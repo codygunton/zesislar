@@ -1,0 +1,72 @@
+{
+  "status": "EXACT_6A38_PHASE_READINESS_PASSED",
+  "source_projection": {
+    "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/PHASE166-RESULT.json",
+    "sha256": "c34c3cf3f56036903108785bafd4d9c09c17ef6214d0412035cbd1f64ffc69e3"
+  },
+  "paired_6ad8_result": {
+    "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/PHASE168-EXACT-RESULT.json",
+    "sha256": "ad7f64e261e35dc251939d0093a0de9fef01602e37445a1b43444890c126bf5d"
+  },
+  "initial_identity": {
+    "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/phase185-6a38/INITIAL-GOAL-PREFLIGHT.json",
+    "sha256": "a2ffb9e0fc8226359f34fc66c8972fcbe7afd0d90bcee6f95b26eaf01f28178f"
+  },
+  "result": {
+    "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/phase185-6a38/responses/0004.json",
+    "sha256": "3138c3d6b7586f8f66f827c393386f5c8154473ec66dca70458e33e17a000012"
+  },
+  "export": {
+    "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/phase185-6a38/complete-goals/state_3.json",
+    "sha256": "63d7a868afd868a0a30c7f61d6fae9afb468c13aed2cda5d155a324074b4cf09"
+  },
+  "context_entries": 103,
+  "target_and_ordered_context_unchanged": true,
+  "guard_unchanged": true,
+  "proof_closed": false,
+  "caller_acceptance": false,
+  "registry": {
+    "id": "stock-batch-1793711421101971340-3774112",
+    "kind": "stock-batch",
+    "owner": "cody",
+    "scheduler": {
+      "pid": 3774112,
+      "startticks": 42658350,
+      "ppid": 2073,
+      "state": "R"
+    },
+    "jobs": [],
+    "claims": {},
+    "command": [
+      "/home/cody/zesislar/.worktrees/spec-b-tools-c25dfe0d/tools/resource_guard.sh",
+      "batch",
+      "spec-b-phase185-6a38",
+      "--",
+      "/home/cody/zesislar/.worktrees/spec-b-tools-c25dfe0d/tools/resource_guard.sh",
+      "scope",
+      "spec-b-phase185-6a38",
+      "--",
+      "/home/cody/.local/share/uv/tools/rocq-mcp/bin/python",
+      "-B",
+      "/home/cody/zesislar/_build/agents/spec-b/source-witness423/phase185-6a38/session.py",
+      "--subject",
+      "/home/cody/zesislar/_build/agents/spec-b/source-witness423/phase185-6a38/Subject.v",
+      "--workspace",
+      "/home/cody/zesislar/_build/agents/spec-b/source-witness423/owned125",
+      "--baseline-body",
+      "",
+      "--theorem",
+      "phase_6a38_185"
+    ],
+    "registered_ns": 1793711421317083023,
+    "status": "completed",
+    "exit_code": 0,
+    "closed_ns": 1793711437491604905,
+    "all_actors_closed": true
+  },
+  "aggregate_absent": true,
+  "final_accounting": {
+    "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/phase185-6a38/FINAL-ACCOUNTING.json",
+    "sha256": "0a3a5196ab3ea95e5fcd8fa3a3b093ef490b5af4fd594e62e8c9a2751cec8c18"
+  }
+}

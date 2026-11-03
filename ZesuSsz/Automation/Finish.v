@@ -295,7 +295,7 @@ Ltac zesu_finish_v1 :=
       first [solve [zesu_array_bounds_if_enabled] |
         solve [unshelve_sidecond; unLET; zesu_array_eight_value] |
         prepare_sidecond]
-  | _ => unLET
+  | _ => Hooks.zesu_unlet_preserving_witness_metadata
   end;
   try zesu_finish_selectors;
   try autorewrite with zesu_indices;
@@ -579,7 +579,7 @@ Ltac zesu_finish_v2 :=
   end;
   lazymatch goal with
   | |- SHELVED_SIDECOND _ => zesu_finish_shelved
-  | _ => unLET
+  | _ => Hooks.zesu_unlet_preserving_witness_metadata
   end;
   zesu_finish_dispatch.
 

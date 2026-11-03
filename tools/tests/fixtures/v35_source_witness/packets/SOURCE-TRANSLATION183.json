@@ -1,0 +1,87 @@
+{
+  "status": "SOURCE_ORIGIN_TRANSLATION_SEAM",
+  "case": "6ad8 return successor",
+  "rows": [
+    {
+      "source_input": {
+        "kind": "source_value",
+        "source_key": "5aef24ce419f5f10855308ee63dadb140d6cfaafca8338b66260cbbc0e72b6e3",
+        "type": "bv 64",
+        "origin": {
+          "kind": "trace_local",
+          "pc": "0x800d6ad8",
+          "trace_sha256": "63b107b508b3c6a5d784383db778ca6fafd2c7906406bd958dea3170892a00cb",
+          "declaration": "v4",
+          "rocq_trace_sha256": "2b62af4a3a4bb17b5577081b9503214831f0554d690a0afd1beb4fb1160d9243"
+        },
+        "source_pointer": "/state/reports/6"
+      },
+      "consumed_Rocq_trace": {
+        "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/owned125/artifacts/default/generated/isla-traces/stock-zisk/decodeItem/a800d6ad8.v",
+        "sha256": "2b62af4a3a4bb17b5577081b9503214831f0554d690a0afd1beb4fb1160d9243"
+      },
+      "declared_variable": 4,
+      "symbol_uses_in_entire_trace": 0,
+      "next_assume": "  Assume (AExp_Binop (Eq) (AExp_Manyop (Bvmanyarith Bvand) [AExp_Val (AVal_Var \"mstatus\" [Field \"bits\"]) Mk_annot; AExp_Val (AVal_Bits (BV 64%N 0x20000%Z)) Mk_annot] Mk_annot) (AExp_Val (AVal_Bits (BV 64%N 0x0%Z)) Mk_annot) Mk_annot) Mk_annot :t:",
+      "declaration_symbol_absent_from_assume": true
+    },
+    {
+      "source_input": {
+        "kind": "source_value",
+        "source_key": "4fed5baf4b516aa0bde5db6b5b140d1de47ef2f44f878b20a16f9b82c4cb40c2",
+        "type": "bv 64",
+        "origin": {
+          "kind": "trace_local",
+          "pc": "0x800d6adc",
+          "trace_sha256": "9da834a083c060dae29304568a29c9933c489a1285bb6bb7eecfad6c048c4714",
+          "declaration": "v4",
+          "rocq_trace_sha256": "9fb2eb4fb6a534f1597efc1085cd77f7d65e825c56e83a87d0aa427306ddb8e5"
+        },
+        "source_pointer": "/state/reports/7"
+      },
+      "consumed_Rocq_trace": {
+        "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/owned125/artifacts/default/generated/isla-traces/stock-zisk/decodeItem/a800d6adc.v",
+        "sha256": "9fb2eb4fb6a534f1597efc1085cd77f7d65e825c56e83a87d0aa427306ddb8e5"
+      },
+      "declared_variable": 4,
+      "symbol_uses_in_entire_trace": 3,
+      "next_assume": "  Assume (AExp_Binop (Eq) (AExp_Manyop (Bvmanyarith Bvand) [AExp_Val (AVal_Var \"mstatus\" [Field \"bits\"]) Mk_annot; AExp_Val (AVal_Bits (BV 64%N 0x20000%Z)) Mk_annot] Mk_annot) (AExp_Val (AVal_Bits (BV 64%N 0x0%Z)) Mk_annot) Mk_annot) Mk_annot :t:",
+      "declaration_symbol_absent_from_assume": true
+    }
+  ],
+  "source_mapping_plan": {
+    "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/emission020/6ad8-PLAN.json",
+    "sha256": "ebae0d7f2bbd6304e2e965ffb44ddb69791e2f20c82a9bc08ed34d3f655fd408"
+  },
+  "pre_capture_export": {
+    "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/capture164-6ad8/complete-goals/state_14.json",
+    "sha256": "a1a13f1f507010278ac21e35c040dfdff900b5f34d7bc53453ed954319742d97"
+  },
+  "post_capture_export": {
+    "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/capture164-6ad8/complete-goals/state_15.json",
+    "sha256": "a3d68189c3516f2023d61a49a0707d7bbe771031342e66b843b500e2ee2e5eb5"
+  },
+  "actual_register_read_export": {
+    "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/capture164-6ad8/complete-goals/state_16.json",
+    "sha256": "4b2886a43b43a486f3cc64c457842858bb47e403d05a953ffa92a0db3a1143ff"
+  },
+  "final_shelves": {
+    "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/boundary175-shelves/complete-goals/state_38.json",
+    "sha256": "ddf63051c8bc86f481835ba338c7c3e3dda7d4dc99beafc41b0dbd641b5891f6"
+  },
+  "mismatches": [
+    {
+      "captured": "source_declaration_value",
+      "guarded": "b",
+      "source_guard": "H23: Z.land (bv_unsigned b) 131072 = 0"
+    },
+    {
+      "captured": "source_declaration_value0",
+      "guarded": "b0",
+      "source_guard": "H25: Z.land (bv_unsigned b0) 131072 = 0"
+    }
+  ],
+  "new_premises": false,
+  "values_equated": false,
+  "conclusion": "The raw-trace declaration origin does not identify the value returned by the Rocq register expression. The capture must bind the authenticated register-read result."
+}

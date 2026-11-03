@@ -1,0 +1,15 @@
+Require Import ZesuSsz.Automation.SourceWitnessInputs.
+Require Import ZesuSsz.Evidence.EntryWitnessSelector.
+
+Ltac zesu_witness_metadata_type kind :=
+  lazymatch kind with
+  | @SourceWitnessInputs.ZesuSourceWitness _ _ _ => idtac
+  | @EntryWitnessSelector.ZesuEntryWitnessPending _ _ _ _ => idtac
+  end.
+
+Ltac zesu_unlet_preserving_witness_metadata :=
+  repeat match goal with
+  | alias := _ : ?kind |- _ =>
+      tryif zesu_witness_metadata_type kind then fail 0
+      else (unfold alias in *; clear alias)
+  end.

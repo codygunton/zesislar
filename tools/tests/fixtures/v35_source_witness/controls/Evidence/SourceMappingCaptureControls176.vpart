@@ -1,0 +1,58 @@
+Require Import ZesuSsz.Automation.All.
+Require Import isla.riscv64.riscv64.
+Require Import stdpp.bitvector.definitions.
+Require Import ZesuSsz.Automation.SourceWitnessInputs.
+Require Import ZesuSsz.Automation.SourceMappingCapture176.
+Require Import ZesuSsz.Evidence.EntryWitnessSelector.
+From Coq Require Import Strings.String.
+Local Open Scope string_scope.
+Definition capture_key176 : unit := tt.
+#[local] Instance capture_mapping176 :
+  ZesuEntrySourceWitnessMapping capture_key176 (bv 64) (bv 64) :=
+  {| zesu_source_witness_input := ZesuSourceValue (bv 64) "source176";
+     zesu_source_witness_mapping := fun value => value |}.
+Lemma capture_reads_value176 (word : bv 64) : True.
+Proof.
+  pose (source := @ZesuSourceWitnessHere (bv 64) "source176" word).
+  zesu_source_mapping_capture176 constr:(capture_key176).
+  lazymatch goal with
+  | marker := _ : @ZesuEntryWitnessPending unit (bv 64) capture_key176 ?value |- _ =>
+      let value := eval cbv beta iota delta [zesu_source_witness_mapping capture_mapping176] in value in
+      constr_eq value word
+  end.
+  exact I.
+Qed.
+Lemma capture_refuses_duplicate176 (word : bv 64) : True.
+Proof.
+  pose (source := @ZesuSourceWitnessHere (bv 64) "source176" word).
+  zesu_source_mapping_capture176 constr:(capture_key176).
+  Fail zesu_source_mapping_capture176 constr:(capture_key176).
+  exact I.
+Qed.
+Lemma capture_refuses_missing176 : True.
+Proof. Fail zesu_source_mapping_capture176 constr:(capture_key176). exact I. Qed.
+Lemma capture_refuses_wrong_type176 (word : bv 32) : True.
+Proof.
+  pose (source := @ZesuSourceWitnessHere (bv 32) "source176" word).
+  Fail zesu_source_mapping_capture176 constr:(capture_key176).
+  exact I.
+Qed.
+Lemma capture_refuses_ambiguous176 (first second : bv 64) : True.
+Proof.
+  pose (source1 := @ZesuSourceWitnessHere (bv 64) "source176" first).
+  pose (source2 := @ZesuSourceWitnessHere (bv 64) "source176" second).
+  Fail zesu_source_mapping_capture176 constr:(capture_key176).
+  exact I.
+Qed.
+Lemma capture_refuses_unregistered176 (word : bv 64) : True.
+Proof.
+  pose (source := @ZesuSourceWitnessHere (bv 64) "source176" word).
+  Fail zesu_source_mapping_capture176 constr:("unregistered176").
+  exact I.
+Qed.
+Print Assumptions capture_reads_value176.
+Print Assumptions capture_refuses_duplicate176.
+Print Assumptions capture_refuses_missing176.
+Print Assumptions capture_refuses_wrong_type176.
+Print Assumptions capture_refuses_ambiguous176.
+Print Assumptions capture_refuses_unregistered176.

@@ -1,0 +1,33 @@
+Require Import ZesuSsz.Automation.All.
+Require Import isla.riscv64.riscv64.
+Require Import stdpp.bitvector.definitions.
+Require Import ZesuSsz.Evidence.FullWitnessPhase157.
+Require Import ZesuSsz.Generated.DecodeItem.FP417.PhaseWitnessProfiles157.
+
+Lemma phase_keeps_index157 (inputs : phase_input_type157) :
+  fst (snd (mapped_phase_values157 inputs)) = fst (snd (snd (snd inputs))).
+Proof. reflexivity. Qed.
+
+Lemma phase_keeps_seed157 (inputs : phase_input_type157) :
+  fst (snd (snd (mapped_phase_values157 inputs))) =
+  fst (snd (snd (snd (snd inputs)))).
+Proof. reflexivity. Qed.
+
+Lemma phase_keeps_vacuous_slots157 (inputs : phase_input_type157) :
+  fst (mapped_phase_values157 inputs) = BV 64%N 0%Z /\
+  fst (snd (snd (snd (mapped_phase_values157 inputs)))) = BV 64%N 0%Z /\
+  fst (snd (snd (snd (snd (mapped_phase_values157 inputs))))) = BV 64%N 0%Z.
+Proof. repeat split; reflexivity. Qed.
+
+Lemma phase_keeps_tail157 (inputs : phase_input_type157) :
+  snd (snd (snd (snd (snd (mapped_phase_values157 inputs))))) =
+  snd (snd (snd (snd (snd inputs)))).
+Proof.
+  destruct inputs as [a0 [a1 [a2 [a3 [a4 [a5 [a6 [a7 [a8 [a9 [a10 []]]]]]]]]]]].
+  reflexivity.
+Qed.
+
+Print Assumptions phase_keeps_index157.
+Print Assumptions phase_keeps_seed157.
+Print Assumptions phase_keeps_vacuous_slots157.
+Print Assumptions phase_keeps_tail157.

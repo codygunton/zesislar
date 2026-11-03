@@ -1,0 +1,337 @@
+{
+  "base_commit": "a6abfb7c8728572b3cc45d969d56db92de87bf8f",
+  "bindings": [
+    {
+      "source": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/production188/SourceWitnessInputs.v",
+      "destination": "ZesuSsz/Automation/SourceWitnessInputs.v",
+      "sha256": "f87df4de0961eb7b8872f2c067f307298fcb866c31f7508309f307336a0a4d95",
+      "owner": "B",
+      "kind": "source"
+    },
+    {
+      "source": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/owned125/artifacts/default/ZesuSsz/Automation/EntryWitnessProfile.v",
+      "destination": "ZesuSsz/Automation/EntryWitnessProfile.v",
+      "sha256": "b4efd820f7abe06a7794ab6aaf456daafdc5dd7aaed9d57b440cc0596b861705",
+      "owner": "B",
+      "kind": "source"
+    },
+    {
+      "source": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/owned125/artifacts/default/ZesuSsz/Automation/EntryWitnessReadiness.v",
+      "destination": "ZesuSsz/Automation/EntryWitnessReadiness.v",
+      "sha256": "29eb44bb3af3f35f4096d0e9f7280ac7f8ab128ad8eed473965da3b4606953f7",
+      "owner": "C",
+      "kind": "source"
+    },
+    {
+      "source": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/owned125/artifacts/default/ZesuSsz/Evidence/EntryWitnessInputs.v",
+      "destination": "ZesuSsz/Evidence/EntryWitnessInputs.v",
+      "sha256": "635e7340afb04cbaccb61f1b6b81754da5d96b2fe29a09b82336e187dde479ef",
+      "owner": "B",
+      "kind": "source"
+    },
+    {
+      "source": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/owned125/artifacts/default/ZesuSsz/Evidence/EntryWitnessSelector.v",
+      "destination": "ZesuSsz/Evidence/EntryWitnessSelector.v",
+      "sha256": "4e73830d62d26df4634da69b9bab94feef6f123d51759384fb91ca32ef85cfb9",
+      "owner": "shared dependency",
+      "kind": "source"
+    },
+    {
+      "source": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/owned125/artifacts/default/ZesuSsz/Evidence/Block2Core.v",
+      "destination": "ZesuSsz/Evidence/Block2Core.v",
+      "sha256": "6d580bade1b51fd29bcd340dd9ba22d61bdd8728c409e9adf0c70cff63f3b638",
+      "owner": "shared dependency",
+      "kind": "source"
+    },
+    {
+      "source": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/owned125/artifacts/default/ZesuSsz/Automation/ExplicitWitnessOrder293.v",
+      "destination": "ZesuSsz/Automation/ExplicitWitnessOrder293.v",
+      "sha256": "79a7a8e0b57fbcdb99f697a8c16e5f8111912eb80232d0b5d28f1a42d75241b9",
+      "owner": "shared dependency",
+      "kind": "source"
+    },
+    {
+      "source": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/owned125/artifacts/default/ZesuSsz/Automation/ExplicitWitnesses292.v",
+      "destination": "ZesuSsz/Automation/ExplicitWitnesses292.v",
+      "sha256": "7435a25279bb70a59f15febbd8d13075ad83075eb39c0a701b0a89ffc3445fc1",
+      "owner": "shared dependency",
+      "kind": "source"
+    },
+    {
+      "source": "/home/cody/zesislar/.worktrees/b1-source-witness423/tools/block/source_witness_bindings.py",
+      "destination": "tools/block/source_witness_bindings.py",
+      "sha256": "99bc0fc9931f024fc3d331738b7790573553af48772abaac4752eb098da5bb48",
+      "owner": "B; existing parser prerequisites preserved",
+      "kind": "source"
+    },
+    {
+      "source": "/home/cody/zesislar/.worktrees/b1-source-witness423/tools/block/witness_phase_projection.py",
+      "destination": "tools/block/witness_phase_projection.py",
+      "sha256": "014d099dcb93a796af8eb7f11bf717edc140b93fa37637da2aa8dbec0e296dfe",
+      "owner": "B; existing parser prerequisites preserved",
+      "kind": "source"
+    },
+    {
+      "source": "/home/cody/zesislar/.worktrees/b1-source-witness423/tools/block/witness_data.py",
+      "destination": "tools/block/witness_data.py",
+      "sha256": "e204a14e05bfc161732d86ff17e0fee164326bd6c265030f17ff595123514ce4",
+      "owner": "B; existing parser prerequisites preserved",
+      "kind": "source"
+    },
+    {
+      "source": "/home/cody/zesislar/.worktrees/b1-source-witness423/tools/block/render_support.py",
+      "destination": "tools/block/render_support.py",
+      "sha256": "4a41371848f09fbafce268cd2c49805ba2e4e6628890578a62170bb6998be033",
+      "owner": "B; existing parser prerequisites preserved",
+      "kind": "source"
+    },
+    {
+      "source": "/home/cody/zesislar/.worktrees/b1-source-witness423/tools/test_source_witness_bindings.py",
+      "destination": "tools/test_source_witness_bindings.py",
+      "sha256": "d6b5450b9835802b9f62cf48b4c371e95a557f83ee43b382cbf7876976e832d2",
+      "owner": "B; existing parser prerequisites preserved",
+      "kind": "source"
+    },
+    {
+      "source": "/home/cody/zesislar/.worktrees/b1-source-witness423/tools/test_witness_phase_projection.py",
+      "destination": "tools/test_witness_phase_projection.py",
+      "sha256": "24f070af8da78a7b6d15bf751cfc9c839d0274440070a58c8e8bfc6d773d0888",
+      "owner": "B; existing parser prerequisites preserved",
+      "kind": "source"
+    },
+    {
+      "source": "/home/cody/zesislar/.worktrees/b1-source-witness423/tools/test_witness_data.py",
+      "destination": "tools/test_witness_data.py",
+      "sha256": "7cad8c3cba7a71f2f648e5ffe885a88688debd7ffce243313c022f7bd9fe1db9",
+      "owner": "B; existing parser prerequisites preserved",
+      "kind": "source"
+    },
+    {
+      "source": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/owned125/artifacts/default/ZesuSsz/Automation/MetadataCleanup152.v",
+      "destination": "tools/tests/fixtures/v35_source_witness/controls/Automation/MetadataCleanup152.vpart",
+      "sha256": "3e110e80613d4e53fff418fbecbdd3e10f708a4dfc7be585410474dff009248b",
+      "owner": "B",
+      "kind": "exact accepted control source"
+    },
+    {
+      "source": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/owned125/artifacts/default/ZesuSsz/Evidence/MetadataCleanupControls152.v",
+      "destination": "tools/tests/fixtures/v35_source_witness/controls/Evidence/MetadataCleanupControls152.vpart",
+      "sha256": "d3b48860b856c5331cf40eff588af6cd8b96493c70a2202e3a25feaa193377b5",
+      "owner": "B",
+      "kind": "exact accepted control source"
+    },
+    {
+      "source": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/owned125/artifacts/default/ZesuSsz/Automation/SourceMappingCapture176.v",
+      "destination": "tools/tests/fixtures/v35_source_witness/controls/Automation/SourceMappingCapture176.vpart",
+      "sha256": "f32785a5b48a6d72d620f824e08124a244090ff67de52789588d4f90fb638be3",
+      "owner": "B",
+      "kind": "exact accepted control source"
+    },
+    {
+      "source": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/owned125/artifacts/default/ZesuSsz/Evidence/SourceMappingCaptureControls176.v",
+      "destination": "tools/tests/fixtures/v35_source_witness/controls/Evidence/SourceMappingCaptureControls176.vpart",
+      "sha256": "b688a3bf48265eeca9429b5b9991a46bf0a66c8f65fb46a7b5688da099952ea8",
+      "owner": "B",
+      "kind": "exact accepted control source"
+    },
+    {
+      "source": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/owned125/artifacts/default/ZesuSsz/Evidence/FullWitnessPhase157.v",
+      "destination": "tools/tests/fixtures/v35_source_witness/controls/Evidence/FullWitnessPhase157.vpart",
+      "sha256": "939cea8d9ac9fbcb986f9758e6c168b7db61657053ec11f42ffb8522a9b00fa9",
+      "owner": "B",
+      "kind": "exact accepted control source"
+    },
+    {
+      "source": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/owned125/artifacts/default/ZesuSsz/Generated/DecodeItem/FP417/PhaseWitnessProfiles157.v",
+      "destination": "tools/tests/fixtures/v35_source_witness/controls/Generated/DecodeItem/FP417/PhaseWitnessProfiles157.vpart",
+      "sha256": "b6796a06306f9d1427c311a8cee3000edcb34bdd0f584f0907174c7021e82323",
+      "owner": "B",
+      "kind": "exact accepted control source"
+    },
+    {
+      "source": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/owned125/artifacts/default/ZesuSsz/Evidence/PhaseProjectionControls157.v",
+      "destination": "tools/tests/fixtures/v35_source_witness/controls/Evidence/PhaseProjectionControls157.vpart",
+      "sha256": "8ad8e64a6882b7c032d23f28b982cd737ea9bb5c37c5b34d207fccb858469b0a",
+      "owner": "B",
+      "kind": "exact accepted control source"
+    },
+    {
+      "source": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/owned125/artifacts/default/ZesuSsz/Automation/Hooks.v",
+      "destination": "tools/tests/fixtures/v35_source_witness/reference/Hooks-e41b6401.vpart",
+      "sha256": "e41b6401079924cfbfabfce82027c7e3ad5b702033ce27b36aba376e62685ee1",
+      "owner": "shared canonical bank",
+      "kind": "reference source"
+    },
+    {
+      "source": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/CLEANUP169-RESULT.json",
+      "destination": "tools/tests/fixtures/v35_source_witness/packets/CLEANUP169-RESULT.json",
+      "sha256": "2f6a3419f2539716ec54f5fddbf99db30a048a3dd599f70dc8f5a2f441f2333f",
+      "owner": "B",
+      "kind": "accepted result or blocker binding"
+    },
+    {
+      "source": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/PHASE166-RESULT.json",
+      "destination": "tools/tests/fixtures/v35_source_witness/packets/PHASE166-RESULT.json",
+      "sha256": "c34c3cf3f56036903108785bafd4d9c09c17ef6214d0412035cbd1f64ffc69e3",
+      "owner": "B",
+      "kind": "accepted result or blocker binding"
+    },
+    {
+      "source": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/PHASE168-EXACT-RESULT.json",
+      "destination": "tools/tests/fixtures/v35_source_witness/packets/PHASE168-EXACT-RESULT.json",
+      "sha256": "ad7f64e261e35dc251939d0093a0de9fef01602e37445a1b43444890c126bf5d",
+      "owner": "B",
+      "kind": "accepted result or blocker binding"
+    },
+    {
+      "source": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/PHASE185-RESULT.json",
+      "destination": "tools/tests/fixtures/v35_source_witness/packets/PHASE185-RESULT.json",
+      "sha256": "a704426fb1c8003c371e66f256acf2e246889d7e986660eaa68aaa5002914d38",
+      "owner": "B",
+      "kind": "accepted result or blocker binding"
+    },
+    {
+      "source": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/CAPTURE180-RESULT.json",
+      "destination": "tools/tests/fixtures/v35_source_witness/packets/CAPTURE180-RESULT.json",
+      "sha256": "8826ce5b721dcfecce82fea755827e0b62c846c3c39e885d8d91a90d2cee41e4",
+      "owner": "B",
+      "kind": "accepted result or blocker binding"
+    },
+    {
+      "source": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/ORDER118-RESULT.json",
+      "destination": "tools/tests/fixtures/v35_source_witness/packets/ORDER118-RESULT.json",
+      "sha256": "1573df259593021cab71a13ec1fd9b60c97f856be7d6e52da79a8379df403064",
+      "owner": "B",
+      "kind": "accepted result or blocker binding"
+    },
+    {
+      "source": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/DECLARE123-RESULT.json",
+      "destination": "tools/tests/fixtures/v35_source_witness/packets/DECLARE123-RESULT.json",
+      "sha256": "8cc4ec50e3d178068aa59c3ef3d34a03dc3248680bd666543984d6c22b3e6f4a",
+      "owner": "B",
+      "kind": "accepted result or blocker binding"
+    },
+    {
+      "source": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/READER124-RESULT.json",
+      "destination": "tools/tests/fixtures/v35_source_witness/packets/READER124-RESULT.json",
+      "sha256": "06d64c334d38356658fa2b061a36dd0dc7df692cc803aeaa81978a4e0e4da227",
+      "owner": "B",
+      "kind": "accepted result or blocker binding"
+    },
+    {
+      "source": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/FINAL125-GENUINE-RESULT.json",
+      "destination": "tools/tests/fixtures/v35_source_witness/packets/FINAL125-GENUINE-RESULT.json",
+      "sha256": "545dccf6ace540472fc886e21762e06c8f638dc17d2c0fea91975ef8e209f722",
+      "owner": "B",
+      "kind": "accepted result or blocker binding"
+    },
+    {
+      "source": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/SOURCE-TRANSLATION183.json",
+      "destination": "tools/tests/fixtures/v35_source_witness/packets/SOURCE-TRANSLATION183.json",
+      "sha256": "48dea242514facb2857c553dcc2e4b0065d0285136920b179dcde48ceaf83b03",
+      "owner": "B",
+      "kind": "accepted result or blocker binding"
+    },
+    {
+      "source": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/phase157/6a38-FULL-DATA.vpart",
+      "destination": "tools/tests/fixtures/v35_source_witness/phase/6a38-FULL-DATA.vpart",
+      "sha256": "2247f595efa393074110e67beee47d3fd0b1fb71858dbc5b8f29fac3d6191826",
+      "owner": "B",
+      "kind": "authenticated declaration data"
+    },
+    {
+      "source": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/phase157/6a38-FULL-METADATA.json",
+      "destination": "tools/tests/fixtures/v35_source_witness/phase/6a38-FULL-METADATA.json",
+      "sha256": "d41b5890bc07083e377e23056a56e59fb31bee610c0292832ea59537666ac02f",
+      "owner": "B",
+      "kind": "authenticated declaration data"
+    },
+    {
+      "source": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/phase157/6a38-PHASE.json",
+      "destination": "tools/tests/fixtures/v35_source_witness/phase/6a38-PHASE.json",
+      "sha256": "897efe863db9170ffd11eae464a49b5a6711897f3542ed37a37ac6872519355e",
+      "owner": "B",
+      "kind": "authenticated declaration data"
+    },
+    {
+      "source": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/phase157/6a38-PROJECTION.json",
+      "destination": "tools/tests/fixtures/v35_source_witness/phase/6a38-PROJECTION.json",
+      "sha256": "937ea653840a8531d47fa5ad039b623d1737a361e5ec3cb8ef3055a3dd0b29f4",
+      "owner": "B",
+      "kind": "authenticated declaration data"
+    },
+    {
+      "source": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/phase157/6ad8-FULL-DATA.vpart",
+      "destination": "tools/tests/fixtures/v35_source_witness/phase/6ad8-FULL-DATA.vpart",
+      "sha256": "2247f595efa393074110e67beee47d3fd0b1fb71858dbc5b8f29fac3d6191826",
+      "owner": "B",
+      "kind": "authenticated declaration data"
+    },
+    {
+      "source": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/phase157/6ad8-FULL-METADATA.json",
+      "destination": "tools/tests/fixtures/v35_source_witness/phase/6ad8-FULL-METADATA.json",
+      "sha256": "8ab082fb034b4fbbf40d3689dbbcddd5dbac72f580a29b8ba20b831bcd9f3484",
+      "owner": "B",
+      "kind": "authenticated declaration data"
+    },
+    {
+      "source": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/phase157/6ad8-PHASE.json",
+      "destination": "tools/tests/fixtures/v35_source_witness/phase/6ad8-PHASE.json",
+      "sha256": "797e76328a9e808482ce545db0d8e0d51f2ba7e4f7774ce1641e5b67e9d72586",
+      "owner": "B",
+      "kind": "authenticated declaration data"
+    },
+    {
+      "source": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/phase157/6ad8-PROJECTION.json",
+      "destination": "tools/tests/fixtures/v35_source_witness/phase/6ad8-PROJECTION.json",
+      "sha256": "be4f1b19634a97a9011f5716a9f582a15a73091efd4a6eb22019e586dd108ec7",
+      "owner": "B",
+      "kind": "authenticated declaration data"
+    },
+    {
+      "source": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/declaration-template139/PACKET.json",
+      "destination": "tools/tests/fixtures/v35_source_witness/template139/PACKET.json",
+      "sha256": "864f7804b8f0f094bcab58cfa280d259c6cc97a55f9c599d131ea88e63fb3eec",
+      "owner": "B",
+      "kind": "declaration interface"
+    },
+    {
+      "source": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/declaration-template139/USAGE.md",
+      "destination": "tools/tests/fixtures/v35_source_witness/template139/USAGE.md",
+      "sha256": "b28d25895e0a6ba9e9f114787b3b1cc0c8521cadc9958fc646ad7811217d9eb2",
+      "owner": "B",
+      "kind": "declaration interface"
+    }
+  ],
+  "objects_copied": false,
+  "hooks_overlap_policy": "Preserve main; add only B source dispatch, declaration capture, and cleanup.",
+  "readiness_owner": "C; exact verified29eb44bb source.",
+  "known_blocker": "SOURCE-TRANSLATION183; no origin semantic fix included yet.",
+  "main_compatibility_proof": "pending genuine build; accepted controls bind their original compiled bank.",
+  "unresolved_join_dependency": {
+    "owner": "B2",
+    "module": "tools/block/forward_design.py",
+    "missing_api": "source_liveness",
+    "decision": "Root requests Orch ruling. Shared source remains unchanged.",
+    "accepted_join_controls": "tools/tests/fixtures/v35_source_witness/controls/test_join_generalize.accepted.py",
+    "active_source_tests": 49
+  },
+  "additional_dependencies": [
+    {
+      "path": "tools/block/join_generalize.py",
+      "base": "f52f8eb9911453dbfedf6a50c52527a9d88f12bc",
+      "change": "Only witness_plan uses the accepted typed source-binding implementation.",
+      "sha256": "e93c8511d4bdc936fd8255b86380d1febe0588661d4c20d0a4b260c42428d6cd"
+    },
+    {
+      "path": "tools/block/guard_normal_form.py",
+      "base": "c9d510cbefc4ba0a448eb3600db20452b13e43e3",
+      "sha256": "6525239338f7af7593139dd8e2bdff1b705b911bb9f1744955e03a2630da505f"
+    },
+    {
+      "path": "tools/block/join_refutations.py",
+      "base": "f52f8eb9911453dbfedf6a50c52527a9d88f12bc",
+      "sha256": "648fe508a6d5f6cb99237debe3e49da9eaa355495717b859cc33c1f655d912f0"
+    }
+  ]
+}

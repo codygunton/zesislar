@@ -1,0 +1,183 @@
+{
+  "status": "EXACT_BOUNDARY_CAPTURE_PASSED_NOT_CALLER_CLOSURE",
+  "helper": {
+    "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/SourceOwnerOrder118.v",
+    "sha256": "138213a170bf83371de927a22fe09016fc45eb0900c5f4b7ee253cadc8d285bd"
+  },
+  "compile": {
+    "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/order118-compile/responses/0004.json",
+    "sha256": "0df708b1b6d06e4fe623ad96926c25917da7a1ca5bea5768da327bdd30ce7637"
+  },
+  "fix": "Unfold the Iris environment before iFresh and iIntros. Use iFresh instead of fresh for the Iris name.",
+  "controls": [
+    {
+      "block": "6a38",
+      "initial_preflight": {
+        "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/wand118-6a38/INITIAL-GOAL-PREFLIGHT.json",
+        "sha256": "555be79e1b8ba8a6cc606ad5b6f287501b26e5c5b4291e881de6c911152662d3"
+      },
+      "subject": {
+        "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/wand118-6a38/Subject.v",
+        "sha256": "fbfacd25df2bbc7cef13f49db19699fb4b390d77b37e5510c533a43b7770a3be"
+      },
+      "plan": {
+        "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/wand118-6a38/PLAN.json",
+        "sha256": "e5bb797f47a2cc6b08b403dcc9ce5a933fd958a3c1316f4f3d6b53ae4c8def8e"
+      },
+      "activation": {
+        "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/wand118-6a38/responses/0017.json",
+        "sha256": "bfa62ef27150488e8d4b831d7e03c330e9740f81d7f5cfd1d884428089333860"
+      },
+      "complete_export": {
+        "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/wand118-6a38/complete-goals/state_14.json",
+        "sha256": "70961385f255d1bc3487efa7023abf7cc20c4034521521f4df1b88e5b62b73c1"
+      },
+      "owner_markers": 9,
+      "ordinary_groups": {
+        "goals": 1,
+        "stack": 0,
+        "shelf": 0,
+        "given_up": 0
+      },
+      "kernel_groups": {
+        "given_up": 0,
+        "goals": 1,
+        "shelf": 0,
+        "stack": 0
+      },
+      "closed": {
+        "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/wand118-6a38/CLOSED.json",
+        "sha256": "21d5369d76c3625795aa31b8801b34372f933fd37adab502ab386de3eb046523"
+      },
+      "accounting": {
+        "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/wand118-6a38/FINAL-ACCOUNTING.json",
+        "sha256": "407b2af9a80f2cf97d6aef750df4b251d1e6575a1263a7e8ba2a0c65d102cdbe"
+      },
+      "registry": {
+        "id": "stock-batch-1793700696639133353-2589220",
+        "kind": "stock-batch",
+        "owner": "worker-build-1",
+        "scheduler": {
+          "pid": 2589220,
+          "startticks": 41585902,
+          "ppid": 2589210,
+          "state": "R"
+        },
+        "jobs": [],
+        "claims": {},
+        "command": [
+          "/home/cody/zesislar/.worktrees/spec-b-tools-c25dfe0d/tools/resource_guard.sh",
+          "batch",
+          "spec-b-wand118-6a38",
+          "--",
+          "/home/cody/zesislar/.worktrees/spec-b-tools-c25dfe0d/tools/resource_guard.sh",
+          "scope",
+          "spec-b-wand118-6a38",
+          "--",
+          "/home/cody/.local/share/uv/tools/rocq-mcp/bin/python",
+          "-B",
+          "/home/cody/zesislar/_build/agents/spec-b/source-witness423/wand118-6a38/session.py",
+          "--subject",
+          "/home/cody/zesislar/_build/agents/spec-b/source-witness423/wand118-6a38/Subject.v",
+          "--workspace",
+          "/home/cody/zesislar/_build/agents/spec-b/source-witness423/owned113",
+          "--baseline-body",
+          "",
+          "--theorem",
+          "fp_native_6a38"
+        ],
+        "registered_ns": 1793700697106971524,
+        "status": "completed",
+        "exit_code": 0,
+        "closed_ns": 1793700726565255688,
+        "all_actors_closed": true
+      },
+      "aggregate_absent": true
+    },
+    {
+      "block": "6ad8",
+      "initial_preflight": {
+        "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/wand118-6ad8/INITIAL-GOAL-PREFLIGHT.json",
+        "sha256": "2329f33913bfed45efff767a669b88ef0d8f2f99f381d04f328347761d00bc5d"
+      },
+      "subject": {
+        "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/wand118-6ad8/Subject.v",
+        "sha256": "1a1fd941d2fca317dfb055a80867b1af42169cdaee8cb85b78af80993aacbd83"
+      },
+      "plan": {
+        "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/wand118-6ad8/PLAN.json",
+        "sha256": "e5bb797f47a2cc6b08b403dcc9ce5a933fd958a3c1316f4f3d6b53ae4c8def8e"
+      },
+      "activation": {
+        "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/wand118-6ad8/responses/0017.json",
+        "sha256": "03d0bef17961636c9248a088be421d52c5a76019910cfb14e955e8a22778e94e"
+      },
+      "complete_export": {
+        "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/wand118-6ad8/complete-goals/state_14.json",
+        "sha256": "a1a13f1f507010278ac21e35c040dfdff900b5f34d7bc53453ed954319742d97"
+      },
+      "owner_markers": 9,
+      "ordinary_groups": {
+        "goals": 1,
+        "stack": 0,
+        "shelf": 0,
+        "given_up": 0
+      },
+      "kernel_groups": {
+        "given_up": 0,
+        "goals": 1,
+        "shelf": 0,
+        "stack": 0
+      },
+      "closed": {
+        "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/wand118-6ad8/CLOSED.json",
+        "sha256": "877d45ae175afaa8444ffb4e51f408a5a58fc54b5412f963f9585863feedfd8e"
+      },
+      "accounting": {
+        "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/wand118-6ad8/FINAL-ACCOUNTING.json",
+        "sha256": "9c9596819a14a3fbd6f82345e96855bfd6cb3f60f8070b5836ecadc83d060cb7"
+      },
+      "registry": {
+        "id": "stock-batch-1793700696779658664-2589276",
+        "kind": "stock-batch",
+        "owner": "worker-build-1",
+        "scheduler": {
+          "pid": 2589276,
+          "startticks": 41585915,
+          "ppid": 2589235,
+          "state": "R"
+        },
+        "jobs": [],
+        "claims": {},
+        "command": [
+          "/home/cody/zesislar/.worktrees/spec-b-tools-c25dfe0d/tools/resource_guard.sh",
+          "batch",
+          "spec-b-wand118-6ad8",
+          "--",
+          "/home/cody/zesislar/.worktrees/spec-b-tools-c25dfe0d/tools/resource_guard.sh",
+          "scope",
+          "spec-b-wand118-6ad8",
+          "--",
+          "/home/cody/.local/share/uv/tools/rocq-mcp/bin/python",
+          "-B",
+          "/home/cody/zesislar/_build/agents/spec-b/source-witness423/wand118-6ad8/session.py",
+          "--subject",
+          "/home/cody/zesislar/_build/agents/spec-b/source-witness423/wand118-6ad8/Subject.v",
+          "--workspace",
+          "/home/cody/zesislar/_build/agents/spec-b/source-witness423/owned113",
+          "--baseline-body",
+          "",
+          "--theorem",
+          "fp_native_6ad8"
+        ],
+        "registered_ns": 1793700699576866015,
+        "status": "completed",
+        "exit_code": 0,
+        "closed_ns": 1793700721560976089,
+        "all_actors_closed": true
+      },
+      "aggregate_absent": true
+    }
+  ],
+  "scope": "Diagnostic alias only. No canonical consumer rebuild or native caller closure."
+}

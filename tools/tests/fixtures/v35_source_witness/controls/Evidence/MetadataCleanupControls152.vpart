@@ -1,0 +1,114 @@
+Require Import ZesuSsz.Automation.All.
+Require Import isla.riscv64.riscv64.
+Require Import stdpp.bitvector.definitions.
+Require Import ZesuSsz.Automation.SourceWitnessInputs.
+Require Import ZesuSsz.Automation.MetadataCleanup152.
+Require Import ZesuSsz.Evidence.EntryWitnessSelector.
+From Coq Require Import Strings.String ZArith.ZArith NArith.NArith.
+Local Open Scope string_scope.
+
+Lemma cleanup_source_marker152 (word : bv 64) : True.
+Proof.
+  pose (source_marker := @ZesuSourceWitnessHere (bv 64) "source" word).
+  pose (ordinary := (2 + 3)%Z).
+  zesu_unlet_preserving_witness_metadata.
+  Fail pose proof ordinary.
+  SourceWitnessInputs.zesu_read_source_value constr:(bv 64) constr:("source")
+    ltac:(fun value => constr_eq value word).
+  exact I.
+Qed.
+
+Lemma cleanup_pending_marker152 (word : bv 64) : True.
+Proof.
+  pose (pending_marker :=
+    @ZesuEntryWitnessPendingHere unit (bv 64 * unit)%type tt (word, tt)).
+  pose (ordinary := (3 + 4)%Z).
+  zesu_unlet_preserving_witness_metadata.
+  Fail pose proof ordinary.
+  lazymatch goal with
+  | marker := _ : @ZesuEntryWitnessPending unit (bv 64 * unit)%type
+      tt (word, tt) |- _ => idtac
+  end.
+  exact I.
+Qed.
+
+Lemma cleanup_interleaved_and_pruned152 (word : bv 64) : True.
+Proof.
+  pose (before_metadata := 1%Z).
+  pose (source_marker := @ZesuSourceWitnessHere (bv 64) "source" word).
+  pose (between_metadata := 2%Z).
+  pose (pending_marker :=
+    @ZesuEntryWitnessPendingHere unit (bv 64 * unit)%type tt (word, tt)).
+  pose (after_metadata := 3%Z).
+  zesu_unlet_preserving_witness_metadata.
+  Fail pose proof before_metadata.
+  Fail pose proof between_metadata.
+  Fail pose proof after_metadata.
+  ZesuSsz.Automation.ContextCollection.zesu_context_prune_goal.
+  lazymatch goal with
+  | marker := _ : @ZesuSourceWitness (bv 64) "source" word |- _ => idtac
+  end.
+  lazymatch goal with
+  | marker := _ : @ZesuEntryWitnessPending unit (bv 64 * unit)%type
+      tt (word, tt) |- _ => idtac
+  end.
+  exact I.
+Qed.
+
+Lemma cleanup_ordinary_definition152 : (2 + 3 = 5)%Z.
+Proof.
+  pose (ordinary := (2 + 3)%Z).
+  change (ordinary = 5)%Z.
+  zesu_unlet_preserving_witness_metadata.
+  Fail pose proof ordinary.
+  reflexivity.
+Qed.
+
+Lemma cleanup_symbolic_value152 (word : bv 64) : word = word.
+Proof.
+  pose (ordinary_alias := word).
+  pose (source_marker :=
+    @ZesuSourceWitnessHere (bv 64) "source" ordinary_alias).
+  zesu_unlet_preserving_witness_metadata.
+  Fail pose proof ordinary_alias.
+  SourceWitnessInputs.zesu_read_source_value constr:(bv 64) constr:("source")
+    ltac:(fun value => constr_eq value word).
+  reflexivity.
+Qed.
+
+Lemma cleanup_idempotent_and_keyed152 (word : bv 64) : True.
+Proof.
+  pose (source_marker := @ZesuSourceWitnessHere (bv 64) "source" word).
+  zesu_unlet_preserving_witness_metadata.
+  zesu_unlet_preserving_witness_metadata.
+  Fail SourceWitnessInputs.zesu_read_source_value
+    constr:(bv 64) constr:("different") ltac:(fun value => idtac).
+  Fail SourceWitnessInputs.zesu_read_source_value
+    constr:(bv 32) constr:("source") ltac:(fun value => idtac).
+  SourceWitnessInputs.zesu_read_source_value constr:(bv 64) constr:("source")
+    ltac:(fun value => constr_eq value word).
+  exact I.
+Qed.
+
+Lemma original_cleanup_erases_metadata152 (word : bv 64) : True.
+Proof.
+  pose (source_marker := @ZesuSourceWitnessHere (bv 64) "source" word).
+  pose (pending_marker :=
+    @ZesuEntryWitnessPendingHere unit (bv 64 * unit)%type tt (word, tt)).
+  unLET.
+  Fail SourceWitnessInputs.zesu_read_source_value
+    constr:(bv 64) constr:("source") ltac:(fun value => idtac).
+  Fail lazymatch goal with
+  | marker := _ : @ZesuEntryWitnessPending unit (bv 64 * unit)%type
+      tt (word, tt) |- _ => idtac
+  end.
+  exact I.
+Qed.
+
+Print Assumptions cleanup_source_marker152.
+Print Assumptions cleanup_pending_marker152.
+Print Assumptions cleanup_interleaved_and_pruned152.
+Print Assumptions cleanup_ordinary_definition152.
+Print Assumptions cleanup_symbolic_value152.
+Print Assumptions cleanup_idempotent_and_keyed152.
+Print Assumptions original_cleanup_erases_metadata152.

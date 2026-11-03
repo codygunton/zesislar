@@ -1,0 +1,4734 @@
+{
+  "status": "FINAL_GENUINE_CONSUMER_CLOSURE_PASSED",
+  "owned_workspace": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/owned125",
+  "modules_total": 36,
+  "modules_recompiled": 33,
+  "modules_reused": 3,
+  "depth": 12,
+  "modules": [
+    {
+      "module": "ZesuSsz.Automation.SourceWitnessInputs",
+      "depth": 4,
+      "source": {
+        "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/owned125/artifacts/default/ZesuSsz/Automation/SourceWitnessInputs.v",
+        "sha256": "aaf7eed4f49194afc2da2f24d37af27bc80db4d7f64f0dea5dd3ecf810ec3aeb"
+      },
+      "route": "rocq_compile_file",
+      "object": {
+        "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/owned125/artifacts/default/ZesuSsz/Automation/SourceWitnessInputs.vo",
+        "sha256": "ff194bbbba8d87d7f6f20ed0897db2be04700c5e3a4784b55b0eb0008b5e42b6"
+      },
+      "vo_digest": {
+        "kind": "Dvo_or_vi",
+        "library": "15ee3692583b3efb89adad8ef1e64ca6"
+      },
+      "physical_receipt": {
+        "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/front126-source/compiler-metrics/819c54fd58ee4bb1afd3e3ba0c0a82da/PHYSICAL-RESULT.json",
+        "sha256": "31eff0e0d13c0f95f80192f80235d398dba0fad1d3ca40504f7d4a61625f7c8f"
+      }
+    },
+    {
+      "module": "ZesuSsz.Automation.Hooks",
+      "depth": 5,
+      "source": {
+        "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/owned125/artifacts/default/ZesuSsz/Automation/Hooks.v",
+        "sha256": "e41b6401079924cfbfabfce82027c7e3ad5b702033ce27b36aba376e62685ee1"
+      },
+      "route": "guarded_Hooks_node",
+      "object": {
+        "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/owned125/artifacts/default/ZesuSsz/Automation/Hooks.vo",
+        "sha256": "e81d5733ff0b060538c9582724502ae22ebba21815c4976fbf87af53d1d7253c"
+      },
+      "vo_digest": {
+        "kind": "Dvo_or_vi",
+        "library": "f642f290dd707133949fdff58fbe3ca3"
+      },
+      "physical_receipt": {
+        "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/hook127/physical/PHYSICAL-RESULT.json",
+        "sha256": "cf14f48247cfbfda08ca74a2bba35e10ebf98f6855ee3eecab63d627a03b8caa"
+      }
+    },
+    {
+      "module": "ZesuSsz.Automation.BranchCastUnsigned",
+      "depth": 6,
+      "source": {
+        "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/owned125/artifacts/default/ZesuSsz/Automation/BranchCastUnsigned.v",
+        "sha256": "dda58a9b8c98b288aad6c4f2145956256d978af88d8f08b489e959572c39a1b9"
+      },
+      "route": "rocq_compile_file",
+      "object": {
+        "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/owned125/artifacts/default/ZesuSsz/Automation/BranchCastUnsigned.vo",
+        "sha256": "a385a2bb14e68dbb9e21a1a8777946e6383ad8497ed4509f87849f9ff8fe2c2e"
+      },
+      "vo_digest": {
+        "kind": "Dvo_or_vi",
+        "library": "a1f001de3c83f93950fa6037533ebd88"
+      },
+      "physical_receipt": {
+        "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/level130-L06-0/compiler-metrics/614d565705f642499abb6b0a03b9ac60/PHYSICAL-RESULT.json",
+        "sha256": "19e20b62d697a4ba90d752078d76d72a5f84be7a47ca0f4072c10d752ee27bfb"
+      }
+    },
+    {
+      "module": "ZesuSsz.Automation.BranchUnsigned",
+      "depth": 6,
+      "source": {
+        "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/owned125/artifacts/default/ZesuSsz/Automation/BranchUnsigned.v",
+        "sha256": "c5e291e7711be5b17466d9b0a86a7702703b953e12562c22f0f4b6c6af7a4079"
+      },
+      "route": "rocq_compile_file",
+      "object": {
+        "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/owned125/artifacts/default/ZesuSsz/Automation/BranchUnsigned.vo",
+        "sha256": "4750653ea8e748e707285ef80d6860ee5e2d696b494cf149c4c3371597c442ed"
+      },
+      "vo_digest": {
+        "kind": "Dvo_or_vi",
+        "library": "ac4b21c2f5f8dd513026d96a390dc629"
+      },
+      "physical_receipt": {
+        "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/level130-L06-1/compiler-metrics/cefc755b3ca746a8b5dbe3af4dcd13fa/PHYSICAL-RESULT.json",
+        "sha256": "20cf36214bc02709d90b333b6e878de0235cec1c518e9e1f1b6585b1c9a90d31"
+      }
+    },
+    {
+      "module": "ZesuSsz.Automation.EffectiveOverrides",
+      "depth": 6,
+      "source": {
+        "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/owned125/artifacts/default/ZesuSsz/Automation/EffectiveOverrides.v",
+        "sha256": "a931e57d7d29e5d0469726dbf84e8ba110cdf6a53a2272ea631747147d407cca"
+      },
+      "route": "rocq_compile_file",
+      "object": {
+        "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/owned125/artifacts/default/ZesuSsz/Automation/EffectiveOverrides.vo",
+        "sha256": "947758d329a9139f0c500b106cad0447800dc5b3537e19d503145543d2f0cdf3"
+      },
+      "vo_digest": {
+        "kind": "Dvo_or_vi",
+        "library": "a25f0e5375f36bec6c2600fec603ea3c"
+      },
+      "physical_receipt": {
+        "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/level130-L06-2/compiler-metrics/e3fe3308eabc41948ccc34de1e10da47/PHYSICAL-RESULT.json",
+        "sha256": "e4840dd138d1be7a43e7b06a2354da04b61332aa2fcad76d8b4b18e3e6c69b33"
+      }
+    },
+    {
+      "module": "ZesuSsz.Automation.ArrayLoadPreselect",
+      "depth": 6,
+      "source": {
+        "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/owned125/artifacts/default/ZesuSsz/Automation/ArrayLoadPreselect.v",
+        "sha256": "0b52f9a4a1dce14a519a93cb6aac0db0bfa3bf1009b5b38bb2e464cf6b7e46c9"
+      },
+      "route": "rocq_compile_file",
+      "object": {
+        "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/owned125/artifacts/default/ZesuSsz/Automation/ArrayLoadPreselect.vo",
+        "sha256": "f951b2402f10aa89a0ba5ddfd669c37ddfa10df008d806269300d46556e064b8"
+      },
+      "vo_digest": {
+        "kind": "Dvo_or_vi",
+        "library": "a2d831c5634220d81c83b6c2de342084"
+      },
+      "physical_receipt": {
+        "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/level130-L06-3/compiler-metrics/a6cb9c10d67643fab4afa712a1b164c3/PHYSICAL-RESULT.json",
+        "sha256": "c488e3d8f39dcfb3fbe41d2179deb1dce7c3ea62c9d18d108cbcb9a5c2875543"
+      }
+    },
+    {
+      "module": "ZesuSsz.Automation.ArrayPayloadPresentation",
+      "depth": 6,
+      "source": {
+        "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/owned125/artifacts/default/ZesuSsz/Automation/ArrayPayloadPresentation.v",
+        "sha256": "0bd098a3479c4e8da84769a2dd4ddc6abb3cdf3bc8d8691d1ec3c8fa29292ddd"
+      },
+      "route": "rocq_compile_file",
+      "object": {
+        "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/owned125/artifacts/default/ZesuSsz/Automation/ArrayPayloadPresentation.vo",
+        "sha256": "575f9745c2aeda2e320feba8a8d602f0953cab1540debd036cf6fb452917f8cc"
+      },
+      "vo_digest": {
+        "kind": "Dvo_or_vi",
+        "library": "f61071fb0d67d5d67afd50d307a8eda0"
+      },
+      "physical_receipt": {
+        "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/level130-L06-4/compiler-metrics/8ff5b1f525404878a126cb5498938372/PHYSICAL-RESULT.json",
+        "sha256": "64345ac97bca51bdb7b9620afcf68585455c477f8fc10edf234830db78bee93a"
+      }
+    },
+    {
+      "module": "ZesuSsz.Automation.MaskWrapPresentation",
+      "depth": 6,
+      "source": {
+        "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/owned125/artifacts/default/ZesuSsz/Automation/MaskWrapPresentation.v",
+        "sha256": "5ce3e997652f2ea11acdefd10d15ef7840be8723aa1793bdd4be0f2ddb3c2c50"
+      },
+      "route": "rocq_compile_file",
+      "object": {
+        "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/owned125/artifacts/default/ZesuSsz/Automation/MaskWrapPresentation.vo",
+        "sha256": "bcc4d29689113b5ed9a5eaefae7179ff914dd3fbc1a574985ebbf4a341669765"
+      },
+      "vo_digest": {
+        "kind": "Dvo_or_vi",
+        "library": "788b27f59ba9ff66b69b6b3f41b7f851"
+      },
+      "physical_receipt": {
+        "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/level130-L06-5/compiler-metrics/0374c067c32948cebe538a5af30db549/PHYSICAL-RESULT.json",
+        "sha256": "916692a5fb892951199f1907f8829e33a0db9b72618d58b1ae510f2fe65f4523"
+      }
+    },
+    {
+      "module": "ZesuSsz.Automation.HypothesisCast",
+      "depth": 7,
+      "source": {
+        "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/owned125/artifacts/default/ZesuSsz/Automation/HypothesisCast.v",
+        "sha256": "250c84d6264a5c4f9146bce40665e495073a26ee58c367dbd9fc46e21c1e5a8d"
+      },
+      "route": "rocq_compile_file",
+      "object": {
+        "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/owned125/artifacts/default/ZesuSsz/Automation/HypothesisCast.vo",
+        "sha256": "0da2a9355ddfd3919c90175b892d9479134f1cf9116a73ff4d4d1a4f45550c2a"
+      },
+      "vo_digest": {
+        "kind": "Dvo_or_vi",
+        "library": "4c9afd07421b89da8b305e773f4b4a97"
+      },
+      "physical_receipt": {
+        "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/level131-L07-0/compiler-metrics/ef1d01a8e5c4406db7408de801876798/PHYSICAL-RESULT.json",
+        "sha256": "cb211a347906b488f6b91330aef4865286c6c38e5247593b7fdaac58d755d5c0"
+      }
+    },
+    {
+      "module": "ZesuSsz.Automation.MaskPresentation",
+      "depth": 6,
+      "source": {
+        "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/owned125/artifacts/default/ZesuSsz/Automation/MaskPresentation.v",
+        "sha256": "8d1230fc2e211ed4c228ea6fa163aa3c9607ead8d4364bafcc3876ab1c337758"
+      },
+      "route": "rocq_compile_file",
+      "object": {
+        "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/owned125/artifacts/default/ZesuSsz/Automation/MaskPresentation.vo",
+        "sha256": "1397b8f5121fa534d2a8b5250494c6db2f88c5b6ebc799d4d933c31b0aae6900"
+      },
+      "vo_digest": {
+        "kind": "Dvo_or_vi",
+        "library": "8d8ef4530039cc9ce8beb2d4fe8f2582"
+      },
+      "physical_receipt": {
+        "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/level130-L06-6/compiler-metrics/cee275364b0c45609a7af2127b8f6f2a/PHYSICAL-RESULT.json",
+        "sha256": "dbe3f026211ac774e8e89a2546fe8b34cbc6b86522a5a5eac38caaf839f0c8a4"
+      }
+    },
+    {
+      "module": "ZesuSsz.Automation.RawWordArrayWitness",
+      "depth": 6,
+      "source": {
+        "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/owned125/artifacts/default/ZesuSsz/Automation/RawWordArrayWitness.v",
+        "sha256": "3cdfc8cbab112eafab591c4146e755d44e1300d017e4df61d393f77f2d8d1ccc"
+      },
+      "route": "rocq_compile_file",
+      "object": {
+        "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/owned125/artifacts/default/ZesuSsz/Automation/RawWordArrayWitness.vo",
+        "sha256": "82d8642baf32c482e1859d7f980f57e9b6af1e9e27e8047bb804c4e3af66ec48"
+      },
+      "vo_digest": {
+        "kind": "Dvo_or_vi",
+        "library": "7e6d153825a55adad25cddc693c29eba"
+      },
+      "physical_receipt": {
+        "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/level130-L06-7/compiler-metrics/4f4dd1eea9e5469998ac8d9563a542f2/PHYSICAL-RESULT.json",
+        "sha256": "87f2f02c71d7d49e03ce0d41bdc35d05de68149ad3f074b06447ed759f3e5bd5"
+      }
+    },
+    {
+      "module": "ZesuSsz.Automation.StoreMemoryLookup",
+      "depth": 6,
+      "source": {
+        "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/owned125/artifacts/default/ZesuSsz/Automation/StoreMemoryLookup.v",
+        "sha256": "9c5aaccc3d74edfcf62985e6efb2b6e29fbddd9dc9b2bb8083c57b3213c3f33d"
+      },
+      "route": "rocq_compile_file",
+      "object": {
+        "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/owned125/artifacts/default/ZesuSsz/Automation/StoreMemoryLookup.vo",
+        "sha256": "7bbe49b019558b21d5d0e62df8a34b34e4281072e3ce53160293d27412882b49"
+      },
+      "vo_digest": {
+        "kind": "Dvo_or_vi",
+        "library": "9d1dc57d77a2413ffd5d06492de5ad0b"
+      },
+      "physical_receipt": {
+        "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/level130-L06-0/compiler-metrics/a11e0e3bf4044b57b537db3449814146/PHYSICAL-RESULT.json",
+        "sha256": "7c4e53aeade46eccbbeab56a27aea39c30a7c627e3a6538af7e2fc223d7fe346"
+      }
+    },
+    {
+      "module": "ZesuSsz.Automation.ExistentialArrayRestore",
+      "depth": 6,
+      "source": {
+        "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/owned125/artifacts/default/ZesuSsz/Automation/ExistentialArrayRestore.v",
+        "sha256": "7206794357f54ba98a898de4d3c8b65f1f144954b30f4ca1bd08872e46958219"
+      },
+      "route": "rocq_compile_file",
+      "object": {
+        "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/owned125/artifacts/default/ZesuSsz/Automation/ExistentialArrayRestore.vo",
+        "sha256": "94322b8d094df02bd4fd28022a276b798857bc20ac74eea43de10a41b63d73b4"
+      },
+      "vo_digest": {
+        "kind": "Dvo_or_vi",
+        "library": "5a58b547a034fb15cc4a7540e72c1713"
+      },
+      "physical_receipt": {
+        "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/level130-L06-1/compiler-metrics/0ef9de0fe06e49088684ceb07d74509c/PHYSICAL-RESULT.json",
+        "sha256": "0ccfa5e90e2be5ea0a42769dd7e72f422052057de032168be087d2109d5840e2"
+      }
+    },
+    {
+      "module": "ZesuSsz.Automation.InteriorByteSlice",
+      "depth": 6,
+      "source": {
+        "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/owned125/artifacts/default/ZesuSsz/Automation/InteriorByteSlice.v",
+        "sha256": "34a9c4c0efbc63bed5bef5715fae06825c7d661e30c6327837b2754befd837a1"
+      },
+      "route": "rocq_compile_file",
+      "object": {
+        "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/owned125/artifacts/default/ZesuSsz/Automation/InteriorByteSlice.vo",
+        "sha256": "0e36dded9893600b8ee3e1c843bc06f06375ee9ad860fcfb704187809a304bae"
+      },
+      "vo_digest": {
+        "kind": "Dvo_or_vi",
+        "library": "78b1ba28fb91ef9f2dbe359a71a7171d"
+      },
+      "physical_receipt": {
+        "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/level130-L06-2/compiler-metrics/4f0aa71b50974987b678dc384ad08499/PHYSICAL-RESULT.json",
+        "sha256": "0a17c31f49b84380f910592ad0e2841a618da33076db061238707b369f7174e7"
+      }
+    },
+    {
+      "module": "ZesuSsz.Automation.V2Steps",
+      "depth": 7,
+      "source": {
+        "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/owned125/artifacts/default/ZesuSsz/Automation/V2Steps.v",
+        "sha256": "7af373278c7d5104c718d6a3cf23d294d5d4916516aa265f4266482fed4b2e53"
+      },
+      "route": "rocq_compile_file",
+      "object": {
+        "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/owned125/artifacts/default/ZesuSsz/Automation/V2Steps.vo",
+        "sha256": "d97d0e45f4a1594e1caab7382acd6fe7dd5fa8c1aac098184edd9bff4102c5e3"
+      },
+      "vo_digest": {
+        "kind": "Dvo_or_vi",
+        "library": "e1c46a66545eaea366cd2fb66e678189"
+      },
+      "physical_receipt": {
+        "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/level131-L07-1/compiler-metrics/fc30a9d2af9044df87618e3b71ab5806/PHYSICAL-RESULT.json",
+        "sha256": "38677fcb735b0cea0f845256df6da52b16c17ad26ef71e1be7d91c91a9c9a87c"
+      }
+    },
+    {
+      "module": "ZesuSsz.Automation.Finish",
+      "depth": 8,
+      "source": {
+        "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/owned125/artifacts/default/ZesuSsz/Automation/Finish.v",
+        "sha256": "6dd18d9e2df77b8e19415af5dcbee6b84d2dc0de74d1d70a267a34a7cdb68326"
+      },
+      "route": "rocq_compile_file",
+      "object": {
+        "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/owned125/artifacts/default/ZesuSsz/Automation/Finish.vo",
+        "sha256": "cdb0e67e2cfd3a9b5f848b13cd36c45ec5e1684638d96a2d7ddd3025c052a81f"
+      },
+      "vo_digest": {
+        "kind": "Dvo_or_vi",
+        "library": "47cf00878cbffc2591e6dfa449ee5a8e"
+      },
+      "physical_receipt": {
+        "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/level132-L08-L09/compiler-metrics/58158b48255a486aa87ca22c10fc0c52/PHYSICAL-RESULT.json",
+        "sha256": "ab212d62884e0660548d33388874f9a84dd4f5811b6148a9966343d71e261ed6"
+      }
+    },
+    {
+      "module": "ZesuSsz.Automation.All",
+      "depth": 9,
+      "source": {
+        "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/owned125/artifacts/default/ZesuSsz/Automation/All.v",
+        "sha256": "8d5669ff96616746d28c297dd87ca7421db751a5f370522a4b59b6643f5f664b"
+      },
+      "route": "rocq_compile_file",
+      "object": {
+        "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/owned125/artifacts/default/ZesuSsz/Automation/All.vo",
+        "sha256": "0cee1608f9b01976caf968ba81552c8f6ebde5e81a7f1ece2a7abf7cc5a89304"
+      },
+      "vo_digest": {
+        "kind": "Dvo_or_vi",
+        "library": "300b56bb42a448a1328fa3d5a6abf461"
+      },
+      "physical_receipt": {
+        "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/level132-L08-L09/compiler-metrics/5c5dc9242f0c4f8b8e2c40e29f321fa2/PHYSICAL-RESULT.json",
+        "sha256": "581267c825fef457f9bbadf7cf820f8537933c21f06dbc723d75bcdf0a52ee80"
+      }
+    },
+    {
+      "module": "ZesuSsz.Generated.DecodeItem.FP417.Pilot6a38Entries",
+      "depth": 10,
+      "source": {
+        "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/owned125/artifacts/default/ZesuSsz/Generated/DecodeItem/FP417/Pilot6a38Entries.v",
+        "sha256": "b58f7963d70ff8802fd87fa4136372b329298bb90ad6f467e069b84a03d41cd8"
+      },
+      "route": "rocq_compile_file",
+      "object": {
+        "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/owned125/artifacts/default/ZesuSsz/Generated/DecodeItem/FP417/Pilot6a38Entries.vo",
+        "sha256": "24893d1aad9e6b6bb8044c89fd03ae7a0e24d8a81a9ce2da2217e310bf939d47"
+      },
+      "vo_digest": {
+        "kind": "Dvo_or_vi",
+        "library": "2029e65684db985be2ae80097fc98b1b"
+      },
+      "physical_receipt": {
+        "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/level133-L10-0/compiler-metrics/1199dd3a457942739d0b1440e85e52fb/PHYSICAL-RESULT.json",
+        "sha256": "a0b8d0fd0e4048d49ce0eaa378bdd6d35e495d02c929b94a4c35265877083f92"
+      }
+    },
+    {
+      "module": "ZesuSsz.Generated.DecodeItem.FP417.Pilot6a38Structural",
+      "depth": 11,
+      "source": {
+        "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/owned125/artifacts/default/ZesuSsz/Generated/DecodeItem/FP417/Pilot6a38Structural.v",
+        "sha256": "97807c632483dc26a0684b27b2f4010f02ccc962a85a5412b334b020fcdda6d1"
+      },
+      "route": "rocq_compile_file",
+      "object": {
+        "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/owned125/artifacts/default/ZesuSsz/Generated/DecodeItem/FP417/Pilot6a38Structural.vo",
+        "sha256": "90b0029c3fe4a8a6a59e221f8fc1152e19144fd35227445357e7e6ca9907de3d"
+      },
+      "vo_digest": {
+        "kind": "Dvo_or_vi",
+        "library": "ddc058498ba019e67a3b60798bd50637"
+      },
+      "physical_receipt": {
+        "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/level134-L11-0/compiler-metrics/aa25590326424c54a134bab7f456cbaa/PHYSICAL-RESULT.json",
+        "sha256": "c6a597107c1edfb548e0b2b49151982c4e609c98f84cf1e764451da85442fa66"
+      }
+    },
+    {
+      "module": "ZesuSsz.Generated.DecodeItem.FP417.Pilot6a40Entries",
+      "depth": 10,
+      "source": {
+        "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/owned125/artifacts/default/ZesuSsz/Generated/DecodeItem/FP417/Pilot6a40Entries.v",
+        "sha256": "1c1ae06b00847a8ff1914132dce8ccfd582b597b7ec4c42106c861351f77ba31"
+      },
+      "route": "rocq_compile_file",
+      "object": {
+        "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/owned125/artifacts/default/ZesuSsz/Generated/DecodeItem/FP417/Pilot6a40Entries.vo",
+        "sha256": "bac025578a79cf72e59f6b50d58613f1ed84bda5df8b737a255f1e28708b5dd5"
+      },
+      "vo_digest": {
+        "kind": "Dvo_or_vi",
+        "library": "edfa1f7799f1f1c197c873b25ddc81e5"
+      },
+      "physical_receipt": {
+        "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/level133-L10-1/compiler-metrics/05cbbba389c14b98bc8fa7cd29dc257d/PHYSICAL-RESULT.json",
+        "sha256": "80fb17a4cc529c6144684fa2373aeedc1a46bd215ef4cc0f9b01fe439ccd6826"
+      }
+    },
+    {
+      "module": "ZesuSsz.Generated.DecodeItem.FP417.Pilot6a40Structural",
+      "depth": 11,
+      "source": {
+        "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/owned125/artifacts/default/ZesuSsz/Generated/DecodeItem/FP417/Pilot6a40Structural.v",
+        "sha256": "4b4b587609c0499d77c3811018975185ee1cae388a7f26e8fba8f7ae00ca7f5d"
+      },
+      "route": "rocq_compile_file",
+      "object": {
+        "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/owned125/artifacts/default/ZesuSsz/Generated/DecodeItem/FP417/Pilot6a40Structural.vo",
+        "sha256": "544b4885ac800cafca39f7ed33d6711d92ba0f072783dd25013b011aa71fba8e"
+      },
+      "vo_digest": {
+        "kind": "Dvo_or_vi",
+        "library": "f407241919cc8878a6e4e9b7bf2adee5"
+      },
+      "physical_receipt": {
+        "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/level134-L11-1/compiler-metrics/b4f35d28a561417c94380045c2175032/PHYSICAL-RESULT.json",
+        "sha256": "6be2777388f7e058522fe63445a066047d6328c9154c44821dac760086a30159"
+      }
+    },
+    {
+      "module": "ZesuSsz.Generated.DecodeItem.FP417.Pilot6ad8Entries",
+      "depth": 10,
+      "source": {
+        "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/owned125/artifacts/default/ZesuSsz/Generated/DecodeItem/FP417/Pilot6ad8Entries.v",
+        "sha256": "8afd7cc33cfc7311621e540074e8d55df23b9bb02379195082e3038b8aaccbdc"
+      },
+      "route": "rocq_compile_file",
+      "object": {
+        "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/owned125/artifacts/default/ZesuSsz/Generated/DecodeItem/FP417/Pilot6ad8Entries.vo",
+        "sha256": "6a9c8c4cf85443ee9eddd21c4b82938d4542d4bd04cbdbb4a9f41f3fd8df3fc5"
+      },
+      "vo_digest": {
+        "kind": "Dvo_or_vi",
+        "library": "af9be1eafcb2b05c38879bf7d9946461"
+      },
+      "physical_receipt": {
+        "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/level133-L10-2/compiler-metrics/8f74af8bc7774d2e9e1f70756500868a/PHYSICAL-RESULT.json",
+        "sha256": "e90ff8a7377d10b9ad480bd79790bf3f6873296b500f888a41b139ac001fe849"
+      }
+    },
+    {
+      "module": "ZesuSsz.Generated.DecodeItem.FP417.Pilot6ad8Structural",
+      "depth": 11,
+      "source": {
+        "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/owned125/artifacts/default/ZesuSsz/Generated/DecodeItem/FP417/Pilot6ad8Structural.v",
+        "sha256": "40a73d1de57dc8873c75006d713328a7ba9d1d0dbe5dbc627f6a202b16bb5506"
+      },
+      "route": "rocq_compile_file",
+      "object": {
+        "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/owned125/artifacts/default/ZesuSsz/Generated/DecodeItem/FP417/Pilot6ad8Structural.vo",
+        "sha256": "4efa4b7a8f4c52a625961c2602f05ba121dec58a8cc2ebd09d432b4a0f5660f4"
+      },
+      "vo_digest": {
+        "kind": "Dvo_or_vi",
+        "library": "a54a7a19603a71bdd39c1eebbb7a0a6a"
+      },
+      "physical_receipt": {
+        "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/level134-L11-2/compiler-metrics/2fa5916822554543b3d3219db5894380/PHYSICAL-RESULT.json",
+        "sha256": "393c4c17d58a7987dfa8d45b600d873a43560afe76ad2cd2cf6da4cd21b77de7"
+      }
+    },
+    {
+      "module": "ZesuSsz.Generated.DecodeItem.FP417.Pilot6b08Entries",
+      "depth": 10,
+      "source": {
+        "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/owned125/artifacts/default/ZesuSsz/Generated/DecodeItem/FP417/Pilot6b08Entries.v",
+        "sha256": "d1397865136230469339790f6319f1eb7b024034fc349e6835ba9d13dc241559"
+      },
+      "route": "rocq_compile_file",
+      "object": {
+        "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/owned125/artifacts/default/ZesuSsz/Generated/DecodeItem/FP417/Pilot6b08Entries.vo",
+        "sha256": "29d9178996543481a06d321cb9c8ff1312d5b03d09033c8e1553335072cdeeb1"
+      },
+      "vo_digest": {
+        "kind": "Dvo_or_vi",
+        "library": "66063356f176bff55981355c90af9c72"
+      },
+      "physical_receipt": {
+        "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/level133-L10-3/compiler-metrics/122c9dfaa8ee47ea86738a492d298114/PHYSICAL-RESULT.json",
+        "sha256": "2b795734a0697dbc5ba64f98a3f4f6e8e81fa619cc9e44b88e0a88cb93a75dd7"
+      }
+    },
+    {
+      "module": "ZesuSsz.Generated.DecodeItem.FP417.Pilot6b08Structural",
+      "depth": 11,
+      "source": {
+        "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/owned125/artifacts/default/ZesuSsz/Generated/DecodeItem/FP417/Pilot6b08Structural.v",
+        "sha256": "6d17f218850ec653f2e6229426486ccc0b3a6d57d35a3258465df08e4551ec0f"
+      },
+      "route": "rocq_compile_file",
+      "object": {
+        "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/owned125/artifacts/default/ZesuSsz/Generated/DecodeItem/FP417/Pilot6b08Structural.vo",
+        "sha256": "d0e257d98b65dbca42ad009e0dc800a0d3a3e60e61244610e58664ab129d3573"
+      },
+      "vo_digest": {
+        "kind": "Dvo_or_vi",
+        "library": "efee6372b20928e9a08244ea7e9ff594"
+      },
+      "physical_receipt": {
+        "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/level134-L11-3/compiler-metrics/b05b754f9a624352aa748f7717c3fbcf/PHYSICAL-RESULT.json",
+        "sha256": "aad9d7779e63a79fb9659a50df5b9eaae2f2047668de2d7fb492d850df0ee764"
+      }
+    },
+    {
+      "module": "ZesuSsz.Generated.DecodeItem.FP417.SourceMapping6a38",
+      "depth": 11,
+      "source": {
+        "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/owned125/artifacts/default/ZesuSsz/Generated/DecodeItem/FP417/SourceMapping6a38.v",
+        "sha256": "9b91725e1ffd8e5e8c0803227ed27a76096022b93724aa63fa17a36da998b72b"
+      },
+      "route": "rocq_compile_file",
+      "object": {
+        "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/owned125/artifacts/default/ZesuSsz/Generated/DecodeItem/FP417/SourceMapping6a38.vo",
+        "sha256": "3a1389265e85066b5a72f904899a335f9b6c33543261e44c748cf949443167dc"
+      },
+      "vo_digest": {
+        "kind": "Dvo_or_vi",
+        "library": "e1c8b4e0fa8f80573f2a3204a84061ab"
+      },
+      "physical_receipt": {
+        "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/level134-L11-4/compiler-metrics/007b3330ca6b4b97a7813d6da7471a6f/PHYSICAL-RESULT.json",
+        "sha256": "87c65abf0a7d7c032320e712b50223fe4ac4e6c0fda1b51fde9b742daa34c407"
+      }
+    },
+    {
+      "module": "ZesuSsz.Generated.DecodeItem.FP417.SourceMapping6ad8",
+      "depth": 11,
+      "source": {
+        "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/owned125/artifacts/default/ZesuSsz/Generated/DecodeItem/FP417/SourceMapping6ad8.v",
+        "sha256": "268b3e277ca0cabc519c6cb99eaf3eb3f9ba833a6f0f5248ddafeb24d5488206"
+      },
+      "route": "rocq_compile_file",
+      "object": {
+        "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/owned125/artifacts/default/ZesuSsz/Generated/DecodeItem/FP417/SourceMapping6ad8.vo",
+        "sha256": "c1fddee1143136f7e967c58158e9b94a0bcb6245539ed106562f1a40a0d5958c"
+      },
+      "vo_digest": {
+        "kind": "Dvo_or_vi",
+        "library": "0e9b38368c84cc6af4d978991cd26f39"
+      },
+      "physical_receipt": {
+        "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/level134-L11-5/compiler-metrics/fcddfa3724354f519f764218a3098fb7/PHYSICAL-RESULT.json",
+        "sha256": "b5c2d1b00178612ef5efbdb39a984c2fe9dcc7856b30e79a0b1b6a436230e2cb"
+      }
+    },
+    {
+      "module": "ZesuSsz.Generated.DecodeItem.MachineJoin6ae0Entries",
+      "depth": 10,
+      "source": {
+        "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/owned125/artifacts/default/ZesuSsz/Generated/DecodeItem/MachineJoin6ae0Entries.v",
+        "sha256": "27a7c0acbeb5e9d06d955b68d4456f5323e73418928985360f1857d8e7624987"
+      },
+      "route": "rocq_compile_file",
+      "object": {
+        "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/owned125/artifacts/default/ZesuSsz/Generated/DecodeItem/MachineJoin6ae0Entries.vo",
+        "sha256": "0f6426bf7263ee6ff9b95b5f5803003346de93854fafd8fd279f04d656e8de59"
+      },
+      "vo_digest": {
+        "kind": "Dvo_or_vi",
+        "library": "e44c8e3346772ded52f05a63388cb64d"
+      },
+      "physical_receipt": {
+        "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/level133-L10-4/compiler-metrics/9d6ef60380a6455195c1f097ce997428/PHYSICAL-RESULT.json",
+        "sha256": "751271d41dd5e8e04d353397d10ed869ea84469e4a5ae9ee1e2ee0ce99556466"
+      }
+    },
+    {
+      "module": "ZesuSsz.Generated.DecodeItem.MachineJoin6ae0SourceOwner",
+      "depth": 10,
+      "source": {
+        "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/owned125/artifacts/default/ZesuSsz/Generated/DecodeItem/MachineJoin6ae0SourceOwner.v",
+        "sha256": "08438479762919b05ec13114022f09ffb1f0881878c588b07d04ed280e38181b"
+      },
+      "route": "rocq_compile_file",
+      "object": {
+        "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/owned125/artifacts/default/ZesuSsz/Generated/DecodeItem/MachineJoin6ae0SourceOwner.vo",
+        "sha256": "ac378fb4c7b88c0dc3ce121908927b53821672b3277b33fa2a27f010902b7b12"
+      },
+      "vo_digest": {
+        "kind": "Dvo_or_vi",
+        "library": "8bd70352baee63f50655f951b826d013"
+      },
+      "physical_receipt": {
+        "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/level133-L10-5/compiler-metrics/df72d71e717f4374b6fec9c49a1f4e08/PHYSICAL-RESULT.json",
+        "sha256": "5eab6af9e797b8b250923bf3c8db1cd03195457dd7851a4ae272d6e41252125a"
+      }
+    },
+    {
+      "module": "ZesuSsz.Generated.DecodeItem.MachineJoin6ae0Structural",
+      "depth": 11,
+      "source": {
+        "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/owned125/artifacts/default/ZesuSsz/Generated/DecodeItem/MachineJoin6ae0Structural.v",
+        "sha256": "536d550e2439a05c63acf2aab5b0e60e876a73b28920eef2a5f9354263e4d066"
+      },
+      "route": "rocq_compile_file",
+      "object": {
+        "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/owned125/artifacts/default/ZesuSsz/Generated/DecodeItem/MachineJoin6ae0Structural.vo",
+        "sha256": "e242c964775ca761916502f18bbfc3b46217064e76d1fa642ce8816a7a228030"
+      },
+      "vo_digest": {
+        "kind": "Dvo_or_vi",
+        "library": "c964a99bc83c0c6bf3502fbea18c52ae"
+      },
+      "physical_receipt": {
+        "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/level134-L11-6/compiler-metrics/36a553d22fd14117ad1b4a06cdbda46e/PHYSICAL-RESULT.json",
+        "sha256": "6c28f730d16fc87d781530d4558a3cdec3d30d2729f6a0e7748ffae7413bf826"
+      }
+    },
+    {
+      "module": "ZesuSsz.Generated.DecodeItem.MachineJoin6ae0WitnessRegistration",
+      "depth": 11,
+      "source": {
+        "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/owned125/artifacts/default/ZesuSsz/Generated/DecodeItem/MachineJoin6ae0WitnessRegistration.v",
+        "sha256": "fcf44f12cb2ed2adb5a1c669f0c6c5f8b0a481d26c8f02d69b65ec6f54799ba0"
+      },
+      "route": "rocq_compile_file",
+      "object": {
+        "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/owned125/artifacts/default/ZesuSsz/Generated/DecodeItem/MachineJoin6ae0WitnessRegistration.vo",
+        "sha256": "839bbcbe14564cc3632879b96254bc52add4e83c7224908a0836a86191e558fb"
+      },
+      "vo_digest": {
+        "kind": "Dvo_or_vi",
+        "library": "f6f8ed9521f3719ce915d7fec764443f"
+      },
+      "physical_receipt": {
+        "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/level134-L11-7/compiler-metrics/08e473f5fa4a41a2879c19ec942cbbf7/PHYSICAL-RESULT.json",
+        "sha256": "11744e37510c9a9628348c82bb282a672ea171b277087bf26978d47e53e41e3a"
+      }
+    },
+    {
+      "module": "ZesuSsz.Evidence.RuleScratchRules",
+      "depth": 12,
+      "source": {
+        "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/owned125/artifacts/default/ZesuSsz/Evidence/RuleScratchRules.v",
+        "sha256": "9a0e24b8c271fa3bfabd24991794015a12f8276c2559b811691f7d9780b8e1d8"
+      },
+      "route": "rocq_compile_file",
+      "object": {
+        "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/owned125/artifacts/default/ZesuSsz/Evidence/RuleScratchRules.vo",
+        "sha256": "ded39ca14d4dafd46816a7d85dc8473e342fbffcaf27482142b3e5da3c1ffedc"
+      },
+      "vo_digest": {
+        "kind": "Dvo_or_vi",
+        "library": "25a5911a170426ef99eb2eb80cde543f"
+      },
+      "physical_receipt": {
+        "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/level135-L12/compiler-metrics/8054a8b77b1747d9b961352c6b52a2db/PHYSICAL-RESULT.json",
+        "sha256": "49d911785221779673e8d882286b3b7253eb495f4f0a1ca22a8e3fb55a75b5b5"
+      }
+    },
+    {
+      "module": "ZesuSsz.Proofs.Tests.DecodeItemBranchContinuationOrder",
+      "depth": 10,
+      "source": {
+        "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/owned125/artifacts/default/ZesuSsz/Proofs/Tests/DecodeItemBranchContinuationOrder.v",
+        "sha256": "bbd530c079701d8a47b0bb70691f47f313e8aa233bd42364ae07b98aebb17e08"
+      },
+      "route": "rocq_compile_file",
+      "object": {
+        "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/owned125/artifacts/default/ZesuSsz/Proofs/Tests/DecodeItemBranchContinuationOrder.vo",
+        "sha256": "c82bc55ade8df9c26e21a59604c8e17079af9cab331b9467099f988959b5f4d7"
+      },
+      "vo_digest": {
+        "kind": "Dvo_or_vi",
+        "library": "51ac0ddbc0cfc577cbe597eb4ebac8af"
+      },
+      "physical_receipt": {
+        "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/level133-L10-6/compiler-metrics/1b7bf2baf21c47a986690568dcb70c56/PHYSICAL-RESULT.json",
+        "sha256": "b11ad60c406d426918ff85699a45276b25a39454d0e244b19f65d2560644944b"
+      }
+    }
+  ],
+  "compiler_CPU_seconds": 30.96419,
+  "aggregate_CPU_seconds_before_guard_cleanup": 90.602037,
+  "aggregate_to_compiler_CPU_ratio": 2.92602638725573,
+  "wall_scope": "Every session result records guarded wall and batch wall. Idle coordination intervals are not compiler wall.",
+  "case_results": [
+    {
+      "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/front126-source/RESULT.json",
+      "sha256": "32b913e78717067f61d4ab8a08f1c5d69faa6e0270c1b9aa43c7c066c0cc8de2"
+    },
+    {
+      "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/level130-L06-0/RESULT.json",
+      "sha256": "21d0cb2df7c0e436b4501533f84d6c58c31e3627be45e663b3e532a1471fe313"
+    },
+    {
+      "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/level130-L06-1/RESULT.json",
+      "sha256": "f1f208fb8943db1f2bd5641cc78b93a080049b789bd07df8962e8b7f0026496f"
+    },
+    {
+      "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/level130-L06-2/RESULT.json",
+      "sha256": "ee0bcb15eb21f1862713ea4d64eb3e2464886ab3e7eb0dad62fd0d463737a31c"
+    },
+    {
+      "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/level130-L06-3/RESULT.json",
+      "sha256": "125680bd75a259ee6acda5e3a09ca4b52997b3f12ba30797193fecff33211047"
+    },
+    {
+      "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/level130-L06-4/RESULT.json",
+      "sha256": "1a00b5eaddf9d816a573a6cd2e139d445cdd89455a867c36a6533059054022ef"
+    },
+    {
+      "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/level130-L06-5/RESULT.json",
+      "sha256": "ad6a8505b0d265cb42eba610046b7cb479ee0786916838238301b1516d1fda96"
+    },
+    {
+      "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/level130-L06-6/RESULT.json",
+      "sha256": "df76f0563b46e6a0acb3a267f6dfe17c282a43a7ff31d58b61b116c0e4e5fdbf"
+    },
+    {
+      "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/level130-L06-7/RESULT.json",
+      "sha256": "429f500d75d5d53f353e8ed55da33f6cfc5aafa82c73adcff0679037be2b1ac6"
+    },
+    {
+      "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/level131-L07-0/RESULT.json",
+      "sha256": "095cbb9118b3d867b2b92caccc880641565588b2bc547de60fbacad14c74c681"
+    },
+    {
+      "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/level131-L07-1/RESULT.json",
+      "sha256": "bb89c52d8b8bf2486d4f413eb953fc3be9b7551d5ae11554f95df394ca5d98b2"
+    },
+    {
+      "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/level132-L08-L09/RESULT.json",
+      "sha256": "17d89001e505cc550d94be0295778d2084e106a19ccc38de3b89c61097e08a9a"
+    },
+    {
+      "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/level133-L10-0/RESULT.json",
+      "sha256": "6a55b545e316cea554387180c11ebdf57834d72879e94de860a6098ce114379c"
+    },
+    {
+      "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/level133-L10-1/RESULT.json",
+      "sha256": "fcd0ffeb552b132ac488bbd09527fd473ae3f9db3bbc1505ce4260781f4b550a"
+    },
+    {
+      "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/level133-L10-2/RESULT.json",
+      "sha256": "2d380fa8fb8c55d8bff631dac99e81396633dfa6ba7e4308d1e88aaf75f2103b"
+    },
+    {
+      "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/level133-L10-3/RESULT.json",
+      "sha256": "984da828b3e75e10ce3502516c62e78ecbcb8454ad99ffff7f720ab387cca775"
+    },
+    {
+      "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/level133-L10-4/RESULT.json",
+      "sha256": "1ea866da200b81a70b3e36d324cbd847458d2430b280a1c5b027bd03e7eb4f89"
+    },
+    {
+      "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/level133-L10-5/RESULT.json",
+      "sha256": "5d0a047389bd1a7e5bdab646d53c1433b95718761ea552076cd96511e3125001"
+    },
+    {
+      "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/level133-L10-6/RESULT.json",
+      "sha256": "d00e9a6331161aae8d089690e3a14bfeca2f419e33160869de5df6f81888a736"
+    },
+    {
+      "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/level134-L11-0/RESULT.json",
+      "sha256": "3b42676b5d48ebec852b5283fb54be3d79ab0f7f559ae526e5c9446bc8470790"
+    },
+    {
+      "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/level134-L11-1/RESULT.json",
+      "sha256": "c3e09b2158b31dcb30f9a2f1fe47a412b01be8d2b154ead14c04b87865585226"
+    },
+    {
+      "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/level134-L11-2/RESULT.json",
+      "sha256": "4ff504b080b749c492c9f02b47c3a047d8050cc9d7b52b39ddcbb9e42d070837"
+    },
+    {
+      "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/level134-L11-3/RESULT.json",
+      "sha256": "a3e96f4b9fd9115ed17839cfbe38301a6281b2c23b6e22ac0412739c6245f5d0"
+    },
+    {
+      "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/level134-L11-4/RESULT.json",
+      "sha256": "9c0db8271cda1191428d32e7d834e25894541c3ff6f39bfcbdbb9aaa6535c9de"
+    },
+    {
+      "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/level134-L11-5/RESULT.json",
+      "sha256": "a5d6ecebf6a98eee2116d217eaa57d3f06cfa3c861b9fc9b7c4b1ddb9fdf2166"
+    },
+    {
+      "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/level134-L11-6/RESULT.json",
+      "sha256": "11c14f9a63bd13777d295bebbab54e45fcb3b8c9240682aeac99ab79047323fb"
+    },
+    {
+      "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/level134-L11-7/RESULT.json",
+      "sha256": "9f4f6795d7a8b54fefadd436363795fc834f4feebab3b9bd4a7acf70cff63263"
+    },
+    {
+      "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/level135-L12/RESULT.json",
+      "sha256": "30539ec82771568a36514e9bb8b93db16d177edd3e0d568a58705a7770e7ea09"
+    }
+  ],
+  "case_initial_goal_preflights": [
+    {
+      "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/front126-source/INITIAL-GOAL-PREFLIGHT.json",
+      "sha256": "35cfeb836d88e78b62b922b4dfc5fcc0fb93929322eb0f44e2d9abfa2d4feb07"
+    },
+    {
+      "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/level130-L06-0/INITIAL-GOAL-PREFLIGHT.json",
+      "sha256": "b95d38a556b98859ba792fbc67aa0f1444dd70d02f3e6daecfaca74d5901803e"
+    },
+    {
+      "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/level130-L06-1/INITIAL-GOAL-PREFLIGHT.json",
+      "sha256": "dd1f93ab87faa2120b1bd4000ed95ae26f9182c85c4bbe027887f2b3b13c21db"
+    },
+    {
+      "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/level130-L06-2/INITIAL-GOAL-PREFLIGHT.json",
+      "sha256": "5e9ed630aecafc5bad97534ca99a7fba474a7c2707598d7dbedabdfd596312e5"
+    },
+    {
+      "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/level130-L06-3/INITIAL-GOAL-PREFLIGHT.json",
+      "sha256": "412535fa0452b56c8d90c28cd7a0d7c5c4c44127ffeeab5c4f52968e8936fe5a"
+    },
+    {
+      "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/level130-L06-4/INITIAL-GOAL-PREFLIGHT.json",
+      "sha256": "f6bfaef20845f96359ff5562ab0e04f5a42e73e56e8f632ccb012b5b7e203f1a"
+    },
+    {
+      "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/level130-L06-5/INITIAL-GOAL-PREFLIGHT.json",
+      "sha256": "2f7e5d7196edbde189537b3320864ac37e2a36f852d93c7645edce275c505015"
+    },
+    {
+      "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/level130-L06-6/INITIAL-GOAL-PREFLIGHT.json",
+      "sha256": "55ab00824127600f707f7378183a8734c398800c3cb86ff7237fbaa213cf50e9"
+    },
+    {
+      "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/level130-L06-7/INITIAL-GOAL-PREFLIGHT.json",
+      "sha256": "aef83e48b030837606d2c0f5e92595e1870976b21b45fd004c9869cf41e35d9d"
+    },
+    {
+      "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/level131-L07-0/INITIAL-GOAL-PREFLIGHT.json",
+      "sha256": "717b7b639344d270c40dd7d8b1a54b35828b06400c1907778d9395c560aa0d51"
+    },
+    {
+      "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/level131-L07-1/INITIAL-GOAL-PREFLIGHT.json",
+      "sha256": "8152c606fab0b3a8008c802595af212abd741f89c841a3deb31ec269890a23df"
+    },
+    {
+      "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/level132-L08-L09/INITIAL-GOAL-PREFLIGHT.json",
+      "sha256": "2a00da467509854caf4458a62f271a4b8e1f1badadf53840f229c6ca62a887b0"
+    },
+    {
+      "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/level133-L10-0/INITIAL-GOAL-PREFLIGHT.json",
+      "sha256": "e5e4fcc6b29f488d202805783760c82091873253c3f8f43991368707b75293f2"
+    },
+    {
+      "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/level133-L10-1/INITIAL-GOAL-PREFLIGHT.json",
+      "sha256": "70a874add840e502b26c05da1ddbbfcc81873314cedf428787e8ca7d1181cdd0"
+    },
+    {
+      "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/level133-L10-2/INITIAL-GOAL-PREFLIGHT.json",
+      "sha256": "405c9f1d14709fdde8a06e48fa5a8e0bf251c398d3f4aa0afa984ceb6bdd8974"
+    },
+    {
+      "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/level133-L10-3/INITIAL-GOAL-PREFLIGHT.json",
+      "sha256": "c410efc5c4a6eb369a607fbc51a773fedaa620d722c956535195399c4198cc0f"
+    },
+    {
+      "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/level133-L10-4/INITIAL-GOAL-PREFLIGHT.json",
+      "sha256": "90343589d908fe21bd715557f8c98603a8271c012c57e733be995ae3ebf4abff"
+    },
+    {
+      "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/level133-L10-5/INITIAL-GOAL-PREFLIGHT.json",
+      "sha256": "0eb0f1d67fb4e19ae0460b9cd8bdcbd697dd7e7effa3379214f39208faa15777"
+    },
+    {
+      "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/level133-L10-6/INITIAL-GOAL-PREFLIGHT.json",
+      "sha256": "4567f7e9a22cddc4d140a78f610c066ce887ceac9f4f1dc2179a385adbe67b29"
+    },
+    {
+      "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/level134-L11-0/INITIAL-GOAL-PREFLIGHT.json",
+      "sha256": "727bea06d7db924d282a25c31fa8acc2cb9a021db4999898d94fe0642b009ec5"
+    },
+    {
+      "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/level134-L11-1/INITIAL-GOAL-PREFLIGHT.json",
+      "sha256": "9ee9e10ef2f8c763bf6a19a05d94aea07183b1b0d3e471743687215060080300"
+    },
+    {
+      "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/level134-L11-2/INITIAL-GOAL-PREFLIGHT.json",
+      "sha256": "1e1f72f24193fa0cbcd76dca96889a030460a0f64472f7a6e7ec91226feeea4d"
+    },
+    {
+      "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/level134-L11-3/INITIAL-GOAL-PREFLIGHT.json",
+      "sha256": "2d439a142ba33e84a5e28f9cd4179a08fd4f2f3fafeef68fb920663d5891057a"
+    },
+    {
+      "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/level134-L11-4/INITIAL-GOAL-PREFLIGHT.json",
+      "sha256": "bdf724c6bb9393e1acf41f8261caf8cea0723295cdefcc68e3d0ef578ef4dc01"
+    },
+    {
+      "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/level134-L11-5/INITIAL-GOAL-PREFLIGHT.json",
+      "sha256": "395e7afaa61217ec7172210b207a8e213308be5c0b9e8234d33a948bfc56414d"
+    },
+    {
+      "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/level134-L11-6/INITIAL-GOAL-PREFLIGHT.json",
+      "sha256": "a771eec0418ab891eeedc980dda8953ba339adadbd323f6646ad7b9bee202923"
+    },
+    {
+      "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/level134-L11-7/INITIAL-GOAL-PREFLIGHT.json",
+      "sha256": "e68133d23168dad2797b8d7c17fad38d93afa5963b6d486b0c9e3b24eccb22ed"
+    },
+    {
+      "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/level135-L12/INITIAL-GOAL-PREFLIGHT.json",
+      "sha256": "bd0d42455468a649568f48146db676034fb45c672fe669106210d9003e5b5f20"
+    }
+  ],
+  "hooks_publication": {
+    "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/HOOKS129-RESULT.json",
+    "sha256": "8349675db16f58a303c5830bd8ddbdcbeac66b3e8f02f5f75f3f196064fdc0f3"
+  },
+  "C_guard": {
+    "source": {
+      "path": "/home/cody/zesislar/.worktrees/spec-c-readiness-phase196/ZesuSsz/Automation/EntryWitnessReadiness.v",
+      "sha256": "29eb44bb3af3f35f4096d0e9f7280ac7f8ab128ad8eed473965da3b4606953f7"
+    },
+    "verification_result": {
+      "path": "/home/cody/zesislar/_build/agents/worker-build-1/pilot-v33-eight305/readiness-phase-verify204/RESULT.json",
+      "sha256": "f26f376581188c5724f143ee2e7f04e24578b6110135f5542001ac93ecf19f75"
+    },
+    "authority": "Root explicitly released C's verified bytes for the genuine rebuild."
+  },
+  "source_activation": {
+    "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/DECLARE123-RESULT.json",
+    "sha256": "8cc4ec50e3d178068aa59c3ef3d34a03dc3248680bd666543984d6c22b3e6f4a"
+  },
+  "typed_reader": {
+    "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/READER124-RESULT.json",
+    "sha256": "06d64c334d38356658fa2b061a36dd0dc7df692cc803aeaa81978a4e0e4da227"
+  },
+  "refusal_controls": {
+    "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/REFUSAL128-RESULT.json",
+    "sha256": "e37ab2b8597665310a5155ccb60ecbca0c454003b6a5001e93ab12186c1ccd03"
+  },
+  "internal_import_digest_checks": 463,
+  "import_checks": [
+    {
+      "owner": "ZesuSsz.Automation.All",
+      "import": "ZesuSsz.Automation.EntryWitnessReadiness",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "c37e3f97ab023b7add6d487830cd9595"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Automation.All",
+      "import": "ZesuSsz.Automation.EntryWitnessProfile",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "1a35d1774aed09689a5f8d0d06f65c5e"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Automation.All",
+      "import": "ZesuSsz.Evidence.EntryWitnessInputs",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "759b284f1db83bc0b9f9a6f3b71f8323"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Automation.All",
+      "import": "ZesuSsz.Automation.SourceWitnessInputs",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "15ee3692583b3efb89adad8ef1e64ca6"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Automation.All",
+      "import": "ZesuSsz.Automation.Hooks",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "f642f290dd707133949fdff58fbe3ca3"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Automation.All",
+      "import": "ZesuSsz.Automation.MaskWrapPresentation",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "788b27f59ba9ff66b69b6b3f41b7f851"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Automation.All",
+      "import": "ZesuSsz.Automation.HypothesisCast",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "4c9afd07421b89da8b305e773f4b4a97"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Automation.All",
+      "import": "ZesuSsz.Automation.BranchUnsigned",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "ac4b21c2f5f8dd513026d96a390dc629"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Automation.All",
+      "import": "ZesuSsz.Automation.BranchCastUnsigned",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "a1f001de3c83f93950fa6037533ebd88"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Automation.All",
+      "import": "ZesuSsz.Automation.MaskPresentation",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "8d8ef4530039cc9ce8beb2d4fe8f2582"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Automation.All",
+      "import": "ZesuSsz.Automation.ArrayPayloadPresentation",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "f61071fb0d67d5d67afd50d307a8eda0"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Automation.All",
+      "import": "ZesuSsz.Automation.StoreMemoryLookup",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "9d1dc57d77a2413ffd5d06492de5ad0b"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Automation.All",
+      "import": "ZesuSsz.Automation.RawWordArrayWitness",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "7e6d153825a55adad25cddc693c29eba"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Automation.All",
+      "import": "ZesuSsz.Automation.ExistentialArrayRestore",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "5a58b547a034fb15cc4a7540e72c1713"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Automation.All",
+      "import": "ZesuSsz.Automation.InteriorByteSlice",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "78b1ba28fb91ef9f2dbe359a71a7171d"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Automation.All",
+      "import": "ZesuSsz.Automation.V2Steps",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "e1c46a66545eaea366cd2fb66e678189"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Automation.All",
+      "import": "ZesuSsz.Automation.ArrayLoadPreselect",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "a2d831c5634220d81c83b6c2de342084"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Automation.All",
+      "import": "ZesuSsz.Automation.Finish",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "47cf00878cbffc2591e6dfa449ee5a8e"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Automation.All",
+      "import": "ZesuSsz.Automation.EffectiveOverrides",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "a25f0e5375f36bec6c2600fec603ea3c"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Automation.ArrayLoadPreselect",
+      "import": "ZesuSsz.Automation.EntryWitnessReadiness",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "c37e3f97ab023b7add6d487830cd9595"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Automation.ArrayLoadPreselect",
+      "import": "ZesuSsz.Automation.EntryWitnessProfile",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "1a35d1774aed09689a5f8d0d06f65c5e"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Automation.ArrayLoadPreselect",
+      "import": "ZesuSsz.Evidence.EntryWitnessInputs",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "759b284f1db83bc0b9f9a6f3b71f8323"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Automation.ArrayLoadPreselect",
+      "import": "ZesuSsz.Automation.SourceWitnessInputs",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "15ee3692583b3efb89adad8ef1e64ca6"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Automation.ArrayLoadPreselect",
+      "import": "ZesuSsz.Automation.Hooks",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "f642f290dd707133949fdff58fbe3ca3"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Automation.ArrayPayloadPresentation",
+      "import": "ZesuSsz.Automation.EntryWitnessReadiness",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "c37e3f97ab023b7add6d487830cd9595"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Automation.ArrayPayloadPresentation",
+      "import": "ZesuSsz.Automation.EntryWitnessProfile",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "1a35d1774aed09689a5f8d0d06f65c5e"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Automation.ArrayPayloadPresentation",
+      "import": "ZesuSsz.Evidence.EntryWitnessInputs",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "759b284f1db83bc0b9f9a6f3b71f8323"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Automation.ArrayPayloadPresentation",
+      "import": "ZesuSsz.Automation.SourceWitnessInputs",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "15ee3692583b3efb89adad8ef1e64ca6"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Automation.ArrayPayloadPresentation",
+      "import": "ZesuSsz.Automation.Hooks",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "f642f290dd707133949fdff58fbe3ca3"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Automation.BranchCastUnsigned",
+      "import": "ZesuSsz.Automation.EntryWitnessReadiness",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "c37e3f97ab023b7add6d487830cd9595"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Automation.BranchCastUnsigned",
+      "import": "ZesuSsz.Automation.EntryWitnessProfile",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "1a35d1774aed09689a5f8d0d06f65c5e"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Automation.BranchCastUnsigned",
+      "import": "ZesuSsz.Evidence.EntryWitnessInputs",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "759b284f1db83bc0b9f9a6f3b71f8323"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Automation.BranchCastUnsigned",
+      "import": "ZesuSsz.Automation.SourceWitnessInputs",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "15ee3692583b3efb89adad8ef1e64ca6"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Automation.BranchCastUnsigned",
+      "import": "ZesuSsz.Automation.Hooks",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "f642f290dd707133949fdff58fbe3ca3"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Automation.BranchUnsigned",
+      "import": "ZesuSsz.Automation.EntryWitnessReadiness",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "c37e3f97ab023b7add6d487830cd9595"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Automation.BranchUnsigned",
+      "import": "ZesuSsz.Automation.EntryWitnessProfile",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "1a35d1774aed09689a5f8d0d06f65c5e"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Automation.BranchUnsigned",
+      "import": "ZesuSsz.Evidence.EntryWitnessInputs",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "759b284f1db83bc0b9f9a6f3b71f8323"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Automation.BranchUnsigned",
+      "import": "ZesuSsz.Automation.SourceWitnessInputs",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "15ee3692583b3efb89adad8ef1e64ca6"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Automation.BranchUnsigned",
+      "import": "ZesuSsz.Automation.Hooks",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "f642f290dd707133949fdff58fbe3ca3"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Automation.EffectiveOverrides",
+      "import": "ZesuSsz.Automation.EntryWitnessReadiness",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "c37e3f97ab023b7add6d487830cd9595"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Automation.EffectiveOverrides",
+      "import": "ZesuSsz.Automation.EntryWitnessProfile",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "1a35d1774aed09689a5f8d0d06f65c5e"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Automation.EffectiveOverrides",
+      "import": "ZesuSsz.Evidence.EntryWitnessInputs",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "759b284f1db83bc0b9f9a6f3b71f8323"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Automation.EffectiveOverrides",
+      "import": "ZesuSsz.Automation.SourceWitnessInputs",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "15ee3692583b3efb89adad8ef1e64ca6"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Automation.EffectiveOverrides",
+      "import": "ZesuSsz.Automation.Hooks",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "f642f290dd707133949fdff58fbe3ca3"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Automation.EntryWitnessProfile",
+      "import": "ZesuSsz.Automation.EntryWitnessReadiness",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "c37e3f97ab023b7add6d487830cd9595"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Automation.ExistentialArrayRestore",
+      "import": "ZesuSsz.Automation.EntryWitnessReadiness",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "c37e3f97ab023b7add6d487830cd9595"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Automation.ExistentialArrayRestore",
+      "import": "ZesuSsz.Automation.EntryWitnessProfile",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "1a35d1774aed09689a5f8d0d06f65c5e"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Automation.ExistentialArrayRestore",
+      "import": "ZesuSsz.Evidence.EntryWitnessInputs",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "759b284f1db83bc0b9f9a6f3b71f8323"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Automation.ExistentialArrayRestore",
+      "import": "ZesuSsz.Automation.SourceWitnessInputs",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "15ee3692583b3efb89adad8ef1e64ca6"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Automation.ExistentialArrayRestore",
+      "import": "ZesuSsz.Automation.Hooks",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "f642f290dd707133949fdff58fbe3ca3"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Automation.Finish",
+      "import": "ZesuSsz.Automation.EntryWitnessReadiness",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "c37e3f97ab023b7add6d487830cd9595"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Automation.Finish",
+      "import": "ZesuSsz.Automation.EntryWitnessProfile",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "1a35d1774aed09689a5f8d0d06f65c5e"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Automation.Finish",
+      "import": "ZesuSsz.Evidence.EntryWitnessInputs",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "759b284f1db83bc0b9f9a6f3b71f8323"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Automation.Finish",
+      "import": "ZesuSsz.Automation.SourceWitnessInputs",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "15ee3692583b3efb89adad8ef1e64ca6"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Automation.Finish",
+      "import": "ZesuSsz.Automation.Hooks",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "f642f290dd707133949fdff58fbe3ca3"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Automation.Finish",
+      "import": "ZesuSsz.Automation.MaskWrapPresentation",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "788b27f59ba9ff66b69b6b3f41b7f851"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Automation.Finish",
+      "import": "ZesuSsz.Automation.HypothesisCast",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "4c9afd07421b89da8b305e773f4b4a97"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Automation.Finish",
+      "import": "ZesuSsz.Automation.BranchUnsigned",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "ac4b21c2f5f8dd513026d96a390dc629"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Automation.Finish",
+      "import": "ZesuSsz.Automation.BranchCastUnsigned",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "a1f001de3c83f93950fa6037533ebd88"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Automation.Finish",
+      "import": "ZesuSsz.Automation.MaskPresentation",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "8d8ef4530039cc9ce8beb2d4fe8f2582"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Automation.Finish",
+      "import": "ZesuSsz.Automation.ArrayPayloadPresentation",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "f61071fb0d67d5d67afd50d307a8eda0"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Automation.Finish",
+      "import": "ZesuSsz.Automation.StoreMemoryLookup",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "9d1dc57d77a2413ffd5d06492de5ad0b"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Automation.Finish",
+      "import": "ZesuSsz.Automation.RawWordArrayWitness",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "7e6d153825a55adad25cddc693c29eba"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Automation.Finish",
+      "import": "ZesuSsz.Automation.ExistentialArrayRestore",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "5a58b547a034fb15cc4a7540e72c1713"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Automation.Finish",
+      "import": "ZesuSsz.Automation.InteriorByteSlice",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "78b1ba28fb91ef9f2dbe359a71a7171d"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Automation.Finish",
+      "import": "ZesuSsz.Automation.V2Steps",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "e1c46a66545eaea366cd2fb66e678189"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Automation.Finish",
+      "import": "ZesuSsz.Automation.ArrayLoadPreselect",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "a2d831c5634220d81c83b6c2de342084"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Automation.Hooks",
+      "import": "ZesuSsz.Automation.EntryWitnessReadiness",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "c37e3f97ab023b7add6d487830cd9595"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Automation.Hooks",
+      "import": "ZesuSsz.Automation.EntryWitnessProfile",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "1a35d1774aed09689a5f8d0d06f65c5e"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Automation.Hooks",
+      "import": "ZesuSsz.Evidence.EntryWitnessInputs",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "759b284f1db83bc0b9f9a6f3b71f8323"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Automation.Hooks",
+      "import": "ZesuSsz.Automation.SourceWitnessInputs",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "15ee3692583b3efb89adad8ef1e64ca6"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Automation.HypothesisCast",
+      "import": "ZesuSsz.Automation.EntryWitnessReadiness",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "c37e3f97ab023b7add6d487830cd9595"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Automation.HypothesisCast",
+      "import": "ZesuSsz.Automation.EntryWitnessProfile",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "1a35d1774aed09689a5f8d0d06f65c5e"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Automation.HypothesisCast",
+      "import": "ZesuSsz.Evidence.EntryWitnessInputs",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "759b284f1db83bc0b9f9a6f3b71f8323"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Automation.HypothesisCast",
+      "import": "ZesuSsz.Automation.SourceWitnessInputs",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "15ee3692583b3efb89adad8ef1e64ca6"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Automation.HypothesisCast",
+      "import": "ZesuSsz.Automation.Hooks",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "f642f290dd707133949fdff58fbe3ca3"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Automation.HypothesisCast",
+      "import": "ZesuSsz.Automation.MaskWrapPresentation",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "788b27f59ba9ff66b69b6b3f41b7f851"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Automation.InteriorByteSlice",
+      "import": "ZesuSsz.Automation.EntryWitnessReadiness",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "c37e3f97ab023b7add6d487830cd9595"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Automation.InteriorByteSlice",
+      "import": "ZesuSsz.Automation.EntryWitnessProfile",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "1a35d1774aed09689a5f8d0d06f65c5e"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Automation.InteriorByteSlice",
+      "import": "ZesuSsz.Evidence.EntryWitnessInputs",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "759b284f1db83bc0b9f9a6f3b71f8323"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Automation.InteriorByteSlice",
+      "import": "ZesuSsz.Automation.SourceWitnessInputs",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "15ee3692583b3efb89adad8ef1e64ca6"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Automation.InteriorByteSlice",
+      "import": "ZesuSsz.Automation.Hooks",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "f642f290dd707133949fdff58fbe3ca3"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Automation.MaskPresentation",
+      "import": "ZesuSsz.Automation.EntryWitnessReadiness",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "c37e3f97ab023b7add6d487830cd9595"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Automation.MaskPresentation",
+      "import": "ZesuSsz.Automation.EntryWitnessProfile",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "1a35d1774aed09689a5f8d0d06f65c5e"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Automation.MaskPresentation",
+      "import": "ZesuSsz.Evidence.EntryWitnessInputs",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "759b284f1db83bc0b9f9a6f3b71f8323"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Automation.MaskPresentation",
+      "import": "ZesuSsz.Automation.SourceWitnessInputs",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "15ee3692583b3efb89adad8ef1e64ca6"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Automation.MaskPresentation",
+      "import": "ZesuSsz.Automation.Hooks",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "f642f290dd707133949fdff58fbe3ca3"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Automation.MaskWrapPresentation",
+      "import": "ZesuSsz.Automation.EntryWitnessReadiness",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "c37e3f97ab023b7add6d487830cd9595"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Automation.MaskWrapPresentation",
+      "import": "ZesuSsz.Automation.EntryWitnessProfile",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "1a35d1774aed09689a5f8d0d06f65c5e"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Automation.MaskWrapPresentation",
+      "import": "ZesuSsz.Evidence.EntryWitnessInputs",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "759b284f1db83bc0b9f9a6f3b71f8323"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Automation.MaskWrapPresentation",
+      "import": "ZesuSsz.Automation.SourceWitnessInputs",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "15ee3692583b3efb89adad8ef1e64ca6"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Automation.MaskWrapPresentation",
+      "import": "ZesuSsz.Automation.Hooks",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "f642f290dd707133949fdff58fbe3ca3"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Automation.RawWordArrayWitness",
+      "import": "ZesuSsz.Automation.EntryWitnessReadiness",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "c37e3f97ab023b7add6d487830cd9595"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Automation.RawWordArrayWitness",
+      "import": "ZesuSsz.Automation.EntryWitnessProfile",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "1a35d1774aed09689a5f8d0d06f65c5e"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Automation.RawWordArrayWitness",
+      "import": "ZesuSsz.Evidence.EntryWitnessInputs",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "759b284f1db83bc0b9f9a6f3b71f8323"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Automation.RawWordArrayWitness",
+      "import": "ZesuSsz.Automation.SourceWitnessInputs",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "15ee3692583b3efb89adad8ef1e64ca6"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Automation.RawWordArrayWitness",
+      "import": "ZesuSsz.Automation.Hooks",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "f642f290dd707133949fdff58fbe3ca3"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Automation.SourceWitnessInputs",
+      "import": "ZesuSsz.Automation.EntryWitnessReadiness",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "c37e3f97ab023b7add6d487830cd9595"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Automation.SourceWitnessInputs",
+      "import": "ZesuSsz.Automation.EntryWitnessProfile",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "1a35d1774aed09689a5f8d0d06f65c5e"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Automation.SourceWitnessInputs",
+      "import": "ZesuSsz.Evidence.EntryWitnessInputs",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "759b284f1db83bc0b9f9a6f3b71f8323"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Automation.StoreMemoryLookup",
+      "import": "ZesuSsz.Automation.EntryWitnessReadiness",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "c37e3f97ab023b7add6d487830cd9595"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Automation.StoreMemoryLookup",
+      "import": "ZesuSsz.Automation.EntryWitnessProfile",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "1a35d1774aed09689a5f8d0d06f65c5e"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Automation.StoreMemoryLookup",
+      "import": "ZesuSsz.Evidence.EntryWitnessInputs",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "759b284f1db83bc0b9f9a6f3b71f8323"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Automation.StoreMemoryLookup",
+      "import": "ZesuSsz.Automation.SourceWitnessInputs",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "15ee3692583b3efb89adad8ef1e64ca6"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Automation.StoreMemoryLookup",
+      "import": "ZesuSsz.Automation.Hooks",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "f642f290dd707133949fdff58fbe3ca3"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Automation.V2Steps",
+      "import": "ZesuSsz.Automation.EntryWitnessReadiness",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "c37e3f97ab023b7add6d487830cd9595"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Automation.V2Steps",
+      "import": "ZesuSsz.Automation.EntryWitnessProfile",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "1a35d1774aed09689a5f8d0d06f65c5e"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Automation.V2Steps",
+      "import": "ZesuSsz.Evidence.EntryWitnessInputs",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "759b284f1db83bc0b9f9a6f3b71f8323"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Automation.V2Steps",
+      "import": "ZesuSsz.Automation.SourceWitnessInputs",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "15ee3692583b3efb89adad8ef1e64ca6"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Automation.V2Steps",
+      "import": "ZesuSsz.Automation.Hooks",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "f642f290dd707133949fdff58fbe3ca3"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Automation.V2Steps",
+      "import": "ZesuSsz.Automation.ExistentialArrayRestore",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "5a58b547a034fb15cc4a7540e72c1713"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Automation.V2Steps",
+      "import": "ZesuSsz.Automation.InteriorByteSlice",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "78b1ba28fb91ef9f2dbe359a71a7171d"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Evidence.EntryWitnessInputs",
+      "import": "ZesuSsz.Automation.EntryWitnessReadiness",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "c37e3f97ab023b7add6d487830cd9595"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Evidence.EntryWitnessInputs",
+      "import": "ZesuSsz.Automation.EntryWitnessProfile",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "1a35d1774aed09689a5f8d0d06f65c5e"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Evidence.RuleScratchRules",
+      "import": "ZesuSsz.Automation.EntryWitnessReadiness",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "c37e3f97ab023b7add6d487830cd9595"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Evidence.RuleScratchRules",
+      "import": "ZesuSsz.Automation.EntryWitnessProfile",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "1a35d1774aed09689a5f8d0d06f65c5e"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Evidence.RuleScratchRules",
+      "import": "ZesuSsz.Evidence.EntryWitnessInputs",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "759b284f1db83bc0b9f9a6f3b71f8323"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Evidence.RuleScratchRules",
+      "import": "ZesuSsz.Automation.SourceWitnessInputs",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "15ee3692583b3efb89adad8ef1e64ca6"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Evidence.RuleScratchRules",
+      "import": "ZesuSsz.Automation.Hooks",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "f642f290dd707133949fdff58fbe3ca3"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Evidence.RuleScratchRules",
+      "import": "ZesuSsz.Automation.MaskWrapPresentation",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "788b27f59ba9ff66b69b6b3f41b7f851"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Evidence.RuleScratchRules",
+      "import": "ZesuSsz.Automation.HypothesisCast",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "4c9afd07421b89da8b305e773f4b4a97"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Evidence.RuleScratchRules",
+      "import": "ZesuSsz.Automation.BranchUnsigned",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "ac4b21c2f5f8dd513026d96a390dc629"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Evidence.RuleScratchRules",
+      "import": "ZesuSsz.Automation.BranchCastUnsigned",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "a1f001de3c83f93950fa6037533ebd88"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Evidence.RuleScratchRules",
+      "import": "ZesuSsz.Automation.MaskPresentation",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "8d8ef4530039cc9ce8beb2d4fe8f2582"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Evidence.RuleScratchRules",
+      "import": "ZesuSsz.Automation.ArrayPayloadPresentation",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "f61071fb0d67d5d67afd50d307a8eda0"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Evidence.RuleScratchRules",
+      "import": "ZesuSsz.Automation.StoreMemoryLookup",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "9d1dc57d77a2413ffd5d06492de5ad0b"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Evidence.RuleScratchRules",
+      "import": "ZesuSsz.Automation.RawWordArrayWitness",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "7e6d153825a55adad25cddc693c29eba"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Evidence.RuleScratchRules",
+      "import": "ZesuSsz.Automation.ExistentialArrayRestore",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "5a58b547a034fb15cc4a7540e72c1713"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Evidence.RuleScratchRules",
+      "import": "ZesuSsz.Automation.InteriorByteSlice",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "78b1ba28fb91ef9f2dbe359a71a7171d"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Evidence.RuleScratchRules",
+      "import": "ZesuSsz.Automation.V2Steps",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "e1c46a66545eaea366cd2fb66e678189"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Evidence.RuleScratchRules",
+      "import": "ZesuSsz.Automation.ArrayLoadPreselect",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "a2d831c5634220d81c83b6c2de342084"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Evidence.RuleScratchRules",
+      "import": "ZesuSsz.Automation.Finish",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "47cf00878cbffc2591e6dfa449ee5a8e"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Evidence.RuleScratchRules",
+      "import": "ZesuSsz.Automation.EffectiveOverrides",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "a25f0e5375f36bec6c2600fec603ea3c"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Evidence.RuleScratchRules",
+      "import": "ZesuSsz.Automation.All",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "300b56bb42a448a1328fa3d5a6abf461"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Evidence.RuleScratchRules",
+      "import": "ZesuSsz.Generated.DecodeItem.FP417.Pilot6a38Entries",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "2029e65684db985be2ae80097fc98b1b"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Evidence.RuleScratchRules",
+      "import": "ZesuSsz.Generated.DecodeItem.FP417.Pilot6a38Structural",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "ddc058498ba019e67a3b60798bd50637"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Evidence.RuleScratchRules",
+      "import": "ZesuSsz.Generated.DecodeItem.FP417.Pilot6a40Entries",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "edfa1f7799f1f1c197c873b25ddc81e5"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Evidence.RuleScratchRules",
+      "import": "ZesuSsz.Generated.DecodeItem.FP417.Pilot6a40Structural",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "f407241919cc8878a6e4e9b7bf2adee5"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Evidence.RuleScratchRules",
+      "import": "ZesuSsz.Generated.DecodeItem.FP417.Pilot6ad8Entries",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "af9be1eafcb2b05c38879bf7d9946461"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Evidence.RuleScratchRules",
+      "import": "ZesuSsz.Generated.DecodeItem.FP417.Pilot6ad8Structural",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "a54a7a19603a71bdd39c1eebbb7a0a6a"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Evidence.RuleScratchRules",
+      "import": "ZesuSsz.Generated.DecodeItem.FP417.Pilot6b08Entries",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "66063356f176bff55981355c90af9c72"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Evidence.RuleScratchRules",
+      "import": "ZesuSsz.Generated.DecodeItem.FP417.Pilot6b08Structural",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "efee6372b20928e9a08244ea7e9ff594"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Evidence.RuleScratchRules",
+      "import": "ZesuSsz.Generated.DecodeItem.FP417.SourceMapping6a38",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "e1c8b4e0fa8f80573f2a3204a84061ab"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Evidence.RuleScratchRules",
+      "import": "ZesuSsz.Generated.DecodeItem.FP417.SourceMapping6ad8",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "0e9b38368c84cc6af4d978991cd26f39"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Evidence.RuleScratchRules",
+      "import": "ZesuSsz.Generated.DecodeItem.MachineJoin6ae0Entries",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "e44c8e3346772ded52f05a63388cb64d"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Evidence.RuleScratchRules",
+      "import": "ZesuSsz.Generated.DecodeItem.MachineJoin6ae0SourceOwner",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "8bd70352baee63f50655f951b826d013"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Evidence.RuleScratchRules",
+      "import": "ZesuSsz.Generated.DecodeItem.MachineJoin6ae0Structural",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "c964a99bc83c0c6bf3502fbea18c52ae"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Evidence.RuleScratchRules",
+      "import": "ZesuSsz.Generated.DecodeItem.MachineJoin6ae0WitnessRegistration",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "f6f8ed9521f3719ce915d7fec764443f"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Generated.DecodeItem.FP417.Pilot6a38Entries",
+      "import": "ZesuSsz.Automation.EntryWitnessReadiness",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "c37e3f97ab023b7add6d487830cd9595"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Generated.DecodeItem.FP417.Pilot6a38Entries",
+      "import": "ZesuSsz.Automation.EntryWitnessProfile",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "1a35d1774aed09689a5f8d0d06f65c5e"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Generated.DecodeItem.FP417.Pilot6a38Entries",
+      "import": "ZesuSsz.Evidence.EntryWitnessInputs",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "759b284f1db83bc0b9f9a6f3b71f8323"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Generated.DecodeItem.FP417.Pilot6a38Entries",
+      "import": "ZesuSsz.Automation.SourceWitnessInputs",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "15ee3692583b3efb89adad8ef1e64ca6"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Generated.DecodeItem.FP417.Pilot6a38Entries",
+      "import": "ZesuSsz.Automation.Hooks",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "f642f290dd707133949fdff58fbe3ca3"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Generated.DecodeItem.FP417.Pilot6a38Entries",
+      "import": "ZesuSsz.Automation.MaskWrapPresentation",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "788b27f59ba9ff66b69b6b3f41b7f851"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Generated.DecodeItem.FP417.Pilot6a38Entries",
+      "import": "ZesuSsz.Automation.HypothesisCast",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "4c9afd07421b89da8b305e773f4b4a97"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Generated.DecodeItem.FP417.Pilot6a38Entries",
+      "import": "ZesuSsz.Automation.BranchUnsigned",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "ac4b21c2f5f8dd513026d96a390dc629"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Generated.DecodeItem.FP417.Pilot6a38Entries",
+      "import": "ZesuSsz.Automation.BranchCastUnsigned",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "a1f001de3c83f93950fa6037533ebd88"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Generated.DecodeItem.FP417.Pilot6a38Entries",
+      "import": "ZesuSsz.Automation.MaskPresentation",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "8d8ef4530039cc9ce8beb2d4fe8f2582"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Generated.DecodeItem.FP417.Pilot6a38Entries",
+      "import": "ZesuSsz.Automation.ArrayPayloadPresentation",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "f61071fb0d67d5d67afd50d307a8eda0"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Generated.DecodeItem.FP417.Pilot6a38Entries",
+      "import": "ZesuSsz.Automation.StoreMemoryLookup",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "9d1dc57d77a2413ffd5d06492de5ad0b"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Generated.DecodeItem.FP417.Pilot6a38Entries",
+      "import": "ZesuSsz.Automation.RawWordArrayWitness",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "7e6d153825a55adad25cddc693c29eba"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Generated.DecodeItem.FP417.Pilot6a38Entries",
+      "import": "ZesuSsz.Automation.ExistentialArrayRestore",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "5a58b547a034fb15cc4a7540e72c1713"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Generated.DecodeItem.FP417.Pilot6a38Entries",
+      "import": "ZesuSsz.Automation.InteriorByteSlice",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "78b1ba28fb91ef9f2dbe359a71a7171d"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Generated.DecodeItem.FP417.Pilot6a38Entries",
+      "import": "ZesuSsz.Automation.V2Steps",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "e1c46a66545eaea366cd2fb66e678189"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Generated.DecodeItem.FP417.Pilot6a38Entries",
+      "import": "ZesuSsz.Automation.ArrayLoadPreselect",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "a2d831c5634220d81c83b6c2de342084"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Generated.DecodeItem.FP417.Pilot6a38Entries",
+      "import": "ZesuSsz.Automation.Finish",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "47cf00878cbffc2591e6dfa449ee5a8e"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Generated.DecodeItem.FP417.Pilot6a38Entries",
+      "import": "ZesuSsz.Automation.EffectiveOverrides",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "a25f0e5375f36bec6c2600fec603ea3c"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Generated.DecodeItem.FP417.Pilot6a38Entries",
+      "import": "ZesuSsz.Automation.All",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "300b56bb42a448a1328fa3d5a6abf461"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Generated.DecodeItem.FP417.Pilot6a38Structural",
+      "import": "ZesuSsz.Automation.EntryWitnessReadiness",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "c37e3f97ab023b7add6d487830cd9595"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Generated.DecodeItem.FP417.Pilot6a38Structural",
+      "import": "ZesuSsz.Automation.EntryWitnessProfile",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "1a35d1774aed09689a5f8d0d06f65c5e"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Generated.DecodeItem.FP417.Pilot6a38Structural",
+      "import": "ZesuSsz.Evidence.EntryWitnessInputs",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "759b284f1db83bc0b9f9a6f3b71f8323"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Generated.DecodeItem.FP417.Pilot6a38Structural",
+      "import": "ZesuSsz.Automation.SourceWitnessInputs",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "15ee3692583b3efb89adad8ef1e64ca6"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Generated.DecodeItem.FP417.Pilot6a38Structural",
+      "import": "ZesuSsz.Automation.Hooks",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "f642f290dd707133949fdff58fbe3ca3"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Generated.DecodeItem.FP417.Pilot6a38Structural",
+      "import": "ZesuSsz.Automation.MaskWrapPresentation",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "788b27f59ba9ff66b69b6b3f41b7f851"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Generated.DecodeItem.FP417.Pilot6a38Structural",
+      "import": "ZesuSsz.Automation.HypothesisCast",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "4c9afd07421b89da8b305e773f4b4a97"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Generated.DecodeItem.FP417.Pilot6a38Structural",
+      "import": "ZesuSsz.Automation.BranchUnsigned",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "ac4b21c2f5f8dd513026d96a390dc629"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Generated.DecodeItem.FP417.Pilot6a38Structural",
+      "import": "ZesuSsz.Automation.BranchCastUnsigned",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "a1f001de3c83f93950fa6037533ebd88"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Generated.DecodeItem.FP417.Pilot6a38Structural",
+      "import": "ZesuSsz.Automation.MaskPresentation",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "8d8ef4530039cc9ce8beb2d4fe8f2582"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Generated.DecodeItem.FP417.Pilot6a38Structural",
+      "import": "ZesuSsz.Automation.ArrayPayloadPresentation",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "f61071fb0d67d5d67afd50d307a8eda0"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Generated.DecodeItem.FP417.Pilot6a38Structural",
+      "import": "ZesuSsz.Automation.StoreMemoryLookup",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "9d1dc57d77a2413ffd5d06492de5ad0b"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Generated.DecodeItem.FP417.Pilot6a38Structural",
+      "import": "ZesuSsz.Automation.RawWordArrayWitness",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "7e6d153825a55adad25cddc693c29eba"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Generated.DecodeItem.FP417.Pilot6a38Structural",
+      "import": "ZesuSsz.Automation.ExistentialArrayRestore",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "5a58b547a034fb15cc4a7540e72c1713"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Generated.DecodeItem.FP417.Pilot6a38Structural",
+      "import": "ZesuSsz.Automation.InteriorByteSlice",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "78b1ba28fb91ef9f2dbe359a71a7171d"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Generated.DecodeItem.FP417.Pilot6a38Structural",
+      "import": "ZesuSsz.Automation.V2Steps",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "e1c46a66545eaea366cd2fb66e678189"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Generated.DecodeItem.FP417.Pilot6a38Structural",
+      "import": "ZesuSsz.Automation.ArrayLoadPreselect",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "a2d831c5634220d81c83b6c2de342084"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Generated.DecodeItem.FP417.Pilot6a38Structural",
+      "import": "ZesuSsz.Automation.Finish",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "47cf00878cbffc2591e6dfa449ee5a8e"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Generated.DecodeItem.FP417.Pilot6a38Structural",
+      "import": "ZesuSsz.Automation.EffectiveOverrides",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "a25f0e5375f36bec6c2600fec603ea3c"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Generated.DecodeItem.FP417.Pilot6a38Structural",
+      "import": "ZesuSsz.Automation.All",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "300b56bb42a448a1328fa3d5a6abf461"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Generated.DecodeItem.FP417.Pilot6a38Structural",
+      "import": "ZesuSsz.Generated.DecodeItem.FP417.Pilot6a38Entries",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "2029e65684db985be2ae80097fc98b1b"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Generated.DecodeItem.FP417.Pilot6a40Entries",
+      "import": "ZesuSsz.Automation.EntryWitnessReadiness",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "c37e3f97ab023b7add6d487830cd9595"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Generated.DecodeItem.FP417.Pilot6a40Entries",
+      "import": "ZesuSsz.Automation.EntryWitnessProfile",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "1a35d1774aed09689a5f8d0d06f65c5e"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Generated.DecodeItem.FP417.Pilot6a40Entries",
+      "import": "ZesuSsz.Evidence.EntryWitnessInputs",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "759b284f1db83bc0b9f9a6f3b71f8323"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Generated.DecodeItem.FP417.Pilot6a40Entries",
+      "import": "ZesuSsz.Automation.SourceWitnessInputs",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "15ee3692583b3efb89adad8ef1e64ca6"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Generated.DecodeItem.FP417.Pilot6a40Entries",
+      "import": "ZesuSsz.Automation.Hooks",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "f642f290dd707133949fdff58fbe3ca3"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Generated.DecodeItem.FP417.Pilot6a40Entries",
+      "import": "ZesuSsz.Automation.MaskWrapPresentation",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "788b27f59ba9ff66b69b6b3f41b7f851"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Generated.DecodeItem.FP417.Pilot6a40Entries",
+      "import": "ZesuSsz.Automation.HypothesisCast",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "4c9afd07421b89da8b305e773f4b4a97"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Generated.DecodeItem.FP417.Pilot6a40Entries",
+      "import": "ZesuSsz.Automation.BranchUnsigned",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "ac4b21c2f5f8dd513026d96a390dc629"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Generated.DecodeItem.FP417.Pilot6a40Entries",
+      "import": "ZesuSsz.Automation.BranchCastUnsigned",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "a1f001de3c83f93950fa6037533ebd88"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Generated.DecodeItem.FP417.Pilot6a40Entries",
+      "import": "ZesuSsz.Automation.MaskPresentation",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "8d8ef4530039cc9ce8beb2d4fe8f2582"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Generated.DecodeItem.FP417.Pilot6a40Entries",
+      "import": "ZesuSsz.Automation.ArrayPayloadPresentation",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "f61071fb0d67d5d67afd50d307a8eda0"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Generated.DecodeItem.FP417.Pilot6a40Entries",
+      "import": "ZesuSsz.Automation.StoreMemoryLookup",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "9d1dc57d77a2413ffd5d06492de5ad0b"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Generated.DecodeItem.FP417.Pilot6a40Entries",
+      "import": "ZesuSsz.Automation.RawWordArrayWitness",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "7e6d153825a55adad25cddc693c29eba"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Generated.DecodeItem.FP417.Pilot6a40Entries",
+      "import": "ZesuSsz.Automation.ExistentialArrayRestore",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "5a58b547a034fb15cc4a7540e72c1713"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Generated.DecodeItem.FP417.Pilot6a40Entries",
+      "import": "ZesuSsz.Automation.InteriorByteSlice",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "78b1ba28fb91ef9f2dbe359a71a7171d"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Generated.DecodeItem.FP417.Pilot6a40Entries",
+      "import": "ZesuSsz.Automation.V2Steps",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "e1c46a66545eaea366cd2fb66e678189"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Generated.DecodeItem.FP417.Pilot6a40Entries",
+      "import": "ZesuSsz.Automation.ArrayLoadPreselect",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "a2d831c5634220d81c83b6c2de342084"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Generated.DecodeItem.FP417.Pilot6a40Entries",
+      "import": "ZesuSsz.Automation.Finish",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "47cf00878cbffc2591e6dfa449ee5a8e"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Generated.DecodeItem.FP417.Pilot6a40Entries",
+      "import": "ZesuSsz.Automation.EffectiveOverrides",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "a25f0e5375f36bec6c2600fec603ea3c"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Generated.DecodeItem.FP417.Pilot6a40Entries",
+      "import": "ZesuSsz.Automation.All",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "300b56bb42a448a1328fa3d5a6abf461"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Generated.DecodeItem.FP417.Pilot6a40Structural",
+      "import": "ZesuSsz.Automation.EntryWitnessReadiness",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "c37e3f97ab023b7add6d487830cd9595"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Generated.DecodeItem.FP417.Pilot6a40Structural",
+      "import": "ZesuSsz.Automation.EntryWitnessProfile",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "1a35d1774aed09689a5f8d0d06f65c5e"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Generated.DecodeItem.FP417.Pilot6a40Structural",
+      "import": "ZesuSsz.Evidence.EntryWitnessInputs",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "759b284f1db83bc0b9f9a6f3b71f8323"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Generated.DecodeItem.FP417.Pilot6a40Structural",
+      "import": "ZesuSsz.Automation.SourceWitnessInputs",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "15ee3692583b3efb89adad8ef1e64ca6"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Generated.DecodeItem.FP417.Pilot6a40Structural",
+      "import": "ZesuSsz.Automation.Hooks",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "f642f290dd707133949fdff58fbe3ca3"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Generated.DecodeItem.FP417.Pilot6a40Structural",
+      "import": "ZesuSsz.Automation.MaskWrapPresentation",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "788b27f59ba9ff66b69b6b3f41b7f851"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Generated.DecodeItem.FP417.Pilot6a40Structural",
+      "import": "ZesuSsz.Automation.HypothesisCast",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "4c9afd07421b89da8b305e773f4b4a97"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Generated.DecodeItem.FP417.Pilot6a40Structural",
+      "import": "ZesuSsz.Automation.BranchUnsigned",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "ac4b21c2f5f8dd513026d96a390dc629"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Generated.DecodeItem.FP417.Pilot6a40Structural",
+      "import": "ZesuSsz.Automation.BranchCastUnsigned",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "a1f001de3c83f93950fa6037533ebd88"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Generated.DecodeItem.FP417.Pilot6a40Structural",
+      "import": "ZesuSsz.Automation.MaskPresentation",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "8d8ef4530039cc9ce8beb2d4fe8f2582"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Generated.DecodeItem.FP417.Pilot6a40Structural",
+      "import": "ZesuSsz.Automation.ArrayPayloadPresentation",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "f61071fb0d67d5d67afd50d307a8eda0"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Generated.DecodeItem.FP417.Pilot6a40Structural",
+      "import": "ZesuSsz.Automation.StoreMemoryLookup",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "9d1dc57d77a2413ffd5d06492de5ad0b"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Generated.DecodeItem.FP417.Pilot6a40Structural",
+      "import": "ZesuSsz.Automation.RawWordArrayWitness",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "7e6d153825a55adad25cddc693c29eba"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Generated.DecodeItem.FP417.Pilot6a40Structural",
+      "import": "ZesuSsz.Automation.ExistentialArrayRestore",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "5a58b547a034fb15cc4a7540e72c1713"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Generated.DecodeItem.FP417.Pilot6a40Structural",
+      "import": "ZesuSsz.Automation.InteriorByteSlice",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "78b1ba28fb91ef9f2dbe359a71a7171d"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Generated.DecodeItem.FP417.Pilot6a40Structural",
+      "import": "ZesuSsz.Automation.V2Steps",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "e1c46a66545eaea366cd2fb66e678189"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Generated.DecodeItem.FP417.Pilot6a40Structural",
+      "import": "ZesuSsz.Automation.ArrayLoadPreselect",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "a2d831c5634220d81c83b6c2de342084"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Generated.DecodeItem.FP417.Pilot6a40Structural",
+      "import": "ZesuSsz.Automation.Finish",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "47cf00878cbffc2591e6dfa449ee5a8e"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Generated.DecodeItem.FP417.Pilot6a40Structural",
+      "import": "ZesuSsz.Automation.EffectiveOverrides",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "a25f0e5375f36bec6c2600fec603ea3c"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Generated.DecodeItem.FP417.Pilot6a40Structural",
+      "import": "ZesuSsz.Automation.All",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "300b56bb42a448a1328fa3d5a6abf461"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Generated.DecodeItem.FP417.Pilot6a40Structural",
+      "import": "ZesuSsz.Generated.DecodeItem.FP417.Pilot6a40Entries",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "edfa1f7799f1f1c197c873b25ddc81e5"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Generated.DecodeItem.FP417.Pilot6ad8Entries",
+      "import": "ZesuSsz.Automation.EntryWitnessReadiness",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "c37e3f97ab023b7add6d487830cd9595"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Generated.DecodeItem.FP417.Pilot6ad8Entries",
+      "import": "ZesuSsz.Automation.EntryWitnessProfile",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "1a35d1774aed09689a5f8d0d06f65c5e"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Generated.DecodeItem.FP417.Pilot6ad8Entries",
+      "import": "ZesuSsz.Evidence.EntryWitnessInputs",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "759b284f1db83bc0b9f9a6f3b71f8323"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Generated.DecodeItem.FP417.Pilot6ad8Entries",
+      "import": "ZesuSsz.Automation.SourceWitnessInputs",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "15ee3692583b3efb89adad8ef1e64ca6"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Generated.DecodeItem.FP417.Pilot6ad8Entries",
+      "import": "ZesuSsz.Automation.Hooks",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "f642f290dd707133949fdff58fbe3ca3"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Generated.DecodeItem.FP417.Pilot6ad8Entries",
+      "import": "ZesuSsz.Automation.MaskWrapPresentation",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "788b27f59ba9ff66b69b6b3f41b7f851"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Generated.DecodeItem.FP417.Pilot6ad8Entries",
+      "import": "ZesuSsz.Automation.HypothesisCast",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "4c9afd07421b89da8b305e773f4b4a97"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Generated.DecodeItem.FP417.Pilot6ad8Entries",
+      "import": "ZesuSsz.Automation.BranchUnsigned",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "ac4b21c2f5f8dd513026d96a390dc629"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Generated.DecodeItem.FP417.Pilot6ad8Entries",
+      "import": "ZesuSsz.Automation.BranchCastUnsigned",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "a1f001de3c83f93950fa6037533ebd88"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Generated.DecodeItem.FP417.Pilot6ad8Entries",
+      "import": "ZesuSsz.Automation.MaskPresentation",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "8d8ef4530039cc9ce8beb2d4fe8f2582"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Generated.DecodeItem.FP417.Pilot6ad8Entries",
+      "import": "ZesuSsz.Automation.ArrayPayloadPresentation",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "f61071fb0d67d5d67afd50d307a8eda0"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Generated.DecodeItem.FP417.Pilot6ad8Entries",
+      "import": "ZesuSsz.Automation.StoreMemoryLookup",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "9d1dc57d77a2413ffd5d06492de5ad0b"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Generated.DecodeItem.FP417.Pilot6ad8Entries",
+      "import": "ZesuSsz.Automation.RawWordArrayWitness",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "7e6d153825a55adad25cddc693c29eba"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Generated.DecodeItem.FP417.Pilot6ad8Entries",
+      "import": "ZesuSsz.Automation.ExistentialArrayRestore",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "5a58b547a034fb15cc4a7540e72c1713"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Generated.DecodeItem.FP417.Pilot6ad8Entries",
+      "import": "ZesuSsz.Automation.InteriorByteSlice",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "78b1ba28fb91ef9f2dbe359a71a7171d"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Generated.DecodeItem.FP417.Pilot6ad8Entries",
+      "import": "ZesuSsz.Automation.V2Steps",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "e1c46a66545eaea366cd2fb66e678189"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Generated.DecodeItem.FP417.Pilot6ad8Entries",
+      "import": "ZesuSsz.Automation.ArrayLoadPreselect",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "a2d831c5634220d81c83b6c2de342084"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Generated.DecodeItem.FP417.Pilot6ad8Entries",
+      "import": "ZesuSsz.Automation.Finish",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "47cf00878cbffc2591e6dfa449ee5a8e"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Generated.DecodeItem.FP417.Pilot6ad8Entries",
+      "import": "ZesuSsz.Automation.EffectiveOverrides",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "a25f0e5375f36bec6c2600fec603ea3c"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Generated.DecodeItem.FP417.Pilot6ad8Entries",
+      "import": "ZesuSsz.Automation.All",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "300b56bb42a448a1328fa3d5a6abf461"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Generated.DecodeItem.FP417.Pilot6ad8Structural",
+      "import": "ZesuSsz.Automation.EntryWitnessReadiness",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "c37e3f97ab023b7add6d487830cd9595"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Generated.DecodeItem.FP417.Pilot6ad8Structural",
+      "import": "ZesuSsz.Automation.EntryWitnessProfile",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "1a35d1774aed09689a5f8d0d06f65c5e"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Generated.DecodeItem.FP417.Pilot6ad8Structural",
+      "import": "ZesuSsz.Evidence.EntryWitnessInputs",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "759b284f1db83bc0b9f9a6f3b71f8323"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Generated.DecodeItem.FP417.Pilot6ad8Structural",
+      "import": "ZesuSsz.Automation.SourceWitnessInputs",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "15ee3692583b3efb89adad8ef1e64ca6"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Generated.DecodeItem.FP417.Pilot6ad8Structural",
+      "import": "ZesuSsz.Automation.Hooks",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "f642f290dd707133949fdff58fbe3ca3"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Generated.DecodeItem.FP417.Pilot6ad8Structural",
+      "import": "ZesuSsz.Automation.MaskWrapPresentation",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "788b27f59ba9ff66b69b6b3f41b7f851"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Generated.DecodeItem.FP417.Pilot6ad8Structural",
+      "import": "ZesuSsz.Automation.HypothesisCast",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "4c9afd07421b89da8b305e773f4b4a97"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Generated.DecodeItem.FP417.Pilot6ad8Structural",
+      "import": "ZesuSsz.Automation.BranchUnsigned",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "ac4b21c2f5f8dd513026d96a390dc629"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Generated.DecodeItem.FP417.Pilot6ad8Structural",
+      "import": "ZesuSsz.Automation.BranchCastUnsigned",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "a1f001de3c83f93950fa6037533ebd88"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Generated.DecodeItem.FP417.Pilot6ad8Structural",
+      "import": "ZesuSsz.Automation.MaskPresentation",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "8d8ef4530039cc9ce8beb2d4fe8f2582"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Generated.DecodeItem.FP417.Pilot6ad8Structural",
+      "import": "ZesuSsz.Automation.ArrayPayloadPresentation",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "f61071fb0d67d5d67afd50d307a8eda0"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Generated.DecodeItem.FP417.Pilot6ad8Structural",
+      "import": "ZesuSsz.Automation.StoreMemoryLookup",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "9d1dc57d77a2413ffd5d06492de5ad0b"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Generated.DecodeItem.FP417.Pilot6ad8Structural",
+      "import": "ZesuSsz.Automation.RawWordArrayWitness",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "7e6d153825a55adad25cddc693c29eba"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Generated.DecodeItem.FP417.Pilot6ad8Structural",
+      "import": "ZesuSsz.Automation.ExistentialArrayRestore",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "5a58b547a034fb15cc4a7540e72c1713"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Generated.DecodeItem.FP417.Pilot6ad8Structural",
+      "import": "ZesuSsz.Automation.InteriorByteSlice",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "78b1ba28fb91ef9f2dbe359a71a7171d"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Generated.DecodeItem.FP417.Pilot6ad8Structural",
+      "import": "ZesuSsz.Automation.V2Steps",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "e1c46a66545eaea366cd2fb66e678189"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Generated.DecodeItem.FP417.Pilot6ad8Structural",
+      "import": "ZesuSsz.Automation.ArrayLoadPreselect",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "a2d831c5634220d81c83b6c2de342084"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Generated.DecodeItem.FP417.Pilot6ad8Structural",
+      "import": "ZesuSsz.Automation.Finish",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "47cf00878cbffc2591e6dfa449ee5a8e"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Generated.DecodeItem.FP417.Pilot6ad8Structural",
+      "import": "ZesuSsz.Automation.EffectiveOverrides",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "a25f0e5375f36bec6c2600fec603ea3c"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Generated.DecodeItem.FP417.Pilot6ad8Structural",
+      "import": "ZesuSsz.Automation.All",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "300b56bb42a448a1328fa3d5a6abf461"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Generated.DecodeItem.FP417.Pilot6ad8Structural",
+      "import": "ZesuSsz.Generated.DecodeItem.FP417.Pilot6ad8Entries",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "af9be1eafcb2b05c38879bf7d9946461"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Generated.DecodeItem.FP417.Pilot6b08Entries",
+      "import": "ZesuSsz.Automation.EntryWitnessReadiness",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "c37e3f97ab023b7add6d487830cd9595"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Generated.DecodeItem.FP417.Pilot6b08Entries",
+      "import": "ZesuSsz.Automation.EntryWitnessProfile",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "1a35d1774aed09689a5f8d0d06f65c5e"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Generated.DecodeItem.FP417.Pilot6b08Entries",
+      "import": "ZesuSsz.Evidence.EntryWitnessInputs",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "759b284f1db83bc0b9f9a6f3b71f8323"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Generated.DecodeItem.FP417.Pilot6b08Entries",
+      "import": "ZesuSsz.Automation.SourceWitnessInputs",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "15ee3692583b3efb89adad8ef1e64ca6"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Generated.DecodeItem.FP417.Pilot6b08Entries",
+      "import": "ZesuSsz.Automation.Hooks",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "f642f290dd707133949fdff58fbe3ca3"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Generated.DecodeItem.FP417.Pilot6b08Entries",
+      "import": "ZesuSsz.Automation.MaskWrapPresentation",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "788b27f59ba9ff66b69b6b3f41b7f851"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Generated.DecodeItem.FP417.Pilot6b08Entries",
+      "import": "ZesuSsz.Automation.HypothesisCast",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "4c9afd07421b89da8b305e773f4b4a97"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Generated.DecodeItem.FP417.Pilot6b08Entries",
+      "import": "ZesuSsz.Automation.BranchUnsigned",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "ac4b21c2f5f8dd513026d96a390dc629"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Generated.DecodeItem.FP417.Pilot6b08Entries",
+      "import": "ZesuSsz.Automation.BranchCastUnsigned",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "a1f001de3c83f93950fa6037533ebd88"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Generated.DecodeItem.FP417.Pilot6b08Entries",
+      "import": "ZesuSsz.Automation.MaskPresentation",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "8d8ef4530039cc9ce8beb2d4fe8f2582"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Generated.DecodeItem.FP417.Pilot6b08Entries",
+      "import": "ZesuSsz.Automation.ArrayPayloadPresentation",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "f61071fb0d67d5d67afd50d307a8eda0"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Generated.DecodeItem.FP417.Pilot6b08Entries",
+      "import": "ZesuSsz.Automation.StoreMemoryLookup",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "9d1dc57d77a2413ffd5d06492de5ad0b"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Generated.DecodeItem.FP417.Pilot6b08Entries",
+      "import": "ZesuSsz.Automation.RawWordArrayWitness",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "7e6d153825a55adad25cddc693c29eba"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Generated.DecodeItem.FP417.Pilot6b08Entries",
+      "import": "ZesuSsz.Automation.ExistentialArrayRestore",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "5a58b547a034fb15cc4a7540e72c1713"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Generated.DecodeItem.FP417.Pilot6b08Entries",
+      "import": "ZesuSsz.Automation.InteriorByteSlice",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "78b1ba28fb91ef9f2dbe359a71a7171d"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Generated.DecodeItem.FP417.Pilot6b08Entries",
+      "import": "ZesuSsz.Automation.V2Steps",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "e1c46a66545eaea366cd2fb66e678189"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Generated.DecodeItem.FP417.Pilot6b08Entries",
+      "import": "ZesuSsz.Automation.ArrayLoadPreselect",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "a2d831c5634220d81c83b6c2de342084"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Generated.DecodeItem.FP417.Pilot6b08Entries",
+      "import": "ZesuSsz.Automation.Finish",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "47cf00878cbffc2591e6dfa449ee5a8e"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Generated.DecodeItem.FP417.Pilot6b08Entries",
+      "import": "ZesuSsz.Automation.EffectiveOverrides",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "a25f0e5375f36bec6c2600fec603ea3c"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Generated.DecodeItem.FP417.Pilot6b08Entries",
+      "import": "ZesuSsz.Automation.All",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "300b56bb42a448a1328fa3d5a6abf461"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Generated.DecodeItem.FP417.Pilot6b08Structural",
+      "import": "ZesuSsz.Automation.EntryWitnessReadiness",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "c37e3f97ab023b7add6d487830cd9595"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Generated.DecodeItem.FP417.Pilot6b08Structural",
+      "import": "ZesuSsz.Automation.EntryWitnessProfile",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "1a35d1774aed09689a5f8d0d06f65c5e"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Generated.DecodeItem.FP417.Pilot6b08Structural",
+      "import": "ZesuSsz.Evidence.EntryWitnessInputs",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "759b284f1db83bc0b9f9a6f3b71f8323"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Generated.DecodeItem.FP417.Pilot6b08Structural",
+      "import": "ZesuSsz.Automation.SourceWitnessInputs",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "15ee3692583b3efb89adad8ef1e64ca6"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Generated.DecodeItem.FP417.Pilot6b08Structural",
+      "import": "ZesuSsz.Automation.Hooks",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "f642f290dd707133949fdff58fbe3ca3"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Generated.DecodeItem.FP417.Pilot6b08Structural",
+      "import": "ZesuSsz.Automation.MaskWrapPresentation",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "788b27f59ba9ff66b69b6b3f41b7f851"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Generated.DecodeItem.FP417.Pilot6b08Structural",
+      "import": "ZesuSsz.Automation.HypothesisCast",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "4c9afd07421b89da8b305e773f4b4a97"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Generated.DecodeItem.FP417.Pilot6b08Structural",
+      "import": "ZesuSsz.Automation.BranchUnsigned",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "ac4b21c2f5f8dd513026d96a390dc629"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Generated.DecodeItem.FP417.Pilot6b08Structural",
+      "import": "ZesuSsz.Automation.BranchCastUnsigned",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "a1f001de3c83f93950fa6037533ebd88"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Generated.DecodeItem.FP417.Pilot6b08Structural",
+      "import": "ZesuSsz.Automation.MaskPresentation",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "8d8ef4530039cc9ce8beb2d4fe8f2582"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Generated.DecodeItem.FP417.Pilot6b08Structural",
+      "import": "ZesuSsz.Automation.ArrayPayloadPresentation",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "f61071fb0d67d5d67afd50d307a8eda0"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Generated.DecodeItem.FP417.Pilot6b08Structural",
+      "import": "ZesuSsz.Automation.StoreMemoryLookup",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "9d1dc57d77a2413ffd5d06492de5ad0b"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Generated.DecodeItem.FP417.Pilot6b08Structural",
+      "import": "ZesuSsz.Automation.RawWordArrayWitness",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "7e6d153825a55adad25cddc693c29eba"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Generated.DecodeItem.FP417.Pilot6b08Structural",
+      "import": "ZesuSsz.Automation.ExistentialArrayRestore",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "5a58b547a034fb15cc4a7540e72c1713"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Generated.DecodeItem.FP417.Pilot6b08Structural",
+      "import": "ZesuSsz.Automation.InteriorByteSlice",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "78b1ba28fb91ef9f2dbe359a71a7171d"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Generated.DecodeItem.FP417.Pilot6b08Structural",
+      "import": "ZesuSsz.Automation.V2Steps",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "e1c46a66545eaea366cd2fb66e678189"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Generated.DecodeItem.FP417.Pilot6b08Structural",
+      "import": "ZesuSsz.Automation.ArrayLoadPreselect",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "a2d831c5634220d81c83b6c2de342084"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Generated.DecodeItem.FP417.Pilot6b08Structural",
+      "import": "ZesuSsz.Automation.Finish",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "47cf00878cbffc2591e6dfa449ee5a8e"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Generated.DecodeItem.FP417.Pilot6b08Structural",
+      "import": "ZesuSsz.Automation.EffectiveOverrides",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "a25f0e5375f36bec6c2600fec603ea3c"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Generated.DecodeItem.FP417.Pilot6b08Structural",
+      "import": "ZesuSsz.Automation.All",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "300b56bb42a448a1328fa3d5a6abf461"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Generated.DecodeItem.FP417.Pilot6b08Structural",
+      "import": "ZesuSsz.Generated.DecodeItem.FP417.Pilot6b08Entries",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "66063356f176bff55981355c90af9c72"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Generated.DecodeItem.FP417.SourceMapping6a38",
+      "import": "ZesuSsz.Automation.EntryWitnessReadiness",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "c37e3f97ab023b7add6d487830cd9595"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Generated.DecodeItem.FP417.SourceMapping6a38",
+      "import": "ZesuSsz.Automation.EntryWitnessProfile",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "1a35d1774aed09689a5f8d0d06f65c5e"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Generated.DecodeItem.FP417.SourceMapping6a38",
+      "import": "ZesuSsz.Evidence.EntryWitnessInputs",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "759b284f1db83bc0b9f9a6f3b71f8323"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Generated.DecodeItem.FP417.SourceMapping6a38",
+      "import": "ZesuSsz.Automation.SourceWitnessInputs",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "15ee3692583b3efb89adad8ef1e64ca6"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Generated.DecodeItem.FP417.SourceMapping6a38",
+      "import": "ZesuSsz.Automation.Hooks",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "f642f290dd707133949fdff58fbe3ca3"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Generated.DecodeItem.FP417.SourceMapping6a38",
+      "import": "ZesuSsz.Automation.MaskWrapPresentation",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "788b27f59ba9ff66b69b6b3f41b7f851"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Generated.DecodeItem.FP417.SourceMapping6a38",
+      "import": "ZesuSsz.Automation.HypothesisCast",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "4c9afd07421b89da8b305e773f4b4a97"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Generated.DecodeItem.FP417.SourceMapping6a38",
+      "import": "ZesuSsz.Automation.BranchUnsigned",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "ac4b21c2f5f8dd513026d96a390dc629"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Generated.DecodeItem.FP417.SourceMapping6a38",
+      "import": "ZesuSsz.Automation.BranchCastUnsigned",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "a1f001de3c83f93950fa6037533ebd88"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Generated.DecodeItem.FP417.SourceMapping6a38",
+      "import": "ZesuSsz.Automation.MaskPresentation",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "8d8ef4530039cc9ce8beb2d4fe8f2582"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Generated.DecodeItem.FP417.SourceMapping6a38",
+      "import": "ZesuSsz.Automation.ArrayPayloadPresentation",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "f61071fb0d67d5d67afd50d307a8eda0"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Generated.DecodeItem.FP417.SourceMapping6a38",
+      "import": "ZesuSsz.Automation.StoreMemoryLookup",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "9d1dc57d77a2413ffd5d06492de5ad0b"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Generated.DecodeItem.FP417.SourceMapping6a38",
+      "import": "ZesuSsz.Automation.RawWordArrayWitness",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "7e6d153825a55adad25cddc693c29eba"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Generated.DecodeItem.FP417.SourceMapping6a38",
+      "import": "ZesuSsz.Automation.ExistentialArrayRestore",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "5a58b547a034fb15cc4a7540e72c1713"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Generated.DecodeItem.FP417.SourceMapping6a38",
+      "import": "ZesuSsz.Automation.InteriorByteSlice",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "78b1ba28fb91ef9f2dbe359a71a7171d"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Generated.DecodeItem.FP417.SourceMapping6a38",
+      "import": "ZesuSsz.Automation.V2Steps",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "e1c46a66545eaea366cd2fb66e678189"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Generated.DecodeItem.FP417.SourceMapping6a38",
+      "import": "ZesuSsz.Automation.ArrayLoadPreselect",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "a2d831c5634220d81c83b6c2de342084"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Generated.DecodeItem.FP417.SourceMapping6a38",
+      "import": "ZesuSsz.Automation.Finish",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "47cf00878cbffc2591e6dfa449ee5a8e"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Generated.DecodeItem.FP417.SourceMapping6a38",
+      "import": "ZesuSsz.Automation.EffectiveOverrides",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "a25f0e5375f36bec6c2600fec603ea3c"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Generated.DecodeItem.FP417.SourceMapping6a38",
+      "import": "ZesuSsz.Automation.All",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "300b56bb42a448a1328fa3d5a6abf461"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Generated.DecodeItem.FP417.SourceMapping6a38",
+      "import": "ZesuSsz.Generated.DecodeItem.FP417.Pilot6a38Entries",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "2029e65684db985be2ae80097fc98b1b"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Generated.DecodeItem.FP417.SourceMapping6a38",
+      "import": "ZesuSsz.Generated.DecodeItem.FP417.Pilot6a40Entries",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "edfa1f7799f1f1c197c873b25ddc81e5"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Generated.DecodeItem.FP417.SourceMapping6a38",
+      "import": "ZesuSsz.Generated.DecodeItem.FP417.Pilot6ad8Entries",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "af9be1eafcb2b05c38879bf7d9946461"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Generated.DecodeItem.FP417.SourceMapping6a38",
+      "import": "ZesuSsz.Generated.DecodeItem.FP417.Pilot6b08Entries",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "66063356f176bff55981355c90af9c72"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Generated.DecodeItem.FP417.SourceMapping6ad8",
+      "import": "ZesuSsz.Automation.EntryWitnessReadiness",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "c37e3f97ab023b7add6d487830cd9595"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Generated.DecodeItem.FP417.SourceMapping6ad8",
+      "import": "ZesuSsz.Automation.EntryWitnessProfile",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "1a35d1774aed09689a5f8d0d06f65c5e"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Generated.DecodeItem.FP417.SourceMapping6ad8",
+      "import": "ZesuSsz.Evidence.EntryWitnessInputs",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "759b284f1db83bc0b9f9a6f3b71f8323"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Generated.DecodeItem.FP417.SourceMapping6ad8",
+      "import": "ZesuSsz.Automation.SourceWitnessInputs",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "15ee3692583b3efb89adad8ef1e64ca6"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Generated.DecodeItem.FP417.SourceMapping6ad8",
+      "import": "ZesuSsz.Automation.Hooks",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "f642f290dd707133949fdff58fbe3ca3"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Generated.DecodeItem.FP417.SourceMapping6ad8",
+      "import": "ZesuSsz.Automation.MaskWrapPresentation",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "788b27f59ba9ff66b69b6b3f41b7f851"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Generated.DecodeItem.FP417.SourceMapping6ad8",
+      "import": "ZesuSsz.Automation.HypothesisCast",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "4c9afd07421b89da8b305e773f4b4a97"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Generated.DecodeItem.FP417.SourceMapping6ad8",
+      "import": "ZesuSsz.Automation.BranchUnsigned",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "ac4b21c2f5f8dd513026d96a390dc629"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Generated.DecodeItem.FP417.SourceMapping6ad8",
+      "import": "ZesuSsz.Automation.BranchCastUnsigned",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "a1f001de3c83f93950fa6037533ebd88"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Generated.DecodeItem.FP417.SourceMapping6ad8",
+      "import": "ZesuSsz.Automation.MaskPresentation",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "8d8ef4530039cc9ce8beb2d4fe8f2582"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Generated.DecodeItem.FP417.SourceMapping6ad8",
+      "import": "ZesuSsz.Automation.ArrayPayloadPresentation",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "f61071fb0d67d5d67afd50d307a8eda0"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Generated.DecodeItem.FP417.SourceMapping6ad8",
+      "import": "ZesuSsz.Automation.StoreMemoryLookup",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "9d1dc57d77a2413ffd5d06492de5ad0b"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Generated.DecodeItem.FP417.SourceMapping6ad8",
+      "import": "ZesuSsz.Automation.RawWordArrayWitness",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "7e6d153825a55adad25cddc693c29eba"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Generated.DecodeItem.FP417.SourceMapping6ad8",
+      "import": "ZesuSsz.Automation.ExistentialArrayRestore",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "5a58b547a034fb15cc4a7540e72c1713"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Generated.DecodeItem.FP417.SourceMapping6ad8",
+      "import": "ZesuSsz.Automation.InteriorByteSlice",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "78b1ba28fb91ef9f2dbe359a71a7171d"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Generated.DecodeItem.FP417.SourceMapping6ad8",
+      "import": "ZesuSsz.Automation.V2Steps",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "e1c46a66545eaea366cd2fb66e678189"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Generated.DecodeItem.FP417.SourceMapping6ad8",
+      "import": "ZesuSsz.Automation.ArrayLoadPreselect",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "a2d831c5634220d81c83b6c2de342084"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Generated.DecodeItem.FP417.SourceMapping6ad8",
+      "import": "ZesuSsz.Automation.Finish",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "47cf00878cbffc2591e6dfa449ee5a8e"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Generated.DecodeItem.FP417.SourceMapping6ad8",
+      "import": "ZesuSsz.Automation.EffectiveOverrides",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "a25f0e5375f36bec6c2600fec603ea3c"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Generated.DecodeItem.FP417.SourceMapping6ad8",
+      "import": "ZesuSsz.Automation.All",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "300b56bb42a448a1328fa3d5a6abf461"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Generated.DecodeItem.FP417.SourceMapping6ad8",
+      "import": "ZesuSsz.Generated.DecodeItem.FP417.Pilot6a38Entries",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "2029e65684db985be2ae80097fc98b1b"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Generated.DecodeItem.FP417.SourceMapping6ad8",
+      "import": "ZesuSsz.Generated.DecodeItem.FP417.Pilot6a40Entries",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "edfa1f7799f1f1c197c873b25ddc81e5"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Generated.DecodeItem.FP417.SourceMapping6ad8",
+      "import": "ZesuSsz.Generated.DecodeItem.FP417.Pilot6ad8Entries",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "af9be1eafcb2b05c38879bf7d9946461"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Generated.DecodeItem.FP417.SourceMapping6ad8",
+      "import": "ZesuSsz.Generated.DecodeItem.FP417.Pilot6b08Entries",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "66063356f176bff55981355c90af9c72"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Generated.DecodeItem.MachineJoin6ae0Entries",
+      "import": "ZesuSsz.Automation.EntryWitnessReadiness",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "c37e3f97ab023b7add6d487830cd9595"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Generated.DecodeItem.MachineJoin6ae0Entries",
+      "import": "ZesuSsz.Automation.EntryWitnessProfile",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "1a35d1774aed09689a5f8d0d06f65c5e"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Generated.DecodeItem.MachineJoin6ae0Entries",
+      "import": "ZesuSsz.Evidence.EntryWitnessInputs",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "759b284f1db83bc0b9f9a6f3b71f8323"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Generated.DecodeItem.MachineJoin6ae0Entries",
+      "import": "ZesuSsz.Automation.SourceWitnessInputs",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "15ee3692583b3efb89adad8ef1e64ca6"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Generated.DecodeItem.MachineJoin6ae0Entries",
+      "import": "ZesuSsz.Automation.Hooks",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "f642f290dd707133949fdff58fbe3ca3"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Generated.DecodeItem.MachineJoin6ae0Entries",
+      "import": "ZesuSsz.Automation.MaskWrapPresentation",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "788b27f59ba9ff66b69b6b3f41b7f851"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Generated.DecodeItem.MachineJoin6ae0Entries",
+      "import": "ZesuSsz.Automation.HypothesisCast",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "4c9afd07421b89da8b305e773f4b4a97"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Generated.DecodeItem.MachineJoin6ae0Entries",
+      "import": "ZesuSsz.Automation.BranchUnsigned",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "ac4b21c2f5f8dd513026d96a390dc629"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Generated.DecodeItem.MachineJoin6ae0Entries",
+      "import": "ZesuSsz.Automation.BranchCastUnsigned",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "a1f001de3c83f93950fa6037533ebd88"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Generated.DecodeItem.MachineJoin6ae0Entries",
+      "import": "ZesuSsz.Automation.MaskPresentation",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "8d8ef4530039cc9ce8beb2d4fe8f2582"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Generated.DecodeItem.MachineJoin6ae0Entries",
+      "import": "ZesuSsz.Automation.ArrayPayloadPresentation",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "f61071fb0d67d5d67afd50d307a8eda0"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Generated.DecodeItem.MachineJoin6ae0Entries",
+      "import": "ZesuSsz.Automation.StoreMemoryLookup",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "9d1dc57d77a2413ffd5d06492de5ad0b"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Generated.DecodeItem.MachineJoin6ae0Entries",
+      "import": "ZesuSsz.Automation.RawWordArrayWitness",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "7e6d153825a55adad25cddc693c29eba"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Generated.DecodeItem.MachineJoin6ae0Entries",
+      "import": "ZesuSsz.Automation.ExistentialArrayRestore",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "5a58b547a034fb15cc4a7540e72c1713"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Generated.DecodeItem.MachineJoin6ae0Entries",
+      "import": "ZesuSsz.Automation.InteriorByteSlice",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "78b1ba28fb91ef9f2dbe359a71a7171d"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Generated.DecodeItem.MachineJoin6ae0Entries",
+      "import": "ZesuSsz.Automation.V2Steps",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "e1c46a66545eaea366cd2fb66e678189"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Generated.DecodeItem.MachineJoin6ae0Entries",
+      "import": "ZesuSsz.Automation.ArrayLoadPreselect",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "a2d831c5634220d81c83b6c2de342084"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Generated.DecodeItem.MachineJoin6ae0Entries",
+      "import": "ZesuSsz.Automation.Finish",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "47cf00878cbffc2591e6dfa449ee5a8e"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Generated.DecodeItem.MachineJoin6ae0Entries",
+      "import": "ZesuSsz.Automation.EffectiveOverrides",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "a25f0e5375f36bec6c2600fec603ea3c"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Generated.DecodeItem.MachineJoin6ae0Entries",
+      "import": "ZesuSsz.Automation.All",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "300b56bb42a448a1328fa3d5a6abf461"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Generated.DecodeItem.MachineJoin6ae0SourceOwner",
+      "import": "ZesuSsz.Automation.EntryWitnessReadiness",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "c37e3f97ab023b7add6d487830cd9595"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Generated.DecodeItem.MachineJoin6ae0SourceOwner",
+      "import": "ZesuSsz.Automation.EntryWitnessProfile",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "1a35d1774aed09689a5f8d0d06f65c5e"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Generated.DecodeItem.MachineJoin6ae0SourceOwner",
+      "import": "ZesuSsz.Evidence.EntryWitnessInputs",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "759b284f1db83bc0b9f9a6f3b71f8323"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Generated.DecodeItem.MachineJoin6ae0SourceOwner",
+      "import": "ZesuSsz.Automation.SourceWitnessInputs",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "15ee3692583b3efb89adad8ef1e64ca6"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Generated.DecodeItem.MachineJoin6ae0SourceOwner",
+      "import": "ZesuSsz.Automation.Hooks",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "f642f290dd707133949fdff58fbe3ca3"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Generated.DecodeItem.MachineJoin6ae0SourceOwner",
+      "import": "ZesuSsz.Automation.MaskWrapPresentation",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "788b27f59ba9ff66b69b6b3f41b7f851"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Generated.DecodeItem.MachineJoin6ae0SourceOwner",
+      "import": "ZesuSsz.Automation.HypothesisCast",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "4c9afd07421b89da8b305e773f4b4a97"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Generated.DecodeItem.MachineJoin6ae0SourceOwner",
+      "import": "ZesuSsz.Automation.BranchUnsigned",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "ac4b21c2f5f8dd513026d96a390dc629"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Generated.DecodeItem.MachineJoin6ae0SourceOwner",
+      "import": "ZesuSsz.Automation.BranchCastUnsigned",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "a1f001de3c83f93950fa6037533ebd88"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Generated.DecodeItem.MachineJoin6ae0SourceOwner",
+      "import": "ZesuSsz.Automation.MaskPresentation",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "8d8ef4530039cc9ce8beb2d4fe8f2582"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Generated.DecodeItem.MachineJoin6ae0SourceOwner",
+      "import": "ZesuSsz.Automation.ArrayPayloadPresentation",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "f61071fb0d67d5d67afd50d307a8eda0"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Generated.DecodeItem.MachineJoin6ae0SourceOwner",
+      "import": "ZesuSsz.Automation.StoreMemoryLookup",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "9d1dc57d77a2413ffd5d06492de5ad0b"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Generated.DecodeItem.MachineJoin6ae0SourceOwner",
+      "import": "ZesuSsz.Automation.RawWordArrayWitness",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "7e6d153825a55adad25cddc693c29eba"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Generated.DecodeItem.MachineJoin6ae0SourceOwner",
+      "import": "ZesuSsz.Automation.ExistentialArrayRestore",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "5a58b547a034fb15cc4a7540e72c1713"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Generated.DecodeItem.MachineJoin6ae0SourceOwner",
+      "import": "ZesuSsz.Automation.InteriorByteSlice",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "78b1ba28fb91ef9f2dbe359a71a7171d"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Generated.DecodeItem.MachineJoin6ae0SourceOwner",
+      "import": "ZesuSsz.Automation.V2Steps",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "e1c46a66545eaea366cd2fb66e678189"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Generated.DecodeItem.MachineJoin6ae0SourceOwner",
+      "import": "ZesuSsz.Automation.ArrayLoadPreselect",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "a2d831c5634220d81c83b6c2de342084"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Generated.DecodeItem.MachineJoin6ae0SourceOwner",
+      "import": "ZesuSsz.Automation.Finish",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "47cf00878cbffc2591e6dfa449ee5a8e"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Generated.DecodeItem.MachineJoin6ae0SourceOwner",
+      "import": "ZesuSsz.Automation.EffectiveOverrides",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "a25f0e5375f36bec6c2600fec603ea3c"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Generated.DecodeItem.MachineJoin6ae0SourceOwner",
+      "import": "ZesuSsz.Automation.All",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "300b56bb42a448a1328fa3d5a6abf461"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Generated.DecodeItem.MachineJoin6ae0Structural",
+      "import": "ZesuSsz.Automation.EntryWitnessReadiness",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "c37e3f97ab023b7add6d487830cd9595"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Generated.DecodeItem.MachineJoin6ae0Structural",
+      "import": "ZesuSsz.Automation.EntryWitnessProfile",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "1a35d1774aed09689a5f8d0d06f65c5e"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Generated.DecodeItem.MachineJoin6ae0Structural",
+      "import": "ZesuSsz.Evidence.EntryWitnessInputs",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "759b284f1db83bc0b9f9a6f3b71f8323"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Generated.DecodeItem.MachineJoin6ae0Structural",
+      "import": "ZesuSsz.Automation.SourceWitnessInputs",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "15ee3692583b3efb89adad8ef1e64ca6"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Generated.DecodeItem.MachineJoin6ae0Structural",
+      "import": "ZesuSsz.Automation.Hooks",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "f642f290dd707133949fdff58fbe3ca3"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Generated.DecodeItem.MachineJoin6ae0Structural",
+      "import": "ZesuSsz.Automation.MaskWrapPresentation",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "788b27f59ba9ff66b69b6b3f41b7f851"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Generated.DecodeItem.MachineJoin6ae0Structural",
+      "import": "ZesuSsz.Automation.HypothesisCast",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "4c9afd07421b89da8b305e773f4b4a97"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Generated.DecodeItem.MachineJoin6ae0Structural",
+      "import": "ZesuSsz.Automation.BranchUnsigned",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "ac4b21c2f5f8dd513026d96a390dc629"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Generated.DecodeItem.MachineJoin6ae0Structural",
+      "import": "ZesuSsz.Automation.BranchCastUnsigned",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "a1f001de3c83f93950fa6037533ebd88"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Generated.DecodeItem.MachineJoin6ae0Structural",
+      "import": "ZesuSsz.Automation.MaskPresentation",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "8d8ef4530039cc9ce8beb2d4fe8f2582"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Generated.DecodeItem.MachineJoin6ae0Structural",
+      "import": "ZesuSsz.Automation.ArrayPayloadPresentation",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "f61071fb0d67d5d67afd50d307a8eda0"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Generated.DecodeItem.MachineJoin6ae0Structural",
+      "import": "ZesuSsz.Automation.StoreMemoryLookup",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "9d1dc57d77a2413ffd5d06492de5ad0b"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Generated.DecodeItem.MachineJoin6ae0Structural",
+      "import": "ZesuSsz.Automation.RawWordArrayWitness",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "7e6d153825a55adad25cddc693c29eba"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Generated.DecodeItem.MachineJoin6ae0Structural",
+      "import": "ZesuSsz.Automation.ExistentialArrayRestore",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "5a58b547a034fb15cc4a7540e72c1713"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Generated.DecodeItem.MachineJoin6ae0Structural",
+      "import": "ZesuSsz.Automation.InteriorByteSlice",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "78b1ba28fb91ef9f2dbe359a71a7171d"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Generated.DecodeItem.MachineJoin6ae0Structural",
+      "import": "ZesuSsz.Automation.V2Steps",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "e1c46a66545eaea366cd2fb66e678189"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Generated.DecodeItem.MachineJoin6ae0Structural",
+      "import": "ZesuSsz.Automation.ArrayLoadPreselect",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "a2d831c5634220d81c83b6c2de342084"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Generated.DecodeItem.MachineJoin6ae0Structural",
+      "import": "ZesuSsz.Automation.Finish",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "47cf00878cbffc2591e6dfa449ee5a8e"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Generated.DecodeItem.MachineJoin6ae0Structural",
+      "import": "ZesuSsz.Automation.EffectiveOverrides",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "a25f0e5375f36bec6c2600fec603ea3c"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Generated.DecodeItem.MachineJoin6ae0Structural",
+      "import": "ZesuSsz.Automation.All",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "300b56bb42a448a1328fa3d5a6abf461"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Generated.DecodeItem.MachineJoin6ae0Structural",
+      "import": "ZesuSsz.Generated.DecodeItem.MachineJoin6ae0Entries",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "e44c8e3346772ded52f05a63388cb64d"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Generated.DecodeItem.MachineJoin6ae0WitnessRegistration",
+      "import": "ZesuSsz.Automation.EntryWitnessReadiness",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "c37e3f97ab023b7add6d487830cd9595"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Generated.DecodeItem.MachineJoin6ae0WitnessRegistration",
+      "import": "ZesuSsz.Automation.EntryWitnessProfile",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "1a35d1774aed09689a5f8d0d06f65c5e"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Generated.DecodeItem.MachineJoin6ae0WitnessRegistration",
+      "import": "ZesuSsz.Evidence.EntryWitnessInputs",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "759b284f1db83bc0b9f9a6f3b71f8323"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Generated.DecodeItem.MachineJoin6ae0WitnessRegistration",
+      "import": "ZesuSsz.Automation.SourceWitnessInputs",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "15ee3692583b3efb89adad8ef1e64ca6"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Generated.DecodeItem.MachineJoin6ae0WitnessRegistration",
+      "import": "ZesuSsz.Automation.Hooks",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "f642f290dd707133949fdff58fbe3ca3"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Generated.DecodeItem.MachineJoin6ae0WitnessRegistration",
+      "import": "ZesuSsz.Automation.MaskWrapPresentation",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "788b27f59ba9ff66b69b6b3f41b7f851"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Generated.DecodeItem.MachineJoin6ae0WitnessRegistration",
+      "import": "ZesuSsz.Automation.HypothesisCast",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "4c9afd07421b89da8b305e773f4b4a97"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Generated.DecodeItem.MachineJoin6ae0WitnessRegistration",
+      "import": "ZesuSsz.Automation.BranchUnsigned",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "ac4b21c2f5f8dd513026d96a390dc629"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Generated.DecodeItem.MachineJoin6ae0WitnessRegistration",
+      "import": "ZesuSsz.Automation.BranchCastUnsigned",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "a1f001de3c83f93950fa6037533ebd88"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Generated.DecodeItem.MachineJoin6ae0WitnessRegistration",
+      "import": "ZesuSsz.Automation.MaskPresentation",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "8d8ef4530039cc9ce8beb2d4fe8f2582"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Generated.DecodeItem.MachineJoin6ae0WitnessRegistration",
+      "import": "ZesuSsz.Automation.ArrayPayloadPresentation",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "f61071fb0d67d5d67afd50d307a8eda0"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Generated.DecodeItem.MachineJoin6ae0WitnessRegistration",
+      "import": "ZesuSsz.Automation.StoreMemoryLookup",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "9d1dc57d77a2413ffd5d06492de5ad0b"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Generated.DecodeItem.MachineJoin6ae0WitnessRegistration",
+      "import": "ZesuSsz.Automation.RawWordArrayWitness",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "7e6d153825a55adad25cddc693c29eba"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Generated.DecodeItem.MachineJoin6ae0WitnessRegistration",
+      "import": "ZesuSsz.Automation.ExistentialArrayRestore",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "5a58b547a034fb15cc4a7540e72c1713"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Generated.DecodeItem.MachineJoin6ae0WitnessRegistration",
+      "import": "ZesuSsz.Automation.InteriorByteSlice",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "78b1ba28fb91ef9f2dbe359a71a7171d"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Generated.DecodeItem.MachineJoin6ae0WitnessRegistration",
+      "import": "ZesuSsz.Automation.V2Steps",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "e1c46a66545eaea366cd2fb66e678189"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Generated.DecodeItem.MachineJoin6ae0WitnessRegistration",
+      "import": "ZesuSsz.Automation.ArrayLoadPreselect",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "a2d831c5634220d81c83b6c2de342084"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Generated.DecodeItem.MachineJoin6ae0WitnessRegistration",
+      "import": "ZesuSsz.Automation.Finish",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "47cf00878cbffc2591e6dfa449ee5a8e"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Generated.DecodeItem.MachineJoin6ae0WitnessRegistration",
+      "import": "ZesuSsz.Automation.EffectiveOverrides",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "a25f0e5375f36bec6c2600fec603ea3c"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Generated.DecodeItem.MachineJoin6ae0WitnessRegistration",
+      "import": "ZesuSsz.Automation.All",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "300b56bb42a448a1328fa3d5a6abf461"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Generated.DecodeItem.MachineJoin6ae0WitnessRegistration",
+      "import": "ZesuSsz.Generated.DecodeItem.MachineJoin6ae0Entries",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "e44c8e3346772ded52f05a63388cb64d"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Generated.DecodeItem.MachineJoin6ae0WitnessRegistration",
+      "import": "ZesuSsz.Generated.DecodeItem.MachineJoin6ae0SourceOwner",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "8bd70352baee63f50655f951b826d013"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Proofs.Tests.DecodeItemBranchContinuationOrder",
+      "import": "ZesuSsz.Automation.EntryWitnessReadiness",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "c37e3f97ab023b7add6d487830cd9595"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Proofs.Tests.DecodeItemBranchContinuationOrder",
+      "import": "ZesuSsz.Automation.EntryWitnessProfile",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "1a35d1774aed09689a5f8d0d06f65c5e"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Proofs.Tests.DecodeItemBranchContinuationOrder",
+      "import": "ZesuSsz.Evidence.EntryWitnessInputs",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "759b284f1db83bc0b9f9a6f3b71f8323"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Proofs.Tests.DecodeItemBranchContinuationOrder",
+      "import": "ZesuSsz.Automation.SourceWitnessInputs",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "15ee3692583b3efb89adad8ef1e64ca6"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Proofs.Tests.DecodeItemBranchContinuationOrder",
+      "import": "ZesuSsz.Automation.Hooks",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "f642f290dd707133949fdff58fbe3ca3"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Proofs.Tests.DecodeItemBranchContinuationOrder",
+      "import": "ZesuSsz.Automation.MaskWrapPresentation",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "788b27f59ba9ff66b69b6b3f41b7f851"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Proofs.Tests.DecodeItemBranchContinuationOrder",
+      "import": "ZesuSsz.Automation.HypothesisCast",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "4c9afd07421b89da8b305e773f4b4a97"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Proofs.Tests.DecodeItemBranchContinuationOrder",
+      "import": "ZesuSsz.Automation.BranchUnsigned",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "ac4b21c2f5f8dd513026d96a390dc629"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Proofs.Tests.DecodeItemBranchContinuationOrder",
+      "import": "ZesuSsz.Automation.BranchCastUnsigned",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "a1f001de3c83f93950fa6037533ebd88"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Proofs.Tests.DecodeItemBranchContinuationOrder",
+      "import": "ZesuSsz.Automation.MaskPresentation",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "8d8ef4530039cc9ce8beb2d4fe8f2582"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Proofs.Tests.DecodeItemBranchContinuationOrder",
+      "import": "ZesuSsz.Automation.ArrayPayloadPresentation",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "f61071fb0d67d5d67afd50d307a8eda0"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Proofs.Tests.DecodeItemBranchContinuationOrder",
+      "import": "ZesuSsz.Automation.StoreMemoryLookup",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "9d1dc57d77a2413ffd5d06492de5ad0b"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Proofs.Tests.DecodeItemBranchContinuationOrder",
+      "import": "ZesuSsz.Automation.RawWordArrayWitness",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "7e6d153825a55adad25cddc693c29eba"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Proofs.Tests.DecodeItemBranchContinuationOrder",
+      "import": "ZesuSsz.Automation.ExistentialArrayRestore",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "5a58b547a034fb15cc4a7540e72c1713"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Proofs.Tests.DecodeItemBranchContinuationOrder",
+      "import": "ZesuSsz.Automation.InteriorByteSlice",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "78b1ba28fb91ef9f2dbe359a71a7171d"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Proofs.Tests.DecodeItemBranchContinuationOrder",
+      "import": "ZesuSsz.Automation.V2Steps",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "e1c46a66545eaea366cd2fb66e678189"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Proofs.Tests.DecodeItemBranchContinuationOrder",
+      "import": "ZesuSsz.Automation.ArrayLoadPreselect",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "a2d831c5634220d81c83b6c2de342084"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Proofs.Tests.DecodeItemBranchContinuationOrder",
+      "import": "ZesuSsz.Automation.Finish",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "47cf00878cbffc2591e6dfa449ee5a8e"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Proofs.Tests.DecodeItemBranchContinuationOrder",
+      "import": "ZesuSsz.Automation.EffectiveOverrides",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "a25f0e5375f36bec6c2600fec603ea3c"
+      }
+    },
+    {
+      "owner": "ZesuSsz.Proofs.Tests.DecodeItemBranchContinuationOrder",
+      "import": "ZesuSsz.Automation.All",
+      "digest": {
+        "kind": "Dvo_or_vi",
+        "library": "300b56bb42a448a1328fa3d5a6abf461"
+      }
+    }
+  ],
+  "object_inspection": {
+    "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/FINAL125-OBJECT-INSPECTION.json",
+    "sha256": "493333b4c090f676ce4221da9f93e0c6361f4398a081e2c9fbff34789733aa94"
+  },
+  "plan": {
+    "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/CLONE125-INPUTS.json",
+    "sha256": "824698c5f8a1eb364911f48c3c3dcca15119ed8517204f07c57b6ad06b917fb9"
+  },
+  "accepted_base_closure": {
+    "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/FINAL098-GENUINE-RESULT.json",
+    "sha256": "34f5296593e2d3829a088e549e27fed5e76bbcb9cd6154d295e1f10531fe7495"
+  },
+  "reused_prerequisites": [
+    {
+      "module": "ZesuSsz.Automation.EntryWitnessReadiness",
+      "object": {
+        "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/owned125/artifacts/default/ZesuSsz/Automation/EntryWitnessReadiness.vo",
+        "sha256": "65e626d85aeeac4f7bf2e249d02d7dea0d3b48ee1dff22a36e5fc1ecff7c0be4"
+      },
+      "accepted_base_object": {
+        "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/owned098/artifacts/default/ZesuSsz/Automation/EntryWitnessReadiness.vo",
+        "sha256": "65e626d85aeeac4f7bf2e249d02d7dea0d3b48ee1dff22a36e5fc1ecff7c0be4"
+      },
+      "accepted_physical_receipt": {
+        "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/front099-L01-L04/compiler-metrics/02ab3ce28ad34be6ac12d1e6a9097706/PHYSICAL-RESULT.json",
+        "sha256": "c056b92d0e964f623300b1f7a3c34f3bbf15c9c896729da58ff53ec1c3c1ac7a"
+      }
+    },
+    {
+      "module": "ZesuSsz.Automation.EntryWitnessProfile",
+      "object": {
+        "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/owned125/artifacts/default/ZesuSsz/Automation/EntryWitnessProfile.vo",
+        "sha256": "1e0c191832519b19ff8de0a091bb2be1f423e2e4bf184cf9a7d428714a751d5c"
+      },
+      "accepted_base_object": {
+        "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/owned098/artifacts/default/ZesuSsz/Automation/EntryWitnessProfile.vo",
+        "sha256": "1e0c191832519b19ff8de0a091bb2be1f423e2e4bf184cf9a7d428714a751d5c"
+      },
+      "accepted_physical_receipt": {
+        "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/front099-L01-L04/compiler-metrics/9a32b3497f5244d2815c1f31d433877e/PHYSICAL-RESULT.json",
+        "sha256": "2c513a64870e4c9c8c6e13de98c30eb630c8a2d7e05f562b9e2b7f3acab2e39a"
+      }
+    },
+    {
+      "module": "ZesuSsz.Evidence.EntryWitnessInputs",
+      "object": {
+        "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/owned125/artifacts/default/ZesuSsz/Evidence/EntryWitnessInputs.vo",
+        "sha256": "ba2619c9e3dc518ffb6206ce3b7915bb3867ba3d4c016c48a5971258df1392fb"
+      },
+      "accepted_base_object": {
+        "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/owned098/artifacts/default/ZesuSsz/Evidence/EntryWitnessInputs.vo",
+        "sha256": "ba2619c9e3dc518ffb6206ce3b7915bb3867ba3d4c016c48a5971258df1392fb"
+      },
+      "accepted_physical_receipt": {
+        "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/front099-L01-L04/compiler-metrics/471f27c64d3349e08248781114e17220/PHYSICAL-RESULT.json",
+        "sha256": "4c44d31aee7dc6741c899a2ac2afdd1c8fb7f1938e94a4d157905b8c3529eeaa"
+      }
+    }
+  ],
+  "caller_proof_acceptance": false,
+  "native_replay_started": false,
+  "original_statements_preserved": true,
+  "all_compiler_sessions_closed": true,
+  "claims_empty": true,
+  "aggregates_absent": true
+}

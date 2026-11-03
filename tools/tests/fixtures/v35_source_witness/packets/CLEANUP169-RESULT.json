@@ -1,0 +1,447 @@
+{
+  "status": "VERIFIED_CLEANUP_CONTROLS_AND_EXACT_BOUNDARY_STAGES",
+  "modules": [
+    {
+      "source": {
+        "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/owned125/artifacts/default/ZesuSsz/Automation/MetadataCleanup152.v",
+        "sha256": "3e110e80613d4e53fff418fbecbdd3e10f708a4dfc7be585410474dff009248b"
+      },
+      "object": {
+        "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/owned125/artifacts/default/ZesuSsz/Automation/MetadataCleanup152.vo",
+        "sha256": "5d4b297170a1aa7168db3746fa2d8be99201bd6ee647344073ea9a91c40c80b0"
+      }
+    },
+    {
+      "source": {
+        "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/owned125/artifacts/default/ZesuSsz/Evidence/MetadataCleanupControls152.v",
+        "sha256": "d3b48860b856c5331cf40eff588af6cd8b96493c70a2202e3a25feaa193377b5"
+      },
+      "object": {
+        "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/owned125/artifacts/default/ZesuSsz/Evidence/MetadataCleanupControls152.vo",
+        "sha256": "de98231c5fc0eac7bf0770c98b7bd274a63867d9f135779ea58f47bde01fac7b"
+      }
+    }
+  ],
+  "verifications": [
+    {
+      "theorem": "verify_cleanup_source_marker152",
+      "response": {
+        "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/cleanup169-verify/responses/0004.json",
+        "sha256": "b24d87b3f47258d0bfbcfad16524593dd33dd3184ec471d5fc550f02b9352244"
+      },
+      "assumptions": [],
+      "method": "module_m"
+    },
+    {
+      "theorem": "verify_cleanup_pending_marker152",
+      "response": {
+        "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/cleanup169-verify/responses/0005.json",
+        "sha256": "3feed5d0348446edb6a8d0e77614ced9737c9864c09519811e46ed4dfc095cf9"
+      },
+      "assumptions": [],
+      "method": "module_m"
+    },
+    {
+      "theorem": "verify_cleanup_interleaved_and_pruned152",
+      "response": {
+        "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/cleanup169-verify/responses/0006.json",
+        "sha256": "b3f493f94628efce1ac2577ed4c56c52d4417aadf2b7c992010a8e3dd228f34e"
+      },
+      "assumptions": [],
+      "method": "module_m"
+    },
+    {
+      "theorem": "verify_cleanup_ordinary_definition152",
+      "response": {
+        "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/cleanup169-verify/responses/0007.json",
+        "sha256": "c38ba4dc99c8d303bffa632d6e7b46cd11cba931a9389deeb725f773bda75420"
+      },
+      "assumptions": [],
+      "method": "module_m"
+    },
+    {
+      "theorem": "verify_cleanup_symbolic_value152",
+      "response": {
+        "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/cleanup169-verify/responses/0008.json",
+        "sha256": "f988ad707db47b50c21f2e9a92def94043ee547716262f5bc3b4a692be0b71fc"
+      },
+      "assumptions": [],
+      "method": "module_m"
+    },
+    {
+      "theorem": "verify_cleanup_idempotent_and_keyed152",
+      "response": {
+        "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/cleanup169-verify/responses/0009.json",
+        "sha256": "5fc85a6688e92da8ec4b2ab018fc1217362318df6980ba7108188310dab069b1"
+      },
+      "assumptions": [],
+      "method": "module_m"
+    },
+    {
+      "theorem": "verify_original_cleanup_erases_metadata152",
+      "response": {
+        "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/cleanup169-verify/responses/0010.json",
+        "sha256": "f50a7a0bff866f51b1e0a818babf0d68ba9511a6d1aecc6e9badb88fa2ee8e52"
+      },
+      "assumptions": [],
+      "method": "module_m"
+    }
+  ],
+  "verification_lifecycle": {
+    "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/cleanup169-verify",
+    "registry": {
+      "id": "stock-batch-1793710109473326365-3723633",
+      "kind": "stock-batch",
+      "owner": "cody",
+      "scheduler": {
+        "pid": 3723633,
+        "startticks": 42527189,
+        "ppid": 2073,
+        "state": "R"
+      },
+      "jobs": [],
+      "claims": {},
+      "command": [
+        "/home/cody/zesislar/.worktrees/spec-b-tools-c25dfe0d/tools/resource_guard.sh",
+        "batch",
+        "spec-b-cleanup169-verify",
+        "--",
+        "/home/cody/zesislar/.worktrees/spec-b-tools-c25dfe0d/tools/resource_guard.sh",
+        "scope",
+        "spec-b-cleanup169-verify",
+        "--",
+        "/home/cody/.local/share/uv/tools/rocq-mcp/bin/python",
+        "-B",
+        "/home/cody/zesislar/_build/agents/spec-b/source-witness423/cleanup169-verify/session.py",
+        "--subject",
+        "/home/cody/zesislar/_build/agents/spec-b/source-witness423/cleanup169-verify/Subject.v",
+        "--workspace",
+        "/home/cody/zesislar/_build/agents/spec-b/source-witness423/owned125",
+        "--baseline-body",
+        "",
+        "--theorem",
+        "source_compile_control"
+      ],
+      "registered_ns": 1793710110693908710,
+      "status": "completed",
+      "exit_code": 0,
+      "closed_ns": 1793710134645653591,
+      "all_actors_closed": true
+    },
+    "aggregate_absent": true,
+    "responses": [
+      {
+        "tool": "rocq_health",
+        "response": {
+          "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/cleanup169-verify/responses/0000.json",
+          "sha256": "df26a29751ffc7cec64fb6810d67ecd715880cfb657675147d2a3cdbcecce811"
+        }
+      },
+      {
+        "tool": "rocq_start",
+        "response": {
+          "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/cleanup169-verify/responses/0001.json",
+          "sha256": "1dcb4a78fa936b78defddeeea9933eb8537e02d19639e8c0dbbcdeb58fc28018"
+        }
+      },
+      {
+        "tool": "rocq_check",
+        "response": {
+          "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/cleanup169-verify/responses/0002.json",
+          "sha256": "37c1362fc81d2c7d4ea8314e78687d5993ba5f11314453f2be782fa0c5330bd3"
+        }
+      },
+      {
+        "tool": "rocq_complete_goals",
+        "response": {
+          "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/cleanup169-verify/responses/0003.json",
+          "sha256": "643e08f3ec5b093aabaf6f6407bb723d59e5fd104ab4083750c5b3ad4f90a6c3"
+        }
+      },
+      {
+        "tool": "rocq_verify",
+        "response": {
+          "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/cleanup169-verify/responses/0004.json",
+          "sha256": "b24d87b3f47258d0bfbcfad16524593dd33dd3184ec471d5fc550f02b9352244"
+        }
+      },
+      {
+        "tool": "rocq_verify",
+        "response": {
+          "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/cleanup169-verify/responses/0005.json",
+          "sha256": "3feed5d0348446edb6a8d0e77614ced9737c9864c09519811e46ed4dfc095cf9"
+        }
+      },
+      {
+        "tool": "rocq_verify",
+        "response": {
+          "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/cleanup169-verify/responses/0006.json",
+          "sha256": "b3f493f94628efce1ac2577ed4c56c52d4417aadf2b7c992010a8e3dd228f34e"
+        }
+      },
+      {
+        "tool": "rocq_verify",
+        "response": {
+          "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/cleanup169-verify/responses/0007.json",
+          "sha256": "c38ba4dc99c8d303bffa632d6e7b46cd11cba931a9389deeb725f773bda75420"
+        }
+      },
+      {
+        "tool": "rocq_verify",
+        "response": {
+          "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/cleanup169-verify/responses/0008.json",
+          "sha256": "f988ad707db47b50c21f2e9a92def94043ee547716262f5bc3b4a692be0b71fc"
+        }
+      },
+      {
+        "tool": "rocq_verify",
+        "response": {
+          "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/cleanup169-verify/responses/0009.json",
+          "sha256": "5fc85a6688e92da8ec4b2ab018fc1217362318df6980ba7108188310dab069b1"
+        }
+      },
+      {
+        "tool": "rocq_verify",
+        "response": {
+          "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/cleanup169-verify/responses/0010.json",
+          "sha256": "f50a7a0bff866f51b1e0a818babf0d68ba9511a6d1aecc6e9badb88fa2ee8e52"
+        }
+      },
+      {
+        "tool": "rocq_health",
+        "response": {
+          "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/cleanup169-verify/responses/0011.json",
+          "sha256": "cb5f21876ca99dbaf8277522f06ea9b0a5367ea480dce26fcc7c2f6555ebdbeb"
+        }
+      },
+      {
+        "tool": "rocq_health",
+        "response": {
+          "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/cleanup169-verify/responses/0012.json",
+          "sha256": "cb5f21876ca99dbaf8277522f06ea9b0a5367ea480dce26fcc7c2f6555ebdbeb"
+        }
+      }
+    ],
+    "final_accounting": {
+      "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/cleanup169-verify/FINAL-ACCOUNTING.json",
+      "sha256": "7c57b0c2cec0426ba8083e97ec70fbbdfd001043a96e4f34568290a93c20a02b"
+    }
+  },
+  "boundary_lifecycle": {
+    "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/key167-6ad8",
+    "registry": {
+      "id": "stock-batch-1793710071968098177-3717938",
+      "kind": "stock-batch",
+      "owner": "cody",
+      "scheduler": {
+        "pid": 3717938,
+        "startticks": 42523436,
+        "ppid": 2073,
+        "state": "R"
+      },
+      "jobs": [],
+      "claims": {},
+      "command": [
+        "/home/cody/zesislar/.worktrees/spec-b-tools-c25dfe0d/tools/resource_guard.sh",
+        "batch",
+        "spec-b-key167-6ad8",
+        "--",
+        "/home/cody/zesislar/.worktrees/spec-b-tools-c25dfe0d/tools/resource_guard.sh",
+        "scope",
+        "spec-b-key167-6ad8",
+        "--",
+        "/home/cody/.local/share/uv/tools/rocq-mcp/bin/python",
+        "-B",
+        "/home/cody/zesislar/_build/agents/spec-b/source-witness423/key167-6ad8/session.py",
+        "--subject",
+        "/home/cody/zesislar/_build/agents/spec-b/source-witness423/key167-6ad8/Subject.v",
+        "--workspace",
+        "/home/cody/zesislar/_build/agents/spec-b/source-witness423/owned125",
+        "--baseline-body",
+        "",
+        "--theorem",
+        "captured_key156"
+      ],
+      "registered_ns": 1793710072170110390,
+      "status": "completed",
+      "exit_code": 0,
+      "closed_ns": 1793710143168044422,
+      "all_actors_closed": true
+    },
+    "aggregate_absent": true,
+    "responses": [
+      {
+        "tool": "rocq_health",
+        "response": {
+          "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/key167-6ad8/responses/0000.json",
+          "sha256": "7a27acc6bd9d9f9b8f53b71dc516729a4fd28c19a158358c60a37878ac079ac9"
+        }
+      },
+      {
+        "tool": "rocq_start",
+        "response": {
+          "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/key167-6ad8/responses/0001.json",
+          "sha256": "5f8136d685553919ce1cc80dddfdfcb98660f2b6a9eaa35d256c3db9ad4c54f1"
+        }
+      },
+      {
+        "tool": "rocq_check",
+        "response": {
+          "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/key167-6ad8/responses/0002.json",
+          "sha256": "4a1d7bf30177a55b5d20147d9cbb3caccde8b7cc428eb9ad906203cb551b7c1f"
+        }
+      },
+      {
+        "tool": "rocq_complete_goals",
+        "response": {
+          "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/key167-6ad8/responses/0003.json",
+          "sha256": "1c4ab364ec42fde03a11147d0fe3737e54ad21ef9cf892651b4115542e05e281"
+        }
+      },
+      {
+        "tool": "rocq_check",
+        "response": {
+          "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/key167-6ad8/responses/0004.json",
+          "sha256": "a10e22e088c2f22a82506338d7d6e530a9c683442952cc9514ceeddf6302f6ff"
+        }
+      },
+      {
+        "tool": "rocq_complete_goals",
+        "response": {
+          "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/key167-6ad8/responses/0005.json",
+          "sha256": "24c204250ffe78ab9b923ab6fa1a0f371c40511f67e7bbede6ff04c9735c72e8"
+        }
+      },
+      {
+        "tool": "rocq_check",
+        "response": {
+          "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/key167-6ad8/responses/0006.json",
+          "sha256": "b9174a4c1de8e506178f1ec436a16973a231776be00ce6699ff73b28078a7709"
+        }
+      },
+      {
+        "tool": "rocq_complete_goals",
+        "response": {
+          "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/key167-6ad8/responses/0007.json",
+          "sha256": "ca6f28b891641d50e793fdcfcdb3221a231790963abecfc7c65a69eb1e84836c"
+        }
+      },
+      {
+        "tool": "rocq_check",
+        "response": {
+          "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/key167-6ad8/responses/0008.json",
+          "sha256": "835b0c219a641099e0d3ef2b80d458867f45b9c6409f5a56483a785af191617a"
+        }
+      },
+      {
+        "tool": "rocq_complete_goals",
+        "response": {
+          "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/key167-6ad8/responses/0009.json",
+          "sha256": "f669560497714cb9e27e99729bb5939d72952cece23d7508ace89767ca565bdf"
+        }
+      },
+      {
+        "tool": "rocq_check",
+        "response": {
+          "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/key167-6ad8/responses/0010.json",
+          "sha256": "b0a6d272411b711cbe98499fad04892453a0ffcff0634d460036d176955d5a7d"
+        }
+      },
+      {
+        "tool": "rocq_complete_goals",
+        "response": {
+          "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/key167-6ad8/responses/0011.json",
+          "sha256": "df29f520776cb5f2c7c789afeab0844260b39f627febd7e88ac60f90344f505f"
+        }
+      },
+      {
+        "tool": "rocq_check",
+        "response": {
+          "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/key167-6ad8/responses/0012.json",
+          "sha256": "0c7722612ac8804050b5ac5634d5d982ca47c63bdc7e0a0e5dde17233cb83e9d"
+        }
+      },
+      {
+        "tool": "rocq_complete_goals",
+        "response": {
+          "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/key167-6ad8/responses/0013.json",
+          "sha256": "f1fdcee6b94ac2614c530a4fadb54984a04765c1a0717c2161b9567896f85984"
+        }
+      },
+      {
+        "tool": "rocq_health",
+        "response": {
+          "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/key167-6ad8/responses/0014.json",
+          "sha256": "a5b7707c7a5d7435082b7d57235c9f0e71a44d6bce3fbb1a2d1f89de6a31f1b4"
+        }
+      },
+      {
+        "tool": "rocq_health",
+        "response": {
+          "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/key167-6ad8/responses/0015.json",
+          "sha256": "a5b7707c7a5d7435082b7d57235c9f0e71a44d6bce3fbb1a2d1f89de6a31f1b4"
+        }
+      }
+    ],
+    "final_accounting": {
+      "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/key167-6ad8/FINAL-ACCOUNTING.json",
+      "sha256": "b2e909aba839481d67450d1773e2c293b5c30bc07efe0a80b0a93ed437dbaec1"
+    }
+  },
+  "boundary_counts": [
+    {
+      "state": 2,
+      "context_entries": 64,
+      "source_markers": 11,
+      "pending_markers": 0,
+      "export": {
+        "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/key167-6ad8/complete-goals/state_2.json",
+        "sha256": "2325b010a7749ed2fffbac1ff89ee6c544c505cd01434f693d082cc0c6d62f2f"
+      }
+    },
+    {
+      "state": 4,
+      "context_entries": 64,
+      "source_markers": 11,
+      "pending_markers": 0,
+      "export": {
+        "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/key167-6ad8/complete-goals/state_4.json",
+        "sha256": "2325b010a7749ed2fffbac1ff89ee6c544c505cd01434f693d082cc0c6d62f2f"
+      }
+    },
+    {
+      "state": 5,
+      "context_entries": 64,
+      "source_markers": 11,
+      "pending_markers": 0,
+      "export": {
+        "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/key167-6ad8/complete-goals/state_5.json",
+        "sha256": "2325b010a7749ed2fffbac1ff89ee6c544c505cd01434f693d082cc0c6d62f2f"
+      }
+    },
+    {
+      "state": 6,
+      "context_entries": 65,
+      "source_markers": 11,
+      "pending_markers": 1,
+      "export": {
+        "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/key167-6ad8/complete-goals/state_6.json",
+        "sha256": "57ae3eb99609e136772bf81aa54ae316741889413965aa3fb803137c8b0c6392"
+      }
+    },
+    {
+      "state": 7,
+      "context_entries": 57,
+      "source_markers": 11,
+      "pending_markers": 1,
+      "export": {
+        "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/key167-6ad8/complete-goals/state_7.json",
+        "sha256": "cff10dab8b2f56920c4064b87999cfabc7f7d9eab0613c7d713e7f6267a8431f"
+      }
+    }
+  ],
+  "changed_absence_guard": "tryif match goal ... then fail 0 else idtac",
+  "guard_change_scope": "scratch only; no canonical object replaced",
+  "cleanup_behavior": "Preserve source and pending local definitions. Normalize ordinary local definitions.",
+  "caller_acceptance": false
+}

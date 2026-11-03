@@ -1,0 +1,91 @@
+{
+  "full": {
+    "schema": "source.full-witness-mapping.v1",
+    "source_declaration": {
+      "path": "/home/cody/zesislar/_build/agents/spec-b/exact-entry-dedup421/owned004/artifacts/default/ZesuSsz/Generated/DecodeItem/FP417/Pilot6a38Entries.v",
+      "sha256": "b58f7963d70ff8802fd87fa4136372b329298bb90ad6f467e069b84a03d41cd8",
+      "declaration": "fp_machineAt6a38_ForwardA0N0"
+    },
+    "target_declaration": {
+      "path": "/home/cody/zesislar/_build/agents/spec-b/exact-entry-dedup421/owned004/artifacts/default/ZesuSsz/Generated/DecodeItem/FP417/Pilot6a40Entries.v",
+      "sha256": "1c1ae06b00847a8ff1914132dce8ccfd582b597b7ec4c42106c861351f77ba31",
+      "declaration": "fp_machineAt6a40_ForwardA0N0"
+    },
+    "mapping_fragment": {
+      "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/phase157/6a38-FULL-DATA.vpart",
+      "sha256": "2247f595efa393074110e67beee47d3fd0b1fb71858dbc5b8f29fac3d6191826"
+    },
+    "slots": [
+      {
+        "name": "machine_x13",
+        "type": "bv 64",
+        "vacuous": false
+      },
+      {
+        "name": "machine_x15",
+        "type": "bv 64",
+        "vacuous": false
+      },
+      {
+        "name": "machine_x16",
+        "type": "bv 64",
+        "vacuous": true
+      },
+      {
+        "name": "machine_x11",
+        "type": "bv 64",
+        "vacuous": false
+      },
+      {
+        "name": "i",
+        "type": "lvar \"zesuLoopIndex\" Z",
+        "vacuous": false
+      },
+      {
+        "name": "fp_seed_mstatus_bits",
+        "type": "bv 64",
+        "vacuous": false
+      },
+      {
+        "name": "fp_seed_satp",
+        "type": "bv 64",
+        "vacuous": true
+      },
+      {
+        "name": "fp_seed_zisk_free_input",
+        "type": "bv 64",
+        "vacuous": true
+      },
+      {
+        "name": "forward_witness_83d3e6d46c3de70e",
+        "type": "bv 64",
+        "vacuous": false
+      },
+      {
+        "name": "forward_witness_1d218312837c2f84",
+        "type": "bv 64",
+        "vacuous": false
+      },
+      {
+        "name": "forward_witness_dc636cab9ffb40ae",
+        "type": "bv 64",
+        "vacuous": false
+      },
+      {
+        "name": "forward_witness_184f6fc7524c683f",
+        "type": "bv 64",
+        "vacuous": false
+      },
+      {
+        "name": "forward_witness_8da77898f656116a",
+        "type": "bv 64",
+        "vacuous": false
+      },
+      {
+        "name": "forward_witness_eba071f2aafca867",
+        "type": "bv 64",
+        "vacuous": false
+      }
+    ]
+  }
+}

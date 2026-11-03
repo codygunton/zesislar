@@ -1,0 +1,70 @@
+{
+  "phase": {
+    "schema": "source.witness-phase.v1",
+    "full_metadata": {
+      "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/phase157/6ad8-FULL-METADATA.json",
+      "sha256": "8ab082fb034b4fbbf40d3689dbbcddd5dbac72f580a29b8ba20b831bcd9f3484",
+      "pointer": "/full"
+    },
+    "retained": [
+      {
+        "source_index": 2,
+        "name": "machine_x16"
+      },
+      {
+        "source_index": 4,
+        "name": "i"
+      },
+      {
+        "source_index": 5,
+        "name": "fp_seed_mstatus_bits"
+      },
+      {
+        "source_index": 6,
+        "name": "fp_seed_satp"
+      },
+      {
+        "source_index": 7,
+        "name": "fp_seed_zisk_free_input"
+      },
+      {
+        "source_index": 8,
+        "name": "forward_witness_dc636cab9ffb40ae"
+      },
+      {
+        "source_index": 9,
+        "name": "forward_witness_184f6fc7524c683f"
+      },
+      {
+        "source_index": 10,
+        "name": "forward_witness_8da77898f656116a"
+      },
+      {
+        "source_index": 11,
+        "name": "forward_witness_eba071f2aafca867"
+      },
+      {
+        "source_index": 12,
+        "name": "forward_witness_6b5c9f21ea2547d9"
+      },
+      {
+        "source_index": 13,
+        "name": "forward_witness_1b5321dec05d0d89"
+      }
+    ],
+    "resolved": [
+      {
+        "source_index": 0,
+        "name": "machine_x13"
+      },
+      {
+        "source_index": 1,
+        "name": "machine_x15"
+      },
+      {
+        "source_index": 3,
+        "name": "machine_x11"
+      }
+    ]
+  }
+}

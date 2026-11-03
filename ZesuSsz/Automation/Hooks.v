@@ -1,6 +1,20 @@
 Require Import ZesuSsz.Automation.EntryIntro.
 Require Import ZesuSsz.Automation.SwitchDispatch.
 Require Import ZesuSsz.Automation.ContextCollection.
+Require Import ZesuSsz.Automation.SourceWitnessInputs.
+Ltac zesu_witness_metadata_type kind :=
+  lazymatch kind with
+  | @SourceWitnessInputs.ZesuSourceWitness _ _ _ => idtac
+  | @EntryWitnessSelector.ZesuEntryWitnessPending _ _ _ _ => idtac
+  end.
+
+Ltac zesu_unlet_preserving_witness_metadata :=
+  repeat match goal with
+  | alias := _ : ?kind |- _ =>
+      tryif zesu_witness_metadata_type kind then fail 0
+      else (unfold alias in *; clear alias)
+  end.
+
 (** Project-wide Lithium hook redefinitions belong in this module. *)
 
 From iris.proofmode Require Import environments.
@@ -2078,12 +2092,19 @@ Ltac zesu_integer_array_address_if_enabled :=
         end))
   end.
 
+Ltac zesu_source_witnesses_if_enabled :=
+  zesu_switch_enabled constr:(ZesuStepSourceWitnesses);
+  first [SourceWitnessInputs.zesu_capture_source_owner |
+         SourceWitnessInputs.zesu_source_mapping_capture_goal |
+         EntryWitnessInputs.zesu_entry_mapping_consume_ready].
+
 Ltac zesu_liAStep :=
  liEnsureInvariant;
  try progress (unfold TRACE_LET);
  try liAIntroduceLetInGoal;
  first [
-    zesu_expose_instruction_lookup
+    zesu_source_witnesses_if_enabled
+  | zesu_expose_instruction_lookup
   | zesu_region_fault_if_enabled
   | zesu_ram_fault_if_enabled
   | zesu_signed_address_if_enabled
@@ -2377,7 +2398,10 @@ Ltac liAAsm ::=
       | Branch _ _ _ => notypeclasses refine (tac_fast_apply (li_wp_branch _ _ _ _) _)
       | ReadMem _ _ _ _ _ _ => notypeclasses refine (tac_fast_apply (li_wp_read_mem _ _ _ _ _ _ _ _) _)
       | WriteMem _ _ _ _ _ _ _ => notypeclasses refine (tac_fast_apply (li_wp_write_mem _ _ _ _ _ _ _ _ _) _)
-      | Smt (DeclareConst _ (Ty_BitVec _)) _ => notypeclasses refine (tac_fast_apply (li_wp_declare_const_bv _ _ _ _) _)
+      | Smt (DeclareConst _ (Ty_BitVec _)) _ =>
+          first [zesu_switch_enabled constr:(ZesuStepSourceWitnesses);
+                 SourceWitnessInputs.zesu_capture_source_declaration |
+                 notypeclasses refine (tac_fast_apply (li_wp_declare_const_bv _ _ _ _) _)]
       | Smt (DeclareConst _ Ty_Bool) _ => notypeclasses refine (tac_fast_apply (li_wp_declare_const_bool _ _ _) _)
       | Smt (DeclareConst _ (Ty_Enum _)) _ => notypeclasses refine (tac_fast_apply (li_wp_declare_const_enum _ _ _ _) _)
       | Smt (DefineConst _ _) _ => notypeclasses refine (tac_fast_apply (li_wp_define_const _ _ _ _) _)

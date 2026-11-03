@@ -1,0 +1,23 @@
+Require Import lithium.base.
+Require Import ZesuSsz.Automation.SourceWitnessInputs.
+Require Import ZesuSsz.Evidence.EntryWitnessInputs.
+Require Import ZesuSsz.Evidence.EntryWitnessSelector.
+Ltac zesu_source_mapping_capture176 key :=
+  EntryWitnessInputs.zesu_witness_resolved key;
+  tryif (match goal with _ : ZesuEntryWitnessPending key _ |- _ => idtac end)
+  then fail 0 "The successor already has a pending source mapping." else idtac;
+  let registration := constr:(_ : ZesuEntrySourceWitnessMapping key _ _) in
+  lazymatch type of registration with
+  | @ZesuEntrySourceWitnessMapping ?Key ?registered ?Input ?Witness =>
+      let requested_head := get_head key in
+      let registered_head := get_head registered in
+      constr_eq requested_head registered_head;
+      let input := constr:(@zesu_source_witness_input Key key Input Witness registration) in
+      let mapping := constr:(@zesu_source_witness_mapping Key key Input Witness registration) in
+      zesu_read_source_input input ltac:(fun values =>
+        let data := constr:(mapping values) in
+        EntryWitnessInputs.zesu_witness_resolved data;
+        let marker := fresh "HentryWitnessPending" in
+        pose (marker := @ZesuEntryWitnessPendingHere Key Witness key data))
+  end.
+

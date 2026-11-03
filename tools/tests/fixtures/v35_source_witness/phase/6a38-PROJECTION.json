@@ -1,0 +1,144 @@
+{
+  "full_type": "(bv 64 * (bv 64 * (bv 64 * (bv 64 * (lvar \"zesuLoopIndex\" Z * (bv 64 * (bv 64 * (bv 64 * (bv 64 * (bv 64 * (bv 64 * (bv 64 * (bv 64 * (bv 64 * unit)%type)%type)%type)%type)%type)%type)%type)%type)%type)%type)%type)%type)%type)%type",
+  "phase_type": "(bv 64 * (lvar \"zesuLoopIndex\" Z * (bv 64 * (bv 64 * (bv 64 * (bv 64 * (bv 64 * (bv 64 * (bv 64 * (bv 64 * (bv 64 * unit)%type)%type)%type)%type)%type)%type)%type)%type)%type)%type)%type",
+  "projection": "(fun full_values : (bv 64 * (bv 64 * (bv 64 * (bv 64 * (lvar \"zesuLoopIndex\" Z * (bv 64 * (bv 64 * (bv 64 * (bv 64 * (bv 64 * (bv 64 * (bv 64 * (bv 64 * (bv 64 * unit)%type)%type)%type)%type)%type)%type)%type)%type)%type)%type)%type)%type)%type)%type => (((fst (snd (snd full_values)))), (((fst (snd (snd (snd (snd full_values)))))), (((fst (snd (snd (snd (snd (snd full_values))))))), (((fst (snd (snd (snd (snd (snd (snd full_values)))))))), (((fst (snd (snd (snd (snd (snd (snd (snd full_values))))))))), (((fst (snd (snd (snd (snd (snd (snd (snd (snd full_values)))))))))), (((fst (snd (snd (snd (snd (snd (snd (snd (snd (snd full_values))))))))))), (((fst (snd (snd (snd (snd (snd (snd (snd (snd (snd (snd full_values)))))))))))), (((fst (snd (snd (snd (snd (snd (snd (snd (snd (snd (snd (snd full_values))))))))))))), (((fst (snd (snd (snd (snd (snd (snd (snd (snd (snd (snd (snd (snd full_values)))))))))))))), (((fst (snd (snd (snd (snd (snd (snd (snd (snd (snd (snd (snd (snd (snd full_values))))))))))))))), tt))))))))))))",
+  "source_indices": [
+    2,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13
+  ],
+  "slots": [
+    {
+      "name": "machine_x16",
+      "type": "bv 64",
+      "vacuous": true
+    },
+    {
+      "name": "i",
+      "type": "lvar \"zesuLoopIndex\" Z",
+      "vacuous": false
+    },
+    {
+      "name": "fp_seed_mstatus_bits",
+      "type": "bv 64",
+      "vacuous": false
+    },
+    {
+      "name": "fp_seed_satp",
+      "type": "bv 64",
+      "vacuous": true
+    },
+    {
+      "name": "fp_seed_zisk_free_input",
+      "type": "bv 64",
+      "vacuous": true
+    },
+    {
+      "name": "forward_witness_83d3e6d46c3de70e",
+      "type": "bv 64",
+      "vacuous": false
+    },
+    {
+      "name": "forward_witness_1d218312837c2f84",
+      "type": "bv 64",
+      "vacuous": false
+    },
+    {
+      "name": "forward_witness_dc636cab9ffb40ae",
+      "type": "bv 64",
+      "vacuous": false
+    },
+    {
+      "name": "forward_witness_184f6fc7524c683f",
+      "type": "bv 64",
+      "vacuous": false
+    },
+    {
+      "name": "forward_witness_8da77898f656116a",
+      "type": "bv 64",
+      "vacuous": false
+    },
+    {
+      "name": "forward_witness_eba071f2aafca867",
+      "type": "bv 64",
+      "vacuous": false
+    }
+  ],
+  "internal_order": [
+    {
+      "name": "forward_witness_eba071f2aafca867",
+      "type": "bv 64",
+      "vacuous": false
+    },
+    {
+      "name": "forward_witness_8da77898f656116a",
+      "type": "bv 64",
+      "vacuous": false
+    },
+    {
+      "name": "forward_witness_184f6fc7524c683f",
+      "type": "bv 64",
+      "vacuous": false
+    },
+    {
+      "name": "forward_witness_dc636cab9ffb40ae",
+      "type": "bv 64",
+      "vacuous": false
+    },
+    {
+      "name": "forward_witness_1d218312837c2f84",
+      "type": "bv 64",
+      "vacuous": false
+    },
+    {
+      "name": "forward_witness_83d3e6d46c3de70e",
+      "type": "bv 64",
+      "vacuous": false
+    },
+    {
+      "name": "fp_seed_zisk_free_input",
+      "type": "bv 64",
+      "vacuous": true
+    },
+    {
+      "name": "fp_seed_satp",
+      "type": "bv 64",
+      "vacuous": true
+    },
+    {
+      "name": "fp_seed_mstatus_bits",
+      "type": "bv 64",
+      "vacuous": false
+    },
+    {
+      "name": "i",
+      "type": "lvar \"zesuLoopIndex\" Z",
+      "vacuous": false
+    },
+    {
+      "name": "machine_x16",
+      "type": "bv 64",
+      "vacuous": true
+    }
+  ],
+  "full_metadata": {
+    "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/phase157/6a38-FULL-METADATA.json",
+    "sha256": "d41b5890bc07083e377e23056a56e59fb31bee610c0292832ea59537666ac02f",
+    "pointer": "/full"
+  },
+  "phase_metadata": {
+    "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/phase157/6a38-PHASE.json",
+    "sha256": "897efe863db9170ffd11eae464a49b5a6711897f3542ed37a37ac6872519355e",
+    "pointer": "/phase"
+  },
+  "proof_scripts_emitted": false,
+  "values_inferred_from_types": false
+}

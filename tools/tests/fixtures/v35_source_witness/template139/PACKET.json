@@ -1,0 +1,643 @@
+{
+  "schema": "zesu.witness-declaration-template.v1",
+  "status": "DECLARATION_TEMPLATE_AND_BOUND_EXAMPLES",
+  "scope": "Render declarations and metadata only. Do not render proof scripts. This packet does not change caller statements or release new natives.",
+  "templates": [
+    {
+      "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/declaration-template139/PROFILE-TEMPLATE.vpart",
+      "sha256": "2cf768369f969eb800460d710dad1a34130c83c9081d79a0f112c57014bdba08"
+    },
+    {
+      "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/declaration-template139/WITNESS-MAPPING-TEMPLATE.vpart",
+      "sha256": "f851e98dfe38d39ab93218f52d6fff7c31e3feae6710bbb236f1a6ed699dc87c"
+    },
+    {
+      "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/declaration-template139/SOURCE-MAPPING-TEMPLATE.vpart",
+      "sha256": "388b2b8179a8a0b1b07867013cac680416f2dcaefa1b6b474415e2b5643a142b"
+    }
+  ],
+  "required_template_fields": {
+    "entry_application": "Exact registered entry application. Preserve every parameter, proof parameter, and K.",
+    "ordinary_witness_type": "Existing right-associated ordinary product ending in unit. Preserve aliases and serialization.",
+    "typed_parameters": "Exact Iris contexts and complete typed parameter telescope in declaration order.",
+    "declaration_sha256": "SHA256 of the exact declaration-source UTF8 string passed to the emitter. Both records use the same nonempty value.",
+    "mapping_fragment_sha256": "SHA256 of the exact unchanged emitted mapping fragment before profile records. The canonical emitter determines this fragment.",
+    "source_slot_spine": "ZesuWitnessProfileSlot name type remaining, ending in ZesuWitnessProfileEnd. Obtain names/types/order from the authenticated target declaration and optional bound phase metadata.",
+    "data_slot_spine": "Same constructor spine. Obtain names/types/order independently from the authenticated emitted mapping slots. Do not copy names from the target to invent a data profile.",
+    "phase_metadata": "Optional exact record {path,sha256,pointer}. The JSON pointer selects the authenticated remaining declaration-order names. Preserve the source order.",
+    "mapping_application": "Existing data function with its exact parameters. The registration selects values and proves no property.",
+    "input_type": "Exact ordinary type of the existing input descriptor.",
+    "owned_input_descriptor": "Existing ZesuWitnessUnit/Register/Pair descriptor for actual owned register values.",
+    "source_input_descriptor": "Existing ZesuSourceUnit/Register/Value/Pair descriptor. SourceValue carries its exact type and authenticated source_key.",
+    "complete_source_owner_plan": "One SourceOwnerSlot per source existential in original order. Use None for unselected slots. Preserve every slot and owner.",
+    "source_application": "Exact owned source assertion application. It must differ from the target declaration.",
+    "source_typed_parameters": "Exact typed telescope of the source assertion.",
+    "pc,variable,width,source_key": "Authenticated instruction PC, numeric declaration variable, bitvector width, and derived source identity. Do not select equal-typed locals by order.",
+    "name": "Unique Rocq registration identifier.",
+    "number": "Declaration index assigned by the canonical source emitter.",
+    "pc": "Authenticated closed instruction PC. Preserve its actual source location.",
+    "variable": "Numeric declaration variable from the authenticated trace origin.",
+    "width": "Bitvector width from that same source declaration.",
+    "source_key": "Derived identity from the authenticated source binding. Preserve it exactly."
+  },
+  "canonical_apis": [
+    {
+      "provider": {
+        "path": "/home/cody/zesislar/.worktrees/b1-source-witness423/tools/block/witness_data.py",
+        "sha256": "e204a14e05bfc161732d86ff17e0fee164326bd6c265030f17ff595123514ce4"
+      },
+      "function": "witness_profile_metadata",
+      "signature": "witness_profile_metadata(source, target, slots, *, name, typed, entry, witness_type, mapping_fragment, locality=\"export\", phase_metadata=None)",
+      "arguments": {
+        "source": "Exact target declaration source string.",
+        "target": "Target definition name.",
+        "slots": "Authenticated emitted slot records, each with name and type.",
+        "name": "Registration identifier.",
+        "typed": "Complete typed parameter text.",
+        "entry": "Exact entry application.",
+        "witness_type": "Existing ordinary product or its unchanged alias.",
+        "mapping_fragment": "Exact data/mapping fragment before profile records.",
+        "locality": "local, global, or export. Preserve the existing registration policy.",
+        "phase_metadata": "Optional bound remaining-slot metadata."
+      }
+    },
+    {
+      "provider": {
+        "path": "/home/cody/zesislar/.worktrees/b1-source-witness423/tools/block/render_support.py",
+        "sha256": "4a41371848f09fbafce268cd2c49805ba2e4e6628890578a62170bb6998be033"
+      },
+      "function": "witness_mapping_source",
+      "signature": "witness_mapping_source(value, fields, root, loaded)",
+      "behavior": "The canonical ordinary mapping emitter appends both profiles for generated data. Its module header must directly import EntryWitnessProfile."
+    },
+    {
+      "provider": {
+        "path": "/home/cody/zesislar/.worktrees/b1-source-witness423/tools/block/source_witness_bindings.py",
+        "sha256": "99bc0fc9931f024fc3d331738b7790573553af48772abaac4752eb098da5bb48"
+      },
+      "function": "render_source_mapping",
+      "signature": "render_source_mapping(plan, *, name, target_application, source_application, parameters, source_parameters, module_header=None)",
+      "behavior": "The canonical authenticated-source emitter appends both profiles and adds the direct EntryWitnessProfile import beside SourceWitnessInputs."
+    }
+  ],
+  "source_plan_context": {
+    "required": [
+      "report",
+      "pointer",
+      "owner_sha256",
+      "source_declaration",
+      "target_declaration"
+    ],
+    "optional": [
+      "trace_index",
+      "trace_pointer",
+      "target_key_declaration"
+    ],
+    "bound_file": "{path,sha256}",
+    "bound_declaration": "{path,sha256,declaration}",
+    "slot_binding": "{kind,pointer}; kind is existential, source_existential, or trace_local",
+    "schema": "source.join-witness-plan.v2",
+    "ordered_fields": [
+      "ordered_binders",
+      "ordered_witnesses"
+    ],
+    "ordered_witness_fields": [
+      "binder",
+      "type",
+      "source_key"
+    ],
+    "source_identity_rule": "Use authenticate_sources and derive_source_plan. Preserve the report row, owned tree scope, source declaration slot, or trace origin. Target-only provenance is invalid."
+  },
+  "runtime_modules": [
+    {
+      "module": "ZesuSsz.Automation.EntryWitnessProfile",
+      "source": {
+        "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/owned125/artifacts/default/ZesuSsz/Automation/EntryWitnessProfile.v",
+        "sha256": "b4efd820f7abe06a7794ab6aaf456daafdc5dd7aaed9d57b440cc0596b861705"
+      },
+      "object": {
+        "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/owned125/artifacts/default/ZesuSsz/Automation/EntryWitnessProfile.vo",
+        "sha256": "1e0c191832519b19ff8de0a091bb2be1f423e2e4bf184cf9a7d428714a751d5c"
+      }
+    },
+    {
+      "module": "ZesuSsz.Automation.EntryWitnessReadiness",
+      "source": {
+        "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/owned125/artifacts/default/ZesuSsz/Automation/EntryWitnessReadiness.v",
+        "sha256": "29eb44bb3af3f35f4096d0e9f7280ac7f8ab128ad8eed473965da3b4606953f7"
+      },
+      "object": {
+        "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/owned125/artifacts/default/ZesuSsz/Automation/EntryWitnessReadiness.vo",
+        "sha256": "65e626d85aeeac4f7bf2e249d02d7dea0d3b48ee1dff22a36e5fc1ecff7c0be4"
+      }
+    },
+    {
+      "module": "ZesuSsz.Automation.SourceWitnessInputs",
+      "source": {
+        "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/owned125/artifacts/default/ZesuSsz/Automation/SourceWitnessInputs.v",
+        "sha256": "aaf7eed4f49194afc2da2f24d37af27bc80db4d7f64f0dea5dd3ecf810ec3aeb"
+      },
+      "object": {
+        "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/owned125/artifacts/default/ZesuSsz/Automation/SourceWitnessInputs.vo",
+        "sha256": "ff194bbbba8d87d7f6f20ed0897db2be04700c5e3a4784b55b0eb0008b5e42b6"
+      }
+    },
+    {
+      "module": "ZesuSsz.Evidence.EntryWitnessInputs",
+      "source": {
+        "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/owned125/artifacts/default/ZesuSsz/Evidence/EntryWitnessInputs.v",
+        "sha256": "635e7340afb04cbaccb61f1b6b81754da5d96b2fe29a09b82336e187dde479ef"
+      },
+      "object": {
+        "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/owned125/artifacts/default/ZesuSsz/Evidence/EntryWitnessInputs.vo",
+        "sha256": "ba2619c9e3dc518ffb6206ce3b7915bb3867ba3d4c016c48a5971258df1392fb"
+      }
+    },
+    {
+      "module": "ZesuSsz.Evidence.EntryWitnessSelector",
+      "source": {
+        "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/owned125/artifacts/default/ZesuSsz/Evidence/EntryWitnessSelector.v",
+        "sha256": "4e73830d62d26df4634da69b9bab94feef6f123d51759384fb91ca32ef85cfb9"
+      },
+      "object": {
+        "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/owned125/artifacts/default/ZesuSsz/Evidence/EntryWitnessSelector.vo",
+        "sha256": "f0f487879584fcfadf00781e008a550293d59ca311edda89e473f63f8b287b17"
+      }
+    }
+  ],
+  "genuine_closure": {
+    "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/FINAL125-GENUINE-RESULT.json",
+    "sha256": "545dccf6ace540472fc886e21762e06c8f638dc17d2c0fea91975ef8e209f722"
+  },
+  "corrected_owner_source_sha256": "aaf7eed4f49194afc2da2f24d37af27bc80db4d7f64f0dea5dd3ecf810ec3aeb",
+  "accepted_evidence": {
+    "reader124": {
+      "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/READER124-RESULT.json",
+      "sha256": "06d64c334d38356658fa2b061a36dd0dc7df692cc803aeaa81978a4e0e4da227"
+    },
+    "declare123": {
+      "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/DECLARE123-RESULT.json",
+      "sha256": "8cc4ec50e3d178068aa59c3ef3d34a03dc3248680bd666543984d6c22b3e6f4a"
+    },
+    "profile_5_7_metadata": {
+      "path": "/home/cody/zesislar/_build/agents/worker-build-1/pilot-v33-eight305/readiness-metadata137/RESULT.json",
+      "sha256": "ae3dd3d4944fc595c53f98e7923879ec4b42cd2f3c8a1f1a601ff194e24a80d3"
+    },
+    "profile_15_module_m_controls": {
+      "path": "/home/cody/zesislar/_build/agents/worker-build-1/pilot-v33-eight305/readiness-verify151/SEALED-RESULT.json",
+      "sha256": "3dd4a7e2421a17118e5a370e8d800861dd725d9f5fe485ac5a9ad3710faa6348"
+    },
+    "final_body_10_module_m_controls": {
+      "path": "/home/cody/zesislar/_build/agents/worker-build-1/pilot-v33-eight305/readiness-phase-verify204/RESULT.json",
+      "sha256": "f26f376581188c5724f143ee2e7f04e24578b6110135f5542001ac93ecf19f75"
+    }
+  },
+  "five_seven_slot_examples": [
+    {
+      "block": "800d6a14",
+      "target_declaration": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-1/pilot-v33-eight305/next-dependencies097/800d6a14/owned/artifacts/default/ZesuSsz/Generated/DecodeItem/MachineExit6a24Entries322.v",
+        "sha256": "12096fb79c2dafdc49e61efede9995b55b0d1e5a64ba0d7fdd4bf80f7fbdb88e"
+      },
+      "original_emitted_slot_metadata": {
+        "path": "/home/cody/zesislar/_build/agents/spec-b/entry-witness-data329/ENTRY-DATA002.json",
+        "sha256": "16f04378c5989b4074ec4b47d1ee4240caff9ad0680dce1afee406793664b0bf"
+      },
+      "metadata_pointer": {
+        "path": "/home/cody/zesislar/_build/agents/spec-b/entry-witness-data329/ENTRY-DATA002.json",
+        "sha256": "16f04378c5989b4074ec4b47d1ee4240caff9ad0680dce1afee406793664b0bf",
+        "pointer": "/registration_request/required_remaining_declaration_order"
+      },
+      "unchanged_mapping": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-1/pilot-v33-eight305/next-dependencies097/800d6a14/owned/artifacts/default/ZesuSsz/Generated/DecodeItem/Entry6a24WitnessRegistration.v",
+        "sha256": "5de40e90e379e94c81c03bf67ef6fb82c05673c4a1289115f6d4d69202a773a1"
+      },
+      "unchanged_data": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-1/pilot-v33-eight305/next-dependencies097/800d6a14/owned/artifacts/default/ZesuSsz/Generated/DecodeItem/EntryWitnessData329.v",
+        "sha256": "283baae1450435ddffcf1e16b4782085f03b30025c6a289c12a9e83812ea8bad"
+      },
+      "source_slots": [
+        {
+          "name": "n",
+          "type": "lvar \"zesuLoopCount\" Z"
+        },
+        {
+          "name": "i",
+          "type": "lvar \"zesuLoopIndex\" Z"
+        },
+        {
+          "name": "payloadStart",
+          "type": "Z"
+        },
+        {
+          "name": "lengthBytes",
+          "type": "list ( bv 8 % N )"
+        },
+        {
+          "name": "loaded",
+          "type": "bv 64 % N"
+        }
+      ],
+      "data_slots": [
+        {
+          "name": "n",
+          "type": "lvar \"zesuLoopCount\" Z"
+        },
+        {
+          "name": "i",
+          "type": "lvar \"zesuLoopIndex\" Z"
+        },
+        {
+          "name": "payloadStart",
+          "type": "Z"
+        },
+        {
+          "name": "lengthBytes",
+          "type": "list (bv 8%N)"
+        },
+        {
+          "name": "loaded",
+          "type": "bv 64%N"
+        }
+      ],
+      "declaration_sha256": "12096fb79c2dafdc49e61efede9995b55b0d1e5a64ba0d7fdd4bf80f7fbdb88e",
+      "mapping_fragment_sha256": "5de40e90e379e94c81c03bf67ef6fb82c05673c4a1289115f6d4d69202a773a1",
+      "exact_profile_example": {
+        "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/declaration-template139/Entry6a24WitnessRegistrationMetadata137.v",
+        "sha256": "842970049eff60cc629ee8e918ffb8089dc103f84032f8df6ef641b150facc81"
+      }
+    },
+    {
+      "block": "800d6ab4",
+      "target_declaration": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-1/pilot-v33-eight305/next-dependencies097/800d6ab4/owned/artifacts/default/ZesuSsz/Generated/DecodeItem/MachinePilot180Fallthrough6ac4Projection.v",
+        "sha256": "e5e3a4cb48c4f31c7aa51fe234e659a433ad1eb88df7c54b7756264d7c8d5574"
+      },
+      "original_emitted_slot_metadata": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-1/entry-witness-data184/ENTRY-DATA002.json",
+        "sha256": "0796cbe3cfc0bea34471ad627682b9670a597f821b2f0213269272a1e72f9072"
+      },
+      "metadata_pointer": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-1/entry-witness-data184/ENTRY-DATA002.json",
+        "sha256": "0796cbe3cfc0bea34471ad627682b9670a597f821b2f0213269272a1e72f9072",
+        "pointer": "/registration_request/required_remaining_declaration_order"
+      },
+      "unchanged_mapping": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-1/pilot-v33-eight305/next-dependencies097/800d6ab4/owned/artifacts/default/ZesuSsz/Generated/DecodeItem/Entry6ac4WitnessRegistration.v",
+        "sha256": "4b64491db4943264e3dc283c87a42287f110cbb9bd59029e2881164f78887191"
+      },
+      "unchanged_data": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-1/pilot-v33-eight305/next-dependencies097/800d6ab4/owned/artifacts/default/ZesuSsz/Generated/DecodeItem/EntryWitnessData184.v",
+        "sha256": "afc98a64fd5f5f06fdc5dc842096c1ed667934a54a4742e3b7c95fb9186b33f2"
+      },
+      "source_slots": [
+        {
+          "name": "prefix",
+          "type": "bv 8 % N"
+        },
+        {
+          "name": "rest",
+          "type": "list ( bv 8 % N )"
+        },
+        {
+          "name": "n",
+          "type": "lvar \"zesuLoopCount\" Z"
+        },
+        {
+          "name": "i",
+          "type": "lvar \"zesuLoopIndex\" Z"
+        },
+        {
+          "name": "payloadStart",
+          "type": "Z"
+        },
+        {
+          "name": "lengthBytes",
+          "type": "list ( bv 8 % N )"
+        },
+        {
+          "name": "loaded",
+          "type": "bv 64 % N"
+        }
+      ],
+      "data_slots": [
+        {
+          "name": "prefix",
+          "type": "bv 8%N"
+        },
+        {
+          "name": "rest",
+          "type": "list (bv 8%N)"
+        },
+        {
+          "name": "n",
+          "type": "lvar \"zesuLoopCount\" Z"
+        },
+        {
+          "name": "i",
+          "type": "lvar \"zesuLoopIndex\" Z"
+        },
+        {
+          "name": "payloadStart",
+          "type": "Z"
+        },
+        {
+          "name": "lengthBytes",
+          "type": "list (bv 8%N)"
+        },
+        {
+          "name": "loaded",
+          "type": "bv 64%N"
+        }
+      ],
+      "declaration_sha256": "e5e3a4cb48c4f31c7aa51fe234e659a433ad1eb88df7c54b7756264d7c8d5574",
+      "mapping_fragment_sha256": "4b64491db4943264e3dc283c87a42287f110cbb9bd59029e2881164f78887191",
+      "exact_profile_example": {
+        "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/declaration-template139/Entry6ac4WitnessRegistrationMetadata137.v",
+        "sha256": "ac38bb3eddb955be6d624917d3d1f69894d5a8695cc91cb010f496a558d0a101"
+      }
+    }
+  ],
+  "eleven_slot_source_examples": [
+    {
+      "source": "6a38",
+      "successor": "6a40",
+      "source_plan": {
+        "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/emission055/6a38-PLAN.json",
+        "sha256": "da597a88448743454d263162f6bd5bb3e67b2b900275272a2132b077706f6afc"
+      },
+      "exact_mapping_example": {
+        "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/declaration-template139/SourceMapping6a38.v",
+        "sha256": "9b91725e1ffd8e5e8c0803227ed27a76096022b93724aa63fa17a36da998b72b"
+      },
+      "canonical_compiled_source": {
+        "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/owned125/artifacts/default/ZesuSsz/Generated/DecodeItem/FP417/SourceMapping6a38.v",
+        "sha256": "9b91725e1ffd8e5e8c0803227ed27a76096022b93724aa63fa17a36da998b72b"
+      },
+      "profile_binding": {
+        "declaration": {
+          "path": "/home/cody/zesislar/_build/agents/spec-b/exact-entry-dedup421/owned004/artifacts/default/ZesuSsz/Generated/DecodeItem/FP417/Pilot6a40Entries.v",
+          "sha256": "1c1ae06b00847a8ff1914132dce8ccfd582b597b7ec4c42106c861351f77ba31",
+          "declaration": "fp_machineAt6a40_ForwardA0N0"
+        },
+        "key_declaration": {
+          "path": "/home/cody/zesislar/_build/agents/spec-b/exact-entry-dedup421/owned004/artifacts/default/ZesuSsz/Generated/DecodeItem/FP417/Pilot6a40Entries.v",
+          "sha256": "1c1ae06b00847a8ff1914132dce8ccfd582b597b7ec4c42106c861351f77ba31",
+          "declaration": "fp_machineAt6a40"
+        },
+        "mapping_fragment_sha256": "c692a622a539b1e3317df068965e20e610e295ef3a480ed52643ce98501e839e",
+        "source_slots": [
+          {
+            "name": "machine_x13",
+            "type": "bv 64"
+          },
+          {
+            "name": "machine_x15",
+            "type": "bv 64"
+          },
+          {
+            "name": "machine_x11",
+            "type": "bv 64"
+          },
+          {
+            "name": "i",
+            "type": "lvar \"zesuLoopIndex\" Z"
+          },
+          {
+            "name": "fp_seed_mstatus_bits",
+            "type": "bv 64"
+          },
+          {
+            "name": "forward_witness_83d3e6d46c3de70e",
+            "type": "bv 64"
+          },
+          {
+            "name": "forward_witness_1d218312837c2f84",
+            "type": "bv 64"
+          },
+          {
+            "name": "forward_witness_dc636cab9ffb40ae",
+            "type": "bv 64"
+          },
+          {
+            "name": "forward_witness_184f6fc7524c683f",
+            "type": "bv 64"
+          },
+          {
+            "name": "forward_witness_8da77898f656116a",
+            "type": "bv 64"
+          },
+          {
+            "name": "forward_witness_eba071f2aafca867",
+            "type": "bv 64"
+          }
+        ],
+        "data_slots": [
+          {
+            "name": "machine_x13",
+            "type": "bv 64"
+          },
+          {
+            "name": "machine_x15",
+            "type": "bv 64"
+          },
+          {
+            "name": "machine_x11",
+            "type": "bv 64"
+          },
+          {
+            "name": "i",
+            "type": "lvar \"zesuLoopIndex\" Z"
+          },
+          {
+            "name": "fp_seed_mstatus_bits",
+            "type": "bv 64"
+          },
+          {
+            "name": "forward_witness_83d3e6d46c3de70e",
+            "type": "bv 64"
+          },
+          {
+            "name": "forward_witness_1d218312837c2f84",
+            "type": "bv 64"
+          },
+          {
+            "name": "forward_witness_dc636cab9ffb40ae",
+            "type": "bv 64"
+          },
+          {
+            "name": "forward_witness_184f6fc7524c683f",
+            "type": "bv 64"
+          },
+          {
+            "name": "forward_witness_8da77898f656116a",
+            "type": "bv 64"
+          },
+          {
+            "name": "forward_witness_eba071f2aafca867",
+            "type": "bv 64"
+          }
+        ],
+        "names_from_authenticated_source": true,
+        "runtime_names_recovered": false
+      },
+      "witness_count": 11
+    },
+    {
+      "source": "6ad8",
+      "successor": "6b08",
+      "source_plan": {
+        "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/emission055/6ad8-PLAN.json",
+        "sha256": "ebae0d7f2bbd6304e2e965ffb44ddb69791e2f20c82a9bc08ed34d3f655fd408"
+      },
+      "exact_mapping_example": {
+        "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/declaration-template139/SourceMapping6ad8.v",
+        "sha256": "268b3e277ca0cabc519c6cb99eaf3eb3f9ba833a6f0f5248ddafeb24d5488206"
+      },
+      "canonical_compiled_source": {
+        "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/owned125/artifacts/default/ZesuSsz/Generated/DecodeItem/FP417/SourceMapping6ad8.v",
+        "sha256": "268b3e277ca0cabc519c6cb99eaf3eb3f9ba833a6f0f5248ddafeb24d5488206"
+      },
+      "profile_binding": {
+        "declaration": {
+          "path": "/home/cody/zesislar/_build/agents/spec-b/exact-entry-dedup421/owned004/artifacts/default/ZesuSsz/Generated/DecodeItem/FP417/Pilot6b08Entries.v",
+          "sha256": "d1397865136230469339790f6319f1eb7b024034fc349e6835ba9d13dc241559",
+          "declaration": "fp_machineAt6b08_ForwardA0N0"
+        },
+        "key_declaration": {
+          "path": "/home/cody/zesislar/_build/agents/spec-b/exact-entry-dedup421/owned004/artifacts/default/ZesuSsz/Generated/DecodeItem/FP417/Pilot6b08Entries.v",
+          "sha256": "d1397865136230469339790f6319f1eb7b024034fc349e6835ba9d13dc241559",
+          "declaration": "fp_machineAt6b08"
+        },
+        "mapping_fragment_sha256": "69dd7fcc754ee36e0144e2ea044b16dc05a26d178f5da6e2557620b837b48dc0",
+        "source_slots": [
+          {
+            "name": "machine_x13",
+            "type": "bv 64"
+          },
+          {
+            "name": "machine_x15",
+            "type": "bv 64"
+          },
+          {
+            "name": "machine_x11",
+            "type": "bv 64"
+          },
+          {
+            "name": "i",
+            "type": "lvar \"zesuLoopIndex\" Z"
+          },
+          {
+            "name": "fp_seed_mstatus_bits",
+            "type": "bv 64"
+          },
+          {
+            "name": "forward_witness_dc636cab9ffb40ae",
+            "type": "bv 64"
+          },
+          {
+            "name": "forward_witness_184f6fc7524c683f",
+            "type": "bv 64"
+          },
+          {
+            "name": "forward_witness_8da77898f656116a",
+            "type": "bv 64"
+          },
+          {
+            "name": "forward_witness_eba071f2aafca867",
+            "type": "bv 64"
+          },
+          {
+            "name": "forward_witness_6b5c9f21ea2547d9",
+            "type": "bv 64"
+          },
+          {
+            "name": "forward_witness_1b5321dec05d0d89",
+            "type": "bv 64"
+          }
+        ],
+        "data_slots": [
+          {
+            "name": "machine_x13",
+            "type": "bv 64"
+          },
+          {
+            "name": "machine_x15",
+            "type": "bv 64"
+          },
+          {
+            "name": "machine_x11",
+            "type": "bv 64"
+          },
+          {
+            "name": "i",
+            "type": "lvar \"zesuLoopIndex\" Z"
+          },
+          {
+            "name": "fp_seed_mstatus_bits",
+            "type": "bv 64"
+          },
+          {
+            "name": "forward_witness_dc636cab9ffb40ae",
+            "type": "bv 64"
+          },
+          {
+            "name": "forward_witness_184f6fc7524c683f",
+            "type": "bv 64"
+          },
+          {
+            "name": "forward_witness_8da77898f656116a",
+            "type": "bv 64"
+          },
+          {
+            "name": "forward_witness_eba071f2aafca867",
+            "type": "bv 64"
+          },
+          {
+            "name": "forward_witness_6b5c9f21ea2547d9",
+            "type": "bv 64"
+          },
+          {
+            "name": "forward_witness_1b5321dec05d0d89",
+            "type": "bv 64"
+          }
+        ],
+        "names_from_authenticated_source": true,
+        "runtime_names_recovered": false
+      },
+      "witness_count": 11
+    }
+  ],
+  "invariants": [
+    "Names come from authenticated source and emission metadata. Runtime li_prod types do not retain names.",
+    "Source/data slots use declaration order. The existing selector reverses data exactly once. The guard reverses only its metadata view.",
+    "Keep the ordinary product, mapping values, selector, resources, and K unchanged.",
+    "The runtime checks metadata equality, runtime types, and the true pure/frame phase. A leading pure register equality alone is insufficient.",
+    "Reject swapped same-type names, changed types, missing hashes, extra reversals, reordered phase metadata, dependent frames, and symbolic bodies.",
+    "Do not emit a data profile without its authenticated mapping slots and exact mapping fragment. Report the missing binding.",
+    "Compile generated companions against their compatible bank. Historical example objects are not authorized substitutes."
+  ],
+  "active_callers": {
+    "preserve": [
+      "caller138-6a38",
+      "caller138-6ad8"
+    ],
+    "native_searches_repeated": false
+  },
+  "source_plan_required_fields": [
+    "schema",
+    "ordered_binders",
+    "ordered_witnesses",
+    "source_context",
+    "source_bindings"
+  ],
+  "source_plan_preserve_returned_fields": [
+    "input",
+    "data",
+    "input_family"
+  ],
+  "usage": {
+    "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/declaration-template139/USAGE.md",
+    "sha256": "b28d25895e0a6ba9e9f114787b3b1cc0c8521cadc9958fc646ad7811217d9eb2"
+  }
+}

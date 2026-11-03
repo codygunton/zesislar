@@ -1,0 +1,132 @@
+{
+  "status": "EXACT_PHASE_READINESS_PASSED",
+  "projection_result": {
+    "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/PHASE166-RESULT.json",
+    "sha256": "c34c3cf3f56036903108785bafd4d9c09c17ef6214d0412035cbd1f64ffc69e3"
+  },
+  "exact_export": {
+    "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/phase168-exact/complete-goals/state_3.json",
+    "sha256": "dd2ebdb1822744e2ba49b3c54c4c578b2c0d9b929cdcebf4923f56eaf9612dba"
+  },
+  "context_entries": 103,
+  "ordinary_groups": {
+    "goals": 1,
+    "stack": 0,
+    "shelf": 0,
+    "given_up": 0
+  },
+  "kernel_groups": {
+    "given_up": 0,
+    "goals": 1,
+    "shelf": 0,
+    "stack": 0
+  },
+  "guard_unchanged": true,
+  "lifecycle": {
+    "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/phase168-exact",
+    "registry": {
+      "id": "stock-batch-1793710092173555011-3720484",
+      "kind": "stock-batch",
+      "owner": "cody",
+      "scheduler": {
+        "pid": 3720484,
+        "startticks": 42525454,
+        "ppid": 2073,
+        "state": "R"
+      },
+      "jobs": [],
+      "claims": {},
+      "command": [
+        "/home/cody/zesislar/.worktrees/spec-b-tools-c25dfe0d/tools/resource_guard.sh",
+        "batch",
+        "spec-b-phase168-exact",
+        "--",
+        "/home/cody/zesislar/.worktrees/spec-b-tools-c25dfe0d/tools/resource_guard.sh",
+        "scope",
+        "spec-b-phase168-exact",
+        "--",
+        "/home/cody/.local/share/uv/tools/rocq-mcp/bin/python",
+        "-B",
+        "/home/cody/zesislar/_build/agents/spec-b/source-witness423/phase168-exact/session.py",
+        "--subject",
+        "/home/cody/zesislar/_build/agents/spec-b/source-witness423/phase168-exact/Subject.v",
+        "--workspace",
+        "/home/cody/zesislar/_build/agents/spec-b/source-witness423/owned125",
+        "--baseline-body",
+        "",
+        "--theorem",
+        "captured_return141"
+      ],
+      "registered_ns": 1793710092990491098,
+      "status": "completed",
+      "exit_code": 0,
+      "closed_ns": 1793710151424166022,
+      "all_actors_closed": true
+    },
+    "aggregate_absent": true,
+    "responses": [
+      {
+        "tool": "rocq_health",
+        "response": {
+          "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/phase168-exact/responses/0000.json",
+          "sha256": "f16a24d6daaa0efea0b391772947a2df1e6f79cb52fb6023aee91a0068d9d292"
+        }
+      },
+      {
+        "tool": "rocq_start",
+        "response": {
+          "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/phase168-exact/responses/0001.json",
+          "sha256": "f16ead86ebc535b0ac1b155ec635aa9f8744b0d1fbbfc5dfb5e2d3ea45c9df34"
+        }
+      },
+      {
+        "tool": "rocq_check",
+        "response": {
+          "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/phase168-exact/responses/0002.json",
+          "sha256": "2efd167bc9cb7b10705fe50a85f14c6599eff1fc717e879b7551bf3d9bedf62c"
+        }
+      },
+      {
+        "tool": "rocq_complete_goals",
+        "response": {
+          "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/phase168-exact/responses/0003.json",
+          "sha256": "882c74809900fa8d27258e076689893950bd998978fb75cb84ee6d2ba2d16dfc"
+        }
+      },
+      {
+        "tool": "rocq_check",
+        "response": {
+          "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/phase168-exact/responses/0004.json",
+          "sha256": "6fa94c09321073248aa2578e38abaebb1247aebffd27be605bca26cbfcbbe4a2"
+        }
+      },
+      {
+        "tool": "rocq_complete_goals",
+        "response": {
+          "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/phase168-exact/responses/0005.json",
+          "sha256": "63a0a5c98610a9044bf9dd6be333b23d98db8abe0803ec5f064dd9f68c29ed71"
+        }
+      },
+      {
+        "tool": "rocq_health",
+        "response": {
+          "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/phase168-exact/responses/0006.json",
+          "sha256": "b99988e7ac852be0e48db02d40394325039f293a2b3372bfe4f052d4218065b0"
+        }
+      },
+      {
+        "tool": "rocq_health",
+        "response": {
+          "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/phase168-exact/responses/0007.json",
+          "sha256": "b99988e7ac852be0e48db02d40394325039f293a2b3372bfe4f052d4218065b0"
+        }
+      }
+    ],
+    "final_accounting": {
+      "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/phase168-exact/FINAL-ACCOUNTING.json",
+      "sha256": "6fb64219ed04e490328363b281a84e74f34351d5e0083beb58aeb7cb9c254803"
+    }
+  },
+  "proof_closed": false,
+  "caller_acceptance": false
+}
