@@ -1,5 +1,7 @@
 """Nonproof tests for verified reservation credit and both admission limits."""
 import copy
+import io
+from contextlib import redirect_stderr
 import json
 import os
 from pathlib import Path
@@ -96,6 +98,73 @@ class ArithmeticTests(unittest.TestCase):
         with self.assertRaises(ValueError):self.evaluate({'x':2},0,1,observations={'x':self.sample(live=-1)})
 
 
+class LiveAdmissionTests(unittest.TestCase):
+    def decide(self, request=8 * M.GIB, live=None, age=0, maximum=M.SLICE_MAX_BYTES,
+               sample_maximum=None, available=200 * M.GIB):
+        class Reader:
+            def claim(self, data, key):
+                return {'verified': False}
+            def slice_max(self):
+                return maximum
+            def slice_sample(self):
+                return {'sampled_monotonic_ns': 20_000_000_000 - age,
+                        'live_bytes': maximum // 2 - request if live is None else live,
+                        'slice_max_bytes': maximum if sample_maximum is None else sample_maximum,
+                        'scope': '/owned/slice', 'device': 1, 'inode': 2}
+        self.log = io.StringIO()
+        with patch.object(M.time, 'monotonic_ns', return_value=20_000_000_000), redirect_stderr(self.log):
+            return M.projection({}, {'booked': 200 * M.GIB}, request, available, reader=Reader())
+
+    def test_exact_half_cap_and_eight_gib_boundary_use_live_path(self):
+        result = self.decide()
+        self.assertTrue(result['fits'])
+        self.assertEqual(result['admission_basis'], 'live_memory')
+        self.assertEqual(result['active_claim_bytes'], 200 * M.GIB)
+        self.assertEqual(result['claim_observations']['booked']['verified'], False)
+        self.assertIn('live_bytes=', self.log.getvalue())
+        self.assertIn('request_bytes=8589934592', self.log.getvalue())
+        self.assertIn('booked_bytes=214748364800', self.log.getvalue())
+
+    def test_one_byte_above_half_cap_falls_back_to_booking(self):
+        result = self.decide(live=M.SLICE_MAX_BYTES // 2 - 8 * M.GIB + 1)
+        self.assertFalse(result['fits'])
+        self.assertEqual(result['admission_basis'], 'booking')
+
+    def test_larger_and_zero_requests_keep_booking(self):
+        for request in (0, 8 * M.GIB + 1, 64 * M.GIB):
+            with self.subTest(request=request):
+                result = self.decide(request=request, live=0)
+                self.assertFalse(result['fits'])
+                self.assertEqual(result['admission_basis'], 'booking')
+                self.assertNotIn('live_memory_sample', result)
+
+    def test_ten_second_boundary_is_exact_and_future_samples_refuse(self):
+        self.assertTrue(self.decide(age=10_000_000_000)['fits'])
+        for age in (10_000_000_001, -1):
+            self.assertFalse(self.decide(age=age)['fits'])
+
+    def test_missing_unreadable_or_changed_slice_sample_uses_booking(self):
+        base = M.evaluate({'old': 200 * M.GIB}, M.GIB, 200 * M.GIB,
+                          slice_max_bytes=M.SLICE_MAX_BYTES)
+        for reader in (object(), unittest.mock.Mock(slice_sample=unittest.mock.Mock(side_effect=OSError))):
+            self.assertFalse(M.live_memory_admission(dict(base), reader)['fits'])
+        self.assertFalse(self.decide(sample_maximum=0)['fits'])
+        self.assertFalse(self.decide(sample_maximum=M.SLICE_MAX_BYTES - 1)['fits'])
+        self.assertFalse(self.decide(maximum=0, live=0)['fits'])
+        self.assertFalse(self.decide(live=-1)['fits'])
+
+    def test_memavailable_remains_an_independent_limit(self):
+        self.assertFalse(self.decide(live=0, available=M.GIB)['fits'])
+
+    def test_old_reader_and_booking_success_remain_supported(self):
+        class Reader:
+            def claim(self, data, key): return {'verified': False}
+            def slice_max(self): return M.SLICE_MAX_BYTES
+        result = M.projection({}, {}, M.GIB, 200 * M.GIB, reader=Reader())
+        self.assertTrue(result['fits'])
+        self.assertEqual(result['admission_basis'], 'booking')
+
+
 class ScopeTests(unittest.TestCase):
     def setUp(self):
         self.temp=tempfile.TemporaryDirectory();self.addCleanup(self.temp.cleanup)
@@ -120,6 +189,19 @@ class ScopeTests(unittest.TestCase):
         self.bound=dict(aggregate_path=str(self.group),aggregate_device=info.st_dev,aggregate_inode=info.st_ino,inside_pid=13,inside_startticks=103)
         self.write(self.out/'BATCH-IDENTITY.json',self.bound)
         self.data={'entry_pilot_outside_owners':{self.key:self.owner},'fixed_claims':{self.key:60}}
+
+    def test_slice_sample_reads_exact_owned_parent_and_preserves_fences(self):
+        (self.parent/'memory.current').write_text(str(M.SLICE_MAX_BYTES))
+        (self.parent/'memory.stat').write_text('anon 1234\nfile 999999999\n')
+        sample = self.reader.slice_sample()
+        self.assertEqual(sample['live_bytes'], 1234)
+        self.assertEqual(sample['counter'], 'memory.stat:anon')
+        self.assertEqual(sample['scope'], str(self.parent))
+        self.assertEqual(sample['slice_max_bytes'], M.SLICE_MAX_BYTES)
+        self.assertEqual((self.parent/'memory.max').read_text(), str(M.SLICE_MAX_BYTES))
+        self.assertEqual((self.parent/'memory.swap.max').read_text(), '0')
+        (self.parent/'memory.swap.max').write_text('1')
+        with self.assertRaises(ValueError): self.reader.slice_sample()
 
     def write(self,path,value):path.write_text(json.dumps(value))
 

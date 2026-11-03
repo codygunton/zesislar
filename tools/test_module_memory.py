@@ -413,6 +413,40 @@ class ModuleMemoryTests(unittest.TestCase):
         (proc / "122/task/122/children").write_text("123 124")
         self.assertEqual(memory.reservation_claims([marker], proc=proc)["claims"], [64 * memory.GIB])
 
+    def measured_probe(self, proc, marker):
+        with marker.open('a') as stream:
+            stream.write(f'memory_claim_bytes={8 * memory.GIB}\nmemory_fence_bytes={64 * memory.GIB}\n')
+        return {str(marker): 8 * memory.GIB}
+
+    def test_authorized_measured_pet_probe_keeps_claim_without_coqc(self):
+        proc, marker = self.live_probe()
+        retained = self.measured_probe(proc, marker)
+        (proc/'123/comm').write_text('python\n')
+        with patch.object(memory, 'authorized_shell_booking', return_value=8 * memory.GIB) as authorize:
+            result = memory.reservation_claims([marker], proc=proc, retained_claims=retained)
+        self.assertEqual(result['claims'], [8 * memory.GIB])
+        self.assertEqual(result['unrepresented_compilers'], [])
+        authorize.assert_called_once_with(marker, 8 * memory.GIB)
+        self.assertEqual(result['growth'], [])
+
+    def test_unauthorized_measured_pet_probe_retains_fence(self):
+        proc, marker = self.live_probe()
+        retained = self.measured_probe(proc, marker)
+        (proc/'123/comm').write_text('python\n')
+        with patch.object(memory, 'authorized_shell_booking', return_value=None):
+            result = memory.reservation_claims([marker], proc=proc, retained_claims=retained)
+        self.assertEqual(result['claims'], [64 * memory.GIB])
+
+    def test_authorized_probe_growth_never_reduces_recorded_booking(self):
+        proc, marker = self.live_probe(peak=8 * 1024 ** 2)
+        retained = self.measured_probe(proc, marker)
+        before = marker.read_bytes()
+        with patch.object(memory, 'authorized_shell_booking', return_value=8 * memory.GIB):
+            result = memory.reservation_claims([marker], proc=proc, retained_claims=retained)
+        self.assertEqual(result['claims'], [12 * memory.GIB])
+        self.assertEqual(result['growth'][0]['previous_bytes'], 8 * memory.GIB)
+        self.assertEqual(marker.read_bytes(), before)
+
     def test_probe_conflicting_physical_fence_refuses(self):
         proc, marker = self.live_probe()
         with marker.open("a") as stream:

@@ -46,9 +46,10 @@ if _staged_tools is not None:
     refresh_shell_growth = _module.refresh_shell_growth
     check_test_ledger = _module.check_test_ledger
     read_shell_bookings = _module.read_shell_bookings
+    authorized_shell_booking = _module.authorized_shell_booking
     select_guard_aggregate_limit = _module.select_guard_aggregate_limit
 else:
-    from admission_memory import evaluate, ScopeReader, confirm_shell, release_shell, recover_dead_shell, current_projection, mark_shell, refresh_shell_growth, check_test_ledger, read_shell_bookings, select_guard_aggregate_limit
+    from admission_memory import evaluate, ScopeReader, confirm_shell, release_shell, recover_dead_shell, current_projection, mark_shell, refresh_shell_growth, check_test_ledger, read_shell_bookings, authorized_shell_booking, select_guard_aggregate_limit
 
 GIB = 1024 ** 3
 SCHEMA = "zesu.module-memory.v1"
@@ -272,18 +273,24 @@ def reservation_claims(markers, *, proc=Path("/proc"), fallback_bytes=32 * GIB,
             expected_fence = (64 if probe == "issue10" else 6) * GIB
             if fence != expected_fence or metadata.get("cpu") != "unlimited":
                 raise ValueError("The probe physical policy differs from its marker.")
+            recorded = max(values.get("memory_claim_bytes", 0),
+                           values.get("memory_probe_claim_bytes", 0), retained_claims.get(str(marker), 0))
+            authorized = (authorized_shell_booking(marker, recorded)
+                          if recorded and "memory_fence_bytes" in values else None)
             measured = probe_measurement(marker, metadata, physical, proc)
-            if measured is None:
+            if measured is None and authorized is None:
                 claims.append(fence)
                 continue
-            covered.update(measured["covered"])
+            if measured is not None:
+                covered.update(measured["covered"])
             previous = max(values.get("memory_probe_claim_bytes", 0), retained_claims.get(str(marker), 0))
-            increased = max(fence, previous, measured["claim_bytes"])
+            increased = max(authorized if authorized is not None else fence, previous,
+                            measured["claim_bytes"] if measured is not None else 0)
             if proc == Path('/proc'):
                 scopes[str(len(claims))] = reader.compiler(marker)
             claims.append(increased)
-            if increased > previous:
-                growth.append({"reservation": str(marker), "previous_bytes": previous,
+            if increased > max(authorized or 0, previous):
+                growth.append({"reservation": str(marker), "previous_bytes": max(authorized or 0, previous),
                                "claim_bytes": increased, "probe": True})
             continue
         claim = max(values.get("memory_claim_bytes", fence), retained_claims.get(str(marker), 0))

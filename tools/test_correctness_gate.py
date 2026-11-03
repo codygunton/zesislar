@@ -139,8 +139,11 @@ class GateClaimsTests(unittest.TestCase):
             waits.append(seconds)
             free[0] = 100
 
-        record = reserve(self.policy, self.owner, self.root / "ADMISSION.json",
-                         available=lambda: free[0], pause=pause)
+        # This fixture supplies synthetic booking amounts, not a kernel sample.
+        with patch('block.harness.code.admission_memory.ScopeReader.slice_sample',
+                   side_effect=OSError('This booking fixture has no live slice sample.')):
+            record = reserve(self.policy, self.owner, self.root / "ADMISSION.json",
+                             available=lambda: free[0], pause=pause)
         self.assertEqual(waits, [60])
         self.assertTrue(record["admitted"])
         self.assertEqual(read(self.ledger)["fixed_claims"], {"healthy": 40, "gate-one": 30})
