@@ -99,7 +99,7 @@
       {
         "name": "existing_cast_rewrite",
         "from": "comparison",
-        "body": "rewrite /decodeItemStackBytes Z.sub_eq_add_opp -ZesuSsz.Contracts.IslarisCode.Z_to_bv_add.\nrepeat liStep.",
+        "body": "rewrite /decodeItemStackBytes -Z.add_opp_r -ZesuSsz.Contracts.IslarisCode.Z_to_bv_add.\nrepeat liStep.",
         "required": false,
         "export": true
       }
@@ -112,15 +112,15 @@
     "status": "passed",
     "returncode": 0
   },
-  "transition": "Orch approved exactly the resource021-x2 successor. The seven accepted steps stay exact. Two optional branches test existing bv_simplify and cast rewrites on the same residual. The source, statement, witnesses, stock018 peak, claim, and fence stay exact.",
+  "transition": "Orch approved exactly resource021-x2 SESSION-v3. The seven accepted steps stay exact. Two optional branches test existing bv_simplify and the pinned Z.add_opp_r and IslarisCode.Z_to_bv_add rewrites on the same residual. The source, statement, witnesses, stock018 peak, claim, and fence stay exact. Earlier proposals remain unsubmitted.",
   "origin_label": "completed-control-session-with-residual",
   "native_proof_acceptance": false,
   "comparison_session": {
-    "path": "/home/cody/zesislar/_build/agents/worker-build-2/join-automation-0d2-v1/control-Lithium-resource021-x2/SESSION.json",
-    "sha256": "09b94b0cc657236dd38a03909a483c103ddee568725ff3ae79c44d77e1714b7c"
+    "path": "/home/cody/zesislar/_build/agents/worker-build-2/join-automation-0d2-v1/control-Lithium-resource021-x2/SESSION-v3.json",
+    "sha256": "19b82bd29b81b2018b507c072c3d31e0ea4fabe755a691769a06d156991b23ad"
   },
   "comparison_evidence": {
-    "path": "/home/cody/zesislar/_build/agents/worker-build-2/measured-focused-resource021-x2-v1/SESSION-TRANSITION.json",
-    "sha256": "7e1d27e17a899ce7b48eb5e1a2349a561173584c9e7b29a30bc5f2d9515701a2"
+    "path": "/home/cody/zesislar/_build/agents/worker-build-2/measured-focused-resource021-x2-v2/SESSION-TRANSITION.json",
+    "sha256": "893e0d3ec1f5b22fd32ae77637492fd11bdff7263534409d4c256cc99aa8b96c"
   }
 }
