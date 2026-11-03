@@ -207,8 +207,11 @@ def witness_plan(binders, *, register_bindings):
             'data': nested(witnesses, {'kind': 'unit'})}
 
 
-def validate_edges(plan):
+def validate_edges(plan, *, refutations=()):
     """Reject missing or invalid source certificates without executing Rocq."""
+    if refutations:
+        from join_refutations import validate_refutations
+        validate_refutations(plan, refutations)
     binders = plan['binders']
     if len({binder['name'] for binder in binders}) != len(binders):
         raise ValueError('A join repeats a declaration')
@@ -223,6 +226,14 @@ def validate_edges(plan):
             if actual != normalize(Expr.from_dict(edge['original_values'][key])):
                 raise ValueError('A join edge changes an owned value')
         for relation in plan['relations']:
+            if relation['kind'] == 'source_equality':
+                expression = normalize(Expr.from_dict(relation['expression']))
+                value = normalize(bindings[input_expr(relation['binder'], relation['width'])])
+                if value != expression or expression.op == 'bits':
+                    raise ValueError('A source equality changes an owned edge value')
+                if relation['coq'] != '(' + relation['binder'] + ' = ' + expression.coq() + ')':
+                    raise ValueError('A source equality has a different rendered relation')
+                continue
             if relation['kind'] != 'unsigned_hull':
                 raise ValueError('A join relation has no authorized source validator')
             normal = GuardNormalForm([Expr.from_dict(value) for value in edge['original_conditions']])
@@ -235,12 +246,15 @@ def validate_edges(plan):
     return True
 
 
-def generalize_registers(alternatives, *, register_order, reserved_names=(), dead_registers=()):
+def generalize_registers(alternatives, *, register_order, reserved_names=(), dead_registers=(),
+                         relational_registers=()):
     """Prepare a register-only join core from complete source alternatives."""
     if len(set(register_order)) != len(register_order) or not register_order:
         raise ValueError('A join needs a unique owned register order')
     if any(not REGISTER.fullmatch(register) for register in register_order):
         raise ValueError('A join cannot generalize a system register')
+    if set(relational_registers) - set(register_order) or set(relational_registers) & set(dead_registers):
+        raise ValueError('A relational register must have a live owned value')
     paths, conditions = [], []
     for alternative in alternatives:
         state = alternative['state']
@@ -250,11 +264,20 @@ def generalize_registers(alternatives, *, register_order, reserved_names=(), dea
         paths.append({register: Expr.from_dict(registers[register]) for register in register_order})
         conditions.append([Expr.from_dict(value) for value in state['conditions']])
     unified = anti_unify(paths, names={register: 'machine_' + register for register in register_order},
-                        reserved_names=reserved_names, force_keys=dead_registers)
+                        reserved_names=reserved_names, force_keys=set(dead_registers) | set(relational_registers))
     relations, refusals = [], []
     for binder in unified.binders:
         if binder['value_key'] in dead_registers:
             continue
+        if binder['value_key'] in relational_registers:
+            values = [normalize(path[binder['value_key']]) for path in paths]
+            if not all(value == values[0] for value in values[1:]):
+                raise ValueError('A requested source equality differs across incoming edges')
+            if values[0].op == 'bits':
+                raise ValueError('A source equality cannot fix a successor to a branch literal')
+            relations.append({'kind': 'source_equality', 'binder': binder['name'],
+                              'width': values[0].width, 'expression': values[0].to_dict(),
+                              'coq': '(' + binder['name'] + ' = ' + values[0].coq() + ')'})
         try:
             relation = hull([path[binder['value_key']] for path in paths], conditions, name=binder['name'])
             if relation:
@@ -346,7 +369,8 @@ def _memory_basis(states, plan, original_seed):
 
 
 def generalize_owned_join(alternatives, *, original_seed, entry_pc, vocabulary,
-                          continuation, outer_names=(), liveness=None, observables=None):
+                          continuation, outer_names=(), liveness=None, observables=None,
+                          relational_registers=()):
     """Build a seed when every incoming non-register resource is identical.
 
     This first case needs no memory witness. A differing memory image refuses
@@ -388,7 +412,7 @@ def generalize_owned_join(alternatives, *, original_seed, entry_pc, vocabulary,
         dead = set(register_order) - live
     plan = generalize_registers(alternatives, register_order=register_order,
                                reserved_names=[*outer_names, name, *(b['name'] for b in original_binders)],
-                               dead_registers=dead)
+                               dead_registers=dead, relational_registers=relational_registers)
     if liveness is not None:
         plan['deadness_basis'] = {'liveness': deepcopy(liveness), 'observables': deepcopy(observables)}
     records = []
@@ -487,8 +511,11 @@ def generalize_owned_join(alternatives, *, original_seed, entry_pc, vocabulary,
         plan['common_guard_certificates'].append({'guard': guard.to_dict(), 'edges': matches})
     for relation in plan['relations']:
         word = input_expr(relation['binder'], relation['width'])
-        state.conditions.extend([operation('bvuge', word, bits(relation['lower'], word.width)),
-                                 operation('bvule', word, bits(relation['upper'], word.width))])
+        if relation['kind'] == 'source_equality':
+            state.conditions.append(operation('=', word, Expr.from_dict(relation['expression'])))
+        else:
+            state.conditions.extend([operation('bvuge', word, bits(relation['lower'], word.width)),
+                                     operation('bvule', word, bits(relation['upper'], word.width))])
     state.writes, state.reports, state.register_writes = [], [], []
     state.memory = []
     for resource in resources:

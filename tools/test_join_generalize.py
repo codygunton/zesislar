@@ -118,6 +118,30 @@ class CommonGuardTests(unittest.TestCase):
         self.assertIn('bv_unsigned machine_x13', result['coq'])
         self.assertNotIn('Z_to_bv', result['coq'])
 
+    def test_correlated_equal_values_keep_an_existential_source_link(self):
+        byte = input_expr('source_byte', 8)
+        word = Expr('sign_extend', (byte,), 64)
+        guard = operation('not', operation('bvslt', word, bits(0, 64)))
+        alternatives = [{'state': {'registers': {'x13': word.to_dict()},
+                                   'conditions': [guard.to_dict()]}}] * 2
+        plan = generalize_registers(alternatives, register_order=['x13'], relational_registers=['x13'])
+        self.assertEqual(plan['binders'][0]['name'], 'machine_x13')
+        self.assertTrue(validate_edges(plan))
+        self.assertEqual([r['kind'] for r in plan['relations']], ['source_equality', 'unsigned_hull'])
+        self.assertIn('source_byte', plan['relations'][0]['coq'])
+        self.assertNotIn('Z_to_bv', plan['relations'][1]['coq'])
+
+    def test_correlated_source_link_refuses_different_values(self):
+        alternatives = [{'state': {'registers': {'x13': input_expr(name, 64).to_dict()},
+                                   'conditions': []}} for name in ['left', 'right']]
+        with self.assertRaisesRegex(ValueError, 'differs across incoming edges'):
+            generalize_registers(alternatives, register_order=['x13'], relational_registers=['x13'])
+
+    def test_correlated_source_link_refuses_a_branch_literal(self):
+        alternatives = [{'state': {'registers': {'x13': bits(0, 64).to_dict()}, 'conditions': []}}] * 2
+        with self.assertRaisesRegex(ValueError, 'branch literal'):
+            generalize_registers(alternatives, register_order=['x13'], relational_registers=['x13'])
+
     def test_signed_byte_without_class_fact_has_no_narrow_hull(self):
         byte = input_expr('source_byte', 8)
         word = Expr('sign_extend', (byte,), 64)
