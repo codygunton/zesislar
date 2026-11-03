@@ -131,6 +131,10 @@ class NativeRoute(unittest.TestCase):
  def _run_native_provider(self,failure=None):
   import entry_chain_provider as P
   v,r,c,j=self.fixture();exports=self.js('groups.json',{'kernel_groups':{'goals':[],'stack':[],'shelf':[],'given_up':[]}})
+  initial={'goals':[{'ty':'True','hyps':[]}],'stack':[],'shelf':[],'given_up':[]}
+  initial_exports=self.js('initial-groups.json',dict(initial,kernel_groups=initial,local_definition_export={'original_state_preserved':True}))
+  wrong={'goals':[{'ty':'False','hyps':[]}],'stack':[],'shelf':[],'given_up':[]}
+  wrong_exports=self.js('wrong-groups.json',dict(wrong,kernel_groups=wrong,local_definition_export={'original_state_preserved':True}))
   runtime={'phase':'native','physical_flags':[],'native_route':r,'ordered_modules':[],'target':{'block':j['target']},'module_files':c['proof_runtime']['module_files'],'mcp_argv':['unused'],'prospective_directory':str(self.root/'prospective'),'bindings':[]}
   out=self.root/'native';out.mkdir();compile_files=[]
   from declaration_preflight import prepare
@@ -143,6 +147,8 @@ class NativeRoute(unittest.TestCase):
    def __init__(self,data):self.structuredContent=data;self.isError=False
    def model_dump(self,**kwargs):return {'structuredContent':self.structuredContent}
   class Session:
+   searched=False
+   actual_started=False
    async def __aenter__(self):return self
    async def __aexit__(self,*args):pass
    async def initialize(self):pass
@@ -150,14 +156,21 @@ class NativeRoute(unittest.TestCase):
     data={'success':True}
     if name=='rocq_start':
      proof_lines=(root/'Native_EntryPilotSearch.v').read_text().splitlines()
-     self_test.assertEqual(args,{'workspace':str(root),'file':str(root/'Native_EntryPilotSearch.v'),
-                                'theorem':'','line':proof_lines.index('Proof.'),
-                                'character':len('Proof.')-1,'timeout':604800})
+     expected={'workspace':str(root),'file':str(root/'Native_EntryPilotSearch.v'),'timeout':604800}
+     if args.get('theorem')=='DesignedBoundary_Test':expected['theorem']='DesignedBoundary_Test'
+     else:
+      expected.update(theorem='',line=proof_lines.index('Proof.'),character=len('Proof.')-1)
+      self.actual_started=True
+     self_test.assertEqual(args,expected)
      if failure=='start':return Raw({'success':False,'reason':'not_found'})
     if name=='rocq_complete_goals' and failure=='scope':
      return Raw({'success':False,'reason':'no-proof-scope'})
     if name in {'rocq_start','rocq_check'}:data.update(state_id=1,proof_finished=True)
-    if name=='rocq_complete_goals':data.update(path=exports['path'],sha256=exports['sha256'])
+    if name=='rocq_check':self.searched=True
+    if name=='rocq_complete_goals':
+     selected=exports if self.searched else initial_exports
+     if failure=='identity' and self.actual_started:selected=wrong_exports
+     data.update(path=selected['path'],sha256=selected['sha256'])
     if name=='rocq_compile_file':
      compile_files.append(args['file'])
      if failure=='parse' and args['file'].endswith('_EntryPilotSearch.v'):
@@ -171,7 +184,7 @@ class NativeRoute(unittest.TestCase):
   groups={'goals':[],'stack':[],'shelf':[],'given_up':[]}
   with patch.object(P,'proof_environment',return_value={}),patch('native_instruction_profile.checked_launcher',return_value=(['unused'],None)),patch.object(P,'stdio_client',streams),patch.object(P,'ClientSession',lambda *a,**k:Session()),patch.object(P,'complete_groups',return_value=groups),patch('scratch_limits.record_search_origin'),patch('scratch_limits.record_search_end'):
    if failure:
-    with self.assertRaises(P.ToolFailure):asyncio.run(P.execute(request))
+    with self.assertRaises(ValueError if failure=='identity' else P.ToolFailure):asyncio.run(P.execute(request))
    else:asyncio.run(P.execute(request))
   self.assertEqual(Path(v['native_source']['path']).read_bytes(),original)
   expected=S.source_statement(v['native_source']['path'])
@@ -183,6 +196,14 @@ class NativeRoute(unittest.TestCase):
   self.assertEqual(compile_files,[str(self.root/'Native_EntryPilotSearch.v'),str(self.root/'Native.v')])
   calls=json.loads((out/'CALLS.json').read_text());self.assertEqual(sum(c['tool']=='rocq_compile_file' and c['arguments']['file'].endswith('Tactic.v') for c in calls),0)
   self.assertEqual(sum(c['tool']=='rocq_check' and c['arguments']['body']=='zesu_block.' for c in calls),1)
+  self.assertTrue(json.loads((out/'INITIAL-IDENTITY.json').read_text())['matched'])
+
+ def test_wrong_initial_kernel_target_stops_before_search(self):
+  out,compiled=self._run_native_provider('identity')
+  calls=json.loads((out/'CALLS.json').read_text())
+  self.assertFalse(any(row['tool']=='rocq_check' for row in calls))
+  self.assertFalse((out/'INITIAL-IDENTITY.json').exists())
+  self.assertEqual(compiled,[str(self.root/'Native_EntryPilotSearch.v')])
 
  def test_sealed_native_preflight_refuses_before_bank_writes(self):
   import entry_chain_run as E

@@ -11,6 +11,7 @@ from mcp import ClientSession, StdioServerParameters
 from mcp.client.stdio import stdio_client
 from scratch_statement import source_statement,compiled_verification
 from declaration_preflight import declaration_search_fixture,checked_fixture
+from native_start_guard import theorem_span,compare_initial
 from entry_chain import binding,save as atomic_json,check_bindings as bound_rows,digest,relative,strict_loads
 from entry_pilot import retain_residual
 from entry_pilot_checker import bound_json,complete_groups
@@ -469,6 +470,9 @@ async def execute(request):
                     if statement_sha != target['statement_sha256']:
                         raise ValueError('The original public statement changed.')
                     search_fixture, proof_line = checked_fixture(runtime,workspace,source,specification)
+                    native_span = theorem_span(search_fixture,specification['statement'],specification['name'])
+                    if native_span['proof_line'] != proof_line:
+                        raise ValueError('The native cursor differs from its authenticated theorem span.')
                     atomic_json(output/'PROGRESS.json', {'phase': 'declaration_preflight', 'side': side})
                     try:
                         parsed = await call(session, 'rocq_compile_file', {'workspace': str(workspace),
@@ -489,10 +493,17 @@ async def execute(request):
                         raise
                     atomic_json(output/'PROGRESS.json', {'phase': 'native_start', 'side': side,
                         'start_mode': 'proof_sentence'})
+                    reference = await call(session, 'rocq_start', {'workspace': str(workspace),
+                        'file': str(search_fixture), 'theorem': native_span['name'], 'timeout': timeout})
+                    reference_export = await export(session, reference)
                     state = await call(session, 'rocq_start', {'workspace': str(workspace),
                         'file': str(search_fixture), 'theorem': '', 'line': proof_line,
                         'character': len('Proof.')-1, 'timeout': timeout})
                     pre_call_export = await export(session, state)
+                    initial_identity = compare_initial(pre_call_export,reference_export)
+                    if theorem_span(search_fixture,specification['statement'],specification['name']) != native_span:
+                        raise ValueError('The native theorem changed during its initial kernel check.')
+                    atomic_json(output/'INITIAL-IDENTITY.json',dict(initial_identity,theorem_span=native_span))
                     atomic_json(output/'PRE-CALL-STATE.json', {
                         'side': side, 'export': pre_call_export,
                         'state_source': 'retained_pre_call_state',
