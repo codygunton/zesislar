@@ -7,6 +7,8 @@ import subprocess
 import sys
 from pathlib import Path
 
+from check_release_imports import imports
+
 
 ROOT = Path(__file__).resolve().parents[2]
 BASELINE = Path(__file__).with_name("spec_shape_baseline.json")
@@ -95,6 +97,25 @@ def typeclasses_opaque(source: str, global_only: bool = False) -> set[str]:
 
 def unfold_opacity_count(source: str, opaque: set[str]) -> int:
     return sum(target not in opaque for target in unfold_targets(source))
+
+
+def imported_opacity(source, module, owners, global_opaque):
+    """Resolve short names only when their definition owner is unambiguous."""
+    imported = {name for _, _, names in imports(source) for name in names}
+    resolved = set()
+    for target in unfold_targets(source):
+        if target is None or "." in target:
+            continue
+        candidates = owners.get(target, set())
+        own = module + "." + target
+        visible = {name for name in candidates if name.rsplit(".", 1)[0] in imported}
+        if own in candidates:
+            visible = {own}
+        elif not visible and len(candidates) == 1:
+            visible = candidates
+        if len(visible) == 1 and visible <= global_opaque:
+            resolved.add(target)
+    return resolved
 
 
 def sealed_predicates(source: str) -> set[str]:
@@ -317,6 +338,11 @@ def main() -> int:
         for name, source in texts.items()
         for constant in typeclasses_opaque(source, global_only=True)
     }
+    owners = {}
+    for name, source in texts.items():
+        module = ".".join(Path(name).with_suffix("").parts)
+        for constant, _, _ in definitions(source):
+            owners.setdefault(constant, set()).add(module + "." + constant)
     errors = scoped_inventory_errors(inventory, texts)
     for name, source in texts.items():
         counts = (shape_counts(source, unfolded, module=".".join(Path(name).with_suffix("").parts))
@@ -324,7 +350,9 @@ def main() -> int:
                   or name in inventory["modules"]
                   else dict.fromkeys(METRICS, 0))
         counts["unfold_without_typeclasses_opaque"] = unfold_opacity_count(
-            source, global_opaque | typeclasses_opaque(source)
+            source, global_opaque | typeclasses_opaque(source) |
+            imported_opacity(source, ".".join(Path(name).with_suffix("").parts),
+                             owners, global_opaque)
         )
         allowances = (inventory["modules"] if name in inventory["modules"] else baseline)
         errors.extend(failures(name, counts, allowances))

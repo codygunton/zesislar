@@ -45,11 +45,15 @@ def release_controls(root, base):
     """Include every evidence control and each test changed by this release."""
     files = set()
     for path in (root / "ZesuSsz/Evidence").glob("*.v"):
-        if any(word in path.stem for word in ("Control", "Activation", "ScopeRegression")):
+        if any(word in path.stem for word in ("Control", "Activation")):
             files.add(path)
     changed = subprocess.check_output(
         ["git", "diff", "--name-only", base, "--", "ZesuSsz/Proofs/Tests", "tools/fixtures"],
         cwd=root, text=True,
+    ).splitlines()
+    changed += subprocess.check_output(
+        ["git", "ls-files", "--others", "--exclude-standard", "--",
+         "ZesuSsz/Proofs/Tests", "tools/fixtures"], cwd=root, text=True,
     ).splitlines()
     files.update(root / name for name in changed if name.endswith(".v"))
     return {path for path in files if path.is_file()}

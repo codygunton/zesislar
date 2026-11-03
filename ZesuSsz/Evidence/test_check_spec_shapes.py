@@ -19,7 +19,35 @@ from check_spec_shapes import (
     typeclasses_opaque,
     unfold_opacity_count,
     unfold_targets,
+    imported_opacity,
 )
+
+
+class ImportedOpacityTests(unittest.TestCase):
+    SOURCE = "Instance entry_unfold : LithiumUnfold (@entry) := I."
+
+    def test_qualified_global_opacity_matches_unique_definition(self):
+        self.assertEqual(imported_opacity(self.SOURCE, "Rules",
+                         {"entry": {"Entries.entry"}}, {"Entries.entry"}), {"entry"})
+
+    def test_ambiguous_definition_does_not_match(self):
+        self.assertEqual(imported_opacity(self.SOURCE, "Rules",
+                         {"entry": {"A.entry", "B.entry"}}, {"A.entry"}), set())
+
+    def test_direct_import_resolves_its_owner(self):
+        self.assertEqual(imported_opacity("Require Import B.\n" + self.SOURCE,
+                         "Rules", {"entry": {"A.entry", "B.entry"}},
+                         {"B.entry"}), {"entry"})
+
+    def test_other_owner_opacity_does_not_match(self):
+        self.assertEqual(imported_opacity("Require Import B.\n" + self.SOURCE,
+                         "Rules", {"entry": {"A.entry", "B.entry"}},
+                         {"A.entry"}), set())
+
+    def test_local_definition_has_priority(self):
+        self.assertEqual(imported_opacity("Require Import A.\n" + self.SOURCE,
+                         "Rules", {"entry": {"A.entry", "Rules.entry"}},
+                         {"A.entry"}), set())
 
 
 class SpecShapeTests(unittest.TestCase):

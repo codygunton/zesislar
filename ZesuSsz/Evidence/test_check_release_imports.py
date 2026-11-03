@@ -1,6 +1,9 @@
 import unittest
+from pathlib import Path
+import tempfile
+from unittest.mock import patch
 
-from check_release_imports import import_errors, imports
+from check_release_imports import import_errors, imports, release_controls
 
 
 class ReleaseImportTests(unittest.TestCase):
@@ -51,6 +54,16 @@ class ReleaseImportTests(unittest.TestCase):
         commands = list(imports(source))
         self.assertEqual(commands[0][2], ["isla.riscv64.riscv64"])
         self.assertEqual(source[commands[0][1] - 1], ".")
+
+    def test_new_untracked_test_is_checked(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            path = root / "ZesuSsz/Proofs/Tests/New.v"
+            path.parent.mkdir(parents=True)
+            path.write_text("Require Import isla.riscv64.riscv64.\n")
+            with patch("check_release_imports.subprocess.check_output",
+                       side_effect=["", "ZesuSsz/Proofs/Tests/New.v\n"]):
+                self.assertEqual(release_controls(root, "base"), {path})
 
 
 if __name__ == "__main__":
