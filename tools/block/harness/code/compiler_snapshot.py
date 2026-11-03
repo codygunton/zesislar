@@ -25,6 +25,7 @@ _VERIFIED_READS = ContextVar('compiler_verified_reads', default=None)
 _VERIFIED_NAMESPACES = ContextVar('compiler_verified_namespaces', default=None)
 _ACCEPTED_PREFIXES = {}
 _SNAPSHOT_READS = {}
+_COMPILATION_ROWS = {}
 _CHAIN_SNAPSHOTS = {}
 _COMPILER_BINDINGS = {}
 _IMPORT_CONTEXTS = {}
@@ -80,15 +81,17 @@ def _read_snapshot(reference):
     return cached[1]
 
 
-def _chain_snapshot(reference, runtime_reference):
-    # The strict public read remains available. Only a compiler chain reuses
-    # its initial whole-inventory stat pass. Actual compiler inputs are hashed
-    # and checked on every invocation below.
+def _chain_snapshot(reference, runtime_reference, compiler_inputs):
+    # The strict public read remains available. A compiler process stats only
+    # the rows that its compilation reads: the sealed load-path files, which
+    # include the initial plugins and objects, and its source and compiler. The
+    # provider's first read and the binding gates keep the whole-inventory
+    # check. Actual compiler inputs are hashed and checked on every invocation.
     key = (os.getpid(), _encoded(reference), _encoded(runtime_reference))
     current = (_identity(reference['path']), _namespace(reference['path']))
     cached = _CHAIN_SNAPSHOTS.get(key)
     if cached is None or cached[0] != current:
-        value = read(reference, runtime_reference)
+        value = read(reference, runtime_reference, compiler_inputs=compiler_inputs)
         _CHAIN_SNAPSHOTS.clear()
         _CHAIN_SNAPSHOTS[key] = (current, value)
     else:
@@ -371,8 +374,26 @@ def _read_private(reference, *, with_binding=False):
     return value
 
 
-def read(reference, runtime_reference):
-    """Authenticate the immutable snapshot before consulting any cached identity."""
+def _compilation_rows(value, compiler_inputs):
+    """Return the row paths that one compilation reads: source, compiler, load path."""
+    # Bound rows name canonical paths. The sealed load-path files are lexical.
+    key = (os.getpid(), id(value), frozenset(compiler_inputs))
+    if key not in _COMPILATION_ROWS:
+        names = value['load_path_files']
+        rows = set(compiler_inputs) | set(names) | {str(Path(name).resolve()) for name in names}
+        _COMPILATION_ROWS.clear()
+        _COMPILATION_ROWS[key] = (value, rows)
+    return _COMPILATION_ROWS[key][1]
+
+
+def read(reference, runtime_reference, *, compiler_inputs=None):
+    """Authenticate the immutable snapshot before consulting any cached identity.
+
+    Without compiler_inputs, stat every classified row. With the paths of one
+    compilation's source and compiler, stat those rows and the rows of the
+    sealed load-path files, which hold its import closure. Every row keeps its
+    shape and uniqueness check.
+    """
     value = _read_snapshot(reference)
     required={'schema', 'runtime', 'producer', 'objects', 'mapping_context', 'compiler', 'initial_plugins', 'load_path_files', 'rows'}
     if not isinstance(value, dict) or not required <= set(value) or set(value)-required-{'initial_objects'} or value['schema'] != SCHEMA or value['runtime'] != runtime_reference:
@@ -385,11 +406,12 @@ def read(reference, runtime_reference):
     if not all(isinstance(value.get(name,[]),list) for name in ['rows','initial_plugins','initial_objects']):
         raise ValueError('The compiler snapshot rows are invalid.')
     seen = set()
+    selected = None if compiler_inputs is None else _compilation_rows(value, compiler_inputs)
     for row in value['rows']+value['initial_plugins']+value.get('initial_objects',[]):
         if not isinstance(row, dict) or set(row) != {'path', 'sha256', 'identity'} or row['path'] in seen:
             raise ValueError('The compiler snapshot repeats or changes a classified row.')
         seen.add(row['path'])
-        if _identity(row['path']) != row['identity']:
+        if (selected is None or row['path'] in selected) and _identity(row['path']) != row['identity']:
             raise ValueError('A compiler input identity changed: ' + row['path'])
     return value
 
@@ -743,6 +765,50 @@ class OutputReceipts:
         return reference
 
 
+PREFIX_SCHEMA = 'entry-chain.verified-receipt-prefix.v1'
+
+
+def _prefix_scope(cache_key):
+    parts = [part if isinstance(part, bytes) else part.encode() for part in cache_key[1:]]
+    return hashlib.sha256(b'\0'.join(parts)).hexdigest()
+
+
+def _signed_prefix(root, key, scope):
+    """Return a prefix that a holder of the index key verified, or None."""
+    # The index key signs this file. The physical compiler never receives it.
+    try:
+        value = _read_private({'path': str(root / 'VERIFIED-PREFIX.json')})
+        body = value['prefix']
+        expected = hmac.new(bytes.fromhex(key), _encoded(body), 'sha256').hexdigest()
+        if (set(value) != {'prefix', 'mac'} or not isinstance(value['mac'], str) or
+                not hmac.compare_digest(expected, value['mac'])):
+            return None
+        if (set(body) != {'schema', 'scope', 'prefix_sha256', 'documents', 'namespaces', 'state'} or
+                body['schema'] != PREFIX_SCHEMA or body['scope'] != scope):
+            return None
+        rows, latest, prior, physical_seen = body['state']
+        if body['prefix_sha256'] != hashlib.sha256(_encoded(prior)).hexdigest():
+            return None
+    except (OSError, ValueError, TypeError, KeyError):
+        return None
+    return {'prior': prior, 'documents': body['documents'], 'namespaces': body['namespaces'],
+            'state': (rows, latest, prior, physical_seen)}
+
+
+def _sign_prefix(root, key, scope, verified):
+    rows, latest, prior, physical_seen = verified['state']
+    body = {'schema': PREFIX_SCHEMA, 'scope': scope,
+            'prefix_sha256': hashlib.sha256(_encoded(prior)).hexdigest(),
+            'documents': verified['documents'], 'namespaces': verified['namespaces'],
+            'state': [rows, latest, prior, physical_seen]}
+    value = {'prefix': body, 'mac': hmac.new(bytes.fromhex(key), _encoded(body), 'sha256').hexdigest()}
+    try:
+        _publish(root / 'VERIFIED-PREFIX.json', value, replace=True)
+    except OSError:
+        # The signed prefix only saves work. A later process replays instead.
+        pass
+
+
 def accepted_objects(snapshot, reference, key, compiler, flags):
     """Check the authenticated receipt index before accepting a later object."""
     root = Path(snapshot['objects'])
@@ -767,6 +833,9 @@ def accepted_objects(snapshot, reference, key, compiler, flags):
     cache_key = (os.getpid(), _encoded(reference), _encoded(snapshot['producer']),
                  hashlib.sha256(bytes.fromhex(key)).hexdigest(), _encoded(compiler), _encoded(flags))
     cached = _ACCEPTED_PREFIXES.get(cache_key)
+    if cached is None:
+        # A new process resumes from the prefix that an earlier process verified.
+        cached = _signed_prefix(root, key, _prefix_scope(cache_key))
     start = 0
     documents = {}
     namespaces = {}
@@ -853,6 +922,8 @@ def accepted_objects(snapshot, reference, key, compiler, flags):
     _ACCEPTED_PREFIXES.clear()
     _ACCEPTED_PREFIXES[cache_key] = {'prior': deepcopy(prior), 'documents': documents,
                                    'namespaces': namespaces, 'state': deepcopy((rows, latest, prior, physical_seen))}
+    if start < len(prior):
+        _sign_prefix(root, key, _prefix_scope(cache_key), _ACCEPTED_PREFIXES[cache_key])
     return rows, version, index['receipts'], authenticated
 
 
@@ -963,7 +1034,10 @@ def _validate_compiler(runtime, runtime_reference, snapshot_reference, source_bi
     usage=resource.getrusage(resource.RUSAGE_SELF)
     if runtime.get('harness') is not None:
         check(runtime['harness'])
-    snapshot = _chain_snapshot(snapshot_reference, runtime_reference)
+    compiler_inputs = {str(source.absolute()), str(Path(compiler).absolute())}
+    # Resolve the load-path rows once per validation, for both identity passes.
+    _COMPILATION_ROWS.clear()
+    snapshot = _chain_snapshot(snapshot_reference, runtime_reference, compiler_inputs)
     if str(Path(compiler).absolute())!=snapshot['compiler']['path']:
         raise ValueError('The physical compiler differs from the selected executable.')
     if physical_context(compiler,runtime['physical_flags'],os.environ) != snapshot['mapping_context']:
@@ -1006,11 +1080,14 @@ def _validate_compiler(runtime, runtime_reference, snapshot_reference, source_bi
                 raise ValueError('A compiler dependency lacks an original binding: '+row['path'])
         if selected is not None and selected!=row['sha256']:
             raise ValueError('A physical compiler input hash differs: '+row['path'])
-    # Hashing can overlap a mutation of an earlier retained input.
-    for row in retained:
-        if (Path(row['path']).suffix not in DEPENDENCIES and
-                row['path'] not in {str(source.absolute()), str(Path(compiler).absolute())}):
+    # Hashing can overlap a mutation of an earlier retained input that this
+    # compilation reads: its source, its compiler, or a load-path file.
+    reads = _compilation_rows(snapshot, compiler_inputs) | {row['path'] for row in inputs}
+    checked = 0
+    for number, row in enumerate(retained):
+        if row['path'] not in reads:
             continue
+        checked += number < len(snapshot['rows'])
         if _identity(row['path']) != row['identity']:
             raise ValueError('A compiler input changed during input hashing: ' + row['path'])
     for row in authenticated_objects:
@@ -1026,10 +1103,10 @@ def _validate_compiler(runtime, runtime_reference, snapshot_reference, source_bi
             'final_identity_wall_seconds':ended-hashing_done,
             'total_wall_seconds':ended-started,
             'self_CPU_seconds':final_usage.ru_utime+final_usage.ru_stime-usage.ru_utime-usage.ru_stime}
-    return {'snapshot_stat_policy':'Initial full inventory; physical dependencies, source, and compiler rechecked per invocation.',
+    return {'snapshot_stat_policy':'Full inventory at chain start and at binding gates; load-path, source, and compiler rows checked before and after hashing per invocation.',
             'timing':timing,'snapshot': snapshot_reference,'producer':snapshot['producer'],
             'compiler_context':context,'physical_flags':selected_flags,'output_context':private_context,
-            'retained_identities_checked': len(snapshot['rows']),
+            'retained_identities_checked': checked,
             'accepted_dependency_objects': produced,
             'accepted_dependency_identities': authenticated_objects,
             'initial_plugins_checked':len(snapshot['initial_plugins']),

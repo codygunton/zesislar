@@ -233,7 +233,8 @@ class CompilerSnapshotTests(unittest.TestCase):
         reference = self.seal()
         with patch('proof_bindings.proof_rows', side_effect=AssertionError('reclassified')):
             report = S.validate_compiler(self.runtime, self.reference, reference, self.source_binding, self.compiler)
-        self.assertEqual(report['retained_identities_checked'], 4)
+        # The source, dependency, and compiler rows. The runtime row is hash bound.
+        self.assertEqual(report['retained_identities_checked'], 3)
         self.assertEqual(len(report['directly_hashed_inputs']), 3)
 
     def test_mutation_during_direct_hashing_refuses(self):
@@ -474,6 +475,119 @@ class CompilerSnapshotTests(unittest.TestCase):
         self.snapshot_path.write_text('{}')
         with self.assertRaisesRegex(ValueError, 'hash differs'):
             S._read_snapshot(reference)
+
+    def unread_row(self):
+        # A bound object outside every load path. No compilation reads it.
+        static = self.root / 'Outside.vo'
+        static.write_text('object fixture outside the load path')
+        self.runtime['bindings'].append(binding(static))
+        return static, self.seal()
+
+    def test_compiler_read_stats_only_rows_its_compilation_reads(self):
+        static, reference = self.unread_row()
+        S._CHAIN_SNAPSHOTS.clear()
+        with patch.object(S, '_identity', wraps=S._identity) as identities:
+            report = S.validate_compiler(self.runtime, self.reference, reference, self.source_binding, self.compiler)
+        stated = {str(call.args[0]) for call in identities.call_args_list}
+        self.assertNotIn(str(static), stated)
+        self.assertLessEqual({str(self.obj), str(self.source), str(self.compiler)}, stated)
+        self.assertEqual(report['retained_identities_checked'], 3)
+        with patch.object(S, '_identity', wraps=S._identity) as identities:
+            self.read(reference)
+        self.assertIn(str(static), {str(call.args[0]) for call in identities.call_args_list})
+
+    def test_row_scope_refuses_a_changed_imported_object(self):
+        graph, runtime, report = self.import_fixture()
+        self.runtime.update(runtime)
+        self.runtime['bindings'].append(binding(graph))
+        reference = self.seal()
+        S._CHAIN_SNAPSHOTS.clear()
+        before = self.obj.stat()
+        self.obj.write_bytes(b'x' * before.st_size)
+        os.utime(self.obj, ns=(before.st_atime_ns, before.st_mtime_ns))
+        with self.assertRaisesRegex(ValueError, 'identity changed: ' + str(self.obj)):
+            S.validate_compiler(self.runtime, self.reference, reference, self.source_binding, self.compiler)
+
+    def test_row_scope_checks_canonical_rows_under_an_aliased_load_path(self):
+        alias = self.root / 'library-alias'
+        alias.symlink_to(self.library, target_is_directory=True)
+        self.runtime['physical_flags'] = ['-Q', str(alias), 'Example']
+        reference = self.seal()
+        self.assertIn(str(alias / self.obj.name), self.read(reference)['load_path_files'])
+        S._CHAIN_SNAPSHOTS.clear()
+        with patch.object(S, '_identity', wraps=S._identity) as identities:
+            S.validate_compiler(self.runtime, self.reference, reference, self.source_binding, self.compiler)
+        # The bound row names the canonical path, not the lexical load-path name.
+        self.assertIn(str(self.obj), {str(call.args[0]) for call in identities.call_args_list})
+        S._CHAIN_SNAPSHOTS.clear()
+        self.obj.chmod(0o600)
+        with self.assertRaisesRegex(ValueError, 'identity changed: ' + str(self.obj)):
+            S.validate_compiler(self.runtime, self.reference, reference, self.source_binding, self.compiler)
+
+    def test_changed_unread_row_keeps_its_full_inventory_refusal(self):
+        static, reference = self.unread_row()
+        S._CHAIN_SNAPSHOTS.clear()
+        static.write_text('changed metadata fixture')
+        # The compilation does not read this row. The full inventory still refuses it.
+        S.validate_compiler(self.runtime, self.reference, reference, self.source_binding, self.compiler)
+        with self.assertRaisesRegex(ValueError, 'identity changed: ' + str(static)):
+            self.read(reference)
+
+    def new_process(self):
+        S._ACCEPTED_PREFIXES.clear()
+        S._CHAIN_SNAPSHOTS.clear()
+
+    def signed_prefix(self, ledger):
+        return json.loads((ledger.root / 'VERIFIED-PREFIX.json').read_text())
+
+    def sign(self, ledger, body, key=None):
+        import hmac
+        mac = hmac.new(bytes.fromhex(key or ledger.key), S._encoded(body), 'sha256').hexdigest()
+        S._publish(ledger.root / 'VERIFIED-PREFIX.json', {'prefix': body, 'mac': mac}, replace=True)
+
+    def test_signed_prefix_resumes_in_a_new_process(self):
+        reference, snapshot, ledger, obj, receipt = self.outputs()
+        first = self.validate_outputs(reference, ledger)
+        self.assertEqual(self.signed_prefix(ledger)['prefix']['state'][2], [receipt])
+        self.new_process()
+        with patch.object(S, '_physical_record', side_effect=AssertionError('old receipt replayed')):
+            report = self.validate_outputs(reference, ledger)
+        self.assertEqual(report['accepted_dependency_identities'], first['accepted_dependency_identities'])
+
+    def test_forged_prefix_signature_replays_every_receipt(self):
+        reference, snapshot, ledger, obj, receipt = self.outputs()
+        first = self.validate_outputs(reference, ledger)
+        self.sign(ledger, self.signed_prefix(ledger)['prefix'], key='00' * 32)
+        self.new_process()
+        with patch.object(S, '_physical_record', wraps=S._physical_record) as replay:
+            report = self.validate_outputs(reference, ledger)
+        self.assertEqual(replay.call_count, 1)
+        self.assertEqual(report['accepted_dependency_identities'], first['accepted_dependency_identities'])
+
+    def test_changed_prefix_replays_every_receipt(self):
+        reference, snapshot, ledger, obj, receipt = self.outputs()
+        self.validate_outputs(reference, ledger)
+        body = self.signed_prefix(ledger)['prefix']
+        other = dict(receipt, sha256='0' * 64)
+        changed = dict(body, state=[body['state'][0], body['state'][1], [other], body['state'][3]],
+                       prefix_sha256=hashlib.sha256(S._encoded([other])).hexdigest())
+        wrong_digest = dict(body, prefix_sha256='0' * 64)
+        for forged in [changed, wrong_digest]:
+            self.sign(ledger, forged)
+            self.new_process()
+            with patch.object(S, '_physical_record', wraps=S._physical_record) as replay:
+                self.validate_outputs(reference, ledger)
+            self.assertEqual(replay.call_count, 1)
+
+    def test_signed_prefix_changed_document_replays_and_refuses(self):
+        reference, snapshot, ledger, obj, receipt = self.outputs()
+        self.validate_outputs(reference, ledger)
+        self.new_process()
+        before = obj.stat()
+        obj.write_bytes(b'x' * before.st_size)
+        os.utime(obj, ns=(before.st_atime_ns, before.st_mtime_ns))
+        with self.assertRaises(ValueError):
+            self.validate_outputs(reference, ledger)
 
     def test_static_snapshot_rows_stat_once_per_chain(self):
         static = self.root / 'Unused.txt'

@@ -248,7 +248,12 @@ compiler.main()
         self.assertEqual(json.loads(result.stdout), {'key_present': False})
         self.assertTrue(source.with_suffix('.vo').is_file())
         report = json.loads((invocation / 'PHYSICAL-VALIDATION.json').read_text())
-        self.assertGreater(report['retained_identities_checked'], 60)
+        # The compiler stats only the rows its compilation reads: here its source
+        # and compiler. The provider's full read covers the complete inventory.
+        self.assertEqual(report['retained_identities_checked'], 2)
+        import compiler_snapshot as snapshots
+        full = snapshots.read(report['snapshot'], {'path': runtime['runtime_path'], 'sha256': runtime['runtime_sha256']})
+        self.assertGreater(len(full['rows']), 60)
         self.assertEqual(json.loads((invocation / 'PHYSICAL-RESULT.json').read_text())['returncode'], 0)
         self.assertNotIn(environment['ENTRY_CHAIN_COMPILER_SNAPSHOT_OUTPUT_KEY'],
                          ''.join(path.read_text() for path in invocation.iterdir() if path.is_file()))
