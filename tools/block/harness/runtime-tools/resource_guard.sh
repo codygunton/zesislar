@@ -600,6 +600,13 @@ recover_dead_reservation() {
 # An admitted launch keeps its slot until its owner or compiler exits.
 live_reservations() {
   local marker owner child
+  # Older pinned guards can remove a token without releasing its ledger claim.
+  # Enumerate the ledger too. Recovery keeps live owners and populated scopes.
+  if [[ -e /proc/$BASHPID/fd/7 && /proc/$BASHPID/fd/7 -ef "$GATE_MUTEX" ]]; then
+    ZESU_GUARD_MUTEX_FD=7 python3 "$MEMORY_TOOL" ledger-recover-stale --all >/dev/null || return $?
+  else
+    env -u ZESU_GUARD_MUTEX_FD python3 "$MEMORY_TOOL" ledger-recover-stale --all >/dev/null || return $?
+  fi
   for marker in "$COQC_RESERVATIONS"/*; do
     [ -e "$marker" ] || continue
     owner=${marker##*/}; owner=${owner%%.*}
