@@ -2083,9 +2083,21 @@ Ltac zesu_integer_array_address_if_enabled :=
         end))
   end.
 
+Polymorphic Inductive zesu_canonical_fact_views_attempted {A : Type} (target : A) : Prop :=
+  zesu_canonical_fact_views_token : zesu_canonical_fact_views_attempted target.
+
 Ltac zesu_canonical_fact_views_if_enabled :=
   zesu_switch_enabled constr:(ZesuSsz.Automation.CanonicalFactAdapter.ZesuStepCanonicalFactAdapter);
-  ZesuSsz.Automation.CanonicalFactAdapter.zesu_canonical_context_step.
+  lazymatch goal with
+  | |- ?target =>
+      assert_fails ltac:(idtac; match goal with
+      | _ : @zesu_canonical_fact_views_attempted _ ?previous |- _ =>
+          constr_eq previous target
+      end);
+      let marker := fresh "HcanonicalFactViewsAttempted" in
+      pose proof (@zesu_canonical_fact_views_token _ target) as marker;
+      ZesuSsz.Automation.CanonicalFactAdapter.zesu_canonical_context_step
+  end.
 
 (* Retain the entry key before ordinary matching exposes its binders. *)
 Ltac zesu_union_witness_step :=
