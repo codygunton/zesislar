@@ -366,6 +366,30 @@ class DeclarationOutputTests(unittest.TestCase):
                 self.accepted()
         self.assertEqual(replay.call_count, 1)
 
+    def test_signed_publication_prefix_resumes_in_a_new_process(self):
+        private, physical = self.physical()
+        self.accept(private, physical)
+        first = self.accepted()
+        S._ACCEPTED_PREFIXES.clear()
+        with patch.object(S, '_physical_record', side_effect=AssertionError('old receipt replayed')):
+            self.assertEqual(self.accepted(), first)
+
+    def test_signed_prefix_namespace_change_replays_and_refuses(self):
+        from clone_copy import copy2
+        private, physical = self.physical()
+        self.accept(private, physical)
+        self.accepted()
+        S._ACCEPTED_PREFIXES.clear()
+        old = private.parent.with_name(private.parent.name + '.retained')
+        private.parent.rename(old)
+        private.parent.mkdir()
+        for suffix in ['.vo', '.vos', '.glob']:
+            copy2(old / private.with_suffix(suffix).name, private.with_suffix(suffix))
+        with patch.object(S, '_physical_record', wraps=S._physical_record) as replay:
+            with self.assertRaisesRegex(ValueError, 'private output mapping'):
+                self.accepted()
+        self.assertEqual(replay.call_count, 1)
+
 
 if __name__ == '__main__':
     unittest.main()
