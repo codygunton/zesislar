@@ -272,6 +272,31 @@
         "sources/projection291/GeneratedSourceProjection290.v",
         "sources/projection291/Pilot6a78Entries.v"
       ]
+    },
+    {
+      "component": "meaning301",
+      "ownership": "C: conditional source projection; existing semantic prerequisites remain shared",
+      "accepted_packet": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-1/pilot-v33-eight305/generated6a78-meaning301/SEALED-RESULT.json",
+        "sha256": "5fa24e0e42170db34aa1a55ee9b726e14a317d901faf64ddb2a5b68d303ee806"
+      },
+      "source_files": [
+        "sources/meaning301/GeneratedMeaningProjection292.v",
+        "sources/meaning301/HEADER.vpart",
+        "sources/meaning301/DecodeItemSemanticIntroduction.v",
+        "sources/meaning301/DecodeItemSailEvaluation.v",
+        "sources/meaning301/ByteFoldPure.v",
+        "sources/meaning301/DecodeItemSailFold.v",
+        "sources/meaning301/DecodeItemSailIntroduction.v",
+        "sources/meaning301/DecodeItemPathAgreement.v",
+        "sources/meaning301/DecodeItemReturnExitResources.v",
+        "sources/meaning301/VerificationControl301.v"
+      ],
+      "image_condition": "encodeResult stays explicit. No output image or generated native closure is proved.",
+      "focused_control": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-1/pilot-v33-eight305/generated6a78-meaning-focus300/RESULT.json",
+        "sha256": "ee3f4ff341b0cc1a228de803f0b8021f7020d374f41be72f10c9fcb25caad605"
+      }
     }
   ],
   "files": [
@@ -1633,6 +1658,96 @@
         "path": "ZesuSsz/Automation/CodecArrayRead.v"
       },
       "ownership": "C: accepted rule packet; B2 assembles production dispatch"
+    },
+    {
+      "file": "sources/meaning301/GeneratedMeaningProjection292.v",
+      "sha256": "7b1b00b63b8a8c5e4bf3826374326b259705bf4d4867f820f2c7027ff822d933",
+      "original": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-1/pilot-v33-eight305/generated6a78-meaning301/owned/artifacts/default/ZesuSsz/Evidence/GeneratedMeaningProjection292.v",
+        "sha256": "7b1b00b63b8a8c5e4bf3826374326b259705bf4d4867f820f2c7027ff822d933"
+      },
+      "ownership": "C: conditional source projection. Existing Compliance prerequisites retain their original ownership."
+    },
+    {
+      "file": "sources/meaning301/HEADER.vpart",
+      "sha256": "d665f5c514063e61b5a44b41884187be3fd864128871834f3cb37f5d5cefd612",
+      "original": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-1/pilot-v33-eight305/generated6a78-meaning301/HEADER.vpart",
+        "sha256": "d665f5c514063e61b5a44b41884187be3fd864128871834f3cb37f5d5cefd612"
+      },
+      "ownership": "C: conditional source projection. Existing Compliance prerequisites retain their original ownership."
+    },
+    {
+      "file": "sources/meaning301/DecodeItemSemanticIntroduction.v",
+      "sha256": "ae3516c15bf351eeb9334d9775cbdbee0d8ffba842899237654b25de6037cfcb",
+      "original": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-1/pilot-v33-eight305/generated6a78-meaning301/owned/artifacts/default/ZesuSsz/Compliance/DecodeItemSemanticIntroduction.v",
+        "sha256": "ae3516c15bf351eeb9334d9775cbdbee0d8ffba842899237654b25de6037cfcb"
+      },
+      "ownership": "C: conditional source projection. Existing Compliance prerequisites retain their original ownership."
+    },
+    {
+      "file": "sources/meaning301/DecodeItemSailEvaluation.v",
+      "sha256": "2d4fdcbc52364a4bf29ec17dfa452de2f4ba1291bdb63db863ab9c7d7e4aa866",
+      "original": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-1/pilot-v33-eight305/generated6a78-meaning301/owned/artifacts/default/ZesuSsz/Compliance/DecodeItemSailEvaluation.v",
+        "sha256": "2d4fdcbc52364a4bf29ec17dfa452de2f4ba1291bdb63db863ab9c7d7e4aa866"
+      },
+      "ownership": "C: conditional source projection. Existing Compliance prerequisites retain their original ownership."
+    },
+    {
+      "file": "sources/meaning301/ByteFoldPure.v",
+      "sha256": "2f2e46ac33b6775e884d1e4bc4f989eece0bf476310198837d4224c0b85482d0",
+      "original": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-1/pilot-v33-eight305/generated6a78-meaning301/owned/artifacts/default/ZesuSsz/Proofs/DecodeItem/ByteFoldPure.v",
+        "sha256": "2f2e46ac33b6775e884d1e4bc4f989eece0bf476310198837d4224c0b85482d0"
+      },
+      "ownership": "C: conditional source projection. Existing Compliance prerequisites retain their original ownership."
+    },
+    {
+      "file": "sources/meaning301/DecodeItemSailFold.v",
+      "sha256": "6f61a90e42e3956fed51a4782c33e29f4e00b3747e8e032d77c74d475ea500d6",
+      "original": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-1/pilot-v33-eight305/generated6a78-meaning301/owned/artifacts/default/ZesuSsz/Compliance/DecodeItemSailFold.v",
+        "sha256": "6f61a90e42e3956fed51a4782c33e29f4e00b3747e8e032d77c74d475ea500d6"
+      },
+      "ownership": "C: conditional source projection. Existing Compliance prerequisites retain their original ownership."
+    },
+    {
+      "file": "sources/meaning301/DecodeItemSailIntroduction.v",
+      "sha256": "15df17e3645f69f4b659122d83c40b6bb79876dabf1b442ef244a6ebce196d71",
+      "original": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-1/pilot-v33-eight305/generated6a78-meaning301/owned/artifacts/default/ZesuSsz/Compliance/DecodeItemSailIntroduction.v",
+        "sha256": "15df17e3645f69f4b659122d83c40b6bb79876dabf1b442ef244a6ebce196d71"
+      },
+      "ownership": "C: conditional source projection. Existing Compliance prerequisites retain their original ownership."
+    },
+    {
+      "file": "sources/meaning301/DecodeItemPathAgreement.v",
+      "sha256": "5bcbea855055b79774a53c77a5a9721059d8ef48588c624cc1c0c6b7ef585fb6",
+      "original": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-1/pilot-v33-eight305/generated6a78-meaning301/owned/artifacts/default/ZesuSsz/Compliance/DecodeItemPathAgreement.v",
+        "sha256": "5bcbea855055b79774a53c77a5a9721059d8ef48588c624cc1c0c6b7ef585fb6"
+      },
+      "ownership": "C: conditional source projection. Existing Compliance prerequisites retain their original ownership."
+    },
+    {
+      "file": "sources/meaning301/DecodeItemReturnExitResources.v",
+      "sha256": "3f6ba83d725fc5eaab42ce991150601a6b9349fc2d066c7660fe5979c6afb055",
+      "original": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-1/pilot-v33-eight305/generated6a78-meaning301/owned/artifacts/default/ZesuSsz/Compliance/DecodeItemReturnExitResources.v",
+        "sha256": "3f6ba83d725fc5eaab42ce991150601a6b9349fc2d066c7660fe5979c6afb055"
+      },
+      "ownership": "C: conditional source projection. Existing Compliance prerequisites retain their original ownership."
+    },
+    {
+      "file": "sources/meaning301/VerificationControl301.v",
+      "sha256": "807d532c10a488b23fe474d927ad9ec1896fd8c6311d98e0ee0ce1f75df32637",
+      "original_request": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-1/pilot-v33-eight305/generated6a78-meaning301/INPUTS.json",
+        "sha256": "b20a5b97b8e7ff3223bdff7674f65f7a05183218345308a7d2340f1c94d2c984"
+      },
+      "ownership": "C: exact module_m wrapper control"
     }
   ],
   "prior_commits": [
