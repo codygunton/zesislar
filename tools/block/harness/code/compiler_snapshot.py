@@ -25,6 +25,7 @@ _VERIFIED_READS = ContextVar('compiler_verified_reads', default=None)
 _VERIFIED_NAMESPACES = ContextVar('compiler_verified_namespaces', default=None)
 _ACCEPTED_PREFIXES = {}
 _SNAPSHOT_READS = {}
+_SNAPSHOT_OBJECTS = {}
 _COMPILATION_ROWS = {}
 _CHAIN_SNAPSHOTS = {}
 _COMPILER_BINDINGS = {}
@@ -79,6 +80,31 @@ def _read_snapshot(reference):
     if tracker is not None and path.name != 'INDEX.json':
         tracker[str(path)] = _identity(path)
     return cached[1]
+
+
+def _release_provider_snapshot(reference, value):
+    """Keep only the authenticated publication path in the provider process."""
+    key = (os.getpid(), _encoded(reference))
+    cached = _SNAPSHOT_READS.pop(key, None)
+    if cached is not None and cached[1] is value:
+        _SNAPSHOT_OBJECTS.clear()
+        _SNAPSHOT_OBJECTS[key] = (cached[0], value['objects'])
+
+
+def publication_objects(reference):
+    """Reuse the provider's path only while the private snapshot stays exact."""
+    key = (os.getpid(), _encoded(reference))
+    cached = _SNAPSHOT_OBJECTS.get(key)
+    if cached is not None:
+        path = Path(reference['path'])
+        info = path.lstat()
+        if _fields(info) == cached[0] and _private(info):
+            tracker = _VERIFIED_READS.get()
+            if tracker is not None and path.name != 'INDEX.json':
+                tracker[str(path)] = _identity(path)
+            return cached[1]
+        _SNAPSHOT_OBJECTS.pop(key, None)
+    return _read_snapshot(reference)['objects']
 
 
 def _chain_snapshot(reference, runtime_reference, compiler_inputs):
@@ -698,6 +724,7 @@ class OutputReceipts:
     def __init__(self, reference, runtime_reference, key=None):
         snapshot=read(reference,runtime_reference)
         self.snapshot={name:json.loads(json.dumps(snapshot[name])) for name in ('runtime','producer','objects','compiler')}
+        _release_provider_snapshot(reference, snapshot)
         self.reference = dict(reference)
         self.key = key or secrets.token_hex(32)
         self.rows = []

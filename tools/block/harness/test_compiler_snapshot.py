@@ -53,6 +53,27 @@ class CompilerSnapshotTests(unittest.TestCase):
         self.assertEqual(ledger.snapshot['compiler']['sha256'],binding(self.compiler)['sha256'])
         self.assertEqual(ledger.reference,reference)
 
+    def test_provider_releases_full_snapshot_and_keeps_exact_publication_path(self):
+        from declaration_outputs import publication_lock
+        reference = self.seal()
+        key = (os.getpid(), S._encoded(reference))
+        self.read(reference)
+        self.assertIn(key, S._SNAPSHOT_READS)
+        manager = S.OutputReceipts(reference, self.reference)
+        self.assertNotIn(key, S._SNAPSHOT_READS)
+        self.assertEqual(S._SNAPSHOT_OBJECTS[key][1], str(manager.root))
+        with patch.object(S, '_read_private', side_effect=AssertionError('Snapshot parsed again')):
+            with publication_lock(reference):
+                pass
+        self.assertNotIn(key, S._SNAPSHOT_READS)
+        # A compiler process keeps the existing full-cache behavior.
+        self.read(reference)
+        self.assertIn(key, S._SNAPSHOT_READS)
+        self.snapshot_path.write_text(self.snapshot_path.read_text() + '\n')
+        with self.assertRaises(ValueError):
+            with publication_lock(reference):
+                pass
+
     def test_abort_preflight_has_bound_inputs_and_normal_output_receipts(self):
         from declaration_preflight import prepare
         from scratch_statement import source_statement
