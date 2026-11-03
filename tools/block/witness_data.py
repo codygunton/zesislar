@@ -213,6 +213,27 @@ def check_witness_shape(expected, supplied):
             raise ValueError("The witness slot type differs at slot " + str(index) + ".")
 
 
+def runtime_witness_slots(binding):
+    """Keep the complete telescope and authenticate each vacuous bitvector."""
+    _source_declaration(binding)
+    layout = declared_witness_slots(Path(binding['path']).read_text(), binding['declaration'])
+    result = []
+    for index, slot in enumerate(layout['declared']):
+        vacuous = slot in layout['vacuous']
+        row = dict(slot, declaration_index=index, vacuous=vacuous,
+                   name_origin={'declaration': binding, 'pointer': '/declared/' + str(index)})
+        if vacuous:
+            kind = slot['type'].split()
+            if len(kind) != 2 or kind[0] != 'bv' or not kind[1].isdigit() or int(kind[1]) < 1:
+                raise ValueError('A vacuous slot has no authorized fixed bitvector inhabitant.')
+            row['value_rule'] = {'kind': 'proven_vacuous_fixed_inhabitant',
+                                 'term': 'BV ' + kind[1] + '%N 0%Z'}
+        else:
+            row['value_rule'] = {'kind': 'authenticated_source_required'}
+        result.append(row)
+    return result
+
+
 def product(types):
     result = "unit"
     for kind in reversed(types):

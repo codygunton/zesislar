@@ -275,18 +275,46 @@ def derive_source_plan(context, *, register_bindings=None, allow_owned_registers
                         source_bindings=bindings, source_context=context)
 
 
+def derive_runtime_source_plan(context, authority, *, allow_owned_registers=False):
+    """Extend a checked used-slot plan without dropping runtime existentials."""
+    from witness_data import runtime_witness_slots
+    if bound_json(authority).get('schema') != 'zesu.witness-runtime-slot-correction.v1':
+        raise ValueError('The full runtime path needs its bound slot authority.')
+    plan = derive_source_plan(context, allow_owned_registers=allow_owned_registers)
+    slots = runtime_witness_slots(context['target_declaration'])
+    used = {row['binder']: row for row in plan['ordered_witnesses']}
+    witnesses = []
+    for slot in slots:
+        if slot['vacuous']:
+            witnesses.append({'binder': slot['name'], 'type': slot['type'],
+                              'vacuous': True, 'fixed_inhabitant': slot['value_rule']['term']})
+        else:
+            witnesses.append(dict(used[slot['name']], type=slot['type']))
+    return dict(plan, ordered_binders=[slot['name'] for slot in slots],
+                ordered_witnesses=witnesses,
+                runtime_slots={'authority': authority, 'slots': slots})
+
+
 def render_source_mapping(plan, *, name, target_application, source_application,
                           parameters, source_parameters, module_header=None):
     """Emit value mappings and capture declarations, never proof scripts."""
     from render_support import expression, identifier
-    from witness_data import declared_witness_slots, product
+    from witness_data import declared_witness_slots, product, runtime_witness_slots
 
     if plan.get('schema') != 'source.join-witness-plan.v2':
         raise ValueError('A typed mapping needs the authenticated source plan.')
     context = plan['source_context']
     target = context['target_declaration']
     layout = declared_witness_slots(Path(target['path']).read_text(), target['declaration'])
-    slots = layout['remaining']
+    runtime = plan.get('runtime_slots')
+    if runtime is not None:
+        if bound_json(runtime['authority']).get('schema') != 'zesu.witness-runtime-slot-correction.v1':
+            raise ValueError('The full runtime path needs its bound slot authority.')
+        expected_slots = runtime_witness_slots(target)
+        if runtime.get('slots') != expected_slots:
+            raise ValueError('The runtime slot identities or vacuous flags changed.')
+    slots = layout['declared'] if runtime is not None else layout['remaining']
+    input_slots = layout['remaining']
     if plan['ordered_binders'] != [slot['name'] for slot in slots]:
         raise ValueError('The source mapping changes declaration order.')
     witnesses = plan.get('ordered_witnesses', [])
@@ -295,8 +323,8 @@ def render_source_mapping(plan, *, name, target_application, source_application,
                 for witness, slot in zip(witnesses, slots))):
         raise ValueError('The source mapping changes witness order, count, or types.')
     # Recheck bound bytes and slot identities at the actual emission boundary.
-    sources = authenticate_sources(slots, plan['source_bindings'], context)
-    registers = owned_register_bindings(context) if any(slot['name'] not in sources for slot in slots) else {}
+    sources = authenticate_sources(input_slots, plan['source_bindings'], context)
+    registers = owned_register_bindings(context) if any(slot['name'] not in sources for slot in input_slots) else {}
     name = identifier(name, 'typed source mapping name')
     target_application = expression(target_application, 'mapping target application')
     source_application = expression(source_application, 'mapping source application')
@@ -351,16 +379,47 @@ def render_source_mapping(plan, *, name, target_application, source_application,
     source_typed = telescope(source_parameters)
     types = [slot['type'] for slot in slots]
     kind = product(types)
+    input_kind = product([slot['type'] for slot in input_slots])
     arguments = ''.join(' (' + parameter['name'] + ')' for parameter in parameters)
     data_name = name + '_data'
     source_head = _application_arguments(source_application)[0]
     target_head = _application_arguments(target_application)[0]
     opacity = 'Global Typeclasses Opaque ' + source_head + ' ' + target_head + '.\n'
+    data_expression = 'source_values'
+    if runtime is not None:
+        local_names = []
+        reserved = set(names) | {'source_values'}
+        for index in range(len(input_slots)):
+            local = 'captured_slot_' + str(index)
+            while local in reserved:
+                local += '_'
+            reserved.add(local)
+            local_names.append(local)
+        values = {slot['name']: local for slot, local in zip(input_slots, local_names)}
+        data_expression = 'tt'
+        by_binder = {row['binder']: row for row in witnesses}
+        for slot in reversed(runtime['slots']):
+            if slot['vacuous']:
+                witness = by_binder[slot['name']]
+                if (witness.get('vacuous') is not True or
+                        witness.get('fixed_inhabitant') != slot['value_rule']['term']):
+                    raise ValueError('A vacuous slot changed its authorized fixed inhabitant.')
+                value = '(' + slot['value_rule']['term'] + ')'
+            else:
+                if by_binder[slot['name']].get('vacuous') or 'fixed_inhabitant' in by_binder[slot['name']]:
+                    raise ValueError('A used slot cannot receive a fixed inhabitant.')
+                value = values[slot['name']]
+            data_expression = '(' + value + ', ' + data_expression + ')'
+        if local_names:
+            pattern = 'tt'
+            for local in reversed(local_names):
+                pattern = '(' + local + ', ' + pattern + ')'
+            data_expression = "let '" + pattern + ' := source_values in ' + data_expression
     source = opacity + ('Definition ' + data_name + ' `{!islaG Sigma} `{!threadG}' + typed +
-              ' (source_values : ' + kind + ') : ' + kind + ' := source_values.\n')
+              ' (source_values : ' + input_kind + ') : ' + kind + ' := ' + data_expression + '.\n')
     inputs = []
     by_name = {w['binder']: w for w in plan['ordered_witnesses']}
-    for slot in slots:
+    for slot in input_slots:
         bound = slot['name']
         if bound in sources:
             if by_name[bound].get('source_key') != sources[bound]['source_key']:
@@ -379,7 +438,7 @@ def render_source_mapping(plan, *, name, target_application, source_application,
         input_term = '(ZesuSourcePair ' + item + ' ' + input_term + ')'
     source += '#[export] Instance ' + name + '_enabled : ZesuStepSourceWitnesses := I.\n'
     source += ('#[export] Instance ' + name + ' `{!islaG Sigma} `{!threadG}' + typed + ' :\n'
-               '  ZesuEntrySourceWitnessMapping (' + target_application + ') (' + kind + ') (' + kind + ') :=\n'
+               '  ZesuEntrySourceWitnessMapping (' + target_application + ') (' + input_kind + ') (' + kind + ') :=\n'
                '  {| zesu_source_witness_input := ' + input_term + ';\n'
                '     zesu_source_witness_mapping := ' + data_name + arguments + ' |}.\n')
     declaration = context['source_declaration']
@@ -456,4 +515,5 @@ def render_source_mapping(plan, *, name, target_application, source_application,
                                 'names_from_authenticated_source': True,
                                 'runtime_names_recovered': False},
             'internal_order': list(reversed(slots)), 'proof_scripts_emitted': False,
-            'capture_uses_source_locations': True}
+            'capture_uses_source_locations': True,
+            'runtime_slot_binding': runtime}

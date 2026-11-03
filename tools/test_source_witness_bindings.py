@@ -9,7 +9,7 @@ import unittest
 sys.path.insert(0, str(Path(__file__).parent / 'block'))
 from join_generalize import witness_plan
 from source_witness_bindings import (digest, derive_source_plan, record_trace_origins,
-                                     render_source_mapping)
+                                     render_source_mapping, derive_runtime_source_plan)
 from symbolic_state import Expr, SymbolicState
 
 
@@ -105,6 +105,56 @@ class SourceWitnessBindingsTests(unittest.TestCase):
                 self.context['report'] = self.bind(self.report)
                 with self.assertRaisesRegex(ValueError, message):
                     self.plan()
+
+    def runtime_fixture(self, kind='bv 64'):
+        self.target.write_text(self.target.read_text().replace('(∃ ', '(∃ (unused : ' + kind + ') ', 1))
+        self.context['target_declaration'].update(self.bind(self.target))
+        authority = self.root / 'AUTHORITY.json'
+        authority.write_text(json.dumps({'schema': 'zesu.witness-runtime-slot-correction.v1'}))
+        return self.bind(authority)
+
+    def runtime_output(self, plan):
+        return render_source_mapping(plan, name='source_mapping', target_application='target_owner',
+                                     source_application='source_owner', parameters=[], source_parameters=[])
+
+    def test_full_runtime_keeps_vacuous_slot_and_used_source_identity(self):
+        authority = self.runtime_fixture()
+        phase = derive_source_plan(self.context)
+        plan = derive_runtime_source_plan(self.context, authority)
+        output = self.runtime_output(plan)
+        self.assertEqual(plan['ordered_binders'], ['unused', 'x', 'y', 'i'])
+        self.assertEqual(plan['ordered_witnesses'][1:], phase['ordered_witnesses'])
+        self.assertTrue(plan['runtime_slots']['slots'][0]['vacuous'])
+        self.assertEqual(output['internal_order'][-1]['name'], 'unused')
+        self.assertIn('(BV 64%N 0%Z)', output['source'])
+        self.assertIn('let \'(captured_slot_0,', output['source'])
+        self.assertIn('ZesuWitnessProfileSlot "unused"', output['source'])
+        self.assertEqual(len(output['profile_binding']['source_slots']), 4)
+        self.assertEqual(len(output['profile_binding']['data_slots']), 4)
+        self.assertEqual(phase['ordered_binders'], ['x', 'y', 'i'])
+
+    def test_full_runtime_refuses_changed_vacuity_or_used_fixed_value(self):
+        plan = derive_runtime_source_plan(self.context, self.runtime_fixture())
+        changed = copy.deepcopy(plan)
+        changed['runtime_slots']['slots'][1]['vacuous'] = True
+        with self.assertRaisesRegex(ValueError, 'vacuous flags changed'):
+            self.runtime_output(changed)
+        changed = copy.deepcopy(plan)
+        changed['ordered_witnesses'][1].update(vacuous=True, fixed_inhabitant='BV 64%N 0%Z')
+        with self.assertRaisesRegex(ValueError, 'used slot cannot'):
+            self.runtime_output(changed)
+        changed = copy.deepcopy(plan)
+        changed['ordered_witnesses'][0]['fixed_inhabitant'] = 'BV 64%N 1%Z'
+        with self.assertRaisesRegex(ValueError, 'changed its authorized'):
+            self.runtime_output(changed)
+
+    def test_full_runtime_refuses_unbound_authority_and_unsupported_inhabitant(self):
+        authority = self.runtime_fixture('Z')
+        with self.assertRaisesRegex(ValueError, 'no authorized fixed'):
+            derive_runtime_source_plan(self.context, authority)
+        Path(authority['path']).write_text('{}')
+        with self.assertRaisesRegex(ValueError, 'bound witness source changed'):
+            derive_runtime_source_plan(self.context, authority)
 
     def test_actual_emitter_uses_only_source_keys(self):
         plan = derive_source_plan(self.context)
