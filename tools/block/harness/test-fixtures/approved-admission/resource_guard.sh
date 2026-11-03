@@ -37,7 +37,7 @@
 # plus 20 GiB. Hold below 20 GiB available; kill at or below 10 GiB available.
 # Ordinary proofs use 6 GiB; issue-10 probes use 64 GiB and require 84 GiB
 # available. CPU-only issue-10 probes use 6 GiB and require 26 GiB available.
-# All probe classes share six admitted aggregate slots.
+# All probe classes share ZESU_PROBE_AGGREGATE_LIMIT slots (default 16).
 # The temporary used-memory policy is explicit: launch below 200 GiB,
 # hold at 215 GiB, and kill at 230 GiB. It does not change scope fences.
 # Memory limits remain 150G for batches and 120G for gates, with no swap.
@@ -51,7 +51,7 @@
 # either state. Jobs inside a running batch go on, so a running arm
 # completes; the gate waits for it and then marks the lock `held`.
 # Validated issue-10 probes continue beside gates. They retain compiler
-# and memory accounting, with at most six admitted probe aggregates machine-wide.
+# and memory accounting, with a configurable aggregate limit (default 16).
 # While an arm populates its build directory, or while a disk is more than
 # 80 % busy, launches also keep a ramp of two per second across guards;
 # otherwise they fill the width as slots free up.
@@ -656,7 +656,11 @@ probe_count() {
 
 # confirm_coqc calls this under the same admission mutex as publication.
 probe_admission_reason() {
-  local owner=$1 aggregate key admitted count=0
+  local owner=$1 aggregate key admitted count=0 limit=${ZESU_PROBE_AGGREGATE_LIMIT:-16}
+  if ! [[ "$limit" =~ ^[1-9][0-9]{0,8}$ ]]; then
+    echo "resource guard: invalid probe aggregate limit" >&2
+    return 2
+  fi
   if [ -n "${ZESU_AGGREGATE_SLICE:-}" ]; then
     if ! aggregate=$(probe_owner_aggregate "$owner" "$ZESU_AGGREGATE_SLICE"); then
       echo "resource guard: probe owner is outside its declared aggregate" >&2
@@ -670,8 +674,8 @@ probe_admission_reason() {
     [ "$admitted" != "$key" ] || return 0
     count=$(( count + 1 ))
   done < <(probe_keys)
-  if (( count >= 24 )); then
-    echo "issue10 probes at their twenty-four-aggregate limit"
+  if (( count >= limit )); then
+    echo "issue10 probes at their $limit-aggregate limit"
   fi
 }
 

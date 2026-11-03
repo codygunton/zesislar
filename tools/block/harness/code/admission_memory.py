@@ -29,6 +29,14 @@ PUBLIC_GUARD_HISTORY = {
         'tools/block/harness/runtime-tools/resource_guard.sh': '6e4940725cf327cc7bc1693ec121d98145dbb618a09cc0b011a6f2ea4d8f5fcf',
     },
 }
+PUBLIC_GUARD_PREDECESSORS = (
+    PUBLIC_GUARD_HISTORY,
+    {'commit': '1bfccdef857827ad460038972fbb80480bfa30a7', 'templates': {
+        'tools/resource_guard.sh': 'ce7be67dcee1a6a612eed7a4a18f6e98f406312cd36517c04b516881655debe8',
+        'tools/block/harness/runtime-tools/resource_guard.sh': '6736b1c0197c449d4c67e22cfc6465176e6fa30d1fc6eaad59ba359f92b82baf',
+    }},
+)
+
 
 
 class RejectedScopeSetup(ValueError):
@@ -560,7 +568,7 @@ class ScopeReader:
             raise ValueError('The public guard source is not owned.')
         tools = next(parent for parent in Path(__file__).resolve().parents if parent.name == 'tools')
         digest = hashlib.sha256(path.read_bytes()).hexdigest()
-        approved = digest in PUBLIC_GUARD_HISTORY['templates'].values()
+        approved = any(digest in row['templates'].values() for row in PUBLIC_GUARD_PREDECESSORS)
         for public in (tools / 'resource_guard.sh',
                        tools / 'block/harness/runtime-tools/resource_guard.sh'):
             try:
