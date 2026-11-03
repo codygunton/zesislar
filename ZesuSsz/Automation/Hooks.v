@@ -23,6 +23,32 @@ Require Import InstrSpecs.Lookup.
 Require Import ZesuSsz.Automation.ResourceGroups.
 Require Import ZesuSsz.Automation.ConjunctMatch.
 
+(* Expose symbolic lookup results with kernel reduction. Do not normalize their
+   payloads in the VM. Closed inputs retain the upstream VM path. *)
+Ltac zesu_regcol_compute_hint :=
+  clear;
+  autounfold with regcol_compute_unfold;
+  repeat match goal with H := _ |- _ => clearbody H end;
+  remember_regcol;
+  lazymatch goal with
+  | |- LiTactic (regcol_compute_hint ?f ?a) =>
+    let input := constr:(f a) in
+    tryif is_closed_term input then
+      let result := eval vm_compute in input in
+      lazymatch result with
+      | Some ?value => apply (regcol_compute_hint_hint value)
+      end;
+      abstract (vm_compute; exact eq_refl)
+    else
+      let result := eval hnf in input in
+      lazymatch result with
+      | Some ?value => apply (regcol_compute_hint_hint value)
+      end;
+      abstract (reflexivity)
+  end.
+
+Ltac isla.automation.solve_regcol_compute_hint ::= zesu_regcol_compute_hint.
+
 (* The pure closer must not unfold an Iris entailment into arithmetic. *)
 Ltac zesu_final_pure_head_gate :=
   lazymatch goal with
