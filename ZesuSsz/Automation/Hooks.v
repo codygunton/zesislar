@@ -2104,7 +2104,32 @@ Ltac zesu_integer_array_address_if_enabled :=
         end))
   end.
 
+Ltac zesu_refute_aligned_return_fault :=
+  lazymatch goal with
+  | Hfault : bv_extract 0 1 (bv_shiftr
+      (bv_or (bv_and (bv_add (Z_to_bv 64 ?R) (BV 64 0))
+        (BV 64 18446744073709551614)) (BV 64 0)) (BV 64 1)) = BV 1 1 |- _ =>
+    lazymatch goal with
+    | Hlower : (0 <= R)%Z, Hupper : (R < ?upper)%Z,
+      Haligned : (R mod 4 = 0)%Z |- _ =>
+      let maximum := constr:(18446744073709551616%Z) in
+      constr_eq upper maximum;
+      let Hlow := fresh "HreturnLowBit" in
+      assert (Hlow : bv_extract 0 1 (Z_to_bv 64 R) = BV 1 0) by
+        (clear -Hlower Hupper Haligned; bv_solve);
+      let Hhigh := fresh "HreturnHighBit" in
+      assert (Hhigh : bv_extract 1 1 (Z_to_bv 64 R) = BV 1 0) by
+        (clear -Hlower Hupper Haligned; bv_solve);
+      let HnoFault := fresh "HreturnNoFault" in
+      pose proof (ZesuSsz.Automation.IntegerReturn.zesu_return_fault_bit_from_extracts
+        (Z_to_bv 64 R) Hlow Hhigh) as HnoFault;
+      rewrite HnoFault in Hfault;
+      discriminate
+    end
+  end.
+
 Ltac zesu_liAStep :=
+  first [solve [zesu_refute_aligned_return_fault] | (
  liEnsureInvariant;
  try progress (unfold TRACE_LET);
  try liAIntroduceLetInGoal;
@@ -2140,7 +2165,7 @@ Ltac zesu_liAStep :=
   | liStep
   | liLetBindHint
   | liUnfoldLate
- ]; liSimpl.
+ ]; liSimpl)].
 
 Ltac liAStep ::= zesu_liAStep.
 
