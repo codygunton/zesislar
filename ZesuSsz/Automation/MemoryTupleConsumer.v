@@ -157,36 +157,11 @@ Ltac zesu_memory_frame_first :=
   lazymatch goal with
   | |- environments.envs_entails _ (@bi_sep _ ?first _) =>
       lazymatch first with @bi_pure _ _ => fail 0 | _ => idtac end;
-      iMatchHyp ltac:(fun name body =>
-        lazymatch first with
-        | mem_mapsto_array_def _ ?fraction ?bytes =>
-          lazymatch body with
-          | @mem_mapsto_array _ _ 8%N _ ?availableFraction ?availableBytes =>
-              constr_eq fraction availableFraction;
-              let Hbytes := fresh "HmemoryFrameBytes" in
-              assert (Hbytes : bytes = availableBytes) by reflexivity;
-              clear Hbytes;
-              rewrite <- isla.ghost_state.mem_mapsto_array_eq
-          end
-        | _ =>
-          let requestedHead := get_head first in
-          let availableHead := get_head body in
-          constr_eq requestedHead availableHead
-        end;
-        progress (iFrame name))
-  end.
-
-Ltac zesu_memory_facts_shape requested :=
-  lazymatch requested with
-  | @bi_sep _ ?head ?tail =>
-      zesu_memory_facts_shape head; zesu_memory_facts_shape tail
-  | @bi_pure _ _ => idtac
-  | _ => is_var requested
+      iMatchHyp ltac:(fun name body => progress (iFrame name))
   end.
 
 (* Scalar constraints select constrained fields. The array consumer preserves
    the source addresses, fractions, and byte order. Callers supply pure logic. *)
-(* Commit each matched phase before a later refusal can repeat its search. *)
 Ltac zesu_memory_tuple consume_facts finish :=
   once (try zesu_memory_registered_intro;
   ResourceGroups.zesu_open_resource_groups;
@@ -197,20 +172,16 @@ Ltac zesu_memory_tuple consume_facts finish :=
       assert (Hone : stride = 1%N) by (clear - Hwidth; Lia.lia);
       subst stride
   end;
-  zesu_memory_open_tuple constr:(16%nat));
-  once (repeat first [progress zesu_memory_frame_first |
-    progress zesu_memory_join_arrays]);
-  once (try (lazymatch goal with
+  zesu_memory_open_tuple constr:(16%nat);
+  repeat iMatchHyp ltac:(fun name body => is_var body; progress (iFrame name));
+  repeat first [progress zesu_memory_frame_first |
+    progress zesu_memory_join_arrays];
+  try (lazymatch goal with
   | |- environments.envs_entails _ (@bi_sep _ (isla.ghost_state.mem_mapsto_array_def _ _ _) _) =>
       iSplitL;
       [rewrite <- isla.ghost_state.mem_mapsto_array_eq;
        ByteArrayAssemblyCodec.zesu_byte_array_assemble_codec | idtac]
   end));
-  once (lazymatch goal with
-  | |- environments.envs_entails _ ?requested =>
-      zesu_memory_facts_shape requested
-  end;
-  repeat iMatchHyp ltac:(fun name body => is_var body; progress (iFrame name)));
   lazymatch goal with
   | |- environments.envs_entails _ ?requested => consume_facts requested
   end;

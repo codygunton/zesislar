@@ -1,0 +1,154 @@
+{
+  "schema": 1,
+  "reference_commit": "56db09078ebb9c79fe2cb0d748a0f1890233fe3c",
+  "reference_packet_sha256": "aca81674bf8e680be8beef5bbc9075770830484fe2444942c9a824479013fb93",
+  "purpose": "Require the consumer to reach the original callback boundary for five authenticated frontier goals.",
+  "cases": [
+    {
+      "id": "6960-goal0",
+      "fixture_sha256": "dd99fb56b4db97e770f97c7670ecde944e0f19b40187d14ee197ee0e5ca36606",
+      "original_statement_sha256": "8dea34ced5cd024d57d2b91bf72a009cfb530ff51568f3d31403885de0b387f6",
+      "initial_checkpoint_sha256": "656ba35375ad7e06f33f527ce33b2a6c8951d9b03476b3ee8ff3cf1caf089775",
+      "consumer_checkpoint_sha256": "1d30d3440b56a1feb9c9d9180ec10cd370237cbb2852b612f4d653adfca46887",
+      "refusal_checkpoint_sha256": "1d30d3440b56a1feb9c9d9180ec10cd370237cbb2852b612f4d653adfca46887",
+      "stages": [
+        {
+          "label": "changed_consumer_ownership",
+          "command_sha256": "e2d12ec32b86963ffa5e6154d8d6aab60342d637463a22e9a99a6a5539274708",
+          "success": true,
+          "diagnostic": ""
+        },
+        {
+          "label": "existing_source_fact_callback",
+          "command_sha256": "778e66cf22d573317b9a684eab7367808ea191a95a3d0afc4bc420c4eea3b94d",
+          "success": false,
+          "diagnostic": "Coq: Tactic failure: Unsupported fixed source fact: (decodeItemDomainAt (decodeItemReturnAddress args) decodeItemC1BDomain args)."
+        }
+      ],
+      "reference_groups": {
+        "active_goals": 1,
+        "stack_entries": 0,
+        "shelved_goals": 0,
+        "given_up_goals": 0
+      }
+    },
+    {
+      "id": "6960-goal1",
+      "fixture_sha256": "866b9bad616f60c9e0b1dcea7fe8c172e30ed1d6e78d59a506206cdade3235f5",
+      "original_statement_sha256": "2e91755eb46eabb5df4a44638c070e129c9d565d6d0b532b9647a095b360c58a",
+      "initial_checkpoint_sha256": "60b605b4c452455cf32018f461269f5b622b270ff05b14de3e506ef595a8d603",
+      "consumer_checkpoint_sha256": "370d61851ac5d86d8834a229d72e2dcae3c797085e6c7edba5fdaa634d74eec3",
+      "refusal_checkpoint_sha256": "370d61851ac5d86d8834a229d72e2dcae3c797085e6c7edba5fdaa634d74eec3",
+      "stages": [
+        {
+          "label": "changed_consumer_ownership",
+          "command_sha256": "e2d12ec32b86963ffa5e6154d8d6aab60342d637463a22e9a99a6a5539274708",
+          "success": true,
+          "diagnostic": ""
+        },
+        {
+          "label": "existing_source_fact_callback",
+          "command_sha256": "778e66cf22d573317b9a684eab7367808ea191a95a3d0afc4bc420c4eea3b94d",
+          "success": false,
+          "diagnostic": "Coq: Tactic failure: Unsupported fixed source fact: (decodeItemDomainAt (decodeItemReturnAddress args) decodeItemC1BDomain args)."
+        }
+      ],
+      "reference_groups": {
+        "active_goals": 1,
+        "stack_entries": 0,
+        "shelved_goals": 4,
+        "given_up_goals": 0
+      }
+    },
+    {
+      "id": "697c-goal0",
+      "fixture_sha256": "fd3351e33c6fc196480f8f943dedad7a99450e4e83daef29d80fa996a74c5c40",
+      "original_statement_sha256": "a023cd6622ed7260f210fb3be589b2f83b890cffa819bbf56c223fe61449f1ef",
+      "initial_checkpoint_sha256": "cf984cc07982d9a3024e0ed96f95c43463b98f235364aa82310efe095310bf11",
+      "consumer_checkpoint_sha256": "391dd06e91bd31c86e61560dccb0b5f04cde1e183711d2481cf9eaa295e45613",
+      "refusal_checkpoint_sha256": "391dd06e91bd31c86e61560dccb0b5f04cde1e183711d2481cf9eaa295e45613",
+      "stages": [
+        {
+          "label": "changed_consumer_ownership",
+          "command_sha256": "e2d12ec32b86963ffa5e6154d8d6aab60342d637463a22e9a99a6a5539274708",
+          "success": true,
+          "diagnostic": ""
+        },
+        {
+          "label": "existing_source_fact_callback",
+          "command_sha256": "778e66cf22d573317b9a684eab7367808ea191a95a3d0afc4bc420c4eea3b94d",
+          "success": false,
+          "diagnostic": "Coq: Tactic failure: Unsupported fixed source fact: (bv_signed (bv_zero_extend 128 (Z_to_bv 64 (decodeItemOutputPointer args) + 32)) >= bv_signed 2684354560)."
+        }
+      ],
+      "reference_groups": {
+        "active_goals": 1,
+        "stack_entries": 0,
+        "shelved_goals": 6,
+        "given_up_goals": 0
+      }
+    },
+    {
+      "id": "69b0-goal1",
+      "fixture_sha256": "b385e18ff829bcce91600989feef7e38e39d3e684660ad0ce9dc6f6838821af1",
+      "original_statement_sha256": "032b4b3e805c78da51f484bcc91b6b27c69d74359e3a9155926cb6f67468ef4f",
+      "initial_checkpoint_sha256": "0504c30363f167d07496824e796981e4f51715ae65604e23cdcb91a30922de9a",
+      "consumer_checkpoint_sha256": "6ec988a805aa0f71e5a45b5581c94310bb597611cf1cda4ab74a5c6e07614109",
+      "refusal_checkpoint_sha256": "6ec988a805aa0f71e5a45b5581c94310bb597611cf1cda4ab74a5c6e07614109",
+      "stages": [
+        {
+          "label": "changed_consumer_ownership",
+          "command_sha256": "e2d12ec32b86963ffa5e6154d8d6aab60342d637463a22e9a99a6a5539274708",
+          "success": true,
+          "diagnostic": ""
+        },
+        {
+          "label": "existing_source_fact_callback",
+          "command_sha256": "778e66cf22d573317b9a684eab7367808ea191a95a3d0afc4bc420c4eea3b94d",
+          "success": true,
+          "diagnostic": ""
+        },
+        {
+          "label": "existing_pure_finish",
+          "command_sha256": "be68d8bcd2e21a7780deb592aa00521bdc36f8da95800591163fdae19c496734",
+          "success": false,
+          "diagnostic": "Coq: No matching clauses for match."
+        }
+      ],
+      "reference_groups": {
+        "active_goals": 1,
+        "stack_entries": 0,
+        "shelved_goals": 0,
+        "given_up_goals": 0
+      }
+    },
+    {
+      "id": "69e8-goal0",
+      "fixture_sha256": "b9e0db2c5e8fb923ab308c677acbb70d16e2879ff1d02b53f1952ad682d300b6",
+      "original_statement_sha256": "3ecf83681c53cdc77879af59494a540c794bede4a46c74fd9a2136f3a9e443db",
+      "initial_checkpoint_sha256": "ccc1930daaa7e38fd744cca354d44acf5846ad878a54fd7fc4232c1e08af1b69",
+      "consumer_checkpoint_sha256": "1b1bb66da2f7197d8cbcf87c73e5fe9ac5718017c1059b267bc7ef4416c23aee",
+      "refusal_checkpoint_sha256": "1b1bb66da2f7197d8cbcf87c73e5fe9ac5718017c1059b267bc7ef4416c23aee",
+      "stages": [
+        {
+          "label": "changed_consumer_ownership",
+          "command_sha256": "e2d12ec32b86963ffa5e6154d8d6aab60342d637463a22e9a99a6a5539274708",
+          "success": true,
+          "diagnostic": ""
+        },
+        {
+          "label": "existing_source_fact_callback",
+          "command_sha256": "778e66cf22d573317b9a684eab7367808ea191a95a3d0afc4bc420c4eea3b94d",
+          "success": false,
+          "diagnostic": "Coq: Tactic failure: Unsupported fixed source fact: (0 \u2264 bv_unsigned (bv_and (bv_and (bv_sign_extend 64 (nth 0 (decodeItemInputBytes args) 0%bv)) 255) 127))."
+        }
+      ],
+      "reference_groups": {
+        "active_goals": 1,
+        "stack_entries": 0,
+        "shelved_goals": 6,
+        "given_up_goals": 0
+      }
+    }
+  ]
+}
