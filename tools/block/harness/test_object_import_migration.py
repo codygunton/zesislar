@@ -7,8 +7,9 @@ import unittest
 from unittest.mock import patch
 
 import scratch
-from entry_chain import binding
+from entry_chain import binding, read_bound
 import object_import_migration as migration
+import object_imports
 from object_imports import compatibility
 REAL_INSPECTOR = migration.inspector
 
@@ -86,6 +87,53 @@ class MigrationTests(unittest.TestCase):
                                self.compiler, self.flags, self.workspace)
             self.assertFalse(any(key[0] == reference['path'] for key in active['records']))
             self.assertTrue(active['records'])  # Shared origin inputs remain cached.
+
+    def test_record_reads_the_migration_receipt_once(self):
+        reference = self.save('MIGRATION.json', self.create())
+        with migration.batch() as active, \
+                patch.object(object_imports, 'read_bound', wraps=read_bound) as record_read, \
+                patch.object(migration, 'read_bound', wraps=read_bound) as migration_read:
+            imports, workspace = object_imports._record(reference, self.module,
+                self.source, self.obj, self.compiler, self.flags, self.workspace)
+            reads = record_read.call_args_list + migration_read.call_args_list
+            self.assertEqual(sum(call.args == (reference,) for call in reads), 1)
+            self.assertEqual(set(imports), {'ZesuSsz.PureFacts'})
+            self.assertEqual(workspace, self.workspace)
+            self.assertFalse(any(key[0] == reference['path'] for key in active['records']))
+
+    def test_public_validate_still_reads_and_authenticates_the_receipt(self):
+        reference = self.save('MIGRATION.json', self.create())
+        with patch.object(migration, 'read_bound', wraps=read_bound) as reads:
+            imports, workspace = migration.validate(reference, self.module,
+                self.source, self.obj, self.compiler, self.flags, self.workspace)
+            self.assertEqual(sum(call.args == (reference,) for call in reads.call_args_list), 1)
+        self.assertEqual(set(imports), {'ZesuSsz.PureFacts'})
+        self.assertEqual(workspace, self.workspace)
+        Path(reference['path']).write_text('{}')
+        for consumer in [migration.validate, object_imports._record]:
+            with self.subTest(consumer=consumer.__name__):
+                with self.assertRaisesRegex(ValueError, 'A chain input changed'):
+                    consumer(reference, self.module, self.source, self.obj,
+                             self.compiler, self.flags, self.workspace)
+
+    def test_record_and_public_validate_keep_the_same_refusals(self):
+        original = self.create()
+        for change, message in [('origin', 'authenticated receipt'),
+                                ('import', 'resolved current bank'),
+                                ('comparison', 'complete successful comparisons')]:
+            receipt = copy.deepcopy(original)
+            if change == 'origin':
+                receipt['origin']['kind'] = 'individual-accepted-compilation'
+            elif change == 'import':
+                receipt['imported_objects'].pop()
+            else:
+                receipt['comparison']['checks'].pop()
+            reference = self.save('MIGRATION.json', receipt)
+            for consumer in [migration.validate, object_imports._record]:
+                with self.subTest(change=change, consumer=consumer.__name__):
+                    with self.assertRaisesRegex(ValueError, message):
+                        consumer(reference, self.module, self.source, self.obj,
+                                 self.compiler, self.flags, self.workspace)
 
     def test_changed_PureFacts_refuses_ReturnBundle(self):
         receipt = self.create()
