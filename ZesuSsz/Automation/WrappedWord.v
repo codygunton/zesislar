@@ -4,8 +4,6 @@ Local Open Scope Z_scope.
 
 (* Wrapped-word helpers. The versioned proof profile controls their activation. *)
 Ltac zesu_wrapped_word_range arithmetic :=
-  try (apply andb_true_iff; split);
-  try apply bool_decide_eq_true_2;
   rewrite !bv_add_unsigned !Z_to_bv_unsigned ;
   repeat rewrite bv_unsigned_BV;
   repeat rewrite bv_wrap_add_idemp_l;
