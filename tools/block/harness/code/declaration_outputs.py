@@ -18,9 +18,8 @@ GIB = 1024 ** 3
 @contextmanager
 def publication_lock(snapshot_reference, *, exclusive=False):
     """Prevent compiler validation from observing a partially published pair."""
-    from compiler_snapshot import _read_snapshot
-    snapshot = _read_snapshot(snapshot_reference)
-    root = Path(snapshot['objects'])
+    from compiler_snapshot import publication_objects
+    root = Path(publication_objects(snapshot_reference))
     descriptor = os.open(root / 'PUBLICATION.lock', os.O_RDWR | os.O_CREAT | os.O_NOFOLLOW, 0o600)
     try:
         info = os.fstat(descriptor)
