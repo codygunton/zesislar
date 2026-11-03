@@ -1406,6 +1406,559 @@
           "sha256": "761c54adc72f98658a3838bafe2633cb8551f85d272f9c2c47c548861a38b588"
         }
       }
+    },
+    {
+      "kind": "accepted-closed-compilations",
+      "binding": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-v34-two-module-continuation-v1/CLOSED-COMPILATION-ORIGIN.json",
+        "sha256": "bf008e07d2fa51871e320bdf5dbfa14e3df7d71ec131d7fee8cfd41f789fda44"
+      },
+      "module_receipts": {
+        "ZesuSsz.Stock.DecodeItemRegions.a800d69f8": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-v34-loader-reuse-keep-going-v1/prepare005/jobs/prerequisites/native/validated-objects/OBJECT-000000.json",
+          "sha256": "57b52a149ae0e51944ee6eb4a14942b64449362f8ec824a5a3ca49e125931bca"
+        },
+        "ZesuSsz.Stock.DecodeItemRegions.a800d69dc": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-v34-loader-reuse-keep-going-v1/prepare005/jobs/prerequisites/native/validated-objects/OBJECT-000001.json",
+          "sha256": "23ab486d82831d1e3c60b38178cbc2c8f92957980b708d0f11f941bafd2c96dc"
+        },
+        "ZesuSsz.Stock.DecodeItemRegions.a800d6a38": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-v34-loader-reuse-keep-going-v1/prepare005/jobs/prerequisites/native/validated-objects/OBJECT-000002.json",
+          "sha256": "d495869e16de68f8828805d6291d6dc30003a31ef91f29b88c5ba295d36540ce"
+        },
+        "ZesuSsz.Stock.DecodeItemRegions.a800d6a28": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-v34-loader-reuse-keep-going-v1/prepare005/jobs/prerequisites/native/validated-objects/OBJECT-000003.json",
+          "sha256": "45438c5340a49835c9c4ac5048802ad86a4566c0c5214eebcd526d9143857d47"
+        },
+        "ZesuSsz.Stock.DecodeItemRegions.a800d69d0": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-v34-loader-reuse-keep-going-v1/prepare005/jobs/prerequisites/native/validated-objects/OBJECT-000004.json",
+          "sha256": "eee908225a87f6f4f7427e7769ddc1a529141df2cf298540380cb22e8a4f22ff"
+        },
+        "ZesuSsz.Stock.DecodeItemRegions.a800d69d8": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-v34-loader-reuse-keep-going-v1/prepare005/jobs/prerequisites/native/validated-objects/OBJECT-000005.json",
+          "sha256": "e5d793d997239da893b21cb33616f361ed71a42416b021dd4c4f04a15db83609"
+        },
+        "ZesuSsz.Stock.DecodeItemRegions.a800d69f4": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-v34-loader-reuse-keep-going-v1/prepare005/jobs/prerequisites/native/validated-objects/OBJECT-000006.json",
+          "sha256": "787b8d39a989a574364f96bb68586ad22cc37af0c32fa7519426d6daa7648efb"
+        },
+        "ZesuSsz.Stock.DecodeItemRegions.a800d6a30": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-v34-loader-reuse-keep-going-v1/prepare005/jobs/prerequisites/native/validated-objects/OBJECT-000007.json",
+          "sha256": "0778d05fec6c99391c1c29ce6d8bb3029ebe8b4d6e70fdc3ef85bd2cd2e653eb"
+        },
+        "ZesuSsz.Stock.DecodeItemRegions.a800d69f0": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-v34-loader-reuse-keep-going-v1/prepare005/jobs/prerequisites/native/validated-objects/OBJECT-000008.json",
+          "sha256": "52f8e26b5b312a6de5acaa18050a119a2f38c3b06c700f2a522c0436b77c21e9"
+        },
+        "ZesuSsz.Stock.DecodeItemRegions.a800d69d4": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-v34-loader-reuse-keep-going-v1/prepare005/jobs/prerequisites/native/validated-objects/OBJECT-000009.json",
+          "sha256": "d1453f8d1cc5358c5307d606dc78b78eff47f91ed184b1deda2002932bf443f0"
+        },
+        "ZesuSsz.Stock.DecodeItemRegions.a800d6a54": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-v34-loader-reuse-keep-going-v1/prepare005/jobs/prerequisites/native/validated-objects/OBJECT-000010.json",
+          "sha256": "e86cc5e0b38de1d579af08b396b106516e4cea3401cec6b78bf158cfef2ee29d"
+        },
+        "ZesuSsz.Stock.DecodeItemRegions.a800d6a14": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-v34-loader-reuse-keep-going-v1/prepare005/jobs/prerequisites/native/validated-objects/OBJECT-000011.json",
+          "sha256": "78436c6475592bf24b404d91672009fbcd6f52691d87f9d6d8174927ba459f26"
+        },
+        "ZesuSsz.Stock.DecodeItemRegions.a800d69e0": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-v34-loader-reuse-keep-going-v1/prepare005/jobs/prerequisites/native/validated-objects/OBJECT-000012.json",
+          "sha256": "df979799bef77edce93a2ed78aa841daff2153f88e1505622071e75ba68e5fa7"
+        },
+        "ZesuSsz.Stock.DecodeItemRegions.a800d6a18": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-v34-loader-reuse-keep-going-v1/prepare005/jobs/prerequisites/native/validated-objects/OBJECT-000013.json",
+          "sha256": "d3c4dd9502527deacdd99d962c7d9859dcbaf7f139d3a82ec66fd8ec45cc3df2"
+        },
+        "ZesuSsz.Stock.DecodeItemRegions.a800d6a40": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-v34-loader-reuse-keep-going-v1/prepare005/jobs/prerequisites/native/validated-objects/OBJECT-000014.json",
+          "sha256": "c220433a40d3c1bef03afb426796489535e40968d550da2b4ee3c5e415816b59"
+        },
+        "ZesuSsz.Stock.DecodeItemRegions.a800d6a00": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-v34-loader-reuse-keep-going-v1/prepare005/jobs/prerequisites/native/validated-objects/OBJECT-000015.json",
+          "sha256": "27e03428704a442d65df3c53c836ae33b8d2405831cd8bc0aa37d4d72393f861"
+        },
+        "ZesuSsz.Stock.DecodeItemRegions.a800d6a04": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-v34-loader-reuse-keep-going-v1/prepare005/jobs/prerequisites/native/validated-objects/OBJECT-000016.json",
+          "sha256": "a08c5de4b3b486d3624d4bbfd1fffef63e2535bfb2f295961e2cbef944c1d583"
+        },
+        "ZesuSsz.Stock.DecodeItemRegions.a800d6a24": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-v34-loader-reuse-keep-going-v1/prepare005/jobs/prerequisites/native/validated-objects/OBJECT-000017.json",
+          "sha256": "1cd02cf4d1d6a6b4c5092930043f5351a4f3077015c7c392141a6f0688fac71a"
+        },
+        "ZesuSsz.Compliance.SailRun": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-v34-loader-reuse-keep-going-v1/prepare005/jobs/prerequisites/native/validated-objects/OBJECT-000018.json",
+          "sha256": "99f930377976ca99e3c5aedf30689ebc7ce6c9c72af1608a1f442da1bc868021"
+        },
+        "ZesuSsz.Stock.DecodeItemRegions.a800d69ec": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-v34-loader-reuse-keep-going-v1/prepare005/jobs/prerequisites/native/validated-objects/OBJECT-000019.json",
+          "sha256": "6b37bffb4e7c6bd1bcc1f977907d8b8e5e25f23fb272d22974d5940c29aca09c"
+        },
+        "ZesuSsz.Stock.DecodeItemRegions.a800d6a44": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-v34-loader-reuse-keep-going-v1/prepare005/jobs/prerequisites/native/validated-objects/OBJECT-000020.json",
+          "sha256": "a9dad5a04e7d81a7c4d27f1566374eafd570b7185c8915e5982ea1932cc226b9"
+        },
+        "ZesuSsz.Stock.DecodeItemRegions.a800d6a10": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-v34-loader-reuse-keep-going-v1/prepare005/jobs/prerequisites/native/validated-objects/OBJECT-000021.json",
+          "sha256": "b88418ddbefec0eea13c9e3375be087c344c014f4d5278806ada0a7b3fd27d81"
+        },
+        "ZesuSsz.Stock.DecodeItemRegions.a800d6a0c": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-v34-loader-reuse-keep-going-v1/prepare005/jobs/prerequisites/native/validated-objects/OBJECT-000022.json",
+          "sha256": "4c58fca3197e590aaab4c02701a0f99d0a29788cefac721d4ba2208507d8f592"
+        },
+        "ZesuSsz.Stock.DecodeItemRegions.a800d6a4c": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-v34-loader-reuse-keep-going-v1/prepare005/jobs/prerequisites/native/validated-objects/OBJECT-000023.json",
+          "sha256": "2d1c76ecc1bca1783821fae696523203d33cb9dfe86f0fe5881452addb974f35"
+        },
+        "ZesuSsz.Stock.DecodeItemRegions.a800d6a2c": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-v34-loader-reuse-keep-going-v1/prepare005/jobs/prerequisites/native/validated-objects/OBJECT-000024.json",
+          "sha256": "5b9c42e93a4cd0122f212346baf91a15d88e8c6a3b022ed8581abadd9bef31af"
+        },
+        "ZesuSsz.Stock.DecodeItemRegions.a800d69cc": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-v34-loader-reuse-keep-going-v1/prepare005/jobs/prerequisites/native/validated-objects/OBJECT-000025.json",
+          "sha256": "e09af0104bc728d6c2bdd8fe81400ec9219183165a0d876c474544f2043e61bc"
+        },
+        "ZesuSsz.Stock.DecodeItemRegions.a800d69fc": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-v34-loader-reuse-keep-going-v1/prepare005/jobs/prerequisites/native/validated-objects/OBJECT-000026.json",
+          "sha256": "c9d36ebb85d012e7880bb63e9c2ab3d20cde8c73f317f8c615bbf49694f51f98"
+        },
+        "ZesuSsz.Stock.DecodeItemRegions.a800d69e4": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-v34-loader-reuse-keep-going-v1/prepare005/jobs/prerequisites/native/validated-objects/OBJECT-000027.json",
+          "sha256": "b06eecfe5614e9cacd987521640073a386a2c72a8d6f4d323cbd5eb1a490a559"
+        },
+        "ZesuSsz.Stock.DecodeItemRegions.a800d6a3c": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-v34-loader-reuse-keep-going-v1/prepare005/jobs/prerequisites/native/validated-objects/OBJECT-000028.json",
+          "sha256": "4f83ce2e5bb515d06928271325449ddc82e538984879d0d0cbcea56c243c5ff2"
+        },
+        "ZesuSsz.Stock.DecodeItemRegions.a800d6a08": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-v34-loader-reuse-keep-going-v1/prepare005/jobs/prerequisites/native/validated-objects/OBJECT-000029.json",
+          "sha256": "8ab64fe27392c86fad78f6a7372ef0c13af26b7759aa3b772b0c081d1b0775be"
+        },
+        "ZesuSsz.Stock.DecodeItemRegions.a800d6a50": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-v34-loader-reuse-keep-going-v1/prepare005/jobs/prerequisites/native/validated-objects/OBJECT-000030.json",
+          "sha256": "f6808dbed155453d1006b78cd826d9a17b5e8b8c52552024b39dcbd38af688c4"
+        },
+        "ZesuSsz.Stock.DecodeItemRegions.a800d6a20": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-v34-loader-reuse-keep-going-v1/prepare005/jobs/prerequisites/native/validated-objects/OBJECT-000031.json",
+          "sha256": "d3cd9b947a718b4c3383782afc2379409e495acf52abf5c8ed73e88dabcc6307"
+        },
+        "ZesuSsz.Stock.DecodeItemRegions.a800d6a34": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-v34-loader-reuse-keep-going-v1/prepare005/jobs/prerequisites/native/validated-objects/OBJECT-000032.json",
+          "sha256": "d26aff5bd1d90bf4646c105c12330c2b1c06d6bfe0fb189f2e598c99ca1283f4"
+        },
+        "ZesuSsz.Stock.DecodeItemRegions.a800d69e8": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-v34-loader-reuse-keep-going-v1/prepare005/jobs/prerequisites/native/validated-objects/OBJECT-000033.json",
+          "sha256": "835c1e36b58967a21f36aafbd16ecb4749b92d41b8b0d3e218d7e73d6931f93c"
+        },
+        "ZesuSsz.Stock.DecodeItemRegions.a800d6a58": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-v34-loader-reuse-keep-going-v1/prepare005/jobs/prerequisites/native/validated-objects/OBJECT-000034.json",
+          "sha256": "ce0952b0a99f00fbf1b29d04e429cc199d05badbb49e131c234bfa8153ea7695"
+        },
+        "ZesuSsz.Stock.DecodeItemRegions.a800d6a1c": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-v34-loader-reuse-keep-going-v1/prepare005/jobs/prerequisites/native/validated-objects/OBJECT-000035.json",
+          "sha256": "221648f8bcaf5e05b08acb78757ffcf71103641875c1e6be5712c949515f7dc3"
+        },
+        "ZesuSsz.Stock.DecodeItemRegions.a800d6a48": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-v34-loader-reuse-keep-going-v1/prepare005/jobs/prerequisites/native/validated-objects/OBJECT-000036.json",
+          "sha256": "6d8214c8031d9c0f9401507c0db8216208661f878227fcf55d6bdf0035e1b7f7"
+        },
+        "ZesuSsz.Stock.DecodeItemRegions.a800d6a60": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-v34-loader-reuse-keep-going-v1/prepare005/jobs/prerequisites/native/validated-objects/OBJECT-000037.json",
+          "sha256": "1a55a83b6fed7ef10814e7fd206fe5ff613ab9c1331a872f7e12bda64e96af9c"
+        },
+        "ZesuSsz.Stock.DecodeItemRegions.a800d6a5c": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-v34-loader-reuse-keep-going-v1/prepare005/jobs/prerequisites/native/validated-objects/OBJECT-000038.json",
+          "sha256": "58c523dc9b2bbf53f5effe32c5f620b0e59364cbd291e5a53ec026abbf2105c9"
+        },
+        "ZesuSsz.Stock.DecodeItemRegions.a800d6a6c": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-v34-loader-reuse-keep-going-v1/prepare005/jobs/prerequisites/native/validated-objects/OBJECT-000039.json",
+          "sha256": "fbdd1cd46d9922c65d9e8758b555851df21c1987d3abeffd71e3f0b8a5517ac2"
+        },
+        "ZesuSsz.Stock.DecodeItemRegions.a800d6abc": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-v34-loader-reuse-keep-going-v1/prepare005/jobs/prerequisites/native/validated-objects/OBJECT-000040.json",
+          "sha256": "7fe420e070e82811244f180af13a728aca7b031661abe787294a04c7e08c2c3c"
+        },
+        "ZesuSsz.Stock.DecodeItemRegions.a800d6aa0": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-v34-loader-reuse-keep-going-v1/prepare005/jobs/prerequisites/native/validated-objects/OBJECT-000041.json",
+          "sha256": "ede71f1d997c85ebc4038e375207ea21c64b2c1db0b4e4b36c9374f2a9290434"
+        },
+        "ZesuSsz.Stock.DecodeItemRegions.a800d6a70": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-v34-loader-reuse-keep-going-v1/prepare005/jobs/prerequisites/native/validated-objects/OBJECT-000042.json",
+          "sha256": "73e47623df6b3957071c530829d64c6677219fb8d980b7315bcb0d5709f96a81"
+        },
+        "ZesuSsz.Stock.DecodeItemRegions.a800d6a88": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-v34-loader-reuse-keep-going-v1/prepare005/jobs/prerequisites/native/validated-objects/OBJECT-000043.json",
+          "sha256": "9309e80bab00443e225d67e10187ab6633afbdf4d97e0316e9230bd584551696"
+        },
+        "ZesuSsz.Stock.DecodeItemRegions.a800d6aa8": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-v34-loader-reuse-keep-going-v1/prepare005/jobs/prerequisites/native/validated-objects/OBJECT-000044.json",
+          "sha256": "05cd178f9a829e4f62ad25bcd22238323e54218b4fe6c41a372051d830608945"
+        },
+        "ZesuSsz.Stock.DecodeItemRegions.a800d6a80": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-v34-loader-reuse-keep-going-v1/prepare005/jobs/prerequisites/native/validated-objects/OBJECT-000045.json",
+          "sha256": "b1e89b3b8f7f89df715a739ebde2ec043c1e82a1510c7c893d0e3ea864e13dd6"
+        },
+        "ZesuSsz.Stock.DecodeItemRegions.a800d6a64": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-v34-loader-reuse-keep-going-v1/prepare005/jobs/prerequisites/native/validated-objects/OBJECT-000046.json",
+          "sha256": "5460569f96907f3f7c82956d6e5619a9c215bd29894a9829caec5083c5940f26"
+        },
+        "ZesuSsz.Stock.DecodeItemRegions.a800d6a84": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-v34-loader-reuse-keep-going-v1/prepare005/jobs/prerequisites/native/validated-objects/OBJECT-000047.json",
+          "sha256": "9604dcf242e8346acf2f28a5644be40a4950942b08f17c4458429477f6f6ac9e"
+        },
+        "ZesuSsz.Stock.DecodeItemRegions.a800d6ac8": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-v34-loader-reuse-keep-going-v1/prepare005/jobs/prerequisites/native/validated-objects/OBJECT-000048.json",
+          "sha256": "2552fd5df9ceadeeab626b49d3f7670e64b63e1cdef9a1e0d8f3dd90c10e28b8"
+        },
+        "ZesuSsz.Stock.DecodeItemRegions.a800d6a9c": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-v34-loader-reuse-keep-going-v1/prepare005/jobs/prerequisites/native/validated-objects/OBJECT-000049.json",
+          "sha256": "d61b9a1defa4dc9f947353d8e242648cd3d24531db67e0a5e95c7fb368dd71ee"
+        },
+        "ZesuSsz.Stock.DecodeItemRegions.a800d6a74": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-v34-loader-reuse-keep-going-v1/prepare005/jobs/prerequisites/native/validated-objects/OBJECT-000050.json",
+          "sha256": "e76fcdb1ebb85649cf377afbe9dc89cca130cec1526556223175f47f09f0dbca"
+        },
+        "ZesuSsz.Stock.DecodeItemRegions.a800d6ab8": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-v34-loader-reuse-keep-going-v1/prepare005/jobs/prerequisites/native/validated-objects/OBJECT-000051.json",
+          "sha256": "e1e6253ca7612571d71381dc8b941694caa1d24bdfabdfec0369901885d24bd8"
+        },
+        "ZesuSsz.Stock.DecodeItemRegions.a800d6a90": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-v34-loader-reuse-keep-going-v1/prepare005/jobs/prerequisites/native/validated-objects/OBJECT-000052.json",
+          "sha256": "b461e6c8adb5ade05c54d78928db7395abeccfe4dafa25c5e0a80d8802c3060d"
+        },
+        "ZesuSsz.Stock.DecodeItemRegions.a800d6acc": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-v34-loader-reuse-keep-going-v1/prepare005/jobs/prerequisites/native/validated-objects/OBJECT-000053.json",
+          "sha256": "9259393384aeb9d78fd62616e5e236c93a3f5b57a9395b2d3abbb826f04865e8"
+        },
+        "ZesuSsz.Stock.DecodeItemRegions.a800d6ab4": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-v34-loader-reuse-keep-going-v1/prepare005/jobs/prerequisites/native/validated-objects/OBJECT-000054.json",
+          "sha256": "0d08d0e5976013fa1da445ee801da21bf41fdd25512df0361c50c4106dba8857"
+        },
+        "ZesuSsz.Stock.DecodeItemRegions.a800d6a7c": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-v34-loader-reuse-keep-going-v1/prepare005/jobs/prerequisites/native/validated-objects/OBJECT-000055.json",
+          "sha256": "d0aa880d8933ce14a4d48ca89d4d088dc3d07bfa41a887a4cba6310a909ec97e"
+        },
+        "ZesuSsz.Stock.DecodeItemRegions.a800d6aac": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-v34-loader-reuse-keep-going-v1/prepare005/jobs/prerequisites/native/validated-objects/OBJECT-000056.json",
+          "sha256": "d49169ddfeabf92dcd573fb907f85343284d846532da99b4c0ebdc2c14a4dc0b"
+        },
+        "ZesuSsz.Stock.DecodeItemRegions.a800d6ab0": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-v34-loader-reuse-keep-going-v1/prepare005/jobs/prerequisites/native/validated-objects/OBJECT-000057.json",
+          "sha256": "2837d00bf527b92b7a472f5f41771a32a3429091e95d25a9381678466ac6697b"
+        },
+        "ZesuSsz.Stock.DecodeItemRegions.a800d6ac4": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-v34-loader-reuse-keep-going-v1/prepare005/jobs/prerequisites/native/validated-objects/OBJECT-000058.json",
+          "sha256": "a0e59e7501492162874ec4701a047ced5dd21b9215de30ae94c3613c3c86ce2c"
+        },
+        "ZesuSsz.Stock.DecodeItemRegions.a800d6adc": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-v34-loader-reuse-keep-going-v1/prepare005/jobs/prerequisites/native/validated-objects/OBJECT-000059.json",
+          "sha256": "d483bb41c8ee23943e043df2ed01565e0c14254094715d8685be61ed820ebd4f"
+        },
+        "ZesuSsz.Stock.DecodeItemRegions.a800d6ac0": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-v34-loader-reuse-keep-going-v1/prepare005/jobs/prerequisites/native/validated-objects/OBJECT-000060.json",
+          "sha256": "eb9698dc7a08874ee8776ac432d81abbf42d51bf912fbae56633ee0ac98ef641"
+        },
+        "ZesuSsz.Stock.DecodeItemRegions.a800d6a94": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-v34-loader-reuse-keep-going-v1/prepare005/jobs/prerequisites/native/validated-objects/OBJECT-000061.json",
+          "sha256": "954124e85a6670a50ae0ba7474574d20e4e2d77878223503a569cea7fc957e0b"
+        },
+        "ZesuSsz.Stock.DecodeItemRegions.a800d6a98": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-v34-loader-reuse-keep-going-v1/prepare005/jobs/prerequisites/native/validated-objects/OBJECT-000062.json",
+          "sha256": "3e85de359d6d4002c6b9757e083bfd63b7ae4afe654c790892778fb6dd7de6b5"
+        },
+        "ZesuSsz.Stock.DecodeItemRegions.a800d6ae0": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-v34-loader-reuse-keep-going-v1/prepare005/jobs/prerequisites/native/validated-objects/OBJECT-000063.json",
+          "sha256": "bd5b3fb658cc62153dd872ba59cd963748f7be86fe8ff2968a0525c2cfa5611c"
+        },
+        "ZesuSsz.Stock.DecodeItemRegions.a800d6a78": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-v34-loader-reuse-keep-going-v1/prepare005/jobs/prerequisites/native/validated-objects/OBJECT-000064.json",
+          "sha256": "60975d52b73087b9aec1b132b48b0355748db4961f7b00d12f59e8afeb034c68"
+        },
+        "ZesuSsz.Stock.DecodeItemRegions.a800d6a68": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-v34-loader-reuse-keep-going-v1/prepare005/jobs/prerequisites/native/validated-objects/OBJECT-000065.json",
+          "sha256": "e82e6975165a31f90c41ea4df9817fbc624e45a4e165f3e15e08a7d40bf48491"
+        },
+        "ZesuSsz.Stock.DecodeItemRegions.a800d6ad4": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-v34-loader-reuse-keep-going-v1/prepare005/jobs/prerequisites/native/validated-objects/OBJECT-000066.json",
+          "sha256": "2a125ac05b206da528d345491ee05ae3e02866f5974e226c0c9d1672b4a5557c"
+        },
+        "ZesuSsz.Stock.DecodeItemRegions.a800d6a8c": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-v34-loader-reuse-keep-going-v1/prepare005/jobs/prerequisites/native/validated-objects/OBJECT-000067.json",
+          "sha256": "671d96d846f3a6d4ae1a25cfdc1a04d57cabf4d0c6d9752dbc9b0b64318aaa35"
+        },
+        "ZesuSsz.Contracts.RlpDecodeItemSchema": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-v34-loader-reuse-keep-going-v1/prepare005/jobs/prerequisites/native/validated-objects/OBJECT-000068.json",
+          "sha256": "7efd93c4f22e14f67eed17a4cc4189e11b0bb947e84bed1ce8627d26bc0f2750"
+        },
+        "ZesuSsz.Stock.DecodeItemRegions.a800d6aa4": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-v34-loader-reuse-keep-going-v1/prepare005/jobs/prerequisites/native/validated-objects/OBJECT-000069.json",
+          "sha256": "a1d93f94990090deeb27017afee68eeb1d2ecb1673f11ae553d7d230b912a378"
+        },
+        "ZesuSsz.Stock.DecodeItemRegions.a800d6ad8": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-v34-loader-reuse-keep-going-v1/prepare005/jobs/prerequisites/native/validated-objects/OBJECT-000070.json",
+          "sha256": "a223562587c693ad5b24c19e8abcd65ac132df5cfb8dc8bc51cddbd10b86167c"
+        },
+        "ZesuSsz.Stock.DecodeItemRegions.a800d6ad0": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-v34-loader-reuse-keep-going-v1/prepare005/jobs/prerequisites/native/validated-objects/OBJECT-000071.json",
+          "sha256": "b91afbac85375636628f0cf0106850b5e8704d8785374cf32d4f4ee7dca488d4"
+        },
+        "ZesuSsz.Stock.DecodeItemRegions.a800d6ae4": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-v34-loader-reuse-keep-going-v1/prepare005/jobs/prerequisites/native/validated-objects/OBJECT-000072.json",
+          "sha256": "86151609d13f1fe21e8ab6e50eb53e6161206c3e7116ca6baf20d92854b116f4"
+        },
+        "ZesuSsz.Stock.DecodeItemRegions.a800d6ae8": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-v34-loader-reuse-keep-going-v1/prepare005/jobs/prerequisites/native/validated-objects/OBJECT-000073.json",
+          "sha256": "e1012c6203f831507851019cc26d3b75c805302a3eb0440069383d57862d36f4"
+        },
+        "ZesuStock.CalleeIdentity": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-v34-loader-reuse-keep-going-v1/prepare005/jobs/prerequisites/native/validated-objects/OBJECT-000074.json",
+          "sha256": "3abf665c41569ae8788cad68b340ef4d0d1b4d57ee3954c5105c19633fd8df53"
+        },
+        "ZesuSsz.Stock.DecodeItemRegions.a800d6b14": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-v34-loader-reuse-keep-going-v1/prepare005/jobs/prerequisites/native/validated-objects/OBJECT-000075.json",
+          "sha256": "ff019580b00da1834459f69697b838da68a23145b80c622eec6ae60b691dd829"
+        },
+        "ZesuSsz.Stock.DecodeItemRegions.a800d6af8": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-v34-loader-reuse-keep-going-v1/prepare005/jobs/prerequisites/native/validated-objects/OBJECT-000076.json",
+          "sha256": "2060653775e482eabf12658cf8c720a2f5717ee0cb81fea653c2535a91b8804e"
+        },
+        "ZesuSsz.Stock.DecodeItemRegions.a800d6b2c": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-v34-loader-reuse-keep-going-v1/prepare005/jobs/prerequisites/native/validated-objects/OBJECT-000077.json",
+          "sha256": "8a549e5aa3b8be3dca7965eafc7619004b73f9b4684fe0be154abfcfb36211f4"
+        },
+        "ZesuSsz.Stock.DecodeItemRegions.a800d6b0c": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-v34-loader-reuse-keep-going-v1/prepare005/jobs/prerequisites/native/validated-objects/OBJECT-000078.json",
+          "sha256": "6b7e56d420858a3bab98a549792e93a9933462b19678b45a9a4c3c69ba396037"
+        },
+        "ZesuSsz.Stock.DecodeItemRegions.a800d6b20": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-v34-loader-reuse-keep-going-v1/prepare005/jobs/prerequisites/native/validated-objects/OBJECT-000079.json",
+          "sha256": "4bf89eb440132864d509d412647cfb3b967a383651a51a1d59a73af89a2477f7"
+        },
+        "ZesuSsz.Stock.DecodeItemRegions.a800d6af0": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-v34-loader-reuse-keep-going-v1/prepare005/jobs/prerequisites/native/validated-objects/OBJECT-000080.json",
+          "sha256": "908ad8af42825e88eb5a32c6c078965a20c20a39bd82c170c986b78e31eccdf9"
+        },
+        "ZesuSsz.Stock.DecodeItemRegions.a800d6b00": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-v34-loader-reuse-keep-going-v1/prepare005/jobs/prerequisites/native/validated-objects/OBJECT-000081.json",
+          "sha256": "3116907ef82d7f7ba692a725f7383b91f459685b39956d25d48f5b725bcb39c1"
+        },
+        "ZesuSsz.Contracts.RlpDecodeItemContract": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-v34-loader-reuse-keep-going-v1/prepare005/jobs/prerequisites/native/validated-objects/OBJECT-000082.json",
+          "sha256": "4fa96eed410e88e5c10910f9f9e101fb3912e76cf9defd742c44818f9ee60ae1"
+        },
+        "ZesuSsz.Stock.DecodeItemRegions.a800d6af4": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-v34-loader-reuse-keep-going-v1/prepare005/jobs/prerequisites/native/validated-objects/OBJECT-000083.json",
+          "sha256": "7542e49a2ec880ce9c627e80124d59ac61c84e1b7362823ea9de3745bde7f2d9"
+        },
+        "ZesuSsz.Stock.DecodeItemRegions.a800d6afc": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-v34-loader-reuse-keep-going-v1/prepare005/jobs/prerequisites/native/validated-objects/OBJECT-000084.json",
+          "sha256": "1c8bd3b98f4fa224bbbf2725347f02ea34867beddab8f4cd6df2d5ed13ad065a"
+        },
+        "ZesuSsz.Stock.DecodeItemRegions.a800d6aec": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-v34-loader-reuse-keep-going-v1/prepare005/jobs/prerequisites/native/validated-objects/OBJECT-000085.json",
+          "sha256": "0b6ef2a9d27e83f3ad3711d07b8b47d9c9d71dbffd7579a188211942cbcdeb1b"
+        },
+        "ZesuSsz.Stock.DecodeItemRegions.a800d6b18": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-v34-loader-reuse-keep-going-v1/prepare005/jobs/prerequisites/native/validated-objects/OBJECT-000086.json",
+          "sha256": "9b1728c7eb88a0aeb702daada273be8a9a9dbbb487330d58980d55e6e55ef947"
+        },
+        "ZesuSsz.Stock.DecodeItemRegions.a800d6b10": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-v34-loader-reuse-keep-going-v1/prepare005/jobs/prerequisites/native/validated-objects/OBJECT-000087.json",
+          "sha256": "f96d0a010d863160319bbf8cb387e15ccc8e428348e20927381b57a8b39f71c0"
+        },
+        "ZesuSsz.Stock.DecodeItemRegions.a800d6b24": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-v34-loader-reuse-keep-going-v1/prepare005/jobs/prerequisites/native/validated-objects/OBJECT-000088.json",
+          "sha256": "56212c4412087fb75b376b1d1870db0e2b849ef35755467f4d5e1c3d0c820428"
+        },
+        "ZesuSsz.Stock.DecodeItemRegions.a800d6b08": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-v34-loader-reuse-keep-going-v1/prepare005/jobs/prerequisites/native/validated-objects/OBJECT-000089.json",
+          "sha256": "85c3ce8ee83e196c82b422f2023810bfae1fad41e84a7a7d2b8bd51349bb6343"
+        },
+        "ZesuSsz.Stock.DecodeItemRegions.a800d6b28": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-v34-loader-reuse-keep-going-v1/prepare005/jobs/prerequisites/native/validated-objects/OBJECT-000090.json",
+          "sha256": "e4009dc14909b2db36ac150a52fe204b3795feef42e210e6fbb7e8a79c94b0de"
+        },
+        "ZesuSsz.Stock.DecodeItemRegions.a800d6b04": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-v34-loader-reuse-keep-going-v1/prepare005/jobs/prerequisites/native/validated-objects/OBJECT-000091.json",
+          "sha256": "d1577d5a721e6471272a5f4fac51de5cdc500a0bdb89bd00e7969d83d42490b9"
+        },
+        "ZesuSsz.Stock.DecodeItemRegions.a800d6b1c": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-v34-loader-reuse-keep-going-v1/prepare005/jobs/prerequisites/native/validated-objects/OBJECT-000092.json",
+          "sha256": "77131a62b27a4f2fc455f2b642a85f172c004166d0a1d3a56583508864fa0456"
+        },
+        "ZesuSsz.Stock.Closure.index_decodeItem": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-v34-loader-reuse-keep-going-v1/prepare005/jobs/prerequisites/native/validated-objects/OBJECT-000093.json",
+          "sha256": "cf247d5624f3294e1bff0e462f0b05e8900fc1fb8317215408f77de1872a6d6a"
+        },
+        "ZesuSsz.Contracts.DecodeItemSelected": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-v34-loader-reuse-keep-going-v1/prepare005/jobs/prerequisites/native/validated-objects/OBJECT-000094.json",
+          "sha256": "773abeaa176458332438c76ca4cc0cb6bb64bf1b8b891477bc9570c8b8488de3"
+        },
+        "ZesuSsz.Contracts.DecodeItemCompositional": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-v34-loader-reuse-keep-going-v1/prepare005/jobs/prerequisites/native/validated-objects/OBJECT-000095.json",
+          "sha256": "297a924854b7bb190748fe966a0c971ee94cf7f6c94c620581f94ef15bc4e4a5"
+        },
+        "ZesuSsz.Evidence.ArrayContinuationControls": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-v34-loader-reuse-keep-going-v1/prepare005/jobs/prerequisites/native/validated-objects/OBJECT-000096.json",
+          "sha256": "e41bbb9751c7647a09000b83ff1dc6fa1b016a106a22aaffd179c3c2d1887ec7"
+        },
+        "ZesuSsz.Evidence.CodecArrayReadControls": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-v34-loader-reuse-keep-going-v1/prepare005/jobs/prerequisites/native/validated-objects/OBJECT-000097.json",
+          "sha256": "6134239dc37eef90d569419a6895107bf3ad707068b8cd16a3d59e4b809cc6ea"
+        },
+        "ZesuSsz.Evidence.MachineSlice6960ScopeRegression": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-v34-loader-reuse-keep-going-v1/prepare005/jobs/prerequisites/native/validated-objects/OBJECT-000098.json",
+          "sha256": "e0752bad96ecab786e946d2dacbd964600413aac2e43cf3d09783a4d07752695"
+        },
+        "ZesuSsz.Generated.DecodeItem.MachinePilot322Entries": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-v34-loader-reuse-keep-going-v1/prepare005/jobs/prerequisites/native/validated-objects/OBJECT-000099.json",
+          "sha256": "bce06a94bdcc195af3931dc38d74c0c9328aef38460ef45907fb6847ebafbfd9"
+        },
+        "ZesuSsz.Generated.DecodeItem.MachineBranch199Entries": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-v34-loader-reuse-keep-going-v1/prepare005/jobs/prerequisites/native/validated-objects/OBJECT-000100.json",
+          "sha256": "8ca1f90c4d39d487f5459acaa65638619746e3ba650dfbc337f8c541527cb07f"
+        },
+        "ZesuSsz.Generated.DecodeItem.MachineBranch198Entries": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-v34-loader-reuse-keep-going-v1/prepare005/jobs/prerequisites/native/validated-objects/OBJECT-000101.json",
+          "sha256": "36e6f2209c8a15da423abeda65b9553b9ed7bf90fd3b6d9f34ec711beb885ea4"
+        },
+        "ZesuSsz.Generated.DecodeItem.MachinePilot322Structural": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-v34-loader-reuse-keep-going-v1/prepare005/jobs/prerequisites/native/validated-objects/OBJECT-000102.json",
+          "sha256": "0ea2cda933e438c8fdc7b9513bcb5e4037a471637f088453274bbbbed21ac306"
+        },
+        "ZesuSsz.Generated.DecodeItem.MachineBranch198Structural": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-v34-loader-reuse-keep-going-v1/prepare005/jobs/prerequisites/native/validated-objects/OBJECT-000103.json",
+          "sha256": "a54cae022844609455319a04ee626d91d2c86c73ff6b2b940b60f7e1096b9156"
+        },
+        "ZesuSsz.Generated.DecodeItem.MachineBranch199Structural": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-v34-loader-reuse-keep-going-v1/prepare005/jobs/prerequisites/native/validated-objects/OBJECT-000104.json",
+          "sha256": "c8f02887a3ecb84370965b8a26533cf92842a392fb16f40abab1cdda85d4b498"
+        },
+        "ZesuSsz.Evidence.SignedMaskControls": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-v34-loader-reuse-keep-going-v1/prepare005/jobs/prerequisites/native/validated-objects/OBJECT-000105.json",
+          "sha256": "b71208bf14664f803ea673782e8c59663c0dc13c7527cec84fd808b75c22dcef"
+        },
+        "ZesuSsz.Evidence.SignedMaskDirectImportControls": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-v34-loader-reuse-keep-going-v1/prepare005/jobs/prerequisites/native/validated-objects/OBJECT-000106.json",
+          "sha256": "0f8b8a6589eaf9dbf4d04c406bb01389388d76d2aefabce7a7e08522d0228bd6"
+        },
+        "ZesuSsz.Evidence.V34VmClosedActivation": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-v34-loader-reuse-keep-going-v1/prepare005/jobs/prerequisites/native/validated-objects/OBJECT-000107.json",
+          "sha256": "f7f058086a288b80d0ce28c5d2cc006935622c1fe18c2caf67b533ab27ee21dc"
+        },
+        "ZesuSsz.Evidence.V34VmClosedAdditionalControls": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-v34-loader-reuse-keep-going-v1/prepare005/jobs/prerequisites/native/validated-objects/OBJECT-000108.json",
+          "sha256": "ba4a8b28cc4d3544ff55b8fc9d57616595d776327db8b4ae8213ec6016f7de58"
+        },
+        "ZesuSsz.Evidence.V34VmClosedCanonicalControls": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-v34-loader-reuse-keep-going-v1/prepare005/jobs/prerequisites/native/validated-objects/OBJECT-000109.json",
+          "sha256": "c7e892794c232910478c8747a8f37b0e37004ca630ab1c674a7caea31ee5a618"
+        },
+        "ZesuSsz.Evidence.WordIdentityControls": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-v34-loader-reuse-keep-going-v1/prepare005/jobs/prerequisites/native/validated-objects/OBJECT-000110.json",
+          "sha256": "67070ee1079f06ba2cba9462c96a81ae28e28b59ada2813f31a87047252f1a01"
+        },
+        "ZesuSsz.Generated.DecodeItem.EntryWitnessData329": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-v34-loader-reuse-keep-going-v1/prepare005/jobs/prerequisites/native/validated-objects/OBJECT-000111.json",
+          "sha256": "a8f284ea9cacd4a0c8a2c9b1afc9ffb367f25093e838f200e0c8415f66e50bef"
+        },
+        "ZesuSsz.Generated.DecodeItem.MachineExit6a24Entries322": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-v34-loader-reuse-keep-going-v1/prepare005/jobs/prerequisites/native/validated-objects/OBJECT-000112.json",
+          "sha256": "ce5829c57b09d2b26f363af94ef55777e3c54133bcb7c56d5b129ccdcfa854f9"
+        },
+        "ZesuSsz.Generated.DecodeItem.EntryWitnessData184": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-v34-loader-reuse-keep-going-v1/prepare005/jobs/prerequisites/native/validated-objects/OBJECT-000113.json",
+          "sha256": "9795fa719605d1454a0983bae32fa10e20026f8405e538a194eb27d76d4c38cd"
+        },
+        "ZesuSsz.Generated.DecodeItem.MachinePilot180Fallthrough6ac4Projection": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-v34-loader-reuse-keep-going-v1/prepare005/jobs/prerequisites/native/validated-objects/OBJECT-000114.json",
+          "sha256": "7ec1c5b8257ad90bbf228bcb32f3de9b55ec04394ccfb794d38428617ff35642"
+        },
+        "ZesuSsz.Generated.DecodeItem.Entry6a24WitnessRegistration": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-v34-loader-reuse-keep-going-v1/prepare005/jobs/prerequisites/native/validated-objects/OBJECT-000115.json",
+          "sha256": "76f023957df61f6ce76c6e17401be5e725771a0bf1355dc89eed5a712fbfe5c8"
+        },
+        "ZesuSsz.Generated.DecodeItem.MachineExit6a24Structural322": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-v34-loader-reuse-keep-going-v1/prepare005/jobs/prerequisites/native/validated-objects/OBJECT-000116.json",
+          "sha256": "bfbe588fcf8f4411f2c7902231b384947868a0841a38879c015d2018e774a062"
+        },
+        "ZesuSsz.Generated.DecodeItem.Entry6ac4WitnessRegistration": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-v34-loader-reuse-keep-going-v1/prepare005/jobs/prerequisites/native/validated-objects/OBJECT-000117.json",
+          "sha256": "c4719067dc1730383b08d5f42fa2cb59e4bc78e7c0e8f061648120aa4d3ac569"
+        },
+        "ZesuSsz.Generated.DecodeItem.MachinePilot180Entries": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-v34-loader-reuse-keep-going-v1/prepare005/jobs/prerequisites/native/validated-objects/OBJECT-000118.json",
+          "sha256": "36a8e56d7f606b5b47246daeca0a4dfc296b78524df92625ad0673a38338e965"
+        },
+        "ZesuSsz.Generated.DecodeItem.MachinePilot180Fallthrough6ac4ProjectionStructural": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-v34-loader-reuse-keep-going-v1/prepare005/jobs/prerequisites/native/validated-objects/OBJECT-000119.json",
+          "sha256": "9392a7166591a3ab9b1cee0eacbce5b4661ad64ebe000817f6a5505be194e111"
+        },
+        "ZesuSsz.Generated.DecodeItem.MachinePilot180LoweredEntries": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-v34-loader-reuse-keep-going-v1/prepare005/jobs/prerequisites/native/validated-objects/OBJECT-000120.json",
+          "sha256": "ad0916cabd7fbb2667faa441ffde8f64a942014af4b47995187859f63fb07240"
+        },
+        "ZesuSsz.Generated.DecodeItem.MachinePilot180Structural": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-v34-loader-reuse-keep-going-v1/prepare005/jobs/prerequisites/native/validated-objects/OBJECT-000121.json",
+          "sha256": "6c7e54dfe62ecc4cfe4b3d539989d023ee708e1662c9e90292ae256177f865be"
+        },
+        "ZesuSsz.Generated.DecodeItem.MachinePilot180Return6a78": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-v34-loader-reuse-keep-going-v1/prepare005/jobs/prerequisites/native/validated-objects/OBJECT-000122.json",
+          "sha256": "ae5999579e802381b48aa84f5dd770d4d2ea53e68bf844c921bf8b5c3c822386"
+        },
+        "ZesuSsz.Generated.DecodeItem.MachinePilot180LoweredStructural": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-v34-loader-reuse-keep-going-v1/prepare005/jobs/prerequisites/native/validated-objects/OBJECT-000123.json",
+          "sha256": "fe5ed62fdb600b87dbdd6871477c779cc1bd98803a287696a5925151fe5451c3"
+        },
+        "ZesuSsz.Generated.DecodeItem.MachinePilot322LoweredEntries": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-v34-loader-reuse-keep-going-v1/prepare005/jobs/prerequisites/native/validated-objects/OBJECT-000124.json",
+          "sha256": "c5926daa6ba437f34165d7ec794589c6c04bd819e6baa2887101c295c1a8ab9c"
+        },
+        "ZesuSsz.Generated.DecodeItem.MachinePilot180Return6a78Structural": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-v34-loader-reuse-keep-going-v1/prepare005/jobs/prerequisites/native/validated-objects/OBJECT-000125.json",
+          "sha256": "3d5274882c0576d3665119e2412f181c2c17919eed5f4ddfd4ca4975454cf380"
+        },
+        "ZesuSsz.Generated.DecodeItem.MachinePilot323Entries": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-v34-loader-reuse-keep-going-v1/prepare005/jobs/prerequisites/native/validated-objects/OBJECT-000126.json",
+          "sha256": "9c129af57d14a366ac4d5759fa8bde26cfd1bb411144dbe4455f91a99f15ea58"
+        },
+        "ZesuSsz.Generated.DecodeItem.MachinePilot322LoweredStructural": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-v34-loader-reuse-keep-going-v1/prepare005/jobs/prerequisites/native/validated-objects/OBJECT-000127.json",
+          "sha256": "a81b21d58563827252a56f096303bfba7cd48fcca386320f6dcd4ab03463f55d"
+        },
+        "ZesuSsz.Generated.DecodeItem.MachineSlice6960Entries": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-v34-loader-reuse-keep-going-v1/prepare005/jobs/prerequisites/native/validated-objects/OBJECT-000128.json",
+          "sha256": "e6e8688d45e5daf32bb49824cd8579f4ccfc16d777c4560e46c4939222731539"
+        },
+        "ZesuSsz.Generated.DecodeItem.MachinePilot323Structural": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-v34-loader-reuse-keep-going-v1/prepare005/jobs/prerequisites/native/validated-objects/OBJECT-000129.json",
+          "sha256": "a16a2f8aec9ba891825650f24e3410d1d0b4a7a13493503dd3abdc88f55e551b"
+        },
+        "ZesuSsz.Generated.DecodeItem.PilotA201Entries": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-v34-loader-reuse-keep-going-v1/prepare005/jobs/prerequisites/native/validated-objects/OBJECT-000130.json",
+          "sha256": "5b4660c10d5732b929ebc9d82fc5519430f3a494023ed1b31f2b1c39e22d1d7a"
+        },
+        "ZesuSsz.Generated.DecodeItem.MachineSlice6960StructuralRegistrations": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-v34-loader-reuse-keep-going-v1/prepare005/jobs/prerequisites/native/validated-objects/OBJECT-000131.json",
+          "sha256": "221cc837cd3a96303d201fd793ba4296147795c2435be4b67baa961da9cde861"
+        },
+        "ZesuSsz.Generated.DecodeItem.PilotA205Entries": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-v34-loader-reuse-keep-going-v1/prepare005/jobs/prerequisites/native/validated-objects/OBJECT-000132.json",
+          "sha256": "0ff3f3d145f8f76ddee4176c900bf660cfd354793a923c1cf21b24adb89f5d8b"
+        },
+        "ZesuSsz.Generated.DecodeItem.PilotA201Structural": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-v34-loader-reuse-keep-going-v1/prepare005/jobs/prerequisites/native/validated-objects/OBJECT-000133.json",
+          "sha256": "f5b9b75f808bee83a484243f7e62454460622802c6a5120a9d616e42f439e611"
+        },
+        "ZesuSsz.Generated.DecodeItem.PilotRejectJoin200": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-v34-loader-reuse-keep-going-v1/prepare005/jobs/prerequisites/native/validated-objects/OBJECT-000134.json",
+          "sha256": "8da33952a0d5d5b681f7823a0a2528a2495aa80aecbdce895eee691629ffe338"
+        },
+        "ZesuSsz.Generated.DecodeItem.PilotA205Structural": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-v34-loader-reuse-keep-going-v1/prepare005/jobs/prerequisites/native/validated-objects/OBJECT-000135.json",
+          "sha256": "4e78a70726457ef8181408e55a64e8bc649ce023280a1ca40dfc305f0607e8f5"
+        }
+      }
     }
   ],
   "inspector_build": {
