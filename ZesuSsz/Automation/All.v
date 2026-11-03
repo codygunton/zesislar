@@ -71,7 +71,6 @@ Require Export ZesuSsz.Automation.EntryWitnessFinish.
 Require Export ZesuSsz.Automation.MemoryTupleConsumer.
 Require Export ZesuSsz.Automation.SourceFactMatching.
 Require Export ZesuSsz.Automation.SourceFactByteViews.
-Require Export ZesuSsz.Automation.SourceFactByteOrder.
 Require Export ZesuSsz.Automation.FrameImageRoundtrip.
 Require Export ZesuSsz.Automation.LoopResourceBackedge.
 
