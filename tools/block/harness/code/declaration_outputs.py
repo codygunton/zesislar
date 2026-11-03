@@ -18,8 +18,8 @@ GIB = 1024 ** 3
 @contextmanager
 def publication_lock(snapshot_reference, *, exclusive=False):
     """Prevent compiler validation from observing a partially published pair."""
-    from compiler_snapshot import _read_private
-    snapshot = _read_private(snapshot_reference)
+    from compiler_snapshot import _read_snapshot
+    snapshot = _read_snapshot(snapshot_reference)
     root = Path(snapshot['objects'])
     descriptor = os.open(root / 'PUBLICATION.lock', os.O_RDWR | os.O_CREAT | os.O_NOFOLLOW, 0o600)
     try:
@@ -127,9 +127,8 @@ def publication(reference, *, source, compiler, flags, snapshot, producer,
 
 def publish(manager, module, source, physical_result, private_object, tool_result, *, workspace):
     """Copy absent outputs and seal their receipt on the provider's single thread."""
-    with publication_lock(manager.reference, exclusive=True):
-        return _publish_outputs(manager, module, source, physical_result, private_object,
-                                tool_result, workspace=workspace)
+    return _publish_outputs(manager, module, source, physical_result, private_object,
+                            tool_result, workspace=workspace)
 
 
 def _publish_outputs(manager, module, source, physical_result, private_object, tool_result, *, workspace):
@@ -159,36 +158,39 @@ def _publish_outputs(manager, module, source, physical_result, private_object, t
     private_glob = private_object.with_suffix('.glob')
     if '\nF' + module + '\n' not in private_glob.read_text():
         raise ValueError('The private declaration has another logical owner.')
-    destinations = [source.with_suffix(suffix) for suffix in ['.vo', '.vos', '.glob']]
-    if any(path.exists() or path.is_symlink() for path in destinations):
-        raise ValueError('A declaration publication would replace an existing output.')
-    source_identity, source_namespace = _identity(source), _namespace(source)
-    private_glob_binding = binding(private_glob)
-    for source_path, destination in zip(
-            [private_object, private_object.with_suffix('.vos'), private_glob], destinations):
-        temporary = destination.with_name('.' + destination.name + '.publication-' + uuid.uuid4().hex)
-        try:
-            copy2(source_path, temporary)
-            # Link the new private clone without replacing an existing output.
-            os.link(temporary, destination, follow_symlinks=False)
-        finally:
-            temporary.unlink(missing_ok=True)
-    published = {'object': output_artifact(destinations[0]),
-                 'sidecar': output_artifact(destinations[1]), 'sidecar_status': 'compiled_output'}
-    if (_identity(source) != source_identity or _namespace(source) != source_namespace or
-            binding(source) != source_binding or
-            compiler_outputs(private_object, before) != private_outputs):
-        raise ValueError('A declaration input or private output changed during publication.')
-    value = {'schema': SCHEMA, 'module': module, 'source': source_binding,
-             'compiler': compiler, 'physical_flags': flags, 'snapshot': manager.reference,
-             'producer': manager.snapshot['producer'], 'physical_result': physical_result,
-             'private_outputs': private_outputs, 'published_outputs': published,
-             'output_context': output_context(runtime, source_binding, private_object, workspace),
-             'private_globalization': private_glob_binding,
-             'published_globalization': binding(destinations[2])}
-    reference = _publish(Path(physical_result['path']).parent / 'PUBLICATION.json', value)
-    publication(reference, source=source_binding, compiler=compiler, flags=flags,
-                snapshot=manager.reference, producer=manager.snapshot['producer'],
-                physical_result=physical_result, canonical_object=binding(destinations[0]))
-    return manager.accept(source, destinations[0], compiler['path'], runtime['physical_flags'],
-                          tool_result, physical_result=physical_result, publication=reference)
+    # Authenticate the private record before the exclusive lock. The locked copy
+    # rechecks the source and the private outputs before it seals the receipt.
+    with publication_lock(manager.reference, exclusive=True):
+        destinations = [source.with_suffix(suffix) for suffix in ['.vo', '.vos', '.glob']]
+        if any(path.exists() or path.is_symlink() for path in destinations):
+            raise ValueError('A declaration publication would replace an existing output.')
+        source_identity, source_namespace = _identity(source), _namespace(source)
+        private_glob_binding = binding(private_glob)
+        for source_path, destination in zip(
+                [private_object, private_object.with_suffix('.vos'), private_glob], destinations):
+            temporary = destination.with_name('.' + destination.name + '.publication-' + uuid.uuid4().hex)
+            try:
+                copy2(source_path, temporary)
+                # Link the new private clone without replacing an existing output.
+                os.link(temporary, destination, follow_symlinks=False)
+            finally:
+                temporary.unlink(missing_ok=True)
+        published = {'object': output_artifact(destinations[0]),
+                     'sidecar': output_artifact(destinations[1]), 'sidecar_status': 'compiled_output'}
+        if (_identity(source) != source_identity or _namespace(source) != source_namespace or
+                binding(source) != source_binding or
+                compiler_outputs(private_object, before) != private_outputs):
+            raise ValueError('A declaration input or private output changed during publication.')
+        value = {'schema': SCHEMA, 'module': module, 'source': source_binding,
+                 'compiler': compiler, 'physical_flags': flags, 'snapshot': manager.reference,
+                 'producer': manager.snapshot['producer'], 'physical_result': physical_result,
+                 'private_outputs': private_outputs, 'published_outputs': published,
+                 'output_context': output_context(runtime, source_binding, private_object, workspace),
+                 'private_globalization': private_glob_binding,
+                 'published_globalization': binding(destinations[2])}
+        reference = _publish(Path(physical_result['path']).parent / 'PUBLICATION.json', value)
+        publication(reference, source=source_binding, compiler=compiler, flags=flags,
+                    snapshot=manager.reference, producer=manager.snapshot['producer'],
+                    physical_result=physical_result, canonical_object=binding(destinations[0]))
+        return manager.accept(source, destinations[0], compiler['path'], runtime['physical_flags'],
+                              tool_result, physical_result=physical_result, publication=reference)

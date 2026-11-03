@@ -383,6 +383,98 @@ class CompilerSnapshotTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, 'canonical owner'):
             S.import_selection(runtime, self.source_binding, self.root, report)
 
+    def import_check_fixture(self):
+        objects = []
+        for number in range(4):
+            path = self.library / ('Input%d.vo' % number)
+            path.write_text('nonproof hashed input %d' % number)
+            objects.append(path)
+        # Only a directory alias names the first import. Its hard-linked
+        # retarget keeps the file identity and changes only the resolution.
+        other = self.root / 'other'
+        other.mkdir()
+        os.link(objects[0], other / objects[0].name)
+        alias = self.root / 'alias'
+        alias.symlink_to(self.library, target_is_directory=True)
+        lexical = [alias / objects[0].name, *objects[1:]]
+        report = {'directly_hashed_inputs': [dict(binding(path), path=str(path), identity=S._identity(path))
+                                             for path in lexical]}
+        selection = {'imported_objects': [{'module': 'Fixture.Input%d' % number,
+            'object': {'path': str(objects[number]), 'sha256': report['directly_hashed_inputs'][number]['sha256']}}
+            for number in range(3)]}
+        return objects, other, alias, report, selection
+
+    @staticmethod
+    def per_import_check(selection, report):
+        """The replaced per-import scan. Keep it to compare results."""
+        if selection is None:return
+        for imported in selection['imported_objects']:
+            path=Path(imported['object']['path'])
+            rows=[row for row in report['directly_hashed_inputs'] if Path(row['path']).resolve()==path]
+            if not rows or any(S._identity(row['path'])!=row['identity'] for row in rows):
+                raise ValueError('An imported compiler object changed during physical compilation.')
+
+    @staticmethod
+    def check_result(check, selection, report):
+        try:
+            check(selection, report)
+        except ValueError as error:
+            return str(error)
+        return 'accepted'
+
+    def test_import_check_resolves_each_input_once(self):
+        objects, other, alias, report, selection = self.import_check_fixture()
+        resolved = []
+        original = Path.resolve
+        def counting(path, *args, **keywords):
+            resolved.append(path)
+            return original(path, *args, **keywords)
+        with patch.object(Path, 'resolve', counting):
+            S.check_import_selection(selection, report)
+            self.assertEqual(len(resolved), len(report['directly_hashed_inputs']))
+            S.check_import_selection(dict(selection, imported_objects=[]), report)
+            S.check_import_selection(None, report)
+        self.assertEqual(len(resolved), len(report['directly_hashed_inputs']))
+
+    def test_import_check_result_matches_the_per_import_scan(self):
+        objects, other, alias, report, selection = self.import_check_fixture()
+        def retarget(target):
+            alias.unlink()
+            alias.symlink_to(target, target_is_directory=True)
+        changes = [lambda: None, lambda: retarget(other), lambda: retarget(self.library),
+                   lambda: objects[1].write_text('changed imported object')]
+        results = []
+        for change in changes:
+            change()
+            expected = self.check_result(self.per_import_check, selection, report)
+            self.assertEqual(self.check_result(S.check_import_selection, selection, report), expected)
+            results.append(expected)
+        refused = 'An imported compiler object changed during physical compilation.'
+        self.assertEqual(results, ['accepted', refused, 'accepted', refused])
+
+    def test_snapshot_parses_once_per_file_identity(self):
+        reference = self.seal()
+        S._SNAPSHOT_READS.clear()
+        def snapshot_reads(reading):
+            return [call for call in reading.call_args_list if call.args[0]['path'] == str(self.snapshot_path)]
+        with patch.object(S, '_read_private', wraps=S._read_private) as reading:
+            first = S._read_snapshot(reference)
+            self.assertIs(S._read_snapshot(reference), first)
+            self.read(reference)
+        self.assertEqual(len(snapshot_reads(reading)), 1)
+        # A new file identity parses and authenticates the bytes again.
+        os.utime(self.snapshot_path)
+        with patch.object(S, '_read_private', wraps=S._read_private) as reading:
+            self.assertEqual(S._read_snapshot(reference), first)
+        self.assertEqual(len(snapshot_reads(reading)), 1)
+        self.snapshot_path.chmod(0o644)
+        with self.assertRaisesRegex(ValueError, 'private regular'):
+            S._read_snapshot(reference)
+        self.snapshot_path.chmod(0o600)
+        self.snapshot_path.write_text('{}')
+        with self.assertRaisesRegex(ValueError, 'hash differs'):
+            S._read_snapshot(reference)
+
     def test_static_snapshot_rows_stat_once_per_chain(self):
         static = self.root / 'Unused.txt'
         static.write_text('static metadata fixture')
