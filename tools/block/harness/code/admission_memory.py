@@ -13,6 +13,7 @@ from pathlib import Path
 import re
 import stat
 import sys
+import time
 
 GIB = 1024 ** 3
 HEADROOM_BYTES = 20 * GIB
@@ -166,6 +167,22 @@ class ScopeReader:
             return maximum
         except (OSError, ValueError):
             return 0  # An unverifiable backstop cannot grant admission.
+
+    def slice_sample(self):
+        """Sample the unchanged workload slice without granting identity authority."""
+        started = time.monotonic_ns()
+        before = self.directory(self.parent)
+        maximum = self.slice_max()
+        statistics = dict(line.split() for line in (self.parent / 'memory.stat').read_text().splitlines())
+        if 'anon' not in statistics:
+            raise ValueError('The live slice lacks its anonymous-memory counter.')
+        current = int(statistics['anon'])
+        integer(current, 'live slice memory')
+        if maximum <= 0 or self.directory(self.parent) != before or self.slice_max() != maximum:
+            raise ValueError('The live slice sample changed its fence or identity.')
+        return {'sampled_monotonic_ns': started, 'live_bytes': current,
+                'slice_max_bytes': maximum, 'counter': 'memory.stat:anon', 'scope': str(self.parent),
+                'device': before[0], 'inode': before[1]}
 
     def process(self, actor):
         pid, start = actor['pid'], actor['startticks']
@@ -839,9 +856,43 @@ def projection(data, claims, new_bytes, available_bytes, *, reader=None, new_obs
         # aggregate contributes actual usage even after its final token ends.
         claims[key] = retained['fallback_bytes']
         observations[key] = sample
-    return dict(evaluate(claims, new_bytes, available_bytes, observations=observations,
-                         new_observation=new_observation,
-                         slice_max_bytes=reader.slice_max()), admission_pool='canonical', memory_ledger='unified')
+    result = dict(evaluate(claims, new_bytes, available_bytes, observations=observations,
+                           new_observation=new_observation,
+                           slice_max_bytes=reader.slice_max()),
+                  admission_pool='canonical', memory_ledger='unified', admission_basis='booking')
+    return live_memory_admission(result, reader)
+
+
+def live_memory_admission(result, reader):
+    """Permit a small request below half of the freshly verified slice cap.
+
+    The caller still owns compiler slots, worker limits, and claim publication.
+    This decision never changes a booking, scope fence, or termination watch.
+    """
+    request = result['new_claim_bytes']
+    if not 0 < request <= 8 * GIB:
+        return result
+    try:
+        sample = reader.slice_sample()
+        age = time.monotonic_ns() - sample['sampled_monotonic_ns']
+        live, maximum = sample['live_bytes'], sample['slice_max_bytes']
+        integer(live, 'live slice memory')
+        integer(maximum, 'sampled slice maximum')
+        if (type(sample['sampled_monotonic_ns']) is not int or not 0 <= age <= 10_000_000_000
+                or maximum <= 0 or maximum != result['slice_max_bytes']):
+            return result
+    except (AttributeError, KeyError, OSError, TypeError, ValueError):
+        return result
+    result['live_memory_sample'] = dict(sample, age_ns=age)
+    # MemAvailable remains an independent host-pressure check. All existing
+    # booking totals remain visible even when the small-request path is used.
+    if live + request <= maximum // 2 and request <= result['budget_bytes']:
+        result.update(fits=True, admitted=True, admission_basis='live_memory')
+        print('live-memory admission: live_bytes=' + str(live)
+              + ' request_bytes=' + str(request)
+              + ' booked_bytes=' + str(result['active_claim_bytes'])
+              + ' slice_max_bytes=' + str(maximum), file=sys.stderr)
+    return result
 
 
 def aggregate_fence(reader, observation):
@@ -1228,6 +1279,23 @@ def confirm_shell(marker, replacement, request_bytes, available_bytes, *, ledger
         data['shell_claim_owners'][key]['token_identity'] = reader.file_identity(marker.lstat())
         write_ledger(ledger, data)
         return result
+
+
+def authorized_shell_booking(marker, amount, *, ledger=None, reader=None):
+    """Return only a live token's exact, already admitted canonical booking."""
+    ledger = Path(ledger or os.environ.get('ZESU_CANONICAL_LEDGER', DEFAULT_LEDGER))
+    reader = ScopeReader() if reader is None else reader
+    integer(amount, 'recorded shell booking')
+    if not amount:
+        return None
+    with ledger_transaction(ledger) as data:
+        key = shell_key(marker)
+        record = data.get('shell_claim_owners', {}).get(key)
+        if (record is None or record['marker'] != str(Path(marker).absolute())
+                or data.get('fixed_claims', {}).get(key) != amount):
+            return None
+        sample = reader.claim(data, key)
+        return amount if sample.get('verified') is True else None
 
 
 def read_shell_bookings(*, ledger=None):

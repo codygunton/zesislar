@@ -468,6 +468,24 @@ memory_hold_reason
                 self.assertEqual(result.returncode, 0, result.stderr)
                 self.assertEqual(not result.stdout.strip(), allowed)
 
+    def test_small_memory_requests_still_obey_global_and_writer_limits(self):
+        result = self.run_guard(r"""
+MEMORY_CLAIM_BYTES=$GIB
+MAX_COQC=48
+compiler_pids() { seq 1 48; }
+live_reservations() { :; }
+[ -n "$(compiler_admission_reason)" ] || exit 90
+compiler_pids() { :; }
+WRITER_ID=fixture
+WRITER_MAX_COQC=8
+live_reservations() { printf '%s\n' "$STATE_DIR"/slot{1..8}; }
+reservation_writer() { echo fixture; }
+reservation_compiler() { :; }
+for i in {1..8}; do echo confirmed > "$STATE_DIR/slot$i"; done
+[ -n "$(compiler_admission_reason)" ] || exit 91
+""")
+        self.assertEqual(result.returncode, 0, result.stderr)
+
     def test_available_memory_hold_and_kill_boundaries(self):
         for available, held, killed in ((20, False, False), (19, True, False),
                                         (11, True, False), (10, True, True), (9, True, True)):

@@ -70,6 +70,30 @@ class UnifiedAdmission(unittest.TestCase):
         self.assertEqual(r['raw_claim_bytes'],128*M.GIB)
         self.assertEqual(len(data['shell_claim_owners']),2)
 
+    def test_authorized_booking_uses_exact_admitted_token_and_live_owner(self):
+        amount = 8 * M.GIB
+        self.assertTrue(self.confirm(amount=amount)['fits'])
+        self.assertEqual(M.authorized_shell_booking(self.marker, amount,
+                         ledger=self.ledger, reader=self.reader), amount)
+        self.assertIsNone(M.authorized_shell_booking(self.marker, amount+1,
+                          ledger=self.ledger, reader=self.reader))
+        self.process(dict(self.pending, startticks=999),12,['guard','scope'],
+                     str(self.group.relative_to(self.reader.root)))
+        self.assertIsNone(M.authorized_shell_booking(self.marker, amount,
+                          ledger=self.ledger, reader=self.reader))
+
+    def test_changed_token_and_released_booking_grant_no_authority(self):
+        amount = 8 * M.GIB
+        self.assertTrue(self.confirm(amount=amount)['fits'])
+        self.marker.write_text(self.marker.read_text()+'changed=1\n')
+        self.assertIsNone(M.authorized_shell_booking(self.marker, amount,
+                          ledger=self.ledger, reader=self.reader))
+        data = self.read()
+        data['fixed_claims'][M.shell_key(self.marker)] = 0
+        self.save(data)
+        self.assertIsNone(M.authorized_shell_booking(self.marker, amount,
+                          ledger=self.ledger, reader=self.reader))
+
     def test_measured_booking_stays_below_fence(self):
         self.assertTrue(self.confirm(amount=24*M.GIB)['fits'])
         data=self.read()
