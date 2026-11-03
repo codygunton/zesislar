@@ -234,6 +234,138 @@ class DeclarationOutputTests(unittest.TestCase):
         self.assertTrue(finished.is_set())
         self.assertEqual(errors, [])
 
+    def validate(self, **keywords):
+        return S.validate_compiler(self.f.runtime, self.f.reference, self.snapshot,
+                                   binding(self.f.source), self.f.compiler, **keywords)
+
+    def accepted(self):
+        sealed = S.read(self.snapshot, self.f.reference)
+        return S.accepted_objects(sealed, self.snapshot, self.manager.key,
+                                  binding(self.f.compiler), self.f.runtime['physical_flags'])
+
+    def test_full_validation_completes_while_a_publication_holds_the_lock(self):
+        validated, finished = threading.Event(), threading.Event()
+        reports, errors = [], []
+        original = S._validate_compiler
+        def tracked(*args, **keywords):
+            report = original(*args, **keywords)
+            validated.set()
+            return report
+        def validate():
+            try:
+                reports.append(self.validate(output_key=self.manager.key))
+            except BaseException as error:
+                errors.append(error)
+            finally:
+                finished.set()
+        with patch.object(S, '_validate_compiler', side_effect=tracked) as validating:
+            with publication_lock(self.snapshot, exclusive=True):
+                worker = threading.Thread(target=validate)
+                worker.start()
+                self.assertTrue(validated.wait(10))
+                # Only the recheck waits for the exclusive publication.
+                self.assertFalse(finished.wait(0.05))
+            worker.join(10)
+        self.assertEqual(errors, [])
+        self.assertEqual(validating.call_count, 1)
+        locked = original(self.f.runtime, self.f.reference, self.snapshot, binding(self.f.source),
+                          self.f.compiler, output_key=self.manager.key)
+        without_timing = lambda report: {key: value for key, value in report.items() if key != 'timing'}
+        self.assertEqual(without_timing(reports[0]), without_timing(locked))
+
+    def test_publication_after_lock_free_validation_repeats_it_under_the_lock(self):
+        private, physical = self.physical()
+        original = S._validate_compiler
+        reports = []
+        def publish_after_first(*args, **keywords):
+            report = original(*args, **keywords)
+            reports.append(report)
+            if len(reports) == 1:
+                self.accept(private, physical)
+            return report
+        with patch.object(S, '_validate_compiler', side_effect=publish_after_first):
+            report = self.validate(output_key=self.manager.key)
+        self.assertEqual(len(reports), 2)
+        self.assertEqual(reports[0]['accepted_output_receipts'], [])
+        self.assertIs(report, reports[1])
+        self.assertEqual(report['accepted_output_receipts'], self.manager.rows)
+
+    def test_partial_publication_after_lock_free_validation_refuses_under_the_lock(self):
+        original = S._validate_compiler
+        calls = []
+        def partial_publication(*args, **keywords):
+            calls.append(keywords)
+            report = original(*args, **keywords)
+            if len(calls) == 1:
+                (self.f.library / 'Partial.vo').write_text('Nonproof output without a receipt.')
+            return report
+        with patch.object(S, '_validate_compiler', side_effect=partial_publication):
+            with self.assertRaisesRegex(ValueError, 'lacks a validated receipt'):
+                self.validate(output_key=self.manager.key)
+        self.assertEqual(len(calls), 2)
+
+    def test_lock_free_refusal_repeats_under_the_lock_with_its_error(self):
+        self.f.obj.write_text('Changed dependency after sealing.')
+        with self.assertRaises(ValueError) as direct:
+            S._validate_compiler(self.f.runtime, self.f.reference, self.snapshot, binding(self.f.source),
+                                 self.f.compiler, output_key=self.manager.key)
+        with patch.object(S, '_validate_compiler', wraps=S._validate_compiler) as validating:
+            with self.assertRaises(ValueError) as refused:
+                self.validate(output_key=self.manager.key)
+        self.assertEqual(validating.call_count, 2)
+        self.assertEqual(str(refused.exception), str(direct.exception))
+
+    def test_lock_and_validation_parse_the_snapshot_once(self):
+        S._SNAPSHOT_READS.clear()
+        S._CHAIN_SNAPSHOTS.clear()
+        with patch.object(S, '_read_private', wraps=S._read_private) as reading:
+            self.validate(output_key=self.manager.key)
+            self.validate(output_key=self.manager.key)
+            with publication_lock(self.snapshot, exclusive=True):
+                pass
+        paths = [call.args[0]['path'] for call in reading.call_args_list]
+        self.assertEqual(paths.count(self.snapshot['path']), 1)
+
+    def test_publication_authenticates_its_private_record_before_the_exclusive_lock(self):
+        from contextlib import contextmanager
+        import declaration_outputs as D
+        private, physical = self.physical()
+        events = []
+        original_lock, original_record = D.publication_lock, S._physical_record
+        @contextmanager
+        def lock(*args, **keywords):
+            events.append('lock')
+            with original_lock(*args, **keywords):
+                yield
+        def record(*args, **keywords):
+            events.append('record')
+            return original_record(*args, **keywords)
+        with patch.object(D, 'publication_lock', lock), patch.object(S, '_physical_record', record):
+            self.accept(private, physical)
+        self.assertEqual(events, ['record', 'lock', 'record'])
+
+    def test_verified_prefix_skips_old_publication_replay(self):
+        private, physical = self.physical()
+        self.accept(private, physical)
+        first = self.accepted()
+        with patch.object(S, '_physical_record', side_effect=AssertionError('old receipt replayed')):
+            self.assertEqual(self.accepted(), first)
+
+    def test_cached_publication_namespace_change_replays_and_refuses(self):
+        from clone_copy import copy2
+        private, physical = self.physical()
+        self.accept(private, physical)
+        self.accepted()
+        old = private.parent.with_name(private.parent.name + '.retained')
+        private.parent.rename(old)
+        private.parent.mkdir()
+        for suffix in ['.vo', '.vos', '.glob']:
+            copy2(old / private.with_suffix(suffix).name, private.with_suffix(suffix))
+        with patch.object(S, '_physical_record', wraps=S._physical_record) as replay:
+            with self.assertRaisesRegex(ValueError, 'private output mapping'):
+                self.accepted()
+        self.assertEqual(replay.call_count, 1)
+
 
 if __name__ == '__main__':
     unittest.main()

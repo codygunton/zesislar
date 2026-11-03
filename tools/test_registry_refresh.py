@@ -6,8 +6,9 @@ import subprocess
 import sys
 import tempfile
 import threading
+from types import SimpleNamespace
 import unittest
-from unittest.mock import patch
+from unittest.mock import MagicMock, patch
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import run_registry
@@ -132,6 +133,31 @@ spec.loader.exec_module(staged_registry)
 
 class StagedRegistryRefreshTests(RegistryRefreshTests):
     module = staged_registry
+
+
+class StagedRunCommandRefreshTests(unittest.TestCase):
+    def test_routine_refresh_is_throttled_and_final_refresh_is_immediate(self):
+        registry = MagicMock()
+        registry.read.return_value = {'runs': {}}
+        process = MagicMock(pid=999999999)
+        process.poll.side_effect = [None] * 71 + [0]
+        process.wait.return_value = 0
+        clock, samples = [0.0], []
+        registry.refresh.side_effect = lambda run_id: (
+            samples.append(clock[0]) or {'status': 'running', 'jobs': []})
+        args = SimpleNamespace(command=['true'], owner='test', id='fixture',
+                               kind='fixture', supersedes=[])
+        module = staged_registry
+        with patch.object(module.subprocess, 'Popen', return_value=process), \
+                patch.object(module.time, 'monotonic', side_effect=lambda: clock[0]), \
+                patch.object(module.time, 'sleep', side_effect=lambda t: clock.__setitem__(0, clock[0] + t)):
+            self.assertEqual(module.run_command(registry, args), 0)
+        # The 0.1 second exit poll refreshes the registry only every 5 seconds.
+        self.assertEqual(module.REFRESH_SECONDS, 5.0)
+        self.assertEqual(len(samples), 3)
+        self.assertGreaterEqual(samples[1] - samples[0], 5)
+        self.assertAlmostEqual(samples[-1], 7.1)
+        self.assertLess(samples[-1] - samples[-2], 5)
 
 
 if __name__ == '__main__':
