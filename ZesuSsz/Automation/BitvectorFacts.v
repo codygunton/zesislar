@@ -2,6 +2,9 @@
 From Coq Require Import Lists.List ZArith.ZArith.
 Require Import isla.riscv64.riscv64.
 Require Import ZesuSsz.Contracts.IslarisMachine.
+Require Import ZesuSsz.Automation.VmClosed.
+From iris.bi Require Import interface.
+Local Open Scope Z_scope.
 
 Import ListNotations.
 
@@ -131,7 +134,6 @@ Qed.
 (* Normalize supported branch conditions before general arithmetic. *)
 Class ZesuStepBranchGuards : Prop := zesu_step_branch_guards : True.
 
-Local Open Scope Z_scope.
 Lemma zesu_guard_low_mask_one_wrap (width low : N) (value mask : bv width) :
   (low <= width)%N ->
   bv_unsigned mask = Z.ones (Z.of_N low) ->
@@ -189,3 +191,165 @@ Proof.
   rewrite <- (bv_wrap_sub_modulus_1 width value).
   apply bv_wrap_small. lia.
 Qed.
+
+(* Closed widths select a presentation. The source supplies every value bound. *)
+Ltac zesu_bias_unsigned_as_signed wide word :=
+  let T := type of word in
+  lazymatch T with
+  | bv ?width =>
+      VmClosed.zesu_vm_closed width;
+      VmClosed.zesu_vm_closed wide;
+      let modulus := eval vm_compute in (bv_modulus width) in
+      let half := eval vm_compute in (bv_half_modulus wide) in
+      let Hfits := fresh "HbiasedSignedWidth" in
+      assert (Hfits : modulus <= half) by (vm_compute; congruence);
+      rewrite bv_zero_extend_signed;
+      apply bv_swrap_small;
+      let Hrange := fresh "HbiasedUnsignedRange" in
+      pose proof (bv_unsigned_in_range width word) as Hrange;
+      change (-half <= bv_unsigned word < half);
+      change (0 <= bv_unsigned word < modulus) in Hrange;
+      clear - Hrange Hfits;
+      revert Hrange;
+      generalize (bv_unsigned word);
+      intros; Lia.lia
+  end.
+
+Ltac zesu_bias_byte_base width byte inner :=
+  VmClosed.zesu_vm_closed width;
+  VmClosed.zesu_vm_closed inner;
+  let Hwidth := fresh "HbiasedByteWidth" in
+  assert (Hwidth : (8 <= width)%N) by (vm_compute; congruence);
+  let Hinner := fresh "HbiasedInnerMask" in
+  assert (Hinner : bv_unsigned inner = Z.ones (Z.of_N 8)) by
+    (vm_compute; reflexivity);
+  change (bv_unsigned (bv_and (Z_to_bv width (bv_signed byte)) inner) =
+    bv_unsigned byte);
+  exact (zesu_guard_mask_signed_value width 8 byte inner Hwidth Hinner).
+
+Ltac zesu_bias_one_wrap byte delta modulus :=
+  repeat match goal with Hpair : _ /\ _ |- _ => destruct Hpair end;
+  multimatch goal with
+  | Hlower : (?lower <= bv_unsigned byte),
+    Hupper : (bv_unsigned byte <= ?upper) |- _ =>
+      VmClosed.zesu_vm_closed lower;
+      VmClosed.zesu_vm_closed upper;
+      clear - Hlower Hupper;
+      revert Hlower Hupper;
+      generalize (bv_unsigned byte);
+      intros; Lia.lia
+  end.
+
+Ltac zesu_bias_mask_image width byte base inner offset mask masked :=
+  VmClosed.zesu_vm_closed width;
+  VmClosed.zesu_vm_closed offset;
+  VmClosed.zesu_vm_closed mask;
+  assert_fails (has_evar byte);
+  let delta := eval vm_compute in (bv_unsigned offset) in
+  let low := eval vm_compute in (N.log2 (Z.to_N (bv_unsigned mask + 1))) in
+  let modulus := eval vm_compute in (bv_modulus low) in
+  let Hwidth := fresh "HbiasedMaskWidth" in
+  assert (Hwidth : (low <= width)%N) by (vm_compute; congruence);
+  let Hmask := fresh "HbiasedLowMask" in
+  assert (Hmask : bv_unsigned mask = Z.ones (Z.of_N low)) by
+    (vm_compute; reflexivity);
+  let Hbase := fresh "HbiasedByteBase" in
+  assert (Hbase : bv_unsigned base = bv_unsigned byte) by
+    zesu_bias_byte_base width byte inner;
+  let Hoffset := fresh "HbiasedOffset" in
+  assert (Hoffset : offset = Z_to_bv width delta) by
+    (apply bv_eq; vm_compute; reflexivity);
+  let Hshape := fresh "HbiasedMaskShape" in
+  assert (Hshape : masked = bv_and (base + Z_to_bv width delta) mask) by
+    first [exact (f_equal (fun rhs => bv_and (base + rhs) mask) Hoffset) |
+      rewrite bv_add_0_r; reflexivity];
+  let Hrange := fresh "HbiasedOneWrap" in
+  assert (Hrange : bv_modulus low <= bv_unsigned base + delta <
+      2 * bv_modulus low) by
+    (rewrite Hbase;
+     change (modulus <= bv_unsigned byte + delta < 2 * modulus);
+     zesu_bias_one_wrap byte delta modulus);
+  rewrite Hshape;
+  rewrite (zesu_unsigned_low_mask_add_sub_modulus
+      width low base mask delta Hwidth Hmask Hrange);
+  rewrite Hbase;
+  lazymatch goal with
+  | |- _ = ?rhs => change (bv_unsigned byte + delta - modulus = rhs)
+  end.
+
+(* The pure leaf fixes the requested result. No branch value is selected. *)
+Ltac zesu_source_biased_mask_goal :=
+  solve [
+    lazymatch goal with
+    | |- (bv_unsigned ?byte - ?difference < bv_unsigned ?limit)%Z =>
+      assert_fails (has_evar byte);
+      assert_fails (has_evar limit);
+      VmClosed.zesu_vm_closed difference;
+      multimatch goal with
+      | Hbranch : ~ (bv_signed (bv_zero_extend ?wide ?masked) >=
+          bv_signed (bv_zero_extend ?wide limit))%Z |- _ =>
+        let Hview := fresh "HbiasedBranchView" in
+        pose proof Hbranch as Hview;
+        let Hleft := fresh "HbiasedLeftView" in
+        assert (Hleft : bv_signed (bv_zero_extend wide masked) =
+            bv_unsigned masked) by zesu_bias_unsigned_as_signed wide masked;
+        let Hright := fresh "HbiasedRightView" in
+        assert (Hright : bv_signed (bv_zero_extend wide limit) =
+            bv_unsigned limit) by zesu_bias_unsigned_as_signed wide limit;
+        rewrite Hleft in Hview;
+        rewrite Hright in Hview;
+        let Himage := fresh "HbiasedImage" in
+        lazymatch masked with
+        | bv_and (bv_add (bv_and (bv_sign_extend ?width byte) ?inner) ?offset) ?mask =>
+            VmClosed.zesu_vm_closed width;
+            VmClosed.zesu_vm_closed inner;
+            VmClosed.zesu_vm_closed offset;
+            VmClosed.zesu_vm_closed mask;
+            let delta := eval vm_compute in (bv_unsigned offset) in
+            let low := eval vm_compute in (N.log2 (Z.to_N (bv_unsigned mask + 1))) in
+            let modulus := eval vm_compute in (bv_modulus low) in
+            let expected := eval vm_compute in (modulus - delta) in
+            constr_eq difference expected;
+            let base := constr:(bv_and (bv_sign_extend width byte) inner) in
+            assert (Himage : bv_unsigned masked = bv_unsigned byte - difference) by
+              (zesu_bias_mask_image width byte base inner offset mask masked; ring)
+        | bv_and (bv_and (bv_sign_extend ?width byte) ?inner) ?mask =>
+            VmClosed.zesu_vm_closed width;
+            VmClosed.zesu_vm_closed inner;
+            VmClosed.zesu_vm_closed mask;
+            let low := eval vm_compute in (N.log2 (Z.to_N (bv_unsigned mask + 1))) in
+            let modulus := eval vm_compute in (bv_modulus low) in
+            constr_eq difference modulus;
+            let base := constr:(bv_and (bv_sign_extend width byte) inner) in
+            let offset := constr:(Z_to_bv width 0) in
+            assert (Himage : bv_unsigned masked = bv_unsigned byte - difference) by
+              (zesu_bias_mask_image width byte base inner offset mask masked; ring)
+        end;
+        rewrite Himage in Hview;
+        rewrite Z.ge_le_iff in Hview;
+        apply Z.nle_gt in Hview;
+        exact Hview
+      end
+    end].
+
+Ltac zesu_source_biased_mask_fact requested :=
+  lazymatch requested with
+  | ?left /\ ?right =>
+      zesu_source_biased_mask_fact left;
+      zesu_source_biased_mask_fact right
+  | _ =>
+      tryif has_evar requested then idtac else
+        tryif (match goal with _ : requested |- _ => idtac end) then idtac else
+          let Hview := fresh "HsourceBiasedMask" in
+          tryif (assert (Hview : requested) by zesu_source_biased_mask_goal)
+          then idtac else idtac
+  end.
+
+Ltac zesu_source_biased_mask_tree requested :=
+  lazymatch requested with
+  | @bi_pure _ ?fact => zesu_source_biased_mask_fact fact
+  | @bi_sep _ ?left ?right =>
+      zesu_source_biased_mask_tree left;
+      zesu_source_biased_mask_tree right
+  | _ => idtac
+  end.
