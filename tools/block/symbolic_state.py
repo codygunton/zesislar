@@ -263,13 +263,18 @@ class SymbolicState:
     memory_disjoint: list = field(default_factory=list)
     register_writes: list | None = None
     source_intervals: list = field(default_factory=list)
+    source_alignments: list = field(default_factory=list)
+    symbolic_read_ranges: list = field(default_factory=list)
+    read_obligations: list = field(default_factory=list)
 
     def copy(self):
         return SymbolicState(dict(self.registers), list(self.memory), list(self.conditions),
                              list(self.reports), list(self.writes), self.endianness, self.trace_count,
                              dict(self.retained_registers), list(self.memory_disjoint),
                              list(self.register_writes) if self.register_writes is not None else None,
-                             list(self.source_intervals))
+                             list(self.source_intervals), list(self.source_alignments),
+                             [dict(row) for row in self.symbolic_read_ranges],
+                             [dict(row) for row in self.read_obligations])
 
     def to_dict(self):
         result = {'schema': 1, 'registers': {k: v.to_dict() for k, v in sorted(self.registers.items())},
@@ -284,6 +289,12 @@ class SymbolicState:
             result['register_writes'] = [dict(write) for write in self.register_writes]
         if self.source_intervals:
             result['source_intervals'] = list(self.source_intervals)
+        if self.source_alignments:
+            result['source_alignments'] = list(self.source_alignments)
+        if self.symbolic_read_ranges:
+            result['symbolic_read_ranges'] = [dict(row) for row in self.symbolic_read_ranges]
+        if self.read_obligations:
+            result['read_obligations'] = [dict(row) for row in self.read_obligations]
         return result
 
 
@@ -771,6 +782,155 @@ def _refute_ram_fault(source, initial, evaluator):
         return
 
 
+def _source_congruence(expression, count, rows):
+    """Return known low bits only from exact power-of-two source equations."""
+    if type(count) is not int or not 0 < count <= (expression.width or 0) <= 128:
+        return None
+    modulus = 1 << count
+    if expression.op == 'bits':
+        return expression.value % modulus, frozenset()
+    matches = [(index, row) for index, row in enumerate(rows)
+               if row.get('expression') == expression.to_dict()]
+    if matches:
+        if len(matches) != 1:
+            return None
+        index, row = matches[0]
+        period, residue = row.get('modulus'), row.get('residue')
+        if (type(period) is not int or period <= 1 or period & (period - 1)
+                or not modulus <= period <= 1 << expression.width
+                or type(residue) is not int or not 0 <= residue < period or not row.get('origin')):
+            return None
+        return residue % modulus, frozenset({index})
+    if expression.op in {'zero_extend', 'sign_extend'} and count <= expression.args[0].width:
+        return _source_congruence(expression.args[0], count, rows)
+    if expression.op == 'extract':
+        base = _source_congruence(expression.args[0], count + expression.value, rows)
+        return None if base is None else ((base[0] >> expression.value) % modulus, base[1])
+    if expression.op == 'bvlshr' and expression.args[1].op == 'bits':
+        shift = expression.args[1].value
+        base = _source_congruence(expression.args[0], count + shift, rows)
+        return None if base is None else ((base[0] >> shift) % modulus, base[1])
+    if expression.op == 'bvand' and expression.args[1].op == 'bits':
+        base = _source_congruence(expression.args[0], count, rows)
+        return None if base is None else (base[0] & (expression.args[1].value % modulus), base[1])
+    if expression.op in {'bvadd', 'bvsub'}:
+        left = _source_congruence(expression.args[0], count, rows)
+        right = _source_congruence(expression.args[1], count, rows)
+        if left is not None and right is not None:
+            value = left[0] + right[0] if expression.op == 'bvadd' else left[0] - right[0]
+            return value % modulus, left[1] | right[1]
+    return None
+
+
+def _source_equality_refutation(condition, intervals, alignments):
+    """Recognize contradictory equalities without selecting an ISA branch."""
+    negated = condition.op == 'not' and len(condition.args) == 1
+    equality = condition.args[0] if negated else condition
+    if equality.op != '=' or len(equality.args) != 2:
+        return None
+    left, right = equality.args
+    if left.width != right.width or left.width is None:
+        return None
+    first, second = _source_interval(left, intervals), _source_interval(right, intervals)
+    if first is not None and second is not None and (first[2] or second[2]):
+        disjoint = first[1] < second[0] or second[1] < first[0]
+        identical = first[0] == first[1] == second[0] == second[1]
+        if (disjoint and not negated) or (identical and negated):
+            return {'rule': 'disjoint_source_intervals' if disjoint else 'identical_source_intervals',
+                    'condition': condition.to_dict(), 'left_interval': list(first[:2]),
+                    'right_interval': list(second[:2]),
+                    'source_intervals': [intervals[index] for index in sorted(first[2] | second[2])]}
+    first = _source_congruence(left, left.width, alignments)
+    second = _source_congruence(right, right.width, alignments)
+    if first is not None and second is not None and (first[1] or second[1]):
+        same = first[0] == second[0]
+        if same == negated:
+            return {'rule': 'source_low_bits', 'condition': condition.to_dict(),
+                    'left_value': first[0], 'right_value': second[0],
+                    'source_alignments': [alignments[index] for index in sorted(first[1] | second[1])]}
+    return None
+
+
+def _source_mask_identity(expression, alignments):
+    """Remove only mask bits that an existing source equation fixes to zero."""
+    if expression.op != 'bvand' or expression.args[1].op != 'bits':
+        return None
+    word, mask = expression.args
+    if word.width != mask.width or word.width != expression.width:
+        return None
+    cleared = ((1 << word.width) - 1) ^ mask.value
+    if not cleared:
+        return None
+    low = _source_congruence(word, cleared.bit_length(), alignments)
+    if low is None or not low[1] or low[0] & cleared:
+        return None
+    return word, {'rule': 'source_aligned_mask_identity', 'original': expression.to_dict(),
+                  'replacement': word.to_dict(),
+                  'source_alignments': [alignments[index] for index in sorted(low[1])]}
+
+
+def _source_comparison_refutation(condition, rows):
+    """Check one closed trace endpoint with exact width and signedness."""
+    negated = condition.op == 'not' and len(condition.args) == 1
+    comparison = condition.args[0] if negated else condition
+    if comparison.op not in {'bvult', 'bvule', 'bvugt', 'bvuge', 'bvslt', 'bvsle', 'bvsgt', 'bvsge'}:
+        return None
+    left, right = comparison.args
+    op = comparison.op
+    if left.op == 'bits' and right.op != 'bits':
+        left, right = right, left
+        op = op[:3] + {'lt': 'gt', 'le': 'ge', 'gt': 'lt', 'ge': 'le'}[op[-2:]]
+    if right.op != 'bits' or left.width != right.width:
+        return None
+    interval = _source_interval(left, rows)
+    if interval is None or not interval[2]:
+        return None
+    low, high, indices = interval
+    endpoint = right.value
+    signed = op.startswith('bvs')
+    if signed:
+        half = 1 << (left.width - 1)
+        if low < half <= high:
+            return None
+        if low >= half:
+            low, high = low - 2 * half, high - 2 * half
+        endpoint = _signed(endpoint, right.width)
+    true, false = {'lt': (high < endpoint, low >= endpoint),
+                   'le': (high <= endpoint, low > endpoint),
+                   'gt': (low > endpoint, high <= endpoint),
+                   'ge': (low >= endpoint, high < endpoint)}[op[-2:]]
+    if not (true if negated else false):
+        return None
+    return {'rule': 'source_interval_comparison', 'condition': condition.to_dict(),
+            'expression': left.to_dict(), 'comparison': op, 'width': left.width, 'signed': signed,
+            'interval': [low, high], 'endpoint': endpoint,
+            'source_intervals': [rows[index] for index in sorted(indices)]}
+
+
+def _apply_source_guard_facts(initial, evaluator):
+    """Keep every new source pruning/rewrite obligation explicit for Rocq."""
+    if evaluator.status != 'complete':
+        return
+    for condition in evaluator.state.conditions:
+        if condition in initial.conditions:
+            continue
+        result = _source_equality_refutation(condition, initial.source_intervals, initial.source_alignments)
+        if result is None:
+            result = _source_comparison_refutation(condition, initial.source_intervals)
+        if result is not None:
+            evaluator.status = 'infeasible'
+            evaluator.report('source_guard_refutation', **result, proof_status='open',
+                             required_rocq_guard_projection=True, proof_premises_added=[])
+            return
+    for register, value in list(evaluator.state.registers.items()):
+        result = _source_mask_identity(value, initial.source_alignments)
+        if result is not None:
+            replacement, evidence = result
+            evaluator.state.registers[register] = replacement
+            evaluator.report('source_alignment_rewrite', register=register, **evidence,
+                             proof_status='open', required_rocq_guard_projection=True, proof_premises_added=[])
+
+
 def evaluate_trace(source, state, *, live_registers=None, instruction_index=0, max_paths=None):
     """Return every trace path. Unsupported events stop only their own path."""
     if state.endianness not in ('little', 'big'):
@@ -785,6 +945,7 @@ def evaluate_trace(source, state, *, live_registers=None, instruction_index=0, m
     results = []
     for evaluator in evaluators:
         _refute_ram_fault(source, state, evaluator)
+        _apply_source_guard_facts(state, evaluator)
         if live_registers is not None:
             live = set(live_registers)
             evaluator.state.registers = {k: v for k, v in evaluator.state.registers.items() if k in live}
