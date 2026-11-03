@@ -2,6 +2,7 @@ Require Import ZesuSsz.Automation.MemoryAddress.
 Require Import ZesuSsz.Automation.Hooks.
 Require Import ZesuSsz.Automation.ResourceGroups.
 Require Import ZesuSsz.Automation.ByteArrayAssemblyCodec.
+Require Import ZesuSsz.Automation.ArrayAffineImage.
 Require Import ZesuSsz.Contracts.IslarisMemory.
 Require Import isla.riscv64.riscv64.
 Require Import ZesuSsz.Automation.AdjacentWordAddress291.
@@ -163,6 +164,10 @@ Ltac zesu_memory_frame_first :=
 
 (* Scalar constraints select constrained fields. The array consumer preserves
    the source addresses, fractions, and byte order. Callers supply pure logic. *)
+Ltac zesu_memory_array_assemble :=
+  first [ByteArrayAssemblyCodec.zesu_byte_array_assemble_codec |
+    solve [ArrayAffineImage.zesu_array_affine_presentation]].
+
 Ltac zesu_memory_tuple consume_facts finish :=
   once (try zesu_memory_registered_intro;
   ResourceGroups.zesu_open_resource_groups;
@@ -175,7 +180,7 @@ Ltac zesu_memory_tuple consume_facts finish :=
   | |- environments.envs_entails _ (@bi_sep _ (isla.ghost_state.mem_mapsto_array_def _ _ _) _) =>
       iSplitL;
       [rewrite <- isla.ghost_state.mem_mapsto_array_eq;
-       ByteArrayAssemblyCodec.zesu_byte_array_assemble_codec | idtac]
+       zesu_memory_array_assemble | idtac]
   end));
   lazymatch goal with
   | |- environments.envs_entails _ ?requested => consume_facts requested
