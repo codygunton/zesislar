@@ -1,0 +1,98 @@
+{
+  "status": "EXACT_ORIGIN_TRANSLATION_CHECKED",
+  "provider": {
+    "path": "/home/cody/zesislar/.worktrees/spec-b-v35-source/tools/block/source_register_origins.py",
+    "sha256": "39fd60439b6e4a0a61cc3d338ccd728b47a55c027f2231230c57a05d5b938dcb"
+  },
+  "source_plan": {
+    "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/emission020/6ad8-PLAN.json",
+    "sha256": "ebae0d7f2bbd6304e2e965ffb44ddb69791e2f20c82a9bc08ed34d3f655fd408"
+  },
+  "trace_index": {
+    "path": "/home/cody/zesislar/_build/agents/worker-build-1/forward-pass-fp20261101-298/pilot-inputs001/TRACE-INDEX.json",
+    "sha256": "780bb7d08f83dcd04de355d9b5e5a4be7fd616b290bd1203bf0c22e8698e5eaa"
+  },
+  "rows": [
+    {
+      "pc": "0x800d6ad8",
+      "source_key": "5aef24ce419f5f10855308ee63dadb140d6cfaafca8338b66260cbbc0e72b6e3",
+      "raw": {
+        "path": "/home/cody/zesislar/.worktrees/b1-forward-pass-fp20261101-298/generated/isla-traces/stock-zisk/decodeItem/a800d6ad8.isla",
+        "sha256": "63b107b508b3c6a5d784383db778ca6fafd2c7906406bd958dea3170892a00cb"
+      },
+      "rocq": {
+        "path": "/home/cody/zesislar/.worktrees/b1-forward-pass-fp20261101-298/generated/isla-traces/stock-zisk/decodeItem/a800d6ad8.v",
+        "sha256": "2b62af4a3a4bb17b5577081b9503214831f0554d690a0afd1beb4fb1160d9243"
+      },
+      "status": "SUPPORTED",
+      "translation": {
+        "schema": "source.register-origin.v1",
+        "pc": 2148362968,
+        "declaration": "v4",
+        "width": 64,
+        "register": "mstatus",
+        "field": "bits",
+        "source_key": "5aef24ce419f5f10855308ee63dadb140d6cfaafca8338b66260cbbc0e72b6e3",
+        "raw": {
+          "path": "/home/cody/zesislar/.worktrees/b1-forward-pass-fp20261101-298/generated/isla-traces/stock-zisk/decodeItem/a800d6ad8.isla",
+          "sha256": "63b107b508b3c6a5d784383db778ca6fafd2c7906406bd958dea3170892a00cb"
+        },
+        "rocq": {
+          "path": "/home/cody/zesislar/.worktrees/b1-forward-pass-fp20261101-298/generated/isla-traces/stock-zisk/decodeItem/a800d6ad8.v",
+          "sha256": "2b62af4a3a4bb17b5577081b9503214831f0554d690a0afd1beb4fb1160d9243"
+        },
+        "raw_assume": [
+          "=",
+          [
+            "bvand",
+            [
+              "|mstatus|",
+              [
+                [
+                  "_",
+                  "field",
+                  "|bits|"
+                ]
+              ]
+            ],
+            "#x0000000000020000"
+          ],
+          "#x0000000000000000"
+        ],
+        "raw_assert": [
+          "=",
+          [
+            "bvand",
+            "v4",
+            "#x0000000000020000"
+          ],
+          "#x0000000000000000"
+        ],
+        "declaration_unused": true,
+        "values_selected": false,
+        "proof_scripts_emitted": false
+      },
+      "registration": {
+        "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/origin208-source/800d6ad8-REGISTRATION.vpart",
+        "sha256": "a350b3e539ce0e8bb4827b17a1b3d3e7aa85d5a63870bb83bcbd1d2aa04a1b52"
+      }
+    },
+    {
+      "pc": "0x800d6adc",
+      "source_key": "4fed5baf4b516aa0bde5db6b5b140d1de47ef2f44f878b20a16f9b82c4cb40c2",
+      "raw": {
+        "path": "/home/cody/zesislar/.worktrees/b1-forward-pass-fp20261101-298/generated/isla-traces/stock-zisk/decodeItem/a800d6adc.isla",
+        "sha256": "9da834a083c060dae29304568a29c9933c489a1285bb6bb7eecfad6c048c4714"
+      },
+      "rocq": {
+        "path": "/home/cody/zesislar/.worktrees/b1-forward-pass-fp20261101-298/generated/isla-traces/stock-zisk/decodeItem/a800d6adc.v",
+        "sha256": "9fb2eb4fb6a534f1597efc1085cd77f7d65e825c56e83a87d0aa427306ddb8e5"
+      },
+      "status": "REFUSED",
+      "reason": "The declaration is used by the consumed trace."
+    }
+  ],
+  "new_source_facts": false,
+  "source_values_equated": false,
+  "proof_scripts_emitted": false
+}

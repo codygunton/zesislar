@@ -1,0 +1,388 @@
+{
+  "status": "VERIFIED_GENERIC_REGISTER_POST_CAPTURE",
+  "verified_modules": [
+    {
+      "scope": "generic consumed-expression post",
+      "source": {
+        "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/owned125/artifacts/default/ZesuSsz/Automation/SourceRegisterOrigin194.v",
+        "sha256": "da4b448a6187431eb1618615e322b7673e9798a86acc341199e4ac266884e641"
+      },
+      "object": {
+        "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/owned125/artifacts/default/ZesuSsz/Automation/SourceRegisterOrigin194.vo",
+        "sha256": "17b9ee6379127af8b8ecce1815ab54456fbf505f489f7cffd44419b89e9d23fb"
+      }
+    },
+    {
+      "scope": "same-width decoder identities",
+      "source": {
+        "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/owned125/artifacts/default/ZesuSsz/Automation/SourceRegisterCodec203.v",
+        "sha256": "6da81d42c13494a47122b46cd2ffdf2bab206157e1e8d4a87f91e980811ce36b"
+      },
+      "object": {
+        "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/owned125/artifacts/default/ZesuSsz/Automation/SourceRegisterCodec203.vo",
+        "sha256": "51f0776dff90cc25b55414f698a64edec9acbc24a672d67cb84d66d404fd8e00"
+      }
+    },
+    {
+      "scope": "tested post-capture tactic",
+      "source": {
+        "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/owned125/artifacts/default/ZesuSsz/Automation/SourceRegisterCapture203.v",
+        "sha256": "f118ca0dd6825fccdb93e1491f92b0cd2b8f8af822f67df3dd5634a6350938cf"
+      },
+      "object": {
+        "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/owned125/artifacts/default/ZesuSsz/Automation/SourceRegisterCapture203.vo",
+        "sha256": "f2f49589e385056c184c2cb5991c4c265b342d7f206954b07c30cf853d9893e2"
+      }
+    },
+    {
+      "scope": "actual owner and width-refusal controls",
+      "source": {
+        "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/owned125/artifacts/default/ZesuSsz/Evidence/SourceRegisterControls206.v",
+        "sha256": "41d7c246dd83426ce14579e731119c72410d5667bac0ddf202d7ae5a2390c16e"
+      },
+      "object": {
+        "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/owned125/artifacts/default/ZesuSsz/Evidence/SourceRegisterControls206.vo",
+        "sha256": "4c1b0d8149ccdff85649b9f168938cce773c0b007f967ad9fe3c610e46afbd81"
+      }
+    }
+  ],
+  "verifications": [
+    {
+      "name": "verify_source_wpaexp207",
+      "response": {
+        "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/origin207-verify/responses/0004.json",
+        "sha256": "2b63036ee4077952c704c25b81f7e65fe4b0a3d43659c4429881cecd149f45e9"
+      },
+      "verification_method": "module_m",
+      "assumptions": []
+    },
+    {
+      "name": "verify_same_width207",
+      "response": {
+        "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/origin207-verify/responses/0005.json",
+        "sha256": "a87f8e18061663bfde64646973126ff528107af6c29150def46d4e6ff6667100"
+      },
+      "verification_method": "module_m",
+      "assumptions": []
+    },
+    {
+      "name": "verify_source_post207",
+      "response": {
+        "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/origin207-verify/responses/0006.json",
+        "sha256": "f5b9d6f1758ecee543603c48a0abcce47468a3d9e88c86de4d14104205cf7aa9"
+      },
+      "verification_method": "module_m",
+      "assumptions": []
+    },
+    {
+      "name": "verify_source_field_actual196_207",
+      "response": {
+        "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/origin207-verify/responses/0007.json",
+        "sha256": "b713bfa46dacb77a40ca0fd8c45ab31dfa1a4cbcc13b6c017cabfff1f9f0afbf"
+      },
+      "verification_method": "module_m",
+      "assumptions": []
+    },
+    {
+      "name": "verify_source_field_wrong_width196_207",
+      "response": {
+        "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/origin207-verify/responses/0008.json",
+        "sha256": "a432fc78b8aedf02eaee8239e6c35c0573b222867c6aa6adf62d86ddf503eaef"
+      },
+      "verification_method": "module_m",
+      "assumptions": []
+    },
+    {
+      "name": "verify_source_field_symbolic_width196_207",
+      "response": {
+        "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/origin207-verify/responses/0009.json",
+        "sha256": "fa9ad8edbca334deddbd9da2188e2c400b2f8b09faef745d47f65510e370b065"
+      },
+      "verification_method": "module_m",
+      "assumptions": []
+    }
+  ],
+  "controls": [
+    "actual field read retains the same owner and symbolic word",
+    "wrong-width refusal in proof mode",
+    "symbolic-width refusal in proof mode"
+  ],
+  "interactive_symbolic_identity": {
+    "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/origin205-symbolic/INITIAL-GOAL-PREFLIGHT.json",
+    "sha256": "bec052fbd6e990d989e04861e234da49645b860c88dd3a65ed23f6ff19448911"
+  },
+  "interactive_zero_groups": {
+    "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/origin205-symbolic/complete-goals/state_11.json",
+    "sha256": "a64cd08ba25b75e26cbed775c005a9565f976fdb28845c07adda969be4d56944"
+  },
+  "interactive_Qed": {
+    "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/origin205-symbolic/responses/0020.json",
+    "sha256": "eacdae95d536020cf7a9933c1e8c03cff8db3100ed26ea4e92422c86e8f9f68b"
+  },
+  "lifecycle": [
+    {
+      "case": "origin194-compile",
+      "registry": {
+        "id": "stock-batch-1793712729132173182-3819963",
+        "kind": "stock-batch",
+        "owner": "cody",
+        "scheduler": {
+          "pid": 3819963,
+          "startticks": 42789157,
+          "ppid": 2073,
+          "state": "R"
+        },
+        "jobs": [],
+        "claims": {},
+        "command": [
+          "/home/cody/zesislar/.worktrees/spec-b-tools-c25dfe0d/tools/resource_guard.sh",
+          "batch",
+          "spec-b-origin194-compile",
+          "--",
+          "/home/cody/zesislar/.worktrees/spec-b-tools-c25dfe0d/tools/resource_guard.sh",
+          "scope",
+          "spec-b-origin194-compile",
+          "--",
+          "/home/cody/.local/share/uv/tools/rocq-mcp/bin/python",
+          "-B",
+          "/home/cody/zesislar/_build/agents/spec-b/source-witness423/origin194-compile/session.py",
+          "--subject",
+          "/home/cody/zesislar/_build/agents/spec-b/source-witness423/origin194-compile/Subject.v",
+          "--workspace",
+          "/home/cody/zesislar/_build/agents/spec-b/source-witness423/owned125",
+          "--baseline-body",
+          "",
+          "--theorem",
+          "source_compile_control"
+        ],
+        "registered_ns": 1793712729287746639,
+        "status": "completed",
+        "exit_code": 0,
+        "closed_ns": 1793712741549161459,
+        "all_actors_closed": true
+      },
+      "aggregate_absent": true,
+      "accounting": {
+        "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/origin194-compile/FINAL-ACCOUNTING.json",
+        "sha256": "05ec154ab6a53d01eacb60cacac720fa8e9c1c44b28e08611fc9b04451819c1f"
+      }
+    },
+    {
+      "case": "origin203-controls",
+      "registry": {
+        "id": "stock-batch-1793727795518677509-212597",
+        "kind": "stock-batch",
+        "owner": "cody",
+        "scheduler": {
+          "pid": 212597,
+          "startticks": 44295800,
+          "ppid": 2073,
+          "state": "R"
+        },
+        "jobs": [],
+        "claims": {},
+        "command": [
+          "/home/cody/zesislar/.worktrees/spec-b-tools-a6abfb7c/tools/resource_guard.sh",
+          "batch",
+          "spec-b-origin203-controls",
+          "--",
+          "/home/cody/zesislar/.worktrees/spec-b-tools-a6abfb7c/tools/resource_guard.sh",
+          "scope",
+          "spec-b-origin203-controls",
+          "--",
+          "/home/cody/.local/share/uv/tools/rocq-mcp/bin/python",
+          "-B",
+          "/home/cody/zesislar/_build/agents/spec-b/source-witness423/origin203-controls/session.py",
+          "--subject",
+          "/home/cody/zesislar/_build/agents/spec-b/source-witness423/origin203-controls/Subject.v",
+          "--workspace",
+          "/home/cody/zesislar/_build/agents/spec-b/source-witness423/owned125",
+          "--baseline-body",
+          "",
+          "--theorem",
+          "source_compile_control"
+        ],
+        "registered_ns": 1793727795677233340,
+        "status": "completed",
+        "exit_code": 0,
+        "closed_ns": 1793727811549286916,
+        "all_actors_closed": true
+      },
+      "aggregate_absent": true,
+      "accounting": {
+        "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/origin203-controls/FINAL-ACCOUNTING.json",
+        "sha256": "a48e67019bde734b5c8cc6081ee2a8b0984b043c5531b6b963a2f1522dd2b0b5"
+      }
+    },
+    {
+      "case": "origin205-symbolic",
+      "registry": {
+        "id": "stock-batch-1793728080356358712-226385",
+        "kind": "stock-batch",
+        "owner": "cody",
+        "scheduler": {
+          "pid": 226385,
+          "startticks": 44324279,
+          "ppid": 2073,
+          "state": "R"
+        },
+        "jobs": [],
+        "claims": {},
+        "command": [
+          "/home/cody/zesislar/.worktrees/spec-b-tools-a6abfb7c/tools/resource_guard.sh",
+          "batch",
+          "spec-b-origin205-symbolic",
+          "--",
+          "/home/cody/zesislar/.worktrees/spec-b-tools-a6abfb7c/tools/resource_guard.sh",
+          "scope",
+          "spec-b-origin205-symbolic",
+          "--",
+          "/home/cody/.local/share/uv/tools/rocq-mcp/bin/python",
+          "-B",
+          "/home/cody/zesislar/_build/agents/spec-b/source-witness423/origin205-symbolic/session.py",
+          "--subject",
+          "/home/cody/zesislar/_build/agents/spec-b/source-witness423/origin205-symbolic/Subject.v",
+          "--workspace",
+          "/home/cody/zesislar/_build/agents/spec-b/source-witness423/owned125",
+          "--baseline-body",
+          "",
+          "--theorem",
+          "source_field_symbolic_width196"
+        ],
+        "registered_ns": 1793728080549998916,
+        "status": "completed",
+        "exit_code": 0,
+        "closed_ns": 1793728094933617256,
+        "all_actors_closed": true
+      },
+      "aggregate_absent": true,
+      "accounting": {
+        "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/origin205-symbolic/FINAL-ACCOUNTING.json",
+        "sha256": "22066063ccfe13deb0532ab0c5bcd2f1a1e5eca77abad33835270f6de5863bff"
+      }
+    },
+    {
+      "case": "origin206-controls",
+      "registry": {
+        "id": "stock-batch-1793728284079924599-238549",
+        "kind": "stock-batch",
+        "owner": "cody",
+        "scheduler": {
+          "pid": 238549,
+          "startticks": 44344657,
+          "ppid": 2073,
+          "state": "R"
+        },
+        "jobs": [],
+        "claims": {},
+        "command": [
+          "/home/cody/zesislar/.worktrees/spec-b-tools-a6abfb7c/tools/resource_guard.sh",
+          "batch",
+          "spec-b-origin206-controls",
+          "--",
+          "/home/cody/zesislar/.worktrees/spec-b-tools-a6abfb7c/tools/resource_guard.sh",
+          "scope",
+          "spec-b-origin206-controls",
+          "--",
+          "/home/cody/.local/share/uv/tools/rocq-mcp/bin/python",
+          "-B",
+          "/home/cody/zesislar/_build/agents/spec-b/source-witness423/origin206-controls/session.py",
+          "--subject",
+          "/home/cody/zesislar/_build/agents/spec-b/source-witness423/origin206-controls/Subject.v",
+          "--workspace",
+          "/home/cody/zesislar/_build/agents/spec-b/source-witness423/owned125",
+          "--baseline-body",
+          "",
+          "--theorem",
+          "source_compile_control"
+        ],
+        "registered_ns": 1793728284732666420,
+        "status": "completed",
+        "exit_code": 0,
+        "closed_ns": 1793728297016280584,
+        "all_actors_closed": true
+      },
+      "aggregate_absent": true,
+      "accounting": {
+        "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/origin206-controls/FINAL-ACCOUNTING.json",
+        "sha256": "198314e48f8d0cc6cc1faaccd1c030318c2bce9a6176b5df09ca805a6da7954e"
+      }
+    },
+    {
+      "case": "origin207-verify",
+      "registry": {
+        "id": "stock-batch-1793728465901141146-247525",
+        "kind": "stock-batch",
+        "owner": "cody",
+        "scheduler": {
+          "pid": 247525,
+          "startticks": 44362835,
+          "ppid": 2073,
+          "state": "R"
+        },
+        "jobs": [],
+        "claims": {},
+        "command": [
+          "/home/cody/zesislar/.worktrees/spec-b-tools-a6abfb7c/tools/resource_guard.sh",
+          "batch",
+          "spec-b-origin207-verify",
+          "--",
+          "/home/cody/zesislar/.worktrees/spec-b-tools-a6abfb7c/tools/resource_guard.sh",
+          "scope",
+          "spec-b-origin207-verify",
+          "--",
+          "/home/cody/.local/share/uv/tools/rocq-mcp/bin/python",
+          "-B",
+          "/home/cody/zesislar/_build/agents/spec-b/source-witness423/origin207-verify/session.py",
+          "--subject",
+          "/home/cody/zesislar/_build/agents/spec-b/source-witness423/origin207-verify/Subject.v",
+          "--workspace",
+          "/home/cody/zesislar/_build/agents/spec-b/source-witness423/owned125",
+          "--baseline-body",
+          "",
+          "--theorem",
+          "source_compile_control"
+        ],
+        "registered_ns": 1793728466057552794,
+        "status": "completed",
+        "exit_code": 0,
+        "closed_ns": 1793728513342637377,
+        "all_actors_closed": true
+      },
+      "aggregate_absent": true,
+      "accounting": {
+        "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/origin207-verify/FINAL-ACCOUNTING.json",
+        "sha256": "fb6de911a1cb52847b944d78f2a1f96edd54da94faaa92b57019286de1df0ae6"
+      }
+    }
+  ],
+  "prototype_metadata_dependency": {
+    "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/owned125/artifacts/default/ZesuSsz/Automation/SourceRegisterCapture196.v",
+    "sha256": "bcda7e1bffbf8e694fd0852768ce62c39ceab8939a4b144bfd793673725738f4"
+  },
+  "scope_limits": [
+    "The metadata wrapper196 is not accepted by these post controls.",
+    "The exact source-registered field boundary remains pending.",
+    "No full caller closure is claimed."
+  ],
+  "source_values_equated": false,
+  "new_source_premises": false,
+  "preserved_failures": [
+    {
+      "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/origin196-controls/responses/0005.json",
+      "sha256": "06848c8cc2eef424dadae5bb40ddd2cacdbd43069954438b04e60531c305f12c"
+    },
+    {
+      "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/origin200-diagnostic/responses/0004.json",
+      "sha256": "9aaff8b71d4705f9f64dc6f9c3a7585cd43516ab0d9ee523fc3e93244fe64d68"
+    },
+    {
+      "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/origin201-diagnostic/responses/0004.json",
+      "sha256": "c298c8195b4eda58009073fd5e1aeceb8124f46eb7e950538532a46f178a3388"
+    },
+    {
+      "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/origin203-controls/responses/0006.json",
+      "sha256": "8a2d679ad3a35aa4f97134d1b6a21c9b839667a0682451b89ac12b42debfc197"
+    }
+  ]
+}

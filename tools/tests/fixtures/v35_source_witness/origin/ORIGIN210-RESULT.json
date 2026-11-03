@@ -1,0 +1,90 @@
+{
+  "status": "CLEAN_REGISTER_POST_VERIFIED",
+  "base_result": {
+    "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/ORIGIN207-RESULT.json",
+    "sha256": "898b4622e2b93199191b7711a08aa7deb5b1b7a9963eef1a85faf46c7b59cf9d"
+  },
+  "modules": [
+    {
+      "source": {
+        "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/owned125/artifacts/default/ZesuSsz/Automation/SourceRegisterCapture209.v",
+        "sha256": "eed32e942ff4581c0072c43c088fc5e63c3f6175e3ecc5d5540a36d00a6b3d7c"
+      },
+      "object": {
+        "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/owned125/artifacts/default/ZesuSsz/Automation/SourceRegisterCapture209.vo",
+        "sha256": "0bc6ddc780098bc879dca3120b5e879f4903e5251c908eb8f89bce34daadc8c2"
+      }
+    },
+    {
+      "source": {
+        "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/owned125/artifacts/default/ZesuSsz/Evidence/SourceRegisterControls210.v",
+        "sha256": "067673e8efe34faa52c231a0ab0fdfa3cffc968b9493e874c6d7e180e85e7cd9"
+      },
+      "object": {
+        "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/owned125/artifacts/default/ZesuSsz/Evidence/SourceRegisterControls210.vo",
+        "sha256": "899dd05e8cbcd0596f397a696ceb32a6b77fe19d22b9581c821de96dd3b39a84"
+      }
+    }
+  ],
+  "verifications": [
+    {
+      "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/origin210-clean/responses/0006.json",
+      "sha256": "c4d5ae7aeaf552c4d81c5964b4d5bbf7f9397766f57c0129f280e09c1b8d7037"
+    },
+    {
+      "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/origin210-clean/responses/0007.json",
+      "sha256": "780ee12243ddb354dd1649f82c319355be56458515fb5fa1724fe9fe46de10c3"
+    },
+    {
+      "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/origin210-clean/responses/0008.json",
+      "sha256": "a146ed312e441b104fea56525701758a2adb4e4673c39ca352860bad0b0b6704"
+    }
+  ],
+  "verification_method": "module_m",
+  "assumptions": [],
+  "change": "Remove only the unused prototype-metadata import. Guard and post bodies unchanged.",
+  "registry": {
+    "id": "stock-batch-1793728955640268446-268585",
+    "kind": "stock-batch",
+    "owner": "cody",
+    "scheduler": {
+      "pid": 268585,
+      "startticks": 44411807,
+      "ppid": 2073,
+      "state": "R"
+    },
+    "jobs": [],
+    "claims": {},
+    "command": [
+      "/home/cody/zesislar/.worktrees/spec-b-tools-a6abfb7c/tools/resource_guard.sh",
+      "batch",
+      "spec-b-origin210-clean",
+      "--",
+      "/home/cody/zesislar/.worktrees/spec-b-tools-a6abfb7c/tools/resource_guard.sh",
+      "scope",
+      "spec-b-origin210-clean",
+      "--",
+      "/home/cody/.local/share/uv/tools/rocq-mcp/bin/python",
+      "-B",
+      "/home/cody/zesislar/_build/agents/spec-b/source-witness423/origin210-clean/session.py",
+      "--subject",
+      "/home/cody/zesislar/_build/agents/spec-b/source-witness423/origin210-clean/Subject.v",
+      "--workspace",
+      "/home/cody/zesislar/_build/agents/spec-b/source-witness423/owned125",
+      "--baseline-body",
+      "",
+      "--theorem",
+      "source_compile_control"
+    ],
+    "registered_ns": 1793728955917457605,
+    "status": "completed",
+    "exit_code": 0,
+    "closed_ns": 1793728981005953308,
+    "all_actors_closed": true
+  },
+  "aggregate_absent": true,
+  "accounting": {
+    "path": "/home/cody/zesislar/_build/agents/spec-b/source-witness423/origin210-clean/FINAL-ACCOUNTING.json",
+    "sha256": "774b82144ac2255c4e43ffbf51d53429820740f6bb6910f6ff22aad6748d2598"
+  }
+}
