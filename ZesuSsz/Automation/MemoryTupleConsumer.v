@@ -1,10 +1,14 @@
 Require Import ZesuSsz.Automation.Hooks.
 Require Import ZesuSsz.Automation.ResourceGroups.
 Require Import ZesuSsz.Automation.ByteArrayAssemblyCodec.
+Require Import ZesuSsz.Contracts.IslarisMemory.
+Require Import isla.riscv64.riscv64.
+Require Import ZesuSsz.Automation.AdjacentWordAddress291.
+Require Import ZesuSsz.Automation.AdjacentWordResources140.
 Require Import lithium.interpreter lithium.pure_definitions.
-From iris.proofmode Require Import tactics environments.
+From iris.proofmode Require Import tactics environments spec_patterns.
 From Coq Require Import ZArith Lia.
-From stdpp Require Import bitvector.definitions.
+From stdpp Require Import bitvector.definitions list.
 Local Open Scope Z_scope.
 
 Ltac zesu_memory_witness_occurs candidate expression :=
@@ -46,10 +50,121 @@ Ltac zesu_memory_open_tuple fuel :=
   | O => fail 0 "The memory package exceeds its existential step bound."
   end.
 
+(* Use the registered introduction without changing the selected rule set. *)
+Ltac zesu_memory_registered_intro :=
+  lazymatch goal with
+  | |- environments.envs_entails _ ?target =>
+      let head := get_head target in
+      assert_fails (constr_eq head constr:(@bi_exist));
+      assert_fails (constr_eq head constr:(@bi_sep));
+      let evidence := constr:(_ : Hooks.ZesuPureFactIntro target _) in
+      assert_fails (has_evar evidence);
+      lazymatch type of evidence with
+      | Hooks.ZesuPureFactIntro _ ?source =>
+          iApply (@Hooks.zesu_pure_fact_intro _ target source evidence)
+      end
+  end.
+
+Ltac zesu_memory_byte_owner owner continuation :=
+  lazymatch owner with
+  | @mem_mapsto_array _ _ 8%N ?address ?fraction ?bytes =>
+      continuation address fraction bytes constr:(@None (bv 64))
+  | @mem_mapsto _ _ 64%N ?address ?fraction ?word =>
+      let bytes := constr:(bv_to_little_endian 8 8 (bv_unsigned word)) in
+      continuation address fraction bytes constr:(Some word)
+  end.
+
+Ltac zesu_memory_address_equal available requested :=
+  first [solve [constr_eq available requested; reflexivity] |
+    Hooks.zesu_handoff_closed_Z available ltac:(fun left =>
+      Hooks.zesu_handoff_closed_Z requested ltac:(fun right =>
+        change (left = right); solve [ring | Hooks.zesu_stack_arithmetic]))].
+
+Ltac zesu_memory_array_count bytes word continuation :=
+  lazymatch word with
+  | Some _ => continuation constr:(8%nat)
+  | None => lazymatch bytes with
+    | bv_to_little_endian ?digits _ _ =>
+        tryif is_closed_term digits
+        then let count := eval vm_compute in (Z.to_nat digits) in continuation count
+        else continuation constr:(length bytes)
+    | _ => continuation constr:(length bytes)
+    end
+  end.
+
+(* Match complete source lists before considering their addresses. *)
+Ltac zesu_memory_join_arrays :=
+  lazymatch goal with
+  | |- environments.envs_entails _
+      (@bi_sep _ (mem_mapsto_array_def ?address ?fraction ?bytes) _) =>
+    assert_fails (has_evar bytes);
+    ResourceGroups.zesu_expose_environment_alias;
+    iMatchHyp ltac:(fun leftName leftOwner =>
+      zesu_memory_byte_owner leftOwner ltac:(fun leftAddress leftFraction leftBytes leftWord =>
+        constr_eq fraction leftFraction;
+        iMatchHyp ltac:(fun rightName rightOwner =>
+          tryif constr_eq leftName rightName then fail 0 else idtac;
+          zesu_memory_byte_owner rightOwner
+            ltac:(fun rightAddress rightFraction rightBytes rightWord =>
+            constr_eq fraction rightFraction;
+            let owners := constr:([SIdent leftName []; SIdent rightName []]) in
+            let Hbytes := fresh "HmemoryArrayBytes" in
+            assert (Hbytes : bytes = (leftBytes ++ rightBytes)%list) by reflexivity;
+            zesu_memory_array_count leftBytes leftWord ltac:(fun count =>
+            let Hcount := fresh "HmemoryArrayLength" in
+            assert (Hcount : length leftBytes = count) by
+              first [reflexivity |
+                rewrite length_bv_to_little_endian;
+                  [reflexivity | Lia.lia]];
+            let Hnext := fresh "HmemoryArrayNext" in
+            assert (Hnext : rightAddress =
+              (leftAddress + Z.of_N (8 / 8) * Z.of_nat count)%Z) by
+              zesu_memory_address_equal rightAddress
+                constr:((leftAddress + Z.of_N (8 / 8) * Z.of_nat count)%Z);
+            lazymatch leftWord with
+            | Some ?low =>
+              lazymatch rightWord with
+              | Some ?high =>
+                iDestruct (adjacent_words_to_bytes140 _ _ fraction
+                  leftAddress rightAddress 8%nat 8%nat low high Hnext
+                  with owners) as leftName
+              | None =>
+                iDestruct (mem_mapsto_mapsto_to_byte_array with leftName) as leftName;
+                iEval (rewrite Hnext) in rightName;
+                iDestruct (mem_mapsto_array_app_combine_at 8 leftAddress fraction
+                  leftBytes rightBytes count Hcount with owners) as leftName
+              end
+            | None =>
+              lazymatch rightWord with
+              | Some _ =>
+                  iDestruct (mem_mapsto_mapsto_to_byte_array with rightName) as rightName
+              | None => idtac
+              end;
+              iEval (rewrite Hnext) in rightName;
+              iDestruct (mem_mapsto_array_app_combine_at 8 leftAddress fraction
+                leftBytes rightBytes count Hcount with owners) as leftName
+            end;
+            first [iEval (rewrite <- Hbytes) in leftName | idtac];
+            first [constr_eq leftAddress address |
+              let Hbase := fresh "HmemoryArrayBase" in
+              assert (Hbase : leftAddress = address) by
+                zesu_memory_address_equal leftAddress address;
+              iEval (rewrite Hbase) in leftName; clear Hbase];
+            clear Hbytes Hcount Hnext)))))
+  end.
+
+Ltac zesu_memory_frame_first :=
+  lazymatch goal with
+  | |- environments.envs_entails _ (@bi_sep _ ?first _) =>
+      lazymatch first with @bi_pure _ _ => fail 0 | _ => idtac end;
+      iMatchHyp ltac:(fun name body => progress (iFrame name))
+  end.
+
 (* Scalar constraints select constrained fields. The array consumer preserves
    the source addresses, fractions, and byte order. Callers supply pure logic. *)
 Ltac zesu_memory_tuple consume_facts finish :=
-  once (ResourceGroups.zesu_open_resource_groups;
+  once (try zesu_memory_registered_intro;
+  ResourceGroups.zesu_open_resource_groups;
   repeat multimatch goal with
   | Hwidth : (8 = ?stride * 8)%N |- _ =>
       is_var stride;
@@ -59,12 +174,14 @@ Ltac zesu_memory_tuple consume_facts finish :=
   end;
   zesu_memory_open_tuple constr:(16%nat);
   repeat iMatchHyp ltac:(fun name body => is_var body; progress (iFrame name));
-  lazymatch goal with
+  repeat first [progress zesu_memory_frame_first |
+    progress zesu_memory_join_arrays];
+  try (lazymatch goal with
   | |- environments.envs_entails _ (@bi_sep _ (isla.ghost_state.mem_mapsto_array_def _ _ _) _) =>
       iSplitL;
       [rewrite <- isla.ghost_state.mem_mapsto_array_eq;
        ByteArrayAssemblyCodec.zesu_byte_array_assemble_codec | idtac]
-  end);
+  end));
   lazymatch goal with
   | |- environments.envs_entails _ ?requested => consume_facts requested
   end;
