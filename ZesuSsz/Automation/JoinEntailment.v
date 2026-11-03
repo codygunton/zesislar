@@ -212,8 +212,26 @@ Ltac zesu_join_head_goal :=
     ListHeadFromLength.zesu_list_head_from_length
   end.
 
+(* Select the source bounds before arithmetic; their width presentations may
+   be definitionally equal without matching syntactically. *)
+Ltac zesu_join_class_side :=
+  lazymatch goal with |- ?lower <= ?value <= ?upper =>
+    multimatch goal with Hne : ?different <> ?base |- _ =>
+      unify value different;
+      multimatch goal with Hlo : ?baseLo <= ?valueLo |- _ =>
+        unify baseLo base; unify valueLo value;
+        multimatch goal with Hhi : ?valueHi <= ?upperHi |- _ =>
+          unify valueHi value; unify upperHi upper;
+          change (lower <= valueLo <= upper);
+          clear - Hlo Hhi Hne; lia
+        end
+      end
+    end
+  end.
+
 Ltac zesu_join_semantic_side views :=
   first [solve [eassumption] | solve [reflexivity] |
+    solve [zesu_join_class_side] |
     solve [split; zesu_join_semantic_side views] |
     solve [progress views; zesu_join_semantic_side views] |
     solve [zesu_join_head_goal] | solve [lia] |
