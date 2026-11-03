@@ -157,7 +157,31 @@ Ltac zesu_memory_frame_first :=
   lazymatch goal with
   | |- environments.envs_entails _ (@bi_sep _ ?first _) =>
       lazymatch first with @bi_pure _ _ => fail 0 | _ => idtac end;
-      iMatchHyp ltac:(fun name body => progress (iFrame name))
+      iMatchHyp ltac:(fun name body =>
+        lazymatch first with
+        | mem_mapsto_array_def _ ?fraction ?bytes =>
+          lazymatch body with
+          | @mem_mapsto_array _ _ 8%N _ ?availableFraction ?availableBytes =>
+              constr_eq fraction availableFraction;
+              let Hbytes := fresh "HmemoryFrameBytes" in
+              assert (Hbytes : bytes = availableBytes) by reflexivity;
+              clear Hbytes;
+              rewrite <- isla.ghost_state.mem_mapsto_array_eq
+          end
+        | _ =>
+          let requestedHead := get_head first in
+          let availableHead := get_head body in
+          constr_eq requestedHead availableHead
+        end;
+        progress (iFrame name))
+  end.
+
+Ltac zesu_memory_facts_shape requested :=
+  lazymatch requested with
+  | @bi_sep _ ?head ?tail =>
+      zesu_memory_facts_shape head; zesu_memory_facts_shape tail
+  | @bi_pure _ _ => idtac
+  | _ => is_var requested
   end.
 
 (* Scalar constraints select constrained fields. The array consumer preserves
@@ -173,7 +197,6 @@ Ltac zesu_memory_tuple consume_facts finish :=
       subst stride
   end;
   zesu_memory_open_tuple constr:(16%nat);
-  repeat iMatchHyp ltac:(fun name body => is_var body; progress (iFrame name));
   repeat first [progress zesu_memory_frame_first |
     progress zesu_memory_join_arrays];
   try (lazymatch goal with
@@ -181,7 +204,12 @@ Ltac zesu_memory_tuple consume_facts finish :=
       iSplitL;
       [rewrite <- isla.ghost_state.mem_mapsto_array_eq;
        ByteArrayAssemblyCodec.zesu_byte_array_assemble_codec | idtac]
-  end));
+  end);
+  lazymatch goal with
+  | |- environments.envs_entails _ ?requested =>
+      zesu_memory_facts_shape requested
+  end;
+  repeat iMatchHyp ltac:(fun name body => is_var body; progress (iFrame name)));
   lazymatch goal with
   | |- environments.envs_entails _ ?requested => consume_facts requested
   end;
