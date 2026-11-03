@@ -186,6 +186,7 @@ Ltac zesu_memory_facts_shape requested :=
 
 (* Scalar constraints select constrained fields. The array consumer preserves
    the source addresses, fractions, and byte order. Callers supply pure logic. *)
+(* Commit each matched phase before a later refusal can repeat its search. *)
 Ltac zesu_memory_tuple consume_facts finish :=
   once (try zesu_memory_registered_intro;
   ResourceGroups.zesu_open_resource_groups;
@@ -196,16 +197,16 @@ Ltac zesu_memory_tuple consume_facts finish :=
       assert (Hone : stride = 1%N) by (clear - Hwidth; Lia.lia);
       subst stride
   end;
-  zesu_memory_open_tuple constr:(16%nat);
-  repeat first [progress zesu_memory_frame_first |
-    progress zesu_memory_join_arrays];
-  try (lazymatch goal with
+  zesu_memory_open_tuple constr:(16%nat));
+  once (repeat first [progress zesu_memory_frame_first |
+    progress zesu_memory_join_arrays]);
+  once (try (lazymatch goal with
   | |- environments.envs_entails _ (@bi_sep _ (isla.ghost_state.mem_mapsto_array_def _ _ _) _) =>
       iSplitL;
       [rewrite <- isla.ghost_state.mem_mapsto_array_eq;
        ByteArrayAssemblyCodec.zesu_byte_array_assemble_codec | idtac]
-  end);
-  lazymatch goal with
+  end));
+  once (lazymatch goal with
   | |- environments.envs_entails _ ?requested =>
       zesu_memory_facts_shape requested
   end;
