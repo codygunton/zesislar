@@ -3,6 +3,7 @@ From stdpp Require Import list list_numbers tactics bitvector.definitions.
 From iris.proofmode Require Import tactics environments.
 Require Import isla.riscv64.riscv64.
 Require Import ZesuSsz.Automation.ByteArrayAssembly.
+Require Import ZesuSsz.Automation.ArrayAffineImage.
 
 Ltac zesu_byte_array_closed_counts bytes :=
   lazymatch bytes with
@@ -26,5 +27,6 @@ Ltac zesu_byte_array_codec_view :=
 
 Ltac zesu_byte_array_assemble_codec :=
   first [ByteArrayAssembly.zesu_byte_array_assemble |
+    solve [ArrayAffineImage.zesu_array_affine_presentation] |
     solve [zesu_byte_array_codec_view;
       ByteArrayAssembly.zesu_byte_array_assemble]].
