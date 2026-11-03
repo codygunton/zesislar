@@ -4,7 +4,7 @@ import hashlib,json,re
 GIB=1024**3
 NATIVE_FENCE=64*GIB
 COMPILE_FENCE=24*GIB
-PARENT_FENCE=175*GIB
+PARENT_FENCE=127*GIB
 QUANTUM=8*GIB
 COMPILE_PHASES={'prerequisites','kernel','compile_only'}
 
