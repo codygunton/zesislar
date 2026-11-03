@@ -7,6 +7,7 @@ Require Import ZesuSsz.Automation.Finish.
 Require Import ZesuSsz.Automation.Legacy.Finish.
 From Coq Require Import ZArith.ZArith NArith.NArith Lists.List.
 From stdpp Require Import tactics bitvector.definitions.
+Require Import ZesuSsz.Automation.All.
 Open Scope Z_scope.
 Goal True.
 Proof.

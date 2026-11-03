@@ -28,7 +28,7 @@ Require Export ZesuSsz.Automation.SymbolicByteCodec.
 #[export] Instance zesu_union_symbolic_byte_codec_enabled :
   ZesuSsz.Automation.SymbolicByteCodec.ZesuStepSymbolicByteCodec := {}.
 
-#[export] Instance zesu_union_explicit_v1 :
+#[export] Instance zesu_explicit_v1 :
   ZesuSsz.Automation.PureFacts.ZesuRuleSetV1 := I.
 Require Export ZesuSsz.Automation.MaskPresentation.
 Require Export ZesuSsz.Automation.MaskWrapPresentation.
@@ -62,4 +62,31 @@ Require Export ZesuSsz.Automation.RewriteBoundGuards.
 (* Record-field pruning requires the existing production filter selection. *)
 Require Export ZesuSsz.Automation.Switches.FinisherOnce.
 
-Require Export ZesuSsz.Automation.EffectiveOverrides.
+
+Require Export ZesuSsz.Automation.Switches.RegisterCollectionSelection.
+Require Export ZesuSsz.Automation.Switches.PureFactHints.
+Require Export ZesuSsz.Automation.MemoryAddress.
+Require Export ZesuSsz.Automation.WrappedWord.
+Require Export ZesuSsz.Automation.EntryWitnessFinish.
+Require Export ZesuSsz.Automation.MemoryTupleConsumer.
+Require Export ZesuSsz.Automation.SourceFactMatching.
+Require Export ZesuSsz.Automation.SourceFactByteViews.
+Require Export ZesuSsz.Automation.SourceFactByteOrder.
+Require Export ZesuSsz.Automation.FrameImageRoundtrip.
+Require Export ZesuSsz.Automation.LoopResourceBackedge.
+
+#[export] Instance zesu_signed_mask_branch_enabled :
+  ZesuSsz.Automation.SignedMaskBranch.ZesuStepSignedMaskBranch := {}.
+#[export] Instance zesu_array_continuation_enabled :
+  ZesuSsz.Automation.ArrayContinuation.ZesuStepArrayContinuation := {}.
+#[export] Instance zesu_word_identity_enabled :
+  ZesuSsz.Automation.WordIdentity.ZesuStepWordIdentity := {}.
+#[export] Instance zesu_codec_array_read_enabled :
+  ZesuSsz.Automation.CodecArrayRead.ZesuStepCodecArrayRead := {}.
+#[export] Instance zesu_regcol_vm_compute_enabled :
+  ZesuSsz.Automation.Hooks.ZesuStepRegcolVMCompute := {}.
+#[export] Instance zesu_source_witnesses_enabled :
+  ZesuSsz.Automation.SourceWitnessInputs.ZesuStepSourceWitnesses := I.
+
+(* Reopen the canonical hook owner after all library imports. *)
+Require Export ZesuSsz.Automation.Hooks.

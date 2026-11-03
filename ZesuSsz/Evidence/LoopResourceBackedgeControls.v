@@ -5,6 +5,7 @@ Require Import ZesuSsz.Automation.SwitchDispatch.
 Require Import ZesuSsz.Automation.ByteWindowFold.
 From Coq Require Import Lists.List ZArith.ZArith.
 Import ListNotations.
+Require Import ZesuSsz.Automation.All.
 Open Scope Z_scope.
 
 Section Controls.
@@ -12,14 +13,14 @@ Context `{!islaG Sigma} `{!threadG}.
 Variables (origin index : Z) (cursor endpoint accumulator next_accumulator : bv 64).
 Variables (bytes : list (bv 8)) (start : nat).
 Variables (P Q : bv 64 -> iProp Sigma) (frame other_frame : iProp Sigma).
-Hypothesis Hindex : 0 <= index.
-Hypothesis Horigin : bv_unsigned cursor = origin + index.
-Hypothesis Hhead : bv_unsigned cursor < bv_unsigned endpoint.
-Hypothesis Hbranch : negb (bool_decide (bv_add cursor (BV 64 1) = endpoint)) = true.
-Hypothesis Hfold : bv_unsigned accumulator =
-  ByteWindowFold.zesu_byte_window_fold bytes start (Z.to_nat index).
-Hypothesis Hnext_fold : bv_unsigned next_accumulator =
-  ByteWindowFold.zesu_byte_window_fold bytes start (Z.to_nat (index + 1)).
+Context (Hindex : 0 <= index).
+Context (Horigin : bv_unsigned cursor = origin + index).
+Context (Hhead : bv_unsigned cursor < bv_unsigned endpoint).
+Context (Hbranch : negb (bool_decide (bv_add cursor (BV 64 1) = endpoint)) = true).
+Context (Hfold : bv_unsigned accumulator =
+  ByteWindowFold.zesu_byte_window_fold bytes start (Z.to_nat index)).
+Context (Hnext_fold : bv_unsigned next_accumulator =
+  ByteWindowFold.zesu_byte_window_fold bytes start (Z.to_nat (index + 1))).
 
 Definition loop_resource_source : iProp Sigma :=
   (P next_accumulator ∗ Q (bv_add cursor (BV 64 1)) ∗ frame)%I.
@@ -124,17 +125,17 @@ End Controls.
 
 Section SymbolicWidth.
 Context `{!islaG Sigma} `{!threadG}.
-Variable width : N.
+Context (width : N).
 Variables (origin index : Z) (cursor endpoint : bv width).
 Variables (accumulator next_accumulator : bv 64) (bytes : list (bv 8)) (start : nat).
 Variables (P : bv 64 -> iProp Sigma) (Q : bv width -> iProp Sigma).
-Hypothesis Hindex : 0 <= index.
-Hypothesis Horigin : bv_unsigned cursor = origin + index.
-Hypothesis Hhead : bv_unsigned cursor < bv_unsigned endpoint.
-Hypothesis Hbranch : negb (bool_decide
-  (bv_add cursor (Z_to_bv width 1) = endpoint)) = true.
-Hypothesis Hfold : bv_unsigned accumulator =
-  ByteWindowFold.zesu_byte_window_fold bytes start (Z.to_nat index).
+Context (Hindex : 0 <= index).
+Context (Horigin : bv_unsigned cursor = origin + index).
+Context (Hhead : bv_unsigned cursor < bv_unsigned endpoint).
+Context (Hbranch : negb (bool_decide
+  (bv_add cursor (Z_to_bv width 1) = endpoint)) = true).
+Context (Hfold : bv_unsigned accumulator =
+  ByteWindowFold.zesu_byte_window_fold bytes start (Z.to_nat index)).
 
 Lemma loop_resource_symbolic_width_refuses : True.
 Proof using All.

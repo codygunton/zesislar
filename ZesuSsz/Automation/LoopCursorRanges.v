@@ -1,6 +1,6 @@
 From Coq Require Import Lists.List ZArith.ZArith Lia.
 From stdpp Require Import bitvector.definitions.
-Open Scope Z_scope.
+Local Open Scope Z_scope.
 
 Lemma zesu_loop_read_range (base start cursor limit length : Z) :
   base <= start -> start <= cursor -> cursor < limit -> limit <= base + length ->

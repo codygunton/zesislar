@@ -42,7 +42,7 @@ Proof.
     all: rewrite decodeItemJoinWordCodec.
     all: try reflexivity.
     assert (Hcast : bv_unsigned (Z_to_bv 64 (decodeItemInputPointer args)) = decodeItemInputPointer args).
-    { clear - Hlayout. Hooks.zesu_stack_arithmetic. }
+    { clear - Hlayout. MemoryAddress.zesu_stack_arithmetic. }
     rewrite Hcast.
     assert (Hnot128 : (bv_unsigned prefix =? 128) = false).
     { apply Z.eqb_neq. lia. }
@@ -72,7 +72,7 @@ Proof.
   assert (Hpositive : 1 <= decodeItemInputLength args).
   { clear - Hcount Hprefix HinputLength. lia. }
   assert (Hcast : bv_unsigned (bv_add (Z_to_bv 64 (decodeItemInputPointer args)) (BV 64 1)) = decodeItemInputPointer args + 1).
-  { clear - Hlayout Hpositive. unfold decodeItemEntryLayout in Hlayout. Hooks.zesu_stack_arithmetic. }
+  { clear - Hlayout Hpositive. unfold decodeItemEntryLayout in Hlayout. MemoryAddress.zesu_stack_arithmetic. }
   assert (Hconsumed : bv_unsigned (bv_add payload (BV 64 1)) = 1 + (bv_unsigned prefix - 128)).
   { rewrite bv_add_unsigned. rewrite Hpayload. rewrite bv_unsigned_BV.
     assert (Hsmall : 0 <= bv_unsigned prefix - 128 + 1 < bv_modulus 64).

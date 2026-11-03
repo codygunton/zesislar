@@ -1,5 +1,5 @@
 Require Import ZesuSsz.Automation.SwitchDispatch.
-Require Import ZesuSsz.Automation.Hooks.
+Require Import ZesuSsz.Automation.MemoryAddress.
 From Coq Require Import Lists.List ZArith.ZArith Lia.
 From stdpp Require Import bitvector.definitions.
 Local Open Scope Z_scope.
@@ -33,9 +33,9 @@ Ltac zesu_codec_array_range :=
     zesu_codec_range_lengths;
     lazymatch goal with
     | |- (?lower <= ?pointer < ?upper)%Z =>
-        ZesuSsz.Automation.Hooks.zesu_handoff_closed_Z lower ltac:(fun low =>
-        ZesuSsz.Automation.Hooks.zesu_handoff_closed_Z pointer ltac:(fun point =>
-        ZesuSsz.Automation.Hooks.zesu_handoff_closed_Z upper ltac:(fun high =>
+        ZesuSsz.Automation.MemoryAddress.zesu_handoff_closed_Z lower ltac:(fun low =>
+        ZesuSsz.Automation.MemoryAddress.zesu_handoff_closed_Z pointer ltac:(fun point =>
+        ZesuSsz.Automation.MemoryAddress.zesu_handoff_closed_Z upper ltac:(fun high =>
           change (low <= point < high)%Z;
           lia)))
     end

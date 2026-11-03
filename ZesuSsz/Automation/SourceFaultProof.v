@@ -21,10 +21,10 @@ Ltac zesu_source_fault_offset_bound :=
 Ltac zesu_source_fault_closed_offsets pointer :=
   lazymatch pointer with
   | bv_add (bv_add (Z_to_bv 64 _) ?first) ?second =>
-      Hooks.zesu_stack_closed_term first;
-      Hooks.zesu_stack_closed_term second
-  | bv_add (Z_to_bv 64 _) ?offset => Hooks.zesu_stack_closed_term offset
-  | bv_sub (Z_to_bv 64 _) ?offset => Hooks.zesu_stack_closed_term offset
+      MemoryAddress.zesu_stack_closed_term first;
+      MemoryAddress.zesu_stack_closed_term second
+  | bv_add (Z_to_bv 64 _) ?offset => MemoryAddress.zesu_stack_closed_term offset
+  | bv_sub (Z_to_bv 64 _) ?offset => MemoryAddress.zesu_stack_closed_term offset
   | Z_to_bv 64 _ => idtac
   end.
 
@@ -38,15 +38,15 @@ Ltac zesu_source_fault_proof project leaf :=
     apply Bool.negb_true_iff in leaf;
     apply bool_decide_eq_false_1 in leaf;
     repeat match goal with
-    | Hbound : _ |- _ => progress (Hooks.zesu_stack_normalize_hypothesis Hbound)
+    | Hbound : _ |- _ => progress (MemoryAddress.zesu_stack_normalize_hypothesis Hbound)
     end;
     Hooks.zesu_normalize_machine_map;
     lazymatch type of leaf with
     | context [bv_zero_extend 128 ?pointer] =>
         zesu_source_fault_closed_offsets pointer;
-        let integer := Hooks.zesu_stack_integer_address pointer in
+        let integer := MemoryAddress.zesu_stack_integer_address pointer in
         let Heq := fresh "HsourcePointer" in
-        assert (Heq : bv_unsigned pointer = integer) by Hooks.zesu_stack_arithmetic;
+        assert (Heq : bv_unsigned pointer = integer) by MemoryAddress.zesu_stack_arithmetic;
         repeat lazymatch type of leaf with
         | context [bv_signed (bv_zero_extend 128 ?value + ?offset)] =>
             rewrite (BitvectorFacts.zesu_signed_zero_extend_add_64_128 value offset) in leaf;
@@ -55,6 +55,6 @@ Ltac zesu_source_fault_proof project leaf :=
             rewrite (BitvectorFacts.zesu_signed_zero_extend_64_128 value) in leaf
         end;
         rewrite Heq in leaf;
-        Hooks.zesu_stack_normalize_hypothesis leaf;
+        MemoryAddress.zesu_stack_normalize_hypothesis leaf;
         lia
     end ].

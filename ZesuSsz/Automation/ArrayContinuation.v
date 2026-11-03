@@ -42,6 +42,6 @@ Ltac zesu_array_continuation codec :=
     try iPureIntro;
     repeat split;
     first [assumption | reflexivity |
-      ZesuSsz.Automation.Hooks.zesu_stack_arithmetic |
+      ZesuSsz.Automation.MemoryAddress.zesu_stack_arithmetic |
       zesu_array_continuation_lengths]
   ].

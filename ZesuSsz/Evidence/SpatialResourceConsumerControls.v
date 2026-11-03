@@ -5,6 +5,7 @@ From iris.base_logic.lib Require Import iprop.
 From iris.proofmode Require Import tactics environments.
 From Coq Require Import List ZArith.
 Import ListNotations.
+Require Import ZesuSsz.Automation.All.
 Open Scope Z_scope.
 
 Definition SpatialBytes : Type := list (bv 8).

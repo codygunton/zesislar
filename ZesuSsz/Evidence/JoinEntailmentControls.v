@@ -3,6 +3,7 @@ Require Import ZesuSsz.Automation.JoinEntailment.
 From Coq Require Import ZArith.ZArith.
 Require Import stdpp.bitvector.definitions.
 From stdpp Require Import decidable.
+Require Import ZesuSsz.Automation.All.
 
 Section Projection.
 Variables P Q R : Prop.
@@ -35,7 +36,7 @@ Qed.
 End Projection.
 
 Section BooleanViews.
-Variable P : Prop.
+Context (P : Prop).
 Context `{!Decision P}.
 
 Lemma join_boolean_positive (Hsource : bool_decide P = true) : P.

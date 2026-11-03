@@ -1,7 +1,7 @@
 From Coq Require Import Lists.List ZArith.ZArith.
 From stdpp Require Import bitvector.definitions.
 Import ListNotations.
-Open Scope Z_scope.
+Local Open Scope Z_scope.
 
 Definition zesu_big_endian8 (bytes : list (bv 8)) : Z :=
   fold_left (fun acc byte => 256 * acc + bv_unsigned byte) bytes 0.

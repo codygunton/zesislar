@@ -7,6 +7,7 @@ From stdpp Require Import bitvector.tactics decidable.
 Local Open Scope Z_scope.
 Require Import ZesuSsz.Automation.MemoryTupleConsumer.
 Require Import ZesuSsz.Automation.SourceFactMatching.
+Require Import ZesuSsz.Automation.All.
 Lemma unused_positive : forall (Sigma : gFunctors) (P : bv 64 -> Prop) (value : bv 64), P value -> ((emp : iProp Sigma) ⊢ ∃ x : li_prod (bv 64) (li_prod (bv 64) unit), ⌜P (li_fst x)⌝)%I.
 Proof. intros Sigma P value Hvalue. iIntros "_". MemoryTupleConsumer.zesu_memory_open_tuple constr:(16%nat). iPureIntro. eassumption. Qed.
 

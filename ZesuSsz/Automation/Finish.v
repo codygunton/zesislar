@@ -1,3 +1,10 @@
+Require Import ZesuSsz.Automation.MemoryAddress.
+Require Import ZesuSsz.Automation.MemoryTupleConsumer.
+Require Import ZesuSsz.Automation.SourceFactMatching.
+Require Import ZesuSsz.Automation.SourceFactByteViews.
+Require Import ZesuSsz.Automation.SourceFactByteOrder.
+Require Import ZesuSsz.Automation.EntryWitnessFinish.
+Require Import ZesuSsz.Automation.WrappedWord.
 Require Import isla.riscv64.riscv64.
 Require Import ZesuSsz.Automation.EntryIntro.
 Require Import ZesuMachineMap.Machine.
@@ -310,7 +317,7 @@ Ltac zesu_finish_v1 :=
       first [solve [zesu_array_bounds_if_enabled] |
         solve [unshelve_sidecond; unLET; zesu_array_eight_value] |
         prepare_sidecond]
-  | _ => unLET
+  | _ => Hooks.zesu_unlet_preserving_witness_metadata
   end;
   try zesu_finish_selectors;
   try autorewrite with zesu_indices;
@@ -562,16 +569,72 @@ Ltac zesu_finish_residual_switches :=
   assert (codec : ZesuSsz.Automation.SymbolicByteCodec.ZesuStepSymbolicByteCodec) by constructor.
 
 (* An unsuccessful cascade restores the goal and its original capabilities. *)
+Ltac zesu_masked_add_branch_finish :=
+  solve [
+    match goal with
+    | branch : ~ (?masked_expression >= ?bound_expression)%Z |- _ =>
+      lazymatch masked_expression with
+      | bv_unsigned (bv_and (bv_add (Z_to_bv ?width ?value) ?offset) ?mask) =>
+        is_closed_term width; is_closed_term offset; is_closed_term mask;
+        assert_fails (has_evar value);
+        let delta := eval vm_compute in (bv_unsigned offset) in
+        let low := eval vm_compute in (N.log2 (Z.to_N (bv_unsigned mask + 1)%Z)) in
+        let modulus := eval vm_compute in (bv_modulus low) in
+        let base := constr:(Z_to_bv width value) in
+        let cast := fresh "HmaskedBaseCast" in
+        assert (cast : bv_unsigned base = value) by
+          (apply Z_to_bv_small;
+           ZesuSsz.Automation.HypothesisCast.zesu_hypothesis_cast_range width value);
+        let widths := fresh "HmaskedWidths" in
+        assert (widths : (low <= width)%N) by (vm_compute; congruence);
+        let bits := fresh "HmaskedBits" in
+        assert (bits : bv_unsigned mask = Z.ones (Z.of_N low)) by
+          (vm_compute; reflexivity);
+        let range := fresh "HmaskedOneWrap" in
+        assert (range : (bv_modulus low <= bv_unsigned base + delta < 2 * bv_modulus low)%Z) by
+          (rewrite cast; change (modulus <= value + delta < 2 * modulus)%Z; lia);
+        let image := fresh "HmaskedAddImage" in
+        assert (image : masked_expression = (value + delta - modulus)%Z) by
+          (change (bv_unsigned (bv_and (bv_add base (Z_to_bv width delta)) mask) = (value + delta - modulus)%Z);
+           rewrite (ZesuSsz.Automation.BitvectorFacts.zesu_unsigned_low_mask_add_sub_modulus
+             width low base mask delta widths bits range) cast;
+           reflexivity);
+        rewrite image in branch;
+        lazymatch bound_expression with
+        | bv_unsigned (Z_to_bv ?bound_width ?bound) =>
+          let bound_cast := fresh "HmaskedBoundCast" in
+          assert (bound_cast : bv_unsigned (Z_to_bv bound_width bound) = bound) by
+            (apply Z_to_bv_small;
+             ZesuSsz.Automation.HypothesisCast.zesu_hypothesis_cast_range bound_width bound);
+          rewrite bound_cast in branch
+        | _ => idtac
+        end;
+        lia
+      end
+    end].
+
 Ltac zesu_v34_array_continuation :=
   ZesuSsz.Automation.ArrayContinuation.zesu_array_continuation
-    ltac:(first [ZesuSsz.Automation.SymbolicByteCodec.zesu_symbolic_byte_codec |
+    ltac:(first [zesu_masked_add_branch_finish |
+      ZesuSsz.Automation.SymbolicByteCodec.zesu_symbolic_byte_codec |
       ZesuSsz.Automation.FramePackingFinish.zesu_frame_packing_finish |
       assumption | reflexivity]).
+
+Ltac zesu_finish_source_package :=
+  MemoryTupleConsumer.zesu_memory_tuple
+    ltac:(fun requested =>
+      SourceFactByteViews.zesu_source_byte_views;
+      SourceFactByteViews.zesu_source_byte_order_tree requested;
+      SourceFactMatching.zesu_source_check_fixed_tree requested;
+      SourceFactMatching.zesu_source_match_tree requested ltac:(idtac))
+    ltac:(fun _ => SourceFactMatching.zesu_source_finish_package).
 
 Ltac zesu_finish_residual_cascade :=
   solve [
     zesu_finish_residual_switches;
-    first [ solve [ZesuSsz.Automation.WordIdentity.zesu_word_identity]
+    first [ solve [zesu_finish_source_package]
+          | solve [ZesuSsz.Automation.WordIdentity.zesu_word_identity]
+          | solve [zesu_masked_add_branch_finish]
           | solve [ZesuSsz.Automation.HypothesisCast.zesu_hypothesis_cast_finish]
           | solve [ZesuSsz.Automation.ByteMaskCast.zesu_byte_mask_cast]
           | solve [ZesuSsz.Automation.ByteReconstruction.zesu_byte_reconstruction ltac:(lia)]
@@ -627,8 +690,11 @@ Ltac zesu_finish_common_pure :=
     repeat first [progress zesu_split_folded_pure |
       match goal with Hpair : _ /\ _ |- _ => destruct Hpair end];
     zesu_normalize_machine_map;
-    autorewrite with isla_coq_rewrite;
-    zesu_union_pure_finish]].
+    first [solve [apply andb_true_iff; split; apply bool_decide_eq_true_2;
+      WrappedWord.zesu_wrapped_word_range ltac:(
+        WrappedWord.zesu_reduce_closed_Z_aliases;
+        cbv [bv_unsigned bv_modulus] in *; lia)]
+    | autorewrite with isla_coq_rewrite; zesu_union_pure_finish]]].
 
 (* The common pure path and final tail share the union helper. Baseline closers remain available. *)
 Ltac zesu_finish_final_pure :=
@@ -686,7 +752,7 @@ Ltac zesu_finish_v2 :=
   end;
   lazymatch goal with
   | |- SHELVED_SIDECOND _ => zesu_finish_shelved
-  | _ => unLET
+  | _ => Hooks.zesu_unlet_preserving_witness_metadata
   end;
   zesu_finish_dispatch.
 
@@ -944,6 +1010,11 @@ Ltac zesu_search_switches := constr:([
   ZesuSsz.Automation.SymbolicByteCodec.ZesuStepSymbolicByteCodec;
   ZesuSsz.Automation.FramePacking.ZesuStepFramePacking]).
 
+Ltac zesu_native_entry_tail :=
+  EntryWitnessFinish.zesu_entry_witness_finish
+    ltac:(progress liAStep)
+    ltac:(cbn [li_fst li_snd]; zesu_finish_pure_goal).
+
 Ltac zesu_run :=
   let switches := zesu_search_switches in
   zesu_dispatch_search switches ltac:(fun _ =>
@@ -953,7 +1024,8 @@ Ltac zesu_run :=
     try zesu_finish_pure_resources;
     try solve [zesu_array_bounds_if_enabled];
     try zesu_finish;
-    try zesu_finish_final_pure).
+    try zesu_finish_final_pure);
+  try zesu_native_entry_tail.
 
 Ltac zesu_expose_code_list instructions :=
   lazymatch instructions with
@@ -1015,12 +1087,11 @@ Ltac zesu_block_base :=
 
 Ltac zesu_block :=
   (tryif zesu_switch_enabled constr:(ZesuStepContextCollection)
-  then first [solve [zesu_block_base] |
+  then first [solve [zesu_block_base; try zesu_finish_residual_cascade] |
     idtac "ZESU_COLLECTION_FALLBACK";
     pose proof zesu_context_collection_off_intro;
     zesu_block_base]
-  else zesu_block_base);
-  try zesu_finish_residual_cascade.
+  else (zesu_block_base; try zesu_finish_residual_cascade)).
 
 Ltac zesu_block_simpl :=
   iStartProof;

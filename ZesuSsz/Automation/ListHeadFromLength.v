@@ -1,7 +1,7 @@
 From Coq Require Import List ZArith Bool.
 From stdpp Require Import bitvector.definitions.
 Import ListNotations.
-Open Scope Z_scope.
+Local Open Scope Z_scope.
 
 Lemma zesu_list_head_from_cast_length {A : Type} (bytes : list A)
     (default : A) (width : N) (quantity : Z) (zero : bv width) :

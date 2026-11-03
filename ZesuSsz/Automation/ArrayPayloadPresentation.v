@@ -29,7 +29,7 @@ Ltac zesu_array_payload_from_spatial spatial sigma heap width address fraction b
             clear Haddress Hbytes;
             iFrame;
             try (iPureIntro; repeat split;
-                 ZesuSsz.Automation.Hooks.zesu_stack_arithmetic)
+                 ZesuSsz.Automation.MemoryAddress.zesu_stack_arithmetic)
         end
       | zesu_array_payload_from_spatial rest sigma heap width address fraction bytes codec]
   end.

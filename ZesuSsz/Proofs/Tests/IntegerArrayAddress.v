@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuSsz.Automation.MemoryAddress.
 Require Import isla.riscv64.riscv64.
 From Coq Require Import List ZArith.
 
@@ -7,13 +8,14 @@ Definition integerAddressDomain (args : IntegerAddressArgs) (bytes : list (bv 8)
   (0 <= integerAddressBase args /\ integerAddressBase args + 40 < 2 ^ 64 /\
    length bytes = 40%nat)%Z.
 
-Lemma integer_array_address_opt_in : True.
+Lemma integer_array_address_release_enabled : True.
 Proof.
-  Fail let _ := constr:(_ : ZesuStepIntegerArrayAddress) in idtac.
+  let _ := constr:(_ : ZesuStepIntegerArrayAddress) in idtac.
   exact I.
 Qed.
 
 Require Import ZesuSsz.Automation.Switches.IntegerArrayAddress.
+Require Import ZesuSsz.Automation.All.
 
 Lemma integer_array_address_open_offset
     (args : IntegerAddressArgs) (offset : bv 64) : True.

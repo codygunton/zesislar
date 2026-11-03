@@ -5,6 +5,7 @@ Require Import isla.riscv64.riscv64.
 From iris.base_logic.lib Require Import iprop.
 From iris.proofmode Require Import tactics environments.
 From Coq Require Import ZArith.
+Require Import ZesuSsz.Automation.All.
 Open Scope Z_scope.
 
 Section Controls.

@@ -8,6 +8,7 @@ Require Import ZesuSsz.Contracts.DecodeItemCompositional.
 Open Scope Z_scope.
 
 Require Import ZesuSsz.Automation.SourceFaultProof.
+Require Import ZesuSsz.Automation.All.
 
 Lemma composition403_fault0 (args : DecodeItemArgs) :
  decodeItemArgsWellFormed args ->

@@ -1,6 +1,7 @@
+Require Import ZesuSsz.Automation.ResourceGroups.
 Require Import isla.riscv64.riscv64.
 Require Import ZesuSsz.Automation.SwitchDispatch.
-Require Import ZesuSsz.Automation.Hooks.
+Require Import ZesuSsz.Automation.MemoryAddress.
 Require Import ZesuSsz.Automation.ByteArrayLengths.
 Require Import ZesuSsz.Automation.CodecArrayRange.
 From Coq Require Import Lists.List ZArith.ZArith Lia.
@@ -13,8 +14,6 @@ Class ZesuStepCodecArrayRead : Prop := {}.
   ZesuStepCodecArrayRange := {}.
 #[export] Instance codec_read_regions `{ZesuStepCodecArrayRead} :
   ZesuSsz.Automation.ByteArrayLengths.ZesuStepArrayRegionBounds := I.
-#[export] Instance codec_read_bounds `{ZesuStepCodecArrayRead} :
-  ZesuSsz.Automation.Hooks.ZesuStepArrayBounds := I.
 
 (* Match the existing owned byte image. The public range proof runs after
    cast normalization, so it never uses a stale payload argument. *)
@@ -25,8 +24,8 @@ Ltac zesu_codec_array_find :=
   | |- environments.envs_entails _
       (find_in_context (FindMemMapsTo (bv_unsigned ?pointer)) _) =>
       let expanded := eval cbv beta zeta in pointer in
-      ZesuSsz.Automation.Hooks.zesu_integer_pointer_root expanded ltac:(fun _ =>
-      let integer := ZesuSsz.Automation.Hooks.zesu_stack_integer_address expanded in
+      ZesuSsz.Automation.MemoryAddress.zesu_integer_pointer_root expanded ltac:(fun _ =>
+      let integer := ZesuSsz.Automation.MemoryAddress.zesu_stack_integer_address expanded in
       iMatchHyp ltac:(fun H body =>
         lazymatch body with
         | @mem_mapsto_array _ _ 8%N ?lower ?fraction ?values =>
@@ -36,14 +35,14 @@ Ltac zesu_codec_array_find :=
             assert_fails (has_evar values);
             let Haddress := fresh "HcodecArrayAddress" in
             assert (Haddress : bv_unsigned pointer = integer) by
-              ZesuSsz.Automation.Hooks.zesu_stack_arithmetic;
+              ZesuSsz.Automation.MemoryAddress.zesu_stack_arithmetic;
             let Hrange := fresh "HcodecArrayRange" in
             assert (Hrange : (lower <= integer < lower +
               Z.of_nat (length values) * Z.of_N (8 `div` 8))%Z) by (
-              ZesuSsz.Automation.Hooks.zesu_array_bound_integer_casts;
+              ZesuSsz.Automation.MemoryAddress.zesu_array_bound_integer_casts;
               ZesuSsz.Automation.ByteArrayLengths.zesu_byte_array_lengths_extended;
               zesu_codec_array_range);
-            ZesuSsz.Automation.Hooks.zesu_integer_array_facts;
+            ZesuSsz.Automation.MemoryAddress.zesu_integer_array_facts;
             rewrite Haddress; clear Haddress;
             liEnsureInvariant;
             liStep
@@ -57,10 +56,10 @@ Ltac zesu_codec_array_read_sidecond :=
   try (lazymatch goal with |- SHELVED_SIDECOND ?condition => change condition end);
   lazymatch goal with
   | |- (0 <= ?offset)%Z =>
-      Hooks.zesu_handoff_closed_Z offset ltac:(fun reduced =>
+      MemoryAddress.zesu_handoff_closed_Z offset ltac:(fun reduced =>
         change (0 <= reduced)%Z; lia)
   | |- (Z.to_nat ?offset + ?width <= ?extent)%nat =>
-      Hooks.zesu_handoff_closed_Z offset ltac:(fun reduced =>
+      MemoryAddress.zesu_handoff_closed_Z offset ltac:(fun reduced =>
         change (Z.to_nat reduced + width <= extent)%nat;
         cbn [length];
         first [
@@ -96,7 +95,7 @@ Ltac zesu_codec_array_read_image image :=
       check_extent values;
       let index := fresh "HcodecIndex" in
       assert (index : Z.to_nat offset = count) by
-        (Hooks.zesu_handoff_closed_Z offset ltac:(fun reduced =>
+        (MemoryAddress.zesu_handoff_closed_Z offset ltac:(fun reduced =>
           change (Z.to_nat reduced = count); lia));
       rewrite index in image; clear index
   end;

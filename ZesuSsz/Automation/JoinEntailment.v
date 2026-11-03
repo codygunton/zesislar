@@ -184,7 +184,7 @@ Ltac zesu_join_cast_once :=
       let equality := constr:(bv_unsigned (Z_to_bv 64 quantity) = quantity) in
       zesu_join_fact_absent equality;
       let Hcast := fresh "HjoinCast" in
-      assert (Hcast : equality) by Hooks.zesu_stack_arithmetic
+      assert (Hcast : equality) by MemoryAddress.zesu_stack_arithmetic
     end
   end.
 
@@ -235,7 +235,7 @@ Ltac zesu_join_semantic_side views :=
     solve [split; zesu_join_semantic_side views] |
     solve [progress views; zesu_join_semantic_side views] |
     solve [zesu_join_head_goal] | solve [lia] |
-    solve [Hooks.zesu_stack_arithmetic]].
+    solve [MemoryAddress.zesu_stack_arithmetic]].
 
 Ltac zesu_join_contradiction :=
   multimatch goal with

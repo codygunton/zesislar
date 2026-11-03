@@ -1,3 +1,21 @@
+Require Import ZesuSsz.Automation.ByteArrayAssemblyCodec.
+Require Import ZesuSsz.Automation.MemoryAddress.
+Require Import ZesuSsz.Automation.CodecArrayRead.
+Require Import ZesuSsz.Automation.WrappedWord.
+Require Import ZesuSsz.Automation.SourceWitnessInputs.
+Ltac zesu_witness_metadata_type kind :=
+  lazymatch kind with
+  | @SourceWitnessInputs.ZesuSourceWitness _ _ _ => idtac
+  | @EntryWitnessSelector.ZesuEntryWitnessPending _ _ _ _ => idtac
+  end.
+
+Ltac zesu_unlet_preserving_witness_metadata :=
+  repeat match goal with
+  | alias := _ : ?kind |- _ =>
+      tryif zesu_witness_metadata_type kind then fail 0
+      else (unfold alias in *; clear alias)
+  end.
+
 Require Import ZesuSsz.Automation.FractionalRead.
 Require ZesuSsz.Evidence.EntryWitnessInputs.
 Require ZesuSsz.Automation.CanonicalFactAdapter.
@@ -7,6 +25,8 @@ Require Import ZesuSsz.Automation.EntryIntro.
 Require Import ZesuSsz.Automation.SwitchDispatch.
 Require Import ZesuSsz.Automation.ContextCollection.
 Require Import ZesuSsz.Automation.RecordFieldPruning.
+Ltac ZesuSsz.Automation.ContextCollection.zesu_context_prune_goal ::= ltac2:(a3n_prune ()).
+
 Require Import ZesuSsz.Automation.LinearFirstLia.
 (** Project-wide Lithium hook redefinitions belong in this module. *)
 
@@ -29,6 +49,32 @@ Require Import ZesuSsz.Contracts.SelectedCodeLookup.
 Require Import InstrSpecs.Lookup.
 Require Import ZesuSsz.Automation.ResourceGroups.
 Require Import ZesuSsz.Automation.ConjunctMatch.
+
+(* Expose symbolic lookup results with kernel reduction. Do not normalize their
+   payloads in the VM. Closed inputs retain the upstream VM path. *)
+Ltac zesu_regcol_compute_hint :=
+  clear;
+  autounfold with regcol_compute_unfold;
+  repeat match goal with H := _ |- _ => clearbody H end;
+  remember_regcol;
+  lazymatch goal with
+  | |- LiTactic (regcol_compute_hint ?f ?a) =>
+    let input := constr:(f a) in
+    tryif is_closed_term input then
+      let result := eval vm_compute in input in
+      lazymatch result with
+      | Some ?value => apply (regcol_compute_hint_hint value)
+      end;
+      abstract (vm_compute; exact eq_refl)
+    else
+      let result := eval hnf in input in
+      lazymatch result with
+      | Some ?value => apply (regcol_compute_hint_hint value)
+      end;
+      abstract (reflexivity)
+  end.
+
+Ltac isla.automation.solve_regcol_compute_hint ::= zesu_regcol_compute_hint.
 
 (* The pure closer must not unfold an Iris entailment into arithmetic. *)
 Ltac zesu_final_pure_head_gate :=
@@ -409,39 +455,7 @@ From Ltac2 Require Import Ltac2.
 Set Default Proof Mode "Classic".
 
 (* Keep the original visitor for aliases, binders, and uncommon kernel forms. *)
-Ltac zesu_stack_closed_fallback recurse current :=
-  let rec visit current :=
-    tryif is_var current then
-      let body := eval unfold current in current in
-      recurse body
-    else lazymatch current with
-    | (fun _ => _) => fail 0
-    | (forall _, _) => fail 0
-    | ?function ?argument => visit function; visit argument
-    | _ => idtac
-    end
-  in visit current.
-
 (* Visit each application head and argument without Ltac1 spine matching. *)
-Ltac2 rec zesu_stack_closed_visit (term : constr) (fallback : Ltac1.t) :=
-  match Constr.Unsafe.kind term with
-  | Constr.Unsafe.App head arguments =>
-      zesu_stack_closed_visit head fallback;
-      Array.iter (fun argument => zesu_stack_closed_visit argument fallback) arguments
-  | Constr.Unsafe.Constant _ _ => ()
-  | Constr.Unsafe.Constructor _ _ => ()
-  | Constr.Unsafe.Ind _ _ => ()
-  | Constr.Unsafe.Sort _ => ()
-  | _ => Ltac1.apply fallback [Ltac1.of_constr term] Ltac1.run
-  end.
-Ltac zesu_stack_closed_term term :=
-  tryif has_evar term then fail 0 else
-  let expanded := eval cbv beta zeta in term in
-  let check := ltac2:(value fallback |-
-    zesu_stack_closed_visit (Option.get (Ltac1.to_constr value)) fallback) in
-  check expanded ltac:(fun current =>
-    zesu_stack_closed_fallback zesu_stack_closed_term current).
-
 Ltac zesu_stack_reduce_closed term :=
   zesu_stack_closed_term term;
   let reduced := ZesuSsz.Automation.VmClosed.zesu_vm_eval_closed term in
@@ -449,91 +463,7 @@ Ltac zesu_stack_reduce_closed term :=
 
 (* Skip canonical integers with one syntactic constructor walk. *)
 (* Inspect the typed constructor tree without reduction or context access. *)
-Ltac2 rec zesu_stack_positive_literal_term (term : constr) :=
-  match Constr.Unsafe.kind term with
-  | Constr.Unsafe.Constructor _ _ => Constr.equal term constr:(BinNums.xH)
-  | Constr.Unsafe.App head arguments =>
-      if Bool.and (Constr.is_constructor head) (Int.equal (Array.length arguments) 1)
-      then zesu_stack_positive_literal_term (Array.get arguments 0)
-      else false
-  | _ => false
-  end.
-Ltac2 zesu_stack_integer_literal_term (term : constr) :=
-  match Constr.Unsafe.kind term with
-  | Constr.Unsafe.Constructor _ _ => Constr.equal term constr:(BinNums.Z0)
-  | Constr.Unsafe.App head arguments =>
-      if Bool.and (Int.equal (Array.length arguments) 1)
-          (Bool.or (Constr.equal head constr:(BinNums.Zpos))
-                   (Constr.equal head constr:(BinNums.Zneg)))
-      then zesu_stack_positive_literal_term (Array.get arguments 0)
-      else false
-  | _ => false
-  end.
-Ltac zesu_stack_integer_literal term :=
-  let check := ltac2:(value |-
-    if zesu_stack_integer_literal_term (Option.get (Ltac1.to_constr value))
-    then () else Control.zero (Tactic_failure None)) in
-  check term.
-
 (* Normalize the selected hypothesis without searching other hypotheses. *)
-Ltac zesu_stack_normalize_hypothesis hypothesis := once (
-  repeat (
-    let statement := type of hypothesis in
-    match statement with
-    | context[?term] =>
-        lazymatch type of term with Z => progress (
-          tryif zesu_stack_integer_literal term then fail 0 else idtac;
-          zesu_stack_closed_term term;
-          let reduced := ZesuSsz.Automation.VmClosed.zesu_vm_eval_closed term in
-          change_no_check term with reduced in * ) end
-    end)).
-
-Ltac zesu_stack_arithmetic :=
-  repeat first [progress zesu_split_folded_pure |
-    match goal with H : _ /\ _ |- _ => destruct H end];
-  repeat match goal with
-  | H : ?statement |- _ =>
-      lazymatch type of statement with Prop => idtac end;
-      lazymatch statement with
-      | Z.le _ _ => fail
-      | Z.lt _ _ => fail
-      | @eq Z _ _ => fail
-      | _ => clear H
-      end
-  end;
-  once (repeat match goal with
-  | H : ?statement |- _ =>
-      lazymatch statement with
-      | Z.le _ _ => idtac
-      | Z.lt _ _ => idtac
-      | @eq Z _ _ => idtac
-      end;
-      progress (zesu_stack_normalize_hypothesis H)
-  end);
-  once (repeat match goal with
-  | |- context[?term] =>
-      lazymatch type of term with Z => progress (
-        zesu_stack_closed_term term;
-        let reduced := ZesuSsz.Automation.VmClosed.zesu_vm_eval_closed term in
-        change_no_check term with reduced) end
-  end);
-  bv_solve.
-
-Ltac zesu_stack_integer_address pointer :=
-  lazymatch pointer with
-  | bv_add (bv_add (Z_to_bv 64 ?base) ?first) ?second =>
-      let left := ZesuSsz.Automation.VmClosed.zesu_vm_eval_closed (bv_signed first) in
-      let right := ZesuSsz.Automation.VmClosed.zesu_vm_eval_closed (bv_signed second) in
-      constr:((base + left + right)%Z)
-  | bv_add (Z_to_bv 64 ?base) ?offset =>
-      let displacement := ZesuSsz.Automation.VmClosed.zesu_vm_eval_closed (bv_signed offset) in
-      constr:((base + displacement)%Z)
-  | bv_sub (Z_to_bv 64 ?base) ?offset =>
-      let displacement := ZesuSsz.Automation.VmClosed.zesu_vm_eval_closed (bv_unsigned offset) in
-      constr:((base - displacement)%Z)
-  | Z_to_bv 64 ?base => constr:(base)
-  end.
-
 (* Select only an owned uninitialized region. Bounds justify address conversion. *)
 Ltac zesu_stack_write_if_enabled :=
   zesu_switch_enabled constr:(ZesuStepStackWrite);
@@ -1776,41 +1706,7 @@ Ltac zesu_region_fault_if_enabled :=
     end].
 
 (* Inspect applications without unfolding the proof context. *)
-Ltac zesu_handoff_closed_term term :=
-  tryif is_var term then fail 0 else
-  tryif has_evar term then fail 0 else
-  lazymatch term with
-  | (fun _ => _) => fail 0
-  | (forall _, _) => fail 0
-  | (let _ := _ in _) => fail 0
-  | ?function ?argument =>
-      zesu_handoff_closed_term function; zesu_handoff_closed_term argument
-  | _ => idtac
-  end.
-
 (* Evaluate closed integer terms without unfolding symbolic record projections. *)
-Ltac zesu_handoff_closed_Z term continuation :=
-  tryif zesu_handoff_closed_term term then
-    let reduced := ZesuSsz.Automation.VmClosed.zesu_vm_eval_closed term in continuation reduced
-  else lazymatch term with
-  | Z.add ?left ?right =>
-      zesu_handoff_closed_Z left ltac:(fun left =>
-        zesu_handoff_closed_Z right ltac:(fun right =>
-          let reduced := constr:(Z.add left right) in continuation reduced))
-  | Z.sub ?left ?right =>
-      zesu_handoff_closed_Z left ltac:(fun left =>
-        zesu_handoff_closed_Z right ltac:(fun right =>
-          let reduced := constr:(Z.sub left right) in continuation reduced))
-  | Z.mul ?left ?right =>
-      zesu_handoff_closed_Z left ltac:(fun left =>
-        zesu_handoff_closed_Z right ltac:(fun right =>
-          let reduced := constr:(Z.mul left right) in continuation reduced))
-  | Z.opp ?value =>
-      zesu_handoff_closed_Z value ltac:(fun value =>
-        let reduced := constr:(Z.opp value) in continuation reduced)
-  | _ => continuation term
-  end.
-
 Ltac zesu_handoff_goal_address_if_enabled :=
   zesu_switch_enabled constr:(ZesuStepWordArrayHandoff);
   lazymatch goal with
@@ -1885,23 +1781,14 @@ Ltac zesu_handoff_integer_equality_if_enabled :=
 Class ZesuStepIntegerArrayAddress : Prop :=
   zesu_step_integer_array_address : True.
 
-Ltac zesu_integer_pointer_root pointer continuation :=
-  lazymatch pointer with
-  | bv_add ?base ?offset =>
-      zesu_handoff_closed_term offset; zesu_integer_pointer_root base continuation
-  | bv_sub ?base ?offset =>
-      zesu_handoff_closed_term offset; zesu_integer_pointer_root base continuation
-  | Z_to_bv 64 ?base => continuation base
-  end.
-
 Ltac zesu_integer_array_emit_facts proof :=
   ZesuSsz.Automation.PureFacts.zesu_integer_array_emit_facts proof.
 
-Ltac zesu_integer_array_facts :=
-  ZesuSsz.Automation.PureFacts.zesu_integer_array_facts.
-
 Class ZesuStepArrayBounds : Prop :=
   zesu_step_array_bounds : True.
+
+#[export] Instance codec_read_bounds `{CodecArrayRead.ZesuStepCodecArrayRead} :
+  ZesuStepArrayBounds := I.
 
 Class ZesuStepByteListContainment : Prop := {}.
 
@@ -1942,15 +1829,6 @@ Ltac zesu_byte_list_containment_if_enabled :=
   end.
 
 (* Convert an integer address only from its owned no-wrap facts. *)
-Ltac zesu_array_bound_integer_casts :=
-  repeat match goal with
-  | |- context[bv_unsigned (Z_to_bv 64 ?pointer)] =>
-      let Hcast := fresh "HarrayBoundCast" in
-      assert (Hcast : bv_unsigned (Z_to_bv 64 pointer) = pointer)
-        by zesu_stack_arithmetic;
-      rewrite Hcast; clear Hcast
-  end.
-
 (* Resolve only an already-selected array resource. The existing region rule
    proves containment or base equality and determines the memory kind. *)
 Ltac zesu_array_region_selection_if_enabled :=
@@ -2043,7 +1921,8 @@ Ltac zesu_array_bounds_extended :=
   end.
 
 Ltac zesu_array_bounds_if_enabled :=
-  first [zesu_array_bounds_base | zesu_array_bounds_extended].
+  first [CodecArrayRead.zesu_codec_array_read_sidecond |
+    zesu_array_bounds_base | zesu_array_bounds_extended].
 
 Ltac zesu_integer_array_address_if_enabled :=
   zesu_switch_enabled constr:(ZesuStepIntegerArrayAddress);
@@ -2057,6 +1936,7 @@ Ltac zesu_integer_array_address_if_enabled :=
       let expanded := eval cbv beta zeta in pointer in
       zesu_integer_pointer_root expanded ltac:(fun _ =>
       let integer := zesu_stack_integer_address expanded in
+      first [ByteArrayAssemblyCodec.zesu_byte_array_restore_source |
       iMatchHyp ltac:(fun H body =>
         lazymatch body with
         | (?lower ↦ₘ{?q}∗ ?values)%I =>
@@ -2080,24 +1960,153 @@ Ltac zesu_integer_array_address_if_enabled :=
               zesu_integer_array_facts;
               rewrite Heq; clear Heq
             end
-        end))
+        end)])
   end.
+
+Polymorphic Inductive zesu_canonical_fact_views_attempted {A : Type} (target : A) : Prop :=
+  zesu_canonical_fact_views_token : zesu_canonical_fact_views_attempted target.
 
 Ltac zesu_canonical_fact_views_if_enabled :=
   zesu_switch_enabled constr:(ZesuSsz.Automation.CanonicalFactAdapter.ZesuStepCanonicalFactAdapter);
-  ZesuSsz.Automation.CanonicalFactAdapter.zesu_canonical_context_step.
+  lazymatch goal with
+  | |- ?target =>
+      assert_fails ltac:(idtac; match goal with
+      | _ : @zesu_canonical_fact_views_attempted _ ?previous |- _ =>
+          constr_eq previous target
+      end);
+      let marker := fresh "HcanonicalFactViewsAttempted" in
+      pose proof (@zesu_canonical_fact_views_token _ target) as marker;
+      ZesuSsz.Automation.CanonicalFactAdapter.zesu_canonical_context_step
+  end.
 
 (* Retain the entry key before ordinary matching exposes its binders. *)
 Ltac zesu_union_witness_step :=
   first [ZesuSsz.Evidence.EntryWitnessInputs.zesu_entry_mapping_capture_goal |
     ZesuSsz.Evidence.EntryWitnessInputs.zesu_entry_mapping_consume_ready].
 
+Ltac zesu_source_witnesses_if_enabled :=
+  zesu_switch_enabled constr:(ZesuStepSourceWitnesses);
+  first [SourceWitnessInputs.zesu_capture_source_owner |
+         SourceWitnessInputs.zesu_source_mapping_capture_goal |
+         EntryWitnessInputs.zesu_entry_mapping_consume_ready].
+
+Ltac zesu_refute_aligned_return_fault :=
+  lazymatch goal with
+  | Hfault : bv_extract 0 1 (bv_shiftr
+      (bv_or (bv_and (bv_add (Z_to_bv 64 ?R) (BV 64 0))
+        (BV 64 18446744073709551614)) (BV 64 0)) (BV 64 1)) = BV 1 1 |- _ =>
+    lazymatch goal with
+    | Hlower : (0 <= R)%Z, Hupper : (R < ?upper)%Z,
+      Haligned : (R mod 4 = 0)%Z |- _ =>
+      let maximum := constr:(18446744073709551616%Z) in
+      constr_eq upper maximum;
+      let Hlow := fresh "HreturnLowBit" in
+      assert (Hlow : bv_extract 0 1 (Z_to_bv 64 R) = BV 1 0) by
+        (clear -Hlower Hupper Haligned; bv_solve);
+      let Hhigh := fresh "HreturnHighBit" in
+      assert (Hhigh : bv_extract 1 1 (Z_to_bv 64 R) = BV 1 0) by
+        (clear -Hlower Hupper Haligned; bv_solve);
+      let HnoFault := fresh "HreturnNoFault" in
+      pose proof (ZesuSsz.Automation.IntegerReturn.zesu_return_fault_bit_from_extracts
+        (Z_to_bv 64 R) Hlow Hhigh) as HnoFault;
+      rewrite HnoFault in Hfault;
+      discriminate
+    end
+  end.
+
+Lemma zesu_bv64_clear_low_bit_even (value : bv 64) :
+  (bv_unsigned value mod 2 = 0)%Z ->
+  bv_and value (BV 64 18446744073709551614) = value.
+Proof.
+ intro Heven.
+ assert (Hlow : bv_extract 0 1 value = BV 1 0).
+ { apply bv_eq. rewrite bv_extract_0_unsigned.
+   change (bv_unsigned value mod 2 = 0)%Z. exact Heven. }
+ apply bv_eq.
+ pose proof (normalize_instr_addr_riscv64_ret_tac value _ Hlow eq_refl) as Hnormalized.
+ rewrite !bv_wrap_bv_unsigned in Hnormalized.
+ rewrite (bv_add_0_r value (BV 64 0) eq_refl) in Hnormalized.
+ rewrite (bv_or_0_r (bv_and value (BV 64 18446744073709551614)) (BV 64 0) eq_refl) in Hnormalized.
+ exact Hnormalized.
+Qed.
+Print Assumptions zesu_bv64_clear_low_bit_even.
+
+(* Inspect the requested low-bit mask before using existing integer bounds. *)
+Ltac zesu_return_integer_even_mask :=
+  repeat match goal with
+  | |- context [bv_add ?word (BV 64 0)] =>
+      rewrite (bv_add_0_r word (BV 64 0) eq_refl)
+  end;
+  lazymatch goal with
+  | |- context [bv_and ?value (BV 64 18446744073709551614)] =>
+      assert_fails (has_evar value);
+      let Heven := fresh "HreturnWordEven" in
+      assert (Heven : (bv_unsigned value mod 2 = 0)%Z) by (
+        first [assumption |
+          lazymatch value with
+          | Z_to_bv 64 ?integer =>
+              let Hrange := fresh "HreturnIntegerRange" in
+              assert (Hrange : (0 <= integer < 2 ^ 64)%Z) by lia;
+              rewrite Z_to_bv_unsigned;
+              rewrite (bv_wrap_small 64 integer Hrange);
+              match goal with
+              | Haligned : (integer mod 4 = 0)%Z |- _ => lia
+              end
+          end]);
+      rewrite (zesu_bv64_clear_low_bit_even value Heven);
+      clear Heven;
+      repeat match goal with
+      | |- context [bv_or ?word (BV 64 0)] =>
+          rewrite (bv_or_0_r word (BV 64 0) eq_refl)
+      end;
+      try (lazymatch value with
+      | Z_to_bv 64 ?integer =>
+          let Hrange := fresh "HreturnIntegerRange" in
+          assert (Hrange : (0 <= integer < 2 ^ 64)%Z) by lia;
+          rewrite (Z_to_bv_unsigned 64 integer);
+          rewrite (bv_wrap_small 64 integer Hrange);
+          clear Hrange
+      end)
+  end.
+
+Ltac zesu_prefer_owned_instr_pre :=
+  lazymatch goal with
+  | |- envs_entails _ (find_in_context (FindInstrKind _ _) _) =>
+      try zesu_return_integer_even_mask;
+      zesu_expose_environment_alias;
+      lazymatch goal with
+      | |- envs_entails _ (find_in_context (FindInstrKind ?requested ?later) ?T) =>
+          assert_fails (has_evar requested);
+          iMatchHyp ltac:(fun name body =>
+            lazymatch body with
+            | instr_pre' ?available_later ?available ?P =>
+                assert_fails (has_evar available);
+                constr_eq available requested;
+                lazymatch later with
+                | true =>
+                    iApply (find_in_context_instr_kind_pre_true requested T);
+                    iExists available_later, P; iFrame name
+                | false =>
+                    constr_eq available_later false;
+                    iApply (find_in_context_instr_kind_pre_false requested T);
+                    iExists P; iFrame name
+                end
+            end)
+      end
+  end.
+
 Ltac zesu_liAStep :=
+  first [solve [zesu_refute_aligned_return_fault] |
+    WrappedWord.zesu_wrapped_memory_lookup | (
  liEnsureInvariant;
  try progress (unfold TRACE_LET);
  try liAIntroduceLetInGoal;
  first [
-    ZesuSsz.Automation.UnionRuleComponents.zesu_region_fault_if_enabled
+    progress ResourceGroups.zesu_open_nested_existential_packages
+  | CodecArrayRead.zesu_codec_array_read
+  | zesu_prefer_owned_instr_pre
+  | zesu_source_witnesses_if_enabled
+  | ZesuSsz.Automation.UnionRuleComponents.zesu_region_fault_if_enabled
   | zesu_expose_instruction_lookup
   | zesu_region_fault_if_enabled
   | zesu_ram_fault_if_enabled
@@ -2131,9 +2140,9 @@ Ltac zesu_liAStep :=
   | liLetBindHint
   | liUnfoldLate
   | zesu_canonical_fact_views_if_enabled
- ]; liSimpl.
+ ]; liSimpl)].
 
-Ltac liAStep ::= zesu_liAStep.
+Ltac liAStep ::= first [progress zesu_union_witness_step | zesu_liAStep].
 
 (* C1: the trace tail a call returns with.
 
@@ -2212,7 +2221,7 @@ Ltac zesu_branch_guard_closed_width word continuation :=
   let kind := type of word in
   let kind := eval hnf in kind in
   lazymatch kind with bv ?width =>
-    ZesuSsz.Automation.Hooks.zesu_stack_closed_term width;
+    ZesuSsz.Automation.MemoryAddress.zesu_stack_closed_term width;
     let normalized := ZesuSsz.Automation.VmClosed.zesu_vm_eval_closed width in
     continuation normalized
   end.
@@ -2394,7 +2403,10 @@ Ltac liAAsm ::=
       | Branch _ _ _ => notypeclasses refine (tac_fast_apply (li_wp_branch _ _ _ _) _)
       | ReadMem _ _ _ _ _ _ => notypeclasses refine (tac_fast_apply (li_wp_read_mem _ _ _ _ _ _ _ _) _)
       | WriteMem _ _ _ _ _ _ _ => notypeclasses refine (tac_fast_apply (li_wp_write_mem _ _ _ _ _ _ _ _ _) _)
-      | Smt (DeclareConst _ (Ty_BitVec _)) _ => notypeclasses refine (tac_fast_apply (li_wp_declare_const_bv _ _ _ _) _)
+      | Smt (DeclareConst _ (Ty_BitVec _)) _ =>
+          first [zesu_switch_enabled constr:(ZesuStepSourceWitnesses);
+                 SourceWitnessInputs.zesu_capture_source_declaration |
+                 notypeclasses refine (tac_fast_apply (li_wp_declare_const_bv _ _ _ _) _)]
       | Smt (DeclareConst _ Ty_Bool) _ => notypeclasses refine (tac_fast_apply (li_wp_declare_const_bool _ _ _) _)
       | Smt (DeclareConst _ (Ty_Enum _)) _ => notypeclasses refine (tac_fast_apply (li_wp_declare_const_enum _ _ _ _) _)
       | Smt (DefineConst _ _) _ => notypeclasses refine (tac_fast_apply (li_wp_define_const _ _ _ _) _)
@@ -2445,7 +2457,7 @@ Ltac zesu_array_payload_from_spatial spatial sigma heap width address fraction b
             clear Haddress Hbytes;
             iFrame;
             try (iPureIntro; repeat split;
-                 ZesuSsz.Automation.Hooks.zesu_stack_arithmetic)
+                 ZesuSsz.Automation.MemoryAddress.zesu_stack_arithmetic)
         end
       | zesu_array_payload_from_spatial rest sigma heap width address fraction bytes codec]
   end.

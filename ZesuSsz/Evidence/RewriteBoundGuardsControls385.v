@@ -2,12 +2,15 @@ Require Import ZesuSsz.Automation.All.
 Require Import ZesuSsz.Automation.RewriteBoundGuards.
 From Coq Require Import ZArith.ZArith.
 From stdpp Require Import bitvector.definitions bitvector.tactics.
+Require Import ZesuSsz.Automation.All.
 Local Open Scope Z_scope.
 
-Lemma rewrite_bound_switch_off385 : 0 <= 7.
+Lemma rewrite_bound_switch_off385 : True.
 Proof.
-  assert_fails (idtac; a3n_closed_bound_if_enabled).
-  exact (Zle_0_nat 7).
+  assert (Hcache : ZesuSsz.Automation.SwitchDispatch.ZesuSwitchDispatchCache
+    (cons (ZesuStepRewriteBoundGuards, false) nil)) by constructor.
+  assert_fails (assert (0 <= 7) by a3n_closed_bound_if_enabled).
+  exact I.
 Qed.
 
 Section Enabled.

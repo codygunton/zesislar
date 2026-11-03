@@ -1,7 +1,7 @@
 From Coq Require Import ZArith.ZArith Lia.
 From stdpp Require Import bitvector.definitions.
 Require Import ZesuSsz.Automation.LoopCursorRanges.
-Open Scope Z_scope.
+Local Open Scope Z_scope.
 
 Lemma zesu_loop_unsigned_backedge (width : N) (cursor limit : bv width) :
   bv_unsigned cursor < bv_unsigned limit ->

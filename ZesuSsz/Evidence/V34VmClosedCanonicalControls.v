@@ -2,6 +2,7 @@ Require Import isla.riscv64.riscv64.
 Require Import ZesuSsz.Automation.Finish.
 Require Import ZesuSsz.Automation.RawWordArrayWitness.
 From Coq Require Import ZArith.ZArith NArith.NArith.
+Require Import ZesuSsz.Automation.All.
 Open Scope Z_scope.
 Lemma canonical_constant : (BV 64 2 + BV 64 3)%bv = BV 64 5.
 Proof. ZesuSsz.Automation.Finish.zesu_finish_constant. Qed.

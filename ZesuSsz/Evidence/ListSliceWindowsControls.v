@@ -2,6 +2,7 @@ Require Import ZesuSsz.Automation.All.
 From Coq Require Import List Lia Arith.
 From stdpp Require Import list.
 Require Import ZesuSsz.Automation.ListSliceWindows.
+Require Import ZesuSsz.Automation.All.
 
 Lemma before_window {A : Type} (before suffix : list A) (prefix start count : nat) :
   (start + count <= prefix)%nat -> (prefix <= length before)%nat ->

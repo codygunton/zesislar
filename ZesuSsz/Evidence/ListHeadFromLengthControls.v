@@ -3,6 +3,7 @@ From Coq Require Import List ZArith Bool.
 From stdpp Require Import bitvector.definitions.
 Require Import ZesuSsz.Automation.ListHeadFromLength.
 Import ListNotations.
+Require Import ZesuSsz.Automation.All.
 Open Scope Z_scope.
 
 Lemma symbolic64 {A : Type} (bytes : list A) default quantity :

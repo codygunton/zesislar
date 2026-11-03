@@ -4,7 +4,7 @@ From iris.algebra Require Import dfrac.
 From iris.proofmode Require Import environments.
 From Coq Require Import Lists.List ZArith.ZArith NArith.NArith.
 Require Import ZesuSsz.Evidence.Block2Core.
-Open Scope Z_scope.
+Local Open Scope Z_scope.
 
 (* Inactive candidate. The dispatcher selects the complete resource first. *)
 Section fractional_read.

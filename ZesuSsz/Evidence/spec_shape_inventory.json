@@ -387,6 +387,254 @@
       "disjunctive_specs": 0,
       "frame_parameters_in_closed_specs": 0,
       "unfold_without_typeclasses_opaque": 0
+    },
+    "ZesuSsz/Compliance/DecodeItemJoinMeaning.v": {
+      "uninferable_existentials": 0,
+      "predicates_without_unfold": 0,
+      "disjunctive_specs": 0,
+      "frame_parameters_in_closed_specs": 0,
+      "unfold_without_typeclasses_opaque": 0
+    },
+    "ZesuSsz/Evidence/ArrayContinuationControls.v": {
+      "uninferable_existentials": 0,
+      "predicates_without_unfold": 0,
+      "disjunctive_specs": 0,
+      "frame_parameters_in_closed_specs": 0,
+      "unfold_without_typeclasses_opaque": 0
+    },
+    "ZesuSsz/Evidence/Block2Core.v": {
+      "uninferable_existentials": 0,
+      "predicates_without_unfold": 0,
+      "disjunctive_specs": 0,
+      "frame_parameters_in_closed_specs": 0,
+      "unfold_without_typeclasses_opaque": 0
+    },
+    "ZesuSsz/Evidence/ByteArrayAssemblyCodecControls.v": {
+      "uninferable_existentials": 0,
+      "predicates_without_unfold": 0,
+      "disjunctive_specs": 0,
+      "frame_parameters_in_closed_specs": 0,
+      "unfold_without_typeclasses_opaque": 0
+    },
+    "ZesuSsz/Evidence/ByteArrayAssemblyControls.v": {
+      "uninferable_existentials": 0,
+      "predicates_without_unfold": 0,
+      "disjunctive_specs": 0,
+      "frame_parameters_in_closed_specs": 0,
+      "unfold_without_typeclasses_opaque": 0
+    },
+    "ZesuSsz/Evidence/ByteClassGuardsControls.v": {
+      "uninferable_existentials": 0,
+      "predicates_without_unfold": 0,
+      "disjunctive_specs": 0,
+      "frame_parameters_in_closed_specs": 0,
+      "unfold_without_typeclasses_opaque": 0
+    },
+    "ZesuSsz/Evidence/CanonicalFactOnceControls.v": {
+      "uninferable_existentials": 0,
+      "predicates_without_unfold": 0,
+      "disjunctive_specs": 0,
+      "frame_parameters_in_closed_specs": 0,
+      "unfold_without_typeclasses_opaque": 0
+    },
+    "ZesuSsz/Evidence/EntryWitnessFinishControls.v": {
+      "uninferable_existentials": 0,
+      "predicates_without_unfold": 0,
+      "disjunctive_specs": 0,
+      "frame_parameters_in_closed_specs": 0,
+      "unfold_without_typeclasses_opaque": 0
+    },
+    "ZesuSsz/Evidence/EntryWitnessInputs.v": {
+      "uninferable_existentials": 0,
+      "predicates_without_unfold": 0,
+      "disjunctive_specs": 0,
+      "frame_parameters_in_closed_specs": 0,
+      "unfold_without_typeclasses_opaque": 0
+    },
+    "ZesuSsz/Evidence/EntryWitnessReadinessControls.v": {
+      "uninferable_existentials": 0,
+      "predicates_without_unfold": 0,
+      "disjunctive_specs": 0,
+      "frame_parameters_in_closed_specs": 0,
+      "unfold_without_typeclasses_opaque": 0
+    },
+    "ZesuSsz/Evidence/EntryWitnessSelector.v": {
+      "uninferable_existentials": 0,
+      "predicates_without_unfold": 0,
+      "disjunctive_specs": 0,
+      "frame_parameters_in_closed_specs": 0,
+      "unfold_without_typeclasses_opaque": 0
+    },
+    "ZesuSsz/Evidence/FramePackingRootControls.v": {
+      "uninferable_existentials": 0,
+      "predicates_without_unfold": 0,
+      "disjunctive_specs": 0,
+      "frame_parameters_in_closed_specs": 0,
+      "unfold_without_typeclasses_opaque": 0
+    },
+    "ZesuSsz/Evidence/JoinEntailmentControls.v": {
+      "uninferable_existentials": 0,
+      "predicates_without_unfold": 0,
+      "disjunctive_specs": 0,
+      "frame_parameters_in_closed_specs": 0,
+      "unfold_without_typeclasses_opaque": 0
+    },
+    "ZesuSsz/Evidence/ListHeadFromLengthControls.v": {
+      "uninferable_existentials": 0,
+      "predicates_without_unfold": 0,
+      "disjunctive_specs": 0,
+      "frame_parameters_in_closed_specs": 0,
+      "unfold_without_typeclasses_opaque": 0
+    },
+    "ZesuSsz/Evidence/ListSliceWindowsControls.v": {
+      "uninferable_existentials": 0,
+      "predicates_without_unfold": 0,
+      "disjunctive_specs": 0,
+      "frame_parameters_in_closed_specs": 0,
+      "unfold_without_typeclasses_opaque": 0
+    },
+    "ZesuSsz/Evidence/LoopResourceBackedgeControls.v": {
+      "uninferable_existentials": 1,
+      "predicates_without_unfold": 2,
+      "disjunctive_specs": 0,
+      "frame_parameters_in_closed_specs": 0,
+      "unfold_without_typeclasses_opaque": 0
+    },
+    "ZesuSsz/Evidence/MemoryTupleConsumerControls.v": {
+      "uninferable_existentials": 0,
+      "predicates_without_unfold": 0,
+      "disjunctive_specs": 0,
+      "frame_parameters_in_closed_specs": 0,
+      "unfold_without_typeclasses_opaque": 0
+    },
+    "ZesuSsz/Evidence/MemoryTupleOrderingControls.v": {
+      "uninferable_existentials": 0,
+      "predicates_without_unfold": 0,
+      "disjunctive_specs": 0,
+      "frame_parameters_in_closed_specs": 0,
+      "unfold_without_typeclasses_opaque": 0
+    },
+    "ZesuSsz/Evidence/RewriteBoundGuardsControls385.v": {
+      "uninferable_existentials": 0,
+      "predicates_without_unfold": 0,
+      "disjunctive_specs": 0,
+      "frame_parameters_in_closed_specs": 0,
+      "unfold_without_typeclasses_opaque": 0
+    },
+    "ZesuSsz/Evidence/SignedMaskControls.v": {
+      "uninferable_existentials": 0,
+      "predicates_without_unfold": 0,
+      "disjunctive_specs": 0,
+      "frame_parameters_in_closed_specs": 0,
+      "unfold_without_typeclasses_opaque": 0
+    },
+    "ZesuSsz/Evidence/SourceFactByteEqualControls.v": {
+      "uninferable_existentials": 0,
+      "predicates_without_unfold": 0,
+      "disjunctive_specs": 0,
+      "frame_parameters_in_closed_specs": 0,
+      "unfold_without_typeclasses_opaque": 0
+    },
+    "ZesuSsz/Evidence/SourceFactByteOrderControls187.v": {
+      "uninferable_existentials": 0,
+      "predicates_without_unfold": 0,
+      "disjunctive_specs": 0,
+      "frame_parameters_in_closed_specs": 0,
+      "unfold_without_typeclasses_opaque": 0
+    },
+    "ZesuSsz/Evidence/SourceFactByteViewsControls.v": {
+      "uninferable_existentials": 0,
+      "predicates_without_unfold": 0,
+      "disjunctive_specs": 0,
+      "frame_parameters_in_closed_specs": 0,
+      "unfold_without_typeclasses_opaque": 0
+    },
+    "ZesuSsz/Evidence/SourceFaultProofControls.v": {
+      "uninferable_existentials": 0,
+      "predicates_without_unfold": 0,
+      "disjunctive_specs": 0,
+      "frame_parameters_in_closed_specs": 0,
+      "unfold_without_typeclasses_opaque": 0
+    },
+    "ZesuSsz/Evidence/SpatialConsumerControls.v": {
+      "uninferable_existentials": 0,
+      "predicates_without_unfold": 0,
+      "disjunctive_specs": 0,
+      "frame_parameters_in_closed_specs": 0,
+      "unfold_without_typeclasses_opaque": 0
+    },
+    "ZesuSsz/Evidence/SpatialResourceConsumerControls.v": {
+      "uninferable_existentials": 0,
+      "predicates_without_unfold": 0,
+      "disjunctive_specs": 0,
+      "frame_parameters_in_closed_specs": 0,
+      "unfold_without_typeclasses_opaque": 0
+    },
+    "ZesuSsz/Evidence/SystemCollectionWitnessControls.v": {
+      "uninferable_existentials": 0,
+      "predicates_without_unfold": 0,
+      "disjunctive_specs": 0,
+      "frame_parameters_in_closed_specs": 0,
+      "unfold_without_typeclasses_opaque": 0
+    },
+    "ZesuSsz/Evidence/V34CombinedControls.v": {
+      "uninferable_existentials": 0,
+      "predicates_without_unfold": 0,
+      "disjunctive_specs": 0,
+      "frame_parameters_in_closed_specs": 0,
+      "unfold_without_typeclasses_opaque": 0
+    },
+    "ZesuSsz/Evidence/V34VmClosedActivation.v": {
+      "uninferable_existentials": 0,
+      "predicates_without_unfold": 0,
+      "disjunctive_specs": 0,
+      "frame_parameters_in_closed_specs": 0,
+      "unfold_without_typeclasses_opaque": 0
+    },
+    "ZesuSsz/Evidence/V34VmClosedAdditionalControls.v": {
+      "uninferable_existentials": 0,
+      "predicates_without_unfold": 0,
+      "disjunctive_specs": 0,
+      "frame_parameters_in_closed_specs": 0,
+      "unfold_without_typeclasses_opaque": 0
+    },
+    "ZesuSsz/Evidence/V34VmClosedCanonicalControls.v": {
+      "uninferable_existentials": 0,
+      "predicates_without_unfold": 0,
+      "disjunctive_specs": 0,
+      "frame_parameters_in_closed_specs": 0,
+      "unfold_without_typeclasses_opaque": 0
+    },
+    "ZesuSsz/Evidence/WordIdentityControls.v": {
+      "uninferable_existentials": 0,
+      "predicates_without_unfold": 0,
+      "disjunctive_specs": 0,
+      "frame_parameters_in_closed_specs": 0,
+      "unfold_without_typeclasses_opaque": 0
+    },
+    "ZesuSsz/Evidence/MemoryTupleRoutingControls.v": {
+      "uninferable_existentials": 1,
+      "predicates_without_unfold": 0,
+      "disjunctive_specs": 0,
+      "frame_parameters_in_closed_specs": 0,
+      "unfold_without_typeclasses_opaque": 0
+    }
+  },
+  "fixture_allowance_reasons": {
+    "ZesuSsz/Evidence/LoopResourceBackedgeControls.v": {
+      "ruling": "Orch15:52, relayed by Root. No production allowance.",
+      "predicates": [
+        "loop_resource_source",
+        "loop_resource_target"
+      ],
+      "reason": "The controls explicitly unfold these abstract predicates. The target retains existential witnesses for the generic callback test."
+    },
+    "ZesuSsz/Evidence/MemoryTupleRoutingControls.v": {
+      "ruling": "Orch16:21 via Root. No production allowance.",
+      "predicates": [
+        "memory_folded_package"
+      ],
+      "reason": "The synthetic registered package tests a li_prod witness whose first projection occurs in an owned register."
     }
   }
 }

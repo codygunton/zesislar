@@ -4,6 +4,7 @@ From stdpp Require Import list bitvector.definitions.
 Require Import ZesuSsz.Automation.SystemCollectionWitness.
 From Coq Require Import Lists.List String.
 Import ListNotations.
+Require Import ZesuSsz.Automation.All.
 Open Scope string_scope.
 
 Lemma system_bits_preserves `{!islaG Sigma} `{!threadG}

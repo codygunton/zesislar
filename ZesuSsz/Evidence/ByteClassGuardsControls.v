@@ -3,6 +3,7 @@ Require Import ZesuSsz.Automation.ByteClassGuards.
 From Coq Require Import List Bool.Bool ZArith.ZArith.
 From stdpp Require Import bitvector.definitions decidable list.
 Import ListNotations.
+Require Import ZesuSsz.Automation.All.
 Open Scope Z_scope.
 
 Lemma byte_class_lower :

@@ -2,6 +2,7 @@ Require Import ZesuSsz.Automation.All.
 Require Import ZesuSsz.Automation.SourceFactByteViews.
 From Coq Require Import ZArith NArith.
 From stdpp Require Import bitvector.tactics.
+Require Import ZesuSsz.Automation.All.
 Local Open Scope Z_scope.
 
 Lemma byte_distinct64 : forall byte : bv 8,

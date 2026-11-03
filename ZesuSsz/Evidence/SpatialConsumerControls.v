@@ -5,6 +5,7 @@ From Coq Require Import ZArith.
 From stdpp Require Import bitvector.tactics decidable.
 From iris.base_logic.lib Require Import iprop.
 From iris.proofmode Require Import tactics environments.
+Require Import ZesuSsz.Automation.All.
 Local Open Scope Z_scope.
 
 Lemma spatial_correlated_choice (Sigma : gFunctors) (P Q : Z -> Prop)

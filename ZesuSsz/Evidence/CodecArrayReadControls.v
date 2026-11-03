@@ -3,6 +3,7 @@ Require Import isla.riscv64.riscv64.
 Require Import ZesuSsz.Automation.CodecArrayRead.
 From Coq Require Import Lia.
 From stdpp Require Import list.
+Require Import ZesuSsz.Automation.All.
 #[local] Instance codec_control_enabled : ZesuStepCodecArrayRead := {}.
 
 Lemma codec_direct_integer (value : Z) :

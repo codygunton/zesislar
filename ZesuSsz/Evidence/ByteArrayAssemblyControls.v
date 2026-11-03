@@ -4,6 +4,7 @@ From iris.base_logic.lib Require Import iprop.
 Require Import isla.riscv64.riscv64.
 Require Import ZesuSsz.Automation.ByteArrayAssembly.
 Import ListNotations.
+Require Import ZesuSsz.Automation.All.
 Open Scope Z_scope.
 Section Controls.
 Context (Sigma : gFunctors) (islaG0 : islaG Sigma).

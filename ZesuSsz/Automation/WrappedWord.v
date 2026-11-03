@@ -32,7 +32,7 @@ Ltac zesu_reduce_closed_Z_aliases :=
     constr_eq head scalar;
     assert_fails (is_var scalar);
     let reduced := eval cbv delta [scalar] in scalar in
-    progress change scalar with reduced in Hconstant
+    progress change scalar with reduced in *
   end.
 
 
@@ -64,19 +64,6 @@ Ltac zesu_normalize_wrapped_findmem arithmetic :=
     end
   end.
 
-Ltac zesu_reduce_closed_Z_aliases_everywhere :=
-  repeat match goal with
-  | Hconstant : context [?scalar] |- _ =>
-    let scalar_type := type of scalar in
-    constr_eq scalar_type Z;
-    is_closed_term scalar;
-    let head := get_head scalar in
-    constr_eq head scalar;
-    assert_fails (is_var scalar);
-    let reduced := eval cbv delta [scalar] in scalar in
-    progress change scalar with reduced in *
-  end.
-
 Ltac zesu_wrapped_memory_lookup :=
   lazymatch goal with
   | |- iris.proofmode.environments.envs_entails _
@@ -88,7 +75,7 @@ Ltac zesu_wrapped_memory_lookup :=
   ZesuSsz.Automation.PureFacts.zesu_saturate_derived_facts;
   repeat first [progress ZesuSsz.Automation.PureFacts.zesu_split_folded_pure |
     match goal with Hpair : _ /\ _ |- _ => destruct Hpair end];
-  zesu_reduce_closed_Z_aliases_everywhere;
+  zesu_reduce_closed_Z_aliases;
   zesu_normalize_wrapped_findmem ltac:(
     zesu_reduce_closed_Z_aliases; cbv [bv_unsigned bv_modulus] in *; lia);
   liStep.

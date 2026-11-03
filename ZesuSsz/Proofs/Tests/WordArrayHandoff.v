@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuSsz.Automation.MemoryAddress.
 Require Import isla.riscv64.riscv64.
 
 Lemma word_array_handoff_is_opt_in : True.
@@ -8,6 +9,7 @@ Proof.
 Qed.
 
 Require Import ZesuSsz.Automation.Switches.WordArrayHandoff.
+Require Import ZesuSsz.Automation.All.
 
 Definition handoff_test_width : Z := 16.
 

@@ -1,11 +1,11 @@
-Require Import ZesuSsz.Automation.All.
 From iris.proofmode Require Import tactics environments.
 From Coq Require Import Bool.Bool.
 From stdpp Require Import decidable.
+From stdpp.bitvector Require Import definitions.
 
 (* Select constrained values through source propositions, with correlated
    alternatives. Pure completion introduces no new arithmetic premise. *)
-Ltac zesu_source_fact := first [solve [assumption] | solve [reflexivity] | lazymatch goal with | |- bool_decide ?fact = true => apply bool_decide_eq_true_2; zesu_source_fact | |- bool_decide ?fact = false => apply bool_decide_eq_false_2; zesu_source_fact | |- negb ?b = true => apply Bool.negb_true_iff; zesu_source_fact | |- ?a /\ ?b => split; zesu_source_fact end].
+Ltac zesu_source_fact := first [solve [assumption] | solve [reflexivity] | lazymatch goal with | |- bool_decide ?fact = true => apply bool_decide_eq_true_2; zesu_source_fact | |- bool_decide ?fact = false => apply bool_decide_eq_false_2; zesu_source_fact | |- negb ?b = true => apply Bool.negb_true_iff; zesu_source_fact | |- ?a /\ ?b => split; zesu_source_fact | |- Z.le Z0 (@bv_unsigned ?width ?value) => assert_fails (has_evar value); exact (proj1 (bv_unsigned_in_range width value)) | |- Z.lt (@bv_unsigned ?width ?value) ?bound => assert_fails (has_evar value); assert_fails (has_evar bound); exact (proj2 (bv_unsigned_in_range width value)) | |- ?fact => let exposed := eval hnf in fact in lazymatch exposed with | ?left /\ ?right => change exposed; split; zesu_source_fact end end].
 
 Ltac zesu_source_finish_package := lazymatch goal with | |- environments.envs_entails _ (@bi_pure _ _) => iPureIntro; zesu_source_fact | |- environments.envs_entails _ (@bi_sep _ _ _) => iSplit; zesu_source_finish_package end.
 

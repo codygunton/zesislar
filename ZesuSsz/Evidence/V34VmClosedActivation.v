@@ -3,10 +3,19 @@ Require Import isla.riscv64.riscv64.
 From Coq Require Import Lists.List ZArith.ZArith NArith.NArith.
 Require Import stdpp.bitvector.definitions.
 Require Import ZesuSsz.Automation.VmClosed.
+Require Import ZesuSsz.Automation.All.
 Open Scope Z_scope.
+Lemma regcol_release_switch_enabled (Sigma : gFunctors) :
+  LiTactic (regcol_compute_hint (Σ:=Sigma) (fun n : nat => Some (S n)) 0%nat).
+Proof.
+  ZesuSsz.Automation.Hooks.zesu_regcol_compute_vm_if_enabled.
+Qed.
 Lemma regcol_switch_off (Sigma : gFunctors) :
   LiTactic (regcol_compute_hint (Σ:=Sigma) (fun n : nat => Some (S n)) 0%nat).
 Proof.
+  assert (Hdisabled : ZesuSsz.Automation.SwitchDispatch.ZesuSwitchDispatchCache
+    ((ZesuSsz.Automation.Hooks.ZesuStepRegcolVMCompute, false) :: nil))
+    by constructor.
   Fail ZesuSsz.Automation.Hooks.zesu_regcol_compute_vm_if_enabled.
   typeclasses eauto.
 Qed.
@@ -40,8 +49,10 @@ Proof.
   exact I.
 Qed.
 Show Ltac Profile CutOff 0.
-Print Assumptions regcol_switch_off.
+Print Assumptions regcol_release_switch_enabled.
 Print Assumptions closed_scalar_proofs.
 Print Assumptions regcol_ground.
 Print Assumptions regcol_symbolic.
 Print Assumptions evaluator_guards.
+
+Print Assumptions regcol_switch_off.

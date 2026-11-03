@@ -3,7 +3,7 @@ From stdpp Require Import bitvector.definitions bitvector.tactics.
 From stdpp.unstable Require Import bitblast.
 Require Import ZesuSsz.Automation.ByteWindowFold.
 Import ListNotations.
-Open Scope Z_scope.
+Local Open Scope Z_scope.
 
 Lemma zesu_byte_shift_or64 (acc : Z) (next : bv 8) :
   bv_or (bv_shiftl (Z_to_bv 64 acc) (BV 64 8)) (bv_zero_extend 64 next) =

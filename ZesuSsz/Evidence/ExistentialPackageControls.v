@@ -1,6 +1,7 @@
 Require Import ZesuSsz.Automation.All.
 Require Import isla.riscv64.riscv64.
 Require Import ZesuSsz.Automation.ResourceGroups.
+Require Import ZesuSsz.Automation.All.
 
 Section existential_package_controls.
 Context `{!islaG Sigma} `{!threadG}.

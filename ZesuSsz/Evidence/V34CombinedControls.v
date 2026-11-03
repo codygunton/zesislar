@@ -1,4 +1,4 @@
-(* Source proposal only. These controls require physical verification. *)
+(* These controls check the canonical release rule set. *)
 Require Import ZesuSsz.Automation.All.
 Require Import isla.riscv64.riscv64.
 From Coq Require Import Lists.List ZArith.ZArith NArith.NArith.
@@ -6,31 +6,31 @@ From stdpp Require Import bitvector.definitions list.
 Import ListNotations.
 Local Open Scope Z_scope.
 
-Lemma v34_all_does_not_select_candidates : True.
+Lemma v34_all_selects_candidates : True.
 Proof.
-  Fail zesu_switch_enabled constr:(ZesuStepSignedMaskBranch).
-  Fail zesu_switch_enabled constr:(ZesuStepArrayContinuation).
-  Fail zesu_switch_enabled constr:(ZesuStepWordIdentity).
-  Fail zesu_switch_enabled constr:(ZesuStepCodecArrayRead).
-  Fail zesu_switch_enabled constr:(ZesuStepRegcolVMCompute).
+  ZesuSsz.Automation.SwitchDispatch.zesu_switch_enabled constr:(ZesuSsz.Automation.SignedMaskBranch.ZesuStepSignedMaskBranch).
+  ZesuSsz.Automation.SwitchDispatch.zesu_switch_enabled constr:(ZesuSsz.Automation.ArrayContinuation.ZesuStepArrayContinuation).
+  ZesuSsz.Automation.SwitchDispatch.zesu_switch_enabled constr:(ZesuSsz.Automation.WordIdentity.ZesuStepWordIdentity).
+  ZesuSsz.Automation.SwitchDispatch.zesu_switch_enabled constr:(ZesuSsz.Automation.CodecArrayRead.ZesuStepCodecArrayRead).
+  ZesuSsz.Automation.SwitchDispatch.zesu_switch_enabled constr:(ZesuSsz.Automation.Hooks.ZesuStepRegcolVMCompute).
   exact I.
 Qed.
 
-(* The native carrier uses this same explicit selection module. *)
-Require Import ZesuSsz.Automation.Sets.V34Candidates.
+(* The native caller imports this same release rule set. *)
+Require Import ZesuSsz.Automation.All.
 
 Lemma v34_selected_switches_reach_search : True.
 Proof.
   let switches := zesu_search_switches in
-  zesu_with_switches switches ltac:(fun _ =>
-    zesu_switch_enabled constr:(ZesuStepSignedMaskBranch);
-    zesu_switch_enabled constr:(ZesuStepArrayContinuation);
-    zesu_switch_enabled constr:(ZesuStepWordIdentity);
-    zesu_switch_enabled constr:(ZesuStepCodecArrayRead);
-    zesu_switch_enabled constr:(ZesuStepCodecArrayRange);
-    zesu_switch_enabled constr:(ZesuStepArrayRegionBounds);
-    zesu_switch_enabled constr:(ZesuStepArrayBounds);
-    zesu_switch_enabled constr:(ZesuStepRegcolVMCompute);
+  ZesuSsz.Automation.SwitchDispatch.zesu_with_switches switches ltac:(fun _ =>
+    ZesuSsz.Automation.SwitchDispatch.zesu_switch_enabled constr:(ZesuSsz.Automation.SignedMaskBranch.ZesuStepSignedMaskBranch);
+    ZesuSsz.Automation.SwitchDispatch.zesu_switch_enabled constr:(ZesuSsz.Automation.ArrayContinuation.ZesuStepArrayContinuation);
+    ZesuSsz.Automation.SwitchDispatch.zesu_switch_enabled constr:(ZesuSsz.Automation.WordIdentity.ZesuStepWordIdentity);
+    ZesuSsz.Automation.SwitchDispatch.zesu_switch_enabled constr:(ZesuSsz.Automation.CodecArrayRead.ZesuStepCodecArrayRead);
+    ZesuSsz.Automation.SwitchDispatch.zesu_switch_enabled constr:(ZesuSsz.Automation.CodecArrayRange.ZesuStepCodecArrayRange);
+    ZesuSsz.Automation.SwitchDispatch.zesu_switch_enabled constr:(ZesuSsz.Automation.ByteArrayLengths.ZesuStepArrayRegionBounds);
+    ZesuSsz.Automation.SwitchDispatch.zesu_switch_enabled constr:(ZesuSsz.Automation.Hooks.ZesuStepArrayBounds);
+    ZesuSsz.Automation.SwitchDispatch.zesu_switch_enabled constr:(ZesuSsz.Automation.Hooks.ZesuStepRegcolVMCompute);
     exact I).
 Qed.
 

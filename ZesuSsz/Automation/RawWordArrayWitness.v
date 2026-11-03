@@ -1,3 +1,4 @@
+Require Import ZesuSsz.Automation.MemoryAddress.
 Require Import ZesuSsz.Automation.VmClosed.
 Require Import isla.riscv64.riscv64.
 Require Import ZesuSsz.Automation.Hooks.
@@ -5,7 +6,7 @@ Require Import ZesuSsz.Automation.SwitchDispatch.
 Require Import ZesuSsz.Automation.ResourceGroups.
 From iris.proofmode Require Import environments.
 Import ListNotations.
-Open Scope Z_scope.
+Local Open Scope Z_scope.
 
 (* Choose a raw array witness from one exact adjacent pair. *)
 Ltac zesu_raw_array_check_word value :=

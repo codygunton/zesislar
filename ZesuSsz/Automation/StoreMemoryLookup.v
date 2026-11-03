@@ -26,12 +26,12 @@ Ltac zesu_store_unsigned_splice_indices :=
       assert_fails (has_evar pointer);
       assert_fails (has_evar base);
       let expanded := eval cbv beta zeta in pointer in
-      ZesuSsz.Automation.Hooks.zesu_integer_pointer_root expanded
+      ZesuSsz.Automation.MemoryAddress.zesu_integer_pointer_root expanded
         ltac:(fun _ =>
-          let integer := ZesuSsz.Automation.Hooks.zesu_stack_integer_address expanded in
+          let integer := ZesuSsz.Automation.MemoryAddress.zesu_stack_integer_address expanded in
           let equality := fresh "HstoreUnsignedAddress" in
           assert (equality : bv_unsigned pointer = integer) by
-            ZesuSsz.Automation.Hooks.zesu_stack_arithmetic;
+            ZesuSsz.Automation.MemoryAddress.zesu_stack_arithmetic;
           progress rewrite equality;
           clear equality)
   end.
@@ -44,7 +44,7 @@ Ltac zesu_store_splice_bounds :=
   | |- SHELVED_SIDECOND _ => unshelve_sidecond
   | _ => idtac
   end;
-  ZesuSsz.Automation.Hooks.zesu_integer_array_facts;
+  ZesuSsz.Automation.MemoryAddress.zesu_integer_array_facts;
   zesu_store_unsigned_splice_indices;
   repeat match goal with
   | |- context [?base + ?offset - ?base] =>
@@ -77,8 +77,8 @@ Ltac zesu_store_codec_array_lookup :=
   | |- environments.envs_entails _
       (find_in_context (FindMemMapsTo (bv_unsigned ?pointer)) _) =>
       let expanded := eval cbv beta zeta in pointer in
-      ZesuSsz.Automation.Hooks.zesu_integer_pointer_root expanded ltac:(fun base =>
-        let integer := ZesuSsz.Automation.Hooks.zesu_stack_integer_address expanded in
+      ZesuSsz.Automation.MemoryAddress.zesu_integer_pointer_root expanded ltac:(fun base =>
+        let integer := ZesuSsz.Automation.MemoryAddress.zesu_stack_integer_address expanded in
         iMatchHyp ltac:(fun name body =>
           lazymatch body with
           | @mem_mapsto_array ?sigma ?heap ?width ?lower ?fraction ?values =>
@@ -95,13 +95,13 @@ Ltac zesu_store_codec_array_lookup :=
                    repeat (rewrite length_bv_to_little_endian; [|lia]);
                    cbn [length N.to_nat];
                    try (autounfold with zesu_contract_constants);
-                   ZesuSsz.Automation.Hooks.zesu_stack_arithmetic);
+                   ZesuSsz.Automation.MemoryAddress.zesu_stack_arithmetic);
                 let found := fresh "HownedArraySemanticLookup" in
                 pose proof (@tac_mem_mapsto_array_eq sigma sourceIsla integer
                   width lower integer values (or_introl range)) as found;
                 let equality := fresh "HownedArrayReadAddress" in
                 assert (equality : bv_unsigned pointer = integer) by
-                  ZesuSsz.Automation.Hooks.zesu_stack_arithmetic;
+                  ZesuSsz.Automation.MemoryAddress.zesu_stack_arithmetic;
                 rewrite equality;
                 liEnsureInvariant;
                 liStep
