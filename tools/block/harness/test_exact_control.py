@@ -65,6 +65,17 @@ class ExactControlTests(unittest.TestCase):
     def test_reject_changed_dependency(self):
         self.changed('predecessor', lambda s: s['bindings'][0].update(sha256='0' * 64))
 
+    def test_reject_changed_compiler(self):
+        original = control.binding
+        def binding(path):
+            value = original(path)
+            if str(path) == '/home/cody/islaris/_opam/bin/coqc':
+                value['sha256'] = '0' * 64
+            return value
+        with patch.object(control, 'binding', side_effect=binding):
+            with self.assertRaises(ValueError):
+                control.validate('resource023', self.output('resource023'))
+
     def test_reject_unknown_case(self):
         with self.assertRaises(ValueError):
             control.validate('other', self.output('other'))

@@ -43,6 +43,15 @@ def validate(case, output):
             raise ValueError('The exact control boundary differs: ' + key)
     if spec['client'] != authority['client'] or spec['CPU_policy'] != 'unlimited':
         raise ValueError('The exact control client or CPU policy differs.')
+    support = read(spec['support_READY'])
+    compiler = support['effective_compiler_version']['compiler']
+    toolchain = [compiler, *[ref for ref in support['bindings']
+                            if ref['path'] == '/home/cody/islaris/_opam/bin/coqdep']]
+    if len(toolchain) != 2 or compiler['path'] != '/home/cody/islaris/_opam/bin/coqc':
+        raise ValueError('The exact control compiler boundary differs.')
+    for reference in toolchain:
+        if binding(reference['path']) != reference:
+            raise ValueError('An exact control toolchain input changed.')
     original = read(spec['original_export'])
     goals = original['kernel_groups']['goals']
     selected = goals[1 if case == 'predecessor' else 0]
@@ -95,6 +104,7 @@ def validate(case, output):
     return {'schema': 'scratch.exact-normalization-command.v1', 'case': case,
             'authority': binding(POLICY), 'validator': binding(__file__),
             'spec': row['spec'], 'client': authority['client'], 'client_argv': client,
+            'toolchain': toolchain,
             'argv': argv, 'environment': row['environment'],
             'claim_bytes': row['claim_bytes'], 'physical_fence_bytes': row['physical_fence_bytes'],
             'fresh_canonical_projection_required': True,
@@ -121,6 +131,9 @@ def main():
     for key in ['authority', 'validator', 'spec', 'client']:
         if binding(command[key]['path']) != command[key]:
             raise ValueError('A final exact control input changed.')
+    for reference in command['toolchain']:
+        if binding(reference['path']) != reference:
+            raise ValueError('A final exact control toolchain input changed.')
     if args.output.is_dir():
         (args.output / 'AUTHORITY-BINDING.json').write_text(json.dumps(result, indent=2) + '\n')
     return code
