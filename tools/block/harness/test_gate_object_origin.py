@@ -228,6 +228,50 @@ class GateOriginTest(unittest.TestCase):
                          G.normalize_flags(self.flags, self.target))
         self.assertIn('-Q', config['physical_flags'])
 
+    def test_relocation_reads_resolution_runtime_once_per_process_batch(self):
+        with M.batch(), patch.object(M, 'read_bound', wraps=M.read_bound) as read:
+            for _ in range(20):
+                self.assertEqual(G.relocate(self.value,self.module,self.obj,self.target),
+                                 self.target_source.with_suffix('.vo'))
+            self.assertEqual(read.call_args_list,[unittest.mock.call(self.runtime)])
+
+    def test_relocation_cache_does_not_cross_a_process_identity(self):
+        with M.batch(), patch.object(M, 'read_bound', wraps=M.read_bound) as read:
+            with patch.object(M.os,'getpid',return_value=101):
+                G.relocate(self.value,self.module,self.obj,self.target)
+            with patch.object(M.os,'getpid',return_value=202):
+                G.relocate(self.value,self.module,self.obj,self.target)
+            self.assertEqual(read.call_count,2)
+
+    def test_relocation_cache_refuses_a_changed_resolution_runtime(self):
+        with M.batch():
+            G.relocate(self.value,self.module,self.obj,self.target)
+            path=Path(self.runtime['path'])
+            old=path.stat()
+            payload=path.read_text().replace('Example','Changed')
+            path.write_text(payload)
+            os.utime(path,ns=(old.st_atime_ns,old.st_mtime_ns))
+            with self.assertRaisesRegex(ValueError,'binding changed'):
+                G.relocate(self.value,self.module,self.obj,self.target)
+
+    def test_relocation_cache_keeps_a_forced_final_digest_check(self):
+        from binding_cache import COUNTERS, force_hashing
+        with M.batch(), patch.object(M,'read_bound',wraps=M.read_bound) as read:
+            G.relocate(self.value,self.module,self.obj,self.target)
+            before=COUNTERS['hashes']
+            with force_hashing(True):
+                G.relocate(self.value,self.module,self.obj,self.target)
+            self.assertGreater(COUNTERS['hashes'],before)
+            self.assertEqual(read.call_count,1)
+
+    def test_relocation_cache_key_includes_the_exact_resolution_binding(self):
+        with M.batch():
+            G.relocate(self.value,self.module,self.obj,self.target)
+            publication=deepcopy(self.value)
+            publication['resolution_runtime']=dict(self.runtime,sha256='0'*64)
+            with self.assertRaisesRegex(ValueError,'binding changed'):
+                G.relocate(publication,self.module,self.obj,self.target)
+
     def test_only_bound_owned_dependency_paths_relocate(self):
         self.assertEqual(G.relocate(self.value, self.module, self.obj, self.target), self.target_source.with_suffix('.vo'))
         with self.assertRaises(ValueError):

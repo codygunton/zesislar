@@ -196,8 +196,8 @@ def relocate(publication, module, path, workspace):
     path, workspace = Path(path).resolve(), Path(workspace).resolve()
     if not path.is_relative_to(build):
         return path
-    from entry_chain import read_bound
-    runtime = read_bound(publication['resolution_runtime'])
+    from object_import_migration import bound_record
+    runtime = bound_record(publication['resolution_runtime'])
     relative = Path(runtime['proof_runtime']['module_files'][module])
     if path != (build / Path(*relative.parts[1:])).with_suffix('.vo'):
         raise ValueError('A gate dependency differs from its bound module mapping.')
