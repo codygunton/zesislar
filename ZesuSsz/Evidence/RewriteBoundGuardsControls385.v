@@ -1,6 +1,7 @@
 Require Import ZesuSsz.Automation.All.
 Require Import ZesuSsz.Automation.RewriteBoundGuards.
 From Coq Require Import ZArith.ZArith.
+From stdpp Require Import bitvector.definitions bitvector.tactics.
 Local Open Scope Z_scope.
 
 Lemma rewrite_bound_switch_off385 : 0 <= 7.
