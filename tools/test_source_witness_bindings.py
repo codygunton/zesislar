@@ -57,6 +57,55 @@ class SourceWitnessBindingsTests(unittest.TestCase):
         self.assertEqual(plan['ordered_witnesses'][2]['type'], 'lvar "index" Z')
         self.assertEqual(plan['input_family'], 'authenticated_source')
 
+    def owned_register_fixture(self):
+        self.target.write_text(self.target.read_text().replace('(x y : bv 64)', '(next y : bv 64)')
+                               .replace('RVal_Bits x', 'RVal_Bits next'))
+        self.context['target_declaration'].update(self.bind(self.target))
+        self.row['state']['registers'] = {'x11': {'op': 'input', 'width': 64, 'value': 'x'},
+                                          'x12': {'op': 'input', 'width': 64, 'value': 'y'}}
+        self.write_report()
+        self.context['report'] = self.bind(self.report)
+
+    def test_direct_owned_register_uses_existing_constructor(self):
+        self.owned_register_fixture()
+        plan = derive_source_plan(self.context, allow_owned_registers=True)
+        output = render_source_mapping(plan, name='source_mapping',
+                                       target_application='target_owner', source_application='source_owner',
+                                       parameters=[], source_parameters=[])
+        self.assertIn('(ZesuSourceRegister 64%N "x11")', output['source'])
+        self.assertEqual(plan['ordered_binders'], ['next', 'y', 'i'])
+
+    def test_owned_register_refuses_wrong_owner_width_and_alias(self):
+        self.owned_register_fixture()
+        for mutation, message in [
+                (lambda text: text.replace('"x11"', '"x10"'), 'does not own'),
+                (lambda text: text.replace('RVal_Bits y', 'RVal_Bits next'), 'multiple register owners')]:
+            with self.subTest(message=message):
+                original = self.target.read_text()
+                self.target.write_text(mutation(original))
+                self.context['target_declaration'].update(self.bind(self.target))
+                with self.assertRaisesRegex(ValueError, message):
+                    derive_source_plan(self.context, allow_owned_registers=True)
+                self.target.write_text(original)
+                self.context['target_declaration'].update(self.bind(self.target))
+        self.row['state']['registers']['x11']['width'] = 32
+        self.write_report()
+        self.context['report'] = self.bind(self.report)
+        with self.assertRaisesRegex(ValueError, 'different source width'):
+            derive_source_plan(self.context, allow_owned_registers=True)
+
+    def test_source_array_refuses_changed_fraction_address_or_payload(self):
+        for source, message in [('(base) ↦ₘ{DfracOwn 2}∗ payload', 'unsupported fraction'),
+                                ('(other) ↦ₘ∗ payload', 'address or payload'),
+                                ('(base) ↦ₘ∗ other', 'address or payload')]:
+            with self.subTest(source=source):
+                self.owner['components'][2]['source'] = source
+                self.context['owner_sha256'] = digest(self.owner)
+                self.write_report()
+                self.context['report'] = self.bind(self.report)
+                with self.assertRaisesRegex(ValueError, message):
+                    self.plan()
+
     def test_actual_emitter_uses_only_source_keys(self):
         plan = derive_source_plan(self.context)
         output = render_source_mapping(plan, name='source_mapping',

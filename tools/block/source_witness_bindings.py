@@ -110,6 +110,10 @@ def authenticate_sources(binders, bindings, context):
                 if resource['kind'] == 'register':
                     resources.append(resource)
                 elif resource['kind'] == 'byte_array':
+                    if resource.get('fraction') is not None:
+                        from check_data_only_lemmas import rocq_tokens
+                        if [token for token, _ in rocq_tokens(resource['fraction'])] != ['{', 'DfracOwn', '1', '}']:
+                            raise ValueError('The source array has an unsupported fraction.')
                     resources.append(dict(resource, address=resource['address_z']))
                 elif source == 'K':
                     resources.append({'kind': 'owned_parameter', 'name': 'K'})
@@ -190,7 +194,48 @@ def authenticate_sources(binders, bindings, context):
     return result
 
 
-def derive_source_plan(context, *, register_bindings=None):
+def owned_register_bindings(context):
+    """Select only direct, unique target binders with source-owned registers."""
+    from forward_witnesses import _register_owners, _source_definition
+    from witness_data import declared_witness_slots, _unwrap
+    from join_generalize import REGISTER
+
+    source = context['source_declaration']
+    target = context['target_declaration']
+    source_registers = _register_owners(_source_definition(source))
+    target_registers = _register_owners(_source_definition(target))
+    report = bound_json(context['report'])
+    row = pointer(report, context['pointer'])
+    target_row = pointer(report, context.get('trace_pointer', context['pointer']))
+    result = {}
+    for slot in declared_witness_slots(Path(target['path']).read_text(), target['declaration'])['remaining']:
+        kind = slot['type'].split()
+        if len(kind) != 2 or kind[0] != 'bv' or not kind[1].isdigit():
+            continue
+        candidates = []
+        for register, value in target_registers:
+            plain = _unwrap(value)
+            if plain[1:2] == [':']:
+                plain = plain[:1]
+            if plain == [slot['name']]:
+                candidates.append(register)
+        if not candidates:
+            continue
+        if len(candidates) != 1 or not REGISTER.fullmatch(candidates[0]):
+            raise ValueError('A target witness has ambiguous register ownership.')
+        register = candidates[0]
+        if sum(name == register for name, _ in source_registers) != 1:
+            raise ValueError('The source does not own the target witness register.')
+        width = int(kind[1])
+        for state in [row['state'], target_row['state']]:
+            value = state.get('registers', {}).get(register, state.get('retained_registers', {}).get(register))
+            if value is None or value.get('width') != width:
+                raise ValueError('The owned witness register has a different source width.')
+        result[slot['name']] = (register, width)
+    return result
+
+
+def derive_source_plan(context, *, register_bindings=None, allow_owned_registers=False):
     """Use exact source names and declaration records, not target equations."""
     from witness_data import _source_declaration, declared_witness_slots
     from join_generalize import witness_plan
@@ -206,6 +251,11 @@ def derive_source_plan(context, *, register_bindings=None):
     row = pointer(report, context.get('trace_pointer', context['pointer']))
     bindings = {}
     registers = register_bindings or {}
+    if allow_owned_registers:
+        checked = owned_register_bindings(context)
+        if any(checked.get(name) != value for name, value in registers.items()):
+            raise ValueError('A supplied register input differs from its owned source.')
+        registers = checked
     for slot in target_layout['remaining']:
         matches = [i for i, candidate in enumerate(source_slots) if candidate == slot]
         if len(matches) == 1:
@@ -220,6 +270,7 @@ def derive_source_plan(context, *, register_bindings=None):
             raise ValueError('The source declaration projection is ambiguous: ' + slot['name'])
         elif slot['name'] not in registers:
             raise ValueError('The source has no authenticated value for ' + slot['name'] + ' : ' + slot['type'])
+    registers = {name: value for name, value in registers.items() if name not in bindings}
     return witness_plan(target_layout['remaining'], register_bindings=registers,
                         source_bindings=bindings, source_context=context)
 
@@ -240,11 +291,12 @@ def render_source_mapping(plan, *, name, target_application, source_application,
         raise ValueError('The source mapping changes declaration order.')
     witnesses = plan.get('ordered_witnesses', [])
     if (len(witnesses) != len(slots) or
-            any(witness.get('binder') != slot['name'] or witness.get('type') != slot['type']
+            any(witness.get('binder') != slot['name'] or witness.get('type', slot['type']) != slot['type']
                 for witness, slot in zip(witnesses, slots))):
         raise ValueError('The source mapping changes witness order, count, or types.')
     # Recheck bound bytes and slot identities at the actual emission boundary.
     sources = authenticate_sources(slots, plan['source_bindings'], context)
+    registers = owned_register_bindings(context) if any(slot['name'] not in sources for slot in slots) else {}
     name = identifier(name, 'typed source mapping name')
     target_application = expression(target_application, 'mapping target application')
     source_application = expression(source_application, 'mapping source application')
@@ -315,7 +367,13 @@ def render_source_mapping(plan, *, name, target_application, source_application,
                 raise ValueError('The emitted source mapping changed a slot identity.')
             inputs.append('(ZesuSourceValue (' + slot['type'] + ') "' + sources[bound]['source_key'] + '")')
         else:
-            raise ValueError('This source mapping emitter needs every slot source-bound.')
+            from symbolic_state import input_expr
+            if bound not in registers:
+                raise ValueError('The source mapping has no checked owned-register input.')
+            register, width = registers[bound]
+            if by_name[bound].get('expression') != input_expr(bound, width).to_dict():
+                raise ValueError('The emitted register mapping changes its source witness.')
+            inputs.append('(ZesuSourceRegister ' + str(width) + '%N "' + register + '")')
     input_term = 'ZesuSourceUnit'
     for item in reversed(inputs):
         input_term = '(ZesuSourcePair ' + item + ' ' + input_term + ')'
@@ -367,7 +425,8 @@ def render_source_mapping(plan, *, name, target_application, source_application,
             result = ('(ZesuWitnessProfileSlot "' + label + '" (' + slot['type'] + ') ' + result + ')')
         return result
     expected_profile = profile(slots, 'name')
-    emitted_profile = profile(witnesses, 'binder')
+    emitted_slots = [dict(witness, type=slot['type']) for witness, slot in zip(witnesses, slots)]
+    emitted_profile = profile(emitted_slots, 'binder')
     source += ('#[export] Instance ' + name + '_source_profile `{!islaG Sigma} `{!threadG}' + typed + ' :\n'
                '  ZesuEntryWitnessSourceProfile (' + target_application + ') (' + kind + ') :=\n'
                '  {| zesu_source_profile_declaration := "' + target['sha256'] + '";\n'
@@ -393,7 +452,7 @@ def render_source_mapping(plan, *, name, target_application, source_application,
                                 'key_declaration': context.get('target_key_declaration', target),
                                 'mapping_fragment_sha256': mapping_sha256,
                                 'source_slots': slots,
-                                'data_slots': [{'name': w['binder'], 'type': w['type']} for w in witnesses],
+                                'data_slots': [{'name': w['binder'], 'type': w['type']} for w in emitted_slots],
                                 'names_from_authenticated_source': True,
                                 'runtime_names_recovered': False},
             'internal_order': list(reversed(slots)), 'proof_scripts_emitted': False,

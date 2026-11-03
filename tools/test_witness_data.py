@@ -8,12 +8,26 @@ import tempfile
 import unittest
 
 sys.path.insert(0, str(Path(__file__).parent / "block"))
-from witness_data import declared_witness_slots, resolved_witness_data
+from witness_data import declared_witness_slots, resolved_witness_data, _array_owners
 from entry_bindings import normalize_type
 from render_support import witness_mapping_source
 
 
 class WitnessDataTests(unittest.TestCase):
+    def test_explicit_full_array_definition_preserves_source(self):
+        text = 'Definition owner : iProp Sigma := isla.ghost_state.mem_mapsto_array_def ((base)%Z) (DfracOwn 1) (payload).'
+        owners = _array_owners(text, 'owner')
+        self.assertEqual(len(owners), 1)
+        self.assertEqual(owners[0]['address'], ['base'])
+        self.assertEqual(owners[0]['payload'], ['payload'])
+        self.assertEqual(owners[0]['fraction']['term'], 'DfracOwn 1')
+        self.assertEqual(owners[0]['fraction']['source'], '(DfracOwn 1)')
+
+    def test_explicit_array_definition_refuses_other_fractions(self):
+        for fraction in ['DfracOwn 2', 'DfracOwn q', 'DfracDiscarded', 'DfracOwn (1 / 2)', 'DfracOwn']:
+            with self.subTest(fraction=fraction), self.assertRaisesRegex(ValueError, 'unsupported explicit fraction'):
+                _array_owners('Definition owner : iProp Sigma := isla.ghost_state.mem_mapsto_array_def (base) (' + fraction + ') (payload).', 'owner')
+
     target = '''Definition target (K : iProp Sigma) : iProp Sigma :=
       ((∃ (unused : Z) (count : Z) (frame : list (bv 8%N))
           (loaded first second : bv 64%N),

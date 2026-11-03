@@ -290,6 +290,27 @@ def _array_owners(source, name):
     marker = [token for token, _ in rocq_tokens("↦ₘ")]
     result = []
     for position in range(values.index(":=") + 1, len(values)):
+        explicit = ["isla.ghost_state.mem_mapsto_array_def"]
+        if values[position:position + len(explicit)] == explicit:
+            begin = position + len(explicit)
+            if values[begin:begin + 1] != ["("]:
+                raise ValueError("The explicit array owner needs a grouped address.")
+            address, end = atom(values, begin)
+            fraction_begin = end
+            fraction, end = atom(values, end)
+            if _unwrap(fraction) != ["DfracOwn", "1"]:
+                raise ValueError("The array witness has an unsupported explicit fraction.")
+            payload_begin = end
+            payload, end = atom(values, end)
+            address_text = source[command[begin][1]:command[fraction_begin - 1][1] + 1]
+            address = _unwrap(_words(rocq_tokens(address_text)))
+            if address[-2:] == ["%", "Z"]:
+                address = _unwrap(address[:-2])
+            text = source[command[payload_begin][1]:command[end - 1][1] + len(command[end - 1][0])]
+            result.append(dict(address=address, payload=_unwrap(_words(rocq_tokens(text))),
+                               value=text, fraction=dict(term="DfracOwn 1", source=source[
+                                   command[fraction_begin][1]:command[payload_begin - 1][1] + 1])))
+            continue
         if values[position:position + len(marker)] != marker:
             continue
         begin = position + len(marker)
