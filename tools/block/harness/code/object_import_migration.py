@@ -9,6 +9,7 @@ from contextlib import contextmanager
 from contextvars import ContextVar
 from copy import deepcopy
 import json
+import os
 from pathlib import Path
 import resource
 import subprocess
@@ -48,7 +49,7 @@ def bound_record(reference):
     if active is None:
         return read_bound(reference)
     path = Path(reference['path'])
-    key = (str(path), reference['sha256'], file_identity(path))
+    key = (os.getpid(), str(path), reference['sha256'], file_identity(path))
     if binding(path) != reference:
         raise ValueError('A migration input binding changed.')
     if key not in active['records']:
