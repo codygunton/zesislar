@@ -151,9 +151,18 @@ class RolePeaks(unittest.TestCase):
 
 class PayloadBehavior(unittest.TestCase):
     def run_supervisor(self, source):
-        root=Path(__file__).resolve().parent/'code'
-        script='import sys;sys.path.insert(0,'+repr(str(root))+');import role_peaks as P;sys.exit(P.run_payload([sys.executable,"-c",'+repr(source)+'],on_exit=lambda actor,code:None))'
-        return subprocess.run([sys.executable,'-c',script],input='input-data',text=True,capture_output=True,timeout=8)
+        here=Path(__file__).resolve().parent
+        roots=[str(path) for path in (here/'code',here,here.parent,here.parents[1])]
+        script='import sys;sys.path[:0]='+repr(roots)+';import role_peaks as P;sys.exit(P.run_payload([sys.executable,"-c",'+repr(source)+'],on_exit=lambda actor,code:None))'
+        environment=dict(os.environ)
+        environment.pop('PYTHONPATH',None)
+        return subprocess.run([sys.executable,'-c',script],input='input-data',text=True,capture_output=True,timeout=8,env=environment)
+
+    def test_fixture_imports_without_inherited_pythonpath(self):
+        with patch.dict(os.environ,{'PYTHONPATH':'/unrelated-source'}):
+            result=self.run_supervisor('import os;assert "PYTHONPATH" not in os.environ;print("clean-import")')
+        self.assertEqual(result.returncode,0,result.stderr)
+        self.assertEqual(result.stdout,'clean-import\n')
 
     def test_stdio_and_nonzero_exit_stay_exact(self):
         result=self.run_supervisor('import sys;print(sys.stdin.read());print("error-data",file=sys.stderr);sys.exit(7)')
