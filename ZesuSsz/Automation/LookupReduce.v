@@ -29,13 +29,13 @@ Ltac zesu_reduce_instr_lookup :=
       lazymatch code with
       | Some _ => fail
       | _ =>
-          let literal := eval vm_compute in address in
+          let literal := ZesuSsz.Automation.VmClosed.zesu_vm_eval_closed address in
           lazymatch literal with
           | Z0 => idtac
           | Zpos _ => idtac
           | Zneg _ => idtac
           end;
-          let reduced := eval vm_compute in code in
+          let reduced := ZesuSsz.Automation.VmClosed.zesu_vm_eval_closed code in
           lazymatch reduced with
           | Some _ => change code with reduced
           end

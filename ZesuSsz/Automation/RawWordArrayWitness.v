@@ -1,10 +1,11 @@
+Require Import ZesuSsz.Automation.VmClosed.
 Require Import isla.riscv64.riscv64.
 Require Import ZesuSsz.Automation.Hooks.
 Require Import ZesuSsz.Automation.SwitchDispatch.
 Require Import ZesuSsz.Automation.ResourceGroups.
 From iris.proofmode Require Import environments.
 Import ListNotations.
-Local Open Scope Z_scope.
+Open Scope Z_scope.
 
 (* Choose a raw array witness from one exact adjacent pair. *)
 Ltac zesu_raw_array_check_word value :=
@@ -12,8 +13,8 @@ Ltac zesu_raw_array_check_word value :=
   let T := type of value in
   lazymatch T with bv ?width =>
     zesu_stack_closed_term width;
-    let count := eval vm_compute in (N.div width 8) in
-    let aligned := eval vm_compute in (N.eqb (N.modulo width 8) 0) in
+    let count := ZesuSsz.Automation.VmClosed.zesu_vm_eval_closed (N.div width 8) in
+    let aligned := ZesuSsz.Automation.VmClosed.zesu_vm_eval_closed (N.eqb (N.modulo width 8) 0) in
     constr_eq aligned true;
     tryif constr_eq count 0%N then fail 0 else idtac
   end.
@@ -21,14 +22,14 @@ Ltac zesu_raw_array_check_word value :=
 Ltac zesu_raw_array_word_bytes value :=
   let T := type of value in
   lazymatch T with bv ?width =>
-    let count := eval vm_compute in (N.div width 8) in
+    let count := ZesuSsz.Automation.VmClosed.zesu_vm_eval_closed (N.div width 8) in
     constr:(bv_to_little_endian (N.to_nat count) 8 (bv_unsigned value))
   end.
 
 Ltac zesu_raw_array_pair_high low_name low_base low_value spatial accumulated continuation :=
   let T := type of low_value in
   lazymatch T with bv ?width =>
-    let count := eval vm_compute in (N.div width 8) in
+    let count := ZesuSsz.Automation.VmClosed.zesu_vm_eval_closed (N.div width 8) in
     let rec scan remaining pairs :=
       lazymatch remaining with
       | Enil => continuation pairs

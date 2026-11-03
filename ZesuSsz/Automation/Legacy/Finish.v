@@ -1,3 +1,4 @@
+Require Import ZesuSsz.Automation.VmClosed.
 Require Import isla.riscv64.riscv64.
 Require Import ZesuMachineMap.Machine.
 Require Export ZesuSsz.Automation.ByteArrays.
@@ -40,7 +41,7 @@ Ltac zesu_finish_constant :=
   lazymatch goal with
   | |- @eq (bv _) ?left ?right =>
       is_closed_term left; is_closed_term right;
-      (solve [apply bv_eq; vm_compute; reflexivity])
+      (solve [apply bv_eq; first [ZesuSsz.Automation.VmClosed.zesu_vm_closed_decide | reflexivity]])
   end.
 
 Ltac zesu_normalize_memory_constants :=
@@ -48,11 +49,11 @@ Ltac zesu_normalize_memory_constants :=
   | |- context[mem_mapsto _ _ (bv_add ?left ?right)] =>
       let value := constr:(bv_add left right) in
       is_closed_term value;
-      let integer := eval vm_compute in (bv_unsigned value) in
+      let integer := ZesuSsz.Automation.VmClosed.zesu_vm_eval_closed (bv_unsigned value) in
       lazymatch integer with Z0 => idtac | Zpos _ => idtac | Zneg _ => idtac end;
       let Hconstant := fresh "Hconstant" in
       assert (Hconstant : value = BV 64 integer) by
-        (apply bv_eq; vm_compute; reflexivity);
+        (apply bv_eq; first [ZesuSsz.Automation.VmClosed.zesu_vm_closed_decide | reflexivity]);
       rewrite Hconstant; clear Hconstant
   end.
 
@@ -63,12 +64,12 @@ Ltac zesu_normalize_memory_addresses :=
     |- context[mem_mapsto (bv_unsigned (bv_add ?base ?offset)) _ _] =>
       constr_eq base pointer;
       constr_eq pointer pointer2;
-      let low := eval vm_compute in minimum in
-      let high := eval vm_compute in maximum in
-      let ramLow := eval vm_compute in ((mapRamBase defaultMap)%Z) in
-      let ramHigh := eval vm_compute in ((machineRamEnd defaultMap)%Z) in
+      let low := ZesuSsz.Automation.VmClosed.zesu_vm_eval_closed minimum in
+      let high := ZesuSsz.Automation.VmClosed.zesu_vm_eval_closed maximum in
+      let ramLow := ZesuSsz.Automation.VmClosed.zesu_vm_eval_closed ((mapRamBase defaultMap)%Z) in
+      let ramHigh := ZesuSsz.Automation.VmClosed.zesu_vm_eval_closed ((machineRamEnd defaultMap)%Z) in
       constr_eq low ramLow; constr_eq high ramHigh;
-      let integer := eval vm_compute in (bv_unsigned offset) in
+      let integer := ZesuSsz.Automation.VmClosed.zesu_vm_eval_closed (bv_unsigned offset) in
       lazymatch integer with Z0 => idtac | Zpos _ => idtac | Zneg _ => idtac end;
       let Haddress := fresh "Haddress" in
       assert (Haddress : bv_unsigned (bv_add pointer offset) =
@@ -115,9 +116,9 @@ Ltac zesu_finish_array_byte_lookup :=
   zesu_normalize_array_byte_lookups;
   repeat match goal with
   | Hlookup : ?bytes !! Z.to_nat (bv_unsigned ?offset `div` 1) = Some ?byte |- _ =>
-      let integer := eval vm_compute in (bv_unsigned offset) in
+      let integer := ZesuSsz.Automation.VmClosed.zesu_vm_eval_closed (bv_unsigned offset) in
       lazymatch integer with Z0 => idtac | Zpos _ => idtac end;
-      let index := eval vm_compute in (Z.to_nat integer) in
+      let index := ZesuSsz.Automation.VmClosed.zesu_vm_eval_closed (Z.to_nat integer) in
       change (bytes !! index = Some byte) in Hlookup
   end;
   repeat match goal with
