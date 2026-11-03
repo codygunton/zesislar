@@ -1,4 +1,5 @@
 """Bind an infeasible source edge to a physically verified exact statement."""
+from copy import deepcopy
 import hashlib
 import json
 from pathlib import Path
@@ -98,3 +99,27 @@ def validate_refutations(plan, refutations):
             raise ValueError('The verified refutation has different source assumptions')
         excluded.add(index)
     return excluded
+
+
+def refute_entry_edges(boundary, binding):
+    """Remove only verified edges from this exact source boundary."""
+    packet = read(binding, document=True)
+    if packet.get('schema') != 'source.edge-refutation-binding.v1':
+        raise ValueError('The entry refutation binding has another schema')
+    plan = read(packet['plan'], document=True)
+    alternatives = boundary['alternatives']
+    if len(plan['edges']) != len(alternatives):
+        raise ValueError('The refutation plan has another source edge count')
+    for index, (alternative, edge) in enumerate(zip(alternatives, plan['edges'])):
+        if edge['index'] != index:
+            raise ValueError('The refutation plan changes source edge order')
+        validate_source_edge(alternative, edge)
+    excluded = validate_refutations(plan, packet['refutations'])
+    if len(excluded) == len(alternatives):
+        raise ValueError('The refutations leave no source entry alternative')
+    result = deepcopy(boundary)
+    result['alternatives'] = [alternative for index, alternative in enumerate(result['alternatives'])
+                              if index not in excluded]
+    result['source_edge_refutations'] = {'binding': deepcopy(binding),
+        'excluded_indices': sorted(excluded), 'original_alternative_count': len(alternatives)}
+    return result

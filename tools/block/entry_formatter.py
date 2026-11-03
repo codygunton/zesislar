@@ -435,6 +435,8 @@ def format_owned_entry_boundary(boundary, *, original_seed, vocabulary, continua
                 not continuation['source_binding']):
             raise ValueError('An entry cut needs a source-bound outer continuation')
         first = format_entry_boundary(framed(boundary), continuation_id=continuation_id, **options)
+        if boundary.get('source_edge_refutations'):
+            first.manifest['source_edge_refutations'] = deepcopy(boundary['source_edge_refutations'])
         if first.response is None:
             return first
         if first.manifest['emitted_alternative_count'] <= 1:
@@ -460,6 +462,8 @@ def format_owned_entry_boundary(boundary, *, original_seed, vocabulary, continua
                 raise ValueError('The generalized continuation has another owned value')
             records[0]['id'] = continuation_id
         result = format_entry_boundary(generalized, continuation_id=continuation_id, **options)
+        if boundary.get('source_edge_refutations'):
+            result.manifest['source_edge_refutations'] = deepcopy(boundary['source_edge_refutations'])
         result.manifest['cut_generalization'] = {
             'kind': 'generalized_owned_cut', 'original_alternative_count': len(boundary['alternatives']),
             'deduplication': first.manifest['exact_deduplication'], 'plan': joined['plan'],
