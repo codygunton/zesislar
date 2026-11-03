@@ -40,12 +40,13 @@ from pathlib import Path
 import module_memory
 
 parser = argparse.ArgumentParser()
-parser.add_argument("operation", choices=("admission", "ledger-confirm", "ledger-mark", "ledger-release", "test-ledger-policy", "aggregate-limit"))
+parser.add_argument("operation", choices=("admission", "ledger-confirm", "ledger-mark", "ledger-release", "ledger-recover-stale", "test-ledger-policy", "aggregate-limit"))
 parser.add_argument("--guard-pid", type=int)
 parser.add_argument("--inner-fence-bytes", type=int)
 parser.add_argument("--booking-bytes", type=int)
 parser.add_argument("--explicit-limit-bytes", type=int)
 parser.add_argument("--gate-limit-bytes", type=int)
+parser.add_argument("--all", action="store_true")
 parser.add_argument("--marker", type=Path)
 parser.add_argument("--replacement", type=Path)
 parser.add_argument("--request-bytes", type=int)
@@ -73,7 +74,10 @@ def admitted(markers):
         headroom_bytes=args.headroom_bytes, maximum_compilers=args.maximum_compilers,
         slice_max_bytes=175 * 1024**3)["admitted"]
 
-if args.operation == "test-ledger-policy":
+if args.operation == "ledger-recover-stale":
+    assert args.all
+    print("[]")  # Shell slot fixtures do not create unified ledger owners.
+elif args.operation == "test-ledger-policy":
     module_memory.check_test_ledger()
 elif args.operation == "aggregate-limit":
     print(module_memory._module.new_aggregate_limit(
