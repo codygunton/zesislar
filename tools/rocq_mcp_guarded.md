@@ -45,11 +45,15 @@ Atomic compiler admission permits at most two probes machine-wide.
 Other compiler scopes use 6 GiB.
 Gates exclude validated probe records only when they drain earlier work.
 Probes still count toward compiler limits and memory holds.
-A launch requires MemAvailable to equal its job limit plus 20 GiB or more.
-The guard holds below 20 GiB available.
-The guard kills at or below 10 GiB available.
-A probe therefore requires 84 GiB available.
-The interim used-memory policy uses launch 200 GiB, hold 215 GiB, and kill 230 GiB.
+The guard measures memory in our account cgroup, `user-$UID.slice`, against its MemoryMax.
+Account use excludes the file cache and reclaimable slab.
+A launch requires account use below 80 % of the cap.
+A launch also requires its job limit plus 20 GiB below the cap.
+The guard holds at 88 % of the cap and kills the youngest scope at 95 %.
+A probe therefore requires 84 GiB below the cap.
+The guard also holds while machine MemAvailable is below 12 GiB.
+Without the account cgroup files, the guard uses MemAvailable.
+It then holds below 20 GiB available and kills at or below 10 GiB available.
 Interim controllers set at most six compiler slots after environment cleaning.
 The guard binds each probe tag to its reservation owner and scope.
 

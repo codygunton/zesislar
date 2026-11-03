@@ -13,6 +13,23 @@ SOURCE = GUARD.read_text()
 LIBRARY = SOURCE.split("\nprune_scope_registry\n", 1)[0]
 DISPATCH_MARKER = '\ncase "${1:-report}" in\n'
 DISPATCH = DISPATCH_MARKER.lstrip("\n") + SOURCE.rsplit(DISPATCH_MARKER, 1)[1]
+# Our account's cgroup files, meminfo, and loadavg, captured on 2026-11-03.
+# The load and pressure lines are from the hour when another account's
+# fuzzers raised load5 to 432.
+ACCOUNT_FIXTURE = Path(__file__).with_name("fixtures") / "account-cgroup"
+ACCOUNT_SETUP = r'''
+mkdir -p "$ACCOUNT_CGROUP"
+for file in memory.max memory.current memory.stat cpu.pressure io.pressure; do
+  cp "$TEST_ACCOUNT/$file" "$ACCOUNT_CGROUP/$file"
+done
+memory() {
+  awk '/^MemTotal:/ {t = $2 * 1024} /^MemAvailable:/ {a = $2 * 1024}
+       END {printf "%.0f %.0f %.0f\n", t, t - a, a}' "$TEST_ACCOUNT/meminfo"
+}
+load_five() { awk '{printf "%d", $2}' "$TEST_ACCOUNT/loadavg"; }
+blocked_count() { echo 99; }
+coqc_count() { echo 0; }
+'''
 
 # These shell controls exercise slot publication, not the unified kernel ledger.
 # Keep the real arithmetic for the profile-capacity control.
@@ -437,11 +454,7 @@ available_gib() { echo 180; }
 available_gib() { echo 26; }
 [ "$(guard_jobs)" = 2 ] || exit 92
 available_gib() { echo 250; }
-[ "$(guard_jobs)" = 48 ] || exit 93
-MEMORY_POLICY=used
-available_gib() { echo 180; }
-used_gib() { echo 71; }
-[ "$(guard_jobs)" = 42 ]
+[ "$(guard_jobs)" = 48 ]
 """)
         self.assertEqual(result.returncode, 0, result.stderr)
 
@@ -523,22 +536,110 @@ JOB_GIB=6
 """)
         self.assertEqual(result.returncode, 0, result.stderr)
 
-    def test_interim_used_memory_policy_is_explicit(self):
-        for used, admitted, killed in ((199, True, False), (200, False, False),
-                                       (215, False, False), (229, False, False),
-                                       (230, False, True)):
+    def account_guard(self, script, **variables):
+        return self.run_guard(ACCOUNT_SETUP + script, TEST_ACCOUNT=str(ACCOUNT_FIXTURE), **variables)
+
+    def test_captured_host_admits_under_another_accounts_load(self):
+        result = self.account_guard(r"""
+cpu_signal; io_signal; load_five; echo
+account_memory; used_gib; available_gib; memory_scope
+record_peak; cat "$PEAK"
+echo "hold=$(hold_reason)"
+rm "$ACCOUNT_CGROUP/cpu.pressure" "$ACCOUNT_CGROUP/io.pressure"
+echo "fallback=$(hold_reason)"
+""")
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertEqual(result.stdout.splitlines(), [
+            "cpu-pressure 5 50", "io-pressure 1 50", "432",
+            "163208757248 33225204464", "30", "121",
+            "account of 152 GiB (launch <80 %, hold 88 %, kill 95 %), "
+            "machine available 140 GiB (backstop 12)",
+            "33225204464", "hold=", "fallback=load5 432"])
+
+    def test_account_memory_lines_are_fractions_of_the_cap(self):
+        cap = 152 * 1024 ** 3
+        edges = {pct: -(-cap * pct // 100) for pct in (80, 88, 95)}
+        launch, hold = "launch line 80 %", "at the 88 % hold"
+        for used, reason, killed in ((edges[80] - 1, "", False), (edges[80], launch, False),
+                                     (edges[88] - 1, launch, False), (edges[88], hold, False),
+                                     (edges[95] - 1, hold, False), (edges[95], hold, True)):
             with self.subTest(used=used):
-                result = self.run_guard(r"""
-used_gib() { echo "$TEST_USED"; }
-available_gib() { echo 0; }
-[ -n "$(memory_hold_reason)" ] || echo admitted
+                result = self.account_guard(r"""
+echo $(( TEST_USED + 3 )) > "$ACCOUNT_CGROUP/memory.current"
+printf 'anon %s\nactive_file 1\ninactive_file 1\nslab_reclaimable 1\n' "$TEST_USED" > "$ACCOUNT_CGROUP/memory.stat"
+echo "reason=$(memory_hold_reason)"
 if memory_kill_required; then echo killed; fi
-""", ZESU_MEMORY_POLICY="used", ZESU_LAUNCH_GIB="200",
-                                         ZESU_HOLD_GIB="215", ZESU_KILL_GIB="230",
-                                         TEST_USED=str(used))
+""", ZESU_MODULE_LIMIT_GIB="6", TEST_USED=str(used))
                 self.assertEqual(result.returncode, 0, result.stderr)
-                self.assertEqual("admitted" in result.stdout.splitlines(), admitted)
-                self.assertEqual("killed" in result.stdout.splitlines(), killed)
+                lines = result.stdout.splitlines()
+                self.assertTrue(lines[0].startswith("reason="), result.stdout)
+                self.assertTrue(lines[0].endswith(reason) if reason else lines[0] == "reason=",
+                                result.stdout)
+                self.assertEqual("killed" in lines, killed)
+
+    def test_account_use_excludes_file_cache_and_reclaimable_slab(self):
+        result = self.account_guard(r"""
+echo $(( 140 * GIB )) > "$ACCOUNT_CGROUP/memory.current"
+printf 'anon 1\nactive_file %s\ninactive_file %s\nslab_reclaimable %s\n' $GIB $GIB $(( 51 * GIB )) > "$ACCOUNT_CGROUP/memory.stat"
+echo "$(used_gib) reason=$(memory_hold_reason)"
+printf 'anon 1\nkernel %s\n' $(( 52 * GIB )) > "$ACCOUNT_CGROUP/memory.stat"
+echo "$(used_gib) reason=$(memory_hold_reason)"
+if memory_kill_required; then echo killed; fi
+echo max > "$ACCOUNT_CGROUP/memory.max"
+echo $(( 134 * GIB )) > "$ACCOUNT_CGROUP/memory.current"
+memory_hold_reason
+""")
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertEqual(result.stdout.splitlines(), [
+            "87 reason=", "140 reason=account memory 140 of 152 GiB, at the 88 % hold",
+            "account memory 134 of 152 GiB, at the 88 % hold"])
+
+    def test_machine_memory_holds_only_below_its_backstop_and_never_kills(self):
+        for available, reason in ((25, ""), (12, ""),
+                                  (11, "machine memory available 11 GiB, below the 12 GiB backstop")):
+            with self.subTest(available=available):
+                result = self.account_guard(r"""
+memory() { echo $(( 251 * GIB )) $(( (251 - TEST_AVAILABLE) * GIB )) $(( TEST_AVAILABLE * GIB )); }
+echo "reason=$(memory_hold_reason)"
+if memory_kill_required; then echo killed; fi
+""", TEST_AVAILABLE=str(available))
+                self.assertEqual(result.returncode, 0, result.stderr)
+                self.assertEqual(result.stdout.splitlines(), ["reason=" + reason])
+        result = self.account_guard(r"""
+memory() { echo $(( 251 * GIB )) $(( 226 * GIB )) $(( 25 * GIB )); }
+memory_hold_reason
+""", ZESU_MACHINE_MIN_AVAILABLE_GIB="30")
+        self.assertEqual(result.stdout.strip(),
+                         "machine memory available 25 GiB, below the 30 GiB backstop")
+
+    def test_account_job_room_and_percent_overrides(self):
+        result = self.account_guard(r"""
+printf 'anon 1\n' > "$ACCOUNT_CGROUP/memory.stat"
+echo $(( 100 * GIB )) > "$ACCOUNT_CGROUP/memory.current"
+memory_hold_reason
+if memory_kill_required; then echo killed; fi
+""", ZESU_MODULE_LIMIT_GIB="64", ZESU_LAUNCH_PCT="70", ZESU_KILL_PCT="65")
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertEqual(result.stdout.splitlines(), [
+            "account memory available 52 GiB, requires 84 GiB for a 64 GiB job", "killed"])
+        for name, value in (("ZESU_HOLD_PCT", "0"), ("ZESU_HOLD_PCT", "101"),
+                            ("ZESU_LAUNCH_PCT", "8x")):
+            with self.subTest(**{name: value}):
+                self.assertEqual(self.run_guard("true", **{name: value}).returncode, 2)
+
+    def test_account_pressure_limits_use_some_cpu_and_full_io(self):
+        for cpu, io, limit, reason in (("50.00", "50.00", "50", ""),
+                                       ("50.01", "0.00", "50", "cpu-pressure 51"),
+                                       ("0.00", "60.00", "50", "io-pressure 60"),
+                                       ("55.00", "55.00", "60", "")):
+            with self.subTest(cpu=cpu, io=io, limit=limit):
+                result = self.account_guard(r"""
+printf 'some avg10=0.00 avg60=%s avg300=0.00 total=1\nfull avg10=0.00 avg60=99.00 avg300=0.00 total=1\n' "$TEST_CPU" > "$ACCOUNT_CGROUP/cpu.pressure"
+printf 'some avg10=0.00 avg60=99.00 avg300=0.00 total=1\nfull avg10=0.00 avg60=%s avg300=0.00 total=1\n' "$TEST_IO" > "$ACCOUNT_CGROUP/io.pressure"
+echo "reason=$(hold_reason)"
+""", TEST_CPU=cpu, TEST_IO=io, ZESU_MAX_CPU_PRESSURE=limit, ZESU_MAX_IO_PRESSURE=limit)
+                self.assertEqual(result.returncode, 0, result.stderr)
+                self.assertEqual(result.stdout.strip(), "reason=" + reason)
 
     def test_probe_confirmation_requires_84_gib_available(self):
         result = self.run_guard(r"""
