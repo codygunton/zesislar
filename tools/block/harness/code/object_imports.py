@@ -14,8 +14,8 @@ def normalized_flags(flags, workspace):
 def _record(reference, module, source, obj, compiler, flags, workspace):
     receipt = read_bound(reference)
     if receipt.get('schema') == 'entry-chain.object-import-migration.v1':
-        from object_import_migration import validate
-        return validate(reference, module, source, obj, compiler, flags, workspace)
+        from object_import_migration import _validate_document
+        return _validate_document(receipt, module, source, obj, compiler, flags, workspace)
     provenance = receipt.get('import_provenance')
     if not isinstance(provenance, dict) or provenance.get('schema') != 'entry-chain.object-imports.v1':
         raise ValueError('The owned object lacks authenticated import hashes.')

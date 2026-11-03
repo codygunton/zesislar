@@ -304,6 +304,11 @@ def create(reference, module, source, obj, compiler, flags, workspace):
 
 def validate(reference, module, source, obj, compiler, flags, workspace):
     receipt = read_bound(reference)
+    return _validate_document(receipt, module, source, obj, compiler, flags, workspace)
+
+
+def _validate_document(receipt, module, source, obj, compiler, flags, workspace):
+    """Validate a receipt document already authenticated by read_bound."""
     policy = json.loads(POLICY.read_text())
     workspace, source, obj = Path(workspace).resolve(), Path(source), Path(obj)
     accepted, effective = origin(policy, receipt['origin']['publication'], module,

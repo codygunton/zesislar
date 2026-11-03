@@ -1959,6 +1959,23 @@
           "sha256": "4e78a70726457ef8181408e55a64e8bc649ce023280a1ca40dfc305f0607e8f5"
         }
       }
+    },
+    {
+      "kind": "accepted-closed-compilations",
+      "binding": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-v34-verification-only-v1/CLOSED-COMPILATION-ORIGIN.json",
+        "sha256": "5b76ae653f6d670ddd1c63483db593e6d4a6f02c568731a6f342efca901e8f5e"
+      },
+      "module_receipts": {
+        "ZesuSsz.Evidence.V34CombinedControls": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-v34-two-module-continuation-v1/prepare001/jobs/prerequisites/native/validated-objects/OBJECT-000000.json",
+          "sha256": "f72349a693064840473760d9a62b75a6da27e479e021a8f4733a6ff4e3ceec4b"
+        },
+        "ZesuSsz.Evidence.RuleScratchRules": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-v34-two-module-continuation-v1/prepare001/jobs/prerequisites/native/validated-objects/OBJECT-000001.json",
+          "sha256": "d6d6ac1a93eed62c911befc706ef9724ce0d098ab23ae74cd0fcea18dad594be"
+        }
+      }
     }
   ],
   "inspector_build": {
