@@ -642,7 +642,7 @@ cat "$STATE_DIR/events"
 [ "$(probe_count)" = 0 ]
 """, ZESU_DIAGNOSTIC_PROBE="1", ZESU_PROBE_ISSUE="10",
                                      ZESU_MODULE_LIMIT_GIB="64",
-                                     ZESU_PROOF_CPU_LIMIT="unlimited")
+                                     ZESU_PROOF_CPU_LIMIT="unlimited", ZESU_PROBE_AGGREGATE_LIMIT="6")
         self.assertEqual(result.returncode, 0, result.stderr)
         active = set()
         peak = 0

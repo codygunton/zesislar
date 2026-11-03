@@ -110,6 +110,7 @@ class GateClaimsTests(unittest.TestCase):
         self.assertEqual(correctness_gate.batch_fence_bytes({"ZESU_GATE_LIMIT": "123"}), 123)
         self.assertEqual(correctness_gate.batch_fence_bytes(
             {"ZESU_BATCH_LIMIT": "64G", "ZESU_GATE_LIMIT": "120G"}), 120 * 1024**3)
+        self.assertEqual(correctness_gate.batch_fence_bytes({"ZESU_AGGREGATE_LIMIT": "8G"}), 120 * 1024**3)
         for value in ["max", "0", "-1", "1.5G"]:
             with self.subTest(value=value), self.assertRaises(ValueError):
                 correctness_gate.batch_fence_bytes({"ZESU_GATE_LIMIT": value})

@@ -267,6 +267,12 @@ def release(receipt):
                   "owner": owner, "receipt_sha256": digest(receipt), "closure": str(out / "CLOSURE.json")}
         ledger["fixed_claims"][key] = 0
         ledger.setdefault("correctness_gate_releases", {})[key] = result
+        from gate_exit_peaks import endorse
+        try:
+            endorse(out, value, ledger, closed=True)
+        except (KeyError, OSError, TypeError, ValueError) as error:
+            # Optional sizing evidence cannot prevent the authenticated release.
+            print('gate exit peak unavailable: '+str(error), file=sys.stderr)
         save(policy["ledger"], ledger)
     save(out / "RELEASE.json", result)
     return result
@@ -293,7 +299,9 @@ def inside(out):
                               env=gate_environment(os.environ), check=False).returncode
     finally:
         cpu = dict(line.split() for line in (aggregate / "cpu.stat").read_text().splitlines())
-        save(out / "METRICS.json", {"aggregate_peak_bytes": int((aggregate / "memory.peak").read_text()),
+        from gate_exit_peaks import sample
+        measured = sample(aggregate, request, identity(os.getpid()))
+        save(out / "METRICS.json", {"guard_exit": measured, "aggregate_peak_bytes": measured["memory_peak_bytes"],
               "CPU_seconds": int(cpu["usage_usec"]) / 1e6, "aggregate_wall_seconds": time.monotonic() - started,
               "measurement_scope": "Complete owned stock aggregate before guard cleanup."})
 
@@ -336,16 +344,26 @@ def run(args):
     command = args.command[1:] if args.command[:1] == ["--"] else args.command
     if not command:
         raise ValueError("The correctness gate command is absent.")
-    basis = select_admission_basis(history_data, args.target, command,
+    from gate_exit_peaks import code_identity, latest
+    workload = code_identity(workspace)
+    ledger = Path(os.environ.get("ZESU_CANONICAL_LEDGER", base / "_build/agents/worker-build-2/native-region-release-v1/LEDGER.json"))
+    with locked(ledger.with_name("LEDGER.lock")):
+        snapshot = read(ledger)
+    basis = latest(snapshot, args.target, command, batch_fence_bytes(os.environ), workload, closed=aggregate_closed)
+    if basis is None:
+        basis = select_admission_basis(history_data, args.target, command,
                                    batch_fence_bytes(os.environ), args.claim_ceiling_bytes,
                                    family_profile=args.family_profile,
                                    family_profile_sha256=args.family_profile_sha256)
-    ledger = Path(os.environ.get("ZESU_CANONICAL_LEDGER", base / "_build/agents/worker-build-2/native-region-release-v1/LEDGER.json"))
+    basis["claim_bytes"] = max(args.claim_ceiling_bytes, basis["claim_bytes"])
     policy = {"ledger": str(ledger), "lock": str(ledger.with_name("LEDGER.lock")),
               "claim_key": "CorrectnessGate_" + uuid.uuid4().hex, "claim_bytes": basis["claim_bytes"],
               "physical_fence_bytes": batch_fence_bytes(os.environ)}
     owner = {"pid": os.getpid(), "startticks": identity(os.getpid())["startticks"], "run_id": run_id}
-    request_record = {"policy": policy, "owner": owner, "workspace": str(workspace), "build": str(build),
+    from block.harness.code.admission_memory import ScopeReader
+    guard = Path(os.environ.get("ZESU_RESOURCE_GUARD", workspace / "tools/resource_guard.sh")).resolve()
+    guard_source = ScopeReader().guard_source(str(guard), digest(guard))
+    request_record = {"guard_source": guard_source, "code_identity": workload, "policy": policy, "owner": owner, "workspace": str(workspace), "build": str(build),
           "target": args.target, "command": command, "basis": basis, "preflight": checked}
     if 'family_profile' in basis:
         request_record['family_profile'] = basis['family_profile']
@@ -356,7 +374,6 @@ def run(args):
     admission_started = time.monotonic()
     reserve(policy, owner, out / "ADMISSION.json")
     admission_wall = time.monotonic() - admission_started
-    guard = Path(os.environ.get("ZESU_RESOURCE_GUARD", workspace / "tools/resource_guard.sh")).resolve()
     env = dict(gate_environment(os.environ), ZESU_IO="gate", ZESU_RUN_REGISTRY_TOOL=str(Path(__file__).with_name("run_registry.py")),
                ZESU_REGISTRY_PYTHON=sys.executable)
     child = subprocess.Popen([str(guard), "batch", args.target, "--", sys.executable,
@@ -366,7 +383,8 @@ def run(args):
         save(out / "BATCH-PROCESS.json", actor)
     status = child.wait()
     metrics = read(out / "METRICS.json") if (out / "METRICS.json").exists() else {}
-    result = {"target": args.target, "success": status == 0, "exit_code": status,
+    after = code_identity(workspace)
+    result = {"code_identity_after": after, "target": args.target, "success": status == 0, "exit_code": status,
               "wall_seconds": (time.monotonic_ns() - run_started) / 1e9,
               "admission_wall_seconds": admission_wall, "completed_ns": time.time_ns(),
               "cache_provenance": {"mode": "unknown",

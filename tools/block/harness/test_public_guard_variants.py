@@ -59,14 +59,37 @@ class PublicGuardVariants(unittest.TestCase):
         self.assertEqual(len(result['aggregate_groups']), 1)
         self.assertEqual(sealed['shell_claim_owners'][key]['guard_attestation']['source'], self.source)
 
-    def historical_variant(self, name):
+    def historical_variant(self, name, history=None):
         relative = ('tools/resource_guard.sh' if name == 'stock' else
                     'tools/block/harness/runtime-tools/resource_guard.sh')
-        history = M.PUBLIC_GUARD_HISTORY
+        history = M.PUBLIC_GUARD_HISTORY if history is None else history
         raw = subprocess.check_output(['git','show',history['commit']+':'+relative],cwd=HERE)
         self.assertEqual(hashlib.sha256(raw).hexdigest(),history['templates'][relative])
         self.guard.write_bytes(raw)
         self.source=self.reader.guard_source(str(self.guard),hashlib.sha256(raw).hexdigest())
+
+    def test_exact_current_predecessor_stock_template_authenticates(self):
+        self.historical_variant('stock', M.PUBLIC_GUARD_PREDECESSORS[-1])
+        attestation=self.seal();self.post_exec()
+        self.assertTrue(self.reader.owned_scope(self.marker,attestation)['verified'])
+
+    def test_exact_current_predecessor_runtime_template_authenticates(self):
+        self.runtime_variant=lambda:self.historical_variant('runtime', M.PUBLIC_GUARD_PREDECESSORS[-1])
+        self.test_runtime_marked_token_authenticates_across_canonical_route()
+
+    def test_changed_current_predecessor_templates_refuse(self):
+        for name in ('stock', 'runtime'):
+            with self.subTest(name=name):
+                self.historical_variant(name, M.PUBLIC_GUARD_PREDECESSORS[-1])
+                self.guard.write_bytes(self.guard.read_bytes()+b'\n# changed predecessor bytes\n')
+                with self.assertRaisesRegex(ValueError,'source bytes changed'):
+                    self.reader.guard_source(str(self.guard),hashlib.sha256(self.guard.read_bytes()).hexdigest())
+
+    def test_current_predecessor_requires_its_exact_hash(self):
+        self.historical_variant('runtime', M.PUBLIC_GUARD_PREDECESSORS[-1])
+        other=M.PUBLIC_GUARD_PREDECESSORS[-1]['templates']['tools/resource_guard.sh']
+        with self.assertRaisesRegex(ValueError,'source bytes changed'):
+            self.reader.guard_source(str(self.guard),other)
 
     def test_exact_historical_stock_template_authenticates(self):
         self.historical_variant('stock')

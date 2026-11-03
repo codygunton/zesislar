@@ -15,7 +15,7 @@ import uuid
 from entry_chain import binding,digest,read_bound,save
 from entry_chain_resources import normalize_cpu,check_operation
 from declaration_outputs import output_context
-from scope_bookings import compiler_environment as scope_compiler_environment
+from scope_bookings import compiler_environment as scope_compiler_environment, CONTROLLER_KEYS
 
 
 def validated_arguments(args,expected,workspace):
@@ -83,7 +83,7 @@ def main():
          'target':{'module':module,'theorem':theorem,'source_sha256':digest(source)},'command_phase':phase})
 
     selected_environment=scope_compiler_environment(runtime,binding(source),os.environ)
-    for name in ('ZESU_CONTROLLER_ROLE','ZESU_CONTROLLER_AUTHORITY_SHA256','ZESU_MODULE_MEMORY_PROFILE'):
+    for name in (*CONTROLLER_KEYS, 'ZESU_MODULE_MEMORY_PROFILE'):
         os.environ.pop(name,None)
     os.environ.update(selected_environment)
     wrapper=workspace/'tools/coqc_findlib.py';guard=workspace/'tools/resource_guard.sh'

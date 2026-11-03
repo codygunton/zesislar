@@ -19,7 +19,7 @@ confirm_coqc "$request" || exit 91
 probe_record "$request" || exit 93
 release_coqc "$request"
 ''', ZESU_DIAGNOSTIC_PROBE="1", ZESU_PROBE_ISSUE="10",
-            ZESU_MODULE_LIMIT_GIB="64", ZESU_PROOF_CPU_LIMIT="unlimited")
+            ZESU_MODULE_LIMIT_GIB="64", ZESU_PROOF_CPU_LIMIT="unlimited", ZESU_PROBE_AGGREGATE_LIMIT="6")
         self.assertEqual(result.returncode, 0, result.stderr)
 
     def test_seventh_confirmation_waits_without_holding_a_marker(self):
@@ -33,7 +33,7 @@ request=$(reserve_coqc $$)
 sleep() { [ ! -e "$request" ] || exit 92; exit 91; }
 confirm_coqc "$request"
 ''', ZESU_DIAGNOSTIC_PROBE="1", ZESU_PROBE_ISSUE="10",
-            ZESU_MODULE_LIMIT_GIB="64", ZESU_PROOF_CPU_LIMIT="unlimited")
+            ZESU_MODULE_LIMIT_GIB="64", ZESU_PROOF_CPU_LIMIT="unlimited", ZESU_PROBE_AGGREGATE_LIMIT="6")
         self.assertEqual(result.returncode, 91, result.stderr)
 
 if __name__ == '__main__':
