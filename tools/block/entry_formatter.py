@@ -400,3 +400,72 @@ def format_entry_boundary(boundary, *, case_id, source_policy, handwritten_owner
     except (ValueError, KeyError, TypeError) as error:
         reports.append({'kind': 'entry_formatter_stop', **active, 'detail': str(error)})
         return FormattedEntry(None, manifest, reports)
+
+
+def format_owned_entry_boundary(boundary, *, original_seed, vocabulary, continuation,
+                                continuation_id, join_options=None, **options):
+    """Deduplicate first, then generalize every remaining multi-alternative cut.
+
+    The caller supplies the original owned seed and the source-bound outer
+    continuation. Exact formatting checks run before generalization. A refused
+    join returns no declaration, rather than retaining a path disjunction.
+    """
+    try:
+        from .join_generalize import generalize_owned_join
+    except ImportError:
+        from join_generalize import generalize_owned_join
+
+    def framed(source):
+        value = deepcopy(source)
+        if value.get('status') == 'handwritten_cut':
+            value['status'] = 'generated'
+        for alternative in value.get('alternatives', []):
+            resource = alternative['resource_boundary']
+            if any(row['id'] == continuation_id for row in resource['components']):
+                raise ValueError('The outer continuation captures an owned resource')
+            resource['tree'] = {'kind': 'sep', 'left': resource['tree'],
+                                'right': {'kind': 'component', 'id': continuation_id}}
+            resource['components'].append({'id': continuation_id, 'source': continuation['name'],
+                                          'provenance': deepcopy(continuation['source_binding'])})
+        return value
+
+    try:
+        if (not isinstance(continuation, dict) or
+                set(continuation) != {'name', 'coq', 'source_binding', 'terminal_id'} or
+                not continuation['source_binding']):
+            raise ValueError('An entry cut needs a source-bound outer continuation')
+        first = format_entry_boundary(framed(boundary), continuation_id=continuation_id, **options)
+        if first.response is None:
+            return first
+        if first.manifest['emitted_alternative_count'] <= 1:
+            first.manifest['cut_generalization'] = {
+                'kind': 'exact_deduplication' if first.manifest['exact_duplicate_alternatives']
+                        else 'single_alternative', 'proof_established': False}
+            return first
+        joined = generalize_owned_join(boundary['alternatives'], original_seed=original_seed,
+            entry_pc=int(boundary['pc'], 0), vocabulary=vocabulary, continuation=continuation,
+            **(join_options or {}))
+        if joined['plan']['join_refusals']:
+            raise ValueError('The cut needs an unsupported guard hull: ' +
+                             json.dumps(joined['plan']['join_refusals'], sort_keys=True))
+        generalized = deepcopy(joined['boundary'])
+        for alternative in generalized['alternatives']:
+            resource = alternative['resource_boundary']
+            terminal = continuation['terminal_id']
+            if resource['tree']['right'] != {'kind': 'component', 'id': terminal}:
+                raise ValueError('The generalized continuation has another source scope')
+            resource['tree']['right']['id'] = continuation_id
+            records = [row for row in resource['components'] if row['id'] == terminal]
+            if len(records) != 1 or records[0]['source'] != continuation['name']:
+                raise ValueError('The generalized continuation has another owned value')
+            records[0]['id'] = continuation_id
+        result = format_entry_boundary(generalized, continuation_id=continuation_id, **options)
+        result.manifest['cut_generalization'] = {
+            'kind': 'generalized_owned_cut', 'original_alternative_count': len(boundary['alternatives']),
+            'deduplication': first.manifest['exact_deduplication'], 'plan': joined['plan'],
+            'proof_established': False}
+        return result
+    except (ValueError, KeyError, TypeError) as error:
+        return FormattedEntry(None, {'schema': 'entry-formatter-manifest.v1',
+            'pc': boundary.get('pc'), 'proof_ran': False},
+            [{'kind': 'entry_cut_generalization_stop', 'detail': str(error)}])
