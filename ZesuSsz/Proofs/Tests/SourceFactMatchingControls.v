@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+From iris.base_logic.lib Require Import iprop.
 Require Import ZesuSsz.Automation.SourceFactMatching.
 From Coq Require Import ZArith NArith.
 From stdpp Require Import tactics decidable.
@@ -93,5 +94,30 @@ Lemma source_unsigned_wrong_closed_bound426 (width : N) (word : bv width) : True
 Proof.
   Fail assert (Hunsupported : (bv_unsigned word < 0)%Z)
     by SourceFactMatching.zesu_source_fact.
+  exact I.
+Qed.
+
+Lemma source_match_prop_after_type426 (P : Prop) (Hsource : P)
+    (Sigma : gFunctors) : True.
+Proof.
+  let requested := open_constr:(_ : Prop) in
+  SourceFactMatching.zesu_source_match_fact requested
+    ltac:(constr_eq requested P).
+  exact I.
+Qed.
+
+Lemma source_match_prop_backtrack426 (P Q : Prop) (HP : P) (HQ : Q)
+    (Sigma : gFunctors) : True.
+Proof.
+  let requested := open_constr:(_ : Prop) in
+  SourceFactMatching.zesu_source_match_fact requested
+    ltac:(constr_eq requested P).
+  exact I.
+Qed.
+
+Lemma source_match_nonprop_refusal426 (Sigma : gFunctors) : True.
+Proof.
+  Fail let requested := open_constr:(_ : Prop) in
+    SourceFactMatching.zesu_source_match_fact requested ltac:(idtac).
   exact I.
 Qed.

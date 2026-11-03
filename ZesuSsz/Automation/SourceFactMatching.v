@@ -22,6 +22,9 @@ Ltac zesu_source_match_fact requested finish :=
       tryif has_evar requested then
         multimatch goal with
         | source_fact : ?available |- _ =>
+            let available_sort := type of available in
+            lazymatch available_sort with Prop => idtac
+            | _ => fail 0 "The source candidate is not a proposition." end;
             assert_fails (has_evar available);
             unify requested available;
             finish
