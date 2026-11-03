@@ -137,3 +137,35 @@ class OrdinaryUmbrellaTests(unittest.TestCase):
         self.ready_reference=self.write('READY-RUNTIME.json',self.ready)
         with self.assertRaisesRegex(ValueError,'closed accepted'):self.validate()
         self.record.assert_not_called()
+
+
+class ProjectPlacementTests(unittest.TestCase):
+    def test_real_MCP_parser_resolves_both_roots_to_the_same_owned_objects(self):
+        import tempfile
+        from pathlib import Path
+        from entry_chain import binding
+        from replay_object_view import install_projects
+        from rocq_mcp.server import _parse_project_flags
+        with tempfile.TemporaryDirectory() as temporary:
+            root=Path(temporary)
+            source=root/'source';source.mkdir()
+            project=b'-Q default/Library Library\n-R default/ZesuSsz ZesuSsz\n-I default/Plugin\n'
+            references=[]
+            for name in ['_CoqProject','_RocqProject']:
+                path=source/name;path.write_bytes(project);references.append(binding(path))
+            output=root/'view';output.mkdir()
+            installed=install_projects(references,output)
+            for name in ['Library','ZesuSsz','Plugin']:(output/'artifacts/default'/name).mkdir()
+            objects=output/'artifacts/default/Library/Value.vo';objects.write_bytes(b'object fixture')
+            returned_flags=_parse_project_flags(output)
+            artifact_flags=_parse_project_flags(output/'artifacts')
+            self.assertEqual(returned_flags,artifact_flags)
+            self.assertEqual(returned_flags,['-Q','default/Library','Library','-R','default/ZesuSsz','ZesuSsz','-I','default/Plugin'])
+            for workspace in [output,output/'artifacts']:
+                selected=(workspace/returned_flags[1]/'Value.vo').resolve()
+                self.assertEqual(selected,objects.resolve())
+                self.assertTrue(selected.is_relative_to((output/'artifacts/default').resolve()))
+                for name in ['_CoqProject','_RocqProject']:
+                    self.assertEqual((workspace/name).read_bytes(),project)
+            self.assertEqual(len(installed),4)
+            self.assertEqual([Path(row['path']).read_bytes() for row in references],[project,project])
