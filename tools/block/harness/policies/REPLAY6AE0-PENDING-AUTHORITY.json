@@ -1,0 +1,865 @@
+{
+  "schema": "scratch.exact-replay-authority-supplement.v1",
+  "status": "source_only_pending_Orch_sizing_and_authority",
+  "execution_enabled": false,
+  "live_measured_authorities_changed": false,
+  "replay_packet": {
+    "path": "/home/cody/zesislar/_build/agents/spec-b/exact-entry-dedup421/replay6ae0-019/REPLAY-BINDINGS.json",
+    "sha256": "f1e02ad7f032a29f35d538a67f070ec7b12e89b6a1612595a50c68075643dd94"
+  },
+  "replay_subject": {
+    "path": "/home/cody/zesislar/_build/agents/spec-b/exact-entry-dedup421/replay6ae0-019/Subject.v",
+    "sha256": "4df050d4ba676e54dde498b70971d937edeb71049c547ca6940b322103a0601c"
+  },
+  "original_subject": {
+    "path": "/home/cody/zesislar/_build/agents/spec-b/exact-entry-dedup421/generated6ae0-native6ad8-017/Subject.v",
+    "sha256": "952aef4fb1249de14d2d291437f58c0b10a8d480e0454e7d452b1df9a778a7c5"
+  },
+  "stable_header": {
+    "path": "/home/cody/zesislar/_build/agents/spec-b/exact-entry-dedup421/replay6ae0-019/HEADER.vpart",
+    "sha256": "a32c2e909887e56781634025903ddc74fb2355d3fefbc20fd89a12c8abb0faf3"
+  },
+  "proof_position": {
+    "line": 4002,
+    "character": 5,
+    "line_numbering": "zero_based",
+    "baseline_body": ""
+  },
+  "original_complete_export": {
+    "path": "/home/cody/zesislar/_build/agents/spec-b/exact-entry-dedup421/generated6ae0-native6ad8-017/complete-goals/state_6.json",
+    "sha256": "4ad0eb8d041f5867cb52cfd8032158ce6e5d8e6955275ddaa84ed9e8c4d93000"
+  },
+  "original_goals": [
+    {
+      "original_index": 0,
+      "original_evar": 991865,
+      "context_entries": 159,
+      "kernel_target_sha256": "e5eeb5d42f4078f627eb53053ddbdaf3c5663772e53f9d970a96212fb3279645",
+      "ordered_kernel_hypotheses_sha256": "a558617c1c176f8688feae9a4802901825ab6cdb6c9ac92c0e28562c3f412fe0",
+      "complete_export": {
+        "path": "/home/cody/zesislar/_build/agents/spec-b/exact-entry-dedup421/generated6ae0-native6ad8-017/complete-goals/state_6.json",
+        "sha256": "4ad0eb8d041f5867cb52cfd8032158ce6e5d8e6955275ddaa84ed9e8c4d93000"
+      }
+    },
+    {
+      "original_index": 1,
+      "original_evar": 1060101,
+      "context_entries": 161,
+      "kernel_target_sha256": "7d614a37bd7de439193e8d621657ff67c5ff9c7ee00a2c96b83e1592918e8cdd",
+      "ordered_kernel_hypotheses_sha256": "d830423cef3e4c9a28d170e4bd23fc79b576090421f45c0fad27f06138e1e63e",
+      "complete_export": {
+        "path": "/home/cody/zesislar/_build/agents/spec-b/exact-entry-dedup421/generated6ae0-native6ad8-017/complete-goals/state_6.json",
+        "sha256": "4ad0eb8d041f5867cb52cfd8032158ce6e5d8e6955275ddaa84ed9e8c4d93000"
+      }
+    }
+  ],
+  "original_group_counts": {
+    "given_up": 0,
+    "goals": 2,
+    "shelf": 0,
+    "stack": 0
+  },
+  "selected_original_goal_index": 1,
+  "other_original_goal_remains_unproved": true,
+  "initial_identity_gate": {
+    "required": true,
+    "order": [
+      "rocq_health must pass against the pinned toolchain.",
+      "Start the exact replay subject at the zero-based position with baseline-body empty.",
+      "Export complete ordinary and kernel groups before any tactic or normalizer installation.",
+      "Require one selected initial kernel goal with the exact target hash and all 161 ordered kernel hypotheses.",
+      "Refuse every target or context mismatch and preserve the complete fresh export.",
+      "Only after the gate passes may the exact frozen normalizer be installed and tested."
+    ],
+    "kernel_target_sha256": "7d614a37bd7de439193e8d621657ff67c5ff9c7ee00a2c96b83e1592918e8cdd",
+    "ordered_kernel_hypotheses_sha256": "d830423cef3e4c9a28d170e4bd23fc79b576090421f45c0fad27f06138e1e63e",
+    "hypothesis_hash_encoding": "UTF-8 JSON with ensure_ascii=false, sort_keys=true, separators=(comma,colon). Preserve list order.",
+    "target_hash_encoding": "SHA256 of the exact UTF-8 kernel ty string.",
+    "fresh_session_identity_tested": false,
+    "fresh_goal_count_or_evar_numbers_assumed": false,
+    "original_other_goal_not_discharged_by_selected_replay": true
+  },
+  "guarded_generic_normalizer": {
+    "source": {
+      "path": "/home/cody/zesislar/_build/agents/worker-build-2/join-automation-0d2-v1/control-Lithium-resource023-shared-wrap/Rule.vpart",
+      "sha256": "aa76e8d5871f189a60f7cb803f3e58fb10039b667bf73b2ddf6c4d9c20f46702"
+    },
+    "source_packet": {
+      "path": "/home/cody/zesislar/_build/agents/worker-build-2/join-automation-0d2-v1/control-Lithium-resource023-shared-wrap/NORMALIZER-SOURCE.json",
+      "sha256": "cc22c84130c1e3bb8800638bb313ee5020c11e506b3d2bc1f84bc91e03d2f754"
+    },
+    "review_status": "Frozen untested source checkpoint. Authority remains pending.",
+    "input_forms": [
+      "Z_to_bv width closed_integer",
+      "BV width closed_integer with its exact existing BvWf witness"
+    ],
+    "protection": "The width and raw value of both inputs must pass is_closed_term. Both pure projected sides must also pass is_closed_term before reduce_closed.",
+    "existing_lemmas": [
+      "Z_to_bv_bv_unsigned",
+      "bv_eq",
+      "Z_to_bv_unsigned",
+      "bv_unsigned_BV"
+    ],
+    "source_references": {
+      "bitvector_definitions": {
+        "path": "/home/cody/islaris/_opam/lib/coq/user-contrib/stdpp/bitvector/definitions.v",
+        "sha256": "225a27f182ac95c4abf8bcff913b451e47f008aeaf69a06efe14fc15f7ed2e65"
+      },
+      "closed_reduction": {
+        "path": "/home/cody/islaris/_opam/lib/coq/user-contrib/stdpp/bitvector/tactics.v",
+        "sha256": "0ada46004338e8b48e3e2656a7dc59020a7ab1a32b3193a815143eb6f02389b7"
+      },
+      "closed_guard": {
+        "path": "/home/cody/islaris/_opam/lib/coq/user-contrib/stdpp/tactics.v",
+        "sha256": "2bd5dbb89f7a953b1b91c9e052d8f8b085ce87ac168584c1f6174d070297e195"
+      }
+    },
+    "new_subtraction_rule": false,
+    "proof_acceptance": false
+  },
+  "toolchain": {
+    "required_tools_pin": "a242d13e51e817200e624d7326bd8ae259661aca",
+    "recorded_tools_root": "/home/cody/zesislar/.worktrees/shared-block-a242d13e",
+    "original_runtime": {
+      "path": "/home/cody/zesislar/_build/agents/worker-build-2/join-automation-0d2-v1/named6ae0-declarations001/prepare001/RUNTIME.json",
+      "sha256": "f01372d1107dfa2c5f870c215b42962d5c6361f0ed35e045b6aed9f59c15f6d0"
+    },
+    "support_READY": {
+      "path": "/home/cody/zesislar/_build/agents/worker-build-2/join-automation-0d2-v1/named6ae0-declarations001/prepare001/READY-RUNTIME.json",
+      "sha256": "d2864c9f648b1020efb927dcbff66fefbfae8539cfe906ed204f648fb4d88a36"
+    },
+    "compiler_version": {
+      "text": "8.19.2+lsp 4.14.4",
+      "evidence": {
+        "path": "/home/cody/zesislar/.worktrees/infra-a-check-entry-chain-3e40/_build/check-entry-stage1-passfix-ten-runtime-v1/VERSION-DIAGNOSIS.json",
+        "sha256": "c76625762ebcab9e2f2c0c216dbdaae70c1e839f9002349f425c0602c04582e6"
+      },
+      "compiler": {
+        "path": "/home/cody/islaris/_opam/bin/coqc",
+        "sha256": "cdea055626239eac587cf71c154535acbceccff12016e47f0538f55c764fbd5f"
+      }
+    },
+    "installation_bindings": [
+      {
+        "path": "/home/cody/islaris/_opam/bin/coqdep",
+        "sha256": "fa42c25db8710ff0787f70455a0b2cb9e8304d9bcd87347e3483c61c521f8cd3"
+      },
+      {
+        "path": "/home/cody/islaris/_opam/bin/coqc",
+        "sha256": "cdea055626239eac587cf71c154535acbceccff12016e47f0538f55c764fbd5f"
+      },
+      {
+        "path": "/home/cody/islaris/_opam/bin/dune",
+        "sha256": "df4c86c9296a1a3ecc6924bdb2917469dabce2751c4ff6e3f92f40857dabc015"
+      }
+    ],
+    "physical_flags": [
+      "-q",
+      "-w",
+      "-notation-overridden",
+      "-w",
+      "-redundant-canonical-projection",
+      "-w",
+      "-deprecated-native-compiler-option",
+      "-w",
+      "-native-compiler-disabled",
+      "-native-compiler",
+      "ondemand",
+      "-boot",
+      "-I",
+      "/home/cody/islaris/_opam/lib/coq-core/boot",
+      "-I",
+      "/home/cody/islaris/_opam/lib/coq-core/clib",
+      "-I",
+      "/home/cody/islaris/_opam/lib/coq-core/config",
+      "-I",
+      "/home/cody/islaris/_opam/lib/coq-core/engine",
+      "-I",
+      "/home/cody/islaris/_opam/lib/coq-core/gramlib",
+      "-I",
+      "/home/cody/islaris/_opam/lib/coq-core/interp",
+      "-I",
+      "/home/cody/islaris/_opam/lib/coq-core/kernel",
+      "-I",
+      "/home/cody/islaris/_opam/lib/coq-core/lib",
+      "-I",
+      "/home/cody/islaris/_opam/lib/coq-core/library",
+      "-I",
+      "/home/cody/islaris/_opam/lib/coq-core/parsing",
+      "-I",
+      "/home/cody/islaris/_opam/lib/coq-core/perf",
+      "-I",
+      "/home/cody/islaris/_opam/lib/coq-core/plugins/ltac",
+      "-I",
+      "/home/cody/islaris/_opam/lib/coq-core/plugins/ltac2",
+      "-I",
+      "/home/cody/islaris/_opam/lib/coq-core/pretyping",
+      "-I",
+      "/home/cody/islaris/_opam/lib/coq-core/printing",
+      "-I",
+      "/home/cody/islaris/_opam/lib/coq-core/proofs",
+      "-I",
+      "/home/cody/islaris/_opam/lib/coq-core/tactics",
+      "-I",
+      "/home/cody/islaris/_opam/lib/coq-core/vernac",
+      "-I",
+      "/home/cody/islaris/_opam/lib/coq-core/vm",
+      "-I",
+      "/home/cody/islaris/_opam/lib/findlib",
+      "-I",
+      "/home/cody/islaris/_opam/lib/memprof-limits",
+      "-I",
+      "/home/cody/islaris/_opam/lib/ocaml",
+      "-I",
+      "/home/cody/islaris/_opam/lib/ocaml/threads",
+      "-I",
+      "/home/cody/islaris/_opam/lib/zarith",
+      "-I",
+      "/home/cody/zesislar/_build/agents/worker-build-2/join-automation-0d2-v1/named6ae0-declarations001/prepare001/prepared/default/ZesuSsz/Evidence/GatesPlugin",
+      "-I",
+      "/home/cody/islaris/_opam/lib/coq/../coq-core/plugins/btauto",
+      "-I",
+      "/home/cody/islaris/_opam/lib/coq/../coq-core/plugins/cc",
+      "-I",
+      "/home/cody/islaris/_opam/lib/coq/../coq-core/plugins/derive",
+      "-I",
+      "/home/cody/islaris/_opam/lib/coq/../coq-core/plugins/extraction",
+      "-I",
+      "/home/cody/islaris/_opam/lib/coq/../coq-core/plugins/firstorder",
+      "-I",
+      "/home/cody/islaris/_opam/lib/coq/../coq-core/plugins/funind",
+      "-I",
+      "/home/cody/islaris/_opam/lib/coq/../coq-core/plugins/ltac",
+      "-I",
+      "/home/cody/islaris/_opam/lib/coq/../coq-core/plugins/ltac2",
+      "-I",
+      "/home/cody/islaris/_opam/lib/coq/../coq-core/plugins/micromega",
+      "-I",
+      "/home/cody/islaris/_opam/lib/coq/../coq-core/plugins/nsatz",
+      "-I",
+      "/home/cody/islaris/_opam/lib/coq/../coq-core/plugins/number_string_notation",
+      "-I",
+      "/home/cody/islaris/_opam/lib/coq/../coq-core/plugins/ring",
+      "-I",
+      "/home/cody/islaris/_opam/lib/coq/../coq-core/plugins/rtauto",
+      "-I",
+      "/home/cody/islaris/_opam/lib/coq/../coq-core/plugins/ssreflect",
+      "-I",
+      "/home/cody/islaris/_opam/lib/coq/../coq-core/plugins/ssrmatching",
+      "-I",
+      "/home/cody/islaris/_opam/lib/coq/../coq-core/plugins/tauto",
+      "-I",
+      "/home/cody/islaris/_opam/lib/coq/../coq-core/plugins/tutorial/p0",
+      "-I",
+      "/home/cody/islaris/_opam/lib/coq/../coq-core/plugins/tutorial/p1",
+      "-I",
+      "/home/cody/islaris/_opam/lib/coq/../coq-core/plugins/tutorial/p2",
+      "-I",
+      "/home/cody/islaris/_opam/lib/coq/../coq-core/plugins/tutorial/p3",
+      "-I",
+      "/home/cody/islaris/_opam/lib/coq/../coq-core/plugins/zify",
+      "-R",
+      "/home/cody/islaris/_opam/lib/coq/theories",
+      "Coq",
+      "-Q",
+      "/home/cody/islaris/_opam/lib/coq/user-contrib/isla",
+      "isla",
+      "-Q",
+      "/home/cody/islaris/_opam/lib/coq/user-contrib/isla/riscv64",
+      "isla.riscv64",
+      "-Q",
+      "/home/cody/zesislar/_build/agents/worker-build-2/join-automation-0d2-v1/named6ae0-declarations001/prepare001/prepared/default/MachineMap",
+      "ZesuMachineMap",
+      "-Q",
+      "/home/cody/islaris/_opam/lib/coq/user-contrib/lithium",
+      "lithium",
+      "-Q",
+      "/home/cody/islaris/_opam/lib/coq/user-contrib/iris",
+      "iris",
+      "-Q",
+      "/home/cody/islaris/_opam/lib/coq/user-contrib/stdpp",
+      "stdpp",
+      "-Q",
+      "/home/cody/islaris/_opam/lib/coq/user-contrib/RecordUpdate",
+      "RecordUpdate",
+      "-Q",
+      "/home/cody/islaris/_opam/lib/coq/user-contrib/Ltac2",
+      "Ltac2",
+      "-Q",
+      "/home/cody/zesislar/_build/agents/worker-build-2/join-automation-0d2-v1/named6ae0-declarations001/prepare001/prepared/default/InstrSpecs",
+      "InstrSpecs",
+      "-Q",
+      "/home/cody/islaris/_opam/lib/coq/user-contrib/stdpp/bitvector",
+      "stdpp.bitvector",
+      "-Q",
+      "/home/cody/zesislar/_build/agents/worker-build-2/join-automation-0d2-v1/named6ae0-declarations001/prepare001/prepared/default/generated/sail-stdpp",
+      "SailStdpp",
+      "-Q",
+      "/home/cody/zesislar/_build/agents/worker-build-2/join-automation-0d2-v1/named6ae0-declarations001/prepare001/prepared/default/generated/evm-sail-coq",
+      "EvmSail",
+      "-Q",
+      "/home/cody/zesislar/_build/agents/worker-build-2/join-automation-0d2-v1/named6ae0-declarations001/prepare001/prepared/default/generated/evm-sail-coq/rlp",
+      "EvmSailRlp",
+      "-Q",
+      "/home/cody/zesislar/_build/agents/worker-build-2/join-automation-0d2-v1/named6ae0-declarations001/prepare001/prepared/default/ZesuStock",
+      "ZesuStock",
+      "-Q",
+      "/home/cody/zesislar/_build/agents/worker-build-2/join-automation-0d2-v1/named6ae0-declarations001/prepare001/prepared/default/generated/isla-traces/stock-zisk/decodeItem",
+      "ZesuSsz.Stock.DecodeItem",
+      "-Q",
+      "/home/cody/zesislar/_build/agents/worker-build-2/join-automation-0d2-v1/named6ae0-declarations001/prepare001/prepared/default/generated/isla-traces/stock-zisk/closure",
+      "ZesuSsz.Stock.Closure",
+      "-Q",
+      "/home/cody/zesislar/_build/agents/worker-build-2/join-automation-0d2-v1/named6ae0-declarations001/prepare001/prepared/default/generated/isla-traces/stock-zisk/free",
+      "ZesuSsz.Stock.Free",
+      "-R",
+      "/home/cody/zesislar/_build/agents/worker-build-2/join-automation-0d2-v1/named6ae0-declarations001/prepare001/prepared/default/ZesuSsz",
+      "ZesuSsz"
+    ],
+    "expected_mcp_flags": [
+      "-I",
+      "default/ZesuSsz/Evidence/GatesPlugin",
+      "-Q",
+      "default/MachineMap",
+      "ZesuMachineMap",
+      "-Q",
+      "default/InstrSpecs",
+      "InstrSpecs",
+      "-Q",
+      "default/generated/sail-stdpp",
+      "SailStdpp",
+      "-Q",
+      "default/generated/evm-sail-coq",
+      "EvmSail",
+      "-Q",
+      "default/generated/evm-sail-coq/rlp",
+      "EvmSailRlp",
+      "-Q",
+      "default/ZesuStock",
+      "ZesuStock",
+      "-Q",
+      "default/generated/isla-traces/stock-zisk/decodeItem",
+      "ZesuSsz.Stock.DecodeItem",
+      "-Q",
+      "default/generated/isla-traces/stock-zisk/closure",
+      "ZesuSsz.Stock.Closure",
+      "-Q",
+      "default/generated/isla-traces/stock-zisk/free",
+      "ZesuSsz.Stock.Free",
+      "-R",
+      "default/ZesuSsz",
+      "ZesuSsz"
+    ],
+    "mcp_argv": [
+      "/home/cody/.local/share/uv/tools/rocq-mcp/bin/python",
+      "-B",
+      "{workspace}/tools/block/stock_scope_stdin_relay.py",
+      "scope",
+      "--guard",
+      "{workspace}/tools/resource_guard.sh",
+      "--receipt",
+      "{workspace}/STDIN-RELAY.json",
+      "--",
+      "/home/cody/.local/share/uv/tools/rocq-mcp/bin/python",
+      "-B",
+      "{workspace}/tools/block/complete_goals_mcp.py"
+    ],
+    "projects": [
+      {
+        "path": "/home/cody/zesislar/_build/agents/spec-b/exact-entry-dedup421/generated6ae0-owned015/_CoqProject",
+        "sha256": "f255d026194543e63ef149156bdc9a27a880825a30e3e5dc2c680fb62fc2475e"
+      },
+      {
+        "path": "/home/cody/zesislar/_build/agents/spec-b/exact-entry-dedup421/generated6ae0-owned015/_RocqProject",
+        "sha256": "1d316b18f06d1211f81531068409463b36850936351f90c90070dafdfaa80515"
+      }
+    ],
+    "bound_driver": {
+      "path": "/home/cody/zesislar/_build/agents/spec-b/exact-entry-dedup421/generated6ae0-native6ad8-017/request_driver.py",
+      "sha256": "552489a6b33d5f0e5ba31b5e5840980aab09bd57fabae28772b466a95dd406a6"
+    },
+    "bound_session_client": {
+      "path": "/home/cody/zesislar/_build/agents/spec-b/exact-entry-dedup421/generated6ae0-native6ad8-017/session.py",
+      "sha256": "bedb613bec60776cc2fa59b48775615e064427df6722a1934e5f70d759fa6a77"
+    },
+    "physical_workspace": "/home/cody/zesislar/_build/agents/spec-b/exact-entry-dedup421/generated6ae0-owned015",
+    "fresh_supported_clone_required": true
+  },
+  "compiler_dependencies": {
+    "source_object_bindings": [
+      {
+        "module": "ZesuSsz.Automation.All",
+        "source": {
+          "path": "/home/cody/zesislar/_build/agents/spec-b/exact-entry-dedup421/generated6ae0-owned015/artifacts/default/ZesuSsz/Automation/All.v",
+          "sha256": "8d5669ff96616746d28c297dd87ca7421db751a5f370522a4b59b6643f5f664b"
+        },
+        "object": {
+          "path": "/home/cody/zesislar/_build/agents/spec-b/exact-entry-dedup421/generated6ae0-owned015/artifacts/default/ZesuSsz/Automation/All.vo",
+          "sha256": "4b6459255e1d985b1d981e48d22d3c07fc690b33c5a1252f550f29d8d1588e5e"
+        }
+      },
+      {
+        "module": "ZesuSsz.Automation.Calls",
+        "source": {
+          "path": "/home/cody/zesislar/_build/agents/spec-b/exact-entry-dedup421/generated6ae0-owned015/artifacts/default/ZesuSsz/Automation/Calls.v",
+          "sha256": "9fa858592cbf546bbc737139d8fa59f9275b07a70b89127c66328fbed6fd7330"
+        },
+        "object": {
+          "path": "/home/cody/zesislar/_build/agents/spec-b/exact-entry-dedup421/generated6ae0-owned015/artifacts/default/ZesuSsz/Automation/Calls.vo",
+          "sha256": "4989c87c57081b0512be01ae1705bbe37b7427959b66f91c55c1863339f2686d"
+        }
+      },
+      {
+        "module": "ZesuSsz.Proofs.Tests.Calls",
+        "source": {
+          "path": "/home/cody/zesislar/_build/agents/spec-b/exact-entry-dedup421/generated6ae0-owned015/artifacts/default/ZesuSsz/Proofs/Tests/Calls.v",
+          "sha256": "61904c8f80f490bce50505997e5e2201751abe5030d69d95669284d11ccf2338"
+        },
+        "object": {
+          "path": "/home/cody/zesislar/_build/agents/spec-b/exact-entry-dedup421/generated6ae0-owned015/artifacts/default/ZesuSsz/Proofs/Tests/Calls.vo",
+          "sha256": "9037c2ee914d823511c6c99efe11c3a0d60aae564fb5d903cc6120e0b7859ed7"
+        }
+      },
+      {
+        "module": "ZesuSsz.Automation.EffectiveOverrides",
+        "source": {
+          "path": "/home/cody/zesislar/_build/agents/spec-b/exact-entry-dedup421/generated6ae0-owned015/artifacts/default/ZesuSsz/Automation/EffectiveOverrides.v",
+          "sha256": "a931e57d7d29e5d0469726dbf84e8ba110cdf6a53a2272ea631747147d407cca"
+        },
+        "object": {
+          "path": "/home/cody/zesislar/_build/agents/spec-b/exact-entry-dedup421/generated6ae0-owned015/artifacts/default/ZesuSsz/Automation/EffectiveOverrides.vo",
+          "sha256": "2a0d2f73ca93c61aebc88ea1065f0c7719de2373021c075c64f95fd46735f203"
+        }
+      },
+      {
+        "module": "ZesuSsz.Proofs.Tests.DecodeItemBranchContinuationOrder",
+        "source": {
+          "path": "/home/cody/zesislar/_build/agents/spec-b/exact-entry-dedup421/generated6ae0-owned015/artifacts/default/ZesuSsz/Proofs/Tests/DecodeItemBranchContinuationOrder.v",
+          "sha256": "bbd530c079701d8a47b0bb70691f47f313e8aa233bd42364ae07b98aebb17e08"
+        },
+        "object": {
+          "path": "/home/cody/zesislar/_build/agents/spec-b/exact-entry-dedup421/generated6ae0-owned015/artifacts/default/ZesuSsz/Proofs/Tests/DecodeItemBranchContinuationOrder.vo",
+          "sha256": "2e0add775799297c650e7a9c4bce7a1e32976222713ebe7e1b13e087690a48a5"
+        }
+      },
+      {
+        "module": "ZesuSsz.Generated.DecodeItem.MachineJoin6ae0Entries",
+        "source": {
+          "path": "/home/cody/zesislar/_build/agents/spec-b/exact-entry-dedup421/generated6ae0-owned015/artifacts/default/ZesuSsz/Generated/DecodeItem/MachineJoin6ae0Entries.v",
+          "sha256": "27a7c0acbeb5e9d06d955b68d4456f5323e73418928985360f1857d8e7624987"
+        },
+        "object": {
+          "path": "/home/cody/zesislar/_build/agents/spec-b/exact-entry-dedup421/generated6ae0-owned015/artifacts/default/ZesuSsz/Generated/DecodeItem/MachineJoin6ae0Entries.vo",
+          "sha256": "30b458caaf86776ef5986ee6467f7a6a54cf42f6f5b8555b0d6f137f34261b3a"
+        }
+      },
+      {
+        "module": "ZesuSsz.Generated.DecodeItem.MachineJoin6ae0Structural",
+        "source": {
+          "path": "/home/cody/zesislar/_build/agents/spec-b/exact-entry-dedup421/generated6ae0-owned015/artifacts/default/ZesuSsz/Generated/DecodeItem/MachineJoin6ae0Structural.v",
+          "sha256": "536d550e2439a05c63acf2aab5b0e60e876a73b28920eef2a5f9354263e4d066"
+        },
+        "object": {
+          "path": "/home/cody/zesislar/_build/agents/spec-b/exact-entry-dedup421/generated6ae0-owned015/artifacts/default/ZesuSsz/Generated/DecodeItem/MachineJoin6ae0Structural.vo",
+          "sha256": "4838f8cb06d72347eb7bdf3d9f3244e30f693c187454715e50d304fd7ee7d789"
+        }
+      },
+      {
+        "module": "ZesuSsz.Generated.DecodeItem.MachineJoin6ae0SourceOwner",
+        "source": {
+          "path": "/home/cody/zesislar/_build/agents/spec-b/exact-entry-dedup421/generated6ae0-owned015/artifacts/default/ZesuSsz/Generated/DecodeItem/MachineJoin6ae0SourceOwner.v",
+          "sha256": "08438479762919b05ec13114022f09ffb1f0881878c588b07d04ed280e38181b"
+        },
+        "object": {
+          "path": "/home/cody/zesislar/_build/agents/spec-b/exact-entry-dedup421/generated6ae0-owned015/artifacts/default/ZesuSsz/Generated/DecodeItem/MachineJoin6ae0SourceOwner.vo",
+          "sha256": "cfe28a7f7779bbfd99db9b0bbca1828aee8cb4b68ce82b2a655025e4a42b90a5"
+        }
+      },
+      {
+        "module": "ZesuSsz.Generated.DecodeItem.MachineJoin6ae0WitnessRegistration",
+        "source": {
+          "path": "/home/cody/zesislar/_build/agents/spec-b/exact-entry-dedup421/generated6ae0-owned015/artifacts/default/ZesuSsz/Generated/DecodeItem/MachineJoin6ae0WitnessRegistration.v",
+          "sha256": "fcf44f12cb2ed2adb5a1c669f0c6c5f8b0a481d26c8f02d69b65ec6f54799ba0"
+        },
+        "object": {
+          "path": "/home/cody/zesislar/_build/agents/spec-b/exact-entry-dedup421/generated6ae0-owned015/artifacts/default/ZesuSsz/Generated/DecodeItem/MachineJoin6ae0WitnessRegistration.vo",
+          "sha256": "6dfbe2c5d129991ca51f5adb34d731dc33b4e7087de39060359ea838695cbf93"
+        }
+      },
+      {
+        "module": "ZesuSsz.Generated.DecodeItem.FP417.Pilot6ad8Entries",
+        "source": {
+          "path": "/home/cody/zesislar/_build/agents/spec-b/exact-entry-dedup421/generated6ae0-owned015/artifacts/default/ZesuSsz/Generated/DecodeItem/FP417/Pilot6ad8Entries.v",
+          "sha256": "8afd7cc33cfc7311621e540074e8d55df23b9bb02379195082e3038b8aaccbdc"
+        },
+        "object": {
+          "path": "/home/cody/zesislar/_build/agents/spec-b/exact-entry-dedup421/generated6ae0-owned015/artifacts/default/ZesuSsz/Generated/DecodeItem/FP417/Pilot6ad8Entries.vo",
+          "sha256": "ca2ee2ec91f8a00952740e02e5a6ae892be2b518c76760dd741e57545562d290"
+        }
+      },
+      {
+        "module": "ZesuSsz.Generated.DecodeItem.FP417.Pilot6ad8Structural",
+        "source": {
+          "path": "/home/cody/zesislar/_build/agents/spec-b/exact-entry-dedup421/generated6ae0-owned015/artifacts/default/ZesuSsz/Generated/DecodeItem/FP417/Pilot6ad8Structural.v",
+          "sha256": "40a73d1de57dc8873c75006d713328a7ba9d1d0dbe5dbc627f6a202b16bb5506"
+        },
+        "object": {
+          "path": "/home/cody/zesislar/_build/agents/spec-b/exact-entry-dedup421/generated6ae0-owned015/artifacts/default/ZesuSsz/Generated/DecodeItem/FP417/Pilot6ad8Structural.vo",
+          "sha256": "deb8c6fa3ebac18487b7e01acf09d136174389f37bb3c62bed5a4dad5840ba3c"
+        }
+      },
+      {
+        "module": "ZesuSsz.Generated.DecodeItem.FP417.Pilot6b08Entries",
+        "source": {
+          "path": "/home/cody/zesislar/_build/agents/spec-b/exact-entry-dedup421/generated6ae0-owned015/artifacts/default/ZesuSsz/Generated/DecodeItem/FP417/Pilot6b08Entries.v",
+          "sha256": "d1397865136230469339790f6319f1eb7b024034fc349e6835ba9d13dc241559"
+        },
+        "object": {
+          "path": "/home/cody/zesislar/_build/agents/spec-b/exact-entry-dedup421/generated6ae0-owned015/artifacts/default/ZesuSsz/Generated/DecodeItem/FP417/Pilot6b08Entries.vo",
+          "sha256": "a7c1064bc16492bf2af0d5601ae137dbdc97d7a34e135c5ec477269744c32b4c"
+        }
+      },
+      {
+        "module": "ZesuSsz.Generated.DecodeItem.FP417.Pilot6b08Structural",
+        "source": {
+          "path": "/home/cody/zesislar/_build/agents/spec-b/exact-entry-dedup421/generated6ae0-owned015/artifacts/default/ZesuSsz/Generated/DecodeItem/FP417/Pilot6b08Structural.v",
+          "sha256": "6d17f218850ec653f2e6229426486ccc0b3a6d57d35a3258465df08e4551ec0f"
+        },
+        "object": {
+          "path": "/home/cody/zesislar/_build/agents/spec-b/exact-entry-dedup421/generated6ae0-owned015/artifacts/default/ZesuSsz/Generated/DecodeItem/FP417/Pilot6b08Structural.vo",
+          "sha256": "173760c8b8eb5cec460463badc7052f8c9f48c3763cb70981e98ca6b446e18de"
+        }
+      }
+    ],
+    "compile_acceptance": {
+      "path": "/home/cody/zesislar/_build/agents/worker-build-2/join-automation-0d2-v1/named6ae0-declarations001/COMPILE-ACCEPTANCE.json",
+      "sha256": "35f5c2f81a8013add89dd2ff18b5feba13baa640432add3e41d1c7038081a4cb"
+    },
+    "compatible_clone": {
+      "path": "/home/cody/zesislar/_build/agents/spec-b/exact-entry-dedup421/GENERATED6AE0-CLONE015.json",
+      "sha256": "a553bba636ce23490c007990fb9d2f263d4c82b2aa14a12709a93946c56c8649"
+    },
+    "compatible_extra_compiles": {
+      "path": "/home/cody/zesislar/_build/agents/spec-b/exact-entry-dedup421/GENERATED6AE0-COMPILE016-RESULT.json",
+      "sha256": "17b605904e057cab20a5e23fccbe723088a401406fe5a8e11b13c204a68a1d1b"
+    },
+    "HANDOFF": {
+      "path": "/home/cody/zesislar/_build/agents/worker-build-2/join-automation-0d2-v1/named6ae0-declarations001/HANDOFF-COMPILED.json",
+      "sha256": "3c6c0d9f95b80ec6d15ac5c0647b0b653e030b7dad106d30376c9f3214613a85"
+    },
+    "full_input_binding_container": {
+      "path": "/home/cody/zesislar/_build/agents/worker-build-2/join-automation-0d2-v1/named6ae0-declarations001/prepare001/RUNTIME.json",
+      "sha256": "f01372d1107dfa2c5f870c215b42962d5c6361f0ed35e045b6aed9f59c15f6d0"
+    },
+    "full_input_binding_count": 610893,
+    "future_public_compatibility_and_input_validation_required": true,
+    "name_coverage_grants_no_compatibility": true
+  },
+  "all_replay_bindings": [
+    {
+      "role": "packet.original_subject",
+      "binding": {
+        "path": "/home/cody/zesislar/_build/agents/spec-b/exact-entry-dedup421/generated6ae0-native6ad8-017/Subject.v",
+        "sha256": "952aef4fb1249de14d2d291437f58c0b10a8d480e0454e7d452b1df9a778a7c5"
+      }
+    },
+    {
+      "role": "packet.stable_header",
+      "binding": {
+        "path": "/home/cody/zesislar/_build/agents/spec-b/exact-entry-dedup421/replay6ae0-019/HEADER.vpart",
+        "sha256": "a32c2e909887e56781634025903ddc74fb2355d3fefbc20fd89a12c8abb0faf3"
+      }
+    },
+    {
+      "role": "packet.replay_subject",
+      "binding": {
+        "path": "/home/cody/zesislar/_build/agents/spec-b/exact-entry-dedup421/replay6ae0-019/Subject.v",
+        "sha256": "4df050d4ba676e54dde498b70971d937edeb71049c547ca6940b322103a0601c"
+      }
+    },
+    {
+      "role": "packet.complete_export",
+      "binding": {
+        "path": "/home/cody/zesislar/_build/agents/spec-b/exact-entry-dedup421/generated6ae0-native6ad8-017/complete-goals/state_6.json",
+        "sha256": "4ad0eb8d041f5867cb52cfd8032158ce6e5d8e6955275ddaa84ed9e8c4d93000"
+      }
+    },
+    {
+      "role": "packet.projects[0]",
+      "binding": {
+        "path": "/home/cody/zesislar/_build/agents/spec-b/exact-entry-dedup421/generated6ae0-owned015/_CoqProject",
+        "sha256": "f255d026194543e63ef149156bdc9a27a880825a30e3e5dc2c680fb62fc2475e"
+      }
+    },
+    {
+      "role": "packet.projects[1]",
+      "binding": {
+        "path": "/home/cody/zesislar/_build/agents/spec-b/exact-entry-dedup421/generated6ae0-owned015/_RocqProject",
+        "sha256": "1d316b18f06d1211f81531068409463b36850936351f90c90070dafdfaa80515"
+      }
+    },
+    {
+      "role": "packet.original_runtime",
+      "binding": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/join-automation-0d2-v1/named6ae0-declarations001/prepare001/RUNTIME.json",
+        "sha256": "f01372d1107dfa2c5f870c215b42962d5c6361f0ed35e045b6aed9f59c15f6d0"
+      }
+    },
+    {
+      "role": "packet.support_READY",
+      "binding": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/join-automation-0d2-v1/named6ae0-declarations001/prepare001/READY-RUNTIME.json",
+        "sha256": "d2864c9f648b1020efb927dcbff66fefbfae8539cfe906ed204f648fb4d88a36"
+      }
+    },
+    {
+      "role": "packet.HANDOFF",
+      "binding": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/join-automation-0d2-v1/named6ae0-declarations001/HANDOFF-COMPILED.json",
+        "sha256": "3c6c0d9f95b80ec6d15ac5c0647b0b653e030b7dad106d30376c9f3214613a85"
+      }
+    },
+    {
+      "role": "packet.declaration_compile_acceptance",
+      "binding": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/join-automation-0d2-v1/named6ae0-declarations001/COMPILE-ACCEPTANCE.json",
+        "sha256": "35f5c2f81a8013add89dd2ff18b5feba13baa640432add3e41d1c7038081a4cb"
+      }
+    },
+    {
+      "role": "packet.compatible_clone",
+      "binding": {
+        "path": "/home/cody/zesislar/_build/agents/spec-b/exact-entry-dedup421/GENERATED6AE0-CLONE015.json",
+        "sha256": "a553bba636ce23490c007990fb9d2f263d4c82b2aa14a12709a93946c56c8649"
+      }
+    },
+    {
+      "role": "packet.compatible_extra_compiles",
+      "binding": {
+        "path": "/home/cody/zesislar/_build/agents/spec-b/exact-entry-dedup421/GENERATED6AE0-COMPILE016-RESULT.json",
+        "sha256": "17b605904e057cab20a5e23fccbe723088a401406fe5a8e11b13c204a68a1d1b"
+      }
+    },
+    {
+      "role": "packet.source_object_bindings[0].source",
+      "binding": {
+        "path": "/home/cody/zesislar/_build/agents/spec-b/exact-entry-dedup421/generated6ae0-owned015/artifacts/default/ZesuSsz/Automation/All.v",
+        "sha256": "8d5669ff96616746d28c297dd87ca7421db751a5f370522a4b59b6643f5f664b"
+      }
+    },
+    {
+      "role": "packet.source_object_bindings[0].object",
+      "binding": {
+        "path": "/home/cody/zesislar/_build/agents/spec-b/exact-entry-dedup421/generated6ae0-owned015/artifacts/default/ZesuSsz/Automation/All.vo",
+        "sha256": "4b6459255e1d985b1d981e48d22d3c07fc690b33c5a1252f550f29d8d1588e5e"
+      }
+    },
+    {
+      "role": "packet.source_object_bindings[1].source",
+      "binding": {
+        "path": "/home/cody/zesislar/_build/agents/spec-b/exact-entry-dedup421/generated6ae0-owned015/artifacts/default/ZesuSsz/Automation/Calls.v",
+        "sha256": "9fa858592cbf546bbc737139d8fa59f9275b07a70b89127c66328fbed6fd7330"
+      }
+    },
+    {
+      "role": "packet.source_object_bindings[1].object",
+      "binding": {
+        "path": "/home/cody/zesislar/_build/agents/spec-b/exact-entry-dedup421/generated6ae0-owned015/artifacts/default/ZesuSsz/Automation/Calls.vo",
+        "sha256": "4989c87c57081b0512be01ae1705bbe37b7427959b66f91c55c1863339f2686d"
+      }
+    },
+    {
+      "role": "packet.source_object_bindings[2].source",
+      "binding": {
+        "path": "/home/cody/zesislar/_build/agents/spec-b/exact-entry-dedup421/generated6ae0-owned015/artifacts/default/ZesuSsz/Proofs/Tests/Calls.v",
+        "sha256": "61904c8f80f490bce50505997e5e2201751abe5030d69d95669284d11ccf2338"
+      }
+    },
+    {
+      "role": "packet.source_object_bindings[2].object",
+      "binding": {
+        "path": "/home/cody/zesislar/_build/agents/spec-b/exact-entry-dedup421/generated6ae0-owned015/artifacts/default/ZesuSsz/Proofs/Tests/Calls.vo",
+        "sha256": "9037c2ee914d823511c6c99efe11c3a0d60aae564fb5d903cc6120e0b7859ed7"
+      }
+    },
+    {
+      "role": "packet.source_object_bindings[3].source",
+      "binding": {
+        "path": "/home/cody/zesislar/_build/agents/spec-b/exact-entry-dedup421/generated6ae0-owned015/artifacts/default/ZesuSsz/Automation/EffectiveOverrides.v",
+        "sha256": "a931e57d7d29e5d0469726dbf84e8ba110cdf6a53a2272ea631747147d407cca"
+      }
+    },
+    {
+      "role": "packet.source_object_bindings[3].object",
+      "binding": {
+        "path": "/home/cody/zesislar/_build/agents/spec-b/exact-entry-dedup421/generated6ae0-owned015/artifacts/default/ZesuSsz/Automation/EffectiveOverrides.vo",
+        "sha256": "2a0d2f73ca93c61aebc88ea1065f0c7719de2373021c075c64f95fd46735f203"
+      }
+    },
+    {
+      "role": "packet.source_object_bindings[4].source",
+      "binding": {
+        "path": "/home/cody/zesislar/_build/agents/spec-b/exact-entry-dedup421/generated6ae0-owned015/artifacts/default/ZesuSsz/Proofs/Tests/DecodeItemBranchContinuationOrder.v",
+        "sha256": "bbd530c079701d8a47b0bb70691f47f313e8aa233bd42364ae07b98aebb17e08"
+      }
+    },
+    {
+      "role": "packet.source_object_bindings[4].object",
+      "binding": {
+        "path": "/home/cody/zesislar/_build/agents/spec-b/exact-entry-dedup421/generated6ae0-owned015/artifacts/default/ZesuSsz/Proofs/Tests/DecodeItemBranchContinuationOrder.vo",
+        "sha256": "2e0add775799297c650e7a9c4bce7a1e32976222713ebe7e1b13e087690a48a5"
+      }
+    },
+    {
+      "role": "packet.source_object_bindings[5].source",
+      "binding": {
+        "path": "/home/cody/zesislar/_build/agents/spec-b/exact-entry-dedup421/generated6ae0-owned015/artifacts/default/ZesuSsz/Generated/DecodeItem/MachineJoin6ae0Entries.v",
+        "sha256": "27a7c0acbeb5e9d06d955b68d4456f5323e73418928985360f1857d8e7624987"
+      }
+    },
+    {
+      "role": "packet.source_object_bindings[5].object",
+      "binding": {
+        "path": "/home/cody/zesislar/_build/agents/spec-b/exact-entry-dedup421/generated6ae0-owned015/artifacts/default/ZesuSsz/Generated/DecodeItem/MachineJoin6ae0Entries.vo",
+        "sha256": "30b458caaf86776ef5986ee6467f7a6a54cf42f6f5b8555b0d6f137f34261b3a"
+      }
+    },
+    {
+      "role": "packet.source_object_bindings[6].source",
+      "binding": {
+        "path": "/home/cody/zesislar/_build/agents/spec-b/exact-entry-dedup421/generated6ae0-owned015/artifacts/default/ZesuSsz/Generated/DecodeItem/MachineJoin6ae0Structural.v",
+        "sha256": "536d550e2439a05c63acf2aab5b0e60e876a73b28920eef2a5f9354263e4d066"
+      }
+    },
+    {
+      "role": "packet.source_object_bindings[6].object",
+      "binding": {
+        "path": "/home/cody/zesislar/_build/agents/spec-b/exact-entry-dedup421/generated6ae0-owned015/artifacts/default/ZesuSsz/Generated/DecodeItem/MachineJoin6ae0Structural.vo",
+        "sha256": "4838f8cb06d72347eb7bdf3d9f3244e30f693c187454715e50d304fd7ee7d789"
+      }
+    },
+    {
+      "role": "packet.source_object_bindings[7].source",
+      "binding": {
+        "path": "/home/cody/zesislar/_build/agents/spec-b/exact-entry-dedup421/generated6ae0-owned015/artifacts/default/ZesuSsz/Generated/DecodeItem/MachineJoin6ae0SourceOwner.v",
+        "sha256": "08438479762919b05ec13114022f09ffb1f0881878c588b07d04ed280e38181b"
+      }
+    },
+    {
+      "role": "packet.source_object_bindings[7].object",
+      "binding": {
+        "path": "/home/cody/zesislar/_build/agents/spec-b/exact-entry-dedup421/generated6ae0-owned015/artifacts/default/ZesuSsz/Generated/DecodeItem/MachineJoin6ae0SourceOwner.vo",
+        "sha256": "cfe28a7f7779bbfd99db9b0bbca1828aee8cb4b68ce82b2a655025e4a42b90a5"
+      }
+    },
+    {
+      "role": "packet.source_object_bindings[8].source",
+      "binding": {
+        "path": "/home/cody/zesislar/_build/agents/spec-b/exact-entry-dedup421/generated6ae0-owned015/artifacts/default/ZesuSsz/Generated/DecodeItem/MachineJoin6ae0WitnessRegistration.v",
+        "sha256": "fcf44f12cb2ed2adb5a1c669f0c6c5f8b0a481d26c8f02d69b65ec6f54799ba0"
+      }
+    },
+    {
+      "role": "packet.source_object_bindings[8].object",
+      "binding": {
+        "path": "/home/cody/zesislar/_build/agents/spec-b/exact-entry-dedup421/generated6ae0-owned015/artifacts/default/ZesuSsz/Generated/DecodeItem/MachineJoin6ae0WitnessRegistration.vo",
+        "sha256": "6dfbe2c5d129991ca51f5adb34d731dc33b4e7087de39060359ea838695cbf93"
+      }
+    },
+    {
+      "role": "packet.source_object_bindings[9].source",
+      "binding": {
+        "path": "/home/cody/zesislar/_build/agents/spec-b/exact-entry-dedup421/generated6ae0-owned015/artifacts/default/ZesuSsz/Generated/DecodeItem/FP417/Pilot6ad8Entries.v",
+        "sha256": "8afd7cc33cfc7311621e540074e8d55df23b9bb02379195082e3038b8aaccbdc"
+      }
+    },
+    {
+      "role": "packet.source_object_bindings[9].object",
+      "binding": {
+        "path": "/home/cody/zesislar/_build/agents/spec-b/exact-entry-dedup421/generated6ae0-owned015/artifacts/default/ZesuSsz/Generated/DecodeItem/FP417/Pilot6ad8Entries.vo",
+        "sha256": "ca2ee2ec91f8a00952740e02e5a6ae892be2b518c76760dd741e57545562d290"
+      }
+    },
+    {
+      "role": "packet.source_object_bindings[10].source",
+      "binding": {
+        "path": "/home/cody/zesislar/_build/agents/spec-b/exact-entry-dedup421/generated6ae0-owned015/artifacts/default/ZesuSsz/Generated/DecodeItem/FP417/Pilot6ad8Structural.v",
+        "sha256": "40a73d1de57dc8873c75006d713328a7ba9d1d0dbe5dbc627f6a202b16bb5506"
+      }
+    },
+    {
+      "role": "packet.source_object_bindings[10].object",
+      "binding": {
+        "path": "/home/cody/zesislar/_build/agents/spec-b/exact-entry-dedup421/generated6ae0-owned015/artifacts/default/ZesuSsz/Generated/DecodeItem/FP417/Pilot6ad8Structural.vo",
+        "sha256": "deb8c6fa3ebac18487b7e01acf09d136174389f37bb3c62bed5a4dad5840ba3c"
+      }
+    },
+    {
+      "role": "packet.source_object_bindings[11].source",
+      "binding": {
+        "path": "/home/cody/zesislar/_build/agents/spec-b/exact-entry-dedup421/generated6ae0-owned015/artifacts/default/ZesuSsz/Generated/DecodeItem/FP417/Pilot6b08Entries.v",
+        "sha256": "d1397865136230469339790f6319f1eb7b024034fc349e6835ba9d13dc241559"
+      }
+    },
+    {
+      "role": "packet.source_object_bindings[11].object",
+      "binding": {
+        "path": "/home/cody/zesislar/_build/agents/spec-b/exact-entry-dedup421/generated6ae0-owned015/artifacts/default/ZesuSsz/Generated/DecodeItem/FP417/Pilot6b08Entries.vo",
+        "sha256": "a7c1064bc16492bf2af0d5601ae137dbdc97d7a34e135c5ec477269744c32b4c"
+      }
+    },
+    {
+      "role": "packet.source_object_bindings[12].source",
+      "binding": {
+        "path": "/home/cody/zesislar/_build/agents/spec-b/exact-entry-dedup421/generated6ae0-owned015/artifacts/default/ZesuSsz/Generated/DecodeItem/FP417/Pilot6b08Structural.v",
+        "sha256": "6d17f218850ec653f2e6229426486ccc0b3a6d57d35a3258465df08e4551ec0f"
+      }
+    },
+    {
+      "role": "packet.source_object_bindings[12].object",
+      "binding": {
+        "path": "/home/cody/zesislar/_build/agents/spec-b/exact-entry-dedup421/generated6ae0-owned015/artifacts/default/ZesuSsz/Generated/DecodeItem/FP417/Pilot6b08Structural.vo",
+        "sha256": "173760c8b8eb5cec460463badc7052f8c9f48c3763cb70981e98ca6b446e18de"
+      }
+    },
+    {
+      "role": "packet.original_session",
+      "binding": {
+        "path": "/home/cody/zesislar/_build/agents/spec-b/exact-entry-dedup421/generated6ae0-native6ad8-017/session.py",
+        "sha256": "bedb613bec60776cc2fa59b48775615e064427df6722a1934e5f70d759fa6a77"
+      }
+    },
+    {
+      "role": "packet.original_driver",
+      "binding": {
+        "path": "/home/cody/zesislar/_build/agents/spec-b/exact-entry-dedup421/generated6ae0-native6ad8-017/request_driver.py",
+        "sha256": "552489a6b33d5f0e5ba31b5e5840980aab09bd57fabae28772b466a95dd406a6"
+      }
+    },
+    {
+      "role": "packet.original_launch",
+      "binding": {
+        "path": "/home/cody/zesislar/_build/agents/spec-b/exact-entry-dedup421/generated6ae0-native6ad8-017/launch.sh",
+        "sha256": "cd3ec409cbb2999448540c02e6b93510f5f3a97d2cc3fe9ab2adaf719fa8956f"
+      }
+    },
+    {
+      "role": "packet.original_admission",
+      "binding": {
+        "path": "/home/cody/zesislar/_build/agents/spec-b/exact-entry-dedup421/GENERATED6AE0-NATIVE017-ADMISSION.json",
+        "sha256": "9f16d84ffde9d6a422472976decf9d4fc42c686b013029aef89bda47ec7d505a"
+      }
+    }
+  ],
+  "sizing": {
+    "status": "pending_Orch_ruling",
+    "claim_bytes": null,
+    "physical_fence_bytes": null,
+    "resource022_peak_does_not_authorize_this_different_subject": true,
+    "CPU_stop_authorized": false
+  },
+  "reservation_or_preparation_or_proof_started": false,
+  "READY_or_native_acceptance_granted": false,
+  "resource022_unchanged": true,
+  "created_ns": 1793669845414808941
+}
