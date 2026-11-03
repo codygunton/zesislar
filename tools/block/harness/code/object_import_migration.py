@@ -132,6 +132,12 @@ def origin(policy, reference, module, source, obj, compiler, flags, workspace):
         raise ValueError('The migration origin is not an approved publication.')
     authority = selected[0]
     publication = bound_record(reference)
+    if authority['kind'] == 'accepted-correctness-gate-objects':
+        from gate_object_origin import selected_origin
+        return selected_origin(authority, reference, module, source, obj, compiler, flags, workspace, bound_record)
+    if authority['kind'] == 'accepted-closed-compilations':
+        from closed_compilation_origin import selected_origin
+        return selected_origin(authority, reference, module, source, obj, compiler, flags, workspace, bound_record)
     if authority['kind'] not in {'accepted-supplier', 'accepted-ready'}:
         raise ValueError('The migration origin kind is unsupported.')
     if authority['kind'] == 'accepted-supplier' and publication['ready'] != authority['ready']:
@@ -273,22 +279,42 @@ def comparisons(policy, module, obj, flags, coqdep, *, recorded=None, supplier=N
     return rows, result
 
 
+def origin_context(policy, accepted):
+    if accepted.get('kind') == 'individual-object-from-accepted-correctness-gate':
+        from gate_object_origin import context
+        authority = next(row for row in policy['origins'] if row['binding'] == accepted['publication'])
+        return context(authority, accepted['publication'], bound_record)[0]
+    if 'closed_runtime' in accepted:
+        from closed_compilation_origin import context
+        authority = next(row for row in policy['origins'] if row['binding'] == accepted['publication'])
+        return context(authority, accepted['publication'], bound_record)[0]
+    return bound_record(accepted['ready'])
+
+
 def create(reference, module, source, obj, compiler, flags, workspace):
     policy = json.loads(POLICY.read_text())
     workspace, source, obj = Path(workspace).resolve(), Path(source), Path(obj)
     accepted, effective = origin(policy, reference, module, source, obj, compiler, flags, workspace)
-    ready = bound_record(accepted['ready'])
+    ready = origin_context(policy, accepted)
     coqdep = next((row for row in ready['bindings']
                    if row['path'] == str(Path(compiler['path']).with_name('coqdep'))), None)
     if coqdep is None:
         raise ValueError('The accepted runtime lacks the pinned coqdep binding.')
     rows, result = comparisons(policy, module, obj, effective, coqdep, supplier=reference)
-    return {'schema': SCHEMA, 'origin': accepted, 'module': module,
+    recorded_flags = normalized(effective, workspace)
+    if accepted.get('kind') == 'individual-object-from-accepted-correctness-gate':
+        from gate_object_origin import normalize_flags
+        recorded_flags = normalize_flags(effective, workspace)
+    receipt = {'schema': SCHEMA, 'origin': accepted, 'module': module,
             'owned_workspace': str(workspace), 'source': binding(source), 'object': binding(obj),
-            'compiler': compiler, 'normalized_flags': normalized(effective, workspace),
+            'compiler': compiler, 'normalized_flags': recorded_flags,
             'inspector_build': policy['inspector_build'], 'coqdep': coqdep,
             'imported_objects': rows, 'comparison': result,
             'qualification': 'Authenticated migration. No new physical compilation or proof check.'}
+    if accepted.get('kind') == 'individual-object-from-accepted-correctness-gate':
+        receipt['gate_identity_observations'] = ready['gate_identity_observations'][module]
+        receipt['gate_build_observations'] = ready['gate_build_observations']
+    return receipt
 
 
 def validate(reference, module, source, obj, compiler, flags, workspace):
@@ -303,24 +329,39 @@ def _validate_document(receipt, module, source, obj, compiler, flags, workspace)
     accepted, effective = origin(policy, receipt['origin']['publication'], module,
                                  source, obj, compiler, flags, workspace)
     old_workspace = Path(receipt['owned_workspace']).resolve()
+    gate = accepted.get('kind') == 'individual-object-from-accepted-correctness-gate'
+    recorded_flags = normalized(effective, workspace)
+    if gate:
+        from gate_object_origin import normalize_flags, relocate
+        recorded_flags = normalize_flags(effective, workspace)
+        publication = bound_record(accepted['publication'])
+        prior_source = Path(receipt['source']['path']).resolve()
+        expected_source = (Path(publication['build_root']) /
+                           Path(*Path(bound_record(publication['resolution_runtime'])['proof_runtime']['module_files'][module]).parts[1:]))
+        path_matches = (prior_source == expected_source and
+                        old_workspace == Path(publication['build_root']).resolve() and
+                        Path(receipt['object']['path']) == expected_source.with_suffix('.vo'))
+    else:
+        path_matches = (Path(receipt['source']['path']).resolve().relative_to(old_workspace) ==
+                        source.resolve().relative_to(workspace))
     if (receipt.get('schema') != SCHEMA or receipt['origin'] != accepted or
             receipt['module'] != module or receipt['compiler'] != compiler or
             receipt['source']['sha256'] != binding(source)['sha256'] or
             receipt['object']['sha256'] != binding(obj)['sha256'] or
             receipt['inspector_build'] != policy['inspector_build'] or
-            receipt['normalized_flags'] != normalized(effective, workspace) or
-            Path(receipt['source']['path']).resolve().relative_to(old_workspace) !=
-            source.resolve().relative_to(workspace)):
+            receipt['normalized_flags'] != recorded_flags or not path_matches):
         raise ValueError('The migrated object differs from its authenticated receipt.')
     # Relocate owned bindings only by their exact workspace-relative path.
     relocated = []
     for row in receipt['imported_objects']:
         selected = Path(row['object']['path']).resolve()
-        if selected.is_relative_to(old_workspace):
+        if gate:
+            selected = relocate(publication, row['module'], selected, workspace)
+        elif selected.is_relative_to(old_workspace):
             selected = workspace / selected.relative_to(old_workspace)
         relocated.append({'module': row['module'], 'object':
                           {'path': str(selected), 'sha256': row['object']['sha256']}})
-    ready = bound_record(accepted['ready'])
+    ready = origin_context(policy, accepted)
     if receipt['coqdep'] not in ready['bindings']:
         raise ValueError('The migration resolver lacks its accepted runtime binding.')
     rows, result = comparisons(policy, module, obj, effective, receipt['coqdep'], recorded=relocated,
@@ -347,15 +388,31 @@ def main():
     parser.add_argument('--output', required=True, type=Path)
     args = parser.parse_args()
     runtime = read_bound({'path': str(args.runtime), 'sha256': args.runtime_sha256})
-    workspace = Path(runtime['prepared_workspace']).resolve()
     reference = {'path': str(args.origin), 'sha256': args.origin_sha256}
     policy = json.loads(POLICY.read_text())
     authority = next((row for row in policy['origins'] if row['binding'] == reference), None)
     if authority is None:
         raise ValueError('The migration origin is not an approved publication.')
+    if authority['kind'] == 'accepted-correctness-gate-objects':
+        from gate_object_origin import context
+        config, publication, selected = context(authority, reference, bound_record)
+        if {'path': str(args.runtime), 'sha256': args.runtime_sha256} != publication['resolution_runtime']:
+            raise ValueError('The gate migration names another resolution runtime.')
+        runtime = config
+    if authority['kind'] == 'accepted-closed-compilations':
+        from closed_compilation_origin import context
+        config, publication, selected, _ = context(authority, reference, bound_record)
+        runtime_reference = {'path': str(args.runtime), 'sha256': args.runtime_sha256}
+        if runtime_reference == publication['inner_runtime']:
+            runtime = config
+    workspace = Path(runtime['prepared_workspace']).resolve()
     if args.all_owned:
         publication = read_bound(reference)
         names = ([row['module'] for row in publication['modules']] if
+                 authority['kind'] == 'accepted-correctness-gate-objects' else
+                 [row['module'] for row in publication['successful_modules']] if
+                 authority['kind'] == 'accepted-closed-compilations' else
+                 [row['module'] for row in publication['modules']] if
                  authority['kind'] == 'accepted-supplier' else list(runtime['proof_runtime']['module_files']))
         modules = [name for name in names if name in runtime['proof_runtime']['module_files'] and
                    (workspace / runtime['proof_runtime']['module_files'][name]).resolve().is_relative_to(workspace)]

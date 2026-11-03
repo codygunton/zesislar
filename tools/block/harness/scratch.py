@@ -273,8 +273,6 @@ def prepare(a):
     if getattr(a,'parallel_declarations',False):
         from declaration_parallel_plan import planning_compiler
         planning_compiler(c)
-    if getattr(a,'object_import_migrations',None):
-        install_object_import_migrations(c,a.object_import_migrations)
     c['harness']=harness
     from supplier_release import releases
     c['supplier_releases']=releases(read_bound(binding(a.supplier_controls))) if a.supplier_controls else []
@@ -317,6 +315,8 @@ def prepare(a):
     modules=c['proof_runtime']['module_files'];graph=read_bound(c['cache_import_graph']);adapter=None
     if a.target_adapter:
         adapter=read_bound(binding(a.target_adapter));graph=read_bound(adapter['graph']);modules.update(graph['module_files'])
+    if getattr(a,'object_import_migrations',None):
+        install_object_import_migrations(c,a.object_import_migrations)
     edges=graph['import_edges'];changed=[];changes=[]
     installed=InstalledMappings([word.replace(str(source),str(workspace)) for word in c['physical_flags']],receipt_dir=out/'IMPORT-RESOLUTION',supplier=profile_supplier(binding(a.admission_profile) if a.admission_profile else c.get('admission_profile')),planning_workspace=workspace,source_files=modules)
     entry=workspace/modules[ENTRY];before=entry.read_text();entry_text=a.entry_file.read_text()
@@ -357,6 +357,12 @@ def prepare(a):
     plan_targets=[row['module'] for row in targets] if a.prerequisite_target_union else ([RULES] if a.declarations_only and a.rules else [module])
     closure_targets=list(dict.fromkeys([row['module'] for row in targets]+[name for name in modules if '.Generated.' in name]+plan_targets))
     edges=reconcile_import_closure(closure_targets,edges,modules,workspace,installed)
+    from closed_object_staging import stage as stage_closed_objects
+    closed_install=stage_closed_objects(c,workspace,modules)
+    if closed_install['count']:
+        save(out/'CLOSED-OBJECT-INSTALL.json',closed_install)
+        inherited=[row[key] for row in closed_install['installed'] for key in ['object','sidecar'] if key!='sidecar' or row[key] is not None]
+        c['bindings']=combined_bindings(c['bindings']+inherited+[binding(out/'CLOSED-OBJECT-INSTALL.json')])
     forward={}
     for edge in edges:forward.setdefault(edge['from'],set()).add(edge['to'])
     missing=missing_prerequisite_objects(closure_targets,forward,modules,workspace)
@@ -365,7 +371,7 @@ def prepare(a):
         c['effective_compiler_version']['compiler'],
         [word.replace(str(source),str(workspace)) for word in c['physical_flags']])
     save(out/'OBJECT-IMPORT-COMPATIBILITY.json',imports)
-    changed=list(set(changed)|set(missing)|set(imports['rebuild_modules']))
+    changed=list((set(changed)-set(imports['compatible_owned_modules']))|set(missing)|set(imports['rebuild_modules']))
     plan=invalidation(edges,changed,plan_targets)
     native_targets={row['module'] for row in targets}
     plan['prerequisites']=[name for name in plan['ordered_required'] if name not in native_targets]

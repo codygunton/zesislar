@@ -15,6 +15,10 @@ from pathlib import Path
 paths=json.loads(sys.argv[1]);workspace=Path(sys.argv[2])
 sys.path[:0]=paths
 import object_imports as O
+import closed_compilation_origin as C
+import gate_object_origin as G
+assert C.KIND=='accepted-closed-compilations'
+assert G.KIND=='accepted-correctness-gate-objects'
 assert 'entry_chain_stage' not in sys.modules
 assert O.graph_closure(['Owner'],{'Owner':['Dependency']})=={'Owner','Dependency'}
 modules={'Owner':'Owner.v','Dependency':'Dependency.v'}
@@ -67,6 +71,7 @@ class ControllerImportGraph(unittest.TestCase):
         layout = json.loads((HERE / 'TOOL-LAYOUT.json').read_text())
         self.assertEqual(layout['block/import_graph.py'], 'code/import_graph.py')
         self.assertEqual(layout['block/object_imports.py'], 'code/object_imports.py')
+        self.assertEqual(layout['block/gate_object_origin.py'], 'code/gate_object_origin.py')
         build = ROOT / '_build'
         build.mkdir(exist_ok=True)
         with tempfile.TemporaryDirectory(dir=build) as directory:

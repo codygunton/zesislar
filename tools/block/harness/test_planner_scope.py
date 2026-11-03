@@ -1,10 +1,12 @@
 """Exercise the actual preparation planner without admission or proof work."""
 import ast
 import inspect
+import json
 from pathlib import Path
 from types import SimpleNamespace
 import tempfile
 import unittest
+from unittest.mock import patch
 
 import scratch
 from entry_chain_stage import import_commands, graph_closure
@@ -98,6 +100,36 @@ class PlannerScopeTests(unittest.TestCase):
         self.assertNotIn('First', plan['ordered_required'])
         self.assertNotIn(self.generated, plan['ordered_required'])
 
+    def test_authenticated_source_override_does_not_recompile_its_dependents(self):
+        plan=self.plan(['Shared'])
+        self.assertEqual(plan['ordered_required'], [self.rules])
+        self.assertNotIn('Shared',plan['changed_modules'])
+        self.assertNotIn(self.rules,plan['invalidated_modules'])
+
+    def test_failed_authentication_keeps_the_source_seed(self):
+        reference=self.provenance.receipts['Shared']
+        value=json.loads(Path(reference['path']).read_text())
+        value['successful_compilation']=False
+        Path(reference['path']).write_text(json.dumps(value))
+        self.provenance.receipts['Shared']=object_fixtures.binding(reference['path'])
+        plan=self.plan(['Shared'])
+        self.assertIn('Shared',plan['changed_modules'])
+        self.assertIn(self.rules,plan['ordered_required'])
+
+    def test_missing_object_keeps_the_rebuild_seed(self):
+        (self.workspace/self.modules['Shared']).with_suffix('.vo').unlink()
+        plan=self.plan(['Shared'])
+        self.assertIn('Shared',plan['prerequisites'])
+        self.assertIn(self.rules,plan['ordered_required'])
+
+    def test_scheduled_upstream_invalidates_a_compatible_dependent(self):
+        # The authenticated objects remain compatible before upstream scheduling.
+        with patch.object(scratch,'missing_prerequisite_objects',return_value=['Shared']):
+            plan=self.plan(['Shared',self.rules])
+        self.assertIn('Shared',plan['changed_modules'])
+        self.assertIn(self.rules,plan['ordered_required'])
+        self.assertIn(self.rules,plan['invalidated_modules'])
+
     def test_selected_native_body_is_excluded_from_setup(self):
         plan = self.plan(['First'], declarations=False)
         self.assertEqual(plan['ordered_required'], ['First'])
@@ -105,6 +137,8 @@ class PlannerScopeTests(unittest.TestCase):
         self.assertEqual(plan['prerequisites'], [])
 
     def test_changed_required_dependency_is_compiled(self):
+        shared=self.workspace/self.modules['Shared']
+        shared.write_text(shared.read_text()+'(* Changed source. *)\n')
         plan = self.plan(['Shared', 'GeneratedOwner'])
         self.assertEqual(plan['prerequisites'], ['Shared'])
         self.assertEqual(plan['ordered_required'], ['Shared', self.rules])

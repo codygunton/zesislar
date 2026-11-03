@@ -92,5 +92,8 @@
   "policies/PORT-V33-OPEN-AUTHORITY.json": "policies/PORT-V33-OPEN-AUTHORITY.json",
   "block/scope_bookings.py": "code/scope_bookings.py",
   "policies/CONTROLLER-PEAK-OBSERVATIONS.json": "policies/CONTROLLER-PEAK-OBSERVATIONS.json",
-  "block/phase_attribution.py": "code/phase_attribution.py"
+  "block/phase_attribution.py": "code/phase_attribution.py",
+  "block/closed_compilation_origin.py": "code/closed_compilation_origin.py",
+  "block/closed_object_staging.py": "code/closed_object_staging.py",
+  "block/gate_object_origin.py": "code/gate_object_origin.py"
 }
