@@ -85,10 +85,25 @@ class SharedHarnessTests(unittest.TestCase):
     def test_actual_consumers_pass_static_commit_time_audit(self):
         reports = [transport_mapping.audit(HARNESS / 'code' / name)
                    for name in ['entry_chain_provider.py', 'entry_chain_compiler.py',
-                                'entry_chain_resources.py']]
+                                'entry_chain_resources.py','declaration_mcp.py']]
         fields = {row['field'] for report in reports for row in report['field_reads']}
         self.assertTrue(transport_mapping.assert_covered(
             reports, {name: transport_mapping.FIELD_MAPPING[name] for name in fields}))
+
+    def test_MCP_consumer_aliases_require_the_exact_declared_owners(self):
+        with tempfile.TemporaryDirectory() as directory:
+            path=Path(directory)/'entry_chain_provider.py'
+            path.write_text('from declaration_mcp import run as run_mcp_levels\n'
+                            'from declaration_parallel_plan import validate as validate_mcp_plan\n'
+                            'def use(runtime):\n'
+                            '    validate_mcp_plan(runtime, None)\n'
+                            '    run_mcp_levels(runtime, None)\n')
+            report=transport_mapping.audit(path)
+            self.assertEqual({row['module'] for row in report['reviewed_sinks']},
+                             {'declaration_mcp','declaration_parallel_plan'})
+            path.write_text(path.read_text().replace('from declaration_mcp import','from unrelated import'))
+            with self.assertRaisesRegex(ValueError,'another source import'):
+                transport_mapping.audit(path)
 
     def test_launch_does_not_run_static_audit(self):
         source = (HARNESS / 'code/stage1_runtime.py').read_text()

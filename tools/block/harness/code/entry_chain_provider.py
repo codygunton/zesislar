@@ -19,6 +19,8 @@ from entry_chain_resources import check_operation,normalize_cpu,session_validati
 from supplier_ready import ENTRYINTRO_MCP_REFUSAL,entry_intro_plugin_refusal
 from declaration_parallel import run as run_declaration_dag
 from declaration_names import check as check_declaration_names
+from declaration_mcp import run as run_mcp_levels
+from declaration_parallel_plan import validate as validate_mcp_plan
 from scope_bookings import descriptor,mcp_environment,require_tool
 
 
@@ -380,8 +382,6 @@ async def execute(request):
                 with attribution.span('initial_health'):
                     await call(session, 'rocq_health', {})
                 if runtime.get('declaration_dag',{}).get('transport')=='mcp':
-                    from declaration_mcp import run as run_mcp_levels
-                    from declaration_parallel_plan import validate as validate_mcp_plan
                     validate_mcp_plan(runtime,workspace)
                     @asynccontextmanager
                     async def extra_session(index):
