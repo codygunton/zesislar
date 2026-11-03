@@ -206,9 +206,15 @@ def format_entry_boundary(boundary, *, case_id, source_policy, handwritten_owner
     The formatter factors that identical operand outside the full disjunction.
     It keeps every other resource inside its original existential scope.
     """
-    alternatives = boundary.get('alternatives', [])
+    incoming = boundary.get('alternatives', [])
+    alternatives = incoming
+    if boundary.get('status') in {'generated_join', 'generated_loop_head'}:
+        alternatives = [alternative for alternative in incoming
+                        if alternative.get('predecessor_pc') is None
+                        and alternative.get('seed_pc') == boundary.get('pc')]
     manifest = {'schema': 'entry-formatter-manifest.v1', 'pc': boundary.get('pc'),
                 'alternative_count': len(alternatives), 'alternatives': [],
+                'incoming_alternative_count': len(incoming) - len(alternatives),
                 'helpers': [], 'continuation_id': continuation_id,
                 'guard_scope': list(guard_scope), 'proof_ran': False}
     for index, alternative in enumerate(alternatives):
@@ -219,9 +225,11 @@ def format_entry_boundary(boundary, *, case_id, source_policy, handwritten_owner
             'path_conditions': deepcopy(resource.get('path_conditions', [])),
             'tree': deepcopy(resource.get('tree'))})
     reports, definitions, choices = [], [], []
+    exact_alternatives = []
+    manifest['exact_duplicate_alternatives'] = []
     active = {'alternative_index': None, 'tree_path': []}
     try:
-        if boundary.get('status') != 'generated' or not alternatives:
+        if boundary.get('status') not in {'generated', 'generated_join', 'generated_loop_head'} or not alternatives:
             raise ValueError('The boundary has no generated alternatives')
         if not guard_scope:
             raise ValueError('Conditions require an explicit existential source scope')
@@ -230,6 +238,8 @@ def format_entry_boundary(boundary, *, case_id, source_policy, handwritten_owner
         extra_binders = _binders(scoped_binders)
         common_continuation = None
         for alternative_index, alternative in enumerate(alternatives):
+            definition_start = len(definitions)
+            helper_start = len(manifest['helpers'])
             resource = alternative['resource_boundary']
             if resource.get('block_status') != 'completed':
                 raise ValueError('An alternative has incomplete resource accounting')
@@ -329,16 +339,56 @@ def format_entry_boundary(boundary, *, case_id, source_policy, handwritten_owner
             if seen | {continuation_id} != set(components):
                 raise ValueError('The assertion tree omits a source resource')
             if len(left) == 1 and left[0]['kind'] == 'application':
-                choices.append(left[0])
+                choice = left[0]
             else:
                 body = {'components': left, 'source_policy': source_policy, 'existentials': [],
                         'lets': [], 'loop': None, 'continuation': {'mode': 'none'}}
-                choices.append(declaration(body, (0,), []))
+                choice = declaration(body, (0,), [])
+            # Validate and render every input before considering exact equality.
+            # Missing rendered source text retains the existing alternatives.
+            source_body = resource.get('body')
+            exact_key = None
+            if isinstance(source_body, str):
+                guards = json.dumps(resource['path_conditions'], ensure_ascii=False,
+                                    separators=(',', ':'))
+                authored = _digest({
+                    'bodies': [row['body'] for row in definitions[definition_start:]],
+                    'signatures': [{key: row[key] for key in
+                        ['tree_path', 'outer_binders', 'arguments']}
+                        for row in manifest['helpers'][helper_start:]],
+                })
+                exact_key = (source_body, guards, continuation['source'], authored)
+            exact_alternatives.append({
+                'key': exact_key, 'definition_end': len(definitions),
+                'helper_end': len(manifest['helpers']),
+                'alternative_index': alternative_index,
+            })
+            choices.append(choice)
         continuation = component_adapter(deepcopy(common_continuation),
             {'pc': boundary['pc'], 'alternative_index': None, 'tree_path': [1], 'binders': []})
         if len(continuation) != 1 or continuation[0].get('kind') != 'continuation':
             raise ValueError('The caller adapter must return one continuation component')
+        first_exact = exact_alternatives[0]
+        identical = (first_exact['key'] is not None and
+                     all(row['key'] == first_exact['key'] for row in exact_alternatives))
+        manifest['exact_deduplication'] = {
+            'all_rendered_resources_available': all(row['key'] is not None for row in exact_alternatives),
+            'all_alternatives_byte_identical': identical,
+        }
+        if len(choices) > 1 and identical:
+            source_body, guards, caller, _ = first_exact['key']
+            manifest['exact_duplicate_alternatives'] = [{
+                'alternative_index': row['alternative_index'],
+                'canonical_alternative_index': first_exact['alternative_index'],
+                'rendered_resources_sha256': hashlib.sha256(source_body.encode()).hexdigest(),
+                'guards_sha256': hashlib.sha256(guards.encode()).hexdigest(),
+                'continuation_sha256': hashlib.sha256(caller.encode()).hexdigest(),
+            } for row in exact_alternatives[1:]]
+            del definitions[first_exact['definition_end']:]
+            del manifest['helpers'][first_exact['helper_end']:]
+            choices = choices[:1]
         choice = choices[0] if len(choices) == 1 else {'kind': 'disjunction', 'alternatives': choices}
+        manifest['emitted_alternative_count'] = len(choices)
         body = {'at': boundary['pc'], 'components': [choice, continuation[0]], 'existentials': [],
                 'lets': [], 'loop': None,
                 'continuation': {'mode': 'from_resource_component', 'resource_component': 1,
@@ -350,3 +400,72 @@ def format_entry_boundary(boundary, *, case_id, source_policy, handwritten_owner
     except (ValueError, KeyError, TypeError) as error:
         reports.append({'kind': 'entry_formatter_stop', **active, 'detail': str(error)})
         return FormattedEntry(None, manifest, reports)
+
+
+def format_owned_entry_boundary(boundary, *, original_seed, vocabulary, continuation,
+                                continuation_id, join_options=None, **options):
+    """Deduplicate first, then generalize every remaining multi-alternative cut.
+
+    The caller supplies the original owned seed and the source-bound outer
+    continuation. Exact formatting checks run before generalization. A refused
+    join returns no declaration, rather than retaining a path disjunction.
+    """
+    try:
+        from .join_generalize import generalize_owned_join
+    except ImportError:
+        from join_generalize import generalize_owned_join
+
+    def framed(source):
+        value = deepcopy(source)
+        if value.get('status') == 'handwritten_cut':
+            value['status'] = 'generated'
+        for alternative in value.get('alternatives', []):
+            resource = alternative['resource_boundary']
+            if any(row['id'] == continuation_id for row in resource['components']):
+                raise ValueError('The outer continuation captures an owned resource')
+            resource['tree'] = {'kind': 'sep', 'left': resource['tree'],
+                                'right': {'kind': 'component', 'id': continuation_id}}
+            resource['components'].append({'id': continuation_id, 'source': continuation['name'],
+                                          'provenance': deepcopy(continuation['source_binding'])})
+        return value
+
+    try:
+        if (not isinstance(continuation, dict) or
+                set(continuation) != {'name', 'coq', 'source_binding', 'terminal_id'} or
+                not continuation['source_binding']):
+            raise ValueError('An entry cut needs a source-bound outer continuation')
+        first = format_entry_boundary(framed(boundary), continuation_id=continuation_id, **options)
+        if first.response is None:
+            return first
+        if first.manifest['emitted_alternative_count'] <= 1:
+            first.manifest['cut_generalization'] = {
+                'kind': 'exact_deduplication' if first.manifest['exact_duplicate_alternatives']
+                        else 'single_alternative', 'proof_established': False}
+            return first
+        joined = generalize_owned_join(boundary['alternatives'], original_seed=original_seed,
+            entry_pc=int(boundary['pc'], 0), vocabulary=vocabulary, continuation=continuation,
+            **(join_options or {}))
+        if joined['plan']['join_refusals']:
+            raise ValueError('The cut needs an unsupported guard hull: ' +
+                             json.dumps(joined['plan']['join_refusals'], sort_keys=True))
+        generalized = deepcopy(joined['boundary'])
+        for alternative in generalized['alternatives']:
+            resource = alternative['resource_boundary']
+            terminal = continuation['terminal_id']
+            if resource['tree']['right'] != {'kind': 'component', 'id': terminal}:
+                raise ValueError('The generalized continuation has another source scope')
+            resource['tree']['right']['id'] = continuation_id
+            records = [row for row in resource['components'] if row['id'] == terminal]
+            if len(records) != 1 or records[0]['source'] != continuation['name']:
+                raise ValueError('The generalized continuation has another owned value')
+            records[0]['id'] = continuation_id
+        result = format_entry_boundary(generalized, continuation_id=continuation_id, **options)
+        result.manifest['cut_generalization'] = {
+            'kind': 'generalized_owned_cut', 'original_alternative_count': len(boundary['alternatives']),
+            'deduplication': first.manifest['exact_deduplication'], 'plan': joined['plan'],
+            'proof_established': False}
+        return result
+    except (ValueError, KeyError, TypeError) as error:
+        return FormattedEntry(None, {'schema': 'entry-formatter-manifest.v1',
+            'pc': boundary.get('pc'), 'proof_ran': False},
+            [{'kind': 'entry_cut_generalization_stop', 'detail': str(error)}])

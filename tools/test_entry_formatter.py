@@ -11,6 +11,7 @@ from coq_scopes import z_address_scope
 from entry_formatter import SourceComponents, SymbolicConditions, format_entry_boundary
 from fractional_source import FractionalSourceArrays, array_declaration
 from guard_normal_form import GuardNormalForm
+from forward_resources import _render_tree
 from symbolic_state import Expr, bits, input_expr, operation
 
 
@@ -38,6 +39,14 @@ def boundary():
 
 
 class FormatterTests(unittest.TestCase):
+    def rendered_boundary(self):
+        value = boundary()
+        for alternative in value['alternatives']:
+            resource = alternative['resource_boundary']
+            resource['body'] = _render_tree(resource['tree'],
+                {row['id']: row['source'] for row in resource['components']})
+        return value
+
     def components(self):
         return SourceComponents({'K': {'owner': 'parameter', 'name': 'K'}},
                                 continuation_id='K', provenance=origin)
@@ -62,6 +71,63 @@ class FormatterTests(unittest.TestCase):
         self.assertEqual(value, before)
         self.assertFalse(result.manifest['proof_ran'])
 
+    def test_exact_rendered_duplicates_keep_all_sources_and_one_entry(self):
+        value = self.rendered_boundary()
+        value['alternatives'] *= 2
+        before = deepcopy(value)
+        result = self.formatted(value)
+        self.assertEqual(result.status, 'complete')
+        self.assertEqual(result.manifest['alternative_count'], 4)
+        self.assertEqual(result.manifest['emitted_alternative_count'], 1)
+        self.assertEqual(len(result.manifest['exact_duplicate_alternatives']), 3)
+        self.assertEqual(len(result.response['body']['additional_definitions']), 1)
+        self.assertEqual(result.response['body']['components'][0]['kind'], 'application')
+        self.assertEqual(result.response['body']['components'][1]['predicate']['name'], 'K')
+        self.assertEqual(value, before)
+
+    def test_rendered_resource_byte_difference_prevents_dedup(self):
+        value = self.rendered_boundary()
+        value['alternatives'][1]['resource_boundary']['body'] += ' '
+        result = self.formatted(value)
+        self.assertEqual(result.status, 'complete')
+        self.assertEqual(result.manifest['emitted_alternative_count'], 2)
+
+    def test_guard_difference_prevents_dedup(self):
+        value = self.rendered_boundary()
+        value['alternatives'][1]['resource_boundary']['path_conditions'] = [
+            operation('=', input_expr('value', 64), bits(2, 64)).to_dict()]
+        result = self.formatted(value)
+        self.assertEqual(result.status, 'complete')
+        self.assertEqual(result.manifest['emitted_alternative_count'], 2)
+
+    def test_any_difference_preserves_even_the_identical_subset(self):
+        value = self.rendered_boundary()
+        value['alternatives'] = [deepcopy(value['alternatives'][0]) for _ in range(4)]
+        value['alternatives'][3]['resource_boundary']['body'] += ' '
+        result = self.formatted(value)
+        self.assertEqual(result.status, 'complete')
+        self.assertEqual(result.manifest['emitted_alternative_count'], 4)
+        self.assertFalse(result.manifest['exact_deduplication']['all_alternatives_byte_identical'])
+        self.assertEqual(result.manifest['exact_duplicate_alternatives'], [])
+
+    def test_authored_resource_difference_prevents_dedup_with_stale_body(self):
+        value = self.rendered_boundary()
+        resource = value['alternatives'][1]['resource_boundary']
+        resource['components'][0]['source'] = '"x2" ↦ᵣ RVal_Bits value'
+        result = self.formatted(value)
+        self.assertEqual(result.status, 'complete')
+        self.assertEqual(result.manifest['emitted_alternative_count'], 2)
+
+    def test_duplicate_candidate_still_validates_incomplete_source(self):
+        value = self.rendered_boundary()
+        value['alternatives'][1]['resource_boundary']['block_status'] = 'stopped'
+        self.assertEqual(self.formatted(value).status, 'stopped')
+
+    def test_duplicate_candidate_preserves_continuation_refusal(self):
+        value = self.rendered_boundary()
+        value['alternatives'][1]['resource_boundary']['components'][-1]['source'] = 'OtherK'
+        self.assertEqual(self.formatted(value).status, 'stopped')
+
     def test_one_failed_alternative_refuses_the_complete_answer(self):
         value = boundary()
         value['alternatives'][1]['resource_boundary']['block_status'] = 'stopped'
@@ -70,6 +136,22 @@ class FormatterTests(unittest.TestCase):
     def test_changed_continuation_refuses(self):
         value = boundary()
         value['alternatives'][1]['resource_boundary']['components'][-1]['source'] = 'OtherK'
+        self.assertEqual(self.formatted(value).status, 'stopped')
+
+    def test_join_renders_only_the_generated_seed(self):
+        value = boundary()
+        value['status'] = 'generated_join'
+        incoming, seed = value['alternatives']
+        incoming.update(predecessor_pc='predecessor', seed_pc='function-entry')
+        seed.update(predecessor_pc=None, seed_pc=value['pc'])
+        result = self.formatted(value)
+        self.assertEqual(result.status, 'complete')
+        self.assertEqual(result.manifest['alternative_count'], 1)
+        self.assertEqual(result.manifest['incoming_alternative_count'], 1)
+
+    def test_join_without_a_generated_seed_refuses(self):
+        value = boundary()
+        value['status'] = 'generated_join'
         self.assertEqual(self.formatted(value).status, 'stopped')
 
     def test_changed_continuation_scope_refuses(self):
