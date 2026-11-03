@@ -1,5 +1,5 @@
 From Coq Require Import List ZArith.
-Require Import ZesuSsz.Automation.Hooks.
+Require Import ZesuSsz.Automation.ArrayPayloadPresentation.
 Require Import ZesuSsz.Automation.ByteClassGuards.
 
 (* Keep only the existing length view inside the equality proof. *)
@@ -14,4 +14,4 @@ Ltac zesu_array_affine_image :=
   end.
 
 Ltac zesu_array_affine_presentation :=
-  Hooks.zesu_array_payload_presentation ltac:(zesu_array_affine_image).
+  ArrayPayloadPresentation.zesu_array_payload_presentation ltac:(zesu_array_affine_image).
