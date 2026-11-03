@@ -1,5 +1,6 @@
 Require Import ZesuSsz.Automation.All.
 Require Import ZesuSsz.Automation.ByteArrayAssemblyCodec.
+Require Import ZesuSsz.Automation.MemoryTupleConsumer.
 Require Import isla.riscv64.riscv64.
 From iris.base_logic.lib Require Import iprop.
 From iris.proofmode Require Import tactics.
@@ -22,7 +23,7 @@ Lemma affine_array_named (address : Z) (fraction : dfrac)
         drop 8 before))%I.
 Proof.
   iIntros "Hbytes". rewrite <- mem_mapsto_array_eq.
-  ByteArrayAssemblyCodec.zesu_byte_array_assemble_codec.
+  MemoryTupleConsumer.zesu_memory_array_assemble.
 Qed.
 
 Lemma affine_array_anonymous (address : Z) (fraction : dfrac)
@@ -36,7 +37,7 @@ Lemma affine_array_anonymous (address : Z) (fraction : dfrac)
         drop 8 before))%I.
 Proof.
   iIntros "?". rewrite <- mem_mapsto_array_eq.
-  ByteArrayAssemblyCodec.zesu_byte_array_assemble_codec.
+  MemoryTupleConsumer.zesu_memory_array_assemble.
 Qed.
 
 Lemma affine_array_fraction_refuses (address : Z)
@@ -51,7 +52,7 @@ Proof.
          (bv_to_little_endian 8 8 (bv_unsigned (bv_sub (bv_add value base) base)) ++
           drop 8 before))%I) by
     (iIntros "Hbytes"; rewrite <- mem_mapsto_array_eq;
-     solve [ByteArrayAssemblyCodec.zesu_byte_array_assemble_codec])).
+     solve [MemoryTupleConsumer.zesu_memory_array_assemble])).
   exact I.
 Qed.
 End Controls.

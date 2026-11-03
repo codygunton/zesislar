@@ -1,6 +1,8 @@
+Require Import ZesuSsz.Automation.MemoryAddress.
 Require Import ZesuSsz.Automation.Hooks.
 Require Import ZesuSsz.Automation.ResourceGroups.
 Require Import ZesuSsz.Automation.ByteArrayAssemblyCodec.
+Require Import ZesuSsz.Automation.ArrayAffineImage.
 Require Import ZesuSsz.Contracts.IslarisMemory.
 Require Import isla.riscv64.riscv64.
 Require Import ZesuSsz.Automation.AdjacentWordAddress291.
@@ -76,9 +78,9 @@ Ltac zesu_memory_byte_owner owner continuation :=
 
 Ltac zesu_memory_address_equal available requested :=
   first [solve [constr_eq available requested; reflexivity] |
-    Hooks.zesu_handoff_closed_Z available ltac:(fun left =>
-      Hooks.zesu_handoff_closed_Z requested ltac:(fun right =>
-        change (left = right); solve [ring | Hooks.zesu_stack_arithmetic]))].
+    MemoryAddress.zesu_handoff_closed_Z available ltac:(fun left =>
+      MemoryAddress.zesu_handoff_closed_Z requested ltac:(fun right =>
+        change (left = right); solve [ring | MemoryAddress.zesu_stack_arithmetic]))].
 
 Ltac zesu_memory_array_count bytes word continuation :=
   lazymatch word with
@@ -162,16 +164,14 @@ Ltac zesu_memory_frame_first :=
 
 (* Scalar constraints select constrained fields. The array consumer preserves
    the source addresses, fractions, and byte order. Callers supply pure logic. *)
+Ltac zesu_memory_array_assemble :=
+  first [ByteArrayAssemblyCodec.zesu_byte_array_assemble_codec |
+    solve [ArrayAffineImage.zesu_array_affine_presentation]].
+
 Ltac zesu_memory_tuple consume_facts finish :=
   once (try zesu_memory_registered_intro;
   ResourceGroups.zesu_open_resource_groups;
-  repeat multimatch goal with
-  | Hwidth : (8 = ?stride * 8)%N |- _ =>
-      is_var stride;
-      let Hone := fresh "HmemoryByteStride" in
-      assert (Hone : stride = 1%N) by (clear - Hwidth; Lia.lia);
-      subst stride
-  end;
+  ByteArrayAssemblyCodec.zesu_byte_array_normalize_stride;
   zesu_memory_open_tuple constr:(16%nat);
   repeat iMatchHyp ltac:(fun name body => is_var body; progress (iFrame name));
   repeat first [progress zesu_memory_frame_first |
@@ -180,7 +180,7 @@ Ltac zesu_memory_tuple consume_facts finish :=
   | |- environments.envs_entails _ (@bi_sep _ (isla.ghost_state.mem_mapsto_array_def _ _ _) _) =>
       iSplitL;
       [rewrite <- isla.ghost_state.mem_mapsto_array_eq;
-       ByteArrayAssemblyCodec.zesu_byte_array_assemble_codec | idtac]
+       zesu_memory_array_assemble | idtac]
   end));
   lazymatch goal with
   | |- environments.envs_entails _ ?requested => consume_facts requested
