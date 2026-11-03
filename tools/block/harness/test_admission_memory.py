@@ -125,13 +125,35 @@ class LiveAdmissionTests(unittest.TestCase):
         self.assertIn('request_bytes=8589934592', self.log.getvalue())
         self.assertIn('booked_bytes=214748364800', self.log.getvalue())
 
+    def test_default_sixteen_gib_ceiling_and_configured_boundary(self):
+        with patch.dict(os.environ, {}, clear=True):
+            self.assertTrue(self.decide(request=16*M.GIB)['fits'])
+            self.assertFalse(self.decide(request=16*M.GIB+1)['fits'])
+        with patch.dict(os.environ, {'ZESU_LIVE_REQUEST_LIMIT_GIB':'8'}):
+            self.assertTrue(self.decide(request=8*M.GIB)['fits'])
+            self.assertFalse(self.decide(request=8*M.GIB+1)['fits'])
+        with patch.dict(os.environ, {'ZESU_LIVE_REQUEST_LIMIT_GIB':'20'}):
+            self.assertTrue(self.decide(request=20*M.GIB)['fits'])
+
+    def test_invalid_live_ceiling_keeps_booking_and_all_claims(self):
+        for value in ('0','-1','176','1.5','invalid',''):
+            with self.subTest(value=value),patch.dict(os.environ, {'ZESU_LIVE_REQUEST_LIMIT_GIB':value}):
+                result=self.decide(request=M.GIB)
+                self.assertFalse(result['fits'])
+                self.assertEqual(result['admission_basis'],'booking')
+                self.assertEqual(result['active_claim_bytes'],200*M.GIB)
+
+    def test_sixteen_gib_still_requires_fresh_anon_and_half_slice(self):
+        self.assertFalse(self.decide(request=16*M.GIB,age=10_000_000_001)['fits'])
+        self.assertFalse(self.decide(request=16*M.GIB,live=M.SLICE_MAX_BYTES//2-16*M.GIB+1)['fits'])
+
     def test_one_byte_above_half_cap_falls_back_to_booking(self):
         result = self.decide(live=M.SLICE_MAX_BYTES // 2 - 8 * M.GIB + 1)
         self.assertFalse(result['fits'])
         self.assertEqual(result['admission_basis'], 'booking')
 
     def test_larger_and_zero_requests_keep_booking(self):
-        for request in (0, 8 * M.GIB + 1, 64 * M.GIB):
+        for request in (0, 16 * M.GIB + 1, 64 * M.GIB):
             with self.subTest(request=request):
                 result = self.decide(request=request, live=0)
                 self.assertFalse(result['fits'])

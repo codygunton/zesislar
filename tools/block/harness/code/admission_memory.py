@@ -878,7 +878,13 @@ def live_memory_admission(result, reader):
     This decision never changes a booking, scope fence, or termination watch.
     """
     request = result['new_claim_bytes']
-    if not 0 < request <= 8 * GIB:
+    try:
+        ceiling = int(os.environ.get('ZESU_LIVE_REQUEST_LIMIT_GIB', '16'))
+        if not 1 <= ceiling <= 175:
+            return result
+    except ValueError:
+        return result
+    if not 0 < request <= ceiling * GIB:
         return result
     try:
         sample = reader.slice_sample()
