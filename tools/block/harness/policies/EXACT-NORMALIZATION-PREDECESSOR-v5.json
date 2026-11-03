@@ -1,0 +1,57 @@
+{
+  "schema": "scratch.exact-normalization-authority.v1",
+  "execution_enabled": true,
+  "release": "One selector-under-actual-bound-bank predecessor attempt. No enabling import or witness. Resource023 remains disabled.",
+  "client": {
+    "path": "/home/cody/zesislar/_build/agents/worker-build-2/join-automation-0d2-v1/control-Lithium-resource023-shared-wrap/EXACT-CONTROL-CLIENT.py",
+    "sha256": "0f6073a2b244490251ddaa0e74e08d94e33b3e30bc918bc93cb5d27a21c4e4c1"
+  },
+  "cases": {
+    "predecessor": {
+      "spec": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/join-automation-0d2-v1/control-Lithium-resource023-shared-wrap/PREDECESSOR-SPEC-v5.json",
+        "sha256": "eb1c408345b9c9de6ab0d066873d48a59aa18994d154eddf3ea2b83b156ddce7"
+      },
+      "public_guard_pin": "8d2a4b84596f137e5586ba5ee2b85cad3d885943",
+      "claim_bytes": 8589934592,
+      "physical_fence_bytes": 68719476736,
+      "subject": {
+        "path": "/home/cody/zesislar/_build/agents/spec-b/exact-entry-dedup421/replay6ae0-019/Subject.v",
+        "sha256": "4df050d4ba676e54dde498b70971d937edeb71049c547ca6940b322103a0601c"
+      },
+      "helper": {
+        "path": "/home/cody/zesislar/_build/agents/worker-build-2/join-automation-0d2-v1/control-Lithium-resource023-shared-wrap/Rule-v2.vpart",
+        "sha256": "87a7951c14663a6fa2607b8490c323838f5729a0e56a895ee64e93b0a142704d"
+      },
+      "identity": {
+        "active_goals": 1,
+        "replay_index": 0,
+        "ordered_kernel_hypotheses_sha256": "d830423cef3e4c9a28d170e4bd23fc79b576090421f45c0fad27f06138e1e63e",
+        "kernel_target_sha256": "7d614a37bd7de439193e8d621657ff67c5ff9c7ee00a2c96b83e1592918e8cdd",
+        "context_entries": 161
+      },
+      "registry_id": "worker2-join6ae0-predecessor-shared-wrap-v5",
+      "guard_name": "join6ae0-predecessor-shared-wrap-v5",
+      "environment": {
+        "ZESU_DIAGNOSTIC_PROBE": "1",
+        "ZESU_PROBE_ISSUE": "10",
+        "ZESU_MODULE_LIMIT_GIB": "64",
+        "ZESU_MODULE_CLAIM_BYTES": "8589934592",
+        "ZESU_PROOF_CPU_LIMIT": "unlimited",
+        "ZESU_SCOPE_CPU": "unlimited"
+      },
+      "final_acceptance_requires": [
+        "Two successful health calls.",
+        "An exact kernel identity gate before helper installation.",
+        "Complete exported goal groups.",
+        "Unchanged final input bindings.",
+        "Normal transport closure.",
+        "Exact aggregate identity and accounting.",
+        "Closed registry actors.",
+        "Exact canonical claim release and absent aggregate."
+      ],
+      "proof_acceptance": false
+    }
+  },
+  "interpretation_limit": "The bound bank does not select PureFactHints. A refusal or no-op cannot isolate LithiumUnfold as the sole cause."
+}
