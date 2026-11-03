@@ -461,3 +461,67 @@ def resolved_witness_data(source, target, value, *, source_texts=None):
                 witness_type=witness_type, registers=registers,
                 declaration_order=layout["remaining"], internal_order=internal,
                 vacuous=layout["vacuous"], provenance=[slot["source"] for slot in slots])
+
+
+def witness_profile_metadata(source, target, slots, *, name, typed, entry,
+                             witness_type, mapping_fragment, locality="export", phase_metadata=None):
+    """Render profiles for authenticated source and unchanged emitted data.
+
+    The caller binds source bytes and the complete mapping fragment. Names come
+    from the declaration parser and the original emitted-slot metadata.
+    """
+    from render_support import identifier, expression
+    name = identifier(name, "witness profile name")
+    entry = expression(entry, "witness profile entry")
+    if locality not in {"local", "global", "export"}:
+        raise ValueError("The profile locality is unsupported.")
+    expected = declared_witness_slots(source, target)["remaining"]
+    phase_binding = None
+    if phase_metadata is not None:
+        import json
+        if set(phase_metadata) != {"path", "sha256", "pointer"}:
+            raise ValueError("The witness phase needs a bound metadata pointer.")
+        raw = Path(phase_metadata["path"]).read_bytes()
+        if hashlib.sha256(raw).hexdigest() != phase_metadata["sha256"]:
+            raise ValueError("The witness phase metadata changed.")
+        names = json.loads(raw)
+        pointer = phase_metadata["pointer"]
+        if not isinstance(pointer, str) or not pointer.startswith("/"):
+            raise ValueError("The witness phase needs an exact metadata pointer.")
+        for component in pointer[1:].split("/"):
+            key = component.replace("~1", "/").replace("~0", "~")
+            names = names[int(key)] if isinstance(names, list) else names[key]
+        if (not isinstance(names, list) or not names or
+                any(not isinstance(n, str) for n in names) or len(set(names)) != len(names)):
+            raise ValueError("The witness phase needs distinct source names.")
+        source_order = [slot["name"] for slot in expected]
+        if any(name not in source_order for name in names):
+            raise ValueError("The witness phase contains an absent source slot.")
+        if names != [name for name in source_order if name in names]:
+            raise ValueError("The witness phase changes source declaration order.")
+        expected = [slot for slot in expected if slot["name"] in names]
+        phase_binding = dict(phase_metadata)
+    check_witness_shape(expected, slots)
+    if normalize_type(witness_type) != normalize_type(product([s["type"] for s in expected])):
+        raise ValueError("The profile changes the ordinary witness product.")
+    def profile(values):
+        result = "ZesuWitnessProfileEnd"
+        for slot in reversed(values):
+            label = identifier(slot["name"], "witness profile slot")
+            result = '(ZesuWitnessProfileSlot "' + label + '" (' + slot["type"] + ') ' + result + ')'
+        return result
+    declaration_hash = hashlib.sha256(source.encode()).hexdigest()
+    mapping_hash = hashlib.sha256(mapping_fragment.encode()).hexdigest()
+    source_record = (f"#[{locality}] Instance {name}_source_profile{typed} :\n"
+                     f"  ZesuEntryWitnessSourceProfile ({entry}) ({witness_type}) :=\n"
+                     '  {| zesu_source_profile_declaration := "' + declaration_hash + '";\n'
+                     '     zesu_source_profile_slots := ' + profile(expected) + ' |}.\n')
+    data_record = (f"#[{locality}] Instance {name}_data_profile{typed} :\n"
+                   f"  ZesuEntryWitnessDataProfile ({entry}) ({witness_type}) :=\n"
+                   '  {| zesu_data_profile_declaration := "' + declaration_hash + '";\n'
+                   '     zesu_data_profile_mapping := "' + mapping_hash + '";\n'
+                   '     zesu_data_profile_slots := ' + profile(slots) + ' |}.\n')
+    return {"source": source_record + data_record, "declaration_sha256": declaration_hash,
+            "mapping_fragment_sha256": mapping_hash,
+            "source_slots": expected, "data_slots": slots, "phase_metadata": phase_binding,
+            "runtime_names_recovered": False}

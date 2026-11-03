@@ -736,9 +736,19 @@ def witness_mapping_source(value, fields, root, loaded):
         terms[key] = expression(value[key], "mapping " + key)
         expression_references(terms[key], fields, root)
     target = f"{value['class']} ({entry}) ({terms['input_type']}) {terms['witness_type']}"
-    return (prefix + f"#[{value['locality']}] Instance {name}{typed} :\n  {target} :=\n"
+    rendered = (prefix + f"#[{value['locality']}] Instance {name}{typed} :\n  {target} :=\n"
             f"  {{| zesu_witness_input := {terms['input']};\n"
             f"     zesu_witness_mapping := {terms['mapping']} |}}.\n")
+    if generated_data:
+        from witness_data import witness_profile_metadata
+        metadata = witness_profile_metadata(target_source, target_name,
+                    [{"name": slot["name"], "type": slot["type"]}
+                     for slot in value["data"]["slots"]],
+                    name=name, typed=typed, entry=entry,
+                    witness_type=terms["witness_type"], mapping_fragment=rendered,
+                    locality=value["locality"])
+        rendered += metadata["source"]
+    return rendered
 
 
 def witness_mapping_sources(values, root, directory, generated_paths=()):

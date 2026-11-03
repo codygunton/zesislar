@@ -58,6 +58,29 @@ class ForwardResourceDesignTests(unittest.TestCase):
         self.assertNotIn('read_obligations', record)
         self.assertEqual(_state_from_result(record).to_dict(), record)
 
+    def test_source_declaration_metadata_preserves_execution_and_resources(self):
+        traces = {16: '(trace (declare-const v7 (_ BitVec 64)) (write-reg |x1| nil v7) (write-reg |PC| nil #x0000000000000014))',
+                  20: '(trace (write-reg |PC| nil #x0000000000000018))',
+                  24: '(trace (write-reg |PC| nil #x0000000000000000))'}
+        baseline = evaluate_owned_function(cfg(), traces, {16: seed()}, vocabulary=VOCABULARY)
+        captured = evaluate_owned_function(cfg(), traces, {16: seed()}, vocabulary=VOCABULARY,
+                                          capture_witness_origins=True)
+        states = [alternative['state'] for boundary in captured['boundaries']
+                  for alternative in boundary['alternatives']] + [stop['state'] for stop in captured['stops']]
+        origins = [row for state in states for row in state['reports']
+                   if row.get('kind') == 'source_witness_origin']
+        self.assertTrue(origins)
+        self.assertTrue(all(row['instruction_pc'] == '0x10' and row['declaration'] == 'v7'
+                            and row['declaration_type'] == ['_', 'BitVec', '64'] for row in origins))
+        def without_origins(value):
+            if isinstance(value, dict):
+                return {key: without_origins(child) for key, child in value.items()}
+            if isinstance(value, list):
+                return [without_origins(child) for child in value
+                        if not isinstance(child, dict) or child.get('kind') != 'source_witness_origin']
+            return value
+        self.assertEqual(without_origins(captured), baseline)
+
     def test_dead_owned_register_keeps_its_actual_final_value(self):
         traces = {16: '(trace (write-reg |x1| nil #x0000000000000007) (write-reg |PC| nil #x0000000000000014))',
                   20: '(trace (write-reg |PC| nil #x0000000000000018))',

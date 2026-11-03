@@ -179,11 +179,24 @@ def hull(values, conditions, *, name, scalar_ranges=None):
             'coq': f'({low}%Z <= bv_unsigned {name} <= {high}%Z)%Z'}
 
 
-def witness_plan(binders, *, register_bindings):
+def witness_plan(binders, *, register_bindings, source_bindings=None, source_context=None):
     """Use only the selector's existing register/pair input constructors."""
     inputs, witnesses = [], []
+    sources = {}
+    if source_bindings is not None:
+        from source_witness_bindings import authenticate_sources
+        sources = authenticate_sources(binders, source_bindings, source_context)
+        if set(register_bindings) & set(source_bindings):
+            raise ValueError('A witness has two competing source readers.')
+        if set(register_bindings) | set(source_bindings) != {b['name'] for b in binders}:
+            raise ValueError('The typed source mapping has missing or extra witness slots.')
     for binder in binders:
         name = binder['name']
+        if name in sources:
+            inputs.append(sources[name])
+            witnesses.append({'binder': name, 'source_key': sources[name]['source_key'],
+                              'type': binder['type']})
+            continue
         if name not in register_bindings:
             raise ValueError('A join witness needs array packaging or an approved input interface: ' + name)
         register, width = register_bindings[name]
@@ -202,9 +215,13 @@ def witness_plan(binders, *, register_bindings):
 
     # This builds right-nested products in declaration order. It does not
     # reverse the witness sequence supplied to ExplicitWitnessOrder293.
-    return {'schema': 'source.join-witness-plan.v1', 'ordered_binders': [b['name'] for b in binders],
-            'input': nested(inputs, {'kind': 'unit'}), 'ordered_witnesses': witnesses,
-            'data': nested(witnesses, {'kind': 'unit'})}
+    result = {'schema': 'source.join-witness-plan.v1', 'ordered_binders': [b['name'] for b in binders],
+              'input': nested(inputs, {'kind': 'unit'}), 'ordered_witnesses': witnesses,
+              'data': nested(witnesses, {'kind': 'unit'})}
+    if source_bindings is not None:
+        result.update(schema='source.join-witness-plan.v2', input_family='authenticated_source',
+                      source_context=deepcopy(source_context), source_bindings=deepcopy(source_bindings))
+    return result
 
 
 def validate_edges(plan, *, refutations=()):
