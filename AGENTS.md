@@ -127,6 +127,28 @@ Do not expect `-j` to parallelize tactics inside one Rocq proof.
 Do not stop a healthy sequential build to test a parallel split.
 Run the split build beside the sequential build when memory permits this action.
 
+Measure harness time against compiler time. For every build and native run, record compiler CPU,
+harness (aggregate) CPU, wall time, modules done, and dependency depth.
+Harness CPU above 10 times compiler CPU is a defect. Fix it before the next large build.
+A build is long only when its dependency depth times its per-module time explains its wall time.
+Otherwise find the serial step or the repeated work, and fix it.
+(2026-11-02: a 4.3-hour serial chain used 140 s of compiler CPU, and a 35-module DAG spent 114 s
+of harness time for each 0.8 s compile.)
+
+A memory booking is an admission weight, not a fence. Book it from measured use.
+At each check, compare booked memory with live cgroup memory (`memory.current`, `memory.peak`,
+and anonymous memory).
+A booking above 4 times its live peak for 15 minutes is a defect in the booking rule. Fix the rule.
+When runs wait while cores and memory are idle, check every concurrency limit first:
+the per-writer compiler limit (`ZESU_WRITER_MAX_COQC`), the probe aggregate limit, and the DAG
+worker budget. (2026-11-02: 296 GiB booked against 16 GiB live, and 2 compilers per writer on a
+64-core machine.)
+
+Run a search to completion when no cheaper route is known.
+When comparable cases close in seconds, a search that runs 10 times longer shows a tactic defect.
+Inspect its goal and try the known cheaper route in parallel. Do not wait it out.
+(2026-11-02: a join path searched 3.6 hours; the fault-first tactic closed it in 1.7 s.)
+
 Use build caches and focused targets during proof development.
 Do not rerun an unchanged failed tactic or build.
 Inspect the first residual goal before the next attempt.
@@ -221,6 +243,12 @@ Ceremony is capped: one certificate or audit per result, no audit of an audit, n
 item longer than 20 minutes without a proof command. A child idle at two consecutive checks gets
 its item re-dispatched with the exact first command. Probes run in the background and occupy no
 child. The coordinator never ends a turn with "nothing owed" while a child is idle.
+
+The coordinator runs a utilization watchdog every 20 minutes. It records the coqc and pet counts,
+CPU and memory use, booked against live memory, every build over 30 minutes with its harness and
+compiler time, and every idle child. When CPU or memory use is below 50%, it launches queued
+proof runs. A "submitted", "launched", or "queued" item is not a running item: within one hour of
+a batch launch, the coordinator gets a per-item table of ran, setup failure, cancelled, and result.
 
 ## Integration gates and rule threshold
 
