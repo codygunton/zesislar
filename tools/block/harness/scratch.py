@@ -439,7 +439,7 @@ def prepare(a):
     if getattr(a,'parallel_declarations',False):
         from declaration_parallel_plan import attach
         dag_plan=attach(c,measurements=(binding(a.declaration_module_measurements)
-            if a.declaration_module_measurements else None),maximum_workers=a.declaration_workers,keep_going=getattr(a,'declaration_keep_going',False))
+            if a.declaration_module_measurements else None),maximum_workers=a.declaration_workers,keep_going=getattr(a,'declaration_keep_going',False),transport=getattr(a,'declaration_transport','dag'))
     implementations=[binding(out/'HARNESS.json')]
     c['cache_producer_files']={'implementation':[dict(r,id='scratch-implementation:'+str(i),kind='source') for i,r in enumerate(implementations)],'inputs':[dict(binding(a.entry_file),id='scratch-entry',kind='source')]+([dict(binding(a.declaration_checks),id='declaration-checks',kind='configuration')] if a.declaration_checks else [])+([dict(binding(a.normalization_policy),id='entry-normalization-policy',kind='configuration')] if a.normalization_policy else [])+([dict(binding(a.rules),id='scratch-rules',kind='source')] if a.rules else []),'outputs':[dict(binding(native),id='scratch-native',kind='source'),dict(binding(entry),id='scratch-entries',kind='source')]}
     if a.supplier_controls:c['cache_producer_files']['inputs'].append(dict(binding(a.supplier_controls),id='supplier-activation-controls',kind='configuration'))
@@ -697,7 +697,7 @@ def refresh_memory(argv):
     if args.parallel_declarations:
         from declaration_parallel_plan import attach
         dag_plan=attach(c,measurements=(binding(args.declaration_module_measurements)
-            if args.declaration_module_measurements else None),maximum_workers=args.declaration_workers,keep_going=getattr(args,'declaration_keep_going',False))
+            if args.declaration_module_measurements else None),maximum_workers=args.declaration_workers,keep_going=getattr(args,'declaration_keep_going',False),transport=getattr(args,'declaration_transport','dag'))
         from declaration_parallel_plan import references
         c['bindings']=combined_bindings(c['bindings']+references(dag_plan))
     if context:c['admission_profile']=context

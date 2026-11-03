@@ -5,6 +5,7 @@ os.environ['PYTHONDONTWRITEBYTECODE']='1'
 """Run one chain block or its shared prerequisites through pinned MCP."""
 import asyncio,functools,hashlib,json,os,resource,sys,time,traceback
 from pathlib import Path
+from contextlib import asynccontextmanager
 sys.path[1:1] = [str(Path(__file__).resolve().parents[2]), str(Path(__file__).resolve().parents[3])]
 from phase_attribution import capture,for_runtime
 from mcp import ClientSession, StdioServerParameters
@@ -378,7 +379,51 @@ async def execute(request):
                     await session.initialize()
                 with attribution.span('initial_health'):
                     await call(session, 'rocq_health', {})
-                if runtime.get('declaration_dag'):
+                if runtime.get('declaration_dag',{}).get('transport')=='mcp':
+                    from declaration_mcp import run as run_mcp_levels
+                    from declaration_parallel_plan import validate as validate_mcp_plan
+                    validate_mcp_plan(runtime,workspace)
+                    @asynccontextmanager
+                    async def extra_session(index):
+                        async with stdio_client(StdioServerParameters(command=launcher[0],args=launcher[1:],
+                                env=mcp_environment_values,cwd=str(workspace))) as extra_streams:
+                            async with ClientSession(*extra_streams) as extra:
+                                await extra.initialize()
+                                await call(extra,'rocq_health',{})
+                                try:
+                                    yield extra
+                                finally:
+                                    await call(extra,'rocq_health',{})
+                    async def compile_mcp(selected_session,module):
+                        source=workspace/relative(runtime['module_files'][module])
+                        atomic_json(output/'PROGRESS.json',{'phase':'MCP_dependency_compile','module':module})
+                        result=await compile_dependency(module,source,workspace,
+                            workspace/relative(runtime['coqc_wrapper']),runtime['expected_mcp_flags'],output,environment,
+                            lambda name,args:call(selected_session,name,args),lambda:check_operation(runtime),timeout)
+                        obj=source.with_suffix('.vo')
+                        if not obj.is_file():raise ToolFailure('An MCP dependency object is absent.')
+                        reference=accept_guarded_dependency(accepted_objects,module,source,obj,
+                            runtime['physical_flags'],result,lambda:check_operation(runtime))
+                        if not reference:
+                            matching=[entry.get('accepted_object_receipt') for entry in calls
+                                if entry['tool']=='rocq_compile_file' and entry['arguments'].get('file')==str(source)
+                                and entry.get('accepted_object_receipt')]
+                            if len(matching)!=1:raise ToolFailure('An MCP dependency lacks one accepted receipt.')
+                            reference=matching[0]
+                        atomic_json(output/('dependency-'+module+'.json'),{'source':str(source),
+                            'source_sha256':digest(source),'object':str(obj),'object_sha256':digest(obj),
+                            'result':result,'accepted_object_receipt':reference})
+                        return reference
+                    if accepted_objects is None:raise ToolFailure('MCP levels require authenticated compiler snapshots.')
+                    controller_bytes=(controller_booking or {}).get('mcp_claim_bytes',
+                        runtime['canonical_admission']['minimum_claim_bytes'])
+                    mcp_result=await run_mcp_levels(runtime,output,session,extra_session,compile_mcp,
+                        controller_bytes=controller_bytes,client_bytes=(controller_booking or {}).get('client_claim_bytes',0),
+                        normal_failure=lambda error:isinstance(error,ToolFailure) and isinstance(error.result,dict)
+                            and error.result.get('reason')=='compile_error' and not error.result.get('pet_restarted')
+                            and not error.result.get('restarted'))
+                    completed_dependencies.update(mcp_result['receipts'])
+                elif runtime.get('declaration_dag'):
                     async def protected_compile(module):
                         source=workspace/relative(runtime['module_files'][module])
                         atomic_json(output/'PROGRESS.json',{'phase':'protected_declaration','module':module})
