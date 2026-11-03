@@ -545,6 +545,9 @@ def workload_for_job(profile_binding,job,config):
  if profile.get('schema')!='scratch.admission-profile.v1':raise ValueError('The admission profile is unsupported.')
  kind=profile.get('kind')
  if kind not in {FAMILY_KIND,FOCUSED_KIND,'minimal_native_tactic',PORT_KIND}:raise ValueError('The workload kind is unsupported.')
+ if kind==FOCUSED_KIND and profile.get('memory_booking')=='completed_verification_peak':
+  from verification_peak import workload
+  return workload(profile_binding,profile,job,config)
  if 'memory_booking' in profile and kind not in {PORT_KIND,FOCUSED_KIND}:raise ValueError('Full-fence booking requires a production PORT profile or a focused declaration profile.')
  if 'memory_booking' in profile and kind==FOCUSED_KIND:
   if profile['memory_booking']!=PORT_FULL_FENCE_BOOKING:raise ValueError('The declaration memory booking option is invalid.')
@@ -644,6 +647,9 @@ def minimal_growth_claim(profile,target):
 
 def workload_claim(workload,job,basis):
  if not workload:return basis['claim_bytes'] if basis else (COMPILE_FENCE if job['phase'] in COMPILE_PHASES else fence(job['phase']))
+ if 'verification_context' in workload:
+  from verification_peak import claim
+  return claim(workload,job)
  owned=workload['owned_sources']
  for row in owned:bound(row)
  context={'proof_runtime':{'module_files':{r['module']:r['path'] for r in owned}},'prepared_workspace':'/','declarations_only':workload['declarations_only'],'prerequisite_modules':workload.get('prerequisite_modules')}
@@ -756,6 +762,9 @@ def attempt_for_job(value,job):
 def profile_bindings(context):
  if not context:return []
  profile=read(context);values=[]
+ if profile.get('kind')==FOCUSED_KIND and profile.get('memory_booking')=='completed_verification_peak':
+  from verification_peak import references
+  values+=references(profile)
  if profile.get('kind')==PORT_KIND:
   authority=production_port_authority(profile)
   values += [profile['authority'],authority['completed_common_ready'],authority['source_packet']]
