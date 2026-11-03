@@ -5,6 +5,7 @@ POLICY=Path(__file__).resolve().parents[1]/'policies/FOCUSED-CONTROL-PEAK.json'
 POLICY_SHA='79927c5760cb0d38cd33779a4a51d3daa4d8ffa70788313cf66cdbd1a5fdcf8b'
 STOCK018_POLICY_SHA='581cf78ef2b7c7ede992c702853607698bc055dd3681569f7a7a9da1c58c9af9'
 RESOURCE019_POLICY_SHA='b1c6727f3cdf625552aa12c0111423bb49314e67278d9ef1d871cb3b4aff6cdf'
+RESOURCE021_POLICY_SHA='8a544aa3fedde9a56d59eff89ced709e40158d0914a3457c143a364603e7e80e'
 BOOKING='completed_control_peak'
 def read(ref):
  p=Path(ref['path'])
@@ -12,7 +13,7 @@ def read(ref):
  return json.loads(p.read_text())
 def authority(profile):
  ref=profile.get('completed_control_peak')
- if not isinstance(ref,dict) or ref.get('sha256') not in (STOCK018_POLICY_SHA,RESOURCE019_POLICY_SHA):raise ValueError('The completed control authority is not approved.')
+ if not isinstance(ref,dict) or ref.get('sha256') not in (STOCK018_POLICY_SHA,RESOURCE019_POLICY_SHA,RESOURCE021_POLICY_SHA):raise ValueError('The completed control authority is not approved.')
  value=read(ref)
  if value.get('schema')!='scratch.completed-control-peak-authority.v1':raise ValueError('The completed control schema differs.')
  return value
