@@ -1685,9 +1685,13 @@ run_scope() {
     register_run_actor || return $?
     exec "$@"
   fi
-  local unit="${SCOPE_PREFIX}-${name}-$$-${RANDOM}"
+  # An inherited reservation belongs to an ancestor, not this launcher.
+  # guard_leaf authenticates that owner's PID in the kernel leaf name.
+  local scope_owner=${reservation##*/}
+  scope_owner=${scope_owner%%.*}
+  local unit="${SCOPE_PREFIX}-${name}-${scope_owner}-${RANDOM}"
   if [ -n "$WRITER_ID" ]; then
-    unit="${SCOPE_PREFIX}-writer-${WRITER_ID}-${name}-$$-${RANDOM}"
+    unit="${SCOPE_PREFIX}-writer-${WRITER_ID}-${name}-${scope_owner}-${RANDOM}"
   fi
   if diagnostic_probe; then
     if ! mark_probe_scope "$reservation" "$unit.scope"; then

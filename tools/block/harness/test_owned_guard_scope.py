@@ -156,6 +156,72 @@ class OwnedGuardScope(unittest.TestCase):
         self.assertFalse(self.reader.compiler(self.marker)['verified'])
         self.assertFalse(self.reader.shell(self.marker, owner=self.owner)['verified'])
 
+    def test_inherited_reservation_names_leaf_for_live_ancestor_owner(self):
+        owner = {'pid': os.getpid(), 'startticks': int(
+            Path('/proc/self/stat').read_text().split(') ', 1)[1].split()[19])}
+        marker = self.tokens / (str(owner['pid']) + '.' + self.generation)
+        marker.write_text('confirmed\nwriter=\naggregate=' + self.group.name +
+            '\nowner_start=' + str(owner['startticks']) + '\nreservation_generation=' + self.generation + '\n')
+        marker.chmod(0o600)
+        guards = (HERE.parents[1] / 'resource_guard.sh', HERE / 'runtime-tools/resource_guard.sh')
+        for guard in guards:
+            with self.subTest(guard=guard):
+                library = guard.read_text().split('\nprune_scope_registry\n', 1)[0]
+                environment = {k: v for k, v in os.environ.items() if not k.startswith('ZESU_')}
+                environment.update(ZESU_GUARD_STATE=str(self.root / 'shell-state'),
+                    ZESU_GATE_LOCK=str(self.root / 'gate.lock'), ZESU_COQC_RESERVATION=str(marker),
+                    TEST_OWNER=str(owner['pid']))
+                script = r'''
+validate_probe_scope() { :; }
+diagnostic_probe() { return 1; }
+reservation_path() { [ "$1" = "$ZESU_COQC_RESERVATION" ]; }
+wait_for_gate() { return 90; }
+guard_wait() { return 91; }
+ensure_workload_parent() { :; }
+aggregate_slice() { echo fixture.slice; }
+reserve_coqc() { return 92; }
+confirm_coqc() { [ "$1" = "$ZESU_COQC_RESERVATION" ]; }
+release_coqc() { return 93; }
+io_class() { :; }
+systemd-run() {
+  for argument in "$@"; do
+    case "$argument" in --unit=*) printf '%s.scope\n' "${argument#--unit=}" > "$STATE_DIR/unit" ;; esac
+  done
+}
+[ "$PPID" = "$TEST_OWNER" ] && [ "$$" != "$TEST_OWNER" ] && kill -0 "$TEST_OWNER" || exit 94
+run_scope fixture -- /fixture/client || exit $?
+cat "$STATE_DIR/unit"
+printf '%s\n' "$$"
+'''
+                result = subprocess.run(['bash', '-c', library + script, str(guard)], env=environment,
+                                        text=True, capture_output=True, timeout=10)
+                self.assertEqual(result.returncode, 0, result.stderr)
+                unit, launcher_pid = result.stdout.splitlines()
+                launcher = {'pid': int(launcher_pid), 'startticks': 106}
+                actor = {'pid': int(launcher_pid) + 10_000_000, 'startticks': 107}
+                self.assertNotEqual(launcher['pid'], owner['pid'])
+                leaf = self.group / unit
+                leaf.mkdir(exist_ok=True)
+                (leaf / 'memory.current').write_text('5')
+                self.process(owner, 12, ['python', 'fixture'], str(self.group.relative_to(self.reader.root)))
+                self.process(launcher, owner['pid'], ['bash', str(guard), 'scope', 'fixture'],
+                             str(self.group.relative_to(self.reader.root)))
+                self.process(actor, launcher['pid'], ['/fixture/client'], str(leaf.relative_to(self.reader.root)))
+                marker.write_text(str(actor['pid']) + '\nwriter=\naggregate=' + self.group.name +
+                    '\nowner_start=' + str(owner['startticks']) + '\nchild_start=107\nreservation_generation=' +
+                    self.generation + '\n')
+                self.reader.guard_leaf(marker)
+
+    def test_guard_leaf_refuses_leaf_named_for_launcher_instead_of_owner(self):
+        launcher = {'pid': 16, 'startticks': 106}
+        self.leaf.rename(self.group / 'zesudet-client-16-1.scope')
+        wrong = self.group / 'zesudet-client-16-1.scope'
+        self.process(launcher, self.owner['pid'], ['bash', str(self.guard), 'scope', 'client'],
+                     str(self.group.relative_to(self.reader.root)))
+        self.process(self.actor, launcher['pid'], self.argv, str(wrong.relative_to(self.reader.root)))
+        with self.assertRaisesRegex(ValueError, 'exact guarded leaf'):
+            self.reader.guard_leaf(self.marker)
+
     def test_confirm_authenticates_guard_source_before_booking(self):
         self.marker.unlink()
         replacement = self.root / 'replacement'
@@ -217,6 +283,44 @@ cat "$STATE_DIR/events"
                                     text=True, capture_output=True, timeout=10)
             self.assertEqual(result.returncode, 0, result.stderr)
             self.assertEqual(result.stdout.splitlines(), ['reserved', 'launched', 'released fresh-compiler-token'])
+
+    def test_direct_reservation_preserves_public_and_writer_leaf_names(self):
+        guards = (HERE.parents[1] / 'resource_guard.sh', HERE / 'runtime-tools/resource_guard.sh')
+        for guard in guards:
+            for writer in ('', 'fixture-writer'):
+                with self.subTest(guard=guard, writer=writer), tempfile.TemporaryDirectory() as temporary:
+                    root = Path(temporary)
+                    environment = {k: v for k, v in os.environ.items() if not k.startswith('ZESU_')}
+                    environment.update(ZESU_GUARD_STATE=str(root), ZESU_GATE_LOCK=str(root / 'gate.lock'),
+                                       ZESU_WRITER_ID=writer)
+                    library = guard.read_text().split('\nprune_scope_registry\n', 1)[0]
+                    script = r'''
+validate_probe_scope() { :; }
+diagnostic_probe() { return 1; }
+reservation_path() { return 1; }
+wait_for_gate() { :; }
+guard_wait() { :; }
+ensure_workload_parent() { :; }
+aggregate_slice() { echo fixture.slice; }
+reserve_coqc() { printf '%s/%s.12345678-1234-1234-1234-123456789abc\n' "$STATE_DIR" "$$"; }
+confirm_coqc() { :; }
+release_coqc() { :; }
+io_class() { :; }
+cat() { case "$1" in /proc/*/cgroup) printf '0::/fixture-root\n' ;; *) command cat "$@" ;; esac; }
+systemd-run() {
+  for argument in "$@"; do
+    case "$argument" in --unit=*) printf '%s.scope\n' "${argument#--unit=}" ;; esac
+  done
+}
+run_scope fixture -- /fixture/client || exit $?
+printf '%s\n' "$$"
+'''
+                    result = subprocess.run(['bash', '-c', library + script, str(guard)], env=environment,
+                                            text=True, capture_output=True, timeout=10)
+                    self.assertEqual(result.returncode, 0, result.stderr)
+                    unit, launcher_pid = result.stdout.splitlines()
+                    prefix = 'zesudet-' + ('writer-' + writer + '-' if writer else '')
+                    self.assertRegex(unit, '^' + prefix + 'fixture-' + launcher_pid + r'-[0-9]+\.scope$')
 
     def test_enter_preserves_only_inner_identity_and_removes_reuse_keys(self):
         read_fd, write_fd = os.pipe()
