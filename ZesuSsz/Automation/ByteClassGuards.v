@@ -68,22 +68,76 @@ Qed.
 
 (* Normalize a byte-list image without selecting machine resources. *)
 Ltac zesu_byte_class_image :=
-  lazymatch goal with |- @eq (list (bv 8)) _ _ => idtac end;
-  list_simplifier;
-  repeat lazymatch goal with |- ?head :: ?left = ?head :: ?right =>
-    apply (f_equal (cons head)) end;
-  repeat rewrite bv_unsigned_BV;
-  cbn [Z.land Z.ones Z.shiftr];
-  repeat rewrite drop_drop;
-  cbn [Nat.add];
-  list_simplifier;
-  repeat lazymatch goal with |- ?head :: ?left = ?head :: ?right =>
-    apply (f_equal (cons head)) end;
-  repeat rewrite Z.shiftr_0_l;
-  repeat rewrite Z.land_0_l;
-  repeat zesu_list_slice_windows;
-  list_simplifier;
-  reflexivity.
+  let target := match goal with |- ?target => target end in
+  assert_fails (has_evar target);
+  lazymatch target with @eq (list (bv 8)) _ _ => idtac end;
+  first [solve [zesu_list_slice_windows; reflexivity] |
+    let closed := ltac:(fun term =>
+      is_closed_term term;
+      let reduced := eval vm_compute in term in
+      progress change term with reduced) in
+    once (do 128 first
+      [ rewrite take_0 | rewrite drop_0 | rewrite app_nil_l | rewrite app_nil_r
+      | rewrite drop_drop
+      | multimatch goal with
+        | |- context [bv_to_little_endian ?digits ?width ?value] =>
+            closed constr:(bv_to_little_endian digits width value)
+        end
+      | multimatch goal with
+        | |- context [@List.repeat ?T ?value ?count] =>
+            closed constr:(@List.repeat T value count)
+        end
+      | multimatch goal with
+        | |- context [@firstn ?T ?index ?bytes] =>
+            closed constr:(@firstn T index bytes)
+        end
+      | multimatch goal with
+        | |- context [@skipn ?T ?index ?bytes] =>
+            closed constr:(@skipn T index bytes)
+        end
+      | multimatch goal with
+        | |- context [@firstn ?T ?index ?bytes] => closed index
+        end
+      | multimatch goal with
+        | |- context [@skipn ?T ?index ?bytes] => closed index
+        end
+      | multimatch goal with
+        | Hlength : List.length ?bytes = ?count |-
+            context [drop ?index ?bytes] =>
+            assert_fails (has_evar bytes);
+            is_closed_term count; is_closed_term index;
+            let Hbound := fresh "HimageDropBound" in
+            assert (Hbound : (List.length bytes <= index)%nat) by
+              (clear - Hlength; rewrite Hlength; Lia.lia);
+            rewrite (drop_ge bytes index Hbound); clear Hbound
+        end
+      | rewrite length_drop | rewrite length_app | rewrite length_take
+      | multimatch goal with
+        | Hlength : List.length ?bytes = ?count |-
+            context [List.length ?bytes] =>
+            assert_fails (has_evar count); progress rewrite Hlength
+        end
+      | rewrite take_app | rewrite drop_app | rewrite take_take
+      | rewrite List.skipn_firstn_comm
+      | rewrite bv_unsigned_BV | rewrite Z.shiftr_0_l
+      | rewrite Z.land_0_l | rewrite Z.land_0_r
+      | zesu_list_slice_windows
+      | progress cbn [List.app]
+      | lazymatch goal with |- ?head :: ?left = ?head :: ?right =>
+          apply (f_equal (cons head))
+        end
+      | lazymatch goal with |- ?left :: ?lefts = ?right :: ?rights =>
+          let Hequal := fresh "HimageByteEqual" in
+          assert (Hequal : left = right) by
+            (apply bv_eq; first [reflexivity |
+              let scalar := match goal with |- ?scalar => scalar end in
+              is_closed_term scalar; vm_compute; reflexivity]);
+          rewrite Hequal; clear Hequal; apply (f_equal (cons right))
+        end
+      | idtac ]);
+    first [reflexivity |
+      let remaining := match goal with |- ?remaining => remaining end in
+      is_closed_term remaining; vm_compute; reflexivity] ].
 
 Ltac zesu_byte_class_guards :=
   multimatch goal with
