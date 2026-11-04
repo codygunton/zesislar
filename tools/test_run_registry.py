@@ -69,6 +69,38 @@ class RunRegistryTests(unittest.TestCase):
         self.assertTrue(row['all_actors_closed'])
         self.assertEqual(self.registry.active(), [])
 
+    def test_child_admission_and_compilation_waits_release_transition_lock(self):
+        code = f"""
+from pathlib import Path
+import time
+root = Path({str(self.root)!r})
+for phase in ('admission', 'compilation'):
+    (root / (phase + '-ready')).write_text('ready')
+    while not (root / (phase + '-release')).exists():
+        time.sleep(0.01)
+"""
+        process = self.wrapper('blocked-child', code)
+        for phase in ('admission', 'compilation'):
+            self.wait_for(lambda: (self.root / (phase + '-ready')).exists())
+            self.wait_for(lambda: self.registry.read_run('blocked-child')['jobs'])
+            probe = r'''
+import fcntl, os, sys
+sys.path.insert(0, sys.argv[1])
+import run_registry as R
+registry = R.Registry(sys.argv[2])
+with (registry.directory / 'transition.lock').open('a') as handle:
+    fcntl.flock(handle, fcntl.LOCK_EX | fcntl.LOCK_NB)
+    registry.register('independent-' + sys.argv[3], 'fixture', 'test', R.identity(os.getpid()), [])
+'''
+            result = subprocess.run([sys.executable, '-B', '-c', probe,
+                str(Path(R.__file__).parent), str(self.registry.directory), phase],
+                capture_output=True, text=True, timeout=5)
+            self.assertEqual(result.returncode, 0, result.stderr)
+            self.assertIsNone(process.poll(), 'The child ended before the lock probe.')
+            (self.root / (phase + '-release')).write_text('release')
+        self.assertEqual(process.wait(timeout=5), 0)
+        self.assertTrue(self.registry.read_run('blocked-child')['all_actors_closed'])
+
     def test_signal_during_locked_update_does_not_deadlock(self):
         code = '''
 import os, signal, sys
