@@ -63,3 +63,55 @@ Lemma byte_class_wrong_payload (byte : bv 8) (lengthWord : bv 64)
   (Hupper : negb (bool_decide (bv_signed (BV 128 183) < bv_signed (bv_zero_extend 128 (bv_and (bv_sign_extend 64 byte) (BV 64 255))))) = true)
   (Hlength : negb (bool_decide (bv_signed (bv_zero_extend 128 (BV 64 0)) >= bv_signed (bv_zero_extend 128 lengthWord))) = true) : True.
 Proof. Fail zesu_byte_class_guards. exact I. Qed.
+
+Definition byte_image_splice (before field : list (bv 8)) (offset : nat) :=
+  take offset before ++ field ++ drop (offset + length field) before.
+
+Lemma byte_image_closed_codec :
+  bv_to_little_endian 8 8 (bv_unsigned (BV 64 0)) =
+    List.repeat (BV 8 0) 8.
+Proof. zesu_byte_class_image. Qed.
+
+Lemma byte_image_complete_words (before : list (bv 8))
+    (Hlength : length before = 40%nat) :
+  byte_image_splice
+    (byte_image_splice
+      (byte_image_splice
+        (byte_image_splice
+          (byte_image_splice before
+            (bv_to_little_endian 8 8 (bv_unsigned (BV 64 4))) 32)
+          (bv_to_little_endian 8 8 (bv_unsigned (BV 64 0))) 0)
+        (bv_to_little_endian 8 8 (bv_unsigned (BV 64 0))) 8)
+      (bv_to_little_endian 8 8 (bv_unsigned (BV 64 0))) 16)
+    (bv_to_little_endian 8 8 (bv_unsigned (BV 64 0))) 24 =
+  List.repeat (BV 8 0) 32 ++ [BV 8 4] ++ List.repeat (BV 8 0) 7.
+Proof. unfold byte_image_splice. zesu_byte_class_image. Qed.
+
+Lemma byte_image_symbolic_offset (offset : nat) (before : list (bv 8)) : True.
+Proof.
+  Fail assert (Himage : take offset before = []) by zesu_byte_class_image.
+  exact I.
+Qed.
+
+Lemma byte_image_symbolic_codec (word : bv 64) : True.
+Proof.
+  Fail assert (Himage : bv_to_little_endian 8 8 (bv_unsigned word) =
+    List.repeat (BV 8 0) 8) by zesu_byte_class_image.
+  exact I.
+Qed.
+
+Lemma byte_image_changed_source (left right : list (bv 8)) : True.
+Proof. Fail assert (Himage : left = right) by zesu_byte_class_image. exact I. Qed.
+
+Lemma byte_image_wrong_closed_value : True.
+Proof.
+  Fail assert (Himage : [BV 8 0] = [BV 8 1]) by zesu_byte_class_image.
+  exact I.
+Qed.
+
+Lemma byte_image_symbolic_width (width : N) (word : bv width) : True.
+Proof.
+  Fail assert (Himage : bv_to_little_endian 8 width (bv_unsigned word) = [])
+    by zesu_byte_class_image.
+  exact I.
+Qed.
