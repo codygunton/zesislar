@@ -346,9 +346,13 @@ Ltac zesu_finish_v1 :=
   try (zesu_finish_ram_known);
   try (zesu_finish_ram_address);
   try (zesu_finish_pointer_alignment);
-  try (zesu_saturate_alignment);
-  try zesu_finish_lia;
-  try (bv_solve);
+  lazymatch goal with
+  | |- environments.envs_entails _ _ => idtac
+  | _ =>
+      try (zesu_saturate_alignment);
+      try zesu_finish_lia;
+      try (bv_solve)
+  end;
   try (zesu_finish_little_endian_if_closed).
 
 Ltac zesu_finish_normalize :=
