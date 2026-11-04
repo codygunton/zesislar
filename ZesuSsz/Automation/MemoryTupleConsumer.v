@@ -159,7 +159,9 @@ Ltac zesu_memory_frame_first :=
   lazymatch goal with
   | |- environments.envs_entails _ (@bi_sep _ ?first _) =>
       lazymatch first with @bi_pure _ _ => fail 0 | _ => idtac end;
-      iMatchHyp ltac:(fun name body => progress (iFrame name))
+      iMatchHyp ltac:(fun name body => progress (first [iFrame name |
+        iEval (rewrite isla.ghost_state.mem_mapsto_array_eq) in name;
+        iFrame name]))
   end.
 
 (* Scalar constraints select constrained fields. The array consumer preserves
