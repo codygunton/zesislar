@@ -1583,6 +1583,17 @@ def release_shell(marker, *, ledger=None, reader=None, require_dead_owner=False)
         if (fields.get('reservation_generation') != record['generation']
                 or int(fields['owner_start']) != record['owner']['startticks']):
             raise ValueError('The release owner differs from its token.')
+        released = data.get('shell_releases', {}).get(key)
+        if released and data.get('fixed_claims', {}).get(key) == 0:
+            if released.get('owner') != record['owner'] or released.get('marker') != str(marker):
+                raise ValueError('The released marker differs from its ledger record.')
+            if reader.file_identity(marker.lstat()) != token_identity:
+                raise ValueError('The released marker changed during cleanup.')
+            marker.unlink()
+            released['marker_cleanup'] = {'observed_token_identity': token_identity,
+                                          'removed_ns': time.time_ns()}
+            write_ledger(ledger, data)
+            return True
         if lines[0].isdecimal():
             if not record.get('leaf') or not leaf_closed(reader, record['leaf']):
                 raise ValueError('The exact shell compiler leaf is not closed.')
