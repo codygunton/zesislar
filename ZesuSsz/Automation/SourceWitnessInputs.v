@@ -161,8 +161,11 @@ Ltac zesu_source_mapping_capture key :=
 Ltac zesu_source_mapping_capture_goal :=
   lazymatch goal with
   | |- environments.envs_entails _ (@bi_sep _ ?requested _) =>
-      zesu_source_mapping_capture requested
-  | |- environments.envs_entails _ ?requested => zesu_source_mapping_capture requested
+      tryif ZesuSsz.Evidence.Block2Core.block2_has_unresolved requested
+      then fail 0 else zesu_source_mapping_capture requested
+  | |- environments.envs_entails _ ?requested =>
+      tryif ZesuSsz.Evidence.Block2Core.block2_has_unresolved requested
+      then fail 0 else zesu_source_mapping_capture requested
   end.
 
 Section DeclareSource.
