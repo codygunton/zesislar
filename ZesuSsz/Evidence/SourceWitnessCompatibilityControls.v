@@ -61,6 +61,17 @@ Proof.
   iPureIntro. constructor.
 Qed.
 
+Lemma source_registered_missing (Sigma : gFunctors) :
+  ⊢ (⌜CompatibilityInvalid⌝%I : iProp Sigma).
+Proof.
+  iStartProof.
+  let registration := constr:(_ : ZesuEntrySourceWitnessMapping
+    (⌜CompatibilityInvalid⌝%I : iProp Sigma) nat nat) in idtac.
+  Fail first [SourceWitnessInputs.zesu_source_mapping_capture_goal |
+    idtac "SOURCE_READER_FALLBACK_SENTINEL"].
+  iPureIntro. constructor.
+Qed.
+
 Lemma source_registered_valid (Sigma : gFunctors) :
   ⊢ (⌜CompatibilityValid⌝%I : iProp Sigma).
 Proof.

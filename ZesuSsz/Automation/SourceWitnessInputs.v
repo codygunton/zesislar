@@ -151,11 +151,13 @@ Ltac zesu_source_mapping_capture key :=
       constr_eq requested_head registered_head;
       let input := constr:(@zesu_source_witness_input Key key Input Witness registration) in
       let mapping := constr:(@zesu_source_witness_mapping Key key Input Witness registration) in
-      zesu_read_source_input input ltac:(fun values =>
+      tryif zesu_read_source_input input ltac:(fun values =>
         let data := constr:(mapping values) in
         EntryWitnessInputs.zesu_witness_resolved data;
         let marker := fresh "HentryWitnessPending" in
         pose (marker := @ZesuEntryWitnessPendingHere Key Witness key data))
+      then idtac
+      else fail 100 "The registered source input is not owned."
   end.
 
 Ltac zesu_source_mapping_capture_goal :=
