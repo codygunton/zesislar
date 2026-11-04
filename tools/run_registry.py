@@ -5,6 +5,9 @@ The registry is shared by all worktrees through Git's common directory. It
 records lifecycle data only. The stock guard owns admission and reservations.
 Child launchers inherit ZESU_RUN_ID and must register processes that systemd
 starts outside the scheduler's process tree.
+
+Explicit compaction archives closed records older than 24 hours. Archives
+are immutable and remain readable. The v3 marker rejects older writers.
 """
 
 from __future__ import annotations
@@ -138,16 +141,28 @@ class Registry:
             fcntl.flock(handle, fcntl.LOCK_EX)
             yield
 
-    def read(self):
+    def read(self, *, include_history=True):
         with self.lock():
             data = self.header()
-            if data['schema'] == 'zesu.run-registry.v2':
+            if data['schema'] != 'zesu.run-registry.v1':
                 rows = []
                 for path in sorted((self.directory / 'runs.d').glob('*.json')):
                     row = self.read_file(path)
                     if self.row_path(row['id']) != path:
                         raise ValueError('A run record has an invalid ID.')
                     rows.append(row)
+                if data['schema'] == 'zesu.run-registry.v3' and include_history:
+                    by_id = {row['id']: row for row in rows}
+                    for path in sorted((self.directory / 'archive.d').glob('*.json')):
+                        row = self.read_file(path)
+                        if self.archive_path(row['id']) != path:
+                            raise ValueError('An archive record has an invalid ID.')
+                        previous = by_id.get(row['id'])
+                        if previous is not None and previous != row:
+                            raise ValueError('An archived record conflicts with the active store.')
+                        if previous is None:
+                            by_id[row['id']] = row
+                    rows = list(by_id.values())
                 return {'schema': data['schema'], 'runs': {r['id']: r for r in rows}}
             return data
 
@@ -159,11 +174,14 @@ class Registry:
         if not self.path.exists():
             return {'schema': 'zesu.run-registry.v1', 'runs': {}}
         result = self.read_file(self.path)
-        if result.get('schema') not in ('zesu.run-registry.v1', 'zesu.run-registry.v2'):
+        if result.get('schema') not in ('zesu.run-registry.v1', 'zesu.run-registry.v2', 'zesu.run-registry.v3'):
             raise ValueError('The run registry schema is unsupported.')
-        if (result['schema'] == 'zesu.run-registry.v2'
+        if (result['schema'] != 'zesu.run-registry.v1'
                 and not (self.directory / 'runs.d').is_dir()):
             raise ValueError('The per-run store directory is missing.')
+        if (result['schema'] == 'zesu.run-registry.v3'
+                and not (self.directory / 'archive.d').is_dir()):
+            raise ValueError('The archive directory is missing.')
         return result
 
     @staticmethod
@@ -196,13 +214,25 @@ class Registry:
     def row_path(self, run_id):
         return self.directory / 'runs.d' / (hashlib.sha256(run_id.encode()).hexdigest() + '.json')
 
+    def archive_path(self, run_id):
+        return self.directory / 'archive.d' / (hashlib.sha256(run_id.encode()).hexdigest() + '.json')
+
+    def refuse_archived_mutation(self, data, run_id):
+        if data['schema'] == 'zesu.run-registry.v3' and self.archive_path(run_id).exists():
+            raise ValueError('An archived run is immutable.')
+
     def load_row(self, data, run_id):
         if data['schema'] == 'zesu.run-registry.v1':
             return data['runs'][run_id]
         try:
             row = self.read_file(self.row_path(run_id))
         except FileNotFoundError:
-            raise KeyError(run_id) from None
+            if data['schema'] != 'zesu.run-registry.v3':
+                raise KeyError(run_id) from None
+            try:
+                row = self.read_file(self.archive_path(run_id))
+            except FileNotFoundError:
+                raise KeyError(run_id) from None
         if row['id'] != run_id:
             raise ValueError('The run record ID does not match its file.')
         return row
@@ -224,6 +254,7 @@ class Registry:
         return True
 
     def save_row(self, data, row):
+        self.refuse_archived_mutation(data, row['id'])
         if data['schema'] == 'zesu.run-registry.v1':
             data['runs'][row['id']] = row
             self.write(data)
@@ -258,9 +289,106 @@ class Registry:
             self.atomic_write(self.path, {'schema': 'zesu.run-registry.v2',
                                          'legacy_snapshot': backup.name})
 
+    def append_archive(self, row):
+        """Publish once without replacing an existing historical record."""
+        target = self.archive_path(row['id'])
+        if target.exists():
+            if self.read_file(target) != row:
+                raise ValueError('An existing archive record differs.')
+            return
+        temporary = target.parent / ('.archive-' + uuid.uuid4().hex)
+        try:
+            with temporary.open('x') as handle:
+                json.dump(row, handle, indent=2)
+                handle.write('\n')
+                handle.flush()
+                os.fsync(handle.fileno())
+            try:
+                os.link(temporary, target)
+            except FileExistsError:
+                if self.read_file(target) != row:
+                    raise ValueError('An existing archive record differs.') from None
+            self.sync_directory(target.parent)
+        finally:
+            temporary.unlink(missing_ok=True)
+
+    def compact(self, *, now_ns=None):
+        """Explicitly archive old closures; never mutate an archive record.
+
+        The first format switch requires closed actors and released claims.
+        A crash before publication keeps the old format authoritative. A
+        crash after publication leaves identical archive/active duplicates,
+        which the next explicit compaction removes.
+        """
+        now_ns = time.time_ns() if now_ns is None else now_ns
+        cutoff = now_ns - 24 * 60 * 60 * 1_000_000_000
+        with self.lock('transition'), self.lock():
+            data = self.header()
+            if data['schema'] == 'zesu.run-registry.v1':
+                rows = data['runs']
+            else:
+                rows = {}
+                for path in sorted((self.directory / 'runs.d').glob('*.json')):
+                    row = self.read_file(path)
+                    if self.row_path(row['id']) != path:
+                        raise ValueError('A run record has an invalid ID.')
+                    rows[row['id']] = row
+            eligible = {}
+            for run_id, row in rows.items():
+                if row['id'] != run_id:
+                    raise ValueError('The run record ID does not match its key.')
+                closed = row.get('closed_ns')
+                if (row.get('status') in {'completed', 'failed', 'stopped'}
+                        and isinstance(closed, int) and closed < cutoff
+                        and row.get('all_actors_closed') is True
+                        and not any(live(a) for a in [row['scheduler']] + row['jobs'])
+                        and all(c['released'] for c in row['claims'].values())):
+                    eligible[run_id] = row
+            if not eligible:
+                return {'archived': 0, 'schema': data['schema']}
+            if data['schema'] != 'zesu.run-registry.v3':
+                if any(any(live(a) for a in [r['scheduler']] + r['jobs'])
+                       or any(not c['released'] for c in r['claims'].values())
+                       for r in rows.values()):
+                    raise ValueError('The archive format switch requires closed actors and released claims.')
+                for directory, label in ((self.directory / 'archive.d', 'archive'),
+                                         (self.directory / 'runs.d', 'active')):
+                    if label == 'active' and data['schema'] != 'zesu.run-registry.v1':
+                        continue
+                    for path in directory.glob('*.json'):
+                        retained = self.read_file(path)
+                        expected_path = (self.archive_path(retained['id']) if label == 'archive'
+                                         else self.row_path(retained['id']))
+                        if path != expected_path or rows.get(retained['id']) != retained:
+                            raise ValueError('An unpublished ' + label + ' record differs.')
+            (self.directory / 'runs.d').mkdir(exist_ok=True)
+            (self.directory / 'archive.d').mkdir(exist_ok=True)
+            self.sync_directory(self.directory)
+            for row in eligible.values():
+                self.append_archive(row)
+            if data['schema'] == 'zesu.run-registry.v1':
+                for row in rows.values():
+                    target = self.row_path(row['id'])
+                    if target.exists() and self.read_file(target) != row:
+                        raise ValueError('An unpublished active record differs.')
+                    if not target.exists():
+                        self.atomic_write(target, row)
+            if data['schema'] != 'zesu.run-registry.v3':
+                self.atomic_write(self.path, {'schema': 'zesu.run-registry.v3',
+                                             'archive_policy': 'immutable-closed-over-24h'})
+            for run_id, row in eligible.items():
+                target = self.row_path(run_id)
+                if target.exists():
+                    if self.read_file(target) != row:
+                        raise ValueError('An active record changed before archive removal.')
+                    target.unlink()
+            self.sync_directory(self.directory / 'runs.d')
+            return {'archived': len(eligible), 'schema': 'zesu.run-registry.v3'}
+
     def update(self, run_id, operation):
         with self.lock():
             data = self.header()
+            self.refuse_archived_mutation(data, run_id)
             row = self.load_row(data, run_id)
             previous = copy.deepcopy(row)
             operation(row)
@@ -358,6 +486,7 @@ class Registry:
             # keep this lock while stopped and prevent discovery or cleanup.
             with self.lock():
                 data = self.header()
+                self.refuse_archived_mutation(data, run_id)
                 row = self.load_row(data, run_id)
                 scheduler = row['scheduler']
                 if actor_key(scheduler) == actor_key(identity(os.getpid())):
@@ -416,7 +545,7 @@ class Registry:
 
     def active(self):
         rows = []
-        for row in self.read()['runs'].values():
+        for row in self.read(include_history=False)['runs'].values():
             actors = [row['scheduler']] + row['jobs']
             pending = [name for name, c in row['claims'].items() if not c['released']]
             living = [a for a in actors if live(a)]
@@ -513,6 +642,7 @@ def main():
     listing.add_argument('--active', action='store_true')
     listing.add_argument('--json', action='store_true')
     commands.add_parser('migrate-per-run', help='Opt in after all actors and claims close.')
+    commands.add_parser('compact', help='Explicitly archive closed runs older than 24 hours.')
     begin = commands.add_parser('begin')
     begin.add_argument('--id', required=True)
     begin.add_argument('--kind', required=True)
@@ -534,6 +664,11 @@ def main():
             sub.add_argument('--status', required=True)
     args = parser.parse_args()
     registry = Registry(args.store or default_store())
+    if args.action == 'compact':
+        if args.store is None:
+            raise ValueError('Compaction requires an explicit --store path.')
+        print(json.dumps(registry.compact()))
+        return 0
     if args.action == 'migrate-per-run':
         if args.store is None:
             raise ValueError('Migration requires an explicit --store path.')
