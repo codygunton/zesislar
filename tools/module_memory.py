@@ -37,6 +37,8 @@ _spec.loader.exec_module(_module)
 evaluate, ScopeReader = _module.evaluate, _module.ScopeReader
 confirm_shell, release_shell = _module.confirm_shell, _module.release_shell
 recover_dead_shell = _module.recover_dead_shell
+recover_stale_shell = _module.recover_stale_shell
+recover_stale_shells = _module.recover_stale_shells
 current_projection = _module.current_projection
 mark_shell = _module.mark_shell
 refresh_shell_growth = _module.refresh_shell_growth
@@ -348,6 +350,10 @@ def main():
     release.add_argument('--marker', type=Path, required=True)
     recover = commands.add_parser('ledger-recover-dead')
     recover.add_argument('--marker', type=Path, required=True)
+    stale = commands.add_parser('ledger-recover-stale')
+    stale_choice = stale.add_mutually_exclusive_group(required=True)
+    stale_choice.add_argument('--marker', type=Path)
+    stale_choice.add_argument('--all', action='store_true')
     mark = commands.add_parser('ledger-mark')
     mark.add_argument('--marker', type=Path, required=True)
     aggregate = commands.add_parser('aggregate-limit')
@@ -394,6 +400,11 @@ def main():
         return 0 if release_shell(args.marker) else 4
     if args.command == 'ledger-recover-dead':
         return 0 if recover_dead_shell(args.marker) else 4
+    if args.command == 'ledger-recover-stale':
+        if args.all:
+            print(json.dumps(recover_stale_shells()))
+            return 0
+        return 0 if recover_stale_shell(args.marker) else 4
     if args.command == "claim":
         arguments = args.arguments[1:] if args.arguments[:1] == ["--"] else args.arguments
         result = module_claim(json.loads(args.profile.read_text()), arguments, args.cwd, args.compiler,

@@ -3,7 +3,7 @@
   "guard": {
     "source_path": "tools/block/harness/runtime-tools/resource_guard.sh",
     "approved_sha256": "27e5e6994aac7de81525698c5a070927b084eaa5fd04d7af029e3660317805ac",
-    "golden_sha256": "d673063afbbcb3d2fffa4c8d111a723aefcf6e35a242f9f79b37c9e5853538bf",
+    "golden_sha256": "87a39987562e073cd0c7fa483155e2b66d144137aafae437f1ec3de1742f5ce7",
     "main_adjustments": [
       [
         "guards share it for two seconds",
@@ -14,7 +14,16 @@
         "$(date +%s) - stamp >= 10"
       ]
     ],
-    "isolation_delta": "Add the test-ledger-policy refusal before reservation, mutex, and registry creation."
+    "isolation_delta": "Add the test-ledger-policy refusal before reservation, mutex, and registry creation.",
+    "recovery_delta": {
+      "commit": "8ce448d3",
+      "tracking_issue": 21,
+      "change": "Enumerate stale ledger claims before reading reservation markers. Preserve all live owners and scopes."
+    },
+    "scope_owner_delta": {
+      "commit": "10a962cdc28aada9e8c3bf2092c425af56434bd4",
+      "change": "Name new guard leaves with the inherited reservation owner PID. Keep owner, actor, scope, and token validation unchanged."
+    }
   },
   "memory_policy": {
     "source_path": "tools/block/harness/code/memory_policy.py",

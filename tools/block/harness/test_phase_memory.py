@@ -67,7 +67,7 @@ class PolicyControls(unittest.TestCase):
   self.assertEqual(result['claim_bytes'],8*P.GIB);self.assertEqual(json.loads(ledger.read_text())['fixed_claims']['isolated-test'],8*P.GIB)
  def guard(self,phase,claim=None,script='validate_probe_scope',available=30):
   guard=HERE/'runtime-tools/resource_guard.sh';library=guard.read_text().split('\nprune_scope_registry\n',1)[0]
-  env={key:value for key,value in os.environ.items() if not key.startswith('ZESU_')};env.update(P.environment(phase,claim));env.update(ZESU_GUARD_STATE=str(self.root/'guard'),ZESU_GATE_LOCK=str(self.root/'gate.lock'),ZESU_RUN_REGISTRY=str(self.root/'registry'),ZESU_RUN_REGISTRY_TOOL=str(HERE/'runtime-tools/run_registry.py'))
+  env={key:value for key,value in os.environ.items() if not key.startswith('ZESU_')};env.update(P.environment(phase,claim));env.update(ZESU_GUARD_STATE=str(self.root/'guard'),ZESU_GATE_LOCK=str(self.root/'gate.lock'),ZESU_RUN_REGISTRY=str(self.root/'registry'),ZESU_RUN_REGISTRY_TOOL=str(HERE/'runtime-tools/run_registry.py'),ZESU_CGROUP_ROOT=str(self.root/'cgroup'))
   return subprocess.run(['bash'],input=library+'\navailable_gib(){ echo '+str(available)+'; }\n'+script,text=True,capture_output=True,env=env)
  def test_actual_native_guard_accepts_reduced_claim(self):
   r=self.guard('native',8*P.GIB,script='validate_probe_scope && test "$MEMORY_CLAIM_BYTES" = 8589934592 && test "$MODULE_LIMIT_GIB" = 64 && memory_hold_reason');self.assertEqual(r.returncode,0,r.stderr);self.assertEqual(r.stdout,'')

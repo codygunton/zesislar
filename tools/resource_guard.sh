@@ -33,17 +33,23 @@
 #   report               one line of guard state and Prometheus figures
 #   window ARGS          `tools/det/prom.py window ARGS`
 #
-# Memory admission uses MemAvailable. Each launch needs its job limit
-# plus 20 GiB. Hold below 20 GiB available; kill at or below 10 GiB available.
+# Memory admission measures our account, user-$UID.slice, against its
+# MemoryMax (152 GiB when unset), because another account shares the host.
+# Used memory excludes the file cache and reclaimable slab. A launch needs
+# use below 80 % of the cap and its job limit plus 20 GiB below the cap.
+# Hold at 88 %; kill at 95 % (ZESU_LAUNCH_PCT, ZESU_HOLD_PCT, ZESU_KILL_PCT).
+# Hold while machine MemAvailable is below 12 GiB
+# (ZESU_MACHINE_MIN_AVAILABLE_GIB). Without the account's cgroup files,
+# the machine applies: hold below 20 GiB MemAvailable; kill at 10 GiB or less.
 # Ordinary proofs use 6 GiB; issue-10 probes use 64 GiB and require 84 GiB
 # available. CPU-only issue-10 probes use 6 GiB and require 26 GiB available.
 # All probe classes share ZESU_PROBE_AGGREGATE_LIMIT slots (default 16).
-# The temporary used-memory policy is explicit: launch below 200 GiB,
-# hold at 215 GiB, and kill at 230 GiB. It does not change scope fences.
 # Memory limits are 120G for batches and 120G for gates, with no swap.
 # The shared parent zesuworkloads.slice has 127 GiB (lowered from 175 GiB
 # on 2026-11-03). A new aggregate cannot exceed it.
-# Other launch checks retain 48 compiler slots, load5 <= 80, blocked <= 16,
+# Other launch checks retain 48 compiler slots, our account's CPU pressure
+# <= 50 % and IO pressure <= 50 % (ZESU_MAX_CPU_PRESSURE, ZESU_MAX_IO_PRESSURE;
+# without the pressure files, load5 <= 80 and blocked <= 16),
 # and the gate lock. The interim controller may restrict compiler slots.
 # Named writers may continue through a gate with two compilers each.
 # A live gate leaves 16 of the 48 slots for writers.
@@ -90,11 +96,15 @@ GATE_LIMIT=${ZESU_GATE_LIMIT:-120G}
 WORKLOAD_PARENT_SLICE=zesuworkloads.slice
 WORKLOAD_PARENT_BYTES=136365211648
 MAX_JOBS=${ZESU_MAX_JOBS:-48}
-MEMORY_POLICY=${ZESU_MEMORY_POLICY:-available}
-case "$MEMORY_POLICY" in available|used) ;; *) echo "resource guard: invalid memory policy" >&2; exit 2 ;; esac
-LAUNCH_GIB=${ZESU_LAUNCH_GIB:-200}
-HOLD_GIB=${ZESU_HOLD_GIB:-215}
-KILL_GIB=${ZESU_KILL_GIB:-230}
+# Account memory lines, in percent of the account's MemoryMax.
+LAUNCH_PCT=${ZESU_LAUNCH_PCT:-80}
+HOLD_PCT=${ZESU_HOLD_PCT:-88}
+KILL_PCT=${ZESU_KILL_PCT:-95}
+for pct in "$LAUNCH_PCT" "$HOLD_PCT" "$KILL_PCT"; do
+  [[ "$pct" =~ ^([1-9][0-9]?|100)$ ]] || { echo "resource guard: invalid memory percent" >&2; exit 2; }
+done
+ACCOUNT_DEFAULT_CAP_GIB=152
+MACHINE_MIN_AVAILABLE_GIB=${ZESU_MACHINE_MIN_AVAILABLE_GIB:-12}
 MEMORY_HEADROOM_GIB=20
 MEMORY_KILL_AVAILABLE_GIB=10
 DISK_BUSY_PERCENT=${ZESU_DISK_BUSY_PERCENT:-80}
@@ -110,6 +120,10 @@ PROC_ROOT=${ZESU_PROC_ROOT:-/proc}
 CGROUP_ROOT=${ZESU_CGROUP_ROOT:-/sys/fs/cgroup}
 MAX_LOAD=${ZESU_MAX_LOAD:-80}
 MAX_BLOCKED=${ZESU_MAX_BLOCKED:-16}
+# Our account's cgroup. Its pressure limits are percent of the last 60 s.
+ACCOUNT_CGROUP=$CGROUP_ROOT/user.slice/user-$UID.slice
+MAX_CPU_PRESSURE=${ZESU_MAX_CPU_PRESSURE:-50}
+MAX_IO_PRESSURE=${ZESU_MAX_IO_PRESSURE:-50}
 # Two launches per second, shared by every guard of every agent.
 RAMP_MS=${ZESU_RAMP_MS:-500}
 RAMP_FILE=${ZESU_RAMP_FILE:-/tmp/zesu-guard-ramp}
@@ -196,47 +210,90 @@ cache_disk_admission() {
 
 memory() { free -b | awk '/^Mem:/ {print $2, $3, $7}'; }
 
-# Used means total minus available, the figure Prometheus reports
-# (`MemTotal - MemAvailable`), so the thresholds and the reports agree.
-used_gib() {
-  local total available
-  read -r total _ available < <(memory)
-  echo $(( (total - available) / GIB ))
+# Print the account's cap and used bytes, or fail when its cgroup files are
+# unreadable. Used is memory.current less the file LRU and reclaimable slab:
+# the kernel reclaims those before the cap kills. On 2026-11-03 reclaimable
+# slab was 51 of 109 GiB charged, so `anon + kernel` would overstate use.
+account_memory() {
+  local cap current key value
+  { read -r cap < "$ACCOUNT_CGROUP/memory.max" &&
+    read -r current < "$ACCOUNT_CGROUP/memory.current"; } 2>/dev/null || return 1
+  [ "$cap" != max ] || cap=$(( ACCOUNT_DEFAULT_CAP_GIB * GIB ))
+  [[ "$cap" =~ ^[1-9][0-9]*$ && "$current" =~ ^[0-9]+$ ]] || return 1
+  [ -r "$ACCOUNT_CGROUP/memory.stat" ] || return 1
+  while read -r key value; do
+    case "$key" in active_file|inactive_file|slab_reclaimable) current=$(( current - value )) ;; esac
+  done < "$ACCOUNT_CGROUP/memory.stat"
+  (( current >= 0 )) || current=0
+  echo "$cap $current"
 }
 
+# Used means the account's figure, else total minus available, the figure
+# Prometheus reports (`MemTotal - MemAvailable`).
+used_bytes() {
+  local cap used total available
+  if read -r cap used < <(account_memory); then echo "$used"; return 0; fi
+  read -r total _ available < <(memory)
+  echo $(( total - available ))
+}
+
+used_gib() { echo $(( $(used_bytes) / GIB )); }
+
+# Available means the account's room below its cap, else MemAvailable.
 available_gib() {
-  local total used available
+  local cap total used available
+  if read -r cap used < <(account_memory); then echo $(( (cap - used) / GIB )); return 0; fi
   read -r total used available < <(memory)
   echo $(( available / GIB ))
 }
 
 memory_hold_reason() {
-  local available used required job_gib=$MODULE_LIMIT_GIB
+  local available cap used total machine required job_gib=$MODULE_LIMIT_GIB
   if [ -n "${ZESU_MODULE_MEMORY_PROFILE:-}" ]; then
     job_gib=$(( (MEMORY_CLAIM_BYTES + GIB - 1) / GIB ))
   fi
-  if [ "$MEMORY_POLICY" = available ]; then
-    available=$(available_gib)
-    required=$(( job_gib + MEMORY_HEADROOM_GIB ))
-    if (( available < MEMORY_HEADROOM_GIB )); then
-      echo "memory available $available GiB, below the 20 GiB hold"
+  required=$(( job_gib + MEMORY_HEADROOM_GIB ))
+  if read -r cap used < <(account_memory); then
+    available=$(( (cap - used) / GIB ))
+    read -r total _ machine < <(memory)
+    if (( used * 100 >= cap * HOLD_PCT )); then
+      echo "account memory $(( used / GIB )) of $(( cap / GIB )) GiB, at the ${HOLD_PCT} % hold"
+    elif (( used * 100 >= cap * LAUNCH_PCT )); then
+      echo "account memory $(( used / GIB )) of $(( cap / GIB )) GiB, launch line ${LAUNCH_PCT} %"
     elif (( available < required )); then
-      echo "memory available $available GiB, requires $required GiB for a $job_gib GiB job"
+      echo "account memory available $available GiB, requires $required GiB for a $job_gib GiB job"
+    elif (( machine < MACHINE_MIN_AVAILABLE_GIB * GIB )); then
+      echo "machine memory available $(( machine / GIB )) GiB, below the ${MACHINE_MIN_AVAILABLE_GIB} GiB backstop"
     fi
-  else
-    used=$(used_gib)
-    if (( used >= HOLD_GIB )); then echo "memory ${used} GiB, at the ${HOLD_GIB} GiB hold"
-    elif (( used >= LAUNCH_GIB )); then echo "memory ${used} GiB, launch line ${LAUNCH_GIB}"; fi
+    return 0
+  fi
+  available=$(available_gib)
+  if (( available < MEMORY_HEADROOM_GIB )); then
+    echo "memory available $available GiB, below the 20 GiB hold"
+  elif (( available < required )); then
+    echo "memory available $available GiB, requires $required GiB for a $job_gib GiB job"
   fi
 }
 
+memory_scope() {
+  local cap used total available
+  if read -r cap used < <(account_memory); then
+    read -r total _ available < <(memory)
+    printf 'account of %s GiB (launch <%s %%, hold %s %%, kill %s %%), machine available %s GiB (backstop %s)\n' \
+      $(( cap / GIB )) "$LAUNCH_PCT" "$HOLD_PCT" "$KILL_PCT" $(( available / GIB )) "$MACHINE_MIN_AVAILABLE_GIB"
+  else
+    echo machine
+  fi
+}
+
+# Another account's memory never kills our scopes while our cgroup is readable.
 memory_kill_required() {
-  if [ "$MEMORY_POLICY" = available ]; then
-    local total used available
+  local cap total used available
+  if read -r cap used < <(account_memory); then
+    (( used * 100 >= cap * KILL_PCT ))
+  else
     read -r total used available < <(memory)
     (( available <= MEMORY_KILL_AVAILABLE_GIB * GIB ))
-  else
-    (( $(used_gib) >= KILL_GIB ))
   fi
 }
 
@@ -280,6 +337,37 @@ coqc_count() {
 load_five() { awk '{printf "%d", $2}' /proc/loadavg; }
 
 blocked_count() { awk '/^procs_blocked/ {print $2}' /proc/stat; }
+
+# An account's avg60 pressure in whole percent, rounded up: KIND `some` for
+# CPU (a task waits for a CPU), `full` for IO (all tasks wait on IO). Fail
+# without the file.
+account_pressure() {
+  local file="$ACCOUNT_CGROUP/$1.pressure" kind avg10 avg60 rest
+  [ -r "$file" ] || return 1
+  while read -r kind avg10 avg60 rest; do
+    [ "$kind" = "$2" ] || continue
+    [[ "${avg60#avg60=}" =~ ^([0-9]+)\.([0-9]+)$ ]] || return 1
+    echo $(( 10#${BASH_REMATCH[1]} + (10#${BASH_REMATCH[2]} > 0) ))
+    return 0
+  done < "$file"
+  return 1
+}
+
+# Each prints NAME VALUE LIMIT. Our account's stall replaces the machine's
+# load5 and blocked count, which another account's work can raise: on
+# 2026-11-03 load5 was 432 while our CPU pressure was 5 %. The machine
+# figures apply only without the account's pressure files.
+cpu_signal() {
+  local value
+  if value=$(account_pressure cpu some); then echo "cpu-pressure $value $MAX_CPU_PRESSURE"
+  else echo "load5 $(load_five) $MAX_LOAD"; fi
+}
+
+io_signal() {
+  local value
+  if value=$(account_pressure io full); then echo "io-pressure $value $MAX_IO_PRESSURE"
+  else echo "blocked $(blocked_count) $MAX_BLOCKED"; fi
+}
 
 # --- the gate lock ---------------------------------------------------------
 #
@@ -515,6 +603,13 @@ recover_dead_reservation() {
 # An admitted launch keeps its slot until its owner or compiler exits.
 live_reservations() {
   local marker owner child
+  # Older pinned guards can remove a token without releasing its ledger claim.
+  # Enumerate the ledger too. Recovery keeps live owners and populated scopes.
+  if [[ -e /proc/$BASHPID/fd/7 && /proc/$BASHPID/fd/7 -ef "$GATE_MUTEX" ]]; then
+    ZESU_GUARD_MUTEX_FD=7 python3 "$MEMORY_TOOL" ledger-recover-stale --all >/dev/null || return $?
+  else
+    env -u ZESU_GUARD_MUTEX_FD python3 "$MEMORY_TOOL" ledger-recover-stale --all >/dev/null || return $?
+  fi
   for marker in "$COQC_RESERVATIONS"/*; do
     [ -e "$marker" ] || continue
     owner=${marker##*/}; owner=${owner%%.*}
@@ -1118,10 +1213,6 @@ guard_jobs() {
   budget=$(( available * 70 / 100 ))
   headroom=$(( available - MEMORY_HEADROOM_GIB ))
   (( budget <= headroom )) || budget=$headroom
-  if [ "$MEMORY_POLICY" = used ]; then
-    headroom=$(( HOLD_GIB - $(used_gib) ))
-    (( budget <= headroom )) || budget=$headroom
-  fi
   limit=$(( budget / JOB_GIB ))
   (( limit < 1 )) && limit=1
   (( limit > MAX_JOBS )) && limit=$MAX_JOBS
@@ -1320,14 +1411,15 @@ kill_youngest() {
 # Why the guard would hold a launch now, or nothing. A gate's own jobs
 # are not held by its own lock.
 hold_reason() {
-  local memory_reason coqc load blocked holder
+  local memory_reason coqc cpu_name cpu cpu_limit io_name io io_limit holder
   memory_reason=$(memory_hold_reason)
   coqc=$(coqc_count) || return $?
-  load=$(load_five); blocked=$(blocked_count)
+  read -r cpu_name cpu cpu_limit < <(cpu_signal)
+  read -r io_name io io_limit < <(io_signal)
   if [ -n "$memory_reason" ]; then echo "$memory_reason"
   elif (( coqc >= MAX_COQC )); then echo "coqc $coqc machine-wide"
-  elif (( load > MAX_LOAD )); then echo "load5 $load"
-  elif (( blocked > MAX_BLOCKED )); then echo "blocked $blocked"
+  elif (( cpu > cpu_limit )); then echo "$cpu_name $cpu"
+  elif (( io > io_limit )); then echo "$io_name $io"
   elif [ "${1:-}" != no-lock ] \
        && [ -z "${ZESU_IN_GATE:-}${ZESU_IN_BATCH:-}$WRITER_ID" ] \
        && holder=$(lock_live 2>/dev/null); then
@@ -1358,16 +1450,15 @@ guard_wait() {
 # The watch also records the high-water mark of used memory, which is the
 # batch peak every report has to carry.
 record_peak() {
-  local total available used before
-  read -r total _ available < <(memory)
-  used=$(( total - available ))
+  local used before
+  used=$(used_bytes)
   before=$(cat "$PEAK" 2>/dev/null); before=${before:-0}
   (( used > before )) && echo "$used" > "$PEAK"
 }
 
 guard_watch() {
   local reason held=""
-  note "watch start: total $(free -g | awk '/^Mem:/{print $2}') GiB policy=$MEMORY_POLICY"
+  note "watch start: total $(free -g | awk '/^Mem:/{print $2}') GiB memory=$(memory_scope)"
   while :; do
     record_peak
     reason=$(memory_hold_reason)
@@ -1594,9 +1685,13 @@ run_scope() {
     register_run_actor || return $?
     exec "$@"
   fi
-  local unit="${SCOPE_PREFIX}-${name}-$$-${RANDOM}"
+  # An inherited reservation belongs to an ancestor, not this launcher.
+  # guard_leaf authenticates that owner's PID in the kernel leaf name.
+  local scope_owner=${reservation##*/}
+  scope_owner=${scope_owner%%.*}
+  local unit="${SCOPE_PREFIX}-${name}-${scope_owner}-${RANDOM}"
   if [ -n "$WRITER_ID" ]; then
-    unit="${SCOPE_PREFIX}-writer-${WRITER_ID}-${name}-$$-${RANDOM}"
+    unit="${SCOPE_PREFIX}-writer-${WRITER_ID}-${name}-${scope_owner}-${RANDOM}"
   fi
   if diagnostic_probe; then
     if ! mark_probe_scope "$reservation" "$unit.scope"; then
@@ -1727,12 +1822,14 @@ io_class() {
 # Guard state from /proc, then the machine figures from Prometheus. The
 # Prometheus line is what a report quotes (plan section 4, rule 6).
 report() {
-  local peak holder coqc
+  local peak holder coqc cpu_name cpu cpu_limit io_name io io_limit
   coqc=$(coqc_count) || return $?
   peak=$(cat "$PEAK" 2>/dev/null); peak=${peak:-0}
   holder=$(lock_live 2>/dev/null) || holder=none
-  printf 'guard: policy %s; available %s GiB; job %s GiB; used %s GiB (used-policy launch <%s, hold %s, kill %s); coqc %s machine-wide; load5 %s; blocked %s; jobs %s; batch peak %d GiB; gate lock %s; holds %s; guard kills %s\n' \
-    "$MEMORY_POLICY" "$(available_gib)" "$MODULE_LIMIT_GIB" "$(used_gib)" "$LAUNCH_GIB" "$HOLD_GIB" "$KILL_GIB" "$coqc" "$(load_five)" "$(blocked_count)" "$(guard_jobs)" \
+  read -r cpu_name cpu cpu_limit < <(cpu_signal)
+  read -r io_name io io_limit < <(io_signal)
+  printf 'guard: memory %s; available %s GiB; job %s GiB; used %s GiB; coqc %s machine-wide; %s %s (limit %s); %s %s (limit %s); jobs %s; batch peak %d GiB; gate lock %s; holds %s; guard kills %s\n' \
+    "$(memory_scope)" "$(available_gib)" "$MODULE_LIMIT_GIB" "$(used_gib)" "$coqc" "$cpu_name" "$cpu" "$cpu_limit" "$io_name" "$io" "$io_limit" "$(guard_jobs)" \
     $(( peak / GIB )) "$holder" \
     "$(grep -c ' HOLD ' "$LOG" 2>/dev/null | head -1)" \
     "$(grep -c ' KILL ' "$LOG" 2>/dev/null | head -1)"
