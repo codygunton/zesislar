@@ -6,6 +6,7 @@ From iris.base_logic.lib Require Import iprop.
 From iris.proofmode Require Import tactics.
 From Coq Require Import List ZArith.
 From stdpp Require Import list bitvector.definitions.
+Require Import ZesuSsz.Automation.All.
 Local Open Scope Z_scope.
 
 Section Controls.
