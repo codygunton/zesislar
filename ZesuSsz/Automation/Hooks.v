@@ -1968,16 +1968,17 @@ Polymorphic Inductive zesu_canonical_fact_views_attempted {A : Type} (target : A
 
 Ltac zesu_canonical_fact_views_if_enabled :=
   zesu_switch_enabled constr:(ZesuSsz.Automation.CanonicalFactAdapter.ZesuStepCanonicalFactAdapter);
-  lazymatch goal with
-  | |- ?target =>
-      assert_fails ltac:(idtac; match goal with
-      | _ : @zesu_canonical_fact_views_attempted _ ?previous |- _ =>
-          constr_eq previous target
-      end);
-      let marker := fresh "HcanonicalFactViewsAttempted" in
-      pose proof (@zesu_canonical_fact_views_token _ target) as marker;
-      ZesuSsz.Automation.CanonicalFactAdapter.zesu_canonical_context_step
-  end.
+  let key := lazymatch goal with
+    | |- environments.envs_entails _ ?P => constr:(P)
+    | |- ?target => constr:(target)
+    end in
+  assert_fails ltac:(idtac; match goal with
+    | _ : @zesu_canonical_fact_views_attempted _ ?previous |- _ =>
+        constr_eq previous key
+    end);
+  let marker := fresh "HcanonicalFactViewsAttempted" in
+  pose proof (@zesu_canonical_fact_views_token _ key) as marker;
+  ZesuSsz.Automation.CanonicalFactAdapter.zesu_canonical_context_step.
 
 (* Retain the entry key before ordinary matching exposes its binders. *)
 Ltac zesu_union_witness_step :=
