@@ -13,6 +13,7 @@ Require Import ZesuSsz.Automation.CodecArrayRead.
 Require Import ZesuSsz.Automation.WordIdentity.
 Require Import ZesuSsz.Automation.SignedMaskBranch.
 Require Import ZesuSsz.Automation.ArrayContinuation.
+Require Import ZesuSsz.Automation.CodecFrame.
 Require Import ZesuSsz.Automation.HypothesisCast.
 Require Import ZesuSsz.Automation.ByteMaskCast.
 Require Import ZesuSsz.Automation.ByteReconstruction.
@@ -633,8 +634,17 @@ Ltac zesu_finish_source_package :=
       SourceFactMatching.zesu_source_match_tree requested ltac:(idtac))
     ltac:(fun _ => SourceFactMatching.zesu_source_finish_package).
 
+(* Match the requested facts directly against the source facts. This adds no
+   byte view and no residual switch. *)
+Ltac zesu_finish_source_tail :=
+  MemoryTupleConsumer.zesu_memory_tuple
+    ltac:(fun requested =>
+      SourceFactMatching.zesu_source_match_tree requested ltac:(idtac))
+    ltac:(fun _ => SourceFactMatching.zesu_source_finish_package).
+
+(* The direct source tail runs last, after the switched closers fail. *)
 Ltac zesu_finish_residual_cascade :=
-  solve [
+  first [solve [
     zesu_finish_residual_switches;
     first [ solve [zesu_finish_source_package]
           | solve [ZesuSsz.Automation.WordIdentity.zesu_word_identity]
@@ -650,10 +660,11 @@ Ltac zesu_finish_residual_cascade :=
           | solve [ZesuSsz.Automation.BranchUnsigned.zesu_unsigned_branch_evidence]
           | solve [ZesuSsz.Automation.FramePackingFinish.zesu_frame_packing_finish]
           | solve [zesu_v34_array_continuation]
+          | solve [ZesuSsz.Automation.CodecFrame.zesu_codec_frame]
           | solve [ZesuSsz.Automation.ArrayPayloadPresentation.zesu_array_payload_presentation
               ltac:(first [ZesuSsz.Automation.SymbolicByteCodec.zesu_symbolic_byte_codec |
       ZesuSsz.Automation.FramePackingFinish.zesu_frame_packing_finish])] ]
-  ].
+  ] | solve [zesu_finish_source_tail]].
 
 (* Fast generic evidence transport precedes broad arithmetic. *)
 Ltac zesu_union_required_pure :=
@@ -1094,7 +1105,7 @@ Ltac zesu_block :=
   then first [solve [zesu_block_base; try zesu_finish_residual_cascade] |
     idtac "ZESU_COLLECTION_FALLBACK";
     pose proof zesu_context_collection_off_intro;
-    zesu_block_base]
+    zesu_block_base; try zesu_finish_residual_cascade]
   else (zesu_block_base; try zesu_finish_residual_cascade)).
 
 Ltac zesu_block_simpl :=

@@ -2070,6 +2070,14 @@ Ltac zesu_return_integer_even_mask :=
       end)
   end.
 
+(* A direct codec value can feed the requested low-bit mask. The codec module
+   loads before this rule, so the mask step is added here. *)
+Ltac ZesuSsz.Automation.CodecArrayRead.zesu_codec_array_direct_value ::=
+  CodecArrayRead.zesu_codec_array_direct_prepare ltac:(fun loaded image =>
+    CodecArrayRead.zesu_codec_array_read_image image;
+    subst loaded;
+    try zesu_return_integer_even_mask).
+
 Ltac zesu_prefer_owned_instr_pre :=
   lazymatch goal with
   | |- envs_entails _ (find_in_context (FindInstrKind _ _) _) =>

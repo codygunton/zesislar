@@ -73,6 +73,8 @@ Require Export ZesuSsz.Automation.SourceFactMatching.
 Require Export ZesuSsz.Automation.SourceFactByteViews.
 Require Export ZesuSsz.Automation.FrameImageRoundtrip.
 Require Export ZesuSsz.Automation.LoopResourceBackedge.
+Require Export ZesuSsz.Automation.CodecRoundtrip.
+Require Export ZesuSsz.Automation.CodecFrame.
 
 #[export] Instance zesu_signed_mask_branch_enabled :
   ZesuSsz.Automation.SignedMaskBranch.ZesuStepSignedMaskBranch := {}.
@@ -86,6 +88,8 @@ Require Export ZesuSsz.Automation.LoopResourceBackedge.
   ZesuSsz.Automation.Hooks.ZesuStepRegcolVMCompute := {}.
 #[export] Instance zesu_source_witnesses_enabled :
   ZesuSsz.Automation.SourceWitnessInputs.ZesuStepSourceWitnesses := I.
+#[export] Instance zesu_codec_frame_enabled :
+  ZesuSsz.Automation.CodecFrame.ZesuStepCodecFrame := {}.
 
 (* Reopen the canonical hook owner after all library imports. *)
 Require Export ZesuSsz.Automation.Hooks.
