@@ -3,7 +3,7 @@
   "guard": {
     "source_path": "tools/block/harness/runtime-tools/resource_guard.sh",
     "approved_sha256": "27e5e6994aac7de81525698c5a070927b084eaa5fd04d7af029e3660317805ac",
-    "golden_sha256": "60cdc7ba4bc9b66d240838489a6e0211e14ce3edf0d1d5ec40a4182399ef6478",
+    "golden_sha256": "fe07b57ef8675c00f8fa644dbeb8269332bd9722a5038c85275c495159df9615",
     "main_adjustments": [
       [
         "guards share it for two seconds",
@@ -19,6 +19,10 @@
       "commit": "8ce448d3",
       "tracking_issue": 21,
       "change": "Enumerate stale ledger claims before reading reservation markers. Preserve all live owners and scopes."
+    },
+    "scope_owner_delta": {
+      "commit": "10a962cdc28aada9e8c3bf2092c425af56434bd4",
+      "change": "Name new guard leaves with the inherited reservation owner PID. Keep owner, actor, scope, and token validation unchanged."
     }
   },
   "memory_policy": {
