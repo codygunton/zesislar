@@ -1548,7 +1548,7 @@ def recover_stale_shells(*, ledger=None, reader=None):
 
 
 def release_shell(marker, *, ledger=None, reader=None, require_dead_owner=False):
-    """Release only an exact token whose recorded compiler actor ended."""
+    """Release an authenticated token whose recorded compiler actor ended."""
     marker = Path(marker).absolute()
     ledger = Path(ledger or os.environ.get('ZESU_CANONICAL_LEDGER', DEFAULT_LEDGER))
     reader = ScopeReader() if reader is None else reader
@@ -1576,13 +1576,24 @@ def release_shell(marker, *, ledger=None, reader=None, require_dead_owner=False)
         if require_dead_owner and not ended_process(reader, record['owner']):
             raise ValueError('The shell reservation owner is still live.')
         token_identity = reader.file_identity(marker.lstat())
-        if tuple(record.get('token_identity', ())) != token_identity:
+        if tuple(record.get('token_identity', ())) != token_identity and not require_dead_owner:
             raise ValueError('The released token identity changed.')
         lines = marker.read_text().splitlines()
         fields = dict(line.split('=', 1) for line in lines[1:] if '=' in line)
         if (fields.get('reservation_generation') != record['generation']
                 or int(fields['owner_start']) != record['owner']['startticks']):
             raise ValueError('The release owner differs from its token.')
+        released = data.get('shell_releases', {}).get(key)
+        if released and data.get('fixed_claims', {}).get(key) == 0:
+            if released.get('owner') != record['owner'] or released.get('marker') != str(marker):
+                raise ValueError('The released marker differs from its ledger record.')
+            if reader.file_identity(marker.lstat()) != token_identity:
+                raise ValueError('The released marker changed during cleanup.')
+            marker.unlink()
+            released['marker_cleanup'] = {'observed_token_identity': token_identity,
+                                          'removed_ns': time.time_ns()}
+            write_ledger(ledger, data)
+            return True
         if lines[0].isdecimal():
             if not record.get('leaf') or not leaf_closed(reader, record['leaf']):
                 raise ValueError('The exact shell compiler leaf is not closed.')
@@ -1616,7 +1627,9 @@ def release_shell(marker, *, ledger=None, reader=None, require_dead_owner=False)
             raise ValueError('The shell reservation owner changed during release.')
         data['fixed_claims'][key] = 0
         data.setdefault('shell_releases', {})[key] = {'marker': str(marker), 'owner': record['owner'],
-            'dead_owner_recovery': require_dead_owner}
+            'dead_owner_recovery': require_dead_owner,
+            'previous_token_identity': record.get('token_identity'),
+            'observed_token_identity': token_identity}
         write_ledger(ledger, data)
         marker.unlink()
         return True
