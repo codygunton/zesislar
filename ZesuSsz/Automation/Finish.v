@@ -2,7 +2,6 @@ Require Import ZesuSsz.Automation.MemoryAddress.
 Require Import ZesuSsz.Automation.MemoryTupleConsumer.
 Require Import ZesuSsz.Automation.SourceFactMatching.
 Require Import ZesuSsz.Automation.SourceFactByteViews.
-Require Import ZesuSsz.Automation.SourceFactByteOrder.
 Require Import ZesuSsz.Automation.EntryWitnessFinish.
 Require Import ZesuSsz.Automation.WrappedWord.
 Require Import isla.riscv64.riscv64.
@@ -623,8 +622,9 @@ Ltac zesu_v34_array_continuation :=
 Ltac zesu_finish_source_package :=
   MemoryTupleConsumer.zesu_memory_tuple
     ltac:(fun requested =>
-      SourceFactByteViews.zesu_source_byte_views;
-      SourceFactByteViews.zesu_source_byte_order_tree requested;
+      once
+        (SourceFactByteViews.zesu_source_byte_views;
+         SourceFactByteViews.zesu_source_byte_order_tree requested);
       SourceFactMatching.zesu_source_check_fixed_tree requested;
       SourceFactMatching.zesu_source_match_tree requested ltac:(idtac))
     ltac:(fun _ => SourceFactMatching.zesu_source_finish_package).
