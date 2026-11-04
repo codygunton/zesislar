@@ -52,12 +52,12 @@ class DeadOwnerRecoveryTests(unittest.TestCase):
         result = M.projection(data, M.ledger_claims(data), 0, 200 * M.GIB, reader=f.reader)
         self.assertEqual(result['accounted_active_bytes'], 0)
 
-    def test_changed_token_identity_stays_refused_after_owner_ends(self):
+    def test_changed_generation_stays_refused_after_owner_ends(self):
         f = self.fixture
         self.end_owner()
-        f.marker.write_text(f.marker.read_text() + 'changed=yes\n')
+        f.marker.write_text(f.marker.read_text().replace('fixture-generation-1234', 'wrong-generation'))
         before = f.ledger.read_bytes()
-        with self.assertRaisesRegex(ValueError, 'token identity changed'):
+        with self.assertRaisesRegex(ValueError, 'owner differs from its token'):
             self.recover()
         self.assertEqual(f.ledger.read_bytes(), before)
         self.assertTrue(f.marker.exists())
