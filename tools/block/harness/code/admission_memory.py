@@ -1454,6 +1454,16 @@ def ended_process(reader, actor):
         return True
 
 
+def _shell_recovery_record(data, key, reader):
+    record = data.get('shell_claim_owners', {}).get(key)
+    released = data.get('shell_releases', {}).get(key)
+    if record is None and key in data.get('shell_archive', {}):
+        from shell_archive import released_records
+        record, released = released_records(data, key, reader)
+        return record, released, True
+    return record, released, False
+
+
 def recover_dead_shell(marker, *, ledger=None, reader=None):
     """Keep exact recovery or audit complete absence after interrupted publication."""
     marker = Path(marker).absolute()
@@ -1461,23 +1471,24 @@ def recover_dead_shell(marker, *, ledger=None, reader=None):
     reader = ScopeReader() if reader is None else reader
     with ledger_transaction(ledger) as data:
         key = shell_key(marker)
-        admitted = data.get('shell_claim_owners', {}).get(key)
+        admitted, released, was_archived = _shell_recovery_record(data, key, reader)
+        archived = admitted if was_archived else None
+        if was_archived and (data['fixed_claims'].get(key) != 0
+                or released['owner'] != admitted['owner'] or released['marker'] != admitted['marker']):
+            raise ValueError('The archived token lacks exact released ownership.')
         if admitted is not None:
             lines = marker.read_text().splitlines()
             fields = dict(line.split('=', 1) for line in lines[1:] if '=' in line)
-            complete = (tuple(admitted.get('token_identity', ())) == reader.file_identity(marker.lstat())
-                        and (lines[0] == 'confirmed' or admitted.get('leaf') and fields.get('child_start')))
+            if (fields.get('reservation_generation') != admitted.get('generation')
+                    or int(fields['owner_start']) != admitted['owner']['startticks']):
+                raise ValueError('The release owner differs from its token.')
+            leaf = admitted.get('leaf')
+            leaf_complete = isinstance(leaf, dict) and {'scope', 'device', 'inode'} <= leaf.keys()
+            complete = (bool(admitted.get('token_identity'))
+                        and (lines[0] == 'confirmed' or leaf_complete and fields.get('child_start')))
             if complete:
                 return release_shell(marker, ledger=ledger, reader=reader, require_dead_owner=True)
 
-        archived = None
-        if key in data.get('shell_archive', {}):
-            from shell_archive import released_records
-            owner, release = released_records(data, key, reader)
-            if (data['fixed_claims'].get(key) != 0 or release['owner'] != owner['owner']
-                    or release['marker'] != owner['marker']):
-                raise ValueError('The archived token lacks exact released ownership.')
-            archived = owner
         expected = Path(data.get('shell_marker_directory', marker_directory()))
         if (marker.parent != expected or marker.parent.resolve() != marker.parent
                 or not re.fullmatch(r'[0-9]+\.[a-zA-Z0-9.-]+', marker.name)):
@@ -1530,13 +1541,13 @@ def recover_dead_shell(marker, *, ledger=None, reader=None):
         audit = {'marker': str(marker), 'owner': owner, 'actor_pid': actor,
                  'absent_scope_names': units, 'token_sha256': hashlib.sha256(raw).hexdigest(),
                  'token_identity': list(identity), 'recovered_ns': time.time_ns(),
-                 'route': ('admitted_absence' if admitted is not None else
-                           'archived_release' if archived is not None else 'unadmitted_orphan'),
+                 'route': ('archived_release' if was_archived else
+                           'admitted_absence' if admitted is not None else 'unadmitted_orphan'),
                  'verified_absent_pids': pids}
         data.setdefault('shell_recovery_audits', {})[key] = audit
         if key in data['fixed_claims']:
             data['fixed_claims'][key] = 0
-        if admitted is not None:
+        if admitted is not None and not was_archived:
             data.setdefault('shell_releases', {})[key] = {
                 'marker': str(marker), 'owner': admitted['owner'],
                 'dead_owner_recovery': True, 'absence_only': True}
@@ -1545,14 +1556,116 @@ def recover_dead_shell(marker, *, ledger=None, reader=None):
         return True
 
 
-def release_shell(marker, *, ledger=None, reader=None, require_dead_owner=False):
-    """Release only an exact token whose recorded compiler actor ended."""
+def recover_stale_shell(marker, *, ledger=None, reader=None):
+    """Audit a stale booking only after its owner and every recorded scope end.
+
+    A missing or replaced marker supplies no authority. The ledger supplies the
+    owner and scope identities. This command never removes a replacement marker.
+    """
     marker = Path(marker).absolute()
     ledger = Path(ledger or os.environ.get('ZESU_CANONICAL_LEDGER', DEFAULT_LEDGER))
     reader = ScopeReader() if reader is None else reader
     with ledger_transaction(ledger) as data:
         key = shell_key(marker)
-        record = data.get('shell_claim_owners', {}).get(key)
+        record, released, was_archived = _shell_recovery_record(data, key, reader)
+        if record is None or record.get('marker') != str(marker):
+            raise ValueError('Stale recovery requires a recorded shell owner.')
+        if released is not None:
+            return False
+        def identity():
+            try:
+                return reader.file_identity(marker.lstat())
+            except FileNotFoundError:
+                return None
+        token = identity()
+        if token is not None and token == tuple(record.get('token_identity', ())):
+            raise ValueError('Stale recovery requires a missing or changed token.')
+        scopes = {}
+        actors = [record['owner']]
+        def collect(value):
+            if isinstance(value, dict):
+                if all(name in value for name in ('scope', 'device', 'inode')):
+                    scopes[value['scope']] = value
+                if isinstance(value.get('actor'), dict):
+                    actors.append(value['actor'])
+                for child in value.values():
+                    collect(child)
+            elif isinstance(value, list):
+                for child in value:
+                    collect(child)
+        collect(record)
+        def check_closed():
+            for actor in actors:
+                if not ended_process(reader, actor):
+                    raise ValueError('The stale shell owner or actor is still live.')
+            for scope, bound in scopes.items():
+                Path(scope).relative_to(reader.root)
+                if not leaf_closed(reader, bound):
+                    raise ValueError('The stale shell scope or leaf is still populated.')
+            relatives = [str(Path(scope).relative_to(reader.root)) for scope in scopes]
+            owner_pid = str(record['owner']['pid'])
+            for process in reader.proc.iterdir():
+                if not process.name.isdigit():
+                    continue
+                try:
+                    memberships = (process / 'cgroup').read_text().splitlines()
+                except FileNotFoundError:
+                    continue
+                for membership in memberships:
+                    location = membership.split(':', 2)[-1].lstrip('/')
+                    parts = Path(location).parts
+                    owned_name = any(('-' + owner_pid + '-') in part or
+                                     ('p' + owner_pid + 'r') in part for part in parts)
+                    if owned_name or any(location == scope or location.startswith(scope + '/')
+                                         for scope in relatives):
+                        raise ValueError('A process still uses the stale shell cgroup.')
+        check_closed()
+        amount = data.get('fixed_claims', {}).get(key, 0)
+        if identity() != token:
+            raise ValueError('The stale token changed during recovery.')
+        check_closed()
+        data.setdefault('fixed_claims', {})[key] = 0
+        data.setdefault('shell_releases', {})[key] = {
+            'marker': str(marker), 'owner': record['owner'],
+            'stale_owner_recovery': True, 'released_bytes': amount,
+            'previous_token_identity': record.get('token_identity'),
+            'observed_token_identity': token, 'closed_scopes': sorted(scopes),
+            'recovered_ns': time.time_ns()}
+        write_ledger(ledger, data)
+        return True
+
+
+def recover_stale_shells(*, ledger=None, reader=None):
+    """Find stale bookings even when an older guard removed their markers."""
+    ledger = Path(ledger or os.environ.get('ZESU_CANONICAL_LEDGER', DEFAULT_LEDGER))
+    reader = ScopeReader() if reader is None else reader
+    with ledger_transaction(ledger) as data:
+        records = [(key, record) for key, record in data.get('shell_claim_owners', {}).items()
+                   if key not in data.get('shell_releases', {})
+                   and data.get('fixed_claims', {}).get(key, 0) > 0]
+    results = []
+    for key, record in records:
+        try:
+            if not ended_process(reader, record['owner']):
+                continue
+            marker = Path(record['marker'])
+            if marker.exists() and reader.file_identity(marker.lstat()) == tuple(record.get('token_identity', ())):
+                continue
+            released = recover_stale_shell(marker, ledger=ledger, reader=reader)
+            results.append({'key': key, 'released': released})
+        except (OSError, ValueError) as error:
+            results.append({'key': key, 'released': False, 'reason': str(error)})
+    return results
+
+
+def release_shell(marker, *, ledger=None, reader=None, require_dead_owner=False):
+    """Release an authenticated token whose recorded compiler actor ended."""
+    marker = Path(marker).absolute()
+    ledger = Path(ledger or os.environ.get('ZESU_CANONICAL_LEDGER', DEFAULT_LEDGER))
+    reader = ScopeReader() if reader is None else reader
+    with ledger_transaction(ledger) as data:
+        key = shell_key(marker)
+        record, released, was_archived = _shell_recovery_record(data, key, reader)
         if record is None:
             if require_dead_owner:
                 raise ValueError('Dead-owner recovery requires an admitted shell owner.')
@@ -1574,13 +1687,28 @@ def release_shell(marker, *, ledger=None, reader=None, require_dead_owner=False)
         if require_dead_owner and not ended_process(reader, record['owner']):
             raise ValueError('The shell reservation owner is still live.')
         token_identity = reader.file_identity(marker.lstat())
-        if tuple(record.get('token_identity', ())) != token_identity:
+        if tuple(record.get('token_identity', ())) != token_identity and not require_dead_owner:
             raise ValueError('The released token identity changed.')
         lines = marker.read_text().splitlines()
         fields = dict(line.split('=', 1) for line in lines[1:] if '=' in line)
         if (fields.get('reservation_generation') != record['generation']
                 or int(fields['owner_start']) != record['owner']['startticks']):
             raise ValueError('The release owner differs from its token.')
+        if released and data.get('fixed_claims', {}).get(key) == 0:
+            if released.get('owner') != record['owner'] or released.get('marker') != str(marker):
+                raise ValueError('The released marker differs from its ledger record.')
+            if reader.file_identity(marker.lstat()) != token_identity:
+                raise ValueError('The released marker changed during cleanup.')
+            marker.unlink()
+            cleanup = {'observed_token_identity': token_identity, 'removed_ns': time.time_ns()}
+            if was_archived:
+                data.setdefault('shell_recovery_audits', {})[key] = dict(cleanup,
+                    route='archived_release', marker=str(marker), owner=record['owner'],
+                    archive_sha256=data['shell_archive'][key])
+            else:
+                released['marker_cleanup'] = cleanup
+            write_ledger(ledger, data)
+            return True
         if lines[0].isdecimal():
             if not record.get('leaf') or not leaf_closed(reader, record['leaf']):
                 raise ValueError('The exact shell compiler leaf is not closed.')
@@ -1614,7 +1742,9 @@ def release_shell(marker, *, ledger=None, reader=None, require_dead_owner=False)
             raise ValueError('The shell reservation owner changed during release.')
         data['fixed_claims'][key] = 0
         data.setdefault('shell_releases', {})[key] = {'marker': str(marker), 'owner': record['owner'],
-            'dead_owner_recovery': require_dead_owner}
+            'dead_owner_recovery': require_dead_owner,
+            'previous_token_identity': record.get('token_identity'),
+            'observed_token_identity': token_identity}
         write_ledger(ledger, data)
         marker.unlink()
         return True

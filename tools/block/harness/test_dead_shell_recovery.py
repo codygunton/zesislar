@@ -52,8 +52,20 @@ class DeadOwnerRecoveryTests(unittest.TestCase):
         result = M.projection(data, M.ledger_claims(data), 0, 200 * M.GIB, reader=f.reader)
         self.assertEqual(result['accounted_active_bytes'], 0)
 
-    def test_changed_token_identity_with_existing_scope_stays_refused(self):
+    def test_changed_generation_stays_refused_after_owner_ends(self):
         f = self.fixture
+        self.end_owner()
+        f.marker.write_text(f.marker.read_text().replace('fixture-generation-1234', 'wrong-generation'))
+        before = f.ledger.read_bytes()
+        with self.assertRaisesRegex(ValueError, 'owner differs from its token'):
+            self.recover()
+        self.assertEqual(f.ledger.read_bytes(), before)
+        self.assertTrue(f.marker.exists())
+
+
+    def test_incomplete_identity_with_existing_scope_stays_refused(self):
+        f = self.fixture
+        self.interrupt_confirmation()
         self.end_owner()
         f.marker.write_text(f.marker.read_text() + 'changed=yes\n')
         before = f.ledger.read_bytes()
@@ -79,6 +91,29 @@ class DeadOwnerRecoveryTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, 'leaf is not closed'):
             self.recover()
         self.assertEqual(f.ledger.read_bytes(), before)
+
+    def test_complete_generation_mismatch_refuses_with_all_actors_and_scopes_absent(self):
+        f = self.fixture
+        self.end_owner()
+        shutil.rmtree(f.group)
+        f.marker.write_text(f.marker.read_text().replace('fixture-generation-1234', 'wrong-generation'))
+        before = f.ledger.read_bytes()
+        with self.assertRaisesRegex(ValueError, 'owner differs from its token'):
+            self.recover()
+        self.assertEqual(f.ledger.read_bytes(), before)
+        self.assertTrue(f.marker.exists())
+
+    def test_complete_replaced_token_uses_authenticated_main_release(self):
+        f = self.fixture
+        self.end_owner()
+        f.marker.write_text(f.marker.read_text() + 'changed=yes\n')
+        self.assertTrue(self.recover())
+        data = f.read()
+        key = M.shell_key(f.marker)
+        self.assertTrue(data['shell_releases'][key]['dead_owner_recovery'])
+        self.assertFalse(f.marker.exists())
+        result = M.projection(data, M.ledger_claims(data), 0, 200*M.GIB, reader=f.reader)
+        self.assertEqual(result['accounted_active_bytes'], 64*M.GIB)
 
     def orphan(self):
         f = self.fixture

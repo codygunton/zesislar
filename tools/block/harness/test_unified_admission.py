@@ -235,6 +235,52 @@ class UnifiedAdmission(unittest.TestCase):
                                    ledger=self.ledger,reader=self.reader)
         self.assertEqual(self.read()['fixed_claims'][M.shell_key(self.marker)],64*M.GIB)
 
+    def test_dead_owner_recovery_accepts_replaced_token_with_matching_binding(self):
+        self.assertTrue(self.confirm()['fits'])
+        original=self.reader.file_identity(self.marker.lstat())
+        replacement=self.root/'changed-token'
+        replacement.write_bytes(self.marker.read_bytes())
+        replacement.replace(self.marker)
+        observed=self.reader.file_identity(self.marker.lstat())
+        self.assertNotEqual(original,observed)
+        with self.assertRaisesRegex(ValueError,'still live'):
+            M.recover_dead_shell(self.marker,ledger=self.ledger,reader=self.reader)
+        self.process(dict(self.pending,startticks=999),12,['guard','scope'],
+                     str(self.group.relative_to(self.reader.root)))
+        text=self.marker.read_text()
+        for changed in (text.replace('owner_start=104','owner_start=105'),
+                        text.replace('fixture-generation-1234','other-generation')):
+            self.marker.write_text(changed)
+            with self.assertRaisesRegex(ValueError,'owner differs'):
+                M.recover_dead_shell(self.marker,ledger=self.ledger,reader=self.reader)
+        self.marker.write_text(text)
+        observed=self.reader.file_identity(self.marker.lstat())
+        (self.group/'cgroup.events').write_text('populated 0\n')
+        self.assertTrue(M.recover_dead_shell(self.marker,ledger=self.ledger,reader=self.reader))
+        data=self.read();key=M.shell_key(self.marker)
+        self.assertEqual(data['fixed_claims'][key],0)
+        self.assertEqual(data['shell_releases'][key]['previous_token_identity'],list(original))
+        self.assertEqual(data['shell_releases'][key]['observed_token_identity'],list(observed))
+
+    def test_released_zero_claim_marker_is_removed_once(self):
+        self.assertTrue(self.confirm()['fits'])
+        text=self.marker.read_text()
+        self.process(dict(self.pending,startticks=999),12,['guard','scope'],
+                     str(self.group.relative_to(self.reader.root)))
+        data=self.read();key=M.shell_key(self.marker)
+        data['fixed_claims'][key]=0
+        data['shell_releases']={key:{'marker':str(self.marker),'owner':self.pending}}
+        self.save(data)
+        self.marker.write_text(text)
+        observed=self.reader.file_identity(self.marker.lstat())
+        self.assertTrue(M.recover_dead_shell(self.marker,ledger=self.ledger,reader=self.reader))
+        self.assertFalse(self.marker.exists())
+        cleanup=self.read()['shell_releases'][key]['marker_cleanup']
+        self.assertEqual(cleanup['observed_token_identity'],list(observed))
+        before=self.ledger.read_bytes()
+        self.assertEqual(M.recover_stale_shells(ledger=self.ledger,reader=self.reader),[])
+        self.assertEqual(self.ledger.read_bytes(),before)
+
     def test_unknown_legacy_release_preserves_marker(self):
         self.token().rename(self.marker)
         original=self.marker.read_bytes();ledger=self.ledger.read_bytes()
