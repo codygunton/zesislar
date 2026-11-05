@@ -14,11 +14,11 @@ From stdpp.bitvector Require Import definitions.
 
 Ltac zesu_source_signed_lookup :=
   lazymatch goal with
-  | |- bv_signed (bv_sign_extend ?wide (bv_sign_extend ?middle ?byte)) < bv_signed ?zero =>
+  | |- (bv_signed (bv_sign_extend ?wide (bv_sign_extend ?middle ?byte)) < bv_signed ?zero)%Z =>
     assert_fails (has_evar byte);
     is_closed_term wide; is_closed_term middle;
     multimatch goal with
-    | Hsource : bv_signed (bv_sign_extend wide (bv_sign_extend middle ?loaded)) < bv_signed zero |- _ =>
+    | Hsource : (bv_signed (bv_sign_extend wide (bv_sign_extend middle ?loaded)) < bv_signed zero)%Z |- _ =>
       let equality := fresh "HsourceLoadedByte" in
       assert (equality : loaded = byte) by
         ArrayByteValues.zesu_finish_array_byte_lookup_if_closed;
@@ -35,12 +35,12 @@ Ltac zesu_source_signed_lookup :=
 
 Ltac zesu_source_signed_lookup_lower :=
  lazymatch goal with
- | |- ?threshold <= bv_unsigned ?byte =>
+ | |- (?threshold <= bv_unsigned ?byte)%Z =>
    assert_fails (has_evar byte);
    multimatch goal with
-   | Hsource : bv_signed (bv_sign_extend ?wide (bv_sign_extend ?middle ?loaded)) < bv_signed ?zero |- _ =>
+   | Hsource : (bv_signed (bv_sign_extend ?wide (bv_sign_extend ?middle ?loaded)) < bv_signed ?zero)%Z |- _ =>
      let transported := fresh "HsignedLookupLower" in
-     assert (transported : bv_signed (bv_sign_extend wide (bv_sign_extend middle byte)) < bv_signed zero) by
+     assert (transported : (bv_signed (bv_sign_extend wide (bv_sign_extend middle byte)) < bv_signed zero)%Z) by
        zesu_source_signed_lookup;
      BitvectorFacts.zesu_source_signed_lower
    end
