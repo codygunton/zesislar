@@ -615,15 +615,31 @@ Ltac zesu_v34_array_continuation :=
       assumption | reflexivity]).
 
 Ltac zesu_finish_source_package :=
-  MemoryTupleConsumer.zesu_memory_tuple
-    ltac:(fun requested =>
+  let run := ltac:(fun consume_facts finish =>
+once (try zesu_memory_registered_intro;
+  ResourceGroups.zesu_open_resource_groups;
+  ByteArrayAssemblyCodec.zesu_byte_array_normalize_stride;
+  zesu_memory_open_tuple constr:(16%nat);
+  repeat iMatchHyp ltac:(fun name body => is_var body; progress (iFrame name));
+  repeat first [progress zesu_memory_frame_first |
+    progress zesu_memory_join_arrays]);
+  lazymatch goal with
+  | |- environments.envs_entails _ ?requested => consume_facts requested
+  end;
+  try MemoryTupleConsumer.zesu_memory_assemble_leading;
+  try (iEval (rewrite big_sepL_nil));
+  try iFrame;
+  finish constr:(tt)) in
+  run ltac:(fun requested =>
       once
         (SourceFactByteViews.zesu_source_byte_views;
          SourceFactByteViews.zesu_source_byte_order_tree requested;
          ZesuSsz.Automation.BitvectorFacts.zesu_source_biased_mask_tree requested);
+      repeat JoinEntailment.zesu_join_project_once;
       SourceFactMatching.zesu_source_check_fixed_tree requested;
       SourceFactMatching.zesu_source_match_tree requested ltac:(idtac))
     ltac:(fun _ => SourceFactMatching.zesu_source_finish_package).
+
 
 (* Match the requested facts directly against the source facts. This adds no
    byte view and no residual switch. *)
@@ -704,7 +720,7 @@ Ltac zesu_finish_common_pure :=
 
 (* The common pure path and final tail share the union helper. Baseline closers remain available. *)
 Ltac zesu_finish_final_pure :=
-  first [
+  first [zesu_finish_common_pure |
   zesu_final_pure_head_gate;
   tryif progress zesu_saturate_derived_facts
   then try solve [zesu_array_bounds_if_enabled]
@@ -724,19 +740,19 @@ Ltac zesu_finish_final_pure :=
           zesu_finish_simpl_and_leaf |
           lazymatch goal with |- and _ _ => split; finish_leaf end]
       in finish_leaf
-    | zesu_finish_list_cons_final]] | zesu_finish_common_pure].
+    | zesu_finish_list_cons_final]]].
 
 
 
 Ltac zesu_finish_pure_goal :=
-  first [
+  first [zesu_finish_common_pure |
 zesu_finish_pure_goal_base;
   try solve [
     first [
       zesu_finish_negated_ge; zesu_finish_implication_pair; repeat split;
       first [reflexivity | assumption | eassumption | lia | bv_solve |
         zesu_finish_forall_leaf]
-    | repeat split; zesu_finish_forall_leaf]] | zesu_finish_common_pure].
+    | repeat split; zesu_finish_forall_leaf]]].
 
 Ltac zesu_finish_entailment :=
   lazymatch goal with
@@ -771,6 +787,7 @@ Ltac zesu_union_array_payload_finish :=
 
 Ltac zesu_finish_base :=
   first [solve [zesu_union_array_payload_finish] |
+  zesu_finish_common_pure |
   try solve [zesu_array_region_selection_if_enabled];
   tryif zesu_defer_unresolved_sidecondition_if_enabled then idtac else (
   try solve [zesu_list_cons_witness_if_enabled |
@@ -779,8 +796,7 @@ Ltac zesu_finish_base :=
   then tryif let _ := constr:(_ : ZesuStepBoundedArithmetic) in idtac
        then try (zesu_finish_v2)
        else zesu_finish_v2
-  else zesu_finish_v1) | zesu_finish_common_pure].
-
+  else zesu_finish_v1)].
 
 Ltac zesu_finish := zesu_finish_once_if_enabled ltac:(zesu_finish_base).
 
