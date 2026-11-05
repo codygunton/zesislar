@@ -59,3 +59,5 @@ Proof.
         args (Coq.Init.Logic.proj2 Hdomain))))).
 Qed.
 Print Assumptions decodeItemDomainAtLengthDerivedFacts.
+
+Require Export ZesuSsz.Contracts.DecodeItemDomainRanges.
