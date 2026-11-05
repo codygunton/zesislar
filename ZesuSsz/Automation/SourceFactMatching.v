@@ -51,10 +51,19 @@ Ltac zesu_source_signed_lookup_lower :=
 
 
 Ltac zesu_source_fact := first [solve [assumption] | solve [reflexivity] |
+  lazymatch goal with
+  | |- context [bv_unsigned (Z_to_bv ?width ?value)] =>
+      assert_fails (has_evar value);
+      let range := fresh "HsourceCastRange" in
+      assert (range : (0 <= value < bv_modulus width)%Z) by
+        ContextRange.zesu_hypothesis_cast_range_fact width value;
+      rewrite (Z_to_bv_small width value range); clear range;
+      zesu_source_fact
+  end |
   solve [BitvectorFacts.zesu_source_unsigned_bound] |
-  solve [zesu_source_signed_lookup] |
   solve [BitvectorFacts.zesu_source_signed_lower] |
   solve [zesu_source_signed_lookup_lower] |
+  solve [zesu_source_signed_lookup] |
   solve [BitvectorFacts.zesu_source_signed_upper] | lazymatch goal with
 | |- Z.ge (@bv_unsigned ?width ?value) Z0 =>
     apply Z.le_ge; exact (proj1 (bv_unsigned_in_range width value))
