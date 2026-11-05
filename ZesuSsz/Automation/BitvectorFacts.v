@@ -465,3 +465,52 @@ Ltac zesu_source_unsigned_bound :=
       clear -range adequate; Lia.lia
     end
   end.
+
+Ltac zesu_source_signed_lower :=
+  lazymatch goal with
+  | |- ?threshold <= bv_unsigned ?byte =>
+    assert_fails (has_evar byte);
+    let kind := type of byte in lazymatch kind with bv ?width =>
+      ZesuSsz.Automation.VmClosed.zesu_vm_closed width;
+      ZesuSsz.Automation.VmClosed.zesu_vm_closed threshold;
+      let half := ZesuSsz.Automation.VmClosed.zesu_vm_eval_closed (bv_half_modulus width) in
+      let floor := ZesuSsz.Automation.VmClosed.zesu_vm_eval_closed threshold in
+      constr_eq floor half;
+      multimatch goal with
+      | Hsource : bv_signed ?extended < ?right |- _ =>
+        ZesuSsz.Automation.VmClosed.zesu_vm_closed right;
+        let zero := ZesuSsz.Automation.VmClosed.zesu_vm_eval_closed right in
+        constr_eq zero constr:(0%Z);
+        let transported := fresh "HsignedLowerSource" in
+        pose proof Hsource as transported;
+        let rec unwrap value :=
+          lazymatch value with
+          | bv_sign_extend ?wide ?inner =>
+            let innerKind := type of inner in
+            lazymatch innerKind with bv ?narrow =>
+              ZesuSsz.Automation.VmClosed.zesu_vm_closed wide;
+              ZesuSsz.Automation.VmClosed.zesu_vm_closed narrow;
+              let ordered := fresh "HsignedExtensionWidth" in
+              assert (ordered : (narrow <= wide)%N) by
+                ZesuSsz.Automation.VmClosed.zesu_vm_closed_decide;
+              rewrite (bv_sign_extend_signed wide inner ordered) in transported;
+              clear ordered; unwrap inner
+            end
+          | _ => constr_eq value byte
+          end in
+        unwrap extended;
+        let rightZero := fresh "HsignedZero" in
+        assert (rightZero : right = 0%Z) by
+          ZesuSsz.Automation.VmClosed.zesu_vm_closed_decide;
+        rewrite rightZero in transported; clear rightZero;
+        let nonzero := fresh "HsignedNonzeroWidth" in
+        assert (nonzero : width <> 0%N) by
+          first [ZesuSsz.Automation.VmClosed.zesu_vm_closed_decide | congruence];
+        apply (proj1 (ZesuSsz.Automation.BitvectorFacts.zesu_guard_signed_negative
+          width byte nonzero)) in transported;
+        change (half <= bv_unsigned byte)%Z in transported;
+        change (floor <= bv_unsigned byte)%Z;
+        exact transported
+      end
+    end
+  end.
