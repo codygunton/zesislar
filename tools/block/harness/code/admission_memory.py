@@ -1455,8 +1455,66 @@ def ended_process(reader, actor):
 
 
 def recover_dead_shell(marker, *, ledger=None, reader=None):
-    """Use the exact release checks only after the admitted owner ends."""
-    return release_shell(marker, ledger=ledger, reader=reader, require_dead_owner=True)
+    """Recover an exact admitted token or audit an entirely absent orphan."""
+    marker = Path(marker).absolute()
+    ledger = Path(ledger or os.environ.get('ZESU_CANONICAL_LEDGER', DEFAULT_LEDGER))
+    reader = ScopeReader() if reader is None else reader
+    with ledger_transaction(ledger) as data:
+        key = shell_key(marker)
+        if key in data.get('shell_claim_owners', {}):
+            return release_shell(marker, ledger=ledger, reader=reader, require_dead_owner=True)
+        archived = None
+        if key in data.get('shell_archive', {}):
+            from shell_archive import released_records
+            owner, release = released_records(data, key, reader)
+            if (data['fixed_claims'].get(key) != 0 or release['owner'] != owner['owner']
+                    or release['marker'] != owner['marker']):
+                raise ValueError('The archived token lacks exact released ownership.')
+            archived = owner
+        expected = Path(data.get('shell_marker_directory', marker_directory()))
+        if (marker.parent != expected or marker.parent.resolve() != marker.parent
+                or not re.fullmatch(r'[0-9]+\.[a-zA-Z0-9.-]+', marker.name)):
+            raise ValueError('The orphan token is outside its owned namespace.')
+        info = marker.lstat()
+        if (not stat.S_ISREG(info.st_mode) or info.st_uid != reader.uid or info.st_mode & 0o022):
+            raise ValueError('The orphan token is not private.')
+        identity = reader.file_identity(info)
+        raw = marker.read_bytes()
+        lines = raw.decode().splitlines()
+        fields = dict(line.split('=', 1) for line in lines[1:] if '=' in line)
+        owner = {'pid': int(marker.name.split('.')[0]), 'startticks': int(fields['owner_start'])}
+        integer(owner['pid'], 'orphan owner PID')
+        integer(owner['startticks'], 'orphan owner start')
+        actor = int(lines[0]) if lines[0].isdecimal() else None
+        if owner['pid'] <= 0 or owner['startticks'] <= 0 or actor is not None and actor <= 0:
+            raise ValueError('The orphan token has an invalid process identity.')
+        if lines[0] != 'confirmed' and actor is None:
+            raise ValueError('The orphan token has no exact actor state.')
+        if ((reader.proc / str(owner['pid'])).exists()
+                or actor is not None and (reader.proc / str(actor)).exists()):
+            raise ValueError('The orphan token owner or actor is still present.')
+        units = [fields[name] for name in ('scope', 'aggregate') if fields.get(name)]
+        if not units:
+            raise ValueError('The orphan token lacks its recorded scope.')
+        for unit in units:
+            if (not re.fullmatch(r'[a-zA-Z0-9_.@:-]+\.(scope|slice)', unit)
+                    or any(reader.parent.rglob(unit))):
+                raise ValueError('The orphan token scope is still present or invalid.')
+        if archived is not None and (archived['owner'] != owner or archived['marker'] != str(marker)
+                or tuple(archived.get('token_identity', ())) != identity):
+            raise ValueError('The archived released token identity changed.')
+        if reader.file_identity(marker.lstat()) != identity:
+            raise ValueError('The orphan token changed during recovery.')
+        audit = {'marker': str(marker), 'owner': owner, 'actor_pid': actor,
+                 'absent_scope_names': units, 'token_sha256': hashlib.sha256(raw).hexdigest(),
+                 'token_identity': list(identity), 'recovered_ns': time.time_ns(),
+                 'route': 'archived_release' if archived is not None else 'unadmitted_orphan'}
+        data.setdefault('shell_recovery_audits', {})[key] = audit
+        if key in data['fixed_claims']:
+            data['fixed_claims'][key] = 0
+        write_ledger(ledger, data)
+        marker.unlink()
+        return True
 
 
 def release_shell(marker, *, ledger=None, reader=None, require_dead_owner=False):
