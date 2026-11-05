@@ -32,7 +32,8 @@ def save(path, value):
     path.parent.mkdir(parents=True, exist_ok=True)
     with tempfile.NamedTemporaryFile(mode="w", dir=path.parent, delete=False) as stream:
         temporary = Path(stream.name)
-        json.dump(value, stream, indent=2)
+        json.dump(value, stream, **({"separators": (",", ":")}
+                                   if path.name == "LEDGER.json" else {"indent": 2}))
         stream.write("\n")
         stream.flush()
         os.fsync(stream.fileno())

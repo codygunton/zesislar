@@ -10,7 +10,7 @@ def sha(path):return hashlib.sha256(Path(path).read_bytes()).hexdigest()
 def atomic_json(path,value):
  path=Path(path);fd,tmp=tempfile.mkstemp(prefix='.'+path.name+'.',suffix='.pending',dir=path.parent)
  try:
-  with os.fdopen(fd,'w') as stream:json.dump(value,stream,indent=2);stream.write('\n');stream.flush();os.fsync(stream.fileno())
+  with os.fdopen(fd,'w') as stream:json.dump(value,stream,**({'separators':(',',':')} if path.name=='LEDGER.json' else {'indent':2}));stream.write('\n');stream.flush();os.fsync(stream.fileno())
   os.replace(tmp,path)
  finally:
   if os.path.exists(tmp):os.unlink(tmp)
