@@ -33,11 +33,27 @@ Ltac zesu_source_signed_lookup :=
 
 
 
+Ltac zesu_source_signed_lookup_lower :=
+ lazymatch goal with
+ | |- ?threshold <= bv_unsigned ?byte =>
+   assert_fails (has_evar byte);
+   multimatch goal with
+   | Hsource : bv_signed (bv_sign_extend ?wide (bv_sign_extend ?middle ?loaded)) < bv_signed ?zero |- _ =>
+     let transported := fresh "HsignedLookupLower" in
+     assert (transported : bv_signed (bv_sign_extend wide (bv_sign_extend middle byte)) < bv_signed zero) by
+       zesu_source_signed_lookup;
+     BitvectorFacts.zesu_source_signed_lower
+   end
+ end.
+
+
+
 
 Ltac zesu_source_fact := first [solve [assumption] | solve [reflexivity] |
   solve [BitvectorFacts.zesu_source_unsigned_bound] |
   solve [zesu_source_signed_lookup] |
-  solve [BitvectorFacts.zesu_source_signed_lower] | lazymatch goal with
+  solve [BitvectorFacts.zesu_source_signed_lower] |
+  solve [zesu_source_signed_lookup_lower] | lazymatch goal with
 | |- Z.ge (@bv_unsigned ?width ?value) Z0 =>
     apply Z.le_ge; exact (proj1 (bv_unsigned_in_range width value))
 | |- Z.ge (@bv_unsigned ?width ?value) (@bv_unsigned ?closedWidth ?closedValue) =>
