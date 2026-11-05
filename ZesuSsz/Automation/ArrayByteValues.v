@@ -230,13 +230,42 @@ Ltac zesu_array_eight_value :=
   reflexivity.
 
 Ltac zesu_finish_array_byte_lookup :=
-  zesu_normalize_array_byte_lookups;
+  repeat match goal with
+  | Hlookup : ?bytes !! Z.to_nat ?expression = Some ?byte |- _ =>
+      assert_fails (has_evar expression);
+      let rec normalize value :=
+        lazymatch value with
+        | Z.sub ?same ?same => constr:(0%Z)
+        | Z.div ?value 1 => normalize value
+        | Z.add ?value 0 => normalize value
+        | _ => value
+        end in
+      let normalized := normalize expression in
+      assert_fails (constr_eq expression normalized);
+      let equality := fresh "HlookupIndex" in
+      assert (equality : expression = normalized) by
+        (rewrite ?Z.sub_diag ?Z.div_1_r ?Z.add_0_r; reflexivity);
+      let lookup := fresh "HnormalizedLookup" in
+      assert (lookup : bytes !! Z.to_nat normalized = Some byte) by
+        (rewrite <- equality; exact Hlookup);
+      clear Hlookup equality; rename lookup into Hlookup
+  end;
+  ZesuSsz.Automation.ArrayByteValues.zesu_normalize_array_byte_lookups;
   repeat match goal with
   | Hlookup : ?bytes !! Z.to_nat (bv_unsigned ?offset `div` 1) = Some ?byte |- _ =>
       let integer := ZesuSsz.Automation.VmClosed.zesu_vm_eval_closed (bv_unsigned offset) in
       lazymatch integer with Z0 => idtac | Zpos _ => idtac end;
       let index := ZesuSsz.Automation.VmClosed.zesu_vm_eval_closed (Z.to_nat integer) in
       change (bytes !! index = Some byte) in Hlookup
+  end;
+  repeat match goal with
+  | Hlookup : ?bytes !! ?index = Some ?byte
+    |- context[nth ?wanted ?bytes ?fallback] =>
+      assert_fails (has_evar index); assert_fails (has_evar wanted);
+      unify index wanted;
+      let equality := fresh "HlookupNth" in
+      pose proof (@nth_lookup_Some (bv 8) bytes index fallback byte Hlookup) as equality;
+      progress rewrite equality; clear equality
   end;
   repeat match goal with
   | Hlookup : ?bytes !! ?index = Some ?byte
