@@ -1,3 +1,4 @@
+Require Import ZesuSsz.Automation.ContextRange.
 Require Import ZesuSsz.Automation.SwitchDispatch.
 Require Import ZesuSsz.Automation.MaskWrapPresentation.
 From stdpp Require Import bitvector.tactics.
@@ -66,3 +67,31 @@ Ltac zesu_hypothesis_cast_finish :=
     try zesu_hypothesis_mask_wraps;
     zesu_hypothesis_casts;
     lia].
+
+Ltac zesu_cast_nonzero_derived :=
+  lazymatch goal with
+  | |- ZesuSsz.Automation.PureFacts.ZesuDerivedFacts ?premise ?derived =>
+    lazymatch premise with
+    | Z_to_bv ?width ?value <> ?zero =>
+      is_closed_term width; assert_fails (has_evar value);
+      first [constr_eq zero constr:((0%bv : bv width)) |
+        constr_eq zero constr:(Z_to_bv width 0)];
+      let wanted := constr:((value <> 0)%Z) in
+      unify derived wanted;
+      let range := fresh "HcastNonzeroRange" in
+      assert (range : (0 <= value < bv_modulus width)%Z) by
+        ContextRange.zesu_hypothesis_cast_range_fact width value;
+      unfold ZesuSsz.Automation.PureFacts.ZesuDerivedFacts;
+      let nonzero := fresh "HcastNonzero" in
+      let zeroValue := fresh "HzeroValue" in
+      intros nonzero zeroValue;
+      apply nonzero; rewrite zeroValue;
+      first [reflexivity |
+        change (Z_to_bv width (bv_unsigned (0%bv : bv width)) = (0%bv : bv width));
+        apply Z_to_bv_bv_unsigned]
+    end
+  end.
+#[export] Hint Extern 4
+  (ZesuSsz.Automation.PureFacts.ZesuDerivedFacts
+    (Z_to_bv ?width ?value <> ?zero) _) =>
+  zesu_cast_nonzero_derived : typeclass_instances.
