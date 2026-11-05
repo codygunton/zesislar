@@ -1288,7 +1288,8 @@ def confirm_shell(marker, replacement, request_bytes, available_bytes, *, ledger
         guard_source = reader.guard_source(fields['guard_source_path'], fields['guard_source_sha256'])
     key = shell_key(marker)
     with ledger_transaction(ledger) as data:
-        if marker.exists() or marker.is_symlink() or key in data.get('shell_claim_owners', {}):
+        if (marker.exists() or marker.is_symlink() or key in data.get('shell_claim_owners', {})
+                or key in data.get('shell_archive', {})):
             raise ValueError('The shell token already exists.')
         if marker.name.partition('.')[2] != generation:
             raise ValueError('The token path differs from its immutable generation.')
