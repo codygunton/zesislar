@@ -1,7 +1,7 @@
-Require Import ZesuSsz.Automation.All.
 Require Import ZesuSsz.Automation.BitvectorFacts.
 From Coq Require Import ZArith NArith.
 From stdpp Require Import bitvector.tactics.
+Require Import ZesuSsz.Automation.All.
 Local Open Scope Z_scope.
 
 Lemma masked_payload_plain (byte : bv 8) (limit : bv 64) :
