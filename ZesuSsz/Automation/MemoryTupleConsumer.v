@@ -170,20 +170,25 @@ Ltac zesu_memory_array_assemble :=
   first [ByteArrayAssemblyCodec.zesu_byte_array_assemble_codec |
     solve [ArrayAffineImage.zesu_array_affine_presentation]].
 
+(* Assemble a leading byte array from its source owners before framing other owners. *)
+Ltac zesu_memory_assemble_leading :=
+  lazymatch goal with
+  | |- environments.envs_entails _ (@bi_sep _ (isla.ghost_state.mem_mapsto_array_def _ _ _) _) =>
+      iSplitL;
+      [rewrite <- isla.ghost_state.mem_mapsto_array_eq;
+       zesu_memory_array_assemble | idtac]
+  end.
+
 Ltac zesu_memory_tuple consume_facts finish :=
   once (try zesu_memory_registered_intro;
   ResourceGroups.zesu_open_resource_groups;
   ByteArrayAssemblyCodec.zesu_byte_array_normalize_stride;
   zesu_memory_open_tuple constr:(16%nat);
   repeat iMatchHyp ltac:(fun name body => is_var body; progress (iFrame name));
+  try zesu_memory_assemble_leading;
   repeat first [progress zesu_memory_frame_first |
     progress zesu_memory_join_arrays];
-  try (lazymatch goal with
-  | |- environments.envs_entails _ (@bi_sep _ (isla.ghost_state.mem_mapsto_array_def _ _ _) _) =>
-      iSplitL;
-      [rewrite <- isla.ghost_state.mem_mapsto_array_eq;
-       zesu_memory_array_assemble | idtac]
-  end));
+  try zesu_memory_assemble_leading);
   lazymatch goal with
   | |- environments.envs_entails _ ?requested => consume_facts requested
   end;
