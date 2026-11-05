@@ -52,12 +52,12 @@ class DeadOwnerRecoveryTests(unittest.TestCase):
         result = M.projection(data, M.ledger_claims(data), 0, 200 * M.GIB, reader=f.reader)
         self.assertEqual(result['accounted_active_bytes'], 0)
 
-    def test_changed_token_identity_stays_refused_after_owner_ends(self):
+    def test_changed_token_identity_with_existing_scope_stays_refused(self):
         f = self.fixture
         self.end_owner()
         f.marker.write_text(f.marker.read_text() + 'changed=yes\n')
         before = f.ledger.read_bytes()
-        with self.assertRaisesRegex(ValueError, 'token identity changed'):
+        with self.assertRaisesRegex(ValueError, 'scope is still present'):
             self.recover()
         self.assertEqual(f.ledger.read_bytes(), before)
         self.assertTrue(f.marker.exists())
@@ -162,6 +162,56 @@ class DeadOwnerRecoveryTests(unittest.TestCase):
         shutil.rmtree(f.group)
         with self.assertRaisesRegex(ValueError, 'archive identity changed'):
             self.recover()
+        self.assertTrue(f.marker.exists())
+
+    def interrupt_confirmation(self):
+        f = self.fixture
+        data = f.read()
+        data['shell_claim_owners'][M.shell_key(f.marker)].pop('token_identity')
+        f.save(data)
+
+    def test_missing_identity_confirmation_recovers_only_after_complete_absence(self):
+        f = self.fixture
+        self.interrupt_confirmation()
+        self.end_owner()
+        shutil.rmtree(f.group)
+        self.assertTrue(self.recover())
+        data = f.read()
+        key = M.shell_key(f.marker)
+        self.assertEqual(data['fixed_claims'][key], 0)
+        self.assertEqual(data['shell_recovery_audits'][key]['route'], 'admitted_absence')
+        self.assertTrue(data['shell_releases'][key]['absence_only'])
+
+    def test_missing_identity_confirmation_with_live_owner_stays_refused(self):
+        f = self.fixture
+        self.interrupt_confirmation()
+        before = f.ledger.read_bytes()
+        with self.assertRaisesRegex(ValueError, 'owner or actor is still present'):
+            self.recover()
+        self.assertEqual(f.ledger.read_bytes(), before)
+        self.assertTrue(f.marker.exists())
+
+    def test_missing_leaf_publication_recovers_only_after_complete_absence(self):
+        f = self.fixture
+        self.end_owner()
+        f.marker.write_text(f.marker.read_text().replace('confirmed\n', '99\n') + 'child_start=999\n')
+        shutil.rmtree(f.group)
+        self.assertTrue(self.recover())
+        key = M.shell_key(f.marker)
+        audit = f.read()['shell_recovery_audits'][key]
+        self.assertEqual(audit['actor_pid'], 99)
+        self.assertEqual(audit['route'], 'admitted_absence')
+
+    def test_missing_leaf_publication_with_live_actor_stays_refused(self):
+        f = self.fixture
+        self.end_owner()
+        f.process({'pid': 99, 'startticks': 999}, 12, ['compiler'],
+                  str(f.group.relative_to(f.reader.root)))
+        f.marker.write_text(f.marker.read_text().replace('confirmed\n', '99\n') + 'child_start=999\n')
+        before = f.ledger.read_bytes()
+        with self.assertRaisesRegex(ValueError, 'owner or actor is still present'):
+            self.recover()
+        self.assertEqual(f.ledger.read_bytes(), before)
         self.assertTrue(f.marker.exists())
 
 

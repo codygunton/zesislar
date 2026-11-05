@@ -1455,14 +1455,21 @@ def ended_process(reader, actor):
 
 
 def recover_dead_shell(marker, *, ledger=None, reader=None):
-    """Recover an exact admitted token or audit an entirely absent orphan."""
+    """Keep exact recovery or audit complete absence after interrupted publication."""
     marker = Path(marker).absolute()
     ledger = Path(ledger or os.environ.get('ZESU_CANONICAL_LEDGER', DEFAULT_LEDGER))
     reader = ScopeReader() if reader is None else reader
     with ledger_transaction(ledger) as data:
         key = shell_key(marker)
-        if key in data.get('shell_claim_owners', {}):
-            return release_shell(marker, ledger=ledger, reader=reader, require_dead_owner=True)
+        admitted = data.get('shell_claim_owners', {}).get(key)
+        if admitted is not None:
+            lines = marker.read_text().splitlines()
+            fields = dict(line.split('=', 1) for line in lines[1:] if '=' in line)
+            complete = (tuple(admitted.get('token_identity', ())) == reader.file_identity(marker.lstat())
+                        and (lines[0] == 'confirmed' or admitted.get('leaf') and fields.get('child_start')))
+            if complete:
+                return release_shell(marker, ledger=ledger, reader=reader, require_dead_owner=True)
+
         archived = None
         if key in data.get('shell_archive', {}):
             from shell_archive import released_records
@@ -1490,10 +1497,25 @@ def recover_dead_shell(marker, *, ledger=None, reader=None):
             raise ValueError('The orphan token has an invalid process identity.')
         if lines[0] != 'confirmed' and actor is None:
             raise ValueError('The orphan token has no exact actor state.')
-        if ((reader.proc / str(owner['pid'])).exists()
-                or actor is not None and (reader.proc / str(actor)).exists()):
+        pids = [owner['pid']] + ([actor] if actor is not None else [])
+        if admitted is not None:
+            pids.append(integer(admitted['owner']['pid'], 'admitted owner PID'))
+            for field in ('guard_attestation', 'setup_failure'):
+                bound_actor = admitted.get(field, {}).get('actor')
+                if bound_actor is not None:
+                    pids.append(integer(bound_actor['pid'], 'admitted actor PID'))
+        if any((reader.proc / str(pid)).exists() for pid in pids):
             raise ValueError('The orphan token owner or actor is still present.')
         units = [fields[name] for name in ('scope', 'aggregate') if fields.get(name)]
+        if admitted is not None:
+            for field in ('aggregate', 'leaf'):
+                bound = admitted.get(field)
+                if bound is not None:
+                    path = Path(bound['scope'])
+                    if not path.is_relative_to(reader.parent) or path != path.resolve():
+                        raise ValueError('The admitted recovery scope is outside its owned slice.')
+                    units.append(path.name)
+        units = list(dict.fromkeys(units))
         if not units:
             raise ValueError('The orphan token lacks its recorded scope.')
         for unit in units:
@@ -1508,10 +1530,16 @@ def recover_dead_shell(marker, *, ledger=None, reader=None):
         audit = {'marker': str(marker), 'owner': owner, 'actor_pid': actor,
                  'absent_scope_names': units, 'token_sha256': hashlib.sha256(raw).hexdigest(),
                  'token_identity': list(identity), 'recovered_ns': time.time_ns(),
-                 'route': 'archived_release' if archived is not None else 'unadmitted_orphan'}
+                 'route': ('admitted_absence' if admitted is not None else
+                           'archived_release' if archived is not None else 'unadmitted_orphan'),
+                 'verified_absent_pids': pids}
         data.setdefault('shell_recovery_audits', {})[key] = audit
         if key in data['fixed_claims']:
             data['fixed_claims'][key] = 0
+        if admitted is not None:
+            data.setdefault('shell_releases', {})[key] = {
+                'marker': str(marker), 'owner': admitted['owner'],
+                'dead_owner_recovery': True, 'absence_only': True}
         write_ledger(ledger, data)
         marker.unlink()
         return True
