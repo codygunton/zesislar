@@ -1,3 +1,4 @@
+Require Import ZesuSsz.Automation.ContextRange.
 Require Import ZesuSsz.Automation.ByteArrayAssemblyCodec.
 Require Import ZesuSsz.Automation.MemoryAddress.
 Require Import ZesuSsz.Automation.CodecArrayRead.
@@ -446,7 +447,20 @@ Ltac zesu_normalize_known_word_address :=
       end
   end.
 Ltac zesu_normalize_find_mem_address :=
-  first [zesu_normalize_symbolic_mem_address | zesu_normalize_known_word_address].
+  first [
+    lazymatch goal with
+    | |- environments.envs_entails _
+        (find_in_context (FindMemMapsTo (bv_unsigned (Z_to_bv ?width ?integer))) _) =>
+        let equality := fresh "HcastMemoryAddress" in
+        assert (equality : bv_unsigned (Z_to_bv width integer) = integer) by
+          (apply Z_to_bv_small;
+           first [ContextRange.zesu_hypothesis_cast_range_fact width integer |
+             ZesuSsz.Automation.PureFacts.zesu_saturate_derived_facts;
+             ContextRange.zesu_hypothesis_cast_range_fact width integer]);
+        rewrite equality; clear equality
+    end |
+    ZesuSsz.Automation.Hooks.zesu_normalize_symbolic_mem_address |
+    ZesuSsz.Automation.Hooks.zesu_normalize_known_word_address].
 
 Class ZesuStepStackWrite : Prop := zesu_step_stack_write : True.
 
