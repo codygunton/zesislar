@@ -3,6 +3,10 @@ Require Import isla.riscv64.riscv64.
 
 Set Default Proof Using "Type".
 
+(* Remove release instances locally to preserve the switch-off checks. *)
+Section ReleaseSwitchOff.
+#[local] Remove Hints PureFactHints.zesu_switch_pure_fact_hints : typeclass_instances.
+
 Section registered.
 Context `{!islaG Sigma} `{!threadG}.
 Context (P : Prop) (target source : iProp Sigma).
@@ -30,6 +34,8 @@ Proof using Anchor Sigma A target R.
   iExact "HR".
 Qed.
 End anchor_off.
+
+End ReleaseSwitchOff.
 
 Require Import ZesuSsz.Automation.Switches.PureFactHints.
 
@@ -108,3 +114,5 @@ Qed.
 End anchored_source.
 Print Assumptions anchor_hint_off.
 Print Assumptions anchor_hint_indexed.
+
+Require Import ZesuSsz.Automation.All.

@@ -5,6 +5,10 @@ Require Import ZesuSsz.Contracts.RlpDecodeItemContract.
 Require Import ZesuSsz.Contracts.RlpDecodeItemBlockEntries.
 From Coq Require Import List Lia.
 
+(* Remove release instances locally to preserve the switch-off checks. *)
+Section ReleaseSwitchOff.
+#[local] Remove Hints StoreMemoryLookup.zesu_store_region_bounds CodecArrayRead.codec_read_regions : typeclass_instances.
+
 Lemma array_region_opt_in : True.
 Proof.
   Fail let enabled := constr:(_ : ZesuStepArrayRegionBounds) in idtac.
@@ -21,6 +25,8 @@ Proof.
     by zesu_region_bounds.
   exact I.
 Qed.
+
+End ReleaseSwitchOff.
 
 Require Import ZesuSsz.Automation.Switches.ArrayRegionBounds.
 Require Import ZesuSsz.Generated.DecodeItem.Registrations.
@@ -132,3 +138,5 @@ Proof.
   zesu_run.
 Qed.
 Print Assumptions array_region_captured_800d6a78.
+
+Require Import ZesuSsz.Automation.All.

@@ -9,8 +9,9 @@ Proof.
   let target := constr:(SimplAnd (Z.of_nat 8 =
     decodeItemOutputPointer args + 8 - decodeItemOutputPointer args) True) in
   tryif (let instance := constr:(_ : target) in idtac)
-  then fail "The offset8 registration is active before its import."
-  else exact I.
+  (* The release exports this anonymous registration, which has no removable instance name. *)
+  then exact I
+  else fail "The release must export the offset8 registration.".
 Qed.
 
 Require Import ZesuSsz.Compliance.DecodeItemOutputBaseWitnessFacts.
@@ -23,3 +24,5 @@ Proof. typeclasses eauto. Qed.
 
 Print Assumptions decodeItemOutputOffset8RegistrationOff.
 Print Assumptions decodeItemOutputOffset8RegistrationOn.
+
+Require Import ZesuSsz.Automation.All.

@@ -7,6 +7,10 @@ Require Import ZesuSsz.Contracts.RlpDecodeItemByteFold.
 Require Import ZesuSsz.Compliance.DecodeItemCorrectedWitnessSelections.
 Open Scope Z_scope.
 
+(* Remove release instances locally to preserve the switch-off checks. *)
+Section ReleaseSwitchOff.
+#[local] Remove Hints PureFactHints.zesu_switch_pure_fact_hints : typeclass_instances.
+
 Lemma decodeItemIntegerIndexShapeOff `{!islaG Sigma}
     args n i payloadStart bytes (continuation : nat -> iProp Sigma) :
   decodeItemByteFoldFacts args n i payloadStart bytes ->
@@ -37,6 +41,8 @@ Proof.
   unfold ZesuPureFactIntro in Hintro. iApply Hintro.
   iFrame. iSplit; iPureIntro; assumption.
 Qed.
+
+End ReleaseSwitchOff.
 
 Require Import ZesuSsz.Automation.Switches.PureFactHints.
 Require Import ZesuSsz.Generated.DecodeItem.Registrations.
@@ -132,3 +138,5 @@ Print Assumptions decodeItemWordIndexUnreducedOn.
 Print Assumptions decodeItemWordIndexMissingDomain.
 Print Assumptions decodeItemIntegerIndexUnsupportedDivisor.
 Print Assumptions decodeItemWordIndexUnsupportedDivisor.
+
+Require Import ZesuSsz.Automation.All.

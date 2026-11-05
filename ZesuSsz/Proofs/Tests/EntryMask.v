@@ -2,10 +2,17 @@ Require Import ZesuSsz.Automation.All.
 Require Import isla.riscv64.riscv64.
 Require Import ZesuSsz.Automation.Switches.EntryIntro.
 
+(* Remove release instances locally to preserve the switch-off checks. *)
+Section ReleaseSwitchOff.
+#[local] Remove Hints All.zesu_union_mask_presentation_enabled
+  All.zesu_union_branch_guards_enabled : typeclass_instances.
+
 Lemma r1b_mask_disabled (value : bv 64) (Hrange : 256 <= bv_unsigned value + 73 < 512) : True.
 Proof.
   assert_fails (assert (candidate : bv_unsigned (bv_and (value + 73) 255) = bv_unsigned value - 183) by zesu_low_mask_sub_modulus_if_enabled). exact I.
 Qed.
+
+End ReleaseSwitchOff.
 
 Require Import ZesuSsz.Automation.Switches.MaskNormalizer.
 
@@ -95,3 +102,5 @@ Lemma r1b_prime_bv (value : bv 64) (prefix offset : Z)
     (Hrange : 256 <= prefix + offset < 512) :
     bv_and (value + Z_to_bv 64 offset) 255 = Z_to_bv 64 (prefix + offset - 256).
 Proof. zesu_low_mask_sub_modulus_if_enabled. Qed.
+
+Require Import ZesuSsz.Automation.All.

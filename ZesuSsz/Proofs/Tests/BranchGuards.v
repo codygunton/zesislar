@@ -3,6 +3,10 @@ Require Import ZesuSsz.Automation.BitvectorFacts.
 Require Import isla.riscv64.riscv64.
 Open Scope Z_scope.
 
+(* Remove release instances locally to preserve the switch-off checks. *)
+Section ReleaseSwitchOff.
+#[local] Remove Hints All.zesu_union_branch_guards_enabled : typeclass_instances.
+
 Lemma branch_guards_disabled (word : bv 64) : True.
 Proof.
   Fail let marker := constr:(_ : ZesuStepBranchGuards) in idtac.
@@ -10,6 +14,8 @@ Proof.
     (bv_unsigned word < 0)) by zesu_branch_guard_simpl_impl.
   exact I.
 Qed.
+
+End ReleaseSwitchOff.
 
 Require Import ZesuSsz.Automation.Switches.BranchGuards.
 
@@ -72,13 +78,17 @@ Proof. Fail zesu_branch_guard_simpl_impl. unfold SimplImpl; tauto. Qed.
 Lemma branch_guard_negated_equality_preserved (left right : bv 64) :
   SimplImpl (left <> right) (left <> right).
 Proof. Fail zesu_branch_guard_simpl_impl. unfold SimplImpl; tauto. Qed.
-Remove Hints zesu_branch_guards_enabled : typeclass_instances.
+(* Remove both release instances to preserve this disabled-rule refusal. *)
+Section ReleaseBranchGuardOff.
+#[local] Remove Hints zesu_branch_guards_enabled
+  All.zesu_union_branch_guards_enabled : typeclass_instances.
 Lemma branch_guard_disabled_refusal (word : bv 64) : True.
 Proof.
   Fail assert (SimplImpl (bv_signed (bv_zero_extend 128 word) < 0)
     (bv_unsigned word < 0)) by zesu_branch_guard_simpl_impl.
   exact I.
 Qed.
+End ReleaseBranchGuardOff.
 #[local] Existing Instance zesu_branch_guards_enabled.
 Lemma branch_guard_output_inference_control (value : bv 64) :
   129 <= bv_unsigned value <= 183 -> True.
@@ -174,7 +184,10 @@ Proof.
     by zesu_branch_guard_solve_if_enabled.
   exact I.
 Qed.
-Remove Hints zesu_branch_guards_enabled : typeclass_instances.
+(* Remove both release instances to preserve this disabled-rule refusal. *)
+Section ReleaseBranchGuardOff.
+#[local] Remove Hints zesu_branch_guards_enabled
+  All.zesu_union_branch_guards_enabled : typeclass_instances.
 Lemma branch_guard_cached_on_without_instance (word : bv 64) :
   129 <= bv_unsigned word <= 183 ->
   bv_unsigned (bv_and word 127) = bv_unsigned word - 128.
@@ -184,6 +197,9 @@ Proof.
     [(ZesuStepBranchGuards, true)]) by constructor.
   zesu_branch_guard_solve_if_enabled.
 Qed.
+End ReleaseBranchGuardOff.
 Print Assumptions branch_guard_normalizer_enabled.
 Print Assumptions branch_guard_cached_off_refusal.
 Print Assumptions branch_guard_cached_on_without_instance.
+
+Require Import ZesuSsz.Automation.All.

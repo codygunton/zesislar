@@ -5,11 +5,17 @@ Require Import ZesuSsz.Contracts.RlpDecodeItemContract.
 Require Import ZesuSsz.Contracts.RlpDecodeItemBlockEntries.
 From iris.proofmode Require Import environments.
 
+(* Remove release instances locally to preserve the switch-off checks. *)
+Section ReleaseSwitchOff.
+#[local] Remove Hints RegisterCollectionSelection.zesu_register_collection_selection_enabled : typeclass_instances.
+
 Lemma plain_register_selection_opt_in : True.
 Proof.
   Fail let _ := constr:(_ : ZesuStepRegisterCollectionSelection) in idtac.
   exact I.
 Qed.
+
+End ReleaseSwitchOff.
 
 Require Import ZesuSsz.Automation.Switches.RegisterCollectionSelection.
 Require Import ZesuSsz.Generated.DecodeItem.Registrations.
@@ -89,3 +95,5 @@ Proof.
   iStartProof. iIntros "Hregs".
   zesu_register_collection_selection_if_enabled. done.
 Qed.
+
+Require Import ZesuSsz.Automation.All.
