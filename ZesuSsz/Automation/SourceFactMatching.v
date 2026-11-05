@@ -49,11 +49,13 @@ Ltac zesu_source_signed_lookup_lower :=
 
 
 
+
 Ltac zesu_source_fact := first [solve [assumption] | solve [reflexivity] |
   solve [BitvectorFacts.zesu_source_unsigned_bound] |
   solve [zesu_source_signed_lookup] |
   solve [BitvectorFacts.zesu_source_signed_lower] |
-  solve [zesu_source_signed_lookup_lower] | lazymatch goal with
+  solve [zesu_source_signed_lookup_lower] |
+  solve [BitvectorFacts.zesu_source_signed_upper] | lazymatch goal with
 | |- Z.ge (@bv_unsigned ?width ?value) Z0 =>
     apply Z.le_ge; exact (proj1 (bv_unsigned_in_range width value))
 | |- Z.ge (@bv_unsigned ?width ?value) (@bv_unsigned ?closedWidth ?closedValue) =>
