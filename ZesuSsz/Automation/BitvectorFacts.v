@@ -353,3 +353,79 @@ Ltac zesu_source_biased_mask_tree requested :=
       zesu_source_biased_mask_tree right
   | _ => idtac
   end.
+
+(* Proposed addition to BitvectorFacts.v. No machine address or contract occurs. *)
+Lemma zesu_single_bit_land_zero (width : N) (index : Z) (word : bv width) :
+  (0 <= index < Z.of_N width)%Z ->
+  Z.land (bv_unsigned word) (2 ^ index) = 0%Z ->
+  bv_extract (Z.to_N index) 1 word = (0%bv : bv 1).
+Proof.
+ intros [Hnonnegative Hbelow] Hland.
+ assert (Hpower : (0 < 2 ^ index)%Z) by (apply Z.pow_pos_nonneg; lia).
+ pose proof (f_equal (fun value : Z => Z.shiftr value index) Hland) as Hshift.
+ cbv beta iota zeta in Hshift.
+ rewrite Z.shiftr_land in Hshift.
+ rewrite !Z.shiftr_div_pow2 in Hshift; try lia.
+ rewrite Z.div_same in Hshift; try lia.
+ apply bv_eq; rewrite bv_extract_unsigned Z2N.id; try lia.
+ change ((Z.shiftr (bv_unsigned word) index) mod (2 ^ 1) = 0)%Z.
+ rewrite Z.shiftr_div_pow2; try lia.
+ rewrite <- Z.land_ones; try lia.
+ change (Z.land (bv_unsigned word / 2 ^ index) 1 = 0)%Z.
+ exact Hshift.
+Qed.
+
+Ltac zesu_source_single_bit_zero_view source word width mask :=
+  assert_fails (has_evar word);
+  ZesuSsz.Automation.VmClosed.zesu_vm_closed width;
+  ZesuSsz.Automation.VmClosed.zesu_vm_closed mask;
+  let positive := eval vm_compute in (0 <? mask)%Z in constr_eq positive true;
+  let index := eval vm_compute in (Z.log2 mask) in
+  let single := eval vm_compute in (Z.eqb mask (2 ^ index)) in constr_eq single true;
+  let within := eval vm_compute in (index <? Z.of_N width)%Z in constr_eq within true;
+  let bit := eval vm_compute in (Z.to_N index) in
+  assert_fails ltac:(idtac; match goal with
+    _ : bv_extract bit 1 word = (0%bv : bv 1),
+    _ : bv_extract bit 1 word <> (1%bv : bv 1),
+    _ : bv_unsigned (bv_extract bit 1 word) = 0%Z,
+    _ : bv_unsigned (bv_extract bit 1 word) <> 1%Z |- _ => idtac end);
+  tryif match goal with _ : bv_extract bit 1 word = (0%bv : bv 1) |- _ => idtac end
+  then idtac else (
+  let Hland := fresh "HsingleBitLand" in
+  assert (Hland : (Z.land (bv_unsigned word) (2 ^ index) = 0)%Z) by
+    (first [
+      let Hsource := fresh "HsingleBitSource" in
+      pose proof (f_equal (@bv_unsigned width) source) as Hsource;
+      change (Z.land (bv_unsigned word) (2 ^ index) = 0)%Z in Hsource;
+      exact Hsource
+    | exact source]);
+  let view := fresh "HsingleBitZero" in
+  assert (view : bv_extract bit 1 word = (0%bv : bv 1)) by
+    (apply (zesu_single_bit_land_zero width index word);
+      [split; ZesuSsz.Automation.VmClosed.zesu_vm_closed_decide | exact Hland]);
+  clear Hland);
+  tryif match goal with _ : bv_extract bit 1 word <> (1%bv : bv 1) |- _ => idtac end
+  then idtac else (
+    let zero := match goal with Hzero : bv_extract bit 1 word = (0%bv : bv 1) |- _ => Hzero end in
+    let different := fresh "HsingleBitNotOne" in
+    assert (different : bv_extract bit 1 word <> (1%bv : bv 1)) by
+      (rewrite zero; discriminate));
+  let zero := match goal with Hzero : bv_extract bit 1 word = (0%bv : bv 1) |- _ => Hzero end in
+  tryif match goal with _ : bv_unsigned (bv_extract bit 1 word) = 0%Z |- _ => idtac end
+  then idtac else (let unsignedZero := fresh "HsingleBitUnsignedZero" in
+    assert (unsignedZero : bv_unsigned (bv_extract bit 1 word) = 0%Z) by (rewrite zero; reflexivity));
+  tryif match goal with _ : bv_unsigned (bv_extract bit 1 word) <> 1%Z |- _ => idtac end
+  then idtac else (let unsignedNotOne := fresh "HsingleBitUnsignedNotOne" in
+    assert (unsignedNotOne : bv_unsigned (bv_extract bit 1 word) <> 1%Z) by (rewrite zero; discriminate)).
+
+Ltac zesu_source_single_bit_zero_views :=
+  repeat multimatch goal with
+  | source : @bv_and ?width ?word ?mask = ?zero |- _ =>
+      constr_eq zero constr:((0%bv : bv width));
+      ZesuSsz.Automation.VmClosed.zesu_vm_closed mask;
+      let magnitude := eval vm_compute in (bv_unsigned mask) in
+      zesu_source_single_bit_zero_view source word width magnitude
+  | source : Z.land (bv_unsigned ?word) ?mask = 0%Z |- _ =>
+      let width := lazymatch type of word with bv ?width => width end in
+      zesu_source_single_bit_zero_view source word width mask
+  end.

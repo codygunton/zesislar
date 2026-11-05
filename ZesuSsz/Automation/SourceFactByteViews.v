@@ -262,6 +262,7 @@ Ltac zesu_source_byte_order_tree requested :=
   end.
 
 Ltac zesu_source_byte_views :=
+  BitvectorFacts.zesu_source_single_bit_zero_views;
   zesu_source_byte_distinct_views; zesu_source_byte_equal_views;
   lazymatch goal with
   | |- environments.envs_entails _ ?requested =>
