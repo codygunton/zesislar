@@ -629,7 +629,8 @@ Ltac zesu_finish_source_package :=
     ltac:(fun requested =>
       once
         (SourceFactByteViews.zesu_source_byte_views;
-         SourceFactByteViews.zesu_source_byte_order_tree requested);
+         SourceFactByteViews.zesu_source_byte_order_tree requested;
+         ZesuSsz.Automation.BitvectorFacts.zesu_source_biased_mask_tree requested);
       SourceFactMatching.zesu_source_check_fixed_tree requested;
       SourceFactMatching.zesu_source_match_tree requested ltac:(idtac))
     ltac:(fun _ => SourceFactMatching.zesu_source_finish_package).
