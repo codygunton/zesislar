@@ -235,6 +235,19 @@ Ltac zesu_finish_known_list_shape :=
   | |- @eq (list _) _ _ => idtac
   | _ => fail 0
   end;
+  (* A singleton codec count can retain a closed nat-to-Z conversion. *)
+  repeat match goal with
+  | |- context[bv_to_little_endian ?count 8 (bv_unsigned ?value)] =>
+      is_closed_term count;
+      let normalized := eval cbv beta iota zeta delta
+        [Z.of_nat Pos.of_succ_nat Pos.succ] in count in
+      constr_eq normalized constr:(1%Z);
+      let Hsingleton := fresh "HsingletonCodec" in
+      pose proof (bv_to_little_endian_to_bv 1 8 [value] eq_refl) as Hsingleton;
+      cbn [little_endian_to_bv little_endian_to_Z fmap list_fmap List.map] in Hsingleton;
+      rewrite ?Z.shiftl_0_l ?Z.lor_0_r in Hsingleton;
+      rewrite Hsingleton; clear Hsingleton
+  end;
   zesu_normalize_equal_array_regions;
   cbn [drop];
   first [solve [zesu_normalize_known_list_lengths; reflexivity] |
