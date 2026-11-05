@@ -706,7 +706,9 @@ Ltac zesu_finish_common_pure :=
 Ltac zesu_finish_final_pure :=
   first [
   zesu_final_pure_head_gate;
-  zesu_saturate_derived_facts;
+  tryif progress zesu_saturate_derived_facts
+  then try solve [zesu_array_bounds_if_enabled]
+  else idtac;
   try solve [
     first [
       zesu_finish_negated_ge; zesu_finish_implication_pair; repeat split;
