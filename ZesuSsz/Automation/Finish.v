@@ -186,33 +186,10 @@ Ltac zesu_finish_ram_known :=
   end.
 
 Ltac zesu_finish_array_byte_lookup :=
-  zesu_normalize_array_byte_lookups;
-  repeat match goal with
-  | Hlookup : ?bytes !! Z.to_nat (bv_unsigned ?offset `div` 1) = Some ?byte |- _ =>
-      let integer := ZesuSsz.Automation.VmClosed.zesu_vm_eval_closed (bv_unsigned offset) in
-      lazymatch integer with Z0 => idtac | Zpos _ => idtac end;
-      let index := ZesuSsz.Automation.VmClosed.zesu_vm_eval_closed (Z.to_nat integer) in
-      change (bytes !! index = Some byte) in Hlookup
-  end;
-  repeat match goal with
-  | Hlookup : ?bytes !! ?index = Some ?byte
-    |- context[default _ (?bytes !! ?index)] => rewrite Hlookup
-  end;
-  reflexivity.
+  ArrayByteValues.zesu_finish_array_byte_lookup.
 
-(* Reject every symbolic offset before either lookup normalizer reaches the VM. *)
 Ltac zesu_finish_array_byte_lookup_if_closed :=
-  assert_fails ltac:(idtac; multimatch goal with
-  | Hlookup : ?bytes !! Z.to_nat (bv_unsigned ?offset `div` 1) = Some ?byte |- _ =>
-      assert_fails ltac:(zesu_vm_closed offset)
-  | Hlookup : ?bytes !! Z.to_nat
-      ((bv_unsigned (bv_add ?row ?offset) - ?base) `div` 1) = Some ?byte |- _ =>
-      assert_fails ltac:(zesu_vm_closed offset)
-  | Hlookup : ?bytes !! Z.to_nat
-      (bv_unsigned (bv_add ?row ?offset) - ?base) = Some ?byte |- _ =>
-      assert_fails ltac:(zesu_vm_closed offset)
-  end);
-  zesu_finish_array_byte_lookup.
+  ArrayByteValues.zesu_finish_array_byte_lookup_if_closed.
 
 Ltac zesu_normalize_equal_array_regions :=
   repeat match goal with
