@@ -12,9 +12,30 @@ From stdpp.bitvector Require Import definitions.
 (* Select constrained values through source propositions, with correlated
    alternatives. Pure completion introduces no new arithmetic premise. *)
 
+Ltac zesu_source_signed_lookup :=
+  lazymatch goal with
+  | |- bv_signed (bv_sign_extend ?wide (bv_sign_extend ?middle ?byte)) < bv_signed ?zero =>
+    assert_fails (has_evar byte);
+    is_closed_term wide; is_closed_term middle;
+    multimatch goal with
+    | Hsource : bv_signed (bv_sign_extend wide (bv_sign_extend middle ?loaded)) < bv_signed zero |- _ =>
+      let equality := fresh "HsourceLoadedByte" in
+      assert (equality : loaded = byte) by
+        ArrayByteValues.zesu_finish_array_byte_lookup_if_closed;
+      let transported := fresh "HsourceSignedByte" in
+      pose proof Hsource as transported;
+      rewrite equality in transported;
+      exact transported
+    end
+  end.
+
+
+
+
 
 Ltac zesu_source_fact := first [solve [assumption] | solve [reflexivity] |
-  solve [BitvectorFacts.zesu_source_unsigned_bound] | lazymatch goal with
+  solve [BitvectorFacts.zesu_source_unsigned_bound] |
+  solve [zesu_source_signed_lookup] | lazymatch goal with
 | |- Z.ge (@bv_unsigned ?width ?value) Z0 =>
     apply Z.le_ge; exact (proj1 (bv_unsigned_in_range width value))
 | |- Z.ge (@bv_unsigned ?width ?value) (@bv_unsigned ?closedWidth ?closedValue) =>
