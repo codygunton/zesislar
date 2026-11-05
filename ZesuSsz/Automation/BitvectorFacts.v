@@ -429,3 +429,39 @@ Ltac zesu_source_single_bit_zero_views :=
       let width := lazymatch type of word with bv ?width => width end in
       zesu_source_single_bit_zero_view source word width mask
   end.
+
+Ltac zesu_source_unsigned_bound :=
+  lazymatch goal with
+  | |- bv_unsigned ?word <= ?bound =>
+    assert_fails (has_evar word);
+    let kind := type of word in lazymatch kind with bv ?width =>
+      ZesuSsz.Automation.VmClosed.zesu_vm_closed width;
+      ZesuSsz.Automation.VmClosed.zesu_vm_closed bound;
+      let limit := ZesuSsz.Automation.VmClosed.zesu_vm_eval_closed (bv_modulus width) in
+      let ceiling := ZesuSsz.Automation.VmClosed.zesu_vm_eval_closed bound in
+      let adequate := fresh "HunsignedCeiling" in
+      assert (adequate : (limit - 1 <= ceiling)%Z) by
+        ZesuSsz.Automation.VmClosed.zesu_vm_closed_decide;
+      let range := fresh "HunsignedRange" in
+      pose proof (bv_unsigned_in_range width word) as range;
+      change (0 <= bv_unsigned word < limit)%Z in range;
+      change (bv_unsigned word <= ceiling)%Z;
+      clear -range adequate; Lia.lia
+    end
+  | |- bv_unsigned ?word < ?bound =>
+    assert_fails (has_evar word);
+    let kind := type of word in lazymatch kind with bv ?width =>
+      ZesuSsz.Automation.VmClosed.zesu_vm_closed width;
+      ZesuSsz.Automation.VmClosed.zesu_vm_closed bound;
+      let limit := ZesuSsz.Automation.VmClosed.zesu_vm_eval_closed (bv_modulus width) in
+      let ceiling := ZesuSsz.Automation.VmClosed.zesu_vm_eval_closed bound in
+      let adequate := fresh "HunsignedCeiling" in
+      assert (adequate : (limit <= ceiling)%Z) by
+        ZesuSsz.Automation.VmClosed.zesu_vm_closed_decide;
+      let range := fresh "HunsignedRange" in
+      pose proof (bv_unsigned_in_range width word) as range;
+      change (0 <= bv_unsigned word < limit)%Z in range;
+      change (bv_unsigned word < ceiling)%Z;
+      clear -range adequate; Lia.lia
+    end
+  end.

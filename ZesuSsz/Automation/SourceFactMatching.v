@@ -1,3 +1,6 @@
+Require Import ZesuSsz.Automation.ContextRange.
+Require Import ZesuSsz.Automation.ArrayByteValues.
+Require Import ZesuSsz.Automation.BitvectorFacts.
 Require Import ZesuSsz.Automation.VmClosed.
 From Coq Require Import Lia.
 Require Coq.ZArith.Zbitwise.
@@ -8,7 +11,10 @@ From stdpp.bitvector Require Import definitions.
 
 (* Select constrained values through source propositions, with correlated
    alternatives. Pure completion introduces no new arithmetic premise. *)
-Ltac zesu_source_fact := first [solve [assumption] | solve [reflexivity] | lazymatch goal with
+
+
+Ltac zesu_source_fact := first [solve [assumption] | solve [reflexivity] |
+  solve [BitvectorFacts.zesu_source_unsigned_bound] | lazymatch goal with
 | |- Z.ge (@bv_unsigned ?width ?value) Z0 =>
     apply Z.le_ge; exact (proj1 (bv_unsigned_in_range width value))
 | |- Z.ge (@bv_unsigned ?width ?value) (@bv_unsigned ?closedWidth ?closedValue) =>
