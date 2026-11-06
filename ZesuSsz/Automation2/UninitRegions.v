@@ -58,9 +58,16 @@ Ltac zesu_region_address_carries base address :=
     carries base].
 
 Ltac zesu_region_collect base address :=
-  let collect := ltac2:(b a |- ZesuSsz.Automation2.RangeFacts.zesu_range_collect
-    (Option.get (Ltac1.to_constr b)) (Option.get (Ltac1.to_constr a))
-    (Option.get (Ltac1.to_constr b))) in
+  let collect := ltac2:(b a |-
+    let base := Option.get (Ltac1.to_constr b) in
+    let address := Option.get (Ltac1.to_constr a) in
+    let original := Control.hyps () in
+    List.iter (fun h => let (name, _, _) := h in
+      Ltac1.apply
+        (Ltac1.ref [@ZesuSsz; @Automation2; @RangeFacts; @zesu_range_project])
+        [Ltac1.of_constr constr:(8%nat); Ltac1.of_constr base;
+         Ltac1.of_constr address; Ltac1.of_constr base;
+         Ltac1.of_constr (Control.hyp name)] Ltac1.run) original) in
   let rec choose_atom term :=
     first [assert_fails (has_evar term);
       assert_fails (ZesuSsz.Automation2.VmClosed.zesu_vm_closed term);
