@@ -1,6 +1,7 @@
 # Frozen Automation
 
-`ZesuSsz/Automation/` stays equal to tree `5ad85b171275969348499d69a580d740b44f60e2`.
+`ZesuSsz/Automation/` stays equal to tree `e962d3a7974b662a75e955d8315bed9f0fa66fd1`.
+The recorded freeze commit is `ba709b59069686a3ddd65ae313759341edeae8c4`.
 The comparison does not depend on branch ancestry.
 The hygiene check rejects committed changes, local changes, deletions, and new source files in this directory.
 New automation belongs in `ZesuSsz/Automation2/`.

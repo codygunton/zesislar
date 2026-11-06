@@ -6,6 +6,8 @@ from unittest.mock import patch
 
 from check_proof_hygiene import (
     PLACEHOLDER,
+    FROZEN_AUTOMATION_COMMIT,
+    FROZEN_AUTOMATION_TREE,
     frozen_automation_failures,
     executable_form_failures,
     executable_text,
@@ -356,6 +358,13 @@ class FrozenAutomationTests(unittest.TestCase):
 
     def check(self):
         return frozen_automation_failures(self.root, self.revision)
+
+    def test_pin_matches_the_recorded_freeze_commit(self):
+        root = Path(__file__).resolve().parents[2]
+        recorded = subprocess.check_output([
+            "git", "-C", str(root), "rev-parse",
+            FROZEN_AUTOMATION_COMMIT + ":ZesuSsz/Automation"], text=True).strip()
+        self.assertEqual(recorded, FROZEN_AUTOMATION_TREE)
 
     def test_unchanged_tree_and_automation2_changes_pass(self):
         other = self.root / "ZesuSsz/Automation2/Rule.v"
