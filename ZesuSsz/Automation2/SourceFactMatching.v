@@ -1,3 +1,7 @@
+Require ZesuSsz.Automation.Hooks.
+Require isla.automation.
+Require Import ZesuSsz.Automation2.ResourceGroups.
+From iris.proofmode Require Import intro_patterns.
 Require Import ZesuSsz.Automation2.ContextRange.
 Require Import ZesuSsz.Automation2.ArrayByteValues.
 Require Import ZesuSsz.Automation2.BitvectorFacts.
@@ -193,3 +197,154 @@ Ltac zesu_source_check_fixed_tree requested :=
       zesu_source_check_fixed_tree left; zesu_source_check_fixed_tree right
   | _ => idtac
   end.
+
+(* Traverse only the requested disjunction. Each registered leaf must close. *)
+Ltac zesu_source_registered_disjunction_tree close :=
+  lazymatch goal with
+  | |- environments.envs_entails _ (@bi_or _ _ _) =>
+      first
+        [ solve [iLeft; zesu_source_registered_disjunction_tree close]
+        | solve [iRight; zesu_source_registered_disjunction_tree close] ]
+  | |- environments.envs_entails _ (@bi_sep _ (@bi_or _ _ _) _) =>
+      rewrite bi.sep_or_r;
+      zesu_source_registered_disjunction_tree close
+  | |- environments.envs_entails _ (@bi_sep _ ?target ?frame) =>
+      let evidence := constr:(_ : ZesuSsz.Automation.Hooks.ZesuPureFactIntro target _) in
+      assert_fails (has_evar evidence);
+      lazymatch type of evidence with
+      | ZesuSsz.Automation.Hooks.ZesuPureFactIntro _ ?source =>
+          iApply (bi.sep_mono_l source frame target
+            (@ZesuSsz.Automation.Hooks.zesu_pure_fact_intro _ target source evidence));
+          try rewrite bi.sep_exist_r;
+          solve [close]
+      end
+  | |- environments.envs_entails _ ?target =>
+      let evidence := constr:(_ : ZesuSsz.Automation.Hooks.ZesuPureFactIntro target _) in
+      assert_fails (has_evar evidence);
+      lazymatch type of evidence with
+      | ZesuSsz.Automation.Hooks.ZesuPureFactIntro _ ?source =>
+          iApply (@ZesuSsz.Automation.Hooks.zesu_pure_fact_intro _ target source evidence);
+          solve [close]
+      end
+  end.
+
+(* A heterogeneous tuple retains the first path for each exact registered source. *)
+Ltac zesu_source_candidate_contains candidates key :=
+  lazymatch candidates with
+  | tt => fail 0
+  | ((?path, ?previous), ?rest) =>
+      first [constr_eq_strict key previous | zesu_source_candidate_contains rest key]
+  end.
+
+Ltac zesu_source_candidate_append candidates candidate :=
+  lazymatch candidates with
+  | tt => constr:((candidate, tt))
+  | (?head, ?rest) =>
+      let tail := zesu_source_candidate_append rest candidate in
+      constr:((head, tail))
+  end.
+
+Ltac zesu_source_candidate_key requested :=
+  lazymatch requested with
+  | @bi_sep _ ?target ?frame =>
+      let evidence := constr:(_ : ZesuSsz.Automation.Hooks.ZesuPureFactIntro target _) in
+      lazymatch type of evidence with
+      | ZesuSsz.Automation.Hooks.ZesuPureFactIntro _ ?source => constr:((source ∗ frame)%I)
+      end
+  | ?target =>
+      let evidence := constr:(_ : ZesuSsz.Automation.Hooks.ZesuPureFactIntro target _) in
+      lazymatch type of evidence with
+      | ZesuSsz.Automation.Hooks.ZesuPureFactIntro _ ?source => source
+      end
+  end.
+
+Ltac zesu_source_collect_candidates requested path candidates continuation :=
+  lazymatch requested with
+  | @bi_or _ ?left ?right =>
+      let left_path := eval cbv in (@List.app bool path (cons false nil)) in
+      let right_path := eval cbv in (@List.app bool path (cons true nil)) in
+      zesu_source_collect_candidates left left_path candidates
+        ltac:(fun previous => zesu_source_collect_candidates right right_path previous continuation)
+  | @bi_sep _ (@bi_or _ ?left ?right) ?frame =>
+      let left_path := eval cbv in (@List.app bool path (cons false nil)) in
+      let right_path := eval cbv in (@List.app bool path (cons true nil)) in
+      let left_goal := constr:((left ∗ frame)%I) in
+      let right_goal := constr:((right ∗ frame)%I) in
+      zesu_source_collect_candidates left_goal left_path candidates
+        ltac:(fun previous => zesu_source_collect_candidates right_goal right_path previous continuation)
+  | _ =>
+      tryif (let key := zesu_source_candidate_key requested in assert_fails (has_evar key))
+      then
+        let key := zesu_source_candidate_key requested in
+        tryif zesu_source_candidate_contains candidates key
+        then continuation candidates
+        else let updated := zesu_source_candidate_append candidates constr:((path, key)) in
+          continuation updated
+      else continuation candidates
+  end.
+
+Ltac zesu_source_select_candidate_path path :=
+  lazymatch path with
+  | nil => idtac
+  | cons ?direction ?rest =>
+      lazymatch goal with
+      | |- environments.envs_entails _ (@bi_sep _ (@bi_or _ _ _) _) => rewrite bi.sep_or_r
+      | _ => idtac
+      end;
+      lazymatch direction with false => iLeft | true => iRight end;
+      zesu_source_select_candidate_path rest
+  end.
+
+Ltac zesu_source_try_candidates candidates close :=
+  lazymatch candidates with
+  | tt => fail 0
+  | ((?path, ?key), ?rest) =>
+      first [solve [zesu_source_select_candidate_path path;
+                    zesu_source_registered_disjunction_tree close]
+            | zesu_source_try_candidates rest close]
+  end.
+
+Ltac zesu_source_registered_disjunction close :=
+  lazymatch goal with
+  | |- environments.envs_entails _ ?requested =>
+      lazymatch requested with
+      | @bi_or _ _ _ => idtac
+      | @bi_sep _ (@bi_or _ _ _) _ => idtac
+      end;
+      zesu_source_collect_candidates requested constr:(@nil bool) constr:(tt)
+        ltac:(fun candidates => once (zesu_source_try_candidates candidates close))
+  end.
+
+Ltac zesu_source_registered_tree target :=
+  lazymatch target with
+  | @bi_or _ ?left ?right =>
+      zesu_source_registered_tree left;
+      zesu_source_registered_tree right
+  | _ =>
+      let evidence := constr:(_ : ZesuSsz.Automation.Hooks.ZesuPureFactIntro target _) in
+      assert_fails (has_evar evidence)
+  end.
+
+Ltac zesu_source_open_registered_tree name body :=
+  lazymatch body with
+  | @bi_or _ ?left ?right =>
+      let branch := iFresh in
+      let pattern := constr:(IList (cons (cons (IIdent branch) nil)
+        (cons (cons (IIdent branch) nil) nil))) in
+      iDestruct name as pattern;
+      [ zesu_source_open_registered_tree branch left
+      | zesu_source_open_registered_tree branch right ]
+  | _ =>
+      let head := get_head body in
+      let registration := constr:(_ : isla.automation.LithiumUnfold head) in
+      iEval (unfold head) in name;
+      repeat iDestruct name as (?) name;
+      ResourceGroups.zesu_open_resource_groups
+  end.
+
+Ltac zesu_source_destruct_registered_disjunction :=
+  iMatchHyp ltac:(fun name body =>
+    let head := get_head body in
+    constr_eq_strict head constr:(@bi_or);
+    zesu_source_registered_tree body;
+    zesu_source_open_registered_tree name body).
