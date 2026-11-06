@@ -297,6 +297,22 @@ Ltac zesu_finish_pure_resources_step :=
   end.
 
 
+(* A proved zero displacement exposes the existing complete-word codec. *)
+Ltac zesu_finish_zero_offset_u64_roundtrip :=
+  lazymatch goal with
+  | |- Z_to_bv 64 (little_endian_to_bv 8
+      (take ?count (drop (Z.to_nat ?offset) ?bytes))) = ?word =>
+      is_closed_term count;
+      assert_fails (has_evar offset);
+      assert_fails (has_evar bytes);
+      assert_fails (has_evar word);
+      let Hzero := fresh "HsliceOffsetZero" in
+      assert (Hzero : offset = 0%Z) by lia;
+      rewrite Hzero; clear Hzero;
+      cbn [Z.to_nat drop];
+      apply ByteArrays.zesu_u64_little_endian_roundtrip
+  end.
+
 Ltac zesu_finish_v1 :=
   try autorewrite with zesu_indices;
   try (zesu_normalize_memory_constants);
@@ -318,6 +334,7 @@ Ltac zesu_finish_v1 :=
   try reflexivity;
   try (zesu_finish_integer_word_image);
   try (zesu_finish_packed_word_equality);
+  try solve [zesu_finish_zero_offset_u64_roundtrip];
   try ((lazymatch goal with
     | |- @eq (bv 64) _ (Z_to_bv 64
         (little_endian_to_bv 8 (take 8 (drop _ _)))) =>
@@ -344,7 +361,8 @@ Ltac zesu_finish_v1 :=
       try zesu_finish_lia;
       try (bv_solve)
   end;
-  try (zesu_finish_little_endian_if_closed).
+  try (zesu_finish_little_endian_if_closed);
+  try solve [SymbolicByteCodec.zesu_symbolic_byte_codec].
 
 Ltac zesu_finish_normalize :=
   try autorewrite with zesu_indices;
