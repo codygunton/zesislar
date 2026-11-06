@@ -1,3 +1,4 @@
+Require Import ZesuSsz.Automation2.All.
 From Coq Require Import ZArith.ZArith NArith.NArith Lia.
 Require Import ZesuSsz.Automation2.CodecArrayRead.
 Require Import isla.riscv64.riscv64.
@@ -5,6 +6,7 @@ Import iris.proofmode.ltac_tactics.
 Set Default Proof Mode "Classic".
 Local Open Scope Z_scope.
 Module M.
+#[local] Remove Hints ZesuSsz.Automation2.All.zesu_codec_array_read_enabled : typeclass_instances.
 Lemma closed_offset (base:Z) : True.
 Proof.
  ZesuSsz.Automation2.MemoryAddress.zesu_integer_pointer_root constr:(bv_add (Z_to_bv 64%N base) (BV 64%N 8%Z)) ltac:(fun _ => idtac).
