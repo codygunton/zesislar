@@ -6,6 +6,8 @@ from unittest.mock import patch
 
 from check_proof_hygiene import (
     PLACEHOLDER,
+    FROZEN_AUTOMATION_TREE,
+    frozen_automation_failures,
     executable_form_failures,
     executable_text,
     main,
@@ -22,6 +24,11 @@ from check_proof_hygiene import (
 
 
 class ProofHygieneTests(unittest.TestCase):
+    def setUp(self):
+        self.freeze = patch("check_proof_hygiene.frozen_automation_failures", return_value=[])
+        self.freeze.start()
+        self.addCleanup(self.freeze.stop)
+
     def test_scanner_rejects_each_planted_executable_form(self):
         cases = (
             ("timeout 1 done.", "timeout identifier"),
@@ -232,6 +239,11 @@ class ProofHygieneTests(unittest.TestCase):
 
 
 class TrustedDeclarationTests(unittest.TestCase):
+    def setUp(self):
+        self.freeze = patch("check_proof_hygiene.frozen_automation_failures", return_value=[])
+        self.freeze.start()
+        self.addCleanup(self.freeze.stop)
+
     name = "ZesuSsz/Automation/EntryIntro.v"
     ml = 'Declare ML Module "zesu-signature-gates.plugin".'
     external = ('Ltac2 @ external zesu_unique_entry_registration : unit -> unit :=\n'
@@ -248,7 +260,27 @@ class TrustedDeclarationTests(unittest.TestCase):
                 main()
 
     def test_exact_allowlist_has_nineteen_declarations(self):
-        self.assertEqual(len(trusted_declarations()), 19)
+        self.assertEqual(len(trusted_declarations()), 23)
+
+    def test_automation2_keeps_the_same_hook_owner_boundary(self):
+        self.scan("ZesuSsz/Automation2/Hooks.v", "Ltac liAStep ::= idtac.")
+        with self.assertRaisesRegex(SystemExit, "Lithium hook redefinition"):
+            self.scan("ZesuSsz/Automation2/Other.v", "Ltac liAStep ::= idtac.")
+
+    def test_automation2_has_the_same_forbidden_name_scope(self):
+        self.scan("ZesuSsz/Automation2/Rule.v", "Definition zesu_lbu_byte_array_at_spec := 0.")
+        with self.assertRaisesRegex(SystemExit, "forbidden-name increase"):
+            self.scan("tools/Rule.v", "Definition zesu_lbu_byte_array_at_spec := 0.")
+
+    def test_automation2_trust_mirrors_only_existing_automation_declarations(self):
+        approved = trusted_declarations()
+        old = {(name, body) for name, body in approved if name.startswith("ZesuSsz/Automation/")}
+        new = {(name.replace("/Automation2/", "/Automation/"), body)
+               for name, body in approved if name.startswith("ZesuSsz/Automation2/")}
+        self.assertEqual(new, old)
+        self.assertTrue(trusted_declaration_failures("ZesuSsz/Automation2/Other.v", self.ml, approved))
+        self.assertTrue(trusted_declaration_failures("ZesuSsz/Automation2/EntryIntro.v",
+            self.ml.replace("zesu-signature-gates.plugin", "other.plugin"), approved))
 
     def test_approved_statements_accept_whitespace_and_comments(self):
         source = ('Declare (* note *) ML\nModule "zesu-signature-gates.plugin".\n'
@@ -301,6 +333,86 @@ class TrustedDeclarationTests(unittest.TestCase):
         self.assertNotEqual(normalized_declaration(self.ml), normalized_declaration(changed))
         self.assertTrue(trusted_declaration_failures(self.name, changed, trusted_declarations()))
 
+
+
+class FrozenAutomationTests(unittest.TestCase):
+    def setUp(self):
+        temporary = tempfile.TemporaryDirectory()
+        self.addCleanup(temporary.cleanup)
+        self.root = Path(temporary.name)
+        self.git("init", "--quiet")
+        self.source = self.root / "ZesuSsz/Automation/Rule.v"
+        self.source.parent.mkdir(parents=True)
+        self.source.write_text("Definition frozen := 1.\n")
+        self.git("add", ".")
+        self.git("-c", "user.name=Test", "-c", "user.email=test@example.invalid",
+                 "commit", "--quiet", "-m", "Freeze")
+        self.revision = self.git("rev-parse", "HEAD:ZesuSsz/Automation").strip()
+        environment = patch.dict("os.environ", {"ZESU_AUTOMATION_EMERGENCY_OVERRIDE": ""})
+        environment.start()
+        self.addCleanup(environment.stop)
+
+    def git(self, *args):
+        return subprocess.check_output(["git", "-C", str(self.root), *args], text=True)
+
+    def check(self):
+        return frozen_automation_failures(self.root, self.revision)
+
+    def test_pin_matches_the_current_legacy_tree(self):
+        root = Path(__file__).resolve().parents[2]
+        recorded = subprocess.check_output([
+            "git", "-C", str(root), "rev-parse",
+            "HEAD:ZesuSsz/Automation"], text=True).strip()
+        self.assertEqual(recorded, FROZEN_AUTOMATION_TREE)
+
+    def test_shallow_clone_needs_only_the_current_tree(self):
+        original = self.git("rev-parse", "HEAD").strip()
+        (self.root/"README").write_text("A later commit retains the frozen tree.")
+        self.git("add", ".")
+        self.git("-c", "user.name=Test", "-c", "user.email=test@example.invalid",
+                 "commit", "--quiet", "-m", "Later")
+        with tempfile.TemporaryDirectory() as destination:
+            clone = Path(destination)/"shallow"
+            subprocess.run(["git", "clone", "--quiet", "--depth", "1",
+                self.root.as_uri(), str(clone)], check=True)
+            absent = subprocess.run(["git", "-C", str(clone), "cat-file", "-e", original],
+                capture_output=True)
+            self.assertNotEqual(absent.returncode, 0)
+            current = subprocess.check_output(["git", "-C", str(clone), "rev-parse",
+                "HEAD:ZesuSsz/Automation"], text=True).strip()
+            self.assertEqual(current, self.revision)
+            self.assertEqual(frozen_automation_failures(clone, self.revision), [])
+            source = clone/"ZesuSsz/Automation/Rule.v"
+            source.write_text("Definition changed := 2.\n")
+            self.assertTrue(frozen_automation_failures(clone, self.revision))
+
+    def test_unchanged_tree_and_automation2_changes_pass(self):
+        other = self.root / "ZesuSsz/Automation2/Rule.v"
+        other.parent.mkdir()
+        other.write_text("Definition new := 2.\n")
+        self.assertEqual(self.check(), [])
+
+    def test_dirty_staged_and_committed_changes_remain_refused(self):
+        self.source.write_text("Definition frozen := 2.\n")
+        self.assertEqual(len(self.check()), 1)
+        self.git("add", ".")
+        self.assertEqual(len(self.check()), 1)
+        self.git("-c", "user.name=Test", "-c", "user.email=test@example.invalid",
+                 "commit", "--quiet", "-m", "Change")
+        self.assertEqual(len(self.check()), 1)
+
+    def test_deletions_and_new_files_are_refused(self):
+        self.source.unlink()
+        added = self.source.with_name("Added.v")
+        added.write_text("Definition new := 2.\n")
+        self.assertEqual(len(self.check()), 2)
+
+    def test_explicit_emergency_reason_is_visible(self):
+        self.source.write_text("Definition frozen := 2.\n")
+        with patch.dict("os.environ", {"ZESU_AUTOMATION_EMERGENCY_OVERRIDE": "Issue17 emergency approval"}), \
+                patch("sys.stderr") as output:
+            self.assertEqual(self.check(), [])
+            self.assertIn("Issue17 emergency approval", str(output.write.call_args_list))
 
 if __name__ == "__main__":
     unittest.main()

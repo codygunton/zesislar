@@ -2,8 +2,9 @@
 Require Import isla.riscv64.riscv64.
 From Coq Require Import Lists.List ZArith.ZArith NArith.NArith.
 Require Import ZesuSsz.Contracts.RlpDecodeItemContract.
+Require Export ZesuSsz.Contracts.DecodeItemDomainRanges.
 Require Import ZesuSsz.Contracts.RlpDecodeItem.
-Require Import ZesuSsz.Automation.All.
+Require ZesuSsz.Automation.Hooks.
 Local Open Scope Z_scope.
 
 Definition fp_machineReturn `{!islaG Sigma} `{!threadG} (args : DecodeItemArgs) (returnAddress : Z) (K : iProp Sigma) : iProp Sigma :=

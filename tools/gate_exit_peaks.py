@@ -45,7 +45,9 @@ def code_identity(workspace):
     tools = toolchain()
     if tools is None:
         return None
+    from gate_scope import tools_digest
     return {'workload_sha256': hashlib.sha256(json.dumps(rows).encode()).hexdigest(),
+            'tools_tree_sha256': tools_digest(workspace),
             'toolchain': tools,
             'environment': {key: os.environ.get(key) for key in ('COQC', 'DUNE_PROFILE', 'ZESU_GATE_MAX_JOBS', 'ZESU_FAST_MAX_JOBS', 'ZESU_MAX_COQC', 'ZESU_WRITER_MAX_COQC', 'ZESU_GATE_JOBS', 'DUNE_JOBS', 'AGENT_JOBS', 'COQFLAGS', 'OCAMLPATH')}}
 

@@ -2,7 +2,9 @@
 """Enforce proof hygiene and ratchet away legacy forbidden identifiers."""
 
 import fnmatch
+import hashlib
 import json
+import os
 import re
 import subprocess
 import sys
@@ -335,6 +337,41 @@ def proof_size_ratchet_failures(
     return failures
 
 
+
+FROZEN_AUTOMATION_TREE = "e962d3a7974b662a75e955d8315bed9f0fa66fd1"
+
+
+def frozen_automation_failures(root=ROOT, tree=FROZEN_AUTOMATION_TREE):
+    """Compare working source bytes with a pinned tree, independent of ancestry."""
+    records = subprocess.check_output([
+        "git", "-C", str(root), "ls-tree", "-r", "-z", tree]).decode().split("\0")
+    expected = {}
+    for record in filter(None, records):
+        metadata, name = record.split("\t", 1)
+        mode, kind, digest = metadata.split()
+        expected[AUTOMATION_PREFIX + name] = (mode, digest)
+    names = subprocess.check_output([
+        "git", "-C", str(root), "ls-files", "--cached", "--others", "--exclude-standard",
+        "-z", "--", AUTOMATION_PREFIX], text=True).split("\0")
+    actual = {}
+    for name in set(filter(None, names)):
+        path = Path(root)/name
+        if not path.exists() or path.is_symlink():
+            continue
+        raw = path.read_bytes()
+        digest = hashlib.sha1(b"blob " + str(len(raw)).encode() + b"\0" + raw).hexdigest()
+        actual[name] = ("100755" if path.stat().st_mode & 0o111 else "100644", digest)
+    changed = sorted(name for name in expected.keys() | actual.keys()
+                     if expected.get(name) != actual.get(name))
+    if not changed:
+        return []
+    reason = os.environ.get("ZESU_AUTOMATION_EMERGENCY_OVERRIDE", "").strip()
+    if reason:
+        print("emergency Automation override: " + reason, file=sys.stderr)
+        return []
+    return ["frozen Automation changed: " + name for name in changed]
+
+
 def main() -> None:
     baseline_data = json.loads(BASELINE_PATH.read_text())
     baseline = baseline_data["files"]
@@ -342,7 +379,7 @@ def main() -> None:
     size_baseline_data = json.loads(SIZE_BASELINE_PATH.read_text())
     size_baseline = size_baseline_data["files"]
     trusted = trusted_declarations()
-    failures: list[str] = []
+    failures: list[str] = list(frozen_automation_failures(ROOT))
     warnings: list[str] = []
     remaining = 0
     for name in tracked_files():
@@ -372,10 +409,10 @@ def main() -> None:
                         f"proof placeholder: {name}:{number}: {line.strip()}"
                     )
 
-        if name != HOOKS_PATH:
+        if name not in (HOOKS_PATH, "ZesuSsz/Automation2/Hooks.v"):
             for number, line in enumerate(lines, 1):
                 if HOOK_REDEFINITION.search(line):
-                    if (name != LEGACY_HOOKS_PATH or
+                    if (name not in (LEGACY_HOOKS_PATH, "ZesuSsz/Automation2/Legacy/Hooks.v") or
                             line.strip() not in LEGACY_HOOK_LINES):
                         failures.append(f"Lithium hook redefinition: {name}:{number}")
 
@@ -404,7 +441,7 @@ def main() -> None:
             if module in text:
                 failures.append(f"imports Appendix A.1 module: {name}: {module}")
 
-        if not name.startswith(AUTOMATION_PREFIX):
+        if not name.startswith((AUTOMATION_PREFIX, "ZesuSsz/Automation2/")):
             counts = forbidden_counts(text)
             remaining += sum(counts.values())
             failures.extend(ratchet_failures(name, counts, baseline))

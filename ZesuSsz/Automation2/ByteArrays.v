@@ -1,0 +1,646 @@
+From Coq Require Import Lists.List ZArith.ZArith.
+Require Import ZesuSsz.Automation2.RewriteBoundGuards.
+From iris.proofmode Require Import environments.
+From iris.program_logic Require Import lifting.
+Require Import isla.riscv64.riscv64.
+Require Import InstrSpecs.Specs.
+Require Import ZesuSsz.Contracts.IslarisMemory.
+
+Import ListNotations.
+
+Lemma zesu_byte_array_word_region `{!islaG Sigma}
+    (address : Z) (q : dfrac) (bytes : list (bv 8)) (offset count : nat)
+    (Hbound : (offset + count * 8 <= length bytes)%nat) :
+  address ↦ₘ{q}∗ bytes -∗
+  address ↦ₘ{q}∗ take offset bytes ∗
+  (address + Z.of_nat offset) ↦ₘ{q}∗
+    u64s_of_bytes count (take (count * 8) (drop offset bytes)) ∗
+  (address + Z.of_nat (offset + count * 8)) ↦ₘ{q}∗
+    drop (offset + count * 8) bytes.
+Proof.
+  iIntros "Hbytes".
+  iDestruct (mem_mapsto_array_region 8 address q bytes offset (count * 8)
+    Hbound with "Hbytes") as "(Hprefix & Hwords & Hsuffix)".
+  have Hlength : length (take (count * 8) (drop offset bytes)) = (count * 8)%nat.
+  { rewrite length_take length_drop. lia. }
+  have Hwords : bytes_of_u64s
+      (u64s_of_bytes count (take (count * 8) (drop offset bytes))) =
+      take (count * 8) (drop offset bytes).
+  { apply bytes_of_u64s_of_bytes. exact Hlength. }
+  iEval (rewrite -Hwords) in "Hwords".
+  iDestruct (mem_mapsto_bytes_to_u64_array with "Hwords") as "Hwords".
+  have Hbyte : Z.of_N (8 `div` 8) = 1 by reflexivity.
+  iEval (rewrite Hbyte !Z.mul_1_l) in "Hwords Hsuffix".
+  iFrame.
+Qed.
+
+Print Assumptions zesu_byte_array_word_region.
+
+Definition zesu_byte_access_size (len : N) : bool :=
+  (len =? 1)%N || (len =? 2)%N || (len =? 4)%N || (len =? 8)%N.
+
+Lemma zesu_bv_sign_extend_same (n : N) (value : bv n) :
+  bv_sign_extend n value = value.
+Proof. apply bv_sign_extend_idemp. Qed.
+
+Lemma zesu_bv_unsigned_add_Z_64 (base : bv 64) (offset : Z) :
+  (0 <= offset)%Z ->
+  (bv_unsigned base + offset < 2 ^ 64)%Z ->
+  bv_unsigned (base + Z_to_bv 64 offset)%bv - bv_unsigned base = offset.
+Proof. intros. bv_solve. Qed.
+
+Lemma zesu_bv_unsigned_add_no_wrap_64 (base offset : bv 64) :
+  (bv_unsigned base + bv_unsigned offset < 2 ^ 64)%Z ->
+  bv_unsigned (base + offset)%bv - bv_unsigned base = bv_unsigned offset.
+Proof. intros. bv_solve. Qed.
+
+Lemma zesu_bv_sub_twice_64 (base first second : bv 64) :
+  (base - first - second)%bv = (base - (first + second))%bv.
+Proof. bv_solve. Qed.
+
+Lemma zesu_bv_add_zero_64 (value : bv 64) :
+  (value + BV 64 0)%bv = value.
+Proof. bv_solve. Qed.
+
+Lemma zesu_aligned_tag_end (pointer : bv 64) (limit : Z) :
+  bv_extract 0 3 pointer = BV 3 0 ->
+  limit `mod` 8 = 0 ->
+  bv_unsigned pointer + 8 < limit ->
+  bv_unsigned pointer + 9 < limit.
+Proof.
+  intros Halign Hlimit Hupper. bv_simplify Halign.
+  change (bv_unsigned pointer `mod` 8 = 0) in Halign. lia.
+Qed.
+
+Lemma zesu_u64_little_endian_roundtrip (value : bv 64) :
+  Z_to_bv 64 (little_endian_to_bv 8
+    (bv_to_little_endian 8 8 (bv_unsigned value))) = value.
+Proof.
+  apply Z_to_bv_little_endian_to_bv_to_little_endian; [lia | reflexivity].
+Qed.
+
+Lemma zesu_array_region_start_8_same base :
+  array_region_start 8 base base = 0%nat.
+Proof. rewrite /array_region_start Z.sub_diag. reflexivity. Qed.
+
+#[export] Hint Rewrite zesu_bv_sign_extend_same
+  : zesu_indices isla_coq_rewrite lithium_rewrite.
+#[export] Hint Rewrite zesu_bv_sub_twice_64
+  : zesu_indices isla_coq_rewrite lithium_rewrite.
+#[export] Hint Rewrite Z.sub_diag zesu_u64_little_endian_roundtrip
+  zesu_array_region_start_8_same zesu_bv_add_zero_64 : zesu_indices.
+#[export] Hint Rewrite (@Z_to_bv_bv_unsigned 64)
+  : zesu_indices isla_coq_rewrite lithium_rewrite.
+#[export] Hint Rewrite zesu_bv_unsigned_add_Z_64 using (first [ZesuSsz.Automation2.RewriteBoundGuards.a3n_closed_bound_if_enabled | bv_solve])
+  : zesu_indices isla_coq_rewrite lithium_rewrite.
+#[export] Hint Rewrite zesu_bv_unsigned_add_no_wrap_64 using (first [ZesuSsz.Automation2.RewriteBoundGuards.a3n_closed_bound_if_enabled | bv_solve])
+  : zesu_indices isla_coq_rewrite lithium_rewrite.
+
+Lemma zesu_take_8_drop (bytes : list (bv 8)) (offset : nat) :
+  (offset + 8 <= length bytes)%nat ->
+  take 8 (drop offset bytes) =
+    [default (BV 8 0) (bytes !! offset);
+     default (BV 8 0) (bytes !! (offset + 1)%nat);
+     default (BV 8 0) (bytes !! (offset + 2)%nat);
+     default (BV 8 0) (bytes !! (offset + 3)%nat);
+     default (BV 8 0) (bytes !! (offset + 4)%nat);
+     default (BV 8 0) (bytes !! (offset + 5)%nat);
+     default (BV 8 0) (bytes !! (offset + 6)%nat);
+     default (BV 8 0) (bytes !! (offset + 7)%nat)].
+Proof.
+  intros Hlength.
+  have Hbyte (index : nat) (Hindex : (index < length bytes)%nat) :
+      bytes !! index = Some (default (BV 8 0) (bytes !! index)).
+  { destruct (nth_lookup_or_length bytes index (BV 8 0)) as [Hlookup|Hlookup].
+    - rewrite Hlookup. reflexivity.
+    - lia. }
+  apply list_eq. intros index.
+  destruct index as [|index].
+  { rewrite lookup_take; [|lia]. rewrite lookup_drop /=.
+    replace (offset + 0)%nat with offset by lia.
+    rewrite (Hbyte offset ltac:(lia)). reflexivity. }
+  destruct index as [|index].
+  { rewrite lookup_take; [|lia]. rewrite lookup_drop /=.
+    rewrite (Hbyte (offset + 1)%nat ltac:(lia)). reflexivity. }
+  destruct index as [|index].
+  { rewrite lookup_take; [|lia]. rewrite lookup_drop /=.
+    rewrite (Hbyte (offset + 2)%nat ltac:(lia)). reflexivity. }
+  destruct index as [|index].
+  { rewrite lookup_take; [|lia]. rewrite lookup_drop /=.
+    rewrite (Hbyte (offset + 3)%nat ltac:(lia)). reflexivity. }
+  destruct index as [|index].
+  { rewrite lookup_take; [|lia]. rewrite lookup_drop /=.
+    rewrite (Hbyte (offset + 4)%nat ltac:(lia)). reflexivity. }
+  destruct index as [|index].
+  { rewrite lookup_take; [|lia]. rewrite lookup_drop /=.
+    rewrite (Hbyte (offset + 5)%nat ltac:(lia)). reflexivity. }
+  destruct index as [|index].
+  { rewrite lookup_take; [|lia]. rewrite lookup_drop /=.
+    rewrite (Hbyte (offset + 6)%nat ltac:(lia)). reflexivity. }
+  destruct index as [|index].
+  { rewrite lookup_take; [|lia]. rewrite lookup_drop /=.
+    rewrite (Hbyte (offset + 7)%nat ltac:(lia)). reflexivity. }
+  rewrite lookup_take_ge; [done|lia].
+Qed.
+
+Lemma zesu_assemble_8_bytes
+    (b0 b1 b2 b3 b4 b5 b6 b7 : bv 8) :
+  bv_or
+    (bv_shiftl
+      (bv_or
+        (bv_or
+          (bv_shiftl (bv_zero_extend 64 b7) (BV 64 24))
+          (bv_shiftl (bv_zero_extend 64 b6) (BV 64 16)))
+        (bv_or
+          (bv_shiftl (bv_zero_extend 64 b5) (BV 64 8))
+          (bv_zero_extend 64 b4)))
+      (BV 64 32))
+    (bv_or
+      (bv_or
+        (bv_shiftl (bv_zero_extend 64 b3) (BV 64 24))
+        (bv_shiftl (bv_zero_extend 64 b2) (BV 64 16)))
+      (bv_or
+        (bv_shiftl (bv_zero_extend 64 b1) (BV 64 8))
+        (bv_zero_extend 64 b0))) =
+  Z_to_bv 64 (little_endian_to_bv 8 [b0; b1; b2; b3; b4; b5; b6; b7]).
+Proof.
+  unfold little_endian_to_bv, little_endian_to_Z.
+  rewrite !fmap_cons. cbn.
+  apply bv_eq. bv_simplify. bitblast as index.
+  all: (f_equal; lia).
+Qed.
+
+Lemma zesu_assemble_8_bytes_at (bytes : list (bv 8)) (offset : nat) :
+  (offset + 8 <= length bytes)%nat ->
+  bv_or
+    (bv_shiftl
+      (bv_or
+        (bv_or
+          (bv_shiftl (bv_zero_extend 64
+            (default (BV 8 0) (bytes !! (offset + 7)%nat))) (BV 64 24))
+          (bv_shiftl (bv_zero_extend 64
+            (default (BV 8 0) (bytes !! (offset + 6)%nat))) (BV 64 16)))
+        (bv_or
+          (bv_shiftl (bv_zero_extend 64
+            (default (BV 8 0) (bytes !! (offset + 5)%nat))) (BV 64 8))
+          (bv_zero_extend 64
+            (default (BV 8 0) (bytes !! (offset + 4)%nat)))))
+      (BV 64 32))
+    (bv_or
+      (bv_or
+        (bv_shiftl (bv_zero_extend 64
+          (default (BV 8 0) (bytes !! (offset + 3)%nat))) (BV 64 24))
+        (bv_shiftl (bv_zero_extend 64
+          (default (BV 8 0) (bytes !! (offset + 2)%nat))) (BV 64 16)))
+      (bv_or
+        (bv_shiftl (bv_zero_extend 64
+          (default (BV 8 0) (bytes !! (offset + 1)%nat))) (BV 64 8))
+        (bv_zero_extend 64 (default (BV 8 0) (bytes !! offset))))) =
+  Z_to_bv 64 (little_endian_to_bv 8 (take 8 (drop offset bytes))).
+Proof.
+  intros Hlength. rewrite (zesu_take_8_drop bytes offset Hlength).
+  apply zesu_assemble_8_bytes.
+Qed.
+
+#[export] Hint Rewrite zesu_assemble_8_bytes zesu_assemble_8_bytes_at using lia
+  : zesu_byte_assembly.
+
+Set Default Proof Using "Type".
+
+Section byte_array_read.
+  Context `{!islaG Sigma} `{!threadG}.
+
+  Lemma li_wp_read_mem_zesu len n kind a vread tag ann es:
+    (⌜n = (8 * len)%N⌝ ∗
+    ⌜len <> 0%N⌝ ∗
+    find_in_context (FindMemMapsTo (bv_unsigned a)) (fun mk =>
+      match mk with
+      | MKMapsTo n' vmem =>
+          ∃ Heq : n = n',
+            (⌜(eq_rect n bv vread n' Heq) = vmem⌝ -∗
+             bv_unsigned a ↦ₘ vmem -∗ WPasm es)
+      | MKArray n' a' values =>
+          if (n' =? n)%N then
+            ⌜(bv_unsigned a - a') `mod` Z.of_N len = 0⌝ ∗
+            ∃ i : nat,
+              ⌜Z.of_nat i = (bv_unsigned a - a') / Z.of_N len⌝ ∗
+              ⌜(i < length values)%nat⌝ ∗
+              ∃ Heq : n = n',
+                (∀ vmem, ⌜values !! i = Some vmem⌝ -∗
+                  ⌜(eq_rect n bv vread n' Heq) = vmem⌝ -∗
+                  a' ↦ₘ∗ values -∗ WPasm es)
+          else
+            if zesu_byte_access_size len then
+              ⌜n' = 8%N⌝ ∗
+              ∃ i : nat,
+                ⌜Z.of_nat i = bv_unsigned a - a'⌝ ∗
+                ⌜(i + N.to_nat len <= length values)%nat⌝ ∗
+                (∀ vmem,
+                  ⌜vmem = Z_to_bv n
+                    (little_endian_to_bv n'
+                      (take (N.to_nat len) (drop i values)))⌝ -∗
+                  ⌜vread = vmem⌝ -∗ a' ↦ₘ∗ values -∗ WPasm es)
+            else False
+      | MKUninit _ _ => False
+      | MKMMIO a' length =>
+          ⌜a' <= bv_unsigned a⌝ ∗
+          ⌜bv_unsigned a + Z.of_N len <= a' + length⌝ ∗
+          ∃ Pks Pks', spec_trace Pks ∗
+            ⌜scons (SReadMem a vread) Pks' ⊆ Pks⌝ ∗
+            (spec_trace Pks' -∗ WPasm es)
+      end))
+    ⊢ WPasm (ReadMem (RVal_Bits (@bv_to_bvn n vread)) kind
+              (RVal_Bits (@bv_to_bvn 64 a)) len tag ann :t: es).
+  Proof.
+    iDestruct 1 as (?? mk) "[Hmem Hcont]" => /=. case_match.
+    - iDestruct "Hcont" as (?) "Hcont". subst => /=.
+      iApply (wp_read_mem with "Hmem Hcont"); [done|lia].
+    - rename a0 into a'. destruct (n0 =? n)%N eqn:Hn.
+      + apply N.eqb_eq in Hn.
+        iDestruct "Hcont" as (? i Heqi [??]%lookup_lt_is_Some_2 ?) "Hcont".
+        clear Hn. subst => /=.
+        have {} Heqi: a' = bv_unsigned a - i * Z.of_N len.
+        { rewrite Heqi Z.mul_comm -Z_div_exact_full_2; [lia|lia|done]. }
+        iApply (wp_read_mem_array with "Hmem [Hcont]");
+          [done|lia|done|done|].
+        iIntros (?) "Hvalue". by iApply "Hcont".
+      + destruct (zesu_byte_access_size len) eqn:Hsize; [|done].
+        iDestruct "Hcont" as (-> i Hi Hbounds) "Hcont".
+        subst n.
+        iDestruct (mem_mapsto_array_region 8%N a' (DfracOwn 1)
+          l i (N.to_nat len) with "Hmem") as
+          "[Hprefix [Hregion Hsuffix]]"; [done|].
+        have Hbytes :
+          length (take (N.to_nat len) (drop i l)) = N.to_nat len.
+        { rewrite length_take length_drop. lia. }
+        iDestruct (mem_mapsto_byte_array_to_mapsto_len
+          (N.to_nat len) with "Hregion") as "Hregion"; [done|].
+        iEval (rewrite N2Nat.id) in "Hregion".
+        have Haddress : (a' + Z.of_nat i)%Z = bv_unsigned a by lia.
+        iEval (rewrite /= Z.mul_1_l Haddress) in "Hregion".
+        iApply (wp_read_mem with "Hregion [Hcont Hprefix Hsuffix]");
+          [done|lia|].
+        iIntros (->) "Hword".
+        iApply ("Hcont" with "[//] [//]").
+        iApply (mem_mapsto_array_recombine_read (N.to_nat len) a'
+          l i with "Hprefix Hsuffix [Hword]").
+        * rewrite N2Nat.id.
+          iEval (rewrite -Haddress) in "Hword". iExact "Hword".
+        * iPureIntro.
+          change (a' + 1 * Z.of_nat (i + N.to_nat len) =
+            a' + Z.of_nat (i + N.to_nat len))%Z. lia.
+        * iPureIntro. reflexivity.
+        * iPureIntro. exact Hbounds.
+    - done.
+    - iDestruct "Hcont" as (?? Pks Pks') "[Hks [%Hscons Hcont]]";
+        simplify_eq/=.
+      iApply (wp_read_mmio with "[] [] [Hmem] Hks").
+      + done.
+      + lia.
+      + intros snapshot _ _. specialize (Hscons [SReadMem a vread snapshot]).
+        apply Hscons. right. eexists _, []. split; [done|by left].
+      + rewrite /snapshot_reg_resources. done.
+      + rewrite /snapshot_mem_resources. done.
+      + iApply (mmio_range_shorten with "Hmem"); lia.
+      + iIntros (snapshot) "_ _ Hspec". iApply "Hcont".
+        iApply (spec_trace_mono with "Hspec"). spec_solver.
+  Qed.
+End byte_array_read.
+
+Section byte_array_write.
+  Context `{!islaG Sigma} `{!threadG}.
+
+  Lemma li_wp_write_mem_zesu len n success kind a (vnew : bv n) tag ann es:
+    (⌜n = (8 * len)%N⌝ ∗
+    ⌜len <> 0%N⌝ ∗
+    find_in_context (FindMemMapsTo (bv_unsigned a)) (fun mk =>
+      match mk with
+      | MKMapsTo n' _ =>
+          ⌜n' = n⌝ ∗ (bv_unsigned a ↦ₘ vnew -∗ WPasm es)
+      | MKArray n' a' values =>
+          if (n' =? n)%N then
+            ⌜(bv_unsigned a - a') `mod` Z.of_N len = 0⌝ ∗
+            ∃ i : nat,
+              ⌜Z.of_nat i = (bv_unsigned a - a') / Z.of_N len⌝ ∗
+              ⌜(i < length values)%nat⌝ ∗
+              ∃ Heq : n = n',
+                (a' ↦ₘ∗ <[i := (eq_rect n bv vnew n' Heq)]>values -∗
+                 WPasm es)
+          else
+            if zesu_byte_access_size len then
+              ⌜n' = 8%N⌝ ∗
+              ∃ i : nat,
+                ⌜Z.of_nat i = bv_unsigned a - a'⌝ ∗
+                ⌜(i + N.to_nat len <= length values)%nat⌝ ∗
+                (a' ↦ₘ∗
+                  (take i values ++
+                   bv_to_little_endian (N.to_nat len) n'
+                     (bv_unsigned vnew) ++
+                   drop (i + N.to_nat len) values) -∗ WPasm es)
+            else False
+      | MKUninit a' length =>
+          ⌜a' <= bv_unsigned a⌝ ∗
+          ⌜bv_unsigned a + Z.of_N len <= a' + length⌝ ∗
+          (bv_unsigned a ↦ₘ vnew -∗
+           a' ↦ₘ? (bv_unsigned a - a') -∗
+           (bv_unsigned a + Z.of_N len) ↦ₘ?
+             (a' + length - (bv_unsigned a + Z.of_N len)) -∗
+           WPasm es)
+      | MKMMIO a' length =>
+          ⌜a' <= bv_unsigned a⌝ ∗
+          ⌜bv_unsigned a + Z.of_N len <= a' + length⌝ ∗
+          ∃ Pks Pks', spec_trace Pks ∗
+            ⌜scons (SWriteMem a vnew) Pks' ⊆ Pks⌝ ∗
+            (spec_trace Pks' -∗ WPasm es)
+      end))
+    ⊢ WPasm (WriteMem (RVal_Bool success) kind
+      (RVal_Bits (@bv_to_bvn 64 a))
+      (RVal_Bits (@bv_to_bvn n vnew)) len tag ann :t: es).
+  Proof.
+    iDestruct 1 as (? ? mk) "[Hmem Hcont]" => /=. case_match.
+    - iDestruct "Hcont" as (->) "Hcont".
+      iApply (wp_write_mem with "Hmem Hcont"); [done | lia].
+    - rename a0 into a'. destruct (n0 =? n)%N eqn:Hn.
+      + apply N.eqb_eq in Hn.
+        iDestruct "Hcont" as (? i Heqi ? Heq) "Hcont".
+        clear Hn. subst => /=.
+        have {} Heqi: a' = bv_unsigned a - i * Z.of_N len.
+        { rewrite Heqi Z.mul_comm -Z_div_exact_full_2; [lia|lia|done]. }
+        iApply (wp_write_mem_array with "Hmem [Hcont]");
+          [done|lia|done|done|].
+        iIntros "Hvalues". by iApply "Hcont".
+      + destruct (zesu_byte_access_size len) eqn:Hsize; [|done].
+        iDestruct "Hcont" as (-> i Hi Hbounds) "Hcont".
+        subst n.
+        iDestruct (mem_mapsto_array_region 8%N a' (DfracOwn 1)
+          l i (N.to_nat len) with "Hmem") as
+          "[Hprefix [Hregion Hsuffix]]"; [done|].
+        have HregionLength :
+          length (take (N.to_nat len) (drop i l)) = N.to_nat len.
+        { rewrite length_take length_drop. lia. }
+        iDestruct (mem_mapsto_byte_array_to_mapsto_len
+          (N.to_nat len) with "Hregion") as "Hregion"; [done|].
+        iEval (rewrite N2Nat.id) in "Hregion".
+        have Haddress : (a' + Z.of_nat i)%Z = bv_unsigned a by lia.
+        iEval (rewrite /= Z.mul_1_l Haddress) in "Hregion".
+        iApply (wp_write_mem with "Hregion [Hcont Hprefix Hsuffix]");
+          [done|lia|].
+        iIntros "Hword".
+        iDestruct (mem_mapsto_mapsto_to_byte_array_N len with "Hword")
+          as "Hmiddle".
+        iEval (rewrite -Haddress) in "Hmiddle".
+        iPoseProof (mem_mapsto_array_app_combine_at 8%N a'
+          (DfracOwn 1) (take i l)
+          (bv_to_little_endian (N.to_nat len) 8 (bv_unsigned vnew)) i
+          with "Hprefix") as "Hleft".
+        { rewrite length_take. lia. }
+        iEval (rewrite /= Z.mul_1_l) in "Hleft".
+        iSpecialize ("Hleft" with "Hmiddle").
+        iPoseProof (mem_mapsto_array_app_combine_at 8%N a'
+          (DfracOwn 1)
+          (take i l ++
+            bv_to_little_endian (N.to_nat len) 8 (bv_unsigned vnew))
+          (drop (i + N.to_nat len) l) (i + N.to_nat len)
+          with "Hleft") as "Hupdated".
+        { rewrite length_app length_take length_bv_to_little_endian;
+            [lia|lia]. }
+        iEval (rewrite /= Z.mul_1_l) in "Hupdated".
+        iEval (rewrite -app_assoc) in "Hupdated".
+        iEval (rewrite /= Z.mul_1_l) in "Hsuffix".
+        iApply "Hcont". iApply "Hupdated". iExact "Hsuffix".
+    - iDestruct "Hcont" as (??) "Hcont". subst n.
+      iDestruct (mem_mapsto_uninit_split (bv_unsigned a - a0)
+        with "Hmem") as "[Ha1 Ha2]"; [lia|].
+      iDestruct (mem_mapsto_uninit_split (Z.of_N len)
+        with "Ha2") as "[Ha2 Ha3]"; [lia|].
+      iDestruct (mem_mapsto_uninit_to_mapsto with "Ha2") as (?? Heq) "Hl".
+      rewrite N2Z.id N.mul_comm in Heq. subst.
+      have -> : a0 + (bv_unsigned a - a0) = bv_unsigned a by bv_solve.
+      iApply (wp_write_mem with "Hl"); [done|lia|]. iIntros "Hl".
+      iApply ("Hcont" with "Hl Ha1").
+      have -> : (n0 - (bv_unsigned a - a0) - Z.of_N len) =
+        (a0 + n0 - (bv_unsigned a + Z.of_N len)) by lia.
+      done.
+    - iDestruct "Hcont" as (?? Pks Pks') "[Hks [%Hscons Hcont]]";
+        simplify_eq/=.
+      iApply (wp_write_mmio with "[] [] [Hmem] Hks").
+      + done.
+      + lia.
+      + intros snapshot _ _. specialize (Hscons [SWriteMem a vnew snapshot]).
+        apply Hscons. right. eexists _, []. split; [done|by left].
+      + rewrite /snapshot_reg_resources. done.
+      + rewrite /snapshot_mem_resources. done.
+      + iApply (mmio_range_shorten with "Hmem"); lia.
+      + iIntros (snapshot) "_ _ Hspec". iApply "Hcont".
+        iApply (spec_trace_mono with "Hspec"). spec_solver.
+  Qed.
+End byte_array_write.
+
+Section byte_array_uninit_subsumption.
+  Context `{!islaG Sigma}.
+
+  Lemma subsume_mem_byte_array_8_uninit A a1 a2
+      (bytes : list (bv 8)) n2 G :
+    (⌜a1 = a2⌝ ∗ ⌜length bytes = 8%nat⌝ ∗ ⌜8 <= n2⌝ ∗
+      (a2 + 8) ↦ₘ? (n2 - 8) ∗ ∃ x : A, G x)%I ⊢
+    subsume (a1 ↦ₘ∗ bytes) (fun _ : A => a2 ↦ₘ? n2) G.
+  Proof.
+    iIntros "(-> & %Hlength & %Hsize & Htail & %x & HG) Hbytes".
+    iExists x. iFrame "HG".
+    iDestruct (mem_mapsto_byte_array_to_mapsto_len 8 with "Hbytes")
+      as "Hword"; first exact Hlength.
+    iDestruct (mem_mapsto_mapsto_to_uninit with "Hword") as "Hhead".
+    iApply (mem_mapsto_uninit_combine 8 with "Hhead Htail"); lia.
+  Qed.
+
+  Definition subsume_mem_byte_array_8_uninit_inst :=
+    [instance @subsume_mem_byte_array_8_uninit].
+  Global Existing Instance subsume_mem_byte_array_8_uninit_inst | 85.
+
+  Lemma subsume_mem_byte_array_uninit A a1 a2
+      (bytes : list (bv 8)) n2 G :
+    (⌜a1 = a2⌝ ∗ ⌜Z.of_nat (length bytes) <= n2⌝ ∗
+      (a2 + Z.of_nat (length bytes)) ↦ₘ? (n2 - Z.of_nat (length bytes)) ∗
+      ∃ x : A, G x)%I ⊢
+    subsume (a1 ↦ₘ∗ bytes) (fun _ : A => a2 ↦ₘ? n2) G.
+  Proof.
+    iIntros "(-> & %Hsize & Htail & %x & HG) Hbytes".
+    iExists x. iFrame "HG".
+    iDestruct (mem_mapsto_byte_array_to_mapsto_len (length bytes)
+      with "Hbytes") as "Hword"; first reflexivity.
+    iDestruct (mem_mapsto_mapsto_to_uninit with "Hword") as "Hhead".
+    iEval (rewrite N.mul_comm N.div_mul; [rewrite nat_N_Z | done]) in "Hhead".
+    iApply (mem_mapsto_uninit_combine (Z.of_nat (length bytes))
+      with "Hhead Htail"); lia.
+  Qed.
+
+  Lemma subsume_mem_scratch_byte_array_uninit A a1 a2
+      (bytes : list (bv 8)) n2 G
+      `{!TCOr (TCFastDone (length bytes = 16%nat))
+              (TCFastDone (length bytes = 32%nat))} :
+    (⌜a1 = a2⌝ ∗ ⌜Z.of_nat (length bytes) <= n2⌝ ∗
+      (a2 + Z.of_nat (length bytes)) ↦ₘ? (n2 - Z.of_nat (length bytes)) ∗
+      ∃ x : A, G x)%I ⊢
+    subsume (a1 ↦ₘ∗ bytes) (fun _ : A => a2 ↦ₘ? n2) G.
+  Proof. apply subsume_mem_byte_array_uninit. Qed.
+
+  Definition subsume_mem_byte_array_uninit_inst :=
+    [instance @subsume_mem_scratch_byte_array_uninit].
+  Global Existing Instance subsume_mem_byte_array_uninit_inst | 84.
+
+  Definition subsume_mem_scratch_byte_array_1_uninit
+      (A : Type) (a1 a2 : Z) (bytes : list (bv 8)) (n2 : Z)
+      (G : A -> iProp Sigma) `{!TCFastDone (length bytes = 1%nat)} :=
+    @subsume_mem_byte_array_uninit A a1 a2 bytes n2 G.
+
+  Definition subsume_mem_scratch_byte_array_1_uninit_inst :=
+    [instance @subsume_mem_scratch_byte_array_1_uninit].
+  Global Existing Instance subsume_mem_scratch_byte_array_1_uninit_inst | 83.
+
+End byte_array_uninit_subsumption.
+
+Lemma zesu_Z_to_bv_add (width : N) (left right : Z) :
+  (Z_to_bv width left + Z_to_bv width right)%bv =
+  Z_to_bv width (left + right).
+Proof.
+  apply bv_eq.
+  rewrite bv_add_unsigned !Z_to_bv_unsigned bv_wrap_add_idemp.
+  reflexivity.
+Qed.
+
+Class ZesuStepWordArrayHandoff : Prop := zesu_step_word_array_handoff : True.
+
+Section word_byte_array_subsumption.
+  Context `{!islaG Sigma}.
+
+  Lemma subsume_mem_adjacent_words_byte_array
+      (A : Type) (a1 a2 : Z) (lowBytes highBytes : N)
+      (low : bv (8 * lowBytes)) (high : bv (8 * highBytes))
+      (requested : A -> list (bv 8)) (G : A -> iProp Sigma) :
+    (∃ x : A, ⌜a1 = a2⌝ ∗
+      ⌜requested x =
+        bv_to_little_endian (N.to_nat lowBytes) 8 (bv_unsigned low) ++
+        bv_to_little_endian (N.to_nat highBytes) 8 (bv_unsigned high)⌝ ∗
+      (a1 + Z.of_N lowBytes) ↦ₘ high ∗ G x)%I ⊢
+    subsume (a1 ↦ₘ low) (fun x => a2 ↦ₘ∗ requested x) G.
+  Proof.
+    iIntros "Hrule Hlow".
+    iDestruct "Hrule" as (x) "(-> & %Hbytes & Hhigh & HG)".
+    iExists x. iSplitL "Hlow Hhigh"; last iExact "HG".
+    rewrite Hbytes.
+    iDestruct (mem_mapsto_mapsto_to_byte_array_N with "Hlow") as "Hlow".
+    iDestruct (mem_mapsto_mapsto_to_byte_array_N with "Hhigh") as "Hhigh".
+    iApply (mem_mapsto_array_app_combine_at 8 a2 (DfracOwn 1) _ _
+      (N.to_nat lowBytes) with "Hlow").
+    { rewrite length_bv_to_little_endian; lia. }
+    rewrite /= Z.mul_1_l.
+    replace (Z.of_nat (N.to_nat lowBytes)) with (Z.of_N lowBytes) by lia.
+    iExact "Hhigh".
+  Qed.
+
+  Lemma subsume_mem_adjacent_u64_byte_array
+      (A : Type) (a1 a2 : Z) (low high : bv 64)
+      (requested : A -> list (bv 8)) (G : A -> iProp Sigma)
+      `{!ZesuStepWordArrayHandoff} :
+    (∃ x : A, ⌜a1 = a2⌝ ∗
+      ⌜requested x = bv_to_little_endian 8 8 (bv_unsigned low) ++
+        bv_to_little_endian 8 8 (bv_unsigned high)⌝ ∗
+      (a1 + 8) ↦ₘ high ∗ G x)%I ⊢
+    subsume (a1 ↦ₘ low) (fun x => a2 ↦ₘ∗ requested x) G.
+  Proof.
+    exact (subsume_mem_adjacent_words_byte_array A a1 a2 8 8
+      low high requested G).
+  Qed.
+
+  Lemma subsume_mem_optional_object_array
+      (A : Type) (a1 a2 : Z) (value : bv 64)
+      (requested : A -> list (bv 8)) (G : A -> iProp Sigma)
+      `{!TCFastDone (forall x : A, length (requested x) = 9%nat)} :
+    (∃ x : A, ⌜a1 = a2⌝ ∗
+      ⌜take 8 (requested x) = bv_to_little_endian 8 8 (bv_unsigned value)⌝ ∗
+      (a2 + 8) ↦ₘ∗ drop 8 (requested x) ∗ G x)%I ⊢
+    subsume (a1 ↦ₘ value) (fun x => a2 ↦ₘ∗ requested x) G.
+  Proof.
+    iIntros "Hrule Hword". iDestruct "Hrule" as (x) "(-> & %Hprefix & Htail & HG)".
+    iDestruct (mem_mapsto_mapsto_to_byte_array with "Hword") as "Hhead".
+    iExists x. iSplitL "Hhead Htail".
+    - iEval (rewrite -(take_drop 8 (requested x))).
+      iApply (mem_mapsto_array_app_combine_at 8 a2 _ _ _ 8 with "[Hhead] [Htail]").
+      + rewrite Hprefix. apply length_bv_to_little_endian. lia.
+      + rewrite Hprefix. iExact "Hhead".
+      + iExact "Htail".
+    - iExact "HG".
+  Qed.
+
+  Definition subsume_mem_optional_object_array_inst :=
+    [instance @subsume_mem_optional_object_array].
+  Global Existing Instance subsume_mem_optional_object_array_inst | 95.
+
+  Lemma subsume_mem_word_byte_array A (a1 a2 : Z) (len : N)
+      (available : bv (8 * len)) (requested : A -> list (bv 8)) G :
+    ((∃ x,
+      ⌜a1 = a2⌝ ∗
+      ⌜requested x =
+        bv_to_little_endian (N.to_nat len) 8 (bv_unsigned available)⌝ ∗
+      G x)%I) ⊢
+    subsume (a1 ↦ₘ available) (fun x : A => a2 ↦ₘ∗ requested x) G.
+  Proof.
+    iIntros "Hrule Hword".
+    iDestruct "Hrule" as (x) "(-> & %Hrequested & HG)".
+    iExists x. iSplitL "Hword".
+    - rewrite Hrequested.
+      iApply (mem_mapsto_mapsto_to_byte_array_N with "Hword").
+    - iExact "HG".
+  Qed.
+
+  Definition subsume_mem_word_byte_array_inst :=
+    [instance @subsume_mem_word_byte_array].
+  Global Existing Instance subsume_mem_word_byte_array_inst | 96.
+
+  Lemma mem_mapsto_u64_pair_to_byte_array (a : Z) (low high : bv 64) :
+    a ↦ₘ low -∗ (a + 8) ↦ₘ high -∗
+    a ↦ₘ∗ (bv_to_little_endian 8 8 (bv_unsigned low) ++
+           bv_to_little_endian 8 8 (bv_unsigned high)).
+  Proof.
+    iIntros "Hlow Hhigh".
+    iDestruct (mem_mapsto_mapsto_to_byte_array with "Hlow") as "Hlow".
+    iDestruct (mem_mapsto_mapsto_to_byte_array with "Hhigh") as "Hhigh".
+    iApply (mem_mapsto_array_app_combine_at 8%N a (DfracOwn 1)
+      (bv_to_little_endian 8 8 (bv_unsigned low))
+      (bv_to_little_endian 8 8 (bv_unsigned high)) 8 with "Hlow").
+    { rewrite length_bv_to_little_endian; [done | lia]. }
+    rewrite /= Z.mul_1_l. iExact "Hhigh".
+  Qed.
+
+  Lemma mem_mapsto_u64_quad_to_byte_array (a : Z) (w0 w1 w2 w3 : bv 64) :
+    a ↦ₘ w0 -∗ (a + 8) ↦ₘ w1 -∗ (a + 16) ↦ₘ w2 -∗ (a + 24) ↦ₘ w3 -∗
+    a ↦ₘ∗
+      ((bv_to_little_endian 8 8 (bv_unsigned w0) ++
+        bv_to_little_endian 8 8 (bv_unsigned w1)) ++
+       (bv_to_little_endian 8 8 (bv_unsigned w2) ++
+        bv_to_little_endian 8 8 (bv_unsigned w3))).
+  Proof.
+    iIntros "H0 H1 H2 H3".
+    iDestruct (mem_mapsto_u64_pair_to_byte_array with "H0 H1") as "Hlower".
+    iEval (replace (a + 24)%Z with (a + 16 + 8)%Z by lia) in "H3".
+    iDestruct (mem_mapsto_u64_pair_to_byte_array with "H2 H3") as "Hupper".
+    iApply (mem_mapsto_array_app_combine_at 8%N a (DfracOwn 1) _ _ 16
+      with "Hlower"); first reflexivity.
+    rewrite /= Z.mul_1_l. iExact "Hupper".
+  Qed.
+
+  Lemma subsume_mem_byte_singleton A (a1 a2 : Z) (available : bv 8)
+      (requested : A -> list (bv 8)) G :
+    ((∃ x, ⌜a1 = a2⌝ ∗ ⌜requested x = [available]⌝ ∗ G x)%I) ⊢
+    subsume (a1 ↦ₘ available) (fun x : A => a2 ↦ₘ∗ requested x) G.
+  Proof.
+    iIntros "Hrule Hbyte".
+    iDestruct "Hrule" as (x) "(-> & %Hrequested & HG)".
+    iExists x. rewrite Hrequested mem_mapsto_array_singleton. iFrame.
+  Qed.
+
+  Definition subsume_mem_byte_singleton_inst :=
+    [instance @subsume_mem_byte_singleton].
+  Global Existing Instance subsume_mem_byte_singleton_inst | 97.
+
+End word_byte_array_subsumption.

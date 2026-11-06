@@ -76,6 +76,22 @@
     {
       "path": "tools/block/TracePlugin/Filtered/TraceObserver.v",
       "statement": "Ltac2 @ external trace_block_checkpoint : string -> constr -> unit := \"p0-filtered-trace.trace-observer\" \"checkpoint\" ."
+    },
+    {
+      "path": "ZesuSsz/Automation2/EntryIntro.v",
+      "statement": "Declare ML Module \"zesu-signature-gates.plugin\" ."
+    },
+    {
+      "path": "ZesuSsz/Automation2/EntryIntro.v",
+      "statement": "Ltac2 @ external zesu_unique_entry_registration : unit -> unit := \"zesu-signature-gates.plugin\" \"unique_entry_registration\" ."
+    },
+    {
+      "path": "ZesuSsz/Automation2/Hooks.v",
+      "statement": "Declare ML Module \"zesu-signature-gates.plugin\" ."
+    },
+    {
+      "path": "ZesuSsz/Automation2/Hooks.v",
+      "statement": "Ltac2 @ external zesu_target_registration : constr -> unit := \"zesu-signature-gates.plugin\" \"target_registration\" ."
     }
   ]
 }

@@ -1,0 +1,59 @@
+(* Rule set v2: v1 plus the rules this branch built.
+
+   Each of these is sound and tested, and each was measured on both
+   benchmark baselines before it was written down here. They are not in
+   `Automation/All.v`, because installing a rule everywhere is a
+   different decision from having one: `WordArrayBytes.v` is sound and
+   clears the stall it was written for, and installing it breaks a
+   merged proof for a reason worth recording rather than working around.
+
+   A generated module imports this set. A merged module keeps v1 until
+   its own measurement says otherwise. The demonstration the bundle owes
+   is that v1 modules have zero changed outcomes.
+
+   Each selected switch below provides a `ZesuRuleSetV2` instance,
+   and `zesu_run_pass` in `Finish.v` asks for
+   it once per pass. With the instance the pass runs
+   `zesu_run_pass_v2`, which is v1's search list plus
+   `zesu_rule_set_v2_steps`; without it the pass runs
+   `zesu_run_pass_v1`, which is v1's search list alone. Importing
+   `All.v` or `Sets/v1.v` cannot reach this instance, so a merged proof
+   runs the same alternatives it ran before. The C7 call-return switch
+   remains available for a measured segment but is absent from this set. *)
+
+Require Export ZesuSsz.Automation2.Sets.v1.
+
+(* C1: the trace tail of a `scons`/`scons_snap` handover.
+   Lemmas, and the hook entries that use them, are in `Hooks.v`. *)
+Require Export ZesuSsz.Automation2.TraceTailLemmas.
+
+(* C6 and the arithmetic a folded hypothesis hides. `Switch.v` is the
+   one instance that turns every such step on; without it each step is a
+   failed class lookup and v1's outcomes are unchanged. *)
+Require Export ZesuSsz.Automation2.PureFacts.
+Require Export ZesuSsz.Automation2.Switches.WitnessArith.
+Require Export ZesuSsz.Automation2.Switches.SpecTail.
+Require Export ZesuSsz.Automation2.Switches.LoadedTrace.
+Require Export ZesuSsz.Automation2.Switches.ReturnWand.
+Require Export ZesuSsz.Automation2.Switches.LookupReduce.
+Require Export ZesuSsz.Automation2.Switches.SealedOpen.
+Require Export ZesuSsz.Automation2.Switches.ExistentialArrayRestore.
+Require Export ZesuSsz.Automation2.Switches.OutcomeHandoff.
+Require Export ZesuSsz.Automation2.SpecPrefix.
+Require Export ZesuSsz.Automation2.LookupReduce.
+Require Export ZesuSsz.Automation2.V2Steps.
+
+(* C3: open a sealed predicate lazily, and only the one that holds the
+   address. *)
+Require Export ZesuSsz.Automation2.SealedCoverage.
+
+(* C4, the spec-table rule, left this set with P0-B: it read the
+   writeSuccess trace index `IslaTraces.write_success_blocks.Index`.
+   A generated trace index registers one lookup instance per address
+   itself. *)
+
+(* C2: a word array satisfies a wanted byte array. *)
+Require Export ZesuSsz.Automation2.WordArrayBytes.
+
+(* C2: the word a block loads lives inside an array the block holds. *)
+Require Export ZesuSsz.Automation2.StackArrayLookup.

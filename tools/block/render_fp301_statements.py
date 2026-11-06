@@ -22,6 +22,29 @@ def read_bound(row):
     return path.read_text()
 
 
+def render_declaration(source, header):
+    """Keep the bound declaration body and render its core-free header."""
+    boundary = "Local Open Scope Z_scope.\n"
+    if source.count(boundary) != 1 or not header.endswith(boundary):
+        raise ValueError("A generated declaration lacks its exact header boundary.")
+    if "Automation.All." in header or "Automation2.All." in header:
+        raise ValueError("A generated declaration cannot import a core.")
+    return header + source.split(boundary, 1)[1]
+
+
+def render_caller(source):
+    """Keep the canonical caller and select the second automation entry point."""
+    if "::=" in source or "Ltac " in source:
+        raise ValueError("A canonical caller cannot contain tactic overrides.")
+    if source.count("Require Import ZesuSsz.Automation.All.") < 1:
+        raise ValueError("A canonical caller lacks its automation import.")
+    if source.count("  zesu_block.\nQed.") != 1:
+        raise ValueError("A canonical caller lacks its plain block proof.")
+    return source.replace("Require Import ZesuSsz.Automation.All.",
+                          "Require Import ZesuSsz.Automation2.All.").replace(
+                              "  zesu_block.\nQed.", "  zesu_block2.\nQed.")
+
+
 def render(inputs, output):
     design = json.loads(read_bound(inputs["design"]))
     callers = json.loads(read_bound(inputs["callers"]))
@@ -75,8 +98,9 @@ def render(inputs, output):
 Require Import isla.riscv64.riscv64.
 From Coq Require Import Lists.List ZArith.ZArith NArith.NArith.
 Require Import ZesuSsz.Contracts.RlpDecodeItemContract.
+Require Export ZesuSsz.Contracts.DecodeItemDomainRanges.
 Require Import ZesuSsz.Contracts.RlpDecodeItem.
-Require Import ZesuSsz.Automation.All.
+Require ZesuSsz.Automation.Hooks.
 Local Open Scope Z_scope.
 """
     entry = directory / "FunctionReturnEntries.v"
@@ -91,10 +115,19 @@ Local Open Scope Z_scope.
     statements = output / "statements"
     statements.mkdir()
     rows = []
+    caller_directory = output / "callers"
+    caller_directory.mkdir()
     for row, original, rendered, changed in prepared:
         path = statements / (row["case"] + ".vpart")
         path.write_text(rendered)
+        caller_source = read_bound(row["caller"]).replace(original, rendered, 1)
+        if changed:
+            caller_source = ("Require Import ZesuSsz.Generated.DecodeItem.FP301.FunctionReturnStructural.\n"
+                             + caller_source)
+        caller = caller_directory / ("Caller" + row["case"] + ".v")
+        caller.write_text(render_caller(caller_source))
         rows.append({
+            "caller": binding(caller),
             "case": row["case"],
             "original_caller": row["caller"],
             "original_statement_sha256": hashlib.sha256(original.encode()).hexdigest(),
