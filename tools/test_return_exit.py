@@ -28,9 +28,10 @@ class ReturnExitTests(unittest.TestCase):
             if index == 10:
                 row.update(successor_pcs=[], return_clause={"return_instruction_pc": pc})
             blocks.append(row)
-            text = ("Lemma DesignedBoundary_800d" + name + " (args : DecodeItemArgs) "
+            text = ("Require Import ZesuSsz.Automation.All.\n"
+                    "Lemma DesignedBoundary_800d" + name + " (args : DecodeItemArgs) "
                     "(returnAddress : Z) (K : iProp Sigma) :\n  code -∗ body.\n"
-                    "Proof. Abort.\n")
+                    "Proof.\n  zesu_block.\nQed.\n")
             callers.append({"case": name, "caller": bound(name + ".v", text)})
             cases.append({"pc": pc})
         return {
@@ -50,6 +51,11 @@ class ReturnExitTests(unittest.TestCase):
                 self.assertEqual(row["original_statement_sha256"], row["statement"]["sha256"])
             structural = Path(result["sources"][1]["path"]).read_text()
             self.assertIn("Typeclasses Opaque fp_machineReturn.", structural)
+            for row in result["statements"]:
+                caller = Path(row["caller"]["path"]).read_text()
+                self.assertIn("Require Import ZesuSsz.Automation2.All.", caller)
+                self.assertIn("Proof.\n  zesu_block2.\nQed.", caller)
+                self.assertNotIn("Abort.", caller)
 
     def test_closed_return_refusal_creates_no_partial_output(self):
         with tempfile.TemporaryDirectory() as directory:
