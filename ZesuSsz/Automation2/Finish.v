@@ -297,6 +297,22 @@ Ltac zesu_finish_pure_resources_step :=
   end.
 
 
+(* A proved zero displacement exposes the existing complete-word codec. *)
+Ltac zesu_finish_zero_offset_u64_roundtrip :=
+  lazymatch goal with
+  | |- Z_to_bv 64 (little_endian_to_bv 8
+      (take ?count (drop (Z.to_nat ?offset) ?bytes))) = ?word =>
+      is_closed_term count;
+      assert_fails (has_evar offset);
+      assert_fails (has_evar bytes);
+      assert_fails (has_evar word);
+      let Hzero := fresh "HsliceOffsetZero" in
+      assert (Hzero : offset = 0%Z) by lia;
+      rewrite Hzero; clear Hzero;
+      cbn [Z.to_nat drop];
+      apply ByteArrays.zesu_u64_little_endian_roundtrip
+  end.
+
 Ltac zesu_finish_v1 :=
   try autorewrite with zesu_indices;
   try (zesu_normalize_memory_constants);
@@ -318,6 +334,7 @@ Ltac zesu_finish_v1 :=
   try reflexivity;
   try (zesu_finish_integer_word_image);
   try (zesu_finish_packed_word_equality);
+  try solve [zesu_finish_zero_offset_u64_roundtrip];
   try ((lazymatch goal with
     | |- @eq (bv 64) _ (Z_to_bv 64
         (little_endian_to_bv 8 (take 8 (drop _ _)))) =>
@@ -344,7 +361,8 @@ Ltac zesu_finish_v1 :=
       try zesu_finish_lia;
       try (bv_solve)
   end;
-  try (zesu_finish_little_endian_if_closed).
+  try (zesu_finish_little_endian_if_closed);
+  try solve [SymbolicByteCodec.zesu_symbolic_byte_codec].
 
 Ltac zesu_finish_normalize :=
   try autorewrite with zesu_indices;
@@ -542,6 +560,25 @@ Ltac zesu_finish_list_cons_final :=
       solve [zesu_finish_contract_arithmetic]
   end.
 
+(* Select the list length atom before arithmetic expands unrelated facts. *)
+Ltac zesu_finish_list_cons_atom :=
+  lazymatch goal with
+  | |- exists (head : ?A) (tail : list ?A),
+      ?values = head :: tail /\ length tail = ?count =>
+      tryif has_evar values then fail 0 else idtac;
+      solve [
+        apply zesu_list_cons_witness;
+        multimatch goal with
+        | Hlength : length ?root = ?size |- _ =>
+            lazymatch goal with
+            | |- context [root] =>
+                is_closed_term size;
+                clear - Hlength
+            end
+        end;
+        zesu_finish_contract_arithmetic]
+  end.
+
 (* Restore only an already-enabled capability after the search scope ends. *)
 Ltac zesu_finish_unsigned_branch :=
   ZesuSsz.Automation2.SwitchDispatch.zesu_switch_enabled
@@ -708,6 +745,7 @@ Ltac zesu_union_required_pure :=
 
 Ltac zesu_union_pure_leaf :=
   first [ZesuSsz.Automation2.UnionRuleComponents.block2_signed_mask_solve |
+    solve [zesu_finish_list_cons_atom] |
     ZesuSsz.Automation2.UnionRuleComponents.block2_f7_arithmetic |
     assumption | ZesuSsz.Automation2.UnionRuleComponents.range_interval].
 
@@ -715,6 +753,7 @@ Ltac zesu_union_pure_finish :=
   zesu_final_pure_head_gate;
   first [zesu_union_required_pure |
     ZesuSsz.Automation2.UnionRuleComponents.block2_signed_mask_solve |
+    solve [zesu_finish_list_cons_atom] |
     ZesuSsz.Automation2.UnionRuleComponents.block2_f7_arithmetic |
     (try ZesuSsz.Automation2.UnionRuleComponents.block2_range_add_zero_goal;
      try ZesuSsz.Automation2.UnionRuleComponents.block2_range_boolean_goal;

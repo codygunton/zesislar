@@ -6,6 +6,7 @@ from unittest.mock import patch
 
 from check_proof_hygiene import (
     PLACEHOLDER,
+    automation_entry_failures,
     FROZEN_AUTOMATION_TREE,
     frozen_automation_failures,
     executable_form_failures,
@@ -28,6 +29,29 @@ class ProofHygieneTests(unittest.TestCase):
         self.freeze = patch("check_proof_hygiene.frozen_automation_failures", return_value=[])
         self.freeze.start()
         self.addCleanup(self.freeze.stop)
+
+    def test_core_umbrella_policy(self):
+        name = "ZesuSsz/Proofs/Tests/EntryFixture.v"
+        old = "Require Import ZesuSsz.Automation.All.\n"
+        new = "Require Import ZesuSsz.Automation2.All.\n"
+        legacy = "Require Import ZesuSsz.Automation.AllLegacy.\n"
+        for source, approved in ((old, set()), (new, set()), (legacy, {name})):
+            with self.subTest(source=source):
+                self.assertEqual(automation_entry_failures(name, source, approved), [])
+        rejected = (
+            ("", set()),
+            ("Require Import ZesuSsz.Automation2.MemoryAddress.\n", set()),
+            (old + new, set()),
+            (old + legacy, {name}),
+            (new + legacy, {name}),
+            (legacy, set()),
+            ("(* " + new + " *)", set()),
+            ('Definition text := "' + new.strip() + '".\n', set()),
+        )
+        for source, approved in rejected:
+            with self.subTest(source=source):
+                self.assertTrue(automation_entry_failures(name, source, approved))
+        self.assertEqual(automation_entry_failures(name, new + "(* " + old + " *)", set()), [])
 
     def test_scanner_rejects_each_planted_executable_form(self):
         cases = (

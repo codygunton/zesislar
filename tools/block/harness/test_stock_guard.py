@@ -28,7 +28,7 @@ class StockGuardControls(unittest.TestCase):
    tools=Path(tmp);(tools/'block').mkdir();wrapper=tools/'entry_chain_coqc.sh'
    shutil.copy2(HERE/'runtime-tools/entry_chain_coqc.sh',wrapper)
    (tools/'block/entry_chain_compiler.py').write_text('import os,json;print(json.dumps(dict(os.environ)))')
-   r=subprocess.run(['bash',str(wrapper),'-q','source.v'],capture_output=True,text=True,env=dict(os.environ,OPAM_SWITCH_PREFIX='/home/cody/islaris/_opam'))
+   r=subprocess.run(['bash',str(wrapper),'-q','source.v'],capture_output=True,text=True,env=dict({k:v for k,v in os.environ.items() if not k.startswith('ZESU_')},OPAM_SWITCH_PREFIX='/home/cody/islaris/_opam'))
    self.assertEqual(r.returncode,0,r.stderr);self.validate_environment(json.loads(r.stdout))
  def test_actual_probe_validation_accepts_64(self):
   r=self.run_guard('validate_probe_scope');self.assertEqual(r.returncode,0,r.stderr)

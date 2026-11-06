@@ -374,6 +374,26 @@ def frozen_automation_failures(root=ROOT, tree=FROZEN_AUTOMATION_TREE):
     return ["frozen Automation changed: " + name for name in changed]
 
 
+
+def automation_entry_failures(name, text, legacy_entries):
+    """Require one core umbrella while preserving the approved legacy ratchet."""
+    code = executable_text(text)
+    entries = (
+        "Require Import ZesuSsz.Automation.All." in code,
+        "Require Import ZesuSsz.Automation2.All." in code,
+        "Require Import ZesuSsz.Automation.AllLegacy." in code,
+    )
+    normal, automation2, legacy = entries
+    failures = []
+    if not (normal or automation2) and not (name in legacy_entries and legacy):
+        failures.append(f"missing Automation umbrella import: {name}")
+    if legacy and name not in legacy_entries:
+        failures.append(f"unapproved Automation.AllLegacy import: {name}")
+    if sum(entries) > 1:
+        failures.append(f"mixed Automation umbrellas imported: {name}")
+    return failures
+
+
 def main() -> None:
     baseline_data = json.loads(BASELINE_PATH.read_text())
     baseline = baseline_data["files"]
@@ -422,14 +442,7 @@ def main() -> None:
                         failures.append(f"Lithium hook redefinition: {name}:{number}")
 
         if name.startswith(PROOFS_PREFIX):
-            normal_entry = "Require Import ZesuSsz.Automation.All." in text
-            legacy_entry = "Require Import ZesuSsz.Automation.AllLegacy." in text
-            if not normal_entry and not (name in legacy_entries and legacy_entry):
-                failures.append(f"missing Automation.All import: {name}")
-            if legacy_entry and name not in legacy_entries:
-                failures.append(f"unapproved Automation.AllLegacy import: {name}")
-            if normal_entry and legacy_entry:
-                failures.append(f"both Automation entries imported: {name}")
+            failures.extend(automation_entry_failures(name, text, legacy_entries))
             if (path.name not in A2_EXCEPTIONS and
                     any(fnmatch.fnmatch(path.name, pattern) for pattern in A2_PATTERNS)):
                 failures.append(f"Appendix A.2 file remains: {name}")

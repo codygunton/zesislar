@@ -1,0 +1,91 @@
+{
+  "schema": "fp301-return-bindings-v1",
+  "declaration_source_head": "54f11047d7d097f2b3cf1acbfe79563657bf29eb",
+  "design": {
+    "path": "ZesuSsz/Evidence/decode_item_block_design.json",
+    "sha256": "996afa88a7ddcca3140bcbce51bea42b110df40bf9d34016a81fb9b2f525a103"
+  },
+  "canonical_fixture": "tools/block/fixtures/fp301-generation.json",
+  "measurement_scope": [
+    "698c",
+    "6ae0"
+  ],
+  "reusable_return_exits": [
+    {
+      "block": "698c",
+      "entry_pc": "0x800d698c",
+      "return_instruction_pc": "0x800d69a0",
+      "package": "ZesuSsz.Generated.DecodeItem.FP301.FunctionReturnEntries.fp_machineReturn args returnAddress K",
+      "address": "returnAddress"
+    },
+    {
+      "block": "6a40",
+      "entry_pc": "0x800d6a40",
+      "return_instruction_pc": "0x800d6a60",
+      "package": "ZesuSsz.Generated.DecodeItem.FP301.FunctionReturnEntries.fp_machineReturn args returnAddress K",
+      "address": "returnAddress"
+    },
+    {
+      "block": "6ae0",
+      "entry_pc": "0x800d6ae0",
+      "return_instruction_pc": "0x800d6b04",
+      "package": "ZesuSsz.Generated.DecodeItem.FP301.FunctionReturnEntries.fp_machineReturn args returnAddress K",
+      "address": "returnAddress"
+    },
+    {
+      "block": "6b08",
+      "entry_pc": "0x800d6b08",
+      "return_instruction_pc": "0x800d6b2c",
+      "package": "ZesuSsz.Generated.DecodeItem.FP301.FunctionReturnEntries.fp_machineReturn args returnAddress K",
+      "address": "returnAddress"
+    }
+  ],
+  "declarations": [
+    {
+      "output": "ZesuSsz/Generated/DecodeItem/FP301/FunctionReturnEntries.v",
+      "sha256": "d93b1082018223ed0270b713535ac049c80db80fa934613764a5341b73cf9bf7",
+      "header_kind": "return",
+      "canonical_sha256": "c09568d1ba94231a91f77ac220d17985bf5792d888ef58812cb0c139c0b27bec"
+    },
+    {
+      "output": "ZesuSsz/Generated/DecodeItem/FP301/FunctionReturnStructural.v",
+      "sha256": "7d000e860c0059a126726e360fe6f159721a692bca07ce74c4762def5ac9b431",
+      "header_kind": "return",
+      "canonical_sha256": "e5182677dce8cbcc22a903f2e9c4409a6419c59602d818b140a7841495c2b707"
+    },
+    {
+      "output": "ZesuSsz/Generated/DecodeItem/FP301/Pilot698cEntries.v",
+      "sha256": "a0b62c288327a1b9cb1c3f8cccc7b7ee1eb009e9f153a327fa2d2e444b2923b7",
+      "header_kind": "pilot",
+      "canonical_sha256": "5961004d2cf41c9635e767268a99e22fc1daaab3466e4227a4ea5cd343292794"
+    },
+    {
+      "output": "ZesuSsz/Generated/DecodeItem/FP301/Pilot698cStructural.v",
+      "sha256": "a4c8a05402fca725def44c9e61be3084964347d1355edbdca2b26690566a391c",
+      "header_kind": "pilot",
+      "canonical_sha256": "4e0f8e6e57047ba03adf90688150d67841f27db89c9e309afe2b232996085e1f"
+    },
+    {
+      "output": "ZesuSsz/Generated/DecodeItem/FP301/Pilot6ae0Entries.v",
+      "sha256": "79bc1a446d2c88bd679534c7004ebfa2d23029200da174050a5f314fa497a4c3",
+      "header_kind": "pilot",
+      "canonical_sha256": "34c4cd7561d0e6a43460305619f4052206790d2070a24a64c01d845c432e9b2d"
+    },
+    {
+      "output": "ZesuSsz/Generated/DecodeItem/FP301/Pilot6ae0Structural.v",
+      "sha256": "6ff37a9227ed2d7e55da20d5ad6d8778d2e9ef5befec19a921dcf9506f6665e5",
+      "header_kind": "pilot",
+      "canonical_sha256": "b69670a0b0003394cbc5ae76e17c2ea4c7e7f280e12149c8de632fd9513446d6"
+    }
+  ],
+  "compilation": {
+    "returncode": 0,
+    "module_count": 6,
+    "CPU_seconds": 7.271342,
+    "wall_seconds": 7.342915068962611,
+    "peak_bytes": 750333952
+  },
+  "proof_acceptance": false,
+  "function_level_contract_changed": false,
+  "automation_rules_changed": false
+}

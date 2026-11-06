@@ -1,5 +1,6 @@
 Require ZesuSsz.Automation.Hooks.
 Require Import ZesuSsz.Automation2.ContextRange.
+Require Import ZesuSsz.Automation2.RangeFacts.
 Require Import ZesuSsz.Automation2.ByteArrayAssemblyCodec.
 Require Import ZesuSsz.Automation2.MemoryAddress.
 Require Import ZesuSsz.Automation2.CodecArrayRead.
