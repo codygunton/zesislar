@@ -149,3 +149,56 @@ class IncrementalShellArchiveTests(unittest.TestCase):
         content.write_text('{}')
         with self.assertRaisesRegex(ValueError, 'archive identity changed'):
             A.released_records(data, self.key, self.f.reader)
+
+    def seed_old_releases(self):
+        import copy
+        data = self.f.read()
+        keys = []
+        for name, pid in [('closed', 999999), ('live', 14)]:
+            marker = self.f.tokens/name
+            key = M.shell_key(marker)
+            owner = copy.deepcopy(data['shell_claim_owners'][self.key])
+            owner['marker'] = str(marker)
+            owner['owner'] = {'pid': pid, 'startticks': 104}
+            owner.pop('leaf', None)
+            data['shell_claim_owners'][key] = owner
+            data.setdefault('shell_releases', {})[key] = {
+                'owner': owner['owner'], 'marker': owner['marker']}
+            data['fixed_claims'][key] = 0
+            keys.append(key)
+        M.write_ledger(self.f.ledger, data)
+        return keys
+
+    def test_threshold_compacts_closed_records_and_retains_live_records(self):
+        closed, live = self.seed_old_releases()
+        before = self.f.read()['shell_claim_owners'][closed]
+        with patch.object(M, 'SHELL_ARCHIVE_THRESHOLD_BYTES', 0):
+            self.release()
+        data = self.f.read()
+        self.assertEqual(A.released_records(data, closed, self.f.reader)[0], before)
+        self.assertNotIn(closed, data['shell_claim_owners'])
+        self.assertIn(live, data['shell_claim_owners'])
+        self.assertNotIn(live, data['shell_archive'])
+
+    def test_below_threshold_retains_old_records(self):
+        closed, live = self.seed_old_releases()
+        with patch.object(M, 'SHELL_ARCHIVE_THRESHOLD_BYTES', self.f.ledger.stat().st_size):
+            self.release()
+        data = self.f.read()
+        self.assertIn(closed, data['shell_claim_owners'])
+        self.assertIn(live, data['shell_claim_owners'])
+        self.assertEqual(set(data['shell_archive']), {self.key})
+
+    def test_threshold_retains_a_changed_leaf_without_blocking_other_records(self):
+        closed, changed = self.seed_old_releases()
+        data = self.f.read()
+        data['shell_claim_owners'][changed]['owner'] = {'pid': 999998, 'startticks': 104}
+        data['shell_releases'][changed]['owner'] = data['shell_claim_owners'][changed]['owner']
+        data['shell_claim_owners'][changed]['leaf'] = {'scope': str(self.f.group), 'device': -1, 'inode': -1}
+        M.write_ledger(self.f.ledger, data)
+        with patch.object(M, 'SHELL_ARCHIVE_THRESHOLD_BYTES', 0):
+            self.release()
+        data = self.f.read()
+        self.assertIn(closed, data['shell_archive'])
+        self.assertIn(changed, data['shell_claim_owners'])
+        self.assertNotIn(changed, data['shell_archive'])

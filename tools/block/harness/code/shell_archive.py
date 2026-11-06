@@ -108,6 +108,28 @@ def _archive_released_record(data, key, directory):
     return digest
 
 
+
+def compact_released_shells(data, directory, reader):
+    """Stage exact closed releases; retain every ineligible record."""
+    import admission_memory as memory
+    archived = []
+    for key, owner in list(data.get('shell_claim_owners', {}).items()):
+        release = data.get('shell_releases', {}).get(key)
+        try:
+            if (data['fixed_claims'].get(key) != 0 or release is None
+                    or release.get('owner') != owner.get('owner')
+                    or release.get('marker') != owner.get('marker')
+                    or not owner.get('marker') or os.path.lexists(owner['marker'])
+                    or not memory.ended_process(reader, owner['owner'])
+                    or owner.get('leaf') and not memory.leaf_closed(reader, owner['leaf'])):
+                continue
+        except ValueError:
+            # A changed actor or leaf stays authoritative in the ledger.
+            continue
+        _archive_released_record(data, key, directory)
+        archived.append(key)
+    return archived
+
 def archive_released_shells(ledger, directory, *, reader=None):
     """Archive exact releases under the ledger lock. Never invoke on live data implicitly."""
     import admission_memory as memory
