@@ -20,7 +20,10 @@ Proof.
   split; [exact Hlow |].
   change (ZesuSsz.Contracts.RlpDecodeItemContract.decodeItemInputPointer args <
     ZesuSsz.Contracts.RlpDecodeItem.word64Modulus)%Z.
-  lia.
+  pose proof (proj1 (Z.add_le_mono_l 0 _ (decodeItemInputPointer args))
+    Hnonnegative) as Hstep.
+  rewrite Z.add_0_r in Hstep.
+  exact (Z.le_lt_trans _ _ _ Hstep Hupper).
 Qed.
 Print Assumptions decodeItemDomainAtInputPointerRangeDerivedFacts.
 
@@ -41,6 +44,10 @@ Proof.
   destruct Hdomain as [_ [_ [_ [Hlow [Hnonnegative [Hupper Hrest]]]]]].
   change (0 <= ZesuSsz.Contracts.RlpDecodeItemContract.decodeItemInputLength args <
     ZesuSsz.Contracts.RlpDecodeItem.word64Modulus)%Z.
-  lia.
+  split; [exact Hnonnegative |].
+  pose proof (proj1 (Z.add_le_mono_r 0 _ (decodeItemInputLength args))
+    Hlow) as Hstep.
+  rewrite Z.add_0_l in Hstep.
+  exact (Z.le_lt_trans _ _ _ Hstep Hupper).
 Qed.
 Print Assumptions decodeItemDomainAtInputLengthRangeDerivedFacts.

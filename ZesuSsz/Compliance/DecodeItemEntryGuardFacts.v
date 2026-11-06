@@ -13,7 +13,7 @@ Open Scope Z_scope.
 Lemma decodeItemStackSubtraction args :
   (Z_to_bv 64 (decodeItemStackPointer args) + 18446744073709551600)%bv =
     Z_to_bv 64 (decodeItemStackPointer args - RlpDecodeItem.decodeItemStackBytes).
-Proof. unfold RlpDecodeItem.decodeItemStackBytes. bv_solve. Qed.
+Proof. bv_solve. Qed.
 
 
 

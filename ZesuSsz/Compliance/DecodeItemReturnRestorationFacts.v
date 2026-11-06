@@ -38,7 +38,7 @@ Qed.
 Lemma decodeItemStackEpilogueRestored (args : DecodeItemArgs) :
   bv_add (Z_to_bv 64%N (decodeItemStackPointer args - RlpDecodeItem.decodeItemStackBytes))
     (16%bv : bv 64%N) = Z_to_bv 64%N (decodeItemStackPointer args).
-Proof. unfold RlpDecodeItem.decodeItemStackBytes. bv_solve. Qed.
+Proof. bv_solve. Qed.
 
 Lemma decodeItemSavedFramePointerDecoder (args : DecodeItemArgs) (frameBytes : list byte) :
   decodeItemSavedFrameFacts args frameBytes ->

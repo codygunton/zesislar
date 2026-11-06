@@ -87,7 +87,7 @@ Proof.
   pose proof (decodeItemLengthBytesValueRange bytes) as Hvalue.
   rewrite Hlength in Hvalue.
   assert (Hpower : 256 ^ n <= 256 ^ 8) by (apply Z.pow_le_mono_r; lia).
-  unfold word64Modulus. change (0 <= bigEndian bytes < 18446744073709551616).
+  change (0 <= bigEndian bytes < 18446744073709551616).
   change (256 ^ n <= 18446744073709551616) in Hpower. lia.
 Qed.
 
@@ -176,11 +176,11 @@ Proof.
   destruct Hdomain as (Hinput & Hstorage & Hlayout).
   destruct Hlayout as (Hpointer & HlengthRange & Hnowrap & _).
   assert (Hcursor : 0 <= payloadStart + n < bv_modulus 64) by
-    (unfold word64Modulus, bv_modulus in *; simpl in *; lia).
+    (unfold bv_modulus in *; simpl in *; lia).
   assert (Hpayload : 0 <= bigEndian bytes < bv_modulus 64) by
-    (unfold word64Modulus, bv_modulus in *; simpl in *; lia).
+    (unfold bv_modulus in *; simpl in *; lia).
   rewrite (Z_to_bv_small 64 _ Hcursor) (Z_to_bv_small 64 _ Hpayload) Z_to_bv_unsigned.
-  unfold word64Modulus, bv_modulus. simpl. split; first lia.
+  unfold bv_modulus. simpl. split; first lia.
   split; first reflexivity. unfold bv_wrap, bv_modulus. simpl. f_equal. lia.
 Qed.
 
@@ -275,7 +275,6 @@ Proof.
     unfold decodeItemEntryLayout in Hlayout.
     destruct Hlayout as (Hpointer & Hlength & Hnowrap & Hrest).
     destruct Hfold as (Hwidth & Hi & Hstart & Hbytes & Hcount & Hfits).
-    unfold word64Modulus in Hnowrap.
     change (0 <= payloadStart + i < 2^64). lia. }
   replace (bv_add (Z_to_bv 64 (payloadStart + i)) 0) with
     (Z_to_bv 64 (payloadStart + i)) by bv_solve.

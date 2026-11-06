@@ -20,7 +20,7 @@ Local Ltac decodeItemReturnMeaning openEntry meaning :=
   iDestruct "Hcore" as "(_ & _ & _ & _ & _ & _ & _ & _ & _ & _ & _ & _ & _ & _ & %Hcore & _)";
   iPureIntro; pose proof (proj2 (proj1 Hcore));
   intros; repeat match goal with H : _ /\ _ |- _ => destruct H end;
-  eapply meaning; eauto; unfold word64Modulus; lia.
+  eapply meaning; eauto; lia.
 
 Lemma decodeItemReturn698cLiteralMeaning `{!islaG Sigma} `{!threadG}
     args (x11 x12 x13 x14 x15 x16 : bv 64)

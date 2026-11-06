@@ -29,11 +29,11 @@ Definition parentHeaderError80 (bytes : list byte) : Prop :=
   List.length bytes = 80%nat /\
   byteAt bytes 72 3 /\ byteAt bytes 73 0.
 
-Definition nextUint64StackBytes : Z := 96.
-Definition parentHeaderStackBytes : Z := 400.
-Definition parentHeaderTailPc : Z := 0x800d5da0.
-Definition parentHeaderReturnPc : Z := 0x800d5f58.
-Definition nextUint64ReturnPc : Z := 0x800d6300.
+Notation nextUint64StackBytes := ((96) : Z) (only parsing).
+Notation parentHeaderStackBytes := ((400) : Z) (only parsing).
+Notation parentHeaderTailPc := ((0x800d5da0) : Z) (only parsing).
+Notation parentHeaderReturnPc := ((0x800d5f58) : Z) (only parsing).
+Notation nextUint64ReturnPc := ((0x800d6300) : Z) (only parsing).
 
 (* The CFG lists 17 direct decodeItem call sites. The first site decodes
    the outer header. The three nextUint64 sites also call decodeItem.

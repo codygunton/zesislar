@@ -12,24 +12,24 @@ Open Scope Z_scope.
    The selected symbol table gives these complete function ranges. *)
 Definition parentHeaderElfSha256 : string :=
   "e44c18d54ae3d77832df92aceb6eb7119de8eb2e8f1f1b4e585a6e33ea04ff95"%string.
-Definition decodeParentHeaderEntry : Z := 0x800d5cb8.
-Definition decodeParentHeaderEnd : Z := 0x800d6274.
-Definition nextUint64Entry : Z := 0x800d6274.
-Definition nextUint64End : Z := 0x800d6348.
+Notation decodeParentHeaderEntry := ((0x800d5cb8) : Z) (only parsing).
+Notation decodeParentHeaderEnd := ((0x800d6274) : Z) (only parsing).
+Notation nextUint64Entry := ((0x800d6274) : Z) (only parsing).
+Notation nextUint64End := ((0x800d6348) : Z) (only parsing).
 
 (* The ELF writes the result through s1. Stores at 0x800d607c..0x800d6098
    and 0x800d61e4..0x800d6208 identify these offsets. Optional tags occupy
    their first byte; their seven padding bytes have no value condition. *)
-Definition parentHeaderResultBytes : nat := 72%nat.
-Definition gasLimitOffset : nat := 0%nat.
-Definition gasUsedOffset : nat := 8%nat.
-Definition timestampOffset : nat := 16%nat.
-Definition baseFeeValueOffset : nat := 24%nat.
-Definition baseFeeTagOffset : nat := 32%nat.
-Definition blobGasValueOffset : nat := 40%nat.
-Definition blobGasTagOffset : nat := 48%nat.
-Definition excessBlobGasValueOffset : nat := 56%nat.
-Definition excessBlobGasTagOffset : nat := 64%nat.
+Notation parentHeaderResultBytes := ((72%nat) : nat) (only parsing).
+Notation gasLimitOffset := ((0%nat) : nat) (only parsing).
+Notation gasUsedOffset := ((8%nat) : nat) (only parsing).
+Notation timestampOffset := ((16%nat) : nat) (only parsing).
+Notation baseFeeValueOffset := ((24%nat) : nat) (only parsing).
+Notation baseFeeTagOffset := ((32%nat) : nat) (only parsing).
+Notation blobGasValueOffset := ((40%nat) : nat) (only parsing).
+Notation blobGasTagOffset := ((48%nat) : nat) (only parsing).
+Notation excessBlobGasValueOffset := ((56%nat) : nat) (only parsing).
+Notation excessBlobGasTagOffset := ((64%nat) : nat) (only parsing).
 
 Definition optionalWordAt (bytes : list byte) (valueOffset tagOffset : nat)
     (value : option Z) : Prop :=

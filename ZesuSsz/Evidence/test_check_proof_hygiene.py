@@ -268,9 +268,9 @@ class TrustedDeclarationTests(unittest.TestCase):
             self.scan("ZesuSsz/Automation2/Other.v", "Ltac liAStep ::= idtac.")
 
     def test_automation2_has_the_same_forbidden_name_scope(self):
-        self.scan("ZesuSsz/Automation2/Rule.v", "Definition zesu_lbu_byte_array_at_spec := 0.")
+        self.scan("ZesuSsz/Automation2/Rule.v", "Definition zesu_lbu_byte_array_at_spec (value : nat) := value.")
         with self.assertRaisesRegex(SystemExit, "forbidden-name increase"):
-            self.scan("tools/Rule.v", "Definition zesu_lbu_byte_array_at_spec := 0.")
+            self.scan("tools/Rule.v", "Definition zesu_lbu_byte_array_at_spec (value : nat) := value.")
 
     def test_automation2_trust_mirrors_only_existing_automation_declarations(self):
         approved = trusted_declarations()

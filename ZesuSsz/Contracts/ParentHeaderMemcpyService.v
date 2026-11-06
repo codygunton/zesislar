@@ -9,9 +9,9 @@ Require Import ZesuSsz.Contracts.ZiskRuntime.
 
 Open Scope Z_scope.
 
-Definition memcpyCsrPc : Z := 0x800e06c0.
-Definition parentHeaderMemcpySource : Z := 0x80114fb8.
-Definition parentHeaderMemcpyLength : Z := 80.
+Notation memcpyCsrPc := ((0x800e06c0) : Z) (only parsing).
+Notation parentHeaderMemcpySource := ((0x80114fb8) : Z) (only parsing).
+Notation parentHeaderMemcpyLength := ((80) : Z) (only parsing).
 
 Definition parentHeaderMemcpyArguments (destination returnAddress : Z) :
     ZiskMemcpyArguments :=

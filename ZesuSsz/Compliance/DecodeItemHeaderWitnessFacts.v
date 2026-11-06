@@ -17,8 +17,6 @@ Require Import ZesuSsz.Compliance.DecodeItemInputHeadWordFacts.
 From Coq Require Import List ZArith Lia.
 Open Scope Z_scope.
 
-#[export] Hint Unfold RlpDecodeItem.word64Modulus
-  RlpDecodeItem.decodeItemStackBytes : zesu_contract_constants.
 
 Lemma decodeItemInputHeadWitnessFacts returnAddress args :
   decodeItemDomainAt returnAddress decodeItemC1BDomain args ->
@@ -134,8 +132,7 @@ Proof.
   - unfold decodeItemByteFoldFacts in Hfold. rewrite -Hinput. lia.
   - unfold decodeItemFoldLengthFits in Hfits. apply Z.leb_le in Hfits.
     rewrite (Z_to_bv_small 64 _ Hrange) Z_to_bv_unsigned in Hfits.
-    rewrite -Hinput. unfold word64Modulus.
-    replace (1 + n + bigEndian lengthBytes) with (bigEndian lengthBytes + n + 1) by ring.
+    rewrite -Hinput. replace (1 + n + bigEndian lengthBytes) with (bigEndian lengthBytes + n + 1) by ring.
     exact Hfits.
 Qed.
 
@@ -186,7 +183,7 @@ Proof.
   unfold decodeItemEntryLayout in Hlayout.
   destruct Hlayout as (Hpointer & Hlength & Hnowrap & Hrest).
   assert (Hrange : 0 <= decodeItemInputPointer args < bv_modulus 64) by
-    (unfold word64Modulus in *; change (0 <= decodeItemInputPointer args < 2^64); lia).
+    (change (0 <= decodeItemInputPointer args < 2^64); lia).
   exact (Z_to_bv_small 64 _ Hrange).
 Qed.
 

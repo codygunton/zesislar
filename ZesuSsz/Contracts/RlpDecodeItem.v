@@ -8,13 +8,13 @@ Open Scope Z_scope.
 (* The selected stock ELF is build/stock-zisk/zesu-zisk.elf. *)
 Definition decodeItemElfSha256 : string :=
   "e44c18d54ae3d77832df92aceb6eb7119de8eb2e8f1f1b4e585a6e33ea04ff95"%string.
-Definition decodeItemEntry : Z := 0x800d6960.
-Definition decodeItemRegionEnd : Z := 0x800d6b30.
+Notation decodeItemEntry := ((0x800d6960) : Z) (only parsing).
+Notation decodeItemRegionEnd := ((0x800d6b30) : Z) (only parsing).
 Definition decodeItemReturnSites : list Z :=
   [0x800d69a0; 0x800d69d4; 0x800d6a60;
    0x800d6aa4; 0x800d6b04; 0x800d6b2c].
-Definition decodeItemStackBytes : Z := 16.
-Definition word64Modulus : Z := 2 ^ 64.
+Notation decodeItemStackBytes := ((16) : Z) (only parsing).
+Notation word64Modulus := ((2 ^ 64) : Z) (only parsing).
 
 (* The result owns 40 bytes. Success preserves the two padding ranges. *)
 Fixpoint littleEndian (bytes : list byte) : Z :=

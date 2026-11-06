@@ -56,7 +56,6 @@ Proof.
   destruct Hdomain as (_ & _ & Hlayout).
   unfold decodeItemEntryLayout in Hlayout.
   destruct Hlayout as (Hinput & _ & Hnowrap & _).
-  unfold word64Modulus in *.
   lia.
 Qed.
 

@@ -15,9 +15,9 @@ Open Scope Z_scope.
     Mem::memcpy permits overlap through a temporary source buffer.
     It does not use scalar-read input fallback semantics. *)
 
-Definition ziskMemcpyCsr : Z := 0x813.
-Definition ziskExtraParamsAddress : Z := 0xa0400f00.
-Definition ziskWordLimit : Z := 2 ^ 64.
+Notation ziskMemcpyCsr := ((0x813) : Z) (only parsing).
+Notation ziskExtraParamsAddress := ((0xa0400f00) : Z) (only parsing).
+Notation ziskWordLimit := ((2 ^ 64) : Z) (only parsing).
 
 (** Permissions concern one complete populated section.
     A readable section includes its stored header bytes.

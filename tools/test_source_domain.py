@@ -194,6 +194,36 @@ class DomainTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, 'hash differs'):
             project_layout_domain(**values)
 
+    def test_literal_definitions_and_parsing_notations_have_equal_values(self):
+        path = self.root / 'Constant.v'
+        for kind, expression in [('Z', '2 ^ 64'), ('N', '40%N'), ('nat', '8 + 8 * 2')]:
+            with self.subTest(kind=kind):
+                path.write_text(f'Definition constant : {kind} := {expression}.\n')
+                old = constant_from_source(self.binding(path, 'constant'))
+                path.write_text(f'Notation constant := (({expression}) : {kind}) (only parsing).\n')
+                binding = self.binding(path, 'constant')
+                new = constant_from_source(binding)
+                self.assertEqual((old['value'], old['type']), (new['value'], new['type']))
+                self.assertEqual(new['origin'], binding)
+
+    def test_numeric_notation_rejects_symbolic_or_unbounded_expressions(self):
+        path = self.root / 'Constant.v'
+        for expression in ['symbol + 1', '2 ^ 129', '2 ^ 128 * 2 ^ 128 * 2',
+                           '__import__("os")', '(40 : bool)']:
+            with self.subTest(expression=expression):
+                path.write_text(f'Notation constant := ({expression}) (only parsing).\n')
+                with self.assertRaises(ValueError):
+                    constant_from_source(self.binding(path, 'constant'))
+
+    def test_numeric_notation_requires_unique_parsing_only_declaration(self):
+        path = self.root / 'Constant.v'
+        for source in ['Notation constant := (40 : Z).\n',
+                       'Notation constant := (40 : Z) (only parsing).\n'
+                       'Definition constant : Z := 40.\n']:
+            path.write_text(source)
+            with self.assertRaises(ValueError):
+                constant_from_source(self.binding(path, 'constant'))
+
     def test_changed_constant_value_refuses(self):
         values = self.parameters()
         values['source_constants']['decodeItemStackBytes']['value'] = 8

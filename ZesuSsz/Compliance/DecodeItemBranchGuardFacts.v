@@ -28,7 +28,7 @@ Proof.
      Hseparation3 & Hreturn & Halignment & Hreadable & HoutputBase &
      HoutputBound & Hend & Hslice).
   assert (Hlen : 0 <= decodeItemInputLength args < bv_modulus 64) by
-    (unfold word64Modulus in *; change (0 <= decodeItemInputLength args < 2^64); lia).
+    (change (0 <= decodeItemInputLength args < 2^64); lia).
   rewrite (Z_to_bv_small 64 (decodeItemInputLength args) Hlen) in Hnonzero.
   replace (Z_to_bv 64 (decodeItemInputPointer args) + 0)%bv with
     (Z_to_bv 64 (decodeItemInputPointer args)) by bv_solve.
@@ -36,7 +36,7 @@ Proof.
     (Z_to_bv 64 (decodeItemInputPointer args)) 1 ltac:(done)).
   rewrite zesu_signed_zero_extend_64_128.
   assert (Hptr : 0 <= decodeItemInputPointer args < bv_modulus 64) by
-    (unfold word64Modulus in *; change (0 <= decodeItemInputPointer args < 2^64); lia).
+    (change (0 <= decodeItemInputPointer args < 2^64); lia).
   assert (Hend64 : 0 <= decodeItemInputEnd args < bv_modulus 64) by exact Hend.
   rewrite (Z_to_bv_small 64 _ Hptr) (Z_to_bv_small 64 _ Hend64).
   change (decodeItemInputPointer args + 1 <= decodeItemInputEnd args). lia.
@@ -73,7 +73,7 @@ Proof.
      Hseparation3 & Hreturn & Halignment & Hreadable & HoutputBase &
      HoutputBound & Hend & Hslice).
   assert (Hlen : 0 <= decodeItemInputLength args < bv_modulus 64) by
-    (unfold word64Modulus in *; change (0 <= decodeItemInputLength args < 2^64); lia).
+    (change (0 <= decodeItemInputLength args < 2^64); lia).
   rewrite (Z_to_bv_small 64 (decodeItemInputLength args) Hlen) in Hnonzero.
   cbv [mapInputBufferAddress mapInputCapacity mapRamBase machineRamEnd
     mapRamSize defaultMap] in Hreadable.
@@ -96,7 +96,7 @@ Proof.
   unfold decodeItemEntryLayout in Hlayout.
   destruct Hlayout as (Hpointer & Hlength & Hnowrap & Hrest).
   assert (Hptr : 0 <= decodeItemInputPointer args < bv_modulus 64) by
-    (unfold word64Modulus in *; change (0 <= decodeItemInputPointer args < 2^64); lia).
+    (change (0 <= decodeItemInputPointer args < 2^64); lia).
   replace (Z_to_bv 64 (decodeItemInputPointer args) + 0)%bv with
     (Z_to_bv 64 (decodeItemInputPointer args)) by bv_solve.
   rewrite !zesu_signed_zero_extend_add_64_128; try done.

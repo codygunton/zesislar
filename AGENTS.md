@@ -69,6 +69,18 @@ for each instruction.
 Ordinary hint modules must remain globally exported through their function's hint umbrella.
 Selected proofs may import scoped hints directly only through the explicit `SCOPED_HINT_IMPORTS` policy in `check_decode_item_hints.py`.
 
+## Constants
+
+Use parsing-only `Notation` for closed numeric literals and literal-only arithmetic or bitvector constants.
+Keep the original numeric type in the notation body.
+This prevents named constants from hiding literals from arithmetic automation.
+Rule `CONST-NOTATION` in the hygiene check enforces this requirement outside frozen Automation.
+Keep a `Definition` when frozen Automation needs its identity for unfolding, rewriting, or conversion.
+Record that dependency in `ZesuSsz/Evidence/closed_literal_exceptions.json` with its exact source hash and reason.
+The allowlist also preserves existing proof controls and pinned upstream Sail constants outside the conversion scope.
+New exceptions require explicit review.
+Never change frozen Automation to remove an exception.
+
 ## File structure
 
 Keep one small umbrella file for each Level 1 contract.

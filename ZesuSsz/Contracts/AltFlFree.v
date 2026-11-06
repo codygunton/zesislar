@@ -4,15 +4,15 @@ Require Import ZesuSsz.Contracts.AbiBytes.
 Import ListNotations.
 Open Scope Z_scope.
 
-Definition freeEntry : Z := 0x80041f38.
-Definition freeRegionEnd : Z := 0x8004218c.
+Notation freeEntry := ((0x80041f38) : Z) (only parsing).
+Notation freeRegionEnd := ((0x8004218c) : Z) (only parsing).
 Definition freeReturnBlockEntries : list Z := [0x80042144; 0x80042160].
 Definition freeReturnSites : list Z := [0x80042150; 0x80042188].
-Definition freeStackBytes : Z := 16.
-Definition freeListsPointer : Z := 0xa0534000.
-Definition freeListCount : Z := 22.
+Notation freeStackBytes := ((16) : Z) (only parsing).
+Notation freeListsPointer := ((0xa0534000) : Z) (only parsing).
+Notation freeListCount := ((22) : Z) (only parsing).
 (* The merged object has state:u8, seven padding bytes, then 22 list heads. *)
-Definition freeListsBytes : Z := 8 + 8 * freeListCount.
+Notation freeListsBytes := ((8 + 8 * freeListCount) : Z) (only parsing).
 
 (* This balanced comparison tree is the shared source helper used by free. *)
 Definition freeSizeClassOfBytes (size : Z) : Z :=

@@ -18,7 +18,7 @@ intros Hdomain Hleaf.
 assert (source_fault_enabled : ZesuStepSourceFaultProof) by constructor.
 zesu_source_fault_proof ltac:(
   unfold decodeItemArgsWellFormed, decodeItemEntryLayout in Hdomain;
-  cbn [decodeItemStackBytes word64Modulus machineRamEnd defaultMap] in Hdomain) Hleaf.
+  cbn [machineRamEnd defaultMap] in Hdomain) Hleaf.
 
 Qed.
 Lemma composition403_fault1 (args : DecodeItemArgs) :
@@ -29,7 +29,7 @@ intros Hdomain Hleaf.
 assert (source_fault_enabled : ZesuStepSourceFaultProof) by constructor.
 zesu_source_fault_proof ltac:(
   unfold decodeItemArgsWellFormed, decodeItemEntryLayout in Hdomain;
-  cbn [decodeItemStackBytes word64Modulus machineRamEnd defaultMap] in Hdomain) Hleaf.
+  cbn [machineRamEnd defaultMap] in Hdomain) Hleaf.
 
 Qed.
 Lemma composition403_fault2 (args : DecodeItemArgs) :
@@ -40,7 +40,7 @@ intros Hdomain Hleaf.
 assert (source_fault_enabled : ZesuStepSourceFaultProof) by constructor.
 zesu_source_fault_proof ltac:(
   unfold decodeItemArgsWellFormed, decodeItemEntryLayout in Hdomain;
-  cbn [decodeItemStackBytes word64Modulus machineRamEnd defaultMap] in Hdomain) Hleaf.
+  cbn [machineRamEnd defaultMap] in Hdomain) Hleaf.
 
 Qed.
 Lemma composition403_fault3 (args : DecodeItemArgs) :
@@ -51,7 +51,7 @@ intros Hdomain Hleaf.
 assert (source_fault_enabled : ZesuStepSourceFaultProof) by constructor.
 zesu_source_fault_proof ltac:(
   unfold decodeItemArgsWellFormed, decodeItemEntryLayout in Hdomain;
-  cbn [decodeItemStackBytes word64Modulus machineRamEnd defaultMap] in Hdomain) Hleaf.
+  cbn [machineRamEnd defaultMap] in Hdomain) Hleaf.
 
 Qed.
 Lemma source_fault_generic_upper (base limit : Z)

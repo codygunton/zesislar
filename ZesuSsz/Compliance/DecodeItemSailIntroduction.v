@@ -75,7 +75,7 @@ Ltac decodeItemSailBranch candidate execution :=
   | |- decodeItemAcceptedFacts _ _ _ _ =>
       split;
       [eapply candidate; eauto;
-        try (rewrite Z.mod_small; [assumption | unfold word64Modulus; lia]) |
+        try (rewrite Z.mod_small; [assumption | lia]) |
        eapply execution; eauto]
   | |- decodeItemSailSuccess _ _ _ _ =>
       apply decodeItemSailSuccessFromPrompt; [exact Hdomain |];
@@ -87,7 +87,7 @@ Ltac decodeItemSailBranch candidate execution :=
   | |- decodeItemRejectedFacts _ =>
       split;
       [eapply candidate; eauto;
-        try (rewrite Z.mod_small; [assumption | unfold word64Modulus; lia]) |
+        try (rewrite Z.mod_small; [assumption | lia]) |
        apply decodeItemSailRejectFromPrompt; [exact Hdomain |];
        unfold decodeItemInputHead in Hinput; unfold decodeItemSailCursor;
        rewrite Hinput in *;
@@ -234,7 +234,6 @@ Proof.
         unfold decodeItemSailCursor in Hrun. rewrite Hinput in Hrun.
         unfold decodeItemSailCursor. rewrite Hinput. rewrite Hinput in Hbound.
         eapply decodeItemRunPromptRejectedHeader; first exact Hrun.
-        unfold word64Modulus in Hwrap.
         assert (Hsizes : 2 ^ 32 - 1 < 2 ^ 64) by (vm_compute; reflexivity).
         apply Z.ge_le in Hwrap.
         eapply Z.lt_le_trans; last exact Hwrap.
@@ -287,7 +286,7 @@ Proof.
   - apply decodeItemSailRejectFromPrompt; first exact Hdomain.
     assert (Hsum : (1 + n + bigEndian lengthBytes) mod word64Modulus <=
       1 + n + bigEndian lengthBytes).
-    { apply Z.mod_le; first lia. unfold word64Modulus. lia. }
+    { apply Z.mod_le; first lia. lia. }
     unfold decodeItemInputHead in Hinput.
     unfold decodeItemSailCursor in Hrun. rewrite Hinput in Hrun.
     unfold decodeItemSailCursor. rewrite Hinput. rewrite Hinput in Hreject.
