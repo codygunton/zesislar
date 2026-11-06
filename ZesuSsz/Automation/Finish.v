@@ -186,33 +186,10 @@ Ltac zesu_finish_ram_known :=
   end.
 
 Ltac zesu_finish_array_byte_lookup :=
-  zesu_normalize_array_byte_lookups;
-  repeat match goal with
-  | Hlookup : ?bytes !! Z.to_nat (bv_unsigned ?offset `div` 1) = Some ?byte |- _ =>
-      let integer := ZesuSsz.Automation.VmClosed.zesu_vm_eval_closed (bv_unsigned offset) in
-      lazymatch integer with Z0 => idtac | Zpos _ => idtac end;
-      let index := ZesuSsz.Automation.VmClosed.zesu_vm_eval_closed (Z.to_nat integer) in
-      change (bytes !! index = Some byte) in Hlookup
-  end;
-  repeat match goal with
-  | Hlookup : ?bytes !! ?index = Some ?byte
-    |- context[default _ (?bytes !! ?index)] => rewrite Hlookup
-  end;
-  reflexivity.
+  ArrayByteValues.zesu_finish_array_byte_lookup.
 
-(* Reject every symbolic offset before either lookup normalizer reaches the VM. *)
 Ltac zesu_finish_array_byte_lookup_if_closed :=
-  assert_fails ltac:(idtac; multimatch goal with
-  | Hlookup : ?bytes !! Z.to_nat (bv_unsigned ?offset `div` 1) = Some ?byte |- _ =>
-      assert_fails ltac:(zesu_vm_closed offset)
-  | Hlookup : ?bytes !! Z.to_nat
-      ((bv_unsigned (bv_add ?row ?offset) - ?base) `div` 1) = Some ?byte |- _ =>
-      assert_fails ltac:(zesu_vm_closed offset)
-  | Hlookup : ?bytes !! Z.to_nat
-      (bv_unsigned (bv_add ?row ?offset) - ?base) = Some ?byte |- _ =>
-      assert_fails ltac:(zesu_vm_closed offset)
-  end);
-  zesu_finish_array_byte_lookup.
+  ArrayByteValues.zesu_finish_array_byte_lookup_if_closed.
 
 Ltac zesu_normalize_equal_array_regions :=
   repeat match goal with
@@ -637,16 +614,50 @@ Ltac zesu_v34_array_continuation :=
       ZesuSsz.Automation.FramePackingFinish.zesu_frame_packing_finish |
       assumption | reflexivity]).
 
+(* Keep the shared route first. Assemble after matching only when it refuses. *)
 Ltac zesu_finish_source_package :=
+  first [solve [
   MemoryTupleConsumer.zesu_memory_tuple
     ltac:(fun requested =>
       once
         (SourceFactByteViews.zesu_source_byte_views;
          SourceFactByteViews.zesu_source_byte_order_tree requested;
          ZesuSsz.Automation.BitvectorFacts.zesu_source_biased_mask_tree requested);
-      SourceFactMatching.zesu_source_check_fixed_tree requested;
+      (tryif SourceFactMatching.zesu_source_check_fixed_tree requested
+       then idtac
+       else (repeat JoinEntailment.zesu_join_project_once;
+         PureFacts.zesu_saturate_derived_facts;
+         SourceFactMatching.zesu_source_check_fixed_tree requested));
+      once (SourceFactMatching.zesu_source_match_tree requested ltac:(idtac)))
+    ltac:(fun _ => SourceFactMatching.zesu_source_finish_package)
+  ] | solve [
+let run := ltac:(fun consume_facts finish =>
+once (try zesu_memory_registered_intro;
+  ResourceGroups.zesu_open_resource_groups;
+  ByteArrayAssemblyCodec.zesu_byte_array_normalize_stride;
+  zesu_memory_open_tuple constr:(16%nat);
+  repeat iMatchHyp ltac:(fun name body => is_var body; progress (iFrame name));
+  repeat first [progress zesu_memory_frame_first |
+    progress zesu_memory_join_arrays]);
+  lazymatch goal with
+  | |- environments.envs_entails _ ?requested => consume_facts requested
+  end;
+  try MemoryTupleConsumer.zesu_memory_assemble_leading;
+  finish constr:(tt)) in
+  run ltac:(fun requested =>
+      once
+        (SourceFactByteViews.zesu_source_byte_views;
+         SourceFactByteViews.zesu_source_byte_order_tree requested;
+         ZesuSsz.Automation.BitvectorFacts.zesu_source_biased_mask_tree requested);
+      (tryif SourceFactMatching.zesu_source_check_fixed_tree requested
+       then idtac
+       else (repeat JoinEntailment.zesu_join_project_once;
+         PureFacts.zesu_saturate_derived_facts;
+         SourceFactMatching.zesu_source_check_fixed_tree requested));
       SourceFactMatching.zesu_source_match_tree requested ltac:(idtac))
-    ltac:(fun _ => SourceFactMatching.zesu_source_finish_package).
+    ltac:(fun _ => SourceFactMatching.zesu_source_finish_package)
+  ]].
+
 
 (* Match the requested facts directly against the source facts. This adds no
    byte view and no residual switch. *)
@@ -729,7 +740,9 @@ Ltac zesu_finish_common_pure :=
 Ltac zesu_finish_final_pure :=
   first [
   zesu_final_pure_head_gate;
-  zesu_saturate_derived_facts;
+  tryif progress zesu_saturate_derived_facts
+  then try solve [zesu_array_bounds_if_enabled]
+  else idtac;
   try solve [
     first [
       zesu_finish_negated_ge; zesu_finish_implication_pair; repeat split;

@@ -353,3 +353,234 @@ Ltac zesu_source_biased_mask_tree requested :=
       zesu_source_biased_mask_tree right
   | _ => idtac
   end.
+
+(* Proposed addition to BitvectorFacts.v. No machine address or contract occurs. *)
+Lemma zesu_single_bit_land_zero (width : N) (index : Z) (word : bv width) :
+  (0 <= index < Z.of_N width)%Z ->
+  Z.land (bv_unsigned word) (2 ^ index) = 0%Z ->
+  bv_extract (Z.to_N index) 1 word = (0%bv : bv 1).
+Proof.
+ intros [Hnonnegative Hbelow] Hland.
+ assert (Hpower : (0 < 2 ^ index)%Z) by (apply Z.pow_pos_nonneg; lia).
+ pose proof (f_equal (fun value : Z => Z.shiftr value index) Hland) as Hshift.
+ cbv beta iota zeta in Hshift.
+ rewrite Z.shiftr_land in Hshift.
+ rewrite !Z.shiftr_div_pow2 in Hshift; try lia.
+ rewrite Z.div_same in Hshift; try lia.
+ apply bv_eq; rewrite bv_extract_unsigned Z2N.id; try lia.
+ change ((Z.shiftr (bv_unsigned word) index) mod (2 ^ 1) = 0)%Z.
+ rewrite Z.shiftr_div_pow2; try lia.
+ rewrite <- Z.land_ones; try lia.
+ change (Z.land (bv_unsigned word / 2 ^ index) 1 = 0)%Z.
+ exact Hshift.
+Qed.
+
+Ltac zesu_source_single_bit_zero_view source word width mask :=
+  assert_fails (has_evar word);
+  ZesuSsz.Automation.VmClosed.zesu_vm_closed width;
+  ZesuSsz.Automation.VmClosed.zesu_vm_closed mask;
+  let positive := eval vm_compute in (0 <? mask)%Z in constr_eq positive true;
+  let index := eval vm_compute in (Z.log2 mask) in
+  let single := eval vm_compute in (Z.eqb mask (2 ^ index)) in constr_eq single true;
+  let within := eval vm_compute in (index <? Z.of_N width)%Z in constr_eq within true;
+  let bit := eval vm_compute in (Z.to_N index) in
+  assert_fails ltac:(idtac; match goal with
+    _ : bv_extract bit 1 word = (0%bv : bv 1),
+    _ : bv_extract bit 1 word <> (1%bv : bv 1),
+    _ : bv_unsigned (bv_extract bit 1 word) = 0%Z,
+    _ : bv_unsigned (bv_extract bit 1 word) <> 1%Z |- _ => idtac end);
+  tryif match goal with _ : bv_extract bit 1 word = (0%bv : bv 1) |- _ => idtac end
+  then idtac else (
+  let Hland := fresh "HsingleBitLand" in
+  assert (Hland : (Z.land (bv_unsigned word) (2 ^ index) = 0)%Z) by
+    (first [
+      let Hsource := fresh "HsingleBitSource" in
+      pose proof (f_equal (@bv_unsigned width) source) as Hsource;
+      change (Z.land (bv_unsigned word) (2 ^ index) = 0)%Z in Hsource;
+      exact Hsource
+    | exact source]);
+  let view := fresh "HsingleBitZero" in
+  assert (view : bv_extract bit 1 word = (0%bv : bv 1)) by
+    (apply (zesu_single_bit_land_zero width index word);
+      [split; ZesuSsz.Automation.VmClosed.zesu_vm_closed_decide | exact Hland]);
+  clear Hland);
+  tryif match goal with _ : bv_extract bit 1 word <> (1%bv : bv 1) |- _ => idtac end
+  then idtac else (
+    let zero := match goal with Hzero : bv_extract bit 1 word = (0%bv : bv 1) |- _ => Hzero end in
+    let different := fresh "HsingleBitNotOne" in
+    assert (different : bv_extract bit 1 word <> (1%bv : bv 1)) by
+      (rewrite zero; discriminate));
+  let zero := match goal with Hzero : bv_extract bit 1 word = (0%bv : bv 1) |- _ => Hzero end in
+  tryif match goal with _ : bv_unsigned (bv_extract bit 1 word) = 0%Z |- _ => idtac end
+  then idtac else (let unsignedZero := fresh "HsingleBitUnsignedZero" in
+    assert (unsignedZero : bv_unsigned (bv_extract bit 1 word) = 0%Z) by (rewrite zero; reflexivity));
+  tryif match goal with _ : bv_unsigned (bv_extract bit 1 word) <> 1%Z |- _ => idtac end
+  then idtac else (let unsignedNotOne := fresh "HsingleBitUnsignedNotOne" in
+    assert (unsignedNotOne : bv_unsigned (bv_extract bit 1 word) <> 1%Z) by (rewrite zero; discriminate)).
+
+Ltac zesu_source_single_bit_zero_views :=
+  repeat multimatch goal with
+  | source : @bv_and ?width ?word ?mask = ?zero |- _ =>
+      constr_eq zero constr:((0%bv : bv width));
+      ZesuSsz.Automation.VmClosed.zesu_vm_closed mask;
+      let magnitude := eval vm_compute in (bv_unsigned mask) in
+      zesu_source_single_bit_zero_view source word width magnitude
+  | source : Z.land (bv_unsigned ?word) ?mask = 0%Z |- _ =>
+      let width := lazymatch type of word with bv ?width => width end in
+      zesu_source_single_bit_zero_view source word width mask
+  end.
+
+Ltac zesu_source_unsigned_bound :=
+  lazymatch goal with
+  | |- bv_unsigned ?word <= ?bound =>
+    assert_fails (has_evar word);
+    let kind := type of word in lazymatch kind with bv ?width =>
+      ZesuSsz.Automation.VmClosed.zesu_vm_closed width;
+      ZesuSsz.Automation.VmClosed.zesu_vm_closed bound;
+      let limit := ZesuSsz.Automation.VmClosed.zesu_vm_eval_closed (bv_modulus width) in
+      let ceiling := ZesuSsz.Automation.VmClosed.zesu_vm_eval_closed bound in
+      let adequate := fresh "HunsignedCeiling" in
+      assert (adequate : (limit - 1 <= ceiling)%Z) by
+        ZesuSsz.Automation.VmClosed.zesu_vm_closed_decide;
+      let range := fresh "HunsignedRange" in
+      pose proof (bv_unsigned_in_range width word) as range;
+      change (0 <= bv_unsigned word < limit)%Z in range;
+      change (bv_unsigned word <= ceiling)%Z;
+      clear -range adequate; Lia.lia
+    end
+  | |- bv_unsigned ?word < ?bound =>
+    assert_fails (has_evar word);
+    let kind := type of word in lazymatch kind with bv ?width =>
+      ZesuSsz.Automation.VmClosed.zesu_vm_closed width;
+      ZesuSsz.Automation.VmClosed.zesu_vm_closed bound;
+      let limit := ZesuSsz.Automation.VmClosed.zesu_vm_eval_closed (bv_modulus width) in
+      let ceiling := ZesuSsz.Automation.VmClosed.zesu_vm_eval_closed bound in
+      let adequate := fresh "HunsignedCeiling" in
+      assert (adequate : (limit <= ceiling)%Z) by
+        ZesuSsz.Automation.VmClosed.zesu_vm_closed_decide;
+      let range := fresh "HunsignedRange" in
+      pose proof (bv_unsigned_in_range width word) as range;
+      change (0 <= bv_unsigned word < limit)%Z in range;
+      change (bv_unsigned word < ceiling)%Z;
+      clear -range adequate; Lia.lia
+    end
+  end.
+
+Ltac zesu_source_signed_lower :=
+  lazymatch goal with
+  | |- ?threshold <= bv_unsigned ?byte =>
+    assert_fails (has_evar byte);
+    let kind := type of byte in lazymatch kind with bv ?width =>
+      ZesuSsz.Automation.VmClosed.zesu_vm_closed width;
+      ZesuSsz.Automation.VmClosed.zesu_vm_closed threshold;
+      let half := ZesuSsz.Automation.VmClosed.zesu_vm_eval_closed (bv_half_modulus width) in
+      let floor := ZesuSsz.Automation.VmClosed.zesu_vm_eval_closed threshold in
+      constr_eq floor half;
+      multimatch goal with
+      | Hsource : bv_signed ?extended < ?right |- _ =>
+        ZesuSsz.Automation.VmClosed.zesu_vm_closed right;
+        let zero := ZesuSsz.Automation.VmClosed.zesu_vm_eval_closed right in
+        constr_eq zero constr:(0%Z);
+        let transported := fresh "HsignedLowerSource" in
+        pose proof Hsource as transported;
+        let rec unwrap value :=
+          lazymatch value with
+          | bv_sign_extend ?wide ?inner =>
+            let innerKind := type of inner in
+            lazymatch innerKind with bv ?narrow =>
+              ZesuSsz.Automation.VmClosed.zesu_vm_closed wide;
+              ZesuSsz.Automation.VmClosed.zesu_vm_closed narrow;
+              let ordered := fresh "HsignedExtensionWidth" in
+              assert (ordered : (narrow <= wide)%N) by
+                ZesuSsz.Automation.VmClosed.zesu_vm_closed_decide;
+              rewrite (bv_sign_extend_signed wide inner ordered) in transported;
+              clear ordered; unwrap inner
+            end
+          | _ => constr_eq value byte
+          end in
+        unwrap extended;
+        let rightZero := fresh "HsignedZero" in
+        assert (rightZero : right = 0%Z) by
+          ZesuSsz.Automation.VmClosed.zesu_vm_closed_decide;
+        rewrite rightZero in transported; clear rightZero;
+        let nonzero := fresh "HsignedNonzeroWidth" in
+        assert (nonzero : width <> 0%N) by
+          first [ZesuSsz.Automation.VmClosed.zesu_vm_closed_decide | congruence];
+        apply (proj1 (ZesuSsz.Automation.BitvectorFacts.zesu_guard_signed_negative
+          width byte nonzero)) in transported;
+        change (half <= bv_unsigned byte)%Z in transported;
+        change (floor <= bv_unsigned byte)%Z;
+        exact transported
+      end
+    end
+  end.
+
+Ltac zesu_source_signed_upper :=
+ lazymatch goal with
+ | |- bv_unsigned ?word <= ?bound =>
+   let byte := lazymatch word with
+     | bv_sign_extend ?wide ?inner => constr:(inner)
+     | _ => constr:(word)
+     end in
+   assert_fails (has_evar byte);
+   let kind := type of byte in lazymatch kind with bv ?width =>
+   VmClosed.zesu_vm_closed width;
+   VmClosed.zesu_vm_closed bound;
+   let half := VmClosed.zesu_vm_eval_closed (bv_half_modulus width) in
+   let ceiling := VmClosed.zesu_vm_eval_closed bound in
+   let adequate := fresh "HsignedUpperCeiling" in
+   assert (adequate : (half - 1 <= ceiling)%Z) by VmClosed.zesu_vm_closed_decide;
+   multimatch goal with
+   | Hsource : ~ bv_signed ?extended < ?right |- _ =>
+     VmClosed.zesu_vm_closed right;
+     let zero := VmClosed.zesu_vm_eval_closed right in
+     constr_eq zero constr:(0%Z);
+     let transported := fresh "HsignedUpperSource" in
+     pose proof Hsource as transported;
+     let rec unwrap value :=
+       lazymatch value with
+       | bv_sign_extend ?wide ?inner =>
+         let innerKind := type of inner in lazymatch innerKind with bv ?narrow =>
+         VmClosed.zesu_vm_closed wide;
+         VmClosed.zesu_vm_closed narrow;
+         let ordered := fresh "HsignedUpperWidth" in
+         assert (ordered : (narrow <= wide)%N) by VmClosed.zesu_vm_closed_decide;
+         rewrite (bv_sign_extend_signed wide inner ordered) in transported;
+         clear ordered; unwrap inner
+         end
+       | _ => constr_eq value byte
+       end in
+     unwrap extended;
+     let rightZero := fresh "HsignedUpperZero" in
+     assert (rightZero : right = 0%Z) by VmClosed.zesu_vm_closed_decide;
+     rewrite rightZero in transported; clear rightZero;
+     let nonzero := fresh "HsignedUpperNonzeroWidth" in
+     assert (nonzero : width <> 0%N) by
+       first [VmClosed.zesu_vm_closed_decide | congruence];
+     rewrite (BitvectorFacts.zesu_guard_signed_negative width byte nonzero) in transported;
+     change (~ half <= bv_unsigned byte)%Z in transported;
+     let range := fresh "HsignedUpperByteRange" in
+     pose proof (bv_unsigned_in_range width byte) as range;
+     lazymatch word with
+     | bv_sign_extend ?wide byte =>
+       VmClosed.zesu_vm_closed wide;
+       let ordered := fresh "HsignedUpperTargetWidth" in
+       assert (ordered : (width <= wide)%N) by VmClosed.zesu_vm_closed_decide;
+       let modulus := fresh "HsignedUpperModulus" in
+       pose proof (bv_modulus_le_mono width wide ordered) as modulus;
+       rewrite bv_sign_extend_unsigned;
+       unfold bv_signed;
+       let signedRange := fresh "HsignedUpperSmall" in
+       assert (signedRange : (-bv_half_modulus width <= bv_unsigned byte < bv_half_modulus width)%Z) by
+         (change (-half <= bv_unsigned byte < half)%Z; lia);
+       rewrite (bv_swrap_small width (bv_unsigned byte) signedRange);
+       let wideRange := fresh "HsignedUpperWideRange" in
+       assert (wideRange : (0 <= bv_unsigned byte < bv_modulus wide)%Z) by lia;
+       rewrite (bv_wrap_small wide (bv_unsigned byte) wideRange)
+     | _ => idtac
+     end;
+     change (bv_unsigned byte <= ceiling)%Z;
+     clear -transported adequate; lia
+   end
+   end
+ end.

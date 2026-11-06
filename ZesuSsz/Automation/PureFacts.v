@@ -54,17 +54,27 @@ Ltac zesu_split_folded_pure :=
   end.
 
 Ltac zesu_saturate_derived_facts :=
-  repeat match goal with
-  | H : ?T |- _ =>
-      let instance := constr:(_ : ZesuDerivedFacts T _) in
-      lazymatch type of instance with
-      | ZesuDerivedFacts _ ?derived =>
-          lazymatch goal with
-          | _ : derived |- _ => fail
-          | _ => pose proof (zesu_derived_facts (ZesuDerivedFacts := instance) H)
-          end
-      end
-  end.
+ repeat (once (multimatch goal with
+ | H : ?T |- _ =>
+   lazymatch type of T with Prop => idtac end;
+   assert_fails (has_evar T);
+   let fact := fresh "derivedFact" in
+   evar (fact : Prop);
+   let instance := fresh "derivedInstance" in
+   assert (instance : ZesuSsz.Automation.PureFacts.ZesuDerivedFacts T fact);
+   [ unfold fact; typeclasses eauto
+   | let derived := eval unfold fact in fact in
+     assert_fails (has_evar derived);
+     lazymatch goal with
+     | _ : derived |- _ => fail 0
+     | _ =>
+       let result := fresh "Hderived" in
+       pose proof (ZesuSsz.Automation.PureFacts.zesu_derived_facts
+          (ZesuDerivedFacts := instance) H) as result;
+       unfold fact in result; clear instance fact
+     end ]
+ end)).
+
 
 (* Everything the witness says, in the form a solver reads. *)
 Ltac zesu_witness_facts :=
