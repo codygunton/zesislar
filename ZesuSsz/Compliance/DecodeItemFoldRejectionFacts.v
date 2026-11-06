@@ -22,7 +22,7 @@ Proof.
   intros Hdomain Hprovenance Hfold Hfits.
   pose proof (decodeItemDomainInputLengthBounds args Hdomain) as Hbounds.
   assert (Hrange : 0 <= decodeItemInputLength args < bv_modulus 64) by
-    (unfold word64Modulus in *; change (0 <= decodeItemInputLength args < 2^64); lia).
+    (change (0 <= decodeItemInputLength args < 2^64); lia).
   pose proof Hdomain as Hfacts.
   destruct Hfacts as (Hinput & Hstorage & Hlayout).
   eapply (decodeItemLongPayloadRejected args isList inputPrefix rest n payloadStart lengthBytes);
@@ -30,8 +30,7 @@ Proof.
   - unfold decodeItemByteFoldFacts in Hfold. rewrite -Hinput. lia.
   - unfold decodeItemFoldLengthFits in Hfits. apply Z.leb_gt in Hfits.
     rewrite (Z_to_bv_small 64 _ Hrange) Z_to_bv_unsigned in Hfits.
-    rewrite -Hinput. unfold word64Modulus.
-    replace (1 + n + bigEndian lengthBytes) with (bigEndian lengthBytes + n + 1) by ring.
+    rewrite -Hinput. replace (1 + n + bigEndian lengthBytes) with (bigEndian lengthBytes + n + 1) by ring.
     exact Hfits.
 Qed.
 Print Assumptions decodeItemCompletedFoldRejected.
@@ -46,6 +45,6 @@ Proof.
   pose proof (decodeItemDomainInputLengthBounds args Hdomain) as Hbounds.
   destruct Hdomain as (Hinput & Hstorage & Hlayout).
   split; [exact Hinput |]. split; [exact Hstorage |].
-  unfold word64Modulus in *. change (0 <= decodeItemInputLength args < 2^64). lia.
+  change (0 <= decodeItemInputLength args < 2^64). lia.
 Qed.
 Print Assumptions decodeItemDomainFoldDerivedFacts.

@@ -86,7 +86,7 @@ Proof.
     all: try (rewrite (length_bv_to_little_endian 8 8 _ ltac:(lia)); reflexivity).
     all: rewrite decodeItemJoinWordCodec.
     all: try (rewrite Hpayload; reflexivity).
-    all: try (rewrite Hconsumed; symmetry; apply Z.mod_small; unfold word64Modulus; lia).
+    all: try (rewrite Hconsumed; symmetry; apply Z.mod_small; lia).
     rewrite Hcast.
     assert (Hnot128 : (bv_unsigned prefix =? 128) = false).
     { apply Z.eqb_neq. lia. }
@@ -94,5 +94,5 @@ Proof.
     unfold itemPayloadPointer. rewrite Hhead.
     rewrite Hnot128. reflexivity.
   - lia.
-  - unfold word64Modulus. lia.
+  - lia.
 Qed.

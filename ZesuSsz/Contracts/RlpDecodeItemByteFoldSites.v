@@ -12,8 +12,8 @@ Open Scope Z_scope.
    The resource predicate in Q20 binds x10, x11, x12, x13, x14, x15,
    x16, x2, x1, x8, both arrays, and the saved stack frame.
    No block proof or edge adapter follows from these definitions. *)
-Definition decodeItemStringFoldPC : Z := 0x800d6a24.
-Definition decodeItemListFoldPC : Z := 0x800d6ac4.
+Notation decodeItemStringFoldPC := ((0x800d6a24) : Z) (only parsing).
+Notation decodeItemListFoldPC := ((0x800d6ac4) : Z) (only parsing).
 
 Definition decodeItemStringFoldAt `{!islaG Sigma} `{!threadG}
     (pc : Z) (args : DecodeItemArgs) (n i payloadStart : Z)

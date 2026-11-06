@@ -1,0 +1,1979 @@
+{
+  "schema": "zesu.closed-literal-exceptions.v1",
+  "exceptions": [
+    {
+      "file": "ZesuSsz/Evidence/WordIdentityControls.v",
+      "name": "control_displacement",
+      "sha256": "4e7fdd954873bf1d27a3948183ea7059ac41d1f3268c1899cd59047e693e5b14",
+      "reason": "Existing out-of-scope proof control; preserve its named constant and test identity."
+    },
+    {
+      "file": "ZesuSsz/Proofs/Tests/FinishDeferCancellation.v",
+      "name": "finish_defer_amount",
+      "sha256": "a6d394554e9acdc96b81f8bb08a6d63b3959fabec569964f4b8e83a31aa608bb",
+      "reason": "Existing out-of-scope proof control; preserve its named constant and test identity."
+    },
+    {
+      "file": "ZesuSsz/Proofs/Tests/FinishDeferCancellation.v",
+      "name": "finish_defer_limit",
+      "sha256": "76573bfec9bb32c5cbd8c8ded079063cde1b0c445fdd444d942d7e49514e5a6c",
+      "reason": "Existing out-of-scope proof control; preserve its named constant and test identity."
+    },
+    {
+      "file": "ZesuSsz/Proofs/Tests/SailEvalParent.v",
+      "name": "sail_import_sentinel",
+      "sha256": "929ce8bfff137a73d9f716cc512f80a61924d08e76bc0b66bfc58964f97a9415",
+      "reason": "Existing out-of-scope proof control; preserve its named constant and test identity."
+    },
+    {
+      "file": "ZesuSsz/Proofs/Tests/StackWriteHook.v",
+      "name": "stack_test_extent",
+      "sha256": "85b2cc404dcfaba1c78b15ca87c7b4d30a31f343f409bd690803e220cd218db9",
+      "reason": "Existing out-of-scope proof control; preserve its named constant and test identity."
+    },
+    {
+      "file": "ZesuSsz/Proofs/Tests/WordArrayHandoff.v",
+      "name": "handoff_test_width",
+      "sha256": "45ec64f4542942dbd2ef91934916538dbec4219dc0dd3bfe882195c6ffc9c635",
+      "reason": "Existing out-of-scope proof control; preserve its named constant and test identity."
+    },
+    {
+      "file": "ZesuSsz/Proofs/Tests/WrappedWordNormalization.v",
+      "name": "wrapped_alias_limit425",
+      "sha256": "73a5ed0de326225cf5ae23a5eab2454cd9d8971c15e06b5f1a92047d1a869ff4",
+      "reason": "Existing out-of-scope proof control; preserve its named constant and test identity."
+    },
+    {
+      "file": "ZesuSsz/Proofs/Tests/WrappedWordNormalization.v",
+      "name": "wrapped_alias_modulus425",
+      "sha256": "65e68c50f175abaa47a634916a71047e9d9bd7939388b4b1db6011360d38ae3b",
+      "reason": "Existing out-of-scope proof control; preserve its named constant and test identity."
+    },
+    {
+      "file": "generated/evm-sail-coq/evm_decoder.v",
+      "name": "BLOCK_ACCESS_LIST_ITEM_GAS",
+      "sha256": "4bb099ace78653409f4ab243e1d558be4a512c3154981fd9feb3944f682e1131",
+      "reason": "Pinned upstream Sail output outside the refactor scope; preserve its constant identity."
+    },
+    {
+      "file": "generated/evm-sail-coq/evm_decoder.v",
+      "name": "GAS_COST_ZERO",
+      "sha256": "c65ba9ef4c51fdaff6a14e76efcbbd0d3f32133472c437407251a8a32e524b42",
+      "reason": "Pinned upstream Sail output outside the refactor scope; preserve its constant identity."
+    },
+    {
+      "file": "generated/evm-sail-coq/evm_decoder.v",
+      "name": "GAS_ZERO",
+      "sha256": "837cc81dda9a5e856a95bd9459e7e14f1b302fcb2c427d1ad857f2038cea41ae",
+      "reason": "Pinned upstream Sail output outside the refactor scope; preserve its constant identity."
+    },
+    {
+      "file": "generated/evm-sail-coq/evm_decoder.v",
+      "name": "SYSTEM_CALL_GAS_LIMIT",
+      "sha256": "ba377fde1c26aac8f5a824f471e1e99bf82dbe3a7a9218ed205be20efaf67e43",
+      "reason": "Pinned upstream Sail output outside the refactor scope; preserve its constant identity."
+    },
+    {
+      "file": "generated/evm-sail-coq/evm_decoder.v",
+      "name": "ADDRESS_BYTE_LENGTH",
+      "sha256": "65da7d2172fe1c5a753bcc821f975a66397e19d2a41a24392b390e90b1d3e4b4",
+      "reason": "Pinned upstream Sail output outside the refactor scope; preserve its constant identity."
+    },
+    {
+      "file": "generated/evm-sail-coq/evm_decoder.v",
+      "name": "WORD_BYTE_LENGTH",
+      "sha256": "0ab41fee11021a5a19dbb86d9f3a515ad672e907a8b70257e9cc2ee0c0e84a9f",
+      "reason": "Pinned upstream Sail output outside the refactor scope; preserve its constant identity."
+    },
+    {
+      "file": "generated/evm-sail-coq/evm_decoder.v",
+      "name": "EIGHT_BYTE_LENGTH",
+      "sha256": "0a00393699ce29109da008e4a7db4b73203faf77eba22d2ebf4e077c2e3ed890",
+      "reason": "Pinned upstream Sail output outside the refactor scope; preserve its constant identity."
+    },
+    {
+      "file": "generated/evm-sail-coq/evm_decoder.v",
+      "name": "DOUBLE_WORD_BYTE_LENGTH",
+      "sha256": "65def929a287a3387d069c708930fc2b34c461c7e83f5488753db60edc1c6bc9",
+      "reason": "Pinned upstream Sail output outside the refactor scope; preserve its constant identity."
+    },
+    {
+      "file": "generated/evm-sail-coq/evm_decoder.v",
+      "name": "Frontier",
+      "sha256": "92b43270e367c601d7eba99b64f44c305e43a96377fe6d1593a61633dd7f6945",
+      "reason": "Pinned upstream Sail output outside the refactor scope; preserve its constant identity."
+    },
+    {
+      "file": "generated/evm-sail-coq/evm_decoder.v",
+      "name": "Homestead",
+      "sha256": "14fab37750e245ed0d61a27bf19b2186ee6cea98c94ab2f0d742e6c75e567769",
+      "reason": "Pinned upstream Sail output outside the refactor scope; preserve its constant identity."
+    },
+    {
+      "file": "generated/evm-sail-coq/evm_decoder.v",
+      "name": "Byzantium",
+      "sha256": "07e96e05faec31b83498750329e918a0730c27f27b34e3aa43deefdf7abe6744",
+      "reason": "Pinned upstream Sail output outside the refactor scope; preserve its constant identity."
+    },
+    {
+      "file": "generated/evm-sail-coq/evm_decoder.v",
+      "name": "Constantinople",
+      "sha256": "18053c774e42bfed74c2229d57f71f03515ac0e4115f45f2e46f566560ef220c",
+      "reason": "Pinned upstream Sail output outside the refactor scope; preserve its constant identity."
+    },
+    {
+      "file": "generated/evm-sail-coq/evm_decoder.v",
+      "name": "Istanbul",
+      "sha256": "4c776d9d2d8dbb7846eceb05ac5db38f797090d3824fe075e4839ca5c8cf8b48",
+      "reason": "Pinned upstream Sail output outside the refactor scope; preserve its constant identity."
+    },
+    {
+      "file": "generated/evm-sail-coq/evm_decoder.v",
+      "name": "Berlin",
+      "sha256": "f0756182d2a966546eda02bb6f1ffa9159504d289b8da4c56bbc8abc9b52ebc5",
+      "reason": "Pinned upstream Sail output outside the refactor scope; preserve its constant identity."
+    },
+    {
+      "file": "generated/evm-sail-coq/evm_decoder.v",
+      "name": "London",
+      "sha256": "fdb5bb58fb05e778e2b219f95075147f848a7d485a6d028389b279c367b7da7a",
+      "reason": "Pinned upstream Sail output outside the refactor scope; preserve its constant identity."
+    },
+    {
+      "file": "generated/evm-sail-coq/evm_decoder.v",
+      "name": "ArrowGlacier",
+      "sha256": "cfc326b6b3338abd280954a11ac74de5d9800bcf7add6c540f40e44f28d9cb49",
+      "reason": "Pinned upstream Sail output outside the refactor scope; preserve its constant identity."
+    },
+    {
+      "file": "generated/evm-sail-coq/evm_decoder.v",
+      "name": "GrayGlacier",
+      "sha256": "65acfbce953803be0518771a90bae7f3b87183b7ec8037754225007fd0fc2c1b",
+      "reason": "Pinned upstream Sail output outside the refactor scope; preserve its constant identity."
+    },
+    {
+      "file": "generated/evm-sail-coq/evm_decoder.v",
+      "name": "Paris",
+      "sha256": "d43a5defe44d30468787d50473d0d26998d8f2ef653ed4fe01c133ca10431e48",
+      "reason": "Pinned upstream Sail output outside the refactor scope; preserve its constant identity."
+    },
+    {
+      "file": "generated/evm-sail-coq/evm_decoder.v",
+      "name": "Shanghai",
+      "sha256": "fdc5b89545bf21d48b231df46f5a50a2cce476c0a5009184219046b5430b1542",
+      "reason": "Pinned upstream Sail output outside the refactor scope; preserve its constant identity."
+    },
+    {
+      "file": "generated/evm-sail-coq/evm_decoder.v",
+      "name": "Cancun",
+      "sha256": "e82f3aca04df90fa1642e3c3226cbf2b437fd5e5c3aaadf6e50e6080e3c893f3",
+      "reason": "Pinned upstream Sail output outside the refactor scope; preserve its constant identity."
+    },
+    {
+      "file": "generated/evm-sail-coq/evm_decoder.v",
+      "name": "Prague",
+      "sha256": "a74dd8f6a7dce83bf19239650f852a5e4be33edfe8d92459e8879e0678ab53af",
+      "reason": "Pinned upstream Sail output outside the refactor scope; preserve its constant identity."
+    },
+    {
+      "file": "generated/evm-sail-coq/evm_decoder.v",
+      "name": "Osaka",
+      "sha256": "fde5ed24e3b7cae2dcd95853ee81c0f778d4dacac64d73d95a5e8ba6eb04ac82",
+      "reason": "Pinned upstream Sail output outside the refactor scope; preserve its constant identity."
+    },
+    {
+      "file": "generated/evm-sail-coq/evm_decoder.v",
+      "name": "BPO1",
+      "sha256": "e13f62ee32d6e36da0e92a8e8e4d9ffb6847809114aaa8e9931e16397924a724",
+      "reason": "Pinned upstream Sail output outside the refactor scope; preserve its constant identity."
+    },
+    {
+      "file": "generated/evm-sail-coq/evm_decoder.v",
+      "name": "BPO2",
+      "sha256": "54dda4ae7ade9773e637527c85369d8732056b71f25799bf8324b5edb77dd827",
+      "reason": "Pinned upstream Sail output outside the refactor scope; preserve its constant identity."
+    },
+    {
+      "file": "generated/evm-sail-coq/evm_decoder.v",
+      "name": "Amsterdam",
+      "sha256": "305053f2d65242ba716ccd1ba70cacce601e2894a5981ab1a86c5f97e568d9de",
+      "reason": "Pinned upstream Sail output outside the refactor scope; preserve its constant identity."
+    },
+    {
+      "file": "generated/evm-sail-coq/evm_decoder.v",
+      "name": "SSZ_OFF_BYTES",
+      "sha256": "c31382991fa0df36fc267b150d5113fa297558a595b7bbd075f0c17a2cbd18ea",
+      "reason": "Pinned upstream Sail output outside the refactor scope; preserve its constant identity."
+    },
+    {
+      "file": "generated/evm-sail-coq/evm_decoder.v",
+      "name": "SSZ_UINT_BYTES",
+      "sha256": "4e0e44fc3200a35ec65efab7d1cf482e719defc58dff95bb2fe5a9262a17b7a1",
+      "reason": "Pinned upstream Sail output outside the refactor scope; preserve its constant identity."
+    },
+    {
+      "file": "generated/evm-sail-coq/evm_decoder.v",
+      "name": "RLP_SHORT_LENGTH_LIMIT",
+      "sha256": "61f59a20de7f76b3a60aa4155acb10c879c425218b3495f96c2b56a2d5c1614b",
+      "reason": "Pinned upstream Sail output outside the refactor scope; preserve its constant identity."
+    },
+    {
+      "file": "generated/evm-sail-coq/evm_decoder.v",
+      "name": "RLP_ENCODED_WORD_LENGTH",
+      "sha256": "a3b5a5d129019fb5e509e840b5a3904a38843c22f2425e74fc9e7300fec541b0",
+      "reason": "Pinned upstream Sail output outside the refactor scope; preserve its constant identity."
+    },
+    {
+      "file": "generated/evm-sail-coq/evm_decoder.v",
+      "name": "RLP_ENCODED_ADDRESS_LENGTH",
+      "sha256": "aa1e8597f8f6644aea10bf993d73d390d8627267ce154ea62e9561ad65f04d54",
+      "reason": "Pinned upstream Sail output outside the refactor scope; preserve its constant identity."
+    },
+    {
+      "file": "generated/evm-sail-coq/evm_decoder.v",
+      "name": "LEGACY_SIGNATURE_SUFFIX_LENGTH",
+      "sha256": "abf56ba4631aba6e75b6f08f4fc9cec0c890114f66defb1785a412007435f19c",
+      "reason": "Pinned upstream Sail output outside the refactor scope; preserve its constant identity."
+    },
+    {
+      "file": "generated/evm-sail-coq/evm_decoder.v",
+      "name": "BLOB_HASH_RLP_LENGTH",
+      "sha256": "0d8834101b5ae49621ef7fec51d5f128fc24f52e0707bc8c1c0a9de93a53099f",
+      "reason": "Pinned upstream Sail output outside the refactor scope; preserve its constant identity."
+    },
+    {
+      "file": "generated/evm-sail-coq/evm_decoder.v",
+      "name": "LOGS_BLOOM_BYTE_LENGTH",
+      "sha256": "5ced931c9455142c376f12c7facdbca6b8ced4c7a4bffbc0f9a0cf69183c6bae",
+      "reason": "Pinned upstream Sail output outside the refactor scope; preserve its constant identity."
+    },
+    {
+      "file": "generated/evm-sail-coq/evm_decoder.v",
+      "name": "SSZ_BODY",
+      "sha256": "4d9161d807dd9b134e439f5995ff3113811994c3bb4ebd687e228221bff0bee0",
+      "reason": "Pinned upstream Sail output outside the refactor scope; preserve its constant identity."
+    },
+    {
+      "file": "generated/evm-sail-coq/evm_decoder.v",
+      "name": "IN_NPR_OFF",
+      "sha256": "db6f1d3f2e1a871aedc7ac00ef64f6d8c4375ca4c948ae5f3dc4e95ae97b4252",
+      "reason": "Pinned upstream Sail output outside the refactor scope; preserve its constant identity."
+    },
+    {
+      "file": "generated/evm-sail-coq/evm_decoder.v",
+      "name": "IN_WITNESS_OFF",
+      "sha256": "94077966e0f67d1a89a2474eb591ae14ddc026754a3106be211de852c6270b63",
+      "reason": "Pinned upstream Sail output outside the refactor scope; preserve its constant identity."
+    },
+    {
+      "file": "generated/evm-sail-coq/evm_decoder.v",
+      "name": "IN_CHAIN_CONFIG_OFF",
+      "sha256": "76510c5ce65dd415f1de840c113967cc1db58622de892c1f2ef4093aca5dba7b",
+      "reason": "Pinned upstream Sail output outside the refactor scope; preserve its constant identity."
+    },
+    {
+      "file": "generated/evm-sail-coq/evm_decoder.v",
+      "name": "IN_PUBLIC_KEYS_OFF",
+      "sha256": "a8a9c6d7cb1e9bdca34d8a341901f5ddeb4a6488c6adef7ddff00ce445ffd0e1",
+      "reason": "Pinned upstream Sail output outside the refactor scope; preserve its constant identity."
+    },
+    {
+      "file": "generated/evm-sail-coq/evm_decoder.v",
+      "name": "NPR_PAYLOAD_OFF",
+      "sha256": "26c7b2af8753ab133ed6fdff002e78ea3833a4910f08197f1955228a674ba89f",
+      "reason": "Pinned upstream Sail output outside the refactor scope; preserve its constant identity."
+    },
+    {
+      "file": "generated/evm-sail-coq/evm_decoder.v",
+      "name": "NPR_VHASHES_OFF",
+      "sha256": "34a6cd9d2fb64914af28c59b27223bf474c7d18aba9ff2b3d55fc0cb85411f6a",
+      "reason": "Pinned upstream Sail output outside the refactor scope; preserve its constant identity."
+    },
+    {
+      "file": "generated/evm-sail-coq/evm_decoder.v",
+      "name": "NPR_BEACON_ROOT",
+      "sha256": "5bc15550ec8e6f64a1183485941eb22f6ebb2cb61f686e4d005690699e075423",
+      "reason": "Pinned upstream Sail output outside the refactor scope; preserve its constant identity."
+    },
+    {
+      "file": "generated/evm-sail-coq/evm_decoder.v",
+      "name": "NPR_REQUESTS_OFF",
+      "sha256": "c6efa24d374a2b79c7ffd5d456bc1495f71ada6dfd8c418d48990ca677d6254a",
+      "reason": "Pinned upstream Sail output outside the refactor scope; preserve its constant identity."
+    },
+    {
+      "file": "generated/evm-sail-coq/evm_decoder.v",
+      "name": "REQ_DEPOSITS_OFF",
+      "sha256": "1d8074bfa72eb09a922a3d0c35b0923276c61241b98381d3c574c425e6bf7f1a",
+      "reason": "Pinned upstream Sail output outside the refactor scope; preserve its constant identity."
+    },
+    {
+      "file": "generated/evm-sail-coq/evm_decoder.v",
+      "name": "REQ_WITHDRAWALS_OFF",
+      "sha256": "61cfc8ee5b611d32aa227089c400dd05bf3071c0d05f6c391850d308e7601b96",
+      "reason": "Pinned upstream Sail output outside the refactor scope; preserve its constant identity."
+    },
+    {
+      "file": "generated/evm-sail-coq/evm_decoder.v",
+      "name": "REQ_CONSOLIDATIONS_OFF",
+      "sha256": "8b0c49ed6f39ff094215384f8a641560a365e81350c42da19b8b301c933f9a52",
+      "reason": "Pinned upstream Sail output outside the refactor scope; preserve its constant identity."
+    },
+    {
+      "file": "generated/evm-sail-coq/evm_decoder.v",
+      "name": "REQ_BUILDER_DEPOSITS_OFF",
+      "sha256": "e75b8fa8f436bd49e9c12ea29bba53fe3852b2e6cc646b0bcd2a4f1ac3cbef0f",
+      "reason": "Pinned upstream Sail output outside the refactor scope; preserve its constant identity."
+    },
+    {
+      "file": "generated/evm-sail-coq/evm_decoder.v",
+      "name": "REQ_BUILDER_EXITS_OFF",
+      "sha256": "fc9f634dafaf6d5bbdfb466acf590177ff85132fcbe94bb8c6c488f9014ca538",
+      "reason": "Pinned upstream Sail output outside the refactor scope; preserve its constant identity."
+    },
+    {
+      "file": "generated/evm-sail-coq/evm_decoder.v",
+      "name": "PL_FEE_RECIPIENT",
+      "sha256": "62fb994e9a835d73faa51c6323ac4a6e63c45db7a6f11d7c868d7c93c0020f67",
+      "reason": "Pinned upstream Sail output outside the refactor scope; preserve its constant identity."
+    },
+    {
+      "file": "generated/evm-sail-coq/evm_decoder.v",
+      "name": "PL_STATE_ROOT",
+      "sha256": "13411dc17876176c35cedb9568a61eba333267f663c63f4595b28d9330ec063a",
+      "reason": "Pinned upstream Sail output outside the refactor scope; preserve its constant identity."
+    },
+    {
+      "file": "generated/evm-sail-coq/evm_decoder.v",
+      "name": "PL_RECEIPTS_ROOT",
+      "sha256": "a40102b3f40174ade6199397f95e2157ef30db512c376404b7ba0d875b36116e",
+      "reason": "Pinned upstream Sail output outside the refactor scope; preserve its constant identity."
+    },
+    {
+      "file": "generated/evm-sail-coq/evm_decoder.v",
+      "name": "PL_LOGS_BLOOM",
+      "sha256": "3625c7ad43b2291e6bba0f6a6ac7c9f8b2aadea15edd0c8f5c98d2808b55b842",
+      "reason": "Pinned upstream Sail output outside the refactor scope; preserve its constant identity."
+    },
+    {
+      "file": "generated/evm-sail-coq/evm_decoder.v",
+      "name": "PL_PREV_RANDAO",
+      "sha256": "27d5345fc44114568e16c02175bb14593a74f603690b427c7a7b002269c0a63b",
+      "reason": "Pinned upstream Sail output outside the refactor scope; preserve its constant identity."
+    },
+    {
+      "file": "generated/evm-sail-coq/evm_decoder.v",
+      "name": "PL_BLOCK_NUMBER",
+      "sha256": "668e92edfa8438c2aa8847aae5b1016c1d76001c54682aff7dac6d8efa1a6bd6",
+      "reason": "Pinned upstream Sail output outside the refactor scope; preserve its constant identity."
+    },
+    {
+      "file": "generated/evm-sail-coq/evm_decoder.v",
+      "name": "PL_GAS_LIMIT",
+      "sha256": "18275f434f12038494bf6b11c0fd21f88262723bf943c51a413253d8c7090624",
+      "reason": "Pinned upstream Sail output outside the refactor scope; preserve its constant identity."
+    },
+    {
+      "file": "generated/evm-sail-coq/evm_decoder.v",
+      "name": "PL_GAS_USED",
+      "sha256": "83a1629c75f078784ac890fdc96694ca6b633637f1847eec32b9acc1ece72306",
+      "reason": "Pinned upstream Sail output outside the refactor scope; preserve its constant identity."
+    },
+    {
+      "file": "generated/evm-sail-coq/evm_decoder.v",
+      "name": "PL_TIMESTAMP",
+      "sha256": "00e9c00c540f803dcfa0ef279189e7aef57bc470298b42b2de8b1f38dd4f5b5e",
+      "reason": "Pinned upstream Sail output outside the refactor scope; preserve its constant identity."
+    },
+    {
+      "file": "generated/evm-sail-coq/evm_decoder.v",
+      "name": "PL_EXTRA_OFF",
+      "sha256": "bdfe26b5c688dd2fd824b8eb5de7d6a976b14d83f046536c92a66d0ca414b39f",
+      "reason": "Pinned upstream Sail output outside the refactor scope; preserve its constant identity."
+    },
+    {
+      "file": "generated/evm-sail-coq/evm_decoder.v",
+      "name": "PL_BASE_FEE",
+      "sha256": "2bb05547007faa16c5e8dd82fa71e10cb52baa5c91a3b289bc3de7433aa90cdb",
+      "reason": "Pinned upstream Sail output outside the refactor scope; preserve its constant identity."
+    },
+    {
+      "file": "generated/evm-sail-coq/evm_decoder.v",
+      "name": "PL_BLOCK_HASH",
+      "sha256": "5277de28a81cd4687a57fd9aaf01775c97b1e578fecaebd1272a09b5aeeda6c2",
+      "reason": "Pinned upstream Sail output outside the refactor scope; preserve its constant identity."
+    },
+    {
+      "file": "generated/evm-sail-coq/evm_decoder.v",
+      "name": "PL_TXS_OFF",
+      "sha256": "19bbe327194f7a8397e5b3cead394f7c85fc6a812a4f9b03a4aa19e7c4e598c5",
+      "reason": "Pinned upstream Sail output outside the refactor scope; preserve its constant identity."
+    },
+    {
+      "file": "generated/evm-sail-coq/evm_decoder.v",
+      "name": "PL_WDS_OFF",
+      "sha256": "e7d71a1d6ae9054b001bdc0aa38e7039b025f9da9ea0102fe104a9f03c9e80a3",
+      "reason": "Pinned upstream Sail output outside the refactor scope; preserve its constant identity."
+    },
+    {
+      "file": "generated/evm-sail-coq/evm_decoder.v",
+      "name": "PL_BLOB_GAS_USED",
+      "sha256": "9260d5f7e26269d4f92e513aaedcf831029b41e01929ae50006776886723beb4",
+      "reason": "Pinned upstream Sail output outside the refactor scope; preserve its constant identity."
+    },
+    {
+      "file": "generated/evm-sail-coq/evm_decoder.v",
+      "name": "PL_EXCESS_BLOB_GAS",
+      "sha256": "a06fe6f5d7532a7ccf30bfddd4e397c2ff90e3e5a81e6ac121e3c946e35f314f",
+      "reason": "Pinned upstream Sail output outside the refactor scope; preserve its constant identity."
+    },
+    {
+      "file": "generated/evm-sail-coq/evm_decoder.v",
+      "name": "PL_BAL_OFF",
+      "sha256": "6ed86ac851288a2c65fc7e089dcb3ab056131b964fd21e63cc04b7c89fb07d7f",
+      "reason": "Pinned upstream Sail output outside the refactor scope; preserve its constant identity."
+    },
+    {
+      "file": "generated/evm-sail-coq/evm_decoder.v",
+      "name": "PL_SLOT_NUMBER",
+      "sha256": "a9b50bb94e4895f84417abf9b3cf17dda30b8413f6a826b9dc0387ba552ade9c",
+      "reason": "Pinned upstream Sail output outside the refactor scope; preserve its constant identity."
+    },
+    {
+      "file": "generated/evm-sail-coq/evm_decoder.v",
+      "name": "WD_SIZE",
+      "sha256": "aadd5c615ec8250b348e1404c3901b55235ce6a5bdfd1c84321f836b428e8216",
+      "reason": "Pinned upstream Sail output outside the refactor scope; preserve its constant identity."
+    },
+    {
+      "file": "generated/evm-sail-coq/evm_decoder.v",
+      "name": "WD_INDEX",
+      "sha256": "709aae7a54bd1ec3772daf9abdd9f4d688606764fe87a44421f821e466aca73b",
+      "reason": "Pinned upstream Sail output outside the refactor scope; preserve its constant identity."
+    },
+    {
+      "file": "generated/evm-sail-coq/evm_decoder.v",
+      "name": "WD_VALIDATOR_INDEX",
+      "sha256": "b53f0560de8681ae29e93a6c22c56e0aa5b0589cfa4c97c0b9acd3889c11de06",
+      "reason": "Pinned upstream Sail output outside the refactor scope; preserve its constant identity."
+    },
+    {
+      "file": "generated/evm-sail-coq/evm_decoder.v",
+      "name": "WD_ADDRESS",
+      "sha256": "41a7a1b413c366eee443991787620d50b82ef7f4f3ba318115482b31667b1f54",
+      "reason": "Pinned upstream Sail output outside the refactor scope; preserve its constant identity."
+    },
+    {
+      "file": "generated/evm-sail-coq/evm_decoder.v",
+      "name": "WD_AMOUNT",
+      "sha256": "836bcf9f6311095e557c84b82c2c571226a8ac7a0e2ce708de828a152130b08b",
+      "reason": "Pinned upstream Sail output outside the refactor scope; preserve its constant identity."
+    },
+    {
+      "file": "generated/evm-sail-coq/evm_decoder.v",
+      "name": "CC_CHAIN_ID",
+      "sha256": "35419092006ba6a67a734528e87e915a472b8bac86c6346ec1d4a145eee58ce0",
+      "reason": "Pinned upstream Sail output outside the refactor scope; preserve its constant identity."
+    },
+    {
+      "file": "generated/evm-sail-coq/evm_decoder.v",
+      "name": "CC_ACTIVE_FORK_OFF",
+      "sha256": "0a149bc6ea452c79b2a5035fdcb156e158b0d76748df9614096e142bd267e220",
+      "reason": "Pinned upstream Sail output outside the refactor scope; preserve its constant identity."
+    },
+    {
+      "file": "generated/evm-sail-coq/evm_decoder.v",
+      "name": "FC_ACTIVATION_OFF",
+      "sha256": "364eb448718f49ee30ee69674559ec6dd0c39890109348ce9f73a535d01cc7a5",
+      "reason": "Pinned upstream Sail output outside the refactor scope; preserve its constant identity."
+    },
+    {
+      "file": "generated/evm-sail-coq/evm_decoder.v",
+      "name": "FA_BLOCK_NUMBER_OFF",
+      "sha256": "6027a39baa63e8beb53b2b52a5f9b38e37bedcabe74cfc540dcb356f311cf6bd",
+      "reason": "Pinned upstream Sail output outside the refactor scope; preserve its constant identity."
+    },
+    {
+      "file": "generated/evm-sail-coq/evm_decoder.v",
+      "name": "FA_TIMESTAMP_OFF",
+      "sha256": "e453bf2b3468310eb1cef253aaf1d44d7ab8c5ed7fb04e680c40230cf970b38c",
+      "reason": "Pinned upstream Sail output outside the refactor scope; preserve its constant identity."
+    },
+    {
+      "file": "generated/evm-sail-coq/evm_decoder.v",
+      "name": "WIT_STATE_OFF",
+      "sha256": "c53379053b11945c6ca6eb5ac51573ccd25ccb6c453db887373847f1f62e7416",
+      "reason": "Pinned upstream Sail output outside the refactor scope; preserve its constant identity."
+    },
+    {
+      "file": "generated/evm-sail-coq/evm_decoder.v",
+      "name": "WIT_CODES_OFF",
+      "sha256": "f143b435d489adb7f4da9414b06cc4656b74e206a982b27d8621d994a0682105",
+      "reason": "Pinned upstream Sail output outside the refactor scope; preserve its constant identity."
+    },
+    {
+      "file": "generated/evm-sail-coq/evm_decoder.v",
+      "name": "WIT_HEADERS_OFF",
+      "sha256": "a7895346e5aafab7b1894b76d6f4c69045145107b17d53f6f36c2a6576637139",
+      "reason": "Pinned upstream Sail output outside the refactor scope; preserve its constant identity."
+    },
+    {
+      "file": "generated/evm-sail-coq/evm_decoder.v",
+      "name": "STATELESS_INPUT_FIXED_LENGTH",
+      "sha256": "99e8308cf4670dafbaed784825c1ee553eb63cf3ea120495715466286b1dbe7c",
+      "reason": "Pinned upstream Sail output outside the refactor scope; preserve its constant identity."
+    },
+    {
+      "file": "generated/evm-sail-coq/evm_decoder.v",
+      "name": "STATELESS_INPUT_BODY_FIXED_LENGTH",
+      "sha256": "3cb24e21c4d1d0837a7412c4b8e7623f1f99e91ff3a720eaf55591063625ea26",
+      "reason": "Pinned upstream Sail output outside the refactor scope; preserve its constant identity."
+    },
+    {
+      "file": "generated/evm-sail-coq/evm_decoder.v",
+      "name": "NEW_PAYLOAD_REQUEST_FIXED_LENGTH",
+      "sha256": "654e612f35ecd1d80c33e410adbc314b16de714d86b1cd3c645180927de3984b",
+      "reason": "Pinned upstream Sail output outside the refactor scope; preserve its constant identity."
+    },
+    {
+      "file": "generated/evm-sail-coq/evm_decoder.v",
+      "name": "EXECUTION_PAYLOAD_FIXED_LENGTH",
+      "sha256": "3114af1870b39d1263e4e3c4c149392f5c4084614021e5413e61fbc5fe90ad47",
+      "reason": "Pinned upstream Sail output outside the refactor scope; preserve its constant identity."
+    },
+    {
+      "file": "generated/evm-sail-coq/evm_decoder.v",
+      "name": "EXECUTION_REQUESTS_FIXED_LENGTH",
+      "sha256": "af42d59c7d18dc12471d37d9256e108da5706469ab13ea65084a02d436186203",
+      "reason": "Pinned upstream Sail output outside the refactor scope; preserve its constant identity."
+    },
+    {
+      "file": "generated/evm-sail-coq/evm_decoder.v",
+      "name": "EXECUTION_WITNESS_FIXED_LENGTH",
+      "sha256": "980da81ced6524b8b73af1ca3da2737db6c1d499c1b3fd542a6781a5ae990419",
+      "reason": "Pinned upstream Sail output outside the refactor scope; preserve its constant identity."
+    },
+    {
+      "file": "generated/evm-sail-coq/evm_decoder.v",
+      "name": "PUBLIC_KEY_LENGTH",
+      "sha256": "7364ef5b0a3fa49da9c7b68d67daa6f4ecabffba2d65fd20faff031170d62a5c",
+      "reason": "Pinned upstream Sail output outside the refactor scope; preserve its constant identity."
+    },
+    {
+      "file": "generated/evm-sail-coq/evm_decoder.v",
+      "name": "CHAIN_CONFIG_HEADER_LENGTH",
+      "sha256": "f96a166e30b8848f415377b662924f7cf84f0b151cfe0338d26779b667cbbc17",
+      "reason": "Pinned upstream Sail output outside the refactor scope; preserve its constant identity."
+    },
+    {
+      "file": "generated/evm-sail-coq/evm_decoder.v",
+      "name": "CHAIN_CONFIG_MIN_LENGTH",
+      "sha256": "6f3728883e1452ee462b7f2387b7396424173c425035b0ec6107d4bb50d44b1e",
+      "reason": "Pinned upstream Sail output outside the refactor scope; preserve its constant identity."
+    },
+    {
+      "file": "generated/evm-sail-coq/evm_decoder_types.v",
+      "name": "word_modulus",
+      "sha256": "6e35b7e8580c2d036a562254c3c16d88dc27af4b8f198ee55190dcb4f858e701",
+      "reason": "Pinned upstream Sail output outside the refactor scope; preserve its constant identity."
+    },
+    {
+      "file": "generated/evm-sail-coq/evm_decoder_types.v",
+      "name": "account_nonce_bound",
+      "sha256": "fd77e212e6d9560e493712e364e875e0f9519fc1bbb74d4cf65f404fa6cc619c",
+      "reason": "Pinned upstream Sail output outside the refactor scope; preserve its constant identity."
+    },
+    {
+      "file": "generated/evm-sail-coq/evm_decoder_types.v",
+      "name": "ssz_uint_bound",
+      "sha256": "1a4ca966e930af5889b3ec2dc6a59088b0c751451c757a279b56bfc7474b936f",
+      "reason": "Pinned upstream Sail output outside the refactor scope; preserve its constant identity."
+    },
+    {
+      "file": "generated/evm-sail-coq/evm_decoder_types.v",
+      "name": "gas_per_blob_value",
+      "sha256": "6e95c0c671f1605ae05ede7ae47c4eeb4efb82c94c32de258ae27e11452630aa",
+      "reason": "Pinned upstream Sail output outside the refactor scope; preserve its constant identity."
+    },
+    {
+      "file": "generated/evm-sail-coq/evm_decoder_types.v",
+      "name": "blob_schedule_inactive_count",
+      "sha256": "068a2db6516330866eaaba5e0bd4ac4f97a00ebc9d3b6af98ee3ff80f29d084f",
+      "reason": "Pinned upstream Sail output outside the refactor scope; preserve its constant identity."
+    },
+    {
+      "file": "generated/evm-sail-coq/evm_decoder_types.v",
+      "name": "cancun_blob_target_count",
+      "sha256": "ae56e8edef2f00159e32e32147fce2a0ac6baac4ef7c9b271fb9bbc0ab431cdd",
+      "reason": "Pinned upstream Sail output outside the refactor scope; preserve its constant identity."
+    },
+    {
+      "file": "generated/evm-sail-coq/evm_decoder_types.v",
+      "name": "prague_blob_target_count",
+      "sha256": "f5f739643c892fe9c4de40b37bb0173a5b9eaac7592001ee74001bffc768a35d",
+      "reason": "Pinned upstream Sail output outside the refactor scope; preserve its constant identity."
+    },
+    {
+      "file": "generated/evm-sail-coq/evm_decoder_types.v",
+      "name": "bpo1_blob_target_count",
+      "sha256": "8c4b6d253b8dbc88f6670934fe8ebc27ab59d712da18b356ff2905dbb85b7b3e",
+      "reason": "Pinned upstream Sail output outside the refactor scope; preserve its constant identity."
+    },
+    {
+      "file": "generated/evm-sail-coq/evm_decoder_types.v",
+      "name": "bpo2_blob_target_count",
+      "sha256": "7eb3c2db3ab3e4b94f95019d389bea1a7686a3b440fc15f08de6855a05b2cb73",
+      "reason": "Pinned upstream Sail output outside the refactor scope; preserve its constant identity."
+    },
+    {
+      "file": "generated/evm-sail-coq/evm_decoder_types.v",
+      "name": "cancun_blob_max_count",
+      "sha256": "4aa618a89b1283b4a2af2e7ab669ea6245e3bc0c605da54bd51fa5945b9fa42c",
+      "reason": "Pinned upstream Sail output outside the refactor scope; preserve its constant identity."
+    },
+    {
+      "file": "generated/evm-sail-coq/evm_decoder_types.v",
+      "name": "prague_blob_max_count",
+      "sha256": "6b929f0a43ecb3aafc1be8d565f51815e39dc21f2704773ec8908bad55f027f4",
+      "reason": "Pinned upstream Sail output outside the refactor scope; preserve its constant identity."
+    },
+    {
+      "file": "generated/evm-sail-coq/evm_decoder_types.v",
+      "name": "bpo1_blob_max_count",
+      "sha256": "335bd997ee835015bb14d3051cfe0dd79e5c8954aa94b8a6bb9465dac9025abe",
+      "reason": "Pinned upstream Sail output outside the refactor scope; preserve its constant identity."
+    },
+    {
+      "file": "generated/evm-sail-coq/evm_decoder_types.v",
+      "name": "bpo2_blob_max_count",
+      "sha256": "b10dc9a93d5fd6ebdd42bc79db36dd8f09cac50386bef2e74e4784c3f5a7cfd7",
+      "reason": "Pinned upstream Sail output outside the refactor scope; preserve its constant identity."
+    },
+    {
+      "file": "generated/evm-sail-coq/evm_decoder_types.v",
+      "name": "blob_fee_update_fraction_bound",
+      "sha256": "1637309ed8032e00186859a623ea5c3be2789b94dd798ed78df3c6f6285885d8",
+      "reason": "Pinned upstream Sail output outside the refactor scope; preserve its constant identity."
+    },
+    {
+      "file": "generated/evm-sail-coq/evm_decoder_types.v",
+      "name": "blob_fee_word_exponent_limit",
+      "sha256": "d510f07d81764e614c792d76dd539b2b3abd1265c5b8953647062917739028af",
+      "reason": "Pinned upstream Sail output outside the refactor scope; preserve its constant identity."
+    },
+    {
+      "file": "generated/evm-sail-coq/evm_decoder_types.v",
+      "name": "excess_blob_gas_wire_bound",
+      "sha256": "b4c655891a8617110c90dcccee968c2eb84a2ad3670c53065b249206c5209a30",
+      "reason": "Pinned upstream Sail output outside the refactor scope; preserve its constant identity."
+    },
+    {
+      "file": "generated/evm-sail-coq/evm_decoder_types.v",
+      "name": "excess_blob_gas_reachable_bound",
+      "sha256": "6331c1afe9e3cbb71b7a9766cb2b6ef1be432eed58c2048fde7e9e5812bd954f",
+      "reason": "Pinned upstream Sail output outside the refactor scope; preserve its constant identity."
+    },
+    {
+      "file": "generated/evm-sail-coq/evm_decoder_types.v",
+      "name": "excess_blob_gas_bound",
+      "sha256": "3f6a64d98ca6db918ad0d3d0d53622aa7911023c924494fad2c49d25bd85ca0d",
+      "reason": "Pinned upstream Sail output outside the refactor scope; preserve its constant identity."
+    },
+    {
+      "file": "generated/evm-sail-coq/evm_decoder_types.v",
+      "name": "inactive_blob_fee_update_fraction",
+      "sha256": "ec0295f56976c3403b14bfe56ffacccbae6fc7f66fcbf182f0e804cd33fc8a84",
+      "reason": "Pinned upstream Sail output outside the refactor scope; preserve its constant identity."
+    },
+    {
+      "file": "generated/evm-sail-coq/evm_decoder_types.v",
+      "name": "cancun_blob_fee_update_fraction",
+      "sha256": "96e269a53832b5b27dc971dce4e098cb1866ad2539c69e8c8cd5a0525f7e1cd4",
+      "reason": "Pinned upstream Sail output outside the refactor scope; preserve its constant identity."
+    },
+    {
+      "file": "generated/evm-sail-coq/evm_decoder_types.v",
+      "name": "prague_blob_fee_update_fraction",
+      "sha256": "a62461f803a9b69edc00d84c0d199278f7f2fc8970aae135fa2d0c68c4ba5c0f",
+      "reason": "Pinned upstream Sail output outside the refactor scope; preserve its constant identity."
+    },
+    {
+      "file": "generated/evm-sail-coq/evm_decoder_types.v",
+      "name": "bpo1_blob_fee_update_fraction",
+      "sha256": "bcdd67bd0735166a5395a44648761a2e99360bab721f18e708a9ae327c93700c",
+      "reason": "Pinned upstream Sail output outside the refactor scope; preserve its constant identity."
+    },
+    {
+      "file": "generated/evm-sail-coq/evm_decoder_types.v",
+      "name": "bpo2_blob_fee_update_fraction",
+      "sha256": "5f109bb85f047e748201d4ebd885005f13e44faa26d4e93a69709e5940569ea8",
+      "reason": "Pinned upstream Sail output outside the refactor scope; preserve its constant identity."
+    },
+    {
+      "file": "generated/evm-sail-coq/evm_decoder_types.v",
+      "name": "pre_amsterdam_deployed_code_size_limit",
+      "sha256": "4a916d23e6039d5f30dd14b8efe0296ac5e07d6a9069f4993849aa6ff7c8bc65",
+      "reason": "Pinned upstream Sail output outside the refactor scope; preserve its constant identity."
+    },
+    {
+      "file": "generated/evm-sail-coq/evm_decoder_types.v",
+      "name": "amsterdam_deployed_code_size_limit",
+      "sha256": "507c6cf8273780ac62ff2797888a1d013b5e31cc9c7fc921c8de03f7a19541b4",
+      "reason": "Pinned upstream Sail output outside the refactor scope; preserve its constant identity."
+    },
+    {
+      "file": "generated/evm-sail-coq/evm_decoder_types.v",
+      "name": "inactive_initcode_size_limit",
+      "sha256": "26befb532c8eae22bfc72043280536b88a51ad7e1be92820bd2ead03db57e17a",
+      "reason": "Pinned upstream Sail output outside the refactor scope; preserve its constant identity."
+    },
+    {
+      "file": "generated/evm-sail-coq/evm_decoder_types.v",
+      "name": "pre_amsterdam_initcode_size_limit",
+      "sha256": "cd8cf8a3a166f27b76d78f885b9650b8fd2328d30878465ad756589a95cf7d73",
+      "reason": "Pinned upstream Sail output outside the refactor scope; preserve its constant identity."
+    },
+    {
+      "file": "generated/evm-sail-coq/evm_decoder_types.v",
+      "name": "amsterdam_initcode_size_limit",
+      "sha256": "befce76c7516011b9aae0e9456165d149044717c8ff3417b1ce59c150d260690",
+      "reason": "Pinned upstream Sail output outside the refactor scope; preserve its constant identity."
+    },
+    {
+      "file": "generated/evm-sail-coq/evm_decoder_types.v",
+      "name": "eip7825_transaction_gas_limit",
+      "sha256": "b21f69cb424dcaed05a4bb574ee21ea349e43b8a37ddbbf0e27cac6d98b89e23",
+      "reason": "Pinned upstream Sail output outside the refactor scope; preserve its constant identity."
+    },
+    {
+      "file": "generated/evm-sail-coq/evm_decoder_types.v",
+      "name": "chain_identifier_bound",
+      "sha256": "f85925863fd315c332dda9c0574ce291a6980bbf68a9da31ba2ca8886b37e81b",
+      "reason": "Pinned upstream Sail output outside the refactor scope; preserve its constant identity."
+    },
+    {
+      "file": "generated/evm-sail-coq/evm_decoder_types.v",
+      "name": "call_depth_limit",
+      "sha256": "578c55b0e32c8b89f891de48a438e69c70cc64675305cb9690d47b79835854de",
+      "reason": "Pinned upstream Sail output outside the refactor scope; preserve its constant identity."
+    },
+    {
+      "file": "generated/evm-sail-coq/evm_decoder_types.v",
+      "name": "default_host_region_bound",
+      "sha256": "bf19e8adff30f2f8bce3bba724b1c2f50329444afc7ae6ff82902a846b79d010",
+      "reason": "Pinned upstream Sail output outside the refactor scope; preserve its constant identity."
+    },
+    {
+      "file": "generated/evm-sail-coq/evm_decoder_types.v",
+      "name": "stateless_input_region_bound",
+      "sha256": "413944cf26c60f026ba3a892b91d584021bb634b02c8d4bccd67b238ef7f8f25",
+      "reason": "Pinned upstream Sail output outside the refactor scope; preserve its constant identity."
+    },
+    {
+      "file": "generated/evm-sail-coq/evm_decoder_types.v",
+      "name": "scratch_region_bound",
+      "sha256": "4dedf4cf78a768059aa11593bea8a9cd06c3ed08e95e545868126baef24e9503",
+      "reason": "Pinned upstream Sail output outside the refactor scope; preserve its constant identity."
+    },
+    {
+      "file": "generated/evm-sail-coq/evm_decoder_types.v",
+      "name": "memory_region_bound",
+      "sha256": "f7c3eb426b7b8b25d1bc46da82b47cbe1dfb8cb7373600eda11744c2488e30fe",
+      "reason": "Pinned upstream Sail output outside the refactor scope; preserve its constant identity."
+    },
+    {
+      "file": "generated/evm-sail-coq/evm_decoder_types.v",
+      "name": "code_region_bound",
+      "sha256": "d5518840eafb8122d753fc1c767d8aa98139219bdc2574ef4255bc28a32e87e2",
+      "reason": "Pinned upstream Sail output outside the refactor scope; preserve its constant identity."
+    },
+    {
+      "file": "generated/evm-sail-coq/evm_decoder_types.v",
+      "name": "log_data_region_bound",
+      "sha256": "1fc0534c01c5401d672e3aeb94932d2185aacb7e2a6d3e91d8fea218ced384d9",
+      "reason": "Pinned upstream Sail output outside the refactor scope; preserve its constant identity."
+    },
+    {
+      "file": "generated/evm-sail-coq/evm_decoder_types.v",
+      "name": "output_region_bound",
+      "sha256": "42d42c3add74dbd4303f6581b1099f68d19bdbd0231273808acfe2cfa99ebf78",
+      "reason": "Pinned upstream Sail output outside the refactor scope; preserve its constant identity."
+    },
+    {
+      "file": "generated/evm-sail-coq/evm_decoder_types.v",
+      "name": "memory_expansion_proof_gas_ceiling",
+      "sha256": "bd017476899a92208db261957dabe6b9a3bf33d6faa2ce88c139df9533280cab",
+      "reason": "Pinned upstream Sail output outside the refactor scope; preserve its constant identity."
+    },
+    {
+      "file": "generated/evm-sail-coq/evm_decoder_types.v",
+      "name": "memory_unaffordable_word_threshold",
+      "sha256": "18ee265c7fd8743f883f5e7034d1b7d4ff0bc4fddd0c506416d09772ad4c58a7",
+      "reason": "Pinned upstream Sail output outside the refactor scope; preserve its constant identity."
+    },
+    {
+      "file": "generated/evm-sail-coq/evm_decoder_types.v",
+      "name": "memory_affordable_word_bound",
+      "sha256": "bdce743c2d986770849fe069f73fb08fd0c10d162aff9fa25999790c4a3181c3",
+      "reason": "Pinned upstream Sail output outside the refactor scope; preserve its constant identity."
+    },
+    {
+      "file": "generated/evm-sail-coq/evm_decoder_types.v",
+      "name": "memory_affordable_byte_bound",
+      "sha256": "09c9ba2e4f1fdd4de863b72703621dbbb39347cd4b2cf0d7b138d38e82ddadc5",
+      "reason": "Pinned upstream Sail output outside the refactor scope; preserve its constant identity."
+    },
+    {
+      "file": "generated/evm-sail-coq/evm_decoder_types.v",
+      "name": "memory_region_word_bound",
+      "sha256": "49c64f487442926058af32666b4e4afebc4343ce15f6c17d2708b61c2b687c2c",
+      "reason": "Pinned upstream Sail output outside the refactor scope; preserve its constant identity."
+    },
+    {
+      "file": "generated/evm-sail-coq/evm_decoder_types.v",
+      "name": "block_gas_limit_bound",
+      "sha256": "31aa3ceec14e014a400b3bd44e2741ca6d964f8216e2ad752dfc3d5c5c484ab2",
+      "reason": "Pinned upstream Sail output outside the refactor scope; preserve its constant identity."
+    },
+    {
+      "file": "generated/evm-sail-coq/evm_decoder_types.v",
+      "name": "block_access_list_item_gas",
+      "sha256": "9032490c13977b766891ca67c0dfa7df49a4dfd2d2994479ea9d320f11f85b50",
+      "reason": "Pinned upstream Sail output outside the refactor scope; preserve its constant identity."
+    },
+    {
+      "file": "generated/evm-sail-coq/evm_decoder_types.v",
+      "name": "transaction_execution_gas_limit_value",
+      "sha256": "8b3eb54ad8972f11161c8b36064a33a657a4b4a7e0f19adac9a3175696a65471",
+      "reason": "Pinned upstream Sail output outside the refactor scope; preserve its constant identity."
+    },
+    {
+      "file": "generated/evm-sail-coq/evm_decoder_types.v",
+      "name": "gas_refund_bound",
+      "sha256": "3f2d21535800487ffb2f5c8546c01adcbdb2afb1225963fc63d3fb987503053e",
+      "reason": "Pinned upstream Sail output outside the refactor scope; preserve its constant identity."
+    },
+    {
+      "file": "generated/evm-sail-coq/evm_decoder_types.v",
+      "name": "amsterdam_storage_clear_refund",
+      "sha256": "faa30b76c0df1a2caefbbca3fc056fb32562aa2bb0ea5237a0ec4f638dcb715f",
+      "reason": "Pinned upstream Sail output outside the refactor scope; preserve its constant identity."
+    },
+    {
+      "file": "generated/evm-sail-coq/evm_decoder_types.v",
+      "name": "pre_london_refund_divisor",
+      "sha256": "c87e5fc52465c30b8f282f8b80fce6e0acf92c597d8fce06193371ef377b98d8",
+      "reason": "Pinned upstream Sail output outside the refactor scope; preserve its constant identity."
+    },
+    {
+      "file": "generated/evm-sail-coq/evm_decoder_types.v",
+      "name": "post_london_refund_divisor",
+      "sha256": "041d14d666537fbb6c0c9bde8f2c12b8a708dd8f5e561bbab084af0fffdf0098",
+      "reason": "Pinned upstream Sail output outside the refactor scope; preserve its constant identity."
+    },
+    {
+      "file": "generated/evm-sail-coq/evm_decoder_types.v",
+      "name": "transaction_count_bound",
+      "sha256": "44ce63a00d16acbbc32472c96372917032bc12723e3337637261e9a658cbf258",
+      "reason": "Pinned upstream Sail output outside the refactor scope; preserve its constant identity."
+    },
+    {
+      "file": "generated/evm-sail-coq/evm_decoder_types.v",
+      "name": "withdrawal_count_bound",
+      "sha256": "8962099c986c0b08bf46ed40bd6973b5cccbb0e227fa7f72b68285a766728bea",
+      "reason": "Pinned upstream Sail output outside the refactor scope; preserve its constant identity."
+    },
+    {
+      "file": "generated/evm-sail-coq/evm_decoder_types.v",
+      "name": "blob_commitment_count_bound",
+      "sha256": "e547ade27f033cfbc8b5f9c0f8a4c50dd4d19a244b2f9d17b53ac4c9c9ece09f",
+      "reason": "Pinned upstream Sail output outside the refactor scope; preserve its constant identity."
+    },
+    {
+      "file": "generated/evm-sail-coq/evm_decoder_types.v",
+      "name": "witness_node_count_bound",
+      "sha256": "adde45ea00e865fae427e235425df742cc4acc2afba2f8c913ccef86477c21d6",
+      "reason": "Pinned upstream Sail output outside the refactor scope; preserve its constant identity."
+    },
+    {
+      "file": "generated/evm-sail-coq/evm_decoder_types.v",
+      "name": "witness_code_count_bound",
+      "sha256": "9b6d2693cd022e9d3c7dad9afd2dfc0b9f28503eea2437fb2a17a322530d2882",
+      "reason": "Pinned upstream Sail output outside the refactor scope; preserve its constant identity."
+    },
+    {
+      "file": "generated/evm-sail-coq/evm_decoder_types.v",
+      "name": "witness_header_count_bound",
+      "sha256": "30591c635cada56914d17ac68ceb65d093b16d3302933f24d1cdd921ec4de96e",
+      "reason": "Pinned upstream Sail output outside the refactor scope; preserve its constant identity."
+    },
+    {
+      "file": "generated/evm-sail-coq/evm_decoder_types.v",
+      "name": "public_key_count_bound",
+      "sha256": "ff6e8d03f8a20ec5c6c398e4f71423fc94c0eca9f0254fa0c3c2e759d895b657",
+      "reason": "Pinned upstream Sail output outside the refactor scope; preserve its constant identity."
+    },
+    {
+      "file": "generated/evm-sail-coq/evm_decoder_types.v",
+      "name": "deposit_request_count_bound",
+      "sha256": "ea9471f043e6eb7d3bc07a0a065aa9b318e7484348d170df71d231b225936730",
+      "reason": "Pinned upstream Sail output outside the refactor scope; preserve its constant identity."
+    },
+    {
+      "file": "generated/evm-sail-coq/evm_decoder_types.v",
+      "name": "withdrawal_request_count_bound",
+      "sha256": "9c03cd8a0b7947aa9b08a60bfb9315d3d8c647756188122879d702c6edd1f7ea",
+      "reason": "Pinned upstream Sail output outside the refactor scope; preserve its constant identity."
+    },
+    {
+      "file": "generated/evm-sail-coq/evm_decoder_types.v",
+      "name": "consolidation_request_count_bound",
+      "sha256": "a964e52300803becad765c802764928c93a0a8f7c01589d46bf0bf91c1fef0ec",
+      "reason": "Pinned upstream Sail output outside the refactor scope; preserve its constant identity."
+    },
+    {
+      "file": "generated/evm-sail-coq/evm_decoder_types.v",
+      "name": "builder_deposit_request_count_bound",
+      "sha256": "a846fcabed18d09a96603b58cbe3efe3d75c7ee229790c127adfe32222ce67a8",
+      "reason": "Pinned upstream Sail output outside the refactor scope; preserve its constant identity."
+    },
+    {
+      "file": "generated/evm-sail-coq/evm_decoder_types.v",
+      "name": "builder_exit_request_count_bound",
+      "sha256": "13a694a5ac7f95d007eb0f9b3643dbbc2c03454887ad5cdf2048887f62360a41",
+      "reason": "Pinned upstream Sail output outside the refactor scope; preserve its constant identity."
+    },
+    {
+      "file": "generated/evm-sail-coq/evm_decoder_types.v",
+      "name": "extra_data_length_bound",
+      "sha256": "2d2ac844b23fd08a75cd1e239282f84c8fcd5862892ae255936e24c583349093",
+      "reason": "Pinned upstream Sail output outside the refactor scope; preserve its constant identity."
+    },
+    {
+      "file": "generated/evm-sail-coq/evm_decoder_types.v",
+      "name": "transaction_length_bound",
+      "sha256": "df5d85d57894f52040e518b140acfc62eb1f2450cc756f81810ffe9472372ed8",
+      "reason": "Pinned upstream Sail output outside the refactor scope; preserve its constant identity."
+    },
+    {
+      "file": "generated/evm-sail-coq/evm_decoder_types.v",
+      "name": "block_access_list_length_bound",
+      "sha256": "2c3cfe5fc9be433a2d45cdc4eddb4b878f0bb6d1027b5ce3915b7aca270cf733",
+      "reason": "Pinned upstream Sail output outside the refactor scope; preserve its constant identity."
+    },
+    {
+      "file": "generated/evm-sail-coq/evm_decoder_types.v",
+      "name": "witness_node_length_bound",
+      "sha256": "e111035068418eedecc8b4dae7071d0520a0db3443ed4a4b33596f6d2c299f11",
+      "reason": "Pinned upstream Sail output outside the refactor scope; preserve its constant identity."
+    },
+    {
+      "file": "generated/evm-sail-coq/evm_decoder_types.v",
+      "name": "witness_code_length_bound",
+      "sha256": "579aefa49eb809fac38d05fce4afdc383244486af04f7b147f8ec58430f1ff64",
+      "reason": "Pinned upstream Sail output outside the refactor scope; preserve its constant identity."
+    },
+    {
+      "file": "generated/evm-sail-coq/evm_decoder_types.v",
+      "name": "witness_header_length_bound",
+      "sha256": "2f60e854fdba7061638458d4f293e6f49d8e54f9f6bfdb5e5d9d9dc59a093aa2",
+      "reason": "Pinned upstream Sail output outside the refactor scope; preserve its constant identity."
+    },
+    {
+      "file": "generated/evm-sail-coq/evm_decoder_types.v",
+      "name": "frontier_fork_value",
+      "sha256": "d4400fadd7fe7a2c22d60843683d2a5cd2a7a128bde345c2a3c0bdbc1721cb2a",
+      "reason": "Pinned upstream Sail output outside the refactor scope; preserve its constant identity."
+    },
+    {
+      "file": "generated/evm-sail-coq/evm_decoder_types.v",
+      "name": "homestead_fork_value",
+      "sha256": "d9e3f81e0ae6611793dd86e65fc2ea25375886962d8b53f3ab5f149aabf0fcda",
+      "reason": "Pinned upstream Sail output outside the refactor scope; preserve its constant identity."
+    },
+    {
+      "file": "generated/evm-sail-coq/evm_decoder_types.v",
+      "name": "byzantium_fork_value",
+      "sha256": "9c00b8cd4057e9a530cc2ed5c11f10bfbf7b760890ee70a577c5bd2ac62c346b",
+      "reason": "Pinned upstream Sail output outside the refactor scope; preserve its constant identity."
+    },
+    {
+      "file": "generated/evm-sail-coq/evm_decoder_types.v",
+      "name": "constantinople_fork_value",
+      "sha256": "81998ff71fb62984e055b949fbb38d31ccce5708b00fd9b84e7bc41a069e9abb",
+      "reason": "Pinned upstream Sail output outside the refactor scope; preserve its constant identity."
+    },
+    {
+      "file": "generated/evm-sail-coq/evm_decoder_types.v",
+      "name": "istanbul_fork_value",
+      "sha256": "d480d5a2e8862e52e7b3c9a16056332f11019a7893abba6273ee9a864d4afee2",
+      "reason": "Pinned upstream Sail output outside the refactor scope; preserve its constant identity."
+    },
+    {
+      "file": "generated/evm-sail-coq/evm_decoder_types.v",
+      "name": "berlin_fork_value",
+      "sha256": "09beb07e4fd422b9424b6d3ef88f91729dc563dbf81b6fef9707a9e50398e563",
+      "reason": "Pinned upstream Sail output outside the refactor scope; preserve its constant identity."
+    },
+    {
+      "file": "generated/evm-sail-coq/evm_decoder_types.v",
+      "name": "london_fork_value",
+      "sha256": "76d56a4198d40322501738196131b95f9c13620787ce9713af7c591a29585ee7",
+      "reason": "Pinned upstream Sail output outside the refactor scope; preserve its constant identity."
+    },
+    {
+      "file": "generated/evm-sail-coq/evm_decoder_types.v",
+      "name": "arrow_glacier_fork_value",
+      "sha256": "614248d3eeebc1978f138e073585108587cfd72eef15833d893f43d97f8fe114",
+      "reason": "Pinned upstream Sail output outside the refactor scope; preserve its constant identity."
+    },
+    {
+      "file": "generated/evm-sail-coq/evm_decoder_types.v",
+      "name": "gray_glacier_fork_value",
+      "sha256": "c92045f76e7349db76171d2a8242c5ee0cad211b48ec78f5de5d21f80f76198c",
+      "reason": "Pinned upstream Sail output outside the refactor scope; preserve its constant identity."
+    },
+    {
+      "file": "generated/evm-sail-coq/evm_decoder_types.v",
+      "name": "paris_fork_value",
+      "sha256": "50bf79f20f03f9f686fec512a67e8de943f3d8d605828ca95db73b8e7f162c56",
+      "reason": "Pinned upstream Sail output outside the refactor scope; preserve its constant identity."
+    },
+    {
+      "file": "generated/evm-sail-coq/evm_decoder_types.v",
+      "name": "shanghai_fork_value",
+      "sha256": "916adeef1782e54574f18657bf68206f78d88097c5eff224ebbe1e2ec5f0e608",
+      "reason": "Pinned upstream Sail output outside the refactor scope; preserve its constant identity."
+    },
+    {
+      "file": "generated/evm-sail-coq/evm_decoder_types.v",
+      "name": "first_blob_fork_value",
+      "sha256": "77233c538bb5cd4cce1749922dbb93e82a55fec8d3c9ba0b08095c1987b0e722",
+      "reason": "Pinned upstream Sail output outside the refactor scope; preserve its constant identity."
+    },
+    {
+      "file": "generated/evm-sail-coq/evm_decoder_types.v",
+      "name": "prague_fork_value",
+      "sha256": "b856af016cb71dbf0914ffdfaa5dfe9581218246aec1b88490842ea4962ba9f9",
+      "reason": "Pinned upstream Sail output outside the refactor scope; preserve its constant identity."
+    },
+    {
+      "file": "generated/evm-sail-coq/evm_decoder_types.v",
+      "name": "osaka_fork_value",
+      "sha256": "d4fc143877840849b4f3067136b175bd515f3baaa40658bb884a96791a79d26c",
+      "reason": "Pinned upstream Sail output outside the refactor scope; preserve its constant identity."
+    },
+    {
+      "file": "generated/evm-sail-coq/evm_decoder_types.v",
+      "name": "bpo1_fork_value",
+      "sha256": "80f34abff8339345c7c2e866c0bf724de8ef17ce60a6035e08648e51f38de3e7",
+      "reason": "Pinned upstream Sail output outside the refactor scope; preserve its constant identity."
+    },
+    {
+      "file": "generated/evm-sail-coq/evm_decoder_types.v",
+      "name": "bpo2_fork_value",
+      "sha256": "678a8aab268b20839621ed3676e80c17e7296a4f5a8df263f956ce1bbe42fe36",
+      "reason": "Pinned upstream Sail output outside the refactor scope; preserve its constant identity."
+    },
+    {
+      "file": "generated/evm-sail-coq/evm_decoder_types.v",
+      "name": "amsterdam_fork_value",
+      "sha256": "794846c077f5b3dfe3f1809cf907fa502d6fc49eb4122e49a9fa76af4fbba5b7",
+      "reason": "Pinned upstream Sail output outside the refactor scope; preserve its constant identity."
+    },
+    {
+      "file": "generated/evm-sail-coq/evm_decoder_types.v",
+      "name": "log_store_index_bound",
+      "sha256": "003638fdff0e276bcdd73df03e3c004c0643a61b3e324cf66e8c9bb247bb328a",
+      "reason": "Pinned upstream Sail output outside the refactor scope; preserve its constant identity."
+    },
+    {
+      "file": "generated/evm-sail-coq/rlp/evm_rlp.v",
+      "name": "SYSTEM_CALL_GAS_LIMIT",
+      "sha256": "ba377fde1c26aac8f5a824f471e1e99bf82dbe3a7a9218ed205be20efaf67e43",
+      "reason": "Pinned upstream Sail output outside the refactor scope; preserve its constant identity."
+    },
+    {
+      "file": "generated/evm-sail-coq/rlp/evm_rlp.v",
+      "name": "WORD_BYTE_LENGTH",
+      "sha256": "0ab41fee11021a5a19dbb86d9f3a515ad672e907a8b70257e9cc2ee0c0e84a9f",
+      "reason": "Pinned upstream Sail output outside the refactor scope; preserve its constant identity."
+    },
+    {
+      "file": "generated/evm-sail-coq/rlp/evm_rlp.v",
+      "name": "EIGHT_BYTE_LENGTH",
+      "sha256": "0a00393699ce29109da008e4a7db4b73203faf77eba22d2ebf4e077c2e3ed890",
+      "reason": "Pinned upstream Sail output outside the refactor scope; preserve its constant identity."
+    },
+    {
+      "file": "generated/evm-sail-coq/rlp/evm_rlp.v",
+      "name": "Berlin",
+      "sha256": "f0756182d2a966546eda02bb6f1ffa9159504d289b8da4c56bbc8abc9b52ebc5",
+      "reason": "Pinned upstream Sail output outside the refactor scope; preserve its constant identity."
+    },
+    {
+      "file": "generated/evm-sail-coq/rlp/evm_rlp.v",
+      "name": "London",
+      "sha256": "fdb5bb58fb05e778e2b219f95075147f848a7d485a6d028389b279c367b7da7a",
+      "reason": "Pinned upstream Sail output outside the refactor scope; preserve its constant identity."
+    },
+    {
+      "file": "generated/evm-sail-coq/rlp/evm_rlp.v",
+      "name": "ArrowGlacier",
+      "sha256": "cfc326b6b3338abd280954a11ac74de5d9800bcf7add6c540f40e44f28d9cb49",
+      "reason": "Pinned upstream Sail output outside the refactor scope; preserve its constant identity."
+    },
+    {
+      "file": "generated/evm-sail-coq/rlp/evm_rlp.v",
+      "name": "GrayGlacier",
+      "sha256": "65acfbce953803be0518771a90bae7f3b87183b7ec8037754225007fd0fc2c1b",
+      "reason": "Pinned upstream Sail output outside the refactor scope; preserve its constant identity."
+    },
+    {
+      "file": "generated/evm-sail-coq/rlp/evm_rlp.v",
+      "name": "Paris",
+      "sha256": "d43a5defe44d30468787d50473d0d26998d8f2ef653ed4fe01c133ca10431e48",
+      "reason": "Pinned upstream Sail output outside the refactor scope; preserve its constant identity."
+    },
+    {
+      "file": "generated/evm-sail-coq/rlp/evm_rlp.v",
+      "name": "Shanghai",
+      "sha256": "fdc5b89545bf21d48b231df46f5a50a2cce476c0a5009184219046b5430b1542",
+      "reason": "Pinned upstream Sail output outside the refactor scope; preserve its constant identity."
+    },
+    {
+      "file": "generated/evm-sail-coq/rlp/evm_rlp.v",
+      "name": "Cancun",
+      "sha256": "e82f3aca04df90fa1642e3c3226cbf2b437fd5e5c3aaadf6e50e6080e3c893f3",
+      "reason": "Pinned upstream Sail output outside the refactor scope; preserve its constant identity."
+    },
+    {
+      "file": "generated/evm-sail-coq/rlp/evm_rlp.v",
+      "name": "Prague",
+      "sha256": "a74dd8f6a7dce83bf19239650f852a5e4be33edfe8d92459e8879e0678ab53af",
+      "reason": "Pinned upstream Sail output outside the refactor scope; preserve its constant identity."
+    },
+    {
+      "file": "generated/evm-sail-coq/rlp/evm_rlp.v",
+      "name": "Osaka",
+      "sha256": "fde5ed24e3b7cae2dcd95853ee81c0f778d4dacac64d73d95a5e8ba6eb04ac82",
+      "reason": "Pinned upstream Sail output outside the refactor scope; preserve its constant identity."
+    },
+    {
+      "file": "generated/evm-sail-coq/rlp/evm_rlp.v",
+      "name": "BPO1",
+      "sha256": "e13f62ee32d6e36da0e92a8e8e4d9ffb6847809114aaa8e9931e16397924a724",
+      "reason": "Pinned upstream Sail output outside the refactor scope; preserve its constant identity."
+    },
+    {
+      "file": "generated/evm-sail-coq/rlp/evm_rlp.v",
+      "name": "BPO2",
+      "sha256": "54dda4ae7ade9773e637527c85369d8732056b71f25799bf8324b5edb77dd827",
+      "reason": "Pinned upstream Sail output outside the refactor scope; preserve its constant identity."
+    },
+    {
+      "file": "generated/evm-sail-coq/rlp/evm_rlp.v",
+      "name": "Amsterdam",
+      "sha256": "305053f2d65242ba716ccd1ba70cacce601e2894a5981ab1a86c5f97e568d9de",
+      "reason": "Pinned upstream Sail output outside the refactor scope; preserve its constant identity."
+    },
+    {
+      "file": "generated/evm-sail-coq/rlp/evm_rlp.v",
+      "name": "RLP_SHORT_LENGTH_LIMIT",
+      "sha256": "61f59a20de7f76b3a60aa4155acb10c879c425218b3495f96c2b56a2d5c1614b",
+      "reason": "Pinned upstream Sail output outside the refactor scope; preserve its constant identity."
+    },
+    {
+      "file": "generated/evm-sail-coq/rlp/evm_rlp_types.v",
+      "name": "ssz_uint_bound",
+      "sha256": "1a4ca966e930af5889b3ec2dc6a59088b0c751451c757a279b56bfc7474b936f",
+      "reason": "Pinned upstream Sail output outside the refactor scope; preserve its constant identity."
+    },
+    {
+      "file": "generated/evm-sail-coq/rlp/evm_rlp_types.v",
+      "name": "gas_per_blob_value",
+      "sha256": "6e95c0c671f1605ae05ede7ae47c4eeb4efb82c94c32de258ae27e11452630aa",
+      "reason": "Pinned upstream Sail output outside the refactor scope; preserve its constant identity."
+    },
+    {
+      "file": "generated/evm-sail-coq/rlp/evm_rlp_types.v",
+      "name": "blob_schedule_inactive_count",
+      "sha256": "068a2db6516330866eaaba5e0bd4ac4f97a00ebc9d3b6af98ee3ff80f29d084f",
+      "reason": "Pinned upstream Sail output outside the refactor scope; preserve its constant identity."
+    },
+    {
+      "file": "generated/evm-sail-coq/rlp/evm_rlp_types.v",
+      "name": "cancun_blob_target_count",
+      "sha256": "ae56e8edef2f00159e32e32147fce2a0ac6baac4ef7c9b271fb9bbc0ab431cdd",
+      "reason": "Pinned upstream Sail output outside the refactor scope; preserve its constant identity."
+    },
+    {
+      "file": "generated/evm-sail-coq/rlp/evm_rlp_types.v",
+      "name": "prague_blob_target_count",
+      "sha256": "f5f739643c892fe9c4de40b37bb0173a5b9eaac7592001ee74001bffc768a35d",
+      "reason": "Pinned upstream Sail output outside the refactor scope; preserve its constant identity."
+    },
+    {
+      "file": "generated/evm-sail-coq/rlp/evm_rlp_types.v",
+      "name": "bpo1_blob_target_count",
+      "sha256": "8c4b6d253b8dbc88f6670934fe8ebc27ab59d712da18b356ff2905dbb85b7b3e",
+      "reason": "Pinned upstream Sail output outside the refactor scope; preserve its constant identity."
+    },
+    {
+      "file": "generated/evm-sail-coq/rlp/evm_rlp_types.v",
+      "name": "bpo2_blob_target_count",
+      "sha256": "7eb3c2db3ab3e4b94f95019d389bea1a7686a3b440fc15f08de6855a05b2cb73",
+      "reason": "Pinned upstream Sail output outside the refactor scope; preserve its constant identity."
+    },
+    {
+      "file": "generated/evm-sail-coq/rlp/evm_rlp_types.v",
+      "name": "cancun_blob_max_count",
+      "sha256": "4aa618a89b1283b4a2af2e7ab669ea6245e3bc0c605da54bd51fa5945b9fa42c",
+      "reason": "Pinned upstream Sail output outside the refactor scope; preserve its constant identity."
+    },
+    {
+      "file": "generated/evm-sail-coq/rlp/evm_rlp_types.v",
+      "name": "prague_blob_max_count",
+      "sha256": "6b929f0a43ecb3aafc1be8d565f51815e39dc21f2704773ec8908bad55f027f4",
+      "reason": "Pinned upstream Sail output outside the refactor scope; preserve its constant identity."
+    },
+    {
+      "file": "generated/evm-sail-coq/rlp/evm_rlp_types.v",
+      "name": "bpo1_blob_max_count",
+      "sha256": "335bd997ee835015bb14d3051cfe0dd79e5c8954aa94b8a6bb9465dac9025abe",
+      "reason": "Pinned upstream Sail output outside the refactor scope; preserve its constant identity."
+    },
+    {
+      "file": "generated/evm-sail-coq/rlp/evm_rlp_types.v",
+      "name": "bpo2_blob_max_count",
+      "sha256": "b10dc9a93d5fd6ebdd42bc79db36dd8f09cac50386bef2e74e4784c3f5a7cfd7",
+      "reason": "Pinned upstream Sail output outside the refactor scope; preserve its constant identity."
+    },
+    {
+      "file": "generated/evm-sail-coq/rlp/evm_rlp_types.v",
+      "name": "blob_fee_update_fraction_bound",
+      "sha256": "1637309ed8032e00186859a623ea5c3be2789b94dd798ed78df3c6f6285885d8",
+      "reason": "Pinned upstream Sail output outside the refactor scope; preserve its constant identity."
+    },
+    {
+      "file": "generated/evm-sail-coq/rlp/evm_rlp_types.v",
+      "name": "blob_fee_word_exponent_limit",
+      "sha256": "d510f07d81764e614c792d76dd539b2b3abd1265c5b8953647062917739028af",
+      "reason": "Pinned upstream Sail output outside the refactor scope; preserve its constant identity."
+    },
+    {
+      "file": "generated/evm-sail-coq/rlp/evm_rlp_types.v",
+      "name": "excess_blob_gas_reachable_bound",
+      "sha256": "6331c1afe9e3cbb71b7a9766cb2b6ef1be432eed58c2048fde7e9e5812bd954f",
+      "reason": "Pinned upstream Sail output outside the refactor scope; preserve its constant identity."
+    },
+    {
+      "file": "generated/evm-sail-coq/rlp/evm_rlp_types.v",
+      "name": "excess_blob_gas_bound",
+      "sha256": "3f6a64d98ca6db918ad0d3d0d53622aa7911023c924494fad2c49d25bd85ca0d",
+      "reason": "Pinned upstream Sail output outside the refactor scope; preserve its constant identity."
+    },
+    {
+      "file": "generated/evm-sail-coq/rlp/evm_rlp_types.v",
+      "name": "inactive_blob_fee_update_fraction",
+      "sha256": "ec0295f56976c3403b14bfe56ffacccbae6fc7f66fcbf182f0e804cd33fc8a84",
+      "reason": "Pinned upstream Sail output outside the refactor scope; preserve its constant identity."
+    },
+    {
+      "file": "generated/evm-sail-coq/rlp/evm_rlp_types.v",
+      "name": "cancun_blob_fee_update_fraction",
+      "sha256": "96e269a53832b5b27dc971dce4e098cb1866ad2539c69e8c8cd5a0525f7e1cd4",
+      "reason": "Pinned upstream Sail output outside the refactor scope; preserve its constant identity."
+    },
+    {
+      "file": "generated/evm-sail-coq/rlp/evm_rlp_types.v",
+      "name": "prague_blob_fee_update_fraction",
+      "sha256": "a62461f803a9b69edc00d84c0d199278f7f2fc8970aae135fa2d0c68c4ba5c0f",
+      "reason": "Pinned upstream Sail output outside the refactor scope; preserve its constant identity."
+    },
+    {
+      "file": "generated/evm-sail-coq/rlp/evm_rlp_types.v",
+      "name": "bpo1_blob_fee_update_fraction",
+      "sha256": "bcdd67bd0735166a5395a44648761a2e99360bab721f18e708a9ae327c93700c",
+      "reason": "Pinned upstream Sail output outside the refactor scope; preserve its constant identity."
+    },
+    {
+      "file": "generated/evm-sail-coq/rlp/evm_rlp_types.v",
+      "name": "bpo2_blob_fee_update_fraction",
+      "sha256": "5f109bb85f047e748201d4ebd885005f13e44faa26d4e93a69709e5940569ea8",
+      "reason": "Pinned upstream Sail output outside the refactor scope; preserve its constant identity."
+    },
+    {
+      "file": "generated/evm-sail-coq/rlp/evm_rlp_types.v",
+      "name": "pre_amsterdam_deployed_code_size_limit",
+      "sha256": "4a916d23e6039d5f30dd14b8efe0296ac5e07d6a9069f4993849aa6ff7c8bc65",
+      "reason": "Pinned upstream Sail output outside the refactor scope; preserve its constant identity."
+    },
+    {
+      "file": "generated/evm-sail-coq/rlp/evm_rlp_types.v",
+      "name": "amsterdam_deployed_code_size_limit",
+      "sha256": "507c6cf8273780ac62ff2797888a1d013b5e31cc9c7fc921c8de03f7a19541b4",
+      "reason": "Pinned upstream Sail output outside the refactor scope; preserve its constant identity."
+    },
+    {
+      "file": "generated/evm-sail-coq/rlp/evm_rlp_types.v",
+      "name": "inactive_initcode_size_limit",
+      "sha256": "26befb532c8eae22bfc72043280536b88a51ad7e1be92820bd2ead03db57e17a",
+      "reason": "Pinned upstream Sail output outside the refactor scope; preserve its constant identity."
+    },
+    {
+      "file": "generated/evm-sail-coq/rlp/evm_rlp_types.v",
+      "name": "pre_amsterdam_initcode_size_limit",
+      "sha256": "cd8cf8a3a166f27b76d78f885b9650b8fd2328d30878465ad756589a95cf7d73",
+      "reason": "Pinned upstream Sail output outside the refactor scope; preserve its constant identity."
+    },
+    {
+      "file": "generated/evm-sail-coq/rlp/evm_rlp_types.v",
+      "name": "amsterdam_initcode_size_limit",
+      "sha256": "befce76c7516011b9aae0e9456165d149044717c8ff3417b1ce59c150d260690",
+      "reason": "Pinned upstream Sail output outside the refactor scope; preserve its constant identity."
+    },
+    {
+      "file": "generated/evm-sail-coq/rlp/evm_rlp_types.v",
+      "name": "eip7825_transaction_gas_limit",
+      "sha256": "b21f69cb424dcaed05a4bb574ee21ea349e43b8a37ddbbf0e27cac6d98b89e23",
+      "reason": "Pinned upstream Sail output outside the refactor scope; preserve its constant identity."
+    },
+    {
+      "file": "generated/evm-sail-coq/rlp/evm_rlp_types.v",
+      "name": "default_host_region_bound",
+      "sha256": "bf19e8adff30f2f8bce3bba724b1c2f50329444afc7ae6ff82902a846b79d010",
+      "reason": "Pinned upstream Sail output outside the refactor scope; preserve its constant identity."
+    },
+    {
+      "file": "generated/evm-sail-coq/rlp/evm_rlp_types.v",
+      "name": "stateless_input_region_bound",
+      "sha256": "413944cf26c60f026ba3a892b91d584021bb634b02c8d4bccd67b238ef7f8f25",
+      "reason": "Pinned upstream Sail output outside the refactor scope; preserve its constant identity."
+    },
+    {
+      "file": "generated/evm-sail-coq/rlp/evm_rlp_types.v",
+      "name": "block_gas_limit_bound",
+      "sha256": "31aa3ceec14e014a400b3bd44e2741ca6d964f8216e2ad752dfc3d5c5c484ab2",
+      "reason": "Pinned upstream Sail output outside the refactor scope; preserve its constant identity."
+    },
+    {
+      "file": "generated/evm-sail-coq/rlp/evm_rlp_types.v",
+      "name": "pre_london_refund_divisor",
+      "sha256": "c87e5fc52465c30b8f282f8b80fce6e0acf92c597d8fce06193371ef377b98d8",
+      "reason": "Pinned upstream Sail output outside the refactor scope; preserve its constant identity."
+    },
+    {
+      "file": "generated/evm-sail-coq/rlp/evm_rlp_types.v",
+      "name": "post_london_refund_divisor",
+      "sha256": "041d14d666537fbb6c0c9bde8f2c12b8a708dd8f5e561bbab084af0fffdf0098",
+      "reason": "Pinned upstream Sail output outside the refactor scope; preserve its constant identity."
+    },
+    {
+      "file": "generated/evm-sail-coq/rlp/evm_rlp_types.v",
+      "name": "berlin_fork_value",
+      "sha256": "09beb07e4fd422b9424b6d3ef88f91729dc563dbf81b6fef9707a9e50398e563",
+      "reason": "Pinned upstream Sail output outside the refactor scope; preserve its constant identity."
+    },
+    {
+      "file": "generated/evm-sail-coq/rlp/evm_rlp_types.v",
+      "name": "london_fork_value",
+      "sha256": "76d56a4198d40322501738196131b95f9c13620787ce9713af7c591a29585ee7",
+      "reason": "Pinned upstream Sail output outside the refactor scope; preserve its constant identity."
+    },
+    {
+      "file": "generated/evm-sail-coq/rlp/evm_rlp_types.v",
+      "name": "arrow_glacier_fork_value",
+      "sha256": "614248d3eeebc1978f138e073585108587cfd72eef15833d893f43d97f8fe114",
+      "reason": "Pinned upstream Sail output outside the refactor scope; preserve its constant identity."
+    },
+    {
+      "file": "generated/evm-sail-coq/rlp/evm_rlp_types.v",
+      "name": "gray_glacier_fork_value",
+      "sha256": "c92045f76e7349db76171d2a8242c5ee0cad211b48ec78f5de5d21f80f76198c",
+      "reason": "Pinned upstream Sail output outside the refactor scope; preserve its constant identity."
+    },
+    {
+      "file": "generated/evm-sail-coq/rlp/evm_rlp_types.v",
+      "name": "paris_fork_value",
+      "sha256": "50bf79f20f03f9f686fec512a67e8de943f3d8d605828ca95db73b8e7f162c56",
+      "reason": "Pinned upstream Sail output outside the refactor scope; preserve its constant identity."
+    },
+    {
+      "file": "generated/evm-sail-coq/rlp/evm_rlp_types.v",
+      "name": "shanghai_fork_value",
+      "sha256": "916adeef1782e54574f18657bf68206f78d88097c5eff224ebbe1e2ec5f0e608",
+      "reason": "Pinned upstream Sail output outside the refactor scope; preserve its constant identity."
+    },
+    {
+      "file": "generated/evm-sail-coq/rlp/evm_rlp_types.v",
+      "name": "first_blob_fork_value",
+      "sha256": "77233c538bb5cd4cce1749922dbb93e82a55fec8d3c9ba0b08095c1987b0e722",
+      "reason": "Pinned upstream Sail output outside the refactor scope; preserve its constant identity."
+    },
+    {
+      "file": "generated/evm-sail-coq/rlp/evm_rlp_types.v",
+      "name": "prague_fork_value",
+      "sha256": "b856af016cb71dbf0914ffdfaa5dfe9581218246aec1b88490842ea4962ba9f9",
+      "reason": "Pinned upstream Sail output outside the refactor scope; preserve its constant identity."
+    },
+    {
+      "file": "generated/evm-sail-coq/rlp/evm_rlp_types.v",
+      "name": "osaka_fork_value",
+      "sha256": "d4fc143877840849b4f3067136b175bd515f3baaa40658bb884a96791a79d26c",
+      "reason": "Pinned upstream Sail output outside the refactor scope; preserve its constant identity."
+    },
+    {
+      "file": "generated/evm-sail-coq/rlp/evm_rlp_types.v",
+      "name": "bpo1_fork_value",
+      "sha256": "80f34abff8339345c7c2e866c0bf724de8ef17ce60a6035e08648e51f38de3e7",
+      "reason": "Pinned upstream Sail output outside the refactor scope; preserve its constant identity."
+    },
+    {
+      "file": "generated/evm-sail-coq/rlp/evm_rlp_types.v",
+      "name": "bpo2_fork_value",
+      "sha256": "678a8aab268b20839621ed3676e80c17e7296a4f5a8df263f956ce1bbe42fe36",
+      "reason": "Pinned upstream Sail output outside the refactor scope; preserve its constant identity."
+    },
+    {
+      "file": "generated/evm-sail-coq/rlp/evm_rlp_types.v",
+      "name": "amsterdam_fork_value",
+      "sha256": "794846c077f5b3dfe3f1809cf907fa502d6fc49eb4122e49a9fa76af4fbba5b7",
+      "reason": "Pinned upstream Sail output outside the refactor scope; preserve its constant identity."
+    },
+    {
+      "file": "generated/evm-sail-coq/transactions/evm_decode_access_list_tx.v",
+      "name": "WORD_BYTE_LENGTH",
+      "sha256": "0ab41fee11021a5a19dbb86d9f3a515ad672e907a8b70257e9cc2ee0c0e84a9f",
+      "reason": "Pinned upstream Sail output outside the refactor scope; preserve its constant identity."
+    },
+    {
+      "file": "generated/evm-sail-coq/transactions/evm_decode_access_list_tx.v",
+      "name": "EIGHT_BYTE_LENGTH",
+      "sha256": "0a00393699ce29109da008e4a7db4b73203faf77eba22d2ebf4e077c2e3ed890",
+      "reason": "Pinned upstream Sail output outside the refactor scope; preserve its constant identity."
+    },
+    {
+      "file": "generated/evm-sail-coq/transactions/evm_decode_access_list_tx.v",
+      "name": "RLP_SHORT_LENGTH_LIMIT",
+      "sha256": "61f59a20de7f76b3a60aa4155acb10c879c425218b3495f96c2b56a2d5c1614b",
+      "reason": "Pinned upstream Sail output outside the refactor scope; preserve its constant identity."
+    },
+    {
+      "file": "generated/evm-sail-coq/transactions/evm_decode_access_list_tx.v",
+      "name": "LEGACY_SIGNATURE_SUFFIX_LENGTH",
+      "sha256": "abf56ba4631aba6e75b6f08f4fc9cec0c890114f66defb1785a412007435f19c",
+      "reason": "Pinned upstream Sail output outside the refactor scope; preserve its constant identity."
+    },
+    {
+      "file": "generated/evm-sail-coq/transactions/evm_decode_access_list_tx_types.v",
+      "name": "ssz_uint_bound",
+      "sha256": "1a4ca966e930af5889b3ec2dc6a59088b0c751451c757a279b56bfc7474b936f",
+      "reason": "Pinned upstream Sail output outside the refactor scope; preserve its constant identity."
+    },
+    {
+      "file": "generated/evm-sail-coq/transactions/evm_decode_access_list_tx_types.v",
+      "name": "blob_schedule_inactive_count",
+      "sha256": "068a2db6516330866eaaba5e0bd4ac4f97a00ebc9d3b6af98ee3ff80f29d084f",
+      "reason": "Pinned upstream Sail output outside the refactor scope; preserve its constant identity."
+    },
+    {
+      "file": "generated/evm-sail-coq/transactions/evm_decode_access_list_tx_types.v",
+      "name": "cancun_blob_max_count",
+      "sha256": "4aa618a89b1283b4a2af2e7ab669ea6245e3bc0c605da54bd51fa5945b9fa42c",
+      "reason": "Pinned upstream Sail output outside the refactor scope; preserve its constant identity."
+    },
+    {
+      "file": "generated/evm-sail-coq/transactions/evm_decode_access_list_tx_types.v",
+      "name": "prague_blob_max_count",
+      "sha256": "6b929f0a43ecb3aafc1be8d565f51815e39dc21f2704773ec8908bad55f027f4",
+      "reason": "Pinned upstream Sail output outside the refactor scope; preserve its constant identity."
+    },
+    {
+      "file": "generated/evm-sail-coq/transactions/evm_decode_access_list_tx_types.v",
+      "name": "chain_identifier_bound",
+      "sha256": "f85925863fd315c332dda9c0574ce291a6980bbf68a9da31ba2ca8886b37e81b",
+      "reason": "Pinned upstream Sail output outside the refactor scope; preserve its constant identity."
+    },
+    {
+      "file": "generated/evm-sail-coq/transactions/evm_decode_access_list_tx_types.v",
+      "name": "default_host_region_bound",
+      "sha256": "bf19e8adff30f2f8bce3bba724b1c2f50329444afc7ae6ff82902a846b79d010",
+      "reason": "Pinned upstream Sail output outside the refactor scope; preserve its constant identity."
+    },
+    {
+      "file": "generated/evm-sail-coq/transactions/evm_decode_access_list_tx_types.v",
+      "name": "stateless_input_region_bound",
+      "sha256": "413944cf26c60f026ba3a892b91d584021bb634b02c8d4bccd67b238ef7f8f25",
+      "reason": "Pinned upstream Sail output outside the refactor scope; preserve its constant identity."
+    },
+    {
+      "file": "generated/evm-sail-coq/transactions/evm_decode_access_list_tx_types.v",
+      "name": "scratch_region_bound",
+      "sha256": "4dedf4cf78a768059aa11593bea8a9cd06c3ed08e95e545868126baef24e9503",
+      "reason": "Pinned upstream Sail output outside the refactor scope; preserve its constant identity."
+    },
+    {
+      "file": "generated/evm-sail-coq/transactions/evm_decode_access_list_tx_types.v",
+      "name": "block_gas_limit_bound",
+      "sha256": "31aa3ceec14e014a400b3bd44e2741ca6d964f8216e2ad752dfc3d5c5c484ab2",
+      "reason": "Pinned upstream Sail output outside the refactor scope; preserve its constant identity."
+    },
+    {
+      "file": "generated/evm-sail-coq/transactions/evm_decode_access_list_tx_types.v",
+      "name": "transaction_length_bound",
+      "sha256": "df5d85d57894f52040e518b140acfc62eb1f2450cc756f81810ffe9472372ed8",
+      "reason": "Pinned upstream Sail output outside the refactor scope; preserve its constant identity."
+    },
+    {
+      "file": "generated/evm-sail-coq/transactions/evm_decode_blob_tx.v",
+      "name": "WORD_BYTE_LENGTH",
+      "sha256": "0ab41fee11021a5a19dbb86d9f3a515ad672e907a8b70257e9cc2ee0c0e84a9f",
+      "reason": "Pinned upstream Sail output outside the refactor scope; preserve its constant identity."
+    },
+    {
+      "file": "generated/evm-sail-coq/transactions/evm_decode_blob_tx.v",
+      "name": "EIGHT_BYTE_LENGTH",
+      "sha256": "0a00393699ce29109da008e4a7db4b73203faf77eba22d2ebf4e077c2e3ed890",
+      "reason": "Pinned upstream Sail output outside the refactor scope; preserve its constant identity."
+    },
+    {
+      "file": "generated/evm-sail-coq/transactions/evm_decode_blob_tx.v",
+      "name": "RLP_SHORT_LENGTH_LIMIT",
+      "sha256": "61f59a20de7f76b3a60aa4155acb10c879c425218b3495f96c2b56a2d5c1614b",
+      "reason": "Pinned upstream Sail output outside the refactor scope; preserve its constant identity."
+    },
+    {
+      "file": "generated/evm-sail-coq/transactions/evm_decode_blob_tx.v",
+      "name": "LEGACY_SIGNATURE_SUFFIX_LENGTH",
+      "sha256": "abf56ba4631aba6e75b6f08f4fc9cec0c890114f66defb1785a412007435f19c",
+      "reason": "Pinned upstream Sail output outside the refactor scope; preserve its constant identity."
+    },
+    {
+      "file": "generated/evm-sail-coq/transactions/evm_decode_blob_tx.v",
+      "name": "BLOB_HASH_RLP_LENGTH",
+      "sha256": "0d8834101b5ae49621ef7fec51d5f128fc24f52e0707bc8c1c0a9de93a53099f",
+      "reason": "Pinned upstream Sail output outside the refactor scope; preserve its constant identity."
+    },
+    {
+      "file": "generated/evm-sail-coq/transactions/evm_decode_blob_tx_types.v",
+      "name": "ssz_uint_bound",
+      "sha256": "1a4ca966e930af5889b3ec2dc6a59088b0c751451c757a279b56bfc7474b936f",
+      "reason": "Pinned upstream Sail output outside the refactor scope; preserve its constant identity."
+    },
+    {
+      "file": "generated/evm-sail-coq/transactions/evm_decode_blob_tx_types.v",
+      "name": "blob_schedule_inactive_count",
+      "sha256": "068a2db6516330866eaaba5e0bd4ac4f97a00ebc9d3b6af98ee3ff80f29d084f",
+      "reason": "Pinned upstream Sail output outside the refactor scope; preserve its constant identity."
+    },
+    {
+      "file": "generated/evm-sail-coq/transactions/evm_decode_blob_tx_types.v",
+      "name": "cancun_blob_max_count",
+      "sha256": "4aa618a89b1283b4a2af2e7ab669ea6245e3bc0c605da54bd51fa5945b9fa42c",
+      "reason": "Pinned upstream Sail output outside the refactor scope; preserve its constant identity."
+    },
+    {
+      "file": "generated/evm-sail-coq/transactions/evm_decode_blob_tx_types.v",
+      "name": "prague_blob_max_count",
+      "sha256": "6b929f0a43ecb3aafc1be8d565f51815e39dc21f2704773ec8908bad55f027f4",
+      "reason": "Pinned upstream Sail output outside the refactor scope; preserve its constant identity."
+    },
+    {
+      "file": "generated/evm-sail-coq/transactions/evm_decode_blob_tx_types.v",
+      "name": "chain_identifier_bound",
+      "sha256": "f85925863fd315c332dda9c0574ce291a6980bbf68a9da31ba2ca8886b37e81b",
+      "reason": "Pinned upstream Sail output outside the refactor scope; preserve its constant identity."
+    },
+    {
+      "file": "generated/evm-sail-coq/transactions/evm_decode_blob_tx_types.v",
+      "name": "default_host_region_bound",
+      "sha256": "bf19e8adff30f2f8bce3bba724b1c2f50329444afc7ae6ff82902a846b79d010",
+      "reason": "Pinned upstream Sail output outside the refactor scope; preserve its constant identity."
+    },
+    {
+      "file": "generated/evm-sail-coq/transactions/evm_decode_blob_tx_types.v",
+      "name": "stateless_input_region_bound",
+      "sha256": "413944cf26c60f026ba3a892b91d584021bb634b02c8d4bccd67b238ef7f8f25",
+      "reason": "Pinned upstream Sail output outside the refactor scope; preserve its constant identity."
+    },
+    {
+      "file": "generated/evm-sail-coq/transactions/evm_decode_blob_tx_types.v",
+      "name": "scratch_region_bound",
+      "sha256": "4dedf4cf78a768059aa11593bea8a9cd06c3ed08e95e545868126baef24e9503",
+      "reason": "Pinned upstream Sail output outside the refactor scope; preserve its constant identity."
+    },
+    {
+      "file": "generated/evm-sail-coq/transactions/evm_decode_blob_tx_types.v",
+      "name": "block_gas_limit_bound",
+      "sha256": "31aa3ceec14e014a400b3bd44e2741ca6d964f8216e2ad752dfc3d5c5c484ab2",
+      "reason": "Pinned upstream Sail output outside the refactor scope; preserve its constant identity."
+    },
+    {
+      "file": "generated/evm-sail-coq/transactions/evm_decode_blob_tx_types.v",
+      "name": "transaction_length_bound",
+      "sha256": "df5d85d57894f52040e518b140acfc62eb1f2450cc756f81810ffe9472372ed8",
+      "reason": "Pinned upstream Sail output outside the refactor scope; preserve its constant identity."
+    },
+    {
+      "file": "generated/evm-sail-coq/transactions/evm_decode_fee_market_tx.v",
+      "name": "WORD_BYTE_LENGTH",
+      "sha256": "0ab41fee11021a5a19dbb86d9f3a515ad672e907a8b70257e9cc2ee0c0e84a9f",
+      "reason": "Pinned upstream Sail output outside the refactor scope; preserve its constant identity."
+    },
+    {
+      "file": "generated/evm-sail-coq/transactions/evm_decode_fee_market_tx.v",
+      "name": "EIGHT_BYTE_LENGTH",
+      "sha256": "0a00393699ce29109da008e4a7db4b73203faf77eba22d2ebf4e077c2e3ed890",
+      "reason": "Pinned upstream Sail output outside the refactor scope; preserve its constant identity."
+    },
+    {
+      "file": "generated/evm-sail-coq/transactions/evm_decode_fee_market_tx.v",
+      "name": "RLP_SHORT_LENGTH_LIMIT",
+      "sha256": "61f59a20de7f76b3a60aa4155acb10c879c425218b3495f96c2b56a2d5c1614b",
+      "reason": "Pinned upstream Sail output outside the refactor scope; preserve its constant identity."
+    },
+    {
+      "file": "generated/evm-sail-coq/transactions/evm_decode_fee_market_tx.v",
+      "name": "LEGACY_SIGNATURE_SUFFIX_LENGTH",
+      "sha256": "abf56ba4631aba6e75b6f08f4fc9cec0c890114f66defb1785a412007435f19c",
+      "reason": "Pinned upstream Sail output outside the refactor scope; preserve its constant identity."
+    },
+    {
+      "file": "generated/evm-sail-coq/transactions/evm_decode_fee_market_tx_types.v",
+      "name": "ssz_uint_bound",
+      "sha256": "1a4ca966e930af5889b3ec2dc6a59088b0c751451c757a279b56bfc7474b936f",
+      "reason": "Pinned upstream Sail output outside the refactor scope; preserve its constant identity."
+    },
+    {
+      "file": "generated/evm-sail-coq/transactions/evm_decode_fee_market_tx_types.v",
+      "name": "blob_schedule_inactive_count",
+      "sha256": "068a2db6516330866eaaba5e0bd4ac4f97a00ebc9d3b6af98ee3ff80f29d084f",
+      "reason": "Pinned upstream Sail output outside the refactor scope; preserve its constant identity."
+    },
+    {
+      "file": "generated/evm-sail-coq/transactions/evm_decode_fee_market_tx_types.v",
+      "name": "cancun_blob_max_count",
+      "sha256": "4aa618a89b1283b4a2af2e7ab669ea6245e3bc0c605da54bd51fa5945b9fa42c",
+      "reason": "Pinned upstream Sail output outside the refactor scope; preserve its constant identity."
+    },
+    {
+      "file": "generated/evm-sail-coq/transactions/evm_decode_fee_market_tx_types.v",
+      "name": "prague_blob_max_count",
+      "sha256": "6b929f0a43ecb3aafc1be8d565f51815e39dc21f2704773ec8908bad55f027f4",
+      "reason": "Pinned upstream Sail output outside the refactor scope; preserve its constant identity."
+    },
+    {
+      "file": "generated/evm-sail-coq/transactions/evm_decode_fee_market_tx_types.v",
+      "name": "chain_identifier_bound",
+      "sha256": "f85925863fd315c332dda9c0574ce291a6980bbf68a9da31ba2ca8886b37e81b",
+      "reason": "Pinned upstream Sail output outside the refactor scope; preserve its constant identity."
+    },
+    {
+      "file": "generated/evm-sail-coq/transactions/evm_decode_fee_market_tx_types.v",
+      "name": "default_host_region_bound",
+      "sha256": "bf19e8adff30f2f8bce3bba724b1c2f50329444afc7ae6ff82902a846b79d010",
+      "reason": "Pinned upstream Sail output outside the refactor scope; preserve its constant identity."
+    },
+    {
+      "file": "generated/evm-sail-coq/transactions/evm_decode_fee_market_tx_types.v",
+      "name": "stateless_input_region_bound",
+      "sha256": "413944cf26c60f026ba3a892b91d584021bb634b02c8d4bccd67b238ef7f8f25",
+      "reason": "Pinned upstream Sail output outside the refactor scope; preserve its constant identity."
+    },
+    {
+      "file": "generated/evm-sail-coq/transactions/evm_decode_fee_market_tx_types.v",
+      "name": "scratch_region_bound",
+      "sha256": "4dedf4cf78a768059aa11593bea8a9cd06c3ed08e95e545868126baef24e9503",
+      "reason": "Pinned upstream Sail output outside the refactor scope; preserve its constant identity."
+    },
+    {
+      "file": "generated/evm-sail-coq/transactions/evm_decode_fee_market_tx_types.v",
+      "name": "block_gas_limit_bound",
+      "sha256": "31aa3ceec14e014a400b3bd44e2741ca6d964f8216e2ad752dfc3d5c5c484ab2",
+      "reason": "Pinned upstream Sail output outside the refactor scope; preserve its constant identity."
+    },
+    {
+      "file": "generated/evm-sail-coq/transactions/evm_decode_fee_market_tx_types.v",
+      "name": "transaction_length_bound",
+      "sha256": "df5d85d57894f52040e518b140acfc62eb1f2450cc756f81810ffe9472372ed8",
+      "reason": "Pinned upstream Sail output outside the refactor scope; preserve its constant identity."
+    },
+    {
+      "file": "generated/evm-sail-coq/transactions/evm_decode_legacy_tx.v",
+      "name": "WORD_BYTE_LENGTH",
+      "sha256": "0ab41fee11021a5a19dbb86d9f3a515ad672e907a8b70257e9cc2ee0c0e84a9f",
+      "reason": "Pinned upstream Sail output outside the refactor scope; preserve its constant identity."
+    },
+    {
+      "file": "generated/evm-sail-coq/transactions/evm_decode_legacy_tx.v",
+      "name": "EIGHT_BYTE_LENGTH",
+      "sha256": "0a00393699ce29109da008e4a7db4b73203faf77eba22d2ebf4e077c2e3ed890",
+      "reason": "Pinned upstream Sail output outside the refactor scope; preserve its constant identity."
+    },
+    {
+      "file": "generated/evm-sail-coq/transactions/evm_decode_legacy_tx.v",
+      "name": "RLP_SHORT_LENGTH_LIMIT",
+      "sha256": "61f59a20de7f76b3a60aa4155acb10c879c425218b3495f96c2b56a2d5c1614b",
+      "reason": "Pinned upstream Sail output outside the refactor scope; preserve its constant identity."
+    },
+    {
+      "file": "generated/evm-sail-coq/transactions/evm_decode_legacy_tx.v",
+      "name": "LEGACY_SIGNATURE_SUFFIX_LENGTH",
+      "sha256": "abf56ba4631aba6e75b6f08f4fc9cec0c890114f66defb1785a412007435f19c",
+      "reason": "Pinned upstream Sail output outside the refactor scope; preserve its constant identity."
+    },
+    {
+      "file": "generated/evm-sail-coq/transactions/evm_decode_legacy_tx_types.v",
+      "name": "ssz_uint_bound",
+      "sha256": "1a4ca966e930af5889b3ec2dc6a59088b0c751451c757a279b56bfc7474b936f",
+      "reason": "Pinned upstream Sail output outside the refactor scope; preserve its constant identity."
+    },
+    {
+      "file": "generated/evm-sail-coq/transactions/evm_decode_legacy_tx_types.v",
+      "name": "blob_schedule_inactive_count",
+      "sha256": "068a2db6516330866eaaba5e0bd4ac4f97a00ebc9d3b6af98ee3ff80f29d084f",
+      "reason": "Pinned upstream Sail output outside the refactor scope; preserve its constant identity."
+    },
+    {
+      "file": "generated/evm-sail-coq/transactions/evm_decode_legacy_tx_types.v",
+      "name": "cancun_blob_max_count",
+      "sha256": "4aa618a89b1283b4a2af2e7ab669ea6245e3bc0c605da54bd51fa5945b9fa42c",
+      "reason": "Pinned upstream Sail output outside the refactor scope; preserve its constant identity."
+    },
+    {
+      "file": "generated/evm-sail-coq/transactions/evm_decode_legacy_tx_types.v",
+      "name": "prague_blob_max_count",
+      "sha256": "6b929f0a43ecb3aafc1be8d565f51815e39dc21f2704773ec8908bad55f027f4",
+      "reason": "Pinned upstream Sail output outside the refactor scope; preserve its constant identity."
+    },
+    {
+      "file": "generated/evm-sail-coq/transactions/evm_decode_legacy_tx_types.v",
+      "name": "chain_identifier_bound",
+      "sha256": "f85925863fd315c332dda9c0574ce291a6980bbf68a9da31ba2ca8886b37e81b",
+      "reason": "Pinned upstream Sail output outside the refactor scope; preserve its constant identity."
+    },
+    {
+      "file": "generated/evm-sail-coq/transactions/evm_decode_legacy_tx_types.v",
+      "name": "default_host_region_bound",
+      "sha256": "bf19e8adff30f2f8bce3bba724b1c2f50329444afc7ae6ff82902a846b79d010",
+      "reason": "Pinned upstream Sail output outside the refactor scope; preserve its constant identity."
+    },
+    {
+      "file": "generated/evm-sail-coq/transactions/evm_decode_legacy_tx_types.v",
+      "name": "stateless_input_region_bound",
+      "sha256": "413944cf26c60f026ba3a892b91d584021bb634b02c8d4bccd67b238ef7f8f25",
+      "reason": "Pinned upstream Sail output outside the refactor scope; preserve its constant identity."
+    },
+    {
+      "file": "generated/evm-sail-coq/transactions/evm_decode_legacy_tx_types.v",
+      "name": "scratch_region_bound",
+      "sha256": "4dedf4cf78a768059aa11593bea8a9cd06c3ed08e95e545868126baef24e9503",
+      "reason": "Pinned upstream Sail output outside the refactor scope; preserve its constant identity."
+    },
+    {
+      "file": "generated/evm-sail-coq/transactions/evm_decode_legacy_tx_types.v",
+      "name": "block_gas_limit_bound",
+      "sha256": "31aa3ceec14e014a400b3bd44e2741ca6d964f8216e2ad752dfc3d5c5c484ab2",
+      "reason": "Pinned upstream Sail output outside the refactor scope; preserve its constant identity."
+    },
+    {
+      "file": "generated/evm-sail-coq/transactions/evm_decode_legacy_tx_types.v",
+      "name": "transaction_length_bound",
+      "sha256": "df5d85d57894f52040e518b140acfc62eb1f2450cc756f81810ffe9472372ed8",
+      "reason": "Pinned upstream Sail output outside the refactor scope; preserve its constant identity."
+    },
+    {
+      "file": "generated/evm-sail-coq/transactions/evm_decode_set_code_tx.v",
+      "name": "WORD_BYTE_LENGTH",
+      "sha256": "0ab41fee11021a5a19dbb86d9f3a515ad672e907a8b70257e9cc2ee0c0e84a9f",
+      "reason": "Pinned upstream Sail output outside the refactor scope; preserve its constant identity."
+    },
+    {
+      "file": "generated/evm-sail-coq/transactions/evm_decode_set_code_tx.v",
+      "name": "EIGHT_BYTE_LENGTH",
+      "sha256": "0a00393699ce29109da008e4a7db4b73203faf77eba22d2ebf4e077c2e3ed890",
+      "reason": "Pinned upstream Sail output outside the refactor scope; preserve its constant identity."
+    },
+    {
+      "file": "generated/evm-sail-coq/transactions/evm_decode_set_code_tx.v",
+      "name": "RLP_SHORT_LENGTH_LIMIT",
+      "sha256": "61f59a20de7f76b3a60aa4155acb10c879c425218b3495f96c2b56a2d5c1614b",
+      "reason": "Pinned upstream Sail output outside the refactor scope; preserve its constant identity."
+    },
+    {
+      "file": "generated/evm-sail-coq/transactions/evm_decode_set_code_tx.v",
+      "name": "LEGACY_SIGNATURE_SUFFIX_LENGTH",
+      "sha256": "abf56ba4631aba6e75b6f08f4fc9cec0c890114f66defb1785a412007435f19c",
+      "reason": "Pinned upstream Sail output outside the refactor scope; preserve its constant identity."
+    },
+    {
+      "file": "generated/evm-sail-coq/transactions/evm_decode_set_code_tx_types.v",
+      "name": "account_nonce_bound",
+      "sha256": "fd77e212e6d9560e493712e364e875e0f9519fc1bbb74d4cf65f404fa6cc619c",
+      "reason": "Pinned upstream Sail output outside the refactor scope; preserve its constant identity."
+    },
+    {
+      "file": "generated/evm-sail-coq/transactions/evm_decode_set_code_tx_types.v",
+      "name": "ssz_uint_bound",
+      "sha256": "1a4ca966e930af5889b3ec2dc6a59088b0c751451c757a279b56bfc7474b936f",
+      "reason": "Pinned upstream Sail output outside the refactor scope; preserve its constant identity."
+    },
+    {
+      "file": "generated/evm-sail-coq/transactions/evm_decode_set_code_tx_types.v",
+      "name": "blob_schedule_inactive_count",
+      "sha256": "068a2db6516330866eaaba5e0bd4ac4f97a00ebc9d3b6af98ee3ff80f29d084f",
+      "reason": "Pinned upstream Sail output outside the refactor scope; preserve its constant identity."
+    },
+    {
+      "file": "generated/evm-sail-coq/transactions/evm_decode_set_code_tx_types.v",
+      "name": "cancun_blob_max_count",
+      "sha256": "4aa618a89b1283b4a2af2e7ab669ea6245e3bc0c605da54bd51fa5945b9fa42c",
+      "reason": "Pinned upstream Sail output outside the refactor scope; preserve its constant identity."
+    },
+    {
+      "file": "generated/evm-sail-coq/transactions/evm_decode_set_code_tx_types.v",
+      "name": "prague_blob_max_count",
+      "sha256": "6b929f0a43ecb3aafc1be8d565f51815e39dc21f2704773ec8908bad55f027f4",
+      "reason": "Pinned upstream Sail output outside the refactor scope; preserve its constant identity."
+    },
+    {
+      "file": "generated/evm-sail-coq/transactions/evm_decode_set_code_tx_types.v",
+      "name": "chain_identifier_bound",
+      "sha256": "f85925863fd315c332dda9c0574ce291a6980bbf68a9da31ba2ca8886b37e81b",
+      "reason": "Pinned upstream Sail output outside the refactor scope; preserve its constant identity."
+    },
+    {
+      "file": "generated/evm-sail-coq/transactions/evm_decode_set_code_tx_types.v",
+      "name": "default_host_region_bound",
+      "sha256": "bf19e8adff30f2f8bce3bba724b1c2f50329444afc7ae6ff82902a846b79d010",
+      "reason": "Pinned upstream Sail output outside the refactor scope; preserve its constant identity."
+    },
+    {
+      "file": "generated/evm-sail-coq/transactions/evm_decode_set_code_tx_types.v",
+      "name": "stateless_input_region_bound",
+      "sha256": "413944cf26c60f026ba3a892b91d584021bb634b02c8d4bccd67b238ef7f8f25",
+      "reason": "Pinned upstream Sail output outside the refactor scope; preserve its constant identity."
+    },
+    {
+      "file": "generated/evm-sail-coq/transactions/evm_decode_set_code_tx_types.v",
+      "name": "scratch_region_bound",
+      "sha256": "4dedf4cf78a768059aa11593bea8a9cd06c3ed08e95e545868126baef24e9503",
+      "reason": "Pinned upstream Sail output outside the refactor scope; preserve its constant identity."
+    },
+    {
+      "file": "generated/evm-sail-coq/transactions/evm_decode_set_code_tx_types.v",
+      "name": "block_gas_limit_bound",
+      "sha256": "31aa3ceec14e014a400b3bd44e2741ca6d964f8216e2ad752dfc3d5c5c484ab2",
+      "reason": "Pinned upstream Sail output outside the refactor scope; preserve its constant identity."
+    },
+    {
+      "file": "generated/evm-sail-coq/transactions/evm_decode_set_code_tx_types.v",
+      "name": "transaction_length_bound",
+      "sha256": "df5d85d57894f52040e518b140acfc62eb1f2450cc756f81810ffe9472372ed8",
+      "reason": "Pinned upstream Sail output outside the refactor scope; preserve its constant identity."
+    },
+    {
+      "file": "generated/evm-sail-coq/transactions/evm_rlp_decode_tx.v",
+      "name": "WORD_BYTE_LENGTH",
+      "sha256": "0ab41fee11021a5a19dbb86d9f3a515ad672e907a8b70257e9cc2ee0c0e84a9f",
+      "reason": "Pinned upstream Sail output outside the refactor scope; preserve its constant identity."
+    },
+    {
+      "file": "generated/evm-sail-coq/transactions/evm_rlp_decode_tx.v",
+      "name": "EIGHT_BYTE_LENGTH",
+      "sha256": "0a00393699ce29109da008e4a7db4b73203faf77eba22d2ebf4e077c2e3ed890",
+      "reason": "Pinned upstream Sail output outside the refactor scope; preserve its constant identity."
+    },
+    {
+      "file": "generated/evm-sail-coq/transactions/evm_rlp_decode_tx.v",
+      "name": "DOUBLE_WORD_BYTE_LENGTH",
+      "sha256": "65def929a287a3387d069c708930fc2b34c461c7e83f5488753db60edc1c6bc9",
+      "reason": "Pinned upstream Sail output outside the refactor scope; preserve its constant identity."
+    },
+    {
+      "file": "generated/evm-sail-coq/transactions/evm_rlp_decode_tx.v",
+      "name": "RLP_SHORT_LENGTH_LIMIT",
+      "sha256": "61f59a20de7f76b3a60aa4155acb10c879c425218b3495f96c2b56a2d5c1614b",
+      "reason": "Pinned upstream Sail output outside the refactor scope; preserve its constant identity."
+    },
+    {
+      "file": "generated/evm-sail-coq/transactions/evm_rlp_decode_tx.v",
+      "name": "LEGACY_SIGNATURE_SUFFIX_LENGTH",
+      "sha256": "abf56ba4631aba6e75b6f08f4fc9cec0c890114f66defb1785a412007435f19c",
+      "reason": "Pinned upstream Sail output outside the refactor scope; preserve its constant identity."
+    },
+    {
+      "file": "generated/evm-sail-coq/transactions/evm_rlp_decode_tx.v",
+      "name": "BLOB_HASH_RLP_LENGTH",
+      "sha256": "0d8834101b5ae49621ef7fec51d5f128fc24f52e0707bc8c1c0a9de93a53099f",
+      "reason": "Pinned upstream Sail output outside the refactor scope; preserve its constant identity."
+    },
+    {
+      "file": "generated/evm-sail-coq/transactions/evm_rlp_decode_tx_types.v",
+      "name": "account_nonce_bound",
+      "sha256": "fd77e212e6d9560e493712e364e875e0f9519fc1bbb74d4cf65f404fa6cc619c",
+      "reason": "Pinned upstream Sail output outside the refactor scope; preserve its constant identity."
+    },
+    {
+      "file": "generated/evm-sail-coq/transactions/evm_rlp_decode_tx_types.v",
+      "name": "ssz_uint_bound",
+      "sha256": "1a4ca966e930af5889b3ec2dc6a59088b0c751451c757a279b56bfc7474b936f",
+      "reason": "Pinned upstream Sail output outside the refactor scope; preserve its constant identity."
+    },
+    {
+      "file": "generated/evm-sail-coq/transactions/evm_rlp_decode_tx_types.v",
+      "name": "blob_schedule_inactive_count",
+      "sha256": "068a2db6516330866eaaba5e0bd4ac4f97a00ebc9d3b6af98ee3ff80f29d084f",
+      "reason": "Pinned upstream Sail output outside the refactor scope; preserve its constant identity."
+    },
+    {
+      "file": "generated/evm-sail-coq/transactions/evm_rlp_decode_tx_types.v",
+      "name": "cancun_blob_max_count",
+      "sha256": "4aa618a89b1283b4a2af2e7ab669ea6245e3bc0c605da54bd51fa5945b9fa42c",
+      "reason": "Pinned upstream Sail output outside the refactor scope; preserve its constant identity."
+    },
+    {
+      "file": "generated/evm-sail-coq/transactions/evm_rlp_decode_tx_types.v",
+      "name": "prague_blob_max_count",
+      "sha256": "6b929f0a43ecb3aafc1be8d565f51815e39dc21f2704773ec8908bad55f027f4",
+      "reason": "Pinned upstream Sail output outside the refactor scope; preserve its constant identity."
+    },
+    {
+      "file": "generated/evm-sail-coq/transactions/evm_rlp_decode_tx_types.v",
+      "name": "chain_identifier_bound",
+      "sha256": "f85925863fd315c332dda9c0574ce291a6980bbf68a9da31ba2ca8886b37e81b",
+      "reason": "Pinned upstream Sail output outside the refactor scope; preserve its constant identity."
+    },
+    {
+      "file": "generated/evm-sail-coq/transactions/evm_rlp_decode_tx_types.v",
+      "name": "default_host_region_bound",
+      "sha256": "bf19e8adff30f2f8bce3bba724b1c2f50329444afc7ae6ff82902a846b79d010",
+      "reason": "Pinned upstream Sail output outside the refactor scope; preserve its constant identity."
+    },
+    {
+      "file": "generated/evm-sail-coq/transactions/evm_rlp_decode_tx_types.v",
+      "name": "stateless_input_region_bound",
+      "sha256": "413944cf26c60f026ba3a892b91d584021bb634b02c8d4bccd67b238ef7f8f25",
+      "reason": "Pinned upstream Sail output outside the refactor scope; preserve its constant identity."
+    },
+    {
+      "file": "generated/evm-sail-coq/transactions/evm_rlp_decode_tx_types.v",
+      "name": "scratch_region_bound",
+      "sha256": "4dedf4cf78a768059aa11593bea8a9cd06c3ed08e95e545868126baef24e9503",
+      "reason": "Pinned upstream Sail output outside the refactor scope; preserve its constant identity."
+    },
+    {
+      "file": "generated/evm-sail-coq/transactions/evm_rlp_decode_tx_types.v",
+      "name": "block_gas_limit_bound",
+      "sha256": "31aa3ceec14e014a400b3bd44e2741ca6d964f8216e2ad752dfc3d5c5c484ab2",
+      "reason": "Pinned upstream Sail output outside the refactor scope; preserve its constant identity."
+    },
+    {
+      "file": "generated/evm-sail-coq/transactions/evm_rlp_decode_tx_types.v",
+      "name": "transaction_length_bound",
+      "sha256": "df5d85d57894f52040e518b140acfc62eb1f2450cc756f81810ffe9472372ed8",
+      "reason": "Pinned upstream Sail output outside the refactor scope; preserve its constant identity."
+    }
+  ]
+}

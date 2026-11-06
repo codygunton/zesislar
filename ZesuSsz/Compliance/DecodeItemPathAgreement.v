@@ -118,7 +118,7 @@ Lemma decodeItemLiteralReturn args after :
     (decodeItemBeforeStorage args) after (candidateSuccess false 0 1) ->
   decodeItemSailSuccess args false 0 1 ->
   DecodeMeaningModuloKnownBugs args after.
-Proof. intros. eapply decodeItemSuccessAgreement; eauto; unfold word64Modulus; lia. Qed.
+Proof. intros. eapply decodeItemSuccessAgreement; eauto; lia. Qed.
 
 Lemma decodeItemClassShortReturn args after payloadLength (isList : bool) :
   decodeItemC1BDomain args ->
@@ -130,7 +130,7 @@ Lemma decodeItemClassShortReturn args after payloadLength (isList : bool) :
   0 <= payloadLength -> 1 + payloadLength < word64Modulus ->
   decodeItemSailSuccess args isList 1 payloadLength ->
   DecodeMeaningModuloKnownBugs args after.
-Proof. intros. eapply decodeItemSuccessAgreement; eauto; unfold word64Modulus; lia. Qed.
+Proof. intros. eapply decodeItemSuccessAgreement; eauto; lia. Qed.
 
 Definition decodeItemShortStringReturn args after payloadLength :=
   decodeItemClassShortReturn args after payloadLength false.
@@ -143,7 +143,7 @@ Lemma decodeItemEmptyStringReturn args after :
     (decodeItemBeforeStorage args) after (candidateSuccess false 1 0) ->
   decodeItemSailSuccess args false 1 0 ->
   DecodeMeaningModuloKnownBugs args after.
-Proof. intros. eapply decodeItemSuccessAgreement; eauto; unfold word64Modulus; lia. Qed.
+Proof. intros. eapply decodeItemSuccessAgreement; eauto; lia. Qed.
 
 (* 0x800d6aa4 is the short-list return. *)
 Definition decodeItemShortListReturn args after payloadLength :=

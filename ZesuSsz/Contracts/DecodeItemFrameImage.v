@@ -88,7 +88,7 @@ Proof.
     unfold bv_modulus in H. exact H.
   - rewrite (littleEndian_machine_bytes 8%nat).
     + rewrite Z_to_bv_small; [reflexivity|].
-      unfold bv_modulus, word64Modulus in Hreturn. exact Hreturn.
+      unfold bv_modulus in Hreturn. exact Hreturn.
     + change (8 * Z.of_nat 8) with 64.
       pose proof (bv_unsigned_in_range 64
         (Z_to_bv 64 (decodeItemReturnAddress args))).

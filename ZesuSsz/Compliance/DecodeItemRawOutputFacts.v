@@ -69,7 +69,7 @@ Lemma decodeItemRawInputPointer args :
 Proof.
   intros Hp Hl Hnowrap.
   assert (Hbounds : 0 <= decodeItemInputPointer args < bv_modulus 64).
-  { unfold word64Modulus in Hnowrap. change (0 <= decodeItemInputPointer args < 2^64). lia. }
+  { change (0 <= decodeItemInputPointer args < 2^64). lia. }
   rewrite (Z_to_bv_small 64 _ Hbounds). lia.
 Qed.
 
@@ -83,7 +83,7 @@ Proof.
   intros Hhead Hlength Hp Hnowrap.
   unfold decodeItemInputHead in Hhead. rewrite Hhead in Hlength. cbn in Hlength.
   assert (Hbounds : 0 <= decodeItemInputPointer args + 1 < bv_modulus 64).
-  { unfold word64Modulus in Hnowrap. change (0 <= decodeItemInputPointer args + 1 < 2^64). lia. }
+  { change (0 <= decodeItemInputPointer args + 1 < 2^64). lia. }
   replace (bv_add (Z_to_bv 64 (decodeItemInputPointer args)) 1) with
     (Z_to_bv 64 (decodeItemInputPointer args + 1)) by bv_solve.
   rewrite (Z_to_bv_small 64 _ Hbounds). reflexivity.

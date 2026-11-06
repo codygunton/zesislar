@@ -28,7 +28,7 @@ Proof.
  unfold decodeItemEntryLayout in Hlayout.
  destruct Hlayout as (Hp & Hl & Hnowrap & Ho & Hon & Hsp & Hsl & Hsu & Hsep1 & Hsep2 & Hsep3 & Hret & Halign & Hreadable & Hrest).
  assert (Hcursor : (0 <= ps + i < bv_modulus 64)%Z) by
-   (unfold RlpDecodeItem.word64Modulus, bv_modulus in *; lia).
+   (unfold bv_modulus in *; lia).
  assert (HnextFit : (ps + i + 1 <= decodeItemInputPointer args + decodeItemInputLength args)%Z) by lia.
  assert (Hword : ((Z_to_bv 64 (ps + i)%Z + 0)%bv) = Z_to_bv 64 (ps + i)%Z) by bv_solve.
  rewrite Hword in Hlow, Hram, Hinput.

@@ -278,7 +278,7 @@ Ltac decodeItemExitDecodeField after off bytes :=
    first [assumption | match goal with args : DecodeItemArgs |- _ =>
      try decodeItemExitPayloadPointer args;
      first [assumption | match goal with Hreg : bv_unsigned ?r = ?v |- bv_unsigned ?r = _ => rewrite Hreg end;
-       first [reflexivity | symmetry; apply Z.mod_small; unfold word64Modulus; lia]] end]].
+       first [reflexivity | symmetry; apply Z.mod_small; lia]] end]].
 Ltac decodeItemExitDecoder after off value :=
  first [multimatch goal with Hreg : bv_unsigned ?r = _ |- _ =>
     decodeItemExitDecodeField after off constr:(word64Bytes (bv_unsigned r)) end

@@ -24,9 +24,9 @@ Lemma decodeItemFoldExitIndex args n i payloadStart bytes :
 Proof.
   intros (Hwidth & Hi & Hstart & Hbytes & Hlength & Hfit) Hguard Hp Hnowrap Heq.
   assert (Hnext : 0 <= payloadStart + i + 1 < bv_modulus 64).
-  { unfold word64Modulus, bv_modulus in *; cbn in *; lia. }
+  { unfold bv_modulus in *; cbn in *; lia. }
   assert (Hend : 0 <= payloadStart + n < bv_modulus 64).
-  { unfold word64Modulus, bv_modulus in *; cbn in *; lia. }
+  { unfold bv_modulus in *; cbn in *; lia. }
   replace (Z_to_bv 64 (payloadStart + i) + 1)%bv with
     (Z_to_bv 64 (payloadStart + i + 1)) in Heq by bv_solve.
   apply (f_equal bv_unsigned) in Heq.
@@ -63,7 +63,7 @@ destruct Hreadable as [[Hmin _] | [Hmin _]]; lia.
 }
 assert (Hcursor : 0 <= payloadStart + i < bv_modulus 64).
 {
-unfold word64Modulus, bv_modulus in *; cbn in *; lia.
+unfold bv_modulus in *; cbn in *; lia.
 }
 apply (f_equal bv_unsigned) in Heq.
 revert Heq.

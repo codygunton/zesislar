@@ -58,15 +58,15 @@ Proof.
   1: rename select (bv_unsigned (returnA1 locals) = decodeItemInputPointer args) into HinputBaseValue.
   1: rewrite HinputBaseValue.
   1: assert (HinputNonempty : (1 <= decodeItemInputLength args)%Z) by (rewrite HarrayFact9 H3; cbn; lia).
-  1: rewrite bv_wrap_small; [reflexivity | unfold bv_modulus, RlpDecodeItem.word64Modulus in *; lia].
+  1: rewrite bv_wrap_small; [reflexivity | unfold bv_modulus in *; lia].
   1: rename select (bv_unsigned (returnA3 locals) = (bv_unsigned inputPrefix - 192)%Z) into HpayloadValue.
   1: rewrite decodeItemByteDecoderBridge little_endian_to_bv_to_little_endian; last lia.
   1: rewrite Z.mod_small; [exact HpayloadValue | change (0 <= bv_unsigned (returnA3 locals) < bv_modulus 64)%Z; apply bv_unsigned_in_range].
   1: rewrite decodeItemByteDecoderBridge little_endian_to_bv_to_little_endian; last lia.
   1: rewrite Z.mod_small; last (change (0 <= bv_unsigned (returnA3 locals + 1) < bv_modulus 64)%Z; apply bv_unsigned_in_range).
   1: rename select (bv_unsigned (returnA3 locals) = (bv_unsigned inputPrefix - 192)%Z) into HconsumedPayloadValue.
-  1: bv_simplify_arith; rewrite HconsumedPayloadValue; unfold bv_wrap, bv_modulus, RlpDecodeItem.word64Modulus; f_equal; lia.
-  all: unfold RlpDecodeItem.word64Modulus; lia.
+  1: bv_simplify_arith; rewrite HconsumedPayloadValue; unfold bv_wrap, bv_modulus; f_equal; lia.
+  all: lia.
 Qed.
 
 #[export] Instance decodeItemShortListOutputDerivedFacts args locals inputPrefix rest :

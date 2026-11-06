@@ -14,8 +14,10 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / "tools" / "residual"))
 from modules import PROOF_OPENER, parse_module
+from closed_literal_definitions import closed_literal_failures
 BASELINE_PATH = Path(__file__).with_name("hygiene_baseline.json")
 SIZE_BASELINE_PATH = Path(__file__).with_name("proof_size_baseline.json")
+CLOSED_LITERAL_EXCEPTIONS_PATH = Path(__file__).with_name("closed_literal_exceptions.json")
 TRUSTED_DECLARATIONS_PATH = Path(__file__).with_name("hygiene_trusted_declarations.json")
 AUTOMATION_PREFIX = "ZesuSsz/Automation/"
 HOOKS_PATH = "ZesuSsz/Automation/Hooks.v"
@@ -379,6 +381,8 @@ def main() -> None:
     size_baseline_data = json.loads(SIZE_BASELINE_PATH.read_text())
     size_baseline = size_baseline_data["files"]
     trusted = trusted_declarations()
+    literal_exceptions = {(row["file"], row["name"]): row for row in
+                          json.loads(CLOSED_LITERAL_EXCEPTIONS_PATH.read_text())["exceptions"]}
     failures: list[str] = list(frozen_automation_failures(ROOT))
     warnings: list[str] = []
     remaining = 0
@@ -396,6 +400,7 @@ def main() -> None:
         text = path.read_text()
         lines = text.splitlines()
         failures.extend(executable_form_failures(name, text))
+        failures.extend(closed_literal_failures(name, text, literal_exceptions))
         failures.extend(trusted_declaration_failures(name, text, trusted))
         failures.extend(generated_hand_line_failures(name, text))
         failures.extend(retired_module_failures(name, text))
