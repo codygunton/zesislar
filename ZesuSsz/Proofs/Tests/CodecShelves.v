@@ -47,3 +47,20 @@ Print Assumptions codec_shelf_bytes.
 Print Assumptions codec_shelf_zero_offset.
 Print Assumptions codec_shelf_nonzero_offset.
 Print Assumptions codec_shelf_symbolic_offset.
+
+Lemma codec_shelf_list_atom (bytes : list (bv 8))
+    (Hlength : length bytes = 40%nat) :
+  exists head tail, bytes = head :: tail /\ length tail = 39%nat.
+Proof. zesu_finish_list_cons_atom. Qed.
+
+Lemma codec_shelf_atom_refuses_proposition : True.
+Proof.
+  time "atom_refuse_proposition" (tryif zesu_finish_list_cons_atom then fail 1 else idtac).
+  exact I.
+Qed.
+
+Lemma codec_shelf_atom_refuses_equality : (0 = 0)%Z.
+Proof.
+  time "atom_refuse_equality" (tryif zesu_finish_list_cons_atom then fail 1 else idtac).
+  reflexivity.
+Qed.

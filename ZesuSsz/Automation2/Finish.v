@@ -560,6 +560,25 @@ Ltac zesu_finish_list_cons_final :=
       solve [zesu_finish_contract_arithmetic]
   end.
 
+(* Select the list length atom before arithmetic expands unrelated facts. *)
+Ltac zesu_finish_list_cons_atom :=
+  lazymatch goal with
+  | |- exists (head : ?A) (tail : list ?A),
+      ?values = head :: tail /\ length tail = ?count =>
+      tryif has_evar values then fail 0 else idtac;
+      solve [
+        apply zesu_list_cons_witness;
+        multimatch goal with
+        | Hlength : length ?root = ?size |- _ =>
+            lazymatch goal with
+            | |- context [root] =>
+                is_closed_term size;
+                clear - Hlength
+            end
+        end;
+        zesu_finish_contract_arithmetic]
+  end.
+
 (* Restore only an already-enabled capability after the search scope ends. *)
 Ltac zesu_finish_unsigned_branch :=
   ZesuSsz.Automation2.SwitchDispatch.zesu_switch_enabled
@@ -726,6 +745,7 @@ Ltac zesu_union_required_pure :=
 
 Ltac zesu_union_pure_leaf :=
   first [ZesuSsz.Automation2.UnionRuleComponents.block2_signed_mask_solve |
+    solve [zesu_finish_list_cons_atom] |
     ZesuSsz.Automation2.UnionRuleComponents.block2_f7_arithmetic |
     assumption | ZesuSsz.Automation2.UnionRuleComponents.range_interval].
 
@@ -733,6 +753,7 @@ Ltac zesu_union_pure_finish :=
   zesu_final_pure_head_gate;
   first [zesu_union_required_pure |
     ZesuSsz.Automation2.UnionRuleComponents.block2_signed_mask_solve |
+    solve [zesu_finish_list_cons_atom] |
     ZesuSsz.Automation2.UnionRuleComponents.block2_f7_arithmetic |
     (try ZesuSsz.Automation2.UnionRuleComponents.block2_range_add_zero_goal;
      try ZesuSsz.Automation2.UnionRuleComponents.block2_range_boolean_goal;
