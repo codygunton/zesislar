@@ -2,6 +2,7 @@ From Coq Require Import Lists.List ZArith.ZArith NArith.NArith Lia.
 From stdpp.bitvector Require Import definitions tactics.
 From Ltac2 Require Import Ltac2 Ref List Int String Ident.
 Require Import ZesuSsz.Automation2.VmClosed.
+Require Import ZesuSsz.Automation2.SearchBudget.
 Set Default Proof Mode "Classic".
 Local Open Scope Z_scope.
 Ltac zesu_range_mentions values pointer T :=
@@ -224,6 +225,20 @@ Ltac zesu_selected_casts :=
    progress rewrite (Z_to_bv_small width value range) in H;
    clear range
  end.
+Ltac zesu_range_reduce_fact evidence :=
+ let normalized := fresh "HrangeFactNormalized" in
+ revert evidence;
+ ZesuSsz.Automation2.SearchBudget.zesu_normalize_closed_goal;
+ intro normalized.
+Ltac2 zesu_range_reduce_selected () :=
+ let selected := Control.hyps () in
+ List.iter (fun h => let (name, _, _) := h in
+   if zesu_name_prefix (Ident.to_string name) "HrangeFact" 0 then
+     Ltac1.apply (Ltac1.ref [@ZesuSsz; @Automation2; @RangeFacts; @zesu_range_reduce_fact])
+       [Ltac1.of_constr (Control.hyp name)] Ltac1.run
+   else ()) selected;
+ Ltac1.apply (Ltac1.ref [@ZesuSsz; @Automation2; @SearchBudget; @zesu_normalize_closed_goal])
+   [] Ltac1.run.
 Ltac zesu_selected_array_range :=
  lazymatch goal with
  | |- (?pointer <= ?index < ?upper)%Z =>
@@ -237,6 +252,7 @@ Ltac zesu_selected_array_range :=
       | Hlength : List.length ?xs = ?n |- context[List.length ?xs] => progress rewrite Hlength end);
      ltac2:(zesu_range_isolate ());
      zesu_selected_casts;
+     ltac2:(zesu_range_reduce_selected ());
      lia
    end
  end.
