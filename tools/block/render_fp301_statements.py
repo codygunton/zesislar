@@ -67,9 +67,9 @@ def selected_loop_declaration(source, header):
 
 
 def render_unfold_opacity(source):
-    """Render opacity next to each generated unfold declaration."""
-    pattern = r'(\#\[export\] Instance (\w+)_unfold : LithiumUnfold \(@\2\) := I\.\n)'
-    return re.sub(pattern, lambda match: match[1] + '#[export] Typeclasses Opaque ' + match[2] + '.\n', source)
+    """Keep the current renderer's idempotent opacity declarations."""
+    from render_support import retain_unfold_opacity
+    return retain_unfold_opacity(source)
 
 
 def class_parts(source):
