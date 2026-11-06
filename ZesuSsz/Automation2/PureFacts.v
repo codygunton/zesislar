@@ -1,3 +1,4 @@
+Require ZesuSsz.Automation.PureFacts.
 (* C6: the facts a side condition needs are folded inside one hypothesis.
 
    A segment carries its witness's well-formedness as a single premise.
@@ -16,7 +17,7 @@
 
    `zesu_saturate_derived_facts` adds what a registered lemma derives from
    a hypothesis. A project states the derivation once, as a
-   `ZesuDerivedFacts` instance beside the lemma; the tactic finds it by
+   `ZesuSsz.Automation.PureFacts.ZesuDerivedFacts` instance beside the lemma; the tactic finds it by
    the hypothesis's type. This is how a fact about a name the automation
    cannot unfold -- a frame pointer defined from an entry pointer, say --
    reaches the solver without a hand line in any segment. *)
@@ -36,8 +37,6 @@ Proof.
   now injection Hlength.
 Qed.
 
-Class ZesuDerivedFacts (premise derived : Prop) : Prop :=
-  zesu_derived_facts : premise -> derived.
 
 Ltac zesu_split_folded_pure :=
   repeat match goal with
@@ -61,7 +60,7 @@ Ltac zesu_saturate_derived_facts :=
    let fact := fresh "derivedFact" in
    evar (fact : Prop);
    let instance := fresh "derivedInstance" in
-   assert (instance : ZesuSsz.Automation2.PureFacts.ZesuDerivedFacts T fact);
+   assert (instance : ZesuSsz.Automation.PureFacts.ZesuDerivedFacts T fact);
    [ unfold fact; typeclasses eauto
    | let derived := eval unfold fact in fact in
      assert_fails (has_evar derived);
@@ -69,7 +68,7 @@ Ltac zesu_saturate_derived_facts :=
      | _ : derived |- _ => fail 0
      | _ =>
        let result := fresh "Hderived" in
-       pose proof (ZesuSsz.Automation2.PureFacts.zesu_derived_facts
+       pose proof (ZesuSsz.Automation.PureFacts.zesu_derived_facts
           (ZesuDerivedFacts := instance) H) as result;
        unfold fact in result; clear instance fact
      end ]

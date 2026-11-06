@@ -1,12 +1,9 @@
+Require ZesuSsz.Automation.EntryIntro.
 Require Import isla.riscv64.riscv64.
 
-Class ZesuEntryIntro {Sigma} (source : iProp Sigma) (facts : Prop) : Prop :=
-  zesu_entry_intro : source ⊢ ⌜facts⌝.
-#[global] Hint Mode ZesuEntryIntro + + - : typeclass_instances.
+#[global] Hint Mode ZesuSsz.Automation.EntryIntro.ZesuEntryIntro + + - : typeclass_instances.
 
-Class ZesuLoopStep {Sigma} (source : iProp Sigma) (facts : Prop) : Prop :=
-  zesu_loop_step : source ⊢ ⌜facts⌝.
-#[global] Hint Mode ZesuLoopStep + + - : typeclass_instances.
+#[global] Hint Mode ZesuSsz.Automation.EntryIntro.ZesuLoopStep + + - : typeclass_instances.
 
 Require Import ZesuSsz.Automation2.SwitchDispatch.
 Require Import ZesuSsz.Automation2.ExitMeaning.
@@ -22,7 +19,7 @@ Class ZesuStepEntryIntro : Prop := {}.
 
 (* This proof-state marker is not a registered instance. *)
 Inductive ZesuEntryIntroApplied {Sigma} (source : iProp Sigma)
-    (facts : Prop) (evidence : ZesuEntryIntro source facts) : Prop :=
+    (facts : Prop) (evidence : ZesuSsz.Automation.EntryIntro.ZesuEntryIntro source facts) : Prop :=
   ZesuEntryIntroWasApplied.
 
 Ltac2 rec zesu_registered_fact_head (term : constr) :=
@@ -139,15 +136,15 @@ Ltac zesu_cached_entry_fact_head head :=
   end.
 
 Lemma zesu_entry_intro_preserve {Sigma} (source : iProp Sigma) (facts : Prop)
-    (intro : ZesuEntryIntro source facts) : source ⊢ ⌜facts⌝ ∗ source.
+    (intro : ZesuSsz.Automation.EntryIntro.ZesuEntryIntro source facts) : source ⊢ ⌜facts⌝ ∗ source.
 Proof.
   apply bi.persistent_entails_l;
-    [typeclasses eauto | exact (@zesu_entry_intro Sigma source facts intro)].
+    [typeclasses eauto | exact (@ZesuSsz.Automation.EntryIntro.zesu_entry_intro Sigma source facts intro)].
 Qed.
 
 Lemma zesu_entry_intro_instr_body_equiv `{!islaG Sigma} `{!threadG}
     (pc : Z) (source frame : iProp Sigma) (facts : Prop)
-    (intro : ZesuEntryIntro source facts) :
+    (intro : ZesuSsz.Automation.EntryIntro.ZesuEntryIntro source facts) :
   instr_body pc (source ∗ frame) ⊣⊢
   instr_body pc (⌜facts⌝ ∗ source ∗ frame).
 Proof.
@@ -165,15 +162,15 @@ Lemma zesu_entry_intro_wand_equiv {PROP : bi} (premise before after : PROP) :
 Proof. intros Hequivalent. by rewrite Hequivalent. Qed.
 
 Lemma zesu_entry_intro_combine {Sigma} (source : iProp Sigma)
-    (entryFacts exitFacts : Prop) (entry : ZesuEntryIntro source entryFacts)
-    (exit : ZesuEntryIntro source exitFacts) :
-  ZesuEntryIntro source (entryFacts /\ exitFacts).
+    (entryFacts exitFacts : Prop) (entry : ZesuSsz.Automation.EntryIntro.ZesuEntryIntro source entryFacts)
+    (exit : ZesuSsz.Automation.EntryIntro.ZesuEntryIntro source exitFacts) :
+  ZesuSsz.Automation.EntryIntro.ZesuEntryIntro source (entryFacts /\ exitFacts).
 Proof.
-  rewrite /ZesuEntryIntro.
+  rewrite /ZesuSsz.Automation.EntryIntro.ZesuEntryIntro.
   iIntros "Hsource".
   iDestruct (zesu_entry_intro_preserve source entryFacts entry with "Hsource")
     as "[%Hentry Hsource]".
-  iDestruct (@zesu_entry_intro Sigma source exitFacts exit with "Hsource")
+  iDestruct (@ZesuSsz.Automation.EntryIntro.zesu_entry_intro Sigma source exitFacts exit with "Hsource")
     as "%Hexit".
   iPureIntro. tauto.
 Qed.
@@ -182,11 +179,11 @@ Qed.
 Ltac zesu_entry_intro_goal_entry_registration Sigma source continuation :=
   zesu_switch_enabled constr:(ZesuStepEntryIntro);
      let evidence := open_constr:(ltac:(ltac2:(zesu_unique_entry_registration ()))
-       : @ZesuEntryIntro Sigma source _) in
+       : @ZesuSsz.Automation.EntryIntro.ZesuEntryIntro Sigma source _) in
      let evidenceType := type of evidence in
      assert_fails (has_evar evidence); assert_fails (has_evar evidenceType);
      lazymatch evidenceType with
-     | @ZesuEntryIntro Sigma _ ?facts =>
+     | @ZesuSsz.Automation.EntryIntro.ZesuEntryIntro Sigma _ ?facts =>
          tryif match goal with
            | _ : @ZesuEntryIntroApplied Sigma source _ _ |- _ => idtac
            end
@@ -199,18 +196,18 @@ Ltac zesu_entry_intro_goal_entry_registration Sigma source continuation :=
 Ltac zesu_entry_intro_goal_exit_registration Sigma source continuation :=
   zesu_switch_enabled constr:(ZesuStepExitMeaning);
      let evidence := open_constr:(ltac:(ltac2:(zesu_unique_entry_registration ()))
-       : @ZesuExitMeaning Sigma source _) in
+       : @ZesuSsz.Automation.ExitMeaning.ZesuExitMeaning Sigma source _) in
      let evidenceType := type of evidence in
      assert_fails (has_evar evidence); assert_fails (has_evar evidenceType);
      lazymatch evidenceType with
-     | @ZesuExitMeaning Sigma _ ?facts =>
+     | @ZesuSsz.Automation.ExitMeaning.ZesuExitMeaning Sigma _ ?facts =>
          tryif match goal with
            | _ : @ZesuExitMeaningApplied Sigma source _ _ |- _ => idtac
            end
          then fail 100 "The goal entry already has applied exit facts"
          else
-           let intro := constr:(@zesu_exit_meaning Sigma source facts evidence
-             : @ZesuEntryIntro Sigma source facts) in
+           let intro := constr:(@ZesuSsz.Automation.ExitMeaning.zesu_exit_meaning Sigma source facts evidence
+             : @ZesuSsz.Automation.EntryIntro.ZesuEntryIntro Sigma source facts) in
            let marker := constr:(@ZesuExitMeaningWasApplied Sigma source facts evidence) in
            continuation facts intro marker
      end.
@@ -284,12 +281,12 @@ Ltac zesu_entry_intro_if_enabled :=
   iMatchHyp ltac:(fun name source =>
     assert_fails (has_evar source);
       let evidence := open_constr:(ltac:(ltac2:(zesu_unique_entry_registration ()))
-        : ZesuEntryIntro source _) in
+        : ZesuSsz.Automation.EntryIntro.ZesuEntryIntro source _) in
       let evidenceType := type of evidence in
       assert_fails (has_evar evidence);
       assert_fails (has_evar evidenceType);
       lazymatch evidenceType with
-      | @ZesuEntryIntro ?Sigma _ ?facts =>
+      | @ZesuSsz.Automation.EntryIntro.ZesuEntryIntro ?Sigma _ ?facts =>
           tryif match goal with
             | _ : @ZesuEntryIntroApplied Sigma source _ ?applied |- _ =>
                 constr_eq evidence applied

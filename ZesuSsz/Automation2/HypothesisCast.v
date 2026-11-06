@@ -70,7 +70,7 @@ Ltac zesu_hypothesis_cast_finish :=
 
 Ltac zesu_cast_nonzero_derived :=
   lazymatch goal with
-  | |- ZesuSsz.Automation2.PureFacts.ZesuDerivedFacts ?premise ?derived =>
+  | |- ZesuSsz.Automation.PureFacts.ZesuDerivedFacts ?premise ?derived =>
     lazymatch premise with
     | Z_to_bv ?width ?value <> ?zero =>
       is_closed_term width; assert_fails (has_evar value);
@@ -81,7 +81,7 @@ Ltac zesu_cast_nonzero_derived :=
       let range := fresh "HcastNonzeroRange" in
       assert (range : (0 <= value < bv_modulus width)%Z) by
         ContextRange.zesu_hypothesis_cast_range_fact width value;
-      unfold ZesuSsz.Automation2.PureFacts.ZesuDerivedFacts;
+      unfold ZesuSsz.Automation.PureFacts.ZesuDerivedFacts;
       let nonzero := fresh "HcastNonzero" in
       let zeroValue := fresh "HzeroValue" in
       intros nonzero zeroValue;
@@ -92,6 +92,6 @@ Ltac zesu_cast_nonzero_derived :=
     end
   end.
 #[export] Hint Extern 4
-  (ZesuSsz.Automation2.PureFacts.ZesuDerivedFacts
+  (ZesuSsz.Automation.PureFacts.ZesuDerivedFacts
     (Z_to_bv ?width ?value <> ?zero) _) =>
   zesu_cast_nonzero_derived : typeclass_instances.

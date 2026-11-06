@@ -1,3 +1,4 @@
+Require ZesuSsz.Automation.Hooks.
 Require Import ZesuSsz.Automation2.ContextRange.
 Require Import ZesuSsz.Automation2.ByteArrayAssemblyCodec.
 Require Import ZesuSsz.Automation2.MemoryAddress.
@@ -549,19 +550,15 @@ Class ZesuStepTupleWitness : Prop :=
 Class ZesuStepPureFactHints : Prop :=
   zesu_step_pure_fact_hints : True.
 
-Class ZesuPureFactIntro {Sigma} (target source : iProp Sigma) : Prop :=
-  zesu_pure_fact_intro : source ⊢ target.
-#[global] Hint Mode ZesuPureFactIntro + + - : typeclass_instances.
+#[global] Hint Mode ZesuSsz.Automation.Hooks.ZesuPureFactIntro + + - : typeclass_instances.
 
-Class ZesuPureFactAnchor {Sigma} (target anchor source : iProp Sigma) : Prop :=
-  zesu_pure_fact_anchor_intro : ZesuPureFactIntro target source.
-#[global] Hint Mode ZesuPureFactAnchor + + + - : typeclass_instances.
+#[global] Hint Mode ZesuSsz.Automation.Hooks.ZesuPureFactAnchor + + + - : typeclass_instances.
 
 Class ZesuStepCanonicalAnchor : Prop := {}.
 
 Class ZesuCanonicalAnchor {Sigma}
     (anchor canonical source : iProp Sigma) : Prop :=
-  zesu_canonical_anchor_intro : ZesuPureFactAnchor canonical anchor source.
+  zesu_canonical_anchor_intro : ZesuSsz.Automation.Hooks.ZesuPureFactAnchor canonical anchor source.
 #[global] Hint Mode ZesuCanonicalAnchor + + - - : typeclass_instances.
 
 Class ZesuStepCanonicalPureConjunction : Prop := {}.
@@ -573,14 +570,14 @@ Ltac2 @ external zesu_target_registration : constr -> unit :=
   "zesu-signature-gates.plugin" "target_registration".
 Set Default Proof Mode "Classic".
 Ltac zesu_lookup_target_registration :=
-  ltac2:(zesu_target_registration '(@ZesuPureFactAnchor)).
+  ltac2:(zesu_target_registration '(@ZesuSsz.Automation.Hooks.ZesuPureFactAnchor)).
 
 (* The result contains a closed introduction and its retained pure proof. *)
 Record ZesuTargetRegistration {Sigma} (target : iProp Sigma) : Type := {
   zesu_target_condition : Prop;
   zesu_target_resources : iProp Sigma;
   zesu_target_introduction :
-    ZesuPureFactIntro target (⌜zesu_target_condition⌝ ∗ zesu_target_resources)%I;
+    ZesuSsz.Automation.Hooks.ZesuPureFactIntro target (⌜zesu_target_condition⌝ ∗ zesu_target_resources)%I;
   zesu_target_derivation : zesu_target_condition
 }.
 
@@ -590,9 +587,9 @@ Ltac zesu_closed_target_registration target :=
     assert_fails (has_evar target);
     lazymatch type of target with iProp ?Sigma =>
       let evidence := open_constr:(ltac:(zesu_lookup_target_registration)
-        : @ZesuPureFactAnchor Sigma target _ _) in
+        : @ZesuSsz.Automation.Hooks.ZesuPureFactAnchor Sigma target _ _) in
       lazymatch type of evidence with
-      | ZesuPureFactAnchor _ ?anchor ?source =>
+      | ZesuSsz.Automation.Hooks.ZesuPureFactAnchor _ ?anchor ?source =>
           let premises := open_constr:(_ : Prop) in
           let resources := open_constr:(_ : iProp Sigma) in
           unify source (⌜premises⌝ ∗ resources)%I;
@@ -603,7 +600,7 @@ Ltac zesu_closed_target_registration target :=
           exact {| zesu_target_condition := premises;
             zesu_target_resources := resources;
             zesu_target_introduction :=
-              @zesu_pure_fact_anchor_intro Sigma target anchor source evidence;
+              @ZesuSsz.Automation.Hooks.zesu_pure_fact_anchor_intro Sigma target anchor source evidence;
             zesu_target_derivation := derivation |}
       end
     end) : ZesuTargetRegistration target).
@@ -624,7 +621,7 @@ Ltac zesu_target_registered_intro_if_enabled :=
         @zesu_target_resources _ target registration)%I) in
       zesu_expose_environment_alias;
       first [constr_eq requested target | iSplitL; [|done]];
-      iApply (@zesu_pure_fact_intro _ target source introduction);
+      iApply (@ZesuSsz.Automation.Hooks.zesu_pure_fact_intro _ target source introduction);
       iSplit; [iPureIntro; exact derivation|]
   end.
 
@@ -639,9 +636,9 @@ Ltac zesu_canonical_anchor_if_enabled :=
         | ZesuCanonicalAnchor _ ?canonical ?source =>
             let evidence := constr:(@zesu_canonical_anchor_intro
               _ anchor canonical source registered) in
-            let intro := constr:(@zesu_pure_fact_anchor_intro
-              _ canonical anchor source evidence : ZesuPureFactIntro target source) in
-            iApply (@zesu_pure_fact_intro _ target source intro)
+            let intro := constr:(@ZesuSsz.Automation.Hooks.zesu_pure_fact_anchor_intro
+              _ canonical anchor source evidence : ZesuSsz.Automation.Hooks.ZesuPureFactIntro target source) in
+            iApply (@ZesuSsz.Automation.Hooks.zesu_pure_fact_intro _ target source intro)
         end)
   end.
 
@@ -666,10 +663,10 @@ Ltac zesu_pure_fact_existential_if_enabled :=
           pose (continuation := remainder);
           let target := constr:((∃ witness : T, ⌜condition⌝ ∗ continuation witness)%I) in
           change (envs_entails environment target);
-          let evidence := constr:(_ : ZesuPureFactIntro target _) in
+          let evidence := constr:(_ : ZesuSsz.Automation.Hooks.ZesuPureFactIntro target _) in
           lazymatch type of evidence with
-          | ZesuPureFactIntro _ ?source =>
-              iApply (@zesu_pure_fact_intro _ target source evidence)
+          | ZesuSsz.Automation.Hooks.ZesuPureFactIntro _ ?source =>
+              iApply (@ZesuSsz.Automation.Hooks.zesu_pure_fact_intro _ target source evidence)
           end;
           unfold continuation; clear continuation
       end
@@ -714,20 +711,20 @@ Ltac zesu_pure_fact_hints_if_enabled :=
         end
       | zesu_canonical_anchor_if_enabled
       | zesu_pure_fact_existential_if_enabled
-      | let evidence := constr:(_ : ZesuPureFactIntro target _) in
+      | let evidence := constr:(_ : ZesuSsz.Automation.Hooks.ZesuPureFactIntro target _) in
         lazymatch type of evidence with
-        | ZesuPureFactIntro _ ?source =>
-            iApply (@zesu_pure_fact_intro _ target source evidence)
+        | ZesuSsz.Automation.Hooks.ZesuPureFactIntro _ ?source =>
+            iApply (@ZesuSsz.Automation.Hooks.zesu_pure_fact_intro _ target source evidence)
         end
       | iMatchHyp ltac:(fun name source =>
-          let evidence := constr:(_ : ZesuPureFactIntro target source) in
-          iApply (@zesu_pure_fact_intro _ target source evidence))
+          let evidence := constr:(_ : ZesuSsz.Automation.Hooks.ZesuPureFactIntro target source) in
+          iApply (@ZesuSsz.Automation.Hooks.zesu_pure_fact_intro _ target source evidence))
       | iMatchHyp ltac:(fun name anchor =>
-          let evidence := constr:(_ : ZesuPureFactAnchor target anchor _) in
+          let evidence := constr:(_ : ZesuSsz.Automation.Hooks.ZesuPureFactAnchor target anchor _) in
           lazymatch type of evidence with
-          | ZesuPureFactAnchor _ _ ?source =>
-              let intro := constr:(@zesu_pure_fact_anchor_intro _ target anchor source evidence) in
-              iApply (@zesu_pure_fact_intro _ target source intro)
+          | ZesuSsz.Automation.Hooks.ZesuPureFactAnchor _ _ ?source =>
+              let intro := constr:(@ZesuSsz.Automation.Hooks.zesu_pure_fact_anchor_intro _ target anchor source evidence) in
+              iApply (@ZesuSsz.Automation.Hooks.zesu_pure_fact_intro _ target source intro)
           end) ]
   | |- ?P =>
       let evidence := zesu_registered_pure_fact P in exact evidence
@@ -2381,15 +2378,15 @@ Ltac zesu_branch_guard_simpl_impl :=
   end.
 (* Derive normalized facts beside the original guard. Saturation is idempotent. *)
 Ltac zesu_branch_guard_derived_facts :=
-  lazymatch goal with |- ZesuDerivedFacts ?proposition _ =>
+  lazymatch goal with |- ZesuSsz.Automation.PureFacts.ZesuDerivedFacts ?proposition _ =>
     zesu_branch_guard_head proposition;
     tryif has_evar proposition then fail 0 else
     let normalized := open_constr:(_ : Prop) in
     let bridge := constr:(ltac:(zesu_branch_guard_simpl_impl) : SimplImpl proposition normalized) in
-    unfold ZesuDerivedFacts;
+    unfold ZesuSsz.Automation.PureFacts.ZesuDerivedFacts;
     exact (proj2 bridge)
   end.
-#[export] Hint Extern 4 (ZesuDerivedFacts _ _) => zesu_branch_guard_derived_facts : typeclass_instances.
+#[export] Hint Extern 4 (ZesuSsz.Automation.PureFacts.ZesuDerivedFacts _ _) => zesu_branch_guard_derived_facts : typeclass_instances.
 
 
 Ltac zesu_branch_guard_normalize_hook :=
