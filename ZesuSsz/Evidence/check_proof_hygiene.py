@@ -338,7 +338,6 @@ def proof_size_ratchet_failures(
 
 
 
-FROZEN_AUTOMATION_COMMIT = "ba709b59069686a3ddd65ae313759341edeae8c4"
 FROZEN_AUTOMATION_TREE = "e962d3a7974b662a75e955d8315bed9f0fa66fd1"
 
 
