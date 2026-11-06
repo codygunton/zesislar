@@ -29,8 +29,11 @@ Do not use execution evidence as a proof premise.
 
 ## Proof pattern
 
-Prove machine code with Islaris and Lithium. Start every proof module with
-`Require Import ZesuSsz.Automation.All.` Prove blocks with `zesu_block`.
+Prove machine code with Islaris and Lithium. Start every new proof module with
+`Require Import ZesuSsz.Automation2.All.` Prove blocks with `zesu_block2`.
+`ZesuSsz/Automation/` is the frozen legacy core. Existing proofs keep importing it. Do not edit it; the
+hygiene check refuses changes there except through its documented emergency override.
+Generated declarations import neither core.
 During the frozen-list repair, only class-R baseline modules may replace that
 import line with `Require Import ZesuSsz.Automation.AllLegacy.`
 The hygiene checker forbids AllLegacy in every new proof module.
@@ -47,7 +50,7 @@ Generators may render declarations (entry statements, registrations, hint umbrel
 Do not transliterate an Iris invariant into an operational one.
 Do not write a `//@spec:` for a load or store from an array. Do not split an
 array in a proof script. Do not redefine a Lithium hook outside
-`ZesuSsz/Automation/Hooks.v`. Do not use a wall-clock deadline (`timeout`, a timed `first` or `try`, a
+`ZesuSsz/Automation2/Hooks.v` (the frozen `ZesuSsz/Automation/Hooks.v` keeps its existing redefinitions). Do not use a wall-clock deadline (`timeout`, a timed `first` or `try`, a
 time-limited solver call) in any tactic a production proof can reach; bound search by steps
 or leave it unbounded, and reject symbolic terms before `vm_compute`. Do not use these names: `IslaInstructionSegment`,
 `writeSuccessTraceAssumptions`, `zesu_ld_byte_array_at_spec`,
@@ -70,7 +73,7 @@ Selected proofs may import scoped hints directly only through the explicit `SCOP
 
 Keep one small umbrella file for each Level 1 contract.
 Put endpoint records and machine resources in `ZesuSsz/Contracts/`.
-Put Lithium rules and tactics in `ZesuSsz/Automation/`.
+Put new Lithium rules and tactics in `ZesuSsz/Automation2/`.
 Put snapshot and adequacy modules in `ZesuSsz/Export/`.
 Put each endpoint proof under its directory in `ZesuSsz/Proofs/`.
 Put the writeSuccess proof under `ZesuSsz/Proofs/WriteSuccess/`.
@@ -263,7 +266,7 @@ statement and rename it to a descriptive name.
 Log the file, line, old name, and selected statement for every rewrite.
 Send a non-unique candidate list to the region owner; leave no numbered
 hypothesis in a repaired line.
-If a commit touches `ZesuSsz/Automation/`, `InstrSpecs/`,
+If a commit touches `ZesuSsz/Automation/`, `ZesuSsz/Automation2/`, `InstrSpecs/`,
 `ZesuSsz/Contracts/`, or `ZesuSsz/Export/`, the full Iris preview's
 failure set must be a subset of the frozen list.
 The same criterion applies to repair commits.
@@ -271,7 +274,7 @@ After the repair phase, do not merge an ordinary commit while the last full
 `make check-iris` gate is red.
 Only measured gate-repair commits can enter an isolated recovery preview then.
 Run full `make check-iris` in the preview before merging a commit that touches
-`ZesuSsz/Automation/`, `InstrSpecs/`, `ZesuSsz/Contracts/`, or `ZesuSsz/Export/`.
+`ZesuSsz/Automation/`, `ZesuSsz/Automation2/`, `InstrSpecs/`, `ZesuSsz/Contracts/`, or `ZesuSsz/Export/`.
 Keep the mandatory `make check-fast` check before each pull request and merge.
 After the repair phase, only a full green Iris gate on Root releases ordinary merges.
 During the approved frozen-list repair, a red full preview may proceed only
@@ -287,3 +290,6 @@ Otherwise, the region owner writes the manual step in its proof.
 For each handwritten contract and proof file, `check_spec_shapes.py` ratchets
 uninferable existentials, missing `LithiumUnfold` instances, disjunctive specs,
 and frame parameters in closed specs.
+
+Gates rebuild only modules whose inputs changed (shared Dune cache).
+The tool suites run only when `tools/` differs from the tools digest of the last green gate.
