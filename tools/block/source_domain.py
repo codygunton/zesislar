@@ -10,6 +10,7 @@ from pathlib import Path
 import re
 
 from entry_seed import definition_body
+from check_data_only_lemmas import rocq_commands
 from forward_resources import _strip_enclosure, _top_positions
 from resource_seed import source_z_expression
 from render_support import declared_binders
@@ -69,9 +70,38 @@ def closed_integer(source):
         raise ValueError('The source integer syntax is unsupported.') from error
 
 
+def numeric_constant_body(source, declaration):
+    """Read numeric abbreviations without changing the entry-resource parser."""
+    commands = rocq_commands(source)
+    notations = [command for command in commands if len(command) > 3
+                 and [token for token, _ in command[:3]] == ["Notation", declaration, ":="]]
+    if not notations:
+        return definition_body(source, declaration)
+    definitions = [command for command in commands if any(
+        token == "Definition" and index + 1 < len(command)
+        and command[index + 1][0] == declaration
+        for index, (token, _) in enumerate(command))]
+    if len(notations) != 1 or definitions:
+        raise ValueError('The numeric source declaration is ambiguous.')
+    command = notations[0]
+    if [token for token, _ in command[-4:]] != ['(', 'only', 'parsing', ')']:
+        raise ValueError('A numeric notation must use only parsing.')
+    body = _strip_enclosure(source[command[2][1] + 2:command[-4][1]].strip())
+    casts = list(_top_positions(body, ':'))
+    if casts:
+        if len(casts) != 1 or _strip_enclosure(body[casts[0] + 1:]) not in {
+                'Z', 'N', 'nat', 'positive', 'Coq.Numbers.BinNums.Z',
+                'Coq.Numbers.BinNums.N', 'Coq.Numbers.BinNums.positive',
+                'Coq.Init.Datatypes.nat'}:
+            raise ValueError('The numeric notation has an unsupported type annotation.')
+        body = body[:casts[0]].strip()
+    closed_integer(body)
+    return body
+
+
 def constant_from_source(origin):
     source = read_source(origin)
-    body = definition_body(source, origin['declaration'])
+    body = numeric_constant_body(source, origin['declaration'])
     if 'field' in origin:
         values = re.findall(r'\b' + re.escape(origin['field']) + r'\s*:=\s*([^;|]+)', body)
         if len(values) != 1:
