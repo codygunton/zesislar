@@ -7,7 +7,7 @@ Require Import ZesuSsz.Contracts.RlpDecodeItemContract.
 Require Import ZesuSsz.Contracts.RlpDecodeItem.
 Require Import ZesuSsz.Contracts.Level1.
 Require Import ZesuSsz.Automation2.ByteWindowFold.
-Open Scope Z_scope.
+Local Open Scope Z_scope.
 Require Import ZesuSsz.Generated.DecodeItem.FP301.Pilot6a40Entries.
 #[export] Instance fp_machineAt6a40_ForwardA0N0_unfold : LithiumUnfold (@fp_machineAt6a40_ForwardA0N0) := I.
 #[export] Instance fp_machineAt6a40_ForwardA0N0_intro `{!islaG Sigma} `{!threadG} (args : DecodeItemArgs) (returnAddress : Z) :
