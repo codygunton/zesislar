@@ -6,7 +6,6 @@ from unittest.mock import patch
 
 from check_proof_hygiene import (
     PLACEHOLDER,
-    FROZEN_AUTOMATION_COMMIT,
     FROZEN_AUTOMATION_TREE,
     frozen_automation_failures,
     executable_form_failures,
@@ -359,12 +358,33 @@ class FrozenAutomationTests(unittest.TestCase):
     def check(self):
         return frozen_automation_failures(self.root, self.revision)
 
-    def test_pin_matches_the_recorded_freeze_commit(self):
+    def test_pin_matches_the_current_legacy_tree(self):
         root = Path(__file__).resolve().parents[2]
         recorded = subprocess.check_output([
             "git", "-C", str(root), "rev-parse",
-            FROZEN_AUTOMATION_COMMIT + ":ZesuSsz/Automation"], text=True).strip()
+            "HEAD:ZesuSsz/Automation"], text=True).strip()
         self.assertEqual(recorded, FROZEN_AUTOMATION_TREE)
+
+    def test_shallow_clone_needs_only_the_current_tree(self):
+        original = self.git("rev-parse", "HEAD").strip()
+        (self.root/"README").write_text("A later commit retains the frozen tree.")
+        self.git("add", ".")
+        self.git("-c", "user.name=Test", "-c", "user.email=test@example.invalid",
+                 "commit", "--quiet", "-m", "Later")
+        with tempfile.TemporaryDirectory() as destination:
+            clone = Path(destination)/"shallow"
+            subprocess.run(["git", "clone", "--quiet", "--depth", "1",
+                self.root.as_uri(), str(clone)], check=True)
+            absent = subprocess.run(["git", "-C", str(clone), "cat-file", "-e", original],
+                capture_output=True)
+            self.assertNotEqual(absent.returncode, 0)
+            current = subprocess.check_output(["git", "-C", str(clone), "rev-parse",
+                "HEAD:ZesuSsz/Automation"], text=True).strip()
+            self.assertEqual(current, self.revision)
+            self.assertEqual(frozen_automation_failures(clone, self.revision), [])
+            source = clone/"ZesuSsz/Automation/Rule.v"
+            source.write_text("Definition changed := 2.\n")
+            self.assertTrue(frozen_automation_failures(clone, self.revision))
 
     def test_unchanged_tree_and_automation2_changes_pass(self):
         other = self.root / "ZesuSsz/Automation2/Rule.v"
