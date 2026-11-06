@@ -702,7 +702,8 @@ Ltac zesu_finish_source_tail :=
 Ltac zesu_finish_residual_cascade :=
   first [solve [
     zesu_finish_residual_switches;
-    first [ solve [zesu_finish_source_package]
+    first [ solve [SourceFactMatching.zesu_source_registered_disjunction ltac:(zesu_finish_source_package)]
+          | solve [zesu_finish_source_package]
           | solve [ZesuSsz.Automation2.WordIdentity.zesu_word_identity]
           | solve [zesu_masked_add_branch_finish]
           | solve [ZesuSsz.Automation2.HypothesisCast.zesu_hypothesis_cast_finish]
@@ -983,7 +984,8 @@ Ltac zesu_finish_initialized_array_read :=
    of its own tactics in `timeout`. *)
 Ltac zesu_run_pass_steps :=
   first
-    [ZesuSsz.Automation2.CodecArrayRead.zesu_codec_array_read_consumer |
+    [SourceFactMatching.zesu_source_destruct_registered_disjunction |
+     ZesuSsz.Automation2.CodecArrayRead.zesu_codec_array_read_consumer |
      zesu_v34_array_continuation |
      zesu_union_witness_step | zesu_target_registered_intro_if_enabled |
      zesu_open_requested_instr_bundle |
@@ -1006,7 +1008,8 @@ Ltac zesu_run_pass_v1 :=
   try zesu_prepare_uninit_goal;
   try zesu_normalize_find_mem_address;
   unshelve (time "zesu_run" repeat first
-    [ZesuSsz.Automation2.CodecArrayRead.zesu_codec_array_read_consumer |
+    [SourceFactMatching.zesu_source_destruct_registered_disjunction |
+     ZesuSsz.Automation2.CodecArrayRead.zesu_codec_array_read_consumer |
      zesu_v34_array_continuation |
      zesu_union_witness_step | zesu_target_registered_intro_if_enabled |
      zesu_open_requested_instr_bundle |
@@ -1153,7 +1156,7 @@ Ltac zesu_block_v2 :=
     zesu_reduce_introduced_code_lists;
     repeat iDestruct select (_ ∗ _)%I as "[? ?]";
     try zesu_entry_intro_if_enabled;
-    zesu_run)
+      zesu_run)
   else first [solve [zesu_finish] | idtac].
 
 Ltac zesu_block_base :=
