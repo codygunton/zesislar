@@ -259,8 +259,8 @@ class UnifiedAdmission(unittest.TestCase):
         self.assertTrue(M.recover_dead_shell(self.marker,ledger=self.ledger,reader=self.reader))
         data=self.read();key=M.shell_key(self.marker)
         self.assertEqual(data['fixed_claims'][key],0)
-        self.assertEqual(data['shell_releases'][key]['previous_token_identity'],list(original))
-        self.assertEqual(data['shell_releases'][key]['observed_token_identity'],list(observed))
+        self.assertEqual(M._shell_recovery_record(data, key, self.reader)[1]['previous_token_identity'],list(original))
+        self.assertEqual(M._shell_recovery_record(data, key, self.reader)[1]['observed_token_identity'],list(observed))
 
     def test_released_zero_claim_marker_is_removed_once(self):
         self.assertTrue(self.confirm()['fits'])
@@ -275,7 +275,7 @@ class UnifiedAdmission(unittest.TestCase):
         observed=self.reader.file_identity(self.marker.lstat())
         self.assertTrue(M.recover_dead_shell(self.marker,ledger=self.ledger,reader=self.reader))
         self.assertFalse(self.marker.exists())
-        cleanup=self.read()['shell_releases'][key]['marker_cleanup']
+        cleanup=M._shell_recovery_record(self.read(), key, self.reader)[1]['marker_cleanup']
         self.assertEqual(cleanup['observed_token_identity'],list(observed))
         before=self.ledger.read_bytes()
         self.assertEqual(M.recover_stale_shells(ledger=self.ledger,reader=self.reader),[])
