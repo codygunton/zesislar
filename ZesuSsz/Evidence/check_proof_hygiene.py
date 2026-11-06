@@ -3,6 +3,7 @@
 
 import fnmatch
 import json
+import os
 import re
 import subprocess
 import sys
@@ -335,6 +336,27 @@ def proof_size_ratchet_failures(
     return failures
 
 
+
+FROZEN_AUTOMATION_REVISION = "4e9f33bfeee005ee7e7f16186f9d933ecac18197"
+
+
+def frozen_automation_failures(root=ROOT, revision=FROZEN_AUTOMATION_REVISION):
+    """Compare both committed and uncommitted source changes with the freeze."""
+    changed = subprocess.check_output([
+        "git", "-C", str(root), "diff", "--name-only", revision, "--",
+        AUTOMATION_PREFIX], text=True).splitlines()
+    added = subprocess.check_output([
+        "git", "-C", str(root), "ls-files", "--others", "--exclude-standard", "--",
+        AUTOMATION_PREFIX], text=True).splitlines()
+    names = sorted(set(changed + added))
+    if not names:
+        return []
+    reason = os.environ.get("ZESU_AUTOMATION_EMERGENCY_OVERRIDE", "").strip()
+    if reason:
+        print("emergency Automation override: " + reason, file=sys.stderr)
+        return []
+    return ["frozen Automation changed: " + name for name in names]
+
 def main() -> None:
     baseline_data = json.loads(BASELINE_PATH.read_text())
     baseline = baseline_data["files"]
@@ -342,7 +364,7 @@ def main() -> None:
     size_baseline_data = json.loads(SIZE_BASELINE_PATH.read_text())
     size_baseline = size_baseline_data["files"]
     trusted = trusted_declarations()
-    failures: list[str] = []
+    failures: list[str] = list(frozen_automation_failures(ROOT))
     warnings: list[str] = []
     remaining = 0
     for name in tracked_files():
