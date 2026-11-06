@@ -3,6 +3,7 @@ From Coq Require Import ZArith.ZArith NArith.NArith Lia.
 Require Import ZesuSsz.Automation2.CodecArrayRead.
 Require Import isla.riscv64.riscv64.
 Import iris.proofmode.ltac_tactics.
+Require Import ZesuSsz.Automation2.All.
 Set Default Proof Mode "Classic".
 Local Open Scope Z_scope.
 Module M.

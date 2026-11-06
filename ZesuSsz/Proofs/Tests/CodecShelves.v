@@ -4,6 +4,7 @@ Require Import ZesuSsz.Contracts.IslarisMemory.
 From stdpp Require Import list list_numbers bitvector.definitions.
 From Coq Require Import Lists.List ZArith.ZArith.
 Import ListNotations.
+Require Import ZesuSsz.Automation2.All.
 Local Open Scope Z_scope.
 
 Lemma codec_shelf_bytes (word : bv 64) (address : Z)

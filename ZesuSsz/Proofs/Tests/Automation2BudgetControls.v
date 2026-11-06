@@ -39,6 +39,7 @@ Print Assumptions bounded_address.
 From Coq Require Import ZArith.ZArith Lia.
 From Ltac2 Require Import Ltac2 Ref.
 Require Import ZesuSsz.Automation2.MemoryAddress.
+Require Import ZesuSsz.Automation2.All.
 Set Default Proof Mode "Classic".
 Local Open Scope Z_scope.
 Definition paired (P Q:Prop) := P /\ Q.
