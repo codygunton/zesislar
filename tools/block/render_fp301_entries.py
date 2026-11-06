@@ -121,7 +121,7 @@ pilots = [
 cases = []
 emitted = []
 header = """(* Generated from FP-20261102-Level1-domain-v1. No proof script. *)
-Require Import ZesuSsz.Automation.All.
+Require ZesuSsz.Automation.Hooks.
 Require Import isla.riscv64.riscv64.
 From Coq Require Import Lists.List ZArith.ZArith NArith.NArith.
 Require Import stdpp.bitvector.definitions.

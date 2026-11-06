@@ -3,7 +3,7 @@ Require Import isla.riscv64.riscv64.
 From Coq Require Import Lists.List ZArith.ZArith NArith.NArith.
 Require Import ZesuSsz.Contracts.RlpDecodeItemContract.
 Require Import ZesuSsz.Contracts.RlpDecodeItem.
-Require Import ZesuSsz.Automation.All.
+Require ZesuSsz.Automation.Hooks.
 Local Open Scope Z_scope.
 Require Import ZesuSsz.Generated.DecodeItem.FP301.FunctionReturnEntries.
 #[export] Instance fp_machineReturn_unfold : LithiumUnfold (@fp_machineReturn) := I.
