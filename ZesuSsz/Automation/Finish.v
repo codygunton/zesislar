@@ -637,7 +637,7 @@ once (try zesu_memory_registered_intro;
          ZesuSsz.Automation.BitvectorFacts.zesu_source_biased_mask_tree requested);
       (tryif SourceFactMatching.zesu_source_check_fixed_tree requested
        then idtac
-       else (try JoinEntailment.zesu_join_project_once;
+       else (repeat JoinEntailment.zesu_join_project_once;
          PureFacts.zesu_saturate_derived_facts;
          SourceFactMatching.zesu_source_check_fixed_tree requested));
       SourceFactMatching.zesu_source_match_tree requested ltac:(idtac))
