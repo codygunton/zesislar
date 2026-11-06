@@ -2,6 +2,9 @@ Require ZesuSsz.Automation.UninitRegions.
 Require Import isla.riscv64.riscv64.
 Require Import ZesuMachineMap.Machine.
 Require Import ZesuSsz.Automation2.ByteArrayLengths.
+Require Import ZesuSsz.Automation2.RangeFacts.
+From Ltac2 Require Import Ltac2.
+Set Default Proof Mode "Classic".
 
 (* Reject unrelated regions without expanding the caller's validity predicates.
    The upstream rules and their resource continuations remain unchanged. *)
@@ -40,12 +43,68 @@ Ltac zesu_region_bounds_legacy :=
     end;
     bv_solve].
 
-Ltac zesu_region_bounds :=
+(* Bounds search uses only facts connected to the candidate region. *)
+Ltac zesu_region_address_carries base address :=
+  first [lazymatch address with context[base] => idtac end |
+    let rec carries term :=
+      first [assert_fails (has_evar term);
+        assert_fails (ZesuSsz.Automation2.VmClosed.zesu_vm_closed term);
+        lazymatch address with context[term] => idtac end |
+        lazymatch term with
+        | Z.add ?left ?right => first [carries left | carries right]
+        | Z.sub ?left ?right => first [carries left | carries right]
+        | Z.mul ?left ?right => first [carries left | carries right]
+        end] in
+    carries base].
+
+Ltac zesu_region_collect base address :=
+  let collect := ltac2:(b a |- ZesuSsz.Automation2.RangeFacts.zesu_range_collect
+    (Option.get (Ltac1.to_constr b)) (Option.get (Ltac1.to_constr a))
+    (Option.get (Ltac1.to_constr b))) in
+  let rec choose_atom term :=
+    first [assert_fails (has_evar term);
+      assert_fails (ZesuSsz.Automation2.VmClosed.zesu_vm_closed term);
+      lazymatch address with context[term] => collect term address end |
+      lazymatch term with
+      | Z.add ?left ?right => first [choose_atom left | choose_atom right]
+      | Z.sub ?left ?right => first [choose_atom left | choose_atom right]
+      | Z.mul ?left ?right => first [choose_atom left | choose_atom right]
+      end] in
+  first [choose_atom base | collect address address].
+
+Ltac zesu_region_selected_facts :=
+  repeat match goal with
+  | Hlocal := _ |- ?target =>
+      lazymatch target with context[Hlocal] => unfold Hlocal in *; clear Hlocal end
+  end;
+  let choose_atom base address :=
+    zesu_region_address_carries base address;
+    zesu_region_collect base address in
+  lazymatch goal with
+  | |- ((?base <= ?address < ?upper)%Z \/ _) => choose_atom base address
+  | |- (?base <= ?address <= ?upper)%Z => choose_atom base address
+  | |- (?base <= ?address < ?upper)%Z => choose_atom base address
+  | |- @eq Z ?base ?address => choose_atom base address
+  | |- ?target =>
+      let rec collect target :=
+        lazymatch target with
+        | ?left /\ ?right => collect left; collect right
+        | ?left \/ ?right => collect left; collect right
+        | @eq Z ?left ?right => zesu_region_collect left right
+        | Z.le ?left ?right => zesu_region_collect left right
+        | Z.lt ?left ?right => zesu_region_collect left right
+        end in
+      collect target
+  end;
+  ltac2:(ZesuSsz.Automation2.RangeFacts.zesu_range_isolate ()).
+
+Ltac zesu_region_bounds := once (
+  zesu_region_selected_facts;
   first [
-    zesu_byte_array_bound_goal_if_enabled;
+    ZesuSsz.Automation2.ByteArrayLengths.zesu_byte_array_bound_goal_if_enabled;
     first [solve [lia] |
-      zesu_byte_array_lengths_if_enabled; solve [lia | bv_solve]]
-  | zesu_region_bounds_legacy].
+      ZesuSsz.Automation2.ByteArrayLengths.zesu_byte_array_lengths_if_enabled; solve [lia | bv_solve]]
+  | ZesuSsz.Automation2.UninitRegions.zesu_region_bounds_legacy]).
 
 Global Hint Extern 0 (ZesuSsz.Automation.UninitRegions.ZesuRegionBounds ?P) =>
   (change P; zesu_region_bounds) : typeclass_instances.
