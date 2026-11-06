@@ -4,11 +4,17 @@ Require Import isla.riscv64.riscv64.
 Require Import ZesuSsz.Contracts.RlpDecodeItemContract.
 Require Import ZesuSsz.Contracts.RlpDecodeItem.
 
+(* Remove release instances locally to preserve the switch-off checks. *)
+Section ReleaseSwitchOff.
+#[local] Remove Hints StoreMemoryLookup.zesu_store_region_bounds CodecArrayRead.codec_read_regions : typeclass_instances.
+
 Lemma array_region_cast_opt_in : True.
 Proof.
   Fail let _ := constr:(_ : ZesuStepArrayRegionBounds) in idtac.
   exact I.
 Qed.
+
+End ReleaseSwitchOff.
 
 Require Import ZesuSsz.Automation.Switches.ArrayRegionBounds.
 Require Import ZesuSsz.Generated.DecodeItem.Registrations.
@@ -95,3 +101,5 @@ Lemma array_region_cast_finisher_direct_kind `{!islaG Sigma}
       (mem_mapsto_kind_prop (bv_unsigned (Z_to_bv 64 base)) kind)
       (base ↦ₘ∗ bytes).
 Proof. eexists. zesu_finish. Qed.
+
+Require Import ZesuSsz.Automation.All.

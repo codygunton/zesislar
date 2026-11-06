@@ -3,6 +3,10 @@ Require Import isla.riscv64.riscv64.
 From Coq Require Import List ZArith.
 Open Scope Z_scope.
 
+(* Remove release instances locally to preserve the switch-off checks. *)
+Section ReleaseSwitchOff.
+#[local] Remove Hints StoreMemoryLookup.zesu_store_array_bounds Hooks.codec_read_bounds : typeclass_instances.
+
 Lemma array_bounds_opt_in : True.
 Proof.
   Fail let _ := constr:(_ : ZesuStepArrayBounds) in idtac.
@@ -18,6 +22,8 @@ Proof.
   replace (p + 32 - p) with 32 by lia.
   cbn. lia.
 Qed.
+
+End ReleaseSwitchOff.
 
 Require Import ZesuSsz.Automation.Switches.ArrayBounds.
 
@@ -78,3 +84,5 @@ Proof.
 Qed.
 
 Print Assumptions array_bounds_updated.
+
+Require Import ZesuSsz.Automation.All.

@@ -30,6 +30,7 @@ Definition zesu_lbu_byte_array_at_spec `{!islaG Σ} `{!threadG}
     (bv_unsigned base + arrayOffset) ↦ₘ∗ take index values ∗
     (bv_unsigned base + arrayOffset + Z.of_nat (index + 1)) ↦ₘ∗
       drop (index + 1) values ∗ True).
+Global Typeclasses Opaque zesu_lbu_byte_array_at_spec.
 
 Global Instance : LithiumUnfold (@zesu_lbu_byte_array_at_spec) := I.
 

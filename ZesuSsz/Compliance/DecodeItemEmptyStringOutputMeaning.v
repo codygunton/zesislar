@@ -58,7 +58,7 @@ rewrite HcanonicalImage HstorageBefore.
 assert (HbeforeLength : length (decodeItemBeforeStorage args) = 40%nat) by (rewrite <- HstorageBefore; exact HstorageLength).
 eapply (DecodeItemReturnExitPure.returnExitEmptyString args inputPrefix rest).
 all: try (first [exact Hinput | exact (proj2 Hdomain) | exact Hprefix | exact HbeforeLength | exact Hcandidate | exact Hsail | rewrite length_bv_to_little_endian; lia]).
-all: lazymatch goal with |- ?lhs = ?rhs => ZesuSsz.Automation.Hooks.zesu_stack_closed_term lhs; ZesuSsz.Automation.Hooks.zesu_stack_closed_term rhs; vm_compute; reflexivity end.
+all: lazymatch goal with |- ?lhs = ?rhs => ZesuSsz.Automation.MemoryAddress.zesu_stack_closed_term lhs; ZesuSsz.Automation.MemoryAddress.zesu_stack_closed_term rhs; vm_compute; reflexivity end.
 Qed.
 
 #[export] Instance decodeItemEmptyStringOutputDerivedFacts args locals inputPrefix rest :

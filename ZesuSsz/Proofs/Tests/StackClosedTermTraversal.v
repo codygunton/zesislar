@@ -1,6 +1,8 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuSsz.Automation.MemoryAddress.
 From Coq Require Import BinNums ZArith.
 Require Import ZesuSsz.Automation.Hooks.
+Require Import ZesuSsz.Automation.All.
 
 (* Compare the production visitor with the original behavior. *)
 Ltac stack_closed_original term :=

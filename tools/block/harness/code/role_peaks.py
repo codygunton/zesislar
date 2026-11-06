@@ -77,14 +77,15 @@ def _released(reference, entry, data, reader, role, run_kind):
             or type(value.get('finished_ns')) is not int or value['finished_ns'] <= 0):
         raise ValueError('The controller exit lacks a normal status or positive kernel peak.')
     key = value['claim_key']
-    owner = data['shell_claim_owners'][key]
+    from shell_archive import released_records
+    owner, shell_release = released_records(data, key, reader)
     attestation = owner['guard_attestation']
     if (owner != value['owner_record'] or owner['guard_source'] != value['guard_source']
             or attestation['actor'] != value['scope_actor']
             or attestation['leaf'] != value['scope']
             or data['fixed_claims'].get(key) != 0
-            or data['shell_releases'][key]['owner'] != owner['owner']
-            or data['shell_releases'][key]['marker'] != owner['marker']
+            or shell_release['owner'] != owner['owner']
+            or shell_release['marker'] != owner['marker']
             or Path(owner['marker']).exists() or Path(value['scope']['scope']).exists()
             or not memory.ended_process(reader, owner['owner'])
             or not memory.ended_process(reader, value['scope_actor'])

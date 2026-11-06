@@ -1,0 +1,684 @@
+{
+  "schema": "join-affine-fixture.v1",
+  "origin": {
+    "path": "/home/cody/zesislar/_build/agents/worker-build-1/forward-domain300/inventory001/FORWARD.json",
+    "sha256": "f75f7c9f89f3cb741e6bd5d31a6b5b8b25aa1be8dbf7221b7947c321b206fadc"
+  },
+  "pc": "0x800d698c",
+  "edges": [
+    {
+      "predecessor_pc": "0x800d697c",
+      "basis": {
+        "x11": {
+          "op": "input",
+          "width": 64,
+          "value": "(Z_to_bv 64%N (decodeItemInputPointer args))"
+        },
+        "x12": {
+          "op": "bits",
+          "width": 64,
+          "value": 1
+        },
+        "input": {
+          "op": "input",
+          "width": 64,
+          "value": "(Z_to_bv 64%N (decodeItemInputPointer args))"
+        }
+      },
+      "field0": {
+        "op": "input",
+        "width": 64,
+        "value": "(Z_to_bv 64%N (decodeItemInputPointer args))"
+      },
+      "field8": {
+        "op": "bits",
+        "width": 64,
+        "value": 1
+      }
+    },
+    {
+      "predecessor_pc": "0x800d697c",
+      "basis": {
+        "x11": {
+          "op": "input",
+          "width": 64,
+          "value": "(Z_to_bv 64%N (decodeItemInputPointer args))"
+        },
+        "x12": {
+          "op": "bits",
+          "width": 64,
+          "value": 1
+        },
+        "input": {
+          "op": "input",
+          "width": 64,
+          "value": "(Z_to_bv 64%N (decodeItemInputPointer args))"
+        }
+      },
+      "field0": {
+        "op": "input",
+        "width": 64,
+        "value": "(Z_to_bv 64%N (decodeItemInputPointer args))"
+      },
+      "field8": {
+        "op": "bits",
+        "width": 64,
+        "value": 1
+      }
+    },
+    {
+      "predecessor_pc": "0x800d697c",
+      "basis": {
+        "x11": {
+          "op": "input",
+          "width": 64,
+          "value": "(Z_to_bv 64%N (decodeItemInputPointer args))"
+        },
+        "x12": {
+          "op": "bits",
+          "width": 64,
+          "value": 1
+        },
+        "input": {
+          "op": "input",
+          "width": 64,
+          "value": "(Z_to_bv 64%N (decodeItemInputPointer args))"
+        }
+      },
+      "field0": {
+        "op": "input",
+        "width": 64,
+        "value": "(Z_to_bv 64%N (decodeItemInputPointer args))"
+      },
+      "field8": {
+        "op": "bits",
+        "width": 64,
+        "value": 1
+      }
+    },
+    {
+      "predecessor_pc": "0x800d697c",
+      "basis": {
+        "x11": {
+          "op": "input",
+          "width": 64,
+          "value": "(Z_to_bv 64%N (decodeItemInputPointer args))"
+        },
+        "x12": {
+          "op": "bits",
+          "width": 64,
+          "value": 1
+        },
+        "input": {
+          "op": "input",
+          "width": 64,
+          "value": "(Z_to_bv 64%N (decodeItemInputPointer args))"
+        }
+      },
+      "field0": {
+        "op": "input",
+        "width": 64,
+        "value": "(Z_to_bv 64%N (decodeItemInputPointer args))"
+      },
+      "field8": {
+        "op": "bits",
+        "width": 64,
+        "value": 1
+      }
+    },
+    {
+      "predecessor_pc": "0x800d697c",
+      "basis": {
+        "x11": {
+          "op": "input",
+          "width": 64,
+          "value": "(Z_to_bv 64%N (decodeItemInputPointer args))"
+        },
+        "x12": {
+          "op": "bits",
+          "width": 64,
+          "value": 1
+        },
+        "input": {
+          "op": "input",
+          "width": 64,
+          "value": "(Z_to_bv 64%N (decodeItemInputPointer args))"
+        }
+      },
+      "field0": {
+        "op": "input",
+        "width": 64,
+        "value": "(Z_to_bv 64%N (decodeItemInputPointer args))"
+      },
+      "field8": {
+        "op": "bits",
+        "width": 64,
+        "value": 1
+      }
+    },
+    {
+      "predecessor_pc": "0x800d69e8",
+      "basis": {
+        "x11": {
+          "op": "bvadd",
+          "width": 64,
+          "args": [
+            {
+              "op": "input",
+              "width": 64,
+              "value": "(Z_to_bv 64%N (decodeItemInputPointer args))"
+            },
+            {
+              "op": "bits",
+              "width": 64,
+              "value": 1
+            }
+          ]
+        },
+        "x12": {
+          "op": "bvadd",
+          "width": 64,
+          "args": [
+            {
+              "op": "bvand",
+              "width": 64,
+              "args": [
+                {
+                  "op": "bvand",
+                  "width": 64,
+                  "args": [
+                    {
+                      "op": "sign_extend",
+                      "width": 64,
+                      "args": [
+                        {
+                          "op": "array_byte",
+                          "width": 8,
+                          "value": 0,
+                          "args": [
+                            {
+                              "op": "input",
+                              "value": "decodeItemInputBytes args"
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "op": "bits",
+                      "width": 64,
+                      "value": 255
+                    }
+                  ]
+                },
+                {
+                  "op": "bits",
+                  "width": 64,
+                  "value": 127
+                }
+              ]
+            },
+            {
+              "op": "bits",
+              "width": 64,
+              "value": 1
+            }
+          ]
+        },
+        "input": {
+          "op": "input",
+          "width": 64,
+          "value": "(Z_to_bv 64%N (decodeItemInputPointer args))"
+        }
+      },
+      "field0": {
+        "op": "bvadd",
+        "width": 64,
+        "args": [
+          {
+            "op": "input",
+            "width": 64,
+            "value": "(Z_to_bv 64%N (decodeItemInputPointer args))"
+          },
+          {
+            "op": "bits",
+            "width": 64,
+            "value": 1
+          }
+        ]
+      },
+      "field8": {
+        "op": "bvand",
+        "width": 64,
+        "args": [
+          {
+            "op": "bvand",
+            "width": 64,
+            "args": [
+              {
+                "op": "sign_extend",
+                "width": 64,
+                "args": [
+                  {
+                    "op": "array_byte",
+                    "width": 8,
+                    "value": 0,
+                    "args": [
+                      {
+                        "op": "input",
+                        "value": "decodeItemInputBytes args"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "op": "bits",
+                "width": 64,
+                "value": 255
+              }
+            ]
+          },
+          {
+            "op": "bits",
+            "width": 64,
+            "value": 127
+          }
+        ]
+      }
+    },
+    {
+      "predecessor_pc": "0x800d69e8",
+      "basis": {
+        "x11": {
+          "op": "bvadd",
+          "width": 64,
+          "args": [
+            {
+              "op": "input",
+              "width": 64,
+              "value": "(Z_to_bv 64%N (decodeItemInputPointer args))"
+            },
+            {
+              "op": "bits",
+              "width": 64,
+              "value": 1
+            }
+          ]
+        },
+        "x12": {
+          "op": "bvadd",
+          "width": 64,
+          "args": [
+            {
+              "op": "bvand",
+              "width": 64,
+              "args": [
+                {
+                  "op": "bvand",
+                  "width": 64,
+                  "args": [
+                    {
+                      "op": "sign_extend",
+                      "width": 64,
+                      "args": [
+                        {
+                          "op": "array_byte",
+                          "width": 8,
+                          "value": 0,
+                          "args": [
+                            {
+                              "op": "input",
+                              "value": "decodeItemInputBytes args"
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "op": "bits",
+                      "width": 64,
+                      "value": 255
+                    }
+                  ]
+                },
+                {
+                  "op": "bits",
+                  "width": 64,
+                  "value": 127
+                }
+              ]
+            },
+            {
+              "op": "bits",
+              "width": 64,
+              "value": 1
+            }
+          ]
+        },
+        "input": {
+          "op": "input",
+          "width": 64,
+          "value": "(Z_to_bv 64%N (decodeItemInputPointer args))"
+        }
+      },
+      "field0": {
+        "op": "bvadd",
+        "width": 64,
+        "args": [
+          {
+            "op": "input",
+            "width": 64,
+            "value": "(Z_to_bv 64%N (decodeItemInputPointer args))"
+          },
+          {
+            "op": "bits",
+            "width": 64,
+            "value": 1
+          }
+        ]
+      },
+      "field8": {
+        "op": "bvand",
+        "width": 64,
+        "args": [
+          {
+            "op": "bvand",
+            "width": 64,
+            "args": [
+              {
+                "op": "sign_extend",
+                "width": 64,
+                "args": [
+                  {
+                    "op": "array_byte",
+                    "width": 8,
+                    "value": 0,
+                    "args": [
+                      {
+                        "op": "input",
+                        "value": "decodeItemInputBytes args"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "op": "bits",
+                "width": 64,
+                "value": 255
+              }
+            ]
+          },
+          {
+            "op": "bits",
+            "width": 64,
+            "value": 127
+          }
+        ]
+      }
+    },
+    {
+      "predecessor_pc": "0x800d69e8",
+      "basis": {
+        "x11": {
+          "op": "bvadd",
+          "width": 64,
+          "args": [
+            {
+              "op": "input",
+              "width": 64,
+              "value": "(Z_to_bv 64%N (decodeItemInputPointer args))"
+            },
+            {
+              "op": "bits",
+              "width": 64,
+              "value": 1
+            }
+          ]
+        },
+        "x12": {
+          "op": "bvadd",
+          "width": 64,
+          "args": [
+            {
+              "op": "bvand",
+              "width": 64,
+              "args": [
+                {
+                  "op": "bvand",
+                  "width": 64,
+                  "args": [
+                    {
+                      "op": "sign_extend",
+                      "width": 64,
+                      "args": [
+                        {
+                          "op": "array_byte",
+                          "width": 8,
+                          "value": 0,
+                          "args": [
+                            {
+                              "op": "input",
+                              "value": "decodeItemInputBytes args"
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "op": "bits",
+                      "width": 64,
+                      "value": 255
+                    }
+                  ]
+                },
+                {
+                  "op": "bits",
+                  "width": 64,
+                  "value": 127
+                }
+              ]
+            },
+            {
+              "op": "bits",
+              "width": 64,
+              "value": 1
+            }
+          ]
+        },
+        "input": {
+          "op": "input",
+          "width": 64,
+          "value": "(Z_to_bv 64%N (decodeItemInputPointer args))"
+        }
+      },
+      "field0": {
+        "op": "bvadd",
+        "width": 64,
+        "args": [
+          {
+            "op": "input",
+            "width": 64,
+            "value": "(Z_to_bv 64%N (decodeItemInputPointer args))"
+          },
+          {
+            "op": "bits",
+            "width": 64,
+            "value": 1
+          }
+        ]
+      },
+      "field8": {
+        "op": "bvand",
+        "width": 64,
+        "args": [
+          {
+            "op": "bvand",
+            "width": 64,
+            "args": [
+              {
+                "op": "sign_extend",
+                "width": 64,
+                "args": [
+                  {
+                    "op": "array_byte",
+                    "width": 8,
+                    "value": 0,
+                    "args": [
+                      {
+                        "op": "input",
+                        "value": "decodeItemInputBytes args"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "op": "bits",
+                "width": 64,
+                "value": 255
+              }
+            ]
+          },
+          {
+            "op": "bits",
+            "width": 64,
+            "value": 127
+          }
+        ]
+      }
+    },
+    {
+      "predecessor_pc": "0x800d69e8",
+      "basis": {
+        "x11": {
+          "op": "bvadd",
+          "width": 64,
+          "args": [
+            {
+              "op": "input",
+              "width": 64,
+              "value": "(Z_to_bv 64%N (decodeItemInputPointer args))"
+            },
+            {
+              "op": "bits",
+              "width": 64,
+              "value": 1
+            }
+          ]
+        },
+        "x12": {
+          "op": "bvadd",
+          "width": 64,
+          "args": [
+            {
+              "op": "bvand",
+              "width": 64,
+              "args": [
+                {
+                  "op": "bvand",
+                  "width": 64,
+                  "args": [
+                    {
+                      "op": "sign_extend",
+                      "width": 64,
+                      "args": [
+                        {
+                          "op": "array_byte",
+                          "width": 8,
+                          "value": 0,
+                          "args": [
+                            {
+                              "op": "input",
+                              "value": "decodeItemInputBytes args"
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "op": "bits",
+                      "width": 64,
+                      "value": 255
+                    }
+                  ]
+                },
+                {
+                  "op": "bits",
+                  "width": 64,
+                  "value": 127
+                }
+              ]
+            },
+            {
+              "op": "bits",
+              "width": 64,
+              "value": 1
+            }
+          ]
+        },
+        "input": {
+          "op": "input",
+          "width": 64,
+          "value": "(Z_to_bv 64%N (decodeItemInputPointer args))"
+        }
+      },
+      "field0": {
+        "op": "bvadd",
+        "width": 64,
+        "args": [
+          {
+            "op": "input",
+            "width": 64,
+            "value": "(Z_to_bv 64%N (decodeItemInputPointer args))"
+          },
+          {
+            "op": "bits",
+            "width": 64,
+            "value": 1
+          }
+        ]
+      },
+      "field8": {
+        "op": "bvand",
+        "width": 64,
+        "args": [
+          {
+            "op": "bvand",
+            "width": 64,
+            "args": [
+              {
+                "op": "sign_extend",
+                "width": 64,
+                "args": [
+                  {
+                    "op": "array_byte",
+                    "width": 8,
+                    "value": 0,
+                    "args": [
+                      {
+                        "op": "input",
+                        "value": "decodeItemInputBytes args"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "op": "bits",
+                "width": 64,
+                "value": 255
+              }
+            ]
+          },
+          {
+            "op": "bits",
+            "width": 64,
+            "value": 127
+          }
+        ]
+      }
+    }
+  ]
+}

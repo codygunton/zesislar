@@ -2,11 +2,17 @@ Require Import ZesuSsz.Automation.All.
 Require Import isla.riscv64.riscv64.
 From iris.proofmode Require Import environments.
 
+(* Remove release instances locally to preserve the switch-off checks. *)
+Section ReleaseSwitchOff.
+#[local] Remove Hints RegisterCollectionSelection.zesu_register_collection_selection_enabled : typeclass_instances.
+
 Lemma register_selection_opt_in : True.
 Proof.
   Fail let _ := constr:(_ : ZesuStepRegisterCollectionSelection) in idtac.
   exact I.
 Qed.
+
+End ReleaseSwitchOff.
 
 Require Import ZesuSsz.Automation.Switches.RegisterCollectionSelection.
 
@@ -50,3 +56,5 @@ Proof.
   lazymatch value with Envs _ _ _ => idtac end.
   exact I.
 Qed.
+
+Require Import ZesuSsz.Automation.All.

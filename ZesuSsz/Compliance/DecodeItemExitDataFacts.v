@@ -192,7 +192,7 @@ Ltac decodeItemExitImageClosedNat :=
   | |- (_ < _)%nat => idtac
   end;
   lazymatch goal with |- ?statement =>
-    ZesuSsz.Automation.Hooks.zesu_handoff_closed_term statement;
+    ZesuSsz.Automation.MemoryAddress.zesu_handoff_closed_term statement;
     apply (proj1 (stdpp.decidable.bool_decide_eq_true statement));
     vm_compute; reflexivity
   end.

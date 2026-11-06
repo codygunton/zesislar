@@ -1,5 +1,7 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuSsz.Automation.MemoryAddress.
 From stdpp.bitvector Require Import tactics.
+Require Import ZesuSsz.Automation.All.
 
 (* Symbolic candidates must leave the context intact. *)
 Lemma zesu_stack_closed_term_regression (x : Z) : x = x.

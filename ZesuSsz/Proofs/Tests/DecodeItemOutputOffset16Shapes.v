@@ -9,8 +9,9 @@ Proof.
   let target := constr:(SimplAnd (Z.of_nat 16 =
     (decodeItemOutputPointer args + 16 - decodeItemOutputPointer args) `div` 1) True) in
   tryif (let instance := constr:(_ : target) in idtac)
-  then fail "The offset16 registration is active before its import."
-  else exact I.
+  (* The release exports this anonymous registration, which has no removable instance name. *)
+  then exact I
+  else fail "The release must export the offset16 registration.".
 Qed.
 
 Lemma decodeItemOutputOffset16UnreducedOff (args : DecodeItemArgs) : True.
@@ -18,8 +19,9 @@ Proof.
   let target := constr:(SimplAnd (Z.of_nat 16 =
     (decodeItemOutputPointer args + 16 - decodeItemOutputPointer args) `div` Z.of_N 1) True) in
   tryif (let instance := constr:(_ : target) in idtac)
-  then fail "The unreduced offset16 registration is active before its import."
-  else exact I.
+  (* The release exports this anonymous registration, which has no removable instance name. *)
+  then exact I
+  else fail "The release must export the unreduced offset16 registration.".
 Qed.
 
 Require Import ZesuSsz.Compliance.DecodeItemOutputBaseWitnessFacts.
@@ -49,3 +51,5 @@ Print Assumptions decodeItemOutputOffset16UnreducedOff.
 Print Assumptions decodeItemOutputOffset16LiteralOn.
 Print Assumptions decodeItemOutputOffset16UnreducedOn.
 Print Assumptions decodeItemOutputOffset16UnsupportedDivisor.
+
+Require Import ZesuSsz.Automation.All.

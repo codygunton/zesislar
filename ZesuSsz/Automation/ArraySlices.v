@@ -1,4 +1,5 @@
 Require Import isla.riscv64.riscv64.
+Require Import ZesuSsz.Automation.RewriteBoundGuards.
 Require Import ZesuSsz.Contracts.IslarisMemory.
 From Coq Require Import Lists.List ZArith.ZArith.
 
@@ -123,6 +124,6 @@ Module SliceMatching.
   #[export] Existing Instance subsume_mem_array_restore_inst | 1.
   #[export] Existing Instance subsume_mem_array_slice_inst | 1.
   #[export] Existing Instance subsume_mem_array_region_inst | 2.
-  #[export] Hint Rewrite array_slice_stack_index using bv_solve
+  #[export] Hint Rewrite array_slice_stack_index using (first [ZesuSsz.Automation.RewriteBoundGuards.a3n_closed_bound_if_enabled | bv_solve])
     : lithium_rewrite isla_coq_rewrite.
 End SliceMatching.

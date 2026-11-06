@@ -411,10 +411,12 @@ def main():
                               fallback_bytes=args.fallback_bytes)
         print(result["claim_bytes"])
     else:
-        observed = reservation_claims(args.markers, proc=args.proc, fallback_bytes=args.fallback_bytes,
-                                      refresh=False, retained_claims=read_shell_bookings())
-        refresh_shell_growth(observed['growth'])
-        result = current_projection(args.request_bytes, args.available_bytes)
+        ledger = Path(os.environ.get('ZESU_CANONICAL_LEDGER', _module.DEFAULT_LEDGER))
+        with _module.ledger_transaction(ledger):
+            observed = reservation_claims(args.markers, proc=args.proc, fallback_bytes=args.fallback_bytes,
+                                          refresh=False, retained_claims=read_shell_bookings())
+            refresh_shell_growth(observed['growth'])
+            result = current_projection(args.request_bytes, args.available_bytes)
         result['admitted'] = result['fits'] and len(observed['claims']) < args.maximum_compilers
         result['reason'] = 'compiler_limit' if len(observed['claims']) >= args.maximum_compilers else 'memory_budget'
         if not result["admitted"]:

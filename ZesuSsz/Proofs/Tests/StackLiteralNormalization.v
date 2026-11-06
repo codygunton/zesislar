@@ -1,6 +1,8 @@
 Require Import ZesuSsz.Automation.All.
+Require Import ZesuSsz.Automation.MemoryAddress.
 From Coq Require Import BinNums ZArith.
 Require Import ZesuSsz.Automation.Hooks.
+Require Import ZesuSsz.Automation.All.
 
 Lemma stackLiteralClassifier : True.
 Proof.

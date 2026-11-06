@@ -1,5 +1,5 @@
 """Bind an explicit public assertion tree to values and inherited ownership."""
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 import hashlib
 import json
 from pathlib import Path
@@ -165,6 +165,10 @@ class OwnedSeed:
     resources: list
     facts: list
     reports: list
+    join_refusals: list = field(default_factory=list)
+    join_edges: list = field(default_factory=list)
+    join_witness_plan: dict | None = None
+    join_kind: str | None = None
 
 
 def seed_owned_resources(seed, *, entry_pc, vocabulary, constants=None, facts=(), address_width=64):
@@ -185,6 +189,11 @@ def seed_owned_resources(seed, *, entry_pc, vocabulary, constants=None, facts=()
                 raise ValueError('A source interval needs a bound fact and provenance')
             state.source_intervals.append({**interval, 'origin': fact['origin'],
                                            'fact_id': fact['fact_id']})
+        alignment = fact.get('terms', {}).get('alignment')
+        if alignment is not None and fact.get('status') in ('supplied', 'derived-by-pass'):
+            if fact.get('kind') != 'alignment' or not fact.get('origin'):
+                raise ValueError('A source alignment needs a bound fact and provenance')
+            state.source_alignments.append({**alignment, 'origin': fact['origin'], 'fact_id': fact['fact_id']})
     resources, derived, reports = [], list(facts), []
     witnesses = {binder['name']: Expr.from_dict(binder['expression']) for binder in ownership['binders']
                  if 'expression' in binder}

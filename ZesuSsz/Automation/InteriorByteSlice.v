@@ -1,3 +1,4 @@
+Require Import ZesuSsz.Automation.VmClosed.
 Require Import ZesuSsz.Automation.Hooks.
 Require Import ZesuSsz.Automation.PureFacts.
 Require Import ZesuSsz.Automation.ResourceGroups.
@@ -5,8 +6,6 @@ Require Import ZesuSsz.Automation.TracePrefixTail.
 From iris.proofmode Require Import environments.
 Require Import ZesuSsz.Contracts.IslarisMemory.
 Require Import isla.riscv64.riscv64.
-
-Set Default Proof Using "Type".
 
 Section interior_byte_slice.
 Context `{!islaG Sigma}.
@@ -23,7 +22,7 @@ Proof.
   iIntros (Hbounds) "Harray".
   iDestruct (mem_mapsto_array_region 8%N base (DfracOwn 1)
     bytes start count with "Harray") as "(Hprefix & Hslice & Hsuffix)"; [done|].
-  have Hstride : Z.of_N (8 / 8) = 1%Z by vm_compute.
+  have Hstride : Z.of_N (8 / 8) = 1%Z by (vm_cast_no_check (eq_refl (1%Z))).
   iEval (rewrite Hstride Z.mul_1_l) in "Hslice Hsuffix".
   iFrame "Hslice". iIntros "Hslice".
   iPoseProof (mem_mapsto_array_app_combine_at 8%N base (DfracOwn 1)
@@ -50,8 +49,7 @@ Ltac zesu_byte_slice_start address base :=
   | bv_unsigned (?register + ?offset)%bv =>
       lazymatch base with
       | (bv_unsigned register + ?baseOffset)%Z =>
-          let start := eval vm_compute in
-            (Z.to_nat (bv_unsigned offset - baseOffset)) in
+          let start := ZesuSsz.Automation.VmClosed.zesu_vm_eval_closed (Z.to_nat (bv_unsigned offset - baseOffset)) in
           constr:(start)
       | _ => constr:(Z.to_nat (address - base))
       end
@@ -70,7 +68,7 @@ Ltac zesu_lend_interior_byte_slice :=
           assert_fails (has_evar address);
           lazymatch rest with
           | context[(⌜?size = Z.of_nat (length slice)⌝)%I] =>
-              let count := eval vm_compute in (Z.to_nat size) in
+              let count := ZesuSsz.Automation.VmClosed.zesu_vm_eval_closed (Z.to_nat size) in
               assert_fails (has_evar count);
               iMatchHyp ltac:(fun Harray resource =>
                 lazymatch resource with
