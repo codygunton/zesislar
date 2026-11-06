@@ -34,9 +34,9 @@ class StaleShellRecovery(unittest.TestCase):
         data = f.read()
         key = M.shell_key(f.marker)
         self.assertEqual(data['fixed_claims'][key], 0)
-        self.assertEqual(data['shell_releases'][key]['released_bytes'], 64 * M.GIB)
-        self.assertTrue(data['shell_releases'][key]['stale_owner_recovery'])
-        self.assertIsNone(data['shell_releases'][key]['observed_token_identity'])
+        self.assertEqual(M._shell_recovery_record(data, key, f.reader)[1]['released_bytes'], 64 * M.GIB)
+        self.assertTrue(M._shell_recovery_record(data, key, f.reader)[1]['stale_owner_recovery'])
+        self.assertIsNone(M._shell_recovery_record(data, key, f.reader)[1]['observed_token_identity'])
         self.assertFalse(self.recover())
 
     def test_changed_token_stays_on_disk(self):

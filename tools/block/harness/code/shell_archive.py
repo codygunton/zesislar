@@ -2,6 +2,7 @@
 import hashlib
 import json
 import os
+import re
 from pathlib import Path
 import stat
 import tempfile
@@ -9,15 +10,22 @@ import tempfile
 FIELDS = ('shell_claim_owners', 'shell_releases', 'shell_admissions')
 
 
-def document_path(directory, key):
-    return Path(directory) / (hashlib.sha256(key.encode()).hexdigest() + '.json')
+def document_path(directory, key, reference=None):
+    name = hashlib.sha256(key.encode()).hexdigest()
+    if reference is not None:
+        if not isinstance(reference, str) or not re.fullmatch(r'[0-9a-f]{64}', reference):
+            raise ValueError('The released shell archive identity changed.')
+        name += '.' + reference
+    return Path(directory) / (name + '.json')
 
 
 def archive_record(data, key, reader):
     reference = data.get('shell_archive', {}).get(key)
     if reference is None:
         raise KeyError(key)
-    path = document_path(data['shell_archive_directory'], key)
+    path = document_path(data['shell_archive_directory'], key, reference)
+    if not os.path.lexists(path):
+        path = document_path(data['shell_archive_directory'], key)
     before = reader.file_identity(path.lstat())
     value = reader.read(path)
     digest = hashlib.sha256(path.read_bytes()).hexdigest()
@@ -47,7 +55,8 @@ def publish(directory, key, records):
         raise ValueError('The shell archive directory is not private.')
     raw = (json.dumps({'schema': 'zesu.shell-archive.v1', 'claim_key': key,
                        'records': records}, separators=(',', ':')) + '\n').encode()
-    path = document_path(directory, key)
+    digest = hashlib.sha256(raw).hexdigest()
+    path = document_path(directory, key, digest)
     descriptor, temporary = tempfile.mkstemp(prefix='.pending-', dir=directory)
     try:
         with os.fdopen(descriptor, 'wb') as stream:
@@ -68,8 +77,58 @@ def publish(directory, key, records):
             os.close(descriptor)
     finally:
         Path(temporary).unlink(missing_ok=True)
-    return hashlib.sha256(raw).hexdigest()
+    return digest
 
+
+def _archive_released_record(data, key, directory):
+    """Stage storage after the caller authenticates release under the ledger lock.
+
+    The caller commits this index with the release. The existing token cleanup
+    can then consult the archive if that commit precedes marker removal.
+    """
+    directory = str(Path(directory).absolute())
+    if data.get('shell_archive_directory', directory) != directory:
+        raise ValueError('The shell archive directory changed.')
+    owner = data['shell_claim_owners'][key]
+    release = data['shell_releases'][key]
+    if (data['fixed_claims'].get(key) != 0 or release.get('owner') != owner['owner']
+            or release.get('marker') != owner['marker']):
+        raise ValueError('The shell archive lacks exact released ownership.')
+    records = {field: data[field][key] for field in FIELDS if key in data.get(field, {})}
+    growth = [row for row in data.get('shell_growth', []) if row.get('claim_key') == key]
+    if growth:
+        records['shell_growth'] = growth
+    digest = publish(directory, key, records)
+    data['shell_archive_directory'] = directory
+    data.setdefault('shell_archive', {})[key] = digest
+    for field in FIELDS:
+        data.get(field, {}).pop(key, None)
+    if growth:
+        data['shell_growth'] = [row for row in data['shell_growth'] if row.get('claim_key') != key]
+    return digest
+
+
+
+def compact_released_shells(data, directory, reader):
+    """Stage exact closed releases; retain every ineligible record."""
+    import admission_memory as memory
+    archived = []
+    for key, owner in list(data.get('shell_claim_owners', {}).items()):
+        release = data.get('shell_releases', {}).get(key)
+        try:
+            if (data['fixed_claims'].get(key) != 0 or release is None
+                    or release.get('owner') != owner.get('owner')
+                    or release.get('marker') != owner.get('marker')
+                    or not owner.get('marker') or os.path.lexists(owner['marker'])
+                    or not memory.ended_process(reader, owner['owner'])
+                    or owner.get('leaf') and not memory.leaf_closed(reader, owner['leaf'])):
+                continue
+        except ValueError:
+            # A changed actor or leaf stays authoritative in the ledger.
+            continue
+        _archive_released_record(data, key, directory)
+        archived.append(key)
+    return archived
 
 def archive_released_shells(ledger, directory, *, reader=None):
     """Archive exact releases under the ledger lock. Never invoke on live data implicitly."""
@@ -88,20 +147,8 @@ def archive_released_shells(ledger, directory, *, reader=None):
                     or os.path.lexists(owner['marker']) or not memory.ended_process(reader, owner['owner'])
                     or owner.get('leaf') and not memory.leaf_closed(reader, owner['leaf'])):
                 raise ValueError('The shell archive lacks exact release and closure.')
-            records = {field: data[field][key] for field in FIELDS if key in data.get(field, {})}
-            growth = [row for row in data.get('shell_growth', []) if row.get('claim_key') == key]
-            if growth:
-                records['shell_growth'] = growth
-            digest = publish(directory, key, records)
-            data['shell_archive_directory'] = directory
-            data.setdefault('shell_archive', {})[key] = digest
-            for field in FIELDS:
-                data.get(field, {}).pop(key, None)
+            _archive_released_record(data, key, directory)
             archived.append(key)
         if archived:
-            selected = set(archived)
-            if 'shell_growth' in data:
-                data['shell_growth'] = [row for row in data['shell_growth']
-                                        if row.get('claim_key') not in selected]
             memory.write_ledger(ledger, data)
         return archived
