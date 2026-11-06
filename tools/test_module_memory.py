@@ -188,7 +188,7 @@ class ModuleMemoryTests(unittest.TestCase):
         self.assertEqual(manifest.count(dependency), 1)
         names = ['dune_coqc_guarded.sh','resource_guard.sh','coqc_findlib.py',
                  'module_memory.py','run_registry.py','det/coqc_slots.py',
-                 'block/harness/code/admission_memory.py']
+                 'block/harness/code/admission_memory.py','block/harness/code/shell_archive.py']
         for declared in (True, False):
             with self.subTest(declared=declared):
                 workspace = self.root/('declared' if declared else 'missing')
@@ -235,6 +235,75 @@ class ModuleMemoryTests(unittest.TestCase):
                     self.assertNotEqual(result.returncode,0)
                     self.assertIn('owned admission dependency',result.stderr)
                     self.assertFalse(events.exists())
+
+    def test_build_copy_release_requires_the_archive_dependency(self):
+        """Execute the release CLI inside Dune's real copy sandbox."""
+        import json
+        import os
+        import shutil
+        import subprocess
+        import sys
+        tools = Path(__file__).resolve().parent
+        sys.path.insert(0, str(tools/'block/harness'))
+        import test_unified_admission as fixtures
+        dune = Path.home()/'islaris/_opam/bin/dune'
+        dependency = '../block/harness/code/shell_archive.py'
+        manifest = (tools/'guard-bin/dune').read_text()
+        self.assertEqual(manifest.count(dependency), 1)
+        for declared in (True, False):
+            with self.subTest(declared=declared):
+                fixture = fixtures.UnifiedAdmission()
+                fixture.setUp()
+                try:
+                    fixture.confirm()
+                    before = fixture.ledger.read_bytes()
+                    workspace = self.root/('release-declared' if declared else 'release-missing')
+                    workspace.mkdir()
+                    (workspace/'dune-project').write_text('(lang dune 3.7)\n')
+                    names = ['dune_coqc_guarded.sh', 'resource_guard.sh', 'coqc_findlib.py',
+                             'module_memory.py', 'run_registry.py', 'det/coqc_slots.py',
+                             'block/harness/code/admission_memory.py', 'block/harness/code/shell_archive.py']
+                    for name in names:
+                        target = workspace/'tools'/name
+                        target.parent.mkdir(parents=True, exist_ok=True)
+                        shutil.copy2(tools/name, target)
+                    control = workspace/'tools/ReleaseControl.py'
+                    control.write_text("import os,sys\nfrom pathlib import Path\n"
+                        "sys.path.insert(0,str(Path(__file__).resolve().parent))\n"
+                        "import module_memory as m\n"
+                        "reader=m.ScopeReader(proc=Path(os.environ['FIXTURE_PROC']),cgroup_root=Path(os.environ['FIXTURE_CGROUP']))\n"
+                        "release=m.release_shell\n"
+                        "m.release_shell=lambda marker:release(marker,reader=reader)\n"
+                        "sys.argv=['module_memory.py','ledger-release','--marker',os.environ['FIXTURE_MARKER']]\n"
+                        "raise SystemExit(m.main())\n")
+                    directory = workspace/'tools/guard-bin'
+                    directory.mkdir()
+                    rule = manifest if declared else manifest.replace(' '+dependency, '')
+                    rule = rule.replace('../det/coqc_slots.py)', '../det/coqc_slots.py ../ReleaseControl.py)')
+                    rule = rule.replace('(action (copy %{dep:../dune_coqc_guarded.sh} %{target})))',
+                        '(action (progn (copy %{dep:../dune_coqc_guarded.sh} %{target}) (run python3 ../ReleaseControl.py))))')
+                    (directory/'dune').write_text(rule)
+                    environment = dict(os.environ, ZESU_CANONICAL_LEDGER=str(fixture.ledger),
+                        FIXTURE_PROC=str(fixture.proc), FIXTURE_CGROUP=str(fixture.reader.root),
+                        FIXTURE_MARKER=str(fixture.marker), PYTHONPATH='',
+                        PATH=str(dune.parent)+os.pathsep+os.environ.get('PATH', ''))
+                    result = subprocess.run([str(dune), 'build', '--sandbox=copy', '--cache=disabled',
+                        'tools/guard-bin/coqc'], cwd=workspace, env=environment, capture_output=True, text=True)
+                    if declared:
+                        self.assertEqual(result.returncode, 0, result.stderr)
+                        data = fixture.read()
+                        key = fixtures.M.shell_key(fixture.marker)
+                        self.assertEqual(data['fixed_claims'][key], 0)
+                        self.assertIn(key, data['shell_archive'])
+                        self.assertFalse(fixture.marker.exists())
+                    else:
+                        self.assertNotEqual(result.returncode, 0)
+                        self.assertIn("No module named 'shell_archive'", result.stderr)
+                        self.assertEqual(fixture.ledger.read_bytes(), before)
+                        self.assertTrue(fixture.marker.exists())
+                finally:
+                    fixture.tearDown()
+                    fixture.doCleanups()
 
     def physical(self, pid, peak=2 * 1024 ** 2, children=""):
         proc = self.root / "proc"
