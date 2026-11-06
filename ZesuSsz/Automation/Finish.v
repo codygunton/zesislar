@@ -614,8 +614,24 @@ Ltac zesu_v34_array_continuation :=
       ZesuSsz.Automation.FramePackingFinish.zesu_frame_packing_finish |
       assumption | reflexivity]).
 
+(* Keep the shared route first. Assemble after matching only when it refuses. *)
 Ltac zesu_finish_source_package :=
-  let run := ltac:(fun consume_facts finish =>
+  first [solve [
+  MemoryTupleConsumer.zesu_memory_tuple
+    ltac:(fun requested =>
+      once
+        (SourceFactByteViews.zesu_source_byte_views;
+         SourceFactByteViews.zesu_source_byte_order_tree requested;
+         ZesuSsz.Automation.BitvectorFacts.zesu_source_biased_mask_tree requested);
+      (tryif SourceFactMatching.zesu_source_check_fixed_tree requested
+       then idtac
+       else (repeat JoinEntailment.zesu_join_project_once;
+         PureFacts.zesu_saturate_derived_facts;
+         SourceFactMatching.zesu_source_check_fixed_tree requested));
+      once (SourceFactMatching.zesu_source_match_tree requested ltac:(idtac)))
+    ltac:(fun _ => SourceFactMatching.zesu_source_finish_package)
+  ] | solve [
+let run := ltac:(fun consume_facts finish =>
 once (try zesu_memory_registered_intro;
   ResourceGroups.zesu_open_resource_groups;
   ByteArrayAssemblyCodec.zesu_byte_array_normalize_stride;
@@ -627,8 +643,6 @@ once (try zesu_memory_registered_intro;
   | |- environments.envs_entails _ ?requested => consume_facts requested
   end;
   try MemoryTupleConsumer.zesu_memory_assemble_leading;
-  try (iEval (rewrite big_sepL_nil));
-  try iFrame;
   finish constr:(tt)) in
   run ltac:(fun requested =>
       once
@@ -641,7 +655,8 @@ once (try zesu_memory_registered_intro;
          PureFacts.zesu_saturate_derived_facts;
          SourceFactMatching.zesu_source_check_fixed_tree requested));
       SourceFactMatching.zesu_source_match_tree requested ltac:(idtac))
-    ltac:(fun _ => SourceFactMatching.zesu_source_finish_package).
+    ltac:(fun _ => SourceFactMatching.zesu_source_finish_package)
+  ]].
 
 
 (* Match the requested facts directly against the source facts. This adds no
