@@ -54,7 +54,21 @@ Ltac zesu_source_signed_lookup_lower :=
 
 
 
+(* Retained order facts can use either standard integer presentation. *)
+Ltac zesu_source_retained_order :=
+  lazymatch goal with
+  | |- Z.ge ?left ?right =>
+      assert_fails (has_evar left);
+      assert_fails (has_evar right);
+      apply Z.le_ge; assumption
+  | |- Z.le ?left ?right =>
+      assert_fails (has_evar left);
+      assert_fails (has_evar right);
+      apply Z.ge_le; assumption
+  end.
+
 Ltac zesu_source_fact := first [solve [assumption] | solve [reflexivity] |
+ solve [zesu_source_retained_order] |
   lazymatch goal with
   | |- context [bv_unsigned (Z_to_bv ?width ?value)] =>
       assert_fails (has_evar value);
