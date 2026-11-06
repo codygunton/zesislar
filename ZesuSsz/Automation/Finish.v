@@ -720,7 +720,7 @@ Ltac zesu_finish_common_pure :=
 
 (* The common pure path and final tail share the union helper. Baseline closers remain available. *)
 Ltac zesu_finish_final_pure :=
-  first [zesu_finish_common_pure |
+  first [
   zesu_final_pure_head_gate;
   tryif progress zesu_saturate_derived_facts
   then try solve [zesu_array_bounds_if_enabled]
@@ -740,19 +740,19 @@ Ltac zesu_finish_final_pure :=
           zesu_finish_simpl_and_leaf |
           lazymatch goal with |- and _ _ => split; finish_leaf end]
       in finish_leaf
-    | zesu_finish_list_cons_final]]].
+    | zesu_finish_list_cons_final]] | zesu_finish_common_pure].
 
 
 
 Ltac zesu_finish_pure_goal :=
-  first [zesu_finish_common_pure |
+  first [
 zesu_finish_pure_goal_base;
   try solve [
     first [
       zesu_finish_negated_ge; zesu_finish_implication_pair; repeat split;
       first [reflexivity | assumption | eassumption | lia | bv_solve |
         zesu_finish_forall_leaf]
-    | repeat split; zesu_finish_forall_leaf]]].
+    | repeat split; zesu_finish_forall_leaf]] | zesu_finish_common_pure].
 
 Ltac zesu_finish_entailment :=
   lazymatch goal with
@@ -787,7 +787,6 @@ Ltac zesu_union_array_payload_finish :=
 
 Ltac zesu_finish_base :=
   first [solve [zesu_union_array_payload_finish] |
-  zesu_finish_common_pure |
   try solve [zesu_array_region_selection_if_enabled];
   tryif zesu_defer_unresolved_sidecondition_if_enabled then idtac else (
   try solve [zesu_list_cons_witness_if_enabled |
@@ -796,7 +795,8 @@ Ltac zesu_finish_base :=
   then tryif let _ := constr:(_ : ZesuStepBoundedArithmetic) in idtac
        then try (zesu_finish_v2)
        else zesu_finish_v2
-  else zesu_finish_v1)].
+  else zesu_finish_v1) | zesu_finish_common_pure].
+
 
 Ltac zesu_finish := zesu_finish_once_if_enabled ltac:(zesu_finish_base).
 
