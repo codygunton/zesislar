@@ -551,15 +551,6 @@ Ltac zesu_finish_simpl_and_leaf :=
       exact (proj1 evidence I)
   end.
 
-Ltac zesu_finish_list_cons_final :=
-  lazymatch goal with
-  | |- exists (head : ?A) (tail : list ?A),
-      ?values = head :: tail /\ length tail = ?count =>
-      tryif has_evar values then fail 0 else idtac;
-      apply zesu_list_cons_witness;
-      solve [zesu_finish_contract_arithmetic]
-  end.
-
 (* Select the list length atom before arithmetic expands unrelated facts. *)
 Ltac zesu_finish_list_cons_atom :=
   lazymatch goal with
@@ -578,6 +569,9 @@ Ltac zesu_finish_list_cons_atom :=
         end;
         zesu_finish_contract_arithmetic]
   end.
+
+Ltac zesu_finish_list_cons_final :=
+  solve [zesu_finish_list_cons_atom].
 
 (* Restore only an already-enabled capability after the search scope ends. *)
 Ltac zesu_finish_unsigned_branch :=

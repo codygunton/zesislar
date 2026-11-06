@@ -65,3 +65,25 @@ Proof.
   time "atom_refuse_equality" (tryif zesu_finish_list_cons_atom then fail 1 else idtac).
   reflexivity.
 Qed.
+
+Lemma selected_final_closed (bytes : list (bv 8)) (Hlength : length bytes = 40%nat) :
+  exists head tail, bytes = head :: tail /\ length tail = 39%nat.
+Proof. ZesuSsz.Automation2.Finish.zesu_finish_list_cons_final. Qed.
+Lemma selected_final_symbolic_refusal (bytes : list (bv 8)) (count : nat)
+    (Hlength : length bytes = S count) :
+  exists head tail, bytes = head :: tail /\ length tail = count.
+Proof.
+  Fail ZesuSsz.Automation2.Finish.zesu_finish_list_cons_final.
+  apply ZesuSsz.Automation2.PureFacts.zesu_list_cons_witness. exact Hlength.
+Qed.
+Lemma selected_final_no_fact_refusal :
+  exists head tail, [(7%bv : bv 8)] = head :: tail /\ length tail = 0%nat.
+Proof.
+  Fail ZesuSsz.Automation2.Finish.zesu_finish_list_cons_final.
+  exists (7%bv : bv 8), []. split; reflexivity.
+Qed.
+Lemma selected_final_shape_refusal : True.
+Proof.
+  Fail ZesuSsz.Automation2.Finish.zesu_finish_list_cons_final.
+  exact I.
+Qed.
