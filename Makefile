@@ -167,6 +167,7 @@ RETAINED_TARGETS := \
   ZesuSsz/Generated/DecodeItem/PromotedBodiesAssumptions.vo \
   @ZesuSsz/Contracts/all \
   @ZesuSsz/Automation/all \
+  $(if $(wildcard ZesuSsz/Automation2),@ZesuSsz/Automation2/all) \
   @ZesuSsz/Export/all \
   @ZesuSsz/Compliance/all \
   @ZesuSsz/Proofs/Tests/all \
