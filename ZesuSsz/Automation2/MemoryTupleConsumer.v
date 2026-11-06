@@ -173,7 +173,12 @@ Ltac zesu_memory_array_assemble :=
 (* Assemble a leading byte array from its source owners before framing other owners. *)
 Ltac zesu_memory_assemble_leading :=
   lazymatch goal with
-  | |- environments.envs_entails _ (@bi_sep _ (isla.ghost_state.mem_mapsto_array_def _ _ _) _) =>
+  | |- environments.envs_entails _ (@bi_sep _ ?array _) =>
+      lazymatch array with
+      | @mem_mapsto_array _ _ 8 _ _ _ =>
+          rewrite isla.ghost_state.mem_mapsto_array_eq
+      | isla.ghost_state.mem_mapsto_array_def _ _ _ => idtac
+      end;
       iSplitL;
       [rewrite <- isla.ghost_state.mem_mapsto_array_eq;
        zesu_memory_array_assemble | idtac]
