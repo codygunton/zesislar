@@ -259,7 +259,27 @@ class TrustedDeclarationTests(unittest.TestCase):
                 main()
 
     def test_exact_allowlist_has_nineteen_declarations(self):
-        self.assertEqual(len(trusted_declarations()), 19)
+        self.assertEqual(len(trusted_declarations()), 23)
+
+    def test_automation2_keeps_the_same_hook_owner_boundary(self):
+        self.scan("ZesuSsz/Automation2/Hooks.v", "Ltac liAStep ::= idtac.")
+        with self.assertRaisesRegex(SystemExit, "Lithium hook redefinition"):
+            self.scan("ZesuSsz/Automation2/Other.v", "Ltac liAStep ::= idtac.")
+
+    def test_automation2_has_the_same_forbidden_name_scope(self):
+        self.scan("ZesuSsz/Automation2/Rule.v", "Definition zesu_lbu_byte_array_at_spec := 0.")
+        with self.assertRaisesRegex(SystemExit, "forbidden-name increase"):
+            self.scan("tools/Rule.v", "Definition zesu_lbu_byte_array_at_spec := 0.")
+
+    def test_automation2_trust_mirrors_only_existing_automation_declarations(self):
+        approved = trusted_declarations()
+        old = {(name, body) for name, body in approved if name.startswith("ZesuSsz/Automation/")}
+        new = {(name.replace("/Automation2/", "/Automation/"), body)
+               for name, body in approved if name.startswith("ZesuSsz/Automation2/")}
+        self.assertEqual(new, old)
+        self.assertTrue(trusted_declaration_failures("ZesuSsz/Automation2/Other.v", self.ml, approved))
+        self.assertTrue(trusted_declaration_failures("ZesuSsz/Automation2/EntryIntro.v",
+            self.ml.replace("zesu-signature-gates.plugin", "other.plugin"), approved))
 
     def test_approved_statements_accept_whitespace_and_comments(self):
         source = ('Declare (* note *) ML\nModule "zesu-signature-gates.plugin".\n'

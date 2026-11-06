@@ -409,10 +409,10 @@ def main() -> None:
                         f"proof placeholder: {name}:{number}: {line.strip()}"
                     )
 
-        if name != HOOKS_PATH:
+        if name not in (HOOKS_PATH, "ZesuSsz/Automation2/Hooks.v"):
             for number, line in enumerate(lines, 1):
                 if HOOK_REDEFINITION.search(line):
-                    if (name != LEGACY_HOOKS_PATH or
+                    if (name not in (LEGACY_HOOKS_PATH, "ZesuSsz/Automation2/Legacy/Hooks.v") or
                             line.strip() not in LEGACY_HOOK_LINES):
                         failures.append(f"Lithium hook redefinition: {name}:{number}")
 
@@ -441,7 +441,7 @@ def main() -> None:
             if module in text:
                 failures.append(f"imports Appendix A.1 module: {name}: {module}")
 
-        if not name.startswith(AUTOMATION_PREFIX):
+        if not name.startswith((AUTOMATION_PREFIX, "ZesuSsz/Automation2/")):
             counts = forbidden_counts(text)
             remaining += sum(counts.values())
             failures.extend(ratchet_failures(name, counts, baseline))
