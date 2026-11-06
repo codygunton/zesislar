@@ -36,7 +36,7 @@ Proof.
   intros Hlength Hlower Hupper.
   unfold decodeItemOutput24Selection.
   assert (Hbounds : 0 <= decodeItemOutputPointer args + 24 < bv_modulus 64).
-  { unfold RlpDecodeItem.word64Modulus in Hupper. unfold bv_modulus. cbn. lia. }
+  { unfold bv_modulus. cbn. lia. }
   replace (bv_add (Z_to_bv 64 (decodeItemOutputPointer args)) (24%bv : bv 64))
     with (Z_to_bv 64 (decodeItemOutputPointer args + 24)) by bv_solve.
   rewrite (Z_to_bv_small 64 _ Hbounds).
