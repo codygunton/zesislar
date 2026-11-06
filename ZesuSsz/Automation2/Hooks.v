@@ -1,5 +1,6 @@
 Require ZesuSsz.Automation.Hooks.
 Require Import ZesuSsz.Automation2.ContextRange.
+Require Import ZesuSsz.Automation2.RangeFacts.
 Require Import ZesuSsz.Automation2.ByteArrayAssemblyCodec.
 Require Import ZesuSsz.Automation2.MemoryAddress.
 Require Import ZesuSsz.Automation2.CodecArrayRead.
@@ -449,6 +450,20 @@ Ltac zesu_normalize_known_word_address :=
   end.
 Ltac zesu_normalize_find_mem_address :=
   first [
+    lazymatch goal with
+    | |- environments.envs_entails _
+        (find_in_context (FindMemMapsTo
+          (bv_unsigned (bv_add (Z_to_bv ?width ?integer) ?offset))) _) =>
+        assert_fails (has_evar integer);
+        let displacement := ZesuSsz.Automation2.VmClosed.zesu_vm_eval_closed
+          (bv_unsigned offset) in
+        let equality := fresh "HreadMemoryAddress" in
+        assert (equality :
+          bv_unsigned (bv_add (Z_to_bv width integer) offset) =
+          (integer + displacement)%Z) by
+          ZesuSsz.Automation2.RangeFacts.zesu_address_equality;
+        rewrite equality; clear equality
+    end |
     lazymatch goal with
     | |- environments.envs_entails _
         (find_in_context (FindMemMapsTo (bv_unsigned (Z_to_bv ?width ?integer))) _) =>
