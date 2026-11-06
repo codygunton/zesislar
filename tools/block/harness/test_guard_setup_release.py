@@ -80,7 +80,7 @@ class GuardSetupRelease(unittest.TestCase):
         self.assertTrue(self.release())
         after = self.read()
         self.assertEqual(after['fixed_claims'][self.key], 0)
-        self.assertEqual(after['shell_claim_owners'], data['shell_claim_owners'])
+        self.assertEqual(M._shell_recovery_record(after, self.key, self.reader)[0], record)
         self.assertFalse(self.marker.exists())
 
     def test_live_leaf_retains_booking(self):

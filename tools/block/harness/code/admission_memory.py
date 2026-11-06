@@ -1551,6 +1551,7 @@ def recover_dead_shell(marker, *, ledger=None, reader=None):
             data.setdefault('shell_releases', {})[key] = {
                 'marker': str(marker), 'owner': admitted['owner'],
                 'dead_owner_recovery': True, 'absence_only': True}
+            _archive_shell_release(ledger, data, key, reader)
         write_ledger(ledger, data)
         marker.unlink()
         return True
@@ -1631,6 +1632,7 @@ def recover_stale_shell(marker, *, ledger=None, reader=None):
             'previous_token_identity': record.get('token_identity'),
             'observed_token_identity': token, 'closed_scopes': sorted(scopes),
             'recovered_ns': time.time_ns()}
+        _archive_shell_release(ledger, data, key, reader)
         write_ledger(ledger, data)
         return True
 
@@ -1656,6 +1658,17 @@ def recover_stale_shells(*, ledger=None, reader=None):
         except (OSError, ValueError) as error:
             results.append({'key': key, 'released': False, 'reason': str(error)})
     return results
+
+
+SHELL_ARCHIVE_THRESHOLD_BYTES = 16 * 1024 * 1024
+
+
+def _archive_shell_release(ledger, data, key, reader):
+    from shell_archive import _archive_released_record, compact_released_shells
+    directory = data.get('shell_archive_directory', Path(ledger).parent/'released-shell-archive')
+    _archive_released_record(data, key, directory)
+    if Path(ledger).stat().st_size > SHELL_ARCHIVE_THRESHOLD_BYTES:
+        compact_released_shells(data, directory, reader)
 
 
 def release_shell(marker, *, ledger=None, reader=None, require_dead_owner=False):
@@ -1707,6 +1720,7 @@ def release_shell(marker, *, ledger=None, reader=None, require_dead_owner=False)
                     archive_sha256=data['shell_archive'][key])
             else:
                 released['marker_cleanup'] = cleanup
+                _archive_shell_release(ledger, data, key, reader)
             write_ledger(ledger, data)
             return True
         if lines[0].isdecimal():
@@ -1745,6 +1759,7 @@ def release_shell(marker, *, ledger=None, reader=None, require_dead_owner=False)
             'dead_owner_recovery': require_dead_owner,
             'previous_token_identity': record.get('token_identity'),
             'observed_token_identity': token_identity}
+        _archive_shell_release(ledger, data, key, reader)
         write_ledger(ledger, data)
         marker.unlink()
         return True

@@ -24,7 +24,9 @@ class ShellArchiveTests(unittest.TestCase):
         self.key = M.shell_key(self.f.marker)
 
     def released(self):
-        M.release_shell(self.f.marker, ledger=self.f.ledger, reader=self.f.reader)
+        # Seed a canonical release from the earlier, nonincremental writer.
+        with patch.object(M, '_archive_shell_release'):
+            M.release_shell(self.f.marker, ledger=self.f.ledger, reader=self.f.reader)
         shutil.rmtree(self.f.reader.proc/'14')
         return self.f.read()
 
@@ -54,7 +56,7 @@ class ShellArchiveTests(unittest.TestCase):
             with self.assertRaises(OSError):
                 self.compact()
         self.assertEqual(self.f.read(), before)
-        self.assertTrue(A.document_path(self.archive, self.key).exists())
+        self.assertEqual(len(list(self.archive.glob('*.json'))), 1)
         self.assertEqual(self.compact(), [self.key])
 
     def test_failed_archive_publication_cannot_remove_ledger_records(self):
@@ -63,7 +65,7 @@ class ShellArchiveTests(unittest.TestCase):
             with self.assertRaises(OSError):
                 self.compact()
         self.assertEqual(self.f.read(), before)
-        self.assertFalse(A.document_path(self.archive, self.key).exists())
+        self.assertEqual(list(self.archive.glob('*.json')), [])
         self.assertEqual(self.compact(), [self.key])
 
     def test_concurrent_compaction_preserves_one_identical_release(self):
@@ -87,7 +89,7 @@ class ShellArchiveTests(unittest.TestCase):
         before = self.released()
         self.compact()
         after = self.f.read()
-        path = A.document_path(self.archive, self.key)
+        path = A.document_path(self.archive, self.key, after['shell_archive'][self.key])
         changed = json.loads(path.read_text())
         changed['records']['shell_releases']['marker'] = '/wrong'
         path.write_text(json.dumps(changed))

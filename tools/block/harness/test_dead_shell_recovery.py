@@ -41,7 +41,7 @@ class DeadOwnerRecoveryTests(unittest.TestCase):
         self.assertEqual(data['fixed_claims'][M.shell_key(f.marker)], 0)
         result = M.projection(data, M.ledger_claims(data), 0, 200 * M.GIB, reader=f.reader)
         self.assertEqual(result['accounted_active_bytes'], 64 * M.GIB)
-        self.assertTrue(data['shell_releases'][M.shell_key(f.marker)]['dead_owner_recovery'])
+        self.assertTrue(M._shell_recovery_record(data, M.shell_key(f.marker), f.reader)[1]['dead_owner_recovery'])
 
     def test_dead_owner_and_closed_aggregate_release_booking(self):
         f = self.fixture
@@ -110,7 +110,7 @@ class DeadOwnerRecoveryTests(unittest.TestCase):
         self.assertTrue(self.recover())
         data = f.read()
         key = M.shell_key(f.marker)
-        self.assertTrue(data['shell_releases'][key]['dead_owner_recovery'])
+        self.assertTrue(M._shell_recovery_record(data, key, f.reader)[1]['dead_owner_recovery'])
         self.assertFalse(f.marker.exists())
         result = M.projection(data, M.ledger_claims(data), 0, 200*M.GIB, reader=f.reader)
         self.assertEqual(result['accounted_active_bytes'], 64*M.GIB)
@@ -215,7 +215,7 @@ class DeadOwnerRecoveryTests(unittest.TestCase):
         key = M.shell_key(f.marker)
         self.assertEqual(data['fixed_claims'][key], 0)
         self.assertEqual(data['shell_recovery_audits'][key]['route'], 'admitted_absence')
-        self.assertTrue(data['shell_releases'][key]['absence_only'])
+        self.assertTrue(M._shell_recovery_record(data, key, f.reader)[1]['absence_only'])
 
     def test_missing_identity_confirmation_with_live_owner_stays_refused(self):
         f = self.fixture
