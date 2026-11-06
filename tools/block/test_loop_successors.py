@@ -5,6 +5,8 @@ from pathlib import Path
 import re
 import unittest
 
+from render_fp301_statements import render_unfold_opacity
+
 ROOT = Path(__file__).resolve().parents[2]
 
 
@@ -16,7 +18,8 @@ class LoopSuccessors(unittest.TestCase):
             with self.subTest(output=row["output"]):
                 source = row["canonical_source"]
                 self.assertEqual(hashlib.sha256(source.encode()).hexdigest(), row["sha256"])
-                self.assertEqual((ROOT / row["output"]).read_text(), source)
+                expected = render_unfold_opacity(source) if row["output"].endswith("Structural.v") else source
+                self.assertEqual((ROOT / row["output"]).read_text(), expected)
                 self.assertIsNone(re.search(r"\b(?:Proof|Qed|Admitted|Axiom|Ltac)\b", source))
                 if row["output"].endswith("Entries.v"):
                     self.assertEqual(source.count(" ∗ K)"), 1)
