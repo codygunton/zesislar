@@ -1133,6 +1133,12 @@ Ltac zesu_constraint_witness T :=
   | bool => open_constr:(_ : bool)
   | list ?A => open_constr:(_ : list A)
   | bv ?width => open_constr:(_ : bv width)
+  | _ =>
+      let reduced := eval hnf in T in
+      lazymatch reduced with
+      | Z => open_constr:(_ : T)
+      | nat => open_constr:(_ : T)
+      end
   end.
 
 Ltac zesu_witness_open_existentials fuel :=
