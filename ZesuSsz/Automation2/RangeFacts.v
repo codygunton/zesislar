@@ -80,28 +80,110 @@ Ltac2 rec zesu_range_has_atom atom atoms :=
  | [] => false
  | h :: rest => if Constr.equal atom h then true else zesu_range_has_atom atom rest
  end.
-(* Each round snapshots selected facts. Atoms are visited only once. *)
+(* Cache syntax once. Opaque data arguments are leaves, not search spaces. *)
+Ltac2 rec zesu_range_syntax term :=
+ let children :=
+   let typ := Constr.type term in
+   let arithmetic :=
+     if Constr.equal typ constr:(Prop) then true else
+     if Constr.equal typ constr:(Z) then true else
+     if Constr.equal typ constr:(nat) then true else
+     if Constr.equal typ constr:(N) then true else
+     if Constr.equal typ constr:(bool) then true else
+     lazy_match! typ with | bv _ => true | _ => false end in
+   if arithmetic then
+     match Constr.Unsafe.kind term with
+     | Constr.Unsafe.App _ args =>
+       Array.fold_left (fun found arg => List.append found (zesu_range_syntax arg)) [] args
+     | Constr.Unsafe.Cast value _ _ => zesu_range_syntax value
+     | _ => []
+     end
+   else [] in
+ term :: children.
+Ltac2 zesu_range_occurs atom syntax := zesu_range_has_atom atom syntax.
+Ltac2 zesu_range_carried selector syntax :=
+ let (values, pointer, root) := selector in
+ Bool.or (zesu_range_occurs values syntax)
+   (Bool.or (zesu_range_occurs pointer syntax) (zesu_range_occurs root syntax)).
+Ltac2 zesu_range_selected selector syntax :=
+ let (values, pointer, _) := selector in
+ Bool.or (zesu_range_occurs values syntax) (zesu_range_occurs pointer syntax).
+Ltac2 rec zesu_range_all_paths selector paths :=
+ match paths with
+ | [] => true
+ | syntax :: rest =>
+   if zesu_range_carried selector syntax then zesu_range_all_paths selector rest else false
+ end.
+(* Project a hypothesis once. Never unfold into resource or data arguments. *)
+Ltac2 rec zesu_range_leaves depth evidence typ paths :=
+ let syntax := zesu_range_syntax typ in
+ let paths := syntax :: paths in
+ let leaf := fun () => [(evidence, typ, syntax, paths)] in
+ lazy_match! typ with
+ | @eq Z _ _ => leaf () | @eq nat _ _ => leaf ()
+ | @eq _ _ _ => []
+ | Z.le _ _ => leaf () | Z.lt _ _ => leaf ()
+ | Z.ge _ _ => leaf () | Z.gt _ _ => leaf ()
+ | _ =>
+   if Int.equal depth 0 then [] else
+   if Constr.equal (Constr.type typ) constr:(Prop) then
+     let exposed := Std.eval_hnf typ in
+     lazy_match! exposed with
+     | @and ?lhs ?rhs =>
+       let l := constr:(@proj1 $lhs $rhs $evidence) in
+       let r := constr:(@proj2 $lhs $rhs $evidence) in
+       List.append (zesu_range_leaves (Int.sub depth 1) l lhs paths)
+         (zesu_range_leaves (Int.sub depth 1) r rhs paths)
+     | _ => [] end
+   else []
+ end.
+Ltac2 zesu_range_atom_is_open atom :=
+ if Constr.has_evar atom then false else
+ Control.once (fun () => Control.plus (fun () =>
+   Ltac1.apply (Ltac1.ref [@ZesuSsz; @Automation2; @VmClosed; @zesu_vm_closed])
+     [Ltac1.of_constr atom] Ltac1.run;
+   false) (fun _ => true)).
+(* Each hypothesis has one cached projection. Each selected fact is committed once. *)
 Ltac2 zesu_range_collect values pointer root :=
  let original := Control.hyps () in
- List.iter (fun h => let (name, _, _) := h in
-   Ltac1.apply (Ltac1.ref [@ZesuSsz; @Automation2; @RangeFacts; @zesu_range_project])
-     [Ltac1.of_constr constr:(8%nat); Ltac1.of_constr values;
-      Ltac1.of_constr pointer; Ltac1.of_constr root;
-      Ltac1.of_constr (Control.hyp name)] Ltac1.run) original;
+ let cached := List.map (fun h => let (name, _, typ) := h in
+   (name, typ, zesu_range_syntax typ, Ref.ref None)) original in
+ let chosen := Ref.ref [] in
+ List.iter (fun h => let (name, _, typ) := h in
+   if zesu_name_prefix (Ident.to_string name) "HrangeFact" 0 then
+     Ref.set chosen (typ :: Ref.get chosen) else ()) original;
+ let rec any selectors predicate := match selectors with
+   | [] => false | h :: rest => if predicate h then true else any rest predicate end in
+ let select := fun selectors =>
+   List.iter (fun h => let (name, typ, syntax, projection) := h in
+     if any selectors (fun selector => zesu_range_carried selector syntax) then (
+       let leaves := match Ref.get projection with
+         | Some found => found
+         | None => let found := zesu_range_leaves 8 (Control.hyp name) typ [] in
+           Ref.set projection (Some found); found end in
+       List.iter (fun leaf => let (evidence, fact, syntax, paths) := leaf in
+         if any selectors (fun selector =>
+           Bool.and (zesu_range_selected selector syntax) (zesu_range_all_paths selector paths)) then
+           if zesu_range_has_atom fact (Ref.get chosen) then () else (
+             Ltac1.apply (Ltac1.ref [@ZesuSsz; @Automation2; @RangeFacts; @zesu_range_pose])
+               [Ltac1.of_constr evidence] Ltac1.run;
+             Ref.set chosen (fact :: Ref.get chosen))
+         else ()) leaves)
+     else ()) cached in
+ select [(values, pointer, root)];
  let visited := Ref.ref [] in
  let rec close remaining :=
    if Int.equal remaining 0 then () else (
-     let selected := Control.hyps () in
-     List.iter (fun h => let (name, _, typ) := h in
-       if zesu_name_prefix (Ident.to_string name) "HrangeFact" 0 then
-         List.iter (fun atom =>
-           if zesu_range_has_atom atom (Ref.get visited) then () else (
-             Ref.set visited (atom :: Ref.get visited);
-             List.iter (fun source => let (source_name, _, _) := source in
-               Ltac1.apply (Ltac1.ref [@ZesuSsz; @Automation2; @RangeFacts; @zesu_range_project_sum_atom])
-                 [Ltac1.of_constr atom; Ltac1.of_constr (Control.hyp source_name)] Ltac1.run)
-               original)) (zesu_range_atoms typ)
-       else ()) selected;
+     let selectors := Ref.ref [] in
+     let selected := Ref.get chosen in
+     List.iter (fun typ => List.iter (fun atom =>
+       if zesu_range_has_atom atom (Ref.get visited) then () else (
+         Ref.set visited (atom :: Ref.get visited);
+         if zesu_range_atom_is_open atom then
+           let root := lazy_match! atom with | ?f ?arg => arg | _ => atom end in
+           Ref.set selectors ((atom, atom, root) :: Ref.get selectors)
+         else ())) (zesu_range_atoms typ)) selected;
+     select (Ref.get selectors);
      close (Int.sub remaining 1)) in
  close 2.
 Ltac2 rec zesu_range_erase_list hyps :=
