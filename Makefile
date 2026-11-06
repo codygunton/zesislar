@@ -118,31 +118,37 @@ check-support-freshness: stock-native-indexes
 	$(PYTHON) tools/block/render_support.py --function decodeItem --check
 	$(PYTHON) tools/block/generate_table.py --function decodeItem --recipe build/stock-zisk/build-recipe.json --cfg build/stock-zisk/cfg.json --design ZesuSsz/Evidence/decode_item_block_design.json --coverage ZesuSsz/Generated/DecodeItem/block_table_metadata.json --output ZesuSsz/Generated/DecodeItem/BlockTable.v --check
 
-check-evidence-tools: check-support-freshness
+check-evidence-tools: check-support-freshness check-tool-tests
 
 .PHONY: check-evidence-tools
 check-evidence-tools:
 	@echo "uncached checks: machine config, tests, hygiene, spec shapes"
 	$(PYTHON) tools/machine_config.py --check
-	$(PYTHON) -m unittest discover -s tools -p 'test_*.py'
-	@command -v "$(MCP_PYTHON)" >/dev/null 2>&1 || { echo "MCP_PYTHON must name the installed MCP test interpreter" >&2; exit 2; }
-	$(MCP_PYTHON) -B -m unittest discover -s tools/block/harness -p 'test_*.py'
-	$(PYTHON) -m unittest tools.block.test_approved_switches tools.block.test_automation_lints
 	$(PYTHON) -m tools.block.check_approved_switches
 	$(PYTHON) -m tools.block.check_generic_automation
 	$(PYTHON) -m tools.block.check_export_scopes
 	$(PYTHON) -m tools.block.check_data_only_lemmas
-	$(PYTHON) -m unittest discover -s tools/stock_zisk -p 'test_manifest.py'
-	PYTHONPATH=tools/stock_zisk/platform $(PYTHON) -m unittest discover -s tools/stock_zisk/platform -p 'test_function_binding.py'
-	PYTHONPATH=tools/stock_zisk/platform $(PYTHON) -m unittest discover -s tools/stock_zisk/platform -p 'test_trace_only.py'
-	$(PYTHON) -m unittest discover -s tools/stock_zisk/machine_map -p 'test_*.py'
 	$(PYTHON) tools/stock_zisk/machine_map/generate.py --build $(STOCK_DIR) --check
-	$(PYTHON) -m unittest discover -s tools/stock_zisk/static_sites -p 'test_*.py'
 	PYTHONPATH=ZesuSsz/Evidence $(PYTHON) -m unittest discover -s ZesuSsz/Evidence -p 'test_*.py'
 	$(PYTHON) ZesuSsz/Evidence/check_proof_hygiene.py
 	$(PYTHON) ZesuSsz/Evidence/check_release_imports.py
 	$(PYTHON) ZesuSsz/Evidence/check_spec_shapes.py
 	$(PYTHON) tools/check_sail_host_axioms.py
+
+.PHONY: check-tool-tests _check-tool-tests
+check-tool-tests:
+	$(PYTHON) tools/gate_scope.py -- $(MAKE) --no-print-directory _check-tool-tests
+
+_check-tool-tests:
+	$(PYTHON) -m unittest discover -s tools -p 'test_*.py'
+	@command -v "$(MCP_PYTHON)" >/dev/null 2>&1 || { echo "MCP_PYTHON must name the installed MCP test interpreter" >&2; exit 2; }
+	$(MCP_PYTHON) -B -m unittest discover -s tools/block/harness -p 'test_*.py'
+	$(PYTHON) -m unittest tools.block.test_approved_switches tools.block.test_automation_lints
+	$(PYTHON) -m unittest discover -s tools/stock_zisk -p 'test_manifest.py'
+	PYTHONPATH=tools/stock_zisk/platform $(PYTHON) -m unittest discover -s tools/stock_zisk/platform -p 'test_function_binding.py'
+	PYTHONPATH=tools/stock_zisk/platform $(PYTHON) -m unittest discover -s tools/stock_zisk/platform -p 'test_trace_only.py'
+	$(PYTHON) -m unittest discover -s tools/stock_zisk/machine_map -p 'test_*.py'
+	$(PYTHON) -m unittest discover -s tools/stock_zisk/static_sites -p 'test_*.py'
 
 .PHONY: check-proof-hygiene
 check-proof-hygiene:

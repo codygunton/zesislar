@@ -2,6 +2,7 @@
 """Enforce proof hygiene and ratchet away legacy forbidden identifiers."""
 
 import fnmatch
+import hashlib
 import json
 import os
 import re
@@ -337,25 +338,39 @@ def proof_size_ratchet_failures(
 
 
 
-FROZEN_AUTOMATION_REVISION = "4e9f33bfeee005ee7e7f16186f9d933ecac18197"
+FROZEN_AUTOMATION_TREE = "5ad85b171275969348499d69a580d740b44f60e2"
 
 
-def frozen_automation_failures(root=ROOT, revision=FROZEN_AUTOMATION_REVISION):
-    """Compare both committed and uncommitted source changes with the freeze."""
-    changed = subprocess.check_output([
-        "git", "-C", str(root), "diff", "--name-only", revision, "--",
-        AUTOMATION_PREFIX], text=True).splitlines()
-    added = subprocess.check_output([
-        "git", "-C", str(root), "ls-files", "--others", "--exclude-standard", "--",
-        AUTOMATION_PREFIX], text=True).splitlines()
-    names = sorted(set(changed + added))
-    if not names:
+def frozen_automation_failures(root=ROOT, tree=FROZEN_AUTOMATION_TREE):
+    """Compare working source bytes with a pinned tree, independent of ancestry."""
+    records = subprocess.check_output([
+        "git", "-C", str(root), "ls-tree", "-r", "-z", tree]).decode().split("\0")
+    expected = {}
+    for record in filter(None, records):
+        metadata, name = record.split("\t", 1)
+        mode, kind, digest = metadata.split()
+        expected[AUTOMATION_PREFIX + name] = (mode, digest)
+    names = subprocess.check_output([
+        "git", "-C", str(root), "ls-files", "--cached", "--others", "--exclude-standard",
+        "-z", "--", AUTOMATION_PREFIX], text=True).split("\0")
+    actual = {}
+    for name in set(filter(None, names)):
+        path = Path(root)/name
+        if not path.exists() or path.is_symlink():
+            continue
+        raw = path.read_bytes()
+        digest = hashlib.sha1(b"blob " + str(len(raw)).encode() + b"\0" + raw).hexdigest()
+        actual[name] = ("100755" if path.stat().st_mode & 0o111 else "100644", digest)
+    changed = sorted(name for name in expected.keys() | actual.keys()
+                     if expected.get(name) != actual.get(name))
+    if not changed:
         return []
     reason = os.environ.get("ZESU_AUTOMATION_EMERGENCY_OVERRIDE", "").strip()
     if reason:
         print("emergency Automation override: " + reason, file=sys.stderr)
         return []
-    return ["frozen Automation changed: " + name for name in names]
+    return ["frozen Automation changed: " + name for name in changed]
+
 
 def main() -> None:
     baseline_data = json.loads(BASELINE_PATH.read_text())

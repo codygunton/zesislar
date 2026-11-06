@@ -326,7 +326,7 @@ class FrozenAutomationTests(unittest.TestCase):
         self.git("add", ".")
         self.git("-c", "user.name=Test", "-c", "user.email=test@example.invalid",
                  "commit", "--quiet", "-m", "Freeze")
-        self.revision = self.git("rev-parse", "HEAD").strip()
+        self.revision = self.git("rev-parse", "HEAD:ZesuSsz/Automation").strip()
         environment = patch.dict("os.environ", {"ZESU_AUTOMATION_EMERGENCY_OVERRIDE": ""})
         environment.start()
         self.addCleanup(environment.stop)
