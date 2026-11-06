@@ -281,6 +281,37 @@ Ltac zesu_bias_mask_image width byte base inner offset mask masked :=
 Ltac zesu_source_biased_mask_goal :=
   solve [
     lazymatch goal with
+    | |- (?bound <= bv_unsigned
+        (bv_and (bv_add (bv_and (bv_sign_extend ?width ?byte) ?inner) ?offset) ?mask))%Z =>
+      assert_fails (has_evar byte);
+      VmClosed.zesu_vm_closed bound;
+      VmClosed.zesu_vm_closed width;
+      VmClosed.zesu_vm_closed inner;
+      VmClosed.zesu_vm_closed offset;
+      VmClosed.zesu_vm_closed mask;
+      let delta := eval vm_compute in (bv_unsigned offset) in
+      let low := eval vm_compute in (N.log2 (Z.to_N (bv_unsigned mask + 1))) in
+      let modulus := eval vm_compute in (bv_modulus low) in
+      let difference := eval vm_compute in (modulus - delta) in
+      multimatch goal with
+      | Hlower : (?lower <= bv_unsigned byte)%Z,
+        Hupper : (bv_unsigned byte <= ?upper)%Z |- _ =>
+        VmClosed.zesu_vm_closed lower;
+        VmClosed.zesu_vm_closed upper;
+        let valid := eval vm_compute in
+          (bool_decide (modulus <= lower + delta /\ upper + delta < 2 * modulus /\
+            bound <= lower - difference)%Z) in
+        constr_eq valid constr:(true);
+        clear - Hlower Hupper;
+        let base := constr:(bv_and (bv_sign_extend width byte) inner) in
+        let masked := constr:(bv_and (bv_add base offset) mask) in
+        let Himage := fresh "HbiasedLowerImage" in
+        assert (Himage : bv_unsigned masked = bv_unsigned byte - difference) by
+          (zesu_bias_mask_image width byte base inner offset mask masked; ring);
+        rewrite Himage;
+        clear - Hlower Hupper;
+        Lia.lia
+      end
     | |- (bv_unsigned ?byte - ?difference < bv_unsigned ?limit)%Z =>
       assert_fails (has_evar byte);
       assert_fails (has_evar limit);
