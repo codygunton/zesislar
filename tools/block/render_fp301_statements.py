@@ -22,6 +22,16 @@ def read_bound(row):
     return path.read_text()
 
 
+def render_declaration(source, header):
+    """Keep the bound declaration body and render its core-free header."""
+    boundary = "Local Open Scope Z_scope.\n"
+    if source.count(boundary) != 1 or not header.endswith(boundary):
+        raise ValueError("A generated declaration lacks its exact header boundary.")
+    if "Automation.All." in header or "Automation2.All." in header:
+        raise ValueError("A generated declaration cannot import a core.")
+    return header + source.split(boundary, 1)[1]
+
+
 def render_caller(source):
     """Keep the canonical caller and select the second automation entry point."""
     if "::=" in source or "Ltac " in source:
@@ -88,6 +98,7 @@ def render(inputs, output):
 Require Import isla.riscv64.riscv64.
 From Coq Require Import Lists.List ZArith.ZArith NArith.NArith.
 Require Import ZesuSsz.Contracts.RlpDecodeItemContract.
+Require Export ZesuSsz.Contracts.DecodeItemDomainRanges.
 Require Import ZesuSsz.Contracts.RlpDecodeItem.
 Require ZesuSsz.Automation.Hooks.
 Local Open Scope Z_scope.

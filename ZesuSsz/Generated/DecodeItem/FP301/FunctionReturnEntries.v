@@ -2,6 +2,7 @@
 Require Import isla.riscv64.riscv64.
 From Coq Require Import Lists.List ZArith.ZArith NArith.NArith.
 Require Import ZesuSsz.Contracts.RlpDecodeItemContract.
+Require Export ZesuSsz.Contracts.DecodeItemDomainRanges.
 Require Import ZesuSsz.Contracts.RlpDecodeItem.
 Require ZesuSsz.Automation.Hooks.
 Local Open Scope Z_scope.
