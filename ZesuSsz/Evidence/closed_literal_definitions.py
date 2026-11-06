@@ -9,7 +9,9 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[2] / "tools/block"))
 from check_data_only_lemmas import rocq_commands, rocq_tokens
 
 RULE = "CONST-NOTATION"
-NUMERIC_TYPE = re.compile(r"(?:Z|N|nat|positive|bv\s*\(?\s*\d+(?:%N)?\s*\)?)\Z")
+NUMERIC_TYPES = {"Z", "N", "nat", "positive", "Coq.Init.Datatypes.nat",
+                 "Coq.Numbers.BinNums.Z", "Coq.Numbers.BinNums.N",
+                 "Coq.Numbers.BinNums.positive"}
 PRIMITIVES = {"Z_to_bv", "BV", "bv_modulus", "Z0", "Zpos", "Zneg", "N0", "Npos",
               "O", "S", "xH", "xI", "xO", "Z", "N", "nat", "positive", "bv", "mod"}
 for namespace in ["Z", "N", "Nat", "Pos"]:
@@ -51,6 +53,14 @@ def literal_expression(body, known=()):
         for token in tokens)
 
 
+def numeric_type(text):
+    text = " ".join(code_text(text).split())
+    if text in NUMERIC_TYPES:
+        return True
+    match = re.fullmatch(r"(?:stdpp\.bitvector\.definitions\.)?bv\s+(.+)", text)
+    return match is not None and literal_expression(match[1])
+
+
 def closed_literal_definitions(text):
     result = []
     commands = rocq_commands(text)
@@ -80,7 +90,7 @@ def closed_literal_definitions(text):
         except ValueError:
             continue
         type_text = text[command[2][1] + 1:command[assignment][1]].strip() if tokens[2] == ":" else ""
-        if type_text and not NUMERIC_TYPE.fullmatch(type_text):
+        if type_text and not numeric_type(type_text):
             continue
         body_start = command[assignment][1] + 2
         last, offset = command[-1]

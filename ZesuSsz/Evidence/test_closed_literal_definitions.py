@@ -7,6 +7,9 @@ from closed_literal_definitions import closed_literal_definitions, closed_litera
 class ClosedLiteralDefinitions(unittest.TestCase):
     def test_numeric_types_and_arithmetic(self):
         for source in ["Definition a : Z := 2 ^ 64.", "Definition a : N := 40%N.",
+                       "Definition a : Coq.Numbers.BinNums.Z := 40.",
+                       "Definition a : Coq.Init.Datatypes.nat := 40.",
+                       "Definition a : stdpp.bitvector.definitions.bv (8 * 8)%N := 0%bv.",
                        "Definition a : nat := Nat.add 8 8.", "Definition a : positive := xH.",
                        "Definition a : Z := Z.ones 8.", "Definition a : bv 8 := BV 8 255.",
                        "Definition a := 40.", "#[local] Definition a : Z := 40.",
