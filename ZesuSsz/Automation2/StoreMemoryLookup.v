@@ -7,6 +7,7 @@ From Coq Require Import ZArith.ZArith NArith.NArith Lia Lists.List.
 Local Open Scope Z_scope.
 Require Import ZesuSsz.Automation2.ByteArrayLengths.
 Require Import ZesuSsz.Automation2.ResourceGroups.
+Require Import ZesuSsz.Automation2.RangeFacts.
 Require Import iris.proofmode.environments.
 
 Class ZesuStepStoreMemoryLookup : Prop := {}.
@@ -91,17 +92,19 @@ Ltac zesu_store_codec_array_lookup :=
                 let range := fresh "HownedCodecArrayRange" in
                 assert (range : (lower <= integer < lower +
                   Z.of_nat (length values) * Z.of_N (N.div width 8))%Z) by
-                  (cbn [length N.to_nat];
-                   repeat (rewrite length_bv_to_little_endian; [|lia]);
-                   cbn [length N.to_nat];
-                   try (autounfold with zesu_contract_constants);
-                   ZesuSsz.Automation2.MemoryAddress.zesu_stack_arithmetic);
+                  (first [solve [ZesuSsz.Automation2.RangeFacts.zesu_selected_array_range] |
+                    cbn [length N.to_nat];
+                    repeat (rewrite length_bv_to_little_endian; [|lia]);
+                    cbn [length N.to_nat];
+                    try (autounfold with zesu_contract_constants);
+                    ZesuSsz.Automation2.MemoryAddress.zesu_stack_arithmetic]);
                 let found := fresh "HownedArraySemanticLookup" in
                 pose proof (@tac_mem_mapsto_array_eq sigma sourceIsla integer
                   width lower integer values (or_introl range)) as found;
                 let equality := fresh "HownedArrayReadAddress" in
                 assert (equality : bv_unsigned pointer = integer) by
-                  ZesuSsz.Automation2.MemoryAddress.zesu_stack_arithmetic;
+                  (first [solve [ZesuSsz.Automation2.RangeFacts.zesu_address_equality] |
+                    ZesuSsz.Automation2.MemoryAddress.zesu_stack_arithmetic]);
                 rewrite equality;
                 liEnsureInvariant;
                 liStep
