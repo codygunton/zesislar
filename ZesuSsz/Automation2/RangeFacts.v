@@ -38,14 +38,35 @@ Ltac2 rec zesu_name_prefix source prefix i :=
  if Int.ge i (String.length source) then false else
  if Char.equal (String.get source i) (String.get prefix i)
  then zesu_name_prefix source prefix (Int.add i 1) else false.
-(* A record argument can carry a predicate that hides a selected bound. *)
+(* Extend selected sum bounds by one layer of summand facts. *)
+Ltac zesu_range_project_sum_atom atom evidence :=
+ tryif has_evar atom then idtac else
+ tryif (let closed := ZesuSsz.Automation2.VmClosed.zesu_vm_eval_closed atom in idtac)
+ then idtac else
+ let root := lazymatch atom with ?f ?arg => constr:(arg) | _ => constr:(atom) end in
+ zesu_range_project constr:(8%nat) atom atom root evidence.
+Ltac2 zesu_range_sum_atoms (typ : constr) : constr list :=
+ lazy_match! typ with
+ | context [Z.add ?lhs ?rhs] => [lhs; rhs]
+ | _ => []
+ end.
+(* Snapshot both lists so this closure cannot recurse through new facts. *)
 Ltac2 zesu_range_collect values pointer root :=
- let hyps := Control.hyps () in
+ let original := Control.hyps () in
  List.iter (fun h => let (name, body, typ) := h in
    Ltac1.apply (Ltac1.ref [@ZesuSsz; @Automation2; @RangeFacts; @zesu_range_project])
      [Ltac1.of_constr constr:(8%nat); Ltac1.of_constr values;
       Ltac1.of_constr pointer; Ltac1.of_constr root;
-      Ltac1.of_constr (Control.hyp name)] Ltac1.run) hyps.
+      Ltac1.of_constr (Control.hyp name)] Ltac1.run) original;
+ let selected := Control.hyps () in
+ List.iter (fun h => let (name, body, typ) := h in
+   if zesu_name_prefix (Ident.to_string name) "HrangeFact" 0 then
+     List.iter (fun atom =>
+       List.iter (fun source => let (source_name, _, _) := source in
+         Ltac1.apply (Ltac1.ref [@ZesuSsz; @Automation2; @RangeFacts; @zesu_range_project_sum_atom])
+           [Ltac1.of_constr atom; Ltac1.of_constr (Control.hyp source_name)] Ltac1.run)
+       original) (zesu_range_sum_atoms typ)
+   else ()) selected.
 Ltac2 rec zesu_range_erase_list hyps :=
  match hyps with
  | [] => []
