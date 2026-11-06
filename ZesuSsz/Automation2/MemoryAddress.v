@@ -349,6 +349,14 @@ Ltac zesu_stack_integer_address pointer :=
   | Z_to_bv 64 ?base => constr:(base)
   end.
 
+(* Reject unrelated array owners before arithmetic lookup search. *)
+Ltac zesu_owned_array_address address :=
+  once (iMatchHyp ltac:(fun _ body =>
+    lazymatch body with
+    | @mem_mapsto_array _ _ _ ?lower _ _ =>
+        lazymatch address with context[lower] => idtac end
+    end)).
+
 Ltac zesu_integer_pointer_root pointer continuation :=
   lazymatch pointer with
   | bv_add ?base ?offset =>

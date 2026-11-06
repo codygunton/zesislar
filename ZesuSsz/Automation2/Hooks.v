@@ -1937,12 +1937,16 @@ Ltac zesu_array_bounds_if_enabled :=
     zesu_array_bounds_base | zesu_array_bounds_extended].
 
 Ltac zesu_integer_array_address_if_enabled :=
-  zesu_switch_enabled constr:(ZesuStepIntegerArrayAddress);
   zesu_expose_environment_alias;
   repeat match goal with
   | Hlocal := _ |- envs_entails _ (find_in_context (FindMemMapsTo ?address) _) =>
       lazymatch address with context[Hlocal] => unfold Hlocal in *; clear Hlocal end
   end;
+  lazymatch goal with
+  | |- envs_entails _ (find_in_context (FindMemMapsTo ?address) _) =>
+      MemoryAddress.zesu_owned_array_address address
+  end;
+  zesu_switch_enabled constr:(ZesuStepIntegerArrayAddress);
   lazymatch goal with
   | |- envs_entails _ (find_in_context (FindMemMapsTo (bv_unsigned ?pointer)) _) =>
       let expanded := eval cbv beta zeta in pointer in
