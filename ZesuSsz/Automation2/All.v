@@ -1,3 +1,4 @@
+(* This entry exports the independent Automation2 rules. *)
 Require Export InstrSpecs.Lookup.
 Require Export InstrSpecs.Machine.
 Require Export InstrSpecs.Specs.
