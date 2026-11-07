@@ -189,7 +189,8 @@ def full_fence_attempt(attempt):
     for row in scopes:
         if row['role'] in {'aggregate','batch','client','mcp','pet','compiler'}:row.update(memory_bytes=64*1024**3,swap_bytes=0)
         if row['role']=='aggregate':row['parent']='workloads'
-    scopes.append({'role':'workloads','parent':None,'memory_bytes':175*1024**3,
+    from memory_policy import PARENT_FENCE
+    scopes.append({'role':'workloads','parent':None,'memory_bytes':PARENT_FENCE,
                    'swap_bytes':0,'cpu_seconds':None,'wall_seconds':None})
     attempt['scope_limits']=scopes
     return attempt

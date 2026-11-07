@@ -3,7 +3,7 @@
   "guard": {
     "source_path": "tools/block/harness/runtime-tools/resource_guard.sh",
     "approved_sha256": "27e5e6994aac7de81525698c5a070927b084eaa5fd04d7af029e3660317805ac",
-    "golden_sha256": "fe07b57ef8675c00f8fa644dbeb8269332bd9722a5038c85275c495159df9615",
+    "golden_sha256": "87a39987562e073cd0c7fa483155e2b66d144137aafae437f1ec3de1742f5ce7",
     "main_adjustments": [
       [
         "guards share it for two seconds",

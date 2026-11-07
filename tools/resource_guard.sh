@@ -22,7 +22,7 @@
 #   confirm-coqc TOKEN   admit a compiler launch atomically
 #   watch                the polling loop; kills the youngest scope at its memory boundary
 #   scope NAME [--cpu SECONDS] -- CMD    run CMD in its configured module scope, registered
-#   batch NAME -- CMD    run CMD in the batch scope, 150 GiB (a gate 120), swap off
+#   batch NAME -- CMD    run CMD in the batch scope, 120 GiB (a gate 120), swap off
 #   locked NAME -- CMD   run CMD holding the gate lock
 #   lock-status          print the gate lock, removing a stale one
 #   lock-want PID HOLDER take the lock for a gate script, state wanted
@@ -44,7 +44,9 @@
 # Ordinary proofs use 6 GiB; issue-10 probes use 64 GiB and require 84 GiB
 # available. CPU-only issue-10 probes use 6 GiB and require 26 GiB available.
 # All probe classes share ZESU_PROBE_AGGREGATE_LIMIT slots (default 16).
-# Memory limits remain 150G for batches and 120G for gates, with no swap.
+# Memory limits are 120G for batches and 120G for gates, with no swap.
+# The shared parent zesuworkloads.slice has 127 GiB (lowered from 175 GiB
+# on 2026-11-03). A new aggregate cannot exceed it.
 # Other launch checks retain 48 compiler slots, our account's CPU pressure
 # <= 50 % and IO pressure <= 50 % (ZESU_MAX_CPU_PRESSURE, ZESU_MAX_IO_PRESSURE;
 # without the pressure files, load5 <= 80 and blocked <= 16),
@@ -88,11 +90,11 @@ MODULE_LIMIT_GIB=${ZESU_MODULE_LIMIT_GIB:-$GATE_MODULE_LIMIT_GIB}
 # about 74 GiB, so 1.5. At 3 GiB the 70-percent formula allows 42
 # workers when 180 GiB is available.
 JOB_GIB=${ZESU_JOB_GIB:-3}
-BATCH_LIMIT=${ZESU_BATCH_LIMIT:-150G}
+BATCH_LIMIT=${ZESU_BATCH_LIMIT:-120G}
 GATE_LIMIT=${ZESU_GATE_LIMIT:-120G}
 # All proof workloads share this kernel backstop across independent runs.
 WORKLOAD_PARENT_SLICE=zesuworkloads.slice
-WORKLOAD_PARENT_BYTES=187904819200
+WORKLOAD_PARENT_BYTES=136365211648
 MAX_JOBS=${ZESU_MAX_JOBS:-48}
 # Account memory lines, in percent of the account's MemoryMax.
 LAUNCH_PCT=${ZESU_LAUNCH_PCT:-80}
@@ -1538,7 +1540,7 @@ aggregate_slice() {
   fi
   if [[ ! "$slice" =~ ^zesuworkloads-aggregate[0-9]+p[0-9]+r[0-9]+\.slice$ ]] ||
      [[ ! "$limit" =~ ^[1-9][0-9]{0,2}G$ ]] ||
-     (( ${limit%G} > 175 )); then
+     (( ${limit%G} * GIB > WORKLOAD_PARENT_BYTES )); then
     echo "resource guard: invalid aggregate slice or limit" >&2
     return 2
   fi

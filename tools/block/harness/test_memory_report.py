@@ -22,7 +22,7 @@ class MemoryReports(unittest.TestCase):
         self.assertTrue(limits.claim_report_required(5, 2))
     def test_report_writes_without_stopping_child(self):
         with tempfile.TemporaryDirectory() as temp:
-            root=Path(temp);out=root/'out';out.mkdir();parent=root/'zesuworkloads.slice';parent.mkdir();(parent/'memory.max').write_text('187904819200');(parent/'memory.swap.max').write_text('0');group=parent/'zesuworkloads-aggregate1p2r3.slice';group.mkdir();(group/'memory.max').write_text(str(limits.MEMORY_FENCE_BYTES));(group/'memory.swap.max').write_text('0')
+            root=Path(temp);out=root/'out';out.mkdir();parent=root/'zesuworkloads.slice';parent.mkdir();(parent/'memory.max').write_text('136365211648');(parent/'memory.swap.max').write_text('0');group=parent/'zesuworkloads-aggregate1p2r3.slice';group.mkdir();(group/'memory.max').write_text(str(limits.MEMORY_FENCE_BYTES));(group/'memory.swap.max').write_text('0')
             (group/'cpu.stat').write_text('usage_usec 1000000\n')
             (group/'memory.current').write_text('5')
             (group/'memory.peak').write_text('6')

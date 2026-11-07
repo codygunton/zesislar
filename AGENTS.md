@@ -118,10 +118,8 @@ Check total CPU use, per-process CPU use, load, available memory, and swap use.
 State that a proof is single-thread bound when one process uses one core and the machine remains idle.
 
 The 300-second and 6 GiB figures are production goals for a finished proof module, not limits
-on search. During development, first bound the problem: run a search or a proof to completion
-with whatever memory and time it needs (the machine has 256 GiB; a 64 GiB cap and no CPU cap are
-normal for a probe).
-Our account may use at most 200 GiB in total, because another account shares this host; `systemctl cat user-1000.slice` shows the limit and its reason. Ask the user before a job that needs more.
+on search. During development, first bound the problem with memory: a single block may use up to a 64 GiB fence and no CPU cap, within the account cap below. Time is the harder limit: a literal proof run gets a 30-minute wall budget that the runner enforces, never a tactic deadline. A run over its budget stops and is recorded; diagnose it in chunks (25 steps, export after each), not by an unchanged rerun. No single-call diagnostic runs longer than 10 minutes.
+Our account may use at most 152 GiB in total (lowered from 200 GiB on 2026-11-03), because another account shares this host; `systemctl cat user-1000.slice` shows the limit and its reason. Ask the user before a job that needs more.
 Record its peak memory, CPU, and residual goals, and optimize afterwards
 from that measurement. A run that stops at a cap mid-search has measured nothing.
 After an out-of-memory stop, profile the run one time with `perf` under a small cap (24 GiB)

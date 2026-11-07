@@ -28,7 +28,7 @@ class SearchWindowControls(unittest.TestCase):
         self.root = Path(self.temp.name)
         parent = self.root / 'zesuworkloads.slice'
         parent.mkdir()
-        (parent / 'memory.max').write_text(str(175 * 1024**3))
+        (parent / 'memory.max').write_text(str(memory_policy.PARENT_FENCE))
         (parent / 'memory.swap.max').write_text('0')
         self.group = parent / 'zesuworkloads-aggregate1000p1r2.slice'
         self.group.mkdir()
@@ -56,7 +56,7 @@ class SearchWindowControls(unittest.TestCase):
         attempt = scratch.full_fence_attempt({'limits': {}, 'scope_limits': [
             {'role': role} for role in ['aggregate', 'batch', 'client', 'mcp', 'pet', 'compiler']]})
         for row in attempt['scope_limits']:
-            self.assertEqual(row['memory_bytes'], (175 if row['role'] == 'workloads' else 64) * 1024**3)
+            self.assertEqual(row['memory_bytes'], (127 if row['role'] == 'workloads' else 64) * 1024**3)
             self.assertEqual(row['swap_bytes'], 0)
 
     def test_prospective_module_limits_match_actual_launch(self):

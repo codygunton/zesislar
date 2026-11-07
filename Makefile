@@ -20,11 +20,12 @@ export ISLA_SNAP_REPO
 
 OPAM := opam exec --switch=$(OPAM_SWITCH) --
 
-# The resource guard. Every Dune gate and every batch runs inside one
-# 200 GiB cgroup scope, and every `coqc` inside its own 6 GiB scope. On
-# 2026-09-20 a gate at 48 jobs times the 6 GiB module limit asked for
-# 288 GiB of 251 GiB and the server rebooted. The buildout gate uses
-# exactly 24 jobs under the guard.
+# The resource guard. Every Dune gate and every batch runs inside its own
+# aggregate scope (120 GiB for a gate) under the shared 127 GiB
+# zesuworkloads.slice parent, and every `coqc` inside its own scope
+# (16 GiB by default). On 2026-09-20 a gate at 48 jobs times the 6 GiB
+# module limit asked for 288 GiB of 251 GiB and the server rebooted. The
+# buildout gate uses exactly 24 jobs under the guard.
 GUARD ?= $(CURDIR)/tools/resource_guard.sh
 GUARD_BATCH = $(if $(wildcard $(GUARD)),$(GUARD) batch,env ZESU_NO_GUARD=1)
 GATE_JOBS := $(shell test -x $(GUARD) && $(GUARD) gate-jobs 2>/dev/null || echo 24)
