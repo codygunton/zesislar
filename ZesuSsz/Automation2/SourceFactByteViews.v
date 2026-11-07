@@ -68,7 +68,9 @@ Proof.
   assert (Hfit : 0 <= bv_unsigned byte < bv_modulus width).
   { pose proof (bv_unsigned_in_range 8 byte) as HbyteRange.
     pose proof (bv_modulus_le_mono 8 width Hwidth) as HmodulusOrder.
-    clear - HbyteRange HmodulusOrder. Lia.lia. }
+    clear - HbyteRange HmodulusOrder.
+    SearchBudget.zesu_solve_selected ("source_fact.byte_equal.fit"%string)
+      ltac:(Lia.lia). }
   rewrite (Z_to_bv_small width (bv_unsigned byte) Hfit) in Hview.
   exact Hview.
 Qed.
@@ -133,8 +135,14 @@ Proof.
   change (256 <= bv_half_modulus wide) in Hhalf.
   rewrite (ByteMaskCast.zesu_sign_extended_byte_mask width byte Hwidth).
   rewrite bv_zero_extend_signed.
-  rewrite (Z_to_bv_small width (bv_unsigned byte) ltac:(lia)).
-  apply bv_swrap_small. lia.
+  rewrite (Z_to_bv_small width (bv_unsigned byte) ltac:(
+    clear - Hbyte Hmodulus;
+    SearchBudget.zesu_solve_selected ("source_fact.signed_order_view.cast_range"%string)
+      ltac:(Lia.lia))).
+  apply bv_swrap_small.
+  clear - Hbyte Hhalf.
+  SearchBudget.zesu_solve_selected ("source_fact.signed_order_view.signed_range"%string)
+    ltac:(Lia.lia).
 Qed.
 
 (* Use proved bounds. Evaluate only their closed constants. *)
@@ -246,7 +254,9 @@ Ltac zesu_source_byte_order_goal :=
               let value := eval vm_compute in (bv_signed bound) in
               change (bv_signed bound) with value in Hderived
           end;
-          solve [clear - Hderived; lia]
+          solve [clear - Hderived;
+            SearchBudget.zesu_solve_selected ("source_fact.byte_order"%string)
+              ltac:(Lia.lia)]
       end
   end].
 
