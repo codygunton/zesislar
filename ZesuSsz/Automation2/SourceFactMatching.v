@@ -69,6 +69,12 @@ Ltac zesu_source_retained_order :=
             rewrite !BitvectorFacts.zesu_signed_zero_extend_64_128 in view;
             apply Z.nlt_ge in view;
             apply Z.le_ge; exact view
+        | retained : Z.ge (bv_signed (bv_zero_extend 128 left))
+                          (bv_signed (bv_zero_extend 128 right)) |- _ =>
+            let view := fresh "HretainedUnsignedOrder" in
+            pose proof retained as view;
+            rewrite !BitvectorFacts.zesu_signed_zero_extend_64_128 in view;
+            exact view
         end
     | |- Z.le (bv_unsigned ?right) (bv_unsigned ?left) =>
         assert_fails (has_evar left);
@@ -80,6 +86,12 @@ Ltac zesu_source_retained_order :=
             pose proof retained as view;
             rewrite !BitvectorFacts.zesu_signed_zero_extend_64_128 in view;
             apply Z.nlt_ge in view; exact view
+        | retained : Z.ge (bv_signed (bv_zero_extend 128 left))
+                          (bv_signed (bv_zero_extend 128 right)) |- _ =>
+            let view := fresh "HretainedUnsignedOrder" in
+            pose proof retained as view;
+            rewrite !BitvectorFacts.zesu_signed_zero_extend_64_128 in view;
+            apply Z.ge_le; exact view
         end
     end |
     lazymatch goal with
