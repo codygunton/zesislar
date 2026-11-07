@@ -38,7 +38,13 @@ Ltac zesu_range_project depth values pointer root evidence :=
  let leaf := ltac:(tryif zesu_range_mentions values pointer T then
    let keep := ltac2:(e |- zesu_range_keep (Option.get (Ltac1.to_constr e))) in
    keep evidence else idtac) in
- lazymatch T with
+ let descend := ltac:(fun remaining left right =>
+   let l := constr:(proj1 evidence) in let r := constr:(proj2 evidence) in
+   zesu_range_project remaining values pointer root l;
+   zesu_range_project remaining values pointer root r) in
+ tryif (lazymatch T with ?head _ _ => constr_eq_strict head constr:(and) end)
+ then lazymatch T with ?left /\ ?right => descend depth left right end
+ else lazymatch T with
  | @eq Z _ _ => leaf | @eq nat _ _ => leaf
  | @eq _ _ _ => idtac
  | Z.le _ _ => leaf | Z.lt _ _ => leaf
@@ -48,10 +54,7 @@ Ltac zesu_range_project depth values pointer root evidence :=
    | S ?remaining =>
      let exposed := eval hnf in T in
      lazymatch exposed with
-     | ?left /\ ?right =>
-       let l := constr:(proj1 evidence) in let r := constr:(proj2 evidence) in
-       zesu_range_project remaining values pointer root l;
-       zesu_range_project remaining values pointer root r
+     | ?left /\ ?right => descend remaining left right
      | _ => idtac end
    end
  end else idtac.
@@ -61,7 +64,7 @@ Ltac zesu_range_project_sum_atom atom evidence :=
  tryif (let closed := ZesuSsz.Automation2.VmClosed.zesu_vm_eval_closed atom in idtac)
  then idtac else
  let root := lazymatch atom with ?f ?arg => constr:(arg) | _ => constr:(atom) end in
- zesu_range_project constr:(8%nat) atom atom root evidence.
+ zesu_range_project constr:(32%nat) atom atom root evidence.
 Ltac2 rec zesu_range_atoms (term : constr) : constr list :=
  lazy_match! term with
  | @eq Z ?lhs ?rhs => List.append (zesu_range_atoms lhs) (zesu_range_atoms rhs)
@@ -120,23 +123,33 @@ Ltac2 rec zesu_range_leaves depth evidence typ paths :=
  let syntax := zesu_range_syntax typ in
  let paths := syntax :: paths in
  let leaf := fun () => [(evidence, typ, syntax, paths)] in
- lazy_match! typ with
- | @eq Z _ _ => leaf () | @eq nat _ _ => leaf ()
- | @eq _ _ _ => []
- | Z.le _ _ => leaf () | Z.lt _ _ => leaf ()
- | Z.ge _ _ => leaf () | Z.gt _ _ => leaf ()
- | _ =>
-   if Int.equal depth 0 then [] else
-   if Constr.equal (Constr.type typ) constr:(Prop) then
-     let exposed := Std.eval_hnf typ in
-     lazy_match! exposed with
-     | @and ?lhs ?rhs =>
-       let l := constr:(@proj1 $lhs $rhs $evidence) in
-       let r := constr:(@proj2 $lhs $rhs $evidence) in
-       List.append (zesu_range_leaves (Int.sub depth 1) l lhs paths)
-         (zesu_range_leaves (Int.sub depth 1) r rhs paths)
-     | _ => [] end
-   else []
+ let descend := fun remaining lhs rhs =>
+   let l := constr:(@proj1 $lhs $rhs $evidence) in
+   let r := constr:(@proj2 $lhs $rhs $evidence) in
+   List.append (zesu_range_leaves remaining l lhs paths)
+     (zesu_range_leaves remaining r rhs paths) in
+ (* Structural conjunction descent does not consume predicate-unfold fuel. *)
+ let direct := match Constr.Unsafe.kind typ with
+   | Constr.Unsafe.App head args =>
+     if Constr.equal head constr:(and) then
+       Some (Array.get args 0, Array.get args 1) else None
+   | _ => None end in
+ match direct with
+ | Some (lhs, rhs) => descend depth lhs rhs
+ | None => lazy_match! typ with
+   | @eq Z _ _ => leaf () | @eq nat _ _ => leaf ()
+   | @eq _ _ _ => []
+   | Z.le _ _ => leaf () | Z.lt _ _ => leaf ()
+   | Z.ge _ _ => leaf () | Z.gt _ _ => leaf ()
+   | _ =>
+     if Int.equal depth 0 then [] else
+     if Constr.equal (Constr.type typ) constr:(Prop) then
+       let exposed := Std.eval_hnf typ in
+       lazy_match! exposed with
+       | @and ?lhs ?rhs => descend (Int.sub depth 1) lhs rhs
+       | _ => [] end
+     else []
+   end
  end.
 Ltac2 zesu_range_atom_is_open atom :=
  if Constr.has_evar atom then false else
@@ -160,7 +173,7 @@ Ltac2 zesu_range_collect values pointer root :=
      if any selectors (fun selector => zesu_range_carried selector syntax) then (
        let leaves := match Ref.get projection with
          | Some found => found
-         | None => let found := zesu_range_leaves 8 (Control.hyp name) typ [] in
+         | None => let found := zesu_range_leaves 32 (Control.hyp name) typ [] in
            Ref.set projection (Some found); found end in
        List.iter (fun leaf => let (evidence, fact, syntax, paths) := leaf in
          if any selectors (fun selector =>
