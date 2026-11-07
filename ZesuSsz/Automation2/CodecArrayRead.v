@@ -28,8 +28,18 @@ Ltac zesu_codec_array_read_lookup_goal :=
 
 Ltac zesu_codec_array_find :=
   zesu_codec_array_read_lookup_goal;
-  zesu_switch_enabled constr:(ZesuStepCodecArrayRead);
   ZesuSsz.Automation2.ResourceGroups.zesu_expose_environment_alias;
+  repeat match goal with
+  | Hlocal := _ |- environments.envs_entails _
+      (find_in_context (FindMemMapsTo ?address) _) =>
+      lazymatch address with context[Hlocal] => unfold Hlocal in *; clear Hlocal end
+  end;
+  lazymatch goal with
+  | |- environments.envs_entails _
+      (find_in_context (FindMemMapsTo ?address) _) =>
+      MemoryAddress.zesu_owned_array_address address
+  end;
+  zesu_switch_enabled constr:(ZesuStepCodecArrayRead);
   lazymatch goal with
   | |- environments.envs_entails _
       (find_in_context (FindMemMapsTo (bv_unsigned ?pointer)) _) =>
