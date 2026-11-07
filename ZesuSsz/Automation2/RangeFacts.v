@@ -3,6 +3,7 @@ From stdpp.bitvector Require Import definitions tactics.
 From Ltac2 Require Import Ltac2 Ref List Int String Ident.
 Require Import ZesuSsz.Automation2.VmClosed.
 Require Import ZesuSsz.Automation2.SearchBudget.
+Require Import ZesuSsz.Automation2.BitvectorFacts.
 Set Default Proof Mode "Classic".
 Local Open Scope Z_scope.
 Ltac zesu_range_mentions values pointer T :=
@@ -31,6 +32,23 @@ Ltac2 zesu_range_keep evidence :=
  if already (Control.hyps ()) then () else
  Ltac1.apply (Ltac1.ref [@ZesuSsz; @Automation2; @RangeFacts; @zesu_range_pose])
    [Ltac1.of_constr evidence] Ltac1.run.
+Ltac zesu_range_order_guard predicate :=
+ lazymatch predicate with
+ | Z.ltb _ _ => idtac | Z.leb _ _ => idtac
+ | @bool_decide ?fact _ =>
+   lazymatch fact with
+   | Z.lt _ _ => idtac | Z.le _ _ => idtac
+   | Z.gt _ _ => idtac | Z.ge _ _ => idtac end
+ | negb ?inner => zesu_range_order_guard inner
+ end.
+Ltac2 rec zesu_range_order_guard2 predicate :=
+ lazy_match! predicate with
+ | Z.ltb _ _ => true | Z.leb _ _ => true
+ | @bool_decide ?fact _ => lazy_match! fact with
+   | Z.lt _ _ => true | Z.le _ _ => true
+   | Z.gt _ _ => true | Z.ge _ _ => true | _ => false end
+ | negb ?inner => zesu_range_order_guard2 inner
+ | _ => false end.
 (* Project relevant conjuncts without destructing the original assumptions. *)
 Ltac zesu_range_project depth values pointer root evidence :=
  let T := type of evidence in
@@ -46,6 +64,11 @@ Ltac zesu_range_project depth values pointer root evidence :=
  then lazymatch T with ?left /\ ?right => descend depth left right end
  else lazymatch T with
  | @eq Z _ _ => leaf | @eq nat _ _ => leaf
+ | @eq (bv _) _ _ => leaf
+ | @eq bool ?predicate ?answer =>
+   tryif (first [constr_eq_strict answer constr:(true) |
+     constr_eq_strict answer constr:(false)]; zesu_range_order_guard predicate)
+   then leaf else idtac
  | @eq _ _ _ => idtac
  | Z.le _ _ => leaf | Z.lt _ _ => leaf
  | Z.ge _ _ => leaf | Z.gt _ _ => leaf
@@ -69,6 +92,7 @@ Ltac2 rec zesu_range_atoms (term : constr) : constr list :=
  lazy_match! term with
  | @eq Z ?lhs ?rhs => List.append (zesu_range_atoms lhs) (zesu_range_atoms rhs)
  | @eq nat ?lhs ?rhs => [lhs; rhs]
+ | @eq (bv _) ?lhs ?rhs => [lhs; rhs]
  | Z.le ?lhs ?rhs => List.append (zesu_range_atoms lhs) (zesu_range_atoms rhs)
  | Z.lt ?lhs ?rhs => List.append (zesu_range_atoms lhs) (zesu_range_atoms rhs)
  | Z.ge ?lhs ?rhs => List.append (zesu_range_atoms lhs) (zesu_range_atoms rhs)
@@ -77,6 +101,7 @@ Ltac2 rec zesu_range_atoms (term : constr) : constr list :=
  | Z.sub ?lhs ?rhs => List.append (zesu_range_atoms lhs) (zesu_range_atoms rhs)
  | Z.mul ?lhs ?rhs => List.append (zesu_range_atoms lhs) (zesu_range_atoms rhs)
  | bv_unsigned (Z_to_bv ?width ?value) => [term; value]
+ | bv_unsigned ?value => [term; value]
  | _ => [term]
  end.
 Ltac2 rec zesu_range_has_atom atom atoms :=
@@ -138,6 +163,11 @@ Ltac2 rec zesu_range_leaves depth evidence typ paths :=
  | Some (lhs, rhs) => descend depth lhs rhs
  | None => lazy_match! typ with
    | @eq Z _ _ => leaf () | @eq nat _ _ => leaf ()
+   | @eq (bv _) _ _ => leaf ()
+   | @eq bool ?predicate ?answer =>
+     if Bool.and (Bool.or (Constr.equal answer constr:(true))
+       (Constr.equal answer constr:(false))) (zesu_range_order_guard2 predicate)
+     then leaf () else []
    | @eq _ _ _ => []
    | Z.le _ _ => leaf () | Z.lt _ _ => leaf ()
    | Z.ge _ _ => leaf () | Z.gt _ _ => leaf ()
@@ -159,6 +189,7 @@ Ltac2 zesu_range_atom_is_open atom :=
    false) (fun _ => true)).
 (* Each hypothesis has one cached projection. Each selected fact is committed once. *)
 Ltac2 zesu_range_collect values pointer root :=
+ ZesuSsz.Automation2.SearchBudget.zesu_atomic_input_bound ();
  let original := Control.hyps () in
  let cached := List.map (fun h => let (name, _, typ) := h in
    (name, typ, zesu_range_syntax typ, Ref.ref None)) original in
@@ -199,7 +230,8 @@ Ltac2 zesu_range_collect values pointer root :=
          else ())) (zesu_range_atoms typ)) selected;
      select (Ref.get selectors);
      close (Int.sub remaining 1)) in
- close 2.
+ close 2;
+ ZesuSsz.Automation2.SearchBudget.zesu_atomic_input_bound ().
 Ltac2 rec zesu_range_erase_list hyps :=
  match hyps with
  | [] => []
@@ -215,6 +247,121 @@ Ltac2 rec zesu_range_erase_list hyps :=
 (* Keep only the selected arithmetic facts in this isolated proof. *)
 Ltac2 zesu_range_isolate () :=
  Std.clear (zesu_range_erase_list (Control.hyps ())).
+(* Reflect only facts which the bounded selector already retained. *)
+Ltac zesu_range_reflected_order evidence :=
+ lazymatch type of evidence with
+ | Z.ltb ?left ?right = true => constr:((proj1 (Z.ltb_lt left right)) evidence)
+ | Z.ltb ?left ?right = false => constr:((proj1 (Z.ltb_ge left right)) evidence)
+ | Z.leb ?left ?right = true => constr:((proj1 (Z.leb_le left right)) evidence)
+ | Z.leb ?left ?right = false => constr:((proj1 (Z.leb_gt left right)) evidence)
+ | @eq bool (@bool_decide ?fact ?decision) true =>
+   constr:(@bool_decide_eq_true_1 fact decision evidence)
+ | @eq bool (@bool_decide ?fact ?decision) false =>
+   constr:(@bool_decide_eq_false_1 fact decision evidence)
+ | negb ?inner = true =>
+   let inner_proof := constr:((proj1 (Bool.negb_true_iff inner)) evidence) in
+   zesu_range_reflected_order inner_proof
+ | negb ?inner = false =>
+   let inner_proof := constr:((proj1 (Bool.negb_false_iff inner)) evidence) in
+   zesu_range_reflected_order inner_proof
+ end.
+Ltac zesu_range_positive_order evidence :=
+ lazymatch type of evidence with
+ | ~ Z.ge ?left ?right =>
+   constr:((proj1 (Z.nle_gt right left))
+     (fun Hle : right <= left => evidence ((proj2 (Z.ge_le_iff left right)) Hle)))
+ | ~ Z.gt ?left ?right =>
+   constr:((proj1 (Z.nlt_ge right left))
+     (fun Hlt : right < left => evidence ((proj2 (Z.gt_lt_iff left right)) Hlt)))
+ | ~ Z.le ?left ?right => constr:((proj1 (Z.nle_gt left right)) evidence)
+ | ~ Z.lt ?left ?right => constr:((proj1 (Z.nlt_ge left right)) evidence)
+ | _ => constr:(evidence)
+ end.
+Ltac zesu_range_reflect_selected evidence :=
+ let T := type of evidence in
+ lazymatch T with
+ | @eq bool ?predicate ?answer =>
+   first [constr_eq_strict answer constr:(true) | constr_eq_strict answer constr:(false)];
+   assert_fails (has_evar predicate);
+   zesu_range_order_guard predicate;
+   let reflected_term := zesu_range_reflected_order evidence in
+   let reflected := fresh "HselectedGuardWork" in
+   pose proof reflected_term as reflected;
+   repeat rewrite BitvectorFacts.zesu_signed_zero_extend_64_128 in reflected;
+   let positive := zesu_range_positive_order constr:(reflected) in
+   let keep := ltac2:(e |- zesu_range_keep (Option.get (Ltac1.to_constr e))) in
+   keep positive; clear reflected
+ end.
+Ltac2 zesu_range_reflect_selected_all () :=
+ List.iter (fun h => let (name, _, _) := h in
+   if zesu_name_prefix (Ident.to_string name) "HrangeFact" 0 then
+     Control.plus (fun () => Ltac1.apply
+       (Ltac1.ref [@ZesuSsz; @Automation2; @RangeFacts; @zesu_range_reflect_selected])
+       [Ltac1.of_constr (Control.hyp name)] Ltac1.run) (fun _ => ())
+   else ()) (Control.hyps ()).
+(* Keep a modular equality when selected facts do not prove its no-wrap bound. *)
+Ltac zesu_range_unsigned_selected evidence :=
+ let T := type of evidence in
+ lazymatch T with
+ | @eq (bv ?width) ?endpoint (bv_add ?left ?right) =>
+   assert_fails (has_evar endpoint); assert_fails (has_evar left);
+   assert_fails (has_evar right);
+   let derived := fresh "HselectedUnsignedWork" in
+   pose proof (f_equal (@bv_unsigned width) evidence) as derived;
+   repeat rewrite bv_add_unsigned in derived;
+   let keep := ltac2:(e |- zesu_range_keep (Option.get (Ltac1.to_constr e))) in
+   let derived_term := constr:(derived) in
+   keep derived_term; clear derived
+ end.
+Ltac2 zesu_range_unsigned_selected_all () :=
+ List.iter (fun h => let (name, _, _) := h in
+   if zesu_name_prefix (Ident.to_string name) "HrangeFact" 0 then
+     Control.plus (fun () => Ltac1.apply
+       (Ltac1.ref [@ZesuSsz; @Automation2; @RangeFacts; @zesu_range_unsigned_selected])
+       [Ltac1.of_constr (Control.hyp name)] Ltac1.run) (fun _ => ())
+   else ()) (Control.hyps ()).
+Ltac zesu_range_sum_nonnegative_atom atom :=
+ lazymatch atom with
+ | @bv_unsigned ?width ?value =>
+   assert_fails (has_evar value);
+   let evidence := constr:(proj1 (bv_unsigned_in_range width value)) in
+   let keep := ltac2:(e |- zesu_range_keep (Option.get (Ltac1.to_constr e))) in
+   keep evidence
+ end.
+Ltac2 zesu_range_sum_nonnegative_all sum :=
+ let visited := Ref.ref [] in
+ List.iter (fun atom =>
+   if zesu_range_has_atom atom (Ref.get visited) then () else (
+     Ref.set visited (atom :: Ref.get visited);
+     Control.plus (fun () => Ltac1.apply
+       (Ltac1.ref [@ZesuSsz; @Automation2; @RangeFacts; @zesu_range_sum_nonnegative_atom])
+       [Ltac1.of_constr atom] Ltac1.run) (fun _ => ()))) (zesu_range_atoms sum).
+Ltac zesu_range_selected_no_wrap :=
+ once (repeat multimatch goal with
+ | Hselected : context [bv_wrap ?width ?sum] |- _ =>
+   let name := match goal with _ => constr:(Hselected) end in
+   let is_selected := ltac2:(h |- let h := Option.get (Ltac1.to_constr h) in
+     match Constr.Unsafe.kind h with
+     | Constr.Unsafe.Var id =>
+       if zesu_name_prefix (Ident.to_string id) "HrangeFact" 0 then ()
+       else Control.zero (Tactic_failure None)
+     | _ => Control.zero (Tactic_failure None) end) in
+   is_selected name;
+   assert_fails (has_evar sum);
+   tryif (lazymatch sum with context [bv_wrap _ _] => idtac end)
+   then fail 0 "Nested modular sum" else idtac;
+   let bound := VmClosed.zesu_vm_eval_closed (bv_modulus width) in
+   let nowrap := fresh "HselectedNoWrap" in
+   assert (nowrap : (0 <= sum < bv_modulus width)%Z) by
+     (change (0 <= sum < bound)%Z;
+      SearchBudget.zesu_normalize_closed_goal;
+      let add_intrinsic := ltac2:(t |- zesu_range_sum_nonnegative_all
+        (Option.get (Ltac1.to_constr t))) in
+      add_intrinsic sum;
+      SearchBudget.zesu_solve_selected ("range_facts.nowrap"%string) ltac:(Lia.lia));
+   progress rewrite (bv_wrap_small width sum nowrap) in Hselected;
+   clear nowrap
+ end).
 Ltac zesu_selected_closed_bounds :=
  repeat match goal with
  | H : (?lhs < ?rhs)%Z |- _ =>
@@ -234,7 +381,7 @@ Ltac zesu_selected_casts :=
    assert (range : (0 <= value < bv_modulus width)%Z) by (
      change (0 <= value < bound)%Z;
      zesu_selected_closed_bounds;
-     Lia.lia);
+     SearchBudget.zesu_solve_selected ("range_facts.cast_range"%string) ltac:(Lia.lia));
    progress rewrite (Z_to_bv_small width value range) in H;
    clear range
  end.
@@ -264,9 +411,12 @@ Ltac zesu_selected_array_range :=
      (repeat match goal with
       | Hlength : List.length ?xs = ?n |- context[List.length ?xs] => progress rewrite Hlength end);
      ltac2:(zesu_range_isolate ());
+     ltac2:(zesu_range_reflect_selected_all ());
+     ltac2:(zesu_range_unsigned_selected_all ());
      zesu_selected_casts;
+     zesu_range_selected_no_wrap;
      ltac2:(zesu_range_reduce_selected ());
-     lia
+     SearchBudget.zesu_solve_selected ("range_facts.array_range"%string) ltac:(Lia.lia)
    end
  end.
 
@@ -284,7 +434,7 @@ Ltac zesu_word_range base :=
    let reduced := ZesuSsz.Automation2.VmClosed.zesu_vm_eval_closed bound in
    change (0 <= value < reduced)%Z
  end;
- lia.
+ SearchBudget.zesu_solve_selected ("range_facts.word_range"%string) ltac:(Lia.lia).
 Lemma zesu_cast_add_no_wrap width base (offset : bv width)
  (Hbase : (0 <= base < bv_modulus width)%Z)
  (Hsum : (0 <= base + bv_unsigned offset < bv_modulus width)%Z) :
