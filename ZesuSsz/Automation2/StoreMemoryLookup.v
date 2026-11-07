@@ -38,6 +38,24 @@ Ltac zesu_store_unsigned_splice_indices :=
           clear equality)
   end.
 
+(* Isolate the proved address and the matching length before linear arithmetic. *)
+Ltac zesu_store_selected_linear :=
+  cbn [Z.of_N Z.of_nat];
+  repeat match goal with
+  | |- context [(?left - ?right)%Z] =>
+      replace (left - right)%Z with 0%Z by lia
+  end;
+  rewrite ?Z.sub_diag ?Z.div_1_r ?Z.mod_1_r;
+  cbn; solve [lia].
+
+Ltac zesu_store_select_length continuation :=
+  match goal with
+  | Hlength : List.length ?values = ?count |- context [List.length ?values] =>
+      let selected := fresh "HstoreSelectedLength" in
+      pose proof Hlength as selected;
+      continuation selected
+  end.
+
 Ltac zesu_store_splice_bounds :=
   ZesuSsz.Automation2.SwitchDispatch.zesu_switch_enabled
     constr:(ZesuStepStoreMemoryLookup);
@@ -46,21 +64,22 @@ Ltac zesu_store_splice_bounds :=
   | |- SHELVED_SIDECOND _ => unshelve_sidecond
   | _ => idtac
   end;
-  ZesuSsz.Automation2.MemoryAddress.zesu_integer_array_facts;
-  zesu_store_unsigned_splice_indices;
-  repeat match goal with
-  | |- context [?base + ?offset - ?base] =>
-      assert_fails (has_evar base);
-      assert_fails (has_evar offset);
-      replace (base + offset - base) with offset by lia
-  | |- context [?base - ?base] =>
-      assert_fails (has_evar base);
-      replace (base - base) with 0 by lia
-  end;
-  repeat progress
-    (rewrite ?length_app ?length_take ?length_drop ?length_insert;
-     cbn [length N.to_nat]);
-  lia.
+  first [
+    lazymatch goal with
+    | |- context [bv_unsigned ?pointer] =>
+        let expanded := eval cbv beta zeta in pointer in
+        let integer := ZesuSsz.Automation2.MemoryAddress.zesu_stack_integer_address expanded in
+        let equality := fresh "HstoreSelectedAddress" in
+        assert (equality : bv_unsigned pointer = integer) by
+          solve [ZesuSsz.Automation2.RangeFacts.zesu_address_equality];
+        rewrite equality;
+        first [zesu_store_select_length ltac:(fun selected =>
+          clear - equality selected; rewrite selected) | clear - equality];
+        zesu_store_selected_linear
+    end
+  | zesu_store_select_length ltac:(fun selected =>
+      clear - selected; rewrite selected; zesu_store_selected_linear)
+  | solve [reflexivity] ].
 
 (* Rebase indexed byte cells without changing their addresses or fractions. *)
 Lemma zesu_indexed_byte_cells_array `{!islaG Sigma}
@@ -80,13 +99,41 @@ Proof.
    iApply (big_sepL_mono with "Hcells"). intros i v Hlookup.
    rewrite Haddress. replace (Z.of_nat i * 1) with (Z.of_nat i) by lia. done.
 Qed.
+(* Test the owner before traversing its pure source facts. *)
+Ltac zesu_store_has_indexed_byte_tail :=
+  iMatchHyp ltac:(fun _ body =>
+    multimatch body with
+    | context [@big_opL _ _ _ _ ?function ?cells] =>
+        let atom := eval cbv beta in (function 0%nat (BV 8 0)) in
+        lazymatch atom with @mem_mapsto _ _ 8 _ _ _ => idtac end
+    end).
+
+(* Retain the structural length equation; the range bound alone is insufficient. *)
+Ltac zesu_store_retain_tail_length cells :=
+  ZesuSsz.Automation2.PureFacts.zesu_integer_array_facts;
+  let count := fresh "storeTailCount" in
+  evar (count : nat);
+  let fact := fresh "HstoreTailLength" in
+  assert (fact : List.length cells = count) by
+    (unfold count;
+     repeat progress (rewrite ?skipn_length ?firstn_length ?length_app; cbn [List.length]);
+     repeat match goal with
+     | Hlength : List.length ?values = ?size |- context [List.length ?values] =>
+         progress rewrite Hlength
+     end;
+     reflexivity);
+  unfold count in fact; clear count.
+
 Ltac zesu_store_fold_indexed_byte_tail :=
+  zesu_store_has_indexed_byte_tail;
+  ZesuSsz.Automation2.ByteArrayAssemblyCodec.zesu_byte_array_normalize_stride;
   iMatchHyp ltac:(fun name body =>
     multimatch body with
     | context [@big_opL _ _ _ _ ?function ?cells] =>
       let atom := eval cbv beta in (function 0%nat (BV 8 0)) in
       lazymatch atom with
       | @mem_mapsto ?Sigma ?heap 8 ?base ?fraction _ =>
+        zesu_store_retain_tail_length cells;
         let address := constr:(fun i : nat => ltac:(
           let atom := eval cbv beta in (function i (BV 8 0)) in
           lazymatch atom with @mem_mapsto _ _ 8 ?value _ _ => exact value end)) in
@@ -174,6 +221,8 @@ Ltac zesu_store_memory_lookup :=
   ZesuSsz.Automation2.SwitchDispatch.zesu_switch_enabled
     constr:(ZesuStepStoreMemoryLookup);
   first [ zesu_store_memory_lookup_core
-  | zesu_store_fold_indexed_byte_tail;
-    ZesuSsz.Automation2.ResourceGroups.zesu_open_resource_groups;
-    zesu_store_memory_lookup_core ].
+  | lazymatch goal with
+    | |- environments.envs_entails _ (find_in_context (FindMemMapsTo _) _) => idtac
+    end;
+    progress (zesu_store_fold_indexed_byte_tail;
+      ZesuSsz.Automation2.ResourceGroups.zesu_open_resource_groups) ].
