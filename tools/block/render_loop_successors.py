@@ -10,6 +10,7 @@ from fractional_source import FractionalSourceArrays,array_declaration
 from render_support import component_source,definition_introduction_source,expression,identifier,unfold_declaration
 from forward_resources import load_resource_vocabulary
 from symbolic_state import Expr
+from render_support import unfold_declaration
 
 def bind(p):p=Path(p);return {'path':str(p),'sha256':hashlib.sha256(p.read_bytes()).hexdigest()}
 forward=options.source_receipt; assert bind(forward)['sha256']==options.source_receipt_sha256, 'The loop source receipt changed'; packet=json.loads(forward.read_text()); data={'boundaries': []}

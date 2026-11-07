@@ -143,6 +143,22 @@ allowed_helpers = {
 for suffix in pilots:
     pc = "0x800d" + suffix
     index = next(i for i, b in enumerate(data["boundaries"]) if b["pc"] == pc)
+    if suffix in {"6a24", "6ac4"}:
+        from render_fp301_statements import render_loop_head
+        directory = O / "sources/ZesuSsz/Generated/DecodeItem/FP301"
+        directory.mkdir(parents=True, exist_ok=True)
+        outputs = []
+        for structural in [False, True]:
+            file = directory / ("Pilot" + suffix + ("Structural" if structural else "Entries") + ".v")
+            file.write_text(render_loop_head(suffix, header, structural))
+            outputs.append(bind(file))
+        emitted.extend(outputs)
+        cases.append({"pc": pc, "status": "source_declarations_rendered",
+                      "entry": outputs[0], "structural": outputs[1],
+                      "qualified_entry": "ZesuSsz.Generated.DecodeItem.FP301.Pilot" + suffix + "Entries.fp_machineAt" + suffix,
+                      "source_boundary": "tools/block/fixtures/fp301-loop-heads.json#" + suffix,
+                      "definition_count": 5, "proof_ran": False})
+        continue
     boundary = deepcopy(data["boundaries"][index])
     name = "fp_machineAt" + suffix
     name = identifier(name, "generated entry")

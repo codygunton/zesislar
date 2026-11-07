@@ -28,11 +28,14 @@ Ltac zesu_memory_default_unused value requested :=
   | tt => idtac
   | _ =>
       is_evar bare;
-      let T := type of bare in
+      let original_type := type of bare in
+      let T := eval hnf in original_type in
       lazymatch T with
       | bv ?width =>
           tryif zesu_memory_witness_occurs bare requested then idtac
           else unify bare (Z_to_bv width 0)
+      | Z => idtac
+      | nat => idtac
       end
   end.
 
@@ -173,7 +176,12 @@ Ltac zesu_memory_array_assemble :=
 (* Assemble a leading byte array from its source owners before framing other owners. *)
 Ltac zesu_memory_assemble_leading :=
   lazymatch goal with
-  | |- environments.envs_entails _ (@bi_sep _ (isla.ghost_state.mem_mapsto_array_def _ _ _) _) =>
+  | |- environments.envs_entails _ (@bi_sep _ ?array _) =>
+      lazymatch array with
+      | @mem_mapsto_array _ _ 8 _ _ _ =>
+          rewrite isla.ghost_state.mem_mapsto_array_eq
+      | isla.ghost_state.mem_mapsto_array_def _ _ _ => idtac
+      end;
       iSplitL;
       [rewrite <- isla.ghost_state.mem_mapsto_array_eq;
        zesu_memory_array_assemble | idtac]
