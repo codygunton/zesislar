@@ -1,0 +1,7 @@
+{
+  "version": 1,
+  "prop_facts": 64,
+  "kernel_nodes": 173732,
+  "node_basis": "twice the largest logged post-prune input: 86866 nodes",
+  "exceptions": []
+}
