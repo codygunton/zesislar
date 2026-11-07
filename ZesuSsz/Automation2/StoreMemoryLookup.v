@@ -9,6 +9,7 @@ Require Import ZesuSsz.Automation2.ByteArrayLengths.
 Require Import ZesuSsz.Automation2.ResourceGroups.
 Require Import ZesuSsz.Automation2.RangeFacts.
 Require Import iris.proofmode.environments.
+Local Open Scope Z_scope.
 
 Class ZesuStepStoreMemoryLookup : Prop := {}.
 
@@ -61,6 +62,55 @@ Ltac zesu_store_splice_bounds :=
      cbn [length N.to_nat]);
   lia.
 
+(* Rebase indexed byte cells without changing their addresses or fractions. *)
+Lemma zesu_indexed_byte_cells_array `{!islaG Sigma}
+    (address : nat -> Z) (base : Z) (q : dfrac) (cells : list (bv 8)) :
+  (0 <= base /\ base + Z.of_nat (length cells) <= 2^64) ->
+  (forall i, address i = base + Z.of_nat i) ->
+  ([∗ list] i ↦ v ∈ cells, mem_mapsto (address i) q v) ⊣⊢
+  mem_mapsto_array base q cells.
+Proof.
+ intros Hbound Haddress. rewrite mem_mapsto_array_eq. iSplit.
+ - iIntros "Hcells". iExists 1%N. iSplit; first done.
+   cbn [Z.of_N]. iSplit; first (iPureIntro; lia).
+   iApply (big_sepL_mono with "Hcells"). intros i v Hlookup.
+   rewrite Haddress. replace (Z.of_nat i * 1) with (Z.of_nat i) by lia. done.
+ - iIntros "[%len [%Hwidth [%Hrange Hcells]]]".
+   assert (len = 1)%N by lia. subst len. cbn [Z.of_N].
+   iApply (big_sepL_mono with "Hcells"). intros i v Hlookup.
+   rewrite Haddress. replace (Z.of_nat i * 1) with (Z.of_nat i) by lia. done.
+Qed.
+Ltac zesu_store_fold_indexed_byte_tail :=
+  iMatchHyp ltac:(fun name body =>
+    multimatch body with
+    | context [@big_opL _ _ _ _ ?function ?cells] =>
+      let atom := eval cbv beta in (function 0%nat (BV 8 0)) in
+      lazymatch atom with
+      | @mem_mapsto ?Sigma ?heap 8 ?base ?fraction _ =>
+        let address := constr:(fun i : nat => ltac:(
+          let atom := eval cbv beta in (function i (BV 8 0)) in
+          lazymatch atom with @mem_mapsto _ _ 8 ?value _ _ => exact value end)) in
+        let base := eval cbn [Z.of_nat Nat.add Nat.mul] in base in
+        let Haddress := fresh "HindexedAddress" in
+        assert (Haddress : forall i, address i = base + Z.of_nat i) by
+          (intro i; cbn [Nat.add Nat.mul]; rewrite ?Nat2Z.inj_succ ?Nat2Z.inj_add; lia);
+        let Hbound := fresh "HindexedBound" in
+        assert (Hbound : 0 <= base /\ base + Z.of_nat (length cells) <= 2^64) by
+          (first [assumption |
+            multimatch goal with
+            | Hrange : 0 <= ?origin /\ ?upper <= 2^64 |- _ =>
+                let Hcopy := fresh "HindexedSourceRange" in
+                pose proof Hrange as Hcopy;
+                clear - Hcopy;
+                cbn [List.length Z.of_N] in Hcopy;
+                rewrite ?Nat2Z.inj_succ in Hcopy;
+                lia
+            end]);
+        iEval (rewrite (zesu_indexed_byte_cells_array address base fraction cells Hbound Haddress)) in name;
+        clear Haddress Hbound
+      end
+    end).
+
 (* Derive a lookup from an actual owned image and the public semantic rule.
    The typed root limits candidate selection. The range is still proved. *)
 Ltac zesu_store_codec_array_lookup :=
@@ -112,12 +162,18 @@ Ltac zesu_store_codec_array_lookup :=
           end))
   end.
 
-Ltac zesu_store_memory_lookup :=
-  ZesuSsz.Automation2.SwitchDispatch.zesu_switch_enabled
-    constr:(ZesuStepStoreMemoryLookup);
+Ltac zesu_store_memory_lookup_core :=
   first [ zesu_store_codec_array_lookup
   | ZesuSsz.Automation2.ResourceGroups.zesu_expose_environment_alias;
     zesu_store_unsigned_splice_indices;
     progress ZesuSsz.Automation2.Hooks.zesu_integer_array_address_if_enabled;
     liEnsureInvariant;
     liStep ].
+
+Ltac zesu_store_memory_lookup :=
+  ZesuSsz.Automation2.SwitchDispatch.zesu_switch_enabled
+    constr:(ZesuStepStoreMemoryLookup);
+  first [ zesu_store_memory_lookup_core
+  | zesu_store_fold_indexed_byte_tail;
+    ZesuSsz.Automation2.ResourceGroups.zesu_open_resource_groups;
+    zesu_store_memory_lookup_core ].
