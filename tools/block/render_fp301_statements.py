@@ -191,6 +191,23 @@ def read_bound(row):
     return path.read_text()
 
 
+def render_entry_registers(source):
+    """Render approved dead-register binders without changing other resources."""
+    fixture = Path(__file__).resolve().parent / 'fixtures/fp301-entry-registers.json'
+    for row in json.loads(fixture.read_text())['rows']:
+        owner = re.escape(row['entry'])
+        if not re.search(r'\b(?:Definition|Instance) ' + owner + r'(?:_intro)?\b', source):
+            continue
+        old, new = row['old_resource'], row['new_resource']
+        if source.count(old) != 1 or source.count('(∃ ') != 1:
+            raise ValueError('The approved register declaration changed: ' + row['entry'])
+        if re.search(r'\b' + re.escape(row['binder']) + r'\b', source):
+            raise ValueError('The approved register binder already exists: ' + row['binder'])
+        source = source.replace(old, new, 1).replace(
+            '(∃ ', '(∃ (' + row['binder'] + ' : ' + row['type'] + ') ', 1)
+    return source
+
+
 def render_declaration(source, header):
     """Keep the bound declaration body and render its core-free header."""
     selected = selected_loop_declaration(source, header)
@@ -201,7 +218,7 @@ def render_declaration(source, header):
         raise ValueError("A generated declaration lacks its exact header boundary.")
     if "Automation.All." in header or "Automation2.All." in header:
         raise ValueError("A generated declaration cannot import a core.")
-    return header + source.split(boundary, 1)[1]
+    return render_entry_registers(header + source.split(boundary, 1)[1])
 
 
 def render_caller(source):
