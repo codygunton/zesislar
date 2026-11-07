@@ -51,3 +51,107 @@ Proof.
   exact (Z.le_lt_trans _ _ _ Hstep Hupper).
 Qed.
 Print Assumptions decodeItemDomainAtInputLengthRangeDerivedFacts.
+
+#[export] Instance decodeItemDomainAtOutputPointerBoundsDerivedFacts
+    (returnAddress : Coq.Numbers.BinNums.Z)
+    (args : ZesuSsz.Contracts.RlpDecodeItemContract.DecodeItemArgs) :
+  ZesuSsz.Automation.PureFacts.ZesuDerivedFacts
+    (ZesuSsz.Contracts.RlpDecodeItemContract.decodeItemDomainAt
+      returnAddress ZesuSsz.Contracts.RlpDecodeItemContract.decodeItemC1BDomain args)
+    ((0 <= ZesuSsz.Contracts.RlpDecodeItemContract.decodeItemOutputPointer args < ZesuSsz.Contracts.RlpDecodeItem.word64Modulus) /\
+  ZesuSsz.Contracts.RlpDecodeItemContract.decodeItemOutputPointer args + 40 < ZesuSsz.Contracts.RlpDecodeItem.word64Modulus /\
+  ZesuMachineMap.Machine.mapRamBase ZesuMachineMap.Machine.defaultMap <= ZesuSsz.Contracts.RlpDecodeItemContract.decodeItemOutputPointer args /\
+  ZesuSsz.Contracts.RlpDecodeItemContract.decodeItemOutputPointer args + 40 <= ZesuMachineMap.Machine.machineRamEnd ZesuMachineMap.Machine.defaultMap)%Z.
+Proof.
+  intro Hdomain.
+  unfold ZesuSsz.Contracts.RlpDecodeItemContract.decodeItemDomainAt,
+    ZesuSsz.Contracts.RlpDecodeItemContract.decodeItemC1BDomain,
+    ZesuSsz.Contracts.RlpDecodeItemContract.decodeItemArgsWellFormed,
+    ZesuSsz.Contracts.RlpDecodeItem.decodeItemEntryLayout in Hdomain.
+  repeat match goal with Hpart : _ /\ _ |- _ => destruct Hpart end.
+  repeat split; first [assumption | lia].
+Qed.
+Print Assumptions decodeItemDomainAtOutputPointerBoundsDerivedFacts.
+
+#[export] Instance decodeItemDomainAtStackRamBoundsDerivedFacts
+    (returnAddress : Coq.Numbers.BinNums.Z)
+    (args : ZesuSsz.Contracts.RlpDecodeItemContract.DecodeItemArgs) :
+  ZesuSsz.Automation.PureFacts.ZesuDerivedFacts
+    (ZesuSsz.Contracts.RlpDecodeItemContract.decodeItemDomainAt
+      returnAddress ZesuSsz.Contracts.RlpDecodeItemContract.decodeItemC1BDomain args)
+    (ZesuMachineMap.Machine.mapRamBase ZesuMachineMap.Machine.defaultMap + ZesuSsz.Contracts.RlpDecodeItem.decodeItemStackBytes <=
+    ZesuSsz.Contracts.RlpDecodeItemContract.decodeItemStackPointer args /\
+  ZesuSsz.Contracts.RlpDecodeItemContract.decodeItemStackPointer args <= ZesuMachineMap.Machine.machineRamEnd ZesuMachineMap.Machine.defaultMap)%Z.
+Proof.
+  intro Hdomain.
+  unfold ZesuSsz.Contracts.RlpDecodeItemContract.decodeItemDomainAt,
+    ZesuSsz.Contracts.RlpDecodeItemContract.decodeItemC1BDomain,
+    ZesuSsz.Contracts.RlpDecodeItemContract.decodeItemArgsWellFormed,
+    ZesuSsz.Contracts.RlpDecodeItem.decodeItemEntryLayout in Hdomain.
+  repeat match goal with Hpart : _ /\ _ |- _ => destruct Hpart end.
+  repeat split; first [assumption | lia].
+Qed.
+Print Assumptions decodeItemDomainAtStackRamBoundsDerivedFacts.
+
+#[export] Instance decodeItemDomainAtReturnAddressBoundsDerivedFacts
+    (returnAddress : Coq.Numbers.BinNums.Z)
+    (args : ZesuSsz.Contracts.RlpDecodeItemContract.DecodeItemArgs) :
+  ZesuSsz.Automation.PureFacts.ZesuDerivedFacts
+    (ZesuSsz.Contracts.RlpDecodeItemContract.decodeItemDomainAt
+      returnAddress ZesuSsz.Contracts.RlpDecodeItemContract.decodeItemC1BDomain args)
+    ((0 <= ZesuSsz.Contracts.RlpDecodeItemContract.decodeItemReturnAddress args < ZesuSsz.Contracts.RlpDecodeItem.word64Modulus) /\
+  ZesuSsz.Contracts.RlpDecodeItemContract.decodeItemReturnAddress args mod 4 = 0)%Z.
+Proof.
+  intro Hdomain.
+  unfold ZesuSsz.Contracts.RlpDecodeItemContract.decodeItemDomainAt,
+    ZesuSsz.Contracts.RlpDecodeItemContract.decodeItemC1BDomain,
+    ZesuSsz.Contracts.RlpDecodeItemContract.decodeItemArgsWellFormed,
+    ZesuSsz.Contracts.RlpDecodeItem.decodeItemEntryLayout in Hdomain.
+  repeat match goal with Hpart : _ /\ _ |- _ => destruct Hpart end.
+  repeat split; first [assumption | lia].
+Qed.
+Print Assumptions decodeItemDomainAtReturnAddressBoundsDerivedFacts.
+
+#[export] Instance decodeItemDomainAtSeparateRangesDerivedFacts
+    (returnAddress : Coq.Numbers.BinNums.Z)
+    (args : ZesuSsz.Contracts.RlpDecodeItemContract.DecodeItemArgs) :
+  ZesuSsz.Automation.PureFacts.ZesuDerivedFacts
+    (ZesuSsz.Contracts.RlpDecodeItemContract.decodeItemDomainAt
+      returnAddress ZesuSsz.Contracts.RlpDecodeItemContract.decodeItemC1BDomain args)
+    (ZesuSsz.Contracts.RlpDecodeItem.separateRanges (ZesuSsz.Contracts.RlpDecodeItemContract.decodeItemInputPointer args)
+    (ZesuSsz.Contracts.RlpDecodeItemContract.decodeItemInputLength args) (ZesuSsz.Contracts.RlpDecodeItemContract.decodeItemOutputPointer args) 40 /\
+  ZesuSsz.Contracts.RlpDecodeItem.separateRanges (ZesuSsz.Contracts.RlpDecodeItemContract.decodeItemInputPointer args)
+    (ZesuSsz.Contracts.RlpDecodeItemContract.decodeItemInputLength args)
+    (ZesuSsz.Contracts.RlpDecodeItemContract.decodeItemStackPointer args - ZesuSsz.Contracts.RlpDecodeItem.decodeItemStackBytes)
+    ZesuSsz.Contracts.RlpDecodeItem.decodeItemStackBytes /\
+  ZesuSsz.Contracts.RlpDecodeItem.separateRanges (ZesuSsz.Contracts.RlpDecodeItemContract.decodeItemOutputPointer args) 40
+    (ZesuSsz.Contracts.RlpDecodeItemContract.decodeItemStackPointer args - ZesuSsz.Contracts.RlpDecodeItem.decodeItemStackBytes)
+    ZesuSsz.Contracts.RlpDecodeItem.decodeItemStackBytes)%Z.
+Proof.
+  intro Hdomain.
+  unfold ZesuSsz.Contracts.RlpDecodeItemContract.decodeItemDomainAt,
+    ZesuSsz.Contracts.RlpDecodeItemContract.decodeItemC1BDomain,
+    ZesuSsz.Contracts.RlpDecodeItemContract.decodeItemArgsWellFormed,
+    ZesuSsz.Contracts.RlpDecodeItem.decodeItemEntryLayout in Hdomain.
+  repeat match goal with Hpart : _ /\ _ |- _ => destruct Hpart end.
+  repeat split; first [assumption | lia].
+Qed.
+Print Assumptions decodeItemDomainAtSeparateRangesDerivedFacts.
+
+#[export] Instance decodeItemDomainAtStorageLengthDerivedFacts
+    (returnAddress : Coq.Numbers.BinNums.Z)
+    (args : ZesuSsz.Contracts.RlpDecodeItemContract.DecodeItemArgs) :
+  ZesuSsz.Automation.PureFacts.ZesuDerivedFacts
+    (ZesuSsz.Contracts.RlpDecodeItemContract.decodeItemDomainAt
+      returnAddress ZesuSsz.Contracts.RlpDecodeItemContract.decodeItemC1BDomain args)
+    ((List.length (ZesuSsz.Contracts.RlpDecodeItemContract.decodeItemBeforeStorage args) = 40)%nat)%Z.
+Proof.
+  intro Hdomain.
+  unfold ZesuSsz.Contracts.RlpDecodeItemContract.decodeItemDomainAt,
+    ZesuSsz.Contracts.RlpDecodeItemContract.decodeItemC1BDomain,
+    ZesuSsz.Contracts.RlpDecodeItemContract.decodeItemArgsWellFormed,
+    ZesuSsz.Contracts.RlpDecodeItem.decodeItemEntryLayout in Hdomain.
+  repeat match goal with Hpart : _ /\ _ |- _ => destruct Hpart end.
+  repeat split; first [assumption | lia].
+Qed.
+Print Assumptions decodeItemDomainAtStorageLengthDerivedFacts.
