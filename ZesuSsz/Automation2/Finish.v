@@ -650,15 +650,18 @@ Ltac zesu_finish_source_package :=
   first [solve [
   MemoryTupleConsumer.zesu_memory_tuple
     ltac:(fun requested =>
-      once
-        (SourceFactByteViews.zesu_source_byte_views;
-         SourceFactByteViews.zesu_source_byte_order_tree requested;
-         ZesuSsz.Automation2.BitvectorFacts.zesu_source_biased_mask_tree requested);
       (tryif SourceFactMatching.zesu_source_check_fixed_tree requested
        then idtac
-       else (repeat JoinEntailment.zesu_join_project_once;
-         PureFacts.zesu_saturate_derived_facts;
-         SourceFactMatching.zesu_source_check_fixed_tree requested));
+       else (
+         once
+           (SourceFactByteViews.zesu_source_byte_views;
+            SourceFactByteViews.zesu_source_byte_order_tree requested;
+            ZesuSsz.Automation2.BitvectorFacts.zesu_source_biased_mask_tree requested);
+         tryif SourceFactMatching.zesu_source_check_fixed_tree requested
+         then idtac
+         else (repeat JoinEntailment.zesu_join_project_once;
+           PureFacts.zesu_saturate_derived_facts;
+           SourceFactMatching.zesu_source_check_fixed_tree requested)));
       once (SourceFactMatching.zesu_source_match_tree requested ltac:(idtac)))
     ltac:(fun _ => SourceFactMatching.zesu_source_finish_package)
   ] | solve [
@@ -676,15 +679,18 @@ once (try zesu_memory_registered_intro;
   try MemoryTupleConsumer.zesu_memory_assemble_leading;
   finish constr:(tt)) in
   run ltac:(fun requested =>
-      once
-        (SourceFactByteViews.zesu_source_byte_views;
-         SourceFactByteViews.zesu_source_byte_order_tree requested;
-         ZesuSsz.Automation2.BitvectorFacts.zesu_source_biased_mask_tree requested);
       (tryif SourceFactMatching.zesu_source_check_fixed_tree requested
        then idtac
-       else (repeat JoinEntailment.zesu_join_project_once;
-         PureFacts.zesu_saturate_derived_facts;
-         SourceFactMatching.zesu_source_check_fixed_tree requested));
+       else (
+         once
+           (SourceFactByteViews.zesu_source_byte_views;
+            SourceFactByteViews.zesu_source_byte_order_tree requested;
+            ZesuSsz.Automation2.BitvectorFacts.zesu_source_biased_mask_tree requested);
+         tryif SourceFactMatching.zesu_source_check_fixed_tree requested
+         then idtac
+         else (repeat JoinEntailment.zesu_join_project_once;
+           PureFacts.zesu_saturate_derived_facts;
+           SourceFactMatching.zesu_source_check_fixed_tree requested)));
       SourceFactMatching.zesu_source_match_tree requested ltac:(idtac))
     ltac:(fun _ => SourceFactMatching.zesu_source_finish_package)
   ]].
