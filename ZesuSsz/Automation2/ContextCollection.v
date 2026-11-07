@@ -1,5 +1,6 @@
 Require Import isla.riscv64.riscv64.
 Require Import ZesuSsz.Automation2.SwitchDispatch.
+Require Import ZesuSsz.Automation2.SearchBudget.
 From Ltac2 Require Import Ltac2.
 Set Default Proof Mode "Classic".
 
@@ -116,7 +117,11 @@ Ltac2 zesu_context_prune () :=
     end) (List.rev hyps).
 
 Ltac zesu_context_prune_goal := ltac2:(zesu_context_prune ()).
-Ltac zesu_context_filtered closer := first [solve [zesu_context_prune_goal; closer] | closer].
+Ltac zesu_solve_solver site closer :=
+  zesu_context_prune_goal;
+  SearchBudget.zesu_solve_selected site closer.
+Ltac zesu_context_filtered closer :=
+  zesu_solve_solver ("context.selected"%string) closer.
 
 Ltac2 zesu_context_collect_live (roots : constr list) :=
   let hyps := Control.hyps () in
@@ -187,9 +192,7 @@ Ltac zesu_context_finish_once closer :=
     | closer]
   end.
 
-Ltac zesu_context_filter closer :=
-  tryif zesu_switch_enabled constr:(ZesuStepFinisherOnce)
-  then zesu_context_filtered closer else closer.
+Ltac zesu_context_filter closer := zesu_context_filtered closer.
 
 Ltac zesu_collect_if_enabled :=
   tryif zesu_switch_enabled constr:(ZesuStepContextCollection)
