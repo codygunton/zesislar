@@ -17,8 +17,8 @@ def render(policy):
     return (
         '(* Generated declarations from Evidence/solver_context_policy.json. *)\n'
         'From Coq Require Import ZArith.ZArith Lists.List Strings.String.\n'
-        f'Definition zesu_solver_prop_limit : Z := {policy["prop_facts"]}.\n'
-        f'Definition zesu_solver_node_limit : Z := {policy["kernel_nodes"]}.\n'
+        f'Notation zesu_solver_prop_limit := ({policy["prop_facts"]}%Z) (only parsing).\n'
+        f'Notation zesu_solver_node_limit := ({policy["kernel_nodes"]}%Z) (only parsing).\n'
         'Definition zesu_solver_exception_labels : list string := nil.\n'
     )
 
