@@ -1,6 +1,8 @@
 From Coq Require Import ZArith.ZArith NArith.NArith.
+From Coq Require Export Strings.String.
 From Ltac2 Require Import Ltac2 Ref List Int Array Ident.
 Require Import ZesuSsz.Automation2.VmClosed.
+Require Import ZesuSsz.Automation2.SolverContextPolicy.
 Set Default Proof Mode "Classic".
 
 (* Budgets count attempted operations, including backtracking. Exhaustion is
@@ -91,3 +93,47 @@ Ltac2 zesu_reduce_closed_goal () :=
 
 Ltac zesu_normalize_closed_goal := ltac2:(zesu_reduce_closed_goal ()).
 Ltac zesu_check_atomic_input := ltac2:(zesu_atomic_input_bound ()).
+
+(* Solver limits apply to the selected proof context. *)
+Ltac2 rec zesu_solver_positive value :=
+  lazy_match! value with
+  | xH => 1
+  | xO ?tail => Int.mul 2 (zesu_solver_positive tail)
+  | xI ?tail => Int.add 1 (Int.mul 2 (zesu_solver_positive tail))
+  end.
+Ltac2 zesu_solver_limit value :=
+  if Constr.has_evar value then Control.zero (Tactic_failure None) else ();
+  let value := Std.eval_hnf value in
+  if Constr.has_evar value then Control.zero (Tactic_failure None) else ();
+  lazy_match! value with
+  | Z0 => 0
+  | Zpos ?positive => zesu_solver_positive positive
+  | _ => Control.zero (Tactic_failure (Some (Message.of_string "Invalid solver context limit")))
+  end.
+Ltac2 zesu_prop_context_bound () :=
+  let limit := zesu_solver_limit constr:(SolverContextPolicy.zesu_solver_prop_limit) in
+  let count := List.fold_left (fun count declaration =>
+    let (_, _, typ) := declaration in
+    if Constr.equal (Constr.type typ) constr:(Prop)
+    then Int.add count 1 else count) 0 (Control.hyps ()) in
+  if Int.gt count limit then
+    Control.zero (Tactic_failure (Some (Message.concat
+      (Message.of_string "Solver context exceeds its Prop limit: ") (Message.of_int count))))
+  else ().
+Ltac2 zesu_solver_context_bound () :=
+  zesu_prop_context_bound ();
+  let failed := Ref.ref false in
+  let limit := zesu_solver_limit constr:(SolverContextPolicy.zesu_solver_node_limit) in
+  let remaining := Ref.ref limit in
+  zesu_count_nodes failed remaining (Control.goal ());
+  List.iter (fun declaration =>
+    let (_, body, typ) := declaration in
+    zesu_count_nodes failed remaining typ;
+    match body with
+    | None => ()
+    | Some value => zesu_count_nodes failed remaining value
+    end) (Control.hyps ());
+  zesu_budget_check failed.
+Ltac zesu_solve_selected site closer :=
+  tryif ltac2:(zesu_solver_context_bound ()) then closer
+  else fail 0 "Solver context refused at" site.
