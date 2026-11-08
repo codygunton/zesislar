@@ -39,9 +39,11 @@ if ! git -C "$root" merge-base --is-ancestor "$tip" "$main_ref"; then
   exit 3
 fi
 
+# awk reads to the end: an early exit kills git with SIGPIPE, and pipefail stops the script.
 worktree=$(git -C "$root" worktree list --porcelain | awk -v ref="refs/heads/$branch" '
   /^worktree / { path = substr($0, 10) }
-  $0 == "branch " ref { print path; exit }')
+  $0 == "branch " ref && found == "" { found = path }
+  END { if (found != "") print found }')
 if [ -z "$worktree" ]; then
   echo "no worktree has $branch checked out"
 elif [ "$(realpath "$worktree")" = "$(realpath "$root")" ]; then
