@@ -11,6 +11,7 @@ from render_support import component_source,definition_introduction_source,expre
 from forward_resources import load_resource_vocabulary
 from symbolic_state import Expr
 from render_support import unfold_declaration
+from render_fp301_statements import render_register_atoms
 
 def bind(p):p=Path(p);return {'path':str(p),'sha256':hashlib.sha256(p.read_bytes()).hexdigest()}
 forward=options.source_receipt; assert bind(forward)['sha256']==options.source_receipt_sha256, 'The loop source receipt changed'; packet=json.loads(forward.read_text()); data={'boundaries': []}
@@ -82,8 +83,8 @@ for suffix in pilots:
  for helper in formatted.response['body']['additional_definitions']:
   assert not next(row for row in formatted.manifest['helpers']if row['suffix']==helper['suffix'])['outer_binders']
   definition='Definition '+helpers[helper['suffix']]+base_telescope+' : iProp Sigma := '+body_source(helper['body'])+'%I.\n'
-  definition_introduction_source(definition,helpers[helper['suffix']]);definitions.append((helpers[helper['suffix']],definition))
- definition='Definition '+name+base_telescope+' (K : iProp Sigma) : iProp Sigma := '+body_source(formatted.response['body'])+'%I.\n';definition_introduction_source(definition,name);definitions.append((name,definition))
+  definition=render_register_atoms(definition);definition_introduction_source(definition,helpers[helper['suffix']]);definitions.append((helpers[helper['suffix']],definition))
+ definition='Definition '+name+base_telescope+' (K : iProp Sigma) : iProp Sigma := '+body_source(formatted.response['body'])+'%I.\n';definition=render_register_atoms(definition);definition_introduction_source(definition,name);definitions.append((name,definition))
  module='Pilot'+suffix+'Entries';relative=Path('ZesuSsz/Generated/DecodeItem/FP301');directory=O/'sources'/relative;directory.mkdir(parents=True,exist_ok=True);entry=directory/(module+'.v');entry.write_text(header+'\n'.join(definition for _,definition in definitions))
  structural=directory/('Pilot'+suffix+'Structural.v');source=header+'Require Import '+'.'.join((relative/module).parts)+'.\n'
  for symbol,definition in definitions:source+=unfold_declaration(symbol, instance_name=symbol+'_unfold', locality='export')+definition_introduction_source(definition,symbol)+'\n'

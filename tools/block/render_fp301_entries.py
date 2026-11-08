@@ -42,7 +42,7 @@ from entry_formatter import (
     format_owned_entry_boundary,
 )
 from fractional_source import FractionalSourceArrays, array_declaration
-from render_fp301_statements import render_entry_registers
+from render_fp301_statements import render_entry_registers, render_register_atoms
 from render_support import (
     component_source,
     definition_introduction_source,
@@ -294,7 +294,7 @@ for suffix in pilots:
             + body_source(helper["body"])
             + "%I.\n"
         )
-        definition = render_entry_registers(definition)
+        definition = render_register_atoms(render_entry_registers(definition))
         definition_introduction_source(definition, helpers[helper["suffix"]])
         definitions.append((helpers[helper["suffix"]], definition))
     definition = (
@@ -305,6 +305,7 @@ for suffix in pilots:
         + body_source(formatted.response["body"])
         + "%I.\n"
     )
+    definition = render_register_atoms(definition)
     definition_introduction_source(definition, name)
     definitions.append((name, definition))
     module = "Pilot" + suffix + "Entries"

@@ -208,6 +208,129 @@ def render_entry_registers(source):
     return source
 
 
+REGISTER_RESOURCE = re.compile(r'"(?P<register>[A-Za-z_]\w*)" ↦ᵣ (?P<open>\(?)RVal_Bits ')
+DECLARED_BINDER = re.compile(r"\((?P<name>[A-Za-z_][\w']*) : [^()]*\)")
+
+
+def matching_parenthesis(text, start):
+    depth = 0
+    for index in range(start, len(text)):
+        depth += (text[index] == '(') - (text[index] == ')')
+        if depth == 0:
+            return index
+    raise ValueError('A generated declaration has unbalanced parentheses.')
+
+
+def top_level_split(text, separator):
+    """Split at separators that lie outside every parenthesis."""
+    parts, start, depth, index = [], 0, 0, 0
+    while index < len(text):
+        if depth == 0 and text.startswith(separator, index):
+            parts.append(text[start:index])
+            index = start = index + len(separator)
+            continue
+        depth += (text[index] == '(') - (text[index] == ')')
+        index += 1
+    return parts + [text[start:]]
+
+
+def unparenthesized(term):
+    term = term.strip()
+    while term.startswith('(') and matching_parenthesis(term, 0) == len(term) - 1:
+        term = term[1:-1].strip()
+    return term
+
+
+def application(term):
+    return [token for token in top_level_split(unparenthesized(term), ' ') if token]
+
+
+def register_value(component):
+    """Return the match, value, and bit width of one register resource."""
+    match = REGISTER_RESOURCE.match(component)
+    if match is None or component[match.end()] != '(':
+        return None
+    close = matching_parenthesis(component, match.end())
+    if component[close + 1:] != (')' if match['open'] else ''):
+        return None
+    value, _, kind = component[match.end() + 1:close].rpartition(' : ')
+    width = re.fullmatch(r'bv (\d+)%N', kind)
+    return None if width is None else (match, unparenthesized(value), width[1])
+
+
+def address_value(term, parameters):
+    """Accept literals and casts of parameter projections under bv_add only."""
+    tokens = application(term)
+    if len(tokens) == 3 and tokens[0] == 'BV':
+        return bool(re.fullmatch(r'\d+%N', tokens[1]) and re.fullmatch(r'-?\d+%Z', tokens[2]))
+    if len(tokens) == 3 and tokens[0] == 'Z_to_bv':
+        projection = application(tokens[2])
+        return len(projection) == 2 and projection[1] in parameters
+    return (len(tokens) == 3 and tokens[0] == 'bv_add'
+            and all(address_value(token, parameters) for token in tokens[1:]))
+
+
+def computed_register_value(value, parameters):
+    """Return whether a register value is computed rather than plain.
+
+    A plain value is a binder, a literal, a parameter projection, or address
+    arithmetic: a bv_add of literals and casts of parameter projections.
+    """
+    tokens = application(value)
+    if len(tokens) == 1 and re.fullmatch(r"[A-Za-z_][\w'.]*", tokens[0]):
+        return False
+    if len(tokens) == 2 and tokens[1] in parameters:
+        return False
+    return not address_value(value, parameters)
+
+
+def declaration_parameters(source, position):
+    """Return the explicit binders of the declaration that encloses a position."""
+    command = max(source.rfind('Definition ', 0, position),
+                  source.rfind('Instance ', 0, position), 0)
+    prefix = re.split(r':=|\(∃ ', source[command:position], maxsplit=1)[0]
+    return {match['name'] for match in DECLARED_BINDER.finditer(prefix)}
+
+
+def render_register_atoms(source):
+    """Render each computed entry register value as an existential atom (F43, F44).
+
+    The atom replaces the value in its register resource.  The old value
+    becomes a separate pure fact on bv_unsigned of the atom at the end of the
+    same existential body.  Plain register values stay unchanged.
+    """
+    for start in sorted((match.start() for match in re.finditer(r'\(∃ ', source)), reverse=True):
+        close = matching_parenthesis(source, start)
+        parameters = declaration_parameters(source, start)
+        telescope, separator, body = source[start + 3:close].partition(', ')
+        if not separator or not body.startswith('(') or matching_parenthesis(body, 0) != len(body) - 1:
+            raise ValueError('An existential entry body changed shape.')
+        components, binders, facts = top_level_split(body[1:-1], ' ∗ '), [], []
+        for index, component in enumerate(components):
+            found = register_value(component)
+            if found is None or not computed_register_value(found[1], parameters):
+                continue
+            match, value, width = found
+            atom = 'entry_' + match['register']
+            if re.search(r'\b' + atom + r'\b', source):
+                raise ValueError('The register atom already exists: ' + atom)
+            components[index] = (match.group(0) + '(' + atom + ' : bv ' + width + '%N)'
+                                 + (')' if match['open'] else ''))
+            binders.append('(' + atom + ' : bv ' + width + ')')
+            facts.append('⌜(bv_unsigned ' + atom + ' = bv_unsigned (' + value + '))%Z⌝')
+        if binders:
+            source = (source[:start] + '(∃ ' + ' '.join(binders + [telescope]) + ', ('
+                      + ' ∗ '.join(components + facts) + '))' + source[close + 1:])
+    for match in REGISTER_RESOURCE.finditer(source):
+        close = matching_parenthesis(source, match.end())
+        found = register_value(source[match.start():close + 1] + (')' if match['open'] else ''))
+        if found is not None and computed_register_value(
+                found[1], declaration_parameters(source, match.start())):
+            raise ValueError('A computed register lies outside an existential body: '
+                             + match['register'])
+    return source
+
+
 def render_declaration(source, header):
     """Keep the bound declaration body and render its core-free header."""
     selected = selected_loop_declaration(source, header)
@@ -218,7 +341,7 @@ def render_declaration(source, header):
         raise ValueError("A generated declaration lacks its exact header boundary.")
     if "Automation.All." in header or "Automation2.All." in header:
         raise ValueError("A generated declaration cannot import a core.")
-    return render_entry_registers(header + source.split(boundary, 1)[1])
+    return render_register_atoms(render_entry_registers(header + source.split(boundary, 1)[1]))
 
 
 def render_caller(source):
