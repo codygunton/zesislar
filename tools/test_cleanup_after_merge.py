@@ -68,6 +68,23 @@ class CleanupAfterMerge(unittest.TestCase):
         self.assertIn('w/feature', self.git('branch', '--list', 'w/feature'))
         self.assertIn(str(tied), (self.root / '_build/janitor/janitor.log').read_text())
 
+    def test_long_worktree_list_does_not_stop_the_lookup(self):
+        # The base checkout has hundreds of worktrees. A lookup that stops reading
+        # early kills `git worktree list` with SIGPIPE, and pipefail ended the script.
+        self.merge()
+        tied = self.item('a/run1', 'w/feature')
+        nested = Path(*(['x' * 200] * 15))
+        for index in range(40):
+            self.git('worktree', 'add', '-q', '--detach', '--no-checkout',
+                     str(self.root / '.worktrees' / nested / f'filler-{index:02d}'))
+        listing = self.git('worktree', 'list', '--porcelain')
+        self.assertGreater(len(listing) - listing.index(str(self.worktree)), 1 << 16)
+        result = self.cleanup('w/feature')
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertFalse(self.worktree.exists())
+        self.assertFalse(tied.exists())
+        self.assertIn('removed worktree ' + str(self.worktree), result.stdout)
+
     def test_dirty_worktree_stays(self):
         self.merge()
         (self.worktree / 'notes.txt').write_text('untracked\n')
