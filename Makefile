@@ -460,3 +460,26 @@ build-directories:
 	mkdir -p "$(AGENT_BUILD_DIR)" "$(CHECK_LOCAL_BUILD_DIR)" "$(BLOCK_BUILD_DIR)" "$(DET_BUILD_DIR)"
 
 proof-verbose _check-fast check-signatures _check-iris check-local block-prepare: | build-directories
+
+# --- build directory janitor (AGENTS.md, "Build directory discipline") --------
+# The janitor always measures the base checkout's _build, also from a worktree.
+JANITOR_ROOT = $(shell dirname "$$(git rev-parse --path-format=absolute --git-common-dir)")
+JANITOR = systemd-run --user --scope --quiet -p MemoryMax=12G -p MemorySwapMax=0 \
+  $(PYTHON) tools/build_janitor.py
+SYSTEMD_USER_DIR ?= $(HOME)/.config/systemd/user
+
+.PHONY: janitor janitor-apply install-janitor
+janitor:
+	$(JANITOR)
+
+janitor-apply:
+	$(JANITOR) --apply
+
+# Installs the units and reloads systemd. It does not enable or start the timer.
+install-janitor:
+	mkdir -p "$(SYSTEMD_USER_DIR)"
+	sed -e 's|@ROOT@|$(JANITOR_ROOT)|g' -e "s|@PYTHON@|$$(command -v $(PYTHON))|g" \
+	  tools/systemd/zesu-build-janitor.service > "$(SYSTEMD_USER_DIR)/zesu-build-janitor.service"
+	cp tools/systemd/zesu-build-janitor.timer "$(SYSTEMD_USER_DIR)/zesu-build-janitor.timer"
+	systemctl --user daemon-reload
+	@echo "Installed. Enable after review: systemctl --user enable --now zesu-build-janitor.timer"

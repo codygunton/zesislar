@@ -1847,6 +1847,11 @@ prune_scope_registry
 case "${1:-report}" in
   batch|scope)
     if [ -z "${ZESU_RUN_ID:-}" ] && [ -z "${ZESU_IN_BATCH:-}${ZESU_IN_GATE:-}" ]; then
+      # A new run must fit its agent's _build budget. This reads only
+      # _build/BUDGET.json, which tools/build_janitor.py writes. A guard copy
+      # without the janitor beside it has no budget to enforce.
+      budget_tool="$(dirname "$(realpath "$0")")/build_janitor.py"
+      if [ -f "$budget_tool" ]; then python3 "$budget_tool" admit || exit $?; fi
       registry=${ZESU_RUN_REGISTRY_TOOL:-$(dirname "$(realpath "$0")")/run_registry.py}
       registry_args=(run --kind "stock-$1" --owner "${COORD_AGENT:-$USER}")
       if [ -n "${ZESU_SUPERSEDES_RUN:-}" ]; then

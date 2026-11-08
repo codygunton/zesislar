@@ -187,6 +187,34 @@ do. Production goals are 300 seconds and
 6 GiB for proof modules, 60 seconds and 2 GiB elsewhere; they are goals for
 finished modules, not caps on search.
 
+## Build directory discipline
+
+`tools/build_janitor.py` enforces these rules. `make janitor` shows what it frees.
+`make janitor-apply` frees it. A nightly user timer runs the apply step.
+The janitor never touches `_build/agents/orch/` or a path that a live process uses.
+It keeps a fresh run, the bank of the newest main commit, and each run that a kept run names
+by a symbolic link or by a path in a manifest. It logs each deletion in `_build/janitor/`.
+
+1. Stay inside your budget. Each agent has a budget for unique data in `_build/agents/<agent>`.
+   All agents together have a total budget. `tools/build_janitor.py` sets both values.
+   The janitor measures extents and writes the usage and the budgets to `_build/BUDGET.json`.
+   The resource guard refuses a new run for an agent over its budget.
+2. Seal means shrink. Write `SEALED.json` in a run dir when the run is final.
+   The janitor shrinks a sealed run, and a run without change for 24 hours.
+   It keeps non-compiled files under 1 MiB and the paths that a `KEEP.json` lists.
+   Write `KEEP.json` as a JSON list of paths relative to its own directory.
+3. Do not make full copies of large inputs. Copy with `tools/reflink_copy.py`,
+   `clone_copy`, or `cp --reflink=always`. These fail; they never make a full copy.
+   Refer by path and SHA-256 to a large input that a run only reads.
+   Do not write a second copy of a large JSON file.
+4. Keep one bank for each main commit. Put a main-commit object bank in `_build/banks/<main-sha>/`.
+   The janitor deletes a bank of an older main commit after 24 hours without change.
+5. Clean up after each merge. Run `tools/cleanup_after_merge.sh <branch>`.
+   It removes the clean worktree of the branch and the run dirs of the branch.
+   It never uses `--force`. Write `ITEM.json` with `{"branch": "<branch>"}` in each run dir.
+6. Worktree builds expire. The janitor deletes a worktree `_build` after 48 hours without change.
+   The source checkout stays.
+
 ## Proof workflow
 
 1. Confirm the exact Level 1 entry, exit, outcome, frame, region, and bound.
@@ -268,6 +296,7 @@ a batch launch, the coordinator gets a per-item table of ran, setup failure, can
 ## Integration gates and rule threshold
 
 Land each release as a pull request that references its plan's tracking issue. The coordinator merges it after both gates pass.
+After each merge, the coordinator runs `tools/cleanup_after_merge.sh <branch>`.
 
 During the frozen-list repair phase, a track commit needs green `make check-fast`
 and a preview that adds no Iris failure before merge.

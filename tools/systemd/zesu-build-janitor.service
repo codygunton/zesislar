@@ -1,0 +1,11 @@
+# Installed by `make install-janitor`, which fills in @ROOT@ and @PYTHON@.
+# The scope caps the janitor's scan at 12 GiB.
+[Unit]
+Description=Zesislar build directory janitor (tools/build_janitor.py --apply)
+
+[Service]
+Type=oneshot
+WorkingDirectory=@ROOT@
+Nice=19
+IOSchedulingClass=idle
+ExecStart=/usr/bin/systemd-run --user --scope --quiet -p MemoryMax=12G -p MemorySwapMax=0 @PYTHON@ @ROOT@/tools/build_janitor.py --apply
