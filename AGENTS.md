@@ -195,8 +195,9 @@ The janitor never touches `_build/agents/orch/` or a path that a live process us
 It keeps a fresh run, the bank of the newest main commit, and each run that a kept run names
 by a symbolic link or by a path in a manifest. It logs each deletion in `_build/janitor/`.
 
-1. Stay inside your budget. Each agent may use 40 GB of unique data in `_build/agents/<agent>`.
-   All agents together may use 150 GB. The janitor measures extents and writes `_build/BUDGET.json`.
+1. Stay inside your budget. Each agent has a budget for unique data in `_build/agents/<agent>`.
+   All agents together have a total budget. `tools/build_janitor.py` sets both values.
+   The janitor measures extents and writes the usage and the budgets to `_build/BUDGET.json`.
    The resource guard refuses a new run for an agent over its budget.
 2. Seal means shrink. Write `SEALED.json` in a run dir when the run is final.
    The janitor shrinks a sealed run, and a run without change for 24 hours.

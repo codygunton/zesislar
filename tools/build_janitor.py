@@ -41,8 +41,9 @@ import sys
 import time
 
 GB = 10 ** 9
-AGENT_BUDGET_BYTES = 40 * GB
-TOTAL_BUDGET_BYTES = 150 * GB
+# The only place that sets the budgets. BUDGET.json and admission read them from here.
+AGENT_BUDGET_BYTES = 80 * GB
+TOTAL_BUDGET_BYTES = 200 * GB
 RUN_IDLE_SECONDS = 24 * 3600
 WORKTREE_IDLE_SECONDS = 48 * 3600
 BANK_IDLE_SECONDS = 24 * 3600
@@ -961,8 +962,10 @@ def main(argv=None):
     parser.add_argument('--dry-run', action='store_true', help='report only (the default)')
     parser.add_argument('--jobs', type=int, default=8)
     parser.add_argument('--main-ref', default='origin/main')
-    parser.add_argument('--agent-budget-gb', type=float, default=AGENT_BUDGET_BYTES / GB)
-    parser.add_argument('--total-budget-gb', type=float, default=TOTAL_BUDGET_BYTES / GB)
+    parser.add_argument('--agent-budget-gb', type=float, default=AGENT_BUDGET_BYTES / GB,
+                        help='budget for each agent (default: %(default)s GB)')
+    parser.add_argument('--total-budget-gb', type=float, default=TOTAL_BUDGET_BYTES / GB,
+                        help='budget for all agents together (default: %(default)s GB)')
     sub.add_parser('admit', help='exit 3 when this agent is over its budget')
     use = sub.add_parser('in-use', help='exit 0 when a live process uses a path')
     use.add_argument('paths', nargs='+')
