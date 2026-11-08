@@ -4,6 +4,7 @@ import ast,copy,hashlib,json,os,subprocess,sys,tempfile,unittest
 HERE=Path(__file__).resolve().parent
 sys.path[:0]=[str(HERE/'code'),str(HERE.parents[0]),str(HERE.parents[1])]
 import memory_policy as P
+import _historical_fixtures as historical
 import scratch_limits as L
 def binding(path):return {'path':str(path),'sha256':hashlib.sha256(path.read_bytes()).hexdigest()}
 class FamilyPolicyTests(unittest.TestCase):
@@ -68,7 +69,8 @@ class FamilyPolicyTests(unittest.TestCase):
   rt=dict(phase='prerequisites',coqc_wrapper='tools/entry_chain_coqc.sh',build_dir='default',ocamlpath='{workspace}/lib',runtime_path='runtime',runtime_sha256='sha',canonical_admission={'minimum_claim_bytes':8*P.GIB});env=ns['prerequisite_environment'](rt,self.root,self.root,inherited={});self.assertEqual(env['ZESU_MODULE_CLAIM_BYTES'],str(8*P.GIB));self.assertEqual(env['ZESU_MODULE_LIMIT_GIB'],'64')
 class CompletedOpenTests(unittest.TestCase):
  def setUp(self):
-  rows=json.loads((HERE/'test-fixtures/COMPLETED-STOCK-MEASUREMENTS.json').read_text())['rows'];self.row=next(r for r in rows if not r.get('format') and P.read(r['result']).get('status')=='native_open');self.target={'module':self.row['module'],'source_sha256':self.row['native_source']['sha256'],'statement_sha256':self.row['statement_sha256']}
+  # Read the receipts from the vendored bundle, never from live build directories.
+  rows=historical.read_json(HERE/'test-fixtures/COMPLETED-STOCK-MEASUREMENTS.json')['rows'];self.row=next(r for r in rows if not r.get('format') and P.read(r['result']).get('status')=='native_open');self.target={'module':self.row['module'],'source_sha256':self.row['native_source']['sha256'],'statement_sha256':self.row['statement_sha256']}
  def altered(self,change):
   data=copy.deepcopy(P.read(self.row['result']));change(data);original=P.read
   return patch.object(P,'read',side_effect=lambda b:data if b==self.row['result'] else original(b))
