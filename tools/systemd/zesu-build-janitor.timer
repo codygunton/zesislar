@@ -1,0 +1,12 @@
+# Installed by `make install-janitor`. Enable it after review:
+#   systemctl --user enable --now zesu-build-janitor.timer
+[Unit]
+Description=Run the Zesislar build directory janitor every night
+
+[Timer]
+OnCalendar=*-*-* 04:30:00
+RandomizedDelaySec=15m
+Persistent=true
+
+[Install]
+WantedBy=timers.target
