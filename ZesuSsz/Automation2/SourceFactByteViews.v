@@ -1,6 +1,7 @@
 Require Import ZesuSsz.Automation2.ByteMaskCast.
 Require Import ZesuSsz.Automation2.BitvectorFacts.
 Require Import ZesuSsz.Automation2.VmClosed.
+Require Import ZesuSsz.Automation2.RangeFacts.
 From iris.proofmode Require Import tactics environments.
 From Coq Require Import ZArith NArith Lia.
 From stdpp Require Import bitvector.tactics.
@@ -147,6 +148,16 @@ Ltac zesu_source_signed_order_goal :=
     let T := type of word in constr_eq T constr:(bv 64);
     lazymatch word with
     | context [Z_to_bv 64 ?quantity] =>
+      let root := lazymatch quantity with
+        | ?function ?argument => constr:(argument)
+        | _ => constr:(quantity)
+        end in
+      let collect := ltac2:(value pointer carrier |-
+        RangeFacts.zesu_range_collect
+          (Option.get (Ltac1.to_constr value))
+          (Option.get (Ltac1.to_constr pointer))
+          (Option.get (Ltac1.to_constr carrier))) in
+      collect quantity quantity root;
       let finish := ltac:(fun Hzero Hrange Hsource =>
         clear - Hzero Hrange Hsource;
         repeat lazymatch goal with
@@ -159,7 +170,8 @@ Ltac zesu_source_signed_order_goal :=
             value offset Hoffset); clear Hoffset
         end;
         repeat rewrite BitvectorFacts.zesu_signed_zero_extend_64_128;
-        bv_solve) in
+        SearchBudget.zesu_solve_selected ("source_fact.signed_order"%string)
+          ltac:(bv_solve)) in
       multimatch goal with
       | Hzero : ?minimum <= quantity, Hrange : ?endpoint < ?modulus |- _ =>
         VmClosed.zesu_vm_closed minimum;
