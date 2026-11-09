@@ -2179,7 +2179,6 @@ Ltac zesu_liAStep :=
   | liLetBindHint
   | liUnfoldLate
   | zesu_canonical_fact_views_if_enabled
-  | MaskWitness.zesu_mask_witness_telescope
  ]; liSimpl)].
 
 Ltac liAStep ::= first [progress zesu_union_witness_step | zesu_liAStep].
