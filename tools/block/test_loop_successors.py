@@ -3,6 +3,8 @@ import hashlib
 import json
 from pathlib import Path
 import re
+import subprocess
+import sys
 import unittest
 
 from render_fp301_statements import render_unfold_opacity
@@ -31,6 +33,23 @@ class LoopSuccessors(unittest.TestCase):
         for row in fixture["reaching_passes"]:
             for key in ["report", "seed"]:
                 self.assertRegex(row[key]["sha256"], r"^[0-9a-f]{64}$")
+
+    def test_exit_obligations_and_consistency(self):
+        fixture = json.loads((ROOT / "tools/block/fixtures/fp301-loop-successors.json").read_text())
+        self.assertEqual(len(fixture["exit_obligations"]), 2)
+        for row in fixture["exit_obligations"]:
+            with self.subTest(head=row["loop_head"]):
+                caller = (ROOT / row["output"]).read_text()
+                self.assertEqual(hashlib.sha256(caller.encode()).hexdigest(), row["sha256"])
+                self.assertEqual(caller.count("\n  " + row["precondition"] + " -∗\n"), 1)
+                self.assertIn("Lemma " + row["checked_by"] + " ", caller)
+                module, name = row["entry"].rsplit(".", 1)
+                entry = (ROOT / (module.replace(".", "/") + ".v")).read_text()
+                self.assertIn("Definition " + name + " ", entry)
+        self.assertEqual(len(fixture["contradiction_checks"]), 4)
+        self.assertTrue(all(row["contradictory"] is False for row in fixture["contradiction_checks"]))
+        subprocess.run([sys.executable, str(ROOT / "tools/block/render_loop_exits.py"), "--check"],
+                       check=True, capture_output=True)
 
 
 if __name__ == "__main__":

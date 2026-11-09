@@ -10,6 +10,7 @@ parser.add_argument("--input-receipt", type=Path, required=True)
 parser.add_argument("--input-receipt-sha256", required=True)
 parser.add_argument("--seed-manifest", type=Path, required=True)
 parser.add_argument("--seed-manifest-sha256", required=True)
+parser.add_argument("--coqc-args", type=Path, required=True)
 options = parser.parse_args()
 
 
@@ -54,6 +55,13 @@ from forward_resources import load_resource_vocabulary
 from symbolic_state import Expr
 from resource_seed import load_public_seed, seed_owned_resources
 from system_shape_seed import seed_system_shapes
+from boundary_guards import (
+    RocqContradictionCheck,
+    contradictory_alternatives,
+    refused_alternative_indices,
+    require_complete_boundary,
+    without_alternatives,
+)
 
 
 def bind(p):
@@ -140,6 +148,15 @@ base_arguments = ["args", "returnAddress"]
 allowed_helpers = {
     row["helper"]["owner"] + "." + row["helper"]["name"] for row in vocabulary["rows"]
 }
+# Refuse every incomplete source boundary before any declaration renders.
+for suffix in pilots:
+    if suffix not in {"6a24", "6ac4"}:
+        require_complete_boundary(
+            next(b for b in data["boundaries"] if b["pc"] == "0x800d" + suffix)
+        )
+check = RocqContradictionCheck(
+    json.loads(options.coqc_args.read_text()), header, O / "contradiction-checks"
+)
 
 for suffix in pilots:
     pc = "0x800d" + suffix
@@ -176,137 +193,154 @@ for suffix in pilots:
                 component["source"] = (
                     "⌜decodeItemDomainAt returnAddress decodeItemC1BDomain args⌝"
                 )
-    plain = SourceComponents(
-        {"K": {"owner": "parameter", "name": "K"}},
-        continuation_id="level1_K",
-        provenance=provenance,
-    )
-    components = FractionalSourceArrays(plain, declaration=array)
-    conditions = SymbolicConditions(provenance)
-    formatted = format_owned_entry_boundary(
-        boundary,
-        original_seed=owned,
-        vocabulary=vocabulary,
-        continuation=continuation,
-        join_options={"outer_names": base_arguments},
-        case_id=pc,
-        source_policy="source-only",
-        handwritten_owner="Level1.IslarisContractSpec",
-        continuation_id="level1_K",
-        guard_scope=(0,),
-        component_adapter=components,
-        condition_adapter=conditions,
-        helper_arguments=lambda body, context: list(base_arguments),
-        scoped_binders=system_binders,
-    )
-    record = {
-        "pc": pc,
-        "source_boundary": source_ref,
-        "alternative_count": len(boundary["alternatives"]),
-        "status": formatted.status,
-        "manifest": formatted.manifest,
-        "reports": formatted.reports,
-        "guard_normalizations": conditions.normalizations,
-        "fraction_applications": components.applications,
-        "proof_ran": False,
-    }
-    if formatted.response is None:
-        cases.append(record)
-        continue
-    helpers = {
-        row["suffix"]: name + "_" + row["suffix"]
-        for row in formatted.response["body"]["additional_definitions"]
-    }
-    facts = []
 
-    def render(node):
-        kind = node["kind"]
-        if kind in ("application", "continuation"):
-            reference = node["predicate"]
-            arguments = node["arguments"]
-            if set(reference) == {"suffix"}:
-                target = helpers[reference["suffix"]]
-            elif reference == {"owner": "parameter", "name": "K"}:
-                if kind != "continuation" or arguments:
-                    raise ValueError(
-                        "The Level1 K parameter is applied or reinterpreted."
-                    )
-                return "K"
-            else:
-                target = reference["owner"] + "." + reference["name"]
-                if target not in allowed_helpers:
-                    raise ValueError(
-                        "An application lacks a source-bound helper: " + target
-                    )
-            return target + "".join(
-                " (" + expression(argument, "application argument") + ")"
-                for argument in arguments
-            )
-        if kind == "pure":
-            terms = []
-            for term in node["terms"]:
-                value = expression(term["term"]["value"], "source-derived pure term")
-                terms.append("(" + value + ")")
-                facts.append(
-                    {"term": value, "provenance": deepcopy(term["provenance"])}
-                )
-            return "⌜" + " /\\ ".join(terms) + "⌝"
-        if kind == "disjunction":
-            return (
-                "("
-                + " ∨ ".join("(" + render(alt) + ")" for alt in node["alternatives"])
-                + ")"
-            )
-        return component_source(node, {}, {"source_hashes": {}}, W, None)
-
-    def body_source(body):
-        if body.get("lets") or body.get("loop"):
-            raise ValueError("This source adapter has no let/loop declaration binding.")
-        result = (
-            "("
-            + " ∗ ".join(render(component) for component in body["components"])
-            + ")"
+    def rendered(boundary):
+        plain = SourceComponents(
+            {"K": {"owner": "parameter", "name": "K"}},
+            continuation_id="level1_K",
+            provenance=provenance,
         )
-        if body["existentials"]:
-            telescope = " ".join(
-                "("
-                + identifier(binder["name"], "source existential")
-                + " : "
-                + expression(binder["type"], "source type")
-                + ")"
-                for binder in body["existentials"]
-            )
-            result = "(∃ " + telescope + ", " + result + ")"
-        return result
+        components = FractionalSourceArrays(plain, declaration=array)
+        conditions = SymbolicConditions(provenance)
+        formatted = format_owned_entry_boundary(
+            boundary,
+            original_seed=owned,
+            vocabulary=vocabulary,
+            continuation=continuation,
+            join_options={"outer_names": base_arguments},
+            case_id=pc,
+            source_policy="source-only",
+            handwritten_owner="Level1.IslarisContractSpec",
+            continuation_id="level1_K",
+            guard_scope=(0,),
+            component_adapter=components,
+            condition_adapter=conditions,
+            helper_arguments=lambda body, context: list(base_arguments),
+            scoped_binders=system_binders,
+        )
+        record = {
+            "pc": pc,
+            "source_boundary": source_ref,
+            "alternative_count": len(boundary["alternatives"]),
+            "status": formatted.status,
+            "manifest": formatted.manifest,
+            "reports": formatted.reports,
+            "guard_normalizations": conditions.normalizations,
+            "fraction_applications": components.applications,
+            "proof_ran": False,
+        }
+        if formatted.response is None:
+            return record, None, []
+        helpers = {
+            row["suffix"]: name + "_" + row["suffix"]
+            for row in formatted.response["body"]["additional_definitions"]
+        }
+        facts = []
 
-    definitions = []
-    for helper in formatted.response["body"]["additional_definitions"]:
-        assert not next(
-            row
-            for row in formatted.manifest["helpers"]
-            if row["suffix"] == helper["suffix"]
-        )["outer_binders"]
+        def render(node):
+            kind = node["kind"]
+            if kind in ("application", "continuation"):
+                reference = node["predicate"]
+                arguments = node["arguments"]
+                if set(reference) == {"suffix"}:
+                    target = helpers[reference["suffix"]]
+                elif reference == {"owner": "parameter", "name": "K"}:
+                    if kind != "continuation" or arguments:
+                        raise ValueError(
+                            "The Level1 K parameter is applied or reinterpreted."
+                        )
+                    return "K"
+                else:
+                    target = reference["owner"] + "." + reference["name"]
+                    if target not in allowed_helpers:
+                        raise ValueError(
+                            "An application lacks a source-bound helper: " + target
+                        )
+                return target + "".join(
+                    " (" + expression(argument, "application argument") + ")"
+                    for argument in arguments
+                )
+            if kind == "pure":
+                terms = []
+                for term in node["terms"]:
+                    value = expression(term["term"]["value"], "source-derived pure term")
+                    terms.append("(" + value + ")")
+                    facts.append(
+                        {"term": value, "provenance": deepcopy(term["provenance"])}
+                    )
+                return "⌜" + " /\\ ".join(terms) + "⌝"
+            if kind == "disjunction":
+                return (
+                    "("
+                    + " ∨ ".join("(" + render(alt) + ")" for alt in node["alternatives"])
+                    + ")"
+                )
+            return component_source(node, {}, {"source_hashes": {}}, W, None)
+
+        def body_source(body):
+            if body.get("lets") or body.get("loop"):
+                raise ValueError("This source adapter has no let/loop declaration binding.")
+            result = (
+                "("
+                + " ∗ ".join(render(component) for component in body["components"])
+                + ")"
+            )
+            if body["existentials"]:
+                telescope = " ".join(
+                    "("
+                    + identifier(binder["name"], "source existential")
+                    + " : "
+                    + expression(binder["type"], "source type")
+                    + ")"
+                    for binder in body["existentials"]
+                )
+                result = "(∃ " + telescope + ", " + result + ")"
+            return result
+
+        definitions = []
+        for helper in formatted.response["body"]["additional_definitions"]:
+            assert not next(
+                row
+                for row in formatted.manifest["helpers"]
+                if row["suffix"] == helper["suffix"]
+            )["outer_binders"]
+            definition = (
+                "Definition "
+                + helpers[helper["suffix"]]
+                + base_telescope
+                + " : iProp Sigma := "
+                + body_source(helper["body"])
+                + "%I.\n"
+            )
+            definition = render_entry_registers(definition)
+            definition_introduction_source(definition, helpers[helper["suffix"]])
+            definitions.append((helpers[helper["suffix"]], definition))
         definition = (
             "Definition "
-            + helpers[helper["suffix"]]
+            + name
             + base_telescope
-            + " : iProp Sigma := "
-            + body_source(helper["body"])
+            + " (K : iProp Sigma) : iProp Sigma := "
+            + body_source(formatted.response["body"])
             + "%I.\n"
         )
-        definition = render_entry_registers(definition)
-        definition_introduction_source(definition, helpers[helper["suffix"]])
-        definitions.append((helpers[helper["suffix"]], definition))
-    definition = (
-        "Definition "
-        + name
-        + base_telescope
-        + " (K : iProp Sigma) : iProp Sigma := "
-        + body_source(formatted.response["body"])
-        + "%I.\n"
-    )
-    definition_introduction_source(definition, name)
-    definitions.append((name, definition))
+        definition_introduction_source(definition, name)
+        definitions.append((name, definition))
+        return record, definitions, facts
+
+    refused_names = []
+    while True:
+        record, definitions, facts = rendered(boundary)
+        if definitions is None:
+            break
+        refused = contradictory_alternatives(definitions, check)
+        if not refused:
+            break
+        refused_names.extend(refused)
+        boundary = without_alternatives(boundary, refused_alternative_indices(refused))
+    record["refused_alternatives"] = refused_names
+    if definitions is None:
+        cases.append(record)
+        continue
     module = "Pilot" + suffix + "Entries"
     relative = Path("ZesuSsz/Generated/DecodeItem/FP301")
     directory = O / "sources" / relative
@@ -376,6 +410,7 @@ for suffix in pilots:
             "new_native_calls": 0,
             "native_release": False,
             "join_seeds_added": True,
+            "contradiction_checks": check.runs,
         },
         indent=2,
     )

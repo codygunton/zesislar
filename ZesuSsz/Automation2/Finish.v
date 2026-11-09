@@ -703,7 +703,9 @@ Ltac zesu_finish_source_tail :=
 Ltac zesu_finish_residual_cascade :=
   first [solve [
     zesu_finish_residual_switches;
-    first [ solve [SourceFactMatching.zesu_source_registered_disjunction ltac:(zesu_finish_source_package)]
+    first [ solve [ZesuSsz.Automation2.MaskWitness.zesu_mask_witness_telescope;
+              unshelve (repeat liAStep); zesu_finish_v1]
+          | solve [SourceFactMatching.zesu_source_registered_disjunction ltac:(zesu_finish_source_package)]
           | solve [zesu_finish_source_package]
           | solve [ZesuSsz.Automation2.WordIdentity.zesu_word_identity]
           | solve [zesu_masked_add_branch_finish]
