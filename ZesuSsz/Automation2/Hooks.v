@@ -2393,6 +2393,7 @@ Ltac zesu_branch_guard_derived_facts :=
   lazymatch goal with |- ZesuSsz.Automation.PureFacts.ZesuDerivedFacts ?proposition _ =>
     zesu_branch_guard_head proposition;
     tryif has_evar proposition then fail 0 else
+    zesu_small_fact proposition;
     let normalized := open_constr:(_ : Prop) in
     let bridge := constr:(ltac:(zesu_branch_guard_simpl_impl) : SimplImpl proposition normalized) in
     unfold ZesuSsz.Automation.PureFacts.ZesuDerivedFacts;
