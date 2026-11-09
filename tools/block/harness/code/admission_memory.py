@@ -1273,6 +1273,21 @@ def current_projection(request_bytes, available_bytes, *, ledger=None, reader=No
         return projection(data, ledger_claims(data), request_bytes, available_bytes, reader=reader)
 
 
+def prune_closed_aggregate_holds(data, reader):
+    """Drop retained shell aggregates whose cgroup no longer exists.
+
+    A removed cgroup cannot return with its recorded identity, and projection
+    counts it as zero. Without pruning, every admission re-samples each hold
+    ever recorded under the global guard mutex (4,228 of 4,250 on 2026-11-09).
+    """
+    holds = data.get('shell_aggregate_holds', {})
+    for key in [key for key, hold in holds.items()
+                if not Path(hold['aggregate']['scope']).exists()
+                and not Path(hold['aggregate']['scope']).is_symlink()
+                and reader.residual(hold['aggregate']).get('closed') is True]:
+        del holds[key]
+
+
 def confirm_shell(marker, replacement, request_bytes, available_bytes, *, ledger=None, reader=None):
     """Publish one shell token and its claim under the canonical transaction lock.
 
@@ -1325,6 +1340,7 @@ def confirm_shell(marker, replacement, request_bytes, available_bytes, *, ledger
         if guard_source is not None:
             data['shell_claim_owners'][key]['guard_source'] = guard_source
         data.setdefault('shell_admissions', {})[key] = result
+        prune_closed_aggregate_holds(data, reader)
         write_ledger(ledger, data)
         os.replace(replacement, marker)
         data['shell_claim_owners'][key]['token_identity'] = reader.file_identity(marker.lstat())
@@ -1570,6 +1586,7 @@ def recover_dead_shell(marker, *, ledger=None, reader=None):
                 'marker': str(marker), 'owner': admitted['owner'],
                 'dead_owner_recovery': True, 'absence_only': True}
             _archive_shell_release(ledger, data, key, reader)
+        prune_closed_aggregate_holds(data, reader)
         write_ledger(ledger, data)
         marker.unlink()
         return True
@@ -1778,6 +1795,7 @@ def release_shell(marker, *, ledger=None, reader=None, require_dead_owner=False)
             'previous_token_identity': record.get('token_identity'),
             'observed_token_identity': token_identity}
         _archive_shell_release(ledger, data, key, reader)
+        prune_closed_aggregate_holds(data, reader)
         write_ledger(ledger, data)
         marker.unlink()
         return True

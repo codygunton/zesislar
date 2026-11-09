@@ -225,6 +225,20 @@ class ScopeTests(unittest.TestCase):
         (self.parent/'memory.swap.max').write_text('1')
         with self.assertRaises(ValueError): self.reader.slice_sample()
 
+    def test_prune_drops_only_removed_aggregate_holds(self):
+        (self.group/'cgroup.events').write_text('populated 1\n')
+        info=self.group.stat()
+        live=dict(scope=str(self.group),device=info.st_dev,inode=info.st_ino)
+        gone=dict(scope=str(self.parent/f'zesuworkloads-aggregate{os.getuid()}p99r1.slice'),device=1,inode=2)
+        alien=dict(scope=str(self.root/'elsewhere.slice'),device=1,inode=2)
+        data={'shell_aggregate_holds':{k:{'aggregate':v,'fallback_bytes':7}
+              for k,v in (('live',live),('gone',gone),('alien',alien))}}
+        M.prune_closed_aggregate_holds(data,self.reader)
+        # A removed owned aggregate is closed; a live or unverifiable one keeps its booking.
+        self.assertEqual(set(data['shell_aggregate_holds']),{'live','alien'})
+        claims=M.projection(data,{},1,10**12,reader=self.reader)
+        self.assertGreaterEqual(claims['raw_claim_bytes'],7)
+
     def write(self,path,value):path.write_text(json.dumps(value))
 
     def process(self,actor,parent,argv,group):

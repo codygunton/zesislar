@@ -514,6 +514,9 @@ class DuneCompilerGuardTest(unittest.TestCase):
             "#!/usr/bin/env bash", "#!/bin/bash", 1))
         process = subprocess.Popen([str(self.wrapper), "30"], env=self.environment,
                                    stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+        # The direct slot calls below model the scratch route, which books
+        # without the module memory profile.
+        self.environment.pop("ZESU_MODULE_MEMORY_PROFILE", None)
         tokens = []
         guard = self.root / "tools/resource_guard.sh"
         try:
@@ -526,13 +529,23 @@ class DuneCompilerGuardTest(unittest.TestCase):
                 for marker in markers:
                     try:lines = marker.read_text().splitlines()
                     except FileNotFoundError:continue
-                    if lines:candidates.append(lines[0])
-                candidates = [pid for pid in candidates if pid.isdigit()
-                              and Path(f"/proc/{pid}/comm").exists()
-                              and Path(f"/proc/{pid}/comm").read_text().strip() == "coqc"
-                              and Path(f"/proc/{pid}/exe").resolve() == compiler]
-                if candidates:
-                    child = candidates[0]
+                    if lines and lines[0].isdigit():candidates.append(lines[0])
+                # The marked scope process runs the compiler as a descendant
+                # (the module memory peak recorder sits between them).
+                found = []
+                for pid in candidates:
+                    queue = [pid]
+                    while queue:
+                        current = queue.pop()
+                        try:
+                            if (Path(f"/proc/{current}/comm").read_text().strip() == "coqc"
+                                    and Path(f"/proc/{current}/exe").resolve() == compiler):
+                                found.append((pid, current)); break
+                            queue += Path(f"/proc/{current}/task/{current}/children").read_text().split()
+                        except OSError:
+                            continue
+                if found:
+                    marked, child = found[0]
                     break
                 time.sleep(0.02)
             self.assertIsNotNone(child)
@@ -545,7 +558,7 @@ class DuneCompilerGuardTest(unittest.TestCase):
             self.assertEqual(result.stdout.strip(), "none")
             state = Path(self.environment["ZESU_GUARD_STATE"])
             marker = next((state / "coqc-reservations").iterdir())
-            self.assertEqual(marker.read_text().splitlines()[0], child)
+            self.assertEqual(marker.read_text().splitlines()[0], marked)
             # One live writer compiler plus fifteen confirmed writer slots fits
             # alongside 32 conservatively counted external compiler PIDs.
             snapshot.write_text(f"{process.pid}\n{child}\n" +

@@ -64,6 +64,7 @@ class GuardLockTest(unittest.TestCase):
                             "ZESU_RUN_REGISTRY": str(base / "run-registry"),
                             "ZESU_RUN_REGISTRY_TOOL": str(TOOLS / "run_registry.py"),
                             "ZESU_RAMP_FILE": str(base / "ramp"),
+                            "ZESU_MODULE_MEMORY_PROFILE": str(base / "module-memory-profile.json"),
                             "ZESU_SCOPE_PREFIX": f"zesutest{os.getpid()}",
                             "ZESU_GUARD_POLL": "0.1",
                             "ZESU_MAX_COQC": "100000",
