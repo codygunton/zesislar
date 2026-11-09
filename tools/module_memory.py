@@ -85,12 +85,18 @@ def module_source(arguments):
 # own scope peak in it. The key is the module path; a row binds the source
 # bytes, the compiler bytes and the compiler arguments, so a changed module
 # books the full fence until it is measured again.
-SCHEMA = "zesu.module-memory.v2"
+SCHEMA = "zesu.module-memory.v3"
 DEFAULT_PROFILE = Path(os.environ.get("XDG_CACHE_HOME") or Path.home() / ".cache") / "zesu-module-memory/profile.json"
 # The floor and margin apply to the largest completed cgroup memory.peak of a
-# matching row. They are derived from the measured distribution (PR body).
-FLOOR_BYTES = 768 * 1024 ** 2
+# matching row. Measured 2026-11-09 over 546 modules: min 104 MiB, p5 525,
+# p50 530, p95 547, max 566 MiB. A 384 MiB floor keeps every single booking
+# under 4x its peak (3.7x at 104 MiB); the 1.25 margin gives 1.25x in sum.
+# The booking also covers 1.5 times the compiler's peak resident set: the
+# guard raises any live booking below that (reservation_claims), and a raise
+# on every healthy compile costs a ledger write under the guard mutex.
+FLOOR_BYTES = 384 * 1024 ** 2
 MARGIN_NUMERATOR, MARGIN_DENOMINATOR = 5, 4
+RSS_NUMERATOR, RSS_DENOMINATOR = 3, 2
 CGROUP_ROOT = Path(os.environ.get("ZESU_CGROUP_ROOT", "/sys/fs/cgroup"))
 BINDING = ("source_sha256", "compiler_sha256", "arguments_sha256")
 
@@ -99,9 +105,11 @@ def arguments_digest(arguments):
     return hashlib.sha256(json.dumps(list(arguments)).encode()).hexdigest()
 
 
-def booking(peak_bytes, fallback_bytes):
+def booking(peak_bytes, fallback_bytes, rss_peak_bytes=None):
     """Book the margin over a measured peak, at least the floor, at most the fence."""
     claim = max(FLOOR_BYTES, -(-peak_bytes * MARGIN_NUMERATOR // MARGIN_DENOMINATOR))
+    if type(rss_peak_bytes) is int and rss_peak_bytes > 0:
+        claim = max(claim, -(-rss_peak_bytes * RSS_NUMERATOR // RSS_DENOMINATOR))
     return min(fallback_bytes, claim)
 
 
@@ -144,10 +152,11 @@ def module_claim(profile, arguments, cwd, compiler, *, fallback_bytes=16 * GIB):
     peak = row.get("peak_bytes")
     if type(peak) is not int or peak <= 0:
         return {"claim_bytes": fallback_bytes, "reason": "missing_peak", "source": source}
-    return {"claim_bytes": booking(peak, fallback_bytes), "reason": "measured_module", "source": source}
+    return {"claim_bytes": booking(peak, fallback_bytes, row.get("rss_peak_bytes")),
+            "reason": "measured_module", "source": source}
 
 
-def record_measurement(profile_path, source, bound, peak_bytes, *, ended_ns=None):
+def record_measurement(profile_path, source, bound, peak_bytes, *, rss_peak_bytes=None, ended_ns=None):
     """Merge one completed peak under the profile lock and replace atomically.
 
     A matching row keeps its largest peak; a changed binding starts a new row.
@@ -166,6 +175,8 @@ def record_measurement(profile_path, source, bound, peak_bytes, *, ended_ns=None
                        observations=row.get("observations", 1) + 1)
         else:
             row = dict(bound, peak_bytes=peak_bytes, minimum_peak_bytes=peak_bytes, observations=1)
+        if type(rss_peak_bytes) is int and rss_peak_bytes > 0:
+            row["rss_peak_bytes"] = max(row.get("rss_peak_bytes", 0), rss_peak_bytes)
         row["updated_ns"] = ended_ns
         profile["modules"][source] = row
         descriptor, temporary = tempfile.mkstemp(prefix=".profile-", dir=profile_path.parent)
@@ -201,6 +212,7 @@ def scope_peak(*, proc=Path("/proc"), cgroup_root=None, unit=None):
 
 def peak_exec(output, payload):
     """Run the compiler inside its scope, then save the scope's memory.peak."""
+    import resource
     import signal
     import subprocess
     import time
@@ -215,8 +227,9 @@ def peak_exec(output, payload):
     status = child.wait()
     if status == 0:
         try:
-            Path(output).write_text(json.dumps({"peak_bytes": scope_peak(), "admitted_ns": admitted,
-                                                "ended_ns": time.time_ns()}))
+            rss = resource.getrusage(resource.RUSAGE_CHILDREN).ru_maxrss * 1024
+            Path(output).write_text(json.dumps({"peak_bytes": scope_peak(), "rss_peak_bytes": rss or None,
+                                                "admitted_ns": admitted, "ended_ns": time.time_ns()}))
         except OSError as error:
             print(f"module memory: scope peak not saved: {error}", file=sys.stderr)
     return status if status >= 0 else 128 - status
@@ -264,10 +277,12 @@ def observe(profile_path, output, guard, compiler, cwd, arguments, *, fallback_b
     peak = measured.get("peak_bytes")
     try:
         if source is not None and type(peak) is int and peak > 0:
-            record_measurement(profile_path, source, bound, peak, ended_ns=measured.get("ended_ns"))
+            record_measurement(profile_path, source, bound, peak, rss_peak_bytes=measured.get("rss_peak_bytes"),
+                               ended_ns=measured.get("ended_ns"))
         if output:
             import fcntl
             row = {"source": source, "cwd": str(Path(cwd).absolute()), "peak_bytes": peak,
+                   "rss_peak_bytes": measured.get("rss_peak_bytes"),
                    "claim_bytes": claim["claim_bytes"], "claim_reason": claim["reason"],
                    "fence_bytes": fallback_bytes, "started_ns": started,
                    "admitted_ns": measured.get("admitted_ns"), "ended_ns": measured.get("ended_ns", time.time_ns())}
@@ -606,10 +621,18 @@ def main():
         with _module.ledger_transaction(ledger):
             observed = reservation_claims(args.markers, proc=args.proc, fallback_bytes=args.fallback_bytes,
                                           refresh=False, retained_claims=read_shell_bookings())
-            refresh_shell_growth(observed['growth'])
+            try:
+                refresh_shell_growth(observed['growth'])
+                unverified = None
+            except ValueError as error:
+                # Another reservation grew but its token cannot be verified.
+                # Hold this launch (the guard retries) rather than fail it.
+                unverified = str(error)
             result = current_projection(args.request_bytes, args.available_bytes)
-        result['admitted'] = result['fits'] and len(observed['claims']) < args.maximum_compilers
-        result['reason'] = 'compiler_limit' if len(observed['claims']) >= args.maximum_compilers else 'memory_budget'
+        result['admitted'] = (result['fits'] and unverified is None
+                              and len(observed['claims']) < args.maximum_compilers)
+        result['reason'] = ('compiler_limit' if len(observed['claims']) >= args.maximum_compilers else
+                            'unverified_growth' if unverified is not None else 'memory_budget')
         if not result["admitted"]:
             print(f"module memory: {result['reason']}; unrealized {result['requested_unrealized_bytes']} bytes, "
                   f"available budget {result['budget_bytes']} bytes; total {result['requested_total_bytes']} bytes, "

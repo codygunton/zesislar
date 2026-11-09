@@ -1,6 +1,8 @@
 """Check measured reservations without launching compilers."""
 
+from contextlib import redirect_stdout
 from copy import deepcopy
+import io
 from pathlib import Path
 import tempfile
 import unittest
@@ -41,6 +43,40 @@ class ModuleMemoryTests(unittest.TestCase):
         self.assertEqual(self.claim("Small.v")["claim_bytes"], memory.FLOOR_BYTES)
         self.assertEqual(self.claim("Large.v")["claim_bytes"],
                          8 * memory.GIB * memory.MARGIN_NUMERATOR // memory.MARGIN_DENOMINATOR)
+
+    def test_booking_covers_the_guard_growth_rule_on_resident_set(self):
+        name, bound = self.bound("Small.v")
+        memory.record_measurement(self.profile_path, name, bound, 500 * 1024 ** 2,
+                                  rss_peak_bytes=600 * 1024 ** 2)
+        self.assertEqual(self.claim()["claim_bytes"], 900 * 1024 ** 2)
+        memory.record_measurement(self.profile_path, name, bound, 400 * 1024 ** 2,
+                                  rss_peak_bytes=500 * 1024 ** 2)
+        row = memory.load_profile(self.profile_path)["modules"]["Small.v"]
+        self.assertEqual((row["peak_bytes"], row["rss_peak_bytes"]), (500 * 1024 ** 2, 600 * 1024 ** 2))
+        self.assertEqual(memory.booking(memory.GIB, 16 * memory.GIB, None),
+                         memory.GIB * memory.MARGIN_NUMERATOR // memory.MARGIN_DENOMINATOR)
+
+    def test_unverified_growth_holds_the_launch_instead_of_failing(self):
+        ledger = self.root / "LEDGER.json"
+        ledger.write_text('{"fixed_claims": {}, "region_claims": {}}\n')
+        growth = {"claims": [memory.GIB], "growth": [{"reservation": "x", "claim_bytes": 2}],
+                  "unrepresented_compilers": []}
+        output = io.StringIO()
+        with patch("sys.argv", ["module_memory.py", "admission", "--request-bytes", "1",
+                               "--available-bytes", "1000000000000"]), \
+                patch.object(memory, "reservation_claims", return_value=growth), \
+                patch.object(memory, "refresh_shell_growth",
+                             side_effect=ValueError("Growth lacks an authenticated shell token.")), \
+                patch.object(memory, "current_projection", return_value={
+                    "fits": True, "requested_unrealized_bytes": 1, "budget_bytes": 2,
+                    "requested_total_bytes": 3, "slice_claim_cap_bytes": 4}), \
+                patch.object(memory, "read_shell_bookings", return_value={}), \
+                patch.dict(memory.os.environ, {"ZESU_CANONICAL_LEDGER": str(ledger),
+                                             "ZESU_GATE_LOCK": str(self.root / "gate.lock")}), \
+                redirect_stdout(output):
+            self.assertEqual(memory.main(), 0)
+        # A non-empty report makes the guard hold and retry this launch.
+        self.assertIn("unverified_growth", output.getvalue())
 
     def test_measured_claim_never_exceeds_the_physical_fence(self):
         self.profile([("Large.v", 15 * memory.GIB)])
@@ -109,7 +145,7 @@ class ModuleMemoryTests(unittest.TestCase):
                 self.assertEqual(memory.measurement_claim(fence, peak, completed=True, matching=True), fence)
 
     def test_older_or_damaged_profiles_read_as_empty(self):
-        for text in ('{"schema": "zesu.module-memory.v1", "modules": {"Small.v": {}}}', "{", "[]"):
+        for text in ('{"schema": "zesu.module-memory.v2", "modules": {"Small.v": {}}}', "{", "[]"):
             with self.subTest(text=text):
                 self.profile_path.parent.mkdir(parents=True, exist_ok=True)
                 self.profile_path.write_text(text)
