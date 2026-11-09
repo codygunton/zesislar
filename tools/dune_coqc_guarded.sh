@@ -34,7 +34,7 @@ python3 "$tools_dir/coqc_findlib.py" record --tools-directory "$tools_dir"
 # Every compile books from the shared measured profile and records its own
 # scope memory.peak there. An unmeasured or changed module books the fence.
 python3 "$tools_dir/module_memory.py" observe \
-  --profile "${ZESU_MODULE_MEMORY_PROFILE:-$HOME/.cache/zesu-module-memory/profile.json}" \
+  --profile "${ZESU_MODULE_MEMORY_PROFILE:-${XDG_CACHE_HOME:-$HOME/.cache}/zesu-module-memory/profile.json}" \
   ${ZESU_MODULE_MEMORY_OBSERVATIONS:+--output "$ZESU_MODULE_MEMORY_OBSERVATIONS"} \
   --guard "$guard" --compiler "$coqc_binary" --cwd "$PWD" \
   --fallback-bytes "$(( ZESU_MODULE_LIMIT_GIB * 1024 * 1024 * 1024 ))" -- "$@" &

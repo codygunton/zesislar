@@ -11,7 +11,7 @@ import unittest
 from coqc_findlib import (RECORD_NAME, compiler_environment, preflight,
                          record_dune_environment)
 from test_guard import fixture_environment
-from module_memory import GIB, make_profile
+from module_memory import GIB, binding, booking, record_measurement
 
 
 TOOLS = Path(__file__).resolve().parent
@@ -200,7 +200,12 @@ class CompilerFindlibTests(unittest.TestCase):
     def test_wrappers_preserve_arguments_and_the_normal_guard(self):
         (self.tools / "guard-bin").mkdir()
         shutil.copy2(TOOLS / "dune_coqc_guarded.sh", self.tools / "guard-bin/coqc")
-        shutil.copy2(TOOLS / "coqc_findlib.py", self.tools / "coqc_findlib.py")
+        (self.tools / "det").mkdir()
+        (self.tools / "block").mkdir()
+        shutil.copy2(TOOLS / "block/harness/code/admission_memory.py", self.tools / "block/admission_memory.py")
+        shutil.copy2(TOOLS / "det/coqc_slots.py", self.tools / "det/coqc_slots.py")
+        for name in ("coqc_findlib.py", "module_memory.py"):
+            shutil.copy2(TOOLS / name, self.tools / name)
         source_tools = self.root / "tools"
         source_tools.mkdir()
         for name in ("rocq_coqc_guarded.sh", "coqc_findlib.py"):
@@ -225,7 +230,14 @@ class CompilerFindlibTests(unittest.TestCase):
         subprocess.run([str(source_tools / "rocq_coqc_guarded.sh"), *arguments],
                        cwd=self.root, env=fallback_environment, check=True)
         records = [json.loads(line) for line in log.read_text().splitlines()]
-        self.assertEqual(records[0]["args"], ["scope", "dune-coqc", "--", str(compiler), *arguments])
+        # The Dune route measures its scope peak around the exact compiler command.
+        recorder = records[0]["args"][:7] + records[0]["args"][9:]
+        self.assertEqual(records[0]["args"][7], "--output")
+        self.assertTrue(Path(recorder[3]).name.startswith("python"))
+        recorder[3] = "python"
+        self.assertEqual(recorder, ["scope", "dune-coqc", "--", "python", "-B",
+                                    str((self.tools / "module_memory.py").resolve()), "peak-exec",
+                                    "--", str(compiler), *arguments])
         self.assertEqual(len(records), 2)
         self.assertEqual(records[1]["args"], ["scope", "rocq-mcp-coqc", "--", str(compiler), *arguments])
         self.assertTrue(all(record["OCAMLPATH"] == str(self.library) for record in records))
@@ -247,10 +259,8 @@ class CompilerFindlibTests(unittest.TestCase):
         compiler.chmod(0o755)
         source = self.build / "default/Probe.v"
         source.write_text("Check nat.\n")
-        observation = {"exe": str(compiler), "cwd": str(source.parent),
-                       "command": str(compiler) + " Probe.v", "observed_peak_rss_kib": 600000}
         profile = self.root / "profile.json"
-        profile.write_text(json.dumps(make_profile([observation], {"exit_code": 0}, compiler)))
+        record_measurement(profile, *binding(["Probe.v"], source.parent, compiler), 600 * 1024 ** 2)
         log = self.root / "weights.jsonl"
         guard = self.tools / "resource_guard.sh"
         guard.write_text("#!/usr/bin/env python3\nimport json,os\n"
@@ -264,13 +274,14 @@ class CompilerFindlibTests(unittest.TestCase):
         source.write_text("Check unit.\n")
         subprocess.run([str(wrapper), "Probe.v"], cwd=source.parent, env=environment, check=True)
         rows = [json.loads(line) for line in log.read_text().splitlines()]
-        self.assertEqual([int(row["ZESU_MODULE_CLAIM_BYTES"]) for row in rows], [GIB, 16 * GIB])
+        self.assertEqual([int(row["ZESU_MODULE_CLAIM_BYTES"]) for row in rows],
+                         [booking(600 * 1024 ** 2, 16 * GIB), 16 * GIB])
         self.assertTrue(all(row["ZESU_MODULE_LIMIT_GIB"] == "16" for row in rows))
+        # A damaged profile books the full fence; it never blocks a compile.
         profile.write_text("invalid JSON")
-        result = subprocess.run([str(wrapper), "Probe.v"], cwd=source.parent, env=environment,
-                                text=True, capture_output=True)
-        self.assertNotEqual(result.returncode, 0)
-        self.assertEqual(len(log.read_text().splitlines()), 2)
+        subprocess.run([str(wrapper), "Probe.v"], cwd=source.parent, env=environment, check=True)
+        rows = [json.loads(line) for line in log.read_text().splitlines()]
+        self.assertEqual(int(rows[-1]["ZESU_MODULE_CLAIM_BYTES"]), 16 * GIB)
 
 
 if __name__ == "__main__":

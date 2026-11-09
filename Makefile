@@ -176,7 +176,7 @@ RETAINED_TARGETS := \
 # compile (gates and agent builds) books from this shared profile and merges
 # its own scope memory.peak into it (tools/module_memory.py observe).
 # Unmeasured or changed modules keep the full gate fence as their booking.
-MODULE_MEMORY_PROFILE ?= $(HOME)/.cache/zesu-module-memory/profile.json
+MODULE_MEMORY_PROFILE ?= $(or $(XDG_CACHE_HOME),$(HOME)/.cache)/zesu-module-memory/profile.json
 CHECK_FAST_OBSERVATIONS = $(abspath $(AGENT_BUILD_DIR))/module-memory-observations.jsonl
 CHECK_IRIS_OBSERVATIONS = $(abspath $(AGENT_BUILD_DIR))/module-memory-observations-iris.jsonl
 .PHONY: check-fast

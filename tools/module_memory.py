@@ -86,7 +86,7 @@ def module_source(arguments):
 # bytes, the compiler bytes and the compiler arguments, so a changed module
 # books the full fence until it is measured again.
 SCHEMA = "zesu.module-memory.v2"
-DEFAULT_PROFILE = Path.home() / ".cache/zesu-module-memory/profile.json"
+DEFAULT_PROFILE = Path(os.environ.get("XDG_CACHE_HOME") or Path.home() / ".cache") / "zesu-module-memory/profile.json"
 # The floor and margin apply to the largest completed cgroup memory.peak of a
 # matching row. They are derived from the measured distribution (PR body).
 FLOOR_BYTES = 768 * 1024 ** 2
