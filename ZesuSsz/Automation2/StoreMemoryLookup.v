@@ -247,22 +247,6 @@ Proof.
   iExact "Hbytes".
 Qed.
 
-Lemma zesu_byte_cells_head `{!islaG Sigma} (base : Z) (fraction : dfrac)
-    (byte : bv 8) (tail : list (bv 8)) :
-  base ↦ₘ{fraction} byte -∗
-  (base + Z.of_nat 1 * 1) ↦ₘ{fraction}∗ tail -∗
-  base ↦ₘ{fraction}∗ (byte :: tail).
-Proof.
-  iIntros "Hbyte Htail".
-  iApply (ZesuSsz.Automation2.ByteArrayAssembly.zesu_byte_array_cons with "Hbyte").
-  replace (base + 1) with (base + Z.of_nat 1 * 1) by ring.
-  iExact "Htail".
-Qed.
-
-Lemma zesu_byte_cells_head_one `{!islaG Sigma} (base : Z) (fraction : dfrac) (byte : bv 8) :
-  base ↦ₘ{fraction} byte -∗ base ↦ₘ{fraction}∗ (byte :: nil).
-Proof. iIntros "Hbyte". rewrite mem_mapsto_array_singleton. iExact "Hbyte". Qed.
-
 Lemma zesu_byte_array_join `{!islaG Sigma} (address : Z) (count : nat) (fraction : dfrac)
     (left right : list (bv 8)) :
   length left = count ->
@@ -314,16 +298,8 @@ Ltac zesu_name_byte_array address fraction :=
         iRename H into "HzesuByteNext"
     end).
 
-Ltac zesu_fold_head_byte_cell base fraction :=
-  zesu_name_byte_cell base fraction;
-  iDestruct (zesu_byte_cells_head base fraction with "HzesuByteCell HzesuByteRun")
-    as "HzesuByteRun".
-
-Ltac zesu_fold_head_only_byte_cell base fraction :=
-  zesu_name_byte_cell base fraction;
-  iDestruct (zesu_byte_cells_head_one base fraction with "HzesuByteCell") as "HzesuByteRun".
-
-Ltac zesu_join_byte_run_at base count fraction :=
+Ltac zesu_join_byte_run base count fraction :=
+  iDestruct (zesu_byte_cells_base base fraction with "HzesuByteRun") as "HzesuByteRun";
   first [
     zesu_name_byte_array (base + Z.of_nat count * 1)%Z fraction;
     let run := iTypeOf (INamed "HzesuByteRun") in
@@ -337,10 +313,6 @@ Ltac zesu_join_byte_run_at base count fraction :=
     end
   | idtac ];
   iDestruct "HzesuByteRun" as "?".
-
-Ltac zesu_join_byte_run base count fraction :=
-  iDestruct (zesu_byte_cells_base base fraction with "HzesuByteRun") as "HzesuByteRun";
-  zesu_join_byte_run_at base count fraction.
 
 From Ltac2 Require Import Ltac2.
 Set Default Proof Mode "Classic".
@@ -454,17 +426,8 @@ Ltac2 zesu_has_byte_array (owners : constr list) address fraction :=
     | _ => false
     end) owners.
 
-Ltac2 zesu_has_plain_byte_cell (owners : constr list) address fraction :=
-  List.exist (fun owner =>
-    lazy_match! owner with
-    | @mem_mapsto _ _ 8 ?available ?owned _ =>
-        Bool.and (Constr.equal available address) (Constr.equal owned fraction)
-    | _ => false
-    end) owners.
-
-(* A frame that requests an array at an address owned as byte cells, from
-   index zero or from a cell at the address itself followed by indexed cells
-   or an array, receives the cells, and an array right after them, as one array. *)
+(* A frame that requests an array at an address owned as byte cells from
+   index zero receives the cells, and an array right after them, as one array. *)
 Ltac2 zesu_join_frame_byte_array () :=
   let (environment, conclusion) := lazy_match! goal with
     | [ |- environments.envs_entails ?environment ?conclusion ] => (environment, conclusion)
@@ -484,14 +447,9 @@ Ltac2 zesu_join_frame_byte_array () :=
     end in
   let owners := zesu_spatial_owners spatial [] in
   let requests := zesu_array_requests conclusion [] in
-  let plain address fraction :=
-    Bool.and (zesu_has_plain_byte_cell owners address fraction)
-      (Bool.or (zesu_has_byte_cell owners address constr:(S O) fraction)
-        (zesu_has_byte_array owners constr:(($address + Z.of_nat 1 * 1)%Z) fraction)) in
   let candidates := List.filter (fun request =>
     let (address, fraction) := request in
-    Bool.and
-      (Bool.or (zesu_has_byte_cell owners address constr:(O) fraction) (plain address fraction))
+    Bool.and (zesu_has_byte_cell owners address constr:(O) fraction)
       (Bool.neg (zesu_has_byte_array owners address fraction))) requests in
   match candidates with
   | [] => Control.zero (Tactic_failure None)
@@ -502,39 +460,19 @@ Ltac2 zesu_join_frame_byte_array () :=
         let next := constr:(S $current) in
         if zesu_has_byte_cell owners base next fraction then high next else current in
       let last := high constr:(O) in
-      let fold_first index :=
-        ltac1:(b i q |- zesu_fold_first_byte_cell b i q)
-          (Ltac1.of_constr base) (Ltac1.of_constr index) (Ltac1.of_constr fraction) in
-      let fold_next index :=
-        ltac1:(b i q |- zesu_fold_next_byte_cell b i q)
-          (Ltac1.of_constr base) (Ltac1.of_constr index) (Ltac1.of_constr fraction) in
-      let count := Ltac1.of_constr constr:(S $last) in
-      if zesu_has_byte_cell owners base constr:(O) fraction then
-        (fold_first last;
-         let rec down current :=
-           lazy_match! current with
-           | O => ()
-           | S ?previous => fold_next previous; down previous
-           end in
-         down last;
-         ltac1:(b n q |- zesu_join_byte_run b n q)
-           (Ltac1.of_constr base) count (Ltac1.of_constr fraction))
-      else
-        ((if Constr.equal last constr:(O) then
-            ltac1:(b q |- zesu_fold_head_only_byte_cell b q)
-              (Ltac1.of_constr base) (Ltac1.of_constr fraction)
-          else
-            (fold_first last;
-             let rec down current :=
-               lazy_match! current with
-               | S O => ()
-               | S ?previous => fold_next previous; down previous
-               end in
-             down last;
-             ltac1:(b q |- zesu_fold_head_byte_cell b q)
-               (Ltac1.of_constr base) (Ltac1.of_constr fraction)));
-         ltac1:(b n q |- zesu_join_byte_run_at b n q)
-           (Ltac1.of_constr base) count (Ltac1.of_constr fraction))
+      ltac1:(b i q |- zesu_fold_first_byte_cell b i q)
+        (Ltac1.of_constr base) (Ltac1.of_constr last) (Ltac1.of_constr fraction);
+      let rec down current :=
+        lazy_match! current with
+        | O => ()
+        | S ?previous =>
+            ltac1:(b i q |- zesu_fold_next_byte_cell b i q)
+              (Ltac1.of_constr base) (Ltac1.of_constr previous) (Ltac1.of_constr fraction);
+            down previous
+        end in
+      down last;
+      ltac1:(b n q |- zesu_join_byte_run b n q)
+        (Ltac1.of_constr base) (Ltac1.of_constr constr:(S $last)) (Ltac1.of_constr fraction)
   end.
 
 Ltac zesu_join_frame_byte_array := ltac2:(zesu_join_frame_byte_array ()).
