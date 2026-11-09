@@ -14,6 +14,9 @@ from unittest.mock import MagicMock, patch
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import run_registry as R
 
+# Waits for an event, never a speed requirement (as in test_guard.py).
+EVENT_CEILING_SECONDS = 120
+
 
 class RunRegistryTests(unittest.TestCase):
     def setUp(self):
@@ -31,9 +34,9 @@ class RunRegistryTests(unittest.TestCase):
         for process in self.children + self.wrappers:
             if process.poll() is None:
                 process.kill()
-            process.wait(timeout=5)
+            process.wait(timeout=EVENT_CEILING_SECONDS)
 
-    def wait_for(self, predicate, timeout=5):
+    def wait_for(self, predicate, timeout=EVENT_CEILING_SECONDS):
         deadline = time.monotonic() + timeout
         while time.monotonic() < deadline:
             result = predicate()
@@ -62,7 +65,7 @@ class RunRegistryTests(unittest.TestCase):
 
     def test_completed_run_records_command_and_exit_status(self):
         process = self.wrapper('complete', 'raise SystemExit(7)')
-        self.assertEqual(process.wait(timeout=5), 7)
+        self.assertEqual(process.wait(timeout=EVENT_CEILING_SECONDS), 7)
         row = self.registry.read()['runs']['complete']
         self.assertEqual(row['status'], 'failed')
         self.assertEqual(row['exit_code'], 7)
@@ -95,7 +98,7 @@ with patch.object(registry, 'refresh', side_effect=refresh):
 '''
         result = subprocess.run([sys.executable, '-B', '-c', code,
             str(Path(R.__file__).parent), str(self.registry.directory)],
-            capture_output=True, text=True, timeout=5)
+            capture_output=True, text=True, timeout=EVENT_CEILING_SECONDS)
         self.assertEqual(result.returncode, 143, result.stderr)
         row = self.registry.read_run('interrupted')
         self.assertTrue(row['fixture_signal_during_update'])
@@ -125,7 +128,7 @@ with patch.object(registry,method,side_effect=interrupted):
 """
         result=subprocess.run([sys.executable,'-B','-c',code,
             str(source or Path(R.__file__).parent),str(directory or self.registry.directory),checkpoint],
-            capture_output=True,text=True,timeout=5)
+            capture_output=True,text=True,timeout=EVENT_CEILING_SECONDS)
         self.assertEqual(result.returncode,143,result.stderr)
         row=R.Registry(directory or self.registry.directory).read()['runs']['registration']
         self.assertTrue(row['all_actors_closed'])
@@ -162,7 +165,7 @@ with patch.object(registry,method,side_effect=interrupted):
         with patch.object(os, 'pidfd_open', None, create=True), \
                 patch.object(R.signal, 'pidfd_send_signal', None, create=True):
             self.assertTrue(R.send_signal(actor, R.signal.SIGTERM))
-            child.wait(timeout=5)
+            child.wait(timeout=EVENT_CEILING_SECONDS)
             self.assertFalse(R.send_signal(actor, R.signal.SIGTERM))
 
     def test_dead_scheduler_does_not_hide_a_live_registered_job(self):
@@ -171,7 +174,7 @@ with patch.object(registry,method,side_effect=interrupted):
         self.registry.register('orphan', 'fixture', 'test', R.identity(scheduler.pid), [])
         self.registry.add_job('orphan', R.identity(job.pid))
         scheduler.terminate()
-        scheduler.wait(timeout=5)
+        scheduler.wait(timeout=EVENT_CEILING_SECONDS)
         self.assertEqual(len(self.registry.active()), 1)
         with self.assertRaisesRegex(ValueError, 'live jobs'):
             self.registry.release_claims('orphan')
@@ -195,8 +198,8 @@ with patch.object(registry,method,side_effect=interrupted):
         new = self.wrapper('new',
             f'from pathlib import Path;assert Path({str(released)!r}).read_text()=="released"',
             '--supersedes', 'old')
-        self.assertEqual(new.wait(timeout=10), 0)
-        old.wait(timeout=5)
+        self.assertEqual(new.wait(timeout=EVENT_CEILING_SECONDS), 0)
+        old.wait(timeout=EVENT_CEILING_SECONDS)
         for actor in [previous['scheduler']] + previous['jobs']:
             self.assertFalse(R.live(actor))
         row = self.registry.read()['runs']['old']
@@ -210,8 +213,8 @@ with patch.object(registry,method,side_effect=interrupted):
         marker = self.root / 'started'
         new = self.wrapper('new', f'from pathlib import Path;Path({str(marker)!r}).touch()',
                            '--supersedes', 'old')
-        self.assertEqual(new.wait(timeout=10), 2)
-        old.wait(timeout=5)
+        self.assertEqual(new.wait(timeout=EVENT_CEILING_SECONDS), 2)
+        old.wait(timeout=EVENT_CEILING_SECONDS)
         self.assertFalse(marker.exists())
         self.assertNotIn('new', self.registry.read()['runs'])
         self.assertFalse(self.registry.read()['runs']['old']['claims']['memory']['released'])
@@ -226,7 +229,7 @@ with patch.object(registry,method,side_effect=interrupted):
             'from pathlib import Path;import sys;p=Path(sys.argv[1]);'
             'p.write_text(p.read_text()+"x" if p.exists() else "x")', str(output)])
         scheduler.terminate()
-        scheduler.wait(timeout=5)
+        scheduler.wait(timeout=EVENT_CEILING_SECONDS)
         self.registry.release_claims('release')
         self.registry.release_claims('release')
         self.assertEqual(output.read_text(), 'x')
@@ -241,7 +244,7 @@ with patch.object(registry,method,side_effect=interrupted):
             'p.write_text(p.read_text()+"x" if p.exists() else "x")', str(output)])
         self.registry.update(run_id, lambda row: row.update(status='children_live'))
         scheduler.terminate()
-        scheduler.wait(timeout=5)
+        scheduler.wait(timeout=EVENT_CEILING_SECONDS)
         return job, output
 
     def test_children_live_run_with_live_job_keeps_its_claim(self):
@@ -252,12 +255,12 @@ with patch.object(registry,method,side_effect=interrupted):
         self.assertFalse(row['claims']['memory']['released'])
         self.assertFalse(output.exists())
         job.terminate()
-        job.wait(timeout=5)
+        job.wait(timeout=EVENT_CEILING_SECONDS)
 
     def test_dead_children_live_run_releases_its_claim(self):
         job, output = self.children_live_run('orphan')
         job.terminate()
-        job.wait(timeout=5)
+        job.wait(timeout=EVENT_CEILING_SECONDS)
         self.assertEqual(self.registry.active(), [])
         row = self.registry.read()['runs']['orphan']
         self.assertEqual(row['status'], 'closed')
@@ -270,7 +273,7 @@ with patch.object(registry,method,side_effect=interrupted):
     def test_new_run_releases_dead_children_live_claims(self):
         job, output = self.children_live_run('orphan')
         job.terminate()
-        job.wait(timeout=5)
+        job.wait(timeout=EVENT_CEILING_SECONDS)
         scheduler = self.sleeper()
         self.registry.register('next', 'fixture', 'test', R.identity(scheduler.pid), [])
         self.assertEqual(self.registry.read()['runs']['orphan']['status'], 'closed')
@@ -348,7 +351,7 @@ R.Registry(store).stop('locking', grace=0.5)
                 str(command_write), str(response_read), str(receipt)],
                 pass_fds=(command_write, response_read))
             self.wrappers.append(stopper)
-            self.assertEqual(stopper.wait(timeout=5), 0)
+            self.assertEqual(stopper.wait(timeout=EVENT_CEILING_SECONDS), 0)
             self.assertEqual(receipt.read_text(), 'blocked')
             self.assertTrue(R.live(R.identity(unrelated.pid)))
             row = self.registry.read()['runs']['locking']
@@ -366,7 +369,7 @@ R.Registry(store).stop('locking', grace=0.5)
                 if process is not None and process.poll() is None:
                     process.kill()
                 if process is not None:
-                    process.wait(timeout=5)
+                    process.wait(timeout=EVENT_CEILING_SECONDS)
             for descriptor in descriptors:
                 os.close(descriptor)
 
@@ -425,7 +428,7 @@ R.Registry(store).stop('locking', grace=0.5)
         child = self.sleeper()
         self.registry.register('old', 'fixture', 'other', R.identity(child.pid), [])
         new = self.wrapper('new', 'pass', '--supersedes', 'old')
-        self.assertEqual(new.wait(timeout=5), 2)
+        self.assertEqual(new.wait(timeout=EVENT_CEILING_SECONDS), 2)
         self.assertTrue(R.live(R.identity(child.pid)))
 
     def test_begin_and_register_detached_job_validate_startticks(self):
@@ -447,7 +450,7 @@ R.Registry(store).stop('locking', grace=0.5)
 
     def test_list_active_json_excludes_fully_closed_runs(self):
         process = self.wrapper('complete', 'pass')
-        self.assertEqual(process.wait(timeout=5), 0)
+        self.assertEqual(process.wait(timeout=EVENT_CEILING_SECONDS), 0)
         output = subprocess.check_output(self.command('list', '--active', '--json'), text=True)
         self.assertEqual(json.loads(output), [])
 
