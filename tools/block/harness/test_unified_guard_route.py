@@ -8,6 +8,10 @@ import unittest
 
 import admission_memory as M
 
+# Each wait ends at its event. The ceiling only bounds a hung fixture on a
+# loaded machine; it never decides a result. A 3-5 s deadline flaked under gates.
+EVENT_CEILING_SECONDS = 120
+
 
 class UnifiedGuardRoute(unittest.TestCase):
     def test_request_path_contains_a_fresh_generation_without_reserving(self):
@@ -18,13 +22,13 @@ class UnifiedGuardRoute(unittest.TestCase):
             environment.update(ZESU_GUARD_STATE=str(directory),ZESU_GATE_LOCK=str(directory/'gate.lock'))
             library=(root/'tools/resource_guard.sh').read_text().split('\nprune_scope_registry\n',1)[0]
             result=subprocess.run(['bash'],input=library+'\nreserve_coqc $$\nreserve_coqc $$\n',
-                                  env=environment,text=True,capture_output=True,timeout=10)
+                                  env=environment,text=True,capture_output=True,timeout=EVENT_CEILING_SECONDS)
             self.assertEqual(result.returncode,0,result.stderr)
             paths=result.stdout.splitlines()
             self.assertEqual(len(paths),2)
             self.assertNotEqual(paths[0],paths[1])
             failure=subprocess.run(['bash'],input=library+'\ncat() { return 1; }\nreserve_coqc $$\n',
-                                   env=environment,text=True,capture_output=True,timeout=10)
+                                   env=environment,text=True,capture_output=True,timeout=EVENT_CEILING_SECONDS)
             self.assertEqual(failure.returncode,2)
             self.assertEqual(failure.stdout,'')
             for path in paths:
@@ -47,7 +51,7 @@ class UnifiedGuardRoute(unittest.TestCase):
                                ZESU_MODULE_MEMORY_TOOL=str(root/'tools/module_memory.py'))
             library=(root/'tools/resource_guard.sh').read_text().split('\nprune_scope_registry\n',1)[0]
             result=subprocess.run(['bash'],input=library+'\nlive_reservations\n',env=environment,
-                                  text=True,capture_output=True,timeout=10)
+                                  text=True,capture_output=True,timeout=EVENT_CEILING_SECONDS)
             self.assertEqual(result.returncode,0,result.stderr)
             self.assertEqual(result.stdout,'')
             self.assertEqual(marker.read_bytes(),original)
@@ -67,7 +71,7 @@ class UnifiedGuardRoute(unittest.TestCase):
                 library=(root/'tools/resource_guard.sh').read_text().split('\nprune_scope_registry\n',1)[0]
                 script='\nmarker="$COQC_RESERVATIONS/2147483647.legacy"\n'+command+'\n'
                 result=subprocess.run(['bash'],input=library+script,env=environment,
-                                      text=True,capture_output=True,timeout=10)
+                                      text=True,capture_output=True,timeout=EVENT_CEILING_SECONDS)
                 self.assertEqual(result.returncode,4,result.stderr)
                 self.assertEqual(marker.read_bytes(),original)
 
@@ -131,7 +135,7 @@ release_coqc "$marker" || exit 14
 [ ! -e "$marker" ] || exit 15
 '''
             result=subprocess.run(['bash','-c',library+script,str(root/'tools/resource_guard.sh')],env=environment,text=True,
-                                  capture_output=True,timeout=15)
+                                  capture_output=True,timeout=EVENT_CEILING_SECONDS)
             self.assertEqual(result.returncode,0,result.stderr)
             data=json.loads(ledger.read_text())
             self.assertEqual(list(data['fixed_claims'].values()),[0])

@@ -9,6 +9,10 @@ from pathlib import Path
 
 from test_guard import fixture_environment
 
+# Each wait ends at its event. The ceiling only bounds a hung fixture on a
+# loaded machine; it never decides a result. A 3-5 s deadline flaked under gates.
+EVENT_CEILING_SECONDS = 120
+
 
 GATE = Path(__file__).resolve().parent / "det" / "gate.sh"
 
@@ -79,13 +83,13 @@ class GateCapTest(unittest.TestCase):
         return subprocess.run(["bash", str(self.root / "tools/det/gate.sh"),
                                "--timing", "check-iris", "gate.log"], cwd=self.root,
                               env=dict(self.environment, **changes),
-                              capture_output=True, text=True, timeout=8)
+                              capture_output=True, text=True, timeout=EVENT_CEILING_SECONDS)
 
     def test_default_correctness_route_does_not_take_the_gate_lock(self):
         (self.root / "Makefile").write_text("check-iris:\n\t@echo correctness-unlocked\n")
         result = subprocess.run(["bash", str(self.root / "tools/det/gate.sh"), "check-iris"],
                                 cwd=self.root, env=self.environment,
-                                capture_output=True, text=True, timeout=8)
+                                capture_output=True, text=True, timeout=EVENT_CEILING_SECONDS)
         self.assertEqual(result.returncode, 0, result.stderr)
         self.assertIn("correctness-unlocked", result.stdout)
         self.assertFalse(self.batch_log.exists())

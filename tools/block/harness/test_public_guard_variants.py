@@ -26,13 +26,13 @@ class PublicGuardVariants(unittest.TestCase):
 
     def test_stock_guard_keeps_exact_source_record(self):
         expected = {'path': str(self.guard), 'sha256': hashlib.sha256(self.guard.read_bytes()).hexdigest(),
-                    'identity': list(self.reader.file_identity(self.guard.lstat()))}
+                    'identity': list(self.reader.content_identity(self.guard.lstat()))}
         self.assertEqual(self.reader.guard_source(str(self.guard), expected['sha256']), expected)
 
     def test_runtime_guard_keeps_exact_source_record(self):
         self.runtime_variant()
         self.assertEqual(self.source['sha256'], hashlib.sha256((HERE / 'runtime-tools/resource_guard.sh').read_bytes()).hexdigest())
-        self.assertEqual(self.source['identity'], list(self.reader.file_identity(self.guard.lstat())))
+        self.assertEqual(self.source['identity'], list(self.reader.content_identity(self.guard.lstat())))
 
     def test_runtime_marked_token_authenticates_across_canonical_route(self):
         self.runtime_variant()
@@ -129,11 +129,26 @@ class PublicGuardVariants(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, 'source bytes changed'):
             self.reader.guard_source(str(self.guard), hashlib.sha256(self.guard.read_bytes()).hexdigest())
 
-    def test_runtime_inode_replacement_breaks_sealing(self):
+    def test_runtime_same_bytes_inode_replacement_keeps_sealing(self):
+        # A Dune cache restore can replace the inode with identical bytes.
         self.runtime_variant(); attestation = self.seal(); self.post_exec()
         replacement = self.guard.with_name('replacement')
         replacement.write_bytes(self.guard.read_bytes()); replacement.chmod(0o700)
         replacement.replace(self.guard)
+        self.assertTrue(self.reader.owned_scope(self.marker, attestation)['verified'])
+
+    def test_new_hardlink_keeps_sealing(self):
+        import os
+        self.runtime_variant(); attestation = self.seal(); self.post_exec()
+        before = self.guard.lstat().st_ctime_ns
+        os.link(self.guard, self.guard.with_name('dune-cache-link'))
+        self.assertNotEqual(self.guard.lstat().st_ctime_ns, before)
+        self.assertTrue(self.reader.owned_scope(self.marker, attestation)['verified'])
+
+    def test_same_size_content_change_breaks_sealing(self):
+        self.runtime_variant(); attestation = self.seal(); self.post_exec()
+        raw = bytearray(self.guard.read_bytes()); raw[-2] ^= 1
+        self.guard.write_bytes(bytes(raw))
         self.assertFalse(self.reader.owned_scope(self.marker, attestation)['verified'])
 
     def test_runtime_mutation_breaks_sealing(self):
