@@ -40,7 +40,14 @@ fi
 
 # The scope borrows an existing scratch token or owns one new token.
 # A compiler already inside the same job scope does not create another scope.
-"$guard" scope dune-coqc -- "$coqc_binary" "$@" &
+# A green gate turns these observations into the next profile.
+if [[ -n "${ZESU_MODULE_MEMORY_OBSERVATIONS:-}" ]]; then
+  python3 "$tools_dir/module_memory.py" observe --output "$ZESU_MODULE_MEMORY_OBSERVATIONS" \
+    --compiler "$coqc_binary" --cwd "$PWD" --claim-bytes "${ZESU_MODULE_CLAIM_BYTES:-$(( ZESU_MODULE_LIMIT_GIB * 1024 * 1024 * 1024 ))}" \
+    -- "$guard" scope dune-coqc -- "$coqc_binary" "$@" &
+else
+  "$guard" scope dune-coqc -- "$coqc_binary" "$@" &
+fi
 scope_pid=$!
 cleanup() {
   if [[ -n "$scope_pid" ]] && kill -0 "$scope_pid" 2>/dev/null; then

@@ -94,7 +94,7 @@ def make_profile(observations, gate_result, compiler, *, floor_bytes=GIB):
         if Path(observation["exe"]).resolve(strict=True) != compiler:
             raise ValueError("The measurement compiler differs from the bound compiler.")
         source = module_source(shlex.split(observation["command"]))
-        fingerprint = digest(Path(observation["cwd"]) / source)
+        fingerprint = observation.get("source_sha256") or digest(Path(observation["cwd"]) / source)
         peak = observation.get("observed_peak_rss_kib")
         if type(peak) is not int or peak < 0:
             raise ValueError("The sampled peak must be a nonnegative integer.")
@@ -113,6 +113,95 @@ def make_profile(observations, gate_result, compiler, *, floor_bytes=GIB):
             "floor_bytes": floor_bytes, "modules": modules, "measurement_complete": True,
             "qualification": "Sampled peaks are lower bounds. Dependencies can change memory use. "
                              "The physical compiler limits remain mandatory."}
+
+
+def observe(output, compiler, cwd, arguments, payload, *, claim_bytes=None):
+    """Run one guarded compile and append its peak RSS after a clean exit.
+
+    The peak is the largest resident set of any waited descendant; the
+    compiler dominates it. Signals reach the payload, so cleanup is unchanged.
+    """
+    import fcntl
+    import resource
+    import signal
+    import subprocess
+    import time
+    started = time.time_ns()
+    child = subprocess.Popen(payload)
+
+    def forward(number, _frame):
+        if child.poll() is None:
+            child.send_signal(number)
+    for number in (signal.SIGTERM, signal.SIGINT, signal.SIGHUP):
+        signal.signal(number, forward)
+    status = child.wait()
+    if status != 0:
+        return status if status > 0 else 128 - status
+    peak = resource.getrusage(resource.RUSAGE_CHILDREN).ru_maxrss
+    try:
+        # A command without exactly one source is not a module measurement.
+        row = {"exe": str(Path(compiler).resolve(strict=True)), "cwd": str(Path(cwd).absolute()),
+               "command": shlex.join([str(compiler), *arguments]),
+               "source_sha256": digest(Path(cwd) / module_source(arguments)),
+               "observed_peak_rss_kib": peak,
+               "claim_bytes": claim_bytes, "started_ns": started, "ended_ns": time.time_ns()}
+        with open(output, "a") as stream:
+            fcntl.flock(stream, fcntl.LOCK_EX)
+            stream.write(json.dumps(row, separators=(",", ":")) + "\n")
+    except (OSError, ValueError) as error:
+        print(f"module memory: measurement not recorded: {error}", file=sys.stderr)
+    return 0
+
+
+def refresh_profile(observations, profile_path, *, floor_bytes=GIB):
+    """Merge one green gate's measurements into the retained profile.
+
+    Modules that this gate did not compile (Dune cache hits) keep their
+    earlier rows; module_claim still checks their source and arguments.
+    """
+    rows = [json.loads(line) for line in Path(observations).read_text().splitlines() if line.strip()]
+    if not rows:
+        return None
+    compilers = {Path(row["exe"]).resolve(strict=True) for row in rows}
+    if len(compilers) != 1:
+        raise ValueError("The gate measurements name more than one compiler.")
+    fresh = make_profile(rows, {"exit_code": 0}, compilers.pop(), floor_bytes=floor_bytes)
+    profile_path = Path(profile_path)
+    profile_path.parent.mkdir(parents=True, exist_ok=True)
+    import fcntl
+    with open(profile_path.with_name(profile_path.name + ".lock"), "a") as lock:
+        fcntl.flock(lock, fcntl.LOCK_EX)
+        return _merge_profile(fresh, profile_path, floor_bytes)
+
+
+def _merge_profile(fresh, profile_path, floor_bytes):
+    try:
+        previous = json.loads(profile_path.read_text())
+    except (FileNotFoundError, ValueError):
+        previous = None
+    if (isinstance(previous, dict) and previous.get("schema") == SCHEMA
+            and previous.get("compiler_sha256") == fresh["compiler_sha256"]
+            and previous.get("floor_bytes") == floor_bytes):
+        fresh["modules"] = {**previous.get("modules", {}), **fresh["modules"]}
+    descriptor, temporary = tempfile.mkstemp(prefix=".profile-", dir=profile_path.parent)
+    with os.fdopen(descriptor, "w") as stream:
+        json.dump(fresh, stream, sort_keys=True)
+    os.replace(temporary, profile_path)
+    return fresh
+
+
+def booked_versus_peak(observations):
+    """Return the largest concurrent booking among the measured compiles."""
+    rows = [json.loads(line) for line in Path(observations).read_text().splitlines() if line.strip()]
+    events = sorted([(row["started_ns"], row["claim_bytes"] or 0) for row in rows]
+                    + [(row["ended_ns"], -(row["claim_bytes"] or 0)) for row in rows])
+    booked = maximum = 0
+    for _time, change in events:
+        booked += change
+        maximum = max(maximum, booked)
+    return {"compiles": len(rows), "maximum_concurrent_booked_bytes": maximum,
+            "largest_compile_peak_bytes": max((row["observed_peak_rss_kib"] * 1024 for row in rows), default=0),
+            "booked_bytes_total": sum(row["claim_bytes"] or 0 for row in rows)}
 
 
 def module_claim(profile, arguments, cwd, compiler, *, fallback_bytes=16 * GIB):
@@ -362,10 +451,49 @@ def main():
     aggregate.add_argument('--booking-bytes', type=int, required=True)
     aggregate.add_argument('--explicit-limit-bytes', type=int)
     aggregate.add_argument('--gate-limit-bytes', type=int)
+    observe_parser = commands.add_parser("observe")
+    observe_parser.add_argument("--output", type=Path, required=True)
+    observe_parser.add_argument("--compiler", type=Path, required=True)
+    observe_parser.add_argument("--cwd", type=Path, required=True)
+    observe_parser.add_argument("--claim-bytes", type=int)
+    observe_parser.add_argument("payload", nargs=argparse.REMAINDER)
+    refresh = commands.add_parser("profile-refresh")
+    refresh.add_argument("--observations", type=Path, required=True)
+    refresh.add_argument("--profile", type=Path, required=True)
+    summary = commands.add_parser("observation-summary")
+    summary.add_argument("--observations", type=Path, required=True)
     staging_exit = commands.add_parser('staging-exit-exec')
     staging_exit.add_argument('--marker', type=Path, required=True)
     staging_exit.add_argument('payload', nargs=argparse.REMAINDER)
     args = parser.parse_args()
+    if args.command == "observe":
+        payload = args.payload[1:] if args.payload[:1] == ["--"] else args.payload
+        if not payload:
+            parser.error("The observer requires its exact payload.")
+        try:
+            separator = payload.index("--")
+        except ValueError:
+            separator = -1
+        if separator < 0 or payload[separator + 1:separator + 2] != [str(args.compiler)]:
+            parser.error("The observed payload must end with -- COMPILER ARGUMENTS.")
+        return observe(args.output, args.compiler, args.cwd, payload[separator + 2:], payload,
+                       claim_bytes=args.claim_bytes)
+    if args.command == "profile-refresh":
+        if not args.observations.exists():
+            print("module memory: no compiles to measure; profile unchanged")
+            return 0
+        try:
+            fresh = refresh_profile(args.observations, args.profile)
+        except (OSError, ValueError, KeyError) as error:
+            # A green gate stays green; the next gate books the full fence.
+            print(f"module memory: profile not refreshed: {error}", file=sys.stderr)
+            return 0
+        print(f"module memory: profile {args.profile} holds "
+              f"{len(fresh['modules']) if fresh else 'unchanged'} modules")
+        return 0
+    if args.command == "observation-summary":
+        print(json.dumps(booked_versus_peak(args.observations)) if args.observations.exists() else "{}")
+        return 0
     if args.command == 'staging-exit-exec':
         from staging_peaks import supervise
         payload = args.payload[1:] if args.payload[:1] == ['--'] else args.payload

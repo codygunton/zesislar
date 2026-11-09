@@ -172,6 +172,11 @@ RETAINED_TARGETS := \
   @ZesuSsz/Compliance/all \
   @ZesuSsz/Proofs/Tests/all \
   @ZesuSsz/Tests/all
+# Compiler bookings come from measured module peaks. Each green check-fast
+# merges the peaks of the modules it compiled into this shared profile.
+# Unmeasured or changed modules keep the full gate fence as their booking.
+MODULE_MEMORY_PROFILE ?= $(HOME)/.cache/zesu-module-memory/check-fast.json
+CHECK_FAST_OBSERVATIONS = $(abspath $(AGENT_BUILD_DIR))/module-memory-observations.jsonl
 .PHONY: check-fast
 check-fast:
 	$(PYTHON) tools/correctness_gate.py run --target check-fast --build-dir $(AGENT_BUILD_DIR) -- \
@@ -179,11 +184,17 @@ check-fast:
 
 .PHONY: _check-fast
 _check-fast: stock-native-indexes check-evidence-tools check-signatures
+	rm -f $(CHECK_FAST_OBSERVATIONS)
 	$(GUARD_BATCH) check-fast -- \
+	  env ZESU_MODULE_MEMORY_OBSERVATIONS=$(CHECK_FAST_OBSERVATIONS) \
+	  $(if $(wildcard $(MODULE_MEMORY_PROFILE)),ZESU_MODULE_MEMORY_PROFILE=$(MODULE_MEMORY_PROFILE)) \
 	  $(PYTHON) tools/build_record.py --build-dir $(AGENT_BUILD_DIR) \
 	  --target check-fast -- $(OPAM) dune build --root . \
 	  --build-dir $(AGENT_BUILD_DIR) --cache=enabled -j$(FAST_JOBS) \
 	  $(RETAINED_TARGETS)
+	$(PYTHON) tools/module_memory.py profile-refresh \
+	  --observations $(CHECK_FAST_OBSERVATIONS) --profile $(MODULE_MEMORY_PROFILE)
+	$(PYTHON) tools/module_memory.py observation-summary --observations $(CHECK_FAST_OBSERVATIONS)
 
 .PHONY: check-signatures
 check-signatures: gate-workspace
