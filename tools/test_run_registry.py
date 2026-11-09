@@ -231,6 +231,51 @@ with patch.object(registry,method,side_effect=interrupted):
         self.registry.release_claims('release')
         self.assertEqual(output.read_text(), 'x')
 
+    def children_live_run(self, run_id):
+        scheduler, job = self.sleeper(), self.sleeper()
+        self.registry.register(run_id, 'fixture', 'test', R.identity(scheduler.pid), [])
+        self.registry.add_job(run_id, R.identity(job.pid))
+        output = self.root / (run_id + '-release')
+        self.registry.add_claim(run_id, 'memory', [sys.executable, '-c',
+            'from pathlib import Path;import sys;p=Path(sys.argv[1]);'
+            'p.write_text(p.read_text()+"x" if p.exists() else "x")', str(output)])
+        self.registry.update(run_id, lambda row: row.update(status='children_live'))
+        scheduler.terminate()
+        scheduler.wait(timeout=5)
+        return job, output
+
+    def test_children_live_run_with_live_job_keeps_its_claim(self):
+        job, output = self.children_live_run('kept')
+        self.assertEqual([row['id'] for row in self.registry.active()], ['kept'])
+        row = self.registry.read()['runs']['kept']
+        self.assertEqual(row['status'], 'children_live')
+        self.assertFalse(row['claims']['memory']['released'])
+        self.assertFalse(output.exists())
+        job.terminate()
+        job.wait(timeout=5)
+
+    def test_dead_children_live_run_releases_its_claim(self):
+        job, output = self.children_live_run('orphan')
+        job.terminate()
+        job.wait(timeout=5)
+        self.assertEqual(self.registry.active(), [])
+        row = self.registry.read()['runs']['orphan']
+        self.assertEqual(row['status'], 'closed')
+        self.assertTrue(row['all_actors_closed'])
+        self.assertTrue(row['claims']['memory']['released'])
+        self.assertEqual(output.read_text(), 'x')
+        self.registry.active()
+        self.assertEqual(output.read_text(), 'x')
+
+    def test_new_run_releases_dead_children_live_claims(self):
+        job, output = self.children_live_run('orphan')
+        job.terminate()
+        job.wait(timeout=5)
+        scheduler = self.sleeper()
+        self.registry.register('next', 'fixture', 'test', R.identity(scheduler.pid), [])
+        self.assertEqual(self.registry.read()['runs']['orphan']['status'], 'closed')
+        self.assertEqual(output.read_text(), 'x')
+
     def check_stop_lock_order(self, target):
         """Try to hold state.lock immediately before the selected stop signal."""
         command_read, command_write = os.pipe()

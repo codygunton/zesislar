@@ -221,6 +221,28 @@ def render_declaration(source, header):
     return render_entry_registers(header + source.split(boundary, 1)[1])
 
 
+CORE_IMPORT = "Require Import ZesuSsz.Automation2.All."
+
+
+def core_import_last(source):
+    """End the import block with the core import.
+
+    `Require Import isla.riscv64.riscv64.` restores the library bodies of
+    `lia`, `bv_solve`, and the Lithium step tactics. Only a later import of
+    the core restores the Hooks.v redefinitions, so every caller ends its
+    imports with it.
+    """
+    lines = source.split("\n")
+    imports = [index for index, line in enumerate(lines)
+               if line.startswith(("Require ", "From "))]
+    if not imports:
+        raise ValueError("A caller has no import block.")
+    last = imports[-1]
+    if lines[last] != CORE_IMPORT:
+        lines.insert(last + 1, CORE_IMPORT)
+    return "\n".join(lines)
+
+
 def render_caller(source):
     """Keep the canonical caller and select the second automation entry point."""
     if "::=" in source or "Ltac " in source:
@@ -229,9 +251,9 @@ def render_caller(source):
         raise ValueError("A canonical caller lacks its automation import.")
     if source.count("  zesu_block.\nQed.") != 1:
         raise ValueError("A canonical caller lacks its plain block proof.")
-    return source.replace("Require Import ZesuSsz.Automation.All.",
-                          "Require Import ZesuSsz.Automation2.All.").replace(
-                              "  zesu_block.\nQed.", "  zesu_block2.\nQed.")
+    return core_import_last(source.replace("Require Import ZesuSsz.Automation.All.",
+                          CORE_IMPORT).replace(
+                              "  zesu_block.\nQed.", "  zesu_block2.\nQed."))
 
 
 def render(inputs, output):

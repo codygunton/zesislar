@@ -1,6 +1,7 @@
 """Check measured gate claims, budget waits, and exact release ownership."""
 
 import fcntl
+import io
 import json
 import os
 from pathlib import Path
@@ -148,6 +149,31 @@ class GateClaimsTests(unittest.TestCase):
         self.assertEqual(waits, [60])
         self.assertTrue(record["admitted"])
         self.assertEqual(read(self.ledger)["fixed_claims"], {"healthy": 40, "gate-one": 30})
+
+    def test_budget_wait_logs_blocking_claims_and_owner_liveness(self):
+        ledger = read(self.ledger)
+        ledger["fixed_claims"].update({"dead-gate": 20, "live-gate": 10, "closed": 0})
+        ledger["correctness_gate_owners"] = {
+            "dead-gate": {"pid": 99999999, "startticks": 1, "run_id": "dead"},
+            "live-gate": {**correctness_gate.identity(os.getpid()), "run_id": "live"}}
+        save(self.ledger, ledger)
+        free = [90]
+
+        def pause(seconds):
+            free[0] = 1000
+
+        with patch('block.harness.code.admission_memory.ScopeReader.slice_sample',
+                   side_effect=OSError('This booking fixture has no live slice sample.')), \
+                patch('sys.stderr', new=io.StringIO()) as stderr:
+            reserve(self.policy, self.owner, self.root / "ADMISSION.json",
+                    available=lambda: free[0], pause=pause)
+        lines = stderr.getvalue().splitlines()
+        self.assertEqual(len(lines), 1)
+        self.assertIn("gate-one waits", lines[0])
+        self.assertIn("dead-gate=20 owner=99999999 dead", lines[0])
+        self.assertIn(f"live-gate=10 owner={os.getpid()} alive", lines[0])
+        self.assertIn("healthy=40 owner=unknown", lines[0])
+        self.assertNotIn("closed=", lines[0])
 
     def test_duplicate_claim_refuses(self):
         reserve(self.policy, self.owner, self.root / "ADMISSION.json", available=lambda: 100)
