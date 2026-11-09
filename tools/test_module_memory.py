@@ -358,6 +358,52 @@ class ModuleMemoryTests(unittest.TestCase):
                              f"memory_fence_bytes={16 * memory.GIB}\n")
         self.assertEqual(memory.reservation_claims([marker], proc=proc)["claims"], [16 * memory.GIB])
 
+    def test_compiler_that_exits_after_the_snapshot_does_not_grow_its_booking(self):
+        import shutil
+        proc = self.physical(123)
+        marker = self.marker(f"123\nwriter=\naggregate=\nmemory_claim_bytes={memory.GIB}\n"
+                             f"memory_fence_bytes={16 * memory.GIB}\n")
+        real = memory.compiler_pids
+
+        def snapshot_then_exit(root):
+            pids = real(root)
+            shutil.rmtree(root / "123")
+            return pids
+        with patch.object(memory, "compiler_pids", snapshot_then_exit):
+            observed = memory.reservation_claims([marker], proc=proc)
+        self.assertEqual((observed["claims"], observed["growth"]), ([memory.GIB], []))
+
+    def test_zombie_compiler_does_not_grow_its_booking(self):
+        proc = self.physical(123)
+        (proc / "123/status").write_text("State:\tZ (zombie)\n")
+        marker = self.marker(f"123\nwriter=\naggregate=\nmemory_claim_bytes={memory.GIB}\n"
+                             f"memory_fence_bytes={16 * memory.GIB}\n")
+        observed = memory.reservation_claims([marker], proc=proc)
+        self.assertEqual((observed["claims"], observed["growth"]), ([memory.GIB], []))
+
+    def test_unverified_growth_holds_the_launch_instead_of_failing(self):
+        from contextlib import redirect_stdout
+        import io
+        ledger = self.root / "LEDGER.json"
+        ledger.write_text('{"fixed_claims": {}, "region_claims": {}}\n')
+        growth = {"claims": [memory.GIB], "growth": [{"reservation": "x", "claim_bytes": 2}],
+                  "unrepresented_compilers": []}
+        output = io.StringIO()
+        with patch("sys.argv", ["module_memory.py", "admission", "--request-bytes", "1",
+                               "--available-bytes", "1000000000000"]), \
+                patch.object(memory, "reservation_claims", return_value=growth), \
+                patch.object(memory, "refresh_shell_growth",
+                             side_effect=ValueError("Growth lacks an authenticated shell token.")), \
+                patch.object(memory, "current_projection", return_value={"fits": True}), \
+                patch.object(memory, "read_shell_bookings", return_value={}), \
+                patch.dict(memory.os.environ, {"ZESU_CANONICAL_LEDGER": str(ledger),
+                                             "ZESU_GATE_LOCK": str(self.root / "gate.lock")}), \
+                redirect_stdout(output):
+            self.assertEqual(memory.main(), 0)
+        # A non-empty report makes the guard hold and retry; exit 0 never fails the compile.
+        self.assertIn("unverified_growth", output.getvalue())
+        self.assertIn("authenticated shell token", output.getvalue())
+
     def test_old_and_probe_reservations_keep_conservative_fences(self):
         proc = self.root / "proc"
         proc.mkdir()
