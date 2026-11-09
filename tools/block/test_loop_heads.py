@@ -1,10 +1,10 @@
 """Check the authenticated loop-head selection and its fixed backedge owners."""
-import ast
 import hashlib
 import json
 from pathlib import Path
 import unittest
 
+from function_profiles import load_profile, pilot_header
 from render_fp301_statements import render_loop_head
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -13,10 +13,7 @@ ROOT = Path(__file__).resolve().parents[2]
 class LoopHeads(unittest.TestCase):
     def test_source_classes_and_committed_outputs(self):
         fixture = json.loads((ROOT / 'tools/block/fixtures/fp301-loop-heads.json').read_text())
-        tree = ast.parse((ROOT / 'tools/block/render_fp301_entries.py').read_text())
-        header = next(ast.literal_eval(n.value) for n in ast.walk(tree)
-                      if isinstance(n, ast.Assign) and any(
-                          isinstance(t, ast.Name) and t.id == 'header' for t in n.targets))
+        header = pilot_header(load_profile())
         self.assertEqual([r['block'] for r in fixture['rows']], ['6a24', '6ac4'])
         for row in fixture['rows']:
             self.assertEqual(len(row['classes']), 4)

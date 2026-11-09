@@ -11,6 +11,8 @@ parser.add_argument("--input-receipt-sha256", required=True)
 parser.add_argument("--seed-manifest", type=Path, required=True)
 parser.add_argument("--seed-manifest-sha256", required=True)
 parser.add_argument("--coqc-args", type=Path, required=True)
+parser.add_argument("--function", default=None,
+                    help="function profile name or path (default: decodeItem)")
 options = parser.parse_args()
 
 
@@ -55,6 +57,7 @@ from forward_resources import load_resource_vocabulary
 from symbolic_state import Expr
 from resource_seed import load_public_seed, seed_owned_resources
 from system_shape_seed import seed_system_shapes
+from function_profiles import load_profile, pilot_header
 from boundary_guards import (
     RocqContradictionCheck,
     contradictory_alternatives,
@@ -105,76 +108,45 @@ continuation = {
     },
     "terminal_id": terminal_ids[0],
 }
-pilots = [
-    "6960",
-    "6974",
-    "697c",
-    "69a4",
-    "69b0",
-    "69d8",
-    "69e0",
-    "69e8",
-    "6a00",
-    "6a08",
-    "6a14",
-    "6a64",
-    "6a6c",
-    "6a78",
-    "6aa8",
-    "6ab4",
-    "698c",
-    "6a24",
-    "6ac4",
-    "6ae0",
-]
+profile = load_profile(options.function)
+pilots = list(profile["blocks"])
+loop_heads = set(profile["loop_heads"])
 cases = []
 emitted = []
-header = """(* Generated from FP-20261102-Level1-domain-v1. No proof script. *)
-Require ZesuSsz.Automation.Hooks.
-Require Import isla.riscv64.riscv64.
-From Coq Require Import Lists.List ZArith.ZArith NArith.NArith.
-Require Import stdpp.bitvector.definitions.
-Require Import ZesuSsz.Contracts.RlpDecodeItemContract.
-Require Export ZesuSsz.Contracts.DecodeItemDomainRanges.
-Require Import ZesuSsz.Contracts.RlpDecodeItem.
-Require Import ZesuSsz.Contracts.Level1.
-Local Open Scope Z_scope.
-"""
+header = pilot_header(profile)
 # These are the source-bound argument and continuation types from Level 1.
-base_telescope = (
-    " `{!islaG Sigma} `{!threadG} (args : DecodeItemArgs) (returnAddress : Z)"
-)
+base_telescope = profile.telescope()
 base_arguments = ["args", "returnAddress"]
 allowed_helpers = {
     row["helper"]["owner"] + "." + row["helper"]["name"] for row in vocabulary["rows"]
 }
 # Refuse every incomplete source boundary before any declaration renders.
 for suffix in pilots:
-    if suffix not in {"6a24", "6ac4"}:
+    if suffix not in loop_heads:
         require_complete_boundary(
-            next(b for b in data["boundaries"] if b["pc"] == "0x800d" + suffix)
+            next(b for b in data["boundaries"] if b["pc"] == profile.pc(suffix))
         )
 check = RocqContradictionCheck(
     json.loads(options.coqc_args.read_text()), header, O / "contradiction-checks"
 )
 
 for suffix in pilots:
-    pc = "0x800d" + suffix
+    pc = profile.pc(suffix)
     index = next(i for i, b in enumerate(data["boundaries"]) if b["pc"] == pc)
-    if suffix in {"6a24", "6ac4"}:
+    if suffix in loop_heads:
         from render_fp301_statements import render_loop_head
-        directory = O / "sources/ZesuSsz/Generated/DecodeItem/FP301"
+        directory = O / "sources" / profile.generated_directory
         directory.mkdir(parents=True, exist_ok=True)
         outputs = []
         for structural in [False, True]:
             file = directory / ("Pilot" + suffix + ("Structural" if structural else "Entries") + ".v")
-            file.write_text(render_loop_head(suffix, header, structural))
+            file.write_text(render_loop_head(suffix, header, structural, profile))
             outputs.append(bind(file))
         emitted.extend(outputs)
         cases.append({"pc": pc, "status": "source_declarations_rendered",
                       "entry": outputs[0], "structural": outputs[1],
-                      "qualified_entry": "ZesuSsz.Generated.DecodeItem.FP301.Pilot" + suffix + "Entries.fp_machineAt" + suffix,
-                      "source_boundary": "tools/block/fixtures/fp301-loop-heads.json#" + suffix,
+                      "qualified_entry": profile.qualified("Pilot" + suffix + "Entries", "fp_machineAt" + suffix),
+                      "source_boundary": profile["loop_head_fixture"] + "#" + suffix,
                       "definition_count": 5, "proof_ran": False})
         continue
     boundary = deepcopy(data["boundaries"][index])
@@ -190,9 +162,7 @@ for suffix in pilots:
         resource = alternative["resource_boundary"]
         for component in resource["components"]:
             if component["source"] == "⌜domain args⌝":
-                component["source"] = (
-                    "⌜decodeItemDomainAt returnAddress decodeItemC1BDomain args⌝"
-                )
+                component["source"] = profile["domain_component"]
 
     def rendered(boundary):
         plain = SourceComponents(
@@ -342,7 +312,7 @@ for suffix in pilots:
         cases.append(record)
         continue
     module = "Pilot" + suffix + "Entries"
-    relative = Path("ZesuSsz/Generated/DecodeItem/FP301")
+    relative = Path(profile.generated_directory)
     directory = O / "sources" / relative
     directory.mkdir(parents=True, exist_ok=True)
     entry = directory / (module + ".v")
@@ -379,6 +349,8 @@ for suffix in pilots:
     json.dumps(
         {
             "status": "SOURCE_DECLARATIONS_ONLY",
+            "function": profile.name,
+            "function_profile": bind(profile.path),
             "input_receipt": bind(options.input_receipt),
             "seed_manifest": bind(options.seed_manifest),
             "source_pass": bind(forward),
@@ -393,6 +365,7 @@ for suffix in pilots:
                     "fractional_source.py",
                     "render_support.py",
                     "render_fp301_entries.py",
+                    "function_profiles.py",
                 ]
             ],
             "level1_K_source": bind(W / "ZesuSsz/Contracts/Level1.v"),
