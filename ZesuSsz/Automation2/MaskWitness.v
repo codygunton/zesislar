@@ -12,18 +12,21 @@ From stdpp Require Import bitvector.definitions bitvector.tactics.
 From Coq Require Import ZArith.ZArith.
 Local Open Scope Z_scope.
 
-Ltac zesu_mask_word width continuation :=
+(* The witness choice commits: one context word, no backtracking over the
+   telescope's components. *)
+Ltac zesu_mask_word width :=
   match goal with
   | H : Z.land (bv_unsigned ?word) ?mask = 0%Z |- _ =>
-      lazymatch type of word with bv width => continuation word end
+      lazymatch type of word with bv width => word end
   end.
 
-Ltac zesu_mask_witness_tuple T continuation :=
+Ltac zesu_mask_witness_tuple T :=
   lazymatch T with
-  | unit => continuation constr:(tt)
+  | unit => constr:(tt)
   | li_prod (bv ?width) ?rest =>
-      zesu_mask_word width ltac:(fun word =>
-        zesu_mask_witness_tuple rest ltac:(fun tail => continuation constr:(li_pair word tail)))
+      let word := zesu_mask_word width in
+      let tail := zesu_mask_witness_tuple rest in
+      constr:(li_pair word tail)
   end.
 
 Ltac zesu_mask_bit_zero bit word continuation :=
@@ -75,8 +78,8 @@ Ltac zesu_mask_witness_telescope :=
   lazymatch goal with
   | |- envs_entails _ (@bi_exist _ ?T ?body) =>
       lazymatch T with li_prod _ _ => idtac end;
-      zesu_mask_witness_tuple T ltac:(fun witness =>
-        let instantiated := eval cbv beta iota delta [li_fst li_snd] in (body witness) in
-        zesu_mask_pure_closable instantiated;
-        notypeclasses refine (tac_ex_evar _ witness _ _); red_li_prod)
+      let witness := zesu_mask_witness_tuple T in
+      let instantiated := eval cbv beta iota delta [li_fst li_snd] in (body witness) in
+      zesu_mask_pure_closable instantiated;
+      notypeclasses refine (tac_ex_evar _ witness _ _); red_li_prod
   end.
