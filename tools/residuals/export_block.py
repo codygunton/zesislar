@@ -175,7 +175,7 @@ def export(a):
     ocamlpath = str(findlib_dir(bank, out))
     os.environ['OCAMLPATH'] = ocamlpath
     row = caller_of(a.block, a.callers)
-    caller_src_path = Path(row['caller'])
+    caller_src_path = Path(a.callers).resolve().parent / row['caller']  # relative paths are relative to the table
     if sha256(caller_src_path) != row.get('caller_sha256', sha256(caller_src_path)):
         raise SystemExit('caller %s does not match its CALLERS24 sha256' % caller_src_path)
     caller = work / ('Caller%s.v' % a.block)
