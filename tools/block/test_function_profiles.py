@@ -6,6 +6,9 @@ import tempfile
 import unittest
 
 from function_profiles import FunctionProfile, load_profile, loop_header, pilot_header, return_header
+from join_generalize import binder_names
+from render_function_callers import plan_callers
+from symbolic_state import input_expr
 from render_fp301_statements import (
     render_block_caller,
     return_precondition,
@@ -92,6 +95,54 @@ class OtherProfile(unittest.TestCase):
             path = Path(directory) / 'other.json'
             path.write_text(json.dumps(other_profile().data))
             self.assertEqual(load_profile(str(path)).name, 'otherFunction')
+
+
+class FreeProfile(unittest.TestCase):
+    """The free profile and its committed callers."""
+
+    def test_profile_and_callers(self):
+        profile = load_profile('free')
+        self.assertEqual(len(profile['blocks']), 43)
+        directory = ROOT / profile['callers_directory']
+        callers = sorted(directory.glob('Caller*.v'))
+        self.assertTrue(callers)
+        for path in callers:
+            source = path.read_text()
+            self.assertNotRegex(source, r'(?i)decodeitem')
+            self.assertEqual(source.count('Proof.\n  zesu_block2.\nQed.\n'), 1)
+            self.assertIn('  freeSelectedCode -∗\n', source)
+
+    def test_committed_outputs_match_the_generation_record(self):
+        import hashlib
+        record = json.loads((ROOT / 'tools/block/fixtures/free-fp301-generation.json').read_text())
+        committed = sorted((ROOT / 'ZesuSsz/Generated/Free/FP301').glob('*.v')) + sorted(
+            (ROOT / 'tools/block/generated/free_fp301_callers').glob('*.v'))
+        self.assertEqual([str(path.relative_to(ROOT)) for path in committed],
+                         [row['path'] for row in record['outputs']])
+        for row in record['outputs']:
+            self.assertEqual(hashlib.sha256((ROOT / row['path']).read_bytes()).hexdigest(), row['sha256'])
+        rendered = [row['case'] for row in record['callers'] if row['status'] == 'rendered']
+        self.assertEqual(rendered, [path.stem[len('Caller'):] for path in committed if path.stem.startswith('Caller')])
+
+    def test_caller_plan_refuses_missing_successors(self):
+        profile = other_profile()
+        function = {'blocks': [{'start': 0x800d1000, 'successors': [0x800d1010]},
+                               {'start': 0x800d1010, 'successors': []}]}
+        cases = [{'pc': '0x800d1000', 'status': 'source_declarations_rendered'},
+                 {'pc': '0x800d1010', 'status': 'source_declarations_rendered'}]
+        self.assertEqual(plan_callers(profile, cases, function),
+                         [('1000', ['1010'], None), ('1010', [], 'function-return package not rendered')])
+        cases[1]['status'] = 'stopped'
+        self.assertEqual(plan_callers(profile, cases, function)[0][2], 'successor entry not rendered: 1010')
+
+
+class JoinBinderNames(unittest.TestCase):
+    def test_names_stay_unless_an_upstream_binder_collides(self):
+        paths = [{'x12': input_expr('a', 64)}, {'x12': input_expr('b', 64)}]
+        self.assertEqual(binder_names(paths, ['x12']), {'x12': 'machine_x12'})
+        paths = [{'x12': input_expr('machine_x12', 64)}, {'x12': input_expr('b', 64)}]
+        self.assertEqual(binder_names(paths, ['x12']), {'x12': 'machine_x12_1'})
+        self.assertEqual(binder_names(paths[1:], ['x12'], ['machine_x12']), {'x12': 'machine_x12_1'})
 
 
 if __name__ == '__main__':
