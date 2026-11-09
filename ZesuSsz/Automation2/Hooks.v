@@ -52,6 +52,7 @@ Require Import ZesuSsz.Contracts.SelectedCodeLookup.
 Require Import InstrSpecs.Lookup.
 Require Import ZesuSsz.Automation2.ResourceGroups.
 Require Import ZesuSsz.Automation2.ConjunctMatch.
+Require Import ZesuSsz.Automation2.RegisterArrayCursor.
 
 (* Expose symbolic lookup results with kernel reduction. Do not normalize their
    payloads in the VM. Closed inputs retain the upstream VM path. *)
@@ -2138,6 +2139,7 @@ Ltac zesu_liAStep :=
   | CodecArrayRead.zesu_codec_array_read
   | zesu_prefer_owned_instr_pre
   | zesu_source_witnesses_if_enabled
+  | RegisterArrayCursor.zesu_register_cursor_step
   | ZesuSsz.Automation2.UnionRuleComponents.zesu_region_fault_if_enabled
   | zesu_expose_instruction_lookup
   | zesu_region_fault_if_enabled
