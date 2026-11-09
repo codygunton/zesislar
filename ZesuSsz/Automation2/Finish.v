@@ -207,6 +207,9 @@ Ltac zesu_normalize_known_list_lengths :=
 Ltac zesu_finish_known_list_shape :=
   lazymatch goal with
   | |- envs_entails _ _ => fail 0
+  (* No alternative below closes an existential: reflexivity, lia and
+     bv_solve all fail on it, after whole-context solver calls. *)
+  | |- ex _ => fail 0
   | |- context[array_region_start 8 _ _] => idtac
   | |- context[length _] => idtac
   | |- @eq (list _) _ _ => idtac
@@ -236,7 +239,10 @@ Ltac zesu_finish_known_list_shape :=
         rewrite (take_ge xs n Htake); clear Htake
       end; reflexivity] |
     solve [zesu_normalize_known_list_lengths; lia] |
-    solve [bv_solve]].
+    (* The bit-vector solver reads the facts the goal reaches, never the
+       whole context: on a 199-fact context it ran for hours. *)
+    solve [ZesuSsz.Automation2.ContextCollection.zesu_solve_goal_selected
+      ("finish.list_shape"%string) ltac:(bv_solve)]].
 
 Ltac zesu_finish_selectors :=
   first [zesu_array_region_selection_if_enabled | lazymatch goal with
@@ -773,6 +779,14 @@ Ltac zesu_finish_common_pure :=
         cbv [bv_unsigned bv_modulus] in *; lia)]
     | autorewrite with isla_coq_rewrite; zesu_union_pure_finish]]].
 
+(* lia and bv_solve never close an existential; on a large context they
+   only spend time before the shape-specific closers get their turn. *)
+Ltac zesu_final_solver_goal :=
+  lazymatch goal with
+  | |- ex _ => fail 0
+  | _ => idtac
+  end.
+
 (* The common pure path and final tail share the union helper. Baseline closers remain available. *)
 Ltac zesu_finish_final_pure :=
   first [
@@ -783,14 +797,16 @@ Ltac zesu_finish_final_pure :=
   try solve [
     first [
       zesu_finish_negated_ge; zesu_finish_implication_pair; repeat split;
-      first [reflexivity | assumption | eassumption | lia | bv_solve |
+      first [reflexivity | assumption | eassumption |
+        zesu_final_solver_goal; lia | zesu_final_solver_goal; bv_solve |
         zesu_finish_forall_leaf | zesu_finish_contract_arithmetic |
         zesu_finish_simpl_and_leaf]
     | repeat split; zesu_finish_forall_leaf
     | repeat split; first [zesu_finish_contract_arithmetic |
         zesu_finish_simpl_and_leaf]
     | let rec finish_leaf :=
-        first [reflexivity | assumption | eassumption | lia | bv_solve |
+        first [reflexivity | assumption | eassumption |
+          zesu_final_solver_goal; lia | zesu_final_solver_goal; bv_solve |
           zesu_finish_forall_leaf | zesu_finish_contract_arithmetic |
           zesu_finish_simpl_and_leaf |
           lazymatch goal with |- and _ _ => split; finish_leaf end]
