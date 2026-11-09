@@ -12,6 +12,7 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent / "residuals"))
 import export_block  # noqa: E402
 import guarded  # noqa: E402
+import ltac_probe  # noqa: E402
 import residual_package as pkg  # noqa: E402
 
 PREFIX = "Require Import ZesuSsz.Automation2.All.\nLocal Open Scope Z_scope.\n"
@@ -193,6 +194,16 @@ class Manifest(unittest.TestCase):
         self.assertEqual(pkg.truth_of("pass"), "true")
         for status in ("fail", "timeout", "killed", "error"):
             self.assertEqual(pkg.truth_of(status), "unknown")
+
+
+class Probe(unittest.TestCase):
+    def test_error_line_skips_warnings(self):
+        log = "".join("%.3f %s\n" % (i * 0.1, l) for i, l in enumerate([
+            'File "./Probe2.v", line 1, characters 0-39:', "Warning:", "Cannot open /bank/Scaffolding",
+            "Ltac exfalso := Ltac.exfalso",
+            'File "./Probe2.v", line 315, characters 11-17:', "Error:", "Syntax error: 'Ltac' expected"]))
+        self.assertEqual(ltac_probe.error_at(log, "Probe2.v"), (315, "Error: Syntax error: 'Ltac' expected"))
+        self.assertIsNone(ltac_probe.error_at(log.split("Ltac exfalso")[0], "Probe2.v"))
 
 
 class Guarded(unittest.TestCase):

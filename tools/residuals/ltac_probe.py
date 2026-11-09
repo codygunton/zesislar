@@ -34,6 +34,19 @@ def _run(out, name, text, args, tag):
     return text, res
 
 
+def error_at(text, filename):
+    """(line, message) of the first error in FILENAME, or None. A `File ...` line
+    counts only when the next line starts the error; warnings also name lines."""
+    lines = body_lines(text)
+    pat = re.compile(r'^File "\./%s", line (\d+), characters \d+-\d+:$' % re.escape(filename))
+    for i, l in enumerate(lines[:-1]):
+        m = pat.match(l)
+        if m and lines[i + 1].startswith('Error'):
+            msg = ' '.join(x.strip() for x in lines[i + 1:i + 4])
+            return int(m.group(1)), msg
+    return None
+
+
 def body_lines(text):
     return [l.split(' ', 1)[1] if ' ' in l else '' for l in text.splitlines()]
 
@@ -70,13 +83,16 @@ def probe(caller, out, args, tag):
     for _ in range(400):
         log2, res2 = _run(out, 'Probe2', header + SHADOW + ''.join('Print Ltac %s.\n' % n for n in names), args, tag)
         compiles += 1
-        m = re.search(r'File "\./Probe2\.v", line (\d+),', log2)
-        if not m or 'Error' not in log2:
+        err = error_at(log2, 'Probe2.v')
+        if err is None:
             if res2['status'] != 'pass':
                 raise SystemExit('probe: Probe2.v failed outside a name; see %s' % (out / 'Probe2.log'))
             break
-        bad = int(m.group(1)) - (header + SHADOW).count('\n') - 1
+        bad = err[0] - (header + SHADOW).count('\n') - 1
+        if not 0 <= bad < len(names):
+            raise SystemExit('probe: Probe2.v error outside the name list: %s' % err[1])
         dropped.append(names.pop(bad))
+        print('probe: drop %s (%s)' % (dropped[-1], err[1][:80]), flush=True)
     else:
         raise SystemExit('probe: Probe2 still fails after 400 drops')
     bodies = ltac_bodies.parse(out / 'Probe2.log')
@@ -140,13 +156,13 @@ def verify(caller, probe_dir, work, args, tag):
         res = guarded.compile_file(vfile, '%s-verify' % tag, args, limit_s=600, stamp=True)
         compiles += 1
         text = log.read_text(errors='replace')
-        m = re.search(r'File "\./%s\.v", line (\d+), characters \d+-\d+:\n(.*)' % stem, text)
-        if not m or 'Error' not in text:
+        err = error_at(text, stem + '.v')
+        if err is None:
             if res['status'] != 'pass':
                 raise SystemExit('verify: %s.v ended with %s (rc %d); see %s' % (
                     stem, res['status'], res['returncode'], log))
             break
-        line = int(m.group(1))
+        line = err[0]
         src = vfile.read_text().splitlines()
         name = None
         for i in range(line - 1, -1, -1):
@@ -157,10 +173,10 @@ def verify(caller, probe_dir, work, args, tag):
         wrapped = json.loads(Path(str(vfile) + '.wrapped.json').read_text())
         real = [w['name'] for w in wrapped if 'census_' + re.sub(r'\W', '_', w['name']) == name]
         if not real:
-            raise SystemExit('verify: error outside a body at line %d: %s' % (line, text[m.start():m.start() + 400]))
-        err = ' '.join(l.split(' ', 1)[1] for l in text[m.end():].splitlines()[:3] if ' ' in l)
+            raise SystemExit('verify: error outside a body at line %d: %s' % (line, err[1]))
         excluded.append(real[0])
-        reasons[real[0]] = 'parse: ' + (m.group(2).split(' ', 1)[1] + ' ' + err)[:300]
+        reasons[real[0]] = 'parse: ' + err[1][:300]
+        print('verify: exclude %s (%s)' % (real[0], err[1][:80]), flush=True)
     else:
         raise SystemExit('verify: the verify file still fails after 200 exclusions')
     orig = ltac_bodies.parse(probe_dir / 'Probe2.log')
