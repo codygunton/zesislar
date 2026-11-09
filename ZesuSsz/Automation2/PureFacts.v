@@ -26,6 +26,9 @@ Require Import isla.isla.
 Require Import isla.riscv64.riscv64.
 Require Import ZesuMachineMap.Machine.
 From Coq Require Import Lists.List ZArith.ZArith.
+Require ZesuSsz.Automation2.ContextCollection.
+From Ltac2 Require Import Ltac2.
+Set Default Proof Mode "Classic".
 
 (* A nonempty owned list supplies its head and tail without guessing data. *)
 Lemma zesu_list_cons_witness {A : Type} (values : list A) (count : nat) :
@@ -52,27 +55,83 @@ Ltac zesu_split_folded_pure :=
       end
   end.
 
-Ltac zesu_saturate_derived_facts :=
- repeat (once (multimatch goal with
- | H : ?T |- _ =>
-   lazymatch type of T with Prop => idtac end;
-   assert_fails (has_evar T);
-   let fact := fresh "derivedFact" in
-   evar (fact : Prop);
-   let instance := fresh "derivedInstance" in
-   assert (instance : ZesuSsz.Automation.PureFacts.ZesuDerivedFacts T fact);
-   [ unfold fact; typeclasses eauto
-   | let derived := eval unfold fact in fact in
-     assert_fails (has_evar derived);
-     lazymatch goal with
-     | _ : derived |- _ => fail 0
-     | _ =>
-       let result := fresh "Hderived" in
-       pose proof (ZesuSsz.Automation.PureFacts.zesu_derived_facts
-          (ZesuDerivedFacts := instance) H) as result;
-       unfold fact in result; clear instance fact
-     end ]
- end)).
+(* One derivation from one hypothesis. It adds a fact that is not yet in the
+   context, or fails. A present result fails, so the instance search
+   backtracks to its next solution: one hypothesis can derive several
+   facts (in 6974, a domain hypothesis gives the range of the input length
+   and then the range of the input pointer). *)
+Ltac zesu_derive_fact_from H :=
+  let T := type of H in
+  lazymatch type of T with Prop => idtac end;
+  assert_fails (has_evar T);
+  let fact := fresh "derivedFact" in
+  evar (fact : Prop);
+  let instance := fresh "derivedInstance" in
+  assert (instance : ZesuSsz.Automation.PureFacts.ZesuDerivedFacts T fact);
+  [ unfold fact; typeclasses eauto
+  | let derived := eval unfold fact in fact in
+    assert_fails (has_evar derived);
+    lazymatch goal with
+    | _ : derived |- _ => fail 0
+    | _ =>
+      let result := fresh "Hderived" in
+      pose proof (ZesuSsz.Automation.PureFacts.zesu_derived_facts
+         (ZesuDerivedFacts := instance) H) as result;
+      unfold fact in result; clear instance fact
+    end ].
+
+(* Semi-naive saturation. A derivation reads its hypothesis and, through
+   the guard normalization's solver calls, the facts about the same names.
+   The first round tries every hypothesis; a later round tries only a
+   hypothesis that the last round added (the delta) or that shares a local
+   name with a fact in the delta, because only those derivations can give a
+   new result. A hypothesis whose last result is still present and that
+   shares no name with the delta is skipped before the guard normalization
+   runs. Rounds end when one adds nothing. *)
+Ltac2 zesu_saturate_names (term : constr) :=
+  match Control.case (fun () => ZesuSsz.Automation2.ContextCollection.zesu_context_variables term) with
+  | Val (names, _) => Some names
+  | Err _ => None
+  end.
+
+Ltac2 zesu_saturate_seminaive () :=
+  let rec round (first : bool) (delta : ident list) :=
+    let delta_names := List.fold_left (fun found name =>
+      match zesu_saturate_names (Constr.type (Control.hyp name)) with
+      | Some names => ZesuSsz.Automation2.ContextCollection.zesu_context_union found names
+      | None => found
+      end) [] delta in
+    let added := Ref.ref [] in
+    List.iter (fun declaration =>
+      let (name, _, ty) := declaration in
+      let eligible :=
+        if first then true
+        else if List.mem Ident.equal name delta then true
+        else match zesu_saturate_names ty with
+          | Some names => ZesuSsz.Automation2.ContextCollection.zesu_context_intersects names delta_names
+          | None => true
+          end in
+      (* Each success adds one new fact; repeat until the hypothesis gives none. *)
+      let rec exhaust () :=
+        let before := List.map (fun (n, _, _) => n) (Control.hyps ()) in
+        match Control.case (fun () =>
+          ltac1:(hypothesis |- zesu_derive_fact_from hypothesis)
+            (Ltac1.of_constr (Control.hyp name))) with
+        | Val _ =>
+            List.iter (fun (n, _, _) =>
+              if List.mem Ident.equal n before then () else Ref.set added (n :: Ref.get added))
+              (Control.hyps ());
+            exhaust ()
+        | Err _ => ()
+        end in
+      if eligible then exhaust () else ()) (List.rev (Control.hyps ()));
+    match Ref.get added with
+    | [] => ()
+    | facts => round false facts
+    end in
+  round true [].
+
+Ltac zesu_saturate_derived_facts := ltac2:(Control.enter zesu_saturate_seminaive).
 
 
 (* Everything the witness says, in the form a solver reads. *)
