@@ -7,20 +7,20 @@
     "sha256": "e3e3d9e4e148efc71e6df925f1d5ecd884a675461a002ce3b8e5641033062f47"
   },
   "input_receipt": {
-    "path": "/home/cody/zesislar/_build/agents/heldout-render/free/pass003/INPUT-RECEIPT.json",
-    "sha256": "1dd6e3e34d5539d5c359c04425326f80d5f6bcbe90a68e9d5695bea719146032"
+    "path": "/home/cody/zesislar/_build/agents/heldout-render/free/pass004/INPUT-RECEIPT.json",
+    "sha256": "00b7318a1079cd8bd22a29f58e3cba12b3984c79f767ff855f2173f75cd2dd2c"
   },
   "source_pass_result": {
-    "path": "/home/cody/zesislar/_build/agents/heldout-render/free/pass003/RESULT.json",
-    "sha256": "c206f0c30ff07b8ac13ea321e2959d8b0bf8bb4bb4ac6cac08125a5428f2a470"
+    "path": "/home/cody/zesislar/_build/agents/heldout-render/free/pass004/RESULT.json",
+    "sha256": "0add612af4fa5d56bc53a2cbdee1080050638ba8e9ea7001623d325efb970aff"
   },
   "entries_result": {
-    "path": "/home/cody/zesislar/_build/agents/heldout-render/free/render003/RESULT.json",
-    "sha256": "1aeb1c7ba4c84f7dd09101d202a13ad90f14766f0056c22bd9ed81217330f747"
+    "path": "/home/cody/zesislar/_build/agents/heldout-render/free/render004/RESULT.json",
+    "sha256": "9d9826b84dfc48a173025ff647565739f00884ee182dd3bedf4eadeff9ac26be"
   },
   "callers_result": {
-    "path": "/home/cody/zesislar/_build/agents/heldout-render/free/callers003/CALLERS.json",
-    "sha256": "03e7d2eb5866f78144314b829b124bf749333aa256e70c151f9dd4faa14568a8"
+    "path": "/home/cody/zesislar/_build/agents/heldout-render/free/callers004/CALLERS.json",
+    "sha256": "f7b2d5dd6f69e649780dc81d7b65a1a5620326288246ce3c1720d96d5f297b19"
   },
   "joins": {
     "cuts": [
@@ -260,7 +260,7 @@
     {
       "pc": "0x80042144",
       "status": "refused_incomplete_boundary",
-      "reason": "2 retained stops can reach the boundary 0x80042144; the first is unknown_pc in block 0x80042144 at 0x80042150."
+      "reason": "1 retained stops can reach the boundary 0x80042144; the first is unknown_pc in block 0x80042144 at 0x80042150."
     },
     {
       "pc": "0x80042154",

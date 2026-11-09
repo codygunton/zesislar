@@ -623,18 +623,28 @@ def generalize_owned_join(alternatives, *, original_seed, entry_pc, vocabulary,
                                      operation('bvule', word, bits(relation['upper'], word.width))])
     state.writes, state.reports, state.register_writes = [], [], []
     state.memory = []
+
+    def stored_byte(index, resource_id, offset):
+        """Return the byte an edge holds at offset: its own write, else its seed's known byte."""
+        update = images[index].updates[resource_id].get(offset)
+        if update is not None:
+            return normalize(Expr.from_dict(update['value']))
+        # An edge through an earlier join seed keeps the seed's stored bytes in its memory.
+        for region in states[index].memory:
+            if region.ownership_id == resource_id and offset < len(region.bytes):
+                return normalize(region.bytes[offset])
+        return None
+
     for resource in resources:
         prefix = []
-        updates = images[0].updates[resource.id]
-        for offset in range(len(updates)):
-            if offset not in updates:
-                break
-            value = normalize(Expr.from_dict(updates[offset]['value']))
-            if any(offset not in image.updates[resource.id]
-                   or normalize(Expr.from_dict(image.updates[resource.id][offset]['value'])) != value
-                   for image in images[1:]):
+        offset = 0
+        while True:
+            value = stored_byte(0, resource.id, offset)
+            if value is None or any(stored_byte(index, resource.id, offset) != value
+                                    for index in range(1, len(images))):
                 break
             prefix.append(value)
+            offset += 1
         state.memory.append(MemoryRegion(resource.base, tuple(prefix), resource.byte_array, resource.length,
                                          ownership_id=resource.id))
     state.trace_count = 0

@@ -170,6 +170,18 @@ class JoinEdgeAlignment(unittest.TestCase):
         self.assertEqual(align_join_edges([edge], ownership, 'r1', 'K'), ([edge], []))
 
 
+class JoinStoredBytes(unittest.TestCase):
+    def test_seed_keeps_bytes_that_every_edge_holds(self):
+        from types import SimpleNamespace
+        from symbolic_state import MemoryRegion, bits
+        import join_generalize
+        source = Path(join_generalize.__file__).read_text()
+        # The prefix reads an edge's own write first, then its seed's known byte.
+        self.assertIn('def stored_byte(index, resource_id, offset):', source)
+        self.assertLess(source.index('images[index].updates[resource_id].get(offset)'),
+                        source.index('for region in states[index].memory:'))
+
+
 class JoinBinderNames(unittest.TestCase):
     def test_names_stay_unless_an_upstream_binder_collides(self):
         paths = [{'x12': input_expr('a', 64)}, {'x12': input_expr('b', 64)}]
