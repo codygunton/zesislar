@@ -306,6 +306,7 @@ Ltac2 zesu_has_byte_cell (owners : constr list) base index fraction :=
    adjacent cells with one fraction, and fold the run when it covers the
    access. Fail without change otherwise. *)
 Ltac2 zesu_fold_byte_cells (integer : constr) (count : int) :=
+  if Int.le count 1 then Control.zero (Tactic_failure None) else ();
   let spatial := lazy_match! goal with
     | [ |- environments.envs_entails (environments.Envs _ ?spatial _) _ ] => spatial
     end in
