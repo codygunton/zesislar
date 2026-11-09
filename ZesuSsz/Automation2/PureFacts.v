@@ -26,6 +26,8 @@ Require Import isla.isla.
 Require Import isla.riscv64.riscv64.
 Require Import ZesuMachineMap.Machine.
 From Coq Require Import Lists.List ZArith.ZArith.
+From Ltac2 Require Import Ltac2.
+Set Default Proof Mode "Classic".
 
 (* A nonempty owned list supplies its head and tail without guessing data. *)
 Lemma zesu_list_cons_witness {A : Type} (values : list A) (count : nat) :
@@ -52,27 +54,55 @@ Ltac zesu_split_folded_pure :=
       end
   end.
 
-Ltac zesu_saturate_derived_facts :=
- repeat (once (multimatch goal with
- | H : ?T |- _ =>
-   lazymatch type of T with Prop => idtac end;
-   assert_fails (has_evar T);
-   let fact := fresh "derivedFact" in
-   evar (fact : Prop);
-   let instance := fresh "derivedInstance" in
-   assert (instance : ZesuSsz.Automation.PureFacts.ZesuDerivedFacts T fact);
-   [ unfold fact; typeclasses eauto
-   | let derived := eval unfold fact in fact in
-     assert_fails (has_evar derived);
-     lazymatch goal with
-     | _ : derived |- _ => fail 0
-     | _ =>
-       let result := fresh "Hderived" in
-       pose proof (ZesuSsz.Automation.PureFacts.zesu_derived_facts
-          (ZesuDerivedFacts := instance) H) as result;
-       unfold fact in result; clear instance fact
-     end ]
- end)).
+(* One derivation from one hypothesis. It fails when no instance applies,
+   succeeds without change when the derived fact is already present, and
+   adds the fact otherwise. *)
+Ltac zesu_derive_fact_from H :=
+  let T := type of H in
+  lazymatch type of T with Prop => idtac end;
+  assert_fails (has_evar T);
+  let fact := fresh "derivedFact" in
+  evar (fact : Prop);
+  let instance := fresh "derivedInstance" in
+  assert (instance : ZesuSsz.Automation.PureFacts.ZesuDerivedFacts T fact);
+  [ unfold fact; typeclasses eauto
+  | let derived := eval unfold fact in fact in
+    assert_fails (has_evar derived);
+    lazymatch goal with
+    | _ : derived |- _ => clear instance fact
+    | _ =>
+      let result := fresh "Hderived" in
+      pose proof (ZesuSsz.Automation.PureFacts.zesu_derived_facts
+         (ZesuDerivedFacts := instance) H) as result;
+      unfold fact in result; clear instance fact
+    end ].
+
+(* Each round tries every hypothesis once, newest first. A hypothesis whose
+   derivation succeeded is not tried again; a round that adds a fact starts
+   another round. The result is the same closure as retrying every
+   hypothesis after each new fact, without repeating the derivations that
+   already succeeded: on a 202-fact side goal of 6b08 the old loop ran 3157
+   derivations for about 56 guards. *)
+Ltac2 zesu_saturate_rounds () :=
+  let settled := Ref.ref [] in
+  let rec round () :=
+    let added := Ref.ref false in
+    List.iter (fun declaration =>
+      let (name, _, _) := declaration in
+      if List.mem Ident.equal name (Ref.get settled) then () else
+      let before := List.length (Control.hyps ()) in
+      match Control.case (fun () =>
+        ltac1:(hypothesis |- zesu_derive_fact_from hypothesis)
+          (Ltac1.of_constr (Control.hyp name))) with
+      | Val _ =>
+          Ref.set settled (name :: Ref.get settled);
+          if Int.lt before (List.length (Control.hyps ())) then Ref.set added true else ()
+      | Err _ => ()
+      end) (List.rev (Control.hyps ()));
+    if Ref.get added then round () else () in
+  round ().
+
+Ltac zesu_saturate_derived_facts := ltac2:(Control.enter zesu_saturate_rounds).
 
 
 (* Everything the witness says, in the form a solver reads. *)
