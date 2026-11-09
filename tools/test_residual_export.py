@@ -87,6 +87,17 @@ class Packaging(unittest.TestCase):
         self.assertEqual(uniq[1]["source"], "failed tactics.bv_solve call during the proof")
         self.assertEqual(uniq[1]["copies"], 2)
 
+    def test_final_open_mode_keeps_only_goals_left_open(self):
+        tries, spatial, uniq = pkg.candidates(self.log, "6960", 1500, {"args"}, fail_dumps=False)
+        self.assertEqual([c["source"] for c in uniq], ["left open at the end (failed)"])
+        self.assertEqual(len(spatial), 1)
+
+    def test_spatial_judgment_is_the_entailment_head(self):
+        text = ("(@environments.envs_entails (uPredI X) (@environments.Envs (uPredI X) a b c) "
+                "(@find_in_context Sigma (FindMemMapsTo p) (fun x => y)))")
+        self.assertEqual(pkg.judgment_of(text), "find_in_context")
+        self.assertEqual(pkg.judgment_of("(Z.le a b)"), "Z.le")
+
     def test_selection_keeps_linked_facts_and_drops_big_ones(self):
         _, _, uniq = pkg.candidates(self.log, "6960", 1500, {"args"})
         names = lambda c: [c["dump"]["hyps"][i]["id"] for i in c["keep"]]
@@ -221,3 +232,21 @@ class Guarded(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class FinalOpenOptions(unittest.TestCase):
+    def test_flags_drop_failure_dumps(self):
+        a = type("A", (), {"mode": "final-open"})()
+        self.assertNotIn("--dump-fail", export_block.flags_of(a))
+        self.assertNotIn("Lia.lia,tactics.bv_solve", export_block.flags_of(a))
+        a.mode = "failed-calls"
+        self.assertEqual(export_block.flags_of(a), export_block.CENSUS_FLAGS)
+
+    def test_caller_import_follows_the_last_import(self):
+        src = export_block.with_import(CALLER, "M.N")
+        self.assertIn("Local Open Scope Z_scope.", src)
+        self.assertLess(src.index("Require Import M.N."), src.index("Local Open Scope"))
+
+    def test_stalled_calls(self):
+        log = "1.0 CENSUS E Lia.lia timeout\n2.0 CENSUS E tactics.bv_solve ok\n"
+        self.assertEqual(export_block.stalled_calls(log), ["Lia.lia"])
