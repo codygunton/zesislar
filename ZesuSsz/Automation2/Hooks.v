@@ -201,11 +201,19 @@ Ltac zesu_low_mask_sub_modulus_goal :=
   end.
 
 
+(* A branch guard is a small pure fact. Large facts (array contents, stored
+   bytes) hold many masked words; trying each one runs whole-context lia, so
+   they are not normalized here. *)
+Ltac zesu_low_mask_guard_fact H :=
+  let fact := type of H in
+  zesu_small_fact fact.
+
 (* Normalize a branch guard only when it contains a complete low-bit wrap. *)
 Ltac zesu_low_mask_branch_hypotheses :=
   repeat match goal with
   | H : context [bv_signed (bv_zero_extend 128
         (bv_and (bv_add ?value ?offset) ?mask))] |- _ =>
+      zesu_low_mask_guard_fact H;
       assert_fails (has_evar value);
       assert_fails (has_evar offset);
       is_closed_term mask;
@@ -216,6 +224,7 @@ Ltac zesu_low_mask_branch_hypotheses :=
             rewrite (zesu_signed_zero_extend_64_128 word) in H
         end)
   | H : context [bv_unsigned (bv_and (bv_add ?value ?offset) ?mask)] |- _ =>
+      zesu_low_mask_guard_fact H;
       assert_fails (has_evar value);
       is_closed_term mask;
       lazymatch type of value with bv ?width =>
@@ -2430,8 +2439,15 @@ Ltac zesu_branch_guard_solve_if_enabled :=
   zesu_switch_enabled constr:(ZesuStepBranchGuards);
   progress zesu_branch_guard_rewrite; first [reflexivity | lia].
 
+(* The low-mask alternatives close small arithmetic goals only. On a large
+   goal each failed attempt runs whole-context lia once per matching
+   subterm, so the hook refuses goals above the fact size limit. *)
+Ltac zesu_low_mask_goal_admissible :=
+  lazymatch goal with |- ?goal => zesu_small_fact goal end.
+
 (* Keep the original normalizer and low-mask alternatives after the new rule. *)
 Ltac zesu_low_mask_sub_modulus_if_enabled ::=
+  zesu_low_mask_goal_admissible;
   first [solve [zesu_branch_guard_solve_if_enabled]
     | (zesu_switch_enabled constr:(ZesuStepMaskNormalizer);
        first [solve [zesu_low_mask_sub_modulus_goal]
