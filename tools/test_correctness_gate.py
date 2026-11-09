@@ -152,10 +152,13 @@ class GateClaimsTests(unittest.TestCase):
 
     def test_budget_wait_logs_blocking_claims_and_owner_liveness(self):
         ledger = read(self.ledger)
-        ledger["fixed_claims"].update({"dead-gate": 20, "live-gate": 10, "closed": 0})
+        ledger["fixed_claims"].update({"dead-gate": 20, "live-gate": 10, "closed": 0,
+                                       "shell:abc": 5})
         ledger["correctness_gate_owners"] = {
             "dead-gate": {"pid": 99999999, "startticks": 1, "run_id": "dead"},
             "live-gate": {**correctness_gate.identity(os.getpid()), "run_id": "live"}}
+        ledger["shell_claim_owners"] = {"shell:abc": {
+            "owner": {"pid": 99999998, "startticks": 1}, "marker": "/run/x/99999998.gen"}}
         save(self.ledger, ledger)
         free = [90]
 
@@ -173,6 +176,8 @@ class GateClaimsTests(unittest.TestCase):
         self.assertIn("dead-gate=20 owner=99999999 dead", lines[0])
         self.assertIn(f"live-gate=10 owner={os.getpid()} alive", lines[0])
         self.assertIn("healthy=40 owner=unknown", lines[0])
+        # A compiler reservation names its shell owner and marker, not "unknown".
+        self.assertIn("shell:abc=5 owner=99999998 dead marker=99999998.gen", lines[0])
         self.assertNotIn("closed=", lines[0])
 
     def test_duplicate_claim_refuses(self):
