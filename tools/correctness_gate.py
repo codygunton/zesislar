@@ -209,6 +209,19 @@ def reserve(policy, owner, receipt, *, available=memory_available, pause=time.sl
                 ledger.setdefault("correctness_gate_admissions", {})[key] = record
                 save(policy["ledger"], ledger)
                 return record
+            owners = ledger.get("correctness_gate_owners", {})
+            blocking = []
+            for name, amount in sorted(claims.items()):
+                if not amount:
+                    continue
+                holder = owners.get(name)
+                if isinstance(holder, dict) and "pid" in holder and "startticks" in holder:
+                    state = "alive" if alive(holder) else "dead"
+                    blocking.append(f"{name}={amount} owner={holder['pid']} {state}")
+                else:
+                    blocking.append(f"{name}={amount} owner=unknown")
+            print(f"correctness gate {key} waits for admission; claims: " + "; ".join(blocking),
+                  file=sys.stderr, flush=True)
         pause(60)
 
 

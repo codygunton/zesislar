@@ -657,7 +657,7 @@ Ltac zesu_finish_source_package :=
          ZesuSsz.Automation2.BitvectorFacts.zesu_source_biased_mask_tree requested);
       (tryif SourceFactMatching.zesu_source_check_fixed_tree requested
        then idtac
-       else (repeat JoinEntailment.zesu_join_project_once;
+       else (once (repeat JoinEntailment.zesu_join_project_once);
          PureFacts.zesu_saturate_derived_facts;
          SourceFactMatching.zesu_source_check_fixed_tree requested));
       once (SourceFactMatching.zesu_source_match_tree requested ltac:(idtac)))
@@ -683,7 +683,7 @@ once (try zesu_memory_registered_intro;
          ZesuSsz.Automation2.BitvectorFacts.zesu_source_biased_mask_tree requested);
       (tryif SourceFactMatching.zesu_source_check_fixed_tree requested
        then idtac
-       else (repeat JoinEntailment.zesu_join_project_once;
+       else (once (repeat JoinEntailment.zesu_join_project_once);
          PureFacts.zesu_saturate_derived_facts;
          SourceFactMatching.zesu_source_check_fixed_tree requested));
       SourceFactMatching.zesu_source_match_tree requested ltac:(idtac))
