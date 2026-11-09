@@ -54,6 +54,7 @@ Require Import ZesuSsz.Automation2.ResourceGroups.
 Require Import ZesuSsz.Automation2.ConjunctMatch.
 Require Import ZesuSsz.Automation2.RegisterArrayCursor.
 Require Import ZesuSsz.Automation2.LoopBackedgeJoin.
+Require Import ZesuSsz.Automation2.MaskWitness.
 
 (* Expose symbolic lookup results with kernel reduction. Do not normalize their
    payloads in the VM. Closed inputs retain the upstream VM path. *)
@@ -387,7 +388,8 @@ Ltac zesu_solve_machine_linear :=
       zesu_normalize_binary_nat_goal; zesu_normalize_machine_map; lia]])].
 (* Preserve the machine normalization used by the existing finisher. *)
 Ltac zesu_finish_lia ::=
-  first [LoopBackedgeJoin.zesu_loop_pure_finish | zesu_solve_machine_linear].
+  first [LoopBackedgeJoin.zesu_loop_pure_finish | solve [MaskWitness.zesu_mask_fact_close] |
+    zesu_solve_machine_linear].
 
 Tactic Notation "lia" := zesu_solve_machine_linear.
 
@@ -2176,6 +2178,7 @@ Ltac zesu_liAStep :=
   | liStep
   | liLetBindHint
   | liUnfoldLate
+  | MaskWitness.zesu_mask_witness_telescope
   | zesu_canonical_fact_views_if_enabled
  ]; liSimpl)].
 

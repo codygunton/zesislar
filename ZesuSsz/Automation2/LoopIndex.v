@@ -60,12 +60,23 @@ Ltac zesu_loop_cursor_step cursor one limit continuation :=
       continuation index
   end.
 
+(* The branch fact may sit inside a retained conjunction, for example after
+   the limit register was substituted by its stepped cursor. *)
+Ltac zesu_loop_step_conjunct statement continuation :=
+  lazymatch statement with
+  | ?left /\ ?right =>
+      first [zesu_loop_step_conjunct left continuation |
+             zesu_loop_step_conjunct right continuation]
+  | @bv_add _ ?cursor ?one = ?limit => continuation cursor one limit
+  | ~ (@bv_add _ ?cursor ?one = ?limit) => continuation cursor one limit
+  end.
+
 Ltac zesu_loop_cursor_guard continuation :=
   match goal with
-  | Hbranch : @bv_add ?width ?cursor ?one <> ?limit |- _ =>
-      zesu_loop_cursor_step cursor one limit continuation
-  | Hbranch : @bv_add ?width ?cursor ?one = ?limit |- _ =>
-      zesu_loop_cursor_step cursor one limit continuation
+  | Hbranch : ?statement |- _ =>
+      lazymatch type of statement with Prop => idtac end;
+      zesu_loop_step_conjunct statement ltac:(fun cursor one limit =>
+        zesu_loop_cursor_step cursor one limit continuation)
   end.
 
 Ltac zesu_simpl_exist_loop_count :=
