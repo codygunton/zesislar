@@ -89,8 +89,14 @@ class OwnedGuardScope(unittest.TestCase):
         self.guard.write_bytes(b'changed public guard')
         with self.assertRaises(ValueError): self.seal()
 
-    def test_pre_exec_refuses_same_bytes_source_replacement(self):
+    def test_pre_exec_accepts_same_bytes_source_replacement(self):
+        # The digest, size, mode and owner bind the guard; a Dune cache
+        # restore may give identical bytes a new inode.
         raw = self.guard.read_bytes(); self.guard.unlink(); self.guard.write_bytes(raw); self.guard.chmod(0o700)
+        self.seal()
+
+    def test_pre_exec_refuses_same_size_content_change(self):
+        raw = bytearray(self.guard.read_bytes()); raw[-2] ^= 1; self.guard.write_bytes(bytes(raw))
         with self.assertRaises(ValueError): self.seal()
 
     def test_pre_exec_refuses_symlink_source(self):
