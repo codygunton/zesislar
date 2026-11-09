@@ -1061,9 +1061,10 @@ class GuardLockTest(unittest.TestCase):
         )
         holder = subprocess.Popen(["sleep", "30"])
         try:
-            for _ in range(100):
-                if started.exists():
-                    break
+            # The launch reaches systemd-run after the registry re-exec and
+            # the admission checks: 1.7-3.5 s under a load of 50.
+            deadline = time.monotonic() + EVENT_CEILING_SECONDS
+            while not started.exists() and launch.poll() is None and time.monotonic() < deadline:
                 time.sleep(0.01)
             self.assertTrue(started.exists())
             self.assertEqual(self.guard("lock-want", str(holder.pid), "t").returncode,
