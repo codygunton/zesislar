@@ -1484,8 +1484,11 @@ def recover_dead_shell(marker, *, ledger=None, reader=None):
                 raise ValueError('The release owner differs from its token.')
             leaf = admitted.get('leaf')
             leaf_complete = isinstance(leaf, dict) and {'scope', 'device', 'inode'} <= leaf.keys()
+            # A confirmed token without an authenticated aggregate cannot close
+            # through release_shell. Such a record takes the absence audit below.
             complete = (bool(admitted.get('token_identity'))
-                        and (lines[0] == 'confirmed' or leaf_complete and fields.get('child_start')))
+                        and (lines[0] == 'confirmed' and bool(admitted.get('aggregate'))
+                             or leaf_complete and fields.get('child_start')))
             if complete:
                 return release_shell(marker, ledger=ledger, reader=reader, require_dead_owner=True)
 
@@ -1533,8 +1536,13 @@ def recover_dead_shell(marker, *, ledger=None, reader=None):
             if (not re.fullmatch(r'[a-zA-Z0-9_.@:-]+\.(scope|slice)', unit)
                     or any(reader.parent.rglob(unit))):
                 raise ValueError('The orphan token scope is still present or invalid.')
+        # A stale-owner release records the token it observed. A leftover
+        # token with that exact identity is the released token itself.
+        known = {tuple(archived.get('token_identity', ()))} if archived is not None else set()
+        if archived is not None and released.get('observed_token_identity'):
+            known.add(tuple(released['observed_token_identity']))
         if archived is not None and (archived['owner'] != owner or archived['marker'] != str(marker)
-                or tuple(archived.get('token_identity', ())) != identity):
+                or identity not in known):
             raise ValueError('The archived released token identity changed.')
         if reader.file_identity(marker.lstat()) != identity:
             raise ValueError('The orphan token changed during recovery.')
