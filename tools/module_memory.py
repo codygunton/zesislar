@@ -484,7 +484,17 @@ def reservation_claims(markers, *, proc=Path("/proc"), fallback_bytes=32 * GIB,
                     status = (proc / str(pid) / "status").read_text().splitlines()
                     peak = next(int(line.split()[1]) for line in status if line.startswith("VmHWM:"))
                     peaks.append(positive_integer(peak, "observed compiler peak") * 1536)
-                except (OSError, StopIteration):
+                except (FileNotFoundError, ProcessLookupError):
+                    # A compiler that exited after the snapshot holds no memory.
+                    # Counting its fence made a finished compile "grow" past its
+                    # measured booking, and its token could no longer be verified.
+                    if (proc / str(pid)).exists():
+                        peaks.append(fence)
+                except StopIteration:
+                    if not any(line.split()[1:2] in (["Z"], ["X"]) for line in status
+                               if line.startswith("State:")):
+                        peaks.append(fence)
+                except OSError:
                     peaks.append(fence)
             try:
                 pending.extend(map(int, (proc / str(pid) / "task" / str(pid) / "children").read_text().split()))
@@ -625,15 +635,18 @@ def main():
                 refresh_shell_growth(observed['growth'])
                 unverified = None
             except ValueError as error:
-                # Another reservation grew but its token cannot be verified.
-                # Hold this launch (the guard retries) rather than fail it.
+                # A ledger bookkeeping error never fails a compile: hold this
+                # launch with the reason, and the guard retries admission.
                 unverified = str(error)
             result = current_projection(args.request_bytes, args.available_bytes)
         result['admitted'] = (result['fits'] and unverified is None
                               and len(observed['claims']) < args.maximum_compilers)
         result['reason'] = ('compiler_limit' if len(observed['claims']) >= args.maximum_compilers else
                             'unverified_growth' if unverified is not None else 'memory_budget')
-        if not result["admitted"]:
+        if unverified is not None:
+            print(f"module memory: unverified_growth; {unverified} "
+                  f"Growth rows: {json.dumps(observed['growth'])}")
+        elif not result["admitted"]:
             print(f"module memory: {result['reason']}; unrealized {result['requested_unrealized_bytes']} bytes, "
                   f"available budget {result['budget_bytes']} bytes; total {result['requested_total_bytes']} bytes, "
                   f"slice cap {result['slice_claim_cap_bytes']} bytes")

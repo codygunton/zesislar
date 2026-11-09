@@ -30,7 +30,11 @@ def fixture_environment(**changes):
     """Remove inherited build routes before a fixture sets its own routes."""
     environment = {name: value for name, value in os.environ.items()
                    if not name.startswith("ZESU_")}
-    environment.pop("ROCQ_COQC_BINARY", None)
+    for name in ("ROCQ_COQC_BINARY", "COORD_AGENT", "COORD_ROOT"):
+        environment.pop(name, None)
+    # A guard test never reads the live build budget: an over-budget agent
+    # there made `batch` refuse before systemd-run.
+    environment["ZESU_BUILD_BUDGET"] = "/nonexistent/zesu-test-build-budget.json"
     environment.update(changes)
     return environment
 
@@ -66,6 +70,7 @@ class GuardLockTest(unittest.TestCase):
                             "ZESU_RAMP_FILE": str(base / "ramp"),
                             # The dune wrapper's default profile stays inside the fixture.
                             "XDG_CACHE_HOME": str(base / "cache"),
+                            "ZESU_POPULATING_PREFIX": str(base / "populating"),
                             "ZESU_SCOPE_PREFIX": f"zesutest{os.getpid()}",
                             "ZESU_GUARD_POLL": "0.1",
                             "ZESU_MAX_COQC": "100000",
@@ -1047,6 +1052,25 @@ class GuardLockTest(unittest.TestCase):
             holder.kill()
             holder.wait()
 
+    def test_fixture_ignores_the_live_build_budget(self):
+        # The live budget can name the calling agent as over budget; then
+        # `batch` refuses before systemd-run. Fixtures must not inherit it.
+        environment = fixture_environment()
+        self.assertNotIn("COORD_AGENT", environment)
+        self.assertFalse(Path(environment["ZESU_BUILD_BUDGET"]).exists())
+        budget = Path(self.directory.name) / "BUDGET.json"
+        budget.write_text(json.dumps({"agents": {"a": {
+            "unique_bytes": 2, "budget_bytes": 1, "over": True, "protected": False}}}))
+        started = Path(self.directory.name) / "launch-started"
+        (self.bin / "systemd-run").write_text(f"#!/bin/sh\ntouch '{started}'\n")
+        refused = subprocess.run([str(GUARD), "batch", "arm", "--", "true"],
+                                 env={**self.environment, "ZESU_BUILD_BUDGET": str(budget),
+                                      "COORD_AGENT": "a"},
+                                 capture_output=True, text=True, timeout=EVENT_CEILING_SECONDS)
+        self.assertEqual(refused.returncode, 3, refused.stderr)
+        self.assertIn("build budget", refused.stderr)
+        self.assertFalse(started.exists())
+
     def test_registered_launch_blocks_gate_transition(self):
         started = Path(self.directory.name) / "launch-started"
         fake_systemd = self.bin / "systemd-run"
@@ -1063,9 +1087,10 @@ class GuardLockTest(unittest.TestCase):
         )
         holder = subprocess.Popen(["sleep", "30"])
         try:
-            for _ in range(100):
-                if started.exists():
-                    break
+            # The launch reaches systemd-run after the registry re-exec and
+            # the admission checks: 1.7-3.5 s under a load of 50.
+            deadline = time.monotonic() + EVENT_CEILING_SECONDS
+            while not started.exists() and launch.poll() is None and time.monotonic() < deadline:
                 time.sleep(0.01)
             self.assertTrue(started.exists())
             self.assertEqual(self.guard("lock-want", str(holder.pid), "t").returncode,
