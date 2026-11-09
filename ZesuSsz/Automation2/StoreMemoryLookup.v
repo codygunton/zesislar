@@ -446,6 +446,13 @@ Ltac2 zesu_join_frame_byte_array () :=
     | environments.Envs _ ?spatial _ => spatial
     end in
   let owners := zesu_spatial_owners spatial [] in
+  (* Scan the goal only when the context owns a byte cell at index zero. *)
+  if List.exist (fun owner =>
+       match zesu_byte_cell_owner owner with
+       | Some cell => let (_, index, _) := cell in Constr.equal index constr:(O)
+       | None => false
+       end) owners
+  then () else Control.zero (Tactic_failure None);
   let requests := zesu_array_requests conclusion [] in
   let candidates := List.filter (fun request =>
     let (address, fraction) := request in
