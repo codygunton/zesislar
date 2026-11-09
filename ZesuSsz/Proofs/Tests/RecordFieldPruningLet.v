@@ -1,7 +1,7 @@
-Require Import ZesuSsz.Automation2.All.
 Require Import ZesuSsz.Contracts.RlpDecodeItemContract.
 From Coq Require Import ZArith.ZArith.
 From stdpp Require Import bitvector.definitions.
+Require Import ZesuSsz.Automation2.All.
 Local Open Scope Z_scope.
 
 (* A goal that reaches a record field only through a local definition keeps
