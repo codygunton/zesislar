@@ -1,0 +1,190 @@
+(* ---- solver census core (diagnostic only; never in repo tactics) ---- *)
+From Ltac2 Require Import Ltac2.
+Set Default Proof Mode "Classic".
+Set Printing Width 1000.
+
+Ltac2 census_timeout () := @TIMEOUT@.
+Ltac2 census_out (m : message) := Message.print (Message.concat (Message.of_string "CENSUS ") m).
+Ltac2 census_cat (ms : message list) :=
+  List.fold_left (fun a b => Message.concat a b) (Message.of_string "") ms.
+Ltac2 census_str (s : string) := Message.of_string s.
+Ltac2 census_int (i : int) := Message.of_int i.
+
+(* Copy at most cap characters of s, with line breaks replaced by spaces. *)
+Ltac2 census_flat (cap : int) (s : string) :=
+  let n := String.length s in
+  let m := if Int.lt n cap then n else cap in
+  let r := String.make m (Char.of_int 32) in
+  let rec loop i :=
+    if Int.lt i m then
+      (let c := String.get s i in
+       (if Int.equal (Char.to_int c) 10 then () else String.set r i c);
+       loop (Int.add i 1))
+    else () in
+  loop 0;
+  if Int.lt m n then String.app r " ...<truncated>" else r.
+
+Ltac2 rec census_count (rem : int Ref.ref) (t : constr) :=
+  if Int.le (Ref.get rem) 0 then () else (
+  Ref.set rem (Int.sub (Ref.get rem) 1);
+  let visit := census_count rem in
+  let binder b := visit (Constr.Binder.type b) in
+  match Constr.Unsafe.kind t with
+  | Constr.Unsafe.App head args => visit head; Array.iter visit args
+  | Constr.Unsafe.Cast value _ typ => visit value; visit typ
+  | Constr.Unsafe.Prod b body => binder b; visit body
+  | Constr.Unsafe.Lambda b body => binder b; visit body
+  | Constr.Unsafe.LetIn b value body => binder b; visit value; visit body
+  | Constr.Unsafe.Case _ predicate _ value branches =>
+      let (typ, _) := predicate in visit typ; visit value; Array.iter visit branches
+  | Constr.Unsafe.Fix _ _ binders bodies => Array.iter binder binders; Array.iter visit bodies
+  | Constr.Unsafe.CoFix _ binders bodies => Array.iter binder binders; Array.iter visit bodies
+  | Constr.Unsafe.Proj _ _ value => visit value
+  | Constr.Unsafe.Evar _ args => Array.iter visit args
+  | _ => ()
+  end).
+
+Ltac2 census_goal_cap () := 100000.
+Ltac2 census_ctx_cap () := 400000.
+
+Ltac2 census_is_prop (t : constr) := Constr.equal (Constr.type t) constr:(Prop).
+
+Ltac2 census_measure () :=
+  let hs := Control.hyps () in
+  let nh := List.length hs in
+  let np := List.fold_left (fun n h => let (_, _, ty) := h in
+    if census_is_prop ty then Int.add n 1 else n) 0 hs in
+  let rg := Ref.ref (census_goal_cap ()) in
+  census_count rg (Control.goal ());
+  let g := Int.sub (census_goal_cap ()) (Ref.get rg) in
+  let rc := Ref.ref (census_ctx_cap ()) in
+  List.iter (fun h => let (_, body, ty) := h in
+    census_count rc ty;
+    match body with Some v => census_count rc v | None => () end) hs;
+  let c := Int.sub (census_ctx_cap ()) (Ref.get rc) in
+  (nh, np, g, c).
+
+Ltac2 census_text (cap : int) (t : constr) := census_flat cap (Message.to_string (Message.of_constr t)).
+
+Ltac2 census_dump (layer : string) :=
+  census_out (census_cat [census_str "GOAL-BEGIN "; census_str layer]);
+  List.iter (fun h => let (id, body, ty) := h in
+    let b := match body with
+      | Some v => census_cat [census_str " := "; census_str (census_text 200000 v)]
+      | None => census_str "" end in
+    census_out (census_cat [census_str "HYP "; Message.of_ident id; b; census_str " : ";
+                            census_str (census_text 200000 ty)])) (Control.hyps ());
+  census_out (census_cat [census_str "CONCL "; census_str (census_text 400000 (Control.goal ()))]);
+  census_out (census_str "GOAL-END").
+
+Ltac2 census_contains (s : string) (pat : string) :=
+  let n := String.length s in
+  let k := String.length pat in
+  let rec at_ i j := if Int.lt j k then
+      (if Int.equal (Char.to_int (String.get s (Int.add i j))) (Char.to_int (String.get pat j))
+       then at_ i (Int.add j 1) else false) else true in
+  let rec scan i := if Int.lt (Int.sub n k) i then false
+      else if at_ i 0 then true else scan (Int.add i 1) in
+  scan 0.
+
+(* The message is "Internal err:([Proofview.tclTIMEOUT] Tactic timeout!)". *)
+Ltac2 census_is_timeout (e : exn) :=
+  census_contains (Message.to_string (Message.of_exn e)) "Tactic timeout!".
+
+Ltac2 rec census_vars (acc : ident list Ref.ref) (rem : int Ref.ref) (t : constr) :=
+  if Int.le (Ref.get rem) 0 then () else (
+  Ref.set rem (Int.sub (Ref.get rem) 1);
+  let visit := census_vars acc rem in
+  let binder b := visit (Constr.Binder.type b) in
+  match Constr.Unsafe.kind t with
+  | Constr.Unsafe.Var id =>
+      if List.exist (fun j => Ident.equal j id) (Ref.get acc) then ()
+      else Ref.set acc (id :: Ref.get acc)
+  | Constr.Unsafe.App head args => visit head; Array.iter visit args
+  | Constr.Unsafe.Cast value _ typ => visit value; visit typ
+  | Constr.Unsafe.Prod b body => binder b; visit body
+  | Constr.Unsafe.Lambda b body => binder b; visit body
+  | Constr.Unsafe.LetIn b value body => binder b; visit value; visit body
+  | Constr.Unsafe.Case _ predicate _ value branches =>
+      let (typ, _) := predicate in visit typ; visit value; Array.iter visit branches
+  | Constr.Unsafe.Fix _ _ binders bodies => Array.iter binder binders; Array.iter visit bodies
+  | Constr.Unsafe.CoFix _ binders bodies => Array.iter binder binders; Array.iter visit bodies
+  | Constr.Unsafe.Proj _ _ value => visit value
+  | Constr.Unsafe.Evar _ args => Array.iter visit args
+  | _ => ()
+  end).
+
+Ltac2 census_varlist (ts : constr list) :=
+  let acc := Ref.ref [] in
+  let rem := Ref.ref 1000000 in
+  List.iter (census_vars acc rem) ts;
+  List.fold_left (fun m id => Message.concat m (Message.concat (Message.of_string " ") (Message.of_ident id)))
+    (Message.of_string "") (List.rev (Ref.get acc)).
+
+Ltac2 census_nodes (cap : int) (t : constr) :=
+  let r := Ref.ref cap in census_count r t; Int.sub cap (Ref.get r).
+
+Ltac2 census_fact_limit () := @FACTLIMIT@.
+
+Ltac2 census_fail_props () := @FAILPROPS@.
+
+(* Dump a failed solver goal with per-hypothesis variables and sizes. *)
+Ltac2 census_fail_dump (layer : string) :=
+  let g := Control.goal () in
+  census_out (census_cat [census_str "FAIL-BEGIN "; census_str layer]);
+  List.iter (fun h => let (id, body, ty) := h in
+    let n := census_nodes 100000 ty in
+    let isp := census_is_prop ty in
+    let vs := match body with Some v => census_varlist [ty; v] | None => census_varlist [ty] end in
+    census_out (census_cat [census_str "RES-HYP "; Message.of_ident id;
+      census_str (match body with Some _ => " d=1" | None => " d=0" end);
+      census_str (if isp then " prop=1" else " prop=0");
+      census_str " n="; census_int n; census_str " v="; vs; census_str " ::"]);
+    (if Bool.and isp (Int.lt (census_fact_limit ()) n) then () else
+      census_out (census_cat [census_str "RES-TYPE "; census_str (census_text 200000 ty)]));
+    match body with
+    | Some v => census_out (census_cat [census_str "RES-BODY "; census_str (census_text 200000 v)])
+    | None => ()
+    end) (Control.hyps ());
+  census_out (census_cat [census_str "RES-CONCL n="; census_int (census_nodes 100000 g);
+    census_str " v="; census_varlist [g]; census_str " ::"]);
+  census_out (census_cat [census_str "RES-TEXT "; census_str (census_text 400000 g)]);
+  census_out (census_str "FAIL-END").
+
+(* A solver layer: measure, run under the diagnostic timeout, log, re-raise. *)
+Ltac2 census_solver (layer : string) (dump : bool) (t : unit -> unit) :=
+  Control.enter (fun () =>
+    let (nh, np, g, c) := census_measure () in
+    let gt := if Int.le g 5000 then census_text 300 (Control.goal ()) else "<large>" in
+    census_out (census_cat [census_str "B "; census_str layer; census_str " h=";
+      census_int nh; census_str " p="; census_int np; census_str " g="; census_int g;
+      census_str " c="; census_int c; census_str " goal="; census_str gt]);
+    let r := Control.case (fun () => Control.timeout (census_timeout ()) t) in
+    match r with
+    | Val (x, _) => census_out (census_cat [census_str "E "; census_str layer; census_str " ok"]); x
+    | Err e =>
+        if census_is_timeout e then
+          (census_out (census_cat [census_str "E "; census_str layer; census_str " timeout"]);
+           census_dump layer; Control.zero e)
+        else
+          (census_out (census_cat [census_str "E "; census_str layer; census_str " fail"]);
+           (if Bool.and dump (Int.lt (census_fail_props ()) np) then census_fail_dump layer else ());
+           Control.zero e)
+    end).
+
+(* A site bracket: log entry and exit, keep every success and failure. *)
+Ltac2 census_bracket (name : string) (t : unit -> unit) :=
+  census_out (census_cat [census_str "S+ "; census_str name]);
+  let rec go r :=
+    match r with
+    | Val (x, k) =>
+        census_out (census_cat [census_str "S- "; census_str name; census_str " ok"]);
+        Control.plus (fun () => x) (fun e =>
+          census_out (census_cat [census_str "S+ "; census_str name; census_str " again"]);
+          go (Control.case (fun () => k e)))
+    | Err e =>
+        census_out (census_cat [census_str "S- "; census_str name; census_str " fail"]);
+        Control.zero e
+    end in
+  go (Control.case t).
+(* ---- end census core ---- *)

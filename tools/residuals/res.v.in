@@ -1,0 +1,61 @@
+(* ---- residual collection (diagnostic only) ---- *)
+From Coq Require Import Strings.String.
+Require ZesuSsz.Automation2.SearchBudget.
+
+
+Ltac2 census_goal_kind () :=
+  let g := Control.goal () in
+  if Bool.neg (census_is_prop g) then "witness" else
+  if Constr.has_evar g then "evar" else
+  match! g with
+  | environments.envs_entails _ _ => "spatial"
+  | _ => "pure"
+  end.
+
+Ltac census_res_solver :=
+  ZesuSsz.Automation2.SearchBudget.zesu_solve_selected ("residual"%string)
+    ltac:(solve [first [zesu_solve_machine_linear | zesu_solve_machine_bounds]]).
+
+(* Pass 1: try the guarded solver under the timeout; close what it proves. *)
+Ltac2 census_res_try () :=
+  Control.enter (fun () =>
+    let kind := census_goal_kind () in
+    if String.equal kind "pure" then
+      match Control.case (fun () => Control.timeout (census_timeout ()) (fun () => ltac1:(census_res_solver))) with
+      | Val (x, _) => census_out (census_str "RES-TRY solved"); x
+      | Err e =>
+          let s := Message.to_string (Message.of_exn e) in
+          let reason := if census_contains s "Tactic timeout!" then "timeout"
+            else if census_contains s "refused" then "refused" else "failed" in
+          census_out (census_cat [census_str "RES-TRY open reason="; census_str reason])
+      end
+    else census_out (census_cat [census_str "RES-TRY open reason="; census_str kind])).
+
+(* Passes 2 and 3: dump each open goal under the current printing flags. *)
+Ltac2 census_res_dump (pass : string) :=
+  Control.enter (fun () =>
+    let kind := census_goal_kind () in
+    let g := Control.goal () in
+    census_out (census_cat [census_str "RES-BEGIN pass="; census_str pass; census_str " kind="; census_str kind]);
+    (if String.equal kind "pure" then
+      List.iter (fun h => let (id, body, ty) := h in
+        let n := census_nodes 100000 ty in
+        let big := Int.lt (census_fact_limit ()) n in
+        let isp := census_is_prop ty in
+        let vs := match body with Some v => census_varlist [ty; v] | None => census_varlist [ty] end in
+        census_out (census_cat [census_str "RES-HYP "; Message.of_ident id;
+          census_str (match body with Some _ => " d=1" | None => " d=0" end);
+          census_str (if isp then " prop=1" else " prop=0");
+          census_str " n="; census_int n; census_str " v="; vs; census_str " ::"]);
+        (if Bool.and isp big then () else
+          census_out (census_cat [census_str "RES-TYPE "; census_str (census_text 200000 ty)]));
+        match body with
+        | Some v => census_out (census_cat [census_str "RES-BODY "; census_str (census_text 200000 v)])
+        | None => ()
+        end) (Control.hyps ())
+    else ());
+    census_out (census_cat [census_str "RES-CONCL n="; census_int (census_nodes 100000 g);
+      census_str " v="; census_varlist [g]; census_str " ::"]);
+    census_out (census_cat [census_str "RES-TEXT "; census_str (census_text 400000 g)]);
+    census_out (census_str "RES-END")).
+(* ---- end residual collection ---- *)
