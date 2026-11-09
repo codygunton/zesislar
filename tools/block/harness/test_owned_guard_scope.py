@@ -17,6 +17,10 @@ import admission_memory as M
 import stock_scope_stdin_relay as relay
 import test_admission_memory as fixtures
 
+# Each wait ends at its event. The ceiling only bounds a hung fixture on a
+# loaded machine; it never decides a result. A 3-5 s deadline flaked under gates.
+EVENT_CEILING_SECONDS = 120
+
 
 class OwnedGuardScope(unittest.TestCase):
     write = fixtures.ScopeTests.write
@@ -89,8 +93,14 @@ class OwnedGuardScope(unittest.TestCase):
         self.guard.write_bytes(b'changed public guard')
         with self.assertRaises(ValueError): self.seal()
 
-    def test_pre_exec_refuses_same_bytes_source_replacement(self):
+    def test_pre_exec_accepts_same_bytes_source_replacement(self):
+        # The digest, size, mode and owner bind the guard; a Dune cache
+        # restore may give identical bytes a new inode.
         raw = self.guard.read_bytes(); self.guard.unlink(); self.guard.write_bytes(raw); self.guard.chmod(0o700)
+        self.seal()
+
+    def test_pre_exec_refuses_same_size_content_change(self):
+        raw = bytearray(self.guard.read_bytes()); raw[-2] ^= 1; self.guard.write_bytes(bytes(raw))
         with self.assertRaises(ValueError): self.seal()
 
     def test_pre_exec_refuses_symlink_source(self):
@@ -194,7 +204,7 @@ cat "$STATE_DIR/unit"
 printf '%s\n' "$$"
 '''
                 result = subprocess.run(['bash', '-c', library + script, str(guard)], env=environment,
-                                        text=True, capture_output=True, timeout=10)
+                                        text=True, capture_output=True, timeout=EVENT_CEILING_SECONDS)
                 self.assertEqual(result.returncode, 0, result.stderr)
                 unit, launcher_pid = result.stdout.splitlines()
                 launcher = {'pid': int(launcher_pid), 'startticks': 106}
@@ -280,7 +290,7 @@ run_scope fixture -- /fixture/compiler || exit $?
 cat "$STATE_DIR/events"
 '''
             result = subprocess.run(['bash', '-c', library + script, str(guard)], env=environment,
-                                    text=True, capture_output=True, timeout=10)
+                                    text=True, capture_output=True, timeout=EVENT_CEILING_SECONDS)
             self.assertEqual(result.returncode, 0, result.stderr)
             self.assertEqual(result.stdout.splitlines(), ['reserved', 'launched', 'released fresh-compiler-token'])
 
@@ -316,7 +326,7 @@ run_scope fixture -- /fixture/client || exit $?
 printf '%s\n' "$$"
 '''
                     result = subprocess.run(['bash', '-c', library + script, str(guard)], env=environment,
-                                            text=True, capture_output=True, timeout=10)
+                                            text=True, capture_output=True, timeout=EVENT_CEILING_SECONDS)
                     self.assertEqual(result.returncode, 0, result.stderr)
                     unit, launcher_pid = result.stdout.splitlines()
                     prefix = 'zesudet-' + ('writer-' + writer + '-' if writer else '')

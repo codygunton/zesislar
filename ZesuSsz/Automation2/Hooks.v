@@ -36,6 +36,7 @@ Require Import ZesuSsz.Automation2.LinearFirstLia.
 From iris.proofmode Require Import environments.
 Require Import isla.riscv64.riscv64.
 Require Export ZesuSsz.Automation2.ByteArrays.
+Require ZesuSsz.Automation2.ByteWordReload.
 Require Import ZesuSsz.Automation2.NatBounds.
 Require Export ZesuSsz.Automation2.ByteArrayLengths.
 Require Import ZesuSsz.Automation2.UninitRegions.
@@ -2147,7 +2148,10 @@ Ltac zesu_liAStep :=
  try progress (unfold TRACE_LET);
  try liAIntroduceLetInGoal;
  first [
-    progress ResourceGroups.zesu_open_nested_existential_packages
+    progress ZesuSsz.Automation2.ByteWordReload.zesu_reload_byte_word_step
+  | ltac2:(Ltac1.run (Ltac1.ref
+      [@ZesuSsz; @Automation2; @StoreMemoryLookup; @zesu_join_frame_byte_array]))
+  | progress ResourceGroups.zesu_open_nested_existential_packages
   | CodecArrayRead.zesu_codec_array_read
   | zesu_prefer_owned_instr_pre
   | zesu_source_witnesses_if_enabled
