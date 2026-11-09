@@ -273,6 +273,7 @@ class Registry:
             raise ValueError('The run needs an ID, kind, and owner.')
         if not live(scheduler):
             raise ValueError('The scheduler identity is not live.')
+        self.reap_orphans()
         with self.lock():
             data = self.header()
             try:
@@ -414,7 +415,28 @@ class Registry:
                 send_signal(actor, signal.SIGCONT)
             raise
 
+    def reap_orphans(self):
+        """Release claims of children_live runs whose exact actors all ended."""
+        for row in self.read()['runs'].values():
+            if row['status'] != 'children_live':
+                continue
+            if any(live(a) for a in [row['scheduler']] + row['jobs']):
+                continue
+            try:
+                self.release_claims(row['id'])
+            except (OSError, ValueError, subprocess.CalledProcessError) as error:
+                # The claim stays reserved; a later pass retries the release.
+                print(f"run registry: orphan {row['id']} keeps its claims: {error}",
+                      file=sys.stderr)
+                continue
+            def close(current):
+                if current['status'] == 'children_live':
+                    current.update(status='closed', closed_ns=time.time_ns(),
+                                   all_actors_closed=True)
+            self.update(row['id'], close)
+
     def active(self):
+        self.reap_orphans()
         rows = []
         for row in self.read()['runs'].values():
             actors = [row['scheduler']] + row['jobs']

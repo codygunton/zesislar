@@ -36,6 +36,7 @@ Require Import ZesuSsz.Automation2.LinearFirstLia.
 From iris.proofmode Require Import environments.
 Require Import isla.riscv64.riscv64.
 Require Export ZesuSsz.Automation2.ByteArrays.
+Require ZesuSsz.Automation2.ByteWordReload.
 Require Import ZesuSsz.Automation2.NatBounds.
 Require Export ZesuSsz.Automation2.ByteArrayLengths.
 Require Import ZesuSsz.Automation2.UninitRegions.
@@ -373,19 +374,29 @@ Ltac bv_solve ::= zesu_context_filter ltac:(first [solve [zesu_strict_signed_if_
   unfold bv_signed, bv_swrap, bv_wrap, bv_half_modulus, bv_modulus, bv_unsigned in *;
   simpl; lia)]).
 
+(* A caller that imports isla after this module restores the library lia
+   and bv_solve, which read the whole context. Try the facts linked to the
+   goal first; the library solver remains the second attempt. *)
+Ltac zesu_bv_solve_linked_facts :=
+  solve [bv_simplify_arith; bv_saturate_unsigned; bv_solve_unfold_tac;
+    unfold bv_signed, bv_swrap, bv_wrap, bv_half_modulus, bv_modulus, bv_unsigned in *;
+    simpl; zesu_lia_linked_facts].
+
 Ltac zesu_solve_machine_bounds :=
   first [solve [zesu_low_mask_sub_modulus_if_enabled] |
     solve [zesu_low_mask_if_closed] |
     (solve [zesu_normalize_binary_nat_hypotheses;
-      zesu_normalize_binary_nat_goal; zesu_normalize_machine_map; bv_solve])].
+      zesu_normalize_binary_nat_goal; zesu_normalize_machine_map;
+      first [zesu_bv_solve_linked_facts | bv_solve]])].
 Ltac zesu_solve_machine_linear :=
   first [zesu_byte_index_arithmetic
     | (first [solve [repeat match goal with
            | Hnat : (_ <= _)%nat |- _ => clear Hnat
            | Hnat : (_ < _)%nat |- _ => clear Hnat
-           end; zesu_normalize_machine_map; lia] |
+           end; zesu_normalize_machine_map; first [solve [zesu_lia_linked_facts] | lia]] |
     solve [zesu_normalize_binary_nat_hypotheses;
-      zesu_normalize_binary_nat_goal; zesu_normalize_machine_map; lia]])].
+      zesu_normalize_binary_nat_goal; zesu_normalize_machine_map;
+      first [solve [zesu_lia_linked_facts] | lia]]])].
 (* Preserve the machine normalization used by the existing finisher. *)
 Ltac zesu_finish_lia ::=
   first [LoopBackedgeJoin.zesu_loop_pure_finish | solve [MaskWitness.zesu_mask_fact_close] |
@@ -2139,7 +2150,10 @@ Ltac zesu_liAStep :=
  try progress (unfold TRACE_LET);
  try liAIntroduceLetInGoal;
  first [
-    progress ResourceGroups.zesu_open_nested_existential_packages
+    progress ZesuSsz.Automation2.ByteWordReload.zesu_reload_byte_word_step
+  | ltac2:(Ltac1.run (Ltac1.ref
+      [@ZesuSsz; @Automation2; @StoreMemoryLookup; @zesu_join_frame_byte_array]))
+  | progress ResourceGroups.zesu_open_nested_existential_packages
   | CodecArrayRead.zesu_codec_array_read
   | zesu_prefer_owned_instr_pre
   | zesu_source_witnesses_if_enabled

@@ -250,5 +250,91 @@ class DeadOwnerRecoveryTests(unittest.TestCase):
         self.assertTrue(f.marker.exists())
 
 
+    def drop_aggregate(self):
+        f = self.fixture
+        data = f.read()
+        record = data['shell_claim_owners'][M.shell_key(f.marker)]
+        record['aggregate'] = None
+        record.pop('leaf', None)
+        f.save(data)
+
+    def test_confirmed_token_without_aggregate_releases_after_complete_absence(self):
+        f = self.fixture
+        self.drop_aggregate()
+        self.end_owner()
+        shutil.rmtree(f.group)
+        self.assertTrue(self.recover())
+        data = f.read()
+        key = M.shell_key(f.marker)
+        self.assertFalse(f.marker.exists())
+        self.assertEqual(data['fixed_claims'][key], 0)
+        audit = data['shell_recovery_audits'][key]
+        self.assertEqual(audit['route'], 'admitted_absence')
+        self.assertIn(f.group.name, audit['absent_scope_names'])
+        self.assertTrue(M._shell_recovery_record(data, key, f.reader)[1]['absence_only'])
+
+    def test_confirmed_token_without_aggregate_and_live_owner_stays_refused(self):
+        f = self.fixture
+        self.drop_aggregate()
+        shutil.rmtree(f.group)
+        before = f.ledger.read_bytes()
+        with self.assertRaisesRegex(ValueError, 'owner or actor is still present'):
+            self.recover()
+        self.assertEqual(f.ledger.read_bytes(), before)
+        self.assertTrue(f.marker.exists())
+
+    def test_confirmed_token_without_aggregate_and_existing_unit_stays_refused(self):
+        f = self.fixture
+        self.drop_aggregate()
+        self.end_owner()
+        before = f.ledger.read_bytes()
+        with self.assertRaisesRegex(ValueError, 'scope is still present'):
+            self.recover()
+        self.assertEqual(f.ledger.read_bytes(), before)
+        self.assertTrue(f.marker.exists())
+
+    def archive_stale_release(self):
+        """Archive a stale-owner release that observed a later token."""
+        import shell_archive
+        f = self.fixture
+        data = f.read()
+        key = M.shell_key(f.marker)
+        owner = data['shell_claim_owners'].pop(key)
+        owner['aggregate'] = None
+        f.marker.write_text(f.marker.read_text().replace('confirmed\n', '99\n') + 'child_start=999\n')
+        release = {'owner': owner['owner'], 'marker': owner['marker'],
+                   'stale_owner_recovery': True, 'released_bytes': 64 * M.GIB,
+                   'previous_token_identity': owner['token_identity'],
+                   'observed_token_identity': list(f.reader.file_identity(f.marker.lstat()))}
+        directory = f.root/'archive'
+        digest = shell_archive.publish(directory, key,
+                    {'shell_claim_owners': owner, 'shell_releases': release})
+        data.update(shell_archive_directory=str(directory), shell_archive={key: digest})
+        data['fixed_claims'][key] = 0
+        f.save(data)
+        return key
+
+    def test_zero_byte_archived_token_with_observed_identity_is_removed(self):
+        f = self.fixture
+        key = self.archive_stale_release()
+        self.end_owner()
+        shutil.rmtree(f.group)
+        self.assertTrue(self.recover())
+        data = f.read()
+        self.assertFalse(f.marker.exists())
+        self.assertEqual(data['fixed_claims'][key], 0)
+        self.assertEqual(data['shell_recovery_audits'][key]['route'], 'archived_release')
+
+    def test_zero_byte_archived_token_with_other_identity_stays_refused(self):
+        f = self.fixture
+        self.archive_stale_release()
+        self.end_owner()
+        shutil.rmtree(f.group)
+        f.marker.write_text(f.marker.read_text() + 'changed=yes\n')
+        with self.assertRaisesRegex(ValueError, 'archived released token identity changed'):
+            self.recover()
+        self.assertTrue(f.marker.exists())
+
+
 if __name__ == '__main__':
     unittest.main()
