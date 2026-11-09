@@ -148,7 +148,7 @@ Ltac zesu_cursor_expose_facts :=
       rewrite (zesu_signed_zero_extend_64_128 word) in H
   end;
   repeat match goal with
-  | H : @eq (bv _) ?word _ |- _ => is_var word; apply (f_equal bv_unsigned) in H
+  | H : @eq (bv _) _ _ |- _ => apply (f_equal bv_unsigned) in H
   | H : ~ (@eq (bv _) _ _) |- _ => apply bv_neq in H
   end.
 

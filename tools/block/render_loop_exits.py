@@ -64,11 +64,50 @@ def strip_parens(term):
     return term[1:-1] if term.startswith('(') and term.endswith(')') else term
 
 
+# The forward-pass declaration at this commit owns the system-register
+# witnesses (mstatus seeds and per-instruction forward witnesses) that the
+# successor entries consume. They do not depend on the loop path, so the exit
+# entry keeps their binders and their facts.
+FORWARD_BASE = '3505afab5'
+WITNESS = re.compile(r'\b(fp_seed_\w+|forward_witness_\w+)\b')
+
+
+def forward_declaration(pc):
+    import subprocess
+    path = f'ZesuSsz/Generated/DecodeItem/FP301/Pilot{pc}Entries.v'
+    source = subprocess.run(['git', '-C', str(ROOT), 'show', FORWARD_BASE + ':' + path],
+                            capture_output=True, text=True, check=True).stdout
+    match = re.search(r'^Definition fp_machineAt' + pc + r'_ForwardA0N0' + re.escape(SIGNATURE) +
+                      r' : iProp Sigma := \(∃ (.*?), \((.*)\)\)%I\.$', source, re.M)
+    if match is None:
+        raise ValueError('The forward declaration shape changed: ' + pc)
+    return match.group(1), match.group(2)
+
+
+def carry_system_witnesses(row, body):
+    binders, forward_body = forward_declaration(row['pc'])
+    names = re.findall(r'\((\w+) : bv 64\)', binders)
+    carried = [name for name in names if WITNESS.fullmatch(name)]
+    facts = [fact for fact in re.findall(r'⌜(.*?)⌝', forward_body)
+             if WITNESS.search(fact) and not re.search(r'machine_x\d+|decodeItem|\bi\b', fact)]
+    if not carried or not facts:
+        raise ValueError('The forward declaration has no system witnesses: ' + row['pc'])
+    prefix = '(∃ '
+    if not body.startswith(prefix):
+        raise ValueError('The class does not start with its telescope.')
+    telescope_end = body.index(', (')
+    body = body[:telescope_end] + ''.join(' (' + name + ' : bv 64)' for name in carried) + body[telescope_end:]
+    if not body.endswith('⌝)%I'):
+        raise ValueError('The class does not end with its pure facts.')
+    return body[:-len('⌝)%I')] + ''.join(' /\\ (' + fact + ')' for fact in facts) + '⌝)%I'
+
+
 def exit_body(row):
     body = loop_class(row['head'])
     if body.count(HEAD_BOUND) != 1:
         raise ValueError('The loop-head bound is not unique in ' + row['head'])
     body = body.replace(HEAD_BOUND, EXIT_LINK)
+    body = carry_system_witnesses(row, body)
     if 'block' not in row:
         return body
     target, source = row['update']
