@@ -164,6 +164,14 @@ When comparable cases close in seconds, a search that runs 10 times longer shows
 Inspect its goal and try the known cheaper route in parallel. Do not wait it out.
 (2026-11-02: a join path searched 3.6 hours; the fault-first tactic closed it in 1.7 s.)
 
+When a proof runs 10 times longer than comparable proofs, profile the live process one time with `perf` before the next run.
+The Ltac profiler prints only when a proof ends, so it cannot name a spin.
+Instrument every finisher step in the first diagnostic run; never move markers from run to run.
+A diagnosis gets at most three full runs of one block.
+Before more runs, save the residual goals at the failing step as standalone lemmas and probe those.
+When a measurement names the failing call, start the fix at once, in parallel with any further diagnosis.
+(2026-11-08: block 6a78 used about 25 sequential full runs over 10 hours; the failing call was known after the first few.)
+
 Use build caches and focused targets during proof development.
 Do not rerun an unchanged failed tactic or build.
 Inspect the first residual goal before the next attempt.
