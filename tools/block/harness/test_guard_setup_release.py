@@ -122,6 +122,24 @@ class GuardSetupRelease(unittest.TestCase):
             self.release()
         self.assertEqual(self.ledger.read_bytes(), before)
 
+    def test_new_guard_hardlink_keeps_mark_and_release(self):
+        import os
+        before = self.guard.lstat().st_ctime_ns
+        os.link(self.guard, self.guard.with_name('dune-cache-link'))
+        self.assertNotEqual(self.guard.lstat().st_ctime_ns, before)
+        self.reject()
+        self.close()
+        self.assertTrue(self.release())
+        self.assertEqual(self.read()['fixed_claims'][self.key], 0)
+
+    def test_same_size_guard_content_change_refuses_mark(self):
+        raw = bytearray(self.guard.read_bytes()); raw[-2] ^= 1
+        self.guard.write_bytes(bytes(raw))
+        before = self.ledger.read_bytes()
+        with self.assertRaisesRegex(ValueError, 'guard source bytes changed'):
+            self.mark()
+        self.assertEqual(self.ledger.read_bytes(), before)
+
     def test_wrong_source_cannot_create_cleanup_evidence(self):
         self.guard.write_bytes(b'changed public guard')
         before = self.ledger.read_bytes()

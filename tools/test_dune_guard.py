@@ -14,6 +14,10 @@ import test_guard
 from coqc_recipe import compiler_recipe
 from test_resource_guard import MEMORY_HELPER
 
+# Each wait ends at its event. The ceiling only bounds a hung fixture on a
+# loaded machine; it never decides a result. A 3-5 s deadline flaked under gates.
+EVENT_CEILING_SECONDS = 120
+
 
 TOOLS = Path(__file__).resolve().parent
 
@@ -79,10 +83,10 @@ class GateQueueTest(unittest.TestCase):
         for process in self.processes:
             if process.poll() is None:
                 os.killpg(process.pid, signal.SIGTERM)
-            process.communicate(timeout=5)
+            process.communicate(timeout=EVENT_CEILING_SECONDS)
 
     def wait_for(self, predicate):
-        deadline = time.monotonic() + 5
+        deadline = time.monotonic() + EVENT_CEILING_SECONDS
         while time.monotonic() < deadline:
             if predicate():
                 return
@@ -121,7 +125,7 @@ class GateQueueTest(unittest.TestCase):
 
     def finish(self, process, name):
         (self.root / (name + ".release")).touch()
-        _, stderr = process.communicate(timeout=5)
+        _, stderr = process.communicate(timeout=EVENT_CEILING_SECONDS)
         self.assertEqual(process.returncode, 0, stderr)
 
     def assert_clean(self):
@@ -185,7 +189,7 @@ class GateQueueTest(unittest.TestCase):
         root = self.start("root", "root")
         self.queued(root)
         root.terminate()
-        root.communicate(timeout=5)
+        root.communicate(timeout=EVENT_CEILING_SECONDS)
         self.wait_for(lambda: not self.waiter_records())
         preview = self.start("preview", "preview")
         self.queued(preview)
@@ -229,11 +233,11 @@ class GateQueueTest(unittest.TestCase):
         self.wait_for(lambda: any(row[2] == str(owner.pid)
                                  for _, row in self.waiter_records()))
         caller.terminate()
-        caller.communicate(timeout=5)
+        caller.communicate(timeout=EVENT_CEILING_SECONDS)
         self.wait_for(lambda: not self.waiter_records())
         self.assertIsNone(owner.poll())
         owner.terminate()
-        owner.wait(timeout=5)
+        owner.wait(timeout=EVENT_CEILING_SECONDS)
         self.finish(holder, "holder")
         self.assert_clean()
 
@@ -251,15 +255,15 @@ class GateQueueTest(unittest.TestCase):
             self.wait_for(lambda: any(row[2] == str(owner.pid)
                                      for _, row in self.waiter_records()))
             owner.terminate()
-            owner.wait(timeout=5)
-            caller.communicate(timeout=5)
+            owner.wait(timeout=EVENT_CEILING_SECONDS)
+            caller.communicate(timeout=EVENT_CEILING_SECONDS)
             self.assertEqual(caller.returncode, 2)
             self.assertEqual(self.waiter_records(), [])
             self.assertIsNone(holder.poll())
         finally:
             if owner.poll() is None:
                 owner.terminate()
-                owner.wait(timeout=5)
+                owner.wait(timeout=EVENT_CEILING_SECONDS)
         self.finish(holder, "holder")
         self.assert_clean()
 
@@ -269,7 +273,7 @@ class GateQueueTest(unittest.TestCase):
         root = self.start("root", "root")
         self.queued(root)
         os.killpg(root.pid, signal.SIGKILL)
-        root.communicate(timeout=5)
+        root.communicate(timeout=EVENT_CEILING_SECONDS)
         self.fixture.guard("lock-status")
         self.assertEqual(self.waiter_records(), [])
         self.assertIsNone(holder.poll())
@@ -302,7 +306,7 @@ class GateQueueTest(unittest.TestCase):
             self.assertIsNone(holder.poll())
         finally:
             os.kill(caller.pid, signal.SIGCONT)
-            caller.communicate(timeout=5)
+            caller.communicate(timeout=EVENT_CEILING_SECONDS)
         self.finish(holder, "holder")
         self.assert_clean()
 
@@ -335,7 +339,7 @@ class GateQueueTest(unittest.TestCase):
             result = subprocess.run(
                 [str(test_guard.GUARD), "lock-want", str(owner.pid), "preview"],
                 env={**self.environment, "ZESU_GATE_CLASS": "preview"},
-                capture_output=True, text=True, timeout=5)
+                capture_output=True, text=True, timeout=EVENT_CEILING_SECONDS)
             self.assertEqual(result.returncode, 0, result.stderr)
             original = self.fixture.lock.read_bytes()
             self.assertTrue(original.startswith(b"state=wanted "))
@@ -349,7 +353,7 @@ class GateQueueTest(unittest.TestCase):
             self.finish(root, "root")
         finally:
             owner.terminate()
-            owner.wait(timeout=5)
+            owner.wait(timeout=EVENT_CEILING_SECONDS)
         self.assert_clean()
 
     def test_invalid_class_and_dead_owner_do_not_register(self):
@@ -359,7 +363,7 @@ class GateQueueTest(unittest.TestCase):
         ]:
             result = subprocess.run([str(test_guard.GUARD), *arguments],
                                     env={**self.environment, **environment},
-                                    capture_output=True, text=True, timeout=5)
+                                    capture_output=True, text=True, timeout=EVENT_CEILING_SECONDS)
             self.assertEqual(result.returncode, 2, result.stderr)
             self.assert_clean()
 
@@ -432,7 +436,7 @@ class DuneCompilerGuardTest(unittest.TestCase):
                     environment["ZESU_GATE_MODULE_LIMIT_GIB"] = limit
                 result = subprocess.run([str(self.wrapper), str(source)],
                                         cwd=self.root, env=environment,
-                                        capture_output=True, text=True, timeout=5)
+                                        capture_output=True, text=True, timeout=EVENT_CEILING_SECONDS)
                 self.assertEqual(result.returncode, 0, result.stderr)
                 memory = limit or McpThresholdTest.guard_default_memory()
                 self.assertEqual(self.compiler_events()[-1]["memory"], memory)
@@ -446,7 +450,7 @@ class DuneCompilerGuardTest(unittest.TestCase):
                 environment = {**self.environment, "ZESU_GATE_MODULE_LIMIT_GIB": limit}
                 result = subprocess.run([str(self.wrapper), "Fixture.v"],
                                         cwd=self.root, env=environment,
-                                        capture_output=True, text=True, timeout=5)
+                                        capture_output=True, text=True, timeout=EVENT_CEILING_SECONDS)
                 self.assertEqual(result.returncode, 2, result.stderr)
                 self.assertIn("integer from 6 through 32", result.stderr)
                 self.assertEqual(self.compiler_events(), [])
@@ -486,7 +490,7 @@ class DuneCompilerGuardTest(unittest.TestCase):
                 for route in routes:
                     with self.subTest(status=status, ambient=ambient, route=route):
                         result = subprocess.run(route, cwd=self.root, env=environment,
-                                                capture_output=True, text=True, timeout=5)
+                                                capture_output=True, text=True, timeout=EVENT_CEILING_SECONDS)
                         self.assertNotEqual(result.returncode, 0)
                         self.assertIn("compiler snapshot failed", result.stderr)
                         self.assertEqual(self.compiler_events(), [])
@@ -513,7 +517,7 @@ class DuneCompilerGuardTest(unittest.TestCase):
         tokens = []
         guard = self.root / "tools/resource_guard.sh"
         try:
-            deadline = time.monotonic() + 3
+            deadline = time.monotonic() + EVENT_CEILING_SECONDS
             child = None
             while time.monotonic() < deadline:
                 markers = list((Path(self.environment["ZESU_GUARD_STATE"]) /
@@ -537,7 +541,7 @@ class DuneCompilerGuardTest(unittest.TestCase):
             # Both raw comm entries are coqc. The guard reports one compiler.
             result = subprocess.run([str(guard), "hold"],
                                     env={**self.environment, "ZESU_MAX_COQC": "2"},
-                                    capture_output=True, text=True, timeout=3)
+                                    capture_output=True, text=True, timeout=EVENT_CEILING_SECONDS)
             self.assertEqual(result.stdout.strip(), "none")
             state = Path(self.environment["ZESU_GUARD_STATE"])
             marker = next((state / "coqc-reservations").iterdir())
@@ -549,12 +553,12 @@ class DuneCompilerGuardTest(unittest.TestCase):
             for i in range(1, 16):
                 result = subprocess.run([str(guard), "reserve-coqc", str(os.getpid())],
                                         env={**self.environment, "ZESU_WRITER_ID": f"writer-{i // 2}"},
-                                        capture_output=True, text=True, timeout=3)
+                                        capture_output=True, text=True, timeout=EVENT_CEILING_SECONDS)
                 self.assertEqual(result.returncode, 0, result.stderr)
                 tokens.append(result.stdout.strip())
                 result = subprocess.run([str(guard), "confirm-coqc", tokens[-1]],
                                         env={**self.environment, "ZESU_WRITER_ID": f"writer-{i // 2}"},
-                                        capture_output=True, text=True, timeout=3)
+                                        capture_output=True, text=True, timeout=EVENT_CEILING_SECONDS)
                 self.assertEqual(result.returncode, 0, result.stderr)
             self.assertEqual(len(list((state / "coqc-reservations").iterdir())), 16)
             request = subprocess.run([str(guard), "reserve-coqc", str(os.getpid())],
@@ -567,9 +571,9 @@ class DuneCompilerGuardTest(unittest.TestCase):
                 time.sleep(0.2)
                 self.assertIsNone(waiter.poll())
             finally:
-                waiter.terminate(); waiter.communicate(timeout=3)
+                waiter.terminate(); waiter.communicate(timeout=EVENT_CEILING_SECONDS)
         finally:
-            process.terminate(); process.communicate(timeout=3)
+            process.terminate(); process.communicate(timeout=EVENT_CEILING_SECONDS)
             if child is not None:
                 self.assertFalse(Path(f"/proc/{child}").exists())
             for token in tokens:
@@ -597,7 +601,7 @@ class DuneCompilerGuardTest(unittest.TestCase):
                                     env={**self.environment, "ZESU_WRITER_ID": "tf2",
                                          "ZESU_RESOURCE_GUARD": str(updated),
                                          "ZESU_SCRATCH_COQC_BINARY": str(self.wrapper)},
-                                    capture_output=True, text=True, timeout=5)
+                                    capture_output=True, text=True, timeout=EVENT_CEILING_SECONDS)
             self.assertEqual(result.returncode, 0, result.stderr)
             self.assertTrue(self.fixture.lock.exists())
         self.assertEqual(len(self.compiler_events()), 2)
@@ -621,7 +625,7 @@ class DuneCompilerGuardTest(unittest.TestCase):
                                      "ZESU_ROCQ_COQC_WRAPPER": str(self.wrapper),
                                      "ZESU_ROCQ_MCP_BINARY": str(server),
                                      "FAKE_SCOPE_LOG": str(scope_log)},
-                                capture_output=True, text=True, timeout=3)
+                                capture_output=True, text=True, timeout=EVENT_CEILING_SECONDS)
         self.assertEqual(result.returncode, 0, result.stderr)
         self.assertEqual(result.stdout.splitlines(), [str(self.wrapper), str(updated)])
         self.assertIn("MemoryMax=16G", scope_log.read_text())
@@ -636,7 +640,7 @@ class DuneCompilerGuardTest(unittest.TestCase):
                                 text=True).stdout.strip() for _ in range(2)]
         for token in tokens:
             subprocess.run([str(guard), "confirm-coqc", token], env=self.environment,
-                           check=True, capture_output=True, text=True, timeout=3)
+                           check=True, capture_output=True, text=True, timeout=EVENT_CEILING_SECONDS)
         source = self.root / "Probe.v"
         source.write_text("(* Fake compiler input. *)\n")
         process = subprocess.Popen([str(self.wrapper), str(source)], env=self.environment,
@@ -646,13 +650,13 @@ class DuneCompilerGuardTest(unittest.TestCase):
             self.assertIsNone(process.poll())
             self.assertEqual(self.compiler_events(), [])
             subprocess.run([str(guard), "release-coqc", tokens.pop()], env=self.environment, check=True)
-            _, stderr = process.communicate(timeout=3)
+            _, stderr = process.communicate(timeout=EVENT_CEILING_SECONDS)
             self.assertEqual(process.returncode, 0, stderr)
             self.assertEqual(len(self.compiler_events()), 1)
         finally:
             if process.poll() is None:
                 process.terminate()
-            process.communicate(timeout=3)
+            process.communicate(timeout=EVENT_CEILING_SECONDS)
             for token in tokens:
                 subprocess.run([str(guard), "release-coqc", token], env=self.environment, check=True)
 
@@ -677,7 +681,7 @@ class DuneCompilerGuardTest(unittest.TestCase):
                                     cwd=self.root, env={**self.environment, "ZESU_WRITER_ID": "tf2",
                                          "ZESU_RESOURCE_GUARD": str(updated),
                                          "FAKE_SCOPE_LOG": str(scope_log)},
-                                    capture_output=True, text=True, timeout=5)
+                                    capture_output=True, text=True, timeout=EVENT_CEILING_SECONDS)
             self.assertEqual(result.returncode, 0, result.stderr)
         self.assertEqual(len(self.compiler_events()), 2)
         self.assertIn("MemoryMax=16G", scope_log.read_text())
@@ -702,13 +706,13 @@ class DuneCompilerGuardTest(unittest.TestCase):
             self.assertIsNone(process.poll())
             self.assertEqual(self.compiler_events(), [])
             self.blocked.write_text("16\n")
-            _, stderr = process.communicate(timeout=3)
+            _, stderr = process.communicate(timeout=EVENT_CEILING_SECONDS)
             self.assertEqual(process.returncode, 0, stderr)
             self.assertEqual(len(self.compiler_events()), 1)
         finally:
             if process.poll() is None:
                 process.terminate()
-            process.communicate(timeout=3)
+            process.communicate(timeout=EVENT_CEILING_SECONDS)
             subprocess.run([str(guard), "release-coqc", token],
                            env=self.environment, check=True)
 
@@ -716,7 +720,7 @@ class DuneCompilerGuardTest(unittest.TestCase):
         self.blocked.write_text("17\n")
         result = subprocess.run([str(self.wrapper), "--print-version", "-boot", "-noinit"],
                                 env=self.environment, capture_output=True, text=True,
-                                timeout=3)
+                                timeout=EVENT_CEILING_SECONDS)
         self.assertEqual(result.returncode, 0, result.stderr)
         self.assertEqual(result.stdout.strip(), "8.19.2 4.14.4")
         self.assertEqual(self.compiler_events(), [])
@@ -738,7 +742,7 @@ class DuneCompilerGuardTest(unittest.TestCase):
         }))
         result = subprocess.run([str(self.root / "tools/coqc_scratch.sh"),
                                  str(source), str(build)], env=self.environment,
-                                capture_output=True, text=True, timeout=5)
+                                capture_output=True, text=True, timeout=EVENT_CEILING_SECONDS)
         self.assertEqual(result.returncode, 0, result.stderr)
         self.assertEqual(len(self.compiler_events()), 1)
         reservations = Path(self.environment["ZESU_GUARD_STATE"]) / "coqc-reservations"
@@ -765,7 +769,7 @@ class DuneCompilerGuardTest(unittest.TestCase):
                 self.scope_log.unlink(missing_ok=True)
                 self.events.unlink(missing_ok=True)
                 result = subprocess.run(route, env=self.environment, capture_output=True,
-                                        text=True, timeout=5)
+                                        text=True, timeout=EVENT_CEILING_SECONDS)
                 self.assertEqual(result.returncode, 0, result.stderr)
                 events = self.compiler_events()
                 self.assertEqual(len(events), 1)
@@ -810,7 +814,7 @@ class DuneCompilerGuardTest(unittest.TestCase):
             env={**self.environment, "ZESU_IN_GATE": "1", "FAKE_BLOCK_AFTER_FIRST": "1"},
             stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True, cwd=self.root)
         try:
-            deadline = time.monotonic() + 10
+            deadline = time.monotonic() + EVENT_CEILING_SECONDS
             log = Path(self.environment["ZESU_GUARD_STATE"]) / "guard.log"
             while time.monotonic() < deadline and process.poll() is None:
                 if log.exists() and "blocked 17" in log.read_text():
@@ -822,7 +826,7 @@ class DuneCompilerGuardTest(unittest.TestCase):
             self.assertEqual(len(self.compiler_events()), 1)
             self.assertIn("blocked 17", log.read_text())
             self.blocked.write_text("16\n")
-            _, stderr = process.communicate(timeout=10)
+            _, stderr = process.communicate(timeout=EVENT_CEILING_SECONDS)
             self.assertEqual(process.returncode, 0, stderr)
             self.assertEqual(len(self.compiler_events()), 2)
             record = json.loads((self.root / "_build/coqc-ocamlpath.json").read_text())
@@ -841,7 +845,7 @@ class DuneCompilerGuardTest(unittest.TestCase):
         finally:
             if process.poll() is None:
                 process.terminate()
-            process.communicate(timeout=3)
+            process.communicate(timeout=EVENT_CEILING_SECONDS)
 
 
 class McpThresholdTest(unittest.TestCase):
@@ -900,7 +904,7 @@ class McpThresholdTest(unittest.TestCase):
                 events.unlink(missing_ok=True)
                 result = subprocess.run([str(TOOLS / name), "Fixture.v"],
                                         cwd=root, env=env, capture_output=True,
-                                        text=True, timeout=5)
+                                        text=True, timeout=EVENT_CEILING_SECONDS)
                 if not accepted:
                     self.assertEqual(result.returncode, 2, result.stderr)
                     self.assertIn("integer from 6 through 32", result.stderr)

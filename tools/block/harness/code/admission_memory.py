@@ -216,6 +216,15 @@ class ScopeReader:
         return (info.st_dev, info.st_ino, info.st_size, info.st_mtime_ns,
                 info.st_ctime_ns, info.st_mode, info.st_uid)
 
+    @staticmethod
+    def content_identity(info):
+        """Identify unchanged guard bytes across Dune cache hardlinks.
+
+        A new hardlink changes ctime, and a cache restore can change the inode.
+        The SHA-256 digest binds the content; size, mode and owner bind the file.
+        """
+        return (info.st_size, info.st_mode, info.st_uid)
+
     def read(self, path):
         path = Path(path)
         info = path.lstat()
@@ -365,7 +374,8 @@ class ScopeReader:
                     raise ValueError('The gate actor belongs to another output.')
                 row = self.scope(bound['aggregate_paths'][0], actor, batch)
             self.process(owner)
-            if any(self.file_identity(path.lstat()) != identity for path,identity in self.consulted):
+            if any((self.content_identity if len(identity) == 3 else self.file_identity)(path.lstat()) != identity
+                   for path, identity in self.consulted):
                 raise ValueError('The claim ownership receipts changed during sampling.')
             return row
         except (OSError, ValueError, KeyError, IndexError, StopIteration, TypeError) as error:
@@ -469,7 +479,7 @@ class ScopeReader:
                         or (aggregate / 'memory.swap.max').read_text().strip() != '0'
                         or self.directory(aggregate) != (sample['device'], sample['inode'])
                         or self.file_identity(token.lstat()) != before
-                        or self.file_identity(guard.lstat()) != tuple(source['identity'])
+                        or self.content_identity(guard.lstat()) != tuple(source['identity'])
                         or any(self.process(item) != parent for item, parent in chain)
                         or self.process(batch) != owner['pid']
                         or self.process(creator) != batch['pid']
@@ -577,8 +587,8 @@ class ScopeReader:
         path = Path(path)
         if not path.is_absolute() or path.resolve(strict=True) != path or path.name != 'resource_guard.sh':
             raise ValueError('The public guard source path changed.')
-        before = self.file_identity(path.lstat())
-        if not stat.S_ISREG(before[5]) or before[6] != self.uid or before[5] & 0o022:
+        before = self.content_identity(path.lstat())
+        if not stat.S_ISREG(before[1]) or before[2] != self.uid or before[1] & 0o022:
             raise ValueError('The public guard source is not owned.')
         tools = next(parent for parent in Path(__file__).resolve().parents if parent.name == 'tools')
         digest = hashlib.sha256(path.read_bytes()).hexdigest()
@@ -586,17 +596,17 @@ class ScopeReader:
         for public in (tools / 'resource_guard.sh',
                        tools / 'block/harness/runtime-tools/resource_guard.sh'):
             try:
-                reference = self.file_identity(public.lstat())
-                if (public.resolve(strict=True) != public or not stat.S_ISREG(reference[5])
-                        or reference[6] != self.uid or reference[5] & 0o022):
+                reference = self.content_identity(public.lstat())
+                if (public.resolve(strict=True) != public or not stat.S_ISREG(reference[1])
+                        or reference[2] != self.uid or reference[1] & 0o022):
                     raise ValueError('The pinned public guard is not owned.')
                 approved |= digest == hashlib.sha256(public.read_bytes()).hexdigest()
-                if self.file_identity(public.lstat()) != reference:
+                if self.content_identity(public.lstat()) != reference:
                     raise ValueError('The pinned public guard changed while reading.')
             except FileNotFoundError:
                 continue  # Staged tools keep their guard beside this helper.
         if (digest != expected_hash or not approved
-                or self.file_identity(path.lstat()) != before):
+                or self.content_identity(path.lstat()) != before):
             raise ValueError('The public guard source bytes changed.')
         return {'path': str(path), 'sha256': digest, 'identity': list(before)}
 
@@ -671,7 +681,7 @@ class ScopeReader:
                 [source['path'], 'scope-exec', str(marker), '--']):
             raise ValueError('The pre-exec actor is not this public scope-exec command.')
         if (self.file_identity(Path(marker).lstat()) != before or self.argv(actor) != argv
-                or self.file_identity(Path(source['path']).lstat()) != tuple(source['identity'])):
+                or self.content_identity(Path(source['path']).lstat()) != tuple(source['identity'])):
             raise ValueError('The pre-exec scope changed during validation.')
         attestation = {'schema': 'owned.guard.scope.v1', 'marker': str(marker), 'generation': generation,
                        'owner': owner, 'actor': actor, 'source': source, 'scope_exec_argv': argv,

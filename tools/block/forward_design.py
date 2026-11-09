@@ -11,8 +11,10 @@ import re
 
 try:
     from .symbolic_state import SymbolicState, evaluate_trace, parse_trace
+    from .boundary_guards import annotate_reaching_stops
 except ImportError:
     from symbolic_state import SymbolicState, evaluate_trace, parse_trace
+    from boundary_guards import annotate_reaching_stops
 
 
 GPR = re.compile(r'x(?:[0-9]|[12][0-9]|3[01])\Z')
@@ -148,6 +150,8 @@ def evaluate_function(function, traces, initial_states, *, max_paths=4096, check
 
     max_paths bounds the total leaf alternatives created during this traversal.
     Infeasible and stopped alternatives count toward the same explicit budget.
+    Each boundary lists, as reaching_stops, the stops that dropped a path whose
+    block can reach it; a renderer refuses a boundary with any such stop.
     """
     if isinstance(max_paths, bool) or not isinstance(max_paths, int) or max_paths < 1:
         raise ValueError('The path limit must be a positive integer')
@@ -310,4 +314,4 @@ def evaluate_function(function, traces, initial_states, *, max_paths=4096, check
                      target_pc=hex(target), cut_reasons=sorted(cuts[target]))
                 continue
             pending.append(_Work(target, work.seed_pc, projected, path, routed.visited))
-    return result
+    return annotate_reaching_stops(result, function)
