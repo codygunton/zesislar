@@ -77,32 +77,34 @@ Ltac zesu_derive_fact_from H :=
       unfold fact in result; clear instance fact
     end ].
 
-(* Each round tries every hypothesis once, newest first. A hypothesis whose
-   derivation succeeded is not tried again; a round that adds a fact starts
-   another round. The result is the same closure as retrying every
-   hypothesis after each new fact, without repeating the derivations that
-   already succeeded: on a 202-fact side goal of 6b08 the old loop ran 3157
-   derivations for about 56 guards. *)
-Ltac2 zesu_saturate_rounds () :=
+(* The scan of the old loop, newest hypothesis first, restarted after each
+   new fact, with one change: a hypothesis whose derivation already
+   succeeded is not derived again. The old loop re-derived it, found its
+   result present and moved on, so the facts and their order are the same.
+   On a 202-fact side goal of 6b08 the old loop ran 3157 guard
+   normalizations for about 56 guards. *)
+Ltac2 zesu_saturate_settled () :=
   let settled := Ref.ref [] in
-  let rec round () :=
-    let added := Ref.ref false in
-    List.iter (fun declaration =>
-      let (name, _, _) := declaration in
-      if List.mem Ident.equal name (Ref.get settled) then () else
-      let before := List.length (Control.hyps ()) in
-      match Control.case (fun () =>
-        ltac1:(hypothesis |- zesu_derive_fact_from hypothesis)
-          (Ltac1.of_constr (Control.hyp name))) with
-      | Val _ =>
-          Ref.set settled (name :: Ref.get settled);
-          if Int.lt before (List.length (Control.hyps ())) then Ref.set added true else ()
-      | Err _ => ()
-      end) (List.rev (Control.hyps ()));
-    if Ref.get added then round () else () in
-  round ().
+  let rec scan hyps :=
+    match hyps with
+    | [] => ()
+    | declaration :: rest =>
+        let (name, _, _) := declaration in
+        if List.mem Ident.equal name (Ref.get settled) then scan rest else
+        let before := List.length (Control.hyps ()) in
+        match Control.case (fun () =>
+          ltac1:(hypothesis |- zesu_derive_fact_from hypothesis)
+            (Ltac1.of_constr (Control.hyp name))) with
+        | Val _ =>
+            Ref.set settled (name :: Ref.get settled);
+            if Int.lt before (List.length (Control.hyps ()))
+            then scan (List.rev (Control.hyps ())) else scan rest
+        | Err _ => scan rest
+        end
+    end in
+  scan (List.rev (Control.hyps ())).
 
-Ltac zesu_saturate_derived_facts := ltac2:(Control.enter zesu_saturate_rounds).
+Ltac zesu_saturate_derived_facts := ltac2:(Control.enter zesu_saturate_settled).
 
 
 (* Everything the witness says, in the form a solver reads. *)
