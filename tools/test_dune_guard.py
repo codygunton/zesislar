@@ -383,7 +383,7 @@ class DuneCompilerGuardTest(unittest.TestCase):
         (tools / "block/harness/code").mkdir(parents=True)
         shutil.copy2(TOOLS / "block/harness/code/admission_memory.py", tools / "block/harness/code/admission_memory.py")
         shutil.copy2(TOOLS / "block/harness/code/shell_archive.py", tools / "block/harness/code/shell_archive.py")
-        for name in ("resource_guard.sh", "dune_coqc_guarded.sh", "coqc_scratch.sh",
+        for name in ("resource_guard.sh", "dune_coqc_guarded.sh", "dune_coqc_route.sh", "coqc_scratch.sh",
                      "coqc_recipe.py", "coqc_findlib.py", "module_memory.py", "run_registry.py",
                      "det/coqc_slots.py", "guard-bin/dune"):
             shutil.copy2(TOOLS / name, tools / name)
@@ -512,6 +512,8 @@ class DuneCompilerGuardTest(unittest.TestCase):
         # The production env/Bash shebang can report comm=bash instead.
         self.wrapper.write_text(self.wrapper.read_text().replace(
             "#!/usr/bin/env bash", "#!/bin/bash", 1))
+        route = self.root / "tools/dune_coqc_route.sh"
+        route.write_text(route.read_text().replace("#!/usr/bin/env bash", "#!/bin/bash", 1))
         process = subprocess.Popen([str(self.wrapper), "30"], env=self.environment,
                                    stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
         # The direct slot calls below model the scratch route, which books
@@ -549,7 +551,9 @@ class DuneCompilerGuardTest(unittest.TestCase):
                     break
                 time.sleep(0.02)
             self.assertIsNotNone(child)
-            self.assertEqual(Path(f"/proc/{process.pid}/comm").read_text().strip(), "coqc")
+            # The stable entry point execs the routing script in the same PID.
+            self.assertIn(Path(f"/proc/{process.pid}/comm").read_text().strip(),
+                          {"coqc", "dune_coqc_route"})
             snapshot.write_text(f"{process.pid}\n{child}\n")
             # Both raw comm entries are coqc. The guard reports one compiler.
             result = subprocess.run([str(guard), "hold"],
@@ -937,6 +941,65 @@ class McpThresholdTest(unittest.TestCase):
                     self.assertIn("--slice=zesuworkloads.slice", scopes[0]["arguments"])
                     self.assertTrue(all(row["pet_rss_mb"] == str(int(memory) * 1024)
                                         for row in rows))
+
+
+class CompileCacheKeyTest(unittest.TestCase):
+    """Guard changes must not enter any compile's Dune cache key."""
+
+    GUARD_FILES = ("dune_coqc_guarded.sh", "dune_coqc_route.sh", "resource_guard.sh",
+                   "coqc_findlib.py", "module_memory.py", "run_registry.py", "det/coqc_slots.py",
+                   "block/harness/code/admission_memory.py", "block/harness/code/shell_archive.py",
+                   "guard-bin/dune")
+
+    def setUp(self):
+        import tempfile
+        prefix = Path(os.environ.get("OPAM_SWITCH_PREFIX", str(Path.home() / "islaris/_opam")))
+        self.dune = prefix / "bin/dune"
+        if not self.dune.exists():
+            self.skipTest("dune is not installed")
+        self.temporary = tempfile.TemporaryDirectory()
+        self.addCleanup(self.temporary.cleanup)
+        self.root = Path(self.temporary.name)
+        for name in self.GUARD_FILES:
+            target = self.root / "tools" / name
+            target.parent.mkdir(parents=True, exist_ok=True)
+            shutil.copy2(TOOLS / name, target)
+        (self.root / "dune-project").write_text("(lang dune 3.7)\n")
+        # The repository's own binary override, as in the root dune file.
+        (self.root / "dune").write_text("(env (_ (binaries (tools/guard-bin/coqc as coqc))))\n")
+        (self.root / "m").mkdir()
+        (self.root / "m/dune").write_text(
+            "(rule (target out) (deps in.v) (action (with-stdout-to out (run coqc in.v))))\n")
+        (self.root / "m/in.v").write_text("Check nat.\n")
+
+    def key(self):
+        """Hash the compile rule's action and the bytes of every dependency."""
+        environment = {k: v for k, v in os.environ.items() if not k.startswith("ZESU_")}
+        environment["PATH"] = str(self.dune.parent) + os.pathsep + environment.get("PATH", "")
+        run = lambda *args: subprocess.run([str(self.dune), *args, "--root", str(self.root)],
+                                           cwd=self.root, env=environment, capture_output=True,
+                                           text=True, timeout=EVENT_CEILING_SECONDS, check=True)
+        import hashlib, re
+        rules = run("rules", "m/out").stdout
+        paths = sorted(re.findall(r"\(In_build_dir ([^)]+)\)", rules))
+        run("build", *[str(Path(path).relative_to("_build/default")) for path in paths])
+        digest = hashlib.sha256(re.sub(r"\(deps[^)]*\)", "", rules).encode())
+        for path in paths:
+            digest.update(path.encode() + (self.root / path).read_bytes())
+        return digest.hexdigest(), rules
+
+    def test_guard_only_changes_keep_compile_cache_keys(self):
+        before, rules = self.key()
+        self.assertIn(".bin/coqc", rules)
+        for name in ("dune_coqc_route.sh", "resource_guard.sh", "module_memory.py",
+                     "block/harness/code/admission_memory.py"):
+            with (self.root / "tools" / name).open("a") as stream:
+                stream.write("\n# a guard-only change\n")
+        self.assertEqual(self.key()[0], before)
+        # The stable entry point is the one tools file inside the key.
+        with (self.root / "tools/dune_coqc_guarded.sh").open("a") as stream:
+            stream.write("\n# an entry point change\n")
+        self.assertNotEqual(self.key()[0], before)
 
 
 if __name__ == "__main__":

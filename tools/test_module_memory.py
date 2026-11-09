@@ -278,7 +278,7 @@ class ModuleMemoryTests(unittest.TestCase):
         manifest = (tools/'guard-bin/dune').read_text()
         dependency = '../block/harness/code/admission_memory.py'
         self.assertEqual(manifest.count(dependency), 1)
-        names = ['dune_coqc_guarded.sh','resource_guard.sh','coqc_findlib.py',
+        names = ['dune_coqc_guarded.sh','dune_coqc_route.sh','resource_guard.sh','coqc_findlib.py',
                  'module_memory.py','run_registry.py','det/coqc_slots.py',
                  'block/harness/code/admission_memory.py','block/harness/code/shell_archive.py']
         for declared in (True, False):
@@ -359,7 +359,7 @@ class ModuleMemoryTests(unittest.TestCase):
                     workspace = self.root/('release-declared' if declared else 'release-missing')
                     workspace.mkdir()
                     (workspace/'dune-project').write_text('(lang dune 3.7)\n')
-                    names = ['dune_coqc_guarded.sh', 'resource_guard.sh', 'coqc_findlib.py',
+                    names = ['dune_coqc_guarded.sh', 'dune_coqc_route.sh', 'resource_guard.sh', 'coqc_findlib.py',
                              'module_memory.py', 'run_registry.py', 'det/coqc_slots.py',
                              'block/harness/code/admission_memory.py', 'block/harness/code/shell_archive.py']
                     for name in names:

@@ -200,6 +200,7 @@ class CompilerFindlibTests(unittest.TestCase):
     def test_wrappers_preserve_arguments_and_the_normal_guard(self):
         (self.tools / "guard-bin").mkdir()
         shutil.copy2(TOOLS / "dune_coqc_guarded.sh", self.tools / "guard-bin/coqc")
+        shutil.copy2(TOOLS / "dune_coqc_route.sh", self.tools / "dune_coqc_route.sh")
         (self.tools / "det").mkdir()
         (self.tools / "block").mkdir()
         shutil.copy2(TOOLS / "block/harness/code/admission_memory.py", self.tools / "block/admission_memory.py")
@@ -253,6 +254,7 @@ class CompilerFindlibTests(unittest.TestCase):
         shutil.copy2(TOOLS / "det/coqc_slots.py", self.tools / "det/coqc_slots.py")
         wrapper = self.tools / "guard-bin/coqc"
         shutil.copy2(TOOLS / "dune_coqc_guarded.sh", wrapper)
+        shutil.copy2(TOOLS / "dune_coqc_route.sh", self.tools / "dune_coqc_route.sh")
         compiler = self.root / "switch/bin/coqc"
         compiler.parent.mkdir(parents=True)
         compiler.write_text("#!/bin/sh\nexit 99\n")
