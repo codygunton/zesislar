@@ -224,13 +224,17 @@ class ModuleMemoryTests(unittest.TestCase):
                 env.update(PATH=str(prefix/'bin')+os.pathsep+env.get('PATH',''),
                     OPAM_SWITCH_PREFIX=str(fake.parent.parent),OCAMLPATH='',PYTHONPATH='',
                     FAKE_EVENTS=str(events),ZESU_RESOURCE_GUARD=str(guard),
-                    ZESU_MODULE_MEMORY_PROFILE=str(profile),ZESU_GATE_MODULE_LIMIT_GIB='16')
+                    ZESU_MODULE_MEMORY_PROFILE=str(profile),ZESU_GATE_MODULE_LIMIT_GIB='16',
+                    ZESU_MODULE_MEMORY_OBSERVATIONS=str(workspace/'observations.jsonl'))
                 result=subprocess.run([str(dune),'build','--sandbox=copy','--cache=disabled','tools/guard-bin/coqc'],
                     cwd=workspace,env=env,capture_output=True,text=True)
                 if declared:
                     self.assertEqual(result.returncode,0,result.stderr)
                     rows=[json.loads(line) for line in events.read_text().splitlines()]
                     self.assertEqual(rows,[{'claim':memory.GIB,'fence':'16'},{'compiler':True}])
+                    measured=json.loads((workspace/'observations.jsonl').read_text())
+                    self.assertEqual((measured['command'],measured['claim_bytes']),
+                                     (f'{fake} Probe.v',memory.GIB))
                 else:
                     self.assertNotEqual(result.returncode,0)
                     self.assertIn('owned admission dependency',result.stderr)
@@ -538,6 +542,80 @@ class ModuleMemoryTests(unittest.TestCase):
         before = marker.read_bytes()
         self.assertEqual(memory.reservation_claims([marker], proc=proc)["claims"], [64 * memory.GIB])
         self.assertEqual(marker.read_bytes(), before)
+
+
+class GateProfileTests(unittest.TestCase):
+    """A green gate's compiles become measured bookings for the next gate."""
+
+    def setUp(self):
+        import json, sys
+        self.json, self.sys = json, sys
+        self.temporary = tempfile.TemporaryDirectory()
+        self.addCleanup(self.temporary.cleanup)
+        self.root = Path(self.temporary.name)
+        self.compiler = self.root / "coqc"
+        self.compiler.write_text("#!/bin/sh\nexit 0\n")
+        self.compiler.chmod(0o755)
+        (self.root / "Measured.v").write_text("Check nat.\n")
+        (self.root / "Unmeasured.v").write_text("Check bool.\n")
+        self.observations = self.root / "observations.jsonl"
+        self.profile_path = self.root / "cache" / "check-fast.json"
+
+    def run_observed(self, source, megabytes, status=0):
+        script = f"b = bytearray({megabytes} * 1024 * 1024); import sys; sys.exit({status})"
+        payload = [self.sys.executable, "-c", script, "--", str(self.compiler), "-q", source]
+        with patch("signal.signal"):
+            return memory.observe(self.observations, self.compiler, self.root, ["-q", source],
+                                  payload, claim_bytes=16 * memory.GIB)
+
+    def test_observe_records_the_compile_peak_only_after_a_clean_exit(self):
+        self.assertEqual(self.run_observed("Measured.v", 300), 0)
+        self.assertEqual(self.run_observed("Unmeasured.v", 1, status=3), 3)
+        rows = [self.json.loads(line) for line in self.observations.read_text().splitlines()]
+        self.assertEqual(len(rows), 1)
+        self.assertEqual(rows[0]["command"], f"{self.compiler} -q Measured.v")
+        self.assertGreaterEqual(rows[0]["observed_peak_rss_kib"], 300 * 1024)
+        self.assertEqual(rows[0]["claim_bytes"], 16 * memory.GIB)
+
+    def write_rows(self, *rows):
+        with self.observations.open("w") as stream:
+            for source, peak in rows:
+                stream.write(self.json.dumps({
+                    "exe": str(self.compiler), "cwd": str(self.root),
+                    "command": f"{self.compiler} -q {source}", "observed_peak_rss_kib": peak,
+                    "claim_bytes": 16 * memory.GIB, "started_ns": 1, "ended_ns": 2}) + "\n")
+
+    def test_measured_module_books_its_peak_with_margin(self):
+        self.write_rows(("Measured.v", 4 * 1024 ** 2))
+        profile = memory.refresh_profile(self.observations, self.profile_path)
+        self.assertEqual(self.json.loads(self.profile_path.read_text()), profile)
+        value = memory.module_claim(profile, ["-q", "Measured.v"], self.root, self.compiler)
+        self.assertEqual((value["claim_bytes"], value["reason"]), (6 * memory.GIB, "measured_module"))
+
+    def test_unmeasured_module_books_the_full_fallback(self):
+        self.write_rows(("Measured.v", 4 * 1024 ** 2))
+        profile = memory.refresh_profile(self.observations, self.profile_path)
+        value = memory.module_claim(profile, ["-q", "Unmeasured.v"], self.root, self.compiler)
+        self.assertEqual((value["claim_bytes"], value["reason"]), (16 * memory.GIB, "unknown_module"))
+
+    def test_refresh_keeps_cached_modules_and_drops_rows_of_another_compiler(self):
+        self.write_rows(("Measured.v", 4 * 1024 ** 2))
+        memory.refresh_profile(self.observations, self.profile_path)
+        self.write_rows(("Unmeasured.v", 2 * 1024 ** 2))
+        profile = memory.refresh_profile(self.observations, self.profile_path)
+        self.assertEqual(set(profile["modules"]), {"Measured.v", "Unmeasured.v"})
+        self.compiler.write_text("#!/bin/sh\nexit 1\n")
+        profile = memory.refresh_profile(self.observations, self.profile_path)
+        self.assertEqual(set(profile["modules"]), {"Unmeasured.v"})
+
+    def test_summary_reports_the_largest_concurrent_booking(self):
+        with self.observations.open("w") as stream:
+            for start, end in ((0, 10), (5, 15), (20, 30)):
+                stream.write(self.json.dumps({"claim_bytes": memory.GIB, "started_ns": start,
+                                              "ended_ns": end, "observed_peak_rss_kib": 1024}) + "\n")
+        summary = memory.booked_versus_peak(self.observations)
+        self.assertEqual(summary["maximum_concurrent_booked_bytes"], 2 * memory.GIB)
+        self.assertEqual(summary["compiles"], 3)
 
 
 if __name__ == "__main__":
