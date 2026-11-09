@@ -1165,12 +1165,7 @@ Ltac zesu_block_base :=
   zesu_with_rule_set ltac:(zesu_block_v1) ltac:(zesu_block_v2).
 
 Ltac zesu_block2 :=
-  (tryif zesu_switch_enabled constr:(ZesuStepContextCollection)
-  then first [solve [zesu_block_base; try zesu_finish_residual_cascade] |
-    idtac "ZESU_COLLECTION_FALLBACK";
-    pose proof zesu_context_collection_off_intro;
-    zesu_block_base; try zesu_finish_residual_cascade]
-  else (zesu_block_base; try zesu_finish_residual_cascade)).
+  zesu_block_base; try zesu_finish_residual_cascade.
 
 Ltac zesu_block_simpl :=
   iStartProof;
