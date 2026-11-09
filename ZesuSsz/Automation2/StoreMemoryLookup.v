@@ -239,6 +239,28 @@ Proof.
   iExact "Htail".
 Qed.
 
+Lemma zesu_byte_cells_base `{!islaG Sigma} (address : Z) (fraction : dfrac)
+    (bytes : list (bv 8)) :
+  (address + Z.of_nat 0 * 1) ↦ₘ{fraction}∗ bytes -∗ address ↦ₘ{fraction}∗ bytes.
+Proof.
+  iIntros "Hbytes". replace (address + Z.of_nat 0 * 1) with address by (simpl; ring).
+  iExact "Hbytes".
+Qed.
+
+Lemma zesu_byte_array_join `{!islaG Sigma} (address : Z) (count : nat) (fraction : dfrac)
+    (left right : list (bv 8)) :
+  length left = count ->
+  address ↦ₘ{fraction}∗ left -∗
+  (address + Z.of_nat count * 1) ↦ₘ{fraction}∗ right -∗
+  address ↦ₘ{fraction}∗ (left ++ right).
+Proof.
+  iIntros (Hcount) "Hleft Hright".
+  iApply (mem_mapsto_array_app_combine_at 8 address fraction left right count Hcount
+    with "Hleft [Hright]").
+  change (Z.of_N (8 `div` 8)) with 1%Z.
+  rewrite Z.mul_1_l Z.mul_1_r. iExact "Hright".
+Qed.
+
 (* The byte width of a lookup, read from its single-cell continuation. *)
 Ltac zesu_access_width continuation :=
   let probe := eval cbv beta iota in (continuation (MKMapsTo 8%N (BV 8 0))) in
@@ -267,6 +289,30 @@ Ltac zesu_fold_next_byte_cell base index fraction :=
   zesu_name_byte_cell (base + Z.of_nat index * 1)%Z fraction;
   iDestruct (zesu_byte_cells_cons base index fraction with "HzesuByteCell HzesuByteRun")
     as "HzesuByteRun".
+
+Ltac zesu_name_byte_array address fraction :=
+  iMatchHyp ltac:(fun H body =>
+    lazymatch body with
+    | @mem_mapsto_array _ _ 8 ?available ?owned _ =>
+        constr_eq available address; constr_eq owned fraction;
+        iRename H into "HzesuByteNext"
+    end).
+
+Ltac zesu_join_byte_run base count fraction :=
+  iDestruct (zesu_byte_cells_base base fraction with "HzesuByteRun") as "HzesuByteRun";
+  first [
+    zesu_name_byte_array (base + Z.of_nat count * 1)%Z fraction;
+    let run := iTypeOf (INamed "HzesuByteRun") in
+    lazymatch run with
+    | Some (_, @mem_mapsto_array _ _ 8 _ _ ?left) =>
+        let Hlength := fresh "HzesuRunLength" in
+        assert (Hlength : length left = count) by reflexivity;
+        iDestruct (zesu_byte_array_join base count fraction left _ Hlength
+          with "HzesuByteRun HzesuByteNext") as "HzesuByteRun";
+        clear Hlength
+    end
+  | idtac ];
+  iDestruct "HzesuByteRun" as "?".
 
 From Ltac2 Require Import Ltac2.
 Set Default Proof Mode "Classic".
@@ -357,6 +403,66 @@ Ltac2 zesu_fold_byte_cells (integer : constr) (count : int) :=
       ltac1:(iDestruct "HzesuByteRun" as "?")
     end
   end.
+
+Ltac2 rec zesu_array_requests (term : constr) (found : (constr * constr) list) :=
+  let found := lazy_match! term with
+    | @mem_mapsto_array _ _ 8 ?address ?fraction _ => (address, fraction) :: found
+    | _ => found
+    end in
+  match Constr.Unsafe.kind term with
+  | Constr.Unsafe.App head arguments =>
+      Array.fold_left (fun found argument => zesu_array_requests argument found)
+        (zesu_array_requests head found) arguments
+  | Constr.Unsafe.Lambda _ body => zesu_array_requests body found
+  | Constr.Unsafe.Prod _ body => zesu_array_requests body found
+  | _ => found
+  end.
+
+Ltac2 zesu_has_byte_array (owners : constr list) address fraction :=
+  List.exist (fun owner =>
+    lazy_match! owner with
+    | @mem_mapsto_array _ _ 8 ?available ?owned _ =>
+        Bool.and (Constr.equal available address) (Constr.equal owned fraction)
+    | _ => false
+    end) owners.
+
+(* A frame that requests an array at an address owned as byte cells from
+   index zero receives the cells, and an array right after them, as one array. *)
+Ltac2 zesu_join_frame_byte_array () :=
+  let (spatial, conclusion) := lazy_match! goal with
+    | [ |- environments.envs_entails (environments.Envs _ ?spatial _) ?conclusion ] =>
+        (spatial, conclusion)
+    end in
+  let owners := zesu_spatial_owners spatial [] in
+  let requests := zesu_array_requests conclusion [] in
+  let candidates := List.filter (fun request =>
+    let (address, fraction) := request in
+    Bool.and (zesu_has_byte_cell owners address constr:(O) fraction)
+      (Bool.neg (zesu_has_byte_array owners address fraction))) requests in
+  match candidates with
+  | [] => Control.zero (Tactic_failure None)
+  | request :: _ =>
+      let (base, fraction) := request in
+      let rec high current :=
+        let next := constr:(S $current) in
+        if zesu_has_byte_cell owners base next fraction then high next else current in
+      let last := high constr:(O) in
+      ltac1:(b i q |- zesu_fold_first_byte_cell b i q)
+        (Ltac1.of_constr base) (Ltac1.of_constr last) (Ltac1.of_constr fraction);
+      let rec down current :=
+        lazy_match! current with
+        | O => ()
+        | S ?previous =>
+            ltac1:(b i q |- zesu_fold_next_byte_cell b i q)
+              (Ltac1.of_constr base) (Ltac1.of_constr previous) (Ltac1.of_constr fraction);
+            down previous
+        end in
+      down last;
+      ltac1:(b n q |- zesu_join_byte_run b n q)
+        (Ltac1.of_constr base) (Ltac1.of_constr constr:(S $last)) (Ltac1.of_constr fraction)
+  end.
+
+Ltac zesu_join_frame_byte_array := ltac2:(zesu_join_frame_byte_array ()).
 
 Ltac zesu_store_fold_byte_cells :=
   try ZesuSsz.Automation2.ResourceGroups.zesu_expose_environment_alias;

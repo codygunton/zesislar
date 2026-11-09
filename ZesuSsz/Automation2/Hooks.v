@@ -2149,6 +2149,8 @@ Ltac zesu_liAStep :=
  try liAIntroduceLetInGoal;
  first [
     progress ZesuSsz.Automation2.ByteWordReload.zesu_reload_byte_word_step
+  | ltac2:(Ltac1.run (Ltac1.ref
+      [@ZesuSsz; @Automation2; @StoreMemoryLookup; @zesu_join_frame_byte_array]))
   | progress ResourceGroups.zesu_open_nested_existential_packages
   | CodecArrayRead.zesu_codec_array_read
   | zesu_prefer_owned_instr_pre
