@@ -26,23 +26,6 @@ Ltac zesu_mask_witness_tuple T continuation :=
         zesu_mask_witness_tuple rest ltac:(fun tail => continuation constr:(li_pair word tail)))
   end.
 
-Ltac zesu_mask_pure_only body :=
-  lazymatch body with
-  | @bi_sep _ ?left ?right => zesu_mask_pure_only left; zesu_mask_pure_only right
-  | @bi_pure _ _ => idtac
-  | ?frame => is_var frame
-  end.
-
-Ltac zesu_mask_witness_telescope :=
-  lazymatch goal with
-  | |- envs_entails _ (@bi_exist _ ?T ?body) =>
-      lazymatch T with li_prod _ _ => idtac end;
-      zesu_mask_witness_tuple T ltac:(fun witness =>
-        let instantiated := eval cbv beta iota delta [li_fst li_snd] in (body witness) in
-        zesu_mask_pure_only instantiated;
-        notypeclasses refine (tac_ex_evar _ witness _ _); red_li_prod)
-  end.
-
 Ltac zesu_mask_bit_zero bit word continuation :=
   match goal with
   | H : Z.land (bv_unsigned word) ?mask = 0%Z |- _ =>
@@ -75,4 +58,25 @@ Ltac zesu_mask_fact_close :=
       zesu_mask_bit_zero bit word ltac:(fun Hzero => rewrite Hzero; discriminate)
   | |- bv_unsigned (bv_extract ?bit 1 ?word) <> 1%Z =>
       zesu_mask_bit_zero bit word ltac:(fun Hzero => rewrite Hzero; vm_compute; congruence)
+  end.
+
+(* Commit to the witnesses only when the closer proves every pure fact of
+   the instantiated body, so the step never preempts another witness route. *)
+Ltac zesu_mask_pure_closable body :=
+  lazymatch body with
+  | @bi_sep _ ?left ?right => zesu_mask_pure_closable left; zesu_mask_pure_closable right
+  | @bi_pure _ ?fact =>
+      assert_succeeds (idtac; let Hfact := fresh "HmaskFact" in
+        assert (Hfact : fact) by zesu_mask_fact_close)
+  | ?frame => is_var frame
+  end.
+
+Ltac zesu_mask_witness_telescope :=
+  lazymatch goal with
+  | |- envs_entails _ (@bi_exist _ ?T ?body) =>
+      lazymatch T with li_prod _ _ => idtac end;
+      zesu_mask_witness_tuple T ltac:(fun witness =>
+        let instantiated := eval cbv beta iota delta [li_fst li_snd] in (body witness) in
+        zesu_mask_pure_closable instantiated;
+        notypeclasses refine (tac_ex_evar _ witness _ _); red_li_prod)
   end.
