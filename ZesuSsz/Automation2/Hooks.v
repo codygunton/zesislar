@@ -372,19 +372,29 @@ Ltac bv_solve ::= zesu_context_filter ltac:(first [solve [zesu_strict_signed_if_
   unfold bv_signed, bv_swrap, bv_wrap, bv_half_modulus, bv_modulus, bv_unsigned in *;
   simpl; lia)]).
 
+(* A caller that imports isla after this module restores the library lia
+   and bv_solve, which read the whole context. Try the facts linked to the
+   goal first; the library solver remains the second attempt. *)
+Ltac zesu_bv_solve_linked_facts :=
+  solve [bv_simplify_arith; bv_saturate_unsigned; bv_solve_unfold_tac;
+    unfold bv_signed, bv_swrap, bv_wrap, bv_half_modulus, bv_modulus, bv_unsigned in *;
+    simpl; zesu_lia_linked_facts].
+
 Ltac zesu_solve_machine_bounds :=
   first [solve [zesu_low_mask_sub_modulus_if_enabled] |
     solve [zesu_low_mask_if_closed] |
     (solve [zesu_normalize_binary_nat_hypotheses;
-      zesu_normalize_binary_nat_goal; zesu_normalize_machine_map; bv_solve])].
+      zesu_normalize_binary_nat_goal; zesu_normalize_machine_map;
+      first [zesu_bv_solve_linked_facts | bv_solve]])].
 Ltac zesu_solve_machine_linear :=
   first [zesu_byte_index_arithmetic
     | (first [solve [repeat match goal with
            | Hnat : (_ <= _)%nat |- _ => clear Hnat
            | Hnat : (_ < _)%nat |- _ => clear Hnat
-           end; zesu_normalize_machine_map; lia] |
+           end; zesu_normalize_machine_map; first [solve [zesu_lia_linked_facts] | lia]] |
     solve [zesu_normalize_binary_nat_hypotheses;
-      zesu_normalize_binary_nat_goal; zesu_normalize_machine_map; lia]])].
+      zesu_normalize_binary_nat_goal; zesu_normalize_machine_map;
+      first [solve [zesu_lia_linked_facts] | lia]]])].
 (* Preserve the machine normalization used by the existing finisher. *)
 Ltac zesu_finish_lia ::=
   first [LoopBackedgeJoin.zesu_loop_pure_finish | zesu_solve_machine_linear].

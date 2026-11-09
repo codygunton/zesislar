@@ -200,21 +200,37 @@ Ltac2 zesu_range_collect values pointer root :=
      select (Ref.get selectors);
      close (Int.sub remaining 1)) in
  close 2.
-Ltac2 rec zesu_range_erase_list hyps :=
+Ltac2 rec zesu_range_contains needle term :=
+ if Constr.equal needle term then true else
+ match Constr.Unsafe.kind term with
+ | Constr.Unsafe.App head args =>
+   Array.fold_left (fun found arg => if found then true else zesu_range_contains needle arg)
+     (zesu_range_contains needle head) args
+ | Constr.Unsafe.Cast value _ _ => zesu_range_contains needle value
+ | _ => false
+ end.
+(* An extent proof needs the length equation of each list in its goal. *)
+Ltac2 zesu_range_goal_length goal typ :=
+ lazy_match! typ with
+ | @eq nat (@List.length _ ?values) _ => zesu_range_contains values goal
+ | _ => false
+ end.
+Ltac2 rec zesu_range_erase_list goal hyps :=
  match hyps with
  | [] => []
  | h :: rest =>
    let (name, body, typ) := h in
-   let tail := zesu_range_erase_list rest in
+   let tail := zesu_range_erase_list goal rest in
    if Constr.equal (Constr.type typ) constr:(Prop) then
     if zesu_name_prefix (Ident.to_string name) "HrangeFact" 0
     then tail
+    else if zesu_range_goal_length goal typ then tail
     else name :: tail
    else tail
  end.
 (* Keep only the selected arithmetic facts in this isolated proof. *)
 Ltac2 zesu_range_isolate () :=
- Std.clear (zesu_range_erase_list (Control.hyps ())).
+ Std.clear (zesu_range_erase_list (Control.goal ()) (Control.hyps ())).
 Ltac zesu_selected_closed_bounds :=
  repeat match goal with
  | H : (?lhs < ?rhs)%Z |- _ =>
@@ -261,9 +277,12 @@ Ltac zesu_selected_array_range :=
        (Option.get (Ltac1.to_constr v)) (Option.get (Ltac1.to_constr p))
        (Option.get (Ltac1.to_constr r))) in
      (collect values pointer root);
+     ltac2:(zesu_range_isolate ());
+     (repeat progress (rewrite ?stdpp.list.length_insert, ?stdpp.list.length_app,
+        ?stdpp.list.length_take, ?stdpp.list.length_drop;
+        cbn [List.length]));
      (repeat match goal with
       | Hlength : List.length ?xs = ?n |- context[List.length ?xs] => progress rewrite Hlength end);
-     ltac2:(zesu_range_isolate ());
      zesu_selected_casts;
      ltac2:(zesu_range_reduce_selected ());
      lia

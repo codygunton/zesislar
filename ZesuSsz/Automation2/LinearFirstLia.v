@@ -118,3 +118,87 @@ Ltac zesu_lia_linear_first3 :=
   first [ solve [Zify.zify_saturate; xlia Lia.zchecker]
         | zesu_lia_has_divmod;
           zesu_lia_divmod_step; Zify.zify_saturate; xlia Lia.zchecker ].
+
+From Ltac2 Require Import Ltac2.
+Set Default Proof Mode "Classic".
+
+(* Linear arithmetic interprets these heads. Every other term is one atom. *)
+Ltac2 zesu_linear_heads () :=
+  [constr:(Z.add); constr:(Z.sub); constr:(Z.mul); constr:(Z.opp); constr:(Z.succ);
+   constr:(Z.pred); constr:(Z.pow); constr:(Z.max); constr:(Z.min); constr:(Z.abs);
+   constr:(Z.modulo); constr:(Z.div); constr:(Z.quot); constr:(Z.rem);
+   constr:(Z.of_nat); constr:(Z.of_N); constr:(Z.to_nat); constr:(Z.to_N);
+   constr:(Nat.add); constr:(Nat.sub); constr:(Nat.mul); constr:(Nat.pred);
+   constr:(Nat.min); constr:(Nat.max); constr:(N.add); constr:(N.sub); constr:(N.mul);
+   constr:(N.of_nat); constr:(N.to_nat); constr:(Z.le); constr:(Z.lt); constr:(Z.ge);
+   constr:(Z.gt); constr:(le); constr:(lt); constr:(ge); constr:(gt); constr:(N.le);
+   constr:(N.lt); constr:(and); constr:(or); constr:(not); constr:(iff)].
+
+Ltac2 zesu_linear_member (term : constr) (terms : constr list) :=
+  List.exist (Constr.equal term) terms.
+
+Ltac2 zesu_linear_add (terms : constr list) (term : constr) :=
+  if zesu_linear_member term terms then terms else term :: terms.
+
+(* Constants, constructors, and bound variables carry no atom. *)
+Ltac2 rec zesu_linear_atoms (heads : constr list) (term : constr) (found : constr list) :=
+  let visit := Array.fold_left (fun found argument =>
+    zesu_linear_atoms heads argument found) found in
+  match Constr.Unsafe.kind term with
+  | Constr.Unsafe.Rel _ => found
+  | Constr.Unsafe.Sort _ => found
+  | Constr.Unsafe.Constant _ _ => found
+  | Constr.Unsafe.Constructor _ _ => found
+  | Constr.Unsafe.Ind _ _ => found
+  | Constr.Unsafe.Cast body _ _ => zesu_linear_atoms heads body found
+  | Constr.Unsafe.Prod binder body =>
+      zesu_linear_atoms heads body (zesu_linear_atoms heads (Constr.Binder.type binder) found)
+  | Constr.Unsafe.App head arguments =>
+      if Constr.equal head constr:(@eq) then
+        zesu_linear_atoms heads (Array.get arguments 2)
+          (zesu_linear_atoms heads (Array.get arguments 1) found)
+      else match Constr.Unsafe.kind head with
+      | Constr.Unsafe.Constructor _ _ => visit arguments
+      | _ => if zesu_linear_member head heads then visit arguments
+             else zesu_linear_add found term
+      end
+  | _ => zesu_linear_add found term
+  end.
+
+(* A fact without atoms stays: it can close the goal by itself. *)
+Ltac2 rec zesu_linear_unlinked (facts : (ident * constr list) list) (linked : constr list) :=
+  let (linked, rest, changed) := List.fold_left (fun state fact =>
+    let (linked, rest, changed) := state in
+    let (_, atoms) := fact in
+    if Bool.or (Int.equal (List.length atoms) 0)
+         (List.exist (fun atom => zesu_linear_member atom linked) atoms)
+    then (List.fold_left zesu_linear_add linked atoms, rest, true)
+    else (linked, fact :: rest, changed)) (linked, [], false) facts in
+  if changed then zesu_linear_unlinked rest linked
+  else List.map (fun fact => let (name, _) := fact in name) rest.
+
+(* Clear the facts that share no linear atom with the goal, directly or
+   through other facts. Fail when the goal has no atom or nothing is clear. *)
+Ltac2 zesu_linear_clear_unrelated () :=
+  let heads := zesu_linear_heads () in
+  let goal_atoms := zesu_linear_atoms heads (Control.goal ()) [] in
+  if Int.equal (List.length goal_atoms) 0 then Control.zero (Tactic_failure None) else ();
+  let unrelated := zesu_linear_unlinked (List.fold_left (fun facts declaration =>
+    let (name, body, typ) := declaration in
+    match body with
+    | Some _ => facts
+    | None =>
+        if Constr.equal (Constr.type typ) constr:(Prop)
+        then (name, zesu_linear_atoms heads typ []) :: facts else facts
+    end) [] (Control.hyps ())) goal_atoms in
+  if Int.equal (List.length unrelated) 0 then Control.zero (Tactic_failure None) else ();
+  (* Each clear commits, so a failed call never retries clear combinations. *)
+  List.iter (fun name =>
+    match Control.case (fun () => Std.clear [name]) with
+    | Val _ => ()
+    | Err _ => ()
+    end) unrelated.
+
+(* The library solver on the facts linked to the goal. *)
+Ltac zesu_lia_linked_facts :=
+  once ltac2:(zesu_linear_clear_unrelated ()); Zify.zify; xlia Lia.zchecker.
