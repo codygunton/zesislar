@@ -359,7 +359,8 @@ Ltac zesu_finish_v1 :=
   | _ =>
       try (zesu_saturate_alignment);
       try zesu_finish_lia;
-      try (bv_solve)
+      try (ZesuSsz.Automation2.ContextCollection.zesu_solve_goal_selected
+        ("finish.v1_tail"%string) ltac:(bv_solve))
   end;
   try (zesu_finish_little_endian_if_closed);
   try solve [SymbolicByteCodec.zesu_symbolic_byte_codec].

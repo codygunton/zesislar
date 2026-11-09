@@ -1,5 +1,6 @@
 Require Import isla.riscv64.riscv64.
 Require Import ZesuSsz.Automation2.SwitchDispatch.
+Require ZesuSsz.Automation2.SearchBudget.
 From Ltac2 Require Import Ltac2.
 Set Default Proof Mode "Classic".
 
@@ -200,3 +201,126 @@ Ltac zesu_collect_if_enabled :=
 Ltac zesu_finish_once_if_enabled closer :=
   tryif zesu_switch_enabled constr:(ZesuStepFinisherOnce)
   then zesu_context_finish_once closer else closer.
+
+(* A solver call reads the facts its goal reaches, never the whole context.
+   An atom is a closed subterm of an integer, natural, or bitvector type
+   that mentions a local name; its subterms are atoms too. A fact is kept
+   when it shares an atom with the goal or with a fact kept in an earlier
+   round. Facts above the node limit are never kept: a solver cannot use
+   their full expressions, and they make it spin. The guard in
+   SearchBudget then checks the kept context against the solver policy. *)
+Ltac2 zesu_select_arith (typ : constr) : bool :=
+  if Constr.equal typ constr:(Z) then true else
+  if Constr.equal typ constr:(nat) then true else
+  if Constr.equal typ constr:(N) then true else
+  match Constr.Unsafe.kind typ with
+  | Constr.Unsafe.App head _ => Constr.equal head constr:(bv)
+  | _ => false
+  end.
+
+Ltac2 zesu_select_add (atoms : constr list ref) (term : constr) :=
+  if List.exist (fun known => Constr.equal known term) (Ref.get atoms) then ()
+  else Ref.set atoms (term :: Ref.get atoms).
+
+Ltac2 rec zesu_select_atoms (atoms : constr list ref) (term : constr) : bool :=
+  let visit := zesu_select_atoms atoms in
+  let pair := fun left right => let found := visit left in let other := visit right in Bool.or found other in
+  let local := match Constr.Unsafe.kind term with
+    | Constr.Unsafe.Var _ => true
+    | Constr.Unsafe.App head arguments =>
+        Array.fold_left (fun found argument =>
+          let inner := visit argument in Bool.or found inner) (visit head) arguments
+    | Constr.Unsafe.Cast value _ typ => pair value typ
+    | Constr.Unsafe.Prod binder body => pair (Constr.Binder.type binder) body
+    | Constr.Unsafe.Lambda binder body => pair (Constr.Binder.type binder) body
+    | Constr.Unsafe.LetIn binder value body =>
+        let found := visit (Constr.Binder.type binder) in
+        let other := pair value body in Bool.or found other
+    | Constr.Unsafe.Proj _ _ value => visit value
+    | Constr.Unsafe.Case _ predicate _ value branches =>
+        let (typ, _) := predicate in
+        Array.fold_left (fun found branch =>
+          let inner := visit branch in Bool.or found inner) (pair typ value) branches
+    | _ => false
+    end in
+  (if local then
+     if Constr.Unsafe.is_closed term then
+       if zesu_select_arith (Constr.type term) then zesu_select_add atoms term else ()
+     else ()
+   else ());
+  local.
+
+Ltac2 rec zesu_select_size (budget : int ref) (term : constr) : unit :=
+  if Int.le (Ref.get budget) 0 then () else (
+  Ref.set budget (Int.sub (Ref.get budget) 1);
+  let visit := zesu_select_size budget in
+  match Constr.Unsafe.kind term with
+  | Constr.Unsafe.App head arguments => visit head; Array.iter visit arguments
+  | Constr.Unsafe.Cast value _ typ => visit value; visit typ
+  | Constr.Unsafe.Prod binder body => visit (Constr.Binder.type binder); visit body
+  | Constr.Unsafe.Lambda binder body => visit (Constr.Binder.type binder); visit body
+  | Constr.Unsafe.LetIn binder value body =>
+      visit (Constr.Binder.type binder); visit value; visit body
+  | Constr.Unsafe.Proj _ _ value => visit value
+  | Constr.Unsafe.Case _ predicate _ value branches =>
+      let (typ, _) := predicate in visit typ; visit value; Array.iter visit branches
+  | _ => ()
+  end).
+
+Ltac2 zesu_select_small (limit : int) (term : constr) : bool :=
+  let budget := Ref.ref (Int.add limit 1) in
+  zesu_select_size budget term;
+  Int.gt (Ref.get budget) 0.
+
+Ltac2 zesu_select_goal_facts (depth : int) (cap : int) (limit : int) :=
+  let hyps := Control.hyps () in
+  let props := List.filter (fun declaration =>
+    let (_, body, typ) := declaration in
+    match body with
+    | None => Constr.equal (Constr.type typ) constr:(Prop)
+    | Some _ => false
+    end) hyps in
+  let eligible := List.filter (fun declaration =>
+    let (_, _, typ) := declaration in
+    if Constr.has_evar typ then false else zesu_select_small limit typ) props in
+  let facts := List.map (fun declaration =>
+    let (name, _, typ) := declaration in
+    let found := Ref.ref [] in
+    let _ := zesu_select_atoms found typ in (name, Ref.get found)) (List.rev eligible) in
+  let atoms := Ref.ref [] in
+  let _ := zesu_select_atoms atoms (Control.goal ()) in
+  let kept := Ref.ref [] in
+  let rec round remaining :=
+    if Int.le remaining 0 then () else (
+    let current := Ref.get atoms in
+    let fresh := List.filter (fun fact =>
+      let (name, mine) := fact in
+      if List.mem Ident.equal name (Ref.get kept) then false else
+      List.exist (fun atom => List.exist (fun known => Constr.equal known atom) current) mine) facts in
+    List.iter (fun fact =>
+      let (name, mine) := fact in
+      if Int.lt (List.length (Ref.get kept)) cap then (
+        Ref.set kept (name :: Ref.get kept);
+        List.iter (zesu_select_add atoms) mine)
+      else ()) fresh;
+    round (Int.sub remaining 1)) in
+  round depth;
+  (* Each clear commits. A failed solver call never retries the facts it dropped. *)
+  List.iter (fun declaration =>
+    let (name, _, _) := declaration in
+    if List.mem Ident.equal name (Ref.get kept) then ()
+    else match Control.case (fun () => Std.clear [name]) with
+      | Val _ => ()
+      | Err _ => ()
+      end) (List.rev props).
+
+Ltac zesu_select_goal_facts := ltac2:(zesu_select_goal_facts 2 48 2048).
+Ltac zesu_solve_goal_selected site closer :=
+  solve [once zesu_select_goal_facts;
+    ZesuSsz.Automation2.SearchBudget.zesu_solve_selected site closer].
+(* A fact above the node limit is not a solver input. *)
+Ltac zesu_small_fact term :=
+  let check := ltac2:(fact |-
+    if zesu_select_small 2048 (Option.get (Ltac1.to_constr fact)) then ()
+    else Control.zero (Tactic_failure None)) in
+  check term.
