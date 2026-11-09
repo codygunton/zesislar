@@ -263,6 +263,36 @@ def validate_edges(plan, *, refutations=()):
     return True
 
 
+def binder_names(paths, register_order, reserved_names=()):
+    """Name each register binder machine_<register>, or a fresh suffix of it.
+
+    A join downstream of another join seed sees that seed's binders as source
+    inputs. A suffix keeps the new binder distinct; without a collision the
+    name is unchanged.
+    """
+    taken = set(reserved_names)
+
+    def inputs(value):
+        found = {str(value.value)} if value.op == 'input' else set()
+        for arg in value.args:
+            found |= inputs(arg)
+        return found
+
+    for path in paths:
+        for value in path.values():
+            for text in inputs(value):
+                taken.update(re.findall(r"[A-Za-z][A-Za-z0-9_']*", text))
+    names = {}
+    for register in register_order:
+        name, index = 'machine_' + register, 0
+        while name in taken:
+            index += 1
+            name = 'machine_' + register + '_' + str(index)
+        names[register] = name
+        taken.add(name)
+    return names
+
+
 def generalize_registers(alternatives, *, register_order, reserved_names=(), dead_registers=(),
                          relational_registers=()):
     """Prepare a register-only join core from complete source alternatives."""
@@ -280,7 +310,7 @@ def generalize_registers(alternatives, *, register_order, reserved_names=(), dea
             raise ValueError('A join edge lost an owned register value')
         paths.append({register: Expr.from_dict(registers[register]) for register in register_order})
         conditions.append([Expr.from_dict(value) for value in state['conditions']])
-    unified = anti_unify(paths, names={register: 'machine_' + register for register in register_order},
+    unified = anti_unify(paths, names=binder_names(paths, register_order, reserved_names),
                         reserved_names=reserved_names, force_keys=set(dead_registers) | set(relational_registers))
     relations, refusals = [], []
     for binder in unified.binders:

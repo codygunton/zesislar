@@ -64,6 +64,23 @@ class StopReachability(unittest.TestCase):
         for pc in (16, 24, 32):
             require_complete_boundary(boundary(result, pc))
 
+    def test_unseeded_cut_drops_the_paths_beyond_it(self):
+        # The pass stops at the loop head 16 from block 24. Without a seed at 16,
+        # every boundary after 16 misses the path, the head too through its back edge.
+        cut = {**stop('handwritten_cut', 24), 'target_pc': hex(16)}
+        unseeded = report(cut)
+        for row in unseeded['boundaries']:
+            row['alternatives'] = [{'predecessor_pc': hex(24)}]
+        result = annotate_reaching_stops(unseeded, FUNCTION)
+        for pc in (16, 24, 32):
+            with self.assertRaisesRegex(BoundaryRefused, 'handwritten_cut'):
+                require_complete_boundary(boundary(result, pc))
+        seeded = report(cut)
+        boundary(seeded, 16)['alternatives'] = [{'predecessor_pc': None}]
+        result = annotate_reaching_stops(seeded, FUNCTION)
+        for pc in (16, 24, 32):
+            require_complete_boundary(boundary(result, pc))
+
     def test_boundary_without_a_reachability_record_is_refused(self):
         with self.assertRaisesRegex(BoundaryRefused, 'no stop-reachability record'):
             require_complete_boundary({'pc': hex(32), 'status': 'generated', 'alternatives': [{}]})
@@ -117,6 +134,8 @@ class Contradictions(unittest.TestCase):
         self.assertIn('Fail solve [zesu_contradiction_check]', source)
         self.assertLess(source.index('Ltac zesu_contradiction_check'), source.index('Fail solve'))
         self.assertNotRegex(source, r'\b(?:Timeout|timeout|Qed|Admitted)\b')
+        other = contradiction_source('Require Import Header.\n', binders, facts, 'FreeArgs')
+        self.assertIn('Goal forall (args : FreeArgs) (returnAddress : Z) (machine_x15 : bv 64),', other)
 
 
 if __name__ == '__main__':

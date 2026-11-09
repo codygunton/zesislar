@@ -47,18 +47,32 @@ def can_reach(successors, start, target):
     return False
 
 
-def reaching_stops(stops, successors, target):
-    """Return the stops that dropped a path whose block can reach target."""
-    return [stop for stop in stops if stop['reason'] not in PASSING_STOPS
-            and can_reach(successors, _pc(stop['block_pc']), target)]
+def reaching_stops(stops, successors, target, seeded=None):
+    """Return the stops that dropped a path whose block can reach target.
+
+    A cut stop records its own boundary, but it drops the path beyond the cut.
+    When `seeded` names the cuts that have a seed, a stop at an unseeded cut
+    reaches every boundary after that cut.
+    """
+    def dropped(stop):
+        if stop['reason'] not in PASSING_STOPS:
+            return can_reach(successors, _pc(stop['block_pc']), target)
+        if stop['reason'] != 'handwritten_cut' or seeded is None or stop.get('target_pc') is None:
+            return False
+        cut = _pc(stop['target_pc'])
+        return cut not in seeded and any(can_reach(successors, after, target)
+                                         for after in successors.get(cut, []))
+    return [stop for stop in stops if dropped(stop)]
 
 
 def annotate_reaching_stops(report, function):
     successors = cfg_successors(function)
+    seeded = {_pc(boundary['pc']) for boundary in report['boundaries']
+              if any(alternative.get('predecessor_pc') is None for alternative in boundary['alternatives'])}
     for boundary in report['boundaries']:
         boundary['reaching_stops'] = [{key: stop.get(key) for key in STOP_FIELDS}
                                       for stop in reaching_stops(report['stops'], successors,
-                                                                 _pc(boundary['pc']))]
+                                                                 _pc(boundary['pc']), seeded)]
     return report
 
 
@@ -111,13 +125,13 @@ CHECK_TACTIC = '''ZesuSsz.Automation2.RegisterArrayCursor.zesu_cursor_expose_fac
 NOT_FAILED = 'The command has not failed'
 
 
-def contradiction_source(header, binders, facts):
+def contradiction_source(header, binders, facts, args_type='DecodeItemArgs'):
     """Return a check that compiles exactly when the facts do not prove False."""
     # The tactic is defined before `Fail`, so an unknown name is an error, not a pass.
     hypotheses = ' ->\n  '.join('(' + fact + ')' for fact in facts)
     return (header + 'Require Import ZesuSsz.Automation2.All.\n\n'
             + 'Ltac zesu_contradiction_check :=\n  ' + CHECK_TACTIC + '.\n\n'
-            + 'Goal forall (args : DecodeItemArgs) (returnAddress : Z) ' + binders + ',\n  '
+            + 'Goal forall (args : ' + args_type + ') (returnAddress : Z) ' + binders + ',\n  '
             + hypotheses + ' ->\n  False.\nProof.\n  intros.\n'
             + '  Fail solve [zesu_contradiction_check].\nAbort.\n')
 
@@ -125,16 +139,17 @@ def contradiction_source(header, binders, facts):
 class RocqContradictionCheck:
     """Run the contradiction check with one coqc command line."""
 
-    def __init__(self, command, header, directory):
+    def __init__(self, command, header, directory, args_type='DecodeItemArgs'):
         self.command = [argument for argument in command if argument != '-time']
         self.header = header
+        self.args_type = args_type
         self.directory = Path(directory)
         self.runs = []
 
     def __call__(self, name, binders, facts):
         self.directory.mkdir(parents=True, exist_ok=True)
         path = self.directory / ('Contradiction_' + re.sub(r'\W', '_', name) + '.v')
-        path.write_text(contradiction_source(self.header, binders, facts))
+        path.write_text(contradiction_source(self.header, binders, facts, self.args_type))
         result = subprocess.run(self.command + [path.name], cwd=self.directory,
                                 capture_output=True, text=True)
         output = result.stdout + result.stderr

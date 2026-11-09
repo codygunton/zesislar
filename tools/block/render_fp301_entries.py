@@ -13,6 +13,8 @@ parser.add_argument("--seed-manifest-sha256", required=True)
 parser.add_argument("--coqc-args", type=Path, required=True)
 parser.add_argument("--function", default=None,
                     help="function profile name or path (default: decodeItem)")
+parser.add_argument("--record-refusals", action="store_true",
+                    help="record a guard-refused boundary and render the others")
 options = parser.parse_args()
 
 
@@ -59,6 +61,7 @@ from resource_seed import load_public_seed, seed_owned_resources
 from system_shape_seed import seed_system_shapes
 from function_profiles import load_profile, pilot_header
 from boundary_guards import (
+    BoundaryRefused,
     RocqContradictionCheck,
     contradictory_alternatives,
     refused_alternative_indices,
@@ -121,13 +124,20 @@ allowed_helpers = {
     row["helper"]["owner"] + "." + row["helper"]["name"] for row in vocabulary["rows"]
 }
 # Refuse every incomplete source boundary before any declaration renders.
+guard_refusals = {}
 for suffix in pilots:
     if suffix not in loop_heads:
-        require_complete_boundary(
-            next(b for b in data["boundaries"] if b["pc"] == profile.pc(suffix))
-        )
+        try:
+            require_complete_boundary(
+                next(b for b in data["boundaries"] if b["pc"] == profile.pc(suffix))
+            )
+        except BoundaryRefused as error:
+            if not options.record_refusals:
+                raise
+            guard_refusals[suffix] = str(error)
 check = RocqContradictionCheck(
-    json.loads(options.coqc_args.read_text()), header, O / "contradiction-checks"
+    json.loads(options.coqc_args.read_text()), header, O / "contradiction-checks",
+    profile.args_type,
 )
 
 for suffix in pilots:
@@ -149,7 +159,20 @@ for suffix in pilots:
                       "source_boundary": profile["loop_head_fixture"] + "#" + suffix,
                       "definition_count": 5, "proof_ran": False})
         continue
+    if suffix in guard_refusals:
+        cases.append({"pc": pc, "status": "refused_incomplete_boundary",
+                      "reports": [{"kind": "reaching_stop_guard", "detail": guard_refusals[suffix]}],
+                      "proof_ran": False})
+        continue
     boundary = deepcopy(data["boundaries"][index])
+    if boundary["status"] in ("generated_join", "generated_loop_head"):
+        # A seeded cut renders from its incoming edges, as an unseeded cut does;
+        # its own seed alternative is the generalization of those same edges.
+        boundary["alternatives"] = [
+            alternative for alternative in boundary["alternatives"]
+            if alternative["predecessor_pc"] is not None
+        ]
+        boundary["status"] = "handwritten_cut"
     name = "fp_machineAt" + suffix
     name = identifier(name, "generated entry")
     source_ref = str(forward) + "#/boundaries/" + str(index)
@@ -201,6 +224,7 @@ for suffix in pilots:
         }
         if formatted.response is None:
             return record, None, []
+        record["response"] = formatted.response
         helpers = {
             row["suffix"]: name + "_" + row["suffix"]
             for row in formatted.response["body"]["additional_definitions"]
@@ -338,7 +362,6 @@ for suffix in pilots:
         qualified_entry=".".join((relative / module).parts) + "." + name,
         definition_count=len(definitions),
         facts=facts,
-        response=formatted.response,
         physical_declaration_check="pending",
         byte_identity_with_OLD="not_assumed",
     )
