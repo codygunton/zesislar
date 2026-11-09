@@ -224,5 +224,47 @@
       }
     }
   ],
-  "seed_protocol": "Existing assemble_loop_class output; exact class-record equality against declaration010; no state reconstruction."
+  "seed_protocol": "Existing assemble_loop_class output; exact class-record equality against declaration010; no state reconstruction.",
+  "contradiction_checks": [
+    {
+      "definition": "fp_machineAt6a38_LoopExit",
+      "check_sha256": "19ba567113c7b202c6273a113470fc6402a99066ea1afd4f426632c3ee4d3297",
+      "contradictory": false
+    },
+    {
+      "definition": "fp_machineAt6a40_LoopExit",
+      "check_sha256": "fbce83e27b4ef2c29c8c155b5b34477515aa3609374e209b16c9446ff9c9885d",
+      "contradictory": false
+    },
+    {
+      "definition": "fp_machineAt6ad8_LoopExit",
+      "check_sha256": "701f1e85f15a57457d04ee2000f86268866c69ef823843ac02755dcc3bafdce4",
+      "contradictory": false
+    },
+    {
+      "definition": "fp_machineAt6b08_LoopExit",
+      "check_sha256": "b8969410d4746a95d1c68dfb026f25a094317c71e3852d393328315d5e32826e",
+      "contradictory": false
+    }
+  ],
+  "exit_obligations": [
+    {
+      "loop_head": "0x800d6a24",
+      "exit_pc": "0x800d6a38",
+      "entry": "ZesuSsz.Generated.DecodeItem.FP301.Pilot6a38Entries.fp_machineAt6a38",
+      "precondition": "instr_pre 0x800d6a38 (ZesuSsz.Generated.DecodeItem.FP301.Pilot6a38Entries.fp_machineAt6a38 (args) (returnAddress) (K))%I",
+      "checked_by": "DesignedBoundary_800d6a24",
+      "output": "tools/block/generated/fp301_callers/Caller6a24.v",
+      "sha256": "f8db31c4260b2bbfc84f816f25d144705004e4069581cb7e18e66593c250b548"
+    },
+    {
+      "loop_head": "0x800d6ac4",
+      "exit_pc": "0x800d6ad8",
+      "entry": "ZesuSsz.Generated.DecodeItem.FP301.Pilot6ad8Entries.fp_machineAt6ad8",
+      "precondition": "instr_pre 0x800d6ad8 (ZesuSsz.Generated.DecodeItem.FP301.Pilot6ad8Entries.fp_machineAt6ad8 (args) (returnAddress) (K))%I",
+      "checked_by": "DesignedBoundary_800d6ac4",
+      "output": "tools/block/generated/fp301_callers/Caller6ac4.v",
+      "sha256": "d2365e2392a7c2fd86e3a6c956681592163abcb932894b5f31a7b182b1dbe739"
+    }
+  ]
 }

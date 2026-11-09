@@ -7,7 +7,12 @@ that follows the exit applies its register update and its branch fact to that
 entry. The renderer writes declarations only, from this design table and the
 committed loop-head class; it writes no proof script.
 
-Usage: render_loop_exits.py [--check]
+Each exit entry must be consistent: the renderer refuses it when its pure
+facts prove False (boundary_guards guard 2). The loop-head caller of each
+exit states the exit entry as its exit precondition, so the loop-head block
+proof checks the exit obligation.
+
+Usage: render_loop_exits.py --coqc-args ARGS.json | --check
 """
 from pathlib import Path
 import argparse, hashlib, json, re, sys
@@ -17,6 +22,7 @@ FP301 = ROOT / 'ZesuSsz/Generated/DecodeItem/FP301'
 FIXTURE = ROOT / 'tools/block/fixtures/fp301-loop-successors.json'
 sys.path.insert(0, str(ROOT / 'tools/block'))
 from render_fp301_statements import render_unfold_opacity
+from boundary_guards import BoundaryRefused, RocqContradictionCheck, alternative_facts, contradiction_source
 
 HEAD_BOUND = '(bv_unsigned machine_x15 < bv_unsigned machine_x11)'
 EXIT_LINK = '(bv_unsigned machine_x15 = bv_unsigned machine_x11)'
@@ -30,6 +36,7 @@ DESIGN = [
     {'pc': '6b08', 'head': '6ac4', 'block': '6ad8', 'update': ('x14', 'x13'), 'branch': ('ltu', 'x12', 'x14', True)},
 ]
 
+CALLERS = 'tools/block/generated/fp301_callers'
 HEADER = '''(* Generated from FP-20261102-Level1-domain-v1. No proof script. *)
 Require Import ZesuSsz.Automation2.All.
 Require Import isla.riscv64.riscv64.
@@ -158,34 +165,123 @@ def structural_source(row, body):
             + f'  ({exit_name} (args) (returnAddress) ∗ K)%I := @PreOrder_Reflexive _ _ bi.entails_po _.\n\n')
 
 
+def qualified_entry(pc):
+    return f'ZesuSsz.Generated.DecodeItem.FP301.Pilot{pc}Entries.fp_machineAt{pc}'
+
+
+def exit_precondition(pc):
+    return f'instr_pre 0x800d{pc} ({qualified_entry(pc)} (args) (returnAddress) (K))%I'
+
+
+def head_caller_source(head, exit_pc):
+    """Render the loop-head caller whose exit precondition is the exit entry."""
+    pc = f'800d{head}'
+    return (f'''Require Import ZesuSsz.Generated.DecodeItem.FP301.Pilot{head}Entries.
+Require Import ZesuSsz.Generated.DecodeItem.FP301.Pilot{head}Structural.
+Require Import ZesuSsz.Generated.DecodeItem.FP301.Pilot{exit_pc}Entries.
+Require Import ZesuSsz.Generated.DecodeItem.FP301.Pilot{exit_pc}Structural.
+Require Import ZesuSsz.Automation2.All.
+Require Import isla.riscv64.riscv64.
+From Coq Require Import Lists.List ZArith.ZArith NArith.NArith.
+Require Import stdpp.bitvector.definitions.
+Require Import ZesuSsz.Contracts.RlpDecodeItemContract.
+Require Import ZesuSsz.Contracts.DecodeItemSelected.
+Require Import ZesuSsz.Automation2.All.
+Local Open Scope Z_scope.
+
+Definition DesignedEntry_{pc}
+    `{{!islaG Sigma}} `{{!threadG}} (args : DecodeItemArgs) (returnAddress : Z) (K : iProp Sigma) : iProp Sigma :=
+  (({qualified_entry(head)} (args) (returnAddress) (K)) ∗
+   True)%I.
+Global Instance : LithiumUnfold (@DesignedEntry_{pc}) := I.
+Global Typeclasses Opaque DesignedEntry_{pc}.
+
+Lemma DesignedBoundary_{pc} `{{!islaG Sigma}} `{{!threadG}} (args : DecodeItemArgs) (returnAddress : Z) (K : iProp Sigma)  :
+  {exit_precondition(head)} -∗
+  {exit_precondition(exit_pc)} -∗
+  decodeItemSelectedCode -∗
+  instr_body 0x{pc}
+    (DesignedEntry_{pc} args returnAddress K).
+Proof.
+  zesu_block2.
+Qed.
+
+Print Assumptions DesignedBoundary_{pc}.
+''')
+
+
+def exit_obligations():
+    rows = []
+    for row in DESIGN:
+        if 'block' not in row:
+            output = f'{CALLERS}/Caller{row["head"]}.v'
+            source = head_caller_source(row['head'], row['pc'])
+            rows.append({'loop_head': '0x800d' + row['head'], 'exit_pc': '0x800d' + row['pc'],
+                         'entry': qualified_entry(row['pc']), 'precondition': exit_precondition(row['pc']),
+                         'checked_by': 'DesignedBoundary_800d' + row['head'], 'output': output,
+                         'sha256': hashlib.sha256(source.encode()).hexdigest(), 'source': source})
+    return rows
+
+
+def check_record(row, body):
+    name = f'fp_machineAt{row["pc"]}_LoopExit'
+    binders, facts = alternative_facts(f'Definition {name}{SIGNATURE} : iProp Sigma := {body}.')
+    source = contradiction_source(HEADER, binders, facts)
+    return name, binders, facts, hashlib.sha256(source.encode()).hexdigest()
+
+
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument('--check', action='store_true')
+    group = parser.add_mutually_exclusive_group(required=True)
+    group.add_argument('--check', action='store_true')
+    group.add_argument('--coqc-args', type=Path)
     options = parser.parse_args()
     fixture = json.loads(FIXTURE.read_text())
     rows = {row['output']: row for row in fixture['declarations']}
-    outputs = {}
+    outputs, checks = {}, []
     for row in DESIGN:
         body = exit_body(row)
+        name, binders, facts, check_sha256 = check_record(row, body)
+        checks.append({'definition': name, 'binders': binders, 'facts': facts,
+                       'check_sha256': check_sha256, 'contradictory': None})
         for kind, source in (('Entries', entries_source(row, body)), ('Structural', structural_source(row, body))):
             output = f'ZesuSsz/Generated/DecodeItem/FP301/Pilot{row["pc"]}{kind}.v'
             if output not in rows:
                 raise ValueError('The fixture has no row for ' + output)
             committed = render_unfold_opacity(source) if kind == 'Structural' else source
             outputs[output] = (source, committed)
+    obligations = exit_obligations()
     if options.check:
         for output, (source, committed) in outputs.items():
             row = rows[output]
             assert row['canonical_source'] == source, output
             assert row['sha256'] == hashlib.sha256(source.encode()).hexdigest(), output
             assert (ROOT / output).read_text() == committed, output
+        recorded = {row['definition']: row for row in fixture['contradiction_checks']}
+        for check in checks:
+            row = recorded[check['definition']]
+            assert row['check_sha256'] == check['check_sha256'] and row['contradictory'] is False, check['definition']
+        assert [{key: value for key, value in row.items() if key != 'source'} for row in obligations] == fixture['exit_obligations']
+        for row in obligations:
+            assert (ROOT / row['output']).read_text() == row['source'], row['output']
         print('Loop-exit declarations match the design table.')
         return
+    checker = RocqContradictionCheck(json.loads(options.coqc_args.read_text()), HEADER,
+                                     ROOT / '_build/agents/loop-exit-contradiction-checks')
+    for check in checks:
+        if checker(check['definition'], check['binders'], check['facts']):
+            raise BoundaryRefused('The exit entry proves False and is refused: ' + check['definition'])
+        check['contradictory'] = False
     for output, (source, committed) in outputs.items():
         rows[output]['canonical_source'] = source
         rows[output]['sha256'] = hashlib.sha256(source.encode()).hexdigest()
         rows[output]['renderer'] = 'tools/block/render_loop_exits.py'
         (ROOT / output).write_text(committed)
+    for row in obligations:
+        (ROOT / row['output']).write_text(row['source'])
+    fixture['contradiction_checks'] = [{key: value for key, value in check.items() if key not in ('binders', 'facts')}
+                                       for check in checks]
+    fixture['exit_obligations'] = [{key: value for key, value in row.items() if key != 'source'} for row in obligations]
     FIXTURE.write_text(json.dumps(fixture, indent=2, ensure_ascii=False) + '\n')
     print('Rendered', len(outputs), 'loop-exit declarations.')
 
