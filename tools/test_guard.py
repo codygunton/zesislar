@@ -16,6 +16,10 @@ GUARD = TOOLS / "resource_guard.sh"
 sys.path.insert(0, str(TOOLS / "det"))
 
 import prom  # noqa: E402
+
+# Each wait ends at its event. The ceiling only bounds a hung fixture on a
+# loaded machine; it never decides a result. A 3-5 s deadline flaked under gates.
+EVENT_CEILING_SECONDS = 120
 if __package__:
     from .test_resource_guard import MEMORY_HELPER
 else:
@@ -156,7 +160,7 @@ class GuardLockTest(unittest.TestCase):
 
     def guard(self, *arguments):
         return subprocess.run([str(GUARD), *arguments], capture_output=True,
-                              text=True, env=self.environment, timeout=10)
+                              text=True, env=self.environment, timeout=EVENT_CEILING_SECONDS)
 
     def test_python_driver_preflight_refuses_stdlib_names_without_importing(self):
         base = Path(self.directory.name) / 'drivers'
@@ -204,7 +208,7 @@ class GuardLockTest(unittest.TestCase):
             with self.subTest(arguments=arguments):
                 result = subprocess.run([str(GUARD), 'driver-check', '--', sys.executable,
                                          *arguments], cwd=base, env=self.environment,
-                                        capture_output=True, text=True, timeout=10)
+                                        capture_output=True, text=True, timeout=EVENT_CEILING_SECONDS)
                 self.assertEqual(result.returncode, 2, result.stderr)
                 self.assertIn('queue.py', result.stderr)
 
@@ -277,13 +281,13 @@ class GuardLockTest(unittest.TestCase):
     def reserve_writer(self, writer):
         result = subprocess.run([str(GUARD), "reserve-coqc", str(os.getpid())],
                                 env={**self.environment, "ZESU_WRITER_ID": writer},
-                                capture_output=True, text=True, timeout=3)
+                                capture_output=True, text=True, timeout=EVENT_CEILING_SECONDS)
         self.assertEqual(result.returncode, 0, result.stderr)
         self.assertTrue(result.stdout.strip())
         token = result.stdout.strip()
         confirmed = subprocess.run([str(GUARD), "confirm-coqc", token],
                                    env={**self.environment, "ZESU_WRITER_ID": writer},
-                                   capture_output=True, text=True, timeout=3)
+                                   capture_output=True, text=True, timeout=EVENT_CEILING_SECONDS)
         self.assertEqual(confirmed.returncode, 0, confirmed.stderr)
         return token
 
@@ -292,7 +296,7 @@ class GuardLockTest(unittest.TestCase):
                                    stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
         try:
             log = Path(self.environment["ZESU_GUARD_STATE"]) / "guard.log"
-            deadline = time.monotonic() + 3
+            deadline = time.monotonic() + EVENT_CEILING_SECONDS
             while time.monotonic() < deadline and process.poll() is None:
                 if log.exists() and reason in log.read_text():
                     break
@@ -301,7 +305,7 @@ class GuardLockTest(unittest.TestCase):
             self.assertIn(reason, log.read_text())
         finally:
             process.terminate()
-            process.communicate(timeout=3)
+            process.communicate(timeout=EVENT_CEILING_SECONDS)
 
     def test_empty_compiler_snapshots_allow_counts_and_admission(self):
         self.prepare_blocked_fixture(0)
@@ -403,7 +407,7 @@ class GuardLockTest(unittest.TestCase):
                 with self.subTest(status=status, arguments=arguments):
                     result = subprocess.run([str(GUARD), *arguments],
                                             env={**self.environment, **extra},
-                                            capture_output=True, text=True, timeout=3)
+                                            capture_output=True, text=True, timeout=EVENT_CEILING_SECONDS)
                     self.assertEqual(result.returncode, status, result.stderr)
                     self.assertFalse(executed.exists())
         self.assertEqual(list(registry.read()['runs']), [run_id])
@@ -611,7 +615,7 @@ class GuardLockTest(unittest.TestCase):
             'while [ "$1" != -- ]; do shift; done; shift; exec "$@"\n')
         self.environment["FAKE_GATE_PID"] = str(os.getpid())
         result = subprocess.run([str(GUARD), "scope", "fixture", "--", "/bin/echo", "WRONG"],
-                                env=self.environment, capture_output=True, text=True, timeout=3)
+                                env=self.environment, capture_output=True, text=True, timeout=EVENT_CEILING_SECONDS)
         self.assertEqual(result.returncode, 0, result.stderr)
         self.assertIn("WRONG", result.stdout)
         reservations = Path(self.environment["ZESU_GUARD_STATE"]) / "coqc-reservations"
@@ -640,7 +644,7 @@ class GuardLockTest(unittest.TestCase):
                         env={**self.environment, **mode}, text=True,
                         stdout=subprocess.PIPE, stderr=subprocess.PIPE)
                     try:
-                        deadline = time.monotonic() + 3
+                        deadline = time.monotonic() + EVENT_CEILING_SECONDS
                         while time.monotonic() < deadline:
                             if process.poll() is not None:
                                 break
@@ -650,14 +654,14 @@ class GuardLockTest(unittest.TestCase):
                         self.assertIsNone(process.poll(), "launch bypassed the blocked limit")
                         self.assertIn("HOLD blocked 17", log.read_text()[previous:])
                         count.write_text("16\n")
-                        stdout, stderr = process.communicate(timeout=5)
+                        stdout, stderr = process.communicate(timeout=EVENT_CEILING_SECONDS)
                         self.assertEqual(process.returncode, 0, stderr)
                         self.assertIn("LAUNCHED", stdout)
                         self.assertIn("RESUME", log.read_text()[previous:])
                     finally:
                         if process.poll() is None:
                             process.terminate()
-                        process.communicate(timeout=3)
+                        process.communicate(timeout=EVENT_CEILING_SECONDS)
 
     def test_reservation_rechecks_blocked_under_gate_owner_exemption(self):
         count = self.prepare_blocked_fixture(16)
@@ -673,13 +677,13 @@ class GuardLockTest(unittest.TestCase):
             time.sleep(0.2)
             self.assertIsNone(process.poll())
             count.write_text("16\n")
-            _, stderr = process.communicate(timeout=3)
+            _, stderr = process.communicate(timeout=EVENT_CEILING_SECONDS)
             self.assertEqual(process.returncode, 0, stderr)
             self.assertTrue(self.lock.exists())
         finally:
             if process.poll() is None:
                 process.terminate()
-            process.communicate(timeout=3)
+            process.communicate(timeout=EVENT_CEILING_SECONDS)
             self.guard("release-coqc", token)
         self.assertEqual(self.guard("confirm-coqc", token).returncode, 0)
         self.assertTrue(Path(token).exists())
@@ -716,12 +720,12 @@ class GuardLockTest(unittest.TestCase):
             time.sleep(0.2)
             self.assertIsNone(process.poll())
             count.write_text("47\n")
-            _, stderr = process.communicate(timeout=3)
+            _, stderr = process.communicate(timeout=EVENT_CEILING_SECONDS)
             self.assertEqual(process.returncode, 0, stderr)
         finally:
             if process.poll() is None:
                 process.terminate()
-            process.communicate(timeout=3)
+            process.communicate(timeout=EVENT_CEILING_SECONDS)
             self.guard("release-coqc", token)
 
     def test_confirmed_coqc_reservations_keep_the_48_cap(self):
@@ -759,14 +763,14 @@ class GuardLockTest(unittest.TestCase):
             time.sleep(0.2)
             self.assertIsNone(second.poll())
             count.write_text("47\n")
-            stdout, stderr = second.communicate(timeout=3)
+            stdout, stderr = second.communicate(timeout=EVENT_CEILING_SECONDS)
             self.assertEqual(second.returncode, 0, stderr)
             self.assertEqual(stdout, "")
             self.assertTrue(Path(second_token).exists())
         finally:
             if second.poll() is None:
                 second.terminate()
-                second.wait(timeout=3)
+                second.wait(timeout=EVENT_CEILING_SECONDS)
             self.guard("release-coqc", first_token)
             if second_token:
                 self.guard("release-coqc", second_token)
@@ -780,7 +784,7 @@ class GuardLockTest(unittest.TestCase):
         try:
             result = subprocess.run([str(GUARD), "confirm-coqc", tokens[0]],
                                     env=self.environment, capture_output=True,
-                                    text=True, timeout=3)
+                                    text=True, timeout=EVENT_CEILING_SECONDS)
             self.assertEqual(result.returncode, 0, result.stderr)
             self.assertEqual(Path(tokens[0]).read_text().splitlines()[0], "confirmed")
             self.assert_launch_waits(["confirm-coqc", tokens[1]], self.environment,
@@ -788,7 +792,7 @@ class GuardLockTest(unittest.TestCase):
             self.guard("release-coqc", tokens[0])
             result = subprocess.run([str(GUARD), "confirm-coqc", tokens[1]],
                                     env=self.environment, capture_output=True,
-                                    text=True, timeout=3)
+                                    text=True, timeout=EVENT_CEILING_SECONDS)
             self.assertEqual(result.returncode, 0, result.stderr)
         finally:
             for token in tokens:
@@ -801,7 +805,7 @@ class GuardLockTest(unittest.TestCase):
         try:
             result = subprocess.run([str(GUARD), "confirm-coqc", token],
                                     env=self.environment, capture_output=True,
-                                    text=True, timeout=3)
+                                    text=True, timeout=EVENT_CEILING_SECONDS)
             self.assertEqual(result.returncode, 0, result.stderr)
         finally:
             self.guard("release-coqc", token)
@@ -822,7 +826,7 @@ class GuardLockTest(unittest.TestCase):
         token.write_text("pending\nwriter=\naggregate=\n")
         result = subprocess.run([str(GUARD), "confirm-coqc", str(token)],
                                 env=self.environment, capture_output=True,
-                                text=True, timeout=10)
+                                text=True, timeout=EVENT_CEILING_SECONDS)
         self.assertEqual(result.returncode, 0, result.stderr)
         self.assertEqual(token.read_text().splitlines()[0], "confirmed")
         self.assertTrue(all(marker.read_bytes() == b"confirmed\nwriter=\naggregate=\n" for marker in expired))
@@ -832,7 +836,7 @@ class GuardLockTest(unittest.TestCase):
         result = subprocess.run([str(GUARD), "scope-exec", str(token),
                                  "--", "touch", str(executed)],
                                 env=self.environment, capture_output=True,
-                                text=True, timeout=3)
+                                text=True, timeout=EVENT_CEILING_SECONDS)
         self.assertEqual(result.returncode, 0, result.stderr)
         self.assertTrue(executed.exists())
 
@@ -854,7 +858,7 @@ class GuardLockTest(unittest.TestCase):
             self.guard("release-coqc", str(marker))
         result = subprocess.run([str(GUARD), "confirm-coqc", str(token)],
                                 env=self.environment, capture_output=True,
-                                text=True, timeout=3)
+                                text=True, timeout=EVENT_CEILING_SECONDS)
         self.assertEqual(result.returncode, 0, result.stderr)
         self.assertTrue(all(not marker.exists() for marker in launching))
 
@@ -866,7 +870,7 @@ class GuardLockTest(unittest.TestCase):
                 fcntl.flock(lock, fcntl.LOCK_EX)
                 result = subprocess.run(
                     [str(GUARD), "confirm-coqc", token], env=self.environment,
-                    text=True, capture_output=True, timeout=2)
+                    text=True, capture_output=True, timeout=EVENT_CEILING_SECONDS)
                 self.assertEqual(result.returncode, 0, result.stderr)
         finally:
             self.guard("release-coqc", token)
@@ -880,7 +884,7 @@ class GuardLockTest(unittest.TestCase):
         result = subprocess.run([str(GUARD), "scope-exec", str(token),
                                  "--", "touch", str(executed)],
                                 env={**self.environment, "ZESU_WRITER_ID": "tf2"},
-                                capture_output=True, text=True, timeout=3)
+                                capture_output=True, text=True, timeout=EVENT_CEILING_SECONDS)
         self.assertEqual(result.returncode, 0, result.stderr)
         self.assertTrue(executed.exists())
         log = Path(self.environment["ZESU_GUARD_STATE"]) / "guard.log"
@@ -950,7 +954,7 @@ class GuardLockTest(unittest.TestCase):
         finally:
             self.guard("release-coqc", token.stdout.strip())
             holder.terminate()
-            holder.wait(timeout=3)
+            holder.wait(timeout=EVENT_CEILING_SECONDS)
 
     def test_fixture_environment_removes_routes_and_retains_explicit_fixture_routes(self):
         from unittest.mock import patch
@@ -1069,7 +1073,7 @@ class GuardLockTest(unittest.TestCase):
             self.assertIn("job scopes or launches still alive", done.stderr)
             self.assertFalse(self.lock.exists())
         finally:
-            launch.wait(timeout=3)
+            launch.wait(timeout=EVENT_CEILING_SECONDS)
             holder.kill()
             holder.wait()
 
@@ -1089,18 +1093,18 @@ class GuardLockTest(unittest.TestCase):
                         text=True, env=self.environment,
                     )
                     try:
-                        deadline = time.monotonic() + 10
+                        deadline = time.monotonic() + EVENT_CEILING_SECONDS
                         while process.poll() is None and time.monotonic() < deadline:
                             time.sleep(0.02)
                         self.assertIsNotNone(process.poll(), "scope startup did not complete")
-                        stdout, stderr = process.communicate(timeout=1)
+                        stdout, stderr = process.communicate(timeout=EVENT_CEILING_SECONDS)
                         self.assertEqual(process.returncode, 0, stderr)
                         self.assertIn("MemoryMax=16G", stdout)
                         self.assertTrue(self.lock.read_text().startswith("state=wanted "))
                     finally:
                         if process.poll() is None:
                             process.terminate()
-                        process.communicate(timeout=3)
+                        process.communicate(timeout=EVENT_CEILING_SECONDS)
         finally:
             holder.kill()
             holder.wait()
@@ -1256,11 +1260,11 @@ class GuardLockTest(unittest.TestCase):
                        **({"ZESU_IN_GATE": "1"} if gate else {})}
                 result = subprocess.run([str(GUARD), "batch", "parent", "--",
                                          sys.executable, str(command), str(GUARD)],
-                                        env=env, capture_output=True, text=True, timeout=5)
+                                        env=env, capture_output=True, text=True, timeout=EVENT_CEILING_SECONDS)
                 self.assertEqual(result.returncode, 0, result.stderr)
                 writer = subprocess.run([str(GUARD), "scope", "writer", "--", "true"],
                                         env={**self.environment, "ZESU_WRITER_ID": "tf2"},
-                                        capture_output=True, text=True, timeout=5)
+                                        capture_output=True, text=True, timeout=EVENT_CEILING_SECONDS)
                 self.assertEqual(writer.returncode, 0, writer.stderr)
                 scopes = [json.loads(line) for line in events.read_text().splitlines()]
                 self.assertEqual(len(scopes), 3)
@@ -1403,7 +1407,7 @@ class GuardLockTest(unittest.TestCase):
                                    text=True, env=self.environment)
         actions = ""
         try:
-            deadline = time.monotonic() + 3
+            deadline = time.monotonic() + EVENT_CEILING_SECONDS
             while time.monotonic() < deadline and process.poll() is None:
                 actions = log.read_text() if log.exists() else ""
                 if "young.scope" in actions:
@@ -1412,7 +1416,7 @@ class GuardLockTest(unittest.TestCase):
         finally:
             if process.poll() is None:
                 process.terminate()
-            stdout, stderr = process.communicate(timeout=3)
+            stdout, stderr = process.communicate(timeout=EVENT_CEILING_SECONDS)
         self.assertIn("young.scope", actions, f"stdout: {stdout}\nstderr: {stderr}")
         self.assertNotIn("old.scope", actions)
 
@@ -1432,7 +1436,7 @@ class GuardLockTest(unittest.TestCase):
         environment = {**self.environment, "ZESU_SCOPE_UNIT": "young.scope"}
         try:
             result = subprocess.run([str(GUARD), "scope-exec", token, "--", "true"],
-                                    env=environment, capture_output=True, text=True, timeout=3)
+                                    env=environment, capture_output=True, text=True, timeout=EVENT_CEILING_SECONDS)
             self.assertEqual(result.returncode, 0, result.stderr)
             registry = Path(self.environment["ZESU_GUARD_STATE"]) / "scopes"
             self.assertEqual(registry.read_text(), "young.scope\n")
@@ -1445,7 +1449,7 @@ class GuardLockTest(unittest.TestCase):
         environment = {**self.environment, "ZESU_SCOPE_CPU": "600"}
         try:
             result = subprocess.run([str(GUARD), "scope-exec", token, "--", "bash", "-c", "ulimit -t"],
-                                    env=environment, capture_output=True, text=True, timeout=3)
+                                    env=environment, capture_output=True, text=True, timeout=EVENT_CEILING_SECONDS)
             self.assertEqual(result.returncode, 0, result.stderr)
             self.assertEqual(result.stdout.strip(), "600")
         finally:

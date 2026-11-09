@@ -17,6 +17,10 @@ import admission_memory as M
 import stock_scope_stdin_relay as relay
 import test_admission_memory as fixtures
 
+# Each wait ends at its event. The ceiling only bounds a hung fixture on a
+# loaded machine; it never decides a result. A 3-5 s deadline flaked under gates.
+EVENT_CEILING_SECONDS = 120
+
 
 class OwnedGuardScope(unittest.TestCase):
     write = fixtures.ScopeTests.write
@@ -200,7 +204,7 @@ cat "$STATE_DIR/unit"
 printf '%s\n' "$$"
 '''
                 result = subprocess.run(['bash', '-c', library + script, str(guard)], env=environment,
-                                        text=True, capture_output=True, timeout=10)
+                                        text=True, capture_output=True, timeout=EVENT_CEILING_SECONDS)
                 self.assertEqual(result.returncode, 0, result.stderr)
                 unit, launcher_pid = result.stdout.splitlines()
                 launcher = {'pid': int(launcher_pid), 'startticks': 106}
@@ -286,7 +290,7 @@ run_scope fixture -- /fixture/compiler || exit $?
 cat "$STATE_DIR/events"
 '''
             result = subprocess.run(['bash', '-c', library + script, str(guard)], env=environment,
-                                    text=True, capture_output=True, timeout=10)
+                                    text=True, capture_output=True, timeout=EVENT_CEILING_SECONDS)
             self.assertEqual(result.returncode, 0, result.stderr)
             self.assertEqual(result.stdout.splitlines(), ['reserved', 'launched', 'released fresh-compiler-token'])
 
@@ -322,7 +326,7 @@ run_scope fixture -- /fixture/client || exit $?
 printf '%s\n' "$$"
 '''
                     result = subprocess.run(['bash', '-c', library + script, str(guard)], env=environment,
-                                            text=True, capture_output=True, timeout=10)
+                                            text=True, capture_output=True, timeout=EVENT_CEILING_SECONDS)
                     self.assertEqual(result.returncode, 0, result.stderr)
                     unit, launcher_pid = result.stdout.splitlines()
                     prefix = 'zesudet-' + ('writer-' + writer + '-' if writer else '')

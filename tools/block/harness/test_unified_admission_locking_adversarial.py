@@ -15,6 +15,10 @@ CODE = HERE / 'code'
 sys.path.insert(0, str(CODE))
 import admission_memory as M
 
+# Each wait ends at its event. The ceiling only bounds a hung fixture on a
+# loaded machine; it never decides a result. A 3-5 s deadline flaked under gates.
+EVENT_CEILING_SECONDS = 120
+
 
 class UnifiedLockTests(unittest.TestCase):
     def setUp(self):
@@ -54,7 +58,7 @@ class UnifiedLockTests(unittest.TestCase):
         process.communicate()
 
     def finish(self, process):
-        stdout, stderr = process.communicate(timeout=5)
+        stdout, stderr = process.communicate(timeout=EVENT_CEILING_SECONDS)
         self.assertEqual(process.returncode, 0, stderr)
         return stdout
 
