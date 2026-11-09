@@ -779,6 +779,14 @@ Ltac zesu_finish_common_pure :=
         cbv [bv_unsigned bv_modulus] in *; lia)]
     | autorewrite with isla_coq_rewrite; zesu_union_pure_finish]]].
 
+(* lia and bv_solve never close an existential; on a large context they
+   only spend time before the shape-specific closers get their turn. *)
+Ltac zesu_final_solver_goal :=
+  lazymatch goal with
+  | |- ex _ => fail 0
+  | _ => idtac
+  end.
+
 (* The common pure path and final tail share the union helper. Baseline closers remain available. *)
 Ltac zesu_finish_final_pure :=
   first [
@@ -789,14 +797,16 @@ Ltac zesu_finish_final_pure :=
   try solve [
     first [
       zesu_finish_negated_ge; zesu_finish_implication_pair; repeat split;
-      first [reflexivity | assumption | eassumption | lia | bv_solve |
+      first [reflexivity | assumption | eassumption |
+        zesu_final_solver_goal; lia | zesu_final_solver_goal; bv_solve |
         zesu_finish_forall_leaf | zesu_finish_contract_arithmetic |
         zesu_finish_simpl_and_leaf]
     | repeat split; zesu_finish_forall_leaf
     | repeat split; first [zesu_finish_contract_arithmetic |
         zesu_finish_simpl_and_leaf]
     | let rec finish_leaf :=
-        first [reflexivity | assumption | eassumption | lia | bv_solve |
+        first [reflexivity | assumption | eassumption |
+          zesu_final_solver_goal; lia | zesu_final_solver_goal; bv_solve |
           zesu_finish_forall_leaf | zesu_finish_contract_arithmetic |
           zesu_finish_simpl_and_leaf |
           lazymatch goal with |- and _ _ => split; finish_leaf end]
