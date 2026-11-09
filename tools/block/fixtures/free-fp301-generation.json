@@ -7,20 +7,20 @@
     "sha256": "e3e3d9e4e148efc71e6df925f1d5ecd884a675461a002ce3b8e5641033062f47"
   },
   "input_receipt": {
-    "path": "/home/cody/zesislar/_build/agents/heldout-render/free/pass001/INPUT-RECEIPT.json",
-    "sha256": "2a97dbcf235f84b2fff0a39625bbda846163f096ee0d7f302efb2a03e7850939"
+    "path": "/home/cody/zesislar/_build/agents/heldout-render/free/pass003/INPUT-RECEIPT.json",
+    "sha256": "1dd6e3e34d5539d5c359c04425326f80d5f6bcbe90a68e9d5695bea719146032"
   },
   "source_pass_result": {
-    "path": "/home/cody/zesislar/_build/agents/heldout-render/free/pass001/RESULT.json",
-    "sha256": "96909dd525958e9d1e4da1c4bf3a6b85129ac09b8c6ed72e9b4291fe1bd90b61"
+    "path": "/home/cody/zesislar/_build/agents/heldout-render/free/pass003/RESULT.json",
+    "sha256": "c206f0c30ff07b8ac13ea321e2959d8b0bf8bb4bb4ac6cac08125a5428f2a470"
   },
   "entries_result": {
-    "path": "/home/cody/zesislar/_build/agents/heldout-render/free/render001/RESULT.json",
-    "sha256": "0560ab01ab2efdea458bc16f79005d8c1c6993a59d23a57e8cffb4bf5e7c53e5"
+    "path": "/home/cody/zesislar/_build/agents/heldout-render/free/render003/RESULT.json",
+    "sha256": "1aeb1c7ba4c84f7dd09101d202a13ad90f14766f0056c22bd9ed81217330f747"
   },
   "callers_result": {
-    "path": "/home/cody/zesislar/_build/agents/heldout-render/free/callers001/CALLERS.json",
-    "sha256": "c531b5ab41da98d5046bb0fd67ba446b7652fa0015c2e72a8362bc770213a68c"
+    "path": "/home/cody/zesislar/_build/agents/heldout-render/free/callers003/CALLERS.json",
+    "sha256": "03e7d2eb5866f78144314b829b124bf749333aa256e70c151f9dd4faa14568a8"
   },
   "joins": {
     "cuts": [
@@ -30,10 +30,70 @@
       "0x80042160"
     ],
     "seeded": [
-      "0x80042130"
+      "0x80042130",
+      "0x80042134",
+      "0x80042144",
+      "0x80042160"
     ],
-    "refusals": {
-      "0x80042134": "join generalization refused: A join edge has incomplete or different ownership (edge seeds: 0x80041f38, 0x80042130)"
+    "refusals": {},
+    "plans": {
+      "0x80042130": {
+        "edges": 13,
+        "edge_seeds": [
+          "0x80041f38"
+        ],
+        "binders": [
+          "machine_x12",
+          "machine_x13"
+        ],
+        "relations": [],
+        "common_guards": 21,
+        "join_refusals": []
+      },
+      "0x80042134": {
+        "edges": 14,
+        "edge_seeds": [
+          "0x80041f38",
+          "0x80042130"
+        ],
+        "binders": [
+          "machine_x12_1",
+          "machine_x13"
+        ],
+        "relations": [],
+        "common_guards": 21,
+        "join_refusals": []
+      },
+      "0x80042144": {
+        "edges": 2,
+        "edge_seeds": [
+          "0x80042134"
+        ],
+        "binders": [
+          "machine_x12_1",
+          "machine_x13_1"
+        ],
+        "relations": [
+          "(22%Z <= bv_unsigned machine_x13_1 <= 18446744073709551615%Z)%Z"
+        ],
+        "common_guards": 23,
+        "join_refusals": []
+      },
+      "0x80042160": {
+        "edges": 2,
+        "edge_seeds": [
+          "0x80042134"
+        ],
+        "binders": [
+          "machine_x12_1",
+          "machine_x13_1"
+        ],
+        "relations": [
+          "(0%Z <= bv_unsigned machine_x13_1 <= 21%Z)%Z"
+        ],
+        "common_guards": 23,
+        "join_refusals": []
+      }
     }
   },
   "boundaries": [
@@ -191,32 +251,29 @@
     },
     {
       "pc": "0x80042134",
-      "status": "stopped",
-      "reason": "The condition scope does not select an existential node"
+      "status": "source_declarations_rendered"
     },
     {
       "pc": "0x8004213c",
-      "status": "refused_incomplete_boundary",
-      "reason": "14 retained stops can reach the boundary 0x8004213c; the first is handwritten_cut in block 0x80042130 at 0x80042130."
+      "status": "source_declarations_rendered"
     },
     {
       "pc": "0x80042144",
       "status": "refused_incomplete_boundary",
-      "reason": "14 retained stops can reach the boundary 0x80042144; the first is handwritten_cut in block 0x80042130 at 0x80042130."
+      "reason": "2 retained stops can reach the boundary 0x80042144; the first is unknown_pc in block 0x80042144 at 0x80042150."
     },
     {
       "pc": "0x80042154",
-      "status": "refused_incomplete_boundary",
-      "reason": "14 retained stops can reach the boundary 0x80042154; the first is handwritten_cut in block 0x80042130 at 0x80042130."
+      "status": "source_declarations_rendered"
     },
     {
       "pc": "0x80042160",
       "status": "refused_incomplete_boundary",
-      "reason": "14 retained stops can reach the boundary 0x80042160; the first is handwritten_cut in block 0x80042130 at 0x80042130."
+      "reason": "14 retained stops can reach the boundary 0x80042160; the first is state_check in block 0x80042160 at 0x80042170."
     }
   ],
   "contradiction_checks": {
-    "runs": 38,
+    "runs": 41,
     "contradictory": 0
   },
   "callers": [
@@ -242,8 +299,8 @@
     },
     {
       "case": "1f7c",
-      "status": "refused",
-      "reason": "successor entry not rendered: 2134"
+      "status": "rendered",
+      "lemma": "DesignedBoundary_80041f7c"
     },
     {
       "case": "1f80",
@@ -267,8 +324,8 @@
     },
     {
       "case": "1fb4",
-      "status": "refused",
-      "reason": "successor entry not rendered: 2134"
+      "status": "rendered",
+      "lemma": "DesignedBoundary_80041fb4"
     },
     {
       "case": "1fb8",
@@ -287,8 +344,8 @@
     },
     {
       "case": "1fd8",
-      "status": "refused",
-      "reason": "successor entry not rendered: 2134"
+      "status": "rendered",
+      "lemma": "DesignedBoundary_80041fd8"
     },
     {
       "case": "1fdc",
@@ -307,8 +364,8 @@
     },
     {
       "case": "2010",
-      "status": "refused",
-      "reason": "successor entry not rendered: 2134"
+      "status": "rendered",
+      "lemma": "DesignedBoundary_80042010"
     },
     {
       "case": "2014",
@@ -317,8 +374,8 @@
     },
     {
       "case": "2028",
-      "status": "refused",
-      "reason": "successor entry not rendered: 2134"
+      "status": "rendered",
+      "lemma": "DesignedBoundary_80042028"
     },
     {
       "case": "202c",
@@ -332,8 +389,8 @@
     },
     {
       "case": "2054",
-      "status": "refused",
-      "reason": "successor entry not rendered: 2134"
+      "status": "rendered",
+      "lemma": "DesignedBoundary_80042054"
     },
     {
       "case": "2058",
@@ -342,8 +399,8 @@
     },
     {
       "case": "2070",
-      "status": "refused",
-      "reason": "successor entry not rendered: 2134"
+      "status": "rendered",
+      "lemma": "DesignedBoundary_80042070"
     },
     {
       "case": "2074",
@@ -357,8 +414,8 @@
     },
     {
       "case": "2090",
-      "status": "refused",
-      "reason": "successor entry not rendered: 2134"
+      "status": "rendered",
+      "lemma": "DesignedBoundary_80042090"
     },
     {
       "case": "2094",
@@ -367,8 +424,8 @@
     },
     {
       "case": "20b0",
-      "status": "refused",
-      "reason": "successor entry not rendered: 2134"
+      "status": "rendered",
+      "lemma": "DesignedBoundary_800420b0"
     },
     {
       "case": "20b4",
@@ -377,8 +434,8 @@
     },
     {
       "case": "20cc",
-      "status": "refused",
-      "reason": "successor entry not rendered: 2134"
+      "status": "rendered",
+      "lemma": "DesignedBoundary_800420cc"
     },
     {
       "case": "20d0",
@@ -387,8 +444,8 @@
     },
     {
       "case": "20ec",
-      "status": "refused",
-      "reason": "successor entry not rendered: 2134"
+      "status": "rendered",
+      "lemma": "DesignedBoundary_800420ec"
     },
     {
       "case": "20f0",
@@ -397,28 +454,28 @@
     },
     {
       "case": "210c",
-      "status": "refused",
-      "reason": "successor entry not rendered: 2134"
+      "status": "rendered",
+      "lemma": "DesignedBoundary_8004210c"
     },
     {
       "case": "2110",
-      "status": "refused",
-      "reason": "successor entry not rendered: 2134"
+      "status": "rendered",
+      "lemma": "DesignedBoundary_80042110"
     },
     {
       "case": "2130",
-      "status": "refused",
-      "reason": "successor entry not rendered: 2134"
+      "status": "rendered",
+      "lemma": "DesignedBoundary_80042130"
     },
     {
       "case": "2134",
-      "status": "refused",
-      "reason": "own entry not rendered"
+      "status": "rendered",
+      "lemma": "DesignedBoundary_80042134"
     },
     {
       "case": "213c",
       "status": "refused",
-      "reason": "own entry not rendered"
+      "reason": "successor entry not rendered: 2144, 2160"
     },
     {
       "case": "2144",
@@ -428,7 +485,7 @@
     {
       "case": "2154",
       "status": "refused",
-      "reason": "own entry not rendered"
+      "reason": "successor entry not rendered: 2144, 2160"
     },
     {
       "case": "2160",
@@ -742,6 +799,30 @@
       "sha256": "141ccdb4fba293197b87ee30d57dd37fb85ac802c21d2fe5e5286cea74ad11bb"
     },
     {
+      "path": "ZesuSsz/Generated/Free/FP301/Pilot2134Entries.v",
+      "sha256": "03b79bbc899371c94fc4df78c032581a91c30506cf720abcff190b838c7481ca"
+    },
+    {
+      "path": "ZesuSsz/Generated/Free/FP301/Pilot2134Structural.v",
+      "sha256": "e8f21d5f8d004811a59784bb09bd7f71218ab2ae0e086c9bce520bb83151c9f2"
+    },
+    {
+      "path": "ZesuSsz/Generated/Free/FP301/Pilot213cEntries.v",
+      "sha256": "575dec687dc5ce31dcc5d957b6cc7b7b2e426e4f5840b40f9c8da4d71f9c0317"
+    },
+    {
+      "path": "ZesuSsz/Generated/Free/FP301/Pilot213cStructural.v",
+      "sha256": "c43b50ee03b412c16c8e297502a29fc0f231a12c3f12e5dfc15512a904488125"
+    },
+    {
+      "path": "ZesuSsz/Generated/Free/FP301/Pilot2154Entries.v",
+      "sha256": "17c4a8c43b5d0a92f733853d47de493d6556b28f407e647682cd7a3f8333b171"
+    },
+    {
+      "path": "ZesuSsz/Generated/Free/FP301/Pilot2154Structural.v",
+      "sha256": "9418d3ee66d8026718f1ffd03c571119d4586b4cbbf48e7cde01bb37da471b19"
+    },
+    {
       "path": "tools/block/generated/free_fp301_callers/Caller1f38.v",
       "sha256": "7cae63bb4ddcd098c8880d60007b90f413c7618f0019db66b2263ccb20fd5062"
     },
@@ -756,6 +837,10 @@
     {
       "path": "tools/block/generated/free_fp301_callers/Caller1f68.v",
       "sha256": "c2981dbad76bf0243329dd95670b6e654b44df6baad0011f308f6f233f4781ef"
+    },
+    {
+      "path": "tools/block/generated/free_fp301_callers/Caller1f7c.v",
+      "sha256": "ed500c21d014c493cd083fafae0b4db0872a7db37bc8a608fcc9e38504d27f22"
     },
     {
       "path": "tools/block/generated/free_fp301_callers/Caller1f80.v",
@@ -774,6 +859,10 @@
       "sha256": "a5e2629bdbca87b02f1e0ad64a66ac4ea47ef2a3b4149afbe5a1f67daee457b6"
     },
     {
+      "path": "tools/block/generated/free_fp301_callers/Caller1fb4.v",
+      "sha256": "097a59922c4627c17b0565a5740805444d3b855c755b9f03af890f762885449f"
+    },
+    {
       "path": "tools/block/generated/free_fp301_callers/Caller1fb8.v",
       "sha256": "8559857560fd37e1e512dade2bdda728700449ea7a907e8ffaf9809a63c02636"
     },
@@ -784,6 +873,10 @@
     {
       "path": "tools/block/generated/free_fp301_callers/Caller1fc8.v",
       "sha256": "c998624ba0eca7a6d4338e509bb4f7ba806e4e5ab7bbb013b5aec73419af9373"
+    },
+    {
+      "path": "tools/block/generated/free_fp301_callers/Caller1fd8.v",
+      "sha256": "3a576fa0f0a2ac3fdb845dc523a7af26343807776af7a12b7f63b2af364dcf06"
     },
     {
       "path": "tools/block/generated/free_fp301_callers/Caller1fdc.v",
@@ -798,8 +891,16 @@
       "sha256": "e465ef5f989b86eacc661d3b700983473d01acf49087167408f92c26a9f449b3"
     },
     {
+      "path": "tools/block/generated/free_fp301_callers/Caller2010.v",
+      "sha256": "3ecb2469d6fdf1d16fa4ea8966d30a767a86da3c3105cd2982376cff98a228f4"
+    },
+    {
       "path": "tools/block/generated/free_fp301_callers/Caller2014.v",
       "sha256": "f3a70447c7ef43ee73610dcbb2f5f1c5f79e4e12c15a3bacc2a88c65083181cb"
+    },
+    {
+      "path": "tools/block/generated/free_fp301_callers/Caller2028.v",
+      "sha256": "6b7e36896f93c580f1f7f42bc03ae2dc4a357fd120b04df7290f66168f1b3432"
     },
     {
       "path": "tools/block/generated/free_fp301_callers/Caller202c.v",
@@ -810,8 +911,16 @@
       "sha256": "6066fc4d69a3dd136ee402d63c1189f7b155be87ef2743c59d588dc6bf2fcbe2"
     },
     {
+      "path": "tools/block/generated/free_fp301_callers/Caller2054.v",
+      "sha256": "eff8ca59d8c43e1d73680f48953587a47a61d9b84dc350395e14ec70e6faaa40"
+    },
+    {
       "path": "tools/block/generated/free_fp301_callers/Caller2058.v",
       "sha256": "7f560d2caf1282dc30ae2dfdb9f29eab2f21a4bc648c162af408d6ae79ef4546"
+    },
+    {
+      "path": "tools/block/generated/free_fp301_callers/Caller2070.v",
+      "sha256": "03c9f958e3e50121728f0cb3ebc87fb4e89b7502ab5fcda76582031232bd242c"
     },
     {
       "path": "tools/block/generated/free_fp301_callers/Caller2074.v",
@@ -822,20 +931,52 @@
       "sha256": "fe17f17a0264172c74e52468bf825112d4ccaac7cbaa0956c05bf97956422b2c"
     },
     {
+      "path": "tools/block/generated/free_fp301_callers/Caller2090.v",
+      "sha256": "68b68d5ec0aa189309d968169496d10f906936c0df2a3c9560d2539f39e1096e"
+    },
+    {
       "path": "tools/block/generated/free_fp301_callers/Caller2094.v",
       "sha256": "5db764ed7703fcce2d89a0ff23bbf2a645b1d13d67ab5934645fa3692c284b02"
+    },
+    {
+      "path": "tools/block/generated/free_fp301_callers/Caller20b0.v",
+      "sha256": "c49b35c2510d87628e046f783ec575eb5635efed3fa74836685810b5ca1aabee"
     },
     {
       "path": "tools/block/generated/free_fp301_callers/Caller20b4.v",
       "sha256": "5c6bc258608e45228933484d3d22c3b92035a65201f3928b2eb79394eb606d29"
     },
     {
+      "path": "tools/block/generated/free_fp301_callers/Caller20cc.v",
+      "sha256": "d1859403ce597f66b70fbf99b578eb2b85387efd12f85a06d2e05d4730b6db7a"
+    },
+    {
       "path": "tools/block/generated/free_fp301_callers/Caller20d0.v",
       "sha256": "8de1944d163922c4339f7f13a8aedfc3a0c761401dd24cf599480ae7ba760399"
     },
     {
+      "path": "tools/block/generated/free_fp301_callers/Caller20ec.v",
+      "sha256": "b8c37052a322480cc46eb6d80691504ab572063933b2da7acec2251485a6f320"
+    },
+    {
       "path": "tools/block/generated/free_fp301_callers/Caller20f0.v",
       "sha256": "b73a8dc98b98c702e8cb1692d02472d047ee35c60d523dccb62d62f877ef2945"
+    },
+    {
+      "path": "tools/block/generated/free_fp301_callers/Caller210c.v",
+      "sha256": "43987ed1baafea22d2018fc1cea005b579adeb1f93c70d9a7373e23e663c0ddf"
+    },
+    {
+      "path": "tools/block/generated/free_fp301_callers/Caller2110.v",
+      "sha256": "5edd9e266b1c8559a2a4675c0c3741ceaf734602ef0133dad020d5f6a82d4a47"
+    },
+    {
+      "path": "tools/block/generated/free_fp301_callers/Caller2130.v",
+      "sha256": "c01fe5a3917ac0b6e1efee908920caa8adc7c899a7642301552c99bedf44263d"
+    },
+    {
+      "path": "tools/block/generated/free_fp301_callers/Caller2134.v",
+      "sha256": "6e26dcb55a04a95432ad57d849690b3d3eb26a75be7b4548d7aa81508ce99751"
     }
   ],
   "proof_ran": false

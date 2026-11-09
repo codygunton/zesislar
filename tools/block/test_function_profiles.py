@@ -6,7 +6,7 @@ import tempfile
 import unittest
 
 from function_profiles import FunctionProfile, load_profile, loop_header, pilot_header, return_header
-from join_generalize import binder_names
+from join_generalize import align_join_edges, binder_names
 from render_function_callers import plan_callers
 from symbolic_state import input_expr
 from render_fp301_statements import (
@@ -134,6 +134,40 @@ class FreeProfile(unittest.TestCase):
                          [('1000', ['1010'], None), ('1010', [], 'function-return package not rendered')])
         cases[1]['status'] = 'stopped'
         self.assertEqual(plan_callers(profile, cases, function)[0][2], 'successor entry not rendered: 1010')
+
+
+class JoinEdgeAlignment(unittest.TestCase):
+    ORIGINAL = {'kind': 'exists', 'binders': [{'name': 'x10', 'type': 'bv 64'}], 'scope': [],
+                'body': {'kind': 'sep_list', 'children': [{'kind': 'component', 'id': 'r0'},
+                                                          {'kind': 'component', 'id': 'r1'}]}}
+
+    def edge(self, tree, terminal='K', extra=()):
+        components = [{'id': 'r0', 'source': 'A'}, {'id': 'r1', 'source': terminal}, *extra]
+        return {'resource_boundary': {'tree': tree, 'components': components}}
+
+    def test_join_seed_edge_moves_onto_the_original_tree(self):
+        ownership = {'tree': self.ORIGINAL, 'components': [{'id': 'r0', 'source': 'A'}, {'id': 'r1', 'source': 'True'}]}
+        seeded = {'kind': 'sep', 'right': {'kind': 'component', 'id': 'r1'},
+                  'left': {'kind': 'exists', 'binders': [{'name': 'machine_x12', 'type': 'bv 64', 'value_key': 'x12'}],
+                           'scope': [0], 'body': {'kind': 'sep_list', 'children': [
+                               {'kind': 'component', 'id': 'r0'}, {'kind': 'component', 'id': 'join_relation_0'}]}}}
+        plain = self.edge(self.ORIGINAL, 'True')
+        joined = self.edge(seeded, 'K', [{'id': 'join_relation_0', 'source': '⌜P⌝'}])
+        aligned, extra = align_join_edges([plain, joined], ownership, 'r1', 'K')
+        self.assertEqual(aligned[0], plain)
+        self.assertEqual(aligned[1]['resource_boundary']['tree'], self.ORIGINAL)
+        self.assertEqual([c['source'] for c in aligned[1]['resource_boundary']['components']], ['A', 'True'])
+        self.assertEqual(extra, [{'name': 'machine_x12', 'type': 'bv 64'}])
+        kept, _ = align_join_edges([joined], ownership, 'r1', 'K', keep_binders=True)
+        self.assertEqual([b['name'] for b in kept[0]['resource_boundary']['tree']['binders']], ['x10', 'machine_x12'])
+
+    def test_other_differences_stay_for_the_refusal(self):
+        ownership = {'tree': self.ORIGINAL, 'components': [{'id': 'r0', 'source': 'A'}, {'id': 'r1', 'source': 'True'}]}
+        other = {'kind': 'sep', 'right': {'kind': 'component', 'id': 'r1'},
+                 'left': {'kind': 'exists', 'binders': [], 'scope': [0],
+                          'body': {'kind': 'sep_list', 'children': [{'kind': 'component', 'id': 'r9'}]}}}
+        edge = self.edge(other)
+        self.assertEqual(align_join_edges([edge], ownership, 'r1', 'K'), ([edge], []))
 
 
 class JoinBinderNames(unittest.TestCase):

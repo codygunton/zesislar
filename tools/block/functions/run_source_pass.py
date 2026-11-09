@@ -88,9 +88,9 @@ def main():
                                      'incomplete incoming edges: ' + str(boundary['reaching_stops'][0]))
                 continue
             origins = {row['seed_pc'] for row in incoming}
-            base = seeds[next(iter(origins))] if len(origins) == 1 else owned
             try:
-                joined = generalize_owned_join(incoming, original_seed=base, entry_pc=pc, vocabulary=vocabulary,
+                # Edges through an earlier join seed are aligned on the entry seed's tree.
+                joined = generalize_owned_join(incoming, original_seed=owned, entry_pc=pc, vocabulary=vocabulary,
                                                continuation=continuation, outer_names=['args', 'returnAddress'])
             except ValueError as error:
                 refusals[hex(pc)] = 'join generalization refused: ' + str(error) + ' (edge seeds: ' + \
