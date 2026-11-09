@@ -207,6 +207,9 @@ Ltac zesu_normalize_known_list_lengths :=
 Ltac zesu_finish_known_list_shape :=
   lazymatch goal with
   | |- envs_entails _ _ => fail 0
+  (* No alternative below closes an existential: reflexivity, lia and
+     bv_solve all fail on it, after whole-context solver calls. *)
+  | |- ex _ => fail 0
   | |- context[array_region_start 8 _ _] => idtac
   | |- context[length _] => idtac
   | |- @eq (list _) _ _ => idtac
@@ -236,7 +239,10 @@ Ltac zesu_finish_known_list_shape :=
         rewrite (take_ge xs n Htake); clear Htake
       end; reflexivity] |
     solve [zesu_normalize_known_list_lengths; lia] |
-    solve [bv_solve]].
+    (* The bit-vector solver reads the facts the goal reaches, never the
+       whole context: on a 199-fact context it ran for hours. *)
+    solve [ZesuSsz.Automation2.ContextCollection.zesu_solve_goal_selected
+      ("finish.list_shape"%string) ltac:(bv_solve)]].
 
 Ltac zesu_finish_selectors :=
   first [zesu_array_region_selection_if_enabled | lazymatch goal with
