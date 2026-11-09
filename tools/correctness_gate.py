@@ -210,14 +210,19 @@ def reserve(policy, owner, receipt, *, available=memory_available, pause=time.sl
                 save(policy["ledger"], ledger)
                 return record
             owners = ledger.get("correctness_gate_owners", {})
+            shells = ledger.get("shell_claim_owners", {})
             blocking = []
             for name, amount in sorted(claims.items()):
                 if not amount:
                     continue
                 holder = owners.get(name)
+                # Compiler reservations record their owner under shell_claim_owners.
+                shell = shells.get(name) if isinstance(shells.get(name), dict) else {}
+                holder = holder or shell.get("owner")
                 if isinstance(holder, dict) and "pid" in holder and "startticks" in holder:
                     state = "alive" if alive(holder) else "dead"
-                    blocking.append(f"{name}={amount} owner={holder['pid']} {state}")
+                    where = f" marker={Path(shell['marker']).name}" if shell.get("marker") else ""
+                    blocking.append(f"{name}={amount} owner={holder['pid']} {state}{where}")
                 else:
                     blocking.append(f"{name}={amount} owner=unknown")
             print(f"correctness gate {key} waits for admission; claims: " + "; ".join(blocking),
