@@ -35,6 +35,34 @@ Ltac zesu_loop_guard continuation :=
     end
   end.
 
+(* A cursor register stepped by one past a not-taken exit branch advances
+   the loop index that its retained cursor conjunct names. *)
+Ltac zesu_loop_cursor_conjunct cursor index statement :=
+  lazymatch statement with
+  | ?left /\ ?right =>
+      first [zesu_loop_cursor_conjunct cursor index left |
+             zesu_loop_cursor_conjunct cursor index right]
+  | bv_unsigned cursor = ?target => lazymatch target with context [index] => idtac end
+  end.
+
+Ltac zesu_loop_cursor_guard continuation :=
+  match goal with
+  | Hbranch : @bv_add ?width ?cursor ?one <> ?limit |- _ =>
+      is_var cursor;
+      assert_fails (has_evar limit);
+      let unit := eval vm_compute in (bv_unsigned one) in
+      constr_eq unit 1%Z;
+      match goal with
+      | index : lvar "zesuLoopIndex" Z |- _ =>
+          match goal with
+          | Hcursor : ?statement |- _ =>
+              lazymatch type of statement with Prop => idtac end;
+              zesu_loop_cursor_conjunct cursor index statement
+          end;
+          continuation index
+      end
+  end.
+
 Ltac zesu_simpl_exist_loop_count :=
   lazymatch goal with |- @SimplExist _ ?T _ =>
     constr_eq T (lvar "zesuLoopCount" Z)
@@ -49,9 +77,13 @@ Ltac zesu_simpl_exist_loop_index :=
     constr_eq T (lvar "zesuLoopIndex" Z)
   end;
   unLET;
-  zesu_loop_guard ltac:(fun index count =>
-    notypeclasses refine (simpl_exist_lvar _ Z (index + 1)%Z "zesuLoopIndex" _);
-    constructor; by unlock).
+  first [
+    zesu_loop_guard ltac:(fun index count =>
+      notypeclasses refine (simpl_exist_lvar _ Z (index + 1)%Z "zesuLoopIndex" _);
+      constructor; by unlock)
+  | zesu_loop_cursor_guard ltac:(fun index =>
+      notypeclasses refine (simpl_exist_lvar _ Z (index + 1)%Z "zesuLoopIndex" _);
+      constructor; by unlock)].
 
 #[export] Hint Extern 1 (SimplExist (lvar "zesuLoopCount" Z) _) =>
   zesu_simpl_exist_loop_count : typeclass_instances.

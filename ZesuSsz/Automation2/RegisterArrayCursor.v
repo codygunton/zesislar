@@ -11,9 +11,12 @@ Require Import ZesuSsz.Automation2.ContextCollection.
 Require Import ZesuSsz.Automation2.PureFacts.
 Require Import ZesuSsz.Automation2.BitvectorFacts.
 Require Import ZesuSsz.Automation2.SearchBudget.
+Require Import ZesuSsz.Automation2.VmClosed.
 From iris.proofmode Require Import environments.
 From stdpp Require Import bitvector.definitions bitvector.tactics.
 From Coq Require Import ZArith.ZArith Lia.
+From Ltac2 Require Import Ltac2.
+Set Default Proof Mode "Classic".
 Local Open Scope Z_scope.
 
 (* The range derivation ran for this register on this path. *)
@@ -63,13 +66,46 @@ Ltac zesu_cursor_arithmetic statement :=
   | ?left \/ ?right => zesu_cursor_arithmetic left; zesu_cursor_arithmetic right
   end.
 
-(* Name each unsigned value that is not a sum, a cast, or a literal. Its
-   range is the only fact the linear solver needs about it. *)
+(* A low mask keeps the residue modulo a power of two. *)
+Lemma zesu_cursor_low_mask (width bits : N) (word mask : bv width) :
+  bv_unsigned mask = Z.ones (Z.of_N bits) ->
+  bv_unsigned (bv_and word mask) = bv_unsigned word mod 2 ^ Z.of_N bits.
+Proof. intros Hmask. rewrite bv_and_unsigned Hmask Z.land_ones; [reflexivity | lia]. Qed.
+
+Ltac zesu_cursor_low_masks :=
+  repeat match goal with
+  | |- context [@bv_unsigned ?width (bv_and ?word ?mask)] =>
+      VmClosed.zesu_vm_closed mask;
+      let value := eval vm_compute in (bv_unsigned mask) in
+      let bits := eval vm_compute in (Z.to_N (Z.log2 (value + 1))) in
+      let Hmask := fresh "HcursorMask" in
+      assert (Hmask : bv_unsigned mask = Z.ones (Z.of_N bits)) by (vm_compute; reflexivity);
+      rewrite (zesu_cursor_low_mask width bits word mask Hmask); clear Hmask
+  end.
+
+(* Evaluate closed signed and unsigned views of literals. *)
+Ltac zesu_cursor_closed_views :=
+  repeat match goal with
+  | |- context [@bv_signed ?width ?word] =>
+      VmClosed.zesu_vm_closed word;
+      let value := eval vm_compute in (@bv_signed width word) in
+      change (@bv_signed width word) with value
+  | |- context [@bv_unsigned ?width ?word] =>
+      lazymatch word with BV _ _ => fail | Z_to_bv _ _ => fail | _ => idtac end;
+      VmClosed.zesu_vm_closed word;
+      let value := eval vm_compute in (@bv_unsigned width word) in
+      change (@bv_unsigned width word) with value
+  end.
+
+(* Name each unsigned value that is not a sum, a cast, a low mask, or a
+   literal. Its range is the only fact the linear solver needs about it. *)
 Ltac zesu_cursor_unsigned_atoms :=
   repeat match goal with H : context [@bv_unsigned _ _] |- _ => revert H end;
-  rewrite ?bv_add_unsigned ?bv_sub_unsigned; intros;
+  rewrite ?bv_add_unsigned ?bv_sub_unsigned;
+  repeat (progress zesu_cursor_low_masks; rewrite ?bv_add_unsigned ?bv_sub_unsigned);
+  zesu_cursor_closed_views;
   repeat match goal with
-  | H : context [@bv_unsigned ?width ?word] |- _ =>
+  | |- context [@bv_unsigned ?width ?word] =>
       tryif is_var word then fail else
       lazymatch word with
       | bv_add _ _ => fail | bv_sub _ _ => fail | Z_to_bv _ _ => fail | BV _ _ => fail
@@ -80,7 +116,6 @@ Ltac zesu_cursor_unsigned_atoms :=
       let atom := fresh "cursorAtom" in
       set (atom := bv_unsigned word) in *; clearbody atom
   end;
-  repeat match goal with H : context [@bv_unsigned _ _] |- _ => revert H end;
   rewrite ?Z_to_bv_unsigned ?bv_unsigned_BV; intros.
 
 Ltac zesu_cursor_linear :=
@@ -98,7 +133,7 @@ Ltac zesu_cursor_linear :=
 (* Expose loop binders at their carrier type, retained conjunctions, guards,
    and widened comparisons as integer facts. Solve with the facts the goal
    reaches. *)
-Ltac zesu_cursor_range_solve :=
+Ltac zesu_cursor_expose_facts :=
   repeat match goal with
   | value : lvar _ ?carrier |- _ => change carrier in value
   end;
@@ -114,9 +149,21 @@ Ltac zesu_cursor_range_solve :=
   end;
   repeat match goal with
   | H : @eq (bv _) ?word _ |- _ => is_var word; apply (f_equal bv_unsigned) in H
-  end;
+  | H : ~ (@eq (bv _) _ _) |- _ => apply bv_neq in H
+  end.
+
+Ltac zesu_cursor_range_solve :=
+  zesu_cursor_expose_facts;
   ContextCollection.zesu_solve_goal_selected ("register_array_cursor"%string)
     ltac:(zesu_cursor_linear).
+
+(* A loop step relates the index to the cursor, the limit, and the guards
+   behind the limit, so its facts lie up to four shared-term rounds away. *)
+Ltac zesu_cursor_step_solve :=
+  zesu_cursor_expose_facts;
+  solve [once ltac2:(ZesuSsz.Automation2.ContextCollection.zesu_select_goal_facts 4 48 2048);
+    SearchBudget.zesu_solve_selected ("register_array_cursor.step"%string)
+      ltac:(zesu_cursor_linear)].
 
 (* Add the cursor range once per register and path. A failed derivation
    leaves only the marker, so later steps do not repeat it. *)
