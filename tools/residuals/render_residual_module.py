@@ -266,7 +266,7 @@ def main():
         sys.exit("render_residual_module: %s" % error)
     Path(a.out).parent.mkdir(parents=True, exist_ok=True)
     Path(a.out).write_text(text)
-    print("wrote %s (%d lemmas)" % (a.out, text.count("#[export] Hint Resolve")))
+    print("wrote %s (%d lemmas)" % (a.out, text.count("\nLemma ")))
 
 
 if __name__ == "__main__":
