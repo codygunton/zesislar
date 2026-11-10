@@ -177,7 +177,7 @@ def domain(entries, layout_source, ids):
                                            'decodeItemStackBytes; the domain bounds sp below machineRamEnd.'}})
     facts.append({'fact_id': 'domain:stack-alignment', 'kind': 'alignment', 'status': 'supplied',
                   'terms': {'alignment': {'expression': stack, 'modulus': 16, 'residue': 0}},
-                  'origin': clause(clauses, 'nextStackPointer args mod 16 = 0', 'nextUint64BoundaryDomain')})
+                  'origin': clause(clauses, '(16 | nextStackPointer args)', 'nextUint64BoundaryDomain')})
     facts.append({'fact_id': 'domain:slice-interval', 'kind': 'bounds', 'status': 'supplied',
                   'terms': {'unsigned_interval': {
                       'expression': input_expr('(Z_to_bv 64%N (nextSlicePointer (nextUint64Base args)))', 64).to_dict(),

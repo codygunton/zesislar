@@ -21,7 +21,9 @@ Record NextUint64Args := {
 
 (* The caller subtracts 96. Its separate callee frame has 16 bytes.
    The decodeItem call (machine_call) needs its stack pointer 16-byte aligned
-   and below the RAM end. The slice is read as two words, so it lies in RAM. *)
+   and below the RAM end. The slice is read as two words, so it lies in RAM.
+   Alignment is a divisibility fact: a symbolic mod makes every failing lia
+   search over the stack addresses branch on its quotient. *)
 Definition nextUint64BoundaryDomain (params : NextUint64Args) : Prop :=
   let args := nextUint64Base params in
   let inputLength := Z.of_nat (length (nextInputBytes args)) in
@@ -38,7 +40,7 @@ Definition nextUint64BoundaryDomain (params : NextUint64Args) : Prop :=
     (nextStackPointer args - 112) 112 /\
   separateRanges (nextSlicePointer args) 16 (nextStackPointer args - 112) 112 /\
   separateRanges (nextResultPointer args) 16 (nextStackPointer args - 112) 112 /\
-  nextStackPointer args mod 16 = 0 /\
+  (16 | nextStackPointer args) /\
   nextStackPointer args < machineRamEnd defaultMap /\
   mapRamBase defaultMap <= nextSlicePointer args /\
   nextSlicePointer args + 16 <= machineRamEnd defaultMap.
