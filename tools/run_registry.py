@@ -374,8 +374,16 @@ class Registry:
                             frozen[actor_key(actor)] = actor
                     # A stop signal can return before the actor stops. Wait
                     # for stopped identities before the final descendant scan.
+                    # The launching shell of a scheduler can resume it at once
+                    # (agent background shells do). A scheduler launches no
+                    # actor after its command starts, so once a job exists
+                    # the freeze waits only for the jobs; the scheduler still
+                    # receives SIGTERM and SIGKILL below.
+                    launched = bool(row['jobs'])
                     pending = []
                     for actor in actors:
+                        if launched and actor_key(actor) == actor_key(scheduler):
+                            continue
                         current = identity(actor['pid'])
                         if (current and current['startticks'] == actor['startticks']
                                 and current['state'] not in ('T', 't', 'Z', 'X')):

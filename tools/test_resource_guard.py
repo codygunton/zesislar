@@ -5,8 +5,12 @@ import shutil
 import os
 from pathlib import Path
 import subprocess
+import sys
 import tempfile
+import time
 import unittest
+
+import run_registry
 
 
 GUARD = Path(__file__).with_name("resource_guard.sh")
@@ -998,29 +1002,94 @@ live_scopes
                 self.assertEqual(result.returncode, 0, result.stderr)
                 self.assertEqual(not result.stdout.strip(), released)
 
+    @staticmethod
+    def guard_environment(directory, **variables):
+        helper = Path(directory) / "module_memory.py"
+        helper.write_text("import sys\nsys.path.insert(0, " + repr(str(GUARD.parent)) + ")\n" + MEMORY_HELPER)
+        ledger = Path(directory) / "LEDGER.json"
+        ledger.write_text(json.dumps({"fixed_claims": {}, "region_claims": {}}))
+        cgroups = Path(directory) / "cgroup"
+        cgroups.mkdir()
+        environment = {key: value for key, value in os.environ.items()
+                       if not key.startswith("ZESU_")}
+        environment.update(ZESU_GUARD_STATE=directory,
+                           ZESU_GATE_LOCK=str(Path(directory) / "gate.lock"),
+                           ZESU_RUN_REGISTRY=str(Path(directory) / "run-registry"),
+                           ZESU_RUN_REGISTRY_TOOL=str(GUARD.with_name("run_registry.py")),
+                           ZESU_CANONICAL_LEDGER=str(ledger),
+                           ZESU_CGROUP_ROOT=str(cgroups),
+                           ZESU_MODULE_MEMORY_TOOL=str(helper),
+                           PYTHONDONTWRITEBYTECODE="1",
+                           **variables)
+        return environment
+
+    # Legacy fixtures never inspect or trim the shared host cache.
+    FIXTURE_PREFIX = "\nhome_free_bytes() { echo 60000000000; }\n"
+
     def run_guard(self, script, **variables):
         with tempfile.TemporaryDirectory() as directory:
-            helper = Path(directory) / "module_memory.py"
-            helper.write_text("import sys\nsys.path.insert(0, " + repr(str(GUARD.parent)) + ")\n" + MEMORY_HELPER)
-            ledger = Path(directory) / "LEDGER.json"
-            ledger.write_text(json.dumps({"fixed_claims": {}, "region_claims": {}}))
-            cgroups = Path(directory) / "cgroup"
-            cgroups.mkdir()
-            environment = {key: value for key, value in os.environ.items()
-                           if not key.startswith("ZESU_")}
-            environment.update(ZESU_GUARD_STATE=directory,
-                               ZESU_GATE_LOCK=str(Path(directory) / "gate.lock"),
-                               ZESU_RUN_REGISTRY=str(Path(directory) / "run-registry"),
-                               ZESU_RUN_REGISTRY_TOOL=str(GUARD.with_name("run_registry.py")),
-                               ZESU_CANONICAL_LEDGER=str(ledger),
-                               ZESU_CGROUP_ROOT=str(cgroups),
-                               ZESU_MODULE_MEMORY_TOOL=str(helper),
-                               PYTHONDONTWRITEBYTECODE="1",
-                               **variables)
-            # Legacy fixtures never inspect or trim the shared host cache.
-            prefix = "\nhome_free_bytes() { echo 60000000000; }\n"
-            return subprocess.run(["bash", "-c", LIBRARY + prefix + script, str(GUARD.resolve())],
+            environment = self.guard_environment(directory, **variables)
+            return subprocess.run(["bash", "-c", LIBRARY + self.FIXTURE_PREFIX + script, str(GUARD.resolve())],
                                   text=True, capture_output=True, env=environment, timeout=120)
+
+    def test_stop_closes_a_held_batch_whose_launching_shell_resumes_its_scheduler(self):
+        # An agent's background shell continues a stopped child at once. The
+        # registry froze every job of a held dune batch but waited for its
+        # scheduler and reported stop_failed (2026-11-10).
+        held = LIBRARY + self.FIXTURE_PREFIX + r"""
+hold_reason() { echo "fixture hold"; }
+compiler_pids() { :; }
+POLL_SECONDS=0.05; WAKE_TIMEOUT=1
+marker=$(reserve_coqc $$) || exit 9
+confirm_coqc "$marker"
+"""
+        resuming_shell = (
+            "import os, signal, sys\n"
+            "pid = os.fork()\n"
+            "if pid == 0:\n    os.execv(sys.argv[1], sys.argv[1:])\n"
+            "while True:\n"
+            "    _, status = os.waitpid(pid, os.WUNTRACED)\n"
+            "    if os.WIFSTOPPED(status):\n        os.kill(pid, signal.SIGCONT)\n"
+            "    else:\n        sys.exit(0)\n")
+        with tempfile.TemporaryDirectory() as directory:
+            environment = self.guard_environment(directory)
+            store = Path(directory) / "run-registry"
+            launcher = subprocess.Popen(
+                [sys.executable, "-c", resuming_shell, sys.executable, str(GUARD.with_name("run_registry.py")),
+                 "--store", str(store), "run", "--id", "held", "--kind", "fixture", "--owner", "test",
+                 "--", "bash", "-c", held, str(GUARD.resolve())],
+                env=environment, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+            try:
+                log = Path(directory) / "guard.log"
+                deadline = time.monotonic() + 60
+                while not (log.exists() and "HOLD reservation launch" in log.read_text()):
+                    self.assertLess(time.monotonic(), deadline, "the fixture launch never held")
+                    time.sleep(0.05)
+                registry = run_registry.Registry(store)
+                released = Path(directory) / "claim-released"
+                registry.add_claim("held", "fixture", [sys.executable, "-c",
+                                                       "import pathlib, sys; pathlib.Path(sys.argv[1]).touch()",
+                                                       str(released)])
+                registry.stop("held", grace=2.0)
+                row = registry.read()["runs"]["held"]
+                self.assertEqual(row["status"], "stopped")
+                self.assertFalse(any(run_registry.live(actor) for actor in [row["scheduler"]] + row["jobs"]))
+                self.assertTrue(row["claims"]["fixture"]["released"])
+                self.assertTrue(released.exists())
+                reservations = Path(directory) / "coqc-reservations"
+                self.assertEqual(list(reservations.glob("*")) if reservations.exists() else [], [])
+                ledger = json.loads((Path(directory) / "LEDGER.json").read_text())
+                self.assertEqual(ledger["fixed_claims"], {})
+                self.assertEqual(launcher.wait(timeout=30), 0)
+            finally:
+                if launcher.poll() is None:
+                    launcher.kill()
+                    launcher.wait()
+                if store.exists():
+                    # A failed stop leaves fixture actors; close them before the directory goes.
+                    for row in run_registry.Registry(store).read()["runs"].values():
+                        for actor in [row["scheduler"]] + row["jobs"]:
+                            run_registry.send_signal(actor, run_registry.signal.SIGKILL)
 
     def test_held_launch_checks_published_totals_before_a_full_check(self):
         result = self.run_guard(r"""
