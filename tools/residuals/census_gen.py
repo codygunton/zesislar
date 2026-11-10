@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Generate a solver-census copy of a caller file (diagnostic only).
 
-Usage: census_gen.py CALLER.v OUT.v [--mode census|verify|residual] [--timeout S]
+Usage: census_gen.py CALLER.v OUT.v [--mode census|verify|residual|final-open] [--timeout S]
                      --ltacs PROBE/ltacs.json --fullnames PROBE/fullnames.json
                      [--exclude NAME,...]
 
@@ -63,21 +63,28 @@ def main(argv=None):
     ap = argparse.ArgumentParser()
     ap.add_argument('caller')
     ap.add_argument('out')
-    ap.add_argument('--mode', default='census', choices=['census', 'verify', 'residual'])
+    ap.add_argument('--mode', default='census', choices=['census', 'verify', 'residual', 'final-open'])
     ap.add_argument('--fact-limit', type=int, default=1500)
     ap.add_argument('--dump-fail', default='', help='solver layers that dump failed goals with more Props than --fail-props')
     ap.add_argument('--fail-props', type=int, default=64)
     ap.add_argument('--print-all', action='store_true',
                     help='Set Printing All before the theorem so dumped goals reparse')
     ap.add_argument('--timeout', type=int, default=5)
-    ap.add_argument('--ltacs', required=True)
-    ap.add_argument('--fullnames', required=True)
+    ap.add_argument('--ltacs')
+    ap.add_argument('--fullnames')
     ap.add_argument('--exclude', default='')
     ap.add_argument('--brackets', default='all', choices=['all', 'none'])
     a = ap.parse_args(argv)
 
-    data = json.loads(Path(a.ltacs).read_text())
-    full = json.loads(Path(a.fullnames).read_text())
+    if a.mode == 'final-open':
+        # Final-open mode runs the production tactics unwrapped, so its open goals
+        # are exactly the goals production leaves open.
+        data, full = {'users': [], 'bodies': {}}, {}
+    else:
+        if not (a.ltacs and a.fullnames):
+            ap.error('--ltacs and --fullnames are required outside final-open mode')
+        data = json.loads(Path(a.ltacs).read_text())
+        full = json.loads(Path(a.fullnames).read_text())
     exclude = set(filter(None, a.exclude.split(',')))
     brackets = []
     if a.brackets == 'all':
@@ -100,7 +107,7 @@ def main(argv=None):
     out.append((HERE / 'core.v.in').read_text().replace('@TIMEOUT@', str(a.timeout))
                .replace('@FACTLIMIT@', str(a.fact_limit)).replace('@FAILPROPS@', str(a.fail_props)))
     dump_fail = set(filter(None, a.dump_fail.split(',')))
-    if a.mode == 'residual':
+    if a.mode in ('residual', 'final-open'):
         out.append((HERE / 'res.v.in').read_text())
     wrapped = []
     for kind, names in (('solver', solvers), ('bracket', brackets)):
@@ -141,6 +148,21 @@ def main(argv=None):
                        '  zesu_block_base; try zesu_finish_residual_cascade.\n'
                        '  all: idtac "CENSUS STAGE prove-done".\n'
                        '  all: ltac2:(census_res_try ()).\n'
+                       '  all: idtac "CENSUS STAGE try-done".\n'
+                       '  all: ltac2:(census_res_dump "readable").\n'
+                       '  Set Printing All.\n'
+                       '  all: ltac2:(census_res_dump "robust").\n'
+                       '  Unset Printing All.\n'
+                       '  all: idtac "CENSUS STAGE dump-done".\n'
+                       '  all: admit.\n'
+                       'Admitted.\n')
+        elif a.mode == 'final-open':
+            # The plain block tactic, then every goal it leaves open; no solver retry.
+            out.append('\n' + stmt.rstrip() + '\nProof.\n'
+                       '  idtac "CENSUS BLOCK-BEGIN".\n'
+                       '  zesu_block2.\n'
+                       '  all: idtac "CENSUS STAGE prove-done".\n'
+                       '  all: ltac2:(census_res_mark ()).\n'
                        '  all: idtac "CENSUS STAGE try-done".\n'
                        '  all: ltac2:(census_res_dump "readable").\n'
                        '  Set Printing All.\n'

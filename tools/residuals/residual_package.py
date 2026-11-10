@@ -166,12 +166,46 @@ def statement(name, hyps, keep, concl_text):
     return 'Lemma %s :\n  %s\n  %s.\n' % (name, '\n  '.join(parts), concl_text)
 
 
+def _top_args(text):
+    """Split an application `(f a b ...)` printed with Printing All into its top-level parts."""
+    s = text.strip()
+    if s.startswith('(') and s.endswith(')'):
+        s = s[1:-1]
+    parts, depth, cur = [], 0, []
+    for ch in s:
+        if ch == '(':
+            depth += 1
+        elif ch == ')':
+            depth -= 1
+        if ch == ' ' and depth == 0:
+            if cur:
+                parts.append(''.join(cur))
+                cur = []
+        else:
+            cur.append(ch)
+    if cur:
+        parts.append(''.join(cur))
+    return parts
+
+
+def judgment_of(robust_text):
+    """The Lithium judgment of a spatial goal: the head of the entailment's right-hand side."""
+    parts = _top_args(robust_text)
+    if not parts or not parts[0].endswith('envs_entails'):
+        return parts[0] if parts else ''
+    goal = _top_args(parts[-1])
+    head = goal[0] if goal else ''
+    while head.startswith('@'):
+        head = head[1:]
+    return head
+
+
 def prefix_of(caller_src):
     m = re.search(r'^(Lemma|Theorem) ', caller_src, re.M)
     return caller_src[:m.start()].rstrip() + '\n'
 
 
-def candidates(log, block, fact_limit, evars):
+def candidates(log, block, fact_limit, evars, fail_dumps=True):
     """Return (tries, spatial rows, unique candidates). Each candidate carries its
     goal id, statement digest, source, copy count, and selection."""
     tries, opened, passes = parse_residual(log)
@@ -179,10 +213,12 @@ def candidates(log, block, fact_limit, evars):
     for k, (reason, read, rob) in enumerate(zip(opened, passes['readable'], passes['robust'])):
         if rob['kind'] != 'pure':
             head = ' '.join((read['concl']['text'] or '').split())[:200].replace('\t', ' ')
-            spatial.append(dict(block=block, n=k, kind=rob['kind'], reason=reason, goal_head=head))
+            spatial.append(dict(block=block, n=k, kind=rob['kind'], reason=reason, goal_head=head,
+                                judgment=judgment_of(rob['concl']['text'] or ''),
+                                text=read['concl']['text'] or ''))
         else:
             cands.append(dict(source='left open at the end (%s)' % reason, dump=rob))
-    for dmp in parse_fail_dumps(log):
+    for dmp in (parse_fail_dumps(log) if fail_dumps else []):
         if dmp['concl'] and dmp['concl']['text']:
             cands.append(dict(source='failed %s call during the proof' % dmp['layer'], dump=dmp))
     seen, uniq = {}, []
@@ -304,6 +340,11 @@ def write_spatial(out, spatial):
     rows = ''.join('%s\t%d\t%s\t%s\t%s\n' % (r['block'], r['n'], r['kind'], r['reason'], r['goal_head'])
                    for r in spatial)
     (out / 'spatial.tsv').write_text(SPATIAL_HEADER + rows)
+    if spatial:
+        d = out / 'spatial'
+        d.mkdir(exist_ok=True)
+        for r in spatial:
+            (d / ('%d.txt' % r['n'])).write_text('judgment: %s\n\n%s\n' % (r.get('judgment', ''), r.get('text', '')))
 
 
 TIMING_KEYS = ('run_times', 'control_seconds', 'goal_seconds', 'started_utc', 'finished_utc')

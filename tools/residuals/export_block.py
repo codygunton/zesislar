@@ -3,6 +3,7 @@
 
 Usage:
   export_block.py --block <case> --bank <bank dir with ARGS.json> --out <new dir> [--heavy]
+                  [--mode failed-calls|final-open] [--caller-import MODULE]
   export_block.py --compare <MANIFEST.json> <MANIFEST.json>
 
 Steps, all in one resource-guard batch (one scope per compile):
@@ -15,6 +16,11 @@ Steps, all in one resource-guard batch (one scope per compile):
     The whole-context control marks a goal `true` (passed) or `unknown` (did not
     pass); unknown goals stay. Non-pure goals go to <out>/spatial.tsv.
  4. Write <out>/MANIFEST.json: block, bank, main sha, goals, controls, run times.
+
+--mode final-open runs the plain `zesu_block2` and exports only the goals it leaves
+open (no failed-call dumps, no solver retry); spatial goals go to spatial.tsv and
+spatial/<n>.txt with their Lithium judgment. --caller-import adds one import after the
+caller's last import (for example a diagnostic solver configuration).
 
 The goal list depends only on the bank and the block. `--compare` checks two
 manifests for equality without their run times. Timeouts are allowed here because
@@ -131,6 +137,30 @@ def build(c, block, prefix, stage, args, workers_tag, control_seconds):
     return dict(name=name, control=control, goal=goal, render=render)
 
 
+def census_mode(a):
+    return 'residual' if a.mode == 'failed-calls' else 'final-open'
+
+
+def flags_of(a):
+    if a.mode == 'failed-calls':
+        return CENSUS_FLAGS
+    return [f for i, f in enumerate(CENSUS_FLAGS)
+            if f != '--dump-fail' and (i == 0 or CENSUS_FLAGS[i - 1] != '--dump-fail')]
+
+
+def with_import(src, module):
+    lines = src.split('\n')
+    last = max(i for i, l in enumerate(lines) if l.startswith(('Require ', 'From ')))
+    lines.insert(last + 1, 'Require Import %s.' % module)
+    return '\n'.join(lines)
+
+
+def stalled_calls(text):
+    """Solver layers that hit the diagnostic limit, in log order."""
+    return [line.split(' E ', 1)[1].split()[0] for line in text.splitlines()
+            if ' E ' in line and line.rstrip().endswith(' timeout') and 'CENSUS' in line]
+
+
 def export(a):
     t_start = time.monotonic()
     started = utc()
@@ -145,28 +175,35 @@ def export(a):
     ocamlpath = str(findlib_dir(bank, out))
     os.environ['OCAMLPATH'] = ocamlpath
     row = caller_of(a.block, a.callers)
-    caller_src_path = Path(row['caller'])
+    caller_src_path = Path(a.callers).resolve().parent / row['caller']  # relative paths are relative to the table
     if sha256(caller_src_path) != row.get('caller_sha256', sha256(caller_src_path)):
         raise SystemExit('caller %s does not match its CALLERS24 sha256' % caller_src_path)
     caller = work / ('Caller%s.v' % a.block)
     shutil.copyfile(caller_src_path, caller)
+    if a.caller_import:
+        caller.write_text(with_import(caller.read_text(), a.caller_import))
     tag = 'residual-export-%s-%s' % (a.block, hashlib.sha256(str(out).encode()).hexdigest()[:6])
     times = {}
 
-    t = time.monotonic()
     probe_dir = work / 'probe'
-    probe = ltac_probe.probe(caller, probe_dir, args, tag + '-probe')
-    times['probe'] = round(time.monotonic() - t, 1)
-    t = time.monotonic()
-    verify, excluded = ltac_probe.verify(caller, probe_dir, work / 'verify', args, tag)
-    times['verify'] = round(time.monotonic() - t, 1)
+    if a.mode == 'final-open':
+        # No wrapped Ltac bodies: nothing to probe or verify.
+        probe, verify, excluded = {}, {}, []
+    else:
+        t = time.monotonic()
+        probe = ltac_probe.probe(caller, probe_dir, args, tag + '-probe')
+        times['probe'] = round(time.monotonic() - t, 1)
+        t = time.monotonic()
+        verify, excluded = ltac_probe.verify(caller, probe_dir, work / 'verify', args, tag)
+        times['verify'] = round(time.monotonic() - t, 1)
 
     t = time.monotonic()
     census_v = work / ('Census%s.v' % a.block)
-    census_gen.main([str(caller), str(census_v), '--mode', 'residual', '--timeout', str(a.call_seconds)] +
-                    CENSUS_FLAGS + ['--ltacs', str(probe_dir / 'ltacs.json'),
+    census_gen.main([str(caller), str(census_v), '--mode', census_mode(a), '--timeout', str(a.call_seconds)] +
+                    flags_of(a) + ([] if a.mode == 'final-open' else
+                                   ['--ltacs', str(probe_dir / 'ltacs.json'),
                                     '--fullnames', str(probe_dir / 'fullnames.json'),
-                                    '--exclude', ','.join(excluded)])
+                                    '--exclude', ','.join(excluded)]))
     census = guarded.compile_file(census_v, tag + '-census', args, stamp=True, attempts=1)
     times['census'] = round(time.monotonic() - t, 1)
     log = census_v.with_suffix('.log')
@@ -178,7 +215,9 @@ def export(a):
     t = time.monotonic()
     caller_src = caller.read_text()
     evars = pkg.entry_vars(caller_src, bank['lib'])
-    tries, spatial, uniq = pkg.candidates(log, a.block, a.fact_limit, evars)
+    tries, spatial, uniq = pkg.candidates(log, a.block, a.fact_limit, evars,
+                                          fail_dumps=a.mode == 'failed-calls')
+    stalls = stalled_calls(text)
     pkg.write_spatial(out, spatial)
     stage = work / 'stage'
     prefix = pkg.prefix_of(caller_src)
@@ -203,8 +242,10 @@ def export(a):
         out=str(out), ocamlpath=ocamlpath,
         main_sha=bank['main'], tool_commit=git_head(),
         caller=dict(path=str(caller_src_path), sha256=sha256(caller_src_path)),
+        mode=a.mode, caller_import=a.caller_import, stalls=stalls,
+        spatial_goals=[dict(n=r['n'], kind=r['kind'], judgment=r['judgment']) for r in spatial],
         settings=dict(call_seconds=a.call_seconds, control_seconds=a.control_seconds, fact_limit=a.fact_limit,
-                      census_flags=CENSUS_FLAGS, heavy=a.heavy),
+                      census_flags=flags_of(a), heavy=a.heavy),
         probe=dict(probe, **verify), excluded=sorted(excluded),
         tries=tries, spatial=len(spatial), unique=len(uniq),
         goal_list=[g['id'] + ':' + g['sha'] for g in goals],
@@ -231,6 +272,9 @@ def main(argv=None):
     ap.add_argument('--workers', type=int, default=8, help='packaging compiles at once (at most 16)')
     ap.add_argument('--heavy', action='store_true', help='issue-10 probe class with a 64 GiB scope')
     ap.add_argument('--compare', nargs=2, metavar='MANIFEST')
+    ap.add_argument('--mode', default='failed-calls', choices=['failed-calls', 'final-open'],
+                    help='failed-calls: every failed solver call; final-open: goals zesu_block2 leaves open')
+    ap.add_argument('--caller-import', help='module imported after the caller\'s last import')
     a = ap.parse_args(argv)
     if a.compare:
         m1, m2 = (json.loads(Path(p).read_text()) for p in a.compare)

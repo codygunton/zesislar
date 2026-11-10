@@ -11,6 +11,7 @@ Require Import ZesuSsz.Generated.DecodeItem.FP301.Pilot69e8Structural.
 Require Import ZesuSsz.Generated.DecodeItem.FP301.Pilot6ae0Entries.
 Require Import ZesuSsz.Generated.DecodeItem.FP301.Pilot69e8Entries.
 Require Import ZesuSsz.Automation2.All.
+Require Import ZesuSsz.Residuals.Block800d69e0.
 Local Open Scope Z_scope.
 
 Definition DesignedEntry_800d69e0

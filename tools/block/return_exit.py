@@ -96,3 +96,39 @@ def add_return_precondition(statement, address, package):
             premise = f"\n  instr_pre {address} ({package}) -∗"
             return statement[: position + 1] + premise + statement[position + 1 :]
     raise ValueError("The caller statement has no top-level result type.")
+
+
+RETURN_TAIL = " ∗ True)) ∗ K)%I"
+
+
+def add_return_facts(source, facts):
+    """Add pure exit facts after the last fact of the one return package body.
+
+    The owned resources come first, so they fix the package existentials (for
+    example the output bytes) before a fact about them is proved.
+    """
+    if not facts:
+        return source
+    for fact in facts:
+        expression(fact, "return fact")
+        if "⌜" in fact or "⌝" in fact:
+            raise ValueError("A return fact must be a bare proposition.")
+    if source.count(RETURN_TAIL) != 1:
+        raise ValueError("The return package needs exactly one pure fact tail.")
+    added = "".join(" ∗ ⌜" + fact + "⌝" for fact in facts)
+    return source.replace(RETURN_TAIL, added + RETURN_TAIL)
+
+
+ENTRY_TAIL = "⌝))%I"
+
+
+def add_entry_facts(source, facts):
+    """Add pure facts after the last fact of the one entry alternative in source."""
+    if not facts:
+        return source
+    for fact in facts:
+        expression(fact, "entry fact")
+    if source.count(ENTRY_TAIL) != 1:
+        raise ValueError("The entry needs exactly one pure fact tail.")
+    added = "".join(" ∗ ⌜" + fact + "⌝" for fact in facts)
+    return source.replace(ENTRY_TAIL, "⌝" + added + "))%I")
