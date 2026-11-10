@@ -1,0 +1,36 @@
+{
+  "function": "nextUint64",
+  "args_type": "NextUint64Args",
+  "pc_prefix": "0x800d",
+  "generated_directory": "ZesuSsz/Generated/NextUint64/FP301",
+  "callers_directory": "tools/block/generated/nextuint64_fp301_callers",
+  "contract_requires": [
+    "Require Import EvmSailRlp.evm_rlp_types.",
+    "Require Import ZesuSsz.Contracts.RlpDecodeItem.",
+    "Require Import ZesuSsz.Contracts.AbiBytes.",
+    "Require Import ZesuSsz.Contracts.RlpDecodeItemContract.",
+    "Require Import ZesuSsz.Contracts.ParentHeaderRootFacts.",
+    "Require Import ZesuSsz.Contracts.NextUint64BlockEntries."
+  ],
+  "loop_contract_requires": [
+    "Require Import ZesuSsz.Contracts.NextUint64BlockEntries."
+  ],
+  "caller_contract_requires": [
+    "Require Import ZesuSsz.Contracts.NextUint64BlockEntries.",
+    "Require Import ZesuSsz.Contracts.NextUint64Contract."
+  ],
+  "selected_code": {
+    "module": "ZesuSsz.Contracts.NextUint64Selected",
+    "premise": "nextUint64SelectedCode"
+  },
+  "domain_component": "⌜nextUint64BoundaryDomain args⌝",
+  "blocks": ["6274", "62b8", "62c0", "62cc", "62d8", "62e4", "6304", "6310", "6318", "632c"],
+  "loop_heads": ["6318"],
+  "cfg_function": "rlp_decode.nextUint64",
+  "entry_source": {
+    "file": "ZesuSsz/Contracts/NextUint64BlockEntries.v",
+    "definition_prefix": "nextUint64EntryAt800d",
+    "helpers": ["nextUint64Registers", "nextUint64PostMemory"],
+    "note": "The FP-20261101 forward pass cannot render this function: block 6274 ends in a call, and the 6318 loop has no loop design. The checked October block entries are the rendered entries; the adapter only closes each entry's binders existentially and adds the continuation K."
+  }
+}
