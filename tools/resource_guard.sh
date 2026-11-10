@@ -159,6 +159,10 @@ MEMORY_TOOL=${ZESU_MODULE_MEMORY_TOOL:-$(dirname "$0")/module_memory.py}
 # Ledger writers publish admission totals here; a held launch waits for it to
 # change instead of rerunning every check each poll.
 ADMISSION_SUMMARY="$STATE_DIR/admission-summary"
+# Every release or recovery rewrites this file, which wakes held launches at
+# once. The totals file alone missed releases when it did not exist yet and
+# every recovery, so held launches slept a full WAKE_TIMEOUT round.
+ADMISSION_WAKE="$STATE_DIR/admission-wake"
 WAKE_TIMEOUT=${ZESU_ADMISSION_WAKE_TIMEOUT:-30}
 if ! [[ "$MODULE_LIMIT_GIB" =~ ^[1-9][0-9]{0,2}$ ]]; then
   echo "resource guard: invalid module memory limit" >&2; exit 2
@@ -600,6 +604,7 @@ recover_dead_reservation() {
     return "$status"
   fi
   note "RELEASE dead-owner reservation: ${marker##*/}"
+  wake_admissions
 }
 
 # An admitted launch keeps its slot until its owner or compiler exits.
@@ -951,27 +956,38 @@ admission_plausible() {
 # WAKE_TIMEOUT seconds, then let the caller run the full check once. Polling
 # reran the Python helpers every POLL_SECONDS while held: 2.4-14.7 s of
 # harness CPU per 0.5-1.7 s compile on 2026-11-10.
+wake_admissions() {
+  printf '%s\n' "$(date +%s%N)" > "$ADMISSION_WAKE" 2>/dev/null || true
+}
+
 wait_for_admission_change() {
-  local started=$SECONDS left
+  local stamp=${1-} started=$SECONDS left round
   if ! command -v inotifywait >/dev/null 2>&1; then
     sleep "$POLL_SECONDS"; return 0
   fi
   while :; do
+    # A release since this attempt began (even one before the wait) returns
+    # at once; short rounds bound a wake missed in the gap to 5 s.
+    [ "$(cat "$ADMISSION_WAKE" 2>/dev/null)" != "$stamp" ] && return 0
     left=$(( WAKE_TIMEOUT - (SECONDS - started) ))
     (( left > 0 )) || return 0
-    inotifywait -qq -t "$left" -e close_write -e moved_to --include '/admission-summary$' \
-      "$STATE_DIR" >/dev/null 2>&1 || return 0
-    admission_plausible && return 0
+    round=$(( left < 5 ? left : 5 ))
+    if inotifywait -qq -t "$round" -e close_write -e moved_to --include '/admission-(summary|wake)$' \
+        "$STATE_DIR" >/dev/null 2>&1; then
+      [ "$(cat "$ADMISSION_WAKE" 2>/dev/null)" != "$stamp" ] && return 0
+      admission_plausible && return 0
+    fi
   done
 }
 
 # Take the slot atomically immediately before launch. An admitted caller
 # can confirm again without waiting for admission while it holds its slot.
 confirm_coqc() {
-  local marker=$1 reason holder admission owner status state replacement aggregate held=""
+  local marker=$1 reason holder admission owner status state replacement aggregate held="" wake_stamp
   validate_probe_scope || return $?
   confirmed_reservation "$marker" && return 0
   while :; do
+    wake_stamp=$(cat "$ADMISSION_WAKE" 2>/dev/null)
     cache_disk_admission || return $?
     exec 7>>"$GATE_MUTEX"
     flock 7 || { echo "resource guard: confirmation mutex failed" >&2; return 2; }
@@ -1080,7 +1096,7 @@ confirm_coqc() {
         fi
         note "HOLD reservation launch: unified memory ledger; owner=$owner claim_bytes=$MEMORY_CLAIM_BYTES marker=${marker##*/}"
         flock -u 7; exec 7>&-
-        wait_for_admission_change
+        wait_for_admission_change "$wake_stamp"
         continue
       fi
       [ -z "$held" ] || note "RESUME reservation launch: $held"
@@ -1093,7 +1109,7 @@ confirm_coqc() {
       held=$reason
     fi
     flock -u 7; exec 7>&-
-    wait_for_admission_change
+    wait_for_admission_change "$wake_stamp"
   done
 }
 
@@ -1140,6 +1156,7 @@ release_coqc() {
   fi
   flock -u 7
   exec 7>&-
+  wake_admissions
 }
 
 release_aggregate_reservations() {
@@ -1159,6 +1176,7 @@ release_aggregate_reservations() {
   done
   flock -u 7
   exec 7>&-
+  wake_admissions
 }
 
 run_locked() {

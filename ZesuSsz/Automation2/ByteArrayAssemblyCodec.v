@@ -76,3 +76,44 @@ Ltac zesu_byte_array_restore_source :=
              zesu_byte_array_assemble_codec | idtac]
         end)
   end.
+
+(* The byte cells of one owned array, read off the spatial environment: every
+   byte cell with the same fraction at `base` or at `base + _`. The assembler
+   below checks each address and value, so this selection only bounds it. *)
+Ltac zesu_byte_cells_at base fraction environment :=
+  lazymatch environment with
+  | Enil => constr:(@nil ident)
+  | Esnoc ?rest ?name ?body =>
+      let tail := zesu_byte_cells_at base fraction rest in
+      lazymatch body with
+      | @mem_mapsto _ _ 8%N base fraction _ => constr:(cons name tail)
+      | @mem_mapsto _ _ 8%N (base + _)%Z fraction _ => constr:(cons name tail)
+      | _ => tail
+      end
+  end.
+
+(* A goal asks for a byte array that the context owns as separate cells, for
+   example after the package opener unfolded the array. Rebuild the array from
+   exactly those cells with the existing assembler, then frame it. The other
+   resources stay in the context. *)
+Ltac zesu_byte_array_rebuild_requested :=
+  lazymatch goal with
+  | |- envs_entails _ (isla.ghost_state.mem_mapsto_array_def _ _ _ ∗ _)%I => idtac
+  end;
+  ResourceGroups.zesu_expose_environment_alias;
+  zesu_byte_array_normalize_stride;
+  lazymatch goal with
+  | |- envs_entails (Envs _ ?spatial _)
+      (@isla.ghost_state.mem_mapsto_array_def _ _ 8%N ?base ?fraction ?bytes ∗ _)%I =>
+      assert_fails (has_evar base);
+      assert_fails (has_evar fraction);
+      assert_fails (has_evar bytes);
+      zesu_byte_array_closed_counts bytes;
+      let cells := zesu_byte_cells_at base fraction spatial in
+      lazymatch cells with cons _ _ => idtac end;
+      let selected := constr:(SGoal (SpecGoal GSpatial false nil cells false)) in
+      iAssert (base ↦ₘ{fraction}∗ bytes)%I with selected as "Hzesu_rebuilt_array";
+      [ResourceGroups.zesu_open_resource_groups; zesu_byte_array_assemble_codec |
+       iEval (rewrite isla.ghost_state.mem_mapsto_array_eq) in "Hzesu_rebuilt_array";
+       iFrame "Hzesu_rebuilt_array"]
+  end.

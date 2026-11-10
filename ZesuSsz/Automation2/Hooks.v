@@ -2165,6 +2165,7 @@ Ltac zesu_liAStep :=
   | ltac2:(Ltac1.run (Ltac1.ref
       [@ZesuSsz; @Automation2; @StoreMemoryLookup; @zesu_join_frame_byte_array]))
   | progress ResourceGroups.zesu_open_nested_existential_packages
+  | ByteArrayAssemblyCodec.zesu_byte_array_rebuild_requested
   | CodecArrayRead.zesu_codec_array_read
   | zesu_prefer_owned_instr_pre
   | zesu_source_witnesses_if_enabled
