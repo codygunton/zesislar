@@ -275,13 +275,55 @@ def return_precondition(profile):
             + ' args returnAddress K)')
 
 
+def caller_entry_alias(profile, block, name=None):
+    """Return the entry alias of one block caller: its FP301 entry and `True`."""
+    pc = profile.pc(block)[2:]
+    entry = profile.qualified('Pilot' + block + 'Entries', 'fp_machineAt' + block)
+    return ('Definition ' + (name or ENTRY + pc) + '\n'
+            + '    `{!islaG Sigma} `{!threadG} (args : ' + profile.args_type
+            + ') (returnAddress : Z) (K : iProp Sigma) : iProp Sigma :=\n'
+            + '  ((' + entry + ' (args) (returnAddress) (K)) ∗\n'
+            + '   True)%I.\n')
+
+
+def caller_blocks(profile):
+    """Return every block that has a caller: the profile blocks and the loop successors."""
+    successors = [suffix for suffix, _ in profile.get('loop_successors', {}).get('pairs', [])]
+    return sorted(set(profile['blocks']) | set(successors))
+
+
+def caller_unfolds_import(profile):
+    return 'Require Import ' + profile.qualified('CallerUnfolds') + '.'
+
+
+def render_caller_unfolds(profile=None):
+    """Render the caller entry aliases and their unfold instances as one module.
+
+    The function's hint umbrella exports this module, so it owns each unfold
+    instance. The callers import it; they declare no instance themselves.
+    """
+    profile = profile or load_profile()
+    blocks = caller_blocks(profile)
+    output = ('(* Generated caller entry aliases and their unfold instances. No proof script. *)\n'
+              + 'Require Import isla.riscv64.riscv64.\n'
+              + 'From Coq Require Import ZArith.ZArith.\n'
+              + ''.join(line + '\n' for line in profile['caller_contract_requires'])
+              + ''.join('Require Import ' + profile.qualified('Pilot' + block + 'Entries') + '.\n'
+                        for block in blocks)
+              + 'Local Open Scope Z_scope.\n\n'
+              + '\n'.join(caller_entry_alias(profile, block)
+                           + unfold_declaration(ENTRY + profile.pc(block)[2:])
+                           for block in blocks))
+    assert not re.search(r'\b(?:Proof|Qed|Admitted|Axiom|Ltac)\b', output)
+    return output
+
+
 def render_block_caller(profile, block, preconditions, imports):
     """Render one block caller from its entry, its exit premises and the selected code.
 
     The statement is declarations data; the proof is always `zesu_block2.`.
     """
     pc = profile.pc(block)[2:]
-    entry = profile.qualified('Pilot' + block + 'Entries', 'fp_machineAt' + block)
     premises = ''.join('  ' + premise + ' -∗\n' for premise in preconditions)
     return (''.join('Require Import ' + module + '.\n' for module in imports)
             + CORE_IMPORT + '\n'
@@ -290,15 +332,9 @@ def render_block_caller(profile, block, preconditions, imports):
             + 'Require Import stdpp.bitvector.definitions.\n'
             + ''.join(line + '\n' for line in profile['caller_contract_requires'])
             + profile.selected_import()
+            + caller_unfolds_import(profile) + '\n'
             + CORE_IMPORT + '\n'
             + 'Local Open Scope Z_scope.\n\n'
-            + 'Definition ' + ENTRY + pc + '\n'
-            + '    `{!islaG Sigma} `{!threadG} (args : ' + profile.args_type
-            + ') (returnAddress : Z) (K : iProp Sigma) : iProp Sigma :=\n'
-            + '  ((' + entry + ' (args) (returnAddress) (K)) ∗\n'
-            + '   True)%I.\n'
-            + 'Global Instance : LithiumUnfold (@' + ENTRY + pc + ') := I.\n'
-            + 'Global Typeclasses Opaque ' + ENTRY + pc + '.\n\n'
             + 'Lemma ' + BOUNDARY + pc + ' `{!islaG Sigma} `{!threadG} (args : '
             + profile.args_type + ') (returnAddress : Z) (K : iProp Sigma)  :\n'
             + premises
@@ -346,9 +382,35 @@ def render_caller(source, residuals=RESIDUALS):
         raise ValueError("A canonical caller lacks its plain block proof.")
     source = re.sub(r"\bDesignedEntry_(?=800d)", ENTRY,
                     re.sub(r"\bDesignedBoundary_(?=800d)", BOUNDARY, source))
-    return residual_import(core_import_last(source.replace("Require Import ZesuSsz.Automation.All.",
-                          CORE_IMPORT).replace(
-                              "  zesu_block.\nQed.", "  zesu_block2.\nQed.")), residuals)
+    source = without_entry_alias(source)
+    source = core_import_last(source.replace("Require Import ZesuSsz.Automation.All.",
+                              CORE_IMPORT).replace(
+                                  "  zesu_block.\nQed.", "  zesu_block2.\nQed."))
+    return residual_import(import_caller_unfolds(source), residuals)
+
+
+def without_entry_alias(source, profile=None):
+    """Remove the caller's own alias and instance; CallerUnfolds owns both."""
+    profile = profile or load_profile()
+    match = re.search(r"^Lemma " + BOUNDARY + r"800d([0-9a-f]{4})\b", source, re.M)
+    if not match:
+        raise ValueError("A caller lacks its boundary lemma.")
+    pc = "800d" + match[1]
+    alias = (caller_entry_alias(profile, match[1]) + unfold_declaration(ENTRY + pc) + "\n")
+    if source.count(alias) != 1:
+        raise ValueError("A caller alias differs from the generated alias: " + pc)
+    return source.replace(alias, "", 1)
+
+
+def import_caller_unfolds(source, profile=None):
+    """Import the generated aliases just before the final core import."""
+    profile = profile or load_profile()
+    lines = source.split("\n")
+    last = max(index for index, text in enumerate(lines) if text.startswith(("Require ", "From ")))
+    if lines[last] != CORE_IMPORT:
+        raise ValueError("A caller must end its imports with the core import.")
+    lines.insert(last, caller_unfolds_import(profile))
+    return "\n".join(lines)
 
 
 def render(inputs, output):
@@ -468,10 +530,20 @@ def render(inputs, output):
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--inputs", type=Path, required=True)
-    parser.add_argument("--inputs-sha256", required=True)
-    parser.add_argument("--output", type=Path, required=True)
+    parser.add_argument("--caller-unfolds", action="store_true",
+                        help="write the generated caller aliases module and stop")
+    parser.add_argument("--inputs", type=Path)
+    parser.add_argument("--inputs-sha256")
+    parser.add_argument("--output", type=Path)
     options = parser.parse_args()
+    if options.caller_unfolds:
+        profile = load_profile()
+        path = ROOT / profile.generated_directory / "CallerUnfolds.v"
+        path.write_text(render_caller_unfolds(profile))
+        print(path)
+        return
+    if not (options.inputs and options.inputs_sha256 and options.output):
+        parser.error("--inputs, --inputs-sha256, and --output are required")
     inputs = json.loads(read_bound({
         "path": str(options.inputs), "sha256": options.inputs_sha256
     }))

@@ -2,6 +2,7 @@ Require Import ZesuSsz.Generated.DecodeItem.Entries.
 Require Export ZesuSsz.Contracts.DecodeItemCallSpec.
 Require Export ZesuSsz.Generated.DecodeItem.BootstrapRegistrations.
 Require Export ZesuSsz.Generated.DecodeItem.Registrations.
+Require Export ZesuSsz.Generated.DecodeItem.FP301.CallerUnfolds.
 Require Import isla.automation.
 Require Import ZesuSsz.Contracts.RlpDecodeItemBlockEntries.
 Require Export ZesuSsz.Compliance.DecodeItemBranchGuardFacts.

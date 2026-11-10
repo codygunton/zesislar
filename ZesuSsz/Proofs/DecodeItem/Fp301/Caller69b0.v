@@ -7,17 +7,11 @@ Require Import ZesuSsz.Contracts.DecodeItemSelected.
 Require Import ZesuSsz.Generated.DecodeItem.FP301.Pilot69b0Entries.
 Require Import ZesuSsz.Generated.DecodeItem.FP301.Pilot69b0Structural.
 Require Import ZesuSsz.Generated.DecodeItem.FP301.FunctionReturnStructural.
+Require Import ZesuSsz.Generated.DecodeItem.FP301.CallerUnfolds.
 Require Import ZesuSsz.Automation2.All.
 Require Import ZesuSsz.Compliance.DecodeItemMeaningPorted.
 Require Import ZesuSsz.Residuals.Block800d69b0.
 Local Open Scope Z_scope.
-
-Definition Fp301Entry_800d69b0
-    `{!islaG Sigma} `{!threadG} (args : DecodeItemArgs) (returnAddress : Z) (K : iProp Sigma) : iProp Sigma :=
-  ((ZesuSsz.Generated.DecodeItem.FP301.Pilot69b0Entries.fp_machineAt69b0 (args) (returnAddress) (K)) ∗
-   True)%I.
-Global Instance : LithiumUnfold (@Fp301Entry_800d69b0) := I.
-Global Typeclasses Opaque Fp301Entry_800d69b0.
 
 Lemma Fp301Boundary_800d69b0 `{!islaG Sigma} `{!threadG} (args : DecodeItemArgs) (returnAddress : Z) (K : iProp Sigma)  :
   instr_pre returnAddress (ZesuSsz.Generated.DecodeItem.FP301.FunctionReturnEntries.fp_machineReturn args returnAddress K) -∗
