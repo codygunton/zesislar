@@ -3,7 +3,9 @@
 Guard 1. The forward pass drops a path when it stops it. A boundary that a
 dropped path can reach in the CFG has an incomplete alternative inventory, so
 a renderer must refuse it. A fault arm that jumps out of the function (to the
-trap vector) drops no path to a boundary. The forward pass records these stops on each
+trap vector) drops no path to a boundary. A call also jumps out of the function,
+but its path resumes at the return site, so a stop at a call drops that path.
+The forward pass records these stops on each
 boundary as `reaching_stops`; a boundary without that record is refused too.
 
 Guard 2. Each surviving alternative must be consistent. A rendered
@@ -51,11 +53,25 @@ def can_reach(successors, start, target):
     return False
 
 
+def calls_callee(stop, function):
+    """The stop's block contains a call whose callee is the stop's concrete target."""
+    actual = stop.get('actual_pc')
+    if not isinstance(actual, str):
+        return False
+    start = _pc(stop['block_pc'])
+    end = next(_pc(block['end']) for block in function['blocks'] if _pc(block['start']) == start)
+    return any(start <= _pc(call['pc']) < end and _pc(call['target']) == _pc(actual)
+               for call in function.get('calls', []))
+
+
 def leaves_function(stop, function):
     """A fault arm jumps to a concrete address outside the function (the trap
-    vector). It leaves the function, so it drops no path to a boundary."""
+    vector). It leaves the function, so it drops no path to a boundary. A jump
+    to the callee of a call in the stop's block is a call boundary, not a fault
+    exit: the path resumes at the return site."""
     actual = stop.get('actual_pc')
-    if stop['reason'] not in LEAVING_STOPS or not isinstance(actual, str):
+    if (stop['reason'] not in LEAVING_STOPS or not isinstance(actual, str)
+            or calls_callee(stop, function)):
         return False
     return not _pc(function['entry']) <= _pc(actual) < _pc(function['end'])
 

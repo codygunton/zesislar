@@ -424,6 +424,29 @@ R.Registry(store).stop('locking', grace=0.5)
         self.assertFalse(row['claims']['memory']['released'])
         self.assertTrue(R.live(actor))
 
+    def test_scheduler_resumed_by_its_shell_does_not_block_a_frozen_job_stop(self):
+        # An agent's background shell continues a stopped scheduler at once.
+        scheduler, child = self.sleeper(), self.sleeper()
+        actor = R.identity(scheduler.pid)
+        self.registry.register('resumed', 'fixture', 'test', actor, [])
+        self.registry.add_job('resumed', R.identity(child.pid))
+        self.registry.add_claim('resumed', 'memory', [sys.executable, '-c', 'pass'])
+        actual_identity = R.identity
+
+        def resumed(pid, *args):
+            current = actual_identity(pid, *args)
+            if current and pid == actor['pid'] and current['state'] in ('T', 't'):
+                return dict(current, state='S')
+            return current
+
+        with patch.object(R, 'identity', side_effect=resumed):
+            self.registry.stop('resumed', grace=0.5)
+        row = self.registry.read()['runs']['resumed']
+        self.assertEqual(row['status'], 'stopped')
+        self.assertTrue(row['claims']['memory']['released'])
+        for process in (scheduler, child):
+            self.assertIsNotNone(process.wait(timeout=EVENT_CEILING_SECONDS))
+
     def test_replacement_refuses_another_owner(self):
         child = self.sleeper()
         self.registry.register('old', 'fixture', 'other', R.identity(child.pid), [])
