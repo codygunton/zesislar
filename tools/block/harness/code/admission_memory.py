@@ -842,6 +842,50 @@ def shell_rows(data, reader):
     return rows
 
 
+def unmeasured_shell(data, key):
+    """A compile booked at its full fence has no measured claim."""
+    try:
+        marker = Path(data['shell_claim_owners'][key]['marker'])
+        fields = dict(line.split('=', 1) for line in marker.read_text().splitlines()[1:] if '=' in line)
+        return int(fields['memory_claim_bytes']) >= int(fields['memory_fence_bytes'])
+    except (KeyError, OSError, ValueError, TypeError):
+        return True
+
+
+def sum_gate_compiles(data, claims, observations, new_observation=None, new_bytes=0, new_unmeasured=False):
+    """Book a measured gate as its own claim plus its running compiles.
+
+    Shared-aggregate grouping counts members as max(), so a gate claim had to
+    cover every compile inside it: 47.3 GiB booked at a 0.55 GiB anon peak on a
+    cached check-fast. A gate with a measured own claim (it records its cold
+    basis in correctness_gate_cold_claims) now books own + the sum of its
+    running compile claims, and at least its cold basis while any of them is
+    unmeasured. An unmeasured gate keeps the max() rule.
+    """
+    cold_claims = data.get('correctness_gate_cold_claims', {})
+    for gate, cold in cold_claims.items():
+        own = claims.get(gate, 0)
+        sample = observations.get(gate, {})
+        if not own or sample.get('verified') is not True or sample.get('aggregate_verified') is not True:
+            continue
+        members = [key for key, amount in claims.items()
+                   if key != gate and amount and key in data.get('shell_claim_owners', {})
+                   and observations.get(key, {}).get('verified') is True
+                   and observations[key].get('scope') == sample.get('scope')]
+        total = own + sum(claims[key] for key in members)
+        # A compile asking to start inside this gate adds to the sum too;
+        # grouped with the gate it would otherwise count as max().
+        joining = ((new_observation or {}).get('scope') == sample.get('scope')
+                   and new_observation.get('verified') is True)
+        if joining:
+            total += new_bytes
+        if any(unmeasured_shell(data, key) for key in members) or (joining and new_unmeasured):
+            total = max(total, cold)
+        claims[gate] = total
+        for key in members:
+            claims[key] = 0
+
+
 def projection(data, claims, new_bytes, available_bytes, *, reader=None, new_observation=None,
                pending_shell=None):
     reader = ScopeReader() if reader is None else reader
@@ -907,6 +951,14 @@ def projection(data, claims, new_bytes, available_bytes, *, reader=None, new_obs
                           and observations[other].get('scope') == sample.get('scope'))
             claims[key] = min(retained["fallback_bytes"], sample["anon_bytes"] + running)
         observations[key] = sample
+    new_unmeasured = False
+    if pending_shell is not None:
+        try:
+            fields = dict(line.split('=', 1) for line in Path(pending_shell[1]).read_text().splitlines()[1:] if '=' in line)
+            new_unmeasured = int(fields['memory_claim_bytes']) >= int(fields['memory_fence_bytes'])
+        except (KeyError, OSError, ValueError, TypeError, IndexError):
+            new_unmeasured = True
+    sum_gate_compiles(data, claims, observations, new_observation, new_bytes, new_unmeasured)
     result = dict(evaluate(claims, new_bytes, available_bytes, observations=observations,
                            new_observation=new_observation,
                            slice_max_bytes=reader.slice_max()),
