@@ -1,7 +1,7 @@
 Require Import ZesuSsz.Automation2.All.
 Require Import isla.riscv64.riscv64.
-Require Import ZesuSsz.Automation2.All.
 From Coq Require Import Lists.List ZArith.ZArith.
+Require Import ZesuSsz.Automation2.All.
 Local Open Scope Z_scope.
 
 (* Facts with wide constants over atoms that no guard below names. A
