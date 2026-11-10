@@ -6,7 +6,7 @@ import unittest
 from check_decode_item_hints import (
     ROOT, SCOPED_HINT_IMPORTS, exported_modules, imported_modules,
     has_hint_registration, missing_hint_modules,
-    manifest_errors, manifest_umbrellas,
+    manifest_errors, manifest_umbrellas, transition_errors,
 )
 
 
@@ -242,6 +242,68 @@ class FunctionHintCoverageTests(unittest.TestCase):
             manifest.write_text(json.dumps(data))
             with self.assertRaisesRegex(ValueError, "one hint umbrella"):
                 manifest_umbrellas(root)
+
+
+class TransitionUmbrellaTests(unittest.TestCase):
+    UNFOLD = "Global Instance : LithiumUnfold (@Fp301Entry_800d1234) := I.\n"
+
+    def tree(self, root, files):
+        base = {
+            "ZesuSsz/Compliance/DecodeItemHints.v": "Require Export ZesuSsz.Compliance.Old.\n",
+            "ZesuSsz/Compliance/Old.v": "Require Import ZesuSsz.Contracts.Base.\n",
+            "ZesuSsz/Compliance/DecodeItemFp301Hints.v":
+                "Require Export ZesuSsz.Generated.DecodeItem.FP301.CallerUnfolds.\n",
+            "ZesuSsz/Generated/DecodeItem/FP301/CallerUnfolds.v":
+                "Require ZesuSsz.Automation2.All.\n" + self.UNFOLD,
+            "ZesuSsz/Proofs/DecodeItem/Fp301/Caller1234.v":
+                "Require Import ZesuSsz.Compliance.DecodeItemFp301Hints.\n"
+                "Require Import ZesuSsz.Automation2.All.\n",
+            "ZesuSsz/Automation2/All.v": "",
+        }
+        base.update(files)
+        for name, text in base.items():
+            (root / name).parent.mkdir(parents=True, exist_ok=True)
+            (root / name).write_text(text)
+
+    def errors(self, files):
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            self.tree(root, files)
+            return transition_errors(root)
+
+    def test_current_tree_passes(self):
+        self.assertEqual(transition_errors(ROOT), [])
+
+    def test_separate_stacks_pass(self):
+        self.assertEqual(self.errors({}), [])
+
+    def test_old_umbrella_must_not_reach_the_new_stack(self):
+        errors = self.errors({"ZesuSsz/Compliance/Old.v":
+                              "Require ZesuSsz.Compliance.DecodeItemFp301Hints.\n"})
+        self.assertIn("ZesuSsz.Compliance.DecodeItemHints reaches the transition umbrella "
+                      "ZesuSsz.Compliance.DecodeItemFp301Hints.", errors)
+        self.assertIn("ZesuSsz.Compliance.DecodeItemHints reaches 1 Automation2 modules, "
+                      "first ZesuSsz.Automation2.All.", errors)
+
+    def test_importer_must_not_reach_the_old_umbrella(self):
+        errors = self.errors({"ZesuSsz/Proofs/DecodeItem/Auto/Block1234.v":
+                              "Require Import ZesuSsz.Compliance.DecodeItemHints.\n"
+                              "Require Import ZesuSsz.Compliance.DecodeItemFp301Hints.\n"})
+        self.assertEqual(errors, [
+            "ZesuSsz.Proofs.DecodeItem.Auto.Block1234 imports ZesuSsz.Compliance.DecodeItemFp301Hints "
+            "and reaches the old umbrella ZesuSsz.Compliance.DecodeItemHints."])
+
+    def test_only_the_owned_module_declares_the_instances(self):
+        errors = self.errors({"ZesuSsz/Proofs/DecodeItem/Fp301/Caller1234.v":
+                              "Require Import ZesuSsz.Compliance.DecodeItemFp301Hints.\n" + self.UNFOLD})
+        self.assertEqual(errors, [
+            "ZesuSsz.Proofs.DecodeItem.Fp301.Caller1234 declares a Fp301Entry_ unfold instance; "
+            "ZesuSsz.Generated.DecodeItem.FP301.CallerUnfolds owns them."])
+
+    def test_the_umbrella_must_export_its_module(self):
+        errors = self.errors({"ZesuSsz/Compliance/DecodeItemFp301Hints.v": ""})
+        self.assertEqual(errors, ["DecodeItemFp301Hints.v does not export "
+                                  "ZesuSsz.Generated.DecodeItem.FP301.CallerUnfolds."])
 
 
 if __name__ == "__main__":

@@ -16,6 +16,7 @@
   "caller_contract_requires": [
     "Require Import ZesuSsz.Contracts.RlpDecodeItemContract."
   ],
+  "caller_hint_umbrella": "ZesuSsz.Compliance.DecodeItemFp301Hints",
   "selected_code": {
     "module": "ZesuSsz.Contracts.DecodeItemSelected",
     "premise": "decodeItemSelectedCode"

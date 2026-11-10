@@ -27,6 +27,7 @@ def other_profile():
         'loop_contract_requires': ['Require Import ZesuSsz.Contracts.OtherContract.'],
         'caller_contract_requires': ['Require Import ZesuSsz.Contracts.OtherContract.'],
         'selected_code': {'module': 'ZesuSsz.Contracts.OtherSelected', 'premise': 'otherSelectedCode'},
+        'caller_hint_umbrella': 'ZesuSsz.Compliance.OtherHints',
         'domain_component': '⌜otherDomain args⌝',
         'blocks': ['1000', '1010'],
         'loop_heads': [],

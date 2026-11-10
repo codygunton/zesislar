@@ -293,14 +293,16 @@ def caller_blocks(profile):
 
 
 def caller_unfolds_import(profile):
-    return 'Require Import ' + profile.qualified('CallerUnfolds') + '.'
+    """Import the function's hint umbrella, which exports CallerUnfolds."""
+    return 'Require Import ' + profile.get('caller_hint_umbrella',
+                                           profile.qualified('CallerUnfolds')) + '.'
 
 
 def render_caller_unfolds(profile=None):
     """Render the caller entry aliases and their unfold instances as one module.
 
-    The function's hint umbrella exports this module, so it owns each unfold
-    instance. The callers import it; they declare no instance themselves.
+    The function's caller hint umbrella exports this module, so it owns each
+    unfold instance. The callers import the umbrella and declare no instance.
     """
     profile = profile or load_profile()
     blocks = caller_blocks(profile)

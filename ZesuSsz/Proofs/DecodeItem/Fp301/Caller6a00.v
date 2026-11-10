@@ -10,7 +10,7 @@ Require Import ZesuSsz.Generated.DecodeItem.FP301.Pilot6a64Structural.
 Require Import ZesuSsz.Generated.DecodeItem.FP301.Pilot6a08Structural.
 Require Import ZesuSsz.Generated.DecodeItem.FP301.Pilot6a64Entries.
 Require Import ZesuSsz.Generated.DecodeItem.FP301.Pilot6a08Entries.
-Require Import ZesuSsz.Generated.DecodeItem.FP301.CallerUnfolds.
+Require Import ZesuSsz.Compliance.DecodeItemFp301Hints.
 Require Import ZesuSsz.Automation2.All.
 Local Open Scope Z_scope.
 

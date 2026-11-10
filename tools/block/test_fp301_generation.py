@@ -31,14 +31,15 @@ class GeneratedFP301(unittest.TestCase):
         unfolds = ROOT / profile.generated_directory / "CallerUnfolds.v"
         self.assertEqual(unfolds.read_text(), render_caller_unfolds(profile))
         self.assertEqual(unfolds.read_text().count("LithiumUnfold"), 24)
-        umbrella = (ROOT / "ZesuSsz/Compliance/DecodeItemHints.v").read_text()
+        umbrella_module = profile["caller_hint_umbrella"]
+        umbrella = (ROOT / (umbrella_module.replace(".", "/") + ".v")).read_text()
         self.assertIn("Require Export " + profile.qualified("CallerUnfolds") + ".\n", umbrella)
         for caller in sorted((ROOT / profile["callers_directory"]).glob("Caller*.v")):
             with self.subTest(caller=caller.name):
                 text = caller.read_text()
                 self.assertNotIn("LithiumUnfold", text)
                 self.assertNotIn("Definition ", text)
-                self.assertIn("Require Import " + profile.qualified("CallerUnfolds") + ".\n", text)
+                self.assertIn("Require Import " + umbrella_module + ".\n", text)
 
 
 if __name__ == "__main__":

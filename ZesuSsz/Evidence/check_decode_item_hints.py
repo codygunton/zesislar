@@ -9,6 +9,17 @@ import re
 ROOT = Path(__file__).resolve().parents[2]
 PREFIX = "ZesuSsz.Compliance."
 UMBRELLA = "DecodeItemHints.v"
+# A transition umbrella is a second umbrella of one function while its old
+# stack retires; then it becomes the function's umbrella. It owns the unfold
+# instances of one generated module. The old umbrella must not reach it or
+# Automation2, and no module that imports it may reach the old umbrella.
+TRANSITION_UMBRELLAS = {
+    "ZesuSsz/Compliance/DecodeItemFp301Hints.v": {
+        "replaces": "ZesuSsz/Compliance/DecodeItemHints.v",
+        "owns": "ZesuSsz.Generated.DecodeItem.FP301.CallerUnfolds",
+        "unfold_prefix": "Fp301Entry_",
+    },
+}
 # These hints apply only at their declared consumers.
 SCOPED_HINT_IMPORTS = {
     PREFIX + "DecodeItemExitDataFacts": (
@@ -180,9 +191,13 @@ def manifest_errors(root: Path) -> tuple[list[str], int]:
     groups = manifest_umbrellas(root)
     directory = root / "ZesuSsz/Compliance"
     umbrellas = [path.relative_to(directory.resolve()) for _, path, _ in groups if path is not None]
+    transitions = [root / path for path in TRANSITION_UMBRELLAS if (root / path).is_file()]
+    umbrellas += [path.relative_to(directory) for path in transitions]
     modules = hint_modules(directory, umbrellas)
     scoped = modules & SCOPED_HINT_IMPORTS.keys()
     covered, errors = set(scoped), []
+    for path in transitions:
+        covered.update(exported_modules(path.read_text()))
     for manifest, umbrella, owned in groups:
         if umbrella is None:
             covered.update(owned)  # Inventory mode skips only missing umbrella coverage.
@@ -254,10 +269,70 @@ def residual_errors(root: Path) -> list[str]:
     return errors
 
 
+def required_any(text: str) -> set[str]:
+    """Every module a source requires, with or without Import or Export."""
+    modules = imported_modules(text) | exported_modules(text)
+    for command in source_commands(text):
+        match = re.fullmatch(r"\s*Require\s+(?!Import\b|Export\b)([\w.\s]+)\s*", command)
+        if match:
+            modules.update(match[1].split())
+    return modules
+
+
+def module_name(root: Path, path: Path) -> str:
+    return ".".join(path.relative_to(root).with_suffix("").parts)
+
+
+def required_closure(root: Path, module: str, cache: dict) -> set[str]:
+    """Modules of the workspace that `module` requires, directly or transitively."""
+    seen, stack = set(), [module]
+    while stack:
+        name = stack.pop()
+        if name in seen:
+            continue
+        seen.add(name)
+        if name not in cache:
+            path = root / (name.replace(".", "/") + ".v")
+            cache[name] = required_any(path.read_text()) if path.is_file() else set()
+        stack.extend(cache[name])
+    return seen
+
+
+def transition_errors(root: Path) -> list[str]:
+    errors, cache = [], {}
+    sources = {module_name(root, path): path for path in sorted((root / "ZesuSsz").rglob("*.v"))}
+    for umbrella_path, rule in TRANSITION_UMBRELLAS.items():
+        umbrella = root / umbrella_path
+        if not umbrella.is_file():
+            errors.append(f"The transition umbrella is missing: {umbrella_path}.")
+            continue
+        name = module_name(root, umbrella)
+        old = module_name(root, root / rule["replaces"])
+        if rule["owns"] not in exported_modules(umbrella.read_text()):
+            errors.append(f"{umbrella.name} does not export {rule['owns']}.")
+        instance = re.compile(r"\bLithiumUnfold\s*\(\s*@\s*" + re.escape(rule["unfold_prefix"]))
+        for module, path in sources.items():
+            if module != rule["owns"] and any(instance.search(command)
+                                              for command in source_commands(path.read_text())):
+                errors.append(f"{module} declares a {rule['unfold_prefix']} unfold instance; "
+                              f"{rule['owns']} owns them.")
+        reach = required_closure(root, old, cache)
+        if name in reach:
+            errors.append(f"{old} reaches the transition umbrella {name}.")
+        reached = sorted(module for module in reach if module.startswith("ZesuSsz.Automation2."))
+        if reached:
+            errors.append(f"{old} reaches {len(reached)} Automation2 modules, first {reached[0]}.")
+        for module, path in sources.items():
+            if name in required_any(path.read_text()) and old in required_closure(root, module, cache):
+                errors.append(f"{module} imports {name} and reaches the old umbrella {old}.")
+    return errors
+
+
 def main() -> int:
     try:
         errors, count = manifest_errors(ROOT)
         errors += residual_errors(ROOT)
+        errors += transition_errors(ROOT)
     except (ValueError, OSError) as error:
         print(error)
         return 1
