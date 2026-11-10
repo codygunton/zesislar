@@ -1,6 +1,7 @@
 """Check writer admission limits and reservation classes in isolation."""
 
 import json
+import shutil
 import os
 from pathlib import Path
 import subprocess
@@ -654,6 +655,7 @@ load_five() { echo 0; }
 blocked_count() { echo 0; }
 request=$(reserve_coqc $$)
 sleep() { [ ! -e "$request" ] || exit 92; exit 91; }
+wait_for_admission_change() { [ ! -e "$request" ] || exit 92; exit 91; }
 confirm_coqc "$request"
 """, ZESU_DIAGNOSTIC_PROBE="1", ZESU_PROBE_ISSUE="10",
                                 ZESU_MODULE_LIMIT_GIB="64",
@@ -1019,6 +1021,36 @@ live_scopes
             prefix = "\nhome_free_bytes() { echo 60000000000; }\n"
             return subprocess.run(["bash", "-c", LIBRARY + prefix + script, str(GUARD.resolve())],
                                   text=True, capture_output=True, env=environment, timeout=120)
+
+    def test_held_launch_checks_published_totals_before_a_full_check(self):
+        result = self.run_guard(r"""
+MEMORY_CLAIM_BYTES=$((2 * GIB))
+printf '%s\n' "$((10 * GIB)) $((10 * GIB)) $((100 * GIB)) $((11 * GIB)) -1 $((175 * GIB))" > "$ADMISSION_SUMMARY"
+admission_plausible && echo room || echo full
+printf '%s\n' "$((8 * GIB)) $((8 * GIB)) $((100 * GIB)) $((11 * GIB)) -1 $((175 * GIB))" > "$ADMISSION_SUMMARY"
+admission_plausible && echo room || echo full
+printf '%s\n' "$((300 * GIB)) $((300 * GIB)) $((100 * GIB)) $((150 * GIB)) $((10 * GIB)) $((175 * GIB))" > "$ADMISSION_SUMMARY"
+admission_plausible && echo live || echo full
+rm -f "$ADMISSION_SUMMARY"; admission_plausible && echo unknown || echo full
+""")
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertEqual(result.stdout.split(), ["full", "room", "live", "unknown"])
+
+    def test_held_launch_wakes_on_a_release_not_on_a_poll(self):
+        if shutil.which("inotifywait") is None:
+            self.skipTest("inotifywait is not installed")
+        result = self.run_guard(r"""
+MEMORY_CLAIM_BYTES=$((2 * GIB)); WAKE_TIMEOUT=60; POLL_SECONDS=0
+printf '%s\n' "$((10 * GIB)) $((10 * GIB)) $((100 * GIB)) $((11 * GIB)) -1 $((175 * GIB))" > "$ADMISSION_SUMMARY"
+( sleep 1; printf '%s\n' "$((10 * GIB)) $((10 * GIB)) $((100 * GIB)) $((11 * GIB)) -1 $((175 * GIB))" > "$ADMISSION_SUMMARY.tmp"; mv "$ADMISSION_SUMMARY.tmp" "$ADMISSION_SUMMARY"
+  sleep 1; printf '%s\n' "$((5 * GIB)) $((5 * GIB)) $((100 * GIB)) $((11 * GIB)) -1 $((175 * GIB))" > "$ADMISSION_SUMMARY.tmp"; mv "$ADMISSION_SUMMARY.tmp" "$ADMISSION_SUMMARY" ) &
+started=$SECONDS
+wait_for_admission_change
+echo $(( SECONDS - started ))
+""")
+        self.assertEqual(result.returncode, 0, result.stderr)
+        # The first change still leaves no room; the second release does.
+        self.assertIn(int(result.stdout.split()[-1]), (1, 2, 3))
 
     def test_gate_does_not_wait_for_unadmitted_probe_request(self):
         result = self.run_guard(r"""

@@ -335,6 +335,51 @@ def booked_versus_peak(observations):
             "guarded_cpu_seconds": round(sum(row.get("guarded_cpu_seconds") or 0 for row in rows), 1)}
 
 
+def publish_admission_totals(result=None, released_bytes=0, *, path=None):
+    """Publish totals that held launches compare before a full admission check.
+
+    A confirmation publishes its projection; a release subtracts its claim.
+    The file is replaced atomically, which wakes waiting guards. It is only a
+    hint: a waiting guard runs the full check at least every WAKE_TIMEOUT.
+    """
+    path = path or os.environ.get("ZESU_ADMISSION_SUMMARY")
+    if not path:
+        return None
+    path = Path(path)
+    if result is not None:
+        fits = result.get("fits") is True
+        live = result.get("live_memory_sample", {}).get("live_bytes", -1)
+        values = [result["requested_total_bytes"] if fits else result["accounted_active_bytes"],
+                  result["requested_unrealized_bytes"] if fits else result["unrealized_claim_bytes"],
+                  result["budget_bytes"], result["slice_claim_cap_bytes"],
+                  live if type(live) is int else -1, result.get("slice_max_bytes", 0)]
+    else:
+        try:
+            values = [int(value) for value in path.read_text().split()[:6]]
+            if len(values) != 6:
+                raise ValueError
+        except (OSError, ValueError):
+            return None
+        values[0] = max(0, values[0] - released_bytes)
+        values[1] = max(0, values[1] - released_bytes)
+    try:
+        descriptor, temporary = tempfile.mkstemp(prefix=".admission-", dir=path.parent)
+        with os.fdopen(descriptor, "w") as stream:
+            stream.write(" ".join(str(int(value)) for value in values) + "\n")
+        os.replace(temporary, path)
+    except (OSError, KeyError, TypeError, ValueError):
+        return None
+    return values
+
+
+def marker_claim(marker):
+    try:
+        fields = dict(line.split("=", 1) for line in Path(marker).read_text().splitlines()[1:] if "=" in line)
+        return int(fields.get("memory_claim_bytes", 0))
+    except (OSError, ValueError):
+        return 0
+
+
 def admission(request_bytes, live_claims, available_bytes, *, headroom_bytes=20 * GIB,
               maximum_compilers=48, observations=None, slice_max_bytes=None):
     """Evaluate one fresh snapshot without mutating any reservation."""
@@ -616,6 +661,7 @@ def main():
         return 0
     if args.command == 'ledger-confirm':
         result = confirm_shell(args.marker, args.replacement, args.request_bytes, args.available_bytes)
+        publish_admission_totals(result)
         if not result['fits']:
             print('unified memory ledger refuses the reservation')
             return 3
@@ -623,7 +669,11 @@ def main():
     if args.command == 'ledger-mark':
         return 0 if mark_shell(args.marker) else 4
     if args.command == 'ledger-release':
-        return 0 if release_shell(args.marker) else 4
+        claim = marker_claim(args.marker)
+        released = release_shell(args.marker)
+        if released:
+            publish_admission_totals(released_bytes=claim)
+        return 0 if released else 4
     if args.command == 'ledger-recover-dead':
         return 0 if recover_dead_shell(args.marker) else 4
     if args.command == 'ledger-recover-stale':

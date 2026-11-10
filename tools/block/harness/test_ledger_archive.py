@@ -23,6 +23,11 @@ class LedgerArchiveTests(unittest.TestCase):
         self.temp = tempfile.TemporaryDirectory()
         self.addCleanup(self.temp.cleanup)
         self.ledger = Path(self.temp.name) / 'LEDGER.json'
+        # Ledger transactions take the guard mutex; never the live one in a test.
+        from unittest.mock import patch
+        patcher = patch.dict(M.os.environ, {'ZESU_GATE_LOCK': str(Path(self.temp.name) / 'gate.lock')})
+        patcher.start()
+        self.addCleanup(patcher.stop)
 
     def data(self):
         return {
@@ -102,14 +107,39 @@ class LedgerArchiveTests(unittest.TestCase):
         self.assertTrue(A.due(self.ledger, {}, now_ns=A.COMPACT_INTERVAL_NS + 1))
         self.assertFalse(A.due(self.ledger, {'ledger_archive': {'compacted_ns': 5}}, now_ns=6))
 
+    def test_writer_token_that_died_before_its_scope_is_recovered(self):
+        root = Path(self.temp.name)
+        markers = root / 'coqc-reservations'; markers.mkdir()
+        proc = root / 'proc'; proc.mkdir()
+        reader = M.ScopeReader(proc=proc, cgroup_root=root / 'cgroup')
+        reader.parent.mkdir(parents=True)
+        marker = markers / '999999.0123456789abcdef0123'
+        marker.write_text('confirmed\nwriter=w1\naggregate=\nmemory_claim_bytes=5\n'
+                          'memory_fence_bytes=16\nowner_start=77\nreservation_generation=0123456789abcdef0123\n')
+        key = M.shell_key(marker)
+        self.ledger.write_text(json.dumps({
+            'fixed_claims': {key: 5}, 'region_claims': {}, 'shell_marker_directory': str(markers),
+            'shell_claim_owners': {key: {'owner': {'pid': 999999, 'startticks': 77}, 'marker': str(marker),
+                                         'aggregate': None, 'generation': '0123456789abcdef0123',
+                                         'token_identity': list(reader.file_identity(marker.lstat()))}}}))
+        scope = reader.parent / 'zesudet-writer-w1-dune-coqc-999999-1.scope'
+        scope.mkdir()
+        with self.assertRaisesRegex(ValueError, 'still has a scope'):
+            M.recover_dead_shell(marker, ledger=self.ledger, reader=reader)
+        scope.rmdir()
+        self.assertTrue(M.recover_dead_shell(marker, ledger=self.ledger, reader=reader))
+        data = json.loads(self.ledger.read_text())
+        self.assertFalse(marker.exists())
+        self.assertEqual(data['fixed_claims'].get(key, 0), 0)
+        self.assertEqual(data['shell_recovery_audits'][key]['route'], 'admitted_absence')
+
     def test_dead_collections_have_no_reader(self):
         tools = HERE.parent.parent
-        for name in sorted(A.DEAD_COLLECTIONS):
-            readers = subprocess.run(
-                ['git', 'grep', '-l', '-w', name, '--', '*.py', ':!**/test_*', ':!**/_historical*',
-                 ':!**/ledger_archive.py'], cwd=tools, capture_output=True, text=True).stdout.split()
-            with self.subTest(name=name):
-                self.assertEqual(readers, [])
+        patterns = [argument for name in sorted(A.DEAD_COLLECTIONS) for argument in ('-e', name)]
+        found = subprocess.run(['git', 'grep', '-o', '-h', '-w', *patterns, '--', '*.py', ':!**/test_*',
+                                ':!**/_historical*', ':!**/ledger_archive.py'],
+                               cwd=tools, capture_output=True, text=True).stdout.split()
+        self.assertEqual(sorted(set(found)), [])
 
 
 if __name__ == '__main__':

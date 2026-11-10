@@ -1603,9 +1603,19 @@ def recover_dead_shell(marker, *, ledger=None, reader=None):
                         raise ValueError('The admitted recovery scope is outside its owned slice.')
                     units.append(path.name)
         units = list(dict.fromkeys(units))
-        if not units:
+        writer = fields.get('writer', '')
+        if not units and lines[0] == 'confirmed' and re.fullmatch(r'[a-zA-Z0-9._-]+', writer or ''):
+            # A writer confirmed its slot and died before systemd created its
+            # scope. Every writer scope name carries the owner PID, so absence
+            # of any such scope proves no compiler ran for this token.
+            if any(reader.parent.rglob(f'*-writer-{writer}-*-{owner["pid"]}-*')):
+                raise ValueError('The orphan writer token still has a scope.')
+            units = [f'writer-{writer}-*-{owner["pid"]}-*']
+        elif not units:
             raise ValueError('The orphan token lacks its recorded scope.')
         for unit in units:
+            if unit.startswith('writer-') and '*' in unit:
+                continue
             if (not re.fullmatch(r'[a-zA-Z0-9_.@:-]+\.(scope|slice)', unit)
                     or any(reader.parent.rglob(unit))):
                 raise ValueError('The orphan token scope is still present or invalid.')
