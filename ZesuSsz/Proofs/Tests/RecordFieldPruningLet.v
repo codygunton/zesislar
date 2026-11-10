@@ -13,7 +13,7 @@ Lemma record_field_pruning_keeps_let_body_facts : forall (args : DecodeItemArgs)
   bv_unsigned address + 8 <= 3221225472 \/ True.
 Proof.
   intros.
-  ContextCollection.zesu_context_prune_goal.
+  ZesuSsz.Automation2.ContextCollection.zesu_context_prune_goal.
   match goal with
   | _ : decodeItemOutputPointer args + 40 < Z.pow 2 64 |- _ => right; exact I
   end.
