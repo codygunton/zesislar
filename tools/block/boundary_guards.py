@@ -21,7 +21,7 @@ import subprocess
 
 # A cut stop records its boundary before it stops; an infeasible stop has a
 # literal False path condition. Neither drops a feasible path.
-PASSING_STOPS = frozenset({'handwritten_cut', 'infeasible'})
+PASSING_STOPS = frozenset({'handwritten_cut', 'infeasible', 'call_boundary'})
 # A stop of these kinds whose concrete target is outside the function left it.
 LEAVING_STOPS = frozenset({'intermediate_pc_mismatch', 'outside_pc'})
 ALTERNATIVE = re.compile(r'_(?:ForwardA\d+N\d+|LoopExit)$')
@@ -88,6 +88,10 @@ def reaching_stops(stops, successors, target, seeded=None, function=None):
             if function is not None and leaves_function(stop, function):
                 return False
             return can_reach(successors, _pc(stop['block_pc']), target)
+        if stop['reason'] == 'call_boundary':
+            # The path resumes at the return site only from a call-return seed.
+            site = _pc(stop['target_pc'])
+            return (seeded is None or site not in seeded) and can_reach(successors, site, target)
         if stop['reason'] != 'handwritten_cut' or seeded is None or stop.get('target_pc') is None:
             return False
         cut = _pc(stop['target_pc'])

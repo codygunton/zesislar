@@ -179,9 +179,14 @@ def hull(values, conditions, *, name, scalar_ranges=None):
             'coq': f'({low}%Z <= bv_unsigned {name} <= {high}%Z)%Z'}
 
 
-def witness_plan(binders, *, register_bindings, source_bindings=None, source_context=None):
-    """Use only the selector's existing register/pair input constructors."""
+def witness_plan(binders, *, register_bindings, source_bindings=None, source_context=None,
+                 array_bindings=None):
+    """Use only the selector's existing register/pair input constructors.
+
+    array_bindings maps a binder to the owned byte array whose value it is.
+    """
     inputs, witnesses = [], []
+    array_bindings = array_bindings or {}
     sources = {}
     if source_bindings is not None:
         from source_witness_bindings import authenticate_sources
@@ -196,6 +201,10 @@ def witness_plan(binders, *, register_bindings, source_bindings=None, source_con
             inputs.append(sources[name])
             witnesses.append({'binder': name, 'source_key': sources[name]['source_key'],
                               'type': binder['type']})
+            continue
+        if name in array_bindings and name not in register_bindings:
+            inputs.append({'kind': 'owned_array', 'resource_id': array_bindings[name]})
+            witnesses.append({'binder': name, 'resource_id': array_bindings[name], 'type': binder['type']})
             continue
         if name not in register_bindings:
             raise ValueError('A join witness needs array packaging or an approved input interface: ' + name)
@@ -563,6 +572,20 @@ def generalize_owned_join(alternatives, *, original_seed, entry_pc, vocabulary,
                           if step['resource_id'] == key] for image in images]
                 reconstruction = affine_memory_image(memory_by_id[key], paths, basis=memory_basis,
                     expressions=memory_expressions, register_names=register_order, vocabulary=vocabulary)
+                old = memory_by_id[key]
+                length = (str(old.length) if isinstance(old.length, int) else
+                          'List.length (' + component['value'] + ')' if component.get('value') else None)
+                if reconstruction['status'] != 'generated' and length is not None:
+                    # Whole-array packaging: the edges disagree on the bytes, so the
+                    # join owns an existential array of the same length. An
+                    # uninitialized byte on an edge is any byte, so this weakens soundly.
+                    binder = 'join_' + key + '_bytes'
+                    fraction = component.get('fraction') or ''
+                    reconstruction = {'status': 'generated', 'kind': 'array_packaging', 'resource_id': key,
+                                      'binder': binder, 'length': length,
+                                      'source': '%s ↦ₘ%s∗ %s' % (old.address_z, fraction, binder),
+                                      'coq': '(List.length %s = %s)%%nat' % (binder, length),
+                                      'detail': reconstruction['detail']}
                 if reconstruction['status'] != 'generated':
                     raise ValueError('A join memory value needs explicit array packaging: ' + key + ': ' + reconstruction['detail'])
                 source = reconstruction['source']
@@ -574,6 +597,12 @@ def generalize_owned_join(alternatives, *, original_seed, entry_pc, vocabulary,
             continue
         if key in memory_by_id:
             old = memory_by_id[key]
+            if (old.byte_array is None and current['source'] == component['source']
+                    and not any(image.updates[key] for image in images)):
+                # No edge wrote this uninitialized span; it joins unchanged.
+                resources.append(old)
+                components.append(current)
+                continue
             parsed, = parse_source_ownership(current['source'], provenance=current['provenance'])['components']
             if parsed['kind'] != 'byte_array':
                 raise ValueError('An owned join array has no complete incoming image')
@@ -646,7 +675,7 @@ def generalize_owned_join(alternatives, *, original_seed, entry_pc, vocabulary,
             prefix.append(value)
             offset += 1
         state.memory.append(MemoryRegion(resource.base, tuple(prefix), resource.byte_array, resource.length,
-                                         ownership_id=resource.id))
+                                         uninitialized=resource.byte_array is None, ownership_id=resource.id))
     state.trace_count = 0
     def source_inputs(value):
         return ([str(value.value)] if value.op == 'input' else []) + [
@@ -663,6 +692,8 @@ def generalize_owned_join(alternatives, *, original_seed, entry_pc, vocabulary,
         raise ValueError('The join needs one explicit source witness scope')
     additions = [{**binder, 'expression': input_expr(binder['name'], int(binder['type'].split()[1])).to_dict()}
                  for binder in plan['binders']]
+    additions += [{'name': row['binder'], 'type': 'list byte', 'expression': input_expr(row['binder'], None).to_dict()}
+                  for row in plan['memory_relations'] if row.get('kind') == 'array_packaging']
     available = {binder['name']: binder for binder in [*used_binders, *additions]}
     ordered = []
     for register in register_order:
@@ -685,6 +716,12 @@ def generalize_owned_join(alternatives, *, original_seed, entry_pc, vocabulary,
         components.append({'id': key, 'kind': 'opaque', 'source': '⌜' + relation['coq'] + '⌝', 'scope': [[0]],
                            'provenance': {'join_edge_count': len(alternatives), 'relation': deepcopy(relation)}})
         tree['body']['children'].append({'kind': 'component', 'id': key})
+    packaged = [row for row in plan['memory_relations'] if row.get('kind') == 'array_packaging']
+    for index, row in enumerate(packaged, start=len(plan['relations'])):
+        key = f'join_relation_{index}'
+        components.append({'id': key, 'kind': 'opaque', 'source': '⌜' + row['coq'] + '⌝', 'scope': [[0]],
+                           'provenance': {'join_edge_count': len(alternatives), 'relation': deepcopy(row)}})
+        tree['body']['children'].append({'kind': 'component', 'id': key})
     provenance = {'contract_exit': deepcopy(continuation['source_binding'])}
     components.append({'id': terminal_id, 'kind': 'opaque', 'source': name, 'scope': [],
                        'provenance': provenance, 'seed_component': {'kind': 'opaque', 'coq': name}})
@@ -696,12 +733,18 @@ def generalize_owned_join(alternatives, *, original_seed, entry_pc, vocabulary,
             value = state.registers[register]
             if value == input_expr(binder['name'], value.width):
                 register_bindings.setdefault(binder['name'], (register, value.width))
-    full_witness_plan = witness_plan(ordered, register_bindings=register_bindings)
+    array_bindings = {component['value']: component['id'] for component in components
+                      if component['kind'] == 'byte_array' and component.get('value') in
+                      {binder['name'] for binder in ordered}}
+    full_witness_plan = witness_plan(ordered, register_bindings=register_bindings,
+                                     array_bindings=array_bindings)
     owned_edges = []
     for edge in plan['edges']:
         record = deepcopy(edge)
+        # An array witness is the inherited array value, the same on every edge.
         record['ordered_witnesses'] = [{'binder': binder['name'],
-            'expression': deepcopy(edge['original_values'][register_bindings[binder['name']][0]])}
+            'expression': deepcopy(edge['original_values'][register_bindings[binder['name']][0]])
+            if binder['name'] in register_bindings else input_expr(binder['name'], None).to_dict()}
             for binder in ordered]
         record['widened_substitution'] = {row['binder']: row['expression'] for row in record['ordered_witnesses']}
         owned_edges.append(record)

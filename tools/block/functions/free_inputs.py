@@ -33,11 +33,11 @@ def bind(path, **more):
     return {'path': str(path), 'sha256': hashlib.sha256(path.read_bytes()).hexdigest(), **more}
 
 
-def trace_index(output):
+def trace_index(output, name=FUNCTION, namespace='ZesuSsz.Stock.Free'):
     cfg = BASE / 'build/stock-zisk/cfg.json'
     recipe = BASE / 'build/stock-zisk/build-recipe.json'
     traces = BASE / 'generated/isla-traces/stock-zisk/closure'
-    function = next(row for row in json.loads(cfg.read_text())['functions'] if row['name'] == FUNCTION)
+    function = next(row for row in json.loads(cfg.read_text())['functions'] if row['name'] == name)
     elf = json.loads(recipe.read_text())['elf_sha256']
     coverage = json.loads((traces / 'coverage.json').read_text())
     if coverage.get('elf_sha256') not in (None, elf):
@@ -56,7 +56,7 @@ def trace_index(output):
     function_path.write_text(json.dumps({'functions': [function], 'source': bind(cfg)}, indent=2) + '\n')
     index_path = output / 'TRACE-INDEX.json'
     index_path.write_text(json.dumps({
-        'schema': 'source.instruction-trace-index.v1', 'namespace': 'ZesuSsz.Stock.Free',
+        'schema': 'source.instruction-trace-index.v1', 'namespace': namespace,
         'ELF_sha256': elf, 'function': bind(function_path), 'coverage': bind(traces / 'coverage.json'),
         'recipe': bind(recipe), 'instruction_pairs': rows, 'proof_calls': 0}, indent=2) + '\n')
     return index_path, function

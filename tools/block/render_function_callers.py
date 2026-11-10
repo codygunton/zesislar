@@ -2,7 +2,9 @@
 
 A block gets a caller when its own entry and the entry of every CFG successor
 rendered. Its exit premises are the successors' `instr_pre` entries in address
-order. A block without successors needs the function-return package; this
+order. A block that ends in a call (a profile `calls` row) also gets the
+callee spec at the callee address, `instr_pre CALLEE SPEC`; its successor is
+the return site. A block without successors needs the function-return package; this
 renderer refuses it until that package exists. Each caller's proof is exactly
 `zesu_block2.`; no other proof text is written.
 
@@ -64,15 +66,21 @@ def main():
             continue
         imports = [profile.qualified('Pilot' + name + kind) for name in [suffix, *successors]
                    for kind in ('Entries', 'Structural')]
-        source = render_block_caller(profile, suffix, [successor_precondition(profile, name)
-                                                      for name in successors], imports)
+        preconditions = [successor_precondition(profile, name) for name in successors]
+        block = next(row for row in function['blocks'] if row['start'] == int(profile.pc(suffix), 16))
+        for call in profile.get('calls', []):
+            if block['start'] <= int(call['call_site_pc'], 16) < block['end']:
+                imports.append(call['spec_module'])
+                preconditions.append('instr_pre ' + call['callee_pc'] + ' ('
+                                     + call['spec_module'] + '.' + call['spec'] + ')%I')
+        source = render_block_caller(profile, suffix, preconditions, imports)
         if source.count('Proof.\n  zesu_block2.\nQed.\n') != 1 or re.search(r'\b(?:Ltac|Admitted|Axiom)\b|::=', source):
             raise ValueError('A caller has more than its block proof: ' + suffix)
         path = output / ('Caller' + suffix + '.v')
         path.write_text(source)
         table.append({**row, 'status': 'rendered', 'caller': bind(path),
                       'lemma': 'DesignedBoundary_' + profile.pc(suffix)[2:],
-                      'preconditions': [successor_precondition(profile, name) for name in successors]})
+                      'preconditions': preconditions})
     summary = {'status': 'SOURCE_DECLARATIONS_ONLY', 'function': profile.name, 'entries': bind(options.entries),
                'cfg': bind(options.cfg), 'rows': table,
                'rendered': sum(row['status'] == 'rendered' for row in table),

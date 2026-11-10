@@ -100,10 +100,26 @@ owned = seed_owned_resources(
 owned.state = seed_system_shapes(
     owned.state, shapes, collection_ownership_id="resource_0"
 ).state
+# A call's return site has its own seed: the root of the boundaries after it.
+root_seeds = {public_seed["entry_pc"]: owned}
+roots = {public_seed["entry_pc"]: public_seed["entry_pc"]}
+if receipt.get("call_seeds"):
+    from forward_resource_design import _state_from_result
+    calls_path = Path(receipt["call_seeds"]["path"])
+    if bind(calls_path)["sha256"] != receipt["call_seeds"]["sha256"]:
+        raise ValueError("A frozen renderer source changed: " + str(calls_path))
+    for site, row in json.loads(calls_path.read_text())["seeds"].items():
+        call_seed = seed_owned_resources(
+            row["public"], entry_pc=int(site, 0), vocabulary=vocabulary,
+            constants=domain["constants"], facts=row["facts"])
+        call_seed.state = _state_from_result(row["state"])
+        root_seeds[site] = call_seed
+if receipt.get("joins"):
+    roots.update(json.loads(Path(receipt["joins"]["path"]).read_text()).get("roots", {}))
 terminal_ids = [
     row["id"] for row in owned.ownership["components"] if row["source"] == "True"
 ]
-source_binder_names = {binder["name"] for binder in owned.ownership["binders"]}
+source_binder_names = {binder["name"] for seed in root_seeds.values() for binder in seed.ownership["binders"]}
 assert len(terminal_ids) == 1
 continuation = {
     "name": "K",
@@ -159,7 +175,8 @@ for suffix in pilots:
                       "entry": outputs[0], "structural": outputs[1],
                       "qualified_entry": profile.qualified("Pilot" + suffix + "Entries", "fp_machineAt" + suffix),
                       "source_boundary": profile["loop_head_fixture"] + "#" + suffix,
-                      "definition_count": 5, "proof_ran": False})
+                      "definition_count": (directory / ("Pilot" + suffix + "Entries.v")).read_text().count("\nDefinition "),
+                      "proof_ran": False})
         continue
     if suffix in guard_refusals:
         cases.append({"pc": pc, "status": "refused_incomplete_boundary",
@@ -167,7 +184,10 @@ for suffix in pilots:
                       "proof_ran": False})
         continue
     boundary = deepcopy(data["boundaries"][index])
-    if boundary["status"] in ("generated_join", "generated_loop_head"):
+    if boundary["status"] == "generated_call_return":
+        # A return site renders from its call-return seed alternative.
+        boundary["status"] = "generated"
+    elif boundary["status"] in ("generated_join", "generated_loop_head"):
         # A seeded cut renders from its incoming edges, as an unseeded cut does;
         # its own seed alternative is the generalization of those same edges.
         boundary["alternatives"] = [
@@ -175,6 +195,14 @@ for suffix in pilots:
             if alternative["predecessor_pc"] is not None
         ]
         boundary["status"] = "handwritten_cut"
+    # A seed without a recorded root (a join seed of an older pass) shares the entry tree.
+    origin_roots = {roots.get(alternative["seed_pc"], public_seed["entry_pc"])
+                    for alternative in boundary["alternatives"]}
+    if len(origin_roots) != 1 or None in origin_roots:
+        cases.append({"pc": pc, "status": "refused_mixed_roots", "roots": sorted(map(str, origin_roots)),
+                      "proof_ran": False})
+        continue
+    original_seed = root_seeds[origin_roots.pop()]
     name = "fp_machineAt" + suffix
     name = identifier(name, "generated entry")
     source_ref = str(forward) + "#/boundaries/" + str(index)
@@ -199,7 +227,7 @@ for suffix in pilots:
         conditions = SymbolicConditions(provenance)
         formatted = format_owned_entry_boundary(
             boundary,
-            original_seed=owned,
+            original_seed=original_seed,
             vocabulary=vocabulary,
             continuation=continuation,
             join_options={"outer_names": base_arguments},

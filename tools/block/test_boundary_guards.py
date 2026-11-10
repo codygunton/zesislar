@@ -124,6 +124,41 @@ class StopReachability(unittest.TestCase):
                 require_complete_boundary(boundary(result, pc))
 
 
+class CallBoundary(unittest.TestCase):
+    # Block 16 ends in a call at 20 to the callee 64; the return site 24 is a cut.
+    CALLER = {'name': 'caller', 'entry': 16, 'end': 32, 'rows': [{'pc': pc} for pc in range(16, 32, 4)],
+              'blocks': [{'start': 16, 'end': 24, 'successors': [24]},
+                         {'start': 24, 'end': 32, 'successors': []}],
+              'calls': [{'pc': 20, 'target': 64, 'kind': 'call'}]}
+    CALL = '(trace (write-reg |PC| nil #x0000000000000040))'
+    PLAIN = '(trace (write-reg |PC| nil #x0000000000000014))'
+
+    def test_call_stops_at_the_call_and_drops_the_return_site_until_it_has_a_seed(self):
+        state = SymbolicState(registers={'PC': bits(16, 64)})
+        result = evaluate_function(self.CALLER, {16: self.PLAIN, 20: self.CALL}, {16: state})
+        self.assertEqual([(row['reason'], row['target_pc']) for row in result['stops']],
+                         [('call_boundary', hex(24))])
+        self.assertIn({'pc': hex(24), 'reason': 'call_return'}, result['cuts'])
+        require_complete_boundary(boundary(result, 16))
+        with self.assertRaisesRegex(BoundaryRefused, 'call_boundary in block 0x10'):
+            require_complete_boundary(boundary(result, 24))
+        seeded = evaluate_function(self.CALLER, {16: self.PLAIN, 20: self.CALL},
+                                   {16: state, 24: SymbolicState(registers={'PC': bits(24, 64)})},
+                                   generated_seeds={24: 'call_return'})
+        # With a return-site seed the call stop drops no path; block 24 itself has no trace here.
+        self.assertEqual([row['reason'] for row in boundary(seeded, 24)['reaching_stops']], ['missing_trace'])
+
+    def test_machine_call_spec_summary(self):
+        from call_boundary import parse_machine_call_spec
+        source = (Path(__file__).resolve().parents[2] / 'ZesuSsz/Contracts/DecodeItemCallSpec.v').read_text()
+        spec = parse_machine_call_spec(source, 'decodeItemCallSpec')
+        self.assertEqual((spec['map'], spec['stack']), ('decodeItemCallMap', 'decodeItemStackBytes'))
+        self.assertEqual(spec['pre']['arrays'], [{'argument': 1, 'binder': 'input'}, {'argument': 0, 'binder': 'before'}])
+        self.assertEqual(spec['post']['arrays'], [{'argument': 1, 'binder': 'input'}, {'argument': 0, 'binder': 'after'}])
+        self.assertEqual(spec['post']['registers'], [{'register': 'zisk_input_end', 'binder': 'inputEndBits'}])
+        self.assertTrue(spec['post']['facts'][0].startswith('DecodeMeaningModuloKnownBugs'))
+
+
 class FunctionReturn(unittest.TestCase):
     RETURN = {'name': 'ret', 'entry': 16, 'end': 20, 'rows': [{'pc': 16}],
               'blocks': [{'start': 16, 'end': 20, 'successors': []}], 'returns': [16]}

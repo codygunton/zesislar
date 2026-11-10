@@ -1,0 +1,120 @@
+{
+  "function": "nextUint64",
+  "args_type": "NextUint64Args",
+  "pc_prefix": "0x800d",
+  "generated_directory": "ZesuSsz/Generated/NextUint64/FP301",
+  "callers_directory": "tools/block/generated/nextuint64_fp301_callers",
+  "contract_requires": [
+    "Require Import EvmSailRlp.evm_rlp_types.",
+    "Require Import ZesuSsz.Contracts.RlpDecodeItem.",
+    "Require Import ZesuSsz.Contracts.RlpDecodeItemContract.",
+    "Require Import ZesuSsz.Contracts.ParentHeaderRootFacts.",
+    "Require Import ZesuSsz.Contracts.NextUint64BlockEntries.",
+    "Require Import ZesuSsz.Contracts.DecodeItemCompositional."
+  ],
+  "loop_contract_requires": [
+    "Require Import EvmSailRlp.evm_rlp_types.",
+    "Require Import ZesuSsz.Contracts.RlpDecodeItem.",
+    "Require Import ZesuSsz.Contracts.RlpDecodeItemContract.",
+    "Require Import ZesuSsz.Contracts.ParentHeaderRootFacts.",
+    "Require Import ZesuSsz.Contracts.NextUint64BlockEntries.",
+    "Require Import ZesuSsz.Contracts.DecodeItemCompositional."
+  ],
+  "caller_contract_requires": [
+    "Require Import ZesuSsz.Contracts.NextUint64BlockEntries."
+  ],
+  "selected_code": {
+    "module": "ZesuSsz.Contracts.NextUint64Selected",
+    "premise": "nextUint64SelectedCode"
+  },
+  "domain_component": "⌜nextReturnAddress (nextUint64Base args) = returnAddress /\\ nextUint64BoundaryDomain args⌝",
+  "blocks": [
+    "6274",
+    "62b8",
+    "62c0",
+    "62cc",
+    "62d8",
+    "62e4",
+    "6304",
+    "6310",
+    "6318",
+    "632c"
+  ],
+  "loop_heads": [
+    "6318"
+  ],
+  "loop_head_fixture": "tools/block/fixtures/nextuint64-loop-heads.json",
+  "cfg_function": "rlp_decode.nextUint64",
+  "calls": [
+    {
+      "function": "rlp_decode.nextUint64",
+      "call_site_pc": "0x800d62b4",
+      "callee_pc": "0x800d6960",
+      "return_site_pc": "0x800d62b8",
+      "spec": "decodeItemCallSpec",
+      "spec_module": "ZesuSsz.Contracts.DecodeItemCallSpec",
+      "spec_source": "ZesuSsz/Contracts/DecodeItemCallSpec.v",
+      "stack_bytes": 16,
+      "arrays": [
+        {
+          "binder": "input",
+          "argument": 1,
+          "caller_value": "nextInputBytes (nextUint64Base args)"
+        },
+        {
+          "binder": "before",
+          "argument": 0,
+          "length": 40,
+          "length_source": "decodeItemArgsWellFormed (RlpDecodeItemContract.v): (List.length (decodeItemBeforeStorage args) = 40)%nat"
+        }
+      ],
+      "output_length_source": "C1BResult (RlpDecodeItem.v): candidateResult40 is errorResult40 or successResult40, each of 40 bytes"
+    }
+  ],
+  "loop_designs": [
+    {
+      "head": "6318",
+      "entry_predecessor": "6310",
+      "registers": {
+        "x11": "machine_x11",
+        "x12": "machine_x12",
+        "x14": "machine_x14"
+      },
+      "index": "i",
+      "facts": [
+        {
+          "kind": "index_link",
+          "coq": "bv_unsigned machine_x12 = (bv_unsigned {x12} + i)%Z"
+        },
+        {
+          "kind": "index_range",
+          "coq": "(0 <= i)%Z"
+        },
+        {
+          "kind": "bound",
+          "coq": "bv_unsigned machine_x12 < bv_unsigned {x13}"
+        },
+        {
+          "kind": "meaning",
+          "need": "the lbu at 0x800d6318 reads the input array: the payload starts inside it",
+          "coq": "(nextInputPointer (nextUint64Base args) <= bv_unsigned {x12})%Z"
+        },
+        {
+          "kind": "meaning",
+          "need": "the lbu at 0x800d6318 reads the input array: the payload ends inside it",
+          "coq": "(bv_unsigned {x13} <= nextInputPointer (nextUint64Base args) + Z.of_nat (length (nextInputBytes (nextUint64Base args))))%Z"
+        },
+        {
+          "kind": "meaning",
+          "need": "the result word stored at 0x800d633c is the big-endian payload value",
+          "coq": "bv_unsigned machine_x11 = ByteWindowFold.zesu_byte_window_fold (nextInputBytes (nextUint64Base args)) (Z.to_nat (bv_unsigned {x12} - nextInputPointer (nextUint64Base args))) (Z.to_nat i)"
+        }
+      ],
+      "array_cursor": {
+        "register": "x12",
+        "array": "nextInputBytes (nextUint64Base args)",
+        "extent_reason": "1 <= length (nextInputBytes (nextUint64Base args)): the payload lies inside the input array and its length is not 0 (loop facts and the beq at 0x800d630c)"
+      }
+    }
+  ]
+}
