@@ -188,6 +188,21 @@ for suffix in pilots:
         for component in resource["components"]:
             if component["source"] == "⌜domain args⌝":
                 component["source"] = profile["domain_component"]
+        # A byte read at a symbolic index renders as its owned-array lookup, in
+        # path conditions as in register values (render_resource_boundary).
+        reads = {json.dumps(row["expression"], sort_keys=True): row["term"]
+                 for row in resource.get("owned_read_renderings", [])}
+
+        def owned_reads(value):
+            if value.get("op") == "owned_array_byte":
+                term = reads.get(json.dumps(value, sort_keys=True))
+                if term is None:
+                    raise ValueError("A symbolic byte read has no owned rendering.")
+                return {"op": "input", "width": 8, "value": term}
+            return {**value, "args": [owned_reads(arg) for arg in value["args"]]} if "args" in value else value
+
+        if reads:
+            resource["path_conditions"] = [owned_reads(row) for row in resource.get("path_conditions", [])]
 
     def rendered(boundary):
         plain = SourceComponents(

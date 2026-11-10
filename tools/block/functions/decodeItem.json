@@ -33,9 +33,9 @@
       "head": "6a24",
       "entry_predecessor": "6a14",
       "registers": {
-        "x13": "machine_x13",
-        "x15": "machine_x15",
-        "x16": "machine_x16"
+        "x13": "loop_seed_x13",
+        "x15": "loop_seed_x15",
+        "x16": "loop_seed_x16"
       },
       "index": "i",
       "array_cursor": {
@@ -48,9 +48,9 @@
       "head": "6ac4",
       "entry_predecessor": "6ab4",
       "registers": {
-        "x13": "machine_x13",
-        "x15": "machine_x15",
-        "x16": "machine_x16"
+        "x13": "loop_seed_x13",
+        "x15": "loop_seed_x15",
+        "x16": "loop_seed_x16"
       },
       "index": "i",
       "array_cursor": {
