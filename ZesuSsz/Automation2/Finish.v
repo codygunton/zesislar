@@ -721,14 +721,15 @@ Ltac zesu_finish_source_tail :=
       SourceFactMatching.zesu_source_match_tree requested ltac:(idtac))
     ltac:(fun _ => SourceFactMatching.zesu_source_finish_package).
 
-(* The direct source tail runs last, after the switched closers fail. *)
-Ltac zesu_finish_residual_cascade :=
+(* The direct source tail runs last, after the switched closers fail.
+   `source` is the source-package route. *)
+Ltac zesu_finish_residual_cascade_with source :=
   first [solve [
     zesu_finish_residual_switches;
     first [ solve [ZesuSsz.Automation2.MaskWitness.zesu_mask_witness_telescope;
               unshelve (repeat liAStep); zesu_finish_v1]
-          | solve [SourceFactMatching.zesu_source_registered_disjunction ltac:(zesu_finish_source_package)]
-          | solve [zesu_finish_source_package]
+          | solve [SourceFactMatching.zesu_source_registered_disjunction ltac:(source)]
+          | solve [source]
           | solve [ZesuSsz.Automation2.WordIdentity.zesu_word_identity]
           | solve [zesu_masked_add_branch_finish]
           | solve [ZesuSsz.Automation2.HypothesisCast.zesu_hypothesis_cast_finish]
@@ -748,16 +749,49 @@ Ltac zesu_finish_residual_cascade :=
       ZesuSsz.Automation2.FramePackingFinish.zesu_frame_packing_finish])] ]
   ] | solve [zesu_finish_source_tail]].
 
+Ltac zesu_finish_residual_cascade :=
+  zesu_finish_residual_cascade_with ltac:(zesu_finish_source_package).
+
 (* A package that the cascade cannot close because of fixed pure conjuncts.
    The source route commits the witnesses and the resources. Each fixed
    conjunct that the source closers cannot prove gets the residual tier, and
-   a conjunct that the tier cannot close stays as its own pure goal. Runs only
-   after the cascade fails, so a package that closes today is not changed. *)
+   a conjunct that the tier cannot close stays as its own pure goal. *)
 Ltac zesu_finish_package_deferring :=
   lazymatch goal with |- environments.envs_entails _ _ => idtac end;
   zesu_finish_residual_switches;
   unshelve (zesu_finish_source_package_with
     ltac:(fun requested => SourceFactMatching.zesu_source_defer_fixed_tree requested)).
+
+(* The cascade, with a source route whose fixed-fact check calls `mark` when
+   it refuses. Each source-package attempt first calls `reset`, so the mark
+   describes the last attempt. *)
+Ltac zesu_finish_residual_cascade_marking mark reset :=
+  zesu_finish_residual_cascade_with ltac:(reset tt;
+    zesu_finish_source_package_with ltac:(fun requested =>
+      tryif SourceFactMatching.zesu_source_check_fixed_tree requested then idtac
+      else (mark requested; fail 0 "The package refused a fixed fact."))).
+
+Ltac zesu_finish_noop := idtac.
+
+(* The cascade, then `deferring` only when the last source-package attempt
+   refused a fixed fact. A failure anywhere else (for example a spatial
+   conjunct) skips `deferring`, because a second pass would fail at the same
+   place. The refusal leaves the backtracked attempt through an Ltac2
+   reference, which backtracking does not restore. *)
+Ltac2 zesu_package_tiers_run (deferring : unit -> unit) :=
+  let refused := Ref.ref false in
+  let noop := Ltac1.ref [@ZesuSsz; @Automation2; @Finish; @zesu_finish_noop] in
+  let mark := Ltac1.lambda (fun _ => Ref.set refused true; noop) in
+  let reset := Ltac1.lambda (fun _ => Ref.set refused false; noop) in
+  Control.plus
+    (fun () => ltac1:(mark reset |- zesu_finish_residual_cascade_marking mark reset) mark reset)
+    (fun e => if Ref.get refused then deferring () else Control.zero e).
+
+Ltac zesu_finish_package_tiers_with deferring :=
+  ltac2:(deferring |- zesu_package_tiers_run (fun () => Ltac1.run deferring)).
+
+Ltac zesu_finish_package_tiers :=
+  zesu_finish_package_tiers_with ltac:(zesu_finish_package_deferring).
 
 (* Fast generic evidence transport precedes broad arithmetic. *)
 Ltac zesu_union_required_pure :=
@@ -1211,8 +1245,7 @@ Ltac zesu_block_base :=
 
 (* Residual lemmas close the pure goals that every other tier leaves open. *)
 Ltac zesu_block2 :=
-  zesu_block_base; try zesu_finish_residual_cascade;
-  try zesu_finish_package_deferring;
+  zesu_block_base; try zesu_finish_package_tiers;
   try ResidualLemmas.zesu_residual_lemma.
 
 Ltac zesu_block_simpl :=
