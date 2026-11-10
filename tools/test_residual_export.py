@@ -250,3 +250,17 @@ class FinalOpenOptions(unittest.TestCase):
     def test_stalled_calls(self):
         log = "1.0 CENSUS E Lia.lia timeout\n2.0 CENSUS E tactics.bv_solve ok\n"
         self.assertEqual(export_block.stalled_calls(log), ["Lia.lia"])
+
+
+class FinalOpenFaithful(unittest.TestCase):
+    def test_final_open_wraps_nothing(self):
+        import census_gen
+        with tempfile.TemporaryDirectory() as tmp:
+            src, out = Path(tmp) / "Caller.v", Path(tmp) / "Census.v"
+            src.write_text(CALLER)
+            with contextlib.redirect_stdout(io.StringIO()):
+                census_gen.main([str(src), str(out), "--mode", "final-open", "--print-all"])
+            text = out.read_text()
+        self.assertNotIn("::=", text)
+        self.assertIn("  zesu_block2.\n", text)
+        self.assertIn("census_res_mark", text)

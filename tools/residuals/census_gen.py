@@ -70,14 +70,21 @@ def main(argv=None):
     ap.add_argument('--print-all', action='store_true',
                     help='Set Printing All before the theorem so dumped goals reparse')
     ap.add_argument('--timeout', type=int, default=5)
-    ap.add_argument('--ltacs', required=True)
-    ap.add_argument('--fullnames', required=True)
+    ap.add_argument('--ltacs')
+    ap.add_argument('--fullnames')
     ap.add_argument('--exclude', default='')
     ap.add_argument('--brackets', default='all', choices=['all', 'none'])
     a = ap.parse_args(argv)
 
-    data = json.loads(Path(a.ltacs).read_text())
-    full = json.loads(Path(a.fullnames).read_text())
+    if a.mode == 'final-open':
+        # Final-open mode runs the production tactics unwrapped, so its open goals
+        # are exactly the goals production leaves open.
+        data, full = {'users': [], 'bodies': {}}, {}
+    else:
+        if not (a.ltacs and a.fullnames):
+            ap.error('--ltacs and --fullnames are required outside final-open mode')
+        data = json.loads(Path(a.ltacs).read_text())
+        full = json.loads(Path(a.fullnames).read_text())
     exclude = set(filter(None, a.exclude.split(',')))
     brackets = []
     if a.brackets == 'all':

@@ -185,20 +185,25 @@ def export(a):
     tag = 'residual-export-%s-%s' % (a.block, hashlib.sha256(str(out).encode()).hexdigest()[:6])
     times = {}
 
-    t = time.monotonic()
     probe_dir = work / 'probe'
-    probe = ltac_probe.probe(caller, probe_dir, args, tag + '-probe')
-    times['probe'] = round(time.monotonic() - t, 1)
-    t = time.monotonic()
-    verify, excluded = ltac_probe.verify(caller, probe_dir, work / 'verify', args, tag)
-    times['verify'] = round(time.monotonic() - t, 1)
+    if a.mode == 'final-open':
+        # No wrapped Ltac bodies: nothing to probe or verify.
+        probe, verify, excluded = {}, {}, []
+    else:
+        t = time.monotonic()
+        probe = ltac_probe.probe(caller, probe_dir, args, tag + '-probe')
+        times['probe'] = round(time.monotonic() - t, 1)
+        t = time.monotonic()
+        verify, excluded = ltac_probe.verify(caller, probe_dir, work / 'verify', args, tag)
+        times['verify'] = round(time.monotonic() - t, 1)
 
     t = time.monotonic()
     census_v = work / ('Census%s.v' % a.block)
     census_gen.main([str(caller), str(census_v), '--mode', census_mode(a), '--timeout', str(a.call_seconds)] +
-                    flags_of(a) + ['--ltacs', str(probe_dir / 'ltacs.json'),
+                    flags_of(a) + ([] if a.mode == 'final-open' else
+                                   ['--ltacs', str(probe_dir / 'ltacs.json'),
                                     '--fullnames', str(probe_dir / 'fullnames.json'),
-                                    '--exclude', ','.join(excluded)])
+                                    '--exclude', ','.join(excluded)]))
     census = guarded.compile_file(census_v, tag + '-census', args, stamp=True, attempts=1)
     times['census'] = round(time.monotonic() - t, 1)
     log = census_v.with_suffix('.log')
