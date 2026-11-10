@@ -238,6 +238,66 @@ class RetainedHoldTests(unittest.TestCase):
         self.assertEqual(result['active_claim_bytes'], 16 * GIB)
 
 
+class GateCompileSumTests(unittest.TestCase):
+    """A measured gate books its own claim plus its running compiles."""
+
+    AGGREGATE = '/cg/zesuworkloads-aggregate1000p7r1.slice'
+
+    class Reader(RetainedHoldTests.Reader):
+        pass
+
+    def setUp(self):
+        self.temp = tempfile.TemporaryDirectory(); self.addCleanup(self.temp.cleanup)
+        self.root = Path(self.temp.name)
+
+    def marker(self, name, claim, fence=16 * GIB):
+        path = self.root / name
+        path.write_text(f'1234\nwriter=\naggregate=x\nmemory_claim_bytes={claim}\nmemory_fence_bytes={fence}\n')
+        return {'marker': str(path)}
+
+    def ledger(self, compiles, gate=GIB, cold=47 * GIB):
+        data = {'fixed_claims': {'CorrectnessGate_g': gate},
+                'correctness_gate_cold_claims': {'CorrectnessGate_g': cold} if cold else {},
+                'shell_claim_owners': {}}
+        for index, claim in enumerate(compiles):
+            key = f'shell:{index}'
+            data['fixed_claims'][key] = claim
+            data['shell_claim_owners'][key] = self.marker(f'm{index}', claim)
+        return data
+
+    def booked(self, data, new=GIB, available=10**13):
+        return M.projection(data, M.ledger_claims(data), new, available,
+                            reader=self.Reader(None, self.AGGREGATE))
+
+    def test_cached_gate_books_its_own_claim_plus_running_compiles(self):
+        result = self.booked(self.ledger([GIB, GIB]))
+        self.assertEqual(result['active_claim_bytes'], 3 * GIB)
+
+    def test_cold_gate_total_is_at_least_its_old_claim(self):
+        # One running compile is unmeasured (booked at its 16 GiB fence).
+        result = self.booked(self.ledger([GIB, 16 * GIB]))
+        self.assertEqual(result['active_claim_bytes'], 47 * GIB)
+        many = self.booked(self.ledger([16 * GIB] * 4))
+        self.assertEqual(many['active_claim_bytes'], GIB + 64 * GIB)
+
+    def test_compile_joining_a_gate_adds_to_its_sum(self):
+        data = self.ledger([GIB])
+        joining = {'verified': True, 'aggregate_verified': True, 'scope': self.AGGREGATE,
+                   'device': 1, 'inode': 2, 'live_bytes': 0}
+        result = M.projection(data, M.ledger_claims(data), 2 * GIB, 10**13,
+                              reader=self.Reader(None, self.AGGREGATE), new_observation=joining)
+        self.assertEqual(result['active_claim_bytes'], 4 * GIB)
+
+    def test_unmeasured_gate_keeps_the_max_rule(self):
+        result = self.booked(self.ledger([GIB, GIB], gate=47 * GIB, cold=None))
+        self.assertEqual(result['active_claim_bytes'], 47 * GIB)
+
+    def test_gate_sum_above_the_slice_cap_waits_for_admission(self):
+        result = self.booked(self.ledger([16 * GIB] * 10))
+        self.assertGreater(result['active_claim_bytes'], result['slice_claim_cap_bytes'])
+        self.assertFalse(result['fits'])
+
+
 class ScopeTests(unittest.TestCase):
     def setUp(self):
         self.temp=tempfile.TemporaryDirectory();self.addCleanup(self.temp.cleanup)
