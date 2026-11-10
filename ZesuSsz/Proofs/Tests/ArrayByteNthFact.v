@@ -15,7 +15,7 @@ Lemma array_byte_nth_sign_fact (bytes : list (bv 8)) (p : Z) (v : bv 8) :
     bv_signed (BV 128 0).
 Proof.
   intros Hlookup Hsign.
-  SourceFactMatching.zesu_source_fact.
+  ZesuSsz.Automation2.SourceFactMatching.zesu_source_fact.
 Qed.
 
 Lemma array_byte_nth_strict_bound (bytes : list (bv 8)) (p : Z) (v : bv 8) :
@@ -24,7 +24,7 @@ Lemma array_byte_nth_strict_bound (bytes : list (bv 8)) (p : Z) (v : bv 8) :
   128 > bv_unsigned (nth 0 bytes (BV 8 0)).
 Proof.
   intros Hlookup Hsign.
-  SourceFactMatching.zesu_source_fact.
+  ZesuSsz.Automation2.SourceFactMatching.zesu_source_fact.
 Qed.
 
 Print Assumptions array_byte_nth_sign_fact.
