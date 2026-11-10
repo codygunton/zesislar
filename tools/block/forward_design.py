@@ -211,7 +211,8 @@ def evaluate_function(function, traces, initial_states, *, max_paths=4096, check
               'function': {'name': function['name'], 'entry': hex(entry), 'end': hex(end)},
               'boundaries': list(boundaries.values()),
               'cuts': [{'pc': hex(pc), 'reason': reason} for pc, reasons in sorted(cuts.items())
-                       for reason in sorted(reasons)], 'stops': [], 'reports': []}
+                       for reason in sorted(reasons)], 'stops': [], 'reports': [], 'exits': []}
+    returns = {_pc(pc) for pc in function.get('returns', [])}
     pending = deque()
     paths_created = 0
 
@@ -299,6 +300,14 @@ def evaluate_function(function, traces, initial_states, *, max_paths=4096, check
         for state, path in states:
             actual = state.registers.get('PC')
             routed = _Work(work.block_pc, work.seed_pc, state, path, work.visited + (work.block_pc,))
+            if (actual is not None and actual.op != 'bits' and not blocks[work.block_pc]['successors']
+                    and instructions[work.block_pc][-1] in returns):
+                # A CFG return site leaves the function; its exit is not a dropped path.
+                result['exits'].append({'kind': 'function_return', 'block_pc': hex(work.block_pc),
+                                        'instruction_pc': hex(instructions[work.block_pc][-1]),
+                                        'seed_pc': hex(work.seed_pc), 'target': actual.to_dict(),
+                                        'path': list(path), 'state': state.to_dict()})
+                continue
             if actual is None or actual.op != 'bits':
                 stop('unknown_pc', routed, instructions[work.block_pc][-1], state,
                      stage='block_exit', actual_pc=actual.to_dict() if actual else None)
