@@ -238,7 +238,7 @@ Ltac zesu_finish_known_list_shape :=
           (zesu_normalize_known_list_lengths; lia);
         rewrite (take_ge xs n Htake); clear Htake
       end; reflexivity] |
-    solve [zesu_normalize_known_list_lengths; lia] |
+    solve [zesu_normalize_known_list_lengths; zesu_solver_goal; lia] |
     (* The bit-vector solver reads the facts the goal reaches, never the
        whole context: on a 199-fact context it ran for hours. *)
     solve [ZesuSsz.Automation2.ContextCollection.zesu_solve_goal_selected
@@ -321,13 +321,9 @@ Ltac zesu_finish_zero_offset_u64_roundtrip :=
 
 (* bv_solve proves arithmetic; it never closes an equation between lists or
    an existential. In 6a40, 6b08 and 6ae0 every selected bv_solve call at the
-   finisher tail was one of these and failed (up to 51 s per call). *)
-Ltac zesu_bv_solver_goal :=
-  lazymatch goal with
-  | |- @eq (list _) _ _ => fail 0
-  | |- ex _ => fail 0
-  | _ => idtac
-  end.
+   finisher tail was one of these and failed (up to 51 s per call). The same
+   holds for any goal the solvers do not interpret (`zesu_solver_goal`). *)
+Ltac zesu_bv_solver_goal := zesu_solver_goal.
 
 Ltac zesu_finish_v1 :=
   try autorewrite with zesu_indices;
@@ -473,7 +469,7 @@ Ltac zesu_finish_pure_goal_base :=
   try (zesu_finish_pointer_alignment);
   try (zesu_saturate_alignment);
   try zesu_finish_lia;
-  try (tryif zesu_finish_defer_cancel_shape then idtac else bv_solve);
+  try (tryif zesu_finish_defer_cancel_shape then idtac else (zesu_solver_goal; bv_solve));
   (* C6, last: the goal is arithmetic and everything above has refused it,
      so the facts it needs are still folded inside a hypothesis. Unfold
      them and ask once more. `solve` keeps the step honest: it either
@@ -806,13 +802,10 @@ Ltac zesu_finish_common_pure :=
         cbv [bv_unsigned bv_modulus] in *; lia)]
     | autorewrite with isla_coq_rewrite; zesu_union_pure_finish]]].
 
-(* lia and bv_solve never close an existential; on a large context they
-   only spend time before the shape-specific closers get their turn. *)
-Ltac zesu_final_solver_goal :=
-  lazymatch goal with
-  | |- ex _ => fail 0
-  | _ => idtac
-  end.
+(* lia and bv_solve never close an existential or another goal they do not
+   interpret; on a large context they only spend time before the
+   shape-specific closers get their turn. *)
+Ltac zesu_final_solver_goal := zesu_solver_goal.
 
 (* The common pure path and final tail share the union helper. Baseline closers remain available. *)
 Ltac zesu_finish_final_pure :=
@@ -848,7 +841,8 @@ zesu_finish_pure_goal_base;
   try solve [
     first [
       zesu_finish_negated_ge; zesu_finish_implication_pair; repeat split;
-      first [reflexivity | assumption | eassumption | lia | bv_solve |
+      first [reflexivity | assumption | eassumption |
+        zesu_final_solver_goal; lia | zesu_final_solver_goal; bv_solve |
         zesu_finish_forall_leaf]
     | repeat split; zesu_finish_forall_leaf]] | zesu_finish_common_pure].
 
