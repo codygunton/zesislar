@@ -78,6 +78,31 @@ class StopReachability(unittest.TestCase):
                 require_complete_boundary(boundary(result, pc))
 
 
+class FunctionReturn(unittest.TestCase):
+    RETURN = {'name': 'ret', 'entry': 16, 'end': 20, 'rows': [{'pc': 16}],
+              'blocks': [{'start': 16, 'end': 20, 'successors': []}], 'returns': [16]}
+    TRACE = '(trace (declare-const v1 (_ BitVec 64)) (read-reg |x1| nil v1) (write-reg |PC| nil v1))'
+
+    def state(self):
+        from symbolic_state import input_expr
+        return SymbolicState(registers={'PC': bits(16, 64), 'x1': input_expr('returnAddress', 64)})
+
+    def test_return_site_is_an_exit_not_a_stop(self):
+        result = evaluate_function(self.RETURN, {16: self.TRACE}, {16: self.state()})
+        self.assertEqual(result['stops'], [])
+        self.assertEqual([row['kind'] for row in result['exits']], ['function_return'])
+        self.assertEqual(result['exits'][0]['instruction_pc'], hex(16))
+        require_complete_boundary(boundary(result, 16))
+
+    def test_jump_to_an_unknown_address_elsewhere_still_stops(self):
+        function = {**self.RETURN, 'returns': []}
+        result = evaluate_function(function, {16: self.TRACE}, {16: self.state()})
+        self.assertEqual([row['reason'] for row in result['stops']], ['unknown_pc'])
+        self.assertEqual(result['exits'], [])
+        with self.assertRaises(BoundaryRefused):
+            require_complete_boundary(boundary(result, 16))
+
+
 class Contradictions(unittest.TestCase):
     def test_contradictory_alternative_is_refused(self):
         calls = []
