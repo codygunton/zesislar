@@ -1159,6 +1159,33 @@ head -n 1 "$marker"
         self.assertEqual(result.returncode, 0, result.stderr)
         self.assertIn("confirmed", result.stdout)
 
+    def test_held_launch_starts_within_5_s_after_a_release(self):
+        if shutil.which("inotifywait") is None:
+            self.skipTest("inotifywait is not installed")
+        result = self.run_guard(r"""
+hold_reason() { :; }
+compiler_pids() { :; }
+first=$(reserve_coqc $$) || exit 10
+confirm_coqc "$first" || exit 11
+held() {
+  local owner=$BASHPID second
+  second=$(reserve_coqc "$owner") || exit 12
+  confirm_coqc "$second" || exit 13
+  date +%s%N > "$STATE_DIR/admitted"
+  release_coqc "$second"
+}
+held & waiter=$!
+sleep 2
+[ ! -e "$STATE_DIR/admitted" ] || exit 14
+date +%s%N > "$STATE_DIR/released"
+release_coqc "$first"
+wait "$waiter" || exit 15
+echo $(( ($(cat "$STATE_DIR/admitted") - $(cat "$STATE_DIR/released")) / 1000000 ))
+""", ZESU_MAX_COQC="1", ZESU_IN_BATCH="1")
+        self.assertEqual(result.returncode, 0, result.stderr)
+        # The release wakes the held launch; a 30 s wait round would fail this.
+        self.assertLess(int(result.stdout.split()[-1]), 5000)
+
     def test_two_batches_exceed_cap_without_deadlock(self):
         result = self.run_guard("""
 hold_reason() { :; }
