@@ -6,6 +6,7 @@ import unittest
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from boundary_guards import (BoundaryRefused, alternative_facts, annotate_reaching_stops,
                              contradiction_source, contradictory_alternatives,
+                             contradictory_sources,
                              refused_alternative_indices, require_complete_boundary,
                              require_consistent_alternatives, without_alternatives)
 from forward_design import evaluate_function
@@ -81,6 +82,34 @@ class StopReachability(unittest.TestCase):
         for pc in (16, 24, 32):
             require_complete_boundary(boundary(result, pc))
 
+    def test_fault_arm_that_leaves_the_function_drops_no_path(self):
+        # The trap vector 0 and the address 64 are outside the function [16, 36).
+        leaving = [dict(stop('intermediate_pc_mismatch', 16), actual_pc=hex(0)),
+                   dict(stop('outside_pc', 24), actual_pc=hex(64))]
+        result = annotate_reaching_stops(report(*leaving), FUNCTION)
+        for pc in (16, 24, 32):
+            require_complete_boundary(boundary(result, pc))
+        inside = dict(stop('intermediate_pc_mismatch', 16), actual_pc=hex(32))
+        result = annotate_reaching_stops(report(inside), FUNCTION)
+        with self.assertRaisesRegex(BoundaryRefused, '1 retained stops can reach the boundary 0x20'):
+            require_complete_boundary(boundary(result, 32))
+
+    def test_call_stop_is_a_call_boundary_not_a_fault_exit(self):
+        # Block 16 ends in a call at 20 to the callee 64, outside the function [16, 32).
+        function = {'name': 'caller', 'entry': 16, 'end': 32,
+                    'rows': [{'pc': pc} for pc in range(16, 32, 4)],
+                    'blocks': [{'start': 16, 'end': 24, 'successors': [24]},
+                               {'start': 24, 'end': 32, 'successors': []}],
+                    'calls': [{'pc': 20, 'target': 64, 'kind': 'call'}]}
+        call = dict(stop('outside_pc', 16), instruction_pc=hex(20), actual_pc=hex(64))
+        result = annotate_reaching_stops(report(call), function)
+        with self.assertRaisesRegex(BoundaryRefused, '1 retained stops can reach the boundary 0x18; '
+                                                     'the first is outside_pc in block 0x10 at 0x14'):
+            require_complete_boundary(boundary(result, 24))
+        # A fault arm of the call instruction (the trap vector 0) still leaves the function.
+        result = annotate_reaching_stops(report(dict(call, actual_pc=hex(0))), function)
+        require_complete_boundary(boundary(result, 24))
+
     def test_boundary_without_a_reachability_record_is_refused(self):
         with self.assertRaisesRegex(BoundaryRefused, 'no stop-reachability record'):
             require_complete_boundary({'pc': hex(32), 'status': 'generated', 'alternatives': [{}]})
@@ -151,6 +180,28 @@ class Contradictions(unittest.TestCase):
             without_alternatives(source, [0, 1])
         with self.assertRaisesRegex(BoundaryRefused, 'plain generated'):
             without_alternatives({**source, 'status': 'generated_join'}, indices)
+
+    def test_contradictory_source_leaves_the_cut_before_generalization(self):
+        source = {'pc': hex(32), 'status': 'generated',
+                  'alternatives': [{'path': [0]}, {'path': [1]}, {'path': [2]}]}
+        rendered, checked = [], []
+
+        def render_alone(alone):
+            alternative, = alone['alternatives']
+            rendered.append(alternative['path'])
+            if alternative['path'] == [2]:
+                return None
+            return [('fp_machineAt32_ForwardA0N0', FORWARD), ('fp_machineAt32', MAIN)]
+
+        def check(name, binders, facts):
+            checked.append(name)
+            return name.endswith('ForwardA1N0')
+
+        self.assertEqual(contradictory_sources(source, render_alone, check), [1])
+        self.assertEqual(rendered, [[0], [1], [2]])
+        self.assertEqual(checked, ['fp_machineAt32_ForwardA0N0', 'fp_machineAt32_ForwardA1N0'])
+        self.assertEqual(without_alternatives(source, [1])['alternatives'],
+                         [{'path': [0]}, {'path': [2]}])
 
     def test_check_compiles_only_when_the_solver_fails(self):
         binders, facts = alternative_facts(FORWARD)
