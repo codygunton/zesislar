@@ -1,10 +1,10 @@
 """Reject stale committed FP301 declarations and generated block callers."""
-import ast
 import hashlib
 import json
 from pathlib import Path
 import unittest
 
+from function_profiles import load_profile, pilot_header, return_header
 from render_fp301_statements import render_caller, render_declaration
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -14,14 +14,8 @@ class GeneratedFP301(unittest.TestCase):
     def test_committed_outputs_match_renderer(self):
         inputs = json.loads((ROOT / "tools/block/fixtures/fp301-generation.json").read_text())
         self.assertEqual(len(inputs["callers"]), 16)
-        headers = {}
-        for kind, name in [("pilot", "render_fp301_entries.py"),
-                           ("return", "render_fp301_statements.py")]:
-            tree = ast.parse((ROOT / "tools/block" / name).read_text())
-            headers[kind] = next(ast.literal_eval(node.value) for node in ast.walk(tree)
-                                 if isinstance(node, ast.Assign) and any(
-                                     isinstance(target, ast.Name) and target.id == "header"
-                                     for target in node.targets))
+        profile = load_profile()
+        headers = {"pilot": pilot_header(profile), "return": return_header(profile)}
         for group in ["callers", "declarations"]:
             for row in inputs[group]:
                 with self.subTest(output=row["output"]):

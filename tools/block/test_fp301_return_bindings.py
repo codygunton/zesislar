@@ -1,11 +1,11 @@
 """Check the source bindings for the shared FP301 return declarations."""
 
-import ast
 import hashlib
 import json
 from pathlib import Path
 import unittest
 
+from function_profiles import load_profile, pilot_header, return_header
 from render_fp301_statements import render_declaration
 from return_exit import return_blocks
 
@@ -29,17 +29,8 @@ class FP301ReturnBindings(unittest.TestCase):
             self.assertEqual(row["address"], "returnAddress")
 
         canonical = json.loads((ROOT / packet["canonical_fixture"]).read_text())
-        headers = {}
-        for kind, filename in [("pilot", "render_fp301_entries.py"),
-                               ("return", "render_fp301_statements.py")]:
-            tree = ast.parse((ROOT / "tools/block" / filename).read_text())
-            headers[kind] = next(
-                ast.literal_eval(node.value) for node in ast.walk(tree)
-                if isinstance(node, ast.Assign) and any(
-                    isinstance(target, ast.Name) and target.id == "header"
-                    for target in node.targets
-                )
-            )
+        profile = load_profile()
+        headers = {"pilot": pilot_header(profile), "return": return_header(profile)}
         for row in packet["declarations"]:
             with self.subTest(output=row["output"]):
                 source = next(item for item in canonical["declarations"]
