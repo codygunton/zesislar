@@ -1,8 +1,13 @@
 Require Import isla.riscv64.riscv64.
 Require Import ZesuSsz.Contracts.AltFlFreeContract.
 Require Import ZesuSsz.Contracts.AltFlFreeBlockEntries.
+Require Import ZesuSsz.Contracts.FreeSelected.
 
 (* Function-specific unfolding markers. These declarations add no generic rule. *)
+(* The selected code keeps its lookup form in Contracts, like decodeItem's;
+   its marker lives with the function hints (as in DecodeItem/BootstrapRegistrations.v). *)
+Global Instance : LithiumUnfold (@ZesuSsz.Contracts.FreeSelected.freeSelectedCode) := I.
+Global Typeclasses Opaque ZesuSsz.Contracts.FreeSelected.freeSelectedCode.
 Global Typeclasses Opaque freeEntryResources.
 Global Instance : LithiumUnfold (@freeEntryResources) := I.
 Global Typeclasses Opaque freeExitRegisterResources.
