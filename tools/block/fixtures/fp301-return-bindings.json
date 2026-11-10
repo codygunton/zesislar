@@ -40,9 +40,6 @@
       "address": "returnAddress"
     }
   ],
-  "return_facts": [
-    "DecodeMeaningModuloKnownBugs args currentStorage"
-  ],
   "declarations": [
     {
       "output": "ZesuSsz/Generated/DecodeItem/FP301/FunctionReturnEntries.v",
@@ -70,13 +67,13 @@
     },
     {
       "output": "ZesuSsz/Generated/DecodeItem/FP301/Pilot6ae0Entries.v",
-      "sha256": "79bc1a446d2c88bd679534c7004ebfa2d23029200da174050a5f314fa497a4c3",
+      "sha256": "e4b9b9042e19552156f55c94b540a7d71fe0ba84cb51c18ff4134714f7635d1e",
       "header_kind": "pilot",
       "canonical_sha256": "34c4cd7561d0e6a43460305619f4052206790d2070a24a64c01d845c432e9b2d"
     },
     {
       "output": "ZesuSsz/Generated/DecodeItem/FP301/Pilot6ae0Structural.v",
-      "sha256": "6ff37a9227ed2d7e55da20d5ad6d8778d2e9ef5befec19a921dcf9506f6665e5",
+      "sha256": "2b475adf2f266a7a8610ef44ab6f0e6fcbb82f93955ad61f3f2fe5d9100f2465",
       "header_kind": "pilot",
       "canonical_sha256": "b69670a0b0003394cbc5ae76e17c2ea4c7e7f280e12149c8de632fd9513446d6"
     }

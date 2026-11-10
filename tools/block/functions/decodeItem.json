@@ -1,0 +1,54 @@
+{
+  "function": "decodeItem",
+  "args_type": "DecodeItemArgs",
+  "pc_prefix": "0x800d",
+  "generated_directory": "ZesuSsz/Generated/DecodeItem/FP301",
+  "callers_directory": "tools/block/generated/fp301_callers",
+  "contract_requires": [
+    "Require Import ZesuSsz.Contracts.RlpDecodeItemContract.",
+    "Require Export ZesuSsz.Contracts.DecodeItemDomainRanges.",
+    "Require Import ZesuSsz.Contracts.RlpDecodeItem."
+  ],
+  "loop_contract_requires": [
+    "Require Import ZesuSsz.Contracts.RlpDecodeItemContract.",
+    "Require Import ZesuSsz.Contracts.RlpDecodeItem."
+  ],
+  "caller_contract_requires": [
+    "Require Import ZesuSsz.Contracts.RlpDecodeItemContract."
+  ],
+  "selected_code": {
+    "module": "ZesuSsz.Contracts.DecodeItemSelected",
+    "premise": "decodeItemSelectedCode"
+  },
+  "return_facts": ["DecodeMeaningModuloKnownBugs args currentStorage"],
+  "domain_component": "⌜decodeItemDomainAt returnAddress decodeItemC1BDomain args⌝",
+  "blocks": ["6960", "6974", "697c", "69a4", "69b0", "69d8", "69e0", "69e8", "6a00", "6a08",
+             "6a14", "6a64", "6a6c", "6a78", "6aa8", "6ab4", "698c", "6a24", "6ac4", "6ae0"],
+  "loop_heads": ["6a24", "6ac4"],
+  "loop_head_fixture": "tools/block/fixtures/fp301-loop-heads.json",
+  "loop_first_pass": {
+    "count_guard_marker": "decodeItemInputLength args",
+    "cursor_base": "(decodeItemInputPointer args)",
+    "start_lemma": "loop_fold_start_from_complete_source_domain"
+  },
+  "closed_cases_count": 10,
+  "loop_exits": {
+    "fixture": "tools/block/fixtures/fp301-loop-successors.json",
+    "head_bound": "(bv_unsigned machine_x15 < bv_unsigned machine_x11)",
+    "exit_link": "(bv_unsigned machine_x15 = bv_unsigned machine_x11)",
+    "forward_base": "3505afab5",
+    "witness_exclusion": "machine_x\\d+|decodeItem|\\bi\\b",
+    "contradiction_directory": "_build/agents/loop-exit-contradiction-checks",
+    "design": [
+      {"pc": "6a38", "head": "6a24"},
+      {"pc": "6a40", "head": "6a24", "block": "6a38", "update": ["x14", "x13"], "branch": ["ltu", "x12", "x14", false]},
+      {"pc": "6ad8", "head": "6ac4"},
+      {"pc": "6b08", "head": "6ac4", "block": "6ad8", "update": ["x14", "x13"], "branch": ["ltu", "x12", "x14", true]}
+    ]
+  },
+  "loop_successors": {
+    "pairs": [["6a38", "6a24"], ["6a40", "6a24"], ["6ad8", "6ac4"], ["6b08", "6ac4"]],
+    "classes_per_head": 4,
+    "continuation_id": "resource_15"
+  }
+}
