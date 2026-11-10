@@ -319,6 +319,16 @@ Ltac zesu_finish_zero_offset_u64_roundtrip :=
       apply ByteArrays.zesu_u64_little_endian_roundtrip
   end.
 
+(* bv_solve proves arithmetic; it never closes an equation between lists or
+   an existential. In 6a40, 6b08 and 6ae0 every selected bv_solve call at the
+   finisher tail was one of these and failed (up to 51 s per call). *)
+Ltac zesu_bv_solver_goal :=
+  lazymatch goal with
+  | |- @eq (list _) _ _ => fail 0
+  | |- ex _ => fail 0
+  | _ => idtac
+  end.
+
 Ltac zesu_finish_v1 :=
   try autorewrite with zesu_indices;
   try (zesu_normalize_memory_constants);
@@ -365,7 +375,8 @@ Ltac zesu_finish_v1 :=
   | _ =>
       try (zesu_saturate_alignment);
       try zesu_finish_lia;
-      try (ZesuSsz.Automation2.ContextCollection.zesu_solve_goal_selected
+      try (zesu_bv_solver_goal;
+        ZesuSsz.Automation2.ContextCollection.zesu_solve_goal_selected
         ("finish.v1_tail"%string) ltac:(bv_solve))
   end;
   try (zesu_finish_little_endian_if_closed);
