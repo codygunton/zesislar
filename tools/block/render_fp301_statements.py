@@ -8,7 +8,8 @@ from pathlib import Path
 
 from production_modules import statement as caller_statement
 from render_support import definition_introduction_source, unfold_declaration
-from return_exit import add_return_precondition, return_blocks, return_package
+from return_exit import (add_return_facts, add_return_precondition, return_blocks,
+                         return_package)
 from function_profiles import load_profile, return_header
 
 
@@ -231,6 +232,8 @@ def render_declaration(source, header, profile=None):
         raise ValueError("A generated declaration lacks its exact header boundary.")
     if "Automation.All." in header or "Automation2.All." in header:
         raise ValueError("A generated declaration cannot import a core.")
+    if re.search(r"\b(?:Definition fp_machineReturn|Instance fp_machineReturn_intro)\b", source):
+        source = add_return_facts(source, (profile or load_profile()).get("return_facts", []))
     return render_entry_registers(header + source.split(boundary, 1)[1])
 
 
@@ -322,6 +325,10 @@ def residual_import(source, residuals=RESIDUALS):
     last = max(index for index, text in enumerate(lines) if text.startswith(("Require ", "From ")))
     if lines[last] != CORE_IMPORT:
         raise ValueError("A caller must end its imports with the core import.")
+    # A return block's residual lemmas may use the pure lemmas behind its exit facts.
+    if "FunctionReturnEntries.fp_machineReturn" in source:
+        lines[last + 1:last + 1] = load_profile().get("return_requires", [])
+        last += len(load_profile().get("return_requires", []))
     lines.insert(last + 1, line)
     return "\n".join(lines)
 
@@ -361,6 +368,7 @@ def render(inputs, output):
     definition, provenance = return_package(
         source, inputs["return_symbol"], symbol, parameters
     )
+    definition = add_return_facts(definition, profile.get("return_facts", []))
     entries = {row["pc"]: row for row in declarations["cases"]}
     prepared = []
     for row in callers["rows"]:

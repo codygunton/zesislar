@@ -20,6 +20,8 @@
     "module": "ZesuSsz.Contracts.DecodeItemSelected",
     "premise": "decodeItemSelectedCode"
   },
+  "return_facts": ["DecodeMeaningModuloKnownBugs args currentStorage"],
+  "return_requires": ["Require Import ZesuSsz.Compliance.DecodeItemMeaningPorted."],
   "domain_component": "⌜decodeItemDomainAt returnAddress decodeItemC1BDomain args⌝",
   "blocks": ["6960", "6974", "697c", "69a4", "69b0", "69d8", "69e0", "69e8", "6a00", "6a08",
              "6a14", "6a64", "6a6c", "6a78", "6aa8", "6ab4", "698c", "6a24", "6ac4", "6ae0"],
