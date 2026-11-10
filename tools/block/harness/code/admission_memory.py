@@ -521,8 +521,16 @@ class ScopeReader:
                 return {'verified': True, 'closed': True, 'live_bytes': 0}
             if 'populated 1' not in events.splitlines() and not (static and 'populated 0' in events.splitlines()):
                 raise ValueError('The retained aggregate population is unknown.')
-            return dict(bound, verified=True, aggregate_verified=True, live_bytes=live,
-                        reason='authenticated aggregate remains populated')
+            row = dict(bound, verified=True, aggregate_verified=True, live_bytes=live,
+                       reason='authenticated aggregate remains populated')
+            try:
+                anon = next(int(line.split()[1]) for line in
+                            (path / 'memory.stat').read_text().splitlines() if line.startswith('anon '))
+                if self.directory(path) == before and anon >= 0:
+                    row['anon_bytes'] = anon
+            except (OSError, StopIteration, ValueError, IndexError):
+                pass
+            return row
         except (OSError, ValueError, KeyError, TypeError) as error:
             return {'verified': False, 'live_bytes': 0, 'reason': str(error)}
 
@@ -879,14 +887,25 @@ def projection(data, claims, new_bytes, available_bytes, *, reader=None, new_obs
             if key not in data.get('shell_claim_owners', {}):
                 observations[key] = observation
     retained_groups = dict(data.get('legacy_aggregate_holds', {}))
-    retained_groups.update(data.get('shell_aggregate_holds', {}))
+    shell_holds = data.get('shell_aggregate_holds', {})
+    retained_groups.update(shell_holds)
     for key, retained in retained_groups.items():
         sample = reader.residual(retained['aggregate'])
         if sample.get('closed') is True:
             continue
         # An unknown retained scope keeps its last booking. A verified live
-        # aggregate contributes actual usage even after its final token ends.
+        # aggregate contributes actual usage even after its final token ends:
+        # its live anonymous memory plus the bookings of its compiles that
+        # still run. Without this a batch kept the largest claim it ever
+        # released until it ended (55 holds, 298.8 GiB on 2026-11-10).
         claims[key] = retained['fallback_bytes']
+        if (key in shell_holds and sample.get('aggregate_verified') is True
+                and type(sample.get('anon_bytes')) is int):
+            running = sum(amount for other, amount in claims.items()
+                          if other != key and amount
+                          and observations.get(other, {}).get('verified') is True
+                          and observations[other].get('scope') == sample.get('scope'))
+            claims[key] = min(retained["fallback_bytes"], sample["anon_bytes"] + running)
         observations[key] = sample
     result = dict(evaluate(claims, new_bytes, available_bytes, observations=observations,
                            new_observation=new_observation,

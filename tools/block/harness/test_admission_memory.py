@@ -187,6 +187,57 @@ class LiveAdmissionTests(unittest.TestCase):
         self.assertEqual(result['admission_basis'], 'booking')
 
 
+GIB = M.GIB
+
+
+class RetainedHoldTests(unittest.TestCase):
+    """A batch hold books live anonymous use plus its running compiles."""
+
+    AGGREGATE = '/cg/zesuworkloads-aggregate1000p1r1.slice'
+
+    class Reader:
+        def __init__(self, anon, aggregate):
+            self.anon, self.aggregate = anon, aggregate
+        def claim(self, data, key, **options):
+            return {'verified': True, 'aggregate_verified': True, 'scope': self.aggregate,
+                    'device': 1, 'inode': 2, 'live_bytes': GIB}
+        def residual(self, bound):
+            row = dict(bound, verified=True, aggregate_verified=True, live_bytes=20 * GIB)
+            if self.anon is not None:
+                row['anon_bytes'] = self.anon
+            return row
+        def slice_max(self):
+            return M.SLICE_MAX_BYTES
+        def slice_sample(self):
+            raise OSError('no live sample in this fixture')
+
+    def ledger(self):
+        aggregate = {'scope': self.AGGREGATE, 'device': 1, 'inode': 2}
+        return {'fixed_claims': {'shell:running': 2 * GIB, 'shell:ended': 0},
+                'shell_aggregate_holds': {'shell-aggregate:x': {'aggregate': aggregate,
+                                                                'fallback_bytes': 16 * GIB}}}
+
+    def test_batch_with_one_ended_and_one_running_compile(self):
+        data = self.ledger()
+        result = M.projection(data, M.ledger_claims(data), GIB, 10**13,
+                              reader=self.Reader(3 * GIB, self.AGGREGATE))
+        # Live anonymous 3 GiB plus the running compile's 2 GiB, not the 16 GiB
+        # the ended compile once booked. The shared aggregate counts once.
+        self.assertEqual(result['active_claim_bytes'], 5 * GIB)
+
+    def test_hold_without_anonymous_sample_keeps_its_fallback(self):
+        data = self.ledger()
+        result = M.projection(data, M.ledger_claims(data), GIB, 10**13,
+                              reader=self.Reader(None, self.AGGREGATE))
+        self.assertEqual(result['active_claim_bytes'], 16 * GIB)
+
+    def test_hold_never_books_above_its_fallback(self):
+        data = self.ledger()
+        result = M.projection(data, M.ledger_claims(data), GIB, 10**13,
+                              reader=self.Reader(40 * GIB, self.AGGREGATE))
+        self.assertEqual(result['active_claim_bytes'], 16 * GIB)
+
+
 class ScopeTests(unittest.TestCase):
     def setUp(self):
         self.temp=tempfile.TemporaryDirectory();self.addCleanup(self.temp.cleanup)
@@ -224,6 +275,14 @@ class ScopeTests(unittest.TestCase):
         self.assertEqual((self.parent/'memory.swap.max').read_text(), '0')
         (self.parent/'memory.swap.max').write_text('1')
         with self.assertRaises(ValueError): self.reader.slice_sample()
+
+    def test_residual_reports_anonymous_memory_apart_from_page_cache(self):
+        (self.group/'cgroup.events').write_text('populated 1\n')
+        (self.group/'memory.current').write_text(str(30*M.GIB))
+        (self.group/'memory.stat').write_text(f'anon {3*M.GIB}\nfile {27*M.GIB}\n')
+        info=self.group.stat()
+        row=self.reader.residual(dict(scope=str(self.group),device=info.st_dev,inode=info.st_ino))
+        self.assertEqual((row['live_bytes'],row['anon_bytes']),(30*M.GIB,3*M.GIB))
 
     def test_prune_drops_only_removed_aggregate_holds(self):
         (self.group/'cgroup.events').write_text('populated 1\n')
