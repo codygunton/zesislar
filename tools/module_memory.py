@@ -227,8 +227,9 @@ def peak_exec(output, payload):
     status = child.wait()
     if status == 0:
         try:
-            rss = resource.getrusage(resource.RUSAGE_CHILDREN).ru_maxrss * 1024
-            Path(output).write_text(json.dumps({"peak_bytes": scope_peak(), "rss_peak_bytes": rss or None,
+            usage = resource.getrusage(resource.RUSAGE_CHILDREN)
+            Path(output).write_text(json.dumps({"peak_bytes": scope_peak(), "rss_peak_bytes": usage.ru_maxrss * 1024 or None,
+                                                "compiler_cpu_seconds": usage.ru_utime + usage.ru_stime,
                                                 "admitted_ns": admitted, "ended_ns": time.time_ns()}))
         except OSError as error:
             print(f"module memory: scope peak not saved: {error}", file=sys.stderr)
@@ -268,6 +269,9 @@ def observe(profile_path, output, guard, compiler, cwd, arguments, *, fallback_b
         status = child.wait()
         if status != 0:
             return status if status > 0 else 128 - status
+        import resource
+        usage = resource.getrusage(resource.RUSAGE_CHILDREN)
+        guarded_cpu = usage.ru_utime + usage.ru_stime
         try:
             measured = json.loads(Path(peak_file).read_text() or "{}")
         except (OSError, ValueError):
@@ -283,6 +287,10 @@ def observe(profile_path, output, guard, compiler, cwd, arguments, *, fallback_b
             import fcntl
             row = {"source": source, "cwd": str(Path(cwd).absolute()), "peak_bytes": peak,
                    "rss_peak_bytes": measured.get("rss_peak_bytes"),
+                   # The guard path (scope setup, admission, ledger) is the
+                   # guarded CPU less the compiler's own CPU.
+                   "compiler_cpu_seconds": measured.get("compiler_cpu_seconds"),
+                   "guarded_cpu_seconds": guarded_cpu,
                    "claim_bytes": claim["claim_bytes"], "claim_reason": claim["reason"],
                    "fence_bytes": fallback_bytes, "started_ns": started,
                    "admitted_ns": measured.get("admitted_ns"), "ended_ns": measured.get("ended_ns", time.time_ns())}
@@ -322,7 +330,9 @@ def booked_versus_peak(observations):
             "peak_bytes_p50": quantile(0.5), "peak_bytes_p95": quantile(0.95),
             "peak_bytes_max": peaks[-1] if peaks else 0,
             "booked_bytes_total": sum(row.get("claim_bytes") or 0 for row in rows),
-            "peak_bytes_total": sum(peaks)}
+            "peak_bytes_total": sum(peaks),
+            "compiler_cpu_seconds": round(sum(row.get("compiler_cpu_seconds") or 0 for row in rows), 1),
+            "guarded_cpu_seconds": round(sum(row.get("guarded_cpu_seconds") or 0 for row in rows), 1)}
 
 
 def admission(request_bytes, live_claims, available_bytes, *, headroom_bytes=20 * GIB,

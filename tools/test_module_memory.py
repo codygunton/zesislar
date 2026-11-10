@@ -716,6 +716,9 @@ class GateProfileTests(unittest.TestCase):
         self.assertEqual(second["claim_bytes"], memory.booking(first["peak_bytes"], 16 * memory.GIB))
         self.assertEqual(self.claims.read_text().split(), [str(16 * memory.GIB), str(second["claim_bytes"])])
         self.assertLessEqual(first["admitted_ns"], first["ended_ns"])
+        # Harness CPU is the guarded CPU less the compiler's own CPU.
+        self.assertGreaterEqual(first["guarded_cpu_seconds"], first["compiler_cpu_seconds"])
+        self.assertGreater(first["compiler_cpu_seconds"], 0)
 
     def test_failed_compile_records_nothing_and_keeps_its_status(self):
         self.assertEqual(self.run_observed("Unmeasured.v", 1, status=3), 3)
