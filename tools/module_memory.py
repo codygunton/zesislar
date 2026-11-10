@@ -137,27 +137,50 @@ def load_profile(path):
 # largest measured peak there, at least 2 GiB, at most the fallback. On
 # 2026-11-10 eleven new 1 s declaration modules each booked the 16 GiB fence
 # and waited 25 min for admission; every measured directory but one has a
-# largest peak under 1.3 GiB. A directory without rows keeps the fallback,
-# and a changed module keeps it until it is measured again. The compiler
-# fence does not change: a module above its booking hits the same limit.
+# largest peak under 1.3 GiB. A directory with no rows in or below it books
+# from its nearest ancestor that has rows in or below it, never above ZesuSsz/
+# for a ZesuSsz module (the repository root bounds the others): a new function
+# directory such as ZesuSsz/Generated/NextUint64/FP301 books from the
+# measured modules under ZesuSsz/Generated. Without such an ancestor the
+# module keeps the fallback, and a changed module keeps it until it is
+# measured again. The compiler fence does not change: a module above its
+# booking hits the same limit.
 PRIOR_NUMERATOR, PRIOR_DENOMINATOR = 3, 2
 PRIOR_FLOOR_BYTES = 2 * GIB
+PRIOR_ROOTS = (PurePosixPath("ZesuSsz"),)
 
 
-def directory_prior(profile, source, fallback_bytes):
-    """Return the booking for an unmeasured module, or None without a directory row."""
-    directory = PurePosixPath(source).parent
-    peaks = []
+def prior_directory(profile, source):
+    """Return (directory, largest measured peak under it) for the nearest measured directory, or None.
+
+    A directory counts as measured when a module in it or below it has a row."""
+    largest = {}
     for key, row in profile["modules"].items():
-        if PurePosixPath(key).parent != directory or not isinstance(row, dict):
+        if not isinstance(row, dict):
             continue
         for field in ("peak_bytes", "rss_peak_bytes"):
             value = row.get(field)
             if type(value) is int and value > 0:
-                peaks.append(value)
-    if not peaks:
+                parent = PurePosixPath(key).parent
+                for directory in (parent, *parent.parents):
+                    largest[directory] = max(largest.get(directory, 0), value)
+    directory = PurePosixPath(source).parent
+    root = next((top for top in PRIOR_ROOTS if directory == top or top in directory.parents),
+                PurePosixPath("."))
+    while True:
+        if directory in largest:
+            return directory, largest[directory]
+        if directory == root or directory == directory.parent:
+            return None
+        directory = directory.parent
+
+
+def directory_prior(profile, source, fallback_bytes):
+    """Return the booking for an unmeasured module, or None without a measured directory."""
+    found = prior_directory(profile, source)
+    if found is None:
         return None
-    prior = max(PRIOR_FLOOR_BYTES, -(-max(peaks) * PRIOR_NUMERATOR // PRIOR_DENOMINATOR))
+    prior = max(PRIOR_FLOOR_BYTES, -(-found[1] * PRIOR_NUMERATOR // PRIOR_DENOMINATOR))
     return min(fallback_bytes, prior)
 
 
@@ -177,7 +200,9 @@ def module_claim(profile, arguments, cwd, compiler, *, fallback_bytes=16 * GIB):
         prior = directory_prior(profile, source, fallback_bytes)
         if prior is None:
             return {"claim_bytes": fallback_bytes, "reason": "unknown_module", "source": source}
-        return {"claim_bytes": prior, "reason": "directory_prior", "source": source}
+        directory = prior_directory(profile, source)[0]
+        reason = "directory_prior" if directory == PurePosixPath(source).parent else "ancestor_prior"
+        return {"claim_bytes": prior, "reason": reason, "source": source, "prior_directory": str(directory)}
     for name, reason in (("compiler_sha256", "changed_compiler"), ("source_sha256", "changed_source"),
                          ("arguments_sha256", "changed_arguments")):
         if row.get(name) != bound[name]:
@@ -358,8 +383,10 @@ def booked_versus_peak(observations):
         return peaks[min(len(peaks) - 1, int(fraction * len(peaks)))] if peaks else 0
     return {"compiles": len(rows), "measured": len(peaks),
             "unmeasured_fence_bookings": sum(1 for row in rows
-                                             if row.get("claim_reason") not in ("measured_module", "directory_prior")),
+                                             if row.get("claim_reason") not in
+                                             ("measured_module", "directory_prior", "ancestor_prior")),
             "directory_prior_bookings": sum(1 for row in rows if row.get("claim_reason") == "directory_prior"),
+            "ancestor_prior_bookings": sum(1 for row in rows if row.get("claim_reason") == "ancestor_prior"),
             "maximum_concurrent_booked_bytes": concurrent("claim_bytes"),
             "maximum_concurrent_peak_bytes": concurrent("peak_bytes"),
             "peak_bytes_p50": quantile(0.5), "peak_bytes_p95": quantile(0.95),

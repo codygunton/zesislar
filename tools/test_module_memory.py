@@ -104,14 +104,51 @@ class ModuleMemoryTests(unittest.TestCase):
         memory.record_measurement(self.profile_path, name, bound, memory.GIB, rss_peak_bytes=4 * memory.GIB)
         self.assertEqual(self.claim("Large.v")["claim_bytes"], 6 * memory.GIB)
 
-    def test_unknown_module_in_an_unmeasured_directory_keeps_the_full_fallback(self):
-        self.profile([("Small.v", 3 * memory.GIB)])
-        (self.root / "sub").mkdir()
-        (self.root / "sub/New.v").write_text("Check nat.\n")
-        value = self.claim("sub/New.v")
+    def source(self, relative):
+        path = self.root / relative
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_text("Check nat.\n")
+        return relative
+
+    def test_unmeasured_directory_books_its_nearest_measured_ancestor(self):
+        self.profile([(self.source("ZesuSsz/Contracts/Measured.v"), 3 * memory.GIB),
+                      (self.source("ZesuSsz/Top.v"), 8 * memory.GIB)])
+        value = self.claim(self.source("ZesuSsz/Contracts/New/Deep/Entry.v"))
+        self.assertEqual((value["claim_bytes"], value["reason"], value["prior_directory"]),
+                         (3 * memory.GIB * 3 // 2, "ancestor_prior", "ZesuSsz/Contracts"))
+        value = self.claim(self.source("ZesuSsz/Generated/New/Entry.v"))
+        self.assertEqual((value["claim_bytes"], value["reason"], value["prior_directory"]),
+                         (12 * memory.GIB, "ancestor_prior", "ZesuSsz"))
+
+    def test_ancestor_counts_the_measured_modules_below_it(self):
+        self.profile([(self.source("ZesuSsz/Generated/DecodeItem/FP301/Pilot.v"), memory.GIB)])
+        value = self.claim(self.source("ZesuSsz/Generated/NextUint64/FP301/Pilot.v"))
+        self.assertEqual((value["claim_bytes"], value["reason"], value["prior_directory"]),
+                         (2 * memory.GIB, "ancestor_prior", "ZesuSsz/Generated"))
+
+    def test_ancestor_search_stops_at_the_zesussz_directory(self):
+        self.profile([("Small.v", 3 * memory.GIB), (self.source("Other/Thing.v"), 3 * memory.GIB)])
+        value = self.claim(self.source("ZesuSsz/New/Entry.v"))
         self.assertEqual((value["claim_bytes"], value["reason"]), (16 * memory.GIB, "unknown_module"))
-        self.assertEqual(memory.directory_prior(memory.load_profile(self.profile_path), "sub/New.v",
-                                                16 * memory.GIB), None)
+        self.assertIsNone(memory.directory_prior(memory.load_profile(self.profile_path),
+                                                 "ZesuSsz/New/Entry.v", 16 * memory.GIB))
+
+    def test_module_outside_zesussz_may_use_the_repository_root(self):
+        self.profile([("Small.v", 3 * memory.GIB)])
+        value = self.claim(self.source("tools/fixtures/New.v"))
+        self.assertEqual((value["claim_bytes"], value["reason"], value["prior_directory"]),
+                         (3 * memory.GIB * 3 // 2, "ancestor_prior", "."))
+
+    def test_unmeasured_tree_keeps_the_full_fallback(self):
+        self.assertEqual(self.claim(self.source("ZesuSsz/New/Entry.v"))["claim_bytes"], 16 * memory.GIB)
+        value = self.claim(self.source("tools/New.v"))
+        self.assertEqual((value["claim_bytes"], value["reason"]), (16 * memory.GIB, "unknown_module"))
+
+    def test_ancestor_prior_keeps_the_floor_and_the_ceiling(self):
+        self.profile([(self.source("ZesuSsz/Light/Small.v"), 100 * 1024 ** 2),
+                      (self.source("ZesuSsz/Heavy/Large.v"), 15 * memory.GIB)])
+        self.assertEqual(self.claim(self.source("ZesuSsz/Light/New/A.v"))["claim_bytes"], 2 * memory.GIB)
+        self.assertEqual(self.claim(self.source("ZesuSsz/Heavy/New/B.v"))["claim_bytes"], 16 * memory.GIB)
 
     def test_directory_prior_never_exceeds_the_fallback(self):
         self.profile([("Small.v", 15 * memory.GIB)])
@@ -813,10 +850,11 @@ class GateProfileTests(unittest.TestCase):
 
     def test_summary_counts_directory_priors_apart_from_fence_bookings(self):
         with self.observations.open("w") as stream:
-            for reason in ("unknown_module", "directory_prior", "measured_module"):
+            for reason in ("unknown_module", "directory_prior", "ancestor_prior", "measured_module"):
                 stream.write(self.json.dumps({"claim_bytes": memory.GIB, "claim_reason": reason}) + "\n")
         summary = memory.booked_versus_peak(self.observations)
-        self.assertEqual((summary["unmeasured_fence_bookings"], summary["directory_prior_bookings"]), (1, 1))
+        self.assertEqual((summary["unmeasured_fence_bookings"], summary["directory_prior_bookings"],
+                          summary["ancestor_prior_bookings"]), (1, 1, 1))
 
 
 if __name__ == "__main__":
