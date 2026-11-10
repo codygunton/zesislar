@@ -1,0 +1,137 @@
+"""Residual lemma modules: renderer, caller import, and policy checks."""
+from pathlib import Path
+import sys
+import tempfile
+import unittest
+
+ROOT = Path(__file__).resolve().parents[2]
+sys.path.insert(0, str(ROOT / "tools" / "residuals"))
+sys.path.insert(0, str(ROOT / "tools" / "block"))
+
+from check_decode_item_hints import residual_errors
+from check_proof_hygiene import residual_module_failures
+from render_residual_module import RenderError, parse_module, render_from_goals
+from render_fp301_statements import residual_import
+
+HEADER = """Require Import ZesuSsz.Automation2.All.
+From Coq Require Import ZArith.ZArith.
+Local Open Scope Z_scope.
+
+Definition DesignedEntry_800d1234 (x : Z) : Prop := True.
+
+"""
+STATEMENT = "Lemma residual_1234_{h} :\n  forall (x : Z) (H0 : 0 <= x), 0 <= x + {n}.\nProof.\n"
+SLOT = "(* PROOF-SLOT: replace this line and the Admitted below with the proof script and Qed. *)\nAdmitted.\n"
+PROOF = "intros.\n  (* copied as is *) lia.\nQed.\n"
+
+
+def goal_dir(root, n, proof=PROOF, header=HEADER):
+    d = Path(root) / ("1234-%d" % n)
+    d.mkdir()
+    statement = header + STATEMENT.format(h="%04x" % n, n=n)
+    (d / "goal.v").write_text(statement + SLOT)
+    (d / "proof.v").write_text(statement + proof)
+    return d
+
+
+class RendererTests(unittest.TestCase):
+    def test_proofs_are_copied_byte_for_byte_and_round_trip(self):
+        with tempfile.TemporaryDirectory() as root:
+            goal_dir(root, 1)
+            goal_dir(root, 2)
+            text = render_from_goals("1234", root)
+        self.assertNotIn("Definition", text)
+        self.assertEqual(text.count("#[export] Hint Resolve residual_1234_"), 2)
+        for n in (1, 2):
+            self.assertIn(STATEMENT.format(h="%04x" % n, n=n) + PROOF.rstrip() + "\n", text)
+        block, header, rows = parse_module(text)
+        self.assertEqual((block, len(rows)), ("1234", 2))
+        self.assertEqual(header[-1], "Local Open Scope Z_scope.")
+        self.assertEqual(residual_module_failures("ZesuSsz/Residuals/Block800d1234.v", text), [])
+
+    def test_refuses_unchecked_proofs(self):
+        for proof in ["intros. admit.\nQed.\n", "Admitted.\n", "intros. lia.\nQed.\nQed.\n",
+                      "timeout 5 lia.\nQed.\n", "intros. lia.\n"]:
+            with self.subTest(proof=proof), tempfile.TemporaryDirectory() as root:
+                goal_dir(root, 1, proof=proof)
+                with self.assertRaises(RenderError):
+                    render_from_goals("1234", root)
+
+    def test_refuses_a_changed_statement(self):
+        with tempfile.TemporaryDirectory() as root:
+            d = goal_dir(root, 1)
+            (d / "proof.v").write_text((d / "proof.v").read_text().replace("0 <= x +", "0 < x +"))
+            with self.assertRaises(RenderError):
+                render_from_goals("1234", root)
+
+    def test_refuses_differing_imports(self):
+        with tempfile.TemporaryDirectory() as root:
+            goal_dir(root, 1)
+            goal_dir(root, 2, header=HEADER.replace("ZArith.ZArith", "Lists.List"))
+            with self.assertRaises(RenderError):
+                render_from_goals("1234", root)
+
+    def test_hygiene_rejects_edited_modules(self):
+        with tempfile.TemporaryDirectory() as root:
+            goal_dir(root, 1)
+            text = render_from_goals("1234", root)
+        name = "ZesuSsz/Residuals/Block800d1234.v"
+        for edited in [text.replace("Hint Resolve residual_1234_0001", "Hint Resolve other"),
+                       text + "\nDefinition extra := 5.\n",
+                       text.replace("Require Import ZesuSsz.Automation2.All.",
+                                    "Require Import ZesuSsz.Automation.All."),
+                       text.replace("lia.\nQed.", "admit.\nQed.")]:
+            with self.subTest(edited=edited[-80:]):
+                self.assertTrue(residual_module_failures(name, edited))
+        self.assertTrue(residual_module_failures("ZesuSsz/Residuals/Block800d9999.v", text))
+        self.assertEqual(residual_module_failures("ZesuSsz/Proofs/Other.v", "anything"), [])
+
+
+class ResidualPolicyTests(unittest.TestCase):
+    def tree(self, files):
+        root = Path(tempfile.mkdtemp())
+        for name, text in files.items():
+            (root / name).parent.mkdir(parents=True, exist_ok=True)
+            (root / name).write_text(text)
+        return root
+
+    MODULE = "Require Import ZesuSsz.Automation2.All.\n#[export] Hint Resolve residual_1234_ab : zesu_residual.\n"
+    CALLER = "Require Import ZesuSsz.Automation2.All.\nRequire Import ZesuSsz.Residuals.Block800d{b}.\nLemma DesignedBoundary_800d1234 : True.\n"
+
+    def test_own_caller_may_import(self):
+        root = self.tree({"ZesuSsz/Residuals/Block800d1234.v": self.MODULE,
+                          "tools/block/generated/fp301_callers/Caller1234.v": self.CALLER.format(b="1234")})
+        self.assertEqual(residual_errors(root), [])
+
+    def test_other_importers_and_hints_are_rejected(self):
+        root = self.tree({
+            "ZesuSsz/Residuals/Block800d1234.v": self.MODULE + "#[export] Hint Resolve foo : core.\n",
+            "ZesuSsz/Residuals/Block800d5678.v": self.MODULE.replace("1234", "5678"),
+            "ZesuSsz/Proofs/P.v": "Require Import ZesuSsz.Residuals.Block800d1234.\n",
+            "tools/block/generated/fp301_callers/Caller1234.v": self.CALLER.format(b="5678"),
+            "tools/block/generated/fp301_callers/Caller9999.v": self.CALLER.format(b="9999"),
+        })
+        errors = "\n".join(residual_errors(root))
+        self.assertIn("registers a hint other than", errors)
+        self.assertIn("ZesuSsz.Proofs.P imports residual module", errors)
+        self.assertIn("another block's residual module", errors)
+        self.assertIn("missing residual module", errors)
+
+    def test_current_tree_passes(self):
+        self.assertEqual(residual_errors(ROOT), [])
+
+
+class CallerImportTests(unittest.TestCase):
+    SOURCE = ("Require Import ZesuSsz.Automation2.All.\nRequire Import ZesuSsz.Automation2.All.\n"
+              "Local Open Scope Z_scope.\nLemma DesignedBoundary_800d1234 : True.\n")
+
+    def test_import_follows_the_core_when_the_module_exists(self):
+        with tempfile.TemporaryDirectory() as root:
+            self.assertEqual(residual_import(self.SOURCE, root), self.SOURCE)
+            (Path(root) / "Block800d1234.v").write_text("")
+            self.assertEqual(residual_import(self.SOURCE, root), self.SOURCE.replace(
+                "All.\nLocal", "All.\nRequire Import ZesuSsz.Residuals.Block800d1234.\nLocal"))
+
+
+if __name__ == "__main__":
+    unittest.main()
