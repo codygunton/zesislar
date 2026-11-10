@@ -1,6 +1,7 @@
 Require Import isla.riscv64.riscv64.
 Require Import InstrSpecs.Machine.
 From iris.proofmode Require Import environments.
+From Coq Require Import NArith Lia.
 
 (* Pure extraction removes its persistent source. Separation keeps both children. *)
 Ltac zesu_expose_environment_alias :=
@@ -84,10 +85,25 @@ Ltac zesu_open_existential_package_step :=
       zesu_open_resource_groups)
   ].
 
+(* An opened byte array `mem_mapsto_array_def` leaves its width equation
+   8 = len * 8 and cells at a + i * Z.of_N len. Fix len to 1 at once, so the
+   cells carry the literal stride that the array rebuild rules expect. *)
+Lemma zesu_byte_stride_one (stride : N) : (8 = stride * 8)%N -> stride = 1%N.
+Proof. lia. Qed.
+
+Ltac zesu_byte_stride_literal :=
+  repeat multimatch goal with
+  | Hwidth : (8 = ?stride * 8)%N |- _ =>
+      is_var stride;
+      pose proof (zesu_byte_stride_one stride Hwidth);
+      subst stride
+  end.
+
 Ltac zesu_open_nested_existential_packages :=
   zesu_open_existential_package_step;
   repeat zesu_open_existential_package_step;
-  zesu_open_resource_groups.
+  zesu_open_resource_groups;
+  zesu_byte_stride_literal.
 
 (* Preserve every package component before selecting the requested field. *)
 Ltac zesu_open_requested_struct_sys_package :=
