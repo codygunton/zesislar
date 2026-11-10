@@ -31,6 +31,11 @@ class EntryRegisterDeclarations(unittest.TestCase):
             source = source.replace(self.rule['entry'], 'another_entry')
             self.assertEqual(render_entry_registers(source), source)
 
+    def test_entry_already_in_the_approved_form_is_kept(self):
+        for source in self.sources:
+            rendered = render_entry_registers(source)
+            self.assertEqual(render_entry_registers(rendered), rendered)
+
     def test_changed_resource_refuses_the_old_authorization(self):
         for source in self.sources:
             source = source.replace(self.rule['old_resource'], 'changed_resource', 1)

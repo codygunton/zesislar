@@ -411,9 +411,9 @@ def format_owned_entry_boundary(boundary, *, original_seed, vocabulary, continua
     join returns no declaration, rather than retaining a path disjunction.
     """
     try:
-        from .join_generalize import generalize_owned_join
+        from .join_generalize import align_join_edges, generalize_owned_join
     except ImportError:
-        from join_generalize import generalize_owned_join
+        from join_generalize import align_join_edges, generalize_owned_join
 
     def framed(source):
         value = deepcopy(source)
@@ -434,6 +434,11 @@ def format_owned_entry_boundary(boundary, *, original_seed, vocabulary, continua
                 set(continuation) != {'name', 'coq', 'source_binding', 'terminal_id'} or
                 not continuation['source_binding']):
             raise ValueError('An entry cut needs a source-bound outer continuation')
+        # Edges through an earlier join seed share the original tree. A single
+        # edge keeps the seed's binders in that tree's witness scope.
+        boundary = {**boundary, 'alternatives': align_join_edges(
+            boundary['alternatives'], original_seed.ownership, continuation['terminal_id'],
+            continuation['name'], keep_binders=len(boundary.get('alternatives', [])) == 1)[0]}
         first = format_entry_boundary(framed(boundary), continuation_id=continuation_id, **options)
         if first.response is None:
             return first

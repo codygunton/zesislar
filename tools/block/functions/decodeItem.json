@@ -28,6 +28,38 @@
              "6a14", "6a64", "6a6c", "6a78", "6aa8", "6ab4", "698c", "6a24", "6ac4", "6ae0"],
   "loop_heads": ["6a24", "6ac4"],
   "loop_head_fixture": "tools/block/fixtures/fp301-loop-heads.json",
+  "loop_designs": [
+    {
+      "head": "6a24",
+      "entry_predecessor": "6a14",
+      "registers": {
+        "x13": "loop_seed_x13",
+        "x15": "loop_seed_x15",
+        "x16": "loop_seed_x16"
+      },
+      "index": "i",
+      "array_cursor": {
+        "register": "x15",
+        "array": "decodeItemInputBytes args",
+        "extent_reason": "1 <= length (decodeItemInputBytes args): the length-of-length window starts at input byte 1 (loop class: bv_unsigned machine_x15 = decodeItemInputPointer args + 1 + i)"
+      }
+    },
+    {
+      "head": "6ac4",
+      "entry_predecessor": "6ab4",
+      "registers": {
+        "x13": "loop_seed_x13",
+        "x15": "loop_seed_x15",
+        "x16": "loop_seed_x16"
+      },
+      "index": "i",
+      "array_cursor": {
+        "register": "x15",
+        "array": "decodeItemInputBytes args",
+        "extent_reason": "1 <= length (decodeItemInputBytes args): the length-of-length window starts at input byte 1 (loop class: bv_unsigned machine_x15 = decodeItemInputPointer args + 1 + i)"
+      }
+    }
+  ],
   "loop_first_pass": {
     "count_guard_marker": "decodeItemInputLength args",
     "cursor_base": "(decodeItemInputPointer args)",

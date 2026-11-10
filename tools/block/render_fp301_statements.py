@@ -213,6 +213,9 @@ def render_entry_registers(source):
         if not re.search(r'\b(?:Definition|Instance) ' + owner + r'(?:_intro)?\b', source):
             continue
         old, new = row['old_resource'], row['new_resource']
+        if (old not in source and source.count(new) == 1
+                and re.search(r'\(' + re.escape(row['binder']) + r' : ' + re.escape(row['type']) + r'\)', source)):
+            continue  # A join already binds this register in the approved form.
         if source.count(old) != 1 or source.count('(∃ ') != 1:
             raise ValueError('The approved register declaration changed: ' + row['entry'])
         if re.search(r'\b' + re.escape(row['binder']) + r'\b', source):
