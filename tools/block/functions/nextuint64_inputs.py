@@ -161,18 +161,31 @@ def domain(entries, layout_source, ids):
                             'coq_statement': 'length (nextUint64SliceImage p l) = 16%nat'},
                   'origin': {'source': bind(entries, declaration='nextUint64SliceImage'),
                              'derivation': 'word64Bytes returns 8 bytes; the image is two words.'}})
-    # decodeItemEntryLayout at stackPointer - 96: RAM base + 16 <= sp - 96 <= RAM end.
+    # decodeItemEntryLayout at stackPointer - 96 gives RAM base + 16 <= sp - 96;
+    # the domain bounds sp below the RAM end and aligns it to 16 bytes.
     ram_base, ram_end = 0xa0000000, 0xc0000000
-    pattern = ('decodeItemEntryLayout (nextInputPointer args) inputLength (nextStackPointer args - 88) '
-               '(nextStackPointer args - 96) 0x800d62b8 (nextUint64InputEnd params)')
+    stack = input_expr('(Z_to_bv 64%N (nextStackPointer (nextUint64Base args)))', 64).to_dict()
+    layout_clause = ('decodeItemEntryLayout (nextInputPointer args) inputLength (nextStackPointer args - 88) '
+                     '(nextStackPointer args - 96) 0x800d62b8 (nextUint64InputEnd params)')
     facts.append({'fact_id': 'domain:stack-interval', 'kind': 'bounds', 'status': 'supplied',
+                  'terms': {'unsigned_interval': {'expression': stack, 'minimum': ram_base + 16 + 96,
+                                                  'maximum': ram_end - 1, 'ram_base': ram_base, 'ram_end': ram_end}},
+                  'origin': {**clause(clauses, 'nextStackPointer args < machineRamEnd defaultMap',
+                                      'nextUint64BoundaryDomain'),
+                             'lower_bound': clause(clauses, layout_clause, 'nextUint64BoundaryDomain'),
+                             'derivation': 'decodeItemEntryLayout bounds sp - 96 below by mapRamBase + '
+                                           'decodeItemStackBytes; the domain bounds sp below machineRamEnd.'}})
+    facts.append({'fact_id': 'domain:stack-alignment', 'kind': 'alignment', 'status': 'supplied',
+                  'terms': {'alignment': {'expression': stack, 'modulus': 16, 'residue': 0}},
+                  'origin': clause(clauses, 'nextStackPointer args mod 16 = 0', 'nextUint64BoundaryDomain')})
+    facts.append({'fact_id': 'domain:slice-interval', 'kind': 'bounds', 'status': 'supplied',
                   'terms': {'unsigned_interval': {
-                      'expression': input_expr('(Z_to_bv 64%N (nextStackPointer (nextUint64Base args)))', 64).to_dict(),
-                      'minimum': ram_base + 16 + 96, 'maximum': ram_end + 96,
-                      'ram_base': ram_base, 'ram_end': ram_end}},
-                  'origin': {**clause(clauses, pattern, 'nextUint64BoundaryDomain'),
-                             'derivation': 'decodeItemEntryLayout bounds its stack pointer argument sp - 96 '
-                                           'by mapRamBase + decodeItemStackBytes and machineRamEnd.'}})
+                      'expression': input_expr('(Z_to_bv 64%N (nextSlicePointer (nextUint64Base args)))', 64).to_dict(),
+                      'minimum': ram_base, 'maximum': ram_end - 16, 'ram_base': ram_base, 'ram_end': ram_end}},
+                  'origin': {**clause(clauses, 'mapRamBase defaultMap <= nextSlicePointer args',
+                                      'nextUint64BoundaryDomain'),
+                             'upper_bound': clause(clauses, 'nextSlicePointer args + 16 <= machineRamEnd defaultMap',
+                                                   'nextUint64BoundaryDomain')}})
     return {'projection': {'facts': facts, 'original_wellformed_clauses': clauses,
                            'entry_assertion_changed': False, 'premises_added': []},
             'constants': {}}

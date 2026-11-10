@@ -2,7 +2,7 @@
   "version": "FP-20261112",
   "kind": "source engine pin",
   "supersedes": "FP-20261111",
-  "provenance": "Adds call-return cuts and call_boundary stops (forward_design.evaluate_function) and separation-derived disjointness of full-permission resources (resource_seed).",
+  "provenance": "Adds call-return cuts and call_boundary stops (forward_design.evaluate_function) and separation-derived disjointness of full-permission resources (resource_seed). A function_return exit carries the owned render of its state (forward_resource_design).",
   "files": [
     {
       "path": "tools/block/entry_helper_resources.py",
@@ -18,7 +18,7 @@
     },
     {
       "path": "tools/block/forward_resource_design.py",
-      "sha256": "e6e57ac9585169c9617d5cfafed26395e59f768bab04ee0fd9f4a687cdc3ed68"
+      "sha256": "e93335b1ed27ad934c33938edb89244c7c3a32ad1eb0d7ead29650971c388a05"
     },
     {
       "path": "tools/block/forward_resources.py",

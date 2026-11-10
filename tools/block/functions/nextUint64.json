@@ -10,7 +10,8 @@
     "Require Import ZesuSsz.Contracts.RlpDecodeItemContract.",
     "Require Import ZesuSsz.Contracts.ParentHeaderRootFacts.",
     "Require Import ZesuSsz.Contracts.NextUint64BlockEntries.",
-    "Require Import ZesuSsz.Contracts.DecodeItemCompositional."
+    "Require Import ZesuSsz.Contracts.DecodeItemCompositional.",
+    "Require Import ZesuSsz.Contracts.DecodeItemCallData."
   ],
   "loop_contract_requires": [
     "Require Import EvmSailRlp.evm_rlp_types.",
@@ -18,7 +19,8 @@
     "Require Import ZesuSsz.Contracts.RlpDecodeItemContract.",
     "Require Import ZesuSsz.Contracts.ParentHeaderRootFacts.",
     "Require Import ZesuSsz.Contracts.NextUint64BlockEntries.",
-    "Require Import ZesuSsz.Contracts.DecodeItemCompositional."
+    "Require Import ZesuSsz.Contracts.DecodeItemCompositional.",
+    "Require Import ZesuSsz.Contracts.DecodeItemCallData."
   ],
   "caller_contract_requires": [
     "Require Import ZesuSsz.Contracts.NextUint64BlockEntries."
@@ -51,9 +53,9 @@
       "call_site_pc": "0x800d62b4",
       "callee_pc": "0x800d6960",
       "return_site_pc": "0x800d62b8",
-      "spec": "decodeItemCallSpec",
-      "spec_module": "ZesuSsz.Contracts.DecodeItemCallSpec",
-      "spec_source": "ZesuSsz/Contracts/DecodeItemCallSpec.v",
+      "spec": "decodeItemCallSpec2",
+      "spec_module": "ZesuSsz.Contracts.DecodeItemCallSpec2",
+      "spec_source": "ZesuSsz/Contracts/DecodeItemCallSpec2.v",
       "stack_bytes": 16,
       "arrays": [
         {
@@ -116,5 +118,15 @@
         "extent_reason": "1 <= length (nextInputBytes (nextUint64Base args)): the payload lies inside the input array and its length is not 0 (loop facts and the beq at 0x800d630c)"
       }
     }
-  ]
+  ],
+  "function_return": {
+    "return_instruction_pc": "0x800d6300",
+    "return_fact": "∃ result : NextUint64Return, nextResultBytes result = {bytes@nextResultPointer (nextUint64Base args)} /\\ {bytes@nextSlicePointer (nextUint64Base args)} = nextUint64SliceImage (nextRestPointer result) (nextRestLength result) /\\ nextUint64RootResult (nextUint64Base args) result",
+    "source": "NextUint64Contract.v: nextUint64ContractExit owns the slice as nextUint64SliceImage (nextRestPointer result) (nextRestLength result) and the result as nextResultBytes result; nextUint64ContractAllows requires nextUint64RootResult (nextUint64Base params) result"
+  },
+  "join_designs": {
+    "62e4": [
+      "∃ result : NextUint64Return, nextResultBytes result = {bytes@nextResultPointer (nextUint64Base args)} /\\ {bytes@nextSlicePointer (nextUint64Base args)} = nextUint64SliceImage (nextRestPointer result) (nextRestLength result) /\\ nextUint64RootResult (nextUint64Base args) result"
+    ]
+  }
 }

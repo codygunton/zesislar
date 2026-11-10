@@ -453,7 +453,7 @@ def align_join_edges(alternatives, ownership, terminal_id, continuation_name, ke
         body = left.get('body') or {}
         if body.get('kind') == 'sep_list':
             relations = {child.get('id') for child in body['children']
-                         if str(child.get('id', '')).startswith('join_relation_')}
+                         if str(child.get('id', '')).startswith(('join_relation_', 'join_design_'))}
             body = {**body, 'children': [child for child in body['children']
                                          if child.get('id') not in relations]}
         shape = {key: value for key, value in left.items() if key not in ('binders', 'scope', 'body')}
@@ -483,8 +483,12 @@ def align_join_edges(alternatives, ownership, terminal_id, continuation_name, ke
 
 def generalize_owned_join(alternatives, *, original_seed, entry_pc, vocabulary,
                           continuation, outer_names=(), liveness=None, observables=None,
-                          relational_registers=()):
+                          relational_registers=(), design_facts=()):
     """Build a seed when every incoming non-register resource is identical.
+
+    design_facts are join-design conjuncts (Coq text). `{bytes@ADDR}` names the
+    current value of the owned array at ADDR; each fact is a pure component of
+    the join scope, which the edges into the join must establish.
 
     This first case needs no memory witness. A differing memory image refuses
     here until affine elimination or whole-array packaging supplies its binder.
@@ -715,6 +719,18 @@ def generalize_owned_join(alternatives, *, original_seed, entry_pc, vocabulary,
             raise ValueError('A join relation captures an owned resource identifier')
         components.append({'id': key, 'kind': 'opaque', 'source': '⌜' + relation['coq'] + '⌝', 'scope': [[0]],
                            'provenance': {'join_edge_count': len(alternatives), 'relation': deepcopy(relation)}})
+        tree['body']['children'].append({'kind': 'component', 'id': key})
+    values = {component.get('address_z'): component.get('value') for component in components
+              if component['kind'] == 'byte_array'}
+    for index, fact in enumerate(design_facts):
+        def array_value(match):
+            if match[1] not in values:
+                raise ValueError('A join design names no owned array at ' + match[1])
+            return values[match[1]]
+        text = re.sub(r'\{bytes@([^}]*)\}', array_value, fact)
+        key = f'join_design_{index}'
+        components.append({'id': key, 'kind': 'opaque', 'source': '⌜' + text + '⌝', 'scope': [[0]],
+                           'provenance': {'join_design': fact}})
         tree['body']['children'].append({'kind': 'component', 'id': key})
     packaged = [row for row in plan['memory_relations'] if row.get('kind') == 'array_packaging']
     for index, row in enumerate(packaged, start=len(plan['relations'])):

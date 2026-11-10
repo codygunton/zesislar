@@ -131,6 +131,10 @@ continuation = {
 }
 profile = load_profile(options.function)
 pilots = list(profile["blocks"])
+blocks = list(pilots)
+# A function-return design adds the return package as one more rendered entry.
+if profile.get("function_return"):
+    pilots.append("Return")
 loop_heads = set(profile["loop_heads"])
 cases = []
 emitted = []
@@ -143,7 +147,7 @@ allowed_helpers = {
 }
 # Refuse every incomplete source boundary before any declaration renders.
 guard_refusals = {}
-for suffix in pilots:
+for suffix in blocks:
     if suffix not in loop_heads:
         try:
             require_complete_boundary(
@@ -158,9 +162,49 @@ check = RocqContradictionCheck(
     profile.args_type,
 )
 
+def return_boundary(design):
+    """The function_return exit as one alternative, with the design's return fact.
+
+    The exit renders on its seed's root tree (as a single join edge does), and
+    the return fact is a pure component of that scope. `{bytes@ADDR}` names the
+    exit value of the owned array at ADDR."""
+    from join_generalize import align_join_edges
+    exits = [row for row in data["exits"] if row["kind"] == "function_return"]
+    if len(exits) != 1:
+        raise ValueError("The return package needs exactly one function_return exit.")
+    exit = exits[0]
+    alternative = {"predecessor_pc": exit["block_pc"], "seed_pc": exit["seed_pc"], "state": exit["state"],
+                   "path": exit["path"], "back_edge": False, "resource_boundary": deepcopy(exit["resource_boundary"])}
+    root = root_seeds[roots.get(exit["seed_pc"], public_seed["entry_pc"])]
+    terminal = next(row["id"] for row in root.ownership["components"] if row["source"] == "True")
+    alternative, = align_join_edges([alternative], root.ownership, terminal, "K", keep_binders=True)[0]
+    resource = alternative["resource_boundary"]
+    from forward_resources import _strip_enclosure
+    values = {}
+    for row in resource["components"]:
+        match = re.fullmatch(r"(.*?)\s*↦ₘ(?:\{[^}]*\})?∗\s*(.*)", row["source"], re.S)
+        if match:
+            values[_strip_enclosure(match[1].strip())] = _strip_enclosure(match[2].strip())
+    def array_value(match):
+        if match[1] not in values:
+            raise ValueError("The return design names no owned array at " + match[1])
+        return values[match[1]]
+    fact = re.sub(r"\{bytes@([^}]*)\}", array_value, design["return_fact"])
+    resource["components"].append({"id": "function_return_fact", "source": "⌜" + fact + "⌝",
+                                   "provenance": {"function_return_design": design["return_fact"]}})
+    tree = resource["tree"] if resource["tree"]["kind"] == "exists" else resource["tree"]["left"]
+    tree["body"]["children"].append({"kind": "component", "id": "function_return_fact"})
+    return {"pc": "function_return", "status": "generated", "alternatives": [alternative],
+            "reaching_stops": []}
+
+
 for suffix in pilots:
-    pc = profile.pc(suffix)
-    index = next(i for i, b in enumerate(data["boundaries"]) if b["pc"] == pc)
+    if suffix == "Return":
+        pc = "function_return"
+        index = None
+    else:
+        pc = profile.pc(suffix)
+        index = next(i for i, b in enumerate(data["boundaries"]) if b["pc"] == pc)
     if suffix in loop_heads:
         from render_fp301_statements import render_loop_head
         directory = O / "sources" / profile.generated_directory
@@ -183,7 +227,8 @@ for suffix in pilots:
                       "reports": [{"kind": "reaching_stop_guard", "detail": guard_refusals[suffix]}],
                       "proof_ran": False})
         continue
-    boundary = deepcopy(data["boundaries"][index])
+    boundary = (return_boundary(profile["function_return"]) if suffix == "Return"
+                else deepcopy(data["boundaries"][index]))
     if boundary["status"] == "generated_call_return":
         # A return site renders from its call-return seed alternative.
         boundary["status"] = "generated"
@@ -203,9 +248,10 @@ for suffix in pilots:
                       "proof_ran": False})
         continue
     original_seed = root_seeds[origin_roots.pop()]
-    name = "fp_machineAt" + suffix
+    name = "fp_machineReturn" if suffix == "Return" else "fp_machineAt" + suffix
     name = identifier(name, "generated entry")
-    source_ref = str(forward) + "#/boundaries/" + str(index)
+    source_ref = str(forward) + ("#/exits" if index is None else "#/boundaries/" + str(index))
+    join_design = profile.get("join_designs", {}).get(suffix, [])
 
     def provenance(*args, **kwargs):
         return {"source": source_ref}
@@ -230,7 +276,7 @@ for suffix in pilots:
             original_seed=original_seed,
             vocabulary=vocabulary,
             continuation=continuation,
-            join_options={"outer_names": base_arguments},
+            join_options={"outer_names": base_arguments, "design_facts": join_design},
             case_id=pc,
             source_policy="source-only",
             handwritten_owner="Level1.IslarisContractSpec",
@@ -401,13 +447,14 @@ for suffix in pilots:
     if definitions is None:
         cases.append(record)
         continue
-    module = "Pilot" + suffix + "Entries"
+    stem = "FunctionReturn" if suffix == "Return" else "Pilot" + suffix
+    module = stem + "Entries"
     relative = Path(profile.generated_directory)
     directory = O / "sources" / relative
     directory.mkdir(parents=True, exist_ok=True)
     entry = directory / (module + ".v")
     entry.write_text(header + "\n".join(definition for _, definition in definitions))
-    structural = directory / ("Pilot" + suffix + "Structural.v")
+    structural = directory / (stem + "Structural.v")
     source = header + "Require Import " + ".".join((relative / module).parts) + ".\n"
     for symbol, definition in definitions:
         source += (

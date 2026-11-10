@@ -151,8 +151,11 @@ def main():
             root = roots[next(iter(origins))]
             try:
                 # Edges through an earlier join seed are aligned on their root seed's tree.
+                designs = profile.get('join_designs', {}) if profile else {}
                 joined = generalize_owned_join(incoming, original_seed=seeds[root], entry_pc=pc, vocabulary=vocabulary,
-                                               continuation=continuation, outer_names=['args', 'returnAddress'])
+                                               continuation=continuation, outer_names=['args', 'returnAddress'],
+                                               design_facts=next((facts for suffix, facts in designs.items()
+                                                                  if profile.pc(suffix) == hex(pc)), []))
             except ValueError as error:
                 refusals[hex(pc)] = 'join generalization refused: ' + str(error) + ' (edge seeds: ' + \
                     ', '.join(sorted(origins)) + ')'
