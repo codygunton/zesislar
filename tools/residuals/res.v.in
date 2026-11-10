@@ -1,5 +1,8 @@
 (* ---- residual collection (diagnostic only) ---- *)
-From Coq Require Import Strings.String.
+(* Import only the string literal syntax: importing Strings.String would make an
+   unqualified `length` in the reparsed tactic bodies mean String.length. *)
+From Coq Require Strings.String.
+Import Coq.Strings.String.StringSyntax.
 Require ZesuSsz.Automation2.SearchBudget.
 
 
@@ -12,9 +15,11 @@ Ltac2 census_goal_kind () :=
   | _ => "pure"
   end.
 
+Local Open Scope string_scope.
 Ltac census_res_solver :=
-  ZesuSsz.Automation2.SearchBudget.zesu_solve_selected ("residual"%string)
+  ZesuSsz.Automation2.SearchBudget.zesu_solve_selected "residual"
     ltac:(solve [first [zesu_solve_machine_linear | zesu_solve_machine_bounds]]).
+Local Close Scope string_scope.
 
 (* Pass 1: try the guarded solver under the timeout; close what it proves. *)
 Ltac2 census_res_try () :=

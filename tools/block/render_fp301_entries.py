@@ -61,6 +61,7 @@ from function_profiles import load_profile, pilot_header
 from boundary_guards import (
     RocqContradictionCheck,
     contradictory_alternatives,
+    contradictory_sources,
     refused_alternative_indices,
     require_complete_boundary,
     without_alternatives,
@@ -201,6 +202,7 @@ for suffix in pilots:
         }
         if formatted.response is None:
             return record, None, []
+        record["response"] = formatted.response
         helpers = {
             row["suffix"]: name + "_" + row["suffix"]
             for row in formatted.response["body"]["additional_definitions"]
@@ -297,6 +299,18 @@ for suffix in pilots:
         definitions.append((name, definition))
         return record, definitions, facts
 
+    # A generated cut whose generalization binds a register value: refute
+    # each source alternative first, so an infeasible arm cannot widen it.
+    record, definitions, facts = rendered(boundary)
+    cut = record["manifest"].get("cut_generalization", {})
+    refused_sources = []
+    if (cut.get("kind") == "generalized_owned_cut" and cut["plan"]["binders"]
+            and boundary["status"] == "generated"):
+        refused_sources = contradictory_sources(
+            boundary, lambda alone: rendered(alone)[1], check
+        )
+        if refused_sources:
+            boundary = without_alternatives(boundary, refused_sources)
     refused_names = []
     while True:
         record, definitions, facts = rendered(boundary)
@@ -308,6 +322,7 @@ for suffix in pilots:
         refused_names.extend(refused)
         boundary = without_alternatives(boundary, refused_alternative_indices(refused))
     record["refused_alternatives"] = refused_names
+    record["refused_source_alternatives"] = refused_sources
     if definitions is None:
         cases.append(record)
         continue
@@ -338,7 +353,6 @@ for suffix in pilots:
         qualified_entry=".".join((relative / module).parts) + "." + name,
         definition_count=len(definitions),
         facts=facts,
-        response=formatted.response,
         physical_declaration_check="pending",
         byte_identity_with_OLD="not_assumed",
     )

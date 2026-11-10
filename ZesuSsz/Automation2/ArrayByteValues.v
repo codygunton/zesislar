@@ -229,7 +229,7 @@ Ltac zesu_array_eight_value :=
   end;
   reflexivity.
 
-Ltac zesu_finish_array_byte_lookup :=
+Ltac zesu_array_byte_lookup_rewrites :=
   repeat match goal with
   | Hlookup : ?bytes !! Z.to_nat ?expression = Some ?byte |- _ =>
       assert_fails (has_evar expression);
@@ -270,11 +270,27 @@ Ltac zesu_finish_array_byte_lookup :=
   repeat match goal with
   | Hlookup : ?bytes !! ?index = Some ?byte
     |- context[default _ (?bytes !! ?index)] => rewrite Hlookup
-  end;
+  end.
+
+Ltac zesu_finish_array_byte_lookup :=
+  zesu_array_byte_lookup_rewrites;
   reflexivity.
 
+(* A pure fact can read a byte as `nth k bytes d` while the context holds the
+   lookup `bytes !! k = Some v`, and the facts about the read are stated on v.
+   Rewrite the read to v; the goal must change. The finisher above does the
+   same rewrite only for an equation that reflexivity then closes. *)
+Ltac zesu_rewrite_array_byte_nth :=
+  lazymatch goal with
+  | |- ?before =>
+      lazymatch before with context[nth _ _ _] => idtac end;
+      assert_fails (has_evar before);
+      zesu_array_byte_lookup_rewrites;
+      lazymatch goal with |- ?after => assert_fails (constr_eq before after) end
+  end.
+
 (* Reject every symbolic offset before either lookup normalizer reaches the VM. *)
-Ltac zesu_finish_array_byte_lookup_if_closed :=
+Ltac zesu_array_byte_lookups_closed :=
   assert_fails ltac:(idtac; multimatch goal with
   | Hlookup : ?bytes !! Z.to_nat (bv_unsigned ?offset `div` 1) = Some ?byte |- _ =>
       assert_fails ltac:(zesu_vm_closed offset)
@@ -284,5 +300,10 @@ Ltac zesu_finish_array_byte_lookup_if_closed :=
   | Hlookup : ?bytes !! Z.to_nat
       (bv_unsigned (bv_add ?row ?offset) - ?base) = Some ?byte |- _ =>
       assert_fails ltac:(zesu_vm_closed offset)
-  end);
-  zesu_finish_array_byte_lookup.
+  end).
+
+Ltac zesu_finish_array_byte_lookup_if_closed :=
+  zesu_array_byte_lookups_closed; zesu_finish_array_byte_lookup.
+
+Ltac zesu_rewrite_array_byte_nth_if_closed :=
+  zesu_array_byte_lookups_closed; zesu_rewrite_array_byte_nth.
