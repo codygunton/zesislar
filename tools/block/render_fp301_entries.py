@@ -102,6 +102,7 @@ owned.state = seed_system_shapes(
 terminal_ids = [
     row["id"] for row in owned.ownership["components"] if row["source"] == "True"
 ]
+source_binder_names = {binder["name"] for binder in owned.ownership["binders"]}
 assert len(terminal_ids) == 1
 continuation = {
     "name": "K",
@@ -279,14 +280,23 @@ for suffix in pilots:
                 + " ∗ ".join(render(component) for component in body["components"])
                 + ")"
             )
-            if body["existentials"]:
+            # A Level 1 entry witness whose register a path overwrote occurs
+            # nowhere in the body; nothing could instantiate it, so it is dropped.
+            # System-shape and condition witnesses are kept as before.
+            existentials = [
+                binder for binder in body["existentials"]
+                if binder["name"] not in source_binder_names
+                or re.search(r"(?<![\w'])" + re.escape(binder["name"]) + r"(?![\w'])",
+                             re.sub(r'"[^"]*"', "", result))
+            ]
+            if existentials:
                 telescope = " ".join(
                     "("
                     + identifier(binder["name"], "source existential")
                     + " : "
                     + expression(binder["type"], "source type")
                     + ")"
-                    for binder in body["existentials"]
+                    for binder in existentials
                 )
                 result = "(∃ " + telescope + ", " + result + ")"
             return result
