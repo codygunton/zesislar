@@ -133,8 +133,38 @@ def load_profile(path):
     return profile
 
 
+# A module with no row books a prior from its own directory: 1.5 times the
+# largest measured peak there, at least 2 GiB, at most the fallback. On
+# 2026-11-10 eleven new 1 s declaration modules each booked the 16 GiB fence
+# and waited 25 min for admission; every measured directory but one has a
+# largest peak under 1.3 GiB. A directory without rows keeps the fallback,
+# and a changed module keeps it until it is measured again. The compiler
+# fence does not change: a module above its booking hits the same limit.
+PRIOR_NUMERATOR, PRIOR_DENOMINATOR = 3, 2
+PRIOR_FLOOR_BYTES = 2 * GIB
+
+
+def directory_prior(profile, source, fallback_bytes):
+    """Return the booking for an unmeasured module, or None without a directory row."""
+    directory = PurePosixPath(source).parent
+    peaks = []
+    for key, row in profile["modules"].items():
+        if PurePosixPath(key).parent != directory or not isinstance(row, dict):
+            continue
+        for field in ("peak_bytes", "rss_peak_bytes"):
+            value = row.get(field)
+            if type(value) is int and value > 0:
+                peaks.append(value)
+    if not peaks:
+        return None
+    prior = max(PRIOR_FLOOR_BYTES, -(-max(peaks) * PRIOR_NUMERATOR // PRIOR_DENOMINATOR))
+    return min(fallback_bytes, prior)
+
+
 def module_claim(profile, arguments, cwd, compiler, *, fallback_bytes=16 * GIB):
-    """Use the full fallback unless a row matches this exact compile."""
+    """Use the full fallback unless a row matches this exact compile.
+
+    A module without any row books its directory prior when one exists."""
     positive_integer(fallback_bytes, "fallback reservation")
     if profile.get("schema") != SCHEMA:
         raise ValueError("The module memory profile schema is unsupported.")
@@ -144,7 +174,10 @@ def module_claim(profile, arguments, cwd, compiler, *, fallback_bytes=16 * GIB):
         return {"claim_bytes": fallback_bytes, "reason": "ambiguous_source"}
     row = profile["modules"].get(source)
     if row is None:
-        return {"claim_bytes": fallback_bytes, "reason": "unknown_module", "source": source}
+        prior = directory_prior(profile, source, fallback_bytes)
+        if prior is None:
+            return {"claim_bytes": fallback_bytes, "reason": "unknown_module", "source": source}
+        return {"claim_bytes": prior, "reason": "directory_prior", "source": source}
     for name, reason in (("compiler_sha256", "changed_compiler"), ("source_sha256", "changed_source"),
                          ("arguments_sha256", "changed_arguments")):
         if row.get(name) != bound[name]:
@@ -324,7 +357,9 @@ def booked_versus_peak(observations):
     def quantile(fraction):
         return peaks[min(len(peaks) - 1, int(fraction * len(peaks)))] if peaks else 0
     return {"compiles": len(rows), "measured": len(peaks),
-            "unmeasured_fence_bookings": sum(1 for row in rows if row.get("claim_reason") != "measured_module"),
+            "unmeasured_fence_bookings": sum(1 for row in rows
+                                             if row.get("claim_reason") not in ("measured_module", "directory_prior")),
+            "directory_prior_bookings": sum(1 for row in rows if row.get("claim_reason") == "directory_prior"),
             "maximum_concurrent_booked_bytes": concurrent("claim_bytes"),
             "maximum_concurrent_peak_bytes": concurrent("peak_bytes"),
             "peak_bytes_p50": quantile(0.5), "peak_bytes_p95": quantile(0.95),

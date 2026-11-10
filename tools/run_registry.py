@@ -361,8 +361,13 @@ class Registry:
                 data = self.header()
                 row = self.load_row(data, run_id)
                 scheduler = row['scheduler']
-                if actor_key(scheduler) == actor_key(identity(os.getpid())):
+                caller = actor_key(identity(os.getpid()))
+                if actor_key(scheduler) == caller:
                     raise ValueError('The registry cannot stop its own caller.')
+                # A caller inside the run would freeze itself while it holds
+                # this lock. run_wall_stop.py stops such a run from outside.
+                if caller in {actor_key(a) for a in descendants([scheduler] + row['jobs'])}:
+                    raise ValueError('The registry cannot stop a run that contains its caller.')
                 row['status'] = 'stopping'
                 freeze_deadline = time.monotonic() + grace
                 while True:
@@ -374,8 +379,16 @@ class Registry:
                             frozen[actor_key(actor)] = actor
                     # A stop signal can return before the actor stops. Wait
                     # for stopped identities before the final descendant scan.
+                    # The launching shell of a scheduler can resume it at once
+                    # (agent background shells do). A scheduler launches no
+                    # actor after its command starts, so once a job exists
+                    # the freeze waits only for the jobs; the scheduler still
+                    # receives SIGTERM and SIGKILL below.
+                    launched = bool(row['jobs'])
                     pending = []
                     for actor in actors:
+                        if launched and actor_key(actor) == actor_key(scheduler):
+                            continue
                         current = identity(actor['pid'])
                         if (current and current['startticks'] == actor['startticks']
                                 and current['state'] not in ('T', 't', 'Z', 'X')):
