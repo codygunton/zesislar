@@ -8,6 +8,8 @@ Require Import ZesuSsz.Generated.DecodeItem.FP301.Pilot6a78Entries.
 Require Import ZesuSsz.Generated.DecodeItem.FP301.Pilot6a78Structural.
 Require Import ZesuSsz.Generated.DecodeItem.FP301.FunctionReturnStructural.
 Require Import ZesuSsz.Automation2.All.
+Require Import ZesuSsz.Compliance.DecodeItemMeaningPorted.
+Require Import ZesuSsz.Residuals.Block800d6a78.
 Local Open Scope Z_scope.
 
 Definition DesignedEntry_800d6a78
