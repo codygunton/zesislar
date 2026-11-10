@@ -77,6 +77,22 @@ class StopReachability(unittest.TestCase):
         with self.assertRaisesRegex(BoundaryRefused, '1 retained stops can reach the boundary 0x20'):
             require_complete_boundary(boundary(result, 32))
 
+    def test_call_stop_is_a_call_boundary_not_a_fault_exit(self):
+        # Block 16 ends in a call at 20 to the callee 64, outside the function [16, 32).
+        function = {'name': 'caller', 'entry': 16, 'end': 32,
+                    'rows': [{'pc': pc} for pc in range(16, 32, 4)],
+                    'blocks': [{'start': 16, 'end': 24, 'successors': [24]},
+                               {'start': 24, 'end': 32, 'successors': []}],
+                    'calls': [{'pc': 20, 'target': 64, 'kind': 'call'}]}
+        call = dict(stop('outside_pc', 16), instruction_pc=hex(20), actual_pc=hex(64))
+        result = annotate_reaching_stops(report(call), function)
+        with self.assertRaisesRegex(BoundaryRefused, '1 retained stops can reach the boundary 0x18; '
+                                                     'the first is outside_pc in block 0x10 at 0x14'):
+            require_complete_boundary(boundary(result, 24))
+        # A fault arm of the call instruction (the trap vector 0) still leaves the function.
+        result = annotate_reaching_stops(report(dict(call, actual_pc=hex(0))), function)
+        require_complete_boundary(boundary(result, 24))
+
     def test_boundary_without_a_reachability_record_is_refused(self):
         with self.assertRaisesRegex(BoundaryRefused, 'no stop-reachability record'):
             require_complete_boundary({'pc': hex(32), 'status': 'generated', 'alternatives': [{}]})
