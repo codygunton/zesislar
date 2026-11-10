@@ -325,6 +325,10 @@ def residual_import(source, residuals=RESIDUALS):
     last = max(index for index, text in enumerate(lines) if text.startswith(("Require ", "From ")))
     if lines[last] != CORE_IMPORT:
         raise ValueError("A caller must end its imports with the core import.")
+    # A return block's residual lemmas may use the pure lemmas behind its exit facts.
+    if "FunctionReturnEntries.fp_machineReturn" in source:
+        lines[last + 1:last + 1] = load_profile().get("return_requires", [])
+        last += len(load_profile().get("return_requires", []))
     lines.insert(last + 1, line)
     return "\n".join(lines)
 
