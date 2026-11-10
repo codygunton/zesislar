@@ -144,3 +144,35 @@ first
   | (bv_simplify_arith HrangeFact1; bv_simplify_arith; lia) ].
 Qed.
 #[export] Hint Resolve residual_697c_d947757d82e37686 : zesu_residual.
+
+(* goal 697c-9: goal.v sha256 f75705a75f4c6e7837143c85c3e9142c389d8202388379706acc9eb6a7dbeee1, proof.v sha256 90abc2fb24866432316be05506c9716322dae3374570b90f4cf373d277e04576 *)
+Lemma residual_697c_b9612b8a2bbdb2d2 :
+  forall (args : DecodeItemArgs) (returnAddress : Z),
+  decodeItemDomainAt returnAddress decodeItemC1BDomain args ->
+  DecodeItemReturnFacts.decodeItemAcceptedFacts args false (bv_unsigned (Z_to_bv 64 (decodeItemInputPointer args)) - decodeItemInputPointer args) (bv_unsigned (BV 64 1) - (bv_unsigned (Z_to_bv 64 (decodeItemInputPointer args)) - decodeItemInputPointer args)) ->
+  bv_unsigned (List.nth 0%nat (decodeItemInputBytes args) (BV 8 0)) <> 128.
+Proof.
+intros args returnAddress [Hret Hdom] Hacc.
+unfold DecodeItemReturnFacts.decodeItemAcceptedFacts in Hacc.
+destruct Hacc as [Hcand _].
+intro Heq.
+revert Hcand Heq; generalize (decodeItemInputBytes args) as bs; intros bs Hcand Heq.
+destruct bs as [|prefix rest].
+- cbn [RlpDecodeItem.candidateDecodeItem] in Hcand. discriminate Hcand.
+- cbn [List.nth] in Heq.
+  cbn [RlpDecodeItem.candidateDecodeItem] in Hcand. rewrite Heq in Hcand. cbn in Hcand.
+  pose proof (f_equal (fun c => match c with RlpDecodeItem.candidateSuccess _ h _ => h | _ => 0 end) Hcand) as Hh.
+  pose proof (f_equal (fun c => match c with RlpDecodeItem.candidateSuccess _ _ q => q | _ => 1 end) Hcand) as Hp.
+  cbn in Hh, Hp.
+  assert (Hx : bv_unsigned (Z_to_bv 64 (decodeItemInputPointer args)) = decodeItemInputPointer args mod 2 ^ 64)
+    by first [ solve [ apply bv_unsigned_Z_to_bv ]
+             | solve [ apply Z_to_bv_unsigned ]
+             | solve [ cbv [Z_to_bv bv_wrap bv_unsigned]; reflexivity ]
+             | solve [ unfold Z_to_bv; reflexivity ]
+             | solve [ unfold Z_to_bv, bv_unsigned; reflexivity ] ].
+  assert (Hone : bv_unsigned (BV 64 1) = 1) by reflexivity.
+  rewrite Hone in Hp.
+  rewrite Hx in Hh.
+  lia.
+Qed.
+#[export] Hint Resolve residual_697c_b9612b8a2bbdb2d2 : zesu_residual.
