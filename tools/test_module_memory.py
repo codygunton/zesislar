@@ -278,7 +278,7 @@ class ModuleMemoryTests(unittest.TestCase):
         self.assertEqual(manifest.count(dependency), 1)
         names = ['dune_coqc_guarded.sh','dune_coqc_route.sh','resource_guard.sh','coqc_findlib.py',
                  'module_memory.py','run_registry.py','det/coqc_slots.py',
-                 'block/harness/code/admission_memory.py','block/harness/code/shell_archive.py']
+                 'block/harness/code/admission_memory.py','block/harness/code/shell_archive.py','block/harness/code/ledger_archive.py']
         for declared in (True, False):
             with self.subTest(declared=declared):
                 workspace = self.root/('declared' if declared else 'missing')
@@ -359,7 +359,7 @@ class ModuleMemoryTests(unittest.TestCase):
                     (workspace/'dune-project').write_text('(lang dune 3.7)\n')
                     names = ['dune_coqc_guarded.sh', 'dune_coqc_route.sh', 'resource_guard.sh', 'coqc_findlib.py',
                              'module_memory.py', 'run_registry.py', 'det/coqc_slots.py',
-                             'block/harness/code/admission_memory.py', 'block/harness/code/shell_archive.py']
+                             'block/harness/code/admission_memory.py', 'block/harness/code/shell_archive.py', 'block/harness/code/ledger_archive.py']
                     for name in names:
                         target = workspace/'tools'/name
                         target.parent.mkdir(parents=True, exist_ok=True)
@@ -681,6 +681,25 @@ class ModuleMemoryTests(unittest.TestCase):
         before = marker.read_bytes()
         self.assertEqual(memory.reservation_claims([marker], proc=proc)["claims"], [64 * memory.GIB])
         self.assertEqual(marker.read_bytes(), before)
+
+
+class AdmissionTotalsTests(unittest.TestCase):
+    """Ledger writers publish totals that wake held launches."""
+
+    def test_confirm_publishes_and_release_subtracts(self):
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / "admission-summary"
+            result = {"fits": True, "requested_total_bytes": 10, "requested_unrealized_bytes": 8,
+                      "accounted_active_bytes": 7, "unrealized_claim_bytes": 6, "budget_bytes": 100,
+                      "slice_claim_cap_bytes": 90, "slice_max_bytes": 175,
+                      "live_memory_sample": {"live_bytes": 4}}
+            self.assertEqual(memory.publish_admission_totals(result, path=path), [10, 8, 100, 90, 4, 175])
+            self.assertEqual(memory.publish_admission_totals(released_bytes=3, path=path), [7, 5, 100, 90, 4, 175])
+            self.assertEqual(path.read_text().split(), ["7", "5", "100", "90", "4", "175"])
+            refused = dict(result, fits=False)
+            del refused["live_memory_sample"]
+            self.assertEqual(memory.publish_admission_totals(refused, path=path), [7, 6, 100, 90, -1, 175])
+            self.assertIsNone(memory.publish_admission_totals(result))
 
 
 class GateProfileTests(unittest.TestCase):
