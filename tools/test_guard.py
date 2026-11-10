@@ -68,6 +68,8 @@ class GuardLockTest(unittest.TestCase):
                             "ZESU_RUN_REGISTRY": str(base / "run-registry"),
                             "ZESU_RUN_REGISTRY_TOOL": str(TOOLS / "run_registry.py"),
                             "ZESU_RAMP_FILE": str(base / "ramp"),
+                            # The dune wrapper's default profile stays inside the fixture.
+                            "XDG_CACHE_HOME": str(base / "cache"),
                             "ZESU_POPULATING_PREFIX": str(base / "populating"),
                             "ZESU_SCOPE_PREFIX": f"zesutest{os.getpid()}",
                             "ZESU_GUARD_POLL": "0.1",

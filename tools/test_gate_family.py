@@ -45,6 +45,43 @@ class GateFamilyTests(unittest.TestCase):
         self.assertEqual(result['measurement_provenance'], self.result['cache_provenance'])
         self.assertIn('not an uncached-build claim', result['qualification'])
 
+    def test_page_cache_heavy_family_books_its_anonymous_peak(self):
+        # memory.peak 200 counts page cache; 20 of it is anonymous memory.
+        self.result['aggregate_anon_peak_bytes'] = 20
+        self.profile['families']['check-fast']['anon_peak_bytes'] = 20
+        self.write()
+        result = self.select()
+        self.assertEqual((result['claim_bytes'], result['aggregate_peak_bytes'], result['anon_peak_bytes']),
+                         (30, 200, 20))
+
+    def test_family_anonymous_peak_must_match_its_measurement(self):
+        self.profile['families']['check-fast']['anon_peak_bytes'] = 20
+        self.write()
+        with self.assertRaises(ValueError):
+            self.select()
+        self.result['aggregate_anon_peak_bytes'] = 20
+        self.profile['families']['check-fast']['anon_peak_bytes'] = 300
+        self.write()
+        with self.assertRaises(ValueError):
+            self.select()
+
+    def test_history_peak_books_its_anonymous_peak(self):
+        row = dict(self.result, aggregate_peak_bytes=30 * 1024**3, aggregate_anon_peak_bytes=3 * 1024**3)
+        self.assertEqual(correctness_gate.booking_peak(row), 3 * 1024**3)
+        self.assertEqual(correctness_gate.booking_peak(dict(self.result)), 200)
+
+    def test_anonymous_sampler_ignores_page_cache(self):
+        from gate_exit_peaks import AnonymousPeak
+        stat = self.root / 'memory.stat'
+        stat.write_text(f'anon {3 * 1024**3}\nfile {27 * 1024**3}\n')
+        sampler = AnonymousPeak(self.root, interval=0.01)
+        sampler.start()
+        while sampler.peak == 0:
+            import time
+            time.sleep(0.01)
+        stat.write_text(f'anon {1024**3}\nfile {29 * 1024**3}\n')
+        self.assertEqual(sampler.stop(), 3 * 1024**3)
+
     def test_actual_approved_fast_peak(self):
         result = gate_family.select('check-fast', ['make', '--no-print-directory', '_check-fast'], 120*1024**3)
         self.assertEqual(result['aggregate_peak_bytes'], 33831407616)

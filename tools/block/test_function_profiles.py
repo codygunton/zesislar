@@ -6,6 +6,9 @@ import tempfile
 import unittest
 
 from function_profiles import FunctionProfile, load_profile, loop_header, pilot_header, return_header
+from join_generalize import align_join_edges, binder_names
+from render_function_callers import plan_callers
+from symbolic_state import input_expr
 from render_fp301_statements import (
     render_block_caller,
     return_precondition,
@@ -92,6 +95,100 @@ class OtherProfile(unittest.TestCase):
             path = Path(directory) / 'other.json'
             path.write_text(json.dumps(other_profile().data))
             self.assertEqual(load_profile(str(path)).name, 'otherFunction')
+
+
+class FreeProfile(unittest.TestCase):
+    """The free profile and its committed callers."""
+
+    def test_profile_and_callers(self):
+        profile = load_profile('free')
+        self.assertEqual(len(profile['blocks']), 43)
+        directory = ROOT / profile['callers_directory']
+        callers = sorted(directory.glob('Caller*.v'))
+        self.assertTrue(callers)
+        for path in callers:
+            source = path.read_text()
+            self.assertNotRegex(source, r'(?i)decodeitem')
+            self.assertEqual(source.count('Proof.\n  zesu_block2.\nQed.\n'), 1)
+            self.assertIn('  freeSelectedCode -∗\n', source)
+
+    def test_committed_outputs_match_the_generation_record(self):
+        import hashlib
+        record = json.loads((ROOT / 'tools/block/fixtures/free-fp301-generation.json').read_text())
+        committed = sorted((ROOT / 'ZesuSsz/Generated/Free/FP301').glob('*.v')) + sorted(
+            (ROOT / 'tools/block/generated/free_fp301_callers').glob('*.v'))
+        self.assertEqual([str(path.relative_to(ROOT)) for path in committed],
+                         [row['path'] for row in record['outputs']])
+        for row in record['outputs']:
+            self.assertEqual(hashlib.sha256((ROOT / row['path']).read_bytes()).hexdigest(), row['sha256'])
+        rendered = [row['case'] for row in record['callers'] if row['status'] == 'rendered']
+        self.assertEqual(rendered, [path.stem[len('Caller'):] for path in committed if path.stem.startswith('Caller')])
+
+    def test_caller_plan_refuses_missing_successors(self):
+        profile = other_profile()
+        function = {'blocks': [{'start': 0x800d1000, 'successors': [0x800d1010]},
+                               {'start': 0x800d1010, 'successors': []}]}
+        cases = [{'pc': '0x800d1000', 'status': 'source_declarations_rendered'},
+                 {'pc': '0x800d1010', 'status': 'source_declarations_rendered'}]
+        self.assertEqual(plan_callers(profile, cases, function),
+                         [('1000', ['1010'], None), ('1010', [], 'function-return package not rendered')])
+        cases[1]['status'] = 'stopped'
+        self.assertEqual(plan_callers(profile, cases, function)[0][2], 'successor entry not rendered: 1010')
+
+
+class JoinEdgeAlignment(unittest.TestCase):
+    ORIGINAL = {'kind': 'exists', 'binders': [{'name': 'x10', 'type': 'bv 64'}], 'scope': [],
+                'body': {'kind': 'sep_list', 'children': [{'kind': 'component', 'id': 'r0'},
+                                                          {'kind': 'component', 'id': 'r1'}]}}
+
+    def edge(self, tree, terminal='K', extra=()):
+        components = [{'id': 'r0', 'source': 'A'}, {'id': 'r1', 'source': terminal}, *extra]
+        return {'resource_boundary': {'tree': tree, 'components': components}}
+
+    def test_join_seed_edge_moves_onto_the_original_tree(self):
+        ownership = {'tree': self.ORIGINAL, 'components': [{'id': 'r0', 'source': 'A'}, {'id': 'r1', 'source': 'True'}]}
+        seeded = {'kind': 'sep', 'right': {'kind': 'component', 'id': 'r1'},
+                  'left': {'kind': 'exists', 'binders': [{'name': 'machine_x12', 'type': 'bv 64', 'value_key': 'x12'}],
+                           'scope': [0], 'body': {'kind': 'sep_list', 'children': [
+                               {'kind': 'component', 'id': 'r0'}, {'kind': 'component', 'id': 'join_relation_0'}]}}}
+        plain = self.edge(self.ORIGINAL, 'True')
+        joined = self.edge(seeded, 'K', [{'id': 'join_relation_0', 'source': '⌜P⌝'}])
+        aligned, extra = align_join_edges([plain, joined], ownership, 'r1', 'K')
+        self.assertEqual(aligned[0], plain)
+        self.assertEqual(aligned[1]['resource_boundary']['tree'], self.ORIGINAL)
+        self.assertEqual([c['source'] for c in aligned[1]['resource_boundary']['components']], ['A', 'True'])
+        self.assertEqual(extra, [{'name': 'machine_x12', 'type': 'bv 64'}])
+        kept, _ = align_join_edges([joined], ownership, 'r1', 'K', keep_binders=True)
+        self.assertEqual([b['name'] for b in kept[0]['resource_boundary']['tree']['binders']], ['x10', 'machine_x12'])
+
+    def test_other_differences_stay_for_the_refusal(self):
+        ownership = {'tree': self.ORIGINAL, 'components': [{'id': 'r0', 'source': 'A'}, {'id': 'r1', 'source': 'True'}]}
+        other = {'kind': 'sep', 'right': {'kind': 'component', 'id': 'r1'},
+                 'left': {'kind': 'exists', 'binders': [], 'scope': [0],
+                          'body': {'kind': 'sep_list', 'children': [{'kind': 'component', 'id': 'r9'}]}}}
+        edge = self.edge(other)
+        self.assertEqual(align_join_edges([edge], ownership, 'r1', 'K'), ([edge], []))
+
+
+class JoinStoredBytes(unittest.TestCase):
+    def test_seed_keeps_bytes_that_every_edge_holds(self):
+        from types import SimpleNamespace
+        from symbolic_state import MemoryRegion, bits
+        import join_generalize
+        source = Path(join_generalize.__file__).read_text()
+        # The prefix reads an edge's own write first, then its seed's known byte.
+        self.assertIn('def stored_byte(index, resource_id, offset):', source)
+        self.assertLess(source.index('images[index].updates[resource_id].get(offset)'),
+                        source.index('for region in states[index].memory:'))
+
+
+class JoinBinderNames(unittest.TestCase):
+    def test_names_stay_unless_an_upstream_binder_collides(self):
+        paths = [{'x12': input_expr('a', 64)}, {'x12': input_expr('b', 64)}]
+        self.assertEqual(binder_names(paths, ['x12']), {'x12': 'machine_x12'})
+        paths = [{'x12': input_expr('machine_x12', 64)}, {'x12': input_expr('b', 64)}]
+        self.assertEqual(binder_names(paths, ['x12']), {'x12': 'machine_x12_1'})
+        self.assertEqual(binder_names(paths[1:], ['x12'], ['machine_x12']), {'x12': 'machine_x12_1'})
 
 
 if __name__ == '__main__':

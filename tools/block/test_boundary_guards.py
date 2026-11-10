@@ -64,6 +64,23 @@ class StopReachability(unittest.TestCase):
         for pc in (16, 24, 32):
             require_complete_boundary(boundary(result, pc))
 
+    def test_unseeded_cut_drops_the_paths_beyond_it(self):
+        # The pass stops at the loop head 16 from block 24. Without a seed at 16,
+        # every boundary after 16 misses the path, the head too through its back edge.
+        cut = {**stop('handwritten_cut', 24), 'target_pc': hex(16)}
+        unseeded = report(cut)
+        for row in unseeded['boundaries']:
+            row['alternatives'] = [{'predecessor_pc': hex(24)}]
+        result = annotate_reaching_stops(unseeded, FUNCTION)
+        for pc in (16, 24, 32):
+            with self.assertRaisesRegex(BoundaryRefused, 'handwritten_cut'):
+                require_complete_boundary(boundary(result, pc))
+        seeded = report(cut)
+        boundary(seeded, 16)['alternatives'] = [{'predecessor_pc': None}]
+        result = annotate_reaching_stops(seeded, FUNCTION)
+        for pc in (16, 24, 32):
+            require_complete_boundary(boundary(result, pc))
+
     def test_boundary_without_a_reachability_record_is_refused(self):
         with self.assertRaisesRegex(BoundaryRefused, 'no stop-reachability record'):
             require_complete_boundary({'pc': hex(32), 'status': 'generated', 'alternatives': [{}]})
@@ -76,6 +93,31 @@ class StopReachability(unittest.TestCase):
         for pc in (16, 24, 32):
             with self.assertRaises(BoundaryRefused):
                 require_complete_boundary(boundary(result, pc))
+
+
+class FunctionReturn(unittest.TestCase):
+    RETURN = {'name': 'ret', 'entry': 16, 'end': 20, 'rows': [{'pc': 16}],
+              'blocks': [{'start': 16, 'end': 20, 'successors': []}], 'returns': [16]}
+    TRACE = '(trace (declare-const v1 (_ BitVec 64)) (read-reg |x1| nil v1) (write-reg |PC| nil v1))'
+
+    def state(self):
+        from symbolic_state import input_expr
+        return SymbolicState(registers={'PC': bits(16, 64), 'x1': input_expr('returnAddress', 64)})
+
+    def test_return_site_is_an_exit_not_a_stop(self):
+        result = evaluate_function(self.RETURN, {16: self.TRACE}, {16: self.state()})
+        self.assertEqual(result['stops'], [])
+        self.assertEqual([row['kind'] for row in result['exits']], ['function_return'])
+        self.assertEqual(result['exits'][0]['instruction_pc'], hex(16))
+        require_complete_boundary(boundary(result, 16))
+
+    def test_jump_to_an_unknown_address_elsewhere_still_stops(self):
+        function = {**self.RETURN, 'returns': []}
+        result = evaluate_function(function, {16: self.TRACE}, {16: self.state()})
+        self.assertEqual([row['reason'] for row in result['stops']], ['unknown_pc'])
+        self.assertEqual(result['exits'], [])
+        with self.assertRaises(BoundaryRefused):
+            require_complete_boundary(boundary(result, 16))
 
 
 class Contradictions(unittest.TestCase):
@@ -117,6 +159,8 @@ class Contradictions(unittest.TestCase):
         self.assertIn('Fail solve [zesu_contradiction_check]', source)
         self.assertLess(source.index('Ltac zesu_contradiction_check'), source.index('Fail solve'))
         self.assertNotRegex(source, r'\b(?:Timeout|timeout|Qed|Admitted)\b')
+        other = contradiction_source('Require Import Header.\n', binders, facts, 'FreeArgs')
+        self.assertIn('Goal forall (args : FreeArgs) (returnAddress : Z) (machine_x15 : bv 64),', other)
 
 
 if __name__ == '__main__':

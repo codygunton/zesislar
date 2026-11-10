@@ -202,11 +202,19 @@ Ltac zesu_low_mask_sub_modulus_goal :=
   end.
 
 
+(* A branch guard is a small pure fact. Large facts (array contents, stored
+   bytes) hold many masked words; trying each one runs whole-context lia, so
+   they are not normalized here. *)
+Ltac zesu_low_mask_guard_fact H :=
+  let fact := type of H in
+  zesu_small_fact fact.
+
 (* Normalize a branch guard only when it contains a complete low-bit wrap. *)
 Ltac zesu_low_mask_branch_hypotheses :=
   repeat match goal with
   | H : context [bv_signed (bv_zero_extend 128
         (bv_and (bv_add ?value ?offset) ?mask))] |- _ =>
+      zesu_low_mask_guard_fact H;
       assert_fails (has_evar value);
       assert_fails (has_evar offset);
       is_closed_term mask;
@@ -217,6 +225,7 @@ Ltac zesu_low_mask_branch_hypotheses :=
             rewrite (zesu_signed_zero_extend_64_128 word) in H
         end)
   | H : context [bv_unsigned (bv_and (bv_add ?value ?offset) ?mask)] |- _ =>
+      zesu_low_mask_guard_fact H;
       assert_fails (has_evar value);
       is_closed_term mask;
       lazymatch type of value with bv ?width =>
@@ -2156,6 +2165,7 @@ Ltac zesu_liAStep :=
   | ltac2:(Ltac1.run (Ltac1.ref
       [@ZesuSsz; @Automation2; @StoreMemoryLookup; @zesu_join_frame_byte_array]))
   | progress ResourceGroups.zesu_open_nested_existential_packages
+  | ByteArrayAssemblyCodec.zesu_byte_array_rebuild_requested
   | CodecArrayRead.zesu_codec_array_read
   | zesu_prefer_owned_instr_pre
   | zesu_source_witnesses_if_enabled
@@ -2281,6 +2291,20 @@ Ltac zesu_branch_guard_closed_width word continuation :=
     continuation normalized
   end.
 
+(* The unsigned value of a sign-extended word lies below its source's half
+   modulus or within that distance of the top. A one-wrap range [m, 2 m)
+   that misses both intervals cannot be proved, so its solver is not run. *)
+Ltac zesu_guard_range_unreachable word modulus :=
+  lazymatch word with
+  | @bv_sign_extend ?source ?target _ =>
+      zesu_stack_closed_term source;
+      zesu_stack_closed_term target;
+      let verdict := eval vm_compute in
+        (Z.leb (2 ^ (Z.of_N source - 1)) modulus &&
+         Z.leb (2 * modulus) (2 ^ Z.of_N target - 2 ^ (Z.of_N source - 1)))%bool in
+      constr_eq verdict true
+  end.
+
 Ltac zesu_branch_guard_rewrite :=
   repeat first
   [ match goal with
@@ -2369,6 +2393,7 @@ Ltac zesu_branch_guard_rewrite :=
         tryif has_evar word then fail 0 else
         lazymatch type of word with bv ?width =>
         zesu_branch_guard_mask width mask ltac:(fun low modulus Hwidth Hmask =>
+          tryif zesu_guard_range_unreachable word modulus then fail 0 else idtac;
           let Hrange := fresh "HguardRange" in
           assert (Hrange : modulus <= bv_unsigned word < 2 * modulus) by lia;
           rewrite (zesu_guard_low_mask_one_wrap width low word mask Hwidth Hmask Hrange);
@@ -2432,8 +2457,15 @@ Ltac zesu_branch_guard_solve_if_enabled :=
   zesu_switch_enabled constr:(ZesuStepBranchGuards);
   progress zesu_branch_guard_rewrite; first [reflexivity | lia].
 
+(* The low-mask alternatives close small arithmetic goals only. On a large
+   goal each failed attempt runs whole-context lia once per matching
+   subterm, so the hook refuses goals above the fact size limit. *)
+Ltac zesu_low_mask_goal_admissible :=
+  lazymatch goal with |- ?goal => zesu_small_fact goal end.
+
 (* Keep the original normalizer and low-mask alternatives after the new rule. *)
 Ltac zesu_low_mask_sub_modulus_if_enabled ::=
+  zesu_low_mask_goal_admissible;
   first [solve [zesu_branch_guard_solve_if_enabled]
     | (zesu_switch_enabled constr:(ZesuStepMaskNormalizer);
        first [solve [zesu_low_mask_sub_modulus_goal]

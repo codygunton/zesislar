@@ -10,7 +10,6 @@ import importlib.util
 import json
 import os
 from pathlib import Path, PurePosixPath
-import shlex
 import sys
 import tempfile
 
@@ -49,7 +48,6 @@ select_guard_aggregate_limit = _module.select_guard_aggregate_limit
 
 
 GIB = 1024 ** 3
-SCHEMA = "zesu.module-memory.v1"
 
 
 def digest(path):
@@ -83,50 +81,142 @@ def module_source(arguments):
     return source.as_posix()
 
 
-def make_profile(observations, gate_result, compiler, *, floor_bytes=GIB):
-    """Retain maximum sampled peaks only from a successful complete gate."""
-    if type(gate_result.get("exit_code")) is not int or gate_result["exit_code"] != 0:
-        raise ValueError("The measurement gate must finish successfully.")
-    positive_integer(floor_bytes, "reservation floor")
-    compiler = Path(compiler).resolve(strict=True)
-    modules = {}
-    for observation in observations:
-        if Path(observation["exe"]).resolve(strict=True) != compiler:
-            raise ValueError("The measurement compiler differs from the bound compiler.")
-        source = module_source(shlex.split(observation["command"]))
-        fingerprint = observation.get("source_sha256") or digest(Path(observation["cwd"]) / source)
-        peak = observation.get("observed_peak_rss_kib")
-        if type(peak) is not int or peak < 0:
-            raise ValueError("The sampled peak must be a nonnegative integer.")
-        previous = modules.get(source)
-        if previous is not None:
-            if previous["source_sha256"] != fingerprint:
-                raise ValueError("The module measurements bind different source bytes.")
-            peak = max(peak, previous["sampled_peak_rss_kib"])
-        modules[source] = {
-            "source_sha256": fingerprint,
-            "sampled_peak_rss_kib": peak,
-            "claim_bytes": max(floor_bytes, (peak * 1024 * 3 + 1) // 2) if peak else None,
-            "arguments": shlex.split(observation["command"])[1:],
-        }
-    return {"schema": SCHEMA, "compiler_sha256": digest(compiler),
-            "floor_bytes": floor_bytes, "modules": modules, "measurement_complete": True,
-            "qualification": "Sampled peaks are lower bounds. Dependencies can change memory use. "
-                             "The physical compiler limits remain mandatory."}
+# Every guarded Dune compile books from this shared profile and records its
+# own scope peak in it. The key is the module path; a row binds the source
+# bytes, the compiler bytes and the compiler arguments, so a changed module
+# books the full fence until it is measured again.
+SCHEMA = "zesu.module-memory.v3"
+DEFAULT_PROFILE = Path(os.environ.get("XDG_CACHE_HOME") or Path.home() / ".cache") / "zesu-module-memory/profile.json"
+# The floor and margin apply to the largest completed cgroup memory.peak of a
+# matching row. Measured 2026-11-09 over 546 modules: min 104 MiB, p5 525,
+# p50 530, p95 547, max 566 MiB. A 384 MiB floor keeps every single booking
+# under 4x its peak (3.7x at 104 MiB); the 1.25 margin gives 1.25x in sum.
+# The booking also covers 1.5 times the compiler's peak resident set: the
+# guard raises any live booking below that (reservation_claims), and a raise
+# on every healthy compile costs a ledger write under the guard mutex.
+FLOOR_BYTES = 384 * 1024 ** 2
+MARGIN_NUMERATOR, MARGIN_DENOMINATOR = 5, 4
+RSS_NUMERATOR, RSS_DENOMINATOR = 3, 2
+CGROUP_ROOT = Path(os.environ.get("ZESU_CGROUP_ROOT", "/sys/fs/cgroup"))
+BINDING = ("source_sha256", "compiler_sha256", "arguments_sha256")
 
 
-def observe(output, compiler, cwd, arguments, payload, *, claim_bytes=None):
-    """Run one guarded compile and append its peak RSS after a clean exit.
+def arguments_digest(arguments):
+    return hashlib.sha256(json.dumps(list(arguments)).encode()).hexdigest()
 
-    The peak is the largest resident set of any waited descendant; the
-    compiler dominates it. Signals reach the payload, so cleanup is unchanged.
+
+def booking(peak_bytes, fallback_bytes, rss_peak_bytes=None):
+    """Book the margin over a measured peak, at least the floor, at most the fence."""
+    claim = max(FLOOR_BYTES, -(-peak_bytes * MARGIN_NUMERATOR // MARGIN_DENOMINATOR))
+    if type(rss_peak_bytes) is int and rss_peak_bytes > 0:
+        claim = max(claim, -(-rss_peak_bytes * RSS_NUMERATOR // RSS_DENOMINATOR))
+    return min(fallback_bytes, claim)
+
+
+def binding(arguments, cwd, compiler):
+    """Return the row key and binding of one compile, or raise ValueError."""
+    source = module_source(arguments)
+    return source, {"source_sha256": digest(Path(cwd) / source),
+                    "compiler_sha256": digest(Path(compiler).resolve(strict=True)),
+                    "arguments_sha256": arguments_digest(arguments)}
+
+
+def load_profile(path):
+    """Read the profile. A missing, damaged or older profile is empty."""
+    try:
+        profile = json.loads(Path(path).read_text())
+    except (OSError, ValueError):
+        profile = None
+    if not isinstance(profile, dict) or profile.get("schema") != SCHEMA \
+            or not isinstance(profile.get("modules"), dict):
+        return {"schema": SCHEMA, "modules": {}}
+    return profile
+
+
+def module_claim(profile, arguments, cwd, compiler, *, fallback_bytes=16 * GIB):
+    """Use the full fallback unless a row matches this exact compile."""
+    positive_integer(fallback_bytes, "fallback reservation")
+    if profile.get("schema") != SCHEMA:
+        raise ValueError("The module memory profile schema is unsupported.")
+    try:
+        source, bound = binding(arguments, cwd, compiler)
+    except (OSError, ValueError):
+        return {"claim_bytes": fallback_bytes, "reason": "ambiguous_source"}
+    row = profile["modules"].get(source)
+    if row is None:
+        return {"claim_bytes": fallback_bytes, "reason": "unknown_module", "source": source}
+    for name, reason in (("compiler_sha256", "changed_compiler"), ("source_sha256", "changed_source"),
+                         ("arguments_sha256", "changed_arguments")):
+        if row.get(name) != bound[name]:
+            return {"claim_bytes": fallback_bytes, "reason": reason, "source": source}
+    peak = row.get("peak_bytes")
+    if type(peak) is not int or peak <= 0:
+        return {"claim_bytes": fallback_bytes, "reason": "missing_peak", "source": source}
+    return {"claim_bytes": booking(peak, fallback_bytes, row.get("rss_peak_bytes")),
+            "reason": "measured_module", "source": source}
+
+
+def record_measurement(profile_path, source, bound, peak_bytes, *, rss_peak_bytes=None, ended_ns=None):
+    """Merge one completed peak under the profile lock and replace atomically.
+
+    A matching row keeps its largest peak; a changed binding starts a new row.
     """
     import fcntl
+    positive_integer(peak_bytes, "measured peak")
+    profile_path = Path(profile_path)
+    profile_path.parent.mkdir(parents=True, exist_ok=True)
+    with open(profile_path.with_name(profile_path.name + ".lock"), "a") as lock:
+        fcntl.flock(lock, fcntl.LOCK_EX)
+        profile = load_profile(profile_path)
+        row = profile["modules"].get(source)
+        if row is not None and all(row.get(name) == bound[name] for name in BINDING):
+            row.update(peak_bytes=max(row["peak_bytes"], peak_bytes),
+                       minimum_peak_bytes=min(row.get("minimum_peak_bytes", peak_bytes), peak_bytes),
+                       observations=row.get("observations", 1) + 1)
+        else:
+            row = dict(bound, peak_bytes=peak_bytes, minimum_peak_bytes=peak_bytes, observations=1)
+        if type(rss_peak_bytes) is int and rss_peak_bytes > 0:
+            row["rss_peak_bytes"] = max(row.get("rss_peak_bytes", 0), rss_peak_bytes)
+        row["updated_ns"] = ended_ns
+        profile["modules"][source] = row
+        descriptor, temporary = tempfile.mkstemp(prefix=".profile-", dir=profile_path.parent)
+        try:
+            with os.fdopen(descriptor, "w") as stream:
+                json.dump(profile, stream, sort_keys=True, separators=(",", ":"))
+            os.replace(temporary, profile_path)
+        except BaseException:
+            Path(temporary).unlink(missing_ok=True)
+            raise
+        return row
+
+
+def scope_peak(*, proc=Path("/proc"), cgroup_root=None, unit=None):
+    """Read memory.peak of this process's own guard scope, or None.
+
+    The cgroup leaf must be the scope unit that the guard named, so a run
+    outside a guard scope never reports its parent's memory.
+    """
+    unit = os.environ.get("ZESU_SCOPE_UNIT") if unit is None else unit
+    if not unit:
+        return None
+    try:
+        membership = next(line.split(":", 2)[2] for line in
+                          (proc / "self/cgroup").read_text().splitlines() if line.startswith("0::"))
+        if PurePosixPath(membership).name != unit:
+            return None
+        peak = int((Path(cgroup_root or CGROUP_ROOT) / membership.lstrip("/") / "memory.peak").read_text())
+    except (OSError, StopIteration, ValueError):
+        return None
+    return peak if peak > 0 else None
+
+
+def peak_exec(output, payload):
+    """Run the compiler inside its scope, then save the scope's memory.peak."""
     import resource
     import signal
     import subprocess
     import time
-    started = time.time_ns()
+    admitted = time.time_ns()
     child = subprocess.Popen(payload)
 
     def forward(number, _frame):
@@ -135,102 +225,159 @@ def observe(output, compiler, cwd, arguments, payload, *, claim_bytes=None):
     for number in (signal.SIGTERM, signal.SIGINT, signal.SIGHUP):
         signal.signal(number, forward)
     status = child.wait()
-    if status != 0:
-        return status if status > 0 else 128 - status
-    peak = resource.getrusage(resource.RUSAGE_CHILDREN).ru_maxrss
+    if status == 0:
+        try:
+            usage = resource.getrusage(resource.RUSAGE_CHILDREN)
+            Path(output).write_text(json.dumps({"peak_bytes": scope_peak(), "rss_peak_bytes": usage.ru_maxrss * 1024 or None,
+                                                "compiler_cpu_seconds": usage.ru_utime + usage.ru_stime,
+                                                "admitted_ns": admitted, "ended_ns": time.time_ns()}))
+        except OSError as error:
+            print(f"module memory: scope peak not saved: {error}", file=sys.stderr)
+    return status if status >= 0 else 128 - status
+
+
+def observe(profile_path, output, guard, compiler, cwd, arguments, *, fallback_bytes):
+    """Book one guarded compile from the profile and record its measured peak.
+
+    The guard receives the claim through ZESU_MODULE_CLAIM_BYTES. Only a clean
+    compile inside a guard scope supplies a peak; signals reach the guard.
+    """
+    import signal
+    import subprocess
+    import time
+    profile_path = Path(profile_path)
     try:
-        # A command without exactly one source is not a module measurement.
-        row = {"exe": str(Path(compiler).resolve(strict=True)), "cwd": str(Path(cwd).absolute()),
-               "command": shlex.join([str(compiler), *arguments]),
-               "source_sha256": digest(Path(cwd) / module_source(arguments)),
-               "observed_peak_rss_kib": peak,
-               "claim_bytes": claim_bytes, "started_ns": started, "ended_ns": time.time_ns()}
-        with open(output, "a") as stream:
-            fcntl.flock(stream, fcntl.LOCK_EX)
-            stream.write(json.dumps(row, separators=(",", ":")) + "\n")
+        source, bound = binding(arguments, cwd, compiler)
+    except (OSError, ValueError):
+        source = bound = None
+    claim = module_claim(load_profile(profile_path), arguments, cwd, compiler, fallback_bytes=fallback_bytes)
+    descriptor, peak_file = tempfile.mkstemp(prefix=".peak-", dir=tempfile.gettempdir())
+    os.close(descriptor)
+    try:
+        started = time.time_ns()
+        payload = [str(guard), "scope", "dune-coqc", "--", sys.executable, "-B",
+                   str(Path(__file__).resolve()), "peak-exec", "--output", peak_file,
+                   "--", str(compiler), *arguments]
+        child = subprocess.Popen(payload, env=dict(os.environ, ZESU_MODULE_CLAIM_BYTES=str(claim["claim_bytes"]),
+                                                   ZESU_MODULE_MEMORY_PROFILE=str(profile_path)))
+
+        def forward(number, _frame):
+            if child.poll() is None:
+                child.send_signal(number)
+        for number in (signal.SIGTERM, signal.SIGINT, signal.SIGHUP):
+            signal.signal(number, forward)
+        status = child.wait()
+        if status != 0:
+            return status if status > 0 else 128 - status
+        import resource
+        usage = resource.getrusage(resource.RUSAGE_CHILDREN)
+        guarded_cpu = usage.ru_utime + usage.ru_stime
+        try:
+            measured = json.loads(Path(peak_file).read_text() or "{}")
+        except (OSError, ValueError):
+            measured = {}
+    finally:
+        Path(peak_file).unlink(missing_ok=True)
+    peak = measured.get("peak_bytes")
+    try:
+        if source is not None and type(peak) is int and peak > 0:
+            record_measurement(profile_path, source, bound, peak, rss_peak_bytes=measured.get("rss_peak_bytes"),
+                               ended_ns=measured.get("ended_ns"))
+        if output:
+            import fcntl
+            row = {"source": source, "cwd": str(Path(cwd).absolute()), "peak_bytes": peak,
+                   "rss_peak_bytes": measured.get("rss_peak_bytes"),
+                   # The guard path (scope setup, admission, ledger) is the
+                   # guarded CPU less the compiler's own CPU.
+                   "compiler_cpu_seconds": measured.get("compiler_cpu_seconds"),
+                   "guarded_cpu_seconds": guarded_cpu,
+                   "claim_bytes": claim["claim_bytes"], "claim_reason": claim["reason"],
+                   "fence_bytes": fallback_bytes, "started_ns": started,
+                   "admitted_ns": measured.get("admitted_ns"), "ended_ns": measured.get("ended_ns", time.time_ns())}
+            with open(output, "a") as stream:
+                fcntl.flock(stream, fcntl.LOCK_EX)
+                stream.write(json.dumps(row, separators=(",", ":")) + "\n")
     except (OSError, ValueError) as error:
         print(f"module memory: measurement not recorded: {error}", file=sys.stderr)
     return 0
 
 
-def refresh_profile(observations, profile_path, *, floor_bytes=GIB):
-    """Merge one green gate's measurements into the retained profile.
+def booked_versus_peak(observations):
+    """Compare concurrent bookings with concurrent measured peaks.
 
-    Modules that this gate did not compile (Dune cache hits) keep their
-    earlier rows; module_claim still checks their source and arguments.
+    A booking lasts from admission inside the scope to compiler exit, as in
+    the guard ledger. The concurrent peak sum bounds live compiler memory.
     """
     rows = [json.loads(line) for line in Path(observations).read_text().splitlines() if line.strip()]
-    if not rows:
+    timed = [row for row in rows if row.get("admitted_ns") is not None and row.get("ended_ns") is not None]
+
+    def concurrent(field):
+        events = sorted([(row["admitted_ns"], row.get(field) or 0) for row in timed]
+                        + [(row["ended_ns"], -(row.get(field) or 0)) for row in timed])
+        total = maximum = 0
+        for _time, change in events:
+            total += change
+            maximum = max(maximum, total)
+        return maximum
+    peaks = sorted(row["peak_bytes"] for row in rows if type(row.get("peak_bytes")) is int)
+
+    def quantile(fraction):
+        return peaks[min(len(peaks) - 1, int(fraction * len(peaks)))] if peaks else 0
+    return {"compiles": len(rows), "measured": len(peaks),
+            "unmeasured_fence_bookings": sum(1 for row in rows if row.get("claim_reason") != "measured_module"),
+            "maximum_concurrent_booked_bytes": concurrent("claim_bytes"),
+            "maximum_concurrent_peak_bytes": concurrent("peak_bytes"),
+            "peak_bytes_p50": quantile(0.5), "peak_bytes_p95": quantile(0.95),
+            "peak_bytes_max": peaks[-1] if peaks else 0,
+            "booked_bytes_total": sum(row.get("claim_bytes") or 0 for row in rows),
+            "peak_bytes_total": sum(peaks),
+            "compiler_cpu_seconds": round(sum(row.get("compiler_cpu_seconds") or 0 for row in rows), 1),
+            "guarded_cpu_seconds": round(sum(row.get("guarded_cpu_seconds") or 0 for row in rows), 1)}
+
+
+def publish_admission_totals(result=None, released_bytes=0, *, path=None):
+    """Publish totals that held launches compare before a full admission check.
+
+    A confirmation publishes its projection; a release subtracts its claim.
+    The file is replaced atomically, which wakes waiting guards. It is only a
+    hint: a waiting guard runs the full check at least every WAKE_TIMEOUT.
+    """
+    path = path or os.environ.get("ZESU_ADMISSION_SUMMARY")
+    if not path:
         return None
-    compilers = {Path(row["exe"]).resolve(strict=True) for row in rows}
-    if len(compilers) != 1:
-        raise ValueError("The gate measurements name more than one compiler.")
-    fresh = make_profile(rows, {"exit_code": 0}, compilers.pop(), floor_bytes=floor_bytes)
-    profile_path = Path(profile_path)
-    profile_path.parent.mkdir(parents=True, exist_ok=True)
-    import fcntl
-    with open(profile_path.with_name(profile_path.name + ".lock"), "a") as lock:
-        fcntl.flock(lock, fcntl.LOCK_EX)
-        return _merge_profile(fresh, profile_path, floor_bytes)
-
-
-def _merge_profile(fresh, profile_path, floor_bytes):
+    path = Path(path)
+    if result is not None:
+        fits = result.get("fits") is True
+        live = result.get("live_memory_sample", {}).get("live_bytes", -1)
+        values = [result["requested_total_bytes"] if fits else result["accounted_active_bytes"],
+                  result["requested_unrealized_bytes"] if fits else result["unrealized_claim_bytes"],
+                  result["budget_bytes"], result["slice_claim_cap_bytes"],
+                  live if type(live) is int else -1, result.get("slice_max_bytes", 0)]
+    else:
+        try:
+            values = [int(value) for value in path.read_text().split()[:6]]
+            if len(values) != 6:
+                raise ValueError
+        except (OSError, ValueError):
+            return None
+        values[0] = max(0, values[0] - released_bytes)
+        values[1] = max(0, values[1] - released_bytes)
     try:
-        previous = json.loads(profile_path.read_text())
-    except (FileNotFoundError, ValueError):
-        previous = None
-    if (isinstance(previous, dict) and previous.get("schema") == SCHEMA
-            and previous.get("compiler_sha256") == fresh["compiler_sha256"]
-            and previous.get("floor_bytes") == floor_bytes):
-        fresh["modules"] = {**previous.get("modules", {}), **fresh["modules"]}
-    descriptor, temporary = tempfile.mkstemp(prefix=".profile-", dir=profile_path.parent)
-    with os.fdopen(descriptor, "w") as stream:
-        json.dump(fresh, stream, sort_keys=True)
-    os.replace(temporary, profile_path)
-    return fresh
+        descriptor, temporary = tempfile.mkstemp(prefix=".admission-", dir=path.parent)
+        with os.fdopen(descriptor, "w") as stream:
+            stream.write(" ".join(str(int(value)) for value in values) + "\n")
+        os.replace(temporary, path)
+    except (OSError, KeyError, TypeError, ValueError):
+        return None
+    return values
 
 
-def booked_versus_peak(observations):
-    """Return the largest concurrent booking among the measured compiles."""
-    rows = [json.loads(line) for line in Path(observations).read_text().splitlines() if line.strip()]
-    events = sorted([(row["started_ns"], row["claim_bytes"] or 0) for row in rows]
-                    + [(row["ended_ns"], -(row["claim_bytes"] or 0)) for row in rows])
-    booked = maximum = 0
-    for _time, change in events:
-        booked += change
-        maximum = max(maximum, booked)
-    return {"compiles": len(rows), "maximum_concurrent_booked_bytes": maximum,
-            "largest_compile_peak_bytes": max((row["observed_peak_rss_kib"] * 1024 for row in rows), default=0),
-            "booked_bytes_total": sum(row["claim_bytes"] or 0 for row in rows)}
-
-
-def module_claim(profile, arguments, cwd, compiler, *, fallback_bytes=16 * GIB):
-    """Use the full fallback when the source or compiler binding differs."""
-    positive_integer(fallback_bytes, "fallback reservation")
-    if profile.get("schema") != SCHEMA:
-        raise ValueError("The module memory profile schema is unsupported.")
+def marker_claim(marker):
     try:
-        source = module_source(arguments)
-    except ValueError:
-        return {"claim_bytes": fallback_bytes, "reason": "ambiguous_source"}
-    row = profile["modules"].get(source)
-    reason = "unknown_module"
-    if row is not None:
-        if profile["compiler_sha256"] != digest(compiler):
-            reason = "changed_compiler"
-        elif row["source_sha256"] != digest(Path(cwd) / source):
-            reason = "changed_source"
-        elif profile.get("measurement_complete") is not True:
-            reason = "incomplete_measurement"
-        elif row.get("arguments") != list(arguments):
-            reason = "changed_arguments"
-        elif row["claim_bytes"] is None:
-            reason = "missing_peak"
-        else:
-            return {"claim_bytes": max(profile["floor_bytes"], measurement_claim(
-                        fallback_bytes, row["sampled_peak_rss_kib"] * 1024, completed=True, matching=True)),
-                    "reason": "measured_module", "source": source}
-    return {"claim_bytes": fallback_bytes, "reason": reason, "source": source}
+        fields = dict(line.split("=", 1) for line in Path(marker).read_text().splitlines()[1:] if "=" in line)
+        return int(fields.get("memory_claim_bytes", 0))
+    except (OSError, ValueError):
+        return 0
 
 
 def admission(request_bytes, live_claims, available_bytes, *, headroom_bytes=20 * GIB,
@@ -427,7 +574,7 @@ def main():
     role_exit.add_argument('--marker', type=Path, required=True)
     role_exit.add_argument('payload', nargs=argparse.REMAINDER)
     claim = commands.add_parser("claim")
-    claim.add_argument("--profile", type=Path, required=True)
+    claim.add_argument("--profile", type=Path, default=DEFAULT_PROFILE)
     claim.add_argument("--cwd", type=Path, required=True)
     claim.add_argument("--compiler", type=Path, required=True)
     claim.add_argument("--fallback-bytes", type=int, required=True)
@@ -462,14 +609,16 @@ def main():
     aggregate.add_argument('--explicit-limit-bytes', type=int)
     aggregate.add_argument('--gate-limit-bytes', type=int)
     observe_parser = commands.add_parser("observe")
-    observe_parser.add_argument("--output", type=Path, required=True)
+    observe_parser.add_argument("--profile", type=Path, default=DEFAULT_PROFILE)
+    observe_parser.add_argument("--output", type=Path)
+    observe_parser.add_argument("--guard", type=Path, required=True)
     observe_parser.add_argument("--compiler", type=Path, required=True)
     observe_parser.add_argument("--cwd", type=Path, required=True)
-    observe_parser.add_argument("--claim-bytes", type=int)
-    observe_parser.add_argument("payload", nargs=argparse.REMAINDER)
-    refresh = commands.add_parser("profile-refresh")
-    refresh.add_argument("--observations", type=Path, required=True)
-    refresh.add_argument("--profile", type=Path, required=True)
+    observe_parser.add_argument("--fallback-bytes", type=int, required=True)
+    observe_parser.add_argument("arguments", nargs=argparse.REMAINDER)
+    peak = commands.add_parser("peak-exec")
+    peak.add_argument("--output", type=Path, required=True)
+    peak.add_argument("payload", nargs=argparse.REMAINDER)
     summary = commands.add_parser("observation-summary")
     summary.add_argument("--observations", type=Path, required=True)
     staging_exit = commands.add_parser('staging-exit-exec')
@@ -477,30 +626,14 @@ def main():
     staging_exit.add_argument('payload', nargs=argparse.REMAINDER)
     args = parser.parse_args()
     if args.command == "observe":
+        arguments = args.arguments[1:] if args.arguments[:1] == ["--"] else args.arguments
+        return observe(args.profile, args.output, args.guard, args.compiler, args.cwd, arguments,
+                       fallback_bytes=positive_integer(args.fallback_bytes, "fallback reservation"))
+    if args.command == "peak-exec":
         payload = args.payload[1:] if args.payload[:1] == ["--"] else args.payload
         if not payload:
-            parser.error("The observer requires its exact payload.")
-        try:
-            separator = payload.index("--")
-        except ValueError:
-            separator = -1
-        if separator < 0 or payload[separator + 1:separator + 2] != [str(args.compiler)]:
-            parser.error("The observed payload must end with -- COMPILER ARGUMENTS.")
-        return observe(args.output, args.compiler, args.cwd, payload[separator + 2:], payload,
-                       claim_bytes=args.claim_bytes)
-    if args.command == "profile-refresh":
-        if not args.observations.exists():
-            print("module memory: no compiles to measure; profile unchanged")
-            return 0
-        try:
-            fresh = refresh_profile(args.observations, args.profile)
-        except (OSError, ValueError, KeyError) as error:
-            # A green gate stays green; the next gate books the full fence.
-            print(f"module memory: profile not refreshed: {error}", file=sys.stderr)
-            return 0
-        print(f"module memory: profile {args.profile} holds "
-              f"{len(fresh['modules']) if fresh else 'unchanged'} modules")
-        return 0
+            parser.error("The peak recorder requires its exact payload.")
+        return peak_exec(args.output, payload)
     if args.command == "observation-summary":
         print(json.dumps(booked_versus_peak(args.observations)) if args.observations.exists() else "{}")
         return 0
@@ -528,6 +661,7 @@ def main():
         return 0
     if args.command == 'ledger-confirm':
         result = confirm_shell(args.marker, args.replacement, args.request_bytes, args.available_bytes)
+        publish_admission_totals(result)
         if not result['fits']:
             print('unified memory ledger refuses the reservation')
             return 3
@@ -535,7 +669,11 @@ def main():
     if args.command == 'ledger-mark':
         return 0 if mark_shell(args.marker) else 4
     if args.command == 'ledger-release':
-        return 0 if release_shell(args.marker) else 4
+        claim = marker_claim(args.marker)
+        released = release_shell(args.marker)
+        if released:
+            publish_admission_totals(released_bytes=claim)
+        return 0 if released else 4
     if args.command == 'ledger-recover-dead':
         return 0 if recover_dead_shell(args.marker) else 4
     if args.command == 'ledger-recover-stale':
@@ -545,7 +683,7 @@ def main():
         return 0 if recover_stale_shell(args.marker) else 4
     if args.command == "claim":
         arguments = args.arguments[1:] if args.arguments[:1] == ["--"] else args.arguments
-        result = module_claim(json.loads(args.profile.read_text()), arguments, args.cwd, args.compiler,
+        result = module_claim(load_profile(args.profile), arguments, args.cwd, args.compiler,
                               fallback_bytes=args.fallback_bytes)
         print(result["claim_bytes"])
     else:
@@ -560,18 +698,13 @@ def main():
                 # A ledger bookkeeping error never fails a compile: hold this
                 # launch with the reason, and the guard retries admission.
                 unverified = str(error)
-            result = current_projection(args.request_bytes, args.available_bytes)
-        result['admitted'] = (result['fits'] and unverified is None
-                              and len(observed['claims']) < args.maximum_compilers)
-        result['reason'] = ('compiler_limit' if len(observed['claims']) >= args.maximum_compilers else
-                            'unverified_growth' if unverified is not None else 'memory_budget')
+        # The memory budget is checked once, by ledger-confirm under the same
+        # mutex hold. A second projection here cost a ledger pass per launch.
         if unverified is not None:
             print(f"module memory: unverified_growth; {unverified} "
                   f"Growth rows: {json.dumps(observed['growth'])}")
-        elif not result["admitted"]:
-            print(f"module memory: {result['reason']}; unrealized {result['requested_unrealized_bytes']} bytes, "
-                  f"available budget {result['budget_bytes']} bytes; total {result['requested_total_bytes']} bytes, "
-                  f"slice cap {result['slice_claim_cap_bytes']} bytes")
+        elif len(observed['claims']) >= args.maximum_compilers:
+            print(f"module memory: compiler_limit; {len(observed['claims'])} reservations")
     return 0
 
 

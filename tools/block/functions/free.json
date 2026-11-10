@@ -1,0 +1,78 @@
+{
+  "function": "free",
+  "args_type": "FreeArgs",
+  "pc_prefix": "0x8004",
+  "generated_directory": "ZesuSsz/Generated/Free/FP301",
+  "callers_directory": "tools/block/generated/free_fp301_callers",
+  "contract_requires": [
+    "Require Import InstrSpecs.Machine.",
+    "Require Import ZesuSsz.Contracts.AltFlFree.",
+    "Require Import ZesuSsz.Contracts.AltFlFreeContract."
+  ],
+  "loop_contract_requires": [
+    "Require Import InstrSpecs.Machine.",
+    "Require Import ZesuSsz.Contracts.AltFlFree.",
+    "Require Import ZesuSsz.Contracts.AltFlFreeContract."
+  ],
+  "caller_contract_requires": [
+    "Require Import ZesuSsz.Contracts.AltFlFreeContract."
+  ],
+  "selected_code": {
+    "module": "ZesuSsz.Contracts.FreeSelected",
+    "premise": "freeSelectedCode"
+  },
+  "domain_component": "⌜freeDomainAt returnAddress args⌝",
+  "blocks": [
+    "1f38",
+    "1f58",
+    "1f60",
+    "1f68",
+    "1f7c",
+    "1f80",
+    "1f8c",
+    "1f98",
+    "1fa4",
+    "1fb4",
+    "1fb8",
+    "1fc0",
+    "1fc8",
+    "1fd8",
+    "1fdc",
+    "1fe8",
+    "1ff4",
+    "2010",
+    "2014",
+    "2028",
+    "202c",
+    "2038",
+    "2054",
+    "2058",
+    "2070",
+    "2074",
+    "2080",
+    "2090",
+    "2094",
+    "20b0",
+    "20b4",
+    "20cc",
+    "20d0",
+    "20ec",
+    "20f0",
+    "210c",
+    "2110",
+    "2130",
+    "2134",
+    "213c",
+    "2144",
+    "2154",
+    "2160"
+  ],
+  "loop_heads": [],
+  "cfg_function": "alt_fl_alloc.free",
+  "join_cuts": [
+    "2130",
+    "2134",
+    "2144",
+    "2160"
+  ]
+}

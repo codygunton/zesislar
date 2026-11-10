@@ -319,6 +319,16 @@ Ltac zesu_finish_zero_offset_u64_roundtrip :=
       apply ByteArrays.zesu_u64_little_endian_roundtrip
   end.
 
+(* bv_solve proves arithmetic; it never closes an equation between lists or
+   an existential. In 6a40, 6b08 and 6ae0 every selected bv_solve call at the
+   finisher tail was one of these and failed (up to 51 s per call). *)
+Ltac zesu_bv_solver_goal :=
+  lazymatch goal with
+  | |- @eq (list _) _ _ => fail 0
+  | |- ex _ => fail 0
+  | _ => idtac
+  end.
+
 Ltac zesu_finish_v1 :=
   try autorewrite with zesu_indices;
   try (zesu_normalize_memory_constants);
@@ -365,7 +375,8 @@ Ltac zesu_finish_v1 :=
   | _ =>
       try (zesu_saturate_alignment);
       try zesu_finish_lia;
-      try (ZesuSsz.Automation2.ContextCollection.zesu_solve_goal_selected
+      try (zesu_bv_solver_goal;
+        ZesuSsz.Automation2.ContextCollection.zesu_solve_goal_selected
         ("finish.v1_tail"%string) ltac:(bv_solve))
   end;
   try (zesu_finish_little_endian_if_closed);
@@ -652,8 +663,9 @@ Ltac zesu_v34_array_continuation :=
       ZesuSsz.Automation2.FramePackingFinish.zesu_frame_packing_finish |
       assumption | reflexivity]).
 
-(* Keep the shared route first. Assemble after matching only when it refuses. *)
-Ltac zesu_finish_source_package :=
+(* Keep the shared route first. Assemble after matching only when it refuses.
+   `check` validates the fixed facts after saturation. *)
+Ltac zesu_finish_source_package_with check :=
   first [solve [
   MemoryTupleConsumer.zesu_memory_tuple
     ltac:(fun requested =>
@@ -665,7 +677,7 @@ Ltac zesu_finish_source_package :=
        then idtac
        else (once (repeat JoinEntailment.zesu_join_project_once);
          PureFacts.zesu_saturate_derived_facts;
-         SourceFactMatching.zesu_source_check_fixed_tree requested));
+         check requested));
       once (SourceFactMatching.zesu_source_match_tree requested ltac:(idtac)))
     ltac:(fun _ => SourceFactMatching.zesu_source_finish_package)
   ] | solve [
@@ -691,10 +703,14 @@ once (try zesu_memory_registered_intro;
        then idtac
        else (once (repeat JoinEntailment.zesu_join_project_once);
          PureFacts.zesu_saturate_derived_facts;
-         SourceFactMatching.zesu_source_check_fixed_tree requested));
+         check requested));
       SourceFactMatching.zesu_source_match_tree requested ltac:(idtac))
     ltac:(fun _ => SourceFactMatching.zesu_source_finish_package)
   ]].
+
+Ltac zesu_finish_source_package :=
+  zesu_finish_source_package_with
+    ltac:(fun requested => SourceFactMatching.zesu_source_check_fixed_tree requested).
 
 
 (* Match the requested facts directly against the source facts. This adds no
@@ -731,6 +747,17 @@ Ltac zesu_finish_residual_cascade :=
               ltac:(first [ZesuSsz.Automation2.SymbolicByteCodec.zesu_symbolic_byte_codec |
       ZesuSsz.Automation2.FramePackingFinish.zesu_frame_packing_finish])] ]
   ] | solve [zesu_finish_source_tail]].
+
+(* A package that the cascade cannot close because of fixed pure conjuncts.
+   The source route commits the witnesses and the resources. Each fixed
+   conjunct that the source closers cannot prove gets the residual tier, and
+   a conjunct that the tier cannot close stays as its own pure goal. Runs only
+   after the cascade fails, so a package that closes today is not changed. *)
+Ltac zesu_finish_package_deferring :=
+  lazymatch goal with |- environments.envs_entails _ _ => idtac end;
+  zesu_finish_residual_switches;
+  unshelve (zesu_finish_source_package_with
+    ltac:(fun requested => SourceFactMatching.zesu_source_defer_fixed_tree requested)).
 
 (* Fast generic evidence transport precedes broad arithmetic. *)
 Ltac zesu_union_required_pure :=
@@ -1185,6 +1212,7 @@ Ltac zesu_block_base :=
 (* Residual lemmas close the pure goals that every other tier leaves open. *)
 Ltac zesu_block2 :=
   zesu_block_base; try zesu_finish_residual_cascade;
+  try zesu_finish_package_deferring;
   try ResidualLemmas.zesu_residual_lemma.
 
 Ltac zesu_block_simpl :=

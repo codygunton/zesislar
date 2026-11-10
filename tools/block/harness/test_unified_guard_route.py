@@ -127,6 +127,7 @@ raise AssertionError('Unexpected fixture operation.')
 cache_disk_admission() { :; }
 hold_reason() { :; }
 compiler_admission_reason() { :; }
+recover_stale_reservations() { :; }
 memory() { echo $((256*GIB)) 0 $((200*GIB)); }
 marker=$(reserve_coqc $$) || exit 11
 confirm_coqc "$marker" || exit 12
