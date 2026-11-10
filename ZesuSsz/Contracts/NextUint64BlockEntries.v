@@ -2,6 +2,7 @@ From Coq Require Import List ZArith.
 From stdpp Require Import bitvector.definitions.
 Require Import isla.riscv64.riscv64.
 Require Import EvmSailRlp.evm_rlp_types.
+Require Import ZesuMachineMap.Machine.
 Require Import ZesuSsz.Contracts.RlpDecodeItem.
 Require Import ZesuSsz.Contracts.AbiBytes.
 Require Import ZesuSsz.Contracts.RlpDecodeItemContract.
@@ -18,7 +19,9 @@ Record NextUint64Args := {
   nextUint64SavedX27 : bv 64
 }.
 
-(* The caller subtracts 96. Its separate callee frame has 16 bytes. *)
+(* The caller subtracts 96. Its separate callee frame has 16 bytes.
+   The decodeItem call (machine_call) needs its stack pointer 16-byte aligned
+   and below the RAM end. The slice is read as two words, so it lies in RAM. *)
 Definition nextUint64BoundaryDomain (params : NextUint64Args) : Prop :=
   let args := nextUint64Base params in
   let inputLength := Z.of_nat (length (nextInputBytes args)) in
@@ -34,7 +37,11 @@ Definition nextUint64BoundaryDomain (params : NextUint64Args) : Prop :=
   separateRanges (nextInputPointer args) inputLength
     (nextStackPointer args - 112) 112 /\
   separateRanges (nextSlicePointer args) 16 (nextStackPointer args - 112) 112 /\
-  separateRanges (nextResultPointer args) 16 (nextStackPointer args - 112) 112.
+  separateRanges (nextResultPointer args) 16 (nextStackPointer args - 112) 112 /\
+  nextStackPointer args mod 16 = 0 /\
+  nextStackPointer args < machineRamEnd defaultMap /\
+  mapRamBase defaultMap <= nextSlicePointer args /\
+  nextSlicePointer args + 16 <= machineRamEnd defaultMap.
 
 Definition nextUint64CalleeBase (params : NextUint64Args)
     (before : list byte) : DecodeItemArgs :=
