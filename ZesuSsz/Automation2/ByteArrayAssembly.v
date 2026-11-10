@@ -51,11 +51,67 @@ Ltac zesu_byte_array_whole spatial address fraction bytes :=
       | zesu_byte_array_whole rest address fraction bytes]
   end.
 
+(* An owned byte array at the requested address whose values equal the
+   requested list up to conversion, for example a word's little-endian bytes. *)
+Ltac zesu_byte_array_whole_converted spatial address fraction bytes :=
+  lazymatch spatial with
+  | Esnoc ?rest ?name ?owner =>
+      first [
+        lazymatch owner with
+        | @mem_mapsto_array ?sigma ?heap 8 ?available ?q ?values =>
+            constr_eq fraction q;
+            let _ := constr:(@eq_refl (list (bv 8)) values : values = bytes) in
+            zesu_byte_array_same_address available address;
+            lazymatch goal with
+            | |- envs_entails ?environment _ =>
+                change (envs_entails environment
+                  (@mem_mapsto_array sigma heap 8 address fraction values))
+            end;
+            solve [iFrame]
+        end
+      | zesu_byte_array_whole_converted rest address fraction bytes]
+  end.
+
+(* An owned byte array at the requested address that covers a proper prefix of
+   the requested list, up to conversion. Consume it and continue at the end. *)
+Ltac zesu_byte_array_prefix spatial address fraction bytes continuation :=
+  lazymatch spatial with
+  | Esnoc ?rest ?name ?owner =>
+      first [
+        lazymatch owner with
+        | @mem_mapsto_array ?sigma ?heap 8 ?available ?q ?values =>
+            constr_eq fraction q;
+            let count := eval vm_compute in (length values) in
+            let total := eval vm_compute in (length bytes) in
+            lazymatch eval vm_compute in (Nat.ltb count total) with true => idtac end;
+            let tail := eval cbn [drop app] in (drop count bytes) in
+            let _ := constr:(@eq_refl (list (bv 8)) bytes : bytes = values ++ tail) in
+            zesu_byte_array_same_address available address;
+            let Hcount := fresh "HarrayPrefixLength" in
+            assert (Hcount : length values = count) by (vm_compute; reflexivity);
+            lazymatch goal with
+            | |- envs_entails ?environment _ =>
+                change (envs_entails environment
+                  (@mem_mapsto_array sigma heap 8 address fraction (values ++ tail)))
+            end;
+            iApply (mem_mapsto_array_app_combine_at 8 address fraction values tail count Hcount
+              with "[$]");
+            clear Hcount;
+            let step := eval vm_compute in (Z.of_N (8 `div` 8) * Z.of_nat count)%Z in
+            try change (Z.of_N (8 `div` 8) * Z.of_nat count)%Z with step;
+            continuation tt
+        end
+      | zesu_byte_array_prefix rest address fraction bytes continuation]
+  end.
+
 Ltac zesu_byte_array_assemble_core :=
   lazymatch goal with
   | |- envs_entails (Envs ?persistent ?spatial ?counter)
       (@mem_mapsto_array ?sigma ?heap 8 ?address ?fraction ?bytes) =>
       first [zesu_byte_array_whole spatial address fraction bytes |
+        zesu_byte_array_whole_converted spatial address fraction bytes |
+        zesu_byte_array_prefix spatial address fraction bytes
+          ltac:(fun _ => zesu_byte_array_assemble_core) |
         let expanded := eval cbn [bv_to_little_endian app] in bytes in
         change (envs_entails (Envs persistent spatial counter)
           (@mem_mapsto_array sigma heap 8 address fraction expanded));

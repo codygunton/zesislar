@@ -42,3 +42,32 @@ Proof.
 Qed.
 
 Print Assumptions frame_cells_rebuild_for_successor.
+
+(* The context owns the saved frame as two 64-bit word cells, and the
+   successor entry asks for the same 16 bytes as one array. The word addresses
+   equal the array base and the base plus 8 only after wrapped 64-bit
+   arithmetic: one through a local definition, one in wrap-normalized form.
+   The core places both words and rebuilds the array from their bytes. *)
+Lemma frame_words_rebuild_for_successor `{!islaG Sigma} `{!threadG}
+    (X C : bv 64) (x : Z) (w0 w1 : bv 64) (R : iProp Sigma) :
+  bv_unsigned C = 2^64 - 16 -> bv_unsigned X = x -> 16 <= x ->
+  let L := (X + C)%bv in
+  R -∗
+  bv_unsigned L ↦ₘ w0 -∗
+  (x + (bv_unsigned C + bv_unsigned (BV 64 8) - bv_modulus 64)) ↦ₘ w1 -∗
+  (isla.ghost_state.mem_mapsto_array_def (x - 16) (DfracOwn 1)
+      (Z_to_bv 8 (Z.land (bv_unsigned w0) (Z.ones 8)) ::
+       Z_to_bv 8 (Z.land (bv_unsigned w0 ≫ 8) (Z.ones 8)) ::
+       Z_to_bv 8 (Z.land (bv_unsigned w0 ≫ 16) (Z.ones 8)) ::
+       Z_to_bv 8 (Z.land (bv_unsigned w0 ≫ 24) (Z.ones 8)) ::
+       Z_to_bv 8 (Z.land (bv_unsigned w0 ≫ 32) (Z.ones 8)) ::
+       Z_to_bv 8 (Z.land (bv_unsigned w0 ≫ 40) (Z.ones 8)) ::
+       Z_to_bv 8 (Z.land (bv_unsigned w0 ≫ 48) (Z.ones 8)) ::
+       Z_to_bv 8 (Z.land (bv_unsigned w0 ≫ 56) (Z.ones 8)) ::
+       bv_to_little_endian 8 8 (bv_unsigned w1)) ∗ R).
+Proof.
+  intros HC HX Hx L. iIntros "HR H0 H1".
+  zesu_block2.
+Qed.
+
+Print Assumptions frame_words_rebuild_for_successor.
