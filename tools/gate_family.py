@@ -25,9 +25,12 @@ def select(target, command, physical_fence_bytes, *, profile=PROFILE, profile_sh
     row = value['families'].get(target)
     if row is None:
         return None
-    if (set(row) != {'command', 'physical_fence_bytes', 'measurement', 'peak_bytes', 'authority'}
+    required = {'command', 'physical_fence_bytes', 'measurement', 'peak_bytes', 'authority'}
+    if (not required <= set(row) <= required | {'anon_peak_bytes'}
             or type(row['physical_fence_bytes']) is not int
-            or type(row['peak_bytes']) is not int or row['peak_bytes'] <= 0):
+            or type(row['peak_bytes']) is not int or row['peak_bytes'] <= 0
+            or ('anon_peak_bytes' in row and (type(row['anon_peak_bytes']) is not int
+                                              or not 0 < row['anon_peak_bytes'] <= row['peak_bytes']))):
         raise ValueError('The reviewed gate-family row is invalid.')
     if command != row['command'] or physical_fence_bytes != row['physical_fence_bytes']:
         return None
@@ -48,13 +51,16 @@ def select(target, command, physical_fence_bytes, *, profile=PROFILE, profile_sh
             or type(measurement.get('exit_code')) is not int or measurement['exit_code'] != 0
             or type(measurement.get('completed_ns')) is not int or measurement['completed_ns'] <= 0
             or measurement.get('aggregate_peak_bytes') != row['peak_bytes']
+            or measurement.get('aggregate_anon_peak_bytes') != row.get('anon_peak_bytes')
             or measurement.get('measurement_scope') != 'Complete owned stock aggregate before guard cleanup.'):
         raise ValueError('The reviewed gate measurement is incomplete or names another family.')
     result = {'reason': 'reviewed_completed_gate_family_peak', 'family': target,
             'measurement': {'path': str(path), 'sha256': binding['sha256']},
             'measurement_provenance': measurement.get('cache_provenance'),
             'aggregate_peak_bytes': row['peak_bytes'], 'authority': row['authority'],
-            'claim_bytes': measurement_claim(physical_fence_bytes, row['peak_bytes'],
+            # memory.peak counts page cache; book from the anonymous peak when reviewed.
+            'anon_peak_bytes': row.get('anon_peak_bytes'),
+            'claim_bytes': measurement_claim(physical_fence_bytes, row.get('anon_peak_bytes', row['peak_bytes']),
                                              completed=True, matching=True),
             'physical_fence_bytes': physical_fence_bytes,
             'qualification': 'Admission prediction from a reviewed completed family measurement. '

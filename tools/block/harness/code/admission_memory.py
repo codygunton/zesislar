@@ -521,8 +521,16 @@ class ScopeReader:
                 return {'verified': True, 'closed': True, 'live_bytes': 0}
             if 'populated 1' not in events.splitlines() and not (static and 'populated 0' in events.splitlines()):
                 raise ValueError('The retained aggregate population is unknown.')
-            return dict(bound, verified=True, aggregate_verified=True, live_bytes=live,
-                        reason='authenticated aggregate remains populated')
+            row = dict(bound, verified=True, aggregate_verified=True, live_bytes=live,
+                       reason='authenticated aggregate remains populated')
+            try:
+                anon = next(int(line.split()[1]) for line in
+                            (path / 'memory.stat').read_text().splitlines() if line.startswith('anon '))
+                if self.directory(path) == before and anon >= 0:
+                    row['anon_bytes'] = anon
+            except (OSError, StopIteration, ValueError, IndexError):
+                pass
+            return row
         except (OSError, ValueError, KeyError, TypeError) as error:
             return {'verified': False, 'live_bytes': 0, 'reason': str(error)}
 
@@ -879,14 +887,25 @@ def projection(data, claims, new_bytes, available_bytes, *, reader=None, new_obs
             if key not in data.get('shell_claim_owners', {}):
                 observations[key] = observation
     retained_groups = dict(data.get('legacy_aggregate_holds', {}))
-    retained_groups.update(data.get('shell_aggregate_holds', {}))
+    shell_holds = data.get('shell_aggregate_holds', {})
+    retained_groups.update(shell_holds)
     for key, retained in retained_groups.items():
         sample = reader.residual(retained['aggregate'])
         if sample.get('closed') is True:
             continue
         # An unknown retained scope keeps its last booking. A verified live
-        # aggregate contributes actual usage even after its final token ends.
+        # aggregate contributes actual usage even after its final token ends:
+        # its live anonymous memory plus the bookings of its compiles that
+        # still run. Without this a batch kept the largest claim it ever
+        # released until it ended (55 holds, 298.8 GiB on 2026-11-10).
         claims[key] = retained['fallback_bytes']
+        if (key in shell_holds and sample.get('aggregate_verified') is True
+                and type(sample.get('anon_bytes')) is int):
+            running = sum(amount for other, amount in claims.items()
+                          if other != key and amount
+                          and observations.get(other, {}).get('verified') is True
+                          and observations[other].get('scope') == sample.get('scope'))
+            claims[key] = min(retained["fallback_bytes"], sample["anon_bytes"] + running)
         observations[key] = sample
     result = dict(evaluate(claims, new_bytes, available_bytes, observations=observations,
                            new_observation=new_observation,
@@ -1249,8 +1268,10 @@ def write_ledger(path, data):
     fd, name = tempfile.mkstemp(prefix='.LEDGER.', dir=path.parent)
     try:
         with os.fdopen(fd, 'w') as stream:
-            json.dump(data, stream, separators=(",", ":"))
-            stream.write('\n'); stream.flush(); os.fsync(stream.fileno())
+            # One write: json.dump issues one call per token (0.16 s against
+            # 0.04 s for 17.5 MB), and every caller holds the guard mutex.
+            stream.write(json.dumps(data, separators=(",", ":")) + '\n')
+            stream.flush(); os.fsync(stream.fileno())
         os.replace(name, path)
     finally:
         Path(name).unlink(missing_ok=True)
@@ -1271,6 +1292,21 @@ def current_projection(request_bytes, available_bytes, *, ledger=None, reader=No
     ledger = Path(ledger or os.environ.get('ZESU_CANONICAL_LEDGER', DEFAULT_LEDGER))
     with ledger_transaction(ledger) as data:
         return projection(data, ledger_claims(data), request_bytes, available_bytes, reader=reader)
+
+
+def prune_closed_aggregate_holds(data, reader):
+    """Drop retained shell aggregates whose cgroup no longer exists.
+
+    A removed cgroup cannot return with its recorded identity, and projection
+    counts it as zero. Without pruning, every admission re-samples each hold
+    ever recorded under the global guard mutex (4,228 of 4,250 on 2026-11-09).
+    """
+    holds = data.get('shell_aggregate_holds', {})
+    for key in [key for key, hold in holds.items()
+                if not Path(hold['aggregate']['scope']).exists()
+                and not Path(hold['aggregate']['scope']).is_symlink()
+                and reader.residual(hold['aggregate']).get('closed') is True]:
+        del holds[key]
 
 
 def confirm_shell(marker, replacement, request_bytes, available_bytes, *, ledger=None, reader=None):
@@ -1325,6 +1361,7 @@ def confirm_shell(marker, replacement, request_bytes, available_bytes, *, ledger
         if guard_source is not None:
             data['shell_claim_owners'][key]['guard_source'] = guard_source
         data.setdefault('shell_admissions', {})[key] = result
+        prune_closed_aggregate_holds(data, reader)
         write_ledger(ledger, data)
         os.replace(replacement, marker)
         data['shell_claim_owners'][key]['token_identity'] = reader.file_identity(marker.lstat())
@@ -1570,6 +1607,7 @@ def recover_dead_shell(marker, *, ledger=None, reader=None):
                 'marker': str(marker), 'owner': admitted['owner'],
                 'dead_owner_recovery': True, 'absence_only': True}
             _archive_shell_release(ledger, data, key, reader)
+        prune_closed_aggregate_holds(data, reader)
         write_ledger(ledger, data)
         marker.unlink()
         return True
@@ -1778,6 +1816,7 @@ def release_shell(marker, *, ledger=None, reader=None, require_dead_owner=False)
             'previous_token_identity': record.get('token_identity'),
             'observed_token_identity': token_identity}
         _archive_shell_release(ledger, data, key, reader)
+        prune_closed_aggregate_holds(data, reader)
         write_ledger(ledger, data)
         marker.unlink()
         return True
