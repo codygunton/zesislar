@@ -95,10 +95,36 @@ class ModuleMemoryTests(unittest.TestCase):
         value = self.claim()
         self.assertEqual((value["claim_bytes"], value["reason"]), (16 * memory.GIB, "changed_compiler"))
 
-    def test_unknown_module_uses_the_full_fallback(self):
-        self.profile()
+    def test_unknown_module_books_its_directory_prior(self):
+        self.profile([("Small.v", 3 * memory.GIB)])
         value = self.claim("Large.v")
+        self.assertEqual((value["claim_bytes"], value["reason"]), (3 * memory.GIB * 3 // 2, "directory_prior"))
+        # The prior covers the guard growth rule on a resident set larger than the scope peak.
+        name, bound = self.bound("Small.v")
+        memory.record_measurement(self.profile_path, name, bound, memory.GIB, rss_peak_bytes=4 * memory.GIB)
+        self.assertEqual(self.claim("Large.v")["claim_bytes"], 6 * memory.GIB)
+
+    def test_unknown_module_in_an_unmeasured_directory_keeps_the_full_fallback(self):
+        self.profile([("Small.v", 3 * memory.GIB)])
+        (self.root / "sub").mkdir()
+        (self.root / "sub/New.v").write_text("Check nat.\n")
+        value = self.claim("sub/New.v")
         self.assertEqual((value["claim_bytes"], value["reason"]), (16 * memory.GIB, "unknown_module"))
+        self.assertEqual(memory.directory_prior(memory.load_profile(self.profile_path), "sub/New.v",
+                                                16 * memory.GIB), None)
+
+    def test_directory_prior_never_exceeds_the_fallback(self):
+        self.profile([("Small.v", 15 * memory.GIB)])
+        self.assertEqual(self.claim("Large.v")["claim_bytes"], 16 * memory.GIB)
+        self.assertEqual(self.claim("Large.v", fallback_bytes=64 * memory.GIB)["claim_bytes"],
+                         15 * memory.GIB * 3 // 2)
+
+    def test_directory_prior_books_at_least_two_gib(self):
+        self.profile([("Small.v", 100 * 1024 ** 2)])
+        value = self.claim("Large.v")
+        self.assertEqual((value["claim_bytes"], value["reason"]), (2 * memory.GIB, "directory_prior"))
+        self.assertEqual(memory.directory_prior(memory.load_profile(self.profile_path), "Large.v",
+                                                memory.GIB), memory.GIB)
 
     def test_missing_peak_uses_the_full_fallback(self):
         self.profile()
@@ -784,6 +810,13 @@ class GateProfileTests(unittest.TestCase):
         self.assertEqual(summary["maximum_concurrent_peak_bytes"], memory.GIB)
         self.assertEqual((summary["compiles"], summary["unmeasured_fence_bookings"]), (3, 1))
         self.assertEqual(summary["peak_bytes_max"], memory.GIB // 2)
+
+    def test_summary_counts_directory_priors_apart_from_fence_bookings(self):
+        with self.observations.open("w") as stream:
+            for reason in ("unknown_module", "directory_prior", "measured_module"):
+                stream.write(self.json.dumps({"claim_bytes": memory.GIB, "claim_reason": reason}) + "\n")
+        summary = memory.booked_versus_peak(self.observations)
+        self.assertEqual((summary["unmeasured_fence_bookings"], summary["directory_prior_bookings"]), (1, 1))
 
 
 if __name__ == "__main__":
