@@ -13,6 +13,8 @@ parser.add_argument("--seed-manifest-sha256", required=True)
 parser.add_argument("--coqc-args", type=Path, required=True)
 parser.add_argument("--function", default=None,
                     help="function profile name or path (default: decodeItem)")
+parser.add_argument("--record-refusals", action="store_true",
+                    help="record a guard-refused boundary and render the others")
 options = parser.parse_args()
 
 
@@ -59,6 +61,7 @@ from resource_seed import load_public_seed, seed_owned_resources
 from system_shape_seed import seed_system_shapes
 from function_profiles import load_profile, pilot_header
 from boundary_guards import (
+    BoundaryRefused,
     RocqContradictionCheck,
     contradictory_alternatives,
     contradictory_sources,
@@ -100,6 +103,7 @@ owned.state = seed_system_shapes(
 terminal_ids = [
     row["id"] for row in owned.ownership["components"] if row["source"] == "True"
 ]
+source_binder_names = {binder["name"] for binder in owned.ownership["binders"]}
 assert len(terminal_ids) == 1
 continuation = {
     "name": "K",
@@ -122,13 +126,20 @@ allowed_helpers = {
     row["helper"]["owner"] + "." + row["helper"]["name"] for row in vocabulary["rows"]
 }
 # Refuse every incomplete source boundary before any declaration renders.
+guard_refusals = {}
 for suffix in pilots:
     if suffix not in loop_heads:
-        require_complete_boundary(
-            next(b for b in data["boundaries"] if b["pc"] == profile.pc(suffix))
-        )
+        try:
+            require_complete_boundary(
+                next(b for b in data["boundaries"] if b["pc"] == profile.pc(suffix))
+            )
+        except BoundaryRefused as error:
+            if not options.record_refusals:
+                raise
+            guard_refusals[suffix] = str(error)
 check = RocqContradictionCheck(
-    json.loads(options.coqc_args.read_text()), header, O / "contradiction-checks"
+    json.loads(options.coqc_args.read_text()), header, O / "contradiction-checks",
+    profile.args_type,
 )
 
 for suffix in pilots:
@@ -150,7 +161,20 @@ for suffix in pilots:
                       "source_boundary": profile["loop_head_fixture"] + "#" + suffix,
                       "definition_count": 5, "proof_ran": False})
         continue
+    if suffix in guard_refusals:
+        cases.append({"pc": pc, "status": "refused_incomplete_boundary",
+                      "reports": [{"kind": "reaching_stop_guard", "detail": guard_refusals[suffix]}],
+                      "proof_ran": False})
+        continue
     boundary = deepcopy(data["boundaries"][index])
+    if boundary["status"] in ("generated_join", "generated_loop_head"):
+        # A seeded cut renders from its incoming edges, as an unseeded cut does;
+        # its own seed alternative is the generalization of those same edges.
+        boundary["alternatives"] = [
+            alternative for alternative in boundary["alternatives"]
+            if alternative["predecessor_pc"] is not None
+        ]
+        boundary["status"] = "handwritten_cut"
     name = "fp_machineAt" + suffix
     name = identifier(name, "generated entry")
     source_ref = str(forward) + "#/boundaries/" + str(index)
@@ -164,6 +188,21 @@ for suffix in pilots:
         for component in resource["components"]:
             if component["source"] == "⌜domain args⌝":
                 component["source"] = profile["domain_component"]
+        # A byte read at a symbolic index renders as its owned-array lookup, in
+        # path conditions as in register values (render_resource_boundary).
+        reads = {json.dumps(row["expression"], sort_keys=True): row["term"]
+                 for row in resource.get("owned_read_renderings", [])}
+
+        def owned_reads(value):
+            if value.get("op") == "owned_array_byte":
+                term = reads.get(json.dumps(value, sort_keys=True))
+                if term is None:
+                    raise ValueError("A symbolic byte read has no owned rendering.")
+                return {"op": "input", "width": 8, "value": term}
+            return {**value, "args": [owned_reads(arg) for arg in value["args"]]} if "args" in value else value
+
+        if reads:
+            resource["path_conditions"] = [owned_reads(row) for row in resource.get("path_conditions", [])]
 
     def rendered(boundary):
         plain = SourceComponents(
@@ -252,21 +291,44 @@ for suffix in pilots:
         def body_source(body):
             if body.get("lets") or body.get("loop"):
                 raise ValueError("This source adapter has no let/loop declaration binding.")
-            result = (
-                "("
-                + " ∗ ".join(render(component) for component in body["components"])
-                + ")"
-            )
-            if body["existentials"]:
+            rendered_components = [(component, render(component)) for component in body["components"]]
+            result = "(" + " ∗ ".join(text for _, text in rendered_components) + ")"
+            # A Level 1 entry witness whose register a path overwrote occurs
+            # nowhere in the body; nothing could instantiate it, so it is dropped.
+            # System-shape and condition witnesses are kept as before.
+            existentials = [
+                binder for binder in body["existentials"]
+                if binder["name"] not in source_binder_names
+                or re.search(r"(?<![\w'])" + re.escape(binder["name"]) + r"(?![\w'])",
+                             re.sub(r'"[^"]*"', "", result))
+            ]
+            if existentials:
                 telescope = " ".join(
                     "("
                     + identifier(binder["name"], "source existential")
                     + " : "
                     + expression(binder["type"], "source type")
                     + ")"
-                    for binder in body["existentials"]
+                    for binder in existentials
                 )
-                result = "(∃ " + telescope + ", " + result + ")"
+
+                def mentions(text):
+                    text = re.sub(r'"[^"]*"', "", text)
+                    return any(re.search(r"(?<![\w'])" + re.escape(binder["name"]) + r"(?![\w'])", text)
+                               for binder in existentials)
+
+                owned = [text for component, text in rendered_components if component["kind"] != "pure"]
+                if any(mentions(text) for text in owned):
+                    return "(∃ " + telescope + ", " + result + ")"
+                # No owned resource fixes a witness: keep the resources and the
+                # witness-free facts outside, and scope the telescope over the
+                # facts that use it (owned resources before pure meaning facts).
+                outer = [text for component, text in rendered_components
+                         if component["kind"] != "pure" or not mentions(text)]
+                inner = [text for component, text in rendered_components
+                         if component["kind"] == "pure" and mentions(text)] or ["True"]
+                result = ("(" + " ∗ ".join(outer + ["(∃ " + telescope + ", (" + " ∗ ".join(inner) + "))"])
+                          + ")")
             return result
 
         definitions = []
