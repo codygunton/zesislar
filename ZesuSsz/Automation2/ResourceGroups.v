@@ -63,16 +63,6 @@ Ltac zesu_contains_existential_resource body :=
         zesu_contains_existential_resource expanded
   end.
 
-(* Owned memory resources stay whole. Their consumers and the successor entries
-   match them as arrays; opened cells are never rebuilt into the array. *)
-Ltac zesu_owned_memory_head head :=
-  lazymatch head with
-  | @isla.ghost_state.mem_mapsto_array_def => idtac
-  | @isla.ghost_state.mem_mapsto_def => idtac
-  | @isla.ghost_state.mem_mapsto_uninit_def => idtac
-  | @isla.ghost_state.mem_mapsto_byte_def => idtac
-  end.
-
 Ltac zesu_open_existential_package_step :=
   first [
     progress iMatchHyp ltac:(fun H body =>
@@ -88,8 +78,7 @@ Ltac zesu_open_existential_package_step :=
       let head := get_head body in
       tryif first [constr_eq head constr:(@bi_sep) |
                    constr_eq head constr:(@bi_pure) |
-                   constr_eq head constr:(@bi_exist) |
-                   zesu_owned_memory_head head] then fail else idtac;
+                   constr_eq head constr:(@bi_exist)] then fail else idtac;
       let expanded := eval cbv beta zeta delta [head] in body in
       zesu_contains_existential_resource expanded;
       progress iEval (unfold head) in H;
