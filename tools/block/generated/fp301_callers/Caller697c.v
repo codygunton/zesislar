@@ -9,6 +9,7 @@ Require Import ZesuSsz.Generated.DecodeItem.FP301.Pilot697cStructural.
 Require Import ZesuSsz.Generated.DecodeItem.FP301.Pilot698cStructural.
 Require Import ZesuSsz.Generated.DecodeItem.FP301.Pilot698cEntries.
 Require Import ZesuSsz.Automation2.All.
+Require Import ZesuSsz.Residuals.Block800d697c.
 Local Open Scope Z_scope.
 
 Definition DesignedEntry_800d697c

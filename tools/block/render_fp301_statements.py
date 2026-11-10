@@ -243,7 +243,28 @@ def core_import_last(source):
     return "\n".join(lines)
 
 
-def render_caller(source):
+RESIDUALS = Path(__file__).resolve().parents[2] / "ZesuSsz/Residuals"
+
+
+def residual_import(source, residuals=RESIDUALS):
+    """Import the block's residual lemmas after the core import, when they exist.
+
+    Import is not transitive, so the caller keeps its solver bindings; the
+    residual module only adds its exact lemmas to the `zesu_residual` hints.
+    """
+    match = re.search(r"^Lemma DesignedBoundary_(800d[0-9a-f]{4})\b", source, re.M)
+    if not match or not (Path(residuals) / ("Block" + match[1] + ".v")).is_file():
+        return source
+    line = "Require Import ZesuSsz.Residuals.Block" + match[1] + "."
+    lines = source.split("\n")
+    last = max(index for index, text in enumerate(lines) if text.startswith(("Require ", "From ")))
+    if lines[last] != CORE_IMPORT:
+        raise ValueError("A caller must end its imports with the core import.")
+    lines.insert(last + 1, line)
+    return "\n".join(lines)
+
+
+def render_caller(source, residuals=RESIDUALS):
     """Keep the canonical caller and select the second automation entry point."""
     if "::=" in source or "Ltac " in source:
         raise ValueError("A canonical caller cannot contain tactic overrides.")
@@ -251,9 +272,9 @@ def render_caller(source):
         raise ValueError("A canonical caller lacks its automation import.")
     if source.count("  zesu_block.\nQed.") != 1:
         raise ValueError("A canonical caller lacks its plain block proof.")
-    return core_import_last(source.replace("Require Import ZesuSsz.Automation.All.",
+    return residual_import(core_import_last(source.replace("Require Import ZesuSsz.Automation.All.",
                           CORE_IMPORT).replace(
-                              "  zesu_block.\nQed.", "  zesu_block2.\nQed."))
+                              "  zesu_block.\nQed.", "  zesu_block2.\nQed.")), residuals)
 
 
 def render(inputs, output):
