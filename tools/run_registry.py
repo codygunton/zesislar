@@ -361,8 +361,13 @@ class Registry:
                 data = self.header()
                 row = self.load_row(data, run_id)
                 scheduler = row['scheduler']
-                if actor_key(scheduler) == actor_key(identity(os.getpid())):
+                caller = actor_key(identity(os.getpid()))
+                if actor_key(scheduler) == caller:
                     raise ValueError('The registry cannot stop its own caller.')
+                # A caller inside the run would freeze itself while it holds
+                # this lock. run_wall_stop.py stops such a run from outside.
+                if caller in {actor_key(a) for a in descendants([scheduler] + row['jobs'])}:
+                    raise ValueError('The registry cannot stop a run that contains its caller.')
                 row['status'] = 'stopping'
                 freeze_deadline = time.monotonic() + grace
                 while True:
