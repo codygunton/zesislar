@@ -253,18 +253,18 @@
       "exit_pc": "0x800d6a38",
       "entry": "ZesuSsz.Generated.DecodeItem.FP301.Pilot6a38Entries.fp_machineAt6a38",
       "precondition": "instr_pre 0x800d6a38 (ZesuSsz.Generated.DecodeItem.FP301.Pilot6a38Entries.fp_machineAt6a38 (args) (returnAddress) (K))%I",
-      "checked_by": "DesignedBoundary_800d6a24",
-      "output": "tools/block/generated/fp301_callers/Caller6a24.v",
-      "sha256": "f8db31c4260b2bbfc84f816f25d144705004e4069581cb7e18e66593c250b548"
+      "checked_by": "Fp301Boundary_800d6a24",
+      "output": "ZesuSsz/Proofs/DecodeItem/Fp301/Caller6a24.v",
+      "sha256": "b331164a3dee001ef5821e98dfd5108266b9237f5c3d5e66f4f4e7740203cb90"
     },
     {
       "loop_head": "0x800d6ac4",
       "exit_pc": "0x800d6ad8",
       "entry": "ZesuSsz.Generated.DecodeItem.FP301.Pilot6ad8Entries.fp_machineAt6ad8",
       "precondition": "instr_pre 0x800d6ad8 (ZesuSsz.Generated.DecodeItem.FP301.Pilot6ad8Entries.fp_machineAt6ad8 (args) (returnAddress) (K))%I",
-      "checked_by": "DesignedBoundary_800d6ac4",
-      "output": "tools/block/generated/fp301_callers/Caller6ac4.v",
-      "sha256": "d2365e2392a7c2fd86e3a6c956681592163abcb932894b5f31a7b182b1dbe739"
+      "checked_by": "Fp301Boundary_800d6ac4",
+      "output": "ZesuSsz/Proofs/DecodeItem/Fp301/Caller6ac4.v",
+      "sha256": "8337d0849a9fba675e351e247018ec181d8121189d10498da072e356771d8500"
     }
   ]
 }

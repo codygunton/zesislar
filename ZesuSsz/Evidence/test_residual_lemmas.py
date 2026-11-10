@@ -96,11 +96,11 @@ class ResidualPolicyTests(unittest.TestCase):
         return root
 
     MODULE = "Require Import ZesuSsz.Automation2.All.\n#[export] Hint Resolve residual_1234_ab : zesu_residual.\n"
-    CALLER = "Require Import ZesuSsz.Automation2.All.\nRequire Import ZesuSsz.Residuals.Block800d{b}.\nLemma DesignedBoundary_800d1234 : True.\n"
+    CALLER = "Require Import ZesuSsz.Automation2.All.\nRequire Import ZesuSsz.Residuals.Block800d{b}.\nLemma Fp301Boundary_800d1234 : True.\n"
 
     def test_own_caller_may_import(self):
         root = self.tree({"ZesuSsz/Residuals/Block800d1234.v": self.MODULE,
-                          "tools/block/generated/fp301_callers/Caller1234.v": self.CALLER.format(b="1234")})
+                          "ZesuSsz/Proofs/DecodeItem/Fp301/Caller1234.v": self.CALLER.format(b="1234")})
         self.assertEqual(residual_errors(root), [])
 
     def test_other_importers_and_hints_are_rejected(self):
@@ -108,8 +108,8 @@ class ResidualPolicyTests(unittest.TestCase):
             "ZesuSsz/Residuals/Block800d1234.v": self.MODULE + "#[export] Hint Resolve foo : core.\n",
             "ZesuSsz/Residuals/Block800d5678.v": self.MODULE.replace("1234", "5678"),
             "ZesuSsz/Proofs/P.v": "Require Import ZesuSsz.Residuals.Block800d1234.\n",
-            "tools/block/generated/fp301_callers/Caller1234.v": self.CALLER.format(b="5678"),
-            "tools/block/generated/fp301_callers/Caller9999.v": self.CALLER.format(b="9999"),
+            "ZesuSsz/Proofs/DecodeItem/Fp301/Caller1234.v": self.CALLER.format(b="5678"),
+            "ZesuSsz/Proofs/DecodeItem/Fp301/Caller9999.v": self.CALLER.format(b="9999"),
         })
         errors = "\n".join(residual_errors(root))
         self.assertIn("registers a hint other than", errors)
@@ -123,7 +123,7 @@ class ResidualPolicyTests(unittest.TestCase):
 
 class CallerImportTests(unittest.TestCase):
     SOURCE = ("Require Import ZesuSsz.Automation2.All.\nRequire Import ZesuSsz.Automation2.All.\n"
-              "Local Open Scope Z_scope.\nLemma DesignedBoundary_800d1234 : True.\n")
+              "Local Open Scope Z_scope.\nLemma Fp301Boundary_800d1234 : True.\n")
 
     def test_import_follows_the_core_when_the_module_exists(self):
         with tempfile.TemporaryDirectory() as root:

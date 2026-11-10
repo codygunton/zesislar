@@ -3,7 +3,7 @@
   "args_type": "DecodeItemArgs",
   "pc_prefix": "0x800d",
   "generated_directory": "ZesuSsz/Generated/DecodeItem/FP301",
-  "callers_directory": "tools/block/generated/fp301_callers",
+  "callers_directory": "ZesuSsz/Proofs/DecodeItem/Fp301",
   "contract_requires": [
     "Require Import ZesuSsz.Contracts.RlpDecodeItemContract.",
     "Require Export ZesuSsz.Contracts.DecodeItemDomainRanges.",

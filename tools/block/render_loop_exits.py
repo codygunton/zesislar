@@ -22,7 +22,7 @@ import argparse, hashlib, json, re, sys
 
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / 'tools/block'))
-from render_fp301_statements import render_block_caller, render_unfold_opacity
+from render_fp301_statements import BOUNDARY, render_block_caller, render_unfold_opacity
 from boundary_guards import BoundaryRefused, RocqContradictionCheck, alternative_facts, contradiction_source
 from function_profiles import load_profile, loop_header
 
@@ -188,7 +188,7 @@ def exit_obligations():
             source = head_caller_source(row['head'], row['pc'])
             rows.append({'loop_head': PROFILE.pc(row['head']), 'exit_pc': PROFILE.pc(row['pc']),
                          'entry': qualified_entry(row['pc']), 'precondition': exit_precondition(row['pc']),
-                         'checked_by': 'DesignedBoundary_' + PROFILE.pc(row['head'])[2:], 'output': output,
+                         'checked_by': BOUNDARY + PROFILE.pc(row['head'])[2:], 'output': output,
                          'sha256': hashlib.sha256(source.encode()).hexdigest(), 'source': source})
     return rows
 

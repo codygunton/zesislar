@@ -205,7 +205,7 @@ def manifest_errors(root: Path) -> tuple[list[str], int]:
 
 RESIDUAL_DIRECTORY = "ZesuSsz/Residuals"
 RESIDUAL_PREFIX = "ZesuSsz.Residuals."
-RESIDUAL_CALLERS = "tools/block/generated/fp301_callers"
+RESIDUAL_CALLERS = "ZesuSsz/Proofs/DecodeItem/Fp301"
 RESIDUAL_HINT = re.compile(r"\s*#\[export\]\s*Hint\s+Resolve\s+(residual_\w+)\s*:\s*zesu_residual\s*")
 
 
@@ -214,7 +214,7 @@ def residual_errors(root: Path) -> list[str]:
 
     A module ZesuSsz/Residuals/Block<addr>.v registers only exported
     `Hint Resolve residual_* : zesu_residual` hints. Only the block's own
-    generated caller imports it; no ZesuSsz source imports it.
+    generated caller in RESIDUAL_CALLERS imports it; no other ZesuSsz source imports it.
     """
     errors = []
     directory = root / RESIDUAL_DIRECTORY
@@ -234,7 +234,7 @@ def residual_errors(root: Path) -> list[str]:
                 errors.append(f"{name} registers a hint other than an exported residual lemma.")
     for path in sorted((root / "ZesuSsz").rglob("*.v")):
         importer = ".".join(path.relative_to(root).with_suffix("").parts)
-        if importer in modules:
+        if importer in modules or path.parent == root / RESIDUAL_CALLERS:
             continue
         text = path.read_text()
         for module in sorted(required_modules(text, "Import") | required_modules(text, "Export")):
@@ -243,7 +243,7 @@ def residual_errors(root: Path) -> list[str]:
     callers = root / RESIDUAL_CALLERS
     for path in sorted(callers.glob("*.v")) if callers.is_dir() else []:
         text = path.read_text()
-        boundary = re.search(r"^Lemma DesignedBoundary_(800d[0-9a-f]{4})\b", text, re.M)
+        boundary = re.search(r"^Lemma Fp301Boundary_(800d[0-9a-f]{4})\b", text, re.M)
         for module in sorted(imported_modules(text) | exported_modules(text)):
             if not module.startswith(RESIDUAL_PREFIX):
                 continue

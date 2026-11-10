@@ -238,6 +238,9 @@ def render_declaration(source, header, profile=None):
 
 
 CORE_IMPORT = "Require Import ZesuSsz.Automation2.All."
+# In-tree caller names. The October stack keeps DesignedBoundary/DesignedEntry.
+BOUNDARY = "Fp301Boundary_"
+ENTRY = "Fp301Entry_"
 
 
 def core_import_last(source):
@@ -289,23 +292,23 @@ def render_block_caller(profile, block, preconditions, imports):
             + profile.selected_import()
             + CORE_IMPORT + '\n'
             + 'Local Open Scope Z_scope.\n\n'
-            + 'Definition DesignedEntry_' + pc + '\n'
+            + 'Definition ' + ENTRY + pc + '\n'
             + '    `{!islaG Sigma} `{!threadG} (args : ' + profile.args_type
             + ') (returnAddress : Z) (K : iProp Sigma) : iProp Sigma :=\n'
             + '  ((' + entry + ' (args) (returnAddress) (K)) ∗\n'
             + '   True)%I.\n'
-            + 'Global Instance : LithiumUnfold (@DesignedEntry_' + pc + ') := I.\n'
-            + 'Global Typeclasses Opaque DesignedEntry_' + pc + '.\n\n'
-            + 'Lemma DesignedBoundary_' + pc + ' `{!islaG Sigma} `{!threadG} (args : '
+            + 'Global Instance : LithiumUnfold (@' + ENTRY + pc + ') := I.\n'
+            + 'Global Typeclasses Opaque ' + ENTRY + pc + '.\n\n'
+            + 'Lemma ' + BOUNDARY + pc + ' `{!islaG Sigma} `{!threadG} (args : '
             + profile.args_type + ') (returnAddress : Z) (K : iProp Sigma)  :\n'
             + premises
             + '  ' + profile.selected_premise() + ' -∗\n'
             + '  instr_body 0x' + pc + '\n'
-            + '    (DesignedEntry_' + pc + ' args returnAddress K).\n'
+            + '    (' + ENTRY + pc + ' args returnAddress K).\n'
             + 'Proof.\n'
             + '  zesu_block2.\n'
             + 'Qed.\n\n'
-            + 'Print Assumptions DesignedBoundary_' + pc + '.\n')
+            + 'Print Assumptions ' + BOUNDARY + pc + '.\n')
 
 
 RESIDUALS = Path(__file__).resolve().parents[2] / "ZesuSsz/Residuals"
@@ -317,7 +320,7 @@ def residual_import(source, residuals=RESIDUALS):
     Import is not transitive, so the caller keeps its solver bindings; the
     residual module only adds its exact lemmas to the `zesu_residual` hints.
     """
-    match = re.search(r"^Lemma DesignedBoundary_(800d[0-9a-f]{4})\b", source, re.M)
+    match = re.search(r"^Lemma " + BOUNDARY + r"(800d[0-9a-f]{4})\b", source, re.M)
     if not match or not (Path(residuals) / ("Block" + match[1] + ".v")).is_file():
         return source
     line = "Require Import ZesuSsz.Residuals.Block" + match[1] + "."
@@ -334,13 +337,15 @@ def residual_import(source, residuals=RESIDUALS):
 
 
 def render_caller(source, residuals=RESIDUALS):
-    """Keep the canonical caller and select the second automation entry point."""
+    """Keep the canonical caller, select the second automation entry point, and use the in-tree names."""
     if "::=" in source or "Ltac " in source:
         raise ValueError("A canonical caller cannot contain tactic overrides.")
     if source.count("Require Import ZesuSsz.Automation.All.") < 1:
         raise ValueError("A canonical caller lacks its automation import.")
     if source.count("  zesu_block.\nQed.") != 1:
         raise ValueError("A canonical caller lacks its plain block proof.")
+    source = re.sub(r"\bDesignedEntry_(?=800d)", ENTRY,
+                    re.sub(r"\bDesignedBoundary_(?=800d)", BOUNDARY, source))
     return residual_import(core_import_last(source.replace("Require Import ZesuSsz.Automation.All.",
                           CORE_IMPORT).replace(
                               "  zesu_block.\nQed.", "  zesu_block2.\nQed.")), residuals)

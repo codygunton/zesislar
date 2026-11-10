@@ -14,19 +14,19 @@ Require Import ZesuSsz.Automation2.All.
 Require Import ZesuSsz.Residuals.Block800d6960.
 Local Open Scope Z_scope.
 
-Definition DesignedEntry_800d6960
+Definition Fp301Entry_800d6960
     `{!islaG Sigma} `{!threadG} (args : DecodeItemArgs) (returnAddress : Z) (K : iProp Sigma) : iProp Sigma :=
   ((ZesuSsz.Generated.DecodeItem.FP301.Pilot6960Entries.fp_machineAt6960 (args) (returnAddress) (K)) ∗
    True)%I.
-Global Instance : LithiumUnfold (@DesignedEntry_800d6960) := I.
-Global Typeclasses Opaque DesignedEntry_800d6960.
+Global Instance : LithiumUnfold (@Fp301Entry_800d6960) := I.
+Global Typeclasses Opaque Fp301Entry_800d6960.
 
-Lemma DesignedBoundary_800d6960 `{!islaG Sigma} `{!threadG} (args : DecodeItemArgs) (returnAddress : Z) (K : iProp Sigma)   :
+Lemma Fp301Boundary_800d6960 `{!islaG Sigma} `{!threadG} (args : DecodeItemArgs) (returnAddress : Z) (K : iProp Sigma)   :
   instr_pre 0x800d6974 (ZesuSsz.Generated.DecodeItem.FP301.Pilot6974Entries.fp_machineAt6974 (args) (returnAddress) (K))%I -∗
   instr_pre 0x800d6ae0 (ZesuSsz.Generated.DecodeItem.FP301.Pilot6ae0Entries.fp_machineAt6ae0 (args) (returnAddress) (K))%I -∗
   decodeItemSelectedCode -∗
   instr_body 0x800d6960
-    (DesignedEntry_800d6960 args returnAddress K).
+    (Fp301Entry_800d6960 args returnAddress K).
 Proof.
   zesu_block2.
 Qed.
