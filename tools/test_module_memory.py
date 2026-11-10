@@ -181,6 +181,26 @@ class ModuleMemoryTests(unittest.TestCase):
             self.assertEqual(memory.main(), 0)
         self.assertEqual(observed.call_args.kwargs['fallback_bytes'], 64*memory.GIB)
 
+    def test_admission_cli_leaves_the_budget_to_ledger_confirm(self):
+        ledger = self.root / "LEDGER.json"
+        ledger.write_text('{"fixed_claims": {}, "region_claims": {}}\n')
+        for count, expected in ((1, ""), (48, "compiler_limit")):
+            output = io.StringIO()
+            with patch("sys.argv", ["module_memory.py", "admission", "--request-bytes", "1",
+                                   "--available-bytes", "1"]), \
+                    patch.object(memory, "reservation_claims", return_value={
+                        "claims": [memory.GIB] * count, "growth": [], "unrepresented_compilers": []}), \
+                    patch.object(memory, "current_projection") as projection, \
+                    patch.object(memory, "read_shell_bookings", return_value={}), \
+                    patch.dict(memory.os.environ, {"ZESU_CANONICAL_LEDGER": str(ledger),
+                                                 "ZESU_GATE_LOCK": str(self.root / "gate.lock")}), \
+                    redirect_stdout(output):
+                self.assertEqual(memory.main(), 0)
+            # One projection per launch, in ledger-confirm; none here.
+            projection.assert_not_called()
+            self.assertEqual(output.getvalue().split(";")[0].strip(),
+                             f"module memory: {expected}" if expected else "")
+
     def test_owned_loader_resolves_late_controller_booking_import(self):
         import os
         import subprocess

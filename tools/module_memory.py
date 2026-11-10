@@ -648,18 +648,13 @@ def main():
                 # A ledger bookkeeping error never fails a compile: hold this
                 # launch with the reason, and the guard retries admission.
                 unverified = str(error)
-            result = current_projection(args.request_bytes, args.available_bytes)
-        result['admitted'] = (result['fits'] and unverified is None
-                              and len(observed['claims']) < args.maximum_compilers)
-        result['reason'] = ('compiler_limit' if len(observed['claims']) >= args.maximum_compilers else
-                            'unverified_growth' if unverified is not None else 'memory_budget')
+        # The memory budget is checked once, by ledger-confirm under the same
+        # mutex hold. A second projection here cost a ledger pass per launch.
         if unverified is not None:
             print(f"module memory: unverified_growth; {unverified} "
                   f"Growth rows: {json.dumps(observed['growth'])}")
-        elif not result["admitted"]:
-            print(f"module memory: {result['reason']}; unrealized {result['requested_unrealized_bytes']} bytes, "
-                  f"available budget {result['budget_bytes']} bytes; total {result['requested_total_bytes']} bytes, "
-                  f"slice cap {result['slice_claim_cap_bytes']} bytes")
+        elif len(observed['claims']) >= args.maximum_compilers:
+            print(f"module memory: compiler_limit; {len(observed['claims'])} reservations")
     return 0
 
 
