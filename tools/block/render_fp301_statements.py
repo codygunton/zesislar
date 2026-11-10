@@ -9,14 +9,17 @@ from pathlib import Path
 from production_modules import statement as caller_statement
 from render_support import definition_introduction_source, unfold_declaration
 from return_exit import add_return_precondition, return_blocks, return_package
+from function_profiles import load_profile, return_header
 
 
-LOOP_HEAD_FIXTURE = Path(__file__).resolve().parent / 'fixtures/fp301-loop-heads.json'
+ROOT = Path(__file__).resolve().parents[2]
 
 
-def render_loop_head(block, header, structural=False):
+def render_loop_head(block, header, structural=False, profile=None):
     """Keep the source classes and frame the existing caller continuation."""
-    rows = json.loads(LOOP_HEAD_FIXTURE.read_text())['rows']
+    profile = profile or load_profile()
+    domain_binder = ' (domain : ' + profile.args_type + ' -> Prop)'
+    rows = json.loads((ROOT / profile['loop_head_fixture']).read_text())['rows']
     row = next((item for item in rows if item['block'] == block), None)
     if row is None:
         raise ValueError('No authenticated loop head exists: ' + block)
@@ -26,10 +29,10 @@ def render_loop_head(block, header, structural=False):
         original = 'generatedLoop' + block + 'Class' + str(index)
         name = 'fp_machineAt' + block + '_LoopClass' + str(index)
         assert source.startswith('Definition ' + original + ' ')
-        assert source.count('(domain : DecodeItemArgs -> Prop)') == 1
+        assert source.count(domain_binder.strip()) == 1
         assert source.count('⌜domain args⌝') == 1
         source = source.replace(original, name).replace(
-            ' (domain : DecodeItemArgs -> Prop)', '').replace(
+            domain_binder, '').replace(
             '⌜domain args⌝', '⌜' + row['domain'] + ' args⌝').replace(
             'ByteWindowFold.zesu_byte_window_fold',
             'ZesuSsz.Automation2.ByteWindowFold.zesu_byte_window_fold')
@@ -38,16 +41,15 @@ def render_loop_head(block, header, structural=False):
     name = 'fp_machineAt' + block
     alternatives = ' ∨ '.join(symbol + ' args returnAddress' for symbol, _ in definitions)
     definitions.append((name,
-        'Definition ' + name + ' `{!islaG Sigma} `{!threadG}'
-        ' (args : DecodeItemArgs) (returnAddress : Z) (K : iProp Sigma)'
+        'Definition ' + name + profile.telescope() + ' (K : iProp Sigma)'
         ' : iProp Sigma := ((' + alternatives + ') ∗ K)%I.\n'))
     extra = 'Require Import lithium.lvar.\nRequire Import ZesuSsz.Automation2.ByteWindowFold.\nRequire Import ZesuSsz.Contracts.LoopFoldStart.\n'
     output = header + extra
     if structural:
-        output += 'Require Import ZesuSsz.Generated.DecodeItem.FP301.Pilot' + block + 'Entries.\n'
+        output += 'Require Import ' + profile.qualified('Pilot' + block + 'Entries') + '.\n'
         for symbol, definition in definitions:
             output += unfold_declaration(symbol, instance_name=symbol + '_unfold', locality='export')
-            output += (first_pass_registration(symbol, authenticated_classes[symbol])
+            output += (first_pass_registration(symbol, authenticated_classes[symbol], profile)
                        if symbol in authenticated_classes else
                        definition_introduction_source(definition, symbol)) + '\n'
     else:
@@ -56,14 +58,19 @@ def render_loop_head(block, header, structural=False):
     return output
 
 
-def selected_loop_declaration(source, header):
+def selected_loop_declaration(source, header, profile=None):
     """Return a loop rendering only for its exact generated entry owner."""
-    match = re.search(r'\bDefinition fp_machineAt(6a24|6ac4)(?:_|\s)', source)
+    profile = profile or load_profile()
+    if not profile['loop_heads']:
+        return None
+    heads = '|'.join(re.escape(head) for head in profile['loop_heads'])
+    match = re.search(r'\bDefinition fp_machineAt(' + heads + r')(?:_|\s)', source)
     if match is None:
-        match = re.search(r'\bInstance fp_machineAt(6a24|6ac4)(?:_|\s)', source)
+        match = re.search(r'\bInstance fp_machineAt(' + heads + r')(?:_|\s)', source)
     if match is None:
         return None
-    return render_loop_head(match[1], header, structural='\nDefinition ' not in source)
+    return render_loop_head(match[1], header, structural='\nDefinition ' not in source,
+                            profile=profile)
 
 
 def render_unfold_opacity(source):
@@ -123,10 +130,16 @@ def conj_term(terms):
     return result
 
 
-def first_pass_registration(name, source):
-    """Render a proof term from the shared start theorem and entailment lemma."""
+def first_pass_registration(name, source, profile=None):
+    """Render a proof term from the shared start theorem and entailment lemma.
+
+    The count guard marker, the cursor base, and the start lemma are
+    function inputs (`loop_first_pass` in the function profile).
+    """
+    profile = profile or load_profile()
+    first_pass = profile['loop_first_pass']
     _, resources, facts = class_parts(source)
-    guard = next(f for f in facts[6:] if 'decodeItemInputLength args' in f)
+    guard = next(f for f in facts[6:] if first_pass['count_guard_marker'] in f)
     prefix = 'bv_zero_extend 128%N '
     begin = guard.index(prefix) + len(prefix)
     if guard[begin] != '(':
@@ -137,7 +150,7 @@ def first_pass_registration(name, source):
         if depth == 0:
             break
     count = guard[begin:end + 1]
-    base = '(decodeItemInputPointer args)'
+    base = first_pass['cursor_base']
     cursor = '(bv_add (Z_to_bv 64 ' + base + ') (BV 64 1))'
     endpoint = '(bv_add (Z_to_bv 64 ' + base + ') (bv_add ' + count + ' (BV 64 1)))'
     values = {'machine_x13': 'BV 64 0', 'machine_x15': cursor,
@@ -147,7 +160,7 @@ def first_pass_registration(name, source):
     initial_text = '(' + conjunction(initial) + ')%Z'
     invariant_text = '(' + conjunction(facts) + ')%Z'
     resource_text = '(' + ' ∗ '.join(resources) + ')%I'
-    telescope = ' `{!islaG Sigma} `{!threadG} (args : DecodeItemArgs) (returnAddress : Z)'
+    telescope = profile.telescope()
     resource_fun = '(fun (machine_x13 machine_x15 machine_x16 machine_x11 : bv 64) (i : lvar "zesuLoopIndex" Z) => ' + resource_text + ')'
     invariant_fun = '(fun (machine_x13 machine_x15 machine_x16 machine_x11 : bv 64) (i : lvar "zesuLoopIndex" Z) => ' + invariant_text + ')'
     domain, count_guard, positive = [projection('Hinitial', i) for i in range(3)]
@@ -160,7 +173,7 @@ def first_pass_registration(name, source):
     for i in range(len(facts[6:])):
         fields.append(projection('Hinitial', 3 + i) if i + 1 < len(facts[6:])
                       else '(proj2 ' + '(proj2 ' * (2 + i) + 'Hinitial' + ')' * (2 + i) + ')')
-    derive = ('(fun Hinitial => let Hstart := @loop_fold_start_from_complete_source_domain args returnAddress '
+    derive = ('(fun Hinitial => let Hstart := @' + first_pass['start_lemma'] + ' args returnAddress '
               + cursor + ' ' + endpoint + ' ' + count + ' (BV 64 0) '
               + domain + ' eq_refl eq_refl ' + count_guard + ' ' + positive + ' eq_refl in '
               + 'match Hstart with conj Hzero (conj Hnonnegative (conj Hcursor (conj Hendpoint Hfold))) => '
@@ -208,9 +221,9 @@ def render_entry_registers(source):
     return source
 
 
-def render_declaration(source, header):
+def render_declaration(source, header, profile=None):
     """Keep the bound declaration body and render its core-free header."""
-    selected = selected_loop_declaration(source, header)
+    selected = selected_loop_declaration(source, header, profile)
     if selected is not None:
         return selected
     boundary = "Local Open Scope Z_scope.\n"
@@ -241,6 +254,55 @@ def core_import_last(source):
     if lines[last] != CORE_IMPORT:
         lines.insert(last + 1, CORE_IMPORT)
     return "\n".join(lines)
+
+
+def successor_precondition(profile, suffix):
+    """Return the `instr_pre` premise that a successor block's entry owns."""
+    entry = profile.qualified('Pilot' + suffix + 'Entries', 'fp_machineAt' + suffix)
+    return 'instr_pre ' + profile.pc(suffix) + ' (' + entry + ' (args) (returnAddress) (K))%I'
+
+
+def return_precondition(profile):
+    """Return the `instr_pre` premise of the function-return package."""
+    return ('instr_pre returnAddress ('
+            + profile.qualified('FunctionReturnEntries', 'fp_machineReturn')
+            + ' args returnAddress K)')
+
+
+def render_block_caller(profile, block, preconditions, imports):
+    """Render one block caller from its entry, its exit premises and the selected code.
+
+    The statement is declarations data; the proof is always `zesu_block2.`.
+    """
+    pc = profile.pc(block)[2:]
+    entry = profile.qualified('Pilot' + block + 'Entries', 'fp_machineAt' + block)
+    premises = ''.join('  ' + premise + ' -∗\n' for premise in preconditions)
+    return (''.join('Require Import ' + module + '.\n' for module in imports)
+            + CORE_IMPORT + '\n'
+            + 'Require Import isla.riscv64.riscv64.\n'
+            + 'From Coq Require Import Lists.List ZArith.ZArith NArith.NArith.\n'
+            + 'Require Import stdpp.bitvector.definitions.\n'
+            + ''.join(line + '\n' for line in profile['caller_contract_requires'])
+            + profile.selected_import()
+            + CORE_IMPORT + '\n'
+            + 'Local Open Scope Z_scope.\n\n'
+            + 'Definition DesignedEntry_' + pc + '\n'
+            + '    `{!islaG Sigma} `{!threadG} (args : ' + profile.args_type
+            + ') (returnAddress : Z) (K : iProp Sigma) : iProp Sigma :=\n'
+            + '  ((' + entry + ' (args) (returnAddress) (K)) ∗\n'
+            + '   True)%I.\n'
+            + 'Global Instance : LithiumUnfold (@DesignedEntry_' + pc + ') := I.\n'
+            + 'Global Typeclasses Opaque DesignedEntry_' + pc + '.\n\n'
+            + 'Lemma DesignedBoundary_' + pc + ' `{!islaG Sigma} `{!threadG} (args : '
+            + profile.args_type + ') (returnAddress : Z) (K : iProp Sigma)  :\n'
+            + premises
+            + '  ' + profile.selected_premise() + ' -∗\n'
+            + '  instr_body 0x' + pc + '\n'
+            + '    (DesignedEntry_' + pc + ' args returnAddress K).\n'
+            + 'Proof.\n'
+            + '  zesu_block2.\n'
+            + 'Qed.\n\n'
+            + 'Print Assumptions DesignedBoundary_' + pc + '.\n')
 
 
 RESIDUALS = Path(__file__).resolve().parents[2] / "ZesuSsz/Residuals"
@@ -282,14 +344,16 @@ def render(inputs, output):
     callers = json.loads(read_bound(inputs["callers"]))
     declarations = json.loads(read_bound(inputs["declarations"]))
     source = read_bound(inputs["return_source"])
+    profile = load_profile(inputs.get("function"))
     closed_cases = inputs["closed_cases"]
-    if len(closed_cases) != 10 or len(set(closed_cases)) != 10:
-        raise ValueError("The preservation gate needs the ten distinct closed cases.")
+    count = profile.get("closed_cases_count", 0)
+    if len(closed_cases) != count or len(set(closed_cases)) != count:
+        raise ValueError("The preservation gate needs the distinct closed cases of the profile.")
     if not set(closed_cases) <= {row["case"] for row in callers["rows"]}:
         raise ValueError("A closed case has no authenticated caller statement.")
     returns = return_blocks(design)
     parameters = [
-        {"name": "args", "type": "DecodeItemArgs"},
+        {"name": "args", "type": profile.args_type},
         {"name": "returnAddress", "type": "Z"},
         {"name": "K", "type": "iProp Sigma"},
     ]
@@ -301,12 +365,11 @@ def render(inputs, output):
     prepared = []
     for row in callers["rows"]:
         text = read_bound(row["caller"])
-        pc = int("800d" + row["case"], 16)
+        pc = int(profile.pc(row["case"]), 16)
         name = "DesignedBoundary_" + format(pc, "x")
         original = caller_statement(text, name)
         application = (
-            "ZesuSsz.Generated.DecodeItem.FP301.FunctionReturnEntries."
-            + symbol + " args returnAddress K"
+            profile.qualified("FunctionReturnEntries", symbol) + " args returnAddress K"
         )
         changed = pc in returns
         rendered = (
@@ -324,23 +387,15 @@ def render(inputs, output):
         read_bound(row)
     output = Path(output)
     output.mkdir(exist_ok=False)
-    directory = output / "sources/ZesuSsz/Generated/DecodeItem/FP301"
+    directory = output / "sources" / profile.generated_directory
     directory.mkdir(parents=True)
-    header = """(* Generated from the authenticated function-return resource package. *)
-Require Import isla.riscv64.riscv64.
-From Coq Require Import Lists.List ZArith.ZArith NArith.NArith.
-Require Import ZesuSsz.Contracts.RlpDecodeItemContract.
-Require Export ZesuSsz.Contracts.DecodeItemDomainRanges.
-Require Import ZesuSsz.Contracts.RlpDecodeItem.
-Require ZesuSsz.Automation.Hooks.
-Local Open Scope Z_scope.
-"""
+    header = return_header(profile)
     entry = directory / "FunctionReturnEntries.v"
     entry.write_text(header + "\n" + definition)
     structural = directory / "FunctionReturnStructural.v"
     structural.write_text(
         header
-        + "Require Import ZesuSsz.Generated.DecodeItem.FP301.FunctionReturnEntries.\n"
+        + "Require Import " + profile.qualified("FunctionReturnEntries") + ".\n"
         + unfold_declaration(symbol, instance_name=symbol + "_unfold", locality="export")
         + definition_introduction_source(definition, symbol)
     )
@@ -354,8 +409,8 @@ Local Open Scope Z_scope.
         path.write_text(rendered)
         caller_source = read_bound(row["caller"]).replace(original, rendered, 1)
         if changed:
-            caller_source = ("Require Import ZesuSsz.Generated.DecodeItem.FP301.FunctionReturnStructural.\n"
-                             + caller_source)
+            caller_source = ("Require Import " + profile.qualified("FunctionReturnStructural")
+                             + ".\n" + caller_source)
         caller = caller_directory / ("Caller" + row["case"] + ".v")
         caller.write_text(render_caller(caller_source))
         rows.append({
@@ -367,11 +422,12 @@ Local Open Scope Z_scope.
             "changed": changed,
             "exit_kind": "function_return" if changed else "successor",
             "additional_imports": [
-                "ZesuSsz.Generated.DecodeItem.FP301.FunctionReturnStructural"
+                profile.qualified("FunctionReturnStructural")
             ] if changed else [],
         })
     result = {
         "status": "SOURCE_DECLARATIONS_ONLY",
+        "function": profile.name,
         "inputs": inputs,
         "function_return_blocks": [hex(pc) for pc in sorted(returns)],
         "return_preconditions": [
@@ -379,8 +435,8 @@ Local Open Scope Z_scope.
                 "entry_pc": hex(pc),
                 "return_instruction_pc": returns[pc]["return_clause"]["return_instruction_pc"],
                 "address": "returnAddress",
-                "package": "ZesuSsz.Generated.DecodeItem.FP301.FunctionReturnEntries."
-                           + symbol + " args returnAddress K",
+                "package": profile.qualified("FunctionReturnEntries", symbol)
+                           + " args returnAddress K",
             }
             for pc in sorted(returns)
         ],

@@ -111,6 +111,14 @@ def cache_provenance(row, declarations):
     return declared or recorded or {"mode": "unknown", "authority": "Legacy result has no cache provenance."}
 
 
+def booking_peak(row):
+    """Book a gate from its anonymous peak when sampled: memory.peak counts page cache."""
+    anon = row.get("aggregate_anon_peak_bytes")
+    if type(anon) is int and 0 < anon <= row["aggregate_peak_bytes"]:
+        return anon
+    return row["aggregate_peak_bytes"]
+
+
 def select_peak(history, target, *, claim_ceiling_bytes=0, physical_fence_bytes=120 * 1024**3, expected_identity=None):
     """Use only completed matching uncached gates for measured admission."""
     if target not in TARGETS:
@@ -135,7 +143,7 @@ def select_peak(history, target, *, claim_ceiling_bytes=0, physical_fence_bytes=
         selected, provenance = max(rows, key=lambda item: item[0]["aggregate_peak_bytes"])
         return {"reason": "largest_uncached_matching_gate_peak", "measurement": selected,
                 "measurement_provenance": provenance,
-                "claim_bytes": measurement_claim(physical_fence_bytes, selected["aggregate_peak_bytes"],
+                "claim_bytes": measurement_claim(physical_fence_bytes, booking_peak(selected),
                                                   completed=True, matching=True)}
     return {"reason": "full_physical_fence", "measurement": None,
             "claim_bytes": max(claim_ceiling_bytes, measurement_claim(physical_fence_bytes)),
@@ -313,16 +321,22 @@ def inside(out):
     aggregate = Path("/sys/fs/cgroup").joinpath(*parts[:index + 1])
     save(out / "BATCH.json", {"actors": [identity(os.getpid())], "aggregate_paths": [str(aggregate)]})
     started = time.monotonic()
+    from gate_exit_peaks import AnonymousPeak, sample
+    anonymous = AnonymousPeak(aggregate)
+    anonymous.start()
     try:
         return subprocess.run(request["command"], cwd=request["workspace"],
                               env=gate_environment(os.environ), check=False).returncode
     finally:
+        anon_peak = anonymous.stop()
         cpu = dict(line.split() for line in (aggregate / "cpu.stat").read_text().splitlines())
-        from gate_exit_peaks import sample
-        measured = sample(aggregate, request, identity(os.getpid()))
-        save(out / "METRICS.json", {"guard_exit": measured, "aggregate_peak_bytes": measured["memory_peak_bytes"],
-              "CPU_seconds": int(cpu["usage_usec"]) / 1e6, "aggregate_wall_seconds": time.monotonic() - started,
-              "measurement_scope": "Complete owned stock aggregate before guard cleanup."})
+        measured = sample(aggregate, request, identity(os.getpid()), anon_peak_bytes=anon_peak)
+        metrics = {"guard_exit": measured, "aggregate_peak_bytes": measured["memory_peak_bytes"],
+                   "CPU_seconds": int(cpu["usage_usec"]) / 1e6, "aggregate_wall_seconds": time.monotonic() - started,
+                   "measurement_scope": "Complete owned stock aggregate before guard cleanup."}
+        if anon_peak:
+            metrics["aggregate_anon_peak_bytes"] = anon_peak
+        save(out / "METRICS.json", metrics)
 
 
 def gate_environment(environment):

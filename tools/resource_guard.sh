@@ -599,14 +599,22 @@ recover_dead_reservation() {
 }
 
 # An admitted launch keeps its slot until its owner or compiler exits.
+recover_stale_reservations() {
+  if [[ -e /proc/$BASHPID/fd/7 && /proc/$BASHPID/fd/7 -ef "$GATE_MUTEX" ]]; then
+    ZESU_GUARD_MUTEX_FD=7 python3 "$MEMORY_TOOL" ledger-recover-stale --all >/dev/null
+  else
+    env -u ZESU_GUARD_MUTEX_FD python3 "$MEMORY_TOOL" ledger-recover-stale --all >/dev/null
+  fi
+}
+
 live_reservations() {
   local marker owner child
   # Older pinned guards can remove a token without releasing its ledger claim.
   # Enumerate the ledger too. Recovery keeps live owners and populated scopes.
-  if [[ -e /proc/$BASHPID/fd/7 && /proc/$BASHPID/fd/7 -ef "$GATE_MUTEX" ]]; then
-    ZESU_GUARD_MUTEX_FD=7 python3 "$MEMORY_TOOL" ledger-recover-stale --all >/dev/null || return $?
-  else
-    env -u ZESU_GUARD_MUTEX_FD python3 "$MEMORY_TOOL" ledger-recover-stale --all >/dev/null || return $?
+  # One confirmation runs the recovery once under its mutex hold
+  # (STALE_RECOVERED), not once per admission check.
+  if [ -z "${STALE_RECOVERED:-}" ]; then
+    recover_stale_reservations || return $?
   fi
   for marker in "$COQC_RESERVATIONS"/*; do
     [ -e "$marker" ] || continue
@@ -963,6 +971,11 @@ confirm_coqc() {
       echo "resource guard: confirmation refused by gate lock: $holder" >&2
       flock -u 7; exec 7>&-; return 3
     fi
+    recover_stale_reservations || {
+      status=$?; echo "resource guard: stale reservation recovery failed ($status)" >&2
+      flock -u 7; exec 7>&-; return "$status"
+    }
+    local STALE_RECOVERED=1
     reason=$(hold_reason no-lock) || {
       status=$?; echo "resource guard: confirmation resource check failed ($status)" >&2
       flock -u 7; exec 7>&-; return "$status"

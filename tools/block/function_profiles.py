@@ -1,0 +1,118 @@
+"""Per-function inputs of the FP301 block renderers.
+
+A profile names everything that differs between functions: the argument
+type, the contract modules, the selected-code premise, the output module
+directory, the domain fact, the block list, and the loop inputs. The
+renderers keep their structure; they read these values from the profile.
+A profile holds declarations data only. It never holds a proof script.
+"""
+import json
+from pathlib import Path
+
+PROFILE_DIRECTORY = Path(__file__).resolve().parent / 'functions'
+DEFAULT_FUNCTION = 'decodeItem'
+
+REQUIRED = [
+    'function', 'args_type', 'pc_prefix', 'generated_directory', 'callers_directory',
+    'contract_requires', 'loop_contract_requires', 'selected_code', 'domain_component',
+    'blocks', 'loop_heads',
+]
+
+
+class FunctionProfile:
+    """Read-only view of one function's renderer inputs."""
+
+    def __init__(self, data, path=None):
+        missing = [key for key in REQUIRED if key not in data]
+        if missing:
+            raise ValueError('The function profile lacks: ' + ', '.join(missing))
+        self.data = data
+        self.path = path
+
+    def __getitem__(self, key):
+        return self.data[key]
+
+    def get(self, key, default=None):
+        return self.data.get(key, default)
+
+    @property
+    def name(self):
+        return self.data['function']
+
+    @property
+    def args_type(self):
+        return self.data['args_type']
+
+    @property
+    def generated_directory(self):
+        return self.data['generated_directory']
+
+    @property
+    def generated_module(self):
+        return '.'.join(Path(self.data['generated_directory']).parts)
+
+    def pc(self, suffix):
+        """Return the address string of a block suffix, for example 0x800d6960."""
+        return self.data['pc_prefix'] + suffix
+
+    def qualified(self, module, symbol=None):
+        result = self.generated_module + '.' + module
+        return result if symbol is None else result + '.' + symbol
+
+    def telescope(self):
+        return ' `{!islaG Sigma} `{!threadG} (args : ' + self.args_type + ') (returnAddress : Z)'
+
+    def selected_import(self):
+        return 'Require Import ' + self.data['selected_code']['module'] + '.\n'
+
+    def selected_premise(self):
+        return self.data['selected_code']['premise']
+
+
+def load_profile(name=None):
+    """Load a profile by function name or by path. No name means decodeItem."""
+    if name is None:
+        name = DEFAULT_FUNCTION
+    path = Path(name)
+    if not path.suffix:
+        path = PROFILE_DIRECTORY / (name + '.json')
+    return FunctionProfile(json.loads(path.read_text()), path)
+
+
+def _lines(rows):
+    return ''.join(row + '\n' for row in rows)
+
+
+def pilot_header(profile):
+    """Header of the forward-pass entry declarations."""
+    return ('(* Generated from FP-20261102-Level1-domain-v1. No proof script. *)\n'
+            'Require ZesuSsz.Automation.Hooks.\n'
+            'Require Import isla.riscv64.riscv64.\n'
+            'From Coq Require Import Lists.List ZArith.ZArith NArith.NArith.\n'
+            'Require Import stdpp.bitvector.definitions.\n'
+            + _lines(profile['contract_requires'])
+            + 'Require Import ZesuSsz.Contracts.Level1.\n'
+            'Local Open Scope Z_scope.\n')
+
+
+def return_header(profile):
+    """Header of the function-return package declarations."""
+    return ('(* Generated from the authenticated function-return resource package. *)\n'
+            'Require Import isla.riscv64.riscv64.\n'
+            'From Coq Require Import Lists.List ZArith.ZArith NArith.NArith.\n'
+            + _lines(profile['contract_requires'])
+            + 'Require ZesuSsz.Automation.Hooks.\n'
+            'Local Open Scope Z_scope.\n')
+
+
+def loop_header(profile):
+    """Header of the loop-derived successor and exit declarations."""
+    return ('(* Generated from FP-20261102-Level1-domain-v1. No proof script. *)\n'
+            'Require Import ZesuSsz.Automation2.All.\n'
+            'Require Import isla.riscv64.riscv64.\n'
+            'From Coq Require Import Lists.List ZArith.ZArith NArith.NArith.\n'
+            'Require Import stdpp.bitvector.definitions.\n'
+            + _lines(profile['loop_contract_requires'])
+            + 'Require Import ZesuSsz.Contracts.Level1.\n'
+            'Require Import ZesuSsz.Automation2.ByteWindowFold.\n'
+            'Local Open Scope Z_scope.\n')

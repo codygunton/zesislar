@@ -37,6 +37,16 @@ Ltac zesu_byte_array_lengths_extended :=
     cbn [length N.to_nat]).
 
 
+(* The base path does not rewrite the length of an updated list
+   (`length_insert` belongs to the extended path), and its solvers fail on
+   such a goal after a whole-context search (about 100 s per call in 6a40).
+   The base path refuses it, so the extended path runs at once. *)
+Ltac zesu_byte_array_base_solvable :=
+  lazymatch goal with
+  | |- context [length (insert _ _ _)] => fail 0
+  | _ => idtac
+  end.
+
 Ltac zesu_byte_array_lengths_if_enabled :=
-  first [solve [zesu_byte_array_lengths_base; solve [lia | bv_solve]] |
+  first [solve [zesu_byte_array_lengths_base; zesu_byte_array_base_solvable; solve [lia | bv_solve]] |
     zesu_byte_array_lengths_extended].

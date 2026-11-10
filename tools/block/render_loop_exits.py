@@ -12,43 +12,42 @@ facts prove False (boundary_guards guard 2). The loop-head caller of each
 exit states the exit entry as its exit precondition, so the loop-head block
 proof checks the exit obligation.
 
-Usage: render_loop_exits.py --coqc-args ARGS.json | --check
+Usage: render_loop_exits.py [--function NAME] --coqc-args ARGS.json | --check
+
+The design table, the bound and link spellings, and the output directory come
+from the function profile (`loop_exits` in tools/block/functions/NAME.json).
 """
 from pathlib import Path
 import argparse, hashlib, json, re, sys
 
 ROOT = Path(__file__).resolve().parents[2]
-FP301 = ROOT / 'ZesuSsz/Generated/DecodeItem/FP301'
-FIXTURE = ROOT / 'tools/block/fixtures/fp301-loop-successors.json'
 sys.path.insert(0, str(ROOT / 'tools/block'))
-from render_fp301_statements import render_unfold_opacity
+from render_fp301_statements import render_block_caller, render_unfold_opacity
 from boundary_guards import BoundaryRefused, RocqContradictionCheck, alternative_facts, contradiction_source
+from function_profiles import load_profile, loop_header
 
-HEAD_BOUND = '(bv_unsigned machine_x15 < bv_unsigned machine_x11)'
-EXIT_LINK = '(bv_unsigned machine_x15 = bv_unsigned machine_x11)'
+PROFILE = None
+FP301 = FIXTURE = HEAD_BOUND = EXIT_LINK = DESIGN = CALLERS = HEADER = SIGNATURE = None
 
-# Design table. `head` is the loop head whose class 0 is the invariant.
-# A row with `block` adds the register update and branch fact of that block.
-DESIGN = [
-    {'pc': '6a38', 'head': '6a24'},
-    {'pc': '6a40', 'head': '6a24', 'block': '6a38', 'update': ('x14', 'x13'), 'branch': ('ltu', 'x12', 'x14', False)},
-    {'pc': '6ad8', 'head': '6ac4'},
-    {'pc': '6b08', 'head': '6ac4', 'block': '6ad8', 'update': ('x14', 'x13'), 'branch': ('ltu', 'x12', 'x14', True)},
-]
 
-CALLERS = 'tools/block/generated/fp301_callers'
-HEADER = '''(* Generated from FP-20261102-Level1-domain-v1. No proof script. *)
-Require Import ZesuSsz.Automation2.All.
-Require Import isla.riscv64.riscv64.
-From Coq Require Import Lists.List ZArith.ZArith NArith.NArith.
-Require Import stdpp.bitvector.definitions.
-Require Import ZesuSsz.Contracts.RlpDecodeItemContract.
-Require Import ZesuSsz.Contracts.RlpDecodeItem.
-Require Import ZesuSsz.Contracts.Level1.
-Require Import ZesuSsz.Automation2.ByteWindowFold.
-Local Open Scope Z_scope.
-'''
-SIGNATURE = ' `{!islaG Sigma} `{!threadG} (args : DecodeItemArgs) (returnAddress : Z)'
+def configure(name=None):
+    """Bind the module values to one function profile."""
+    global PROFILE, FP301, FIXTURE, HEAD_BOUND, EXIT_LINK, DESIGN, CALLERS, HEADER, SIGNATURE
+    global FORWARD_BASE, WITNESS_EXCLUSION
+    PROFILE = load_profile(name)
+    exits = PROFILE['loop_exits']
+    FP301 = ROOT / PROFILE.generated_directory
+    FIXTURE = ROOT / exits['fixture']
+    HEAD_BOUND = exits['head_bound']
+    EXIT_LINK = exits['exit_link']
+    # Design table. `head` is the loop head whose class 0 is the invariant.
+    # A row with `block` adds the register update and branch fact of that block.
+    DESIGN = exits['design']
+    CALLERS = PROFILE['callers_directory']
+    HEADER = loop_header(PROFILE)
+    SIGNATURE = PROFILE.telescope()
+    FORWARD_BASE = exits['forward_base']
+    WITNESS_EXCLUSION = re.compile(exits['witness_exclusion'])
 
 
 def loop_class(head):
@@ -75,13 +74,13 @@ def strip_parens(term):
 # witnesses (mstatus seeds and per-instruction forward witnesses) that the
 # successor entries consume. They do not depend on the loop path, so the exit
 # entry keeps their binders and their facts.
-FORWARD_BASE = '3505afab5'
+FORWARD_BASE = WITNESS_EXCLUSION = None
 WITNESS = re.compile(r'\b(fp_seed_\w+|forward_witness_\w+)\b')
 
 
 def forward_declaration(pc):
     import subprocess
-    path = f'ZesuSsz/Generated/DecodeItem/FP301/Pilot{pc}Entries.v'
+    path = f'{PROFILE.generated_directory}/Pilot{pc}Entries.v'
     source = subprocess.run(['git', '-C', str(ROOT), 'show', FORWARD_BASE + ':' + path],
                             capture_output=True, text=True, check=True).stdout
     match = re.search(r'^Definition fp_machineAt' + pc + r'_ForwardA0N0' + re.escape(SIGNATURE) +
@@ -96,7 +95,7 @@ def carry_system_witnesses(row, body):
     names = re.findall(r'\((\w+) : bv 64\)', binders)
     carried = [name for name in names if WITNESS.fullmatch(name)]
     facts = [fact for fact in re.findall(r'⌜(.*?)⌝', forward_body)
-             if WITNESS.search(fact) and not re.search(r'machine_x\d+|decodeItem|\bi\b', fact)]
+             if WITNESS.search(fact) and not WITNESS_EXCLUSION.search(fact)]
     if not carried or not facts:
         raise ValueError('The forward declaration has no system witnesses: ' + row['pc'])
     prefix = '(∃ '
@@ -152,7 +151,7 @@ def structural_source(row, body):
     pc = row['pc']
     exit_name = f'fp_machineAt{pc}_LoopExit'
     return (HEADER
-            + f'Require Import ZesuSsz.Generated.DecodeItem.FP301.Pilot{pc}Entries.\n'
+            + f'Require Import {PROFILE.qualified("Pilot" + pc + "Entries")}.\n'
             + f'#[export] Instance {exit_name}_unfold : LithiumUnfold (@{exit_name}) := I.\n'
             + f'#[export] Typeclasses Opaque {exit_name}.\n'
             + f'#[export] Instance {exit_name}_intro{SIGNATURE} :\n'
@@ -166,48 +165,19 @@ def structural_source(row, body):
 
 
 def qualified_entry(pc):
-    return f'ZesuSsz.Generated.DecodeItem.FP301.Pilot{pc}Entries.fp_machineAt{pc}'
+    return PROFILE.qualified(f'Pilot{pc}Entries', f'fp_machineAt{pc}')
 
 
 def exit_precondition(pc):
-    return f'instr_pre 0x800d{pc} ({qualified_entry(pc)} (args) (returnAddress) (K))%I'
+    return f'instr_pre {PROFILE.pc(pc)} ({qualified_entry(pc)} (args) (returnAddress) (K))%I'
 
 
 def head_caller_source(head, exit_pc):
     """Render the loop-head caller whose exit precondition is the exit entry."""
-    pc = f'800d{head}'
-    return (f'''Require Import ZesuSsz.Generated.DecodeItem.FP301.Pilot{head}Entries.
-Require Import ZesuSsz.Generated.DecodeItem.FP301.Pilot{head}Structural.
-Require Import ZesuSsz.Generated.DecodeItem.FP301.Pilot{exit_pc}Entries.
-Require Import ZesuSsz.Generated.DecodeItem.FP301.Pilot{exit_pc}Structural.
-Require Import ZesuSsz.Automation2.All.
-Require Import isla.riscv64.riscv64.
-From Coq Require Import Lists.List ZArith.ZArith NArith.NArith.
-Require Import stdpp.bitvector.definitions.
-Require Import ZesuSsz.Contracts.RlpDecodeItemContract.
-Require Import ZesuSsz.Contracts.DecodeItemSelected.
-Require Import ZesuSsz.Automation2.All.
-Local Open Scope Z_scope.
-
-Definition DesignedEntry_{pc}
-    `{{!islaG Sigma}} `{{!threadG}} (args : DecodeItemArgs) (returnAddress : Z) (K : iProp Sigma) : iProp Sigma :=
-  (({qualified_entry(head)} (args) (returnAddress) (K)) ∗
-   True)%I.
-Global Instance : LithiumUnfold (@DesignedEntry_{pc}) := I.
-Global Typeclasses Opaque DesignedEntry_{pc}.
-
-Lemma DesignedBoundary_{pc} `{{!islaG Sigma}} `{{!threadG}} (args : DecodeItemArgs) (returnAddress : Z) (K : iProp Sigma)  :
-  {exit_precondition(head)} -∗
-  {exit_precondition(exit_pc)} -∗
-  decodeItemSelectedCode -∗
-  instr_body 0x{pc}
-    (DesignedEntry_{pc} args returnAddress K).
-Proof.
-  zesu_block2.
-Qed.
-
-Print Assumptions DesignedBoundary_{pc}.
-''')
+    imports = [PROFILE.qualified(f'Pilot{pc}{kind}') for pc in (head, exit_pc)
+               for kind in ('Entries', 'Structural')]
+    return render_block_caller(PROFILE, head, [exit_precondition(head), exit_precondition(exit_pc)],
+                               imports)
 
 
 def exit_obligations():
@@ -216,9 +186,9 @@ def exit_obligations():
         if 'block' not in row:
             output = f'{CALLERS}/Caller{row["head"]}.v'
             source = head_caller_source(row['head'], row['pc'])
-            rows.append({'loop_head': '0x800d' + row['head'], 'exit_pc': '0x800d' + row['pc'],
+            rows.append({'loop_head': PROFILE.pc(row['head']), 'exit_pc': PROFILE.pc(row['pc']),
                          'entry': qualified_entry(row['pc']), 'precondition': exit_precondition(row['pc']),
-                         'checked_by': 'DesignedBoundary_800d' + row['head'], 'output': output,
+                         'checked_by': 'DesignedBoundary_' + PROFILE.pc(row['head'])[2:], 'output': output,
                          'sha256': hashlib.sha256(source.encode()).hexdigest(), 'source': source})
     return rows
 
@@ -235,7 +205,9 @@ def main():
     group = parser.add_mutually_exclusive_group(required=True)
     group.add_argument('--check', action='store_true')
     group.add_argument('--coqc-args', type=Path)
+    parser.add_argument('--function', default=None, help='function profile (default: decodeItem)')
     options = parser.parse_args()
+    configure(options.function)
     fixture = json.loads(FIXTURE.read_text())
     rows = {row['output']: row for row in fixture['declarations']}
     outputs, checks = {}, []
@@ -245,7 +217,7 @@ def main():
         checks.append({'definition': name, 'binders': binders, 'facts': facts,
                        'check_sha256': check_sha256, 'contradictory': None})
         for kind, source in (('Entries', entries_source(row, body)), ('Structural', structural_source(row, body))):
-            output = f'ZesuSsz/Generated/DecodeItem/FP301/Pilot{row["pc"]}{kind}.v'
+            output = f'{PROFILE.generated_directory}/Pilot{row["pc"]}{kind}.v'
             if output not in rows:
                 raise ValueError('The fixture has no row for ' + output)
             committed = render_unfold_opacity(source) if kind == 'Structural' else source
@@ -267,7 +239,7 @@ def main():
         print('Loop-exit declarations match the design table.')
         return
     checker = RocqContradictionCheck(json.loads(options.coqc_args.read_text()), HEADER,
-                                     ROOT / '_build/agents/loop-exit-contradiction-checks')
+                                     ROOT / PROFILE['loop_exits']['contradiction_directory'])
     for check in checks:
         if checker(check['definition'], check['binders'], check['facts']):
             raise BoundaryRefused('The exit entry proves False and is refused: ' + check['definition'])
