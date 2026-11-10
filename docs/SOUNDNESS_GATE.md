@@ -23,7 +23,8 @@ The gate performs these stages:
 
 1. It builds both existing plugins, then the PUBLIC dependency closure.
 2. It compiles five isolated negative candidates and requires the expected checker refusals.
-3. It verifies the four protected PUBLIC statements and compiles four checker-owned typed wrappers.
+3. It verifies the four protected PUBLIC statements and compiles four checker-owned typed wrappers
+   (selected, registers, compositional, and the generated theorem).
 4. It runs recursive `coqchk` with the compiler recipe's supported load-path flags.
 
 The negative candidates cover `Admitted`, an extra axiom, installed `Coq.Compat.AdmitAxiom`, a wrong statement, and a doctored expected type.
@@ -37,7 +38,8 @@ The compiler uses its existing private artifact mapping.
 `coqchk` receives one exact load-path entry for that scratch object.
 The gate leaves no wrapper source in the production tree.
 
-The gate pins its PUBLIC sources and trust contexts to the reviewed `dbefab79` baseline.
+The gate pins its PUBLIC sources and trust contexts to the reviewed `81d3cd52` baseline,
+the switch of the PUBLIC theorems to the 24 generated block proofs (the earlier baseline was `dbefab79`).
 It refuses a changed protected source before proof work.
 A maintainer must review that boundary before updating the baseline.
 It verifies each PUBLIC source independently.
