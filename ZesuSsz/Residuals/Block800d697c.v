@@ -11,6 +11,7 @@ Require Import ZesuSsz.Generated.DecodeItem.FP301.Pilot697cStructural.
 Require Import ZesuSsz.Generated.DecodeItem.FP301.Pilot698cStructural.
 Require Import ZesuSsz.Generated.DecodeItem.FP301.Pilot698cEntries.
 Require Import ZesuSsz.Automation2.All.
+Require Import ZesuSsz.Compliance.DecodeItemMeaningPorted.
 Local Open Scope Z_scope.
 
 (* goal 697c-1: goal.v sha256 b38172ec4de8c5429e414e3311f2fe5097ce0381fc00f8924fc5bb948b54698f, proof.v sha256 b12dfa95fd1eefe4af01f2ac4b00bdfdd978cfbca9edd90d565167d7e999d8ca *)
@@ -144,3 +145,74 @@ first
   | (bv_simplify_arith HrangeFact1; bv_simplify_arith; lia) ].
 Qed.
 #[export] Hint Resolve residual_697c_d947757d82e37686 : zesu_residual.
+
+(* goal 697c-9: goal.v sha256 f75705a75f4c6e7837143c85c3e9142c389d8202388379706acc9eb6a7dbeee1, proof.v sha256 90abc2fb24866432316be05506c9716322dae3374570b90f4cf373d277e04576 *)
+Lemma residual_697c_b9612b8a2bbdb2d2 :
+  forall (args : DecodeItemArgs) (returnAddress : Z),
+  decodeItemDomainAt returnAddress decodeItemC1BDomain args ->
+  DecodeItemReturnFacts.decodeItemAcceptedFacts args false (bv_unsigned (Z_to_bv 64 (decodeItemInputPointer args)) - decodeItemInputPointer args) (bv_unsigned (BV 64 1) - (bv_unsigned (Z_to_bv 64 (decodeItemInputPointer args)) - decodeItemInputPointer args)) ->
+  bv_unsigned (List.nth 0%nat (decodeItemInputBytes args) (BV 8 0)) <> 128.
+Proof.
+intros args returnAddress [Hret Hdom] Hacc.
+unfold DecodeItemReturnFacts.decodeItemAcceptedFacts in Hacc.
+destruct Hacc as [Hcand _].
+intro Heq.
+revert Hcand Heq; generalize (decodeItemInputBytes args) as bs; intros bs Hcand Heq.
+destruct bs as [|prefix rest].
+- cbn [RlpDecodeItem.candidateDecodeItem] in Hcand. discriminate Hcand.
+- cbn [List.nth] in Heq.
+  cbn [RlpDecodeItem.candidateDecodeItem] in Hcand. rewrite Heq in Hcand. cbn in Hcand.
+  pose proof (f_equal (fun c => match c with RlpDecodeItem.candidateSuccess _ h _ => h | _ => 0 end) Hcand) as Hh.
+  pose proof (f_equal (fun c => match c with RlpDecodeItem.candidateSuccess _ _ q => q | _ => 1 end) Hcand) as Hp.
+  cbn in Hh, Hp.
+  assert (Hx : bv_unsigned (Z_to_bv 64 (decodeItemInputPointer args)) = decodeItemInputPointer args mod 2 ^ 64)
+    by first [ solve [ apply bv_unsigned_Z_to_bv ]
+             | solve [ apply Z_to_bv_unsigned ]
+             | solve [ cbv [Z_to_bv bv_wrap bv_unsigned]; reflexivity ]
+             | solve [ unfold Z_to_bv; reflexivity ]
+             | solve [ unfold Z_to_bv, bv_unsigned; reflexivity ] ].
+  assert (Hone : bv_unsigned (BV 64 1) = 1) by reflexivity.
+  rewrite Hone in Hp.
+  rewrite Hx in Hh.
+  lia.
+Qed.
+#[export] Hint Resolve residual_697c_b9612b8a2bbdb2d2 : zesu_residual.
+
+(* goal 697c-11: goal.v sha256 f640d2a8921d7bdf3c23aae29379321b5baf0ecb4133a4e70096efe23b8e779b, proof.v sha256 7bb622c8c6c6da55b69b586e74e53166bca3b15095199e208de7d95ed086a55a *)
+Lemma residual_697c_61b9df0f27671b97 :
+  forall (args : DecodeItemArgs) (returnAddress : Z),
+  (decodeItemDomainAt returnAddress decodeItemC1BDomain args) ->
+  (bv_unsigned (Z_to_bv 64 (decodeItemInputLength args)) ≠ 0) ->
+  (bv_unsigned (nth 0 (decodeItemInputBytes args) 0%bv) ≤ 127) ->
+  (DecodeItemReturnFacts.decodeItemAcceptedFacts args false (bv_unsigned (Z_to_bv 64 (decodeItemInputPointer args)) - decodeItemInputPointer args) (bv_unsigned (BV 64 1) - (bv_unsigned (Z_to_bv 64 (decodeItemInputPointer args)) - decodeItemInputPointer args))).
+Proof.
+intros args returnAddress Hdom Hlen Hbyte.
+destruct (ZesuSsz.Compliance.DecodeItemMeaningPorted.PortedSemanticIntroduction.decodeItemDomainNonemptyInputHead returnAddress args Hdom Hlen) as [prefix [rest Hhead]].
+assert (Hcast : bv_unsigned (Z_to_bv 64 (decodeItemInputPointer args)) = decodeItemInputPointer args).
+{ unfold decodeItemDomainAt in Hdom. destruct Hdom as [_ Hc1].
+  unfold decodeItemC1BDomain, decodeItemArgsWellFormed in Hc1.
+  destruct Hc1 as [_ [_ Hlay]].
+  first [unfold RlpDecodeItem.decodeItemEntryLayout in Hlay | unfold ZesuSsz.Contracts.RlpDecodeItem.decodeItemEntryLayout in Hlay | idtac].
+  repeat match goal with H : _ /\ _ |- _ => destruct H end.
+  first [bv_solve | (unfold Z_to_bv; bv_solve)]. }
+assert (Hsub : bv_unsigned (Z_to_bv 64 (decodeItemInputPointer args)) - decodeItemInputPointer args = 0) by lia.
+assert (H1 : bv_unsigned (BV 64 1) = 1) by (first [reflexivity | (cbv; reflexivity) | bv_solve]).
+rewrite Hsub.
+rewrite H1.
+rewrite Z.sub_0_r.
+assert (Hbyte' : bv_unsigned prefix <= 127).
+{ unfold ZesuSsz.Contracts.DecodeItemReturnFacts.decodeItemInputHead in Hhead. rewrite Hhead in Hbyte. simpl in Hbyte. exact Hbyte. }
+exact (ZesuSsz.Compliance.DecodeItemMeaningPorted.PortedSailIntroduction.decodeItemLiteralAccepted args prefix rest (proj2 Hdom) Hhead Hbyte').
+Qed.
+#[export] Hint Resolve residual_697c_61b9df0f27671b97 : zesu_residual.
+
+(* goal 697c-12: goal.v sha256 2139dd80d75f8206c80fb0145718b6ba35027035afbb218d13e6992c9c1cc129, proof.v sha256 42095776c057b73b94bb55c30a8a15bed5f801f430a752acf137be753ffccf46 *)
+Lemma residual_697c_de8d5b6ed0db2199 :
+  forall (args : DecodeItemArgs),
+  (bv_unsigned (nth 0 (decodeItemInputBytes args) 0%bv) ≤ 127) ->
+  (bv_unsigned (nth 0 (decodeItemInputBytes args) 0%bv) ≠ 128).
+Proof.
+intros args H Heq.
+lia.
+Qed.
+#[export] Hint Resolve residual_697c_de8d5b6ed0db2199 : zesu_residual.

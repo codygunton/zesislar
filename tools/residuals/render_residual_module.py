@@ -3,12 +3,18 @@
 
 Usage:
   render_residual_module.py --block 6960 --goals DIR [--manifest MANIFEST.json] --out FILE
+  render_residual_module.py --shared DecodeItemBridges --goals DIR --out FILE
 
 Each goal dir <blk>-<n>/ holds goal.v (the statement with a PROOF-SLOT) and
 proof.v (goal.v with the slot filled and one Qed.). The module text of each
 lemma is copied byte for byte from proof.v, from `Lemma` to `Qed.`. This
 tool writes declarations around the copies (imports, hint registrations); it
 never writes or edits proof text.
+
+The shared module ZesuSsz/Residuals/DecodeItemBridges.v holds bridge lemmas
+that several block modules use. It is rendered the same way from goal dirs
+named after their lemmas, with no hint registration: block modules name its
+lemmas in their proofs, and the residual tier never applies them.
 """
 import argparse
 import hashlib
@@ -55,7 +61,15 @@ def goal_ids(goals, block, manifest=None):
     return ids
 
 
-def read_goal(directory):
+SHARED = {"DecodeItemBridges": "decodeItem_bridge_"}
+SHARED_NAME = r"decodeItem_bridge_\w+"
+SHARED_LEMMA = re.compile(
+    r"\(\* goal (?P<goal>\w+): goal\.v sha256 (?P<goal_sha>[0-9a-f]{64}), "
+    r"proof\.v sha256 (?P<proof_sha>[0-9a-f]{64}) \*\)\n"
+    r"(?P<body>Lemma (?P<name>" + SHARED_NAME + r") :\n.*?\nProof\.\n.*?Qed\.)\n", re.S)
+
+
+def read_goal(directory, lemma_prefix="residual_"):
     """Return (header lines, lemma text, goal sha, proof sha) of one goal dir."""
     goal_path, proof_path = directory / "goal.v", directory / "proof.v"
     goal, proof = goal_path.read_text(), proof_path.read_text()
@@ -69,9 +83,9 @@ def read_goal(directory):
         raise RenderError("%s: proof.v uses a forbidden command." % directory.name)
     if rest.count("Qed.") != 1 or not rest.rstrip().endswith("Qed."):
         raise RenderError("%s: proof.v must end with exactly one Qed." % directory.name)
-    start = head.find("\nLemma residual_")
+    start = head.find("\nLemma " + lemma_prefix)
     if start < 0:
-        raise RenderError("%s: goal.v has no residual lemma." % directory.name)
+        raise RenderError("%s: goal.v has no %s lemma." % (directory.name, lemma_prefix))
     lemma = proof[start + 1:].rstrip()
     imports = []
     for line in head[:start].splitlines():
@@ -138,14 +152,30 @@ def parse_module(text):
     return block, header, rows
 
 
+def merged_header(header, imports, goal):
+    """One import list for the block: goals may add imports before Local Open Scope.
+
+    Each goal's imports must be the shared list with extra lines inserted, so
+    the module's header is the union in order. Every copied proof is then
+    checked again in that context when the module compiles.
+    """
+    def body(lines):
+        return [line for line in lines if not line.startswith("Local Open Scope")]
+    longer, shorter = (imports, header) if len(imports) >= len(header) else (header, imports)
+    rest = iter(body(longer))
+    if not all(any(line == other for other in rest) for line in body(shorter)):
+        raise RenderError("%s: its imports conflict with the block's other goals." % goal)
+    return longer
+
+
 def render_from_goals(block, goals, manifest=None):
     header, rows = None, []
+    own = "Require Import ZesuSsz.Residuals.%s." % module_name(block)
     for goal in goal_ids(goals, block, manifest):
         imports, lemma, goal_sha, proof_sha = read_goal(Path(goals) / goal)
-        if header is None:
-            header = imports
-        elif imports != header:
-            raise RenderError("%s: its imports differ from the block's other goals." % goal)
+        # A caller imports its own residual module; the module cannot import itself.
+        imports = [line for line in imports if line != own]
+        header = imports if header is None else merged_header(header, imports, goal)
         name = re.match(r"Lemma (\S+)", lemma)[1]
         if not re.fullmatch(NAME, name) or not name.startswith("residual_%s_" % block):
             raise RenderError("%s: unexpected lemma name %s." % (goal, name))
@@ -186,20 +216,88 @@ def pin_shared_modules(header, rows, shared=None):
     return header[:at] + pins + header[at:]
 
 
+def render_shared_module(header, lemmas):
+    out = [GENERATED, "\n".join(header), "\n"]
+    for row in lemmas:
+        out.append("\n(* goal %s: goal.v sha256 %s, proof.v sha256 %s *)\n%s\n"
+                   % (row["goal"], row["goal_sha"], row["proof_sha"], row["body"]))
+    return "".join(out)
+
+
+def parse_shared_module(text):
+    """Split the shared module into (header lines, lemma rows); raise on any other shape."""
+    if not text.startswith(GENERATED):
+        raise RenderError("The module lacks the generated header.")
+    header_text, sep, body = text[len(GENERATED):].partition("\n\n")
+    if not sep:
+        raise RenderError("The module has no lemmas.")
+    header = header_text.split("\n")
+    for line in header:
+        if not HEADER_LINE.match(line) or OLD_CORE.search(line) or ".Residuals." in line:
+            raise RenderError("Invalid header line: %s" % line)
+    rows, position = [], 0
+    while position < len(body):
+        match = SHARED_LEMMA.match(body, position)
+        if not match:
+            raise RenderError("Invalid lemma block at offset %d." % position)
+        proof = match["body"].split("\nProof.\n", 1)[1]
+        if FORBIDDEN.search(proof) or proof.count("Qed.") != 1:
+            raise RenderError("Invalid proof of %s." % match["name"])
+        rows.append(dict(goal=match["goal"], goal_sha=match["goal_sha"], proof_sha=match["proof_sha"],
+                         name=match["name"], body=match["body"]))
+        position = match.end()
+        if position < len(body):
+            if body[position] != "\n":
+                raise RenderError("Lemma blocks must be separated by one blank line.")
+            position += 1
+    if not rows:
+        raise RenderError("The module has no lemmas.")
+    if len({row["name"] for row in rows}) != len(rows):
+        raise RenderError("A lemma name repeats.")
+    if render_shared_module(header, rows) != text:
+        raise RenderError("The module does not round-trip through the renderer.")
+    return header, rows
+
+
+def render_shared_from_goals(shared, goals):
+    if shared not in SHARED:
+        raise RenderError("Unknown shared module %s." % shared)
+    prefix = SHARED[shared]
+    header, rows = None, []
+    dirs = sorted(p for p in Path(goals).iterdir() if p.is_dir() and (p / "goal.v").exists())
+    if not dirs:
+        raise RenderError("No goal dirs in %s." % goals)
+    for directory in dirs:
+        imports, lemma, goal_sha, proof_sha = read_goal(directory, prefix)
+        header = imports if header is None else merged_header(header, imports, directory.name)
+        name = re.match(r"Lemma (\S+)", lemma)[1]
+        if not re.fullmatch(SHARED_NAME, name) or name != prefix + directory.name:
+            raise RenderError("%s: the lemma must be named %s%s." % (directory.name, prefix, directory.name))
+        rows.append(dict(goal=directory.name, goal_sha=goal_sha, proof_sha=proof_sha, name=name, body=lemma))
+    text = render_shared_module(header, rows)
+    parse_shared_module(text)
+    return text
+
+
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument("--block", required=True)
+    group = ap.add_mutually_exclusive_group(required=True)
+    group.add_argument("--block")
+    group.add_argument("--shared")
     ap.add_argument("--goals", required=True)
     ap.add_argument("--manifest")
     ap.add_argument("--out", required=True)
     a = ap.parse_args()
     try:
-        text = render_from_goals(a.block, a.goals, a.manifest)
+        if a.shared:
+            text = render_shared_from_goals(a.shared, a.goals)
+        else:
+            text = render_from_goals(a.block, a.goals, a.manifest)
     except RenderError as error:
         sys.exit("render_residual_module: %s" % error)
     Path(a.out).parent.mkdir(parents=True, exist_ok=True)
     Path(a.out).write_text(text)
-    print("wrote %s (%d lemmas)" % (a.out, text.count("#[export] Hint Resolve")))
+    print("wrote %s (%d lemmas)" % (a.out, text.count("\nLemma ")))
 
 
 if __name__ == "__main__":

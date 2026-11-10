@@ -11,6 +11,8 @@ Require Import ZesuSsz.Generated.DecodeItem.FP301.Pilot69e8Structural.
 Require Import ZesuSsz.Generated.DecodeItem.FP301.Pilot698cStructural.
 Require Import ZesuSsz.Generated.DecodeItem.FP301.Pilot698cEntries.
 Require Import ZesuSsz.Automation2.All.
+Require Import ZesuSsz.Compliance.DecodeItemMeaningPorted.
+Require Import ZesuSsz.Residuals.DecodeItemBridges.
 Local Open Scope Z_scope.
 
 (* goal 69e8-1: goal.v sha256 7dbfdbb08573d5e965af42ed566b99105a00140abc7e4b48e18040bc5b5a2dd4, proof.v sha256 308ee9c7fb56f4c68acfe4bc6f09da876e306836cb4e4ac6ca745fb220944ace *)
@@ -113,3 +115,53 @@ bv_simplify HrangeFact1.
 bv_solve.
 Qed.
 #[export] Hint Resolve residual_69e8_d947757d82e37686 : zesu_residual.
+
+(* goal 69e8-9: goal.v sha256 846f892fadf785cedfa6d12ff23705c724a24097620e448f3baa565b49dc3dc9, proof.v sha256 4fc96ae2d19f5adfcdd141a3a55703a33ef06a6c1a5322d72e5cd0020e548ceb *)
+Lemma residual_69e8_198afe4c68b33331 :
+  forall (args : DecodeItemArgs),
+  (decodeItemDomainAt (decodeItemReturnAddress args) decodeItemC1BDomain args) ->
+  (bv_unsigned (Z_to_bv 64 (decodeItemInputLength args)) ≠ 0) ->
+  (128 ≤ bv_unsigned (nth 0 (decodeItemInputBytes args) 0%bv)) ->
+  (bv_unsigned (nth 0 (decodeItemInputBytes args) 0%bv) ≤ 183) ->
+  (bv_unsigned (nth 0 (decodeItemInputBytes args) 0%bv) ≠ 128) ->
+  (bv_unsigned (nth 0 (decodeItemInputBytes args) 0%bv) - 128 < bv_unsigned (Z_to_bv 64 (decodeItemInputLength args))) ->
+  (0 ≤ decodeItemInputLength args < bv_modulus 64) ->
+  (0 ≤ decodeItemInputPointer args < bv_modulus 64) ->
+  (DecodeItemReturnFacts.decodeItemAcceptedFacts args false (bv_unsigned (Z_to_bv 64 (decodeItemInputPointer args) + 1) - decodeItemInputPointer args) (bv_unsigned (bv_and (bv_and (bv_sign_extend 64 (nth 0 (decodeItemInputBytes args) 0%bv)) 255) 127 + 1) - (bv_unsigned (Z_to_bv 64 (decodeItemInputPointer args) + 1) - decodeItemInputPointer args))).
+Proof.
+intros args H0 H18 H22 H23 H31 H43 Hd5 Hd6.
+assert (H0c := H0).
+destruct H0 as [_ Hdom].
+assert (Hdom2 : decodeItemC1BDomain args) by exact Hdom.
+unfold decodeItemC1BDomain, decodeItemArgsWellFormed in Hdom.
+destruct Hdom as [Hlen [_ Hlay]].
+unfold RlpDecodeItem.decodeItemEntryLayout in Hlay.
+assert (Hbl : bv_unsigned (Z_to_bv 64 (decodeItemInputLength args)) = decodeItemInputLength args).
+{ clear - Hd5. first [bv_solve | (bv_simplify; lia) | (unfold Z_to_bv; bv_solve)]. }
+rewrite Hbl in H43.
+assert (Hp1 : decodeItemInputPointer args + 1 < 2 ^ 64).
+{ cbv [bv_modulus] in *. repeat match goal with H : _ /\ _ |- _ => destruct H end. lia. }
+assert (Hbp1 : bv_unsigned (Z_to_bv 64 (decodeItemInputPointer args) + 1) = decodeItemInputPointer args + 1).
+{ clear - Hp1 Hd6. first [bv_solve | (bv_simplify; lia) | (unfold Z_to_bv; bv_solve)]. }
+clear Hlay.
+rewrite Hbp1.
+replace (decodeItemInputPointer args + 1 - decodeItemInputPointer args) with 1 by lia.
+destruct (decodeItemDomainNonemptyInputHead _ _ H0c H18) as [p [rest Hh]].
+assert (Hbp : nth 0 (decodeItemInputBytes args) 0%bv = p).
+{ rewrite Hh. reflexivity. }
+rewrite Hbp in H22, H23, H31, H43.
+rewrite Hbp.
+assert (HY := ZesuSsz.Automation2.JoinEntailment.zesu_join_mask_payload p H22).
+assert (H1 : bv_unsigned (BV 64 1) = 1) by reflexivity.
+assert (Hb1 : 128 < bv_unsigned p) by (apply Z.le_neq; split; [exact H22 | intro E; apply H31; symmetry; exact E]).
+assert (Hb : 129 <= bv_unsigned p <= 183) by (split; [exact (proj2 (Z.le_succ_l 128 (bv_unsigned p)) Hb1) | exact H23]).
+assert (Hm : bv_unsigned (bv_and (bv_and (bv_sign_extend 64 p) 255) 127 + 1) - 1 = bv_unsigned p - 128).
+{ assert (Hw : 0 <= bv_unsigned p - 128 + 1 < bv_modulus 64) by (unfold bv_modulus; lia).
+  rewrite bv_add_unsigned; rewrite HY; rewrite H1.
+  rewrite (bv_wrap_small 64%N (bv_unsigned p - 128 + 1) Hw).
+  lia. }
+rewrite Hm.
+assert (Hl2 : 1 + (bv_unsigned p - 128) <= Z.of_nat (List.length (decodeItemInputBytes args))) by (rewrite <- Hlen; rewrite Z.add_1_l; exact (proj2 (Z.le_succ_l _ _) H43)).
+exact (decodeItemShortStringAccepted args p rest Hdom2 Hh Hb Hl2).
+Qed.
+#[export] Hint Resolve residual_69e8_198afe4c68b33331 : zesu_residual.

@@ -36,6 +36,11 @@ Ltac2 census_res_try () :=
       end
     else census_out (census_cat [census_str "RES-TRY open reason="; census_str kind])).
 
+(* Final-open mode: mark each goal that zesu_block2 left open, without a retry. *)
+Ltac2 census_res_mark () :=
+  Control.enter (fun () =>
+    census_out (census_cat [census_str "RES-TRY open reason="; census_str (census_goal_kind ())])).
+
 (* Passes 2 and 3: dump each open goal under the current printing flags. *)
 Ltac2 census_res_dump (pass : string) :=
   Control.enter (fun () =>
