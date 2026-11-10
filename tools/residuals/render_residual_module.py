@@ -150,9 +150,40 @@ def render_from_goals(block, goals, manifest=None):
         if not re.fullmatch(NAME, name) or not name.startswith("residual_%s_" % block):
             raise RenderError("%s: unexpected lemma name %s." % (goal, name))
         rows.append(dict(goal=goal, goal_sha=goal_sha, proof_sha=proof_sha, name=name, body=lemma))
-    text = render_module(block, header, rows)
+    text = render_module(block, pin_shared_modules(header, rows), rows)
     parse_module(text)
     return text
+
+
+ROOT = Path(__file__).resolve().parents[2]
+
+
+def shared_core_modules(root=ROOT):
+    """Module names present in both the frozen core and Automation2."""
+    frozen = {p.stem for p in (Path(root) / "ZesuSsz/Automation").rglob("*.v")}
+    current = {p.stem for p in (Path(root) / "ZesuSsz/Automation2").rglob("*.v")}
+    return frozen & current
+
+
+def pin_shared_modules(header, rows, shared=None):
+    """Import the Automation2 module behind each shared short name a lemma uses.
+
+    A copied lemma may write `ByteWindowFold.x`; when the frozen core's module
+    of that name is also in scope, the short name can resolve to it. Importing
+    the Automation2 module last makes the short name resolve to Automation2.
+    The statements and proofs are not changed.
+    """
+    shared = shared_core_modules() if shared is None else shared
+    used = sorted({m.group(1) for row in rows for m in re.finditer(
+        r"(?<![\w.'])(%s)\.[A-Za-z_]" % "|".join(map(re.escape, sorted(shared))),
+        row["body"])} if shared else set())
+    pins = ["Require Import ZesuSsz.Automation2.%s." % name for name in used]
+    pins = [line for line in pins if line not in header]
+    if not pins:
+        return header
+    scope = [i for i, line in enumerate(header) if line.startswith("Local Open Scope")]
+    at = scope[0] if scope else len(header)
+    return header[:at] + pins + header[at:]
 
 
 def main():
