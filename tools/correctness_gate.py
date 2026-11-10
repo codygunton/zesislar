@@ -111,6 +111,26 @@ def cache_provenance(row, declarations):
     return declared or recorded or {"mode": "unknown", "authority": "Legacy result has no cache provenance."}
 
 
+GIB = 1024 ** 3
+HARNESS_HISTORY = 5
+
+
+def harness_claim(history, target):
+    """Book a gate's own processes from the largest recent harness anon peak.
+
+    The harness is the gate's batch scope (dune, tool tests, checkers); its
+    compiles run in sibling scopes and book their own claims, which admission
+    adds to this one. None means unmeasured: book the full gate basis.
+    """
+    peaks = [row["aggregate_harness_anon_peak_bytes"] for row in history.get("runs", [])
+             if row.get("target") == target and row.get("success") is True
+             and type(row.get("aggregate_harness_anon_peak_bytes")) is int
+             and row["aggregate_harness_anon_peak_bytes"] > 0][-HARNESS_HISTORY:]
+    if not peaks:
+        return None
+    return max(GIB, (3 * max(peaks) + 1) // 2)
+
+
 def booking_peak(row):
     """Book a gate from its anonymous peak when sampled: memory.peak counts page cache."""
     anon = row.get("aggregate_anon_peak_bytes")
@@ -209,6 +229,8 @@ def reserve(policy, owner, receipt, *, available=memory_available, pause=time.sl
             if record["admitted"]:
                 ledger["fixed_claims"][key] = policy["claim_bytes"]
                 ledger.setdefault("correctness_gate_owners", {})[key] = owner
+                if policy.get("cold_claim_bytes"):
+                    ledger.setdefault("correctness_gate_cold_claims", {})[key] = policy["cold_claim_bytes"]
                 if policy.get('physical_fence_bytes') is not None:
                     ledger.setdefault('claim_fences', {})[key] = {
                         'owner': owner, 'physical_fence_bytes': policy['physical_fence_bytes']}
@@ -323,12 +345,16 @@ def inside(out):
     started = time.monotonic()
     from gate_exit_peaks import AnonymousPeak, sample
     anonymous = AnonymousPeak(aggregate)
+    # This process runs in the gate's batch scope; compiles run in sibling scopes.
+    harness = AnonymousPeak(Path("/sys/fs/cgroup").joinpath(*parts))
     anonymous.start()
+    harness.start()
     try:
         return subprocess.run(request["command"], cwd=request["workspace"],
                               env=gate_environment(os.environ), check=False).returncode
     finally:
         anon_peak = anonymous.stop()
+        harness_peak = harness.stop()
         cpu = dict(line.split() for line in (aggregate / "cpu.stat").read_text().splitlines())
         measured = sample(aggregate, request, identity(os.getpid()), anon_peak_bytes=anon_peak)
         metrics = {"guard_exit": measured, "aggregate_peak_bytes": measured["memory_peak_bytes"],
@@ -336,6 +362,8 @@ def inside(out):
                    "measurement_scope": "Complete owned stock aggregate before guard cleanup."}
         if anon_peak:
             metrics["aggregate_anon_peak_bytes"] = anon_peak
+        if harness_peak and parts[index + 1:]:
+            metrics["aggregate_harness_anon_peak_bytes"] = harness_peak
         save(out / "METRICS.json", metrics)
 
 
@@ -392,6 +420,12 @@ def run(args):
     policy = {"ledger": str(ledger), "lock": str(ledger.with_name("LEDGER.lock")),
               "claim_key": "CorrectnessGate_" + uuid.uuid4().hex, "claim_bytes": basis["claim_bytes"],
               "physical_fence_bytes": batch_fence_bytes(os.environ)}
+    own = harness_claim(history_data, args.target)
+    if own is not None and own < basis["claim_bytes"]:
+        # Admission adds the claims of the gate's running compiles to this
+        # own claim, and keeps the full basis while any of them is unmeasured.
+        policy.update(claim_bytes=own, cold_claim_bytes=basis["claim_bytes"])
+        basis.update(reason_own="measured_gate_harness", harness_claim_bytes=own)
     owner = {"pid": os.getpid(), "startticks": identity(os.getpid())["startticks"], "run_id": run_id}
     from block.harness.code.admission_memory import ScopeReader
     guard = Path(os.environ.get("ZESU_RESOURCE_GUARD", workspace / "tools/resource_guard.sh")).resolve()
