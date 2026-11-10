@@ -149,7 +149,11 @@ def alternative_facts(definition):
         telescopes.append(body[3:position].strip())
         body = body[position:]
     # A telescope scoped over the facts alone follows the owned resources.
+    # An existential inside a pure fact binds only that fact; it is not hoisted.
+    pure = [(match.start(), match.end()) for match in re.finditer(r'⌜.*?⌝', body, flags=re.S)]
     for match in re.finditer(r'\(∃ ', body):
+        if any(begin <= match.start() < end for begin, end in pure):
+            continue
         position = telescope_end(body, match.end())
         telescopes.append(body[match.end():position].strip())
     binders = ' '.join(telescopes)

@@ -159,6 +159,15 @@ class CallBoundary(unittest.TestCase):
         self.assertTrue(spec['post']['facts'][0].startswith('DecodeMeaningModuloKnownBugs'))
 
 
+class PureExistentials(unittest.TestCase):
+    def test_existential_inside_a_pure_fact_is_not_hoisted(self):
+        definition = ('Definition d `{!islaG Sigma} (args : A) : iProp Sigma := (∃ (w : bv 64), '
+                      '("x1" ↦ᵣ RVal_Bits (w : bv 64%N) ∗ ⌜(∃ r : R, P r w)⌝ ∗ (∃ (v : bv 64), ⌜Q v⌝)))%I.\n')
+        binders, facts = alternative_facts(definition)
+        self.assertEqual(binders, '(w : bv 64) (v : bv 64)')
+        self.assertEqual(facts, ['(∃ r : R, P r w)', 'Q v'])
+
+
 class FunctionReturn(unittest.TestCase):
     RETURN = {'name': 'ret', 'entry': 16, 'end': 20, 'rows': [{'pc': 16}],
               'blocks': [{'start': 16, 'end': 20, 'successors': []}], 'returns': [16]}
