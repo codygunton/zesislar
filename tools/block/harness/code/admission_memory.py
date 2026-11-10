@@ -1314,9 +1314,32 @@ def ledger_transaction(ledger):
             _ledger_transaction.reset(token)
 
 
+def archived_shell_digest(data, key, ledger):
+    """A released token's archive digest; the archive module is optional in fixtures."""
+    if key in data.get('shell_archive', {}):
+        return data['shell_archive'][key]
+    try:
+        import ledger_archive
+    except ImportError:
+        return None
+    return ledger_archive.archived_shell_digest(data, key, ledger)
+
+
+def active_ledger():
+    active = _ledger_transaction.get()
+    return active[0] if active is not None else None
+
+
 def write_ledger(path, data):
     check_test_ledger(path)
     path = Path(path)
+    try:
+        import ledger_archive
+    except ImportError:
+        ledger_archive = None
+    if ledger_archive is not None and ledger_archive.due(path, data):
+        # Closed records leave the hot file before it is rewritten.
+        ledger_archive.compact(path, data, ScopeReader(), ended_process)
     fd, name = tempfile.mkstemp(prefix='.LEDGER.', dir=path.parent)
     try:
         with os.fdopen(fd, 'w') as stream:
@@ -1412,7 +1435,10 @@ def confirm_shell(marker, replacement, request_bytes, available_bytes, *, ledger
             'generation': generation}
         if guard_source is not None:
             data['shell_claim_owners'][key]['guard_source'] = guard_source
-        data.setdefault('shell_admissions', {})[key] = result
+        # Keep the decision and its totals; the per-claim observations were
+        # 35 kB per live token in the hot ledger.
+        data.setdefault('shell_admissions', {})[key] = {
+            name: value for name, value in result.items() if name != 'claim_observations'}
         prune_closed_aggregate_holds(data, reader)
         write_ledger(ledger, data)
         os.replace(replacement, marker)
@@ -1556,7 +1582,7 @@ def ended_process(reader, actor):
 def _shell_recovery_record(data, key, reader):
     record = data.get('shell_claim_owners', {}).get(key)
     released = data.get('shell_releases', {}).get(key)
-    if record is None and key in data.get('shell_archive', {}):
+    if record is None and archived_shell_digest(data, key, active_ledger()) is not None:
         from shell_archive import released_records
         record, released = released_records(data, key, reader)
         return record, released, True
@@ -1572,7 +1598,7 @@ def recover_dead_shell(marker, *, ledger=None, reader=None):
         key = shell_key(marker)
         admitted, released, was_archived = _shell_recovery_record(data, key, reader)
         archived = admitted if was_archived else None
-        if was_archived and (data['fixed_claims'].get(key) != 0
+        if was_archived and (data['fixed_claims'].get(key, 0) != 0
                 or released['owner'] != admitted['owner'] or released['marker'] != admitted['marker']):
             raise ValueError('The archived token lacks exact released ownership.')
         if admitted is not None:
@@ -1629,9 +1655,19 @@ def recover_dead_shell(marker, *, ledger=None, reader=None):
                         raise ValueError('The admitted recovery scope is outside its owned slice.')
                     units.append(path.name)
         units = list(dict.fromkeys(units))
-        if not units:
+        writer = fields.get('writer', '')
+        if not units and lines[0] == 'confirmed' and re.fullmatch(r'[a-zA-Z0-9._-]+', writer or ''):
+            # A writer confirmed its slot and died before systemd created its
+            # scope. Every writer scope name carries the owner PID, so absence
+            # of any such scope proves no compiler ran for this token.
+            if any(reader.parent.rglob(f'*-writer-{writer}-*-{owner["pid"]}-*')):
+                raise ValueError('The orphan writer token still has a scope.')
+            units = [f'writer-{writer}-*-{owner["pid"]}-*']
+        elif not units:
             raise ValueError('The orphan token lacks its recorded scope.')
         for unit in units:
+            if unit.startswith('writer-') and '*' in unit:
+                continue
             if (not re.fullmatch(r'[a-zA-Z0-9_.@:-]+\.(scope|slice)', unit)
                     or any(reader.parent.rglob(unit))):
                 raise ValueError('The orphan token scope is still present or invalid.')
@@ -1825,7 +1861,7 @@ def release_shell(marker, *, ledger=None, reader=None, require_dead_owner=False)
             if was_archived:
                 data.setdefault('shell_recovery_audits', {})[key] = dict(cleanup,
                     route='archived_release', marker=str(marker), owner=record['owner'],
-                    archive_sha256=data['shell_archive'][key])
+                    archive_sha256=archived_shell_digest(data, key, ledger))
             else:
                 released['marker_cleanup'] = cleanup
                 _archive_shell_release(ledger, data, key, reader)

@@ -156,6 +156,10 @@ touch "$REGISTRY" "$LOG" "$PEAK"
 
 GIB=$((1024 * 1024 * 1024))
 MEMORY_TOOL=${ZESU_MODULE_MEMORY_TOOL:-$(dirname "$0")/module_memory.py}
+# Ledger writers publish admission totals here; a held launch waits for it to
+# change instead of rerunning every check each poll.
+ADMISSION_SUMMARY="$STATE_DIR/admission-summary"
+WAKE_TIMEOUT=${ZESU_ADMISSION_WAKE_TIMEOUT:-30}
 if ! [[ "$MODULE_LIMIT_GIB" =~ ^[1-9][0-9]{0,2}$ ]]; then
   echo "resource guard: invalid module memory limit" >&2; exit 2
 fi
@@ -932,6 +936,35 @@ confirmed_reservation() {
   [ "$(reservation_writer "$marker")" = "$WRITER_ID" ]
 }
 
+# A launch can fit only if the published totals leave room for its claim.
+# Missing or unreadable totals count as room: the full check decides.
+admission_plausible() {
+  local accounted unrealized budget cap live maximum
+  read -r accounted unrealized budget cap live maximum < "$ADMISSION_SUMMARY" 2>/dev/null || return 0
+  [[ "$accounted$unrealized$budget$cap$maximum" =~ ^[0-9]+$ && "$live" =~ ^-?[0-9]+$ ]] || return 0
+  (( accounted + MEMORY_CLAIM_BYTES <= cap && unrealized + MEMORY_CLAIM_BYTES <= budget )) && return 0
+  # The small-request path admits on verified live slice memory instead.
+  (( live >= 0 && MEMORY_CLAIM_BYTES <= ${ZESU_LIVE_REQUEST_LIMIT_GIB:-16} * GIB && live + MEMORY_CLAIM_BYTES <= maximum / 2 ))
+}
+
+# Wait for a release (the summary changes) that can make room, at most
+# WAKE_TIMEOUT seconds, then let the caller run the full check once. Polling
+# reran the Python helpers every POLL_SECONDS while held: 2.4-14.7 s of
+# harness CPU per 0.5-1.7 s compile on 2026-11-10.
+wait_for_admission_change() {
+  local started=$SECONDS left
+  if ! command -v inotifywait >/dev/null 2>&1; then
+    sleep "$POLL_SECONDS"; return 0
+  fi
+  while :; do
+    left=$(( WAKE_TIMEOUT - (SECONDS - started) ))
+    (( left > 0 )) || return 0
+    inotifywait -qq -t "$left" -e close_write -e moved_to --include '/admission-summary$' \
+      "$STATE_DIR" >/dev/null 2>&1 || return 0
+    admission_plausible && return 0
+  done
+}
+
 # Take the slot atomically immediately before launch. An admitted caller
 # can confirm again without waiting for admission while it holds its slot.
 confirm_coqc() {
@@ -1036,7 +1069,8 @@ confirm_coqc() {
       fi
       local unified_status total used available
       read -r total used available < <(memory)
-      ZESU_GUARD_MUTEX_FD=7 python3 "$MEMORY_TOOL" ledger-confirm --marker "$marker" --replacement "$replacement" \
+      ZESU_GUARD_MUTEX_FD=7 ZESU_ADMISSION_SUMMARY="$ADMISSION_SUMMARY" python3 "$MEMORY_TOOL" ledger-confirm \
+        --marker "$marker" --replacement "$replacement" \
         --request-bytes "$MEMORY_CLAIM_BYTES" --available-bytes "$available"
       unified_status=$?
       if [ "$unified_status" -ne 0 ]; then
@@ -1046,7 +1080,7 @@ confirm_coqc() {
         fi
         note "HOLD reservation launch: unified memory ledger; owner=$owner claim_bytes=$MEMORY_CLAIM_BYTES marker=${marker##*/}"
         flock -u 7; exec 7>&-
-        sleep "$POLL_SECONDS"
+        wait_for_admission_change
         continue
       fi
       [ -z "$held" ] || note "RESUME reservation launch: $held"
@@ -1059,7 +1093,7 @@ confirm_coqc() {
       held=$reason
     fi
     flock -u 7; exec 7>&-
-    sleep "$POLL_SECONDS"
+    wait_for_admission_change
   done
 }
 
@@ -1098,7 +1132,7 @@ release_coqc() {
   flock 7
   if reservation_path "$marker"; then
     local unified_status
-    ZESU_GUARD_MUTEX_FD=7 python3 "$MEMORY_TOOL" ledger-release --marker "$marker"
+    ZESU_GUARD_MUTEX_FD=7 ZESU_ADMISSION_SUMMARY="$ADMISSION_SUMMARY" python3 "$MEMORY_TOOL" ledger-release --marker "$marker"
     unified_status=$?
     if [ "$unified_status" -ne 0 ]; then
       flock -u 7; exec 7>&-; return "$unified_status"
@@ -1116,7 +1150,7 @@ release_aggregate_reservations() {
     [ -f "$marker" ] || continue
     if [ "$(sed -n '3s/^aggregate=//p' "$marker")" = "$slice" ]; then
       local unified_status
-      ZESU_GUARD_MUTEX_FD=7 python3 "$MEMORY_TOOL" ledger-release --marker "$marker"
+      ZESU_GUARD_MUTEX_FD=7 ZESU_ADMISSION_SUMMARY="$ADMISSION_SUMMARY" python3 "$MEMORY_TOOL" ledger-release --marker "$marker"
       unified_status=$?
       if [ "$unified_status" -ne 0 ]; then
         flock -u 7; exec 7>&-; return "$unified_status"
