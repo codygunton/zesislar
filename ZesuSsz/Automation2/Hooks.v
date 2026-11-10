@@ -2281,6 +2281,20 @@ Ltac zesu_branch_guard_closed_width word continuation :=
     continuation normalized
   end.
 
+(* The unsigned value of a sign-extended word lies below its source's half
+   modulus or within that distance of the top. A one-wrap range [m, 2 m)
+   that misses both intervals cannot be proved, so its solver is not run. *)
+Ltac zesu_guard_range_unreachable word modulus :=
+  lazymatch word with
+  | @bv_sign_extend ?source ?target _ =>
+      zesu_stack_closed_term source;
+      zesu_stack_closed_term target;
+      let verdict := eval vm_compute in
+        (Z.leb (2 ^ (Z.of_N source - 1)) modulus &&
+         Z.leb (2 * modulus) (2 ^ Z.of_N target - 2 ^ (Z.of_N source - 1)))%bool in
+      constr_eq verdict true
+  end.
+
 Ltac zesu_branch_guard_rewrite :=
   repeat first
   [ match goal with
@@ -2369,6 +2383,7 @@ Ltac zesu_branch_guard_rewrite :=
         tryif has_evar word then fail 0 else
         lazymatch type of word with bv ?width =>
         zesu_branch_guard_mask width mask ltac:(fun low modulus Hwidth Hmask =>
+          tryif zesu_guard_range_unreachable word modulus then fail 0 else idtac;
           let Hrange := fresh "HguardRange" in
           assert (Hrange : modulus <= bv_unsigned word < 2 * modulus) by lia;
           rewrite (zesu_guard_low_mask_one_wrap width low word mask Hwidth Hmask Hrange);
