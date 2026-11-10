@@ -24,13 +24,11 @@ PLUGINS = (
     '_dune-cache/install/default/lib/zesu-signature-gates/plugin/signature_gates_plugin.cmxs',
     '_dune-cache/install/default/lib/zesu-signature-gates/trace-observer/trace_block_plugin.cmxs',
 )
-WRAPPERS = '''Require Import ZesuSsz.Automation.All.
+WRAPPERS = '''Require Import ZesuSsz.Automation2.All.
 Require Import isla.riscv64.riscv64.
-Require Import ZesuSsz.Automation.BlockTable.
-Require Import ZesuSsz.Generated.DecodeItem.BlockTable.
 Require Import ZesuSsz.Compliance.DecodeItemCompliance.
 Require Import ZesuSsz.Compliance.DecodeItemCompositionalCompliance.
-Require Import ZesuSsz.Proofs.DecodeItem.TableSlots.Adapter800d698c.
+Require Import ZesuSsz.Compliance.DecodeItemComplianceGenerated.
 
 Definition certified_selected :
   forall returnAddress,
@@ -53,18 +51,18 @@ Definition certified_compositional :
       (ZesuSsz.Contracts.DecodeItemCompositional.decodeItemSelectedModelCompositional returnAddress) :=
   ZesuSsz.Compliance.DecodeItemCompositionalCompliance.decodeItemSelectedComplianceCompositional.
 
-Lemma certified_slot `{!islaG Sigma} `{!threadG} :
-  ⊢ block_table_pre decodeItemBlockTable -∗
-    instr_body 0x800d698c decodeItemState800d698c.
-Proof.
-  exact ZesuSsz.Proofs.DecodeItem.TableSlots.Adapter800d698c.decodeItemSlotBody800d698c.
-Qed.
+Definition certified_generated :
+  forall returnAddress,
+    ZesuSsz.Contracts.Level1.IslarisContractCorrect
+      ZesuSsz.Contracts.RlpDecodeItem.decodeItemEntry returnAddress
+      (ZesuSsz.Contracts.DecodeItemSelected.decodeItemSelectedModel returnAddress) :=
+  ZesuSsz.Compliance.DecodeItemComplianceGenerated.decodeItemGeneratedCompliance.
 
 Set Printing Fully Qualified.
 Print Assumptions certified_selected.
 Print Assumptions certified_registers.
 Print Assumptions certified_compositional.
-Print Assumptions certified_slot.
+Print Assumptions certified_generated.
 '''
 
 

@@ -290,7 +290,7 @@ Qed.
 End fp301_table.
 
 (* ---- The registers statement and its weakening to the reviewed model. ---- *)
-Theorem decodeItemGeneratedComplianceRegisters :
+Lemma decodeItemGeneratedComplianceRegisters :
   forall returnAddress,
     IslarisContractCorrect decodeItemEntry returnAddress
       (decodeItemSelectedModelRegisters returnAddress).
@@ -313,7 +313,7 @@ Proof.
   iIntros "[Hbase _]". iExact "Hbase".
 Qed.
 
-Theorem decodeItemGeneratedCompliance :
+Lemma decodeItemGeneratedCompliance :
   forall returnAddress,
     IslarisContractCorrect decodeItemEntry returnAddress
       (decodeItemSelectedModel returnAddress).
