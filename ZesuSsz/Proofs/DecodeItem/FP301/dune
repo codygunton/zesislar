@@ -1,0 +1,28 @@
+; The generated decodeItem block proofs, compiled in place. The design-table
+; renderer writes each caller under tools/block/generated/fp301_callers; this
+; directory only copies them into the ZesuSsz theory, so the compliance
+; theorem can consume them. Edit the callers through their renderers.
+(rule (targets Caller6960.v) (deps ../../../../tools/block/generated/fp301_callers/Caller6960.v) (action (copy ../../../../tools/block/generated/fp301_callers/Caller6960.v Caller6960.v)))
+(rule (targets Caller6974.v) (deps ../../../../tools/block/generated/fp301_callers/Caller6974.v) (action (copy ../../../../tools/block/generated/fp301_callers/Caller6974.v Caller6974.v)))
+(rule (targets Caller697c.v) (deps ../../../../tools/block/generated/fp301_callers/Caller697c.v) (action (copy ../../../../tools/block/generated/fp301_callers/Caller697c.v Caller697c.v)))
+(rule (targets Caller698c.v) (deps ../../../../tools/block/generated/fp301_callers/Caller698c.v) (action (copy ../../../../tools/block/generated/fp301_callers/Caller698c.v Caller698c.v)))
+(rule (targets Caller69a4.v) (deps ../../../../tools/block/generated/fp301_callers/Caller69a4.v) (action (copy ../../../../tools/block/generated/fp301_callers/Caller69a4.v Caller69a4.v)))
+(rule (targets Caller69b0.v) (deps ../../../../tools/block/generated/fp301_callers/Caller69b0.v) (action (copy ../../../../tools/block/generated/fp301_callers/Caller69b0.v Caller69b0.v)))
+(rule (targets Caller69d8.v) (deps ../../../../tools/block/generated/fp301_callers/Caller69d8.v) (action (copy ../../../../tools/block/generated/fp301_callers/Caller69d8.v Caller69d8.v)))
+(rule (targets Caller69e0.v) (deps ../../../../tools/block/generated/fp301_callers/Caller69e0.v) (action (copy ../../../../tools/block/generated/fp301_callers/Caller69e0.v Caller69e0.v)))
+(rule (targets Caller69e8.v) (deps ../../../../tools/block/generated/fp301_callers/Caller69e8.v) (action (copy ../../../../tools/block/generated/fp301_callers/Caller69e8.v Caller69e8.v)))
+(rule (targets Caller6a00.v) (deps ../../../../tools/block/generated/fp301_callers/Caller6a00.v) (action (copy ../../../../tools/block/generated/fp301_callers/Caller6a00.v Caller6a00.v)))
+(rule (targets Caller6a08.v) (deps ../../../../tools/block/generated/fp301_callers/Caller6a08.v) (action (copy ../../../../tools/block/generated/fp301_callers/Caller6a08.v Caller6a08.v)))
+(rule (targets Caller6a14.v) (deps ../../../../tools/block/generated/fp301_callers/Caller6a14.v) (action (copy ../../../../tools/block/generated/fp301_callers/Caller6a14.v Caller6a14.v)))
+(rule (targets Caller6a24.v) (deps ../../../../tools/block/generated/fp301_callers/Caller6a24.v) (action (copy ../../../../tools/block/generated/fp301_callers/Caller6a24.v Caller6a24.v)))
+(rule (targets Caller6a38.v) (deps ../../../../tools/block/generated/fp301_callers/Caller6a38.v) (action (copy ../../../../tools/block/generated/fp301_callers/Caller6a38.v Caller6a38.v)))
+(rule (targets Caller6a40.v) (deps ../../../../tools/block/generated/fp301_callers/Caller6a40.v) (action (copy ../../../../tools/block/generated/fp301_callers/Caller6a40.v Caller6a40.v)))
+(rule (targets Caller6a64.v) (deps ../../../../tools/block/generated/fp301_callers/Caller6a64.v) (action (copy ../../../../tools/block/generated/fp301_callers/Caller6a64.v Caller6a64.v)))
+(rule (targets Caller6a6c.v) (deps ../../../../tools/block/generated/fp301_callers/Caller6a6c.v) (action (copy ../../../../tools/block/generated/fp301_callers/Caller6a6c.v Caller6a6c.v)))
+(rule (targets Caller6a78.v) (deps ../../../../tools/block/generated/fp301_callers/Caller6a78.v) (action (copy ../../../../tools/block/generated/fp301_callers/Caller6a78.v Caller6a78.v)))
+(rule (targets Caller6aa8.v) (deps ../../../../tools/block/generated/fp301_callers/Caller6aa8.v) (action (copy ../../../../tools/block/generated/fp301_callers/Caller6aa8.v Caller6aa8.v)))
+(rule (targets Caller6ab4.v) (deps ../../../../tools/block/generated/fp301_callers/Caller6ab4.v) (action (copy ../../../../tools/block/generated/fp301_callers/Caller6ab4.v Caller6ab4.v)))
+(rule (targets Caller6ac4.v) (deps ../../../../tools/block/generated/fp301_callers/Caller6ac4.v) (action (copy ../../../../tools/block/generated/fp301_callers/Caller6ac4.v Caller6ac4.v)))
+(rule (targets Caller6ad8.v) (deps ../../../../tools/block/generated/fp301_callers/Caller6ad8.v) (action (copy ../../../../tools/block/generated/fp301_callers/Caller6ad8.v Caller6ad8.v)))
+(rule (targets Caller6ae0.v) (deps ../../../../tools/block/generated/fp301_callers/Caller6ae0.v) (action (copy ../../../../tools/block/generated/fp301_callers/Caller6ae0.v Caller6ae0.v)))
+(rule (targets Caller6b08.v) (deps ../../../../tools/block/generated/fp301_callers/Caller6b08.v) (action (copy ../../../../tools/block/generated/fp301_callers/Caller6b08.v Caller6b08.v)))
