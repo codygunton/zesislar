@@ -40,16 +40,19 @@
       "address": "returnAddress"
     }
   ],
+  "return_facts": [
+    "DecodeMeaningModuloKnownBugs args currentStorage"
+  ],
   "declarations": [
     {
       "output": "ZesuSsz/Generated/DecodeItem/FP301/FunctionReturnEntries.v",
-      "sha256": "d93b1082018223ed0270b713535ac049c80db80fa934613764a5341b73cf9bf7",
+      "sha256": "cbde7fc110268e3986501358e37dd79a09c25a2e5522cc6fc0ef3dc18e1f8627",
       "header_kind": "return",
       "canonical_sha256": "c09568d1ba94231a91f77ac220d17985bf5792d888ef58812cb0c139c0b27bec"
     },
     {
       "output": "ZesuSsz/Generated/DecodeItem/FP301/FunctionReturnStructural.v",
-      "sha256": "7d000e860c0059a126726e360fe6f159721a692bca07ce74c4762def5ac9b431",
+      "sha256": "0287d77923668bddbda407095c6cb83e6aa96d228f19cd39ed80768128d9aa30",
       "header_kind": "return",
       "canonical_sha256": "e5182677dce8cbcc22a903f2e9c4409a6419c59602d818b140a7841495c2b707"
     },

@@ -8,10 +8,17 @@ from pathlib import Path
 
 from production_modules import statement as caller_statement
 from render_support import definition_introduction_source, unfold_declaration
-from return_exit import add_return_precondition, return_blocks, return_package
+from return_exit import (add_return_facts, add_return_precondition, return_blocks,
+                         return_package)
 
 
 LOOP_HEAD_FIXTURE = Path(__file__).resolve().parent / 'fixtures/fp301-loop-heads.json'
+RETURN_FIXTURE = Path(__file__).resolve().parent / 'fixtures/fp301-return-bindings.json'
+
+
+def return_facts():
+    """Pure exit facts of the return package (declarations data, never proofs)."""
+    return json.loads(RETURN_FIXTURE.read_text()).get('return_facts', [])
 
 
 def render_loop_head(block, header, structural=False):
@@ -218,6 +225,8 @@ def render_declaration(source, header):
         raise ValueError("A generated declaration lacks its exact header boundary.")
     if "Automation.All." in header or "Automation2.All." in header:
         raise ValueError("A generated declaration cannot import a core.")
+    if re.search(r"\b(?:Definition fp_machineReturn|Instance fp_machineReturn_intro)\b", source):
+        source = add_return_facts(source, return_facts())
     return render_entry_registers(header + source.split(boundary, 1)[1])
 
 
@@ -297,6 +306,7 @@ def render(inputs, output):
     definition, provenance = return_package(
         source, inputs["return_symbol"], symbol, parameters
     )
+    definition = add_return_facts(definition, return_facts())
     entries = {row["pc"]: row for row in declarations["cases"]}
     prepared = []
     for row in callers["rows"]:
