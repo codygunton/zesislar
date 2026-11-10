@@ -440,3 +440,33 @@ class FrozenAutomationTests(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class ShortCoreNameTests(unittest.TestCase):
+    """Short names of modules in both cores can resolve to the frozen core."""
+
+    HEADER = "Require Import ZesuSsz.Automation2.All.\n"
+
+    def failures(self, name, text):
+        from check_proof_hygiene import short_core_name_failures
+        return short_core_name_failures(name, text, {"ContextCollection", "Hooks"})
+
+    def test_short_shared_name_in_an_automation2_test_fails(self):
+        text = self.HEADER + "Goal True.\nProof. ContextCollection.zesu_context_prune_goal. Qed.\n"
+        failures = self.failures("ZesuSsz/Proofs/Tests/X.v", text)
+        self.assertEqual(len(failures), 1)
+        self.assertIn("X.v:3: ContextCollection.", failures[0])
+
+    def test_full_names_imports_comments_and_other_trees_pass(self):
+        text = (self.HEADER + "Require Import ZesuSsz.Automation2.ContextCollection.\n"
+                "(* ContextCollection.zesu_context_prune_goal *)\n"
+                "Goal True. Proof. ZesuSsz.Automation2.ContextCollection.zesu_context_prune_goal. Qed.\n")
+        self.assertEqual(self.failures("ZesuSsz/Proofs/Tests/X.v", text), [])
+        short = self.HEADER + "Ltac t := Hooks.zesu_run.\n"
+        self.assertEqual(self.failures("ZesuSsz/Residuals/Block800d1234.v", short), [])
+        self.assertEqual(self.failures("ZesuSsz/Proofs/Tests/Y.v",
+                                       "Require Import ZesuSsz.Automation.All.\n" + short[len(self.HEADER):]), [])
+
+    def test_shared_modules_include_context_collection(self):
+        from check_proof_hygiene import shared_core_modules
+        self.assertIn("ContextCollection", shared_core_modules())

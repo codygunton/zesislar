@@ -135,3 +135,15 @@ class CallerImportTests(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class SharedModulePinTests(unittest.TestCase):
+    def test_short_shared_name_gets_an_automation2_import(self):
+        from render_residual_module import pin_shared_modules
+        header = ["Require Import ZesuSsz.Automation2.All.", "Local Open Scope Z_scope."]
+        rows = [dict(body="Lemma residual_1234_ab :\n  forall (H : ByteWindowFold.p 1), True.\nProof.\nexact I.\nQed.")]
+        self.assertEqual(pin_shared_modules(header, rows, {"ByteWindowFold"}),
+                         ["Require Import ZesuSsz.Automation2.All.",
+                          "Require Import ZesuSsz.Automation2.ByteWindowFold.",
+                          "Local Open Scope Z_scope."])
+        self.assertEqual(pin_shared_modules(header, rows, {"Hooks"}), header)
