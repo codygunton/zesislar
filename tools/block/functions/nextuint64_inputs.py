@@ -186,6 +186,14 @@ def domain(entries, layout_source, ids):
                                       'nextUint64BoundaryDomain'),
                              'upper_bound': clause(clauses, 'nextSlicePointer args + 16 <= machineRamEnd defaultMap',
                                                    'nextUint64BoundaryDomain')}})
+    facts.append({'fact_id': 'domain:result-interval', 'kind': 'bounds', 'status': 'supplied',
+                  'terms': {'unsigned_interval': {
+                      'expression': input_expr('(Z_to_bv 64%N (nextResultPointer (nextUint64Base args)))', 64).to_dict(),
+                      'minimum': ram_base, 'maximum': ram_end - 16, 'ram_base': ram_base, 'ram_end': ram_end}},
+                  'origin': {**clause(clauses, 'mapRamBase defaultMap <= nextResultPointer args',
+                                      'nextUint64BoundaryDomain'),
+                             'upper_bound': clause(clauses, 'nextResultPointer args + 16 <= machineRamEnd defaultMap',
+                                                   'nextUint64BoundaryDomain')}})
     return {'projection': {'facts': facts, 'original_wellformed_clauses': clauses,
                            'entry_assertion_changed': False, 'premises_added': []},
             'constants': {}}
