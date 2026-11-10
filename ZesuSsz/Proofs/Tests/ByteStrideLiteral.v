@@ -91,8 +91,8 @@ Lemma frame_words_late_split_for_successor `{!islaG Sigma} `{!threadG}
        bv_to_little_endian 8 8 (bv_unsigned w1)) ∗ R).
 Proof.
   intros HC HX Hx L. iIntros "HR H0 H1".
-  Fail ByteArrayAssemblyCodec.zesu_byte_array_rebuild_requested.
-  progress ResourceGroups.zesu_open_nested_existential_packages.
+  Fail ZesuSsz.Automation2.ByteArrayAssemblyCodec.zesu_byte_array_rebuild_requested.
+  progress ZesuSsz.Automation2.ResourceGroups.zesu_open_nested_existential_packages.
   zesu_block2.
 Qed.
 
