@@ -23,7 +23,7 @@ OWNER = Path(__file__).resolve().parents[2]
 BRIDGE = package.BRIDGE
 PLUGIN = package.FILTERED
 RUNTIME_FILES = (*GUARD_RUNTIME_FILES, "tools/native_admission.py", "tools/canonical-bin/coqdep",
-                 "tools/dune_coqc_guarded.sh",
+                 "tools/dune_coqc_guarded.sh", "tools/dune_coqc_route.sh",
                  "tools/guard-bin/dune", "tools/block/trace_block_coqc.sh")
 
 

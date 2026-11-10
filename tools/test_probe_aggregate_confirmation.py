@@ -31,6 +31,7 @@ mkdir -p "$PROC_ROOT/$$"
 printf '0::/user.slice/zesuworkloads.slice/%s/client.scope\n' "$ZESU_AGGREGATE_SLICE" > "$PROC_ROOT/$$/cgroup"
 request=$(reserve_coqc $$)
 sleep() { [ ! -e "$request" ] || exit 92; exit 91; }
+wait_for_admission_change() { [ ! -e "$request" ] || exit 92; exit 91; }
 confirm_coqc "$request"
 ''', ZESU_DIAGNOSTIC_PROBE="1", ZESU_PROBE_ISSUE="10",
             ZESU_MODULE_LIMIT_GIB="64", ZESU_PROOF_CPU_LIMIT="unlimited", ZESU_PROBE_AGGREGATE_LIMIT="6")

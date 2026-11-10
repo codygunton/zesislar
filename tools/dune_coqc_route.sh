@@ -1,0 +1,56 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+# The stable entry point tools/guard-bin/coqc (dune_coqc_guarded.sh) execs
+# this script. It is outside every compile cache key; change routing here.
+# Resolve the actual compiler from the active pinned opam switch.
+# Cached scratch recipes can run outside opam exec and use the repository pin.
+tools_dir=$(dirname "$(realpath "$0")")
+if [[ "$(basename "$tools_dir")" == guard-bin ]]; then
+  tools_dir=$(dirname "$tools_dir")
+fi
+export ZESU_MODULE_LIMIT_GIB=${ZESU_GATE_MODULE_LIMIT_GIB-16}
+if [[ ! "$ZESU_MODULE_LIMIT_GIB" =~ ^([6-9]|[12][0-9]|3[0-2])$ ]]; then
+  echo "compiler gate memory limit must be an integer from 6 through 32 GiB" >&2
+  exit 2
+fi
+switch_prefix=${OPAM_SWITCH_PREFIX:-${ISLARIS_REPO:-$HOME/islaris}/_opam}
+coqc_binary="$switch_prefix/bin/coqc"
+if [[ "$(realpath "$coqc_binary")" == "$(realpath "$0")" ]]; then
+  echo "refusing recursive compiler override" >&2
+  exit 2
+fi
+guard=${ZESU_RESOURCE_GUARD:-$tools_dir/resource_guard.sh}
+
+# Dune asks for configuration before any proof job. These queries do not
+# consume a compiler slot. A source argument never uses this bypass.
+case "$*" in
+  -config|--config|--print-version|"--print-version -boot -noinit"|--version|-v)
+    exec "$coqc_binary" "$@" ;;
+esac
+
+# Preserve only the findlib path from this exact private Dune recipe.
+python3 "$tools_dir/coqc_findlib.py" record --tools-directory "$tools_dir"
+
+# Every compile books from the shared measured profile and records its own
+# scope memory.peak there. An unmeasured or changed module books the fence.
+python3 "$tools_dir/module_memory.py" observe \
+  --profile "${ZESU_MODULE_MEMORY_PROFILE:-${XDG_CACHE_HOME:-$HOME/.cache}/zesu-module-memory/profile.json}" \
+  ${ZESU_MODULE_MEMORY_OBSERVATIONS:+--output "$ZESU_MODULE_MEMORY_OBSERVATIONS"} \
+  --guard "$guard" --compiler "$coqc_binary" --cwd "$PWD" \
+  --fallback-bytes "$(( ZESU_MODULE_LIMIT_GIB * 1024 * 1024 * 1024 ))" -- "$@" &
+scope_pid=$!
+cleanup() {
+  if [[ -n "$scope_pid" ]] && kill -0 "$scope_pid" 2>/dev/null; then
+    kill "$scope_pid" 2>/dev/null || true
+    wait "$scope_pid" 2>/dev/null || true
+  fi
+}
+trap cleanup EXIT
+trap 'exit 143' TERM
+trap 'exit 130' INT
+set +e
+wait "$scope_pid"
+status=$?
+scope_pid=""
+exit "$status"
