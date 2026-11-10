@@ -117,3 +117,18 @@ def add_return_facts(source, facts):
         raise ValueError("The return package needs exactly one pure fact tail.")
     added = "".join(" ∗ ⌜" + fact + "⌝" for fact in facts)
     return source.replace(RETURN_TAIL, added + RETURN_TAIL)
+
+
+ENTRY_TAIL = "⌝))%I"
+
+
+def add_entry_facts(source, facts):
+    """Add pure facts after the last fact of the one entry alternative in source."""
+    if not facts:
+        return source
+    for fact in facts:
+        expression(fact, "entry fact")
+    if source.count(ENTRY_TAIL) != 1:
+        raise ValueError("The entry needs exactly one pure fact tail.")
+    added = "".join(" ∗ ⌜" + fact + "⌝" for fact in facts)
+    return source.replace(ENTRY_TAIL, "⌝" + added + "))%I")

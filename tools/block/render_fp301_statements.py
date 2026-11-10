@@ -8,8 +8,8 @@ from pathlib import Path
 
 from production_modules import statement as caller_statement
 from render_support import definition_introduction_source, unfold_declaration
-from return_exit import (add_return_facts, add_return_precondition, return_blocks,
-                         return_package)
+from return_exit import (add_entry_facts, add_return_facts, add_return_precondition,
+                         return_blocks, return_package)
 from function_profiles import load_profile, return_header
 
 
@@ -234,6 +234,10 @@ def render_declaration(source, header, profile=None):
         raise ValueError("A generated declaration cannot import a core.")
     if re.search(r"\b(?:Definition fp_machineReturn|Instance fp_machineReturn_intro)\b", source):
         source = add_return_facts(source, (profile or load_profile()).get("return_facts", []))
+    for symbol, spec in (profile or load_profile()).get("entry_facts", {}).items():
+        if re.search(r"\b(?:Definition " + symbol + r"|Instance " + symbol + r"_intro)\b", source):
+            source = add_entry_facts(source, spec["facts"])
+            source = source.replace(boundary, "".join(line + "\n" for line in spec.get("requires", [])) + boundary, 1)
     return render_entry_registers(header + source.split(boundary, 1)[1])
 
 

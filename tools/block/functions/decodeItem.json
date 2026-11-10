@@ -20,6 +20,7 @@
     "module": "ZesuSsz.Contracts.DecodeItemSelected",
     "premise": "decodeItemSelectedCode"
   },
+  "entry_facts": {"fp_machineAt698c_ForwardA0N0": {"facts": ["decodeItemAcceptedFacts args false (bv_unsigned machine_x11 - decodeItemInputPointer args) (bv_unsigned (bv_sub (bv_add machine_x12 (Z_to_bv 64%N (decodeItemInputPointer args))) machine_x11))", "((bv_unsigned machine_x11 - decodeItemInputPointer args) + (bv_unsigned (bv_sub (bv_add machine_x12 (Z_to_bv 64%N (decodeItemInputPointer args))) machine_x11)) < 2 ^ 64)%Z"], "requires": ["Require Import ZesuSsz.Contracts.DecodeItemReturnFacts."]}},
   "return_facts": ["DecodeMeaningModuloKnownBugs args currentStorage"],
   "return_requires": ["Require Import ZesuSsz.Compliance.DecodeItemMeaningPorted."],
   "domain_component": "⌜decodeItemDomainAt returnAddress decodeItemC1BDomain args⌝",
