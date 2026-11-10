@@ -10,7 +10,10 @@ import tempfile
 import time
 import unittest
 
-import run_registry
+if __package__:
+    from . import run_registry
+else:
+    import run_registry
 
 
 GUARD = Path(__file__).with_name("resource_guard.sh")
@@ -1027,9 +1030,11 @@ live_scopes
     FIXTURE_PREFIX = "\nhome_free_bytes() { echo 60000000000; }\n"
 
     def run_guard(self, script, **variables):
+        # Other test modules borrow this method, so it names its own class.
         with tempfile.TemporaryDirectory() as directory:
-            environment = self.guard_environment(directory, **variables)
-            return subprocess.run(["bash", "-c", LIBRARY + self.FIXTURE_PREFIX + script, str(GUARD.resolve())],
+            environment = ResourceGuard.guard_environment(directory, **variables)
+            return subprocess.run(["bash", "-c", LIBRARY + ResourceGuard.FIXTURE_PREFIX + script,
+                                   str(GUARD.resolve())],
                                   text=True, capture_output=True, env=environment, timeout=120)
 
     def test_stop_closes_a_held_batch_whose_launching_shell_resumes_its_scheduler(self):
