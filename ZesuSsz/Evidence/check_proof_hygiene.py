@@ -16,7 +16,8 @@ sys.path.insert(0, str(ROOT / "tools" / "residual"))
 from modules import PROOF_OPENER, parse_module
 from closed_literal_definitions import closed_literal_failures
 sys.path.insert(0, str(ROOT / "tools" / "residuals"))
-from render_residual_module import RenderError, module_name, parse_module as parse_residual_module
+from render_residual_module import (RenderError, SHARED, module_name, parse_module as parse_residual_module,
+                                    parse_shared_module)
 BASELINE_PATH = Path(__file__).with_name("hygiene_baseline.json")
 SIZE_BASELINE_PATH = Path(__file__).with_name("proof_size_baseline.json")
 CLOSED_LITERAL_EXCEPTIONS_PATH = Path(__file__).with_name("closed_literal_exceptions.json")
@@ -256,6 +257,12 @@ def generated_hand_line_failures(name: str, text: str) -> list[str]:
 def residual_module_failures(name: str, text: str) -> list[str]:
     """Residual modules hold only rendered declarations around copied proofs."""
     if not name.startswith(RESIDUALS_PREFIX):
+        return []
+    if name[len(RESIDUALS_PREFIX):-len(".v")] in SHARED:
+        try:
+            parse_shared_module(text)
+        except RenderError as error:
+            return [f"residual module is not renderer output: {name}: {error}"]
         return []
     try:
         block, _, _ = parse_residual_module(text)

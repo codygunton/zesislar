@@ -10,7 +10,8 @@ sys.path.insert(0, str(ROOT / "tools" / "block"))
 
 from check_decode_item_hints import residual_errors
 from check_proof_hygiene import residual_module_failures
-from render_residual_module import RenderError, parse_module, render_from_goals
+from render_residual_module import (RenderError, parse_module, parse_shared_module, render_from_goals,
+                                    render_shared_from_goals)
 from render_fp301_statements import residual_import
 
 HEADER = """Require Import ZesuSsz.Automation2.All.
@@ -87,6 +88,45 @@ class RendererTests(unittest.TestCase):
         self.assertEqual(residual_module_failures("ZesuSsz/Proofs/Other.v", "anything"), [])
 
 
+BRIDGE = "Lemma decodeItem_bridge_{n} :\n  forall (x : Z), 0 <= x -> 0 <= x + 1.\nProof.\n"
+BRIDGE_HEADER = "Require Import ZesuSsz.Automation2.All.\nFrom Coq Require Import ZArith.ZArith.\nLocal Open Scope Z_scope.\n\n"
+
+
+class SharedModuleTests(unittest.TestCase):
+    def bridge_dir(self, root, n, proof=PROOF, name=None):
+        d = Path(root) / n
+        d.mkdir()
+        statement = BRIDGE_HEADER + BRIDGE.format(n=name or n)
+        (d / "goal.v").write_text(statement + SLOT)
+        (d / "proof.v").write_text(statement + proof)
+
+    def test_bridges_are_copied_without_hints(self):
+        with tempfile.TemporaryDirectory() as root:
+            self.bridge_dir(root, "fold")
+            self.bridge_dir(root, "byte_mask")
+            text = render_shared_from_goals("DecodeItemBridges", root)
+        self.assertNotIn("Hint", text)
+        self.assertIn(BRIDGE.format(n="fold") + PROOF.rstrip() + "\n", text)
+        self.assertEqual(len(parse_shared_module(text)[1]), 2)
+        name = "ZesuSsz/Residuals/DecodeItemBridges.v"
+        self.assertEqual(residual_module_failures(name, text), [])
+        for edited in [text + "#[export] Hint Resolve decodeItem_bridge_fold : core.\n",
+                       text.replace("lia.\nQed.", "admit.\nQed."),
+                       text + "\nDefinition extra := 5.\n"]:
+            with self.subTest(edited=edited[-60:]):
+                self.assertTrue(residual_module_failures(name, edited))
+
+    def test_refuses_a_lemma_named_apart_from_its_dir(self):
+        with tempfile.TemporaryDirectory() as root:
+            self.bridge_dir(root, "fold", name="other")
+            with self.assertRaises(RenderError):
+                render_shared_from_goals("DecodeItemBridges", root)
+        with tempfile.TemporaryDirectory() as root:
+            self.bridge_dir(root, "fold")
+            with self.assertRaises(RenderError):
+                render_shared_from_goals("OtherBridges", root)
+
+
 class ResidualPolicyTests(unittest.TestCase):
     def tree(self, files):
         root = Path(tempfile.mkdtemp())
@@ -116,6 +156,20 @@ class ResidualPolicyTests(unittest.TestCase):
         self.assertIn("ZesuSsz.Proofs.P imports residual module", errors)
         self.assertIn("another block's residual module", errors)
         self.assertIn("missing residual module", errors)
+
+    def test_block_modules_may_import_the_shared_module(self):
+        bridges = "Require Import ZesuSsz.Automation2.All.\nLemma decodeItem_bridge_x : True.\n"
+        root = self.tree({
+            "ZesuSsz/Residuals/DecodeItemBridges.v": bridges,
+            "ZesuSsz/Residuals/Block800d1234.v": "Require Import ZesuSsz.Residuals.DecodeItemBridges.\n" + self.MODULE,
+            "tools/block/generated/fp301_callers/Caller1234.v": self.CALLER.format(b="1234")})
+        self.assertEqual(residual_errors(root), [])
+        (root / "ZesuSsz/Proofs").mkdir(parents=True)
+        (root / "ZesuSsz/Proofs/P.v").write_text("Require Import ZesuSsz.Residuals.DecodeItemBridges.\n")
+        (root / "ZesuSsz/Residuals/DecodeItemBridges.v").write_text(bridges + "#[export] Hint Resolve x : core.\n")
+        errors = "\n".join(residual_errors(root))
+        self.assertIn("ZesuSsz.Proofs.P imports residual module", errors)
+        self.assertIn("shared bridge module and registers a hint", errors)
 
     def test_current_tree_passes(self):
         self.assertEqual(residual_errors(ROOT), [])
