@@ -263,6 +263,36 @@ def validate_edges(plan, *, refutations=()):
     return True
 
 
+def binder_names(paths, register_order, reserved_names=()):
+    """Name each register binder machine_<register>, or a fresh suffix of it.
+
+    A join downstream of another join seed sees that seed's binders as source
+    inputs. A suffix keeps the new binder distinct; without a collision the
+    name is unchanged.
+    """
+    taken = set(reserved_names)
+
+    def inputs(value):
+        found = {str(value.value)} if value.op == 'input' else set()
+        for arg in value.args:
+            found |= inputs(arg)
+        return found
+
+    for path in paths:
+        for value in path.values():
+            for text in inputs(value):
+                taken.update(re.findall(r"[A-Za-z][A-Za-z0-9_']*", text))
+    names = {}
+    for register in register_order:
+        name, index = 'machine_' + register, 0
+        while name in taken:
+            index += 1
+            name = 'machine_' + register + '_' + str(index)
+        names[register] = name
+        taken.add(name)
+    return names
+
+
 def generalize_registers(alternatives, *, register_order, reserved_names=(), dead_registers=(),
                          relational_registers=()):
     """Prepare a register-only join core from complete source alternatives."""
@@ -280,7 +310,7 @@ def generalize_registers(alternatives, *, register_order, reserved_names=(), dea
             raise ValueError('A join edge lost an owned register value')
         paths.append({register: Expr.from_dict(registers[register]) for register in register_order})
         conditions.append([Expr.from_dict(value) for value in state['conditions']])
-    unified = anti_unify(paths, names={register: 'machine_' + register for register in register_order},
+    unified = anti_unify(paths, names=binder_names(paths, register_order, reserved_names),
                         reserved_names=reserved_names, force_keys=set(dead_registers) | set(relational_registers))
     relations, refusals = [], []
     for binder in unified.binders:
@@ -385,6 +415,63 @@ def _memory_basis(states, plan, original_seed):
     return basis, expressions
 
 
+def align_join_edges(alternatives, ownership, terminal_id, continuation_name, keep_binders=False):
+    """Express edges that come through an earlier join seed on the original tree.
+
+    A join seed keeps the original components, adds its relation facts as
+    `join_relation_*` components (its state keeps them as conditions), moves
+    the terminal outside its witness scope as the continuation, and has its
+    own binders. Such an edge is rewritten onto the original tree with the
+    original terminal. Its binders are returned so the new join keeps them as
+    existential binders; with keep_binders the rewritten tree binds them too.
+    Any other difference is left for the caller to refuse.
+    """
+    original = ownership['tree']
+    terminal_source = next(component['source'] for component in ownership['components']
+                           if component['id'] == terminal_id)
+    expected = _remove_terminal(original, terminal_id)
+    aligned, extra = [], []
+    for alternative in alternatives:
+        boundary = alternative.get('resource_boundary', {})
+        tree = boundary.get('tree')
+        if tree == original or not isinstance(tree, dict) or tree.get('kind') != 'sep':
+            aligned.append(alternative)
+            continue
+        left, right = tree.get('left', {}), tree.get('right')
+        terminal = [component for component in boundary.get('components', [])
+                    if component['id'] == terminal_id]
+        relations = set()
+        body = left.get('body') or {}
+        if body.get('kind') == 'sep_list':
+            relations = {child.get('id') for child in body['children']
+                         if str(child.get('id', '')).startswith('join_relation_')}
+            body = {**body, 'children': [child for child in body['children']
+                                         if child.get('id') not in relations]}
+        shape = {key: value for key, value in left.items() if key not in ('binders', 'scope', 'body')}
+        expected_shape = {key: value for key, value in expected.items() if key not in ('binders', 'scope', 'body')}
+        if (right != {'kind': 'component', 'id': terminal_id} or left.get('kind') != 'exists'
+                or shape != expected_shape or body != expected.get('body') or len(terminal) != 1
+                or terminal[0]['source'] != continuation_name):
+            aligned.append(alternative)
+            continue
+        names = {binder['name'] for binder in original.get('binders', [])}
+        own = [{key: value for key, value in binder.items() if key != 'value_key'}
+               for binder in left['binders'] if binder['name'] not in names]
+        for binder in own:
+            if binder['name'] not in [row['name'] for row in extra]:
+                extra.append(binder)
+        edge = deepcopy(alternative)
+        rewritten = deepcopy(original)
+        if keep_binders:
+            rewritten['binders'] = [*rewritten.get('binders', []), *deepcopy(own)]
+        edge['resource_boundary']['tree'] = rewritten
+        edge['resource_boundary']['components'] = [
+            {**component, 'source': terminal_source} if component['id'] == terminal_id else component
+            for component in edge['resource_boundary']['components'] if component['id'] not in relations]
+        aligned.append(edge)
+    return aligned, extra
+
+
 def generalize_owned_join(alternatives, *, original_seed, entry_pc, vocabulary,
                           continuation, outer_names=(), liveness=None, observables=None,
                           relational_registers=()):
@@ -417,6 +504,7 @@ def generalize_owned_join(alternatives, *, original_seed, entry_pc, vocabulary,
     if any(binder['name'] == name for binder in original_binders):
         raise ValueError('The continuation captures a source binder')
     register_order = [component['name'] for component in ownership['components'] if component['kind'] == 'register']
+    alternatives, inherited_binders = align_join_edges(alternatives, ownership, terminal_id, name)
     dead = set()
     if liveness is not None or observables is not None:
         if (not isinstance(liveness, dict) or liveness.get('pc') != hex(entry_pc)
@@ -535,18 +623,28 @@ def generalize_owned_join(alternatives, *, original_seed, entry_pc, vocabulary,
                                      operation('bvule', word, bits(relation['upper'], word.width))])
     state.writes, state.reports, state.register_writes = [], [], []
     state.memory = []
+
+    def stored_byte(index, resource_id, offset):
+        """Return the byte an edge holds at offset: its own write, else its seed's known byte."""
+        update = images[index].updates[resource_id].get(offset)
+        if update is not None:
+            return normalize(Expr.from_dict(update['value']))
+        # An edge through an earlier join seed keeps the seed's stored bytes in its memory.
+        for region in states[index].memory:
+            if region.ownership_id == resource_id and offset < len(region.bytes):
+                return normalize(region.bytes[offset])
+        return None
+
     for resource in resources:
         prefix = []
-        updates = images[0].updates[resource.id]
-        for offset in range(len(updates)):
-            if offset not in updates:
-                break
-            value = normalize(Expr.from_dict(updates[offset]['value']))
-            if any(offset not in image.updates[resource.id]
-                   or normalize(Expr.from_dict(image.updates[resource.id][offset]['value'])) != value
-                   for image in images[1:]):
+        offset = 0
+        while True:
+            value = stored_byte(0, resource.id, offset)
+            if value is None or any(stored_byte(index, resource.id, offset) != value
+                                    for index in range(1, len(images))):
                 break
             prefix.append(value)
+            offset += 1
         state.memory.append(MemoryRegion(resource.base, tuple(prefix), resource.byte_array, resource.length,
                                          ownership_id=resource.id))
     state.trace_count = 0
@@ -556,7 +654,7 @@ def generalize_owned_join(alternatives, *, original_seed, entry_pc, vocabulary,
     source_text = ' '.join([*(component['source'] for component in components if component['kind'] != 'register'),
                             *(text for value in state.registers.values() for text in source_inputs(value)),
                             *(text for value in state.conditions for text in source_inputs(value))])
-    used_binders = [binder for binder in original_binders
+    used_binders = [binder for binder in [*original_binders, *({**row, 'scope': []} for row in inherited_binders)]
                     if re.search(r"(?<![\w'])" + re.escape(binder['name']) + r"(?![\w'])", source_text)]
     # The inherited source has one explicit witness scope. Nested scopes need
     # their own packaging design rather than moving a binder across a wand.
