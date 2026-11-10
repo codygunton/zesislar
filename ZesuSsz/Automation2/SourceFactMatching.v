@@ -6,6 +6,7 @@ Require Import ZesuSsz.Automation2.ContextRange.
 Require Import ZesuSsz.Automation2.ArrayByteValues.
 Require Import ZesuSsz.Automation2.BitvectorFacts.
 Require Import ZesuSsz.Automation2.VmClosed.
+Require ZesuSsz.Automation2.ResidualLemmas.
 From Coq Require Import Lia.
 Require Coq.ZArith.Zbitwise.
 From iris.proofmode Require Import tactics environments.
@@ -256,6 +257,40 @@ Ltac zesu_source_check_fixed_tree requested :=
   | @bi_pure _ ?fact => zesu_source_check_fixed_fact fact
   | @bi_sep _ ?left ?right =>
       zesu_source_check_fixed_tree left; zesu_source_check_fixed_tree right
+  | _ => idtac
+  end.
+
+(* The same walk, but a fixed fact that the source closers cannot prove does
+   not stop the package. The residual tier gets one attempt. If it fails, the
+   fact becomes its own goal on the shelf, and the package continues with the
+   fact as a hypothesis. A fact with an evar is left to the matching step, so
+   the witnesses are chosen as before. The caller must unshelve. *)
+Ltac zesu_source_defer_fixed_fact requested :=
+  lazymatch requested with
+  | bool_decide ?fact = true => zesu_source_defer_fixed_fact fact
+  | bool_decide ?fact = false => zesu_source_defer_fixed_fact (~ fact)
+  | negb (bool_decide ?fact) = true => zesu_source_defer_fixed_fact (~ fact)
+  | negb (bool_decide ?fact) = false => zesu_source_defer_fixed_fact fact
+  | ?left /\ ?right =>
+      zesu_source_defer_fixed_fact left; zesu_source_defer_fixed_fact right
+  | _ =>
+      tryif has_evar requested then idtac
+      else
+        let checked := fresh "HsourceFixedConstraint" in
+        tryif (assert (checked : requested) by zesu_source_fact)
+        then clear checked
+        else
+          let deferred := fresh "HdeferredFact" in
+          first [assert (deferred : requested) by
+                   ZesuSsz.Automation2.ResidualLemmas.zesu_residual_lemma
+                | assert (deferred : requested); [shelve | ]]
+  end.
+
+Ltac zesu_source_defer_fixed_tree requested :=
+  lazymatch requested with
+  | @bi_pure _ ?fact => zesu_source_defer_fixed_fact fact
+  | @bi_sep _ ?left ?right =>
+      zesu_source_defer_fixed_tree left; zesu_source_defer_fixed_tree right
   | _ => idtac
   end.
 
