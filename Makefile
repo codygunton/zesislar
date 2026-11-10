@@ -172,11 +172,13 @@ RETAINED_TARGETS := \
   @ZesuSsz/Compliance/all \
   @ZesuSsz/Proofs/Tests/all \
   @ZesuSsz/Tests/all
-# Compiler bookings come from measured module peaks. Each green check-fast
-# merges the peaks of the modules it compiled into this shared profile.
+# Compiler bookings come from measured module peaks. Every guarded Dune
+# compile (gates and agent builds) books from this shared profile and merges
+# its own scope memory.peak into it (tools/module_memory.py observe).
 # Unmeasured or changed modules keep the full gate fence as their booking.
-MODULE_MEMORY_PROFILE ?= $(HOME)/.cache/zesu-module-memory/check-fast.json
+MODULE_MEMORY_PROFILE ?= $(or $(XDG_CACHE_HOME),$(HOME)/.cache)/zesu-module-memory/profile.json
 CHECK_FAST_OBSERVATIONS = $(abspath $(AGENT_BUILD_DIR))/module-memory-observations.jsonl
+CHECK_IRIS_OBSERVATIONS = $(abspath $(AGENT_BUILD_DIR))/module-memory-observations-iris.jsonl
 .PHONY: check-fast
 check-fast:
 	$(PYTHON) tools/correctness_gate.py run --target check-fast --build-dir $(AGENT_BUILD_DIR) -- \
@@ -187,13 +189,11 @@ _check-fast: stock-native-indexes check-evidence-tools check-signatures
 	rm -f $(CHECK_FAST_OBSERVATIONS)
 	$(GUARD_BATCH) check-fast -- \
 	  env ZESU_MODULE_MEMORY_OBSERVATIONS=$(CHECK_FAST_OBSERVATIONS) \
-	  $(if $(wildcard $(MODULE_MEMORY_PROFILE)),ZESU_MODULE_MEMORY_PROFILE=$(MODULE_MEMORY_PROFILE)) \
+	  ZESU_MODULE_MEMORY_PROFILE=$(MODULE_MEMORY_PROFILE) \
 	  $(PYTHON) tools/build_record.py --build-dir $(AGENT_BUILD_DIR) \
 	  --target check-fast -- $(OPAM) dune build --root . \
 	  --build-dir $(AGENT_BUILD_DIR) --cache=enabled -j$(FAST_JOBS) \
 	  $(RETAINED_TARGETS)
-	$(PYTHON) tools/module_memory.py profile-refresh \
-	  --observations $(CHECK_FAST_OBSERVATIONS) --profile $(MODULE_MEMORY_PROFILE)
 	$(PYTHON) tools/module_memory.py observation-summary --observations $(CHECK_FAST_OBSERVATIONS)
 
 .PHONY: check-signatures
@@ -213,11 +213,15 @@ check-iris:
 
 .PHONY: _check-iris
 _check-iris: stock-native-indexes check-evidence-tools
+	rm -f $(CHECK_IRIS_OBSERVATIONS)
 	$(GUARD_BATCH) check-iris -- \
+	  env ZESU_MODULE_MEMORY_OBSERVATIONS=$(CHECK_IRIS_OBSERVATIONS) \
+	  ZESU_MODULE_MEMORY_PROFILE=$(MODULE_MEMORY_PROFILE) \
 	  $(PYTHON) tools/build_record.py --build-dir $(AGENT_BUILD_DIR) \
 	  --target check-iris -- $(OPAM) dune build --root . \
 	  --build-dir $(AGENT_BUILD_DIR) --cache=enabled -j$(AGENT_JOBS) \
 	  @all
+	$(PYTHON) tools/module_memory.py observation-summary --observations $(CHECK_IRIS_OBSERVATIONS)
 
 # Correctness is unlocked. Use TIMING=1 only for exclusive measurements.
 TARGET ?= check-iris

@@ -14,6 +14,9 @@ import correctness_gate
 from correctness_gate import active_claims, digest, gate_environment, read, release, reserve, save, select_peak
 
 
+GIB = 1024 ** 3
+
+
 class GateClaimsTests(unittest.TestCase):
     def test_gates_force_cache_off(self):
         source = {'ZESU_PROOF_CACHE': 'on', 'other': 'preserved'}
@@ -179,6 +182,24 @@ class GateClaimsTests(unittest.TestCase):
         # A compiler reservation names its shell owner and marker, not "unknown".
         self.assertIn("shell:abc=5 owner=99999998 dead marker=99999998.gen", lines[0])
         self.assertNotIn("closed=", lines[0])
+
+    def test_measured_gate_records_its_cold_basis(self):
+        policy = dict(self.policy, cold_claim_bytes=90)
+        reserve(policy, self.owner, self.root / "ADMISSION.json", available=lambda: 1000)
+        ledger = read(self.ledger)
+        self.assertEqual(ledger["correctness_gate_cold_claims"], {policy["claim_key"]: 90})
+
+    def test_cached_gate_books_its_measured_harness_claim(self):
+        history = {"runs": [{"target": "check-fast", "success": True,
+                             "aggregate_harness_anon_peak_bytes": peak} for peak in (2 * GIB, 3 * GIB)]
+                   + [{"target": "check-iris", "success": True, "aggregate_harness_anon_peak_bytes": 40 * GIB},
+                      {"target": "check-fast", "success": False, "aggregate_harness_anon_peak_bytes": 30 * GIB}]}
+        self.assertEqual(correctness_gate.harness_claim(history, "check-fast"), 9 * GIB // 2)
+        # Unmeasured: None, and the gate keeps its full basis claim.
+        self.assertIsNone(correctness_gate.harness_claim({"runs": []}, "check-fast"))
+        self.assertEqual(correctness_gate.harness_claim(
+            {"runs": [{"target": "check-fast", "success": True, "aggregate_harness_anon_peak_bytes": 10}]},
+            "check-fast"), GIB)
 
     def test_duplicate_claim_refuses(self):
         reserve(self.policy, self.owner, self.root / "ADMISSION.json", available=lambda: 100)
