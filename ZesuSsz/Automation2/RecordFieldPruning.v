@@ -70,6 +70,25 @@ Ltac2 rec a3n_relevance (facts : (ident * constr list) list)
     else found) (keys, names) facts in
   if Int.equal (List.length next_names) (List.length names) then next_names
   else a3n_relevance facts next_keys next_names.
+(* A local definition stands for its body: a key that names one also brings
+   the keys of its body, so facts about the fields behind it stay relevant. *)
+Ltac2 rec a3n_unfold_keys (records : ident list)
+    (hyps : (ident * constr option * constr) list) (keys : constr list) :=
+  let next := List.fold_left (fun found key =>
+    match Constr.Unsafe.kind key with
+    | Constr.Unsafe.Var name =>
+        List.fold_left (fun found declaration =>
+          let (other, body, _) := declaration in
+          if Ident.equal name other then
+            match body with
+            | Some value => a3n_union found (a3n_keys records value)
+            | None => found
+            end
+          else found) found hyps
+    | _ => found
+    end) keys keys in
+  if Int.equal (List.length next) (List.length keys) then keys
+  else a3n_unfold_keys records hyps next.
 Ltac2 a3n_prune () :=
   let hyps := Control.hyps () in
   let target := Control.goal () in
@@ -88,8 +107,8 @@ Ltac2 a3n_prune () :=
     let (name, body, ty) := declaration in
     match body with Some _ => found | None =>
       if ZesuSsz.Automation2.ContextCollection.zesu_context_proposition ty
-      then (name, a3n_keys records ty) :: found else found end) [] hyps in
-  let relevant := a3n_relevance facts (a3n_keys records target) [] in
+      then (name, a3n_unfold_keys records hyps (a3n_keys records ty)) :: found else found end) [] hyps in
+  let relevant := a3n_relevance facts (a3n_unfold_keys records hyps (a3n_keys records target)) [] in
   let kept := List.fold_left (fun names declaration =>
     let (name, body, ty) := declaration in
     match body with
