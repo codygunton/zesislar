@@ -5,15 +5,18 @@ lists only the batch. A wall-time stop of one scope therefore finds the
 batch run whose process tree holds the scope's process and stops that run
 with Registry.stop, the supported stop path. A caller inside that run (a
 sweep driver is the batch command) cannot stop it in place, because the
-stop freezes every actor of the run. It hands the stop to a detached
-process outside the run's process tree instead.
+stop freezes every actor of the run. It hands the stop to a process
+outside the run's process tree and cgroup instead.
 
 Usage: run_wall_stop.py --pid PID [--store DIR]
 """
 import argparse
+import hashlib
 import json
 import os
 from pathlib import Path
+import shutil
+import subprocess
 import sys
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
@@ -33,15 +36,28 @@ def run_containing(registry, pid):
 
 
 def detach_stop(registry, run_id):
-    """Run Registry.stop in a process whose parent is outside the run."""
+    """Run Registry.stop outside the run's process tree and cgroup.
+
+    A forked process stays in the batch's systemd scope even after it is
+    reparented, and the batch cleanup stops that scope with everything in it,
+    so the stopper starts as its own transient user unit when systemd-run
+    exists (2026-11-10: a forked stopper died with the batch and left the
+    row at 'stopping'). Otherwise it is double-forked out of the tree.
+    """
+    command = [sys.executable, '-B', str(Path(R.__file__).resolve()),
+               '--store', str(registry.directory), 'stop', '--run-id', run_id]
+    if shutil.which('systemd-run'):
+        unit = 'zesu-wall-stop-' + hashlib.sha256(run_id.encode()).hexdigest()[:16]
+        subprocess.run(['systemd-run', '--user', '--quiet', '--collect', '--unit', unit, '--', *command],
+                       check=True)
+        return
     child = os.fork()
     if child == 0:
         try:
             os.setsid()
             if os.fork() != 0:
                 os._exit(0)
-            os.execv(sys.executable, [sys.executable, '-B', str(Path(R.__file__).resolve()),
-                                      '--store', str(registry.directory), 'stop', '--run-id', run_id])
+            os.execv(command[0], command)
         finally:
             os._exit(127)
     os.waitpid(child, 0)
