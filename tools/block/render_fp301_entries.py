@@ -64,6 +64,7 @@ from boundary_guards import (
     BoundaryRefused,
     RocqContradictionCheck,
     contradictory_alternatives,
+    contradictory_sources,
     refused_alternative_indices,
     require_complete_boundary,
     without_alternatives,
@@ -345,6 +346,18 @@ for suffix in pilots:
         definitions.append((name, definition))
         return record, definitions, facts
 
+    # A generated cut whose generalization binds a register value: refute
+    # each source alternative first, so an infeasible arm cannot widen it.
+    record, definitions, facts = rendered(boundary)
+    cut = record["manifest"].get("cut_generalization", {})
+    refused_sources = []
+    if (cut.get("kind") == "generalized_owned_cut" and cut["plan"]["binders"]
+            and boundary["status"] == "generated"):
+        refused_sources = contradictory_sources(
+            boundary, lambda alone: rendered(alone)[1], check
+        )
+        if refused_sources:
+            boundary = without_alternatives(boundary, refused_sources)
     refused_names = []
     while True:
         record, definitions, facts = rendered(boundary)
@@ -356,6 +369,7 @@ for suffix in pilots:
         refused_names.extend(refused)
         boundary = without_alternatives(boundary, refused_alternative_indices(refused))
     record["refused_alternatives"] = refused_names
+    record["refused_source_alternatives"] = refused_sources
     if definitions is None:
         cases.append(record)
         continue
