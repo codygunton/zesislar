@@ -13,6 +13,7 @@ Require Import ZesuSsz.Generated.DecodeItem.FP301.Pilot6974Structural.
 Require Import ZesuSsz.Generated.DecodeItem.FP301.Pilot6ae0Entries.
 Require Import ZesuSsz.Generated.DecodeItem.FP301.Pilot6974Entries.
 Require Import ZesuSsz.Automation2.All.
+Require Import ZesuSsz.Compliance.DecodeItemMeaningPorted.
 Local Open Scope Z_scope.
 
 (* goal 6960-1: goal.v sha256 feb2f8bd1f8b9ec1d2ac7cbe26e0a0cea47d35111ca4ba5a6d2ab4455af660f6, proof.v sha256 a1ed40d6d22231654f65ba05dd05b3b1a406a8fdab2b575da197689e716ae604 *)
@@ -154,3 +155,23 @@ split; first
   | bv_solve ].
 Qed.
 #[export] Hint Resolve residual_6960_029d46dfad7f404a : zesu_residual.
+
+(* goal 6960-10: goal.v sha256 0541360ead5aea9d6cef3619267b23a8419ca9216aef368094ba2e16039c482c, proof.v sha256 1dc036709f027e733a72a26973c6d1b9d007a95d064d4cd5e229e70ecd682c09 *)
+Lemma residual_6960_32c5c3628130a95d :
+  forall (args : DecodeItemArgs),
+  (decodeItemInputLength args = length (decodeItemInputBytes args)) ->
+  (0 ≤ decodeItemInputLength args) ->
+  (decodeItemInputLength args < bv_modulus 64) ->
+  (Z_to_bv 64 (decodeItemInputLength args) = 0%bv) ->
+  (DecodeItemReturnFacts.decodeItemRejectedFacts args).
+Proof.
+intros args H9 H13 H14 H41.
+apply decodeItemEmptyInputRejected.
+assert (Hl : decodeItemInputLength args = 0).
+{ apply (f_equal bv_unsigned) in H41. clear - H13 H14 H41. bv_simplify H41. first [lia | bv_solve]. }
+assert (Hn : length (decodeItemInputBytes args) = 0%nat) by (apply Nat2Z.inj; simpl; lia).
+destruct (decodeItemInputBytes args) as [|b bs] eqn:E.
+- reflexivity.
+- simpl in Hn. discriminate.
+Qed.
+#[export] Hint Resolve residual_6960_32c5c3628130a95d : zesu_residual.
