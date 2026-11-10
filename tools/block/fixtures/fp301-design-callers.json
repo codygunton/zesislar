@@ -1,0 +1,102 @@
+{
+  "schema": "fp301-design-callers.v1",
+  "renderer": "tools/block/render_design_callers.py",
+  "design": {
+    "path": "ZesuSsz/Evidence/decode_item_block_design.json",
+    "sha256": "996afa88a7ddcca3140bcbce51bea42b110df40bf9d34016a81fb9b2f525a103"
+  },
+  "callers": [
+    {
+      "case": "698c",
+      "output": "tools/block/generated/fp301_callers/Caller698c.v",
+      "premises": [
+        "instr_pre returnAddress (ZesuSsz.Generated.DecodeItem.FP301.FunctionReturnEntries.fp_machineReturn args returnAddress K)"
+      ],
+      "imports": [
+        "ZesuSsz.Generated.DecodeItem.FP301.Pilot698cEntries",
+        "ZesuSsz.Generated.DecodeItem.FP301.Pilot698cStructural",
+        "ZesuSsz.Generated.DecodeItem.FP301.FunctionReturnStructural"
+      ],
+      "statement_sha256": "48b09c98a1833fe4d082d83b7d1b67c5245307dc3bbf9da240bda26fb355c36e",
+      "sha256": "eb6926225c54b4a20a071cde9c9fa2b14a19cd06559505d8c0b2908b91d8f3db"
+    },
+    {
+      "case": "6a38",
+      "output": "tools/block/generated/fp301_callers/Caller6a38.v",
+      "premises": [
+        "instr_pre 0x800d6ae0 (ZesuSsz.Generated.DecodeItem.FP301.Pilot6ae0Entries.fp_machineAt6ae0 (args) (returnAddress) (K))%I",
+        "instr_pre 0x800d6a40 (ZesuSsz.Generated.DecodeItem.FP301.Pilot6a40Entries.fp_machineAt6a40 (args) (returnAddress) (K))%I"
+      ],
+      "imports": [
+        "ZesuSsz.Generated.DecodeItem.FP301.Pilot6a38Entries",
+        "ZesuSsz.Generated.DecodeItem.FP301.Pilot6a38Structural",
+        "ZesuSsz.Generated.DecodeItem.FP301.Pilot6ae0Entries",
+        "ZesuSsz.Generated.DecodeItem.FP301.Pilot6ae0Structural",
+        "ZesuSsz.Generated.DecodeItem.FP301.Pilot6a40Entries",
+        "ZesuSsz.Generated.DecodeItem.FP301.Pilot6a40Structural"
+      ],
+      "statement_sha256": "547f06262333d9eecef3704a36ead86d11d302ed910c79d71e21459bdb858910",
+      "sha256": "1239f8850f2f351037a0798059b266bf41dddeba1ebe45d9ba2aac311e2bdc2a"
+    },
+    {
+      "case": "6a40",
+      "output": "tools/block/generated/fp301_callers/Caller6a40.v",
+      "premises": [
+        "instr_pre returnAddress (ZesuSsz.Generated.DecodeItem.FP301.FunctionReturnEntries.fp_machineReturn args returnAddress K)"
+      ],
+      "imports": [
+        "ZesuSsz.Generated.DecodeItem.FP301.Pilot6a40Entries",
+        "ZesuSsz.Generated.DecodeItem.FP301.Pilot6a40Structural",
+        "ZesuSsz.Generated.DecodeItem.FP301.FunctionReturnStructural"
+      ],
+      "statement_sha256": "15cab927b2984d7160fb129700b3e8325dab62d39cfcf6470c44fa341b210123",
+      "sha256": "8256380825e754f293f167b3b5df6cc8a2785e7fa3f23975e10bdd3b4055418c"
+    },
+    {
+      "case": "6ad8",
+      "output": "tools/block/generated/fp301_callers/Caller6ad8.v",
+      "premises": [
+        "instr_pre 0x800d6b08 (ZesuSsz.Generated.DecodeItem.FP301.Pilot6b08Entries.fp_machineAt6b08 (args) (returnAddress) (K))%I",
+        "instr_pre 0x800d6ae0 (ZesuSsz.Generated.DecodeItem.FP301.Pilot6ae0Entries.fp_machineAt6ae0 (args) (returnAddress) (K))%I"
+      ],
+      "imports": [
+        "ZesuSsz.Generated.DecodeItem.FP301.Pilot6ad8Entries",
+        "ZesuSsz.Generated.DecodeItem.FP301.Pilot6ad8Structural",
+        "ZesuSsz.Generated.DecodeItem.FP301.Pilot6b08Entries",
+        "ZesuSsz.Generated.DecodeItem.FP301.Pilot6b08Structural",
+        "ZesuSsz.Generated.DecodeItem.FP301.Pilot6ae0Entries",
+        "ZesuSsz.Generated.DecodeItem.FP301.Pilot6ae0Structural"
+      ],
+      "statement_sha256": "dd8fe92f8114556266f7380d0ebec626411bf1fafdf129f08ee26a2443dceddc",
+      "sha256": "19febe7d3b1da9199e8c0ec4aa8a0bf8e1b3e1f6aaf57f484a37dc95a7da802f"
+    },
+    {
+      "case": "6ae0",
+      "output": "tools/block/generated/fp301_callers/Caller6ae0.v",
+      "premises": [
+        "instr_pre returnAddress (ZesuSsz.Generated.DecodeItem.FP301.FunctionReturnEntries.fp_machineReturn args returnAddress K)"
+      ],
+      "imports": [
+        "ZesuSsz.Generated.DecodeItem.FP301.Pilot6ae0Entries",
+        "ZesuSsz.Generated.DecodeItem.FP301.Pilot6ae0Structural",
+        "ZesuSsz.Generated.DecodeItem.FP301.FunctionReturnStructural"
+      ],
+      "statement_sha256": "df7c76f8f2f2912b0cc3932430b940894b9734cd6ca28c8e5594b1717c2fedd8",
+      "sha256": "7c352d7d33376d8f9d4373e38399fc8a21286262aa85b99e6a262ba20558e71d"
+    },
+    {
+      "case": "6b08",
+      "output": "tools/block/generated/fp301_callers/Caller6b08.v",
+      "premises": [
+        "instr_pre returnAddress (ZesuSsz.Generated.DecodeItem.FP301.FunctionReturnEntries.fp_machineReturn args returnAddress K)"
+      ],
+      "imports": [
+        "ZesuSsz.Generated.DecodeItem.FP301.Pilot6b08Entries",
+        "ZesuSsz.Generated.DecodeItem.FP301.Pilot6b08Structural",
+        "ZesuSsz.Generated.DecodeItem.FP301.FunctionReturnStructural"
+      ],
+      "statement_sha256": "31dacd62cd1f3d3a54325af74b39462584b4d476ca6d4922652c2352b60ceab7",
+      "sha256": "c0f6ab1fd7910bea61dd92d923711722d4c3869091ab6d089698c1fca920693d"
+    }
+  ]
+}

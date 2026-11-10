@@ -47,6 +47,11 @@
       {"pc": "6b08", "head": "6ac4", "block": "6ad8", "update": ["x14", "x13"], "branch": ["ltu", "x12", "x14", true]}
     ]
   },
+  "design_callers": {
+    "fixture": "tools/block/fixtures/fp301-design-callers.json",
+    "design": "ZesuSsz/Evidence/decode_item_block_design.json",
+    "blocks": ["698c", "6a38", "6a40", "6ad8", "6ae0", "6b08"]
+  },
   "loop_successors": {
     "pairs": [["6a38", "6a24"], ["6a40", "6a24"], ["6ad8", "6ac4"], ["6b08", "6ac4"]],
     "classes_per_head": 4,
