@@ -15,6 +15,8 @@ ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / "tools" / "residual"))
 from modules import PROOF_OPENER, parse_module
 from closed_literal_definitions import closed_literal_failures
+sys.path.insert(0, str(ROOT / "tools" / "residuals"))
+from render_residual_module import RenderError, module_name, parse_module as parse_residual_module
 BASELINE_PATH = Path(__file__).with_name("hygiene_baseline.json")
 SIZE_BASELINE_PATH = Path(__file__).with_name("proof_size_baseline.json")
 CLOSED_LITERAL_EXCEPTIONS_PATH = Path(__file__).with_name("closed_literal_exceptions.json")
@@ -24,6 +26,7 @@ HOOKS_PATH = "ZesuSsz/Automation/Hooks.v"
 LEGACY_PATH = "ZesuSsz/Automation/AllLegacy.v"
 LEGACY_HOOKS_PATH = "ZesuSsz/Automation/Legacy/Hooks.v"
 PROOFS_PREFIX = "ZesuSsz/Proofs/"
+RESIDUALS_PREFIX = "ZesuSsz/Residuals/"
 GENERATED_PROOFS_PREFIX = "ZesuSsz/Generated/"
 SHELL_ALLOWLIST = {"ZesuSsz/Compliance/Shell.v"}
 GENERATED_PREFIX = "generated/"
@@ -250,6 +253,19 @@ def generated_hand_line_failures(name: str, text: str) -> list[str]:
     return failures
 
 
+def residual_module_failures(name: str, text: str) -> list[str]:
+    """Residual modules hold only rendered declarations around copied proofs."""
+    if not name.startswith(RESIDUALS_PREFIX):
+        return []
+    try:
+        block, _, _ = parse_residual_module(text)
+    except RenderError as error:
+        return [f"residual module is not renderer output: {name}: {error}"]
+    if name != RESIDUALS_PREFIX + module_name(block) + ".v":
+        return [f"residual module name does not match its block: {name}"]
+    return []
+
+
 def forbidden_counts(text: str) -> dict[str, int]:
     return {
         identifier: text.count(identifier)
@@ -424,6 +440,7 @@ def main() -> None:
         failures.extend(trusted_declaration_failures(name, text, trusted))
         failures.extend(generated_hand_line_failures(name, text))
         failures.extend(retired_module_failures(name, text))
+        failures.extend(residual_module_failures(name, text))
 
         # Generated Sail interfaces contain upstream Axiom declarations.
         # Reviewed proof files remain subject to the complete placeholder check.
