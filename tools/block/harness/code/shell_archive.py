@@ -20,7 +20,9 @@ def document_path(directory, key, reference=None):
 
 
 def archive_record(data, key, reader):
-    reference = data.get('shell_archive', {}).get(key)
+    import admission_memory as memory
+    ledger = memory.active_ledger() or os.environ.get('ZESU_CANONICAL_LEDGER', memory.DEFAULT_LEDGER)
+    reference = memory.archived_shell_digest(data, key, ledger)
     if reference is None:
         raise KeyError(key)
     path = document_path(data['shell_archive_directory'], key, reference)
