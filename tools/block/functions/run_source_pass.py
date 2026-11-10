@@ -17,6 +17,8 @@ from boundary_guards import can_reach, cfg_successors
 from forward_resource_design import evaluate_owned_function
 from forward_resources import load_resource_vocabulary
 from join_generalize import generalize_owned_join
+from function_profiles import load_profile
+from loop_design import loop_head_seed
 from resource_seed import load_public_seed, seed_owned_resources
 from system_shape_seed import seed_system_shapes
 
@@ -45,7 +47,10 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--inputs', type=Path, required=True)
     parser.add_argument('--output', type=Path, required=True)
+    parser.add_argument('--function', default=None, help='function profile with loop designs')
     options = parser.parse_args()
+    profile = load_profile(options.function) if options.function else None
+    loop_designs = profile.get('loop_designs', []) if profile else []
     inputs, output = options.inputs.resolve(), options.output.resolve()
     output.mkdir(exist_ok=False)
     manifest = json.loads((inputs / 'SEED-MANIFEST.json').read_text())
@@ -75,7 +80,22 @@ def main():
     while True:
         report = evaluate_owned_function(function, traces, seeds, vocabulary=vocabulary)
         added = None
-        for pc in joins:
+        # A loop head is seeded once every path into its entry block is complete.
+        for design in loop_designs:
+            head = profile.pc(design['head'])
+            entry = next(row for row in report['boundaries'] if row['pc'] == profile.pc(design['entry_predecessor']))
+            if head in seeds or entry['reaching_stops']:
+                continue
+            try:
+                seeds[head] = loop_head_seed(report, design, profile, root_seed=owned,
+                                             vocabulary=vocabulary, continuation=continuation)
+            except ValueError as error:
+                refusals[head] = 'loop head seed refused: ' + str(error)
+                continue
+            refusals.pop(head, None)
+            added = head
+            break
+        for pc in joins if added is None else []:
             if hex(pc) in seeds:
                 continue
             if any(other != pc and hex(other) not in seeds and can_reach(successors, other, pc)

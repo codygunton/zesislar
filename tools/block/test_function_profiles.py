@@ -59,6 +59,12 @@ class DecodeItemProfile(unittest.TestCase):
             committed = ROOT / profile['callers_directory'] / ('Caller' + head + '.v')
             self.assertEqual(committed.read_text(), source)
 
+    def test_every_loop_head_has_a_seed_design(self):
+        profile = load_profile()
+        self.assertEqual([row['head'] for row in profile['loop_designs']], profile['loop_heads'])
+        for row in profile['loop_designs']:
+            self.assertIn(row['array_cursor']['register'], row['registers'])
+
     def test_return_precondition_matches_the_committed_caller(self):
         profile = load_profile()
         caller = (ROOT / profile['callers_directory'] / 'Caller6a78.v').read_text()
