@@ -521,8 +521,16 @@ class ScopeReader:
                 return {'verified': True, 'closed': True, 'live_bytes': 0}
             if 'populated 1' not in events.splitlines() and not (static and 'populated 0' in events.splitlines()):
                 raise ValueError('The retained aggregate population is unknown.')
-            return dict(bound, verified=True, aggregate_verified=True, live_bytes=live,
-                        reason='authenticated aggregate remains populated')
+            row = dict(bound, verified=True, aggregate_verified=True, live_bytes=live,
+                       reason='authenticated aggregate remains populated')
+            try:
+                anon = next(int(line.split()[1]) for line in
+                            (path / 'memory.stat').read_text().splitlines() if line.startswith('anon '))
+                if self.directory(path) == before and anon >= 0:
+                    row['anon_bytes'] = anon
+            except (OSError, StopIteration, ValueError, IndexError):
+                pass
+            return row
         except (OSError, ValueError, KeyError, TypeError) as error:
             return {'verified': False, 'live_bytes': 0, 'reason': str(error)}
 
@@ -834,6 +842,50 @@ def shell_rows(data, reader):
     return rows
 
 
+def unmeasured_shell(data, key):
+    """A compile booked at its full fence has no measured claim."""
+    try:
+        marker = Path(data['shell_claim_owners'][key]['marker'])
+        fields = dict(line.split('=', 1) for line in marker.read_text().splitlines()[1:] if '=' in line)
+        return int(fields['memory_claim_bytes']) >= int(fields['memory_fence_bytes'])
+    except (KeyError, OSError, ValueError, TypeError):
+        return True
+
+
+def sum_gate_compiles(data, claims, observations, new_observation=None, new_bytes=0, new_unmeasured=False):
+    """Book a measured gate as its own claim plus its running compiles.
+
+    Shared-aggregate grouping counts members as max(), so a gate claim had to
+    cover every compile inside it: 47.3 GiB booked at a 0.55 GiB anon peak on a
+    cached check-fast. A gate with a measured own claim (it records its cold
+    basis in correctness_gate_cold_claims) now books own + the sum of its
+    running compile claims, and at least its cold basis while any of them is
+    unmeasured. An unmeasured gate keeps the max() rule.
+    """
+    cold_claims = data.get('correctness_gate_cold_claims', {})
+    for gate, cold in cold_claims.items():
+        own = claims.get(gate, 0)
+        sample = observations.get(gate, {})
+        if not own or sample.get('verified') is not True or sample.get('aggregate_verified') is not True:
+            continue
+        members = [key for key, amount in claims.items()
+                   if key != gate and amount and key in data.get('shell_claim_owners', {})
+                   and observations.get(key, {}).get('verified') is True
+                   and observations[key].get('scope') == sample.get('scope')]
+        total = own + sum(claims[key] for key in members)
+        # A compile asking to start inside this gate adds to the sum too;
+        # grouped with the gate it would otherwise count as max().
+        joining = ((new_observation or {}).get('scope') == sample.get('scope')
+                   and new_observation.get('verified') is True)
+        if joining:
+            total += new_bytes
+        if any(unmeasured_shell(data, key) for key in members) or (joining and new_unmeasured):
+            total = max(total, cold)
+        claims[gate] = total
+        for key in members:
+            claims[key] = 0
+
+
 def projection(data, claims, new_bytes, available_bytes, *, reader=None, new_observation=None,
                pending_shell=None):
     reader = ScopeReader() if reader is None else reader
@@ -879,15 +931,34 @@ def projection(data, claims, new_bytes, available_bytes, *, reader=None, new_obs
             if key not in data.get('shell_claim_owners', {}):
                 observations[key] = observation
     retained_groups = dict(data.get('legacy_aggregate_holds', {}))
-    retained_groups.update(data.get('shell_aggregate_holds', {}))
+    shell_holds = data.get('shell_aggregate_holds', {})
+    retained_groups.update(shell_holds)
     for key, retained in retained_groups.items():
         sample = reader.residual(retained['aggregate'])
         if sample.get('closed') is True:
             continue
         # An unknown retained scope keeps its last booking. A verified live
-        # aggregate contributes actual usage even after its final token ends.
+        # aggregate contributes actual usage even after its final token ends:
+        # its live anonymous memory plus the bookings of its compiles that
+        # still run. Without this a batch kept the largest claim it ever
+        # released until it ended (55 holds, 298.8 GiB on 2026-11-10).
         claims[key] = retained['fallback_bytes']
+        if (key in shell_holds and sample.get('aggregate_verified') is True
+                and type(sample.get('anon_bytes')) is int):
+            running = sum(amount for other, amount in claims.items()
+                          if other != key and amount
+                          and observations.get(other, {}).get('verified') is True
+                          and observations[other].get('scope') == sample.get('scope'))
+            claims[key] = min(retained["fallback_bytes"], sample["anon_bytes"] + running)
         observations[key] = sample
+    new_unmeasured = False
+    if pending_shell is not None:
+        try:
+            fields = dict(line.split('=', 1) for line in Path(pending_shell[1]).read_text().splitlines()[1:] if '=' in line)
+            new_unmeasured = int(fields['memory_claim_bytes']) >= int(fields['memory_fence_bytes'])
+        except (KeyError, OSError, ValueError, TypeError, IndexError):
+            new_unmeasured = True
+    sum_gate_compiles(data, claims, observations, new_observation, new_bytes, new_unmeasured)
     result = dict(evaluate(claims, new_bytes, available_bytes, observations=observations,
                            new_observation=new_observation,
                            slice_max_bytes=reader.slice_max()),
@@ -1243,14 +1314,39 @@ def ledger_transaction(ledger):
             _ledger_transaction.reset(token)
 
 
+def archived_shell_digest(data, key, ledger):
+    """A released token's archive digest; the archive module is optional in fixtures."""
+    if key in data.get('shell_archive', {}):
+        return data['shell_archive'][key]
+    try:
+        import ledger_archive
+    except ImportError:
+        return None
+    return ledger_archive.archived_shell_digest(data, key, ledger)
+
+
+def active_ledger():
+    active = _ledger_transaction.get()
+    return active[0] if active is not None else None
+
+
 def write_ledger(path, data):
     check_test_ledger(path)
     path = Path(path)
+    try:
+        import ledger_archive
+    except ImportError:
+        ledger_archive = None
+    if ledger_archive is not None and ledger_archive.due(path, data):
+        # Closed records leave the hot file before it is rewritten.
+        ledger_archive.compact(path, data, ScopeReader(), ended_process)
     fd, name = tempfile.mkstemp(prefix='.LEDGER.', dir=path.parent)
     try:
         with os.fdopen(fd, 'w') as stream:
-            json.dump(data, stream, separators=(",", ":"))
-            stream.write('\n'); stream.flush(); os.fsync(stream.fileno())
+            # One write: json.dump issues one call per token (0.16 s against
+            # 0.04 s for 17.5 MB), and every caller holds the guard mutex.
+            stream.write(json.dumps(data, separators=(",", ":")) + '\n')
+            stream.flush(); os.fsync(stream.fileno())
         os.replace(name, path)
     finally:
         Path(name).unlink(missing_ok=True)
@@ -1271,6 +1367,21 @@ def current_projection(request_bytes, available_bytes, *, ledger=None, reader=No
     ledger = Path(ledger or os.environ.get('ZESU_CANONICAL_LEDGER', DEFAULT_LEDGER))
     with ledger_transaction(ledger) as data:
         return projection(data, ledger_claims(data), request_bytes, available_bytes, reader=reader)
+
+
+def prune_closed_aggregate_holds(data, reader):
+    """Drop retained shell aggregates whose cgroup no longer exists.
+
+    A removed cgroup cannot return with its recorded identity, and projection
+    counts it as zero. Without pruning, every admission re-samples each hold
+    ever recorded under the global guard mutex (4,228 of 4,250 on 2026-11-09).
+    """
+    holds = data.get('shell_aggregate_holds', {})
+    for key in [key for key, hold in holds.items()
+                if not Path(hold['aggregate']['scope']).exists()
+                and not Path(hold['aggregate']['scope']).is_symlink()
+                and reader.residual(hold['aggregate']).get('closed') is True]:
+        del holds[key]
 
 
 def confirm_shell(marker, replacement, request_bytes, available_bytes, *, ledger=None, reader=None):
@@ -1324,7 +1435,11 @@ def confirm_shell(marker, replacement, request_bytes, available_bytes, *, ledger
             'generation': generation}
         if guard_source is not None:
             data['shell_claim_owners'][key]['guard_source'] = guard_source
-        data.setdefault('shell_admissions', {})[key] = result
+        # Keep the decision and its totals; the per-claim observations were
+        # 35 kB per live token in the hot ledger.
+        data.setdefault('shell_admissions', {})[key] = {
+            name: value for name, value in result.items() if name != 'claim_observations'}
+        prune_closed_aggregate_holds(data, reader)
         write_ledger(ledger, data)
         os.replace(replacement, marker)
         data['shell_claim_owners'][key]['token_identity'] = reader.file_identity(marker.lstat())
@@ -1467,7 +1582,7 @@ def ended_process(reader, actor):
 def _shell_recovery_record(data, key, reader):
     record = data.get('shell_claim_owners', {}).get(key)
     released = data.get('shell_releases', {}).get(key)
-    if record is None and key in data.get('shell_archive', {}):
+    if record is None and archived_shell_digest(data, key, active_ledger()) is not None:
         from shell_archive import released_records
         record, released = released_records(data, key, reader)
         return record, released, True
@@ -1483,7 +1598,7 @@ def recover_dead_shell(marker, *, ledger=None, reader=None):
         key = shell_key(marker)
         admitted, released, was_archived = _shell_recovery_record(data, key, reader)
         archived = admitted if was_archived else None
-        if was_archived and (data['fixed_claims'].get(key) != 0
+        if was_archived and (data['fixed_claims'].get(key, 0) != 0
                 or released['owner'] != admitted['owner'] or released['marker'] != admitted['marker']):
             raise ValueError('The archived token lacks exact released ownership.')
         if admitted is not None:
@@ -1540,9 +1655,19 @@ def recover_dead_shell(marker, *, ledger=None, reader=None):
                         raise ValueError('The admitted recovery scope is outside its owned slice.')
                     units.append(path.name)
         units = list(dict.fromkeys(units))
-        if not units:
+        writer = fields.get('writer', '')
+        if not units and lines[0] == 'confirmed' and re.fullmatch(r'[a-zA-Z0-9._-]+', writer or ''):
+            # A writer confirmed its slot and died before systemd created its
+            # scope. Every writer scope name carries the owner PID, so absence
+            # of any such scope proves no compiler ran for this token.
+            if any(reader.parent.rglob(f'*-writer-{writer}-*-{owner["pid"]}-*')):
+                raise ValueError('The orphan writer token still has a scope.')
+            units = [f'writer-{writer}-*-{owner["pid"]}-*']
+        elif not units:
             raise ValueError('The orphan token lacks its recorded scope.')
         for unit in units:
+            if unit.startswith('writer-') and '*' in unit:
+                continue
             if (not re.fullmatch(r'[a-zA-Z0-9_.@:-]+\.(scope|slice)', unit)
                     or any(reader.parent.rglob(unit))):
                 raise ValueError('The orphan token scope is still present or invalid.')
@@ -1570,6 +1695,7 @@ def recover_dead_shell(marker, *, ledger=None, reader=None):
                 'marker': str(marker), 'owner': admitted['owner'],
                 'dead_owner_recovery': True, 'absence_only': True}
             _archive_shell_release(ledger, data, key, reader)
+        prune_closed_aggregate_holds(data, reader)
         write_ledger(ledger, data)
         marker.unlink()
         return True
@@ -1735,7 +1861,7 @@ def release_shell(marker, *, ledger=None, reader=None, require_dead_owner=False)
             if was_archived:
                 data.setdefault('shell_recovery_audits', {})[key] = dict(cleanup,
                     route='archived_release', marker=str(marker), owner=record['owner'],
-                    archive_sha256=data['shell_archive'][key])
+                    archive_sha256=archived_shell_digest(data, key, ledger))
             else:
                 released['marker_cleanup'] = cleanup
                 _archive_shell_release(ledger, data, key, reader)
@@ -1778,6 +1904,7 @@ def release_shell(marker, *, ledger=None, reader=None, require_dead_owner=False)
             'previous_token_identity': record.get('token_identity'),
             'observed_token_identity': token_identity}
         _archive_shell_release(ledger, data, key, reader)
+        prune_closed_aggregate_holds(data, reader)
         write_ledger(ledger, data)
         marker.unlink()
         return True

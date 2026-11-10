@@ -102,5 +102,6 @@
   "block/declaration_mcp.py": "code/declaration_mcp.py",
   "block/replay_object_view.py": "code/replay_object_view.py",
   "block/staging_peaks.py": "code/staging_peaks.py",
-  "block/shell_archive.py": "code/shell_archive.py"
+  "block/shell_archive.py": "code/shell_archive.py",
+  "block/ledger_archive.py": "code/ledger_archive.py"
 }
