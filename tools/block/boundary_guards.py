@@ -8,7 +8,8 @@ boundary as `reaching_stops`; a boundary without that record is refused too.
 Guard 2. Each surviving alternative must be consistent. A rendered
 alternative definition is refused when its pure facts (path conditions, loop
 facts, and the domain fact, which the check unfolds) prove False with the
-cursor solver. The check is a generator-time Rocq run; no proof script is
+cursor solver. A generated cut checks each source alternative before it is
+generalized, so an infeasible arm cannot widen a register value. The check is a generator-time Rocq run; no proof script is
 written into a generated file.
 """
 from pathlib import Path
@@ -157,6 +158,27 @@ def contradictory_alternatives(definitions, check):
             binders, facts = alternative_facts(definition)
             if check(name, binders, facts):
                 refused.append(name)
+    return refused
+
+
+def contradictory_sources(boundary, render_alone, check):
+    """Return the indices of source alternatives whose own facts prove False.
+
+    A cut generalization joins every alternative. One infeasible arm with a
+    different register value turns the value that the feasible arms agree on
+    into a binder with only a range, and the link to its source is lost. So
+    each alternative of a generated cut is rendered alone and checked before
+    the cut is generalized. render_alone returns the definitions or None.
+    """
+    refused = []
+    for index, alternative in enumerate(boundary['alternatives']):
+        definitions = render_alone({**boundary, 'alternatives': [alternative]})
+        if definitions is None:
+            continue
+        renamed = [(re.sub(r'_ForwardA0(N\d+)$', r'_ForwardA%d\1' % index, name), text)
+                   for name, text in definitions]
+        if contradictory_alternatives(renamed, check):
+            refused.append(index)
     return refused
 
 
