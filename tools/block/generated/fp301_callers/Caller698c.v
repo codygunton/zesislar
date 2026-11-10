@@ -8,6 +8,7 @@ Require Import stdpp.bitvector.definitions.
 Require Import ZesuSsz.Contracts.RlpDecodeItemContract.
 Require Import ZesuSsz.Contracts.DecodeItemSelected.
 Require Import ZesuSsz.Automation2.All.
+Require Import ZesuSsz.Residuals.Block800d698c.
 Require Import ZesuSsz.Compliance.DecodeItemMeaningPorted.
 Local Open Scope Z_scope.
 
