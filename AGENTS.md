@@ -62,6 +62,13 @@ A proof that needs more than five `iRename select` or more than forty lines
 per `instr_body` handoff has found a missing rule. Report the residual goal
 to the lead and fix the rule in `Automation/`.
 
+Solvers run first, on selected facts only. When a selected-facts solver fails on a pure goal,
+export the goal as a standalone lemma (`tools/residuals/`); a model writes its proof, ending in `Qed.`, and Rocq checks it.
+`tools/residuals/render_residual_module.py` writes `ZesuSsz/Residuals/Block<address>.v`: rendered declarations
+around proofs copied verbatim. Never edit or hand-write those proofs; send a failing one back as FAIL.
+The block's caller imports its residual module, and `zesu_block2. Qed.` applies the lemmas through the
+`zesu_residual` hints (`Automation2/ResidualLemmas.v`), tried after the solver fails.
+
 Termination is proved separately in Phase 5 of the active plan with the
 verified executor in `Export/Executor.v`. Never prove termination by hand
 for each instruction.

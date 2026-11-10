@@ -1193,8 +1193,10 @@ Ltac zesu_block_base :=
   try zesu_entry_intro_goal_if_enabled;
   zesu_with_rule_set ltac:(zesu_block_v1) ltac:(zesu_block_v2).
 
+(* Residual lemmas close the pure goals that every other tier leaves open. *)
 Ltac zesu_block2 :=
-  zesu_block_base; try zesu_finish_residual_cascade.
+  zesu_block_base; try zesu_finish_residual_cascade;
+  try ResidualLemmas.zesu_residual_lemma.
 
 Ltac zesu_block_simpl :=
   iStartProof;

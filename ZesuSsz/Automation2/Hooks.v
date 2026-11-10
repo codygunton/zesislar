@@ -1,5 +1,6 @@
 Require ZesuSsz.Automation.Hooks.
 Require Import ZesuSsz.Automation2.ContextRange.
+Require ZesuSsz.Automation2.ResidualLemmas.
 Require Import ZesuSsz.Automation2.RangeFacts.
 Require Import ZesuSsz.Automation2.ByteArrayAssemblyCodec.
 Require Import ZesuSsz.Automation2.MemoryAddress.
@@ -363,8 +364,9 @@ Ltac zesu_strict_signed_if_enabled :=
       end
   end.
 
-(* Library solvers also call these primitives without the project finisher. *)
-Ltac bv_solve ::= zesu_context_filter ltac:(first [solve [zesu_strict_signed_if_enabled] |
+(* Library solvers also call these primitives without the project finisher.
+   A residual lemma is the last attempt after the solver fails. *)
+Ltac bv_solve ::= first [zesu_context_filter ltac:(first [solve [zesu_strict_signed_if_enabled] |
   solve [zesu_low_mask_sub_modulus_if_enabled] |
   solve [zesu_low_mask_if_closed] |
   (
@@ -372,7 +374,7 @@ Ltac bv_solve ::= zesu_context_filter ltac:(first [solve [zesu_strict_signed_if_
   bv_saturate_unsigned;
   bv_solve_unfold_tac;
   unfold bv_signed, bv_swrap, bv_wrap, bv_half_modulus, bv_modulus, bv_unsigned in *;
-  simpl; lia)]).
+  simpl; lia)]) | ResidualLemmas.zesu_residual_lemma].
 
 (* A caller that imports isla after this module restores the library lia
    and bv_solve, which read the whole context. Try the facts linked to the
@@ -2499,7 +2501,8 @@ Ltac liAAsm ::=
   end.
 
 
-Ltac Lia.lia ::= zesu_context_filter ltac:(zesu_lia_linear_first3).
+Ltac Lia.lia ::= first [zesu_context_filter ltac:(zesu_lia_linear_first3) |
+  ResidualLemmas.zesu_residual_lemma].
 
 
 (* The callback must prove the payload equality. Owners are never converted. *)
