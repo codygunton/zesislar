@@ -138,14 +138,30 @@ def parse_module(text):
     return block, header, rows
 
 
+def merged_header(header, imports, goal):
+    """One import list for the block: goals may add imports before Local Open Scope.
+
+    Each goal's imports must be the shared list with extra lines inserted, so
+    the module's header is the union in order. Every copied proof is then
+    checked again in that context when the module compiles.
+    """
+    def body(lines):
+        return [line for line in lines if not line.startswith("Local Open Scope")]
+    longer, shorter = (imports, header) if len(imports) >= len(header) else (header, imports)
+    rest = iter(body(longer))
+    if not all(any(line == other for other in rest) for line in body(shorter)):
+        raise RenderError("%s: its imports conflict with the block's other goals." % goal)
+    return longer
+
+
 def render_from_goals(block, goals, manifest=None):
     header, rows = None, []
+    own = "Require Import ZesuSsz.Residuals.%s." % module_name(block)
     for goal in goal_ids(goals, block, manifest):
         imports, lemma, goal_sha, proof_sha = read_goal(Path(goals) / goal)
-        if header is None:
-            header = imports
-        elif imports != header:
-            raise RenderError("%s: its imports differ from the block's other goals." % goal)
+        # A caller imports its own residual module; the module cannot import itself.
+        imports = [line for line in imports if line != own]
+        header = imports if header is None else merged_header(header, imports, goal)
         name = re.match(r"Lemma (\S+)", lemma)[1]
         if not re.fullmatch(NAME, name) or not name.startswith("residual_%s_" % block):
             raise RenderError("%s: unexpected lemma name %s." % (goal, name))

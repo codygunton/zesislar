@@ -135,3 +135,17 @@ class CallerImportTests(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class MergedHeaderTests(unittest.TestCase):
+    def test_added_imports_merge_and_the_own_module_is_dropped(self):
+        with tempfile.TemporaryDirectory() as root:
+            goal_dir(root, 1)
+            extra = HEADER.replace("Local Open Scope Z_scope.\n",
+                                   "Require Import ZesuSsz.Compliance.X.\n"
+                                   "Require Import ZesuSsz.Residuals.Block800d1234.\n"
+                                   "Local Open Scope Z_scope.\n")
+            goal_dir(root, 2, header=extra)
+            text = render_from_goals("1234", root)
+        self.assertIn("Require Import ZesuSsz.Compliance.X.\n", text)
+        self.assertNotIn("ZesuSsz.Residuals.Block800d1234", text)
