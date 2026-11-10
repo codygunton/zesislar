@@ -65,6 +65,18 @@ class StopReachability(unittest.TestCase):
         for pc in (16, 24, 32):
             require_complete_boundary(boundary(result, pc))
 
+    def test_fault_arm_that_leaves_the_function_drops_no_path(self):
+        # The trap vector 0 and the address 64 are outside the function [16, 36).
+        leaving = [dict(stop('intermediate_pc_mismatch', 16), actual_pc=hex(0)),
+                   dict(stop('outside_pc', 24), actual_pc=hex(64))]
+        result = annotate_reaching_stops(report(*leaving), FUNCTION)
+        for pc in (16, 24, 32):
+            require_complete_boundary(boundary(result, pc))
+        inside = dict(stop('intermediate_pc_mismatch', 16), actual_pc=hex(32))
+        result = annotate_reaching_stops(report(inside), FUNCTION)
+        with self.assertRaisesRegex(BoundaryRefused, '1 retained stops can reach the boundary 0x20'):
+            require_complete_boundary(boundary(result, 32))
+
     def test_boundary_without_a_reachability_record_is_refused(self):
         with self.assertRaisesRegex(BoundaryRefused, 'no stop-reachability record'):
             require_complete_boundary({'pc': hex(32), 'status': 'generated', 'alternatives': [{}]})

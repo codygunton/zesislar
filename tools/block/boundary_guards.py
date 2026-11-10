@@ -2,7 +2,8 @@
 
 Guard 1. The forward pass drops a path when it stops it. A boundary that a
 dropped path can reach in the CFG has an incomplete alternative inventory, so
-a renderer must refuse it. The forward pass records these stops on each
+a renderer must refuse it. A fault arm that jumps out of the function (to the
+trap vector) drops no path to a boundary. The forward pass records these stops on each
 boundary as `reaching_stops`; a boundary without that record is refused too.
 
 Guard 2. Each surviving alternative must be consistent. A rendered
@@ -19,6 +20,8 @@ import subprocess
 # A cut stop records its boundary before it stops; an infeasible stop has a
 # literal False path condition. Neither drops a feasible path.
 PASSING_STOPS = frozenset({'handwritten_cut', 'infeasible'})
+# A stop of these kinds whose concrete target is outside the function left it.
+LEAVING_STOPS = frozenset({'intermediate_pc_mismatch', 'outside_pc'})
 ALTERNATIVE = re.compile(r'_(?:ForwardA\d+N\d+|LoopExit)$')
 STOP_FIELDS = ('reason', 'block_pc', 'instruction_pc', 'seed_pc', 'path')
 
@@ -48,9 +51,19 @@ def can_reach(successors, start, target):
     return False
 
 
-def reaching_stops(stops, successors, target):
+def leaves_function(stop, function):
+    """A fault arm jumps to a concrete address outside the function (the trap
+    vector). It leaves the function, so it drops no path to a boundary."""
+    actual = stop.get('actual_pc')
+    if stop['reason'] not in LEAVING_STOPS or not isinstance(actual, str):
+        return False
+    return not _pc(function['entry']) <= _pc(actual) < _pc(function['end'])
+
+
+def reaching_stops(stops, successors, target, function=None):
     """Return the stops that dropped a path whose block can reach target."""
     return [stop for stop in stops if stop['reason'] not in PASSING_STOPS
+            and not (function is not None and leaves_function(stop, function))
             and can_reach(successors, _pc(stop['block_pc']), target)]
 
 
@@ -59,7 +72,7 @@ def annotate_reaching_stops(report, function):
     for boundary in report['boundaries']:
         boundary['reaching_stops'] = [{key: stop.get(key) for key in STOP_FIELDS}
                                       for stop in reaching_stops(report['stops'], successors,
-                                                                 _pc(boundary['pc']))]
+                                                                 _pc(boundary['pc']), function)]
     return report
 
 
