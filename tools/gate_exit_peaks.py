@@ -52,7 +52,42 @@ def code_identity(workspace):
             'environment': {key: os.environ.get(key) for key in ('COQC', 'DUNE_PROFILE', 'ZESU_GATE_MAX_JOBS', 'ZESU_FAST_MAX_JOBS', 'ZESU_MAX_COQC', 'ZESU_WRITER_MAX_COQC', 'ZESU_GATE_JOBS', 'DUNE_JOBS', 'AGENT_JOBS', 'COQFLAGS', 'OCAMLPATH')}}
 
 
-def sample(aggregate, request, actor, *, reader=None):
+class AnonymousPeak:
+    """Sample the aggregate's anonymous memory (memory.stat anon) while a gate runs.
+
+    memory.peak counts page cache, which the kernel reclaims before the fence
+    acts; a cold check-fast reached 31.5 GiB memory.peak at a few GiB of anon.
+    """
+    def __init__(self, aggregate, interval=1.0):
+        import threading
+        self.path, self.interval, self.peak = Path(aggregate) / 'memory.stat', interval, 0
+        self.done = threading.Event()
+        self.thread = threading.Thread(target=self.run, daemon=True)
+
+    def read(self):
+        try:
+            value = next(int(line.split()[1]) for line in self.path.read_text().splitlines()
+                         if line.startswith('anon '))
+            self.peak = max(self.peak, value)
+        except (OSError, StopIteration, ValueError, IndexError):
+            pass
+
+    def run(self):
+        while not self.done.is_set():
+            self.read()
+            self.done.wait(self.interval)
+
+    def start(self):
+        self.thread.start()
+
+    def stop(self):
+        self.done.set()
+        self.thread.join()
+        self.read()
+        return self.peak
+
+
+def sample(aggregate, request, actor, *, reader=None, anon_peak_bytes=None):
     """Read the live owned aggregate after its payload exits, before cleanup."""
     reader = ScopeReader() if reader is None else reader
     identity = reader.directory(aggregate)
@@ -70,7 +105,8 @@ def sample(aggregate, request, actor, *, reader=None):
     return {'schema': SCHEMA, 'role': 'correctness-gate', 'run_kind': request['target'],
             'owner': request['owner'], 'actor': actor, 'guard_source': guard,
             'aggregate': {'path': str(aggregate), 'device': identity[0], 'inode': identity[1]},
-            'physical_fence_bytes': limit, 'memory_peak_bytes': peak}
+            'physical_fence_bytes': limit, 'memory_peak_bytes': peak,
+            **({'anon_peak_bytes': anon_peak_bytes} if anon_peak_bytes and anon_peak_bytes <= peak else {})}
 
 
 def endorse(output, request, ledger, *, closed):
@@ -141,9 +177,11 @@ def latest(ledger, target, command, limit, identity, *, closed, guard_reader=Non
                     or type(measured['memory_peak_bytes']) is not int or measured['memory_peak_bytes'] <= 0
                     or measured['memory_peak_bytes'] != result['aggregate_peak_bytes']):
                 return None
+            anon = measured.get('anon_peak_bytes')
+            booked = anon if type(anon) is int and 0 < anon <= measured['memory_peak_bytes'] else measured['memory_peak_bytes']
             return {'reason': 'last_released_guard_gate_peak', 'family': target,
                     'record': entry, 'aggregate_peak_bytes': measured['memory_peak_bytes'],
-                    'claim_bytes': max(GIB, (3*measured['memory_peak_bytes']+1)//2),
+                    'anon_peak_bytes': anon, 'claim_bytes': max(GIB, (3*booked+1)//2),
                     'physical_fence_bytes': limit,
                     'measurement_provenance': result.get('cache_provenance'),
                     'qualification': 'Last guard-recorded peak for this unchanged source tree and run kind. Cache state remains qualified.'}
