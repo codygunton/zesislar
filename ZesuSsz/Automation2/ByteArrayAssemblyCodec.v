@@ -33,6 +33,11 @@ Ltac zesu_byte_array_assemble_codec :=
     solve [zesu_byte_array_codec_view;
       ByteArrayAssembly.zesu_byte_array_assemble]].
 
+Ltac zesu_byte_array_assemble_owned_codec :=
+  first [ByteArrayAssembly.zesu_byte_array_assemble_owned |
+    solve [zesu_byte_array_codec_view;
+      ByteArrayAssembly.zesu_byte_array_assemble_owned]].
+
 (* Preserve the width equation supplied by the source array elimination. *)
 Ltac zesu_byte_array_normalize_stride :=
   repeat multimatch goal with
@@ -310,7 +315,7 @@ Ltac zesu_byte_array_rebuild_requested :=
       lazymatch cells with cons _ _ => idtac end;
       let selected := constr:(SGoal (SpecGoal GSpatial false nil cells false)) in
       iAssert (base ↦ₘ{fraction}∗ bytes)%I with selected as "Hzesu_rebuilt_array";
-      [ResourceGroups.zesu_open_resource_groups; zesu_byte_array_assemble_codec |
+      [ResourceGroups.zesu_open_resource_groups; zesu_byte_array_assemble_owned_codec |
        iEval (rewrite isla.ghost_state.mem_mapsto_array_eq) in "Hzesu_rebuilt_array";
        iFrame "Hzesu_rebuilt_array"]
   end.
