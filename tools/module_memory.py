@@ -147,7 +147,15 @@ def load_profile(path):
 # booking hits the same limit.
 PRIOR_NUMERATOR, PRIOR_DENOMINATOR = 3, 2
 PRIOR_FLOOR_BYTES = 2 * GIB
-PRIOR_ROOTS = (PurePosixPath("ZesuSsz"),)
+PRIOR_ROOTS = ("ZesuSsz",)
+
+
+def _ancestors(directory):
+    """Yield a normalized relative directory and its ancestors up to '.'."""
+    while directory not in ("", "."):
+        yield directory
+        directory = directory.rpartition("/")[0]
+    yield "."
 
 
 def prior_directory(profile, source):
@@ -158,27 +166,27 @@ def prior_directory(profile, source):
     for key, row in profile["modules"].items():
         if not isinstance(row, dict):
             continue
-        for field in ("peak_bytes", "rss_peak_bytes"):
-            value = row.get(field)
-            if type(value) is int and value > 0:
-                parent = PurePosixPath(key).parent
-                for directory in (parent, *parent.parents):
-                    largest[directory] = max(largest.get(directory, 0), value)
-    directory = PurePosixPath(source).parent
-    root = next((top for top in PRIOR_ROOTS if directory == top or top in directory.parents),
-                PurePosixPath("."))
-    while True:
+        peak = max((value for value in (row.get("peak_bytes"), row.get("rss_peak_bytes"))
+                    if type(value) is int and value > 0), default=0)
+        if peak:
+            for directory in _ancestors(key.rpartition("/")[0]):
+                if largest.get(directory, 0) >= peak:
+                    break
+                largest[directory] = peak
+    start = PurePosixPath(source).parent.as_posix()
+    root = next((top for top in PRIOR_ROOTS if start == top or start.startswith(top + "/")), ".")
+    for directory in _ancestors(start):
         if directory in largest:
             return directory, largest[directory]
-        if directory == root or directory == directory.parent:
+        if directory == root:
             return None
-        directory = directory.parent
+    return None
 
 
-def directory_prior(profile, source, fallback_bytes):
+def directory_prior(profile, source, fallback_bytes, found=None):
     """Return the booking for an unmeasured module, or None without a measured directory."""
-    found = prior_directory(profile, source)
-    if found is None:
+    found = prior_directory(profile, source) if found is None else found
+    if not found:
         return None
     prior = max(PRIOR_FLOOR_BYTES, -(-found[1] * PRIOR_NUMERATOR // PRIOR_DENOMINATOR))
     return min(fallback_bytes, prior)
@@ -197,12 +205,12 @@ def module_claim(profile, arguments, cwd, compiler, *, fallback_bytes=16 * GIB):
         return {"claim_bytes": fallback_bytes, "reason": "ambiguous_source"}
     row = profile["modules"].get(source)
     if row is None:
-        prior = directory_prior(profile, source, fallback_bytes)
-        if prior is None:
+        found = prior_directory(profile, source)
+        if found is None:
             return {"claim_bytes": fallback_bytes, "reason": "unknown_module", "source": source}
-        directory = prior_directory(profile, source)[0]
-        reason = "directory_prior" if directory == PurePosixPath(source).parent else "ancestor_prior"
-        return {"claim_bytes": prior, "reason": reason, "source": source, "prior_directory": str(directory)}
+        prior = directory_prior(profile, source, fallback_bytes, found)
+        reason = "directory_prior" if found[0] == PurePosixPath(source).parent.as_posix() else "ancestor_prior"
+        return {"claim_bytes": prior, "reason": reason, "source": source, "prior_directory": found[0]}
     for name, reason in (("compiler_sha256", "changed_compiler"), ("source_sha256", "changed_source"),
                          ("arguments_sha256", "changed_arguments")):
         if row.get(name) != bound[name]:
