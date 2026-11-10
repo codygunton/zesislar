@@ -1708,6 +1708,140 @@ Ltac zesu_region_reduce_closed term :=
       else change_no_check term with reduced in * ))
   else reduce_closed term.
 
+(* Reduce every closed integer subterm of the context and the goal in one
+   pass. The repeated `context[?term]` match retried each subterm after every
+   reduction and re-expanded local definitions for each closedness check:
+   about 19,000 attempts for 31 reductions in one call. This pass checks
+   each local definition once, computes each closed term once, and stops at
+   a fixed point. It reduces the same subterms as zesu_region_reduce_closed. *)
+Ltac zesu_region_closed_fallback term := zesu_stack_closed_term term.
+Ltac zesu_region_change_closed term reduced :=
+  try (change_no_check term with reduced in * ).
+
+Ltac2 zesu_region_positive_literal_term (p : constr) : bool :=
+  let rec go p :=
+    match Constr.Unsafe.kind p with
+    | Constr.Unsafe.Constructor _ _ => Constr.equal p constr:(xH)
+    | Constr.Unsafe.App head arguments =>
+        if Int.equal (Array.length arguments) 1 then
+          if Bool.or (Constr.equal head constr:(xO)) (Constr.equal head constr:(xI))
+          then go (Array.get arguments 0) else false
+        else false
+    | _ => false
+    end in
+  go p.
+Ltac2 zesu_region_integer_literal_term (value : constr) : bool :=
+  match Constr.Unsafe.kind value with
+  | Constr.Unsafe.Constructor _ _ => Constr.equal value constr:(Z0)
+  | Constr.Unsafe.App head arguments =>
+      if Int.equal (Array.length arguments) 1 then
+        if Bool.or (Constr.equal head constr:(Zpos)) (Constr.equal head constr:(Zneg))
+        then zesu_region_positive_literal_term (Array.get arguments 0) else false
+      else false
+  | _ => false
+  end.
+
+(* 0: open, 1: closed, 2: unknown (the Ltac1 check decides). *)
+Ltac2 rec zesu_region_closed_code (memo : (ident * int) list Ref.ref) (term : constr) : int :=
+  let local name :=
+    match List.find_opt (fun (known, _) => Ident.equal known name) (Ref.get memo) with
+    | Some (_, code) => code
+    | None =>
+        let code :=
+          match List.find_opt (fun (known, _, _) => Ident.equal known name) (Control.hyps ()) with
+          | Some (_, body, _) =>
+              match body with
+              | Some value => if Constr.has_evar value then 0 else zesu_region_closed_code memo value
+              | None => 0
+              end
+          | None => 0
+          end in
+        Ref.set memo ((name, code) :: Ref.get memo);
+        code
+    end in
+  match Constr.Unsafe.kind term with
+  | Constr.Unsafe.App head arguments =>
+      match Constr.Unsafe.kind head with
+      | Constr.Unsafe.Lambda _ _ => 2
+      | _ => Array.fold_left (fun code argument =>
+          if Int.equal code 1 then zesu_region_closed_code memo argument else code)
+          (zesu_region_closed_code memo head) arguments
+      end
+  | Constr.Unsafe.Constant _ _ => 1
+  | Constr.Unsafe.Constructor _ _ => 1
+  | Constr.Unsafe.Ind _ _ => 1
+  | Constr.Unsafe.Sort _ => 1
+  | Constr.Unsafe.Var name => local name
+  | Constr.Unsafe.Lambda _ _ => 0
+  | Constr.Unsafe.Prod _ _ => 0
+  | Constr.Unsafe.Case _ _ _ _ _ => 1
+  | Constr.Unsafe.Cast _ _ _ => 1
+  | _ => 2
+  end.
+
+Ltac2 zesu_region_closed_integer_terms () : (constr * constr) list :=
+  let memo := Ref.ref [] in
+  let found := Ref.ref [] in
+  let z := constr:(Z) in
+  let closed term :=
+    let code := zesu_region_closed_code memo term in
+    if Int.equal code 1 then true
+    else if Int.equal code 0 then false
+    else match Control.case (fun () =>
+             ltac1:(term |- zesu_region_closed_fallback term) (Ltac1.of_constr term)) with
+         | Val _ => true
+         | Err _ => false
+         end in
+  let rec visit term :=
+    let children () :=
+      match Constr.Unsafe.kind term with
+      | Constr.Unsafe.App head arguments => visit head; Array.iter visit arguments
+      | Constr.Unsafe.Prod binder body => visit (Constr.Binder.type binder); visit body
+      | Constr.Unsafe.Lambda binder body => visit (Constr.Binder.type binder); visit body
+      | Constr.Unsafe.LetIn binder value body =>
+          visit (Constr.Binder.type binder); visit value; visit body
+      | Constr.Unsafe.Case _ _ _ value branches => visit value; Array.iter visit branches
+      | Constr.Unsafe.Cast value _ _ => visit value
+      | Constr.Unsafe.Proj _ _ value => visit value
+      | _ => ()
+      end in
+    if Bool.or (Bool.neg (Constr.Unsafe.is_closed term)) (Constr.has_evar term) then children ()
+    else if zesu_region_integer_literal_term term then ()
+    else if List.exist (fun (known, _) => Constr.equal known term) (Ref.get found) then ()
+    else if Bool.and (Constr.equal (Constr.type term) z) (closed term) then
+      let reduced := Std.eval_vm None term in
+      if Constr.equal reduced term then children ()
+      else Ref.set found ((term, reduced) :: Ref.get found)
+    else children () in
+  List.iter (fun (_, _, statement) => visit statement) (Control.hyps ());
+  visit (Control.goal ());
+  List.rev (Ref.get found).
+
+Ltac2 zesu_region_reduce_closed_pass () :=
+  let rec loop previous :=
+    let found := zesu_region_closed_integer_terms () in
+    if Int.equal (List.length found) 0 then ()
+    else if List.equal (fun (a, _) (b, _) => Constr.equal a b) found previous then ()
+    else (
+      List.iter (fun (term, reduced) =>
+        ltac1:(term reduced |- zesu_region_change_closed term reduced)
+          (Ltac1.of_constr term) (Ltac1.of_constr reduced)) found;
+      loop found) in
+  loop [].
+
+Ltac zesu_region_reduce_closed_loop :=
+  repeat match goal with
+  | H : context[?term] |- _ =>
+      lazymatch type of term with Z => progress (zesu_region_reduce_closed term) end
+  | |- context[?term] =>
+      lazymatch type of term with Z => progress (zesu_region_reduce_closed term) end
+  end.
+Ltac zesu_region_reduce_closed_pass := ltac2:(Control.enter zesu_region_reduce_closed_pass).
+Ltac zesu_region_reduce_closed_all :=
+  tryif zesu_switch_enabled constr:(ZesuStepRegionFaultNormalization)
+  then zesu_region_reduce_closed_pass
+  else zesu_region_reduce_closed_loop.
+
 Class ZesuStepRegionFaultCastHypotheses : Prop := {}.
 
 (* Normalize retained unsigned conversions without unfolding local definitions. *)
@@ -1738,12 +1872,7 @@ Ltac zesu_region_fault_prepare :=
       assert_fails (zesu_region_arithmetic_statement statement);
       clear H
   end;
-  repeat match goal with
-  | H : context[?term] |- _ =>
-      lazymatch type of term with Z => progress (zesu_region_reduce_closed term) end
-  | |- context[?term] =>
-      lazymatch type of term with Z => progress (zesu_region_reduce_closed term) end
-  end;
+  zesu_region_reduce_closed_all;
   try (rewrite zesu_signed_zero_extend_add_64_128; last bv_solve);
   repeat match goal with
   | H : context[bv_signed (bv_zero_extend 128 ?value)] |- _ =>
@@ -1852,12 +1981,7 @@ Ltac zesu_region_fault_word_casts :=
 Ltac zesu_region_fault_late_arithmetic :=
   zesu_region_fault_prepare;
   zesu_region_fault_word_casts;
-  repeat match goal with
-  | H : context[?term] |- _ =>
-      lazymatch type of term with Z => progress (zesu_region_reduce_closed term) end
-  | |- context[?term] =>
-      lazymatch type of term with Z => progress (zesu_region_reduce_closed term) end
-  end;
+  zesu_region_reduce_closed_all;
   first [lia | bv_solve].
 
 Ltac zesu_region_fault_array_address address :=
