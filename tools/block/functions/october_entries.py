@@ -13,7 +13,14 @@ The source body is copied byte for byte into its introduction. No proof
 script is written. The output RESULT.json has the case shape that
 render_function_callers.py reads.
 
-Usage: october_entries.py --function NAME --output RESULT_DIR
+With --expand-pure NAME the wrapper holds a convertible copy of the source
+entry body in which each application of the definition NAME (applied to
+exactly its own parameter names) is replaced by its body. NAME is a pure
+definition or an iProp helper. This states the entry in the flat shape of
+rendered entries: owned atoms and top-level conjuncts (F44: a link is a
+separate pure conjunct). The source entry is not changed.
+
+Usage: october_entries.py --function NAME --output RESULT_DIR [--expand-pure NAME]...
 """
 from pathlib import Path
 import argparse, hashlib, json, re, sys
@@ -51,6 +58,34 @@ def definition(source, name):
     return groups, match['body']
 
 
+def pure_definition(source, name):
+    """Return (parameter names, body) of `Definition name (groups) : Prop := body.`
+    (or an iProp helper with the islaG context)."""
+    match = re.search(r'^Definition ' + re.escape(name) + r'(?: ' + re.escape(CONTEXT) + r')?'
+                      r'(?P<telescope>(?:\s*\([^()]*\))*)\s*:\s*(?:Prop|iProp Sigma) :=\n'
+                      r'(?P<body>.*?)\.\n', source, re.S | re.M)
+    if match is None:
+        raise ValueError('The pure definition is absent or has another shape: ' + name)
+    names = [n for group, _ in re.findall(r'\(([^():]+):\s*([^()]+)\)', match['telescope'])
+             for n in group.split()]
+    return names, match['body']
+
+
+def expand(body, name, parameters, definition_body):
+    """Replace `name <parameters>` in body by the definition body (same names, so no renaming)."""
+    application = name + ' ' + ' '.join(parameters)
+    count = body.count(application)
+    if count != 1 or len(re.findall(r'\b' + re.escape(name) + r'\b', body)) != 1:
+        raise ValueError('The entry applies ' + name + ' other than once to its own parameter names.')
+    inner = definition_body.strip()
+    head = re.match(r'(let \w+ := [^\n]+ in)\n', inner)
+    if head:
+        if not body.lstrip().startswith(head[1]):
+            raise ValueError('The pure definition binds a let that the entry does not bind.')
+        inner = inner[head.end():]
+    return body.replace(application, '(' + inner.strip() + ')')
+
+
 def telescope(groups):
     return ' '.join('(' + ' '.join(names) + ' : ' + kind + ')' for names, kind in groups)
 
@@ -59,6 +94,7 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--function', required=True)
     parser.add_argument('--output', type=Path, required=True)
+    parser.add_argument('--expand-pure', action='append', default=[])
     options = parser.parse_args()
     profile = load_profile(options.function)
     spec = profile['entry_source']
@@ -96,11 +132,25 @@ def main():
         target = 'fp_machineAt' + suffix
         closed = ('((∃ ' + telescope(rest) + ', ' + module + '.' + name + ' (args) '
                   + ' '.join(binders) + ') ∗ K)%I')
+        record_parameter = 'args'
+        expanded = []
+        for pure in options.expand_pure:
+            if re.search(r'\b' + re.escape(pure) + r'\b', body):
+                body = expand(body, pure, *pure_definition(source, pure))
+                expanded.append(pure)
+        if expanded:
+            # The wrapper states a convertible copy of the entry body; its record
+            # parameter keeps the source name so the copied body needs no renaming.
+            record_parameter = parameter
+            closed = '((∃ ' + telescope(rest) + ', (' + body + ')) ∗ K)%I'
         entries = (
             '(* Rendered from the checked entry ' + module + '.' + name + '.\n'
-            '   Only the existential closure of its binders and the continuation K are added. No proof script. *)\n'
+            + ('   Only the existential closure of its binders and the continuation K are added. No proof script. *)\n'
+               if not expanded else
+               '   A convertible copy of its body with ' + ', '.join(expanded) + ' unfolded in place, closed\n'
+               '   existentially over its binders, with the continuation K. No proof script. *)\n')
             + HEADER + imports + 'Local Open Scope Z_scope.\n'
-            'Definition ' + target + ' ' + CONTEXT + ' (args : ' + profile.args_type
+            'Definition ' + target + ' ' + CONTEXT + ' (' + record_parameter + ' : ' + profile.args_type
             + ') (returnAddress : Z) (K : iProp Sigma) : iProp Sigma := ' + closed + '.\n')
         structural = (
             '(* Rendered from the checked entry ' + module + '.' + name + '. No proof script. *)\n'
@@ -109,9 +159,9 @@ def main():
             'Require Import ' + profile.qualified('Pilot' + suffix + 'Entries') + '.\n'
             '#[export] Instance ' + target + '_unfold : LithiumUnfold (@' + target + ') := I.\n'
             '#[export] Typeclasses Opaque ' + target + '.\n'
-            '#[export] Instance ' + target + '_intro ' + CONTEXT + ' (args : ' + profile.args_type
-            + ') (returnAddress : Z) (K : iProp Sigma) :\n  ' + INTRO + ' (' + target
-            + ' (args) (returnAddress) (K))\n  ' + closed + PROOF + '\n'
+            '#[export] Instance ' + target + '_intro ' + CONTEXT + ' (' + record_parameter + ' : '
+            + profile.args_type + ') (returnAddress : Z) (K : iProp Sigma) :\n  ' + INTRO + ' (' + target
+            + ' (' + record_parameter + ') (returnAddress) (K))\n  ' + closed + PROOF + '\n'
             '#[export] Instance ' + name + '_unfold : LithiumUnfold (@' + module + '.' + name + ') := I.\n'
             '#[export] Typeclasses Opaque ' + module + '.' + name + '.\n'
             '#[export] Instance ' + name + '_intro ' + CONTEXT + ' ' + telescope(groups) + ' :\n  '
@@ -123,7 +173,7 @@ def main():
         structural_path.write_text(structural)
         cases.append({'pc': profile.pc(suffix), 'status': 'source_declarations_rendered',
                       'source': {'file': str(source_path), 'definition': name},
-                      'binders': binders, 'entries': bind(entries_path), 'structural': bind(structural_path),
+                      'binders': binders, 'expanded_pure_definitions': expanded, 'entries': bind(entries_path), 'structural': bind(structural_path),
                       'proof_ran': False})
     result = {'status': 'SOURCE_DECLARATIONS_ONLY', 'function': profile.name,
               'origin': 'checked source block entries (not the FP-20261101 forward pass)',
