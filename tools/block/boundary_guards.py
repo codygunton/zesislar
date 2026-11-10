@@ -2,13 +2,15 @@
 
 Guard 1. The forward pass drops a path when it stops it. A boundary that a
 dropped path can reach in the CFG has an incomplete alternative inventory, so
-a renderer must refuse it. The forward pass records these stops on each
+a renderer must refuse it. A fault arm that jumps out of the function (to the
+trap vector) drops no path to a boundary. The forward pass records these stops on each
 boundary as `reaching_stops`; a boundary without that record is refused too.
 
 Guard 2. Each surviving alternative must be consistent. A rendered
 alternative definition is refused when its pure facts (path conditions, loop
 facts, and the domain fact, which the check unfolds) prove False with the
-cursor solver. The check is a generator-time Rocq run; no proof script is
+cursor solver. A generated cut checks each source alternative before it is
+generalized, so an infeasible arm cannot widen a register value. The check is a generator-time Rocq run; no proof script is
 written into a generated file.
 """
 from pathlib import Path
@@ -18,6 +20,8 @@ import subprocess
 # A cut stop records its boundary before it stops; an infeasible stop has a
 # literal False path condition. Neither drops a feasible path.
 PASSING_STOPS = frozenset({'handwritten_cut', 'infeasible'})
+# A stop of these kinds whose concrete target is outside the function left it.
+LEAVING_STOPS = frozenset({'intermediate_pc_mismatch', 'outside_pc'})
 ALTERNATIVE = re.compile(r'_(?:ForwardA\d+N\d+|LoopExit)$')
 STOP_FIELDS = ('reason', 'block_pc', 'instruction_pc', 'seed_pc', 'path')
 
@@ -47,7 +51,16 @@ def can_reach(successors, start, target):
     return False
 
 
-def reaching_stops(stops, successors, target, seeded=None):
+def leaves_function(stop, function):
+    """A fault arm jumps to a concrete address outside the function (the trap
+    vector). It leaves the function, so it drops no path to a boundary."""
+    actual = stop.get('actual_pc')
+    if stop['reason'] not in LEAVING_STOPS or not isinstance(actual, str):
+        return False
+    return not _pc(function['entry']) <= _pc(actual) < _pc(function['end'])
+
+
+def reaching_stops(stops, successors, target, seeded=None, function=None):
     """Return the stops that dropped a path whose block can reach target.
 
     A cut stop records its own boundary, but it drops the path beyond the cut.
@@ -56,6 +69,8 @@ def reaching_stops(stops, successors, target, seeded=None):
     """
     def dropped(stop):
         if stop['reason'] not in PASSING_STOPS:
+            if function is not None and leaves_function(stop, function):
+                return False
             return can_reach(successors, _pc(stop['block_pc']), target)
         if stop['reason'] != 'handwritten_cut' or seeded is None or stop.get('target_pc') is None:
             return False
@@ -72,7 +87,7 @@ def annotate_reaching_stops(report, function):
     for boundary in report['boundaries']:
         boundary['reaching_stops'] = [{key: stop.get(key) for key in STOP_FIELDS}
                                       for stop in reaching_stops(report['stops'], successors,
-                                                                 _pc(boundary['pc']), seeded)]
+                                                                 _pc(boundary['pc']), seeded, function)]
     return report
 
 
@@ -181,6 +196,27 @@ def contradictory_alternatives(definitions, check):
             binders, facts = alternative_facts(definition)
             if check(name, binders, facts):
                 refused.append(name)
+    return refused
+
+
+def contradictory_sources(boundary, render_alone, check):
+    """Return the indices of source alternatives whose own facts prove False.
+
+    A cut generalization joins every alternative. One infeasible arm with a
+    different register value turns the value that the feasible arms agree on
+    into a binder with only a range, and the link to its source is lost. So
+    each alternative of a generated cut is rendered alone and checked before
+    the cut is generalized. render_alone returns the definitions or None.
+    """
+    refused = []
+    for index, alternative in enumerate(boundary['alternatives']):
+        definitions = render_alone({**boundary, 'alternatives': [alternative]})
+        if definitions is None:
+            continue
+        renamed = [(re.sub(r'_ForwardA0(N\d+)$', r'_ForwardA%d\1' % index, name), text)
+                   for name, text in definitions]
+        if contradictory_alternatives(renamed, check):
+            refused.append(index)
     return refused
 
 

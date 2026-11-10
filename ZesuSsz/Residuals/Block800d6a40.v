@@ -10,6 +10,7 @@ Require Import ZesuSsz.Contracts.DecodeItemSelected.
 Require Import ZesuSsz.Generated.DecodeItem.FP301.Pilot6a40Entries.
 Require Import ZesuSsz.Generated.DecodeItem.FP301.Pilot6a40Structural.
 Require Import ZesuSsz.Automation2.All.
+Require Import ZesuSsz.Automation2.ByteWindowFold.
 Local Open Scope Z_scope.
 
 (* goal 6a40-1: goal.v sha256 9ff2951369449350679831508e90da812b012078451a6c93d1b3ab731da2d29f, proof.v sha256 e1dcb8b172c7d3f0a22f1ff60d74a1a3869cc21126b800e837d01e7dff1f20ac *)

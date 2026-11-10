@@ -106,6 +106,20 @@ Ltac zesu_source_retained_order :=
         apply Z.ge_le; assumption
     end ].
 
+(* A fact that reads a byte through `nth`, with the lookup of the same list
+   and index in the context, is a fact about the lookup value. A strict upper
+   bound `bound > value` becomes `value <= bound - 1` for the bound closers. *)
+Ltac zesu_source_array_byte_nth close :=
+  ArrayByteValues.zesu_rewrite_array_byte_nth_if_closed;
+  first [close tt |
+    lazymatch goal with
+    | |- Z.gt ?bound ?value =>
+        VmClosed.zesu_vm_closed bound;
+        let ceiling := VmClosed.zesu_vm_eval_closed (Z.pred bound) in
+        apply Z.lt_gt; apply (Z.le_lt_trans value ceiling bound);
+        [close tt | VmClosed.zesu_vm_closed_decide]
+    end].
+
 Ltac zesu_source_fact := first [solve [assumption] | solve [reflexivity] |
  solve [zesu_source_retained_order] |
   lazymatch goal with
@@ -121,6 +135,7 @@ Ltac zesu_source_fact := first [solve [assumption] | solve [reflexivity] |
   solve [BitvectorFacts.zesu_source_signed_lower] |
   solve [zesu_source_signed_lookup_lower] |
   solve [zesu_source_signed_lookup] |
+  solve [zesu_source_array_byte_nth ltac:(fun _ => zesu_source_fact)] |
   solve [BitvectorFacts.zesu_source_signed_upper] | lazymatch goal with
 | |- Z.ge (@bv_unsigned ?width ?value) Z0 =>
     apply Z.le_ge; exact (proj1 (bv_unsigned_in_range width value))

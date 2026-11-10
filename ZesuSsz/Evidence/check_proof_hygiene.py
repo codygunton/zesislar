@@ -253,6 +253,35 @@ def generated_hand_line_failures(name: str, text: str) -> list[str]:
     return failures
 
 
+def shared_core_modules(root=ROOT) -> set[str]:
+    """Module names that exist in both the frozen core and Automation2."""
+    frozen = {path.stem for path in (Path(root) / AUTOMATION_PREFIX).rglob("*.v")}
+    current = {path.stem for path in (Path(root) / "ZesuSsz/Automation2").rglob("*.v")}
+    return frozen & current
+
+
+def short_core_name_failures(name: str, text: str, shared: set[str]) -> list[str]:
+    """A proof file on the Automation2 core names shared core modules in full.
+
+    A short name such as `ContextCollection.zesu_context_prune_goal` can
+    resolve to the frozen core when that module is also in scope, so the file
+    silently calls the frozen tactic.
+    """
+    if not name.startswith(PROOFS_PREFIX) or not shared:
+        return []
+    code = executable_text(text)
+    if "Require Import ZesuSsz.Automation2.All." not in code:
+        return []
+    pattern = re.compile(r"(?<![\w.'])(" + "|".join(sorted(map(re.escape, shared))) + r")\.[A-Za-z_]")
+    failures = []
+    for match in pattern.finditer(code):
+        number = code.count("\n", 0, match.start()) + 1
+        failures.append(
+            f"short core module name: {name}:{number}: {match.group(1)}.; "
+            f"write ZesuSsz.Automation2.{match.group(1)}.")
+    return failures
+
+
 def residual_module_failures(name: str, text: str) -> list[str]:
     """Residual modules hold only rendered declarations around copied proofs."""
     if not name.startswith(RESIDUALS_PREFIX):
@@ -420,6 +449,7 @@ def main() -> None:
     literal_exceptions = {(row["file"], row["name"]): row for row in
                           json.loads(CLOSED_LITERAL_EXCEPTIONS_PATH.read_text())["exceptions"]}
     failures: list[str] = list(frozen_automation_failures(ROOT))
+    shared = shared_core_modules(ROOT)
     warnings: list[str] = []
     remaining = 0
     for name in tracked_files():
@@ -441,6 +471,7 @@ def main() -> None:
         failures.extend(generated_hand_line_failures(name, text))
         failures.extend(retired_module_failures(name, text))
         failures.extend(residual_module_failures(name, text))
+        failures.extend(short_core_name_failures(name, text, shared))
 
         # Generated Sail interfaces contain upstream Axiom declarations.
         # Reviewed proof files remain subject to the complete placeholder check.
