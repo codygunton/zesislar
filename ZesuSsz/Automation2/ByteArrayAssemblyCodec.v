@@ -247,10 +247,38 @@ Ltac zesu_byte_array_place_owners names base count :=
       zesu_byte_array_place_owners rest base count
   end.
 
+(* A separating chain of memory cells and arrays, all with `fraction`, that
+   ends in a cell, an array or `emp`. *)
+Ltac zesu_byte_array_owner_chain fraction body :=
+  lazymatch body with
+  | emp%I => idtac
+  | (?owner ∗ ?rest)%I =>
+      zesu_byte_array_owner_chain fraction owner;
+      zesu_byte_array_owner_chain fraction rest
+  | @mem_mapsto _ _ _ _ ?q _ => constr_eq q fraction
+  | @mem_mapsto_array _ _ _ _ ?q _ => constr_eq q fraction
+  end.
+
+(* The package opener can leave an opened array as one chain of cells, for
+   example when the cells appear only after a later simplification. Split
+   such chains, so the owners below see each cell. *)
+Ltac zesu_byte_array_split_owner_chains fraction :=
+  repeat iMatchHyp ltac:(fun H body =>
+    lazymatch body with
+    | (_ ∗ ?rest)%I =>
+        zesu_byte_array_owner_chain fraction body;
+        lazymatch rest with
+        | emp%I => iDestruct H as "[? _]"
+        | _ => iDestruct H as "[? ?]"
+        end
+    end).
+
 (* A goal asks for a byte array that the context owns in pieces: byte cells
    after the package opener split the array, 64-bit word cells, or byte arrays,
    possibly at addresses that equal `base + k` only after wrapped arithmetic.
-   Place those owners, rebuild the array from exactly the owners at the base
+   The cells can also appear late, as one chain, after the opener splits a
+   word's byte array. Split those chains and place the owners, rebuild the
+   array from exactly the owners at the base
    with the existing assembler, then frame it. The other resources stay in the
    context. *)
 Ltac zesu_byte_array_rebuild_requested :=
@@ -266,6 +294,11 @@ Ltac zesu_byte_array_rebuild_requested :=
       assert_fails (has_evar fraction);
       assert_fails (has_evar bytes);
       zesu_byte_array_closed_counts bytes;
+      zesu_byte_array_split_owner_chains fraction
+  end;
+  lazymatch goal with
+  | |- envs_entails (Envs _ ?spatial _)
+      (@isla.ghost_state.mem_mapsto_array_def _ _ 8%N ?base ?fraction ?bytes ∗ _)%I =>
       let count := eval vm_compute in (Z.of_nat (length bytes)) in
       let owners := zesu_byte_owners_off_base base fraction spatial in
       zesu_byte_array_place_owners owners base count

@@ -71,3 +71,29 @@ Proof.
 Qed.
 
 Print Assumptions frame_words_rebuild_for_successor.
+
+(* Late split: each saved word is still one unopened byte array when the
+   successor first asks for the frame, so the rebuild step finds no cells.
+   The package opener then splits the words into chains of byte cells at the
+   same wrapped addresses, and the core rebuilds the array from those cells. *)
+Lemma frame_words_late_split_for_successor `{!islaG Sigma} `{!threadG}
+    (X C : bv 64) (x : Z) (w0 w1 : bv 64) (R : iProp Sigma) :
+  bv_unsigned C = 2^64 - 16 -> bv_unsigned X = x -> 16 <= x ->
+  let L := (X + C)%bv in
+  R -∗
+  isla.ghost_state.mem_mapsto_array_def (bv_unsigned L) (DfracOwn 1)
+    (bv_to_little_endian 8 8 (bv_unsigned w0)) -∗
+  isla.ghost_state.mem_mapsto_array_def
+    (x + (bv_unsigned C + bv_unsigned (BV 64 8) - bv_modulus 64)) (DfracOwn 1)
+    (bv_to_little_endian 8 8 (bv_unsigned w1)) -∗
+  (isla.ghost_state.mem_mapsto_array_def (x - 16) (DfracOwn 1)
+      (bv_to_little_endian 8 8 (bv_unsigned w0) ++
+       bv_to_little_endian 8 8 (bv_unsigned w1)) ∗ R).
+Proof.
+  intros HC HX Hx L. iIntros "HR H0 H1".
+  Fail ByteArrayAssemblyCodec.zesu_byte_array_rebuild_requested.
+  progress ResourceGroups.zesu_open_nested_existential_packages.
+  zesu_block2.
+Qed.
+
+Print Assumptions frame_words_late_split_for_successor.
