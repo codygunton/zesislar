@@ -2305,6 +2305,28 @@ Ltac zesu_guard_range_unreachable word modulus :=
       constr_eq verdict true
   end.
 
+(* A low mask over a sign-extended word keeps the source value. The lemma is
+   stated for the unfolded spelling; this matches the bv_sign_extend spelling. *)
+Ltac zesu_guard_sign_extend_mask :=
+  match goal with
+  | |- context [bv_unsigned (bv_and (bv_sign_extend ?width ?word) ?mask)] =>
+      tryif has_evar word then fail 0 else
+      zesu_branch_guard_closed_width word ltac:(fun low =>
+        zesu_branch_guard_mask width mask ltac:(fun found modulus Hwidth Hmask =>
+          constr_eq low found;
+          let Hcast := fresh "HguardCast" in
+          pose proof (zesu_guard_mask_signed_value width low word mask Hwidth Hmask) as Hcast;
+          change (bv_unsigned (bv_and (bv_sign_extend width word) mask) = bv_unsigned word) in Hcast;
+          rewrite Hcast; clear Hcast))
+  end.
+
+(* The one-wrap range reads only the facts that its word reaches. A masked
+   sign-extended word is first replaced by its source value, which those facts
+   name. On a whole context a range that lia cannot prove ran for minutes. *)
+Ltac zesu_guard_one_wrap_range :=
+  repeat zesu_guard_sign_extend_mask;
+  ContextCollection.zesu_solve_goal_selected ("branch_guard.one_wrap_range"%string) ltac:(lia).
+
 Ltac zesu_branch_guard_rewrite :=
   repeat first
   [ match goal with
@@ -2366,6 +2388,7 @@ Ltac zesu_branch_guard_rewrite :=
             constr_eq low found;
             rewrite (zesu_guard_mask_signed_value width low word mask Hwidth Hmask)))
     end
+  | zesu_guard_sign_extend_mask
   | match goal with
     | |- context [bv_unsigned (bv_and (bv_add ?word ?offset) ?mask)] =>
         tryif has_evar word then fail 0 else
@@ -2395,7 +2418,7 @@ Ltac zesu_branch_guard_rewrite :=
         zesu_branch_guard_mask width mask ltac:(fun low modulus Hwidth Hmask =>
           tryif zesu_guard_range_unreachable word modulus then fail 0 else idtac;
           let Hrange := fresh "HguardRange" in
-          assert (Hrange : modulus <= bv_unsigned word < 2 * modulus) by lia;
+          assert (Hrange : modulus <= bv_unsigned word < 2 * modulus) by zesu_guard_one_wrap_range;
           rewrite (zesu_guard_low_mask_one_wrap width low word mask Hwidth Hmask Hrange);
           change_no_check (bv_modulus low) with modulus;
           clear Hrange)
