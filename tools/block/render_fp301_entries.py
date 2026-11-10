@@ -275,11 +275,8 @@ for suffix in pilots:
         def body_source(body):
             if body.get("lets") or body.get("loop"):
                 raise ValueError("This source adapter has no let/loop declaration binding.")
-            result = (
-                "("
-                + " ∗ ".join(render(component) for component in body["components"])
-                + ")"
-            )
+            rendered_components = [(component, render(component)) for component in body["components"]]
+            result = "(" + " ∗ ".join(text for _, text in rendered_components) + ")"
             # A Level 1 entry witness whose register a path overwrote occurs
             # nowhere in the body; nothing could instantiate it, so it is dropped.
             # System-shape and condition witnesses are kept as before.
@@ -298,7 +295,24 @@ for suffix in pilots:
                     + ")"
                     for binder in existentials
                 )
-                result = "(∃ " + telescope + ", " + result + ")"
+
+                def mentions(text):
+                    text = re.sub(r'"[^"]*"', "", text)
+                    return any(re.search(r"(?<![\w'])" + re.escape(binder["name"]) + r"(?![\w'])", text)
+                               for binder in existentials)
+
+                owned = [text for component, text in rendered_components if component["kind"] != "pure"]
+                if any(mentions(text) for text in owned):
+                    return "(∃ " + telescope + ", " + result + ")"
+                # No owned resource fixes a witness: keep the resources and the
+                # witness-free facts outside, and scope the telescope over the
+                # facts that use it (owned resources before pure meaning facts).
+                outer = [text for component, text in rendered_components
+                         if component["kind"] != "pure" or not mentions(text)]
+                inner = [text for component, text in rendered_components
+                         if component["kind"] == "pure" and mentions(text)] or ["True"]
+                result = ("(" + " ∗ ".join(outer + ["(∃ " + telescope + ", (" + " ∗ ".join(inner) + "))"])
+                          + ")")
             return result
 
         definitions = []

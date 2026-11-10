@@ -95,20 +95,29 @@ def alternative_facts(definition):
     """Return the binder telescope and the pure facts of one rendered definition."""
     start = definition.index(':= ') + 3
     body = definition[start:]
-    binders = ''
-    if body.startswith('(∃ '):
-        position, depth = 3, 0
+    telescopes = []
+
+    def telescope_end(text, begin):
+        position, depth = begin, 0
         while True:
-            character = body[position]
+            character = text[position]
             if character == '(':
                 depth += 1
             elif character == ')':
                 depth -= 1
             elif character == ',' and depth == 0:
-                break
+                return position
             position += 1
-        binders = body[3:position].strip()
+
+    if body.startswith('(∃ '):
+        position = telescope_end(body, 3)
+        telescopes.append(body[3:position].strip())
         body = body[position:]
+    # A telescope scoped over the facts alone follows the owned resources.
+    for match in re.finditer(r'\(∃ ', body):
+        position = telescope_end(body, match.end())
+        telescopes.append(body[match.end():position].strip())
+    binders = ' '.join(telescopes)
     facts = re.findall(r'⌜(.*?)⌝', body, flags=re.S)
     if not facts:
         raise BoundaryRefused('The alternative has no pure facts to check.')
