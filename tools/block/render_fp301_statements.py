@@ -237,7 +237,7 @@ def render_declaration(source, header, profile=None):
     for symbol, spec in (profile or load_profile()).get("entry_facts", {}).items():
         if re.search(r"\b(?:Definition " + symbol + r"|Instance " + symbol + r"_intro)\b", source):
             source = add_entry_facts(source, spec["facts"])
-            source = source.replace(boundary, "".join(line + "\n" for line in spec.get("requires", [])) + boundary, 1)
+            source = source.replace(boundary, boundary + "".join(line + "\n" for line in spec.get("requires", [])), 1)
     return render_entry_registers(header + source.split(boundary, 1)[1])
 
 
