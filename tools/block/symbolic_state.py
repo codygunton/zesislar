@@ -369,6 +369,46 @@ def _fields(accessors):
     return result
 
 
+def _addends(expr):
+    """Flatten a bvadd chain into its non-constant addends and its constant sum."""
+    if expr.op == 'bits':
+        return [], expr.value
+    if expr.op == 'bvadd':
+        left, x = _addends(expr.args[0])
+        right, y = _addends(expr.args[1])
+        return left + right, x + y
+    return [expr], 0
+
+
+def _symbolic_owner(address, regions):
+    """Return the one initialized owned array that a symbolic in-array address names.
+
+    The address must carry the region base as an addend (a constant base through
+    the constant sum) and at least one symbolic addend. The offset is unproved;
+    the caller records it as an open range obligation.
+    """
+    terms, constant = _addends(address)
+    if not terms:
+        return None
+    matches = []
+    for region in regions:
+        if region.byte_array is None or region.ownership_id is None or region.uninitialized:
+            continue
+        length = region.length.value if isinstance(region.length, Expr) and region.length.op == 'bits' else region.length
+        extent = length if isinstance(length, int) else region.minimum_length
+        if not extent:
+            continue
+        base_terms, base_constant = _addends(region.base)
+        rest = list(terms)
+        if any(term not in rest or rest.remove(term) for term in base_terms):
+            continue
+        offset = (constant - base_constant) % (1 << address.width)
+        if not rest or offset >= extent:
+            continue
+        matches.append((region, extent))
+    return matches[0] if len(matches) == 1 else None
+
+
 def _offset(address, base):
     def split(expr):
         if expr.op == 'bits':
@@ -525,6 +565,11 @@ class _Evaluator:
             if offset is not None and region.ownership_id is not None and (offset < len(region.bytes) or
                     (isinstance(length, int) and offset < length) or offset < region.minimum_length):
                 owners.append(region.ownership_id)
+        symbolic = None
+        if not owners and all(_offset(address, region.base) is None for region in self.state.memory):
+            symbolic = _symbolic_owner(address, self.state.memory)
+            if symbolic is not None:
+                owners.append(symbolic[0].ownership_id)
         for write in reversed(self.state.writes):
             offset = _offset(address, write.address)
             if offset is None:
@@ -540,6 +585,8 @@ class _Evaluator:
                     return Expr('unknown_read', (address,), 8)
                 position = offset if self.state.endianness == 'little' else write.size-offset-1
                 return operation('extract', write.value, width=8, value=8*position)
+        if symbolic is not None:
+            return self.symbolic_array_byte(address, *symbolic)
         candidates, ambiguous_regions = [], []
         for region in self.state.memory:
             offset = _offset(address, region.base)
@@ -570,6 +617,28 @@ class _Evaluator:
             return candidates[0][0]
         self.report('ambiguous_memory_alias' if candidates else 'unknown_memory_read', address=address.to_dict())
         return Expr('unknown_read', (address,), 8)
+
+    def symbolic_array_byte(self, address, region, extent):
+        """Read an owned array at a symbolic index as a list lookup.
+
+        The byte is the array's element at the address minus the base. The
+        index range is a path condition and an open read obligation; the
+        block proof discharges it at the boundary that states it.
+        """
+        index = operation('bvsub', address, region.base)
+        in_range = operation('bvult', index, bits(extent, address.width))
+        if in_range not in self.state.conditions:
+            self.state.conditions.append(in_range)
+        identity = hashlib.sha256(json.dumps([address.to_dict(), region.base.to_dict(),
+                                              region.byte_array.to_dict()], sort_keys=True).encode()).hexdigest()
+        value = Expr('owned_array_byte', (region.byte_array, address, region.base), 8, identity)
+        row = {'kind': 'owned_symbolic_byte_range', 'status': 'OPEN', 'owner': region.ownership_id,
+               'array': region.byte_array.to_dict(), 'address': address.to_dict(), 'base': region.base.to_dict(),
+               'value': value.to_dict(), 'source': {'source': 'symbolic_state.memory_byte'},
+               'source_chain': [in_range.to_dict()], 'goal': 'index below the owned array extent'}
+        if row not in self.state.read_obligations:
+            self.state.read_obligations.append(row)
+        return value
 
     def mapped_byte(self, address):
         """A store cannot allocate initial memory or establish a missing bound."""
