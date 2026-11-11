@@ -14,7 +14,7 @@ import soundness_gate as gate
 class SoundnessGateTests(unittest.TestCase):
     def test_checker_wrapper_is_the_accepted_exact_source(self):
         self.assertEqual(hashlib.sha256(gate.WRAPPERS.encode()).hexdigest(),
-                         'a8c1f3a02687e07570165462986c1215ed36915cec36c829988ef0af8023d720')
+                         '4a2bad6927e41035c11318c583f2c4d5e92fd1eae60a2dedc0c7ca34f78ecf82')
 
     def test_wrapper_generator_stays_outside_the_production_shape_inventory(self):
         with tempfile.TemporaryDirectory() as directory:

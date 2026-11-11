@@ -51,12 +51,14 @@ Definition certified_compositional :
       (ZesuSsz.Contracts.DecodeItemCompositional.decodeItemSelectedModelCompositional returnAddress) :=
   ZesuSsz.Compliance.DecodeItemCompositionalCompliance.decodeItemSelectedComplianceCompositional.
 
-Definition certified_generated :
+Lemma certified_generated :
   forall returnAddress,
     ZesuSsz.Contracts.Level1.IslarisContractCorrect
       ZesuSsz.Contracts.RlpDecodeItem.decodeItemEntry returnAddress
-      (ZesuSsz.Contracts.DecodeItemSelected.decodeItemSelectedModel returnAddress) :=
-  ZesuSsz.Compliance.DecodeItemComplianceGenerated.decodeItemGeneratedCompliance.
+      (ZesuSsz.Contracts.DecodeItemSelected.decodeItemSelectedModel returnAddress).
+Proof.
+  exact ZesuSsz.Compliance.DecodeItemComplianceGenerated.decodeItemGeneratedCompliance.
+Qed.
 
 Set Printing Fully Qualified.
 Print Assumptions certified_selected.
