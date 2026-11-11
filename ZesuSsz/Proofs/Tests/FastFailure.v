@@ -35,6 +35,10 @@ Definition fastFailureAnchor (n : nat) : iProp Sigma := True%I.
 Definition fastFailurePlainTarget (n : nat) : iProp Sigma := True%I.
 Typeclasses Opaque fastFailureIntroTarget fastFailureAnchorTarget fastFailureAnchor
   fastFailurePlainTarget.
+#[local] Instance fastFailureIntroTarget_unfold : LithiumUnfold (@fastFailureIntroTarget) := I.
+#[local] Instance fastFailureAnchorTarget_unfold : LithiumUnfold (@fastFailureAnchorTarget) := I.
+#[local] Instance fastFailureAnchor_unfold : LithiumUnfold (@fastFailureAnchor) := I.
+#[local] Instance fastFailurePlainTarget_unfold : LithiumUnfold (@fastFailurePlainTarget) := I.
 #[local] Instance fastFailureIntroRegistration n :
   ZesuSsz.Automation.Hooks.ZesuPureFactIntro (fastFailureIntroTarget n) True%I.
 Proof. unfold ZesuSsz.Automation.Hooks.ZesuPureFactIntro, fastFailureIntroTarget. iIntros "_". done. Qed.
