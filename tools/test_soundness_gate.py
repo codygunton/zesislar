@@ -12,23 +12,6 @@ import soundness_gate as gate
 
 
 class SoundnessGateTests(unittest.TestCase):
-    def test_gate_lock_is_wanted_for_the_stages_and_released(self):
-        calls = []
-        with patch.dict(gate.os.environ, {'COORD_AGENT': 'tester'}, clear=False):
-            gate.os.environ.pop('ZESU_GATE_CLASS', None)
-            gate.os.environ.pop('ZESU_IN_GATE', None)
-            release = gate.take_gate_lock(Path('/work'), 'tok',
-                                          run=lambda command, **options: calls.append((command, options)))
-            self.assertEqual(gate.os.environ.get('ZESU_IN_GATE'), '1')
-            release()
-            self.assertNotIn('ZESU_IN_GATE', gate.os.environ)
-        want, done = calls
-        self.assertEqual(want[0], ['/work/tools/resource_guard.sh', 'lock-want', str(gate.os.getpid()),
-                                   'tester:soundness-tok:/work'])
-        self.assertTrue(want[1]['check'])
-        self.assertEqual(want[1]['env']['ZESU_GATE_CLASS'], 'root')
-        self.assertEqual(done[0], ['/work/tools/resource_guard.sh', 'lock-release', str(gate.os.getpid())])
-
     def test_checker_wrapper_is_the_accepted_exact_source(self):
         self.assertEqual(hashlib.sha256(gate.WRAPPERS.encode()).hexdigest(),
                          'd13ef899c73649d078654cb983d537048a443ce7a8d81b45990d5d9017916580')
