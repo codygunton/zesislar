@@ -66,3 +66,42 @@ Proof.
   unfold fastFailurePlainTarget. by iPureIntro.
 Qed.
 End FastFailurePureFacts.
+
+(* A closed comparison closes by computation; a closed false one still goes to
+   the solvers, which close it from a contradictory context. *)
+Section FastFailureClosed.
+Local Open Scope Z_scope.
+Goal Z.of_nat (List.length (cons 1%nat (cons 2%nat (cons 3%nat nil)))) <= 3.
+Proof. Lia.lia. Qed.
+Goal 8 < 3.
+Proof. Fail Lia.lia. Abort.
+Goal forall z : Z, z < 0 -> 0 <= z -> 8 < 3.
+Proof. intros z Hneg Hnonneg. Lia.lia. Qed.
+End FastFailureClosed.
+
+(* The refuter decides that an equality is false for every value of its
+   atoms; a refuted goal closes only from facts that share its terms. *)
+Section FastFailureRefute.
+Local Open Scope Z_scope.
+Variables (p q : bv 64) (x : Z).
+Goal bv_add p (BV 64 8) = bv_add p (BV 64 16).
+Proof. ZesuSsz.Automation2.BvLinear.zesu_bv_linear_refutes. Abort.
+Goal bv_unsigned (bv_add p (BV 64 8)) = bv_unsigned (bv_add p (BV 64 16)).
+Proof. ZesuSsz.Automation2.BvLinear.zesu_bv_linear_refutes. Abort.
+Goal bv_unsigned (bv_add p (BV 64 8)) = bv_unsigned p + 16.
+Proof. ZesuSsz.Automation2.BvLinear.zesu_bv_linear_refutes. Abort.
+Goal bv_unsigned p + 16 = bv_unsigned (bv_add p (BV 64 8)).
+Proof. ZesuSsz.Automation2.BvLinear.zesu_bv_linear_refutes. Abort.
+Goal bv_add p (BV 64 8) = q.
+Proof. Fail ZesuSsz.Automation2.BvLinear.zesu_bv_linear_refutes. Abort.
+Goal bv_add (bv_add p (BV 64 4)) (BV 64 4) = bv_add p (BV 64 8).
+Proof. Fail ZesuSsz.Automation2.BvLinear.zesu_bv_linear_refutes. Abort.
+Goal bv_unsigned p < bv_unsigned p + 8.
+Proof. Fail ZesuSsz.Automation2.BvLinear.zesu_bv_linear_refutes. Abort.
+Goal exists y : bv 64, bv_add p (BV 64 8) = bv_add y (BV 64 16).
+Proof. eexists. Fail ZesuSsz.Automation2.BvLinear.zesu_bv_linear_refutes. Abort.
+Goal bv_add p (BV 64 8) = bv_add p (BV 64 16).
+Proof. Fail bv_solve. Abort.
+Goal bv_unsigned p < 0 -> bv_add p (BV 64 8) = bv_add p (BV 64 16).
+Proof. intros Hneg. bv_solve. Qed.
+End FastFailureRefute.
