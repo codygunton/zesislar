@@ -1,7 +1,7 @@
-Require Import ZesuSsz.Automation2.All.
 Require Import isla.riscv64.riscv64.
 From Coq Require Import Lists.List ZArith.ZArith NArith.NArith.
 Require Import stdpp.bitvector.definitions.
+Require Import ZesuSsz.Automation2.All.
 Local Open Scope Z_scope.
 
 (* A call-return seed renders the caller's saved frame as the little-endian
