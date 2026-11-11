@@ -14,10 +14,11 @@ pure conjunct that the package route splits off (`split`) and for each goal stil
 open at the end of `zesu_block2` (`final`). A record holds the exact source of the
 goal's statement (ResidualExport.v): every implicit argument, so every literal
 width, is explicit, and the premises are only the facts that the conclusion
-reaches. When the run reaches the end, the final records are the goals; when the
-run is stopped first (--stop-quiet: no new record for S seconds after the first
-split record), the split records are. The compile runs in one guard scope under
-`tools/run_registry.py`, and a stop goes through `run_registry.py stop`.
+reaches. The final records are the goals. A run that ends without them closed
+the block, unless it was stopped (--stop-quiet: no new record for S seconds after
+the first split record), killed or failed; then the split records are the goals.
+The compile runs in one guard scope under `tools/run_registry.py`, and a stop goes
+through `run_registry.py stop`. --from-log reuses the log of an earlier export run.
 For each goal, export writes RUN/goals/<id>/goal.v (statement and PROOF-SLOT) and
 check.sh (one scope, 1 GiB booking), checks that the statement reparses to the
 same term (print, reparse, print again: the two texts must be equal), and writes
@@ -45,8 +46,10 @@ import json
 import os
 import re
 import shutil
+import queue
 import subprocess
 import sys
+import threading
 import time
 from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
@@ -128,17 +131,20 @@ def caller_header(source, block):
 # ---- export records ----
 
 def records(lines):
-    """Join wrapped output lines into one (stamp, text) record per `@@X` line."""
+    """Join wrapped output lines into one (stamp, text) record per `@@X` line.
+    A line printed more than one second after the record started is never part
+    of it (for example a guard message after the last record)."""
     current = None
     for raw in lines:
         raw = raw.rstrip("\n")
         match = STAMP.match(raw)
         stamp, text = (float(match.group(1)), match.group(2)) if match else (None, raw)
+        later = stamp is not None and current is not None and current[0] is not None and stamp - current[0] > 1.0
         if text.startswith("@@"):
             if current is not None:
                 yield current
             current = [stamp, text]
-        elif current is not None and text.strip() and not text.startswith(STOP_PREFIXES):
+        elif current is not None and text.strip() and not text.startswith(STOP_PREFIXES) and not later:
             current[1] += " " + text.strip()
         else:
             if current is not None:
@@ -178,11 +184,13 @@ def parse_export(lines):
     return out
 
 
-def select_goals(found, block, stopped):
-    """The goals of one export run. Final records are the goals open at the end;
-    without them (a stopped run), the split records are. Equal statements merge."""
+def select_goals(found, block, closed):
+    """The goals of one export run. Final records are the goals open at the end.
+    A run without them that closed the block has no goals; a run without them that
+    did not close it (stopped, killed, or failed) gives its split records.
+    Equal statements merge."""
     finals = [r for r in found if r["kind"] == "final"]
-    source = "final" if finals or not stopped else "split"
+    source = "final" if finals or closed else "split"
     goals, seen = [], {}
     for record in found:
         if record["status"] != "pure" or record["kind"] != source:
@@ -212,10 +220,11 @@ def goal_head(goal_v):
 
 
 def roundtrip_text(header, statement):
-    """Reparse STATEMENT, show it with the default printer, and print it again
-    with the exporter. Kept out of goal.v: goal.v holds only the lemma."""
-    return ("%s\n%s\nSet Printing Width 120.\nGoal %s.\nShow.\n"
-            "ltac2:(ZesuSsz.Automation2.ResidualExport.zesu_export_roundtrip ()).\nAbort.\n"
+    """Reparse STATEMENT and print it again with the exporter, then show the
+    goal after `intros.` with the default printer (the named hypotheses that a
+    proof starts from). Kept out of goal.v: goal.v holds only the lemma."""
+    return ("%s\n%s\nSet Printing Width 120.\nSet Printing Depth 1000000.\nGoal %s.\n"
+            "ltac2:(ZesuSsz.Automation2.ResidualExport.zesu_export_roundtrip ()).\nintros.\nShow.\nAbort.\n"
             % ("\n".join(header), EXPORT_MODULE, statement))
 
 
@@ -239,17 +248,18 @@ def minimize_text(header, name, statement, answer):
 
 
 def readable(log_text):
-    """The goal as `Show` printed it in a round-trip log (time stamps removed)."""
+    """The goal as `Show` printed it in a round-trip log: the named hypotheses,
+    the separator and the conclusion (time stamps removed)."""
     lines = [STAMP.sub(r"\2", line) for line in log_text.split("\n")]
     try:
-        start = next(i for i, line in enumerate(lines) if line.strip().startswith("====="))
+        start = next(i for i, line in enumerate(lines) if line.strip() == "1 goal")
     except StopIteration:
         return ""
     out = []
     for line in lines[start + 1:]:
-        if line.startswith("@@X") or not line.strip():
+        if line.strip() and not line.startswith(" "):
             break
-        out.append(line)
+        out.append(line[2:] if line.startswith("  ") else line.strip())
     return "\n".join(out).strip()
 
 
@@ -295,7 +305,9 @@ def clean_env(extra=None):
 def scoped(path, tag, args, ocamlpath, claim=CHECK_CLAIM, run_id=None, watch=None, extra_args=(), keep=False):
     """Compile PATH in its own guard scope, stamping each output line with the
     seconds since start into PATH.log. WATCH(text, elapsed) may return True to stop
-    the run through run_registry.py (RUN_ID required). Returns a result dict."""
+    the run through run_registry.py (RUN_ID required); it is also called with
+    text None every few seconds while the compiler prints nothing. Returns a
+    result dict."""
     path = Path(path)
     log = path.with_suffix(".log")
     command = [str(GUARD), "scope", tag, "--"] + list(args) + list(extra_args) + [path.name]
@@ -311,11 +323,27 @@ def scoped(path, tag, args, ocamlpath, claim=CHECK_CLAIM, run_id=None, watch=Non
     with log.open("w") as out:
         proc = subprocess.Popen(command, cwd=path.parent, env=env, stdout=subprocess.PIPE,
                                 stderr=subprocess.STDOUT)
-        for raw in proc.stdout:
-            line = raw.decode("utf-8", "replace").rstrip("\n")
+        lines = queue.Queue()
+
+        def read():
+            for raw in proc.stdout:
+                lines.put(raw)
+
+        reader = threading.Thread(target=read, daemon=True)
+        reader.start()
+        while True:
+            try:
+                raw = lines.get(timeout=5)
+            except queue.Empty:
+                raw = None
+                if not reader.is_alive() and lines.empty():
+                    break
             elapsed = time.monotonic() - start
-            out.write("%.3f %s\n" % (elapsed, line))
-            out.flush()
+            line = None
+            if raw is not None:
+                line = raw.decode("utf-8", "replace").rstrip("\n")
+                out.write("%.3f %s\n" % (elapsed, line))
+                out.flush()
             if watch and not stopped and watch(line, elapsed):
                 stopped = True
                 subprocess.run([sys.executable, str(REGISTRY), "stop", "--run-id", run_id],
@@ -336,7 +364,7 @@ class QuietWatch:
         self.seconds, self.seen, self.last = seconds, False, None
 
     def __call__(self, line, elapsed):
-        text = STAMP.sub(r"\2", line)
+        text = STAMP.sub(r"\2", line or "")
         if "@@X " in text:
             self.last = elapsed
             if "@@X begin split" in text or "@@X skip split" in text:
@@ -433,19 +461,37 @@ def write_task(run, block, goal, header):
     (run / "tasks" / (goal["id"] + ".md")).write_text(text)
 
 
+def write_task_index(run, manifest):
+    """RUN/tasks/README.md: the goals of the block in order, for its standing agent."""
+    run = Path(run)
+    open_goals = [g for g in manifest["goals"] if g.get("reparse") == "exact"
+                  and read_json(run / "goals" / g["id"] / "STATUS.json", {}).get("result") != "PASS"]
+    if not open_goals:
+        return
+    (run / "tasks").mkdir(exist_ok=True)
+    lines = ["# Block %s: residual goals" % manifest["block"], "",
+             "Prove the goals in this order, one answer file each. Keep this session for all of them.", ""]
+    lines += ["- `%s.md` (round %d)" % (g["id"], g.get("round", 1)) for g in open_goals]
+    (run / "tasks" / "README.md").write_text("\n".join(lines) + "\n")
+
+
 def next_ids(goals, block, count):
     used = [int(g["id"].rsplit("-", 1)[1]) for g in goals]
     start = max(used, default=0) + 1
     return ["%s-%d" % (block, start + i) for i in range(count)]
 
 
-def export_round(run, manifest, caller_source, log_text, stopped, jobs):
+def export_round(run, manifest, caller_source, log_text, closed, jobs):
     """Add the goals of one export log to the manifest; write their files."""
     block = manifest["block"]
     found = parse_export(log_text.split("\n"))
-    goals, source, split_only = select_goals(found, block, stopped)
-    known = {g["name"] for g in manifest["goals"]}
+    goals, source, split_only = select_goals(found, block, closed)
+    known = {}
+    for g in manifest["goals"]:
+        known[g["name"]] = g["id"]
+        known[g.get("final_name", g["name"])] = g["id"]
     fresh = [g for g in goals if g["name"] not in known]
+    again = [known[g["name"]] for g in goals if g["name"] in known]
     for goal, gid in zip(fresh, next_ids(manifest["goals"], block, len(fresh))):
         goal.update(id=gid, round=manifest["rounds"])
     header = caller_header(caller_source, block)
@@ -465,7 +511,7 @@ def export_round(run, manifest, caller_source, log_text, stopped, jobs):
     manifest["goals"].extend(fresh)
     manifest["skipped"].extend(dict(kind=r["kind"], reason=r["reason"], round=manifest["rounds"])
                                for r in found if r["status"] == "skip")
-    return dict(source=source, records=len(found), new_goals=[g["id"] for g in fresh],
+    return dict(source=source, records=len(found), new_goals=[g["id"] for g in fresh], open_again=again,
                 closed_after_split=split_only if source == "final" else None)
 
 
@@ -481,14 +527,22 @@ def cmd_export(a):
     target = run / "export" / ("Export%s.v" % block)
     target.write_text(export_caller(caller))
     args, ocamlpath = bank_args(a.bank)
-    watch = QuietWatch(a.stop_quiet) if a.stop_quiet else None
     run_id = "residual-export-%s-%d" % (block, time.time_ns())
-    result = scoped(target, "export-" + block, args, ocamlpath, claim=int(a.claim_gib * (1 << 30)),
-                    run_id=run_id, watch=watch)
+    if a.from_log:
+        # Reuse the log of an earlier export run that did not close the block.
+        shutil.copyfile(a.from_log, target.with_suffix(".log"))
+        result = dict(returncode=None, seconds=None, stopped=False, log=str(target.with_suffix(".log")),
+                      from_log=str(Path(a.from_log).resolve()))
+    else:
+        watch = QuietWatch(a.stop_quiet) if a.stop_quiet else None
+        result = scoped(target, "export-" + block, args, ocamlpath, claim=int(a.claim_gib * (1 << 30)),
+                        run_id=run_id, watch=watch)
     log_text = Path(result["log"]).read_text(errors="replace")
-    summary = export_round(run, manifest, caller, log_text, result["stopped"], a.jobs)
+    closed = result["returncode"] == 0 and not result["stopped"]
+    summary = export_round(run, manifest, caller, log_text, closed, a.jobs)
     manifest["exports"].append(dict(result, run_id=run_id, round=1, **summary))
     write_json(run / "MANIFEST.json", manifest)
+    write_task_index(run, manifest)
     print_results(run)
 
 
@@ -536,10 +590,8 @@ def cmd_collect(a):
 
 def minimize(run, d, goal, answer, header, args, ocamlpath):
     """Drop the premises that the proof term does not use, and check again."""
-    m = d / "min"
-    if m.exists():
-        shutil.rmtree(m)
-    m.mkdir()
+    m = d / ("min-" + sha(answer)[:12])
+    m.mkdir(exist_ok=True)
     (m / "minimize.v").write_text(minimize_text(header, goal["name"], goal["statement"], answer))
     result = scoped(m / "minimize.v", "min-" + goal["id"], args, ocamlpath)
     text = Path(result["log"]).read_text(errors="replace")
@@ -656,9 +708,10 @@ def cmd_rerun(a):
     log_text = Path(result["log"]).read_text(errors="replace")
     closed = result["returncode"] == 0
     manifest["rounds"] += 1
-    summary = export_round(run, manifest, caller, log_text, result["stopped"], a.jobs) if not closed else {}
+    summary = export_round(run, manifest, caller, log_text, closed, a.jobs) if not closed else {}
     manifest["reruns"].append(dict(result, round=manifest["rounds"], closed=closed, **summary))
     write_json(run / "MANIFEST.json", manifest)
+    write_task_index(run, manifest)
     print_results(run)
 
 
@@ -678,8 +731,10 @@ def result_lines(run):
             " minimized=%d" % used if used is not None else "", len(attempts),
             sum(tokens) if tokens else "-", tier))
     for rerun in manifest["reruns"]:
+        state = "closed" if rerun["closed"] else "open open_again=%s new=%s" % (
+            ",".join(rerun.get("open_again", [])) or "-", ",".join(rerun.get("new_goals", [])) or "-")
         lines.append("RESULT %s rerun round=%d %s seconds=%s" % (
-            manifest["block"], rerun["round"], "closed" if rerun["closed"] else "open", rerun["seconds"]))
+            manifest["block"], rerun["round"], state, rerun["seconds"]))
     return lines
 
 
@@ -699,7 +754,8 @@ def main(argv=None):
     e.add_argument("--bank", required=True)
     e.add_argument("--out", required=True)
     e.add_argument("--stop-quiet", type=float, default=None)
-    e.add_argument("--claim-gib", type=float, default=4.0)
+    e.add_argument("--from-log", help="reuse the log of an earlier export run instead of compiling")
+    e.add_argument("--claim-gib", type=float, default=8.0)
     e.add_argument("--jobs", type=int, default=8)
     c = sub.add_parser("collect")
     c.add_argument("--run", required=True)
@@ -712,7 +768,7 @@ def main(argv=None):
     rr.add_argument("--run", required=True)
     rr.add_argument("--residuals", default=str(RESIDUALS))
     rr.add_argument("--caller")
-    rr.add_argument("--claim-gib", type=float, default=4.0)
+    rr.add_argument("--claim-gib", type=float, default=8.0)
     rr.add_argument("--jobs", type=int, default=8)
     s = sub.add_parser("results")
     s.add_argument("--run", required=True)

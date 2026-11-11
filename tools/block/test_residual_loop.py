@@ -73,7 +73,7 @@ class ExportRecordTests(unittest.TestCase):
         self.assertEqual(found[1]["reason"], "evar in goal")
 
     def test_stopped_run_takes_split_records(self):
-        goals, source, _ = loop.select_goals(loop.parse_export(SPLIT_LOG.split("\n")), "1234", stopped=True)
+        goals, source, _ = loop.select_goals(loop.parse_export(SPLIT_LOG.split("\n")), "1234", closed=False)
         self.assertEqual(source, "split")
         self.assertEqual(len(goals), 2)
         self.assertTrue(goals[0]["name"].startswith("residual_1234_"))
@@ -81,10 +81,20 @@ class ExportRecordTests(unittest.TestCase):
 
     def test_finished_run_takes_final_records(self):
         goals, source, split_only = loop.select_goals(loop.parse_export(FINAL_LOG.split("\n")), "1234",
-                                                      stopped=False)
+                                                      closed=False)
         self.assertEqual(source, "final")
         self.assertEqual([g["statement"] for g in goals], [STATEMENT])
         self.assertEqual(split_only, 1)  # the second split goal closed after the split
+
+    def test_closed_run_has_no_goals(self):
+        goals, source, split_only = loop.select_goals(loop.parse_export(SPLIT_LOG.split("\n")), "1234",
+                                                      closed=True)
+        self.assertEqual((goals, source, split_only), ([], "final", 2))
+
+    def test_a_later_line_is_not_part_of_the_last_record(self):
+        log = SPLIT_LOG + "2433.115 resource_guard.sh: line 1801: 2304756 Killed\n"
+        found = loop.parse_export(log.split("\n"))
+        self.assertEqual([r["status"] for r in found], ["pure", "skip", "pure"])
 
     def test_equal_statements_merge(self):
         final = FINAL_LOG[FINAL_LOG.index("900.100"):]
@@ -94,11 +104,12 @@ class ExportRecordTests(unittest.TestCase):
     def test_quiet_watch_stops_only_after_a_split_record(self):
         watch = loop.QuietWatch(60)
         self.assertFalse(watch("@@X skip final spatial", 10.0))
-        self.assertFalse(watch("anything", 100.0))
+        self.assertFalse(watch(None, 100.0))
         self.assertFalse(watch("@@X begin split", 167.0))
         self.assertFalse(watch("@@X end", 168.0))
-        self.assertFalse(watch("other output", 200.0))
-        self.assertTrue(watch("other output", 228.5))
+        self.assertFalse(watch(None, 200.0))
+        # The compiler prints nothing while the finisher runs; idle ticks stop it.
+        self.assertTrue(watch(None, 228.5))
 
 
 class CallerTests(unittest.TestCase):
@@ -159,9 +170,9 @@ class GoalFileTests(unittest.TestCase):
         self.assertIn("zesu_export_minimized_of '(@residual_1234_ab)", text)
 
     def test_roundtrip_log_gives_readable_statement_and_reprint(self):
-        log = ("0.1 1 goal\n0.1   \n0.1   ============================\n0.1   forall x : Z,\n"
-               "0.1   0 <= x -> 0 <= x + 1\n0.2 @@X roundtrip %s\n" % STATEMENT)
-        self.assertEqual(loop.readable(log), "forall x : Z,\n  0 <= x -> 0 <= x + 1")
+        log = ("0.1 @@X roundtrip %s\n0.2 1 goal\n0.2   \n0.2   x : Z\n0.2   Hx : 0 <= x\n"
+               "0.2   ============================\n0.2   0 <= x + 1\n0.3 Warning: something\n" % STATEMENT)
+        self.assertEqual(loop.readable(log), "x : Z\nHx : 0 <= x\n============================\n0 <= x + 1")
         self.assertEqual(loop.last_record(log, "@@X roundtrip "), STATEMENT)
         self.assertIsNone(loop.first_difference(STATEMENT, STATEMENT))
         self.assertEqual(loop.first_difference("abcd", "abxd"), 2)
@@ -202,6 +213,24 @@ class RegisterTests(unittest.TestCase):
             self.assertEqual(lines.count("Require Import ZesuSsz.Residuals.Block800d1234."), 1)
 
 
+class TaskTests(unittest.TestCase):
+    def test_task_file_and_index_hold_the_exact_statement_and_rules(self):
+        with tempfile.TemporaryDirectory() as root:
+            run = Path(root)
+            header = loop.caller_header(CALLER, "1234")
+            goal = dict(id="1234-1", name="residual_1234_ab", statement=STATEMENT, readable="forall x : Z, ...",
+                        counts=dict(kept=1, props=146, small=120), reparse="exact", round=1)
+            loop.write_task(run, "1234", goal, header)
+            loop.write_task_index(run, dict(block="1234", goals=[goal]))
+            task = (run / "tasks" / "1234-1.md").read_text()
+            index = (run / "tasks" / "README.md").read_text()
+        self.assertIn(STATEMENT, task)
+        self.assertIn("residual_1234_ab", task)
+        self.assertIn("Never use Admitted", task)
+        self.assertIn(str(run / "answers" / "1234-1.v"), task)
+        self.assertIn("`1234-1.md`", index)
+
+
 class ResultTests(unittest.TestCase):
     def test_result_lines_hold_no_proof_text(self):
         with tempfile.TemporaryDirectory() as root:
@@ -216,11 +245,13 @@ class ResultTests(unittest.TestCase):
             loop.write_json(run / "MANIFEST.json", dict(block="1234", goals=[
                 dict(id="1234-1", name=name, statement=STATEMENT, source="split", binders=["x", "Hx", "y"],
                      reparse="exact", conclusion_definitions=[])],
-                reruns=[dict(round=2, closed=True, seconds=99.0)]))
+                reruns=[dict(round=2, closed=False, seconds=50.0, open_again=["1234-1"], new_goals=[]),
+                        dict(round=3, closed=True, seconds=99.0)]))
             lines = loop.result_lines(run)
         self.assertEqual(lines[0], "RESULT 1234-1 PASS source=split reparse=exact binders=3 minimized=2 "
                                    "attempts=2 tokens=3000 tier=matchable")
-        self.assertEqual(lines[1], "RESULT 1234 rerun round=2 closed seconds=99.0")
+        self.assertEqual(lines[1], "RESULT 1234 rerun round=2 open open_again=1234-1 new=- seconds=50.0")
+        self.assertEqual(lines[2], "RESULT 1234 rerun round=3 closed seconds=99.0")
         self.assertFalse(any("unique-proof-token" in line or "lia" in line for line in lines))
 
 
