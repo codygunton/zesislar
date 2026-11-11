@@ -16,8 +16,9 @@ context"):
   automation leaves open; a model wrote their proofs, and Rocq checks them like any proof.
 
 The registers and compositional variants in `DecodeItemCompositionalCompliance.v` rest on
-the same chain. The October block and composition modules remain in the tree; no
-production theorem uses them. The user selected C1-B: the public result records exact
+the same chain. The October block, slot and composition proofs are retired. Some October
+fact modules remain for nextUint64, the termination export, frozen-core tests and the
+signature fixtures; no production theorem uses them. The user selected C1-B: the public result records exact
 machine bytes and permits only the named `RlpLongLengthWrap` divergence from Sail.
 The `KnownBugs` list has one constructor. A wrap case requires the exact binary
 result and Sail rejection. `headerFits` remains a caller lemma, not a public domain.
