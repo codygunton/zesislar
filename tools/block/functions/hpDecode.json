@@ -97,11 +97,18 @@
           "coq": "(hpDecodeOutputPointer args + 1 <= bv_unsigned {x13} <= hpDecodeOutputPointer args + 2)%Z"
         }
       ],
-      "array_cursor": {
-        "register": "x16",
-        "array": "hpDecodeInputBytes args",
-        "extent_reason": "2 <= hpDecodeInputLength args on this path (beq at 0x80067750 leaves the one-byte case)"
-      }
+      "array_cursor": [
+        {
+          "register": "x16",
+          "array": "hpDecodeInputBytes args",
+          "extent_reason": "2 <= hpDecodeInputLength args on this path (beq at 0x80067750 leaves the one-byte case)"
+        },
+        {
+          "register": "x13",
+          "array": "hpDecodeBeforeOutput args",
+          "extent_reason": "1 <= length (hpDecodeBeforeOutput args): 2 * hpDecodeInputLength args <= hpDecodeOutputLength args, and 2 <= hpDecodeInputLength args on this path (beq at 0x80067750 leaves the one-byte case); the two sb at 0x80067790 and 0x80067794 write at x13 - 1 and x13"
+        }
+      ]
     }
   ],
   "function_returns": [
