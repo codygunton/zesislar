@@ -32,9 +32,10 @@ def render_loop_head(block, header, structural=False, profile=None):
         assert source.startswith('Definition ' + original + ' ')
         assert source.count(domain_binder.strip()) == 1
         assert source.count('⌜domain args⌝') == 1
+        domain = row.get('domain_component') or '⌜' + row['domain'] + ' args⌝'
         source = source.replace(original, name).replace(
             domain_binder, '').replace(
-            '⌜domain args⌝', '⌜' + row['domain'] + ' args⌝').replace(
+            '⌜domain args⌝', domain).replace(
             'ByteWindowFold.zesu_byte_window_fold',
             'ZesuSsz.Automation2.ByteWindowFold.zesu_byte_window_fold')
         authenticated_classes[name] = source
@@ -50,8 +51,10 @@ def render_loop_head(block, header, structural=False, profile=None):
         output += 'Require Import ' + profile.qualified('Pilot' + block + 'Entries') + '.\n'
         for symbol, definition in definitions:
             output += unfold_declaration(symbol, instance_name=symbol + '_unfold', locality='export')
+            # A first-pass registration needs the profile's start lemma; without
+            # one, the class keeps its definition introduction.
             output += (first_pass_registration(symbol, authenticated_classes[symbol], profile)
-                       if symbol in authenticated_classes else
+                       if symbol in authenticated_classes and profile.get('loop_first_pass') else
                        definition_introduction_source(definition, symbol)) + '\n'
     else:
         output += '\n'.join(source for _, source in definitions)
