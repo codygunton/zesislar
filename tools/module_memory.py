@@ -36,6 +36,9 @@ _spec.loader.exec_module(_module)
 evaluate, ScopeReader = _module.evaluate, _module.ScopeReader
 confirm_shell, release_shell = _module.confirm_shell, _module.release_shell
 recover_dead_shell = _module.recover_dead_shell
+LeafNotClosed = _module.LeafNotClosed
+# A release whose compiler leaf still drains exits with this status; the guard retries it.
+LEAF_DRAINING = 5
 recover_stale_shell = _module.recover_stale_shell
 recover_stale_shells = _module.recover_stale_shells
 current_projection = _module.current_projection
@@ -749,12 +752,20 @@ def main():
         return 0 if mark_shell(args.marker) else 4
     if args.command == 'ledger-release':
         claim = marker_claim(args.marker)
-        released = release_shell(args.marker)
+        try:
+            released = release_shell(args.marker)
+        except LeafNotClosed:
+            print('The shell compiler leaf is still draining.', file=sys.stderr)
+            return LEAF_DRAINING
         if released:
             publish_admission_totals(released_bytes=claim)
         return 0 if released else 4
     if args.command == 'ledger-recover-dead':
-        return 0 if recover_dead_shell(args.marker) else 4
+        try:
+            return 0 if recover_dead_shell(args.marker) else 4
+        except LeafNotClosed:
+            print('The shell compiler leaf is still draining.', file=sys.stderr)
+            return LEAF_DRAINING
     if args.command == 'ledger-recover-stale':
         if args.all:
             print(json.dumps(recover_stale_shells()))

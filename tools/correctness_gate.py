@@ -17,7 +17,7 @@ import uuid
 
 from coqc_findlib import preflight
 from module_memory import measurement_claim
-from block.harness.code.admission_memory import projection, guard_lock, check_test_ledger
+from block.harness.code.admission_memory import projection, guard_lock, check_test_ledger, record_waiter, clear_waiter
 
 
 TARGETS = {"check-fast", "check-iris"}
@@ -224,9 +224,10 @@ def reserve(policy, owner, receipt, *, available=memory_available, pause=time.sl
             record = {"owner": owner, "claim_key": key, "claim_bytes": policy["claim_bytes"],
                       "MemAvailable_bytes": free, "budget_bytes": free * 7 // 10,
                       "active_claim_bytes": sum(claims.values()), "time_ns": time.time_ns()}
-            record.update(projection(ledger, claims, policy["claim_bytes"], free))
+            record.update(projection(ledger, claims, policy["claim_bytes"], free, requester=key))
             save(receipt, record)
             if record["admitted"]:
+                clear_waiter(ledger, key)
                 ledger["fixed_claims"][key] = policy["claim_bytes"]
                 ledger.setdefault("correctness_gate_owners", {})[key] = owner
                 if policy.get("cold_claim_bytes"):
@@ -257,6 +258,9 @@ def reserve(policy, owner, receipt, *, available=memory_available, pause=time.sl
                     blocking.append(f"{name}={amount} owner=unknown")
             print(f"correctness gate {key} waits for admission; claims: " + "; ".join(blocking),
                   file=sys.stderr, flush=True)
+            # The first refusal dates the wait; after the bound newer, smaller requests leave room.
+            if record_waiter(ledger, key, policy["claim_bytes"], owner):
+                save(policy["ledger"], ledger)
         pause(60)
 
 

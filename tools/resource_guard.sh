@@ -599,6 +599,11 @@ recover_dead_reservation() {
     detail=$(env -u ZESU_GUARD_MUTEX_FD python3 "$MEMORY_TOOL" ledger-recover-dead --marker "$marker" 2>&1)
   fi
   status=$?
+  if [ "$status" -eq 5 ]; then
+    # The killed compiler still frees memory in its leaf; a later pass releases it.
+    note "WAIT dead-owner reservation: ${marker##*/}: compiler leaf draining"
+    return "$status"
+  fi
   if [ "$status" -ne 0 ]; then
     note "KEEP dead-owner reservation: ${marker##*/}: ${detail##*$'\n'}"
     return "$status"
@@ -1157,6 +1162,22 @@ release_coqc() {
   flock -u 7
   exec 7>&-
   wake_admissions
+}
+
+# After an out-of-memory kill the scope's small main process exits before
+# the killed compiler has freed its memory, so the leaf stays populated for a
+# while. Retry the release outside the mutex until the leaf drains (status 5),
+# for at most ZESU_LEAF_DRAIN_SECONDS; a leaf that never drains stays booked
+# for the dead-owner recovery.
+release_coqc_drained() {
+  local marker=$1 status deadline=$(( SECONDS + ${ZESU_LEAF_DRAIN_SECONDS:-120} )) noted=""
+  while :; do
+    release_coqc "$marker"; status=$?
+    [ "$status" -eq 5 ] || return "$status"
+    [ -n "$noted" ] || { note "WAIT release: ${marker##*/}: compiler leaf draining"; noted=1; }
+    (( SECONDS < deadline )) || return "$status"
+    sleep "${ZESU_LEAF_DRAIN_POLL:-0.5}"
+  done
 }
 
 release_aggregate_reservations() {
@@ -1768,7 +1789,7 @@ run_scope() {
       kill "$child" 2>/dev/null || true
       wait "$child" 2>/dev/null || true
     fi
-    [ "$owned" = 0 ] || release_coqc "$reservation"
+    [ "$owned" = 0 ] || release_coqc_drained "$reservation"
   }
   trap cleanup_scope EXIT
   trap 'exit 143' TERM
