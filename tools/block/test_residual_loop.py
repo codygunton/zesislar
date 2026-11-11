@@ -112,6 +112,41 @@ class ExportRecordTests(unittest.TestCase):
         self.assertTrue(watch(None, 228.5))
 
 
+FAKE_GUARD = """#!/bin/sh
+echo '@@X begin split'
+echo '@@X end'
+sleep 4
+echo 'after the quiet period'
+"""
+
+FAKE_REGISTRY = """import pathlib, subprocess, sys
+if sys.argv[1] == 'run':
+    sys.exit(subprocess.call(sys.argv[sys.argv.index('--') + 1:]))
+pathlib.Path(sys.argv[0]).with_name('STOPPED').write_text(' '.join(sys.argv[1:]))
+"""
+
+
+class QuietStopTests(unittest.TestCase):
+    def test_idle_ticks_stop_a_silent_run_through_the_registry(self):
+        with tempfile.TemporaryDirectory() as root:
+            root = Path(root)
+            (root / "guard.sh").write_text(FAKE_GUARD)
+            (root / "guard.sh").chmod(0o755)
+            (root / "registry.py").write_text(FAKE_REGISTRY)
+            (root / "Export1234.v").write_text("")
+            saved = loop.GUARD, loop.REGISTRY, loop.IDLE_POLL_SECONDS
+            loop.GUARD, loop.REGISTRY, loop.IDLE_POLL_SECONDS = root / "guard.sh", root / "registry.py", 0.1
+            try:
+                result = loop.scoped(root / "Export1234.v", "t", [], "", run_id="run-1",
+                                     watch=loop.QuietWatch(0.5))
+            finally:
+                loop.GUARD, loop.REGISTRY, loop.IDLE_POLL_SECONDS = saved
+            self.assertTrue(result["stopped"])
+            self.assertEqual((root / "STOPPED").read_text(), "stop --run-id run-1")
+            log = (root / "Export1234.log").read_text().split("\n")
+            self.assertTrue(log[0].endswith(" @@X begin split"))
+
+
 class CallerTests(unittest.TestCase):
     def test_export_caller_imports_the_switch_last(self):
         text = loop.export_caller(CALLER)

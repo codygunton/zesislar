@@ -72,6 +72,7 @@ STOP_PREFIXES = ("@@", "Chars ", "Warning", "File ", "Error", "Tactic call", "Fi
 FORBIDDEN = re.compile(r"\b(Admitted|admit|Axiom|Abort|timeout|Timeout|give_up|Parameter)\b")
 COORD_VARS = ("COORD_AGENT", "COORD_ROOT")
 CHECK_CLAIM = 1 << 30
+IDLE_POLL_SECONDS = 5
 GUARD = ROOT / "tools/resource_guard.sh"
 REGISTRY = ROOT / "tools/run_registry.py"
 RESIDUALS = ROOT / "ZesuSsz/Residuals"
@@ -333,7 +334,7 @@ def scoped(path, tag, args, ocamlpath, claim=CHECK_CLAIM, run_id=None, watch=Non
         reader.start()
         while True:
             try:
-                raw = lines.get(timeout=5)
+                raw = lines.get(timeout=IDLE_POLL_SECONDS)
             except queue.Empty:
                 raw = None
                 if not reader.is_alive() and lines.empty():
