@@ -2,8 +2,8 @@
   "schema": "fp301-design-callers.v1",
   "renderer": "tools/block/render_design_callers.py",
   "design": {
-    "path": "ZesuSsz/Evidence/decode_item_block_design.json",
-    "sha256": "36b3683d038afced6c933ecd83bda8ba7623cd28dbd8e127501c2b2b471d2c12"
+    "path": "build/stock-zisk/inventory.json",
+    "sha256": "68013e60bfb285c63589a2eb3fdac4592a956b3f6d86382b70e73b38810322d4"
   },
   "callers": [
     {

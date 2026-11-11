@@ -82,7 +82,7 @@
   },
   "design_callers": {
     "fixture": "tools/block/fixtures/fp301-design-callers.json",
-    "design": "ZesuSsz/Evidence/decode_item_block_design.json",
+    "cfg": "build/stock-zisk/inventory.json",
     "blocks": ["698c", "6a38", "6a40", "6ad8", "6ae0", "6b08"]
   },
   "loop_successors": {
