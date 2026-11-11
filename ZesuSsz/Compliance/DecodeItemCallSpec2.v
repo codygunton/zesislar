@@ -1,5 +1,6 @@
 Require Import ZesuSsz.Automation.All.
 Require Import isla.riscv64.riscv64.
+Require Import ZesuSsz.Contracts.RlpDecodeItem.
 Require Import ZesuSsz.Contracts.DecodeItemSelected.
 Require Import ZesuSsz.Contracts.DecodeItemCallSpec.
 Require Import ZesuSsz.Contracts.DecodeItemCallSpec2.
