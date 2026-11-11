@@ -1,7 +1,23 @@
 # Trust boundary
 
-Rocq checks each completed theorem term. The current restart work has no completed
-rung-1 compliance theorem. The user selected C1-B: the public result records exact
+Rocq checks each completed theorem term. The rung-1 compliance theorem for decodeItem,
+`decodeItemSelectedCompliance` in `ZesuSsz/Compliance/DecodeItemCompliance.v`, is complete.
+It rests on these proofs, and on no axioms (`Print Assumptions`: "Closed under the global
+context"):
+
+- the 24 generated block proofs, one per basic block, each `zesu_block2. Qed.` against its
+  generated entry (`tools/block/generated/fp301_callers`, compiled as
+  `ZesuSsz.Proofs.DecodeItem.FP301.Caller*`), composed over the Automation2 block table in
+  `ZesuSsz/Compliance/DecodeItemGeneratedComposition.v` and stated in
+  `ZesuSsz/Compliance/DecodeItemComplianceGenerated.v`;
+- the ported meaning lemmas in `ZesuSsz/Compliance/DecodeItemMeaningPorted.v`, which give
+  the output meaning at the six return blocks;
+- the residual lemmas in `ZesuSsz/Residuals`, pure lemmas that close the goals the
+  automation leaves open; a model wrote their proofs, and Rocq checks them like any proof.
+
+The registers and compositional variants in `DecodeItemCompositionalCompliance.v` rest on
+the same chain. The October block and composition modules remain in the tree; no
+production theorem uses them. The user selected C1-B: the public result records exact
 machine bytes and permits only the named `RlpLongLengthWrap` divergence from Sail.
 The `KnownBugs` list has one constructor. A wrap case requires the exact binary
 result and Sail rejection. `headerFits` remains a caller lemma, not a public domain.
@@ -81,8 +97,12 @@ contains no input-extern axioms.
 The signature gate (`make check-signatures`, inside `make check-fast`) checks the closed
 types of the four current Sail relations. A Rocq plugin checks their global axioms against
 an empty library-axiom allow-list; runtime premises are listed separately from global
-axioms. The gate does not yet check a compliance theorem because none exists. Every later
-public theorem needs its own reviewed closed type and axiom check.
+axioms. The decodeItem compliance theorem has a reviewed closed type: the Scaffolding
+signature files built by `make check-signatures` compare `ReviewedDecodeItemComplianceType`
+with `DecodeItemComplianceStatement` by `eq_refl`. The PUBLIC soundness gate
+(`tools/soundness_gate.py`, `docs/SOUNDNESS_GATE.md`) checks the four PUBLIC theorems with an
+empty axiom allow-list and recursive `coqchk`. Every later public theorem needs its own
+reviewed closed type and axiom check.
 
 The user approved seven named C4 host premises for the rung-3 transaction snapshot.
 Its generated roots declare those seven host extern axioms.
