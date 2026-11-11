@@ -722,14 +722,17 @@ Ltac zesu_finish_source_tail :=
       SourceFactMatching.zesu_source_match_tree requested ltac:(idtac))
     ltac:(fun _ => SourceFactMatching.zesu_source_finish_package).
 
-(* The direct source tail runs last, after the switched closers fail. *)
+(* The direct source tail runs last, after the switched closers fail. The
+   full source-package route is not tried here: the deferring step after
+   this cascade runs the same route, closes a package whose fixed facts the
+   source closers prove, and splits off the rest. A package that cannot
+   close ran the route twice. *)
 Ltac zesu_finish_residual_cascade :=
   first [solve [
     zesu_finish_residual_switches;
     first [ solve [ZesuSsz.Automation2.MaskWitness.zesu_mask_witness_telescope;
               unshelve (repeat liAStep); zesu_finish_v1]
           | solve [SourceFactMatching.zesu_source_registered_disjunction ltac:(zesu_finish_source_package)]
-          | solve [zesu_finish_source_package]
           | solve [ZesuSsz.Automation2.WordIdentity.zesu_word_identity]
           | solve [zesu_masked_add_branch_finish]
           | solve [ZesuSsz.Automation2.HypothesisCast.zesu_hypothesis_cast_finish]
@@ -754,9 +757,14 @@ Ltac zesu_finish_residual_cascade :=
    conjunct that the source closers cannot prove gets the residual tier, and
    a conjunct that the tier cannot close stays as its own pure goal. Runs only
    after the cascade fails, so a package that closes today is not changed. *)
+Inductive zesu_split_baseline : Prop := zesu_split_baseline_intro.
+
 Ltac zesu_finish_package_deferring :=
   lazymatch goal with |- environments.envs_entails _ _ => idtac end;
   zesu_finish_residual_switches;
+  (* Marks where the facts that the route introduces begin. *)
+  let baseline := fresh "HsplitBaseline" in
+  pose proof zesu_split_baseline_intro as baseline;
   unshelve (zesu_finish_source_package_with
     ltac:(fun requested => SourceFactMatching.zesu_source_defer_fixed_tree requested)).
 
@@ -1213,16 +1221,25 @@ Ltac zesu_block_base :=
 (* The package route opens the package's resource groups, so a conjunct that
    it splits off can see facts that no finisher call saw. The pure finisher
    runs once on each split conjunct before the final residual tier. *)
+Ltac zesu_clear_split_baseline :=
+  repeat match goal with H : zesu_split_baseline |- _ => clear H end.
+
+(* The finisher already ran with the facts that were present before the
+   split. A conjunct that no new fact reaches (no shared atom) gets nothing
+   new from another run, so the run is skipped. *)
 Ltac zesu_finish_split_conjunct :=
   lazymatch goal with
   | |- environments.envs_entails _ _ => fail
-  | _ => solve [zesu_finish]
+  | _ =>
+      ZesuSsz.Automation2.ContextCollection.zesu_facts_after_share_term constr:(zesu_split_baseline);
+      zesu_clear_split_baseline;
+      solve [zesu_finish]
   end.
 
 (* Residual lemmas close the pure goals that every other tier leaves open. *)
 Ltac zesu_block2 :=
   zesu_block_base; try zesu_finish_residual_cascade;
-  try (zesu_finish_package_deferring; try zesu_finish_split_conjunct);
+  try (zesu_finish_package_deferring; try zesu_finish_split_conjunct; zesu_clear_split_baseline);
   try ResidualLemmas.zesu_residual_lemma.
 
 Ltac zesu_block_simpl :=
