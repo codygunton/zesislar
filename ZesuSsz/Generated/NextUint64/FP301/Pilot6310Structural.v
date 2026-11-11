@@ -10,6 +10,7 @@ Require Import ZesuSsz.Contracts.ParentHeaderRootFacts.
 Require Import ZesuSsz.Contracts.NextUint64BlockEntries.
 Require Import ZesuSsz.Contracts.DecodeItemCompositional.
 Require Import ZesuSsz.Contracts.DecodeItemCallData.
+Require Export ZesuSsz.Contracts.NextUint64DomainRanges.
 Require Import ZesuSsz.Contracts.Level1.
 Local Open Scope Z_scope.
 Require Import ZesuSsz.Generated.NextUint64.FP301.Pilot6310Entries.
