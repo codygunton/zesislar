@@ -895,6 +895,8 @@ def generalize_owned_join(alternatives, *, original_seed, entry_pc, vocabulary,
 
     def stored_byte(index, resource_id, offset):
         """Return the byte an edge holds at offset: its own write, else its seed's known byte."""
+        if any(isinstance(key, str) for key in images[index].updates[resource_id]):
+            return None   # A store at a symbolic offset may have replaced any byte.
         update = images[index].updates[resource_id].get(offset)
         if update is not None:
             return normalize(Expr.from_dict(update['value']))

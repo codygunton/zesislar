@@ -154,9 +154,9 @@ def loop_head_seed(report, design, profile, *, root_seed, vocabulary, continuati
 
     The seed keeps the entry edge's resources and path conditions. Each changed
     register becomes its binder. A changed register that the design links to
-    an owned array by an index fact (`array_cursor`) keeps that array's base as
-    an addend, so the body reads the array at a symbolic index; its index range
-    stays an open read obligation. The class row, not this seed, states the
+    an owned array by an index fact (`array_cursor`, one row or a list) keeps
+    that array's base as an addend, so the body reads or stores the array at a
+    symbolic index; its index range stays an open obligation. The class row, not this seed, states the
     loop facts; this seed only lets the pass reach the loop exits.
     """
     from join_generalize import generalize_owned_join
@@ -172,14 +172,18 @@ def loop_head_seed(report, design, profile, *, root_seed, vocabulary, continuati
                                    continuation=continuation, outer_names=['args', 'returnAddress'],
                                    live_registers=live_registers)
     seed = joined['seed']
-    cursor = design.get('array_cursor')
+    cursors = design.get('array_cursor') or []
+    cursors = cursors if isinstance(cursors, list) else [cursors]
     added = []
     for register, binder in design['registers'].items():
         value = input_expr(binder, 64)
-        if cursor and cursor['register'] == register:
+        cursor = next((row for row in cursors if row['register'] == register), None)
+        if cursor:
+            # The array keeps its contract name in the seed component when a join packaged it.
             owner = next(resource for resource in seed.resources if resource.id in
                          {row['id'] for row in seed.ownership['components']
-                          if row.get('value') == cursor['array']})
+                          if cursor['array'] in (row.get('value'), (row.get('seed_component') or {})
+                                                 .get('byte_array_expr', {}).get('value'))})
             offset = input_expr(binder + '_offset', 64)
             value = operation('bvadd', owner.base, offset)
             added.append({'name': binder + '_offset', 'type': 'bv 64', 'expression': offset.to_dict()})
