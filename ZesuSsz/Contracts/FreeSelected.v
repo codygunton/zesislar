@@ -7,3 +7,6 @@ Require Import InstrSpecs.Lookup.
 Definition freeSelectedCode `{!islaG Sigma} `{!threadG} : iProp Sigma :=
   instr_lookup_resources
     (selectedCodeLookup ZesuSsz.Stock.Free.index_free.instr_map).
+
+Global Instance : LithiumUnfold (@freeSelectedCode) := I.
+Global Typeclasses Opaque freeSelectedCode.

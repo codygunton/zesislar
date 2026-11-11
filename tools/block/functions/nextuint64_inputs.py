@@ -20,7 +20,7 @@ from entry_seed import definition_body
 from forward_resources import load_resource_vocabulary, ownership_from_assertion_tree, parse_source_ownership
 from source_domain import conjunctions
 from symbolic_state import input_expr
-from free_inputs import bind, system_shapes, trace_index
+from function_inputs import bind, system_shapes, trace_index
 
 FUNCTION = 'rlp_decode.nextUint64'
 BASE = '(nextUint64Base args)'

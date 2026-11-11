@@ -21,7 +21,9 @@ def selected_code(prefix, logical_module):
             "Require Import InstrSpecs.Lookup.\n\n"
             f"Definition {prefix}SelectedCode `{{!islaG Sigma}} `{{!threadG}} : iProp Sigma :=\n"
             "  instr_lookup_resources\n"
-            f"    (selectedCodeLookup {logical_module}.instr_map).\n")
+            f"    (selectedCodeLookup {logical_module}.instr_map).\n\n"
+            f"Global Instance : LithiumUnfold (@{prefix}SelectedCode) := I.\n"
+            f"Global Typeclasses Opaque {prefix}SelectedCode.\n")
 
 
 def prepare(root, source, function_name, trace_name):
