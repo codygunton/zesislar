@@ -10,6 +10,7 @@
 -Q _build/default/generated/isla-traces/stock-zisk/free ZesuSsz.Stock.Free
 -Q _build/default/generated/isla-traces/stock-zisk/hpDecode ZesuSsz.Stock.HpDecode
 -Q _build/default/generated/isla-traces/stock-zisk/berlinGasCalc ZesuSsz.Stock.BerlinGasCalc
+-Q _build/default/generated/isla-traces/stock-zisk/resumeCall ZesuSsz.Stock.ResumeCall
 -Q _build/default/generated/evm-sail-coq EvmSail
 -Q _build/default/generated/evm-sail-coq/rlp EvmSailRlp
 -Q _build/default/generated/sail-stdpp SailStdpp

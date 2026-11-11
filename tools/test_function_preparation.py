@@ -37,7 +37,7 @@ class FunctionPreparationTests(unittest.TestCase):
             result = subprocess.run(command, cwd=root, capture_output=True, text=True)
             self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
             calls = [json.loads(line) for line in log.read_text().splitlines()]
-            self.assertEqual(len(calls), 9)
+            self.assertEqual(len(calls), 10)
             self.assertEqual(calls[0], ["tools/gate_workspace.py", "--workspace", ".",
                                       "--source-workspace", "custom/source"])
             self.assertEqual(calls[1], ["tools/stock_zisk/platform/traces.py",
@@ -56,9 +56,12 @@ class FunctionPreparationTests(unittest.TestCase):
             self.assertEqual(calls[4], ["tools/stock_zisk/selected/bind_traces.py",
                                       "--out", "custom/closure", "--function",
                                       "modexp.berlinGasCalc", "--trace-name", "berlinGasCalc"])
+            self.assertEqual(calls[5], ["tools/stock_zisk/selected/bind_traces.py",
+                                      "--out", "custom/closure", "--function",
+                                      "opcodes.call.resumeCall", "--trace-name", "resumeCall"])
 
 
-            self.assertEqual(calls[5], ["tools/stock_zisk/platform/traces.py",
+            self.assertEqual(calls[6], ["tools/stock_zisk/platform/traces.py",
                 "--trace-only", "--manifest", "build/stock-zisk/eql-trace-input.json",
                 "--dump", "build/stock-zisk/eql-policy/eql.raw.dump",
                 "--out", "generated/isla-traces/stock-zisk/eql",
@@ -67,10 +70,10 @@ class FunctionPreparationTests(unittest.TestCase):
                 "--per-load-regions-sha256", "3e79c1525180f95d48d65823a69394c89ba7d7e70bc778dae19b89004885cfeb",
                 "--region-source-map", "build/stock-zisk/eql-policy/PATH-MAP.json",
                 "--region-source-map-sha256", "a5afd3146de5a937cbebe3c0b18fbebc7927e73ca27302ae490afd749721afde"])
-            self.assertEqual(calls[6], ["tools/stock_zisk/platform/bind_traces.py",
+            self.assertEqual(calls[7], ["tools/stock_zisk/platform/bind_traces.py",
                 "--out", "generated/isla-traces/stock-zisk/eql", "--trace-name", "eql",
                 "--check-manifest", "custom/recipe.json"])
-            self.assertEqual(calls[7], ["tools/stock_zisk/platform/traces.py",
+            self.assertEqual(calls[8], ["tools/stock_zisk/platform/traces.py",
                 "--trace-only", "--manifest", "build/stock-zisk/decodeItem-regions-trace-input.json",
                 "--dump", "build/stock-zisk/decodeItem-regions-policy/decodeItem.raw.dump",
                 "--out", "generated/isla-traces/stock-zisk/decodeItemRegions",
@@ -79,7 +82,7 @@ class FunctionPreparationTests(unittest.TestCase):
                 "--per-load-regions-sha256", "e9f2697fa7d5611887695b66130958957a672ee74707650e5f20fa91e3eb0eaa",
                 "--region-source-map", "build/stock-zisk/decodeItem-regions-policy/PATH-MAP.json",
                 "--region-source-map-sha256", "dac940753fc60ebdcc5f6138cff636d5cb79dccf5be76553f308b9c49b05d12f"])
-            self.assertEqual(calls[8], ["tools/stock_zisk/platform/bind_traces.py",
+            self.assertEqual(calls[9], ["tools/stock_zisk/platform/bind_traces.py",
                 "--out", "generated/isla-traces/stock-zisk/decodeItemRegions", "--trace-name", "decodeItemRegions",
                 "--check-manifest", "custom/recipe.json"])
 

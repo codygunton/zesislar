@@ -437,6 +437,8 @@ stock-native-indexes: gate-workspace
 	  --function nibbles.hpDecode --trace-name hpDecode
 	$(PYTHON) tools/stock_zisk/selected/bind_traces.py --out $(STOCK_CLOSURE_TRACE_DIR) \
 	  --function modexp.berlinGasCalc --trace-name berlinGasCalc
+	$(PYTHON) tools/stock_zisk/selected/bind_traces.py --out $(STOCK_CLOSURE_TRACE_DIR) \
+	  --function opcodes.call.resumeCall --trace-name resumeCall
 	$(MAKE) --no-print-directory -f $(lastword $(MAKEFILE_LIST)) stock-eql-traces
 	$(MAKE) --no-print-directory -f $(lastword $(MAKEFILE_LIST)) stock-decodeitem-region-traces
 

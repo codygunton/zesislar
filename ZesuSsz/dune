@@ -10,5 +10,5 @@
  (theories
    isla isla.riscv64 InstrSpecs EvmSail EvmSailRlp SailStdpp
    ZesuStock ZesuSsz.Stock.DecodeItem ZesuSsz.Stock.Closure ZesuSsz.Stock.Free
-   ZesuSsz.Stock.HpDecode ZesuSsz.Stock.BerlinGasCalc
+   ZesuSsz.Stock.HpDecode ZesuSsz.Stock.BerlinGasCalc ZesuSsz.Stock.ResumeCall
    lithium iris stdpp RecordUpdate Ltac2))

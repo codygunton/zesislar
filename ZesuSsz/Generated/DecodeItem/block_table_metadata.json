@@ -1,17 +1,17 @@
 {
   "schema_version": 1,
-  "artifact_identity": "000cbd6e50115631af0c580abc4d8342fec7459d23826da94f314422489644f8",
+  "artifact_identity": "d9fbe18b42c81272b2f8b63316df0f492ce775ffad14c041848b4e8acef7899a",
   "label": "Structural wiring coverage; no machine contract proof",
   "source_hashes": {
-    "build/stock-zisk/build-recipe.json": "7a54caff28e29015f64315853fd127bb6e4033157b6dc3d2ad643aef9fe051ae",
-    "build/stock-zisk/cfg.json": "4d085d563ea1d54758b7bc999f9ec186d3cd04d4f8bfa86ceb027ba44c15793f",
-    "ZesuSsz/Evidence/decode_item_block_design.json": "71fe9201928992336d8e3494d11fcd22bc1757a3d397ad5e42344646ddeaae04",
-    "build/stock-zisk/inventory.json": "0ee03856bf727dd30efd17d5b45bb8cb870e6f848b8ad665d3bf43b5cf192361",
+    "build/stock-zisk/build-recipe.json": "2443ed6f2bc9a21a671258c0a73297619972ec921d2490e08cf8da1d086f6640",
+    "build/stock-zisk/cfg.json": "42fe8f9cdce5ea45f0297ef3da8382012694d819a5b737bd8e3ae56be732d0ec",
+    "ZesuSsz/Evidence/decode_item_block_design.json": "c9040cac5f7abfe66d54f73fc10c3f8fb511f69f63baa5bf52495065fae3cda3",
+    "build/stock-zisk/inventory.json": "33e0883234e9a05f96ddcba2ae5ad7c04b75fea17d1469528d364b661d8fbe2c",
     "ZesuSsz/Contracts/DecodeItemBranchEntries.v": "85a6a567952243f919c2f170cc3bebca6eeb60d14399fb73de8af5a53e9956e0",
     "ZesuSsz/Contracts/RlpDecodeItemContract.v": "595fab72b6fcaa0603a8bd35f5e3b4433a380493a076f2bf8d05116738355d9a",
     "ZesuSsz/Contracts/ResultImage.v": "25304efe309a5644c10bd39a98bcd914c42d30c51a5eeed62ba231c97e4a209d",
     "ZesuSsz/Contracts/AbiBytes.v": "007990c44de0b1d546b3fdcd39a828d25cfb24b4a56bdb6891cff3e74323470c",
-    "build/stock-zisk/decodeItem.raw.dump": "309bfd72ccac295008856beb22ba83fc6834ac97c56f7591a8a1316ec7e52a2b",
+    "build/stock-zisk/decodeItem.raw.dump": "bcce4c5f6f729da79021dfae9f75b3defcb1978cd5a9907ce8d5be70df59314a",
     "ZesuSsz/Contracts/DecodeItemReturnFacts.v": "9da33c0898953f7ff5f270dc6e1f66681f4de045c7bb774b7701676399da1cf5",
     "ZesuSsz/Contracts/RlpDecodeItemByteFold.v": "5e51923c72bf5d9160a5b550094a0d4609c5f2d3bb8e39550a10519ed4baa02c",
     "ZesuSsz/Contracts/RlpDecodeItemByteFoldBlocks.v": "a504dfa090e1ec91f709ad3c3b5c7df1823dc64159b0b53960a0606a5ffe92a9",
@@ -540,8 +540,8 @@
       "ZesuSsz/Contracts/RlpDecodeItemContract.v": "595fab72b6fcaa0603a8bd35f5e3b4433a380493a076f2bf8d05116738355d9a",
       "ZesuSsz/Contracts/ResultImage.v": "25304efe309a5644c10bd39a98bcd914c42d30c51a5eeed62ba231c97e4a209d",
       "ZesuSsz/Contracts/AbiBytes.v": "007990c44de0b1d546b3fdcd39a828d25cfb24b4a56bdb6891cff3e74323470c",
-      "build/stock-zisk/inventory.json": "0ee03856bf727dd30efd17d5b45bb8cb870e6f848b8ad665d3bf43b5cf192361",
-      "build/stock-zisk/decodeItem.raw.dump": "309bfd72ccac295008856beb22ba83fc6834ac97c56f7591a8a1316ec7e52a2b",
+      "build/stock-zisk/inventory.json": "33e0883234e9a05f96ddcba2ae5ad7c04b75fea17d1469528d364b661d8fbe2c",
+      "build/stock-zisk/decodeItem.raw.dump": "bcce4c5f6f729da79021dfae9f75b3defcb1978cd5a9907ce8d5be70df59314a",
       "ZesuSsz/Contracts/DecodeItemReturnFacts.v": "9da33c0898953f7ff5f270dc6e1f66681f4de045c7bb774b7701676399da1cf5",
       "ZesuSsz/Contracts/RlpDecodeItemByteFold.v": "5e51923c72bf5d9160a5b550094a0d4609c5f2d3bb8e39550a10519ed4baa02c",
       "ZesuSsz/Contracts/RlpDecodeItemByteFoldBlocks.v": "a504dfa090e1ec91f709ad3c3b5c7df1823dc64159b0b53960a0606a5ffe92a9",
@@ -679,7 +679,7 @@
     }
   },
   "generated_hashes": {
-    "ZesuSsz/Generated/DecodeItem/BlockTable.v": "76e3f24102c9ff2dd223350f53266fe714f769072448643af5d06ceccfab44c9"
+    "ZesuSsz/Generated/DecodeItem/BlockTable.v": "834a80ba4161766e96a696c6557de8cb605631544183047642e504359fb18cd2"
   },
   "proof_slots": [
     {

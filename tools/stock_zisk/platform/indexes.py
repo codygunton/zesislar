@@ -17,6 +17,7 @@ FUNCTION_NAMES = {
     "memcpy": "memcpyStub",
     "nibbles.hpDecode": "hpDecode",
     "modexp.berlinGasCalc": "berlinGasCalc",
+    "opcodes.call.resumeCall": "resumeCall",
 }
 
 def approved_regions(inventory, supported):

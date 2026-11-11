@@ -17,7 +17,7 @@ ROOTS = ['rlp.decodeItem', 'rlp_decode.nextUint64', 'rlp_decode.decodeParentHead
          'array_list.Aligned([32]u8,null).toOwnedSlice',
          'array_list.Aligned(input.AccessListEntry,null).toOwnedSlice',
          'alt_fl_alloc.alloc', 'alt_fl_alloc.remap', 'alt_fl_alloc.free', 'memcpy',
-         'nibbles.hpDecode', 'modexp.berlinGasCalc']
+         'nibbles.hpDecode', 'modexp.berlinGasCalc', 'opcodes.call.resumeCall']
 CALLER_SAVED = {1,5,6,7,10,11,12,13,14,15,16,17,28,29,30,31}
 
 
