@@ -1988,13 +1988,19 @@ Ltac zesu_integer_array_address_if_enabled :=
       zesu_integer_pointer_root expanded ltac:(fun _ =>
       let integer := zesu_stack_integer_address expanded in
       first [ByteArrayAssemblyCodec.zesu_byte_array_restore_source |
+      (* The address equality does not depend on the candidate array. Prove it
+         once, when some candidate reaches it, and let every candidate use it. *)
+      assert_succeeds (iMatchHyp ltac:(fun _ body =>
+        lazymatch body with
+        | (_ ↦ₘ{_}∗ ?values)%I => lazymatch type of values with list (bv _) => idtac end
+        end));
+      let Heq := fresh "HarrayAddress" in
+      assert (Heq : bv_unsigned pointer = integer) by
+        (zesu_stack_arithmetic);
       iMatchHyp ltac:(fun H body =>
         lazymatch body with
         | (?lower ↦ₘ{?q}∗ ?values)%I =>
             lazymatch type of values with list (bv ?width) =>
-              let Heq := fresh "HarrayAddress" in
-              assert (Heq : bv_unsigned pointer = integer) by
-                (zesu_stack_arithmetic);
               let Hrange := fresh "HarrayAddressRange" in
               assert (Hrange : (lower <= integer < lower +
                 Z.of_nat (length values) * Z.of_N (width `div` 8))%Z) by
