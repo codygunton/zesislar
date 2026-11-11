@@ -83,9 +83,24 @@ def trace_commands(group):
                      '--region-source-map-sha256', sha(policy + '/PATH-MAP.json')]]
 
 
+def current_fragment(group, fragment):
+    """A finished generation for this ELF and platform resumes without regenerating."""
+    if fragment['traces'].get('elf_sha256') != recipe()['elf_sha256']:
+        return False
+    snapshot = sha(BUILD + '/platform/riscv64-zisk.ir')
+    if group in TRACE_ONLY:
+        return fragment['traces']['input_hashes'].get('platform_snapshot') == snapshot
+    coverage = json.loads((ROOT / TRACES / group / 'coverage.json').read_text())
+    return coverage.get('platform_snapshot_sha256') == snapshot
+
+
 def traces():
     missing = [group for group in ('decodeItem', 'closure', *TRACE_ONLY) if group not in recipe()['traces']]
     for group in missing:
+        fragment = ROOT / TRACES / group / 'manifest-fragment.json'
+        if fragment.exists() and current_fragment(group, json.loads(fragment.read_text())):
+            print(f'[regenerate] {group} traces match the selected ELF and platform; binding them', flush=True)
+            continue
         if (ROOT / TRACES / group).exists():
             raise SystemExit(f'{TRACES}/{group} belongs to another recipe; move it aside to regenerate it.')
         for command in trace_commands(group):

@@ -160,6 +160,11 @@ def update_group_inputs(inputs, group, fragment_inputs, root=ROOT):
             inputs[key] = {field: row.get(field, value) for field, value in inputs[key].items()}
 
 
+def trace_record(old, fragment):
+    """Keep the existing keys and their order; the fragment's values win; the binding is complete."""
+    return {**old, **fragment, 'manifest_binding_pending': False}
+
+
 def merge_traces(build, groups, traces=TRACES, root=ROOT):
     """Bind each group's fragment: project files, trace record and trace-only inputs."""
     recipe = read(build)
@@ -179,7 +184,7 @@ def merge_traces(build, groups, traces=TRACES, root=ROOT):
             for name in old:
                 del recipe['project_derived'][name]
         recipe['project_derived'].update(records)
-        record = dict(recipe['traces'].get(group, {}), **fragment['traces'], manifest_binding_pending=False)
+        record = trace_record(recipe['traces'].get(group, {}), fragment['traces'])
         if record.get('kind') == 'trace_only':
             update_group_inputs(recipe['inputs'], group, fragment['inputs'], root)
         recipe['traces'][group] = record

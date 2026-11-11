@@ -188,6 +188,13 @@ class RecipeTests(unittest.TestCase):
         self.assertEqual(inputs, {'eql/build/eql.dump': {'path': 'build/eql.dump', 'sha256': 'new-dump'},
                                   'regions/elf': {'path': 'build/zesu-zisk.elf', 'sha256': 'new-elf'}})
 
+    def test_a_trace_record_keeps_old_keys_and_completes_the_binding(self):
+        old = {'kind': 'trace_only', 'generation_provenance': {'run': 1}, 'manifest_binding_pending': False}
+        new = {'kind': 'trace_only', 'elf_sha256': 'e', 'manifest_binding_pending': True}
+        self.assertEqual(list(recipe.trace_record(old, new).items()),
+                         [('kind', 'trace_only'), ('generation_provenance', {'run': 1}),
+                          ('manifest_binding_pending', False), ('elf_sha256', 'e')])
+
     def test_verification_reports_bound_native_coverage(self):
         directory = tempfile.TemporaryDirectory()
         self.addCleanup(directory.cleanup)
