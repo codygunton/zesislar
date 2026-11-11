@@ -238,13 +238,13 @@ class GuardLockTest(unittest.TestCase):
                 self.assertIn('shadows stdlib modules: queue.py', result.stderr)
                 self.assertNotIn('must not execute', result.stderr)
 
-    def batch_environment(self, limit="150G"):
+    def batch_environment(self, limit="120G"):
         slice_name = f"zesuworkloads-aggregate1000p{os.getpid()}r1.slice"
         subprocess.run(["systemctl", "--user", "set-property", "--runtime", slice_name,
                         f"MemoryMax={limit}", "MemorySwapMax=0"],
                        env=self.environment, check=True)
         subprocess.run(["systemctl", "--user", "set-property", "--runtime", "zesuworkloads.slice",
-                        "MemoryMax=187904819200", "MemorySwapMax=0"], env=self.environment, check=True)
+                        "MemoryMax=136365211648", "MemorySwapMax=0"], env=self.environment, check=True)
         self.cgroup.write_text("0::/user.slice/user-1000.slice/user@1000.service/zesuworkloads.slice/" + slice_name + "/fixture.scope\n")
         return {"ZESU_IN_BATCH": "1", "ZESU_AGGREGATE_SLICE": slice_name,
                 "ZESU_AGGREGATE_LIMIT": limit}
@@ -1216,7 +1216,7 @@ class GuardLockTest(unittest.TestCase):
         self.assertEqual(result.returncode, 0, result.stderr)
         state = json.loads(Path(self.environment["GUARD_TEST_SLICE_STATE"]).read_text())
         self.assertEqual(state["zesuworkloads.slice"],
-                         {"MemoryMax": "187904819200", "MemorySwapMax": "0"})
+                         {"MemoryMax": "136365211648", "MemorySwapMax": "0"})
         self.assertIn("--slice=zesuworkloads.slice", result.stdout)
 
     def test_parent_setup_failure_prevents_launch(self):
@@ -1237,7 +1237,7 @@ class GuardLockTest(unittest.TestCase):
     def test_changed_parent_fence_refuses_inherited_payload(self):
         context = self.batch_environment()
         subprocess.run(["systemctl", "--user", "set-property", "--runtime", "zesuworkloads.slice",
-                        "MemoryMax=187904819201", "MemorySwapMax=0"],
+                        "MemoryMax=136365211649", "MemorySwapMax=0"],
                        env=self.environment, check=True)
         result = subprocess.run([str(GUARD), "batch-exec", "--", "echo", "MUST_NOT_RUN"],
                                 env={**self.environment, **context}, capture_output=True, text=True)
@@ -1255,9 +1255,9 @@ class GuardLockTest(unittest.TestCase):
         self.assertNotIn("MUST_NOT_RUN", result.stdout)
 
     def test_scope_and_batch_memory_fences(self):
-        self.environment["ZESU_AGGREGATE_LIMIT"] = "150G"
+        self.environment["ZESU_AGGREGATE_LIMIT"] = "120G"
         for arguments, fence in (("scope", "MemoryMax=16G"),
-                                 ("batch", "MemoryMax=150G")):
+                                 ("batch", "MemoryMax=120G")):
             with self.subTest(arguments=arguments):
                 result = self.guard(arguments, "test", "--", "true")
                 self.assertEqual(result.returncode, 0)
@@ -1279,7 +1279,7 @@ class GuardLockTest(unittest.TestCase):
             "guard=sys.argv[1]\n"
             "subprocess.run([guard,'batch','nested','--',guard,'scope','ordinary','--','true'],check=True)\n"
 )
-        for gate, limit in ((False, "150G"), (True, "120G")):
+        for gate, limit in ((False, "127G"), (True, "120G")):
             with self.subTest(gate=gate):
                 events.unlink(missing_ok=True)
                 if gate:self.lock.write_text(f"state=held holder=fixture pid={os.getpid()} start=x\n")
@@ -1308,9 +1308,11 @@ class GuardLockTest(unittest.TestCase):
 
     def test_missing_or_changed_aggregate_fence_rejects_compiler(self):
         self.prepare_blocked_fixture(0)
+        # The fixture aggregate keeps the fence of the last call: 128G, above the parent.
         for context in ({"ZESU_IN_BATCH": "1"},
-                        {**self.batch_environment("150G"), "ZESU_AGGREGATE_LIMIT": "120G"},
-                        {**self.batch_environment(), "ZESU_AGGREGATE_SLICE": "app.slice"}):
+                        {**self.batch_environment(), "ZESU_AGGREGATE_LIMIT": "64G"},
+                        {**self.batch_environment(), "ZESU_AGGREGATE_SLICE": "app.slice"},
+                        self.batch_environment("128G")):
             with self.subTest(context=context):
                 result = subprocess.run([str(GUARD), "scope", "bad", "--", "echo", "WRONG"],
                                         env={**self.environment, **context}, capture_output=True, text=True)
@@ -1396,15 +1398,15 @@ class GuardLockTest(unittest.TestCase):
         self.assertEqual(list((Path(self.environment["ZESU_GUARD_STATE"]) / "launches").iterdir()), [])
 
     def test_direct_batch_waits_at_launch_limit(self):
-        self.environment["ZESU_AGGREGATE_LIMIT"] = "150G"
+        self.environment["ZESU_AGGREGATE_LIMIT"] = "120G"
         self.environment["GUARD_TEST_USED_GIB"] = "226"
         result = subprocess.run(
             ["timeout", "0.2", str(GUARD), "batch", "test", "--", "true"],
             capture_output=True, text=True, env=self.environment)
         self.assertEqual(result.returncode, 124)
-        self.assertNotIn("MemoryMax=150G", result.stdout)
+        self.assertNotIn("MemoryMax=120G", result.stdout)
         self.environment["GUARD_TEST_USED_GIB"] = "149"
-        self.assertIn("MemoryMax=150G", self.guard("batch", "test", "--", "true").stdout)
+        self.assertIn("MemoryMax=120G", self.guard("batch", "test", "--", "true").stdout)
 
     def test_gate_uses_120_gib_batch_fence(self):
         gate = (TOOLS / "det" / "gate.sh").read_text()

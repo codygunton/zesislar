@@ -18,7 +18,8 @@ import time
 
 GIB = 1024 ** 3
 HEADROOM_BYTES = 20 * GIB
-SLICE_MAX_BYTES = 175 * GIB
+# test_phase_memory checks that every copy of the parent fence agrees.
+SLICE_MAX_BYTES = 127 * GIB
 STATIC_KERNEL_ACCOUNT_SCHEMA = 'legacy_kernel_accounts.v1'
 CGROUP_ROOT = Path('/sys/fs/cgroup')
 PROC = Path('/proc')
@@ -1031,7 +1032,7 @@ def live_memory_admission(result, reader, *, reserved_bytes=0, senior=False):
     request = result['new_claim_bytes']
     try:
         ceiling = int(os.environ.get('ZESU_LIVE_REQUEST_LIMIT_GIB', '16'))
-        if not 1 <= ceiling <= 175:
+        if not 1 <= ceiling <= SLICE_MAX_BYTES // GIB:
             return result
     except ValueError:
         return result

@@ -36,7 +36,7 @@ class FixtureReader:
         return copy.deepcopy(self.observation)
 
     def slice_max(self):
-        return 175 * M.GIB
+        return M.SLICE_MAX_BYTES
 
     def process(self, actor):
         return 1
@@ -90,7 +90,7 @@ class RetainedBookingTests(unittest.TestCase):
 class PendingGroupingTests(unittest.TestCase):
     def evaluate(self, claims, observations, **kwargs):
         return M.evaluate(claims, 0, 300 * M.GIB, observations=observations,
-                          slice_max_bytes=175 * M.GIB,
+                          slice_max_bytes=M.SLICE_MAX_BYTES,
                           headroom_bytes=20 * M.GIB, **kwargs)
 
     def test_pending_tokens_keep_largest_approved_aggregate_booking(self):
@@ -103,7 +103,7 @@ class PendingGroupingTests(unittest.TestCase):
     def test_new_pending_token_cannot_reduce_existing_booking(self):
         result = M.evaluate({'first': 64 * M.GIB}, 16 * M.GIB, 300 * M.GIB,
                             observations={'first': sample(0)},
-                            new_observation=sample(0), slice_max_bytes=175 * M.GIB,
+                            new_observation=sample(0), slice_max_bytes=M.SLICE_MAX_BYTES,
                             headroom_bytes=20 * M.GIB)
         self.assertEqual(result['active_claim_bytes'], 64 * M.GIB)
         self.assertEqual(result['unrealized_claim_bytes'], 64 * M.GIB)

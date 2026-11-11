@@ -80,7 +80,7 @@ def admitted(markers):
     return module_memory.admission(
         args.request_bytes, claims, args.available_bytes,
         headroom_bytes=args.headroom_bytes, maximum_compilers=args.maximum_compilers,
-        slice_max_bytes=175 * 1024**3)["admitted"]
+        slice_max_bytes=127 * 1024**3)["admitted"]
 
 if args.operation == "ledger-recover-stale":
     assert args.all
@@ -425,7 +425,7 @@ cat() {
 }
 systemctl() {
   [ "$*" = '--user show zesuworkloads.slice -p MemoryMax -p MemorySwapMax' ] || return 2
-  printf 'MemoryMax=187904819200\nMemorySwapMax=0\n'
+  printf 'MemoryMax=136365211648\nMemorySwapMax=0\n'
 }
 ulimit -S -s 8192
 set -- scope-exec fixture -- python3 -c 'import json, resource; print(json.dumps({"stack":resource.getrlimit(resource.RLIMIT_STACK), "cpu":resource.getrlimit(resource.RLIMIT_CPU)}))'

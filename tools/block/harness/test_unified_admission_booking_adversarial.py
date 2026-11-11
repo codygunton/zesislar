@@ -26,7 +26,7 @@ class LegacyBookingTests(unittest.TestCase):
         self.group.mkdir(parents=True)
         (self.reader.parent / 'memory.max').write_text(str(M.SLICE_MAX_BYTES))
         (self.reader.parent / 'memory.swap.max').write_text('0')
-        (self.group / 'memory.max').write_text(str(150 * M.GIB))
+        (self.group / 'memory.max').write_text(str(120 * M.GIB))
         (self.group / 'memory.swap.max').write_text('0')
         (self.group / 'memory.current').write_text('0')
         (self.group / 'cgroup.events').write_text('populated 1\n')
@@ -59,7 +59,7 @@ class LegacyBookingTests(unittest.TestCase):
     def account(self, booking, live):
         return M.evaluate({'legacy': booking}, 0, 300 * M.GIB,
                           observations={'legacy': self.observation(live)},
-                          slice_max_bytes=175 * M.GIB, headroom_bytes=20 * M.GIB)
+                          slice_max_bytes=M.SLICE_MAX_BYTES, headroom_bytes=20 * M.GIB)
 
     def test_recorded_8_under_32_preserves_booking_and_live_growth(self):
         (self.group / 'memory.max').write_text(str(32 * M.GIB))
@@ -75,7 +75,7 @@ class LegacyBookingTests(unittest.TestCase):
         self.assertEqual(high['accounted_active_bytes'], 12 * M.GIB)
         self.assertEqual(high['unrealized_claim_bytes'], 0)
 
-    def test_recorded_64_under_150_does_not_become_150(self):
+    def test_recorded_64_under_120_does_not_become_120(self):
         marker = self.marker(101, 64, 64)
         self.inner('one', 64)
         result = self.booking([marker])
@@ -112,9 +112,9 @@ class LegacyBookingTests(unittest.TestCase):
 
     def test_no_recorded_booking_sums_inner_fences_below_aggregate(self):
         self.inner('one', 64)
-        self.inner('two', 64)
+        self.inner('two', 32)
         result = self.booking([])
-        self.assertEqual(result['booking_bytes'], 128 * M.GIB)
+        self.assertEqual(result['booking_bytes'], 96 * M.GIB)
         self.assertFalse(result['recorded_booking_bytes'])
 
     def test_no_recorded_booking_never_exceeds_aggregate_fence(self):

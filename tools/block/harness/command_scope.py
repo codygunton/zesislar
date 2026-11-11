@@ -5,7 +5,8 @@ import subprocess
 import sys
 
 PARENT = 'zesuworkloads.slice'
-PARENT_BYTES = 175 * 1024**3
+# test_phase_memory checks that every copy of the parent fence agrees.
+PARENT_BYTES = 127 * 1024**3
 
 
 def contained(*, proc=Path('/proc/self/cgroup'), cgroups=Path('/sys/fs/cgroup')):

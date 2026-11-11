@@ -181,7 +181,7 @@ class LegacyRolloutTests(unittest.TestCase):
                 return dict(verified=False, live_bytes=0)
 
             def slice_max(self):
-                return 175 * M.GIB
+                return M.SLICE_MAX_BYTES
 
         self.reader = Reader()
         self.data = dict(fixed_claims={}, shell_marker_directory=str(self.markers))
