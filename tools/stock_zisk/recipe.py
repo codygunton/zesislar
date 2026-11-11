@@ -68,7 +68,10 @@ def rebase(build, built, keep_object=False, root=ROOT, pins=PINS):
     recipe, fresh = read(build), json.loads((built / 'build-recipe.json').read_text())
     if manifest.digest(built / 'zesu-zisk.elf') != fresh['elf_sha256']:
         raise ValueError('The built ELF differs from its recipe.')
-    relative = lambda value: manifest.relative_project_paths(value, root)  # noqa: E731
+    # The build may have run in another checkout; its project paths name this checkout's files.
+    built_root = Path(fresh['inputs']['builder/build.py']['path']).resolve().parents[2]
+    relative = lambda value: manifest.relative_project_paths(  # noqa: E731
+        manifest.relative_project_paths(value, built_root), root)
     old_sha, old_extents, old_symbols = recipe['elf_sha256'], extents(recipe), symbols(build)
     shutil.copyfile(built / 'zesu-zisk.elf', build / 'zesu-zisk.elf')
     for name, command in manifest.REPORTS.items():

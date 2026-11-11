@@ -112,6 +112,17 @@ def platform_current():
             == sha('tools/stock_zisk/platform/smoke.py'))
 
 
+def refresh_design_pins(design, before, after):
+    """Block fixtures pin the design table by hash; its provenance hashes follow the artifact identity."""
+    if before == after:
+        return
+    for path in sorted((ROOT / 'tools/block/fixtures').glob('*.json')):
+        fixture = json.loads(path.read_text())
+        if isinstance(fixture, dict) and fixture.get('design') == {'path': design, 'sha256': before}:
+            path.write_text(path.read_text().replace(before, after))
+            print(f'[regenerate] {path.relative_to(ROOT)} pins the regenerated design table', flush=True)
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument('--built', type=Path, help='a build.py output directory with the new ELF')
@@ -143,7 +154,10 @@ def main():
         raise SystemExit('The artifact identity did not settle in three rounds.')
     run('selected free binding', [PY, 'tools/stock_zisk/selected/bind_traces.py', '--out',
                                   TRACES + '/closure', '--function', 'alt_fl_alloc.free', '--trace-name', 'free'])
+    design = 'ZesuSsz/Evidence/decode_item_block_design.json'
+    before = sha(design)
     run('block design', [PY, 'ZesuSsz/Evidence/generate_block_design.py', '--function', 'decodeItem'])
+    refresh_design_pins(design, before, sha(design))
     run('block table', [PY, 'tools/block/generate_table.py', '--function', 'decodeItem', '--recipe', RECIPE,
                         '--cfg', BUILD + '/cfg.json', '--design', 'ZesuSsz/Evidence/decode_item_block_design.json',
                         '--coverage', 'ZesuSsz/Generated/DecodeItem/block_table_metadata.json',
@@ -153,6 +167,7 @@ def main():
               ('layout check', [PY, 'tools/stock_zisk/layout.py', '--check']),
               ('region windows check', [PY, 'tools/stock_zisk/platform/region_windows.py']),
               ('support check', [PY, 'tools/block/render_support.py', '--function', 'decodeItem', '--check']),
+              ('design callers check', [PY, 'tools/block/render_design_callers.py', '--check']),
               ('test-trace fixtures', [PY, 'tools/stock_zisk/check_test_traces.py'])]
     failed = []
     for label, command in checks:
