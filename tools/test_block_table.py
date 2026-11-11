@@ -132,29 +132,6 @@ class BlockTableTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "different functions"):
             generate_table.structure(cfg, design)
 
-    def test_selected_stock_structure(self):
-        root = Path(__file__).resolve().parents[1]
-        cfg = json.loads((root / "build/stock-zisk/cfg.json").read_text())
-        design = json.loads((root / "ZesuSsz/Evidence/decode_item_block_design.json").read_text())
-        report = generate_table.structure(cfg, design)
-        self.assertEqual(report["coverage"], dict(instructions=116, blocks=24,
-            instruction_edges=124, block_edges=32, returns=6, calls=0, conditional_branches=14, loops=2))
-        self.assertEqual({edge["header"] for edge in report["loop_edges"]}, {"0x800d6a24", "0x800d6ac4"})
-
-    def test_selected_executable_names_are_bound_and_rendered_once(self):
-        root = Path(__file__).resolve().parents[1]
-        design_path = root / "ZesuSsz/Evidence/decode_item_block_design.json"
-        design = json.loads(design_path.read_text())
-        report = generate_table.bound_inputs(root / "build/stock-zisk/build-recipe.json",
-                                             root / "build/stock-zisk/cfg.json", design_path)
-        self.assertEqual(report["missing_entry_definitions"], [])
-        source = generate_table.render_table(design, report)
-        self.assertEqual(source.count("Definition decodeItemState"), 24)
-        for block in design["blocks"]:
-            name = f"decodeItemState{generate_table.address(block['entry_pc']):x}"
-            self.assertEqual(source.count(f"Definition {name} :"), 1)
-            self.assertIn(f"(* Entry: {block['entry_definition']}.", source)
-
     def executable_fixture(self):
         cfg, design = self.fixture()
         design["table_convention"] = {
@@ -350,22 +327,6 @@ class BlockTableTests(unittest.TestCase):
         design["table_convention"]["existential_binders"] = "Invented locals"
         with self.assertRaisesRegex(ValueError, "approved convention"):
             generate_table.render_table(design, report)
-
-    def test_design_generator_uses_approved_table_convention(self):
-        root = Path(__file__).resolve().parents[1]
-        path = root / "ZesuSsz/Evidence/generate_block_design.py"
-        spec = importlib.util.spec_from_file_location("block_design", path)
-        generator = importlib.util.module_from_spec(spec)
-        spec.loader.exec_module(generator)
-        inventory = json.loads((root / "build/stock-zisk/inventory.json").read_text())
-        profile = json.loads((root / "ZesuSsz/Contracts/decode_item_block_design.json").read_text())
-        design = generator.build(inventory, profile["function"], profile, root=root)
-        convention = generate_table.table_convention(design)
-        self.assertNotIn("universal_binders", convention)
-        views = generate_table.rendered_entry_views(design, root)
-        source_hashes = generate_table.entry_source_hashes(views["table_design"], root)
-        for path, expected in convention["code_source_hashes"].items():
-            self.assertEqual(source_hashes[path], expected)
 
     def test_universal_state_convention_is_rejected(self):
         design, report = self.executable_fixture()

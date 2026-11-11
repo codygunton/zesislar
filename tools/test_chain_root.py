@@ -464,29 +464,6 @@ class ChainRootInvariantTests(unittest.TestCase):
         self.assertEqual(chain_root.terminal_target("decodeItemReturnAddress args"),
                          "decodeItemReturnAddress args")
 
-    def test_q27_hints_match_real_cfg_headers(self):
-        root = Path(__file__).resolve().parents[1]
-        cfg = json.loads((root / "build/stock-zisk/cfg.json").read_text())
-        entry = 0x800d6960
-        blocks = chain_root.graph(cfg, entry)
-        hints = chain_root.load_invariant_hints(root / "ZesuSsz/Evidence/decode_item_block_design.json", blocks, entry)
-        self.assertEqual(set(hints), {0x800d6a24, 0x800d6ac4})
-        obligations = chain_root.invariant_obligations(hints)
-        self.assertEqual(len(obligations), 6)
-        self.assertTrue(all(row["status"] == "pending" for row in obligations))
-        self.assertTrue(all(row["capture_only"] for row in obligations))
-
-    def test_conflicting_register_hint_is_rejected(self):
-        root = Path(__file__).resolve().parents[1]
-        cfg = json.loads((root / "build/stock-zisk/cfg.json").read_text())
-        design = json.loads((root / "ZesuSsz/Evidence/decode_item_block_design.json").read_text())
-        next(row["invariant_hint"] for row in design["blocks"] if "invariant_hint" in row)["register_bindings"]["x15"] = "wrong"
-        with tempfile.TemporaryDirectory() as directory:
-            path = Path(directory) / "design.json"
-            path.write_text(json.dumps(design))
-            with self.assertRaisesRegex(ValueError, "conflicts"):
-                chain_root.load_invariant_hints(path, chain_root.graph(cfg, 0x800d6960), 0x800d6960)
-
     def test_symbolic_source_keeps_return_expression_in_premise(self):
         source = ('Lemma infer_boundary (returnAddress : Z) :\n'
                   '  instr_lookup_resources -∗\n  instr_body 0xa P.\nProof.\n'

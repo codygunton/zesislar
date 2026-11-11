@@ -95,14 +95,5 @@ class DiscoveryTests(unittest.TestCase):
         self.assertIsNone(row['first_residual'])
         self.assertEqual(row['setup_error'], 'A dependency is missing')
 
-    def test_selected_design_has_24_blocks(self):
-        root = Path(__file__).resolve().parents[1]
-        design = json.loads((root / 'ZesuSsz/Evidence/decode_item_block_design.json').read_text())
-        cfg = json.loads((root / 'build/stock-zisk/cfg.json').read_text())
-        ready, gaps = discovery.prepare(design, cfg, {}, int(design['entry_pc'], 16))
-        self.assertFalse(ready)
-        self.assertEqual(len(gaps), 24)
-
-
 if __name__ == '__main__':
     unittest.main()

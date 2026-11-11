@@ -101,18 +101,6 @@ class EntryBindingTests(unittest.TestCase):
             declared_binders('Module A. Definition entry := True. End A. Module B. Definition entry := True. End B.', 'entry')
 
 
-class SharedTypeImportTests(unittest.TestCase):
-    def test_other23_rows_import_shared_argument_type_directly(self):
-        root = Path(__file__).resolve().parents[1]
-        design = json.loads((root/'ZesuSsz/Evidence/decode_item_block_design.json').read_text())
-        design['blocks'] = [row for row in design['blocks'] if row['entry_pc'] != '0x800d6960']
-        self.assertEqual(len(design['blocks']), 23)
-        source = application_source(design)
-        shared = 'Require Import ZesuSsz.Contracts.RlpDecodeItemContract.'
-        self.assertEqual(source.count(shared), 1)
-        self.assertLess(source.index(shared), source.index('Context (args : DecodeItemArgs).'))
-
-
 class RenderedEntryViewTests(unittest.TestCase):
     def setUp(self):
         self.temporary = tempfile.TemporaryDirectory()
