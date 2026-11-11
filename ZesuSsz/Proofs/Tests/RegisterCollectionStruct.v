@@ -1,9 +1,9 @@
 Require Import isla.riscv64.riscv64.
 From Coq Require Import Lists.List ZArith.ZArith NArith.NArith Strings.String.
+Import ListNotations.
 Require Import stdpp.bitvector.definitions.
 Require Import ZesuSsz.Automation2.All.
 Local Open Scope Z_scope.
-Import ListNotations.
 
 (* At a call the caller's system-register collection meets the callee's. The
    struct entry is the same on both sides; one exact value is widened to its

@@ -27,3 +27,10 @@ Lemma derived_range_at_lookup `{!islaG Sigma} `{!threadG} (args : LookupArgs) (b
     (FindMemMapsTo (bv_unsigned (Z_to_bv 64 (lookupFrame args) + BV 64 (2 ^ 64 - 96) + BV 64 8 + BV 64 8)))
     (fun _ => True)%I.
 Proof. intros Hdomain. iIntros "Harray". zesu_block2. Qed.
+
+(* The remainder of a wrapped cast sum: the divisibility is a plain fact, and
+   the range that keeps the sum in one wrap comes only from the folded domain. *)
+Lemma derived_range_remainder `{!islaG Sigma} `{!threadG} (args : LookupArgs) (bytes : list (bv 8)) (R : iProp Sigma) :
+  LookupDomain args bytes -> (16 | lookupFrame args) ->
+  R -∗ (⌜bv_unsigned (Z_to_bv 64 (lookupFrame args) + BV 64 (2 ^ 64 - 96)) mod 16 = 0⌝ ∗ R).
+Proof. intros Hdomain Hdivide. iIntros "HR". zesu_block2. Qed.
