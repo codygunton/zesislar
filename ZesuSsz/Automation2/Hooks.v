@@ -503,8 +503,18 @@ Ltac zesu_lookup_folded_fact fact :=
    from a folded hypothesis through a registered `ZesuDerivedFacts` instance.
    Derived facts otherwise enter only in the finisher's saturation, after the
    lookup has failed. This hint derives them inside the side condition's own
-   proof, so the shared context does not change. *)
+   proof, so the shared context does not change. It acts only on an array
+   whose base is not the cast's own integer: an array at that base keeps its
+   existing read rules. *)
 Ltac zesu_lookup_side_condition :=
+  lazymatch goal with
+  | |- (((?base <= ?address)%Z /\ _) \/ _) =>
+      match address with
+      | context [Z_to_bv _ ?integer] =>
+          tryif stdpp.tactics.is_closed_term integer then fail else idtac;
+          tryif constr_eq integer base then fail else idtac
+      end
+  end;
   repeat (match goal with
     | H : ?fact |- _ =>
         lazymatch type of fact with Prop => idtac end;
