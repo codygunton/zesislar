@@ -722,18 +722,36 @@ Ltac zesu_finish_source_tail :=
       SourceFactMatching.zesu_source_match_tree requested ltac:(idtac))
     ltac:(fun _ => SourceFactMatching.zesu_source_finish_package).
 
-(* The switched closers. Neither the full source-package route nor the
-   direct source tail is tried here: the deferring step after this cascade
+(* The switched closers. The witness telescope runs on any goal; the other
+   closers run only on a goal without open witnesses. Neither the full
+   source-package route nor the direct source tail is tried here: the deferring step after this cascade
    runs the route once, closes a package whose fixed facts the source closers
    prove, and splits off the rest; the tail runs only when the route fails
    outright. Before, a package that could not close opened its memory tuple
    three times (strict route, tail, deferring route). *)
+(* A goal that still holds open existential witnesses: an existential
+   package, or open evars. The cascade's closers traverse the whole goal
+   term; on a large open package each traversal normalizes its evars again,
+   and none of these closers chooses witnesses. *)
+Ltac zesu_goal_holds_open_witnesses :=
+  lazymatch goal with
+  | |- environments.envs_entails _ ?target =>
+      first [has_evar target
+        | lazymatch target with
+          | @bi_exist _ _ _ => idtac
+          | @bi_sep _ (@bi_exist _ _ _) _ => idtac
+          end]
+  | |- ?target => has_evar target
+  end.
+
 Ltac zesu_finish_residual_cascade :=
   first [solve [
     zesu_finish_residual_switches;
     first [ solve [ZesuSsz.Automation2.MaskWitness.zesu_mask_witness_telescope;
               unshelve (repeat liAStep); zesu_finish_v1]
-          | solve [SourceFactMatching.zesu_source_registered_disjunction ltac:(zesu_finish_source_package)]
+          | tryif zesu_goal_holds_open_witnesses then fail else idtac;
+            first [
+            solve [SourceFactMatching.zesu_source_registered_disjunction ltac:(zesu_finish_source_package)]
           | solve [ZesuSsz.Automation2.WordIdentity.zesu_word_identity]
           | solve [zesu_masked_add_branch_finish]
           | solve [ZesuSsz.Automation2.HypothesisCast.zesu_hypothesis_cast_finish]
@@ -750,7 +768,7 @@ Ltac zesu_finish_residual_cascade :=
           | solve [ZesuSsz.Automation2.CodecFrame.zesu_codec_frame]
           | solve [ZesuSsz.Automation2.ArrayPayloadPresentation.zesu_array_payload_presentation
               ltac:(first [ZesuSsz.Automation2.SymbolicByteCodec.zesu_symbolic_byte_codec |
-      ZesuSsz.Automation2.FramePackingFinish.zesu_frame_packing_finish])] ]
+      ZesuSsz.Automation2.FramePackingFinish.zesu_frame_packing_finish])] ] ]
   ]].
 
 (* A package that the cascade cannot close because of fixed pure conjuncts.
