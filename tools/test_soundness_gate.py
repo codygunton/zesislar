@@ -174,6 +174,66 @@ class SoundnessGateTests(unittest.TestCase):
                     gate.public_records(candidate, baseline, root / 'build')
             self.assertFalse((baseline / '_build').exists())
 
+    def fresh_build(self, root):
+        theory = root / 'build/default/ZesuSsz'
+        theory.mkdir(parents=True)
+        (theory / '.ZesuSsz.theory.d').write_text(
+            'A.vo A.glob: A.v B.vo /opam/lib/List.vo \\\n  Sub/C.vo\n'
+            'B.vo B.glob: B.v ../generated/D.vo\n'
+            'Sub/C.vo: Sub/C.v\n')
+        return root / 'build'
+
+    def test_fresh_dependencies_skip_fresh_members_and_installed_libraries(self):
+        with tempfile.TemporaryDirectory() as directory:
+            build = self.fresh_build(Path(directory))
+            self.assertEqual(gate.fresh_dependencies(build, ['ZesuSsz/A.vo', 'ZesuSsz/B.vo']),
+                             ['ZesuSsz/Sub/C.vo', 'generated/D.vo'])
+            self.assertEqual(gate.fresh_dependencies(build, ['ZesuSsz/A.vo']),
+                             ['ZesuSsz/B.vo', 'ZesuSsz/Sub/C.vo'])
+            with self.assertRaisesRegex(ValueError, 'lacks a fresh-set module'):
+                gate.fresh_dependencies(build, ['ZesuSsz/Absent.vo'])
+
+    @staticmethod
+    def atom(value):
+        return f'{len(value.encode())}:{value}'
+
+    def finish(self, source, target, exit_code='0', program='.bin/coqc'):
+        a = self.atom
+        return (f'({a("process")}{a("finish")}(({a("1")}{a("2")}))({a("process_args")}({a("-q")}{a(source)}))'
+                f'({a("pid")}{a("7")})({a("prog")}{a(program)})({a("exit")}{a(exit_code)})'
+                f'({a("target_files")}({a("_dune-cache/default/" + target)})))')
+
+    def test_trace_must_show_a_successful_coqc_run_for_each_fresh_object(self):
+        with tempfile.TemporaryDirectory() as directory:
+            trace = Path(directory) / 'trace.csexp'
+            target = 'ZesuSsz/A.vo'
+            trace.write_text(self.finish('ZesuSsz/A.v', target))
+            self.assertEqual(gate.fresh_compiler_runs(trace, [target])[target]['source'], 'ZesuSsz/A.v')
+            for event in [self.finish('ZesuSsz/A.v', target, exit_code='1'),
+                          self.finish('ZesuSsz/A.v', target, program='.bin/coqdep'),
+                          self.finish('ZesuSsz/Other.v', target)]:
+                trace.write_text(event)
+                with self.assertRaisesRegex(ValueError, 'no fresh coqc run'):
+                    gate.fresh_compiler_runs(trace, [target])
+
+    def test_receipt_refuses_a_linked_object_that_differs_from_the_fresh_compile(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            build, captured, target = root / 'build', root / 'captured', 'ZesuSsz/A.vo'
+            (build / 'default/ZesuSsz').mkdir(parents=True)
+            (captured / 'ZesuSsz').mkdir(parents=True)
+            (build / 'trace.csexp').write_text(self.finish('ZesuSsz/A.v', target))
+            (build / 'default' / target).write_bytes(b'object')
+            (captured / target).write_bytes(b'object')
+            receipt = gate.public_fresh_receipt(build, [target], captured, 0)
+            self.assertTrue(receipt['fresh_objects'][0]['equal'])
+            (build / 'default' / target).write_bytes(b'cached object')
+            with self.assertRaisesRegex(ValueError, 'differs from the fresh compile'):
+                gate.public_fresh_receipt(build, [target], captured, 0)
+            (captured / target).unlink()
+            with self.assertRaisesRegex(ValueError, 'fresh object is missing'):
+                gate.public_fresh_receipt(build, [target], captured, 0)
+
 
 if __name__ == '__main__':
     unittest.main()

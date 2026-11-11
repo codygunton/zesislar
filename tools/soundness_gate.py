@@ -273,32 +273,107 @@ async def negative_checks(config):
             raise ValueError('The negative-control transport did not close.')
 
 
-PUBLIC_SUFFIXES = ('.vo', '.vos', '.vok', '.glob')
+def fresh_dependencies(build, fresh):
+    """Project objects that the fresh set needs, without any fresh-set member."""
+    graph = {}
+    text = (build / 'default/ZesuSsz/.ZesuSsz.theory.d').read_text().replace('\\\n', ' ')
+    for line in text.splitlines():
+        if ':' not in line:
+            continue
+        left, right = line.split(':', 1)
+        target = left.split()[0]
+        if target.endswith('.vo'):
+            rows = []
+            for dependency in right.split():
+                if not dependency.endswith('.vo'):
+                    continue
+                if os.path.isabs(dependency):
+                    if not Path(dependency).is_relative_to(build / 'default'):
+                        continue  # An installed library is not a project target.
+                    dependency = str(Path(dependency).relative_to(build / 'default'))
+                else:
+                    dependency = os.path.normpath('ZesuSsz/' + dependency)
+                rows.append(dependency)
+            graph['ZesuSsz/' + target] = rows
+    missing = set(fresh) - graph.keys()
+    if missing:
+        raise ValueError('The dependency file lacks a fresh-set module: ' + ', '.join(sorted(missing)))
+    needed, seen, pending = set(), set(), list(fresh)
+    while pending:
+        target = pending.pop()
+        if target in seen:
+            continue
+        seen.add(target)
+        for dependency in graph[target]:
+            if dependency in fresh:
+                pending.append(dependency)
+            else:
+                needed.add(dependency)
+    return sorted(needed)
 
 
-def fresh_public_outputs(build, public):
-    """Remove every PUBLIC output so that an uncached Dune run compiles it again."""
-    removed = []
-    for target in public:
-        for suffix in PUBLIC_SUFFIXES:
-            path = build / 'default' / Path(target).with_suffix(suffix)
-            if path.exists():
-                removed.append(binding(path))
-                path.unlink()
-    return removed
+def csexp(data):
+    """Parse a stream of canonical S-expressions (the Dune trace format)."""
+    stack, items, index = [], [], 0
+    while index < len(data):
+        byte = data[index]
+        if byte == 0x28:
+            stack.append([]); index += 1
+        elif byte == 0x29:
+            done = stack.pop(); index += 1
+            (stack[-1] if stack else items).append(done)
+        else:
+            colon = data.index(b':', index)
+            size = int(data[index:colon])
+            atom = data[colon + 1:colon + 1 + size].decode('utf-8', 'replace')
+            index = colon + 1 + size
+            (stack[-1] if stack else items).append(atom)
+    if stack:
+        raise ValueError('The Dune trace ends inside an expression.')
+    return items
 
 
-def public_fresh_receipt(build, public, removed, started):
-    """Each PUBLIC object must be a new file written after the removal."""
+def field(event, name):
+    return next((row[1:] for row in event if isinstance(row, list) and row and row[0] == name), None)
+
+
+def fresh_compiler_runs(trace, fresh):
+    """Each fresh object needs a coqc run in this Dune invocation that exited 0."""
+    runs = {}
+    for event in csexp(trace.read_bytes()):
+        if event[:2] != ['process', 'finish']:
+            continue
+        program, arguments = field(event, 'prog'), field(event, 'process_args')
+        exit_code, targets = field(event, 'exit'), field(event, 'target_files')
+        if not program or Path(program[0]).name != 'coqc' or exit_code != ['0'] or not arguments or not targets:
+            continue
+        for target in fresh:
+            source = str(Path(target).with_suffix('.v'))
+            if arguments[0][-1] == source and any(name.endswith('/default/' + target) for name in targets[0]):
+                runs[target] = {'source': source, 'pid': field(event, 'pid')[0], 'exit': 0}
+    missing = sorted(set(fresh) - runs.keys())
+    if missing:
+        raise ValueError('The Dune trace shows no fresh coqc run for: ' + ', '.join(missing))
+    return runs
+
+
+def public_fresh_receipt(build, fresh, captured, started):
+    """The fresh object and the object that Dune linked into _build must be equal."""
+    runs = fresh_compiler_runs(build / 'trace.csexp', fresh)
     rows = []
-    for target in public:
-        path = build / 'default' / target
-        if not path.is_file() or path.stat().st_mtime_ns < started:
-            raise ValueError('A PUBLIC object did not compile fresh: ' + target)
-        rows.append(dict(binding(path), mtime_ns=path.stat().st_mtime_ns))
-    return {'schema': 'soundness.public-fresh.v1', 'removed_ns': started,
-            'removed_outputs': removed, 'fresh_objects': rows,
-            'policy': 'Dependency objects may come from the Dune cache; recursive coqchk re-checks them.'}
+    for target in fresh:
+        produced, linked = captured / target, build / 'default' / target
+        if not produced.is_file() or not linked.is_file():
+            raise ValueError('A fresh object is missing: ' + target)
+        if produced.stat().st_mtime_ns < started:
+            raise ValueError('A captured object predates the fresh compile: ' + target)
+        if digest(produced) != digest(linked):
+            raise ValueError('The object in _build differs from the fresh compile: ' + target)
+        rows.append({'target': target, 'compiler_run': runs[target], 'fresh': binding(produced),
+                     'linked': binding(linked), 'equal': True})
+    return {'schema': 'soundness.public-fresh.v2', 'started_ns': started, 'fresh_objects': rows,
+            'policy': 'Dependency objects may come from the Dune cache; recursive coqchk re-checks them. '
+                      'Each fresh object comes from a coqc rerun and equals the object in _build.'}
 
 
 def stage(config, name):
@@ -310,20 +385,28 @@ def stage(config, name):
         fresh = sorted(set(public) | ({str(Path(p).with_suffix('.vo')) for p in PUBLIC_CONTEXTS}
                                       if config.get('fresh_contexts') else set()))
 
-        def dune(label, cache, targets):
+        def dune(label, targets, **environment):
+            # Every step keeps the cache enabled: Dune reruns every rule when the mode changes.
             subprocess.run([sys.executable, '-B', 'tools/build_record.py', '--build-dir', str(build),
                 '--target', 'soundness-' + label, '--', shutil.which('dune'), 'build', '--root', str(workspace),
-                '--build-dir', str(build), '--cache=' + cache, '-j2', '--display', 'short', *targets],
-                cwd=workspace, env=dict(os.environ, DUNE_CACHE=cache), check=True)
-        dune('plugins', 'disabled', PLUGINS)
+                '--build-dir', str(build), '--cache=enabled', '-j2', '--display', 'short', *targets],
+                cwd=workspace, env=dict(os.environ, DUNE_CACHE='enabled', **environment), check=True)
+        # A reproducibility check reruns each cached rule: the plugins compile fresh.
+        dune('plugins', PLUGINS, DUNE_CACHE_CHECK_PROBABILITY='1')
+        dune('dependencies', ['ZesuSsz/.ZesuSsz.theory.d'])
         # The dependency closure may come from the Dune cache: recursive coqchk
-        # re-checks every object, cached or fresh. The PUBLIC theorem files
-        # always compile fresh from the reviewed sources.
-        dune('closure', 'enabled', public)
+        # re-checks every object, cached or fresh.
+        dependencies = fresh_dependencies(build, fresh)
+        if dependencies:  # Dune builds its default alias without targets.
+            dune('closure', dependencies)
+        if any((build / 'default' / target).exists() for target in fresh):
+            raise ValueError('A fresh-set object exists before its fresh compile.')
+        # The fresh set always reruns coqc. The compiler route keeps each new
+        # object before Dune links the target to an equal cache entry.
+        captured = Path(config['output']) / 'fresh-objects'
         started = time.time_ns()
-        removed = fresh_public_outputs(build, fresh)
-        dune('PUBLIC', 'disabled', public)
-        save(Path(config['output']) / 'PUBLIC-FRESH.json', public_fresh_receipt(build, fresh, removed, started))
+        dune('fresh', fresh, DUNE_CACHE_CHECK_PROBABILITY='1', ZESU_FRESH_OBJECT_DIR=str(captured))
+        save(Path(config['output']) / 'PUBLIC-FRESH.json', public_fresh_receipt(build, fresh, captured, started))
     elif name == 'negative':
         asyncio.run(negative_checks(config))
     elif name == 'wrappers':

@@ -107,7 +107,8 @@ empty axiom allow-list and recursive `coqchk`. Every later public theorem needs 
 reviewed closed type and axiom check.
 
 The PUBLIC soundness gate (`tools/soundness_gate.py`, `docs/SOUNDNESS_GATE.md`) compiles
-the PUBLIC theorem files fresh. It takes their dependency objects from the Dune cache, runs
+the PUBLIC theorem files fresh and checks that each fresh object equals the object in
+`_build`. It takes their dependency objects from the Dune cache, runs
 the five negative controls and the statement and wrapper checks, and re-checks every object
 with recursive `coqchk`. `coqchk` re-checks cached objects against the kernel, but it does
 not compare an object with its source, so the meaning of a cached dependency definition
