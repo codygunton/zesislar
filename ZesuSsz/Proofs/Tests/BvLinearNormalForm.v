@@ -3,8 +3,8 @@
 Require Import isla.riscv64.riscv64.
 From Coq Require Import ZArith Lia.
 From stdpp Require Import bitvector.definitions.
-Require Import ZesuSsz.Automation2.All.
 Require Import ZesuSsz.Automation2.BvLinear.
+Require Import ZesuSsz.Automation2.All.
 
 Section zesu_bv_linear_tests.
 Local Open Scope Z_scope.
