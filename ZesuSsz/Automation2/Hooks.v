@@ -2379,13 +2379,48 @@ Ltac zesu_guard_integer_numeral value :=
   end.
 
 (* Closed bit-vector arithmetic, or a literal whose value is not a numeral. *)
+Ltac zesu_guard_natural_numeral value :=
+  lazymatch value with
+  | N0 => idtac
+  | Npos ?digits => zesu_guard_positive_numeral digits
+  end.
+
+(* Closed bit-vector arithmetic, a closed cast of an integer, or a literal
+   whose width or value is not a numeral. *)
 Ltac zesu_guard_closed_arith term :=
   lazymatch term with
   | @bv_add _ _ _ => idtac
   | @bv_sub _ _ _ => idtac
   | @bv_mul _ _ _ => idtac
-  | @BV _ ?value _ => tryif zesu_guard_integer_numeral value then fail else idtac
+  | @Z_to_bv _ _ => idtac
+  | @BV ?width ?value _ =>
+      tryif (zesu_guard_natural_numeral width; zesu_guard_integer_numeral value)
+      then fail else idtac
   end.
+
+(* A width written as closed natural arithmetic, for example 8 * 8. *)
+Ltac zesu_guard_closed_width term :=
+  lazymatch term with
+  | N.mul _ _ => idtac
+  | N.add _ _ => idtac
+  | N.sub _ _ => idtac
+  | N.pow _ _ => idtac
+  | N.of_nat _ => idtac
+  | Z.to_N _ => idtac
+  end.
+
+(* A decided proposition is normalized under its decision: the proposition is
+   rewritten on its own, and `bool_decide_ext` carries the result back. *)
+Ltac zesu_guard_decision_normalize rewriter proposition continuation :=
+  let normalized := fresh "ZesuGuardDecided" in
+  evar (normalized : Prop);
+  let Hiff := fresh "HguardDecided" in
+  assert (Hiff : proposition <-> normalized) by
+    (unfold normalized; progress rewriter; reflexivity);
+  let result := eval unfold normalized in normalized in
+  clear normalized;
+  continuation result Hiff;
+  clear Hiff.
 
 Ltac zesu_branch_guard_rewrite :=
   repeat first
@@ -2495,6 +2530,18 @@ Ltac zesu_branch_guard_rewrite :=
         end
     end
   | match goal with
+    | |- context [if ?condition then ?left else ?right] =>
+        tryif has_evar condition then fail 0 else
+        change (if condition then left else right) with (ite condition left right)
+    end
+  | match goal with
+    | |- context [@bool_decide ?proposition ?decision] =>
+        tryif has_evar proposition then fail 0 else
+        zesu_guard_decision_normalize ltac:(idtac; zesu_branch_guard_rewrite) proposition
+          ltac:(fun normalized Hiff =>
+          rewrite (@bool_decide_ext proposition normalized decision _ Hiff))
+    end
+  | match goal with
     | |- context [@ite ?kind ?condition ?left ?right] =>
         tryif has_evar condition then fail 0 else
         first [
@@ -2518,6 +2565,13 @@ Ltac zesu_branch_guard_rewrite :=
           assert (Hliteral : term = literal) by (apply bv_eq; vm_compute; reflexivity);
           rewrite Hliteral; clear Hliteral
         end
+    end
+  | match goal with
+    | |- context [?width] =>
+        zesu_guard_closed_width width;
+        zesu_stack_closed_term width;
+        let value := ZesuSsz.Automation2.VmClosed.zesu_vm_eval_closed width in
+        change width with value
     end ].
 
 

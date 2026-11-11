@@ -351,6 +351,7 @@ Ltac zesu_finish_v1 :=
   try (zesu_finish_integer_word_image);
   try (zesu_finish_packed_word_equality);
   try solve [zesu_finish_zero_offset_u64_roundtrip];
+  try solve [ZesuSsz.Automation2.ByteWordReload.zesu_reload_spliced_word_step; reflexivity];
   try ((lazymatch goal with
     | |- @eq (bv 64) _ (Z_to_bv 64
         (little_endian_to_bv 8 (take 8 (drop _ _)))) =>
