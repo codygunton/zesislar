@@ -69,11 +69,17 @@ class ModuleMemoryTests(unittest.TestCase):
                          (2 * memory.GIB, memory.GIB, 2))
         self.assertEqual(self.claim()["claim_bytes"], memory.booking(2 * memory.GIB, 16 * memory.GIB))
 
-    def test_changed_source_books_the_fence_until_it_is_measured_again(self):
+    def test_changed_source_books_its_directory_prior_until_it_is_measured_again(self):
         self.profile([("Small.v", 2 * memory.GIB)])
         (self.root / "Small.v").write_text("Check unit.\n")
         self.assertEqual((self.claim()["claim_bytes"], self.claim()["reason"]),
-                         (16 * memory.GIB, "changed_source"))
+                         (3 * memory.GIB, "changed_source_prior"))
+        self.assertEqual(self.claim(fallback_bytes=memory.GIB)["claim_bytes"], memory.GIB)
+        # The prior is the largest measured peak in the directory, never a typical one.
+        self.record("Large.v", 4 * memory.GIB)
+        self.assertEqual(self.claim()["claim_bytes"], 6 * memory.GIB)
+        changed = self.claim(arguments=["-q", "-w", "-all", "Small.v"])
+        self.assertEqual((changed["claim_bytes"], changed["reason"]), (16 * memory.GIB, "changed_arguments"))
         self.record("Small.v", memory.GIB)
         row = memory.load_profile(self.profile_path)["modules"]["Small.v"]
         self.assertEqual((row["peak_bytes"], row["observations"]), (memory.GIB, 1))
@@ -850,11 +856,12 @@ class GateProfileTests(unittest.TestCase):
 
     def test_summary_counts_directory_priors_apart_from_fence_bookings(self):
         with self.observations.open("w") as stream:
-            for reason in ("unknown_module", "directory_prior", "ancestor_prior", "measured_module"):
+            for reason in ("unknown_module", "directory_prior", "ancestor_prior", "measured_module",
+                           "changed_source_prior", "changed_compiler"):
                 stream.write(self.json.dumps({"claim_bytes": memory.GIB, "claim_reason": reason}) + "\n")
         summary = memory.booked_versus_peak(self.observations)
         self.assertEqual((summary["unmeasured_fence_bookings"], summary["directory_prior_bookings"],
-                          summary["ancestor_prior_bookings"]), (1, 1, 1))
+                          summary["ancestor_prior_bookings"], summary["changed_prior_bookings"]), (2, 1, 1, 1))
 
 
 if __name__ == "__main__":

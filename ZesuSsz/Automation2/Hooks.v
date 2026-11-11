@@ -58,6 +58,7 @@ Require Import ZesuSsz.Automation2.RegisterArrayCursor.
 Require Import ZesuSsz.Automation2.LoopBackedgeJoin.
 Require Import ZesuSsz.Automation2.MaskWitness.
 Require ZesuSsz.Automation2.FlagMaskBounds.
+Require ZesuSsz.Automation2.ByteExtractCodec281.
 
 (* Expose symbolic lookup results with kernel reduction. Do not normalize their
    payloads in the VM. Closed inputs retain the upstream VM path. *)
@@ -409,10 +410,22 @@ Ltac zesu_solve_machine_linear :=
     solve [zesu_normalize_binary_nat_hypotheses;
       zesu_normalize_binary_nat_goal; zesu_normalize_machine_map;
       first [solve [zesu_lia_linked_facts] | lia]]])].
+(* The flag and remainder closer runs before the finisher saturates derived
+   facts, so a range that only a folded hypothesis states (through a
+   registered `ZesuDerivedFacts` instance) is missing there. When the goal has
+   the closer's shape and saturation adds a fact, the closer runs once more
+   inside `solve`: a failure leaves the context as it was. *)
+Ltac zesu_flag_mask_bound_derived :=
+  FlagMaskBounds.zesu_flag_goal_head;
+  FlagMaskBounds.zesu_flag_shape;
+  progress ZesuSsz.Automation2.PureFacts.zesu_saturate_derived_facts;
+  FlagMaskBounds.zesu_flag_mask_bound.
+
 (* Preserve the machine normalization used by the existing finisher. *)
 Ltac zesu_finish_lia ::=
   first [LoopBackedgeJoin.zesu_loop_pure_finish | solve [MaskWitness.zesu_mask_fact_close] |
-    zesu_solve_machine_linear | solve [FlagMaskBounds.zesu_flag_mask_bound]].
+    zesu_solve_machine_linear | solve [FlagMaskBounds.zesu_flag_mask_bound] |
+    solve [zesu_flag_mask_bound_derived]].
 
 Tactic Notation "lia" := zesu_solve_machine_linear.
 
@@ -476,6 +489,58 @@ Ltac zesu_normalize_known_word_address :=
       rewrite Heq; clear Heq
       end
   end.
+(* A folded hypothesis: an applied definition or record proposition, not a
+   comparison or a connective. Only such a hypothesis can carry facts that a
+   registered `ZesuDerivedFacts` instance unfolds. *)
+Ltac zesu_lookup_folded_fact fact :=
+  lazymatch fact with
+  | _ = _ => fail
+  | ~ _ => fail
+  | _ /\ _ => fail
+  | _ \/ _ => fail
+  | (_ <-> _) => fail
+  | Z.le _ _ => fail
+  | Z.lt _ _ => fail
+  | Z.ge _ _ => fail
+  | Z.gt _ _ => fail
+  | le _ _ => fail
+  | lt _ _ => fail
+  | True => fail
+  | False => fail
+  | ex _ => fail
+  | _ => let head := get_head fact in first [is_const head | is_ind head]
+  end.
+
+(* The array lookup's side condition (`tac_mem_mapsto_array_eq`) runs
+   `bv_solve` on the context as it is, but the range of a cast may follow only
+   from a folded hypothesis through a registered `ZesuDerivedFacts` instance.
+   Derived facts otherwise enter only in the finisher's saturation, after the
+   lookup has failed. This hint runs after the existing one fails, and derives
+   them inside the side condition's own proof, so the shared context does not
+   change. It acts only when the array base is built on the cast's integer
+   without being that integer: an array at the integer itself keeps its
+   existing read rules, and an array whose base does not mention the integer
+   gains nothing from its range. *)
+Ltac zesu_lookup_side_condition :=
+  lazymatch goal with
+  | |- (((?base <= ?address)%Z /\ _) \/ _) =>
+      match address with
+      | context [Z_to_bv _ ?integer] =>
+          tryif stdpp.tactics.is_closed_term integer then fail else idtac;
+          tryif constr_eq integer base then fail else idtac;
+          lazymatch base with context [integer] => idtac end
+      end
+  end;
+  repeat (match goal with
+    | H : ?fact |- _ =>
+        lazymatch type of fact with Prop => idtac end;
+        zesu_lookup_folded_fact fact;
+        ZesuSsz.Automation2.PureFacts.zesu_derive_fact_from H
+    end);
+  bv_solve.
+#[export] Hint Extern 11 (FindHypEqual (FICMemMapstoSemantic _) (_ ↦ₘ∗ _) (mem_mapsto_kind_prop _ _) _) =>
+  (apply tac_mem_mapsto_array_eq; zesu_lookup_side_condition) : typeclass_instances.
+
 Ltac zesu_normalize_find_mem_address :=
   first [
     lazymatch goal with
@@ -1988,13 +2053,19 @@ Ltac zesu_integer_array_address_if_enabled :=
       zesu_integer_pointer_root expanded ltac:(fun _ =>
       let integer := zesu_stack_integer_address expanded in
       first [ByteArrayAssemblyCodec.zesu_byte_array_restore_source |
+      (* The address equality does not depend on the candidate array. Prove it
+         once, when some candidate reaches it, and let every candidate use it. *)
+      assert_succeeds (iMatchHyp ltac:(fun _ body =>
+        lazymatch body with
+        | (_ ↦ₘ{_}∗ ?values)%I => lazymatch type of values with list (bv _) => idtac end
+        end));
+      let Heq := fresh "HarrayAddress" in
+      assert (Heq : bv_unsigned pointer = integer) by
+        (zesu_stack_arithmetic);
       iMatchHyp ltac:(fun H body =>
         lazymatch body with
         | (?lower ↦ₘ{?q}∗ ?values)%I =>
             lazymatch type of values with list (bv ?width) =>
-              let Heq := fresh "HarrayAddress" in
-              assert (Heq : bv_unsigned pointer = integer) by
-                (zesu_stack_arithmetic);
               let Hrange := fresh "HarrayAddressRange" in
               assert (Hrange : (lower <= integer < lower +
                 Z.of_nat (length values) * Z.of_N (width `div` 8))%Z) by
@@ -2032,14 +2103,35 @@ Ltac zesu_canonical_fact_views_if_enabled :=
   ZesuSsz.Automation2.CanonicalFactAdapter.zesu_canonical_context_step.
 
 (* Retain the entry key before ordinary matching exposes its binders. *)
+(* A mapping capture succeeds only for a requested resource with a registered
+   mapping: it resolves that registration before it can succeed. Resolve it
+   first, so that a step without a registration skips the two unresolved-term
+   scans of the whole goal. With a registration, the capture runs unchanged.
+   The guard selects the requested resource exactly as the capture does. *)
+Ltac zesu_mapping_registered_goal registered :=
+  lazymatch goal with
+  | |- environments.envs_entails _ (@bi_sep _ ?requested _) => registered requested
+  | |- environments.envs_entails _ ?requested => registered requested
+  end.
+
+Ltac zesu_entry_mapping_registered requested :=
+  assert_succeeds (let _ := constr:(_ :
+    ZesuSsz.Evidence.EntryWitnessInputs.ZesuEntryWitnessMapping requested _ _) in idtac).
+
+Ltac zesu_source_mapping_registered requested :=
+  assert_succeeds (let _ := constr:(_ :
+    SourceWitnessInputs.ZesuEntrySourceWitnessMapping requested _ _) in idtac).
+
 Ltac zesu_union_witness_step :=
-  first [ZesuSsz.Evidence.EntryWitnessInputs.zesu_entry_mapping_capture_goal |
+  first [zesu_mapping_registered_goal zesu_entry_mapping_registered;
+      ZesuSsz.Evidence.EntryWitnessInputs.zesu_entry_mapping_capture_goal |
     ZesuSsz.Evidence.EntryWitnessInputs.zesu_entry_mapping_consume_ready].
 
 Ltac zesu_source_witnesses_if_enabled :=
   zesu_switch_enabled constr:(ZesuStepSourceWitnesses);
   first [SourceWitnessInputs.zesu_capture_source_owner |
-         SourceWitnessInputs.zesu_source_mapping_capture_goal |
+         zesu_mapping_registered_goal zesu_source_mapping_registered;
+           SourceWitnessInputs.zesu_source_mapping_capture_goal |
          EntryWitnessInputs.zesu_entry_mapping_consume_ready].
 
 Ltac zesu_refute_aligned_return_fault :=
@@ -2083,18 +2175,51 @@ Proof.
 Qed.
 Print Assumptions zesu_bv64_clear_low_bit_even.
 
+(* A return address saved in a byte frame is reloaded as the word of its
+   eight extracted bytes. *)
+Lemma zesu_word_of_byte_extracts (value : bv 64) :
+  Z_to_bv 64 (little_endian_to_bv 8
+    [bv_extract 0 8 value; bv_extract 8 8 value; bv_extract 16 8 value;
+     bv_extract 24 8 value; bv_extract 32 8 value; bv_extract 40 8 value;
+     bv_extract 48 8 value; bv_extract 56 8 value]) = value.
+Proof.
+  change [bv_extract 0 8 value; bv_extract 8 8 value; bv_extract 16 8 value;
+     bv_extract 24 8 value; bv_extract 32 8 value; bv_extract 40 8 value;
+     bv_extract 48 8 value; bv_extract 56 8 value]
+    with (ByteExtractCodec281.byte_extracts281 8 value).
+  rewrite ByteExtractCodec281.byte_extracts_codec281.
+  exact (zesu_u64_little_endian_roundtrip value).
+Qed.
+
+(* A masked target that is the word of a saved register's bytes is the
+   register itself; its evenness then comes from the context. *)
+Ltac zesu_return_saved_word :=
+  lazymatch goal with
+  | |- context [bv_and ?value (BV 64 18446744073709551614)] =>
+      lazymatch value with
+      | Z_to_bv 64 (little_endian_to_bv 8 _) =>
+          first [rewrite zesu_word_of_byte_extracts
+            | rewrite zesu_u64_little_endian_roundtrip]
+      end
+  end.
+
 (* Inspect the requested low-bit mask before using existing integer bounds. *)
 Ltac zesu_return_integer_even_mask :=
   repeat match goal with
   | |- context [bv_add ?word (BV 64 0)] =>
       rewrite (bv_add_0_r word (BV 64 0) eq_refl)
   end;
+  try zesu_return_saved_word;
   lazymatch goal with
   | |- context [bv_and ?value (BV 64 18446744073709551614)] =>
       assert_fails (has_evar value);
       let Heven := fresh "HreturnWordEven" in
       assert (Heven : (bv_unsigned value mod 2 = 0)%Z) by (
         first [assumption |
+          match goal with
+          | Haligned : (bv_unsigned value mod 4 = 0)%Z |- _ =>
+              clear -Haligned; lia
+          end |
           lazymatch value with
           | Z_to_bv 64 ?integer =>
               let Hrange := fresh "HreturnIntegerRange" in
@@ -2174,7 +2299,6 @@ Ltac zesu_liAStep :=
   | LoopBackedgeJoin.zesu_loop_backedge_choice
   | ZesuSsz.Automation2.UnionRuleComponents.zesu_region_fault_if_enabled
   | zesu_expose_instruction_lookup
-  | zesu_region_fault_if_enabled
   | zesu_ram_fault_if_enabled
   | zesu_signed_address_if_enabled
   | zesu_stack_write_if_enabled
@@ -2331,7 +2455,11 @@ Ltac zesu_guard_one_wrap_range :=
 (* A guard and the goal it decides can spell the same term differently: one
    side evaluates a sum of constants or an `if` whose condition is decided,
    the other does not. Both normal forms below are applied to guard facts and
-   to guard goals, so the two sides meet. *)
+   to guard goals, so the two sides meet. A decision also carries its
+   instance: one side can hold the bare procedure (`Z.lt_dec a b`) and the
+   other the instance that resolution gives (`decide_rel Z.lt Z.lt_dec a b`).
+   Each `bool_decide` is moved to the resolved instance, so the solvers see
+   one atom. *)
 Lemma zesu_guard_ite_true {A : Type} (condition : bool) (left right : A) :
   condition = true -> ite condition left right = left.
 Proof. intros ->. reflexivity. Qed.
@@ -2537,6 +2665,14 @@ Ltac zesu_branch_guard_rewrite :=
   | match goal with
     | |- context [@bool_decide ?proposition ?decision] =>
         tryif has_evar proposition then fail 0 else
+        let canonical := constr:(_ : Decision proposition) in
+        tryif constr_eq decision canonical then fail 0 else
+        rewrite (@bool_decide_ext proposition proposition decision canonical (iff_refl proposition))
+    end
+  | match goal with
+    | |- context [@bool_decide ?proposition ?decision] =>
+        tryif has_evar proposition then fail 0 else
+        lazymatch proposition with context [bv_signed _] => idtac end;
         zesu_guard_decision_normalize ltac:(idtac; zesu_branch_guard_rewrite) proposition
           ltac:(fun normalized Hiff =>
           rewrite (@bool_decide_ext proposition normalized decision _ Hiff))
@@ -2748,3 +2884,45 @@ Ltac zesu_regcol_compute_vm_if_enabled :=
 
 #[export] Hint Extern 9 (LiTactic (regcol_compute_hint _ _)) =>
   zesu_regcol_compute_vm_if_enabled : typeclass_instances.
+
+(* Register-collection subsumption pairs the entries of two collections and
+   asks `valu_shape_implies` for each pair it cannot cancel at once. That
+   predicate has no case for two struct shapes, so an identical struct entry
+   (a status word with its mask fields) becomes `False`. A struct entry that is
+   the same on both sides implies itself; every other pair keeps the library
+   condition. *)
+Definition zesu_shape_implies (left right : valu_shape) : Prop :=
+  match left, right with
+  | StructShape fields, StructShape fields' => fields = fields'
+  | _, _ => valu_shape_implies left right
+  end.
+
+Lemma zesu_shape_implies_sound left right value :
+  zesu_shape_implies left right -> valu_has_shape value left -> valu_has_shape value right.
+Proof.
+  intros Himplies Hshape.
+  destruct left; destruct right;
+    try exact (valu_shape_implies_sound _ _ _ Himplies Hshape).
+  simpl in Himplies. subst. exact Hshape.
+Qed.
+
+Section zesu_regcol_subsume.
+  Context `{!islaG Σ} `{!threadG}.
+
+  Lemma zesu_subsume_regcol_regcol A regs1 regs2 G :
+    (li_tactic (regcol_compute_hint (λ '(regs1, regs2), Some (regcol_cancel regs1 regs2)) (regs1, regs2))
+       (λ '(regs1', regs2', c),
+          ⌜foldr (λ c, and (zesu_shape_implies c.1 c.2)) True c⌝ ∗
+          (reg_col regs1' -∗ ∃ x, reg_col regs2' ∗ G x)))
+    ⊢ subsume (reg_col regs1) (λ x : A, reg_col regs2) G.
+  Proof.
+    unfold li_tactic, regcol_compute_hint.
+    iDestruct 1 as ([[regs1' regs2'] c] [=] Hf) "HT". move/Forall_fold_right in Hf.
+    iIntros "Hregs".
+    iDestruct (regcol_cancel_sound with "Hregs") as "[? H2]"; [done| |] => /=.
+    { apply: Forall_impl; [done|] => /= ????. by apply: zesu_shape_implies_sound; [|done]. }
+    iDestruct ("HT" with "[$]") as (?) "[? ?]". iExists _. iFrame. by iApply "H2".
+  Qed.
+  Definition zesu_subsume_regcol_regcol_inst := [instance zesu_subsume_regcol_regcol].
+End zesu_regcol_subsume.
+Global Existing Instance zesu_subsume_regcol_regcol_inst | 0.
