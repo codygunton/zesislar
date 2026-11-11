@@ -14,9 +14,9 @@ Lemma refusal_hooks_off (x : Z) (Hx : 0 <= x < 10) : x + 1 <= 11.
 Proof.
   Fail diag_off_check.
   Fail zesu_diag_step.
-  zesu_diag_stage "test";
+  zesu_diag_stage ("test"%string);
   zesu_diag_step_end;
-  zesu_diag_refusal "test".
+  zesu_diag_refusal ("test"%string).
   match goal with |- x + 1 <= 11 => idtac end.
   lia.
 Qed.

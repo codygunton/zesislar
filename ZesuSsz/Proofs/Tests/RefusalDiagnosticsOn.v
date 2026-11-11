@@ -23,9 +23,9 @@ Lemma refusal_hooks_on (x : Z) (Hx : 0 <= x < 10) (Hy : 0 < 1) : x + 1 <= 11.
 Proof.
   diag_on_check.
   Fail zesu_diag_step.
-  zesu_diag_stage "test";
+  zesu_diag_stage ("test"%string);
   zesu_diag_step_end;
-  zesu_diag_refusal "test".
+  zesu_diag_refusal ("test"%string).
   match goal with |- x + 1 <= 11 => idtac end.
   ltac2:(if Int.equal (diag_prop_count ()) 2 then () else Control.throw (Tactic_failure None)).
   lia.
