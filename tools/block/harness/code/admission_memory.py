@@ -44,6 +44,14 @@ PUBLIC_GUARD_PREDECESSORS = (
 
 
 
+class LeafNotClosed(ValueError):
+    """The compiler leaf still holds a task; its booking stays until the leaf drains.
+
+    After an out-of-memory kill the small scope process exits first, while the
+    killed compiler still frees its memory inside the leaf. The release must
+    wait for that memory, so it refuses now and succeeds once the leaf drains."""
+
+
 class RejectedScopeSetup(ValueError):
     """Carry cleanup evidence without authorizing a guarded workload."""
 
@@ -1928,8 +1936,10 @@ def release_shell(marker, *, ledger=None, reader=None, require_dead_owner=False)
             write_ledger(ledger, data)
             return True
         if lines[0].isdecimal():
-            if not record.get('leaf') or not leaf_closed(reader, record['leaf']):
+            if not record.get('leaf'):
                 raise ValueError('The exact shell compiler leaf is not closed.')
+            if not leaf_closed(reader, record['leaf']):
+                raise LeafNotClosed('The exact shell compiler leaf is not closed.')
             actor = {'pid': int(lines[0]), 'startticks': int(fields['child_start'])}
             try:
                 path = reader.proc / str(actor['pid'])
