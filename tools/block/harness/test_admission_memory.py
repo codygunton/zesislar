@@ -210,10 +210,11 @@ class WaiterTests(unittest.TestCase):
         env = patch.dict(os.environ, {'ZESU_ADMISSION_WAIT_BOUND_S': '300'})
         env.start(); self.addCleanup(env.stop)
 
-    def decide(self, request, requester):
+    def decide(self, request, requester, booked=200 * M.GIB, available=200 * M.GIB):
+        self.log = io.StringIO()
         with patch.object(M.time, 'monotonic_ns', return_value=20_000_000_000), \
-                patch.object(M.time, 'time_ns', return_value=self.now), redirect_stderr(io.StringIO()):
-            return M.projection(self.data, {'booked': 200 * M.GIB}, request, 200 * M.GIB,
+                patch.object(M.time, 'time_ns', return_value=self.now), redirect_stderr(self.log):
+            return M.projection(self.data, {'booked': booked}, request, available,
                                 reader=self.Reader(self), requester=requester)
 
     def gate_poll(self):
@@ -240,12 +241,33 @@ class WaiterTests(unittest.TestCase):
                 gate_step = step
                 break
             self.now += 60_000_000_000
-        # Before the bound the small requests pass and the large one waits; after it the
-        # small requests leave room until the large claim is admitted.
-        self.assertEqual(admitted_small, list(range(5)))
-        self.assertIsNotNone(gate_step)
-        self.assertLessEqual(gate_step, 5 + 8)
+        # The small requests always pass on live memory; once aged, the large claim
+        # passes too, on live memory up to the slice maximum less the headroom.
+        self.assertEqual(admitted_small, list(range(6)))
+        self.assertEqual(gate_step, 5)
         self.assertNotIn('gate', self.data.get(M.WAITERS, {}))
+
+    def test_a_waiter_that_live_memory_cannot_admit_does_not_freeze_small_requests(self):
+        cap = M.SLICE_MAX_BYTES - M.HEADROOM_BYTES
+        booked, available = cap - 10 * M.GIB, 400 * M.GIB
+        self.live = cap - 25 * M.GIB          # the waiter needs live + 32 GiB <= cap
+        M.record_waiter(self.data, 'gate', 32 * M.GIB, {'pid': 'gate', 'startticks': 1}, self.now)
+        self.assertTrue(self.decide(4 * M.GIB, 'small', booked, available)['fits'])
+        self.now += 300_000_000_000           # aged: the waiter reserves its bytes on bookings only
+        small = self.decide(4 * M.GIB, 'small', booked, available)
+        self.assertEqual((small['fits'], small['waiter_reserved_bytes']), (False, 32 * M.GIB))
+        self.assertFalse(self.decide(32 * M.GIB, 'gate', booked, available)['fits'])
+        self.live = self.HALF - 10 * M.GIB    # on live memory a small request passes beside the waiter
+        self.assertEqual(self.decide(4 * M.GIB, 'small')['admission_basis'], 'live_memory')
+        self.live = cap - 25 * M.GIB
+        self.now += 900_000_000_000           # after the second bound the waiter stops blocking
+        small = self.decide(4 * M.GIB, 'small', booked, available)
+        self.assertEqual((small['fits'], small['waiter_reserved_bytes']), (True, 0))
+        self.assertIn('admission waiter gate', self.log.getvalue())
+        self.assertIn('gate', self.data[M.WAITERS])      # it keeps its place
+        self.live = cap - 40 * M.GIB          # memory frees: the waiter is admitted
+        result = self.decide(32 * M.GIB, 'gate', booked, available)
+        self.assertEqual((result['fits'], result['admission_basis']), (True, 'live_memory'))
 
     def test_young_dead_or_smaller_waiters_reserve_nothing(self):
         M.record_waiter(self.data, 'gate', 32 * M.GIB, {'pid': 'gate', 'startticks': 1}, self.now)

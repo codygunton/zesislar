@@ -895,9 +895,16 @@ def sum_gate_compiles(data, claims, observations, new_observation=None, new_byte
 
 
 # A refused request records itself as a waiter. After a bounded wait, every
-# newer and smaller request must leave room for it, on bookings and on live
-# memory, and the waiter may use the live-memory path above the small-request
-# ceiling. Without this a 32 GiB slot waited indefinitely while 1-4 GiB
+# newer and smaller request must leave room for it on the booking axis, and
+# the waiter may use the live-memory path above the small-request ceiling,
+# up to the slice maximum less the fixed headroom (the booking cap applied to
+# live memory). Newer requests are not held on the live axis: a waiter that
+# live memory cannot admit froze every smaller request until live memory fell
+# below half the slice (2026-11-11). A small request is admitted on live
+# memory only below half the slice, where the waiter's looser bound also
+# admits it, so the waiter cannot starve there. After a second bound a
+# waiter stops reserving bookings too; it keeps its place and is logged.
+# Without the waiter record a 32 GiB slot waited indefinitely while 1-4 GiB
 # requests took each gap on live memory (2026-11-11, soundness gate).
 WAITERS = 'admission_waiters'
 
@@ -907,6 +914,14 @@ def wait_bound_ns():
         seconds = int(os.environ.get('ZESU_ADMISSION_WAIT_BOUND_S', '300'))
     except ValueError:
         seconds = 300
+    return max(0, seconds) * 1_000_000_000
+
+
+def block_bound_ns():
+    try:
+        seconds = int(os.environ.get('ZESU_ADMISSION_BLOCK_BOUND_S', '900'))
+    except ValueError:
+        seconds = 900
     return max(0, seconds) * 1_000_000_000
 
 
@@ -925,8 +940,8 @@ def clear_waiter(data, key):
 
 
 def senior_waiters(data, requester, request_bytes, reader):
-    """Return (bytes this request must leave free, whether it is itself an aged waiter)."""
-    now, bound = time.time_ns(), wait_bound_ns()
+    """Return (bytes this request must leave free on bookings, whether it is itself an aged waiter)."""
+    now, bound, block = time.time_ns(), wait_bound_ns(), block_bound_ns()
     waiters = data.get(WAITERS, {})
     own = waiters.get(requester) if requester is not None else None
     since = own['since_ns'] if own else now
@@ -939,8 +954,14 @@ def senior_waiters(data, requester, request_bytes, reader):
         except (AttributeError, KeyError, OSError, TypeError, ValueError):
             del waiters[key]  # A dead or unreadable waiter holds nothing.
             continue
-        if now - row['since_ns'] >= bound and row['since_ns'] < since and row['bytes'] > request_bytes:
-            reserved += row['bytes']
+        age = now - row['since_ns']
+        if age < bound or row['since_ns'] >= since or row['bytes'] <= request_bytes:
+            continue
+        if age >= bound + block:
+            print(f'admission waiter {key} ({row["bytes"]} bytes, {age // 10**9} s) no longer blocks newer requests',
+                  file=sys.stderr)
+            continue
+        reserved += row['bytes']
     return reserved, bool(own) and now - since >= bound
 
 
@@ -1025,16 +1046,16 @@ def projection(data, claims, new_bytes, available_bytes, *, reader=None, new_obs
                            slice_max_bytes=reader.slice_max()),
                   admission_pool='canonical', memory_ledger='unified', admission_basis='booking',
                   waiter_reserved_bytes=reserved, senior_waiter=senior)
-    return live_memory_admission(result, reader, reserved_bytes=reserved, senior=senior)
+    return live_memory_admission(result, reader, senior=senior)
 
 
-def live_memory_admission(result, reader, *, reserved_bytes=0, senior=False):
+def live_memory_admission(result, reader, *, senior=False):
     """Permit a small request below half of the freshly verified slice cap.
 
     The caller still owns compiler slots, worker limits, and claim publication.
     This decision never changes a booking, scope fence, or termination watch.
-    An aged waiter may exceed the small-request ceiling; every other request
-    leaves the reserved bytes of older, larger aged waiters free.
+    An aged waiter may exceed the small-request ceiling and may fill live
+    memory up to the slice maximum less the fixed headroom.
     """
     request = result['new_claim_bytes']
     try:
@@ -1059,7 +1080,8 @@ def live_memory_admission(result, reader, *, reserved_bytes=0, senior=False):
     result['live_memory_sample'] = dict(sample, age_ns=age)
     # MemAvailable remains an independent host-pressure check. All existing
     # booking totals remain visible even when the small-request path is used.
-    if live + request + reserved_bytes <= maximum // 2 and request <= result['budget_bytes']:
+    limit = maximum - result['fixed_headroom_bytes'] if senior else maximum // 2
+    if live + request <= limit and request <= result['budget_bytes']:
         result.update(fits=True, admitted=True, admission_basis='live_memory')
         print('live-memory admission: live_bytes=' + str(live)
               + ' request_bytes=' + str(request)
