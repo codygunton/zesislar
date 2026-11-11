@@ -72,6 +72,13 @@ def build(args):
     upstream=args.guest/'zisk'
     for name in ['build.zig','build.zig.zon','Makefile']:
         shutil.copyfile(upstream/name,stage/name)
+    adapters={}
+    if args.guest_patch:
+        # A declared patch changes only the staged copy; the checkout stays pinned.
+        subprocess.run(['patch','-s','-o',str(stage/'build.zig'),str(upstream/'build.zig'),
+            str(args.guest_patch)],check=True)
+        adapters['guest/build.zig']=manifest.adapter_record(upstream/'build.zig',
+            args.guest_patch,stage/'build.zig',args.guest_patch_reason)
     shutil.copyfile(upstream/'src/zisk_host.zig',stage/'src/zisk_host.zig')
     linker=upstream/'zisk.ld'
     shutil.copyfile(linker,stage/'zisk.ld')
@@ -96,7 +103,7 @@ def build(args):
         'object_command':object_command,'link_command':link_command,
         'linker_script_sha256':digest(linker),'runtime_library_sha256':digest(args.runtime_library),
         'stock_object_sha256':digest(args.zesu/'zig-out/lib/zesu.o'),
-        'elf_sha256':digest(elf),'adapters':{},
+        'elf_sha256':digest(elf),'adapters':adapters,
         'link_without_exit_adapter':{'passed':True,'host_sha256':digest(stage/'src/zisk_host.zig')},
         'measurements':{'object':object_measurement,'link':link_measurement},
         **{key:previous[key] for key in ['preserved_inputs','preservation_measurement'] if key in previous}}
@@ -116,6 +123,8 @@ def main():
         parser.add_argument('--'+name,type=lambda value:Path(value).resolve())
     parser.add_argument('--runtime-library',type=lambda value:Path(value).resolve())
     parser.add_argument('--runtime-build-recipe',type=lambda value:Path(value).resolve())
+    parser.add_argument('--guest-patch',type=lambda value:Path(value).resolve())
+    parser.add_argument('--guest-patch-reason')
     parser.add_argument('--build-dir',type=lambda value:Path(value).resolve())
     parser.add_argument('--out',type=lambda value:Path(value).resolve(),required=True)
     parser.add_argument('--jobs',type=int,default=8)
@@ -126,6 +135,8 @@ def main():
     for name in [*PINS,'runtime_library','build_dir']:
         if getattr(args,name) is None:parser.error('--'+name.replace('_','-')+' is required for a build')
     if not 1<=args.jobs<=48:parser.error('jobs must be between 1 and 48')
+    if bool(args.guest_patch)!=bool(args.guest_patch_reason):
+        parser.error('--guest-patch requires --guest-patch-reason')
     build(args)
 
 

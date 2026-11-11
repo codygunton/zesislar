@@ -63,13 +63,16 @@ def record(image, recipe, source):
         observable_effect='no public service event; memory changes include the scratch word and destination',
         status='Statement only. No service correctness or termination proof.')
     zisk = Path(recipe['sources']['zisk']['path'])
-    evidence = {name: manifest.file_record(zisk / name) for name in [
+    # Project-relative paths keep the record independent of the checkout location.
+    root = Path(__file__).resolve().parents[2]
+    project = lambda path: manifest.relative_project_paths(manifest.file_record(path), root)  # noqa: E731
+    evidence = {name: project(zisk / name) for name in [
         'ziskos/entrypoint/src/dma/memcpy.s',
         'transpilers/riscv/src/riscv2zisk_context.rs',
         'core/src/operations/dma_memcpy.rs', 'core/src/mem.rs',
         'core/src/zisk_inst_builder.rs']}
     return {'schema': 1, 'artifact_identity': recipe['artifact_identity'],
-        'elf_sha256': recipe['elf_sha256'], 'source': manifest.file_record(source),
+        'elf_sha256': recipe['elf_sha256'], 'source': project(source),
         'runtime_source_evidence': evidence,
         'evidence_class': 'Static ELF and source analysis. No selected-ELF execution or proof.',
         'allocator_vtable': vtable, 'allocator_state': state, 'free_lists': lists,
