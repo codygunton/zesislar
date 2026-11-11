@@ -21,6 +21,12 @@
     "module": "ZesuSsz.Contracts.HpDecodeSelected",
     "premise": "hpDecodeSelectedCode"
   },
+  "return_address": {
+    "register": "x1",
+    "value": "(Z_to_bv 64 (hpDecodeReturnAddress args))",
+    "alignment": 4,
+    "source": "Each caller reaches the entry by jal or jalr from a 4-aligned pc (no compressed instructions), so ra = pc + 4 is 4-aligned; hpDecodeArgsWellFormed states returnAddress mod 4 = 0 (#195 return-address conjunct)."
+  },
   "domain_component": "⌜hpDecodeDomainAt returnAddress args⌝",
   "entry_interface": {
     "entry_resources": "hpDecodeEntryResources",
