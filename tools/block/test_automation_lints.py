@@ -166,18 +166,6 @@ class DataOnlyLemmaTests(ManifestFixture, unittest.TestCase):
         self.assertEqual(check_data_only_lemmas.violations(self.root), [])
 
 
-class BlockTableMetadataTests(unittest.TestCase):
-    def test_metadata_matches_current_sources_and_existential_convention(self):
-        root = Path(__file__).resolve().parents[2]
-        metadata = json.loads((root / "ZesuSsz/Generated/DecodeItem/block_table_metadata.json").read_text())
-        self.assertIn("existential_binders", metadata["table_convention"])
-        self.assertNotIn("universal_binders", metadata["table_convention"])
-        for category in ("source_hashes", "generated_hashes"):
-            for relative, expected in metadata[category].items():
-                with self.subTest(path=relative):
-                    self.assertEqual(hashlib.sha256((root / relative).read_bytes()).hexdigest(), expected)
-
-
 class RegistrationParserTests(unittest.TestCase):
     def test_named_classes_and_source_heads(self):
         records = check_data_only_lemmas.registrations("""

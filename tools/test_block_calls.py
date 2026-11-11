@@ -135,18 +135,6 @@ class CallTableTests(unittest.TestCase):
         f = next(f for f in cfg['functions'] if f['name'] == 'rlp_decode.nextUint64')
         self.assertEqual(generate_table.resolved_calls(f), {0x800d62b4: 0x800d6960})
 
-    def test_decode_item_render_preserves_published_bytes(self):
-        root = Path(__file__).resolve().parents[1]
-        published = root / 'ZesuSsz/Generated/DecodeItem/BlockTable.v'
-        before = published.read_bytes()
-        report = json.loads((published.parent / 'block_table_metadata.json').read_text())
-        design = json.loads((root / 'ZesuSsz/Evidence/decode_item_block_design.json').read_text())
-        # The published comment retains its historical producer identity.
-        comment = generate_table.PRODUCER_SHA_LINE.search(before.decode()).group()
-        report['source_hashes']['tools/block/generate_table.py'] = comment.split('SHA-256: ')[1].split('.')[0]
-        views = generate_table.rendered_entry_views(design, root)
-        self.assertEqual(generate_table.render_table(views['table_design'], report).encode(), before)
-
     def test_callee_code_source_is_checked_independently(self):
         _, design = self.fixture()
         design['blocks'] = []

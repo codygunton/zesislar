@@ -19,18 +19,16 @@ from check_function_closure import PUBLIC, PUBLIC_CONTEXTS
 from coqc_findlib import check_record
 from gate_workspace import prepare as prepare_sources
 
-BASELINE = 'dbefab796f99635e1ba87542625f792df5aeb46d'
+BASELINE = 'd73a7a5a5610c2312b7c27ea9b41363f36324a29'
 PLUGINS = (
     '_dune-cache/install/default/lib/zesu-signature-gates/plugin/signature_gates_plugin.cmxs',
     '_dune-cache/install/default/lib/zesu-signature-gates/trace-observer/trace_block_plugin.cmxs',
 )
-WRAPPERS = '''Require Import ZesuSsz.Automation.All.
+WRAPPERS = '''Require Import ZesuSsz.Automation2.All.
 Require Import isla.riscv64.riscv64.
-Require Import ZesuSsz.Automation.BlockTable.
-Require Import ZesuSsz.Generated.DecodeItem.BlockTable.
 Require Import ZesuSsz.Compliance.DecodeItemCompliance.
 Require Import ZesuSsz.Compliance.DecodeItemCompositionalCompliance.
-Require Import ZesuSsz.Proofs.DecodeItem.TableSlots.Adapter800d698c.
+Require Import ZesuSsz.Compliance.DecodeItemComplianceGenerated.
 
 Definition certified_selected :
   forall returnAddress,
@@ -53,18 +51,20 @@ Definition certified_compositional :
       (ZesuSsz.Contracts.DecodeItemCompositional.decodeItemSelectedModelCompositional returnAddress) :=
   ZesuSsz.Compliance.DecodeItemCompositionalCompliance.decodeItemSelectedComplianceCompositional.
 
-Lemma certified_slot `{!islaG Sigma} `{!threadG} :
-  ⊢ block_table_pre decodeItemBlockTable -∗
-    instr_body 0x800d698c decodeItemState800d698c.
+Lemma certified_generated :
+  forall returnAddress,
+    ZesuSsz.Contracts.Level1.IslarisContractCorrect
+      ZesuSsz.Contracts.RlpDecodeItem.decodeItemEntry returnAddress
+      (ZesuSsz.Contracts.DecodeItemSelected.decodeItemSelectedModel returnAddress).
 Proof.
-  exact ZesuSsz.Proofs.DecodeItem.TableSlots.Adapter800d698c.decodeItemSlotBody800d698c.
+  exact ZesuSsz.Compliance.DecodeItemComplianceGenerated.decodeItemGeneratedCompliance.
 Qed.
 
 Set Printing Fully Qualified.
 Print Assumptions certified_selected.
 Print Assumptions certified_registers.
 Print Assumptions certified_compositional.
-Print Assumptions certified_slot.
+Print Assumptions certified_generated.
 '''
 
 
