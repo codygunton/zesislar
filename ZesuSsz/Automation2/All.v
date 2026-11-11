@@ -13,6 +13,7 @@ Require Export ZesuSsz.Automation2.Hooks.
 Require Export ZesuSsz.Automation2.ResidualLemmas.
 Require Export ZesuSsz.Automation2.UninitRegions.
 Require Export ZesuSsz.Automation2.FrozenDuplicates.
+Require Export ZesuSsz.Automation2.SwitchExperiment.
 Require Export ZesuSsz.Automation2.NatBitvectors.
 Require Export ZesuSsz.Automation2.ArrayPacking.
 Require Export ZesuSsz.Automation2.LoopIndex.
