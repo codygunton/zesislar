@@ -64,15 +64,13 @@ Require ZesuSsz.Proofs.DecodeItem.FP301.Caller6ae0.
 Require ZesuSsz.Proofs.DecodeItem.FP301.Caller6b08.
 Local Open Scope Z_scope.
 
-Section fp301_table.
-Context `{!islaG Sigma} `{!threadG}.
 
 (* The contract continuation, rephrased at the return package with an empty frame.
    Every entry carries it as K; a return block receives it as its return premise. *)
 Local Notation fp301Continuation args returnAddress :=
   (instr_pre returnAddress (ZesuSsz.Generated.DecodeItem.FP301.FunctionReturnEntries.fp_machineReturn args returnAddress emp)).
 
-Definition fp301Table (args : DecodeItemArgs) (returnAddress : Z) : blockTable Sigma := {|
+Definition fp301Table `{!islaG Sigma} `{!threadG} (args : DecodeItemArgs) (returnAddress : Z) : blockTable Sigma := {|
   block_table_code := decodeItemSelectedCode;
   block_table_entries := [
     (0x800d6960, (ZesuSsz.Generated.DecodeItem.FP301.Pilot6960Entries.fp_machineAt6960 args returnAddress (fp301Continuation args returnAddress))%I);
@@ -103,20 +101,20 @@ Definition fp301Table (args : DecodeItemArgs) (returnAddress : Z) : blockTable S
 
 (* ---- Infrastructure (hand-written once; no step names a block). ---- *)
 
-Lemma fp301_body_weaken (a : Z) (P : iProp Sigma) :
+Lemma fp301_body_weaken `{!islaG Sigma} `{!threadG} (a : Z) (P : iProp Sigma) :
   instr_body a (P ∗ True)%I -∗ instr_body a P.
 Proof. iIntros "H". iApply (instr_pre_wand with "H"); [done|done|]. iIntros "$". Qed.
 
 (* A return block's caller takes its return premise outside the body; the
    entry state supplies it as K. *)
-Lemma fp301_return_slot (a : Z) (F Kc : iProp Sigma) :
+Lemma fp301_return_slot `{!islaG Sigma} `{!threadG} (a : Z) (F Kc : iProp Sigma) :
   (Kc -∗ instr_body a ((F ∗ emp) ∗ True)%I) -∗ instr_body a (F ∗ Kc)%I.
 Proof.
   rewrite instr_pre'_eq /instr_pre'_def /=.
   iIntros "H [HF HK]". iApply ("H" with "HK"). by iFrame.
 Qed.
 
-Lemma fp301_byte_array_to_uninit (a : Z) (l : list (bv 8)) (n : Z) :
+Lemma fp301_byte_array_to_uninit `{!islaG Sigma} `{!threadG} (a : Z) (l : list (bv 8)) (n : Z) :
   Z.of_nat (length l) = n -> a ↦ₘ∗ l -∗ a ↦ₘ? n.
 Proof.
   intros <-.
@@ -153,19 +151,19 @@ Ltac fp301_slot :=
   first
   [ iApply fp301_body_weaken;
     match goal with
-    | H : forall (_ : DecodeItemArgs) (_ : Z) (_ : iProp Sigma), bi_emp_valid _ |- _ =>
+    | H : forall (_ : DecodeItemArgs) (_ : Z) (_ : iProp _), bi_emp_valid _ |- _ =>
         iApply H; fp301_premise
     end
   | iApply fp301_return_slot; iIntros "Hret";
     match goal with
-    | H : forall (_ : DecodeItemArgs) (_ : Z) (_ : iProp Sigma), bi_emp_valid _ |- _ =>
+    | H : forall (_ : DecodeItemArgs) (_ : Z) (_ : iProp _), bi_emp_valid _ |- _ =>
         iApply (H with "Hret HtabCode")
     end ].
 
 (* The 24 generated block proofs at this Sigma, with the caller entry unfolded
    (the callers make it typeclass-opaque); the slot tactic picks the proof
    whose conclusion matches the slot. *)
-Ltac fp301_block_proofs :=
+Ltac fp301_block_proofs Sigma :=
   pose proof (@ZesuSsz.Proofs.DecodeItem.FP301.Caller6960.DesignedBoundary_800d6960 Sigma _ _) as Fp301Block_800d6960;
   unfold ZesuSsz.Proofs.DecodeItem.FP301.Caller6960.DesignedEntry_800d6960 in Fp301Block_800d6960;
   pose proof (@ZesuSsz.Proofs.DecodeItem.FP301.Caller6974.DesignedBoundary_800d6974 Sigma _ _) as Fp301Block_800d6974;
@@ -216,12 +214,12 @@ Ltac fp301_block_proofs :=
   unfold ZesuSsz.Proofs.DecodeItem.FP301.Caller6b08.DesignedEntry_800d6b08 in Fp301Block_800d6b08.
 
 (* ---- Composition over the block table. ---- *)
-Lemma fp301_decodeItem_body (args : DecodeItemArgs) (returnAddress : Z) :
+Lemma fp301_decodeItem_body `{!islaG Sigma} `{!threadG} (args : DecodeItemArgs) (returnAddress : Z) :
   ⊢ □ decodeItemSelectedCode -∗
     instr_body 0x800d6960 (ZesuSsz.Generated.DecodeItem.FP301.Pilot6960Entries.fp_machineAt6960 args returnAddress
       (fp301Continuation args returnAddress)).
 Proof.
-  fp301_block_proofs.
+  fp301_block_proofs Sigma.
   iIntros "#Hsel".
   iApply (block_table_body (fp301Table args returnAddress)).
   { simpl. fp301_member. }
@@ -234,7 +232,7 @@ Proof.
 Qed.
 
 (* ---- End bridge (gap report item (d)). ---- *)
-Lemma fp301_end_bridge (args : DecodeItemArgs) (returnAddress : Z) :
+Lemma fp301_end_bridge `{!islaG Sigma} `{!threadG} (args : DecodeItemArgs) (returnAddress : Z) :
   decodeItemDomainAt returnAddress decodeItemC1BDomain args ->
   ZesuSsz.Generated.DecodeItem.FP301.FunctionReturnEntries.fp_machineReturn args returnAddress emp ⊢
   ∃ after : DecodeItemOutcome,
@@ -255,7 +253,7 @@ Proof.
 Qed.
 
 (* ---- Start bridge (gap report item (c)), keeping the domain fact. ---- *)
-Lemma fp301_start_bridge (args : DecodeItemArgs) (returnAddress : Z) :
+Lemma fp301_start_bridge `{!islaG Sigma} `{!threadG} (args : DecodeItemArgs) (returnAddress : Z) :
   decodeItemEntryResources (decodeItemDomainAt returnAddress decodeItemC1BDomain) args ⊢
   ZesuSsz.Generated.DecodeItem.FP301.Pilot6960Entries.fp_machineAt6960_ForwardA0N0 args returnAddress ∗
   ⌜decodeItemDomainAt returnAddress decodeItemC1BDomain args⌝.
@@ -267,7 +265,7 @@ Proof.
 Qed.
 
 (* ---- The statement decodeItemSelectedComplianceRegisters consumes, at one Sigma. ---- *)
-Lemma fp301_registers_body (returnAddress : Z) :
+Lemma fp301_registers_body `{!islaG Sigma} `{!threadG} (returnAddress : Z) :
   ⊢ decodeItemSelectedCode -∗ ∀ args : DecodeItemArgs,
     instr_body decodeItemEntry
       (decodeItemEntryResources (decodeItemDomainAt returnAddress decodeItemC1BDomain) args ∗
@@ -287,7 +285,6 @@ Proof.
   iIntros "Hreturn". by iApply (fp301_end_bridge with "Hreturn").
 Qed.
 
-End fp301_table.
 
 (* ---- The registers statement and its weakening to the reviewed model. ---- *)
 Lemma decodeItemGeneratedComplianceRegisters :
