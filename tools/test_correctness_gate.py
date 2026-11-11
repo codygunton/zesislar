@@ -153,6 +153,23 @@ class GateClaimsTests(unittest.TestCase):
         self.assertTrue(record["admitted"])
         self.assertEqual(read(self.ledger)["fixed_claims"], {"healthy": 40, "gate-one": 30})
 
+    def test_budget_wait_records_one_waiter_and_admission_clears_it(self):
+        free, seen = [90], []
+
+        def pause(seconds):
+            seen.append(read(self.ledger).get("admission_waiters", {}).get("gate-one"))
+            free[0] = 100 if len(seen) == 2 else 90
+
+        with patch('block.harness.code.admission_memory.ScopeReader.slice_sample',
+                   side_effect=OSError('This booking fixture has no live slice sample.')):
+            record = reserve(self.policy, self.owner, self.root / "ADMISSION.json",
+                             available=lambda: free[0], pause=pause)
+        self.assertTrue(record["admitted"])
+        self.assertEqual([row["bytes"] for row in seen], [30, 30])
+        # The second refusal keeps the first refusal time.
+        self.assertEqual(seen[0]["since_ns"], seen[1]["since_ns"])
+        self.assertEqual(read(self.ledger).get("admission_waiters"), {})
+
     def test_budget_wait_logs_blocking_claims_and_owner_liveness(self):
         ledger = read(self.ledger)
         ledger["fixed_claims"].update({"dead-gate": 20, "live-gate": 10, "closed": 0,
