@@ -1,6 +1,6 @@
 Require Import ZesuSsz.Automation2.All.
 Require Import ZesuSsz.Automation2.Diagnostics.
-From Coq Require Import ZArith.ZArith Lia.
+From Coq Require Import ZArith.ZArith Lia Strings.String.
 Require Import ZesuSsz.Automation2.All.
 Set Default Proof Mode "Classic".
 Local Open Scope Z_scope.

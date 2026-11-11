@@ -1,6 +1,6 @@
 Require Import ZesuSsz.Automation2.All.
 Require Import ZesuSsz.Automation2.DiagnosticsOn.
-From Coq Require Import ZArith.ZArith Lia.
+From Coq Require Import ZArith.ZArith Lia Strings.String.
 From Ltac2 Require Import Ltac2.
 Require Import ZesuSsz.Automation2.All.
 Set Default Proof Mode "Classic".
