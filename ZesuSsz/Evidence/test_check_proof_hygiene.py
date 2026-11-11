@@ -470,3 +470,61 @@ class ShortCoreNameTests(unittest.TestCase):
     def test_shared_modules_include_context_collection(self):
         from check_proof_hygiene import shared_core_modules
         self.assertIn("ContextCollection", shared_core_modules())
+
+
+class DuplicateRewriteTests(unittest.TestCase):
+    """One lemma is registered once per rewrite database and direction."""
+
+    def failures(self, sources):
+        from check_proof_hygiene import duplicate_rewrite_failures
+        return duplicate_rewrite_failures(sources)
+
+    def test_second_registration_in_one_database_fails(self):
+        sources = {
+            "ZesuSsz/Automation2/A.v": "#[export] Hint Rewrite lemma_a (@lemma_b 64) : db_one db_two.\n",
+            "ZesuSsz/Automation2/B.v": ("(* lemma_a *)\n#[export] Hint Rewrite (@lemma_b 64)\n"
+                                        "  lemma_c using (first [idtac | bv_solve]) : db_two.\n"),
+        }
+        failures = self.failures(sources)
+        self.assertEqual(len(failures), 1)
+        self.assertIn("(@lemma_b 64) (->) in db_two", failures[0])
+        self.assertIn("A.v:1", failures[0])
+        self.assertIn("B.v:2", failures[0])
+
+    def test_local_other_database_and_other_direction_pass(self):
+        sources = {
+            "ZesuSsz/Automation2/A.v": "#[export] Hint Rewrite lemma_a : db_one.\n",
+            "ZesuSsz/Automation2/B.v": ("#[local] Hint Rewrite lemma_a : db_one.\n"
+                                        "#[export] Hint Rewrite lemma_a : db_two.\n"
+                                        "#[export] Hint Rewrite <- lemma_a : db_one.\n"),
+        }
+        self.assertEqual(self.failures(sources), [])
+
+
+class FrozenGlobalTests(unittest.TestCase):
+    """A frozen Global instance loaded by the Automation2 umbrella is removed."""
+
+    def write(self, root, module, text):
+        path = Path(root) / (module.replace(".", "/") + ".v")
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_text(text)
+
+    def test_loaded_frozen_instance_needs_a_removal(self):
+        from check_proof_hygiene import frozen_global_failures
+        with tempfile.TemporaryDirectory() as root:
+            self.write(root, "ZesuSsz.Automation.Frozen",
+                       "Definition frozen_inst := 0.\nGlobal Existing Instance frozen_inst | 5.\n"
+                       "Global Instance frozen_other : C.\nGlobal Existing Instance library_inst | 20.\n")
+            self.write(root, "ZesuSsz.Automation.Unloaded", "Global Existing Instance unloaded_inst.\n")
+            self.write(root, "ZesuSsz.Automation2.All",
+                       "Require ZesuSsz.Automation.Frozen.\n(* Require ZesuSsz.Automation.Unloaded. *)\n")
+            failures = frozen_global_failures(root)
+            self.assertEqual(sorted(failures), [
+                "frozen Global instance active beside Automation2: ZesuSsz.Automation.Frozen.frozen_inst",
+                "frozen Global instance active beside Automation2: ZesuSsz.Automation.Frozen.frozen_other"])
+            self.write(root, "ZesuSsz.Automation2.All",
+                       "Require ZesuSsz.Automation.Frozen.\nRequire Export ZesuSsz.Automation2.Removal.\n")
+            self.write(root, "ZesuSsz.Automation2.Removal",
+                       "Global Remove Hints ZesuSsz.Automation.Frozen.frozen_inst : typeclass_instances.\n")
+            self.assertEqual(frozen_global_failures(
+                root, allowlist={"ZesuSsz.Automation.Frozen.frozen_other": "reason"}), [])
