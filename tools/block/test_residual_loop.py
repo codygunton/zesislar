@@ -224,7 +224,9 @@ class TaskTests(unittest.TestCase):
             loop.write_task_index(run, dict(block="1234", goals=[goal]))
             task = (run / "tasks" / "1234-1.md").read_text()
             index = (run / "tasks" / "README.md").read_text()
-        self.assertIn(STATEMENT, task)
+        self.assertNotIn(STATEMENT, task)  # the exact source stays in goal.v
+        self.assertIn(str(run / "goals" / "1234-1" / "goal.v"), task)
+        self.assertIn("forall x : Z, ...", task)
         self.assertIn("residual_1234_ab", task)
         self.assertIn("Never use Admitted", task)
         self.assertIn(str(run / "answers" / "1234-1.v"), task)

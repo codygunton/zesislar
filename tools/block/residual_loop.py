@@ -427,17 +427,14 @@ Rules:
 Lemma name: `{name}`
 Premises: {premises} of {props} facts in the block context ({small} small enough to state).
 
-## Statement (default printer; literal widths may be hidden)
+## Goal after `intros.` (default printer; literal widths may be hidden)
 
 ```
 {readable}
 ```
 
-## Statement (exact source; every width is explicit)
-
-```
-{statement}
-```
+The exact source of the statement, with every width explicit, is in `{goal}`.
+Read it only when a literal width matters.
 
 ## Imports
 
@@ -457,7 +454,7 @@ def write_task(run, block, goal, header):
                        feedback=run / "feedback" / (goal["id"] + ".txt"), name=goal["name"],
                        premises=counts.get("kept", "?"), props=counts.get("props", "?"),
                        small=counts.get("small", "?"), readable=goal.get("readable") or "(not available)",
-                       statement=goal["statement"], header="\n".join(header))
+                       goal=run / "goals" / goal["id"] / "goal.v", header="\n".join(header))
     (run / "tasks" / (goal["id"] + ".md")).write_text(text)
 
 
