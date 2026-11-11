@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "artifact_identity": "0a65ecef84a26877fbde660325fb54871bc3e104997b5caae27f5d7fd5dd355a",
+  "artifact_identity": "842d641c2dccc7019d0ddfc44927d32a73d066e87b741e3a4685cf04b358ea1a",
   "functions": [
     {
       "name": "rlp.decodeItem",
@@ -59,8 +59,8 @@
     },
     {
       "name": "memcpy",
-      "start": 2148402880,
-      "end": 2148402892
+      "start": 2148402928,
+      "end": 2148402940
     }
   ],
   "inline_decodeSingleTx": [

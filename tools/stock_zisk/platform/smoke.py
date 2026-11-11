@@ -16,7 +16,7 @@ RAM = 0xa0000000
 CASES = [
  ("input", "ld", INPUT + 8, "read", 16),
  ("executable_text", "fetch", 0x80000000, "fetch", 16),
- ("read_only_data", "ld", 0x8010fd80, "read", 16),
+ ("read_only_data", "ld", 0x8010f5f0, "read", 16),
  ("gap", "ld", 0x88000000, "load_fault", 16),
  ("ram", "ld", RAM + 64, "read", 16),
  ("stack", "ld", 0xa03ffff8, "read", 16),
@@ -37,11 +37,11 @@ CASES = [
  ("header_word", "lw", INPUT + 4, "read", 16),
  ("header_data_join", "lh", INPUT + 7, "read", 16),
  ("empty_header_crossing", "lh", INPUT + 7, "load_fault", 0),
- ("rodata_write", "sd", 0x8010fd80, "store_fault", 16),
+ ("rodata_write", "sd", 0x8010f5f0, "store_fault", 16),
  ("ram_end_crossing", "ld", 0xbffffffc, "load_fault", 16),
  ("input_end_crossing", "ld", 0x7ffffffc, "load_fault", 16),
- ("text_end_crossing", "fetch", 0x8010fd76, "fetch_fault", 16),
- ("rodata_end_crossing", "ld", 0x80118674, "load_fault", 16),
+ ("text_end_crossing", "fetch", 0x8010f5e2, "fetch_fault", 16),
+ ("rodata_end_crossing", "ld", 0x80117eec, "load_fault", 16),
  ("address_wrap", "ld", 0xfffffffffffffffc, "load_fault", 16),
 ]
 OPCODES = {"lb":0x00058503,"lh":0x00059503,"lw":0x0005a503,

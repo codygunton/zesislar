@@ -7,7 +7,7 @@ The rung-2 trust text must state this exact service premise.
 
 ## Memcpy boundary
 
-The selected `memcpy` entry is `0x800e06c0`.
+The selected `memcpy` entry is `0x800e06f0`.
 Its bytes are `73a035813300c50067800000`.
 The function contains the CSR marker, its following add, and the return.
 The source implements the marker as a transpilation pattern.

@@ -60,7 +60,7 @@ class FunctionPreparationTests(unittest.TestCase):
                 "--per-load-regions", "build/stock-zisk/eql-policy/regions.json.gz",
                 "--per-load-regions-sha256", "3e79c1525180f95d48d65823a69394c89ba7d7e70bc778dae19b89004885cfeb",
                 "--region-source-map", "build/stock-zisk/eql-policy/PATH-MAP.json",
-                "--region-source-map-sha256", "a5afd3146de5a937cbebe3c0b18fbebc7927e73ca27302ae490afd749721afde"])
+                "--region-source-map-sha256", "4c0a2bfe61ea4f4828aa68fec6423af2f587d705a6a3511f828698808519bf31"])
             self.assertEqual(calls[4], ["tools/stock_zisk/platform/bind_traces.py",
                 "--out", "generated/isla-traces/stock-zisk/eql", "--trace-name", "eql",
                 "--check-manifest", "custom/recipe.json"])
@@ -72,7 +72,7 @@ class FunctionPreparationTests(unittest.TestCase):
                 "--per-load-regions", "build/stock-zisk/decodeItem-regions-policy/regions.json.gz",
                 "--per-load-regions-sha256", "e9f2697fa7d5611887695b66130958957a672ee74707650e5f20fa91e3eb0eaa",
                 "--region-source-map", "build/stock-zisk/decodeItem-regions-policy/PATH-MAP.json",
-                "--region-source-map-sha256", "dac940753fc60ebdcc5f6138cff636d5cb79dccf5be76553f308b9c49b05d12f"])
+                "--region-source-map-sha256", "4827f33cb807c35d1b410f86c5047e3f141356f77140955cea1e6a3015b1354d"])
             self.assertEqual(calls[6], ["tools/stock_zisk/platform/bind_traces.py",
                 "--out", "generated/isla-traces/stock-zisk/decodeItemRegions", "--trace-name", "decodeItemRegions",
                 "--check-manifest", "custom/recipe.json"])

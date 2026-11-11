@@ -3,7 +3,7 @@
     {
       "name": "zchecked_mem_read",
       "original_sha256": "6dd22ac846c1ac991be124d358cdad09778123a86a66a1178bd40c4eea3028c0",
-      "generated_sha256": "285ad2ce55e6fcbe679b56563ff03977409e2194e7d6f3a591bf78e60328c3a9"
+      "generated_sha256": "031f761d0d6303a9e459eb65ba5ce8fc5b588d1365ebf9e5294659cef53dd7ea"
     },
     {
       "name": "zchecked_mem_write",
@@ -13,7 +13,7 @@
     {
       "name": "zwithin_phys_mem",
       "original_sha256": "fa6fbf5b5573cc4c69ef61dc05653172b77807a612955f6fd0ac0324a6b29d42",
-      "generated_sha256": "e0e18ba154517d2b422bc217de6397e6f45ef9500970ee79bfb51225a484377f"
+      "generated_sha256": "f03158eadec893cf9503384266ad4a116cd4a883c81bf5acdcdfedd037ebc0ef"
     },
     {
       "name": "zwithin_mmio_readable",
@@ -31,15 +31,15 @@
   "non_platform_declarations_byte_identical": true,
   "schema_version": 1,
   "base_sha256": "1883a3851579230cae1ba0e3975e7ccb3b6ec6a3c0cb8e73d317728777fb8d4a",
-  "snapshot_sha256": "2b1b3c9eeae6fc53ea430376c9759a9abd0d1f8e123362078800642d4b5eec8e",
-  "adapter_source_sha256": "d07bd6d12b5ec244e67c474320d5d08a91cb7aa202a5350eaba342ce3f05c63b",
+  "snapshot_sha256": "4dbf6f29f2595ed8e8d918cc63fbd7c88b261eee86d5f03169d1c0f5fe73df15",
+  "adapter_source_sha256": "4f37182e3ecef2850e6c9999f44ba9c8eb96b607a74c4c7c3e14522b67e8b117",
   "sail_sha256": "a3e55921a1dbd52a77ba2efb89ed6ea18cbc43b1da8d3ad47bd5fa08d3de58af",
   "plugin_sha256": "cb118cddcc3309935f6b17e44f9896d5f6d1cb62116e392f02d81d9ec29d9429",
   "compiler_patch": "Remove obsolete Initial_check.opt_undefined_gen assignment; Sail 0.17 generates undefined values by default.",
   "command": [
     "/home/cody/islaris/_opam/bin/sail",
     "--plugin",
-    "/home/cody/zesislar/.worktrees/worker2-child-platform/build/stock-zisk/platform/sail_plugin_isla.cmxs",
+    "/home/cody/zesislar/.worktrees/elf-switch-dryrun/build/stock-zisk/platform/sail_plugin_isla.cmxs",
     "-isla",
     "-isla_preserve",
     "checked_mem_read",
@@ -53,11 +53,11 @@
     "within_mmio_writable",
     "-isla_preserve",
     "zisk_smoke_fetch",
-    "/home/cody/zesislar/.worktrees/worker2-child-platform/tools/stock_zisk/platform/adapter.sail",
+    "/home/cody/zesislar/.worktrees/elf-switch-dryrun/tools/stock_zisk/platform/adapter.sail",
     "-o",
-    "/home/cody/zesislar/.worktrees/worker2-child-platform/build/stock-zisk/platform/adapter"
+    "/home/cody/zesislar/.worktrees/elf-switch-dryrun/build/stock-zisk/platform/adapter"
   ],
-  "seconds": 0.137,
-  "peak_rss_kib": 34944,
+  "seconds": 1.642,
+  "peak_rss_kib": 36696,
   "workers": 6
 }

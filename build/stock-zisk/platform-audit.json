@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "artifact_identity": "0a65ecef84a26877fbde660325fb54871bc3e104997b5caae27f5d7fd5dd355a",
+  "artifact_identity": "842d641c2dccc7019d0ddfc44927d32a73d066e87b741e3a4685cf04b358ea1a",
   "status": "Source and ELF audit. The selected platform adapter is manifest-bound. Decoder obligations remain unproved.",
   "constants": {
     "INPUT_ADDR": 1073741824,
@@ -16,15 +16,15 @@
   "load_segments": [
     {
       "start": 2147483648,
-      "end": 2148597112,
+      "end": 2148595172,
       "flags": 1,
-      "file_bytes": 1113464
+      "file_bytes": 1111524
     },
     {
-      "start": 2148597120,
-      "end": 2148632184,
+      "start": 2148595184,
+      "end": 2148630256,
       "flags": 4,
-      "file_bytes": 35064
+      "file_bytes": 35072
     },
     {
       "start": 2688745472,

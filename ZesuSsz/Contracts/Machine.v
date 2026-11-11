@@ -59,31 +59,31 @@ Definition forkMap : MachineMap := {|
 |}.
 
 (* BEGIN GENERATED STOCK MAP *)
-(** ELF SHA256: e44c18d54ae3d77832df92aceb6eb7119de8eb2e8f1f1b4e585a6e33ea04ff95. *)
+(** ELF SHA256: 9db39b9eba31302a76f8132a09250934ea06cc0bf5bec79d7e0eb28963c1eaf4. *)
 Definition defaultMap : MachineMap := {|
   mapPopulatedSections := [
-    {| sectionBase := 0x80000000; sectionEnd := 0x8010fd78; sectionFileEnd := 0x8010fd78; sectionReadable := false; sectionWritable := false; sectionExecutable := true |};
-    {| sectionBase := 0x8010fd80; sectionEnd := 0x80118678; sectionFileEnd := 0x80118678; sectionReadable := true; sectionWritable := false; sectionExecutable := false |};
+    {| sectionBase := 0x80000000; sectionEnd := 0x8010f5e4; sectionFileEnd := 0x8010f5e4; sectionReadable := false; sectionWritable := false; sectionExecutable := true |};
+    {| sectionBase := 0x8010f5f0; sectionEnd := 0x80117ef0; sectionFileEnd := 0x80117ef0; sectionReadable := true; sectionWritable := false; sectionExecutable := false |};
     {| sectionBase := 0xa0430000; sectionEnd := 0xa0d34520; sectionFileEnd := 0xa0430000; sectionReadable := true; sectionWritable := true; sectionExecutable := false |};
     {| sectionBase := 0xa0d34520; sectionEnd := 0xa0d34530; sectionFileEnd := 0xa0d34530; sectionReadable := true; sectionWritable := true; sectionExecutable := false |}
   ];
   mapRamBase := 0xa0000000;
   mapRamSize := 0x20000000;
   mapTextBase := 0x80000000;
-  mapTextEnd := 0x8010fd78;
-  mapRodataBase := 0x8010fd80;
-  mapRodataEnd := 0x80118678;
+  mapTextEnd := 0x8010f5e4;
+  mapRodataBase := 0x8010f5f0;
+  mapRodataEnd := 0x80117ef0;
   mapDataBase := 0xa0430000;
   mapHeapBase := 0xa0d34530;
   mapHeapEnd := 0xbfff0000;
   mapInputBufferAddress := 0x40000000;
   mapInputCapacity := 0x40000000;
   mapIoContextAddress := None;
-  mapStartPc := 0x800f5b30;
-  mapReadInputPc := Some 0x800e1720%Z;
-  mapWriteOutputPc := Some 0x800e17b8%Z;
+  mapStartPc := 0x8010f074;
+  mapReadInputPc := Some 0x800e1750%Z;
+  mapWriteOutputPc := Some 0x800e17e8%Z;
   mapZkvmExitPc := None;
-  mapMemcpyPc := 0x800e06c0;
+  mapMemcpyPc := 0x800e06f0;
   mapMainPc := 0x80041ee0;
   mapHeapTopAddress := 0xa0d34528;
   mapHeapPosAddress := 0xa0d34520;

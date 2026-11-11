@@ -1,6 +1,6 @@
 {
   "schema": 2,
-  "artifact_identity": "0a65ecef84a26877fbde660325fb54871bc3e104997b5caae27f5d7fd5dd355a",
+  "artifact_identity": "842d641c2dccc7019d0ddfc44927d32a73d066e87b741e3a4685cf04b358ea1a",
   "static_closure": "passed under the inventory conditions",
   "unsupported_instructions": [],
   "unresolved_transfers": [],
@@ -8,41 +8,12 @@
   "expected_unmodeled_operations": [
     {
       "function": "memcpy",
-      "pc": 2148402880,
+      "pc": 2148402928,
       "csr": 2067
     }
   ],
-  "trace_generation": "116/116 decodeItem traces; 4503/4504 closure traces; CSR 0x813 remains unmodeled",
+  "trace_generation": "not run: the selected platform adapter is recorded",
   "entry_block_smoke": "not run",
   "return_site_chain": "not run",
-  "proof_status": "not proved",
-  "trace_coverage": {
-    "decodeItem": {
-      "elf_sha256": "e44c18d54ae3d77832df92aceb6eb7119de8eb2e8f1f1b4e585a6e33ea04ff95",
-      "instruction_count": 116,
-      "generated_count": 116,
-      "full_closure_coverage": true,
-      "unsupported_runtime_boundaries": [],
-      "instruction_modules_validated": true,
-      "manifest_binding_pending": false,
-      "bound_artifact_identity": "11c768eddd34efaff60506705c3b37dda282fce707bea53c5415870977f55ed3"
-    },
-    "closure": {
-      "elf_sha256": "e44c18d54ae3d77832df92aceb6eb7119de8eb2e8f1f1b4e585a6e33ea04ff95",
-      "instruction_count": 4504,
-      "generated_count": 4503,
-      "full_closure_coverage": false,
-      "unsupported_runtime_boundaries": [
-        {
-          "pc": "0x800e06c0",
-          "opcode": "8135a073",
-          "name": "memcpy CSR0x813 runtime service",
-          "reason": "The pinned instruction model does not implement this ZisK service"
-        }
-      ],
-      "instruction_modules_validated": true,
-      "manifest_binding_pending": false,
-      "bound_artifact_identity": "11c768eddd34efaff60506705c3b37dda282fce707bea53c5415870977f55ed3"
-    }
-  }
+  "proof_status": "not proved"
 }

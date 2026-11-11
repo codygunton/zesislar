@@ -7,7 +7,7 @@ This checkpoint records source facts, smoke traces, and the remaining proof obli
 
 ## Artifact and source identities
 
-The selected ELF has SHA256 `e44c18d54ae3d77832df92aceb6eb7119de8eb2e8f1f1b4e585a6e33ea04ff95`.
+The selected ELF has SHA256 `9db39b9eba31302a76f8132a09250934ea06cc0bf5bec79d7e0eb28963c1eaf4`.
 ZisK uses commit `fbbc69bcd2ea9a78d1a438b4a897bc48ff0b00a3`.
 The guest recipe uses commit `be591e90ecbd94b0a3185809ba5ed74268558fa3`.
 The local Isla snapshot uses commit `b58da9170470a422c9396983ac8f87f0a63ba6f8`.
@@ -31,8 +31,8 @@ The nearby `128M` source comment does not match its hexadecimal constant.
 
 The selected ELF has these occupied regions:
 
-- The execute-only `.text` segment occupies `0x80000000..0x8010fd78`.
-- The read-only `.rodata` segment occupies `0x8010fd80..0x80118678`.
+- The execute-only `.text` segment occupies `0x80000000..0x8010f5e4`.
+- The read-only `.rodata` segment occupies `0x8010f5f0..0x80117ef0`.
 - The `.bss` segment occupies `0xa0430000..0xa0d34520`.
 - The initialized heap words occupy `0xa0d34520..0xa0d34530`.
 

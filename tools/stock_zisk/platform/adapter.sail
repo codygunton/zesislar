@@ -36,7 +36,7 @@ val checked_mem_read : forall 'n, 0 < 'n <= 8.
  (AccessType(unit), xlenbits, atom('n), bool, bool, bool, bool) -> MemoryOpResult((bits(8 * 'n), unit))
 function checked_mem_read(t, a, w, aq, rl, res, meta) = {
  match t {
-  Execute() => if zisk_contains(a, w, 2147483648, 2148597112)
+  Execute() => if zisk_contains(a, w, 2147483648, 2148595172)
    then phys_mem_read(t, a, w, aq, rl, res, meta)
    else MemException(E_Fetch_Access_Fault()),
   Read(_) => {
@@ -46,7 +46,7 @@ function checked_mem_read(t, a, w, aq, rl, res, meta) = {
    then MemValue(sail_zero_extend(zisk_free_input, 8 * w), ())
    else if (zisk_contains(a, w, 1073741824, 2147483648) &
             zisk_contains(a, w, 1073741824, unsigned(zisk_input_end))) |
-           zisk_contains(a, w, 2148597120, 2148632184)
+           zisk_contains(a, w, 2148595184, 2148630256)
    then phys_mem_read(t, a, w, aq, rl, res, meta)
    else if zisk_contains(a, w, 1073741832, 2147483648)
    then MemValue(sail_zero_extend(0b0, 8 * w), ())
@@ -66,8 +66,8 @@ function checked_mem_write(wk, a, w, data, meta) =
 val within_phys_mem : (bits(64), int) -> bool
 function within_phys_mem(a, w) =
  zisk_contains(a, w, 1073741824, 2147483648) |
- zisk_contains(a, w, 2147483648, 2148597112) |
- zisk_contains(a, w, 2148597120, 2148632184) |
+ zisk_contains(a, w, 2147483648, 2148595172) |
+ zisk_contains(a, w, 2148595184, 2148630256) |
  zisk_contains(a, w, 2684354560, 3221225472)
 
 val within_mmio_readable : (bits(64), int) -> bool

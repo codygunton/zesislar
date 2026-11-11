@@ -1,5 +1,5 @@
 {
-  "elf_sha256": "e44c18d54ae3d77832df92aceb6eb7119de8eb2e8f1f1b4e585a6e33ea04ff95",
+  "elf_sha256": "9db39b9eba31302a76f8132a09250934ea06cc0bf5bec79d7e0eb28963c1eaf4",
   "schema": 2,
   "functions": [
     {
@@ -3494,14 +3494,14 @@
         {
           "pc": 2148359428,
           "size": 4,
-          "word": 730138003,
+          "word": 2995062163,
           "rd": 11,
           "rs1": 10,
-          "rs2": 24,
+          "rs2": 8,
           "funct3": 0,
           "kind": "plain",
           "mnemonic": "addi",
-          "imm": 696,
+          "imm": -1240,
           "successors": [
             2148359432
           ]
@@ -3762,14 +3762,14 @@
         {
           "pc": 2148359492,
           "size": 4,
-          "word": 663029139,
+          "word": 2927953299,
           "rd": 11,
           "rs1": 10,
-          "rs2": 24,
+          "rs2": 8,
           "funct3": 0,
           "kind": "plain",
           "mnemonic": "addi",
-          "imm": 632,
+          "imm": -1304,
           "successors": [
             2148359496
           ]
@@ -3808,14 +3808,14 @@
         {
           "pc": 2148359504,
           "size": 4,
-          "word": 650446227,
+          "word": 2915370387,
           "rd": 11,
           "rs1": 10,
-          "rs2": 12,
+          "rs2": 28,
           "funct3": 0,
           "kind": "plain",
           "mnemonic": "addi",
-          "imm": 620,
+          "imm": -1316,
           "successors": [
             2148359508
           ]
@@ -3891,14 +3891,14 @@
         {
           "pc": 2148359524,
           "size": 4,
-          "word": 629474707,
+          "word": 2894398867,
           "rd": 11,
           "rs1": 10,
-          "rs2": 24,
+          "rs2": 8,
           "funct3": 0,
           "kind": "plain",
           "mnemonic": "addi",
-          "imm": 600,
+          "imm": -1336,
           "successors": [
             2148359528
           ]
@@ -4166,17 +4166,17 @@
         {
           "pc": 2148359584,
           "size": 4,
-          "word": 2453864551,
+          "word": 2504196199,
           "rd": 0,
           "rs1": 6,
-          "rs2": 4,
+          "rs2": 20,
           "funct3": 0,
           "kind": "jump",
           "mnemonic": "jalr",
-          "imm": -1756,
-          "target": 2148402880,
+          "imm": -1708,
+          "target": 2148402928,
           "successors": [
-            2148402880
+            2148402928
           ]
         },
         {
@@ -7490,14 +7490,14 @@
         {
           "pc": 2148360384,
           "size": 4,
-          "word": 259351,
+          "word": 255255,
           "rd": 10,
           "rs1": 7,
           "rs2": 0,
-          "funct3": 7,
+          "funct3": 6,
           "kind": "plain",
           "mnemonic": "auipc",
-          "imm": 258048,
+          "imm": 253952,
           "successors": [
             2148360388
           ]
@@ -7505,14 +7505,14 @@
         {
           "pc": 2148360388,
           "size": 4,
-          "word": 4018472339,
+          "word": 1988429203,
           "rd": 11,
           "rs1": 10,
-          "rs2": 24,
+          "rs2": 8,
           "funct3": 0,
           "kind": "plain",
           "mnemonic": "addi",
-          "imm": -264,
+          "imm": 1896,
           "successors": [
             2148360392
           ]
@@ -8001,14 +8001,14 @@
         {
           "pc": 2148360508,
           "size": 4,
-          "word": 411405203,
+          "word": 2676329363,
           "rd": 23,
           "rs1": 11,
-          "rs2": 8,
+          "rs2": 24,
           "funct3": 0,
           "kind": "plain",
           "mnemonic": "addi",
-          "imm": 392,
+          "imm": -1544,
           "successors": [
             2148360512
           ]
@@ -8437,14 +8437,14 @@
         {
           "pc": 2148360612,
           "size": 4,
-          "word": 259351,
+          "word": 255255,
           "rd": 10,
           "rs1": 7,
           "rs2": 0,
-          "funct3": 7,
+          "funct3": 6,
           "kind": "plain",
           "mnemonic": "auipc",
-          "imm": 258048,
+          "imm": 253952,
           "successors": [
             2148360616
           ]
@@ -8452,14 +8452,14 @@
         {
           "pc": 2148360616,
           "size": 4,
-          "word": 3779397011,
+          "word": 1749353875,
           "rd": 11,
           "rs1": 10,
-          "rs2": 20,
+          "rs2": 4,
           "funct3": 0,
           "kind": "plain",
           "mnemonic": "addi",
-          "imm": -492,
+          "imm": 1668,
           "successors": [
             2148360620
           ]
@@ -9407,7 +9407,7 @@
           "start": 2148359528,
           "end": 2148359588,
           "successors": [
-            2148402880
+            2148402928
           ]
         },
         {
@@ -9995,7 +9995,7 @@
         },
         {
           "pc": 2148359584,
-          "target": 2148402880,
+          "target": 2148402928,
           "kind": "tail"
         },
         {
@@ -10534,14 +10534,14 @@
         {
           "pc": 2147485028,
           "size": 4,
-          "word": 1115543,
+          "word": 1111447,
           "rd": 11,
-          "rs1": 2,
+          "rs1": 1,
           "rs2": 1,
-          "funct3": 0,
+          "funct3": 7,
           "kind": "plain",
           "mnemonic": "auipc",
-          "imm": 1114112,
+          "imm": 1110016,
           "successors": [
             2147485032
           ]
@@ -10564,14 +10564,14 @@
         {
           "pc": 2147485036,
           "size": 4,
-          "word": 2932180371,
+          "word": 902137235,
           "rd": 11,
           "rs1": 11,
-          "rs2": 12,
+          "rs2": 28,
           "funct3": 0,
           "kind": "plain",
           "mnemonic": "addi",
-          "imm": -1300,
+          "imm": 860,
           "successors": [
             2147485040
           ]
@@ -29485,7 +29485,7 @@
           "successors": [
             2147489520
           ],
-          "address_analysis": 2148611800
+          "address_analysis": 2148609864
         },
         {
           "pc": 2147489520,
@@ -30159,7 +30159,7 @@
           "successors": [
             2147489676
           ],
-          "address_analysis": 2148611800
+          "address_analysis": 2148609864
         },
         {
           "pc": 2147489676,
@@ -30384,15 +30384,15 @@
         {
           "pc": 2147489728,
           "size": 4,
-          "word": 4030759143,
+          "word": 4081090791,
           "rd": 1,
           "rs1": 1,
-          "rs2": 4,
+          "rs2": 20,
           "funct3": 0,
           "kind": "call",
           "mnemonic": "jalr",
-          "imm": -252,
-          "target": 2148402880,
+          "imm": -204,
+          "target": 2148402928,
           "successors": [
             2147489732
           ]
@@ -31628,7 +31628,7 @@
           "successors": [
             2147490024
           ],
-          "address_analysis": 2148611800
+          "address_analysis": 2148609864
         },
         {
           "pc": 2147490024,
@@ -32322,7 +32322,7 @@
           "successors": [
             2147490180
           ],
-          "address_analysis": 2148611800
+          "address_analysis": 2148609864
         },
         {
           "pc": 2147490180,
@@ -33016,7 +33016,7 @@
           "successors": [
             2147490336
           ],
-          "address_analysis": 2148611800
+          "address_analysis": 2148609864
         },
         {
           "pc": 2147490336,
@@ -33271,15 +33271,15 @@
         {
           "pc": 2147490392,
           "size": 4,
-          "word": 3334504679,
+          "word": 3384836327,
           "rd": 1,
           "rs1": 1,
-          "rs2": 12,
+          "rs2": 28,
           "funct3": 0,
           "kind": "call",
           "mnemonic": "jalr",
-          "imm": -916,
-          "target": 2148402880,
+          "imm": -868,
+          "target": 2148402928,
           "successors": [
             2147490396
           ]
@@ -35571,15 +35571,15 @@
         {
           "pc": 2147490944,
           "size": 4,
-          "word": 2755690727,
+          "word": 2806022375,
           "rd": 1,
           "rs1": 1,
-          "rs2": 4,
+          "rs2": 20,
           "funct3": 0,
           "kind": "call",
           "mnemonic": "jalr",
-          "imm": -1468,
-          "target": 2148402880,
+          "imm": -1420,
+          "target": 2148402928,
           "successors": [
             2147490948
           ]
@@ -36413,15 +36413,15 @@
         {
           "pc": 2147491132,
           "size": 4,
-          "word": 2558558439,
+          "word": 2608890087,
           "rd": 1,
           "rs1": 1,
-          "rs2": 8,
+          "rs2": 24,
           "funct3": 0,
           "kind": "call",
           "mnemonic": "jalr",
-          "imm": -1656,
-          "target": 2148402880,
+          "imm": -1608,
+          "target": 2148402928,
           "successors": [
             2147491136
           ]
@@ -37969,15 +37969,15 @@
         {
           "pc": 2147491500,
           "size": 4,
-          "word": 2172682471,
+          "word": 2223014119,
           "rd": 1,
           "rs1": 1,
-          "rs2": 24,
+          "rs2": 8,
           "funct3": 0,
           "kind": "call",
           "mnemonic": "jalr",
-          "imm": -2024,
-          "target": 2148402880,
+          "imm": -1976,
+          "target": 2148402928,
           "successors": [
             2147491504
           ]
@@ -49813,7 +49813,7 @@
           "successors": [
             2147494268
           ],
-          "address_analysis": 2148611816
+          "address_analysis": 2148609880
         },
         {
           "pc": 2147494268,
@@ -50042,19 +50042,19 @@
         {
           "pc": 2147494320,
           "size": 4,
-          "word": 1162196355,
+          "word": 3427120515,
           "rd": 11,
           "rs1": 11,
-          "rs2": 20,
+          "rs2": 4,
           "funct3": 3,
           "kind": "load",
           "mnemonic": "ld",
-          "imm": 1108,
+          "imm": -828,
           "width": 8,
           "successors": [
             2147494324
           ],
-          "address_analysis": 2148597248
+          "address_analysis": 2148595312
         },
         {
           "pc": 2147494324,
@@ -50349,7 +50349,7 @@
           "successors": [
             2147494392
           ],
-          "address_analysis": 2148611800
+          "address_analysis": 2148609864
         },
         {
           "pc": 2147494392,
@@ -50619,15 +50619,15 @@
         {
           "pc": 2147494452,
           "size": 4,
-          "word": 3372253415,
+          "word": 3422585063,
           "rd": 1,
           "rs1": 1,
-          "rs2": 16,
+          "rs2": 0,
           "funct3": 0,
           "kind": "call",
           "mnemonic": "jalr",
-          "imm": -880,
-          "target": 2148402880,
+          "imm": -832,
+          "target": 2148402928,
           "successors": [
             2147494456
           ]
@@ -50704,7 +50704,7 @@
           "successors": [
             2147494472
           ],
-          "address_analysis": 2148611824
+          "address_analysis": 2148609888
         },
         {
           "pc": 2147494472,
@@ -52883,7 +52883,7 @@
           "successors": [
             2147494996
           ],
-          "address_analysis": 2148611800
+          "address_analysis": 2148609864
         },
         {
           "pc": 2147494996,
@@ -55659,14 +55659,14 @@
         {
           "pc": 2147495640,
           "size": 4,
-          "word": 905367,
+          "word": 909463,
           "rd": 1,
           "rs1": 27,
           "rs2": 0,
-          "funct3": 5,
+          "funct3": 6,
           "kind": "plain",
           "mnemonic": "auipc",
-          "imm": 905216,
+          "imm": 909312,
           "successors": [
             2147495644
           ]
@@ -55674,15 +55674,15 @@
         {
           "pc": 2147495644,
           "size": 4,
-          "word": 2122350823,
+          "word": 2172682471,
           "rd": 1,
           "rs1": 1,
-          "rs2": 8,
+          "rs2": 24,
           "funct3": 0,
           "kind": "call",
           "mnemonic": "jalr",
-          "imm": 2024,
-          "target": 2148402880,
+          "imm": -2024,
+          "target": 2148402928,
           "successors": [
             2147495648
           ]
@@ -55779,7 +55779,7 @@
           "successors": [
             2147495668
           ],
-          "address_analysis": 2148611824
+          "address_analysis": 2148609888
         },
         {
           "pc": 2147495668,
@@ -55994,7 +55994,7 @@
           "successors": [
             2147495720
           ],
-          "address_analysis": 2148611816
+          "address_analysis": 2148609880
         },
         {
           "pc": 2147495720,
@@ -56213,14 +56213,14 @@
         {
           "pc": 2147495772,
           "size": 4,
-          "word": 1103127,
+          "word": 1099031,
           "rd": 10,
           "rs1": 1,
           "rs2": 1,
-          "funct3": 5,
+          "funct3": 4,
           "kind": "plain",
           "mnemonic": "auipc",
-          "imm": 1101824,
+          "imm": 1097728,
           "successors": [
             2147495776
           ]
@@ -56228,19 +56228,19 @@
         {
           "pc": 2147495776,
           "size": 4,
-          "word": 3930404099,
+          "word": 1900360963,
           "rd": 10,
           "rs1": 10,
-          "rs2": 4,
+          "rs2": 20,
           "funct3": 3,
           "kind": "load",
           "mnemonic": "ld",
-          "imm": -348,
+          "imm": 1812,
           "width": 8,
           "successors": [
             2147495780
           ],
-          "address_analysis": 2148597248
+          "address_analysis": 2148595312
         },
         {
           "pc": 2147495780,
@@ -62793,7 +62793,7 @@
         },
         {
           "pc": 2147489728,
-          "target": 2148402880,
+          "target": 2148402928,
           "kind": "call"
         },
         {
@@ -62833,7 +62833,7 @@
         },
         {
           "pc": 2147490392,
-          "target": 2148402880,
+          "target": 2148402928,
           "kind": "call"
         },
         {
@@ -62858,7 +62858,7 @@
         },
         {
           "pc": 2147490944,
-          "target": 2148402880,
+          "target": 2148402928,
           "kind": "call"
         },
         {
@@ -62873,7 +62873,7 @@
         },
         {
           "pc": 2147491132,
-          "target": 2148402880,
+          "target": 2148402928,
           "kind": "call"
         },
         {
@@ -62893,7 +62893,7 @@
         },
         {
           "pc": 2147491500,
-          "target": 2148402880,
+          "target": 2148402928,
           "kind": "call"
         },
         {
@@ -62998,7 +62998,7 @@
         },
         {
           "pc": 2147494452,
-          "target": 2148402880,
+          "target": 2148402928,
           "kind": "call"
         },
         {
@@ -63023,7 +63023,7 @@
         },
         {
           "pc": 2147495644,
-          "target": 2148402880,
+          "target": 2148402928,
           "kind": "call"
         },
         {
@@ -63536,7 +63536,7 @@
       "unsupported": [],
       "dispatch": {
         "pc": 2147485060,
-        "table_address": 2148597840,
+        "table_address": 2148595904,
         "table_bytes": "88050080000000001c080080000000009c060080000000005c07008000000000dc05008000000000",
         "index_register": 12,
         "index_mask": 255,
@@ -66981,7 +66981,7 @@
           "successors": [
             2147484432
           ],
-          "address_analysis": 2148611816
+          "address_analysis": 2148609880
         },
         {
           "pc": 2147484432,
@@ -67784,7 +67784,7 @@
           "successors": [
             2147484612
           ],
-          "address_analysis": 2148611800
+          "address_analysis": 2148609864
         },
         {
           "pc": 2147484612,
@@ -68014,15 +68014,15 @@
         {
           "pc": 2147484668,
           "size": 4,
-          "word": 746619111,
+          "word": 796950759,
           "rd": 1,
           "rs1": 1,
-          "rs2": 8,
+          "rs2": 24,
           "funct3": 0,
           "kind": "call",
           "mnemonic": "jalr",
-          "imm": 712,
-          "target": 2148402880,
+          "imm": 760,
+          "target": 2148402928,
           "successors": [
             2147484672
           ]
@@ -68079,7 +68079,7 @@
           "successors": [
             2147484684
           ],
-          "address_analysis": 2148611824
+          "address_analysis": 2148609888
         },
         {
           "pc": 2147484684,
@@ -69656,7 +69656,7 @@
         },
         {
           "pc": 2147484668,
-          "target": 2148402880,
+          "target": 2148402928,
           "kind": "call"
         },
         {
@@ -70593,7 +70593,7 @@
           "successors": [
             2148316372
           ],
-          "address_analysis": 2148611816
+          "address_analysis": 2148609880
         },
         {
           "pc": 2148316372,
@@ -71047,7 +71047,7 @@
           "successors": [
             2148316488
           ],
-          "address_analysis": 2148611800
+          "address_analysis": 2148609864
         },
         {
           "pc": 2148316488,
@@ -71286,15 +71286,15 @@
         {
           "pc": 2148316548,
           "size": 4,
-          "word": 335577319,
+          "word": 385908967,
           "rd": 1,
           "rs1": 1,
-          "rs2": 0,
+          "rs2": 16,
           "funct3": 0,
           "kind": "call",
           "mnemonic": "jalr",
-          "imm": 320,
-          "target": 2148402880,
+          "imm": 368,
+          "target": 2148402928,
           "successors": [
             2148316552
           ]
@@ -71331,7 +71331,7 @@
           "successors": [
             2148316560
           ],
-          "address_analysis": 2148611824
+          "address_analysis": 2148609888
         },
         {
           "pc": 2148316560,
@@ -71678,7 +71678,7 @@
         },
         {
           "pc": 2148316548,
-          "target": 2148402880,
+          "target": 2148402928,
           "kind": "call"
         },
         {
@@ -72263,7 +72263,7 @@
           "successors": [
             2148362236
           ],
-          "address_analysis": 2148611824
+          "address_analysis": 2148609888
         },
         {
           "pc": 2148362236,
@@ -72420,7 +72420,7 @@
           "successors": [
             2148362276
           ],
-          "address_analysis": 2148611816
+          "address_analysis": 2148609880
         },
         {
           "pc": 2148362276,
@@ -73147,7 +73147,7 @@
           "successors": [
             2148362448
           ],
-          "address_analysis": 2148611800
+          "address_analysis": 2148609864
         },
         {
           "pc": 2148362448,
@@ -73323,15 +73323,15 @@
         {
           "pc": 2148362492,
           "size": 4,
-          "word": 3699409127,
+          "word": 3749740775,
           "rd": 1,
           "rs1": 1,
-          "rs2": 8,
+          "rs2": 24,
           "funct3": 0,
           "kind": "call",
           "mnemonic": "jalr",
-          "imm": -568,
-          "target": 2148402880,
+          "imm": -520,
+          "target": 2148402928,
           "successors": [
             2148362496
           ]
@@ -73442,7 +73442,7 @@
           "successors": [
             2148362520
           ],
-          "address_analysis": 2148611824
+          "address_analysis": 2148609888
         },
         {
           "pc": 2148362520,
@@ -73670,15 +73670,15 @@
         {
           "pc": 2148362576,
           "size": 4,
-          "word": 3611328743,
+          "word": 3661660391,
           "rd": 1,
           "rs1": 1,
-          "rs2": 20,
+          "rs2": 4,
           "funct3": 0,
           "kind": "call",
           "mnemonic": "jalr",
-          "imm": -652,
-          "target": 2148402880,
+          "imm": -604,
+          "target": 2148402928,
           "successors": [
             2148362580
           ]
@@ -73957,7 +73957,7 @@
         },
         {
           "pc": 2148362492,
-          "target": 2148402880,
+          "target": 2148402928,
           "kind": "call"
         },
         {
@@ -73967,7 +73967,7 @@
         },
         {
           "pc": 2148362576,
-          "target": 2148402880,
+          "target": 2148402928,
           "kind": "call"
         }
       ],
@@ -74562,7 +74562,7 @@
           "successors": [
             2148361688
           ],
-          "address_analysis": 2148611824
+          "address_analysis": 2148609888
         },
         {
           "pc": 2148361688,
@@ -74779,7 +74779,7 @@
           "successors": [
             2148361744
           ],
-          "address_analysis": 2148611816
+          "address_analysis": 2148609880
         },
         {
           "pc": 2148361744,
@@ -75656,7 +75656,7 @@
           "successors": [
             2148361956
           ],
-          "address_analysis": 2148611800
+          "address_analysis": 2148609864
         },
         {
           "pc": 2148361956,
@@ -75832,15 +75832,15 @@
         {
           "pc": 2148362000,
           "size": 4,
-          "word": 4215308519,
+          "word": 4265640167,
           "rd": 1,
           "rs1": 1,
-          "rs2": 20,
+          "rs2": 4,
           "funct3": 0,
           "kind": "call",
           "mnemonic": "jalr",
-          "imm": -76,
-          "target": 2148402880,
+          "imm": -28,
+          "target": 2148402928,
           "successors": [
             2148362004
           ]
@@ -75951,7 +75951,7 @@
           "successors": [
             2148362028
           ],
-          "address_analysis": 2148611824
+          "address_analysis": 2148609888
         },
         {
           "pc": 2148362028,
@@ -76209,15 +76209,15 @@
         {
           "pc": 2148362092,
           "size": 4,
-          "word": 4118839527,
+          "word": 4169171175,
           "rd": 1,
           "rs1": 1,
-          "rs2": 24,
+          "rs2": 8,
           "funct3": 0,
           "kind": "call",
           "mnemonic": "jalr",
-          "imm": -168,
-          "target": 2148402880,
+          "imm": -120,
+          "target": 2148402928,
           "successors": [
             2148362096
           ]
@@ -76496,7 +76496,7 @@
         },
         {
           "pc": 2148362000,
-          "target": 2148402880,
+          "target": 2148402928,
           "kind": "call"
         },
         {
@@ -76506,7 +76506,7 @@
         },
         {
           "pc": 2148362092,
-          "target": 2148402880,
+          "target": 2148402928,
           "kind": "call"
         }
       ],
@@ -82729,11 +82729,11 @@
     },
     {
       "name": "memcpy",
-      "entry": 2148402880,
-      "end": 2148402892,
+      "entry": 2148402928,
+      "end": 2148402940,
       "rows": [
         {
-          "pc": 2148402880,
+          "pc": 2148402928,
           "size": 4,
           "word": 2167775347,
           "rd": 0,
@@ -82745,11 +82745,11 @@
           "imm": -2029,
           "csr": 2067,
           "successors": [
-            2148402884
+            2148402932
           ]
         },
         {
-          "pc": 2148402884,
+          "pc": 2148402932,
           "size": 4,
           "word": 12910643,
           "rd": 0,
@@ -82760,11 +82760,11 @@
           "mnemonic": "add",
           "imm": 12,
           "successors": [
-            2148402888
+            2148402936
           ]
         },
         {
-          "pc": 2148402888,
+          "pc": 2148402936,
           "size": 4,
           "word": 32871,
           "rd": 0,
@@ -82779,8 +82779,8 @@
       ],
       "blocks": [
         {
-          "start": 2148402880,
-          "end": 2148402892,
+          "start": 2148402928,
+          "end": 2148402940,
           "successors": []
         }
       ],
@@ -82790,13 +82790,13 @@
       "call_count": 0,
       "calls": [],
       "returns": [
-        2148402888
+        2148402936
       ],
       "loops": [],
       "loop_count": 0,
       "runtime_operations": [
         {
-          "pc": 2148402880,
+          "pc": 2148402928,
           "csr": 2067
         }
       ],
@@ -83108,7 +83108,7 @@
       },
       {
         "pc": 2147734220,
-        "target": 2148402880,
+        "target": 2148402928,
         "kind": "call"
       },
       {
@@ -83133,7 +83133,7 @@
       },
       {
         "pc": 2147734572,
-        "target": 2148402880,
+        "target": 2148402928,
         "kind": "call"
       }
     ],
@@ -85444,7 +85444,7 @@
     }
   ],
   "allocator_vtable": {
-    "address": 2148611800,
+    "address": 2148609864,
     "state_address": 2689810432,
     "free_lists_address": 2689810440,
     "bytes": "9424048000000000b0210480000000008c21048000000000381f048000000000",
@@ -85461,5 +85461,5 @@
     "The decodeTxFields index is between 0 and 4. Caller resource and bound proofs remain separate."
   ],
   "claim": "Conditional static inventory. This report is not a machine-code proof.",
-  "artifact_identity": "0a65ecef84a26877fbde660325fb54871bc3e104997b5caae27f5d7fd5dd355a"
+  "artifact_identity": "842d641c2dccc7019d0ddfc44927d32a73d066e87b741e3a4685cf04b358ea1a"
 }

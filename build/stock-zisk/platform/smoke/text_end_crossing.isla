@@ -1,5 +1,5 @@
 (trace
-  (assume-reg |x11| nil #x000000008010fd76)
+  (assume-reg |x11| nil #x000000008010f5e2)
   (assume-reg |rv_enable_writable_misa| nil true)
   (assume-reg |rv_enable_rvc| nil false)
   (assume-reg |rv_enable_fdext| nil false)
