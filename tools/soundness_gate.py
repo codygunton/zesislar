@@ -411,7 +411,7 @@ def main():
     os.environ.update(TMPDIR=str(out / 'tmp'), PYTHONDONTWRITEBYTECODE='1',
         PYTHONHASHSEED='0',
         ZESU_PROOF_CACHE='off', DUNE_CACHE='disabled', ZESU_GATE_LIMIT='64G', ZESU_BATCH_LIMIT='64G',
-        ZESU_GATE_MODULE_LIMIT_GIB='32', ZESU_MODULE_LIMIT_GIB='32')
+        ZESU_GATE_MODULE_LIMIT_GIB='8', ZESU_MODULE_LIMIT_GIB='8')
     baseline = out / 'baseline'
     subprocess.run(['git', '-C', str(workspace), 'worktree', 'add', '--detach', str(baseline), BASELINE], check=True)
     for relative in (*PUBLIC_CONTEXTS, *set(PUBLIC.values())):
@@ -440,7 +440,8 @@ def main():
     costs = {}
     try:
         for name in ('source', 'negative', 'wrappers', 'coqchk'):
-            limit = '32' if name == 'source' else '24'
+            # Compiles peak at most 1.25 GiB; coqchk keeps its larger fence.
+            limit = '24' if name == 'coqchk' else '8'
             os.environ.update(ZESU_GATE_MODULE_LIMIT_GIB=limit, ZESU_MODULE_LIMIT_GIB=limit)
             run_id = 'soundness-' + token + '-' + name
             command = [sys.executable, '-B', str(workspace / 'tools/run_registry.py'), 'run', '--id', run_id,

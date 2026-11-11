@@ -50,8 +50,9 @@ This avoids selecting an unrelated generated module as a statement target.
 
 Each stage uses existing canonical admission and guard tools.
 The aggregate claim and fence are 64 GiB.
-Source compilation uses 32 GiB module fences and two Dune workers.
-The remaining stages use 24 GiB fences.
+Source compilation uses two Dune workers.
+The source, negative, and wrapper stages use 8 GiB module fences; their compiles peak at most 1.25 GiB.
+The coqchk stage uses a 24 GiB fence.
 Every TMPDIR belongs to the output directory under `/home`.
 The proof cache stays disabled.
 The Dune cache serves only the PUBLIC dependency closure; the plugins and the PUBLIC theorem files build without it.
