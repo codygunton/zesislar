@@ -130,6 +130,12 @@ Proof.
   apply Hvalue. pose proof (bv_unsigned_in_range w source). lia.
 Qed.
 
+(* A cast of an integer in range keeps the integer. *)
+Lemma zesu_cast_small (n : N) (modulus value : Z) :
+  modulus = bv_modulus n ->
+  (0 <= value < modulus -> bv_unsigned (Z_to_bv n value) = value).
+Proof. intros -> Hrange. apply Z_to_bv_small. exact Hrange. Qed.
+
 (* The step. Each fact is derived once per term of the goal. *)
 Definition zesu_flag_seen {A : Type} (term : A) : Prop := True.
 
@@ -268,6 +274,50 @@ Ltac zesu_flag_mask_facts :=
       end)
   end.
 
+(* A cast of an open integer: its value when the integer is in range. *)
+Ltac zesu_flag_cast_facts :=
+  repeat match goal with
+  | |- context [@Z_to_bv ?n ?value] =>
+      tryif stdpp.tactics.is_closed_term value then fail else idtac;
+      let term := constr:(@Z_to_bv n value) in
+      zesu_flag_unseen term; zesu_flag_mark term;
+      let modulus := zesu_flag_modulus n in
+      let H := fresh "HflagCast" in
+      pose proof (zesu_cast_small n modulus value ltac:(vm_compute; reflexivity)) as H
+  end.
+
+(* A remainder by a closed positive divisor, as a linear equation over the
+   quotient and the remainder, and each divisibility fact by a closed divisor
+   as an equation over its quotient. *)
+Ltac zesu_flag_modulo_facts :=
+  repeat match goal with
+  | |- context [Z.modulo ?value ?divisor] =>
+      stdpp.tactics.is_closed_term divisor;
+      lazymatch eval vm_compute in (0 <? divisor)%Z with true => idtac end;
+      let term := constr:(Z.modulo value divisor) in
+      zesu_flag_unseen term; zesu_flag_mark term;
+      let Hequation := fresh "HflagDivMod" in
+      let Hbound := fresh "HflagModBound" in
+      pose proof (Z.div_mod value divisor ltac:(lia)) as Hequation;
+      pose proof (Z.mod_pos_bound value divisor ltac:(lia)) as Hbound
+  end;
+  repeat match goal with
+  | Hdivide : Z.divide ?divisor ?value |- _ =>
+      stdpp.tactics.is_closed_term divisor;
+      let term := constr:(Z.divide divisor value) in
+      zesu_flag_unseen term; zesu_flag_mark term;
+      let quotient := fresh "flagQuotient" in
+      let Hquotient := fresh "HflagQuotient" in
+      destruct Hdivide as [quotient Hquotient]
+  end.
+
+Ltac zesu_flag_divisibility_shape :=
+  lazymatch goal with
+  | |- context [Z.modulo _ ?divisor] =>
+      stdpp.tactics.is_closed_term divisor;
+      lazymatch goal with _ : Z.divide _ _ |- _ => idtac end
+  end.
+
 Ltac zesu_flag_goal_head :=
   lazymatch goal with
   | |- (_ < _)%Z => idtac
@@ -300,16 +350,19 @@ Ltac zesu_flag_shape_deep term depth :=
     end].
 
 Ltac zesu_flag_shape :=
-  lazymatch goal with
-  | |- ?goal => zesu_flag_shape_deep goal 3%nat
-  end.
+  first [lazymatch goal with
+    | |- ?goal => zesu_flag_shape_deep goal 3%nat
+    end
+  | zesu_flag_divisibility_shape].
 
-(* A pure bound over a comparison flag or a low-bit mask of a cast. *)
+(* A pure bound over a comparison flag or a low-bit mask of a cast, or a
+   remainder by a closed divisor when the context states a divisibility. *)
 Ltac zesu_flag_mask_bound :=
   zesu_flag_goal_head;
   zesu_flag_shape;
   zesu_flag_unfold_goal_locals;
   zesu_flag_facts; zesu_flag_xor_facts; zesu_flag_mask_facts; zesu_flag_wrap_facts;
+  zesu_flag_cast_facts; zesu_flag_modulo_facts;
   zesu_flag_numerals_goal;
   repeat match goal with H : zesu_flag_seen _ |- _ => clear H end;
   ZesuSsz.Automation2.ContextCollection.zesu_solve_goal_selected
