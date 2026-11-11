@@ -5,29 +5,15 @@
   "ZesuSsz/Automation/Calls.v": {
     "unfold_without_typeclasses_opaque": 2
   },
-  "ZesuSsz/Contracts/DecodeItemBranchEntries.v": {
-    "reason": "The decodeItem branch continuation introduces its result outcome when it returns; this witness is not inferred from an entry register.",
-    "uninferable_existentials": 1
-  },
   "ZesuSsz/Contracts/Level1.v": {
-    "reason": "The generic Level 1 exit continuation introduces its outcome when the machine returns; this witness is not inferred from entry resources.",
-    "uninferable_existentials": 1
+    "reason": "The generic Level 1 exit continuation introduces its outcome when the machine returns; this witness is not inferred from entry resources. The LithiumUnfold instances of these predicates lived in the retired October Generated/DecodeItem registrations; no remaining Lithium proof unfolds them.",
+    "uninferable_existentials": 1,
+    "predicates_without_unfold": 1
   },
   "ZesuSsz/Contracts/ParentHeaderMemcpyService.v": {
-    "reason": "The memcpy service continuation introduces the after-state when it returns; this witness is not inferred from entry resources.",
-    "uninferable_existentials": 1
-  },
-  "ZesuSsz/Contracts/RlpDecodeItemBlockEntries.v": {
-    "reason": "E3-only approved exception: the 698c sum joins Literal and ShortString on the hypothesis side. Each predecessor targets only its own resource alternative.",
-    "uninferable_existentials": 0,
-    "predicates_without_unfold": 0,
-    "disjunctive_specs": 1,
-    "frame_parameters_in_closed_specs": 0,
-    "unfold_without_typeclasses_opaque": 0
-  },
-  "ZesuSsz/Contracts/RlpDecodeItemFoldEntries.v": {
-    "reason": "Four fold entries package six Q46 locals each. The predecessor resources carry concrete witnesses. The compiled entailment adapter must introduce those witnesses at each edge; raw register inference is not assumed.",
-    "uninferable_existentials": 24
+    "reason": "The memcpy service continuation introduces the after-state when it returns; this witness is not inferred from entry resources. The LithiumUnfold instances of these predicates lived in the retired October Generated/DecodeItem registrations; no remaining Lithium proof unfolds them.",
+    "uninferable_existentials": 1,
+    "predicates_without_unfold": 4
   },
   "ZesuSsz/Proofs/Tests/CanonicalPureConjunction.v": {
     "reason": "Synthetic fixtures test registered witness selection and failed lookup for six intentionally uninferable existentials.",
@@ -62,5 +48,37 @@
     "frame_parameters_in_closed_specs": 0,
     "unfold_without_typeclasses_opaque": 0,
     "reason": "Orch approved this file-specific exception for the exact renderer call state. Its existential args : DecodeItemCompositionalArgs is preserved by the installation bridge. No contract or global threshold changes."
+  },
+  "ZesuSsz/Contracts/RlpDecodeItemByteFoldBlocks.v": {
+    "predicates_without_unfold": 5,
+    "reason": "The LithiumUnfold instances of these predicates lived in the retired October Generated/DecodeItem registrations; no remaining Lithium proof unfolds them."
+  },
+  "ZesuSsz/Contracts/DecodeItemCompositional.v": {
+    "predicates_without_unfold": 7,
+    "reason": "The LithiumUnfold instances of these predicates lived in the retired October Generated/DecodeItem registrations; no remaining Lithium proof unfolds them."
+  },
+  "ZesuSsz/Contracts/ParentHeaderSelected.v": {
+    "predicates_without_unfold": 3,
+    "reason": "The LithiumUnfold instances of these predicates lived in the retired October Generated/DecodeItem registrations; no remaining Lithium proof unfolds them."
+  },
+  "ZesuSsz/Contracts/RlpDecodeItemByteFoldSites.v": {
+    "predicates_without_unfold": 2,
+    "reason": "The LithiumUnfold instances of these predicates lived in the retired October Generated/DecodeItem registrations; no remaining Lithium proof unfolds them."
+  },
+  "ZesuSsz/Contracts/ParentHeaderLevel1.v": {
+    "predicates_without_unfold": 3,
+    "reason": "The LithiumUnfold instances of these predicates lived in the retired October Generated/DecodeItem registrations; no remaining Lithium proof unfolds them."
+  },
+  "ZesuSsz/Contracts/DecodeItemSelected.v": {
+    "predicates_without_unfold": 1,
+    "reason": "The LithiumUnfold instances of these predicates lived in the retired October Generated/DecodeItem registrations; no remaining Lithium proof unfolds them."
+  },
+  "ZesuSsz/Contracts/RlpDecodeItemByteFold.v": {
+    "predicates_without_unfold": 3,
+    "reason": "The LithiumUnfold instances of these predicates lived in the retired October Generated/DecodeItem registrations; no remaining Lithium proof unfolds them."
+  },
+  "ZesuSsz/Contracts/RlpDecodeItemContract.v": {
+    "predicates_without_unfold": 2,
+    "reason": "The LithiumUnfold instances of these predicates lived in the retired October Generated/DecodeItem registrations; no remaining Lithium proof unfolds them."
   }
 }

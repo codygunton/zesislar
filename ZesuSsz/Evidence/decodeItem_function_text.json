@@ -15,14 +15,10 @@
     "recount": "For each files record, read path.splitlines(), union inclusive line_ranges, and count the union. Sum by category; compare category_totals. Verify sha256 except this manifest."
   },
   "contracts": [
-    "ZesuSsz/Contracts/DecodeItemBranchEntries.v",
-    "ZesuSsz/Contracts/DecodeItemErrorBranch.v",
-    "ZesuSsz/Contracts/DecodeItemFrameImage.v",
     "ZesuSsz/Contracts/DecodeItemReturnFacts.v",
     "ZesuSsz/Contracts/DecodeItemSelected.v",
     "ZesuSsz/Contracts/ResultImage.v",
     "ZesuSsz/Contracts/RlpDecodeItem.v",
-    "ZesuSsz/Contracts/RlpDecodeItemBlockEntries.v",
     "ZesuSsz/Contracts/RlpDecodeItemByteFold.v",
     "ZesuSsz/Contracts/RlpDecodeItemByteFoldBlocks.v",
     "ZesuSsz/Contracts/RlpDecodeItemByteFoldSites.v",
@@ -30,62 +26,21 @@
     "ZesuSsz/Contracts/RlpDecodeItemReturnImageDef.v",
     "ZesuSsz/Contracts/RlpDecodeItemReturnImages.v",
     "ZesuSsz/Contracts/RlpDecodeItemSchema.v",
-    "ZesuSsz/Contracts/DecodeItemCallSpec.v",
-    "ZesuSsz/Generated/DecodeItem/Entries.v"
+    "ZesuSsz/Contracts/DecodeItemCallSpec.v"
   ],
   "introductions": [
-    "ZesuSsz/Compliance/DecodeItemBranchGuardFacts.v",
-    "ZesuSsz/Compliance/DecodeItemCorrectedWitnessSelections.v",
-    "ZesuSsz/Compliance/DecodeItemDataWitnessFacts.v",
-    "ZesuSsz/Compliance/DecodeItemEntryByteIndexFacts.v",
-    "ZesuSsz/Compliance/DecodeItemEntryGuardFacts.v",
-    "ZesuSsz/Compliance/DecodeItemEntryIntroductions.v",
-    "ZesuSsz/Compliance/DecodeItemHeaderWitnessFacts.v",
-    "ZesuSsz/Compliance/DecodeItemInitializationPureFacts.v",
-    "ZesuSsz/Compliance/DecodeItemInputHeadWordFacts.v",
-    "ZesuSsz/Compliance/DecodeItemLoadedEntryFacts.v",
-    "ZesuSsz/Compliance/DecodeItemOutputBaseWitnessFacts.v",
-    "ZesuSsz/Compliance/DecodeItemRawOutputFacts.v",
-    "ZesuSsz/Compliance/DecodeItemS40GuardFacts.v",
-    "ZesuSsz/Compliance/DecodeItemSavedFrameWitnesses.v",
-    "ZesuSsz/Compliance/DecodeItemSemanticIntroduction.v",
     "ZesuSsz/Compliance/KnownBugs.v",
     "ZesuSsz/Compliance/ProjectionTransaction.v",
     "ZesuSsz/Compliance/RlpInputBounds.v"
   ],
   "exit_meanings": [
-    "ZesuSsz/Compliance/DecodeItemExitMeanings.v",
-    "ZesuSsz/Compliance/DecodeItemJoinTransferPure.v",
-    "ZesuSsz/Compliance/DecodeItemPathAgreement.v",
-    "ZesuSsz/Compliance/DecodeItemReturnExitResources.v",
-    "ZesuSsz/Compliance/DecodeItemReturnRestorationFacts.v",
-    "ZesuSsz/Compliance/DecodeItemSailEvaluation.v",
-    "ZesuSsz/Compliance/DecodeItemSailFold.v",
-    "ZesuSsz/Compliance/DecodeItemSailIntroduction.v",
     "ZesuSsz/Compliance/EvmSailAdapter.v",
     "ZesuSsz/Compliance/SailRun.v"
   ],
-  "loop_steps": [
-    "ZesuSsz/Compliance/ByteFold.v",
-    "ZesuSsz/Compliance/DecodeItemCompletedFoldFacts.v",
-    "ZesuSsz/Compliance/DecodeItemFoldBackEdgeWitnesses.v",
-    "ZesuSsz/Compliance/DecodeItemFoldExitFacts.v",
-    "ZesuSsz/Compliance/DecodeItemFoldRejectionFacts.v",
-    "ZesuSsz/Compliance/DecodeItemFoldZeroFacts.v",
-    "ZesuSsz/Compliance/DecodeItemLoopSteps.v",
-    "ZesuSsz/Proofs/DecodeItem/ByteFoldPure.v"
-  ],
-  "registrations": [
-    "ZesuSsz/Compliance/DecodeItemDataRegistrations.v",
-    "ZesuSsz/Compliance/DecodeItemHints.v",
-    "ZesuSsz/Generated/DecodeItem/Registrations.v",
-    "ZesuSsz/Generated/DecodeItem/BootstrapRegistrations.v"
-  ],
+  "loop_steps": [],
+  "registrations": [],
   "generator_json": [
-    "ZesuSsz/Contracts/decode_item_block_design.json",
     "ZesuSsz/Evidence/decode_item_auto_modules.json",
-    "ZesuSsz/Evidence/decode_item_block_design.json",
-    "ZesuSsz/Evidence/generate_decode_item_block_design.py",
     "tools/block/DISCOVERY.md",
     "tools/block/chain_root.py",
     "tools/block/check_approved_switches.py",
@@ -106,12 +61,9 @@
     "tools/block/retry_unavailable.py",
     "tools/block/setup_fallback.py",
     "tools/block/testdata/truncated_root_recorder.txt",
-    "tools/block/testdata/unfolded_header_target.json",
-    "ZesuSsz/Contracts/decode_item_block_author.json"
+    "tools/block/testdata/unfolded_header_target.json"
   ],
-  "block_proofs": [
-    "ZesuSsz/Proofs/DecodeItem/ByteFoldMachineObligations.v"
-  ],
+  "block_proofs": [],
   "composition": [
     "Scaffolding/DecodeItemComplianceStatement.v",
     "ZesuSsz/Compliance/DecodeItemCompliance.v",
@@ -267,43 +219,12 @@
     "ZesuSsz/Proofs/Tests/SailEvalParent.v"
   ],
   "lemmas": [
-    "ZesuSsz/Compliance/ByteFold.v",
-    "ZesuSsz/Compliance/DecodeItemBranchGuardFacts.v",
-    "ZesuSsz/Compliance/DecodeItemCompletedFoldFacts.v",
-    "ZesuSsz/Compliance/DecodeItemCorrectedWitnessSelections.v",
-    "ZesuSsz/Compliance/DecodeItemDataWitnessFacts.v",
-    "ZesuSsz/Compliance/DecodeItemEntryByteIndexFacts.v",
-    "ZesuSsz/Compliance/DecodeItemEntryGuardFacts.v",
-    "ZesuSsz/Compliance/DecodeItemEntryIntroductions.v",
-    "ZesuSsz/Compliance/DecodeItemExitMeanings.v",
-    "ZesuSsz/Compliance/DecodeItemFoldBackEdgeWitnesses.v",
-    "ZesuSsz/Compliance/DecodeItemFoldExitFacts.v",
-    "ZesuSsz/Compliance/DecodeItemFoldRejectionFacts.v",
-    "ZesuSsz/Compliance/DecodeItemFoldZeroFacts.v",
-    "ZesuSsz/Compliance/DecodeItemHeaderWitnessFacts.v",
-    "ZesuSsz/Compliance/DecodeItemInitializationPureFacts.v",
-    "ZesuSsz/Compliance/DecodeItemInputHeadWordFacts.v",
-    "ZesuSsz/Compliance/DecodeItemJoinTransferPure.v",
-    "ZesuSsz/Compliance/DecodeItemLoadedEntryFacts.v",
-    "ZesuSsz/Compliance/DecodeItemLoopSteps.v",
-    "ZesuSsz/Compliance/DecodeItemOutputBaseWitnessFacts.v",
-    "ZesuSsz/Compliance/DecodeItemPathAgreement.v",
-    "ZesuSsz/Compliance/DecodeItemRawOutputFacts.v",
-    "ZesuSsz/Compliance/DecodeItemReturnExitResources.v",
-    "ZesuSsz/Compliance/DecodeItemReturnRestorationFacts.v",
-    "ZesuSsz/Compliance/DecodeItemS40GuardFacts.v",
-    "ZesuSsz/Compliance/DecodeItemSailEvaluation.v",
-    "ZesuSsz/Compliance/DecodeItemSailFold.v",
-    "ZesuSsz/Compliance/DecodeItemSailIntroduction.v",
-    "ZesuSsz/Compliance/DecodeItemSavedFrameWitnesses.v",
-    "ZesuSsz/Compliance/DecodeItemSemanticIntroduction.v",
     "ZesuSsz/Compliance/EvmSailAdapter.v",
     "ZesuSsz/Compliance/KnownBugs.v",
     "ZesuSsz/Compliance/ProjectionTransaction.v",
     "ZesuSsz/Compliance/RlpInputBounds.v",
     "ZesuSsz/Compliance/SailRun.v",
-    "ZesuSsz/Compliance/SailVectorAuditIntegers.v",
-    "ZesuSsz/Proofs/DecodeItem/ByteFoldPure.v"
+    "ZesuSsz/Compliance/SailVectorAuditIntegers.v"
   ],
   "pending": [],
   "files": [
@@ -9155,5 +9076,6 @@
         "ZesuSsz/Generated/DecodeItem/BlockTable.v"
       ]
     }
-  }
+  },
+  "inventory_only": true
 }

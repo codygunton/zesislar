@@ -10,7 +10,8 @@ Require Import ZesuSsz.Contracts.NextUint64Contract.
 From Coq Require Import List ZArith.
 Open Scope Z_scope.
 
-Require Import ZesuSsz.Compliance.DecodeItemReturnRestorationFacts.
+(* The byte-decoder bridge has one copy, in the ported meaning lemmas. *)
+Require ZesuSsz.Compliance.DecodeItemMeaningPorted.
 
 Lemma nextUint64Word64AtDecoder (bytes : list byte) (offset : nat) (value : Z) :
   word64At bytes offset value ->
@@ -18,7 +19,7 @@ Lemma nextUint64Word64AtDecoder (bytes : list byte) (offset : nat) (value : Z) :
     Z_to_bv 64%N value.
 Proof.
   intros [_ Hvalue]. f_equal.
-  rewrite <- decodeItemByteDecoderBridge. exact Hvalue.
+  rewrite <- ZesuSsz.Compliance.DecodeItemMeaningPorted.PortedRestoration.decodeItemByteDecoderBridge. exact Hvalue.
 Qed.
 
 Lemma nextUint64SavedReturnDecoder (args : NextUint64Call) (saved : list byte) :
