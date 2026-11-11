@@ -10,15 +10,8 @@ ROOT = Path(__file__).resolve().parents[2]
 PREFIX = "ZesuSsz.Compliance."
 UMBRELLA = "DecodeItemHints.v"
 # These hints apply only at their declared consumers.
-SCOPED_HINT_IMPORTS = {
-    PREFIX + "DecodeItemExitDataFacts": (
-        "Scaffolding.DecodeItemC1BMeaning",
-    ),
-    # Their October block importers are retired; the frozen-core tests that
-    # still import them move with the follow-up test port.
-    PREFIX + "DecodeItemLoopDerivedFacts": (),
-    PREFIX + "DecodeItemLoopInitialization": (),
-}
+# The October scoped hint modules and their importers are retired.
+SCOPED_HINT_IMPORTS: dict[str, tuple[str, ...]] = {}
 
 
 def source_commands(text: str) -> list[str]:

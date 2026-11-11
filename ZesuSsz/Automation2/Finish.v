@@ -1260,6 +1260,7 @@ Ltac zesu_finish_split_conjunct :=
   lazymatch goal with
   | |- environments.envs_entails _ _ => fail
   | _ =>
+      zesu_diag_export_split;
       ZesuSsz.Automation2.ContextCollection.zesu_facts_after_share_term constr:(zesu_split_baseline);
       zesu_clear_split_baseline;
       first [ResidualLemmas.zesu_residual_lemma | solve [zesu_finish]]
