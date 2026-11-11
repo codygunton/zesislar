@@ -8,65 +8,9 @@
       "predicates_without_unfold": 0,
       "disjunctive_specs": 0
     },
-    "ZesuSsz/Compliance/DecodeItemEntryWitnessIntroductions.v": {
-      "frame_parameters_in_closed_specs": 0,
-      "uninferable_existentials": 0,
-      "predicates_without_unfold": 0,
-      "disjunctive_specs": 0
-    },
-    "ZesuSsz/Compliance/DecodeItemMaskedReturnFacts.v": {
-      "frame_parameters_in_closed_specs": 0,
-      "uninferable_existentials": 0,
-      "predicates_without_unfold": 0,
-      "disjunctive_specs": 0
-    },
     "ZesuSsz/Compliance/DecodeItemReturnRestorationFacts.v": {
       "frame_parameters_in_closed_specs": 0,
       "unfold_without_typeclasses_opaque": 0,
-      "uninferable_existentials": 0,
-      "predicates_without_unfold": 0,
-      "disjunctive_specs": 0
-    },
-    "ZesuSsz/Compliance/DecodeItemStoreSelectionIntroductions.v": {
-      "frame_parameters_in_closed_specs": 0,
-      "uninferable_existentials": 0,
-      "predicates_without_unfold": 0,
-      "disjunctive_specs": 0
-    },
-    "ZesuSsz/Evidence/DecodeItemOutput24Selections.v": {
-      "frame_parameters_in_closed_specs": 0,
-      "uninferable_existentials": 0,
-      "predicates_without_unfold": 0,
-      "disjunctive_specs": 0
-    },
-    "ZesuSsz/Evidence/DecodeItemS152Selected6b08.v": {
-      "frame_parameters_in_closed_specs": 0,
-      "uninferable_existentials": 0,
-      "predicates_without_unfold": 0,
-      "disjunctive_specs": 0
-    },
-    "ZesuSsz/Evidence/DecodeItemS152StageDIndex32.v": {
-      "frame_parameters_in_closed_specs": 0,
-      "uninferable_existentials": 0,
-      "predicates_without_unfold": 0,
-      "disjunctive_specs": 0
-    },
-    "ZesuSsz/Compliance/DecodeItemShortListOutputMeaning.v": {
-      "frame_parameters_in_closed_specs": 0,
-      "unfold_without_typeclasses_opaque": 0,
-      "uninferable_existentials": 0,
-      "predicates_without_unfold": 0,
-      "disjunctive_specs": 0
-    },
-    "ZesuSsz/Compliance/DecodeItemEmptyStringOutputMeaning.v": {
-      "frame_parameters_in_closed_specs": 0,
-      "unfold_without_typeclasses_opaque": 0,
-      "uninferable_existentials": 0,
-      "predicates_without_unfold": 0,
-      "disjunctive_specs": 0
-    },
-    "ZesuSsz/Compliance/DecodeItemLongStringOutputMeaning.v": {
-      "frame_parameters_in_closed_specs": 0,
       "uninferable_existentials": 0,
       "predicates_without_unfold": 0,
       "disjunctive_specs": 0
@@ -89,13 +33,6 @@
       "disjunctive_specs": 0
     },
     "ZesuSsz/Compliance/DecodeItemDataRegistrations.v": {
-      "uninferable_existentials": 0,
-      "predicates_without_unfold": 0,
-      "disjunctive_specs": 0,
-      "frame_parameters_in_closed_specs": 0,
-      "unfold_without_typeclasses_opaque": 0
-    },
-    "ZesuSsz/Compliance/DecodeItemEntryAdditionalFacts.v": {
       "uninferable_existentials": 0,
       "predicates_without_unfold": 0,
       "disjunctive_specs": 0,
@@ -273,42 +210,7 @@
       "frame_parameters_in_closed_specs": 0,
       "unfold_without_typeclasses_opaque": 0
     },
-    "ZesuSsz/Compliance/DecodeItemLoopDerivedFacts.v": {
-      "uninferable_existentials": 0,
-      "predicates_without_unfold": 0,
-      "disjunctive_specs": 0,
-      "frame_parameters_in_closed_specs": 0,
-      "unfold_without_typeclasses_opaque": 0
-    },
-    "ZesuSsz/Compliance/DecodeItemLoopInitialization.v": {
-      "uninferable_existentials": 0,
-      "predicates_without_unfold": 0,
-      "disjunctive_specs": 0,
-      "frame_parameters_in_closed_specs": 0,
-      "unfold_without_typeclasses_opaque": 0
-    },
-    "ZesuSsz/Compliance/DecodeItemExitDataFacts.v": {
-      "uninferable_existentials": 0,
-      "predicates_without_unfold": 0,
-      "disjunctive_specs": 0,
-      "frame_parameters_in_closed_specs": 0,
-      "unfold_without_typeclasses_opaque": 0
-    },
-    "ZesuSsz/Compliance/DecodeItemCanonicalEntryFacts.v": {
-      "uninferable_existentials": 0,
-      "predicates_without_unfold": 0,
-      "disjunctive_specs": 0,
-      "frame_parameters_in_closed_specs": 0,
-      "unfold_without_typeclasses_opaque": 0
-    },
     "ZesuSsz/Compliance/EvmSailHashBytes.v": {
-      "uninferable_existentials": 0,
-      "predicates_without_unfold": 0,
-      "disjunctive_specs": 0,
-      "frame_parameters_in_closed_specs": 0,
-      "unfold_without_typeclasses_opaque": 0
-    },
-    "ZesuSsz/Compliance/DecodeItemNormalizedGuardRegistrations.v": {
       "uninferable_existentials": 0,
       "predicates_without_unfold": 0,
       "disjunctive_specs": 0,
