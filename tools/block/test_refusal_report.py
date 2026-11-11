@@ -6,7 +6,7 @@ import tempfile
 import unittest
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from refusal_report import analyze, instructions, parse, render
+from refusal_report import analyze, instructions, parse, render, render_unfinished, unfinished
 
 OBJDUMP = """
 800d6974:	00058683          	lb	a3,0(a1)
@@ -98,9 +98,16 @@ class RefusalReport(unittest.TestCase):
         self.assertEqual(message["expect"]["control"]["step"], 2)
         self.assertIn("absent in this run", render(message))
 
-    def test_a_log_without_refusals_reports_nothing(self):
+    def test_a_log_without_refusals_reports_where_the_run_was(self):
         log = "\n".join(line for line in LOG.splitlines() if "0.5" not in line.split()[0])
-        self.assertEqual(analyze(parse(log.splitlines()), self.table), [])
+        parsed = parse(log.splitlines())
+        self.assertEqual(analyze(parsed, self.table), [])
+        state = unfinished(parsed, self.table, re.compile(r"bv_unsigned x = 3"), parse(LOG.splitlines()))
+        self.assertEqual((state["steps"], state["pc"], state["last_stage"]), (2, 0x800d6978, "final_pure"))
+        self.assertEqual(state["head"], "bv_unsigned x < 5")
+        self.assertEqual(state["expect"]["present"], ["Hlate"])
+        self.assertEqual(state["expect"]["control"]["step"], 2)
+        self.assertIn("NO REFUSAL", render_unfinished(state))
 
 
 if __name__ == "__main__":

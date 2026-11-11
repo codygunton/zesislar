@@ -115,7 +115,8 @@ def parse(lines):
         elif text.startswith("@@CONCL "):
             if target is not None and target.get("kind") == "refuse":
                 target["conclusion"] = text[len("@@CONCL "):]
-    return dict(steps=state["step"], sideconds=sideconds, stages=stages, refusals=refusals, named=named)
+    return dict(steps=state["step"], pc=state["pc"], sideconds=sideconds, stages=stages, refusals=refusals,
+                named=named)
 
 
 def instructions(path):
@@ -204,6 +205,46 @@ def analyze(parsed, table, expect=None, control=None):
     return messages
 
 
+def unfinished(parsed, table, expect=None, control=None):
+    """Where a run that printed no refusal was when it ended (or was stopped)."""
+    last = parsed["stages"][-1] if parsed["stages"] else None
+    message = dict(steps=parsed["steps"], pc=parsed["pc"],
+                   instruction=table.get(parsed["pc"]) if parsed["pc"] is not None else None,
+                   last_stage=last["name"] if last else None, last_stage_step=last["step"] if last else None,
+                   head=last.get("head") if last else None, facts=len(last["facts"]) + len(last["big"]) if last else 0)
+    if expect is not None:
+        present = [name for name, statement in (last["facts"] if last else {}).items() if expect.search(statement)]
+        message["expect"] = dict(pattern=expect.pattern, present=present)
+        if control is not None:
+            found = first_matching(expect, control["stages"])
+            first = control["named"].get(found[1]) if found else None
+            message["expect"]["control"] = None if found is None else dict(
+                stage=found[0]["name"], stage_index=found[0]["index"],
+                step=first["step"] if first else found[0]["step"], pc=first["pc"] if first else found[0]["pc"],
+                instruction=table.get(first["pc"] if first else found[0]["pc"]), name=found[1],
+                statement=found[2])
+    return message
+
+
+def render_unfinished(message):
+    pc = "?" if message["pc"] is None else hex(message["pc"])
+    lines = ["NO REFUSAL (the run ended first): steps=%s last pc=%s insn=\"%s\" last_stage=%s@step%s head=\"%s\" facts=%s" % (
+        message["steps"], pc, message["instruction"] or "?", message["last_stage"], message["last_stage_step"],
+        message["head"] or "?", message["facts"])]
+    if "expect" in message:
+        expect = message["expect"]
+        state = "present: " + " ".join(expect["present"]) if expect["present"] else "absent at the last stage"
+        lines.append("  expect /%s/: %s" % (expect["pattern"], state))
+        found = expect.get("control")
+        if "control" in expect:
+            lines.append("  control: no fact matches" if found is None else
+                         "  control: first at step %s pc %s insn=\"%s\" (first closing stage %s#%s) as %s : %s" % (
+                             found["step"], "?" if found["pc"] is None else hex(found["pc"]),
+                             found["instruction"] or "?", found["stage"], found["stage_index"], found["name"],
+                             found["statement"]))
+    return "\n".join(lines)
+
+
 def render(message):
     pc = "?" if message["pc"] is None else hex(message["pc"])
     where = "raised" if message["raised_at_step"] else "last"
@@ -242,8 +283,12 @@ def main(argv=None):
     parsed = parse(args.log.read_text(errors="replace").splitlines())
     control = parse(args.control.read_text(errors="replace").splitlines()) if args.control else None
     expect = re.compile(args.expect) if args.expect else None
-    messages = analyze(parsed, instructions(args.objdump), expect, control)
-    if args.json:
+    table = instructions(args.objdump)
+    messages = analyze(parsed, table, expect, control)
+    if not messages:
+        state = unfinished(parsed, table, expect, control)
+        print(json.dumps(state, indent=1) if args.json else render_unfinished(state))
+    elif args.json:
         print(json.dumps(messages, indent=1))
     else:
         for message in messages:
