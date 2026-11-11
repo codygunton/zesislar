@@ -250,6 +250,17 @@ class ModuleMemoryTests(unittest.TestCase):
             self.assertEqual(memory.main(), 0)
         self.assertEqual(observed.call_args.kwargs['fallback_bytes'], 64*memory.GIB)
 
+    def test_release_clis_report_a_draining_leaf_with_status_5(self):
+        marker = self.root / "1.token"
+        marker.write_text("15\nmemory_claim_bytes=1\n")
+        draining = memory.LeafNotClosed("The exact shell compiler leaf is not closed.")
+        for command, name in (("ledger-release", "release_shell"), ("ledger-recover-dead", "recover_dead_shell")):
+            with self.subTest(command=command), patch("sys.argv", ["module_memory.py", command, "--marker", str(marker)]), \
+                    patch.object(memory, name, side_effect=draining), patch("sys.stderr", new=io.StringIO()) as stderr:
+                self.assertEqual(memory.main(), memory.LEAF_DRAINING)
+                self.assertIn("still draining", stderr.getvalue())
+        self.assertTrue(issubclass(memory.LeafNotClosed, ValueError))
+
     def test_admission_cli_leaves_the_budget_to_ledger_confirm(self):
         ledger = self.root / "LEDGER.json"
         ledger.write_text('{"fixed_claims": {}, "region_claims": {}}\n')
