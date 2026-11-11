@@ -2053,13 +2053,19 @@ Ltac zesu_integer_array_address_if_enabled :=
       zesu_integer_pointer_root expanded ltac:(fun _ =>
       let integer := zesu_stack_integer_address expanded in
       first [ByteArrayAssemblyCodec.zesu_byte_array_restore_source |
+      (* The address equality does not depend on the candidate array. Prove it
+         once, when some candidate reaches it, and let every candidate use it. *)
+      assert_succeeds (iMatchHyp ltac:(fun _ body =>
+        lazymatch body with
+        | (_ ↦ₘ{_}∗ ?values)%I => lazymatch type of values with list (bv _) => idtac end
+        end));
+      let Heq := fresh "HarrayAddress" in
+      assert (Heq : bv_unsigned pointer = integer) by
+        (zesu_stack_arithmetic);
       iMatchHyp ltac:(fun H body =>
         lazymatch body with
         | (?lower ↦ₘ{?q}∗ ?values)%I =>
             lazymatch type of values with list (bv ?width) =>
-              let Heq := fresh "HarrayAddress" in
-              assert (Heq : bv_unsigned pointer = integer) by
-                (zesu_stack_arithmetic);
               let Hrange := fresh "HarrayAddressRange" in
               assert (Hrange : (lower <= integer < lower +
                 Z.of_nat (length values) * Z.of_N (width `div` 8))%Z) by
@@ -2097,14 +2103,35 @@ Ltac zesu_canonical_fact_views_if_enabled :=
   ZesuSsz.Automation2.CanonicalFactAdapter.zesu_canonical_context_step.
 
 (* Retain the entry key before ordinary matching exposes its binders. *)
+(* A mapping capture succeeds only for a requested resource with a registered
+   mapping: it resolves that registration before it can succeed. Resolve it
+   first, so that a step without a registration skips the two unresolved-term
+   scans of the whole goal. With a registration, the capture runs unchanged.
+   The guard selects the requested resource exactly as the capture does. *)
+Ltac zesu_mapping_registered_goal registered :=
+  lazymatch goal with
+  | |- environments.envs_entails _ (@bi_sep _ ?requested _) => registered requested
+  | |- environments.envs_entails _ ?requested => registered requested
+  end.
+
+Ltac zesu_entry_mapping_registered requested :=
+  assert_succeeds (let _ := constr:(_ :
+    ZesuSsz.Evidence.EntryWitnessInputs.ZesuEntryWitnessMapping requested _ _) in idtac).
+
+Ltac zesu_source_mapping_registered requested :=
+  assert_succeeds (let _ := constr:(_ :
+    SourceWitnessInputs.ZesuEntrySourceWitnessMapping requested _ _) in idtac).
+
 Ltac zesu_union_witness_step :=
-  first [ZesuSsz.Evidence.EntryWitnessInputs.zesu_entry_mapping_capture_goal |
+  first [zesu_mapping_registered_goal zesu_entry_mapping_registered;
+      ZesuSsz.Evidence.EntryWitnessInputs.zesu_entry_mapping_capture_goal |
     ZesuSsz.Evidence.EntryWitnessInputs.zesu_entry_mapping_consume_ready].
 
 Ltac zesu_source_witnesses_if_enabled :=
   zesu_switch_enabled constr:(ZesuStepSourceWitnesses);
   first [SourceWitnessInputs.zesu_capture_source_owner |
-         SourceWitnessInputs.zesu_source_mapping_capture_goal |
+         zesu_mapping_registered_goal zesu_source_mapping_registered;
+           SourceWitnessInputs.zesu_source_mapping_capture_goal |
          EntryWitnessInputs.zesu_entry_mapping_consume_ready].
 
 Ltac zesu_refute_aligned_return_fault :=
