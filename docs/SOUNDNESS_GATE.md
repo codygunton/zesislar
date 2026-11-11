@@ -38,7 +38,7 @@ The compiler uses its existing private artifact mapping.
 `coqchk` receives one exact load-path entry for that scratch object.
 The gate leaves no wrapper source in the production tree.
 
-The gate pins its PUBLIC sources and trust contexts to the reviewed `81d3cd52` baseline,
+The gate pins its PUBLIC sources and trust contexts to the reviewed `3a36ca8f` baseline,
 the switch of the PUBLIC theorems to the 24 generated block proofs (the earlier baseline was `dbefab79`).
 It refuses a changed protected source before proof work.
 A maintainer must review that boundary before updating the baseline.
