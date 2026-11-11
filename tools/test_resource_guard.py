@@ -1110,6 +1110,42 @@ rm -f "$ADMISSION_SUMMARY"; admission_plausible && echo unknown || echo full
         self.assertEqual(result.returncode, 0, result.stderr)
         self.assertEqual(result.stdout.split(), ["full", "room", "live", "unknown"])
 
+    def test_owner_release_retries_a_draining_leaf_outside_the_mutex(self):
+        script = r"""
+count=0
+release_coqc() {
+  count=$((count + 1))
+  if [ -e /proc/$BASHPID/fd/7 ]; then echo "mutex held between attempts"; fi
+  [ "$count" -ge 3 ] && return 0
+  return 5
+}
+ZESU_LEAF_DRAIN_POLL=0.01 release_coqc_drained "$COQC_RESERVATIONS/1.fixture"
+echo "status=$? count=$count"
+count=-1000
+ZESU_LEAF_DRAIN_SECONDS=0 ZESU_LEAF_DRAIN_POLL=0.01 release_coqc_drained "$COQC_RESERVATIONS/1.fixture"
+echo "bounded=$?"
+grep -c "WAIT release: 1.fixture: compiler leaf draining" "$LOG"
+"""
+        result = self.run_guard(script)
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertEqual(result.stdout.split(), ["status=0", "count=3", "bounded=5", "2"])
+
+    def test_dead_owner_recovery_waits_for_a_draining_leaf(self):
+        with tempfile.TemporaryDirectory() as directory:
+            fake = Path(directory) / "draining.py"
+            fake.write_text("import sys\nprint('The shell compiler leaf is still draining.', file=sys.stderr)\n"
+                            "raise SystemExit(5)\n")
+            script = f"""
+MEMORY_TOOL={fake}
+recover_dead_reservation "$COQC_RESERVATIONS/2.fixture"
+echo "status=$?"
+grep -c "WAIT dead-owner reservation: 2.fixture: compiler leaf draining" "$LOG"
+grep -c "KEEP dead-owner" "$LOG" || true
+"""
+            result = self.run_guard(script)
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertEqual(result.stdout.split(), ["status=5", "1", "0"])
+
     def test_held_launch_wakes_on_a_release_not_on_a_poll(self):
         if shutil.which("inotifywait") is None:
             self.skipTest("inotifywait is not installed")
