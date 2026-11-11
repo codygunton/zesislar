@@ -210,10 +210,11 @@ class WaiterTests(unittest.TestCase):
         env = patch.dict(os.environ, {'ZESU_ADMISSION_WAIT_BOUND_S': '300'})
         env.start(); self.addCleanup(env.stop)
 
-    def decide(self, request, requester):
+    def decide(self, request, requester, booked=200 * M.GIB, available=200 * M.GIB):
+        self.log = io.StringIO()
         with patch.object(M.time, 'monotonic_ns', return_value=20_000_000_000), \
-                patch.object(M.time, 'time_ns', return_value=self.now), redirect_stderr(io.StringIO()):
-            return M.projection(self.data, {'booked': 200 * M.GIB}, request, 200 * M.GIB,
+                patch.object(M.time, 'time_ns', return_value=self.now), redirect_stderr(self.log):
+            return M.projection(self.data, {'booked': booked}, request, available,
                                 reader=self.Reader(self), requester=requester)
 
     def gate_poll(self):
@@ -240,12 +241,33 @@ class WaiterTests(unittest.TestCase):
                 gate_step = step
                 break
             self.now += 60_000_000_000
-        # Before the bound the small requests pass and the large one waits; after it the
-        # small requests leave room until the large claim is admitted.
-        self.assertEqual(admitted_small, list(range(5)))
-        self.assertIsNotNone(gate_step)
-        self.assertLessEqual(gate_step, 5 + 8)
+        # The small requests always pass on live memory; once aged, the large claim
+        # passes too, on live memory up to the slice maximum less the headroom.
+        self.assertEqual(admitted_small, list(range(6)))
+        self.assertEqual(gate_step, 5)
         self.assertNotIn('gate', self.data.get(M.WAITERS, {}))
+
+    def test_a_waiter_that_live_memory_cannot_admit_does_not_freeze_small_requests(self):
+        cap = M.SLICE_MAX_BYTES - M.HEADROOM_BYTES
+        booked, available = cap - 10 * M.GIB, 400 * M.GIB
+        self.live = cap - 25 * M.GIB          # the waiter needs live + 32 GiB <= cap
+        M.record_waiter(self.data, 'gate', 32 * M.GIB, {'pid': 'gate', 'startticks': 1}, self.now)
+        self.assertTrue(self.decide(4 * M.GIB, 'small', booked, available)['fits'])
+        self.now += 300_000_000_000           # aged: the waiter reserves its bytes on bookings only
+        small = self.decide(4 * M.GIB, 'small', booked, available)
+        self.assertEqual((small['fits'], small['waiter_reserved_bytes']), (False, 32 * M.GIB))
+        self.assertFalse(self.decide(32 * M.GIB, 'gate', booked, available)['fits'])
+        self.live = self.HALF - 10 * M.GIB    # on live memory a small request passes beside the waiter
+        self.assertEqual(self.decide(4 * M.GIB, 'small')['admission_basis'], 'live_memory')
+        self.live = cap - 25 * M.GIB
+        self.now += 900_000_000_000           # after the second bound the waiter stops blocking
+        small = self.decide(4 * M.GIB, 'small', booked, available)
+        self.assertEqual((small['fits'], small['waiter_reserved_bytes']), (True, 0))
+        self.assertIn('admission waiter gate', self.log.getvalue())
+        self.assertIn('gate', self.data[M.WAITERS])      # it keeps its place
+        self.live = cap - 40 * M.GIB          # memory frees: the waiter is admitted
+        result = self.decide(32 * M.GIB, 'gate', booked, available)
+        self.assertEqual((result['fits'], result['admission_basis']), (True, 'live_memory'))
 
     def test_young_dead_or_smaller_waiters_reserve_nothing(self):
         M.record_waiter(self.data, 'gate', 32 * M.GIB, {'pid': 'gate', 'startticks': 1}, self.now)
@@ -257,6 +279,15 @@ class WaiterTests(unittest.TestCase):
         self.data[M.WAITERS]['gate']['owner'] = {'pid': 'gone', 'startticks': 1}
         self.assertEqual(self.decide(4 * M.GIB, 'small')['waiter_reserved_bytes'], 0)
         self.assertNotIn('gate', self.data[M.WAITERS])
+
+    def test_only_the_head_of_the_waiter_queue_reserves(self):
+        for index, size in enumerate((8, 6, 12)):
+            M.record_waiter(self.data, f'w{index}', size * M.GIB, {'pid': 'gate', 'startticks': 1},
+                            self.now + index)
+        self.now += 400_000_000_000
+        self.assertEqual(self.decide(2 * M.GIB, 'small')['waiter_reserved_bytes'], 8 * M.GIB)
+        self.assertEqual(self.decide(7 * M.GIB, 'small')['waiter_reserved_bytes'], 8 * M.GIB)
+        self.assertEqual(self.decide(10 * M.GIB, 'small')['waiter_reserved_bytes'], 12 * M.GIB)
 
     def test_an_aged_waiter_keeps_its_first_refusal_time(self):
         owner = {'pid': 'gate', 'startticks': 1}
@@ -299,9 +330,23 @@ class RetainedHoldTests(unittest.TestCase):
         data = self.ledger()
         result = M.projection(data, M.ledger_claims(data), GIB, 10**13,
                               reader=self.Reader(3 * GIB, self.AGGREGATE))
-        # Live anonymous 3 GiB plus the running compile's 2 GiB, not the 16 GiB
-        # the ended compile once booked. The shared aggregate counts once.
-        self.assertEqual(result['active_claim_bytes'], 5 * GIB)
+        # The running compile's 2 GiB claim plus the aggregate's anonymous memory
+        # outside it (3 GiB live less its 1 GiB), not the 16 GiB the ended compile
+        # once booked. The shared aggregate and its compile count each byte once.
+        self.assertEqual(result['active_claim_bytes'], 4 * GIB)
+
+    def test_ledger_total_is_live_claims_plus_unspent_aggregate(self):
+        aggregate = {'scope': self.AGGREGATE, 'device': 1, 'inode': 2}
+        claims = {'shell:a': 4 * GIB, 'shell:b': 6 * GIB}
+        data = {'fixed_claims': dict(claims),
+                'shell_aggregate_holds': {'shell-aggregate:x': {'aggregate': aggregate,
+                                                                'fallback_bytes': 32 * GIB}}}
+        for anon, unspent in ((2 * GIB, 0), (5 * GIB, 3 * GIB)):
+            with self.subTest(anon=anon):
+                result = M.projection(data, M.ledger_claims(data), GIB, 10**13,
+                                      reader=self.Reader(anon, self.AGGREGATE))
+                # Each running compile shows 1 GiB live inside the aggregate.
+                self.assertEqual(result['active_claim_bytes'], sum(claims.values()) + unspent)
 
     def test_hold_without_anonymous_sample_keeps_its_fallback(self):
         data = self.ledger()

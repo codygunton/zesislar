@@ -24,7 +24,7 @@ PUBLIC = {
     'decodeItemSelectedCompliance': 'ZesuSsz/Compliance/DecodeItemCompliance.v',
     'decodeItemSelectedComplianceRegisters': 'ZesuSsz/Compliance/DecodeItemCompositionalCompliance.v',
     'decodeItemSelectedComplianceCompositional': 'ZesuSsz/Compliance/DecodeItemCompositionalCompliance.v',
-    'decodeItemSlotBody800d698c': 'ZesuSsz/Proofs/DecodeItem/TableSlots/Adapter800d698c.v',
+    'decodeItemGeneratedCompliance': 'ZesuSsz/Compliance/DecodeItemComplianceGenerated.v',
 }
 # These modules fix the claim and its signature. Entry modules may change.
 PUBLIC_CONTEXTS = (
