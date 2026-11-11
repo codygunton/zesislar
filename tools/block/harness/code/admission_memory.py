@@ -44,6 +44,14 @@ PUBLIC_GUARD_PREDECESSORS = (
 
 
 
+class LeafNotClosed(ValueError):
+    """The compiler leaf still holds a task; its booking stays until the leaf drains.
+
+    After an out-of-memory kill the small scope process exits first, while the
+    killed compiler still frees its memory inside the leaf. The release must
+    wait for that memory, so it refuses now and succeeds once the leaf drains."""
+
+
 class RejectedScopeSetup(ValueError):
     """Carry cleanup evidence without authorizing a guarded workload."""
 
@@ -886,8 +894,83 @@ def sum_gate_compiles(data, claims, observations, new_observation=None, new_byte
             claims[key] = 0
 
 
+# A refused request records itself as a waiter. After a bounded wait, every
+# newer and smaller request must leave room for it on the booking axis, and
+# the waiter may use the live-memory path above the small-request ceiling,
+# up to the slice maximum less the fixed headroom (the booking cap applied to
+# live memory). Newer requests are not held on the live axis: a waiter that
+# live memory cannot admit froze every smaller request until live memory fell
+# below half the slice (2026-11-11). A small request is admitted on live
+# memory only below half the slice, where the waiter's looser bound also
+# admits it, so the waiter cannot starve there. After a second bound a
+# waiter stops reserving bookings too; it keeps its place and is logged.
+# Without the waiter record a 32 GiB slot waited indefinitely while 1-4 GiB
+# requests took each gap on live memory (2026-11-11, soundness gate).
+WAITERS = 'admission_waiters'
+
+
+def wait_bound_ns():
+    try:
+        seconds = int(os.environ.get('ZESU_ADMISSION_WAIT_BOUND_S', '300'))
+    except ValueError:
+        seconds = 300
+    return max(0, seconds) * 1_000_000_000
+
+
+def block_bound_ns():
+    try:
+        seconds = int(os.environ.get('ZESU_ADMISSION_BLOCK_BOUND_S', '900'))
+    except ValueError:
+        seconds = 900
+    return max(0, seconds) * 1_000_000_000
+
+
+def record_waiter(data, key, request_bytes, owner, now_ns=None):
+    """Keep the first refusal time of one request. Return True when the record changed."""
+    row = data.get(WAITERS, {}).get(key)
+    if row and row.get('bytes') == request_bytes and row.get('owner') == owner:
+        return False
+    data.setdefault(WAITERS, {})[key] = {'bytes': request_bytes, 'owner': owner,
+        'since_ns': time.time_ns() if now_ns is None else now_ns}
+    return True
+
+
+def clear_waiter(data, key):
+    return data.get(WAITERS, {}).pop(key, None) is not None
+
+
+def senior_waiters(data, requester, request_bytes, reader):
+    """Return (bytes this request must leave free on bookings, whether it is itself an aged waiter)."""
+    now, bound, block = time.time_ns(), wait_bound_ns(), block_bound_ns()
+    waiters = data.get(WAITERS, {})
+    own = waiters.get(requester) if requester is not None else None
+    since = own['since_ns'] if own else now
+    head = None
+    for key, row in list(waiters.items()):
+        if key == requester:
+            continue
+        try:
+            reader.process(row['owner'])
+        except (AttributeError, KeyError, OSError, TypeError, ValueError):
+            del waiters[key]  # A dead or unreadable waiter holds nothing.
+            continue
+        age = now - row['since_ns']
+        if age < bound or row['since_ns'] >= since or row['bytes'] <= request_bytes:
+            continue
+        if age >= bound + block:
+            print(f'admission waiter {key} ({row["bytes"]} bytes, {age // 10**9} s) no longer blocks newer requests',
+                  file=sys.stderr)
+            continue
+        if head is None or row['since_ns'] < head['since_ns']:
+            head = row
+    # Only the head of the queue reserves: the waiters behind it get their turn
+    # in order. Reserving every waiter booked 40 queued requests (109 GiB) that
+    # held no memory, and the summary showed them as bookings (2026-11-11).
+    return (head['bytes'] if head else 0), bool(own) and now - since >= bound
+
+
 def projection(data, claims, new_bytes, available_bytes, *, reader=None, new_observation=None,
-               pending_shell=None):
+               pending_shell=None, requester=None):
     reader = ScopeReader() if reader is None else reader
     claims = dict(claims)
     observations = {}
@@ -945,11 +1028,17 @@ def projection(data, claims, new_bytes, available_bytes, *, reader=None, new_obs
         claims[key] = retained['fallback_bytes']
         if (key in shell_holds and sample.get('aggregate_verified') is True
                 and type(sample.get('anon_bytes')) is int):
-            running = sum(amount for other, amount in claims.items()
-                          if other != key and amount
-                          and observations.get(other, {}).get('verified') is True
-                          and observations[other].get('scope') == sample.get('scope'))
-            claims[key] = min(retained["fallback_bytes"], sample["anon_bytes"] + running)
+            members = [other for other, amount in claims.items()
+                       if other != key and amount
+                       and observations.get(other, {}).get('verified') is True
+                       and observations[other].get('scope') == sample.get('scope')]
+            running = sum(claims[other] for other in members)
+            running_live = sum(observations[other].get('live_bytes', 0) for other in members)
+            # The aggregate's anonymous memory already contains its running
+            # compiles; book that memory once, through their claims, and add
+            # only the rest of the aggregate.
+            claims[key] = min(retained["fallback_bytes"],
+                              max(0, sample["anon_bytes"] - running_live) + running)
         observations[key] = sample
     new_unmeasured = False
     if pending_shell is not None:
@@ -959,18 +1048,24 @@ def projection(data, claims, new_bytes, available_bytes, *, reader=None, new_obs
         except (KeyError, OSError, ValueError, TypeError, IndexError):
             new_unmeasured = True
     sum_gate_compiles(data, claims, observations, new_observation, new_bytes, new_unmeasured)
+    reserved, senior = senior_waiters(data, requester, new_bytes, reader)
+    if reserved:
+        claims['admission_waiters'] = reserved
     result = dict(evaluate(claims, new_bytes, available_bytes, observations=observations,
                            new_observation=new_observation,
                            slice_max_bytes=reader.slice_max()),
-                  admission_pool='canonical', memory_ledger='unified', admission_basis='booking')
-    return live_memory_admission(result, reader)
+                  admission_pool='canonical', memory_ledger='unified', admission_basis='booking',
+                  waiter_reserved_bytes=reserved, senior_waiter=senior)
+    return live_memory_admission(result, reader, senior=senior)
 
 
-def live_memory_admission(result, reader):
+def live_memory_admission(result, reader, *, senior=False):
     """Permit a small request below half of the freshly verified slice cap.
 
     The caller still owns compiler slots, worker limits, and claim publication.
     This decision never changes a booking, scope fence, or termination watch.
+    An aged waiter may exceed the small-request ceiling and may fill live
+    memory up to the slice maximum less the fixed headroom.
     """
     request = result['new_claim_bytes']
     try:
@@ -979,7 +1074,7 @@ def live_memory_admission(result, reader):
             return result
     except ValueError:
         return result
-    if not 0 < request <= ceiling * GIB:
+    if not 0 < request <= (result['slice_max_bytes'] if senior else ceiling * GIB):
         return result
     try:
         sample = reader.slice_sample()
@@ -995,7 +1090,8 @@ def live_memory_admission(result, reader):
     result['live_memory_sample'] = dict(sample, age_ns=age)
     # MemAvailable remains an independent host-pressure check. All existing
     # booking totals remain visible even when the small-request path is used.
-    if live + request <= maximum // 2 and request <= result['budget_bytes']:
+    limit = maximum - result['fixed_headroom_bytes'] if senior else maximum // 2
+    if live + request <= limit and request <= result['budget_bytes']:
         result.update(fits=True, admitted=True, admission_basis='live_memory')
         print('live-memory admission: live_bytes=' + str(live)
               + ' request_bytes=' + str(request)
@@ -1422,9 +1518,13 @@ def confirm_shell(marker, replacement, request_bytes, available_bytes, *, ledger
         claims = ledger_claims(data)
         result = projection(data, claims, request_bytes, available_bytes,
                             reader=reader, new_observation=observation,
-                            pending_shell=(marker, replacement))
+                            pending_shell=(marker, replacement), requester=key)
         if not result['fits']:
+            # The guard retries the same marker, so the first refusal dates the wait.
+            if record_waiter(data, key, request_bytes, owner):
+                write_ledger(ledger, data)
             return result
+        clear_waiter(data, key)
         reader.process(owner)
         if reader.file_identity(replacement.lstat()) != replacement_identity:
             raise ValueError('The pending shell token changed.')
@@ -1868,8 +1968,10 @@ def release_shell(marker, *, ledger=None, reader=None, require_dead_owner=False)
             write_ledger(ledger, data)
             return True
         if lines[0].isdecimal():
-            if not record.get('leaf') or not leaf_closed(reader, record['leaf']):
+            if not record.get('leaf'):
                 raise ValueError('The exact shell compiler leaf is not closed.')
+            if not leaf_closed(reader, record['leaf']):
+                raise LeafNotClosed('The exact shell compiler leaf is not closed.')
             actor = {'pid': int(lines[0]), 'startticks': int(fields['child_start'])}
             try:
                 path = reader.proc / str(actor['pid'])
