@@ -59,7 +59,7 @@ from forward_resources import load_resource_vocabulary
 from symbolic_state import Expr
 from resource_seed import load_public_seed, seed_owned_resources
 from system_shape_seed import seed_system_shapes
-from function_profiles import load_profile, pilot_header
+from function_profiles import add_return_alignment, load_profile, pilot_header
 from boundary_guards import (
     BoundaryRefused,
     RocqContradictionCheck,
@@ -88,7 +88,8 @@ system_binders = [
     if row["shape"] in ("mask", "bits")
 ]
 seedpath = Path(seed_manifest["seed"]["path"])
-public_seed = load_public_seed(seedpath, bind(seedpath)["sha256"])
+public_seed = add_return_alignment(load_public_seed(seedpath, bind(seedpath)["sha256"]),
+                                   load_profile(options.function))
 domain = json.loads(Path(seed_manifest["domain"]["path"]).read_text())
 owned = seed_owned_resources(
     public_seed,
