@@ -32,6 +32,7 @@ Require Import ZesuSsz.Automation2.RecordFieldPruning.
 Ltac ZesuSsz.Automation2.ContextCollection.zesu_context_prune_goal ::= ltac2:(a3n_prune ()).
 
 Require Import ZesuSsz.Automation2.LinearFirstLia.
+Require ZesuSsz.Automation2.WrapLinear.
 (** Project-wide Lithium hook redefinitions belong in this module. *)
 
 From iris.proofmode Require Import environments.
@@ -377,9 +378,14 @@ Ltac zesu_strict_signed_if_enabled :=
 
 (* Library solvers also call these primitives without the project finisher.
    A linear address (in)equality closes first by the reflective normal form
-   (BvLinear); other goals fail there at once. A residual lemma is the last
-   attempt after the solver fails. *)
+   (BvLinear); other goals fail there at once. Wrap-to-linear (WrapLinear)
+   rewrites bv_unsigned of a wrapping sum to its linear form and closes with
+   linear arithmetic; it fails at once without such a term. The library
+   closer below unfolds bv_unsigned and cannot use those equations. A residual
+   lemma is the last attempt after the solver fails. *)
 Ltac bv_solve ::= first [solve [ZesuSsz.Automation2.BvLinear.zesu_bv_linear_with ltac:(lia)] |
+  solve [ZesuSsz.Automation2.WrapLinear.zesu_wrap_prepare;
+    zesu_context_filter ltac:(zesu_lia_linear_first3)] |
   zesu_context_filter ltac:(first [solve [zesu_strict_signed_if_enabled] |
   solve [zesu_low_mask_sub_modulus_if_enabled] |
   solve [zesu_low_mask_if_closed] |
@@ -2329,6 +2335,7 @@ Ltac zesu_liAStep :=
   | zesu_liInstrPreMatch
   | zesu_preserve_current_unsigned
   | zesu_register_collection_selection_if_enabled
+  | ZesuSsz.Automation2.WrapLinear.zesu_wrap_cache_step
   | liStep
   | liLetBindHint
   | liUnfoldLate
@@ -2819,8 +2826,12 @@ Ltac liAAsm ::=
   end.
 
 
+(* Wrap-to-linear rewrites bv_unsigned of a wrapping sum in the goal to its
+   linear form and keeps the equation; the filtered closer then reads linear
+   terms. It changes nothing when the goal has no such term. *)
 Ltac Lia.lia ::= first [solve [ZesuSsz.Automation2.BvLinear.zesu_bv_linear_with ltac:(lia)] |
-  zesu_context_filter ltac:(zesu_lia_linear_first3) |
+  (try ZesuSsz.Automation2.WrapLinear.zesu_wrap_prepare;
+   zesu_context_filter ltac:(zesu_lia_linear_first3)) |
   ResidualLemmas.zesu_residual_lemma].
 
 
