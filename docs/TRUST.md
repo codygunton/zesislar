@@ -8,6 +8,7 @@ context"):
 - the 24 generated block proofs, one per basic block, each `zesu_block2. Qed.` against its
   generated entry (`tools/block/generated/fp301_callers`, compiled as
   `ZesuSsz.Proofs.DecodeItem.FP301.Caller*`), composed over the Automation2 block table in
+  `ZesuSsz/Compliance/DecodeItemGeneratedComposition.v` and stated in
   `ZesuSsz/Compliance/DecodeItemComplianceGenerated.v`;
 - the ported meaning lemmas in `ZesuSsz/Compliance/DecodeItemMeaningPorted.v`, which give
   the output meaning at the six return blocks;
