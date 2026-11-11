@@ -547,6 +547,35 @@ def drop_unheld_binders(state, components, carried, binders, plan, live_register
             plan.setdefault('dropped_binders', []).append({'binder': name, 'rule': 'definition',
                                                            'definition': other.to_dict()})
             continue
+        defined = _register_definition(state, name, unheld=[row['name'] for row in binders
+                                                            if row['name'] not in held])
+        if defined is not None:
+            register, fresh_width, rest = defined
+            index = 1
+            while 'machine_%s_%d' % (register, index) in taken:
+                index += 1
+            fresh = input_expr('machine_%s_%d' % (register, index), fresh_width)
+            taken.add(fresh.value)
+            binder = input_expr(name, fresh_width)
+            definition = operation('bvsub', fresh, rest)
+            mapping = {binder: definition}
+            state.registers[register] = fresh
+            for other, value in list(state.registers.items()):
+                if other != register:
+                    state.registers[other] = substitute(value, mapping)
+            state.conditions[:] = [substitute(c, mapping) for c in state.conditions]
+            for key, writes in carried.items():
+                carried[key] = [replace(w, value=substitute(w.value, mapping), address=substitute(w.address, mapping))
+                                for w in writes]
+            for component in components:
+                if component['kind'] != 'register' and _mentions(component.get('source', ''), name):
+                    component['source'] = re.sub(r"(?<![\w'])" + re.escape(name) + r"(?![\w'])",
+                                                 lambda _: '(' + definition.coq() + ')', component['source'])
+            plan['binders'].append({'name': fresh.value, 'type': 'bv %d' % fresh_width, 'value_key': register})
+            held.add(fresh.value)
+            plan.setdefault('dropped_binders', []).append({'binder': name, 'rule': 'register_definition',
+                                                           'register': register, 'definition': definition.to_dict()})
+            continue
         live = None if live_registers is None else set(live_registers) | EXIT_OBSERVED
         needed = [register for register, value in state.registers.items()
                   if REGISTER.fullmatch(register) and _mentions(text(value), name)
@@ -583,6 +612,52 @@ def drop_unheld_binders(state, components, carried, binders, plan, live_register
             raise ValueError('An inherited join binder stays in an owned resource: ' + name)
         plan.setdefault('dropped_binders', []).append(record)
     state.writes = [w for rows in carried.values() for w in rows]
+
+
+def _addends(value):
+    return _addends(value.args[0]) + _addends(value.args[1]) if value.op == 'bvadd' else [value]
+
+
+def _register_definition(state, name, unheld=()):
+    """A register whose value is `name + t`, where `name` occurs once with coefficient 1 and
+    t mentions no unheld binder, and `name + t` cannot wrap under the seed's ranges.
+
+    Returns (register, width, t). The register then holds a fresh binder c, and `name` is
+    c - t on every edge: bitvector subtraction inverts the addition, and the range check
+    keeps the same equation true on the unsigned integers."""
+    text = lambda value: json.dumps(value.to_dict(), sort_keys=True)
+    lower, upper = 0, None
+    for condition in state.conditions:
+        if condition.op in ('bvuge', 'bvule') and len(condition.args) == 2:
+            left, right = condition.args
+            if left.op == 'input' and left.value == name and right.op == 'bits':
+                if condition.op == 'bvuge':
+                    lower = max(lower, right.value)
+                else:
+                    upper = right.value if upper is None else min(upper, right.value)
+    try:
+        from .symbolic_state import _source_interval
+    except ImportError:
+        from symbolic_state import _source_interval
+    for register in sorted(state.registers, key=lambda key: (len(key), key)):
+        value = state.registers[register]
+        if not REGISTER.fullmatch(register) or value.op != 'bvadd':
+            continue
+        terms = _addends(value)
+        mine = [term for term in terms if term.op == 'input' and term.value == name]
+        rest = [term for term in terms if not (term.op == 'input' and term.value == name)]
+        if len(mine) != 1 or not rest or any(_mentions(text(term), other) for term in rest for other in unheld):
+            continue
+        total = rest[0]
+        for term in rest[1:]:
+            total = operation('bvadd', total, term)
+        interval = _source_interval(total, state.source_intervals)
+        if interval is None or upper is None:
+            continue
+        if not (0 <= lower + interval[0] and upper + interval[1] < 1 << value.width):
+            continue
+        return register, value.width, total
+    return None
 
 
 def _agreed_writes(images, resource_id):
