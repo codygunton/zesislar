@@ -5,10 +5,12 @@
   "generated_directory": "ZesuSsz/Generated/BerlinGasCalc/FP301",
   "callers_directory": "tools/block/generated/berlingascalc_fp301_callers",
   "contract_requires": [
+    "Require Import InstrSpecs.Machine.",
     "Require Import ZesuSsz.Contracts.BerlinGasCalcContract.",
     "Require Export ZesuSsz.Compliance.BerlinGasCalcHints."
   ],
   "loop_contract_requires": [
+    "Require Import InstrSpecs.Machine.",
     "Require Import ZesuSsz.Contracts.BerlinGasCalcContract.",
     "Require Export ZesuSsz.Compliance.BerlinGasCalcHints."
   ],

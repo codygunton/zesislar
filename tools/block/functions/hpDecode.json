@@ -5,11 +5,13 @@
   "generated_directory": "ZesuSsz/Generated/HpDecode/FP301",
   "callers_directory": "tools/block/generated/hpdecode_fp301_callers",
   "contract_requires": [
+    "Require Import InstrSpecs.Machine.",
     "Require Import EvmSailRlp.evm_rlp_types.",
     "Require Import ZesuSsz.Contracts.HpDecodeContract.",
     "Require Export ZesuSsz.Compliance.HpDecodeHints."
   ],
   "loop_contract_requires": [
+    "Require Import InstrSpecs.Machine.",
     "Require Import EvmSailRlp.evm_rlp_types.",
     "Require Import ZesuSsz.Contracts.HpDecodeContract.",
     "Require Export ZesuSsz.Compliance.HpDecodeHints."
