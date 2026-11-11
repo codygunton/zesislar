@@ -1,0 +1,85 @@
+{
+  "function": "berlinGasCalc",
+  "args_type": "BerlinGasCalcArgs",
+  "pc_prefix": "0x800d",
+  "generated_directory": "ZesuSsz/Generated/BerlinGasCalc/FP301",
+  "callers_directory": "tools/block/generated/berlingascalc_fp301_callers",
+  "contract_requires": [
+    "Require Import ZesuSsz.Contracts.BerlinGasCalcContract.",
+    "Require Export ZesuSsz.Compliance.BerlinGasCalcHints."
+  ],
+  "loop_contract_requires": [
+    "Require Import ZesuSsz.Contracts.BerlinGasCalcContract.",
+    "Require Export ZesuSsz.Compliance.BerlinGasCalcHints."
+  ],
+  "caller_contract_requires": [
+    "Require Import ZesuSsz.Contracts.BerlinGasCalcContract."
+  ],
+  "selected_code": {
+    "module": "ZesuSsz.Contracts.BerlinGasCalcSelected",
+    "premise": "berlinGasCalcSelectedCode"
+  },
+  "domain_component": "⌜berlinGasCalcDomainAt returnAddress args⌝",
+  "entry_interface": {
+    "entry_resources": "berlinGasCalcEntryResources",
+    "well_formed": "berlinGasCalcArgsWellFormed",
+    "exit_resources": "berlinGasCalcExitResources",
+    "source": "ZesuSsz/Contracts/BerlinGasCalcContract.v"
+  },
+  "blocks": [
+    "39a4",
+    "39b8",
+    "39bc",
+    "39cc",
+    "39d4",
+    "39e8",
+    "39ec",
+    "39f4",
+    "39fc",
+    "3a40",
+    "3aac",
+    "3b18",
+    "3b1c",
+    "3b24",
+    "3b68",
+    "3bd4",
+    "3c40",
+    "3c44",
+    "3cac",
+    "3d1c",
+    "3d20",
+    "3d28",
+    "3d48",
+    "3d4c",
+    "3db4",
+    "3e24",
+    "3e28",
+    "3e30",
+    "3e44",
+    "3e68",
+    "3e7c",
+    "3e80",
+    "3e98",
+    "3eac",
+    "3ec8",
+    "3edc",
+    "3f00",
+    "3f04"
+  ],
+  "loop_heads": [],
+  "cfg_function": "modexp.berlinGasCalc",
+  "calls": [],
+  "loop_designs": [],
+  "function_returns": [
+    {
+      "return_instruction_pc": "0x800d3ed8",
+      "return_fact": "True",
+      "source": "exit resources only (BerlinGasCalcContract.v berlinGasCalcExitResources)"
+    },
+    {
+      "return_instruction_pc": "0x800d3f10",
+      "return_fact": "True",
+      "source": "exit resources only (BerlinGasCalcContract.v berlinGasCalcExitResources)"
+    }
+  ]
+}

@@ -1,0 +1,111 @@
+{
+  "function": "hpDecode",
+  "args_type": "HpDecodeArgs",
+  "pc_prefix": "0x8006",
+  "generated_directory": "ZesuSsz/Generated/HpDecode/FP301",
+  "callers_directory": "tools/block/generated/hpdecode_fp301_callers",
+  "contract_requires": [
+    "Require Import EvmSailRlp.evm_rlp_types.",
+    "Require Import ZesuSsz.Contracts.HpDecodeContract.",
+    "Require Export ZesuSsz.Compliance.HpDecodeHints."
+  ],
+  "loop_contract_requires": [
+    "Require Import EvmSailRlp.evm_rlp_types.",
+    "Require Import ZesuSsz.Contracts.HpDecodeContract.",
+    "Require Export ZesuSsz.Compliance.HpDecodeHints."
+  ],
+  "caller_contract_requires": [
+    "Require Import ZesuSsz.Contracts.HpDecodeContract."
+  ],
+  "selected_code": {
+    "module": "ZesuSsz.Contracts.HpDecodeSelected",
+    "premise": "hpDecodeSelectedCode"
+  },
+  "domain_component": "⌜hpDecodeDomainAt returnAddress args⌝",
+  "entry_interface": {
+    "entry_resources": "hpDecodeEntryResources",
+    "well_formed": "hpDecodeArgsWellFormed",
+    "exit_resources": "hpDecodeExitResources",
+    "source": "ZesuSsz/Contracts/HpDecodeContract.v"
+  },
+  "blocks": [
+    "7714",
+    "7718",
+    "7724",
+    "7738",
+    "7740",
+    "774c",
+    "7754",
+    "7780",
+    "77a0",
+    "77ac"
+  ],
+  "loop_heads": [
+    "7780"
+  ],
+  "cfg_function": "nibbles.hpDecode",
+  "calls": [],
+  "loop_designs": [
+    {
+      "head": "7780",
+      "entry_predecessor": "7754",
+      "registers": {
+        "x12": "machine_x12",
+        "x13": "machine_x13",
+        "x16": "machine_x16",
+        "x17": "machine_x17"
+      },
+      "index": "i",
+      "facts": [
+        {
+          "kind": "index_link",
+          "coq": "bv_unsigned machine_x16 = (bv_unsigned {x16} + i)%Z"
+        },
+        {
+          "kind": "index_link",
+          "coq": "bv_unsigned machine_x13 = (bv_unsigned {x13} + 2 * i)%Z"
+        },
+        {
+          "kind": "index_range",
+          "coq": "(0 <= i)%Z"
+        },
+        {
+          "kind": "bound",
+          "coq": "bv_unsigned machine_x16 < bv_unsigned {x11}"
+        },
+        {
+          "kind": "meaning",
+          "need": "the lbu at 0x80067780 reads the input array: the cursor starts after its first byte",
+          "coq": "bv_unsigned {x16} = (hpDecodeInputPointer args + 1)%Z"
+        },
+        {
+          "kind": "meaning",
+          "need": "the loop ends at the end of the input array (bne at 0x8006779c)",
+          "coq": "bv_unsigned {x11} = (hpDecodeInputPointer args + hpDecodeInputLength args)%Z"
+        },
+        {
+          "kind": "meaning",
+          "need": "the two sb at 0x80067790 and 0x80067794 write inside the out array",
+          "coq": "(hpDecodeOutputPointer args + 1 <= bv_unsigned {x13} <= hpDecodeOutputPointer args + 2)%Z"
+        }
+      ],
+      "array_cursor": {
+        "register": "x16",
+        "array": "hpDecodeInputBytes args",
+        "extent_reason": "2 <= hpDecodeInputLength args on this path (beq at 0x80067750 leaves the one-byte case)"
+      }
+    }
+  ],
+  "function_returns": [
+    {
+      "return_instruction_pc": "0x80067734",
+      "return_fact": "True",
+      "source": "error return: exit resources only (HpDecodeContract.v hpDecodeExitResources)"
+    },
+    {
+      "return_instruction_pc": "0x800677c0",
+      "return_fact": "True",
+      "source": "success return: exit resources only (HpDecodeContract.v hpDecodeExitResources)"
+    }
+  ]
+}
