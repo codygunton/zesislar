@@ -50,6 +50,7 @@ Require Import ZesuSsz.Automation2.ConjunctMatch.
 Require Import ZesuSsz.Automation2.ArrayLoadPreselect.
 Require Import ZesuSsz.Automation2.ReturnBundle.
 Require Import ZesuSsz.Automation2.ReturnWand.
+Require Import ZesuSsz.Automation2.Diagnostics.
 From iris.proofmode Require Import environments.
 From Ltac2 Require Import Ltac2.
 Set Default Proof Mode "Classic".
@@ -375,6 +376,7 @@ Ltac zesu_finish_v1 :=
   | |- environments.envs_entails _ _ => idtac
   | _ =>
       try (zesu_saturate_alignment);
+      zesu_diag_stage "finish_v1.solvers";
       try zesu_finish_lia;
       try (zesu_bv_solver_goal;
         ZesuSsz.Automation2.ContextCollection.zesu_solve_goal_selected
@@ -473,6 +475,7 @@ Ltac zesu_finish_pure_goal_base :=
   try (zesu_finish_ram_address);
   try (zesu_finish_pointer_alignment);
   try (zesu_saturate_alignment);
+  zesu_diag_stage "finish_pure_goal.solvers";
   try zesu_finish_lia;
   try (tryif zesu_finish_defer_cancel_shape then idtac else bv_solve);
   (* C6, last: the goal is arithmetic and everything above has refused it,
@@ -745,6 +748,7 @@ Ltac zesu_goal_holds_open_witnesses :=
   end.
 
 Ltac zesu_finish_residual_cascade :=
+  zesu_diag_stage "residual_cascade";
   first [solve [
     zesu_finish_residual_switches;
     first [ solve [ZesuSsz.Automation2.MaskWitness.zesu_mask_witness_telescope;
@@ -780,6 +784,7 @@ Inductive zesu_split_baseline : Prop := zesu_split_baseline_intro.
 
 Ltac zesu_finish_package_deferring :=
   lazymatch goal with |- environments.envs_entails _ _ => idtac end;
+  zesu_diag_stage "package_deferring";
   zesu_finish_residual_switches;
   (* Marks where the facts that the route introduces begin. *)
   let baseline := fresh "HsplitBaseline" in
@@ -849,6 +854,7 @@ Ltac zesu_finish_final_pure :=
   tryif progress zesu_saturate_derived_facts
   then try solve [zesu_array_bounds_if_enabled]
   else idtac;
+  zesu_diag_stage "final_pure";
   try solve [
     first [
       zesu_finish_negated_ge; zesu_finish_implication_pair; repeat split;
@@ -1082,7 +1088,8 @@ Ltac zesu_run_pass_v1 :=
   try zesu_prepare_uninit_goal;
   try zesu_normalize_find_mem_address;
   unshelve (time "zesu_run" repeat first
-    [SourceFactMatching.zesu_source_destruct_registered_disjunction |
+    [zesu_diag_step |
+     SourceFactMatching.zesu_source_destruct_registered_disjunction |
      ZesuSsz.Automation2.CodecArrayRead.zesu_codec_array_read_consumer |
      zesu_v34_array_continuation |
      zesu_union_witness_step | zesu_target_registered_intro_if_enabled |
@@ -1099,7 +1106,7 @@ Ltac zesu_run_pass_v1 :=
      zesu_liAStep |
      ZesuSsz.Automation2.CodecArrayRead.zesu_codec_array_read_sidecond |
      zesu_open_matching_two_level_frame |
-     zesu_extract_matching_descriptor_pure]; liShow;
+     zesu_extract_matching_descriptor_pure]; zesu_diag_step_end; liShow;
     try zesu_finish_closed_wand;
     try zesu_finish_framed_wand;
     zesu_finish).
@@ -1109,7 +1116,7 @@ Ltac zesu_run_pass_v2 :=
   try zesu_prepare_uninit_goal;
   try zesu_normalize_find_mem_address;
   unshelve (time "zesu_run" repeat first
-    [zesu_target_registered_intro_if_enabled | zesu_array_load_preselect | zesu_array_load_priority | zesu_conjunct_match_if_enabled | zesu_run_pass_steps | zesu_close_matching_trace_tail | zesu_open_trace_exist | zesu_rule_set_v2_steps]; liShow;
+    [zesu_diag_step | zesu_target_registered_intro_if_enabled | zesu_array_load_preselect | zesu_array_load_priority | zesu_conjunct_match_if_enabled | zesu_run_pass_steps | zesu_close_matching_trace_tail | zesu_open_trace_exist | zesu_rule_set_v2_steps]; zesu_diag_step_end; liShow;
     try zesu_finish_closed_wand;
     try zesu_finish_framed_wand;
     zesu_finish).
@@ -1261,7 +1268,8 @@ Ltac zesu_block2 :=
   try first [
     (zesu_finish_package_deferring; try zesu_finish_split_conjunct; zesu_clear_split_baseline)
   | solve [zesu_finish_source_tail]];
-  try ResidualLemmas.zesu_residual_lemma.
+  try (zesu_diag_stage "residual_lemma"; ResidualLemmas.zesu_residual_lemma);
+  zesu_diag_refusal "final".
 
 Ltac zesu_block_simpl :=
   iStartProof;
