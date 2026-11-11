@@ -47,8 +47,10 @@ Section tests.
     iExact "H".
   Qed.
 
-  (* Without a registered introduction, the step does not apply to an opaque predicate. *)
+  (* Without a registered introduction, the step does not apply to an opaque predicate
+     that is otherwise shaped like an FP301 entry (an unfold instance, opaque). *)
   Definition fp301_unregistered_entry (args : DecodeItemArgs) : iProp Sigma := True%I.
+  #[local] Instance fp301_unregistered_entry_unfold : LithiumUnfold (@fp301_unregistered_entry) := I.
   Typeclasses Opaque fp301_unregistered_entry.
 
   Lemma fp301_unregistered_entry_is_refused (args : DecodeItemArgs) :
