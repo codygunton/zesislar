@@ -172,6 +172,28 @@ def _unfold(fact, definitions):
     return fact
 
 
+def _word_chunks(image, key, start, end):
+    """Render a fully written span as the caller's stores, in decodeItem's frame form:
+    `bv_to_little_endian (Z.of_nat n) 8 (bv_unsigned v) ++ ...`, so a later load of a
+    stored word reads the word back. Return None unless the stores tile the span."""
+    stores = [(image.writes[step['write_index']], step['offset']) for step in image.transitions
+              if step['resource_id'] == key]
+    chunks, cursor = [], start
+    while cursor < end:
+        choices = [(write, offset) for write, offset in stores if offset == cursor
+                   and offset + write.size <= end and write.size * 8 == write.value.width
+                   and all(image.updates[key][offset + byte]['value'] ==
+                           operation('extract', write.value, width=8, value=8 * byte).to_dict()
+                           for byte in range(write.size))]
+        if not choices:
+            return None
+        write, offset = choices[-1]
+        chunks.append('(bv_to_little_endian (Z.of_nat %d%%nat) 8%%N (bv_unsigned (%s : bv %d%%N)))'
+                      % (write.size, _coq(write.value), write.value.width))
+        cursor += write.size
+    return '(' + ' ++ '.join(chunks) + ')'
+
+
 def _merge_call_sites(edges):
     """One call-site state: equal values stay; a register that differs becomes a binder."""
     states = [_state_from_result(edge['state']) for edge in edges]
@@ -375,7 +397,8 @@ def call_return_seed(edges, *, call, function_root, root_seed, shapes, vocabular
                                   'length_original_coq': str(end - start)})
                 elif len(written) == end - start:
                     known = tuple(Expr.from_dict(updates[offset]['value']) for offset in range(start, end))
-                    value = '[' + '; '.join(_coq(byte) for byte in known) + ']'
+                    value = _word_chunks(image, key, start, end) or \
+                        '[' + '; '.join(_coq(byte) for byte in known) + ']'
                     nodes.append({'kind': 'byte_array', 'id': piece_id, 'original_component':
                                   '%s ↦ₘ∗ %s' % (address, value), 'address_z': address,
                                   'byte_array_expr': input_expr(value, None).to_dict(), 'element_bits': 8,
