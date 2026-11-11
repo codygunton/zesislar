@@ -13,7 +13,7 @@
   },
   "hashes": {
     "oracle_sha256": "486c26e5b3103681756d88f4dd7ca329462d181952d8d0ca369f120e93683efe",
-    "selected_elf_sha256": "e44c18d54ae3d77832df92aceb6eb7119de8eb2e8f1f1b4e585a6e33ea04ff95",
+    "selected_elf_sha256": "9db39b9eba31302a76f8132a09250934ea06cc0bf5bec79d7e0eb28963c1eaf4",
     "vector_inputs_sha256": "14263b0d282cc3aaf2e1350960080b5e0f9a0e4ad4712eeb26173948eaebb664"
   },
   "vectors": [

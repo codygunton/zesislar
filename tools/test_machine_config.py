@@ -1,4 +1,5 @@
 import copy
+import re
 import tomllib
 import unittest
 from pathlib import Path
@@ -70,8 +71,8 @@ class MachineConfigTests(unittest.TestCase):
         self.assertEqual(sections[2]['sectionEnd'], sections[3]['sectionBase'])
 
     def test_rejects_invalid_populated_extent(self):
-        source = self.source.replace('sectionFileEnd := 0x8010fd78',
-                                     'sectionFileEnd := 0xffffffffffffffff')
+        source = re.sub(r'sectionFileEnd := 0x[0-9a-f]+',
+                        'sectionFileEnd := 0xffffffffffffffff', self.source, count=1)
         with self.assertRaisesRegex(ValueError, 'populated section extent'):
             read_machine(source)
 

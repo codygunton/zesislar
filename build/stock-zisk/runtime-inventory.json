@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "artifact_identity": "842d641c2dccc7019d0ddfc44927d32a73d066e87b741e3a4685cf04b358ea1a",
+  "artifact_identity": "2cf4910d74a3f75e7f3a183e819164a0d8feb1a915aff54dad49254ac50b62ef",
   "elf_sha256": "9db39b9eba31302a76f8132a09250934ea06cc0bf5bec79d7e0eb28963c1eaf4",
   "source": {
     "path": "/home/cody/zesislar/.worktrees/elf-switch-dryrun/_build/p0c-zesu-source/src/zkvm/alt_fl_alloc.zig",

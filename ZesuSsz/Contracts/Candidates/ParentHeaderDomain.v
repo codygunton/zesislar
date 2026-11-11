@@ -9,12 +9,12 @@ Import ListNotations.
 Open Scope Z_scope.
 
 (* The selected inventory's canonical JSON, without artifact_identity, has
-   SHA256 ac8d71ba0c1fef4597c74648c8d6d0dbf8ac9783707560c659a4049a208016c2.
+   SHA256 d86808bd6c54cde2a57eb86d38f739a7d6d5a3e99c7645e04d3164239713232e.
    Its decoded CFG gives these 20 call PCs and the shown targets. The three
    optional Uint64Field entries call nextUint64; all other entries call
    decodeItem directly, including three inlined required integers. *)
 Definition parentHeaderInventorySha256 : string :=
-  "ac8d71ba0c1fef4597c74648c8d6d0dbf8ac9783707560c659a4049a208016c2"%string.
+  "d86808bd6c54cde2a57eb86d38f739a7d6d5a3e99c7645e04d3164239713232e"%string.
 
 Inductive ParentHeaderFieldKind :=
 | RequiredSkip | RequiredUint64 | OptionalSkip | OptionalUint64.
