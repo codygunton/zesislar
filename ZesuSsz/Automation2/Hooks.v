@@ -476,8 +476,51 @@ Ltac zesu_normalize_known_word_address :=
       rewrite Heq; clear Heq
       end
   end.
+(* A folded hypothesis: an applied definition or record proposition, not a
+   comparison or a connective. Only such a hypothesis can carry facts that a
+   registered `ZesuDerivedFacts` instance unfolds. *)
+Ltac zesu_lookup_folded_fact fact :=
+  lazymatch fact with
+  | _ = _ => fail
+  | ~ _ => fail
+  | _ /\ _ => fail
+  | _ \/ _ => fail
+  | (_ <-> _) => fail
+  | Z.le _ _ => fail
+  | Z.lt _ _ => fail
+  | Z.ge _ _ => fail
+  | Z.gt _ _ => fail
+  | le _ _ => fail
+  | lt _ _ => fail
+  | True => fail
+  | False => fail
+  | ex _ => fail
+  | _ => let head := get_head fact in first [is_const head | is_ind head]
+  end.
+
+(* A load or store at an address built on a cast of an open integer needs
+   that integer's range, which a folded hypothesis may only derive. Derived
+   facts otherwise enter only in the finisher's saturation, after the lookup
+   has failed. Derive them once, before the lookup; they stay in the context,
+   so a later lookup adds nothing. *)
+Ltac zesu_lookup_derived_facts :=
+  match goal with
+  | |- environments.envs_entails _ (find_in_context (FindMemMapsTo ?address) _) =>
+      match address with
+      | context [Z_to_bv _ ?integer] =>
+          tryif stdpp.tactics.is_closed_term integer then fail else idtac
+      end
+  end;
+  progress (repeat (match goal with
+    | H : ?fact |- _ =>
+        lazymatch type of fact with Prop => idtac end;
+        zesu_lookup_folded_fact fact;
+        ZesuSsz.Automation2.PureFacts.zesu_derive_fact_from H
+    end)).
+
 Ltac zesu_normalize_find_mem_address :=
   first [
+    zesu_lookup_derived_facts |
     lazymatch goal with
     | |- environments.envs_entails _
         (find_in_context (FindMemMapsTo (bv_unsigned (Z_to_bv ?width ?integer))) _) =>
@@ -2537,6 +2580,7 @@ Ltac zesu_branch_guard_rewrite :=
   | match goal with
     | |- context [@bool_decide ?proposition ?decision] =>
         tryif has_evar proposition then fail 0 else
+        lazymatch proposition with context [bv_signed _] => idtac end;
         zesu_guard_decision_normalize ltac:(idtac; zesu_branch_guard_rewrite) proposition
           ltac:(fun normalized Hiff =>
           rewrite (@bool_decide_ext proposition normalized decision _ Hiff))
@@ -2748,3 +2792,45 @@ Ltac zesu_regcol_compute_vm_if_enabled :=
 
 #[export] Hint Extern 9 (LiTactic (regcol_compute_hint _ _)) =>
   zesu_regcol_compute_vm_if_enabled : typeclass_instances.
+
+(* Register-collection subsumption pairs the entries of two collections and
+   asks `valu_shape_implies` for each pair it cannot cancel at once. That
+   predicate has no case for two struct shapes, so an identical struct entry
+   (a status word with its mask fields) becomes `False`. A struct entry that is
+   the same on both sides implies itself; every other pair keeps the library
+   condition. *)
+Definition zesu_shape_implies (left right : valu_shape) : Prop :=
+  match left, right with
+  | StructShape fields, StructShape fields' => fields = fields'
+  | _, _ => valu_shape_implies left right
+  end.
+
+Lemma zesu_shape_implies_sound left right value :
+  zesu_shape_implies left right -> valu_has_shape value left -> valu_has_shape value right.
+Proof.
+  intros Himplies Hshape.
+  destruct left; destruct right;
+    try exact (valu_shape_implies_sound _ _ _ Himplies Hshape).
+  simpl in Himplies. subst. exact Hshape.
+Qed.
+
+Section zesu_regcol_subsume.
+  Context `{!islaG Σ} `{!threadG}.
+
+  Lemma zesu_subsume_regcol_regcol A regs1 regs2 G :
+    (li_tactic (regcol_compute_hint (λ '(regs1, regs2), Some (regcol_cancel regs1 regs2)) (regs1, regs2))
+       (λ '(regs1', regs2', c),
+          ⌜foldr (λ c, and (zesu_shape_implies c.1 c.2)) True c⌝ ∗
+          (reg_col regs1' -∗ ∃ x, reg_col regs2' ∗ G x)))
+    ⊢ subsume (reg_col regs1) (λ x : A, reg_col regs2) G.
+  Proof.
+    unfold li_tactic, regcol_compute_hint.
+    iDestruct 1 as ([[regs1' regs2'] c] [=] Hf) "HT". move/Forall_fold_right in Hf.
+    iIntros "Hregs".
+    iDestruct (regcol_cancel_sound with "Hregs") as "[? H2]"; [done| |] => /=.
+    { apply: Forall_impl; [done|] => /= ????. by apply: zesu_shape_implies_sound; [|done]. }
+    iDestruct ("HT" with "[$]") as (?) "[? ?]". iExists _. iFrame. by iApply "H2".
+  Qed.
+  Definition zesu_subsume_regcol_regcol_inst := [instance zesu_subsume_regcol_regcol].
+End zesu_regcol_subsume.
+Global Existing Instance zesu_subsume_regcol_regcol_inst | 0.
