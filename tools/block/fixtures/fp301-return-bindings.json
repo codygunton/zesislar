@@ -3,7 +3,7 @@
   "declaration_source_head": "54f11047d7d097f2b3cf1acbfe79563657bf29eb",
   "design": {
     "path": "ZesuSsz/Evidence/decode_item_block_design.json",
-    "sha256": "996afa88a7ddcca3140bcbce51bea42b110df40bf9d34016a81fb9b2f525a103"
+    "sha256": "36b3683d038afced6c933ecd83bda8ba7623cd28dbd8e127501c2b2b471d2c12"
   },
   "canonical_fixture": "tools/block/fixtures/fp301-generation.json",
   "measurement_scope": [
