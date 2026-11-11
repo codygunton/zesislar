@@ -283,6 +283,130 @@ def short_core_name_failures(name: str, text: str, shared: set[str]) -> list[str
     return failures
 
 
+REWRITE_HINT = re.compile(
+    r"(?:#\[\s*(?P<attribute>\w+)\s*\]\s*|\b(?P<locality>Local|Global|Export)\s+)?"
+    r"\bHint\s+Rewrite\b(?P<body>.*?)\.(?=\s)", re.S)
+
+
+def rewrite_hint_terms(head: str) -> list[str]:
+    """Split the lemma list of a `Hint Rewrite` at top-level spaces."""
+    terms, depth, current = [], 0, ""
+    for char in head:
+        depth += {"(": 1, ")": -1}.get(char, 0)
+        if char.isspace() and depth == 0:
+            if current:
+                terms.append(current)
+            current = ""
+        else:
+            current += char
+    if current:
+        terms.append(current)
+    return terms
+
+
+def duplicate_rewrite_failures(sources: dict[str, str]) -> list[str]:
+    """One lemma, in one direction, is registered once in one rewrite database.
+
+    `autorewrite` tries every registration, with its side-condition solver,
+    so a second registration doubles that cost and adds nothing. Local
+    registrations are file-scoped and are not compared.
+    """
+    seen: dict[tuple[str, str, str], list[str]] = {}
+    for name, text in sorted(sources.items()):
+        code = executable_text(text, mask_strings=False)
+        for match in REWRITE_HINT.finditer(code):
+            locality = (match.group("attribute") or match.group("locality") or "").lower()
+            body = match.group("body")
+            if locality == "local" or ":" not in body:
+                continue
+            head, databases = body.rsplit(":", 1)
+            head = re.split(r"\busing\b", head, maxsplit=1)[0].strip()
+            direction = "->"
+            if head.startswith(("<-", "->")):
+                direction, head = head[:2], head[2:]
+            line = code.count("\n", 0, match.start()) + 1
+            for term in rewrite_hint_terms(head):
+                for database in databases.split():
+                    key = (database, direction, " ".join(term.split()))
+                    seen.setdefault(key, []).append(f"{name}:{line}")
+    return [f"rewrite registered twice: {term} ({direction}) in {database}: " + ", ".join(places)
+            for (database, direction, term), places in sorted(seen.items()) if len(places) > 1]
+
+
+# Frozen `Global` instances that may stay active beside the Automation2 core,
+# each with its reason. Empty: every reachable one is removed.
+FROZEN_GLOBAL_ALLOWLIST: dict[str, str] = {}
+REQUIRE_COMMAND = re.compile(
+    r"^\s*(?:From\s+(?P<prefix>\S+)\s+)?Require\s+(?:Import\s+|Export\s+)?(?P<modules>[^.]+(?:\.[\w']+)*)\s*\.\s*$",
+    re.M)
+FROZEN_GLOBAL_INSTANCE = re.compile(r"^\s*Global\s+(?:Existing\s+)?Instance\s+(?P<name>[\w']+)", re.M)
+LOCAL_DEFINITION = re.compile(
+    r"^\s*(?:#\[[^\]]*\]\s*)?(?:(?:Global|Local)\s+)?(?:Program\s+)?"
+    r"(?:Definition|Instance|Lemma|Theorem|Fixpoint)\s+(?P<name>[\w']+)", re.M)
+GLOBAL_REMOVE_HINTS = re.compile(r"\bGlobal\s+Remove\s+Hints\b(?P<names>[^:]*):\s*typeclass_instances\s*\.")
+
+
+def module_path(module: str, root=ROOT):
+    if not module.startswith("ZesuSsz."):
+        return None
+    path = Path(root) / (module.replace(".", "/") + ".v")
+    return path if path.exists() else None
+
+
+def required_closure(start: str, root=ROOT) -> set[str]:
+    """Every ZesuSsz module that `start` loads, through any Require."""
+    seen, stack = set(), [start]
+    while stack:
+        module = stack.pop()
+        if module in seen:
+            continue
+        seen.add(module)
+        path = module_path(module, root)
+        if path is None:
+            continue
+        code = executable_text(path.read_text())
+        for match in REQUIRE_COMMAND.finditer(code):
+            prefix = match.group("prefix")
+            for name in match.group("modules").split():
+                full = f"{prefix}.{name}" if prefix else name
+                if full.startswith("ZesuSsz."):
+                    stack.append(full)
+    return seen
+
+
+def frozen_global_failures(root=ROOT, umbrella="ZesuSsz.Automation2.All",
+                           allowlist=FROZEN_GLOBAL_ALLOWLIST) -> list[str]:
+    """A frozen `Global` instance that the Automation2 umbrella loads is removed.
+
+    `Global` instances stay active wherever their module is loaded, even
+    without an import, so a frozen copy runs beside its Automation2 copy and
+    doubles every failing instance search. A loaded frozen instance needs a
+    `Global Remove Hints` with its full name in a non-frozen loaded module, or
+    an allowlist entry with a reason.
+    """
+    closure = required_closure(umbrella, root)
+    removed: set[str] = set()
+    declared: list[tuple[str, str]] = []
+    for module in sorted(closure):
+        path = module_path(module, root)
+        if path is None:
+            continue
+        code = executable_text(path.read_text())
+        if module.startswith("ZesuSsz.Automation."):
+            # A library instance registered again is one hint, shared with
+            # the Automation2 registration; only frozen-defined ones count.
+            defined = {match.group("name") for match in LOCAL_DEFINITION.finditer(code)}
+            for match in FROZEN_GLOBAL_INSTANCE.finditer(code):
+                if match.group("name") in defined:
+                    declared.append((module, match.group("name")))
+        else:
+            for match in GLOBAL_REMOVE_HINTS.finditer(code):
+                removed.update(match.group("names").split())
+    return [f"frozen Global instance active beside Automation2: {module}.{name}"
+            for module, name in declared
+            if f"{module}.{name}" not in removed and f"{module}.{name}" not in allowlist]
+
+
 def residual_module_failures(name: str, text: str) -> list[str]:
     """Residual modules hold only rendered declarations around copied proofs."""
     if not name.startswith(RESIDUALS_PREFIX):
@@ -459,6 +583,7 @@ def main() -> None:
     shared = shared_core_modules(ROOT)
     warnings: list[str] = []
     remaining = 0
+    core_sources: dict[str, str] = {}
     for name in tracked_files():
         if name.startswith("generated/isla-traces/"):
             failures.append(f"tracked generated Isla trace: {name}")
@@ -472,6 +597,8 @@ def main() -> None:
             continue
         text = path.read_text()
         lines = text.splitlines()
+        if name.startswith("ZesuSsz/Automation2/"):
+            core_sources[name] = text
         failures.extend(executable_form_failures(name, text))
         failures.extend(closed_literal_failures(name, text, literal_exceptions))
         failures.extend(trusted_declaration_failures(name, text, trusted))
@@ -519,6 +646,8 @@ def main() -> None:
             remaining += sum(counts.values())
             failures.extend(ratchet_failures(name, counts, baseline))
 
+    failures.extend(duplicate_rewrite_failures(core_sources))
+    failures.extend(frozen_global_failures(ROOT))
     if warnings:
         print(f"warning: {len(warnings)} proof-size baseline violations remain", file=sys.stderr)
     if remaining:
