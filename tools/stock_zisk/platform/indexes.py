@@ -15,6 +15,8 @@ FUNCTION_NAMES = {
     "alt_fl_alloc.remap": "allocatorRemap",
     "alt_fl_alloc.free": "allocatorFree",
     "memcpy": "memcpyStub",
+    "nibbles.hpDecode": "hpDecode",
+    "modexp.berlinGasCalc": "berlinGasCalc",
 }
 
 def approved_regions(inventory, supported):

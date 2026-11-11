@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "artifact_identity": "0a65ecef84a26877fbde660325fb54871bc3e104997b5caae27f5d7fd5dd355a",
+  "artifact_identity": "000cbd6e50115631af0c580abc4d8342fec7459d23826da94f314422489644f8",
   "functions": [
     {
       "name": "rlp.decodeItem",
@@ -61,6 +61,16 @@
       "name": "memcpy",
       "start": 2148402880,
       "end": 2148402892
+    },
+    {
+      "name": "nibbles.hpDecode",
+      "start": 2147907348,
+      "end": 2147907524
+    },
+    {
+      "name": "modexp.berlinGasCalc",
+      "start": 2148350372,
+      "end": 2148351764
     }
   ],
   "inline_decodeSingleTx": [

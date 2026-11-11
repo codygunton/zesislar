@@ -82804,6 +82804,6474 @@
       "unsupported": [],
       "dispatch": null,
       "allocator_argument_register": null
+    },
+    {
+      "name": "nibbles.hpDecode",
+      "entry": 2147907348,
+      "end": 2147907524,
+      "rows": [
+        {
+          "pc": 2147907348,
+          "size": 4,
+          "word": 395363,
+          "rd": 16,
+          "rs1": 12,
+          "rs2": 0,
+          "funct3": 0,
+          "kind": "branch",
+          "mnemonic": "beq",
+          "imm": 0,
+          "target": 2147907364,
+          "successors": [
+            2147907364,
+            2147907352
+          ]
+        },
+        {
+          "pc": 2147907352,
+          "size": 4,
+          "word": 378627,
+          "rd": 14,
+          "rs1": 11,
+          "rs2": 0,
+          "funct3": 4,
+          "kind": "load",
+          "mnemonic": "lbu",
+          "imm": 0,
+          "width": 1,
+          "successors": [
+            2147907356
+          ],
+          "address_analysis": null
+        },
+        {
+          "pc": 2147907356,
+          "size": 4,
+          "word": 67110803,
+          "rd": 15,
+          "rs1": 0,
+          "rs2": 0,
+          "funct3": 0,
+          "kind": "plain",
+          "mnemonic": "addi",
+          "imm": 64,
+          "successors": [
+            2147907360
+          ]
+        },
+        {
+          "pc": 2147907360,
+          "size": 4,
+          "word": 16215139,
+          "rd": 24,
+          "rs1": 14,
+          "rs2": 15,
+          "funct3": 6,
+          "kind": "branch",
+          "mnemonic": "bltu",
+          "imm": 15,
+          "target": 2147907384,
+          "successors": [
+            2147907384,
+            2147907364
+          ]
+        },
+        {
+          "pc": 2147907364,
+          "size": 4,
+          "word": 32507283,
+          "rd": 11,
+          "rs1": 0,
+          "rs2": 31,
+          "funct3": 0,
+          "kind": "plain",
+          "mnemonic": "addi",
+          "imm": 31,
+          "successors": [
+            2147907368
+          ]
+        },
+        {
+          "pc": 2147907368,
+          "size": 4,
+          "word": 340003,
+          "rd": 0,
+          "rs1": 10,
+          "rs2": 0,
+          "funct3": 3,
+          "kind": "store",
+          "mnemonic": "sd",
+          "imm": 0,
+          "width": 8,
+          "successors": [
+            2147907372
+          ],
+          "address_analysis": null
+        },
+        {
+          "pc": 2147907372,
+          "size": 4,
+          "word": 341027,
+          "rd": 8,
+          "rs1": 10,
+          "rs2": 0,
+          "funct3": 3,
+          "kind": "store",
+          "mnemonic": "sd",
+          "imm": 8,
+          "width": 8,
+          "successors": [
+            2147907376
+          ],
+          "address_analysis": null
+        },
+        {
+          "pc": 2147907376,
+          "size": 4,
+          "word": 11876387,
+          "rd": 16,
+          "rs1": 10,
+          "rs2": 11,
+          "funct3": 3,
+          "kind": "store",
+          "mnemonic": "sd",
+          "imm": 16,
+          "width": 8,
+          "successors": [
+            2147907380
+          ],
+          "address_analysis": null
+        },
+        {
+          "pc": 2147907380,
+          "size": 4,
+          "word": 32871,
+          "rd": 0,
+          "rs1": 1,
+          "rs2": 0,
+          "funct3": 0,
+          "kind": "return",
+          "mnemonic": "jalr",
+          "imm": 0,
+          "successors": []
+        },
+        {
+          "pc": 2147907384,
+          "size": 4,
+          "word": 17266579,
+          "rd": 15,
+          "rs1": 14,
+          "rs2": 16,
+          "funct3": 7,
+          "kind": "plain",
+          "mnemonic": "andi",
+          "imm": 16,
+          "successors": [
+            2147907388
+          ]
+        },
+        {
+          "pc": 2147907388,
+          "size": 4,
+          "word": 493667,
+          "rd": 16,
+          "rs1": 15,
+          "rs2": 0,
+          "funct3": 0,
+          "kind": "branch",
+          "mnemonic": "beq",
+          "imm": 0,
+          "target": 2147907404,
+          "successors": [
+            2147907404,
+            2147907392
+          ]
+        },
+        {
+          "pc": 2147907392,
+          "size": 4,
+          "word": 16218003,
+          "rd": 15,
+          "rs1": 14,
+          "rs2": 15,
+          "funct3": 7,
+          "kind": "plain",
+          "mnemonic": "andi",
+          "imm": 15,
+          "successors": [
+            2147907396
+          ]
+        },
+        {
+          "pc": 2147907396,
+          "size": 4,
+          "word": 16154659,
+          "rd": 0,
+          "rs1": 13,
+          "rs2": 15,
+          "funct3": 0,
+          "kind": "store",
+          "mnemonic": "sb",
+          "imm": 0,
+          "width": 1,
+          "successors": [
+            2147907400
+          ],
+          "address_analysis": null
+        },
+        {
+          "pc": 2147907400,
+          "size": 4,
+          "word": 1050515,
+          "rd": 15,
+          "rs1": 0,
+          "rs2": 1,
+          "funct3": 0,
+          "kind": "plain",
+          "mnemonic": "addi",
+          "imm": 1,
+          "successors": [
+            2147907404
+          ]
+        },
+        {
+          "pc": 2147907404,
+          "size": 4,
+          "word": 1050643,
+          "rd": 16,
+          "rs1": 0,
+          "rs2": 1,
+          "funct3": 0,
+          "kind": "plain",
+          "mnemonic": "addi",
+          "imm": 1,
+          "successors": [
+            2147907408
+          ]
+        },
+        {
+          "pc": 2147907408,
+          "size": 4,
+          "word": 84282979,
+          "rd": 28,
+          "rs1": 12,
+          "rs2": 16,
+          "funct3": 0,
+          "kind": "branch",
+          "mnemonic": "beq",
+          "imm": 80,
+          "target": 2147907500,
+          "successors": [
+            2147907500,
+            2147907412
+          ]
+        },
+        {
+          "pc": 2147907412,
+          "size": 4,
+          "word": 4278255891,
+          "rd": 2,
+          "rs1": 2,
+          "rs2": 16,
+          "funct3": 0,
+          "kind": "plain",
+          "mnemonic": "addi",
+          "imm": -16,
+          "successors": [
+            2147907416
+          ]
+        },
+        {
+          "pc": 2147907416,
+          "size": 4,
+          "word": 1127459,
+          "rd": 8,
+          "rs1": 2,
+          "rs2": 1,
+          "funct3": 3,
+          "kind": "store",
+          "mnemonic": "sd",
+          "imm": 8,
+          "width": 8,
+          "successors": [
+            2147907420
+          ],
+          "address_analysis": [
+            "stack",
+            -8
+          ]
+        },
+        {
+          "pc": 2147907420,
+          "size": 4,
+          "word": 8466467,
+          "rd": 0,
+          "rs1": 2,
+          "rs2": 8,
+          "funct3": 3,
+          "kind": "store",
+          "mnemonic": "sd",
+          "imm": 0,
+          "width": 8,
+          "successors": [
+            2147907424
+          ],
+          "address_analysis": [
+            "stack",
+            -16
+          ]
+        },
+        {
+          "pc": 2147907424,
+          "size": 4,
+          "word": 16843795,
+          "rd": 8,
+          "rs1": 2,
+          "rs2": 16,
+          "funct3": 0,
+          "kind": "plain",
+          "mnemonic": "addi",
+          "imm": 16,
+          "successors": [
+            2147907428
+          ]
+        },
+        {
+          "pc": 2147907428,
+          "size": 4,
+          "word": 1411091,
+          "rd": 16,
+          "rs1": 11,
+          "rs2": 1,
+          "funct3": 0,
+          "kind": "plain",
+          "mnemonic": "addi",
+          "imm": 1,
+          "successors": [
+            2147907432
+          ]
+        },
+        {
+          "pc": 2147907432,
+          "size": 4,
+          "word": 14124723,
+          "rd": 13,
+          "rs1": 15,
+          "rs2": 13,
+          "funct3": 0,
+          "kind": "plain",
+          "mnemonic": "add",
+          "imm": 13,
+          "successors": [
+            2147907436
+          ]
+        },
+        {
+          "pc": 2147907436,
+          "size": 4,
+          "word": 1448083,
+          "rd": 17,
+          "rs1": 12,
+          "rs2": 1,
+          "funct3": 1,
+          "kind": "plain",
+          "mnemonic": "slli",
+          "imm": 1,
+          "successors": [
+            2147907440
+          ]
+        },
+        {
+          "pc": 2147907440,
+          "size": 4,
+          "word": 1476243,
+          "rd": 13,
+          "rs1": 13,
+          "rs2": 1,
+          "funct3": 0,
+          "kind": "plain",
+          "mnemonic": "addi",
+          "imm": 1,
+          "successors": [
+            2147907444
+          ]
+        },
+        {
+          "pc": 2147907444,
+          "size": 4,
+          "word": 18343859,
+          "rd": 15,
+          "rs1": 15,
+          "rs2": 17,
+          "funct3": 6,
+          "kind": "plain",
+          "mnemonic": "or",
+          "imm": 17,
+          "successors": [
+            2147907448
+          ]
+        },
+        {
+          "pc": 2147907448,
+          "size": 4,
+          "word": 4293363603,
+          "rd": 15,
+          "rs1": 15,
+          "rs2": 30,
+          "funct3": 0,
+          "kind": "plain",
+          "mnemonic": "addi",
+          "imm": -2,
+          "successors": [
+            2147907452
+          ]
+        },
+        {
+          "pc": 2147907452,
+          "size": 4,
+          "word": 12944819,
+          "rd": 11,
+          "rs1": 11,
+          "rs2": 12,
+          "funct3": 0,
+          "kind": "plain",
+          "mnemonic": "add",
+          "imm": 12,
+          "successors": [
+            2147907456
+          ]
+        },
+        {
+          "pc": 2147907456,
+          "size": 4,
+          "word": 542211,
+          "rd": 12,
+          "rs1": 16,
+          "rs2": 0,
+          "funct3": 4,
+          "kind": "load",
+          "mnemonic": "lbu",
+          "imm": 0,
+          "width": 1,
+          "successors": [
+            2147907460
+          ],
+          "address_analysis": null
+        },
+        {
+          "pc": 2147907460,
+          "size": 4,
+          "word": 1574931,
+          "rd": 16,
+          "rs1": 16,
+          "rs2": 1,
+          "funct3": 0,
+          "kind": "plain",
+          "mnemonic": "addi",
+          "imm": 1,
+          "successors": [
+            2147907464
+          ]
+        },
+        {
+          "pc": 2147907464,
+          "size": 4,
+          "word": 4610195,
+          "rd": 17,
+          "rs1": 12,
+          "rs2": 4,
+          "funct3": 5,
+          "kind": "plain",
+          "mnemonic": "srli",
+          "imm": 4,
+          "successors": [
+            2147907468
+          ]
+        },
+        {
+          "pc": 2147907468,
+          "size": 4,
+          "word": 16152083,
+          "rd": 12,
+          "rs1": 12,
+          "rs2": 15,
+          "funct3": 7,
+          "kind": "plain",
+          "mnemonic": "andi",
+          "imm": 15,
+          "successors": [
+            2147907472
+          ]
+        },
+        {
+          "pc": 2147907472,
+          "size": 4,
+          "word": 4279668643,
+          "rd": 31,
+          "rs1": 13,
+          "rs2": 17,
+          "funct3": 0,
+          "kind": "store",
+          "mnemonic": "sb",
+          "imm": -1,
+          "width": 1,
+          "successors": [
+            2147907476
+          ],
+          "address_analysis": null
+        },
+        {
+          "pc": 2147907476,
+          "size": 4,
+          "word": 13008931,
+          "rd": 0,
+          "rs1": 13,
+          "rs2": 12,
+          "funct3": 0,
+          "kind": "store",
+          "mnemonic": "sb",
+          "imm": 0,
+          "width": 1,
+          "successors": [
+            2147907480
+          ],
+          "address_analysis": null
+        },
+        {
+          "pc": 2147907480,
+          "size": 4,
+          "word": 2524819,
+          "rd": 13,
+          "rs1": 13,
+          "rs2": 2,
+          "funct3": 0,
+          "kind": "plain",
+          "mnemonic": "addi",
+          "imm": 2,
+          "successors": [
+            2147907484
+          ]
+        },
+        {
+          "pc": 2147907484,
+          "size": 4,
+          "word": 4273476323,
+          "rd": 5,
+          "rs1": 16,
+          "rs2": 11,
+          "funct3": 1,
+          "kind": "branch",
+          "mnemonic": "bne",
+          "imm": -21,
+          "target": 2147907456,
+          "successors": [
+            2147907456,
+            2147907488
+          ]
+        },
+        {
+          "pc": 2147907488,
+          "size": 4,
+          "word": 8466563,
+          "rd": 1,
+          "rs1": 2,
+          "rs2": 8,
+          "funct3": 3,
+          "kind": "load",
+          "mnemonic": "ld",
+          "imm": 8,
+          "width": 8,
+          "successors": [
+            2147907492
+          ],
+          "address_analysis": [
+            "stack",
+            -8
+          ]
+        },
+        {
+          "pc": 2147907492,
+          "size": 4,
+          "word": 78851,
+          "rd": 8,
+          "rs1": 2,
+          "rs2": 0,
+          "funct3": 3,
+          "kind": "load",
+          "mnemonic": "ld",
+          "imm": 0,
+          "width": 8,
+          "successors": [
+            2147907496
+          ],
+          "address_analysis": [
+            "stack",
+            -16
+          ]
+        },
+        {
+          "pc": 2147907496,
+          "size": 4,
+          "word": 16843027,
+          "rd": 2,
+          "rs1": 2,
+          "rs2": 16,
+          "funct3": 0,
+          "kind": "plain",
+          "mnemonic": "addi",
+          "imm": 16,
+          "successors": [
+            2147907500
+          ]
+        },
+        {
+          "pc": 2147907500,
+          "size": 4,
+          "word": 34026899,
+          "rd": 11,
+          "rs1": 14,
+          "rs2": 0,
+          "funct3": 3,
+          "kind": "plain",
+          "mnemonic": "sltiu",
+          "imm": 32,
+          "successors": [
+            2147907504
+          ]
+        },
+        {
+          "pc": 2147907504,
+          "size": 4,
+          "word": 1426835,
+          "rd": 11,
+          "rs1": 11,
+          "rs2": 1,
+          "funct3": 4,
+          "kind": "plain",
+          "mnemonic": "xori",
+          "imm": 1,
+          "successors": [
+            2147907508
+          ]
+        },
+        {
+          "pc": 2147907508,
+          "size": 4,
+          "word": 16068643,
+          "rd": 0,
+          "rs1": 10,
+          "rs2": 15,
+          "funct3": 3,
+          "kind": "store",
+          "mnemonic": "sd",
+          "imm": 0,
+          "width": 8,
+          "successors": [
+            2147907512
+          ],
+          "address_analysis": null
+        },
+        {
+          "pc": 2147907512,
+          "size": 4,
+          "word": 11863075,
+          "rd": 8,
+          "rs1": 10,
+          "rs2": 11,
+          "funct3": 0,
+          "kind": "store",
+          "mnemonic": "sb",
+          "imm": 8,
+          "width": 1,
+          "successors": [
+            2147907516
+          ],
+          "address_analysis": null
+        },
+        {
+          "pc": 2147907516,
+          "size": 4,
+          "word": 333859,
+          "rd": 16,
+          "rs1": 10,
+          "rs2": 0,
+          "funct3": 1,
+          "kind": "store",
+          "mnemonic": "sh",
+          "imm": 16,
+          "width": 2,
+          "successors": [
+            2147907520
+          ],
+          "address_analysis": null
+        },
+        {
+          "pc": 2147907520,
+          "size": 4,
+          "word": 32871,
+          "rd": 0,
+          "rs1": 1,
+          "rs2": 0,
+          "funct3": 0,
+          "kind": "return",
+          "mnemonic": "jalr",
+          "imm": 0,
+          "successors": []
+        }
+      ],
+      "blocks": [
+        {
+          "start": 2147907348,
+          "end": 2147907352,
+          "successors": [
+            2147907364,
+            2147907352
+          ]
+        },
+        {
+          "start": 2147907352,
+          "end": 2147907364,
+          "successors": [
+            2147907384,
+            2147907364
+          ]
+        },
+        {
+          "start": 2147907364,
+          "end": 2147907384,
+          "successors": []
+        },
+        {
+          "start": 2147907384,
+          "end": 2147907392,
+          "successors": [
+            2147907404,
+            2147907392
+          ]
+        },
+        {
+          "start": 2147907392,
+          "end": 2147907404,
+          "successors": [
+            2147907404
+          ]
+        },
+        {
+          "start": 2147907404,
+          "end": 2147907412,
+          "successors": [
+            2147907500,
+            2147907412
+          ]
+        },
+        {
+          "start": 2147907412,
+          "end": 2147907456,
+          "successors": [
+            2147907456
+          ]
+        },
+        {
+          "start": 2147907456,
+          "end": 2147907488,
+          "successors": [
+            2147907456,
+            2147907488
+          ]
+        },
+        {
+          "start": 2147907488,
+          "end": 2147907500,
+          "successors": [
+            2147907500
+          ]
+        },
+        {
+          "start": 2147907500,
+          "end": 2147907524,
+          "successors": []
+        }
+      ],
+      "instruction_count": 44,
+      "block_count": 10,
+      "branch_count": 5,
+      "call_count": 0,
+      "calls": [],
+      "returns": [
+        2147907380,
+        2147907520
+      ],
+      "loops": [
+        {
+          "instruction_count": 8,
+          "minimum_pc": "0x80067780",
+          "backward_edges": [
+            {
+              "from": "0x8006779c",
+              "to": "0x80067780"
+            }
+          ]
+        }
+      ],
+      "loop_count": 1,
+      "runtime_operations": [],
+      "unresolved": [],
+      "unsupported": [],
+      "dispatch": null,
+      "allocator_argument_register": null
+    },
+    {
+      "name": "modexp.berlinGasCalc",
+      "entry": 2148350372,
+      "end": 2148351764,
+      "rows": [
+        {
+          "pc": 2148350372,
+          "size": 4,
+          "word": 4227924243,
+          "rd": 2,
+          "rs1": 2,
+          "rs2": 0,
+          "funct3": 0,
+          "kind": "plain",
+          "mnemonic": "addi",
+          "imm": -64,
+          "successors": [
+            2148350376
+          ]
+        },
+        {
+          "pc": 2148350376,
+          "size": 4,
+          "word": 34683939,
+          "rd": 24,
+          "rs1": 2,
+          "rs2": 1,
+          "funct3": 3,
+          "kind": "store",
+          "mnemonic": "sd",
+          "imm": 56,
+          "width": 8,
+          "successors": [
+            2148350380
+          ],
+          "address_analysis": [
+            "stack",
+            -8
+          ]
+        },
+        {
+          "pc": 2148350380,
+          "size": 4,
+          "word": 42022947,
+          "rd": 16,
+          "rs1": 2,
+          "rs2": 8,
+          "funct3": 3,
+          "kind": "store",
+          "mnemonic": "sd",
+          "imm": 48,
+          "width": 8,
+          "successors": [
+            2148350384
+          ],
+          "address_analysis": [
+            "stack",
+            -16
+          ]
+        },
+        {
+          "pc": 2148350384,
+          "size": 4,
+          "word": 67175443,
+          "rd": 8,
+          "rs1": 2,
+          "rs2": 0,
+          "funct3": 0,
+          "kind": "plain",
+          "mnemonic": "addi",
+          "imm": 64,
+          "successors": [
+            2148350388
+          ]
+        },
+        {
+          "pc": 2148350388,
+          "size": 4,
+          "word": 10904675,
+          "rd": 8,
+          "rs1": 12,
+          "rs2": 10,
+          "funct3": 6,
+          "kind": "branch",
+          "mnemonic": "bltu",
+          "imm": 10,
+          "target": 2148350396,
+          "successors": [
+            2148350396,
+            2148350392
+          ]
+        },
+        {
+          "pc": 2148350392,
+          "size": 4,
+          "word": 394515,
+          "rd": 10,
+          "rs1": 12,
+          "rs2": 0,
+          "funct3": 0,
+          "kind": "plain",
+          "mnemonic": "addi",
+          "imm": 0,
+          "successors": [
+            2148350396
+          ]
+        },
+        {
+          "pc": 2148350396,
+          "size": 4,
+          "word": 33555091,
+          "rd": 5,
+          "rs1": 0,
+          "rs2": 0,
+          "funct3": 0,
+          "kind": "plain",
+          "mnemonic": "addi",
+          "imm": 32,
+          "successors": [
+            2148350400
+          ]
+        },
+        {
+          "pc": 2148350400,
+          "size": 4,
+          "word": 16180787,
+          "rd": 12,
+          "rs1": 13,
+          "rs2": 15,
+          "funct3": 6,
+          "kind": "plain",
+          "mnemonic": "or",
+          "imm": 15,
+          "successors": [
+            2148350404
+          ]
+        },
+        {
+          "pc": 2148350404,
+          "size": 4,
+          "word": 17262771,
+          "rd": 17,
+          "rs1": 14,
+          "rs2": 16,
+          "funct3": 6,
+          "kind": "plain",
+          "mnemonic": "or",
+          "imm": 16,
+          "successors": [
+            2148350408
+          ]
+        },
+        {
+          "pc": 2148350408,
+          "size": 4,
+          "word": 45277795,
+          "rd": 4,
+          "rs1": 5,
+          "rs2": 11,
+          "funct3": 6,
+          "kind": "branch",
+          "mnemonic": "bltu",
+          "imm": 43,
+          "target": 2148350444,
+          "successors": [
+            2148350444,
+            2148350412
+          ]
+        },
+        {
+          "pc": 2148350412,
+          "size": 4,
+          "word": 18244275,
+          "rd": 5,
+          "rs1": 12,
+          "rs2": 17,
+          "funct3": 6,
+          "kind": "plain",
+          "mnemonic": "or",
+          "imm": 17,
+          "successors": [
+            2148350416
+          ]
+        },
+        {
+          "pc": 2148350416,
+          "size": 4,
+          "word": 171619,
+          "rd": 28,
+          "rs1": 5,
+          "rs2": 0,
+          "funct3": 1,
+          "kind": "branch",
+          "mnemonic": "bne",
+          "imm": 0,
+          "target": 2148350444,
+          "successors": [
+            2148350444,
+            2148350420
+          ]
+        },
+        {
+          "pc": 2148350420,
+          "size": 4,
+          "word": 1427,
+          "rd": 11,
+          "rs1": 0,
+          "rs2": 0,
+          "funct3": 0,
+          "kind": "plain",
+          "mnemonic": "addi",
+          "imm": 0,
+          "successors": [
+            2148350424
+          ]
+        },
+        {
+          "pc": 2148350424,
+          "size": 4,
+          "word": 7669267,
+          "rd": 12,
+          "rs1": 10,
+          "rs2": 7,
+          "funct3": 0,
+          "kind": "plain",
+          "mnemonic": "addi",
+          "imm": 7,
+          "successors": [
+            2148350428
+          ]
+        },
+        {
+          "pc": 2148350428,
+          "size": 4,
+          "word": 10892979,
+          "rd": 13,
+          "rs1": 12,
+          "rs2": 10,
+          "funct3": 3,
+          "kind": "plain",
+          "mnemonic": "sltu",
+          "imm": 10,
+          "successors": [
+            2148350432
+          ]
+        },
+        {
+          "pc": 2148350432,
+          "size": 4,
+          "word": 4241755171,
+          "rd": 24,
+          "rs1": 8,
+          "rs2": 13,
+          "funct3": 0,
+          "kind": "store",
+          "mnemonic": "sb",
+          "imm": -40,
+          "width": 1,
+          "successors": [
+            2148350436
+          ],
+          "address_analysis": [
+            "stack",
+            -40
+          ]
+        },
+        {
+          "pc": 2148350436,
+          "size": 4,
+          "word": 1319527011,
+          "rd": 4,
+          "rs1": 12,
+          "rs2": 10,
+          "funct3": 6,
+          "kind": "branch",
+          "mnemonic": "bltu",
+          "imm": 1258,
+          "target": 2148351688,
+          "successors": [
+            2148351688,
+            2148350440
+          ]
+        },
+        {
+          "pc": 2148350440,
+          "size": 4,
+          "word": 1258291311,
+          "rd": 0,
+          "rs1": 0,
+          "rs2": 16,
+          "funct3": 0,
+          "kind": "jump",
+          "mnemonic": "jal",
+          "imm": 1200,
+          "target": 2148351640,
+          "successors": [
+            2148351640
+          ]
+        },
+        {
+          "pc": 2148350444,
+          "size": 4,
+          "word": 34603667,
+          "rd": 5,
+          "rs1": 0,
+          "rs2": 1,
+          "funct3": 0,
+          "kind": "plain",
+          "mnemonic": "addi",
+          "imm": 33,
+          "successors": [
+            2148350448
+          ]
+        },
+        {
+          "pc": 2148350448,
+          "size": 4,
+          "word": 307623523,
+          "rd": 12,
+          "rs1": 11,
+          "rs2": 5,
+          "funct3": 7,
+          "kind": "branch",
+          "mnemonic": "bgeu",
+          "imm": 293,
+          "target": 2148350748,
+          "successors": [
+            2148350748,
+            2148350452
+          ]
+        },
+        {
+          "pc": 2148350452,
+          "size": 4,
+          "word": 18245043,
+          "rd": 11,
+          "rs1": 12,
+          "rs2": 17,
+          "funct3": 6,
+          "kind": "plain",
+          "mnemonic": "or",
+          "imm": 17,
+          "successors": [
+            2148350456
+          ]
+        },
+        {
+          "pc": 2148350456,
+          "size": 4,
+          "word": 839223395,
+          "rd": 16,
+          "rs1": 11,
+          "rs2": 0,
+          "funct3": 0,
+          "kind": "branch",
+          "mnemonic": "beq",
+          "imm": 800,
+          "target": 2148351272,
+          "successors": [
+            2148351272,
+            2148350460
+          ]
+        },
+        {
+          "pc": 2148350460,
+          "size": 4,
+          "word": 1431655863,
+          "rd": 11,
+          "rs1": 10,
+          "rs2": 21,
+          "funct3": 5,
+          "kind": "plain",
+          "mnemonic": "lui",
+          "imm": 1431654400,
+          "successors": [
+            2148350464
+          ]
+        },
+        {
+          "pc": 2148350464,
+          "size": 4,
+          "word": 858994231,
+          "rd": 12,
+          "rs1": 6,
+          "rs2": 19,
+          "funct3": 3,
+          "kind": "plain",
+          "mnemonic": "lui",
+          "imm": 858992640,
+          "successors": [
+            2148350468
+          ]
+        },
+        {
+          "pc": 2148350468,
+          "size": 4,
+          "word": 252647607,
+          "rd": 17,
+          "rs1": 30,
+          "rs2": 16,
+          "funct3": 1,
+          "kind": "plain",
+          "mnemonic": "lui",
+          "imm": 252645376,
+          "successors": [
+            2148350472
+          ]
+        },
+        {
+          "pc": 2148350472,
+          "size": 4,
+          "word": 16843447,
+          "rd": 5,
+          "rs1": 2,
+          "rs2": 16,
+          "funct3": 0,
+          "kind": "plain",
+          "mnemonic": "lui",
+          "imm": 16842752,
+          "successors": [
+            2148350476
+          ]
+        },
+        {
+          "pc": 2148350476,
+          "size": 4,
+          "word": 1431668115,
+          "rd": 11,
+          "rs1": 11,
+          "rs2": 21,
+          "funct3": 0,
+          "kind": "plain",
+          "mnemonic": "addi",
+          "imm": 1365,
+          "successors": [
+            2148350480
+          ]
+        },
+        {
+          "pc": 2148350480,
+          "size": 4,
+          "word": 859178515,
+          "rd": 12,
+          "rs1": 12,
+          "rs2": 19,
+          "funct3": 0,
+          "kind": "plain",
+          "mnemonic": "addi",
+          "imm": 819,
+          "successors": [
+            2148350484
+          ]
+        },
+        {
+          "pc": 2148350484,
+          "size": 4,
+          "word": 4042818323,
+          "rd": 6,
+          "rs1": 17,
+          "rs2": 15,
+          "funct3": 0,
+          "kind": "plain",
+          "mnemonic": "addi",
+          "imm": -241,
+          "successors": [
+            2148350488
+          ]
+        },
+        {
+          "pc": 2148350488,
+          "size": 4,
+          "word": 269648787,
+          "rd": 7,
+          "rs1": 5,
+          "rs2": 1,
+          "funct3": 0,
+          "kind": "plain",
+          "mnemonic": "addi",
+          "imm": 257,
+          "successors": [
+            2148350492
+          ]
+        },
+        {
+          "pc": 2148350492,
+          "size": 4,
+          "word": 33919635,
+          "rd": 5,
+          "rs1": 11,
+          "rs2": 0,
+          "funct3": 1,
+          "kind": "plain",
+          "mnemonic": "slli",
+          "imm": 32,
+          "successors": [
+            2148350496
+          ]
+        },
+        {
+          "pc": 2148350496,
+          "size": 4,
+          "word": 5604019,
+          "rd": 5,
+          "rs1": 11,
+          "rs2": 5,
+          "funct3": 0,
+          "kind": "plain",
+          "mnemonic": "add",
+          "imm": 5,
+          "successors": [
+            2148350500
+          ]
+        },
+        {
+          "pc": 2148350500,
+          "size": 4,
+          "word": 33953939,
+          "rd": 17,
+          "rs1": 12,
+          "rs2": 0,
+          "funct3": 1,
+          "kind": "plain",
+          "mnemonic": "slli",
+          "imm": 32,
+          "successors": [
+            2148350504
+          ]
+        },
+        {
+          "pc": 2148350504,
+          "size": 4,
+          "word": 18221235,
+          "rd": 17,
+          "rs1": 12,
+          "rs2": 17,
+          "funct3": 0,
+          "kind": "plain",
+          "mnemonic": "add",
+          "imm": 17,
+          "successors": [
+            2148350508
+          ]
+        },
+        {
+          "pc": 2148350508,
+          "size": 4,
+          "word": 33756563,
+          "rd": 11,
+          "rs1": 6,
+          "rs2": 0,
+          "funct3": 1,
+          "kind": "plain",
+          "mnemonic": "slli",
+          "imm": 32,
+          "successors": [
+            2148350512
+          ]
+        },
+        {
+          "pc": 2148350512,
+          "size": 4,
+          "word": 11732403,
+          "rd": 11,
+          "rs1": 6,
+          "rs2": 11,
+          "funct3": 0,
+          "kind": "plain",
+          "mnemonic": "add",
+          "imm": 11,
+          "successors": [
+            2148350516
+          ]
+        },
+        {
+          "pc": 2148350516,
+          "size": 4,
+          "word": 33789459,
+          "rd": 12,
+          "rs1": 7,
+          "rs2": 0,
+          "funct3": 1,
+          "kind": "plain",
+          "mnemonic": "slli",
+          "imm": 32,
+          "successors": [
+            2148350520
+          ]
+        },
+        {
+          "pc": 2148350520,
+          "size": 4,
+          "word": 12813875,
+          "rd": 12,
+          "rs1": 7,
+          "rs2": 12,
+          "funct3": 0,
+          "kind": "plain",
+          "mnemonic": "add",
+          "imm": 12,
+          "successors": [
+            2148350524
+          ]
+        },
+        {
+          "pc": 2148350524,
+          "size": 4,
+          "word": 537400419,
+          "rd": 8,
+          "rs1": 16,
+          "rs2": 0,
+          "funct3": 1,
+          "kind": "branch",
+          "mnemonic": "bne",
+          "imm": 512,
+          "target": 2148351044,
+          "successors": [
+            2148351044,
+            2148350528
+          ]
+        },
+        {
+          "pc": 2148350528,
+          "size": 4,
+          "word": 1561363,
+          "rd": 6,
+          "rs1": 15,
+          "rs2": 1,
+          "funct3": 5,
+          "kind": "plain",
+          "mnemonic": "srli",
+          "imm": 1,
+          "successors": [
+            2148350532
+          ]
+        },
+        {
+          "pc": 2148350532,
+          "size": 4,
+          "word": 6808371,
+          "rd": 6,
+          "rs1": 15,
+          "rs2": 6,
+          "funct3": 6,
+          "kind": "plain",
+          "mnemonic": "or",
+          "imm": 6,
+          "successors": [
+            2148350536
+          ]
+        },
+        {
+          "pc": 2148350536,
+          "size": 4,
+          "word": 2315155,
+          "rd": 7,
+          "rs1": 6,
+          "rs2": 2,
+          "funct3": 5,
+          "kind": "plain",
+          "mnemonic": "srli",
+          "imm": 2,
+          "successors": [
+            2148350540
+          ]
+        },
+        {
+          "pc": 2148350540,
+          "size": 4,
+          "word": 7562035,
+          "rd": 6,
+          "rs1": 6,
+          "rs2": 7,
+          "funct3": 6,
+          "kind": "plain",
+          "mnemonic": "or",
+          "imm": 7,
+          "successors": [
+            2148350544
+          ]
+        },
+        {
+          "pc": 2148350544,
+          "size": 4,
+          "word": 4412307,
+          "rd": 7,
+          "rs1": 6,
+          "rs2": 4,
+          "funct3": 5,
+          "kind": "plain",
+          "mnemonic": "srli",
+          "imm": 4,
+          "successors": [
+            2148350548
+          ]
+        },
+        {
+          "pc": 2148350548,
+          "size": 4,
+          "word": 7562035,
+          "rd": 6,
+          "rs1": 6,
+          "rs2": 7,
+          "funct3": 6,
+          "kind": "plain",
+          "mnemonic": "or",
+          "imm": 7,
+          "successors": [
+            2148350552
+          ]
+        },
+        {
+          "pc": 2148350552,
+          "size": 4,
+          "word": 8606611,
+          "rd": 7,
+          "rs1": 6,
+          "rs2": 8,
+          "funct3": 5,
+          "kind": "plain",
+          "mnemonic": "srli",
+          "imm": 8,
+          "successors": [
+            2148350556
+          ]
+        },
+        {
+          "pc": 2148350556,
+          "size": 4,
+          "word": 7562035,
+          "rd": 6,
+          "rs1": 6,
+          "rs2": 7,
+          "funct3": 6,
+          "kind": "plain",
+          "mnemonic": "or",
+          "imm": 7,
+          "successors": [
+            2148350560
+          ]
+        },
+        {
+          "pc": 2148350560,
+          "size": 4,
+          "word": 16995219,
+          "rd": 7,
+          "rs1": 6,
+          "rs2": 16,
+          "funct3": 5,
+          "kind": "plain",
+          "mnemonic": "srli",
+          "imm": 16,
+          "successors": [
+            2148350564
+          ]
+        },
+        {
+          "pc": 2148350564,
+          "size": 4,
+          "word": 7562035,
+          "rd": 6,
+          "rs1": 6,
+          "rs2": 7,
+          "funct3": 6,
+          "kind": "plain",
+          "mnemonic": "or",
+          "imm": 7,
+          "successors": [
+            2148350568
+          ]
+        },
+        {
+          "pc": 2148350568,
+          "size": 4,
+          "word": 33772435,
+          "rd": 7,
+          "rs1": 6,
+          "rs2": 0,
+          "funct3": 5,
+          "kind": "plain",
+          "mnemonic": "srli",
+          "imm": 32,
+          "successors": [
+            2148350572
+          ]
+        },
+        {
+          "pc": 2148350572,
+          "size": 4,
+          "word": 7562035,
+          "rd": 6,
+          "rs1": 6,
+          "rs2": 7,
+          "funct3": 6,
+          "kind": "plain",
+          "mnemonic": "or",
+          "imm": 7,
+          "successors": [
+            2148350576
+          ]
+        },
+        {
+          "pc": 2148350576,
+          "size": 4,
+          "word": 4294132499,
+          "rd": 6,
+          "rs1": 6,
+          "rs2": 31,
+          "funct3": 4,
+          "kind": "plain",
+          "mnemonic": "xori",
+          "imm": -1,
+          "successors": [
+            2148350580
+          ]
+        },
+        {
+          "pc": 2148350580,
+          "size": 4,
+          "word": 1266579,
+          "rd": 7,
+          "rs1": 6,
+          "rs2": 1,
+          "funct3": 5,
+          "kind": "plain",
+          "mnemonic": "srli",
+          "imm": 1,
+          "successors": [
+            2148350584
+          ]
+        },
+        {
+          "pc": 2148350584,
+          "size": 4,
+          "word": 5501875,
+          "rd": 7,
+          "rs1": 7,
+          "rs2": 5,
+          "funct3": 7,
+          "kind": "plain",
+          "mnemonic": "and",
+          "imm": 5,
+          "successors": [
+            2148350588
+          ]
+        },
+        {
+          "pc": 2148350588,
+          "size": 4,
+          "word": 1081279283,
+          "rd": 6,
+          "rs1": 6,
+          "rs2": 7,
+          "funct3": 0,
+          "kind": "plain",
+          "mnemonic": "sub",
+          "imm": 1031,
+          "successors": [
+            2148350592
+          ]
+        },
+        {
+          "pc": 2148350592,
+          "size": 4,
+          "word": 18052019,
+          "rd": 7,
+          "rs1": 6,
+          "rs2": 17,
+          "funct3": 7,
+          "kind": "plain",
+          "mnemonic": "and",
+          "imm": 17,
+          "successors": [
+            2148350596
+          ]
+        },
+        {
+          "pc": 2148350596,
+          "size": 4,
+          "word": 2315027,
+          "rd": 6,
+          "rs1": 6,
+          "rs2": 2,
+          "funct3": 5,
+          "kind": "plain",
+          "mnemonic": "srli",
+          "imm": 2,
+          "successors": [
+            2148350600
+          ]
+        },
+        {
+          "pc": 2148350600,
+          "size": 4,
+          "word": 18051891,
+          "rd": 6,
+          "rs1": 6,
+          "rs2": 17,
+          "funct3": 7,
+          "kind": "plain",
+          "mnemonic": "and",
+          "imm": 17,
+          "successors": [
+            2148350604
+          ]
+        },
+        {
+          "pc": 2148350604,
+          "size": 4,
+          "word": 6521651,
+          "rd": 6,
+          "rs1": 7,
+          "rs2": 6,
+          "funct3": 0,
+          "kind": "plain",
+          "mnemonic": "add",
+          "imm": 6,
+          "successors": [
+            2148350608
+          ]
+        },
+        {
+          "pc": 2148350608,
+          "size": 4,
+          "word": 4412307,
+          "rd": 7,
+          "rs1": 6,
+          "rs2": 4,
+          "funct3": 5,
+          "kind": "plain",
+          "mnemonic": "srli",
+          "imm": 4,
+          "successors": [
+            2148350612
+          ]
+        },
+        {
+          "pc": 2148350612,
+          "size": 4,
+          "word": 7537459,
+          "rd": 6,
+          "rs1": 6,
+          "rs2": 7,
+          "funct3": 0,
+          "kind": "plain",
+          "mnemonic": "add",
+          "imm": 7,
+          "successors": [
+            2148350616
+          ]
+        },
+        {
+          "pc": 2148350616,
+          "size": 4,
+          "word": 11760435,
+          "rd": 6,
+          "rs1": 6,
+          "rs2": 11,
+          "funct3": 7,
+          "kind": "plain",
+          "mnemonic": "and",
+          "imm": 11,
+          "successors": [
+            2148350620
+          ]
+        },
+        {
+          "pc": 2148350620,
+          "size": 4,
+          "word": 46334771,
+          "rd": 6,
+          "rs1": 6,
+          "rs2": 12,
+          "funct3": 0,
+          "kind": "plain",
+          "mnemonic": "mul",
+          "imm": 44,
+          "successors": [
+            2148350624
+          ]
+        },
+        {
+          "pc": 2148350624,
+          "size": 4,
+          "word": 58938131,
+          "rd": 6,
+          "rs1": 6,
+          "rs2": 24,
+          "funct3": 5,
+          "kind": "plain",
+          "mnemonic": "srli",
+          "imm": 56,
+          "successors": [
+            2148350628
+          ]
+        },
+        {
+          "pc": 2148350628,
+          "size": 4,
+          "word": 67306259,
+          "rd": 6,
+          "rs1": 6,
+          "rs2": 0,
+          "funct3": 0,
+          "kind": "plain",
+          "mnemonic": "addi",
+          "imm": 64,
+          "successors": [
+            2148350632
+          ]
+        },
+        {
+          "pc": 2148350632,
+          "size": 4,
+          "word": 537330275,
+          "rd": 4,
+          "rs1": 14,
+          "rs2": 0,
+          "funct3": 0,
+          "kind": "branch",
+          "mnemonic": "beq",
+          "imm": 512,
+          "target": 2148351148,
+          "successors": [
+            2148351148,
+            2148350636
+          ]
+        },
+        {
+          "pc": 2148350636,
+          "size": 4,
+          "word": 1529491,
+          "rd": 13,
+          "rs1": 14,
+          "rs2": 1,
+          "funct3": 5,
+          "kind": "plain",
+          "mnemonic": "srli",
+          "imm": 1,
+          "successors": [
+            2148350640
+          ]
+        },
+        {
+          "pc": 2148350640,
+          "size": 4,
+          "word": 14116531,
+          "rd": 13,
+          "rs1": 14,
+          "rs2": 13,
+          "funct3": 6,
+          "kind": "plain",
+          "mnemonic": "or",
+          "imm": 13,
+          "successors": [
+            2148350644
+          ]
+        },
+        {
+          "pc": 2148350644,
+          "size": 4,
+          "word": 2545427,
+          "rd": 14,
+          "rs1": 13,
+          "rs2": 2,
+          "funct3": 5,
+          "kind": "plain",
+          "mnemonic": "srli",
+          "imm": 2,
+          "successors": [
+            2148350648
+          ]
+        },
+        {
+          "pc": 2148350648,
+          "size": 4,
+          "word": 15132339,
+          "rd": 13,
+          "rs1": 13,
+          "rs2": 14,
+          "funct3": 6,
+          "kind": "plain",
+          "mnemonic": "or",
+          "imm": 14,
+          "successors": [
+            2148350652
+          ]
+        },
+        {
+          "pc": 2148350652,
+          "size": 4,
+          "word": 4642579,
+          "rd": 14,
+          "rs1": 13,
+          "rs2": 4,
+          "funct3": 5,
+          "kind": "plain",
+          "mnemonic": "srli",
+          "imm": 4,
+          "successors": [
+            2148350656
+          ]
+        },
+        {
+          "pc": 2148350656,
+          "size": 4,
+          "word": 15132339,
+          "rd": 13,
+          "rs1": 13,
+          "rs2": 14,
+          "funct3": 6,
+          "kind": "plain",
+          "mnemonic": "or",
+          "imm": 14,
+          "successors": [
+            2148350660
+          ]
+        },
+        {
+          "pc": 2148350660,
+          "size": 4,
+          "word": 8836883,
+          "rd": 14,
+          "rs1": 13,
+          "rs2": 8,
+          "funct3": 5,
+          "kind": "plain",
+          "mnemonic": "srli",
+          "imm": 8,
+          "successors": [
+            2148350664
+          ]
+        },
+        {
+          "pc": 2148350664,
+          "size": 4,
+          "word": 15132339,
+          "rd": 13,
+          "rs1": 13,
+          "rs2": 14,
+          "funct3": 6,
+          "kind": "plain",
+          "mnemonic": "or",
+          "imm": 14,
+          "successors": [
+            2148350668
+          ]
+        },
+        {
+          "pc": 2148350668,
+          "size": 4,
+          "word": 17225491,
+          "rd": 14,
+          "rs1": 13,
+          "rs2": 16,
+          "funct3": 5,
+          "kind": "plain",
+          "mnemonic": "srli",
+          "imm": 16,
+          "successors": [
+            2148350672
+          ]
+        },
+        {
+          "pc": 2148350672,
+          "size": 4,
+          "word": 15132339,
+          "rd": 13,
+          "rs1": 13,
+          "rs2": 14,
+          "funct3": 6,
+          "kind": "plain",
+          "mnemonic": "or",
+          "imm": 14,
+          "successors": [
+            2148350676
+          ]
+        },
+        {
+          "pc": 2148350676,
+          "size": 4,
+          "word": 34002707,
+          "rd": 14,
+          "rs1": 13,
+          "rs2": 0,
+          "funct3": 5,
+          "kind": "plain",
+          "mnemonic": "srli",
+          "imm": 32,
+          "successors": [
+            2148350680
+          ]
+        },
+        {
+          "pc": 2148350680,
+          "size": 4,
+          "word": 15132339,
+          "rd": 13,
+          "rs1": 13,
+          "rs2": 14,
+          "funct3": 6,
+          "kind": "plain",
+          "mnemonic": "or",
+          "imm": 14,
+          "successors": [
+            2148350684
+          ]
+        },
+        {
+          "pc": 2148350684,
+          "size": 4,
+          "word": 4294362771,
+          "rd": 13,
+          "rs1": 13,
+          "rs2": 31,
+          "funct3": 4,
+          "kind": "plain",
+          "mnemonic": "xori",
+          "imm": -1,
+          "successors": [
+            2148350688
+          ]
+        },
+        {
+          "pc": 2148350688,
+          "size": 4,
+          "word": 1496851,
+          "rd": 14,
+          "rs1": 13,
+          "rs2": 1,
+          "funct3": 5,
+          "kind": "plain",
+          "mnemonic": "srli",
+          "imm": 1,
+          "successors": [
+            2148350692
+          ]
+        },
+        {
+          "pc": 2148350692,
+          "size": 4,
+          "word": 5732147,
+          "rd": 14,
+          "rs1": 14,
+          "rs2": 5,
+          "funct3": 7,
+          "kind": "plain",
+          "mnemonic": "and",
+          "imm": 5,
+          "successors": [
+            2148350696
+          ]
+        },
+        {
+          "pc": 2148350696,
+          "size": 4,
+          "word": 1088849587,
+          "rd": 13,
+          "rs1": 13,
+          "rs2": 14,
+          "funct3": 0,
+          "kind": "plain",
+          "mnemonic": "sub",
+          "imm": 1038,
+          "successors": [
+            2148350700
+          ]
+        },
+        {
+          "pc": 2148350700,
+          "size": 4,
+          "word": 18282291,
+          "rd": 14,
+          "rs1": 13,
+          "rs2": 17,
+          "funct3": 7,
+          "kind": "plain",
+          "mnemonic": "and",
+          "imm": 17,
+          "successors": [
+            2148350704
+          ]
+        },
+        {
+          "pc": 2148350704,
+          "size": 4,
+          "word": 2545299,
+          "rd": 13,
+          "rs1": 13,
+          "rs2": 2,
+          "funct3": 5,
+          "kind": "plain",
+          "mnemonic": "srli",
+          "imm": 2,
+          "successors": [
+            2148350708
+          ]
+        },
+        {
+          "pc": 2148350708,
+          "size": 4,
+          "word": 18282163,
+          "rd": 13,
+          "rs1": 13,
+          "rs2": 17,
+          "funct3": 7,
+          "kind": "plain",
+          "mnemonic": "and",
+          "imm": 17,
+          "successors": [
+            2148350712
+          ]
+        },
+        {
+          "pc": 2148350712,
+          "size": 4,
+          "word": 14091955,
+          "rd": 13,
+          "rs1": 14,
+          "rs2": 13,
+          "funct3": 0,
+          "kind": "plain",
+          "mnemonic": "add",
+          "imm": 13,
+          "successors": [
+            2148350716
+          ]
+        },
+        {
+          "pc": 2148350716,
+          "size": 4,
+          "word": 4642579,
+          "rd": 14,
+          "rs1": 13,
+          "rs2": 4,
+          "funct3": 5,
+          "kind": "plain",
+          "mnemonic": "srli",
+          "imm": 4,
+          "successors": [
+            2148350720
+          ]
+        },
+        {
+          "pc": 2148350720,
+          "size": 4,
+          "word": 15107763,
+          "rd": 13,
+          "rs1": 13,
+          "rs2": 14,
+          "funct3": 0,
+          "kind": "plain",
+          "mnemonic": "add",
+          "imm": 14,
+          "successors": [
+            2148350724
+          ]
+        },
+        {
+          "pc": 2148350724,
+          "size": 4,
+          "word": 11990451,
+          "rd": 11,
+          "rs1": 13,
+          "rs2": 11,
+          "funct3": 7,
+          "kind": "plain",
+          "mnemonic": "and",
+          "imm": 11,
+          "successors": [
+            2148350728
+          ]
+        },
+        {
+          "pc": 2148350728,
+          "size": 4,
+          "word": 46499251,
+          "rd": 11,
+          "rs1": 11,
+          "rs2": 12,
+          "funct3": 0,
+          "kind": "plain",
+          "mnemonic": "mul",
+          "imm": 44,
+          "successors": [
+            2148350732
+          ]
+        },
+        {
+          "pc": 2148350732,
+          "size": 4,
+          "word": 59102611,
+          "rd": 11,
+          "rs1": 11,
+          "rs2": 24,
+          "funct3": 5,
+          "kind": "plain",
+          "mnemonic": "srli",
+          "imm": 56,
+          "successors": [
+            2148350736
+          ]
+        },
+        {
+          "pc": 2148350736,
+          "size": 4,
+          "word": 17294899,
+          "rd": 12,
+          "rs1": 15,
+          "rs2": 16,
+          "funct3": 6,
+          "kind": "plain",
+          "mnemonic": "or",
+          "imm": 16,
+          "successors": [
+            2148350740
+          ]
+        },
+        {
+          "pc": 2148350740,
+          "size": 4,
+          "word": 537265251,
+          "rd": 8,
+          "rs1": 12,
+          "rs2": 0,
+          "funct3": 0,
+          "kind": "branch",
+          "mnemonic": "beq",
+          "imm": 512,
+          "target": 2148351260,
+          "successors": [
+            2148351260,
+            2148350744
+          ]
+        },
+        {
+          "pc": 2148350744,
+          "size": 4,
+          "word": 545259631,
+          "rd": 0,
+          "rs1": 0,
+          "rs2": 8,
+          "funct3": 0,
+          "kind": "jump",
+          "mnemonic": "jal",
+          "imm": 520,
+          "target": 2148351264,
+          "successors": [
+            2148351264
+          ]
+        },
+        {
+          "pc": 2148350748,
+          "size": 4,
+          "word": 18245171,
+          "rd": 12,
+          "rs1": 12,
+          "rs2": 17,
+          "funct3": 6,
+          "kind": "plain",
+          "mnemonic": "or",
+          "imm": 17,
+          "successors": [
+            2148350752
+          ]
+        },
+        {
+          "pc": 2148350752,
+          "size": 4,
+          "word": 805701731,
+          "rd": 16,
+          "rs1": 12,
+          "rs2": 0,
+          "funct3": 0,
+          "kind": "branch",
+          "mnemonic": "beq",
+          "imm": 768,
+          "target": 2148351536,
+          "successors": [
+            2148351536,
+            2148350756
+          ]
+        },
+        {
+          "pc": 2148350756,
+          "size": 4,
+          "word": 1431655991,
+          "rd": 12,
+          "rs1": 10,
+          "rs2": 21,
+          "funct3": 5,
+          "kind": "plain",
+          "mnemonic": "lui",
+          "imm": 1431654400,
+          "successors": [
+            2148350760
+          ]
+        },
+        {
+          "pc": 2148350760,
+          "size": 4,
+          "word": 858994871,
+          "rd": 17,
+          "rs1": 6,
+          "rs2": 19,
+          "funct3": 3,
+          "kind": "plain",
+          "mnemonic": "lui",
+          "imm": 858992640,
+          "successors": [
+            2148350764
+          ]
+        },
+        {
+          "pc": 2148350764,
+          "size": 4,
+          "word": 252646071,
+          "rd": 5,
+          "rs1": 30,
+          "rs2": 16,
+          "funct3": 1,
+          "kind": "plain",
+          "mnemonic": "lui",
+          "imm": 252645376,
+          "successors": [
+            2148350768
+          ]
+        },
+        {
+          "pc": 2148350768,
+          "size": 4,
+          "word": 16843575,
+          "rd": 6,
+          "rs1": 2,
+          "rs2": 16,
+          "funct3": 0,
+          "kind": "plain",
+          "mnemonic": "lui",
+          "imm": 16842752,
+          "successors": [
+            2148350772
+          ]
+        },
+        {
+          "pc": 2148350772,
+          "size": 4,
+          "word": 1431701011,
+          "rd": 12,
+          "rs1": 12,
+          "rs2": 21,
+          "funct3": 0,
+          "kind": "plain",
+          "mnemonic": "addi",
+          "imm": 1365,
+          "successors": [
+            2148350776
+          ]
+        },
+        {
+          "pc": 2148350776,
+          "size": 4,
+          "word": 859342995,
+          "rd": 17,
+          "rs1": 17,
+          "rs2": 19,
+          "funct3": 0,
+          "kind": "plain",
+          "mnemonic": "addi",
+          "imm": 819,
+          "successors": [
+            2148350780
+          ]
+        },
+        {
+          "pc": 2148350780,
+          "size": 4,
+          "word": 4042425235,
+          "rd": 7,
+          "rs1": 5,
+          "rs2": 15,
+          "funct3": 0,
+          "kind": "plain",
+          "mnemonic": "addi",
+          "imm": -241,
+          "successors": [
+            2148350784
+          ]
+        },
+        {
+          "pc": 2148350784,
+          "size": 4,
+          "word": 269684243,
+          "rd": 28,
+          "rs1": 6,
+          "rs2": 1,
+          "funct3": 0,
+          "kind": "plain",
+          "mnemonic": "addi",
+          "imm": 257,
+          "successors": [
+            2148350788
+          ]
+        },
+        {
+          "pc": 2148350788,
+          "size": 4,
+          "word": 33952531,
+          "rd": 6,
+          "rs1": 12,
+          "rs2": 0,
+          "funct3": 1,
+          "kind": "plain",
+          "mnemonic": "slli",
+          "imm": 32,
+          "successors": [
+            2148350792
+          ]
+        },
+        {
+          "pc": 2148350792,
+          "size": 4,
+          "word": 6685491,
+          "rd": 6,
+          "rs1": 12,
+          "rs2": 6,
+          "funct3": 0,
+          "kind": "plain",
+          "mnemonic": "add",
+          "imm": 6,
+          "successors": [
+            2148350796
+          ]
+        },
+        {
+          "pc": 2148350796,
+          "size": 4,
+          "word": 34116243,
+          "rd": 5,
+          "rs1": 17,
+          "rs2": 0,
+          "funct3": 1,
+          "kind": "plain",
+          "mnemonic": "slli",
+          "imm": 32,
+          "successors": [
+            2148350800
+          ]
+        },
+        {
+          "pc": 2148350800,
+          "size": 4,
+          "word": 5800627,
+          "rd": 5,
+          "rs1": 17,
+          "rs2": 5,
+          "funct3": 0,
+          "kind": "plain",
+          "mnemonic": "add",
+          "imm": 5,
+          "successors": [
+            2148350804
+          ]
+        },
+        {
+          "pc": 2148350804,
+          "size": 4,
+          "word": 33789459,
+          "rd": 12,
+          "rs1": 7,
+          "rs2": 0,
+          "funct3": 1,
+          "kind": "plain",
+          "mnemonic": "slli",
+          "imm": 32,
+          "successors": [
+            2148350808
+          ]
+        },
+        {
+          "pc": 2148350808,
+          "size": 4,
+          "word": 12813875,
+          "rd": 12,
+          "rs1": 7,
+          "rs2": 12,
+          "funct3": 0,
+          "kind": "plain",
+          "mnemonic": "add",
+          "imm": 12,
+          "successors": [
+            2148350812
+          ]
+        },
+        {
+          "pc": 2148350812,
+          "size": 4,
+          "word": 34478227,
+          "rd": 17,
+          "rs1": 28,
+          "rs2": 0,
+          "funct3": 1,
+          "kind": "plain",
+          "mnemonic": "slli",
+          "imm": 32,
+          "successors": [
+            2148350816
+          ]
+        },
+        {
+          "pc": 2148350816,
+          "size": 4,
+          "word": 18745523,
+          "rd": 17,
+          "rs1": 28,
+          "rs2": 17,
+          "funct3": 0,
+          "kind": "plain",
+          "mnemonic": "add",
+          "imm": 17,
+          "successors": [
+            2148350820
+          ]
+        },
+        {
+          "pc": 2148350820,
+          "size": 4,
+          "word": 503845987,
+          "rd": 8,
+          "rs1": 16,
+          "rs2": 0,
+          "funct3": 1,
+          "kind": "branch",
+          "mnemonic": "bne",
+          "imm": 480,
+          "target": 2148351308,
+          "successors": [
+            2148351308,
+            2148350824
+          ]
+        },
+        {
+          "pc": 2148350824,
+          "size": 4,
+          "word": 1561491,
+          "rd": 7,
+          "rs1": 15,
+          "rs2": 1,
+          "funct3": 5,
+          "kind": "plain",
+          "mnemonic": "srli",
+          "imm": 1,
+          "successors": [
+            2148350828
+          ]
+        },
+        {
+          "pc": 2148350828,
+          "size": 4,
+          "word": 7857075,
+          "rd": 7,
+          "rs1": 15,
+          "rs2": 7,
+          "funct3": 6,
+          "kind": "plain",
+          "mnemonic": "or",
+          "imm": 7,
+          "successors": [
+            2148350832
+          ]
+        },
+        {
+          "pc": 2148350832,
+          "size": 4,
+          "word": 2350611,
+          "rd": 28,
+          "rs1": 7,
+          "rs2": 2,
+          "funct3": 5,
+          "kind": "plain",
+          "mnemonic": "srli",
+          "imm": 2,
+          "successors": [
+            2148350836
+          ]
+        },
+        {
+          "pc": 2148350836,
+          "size": 4,
+          "word": 29615027,
+          "rd": 7,
+          "rs1": 7,
+          "rs2": 28,
+          "funct3": 6,
+          "kind": "plain",
+          "mnemonic": "or",
+          "imm": 28,
+          "successors": [
+            2148350840
+          ]
+        },
+        {
+          "pc": 2148350840,
+          "size": 4,
+          "word": 4447763,
+          "rd": 28,
+          "rs1": 7,
+          "rs2": 4,
+          "funct3": 5,
+          "kind": "plain",
+          "mnemonic": "srli",
+          "imm": 4,
+          "successors": [
+            2148350844
+          ]
+        },
+        {
+          "pc": 2148350844,
+          "size": 4,
+          "word": 29615027,
+          "rd": 7,
+          "rs1": 7,
+          "rs2": 28,
+          "funct3": 6,
+          "kind": "plain",
+          "mnemonic": "or",
+          "imm": 28,
+          "successors": [
+            2148350848
+          ]
+        },
+        {
+          "pc": 2148350848,
+          "size": 4,
+          "word": 8642067,
+          "rd": 28,
+          "rs1": 7,
+          "rs2": 8,
+          "funct3": 5,
+          "kind": "plain",
+          "mnemonic": "srli",
+          "imm": 8,
+          "successors": [
+            2148350852
+          ]
+        },
+        {
+          "pc": 2148350852,
+          "size": 4,
+          "word": 29615027,
+          "rd": 7,
+          "rs1": 7,
+          "rs2": 28,
+          "funct3": 6,
+          "kind": "plain",
+          "mnemonic": "or",
+          "imm": 28,
+          "successors": [
+            2148350856
+          ]
+        },
+        {
+          "pc": 2148350856,
+          "size": 4,
+          "word": 17030675,
+          "rd": 28,
+          "rs1": 7,
+          "rs2": 16,
+          "funct3": 5,
+          "kind": "plain",
+          "mnemonic": "srli",
+          "imm": 16,
+          "successors": [
+            2148350860
+          ]
+        },
+        {
+          "pc": 2148350860,
+          "size": 4,
+          "word": 29615027,
+          "rd": 7,
+          "rs1": 7,
+          "rs2": 28,
+          "funct3": 6,
+          "kind": "plain",
+          "mnemonic": "or",
+          "imm": 28,
+          "successors": [
+            2148350864
+          ]
+        },
+        {
+          "pc": 2148350864,
+          "size": 4,
+          "word": 33807891,
+          "rd": 28,
+          "rs1": 7,
+          "rs2": 0,
+          "funct3": 5,
+          "kind": "plain",
+          "mnemonic": "srli",
+          "imm": 32,
+          "successors": [
+            2148350868
+          ]
+        },
+        {
+          "pc": 2148350868,
+          "size": 4,
+          "word": 29615027,
+          "rd": 7,
+          "rs1": 7,
+          "rs2": 28,
+          "funct3": 6,
+          "kind": "plain",
+          "mnemonic": "or",
+          "imm": 28,
+          "successors": [
+            2148350872
+          ]
+        },
+        {
+          "pc": 2148350872,
+          "size": 4,
+          "word": 4294165395,
+          "rd": 7,
+          "rs1": 7,
+          "rs2": 31,
+          "funct3": 4,
+          "kind": "plain",
+          "mnemonic": "xori",
+          "imm": -1,
+          "successors": [
+            2148350876
+          ]
+        },
+        {
+          "pc": 2148350876,
+          "size": 4,
+          "word": 1302035,
+          "rd": 28,
+          "rs1": 7,
+          "rs2": 1,
+          "funct3": 5,
+          "kind": "plain",
+          "mnemonic": "srli",
+          "imm": 1,
+          "successors": [
+            2148350880
+          ]
+        },
+        {
+          "pc": 2148350880,
+          "size": 4,
+          "word": 7241267,
+          "rd": 28,
+          "rs1": 28,
+          "rs2": 6,
+          "funct3": 7,
+          "kind": "plain",
+          "mnemonic": "and",
+          "imm": 6,
+          "successors": [
+            2148350884
+          ]
+        },
+        {
+          "pc": 2148350884,
+          "size": 4,
+          "word": 1103332275,
+          "rd": 7,
+          "rs1": 7,
+          "rs2": 28,
+          "funct3": 0,
+          "kind": "plain",
+          "mnemonic": "sub",
+          "imm": 1052,
+          "successors": [
+            2148350888
+          ]
+        },
+        {
+          "pc": 2148350888,
+          "size": 4,
+          "word": 5504563,
+          "rd": 28,
+          "rs1": 7,
+          "rs2": 5,
+          "funct3": 7,
+          "kind": "plain",
+          "mnemonic": "and",
+          "imm": 5,
+          "successors": [
+            2148350892
+          ]
+        },
+        {
+          "pc": 2148350892,
+          "size": 4,
+          "word": 2347923,
+          "rd": 7,
+          "rs1": 7,
+          "rs2": 2,
+          "funct3": 5,
+          "kind": "plain",
+          "mnemonic": "srli",
+          "imm": 2,
+          "successors": [
+            2148350896
+          ]
+        },
+        {
+          "pc": 2148350896,
+          "size": 4,
+          "word": 5501875,
+          "rd": 7,
+          "rs1": 7,
+          "rs2": 5,
+          "funct3": 7,
+          "kind": "plain",
+          "mnemonic": "and",
+          "imm": 5,
+          "successors": [
+            2148350900
+          ]
+        },
+        {
+          "pc": 2148350900,
+          "size": 4,
+          "word": 8258483,
+          "rd": 7,
+          "rs1": 28,
+          "rs2": 7,
+          "funct3": 0,
+          "kind": "plain",
+          "mnemonic": "add",
+          "imm": 7,
+          "successors": [
+            2148350904
+          ]
+        },
+        {
+          "pc": 2148350904,
+          "size": 4,
+          "word": 4447763,
+          "rd": 28,
+          "rs1": 7,
+          "rs2": 4,
+          "funct3": 5,
+          "kind": "plain",
+          "mnemonic": "srli",
+          "imm": 4,
+          "successors": [
+            2148350908
+          ]
+        },
+        {
+          "pc": 2148350908,
+          "size": 4,
+          "word": 29590451,
+          "rd": 7,
+          "rs1": 7,
+          "rs2": 28,
+          "funct3": 0,
+          "kind": "plain",
+          "mnemonic": "add",
+          "imm": 28,
+          "successors": [
+            2148350912
+          ]
+        },
+        {
+          "pc": 2148350912,
+          "size": 4,
+          "word": 12841907,
+          "rd": 7,
+          "rs1": 7,
+          "rs2": 12,
+          "funct3": 7,
+          "kind": "plain",
+          "mnemonic": "and",
+          "imm": 12,
+          "successors": [
+            2148350916
+          ]
+        },
+        {
+          "pc": 2148350916,
+          "size": 4,
+          "word": 51610547,
+          "rd": 7,
+          "rs1": 7,
+          "rs2": 17,
+          "funct3": 0,
+          "kind": "plain",
+          "mnemonic": "mul",
+          "imm": 49,
+          "successors": [
+            2148350920
+          ]
+        },
+        {
+          "pc": 2148350920,
+          "size": 4,
+          "word": 58971027,
+          "rd": 7,
+          "rs1": 7,
+          "rs2": 24,
+          "funct3": 5,
+          "kind": "plain",
+          "mnemonic": "srli",
+          "imm": 56,
+          "successors": [
+            2148350924
+          ]
+        },
+        {
+          "pc": 2148350924,
+          "size": 4,
+          "word": 67339155,
+          "rd": 7,
+          "rs1": 7,
+          "rs2": 0,
+          "funct3": 0,
+          "kind": "plain",
+          "mnemonic": "addi",
+          "imm": 64,
+          "successors": [
+            2148350928
+          ]
+        },
+        {
+          "pc": 2148350928,
+          "size": 4,
+          "word": 503775843,
+          "rd": 4,
+          "rs1": 14,
+          "rs2": 0,
+          "funct3": 0,
+          "kind": "branch",
+          "mnemonic": "beq",
+          "imm": 480,
+          "target": 2148351412,
+          "successors": [
+            2148351412,
+            2148350932
+          ]
+        },
+        {
+          "pc": 2148350932,
+          "size": 4,
+          "word": 1529491,
+          "rd": 13,
+          "rs1": 14,
+          "rs2": 1,
+          "funct3": 5,
+          "kind": "plain",
+          "mnemonic": "srli",
+          "imm": 1,
+          "successors": [
+            2148350936
+          ]
+        },
+        {
+          "pc": 2148350936,
+          "size": 4,
+          "word": 14116531,
+          "rd": 13,
+          "rs1": 14,
+          "rs2": 13,
+          "funct3": 6,
+          "kind": "plain",
+          "mnemonic": "or",
+          "imm": 13,
+          "successors": [
+            2148350940
+          ]
+        },
+        {
+          "pc": 2148350940,
+          "size": 4,
+          "word": 2545427,
+          "rd": 14,
+          "rs1": 13,
+          "rs2": 2,
+          "funct3": 5,
+          "kind": "plain",
+          "mnemonic": "srli",
+          "imm": 2,
+          "successors": [
+            2148350944
+          ]
+        },
+        {
+          "pc": 2148350944,
+          "size": 4,
+          "word": 15132339,
+          "rd": 13,
+          "rs1": 13,
+          "rs2": 14,
+          "funct3": 6,
+          "kind": "plain",
+          "mnemonic": "or",
+          "imm": 14,
+          "successors": [
+            2148350948
+          ]
+        },
+        {
+          "pc": 2148350948,
+          "size": 4,
+          "word": 4642579,
+          "rd": 14,
+          "rs1": 13,
+          "rs2": 4,
+          "funct3": 5,
+          "kind": "plain",
+          "mnemonic": "srli",
+          "imm": 4,
+          "successors": [
+            2148350952
+          ]
+        },
+        {
+          "pc": 2148350952,
+          "size": 4,
+          "word": 15132339,
+          "rd": 13,
+          "rs1": 13,
+          "rs2": 14,
+          "funct3": 6,
+          "kind": "plain",
+          "mnemonic": "or",
+          "imm": 14,
+          "successors": [
+            2148350956
+          ]
+        },
+        {
+          "pc": 2148350956,
+          "size": 4,
+          "word": 8836883,
+          "rd": 14,
+          "rs1": 13,
+          "rs2": 8,
+          "funct3": 5,
+          "kind": "plain",
+          "mnemonic": "srli",
+          "imm": 8,
+          "successors": [
+            2148350960
+          ]
+        },
+        {
+          "pc": 2148350960,
+          "size": 4,
+          "word": 15132339,
+          "rd": 13,
+          "rs1": 13,
+          "rs2": 14,
+          "funct3": 6,
+          "kind": "plain",
+          "mnemonic": "or",
+          "imm": 14,
+          "successors": [
+            2148350964
+          ]
+        },
+        {
+          "pc": 2148350964,
+          "size": 4,
+          "word": 17225491,
+          "rd": 14,
+          "rs1": 13,
+          "rs2": 16,
+          "funct3": 5,
+          "kind": "plain",
+          "mnemonic": "srli",
+          "imm": 16,
+          "successors": [
+            2148350968
+          ]
+        },
+        {
+          "pc": 2148350968,
+          "size": 4,
+          "word": 15132339,
+          "rd": 13,
+          "rs1": 13,
+          "rs2": 14,
+          "funct3": 6,
+          "kind": "plain",
+          "mnemonic": "or",
+          "imm": 14,
+          "successors": [
+            2148350972
+          ]
+        },
+        {
+          "pc": 2148350972,
+          "size": 4,
+          "word": 34002707,
+          "rd": 14,
+          "rs1": 13,
+          "rs2": 0,
+          "funct3": 5,
+          "kind": "plain",
+          "mnemonic": "srli",
+          "imm": 32,
+          "successors": [
+            2148350976
+          ]
+        },
+        {
+          "pc": 2148350976,
+          "size": 4,
+          "word": 15132339,
+          "rd": 13,
+          "rs1": 13,
+          "rs2": 14,
+          "funct3": 6,
+          "kind": "plain",
+          "mnemonic": "or",
+          "imm": 14,
+          "successors": [
+            2148350980
+          ]
+        },
+        {
+          "pc": 2148350980,
+          "size": 4,
+          "word": 4294362771,
+          "rd": 13,
+          "rs1": 13,
+          "rs2": 31,
+          "funct3": 4,
+          "kind": "plain",
+          "mnemonic": "xori",
+          "imm": -1,
+          "successors": [
+            2148350984
+          ]
+        },
+        {
+          "pc": 2148350984,
+          "size": 4,
+          "word": 1496851,
+          "rd": 14,
+          "rs1": 13,
+          "rs2": 1,
+          "funct3": 5,
+          "kind": "plain",
+          "mnemonic": "srli",
+          "imm": 1,
+          "successors": [
+            2148350988
+          ]
+        },
+        {
+          "pc": 2148350988,
+          "size": 4,
+          "word": 6780723,
+          "rd": 14,
+          "rs1": 14,
+          "rs2": 6,
+          "funct3": 7,
+          "kind": "plain",
+          "mnemonic": "and",
+          "imm": 6,
+          "successors": [
+            2148350992
+          ]
+        },
+        {
+          "pc": 2148350992,
+          "size": 4,
+          "word": 1088849587,
+          "rd": 13,
+          "rs1": 13,
+          "rs2": 14,
+          "funct3": 0,
+          "kind": "plain",
+          "mnemonic": "sub",
+          "imm": 1038,
+          "successors": [
+            2148350996
+          ]
+        },
+        {
+          "pc": 2148350996,
+          "size": 4,
+          "word": 5699379,
+          "rd": 14,
+          "rs1": 13,
+          "rs2": 5,
+          "funct3": 7,
+          "kind": "plain",
+          "mnemonic": "and",
+          "imm": 5,
+          "successors": [
+            2148351000
+          ]
+        },
+        {
+          "pc": 2148351000,
+          "size": 4,
+          "word": 2545299,
+          "rd": 13,
+          "rs1": 13,
+          "rs2": 2,
+          "funct3": 5,
+          "kind": "plain",
+          "mnemonic": "srli",
+          "imm": 2,
+          "successors": [
+            2148351004
+          ]
+        },
+        {
+          "pc": 2148351004,
+          "size": 4,
+          "word": 5699251,
+          "rd": 13,
+          "rs1": 13,
+          "rs2": 5,
+          "funct3": 7,
+          "kind": "plain",
+          "mnemonic": "and",
+          "imm": 5,
+          "successors": [
+            2148351008
+          ]
+        },
+        {
+          "pc": 2148351008,
+          "size": 4,
+          "word": 14091955,
+          "rd": 13,
+          "rs1": 14,
+          "rs2": 13,
+          "funct3": 0,
+          "kind": "plain",
+          "mnemonic": "add",
+          "imm": 13,
+          "successors": [
+            2148351012
+          ]
+        },
+        {
+          "pc": 2148351012,
+          "size": 4,
+          "word": 4642579,
+          "rd": 14,
+          "rs1": 13,
+          "rs2": 4,
+          "funct3": 5,
+          "kind": "plain",
+          "mnemonic": "srli",
+          "imm": 4,
+          "successors": [
+            2148351016
+          ]
+        },
+        {
+          "pc": 2148351016,
+          "size": 4,
+          "word": 15107763,
+          "rd": 13,
+          "rs1": 13,
+          "rs2": 14,
+          "funct3": 0,
+          "kind": "plain",
+          "mnemonic": "add",
+          "imm": 14,
+          "successors": [
+            2148351020
+          ]
+        },
+        {
+          "pc": 2148351020,
+          "size": 4,
+          "word": 13039155,
+          "rd": 12,
+          "rs1": 13,
+          "rs2": 12,
+          "funct3": 7,
+          "kind": "plain",
+          "mnemonic": "and",
+          "imm": 12,
+          "successors": [
+            2148351024
+          ]
+        },
+        {
+          "pc": 2148351024,
+          "size": 4,
+          "word": 51775027,
+          "rd": 12,
+          "rs1": 12,
+          "rs2": 17,
+          "funct3": 0,
+          "kind": "plain",
+          "mnemonic": "mul",
+          "imm": 49,
+          "successors": [
+            2148351028
+          ]
+        },
+        {
+          "pc": 2148351028,
+          "size": 4,
+          "word": 59135507,
+          "rd": 12,
+          "rs1": 12,
+          "rs2": 24,
+          "funct3": 5,
+          "kind": "plain",
+          "mnemonic": "srli",
+          "imm": 56,
+          "successors": [
+            2148351032
+          ]
+        },
+        {
+          "pc": 2148351032,
+          "size": 4,
+          "word": 17295027,
+          "rd": 13,
+          "rs1": 15,
+          "rs2": 16,
+          "funct3": 6,
+          "kind": "plain",
+          "mnemonic": "or",
+          "imm": 16,
+          "successors": [
+            2148351036
+          ]
+        },
+        {
+          "pc": 2148351036,
+          "size": 4,
+          "word": 503743587,
+          "rd": 8,
+          "rs1": 13,
+          "rs2": 0,
+          "funct3": 0,
+          "kind": "branch",
+          "mnemonic": "beq",
+          "imm": 480,
+          "target": 2148351524,
+          "successors": [
+            2148351524,
+            2148351040
+          ]
+        },
+        {
+          "pc": 2148351040,
+          "size": 4,
+          "word": 511705199,
+          "rd": 0,
+          "rs1": 0,
+          "rs2": 8,
+          "funct3": 0,
+          "kind": "jump",
+          "mnemonic": "jal",
+          "imm": 488,
+          "target": 2148351528,
+          "successors": [
+            2148351528
+          ]
+        },
+        {
+          "pc": 2148351044,
+          "size": 4,
+          "word": 1594131,
+          "rd": 6,
+          "rs1": 16,
+          "rs2": 1,
+          "funct3": 5,
+          "kind": "plain",
+          "mnemonic": "srli",
+          "imm": 1,
+          "successors": [
+            2148351048
+          ]
+        },
+        {
+          "pc": 2148351048,
+          "size": 4,
+          "word": 6841139,
+          "rd": 6,
+          "rs1": 16,
+          "rs2": 6,
+          "funct3": 6,
+          "kind": "plain",
+          "mnemonic": "or",
+          "imm": 6,
+          "successors": [
+            2148351052
+          ]
+        },
+        {
+          "pc": 2148351052,
+          "size": 4,
+          "word": 2315155,
+          "rd": 7,
+          "rs1": 6,
+          "rs2": 2,
+          "funct3": 5,
+          "kind": "plain",
+          "mnemonic": "srli",
+          "imm": 2,
+          "successors": [
+            2148351056
+          ]
+        },
+        {
+          "pc": 2148351056,
+          "size": 4,
+          "word": 7562035,
+          "rd": 6,
+          "rs1": 6,
+          "rs2": 7,
+          "funct3": 6,
+          "kind": "plain",
+          "mnemonic": "or",
+          "imm": 7,
+          "successors": [
+            2148351060
+          ]
+        },
+        {
+          "pc": 2148351060,
+          "size": 4,
+          "word": 4412307,
+          "rd": 7,
+          "rs1": 6,
+          "rs2": 4,
+          "funct3": 5,
+          "kind": "plain",
+          "mnemonic": "srli",
+          "imm": 4,
+          "successors": [
+            2148351064
+          ]
+        },
+        {
+          "pc": 2148351064,
+          "size": 4,
+          "word": 7562035,
+          "rd": 6,
+          "rs1": 6,
+          "rs2": 7,
+          "funct3": 6,
+          "kind": "plain",
+          "mnemonic": "or",
+          "imm": 7,
+          "successors": [
+            2148351068
+          ]
+        },
+        {
+          "pc": 2148351068,
+          "size": 4,
+          "word": 8606611,
+          "rd": 7,
+          "rs1": 6,
+          "rs2": 8,
+          "funct3": 5,
+          "kind": "plain",
+          "mnemonic": "srli",
+          "imm": 8,
+          "successors": [
+            2148351072
+          ]
+        },
+        {
+          "pc": 2148351072,
+          "size": 4,
+          "word": 7562035,
+          "rd": 6,
+          "rs1": 6,
+          "rs2": 7,
+          "funct3": 6,
+          "kind": "plain",
+          "mnemonic": "or",
+          "imm": 7,
+          "successors": [
+            2148351076
+          ]
+        },
+        {
+          "pc": 2148351076,
+          "size": 4,
+          "word": 16995219,
+          "rd": 7,
+          "rs1": 6,
+          "rs2": 16,
+          "funct3": 5,
+          "kind": "plain",
+          "mnemonic": "srli",
+          "imm": 16,
+          "successors": [
+            2148351080
+          ]
+        },
+        {
+          "pc": 2148351080,
+          "size": 4,
+          "word": 7562035,
+          "rd": 6,
+          "rs1": 6,
+          "rs2": 7,
+          "funct3": 6,
+          "kind": "plain",
+          "mnemonic": "or",
+          "imm": 7,
+          "successors": [
+            2148351084
+          ]
+        },
+        {
+          "pc": 2148351084,
+          "size": 4,
+          "word": 33772435,
+          "rd": 7,
+          "rs1": 6,
+          "rs2": 0,
+          "funct3": 5,
+          "kind": "plain",
+          "mnemonic": "srli",
+          "imm": 32,
+          "successors": [
+            2148351088
+          ]
+        },
+        {
+          "pc": 2148351088,
+          "size": 4,
+          "word": 7562035,
+          "rd": 6,
+          "rs1": 6,
+          "rs2": 7,
+          "funct3": 6,
+          "kind": "plain",
+          "mnemonic": "or",
+          "imm": 7,
+          "successors": [
+            2148351092
+          ]
+        },
+        {
+          "pc": 2148351092,
+          "size": 4,
+          "word": 4294132499,
+          "rd": 6,
+          "rs1": 6,
+          "rs2": 31,
+          "funct3": 4,
+          "kind": "plain",
+          "mnemonic": "xori",
+          "imm": -1,
+          "successors": [
+            2148351096
+          ]
+        },
+        {
+          "pc": 2148351096,
+          "size": 4,
+          "word": 1266579,
+          "rd": 7,
+          "rs1": 6,
+          "rs2": 1,
+          "funct3": 5,
+          "kind": "plain",
+          "mnemonic": "srli",
+          "imm": 1,
+          "successors": [
+            2148351100
+          ]
+        },
+        {
+          "pc": 2148351100,
+          "size": 4,
+          "word": 5501875,
+          "rd": 7,
+          "rs1": 7,
+          "rs2": 5,
+          "funct3": 7,
+          "kind": "plain",
+          "mnemonic": "and",
+          "imm": 5,
+          "successors": [
+            2148351104
+          ]
+        },
+        {
+          "pc": 2148351104,
+          "size": 4,
+          "word": 1081279283,
+          "rd": 6,
+          "rs1": 6,
+          "rs2": 7,
+          "funct3": 0,
+          "kind": "plain",
+          "mnemonic": "sub",
+          "imm": 1031,
+          "successors": [
+            2148351108
+          ]
+        },
+        {
+          "pc": 2148351108,
+          "size": 4,
+          "word": 18052019,
+          "rd": 7,
+          "rs1": 6,
+          "rs2": 17,
+          "funct3": 7,
+          "kind": "plain",
+          "mnemonic": "and",
+          "imm": 17,
+          "successors": [
+            2148351112
+          ]
+        },
+        {
+          "pc": 2148351112,
+          "size": 4,
+          "word": 2315027,
+          "rd": 6,
+          "rs1": 6,
+          "rs2": 2,
+          "funct3": 5,
+          "kind": "plain",
+          "mnemonic": "srli",
+          "imm": 2,
+          "successors": [
+            2148351116
+          ]
+        },
+        {
+          "pc": 2148351116,
+          "size": 4,
+          "word": 18051891,
+          "rd": 6,
+          "rs1": 6,
+          "rs2": 17,
+          "funct3": 7,
+          "kind": "plain",
+          "mnemonic": "and",
+          "imm": 17,
+          "successors": [
+            2148351120
+          ]
+        },
+        {
+          "pc": 2148351120,
+          "size": 4,
+          "word": 6521651,
+          "rd": 6,
+          "rs1": 7,
+          "rs2": 6,
+          "funct3": 0,
+          "kind": "plain",
+          "mnemonic": "add",
+          "imm": 6,
+          "successors": [
+            2148351124
+          ]
+        },
+        {
+          "pc": 2148351124,
+          "size": 4,
+          "word": 4412307,
+          "rd": 7,
+          "rs1": 6,
+          "rs2": 4,
+          "funct3": 5,
+          "kind": "plain",
+          "mnemonic": "srli",
+          "imm": 4,
+          "successors": [
+            2148351128
+          ]
+        },
+        {
+          "pc": 2148351128,
+          "size": 4,
+          "word": 7537459,
+          "rd": 6,
+          "rs1": 6,
+          "rs2": 7,
+          "funct3": 0,
+          "kind": "plain",
+          "mnemonic": "add",
+          "imm": 7,
+          "successors": [
+            2148351132
+          ]
+        },
+        {
+          "pc": 2148351132,
+          "size": 4,
+          "word": 11760435,
+          "rd": 6,
+          "rs1": 6,
+          "rs2": 11,
+          "funct3": 7,
+          "kind": "plain",
+          "mnemonic": "and",
+          "imm": 11,
+          "successors": [
+            2148351136
+          ]
+        },
+        {
+          "pc": 2148351136,
+          "size": 4,
+          "word": 46334771,
+          "rd": 6,
+          "rs1": 6,
+          "rs2": 12,
+          "funct3": 0,
+          "kind": "plain",
+          "mnemonic": "mul",
+          "imm": 44,
+          "successors": [
+            2148351140
+          ]
+        },
+        {
+          "pc": 2148351140,
+          "size": 4,
+          "word": 58938131,
+          "rd": 6,
+          "rs1": 6,
+          "rs2": 24,
+          "funct3": 5,
+          "kind": "plain",
+          "mnemonic": "srli",
+          "imm": 56,
+          "successors": [
+            2148351144
+          ]
+        },
+        {
+          "pc": 2148351144,
+          "size": 4,
+          "word": 3758559971,
+          "rd": 5,
+          "rs1": 14,
+          "rs2": 0,
+          "funct3": 1,
+          "kind": "branch",
+          "mnemonic": "bne",
+          "imm": -512,
+          "target": 2148350636,
+          "successors": [
+            2148350636,
+            2148351148
+          ]
+        },
+        {
+          "pc": 2148351148,
+          "size": 4,
+          "word": 1496851,
+          "rd": 14,
+          "rs1": 13,
+          "rs2": 1,
+          "funct3": 5,
+          "kind": "plain",
+          "mnemonic": "srli",
+          "imm": 1,
+          "successors": [
+            2148351152
+          ]
+        },
+        {
+          "pc": 2148351152,
+          "size": 4,
+          "word": 15132339,
+          "rd": 13,
+          "rs1": 13,
+          "rs2": 14,
+          "funct3": 6,
+          "kind": "plain",
+          "mnemonic": "or",
+          "imm": 14,
+          "successors": [
+            2148351156
+          ]
+        },
+        {
+          "pc": 2148351156,
+          "size": 4,
+          "word": 2545427,
+          "rd": 14,
+          "rs1": 13,
+          "rs2": 2,
+          "funct3": 5,
+          "kind": "plain",
+          "mnemonic": "srli",
+          "imm": 2,
+          "successors": [
+            2148351160
+          ]
+        },
+        {
+          "pc": 2148351160,
+          "size": 4,
+          "word": 15132339,
+          "rd": 13,
+          "rs1": 13,
+          "rs2": 14,
+          "funct3": 6,
+          "kind": "plain",
+          "mnemonic": "or",
+          "imm": 14,
+          "successors": [
+            2148351164
+          ]
+        },
+        {
+          "pc": 2148351164,
+          "size": 4,
+          "word": 4642579,
+          "rd": 14,
+          "rs1": 13,
+          "rs2": 4,
+          "funct3": 5,
+          "kind": "plain",
+          "mnemonic": "srli",
+          "imm": 4,
+          "successors": [
+            2148351168
+          ]
+        },
+        {
+          "pc": 2148351168,
+          "size": 4,
+          "word": 15132339,
+          "rd": 13,
+          "rs1": 13,
+          "rs2": 14,
+          "funct3": 6,
+          "kind": "plain",
+          "mnemonic": "or",
+          "imm": 14,
+          "successors": [
+            2148351172
+          ]
+        },
+        {
+          "pc": 2148351172,
+          "size": 4,
+          "word": 8836883,
+          "rd": 14,
+          "rs1": 13,
+          "rs2": 8,
+          "funct3": 5,
+          "kind": "plain",
+          "mnemonic": "srli",
+          "imm": 8,
+          "successors": [
+            2148351176
+          ]
+        },
+        {
+          "pc": 2148351176,
+          "size": 4,
+          "word": 15132339,
+          "rd": 13,
+          "rs1": 13,
+          "rs2": 14,
+          "funct3": 6,
+          "kind": "plain",
+          "mnemonic": "or",
+          "imm": 14,
+          "successors": [
+            2148351180
+          ]
+        },
+        {
+          "pc": 2148351180,
+          "size": 4,
+          "word": 17225491,
+          "rd": 14,
+          "rs1": 13,
+          "rs2": 16,
+          "funct3": 5,
+          "kind": "plain",
+          "mnemonic": "srli",
+          "imm": 16,
+          "successors": [
+            2148351184
+          ]
+        },
+        {
+          "pc": 2148351184,
+          "size": 4,
+          "word": 15132339,
+          "rd": 13,
+          "rs1": 13,
+          "rs2": 14,
+          "funct3": 6,
+          "kind": "plain",
+          "mnemonic": "or",
+          "imm": 14,
+          "successors": [
+            2148351188
+          ]
+        },
+        {
+          "pc": 2148351188,
+          "size": 4,
+          "word": 34002707,
+          "rd": 14,
+          "rs1": 13,
+          "rs2": 0,
+          "funct3": 5,
+          "kind": "plain",
+          "mnemonic": "srli",
+          "imm": 32,
+          "successors": [
+            2148351192
+          ]
+        },
+        {
+          "pc": 2148351192,
+          "size": 4,
+          "word": 15132339,
+          "rd": 13,
+          "rs1": 13,
+          "rs2": 14,
+          "funct3": 6,
+          "kind": "plain",
+          "mnemonic": "or",
+          "imm": 14,
+          "successors": [
+            2148351196
+          ]
+        },
+        {
+          "pc": 2148351196,
+          "size": 4,
+          "word": 4294362771,
+          "rd": 13,
+          "rs1": 13,
+          "rs2": 31,
+          "funct3": 4,
+          "kind": "plain",
+          "mnemonic": "xori",
+          "imm": -1,
+          "successors": [
+            2148351200
+          ]
+        },
+        {
+          "pc": 2148351200,
+          "size": 4,
+          "word": 1496851,
+          "rd": 14,
+          "rs1": 13,
+          "rs2": 1,
+          "funct3": 5,
+          "kind": "plain",
+          "mnemonic": "srli",
+          "imm": 1,
+          "successors": [
+            2148351204
+          ]
+        },
+        {
+          "pc": 2148351204,
+          "size": 4,
+          "word": 5732147,
+          "rd": 14,
+          "rs1": 14,
+          "rs2": 5,
+          "funct3": 7,
+          "kind": "plain",
+          "mnemonic": "and",
+          "imm": 5,
+          "successors": [
+            2148351208
+          ]
+        },
+        {
+          "pc": 2148351208,
+          "size": 4,
+          "word": 1088849587,
+          "rd": 13,
+          "rs1": 13,
+          "rs2": 14,
+          "funct3": 0,
+          "kind": "plain",
+          "mnemonic": "sub",
+          "imm": 1038,
+          "successors": [
+            2148351212
+          ]
+        },
+        {
+          "pc": 2148351212,
+          "size": 4,
+          "word": 18282291,
+          "rd": 14,
+          "rs1": 13,
+          "rs2": 17,
+          "funct3": 7,
+          "kind": "plain",
+          "mnemonic": "and",
+          "imm": 17,
+          "successors": [
+            2148351216
+          ]
+        },
+        {
+          "pc": 2148351216,
+          "size": 4,
+          "word": 2545299,
+          "rd": 13,
+          "rs1": 13,
+          "rs2": 2,
+          "funct3": 5,
+          "kind": "plain",
+          "mnemonic": "srli",
+          "imm": 2,
+          "successors": [
+            2148351220
+          ]
+        },
+        {
+          "pc": 2148351220,
+          "size": 4,
+          "word": 18282163,
+          "rd": 13,
+          "rs1": 13,
+          "rs2": 17,
+          "funct3": 7,
+          "kind": "plain",
+          "mnemonic": "and",
+          "imm": 17,
+          "successors": [
+            2148351224
+          ]
+        },
+        {
+          "pc": 2148351224,
+          "size": 4,
+          "word": 14091955,
+          "rd": 13,
+          "rs1": 14,
+          "rs2": 13,
+          "funct3": 0,
+          "kind": "plain",
+          "mnemonic": "add",
+          "imm": 13,
+          "successors": [
+            2148351228
+          ]
+        },
+        {
+          "pc": 2148351228,
+          "size": 4,
+          "word": 4642579,
+          "rd": 14,
+          "rs1": 13,
+          "rs2": 4,
+          "funct3": 5,
+          "kind": "plain",
+          "mnemonic": "srli",
+          "imm": 4,
+          "successors": [
+            2148351232
+          ]
+        },
+        {
+          "pc": 2148351232,
+          "size": 4,
+          "word": 15107763,
+          "rd": 13,
+          "rs1": 13,
+          "rs2": 14,
+          "funct3": 0,
+          "kind": "plain",
+          "mnemonic": "add",
+          "imm": 14,
+          "successors": [
+            2148351236
+          ]
+        },
+        {
+          "pc": 2148351236,
+          "size": 4,
+          "word": 11990451,
+          "rd": 11,
+          "rs1": 13,
+          "rs2": 11,
+          "funct3": 7,
+          "kind": "plain",
+          "mnemonic": "and",
+          "imm": 11,
+          "successors": [
+            2148351240
+          ]
+        },
+        {
+          "pc": 2148351240,
+          "size": 4,
+          "word": 46499251,
+          "rd": 11,
+          "rs1": 11,
+          "rs2": 12,
+          "funct3": 0,
+          "kind": "plain",
+          "mnemonic": "mul",
+          "imm": 44,
+          "successors": [
+            2148351244
+          ]
+        },
+        {
+          "pc": 2148351244,
+          "size": 4,
+          "word": 59102611,
+          "rd": 11,
+          "rs1": 11,
+          "rs2": 24,
+          "funct3": 5,
+          "kind": "plain",
+          "mnemonic": "srli",
+          "imm": 56,
+          "successors": [
+            2148351248
+          ]
+        },
+        {
+          "pc": 2148351248,
+          "size": 4,
+          "word": 67470739,
+          "rd": 11,
+          "rs1": 11,
+          "rs2": 0,
+          "funct3": 0,
+          "kind": "plain",
+          "mnemonic": "addi",
+          "imm": 64,
+          "successors": [
+            2148351252
+          ]
+        },
+        {
+          "pc": 2148351252,
+          "size": 4,
+          "word": 17294899,
+          "rd": 12,
+          "rs1": 15,
+          "rs2": 16,
+          "funct3": 6,
+          "kind": "plain",
+          "mnemonic": "or",
+          "imm": 16,
+          "successors": [
+            2148351256
+          ]
+        },
+        {
+          "pc": 2148351256,
+          "size": 4,
+          "word": 398435,
+          "rd": 8,
+          "rs1": 12,
+          "rs2": 0,
+          "funct3": 1,
+          "kind": "branch",
+          "mnemonic": "bne",
+          "imm": 0,
+          "target": 2148351264,
+          "successors": [
+            2148351264,
+            2148351260
+          ]
+        },
+        {
+          "pc": 2148351260,
+          "size": 4,
+          "word": 134578963,
+          "rd": 6,
+          "rs1": 11,
+          "rs2": 0,
+          "funct3": 0,
+          "kind": "plain",
+          "mnemonic": "addi",
+          "imm": 128,
+          "successors": [
+            2148351264
+          ]
+        },
+        {
+          "pc": 2148351264,
+          "size": 4,
+          "word": 268436883,
+          "rd": 11,
+          "rs1": 0,
+          "rs2": 0,
+          "funct3": 0,
+          "kind": "plain",
+          "mnemonic": "addi",
+          "imm": 256,
+          "successors": [
+            2148351268
+          ]
+        },
+        {
+          "pc": 2148351268,
+          "size": 4,
+          "word": 1080395187,
+          "rd": 11,
+          "rs1": 11,
+          "rs2": 6,
+          "funct3": 0,
+          "kind": "plain",
+          "mnemonic": "sub",
+          "imm": 1030,
+          "successors": [
+            2148351272
+          ]
+        },
+        {
+          "pc": 2148351272,
+          "size": 4,
+          "word": 4294280723,
+          "rd": 12,
+          "rs1": 11,
+          "rs2": 31,
+          "funct3": 0,
+          "kind": "plain",
+          "mnemonic": "addi",
+          "imm": -1,
+          "successors": [
+            2148351276
+          ]
+        },
+        {
+          "pc": 2148351276,
+          "size": 4,
+          "word": 12957107,
+          "rd": 11,
+          "rs1": 11,
+          "rs2": 12,
+          "funct3": 3,
+          "kind": "plain",
+          "mnemonic": "sltu",
+          "imm": 12,
+          "successors": [
+            2148351280
+          ]
+        },
+        {
+          "pc": 2148351280,
+          "size": 4,
+          "word": 4294280595,
+          "rd": 11,
+          "rs1": 11,
+          "rs2": 31,
+          "funct3": 0,
+          "kind": "plain",
+          "mnemonic": "addi",
+          "imm": -1,
+          "successors": [
+            2148351284
+          ]
+        },
+        {
+          "pc": 2148351284,
+          "size": 4,
+          "word": 12973491,
+          "rd": 11,
+          "rs1": 11,
+          "rs2": 12,
+          "funct3": 7,
+          "kind": "plain",
+          "mnemonic": "and",
+          "imm": 12,
+          "successors": [
+            2148351288
+          ]
+        },
+        {
+          "pc": 2148351288,
+          "size": 4,
+          "word": 7669267,
+          "rd": 12,
+          "rs1": 10,
+          "rs2": 7,
+          "funct3": 0,
+          "kind": "plain",
+          "mnemonic": "addi",
+          "imm": 7,
+          "successors": [
+            2148351292
+          ]
+        },
+        {
+          "pc": 2148351292,
+          "size": 4,
+          "word": 10892979,
+          "rd": 13,
+          "rs1": 12,
+          "rs2": 10,
+          "funct3": 3,
+          "kind": "plain",
+          "mnemonic": "sltu",
+          "imm": 10,
+          "successors": [
+            2148351296
+          ]
+        },
+        {
+          "pc": 2148351296,
+          "size": 4,
+          "word": 4241755171,
+          "rd": 24,
+          "rs1": 8,
+          "rs2": 13,
+          "funct3": 0,
+          "kind": "store",
+          "mnemonic": "sb",
+          "imm": -40,
+          "width": 1,
+          "successors": [
+            2148351300
+          ],
+          "address_analysis": [
+            "stack",
+            -40
+          ]
+        },
+        {
+          "pc": 2148351300,
+          "size": 4,
+          "word": 413557347,
+          "rd": 4,
+          "rs1": 12,
+          "rs2": 10,
+          "funct3": 6,
+          "kind": "branch",
+          "mnemonic": "bltu",
+          "imm": 394,
+          "target": 2148351688,
+          "successors": [
+            2148351688,
+            2148351304
+          ]
+        },
+        {
+          "pc": 2148351304,
+          "size": 4,
+          "word": 352321647,
+          "rd": 0,
+          "rs1": 0,
+          "rs2": 16,
+          "funct3": 0,
+          "kind": "jump",
+          "mnemonic": "jal",
+          "imm": 336,
+          "target": 2148351640,
+          "successors": [
+            2148351640
+          ]
+        },
+        {
+          "pc": 2148351308,
+          "size": 4,
+          "word": 1594259,
+          "rd": 7,
+          "rs1": 16,
+          "rs2": 1,
+          "funct3": 5,
+          "kind": "plain",
+          "mnemonic": "srli",
+          "imm": 1,
+          "successors": [
+            2148351312
+          ]
+        },
+        {
+          "pc": 2148351312,
+          "size": 4,
+          "word": 7889843,
+          "rd": 7,
+          "rs1": 16,
+          "rs2": 7,
+          "funct3": 6,
+          "kind": "plain",
+          "mnemonic": "or",
+          "imm": 7,
+          "successors": [
+            2148351316
+          ]
+        },
+        {
+          "pc": 2148351316,
+          "size": 4,
+          "word": 2350611,
+          "rd": 28,
+          "rs1": 7,
+          "rs2": 2,
+          "funct3": 5,
+          "kind": "plain",
+          "mnemonic": "srli",
+          "imm": 2,
+          "successors": [
+            2148351320
+          ]
+        },
+        {
+          "pc": 2148351320,
+          "size": 4,
+          "word": 29615027,
+          "rd": 7,
+          "rs1": 7,
+          "rs2": 28,
+          "funct3": 6,
+          "kind": "plain",
+          "mnemonic": "or",
+          "imm": 28,
+          "successors": [
+            2148351324
+          ]
+        },
+        {
+          "pc": 2148351324,
+          "size": 4,
+          "word": 4447763,
+          "rd": 28,
+          "rs1": 7,
+          "rs2": 4,
+          "funct3": 5,
+          "kind": "plain",
+          "mnemonic": "srli",
+          "imm": 4,
+          "successors": [
+            2148351328
+          ]
+        },
+        {
+          "pc": 2148351328,
+          "size": 4,
+          "word": 29615027,
+          "rd": 7,
+          "rs1": 7,
+          "rs2": 28,
+          "funct3": 6,
+          "kind": "plain",
+          "mnemonic": "or",
+          "imm": 28,
+          "successors": [
+            2148351332
+          ]
+        },
+        {
+          "pc": 2148351332,
+          "size": 4,
+          "word": 8642067,
+          "rd": 28,
+          "rs1": 7,
+          "rs2": 8,
+          "funct3": 5,
+          "kind": "plain",
+          "mnemonic": "srli",
+          "imm": 8,
+          "successors": [
+            2148351336
+          ]
+        },
+        {
+          "pc": 2148351336,
+          "size": 4,
+          "word": 29615027,
+          "rd": 7,
+          "rs1": 7,
+          "rs2": 28,
+          "funct3": 6,
+          "kind": "plain",
+          "mnemonic": "or",
+          "imm": 28,
+          "successors": [
+            2148351340
+          ]
+        },
+        {
+          "pc": 2148351340,
+          "size": 4,
+          "word": 17030675,
+          "rd": 28,
+          "rs1": 7,
+          "rs2": 16,
+          "funct3": 5,
+          "kind": "plain",
+          "mnemonic": "srli",
+          "imm": 16,
+          "successors": [
+            2148351344
+          ]
+        },
+        {
+          "pc": 2148351344,
+          "size": 4,
+          "word": 29615027,
+          "rd": 7,
+          "rs1": 7,
+          "rs2": 28,
+          "funct3": 6,
+          "kind": "plain",
+          "mnemonic": "or",
+          "imm": 28,
+          "successors": [
+            2148351348
+          ]
+        },
+        {
+          "pc": 2148351348,
+          "size": 4,
+          "word": 33807891,
+          "rd": 28,
+          "rs1": 7,
+          "rs2": 0,
+          "funct3": 5,
+          "kind": "plain",
+          "mnemonic": "srli",
+          "imm": 32,
+          "successors": [
+            2148351352
+          ]
+        },
+        {
+          "pc": 2148351352,
+          "size": 4,
+          "word": 29615027,
+          "rd": 7,
+          "rs1": 7,
+          "rs2": 28,
+          "funct3": 6,
+          "kind": "plain",
+          "mnemonic": "or",
+          "imm": 28,
+          "successors": [
+            2148351356
+          ]
+        },
+        {
+          "pc": 2148351356,
+          "size": 4,
+          "word": 4294165395,
+          "rd": 7,
+          "rs1": 7,
+          "rs2": 31,
+          "funct3": 4,
+          "kind": "plain",
+          "mnemonic": "xori",
+          "imm": -1,
+          "successors": [
+            2148351360
+          ]
+        },
+        {
+          "pc": 2148351360,
+          "size": 4,
+          "word": 1302035,
+          "rd": 28,
+          "rs1": 7,
+          "rs2": 1,
+          "funct3": 5,
+          "kind": "plain",
+          "mnemonic": "srli",
+          "imm": 1,
+          "successors": [
+            2148351364
+          ]
+        },
+        {
+          "pc": 2148351364,
+          "size": 4,
+          "word": 7241267,
+          "rd": 28,
+          "rs1": 28,
+          "rs2": 6,
+          "funct3": 7,
+          "kind": "plain",
+          "mnemonic": "and",
+          "imm": 6,
+          "successors": [
+            2148351368
+          ]
+        },
+        {
+          "pc": 2148351368,
+          "size": 4,
+          "word": 1103332275,
+          "rd": 7,
+          "rs1": 7,
+          "rs2": 28,
+          "funct3": 0,
+          "kind": "plain",
+          "mnemonic": "sub",
+          "imm": 1052,
+          "successors": [
+            2148351372
+          ]
+        },
+        {
+          "pc": 2148351372,
+          "size": 4,
+          "word": 5504563,
+          "rd": 28,
+          "rs1": 7,
+          "rs2": 5,
+          "funct3": 7,
+          "kind": "plain",
+          "mnemonic": "and",
+          "imm": 5,
+          "successors": [
+            2148351376
+          ]
+        },
+        {
+          "pc": 2148351376,
+          "size": 4,
+          "word": 2347923,
+          "rd": 7,
+          "rs1": 7,
+          "rs2": 2,
+          "funct3": 5,
+          "kind": "plain",
+          "mnemonic": "srli",
+          "imm": 2,
+          "successors": [
+            2148351380
+          ]
+        },
+        {
+          "pc": 2148351380,
+          "size": 4,
+          "word": 5501875,
+          "rd": 7,
+          "rs1": 7,
+          "rs2": 5,
+          "funct3": 7,
+          "kind": "plain",
+          "mnemonic": "and",
+          "imm": 5,
+          "successors": [
+            2148351384
+          ]
+        },
+        {
+          "pc": 2148351384,
+          "size": 4,
+          "word": 8258483,
+          "rd": 7,
+          "rs1": 28,
+          "rs2": 7,
+          "funct3": 0,
+          "kind": "plain",
+          "mnemonic": "add",
+          "imm": 7,
+          "successors": [
+            2148351388
+          ]
+        },
+        {
+          "pc": 2148351388,
+          "size": 4,
+          "word": 4447763,
+          "rd": 28,
+          "rs1": 7,
+          "rs2": 4,
+          "funct3": 5,
+          "kind": "plain",
+          "mnemonic": "srli",
+          "imm": 4,
+          "successors": [
+            2148351392
+          ]
+        },
+        {
+          "pc": 2148351392,
+          "size": 4,
+          "word": 29590451,
+          "rd": 7,
+          "rs1": 7,
+          "rs2": 28,
+          "funct3": 0,
+          "kind": "plain",
+          "mnemonic": "add",
+          "imm": 28,
+          "successors": [
+            2148351396
+          ]
+        },
+        {
+          "pc": 2148351396,
+          "size": 4,
+          "word": 12841907,
+          "rd": 7,
+          "rs1": 7,
+          "rs2": 12,
+          "funct3": 7,
+          "kind": "plain",
+          "mnemonic": "and",
+          "imm": 12,
+          "successors": [
+            2148351400
+          ]
+        },
+        {
+          "pc": 2148351400,
+          "size": 4,
+          "word": 51610547,
+          "rd": 7,
+          "rs1": 7,
+          "rs2": 17,
+          "funct3": 0,
+          "kind": "plain",
+          "mnemonic": "mul",
+          "imm": 49,
+          "successors": [
+            2148351404
+          ]
+        },
+        {
+          "pc": 2148351404,
+          "size": 4,
+          "word": 58971027,
+          "rd": 7,
+          "rs1": 7,
+          "rs2": 24,
+          "funct3": 5,
+          "kind": "plain",
+          "mnemonic": "srli",
+          "imm": 56,
+          "successors": [
+            2148351408
+          ]
+        },
+        {
+          "pc": 2148351408,
+          "size": 4,
+          "word": 3792114403,
+          "rd": 5,
+          "rs1": 14,
+          "rs2": 0,
+          "funct3": 1,
+          "kind": "branch",
+          "mnemonic": "bne",
+          "imm": -480,
+          "target": 2148350932,
+          "successors": [
+            2148350932,
+            2148351412
+          ]
+        },
+        {
+          "pc": 2148351412,
+          "size": 4,
+          "word": 1496851,
+          "rd": 14,
+          "rs1": 13,
+          "rs2": 1,
+          "funct3": 5,
+          "kind": "plain",
+          "mnemonic": "srli",
+          "imm": 1,
+          "successors": [
+            2148351416
+          ]
+        },
+        {
+          "pc": 2148351416,
+          "size": 4,
+          "word": 15132339,
+          "rd": 13,
+          "rs1": 13,
+          "rs2": 14,
+          "funct3": 6,
+          "kind": "plain",
+          "mnemonic": "or",
+          "imm": 14,
+          "successors": [
+            2148351420
+          ]
+        },
+        {
+          "pc": 2148351420,
+          "size": 4,
+          "word": 2545427,
+          "rd": 14,
+          "rs1": 13,
+          "rs2": 2,
+          "funct3": 5,
+          "kind": "plain",
+          "mnemonic": "srli",
+          "imm": 2,
+          "successors": [
+            2148351424
+          ]
+        },
+        {
+          "pc": 2148351424,
+          "size": 4,
+          "word": 15132339,
+          "rd": 13,
+          "rs1": 13,
+          "rs2": 14,
+          "funct3": 6,
+          "kind": "plain",
+          "mnemonic": "or",
+          "imm": 14,
+          "successors": [
+            2148351428
+          ]
+        },
+        {
+          "pc": 2148351428,
+          "size": 4,
+          "word": 4642579,
+          "rd": 14,
+          "rs1": 13,
+          "rs2": 4,
+          "funct3": 5,
+          "kind": "plain",
+          "mnemonic": "srli",
+          "imm": 4,
+          "successors": [
+            2148351432
+          ]
+        },
+        {
+          "pc": 2148351432,
+          "size": 4,
+          "word": 15132339,
+          "rd": 13,
+          "rs1": 13,
+          "rs2": 14,
+          "funct3": 6,
+          "kind": "plain",
+          "mnemonic": "or",
+          "imm": 14,
+          "successors": [
+            2148351436
+          ]
+        },
+        {
+          "pc": 2148351436,
+          "size": 4,
+          "word": 8836883,
+          "rd": 14,
+          "rs1": 13,
+          "rs2": 8,
+          "funct3": 5,
+          "kind": "plain",
+          "mnemonic": "srli",
+          "imm": 8,
+          "successors": [
+            2148351440
+          ]
+        },
+        {
+          "pc": 2148351440,
+          "size": 4,
+          "word": 15132339,
+          "rd": 13,
+          "rs1": 13,
+          "rs2": 14,
+          "funct3": 6,
+          "kind": "plain",
+          "mnemonic": "or",
+          "imm": 14,
+          "successors": [
+            2148351444
+          ]
+        },
+        {
+          "pc": 2148351444,
+          "size": 4,
+          "word": 17225491,
+          "rd": 14,
+          "rs1": 13,
+          "rs2": 16,
+          "funct3": 5,
+          "kind": "plain",
+          "mnemonic": "srli",
+          "imm": 16,
+          "successors": [
+            2148351448
+          ]
+        },
+        {
+          "pc": 2148351448,
+          "size": 4,
+          "word": 15132339,
+          "rd": 13,
+          "rs1": 13,
+          "rs2": 14,
+          "funct3": 6,
+          "kind": "plain",
+          "mnemonic": "or",
+          "imm": 14,
+          "successors": [
+            2148351452
+          ]
+        },
+        {
+          "pc": 2148351452,
+          "size": 4,
+          "word": 34002707,
+          "rd": 14,
+          "rs1": 13,
+          "rs2": 0,
+          "funct3": 5,
+          "kind": "plain",
+          "mnemonic": "srli",
+          "imm": 32,
+          "successors": [
+            2148351456
+          ]
+        },
+        {
+          "pc": 2148351456,
+          "size": 4,
+          "word": 15132339,
+          "rd": 13,
+          "rs1": 13,
+          "rs2": 14,
+          "funct3": 6,
+          "kind": "plain",
+          "mnemonic": "or",
+          "imm": 14,
+          "successors": [
+            2148351460
+          ]
+        },
+        {
+          "pc": 2148351460,
+          "size": 4,
+          "word": 4294362771,
+          "rd": 13,
+          "rs1": 13,
+          "rs2": 31,
+          "funct3": 4,
+          "kind": "plain",
+          "mnemonic": "xori",
+          "imm": -1,
+          "successors": [
+            2148351464
+          ]
+        },
+        {
+          "pc": 2148351464,
+          "size": 4,
+          "word": 1496851,
+          "rd": 14,
+          "rs1": 13,
+          "rs2": 1,
+          "funct3": 5,
+          "kind": "plain",
+          "mnemonic": "srli",
+          "imm": 1,
+          "successors": [
+            2148351468
+          ]
+        },
+        {
+          "pc": 2148351468,
+          "size": 4,
+          "word": 6780723,
+          "rd": 14,
+          "rs1": 14,
+          "rs2": 6,
+          "funct3": 7,
+          "kind": "plain",
+          "mnemonic": "and",
+          "imm": 6,
+          "successors": [
+            2148351472
+          ]
+        },
+        {
+          "pc": 2148351472,
+          "size": 4,
+          "word": 1088849587,
+          "rd": 13,
+          "rs1": 13,
+          "rs2": 14,
+          "funct3": 0,
+          "kind": "plain",
+          "mnemonic": "sub",
+          "imm": 1038,
+          "successors": [
+            2148351476
+          ]
+        },
+        {
+          "pc": 2148351476,
+          "size": 4,
+          "word": 5699379,
+          "rd": 14,
+          "rs1": 13,
+          "rs2": 5,
+          "funct3": 7,
+          "kind": "plain",
+          "mnemonic": "and",
+          "imm": 5,
+          "successors": [
+            2148351480
+          ]
+        },
+        {
+          "pc": 2148351480,
+          "size": 4,
+          "word": 2545299,
+          "rd": 13,
+          "rs1": 13,
+          "rs2": 2,
+          "funct3": 5,
+          "kind": "plain",
+          "mnemonic": "srli",
+          "imm": 2,
+          "successors": [
+            2148351484
+          ]
+        },
+        {
+          "pc": 2148351484,
+          "size": 4,
+          "word": 5699251,
+          "rd": 13,
+          "rs1": 13,
+          "rs2": 5,
+          "funct3": 7,
+          "kind": "plain",
+          "mnemonic": "and",
+          "imm": 5,
+          "successors": [
+            2148351488
+          ]
+        },
+        {
+          "pc": 2148351488,
+          "size": 4,
+          "word": 14091955,
+          "rd": 13,
+          "rs1": 14,
+          "rs2": 13,
+          "funct3": 0,
+          "kind": "plain",
+          "mnemonic": "add",
+          "imm": 13,
+          "successors": [
+            2148351492
+          ]
+        },
+        {
+          "pc": 2148351492,
+          "size": 4,
+          "word": 4642579,
+          "rd": 14,
+          "rs1": 13,
+          "rs2": 4,
+          "funct3": 5,
+          "kind": "plain",
+          "mnemonic": "srli",
+          "imm": 4,
+          "successors": [
+            2148351496
+          ]
+        },
+        {
+          "pc": 2148351496,
+          "size": 4,
+          "word": 15107763,
+          "rd": 13,
+          "rs1": 13,
+          "rs2": 14,
+          "funct3": 0,
+          "kind": "plain",
+          "mnemonic": "add",
+          "imm": 14,
+          "successors": [
+            2148351500
+          ]
+        },
+        {
+          "pc": 2148351500,
+          "size": 4,
+          "word": 13039155,
+          "rd": 12,
+          "rs1": 13,
+          "rs2": 12,
+          "funct3": 7,
+          "kind": "plain",
+          "mnemonic": "and",
+          "imm": 12,
+          "successors": [
+            2148351504
+          ]
+        },
+        {
+          "pc": 2148351504,
+          "size": 4,
+          "word": 51775027,
+          "rd": 12,
+          "rs1": 12,
+          "rs2": 17,
+          "funct3": 0,
+          "kind": "plain",
+          "mnemonic": "mul",
+          "imm": 49,
+          "successors": [
+            2148351508
+          ]
+        },
+        {
+          "pc": 2148351508,
+          "size": 4,
+          "word": 59135507,
+          "rd": 12,
+          "rs1": 12,
+          "rs2": 24,
+          "funct3": 5,
+          "kind": "plain",
+          "mnemonic": "srli",
+          "imm": 56,
+          "successors": [
+            2148351512
+          ]
+        },
+        {
+          "pc": 2148351512,
+          "size": 4,
+          "word": 67503635,
+          "rd": 12,
+          "rs1": 12,
+          "rs2": 0,
+          "funct3": 0,
+          "kind": "plain",
+          "mnemonic": "addi",
+          "imm": 64,
+          "successors": [
+            2148351516
+          ]
+        },
+        {
+          "pc": 2148351516,
+          "size": 4,
+          "word": 17295027,
+          "rd": 13,
+          "rs1": 15,
+          "rs2": 16,
+          "funct3": 6,
+          "kind": "plain",
+          "mnemonic": "or",
+          "imm": 16,
+          "successors": [
+            2148351520
+          ]
+        },
+        {
+          "pc": 2148351520,
+          "size": 4,
+          "word": 431203,
+          "rd": 8,
+          "rs1": 13,
+          "rs2": 0,
+          "funct3": 1,
+          "kind": "branch",
+          "mnemonic": "bne",
+          "imm": 0,
+          "target": 2148351528,
+          "successors": [
+            2148351528,
+            2148351524
+          ]
+        },
+        {
+          "pc": 2148351524,
+          "size": 4,
+          "word": 134611859,
+          "rd": 7,
+          "rs1": 12,
+          "rs2": 0,
+          "funct3": 0,
+          "kind": "plain",
+          "mnemonic": "addi",
+          "imm": 128,
+          "successors": [
+            2148351528
+          ]
+        },
+        {
+          "pc": 2148351528,
+          "size": 4,
+          "word": 268437011,
+          "rd": 12,
+          "rs1": 0,
+          "rs2": 0,
+          "funct3": 0,
+          "kind": "plain",
+          "mnemonic": "addi",
+          "imm": 256,
+          "successors": [
+            2148351532
+          ]
+        },
+        {
+          "pc": 2148351532,
+          "size": 4,
+          "word": 1081476659,
+          "rd": 12,
+          "rs1": 12,
+          "rs2": 7,
+          "funct3": 0,
+          "kind": "plain",
+          "mnemonic": "sub",
+          "imm": 1031,
+          "successors": [
+            2148351536
+          ]
+        },
+        {
+          "pc": 2148351536,
+          "size": 4,
+          "word": 4261774739,
+          "rd": 11,
+          "rs1": 11,
+          "rs2": 0,
+          "funct3": 0,
+          "kind": "plain",
+          "mnemonic": "addi",
+          "imm": -32,
+          "successors": [
+            2148351540
+          ]
+        },
+        {
+          "pc": 2148351540,
+          "size": 4,
+          "word": 64345747,
+          "rd": 13,
+          "rs1": 11,
+          "rs2": 29,
+          "funct3": 5,
+          "kind": "plain",
+          "mnemonic": "srli",
+          "imm": 61,
+          "successors": [
+            2148351544
+          ]
+        },
+        {
+          "pc": 2148351544,
+          "size": 4,
+          "word": 13645619,
+          "rd": 14,
+          "rs1": 0,
+          "rs2": 13,
+          "funct3": 3,
+          "kind": "plain",
+          "mnemonic": "sltu",
+          "imm": 13,
+          "successors": [
+            2148351548
+          ]
+        },
+        {
+          "pc": 2148351548,
+          "size": 4,
+          "word": 4242801699,
+          "rd": 8,
+          "rs1": 8,
+          "rs2": 14,
+          "funct3": 0,
+          "kind": "store",
+          "mnemonic": "sb",
+          "imm": -56,
+          "width": 1,
+          "successors": [
+            2148351552
+          ],
+          "address_analysis": [
+            "stack",
+            -56
+          ]
+        },
+        {
+          "pc": 2148351552,
+          "size": 4,
+          "word": 33985635,
+          "rd": 8,
+          "rs1": 13,
+          "rs2": 0,
+          "funct3": 1,
+          "kind": "branch",
+          "mnemonic": "bne",
+          "imm": 32,
+          "target": 2148351592,
+          "successors": [
+            2148351592,
+            2148351556
+          ]
+        },
+        {
+          "pc": 2148351556,
+          "size": 4,
+          "word": 3511955,
+          "rd": 13,
+          "rs1": 11,
+          "rs2": 3,
+          "funct3": 1,
+          "kind": "plain",
+          "mnemonic": "slli",
+          "imm": 3,
+          "successors": [
+            2148351560
+          ]
+        },
+        {
+          "pc": 2148351560,
+          "size": 4,
+          "word": 4294313363,
+          "rd": 11,
+          "rs1": 12,
+          "rs2": 31,
+          "funct3": 0,
+          "kind": "plain",
+          "mnemonic": "addi",
+          "imm": -1,
+          "successors": [
+            2148351564
+          ]
+        },
+        {
+          "pc": 2148351564,
+          "size": 4,
+          "word": 11941427,
+          "rd": 12,
+          "rs1": 12,
+          "rs2": 11,
+          "funct3": 3,
+          "kind": "plain",
+          "mnemonic": "sltu",
+          "imm": 11,
+          "successors": [
+            2148351568
+          ]
+        },
+        {
+          "pc": 2148351568,
+          "size": 4,
+          "word": 4294313491,
+          "rd": 12,
+          "rs1": 12,
+          "rs2": 31,
+          "funct3": 0,
+          "kind": "plain",
+          "mnemonic": "addi",
+          "imm": -1,
+          "successors": [
+            2148351572
+          ]
+        },
+        {
+          "pc": 2148351572,
+          "size": 4,
+          "word": 11957683,
+          "rd": 11,
+          "rs1": 12,
+          "rs2": 11,
+          "funct3": 7,
+          "kind": "plain",
+          "mnemonic": "and",
+          "imm": 11,
+          "successors": [
+            2148351576
+          ]
+        },
+        {
+          "pc": 2148351576,
+          "size": 4,
+          "word": 11961779,
+          "rd": 11,
+          "rs1": 13,
+          "rs2": 11,
+          "funct3": 0,
+          "kind": "plain",
+          "mnemonic": "add",
+          "imm": 11,
+          "successors": [
+            2148351580
+          ]
+        },
+        {
+          "pc": 2148351580,
+          "size": 4,
+          "word": 14005811,
+          "rd": 12,
+          "rs1": 11,
+          "rs2": 13,
+          "funct3": 3,
+          "kind": "plain",
+          "mnemonic": "sltu",
+          "imm": 13,
+          "successors": [
+            2148351584
+          ]
+        },
+        {
+          "pc": 2148351584,
+          "size": 4,
+          "word": 4240705571,
+          "rd": 16,
+          "rs1": 8,
+          "rs2": 12,
+          "funct3": 0,
+          "kind": "store",
+          "mnemonic": "sb",
+          "imm": -48,
+          "width": 1,
+          "successors": [
+            2148351588
+          ],
+          "address_analysis": [
+            "stack",
+            -48
+          ]
+        },
+        {
+          "pc": 2148351588,
+          "size": 4,
+          "word": 14024291,
+          "rd": 28,
+          "rs1": 11,
+          "rs2": 13,
+          "funct3": 7,
+          "kind": "branch",
+          "mnemonic": "bgeu",
+          "imm": 13,
+          "target": 2148351616,
+          "successors": [
+            2148351616,
+            2148351592
+          ]
+        },
+        {
+          "pc": 2148351592,
+          "size": 4,
+          "word": 4293920147,
+          "rd": 11,
+          "rs1": 0,
+          "rs2": 31,
+          "funct3": 0,
+          "kind": "plain",
+          "mnemonic": "addi",
+          "imm": -1,
+          "successors": [
+            2148351596
+          ]
+        },
+        {
+          "pc": 2148351596,
+          "size": 4,
+          "word": 7669267,
+          "rd": 12,
+          "rs1": 10,
+          "rs2": 7,
+          "funct3": 0,
+          "kind": "plain",
+          "mnemonic": "addi",
+          "imm": 7,
+          "successors": [
+            2148351600
+          ]
+        },
+        {
+          "pc": 2148351600,
+          "size": 4,
+          "word": 10892979,
+          "rd": 13,
+          "rs1": 12,
+          "rs2": 10,
+          "funct3": 3,
+          "kind": "plain",
+          "mnemonic": "sltu",
+          "imm": 10,
+          "successors": [
+            2148351604
+          ]
+        },
+        {
+          "pc": 2148351604,
+          "size": 4,
+          "word": 4241755171,
+          "rd": 24,
+          "rs1": 8,
+          "rs2": 13,
+          "funct3": 0,
+          "kind": "store",
+          "mnemonic": "sb",
+          "imm": -40,
+          "width": 1,
+          "successors": [
+            2148351608
+          ],
+          "address_analysis": [
+            "stack",
+            -40
+          ]
+        },
+        {
+          "pc": 2148351608,
+          "size": 4,
+          "word": 44462179,
+          "rd": 0,
+          "rs1": 12,
+          "rs2": 10,
+          "funct3": 7,
+          "kind": "branch",
+          "mnemonic": "bgeu",
+          "imm": 42,
+          "target": 2148351640,
+          "successors": [
+            2148351640,
+            2148351612
+          ]
+        },
+        {
+          "pc": 2148351612,
+          "size": 4,
+          "word": 79691887,
+          "rd": 0,
+          "rs1": 0,
+          "rs2": 12,
+          "funct3": 0,
+          "kind": "jump",
+          "mnemonic": "jal",
+          "imm": 76,
+          "target": 2148351688,
+          "successors": [
+            2148351688
+          ]
+        },
+        {
+          "pc": 2148351616,
+          "size": 4,
+          "word": 1422867,
+          "rd": 12,
+          "rs1": 11,
+          "rs2": 1,
+          "funct3": 3,
+          "kind": "plain",
+          "mnemonic": "sltiu",
+          "imm": 1,
+          "successors": [
+            2148351620
+          ]
+        },
+        {
+          "pc": 2148351620,
+          "size": 4,
+          "word": 12944819,
+          "rd": 11,
+          "rs1": 11,
+          "rs2": 12,
+          "funct3": 0,
+          "kind": "plain",
+          "mnemonic": "add",
+          "imm": 12,
+          "successors": [
+            2148351624
+          ]
+        },
+        {
+          "pc": 2148351624,
+          "size": 4,
+          "word": 7669267,
+          "rd": 12,
+          "rs1": 10,
+          "rs2": 7,
+          "funct3": 0,
+          "kind": "plain",
+          "mnemonic": "addi",
+          "imm": 7,
+          "successors": [
+            2148351628
+          ]
+        },
+        {
+          "pc": 2148351628,
+          "size": 4,
+          "word": 10892979,
+          "rd": 13,
+          "rs1": 12,
+          "rs2": 10,
+          "funct3": 3,
+          "kind": "plain",
+          "mnemonic": "sltu",
+          "imm": 10,
+          "successors": [
+            2148351632
+          ]
+        },
+        {
+          "pc": 2148351632,
+          "size": 4,
+          "word": 4241755171,
+          "rd": 24,
+          "rs1": 8,
+          "rs2": 13,
+          "funct3": 0,
+          "kind": "store",
+          "mnemonic": "sb",
+          "imm": -40,
+          "width": 1,
+          "successors": [
+            2148351636
+          ],
+          "address_analysis": [
+            "stack",
+            -40
+          ]
+        },
+        {
+          "pc": 2148351636,
+          "size": 4,
+          "word": 44460643,
+          "rd": 20,
+          "rs1": 12,
+          "rs2": 10,
+          "funct3": 6,
+          "kind": "branch",
+          "mnemonic": "bltu",
+          "imm": 42,
+          "target": 2148351688,
+          "successors": [
+            2148351688,
+            2148351640
+          ]
+        },
+        {
+          "pc": 2148351640,
+          "size": 4,
+          "word": 3560723,
+          "rd": 10,
+          "rs1": 12,
+          "rs2": 3,
+          "funct3": 5,
+          "kind": "plain",
+          "mnemonic": "srli",
+          "imm": 3,
+          "successors": [
+            2148351644
+          ]
+        },
+        {
+          "pc": 2148351644,
+          "size": 4,
+          "word": 44381747,
+          "rd": 12,
+          "rs1": 10,
+          "rs2": 10,
+          "funct3": 3,
+          "kind": "plain",
+          "mnemonic": "mulhu",
+          "imm": 42,
+          "successors": [
+            2148351648
+          ]
+        },
+        {
+          "pc": 2148351648,
+          "size": 4,
+          "word": 12596915,
+          "rd": 13,
+          "rs1": 0,
+          "rs2": 12,
+          "funct3": 3,
+          "kind": "plain",
+          "mnemonic": "sltu",
+          "imm": 12,
+          "successors": [
+            2148351652
+          ]
+        },
+        {
+          "pc": 2148351652,
+          "size": 4,
+          "word": 4275306531,
+          "rd": 0,
+          "rs1": 8,
+          "rs2": 13,
+          "funct3": 0,
+          "kind": "store",
+          "mnemonic": "sb",
+          "imm": -32,
+          "width": 1,
+          "successors": [
+            2148351656
+          ],
+          "address_analysis": [
+            "stack",
+            -32
+          ]
+        },
+        {
+          "pc": 2148351656,
+          "size": 4,
+          "word": 33951843,
+          "rd": 0,
+          "rs1": 12,
+          "rs2": 0,
+          "funct3": 1,
+          "kind": "branch",
+          "mnemonic": "bne",
+          "imm": 32,
+          "target": 2148351688,
+          "successors": [
+            2148351688,
+            2148351660
+          ]
+        },
+        {
+          "pc": 2148351660,
+          "size": 4,
+          "word": 1422867,
+          "rd": 12,
+          "rs1": 11,
+          "rs2": 1,
+          "funct3": 3,
+          "kind": "plain",
+          "mnemonic": "sltiu",
+          "imm": 1,
+          "successors": [
+            2148351664
+          ]
+        },
+        {
+          "pc": 2148351664,
+          "size": 4,
+          "word": 12944819,
+          "rd": 11,
+          "rs1": 11,
+          "rs2": 12,
+          "funct3": 0,
+          "kind": "plain",
+          "mnemonic": "add",
+          "imm": 12,
+          "successors": [
+            2148351668
+          ]
+        },
+        {
+          "pc": 2148351668,
+          "size": 4,
+          "word": 44369203,
+          "rd": 10,
+          "rs1": 10,
+          "rs2": 10,
+          "funct3": 0,
+          "kind": "plain",
+          "mnemonic": "mul",
+          "imm": 42,
+          "successors": [
+            2148351672
+          ]
+        },
+        {
+          "pc": 2148351672,
+          "size": 4,
+          "word": 45430323,
+          "rd": 12,
+          "rs1": 10,
+          "rs2": 11,
+          "funct3": 3,
+          "kind": "plain",
+          "mnemonic": "mulhu",
+          "imm": 43,
+          "successors": [
+            2148351676
+          ]
+        },
+        {
+          "pc": 2148351676,
+          "size": 4,
+          "word": 12596915,
+          "rd": 13,
+          "rs1": 0,
+          "rs2": 12,
+          "funct3": 3,
+          "kind": "plain",
+          "mnemonic": "sltu",
+          "imm": 12,
+          "successors": [
+            2148351680
+          ]
+        },
+        {
+          "pc": 2148351680,
+          "size": 4,
+          "word": 4275307555,
+          "rd": 8,
+          "rs1": 8,
+          "rs2": 13,
+          "funct3": 0,
+          "kind": "store",
+          "mnemonic": "sb",
+          "imm": -24,
+          "width": 1,
+          "successors": [
+            2148351684
+          ],
+          "address_analysis": [
+            "stack",
+            -24
+          ]
+        },
+        {
+          "pc": 2148351684,
+          "size": 4,
+          "word": 396387,
+          "rd": 24,
+          "rs1": 12,
+          "rs2": 0,
+          "funct3": 0,
+          "kind": "branch",
+          "mnemonic": "beq",
+          "imm": 0,
+          "target": 2148351708,
+          "successors": [
+            2148351708,
+            2148351688
+          ]
+        },
+        {
+          "pc": 2148351688,
+          "size": 4,
+          "word": 4293920019,
+          "rd": 10,
+          "rs1": 0,
+          "rs2": 31,
+          "funct3": 0,
+          "kind": "plain",
+          "mnemonic": "addi",
+          "imm": -1,
+          "successors": [
+            2148351692
+          ]
+        },
+        {
+          "pc": 2148351692,
+          "size": 4,
+          "word": 58798211,
+          "rd": 1,
+          "rs1": 2,
+          "rs2": 24,
+          "funct3": 3,
+          "kind": "load",
+          "mnemonic": "ld",
+          "imm": 56,
+          "width": 8,
+          "successors": [
+            2148351696
+          ],
+          "address_analysis": [
+            "stack",
+            -8
+          ]
+        },
+        {
+          "pc": 2148351696,
+          "size": 4,
+          "word": 50410499,
+          "rd": 8,
+          "rs1": 2,
+          "rs2": 16,
+          "funct3": 3,
+          "kind": "load",
+          "mnemonic": "ld",
+          "imm": 48,
+          "width": 8,
+          "successors": [
+            2148351700
+          ],
+          "address_analysis": [
+            "stack",
+            -16
+          ]
+        },
+        {
+          "pc": 2148351700,
+          "size": 4,
+          "word": 67174675,
+          "rd": 2,
+          "rs1": 2,
+          "rs2": 0,
+          "funct3": 0,
+          "kind": "plain",
+          "mnemonic": "addi",
+          "imm": 64,
+          "successors": [
+            2148351704
+          ]
+        },
+        {
+          "pc": 2148351704,
+          "size": 4,
+          "word": 32871,
+          "rd": 0,
+          "rs1": 1,
+          "rs2": 0,
+          "funct3": 0,
+          "kind": "return",
+          "mnemonic": "jalr",
+          "imm": 0,
+          "successors": []
+        },
+        {
+          "pc": 2148351708,
+          "size": 4,
+          "word": 45417779,
+          "rd": 10,
+          "rs1": 10,
+          "rs2": 11,
+          "funct3": 0,
+          "kind": "plain",
+          "mnemonic": "mul",
+          "imm": 43,
+          "successors": [
+            2148351712
+          ]
+        },
+        {
+          "pc": 2148351712,
+          "size": 4,
+          "word": 2863314359,
+          "rd": 11,
+          "rs1": 21,
+          "rs2": 10,
+          "funct3": 3,
+          "kind": "plain",
+          "mnemonic": "lui",
+          "imm": -1431654400,
+          "successors": [
+            2148351716
+          ]
+        },
+        {
+          "pc": 2148351716,
+          "size": 4,
+          "word": 2864022931,
+          "rd": 11,
+          "rs1": 11,
+          "rs2": 11,
+          "funct3": 0,
+          "kind": "plain",
+          "mnemonic": "addi",
+          "imm": -1365,
+          "successors": [
+            2148351720
+          ]
+        },
+        {
+          "pc": 2148351720,
+          "size": 4,
+          "word": 33920531,
+          "rd": 12,
+          "rs1": 11,
+          "rs2": 0,
+          "funct3": 1,
+          "kind": "plain",
+          "mnemonic": "slli",
+          "imm": 32,
+          "successors": [
+            2148351724
+          ]
+        },
+        {
+          "pc": 2148351724,
+          "size": 4,
+          "word": 12944819,
+          "rd": 11,
+          "rs1": 11,
+          "rs2": 12,
+          "funct3": 0,
+          "kind": "plain",
+          "mnemonic": "add",
+          "imm": 12,
+          "successors": [
+            2148351728
+          ]
+        },
+        {
+          "pc": 2148351728,
+          "size": 4,
+          "word": 45430067,
+          "rd": 10,
+          "rs1": 10,
+          "rs2": 11,
+          "funct3": 3,
+          "kind": "plain",
+          "mnemonic": "mulhu",
+          "imm": 43,
+          "successors": [
+            2148351732
+          ]
+        },
+        {
+          "pc": 2148351732,
+          "size": 4,
+          "word": 1398035,
+          "rd": 10,
+          "rs1": 10,
+          "rs2": 1,
+          "funct3": 5,
+          "kind": "plain",
+          "mnemonic": "srli",
+          "imm": 1,
+          "successors": [
+            2148351736
+          ]
+        },
+        {
+          "pc": 2148351736,
+          "size": 4,
+          "word": 209716627,
+          "rd": 11,
+          "rs1": 0,
+          "rs2": 8,
+          "funct3": 0,
+          "kind": "plain",
+          "mnemonic": "addi",
+          "imm": 200,
+          "successors": [
+            2148351740
+          ]
+        },
+        {
+          "pc": 2148351740,
+          "size": 4,
+          "word": 10871907,
+          "rd": 8,
+          "rs1": 11,
+          "rs2": 10,
+          "funct3": 6,
+          "kind": "branch",
+          "mnemonic": "bltu",
+          "imm": 10,
+          "target": 2148351748,
+          "successors": [
+            2148351748,
+            2148351744
+          ]
+        },
+        {
+          "pc": 2148351744,
+          "size": 4,
+          "word": 209716499,
+          "rd": 10,
+          "rs1": 0,
+          "rs2": 8,
+          "funct3": 0,
+          "kind": "plain",
+          "mnemonic": "addi",
+          "imm": 200,
+          "successors": [
+            2148351748
+          ]
+        },
+        {
+          "pc": 2148351748,
+          "size": 4,
+          "word": 58798211,
+          "rd": 1,
+          "rs1": 2,
+          "rs2": 24,
+          "funct3": 3,
+          "kind": "load",
+          "mnemonic": "ld",
+          "imm": 56,
+          "width": 8,
+          "successors": [
+            2148351752
+          ],
+          "address_analysis": [
+            "stack",
+            -8
+          ]
+        },
+        {
+          "pc": 2148351752,
+          "size": 4,
+          "word": 50410499,
+          "rd": 8,
+          "rs1": 2,
+          "rs2": 16,
+          "funct3": 3,
+          "kind": "load",
+          "mnemonic": "ld",
+          "imm": 48,
+          "width": 8,
+          "successors": [
+            2148351756
+          ],
+          "address_analysis": [
+            "stack",
+            -16
+          ]
+        },
+        {
+          "pc": 2148351756,
+          "size": 4,
+          "word": 67174675,
+          "rd": 2,
+          "rs1": 2,
+          "rs2": 0,
+          "funct3": 0,
+          "kind": "plain",
+          "mnemonic": "addi",
+          "imm": 64,
+          "successors": [
+            2148351760
+          ]
+        },
+        {
+          "pc": 2148351760,
+          "size": 4,
+          "word": 32871,
+          "rd": 0,
+          "rs1": 1,
+          "rs2": 0,
+          "funct3": 0,
+          "kind": "return",
+          "mnemonic": "jalr",
+          "imm": 0,
+          "successors": []
+        }
+      ],
+      "blocks": [
+        {
+          "start": 2148350372,
+          "end": 2148350392,
+          "successors": [
+            2148350396,
+            2148350392
+          ]
+        },
+        {
+          "start": 2148350392,
+          "end": 2148350396,
+          "successors": [
+            2148350396
+          ]
+        },
+        {
+          "start": 2148350396,
+          "end": 2148350412,
+          "successors": [
+            2148350444,
+            2148350412
+          ]
+        },
+        {
+          "start": 2148350412,
+          "end": 2148350420,
+          "successors": [
+            2148350444,
+            2148350420
+          ]
+        },
+        {
+          "start": 2148350420,
+          "end": 2148350440,
+          "successors": [
+            2148351688,
+            2148350440
+          ]
+        },
+        {
+          "start": 2148350440,
+          "end": 2148350444,
+          "successors": [
+            2148351640
+          ]
+        },
+        {
+          "start": 2148350444,
+          "end": 2148350452,
+          "successors": [
+            2148350748,
+            2148350452
+          ]
+        },
+        {
+          "start": 2148350452,
+          "end": 2148350460,
+          "successors": [
+            2148351272,
+            2148350460
+          ]
+        },
+        {
+          "start": 2148350460,
+          "end": 2148350528,
+          "successors": [
+            2148351044,
+            2148350528
+          ]
+        },
+        {
+          "start": 2148350528,
+          "end": 2148350636,
+          "successors": [
+            2148351148,
+            2148350636
+          ]
+        },
+        {
+          "start": 2148350636,
+          "end": 2148350744,
+          "successors": [
+            2148351260,
+            2148350744
+          ]
+        },
+        {
+          "start": 2148350744,
+          "end": 2148350748,
+          "successors": [
+            2148351264
+          ]
+        },
+        {
+          "start": 2148350748,
+          "end": 2148350756,
+          "successors": [
+            2148351536,
+            2148350756
+          ]
+        },
+        {
+          "start": 2148350756,
+          "end": 2148350824,
+          "successors": [
+            2148351308,
+            2148350824
+          ]
+        },
+        {
+          "start": 2148350824,
+          "end": 2148350932,
+          "successors": [
+            2148351412,
+            2148350932
+          ]
+        },
+        {
+          "start": 2148350932,
+          "end": 2148351040,
+          "successors": [
+            2148351524,
+            2148351040
+          ]
+        },
+        {
+          "start": 2148351040,
+          "end": 2148351044,
+          "successors": [
+            2148351528
+          ]
+        },
+        {
+          "start": 2148351044,
+          "end": 2148351148,
+          "successors": [
+            2148350636,
+            2148351148
+          ]
+        },
+        {
+          "start": 2148351148,
+          "end": 2148351260,
+          "successors": [
+            2148351264,
+            2148351260
+          ]
+        },
+        {
+          "start": 2148351260,
+          "end": 2148351264,
+          "successors": [
+            2148351264
+          ]
+        },
+        {
+          "start": 2148351264,
+          "end": 2148351272,
+          "successors": [
+            2148351272
+          ]
+        },
+        {
+          "start": 2148351272,
+          "end": 2148351304,
+          "successors": [
+            2148351688,
+            2148351304
+          ]
+        },
+        {
+          "start": 2148351304,
+          "end": 2148351308,
+          "successors": [
+            2148351640
+          ]
+        },
+        {
+          "start": 2148351308,
+          "end": 2148351412,
+          "successors": [
+            2148350932,
+            2148351412
+          ]
+        },
+        {
+          "start": 2148351412,
+          "end": 2148351524,
+          "successors": [
+            2148351528,
+            2148351524
+          ]
+        },
+        {
+          "start": 2148351524,
+          "end": 2148351528,
+          "successors": [
+            2148351528
+          ]
+        },
+        {
+          "start": 2148351528,
+          "end": 2148351536,
+          "successors": [
+            2148351536
+          ]
+        },
+        {
+          "start": 2148351536,
+          "end": 2148351556,
+          "successors": [
+            2148351592,
+            2148351556
+          ]
+        },
+        {
+          "start": 2148351556,
+          "end": 2148351592,
+          "successors": [
+            2148351616,
+            2148351592
+          ]
+        },
+        {
+          "start": 2148351592,
+          "end": 2148351612,
+          "successors": [
+            2148351640,
+            2148351612
+          ]
+        },
+        {
+          "start": 2148351612,
+          "end": 2148351616,
+          "successors": [
+            2148351688
+          ]
+        },
+        {
+          "start": 2148351616,
+          "end": 2148351640,
+          "successors": [
+            2148351688,
+            2148351640
+          ]
+        },
+        {
+          "start": 2148351640,
+          "end": 2148351660,
+          "successors": [
+            2148351688,
+            2148351660
+          ]
+        },
+        {
+          "start": 2148351660,
+          "end": 2148351688,
+          "successors": [
+            2148351708,
+            2148351688
+          ]
+        },
+        {
+          "start": 2148351688,
+          "end": 2148351708,
+          "successors": []
+        },
+        {
+          "start": 2148351708,
+          "end": 2148351744,
+          "successors": [
+            2148351748,
+            2148351744
+          ]
+        },
+        {
+          "start": 2148351744,
+          "end": 2148351748,
+          "successors": [
+            2148351748
+          ]
+        },
+        {
+          "start": 2148351748,
+          "end": 2148351764,
+          "successors": []
+        }
+      ],
+      "instruction_count": 348,
+      "block_count": 38,
+      "branch_count": 25,
+      "call_count": 0,
+      "calls": [],
+      "returns": [
+        2148351704,
+        2148351760
+      ],
+      "loops": [],
+      "loop_count": 0,
+      "runtime_operations": [],
+      "unresolved": [],
+      "unsupported": [],
+      "dispatch": null,
+      "allocator_argument_register": null
     }
   ],
   "inline_decodeSingleTx": {
@@ -85461,5 +91929,5 @@
     "The decodeTxFields index is between 0 and 4. Caller resource and bound proofs remain separate."
   ],
   "claim": "Conditional static inventory. This report is not a machine-code proof.",
-  "artifact_identity": "0a65ecef84a26877fbde660325fb54871bc3e104997b5caae27f5d7fd5dd355a"
+  "artifact_identity": "000cbd6e50115631af0c580abc4d8342fec7459d23826da94f314422489644f8"
 }

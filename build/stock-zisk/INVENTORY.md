@@ -16,6 +16,8 @@ Conditional static inventory. This report is not a machine-code proof.
 | alt_fl_alloc.remap | 9 | 1 | 0 | 0 | 0 |
 | alt_fl_alloc.free | 149 | 43 | 28 | 0 | 0 |
 | memcpy | 3 | 1 | 0 | 0 | 0 |
+| nibbles.hpDecode | 44 | 10 | 5 | 1 | 0 |
+| modexp.berlinGasCalc | 348 | 38 | 25 | 0 | 0 |
 | dispatch | 31 | 1 | 0 | 0 | 0 |
 | type_0 | 405 | 80 | 45 | 7 | 11 |
 | type_1 | 388 | 85 | 49 | 8 | 13 |
