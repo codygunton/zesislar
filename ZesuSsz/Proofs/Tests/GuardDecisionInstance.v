@@ -29,3 +29,16 @@ Lemma guard_decision_instance_xor `{!islaG Sigma} `{!threadG} (z : Z) (x y : bv 
            (if bool_decide (bv_signed (bv_zero_extend 128 x) < bv_signed (bv_zero_extend 128 y))
             then BV 1 1 else BV 1 0)) (BV 64 1))⌝ ∗ R).
 Proof. intros Hguard. iIntros "HR". zesu_block2. Qed.
+
+(* The same guard, with the fact as an Iris pure hypothesis: it enters the
+   context only when the package route splits the conjunct off, after the
+   last finisher call. *)
+Lemma guard_decision_instance_package `{!islaG Sigma} `{!threadG} (z : Z) (x : bv 64) (R : iProp Sigma) :
+  ⌜~ (bv_unsigned (bv_sub (bv_and (Z_to_bv 64 z) (BV 64 63)) (BV 64 3)) >=
+     bv_unsigned (bv_sub (BV 64 56)
+       (bv_zero_extend 64 (ite (@bool_decide (bv_unsigned x < 128) (Z.lt_dec _ _)) (BV 1 1) (BV 1 0)))))⌝ ∗ R -∗
+  R ∗ ⌜bv_unsigned (bv_sub (bv_and (Z_to_bv 64 z) (BV 64 63)) (BV 64 3)) <
+         bv_unsigned (bv_sub (BV 64 56) (bv_zero_extend 64
+           (if bool_decide (bv_signed (bv_zero_extend 128 x) < bv_signed (BV 128 128))
+            then BV 1 1 else BV 1 0)))⌝.
+Proof. zesu_block2. Qed.
