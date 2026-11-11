@@ -404,15 +404,26 @@ Ltac zesu_solve_machine_bounds :=
     (solve [zesu_normalize_binary_nat_hypotheses;
       zesu_normalize_binary_nat_goal; zesu_normalize_machine_map;
       first [zesu_bv_solve_linked_facts | bv_solve]])].
+(* Without a natural-number order fact or goal, the binary-nat alternative of
+   `zesu_solve_machine_linear` repeats the first one on the same goal and facts:
+   the first clears nothing and the nat normalizers change nothing. *)
+Ltac zesu_nat_order_present :=
+  match goal with
+  | |- (_ <= _)%nat => idtac
+  | |- (_ < _)%nat => idtac
+  | _ : (_ <= _)%nat |- _ => idtac
+  | _ : (_ < _)%nat |- _ => idtac
+  end.
 Ltac zesu_solve_machine_linear :=
   first [zesu_byte_index_arithmetic
     | (first [solve [repeat match goal with
            | Hnat : (_ <= _)%nat |- _ => clear Hnat
            | Hnat : (_ < _)%nat |- _ => clear Hnat
            end; zesu_normalize_machine_map; first [solve [zesu_lia_linked_facts] | lia]] |
-    solve [zesu_normalize_binary_nat_hypotheses;
+    (zesu_nat_order_present;
+     solve [zesu_normalize_binary_nat_hypotheses;
       zesu_normalize_binary_nat_goal; zesu_normalize_machine_map;
-      first [solve [zesu_lia_linked_facts] | lia]]])].
+      first [solve [zesu_lia_linked_facts] | lia]])])].
 (* The flag and remainder closer runs before the finisher saturates derived
    facts, so a range that only a folded hypothesis states (through a
    registered `ZesuDerivedFacts` instance) is missing there. When the goal has
@@ -795,6 +806,27 @@ Ltac zesu_registered_pure_fact P :=
     lazymatch used with true => constr:(proof) end
   end.
 
+(* The introduction scans below resolve a registration for the target before
+   they can succeed. Resolve it first, so that a target without one skips the
+   scans of every hypothesis (the pattern of the witness mapping guard).
+   Introductions take the source as an output; anchors need the relaxed
+   registry view, because their global mode makes the anchor an input. *)
+Ltac zesu_pure_fact_intro_registered target :=
+  assert_succeeds (let _ := constr:(_ : ZesuSsz.Automation.Hooks.ZesuPureFactIntro target _) in idtac).
+
+Ltac zesu_pure_fact_anchor_registered target :=
+  assert_succeeds (let _ := open_constr:(ltac:(zesu_lookup_target_registration)
+    : ZesuSsz.Automation.Hooks.ZesuPureFactAnchor target _ _) in idtac).
+
+Ltac zesu_pure_fact_anchor_scan target :=
+  iMatchHyp ltac:(fun name anchor =>
+    let evidence := constr:(_ : ZesuSsz.Automation.Hooks.ZesuPureFactAnchor target anchor _) in
+    lazymatch type of evidence with
+    | ZesuSsz.Automation.Hooks.ZesuPureFactAnchor _ _ ?source =>
+        let intro := constr:(@ZesuSsz.Automation.Hooks.zesu_pure_fact_anchor_intro _ target anchor source evidence) in
+        iApply (@ZesuSsz.Automation.Hooks.zesu_pure_fact_intro _ target source intro)
+    end).
+
 (* Registered introductions retain their resource and pure obligations. *)
 Ltac zesu_pure_fact_hints_if_enabled :=
   zesu_switch_enabled constr:(ZesuStepPureFactHints);
@@ -808,21 +840,18 @@ Ltac zesu_pure_fact_hints_if_enabled :=
         end
       | zesu_canonical_anchor_if_enabled
       | zesu_pure_fact_existential_if_enabled
-      | let evidence := constr:(_ : ZesuSsz.Automation.Hooks.ZesuPureFactIntro target _) in
-        lazymatch type of evidence with
-        | ZesuSsz.Automation.Hooks.ZesuPureFactIntro _ ?source =>
-            iApply (@ZesuSsz.Automation.Hooks.zesu_pure_fact_intro _ target source evidence)
-        end
-      | iMatchHyp ltac:(fun name source =>
-          let evidence := constr:(_ : ZesuSsz.Automation.Hooks.ZesuPureFactIntro target source) in
-          iApply (@ZesuSsz.Automation.Hooks.zesu_pure_fact_intro _ target source evidence))
-      | iMatchHyp ltac:(fun name anchor =>
-          let evidence := constr:(_ : ZesuSsz.Automation.Hooks.ZesuPureFactAnchor target anchor _) in
-          lazymatch type of evidence with
-          | ZesuSsz.Automation.Hooks.ZesuPureFactAnchor _ _ ?source =>
-              let intro := constr:(@ZesuSsz.Automation.Hooks.zesu_pure_fact_anchor_intro _ target anchor source evidence) in
-              iApply (@ZesuSsz.Automation.Hooks.zesu_pure_fact_intro _ target source intro)
-          end) ]
+      | tryif zesu_pure_fact_intro_registered target then
+          first [
+            let evidence := constr:(_ : ZesuSsz.Automation.Hooks.ZesuPureFactIntro target _) in
+            lazymatch type of evidence with
+            | ZesuSsz.Automation.Hooks.ZesuPureFactIntro _ ?source =>
+                iApply (@ZesuSsz.Automation.Hooks.zesu_pure_fact_intro _ target source evidence)
+            end
+          | iMatchHyp ltac:(fun name source =>
+              let evidence := constr:(_ : ZesuSsz.Automation.Hooks.ZesuPureFactIntro target source) in
+              iApply (@ZesuSsz.Automation.Hooks.zesu_pure_fact_intro _ target source evidence))
+          | zesu_pure_fact_anchor_scan target ]
+        else (zesu_pure_fact_anchor_registered target; zesu_pure_fact_anchor_scan target) ]
   | |- ?P =>
       let evidence := zesu_registered_pure_fact P in exact evidence
   end.
