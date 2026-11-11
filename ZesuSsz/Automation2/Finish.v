@@ -722,11 +722,12 @@ Ltac zesu_finish_source_tail :=
       SourceFactMatching.zesu_source_match_tree requested ltac:(idtac))
     ltac:(fun _ => SourceFactMatching.zesu_source_finish_package).
 
-(* The direct source tail runs last, after the switched closers fail. The
-   full source-package route is not tried here: the deferring step after
-   this cascade runs the same route, closes a package whose fixed facts the
-   source closers prove, and splits off the rest. A package that cannot
-   close ran the route twice. *)
+(* The switched closers. Neither the full source-package route nor the
+   direct source tail is tried here: the deferring step after this cascade
+   runs the route once, closes a package whose fixed facts the source closers
+   prove, and splits off the rest; the tail runs only when the route fails
+   outright. Before, a package that could not close opened its memory tuple
+   three times (strict route, tail, deferring route). *)
 Ltac zesu_finish_residual_cascade :=
   first [solve [
     zesu_finish_residual_switches;
@@ -750,7 +751,7 @@ Ltac zesu_finish_residual_cascade :=
           | solve [ZesuSsz.Automation2.ArrayPayloadPresentation.zesu_array_payload_presentation
               ltac:(first [ZesuSsz.Automation2.SymbolicByteCodec.zesu_symbolic_byte_codec |
       ZesuSsz.Automation2.FramePackingFinish.zesu_frame_packing_finish])] ]
-  ] | solve [zesu_finish_source_tail]].
+  ]].
 
 (* A package that the cascade cannot close because of fixed pure conjuncts.
    The source route commits the witnesses and the resources. Each fixed
@@ -1239,7 +1240,9 @@ Ltac zesu_finish_split_conjunct :=
 (* Residual lemmas close the pure goals that every other tier leaves open. *)
 Ltac zesu_block2 :=
   zesu_block_base; try zesu_finish_residual_cascade;
-  try (zesu_finish_package_deferring; try zesu_finish_split_conjunct; zesu_clear_split_baseline);
+  try first [
+    (zesu_finish_package_deferring; try zesu_finish_split_conjunct; zesu_clear_split_baseline)
+  | solve [zesu_finish_source_tail]];
   try ResidualLemmas.zesu_residual_lemma.
 
 Ltac zesu_block_simpl :=
