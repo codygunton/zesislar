@@ -409,8 +409,11 @@ def stage(config, name):
                 '--target', 'soundness-' + label, '--', shutil.which('dune'), 'build', '--root', str(workspace),
                 '--build-dir', str(build), '--cache=enabled', '-j2', '--display', 'short', *targets],
                 cwd=workspace, env=dict(os.environ, DUNE_CACHE='enabled', **environment), check=True)
-        # A reproducibility check reruns each cached rule: the plugins compile fresh.
-        dune('plugins', PLUGINS, DUNE_CACHE_CHECK_PROBABILITY='1')
+        # The plugins come from the cache too. A native OCaml compile records its
+        # worktree path, so a fresh plugin changed every Coq rule digest outside
+        # the worktree that filled the cache. A plugin acts only at elaboration:
+        # recursive coqchk and the statement checks cover what it produced.
+        dune('plugins', PLUGINS)
         dune('dependencies', ['ZesuSsz/.ZesuSsz.theory.d'])
         graph = project_graph(build)
         # Optionally the trust-context files that the PUBLIC closure contains

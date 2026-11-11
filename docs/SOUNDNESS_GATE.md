@@ -23,7 +23,7 @@ The script refuses an existing output directory.
 The gate performs these stages:
 
 1. It keeps the Dune cache enabled in every step, because Dune reruns every rule when the cache mode changes.
-   It builds both existing plugins with a reproducibility check of probability 1, so each plugin rule runs again.
+   It builds both existing plugins from the cache: a fresh native plugin records its worktree path and changes every Coq rule digest.
    It builds the dependencies of the three PUBLIC theorem files from the cache, without the PUBLIC files themselves.
    Then it builds the PUBLIC files with the reproducibility check: Dune reruns `coqc` for each file.
    The compiler route keeps each new object before Dune links the target to an equal cache entry.
@@ -61,7 +61,7 @@ The source, negative, and wrapper stages use 8 GiB module fences; their compiles
 The coqchk stage uses a 24 GiB fence.
 Every TMPDIR belongs to the output directory under `/home`.
 The proof cache stays disabled.
-The Dune cache serves only the PUBLIC dependency closure; the plugins and the PUBLIC theorem files compile again in the gate.
+The Dune cache serves the PUBLIC dependency closure and the plugins; the PUBLIC theorem files compile again in the gate.
 The script freezes source receipts before the verification stages.
 It preserves raw MCP responses, exact types, object hashes, costs, actor closure, and claim release.
 It checks that `coqchk` changes no project object.
