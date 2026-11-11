@@ -2,12 +2,32 @@ import json
 from pathlib import Path
 import tempfile
 import unittest
+from unittest.mock import patch
 
 from check_decode_item_hints import (
     ROOT, SCOPED_HINT_IMPORTS, exported_modules, imported_modules,
     has_hint_registration, missing_hint_modules,
     manifest_errors, manifest_umbrellas,
 )
+import check_decode_item_hints
+
+# The retired October policy, kept as a fixture: the scoped-import checks still
+# need declared scoped modules and importers to test against.
+HISTORICAL_SCOPED_HINT_IMPORTS = {
+    "ZesuSsz.Compliance.DecodeItemExitDataFacts": (
+        "Scaffolding.DecodeItemC1BMeaning",
+    ),
+    "ZesuSsz.Compliance.DecodeItemLoopDerivedFacts": (
+        "ZesuSsz.Proofs.DecodeItem.Hand.Block800d6a24",
+        "ZesuSsz.Proofs.DecodeItem.Hand.Block800d6ac4",
+    ),
+    "ZesuSsz.Compliance.DecodeItemLoopInitialization": (
+        "ZesuSsz.Proofs.DecodeItem.Auto.Block800d6a14",
+        "ZesuSsz.Proofs.DecodeItem.Auto.Block800d6ab4",
+        "ZesuSsz.Proofs.DecodeItem.Hand.Block800d6a24",
+        "ZesuSsz.Proofs.DecodeItem.Hand.Block800d6ac4",
+    ),
+}
 
 
 class DecodeItemHintCoverageTests(unittest.TestCase):
@@ -69,6 +89,7 @@ class DecodeItemHintCoverageTests(unittest.TestCase):
         ), {"ZesuSsz.Compliance.Fact", "ZesuSsz.Compliance.Other"})
 
 
+@patch.dict(check_decode_item_hints.SCOPED_HINT_IMPORTS, HISTORICAL_SCOPED_HINT_IMPORTS)
 class FunctionHintCoverageTests(unittest.TestCase):
     def fixture(self, root):
         evidence = root / "ZesuSsz/Evidence"
