@@ -1,0 +1,63 @@
+{
+ "schema": "fp301-authenticated-loop-heads-v1",
+ "rows": [
+  {
+   "block": "7780",
+   "source": {
+    "path": "/home/cody/zesislar/.worktrees/heldout-w0/tools/block/functions/hpDecode.json",
+    "sha256": "718c29037f7e7321a2940d21882303052b97dfdc4c0ecd78c7e21b5e29f692f8"
+   },
+   "verification": {
+    "path": "/home/cody/zesislar/_build/agents/heldout-render/w0/col2/forward-hpDecode/FORWARD.json",
+    "sha256": "9e274f34cbd9a46e38cd2baeb4ae559856c680dc75fad6f55876337b41d46b50"
+   },
+   "classes": [
+    "Definition generatedLoop7780Class0 `{!islaG Sigma} `{!threadG} (args : HpDecodeArgs) (returnAddress : Z) (domain : HpDecodeArgs -> Prop) : iProp Sigma :=\n  ((∃ (machine_x12 : bv 64) (machine_x13 : bv 64) (machine_x16 : bv 64) (machine_x17 : bv 64) (i : lvar \"zesuLoopIndex\" Z) (machine_x14 : bv 64) (join_resource_13_bytes : list byte), (reg_col zesu_sys_regs ∗ \"x1\" ↦ᵣ RVal_Bits (((Z_to_bv 64%N (hpDecodeReturnAddress args))) : bv 64%N) ∗ \"x2\" ↦ᵣ RVal_Bits ((bv_add ((Z_to_bv 64%N (hpDecodeStackPointer args))) (BV 64%N 18446744073709551600%Z)) : bv 64%N) ∗ \"x8\" ↦ᵣ RVal_Bits ((bv_add (bv_add ((Z_to_bv 64%N (hpDecodeStackPointer args))) (BV 64%N 18446744073709551600%Z)) (BV 64%N 16%Z)) : bv 64%N) ∗ \"x10\" ↦ᵣ RVal_Bits (((Z_to_bv 64%N (hpDecodeResultPointer args))) : bv 64%N) ∗ \"x11\" ↦ᵣ RVal_Bits ((bv_add ((Z_to_bv 64%N (hpDecodeInputPointer args))) ((Z_to_bv 64%N (hpDecodeInputLength args)))) : bv 64%N) ∗ \"x12\" ↦ᵣ RVal_Bits (machine_x12 : bv 64%N) ∗ \"x13\" ↦ᵣ RVal_Bits (machine_x13 : bv 64%N) ∗ \"x14\" ↦ᵣ RVal_Bits (machine_x14 : bv 64%N) ∗ \"x15\" ↦ᵣ RVal_Bits ((bv_add (bv_or ((bv_sub (bv_sub machine_x13 (Z_to_bv 64 (2 * i))) ((bv_add ((Z_to_bv 64%N (hpDecodeOutputPointer args))) (BV 64%N 1%Z))))) (bv_shiftl ((Z_to_bv 64%N (hpDecodeInputLength args))) (BV 64%N 1%Z))) (BV 64%N 18446744073709551614%Z)) : bv 64%N) ∗ \"x16\" ↦ᵣ RVal_Bits (machine_x16 : bv 64%N) ∗ \"x17\" ↦ᵣ RVal_Bits (machine_x17 : bv 64%N) ∗ hpDecodeInputPointer args ↦ₘ∗ hpDecodeInputBytes args ∗ hpDecodeOutputPointer args ↦ₘ∗ join_resource_13_bytes ∗ hpDecodeResultPointer args ↦ₘ∗ hpDecodeBeforeResult args ∗ ((hpDecodeStackPointer args - hpDecodeStackBytes)) ↦ₘ{DfracOwn 1}∗ ((bv_to_little_endian (Z.of_nat 8%nat) 8%N (bv_unsigned (hpDecodeSavedFramePointer args))) ++ (bv_to_little_endian (Z.of_nat 8%nat) 8%N (bv_unsigned ((Z_to_bv 64%N (hpDecodeReturnAddress args)))))) ∗ ⌜domain args⌝ ∗ ⌜(bv_unsigned (Z_to_bv 64 (hpDecodeReturnAddress args)) mod 4 = 0)%Z⌝ ∗ ⌜(0%Z <= bv_unsigned machine_x14 <= 63%Z)%Z⌝ ∗ ⌜(0%Z <= bv_unsigned (bv_sub (bv_sub machine_x13 (Z_to_bv 64 (2 * i))) ((bv_add ((Z_to_bv 64%N (hpDecodeOutputPointer args))) (BV 64%N 1%Z)))) <= 1%Z)%Z⌝ ∗ ⌜(List.length join_resource_13_bytes = List.length (hpDecodeBeforeOutput args))%nat⌝ ∗ ⌜((negb (bool_decide (((Z_to_bv 64%N (hpDecodeInputLength args))) = (BV 64%N 0%Z))))) = true⌝ ∗ ⌜((bool_decide ((bv_unsigned machine_x14 >= bv_unsigned (BV 64%N 0%Z))%Z))) = true⌝ ∗ ⌜((bool_decide ((bv_unsigned machine_x14 <= bv_unsigned (BV 64%N 63%Z))%Z))) = true⌝ ∗ ⌜((bool_decide ((bv_unsigned ((bv_sub (bv_sub machine_x13 (Z_to_bv 64 (2 * i))) ((bv_add ((Z_to_bv 64%N (hpDecodeOutputPointer args))) (BV 64%N 1%Z))))) >= bv_unsigned (BV 64%N 0%Z))%Z))) = true⌝ ∗ ⌜((bool_decide ((bv_unsigned ((bv_sub (bv_sub machine_x13 (Z_to_bv 64 (2 * i))) ((bv_add ((Z_to_bv 64%N (hpDecodeOutputPointer args))) (BV 64%N 1%Z))))) <= bv_unsigned (BV 64%N 1%Z))%Z))) = true⌝ ∗ ⌜((negb (bool_decide (((Z_to_bv 64%N (hpDecodeInputLength args))) = (BV 64%N 1%Z))))) = true⌝ ∗ ⌜((bool_decide ((bv_signed (bv_zero_extend 128%N (bv_add (bv_add ((Z_to_bv 64%N (hpDecodeStackPointer args))) (BV 64%N 18446744073709551600%Z)) (BV 64%N 8%Z))) >= bv_signed (BV 128%N 2684354560%Z))%Z))) = true⌝ ∗ ⌜((bool_decide ((bv_signed (bv_add (bv_zero_extend 128%N (bv_add (bv_add ((Z_to_bv 64%N (hpDecodeStackPointer args))) (BV 64%N 18446744073709551600%Z)) (BV 64%N 8%Z))) (BV 128%N 8%Z)) <= bv_signed (BV 128%N 3221225472%Z))%Z))) = true⌝ ∗ ⌜((bool_decide ((bv_signed (bv_zero_extend 128%N (bv_add ((Z_to_bv 64%N (hpDecodeStackPointer args))) (BV 64%N 18446744073709551600%Z))) >= bv_signed (BV 128%N 2684354560%Z))%Z))) = true⌝ ∗ ⌜((bool_decide ((bv_signed (bv_add (bv_zero_extend 128%N (bv_add ((Z_to_bv 64%N (hpDecodeStackPointer args))) (BV 64%N 18446744073709551600%Z))) (BV 128%N 8%Z)) <= bv_signed (BV 128%N 3221225472%Z))%Z))) = true⌝ ∗ ⌜bv_unsigned machine_x16 = (bv_unsigned ((bv_add ((Z_to_bv 64%N (hpDecodeInputPointer args))) (BV 64%N 1%Z))) + i)%Z⌝ ∗ ⌜bv_unsigned machine_x13 = (bv_unsigned ((bv_sub machine_x13 (Z_to_bv 64 (2 * i)))) + 2 * i)%Z⌝ ∗ ⌜(0 <= i)%Z⌝ ∗ ⌜bv_unsigned machine_x16 < bv_unsigned ((bv_add ((Z_to_bv 64%N (hpDecodeInputPointer args))) ((Z_to_bv 64%N (hpDecodeInputLength args)))))⌝ ∗ ⌜bv_unsigned ((bv_add ((Z_to_bv 64%N (hpDecodeInputPointer args))) (BV 64%N 1%Z))) = (hpDecodeInputPointer args + 1)%Z⌝ ∗ ⌜bv_unsigned ((bv_add ((Z_to_bv 64%N (hpDecodeInputPointer args))) ((Z_to_bv 64%N (hpDecodeInputLength args))))) = (hpDecodeInputPointer args + hpDecodeInputLength args)%Z⌝ ∗ ⌜(hpDecodeOutputPointer args + 1 <= bv_unsigned ((bv_sub machine_x13 (Z_to_bv 64 (2 * i)))) <= hpDecodeOutputPointer args + 2)%Z⌝)))%I."
+   ],
+   "domain": "domain",
+   "domain_component": "⌜hpDecodeDomainAt returnAddress args⌝",
+   "continuation": "K",
+   "design": {
+    "entry_edge": "0x80067754",
+    "changed_registers": {
+     "x12": "machine_x12",
+     "x13": "machine_x13",
+     "x16": "machine_x16",
+     "x17": "machine_x17"
+    },
+    "resource_facts": 5,
+    "path_conditions": 10,
+    "design_facts": [
+     {
+      "kind": "index_link",
+      "coq": "bv_unsigned machine_x16 = (bv_unsigned {x16} + i)%Z"
+     },
+     {
+      "kind": "index_link",
+      "coq": "bv_unsigned machine_x13 = (bv_unsigned {x13} + 2 * i)%Z"
+     },
+     {
+      "kind": "index_range",
+      "coq": "(0 <= i)%Z"
+     },
+     {
+      "kind": "bound",
+      "coq": "bv_unsigned machine_x16 < bv_unsigned {x11}"
+     },
+     {
+      "kind": "meaning",
+      "coq": "bv_unsigned {x16} = (hpDecodeInputPointer args + 1)%Z"
+     },
+     {
+      "kind": "meaning",
+      "coq": "bv_unsigned {x11} = (hpDecodeInputPointer args + hpDecodeInputLength args)%Z"
+     },
+     {
+      "kind": "meaning",
+      "coq": "(hpDecodeOutputPointer args + 1 <= bv_unsigned {x13} <= hpDecodeOutputPointer args + 2)%Z"
+     }
+    ]
+   }
+  }
+ ]
+}

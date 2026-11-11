@@ -1,0 +1,183 @@
+{
+  "status": "SOURCE_DECLARATIONS_ONLY",
+  "function": "hpDecode",
+  "entries": {
+    "path": "/home/cody/zesislar/_build/agents/heldout-render/w0/col2/render-hpDecode-2/RESULT.json",
+    "sha256": "f97d7df1d5d8702e9d763156fac114acbd9c0169bf13d578fea96e96ef9c2c05"
+  },
+  "cfg": {
+    "path": "/home/cody/zesislar/_build/agents/heldout-render/w0/col2/inputs-hpDecode/FUNCTION.json",
+    "sha256": "fedff45fc31d589732c2ed02de2091bb2c2a7b6a8a29ddc43fac242abb2c5d54"
+  },
+  "rows": [
+    {
+      "case": "7714",
+      "pc": "0x80067714",
+      "successors": [
+        "7718",
+        "7724"
+      ],
+      "status": "rendered",
+      "caller": {
+        "path": "/home/cody/zesislar/_build/agents/heldout-render/w0/col2/callers-hpDecode/Caller7714.v",
+        "sha256": "4c425f9f450e4395fc9fafb0849ae9bef64ea0f20f5fe020bf95293dddfbc966"
+      },
+      "lemma": "DesignedBoundary_80067714",
+      "preconditions": [
+        "instr_pre 0x80067718 (ZesuSsz.Generated.HpDecode.FP301.Pilot7718Entries.fp_machineAt7718 (args) (returnAddress) (K))%I",
+        "instr_pre 0x80067724 (ZesuSsz.Generated.HpDecode.FP301.Pilot7724Entries.fp_machineAt7724 (args) (returnAddress) (K))%I"
+      ]
+    },
+    {
+      "case": "7718",
+      "pc": "0x80067718",
+      "successors": [
+        "7724",
+        "7738"
+      ],
+      "status": "rendered",
+      "caller": {
+        "path": "/home/cody/zesislar/_build/agents/heldout-render/w0/col2/callers-hpDecode/Caller7718.v",
+        "sha256": "7da2923e4a7362d9ca2b4ab2c08792378b57fc17abb82bac03b2b96e152e17ce"
+      },
+      "lemma": "DesignedBoundary_80067718",
+      "preconditions": [
+        "instr_pre 0x80067724 (ZesuSsz.Generated.HpDecode.FP301.Pilot7724Entries.fp_machineAt7724 (args) (returnAddress) (K))%I",
+        "instr_pre 0x80067738 (ZesuSsz.Generated.HpDecode.FP301.Pilot7738Entries.fp_machineAt7738 (args) (returnAddress) (K))%I"
+      ]
+    },
+    {
+      "case": "7724",
+      "pc": "0x80067724",
+      "successors": [],
+      "status": "rendered",
+      "caller": {
+        "path": "/home/cody/zesislar/_build/agents/heldout-render/w0/col2/callers-hpDecode/Caller7724.v",
+        "sha256": "0682e479da7e109ed86ac9e24b99ab207ad61c8f75b186ba0c29324493c76733"
+      },
+      "lemma": "DesignedBoundary_80067724",
+      "preconditions": [
+        "instr_pre returnAddress (ZesuSsz.Generated.HpDecode.FP301.FunctionReturn7734Entries.fp_machineReturn7734 args returnAddress K)"
+      ]
+    },
+    {
+      "case": "7738",
+      "pc": "0x80067738",
+      "successors": [
+        "7740",
+        "774c"
+      ],
+      "status": "rendered",
+      "caller": {
+        "path": "/home/cody/zesislar/_build/agents/heldout-render/w0/col2/callers-hpDecode/Caller7738.v",
+        "sha256": "5695a51ff4ec046fc4f80921351de981b06e26f6c2abb1ca38bc318ff267db58"
+      },
+      "lemma": "DesignedBoundary_80067738",
+      "preconditions": [
+        "instr_pre 0x80067740 (ZesuSsz.Generated.HpDecode.FP301.Pilot7740Entries.fp_machineAt7740 (args) (returnAddress) (K))%I",
+        "instr_pre 0x8006774c (ZesuSsz.Generated.HpDecode.FP301.Pilot774cEntries.fp_machineAt774c (args) (returnAddress) (K))%I"
+      ]
+    },
+    {
+      "case": "7740",
+      "pc": "0x80067740",
+      "successors": [
+        "774c"
+      ],
+      "status": "rendered",
+      "caller": {
+        "path": "/home/cody/zesislar/_build/agents/heldout-render/w0/col2/callers-hpDecode/Caller7740.v",
+        "sha256": "64d5cd520f4a08e816812aef243993c60ff39dc70db4a7e5fad8e8a7754f6f94"
+      },
+      "lemma": "DesignedBoundary_80067740",
+      "preconditions": [
+        "instr_pre 0x8006774c (ZesuSsz.Generated.HpDecode.FP301.Pilot774cEntries.fp_machineAt774c (args) (returnAddress) (K))%I"
+      ]
+    },
+    {
+      "case": "774c",
+      "pc": "0x8006774c",
+      "successors": [
+        "7754",
+        "77ac"
+      ],
+      "status": "rendered",
+      "caller": {
+        "path": "/home/cody/zesislar/_build/agents/heldout-render/w0/col2/callers-hpDecode/Caller774c.v",
+        "sha256": "66e7103347a0beff233ff6d8ff1359605b990156ea06d2fd53c694441f1c237e"
+      },
+      "lemma": "DesignedBoundary_8006774c",
+      "preconditions": [
+        "instr_pre 0x80067754 (ZesuSsz.Generated.HpDecode.FP301.Pilot7754Entries.fp_machineAt7754 (args) (returnAddress) (K))%I",
+        "instr_pre 0x800677ac (ZesuSsz.Generated.HpDecode.FP301.Pilot77acEntries.fp_machineAt77ac (args) (returnAddress) (K))%I"
+      ]
+    },
+    {
+      "case": "7754",
+      "pc": "0x80067754",
+      "successors": [
+        "7780"
+      ],
+      "status": "rendered",
+      "caller": {
+        "path": "/home/cody/zesislar/_build/agents/heldout-render/w0/col2/callers-hpDecode/Caller7754.v",
+        "sha256": "e0f227fc6c1df4e9832fb8a48575502da76b6f2dbd81856aa2b325641b76c9ce"
+      },
+      "lemma": "DesignedBoundary_80067754",
+      "preconditions": [
+        "instr_pre 0x80067780 (ZesuSsz.Generated.HpDecode.FP301.Pilot7780Entries.fp_machineAt7780 (args) (returnAddress) (K))%I"
+      ]
+    },
+    {
+      "case": "7780",
+      "pc": "0x80067780",
+      "successors": [
+        "7780",
+        "77a0"
+      ],
+      "status": "rendered",
+      "caller": {
+        "path": "/home/cody/zesislar/_build/agents/heldout-render/w0/col2/callers-hpDecode/Caller7780.v",
+        "sha256": "335b67d74b013b8e6b3fd3acad08e48e6e4456009de37248f7fa29dd95f8042c"
+      },
+      "lemma": "DesignedBoundary_80067780",
+      "preconditions": [
+        "instr_pre 0x80067780 (ZesuSsz.Generated.HpDecode.FP301.Pilot7780Entries.fp_machineAt7780 (args) (returnAddress) (K))%I",
+        "instr_pre 0x800677a0 (ZesuSsz.Generated.HpDecode.FP301.Pilot77a0Entries.fp_machineAt77a0 (args) (returnAddress) (K))%I"
+      ]
+    },
+    {
+      "case": "77a0",
+      "pc": "0x800677a0",
+      "successors": [
+        "77ac"
+      ],
+      "status": "rendered",
+      "caller": {
+        "path": "/home/cody/zesislar/_build/agents/heldout-render/w0/col2/callers-hpDecode/Caller77a0.v",
+        "sha256": "a8b7def777deb6040e5281b89c6447e5080e886ba27e8de9367812b4d8e38307"
+      },
+      "lemma": "DesignedBoundary_800677a0",
+      "preconditions": [
+        "instr_pre 0x800677ac (ZesuSsz.Generated.HpDecode.FP301.Pilot77acEntries.fp_machineAt77ac (args) (returnAddress) (K))%I"
+      ]
+    },
+    {
+      "case": "77ac",
+      "pc": "0x800677ac",
+      "successors": [],
+      "status": "rendered",
+      "caller": {
+        "path": "/home/cody/zesislar/_build/agents/heldout-render/w0/col2/callers-hpDecode/Caller77ac.v",
+        "sha256": "eaffbbaa788898b19aae8c96a4e2ea8dd0ffdb3a1bf4dc3b52354496fb71a2d1"
+      },
+      "lemma": "DesignedBoundary_800677ac",
+      "preconditions": [
+        "instr_pre returnAddress (ZesuSsz.Generated.HpDecode.FP301.FunctionReturn77c0Entries.fp_machineReturn77c0 args returnAddress K)"
+      ]
+    }
+  ],
+  "rendered": 10,
+  "refused": 0,
+  "proof_ran": false
+}
