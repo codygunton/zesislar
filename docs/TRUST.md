@@ -84,6 +84,13 @@ an empty library-axiom allow-list; runtime premises are listed separately from g
 axioms. The gate does not yet check a compliance theorem because none exists. Every later
 public theorem needs its own reviewed closed type and axiom check.
 
+The PUBLIC soundness gate (`tools/soundness_gate.py`, `docs/SOUNDNESS_GATE.md`) compiles
+the PUBLIC theorem files fresh. It takes their dependency objects from the Dune cache, runs
+the five negative controls and the statement and wrapper checks, and re-checks every object
+with recursive `coqchk`. `coqchk` re-checks cached objects against the kernel, but it does
+not compare an object with its source, so the meaning of a cached dependency definition
+rests on the integrity of the local Dune cache.
+
 The user approved seven named C4 host premises for the rung-3 transaction snapshot.
 Its generated roots declare those seven host extern axioms.
 `SailHostPremises` states their required completion, return values, scratch changes,

@@ -15,13 +15,14 @@ ai-coord watch --label soundness-release -- \
 `SOURCE_WORKSPACE` owns the pinned guest, Zesu, and Zisk source checkouts.
 `TRACE_SOURCE` supplies the trace sources that the tracked build recipe binds.
 The script checks every trace hash before staging.
-It copies no compiled project object into the fresh build.
+It copies no compiled project object into the build itself.
+The dependency closure may restore objects from the Dune cache (stage 1).
 Existing local trace sources need no `--trace-source` option.
 The script refuses an existing output directory.
 
 The gate performs these stages:
 
-1. It builds both existing plugins, then the PUBLIC dependency closure.
+1. It builds both existing plugins without the Dune cache. It builds the PUBLIC dependency closure with the Dune cache enabled. Then it removes the outputs of the three PUBLIC theorem files and compiles them again with the cache disabled. `PUBLIC-FRESH.json` records the removed outputs and the fresh objects.
 2. It compiles five isolated negative candidates and requires the expected checker refusals.
 3. It verifies the four protected PUBLIC statements and compiles four checker-owned typed wrappers.
 4. It runs recursive `coqchk` with the compiler recipe's supported load-path flags.
@@ -48,11 +49,23 @@ The aggregate claim and fence are 64 GiB.
 Source compilation uses 32 GiB module fences and two Dune workers.
 The remaining stages use 24 GiB fences.
 Every TMPDIR belongs to the output directory under `/home`.
-Both caches stay disabled.
+The proof cache stays disabled.
+The Dune cache serves only the PUBLIC dependency closure; the plugins and the PUBLIC theorem files build without it.
 The script freezes source receipts before the verification stages.
 It preserves raw MCP responses, exact types, object hashes, costs, actor closure, and claim release.
 It checks that `coqchk` changes no project object.
 It stops at the first failed stage and retains the attempt.
+
+## Cache trust
+
+A Dune cache entry is keyed by the digests of the compile action's inputs: the source file, the dependency objects, and the compiler command.
+A cached dependency object therefore comes from an earlier compile of the same source with the same dependencies, if the local cache is intact.
+Recursive `coqchk` re-checks every object, cached or fresh, against the kernel.
+A cached object cannot add an unchecked proof or a hidden axiom: `coqchk` rejects an ill-typed term, and the wrapper assumption reports must stay closed.
+`coqchk` does not compare an object with its source file.
+A tampered cache entry could therefore change a dependency definition that a PUBLIC statement unfolds to, while every term still checks.
+The fresh compile of the PUBLIC theorem files, together with the statement checks against the reviewed baseline source, binds the statements themselves; the definitions they unfold to rely on the integrity of the account's Dune cache.
+Compiling the four trust-context files fresh as well (`PUBLIC_CONTEXTS`) would narrow this to definitions outside those files.
 
 This gate checks the PUBLIC closure.
 It does not replace `make check-fast` or the full `make check-iris` gate.
