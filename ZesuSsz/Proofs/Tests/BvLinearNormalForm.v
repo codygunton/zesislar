@@ -40,6 +40,13 @@ Goal bv_unsigned (bv_add p (BV 64 8)) <> bv_unsigned p + 16.
 Proof. zesu_bv_linear_with ltac:(lia). Qed.
 Goal 0 <= x -> x + 8 < 18446744073709551616 -> bv_unsigned (bv_add (Z_to_bv 64 x) (BV 64 8)) = x + 8.
 Proof. intros. zesu_bv_linear_with ltac:(lia). Qed.
+Goal 0 <= x -> x + 8 < bv_modulus 64 -> bv_unsigned (bv_add (Z_to_bv 64 x) (BV 64 8)) = x + 8.
+Proof. intros. zesu_bv_linear_with ltac:(lia). Qed.
+(* A range over unsigned values needs no hypothesis. *)
+Goal bv_unsigned (bv_add p (BV 64 0)) = bv_unsigned p + 0.
+Proof. zesu_bv_linear_with ltac:(fail). Qed.
+Goal 0 <= bv_unsigned p + bv_unsigned q - bv_unsigned q < bv_modulus 64.
+Proof. zesu_bv_linear_range. Qed.
 
 (* False goals and goals outside the fragment fail. *)
 Ltac zesu_bv_linear_lia := zesu_bv_linear_with ltac:(lia).
@@ -51,6 +58,8 @@ Goal bv_unsigned (bv_add (Z_to_bv 64 x) (BV 64 8)) = x + 8.
 Proof. Fail zesu_bv_linear_lia. Abort.
 Goal (bv_unsigned p <= bv_unsigned p + 1)%Z.
 Proof. Fail zesu_bv_linear_lia. Abort.
+Goal 0 <= bv_unsigned p + 1 < bv_modulus 64.
+Proof. Fail zesu_bv_linear_range. Abort.
 (* A goal with an evar is left to the other solvers. *)
 Goal exists y : bv 64, bv_add p (BV 64 8) = bv_add y (BV 64 8).
 Proof. eexists. Fail zesu_bv_linear_lia. Abort.

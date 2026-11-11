@@ -165,6 +165,29 @@ Fixpoint zesuBvLinLitCheck {width : N} (literals : list (bv width)) (term : zesu
 
 (* ---- Denotation and soundness. ---- *)
 
+(* Bounds of a linear integer term whose atoms are all unsigned values of
+   bit vectors (each in [0, top]); None when an integer atom occurs. *)
+Fixpoint zesuTermsBounds (top : Z) (terms : list (zesuLinKey * Z)) : option (Z * Z) :=
+  match terms with
+  | [] => Some (0, 0)
+  | ((true, _), coeff) :: rest =>
+      match zesuTermsBounds top rest with
+      | Some (low, high) => Some (Z.min 0 (coeff * top) + low, Z.max 0 (coeff * top) + high)
+      | None => None
+      end
+  | ((false, _), _) :: _ => None
+  end.
+
+Definition zesuRangeCheck (width : N) (term : zesuZLin) : bool :=
+  match zesuZNorm term with
+  | Some (constant, terms) =>
+      match zesuTermsBounds (bv_modulus width - 1) terms with
+      | Some (low, high) => (0 <=? constant + low) && (constant + high <? bv_modulus width)
+      | None => false
+      end
+  | None => false
+  end.
+
 Section denote.
 Context {width : N} (atoms literals : list (bv width)) (integers : list Z).
 
@@ -402,6 +425,36 @@ Proof.
   unfold zesuPolyEval in Hdiff. rewrite Z.add_mod, Hzero, Z.add_0_r, Z.mod_mod in Hdiff by lia.
   exact Hdiff.
 Qed.
+Lemma zesuTermsBounds_sound terms low high :
+  zesuTermsBounds (bv_modulus width - 1) terms = Some (low, high) ->
+  low <= zesuTermsEval terms <= high.
+Proof.
+  revert low high.
+  induction terms as [|[[kind index] coeff] rest IH]; intros low high Hbounds; cbn in Hbounds |- *.
+  - inversion Hbounds; subst. lia.
+  - destruct kind; [|discriminate].
+    destruct (zesuTermsBounds (bv_modulus width - 1) rest) as [[l h]|] eqn:Hrest; [|discriminate].
+    inversion Hbounds; subst. specialize (IH l h eq_refl).
+    unfold zesuKeyValue. cbn [fst snd].
+    pose proof (bv_unsigned_in_range _ (nth index atoms (Z_to_bv width 0))) as Hin.
+    destruct (Z.le_ge_cases 0 coeff) as [Hc|Hc].
+    + rewrite Z.min_l, Z.max_r by nia. nia.
+    + rewrite Z.min_r, Z.max_l by nia. nia.
+Qed.
+
+Theorem zesuRange_sound term :
+  zesuRangeCheck width term = true -> 0 <= zesuZLinDenote term < bv_modulus width.
+Proof.
+  unfold zesuRangeCheck. intros Hcheck.
+  destruct (zesuZNorm term) as [[constant terms]|] eqn:Hnorm; [|discriminate].
+  destruct (zesuTermsBounds (bv_modulus width - 1) terms) as [[low high]|] eqn:Hbounds;
+    [|discriminate].
+  apply andb_true_iff in Hcheck as [Hlow Hhigh].
+  apply Z.leb_le in Hlow. apply Z.ltb_lt in Hhigh.
+  rewrite <- (zesuZNorm_sound _ _ Hnorm). unfold zesuPolyEval. cbn [fst snd].
+  pose proof (zesuTermsBounds_sound _ _ _ Hbounds). lia.
+Qed.
+
 End denote.
 
 (* ---- Integer goals that map back to bit vectors. ---- *)
@@ -563,14 +616,40 @@ Ltac2 zesu_bvlin_goal () :=
 
 Ltac zesu_bv_linear_bv := ltac2:(zesu_bvlin_goal ()).
 
-(* The modulus of a literal width is a closed term; give it as a numeral to
-   the range solver. *)
-Ltac zesu_bv_modulus_literal :=
+(* Prove 0 <= value < bv_modulus width when value is linear in unsigned
+   values of bit vectors only. *)
+Ltac2 zesu_bvlin_range_goal () :=
+  lazy_match! goal with
+  | [ |- Z.le 0 ?value /\ Z.lt ?value (bv_modulus ?width) ] =>
+      let state := { bv_atoms := []; bv_literals := []; z_atoms := [] } in
+      let v := zesu_bvlin_reify_z width state value in
+      let kind := constr:(bv $width) in
+      let atoms := zesu_bvlin_list kind (state.(bv_atoms)) in
+      let integers := zesu_bvlin_list constr:(Z) (state.(z_atoms)) in
+      refine '(@zesuRange_sound $width $atoms $integers $v _);
+      Control.enter zesu_bvlin_close_check
+  end.
+
+Ltac zesu_bv_linear_range := ltac2:(zesu_bvlin_range_goal ()).
+
+(* The modulus of a literal width is a closed term. The range solver gets
+   its value as an equation, so that facts stated with bv_modulus and facts
+   stated with a numeral both apply. *)
+Ltac zesu_bv_modulus_value :=
   repeat match goal with
   | |- context [bv_modulus ?width] =>
-      let value := ZesuSsz.Automation2.VmClosed.zesu_vm_eval_closed (bv_modulus width) in
-      change (bv_modulus width) with value
+      lazymatch goal with
+      | _ : bv_modulus width = _ |- _ => fail
+      | _ =>
+          let value := ZesuSsz.Automation2.VmClosed.zesu_vm_eval_closed (bv_modulus width) in
+          pose proof (eq_refl : bv_modulus width = value)
+      end
   end.
+
+(* The range of a cast: by bounds of unsigned values first, else by the
+   given solver. *)
+Ltac zesu_bv_linear_cast_range range :=
+  first [zesu_bv_linear_range | zesu_bv_modulus_value; range].
 
 (* The fast path: bit-vector (in)equalities, and integer (in)equalities of
    unsigned values that map back soundly. The integer cast form leaves only
@@ -587,10 +666,10 @@ Ltac zesu_bv_linear_with range :=
       solve [apply (zesu_bv_unsigned_ne_of_ne lhs rhs); zesu_bv_linear_bv]
   | |- @eq Z (@bv_unsigned ?width ?term) ?value =>
       solve [apply (zesu_bv_unsigned_eq_of_cast (width := width) term value);
-        [zesu_bv_linear_bv | zesu_bv_modulus_literal; range]]
+        [zesu_bv_linear_bv | zesu_bv_linear_cast_range range]]
   | |- @eq Z ?value (@bv_unsigned ?width ?term) =>
       solve [symmetry; apply (zesu_bv_unsigned_eq_of_cast (width := width) term value);
-        [zesu_bv_linear_bv | zesu_bv_modulus_literal; range]]
+        [zesu_bv_linear_bv | zesu_bv_linear_cast_range range]]
   | |- not (@eq Z (@bv_unsigned ?width ?term) ?value) =>
       solve [apply (zesu_bv_unsigned_ne_of_cast (width := width) term value); zesu_bv_linear_bv]
   end.
