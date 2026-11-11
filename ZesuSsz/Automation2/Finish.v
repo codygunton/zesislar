@@ -1223,7 +1223,7 @@ Ltac zesu_block_base :=
 Ltac zesu_finish_split_conjunct :=
   lazymatch goal with
   | |- environments.envs_entails _ _ => fail
-  | _ => solve [zesu_finish]
+  | _ => zesu_diag_export_split; solve [zesu_finish]
   end.
 
 (* Residual lemmas close the pure goals that every other tier leaves open. *)
