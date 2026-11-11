@@ -77,7 +77,9 @@ A cached object cannot add an unchecked proof or a hidden axiom: `coqchk` reject
 A tampered cache entry could therefore change a dependency definition that a PUBLIC statement unfolds to, while every term still checks.
 The fresh compile of the PUBLIC theorem files, together with the statement checks against the reviewed baseline source, binds the statements themselves; the definitions they unfold to rely on the integrity of the account's Dune cache.
 The gate does not rely on Dune's handling of a reproducibility mismatch: it compares the fresh object with the object in `_build` itself.
-Compiling the four trust-context files fresh as well (`PUBLIC_CONTEXTS`) would narrow this to definitions outside those files.
+Compiling the trust-context files fresh as well (`PUBLIC_CONTEXTS`, option `--fresh-contexts`) narrows this to definitions outside those files.
+The option takes only the context files inside the PUBLIC closure; `Evidence/SignatureGates.v` is outside it, so no PUBLIC term can come from it.
+Every closure object above a fresh file then compiles in the fresh step too.
 
 This gate checks the PUBLIC closure.
 It does not replace `make check-fast` or the full `make check-iris` gate.

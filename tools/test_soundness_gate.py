@@ -185,13 +185,19 @@ class SoundnessGateTests(unittest.TestCase):
 
     def test_fresh_dependencies_skip_fresh_members_and_installed_libraries(self):
         with tempfile.TemporaryDirectory() as directory:
-            build = self.fresh_build(Path(directory))
-            self.assertEqual(gate.fresh_dependencies(build, ['ZesuSsz/A.vo', 'ZesuSsz/B.vo']),
+            graph = gate.project_graph(self.fresh_build(Path(directory)))
+            self.assertEqual(gate.fresh_dependencies(graph, ['ZesuSsz/A.vo', 'ZesuSsz/B.vo']),
                              ['ZesuSsz/Sub/C.vo', 'generated/D.vo'])
-            self.assertEqual(gate.fresh_dependencies(build, ['ZesuSsz/A.vo']),
-                             ['ZesuSsz/B.vo', 'ZesuSsz/Sub/C.vo'])
-            with self.assertRaisesRegex(ValueError, 'lacks a fresh-set module'):
-                gate.fresh_dependencies(build, ['ZesuSsz/Absent.vo'])
+            self.assertEqual(gate.fresh_dependencies(graph, ['ZesuSsz/A.vo']),
+                             ['ZesuSsz/B.vo', 'ZesuSsz/Sub/C.vo', 'generated/D.vo'])
+            with self.assertRaisesRegex(ValueError, 'lacks a module'):
+                gate.fresh_dependencies(graph, ['ZesuSsz/Absent.vo'])
+
+    def test_objects_above_a_fresh_member_wait_for_the_fresh_step(self):
+        graph = {'P.vo': ['M.vo', 'Context.vo'], 'M.vo': ['Context.vo', 'Low.vo'],
+                 'Context.vo': [], 'Low.vo': []}
+        self.assertEqual(gate.fresh_dependencies(graph, ['P.vo', 'Context.vo']), ['Low.vo'])
+        self.assertEqual(gate.dependency_closure(graph, ['M.vo']), {'M.vo', 'Context.vo', 'Low.vo'})
 
     @staticmethod
     def atom(value):

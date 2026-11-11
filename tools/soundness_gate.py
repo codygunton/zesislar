@@ -273,8 +273,8 @@ async def negative_checks(config):
             raise ValueError('The negative-control transport did not close.')
 
 
-def fresh_dependencies(build, fresh):
-    """Project objects that the fresh set needs, without any fresh-set member."""
+def project_graph(build):
+    """Direct project dependencies of each ZesuSsz object, from Dune's coqdep output."""
     graph = {}
     text = (build / 'default/ZesuSsz/.ZesuSsz.theory.d').read_text().replace('\\\n', ' ')
     for line in text.splitlines():
@@ -295,21 +295,42 @@ def fresh_dependencies(build, fresh):
                     dependency = os.path.normpath('ZesuSsz/' + dependency)
                 rows.append(dependency)
             graph['ZesuSsz/' + target] = rows
-    missing = set(fresh) - graph.keys()
+    return graph
+
+
+def dependency_closure(graph, roots):
+    """The roots and every project object they need (objects of other theories end the walk)."""
+    missing = set(roots) - graph.keys()
     if missing:
-        raise ValueError('The dependency file lacks a fresh-set module: ' + ', '.join(sorted(missing)))
-    needed, seen, pending = set(), set(), list(fresh)
+        raise ValueError('The dependency file lacks a module: ' + ', '.join(sorted(missing)))
+    seen, pending = set(), list(roots)
     while pending:
         target = pending.pop()
-        if target in seen:
-            continue
-        seen.add(target)
-        for dependency in graph[target]:
-            if dependency in fresh:
-                pending.append(dependency)
-            else:
-                needed.add(dependency)
-    return sorted(needed)
+        if target not in seen:
+            seen.add(target)
+            pending.extend(graph.get(target, ()))
+    return seen
+
+
+def fresh_dependencies(graph, fresh):
+    """Objects the fresh set needs that need no fresh-set member.
+
+    An object above a fresh member is left to the fresh step: built in the
+    closure step, it would bring the fresh member in from the cache first.
+    """
+    fresh = set(fresh)
+    needed = dependency_closure(graph, fresh) - fresh
+    users = {}
+    for target in needed:
+        for dependency in graph.get(target, ()):
+            users.setdefault(dependency, set()).add(target)
+    above, pending = set(), list(fresh)
+    while pending:
+        for user in users.get(pending.pop(), ()):
+            if user not in above:
+                above.add(user)
+                pending.append(user)
+    return sorted(needed - above)
 
 
 def csexp(data):
@@ -381,9 +402,6 @@ def stage(config, name):
     workspace, out, build = map(Path, (config['workspace'], config['output'], config['build']))
     if name == 'source':
         public = sorted({str(Path(p).with_suffix('.vo')) for p in PUBLIC.values()})
-        # Optionally the four trust-context files also compile fresh.
-        fresh = sorted(set(public) | ({str(Path(p).with_suffix('.vo')) for p in PUBLIC_CONTEXTS}
-                                      if config.get('fresh_contexts') else set()))
 
         def dune(label, targets, **environment):
             # Every step keeps the cache enabled: Dune reruns every rule when the mode changes.
@@ -394,9 +412,15 @@ def stage(config, name):
         # A reproducibility check reruns each cached rule: the plugins compile fresh.
         dune('plugins', PLUGINS, DUNE_CACHE_CHECK_PROBABILITY='1')
         dune('dependencies', ['ZesuSsz/.ZesuSsz.theory.d'])
+        graph = project_graph(build)
+        # Optionally the trust-context files that the PUBLIC closure contains
+        # also compile fresh; a context outside it cannot define a PUBLIC term.
+        closure = dependency_closure(graph, public)
+        contexts = sorted(str(Path(p).with_suffix('.vo')) for p in PUBLIC_CONTEXTS) if config.get('fresh_contexts') else []
+        fresh = sorted(set(public) | {c for c in contexts if c in closure})
         # The dependency closure may come from the Dune cache: recursive coqchk
         # re-checks every object, cached or fresh.
-        dependencies = fresh_dependencies(build, fresh)
+        dependencies = fresh_dependencies(graph, fresh)
         if dependencies:  # Dune builds its default alias without targets.
             dune('closure', dependencies)
         if any((build / 'default' / target).exists() for target in fresh):
@@ -406,7 +430,10 @@ def stage(config, name):
         captured = Path(config['output']) / 'fresh-objects'
         started = time.time_ns()
         dune('fresh', fresh, DUNE_CACHE_CHECK_PROBABILITY='1', ZESU_FRESH_OBJECT_DIR=str(captured))
-        save(Path(config['output']) / 'PUBLIC-FRESH.json', public_fresh_receipt(build, fresh, captured, started))
+        receipt = public_fresh_receipt(build, fresh, captured, started)
+        receipt.update(contexts_outside_closure=[c for c in contexts if c not in closure],
+                       rebuilt_above_fresh=len(closure) - len(dependencies) - len(fresh))
+        save(Path(config['output']) / 'PUBLIC-FRESH.json', receipt)
     elif name == 'negative':
         asyncio.run(negative_checks(config))
     elif name == 'wrappers':
