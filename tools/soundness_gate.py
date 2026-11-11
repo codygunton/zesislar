@@ -387,6 +387,7 @@ def main():
                   commit=git(workspace, 'rev-parse', 'HEAD').decode().strip())
     save(out / 'INPUTS.json', config)
     costs = {}
+    release = take_gate_lock(workspace, token)
     try:
         for name in ('source', 'negative', 'wrappers', 'coqchk'):
             limit = '32' if name == 'source' else '24'
@@ -422,7 +423,27 @@ def main():
     except BaseException as error:
         save(out / 'RESULT.json', dict(success=False, error=str(error), costs=costs))
         raise
+    finally:
+        release()
     print(json.dumps(binding(out / 'RESULT.json')))
+
+
+def take_gate_lock(workspace, token, *, run=subprocess.run):
+    """Hold the gate lock in the wanted state, as the other gates do.
+
+    No new ordinary batch or scope starts while the lock lives; running work
+    goes on. The stages run as gate work (ZESU_IN_GATE) so that the lock does
+    not hold this gate's own launches. Return the release function."""
+    guard = str(workspace / 'tools/resource_guard.sh')
+    holder = f"{os.environ.get('COORD_AGENT', 'soundness')}:soundness-{token}:{workspace}"
+    environment = dict(os.environ, ZESU_GATE_CLASS=os.environ.get('ZESU_GATE_CLASS', 'root'))
+    run([guard, 'lock-want', str(os.getpid()), holder], check=True, env=environment)
+    os.environ['ZESU_IN_GATE'] = '1'
+
+    def release():
+        os.environ.pop('ZESU_IN_GATE', None)
+        run([guard, 'lock-release', str(os.getpid())], check=False)
+    return release
 
 
 if __name__ == '__main__':
