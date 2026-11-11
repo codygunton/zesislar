@@ -306,6 +306,9 @@ def stage(config, name):
     workspace, out, build = map(Path, (config['workspace'], config['output'], config['build']))
     if name == 'source':
         public = sorted({str(Path(p).with_suffix('.vo')) for p in PUBLIC.values()})
+        # Optionally the four trust-context files also compile fresh.
+        fresh = sorted(set(public) | ({str(Path(p).with_suffix('.vo')) for p in PUBLIC_CONTEXTS}
+                                      if config.get('fresh_contexts') else set()))
 
         def dune(label, cache, targets):
             subprocess.run([sys.executable, '-B', 'tools/build_record.py', '--build-dir', str(build),
@@ -318,9 +321,9 @@ def stage(config, name):
         # always compile fresh from the reviewed sources.
         dune('closure', 'enabled', public)
         started = time.time_ns()
-        removed = fresh_public_outputs(build, public)
+        removed = fresh_public_outputs(build, fresh)
         dune('PUBLIC', 'disabled', public)
-        save(Path(config['output']) / 'PUBLIC-FRESH.json', public_fresh_receipt(build, public, removed, started))
+        save(Path(config['output']) / 'PUBLIC-FRESH.json', public_fresh_receipt(build, fresh, removed, started))
     elif name == 'negative':
         asyncio.run(negative_checks(config))
     elif name == 'wrappers':
@@ -379,6 +382,8 @@ def main():
     parser.add_argument('--output', type=Path, help='New directory below the workspace _build/agents.')
     parser.add_argument('--trace-source', type=Path, help='Optional source for exact manifest-bound traces.')
     parser.add_argument('--source-workspace', type=Path, help='Pinned external source checkout owner.')
+    parser.add_argument('--fresh-contexts', action='store_true',
+                        help='Also compile the four PUBLIC trust-context files without the Dune cache.')
     parser.add_argument('--stage', choices=('source', 'negative', 'wrappers', 'coqchk'), help=argparse.SUPPRESS)
     parser.add_argument('--config', type=Path, help=argparse.SUPPRESS)
     args = parser.parse_args()
@@ -429,7 +434,7 @@ def main():
                  ('correctness_gate.py', 'resource_guard.sh', 'rocq_mcp_guarded.sh', 'rocq_coqc_guarded.sh')]
     bindings += [binding(Path(shutil.which(p))) for p in ('dune', 'coqc', 'coqchk', 'pet')]
     config = dict(workspace=str(workspace), output=str(out), baseline=str(baseline), build=str(build),
-                  mcp_python=sys.executable, token=token, bindings=bindings,
+                  mcp_python=sys.executable, token=token, bindings=bindings, fresh_contexts=args.fresh_contexts,
                   commit=git(workspace, 'rev-parse', 'HEAD').decode().strip())
     save(out / 'INPUTS.json', config)
     costs = {}
