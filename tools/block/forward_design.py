@@ -184,6 +184,16 @@ def evaluate_function(function, traces, initial_states, *, max_paths=4096, check
     loop_heads = {_pc(loop['minimum_pc']) for loop in function.get('loops', [])}
     if not loop_heads.issubset(blocks):
         raise ValueError('A loop head is not a block start')
+    # A call ends its block; its callee runs outside the function. The return
+    # site is a cut: a path continues there only from a call-return seed.
+    calls = {}
+    for call in function.get('calls', []):
+        site = _pc(call['pc'])
+        block = next((pc for pc, row in blocks.items() if pc <= site < row['end']), None)
+        if block is None or instructions[block][-1] != site or blocks[block]['successors'] != [site + 4]:
+            raise ValueError('A call does not end its block with the return site as its successor')
+        calls[block] = {'call_pc': site, 'callee_pc': _pc(call['target']), 'return_pc': site + 4}
+    return_sites = {row['return_pc'] for row in calls.values()}
     cuts = {}
     for pc in blocks:
         reasons = set()
@@ -191,13 +201,16 @@ def evaluate_function(function, traces, initial_states, *, max_paths=4096, check
             reasons.add('loop_head')
         if len(predecessors[pc]) > 1:
             reasons.add('join')
+        if pc in return_sites:
+            reasons.add('call_return')
         if reasons:
             cuts[pc] = reasons
     seeds = {_pc(pc): state for pc, state in initial_states.items()}
     generated_seeds = {_pc(pc): kind for pc, kind in (generated_seeds or {}).items()}
-    if any(pc not in seeds or pc not in cuts or kind not in {'join', 'loop_head'}
+    if any(pc not in seeds or pc not in cuts or kind not in {'join', 'loop_head', 'call_return'}
+           or (kind == 'call_return') != (pc in return_sites)
            for pc, kind in generated_seeds.items()):
-        raise ValueError('A generated seed must name an explicit join or loop head')
+        raise ValueError('A generated seed must name an explicit join, loop head, or call return site')
     if len(seeds) != len(initial_states) or any(pc != entry and pc not in cuts for pc in seeds):
         raise ValueError('An initial state must belong to the function entry or a handwritten cut')
     if any(not isinstance(state, SymbolicState) for state in seeds.values()):
@@ -212,6 +225,9 @@ def evaluate_function(function, traces, initial_states, *, max_paths=4096, check
               'boundaries': list(boundaries.values()),
               'cuts': [{'pc': hex(pc), 'reason': reason} for pc, reasons in sorted(cuts.items())
                        for reason in sorted(reasons)], 'stops': [], 'reports': [], 'exits': []}
+    if calls:
+        result['calls'] = [{'block_pc': hex(block), **{key: hex(value) for key, value in row.items()}}
+                           for block, row in sorted(calls.items())]
     returns = {_pc(pc) for pc in function.get('returns', [])}
     pending = deque()
     paths_created = 0
@@ -313,6 +329,12 @@ def evaluate_function(function, traces, initial_states, *, max_paths=4096, check
                      stage='block_exit', actual_pc=actual.to_dict() if actual else None)
                 continue
             target = actual.value
+            call = calls.get(work.block_pc)
+            if call is not None and target == call['callee_pc']:
+                # The callee summary continues this path at the return site.
+                stop('call_boundary', routed, call['call_pc'], state, target_pc=hex(call['return_pc']),
+                     callee_pc=hex(target))
+                continue
             if target not in blocks[work.block_pc]['successors'] or target not in blocks:
                 stop('outside_pc', routed, instructions[work.block_pc][-1], state,
                      actual_pc=hex(target), allowed_successors=[hex(pc) for pc in blocks[work.block_pc]['successors']])
