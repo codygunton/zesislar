@@ -36,6 +36,9 @@ _spec.loader.exec_module(_module)
 evaluate, ScopeReader = _module.evaluate, _module.ScopeReader
 confirm_shell, release_shell = _module.confirm_shell, _module.release_shell
 recover_dead_shell = _module.recover_dead_shell
+LeafNotClosed = _module.LeafNotClosed
+# A release whose compiler leaf still drains exits with this status; the guard retries it.
+LEAF_DRAINING = 5
 recover_stale_shell = _module.recover_stale_shell
 recover_stale_shells = _module.recover_stale_shells
 current_projection = _module.current_projection
@@ -142,12 +145,16 @@ def load_profile(path):
 # for a ZesuSsz module (the repository root bounds the others): a new function
 # directory such as ZesuSsz/Generated/NextUint64/FP301 books from the
 # measured modules under ZesuSsz/Generated. Without such an ancestor the
-# module keeps the fallback, and a changed module keeps it until it is
-# measured again. The compiler fence does not change: a module above its
-# booking hits the same limit.
+# module keeps the fallback. A module whose source changed books the same
+# prior until it is measured again: on 2026-11-11 a regenerated trace set
+# changed 960 trace modules (old peaks at most 0.9 GiB), and each booked the
+# 16 GiB fence. Changed compilers and arguments keep the fallback. The
+# compiler fence does not change: a module above its booking hits the same
+# limit.
 PRIOR_NUMERATOR, PRIOR_DENOMINATOR = 3, 2
 PRIOR_FLOOR_BYTES = 2 * GIB
 PRIOR_ROOTS = ("ZesuSsz",)
+PRIOR_REASONS = ("directory_prior", "ancestor_prior", "changed_source_prior")
 
 
 def _ancestors(directory):
@@ -211,10 +218,14 @@ def module_claim(profile, arguments, cwd, compiler, *, fallback_bytes=16 * GIB):
         prior = directory_prior(profile, source, fallback_bytes, found)
         reason = "directory_prior" if found[0] == PurePosixPath(source).parent.as_posix() else "ancestor_prior"
         return {"claim_bytes": prior, "reason": reason, "source": source, "prior_directory": found[0]}
-    for name, reason in (("compiler_sha256", "changed_compiler"), ("source_sha256", "changed_source"),
-                         ("arguments_sha256", "changed_arguments")):
+    for name, reason in (("compiler_sha256", "changed_compiler"), ("arguments_sha256", "changed_arguments")):
         if row.get(name) != bound[name]:
             return {"claim_bytes": fallback_bytes, "reason": reason, "source": source}
+    if row.get("source_sha256") != bound["source_sha256"]:
+        prior = directory_prior(profile, source, fallback_bytes)
+        if prior is None:
+            return {"claim_bytes": fallback_bytes, "reason": "changed_source", "source": source}
+        return {"claim_bytes": prior, "reason": "changed_source_prior", "source": source}
     peak = row.get("peak_bytes")
     if type(peak) is not int or peak <= 0:
         return {"claim_bytes": fallback_bytes, "reason": "missing_peak", "source": source}
@@ -392,9 +403,10 @@ def booked_versus_peak(observations):
     return {"compiles": len(rows), "measured": len(peaks),
             "unmeasured_fence_bookings": sum(1 for row in rows
                                              if row.get("claim_reason") not in
-                                             ("measured_module", "directory_prior", "ancestor_prior")),
+                                             PRIOR_REASONS + ("measured_module",)),
             "directory_prior_bookings": sum(1 for row in rows if row.get("claim_reason") == "directory_prior"),
             "ancestor_prior_bookings": sum(1 for row in rows if row.get("claim_reason") == "ancestor_prior"),
+            "changed_prior_bookings": sum(1 for row in rows if row.get("claim_reason") in PRIOR_REASONS[2:]),
             "maximum_concurrent_booked_bytes": concurrent("claim_bytes"),
             "maximum_concurrent_peak_bytes": concurrent("peak_bytes"),
             "peak_bytes_p50": quantile(0.5), "peak_bytes_p95": quantile(0.95),
@@ -740,12 +752,20 @@ def main():
         return 0 if mark_shell(args.marker) else 4
     if args.command == 'ledger-release':
         claim = marker_claim(args.marker)
-        released = release_shell(args.marker)
+        try:
+            released = release_shell(args.marker)
+        except LeafNotClosed:
+            print('The shell compiler leaf is still draining.', file=sys.stderr)
+            return LEAF_DRAINING
         if released:
             publish_admission_totals(released_bytes=claim)
         return 0 if released else 4
     if args.command == 'ledger-recover-dead':
-        return 0 if recover_dead_shell(args.marker) else 4
+        try:
+            return 0 if recover_dead_shell(args.marker) else 4
+        except LeafNotClosed:
+            print('The shell compiler leaf is still draining.', file=sys.stderr)
+            return LEAF_DRAINING
     if args.command == 'ledger-recover-stale':
         if args.all:
             print(json.dumps(recover_stale_shells()))

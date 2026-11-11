@@ -129,6 +129,9 @@ check-evidence-tools:
 	$(PYTHON) -m tools.block.check_export_scopes
 	$(PYTHON) -m tools.block.check_data_only_lemmas
 	$(PYTHON) tools/stock_zisk/machine_map/generate.py --build $(STOCK_DIR) --check
+	$(PYTHON) tools/stock_zisk/layout.py --check
+	$(PYTHON) tools/stock_zisk/platform/region_windows.py
+	$(PYTHON) tools/stock_zisk/check_test_traces.py
 	PYTHONPATH=ZesuSsz/Evidence $(PYTHON) -m unittest discover -s ZesuSsz/Evidence -p 'test_*.py'
 	$(PYTHON) ZesuSsz/Evidence/check_proof_hygiene.py
 	$(PYTHON) ZesuSsz/Evidence/check_release_imports.py --umbrella ZesuSsz.Automation2.All
@@ -143,10 +146,10 @@ _check-tool-tests:
 	$(PYTHON) -m unittest discover -s tools -p 'test_*.py'
 	@command -v "$(MCP_PYTHON)" >/dev/null 2>&1 || { echo "MCP_PYTHON must name the installed MCP test interpreter" >&2; exit 2; }
 	$(MCP_PYTHON) -B -m unittest discover -s tools/block/harness -p 'test_*.py'
-	$(PYTHON) -m unittest tools.block.test_approved_switches tools.block.test_automation_lints
+	$(PYTHON) -m unittest discover -s tools/block -p 'test_*.py'
 	$(PYTHON) -m unittest discover -s tools/stock_zisk -p 'test_manifest.py'
-	PYTHONPATH=tools/stock_zisk/platform $(PYTHON) -m unittest discover -s tools/stock_zisk/platform -p 'test_function_binding.py'
-	PYTHONPATH=tools/stock_zisk/platform $(PYTHON) -m unittest discover -s tools/stock_zisk/platform -p 'test_trace_only.py'
+	$(PYTHON) -m unittest discover -s tools/stock_zisk -p 'test_regen.py'
+	PYTHONPATH=tools/stock_zisk/platform $(PYTHON) -m unittest discover -s tools/stock_zisk/platform -p 'test_*.py'
 	$(PYTHON) -m unittest discover -s tools/stock_zisk/machine_map -p 'test_*.py'
 	$(PYTHON) -m unittest discover -s tools/stock_zisk/static_sites -p 'test_*.py'
 
