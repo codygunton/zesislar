@@ -418,7 +418,10 @@ traces-closure-indexes:
 	  --check-manifest $(STOCK_TRACE_MANIFEST) --trace-name closure
 
 # Restore tracked native index datasets before checkers or Dune start.
-STOCK_NATIVE_TRACE_CACHE_DIR ?= $(CURDIR)/_build/stock-zisk/native-trace-cache
+# All worktrees share one cache: a fresh worktree otherwise regenerates every
+# closure trace (about 8,500 CPU seconds). Each restore checks every file
+# against the tracked manifest hashes.
+STOCK_NATIVE_TRACE_CACHE_DIR ?= /home/cody/zesislar-archive/stock-inputs/native-trace-cache
 .PHONY: stock-native-indexes
 .PHONY: gate-workspace
 gate-workspace:
