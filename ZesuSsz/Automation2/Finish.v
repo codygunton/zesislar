@@ -1252,14 +1252,17 @@ Ltac zesu_clear_split_baseline :=
 
 (* The finisher already ran with the facts that were present before the
    split. A conjunct that no new fact reaches (no shared atom) gets nothing
-   new from another run, so the run is skipped. *)
+   new from another run, so the run is skipped. The residual lemmas go
+   first: a registered lemma closes its goal at once, while a goal that the
+   finisher cannot close can spin there before the residual tier runs. With
+   no registered lemma the tier fails at once. *)
 Ltac zesu_finish_split_conjunct :=
   lazymatch goal with
   | |- environments.envs_entails _ _ => fail
   | _ =>
       ZesuSsz.Automation2.ContextCollection.zesu_facts_after_share_term constr:(zesu_split_baseline);
       zesu_clear_split_baseline;
-      solve [zesu_finish]
+      first [ResidualLemmas.zesu_residual_lemma | solve [zesu_finish]]
   end.
 
 (* Residual lemmas close the pure goals that every other tier leaves open. *)
