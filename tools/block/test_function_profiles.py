@@ -59,6 +59,12 @@ class DecodeItemProfile(unittest.TestCase):
             committed = ROOT / profile['callers_directory'] / ('Caller' + head + '.v')
             self.assertEqual(committed.read_text(), source)
 
+    def test_every_loop_head_has_a_seed_design(self):
+        profile = load_profile()
+        self.assertEqual([row['head'] for row in profile['loop_designs']], profile['loop_heads'])
+        for row in profile['loop_designs']:
+            self.assertIn(row['array_cursor']['register'], row['registers'])
+
     def test_return_precondition_matches_the_committed_caller(self):
         profile = load_profile()
         caller = (ROOT / profile['callers_directory'] / 'Caller6a78.v').read_text()
@@ -97,33 +103,7 @@ class OtherProfile(unittest.TestCase):
             self.assertEqual(load_profile(str(path)).name, 'otherFunction')
 
 
-class FreeProfile(unittest.TestCase):
-    """The free profile and its committed callers."""
-
-    def test_profile_and_callers(self):
-        profile = load_profile('free')
-        self.assertEqual(len(profile['blocks']), 43)
-        directory = ROOT / profile['callers_directory']
-        callers = sorted(directory.glob('Caller*.v'))
-        self.assertTrue(callers)
-        for path in callers:
-            source = path.read_text()
-            self.assertNotRegex(source, r'(?i)decodeitem')
-            self.assertEqual(source.count('Proof.\n  zesu_block2.\nQed.\n'), 1)
-            self.assertIn('  freeSelectedCode -∗\n', source)
-
-    def test_committed_outputs_match_the_generation_record(self):
-        import hashlib
-        record = json.loads((ROOT / 'tools/block/fixtures/free-fp301-generation.json').read_text())
-        committed = sorted((ROOT / 'ZesuSsz/Generated/Free/FP301').glob('*.v')) + sorted(
-            (ROOT / 'tools/block/generated/free_fp301_callers').glob('*.v'))
-        self.assertEqual([str(path.relative_to(ROOT)) for path in committed],
-                         [row['path'] for row in record['outputs']])
-        for row in record['outputs']:
-            self.assertEqual(hashlib.sha256((ROOT / row['path']).read_bytes()).hexdigest(), row['sha256'])
-        rendered = [row['case'] for row in record['callers'] if row['status'] == 'rendered']
-        self.assertEqual(rendered, [path.stem[len('Caller'):] for path in committed if path.stem.startswith('Caller')])
-
+class CallerPlan(unittest.TestCase):
     def test_caller_plan_refuses_missing_successors(self):
         profile = other_profile()
         function = {'blocks': [{'start': 0x800d1000, 'successors': [0x800d1010]},

@@ -57,6 +57,7 @@ Require Import ZesuSsz.Automation2.ConjunctMatch.
 Require Import ZesuSsz.Automation2.RegisterArrayCursor.
 Require Import ZesuSsz.Automation2.LoopBackedgeJoin.
 Require Import ZesuSsz.Automation2.MaskWitness.
+Require ZesuSsz.Automation2.FlagMaskBounds.
 
 (* Expose symbolic lookup results with kernel reduction. Do not normalize their
    payloads in the VM. Closed inputs retain the upstream VM path. *)
@@ -411,7 +412,7 @@ Ltac zesu_solve_machine_linear :=
 (* Preserve the machine normalization used by the existing finisher. *)
 Ltac zesu_finish_lia ::=
   first [LoopBackedgeJoin.zesu_loop_pure_finish | solve [MaskWitness.zesu_mask_fact_close] |
-    zesu_solve_machine_linear].
+    zesu_solve_machine_linear | solve [FlagMaskBounds.zesu_flag_mask_bound]].
 
 Tactic Notation "lia" := zesu_solve_machine_linear.
 
@@ -2327,6 +2328,65 @@ Ltac zesu_guard_one_wrap_range :=
   repeat zesu_guard_sign_extend_mask;
   ContextCollection.zesu_solve_goal_selected ("branch_guard.one_wrap_range"%string) ltac:(lia).
 
+(* A guard and the goal it decides can spell the same term differently: one
+   side evaluates a sum of constants or an `if` whose condition is decided,
+   the other does not. Both normal forms below are applied to guard facts and
+   to guard goals, so the two sides meet. *)
+Lemma zesu_guard_ite_true {A : Type} (condition : bool) (left right : A) :
+  condition = true -> ite condition left right = left.
+Proof. intros ->. reflexivity. Qed.
+
+Lemma zesu_guard_ite_false {A : Type} (condition : bool) (left right : A) :
+  condition = false -> ite condition left right = right.
+Proof. intros ->. reflexivity. Qed.
+
+(* A condition is decided by computation, by a context fact, or, for a
+   decided proposition, by lia on the facts that share its terms. *)
+Ltac zesu_guard_condition_true condition :=
+  first [
+    zesu_stack_closed_term condition; vm_compute; reflexivity
+  | assumption
+  | lazymatch condition with
+    | @bool_decide ?P ?decision =>
+        apply (@bool_decide_eq_true_2 P decision);
+        first [assumption |
+          ContextCollection.zesu_solve_goal_selected ("branch_guard.ite"%string) ltac:(lia)]
+    end].
+
+Ltac zesu_guard_condition_false condition :=
+  first [
+    zesu_stack_closed_term condition; vm_compute; reflexivity
+  | assumption
+  | lazymatch condition with
+    | @bool_decide ?P ?decision =>
+        apply (@bool_decide_eq_false_2 P decision);
+        first [assumption |
+          ContextCollection.zesu_solve_goal_selected ("branch_guard.ite"%string) ltac:(lia)]
+    end].
+
+Ltac zesu_guard_positive_numeral digits :=
+  lazymatch digits with
+  | xH => idtac
+  | xO ?rest => zesu_guard_positive_numeral rest
+  | xI ?rest => zesu_guard_positive_numeral rest
+  end.
+
+Ltac zesu_guard_integer_numeral value :=
+  lazymatch value with
+  | Z0 => idtac
+  | Zpos ?digits => zesu_guard_positive_numeral digits
+  | Zneg ?digits => zesu_guard_positive_numeral digits
+  end.
+
+(* Closed bit-vector arithmetic, or a literal whose value is not a numeral. *)
+Ltac zesu_guard_closed_arith term :=
+  lazymatch term with
+  | @bv_add _ _ _ => idtac
+  | @bv_sub _ _ _ => idtac
+  | @bv_mul _ _ _ => idtac
+  | @BV _ ?value _ => tryif zesu_guard_integer_numeral value then fail else idtac
+  end.
+
 Ltac zesu_branch_guard_rewrite :=
   repeat first
   [ match goal with
@@ -2432,6 +2492,31 @@ Ltac zesu_branch_guard_rewrite :=
           rewrite (zesu_guard_signed_negative width word ltac:(first [ZesuSsz.Automation2.VmClosed.zesu_vm_closed_decide | congruence]));
           let half := ZesuSsz.Automation2.VmClosed.zesu_vm_eval_closed (bv_half_modulus width) in
           change_no_check (bv_half_modulus width) with half
+        end
+    end
+  | match goal with
+    | |- context [@ite ?kind ?condition ?left ?right] =>
+        tryif has_evar condition then fail 0 else
+        first [
+          let Hcondition := fresh "HguardIte" in
+          assert (Hcondition : condition = true) by zesu_guard_condition_true condition;
+          rewrite (zesu_guard_ite_true condition left right Hcondition); clear Hcondition
+        | let Hcondition := fresh "HguardIte" in
+          assert (Hcondition : condition = false) by zesu_guard_condition_false condition;
+          rewrite (zesu_guard_ite_false condition left right Hcondition); clear Hcondition]
+    end
+  | match goal with
+    | |- context [?term] =>
+        zesu_guard_closed_arith term;
+        zesu_stack_closed_term term;
+        lazymatch type of term with bv ?width =>
+          zesu_stack_closed_term width;
+          let size := ZesuSsz.Automation2.VmClosed.zesu_vm_eval_closed width in
+          let value := ZesuSsz.Automation2.VmClosed.zesu_vm_eval_closed (bv_unsigned term) in
+          let literal := constr:(BV size value) in
+          let Hliteral := fresh "HguardLiteral" in
+          assert (Hliteral : term = literal) by (apply bv_eq; vm_compute; reflexivity);
+          rewrite Hliteral; clear Hliteral
         end
     end ].
 

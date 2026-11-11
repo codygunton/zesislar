@@ -110,8 +110,9 @@ def loop_head_seed(report, design, profile, *, root_seed, vocabulary, continuati
     boundary = next(row for row in report['boundaries'] if row['pc'] == head)
     entries = [row for row in boundary['alternatives']
                if row['predecessor_pc'] == profile.pc(design['entry_predecessor'])]
-    if len(entries) != 1:
-        raise ValueError('The loop head needs exactly one entry edge from ' + design['entry_predecessor'])
+    if not entries:
+        raise ValueError('The loop head has no entry edge from ' + design['entry_predecessor'])
+    # Several entry paths join as at any cut; the changed registers then become binders.
     joined = generalize_owned_join(entries, original_seed=root_seed, entry_pc=int(head, 0), vocabulary=vocabulary,
                                    continuation=continuation, outer_names=['args', 'returnAddress'])
     seed = joined['seed']

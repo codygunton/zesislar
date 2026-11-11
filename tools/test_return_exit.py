@@ -6,7 +6,7 @@ import unittest
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).parent / "block"))
-from return_exit import add_return_precondition, return_blocks, return_package
+from return_exit import add_return_facts, add_return_precondition, return_blocks, return_package
 from render_fp301_statements import render
 
 
@@ -19,7 +19,7 @@ class ReturnExitTests(unittest.TestCase):
 
         source = bound("Return.v", "Definition old `{!islaG Sigma} `{!threadG} "
                        "(args : DecodeItemArgs) (returnAddress : Z) (K : iProp Sigma) "
-                       ": iProp Sigma := (owner args ∗ K)%I.\n")
+                       ": iProp Sigma := ((∃ x, (owner args x ∗ True)) ∗ K)%I.\n")
         blocks, callers, cases = [], [], []
         names = [format(0x1000 + n, "x") for n in range(11)]
         for index, name in enumerate(names):
@@ -75,6 +75,14 @@ class ReturnExitTests(unittest.TestCase):
         row["successor_pcs"] = ["0x20"]
         with self.assertRaisesRegex(ValueError, "inconsistent"):
             return_blocks({"blocks": [row]})
+
+    def test_return_facts_follow_every_resource(self):
+        body = "((∃ x, (owner args x ∗ ⌜x = 1⌝ ∗ True)) ∗ K)%I"
+        self.assertEqual(add_return_facts(body, ["P args x"]),
+                         "((∃ x, (owner args x ∗ ⌜x = 1⌝ ∗ ⌜P args x⌝ ∗ True)) ∗ K)%I")
+        self.assertEqual(add_return_facts("(owner ∗ K)%I", []), "(owner ∗ K)%I")
+        with self.assertRaisesRegex(ValueError, "pure fact tail"):
+            add_return_facts("(owner ∗ K)%I", ["P"])
 
     def test_return_premise_preserves_the_original_statement(self):
         original = "Lemma boundary (args : Args) (K : iProp Sigma) :\n  code -∗ body.\n"

@@ -22,6 +22,8 @@ from loop_design import loop_head_seed
 from forward_resource_design import evaluate_owned_function
 from forward_resources import load_resource_vocabulary
 from join_generalize import generalize_owned_join
+from function_profiles import load_profile
+from loop_design import loop_head_seed
 from resource_seed import load_public_seed, seed_owned_resources
 from system_shape_seed import seed_system_shapes
 
@@ -119,9 +121,10 @@ def main():
             entry = next(row for row in report['boundaries'] if row['pc'] == profile.pc(design['entry_predecessor']))
             edges = [row for row in next(b for b in report['boundaries'] if b['pc'] == head)['alternatives']
                      if row['predecessor_pc'] == entry['pc']]
-            if head in seeds or entry['reaching_stops'] or len(edges) != 1:
+            origins = {roots.get(row['seed_pc']) for row in edges}
+            if head in seeds or entry['reaching_stops'] or not edges or len(origins) != 1:
                 continue
-            root = roots.get(edges[0]['seed_pc'])
+            root = origins.pop()
             try:
                 seeds[head] = loop_head_seed(report, design, profile, root_seed=seeds[root],
                                              vocabulary=vocabulary, continuation=continuation)

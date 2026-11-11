@@ -206,6 +206,7 @@ def manifest_errors(root: Path) -> tuple[list[str], int]:
 RESIDUAL_DIRECTORY = "ZesuSsz/Residuals"
 RESIDUAL_PREFIX = "ZesuSsz.Residuals."
 RESIDUAL_CALLERS = "tools/block/generated/fp301_callers"
+RESIDUAL_SHARED = {"DecodeItemBridges"}
 RESIDUAL_HINT = re.compile(r"\s*#\[export\]\s*Hint\s+Resolve\s+(residual_\w+)\s*:\s*zesu_residual\s*")
 
 
@@ -214,14 +215,23 @@ def residual_errors(root: Path) -> list[str]:
 
     A module ZesuSsz/Residuals/Block<addr>.v registers only exported
     `Hint Resolve residual_* : zesu_residual` hints. Only the block's own
-    generated caller imports it; no ZesuSsz source imports it.
+    generated caller imports it; no ZesuSsz source imports it. The shared
+    bridge module registers no hint, and only block residual modules import it.
     """
     errors = []
     directory = root / RESIDUAL_DIRECTORY
     modules = {}
+    shared = set()
     for path in sorted(directory.rglob("*.v")) if directory.is_dir() else []:
         name = ".".join(path.relative_to(root).with_suffix("").parts)
         match = re.fullmatch(r"Block(800d[0-9a-f]{4})", path.stem)
+        if path.parent == directory and path.stem in RESIDUAL_SHARED:
+            shared.add(name)
+            for command in source_commands(path.read_text()):
+                head = re.sub(r"^\s*(?:#\[[^]]*\]\s*)*", "", command)
+                if re.match(r"(?:Global\s+|Local\s+)?(?:Hint\b|(?:(?:Program|Existing|Declare)\s+)?Instances?\b)", head):
+                    errors.append(f"{name} is a shared bridge module and registers a hint.")
+            continue
         if path.parent != directory or not match:
             errors.append(f"Residual module name is not Block<address>: {name}.")
             continue
@@ -234,7 +244,7 @@ def residual_errors(root: Path) -> list[str]:
                 errors.append(f"{name} registers a hint other than an exported residual lemma.")
     for path in sorted((root / "ZesuSsz").rglob("*.v")):
         importer = ".".join(path.relative_to(root).with_suffix("").parts)
-        if importer in modules:
+        if importer in modules or importer in shared:
             continue
         text = path.read_text()
         for module in sorted(required_modules(text, "Import") | required_modules(text, "Export")):
