@@ -88,6 +88,14 @@ Ltac2 zesu_diag_print_facts () :=
   Message.print (Message.concat (Message.of_string "@@D facts-end ")
     (Message.of_int (List.length props))).
 
+(* The names of the context facts, at each step: the report finds the step
+   where a fact first appears by its name. *)
+Ltac2 zesu_diag_print_names () :=
+  Message.print (List.fold_left (fun message declaration =>
+    let (name, _, _) := declaration in
+    Message.concat message (Message.concat (Message.of_string " ") (Message.of_ident name)))
+    (Message.of_string "@@D names") (zesu_diag_props ())).
+
 (* The facts that share an atom with the goal (the ContextCollection atom). *)
 Ltac2 zesu_diag_print_relevant () :=
   let goal_atoms := Ref.ref [] in
@@ -124,7 +132,8 @@ Ltac zesu_diag_print_step :=
       let print := ltac2:(term |- zesu_diag_print_term "@@D sidecond " term) in print condition
   | _ => idtac
   end;
-  zesu_diag_print_head.
+  zesu_diag_print_head;
+  ltac2:(zesu_diag_print_names ()).
 
 (* The printer of `orch/joins/make_printer.py`: definitions, hypotheses,
    conclusion. *)

@@ -67,7 +67,7 @@ def number(text):
 def parse(lines):
     """Return steps, side condition events, stages and refusals from a log."""
     state = dict(step=0, pc=None)
-    sideconds, stages, refusals = [], [], []
+    sideconds, stages, refusals, named = [], [], [], {}
     target = None  # the record that `head`, `fact` and printer lines belong to
     for stamp, text in records(lines):
         if text == "@@D step":
@@ -81,6 +81,9 @@ def parse(lines):
                 target["sidecond"] = skeleton
             else:
                 sideconds.append(dict(skeleton=skeleton, step=state["step"], pc=state["pc"]))
+        elif text.startswith("@@D names"):
+            for name in text[len("@@D names"):].split():
+                named.setdefault(name, dict(step=state["step"], pc=state["pc"]))
         elif text.startswith("@@D head "):
             if target is not None:
                 target["head"] = text[len("@@D head "):]
@@ -112,7 +115,7 @@ def parse(lines):
         elif text.startswith("@@CONCL "):
             if target is not None and target.get("kind") == "refuse":
                 target["conclusion"] = text[len("@@CONCL "):]
-    return dict(steps=state["step"], sideconds=sideconds, stages=stages, refusals=refusals)
+    return dict(steps=state["step"], sideconds=sideconds, stages=stages, refusals=refusals, named=named)
 
 
 def instructions(path):
@@ -167,10 +170,12 @@ def analyze(parsed, table, expect=None, control=None):
         for name in refusal["relevant"]:
             statement = refusal["facts"].get(name, refusal["hyps"].get(name))
             stage = first_seen(name, refusal["facts"].get(name), stages[:refusal["index"]])
+            first = parsed["named"].get(name)
             facts.append(dict(name=name, statement=statement,
                               stage=stage["name"] if stage else None,
                               stage_index=stage["index"] if stage else None,
-                              step=stage["step"] if stage else None))
+                              step=first["step"] if first else (stage["step"] if stage else None),
+                              pc=first["pc"] if first else None))
         if not finishers:
             verdict = "no-finisher-on-this-goal"
         elif any(f["stage_index"] is not None and f["stage_index"] > finishers[-1]["index"] for f in facts):
@@ -189,10 +194,12 @@ def analyze(parsed, table, expect=None, control=None):
             message["expect"] = dict(pattern=expect.pattern, present=present)
             if control is not None:
                 found = first_matching(expect, control["stages"])
+                first = control["named"].get(found[1]) if found else None
+                step, pc = (first["step"], first["pc"]) if first else (
+                    (found[0]["step"], found[0]["pc"]) if found else (None, None))
                 message["expect"]["control"] = None if found is None else dict(
-                    stage=found[0]["name"], stage_index=found[0]["index"], step=found[0]["step"],
-                    pc=found[0]["pc"], instruction=table.get(found[0]["pc"]), name=found[1],
-                    statement=found[2])
+                    stage=found[0]["name"], stage_index=found[0]["index"], step=step, pc=pc,
+                    instruction=table.get(pc), name=found[1], statement=found[2])
         messages.append(message)
     return messages
 
@@ -203,8 +210,8 @@ def render(message):
     lines = ["REFUSAL %s #%d step=%s (%s) pc=%s insn=\"%s\" head=\"%s\" last_stage=%s@step%s" % (
         message["kind"], message["number"], message["step"], where, pc, message["instruction"] or "?",
         message["head"], message["last_stage"], message["last_stage_step"])]
-    shown = ["%s@%s" % (f["name"], "%s#%s(step %s)" % (f["stage"], f["stage_index"], f["step"])
-                        if f["stage"] else "not-at-a-stage") for f in message["facts"]]
+    shown = ["%s@step %s/%s" % (f["name"], f["step"], "stage %s#%s" % (f["stage"], f["stage_index"])
+                               if f["stage"] else "no stage") for f in message["facts"]]
     lines.append("  facts: %s" % (" ".join(shown) if shown else "(none share a term with the goal)"))
     lines.append("  verdict=%s (finisher stages on this goal: %d)" % (message["verdict"],
                                                                     message["finisher_stages"]))
@@ -217,10 +224,10 @@ def render(message):
             if found is None:
                 lines.append("  control: no fact matches")
             else:
-                lines.append("  control: first at stage %s#%s step %s pc %s insn=\"%s\" as %s : %s" % (
-                    found["stage"], found["stage_index"], found["step"],
+                lines.append("  control: first at step %s pc %s insn=\"%s\" (first closing stage %s#%s) as %s : %s" % (
+                    found["step"],
                     "?" if found["pc"] is None else hex(found["pc"]), found["instruction"] or "?",
-                    found["name"], found["statement"]))
+                    found["stage"], found["stage_index"], found["name"], found["statement"]))
     return "\n".join(lines)
 
 

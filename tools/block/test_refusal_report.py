@@ -19,10 +19,12 @@ OBJDUMP = """
 LOG = """0.100 @@D step
 0.101 @@D pc 2148362612
 0.102 @@D head instr_body 2148362612 __
+0.103 @@D names Hx
 0.200 @@D step
 0.201 @@D pc 2148362616
 0.202 @@D sidecond bv_unsigned __ < 5
 0.203 @@D head ⌜bv_unsigned __ < 5⌝ ∗ __
+0.204 @@D names Hx Hlate
 0.300 @@D stage "finish_v1.solvers"
 0.301 @@D head bv_unsigned x < 5
 0.302 @@D fact Hx : bv_unsigned x < 10
@@ -74,10 +76,12 @@ class RefusalReport(unittest.TestCase):
         message = self.message(LOG)
         stages = {fact["name"]: fact["stage"] for fact in message["facts"]}
         self.assertEqual(stages, {"Hx": "finish_v1.solvers", "Hlate": "final_pure"})
+        steps = {fact["name"]: (fact["step"], fact["pc"]) for fact in message["facts"]}
+        self.assertEqual(steps, {"Hx": (1, 0x800d6974), "Hlate": (2, 0x800d6978)})
         self.assertEqual(message["verdict"], "fact-after-finisher")
         text = render(message)
         self.assertIn('insn="add a1,a0,a1"', text)
-        self.assertIn("Hlate@final_pure", text)
+        self.assertIn("Hlate@step 2/stage final_pure#1", text)
 
     def test_facts_present_before_the_finisher(self):
         log = LOG.replace("0.302 @@D fact Hx : bv_unsigned x < 10\n",
@@ -91,6 +95,7 @@ class RefusalReport(unittest.TestCase):
         self.assertEqual(message["expect"]["present"], [])
         self.assertEqual(message["expect"]["control"]["stage"], "final_pure")
         self.assertEqual(message["expect"]["control"]["pc"], 0x800d6978)
+        self.assertEqual(message["expect"]["control"]["step"], 2)
         self.assertIn("absent in this run", render(message))
 
     def test_a_log_without_refusals_reports_nothing(self):
