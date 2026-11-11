@@ -1210,10 +1210,19 @@ Ltac zesu_block_base :=
   try zesu_entry_intro_goal_if_enabled;
   zesu_with_rule_set ltac:(zesu_block_v1) ltac:(zesu_block_v2).
 
+(* The package route opens the package's resource groups, so a conjunct that
+   it splits off can see facts that no finisher call saw. The pure finisher
+   runs once on each split conjunct before the final residual tier. *)
+Ltac zesu_finish_split_conjunct :=
+  lazymatch goal with
+  | |- environments.envs_entails _ _ => fail
+  | _ => solve [zesu_finish]
+  end.
+
 (* Residual lemmas close the pure goals that every other tier leaves open. *)
 Ltac zesu_block2 :=
   zesu_block_base; try zesu_finish_residual_cascade;
-  try zesu_finish_package_deferring;
+  try (zesu_finish_package_deferring; try zesu_finish_split_conjunct);
   try ResidualLemmas.zesu_residual_lemma.
 
 Ltac zesu_block_simpl :=
