@@ -13,26 +13,11 @@ UMBRELLA = "DecodeItemHints.v"
 SCOPED_HINT_IMPORTS = {
     PREFIX + "DecodeItemExitDataFacts": (
         "Scaffolding.DecodeItemC1BMeaning",
-        "ZesuSsz.Proofs.DecodeItem.Auto.Block800d697c",
-        "ZesuSsz.Proofs.DecodeItem.Auto.Block800d698cLiteral",
-        "ZesuSsz.Proofs.DecodeItem.Auto.Block800d698cShortString",
-        "ZesuSsz.Proofs.DecodeItem.Auto.Block800d69b0",
-        "ZesuSsz.Proofs.DecodeItem.Auto.Block800d69e8",
-        "ZesuSsz.Proofs.DecodeItem.Auto.Block800d6a40",
-        "ZesuSsz.Proofs.DecodeItem.Auto.Block800d6a78",
-        "ZesuSsz.Proofs.DecodeItem.Auto.Block800d6ae0",
-        "ZesuSsz.Proofs.DecodeItem.Auto.Block800d6b08",
     ),
-    PREFIX + "DecodeItemLoopDerivedFacts": (
-        "ZesuSsz.Proofs.DecodeItem.Hand.Block800d6a24",
-        "ZesuSsz.Proofs.DecodeItem.Hand.Block800d6ac4",
-    ),
-    PREFIX + "DecodeItemLoopInitialization": (
-        "ZesuSsz.Proofs.DecodeItem.Auto.Block800d6a14",
-        "ZesuSsz.Proofs.DecodeItem.Auto.Block800d6ab4",
-        "ZesuSsz.Proofs.DecodeItem.Hand.Block800d6a24",
-        "ZesuSsz.Proofs.DecodeItem.Hand.Block800d6ac4",
-    ),
+    # Their October block importers are retired; the frozen-core tests that
+    # still import them move with the follow-up test port.
+    PREFIX + "DecodeItemLoopDerivedFacts": (),
+    PREFIX + "DecodeItemLoopInitialization": (),
 }
 
 
