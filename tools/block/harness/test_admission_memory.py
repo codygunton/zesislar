@@ -280,6 +280,15 @@ class WaiterTests(unittest.TestCase):
         self.assertEqual(self.decide(4 * M.GIB, 'small')['waiter_reserved_bytes'], 0)
         self.assertNotIn('gate', self.data[M.WAITERS])
 
+    def test_only_the_head_of_the_waiter_queue_reserves(self):
+        for index, size in enumerate((8, 6, 12)):
+            M.record_waiter(self.data, f'w{index}', size * M.GIB, {'pid': 'gate', 'startticks': 1},
+                            self.now + index)
+        self.now += 400_000_000_000
+        self.assertEqual(self.decide(2 * M.GIB, 'small')['waiter_reserved_bytes'], 8 * M.GIB)
+        self.assertEqual(self.decide(7 * M.GIB, 'small')['waiter_reserved_bytes'], 8 * M.GIB)
+        self.assertEqual(self.decide(10 * M.GIB, 'small')['waiter_reserved_bytes'], 12 * M.GIB)
+
     def test_an_aged_waiter_keeps_its_first_refusal_time(self):
         owner = {'pid': 'gate', 'startticks': 1}
         self.assertTrue(M.record_waiter(self.data, 'gate', 32 * M.GIB, owner, 1))
@@ -321,9 +330,23 @@ class RetainedHoldTests(unittest.TestCase):
         data = self.ledger()
         result = M.projection(data, M.ledger_claims(data), GIB, 10**13,
                               reader=self.Reader(3 * GIB, self.AGGREGATE))
-        # Live anonymous 3 GiB plus the running compile's 2 GiB, not the 16 GiB
-        # the ended compile once booked. The shared aggregate counts once.
-        self.assertEqual(result['active_claim_bytes'], 5 * GIB)
+        # The running compile's 2 GiB claim plus the aggregate's anonymous memory
+        # outside it (3 GiB live less its 1 GiB), not the 16 GiB the ended compile
+        # once booked. The shared aggregate and its compile count each byte once.
+        self.assertEqual(result['active_claim_bytes'], 4 * GIB)
+
+    def test_ledger_total_is_live_claims_plus_unspent_aggregate(self):
+        aggregate = {'scope': self.AGGREGATE, 'device': 1, 'inode': 2}
+        claims = {'shell:a': 4 * GIB, 'shell:b': 6 * GIB}
+        data = {'fixed_claims': dict(claims),
+                'shell_aggregate_holds': {'shell-aggregate:x': {'aggregate': aggregate,
+                                                                'fallback_bytes': 32 * GIB}}}
+        for anon, unspent in ((2 * GIB, 0), (5 * GIB, 3 * GIB)):
+            with self.subTest(anon=anon):
+                result = M.projection(data, M.ledger_claims(data), GIB, 10**13,
+                                      reader=self.Reader(anon, self.AGGREGATE))
+                # Each running compile shows 1 GiB live inside the aggregate.
+                self.assertEqual(result['active_claim_bytes'], sum(claims.values()) + unspent)
 
     def test_hold_without_anonymous_sample_keeps_its_fallback(self):
         data = self.ledger()

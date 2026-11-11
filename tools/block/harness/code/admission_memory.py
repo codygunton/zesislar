@@ -945,7 +945,7 @@ def senior_waiters(data, requester, request_bytes, reader):
     waiters = data.get(WAITERS, {})
     own = waiters.get(requester) if requester is not None else None
     since = own['since_ns'] if own else now
-    reserved = 0
+    head = None
     for key, row in list(waiters.items()):
         if key == requester:
             continue
@@ -961,8 +961,12 @@ def senior_waiters(data, requester, request_bytes, reader):
             print(f'admission waiter {key} ({row["bytes"]} bytes, {age // 10**9} s) no longer blocks newer requests',
                   file=sys.stderr)
             continue
-        reserved += row['bytes']
-    return reserved, bool(own) and now - since >= bound
+        if head is None or row['since_ns'] < head['since_ns']:
+            head = row
+    # Only the head of the queue reserves: the waiters behind it get their turn
+    # in order. Reserving every waiter booked 40 queued requests (109 GiB) that
+    # held no memory, and the summary showed them as bookings (2026-11-11).
+    return (head['bytes'] if head else 0), bool(own) and now - since >= bound
 
 
 def projection(data, claims, new_bytes, available_bytes, *, reader=None, new_observation=None,
@@ -1024,11 +1028,17 @@ def projection(data, claims, new_bytes, available_bytes, *, reader=None, new_obs
         claims[key] = retained['fallback_bytes']
         if (key in shell_holds and sample.get('aggregate_verified') is True
                 and type(sample.get('anon_bytes')) is int):
-            running = sum(amount for other, amount in claims.items()
-                          if other != key and amount
-                          and observations.get(other, {}).get('verified') is True
-                          and observations[other].get('scope') == sample.get('scope'))
-            claims[key] = min(retained["fallback_bytes"], sample["anon_bytes"] + running)
+            members = [other for other, amount in claims.items()
+                       if other != key and amount
+                       and observations.get(other, {}).get('verified') is True
+                       and observations[other].get('scope') == sample.get('scope')]
+            running = sum(claims[other] for other in members)
+            running_live = sum(observations[other].get('live_bytes', 0) for other in members)
+            # The aggregate's anonymous memory already contains its running
+            # compiles; book that memory once, through their claims, and add
+            # only the rest of the aggregate.
+            claims[key] = min(retained["fallback_bytes"],
+                              max(0, sample["anon_bytes"] - running_live) + running)
         observations[key] = sample
     new_unmeasured = False
     if pending_shell is not None:
