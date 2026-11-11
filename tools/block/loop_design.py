@@ -149,6 +149,31 @@ def loop_class(report, design, profile):
     return source, record
 
 
+def reseat_orphaned(registers, entry_registers, design_registers, taken):
+    """Give a fresh binder to each register that names a binder no register holds any more.
+
+    Overwriting a design register with its loop binder leaves the binder it held at the
+    loop entry without a holder. Another register that names that binder gets a fresh
+    seed binder; the loop class keeps its exact entry value. Returns the new binder rows."""
+    from symbolic_state import input_expr
+    holders = [value.value for value in registers.values() if value.op == 'input']
+    orphaned = {value.value for register, value in entry_registers.items()
+                if register in design_registers and value.op == 'input' and value.value not in holders}
+    taken, added = set(taken), []
+    for register in sorted(registers, key=lambda key: (len(key), key)):
+        value = registers[register]
+        if register in design_registers or not GPR.fullmatch(register) or not orphaned & set(_inputs(value)):
+            continue
+        index = 1
+        while 'machine_%s_%d' % (register, index) in taken:
+            index += 1
+        fresh = input_expr('machine_%s_%d' % (register, index), value.width)
+        taken.add(fresh.value)
+        added.append({'name': fresh.value, 'type': 'bv %d' % value.width, 'expression': fresh.to_dict()})
+        registers[register] = fresh
+    return added
+
+
 def loop_head_seed(report, design, profile, *, root_seed, vocabulary, continuation, live_registers=None):
     """Return a forward-pass seed at the loop head from its entry edge and design.
 
@@ -172,6 +197,7 @@ def loop_head_seed(report, design, profile, *, root_seed, vocabulary, continuati
                                    continuation=continuation, outer_names=['args', 'returnAddress'],
                                    live_registers=live_registers)
     seed = joined['seed']
+    entry_registers = dict(seed.state.registers)
     cursors = design.get('array_cursor') or []
     cursors = cursors if isinstance(cursors, list) else [cursors]
     added = []
@@ -195,6 +221,8 @@ def loop_head_seed(report, design, profile, *, root_seed, vocabulary, continuati
         else:
             added.append({'name': binder, 'type': 'bv 64', 'expression': value.to_dict()})
         seed.state.registers[register] = value
+    added += reseat_orphaned(seed.state.registers, entry_registers, design['registers'],
+                             {row['name'] for row in [*seed.ownership['binders'], *added]})
     seed.state.retained_registers = dict(seed.state.registers)
     tree = seed.ownership['tree']['left']
     tree['binders'] = [*tree['binders'], *({k: v for k, v in row.items()} for row in added)]
