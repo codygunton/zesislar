@@ -1,6 +1,6 @@
 {
   "schema": 2,
-  "artifact_identity": "0a65ecef84a26877fbde660325fb54871bc3e104997b5caae27f5d7fd5dd355a",
+  "artifact_identity": "799534fcb570b2713df7c1aed999b1e78c70622d5861b9cd05d48536ac19cb6a",
   "static_closure": "passed under the inventory conditions",
   "unsupported_instructions": [],
   "unresolved_transfers": [],
@@ -25,7 +25,7 @@
       "unsupported_runtime_boundaries": [],
       "instruction_modules_validated": true,
       "manifest_binding_pending": false,
-      "bound_artifact_identity": "11c768eddd34efaff60506705c3b37dda282fce707bea53c5415870977f55ed3"
+      "bound_artifact_identity": "799534fcb570b2713df7c1aed999b1e78c70622d5861b9cd05d48536ac19cb6a"
     },
     "closure": {
       "elf_sha256": "e44c18d54ae3d77832df92aceb6eb7119de8eb2e8f1f1b4e585a6e33ea04ff95",
@@ -42,7 +42,7 @@
       ],
       "instruction_modules_validated": true,
       "manifest_binding_pending": false,
-      "bound_artifact_identity": "11c768eddd34efaff60506705c3b37dda282fce707bea53c5415870977f55ed3"
+      "bound_artifact_identity": "799534fcb570b2713df7c1aed999b1e78c70622d5861b9cd05d48536ac19cb6a"
     }
   }
 }
