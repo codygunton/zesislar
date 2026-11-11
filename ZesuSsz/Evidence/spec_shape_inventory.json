@@ -33,19 +33,7 @@
       "predicates_without_unfold": 0,
       "disjunctive_specs": 0
     },
-    "ZesuSsz/Evidence/DecodeItemOpenNativeHypotheses.v": {
-      "frame_parameters_in_closed_specs": 0,
-      "uninferable_existentials": 0,
-      "predicates_without_unfold": 0,
-      "disjunctive_specs": 0
-    },
     "ZesuSsz/Evidence/DecodeItemOutput24Selections.v": {
-      "frame_parameters_in_closed_specs": 0,
-      "uninferable_existentials": 0,
-      "predicates_without_unfold": 0,
-      "disjunctive_specs": 0
-    },
-    "ZesuSsz/Evidence/DecodeItemPrecommitmentLedger.v": {
       "frame_parameters_in_closed_specs": 0,
       "uninferable_existentials": 0,
       "predicates_without_unfold": 0,
@@ -90,18 +78,6 @@
       "predicates_without_unfold": 0,
       "disjunctive_specs": 0
     },
-    "ZesuSsz/Evidence/DecodeItemRouteRepairAcceptance.v": {
-      "frame_parameters_in_closed_specs": 0,
-      "uninferable_existentials": 0,
-      "predicates_without_unfold": 0,
-      "disjunctive_specs": 0
-    },
-    "ZesuSsz/Evidence/DecodeItemPrecommitmentWitnessFixtures.v": {
-      "frame_parameters_in_closed_specs": 0,
-      "uninferable_existentials": 0,
-      "predicates_without_unfold": 0,
-      "disjunctive_specs": 0
-    },
     "ZesuSsz/Compliance/DecodeItemEntryIntroductions.v": {},
     "ZesuSsz/Compliance/DecodeItemLoopSteps.v": {},
     "ZesuSsz/Compliance/DecodeItemExitMeanings.v": {},
@@ -120,13 +96,6 @@
       "unfold_without_typeclasses_opaque": 0
     },
     "ZesuSsz/Compliance/DecodeItemEntryAdditionalFacts.v": {
-      "uninferable_existentials": 0,
-      "predicates_without_unfold": 0,
-      "disjunctive_specs": 0,
-      "frame_parameters_in_closed_specs": 0,
-      "unfold_without_typeclasses_opaque": 0
-    },
-    "ZesuSsz/Evidence/DecodeItemExitMeaningDraftFixtures.v": {
       "uninferable_existentials": 0,
       "predicates_without_unfold": 0,
       "disjunctive_specs": 0,
@@ -304,20 +273,6 @@
       "frame_parameters_in_closed_specs": 0,
       "unfold_without_typeclasses_opaque": 0
     },
-    "ZesuSsz/Evidence/DecodeItemPromoted6a38Fixtures.v": {
-      "uninferable_existentials": 0,
-      "predicates_without_unfold": 0,
-      "disjunctive_specs": 0,
-      "frame_parameters_in_closed_specs": 0,
-      "unfold_without_typeclasses_opaque": 0
-    },
-    "ZesuSsz/Evidence/DecodeItemPromoted6ad8Fixtures.v": {
-      "uninferable_existentials": 0,
-      "predicates_without_unfold": 0,
-      "disjunctive_specs": 0,
-      "frame_parameters_in_closed_specs": 0,
-      "unfold_without_typeclasses_opaque": 0
-    },
     "ZesuSsz/Compliance/DecodeItemLoopDerivedFacts.v": {
       "uninferable_existentials": 0,
       "predicates_without_unfold": 0,
@@ -353,13 +308,6 @@
       "frame_parameters_in_closed_specs": 0,
       "unfold_without_typeclasses_opaque": 0
     },
-    "ZesuSsz/Evidence/DecodeItemSupportAssumptions.v": {
-      "uninferable_existentials": 0,
-      "predicates_without_unfold": 0,
-      "disjunctive_specs": 0,
-      "frame_parameters_in_closed_specs": 0,
-      "unfold_without_typeclasses_opaque": 0
-    },
     "ZesuSsz/Compliance/DecodeItemNormalizedGuardRegistrations.v": {
       "uninferable_existentials": 0,
       "predicates_without_unfold": 0,
@@ -388,13 +336,6 @@
       "unfold_without_typeclasses_opaque": 0
     },
     "ZesuSsz/Evidence/ExistentialPackageControls.v": {
-      "uninferable_existentials": 0,
-      "predicates_without_unfold": 0,
-      "disjunctive_specs": 0,
-      "frame_parameters_in_closed_specs": 0,
-      "unfold_without_typeclasses_opaque": 0
-    },
-    "ZesuSsz/Compliance/DecodeItemJoinMeaning.v": {
       "uninferable_existentials": 0,
       "predicates_without_unfold": 0,
       "disjunctive_specs": 0,

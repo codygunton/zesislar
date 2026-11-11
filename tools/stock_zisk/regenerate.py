@@ -173,10 +173,6 @@ def main():
     before = sha(design)
     run('block design', [PY, 'ZesuSsz/Evidence/generate_block_design.py', '--function', 'decodeItem'])
     refresh_design_pins(design, before, sha(design))
-    run('block table', [PY, 'tools/block/generate_table.py', '--function', 'decodeItem', '--recipe', RECIPE,
-                        '--cfg', BUILD + '/cfg.json', '--design', 'ZesuSsz/Evidence/decode_item_block_design.json',
-                        '--coverage', 'ZesuSsz/Generated/DecodeItem/block_table_metadata.json',
-                        '--output', 'ZesuSsz/Generated/DecodeItem/BlockTable.v'])
     checks = [('stock check', [PY, 'tools/stock_zisk/build.py', '--check', '--out', BUILD]),
               ('machine map check', [PY, 'tools/stock_zisk/machine_map/generate.py', '--build', BUILD, '--check']),
               ('layout check', [PY, 'tools/stock_zisk/layout.py', '--check']),
