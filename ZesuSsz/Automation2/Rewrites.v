@@ -59,11 +59,12 @@ Ltac zesu_finish_integer_word_image :=
 
 Create HintDb zesu_selectors.
 
+(* `zesu_bv_sign_extend_same`, `zesu_bv_unsigned_add_Z_64` and
+   `zesu_bv_unsigned_add_no_wrap_64` are registered in these databases by
+   `ByteArrays.v`. A second registration makes `autorewrite` try each of them,
+   with its side-condition solver, twice. *)
 #[export] Hint Rewrite zesu_bv_sign_extend_64_idemp
-  (@bv_sign_extend_idemp 64) zesu_bv_sign_extend_same
-  : isla_coq_rewrite lithium_rewrite.
-#[export] Hint Rewrite zesu_bv_unsigned_add_Z_64
-  zesu_bv_unsigned_add_no_wrap_64 using (first [ZesuSsz.Automation2.RewriteBoundGuards.a3n_closed_bound_if_enabled | bv_solve])
+  (@bv_sign_extend_idemp 64)
   : isla_coq_rewrite lithium_rewrite.
 #[export] Hint Rewrite zesu_bv_unsigned_Z_to_bv_small using (first [ZesuSsz.Automation2.RewriteBoundGuards.a3n_closed_bound_if_enabled | bv_solve])
   : isla_coq_rewrite lithium_rewrite.

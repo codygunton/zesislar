@@ -2299,7 +2299,6 @@ Ltac zesu_liAStep :=
   | LoopBackedgeJoin.zesu_loop_backedge_choice
   | ZesuSsz.Automation2.UnionRuleComponents.zesu_region_fault_if_enabled
   | zesu_expose_instruction_lookup
-  | zesu_region_fault_if_enabled
   | zesu_ram_fault_if_enabled
   | zesu_signed_address_if_enabled
   | zesu_stack_write_if_enabled
