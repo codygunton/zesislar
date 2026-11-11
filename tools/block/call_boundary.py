@@ -354,6 +354,8 @@ def call_return_seed(edges, *, call, function_root, root_seed, shapes, vocabular
             pieces = [(0, split['offset']), (split['offset'], split['offset'] + split['length']),
                       (split['offset'] + split['length'], resource.length)]
             updates = image.updates[key]
+            if any(isinstance(offset, str) for offset in updates):
+                raise CallRefused('A caller span next to the callee output holds a store at a symbolic offset: ' + key)
             for index, (start, end) in enumerate(pieces):
                 if start == end:
                     continue
