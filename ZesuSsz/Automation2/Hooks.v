@@ -498,29 +498,25 @@ Ltac zesu_lookup_folded_fact fact :=
   | _ => let head := get_head fact in first [is_const head | is_ind head]
   end.
 
-(* A load or store at an address built on a cast of an open integer needs
-   that integer's range, which a folded hypothesis may only derive. Derived
-   facts otherwise enter only in the finisher's saturation, after the lookup
-   has failed. Derive them once, before the lookup; they stay in the context,
-   so a later lookup adds nothing. *)
-Ltac zesu_lookup_derived_facts :=
-  match goal with
-  | |- environments.envs_entails _ (find_in_context (FindMemMapsTo ?address) _) =>
-      match address with
-      | context [Z_to_bv _ ?integer] =>
-          tryif stdpp.tactics.is_closed_term integer then fail else idtac
-      end
-  end;
-  progress (repeat (match goal with
+(* The array lookup's side condition (`tac_mem_mapsto_array_eq`) runs
+   `bv_solve` on the context as it is, but the range of a cast may follow only
+   from a folded hypothesis through a registered `ZesuDerivedFacts` instance.
+   Derived facts otherwise enter only in the finisher's saturation, after the
+   lookup has failed. This hint derives them inside the side condition's own
+   proof, so the shared context does not change. *)
+Ltac zesu_lookup_side_condition :=
+  repeat (match goal with
     | H : ?fact |- _ =>
         lazymatch type of fact with Prop => idtac end;
         zesu_lookup_folded_fact fact;
         ZesuSsz.Automation2.PureFacts.zesu_derive_fact_from H
-    end)).
+    end);
+  bv_solve.
+#[export] Hint Extern 9 (FindHypEqual (FICMemMapstoSemantic _) (_ ↦ₘ∗ _) (mem_mapsto_kind_prop _ _) _) =>
+  (apply tac_mem_mapsto_array_eq; zesu_lookup_side_condition) : typeclass_instances.
 
 Ltac zesu_normalize_find_mem_address :=
   first [
-    zesu_lookup_derived_facts |
     lazymatch goal with
     | |- environments.envs_entails _
         (find_in_context (FindMemMapsTo (bv_unsigned (Z_to_bv ?width ?integer))) _) =>
