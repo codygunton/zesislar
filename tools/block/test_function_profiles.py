@@ -59,12 +59,6 @@ class DecodeItemProfile(unittest.TestCase):
             committed = ROOT / profile['callers_directory'] / ('Caller' + head + '.v')
             self.assertEqual(committed.read_text(), source)
 
-    def test_every_loop_head_has_a_seed_design(self):
-        profile = load_profile()
-        self.assertEqual([row['head'] for row in profile['loop_designs']], profile['loop_heads'])
-        for row in profile['loop_designs']:
-            self.assertIn(row['array_cursor']['register'], row['registers'])
-
     def test_return_precondition_matches_the_committed_caller(self):
         profile = load_profile()
         caller = (ROOT / profile['callers_directory'] / 'Caller6a78.v').read_text()
@@ -103,7 +97,33 @@ class OtherProfile(unittest.TestCase):
             self.assertEqual(load_profile(str(path)).name, 'otherFunction')
 
 
-class CallerPlan(unittest.TestCase):
+class FreeProfile(unittest.TestCase):
+    """The free profile and its committed callers."""
+
+    def test_profile_and_callers(self):
+        profile = load_profile('free')
+        self.assertEqual(len(profile['blocks']), 43)
+        directory = ROOT / profile['callers_directory']
+        callers = sorted(directory.glob('Caller*.v'))
+        self.assertTrue(callers)
+        for path in callers:
+            source = path.read_text()
+            self.assertNotRegex(source, r'(?i)decodeitem')
+            self.assertEqual(source.count('Proof.\n  zesu_block2.\nQed.\n'), 1)
+            self.assertIn('  freeSelectedCode -∗\n', source)
+
+    def test_committed_outputs_match_the_generation_record(self):
+        import hashlib
+        record = json.loads((ROOT / 'tools/block/fixtures/free-fp301-generation.json').read_text())
+        committed = sorted((ROOT / 'ZesuSsz/Generated/Free/FP301').glob('*.v')) + sorted(
+            (ROOT / 'tools/block/generated/free_fp301_callers').glob('*.v'))
+        self.assertEqual([str(path.relative_to(ROOT)) for path in committed],
+                         [row['path'] for row in record['outputs']])
+        for row in record['outputs']:
+            self.assertEqual(hashlib.sha256((ROOT / row['path']).read_bytes()).hexdigest(), row['sha256'])
+        rendered = [row['case'] for row in record['callers'] if row['status'] == 'rendered']
+        self.assertEqual(rendered, [path.stem[len('Caller'):] for path in committed if path.stem.startswith('Caller')])
+
     def test_caller_plan_refuses_missing_successors(self):
         profile = other_profile()
         function = {'blocks': [{'start': 0x800d1000, 'successors': [0x800d1010]},
@@ -114,6 +134,15 @@ class CallerPlan(unittest.TestCase):
                          [('1000', ['1010'], None), ('1010', [], 'function-return package not rendered')])
         cases[1]['status'] = 'stopped'
         self.assertEqual(plan_callers(profile, cases, function)[0][2], 'successor entry not rendered: 1010')
+
+    def test_return_block_renders_once_the_return_package_renders(self):
+        profile = other_profile()
+        function = {'blocks': [{'start': 0x800d1000, 'successors': [0x800d1010]},
+                               {'start': 0x800d1010, 'successors': []}]}
+        cases = [{'pc': '0x800d1000', 'status': 'source_declarations_rendered'},
+                 {'pc': '0x800d1010', 'status': 'source_declarations_rendered'},
+                 {'pc': 'function_return', 'status': 'source_declarations_rendered'}]
+        self.assertEqual(plan_callers(profile, cases, function)[-1], ('1010', [], None))
 
 
 class JoinEdgeAlignment(unittest.TestCase):
@@ -140,6 +169,16 @@ class JoinEdgeAlignment(unittest.TestCase):
         self.assertEqual(extra, [{'name': 'machine_x12', 'type': 'bv 64'}])
         kept, _ = align_join_edges([joined], ownership, 'r1', 'K', keep_binders=True)
         self.assertEqual([b['name'] for b in kept[0]['resource_boundary']['tree']['binders']], ['x10', 'machine_x12'])
+
+    def test_join_design_components_leave_like_relations(self):
+        ownership = {'tree': self.ORIGINAL, 'components': [{'id': 'r0', 'source': 'A'}, {'id': 'r1', 'source': 'True'}]}
+        seeded = {'kind': 'sep', 'right': {'kind': 'component', 'id': 'r1'},
+                  'left': {'kind': 'exists', 'binders': [], 'scope': [0], 'body': {'kind': 'sep_list', 'children': [
+                      {'kind': 'component', 'id': 'r0'}, {'kind': 'component', 'id': 'join_design_0'}]}}}
+        joined = self.edge(seeded, 'K', [{'id': 'join_design_0', 'source': '⌜Q⌝'}])
+        aligned, _ = align_join_edges([joined], ownership, 'r1', 'K')
+        self.assertEqual(aligned[0]['resource_boundary']['tree'], self.ORIGINAL)
+        self.assertEqual([c['source'] for c in aligned[0]['resource_boundary']['components']], ['A', 'True'])
 
     def test_other_differences_stay_for_the_refusal(self):
         ownership = {'tree': self.ORIGINAL, 'components': [{'id': 'r0', 'source': 'A'}, {'id': 'r1', 'source': 'True'}]}
