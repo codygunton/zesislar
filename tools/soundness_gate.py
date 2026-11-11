@@ -273,15 +273,54 @@ async def negative_checks(config):
             raise ValueError('The negative-control transport did not close.')
 
 
+PUBLIC_SUFFIXES = ('.vo', '.vos', '.vok', '.glob')
+
+
+def fresh_public_outputs(build, public):
+    """Remove every PUBLIC output so that an uncached Dune run compiles it again."""
+    removed = []
+    for target in public:
+        for suffix in PUBLIC_SUFFIXES:
+            path = build / 'default' / Path(target).with_suffix(suffix)
+            if path.exists():
+                removed.append(binding(path))
+                path.unlink()
+    return removed
+
+
+def public_fresh_receipt(build, public, removed, started):
+    """Each PUBLIC object must be a new file written after the removal."""
+    rows = []
+    for target in public:
+        path = build / 'default' / target
+        if not path.is_file() or path.stat().st_mtime_ns < started:
+            raise ValueError('A PUBLIC object did not compile fresh: ' + target)
+        rows.append(dict(binding(path), mtime_ns=path.stat().st_mtime_ns))
+    return {'schema': 'soundness.public-fresh.v1', 'removed_ns': started,
+            'removed_outputs': removed, 'fresh_objects': rows,
+            'policy': 'Dependency objects may come from the Dune cache; recursive coqchk re-checks them.'}
+
+
 def stage(config, name):
     unchanged_inputs(config)
     workspace, out, build = map(Path, (config['workspace'], config['output'], config['build']))
     if name == 'source':
-        for label, targets in [('plugins', PLUGINS), ('PUBLIC', sorted({str(Path(p).with_suffix('.vo')) for p in PUBLIC.values()}))]:
+        public = sorted({str(Path(p).with_suffix('.vo')) for p in PUBLIC.values()})
+
+        def dune(label, cache, targets):
             subprocess.run([sys.executable, '-B', 'tools/build_record.py', '--build-dir', str(build),
                 '--target', 'soundness-' + label, '--', shutil.which('dune'), 'build', '--root', str(workspace),
-                '--build-dir', str(build), '--cache=disabled', '-j2', '--display', 'short', *targets],
-                cwd=workspace, check=True)
+                '--build-dir', str(build), '--cache=' + cache, '-j2', '--display', 'short', *targets],
+                cwd=workspace, env=dict(os.environ, DUNE_CACHE=cache), check=True)
+        dune('plugins', 'disabled', PLUGINS)
+        # The dependency closure may come from the Dune cache: recursive coqchk
+        # re-checks every object, cached or fresh. The PUBLIC theorem files
+        # always compile fresh from the reviewed sources.
+        dune('closure', 'enabled', public)
+        started = time.time_ns()
+        removed = fresh_public_outputs(build, public)
+        dune('PUBLIC', 'disabled', public)
+        save(Path(config['output']) / 'PUBLIC-FRESH.json', public_fresh_receipt(build, public, removed, started))
     elif name == 'negative':
         asyncio.run(negative_checks(config))
     elif name == 'wrappers':
