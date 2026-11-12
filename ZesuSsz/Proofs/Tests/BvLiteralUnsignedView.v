@@ -28,9 +28,8 @@ Lemma intro_views_or_disequality (args : literal_args) :
   bv_or (literal_head args) (literal_low args) <> 0%bv -> True.
 Proof.
   liImpl.
-  lazymatch goal with
-  | _ : bv_unsigned (bv_or (literal_head args) (literal_low args)) <> 0 |- _ => exact I
-  end.
+  let expected := constr:(bv_unsigned (bv_or (literal_head args) (literal_low args)) <> 0) in
+  match goal with view : ?statement |- _ => constr_eq statement expected; exact I end.
 Qed.
 
 Lemma intro_views_nonzero_literal (args : literal_args) :
