@@ -521,16 +521,19 @@ class DuneCompilerGuardTest(unittest.TestCase):
             "#!/usr/bin/env bash", "#!/bin/bash", 1))
         route = self.root / "tools/dune_coqc_route.sh"
         route.write_text(route.read_text().replace("#!/usr/bin/env bash", "#!/bin/bash", 1))
-        process = subprocess.Popen([str(self.wrapper), "30"], env=self.environment,
+        # The fake compile must outlive every step below: under parallel gates the
+        # sixteen guard calls took longer than a 30 s compile, whose reservation
+        # then ended (15 != 16, 2026-11-12). It runs until the test stops it.
+        process = subprocess.Popen([str(self.wrapper), str(10 * EVENT_CEILING_SECONDS)], env=self.environment,
                                    stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
         # The direct slot calls below model the scratch route, which books
         # without the module memory profile.
         self.environment.pop("ZESU_MODULE_MEMORY_PROFILE", None)
         tokens = []
         guard = self.root / "tools/resource_guard.sh"
+        child = None
         try:
             deadline = time.monotonic() + EVENT_CEILING_SECONDS
-            child = None
             while time.monotonic() < deadline:
                 markers = list((Path(self.environment["ZESU_GUARD_STATE"]) /
                                 "coqc-reservations").glob("*"))
@@ -598,6 +601,11 @@ class DuneCompilerGuardTest(unittest.TestCase):
                 waiter.terminate(); waiter.communicate(timeout=EVENT_CEILING_SECONDS)
         finally:
             process.terminate(); process.communicate(timeout=EVENT_CEILING_SECONDS)
+            if child is not None:
+                try:
+                    os.kill(int(child), signal.SIGTERM)
+                except ProcessLookupError:
+                    pass
             if child is not None:
                 self.assertFalse(Path(f"/proc/{child}").exists())
             for token in tokens:
