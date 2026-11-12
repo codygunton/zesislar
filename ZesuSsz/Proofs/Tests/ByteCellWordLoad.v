@@ -63,4 +63,34 @@ Proof.
   Fail ZesuSsz.Automation2.ByteCellWords.zesu_byte_cells_fold.
 Abort.
 
+(* The loaded window of a saved frame (fp then ra bytes) is the saved word. *)
+Lemma byte_cells_word_reload (base : Z) (saved returned : bv 64) :
+  Z_to_bv 64 (little_endian_to_bv 8 (take 8 (drop
+    (Z.to_nat (base + -64 + 56 - (base - 64 + 48)))
+    [bv_extract 0 8 saved; bv_extract 8 8 saved; bv_extract 16 8 saved;
+     bv_extract 24 8 saved; bv_extract 32 8 saved; bv_extract 40 8 saved;
+     bv_extract 48 8 saved; bv_extract 56 8 saved;
+     bv_extract 0 8 returned; bv_extract 8 8 returned; bv_extract 16 8 returned;
+     bv_extract 24 8 returned; bv_extract 32 8 returned; bv_extract 40 8 returned;
+     bv_extract 48 8 returned; bv_extract 56 8 returned]))) = returned.
+Proof.
+  ZesuSsz.Automation2.ByteWordReload.zesu_reload_byte_word_step.
+  reflexivity.
+Qed.
+
+(* A window that is not the bytes of one word is not rewritten. *)
+Lemma byte_cells_mixed_window_refusal (saved returned : bv 64) :
+  Z_to_bv 64 (little_endian_to_bv 8 (take 8 (drop (Z.to_nat 4)
+    [bv_extract 0 8 saved; bv_extract 8 8 saved; bv_extract 16 8 saved;
+     bv_extract 24 8 saved; bv_extract 32 8 saved; bv_extract 40 8 saved;
+     bv_extract 48 8 saved; bv_extract 56 8 saved;
+     bv_extract 0 8 returned; bv_extract 8 8 returned; bv_extract 16 8 returned;
+     bv_extract 24 8 returned]))) = returned -> True.
+Proof.
+  intros _.
+  Fail ZesuSsz.Automation2.ByteWordReload.zesu_reload_byte_word_step.
+  exact I.
+Qed.
+
 Print Assumptions byte_cells_word_lookup.
+Print Assumptions byte_cells_word_reload.

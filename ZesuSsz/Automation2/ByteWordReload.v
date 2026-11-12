@@ -2,6 +2,7 @@ From Coq Require Import Lists.List ZArith.ZArith NArith.NArith Lia.
 From stdpp Require Import list bitvector.definitions.
 Require Import isla.riscv64.riscv64.
 Require ZesuSsz.Automation2.ContextCollection.
+Require ZesuSsz.Automation2.ByteExtractCodec281.
 Local Open Scope Z_scope.
 
 (* A word read back from the little-endian bytes of a stored word is that word. *)
@@ -96,6 +97,20 @@ Ltac zesu_reload_encoded_word_step :=
             change window with (bv_to_little_endian size 8 word);
             apply zesu_reload_byte_word;
             [first [apply (proj1 (bv_unsigned_in_range _ _)) | lia] | vm_compute; reflexivity]);
+          rewrite Hreload; clear Hreload
+      | bv_extract 0 8 ?word :: _ =>
+          (* The window is the extracted bytes of a word (a byte array the
+             word was saved into): the load reads the word back. *)
+          let Hreload := fresh "HreloadByteWord" in
+          assert (Hreload : Z_to_bv width
+              (little_endian_to_bv 8 (take count (drop (Z.to_nat offset) bytes))) = word) by (
+            replace offset with value by (clear; lia);
+            change (take count (drop (Z.to_nat value) bytes)) with window;
+            change window with (ZesuSsz.Automation2.ByteExtractCodec281.byte_extracts281 size word);
+            rewrite ZesuSsz.Automation2.ByteExtractCodec281.byte_extracts_codec281;
+            rewrite (zesu_reload_byte_word width size (bv_unsigned word));
+            [apply Z_to_bv_bv_unsigned | apply (proj1 (bv_unsigned_in_range _ _)) |
+             vm_compute; reflexivity]);
           rewrite Hreload; clear Hreload
       end
   end.
