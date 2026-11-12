@@ -292,5 +292,62 @@ class ForwardResourcesTests(unittest.TestCase):
                 load_resource_vocabulary(packet, digest)
 
 
+
+class SymbolicOffsetStores(unittest.TestCase):
+    """A store at a symbolic offset into an owned array, modeled on the symbolic read."""
+    base = input_expr('out_base')
+    address = operation('bvadd', operation('bvadd', base, input_expr('cursor_offset')), bits((1 << 64) - 1, 64))
+
+    def array(self, name='out', base=None, array='old_bytes'):
+        ownership = parse_source_ownership('address ↦ₘ∗ ' + array, provenance=PROVENANCE)
+        component, = ownership['components']
+        resource = OwnedBytes(name, base or self.base, 'address', input_expr(array, None),
+                              8, True, '(DfracOwn (1%Qp))', component, PROVENANCE, 8)
+        return ownership, resource
+
+    def test_the_array_stays_owned_and_the_cell_is_an_update_at_the_index(self):
+        ownership, resource = self.array()
+        ownership['components'][0]['id'] = 'out'
+        result = apply([resource], [MemoryWrite(self.address, bits(7, 8), 1)])
+        self.assertEqual(result.status, 'complete')
+        step, = result.transitions
+        self.assertIsNone(step['offset'])
+        self.assertEqual(step['symbolic_offset'], operation('bvsub', self.address, self.base).to_dict())
+        self.assertEqual(step['offset_justification']['status'], 'OPEN')
+        self.assertEqual(list(result.updates['out']), ['symbolic:0'])
+        output = render_resource_boundary(ownership, result, SymbolicState(), vocabulary=VOCABULARY)
+        self.assertEqual(output['block_status'], 'completed')
+        at = '(Z.to_nat ((bv_unsigned %s - bv_unsigned out_base)%%Z))' % self.address.coq()
+        source = output['components'][0]['source']
+        self.assertIn('take %s old_bytes' % at, source)
+        self.assertIn('drop (Nat.add %s 1%%nat) old_bytes' % at, source)
+
+    def test_an_uninitialized_span_never_owns_a_symbolic_store(self):
+        resource = owned(base=self.base)
+        result = apply([resource], [MemoryWrite(self.address, bits(7, 8), 1)])
+        self.assertEqual(result.reports[0]['kind'], 'unknown_write_owner')
+
+    def test_another_resource_needs_a_disjointness_fact(self):
+        _, first = self.array()
+        second = owned('other', input_expr('other_base'))
+        write = MemoryWrite(self.address, bits(7, 8), 1)
+        self.assertEqual(apply([first, second], [write]).reports[0]['kind'], 'ambiguous_write_alias')
+        facts = [fact('disjoint_ranges', left='out', right='other')]
+        self.assertEqual(apply([first, second], [write], facts=facts).status, 'complete')
+
+    def test_two_arrays_on_the_same_base_term_are_ambiguous(self):
+        _, first = self.array()
+        _, second = self.array('high', operation('bvadd', self.base, bits(64, 64)), 'high_bytes')
+        result = apply([first, second], [MemoryWrite(self.address, bits(7, 8), 1)])
+        self.assertEqual(result.reports[0]['kind'], 'ambiguous_write_owner')
+
+    def test_constant_updates_stay_first_in_the_accounting(self):
+        _, resource = self.array()
+        result = apply([resource], [MemoryWrite(self.address, bits(7, 8), 1),
+                                    MemoryWrite(self.base, bits(9, 8), 1)])
+        self.assertEqual(result.status, 'complete')
+        self.assertEqual([row['offset'] for row in result.to_dict()['updates']['out']], [0, 'symbolic:0'])
+
+
 if __name__ == '__main__':
     unittest.main()

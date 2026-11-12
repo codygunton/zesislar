@@ -59,7 +59,7 @@ from forward_resources import load_resource_vocabulary
 from symbolic_state import Expr
 from resource_seed import load_public_seed, seed_owned_resources
 from system_shape_seed import seed_system_shapes
-from function_profiles import add_return_alignment, function_returns, load_profile, pilot_header
+from function_profiles import add_return_alignment, function_returns, load_profile, pilot_header, return_sites
 from boundary_guards import (
     BoundaryRefused,
     RocqContradictionCheck,
@@ -134,8 +134,13 @@ profile = load_profile(options.function)
 pilots = list(profile["blocks"])
 blocks = list(pilots)
 # A function-return design adds the return package as one more rendered entry.
-if function_returns(profile):
-    pilots.append("Return")
+sites = dict(("Return" + suffix, design) for suffix, design in return_sites(profile))
+pilots.extend(sites)
+if sites:
+    # Every return exit belongs to a design row; a site without an exit is reported.
+    from return_exit import match_return_exits
+    _, unreached_sites = match_return_exits(function_returns(profile),
+                                            [row for row in data["exits"] if row["kind"] == "function_return"])
 loop_heads = set(profile["loop_heads"])
 cases = []
 emitted = []
@@ -175,7 +180,9 @@ def return_boundary(designs):
     from forward_resources import _strip_enclosure
     from return_exit import allows_exit_resources_only, match_return_exits
     # A design that no path reaches renders no alternative; its blocks do not render either.
-    pairs, unreached = match_return_exits(designs, [row for row in data["exits"] if row["kind"] == "function_return"])
+    at = {int(design["return_instruction_pc"], 0) for design in designs}
+    pairs, unreached = match_return_exits(designs, [row for row in data["exits"] if row["kind"] == "function_return"
+                                                    and int(row["instruction_pc"], 0) in at])
     if not pairs:
         raise ValueError("The return package has no function_return exit.")
     alternatives = []
@@ -211,10 +218,20 @@ def return_boundary(designs):
     return {"pc": "function_return", "status": "generated", "alternatives": alternatives,
             "reaching_stops": [], "unreached_return_sites": unreached}
 
+
+def return_pc(suffix):
+    """The case name of a return package pilot."""
+    return "function_return" + ("_" + suffix[len("Return"):] if suffix != "Return" else "")
+
 for suffix in pilots:
-    if suffix == "Return":
-        pc = "function_return"
+    if suffix in sites:
+        pc = return_pc(suffix)
         index = None
+        if sites[suffix]["return_instruction_pc"] in unreached_sites:
+            cases.append({"pc": pc, "status": "refused_unreached_return_site", "proof_ran": False,
+                          "reports": [{"kind": "unreached_return_site",
+                                       "detail": sites[suffix]["return_instruction_pc"]}]})
+            continue
     else:
         pc = profile.pc(suffix)
         index = next(i for i, b in enumerate(data["boundaries"]) if b["pc"] == pc)
@@ -223,9 +240,16 @@ for suffix in pilots:
         directory = O / "sources" / profile.generated_directory
         directory.mkdir(parents=True, exist_ok=True)
         outputs = []
-        for structural in [False, True]:
+        try:
+            texts = [render_loop_head(suffix, header, structural, profile) for structural in [False, True]]
+        except (FileNotFoundError, ValueError) as error:
+            # The pass produced no loop-head row (its entry edge is incomplete or refused).
+            cases.append({"pc": pc, "status": "refused_no_loop_head_row", "proof_ran": False,
+                          "reports": [{"kind": "no_loop_head_row", "detail": str(error)}]})
+            continue
+        for structural, text in zip([False, True], texts):
             file = directory / ("Pilot" + suffix + ("Structural" if structural else "Entries") + ".v")
-            file.write_text(render_loop_head(suffix, header, structural, profile))
+            file.write_text(text)
             outputs.append(bind(file))
         emitted.extend(outputs)
         cases.append({"pc": pc, "status": "source_declarations_rendered",
@@ -240,7 +264,7 @@ for suffix in pilots:
                       "reports": [{"kind": "reaching_stop_guard", "detail": guard_refusals[suffix]}],
                       "proof_ran": False})
         continue
-    boundary = (return_boundary(function_returns(profile)) if suffix == "Return"
+    boundary = (return_boundary([sites[suffix]]) if suffix in sites
                 else deepcopy(data["boundaries"][index]))
     if boundary["status"] == "generated_call_return":
         # A return site renders from its call-return seed alternative.
@@ -261,7 +285,7 @@ for suffix in pilots:
                       "proof_ran": False})
         continue
     original_seed = root_seeds[origin_roots.pop()]
-    name = "fp_machineReturn" if suffix == "Return" else "fp_machineAt" + suffix
+    name = "fp_machine" + suffix if suffix in sites else "fp_machineAt" + suffix
     name = identifier(name, "generated entry")
     source_ref = str(forward) + ("#/exits" if index is None else "#/boundaries/" + str(index))
     join_design = profile.get("join_designs", {}).get(suffix, [])
@@ -304,7 +328,8 @@ for suffix in pilots:
             original_seed=original_seed,
             vocabulary=vocabulary,
             continuation=continuation,
-            join_options={"outer_names": base_arguments, "design_facts": join_design},
+            join_options={"outer_names": base_arguments, "design_facts": join_design,
+                          "live_registers": data.get("liveness", {}).get(pc)},
             case_id=pc,
             source_policy="source-only",
             handwritten_owner="Level1.IslarisContractSpec",
@@ -475,7 +500,7 @@ for suffix in pilots:
     if definitions is None:
         cases.append(record)
         continue
-    stem = "FunctionReturn" if suffix == "Return" else "Pilot" + suffix
+    stem = "Function" + suffix if suffix in sites else "Pilot" + suffix
     module = stem + "Entries"
     relative = Path(profile.generated_directory)
     directory = O / "sources" / relative

@@ -172,6 +172,23 @@ def _unfold(fact, definitions):
     return fact
 
 
+RETURN_WORD = re.compile(r'\{word:([A-Za-z_][A-Za-z0-9_]*):([0-9]+)\}')
+
+
+def _return_fact(text, fresh):
+    """A design return fact with `{word:BINDER:OFFSET}` rendered as the 64-bit little-endian
+    load of the callee's output array BINDER at byte OFFSET, in the forward pass's form, so
+    the fact names the same terms as the caller's loads."""
+    def word(match):
+        array = input_expr(fresh[match.group(1)], None)
+        chunks = [Expr('array_byte', (array,), 8, int(match.group(2)) + index) for index in range(8)]
+        result = chunks[-1]
+        for chunk in reversed(chunks[:-1]):
+            result = operation('concat', result, chunk)
+        return _coq(result)
+    return RETURN_WORD.sub(word, text)
+
+
 def _merge_call_sites(edges):
     """One call-site state: equal values stay; a register that differs becomes a binder."""
     states = [_state_from_result(edge['state']) for edge in edges]
@@ -354,6 +371,8 @@ def call_return_seed(edges, *, call, function_root, root_seed, shapes, vocabular
             pieces = [(0, split['offset']), (split['offset'], split['offset'] + split['length']),
                       (split['offset'] + split['length'], resource.length)]
             updates = image.updates[key]
+            if any(isinstance(offset, str) for offset in updates):
+                raise CallRefused('A caller span next to the callee output holds a store at a symbolic offset: ' + key)
             for index, (start, end) in enumerate(pieces):
                 if start == end:
                     continue
@@ -390,7 +409,9 @@ def call_return_seed(edges, *, call, function_root, root_seed, shapes, vocabular
     terminal = next(index for index, node in enumerate(nodes) if node.get('coq') == 'True')
     nodes[terminal:terminal] = [
         {'kind': 'opaque', 'id': row['resource_id'] + '_length', 'coq': '⌜' + row['coq'] + '⌝'}
-        for row in extra_facts] + [{'kind': 'opaque', 'id': 'call_facts', 'coq': '⌜' + carried + '⌝'}]
+        for row in extra_facts] + [{'kind': 'opaque', 'id': 'call_facts', 'coq': '⌜' + carried + '⌝'}] + [
+        {'kind': 'opaque', 'id': 'call_return_fact_%d' % index, 'coq': '⌜' + _return_fact(row['coq'], fresh) + '⌝'}
+        for index, row in enumerate(call.get('return_facts', []))]
     post_types = dict(spec['post_binders'])
     for split in splits.values():
         binders.append({'name': fresh[split['post']], 'type': post_types[split['post']],
