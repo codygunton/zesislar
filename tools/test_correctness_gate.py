@@ -1,5 +1,6 @@
 """Check measured gate claims, budget waits, and exact release ownership."""
 
+import contextlib
 import fcntl
 import io
 import json
@@ -131,6 +132,22 @@ class GateClaimsTests(unittest.TestCase):
                                                      "sha256": digest(receipt)}}}
         self.assertEqual(active_claims(ledger), {})
         ledger["released_region_claims"]["old"]["bytes"] = 8
+        self.assertEqual(active_claims(ledger), {"legacy:old": 7})
+
+    def test_release_with_a_deleted_receipt_stays_released(self):
+        # A worktree removal deleted the 6ae0 receipt on 2026-11-12; every admission crashed.
+        receipt = self.root / "deleted-release.json"
+        save(receipt, {"released": True})
+        ledger = {"fixed_claims": {}, "region_claims": {"old": 7},
+                  "released_region_claims": {"old": {"bytes": 7, "receipt": str(receipt),
+                                                     "sha256": digest(receipt)}}}
+        receipt.unlink()
+        warnings = io.StringIO()
+        with contextlib.redirect_stderr(warnings):
+            self.assertEqual(active_claims(ledger), {})
+        self.assertIn("receipt " + str(receipt) + " is missing", warnings.getvalue())
+        # A receipt with other bytes is not a release.
+        save(receipt, {"released": False})
         self.assertEqual(active_claims(ledger), {"legacy:old": 7})
 
     def test_budget_wait_releases_lock_and_preserves_healthy_claim(self):

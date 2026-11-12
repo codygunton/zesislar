@@ -673,3 +673,24 @@ Ltac zesu_bv_linear_with range :=
   | |- not (@eq Z (@bv_unsigned ?width ?term) ?value) =>
       solve [apply (zesu_bv_unsigned_ne_of_cast (width := width) term value); zesu_bv_linear_bv]
   end.
+
+(* Succeed, goal unchanged, when the normal form proves the goal equality false
+   for every value of its atoms (the sides differ by a non-zero constant modulo
+   2^width). Hypotheses are not read. Other goals, undecided equalities and
+   goals with an evar fail. *)
+Ltac zesu_bv_linear_refutes :=
+  lazymatch goal with |- ?goal => tryif has_evar goal then fail 0 else idtac end;
+  lazymatch goal with
+  | |- @eq (bv _) ?lhs ?rhs =>
+      assert_succeeds (assert (lhs <> rhs) by zesu_bv_linear_bv)
+  | |- @eq Z (bv_unsigned ?lhs) (bv_unsigned ?rhs) =>
+      assert_succeeds (assert (bv_unsigned lhs <> bv_unsigned rhs) by
+        (apply (zesu_bv_unsigned_ne_of_ne lhs rhs); zesu_bv_linear_bv))
+  | |- @eq Z (@bv_unsigned ?width ?term) ?value =>
+      assert_succeeds (assert (bv_unsigned term <> value) by
+        (apply (zesu_bv_unsigned_ne_of_cast (width := width) term value); zesu_bv_linear_bv))
+  | |- @eq Z ?value (@bv_unsigned ?width ?term) =>
+      assert_succeeds (assert (value <> bv_unsigned term) by
+        (apply not_eq_sym; apply (zesu_bv_unsigned_ne_of_cast (width := width) term value);
+         zesu_bv_linear_bv))
+  end.
