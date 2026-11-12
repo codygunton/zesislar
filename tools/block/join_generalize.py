@@ -6,6 +6,7 @@ source arithmetic only. They never certify an Iris entailment or a native proof.
 from copy import deepcopy
 from dataclasses import dataclass, replace
 import hashlib
+import json
 from pathlib import Path
 import re
 
@@ -481,6 +482,14 @@ def align_join_edges(alternatives, ownership, terminal_id, continuation_name, ke
     return aligned, extra
 
 
+def _write_steps(image, resource_id):
+    """The writes of an edge's image into one resource: address, size, value, offset."""
+    return tuple((json.dumps(image.writes[step['write_index']].address.to_dict(), sort_keys=True),
+                  image.writes[step['write_index']].size,
+                  json.dumps(image.writes[step['write_index']].value.to_dict(), sort_keys=True), step['offset'])
+                 for step in image.transitions if step['resource_id'] == resource_id)
+
+
 def generalize_owned_join(alternatives, *, original_seed, entry_pc, vocabulary,
                           continuation, outer_names=(), liveness=None, observables=None,
                           relational_registers=(), design_facts=()):
@@ -556,7 +565,7 @@ def generalize_owned_join(alternatives, *, original_seed, entry_pc, vocabulary,
         right = {key: value for key, value in state.registers.items() if not REGISTER.fullmatch(key)}
         if left != right:
             raise ValueError('A join changes system state')
-    resources, components = [], []
+    resources, components, carried_writes = [], [], []
     memory_by_id = {resource.id: resource for resource in original_seed.resources}
     memory_basis, memory_expressions = _memory_basis(states, plan, original_seed)
     plan['memory_relations'] = []
@@ -607,7 +616,20 @@ def generalize_owned_join(alternatives, *, original_seed, entry_pc, vocabulary,
                 resources.append(old)
                 components.append(current)
                 continue
-            parsed, = parse_source_ownership(current['source'], provenance=current['provenance'])['components']
+            pieces = parse_source_ownership(current['source'], provenance=current['provenance'])['components']
+            if (old.byte_array is None and len(pieces) > 1
+                    and len({_write_steps(image, key) for image in images}) == 1):
+                # Every edge wrote the same bytes into this uninitialized span, so every edge
+                # states the same pieces: the written runs and the unwritten gaps. The join
+                # keeps them exactly; its seed carries those writes for the successors.
+                resources.append(old)
+                components.append(current)
+                carried_writes += [images[0].writes[step['write_index']] for step in images[0].transitions
+                                   if step['resource_id'] == key]
+                continue
+            if len(pieces) != 1:
+                raise ValueError('A join edge writes only part of an owned span differently: ' + key)
+            parsed, = pieces
             if parsed['kind'] != 'byte_array':
                 raise ValueError('An owned join array has no complete incoming image')
             current.update(kind='byte_array', value=parsed['value'], address_z=parsed['address_z'],
@@ -654,7 +676,7 @@ def generalize_owned_join(alternatives, *, original_seed, entry_pc, vocabulary,
         else:
             state.conditions.extend([operation('bvuge', word, bits(relation['lower'], word.width)),
                                      operation('bvule', word, bits(relation['upper'], word.width))])
-    state.writes, state.reports, state.register_writes = [], [], []
+    state.writes, state.reports, state.register_writes = list(carried_writes), [], []
     state.memory = []
 
     def stored_byte(index, resource_id, offset):
