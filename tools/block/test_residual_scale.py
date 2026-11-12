@@ -146,6 +146,19 @@ class BankArgsTests(unittest.TestCase):
         self.assertEqual(args[1:4], ["-Q", default + "/ZesuSsz", "ZesuSsz"])
         self.assertIn("ZesuSsz.Stock.Closure", args)
 
+    def test_bank_args_add_bound_trace_theories(self):
+        with tempfile.TemporaryDirectory() as root:
+            traces = Path(root) / "build" / "default" / "generated/isla-traces/stock-zisk"
+            (Path(root) / "build" / "default" / "ZesuSsz").mkdir(parents=True)
+            for name, theory in (("free", "Free"), ("berlinGasCalc", "BerlinGasCalc")):
+                (traces / name).mkdir(parents=True)
+                # Dune's build tree has no `dune` file; the compiled module's .glob names the theory.
+                (traces / name / ("index_%s.glob" % name)).write_text(
+                    "DIGEST 0\nFZesuSsz.Stock.%s.index_%s\n" % (theory, name))
+            args = scale.bank_args(Path(root) / "build")
+        self.assertEqual(args.count("ZesuSsz.Stock.Free"), 1)
+        self.assertIn("ZesuSsz.Stock.BerlinGasCalc", args)
+
 
 class StateTests(unittest.TestCase):
     def test_rules_only_states(self):
@@ -172,6 +185,18 @@ class StateTests(unittest.TestCase):
             state = scale.block_state(run, "b")
         self.assertEqual((state["rules"], state["rerun"], state["final"], state["passed"]),
                          ("open", "closed", "closed", 1))
+
+    def test_closing_cpu_is_the_export_or_the_rerun(self):
+        with tempfile.TemporaryDirectory() as run:
+            data = manifest(returncode=0)
+            data["exports"][0]["cpu_seconds"] = 61.5
+            make_block(run, "shut", data)
+            data = manifest(goals=[dict(id="b-1", reparse="exact")],
+                            reruns=[dict(closed=True, seconds=50.0, cpu_seconds=44.0)])
+            make_block(run, "late", data, {"b-1": dict(result="PASS", attempts=[dict(tokens=3000)])})
+            shut, late = scale.block_state(run, "shut"), scale.block_state(run, "late")
+        self.assertEqual((shut["closing_cpu"], late["closing_cpu"], late["tokens"]), (61.5, 44.0, 3000))
+        self.assertTrue(scale.block_lines(late).endswith("final=closed cpu=44.0 tokens=3000"))
 
 
 class BundleTests(unittest.TestCase):
@@ -204,6 +229,52 @@ class PacingTests(unittest.TestCase):
         scale.paced(["a", "b", "c"], lambda b: starts.append(time.monotonic()) or b, 3, 0.05)
         starts.sort()
         self.assertTrue(all(later - earlier >= 0.045 for earlier, later in zip(starts, starts[1:])))
+
+
+class MemoryHoldTests(unittest.TestCase):
+    def test_starts_wait_while_the_slice_is_above_the_limit(self):
+        import os
+        import threading
+        with tempfile.TemporaryDirectory() as root:
+            current = Path(root) / "memory.current"
+            current.write_text(str(180 * 2**30))
+            os.environ["ZESU_SLICE_MEMORY_FILE"] = str(current)
+            try:
+                threading.Timer(0.3, lambda: current.write_text(str(150 * 2**30))).start()
+                begin = time.monotonic()
+                started = []
+                scale.paced(["a"], lambda b: started.append(time.monotonic() - begin), 1, 0, hold_above_gib=170,
+                            poll=0.05)
+            finally:
+                del os.environ["ZESU_SLICE_MEMORY_FILE"]
+        self.assertGreaterEqual(started[0], 0.25)
+
+
+class FastSettingTests(unittest.TestCase):
+    def test_fast_setting_runs_more_at_once_below_the_low_mark(self):
+        import os
+        import threading
+        with tempfile.TemporaryDirectory() as root:
+            current = Path(root) / "memory.current"
+            current.write_text(str(99 * 2**30))
+            os.environ["ZESU_SLICE_MEMORY_FILE"] = str(current)
+            peak, running, lock = [0], [0], threading.Lock()
+
+            def work(block):
+                with lock:
+                    running[0] += 1
+                    peak[0] = max(peak[0], running[0])
+                time.sleep(0.2)
+                with lock:
+                    running[0] -= 1
+                return block
+
+            try:
+                out = scale.paced(list("abcdef"), work, 2, 0, fast=(150, 4, 0, 170))
+            finally:
+                del os.environ["ZESU_SLICE_MEMORY_FILE"]
+        self.assertEqual(out, list("abcdef"))
+        self.assertEqual(peak[0], 4)
 
 
 class DriverTests(unittest.TestCase):
