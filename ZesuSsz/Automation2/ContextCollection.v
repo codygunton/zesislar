@@ -318,6 +318,42 @@ Ltac zesu_select_goal_facts := ltac2:(zesu_select_goal_facts 2 48 2048).
 Ltac zesu_solve_goal_selected site closer :=
   solve [once zesu_select_goal_facts;
     ZesuSsz.Automation2.SearchBudget.zesu_solve_selected site closer].
+(* Whether a fact that entered the context after the hypothesis of type
+   `marker` shares an atom with the goal. Without such a hypothesis the
+   answer is yes. *)
+Ltac2 zesu_facts_after_share_atom (marker : constr) : bool :=
+  let hyps := Control.hyps () in
+  let rec after hyps :=
+    match hyps with
+    | [] => None
+    | declaration :: rest =>
+        let (_, _, typ) := declaration in
+        if Constr.equal typ marker then Some rest else after rest
+    end in
+  match after hyps with
+  | None => true
+  | Some later =>
+      let goal := Ref.ref [] in
+      let _ := zesu_select_atoms goal (Control.goal ()) in
+      List.exist (fun declaration =>
+        let (_, body, typ) := declaration in
+        match body with
+        | Some _ => false
+        | None =>
+            if Constr.equal (Constr.type typ) constr:(Prop) then
+              let mine := Ref.ref [] in
+              let _ := zesu_select_atoms mine typ in
+              List.exist (fun atom => List.exist (Constr.equal atom) (Ref.get goal)) (Ref.get mine)
+            else false
+        end) later
+  end.
+
+Ltac zesu_facts_after_share_term marker :=
+  let check := ltac2:(marker |-
+    if zesu_facts_after_share_atom (Option.get (Ltac1.to_constr marker)) then ()
+    else Control.zero (Tactic_failure None)) in
+  check marker.
+
 (* A fact above the node limit is not a solver input. *)
 Ltac zesu_small_fact term :=
   let check := ltac2:(fact |-
