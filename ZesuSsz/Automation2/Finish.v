@@ -1072,7 +1072,8 @@ Ltac zesu_finish_initialized_array_read :=
    of its own tactics in `timeout`. *)
 Ltac zesu_run_pass_steps :=
   first
-    [SourceFactMatching.zesu_source_destruct_registered_disjunction |
+    [WrappedWord.zesu_wrapped_closed_address_step |
+     SourceFactMatching.zesu_source_destruct_registered_disjunction |
      ZesuSsz.Automation2.CodecArrayRead.zesu_codec_array_read_consumer |
      zesu_v34_array_continuation |
      zesu_union_witness_step | zesu_target_registered_intro_if_enabled |
@@ -1097,6 +1098,7 @@ Ltac zesu_run_pass_v1 :=
   try zesu_normalize_find_mem_address;
   unshelve (time "zesu_run" repeat first
     [zesu_diag_step |
+     WrappedWord.zesu_wrapped_closed_address_step |
      SourceFactMatching.zesu_source_destruct_registered_disjunction |
      ZesuSsz.Automation2.CodecArrayRead.zesu_codec_array_read_consumer |
      zesu_v34_array_continuation |
