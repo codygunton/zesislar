@@ -1148,11 +1148,6 @@ Ltac zesu_defer_unresolved_implication_if_enabled :=
       zesu_condition_has_unresolved_evar premise
   end.
 
-Ltac liImpl ::=
-  tryif zesu_defer_unresolved_implication_if_enabled
-  then fail 0 "unresolved implication premise"
-  else normalize_and_simpl_impl false.
-
 Class ZesuStepPureWitnessConstraints : Prop :=
   zesu_step_pure_witness_constraints : True.
 
@@ -2763,27 +2758,34 @@ Lemma zesu_bv_literal_unsigned_neq (n : N) (word : bv n) (z : Z) proof :
   word <> @BV n z proof -> bv_unsigned word <> z.
 Proof. intros different same. apply different, bv_eq. exact same. Qed.
 
-Ltac zesu_bv_literal_unsigned_view :=
+(* The view is added after the intro with `pose proof`, never through a
+   `SimplImpl` instance: that route runs `simpl` on the goal, which turns
+   `bv_unsigned (bv_or x y)` into `Z.lor ..`, so a guard raised later in the
+   unsimplified form no longer matches (berlinGasCalc 39cc). *)
+Ltac zesu_bv_literal_unsigned_view_last :=
   lazymatch goal with
-  | |- SimplImplUnsafe ?changed ?fact ?view =>
-    zesu_switch_enabled constr:(ZesuStepBranchGuards);
-    tryif has_evar fact then fail 0 else idtac;
-    lazymatch fact with
+  | fact : ?statement |- _ =>
+    lazymatch statement with
     | @eq (bv ?n) ?word (@BV _ ?z ?proof) =>
         tryif is_var word then fail 0 else idtac;
+        tryif has_evar statement then fail 0 else idtac;
         lazymatch goal with _ : bv_unsigned word = z |- _ => fail 0 | _ => idtac end;
-        unify changed false;
-        exact (zesu_bv_literal_unsigned_eq n word z proof)
+        zesu_switch_enabled constr:(ZesuStepBranchGuards);
+        let view := fresh "HbvUnsigned" in
+        pose proof (zesu_bv_literal_unsigned_eq n word z proof fact) as view
     | not (@eq (bv ?n) ?word (@BV _ ?z ?proof)) =>
+        tryif has_evar statement then fail 0 else idtac;
         lazymatch goal with _ : bv_unsigned word <> z |- _ => fail 0 | _ => idtac end;
-        unify changed false;
-        exact (zesu_bv_literal_unsigned_neq n word z proof)
+        zesu_switch_enabled constr:(ZesuStepBranchGuards);
+        let view := fresh "HbvUnsigned" in
+        pose proof (zesu_bv_literal_unsigned_neq n word z proof fact) as view
     end
   end.
-#[export] Hint Extern 10 (SimplImplUnsafe _ (@eq (bv _) _ _) _) =>
-  zesu_bv_literal_unsigned_view : typeclass_instances.
-#[export] Hint Extern 10 (SimplImplUnsafe _ (not (@eq (bv _) _ _)) _) =>
-  zesu_bv_literal_unsigned_view : typeclass_instances.
+
+Ltac liImpl ::=
+  tryif zesu_defer_unresolved_implication_if_enabled
+  then fail 0 "unresolved implication premise"
+  else (normalize_and_simpl_impl false; try zesu_bv_literal_unsigned_view_last).
 
 
 Ltac zesu_branch_guard_normalize_hook :=

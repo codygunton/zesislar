@@ -10,25 +10,32 @@ Local Open Scope Z_scope.
    assumption (berlinGasCalc class K5). *)
 Check ZesuSsz.Automation2.Hooks.zesu_bv_literal_unsigned_eq.
 Check ZesuSsz.Automation2.Hooks.zesu_bv_literal_unsigned_neq.
+Ltac check_view_tactic := ZesuSsz.Automation2.Hooks.zesu_bv_literal_unsigned_view_last.
 
 Record literal_args := { literal_head : bv 64; literal_low : bv 64 }.
 
 Lemma intro_views_disequality (word : bv 64) :
   word <> 0%bv -> bv_unsigned word <> 0.
-Proof. liImpl. liImpl. assumption. Qed.
+Proof. liImpl. assumption. Qed.
 
 Lemma intro_views_field_equality (args : literal_args) :
   literal_head args = 0%bv -> bv_unsigned (literal_head args) = 0.
-Proof. liImpl. liImpl. assumption. Qed.
+Proof. liImpl. assumption. Qed.
 
+(* The view keeps `bv_unsigned (bv_or ..)` unsimplified: a guard raised later
+   states it in this form. *)
 Lemma intro_views_or_disequality (args : literal_args) :
-  bv_or (literal_head args) (literal_low args) <> 0%bv ->
-  bv_unsigned (bv_or (literal_head args) (literal_low args)) <> 0.
-Proof. liImpl. liImpl. assumption. Qed.
+  bv_or (literal_head args) (literal_low args) <> 0%bv -> True.
+Proof.
+  liImpl.
+  lazymatch goal with
+  | _ : bv_unsigned (bv_or (literal_head args) (literal_low args)) <> 0 |- _ => exact I
+  end.
+Qed.
 
 Lemma intro_views_nonzero_literal (args : literal_args) :
   literal_head args <> 7%bv -> bv_unsigned (literal_head args) <> 7.
-Proof. liImpl. liImpl. assumption. Qed.
+Proof. liImpl. assumption. Qed.
 
 (* No view: a variable equal to a literal is substituted, and a comparison of
    two words has no literal side. Only the original fact is introduced. *)
@@ -36,7 +43,7 @@ Lemma intro_substitutes_variable (word : bv 64) :
   word = 0%bv -> True.
 Proof.
   liImpl.
-  tryif lazymatch goal with |- _ -> _ => idtac end then fail else idtac.
+  tryif lazymatch goal with _ : bv_unsigned _ = _ |- _ => idtac end then fail else idtac.
   exact I.
 Qed.
 
@@ -44,7 +51,6 @@ Lemma intro_keeps_word_comparison (left right : bv 64) :
   left <> right -> True.
 Proof.
   liImpl.
-  tryif lazymatch goal with |- _ -> _ => idtac end then fail else idtac.
   tryif lazymatch goal with _ : bv_unsigned left <> bv_unsigned right |- _ => idtac end
   then fail else idtac.
   exact I.
@@ -55,6 +61,6 @@ Lemma intro_skips_present_view (args : literal_args) :
   bv_unsigned (literal_head args) <> 0 -> literal_head args <> 0%bv -> True.
 Proof.
   liImpl. liImpl.
-  tryif lazymatch goal with |- _ -> _ => idtac end then fail else idtac.
+  tryif lazymatch goal with HbvUnsigned : _ |- _ => idtac end then fail else idtac.
   exact I.
 Qed.
