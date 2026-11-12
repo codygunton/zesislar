@@ -2748,8 +2748,9 @@ Ltac zesu_branch_guard_derived_facts :=
 (* A branch fact compares a word with a literal, `w = BV n z` or `w <> BV n z`,
    while a successor guard states the same condition over `bv_unsigned w`.
    lia and bv_solve read no bit-vector hypothesis, so the intro keeps the fact
-   and adds its unsigned view beside it. A variable equal to a literal is
-   substituted by the intro, so it needs no view. *)
+   and adds its unsigned view beside it. A plain variable equal to a literal
+   is substituted by the intro, so it needs no view; a local definition is
+   not substituted, and unfolding it later rewrites the view with it. *)
 Lemma zesu_bv_literal_unsigned_eq (n : N) (word : bv n) (z : Z) proof :
   word = @BV n z proof -> bv_unsigned word = z.
 Proof. intros ->. reflexivity. Qed.
@@ -2767,7 +2768,9 @@ Ltac zesu_bv_literal_unsigned_view_last :=
   | fact : ?statement |- _ =>
     lazymatch statement with
     | @eq (bv ?n) ?word (@BV _ ?z ?proof) =>
-        tryif is_var word then fail 0 else idtac;
+        tryif is_var word
+        then (match goal with local := _ |- _ => constr_eq local word end)
+        else idtac;
         tryif has_evar statement then fail 0 else idtac;
         lazymatch goal with _ : bv_unsigned word = z |- _ => fail 0 | _ => idtac end;
         zesu_switch_enabled constr:(ZesuStepBranchGuards);

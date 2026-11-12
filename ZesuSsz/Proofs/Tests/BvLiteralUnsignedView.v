@@ -32,6 +32,16 @@ Proof.
   match goal with view : ?statement |- _ => constr_eq statement expected; exact I end.
 Qed.
 
+(* A local definition is not substituted by the intro; its view follows it
+   when it is unfolded. *)
+Lemma intro_views_local_definition (args : literal_args) :
+  let word := bv_or (literal_head args) (literal_low args) in word = 0%bv -> True.
+Proof.
+  intros word. liImpl. unfold word in *.
+  let expected := constr:(bv_unsigned (bv_or (literal_head args) (literal_low args)) = 0) in
+  match goal with view : ?statement |- _ => constr_eq statement expected; exact I end.
+Qed.
+
 Lemma intro_views_nonzero_literal (args : literal_args) :
   literal_head args <> 7%bv -> bv_unsigned (literal_head args) <> 7.
 Proof. liImpl. assumption. Qed.
