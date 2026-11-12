@@ -375,6 +375,7 @@ Ltac zesu_finish_v1 :=
   lazymatch goal with
   | |- environments.envs_entails _ _ => idtac
   | _ =>
+      try solve [ZesuSsz.Automation2.Hooks.zesu_bv_literal_unsigned_goal];
       try (zesu_saturate_alignment);
       zesu_diag_stage "finish_v1.solvers";
       try zesu_finish_lia;

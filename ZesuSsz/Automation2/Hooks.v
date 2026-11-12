@@ -2802,6 +2802,36 @@ Ltac zesu_branch_guard_derived_facts :=
   end.
 #[export] Hint Extern 4 (ZesuSsz.Automation.PureFacts.ZesuDerivedFacts _ _) => zesu_branch_guard_derived_facts : typeclass_instances.
 
+(* A branch fact compares a word with a literal, `w = BV n z` or `w <> BV n z`,
+   while a successor guard states the same condition over `bv_unsigned w`.
+   lia and bv_solve read no bit-vector hypothesis. The closer answers such a
+   goal from the fact; it adds nothing to the context, because a view of every
+   literal fact at the intro grew the closing tiers past their memory fence
+   (berlinGasCalc 3b68, 3c44, 3bd4). *)
+Lemma zesu_bv_literal_unsigned_eq (n : N) (word : bv n) (z : Z) proof :
+  word = @BV n z proof -> bv_unsigned word = z.
+Proof. intros ->. reflexivity. Qed.
+
+Lemma zesu_bv_literal_unsigned_neq (n : N) (word : bv n) (z : Z) proof :
+  word <> @BV n z proof -> bv_unsigned word <> z.
+Proof. intros different same. apply different, bv_eq. exact same. Qed.
+
+Ltac zesu_bv_literal_unsigned_goal :=
+  lazymatch goal with
+  | |- @eq Z (bv_unsigned ?word) _ =>
+      zesu_switch_enabled constr:(ZesuStepBranchGuards);
+      match goal with
+      | fact : @eq (bv _) word (@BV _ _ _) |- _ =>
+          exact (zesu_bv_literal_unsigned_eq _ _ _ _ fact)
+      end
+  | |- not (@eq Z (bv_unsigned ?word) _) =>
+      zesu_switch_enabled constr:(ZesuStepBranchGuards);
+      match goal with
+      | fact : not (@eq (bv _) word (@BV _ _ _)) |- _ =>
+          exact (zesu_bv_literal_unsigned_neq _ _ _ _ fact)
+      end
+  end.
+
 
 Ltac zesu_branch_guard_normalize_hook :=
   zesu_switch_enabled constr:(ZesuStepBranchGuards);
