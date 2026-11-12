@@ -126,7 +126,6 @@ Ltac zesu_wrapped_closed_offset word arithmetic :=
 Ltac zesu_normalize_wrapped_findmem arithmetic :=
   lazymatch goal with
   | |- iris.proofmode.environments.envs_entails _ (find_in_context (FindMemMapsTo (bv_unsigned ?word)) _) =>
-    tryif zesu_wrapped_closed_chain word then zesu_wrapped_closed_offset word arithmetic else
     lazymatch word with
     | bv_add (bv_add (Z_to_bv ?width ?base) ?left) ?right =>
       let Heq := fresh "HwrappedAddress" in
@@ -137,15 +136,34 @@ Ltac zesu_normalize_wrapped_findmem arithmetic :=
     end
   end.
 
+(* Rewrite a lookup address with two or more closed offsets on one integer
+   cast to its reduced form, before any lookup rule sees the address. Stores
+   then split regions at `base - k` instead of at `bv_unsigned (...)`. The
+   range side condition uses the facts of [zesu_wrapped_memory_lookup]. *)
+Ltac zesu_wrapped_closed_address_step :=
+  lazymatch goal with
+  | |- iris.proofmode.environments.envs_entails _
+      (find_in_context (FindMemMapsTo (bv_unsigned ?word)) _) =>
+      zesu_wrapped_closed_chain word
+  end;
+  ZesuSsz.Automation2.PureFacts.zesu_saturate_derived_facts;
+  repeat first [progress ZesuSsz.Automation2.PureFacts.zesu_split_folded_pure |
+    match goal with Hpair : _ /\ _ |- _ => destruct Hpair end];
+  zesu_reduce_closed_Z_aliases;
+  lazymatch goal with
+  | |- iris.proofmode.environments.envs_entails _
+      (find_in_context (FindMemMapsTo (bv_unsigned ?word)) _) =>
+      zesu_wrapped_closed_offset word ltac:(
+        zesu_reduce_closed_Z_aliases; cbv [bv_unsigned bv_modulus] in *; lia)
+  end.
+
 Ltac zesu_wrapped_memory_lookup :=
   lazymatch goal with
   | |- iris.proofmode.environments.envs_entails _
       (find_in_context (FindMemMapsTo (bv_unsigned ?word)) _) =>
-    first [
-      lazymatch word with
-      | bv_add (bv_add (Z_to_bv _ _) _) _ => idtac
-      end |
-      zesu_wrapped_closed_chain word]
+    lazymatch word with
+    | bv_add (bv_add (Z_to_bv _ _) _) _ => idtac
+    end
   end;
   ZesuSsz.Automation2.PureFacts.zesu_saturate_derived_facts;
   repeat first [progress ZesuSsz.Automation2.PureFacts.zesu_split_folded_pure |

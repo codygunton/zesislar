@@ -9,9 +9,9 @@ Local Open Scope Z_scope.
 Check ZesuSsz.Automation2.WrappedWord.zesu_wrapped_offset_small.
 Check ZesuSsz.Automation2.WrappedWord.zesu_wrapped_offset_step.
 
-(* A stack store `sd ra,56(sp)` after `addi sp,sp,-64`: the closed offsets
-   reduce to one literal, so the address is `base - 8`, not
-   `base + (bv_unsigned _ + bv_unsigned _ - bv_modulus 64)`. *)
+(* A stack store `sd ra,56(sp)` after `addi sp,sp,-64`: before any lookup
+   rule runs, the closed offsets reduce to one literal. The address is
+   `base - 8`, not `base + (bv_unsigned _ + bv_unsigned _ - bv_modulus 64)`. *)
 Lemma wrapped_closed_two_offsets `{!islaG Sigma} `{!threadG} (base : Z) (value : bv 64) :
   64 <= base < bv_modulus 64 ->
   (base - 8) ↦ₘ value -∗
@@ -20,13 +20,12 @@ Lemma wrapped_closed_two_offsets `{!islaG Sigma} `{!threadG} (base : Z) (value :
     (fun _ => True%I).
 Proof.
   intros Hrange. iIntros "Hword".
-  ZesuSsz.Automation2.WrappedWord.zesu_normalize_wrapped_findmem ltac:(
-    cbv [bv_unsigned bv_modulus] in *; lia).
+  ZesuSsz.Automation2.WrappedWord.zesu_wrapped_closed_address_step.
   lazymatch goal with
   | |- iris.proofmode.environments.envs_entails _ (find_in_context (FindMemMapsTo ?address) _) =>
       constr_eq address (base - 8)
   end.
-  liStep.
+  liStep. done.
 Qed.
 
 (* A byte store `sb a3,-40(s0)` with `s0 = sp - 64 + 64`: three closed
@@ -40,7 +39,12 @@ Lemma wrapped_closed_three_offsets `{!islaG Sigma} `{!threadG} (base : Z) (value
     (fun _ => True%I).
 Proof.
   intros Hrange. iIntros "Hword".
-  ZesuSsz.Automation2.WrappedWord.zesu_wrapped_memory_lookup.
+  ZesuSsz.Automation2.WrappedWord.zesu_wrapped_closed_address_step.
+  lazymatch goal with
+  | |- iris.proofmode.environments.envs_entails _ (find_in_context (FindMemMapsTo ?address) _) =>
+      constr_eq address (base - 40)
+  end.
+  liStep. done.
 Qed.
 
 (* A positive closed sum keeps the `base + k` form. *)
@@ -52,22 +56,21 @@ Lemma wrapped_closed_positive_offset `{!islaG Sigma} `{!threadG} (base : Z) (val
     (fun _ => True%I).
 Proof.
   intros Hrange. iIntros "Hword".
-  ZesuSsz.Automation2.WrappedWord.zesu_normalize_wrapped_findmem ltac:(
-    cbv [bv_unsigned bv_modulus] in *; lia).
+  ZesuSsz.Automation2.WrappedWord.zesu_wrapped_closed_address_step.
   lazymatch goal with
   | |- iris.proofmode.environments.envs_entails _ (find_in_context (FindMemMapsTo ?address) _) =>
       constr_eq address (base + 24)
   end.
-  liStep.
+  liStep. done.
 Qed.
 
 (* A symbolic offset is refused before VM evaluation. *)
 Lemma wrapped_closed_symbolic_refusal (base : Z) (offset : bv 64) : True.
 Proof.
   Fail ZesuSsz.Automation2.WrappedWord.zesu_wrapped_closed_chain
-    constr:(Z_to_bv 64 base + offset + 8 + 16).
+    constr:((Z_to_bv 64 base + offset + 8 + 16)%bv).
   ZesuSsz.Automation2.WrappedWord.zesu_wrapped_closed_chain
-    constr:(Z_to_bv 64 base + 8 + 8 + 16).
+    constr:((Z_to_bv 64 base + 8 + 8 + 16)%bv).
   exact I.
 Qed.
 
@@ -75,7 +78,7 @@ Qed.
 Lemma wrapped_closed_single_offset_refusal (base : Z) : True.
 Proof.
   Fail ZesuSsz.Automation2.WrappedWord.zesu_wrapped_closed_chain
-    constr:(Z_to_bv 64 base + 8).
+    constr:((Z_to_bv 64 base + 8)%bv).
   exact I.
 Qed.
 
