@@ -12,6 +12,7 @@ Require Import ZesuSsz.Contracts.DecodeItemSelected.
 Require Import ZesuSsz.Contracts.Level1.
 Require Import ZesuSsz.Contracts.RlpDecodeItem.
 Require Import ZesuSsz.Contracts.DecodeItemCompositional.
+Require Import ZesuSsz.Contracts.DecodeItemDomainRanges.
 Require Import ZesuSsz.Generated.DecodeItem.FP301.FunctionReturnEntries.
 Require Import ZesuSsz.Generated.DecodeItem.FP301.Pilot6960Entries.
 Require Import ZesuSsz.Generated.DecodeItem.FP301.Pilot6974Entries.
@@ -260,7 +261,9 @@ Proof.
   iIntros "(%a3 & %a4 & %a5 & %a6 & Hsys & H10 & H11 & H12 & H13 & H14 & H15 & H16 & H2 & H1 & H8 & Hin & Hout & Hstack & %Hdomain & _)".
   iSplit; [|done].
   iExists a3, a4, a5, a6, (BV 64 0), (BV 64 0), (BV 64 0).
-  iFrame. iSplit; [done|]. iSplit; [done|]. iPureIntro. split; reflexivity.
+  iFrame. iSplit; [done|].
+  iSplit; [iPureIntro; exact (decodeItemDomainAtReturnAlignment returnAddress args Hdomain)|].
+  iSplit; [done|]. iPureIntro. split; reflexivity.
 Qed.
 
 (* ---- The statement decodeItemSelectedComplianceRegisters consumes, at one Sigma. ---- *)

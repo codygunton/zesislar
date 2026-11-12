@@ -76,7 +76,69 @@ def load_profile(name=None):
     path = Path(name)
     if not path.suffix:
         path = PROFILE_DIRECTORY / (name + '.json')
-    return FunctionProfile(json.loads(path.read_text()), path)
+    data = json.loads(path.read_text())
+    if data.get('loop_heads') and 'loop_head_fixture' not in data:
+        # The loop-head rows of a design-table loop live beside the other fixtures.
+        data['loop_head_fixture'] = 'tools/block/fixtures/%s-loop-heads.json' % data['function'].lower()
+    return FunctionProfile(data, path)
+
+
+def function_returns(profile):
+    """The function-return design rows: `function_returns` (a list), or the older single
+    `function_return`. Each row names its `return_instruction_pc` and a `return_fact`;
+    `True` (or JSON true) allows the exit resources only and adds no meaning."""
+    rows = profile.get('function_returns') if profile else None
+    if rows is None:
+        row = profile.get('function_return') if profile else None
+        rows = [row] if row else []
+    return list(rows)
+
+
+def return_sites(profile):
+    """(suffix, design) per function-return design. One site keeps the plain names
+    `fp_machineReturn` / `FunctionReturn*`; several sites suffix each name with the return
+    instruction's address digits after the profile prefix."""
+    designs = function_returns(profile)
+    if len(designs) <= 1:
+        return [('', design) for design in designs]
+    prefix = profile['pc_prefix']
+    sites = []
+    for design in designs:
+        pc = hex(int(design['return_instruction_pc'], 0))
+        if not pc.startswith(prefix):
+            raise ValueError('A return instruction lies outside the profile address prefix: ' + pc)
+        sites.append((pc[len(prefix):], design))
+    return sites
+
+
+def return_alignment_fact(profile):
+    """The pure conjunct of a `return_address` design row: the register's value at the function
+    entry is aligned, stated on bv_unsigned of that value (F44). None without a row."""
+    row = profile.get('return_address') if profile else None
+    if not row:
+        return None
+    # An equation, not (n | x): an introduced divisibility hypothesis becomes x = c * n, and the
+    # same goal at a successor then has no proof.
+    return '\u231c(bv_unsigned %s mod %d = 0)%%Z\u231d' % (row['value'], row['alignment'])
+
+
+def add_return_alignment(public, profile):
+    """Give the function-entry seed the return-address conjunct, before its terminal True. The
+    forward pass carries it to every entry; loop-head classes get it beside the domain."""
+    fact = return_alignment_fact(profile)
+    components = public['assertion_tree']['components']
+    if fact is None or any(component.get('id') == 'return_address_alignment' for component in components):
+        return public
+    row = profile.get('return_address')
+    register, = [component for component in components
+                 if component.get('kind') == 'register' and component.get('register') == row['register']]
+    if register['value_coq'] != row['value']:
+        raise ValueError('The return-address row names %s; the entry seed gives %s %s'
+                         % (row['value'], row['register'], register['value_coq']))
+    terminal = next(index for index, component in enumerate(components) if component.get('coq') == 'True')
+    components.insert(terminal, {'kind': 'opaque', 'id': 'return_address_alignment',
+                                 'original_component': fact, 'coq': fact})
+    return public
 
 
 def _lines(rows):

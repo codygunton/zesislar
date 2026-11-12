@@ -272,25 +272,9 @@ class _Facts:
                             'conditions': [condition.to_dict() for condition in self.conditions if condition.op == '=']}
         return None, None
 
-    def lower_bound(self, resource):
-        length = resource.length
-        if isinstance(length, int):
-            return length, {'kind': 'source_length', 'resource_id': resource.id}
-        length = self.canonical(length)
-        if length.op == 'bits':
-            return length.value, {'kind': 'constant_length'}
+    def condition_minimum(self, views):
+        """The least value the path conditions allow for an unsigned value spelled by `views`."""
         lower, evidence = 0, None
-        views = {length}
-        for fact in self.available('bounds'):
-            if fact['terms'].get('resource_id') == resource.id and 'length_view' in fact['terms']:
-                views.add(self.canonical(Expr.from_dict(fact['terms']['length_view'])))
-        for fact in self.available('bounds'):
-            terms = fact['terms']
-            if not {'resource_id', 'index', 'count'}.issubset(terms):
-                continue
-            minimum = terms['index'] + terms['count']
-            if terms['resource_id'] == resource.id and minimum > lower:
-                lower, evidence = minimum, {'kind': 'source_fact', 'fact_id': fact['fact_id'], 'origin': fact['origin']}
         for condition in self.conditions:
             if condition.op == 'not' and condition.args[0].op == '=':
                 left, right = map(self.canonical, condition.args[0].args)
@@ -310,6 +294,41 @@ class _Facts:
             minimum = right.value + int(condition.op.endswith(('lt', 'gt')))
             if minimum > lower:
                 lower, evidence = minimum, {'kind': 'path_condition', 'condition': condition.to_dict()}
+        return lower, evidence
+
+    def lower_bound(self, resource):
+        length = resource.length
+        if isinstance(length, int):
+            return length, {'kind': 'source_length', 'resource_id': resource.id}
+        length = self.canonical(length)
+        if length.op == 'bits':
+            return length.value, {'kind': 'constant_length'}
+        lower, evidence = 0, None
+        views = {length}
+        for fact in self.available('bounds'):
+            if fact['terms'].get('resource_id') == resource.id and 'length_view' in fact['terms']:
+                views.add(self.canonical(Expr.from_dict(fact['terms']['length_view'])))
+        for fact in self.available('bounds'):
+            terms = fact['terms']
+            if not {'resource_id', 'index', 'count'}.issubset(terms):
+                continue
+            minimum = terms['index'] + terms['count']
+            if terms['resource_id'] == resource.id and minimum > lower:
+                lower, evidence = minimum, {'kind': 'source_fact', 'fact_id': fact['fact_id'], 'origin': fact['origin']}
+        minimum, condition_evidence = self.condition_minimum(views)
+        if minimum > lower:
+            lower, evidence = minimum, condition_evidence
+        # A source relation `length >= scale * value + offset` with a register value whose
+        # path conditions bound it below; the relation holds on the unchanged entry values.
+        for fact in self.available('bounds'):
+            relation = fact['terms'].get('length_relation')
+            if relation is None or fact['terms'].get('resource_id') != resource.id:
+                continue
+            value_minimum, value_evidence = self.condition_minimum({self.canonical(Expr.from_dict(relation['view']))})
+            minimum = relation['scale'] * value_minimum + relation.get('offset', 0)
+            if minimum > lower:
+                lower, evidence = minimum, {'kind': 'length_relation', 'fact_id': fact['fact_id'],
+                                            'origin': fact['origin'], 'value_bound': value_evidence}
         return lower, evidence
 
     def disjoint(self, first, second):

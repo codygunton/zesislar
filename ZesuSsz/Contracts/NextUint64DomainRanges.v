@@ -60,3 +60,15 @@ Proof. intro domain. pose proof (nextUint64BoundaryDomainRanges params domain). 
   ZesuDerivedFacts (nextUint64BoundaryDomain params)
     (0 <= nextUint64InputEnd params < bv_modulus 64%N)%Z.
 Proof. intro domain. pose proof (nextUint64BoundaryDomainRanges params domain). tauto. Qed.
+
+(* The function-entry statement's return-address conjunct: the Level-1
+   layout keeps the return address in range and 4-aligned. *)
+Lemma nextUint64BoundaryDomainReturnAlignment (params : NextUint64Args) :
+  nextUint64BoundaryDomain params ->
+  (bv_unsigned (Z_to_bv 64 (nextReturnAddress (nextUint64Base params))) mod 4 = 0)%Z.
+Proof.
+  unfold nextUint64BoundaryDomain, nextUint64EntryLayout; cbv zeta.
+  intros domain. repeat match goal with H : _ /\ _ |- _ => destruct H end.
+  rewrite Z_to_bv_unsigned, bv_wrap_small by (unfold bv_modulus; cbn; lia).
+  assumption.
+Qed.

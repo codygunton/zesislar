@@ -10,7 +10,7 @@ from production_modules import statement as caller_statement
 from render_support import definition_introduction_source, unfold_declaration
 from return_exit import (add_entry_facts, add_return_facts, add_return_precondition,
                          return_blocks, return_package)
-from function_profiles import load_profile, return_header
+from function_profiles import load_profile, return_alignment_fact, return_header
 
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -33,6 +33,13 @@ def render_loop_head(block, header, structural=False, profile=None):
         assert source.count(domain_binder.strip()) == 1
         assert source.count('⌜domain args⌝') == 1
         domain = row.get('domain_component') or '⌜' + row['domain'] + ' args⌝'
+        alignment = return_alignment_fact(profile)
+        if alignment and alignment[1:-1] not in source:
+            # The last component: a first-pass registration carries trailing facts from the entry.
+            if not source.endswith(')%I.'):
+                raise ValueError('A loop class does not end with its assertion: ' + original)
+            source = source[:-len(')%I.')].rstrip(')') + ' ∗ ' + alignment + ')' * (
+                len(source[:-len(')%I.')]) - len(source[:-len(')%I.')].rstrip(')'))) + ')%I.'
         source = source.replace(original, name).replace(
             domain_binder, '').replace(
             '⌜domain args⌝', domain).replace(
@@ -275,10 +282,10 @@ def successor_precondition(profile, suffix):
     return 'instr_pre ' + profile.pc(suffix) + ' (' + entry + ' (args) (returnAddress) (K))%I'
 
 
-def return_precondition(profile):
-    """Return the `instr_pre` premise of the function-return package."""
+def return_precondition(profile, suffix=''):
+    """Return the `instr_pre` premise of a function-return package (one per return site)."""
     return ('instr_pre returnAddress ('
-            + profile.qualified('FunctionReturnEntries', 'fp_machineReturn')
+            + profile.qualified('FunctionReturn' + suffix + 'Entries', 'fp_machineReturn' + suffix)
             + ' args returnAddress K)')
 
 
