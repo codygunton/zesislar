@@ -36,6 +36,26 @@ class DuneTraceGuardTests(unittest.TestCase):
             self.assertEqual((build / 'trace.csexp').read_bytes(), compiler)
             self.assertNotIn(b'private-value', result.stdout + result.stderr)
 
+    def test_a_command_already_rewritten_by_a_stock_batch_does_not_wait_for_the_alias_lock(self):
+        # A stock batch wraps its command in this guard, which holds the alias
+        # lock while the command runs; the recipe's own guard must not wait for it.
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            build = root / '_build/agents/private'
+            dune = root / 'dune'
+            dune.write_text('#!' + sys.executable + '\n'
+                            'import pathlib,sys\n'
+                            'build=pathlib.Path(sys.argv[sys.argv.index("--build-dir")+1])\n'
+                            'build.mkdir(parents=True,exist_ok=True); (build/"ran").write_text("yes")\n')
+            dune.chmod(0o755)
+            guard = str(Path(__file__).with_name('dune_trace_guard.py'))
+            result = subprocess.run([sys.executable, guard, '--canonical-build-dir', '--',
+                                     sys.executable, guard, '--canonical-build-dir', '--', str(dune), 'build',
+                                     '--root', str(root), '--build-dir', str(build)],
+                                    cwd=root, capture_output=True, timeout=120)
+            self.assertEqual(result.returncode, 0, result.stderr)
+            self.assertEqual((build / 'ran').read_text(), 'yes')
+
     def trace(self):
         header = csexp(["config", "init", "1", ["env", ["TEST_KEY=private-value"]]])
         compiler = csexp(["process", "start", "2", ["prog", "/switch/bin/coqc"],

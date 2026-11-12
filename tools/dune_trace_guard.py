@@ -71,7 +71,14 @@ def main():
     if not command:
         raise SystemExit("A build command is required")
     paths = trace_paths(command)
-    if canonical:
+    # A stock batch wraps its command in this guard and holds the canonical
+    # alias lock while it runs. Its inserted execution shim marks a command
+    # it already rewrote; a second rewrite would wait for that lock forever
+    # (make check-signatures run alone, 2026-11-12). build_record does the same.
+    already_canonical = any(Path(value).name == "dune_build_dir.py"
+                            and command[index + 1:index + 2] == ["--execute"]
+                            for index, value in enumerate(command))
+    if canonical and not already_canonical:
         from dune_build_dir import canonical_command
         context = canonical_command(command)
     else:
