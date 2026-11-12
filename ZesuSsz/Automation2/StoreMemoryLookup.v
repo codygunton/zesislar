@@ -217,7 +217,15 @@ Ltac zesu_store_memory_lookup_core :=
     zesu_store_unsigned_splice_indices;
     progress ZesuSsz.Automation2.Hooks.zesu_integer_array_address_if_enabled;
     liEnsureInvariant;
-    liStep ].
+    liStep
+  (* A lookup whose address needs a range that sits only behind a folded
+     domain predicate: saturate the derived facts once, in the main context,
+     and let the next step retry the lookup. Runs only when every other route
+     failed; `progress` stops it when the facts are already there. *)
+  | lazymatch goal with
+    | |- iris.proofmode.environments.envs_entails _ (find_in_context (FindMemMapsTo _) _) => idtac
+    end;
+    progress ZesuSsz.Automation2.PureFacts.zesu_saturate_derived_facts ].
 
 (* A wider access to a run of owned byte cells reads the run as one array. *)
 Lemma zesu_byte_cells_one `{!islaG Sigma} (base : Z) (index : nat) (fraction : dfrac)
@@ -505,13 +513,19 @@ Ltac zesu_store_fold_byte_cells :=
       run integer count
   end.
 
+(* Every alternative below acts only on a memory lookup, and none of the steps
+   before that test (alias exposure, unfolding local names, splice rewrites)
+   changes the target's head. Test the head once, before any of them. *)
+Ltac zesu_store_lookup_goal :=
+  lazymatch goal with
+  | |- environments.envs_entails _ (find_in_context (FindMemMapsTo _) _) => idtac
+  end.
+
 Ltac zesu_store_memory_lookup :=
+  zesu_store_lookup_goal;
   ZesuSsz.Automation2.SwitchDispatch.zesu_switch_enabled
     constr:(ZesuStepStoreMemoryLookup);
   first [ zesu_store_memory_lookup_core
-  | lazymatch goal with
-    | |- environments.envs_entails _ (find_in_context (FindMemMapsTo _) _) => idtac
-    end;
-    progress (zesu_store_fold_indexed_byte_tail;
+  | progress (zesu_store_fold_indexed_byte_tail;
       ZesuSsz.Automation2.ResourceGroups.zesu_open_resource_groups)
   | zesu_store_fold_byte_cells ].

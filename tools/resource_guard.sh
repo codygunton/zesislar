@@ -156,6 +156,8 @@ touch "$REGISTRY" "$LOG" "$PEAK"
 
 GIB=$((1024 * 1024 * 1024))
 MEMORY_TOOL=${ZESU_MODULE_MEMORY_TOOL:-$(dirname "$0")/module_memory.py}
+# Kills at a scope's memory fence, with the compiled source's hash (module_memory.py).
+FENCE_KILLS="$STATE_DIR/fence-kills.jsonl"
 # Ledger writers publish admission totals here; a held launch waits for it to
 # change instead of rerunning every check each poll.
 ADMISSION_SUMMARY="$STATE_DIR/admission-summary"
@@ -1747,6 +1749,7 @@ run_scope() {
   fi
   [ "${1:-}" = "--" ] && shift
   check_python_driver "$@" || return $?
+  if diagnostic_probe; then probe_fence_claim "$@"; fi
   # An admitted launch must drain before a later gate can acquire its lock.
   if ! reservation_path "${ZESU_COQC_RESERVATION:-}"; then
     wait_for_gate
@@ -1811,9 +1814,46 @@ run_scope() {
   wait "$child"
   status=$?
   child=""
+  [ "$status" -eq 0 ] || report_fence_kill "$unit.scope" "$@"
   cleanup_scope
   trap - EXIT TERM INT
   return "$status"
+}
+
+# systemd keeps a failed transient scope with its result: oom-kill after a
+# kill at its MemoryMax.
+scope_result() {
+  systemctl --user show "$1" -p Result --value 2>/dev/null
+}
+
+# A kill at the scope's memory fence otherwise ends as a plain nonzero status
+# with no peak. Name it to the caller and record it with the compiled source's
+# hash, so a later probe of that source books from the fence it reached.
+report_fence_kill() {
+  local unit=$1; shift
+  [ "$(scope_result "$unit")" = oom-kill ] || return 0
+  echo "resource guard: memory fence kill: $unit reached its ${MODULE_LIMIT_GIB} GiB fence" >&2
+  python3 "$MEMORY_TOOL" fence-kill-record --ledger "$FENCE_KILLS" --unit "$unit" \
+    --fence-bytes "$(( MODULE_LIMIT_GIB * GIB ))" --cwd "$PWD" -- "$@" >/dev/null ||
+    note "fence kill record failed: $unit"
+}
+
+# A probe of a source already killed at a known fence books 1.25x that fence,
+# not its full request; it then grows by the resident rule up to its fence.
+# Without a record, or if the lookup fails, the probe keeps its full request.
+probe_fence_claim() {
+  local lowered
+  [ -s "$FENCE_KILLS" ] || return 0
+  if ! lowered=$(python3 "$MEMORY_TOOL" fence-kill-claim --ledger "$FENCE_KILLS" \
+      --requested-bytes "$MEMORY_CLAIM_BYTES" --cwd "$PWD" -- "$@") ||
+     ! [[ "$lowered" =~ ^[1-9][0-9]{0,11}$ ]]; then
+    note "PROBE fence-kill lookup failed; keeping claim $MEMORY_CLAIM_BYTES"
+    return 0
+  fi
+  if [ "$lowered" != "$MEMORY_CLAIM_BYTES" ]; then
+    note "PROBE claim $MEMORY_CLAIM_BYTES lowered to $lowered after a recorded fence kill"
+    MEMORY_CLAIM_BYTES=$lowered
+  fi
 }
 
 new_batch_limit() {

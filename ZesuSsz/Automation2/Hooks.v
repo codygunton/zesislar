@@ -32,6 +32,7 @@ Require Import ZesuSsz.Automation2.RecordFieldPruning.
 Ltac ZesuSsz.Automation2.ContextCollection.zesu_context_prune_goal ::= ltac2:(a3n_prune ()).
 
 Require Import ZesuSsz.Automation2.LinearFirstLia.
+Require ZesuSsz.Automation2.RewriteBoundGuards.
 (** Project-wide Lithium hook redefinitions belong in this module. *)
 
 From iris.proofmode Require Import environments.
@@ -375,12 +376,16 @@ Ltac zesu_strict_signed_if_enabled :=
       end
   end.
 
-(* Library solvers also call these primitives without the project finisher.
-   A linear address (in)equality closes first by the reflective normal form
-   (BvLinear); other goals fail there at once. A residual lemma is the last
-   attempt after the solver fails. *)
-Ltac bv_solve ::= first [solve [ZesuSsz.Automation2.BvLinear.zesu_bv_linear_with ltac:(lia)] |
-  zesu_context_filter ltac:(first [solve [zesu_strict_signed_if_enabled] |
+(* A closed comparison decides by computation; is_closed_term refuses a goal
+   with a local name before the VM runs. A closed comparison that computes to
+   false goes on to the solvers: a contradictory context still proves it. *)
+Ltac zesu_closed_goal_decide :=
+  lazymatch goal with |- ?goal => is_closed_term goal end;
+  first [ZesuSsz.Automation2.VmClosed.zesu_vm_closed_decide |
+    ZesuSsz.Automation2.RewriteBoundGuards.a3n_closed_bound].
+
+Ltac zesu_bv_solve_closer :=
+  first [solve [zesu_strict_signed_if_enabled] |
   solve [zesu_low_mask_sub_modulus_if_enabled] |
   solve [zesu_low_mask_if_closed] |
   (
@@ -388,7 +393,25 @@ Ltac bv_solve ::= first [solve [ZesuSsz.Automation2.BvLinear.zesu_bv_linear_with
   bv_saturate_unsigned;
   bv_solve_unfold_tac;
   unfold bv_signed, bv_swrap, bv_wrap, bv_half_modulus, bv_modulus, bv_unsigned in *;
-  simpl; lia)]) | ResidualLemmas.zesu_residual_lemma].
+  simpl; lia)].
+
+(* A goal that the normal form refutes is false for every value of its atoms;
+   only a contradictory context proves it. Look for the contradiction among
+   the facts that share terms with the goal only. *)
+Ltac zesu_refuted_solve closer :=
+  ZesuSsz.Automation2.ContextCollection.zesu_solve_goal_selected ("refuted"%string) closer.
+
+(* Library solvers also call these primitives without the project finisher.
+   A closed comparison decides by computation first. A linear address
+   (in)equality closes next by the reflective normal form (BvLinear); other
+   goals fail there at once. An equality that the normal form refutes goes to
+   the solver on its linked facts only. A residual lemma is the last attempt
+   after the solver fails. *)
+Ltac bv_solve ::= first [solve [zesu_closed_goal_decide] |
+  solve [ZesuSsz.Automation2.BvLinear.zesu_bv_linear_with ltac:(lia)] |
+  (tryif ZesuSsz.Automation2.BvLinear.zesu_bv_linear_refutes
+   then first [zesu_refuted_solve ltac:(zesu_bv_solve_closer) | ResidualLemmas.zesu_residual_lemma]
+   else first [zesu_context_filter ltac:(zesu_bv_solve_closer) | ResidualLemmas.zesu_residual_lemma])].
 
 (* A caller that imports isla after this module restores the library lia
    and bv_solve, which read the whole context. Try the facts linked to the
@@ -404,15 +427,26 @@ Ltac zesu_solve_machine_bounds :=
     (solve [zesu_normalize_binary_nat_hypotheses;
       zesu_normalize_binary_nat_goal; zesu_normalize_machine_map;
       first [zesu_bv_solve_linked_facts | bv_solve]])].
+(* Without a natural-number order fact or goal, the binary-nat alternative of
+   `zesu_solve_machine_linear` repeats the first one on the same goal and facts:
+   the first clears nothing and the nat normalizers change nothing. *)
+Ltac zesu_nat_order_present :=
+  match goal with
+  | |- (_ <= _)%nat => idtac
+  | |- (_ < _)%nat => idtac
+  | _ : (_ <= _)%nat |- _ => idtac
+  | _ : (_ < _)%nat |- _ => idtac
+  end.
 Ltac zesu_solve_machine_linear :=
   first [zesu_byte_index_arithmetic
     | (first [solve [repeat match goal with
            | Hnat : (_ <= _)%nat |- _ => clear Hnat
            | Hnat : (_ < _)%nat |- _ => clear Hnat
            end; zesu_normalize_machine_map; first [solve [zesu_lia_linked_facts] | lia]] |
-    solve [zesu_normalize_binary_nat_hypotheses;
+    (zesu_nat_order_present;
+     solve [zesu_normalize_binary_nat_hypotheses;
       zesu_normalize_binary_nat_goal; zesu_normalize_machine_map;
-      first [solve [zesu_lia_linked_facts] | lia]]])].
+      first [solve [zesu_lia_linked_facts] | lia]])])].
 (* The flag and remainder closer runs before the finisher saturates derived
    facts, so a range that only a folded hypothesis states (through a
    registered `ZesuDerivedFacts` instance) is missing there. When the goal has
@@ -795,6 +829,27 @@ Ltac zesu_registered_pure_fact P :=
     lazymatch used with true => constr:(proof) end
   end.
 
+(* The introduction scans below resolve a registration for the target before
+   they can succeed. Resolve it first, so that a target without one skips the
+   scans of every hypothesis (the pattern of the witness mapping guard).
+   Introductions take the source as an output; anchors need the relaxed
+   registry view, because their global mode makes the anchor an input. *)
+Ltac zesu_pure_fact_intro_registered target :=
+  assert_succeeds (let _ := constr:(_ : ZesuSsz.Automation.Hooks.ZesuPureFactIntro target _) in idtac).
+
+Ltac zesu_pure_fact_anchor_registered target :=
+  assert_succeeds (let _ := open_constr:(ltac:(zesu_lookup_target_registration)
+    : ZesuSsz.Automation.Hooks.ZesuPureFactAnchor target _ _) in idtac).
+
+Ltac zesu_pure_fact_anchor_scan target :=
+  iMatchHyp ltac:(fun name anchor =>
+    let evidence := constr:(_ : ZesuSsz.Automation.Hooks.ZesuPureFactAnchor target anchor _) in
+    lazymatch type of evidence with
+    | ZesuSsz.Automation.Hooks.ZesuPureFactAnchor _ _ ?source =>
+        let intro := constr:(@ZesuSsz.Automation.Hooks.zesu_pure_fact_anchor_intro _ target anchor source evidence) in
+        iApply (@ZesuSsz.Automation.Hooks.zesu_pure_fact_intro _ target source intro)
+    end).
+
 (* Registered introductions retain their resource and pure obligations. *)
 Ltac zesu_pure_fact_hints_if_enabled :=
   zesu_switch_enabled constr:(ZesuStepPureFactHints);
@@ -808,21 +863,18 @@ Ltac zesu_pure_fact_hints_if_enabled :=
         end
       | zesu_canonical_anchor_if_enabled
       | zesu_pure_fact_existential_if_enabled
-      | let evidence := constr:(_ : ZesuSsz.Automation.Hooks.ZesuPureFactIntro target _) in
-        lazymatch type of evidence with
-        | ZesuSsz.Automation.Hooks.ZesuPureFactIntro _ ?source =>
-            iApply (@ZesuSsz.Automation.Hooks.zesu_pure_fact_intro _ target source evidence)
-        end
-      | iMatchHyp ltac:(fun name source =>
-          let evidence := constr:(_ : ZesuSsz.Automation.Hooks.ZesuPureFactIntro target source) in
-          iApply (@ZesuSsz.Automation.Hooks.zesu_pure_fact_intro _ target source evidence))
-      | iMatchHyp ltac:(fun name anchor =>
-          let evidence := constr:(_ : ZesuSsz.Automation.Hooks.ZesuPureFactAnchor target anchor _) in
-          lazymatch type of evidence with
-          | ZesuSsz.Automation.Hooks.ZesuPureFactAnchor _ _ ?source =>
-              let intro := constr:(@ZesuSsz.Automation.Hooks.zesu_pure_fact_anchor_intro _ target anchor source evidence) in
-              iApply (@ZesuSsz.Automation.Hooks.zesu_pure_fact_intro _ target source intro)
-          end) ]
+      | tryif zesu_pure_fact_intro_registered target then
+          first [
+            let evidence := constr:(_ : ZesuSsz.Automation.Hooks.ZesuPureFactIntro target _) in
+            lazymatch type of evidence with
+            | ZesuSsz.Automation.Hooks.ZesuPureFactIntro _ ?source =>
+                iApply (@ZesuSsz.Automation.Hooks.zesu_pure_fact_intro _ target source evidence)
+            end
+          | iMatchHyp ltac:(fun name source =>
+              let evidence := constr:(_ : ZesuSsz.Automation.Hooks.ZesuPureFactIntro target source) in
+              iApply (@ZesuSsz.Automation.Hooks.zesu_pure_fact_intro _ target source evidence))
+          | zesu_pure_fact_anchor_scan target ]
+        else (zesu_pure_fact_anchor_registered target; zesu_pure_fact_anchor_scan target) ]
   | |- ?P =>
       let evidence := zesu_registered_pure_fact P in exact evidence
   end.
@@ -2819,9 +2871,11 @@ Ltac liAAsm ::=
   end.
 
 
-Ltac Lia.lia ::= first [solve [ZesuSsz.Automation2.BvLinear.zesu_bv_linear_with ltac:(lia)] |
-  zesu_context_filter ltac:(zesu_lia_linear_first3) |
-  ResidualLemmas.zesu_residual_lemma].
+Ltac Lia.lia ::= first [solve [zesu_closed_goal_decide] |
+  solve [ZesuSsz.Automation2.BvLinear.zesu_bv_linear_with ltac:(lia)] |
+  (tryif ZesuSsz.Automation2.BvLinear.zesu_bv_linear_refutes
+   then first [zesu_refuted_solve ltac:(zesu_lia_linear_first3) | ResidualLemmas.zesu_residual_lemma]
+   else first [zesu_context_filter ltac:(zesu_lia_linear_first3) | ResidualLemmas.zesu_residual_lemma])].
 
 
 (* The callback must prove the payload equality. Owners are never converted. *)
