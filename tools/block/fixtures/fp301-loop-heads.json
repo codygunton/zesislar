@@ -2,7 +2,7 @@
   "schema": "fp301-authenticated-loop-heads-v1",
   "rows": [
     {
-      "block": "6a24",
+      "block": "00c4",
       "source": {
         "path": "/home/cody/zesislar/_build/agents/spec-b/loop6a24-414/owned001/artifacts/default/ZesuSsz/Evidence/Loop6a24RemainingReadControls.v",
         "sha256": "63e14c4c1688ca6d6f2a882b75956de4442f57ed0274ed04b276ed10549a72ee"
@@ -21,7 +21,7 @@
       "continuation": "K"
     },
     {
-      "block": "6ac4",
+      "block": "0164",
       "source": {
         "path": "/home/cody/zesislar/_build/agents/spec-b/loop6ac4-411/owned002/artifacts/default/ZesuSsz/Evidence/Loop6ac4Preheader411.v",
         "sha256": "89513f9ce809b05270fa4b82193f2fe80bbe63fd293fbf842580df326b4aa0c8"

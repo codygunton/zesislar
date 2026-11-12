@@ -30,12 +30,12 @@ class DesignCallers(unittest.TestCase):
             original.write_text(text)
 
     def test_exit_premises_follow_the_design_table(self):
-        premises, imports = design_callers.exits(self.profile, self.design, '6a38')
-        self.assertEqual(premises, [successor_precondition(self.profile, '6ae0'),
-                                    successor_precondition(self.profile, '6a40')])
-        self.assertEqual(imports[:2], [self.profile.qualified('Pilot6a38Entries'),
-                                       self.profile.qualified('Pilot6a38Structural')])
-        premises, imports = design_callers.exits(self.profile, self.design, '6ae0')
+        premises, imports = design_callers.exits(self.profile, self.design, '00d8')
+        self.assertEqual(premises, [successor_precondition(self.profile, '0180'),
+                                    successor_precondition(self.profile, '00e0')])
+        self.assertEqual(imports[:2], [self.profile.qualified('Pilot00d8Entries'),
+                                       self.profile.qualified('Pilot00d8Structural')])
+        premises, imports = design_callers.exits(self.profile, self.design, '0180')
         self.assertEqual(premises, [return_precondition(self.profile)])
         self.assertIn(self.profile.qualified('FunctionReturnStructural'), imports)
 
