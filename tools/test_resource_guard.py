@@ -159,6 +159,29 @@ cat "$STATE_DIR/events"
         self.assertEqual(peak, 1)
         self.assertFalse(active)
 
+    def confirmed_marker(self, **environment):
+        with tempfile.TemporaryDirectory() as directory:
+            return self.run_guard(r'''
+hold_reason() { :; }
+compiler_pids() { :; }
+memory() { echo $((100*GIB)) 0 $((60*GIB)); }
+marker=$(reserve_coqc $$) || exit 11
+confirm_coqc "$marker" || exit 12
+cat "$marker"
+release_coqc "$marker"
+''', ZESU_IN_BATCH="1", ZESU_MODULE_MEMORY_PROFILE="fixture",
+                ZESU_MODULE_CLAIM_BYTES=str(5 * 1024 ** 3), ZESU_PROC_ROOT=directory, **environment)
+
+    def test_a_measured_module_records_its_peak_in_its_reservation(self):
+        result = self.confirmed_marker(ZESU_MODULE_MEASURED_PEAK_BYTES=str(4 * 1024 ** 3))
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertIn(f"memory_claim_bytes={5 * 1024 ** 3}\n", result.stdout)
+        self.assertIn(f"memory_measured_peak_bytes={4 * 1024 ** 3}\n", result.stdout)
+        unmeasured = self.confirmed_marker()
+        self.assertEqual(unmeasured.returncode, 0, unmeasured.stderr)
+        self.assertNotIn("memory_measured_peak_bytes", unmeasured.stdout)
+        self.assertNotEqual(self.confirmed_marker(ZESU_MODULE_MEASURED_PEAK_BYTES="many").returncode, 0)
+
     def test_disk_trim_threshold_uses_decimal_bytes(self):
         for free, trimmed in ((60000000000, False), (59999999999, True)):
             with self.subTest(free=free):

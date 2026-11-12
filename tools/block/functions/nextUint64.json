@@ -12,6 +12,7 @@
     "Require Import ZesuSsz.Contracts.NextUint64BlockEntries.",
     "Require Import ZesuSsz.Contracts.DecodeItemCompositional.",
     "Require Import ZesuSsz.Contracts.DecodeItemCallData.",
+    "Require Export ZesuSsz.Contracts.DecodeItemPayloadBounds.",
     "Require Export ZesuSsz.Contracts.NextUint64DomainRanges."
   ],
   "loop_contract_requires": [
@@ -78,7 +79,15 @@
           "length_source": "decodeItemArgsWellFormed (RlpDecodeItemContract.v): (List.length (decodeItemBeforeStorage args) = 40)%nat"
         }
       ],
-      "output_length_source": "C1BResult (RlpDecodeItem.v): candidateResult40 is errorResult40 or successResult40, each of 40 bytes"
+      "output_length_source": "C1BResult (RlpDecodeItem.v): candidateResult40 is errorResult40 or successResult40, each of 40 bytes",
+      "return_facts": [
+        {
+          "kind": "meaning",
+          "need": "the lbu at 0x800d6318 reads the input array: the decoded payload lies inside it",
+          "coq": "(0 < bv_unsigned {word:after:8} -> bv_unsigned {word:after:8} <= 8 -> nextInputPointer (nextUint64Base args) <= bv_unsigned {word:after:0} /\\ bv_unsigned {word:after:0} + bv_unsigned {word:after:8} <= nextInputPointer (nextUint64Base args) + Z.of_nat (length (nextInputBytes (nextUint64Base args))))%Z",
+          "source": "decodeItemCallPayloadInInputDerivedFacts (DecodeItemPayloadBounds.v): the call post's C1BResult bounds a nonempty payload shorter than 2^64 - 9 by argument 1 and the input length; nextUint64BoundaryDomainSliceWord0DerivedFacts (NextUint64DomainRanges.v): argument 1, the slice's first word, is nextInputPointer"
+        }
+      ]
     }
   ],
   "loop_designs": [

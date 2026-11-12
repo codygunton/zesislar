@@ -268,6 +268,47 @@ class TaskTests(unittest.TestCase):
         self.assertIn("`1234-1.md`", index)
 
 
+class ModuleNameTests(unittest.TestCase):
+    def test_a_named_module_replaces_the_block_name(self):
+        manifest = dict(block="1234", module="Residual_f_1234")
+        self.assertEqual(loop.module_of(manifest), "Residual_f_1234")
+        self.assertEqual(loop.module_of(dict(block="1234")), "Block800d1234")
+        source = CALLER.replace("Require Import ZesuSsz.Automation2.DiagnosticsOn.",
+                                "Require Import ZesuSsz.Residuals.Residual_f_1234.")
+        header = loop.caller_header(source, "1234", "Residual_f_1234")
+        self.assertFalse(any("Residual_f_1234" in line for line in header))
+        text = loop.export_caller(source, "Require Import ResidualLoop.Residual_f_1234.", "Residual_f_1234")
+        self.assertNotIn("ZesuSsz.Residuals.Residual_f_1234", text)
+        self.assertIn("Require Import ResidualLoop.Residual_f_1234.", text)
+
+    def test_register_writes_the_named_module_and_its_import(self):
+        with tempfile.TemporaryDirectory() as root:
+            run = Path(root) / "run"
+            d, name = goal_dir(run / "goals", "1234-1")
+            loop.write_json(d / "STATUS.json", dict(result="PASS", attempts=[]))
+            caller = Path(root) / "Caller1234.v"
+            caller.write_text(CALLER)
+            loop.write_json(run / "MANIFEST.json", dict(block="1234", module="Residual_f_1234", caller=str(caller),
+                                                        goals=[dict(id="1234-1", name=name, statement=STATEMENT,
+                                                                    source="split", binders=[], reparse="exact")],
+                                                        reruns=[]))
+            residuals = Path(root) / "Residuals"
+            with redirect_stdout(io.StringIO()):
+                loop.main(["register", "--run", str(run), "--residuals", str(residuals)])
+            self.assertTrue((residuals / "Residual_f_1234.v").exists())
+            self.assertFalse((residuals / "Block800d1234.v").exists())
+            self.assertIn("Require Import ZesuSsz.Residuals.Residual_f_1234.", caller.read_text().split("\n"))
+
+    def test_export_refuses_a_module_name_that_is_not_an_identifier(self):
+        with tempfile.TemporaryDirectory() as root:
+            caller = Path(root) / "Caller1234.v"
+            caller.write_text(CALLER)
+            with self.assertRaises(SystemExit):
+                with redirect_stdout(io.StringIO()):
+                    loop.main(["export", "--block", "1234", "--caller", str(caller), "--bank", root,
+                               "--out", str(Path(root) / "out"), "--module", "rlp.decodeItem"])
+
+
 class ResultTests(unittest.TestCase):
     def test_result_lines_hold_no_proof_text(self):
         with tempfile.TemporaryDirectory() as root:

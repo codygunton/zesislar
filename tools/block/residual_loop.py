@@ -31,7 +31,8 @@ facts whose binders the proof term does not use are dropped, and the smaller
 statement is checked again with the same script; it replaces the first one only
 when that check passes and it reparses exactly.
 
-register adds the passing lemmas to ZesuSsz/Residuals/Block800d<B>.v through
+register adds the passing lemmas to ZesuSsz/Residuals/Block800d<B>.v (or the module
+named by export --module) through
 tools/residuals/render_residual_module.py (existing lemmas stay) and adds the
 module import to the caller. rerun compiles that module and the caller copy with
 the export switch: it records whether the block closes, and the goals still open
@@ -97,6 +98,19 @@ def write_json(path, data):
 
 # ---- caller text ----
 
+MODULE_NAME = re.compile(r"^[A-Za-z][A-Za-z0-9_]*$")
+
+
+def module_of(manifest):
+    """The residual module of a run: the name given at export (for example from
+    the function symbol), else the in-tree name Block800d<block>."""
+    return manifest.get("module") or rrm.module_name(manifest["block"])
+
+
+def module_import(module):
+    return "Require Import ZesuSsz.Residuals.%s." % module
+
+
 def import_index(lines):
     found = [i for i, line in enumerate(lines) if IMPORT_LINE.match(line)]
     if not found:
@@ -104,22 +118,24 @@ def import_index(lines):
     return found[-1]
 
 
-def export_caller(source, residual=None):
+def export_caller(source, residual=None, module=None):
     """The caller with the export switch imported last. RESIDUAL, when given, is
-    the import line of the block's residual module copy (replacing any import of
-    the block's own residual module)."""
+    the import line of the block's residual module copy; it replaces the import
+    of the block's own residual module MODULE (and of any Block800d module)."""
     lines = [line for line in source.split("\n") if not SWITCH_MODULES.search(line)]
     if residual:
-        lines = [line for line in lines if not re.match(r"Require Import ZesuSsz\.Residuals\.Block800d", line)]
+        own = module_import(module) if module else None
+        lines = [line for line in lines if line != own
+                 and not re.match(r"Require Import ZesuSsz\.Residuals\.Block800d", line)]
     last = import_index(lines)
     lines[last + 1:last + 1] = ([residual] if residual else []) + [SWITCH]
     return "\n".join(lines)
 
 
-def caller_header(source, block):
+def caller_header(source, block, module=None):
     """The import lines of a goal file: the caller's imports without the switch
     modules and without the block's own residual module, then Z_scope."""
-    own = "Require Import ZesuSsz.Residuals.Block800d%s." % block
+    own = module_import(module or rrm.module_name(block))
     lines = source.split("\n")
     header = [line for line in lines[:import_index(lines) + 1]
               if IMPORT_LINE.match(line) and not SWITCH_MODULES.search(line) and line != own]
@@ -492,7 +508,7 @@ def export_round(run, manifest, caller_source, log_text, closed, jobs):
     again = [known[g["name"]] for g in goals if g["name"] in known]
     for goal, gid in zip(fresh, next_ids(manifest["goals"], block, len(fresh))):
         goal.update(id=gid, round=manifest["rounds"])
-    header = caller_header(caller_source, block)
+    header = caller_header(caller_source, block, module_of(manifest))
     args, ocamlpath = bank_args(manifest["bank"])
 
     def prepare(goal):
@@ -520,8 +536,12 @@ def cmd_export(a):
     (run / "export").mkdir(parents=True)
     caller = Path(a.caller).read_text()
     block = a.block
+    if a.module and not MODULE_NAME.match(a.module):
+        raise LoopError("The module name is not a Rocq identifier: %s" % a.module)
     manifest = dict(block=block, bank=str(Path(a.bank).resolve()), caller=str(Path(a.caller).resolve()),
                     caller_sha256=sha(caller), rounds=1, goals=[], skipped=[], exports=[], reruns=[])
+    if a.module:
+        manifest["module"] = a.module
     target = run / "export" / ("Export%s.v" % block)
     target.write_text(export_caller(caller))
     args, ocamlpath = bank_args(a.bank)
@@ -547,7 +567,7 @@ def cmd_export(a):
 def cmd_collect(a):
     run = Path(a.run)
     manifest = read_json(run / "MANIFEST.json")
-    header = caller_header(Path(manifest["caller"]).read_text(), manifest["block"])
+    header = caller_header(Path(manifest["caller"]).read_text(), manifest["block"], module_of(manifest))
     args, ocamlpath = bank_args(manifest["bank"])
 
     def collect(goal):
@@ -618,11 +638,11 @@ def minimize(run, d, goal, answer, header, args, ocamlpath):
     return state
 
 
-def module_path(residuals, block):
-    return Path(residuals) / ("%s.v" % rrm.module_name(block))
+def module_path(residuals, module):
+    return Path(residuals) / ("%s.v" % module)
 
 
-def module_text(block, existing, goal_dirs):
+def module_text(block, existing, goal_dirs, module=None):
     """The residual module with the lemmas of GOAL_DIRS added to EXISTING (text or None)."""
     if existing:
         _, header, rows = rrm.parse_module(existing)
@@ -631,7 +651,7 @@ def module_text(block, existing, goal_dirs):
     names = {row["name"] for row in rows}
     labels = {row["goal"] for row in rows}
     used = [int(label.rsplit("-", 1)[1]) for label in labels]
-    own = "Require Import ZesuSsz.Residuals.%s." % rrm.module_name(block)
+    own = module_import(module or rrm.module_name(block))
     added = []
     for directory in goal_dirs:
         imports, lemma, goal_sha, proof_sha = rrm.read_goal(Path(directory))
@@ -661,14 +681,15 @@ def cmd_register(a):
     block = manifest["block"]
     passing = [g for g in manifest["goals"]
                if read_json(run / "goals" / g["id"] / "STATUS.json", {}).get("result") == "PASS"]
-    target = module_path(a.residuals, block)
+    module = module_of(manifest)
+    target = module_path(a.residuals, module)
     existing = target.read_text() if target.exists() else None
-    text, added = module_text(block, existing, [run / "goals" / g["id"] for g in passing])
+    text, added = module_text(block, existing, [run / "goals" / g["id"] for g in passing], module)
     target.parent.mkdir(parents=True, exist_ok=True)
     target.write_text(text)
     caller = Path(a.caller or manifest["caller"])
     source = caller.read_text()
-    line = "Require Import ZesuSsz.Residuals.%s." % rrm.module_name(block)
+    line = module_import(module)
     if line not in source.split("\n"):
         lines = source.split("\n")
         lines.insert(import_index(lines) + 1, line)
@@ -685,8 +706,8 @@ def cmd_rerun(a):
     k = len(manifest["reruns"]) + 1
     d = run / ("rerun-%d" % k)
     (d / "lib").mkdir(parents=True)
-    module = rrm.module_name(block)
-    source_module = module_path(a.residuals, block)
+    module = module_of(manifest)
+    source_module = module_path(a.residuals, module)
     args, ocamlpath = bank_args(manifest["bank"])
     extra = []
     residual = None
@@ -700,7 +721,7 @@ def cmd_rerun(a):
         residual = "Require Import ResidualLoop.%s." % module
     caller = Path(a.caller or manifest["caller"]).read_text()
     target = d / ("Rerun%s.v" % block)
-    target.write_text(export_caller(caller, residual))
+    target.write_text(export_caller(caller, residual, module))
     result = scoped(target, "rerun-" + block, args, ocamlpath, claim=int(a.claim_gib * (1 << 30)),
                     run_id="residual-rerun-%s-%d" % (block, time.time_ns()), extra_args=extra)
     log_text = Path(result["log"]).read_text(errors="replace")
@@ -753,6 +774,7 @@ def main(argv=None):
     e.add_argument("--bank", required=True)
     e.add_argument("--out", required=True)
     e.add_argument("--stop-quiet", type=float, default=None)
+    e.add_argument("--module", help="name of the block's residual module (default Block800d<block>)")
     e.add_argument("--from-log", help="reuse the log of an earlier export run instead of compiling")
     e.add_argument("--claim-gib", type=float, default=8.0)
     e.add_argument("--jobs", type=int, default=8)

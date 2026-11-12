@@ -158,6 +158,18 @@ class CallBoundary(unittest.TestCase):
         self.assertEqual(spec['post']['registers'], [{'register': 'zisk_input_end', 'binder': 'inputEndBits'}])
         self.assertTrue(spec['post']['facts'][0].startswith('DecodeMeaningModuloKnownBugs'))
 
+    def test_return_fact_names_the_callers_load_of_the_output(self):
+        from call_boundary import _return_fact
+        from symbolic_state import Expr, input_expr, operation
+        array = input_expr('call_after', None)
+        # The forward pass's 8-byte little-endian load at offset 8 of the output array.
+        chunks = [Expr('array_byte', (array,), 8, 8 + index) for index in range(8)][::-1]
+        load = chunks[0]
+        for chunk in chunks[1:]:
+            load = operation('concat', load, chunk)
+        self.assertEqual(_return_fact('0 < bv_unsigned {word:after:8}', {'after': 'call_after'}),
+                         '0 < bv_unsigned ' + load.coq())
+
 
 class PureExistentials(unittest.TestCase):
     def test_existential_inside_a_pure_fact_is_not_hoisted(self):
