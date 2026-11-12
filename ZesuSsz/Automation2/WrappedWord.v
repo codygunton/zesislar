@@ -1,5 +1,6 @@
 Require Import isla.riscv64.riscv64.
 Require Import ZesuSsz.Automation2.PureFacts.
+Require Import ZesuSsz.Automation2.VmClosed.
 Local Open Scope Z_scope.
 
 (* Wrapped-word helpers. The versioned proof profile controls their activation. *)
@@ -51,9 +52,81 @@ Proof.
   apply bv_wrap_small. exact Hrange.
 Qed.
 
+Lemma zesu_wrapped_offset_base (width : N) (base : Z) :
+  bv_unsigned (Z_to_bv width base) = bv_wrap width (base + 0).
+Proof. rewrite Z_to_bv_unsigned Z.add_0_r. reflexivity. Qed.
+
+Lemma zesu_wrapped_offset_step (width : N) (base sum : Z) (word step : bv width) :
+  bv_unsigned word = bv_wrap width (base + sum) ->
+  bv_unsigned (bv_add word step) = bv_wrap width (base + (sum + bv_unsigned step)).
+Proof.
+  intros Hword. rewrite bv_add_unsigned Hword bv_wrap_add_idemp_l Z.add_assoc.
+  reflexivity.
+Qed.
+
+Lemma zesu_wrapped_offset_small (width : N) (base sum offset address : Z) (word : bv width) :
+  bv_unsigned word = bv_wrap width (base + sum) ->
+  bv_swrap width sum = offset ->
+  address = base + offset ->
+  0 <= address < bv_modulus width ->
+  bv_unsigned word = address.
+Proof.
+  intros Hword Hoffset Haddress Hrange. rewrite Hword. subst offset address.
+  pose proof (bv_modulus_pos width) as Hpos.
+  unfold bv_swrap, bv_wrap in *.
+  set (shifted := sum + bv_half_modulus width).
+  replace (base + sum) with
+    (base + (shifted mod bv_modulus width - bv_half_modulus width) +
+      (shifted / bv_modulus width) * bv_modulus width)
+    by (pose proof (Z.div_mod shifted (bv_modulus width)); subst shifted; lia).
+  rewrite Z_mod_plus_full. apply Z.mod_small. exact Hrange.
+Qed.
+
+(* A proof of [bv_unsigned word = bv_wrap width (base + sum)] for additions
+   on one integer cast. *)
+Ltac zesu_wrapped_offset_chain word :=
+  lazymatch word with
+  | Z_to_bv ?width ?base => constr:(zesu_wrapped_offset_base width base)
+  | bv_add ?inner ?step =>
+      let proof := zesu_wrapped_offset_chain inner in
+      constr:(zesu_wrapped_offset_step _ _ _ inner step proof)
+  end.
+
+(* Two or more additions on one integer cast, every offset closed. *)
+Ltac zesu_wrapped_closed_chain word :=
+  lazymatch word with
+  | bv_add (bv_add _ _) _ =>
+      let chain := zesu_wrapped_offset_chain word in
+      lazymatch type of chain with
+      | bv_unsigned _ = bv_wrap ?width (_ + ?sum) =>
+          zesu_vm_closed width; zesu_vm_closed sum
+      end
+  end.
+
+(* Reduce the closed offsets to one signed literal: the address becomes
+   [base - k], [base] or [base + k]. The caller checks the chain with
+   [zesu_wrapped_closed_chain] before this VM evaluation. *)
+Ltac zesu_wrapped_closed_offset word arithmetic :=
+  let chain := zesu_wrapped_offset_chain word in
+  lazymatch type of chain with
+  | bv_unsigned _ = bv_wrap ?width (?base + ?sum) =>
+      let offset := zesu_vm_eval_closed (bv_swrap width sum) in
+      let address := lazymatch eval vm_compute in (Z.compare offset 0) with
+        | Lt => let magnitude := eval vm_compute in (Z.opp offset) in constr:(base - magnitude)
+        | Eq => constr:(base)
+        | Gt => constr:(base + offset)
+        end in
+      let Heq := fresh "HwrappedAddress" in
+      assert (Heq : bv_unsigned word = address) by
+        (refine (zesu_wrapped_offset_small width base sum offset address word chain _ _ _);
+         [vm_compute; reflexivity | ring | arithmetic]);
+      rewrite Heq; clear Heq
+  end.
+
 Ltac zesu_normalize_wrapped_findmem arithmetic :=
   lazymatch goal with
   | |- iris.proofmode.environments.envs_entails _ (find_in_context (FindMemMapsTo (bv_unsigned ?word)) _) =>
+    tryif zesu_wrapped_closed_chain word then zesu_wrapped_closed_offset word arithmetic else
     lazymatch word with
     | bv_add (bv_add (Z_to_bv ?width ?base) ?left) ?right =>
       let Heq := fresh "HwrappedAddress" in
@@ -68,9 +141,11 @@ Ltac zesu_wrapped_memory_lookup :=
   lazymatch goal with
   | |- iris.proofmode.environments.envs_entails _
       (find_in_context (FindMemMapsTo (bv_unsigned ?word)) _) =>
-    lazymatch word with
-    | bv_add (bv_add (Z_to_bv _ _) _) _ => idtac
-    end
+    first [
+      lazymatch word with
+      | bv_add (bv_add (Z_to_bv _ _) _) _ => idtac
+      end |
+      zesu_wrapped_closed_chain word]
   end;
   ZesuSsz.Automation2.PureFacts.zesu_saturate_derived_facts;
   repeat first [progress ZesuSsz.Automation2.PureFacts.zesu_split_folded_pure |
