@@ -38,7 +38,9 @@
     "ZesuSsz/Compliance/SailRun.v"
   ],
   "loop_steps": [],
-  "registrations": [],
+  "registrations": [
+    "ZesuSsz/Compliance/DecodeItemHints.v"
+  ],
   "generator_json": [
     "ZesuSsz/Evidence/decode_item_auto_modules.json",
     "tools/block/DISCOVERY.md",
@@ -9076,6 +9078,5 @@
         "ZesuSsz/Generated/DecodeItem/BlockTable.v"
       ]
     }
-  },
-  "inventory_only": true
+  }
 }
