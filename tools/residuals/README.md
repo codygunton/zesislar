@@ -48,3 +48,21 @@ tools/block/residual_loop.py results --run <run>     # one RESULT line per goal,
 ```
 
 The tool calls no model. The coordinator starts one standing agent per block on `RUN/tasks/`.
+
+## At scale: every block of a function
+
+`tools/block/residual_scale.py` runs the loop on each block of a function and compares closures.
+
+```
+tools/block/residual_scale.py plan --function nextUint64 --callers tools/block/generated/nextuint64_fp301_callers --bank <bank> --out <run>
+tools/block/residual_scale.py export --run <run> [--jobs 4] [--launch-gap 300] [--stop-quiet S]
+tools/block/residual_scale.py bundle --run <run>      # RUN/bundles/<block>/README.md and AGENT_PROMPT.txt
+tools/block/residual_scale.py collect --run <run>     # after the standing agents wrote their answers
+tools/block/residual_scale.py rerun --run <run>       # register in RUN/residuals (scratch), compile again
+tools/block/residual_scale.py report --run <run> [--counts-only]
+```
+
+The export compile of a block is its rules-only result. The report gives rules-only closures against
+closures after the rerun, RESULT lines without proof text, and only counts with `--counts-only`.
+Whoever runs a standing agent may write `RUN/blocks/<block>/loop/answers/<goal>.json` with `{"tokens": N}`;
+the RESULT lines then report the tokens per goal.
