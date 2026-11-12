@@ -1749,7 +1749,7 @@ run_scope() {
   fi
   [ "${1:-}" = "--" ] && shift
   check_python_driver "$@" || return $?
-  if diagnostic_probe; then probe_fence_claim "$@" || return 2; fi
+  if diagnostic_probe; then probe_fence_claim "$@"; fi
   # An admitted launch must drain before a later gate can acquire its lock.
   if ! reservation_path "${ZESU_COQC_RESERVATION:-}"; then
     wait_for_gate
@@ -1840,11 +1840,16 @@ report_fence_kill() {
 
 # A probe of a source already killed at a known fence books 1.25x that fence,
 # not its full request; it then grows by the resident rule up to its fence.
+# Without a record, or if the lookup fails, the probe keeps its full request.
 probe_fence_claim() {
   local lowered
-  lowered=$(python3 "$MEMORY_TOOL" fence-kill-claim --ledger "$FENCE_KILLS" \
-    --requested-bytes "$MEMORY_CLAIM_BYTES" --cwd "$PWD" -- "$@") || return 2
-  [[ "$lowered" =~ ^[1-9][0-9]{0,11}$ ]] || return 2
+  [ -s "$FENCE_KILLS" ] || return 0
+  if ! lowered=$(python3 "$MEMORY_TOOL" fence-kill-claim --ledger "$FENCE_KILLS" \
+      --requested-bytes "$MEMORY_CLAIM_BYTES" --cwd "$PWD" -- "$@") ||
+     ! [[ "$lowered" =~ ^[1-9][0-9]{0,11}$ ]]; then
+    note "PROBE fence-kill lookup failed; keeping claim $MEMORY_CLAIM_BYTES"
+    return 0
+  fi
   if [ "$lowered" != "$MEMORY_CLAIM_BYTES" ]; then
     note "PROBE claim $MEMORY_CLAIM_BYTES lowered to $lowered after a recorded fence kill"
     MEMORY_CLAIM_BYTES=$lowered
