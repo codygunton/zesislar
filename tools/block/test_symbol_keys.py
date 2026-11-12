@@ -52,6 +52,8 @@ class SymbolKeys(unittest.TestCase):
         symbols = symbol_table()
         self.assertEqual(symbols['rlp.decodeItem'], 0x800d6960)
         self.assertEqual(load_profile('decodeItem')['pc_prefix'], '0x800d')
+        call, = load_profile('nextUint64')['calls']
+        self.assertEqual(call['callee_pc'], hex(symbols['rlp.decodeItem']))
 
 
 if __name__ == '__main__':
