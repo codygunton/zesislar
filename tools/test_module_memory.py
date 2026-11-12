@@ -85,6 +85,18 @@ class ModuleMemoryTests(unittest.TestCase):
         self.assertEqual((row["peak_bytes"], row["observations"]), (memory.GIB, 1))
         self.assertEqual(self.claim()["reason"], "measured_module")
 
+    def test_compile_limit_counts_only_the_compile_inside_the_scope(self):
+        import os
+        with tempfile.TemporaryDirectory() as directory:
+            output = Path(directory) / "peak.json"
+            with patch.dict(os.environ, {"ZESU_COMPILE_SECONDS": "1"}):
+                with patch.object(memory, "scope_peak", return_value=memory.GIB):
+                    self.assertEqual(memory.peak_exec(output, ["sh", "-c", "sleep 0.1"]), 0)
+                self.assertEqual(memory.peak_exec(output, ["sh", "-c", "sleep 30"]), 124)
+            with patch.dict(os.environ, {"ZESU_COMPILE_SECONDS": "0"}):
+                with self.assertRaises(ValueError):
+                    memory.peak_exec(output, ["true"])
+
     def test_invalid_peaks_refuse(self):
         for peak in (-1, 0, None, True, 1.5):
             with self.subTest(peak=peak), self.assertRaises(ValueError):
@@ -512,6 +524,36 @@ class ModuleMemoryTests(unittest.TestCase):
         result = memory.reservation_claims([marker], proc=proc, refresh=True, retained_claims=retained)
         self.assertEqual(result["claims"], [3 * memory.GIB])
         self.assertEqual(result["growth"], [])
+
+    def growth(self, measured_peak=None, resident_gib=8):
+        self.pid = getattr(self, "pid", 122) + 1
+        proc = self.physical(self.pid, peak=resident_gib * 1024 ** 2)
+        extra = f"memory_measured_peak_bytes={measured_peak}\n" if measured_peak else ""
+        marker = self.marker(f"{self.pid}\nwriter=fixture\naggregate=test\nmemory_claim_bytes={memory.GIB}\n"
+                             f"memory_fence_bytes={32 * memory.GIB}\n{extra}")
+        # Only this compile is a live compiler in the fixture's process table.
+        with patch.object(memory, "compiler_pids", return_value={self.pid}):
+            return memory.reservation_claims([marker], proc=proc, refresh=True)["claims"][0]
+
+    def test_a_measured_module_at_its_peak_grows_by_the_measured_margin(self):
+        # 8 GiB resident at a 10 GiB measured peak: 1.25 x 10 GiB, not 1.5 x 8 GiB.
+        self.assertEqual(self.growth(measured_peak=10 * memory.GIB), 25 * memory.GIB // 2)
+        # 8 GiB resident at exactly its 8 GiB measured peak: 1.25 x 8 GiB.
+        self.assertEqual(self.growth(measured_peak=8 * memory.GIB), 10 * memory.GIB)
+
+    def test_unmeasured_or_above_peak_modules_keep_the_resident_margin(self):
+        self.assertEqual(self.growth(), 12 * memory.GIB)
+        # 8 GiB resident above a 6 GiB measured peak: the final peak is unknown.
+        self.assertEqual(self.growth(measured_peak=6 * memory.GIB), 12 * memory.GIB)
+
+    def test_measured_claims_carry_their_peak_to_the_guard(self):
+        name, bound = self.bound("Small.v")
+        memory.record_measurement(self.profile_path, name, bound, 3 * memory.GIB, rss_peak_bytes=4 * memory.GIB)
+        claim = self.claim()
+        self.assertEqual(claim["reason"], "measured_module")
+        self.assertEqual(claim["measured_peak_bytes"], 4 * memory.GIB)
+        self.profile([("Small.v", 3 * memory.GIB)])
+        self.assertNotIn("measured_peak_bytes", self.claim("Large.v"))
 
     def test_unrepresented_compilers_keep_full_fallback_reservations(self):
         proc = self.physical(123)

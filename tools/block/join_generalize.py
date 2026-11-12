@@ -1009,7 +1009,10 @@ def generalize_owned_join(alternatives, *, original_seed, entry_pc, vocabulary,
     plan.update(owned_binders=deepcopy(ordered), owned_edges=owned_edges, join_witness_plan=full_witness_plan)
     seed = OwnedSeed(state, ownership, resources, deepcopy(original_seed.facts), [],
                      deepcopy(plan['join_refusals']), owned_edges, full_witness_plan, 'join')
-    rendered = render_resource_boundary(ownership, apply_owned_writes(resources, [], facts=seed.facts),
+    # The seed carries the writes that every edge holds (the saved frame slots of a
+    # partial span); its entry states them, as the seed state does.
+    rendered = render_resource_boundary(ownership, apply_owned_writes(
+        resources, state.writes, conditions=state.conditions, facts=seed.facts, endianness=state.endianness),
                                         state, vocabulary=vocabulary)
     if rendered['block_status'] != 'completed':
         raise ValueError('The generalized join ownership cannot render')
@@ -1088,8 +1091,9 @@ def attach_exit_pullback(join, traversal, *, output_resource_id, return_expressi
     owned.ownership['components'].insert(-1, {'id': key, 'kind': 'opaque', 'source': source, 'scope': [[0]],
         'provenance': {'contract_allows': deepcopy(allows['source_binding']), 'proof_established': False}})
     owned.ownership['tree']['left']['body']['children'].append({'kind': 'component', 'id': key})
-    body = render_resource_boundary(owned.ownership, apply_owned_writes(owned.resources, [], facts=owned.facts),
-                                    owned.state, vocabulary=vocabulary)
+    body = render_resource_boundary(owned.ownership, apply_owned_writes(
+        owned.resources, owned.state.writes, conditions=owned.state.conditions, facts=owned.facts,
+        endianness=owned.state.endianness), owned.state, vocabulary=vocabulary)
     boundary = deepcopy(join['boundary'])
     boundary['alternatives'][0]['resource_boundary'] = body
     return {**join, 'seed': owned, 'boundary': boundary, 'pullback': pullback}

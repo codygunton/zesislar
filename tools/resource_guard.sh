@@ -171,6 +171,11 @@ MEMORY_CLAIM_BYTES=${ZESU_MODULE_CLAIM_BYTES:-$(( MODULE_LIMIT_GIB * GIB ))}
 if ! [[ "$MEMORY_CLAIM_BYTES" =~ ^[1-9][0-9]{0,11}$ ]]; then
   echo "resource guard: invalid module memory reservation" >&2; exit 2
 fi
+# A measured module's recorded peak caps its growth booking (module_memory.py).
+MEASURED_PEAK_BYTES=${ZESU_MODULE_MEASURED_PEAK_BYTES:-}
+if [ -n "$MEASURED_PEAK_BYTES" ] && ! [[ "$MEASURED_PEAK_BYTES" =~ ^[1-9][0-9]{0,11}$ ]]; then
+  echo "resource guard: invalid measured module peak" >&2; exit 2
+fi
 
 note() { printf '%s %s\n' "$(date -Is)" "$*" >> "$LOG"; }
 
@@ -1067,6 +1072,11 @@ confirm_coqc() {
         "$MEMORY_CLAIM_BYTES" "$(( MODULE_LIMIT_GIB * GIB ))" >> "$replacement" || {
           rm -f -- "$replacement"; flock -u 7; exec 7>&-; return 2;
         }
+      if [ -n "$MEASURED_PEAK_BYTES" ]; then
+        printf 'memory_measured_peak_bytes=%s\n' "$MEASURED_PEAK_BYTES" >> "$replacement" || {
+          rm -f -- "$replacement"; flock -u 7; exec 7>&-; return 2;
+        }
+      fi
       printf 'owner_start=%s\n' "$(process_start "$owner")" >> "$replacement" || {
         rm -f -- "$replacement"; flock -u 7; exec 7>&-; return 2;
       }

@@ -25,8 +25,11 @@ class SoundnessGateTests(unittest.TestCase):
             source, artifact = gate.wrapper_paths(workspace, out, build)
             calls = []
 
+            kinds = []
+
             async def verify(root, sources, pc, report, **kwargs):
                 calls.append(list(sources))
+                kinds.append((kwargs.get('timeout'), kwargs.get('admission_seconds')))
                 artifact.parent.mkdir(parents=True, exist_ok=True)
                 artifact.write_bytes(b'fixture object')
                 result = {'checks': [{'compile_file': {'output': '\n'.join(['Closed under the global context'] * 4)},
@@ -42,6 +45,8 @@ class SoundnessGateTests(unittest.TestCase):
                 gate.stage(config, 'wrappers')
             self.assertEqual(len(calls), 4)
             self.assertEqual(calls[-1], [source])
+            # Each compile gets its limit after guard admission; admission has its own bound.
+            self.assertEqual(kinds, [(gate.COMPILE_SECONDS, gate.verification.ADMISSION_WAIT_SECONDS)] * 4)
             self.assertEqual(source.read_text(), gate.WRAPPERS)
             self.assertFalse((workspace / 'ZesuSsz').exists())
             self.assertEqual(artifact, build / 'default/_build/agents/test-gate/scratch/SoundnessGateWrappers.vo')

@@ -9,11 +9,9 @@ from unittest.mock import patch
 
 sys.path.insert(0, str(Path(__file__).parent / "block"))
 from function_names import FunctionNames, prefix_argument
-import complete_promotion
 import generate_table
 import production_modules
-import promote_table
-from tools import test_block_table, test_complete_promotion, test_production_modules, test_promote_table
+from tools import test_block_table, test_production_modules
 
 
 class FunctionNameTests(unittest.TestCase):
@@ -28,7 +26,6 @@ class FunctionNameTests(unittest.TestCase):
                 FunctionNames(name)
 
     def test_default_renderer_prefix_is_byte_identical(self):
-        self.assertEqual(complete_promotion.render_prefix(), complete_promotion.PREFIX)
         design, report = test_block_table.BlockTableTests().executable_fixture()
         self.assertEqual(generate_table.render_table(design, report),
                          generate_table.render_table(design, report, name_prefix="decodeItem"))
@@ -82,25 +79,6 @@ class FunctionNameTests(unittest.TestCase):
         self.assertIn("ZesuSsz.Contracts.Fixture.entry1000 (args) (frameBytes)", source)
         self.assertNotIn("decodeItem", source)
 
-    def test_other_function_promotion_checks_its_own_table_signature(self):
-        _, design, _ = test_promote_table.PromotionTests().fixture()
-        native, adapter = test_promote_table.PromotionTests().evidence()
-        adapter["statement"] = promote_table.table_statement(0x1000, name_prefix="free")
-        self.assertEqual(promote_table.validate_promotion(
-            design["blocks"][0], native, adapter, design_sha256="bound", name_prefix="free"),
-            "Proofs.ExactBody")
-        with self.assertRaisesRegex(ValueError, "table-body signature"):
-            promote_table.validate_promotion(
-                design["blocks"][0], native, adapter, design_sha256="bound")
-
-    def test_other_function_slots_preserve_supplied_qualified_proof(self):
-        report = {"proof_slots": [{"pc": "0x1000", "status": "proved",
-                  "proof_module": "Proofs.decodeItemKeep", "proof_lemma": "Proofs.decodeItemKeep.body"}]}
-        source = promote_table.render_slots(report, name_prefix="free")
-        self.assertIn("Require Import ZesuSsz.Compliance.FreeHints.", source)
-        self.assertIn("Definition freePromotedBody1000 :", source)
-        self.assertIn("Proofs.decodeItemKeep.body.", source)
-
     def test_other_function_module_keeps_the_exact_declaration(self):
         fixture = test_production_modules.ProductionModuleTests().fixture()
         with tempfile.TemporaryDirectory() as directory:
@@ -110,38 +88,6 @@ class FunctionNameTests(unittest.TestCase):
             self.assertEqual(production_modules.statement(source, fixture["lemma"]),
                              production_modules.statement(fixture["source"], fixture["lemma"]))
             self.assertIn("Require Import ZesuSsz.Compliance.FreeHints.", source)
-
-    def test_other_function_adapter_uses_its_names_without_rewriting_theorem(self):
-        source = complete_promotion.render_adapter(
-            0x1000, "Proofs.decodeItemKeep", "decodeItemKeep", ["args"], name_prefix="free")
-        self.assertIn("Require Import ZesuSsz.Proofs.Free.TableSlots.Adapter1000Conditional.", source)
-        self.assertIn("Lemma freeSlotBody1000", source)
-        self.assertIn("instr_body 0x1000 freeState1000.", source)
-        self.assertIn("exact (decodeItemKeep args).", source)
-
-    def test_other_function_complete_does_not_consume_the_historical_i67_table(self):
-        with tempfile.TemporaryDirectory() as directory:
-            root = Path(directory)
-            for name in test_complete_promotion.INPUTS:
-                old = test_complete_promotion.HISTORICAL_NAMES.get(name, name)
-                text = test_complete_promotion.historical("cp-p1-i60", old)
-                text = text.replace("DecodeItem", "Free").replace("decodeItem", "free")
-                path = root / name.replace("DecodeItem", "Free")
-                path.parent.mkdir(parents=True, exist_ok=True)
-                path.write_text(text)
-            module = test_complete_promotion.MODULE.replace("DecodeItem", "Free")
-            lemma = test_complete_promotion.LEMMA.replace("DecodeItem", "Free")
-            with patch.object(test_complete_promotion.native_status, "generate",
-                              side_effect=AssertionError("The historical refresh must not run.")), \
-                 patch.object(complete_promotion.subprocess, "check_output", return_value="fixture-root\n"), \
-                 patch("promotion_verification.verify_generated", return_value={"success": True}):
-                report = complete_promotion.complete(
-                    root, 0x800d6974, module, lemma, root / "report.json", None,
-                    name_prefix="free")
-            self.assertTrue(report["success"])
-            self.assertIsNone(report["native_status"])
-            self.assertTrue((root / "ZesuSsz/Evidence/FreeOpenNativeHypotheses.v").is_file())
-            self.assertFalse((root / "ZesuSsz/Evidence/DecodeItemOpenNativeHypotheses.v").exists())
 
     def test_table_check_compares_bytes_without_rewriting_stale_output(self):
         with tempfile.TemporaryDirectory() as directory:

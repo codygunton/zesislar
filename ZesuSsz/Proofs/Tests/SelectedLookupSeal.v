@@ -1,10 +1,8 @@
-Require Import ZesuSsz.Automation.All.
-Require Import ZesuSsz.Generated.DecodeItem.BootstrapRegistrations.
 From iris.proofmode Require Import environments.
 Require Import isla.riscv64.riscv64.
 Require Import ZesuSsz.Contracts.SelectedCodeLookup.
 Require Import ZesuSsz.Stock.Closure.index_decodeItem.
-Require Import ZesuSsz.Generated.DecodeItem.Registrations.
+Require Import ZesuSsz.Automation2.All.
 
 Set Default Proof Using "Type".
 
