@@ -89,6 +89,20 @@ class GateWorkspaceTests(unittest.TestCase):
         self.assertIn('Gate workspace preparation failed', result.stdout)
         self.assertNotIn('dune build', result.stdout)
 
+    def test_signature_build_runs_in_a_guard_batch(self):
+        # A guarded compile outside every batch aggregate needs a writer identity.
+        root = Path(__file__).resolve().parents[1]
+        guard = self.work / 'guard'
+        guard.write_text('#!/bin/sh\nexit 0\n')
+        guard.chmod(0o755)
+        result = subprocess.run(['make', '-n', '-f', str(root / 'Makefile'), 'check-signatures',
+            'GUARD=' + str(guard), 'PYTHON=python3'],
+            cwd=root, text=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+        self.assertEqual(result.returncode, 0, result.stdout)
+        self.assertIn(str(guard) + ' batch check-signatures --', result.stdout)
+        self.assertLess(result.stdout.index(str(guard) + ' batch check-signatures'),
+                        result.stdout.index('dune_trace_guard.py'))
+
 
 if __name__ == '__main__':
     unittest.main()

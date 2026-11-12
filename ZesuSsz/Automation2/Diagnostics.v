@@ -1,5 +1,6 @@
 Require Import isla.riscv64.riscv64.
 Require Import ZesuSsz.Automation2.ContextCollection.
+Require ZesuSsz.Automation2.ResidualExport.
 From Ltac2 Require Import Ltac2.
 Set Default Proof Mode "Classic".
 
@@ -177,5 +178,33 @@ Ltac zesu_diag_step_end :=
     end)
   else idtac.
 
+(* Residual export (ResidualExport.v): a second switch, so an export run
+   prints no step or stage records. Each hook prints one `@@X` record for
+   the focused goal: the exact source of its statement for a pure goal, or a
+   skip line with the reason. It never changes the goal or the context. *)
+Class ZesuResidualExportOn : Prop := zesu_residual_export_on : True.
+
+Ltac zesu_diag_export_on := let _ := constr:(_ : ZesuResidualExportOn) in idtac.
+
+(* At the split point: a pure conjunct that the package route split off,
+   before the finisher runs on it. *)
+Ltac zesu_diag_export_split :=
+  tryif zesu_diag_export_on then try (
+    lazymatch goal with
+    | |- environments.envs_entails _ _ => idtac "@@X skip split spatial"
+    | _ => ltac2:(ZesuSsz.Automation2.ResidualExport.zesu_export_goal "split")
+    end)
+  else idtac.
+
+(* At the refusal point: each goal still open at the end of the block. *)
+Ltac zesu_diag_export_final :=
+  tryif zesu_diag_export_on then try (
+    lazymatch goal with
+    | |- environments.envs_entails _ _ => idtac "@@X skip final spatial"
+    | _ => ltac2:(ZesuSsz.Automation2.ResidualExport.zesu_export_goal "final")
+    end)
+  else idtac.
+
 Ltac zesu_diag_refusal kind :=
-  tryif zesu_diag_on then try zesu_diag_print_refusal kind else idtac.
+  (tryif zesu_diag_on then try zesu_diag_print_refusal kind else idtac);
+  zesu_diag_export_final.

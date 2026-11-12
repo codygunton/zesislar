@@ -15,6 +15,34 @@ from successor_entailment import _result
 from function_names import FunctionNames
 
 HERE = Path(__file__).resolve().parent
+# Compile-only limits: the guarded compiler wrappers start ZESU_COMPILE_SECONDS
+# inside the guard scope, after admission. The MCP call bound adds a separate,
+# generous allowance for the admission wait; a call that exceeds it is retried.
+ADMISSION_WAIT_SECONDS = int(os.environ.get('ZESU_ADMISSION_WAIT_SECONDS', '7200'))
+ADMISSION_RETRIES = int(os.environ.get('ZESU_ADMISSION_RETRIES', '3'))
+
+
+def admission_expired(result):
+    """An MCP compile or verification that reached its whole-call bound."""
+    return isinstance(result, dict) and result.get('success') is not True and result.get('reason') == 'timeout'
+
+
+async def call_with_admission(call, tool, arguments, compile_seconds, *,
+                              admission_seconds=ADMISSION_WAIT_SECONDS, retries=ADMISSION_RETRIES, log=None):
+    """Call a compiling MCP tool whose compile limit excludes the admission wait.
+
+    The caller's MCP server must carry ZESU_COMPILE_SECONDS=compile_seconds.
+    A call bound expiry then means the admission wait alone exceeded its
+    allowance: log it and call again instead of failing.
+    """
+    arguments = dict(arguments, timeout=compile_seconds + admission_seconds)
+    for attempt in range(retries + 1):
+        result = await call(tool, arguments)
+        if not admission_expired(result) or attempt == retries:
+            return result
+        (log or (lambda text: print(text, file=sys.stderr, flush=True)))(
+            f'{tool}: guard admission took more than {admission_seconds} s; retry {attempt + 1} of {retries}')
+    return result
 
 
 def digest(path):
@@ -365,7 +393,9 @@ def owned_pet(health, owner):
 
 async def verify(workspace, sources, pc, directory, timeout=600, *, compiled_checks=None,
                  name_prefix="decodeItem", mcp_launcher=None, compiler_launcher=None,
-                 protected_expectations=None, verification_imports=None, operation_observer=None):
+                 protected_expectations=None, verification_imports=None, operation_observer=None,
+                 admission_seconds=None):
+    """With admission_seconds, timeout limits each compile only, after guard admission."""
     workspace = Path(workspace).resolve()
     launchers = launcher_bindings(workspace, mcp_launcher, compiler_launcher)
     protected = prepare_protected_expectations(workspace, sources, protected_expectations)
@@ -383,6 +413,20 @@ async def verify(workspace, sources, pc, directory, timeout=600, *, compiled_che
         (directory / 'RESULT.json').write_text(json.dumps(report, indent=2) + '\n')
 
     async def operation(label, tool, arguments):
+        if admission_seconds is None:
+            result = await attempt(label, tool, arguments)
+        else:
+            attempts = iter(range(ADMISSION_RETRIES + 1))
+            async def call(name, args):
+                number = next(attempts)
+                return await attempt(label if number == 0 else f'{label}-retry{number}', name, args)
+            result = await call_with_admission(call, tool, arguments, timeout,
+                                               admission_seconds=admission_seconds)
+        if not result or not result.get('success'):
+            raise ValueError(f'{tool} failed. Inspect {directory / "RESULT.json"}.')
+        return result
+
+    async def attempt(label, tool, arguments):
         owner = pet = None
         normal = False
         unchanged_launchers(launchers)
@@ -392,6 +436,8 @@ async def verify(workspace, sources, pc, directory, timeout=600, *, compiled_che
         env.update(ROCQ_WORKSPACE=str(workspace), ROCQ_DUNE_BUILD='1',
                    AGENT_BUILD_DIR=str(private.parent),
                    ZESU_ROCQ_COQC_WRAPPER=launchers['compiler']['path'])
+        if admission_seconds is not None:
+            env['ZESU_COMPILE_SECONDS'] = str(timeout)
         # The existing compiler wrapper supplies normal guarded admission.
         command = directory / (label + '.sh')
         command.write_text('#!/bin/sh\nset -eu\nexec "$ZESU_MCP_PYTHON" "$ZESU_PROMOTION_SERVER"\n')
@@ -453,8 +499,6 @@ async def verify(workspace, sources, pc, directory, timeout=600, *, compiled_che
             report['closures'].append(closure); save()
         if not all(closure[k] for k in ('transport_closed_normally', 'server_exited', 'owned_Pet_absent')):
             raise ValueError('The owned verification transport did not close normally.')
-        if not result or not result.get('success'):
-            raise ValueError(f'{tool} failed. Inspect {directory / "RESULT.json"}.')
         return result
 
     try:

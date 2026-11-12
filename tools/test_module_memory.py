@@ -85,6 +85,18 @@ class ModuleMemoryTests(unittest.TestCase):
         self.assertEqual((row["peak_bytes"], row["observations"]), (memory.GIB, 1))
         self.assertEqual(self.claim()["reason"], "measured_module")
 
+    def test_compile_limit_counts_only_the_compile_inside_the_scope(self):
+        import os
+        with tempfile.TemporaryDirectory() as directory:
+            output = Path(directory) / "peak.json"
+            with patch.dict(os.environ, {"ZESU_COMPILE_SECONDS": "1"}):
+                with patch.object(memory, "scope_peak", return_value=memory.GIB):
+                    self.assertEqual(memory.peak_exec(output, ["sh", "-c", "sleep 0.1"]), 0)
+                self.assertEqual(memory.peak_exec(output, ["sh", "-c", "sleep 30"]), 124)
+            with patch.dict(os.environ, {"ZESU_COMPILE_SECONDS": "0"}):
+                with self.assertRaises(ValueError):
+                    memory.peak_exec(output, ["true"])
+
     def test_invalid_peaks_refuse(self):
         for peak in (-1, 0, None, True, 1.5):
             with self.subTest(peak=peak), self.assertRaises(ValueError):

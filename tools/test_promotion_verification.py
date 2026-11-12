@@ -17,6 +17,35 @@ sys.path.insert(0, str(Path(__file__).parent / 'block'))
 import promotion_verification as verification
 
 
+class AdmissionWaitTests(unittest.TestCase):
+    def test_an_expired_admission_wait_is_retried_with_the_compile_bound_unchanged(self):
+        results = [{'success': False, 'reason': 'timeout'}, {'success': True}]
+        calls, logs = [], []
+
+        async def call(tool, arguments):
+            calls.append((tool, arguments))
+            return results.pop(0)
+        result = asyncio.run(verification.call_with_admission(
+            call, 'rocq_compile_file', {'file': 'A.v'}, 600, admission_seconds=7200, retries=3, log=logs.append))
+        self.assertEqual(result, {'success': True})
+        self.assertEqual([arguments['timeout'] for _, arguments in calls], [7800, 7800])
+        self.assertEqual(len(logs), 1)
+
+    def test_a_compile_failure_is_not_retried_and_retries_are_bounded(self):
+        async def failing(tool, arguments):
+            return {'success': False, 'reason': 'error'}
+        self.assertEqual(asyncio.run(verification.call_with_admission(failing, 'rocq_verify', {}, 600,
+                                                                      log=lambda text: None))['reason'], 'error')
+        count = []
+
+        async def waiting(tool, arguments):
+            count.append(1)
+            return {'success': False, 'reason': 'timeout'}
+        asyncio.run(verification.call_with_admission(waiting, 'rocq_verify', {}, 600, retries=2,
+                                                     log=lambda text: None))
+        self.assertEqual(len(count), 3)
+
+
 class PromotionVerificationTests(unittest.TestCase):
     def test_audit_leaf_has_no_proof_statement(self):
         source = ('Require Import Project.Bodies.\n'

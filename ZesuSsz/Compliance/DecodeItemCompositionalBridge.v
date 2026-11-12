@@ -1,5 +1,4 @@
-Require Import ZesuSsz.Automation.All.
-Require Import ZesuSsz.Compliance.DecodeItemHints.
+Require Import ZesuSsz.Automation2.All.
 Require Import isla.riscv64.riscv64.
 Require Import ZesuSsz.Contracts.Level1.
 Require Import ZesuSsz.Contracts.DecodeItemSelected.
