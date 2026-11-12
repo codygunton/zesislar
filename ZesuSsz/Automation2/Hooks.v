@@ -417,11 +417,14 @@ Ltac zesu_solve_machine_linear :=
    facts, so a range that only a folded hypothesis states (through a
    registered `ZesuDerivedFacts` instance) is missing there. When the goal has
    the closer's shape and saturation adds a fact, the closer runs once more
-   inside `solve`: a failure leaves the context as it was. *)
+   inside `solve`: a failure leaves the context as it was. A remainder goal
+   qualifies before its divisibility fact is present, since that fact may be
+   derived too; derived bounds in `bv_modulus` form are evaluated. *)
 Ltac zesu_flag_mask_bound_derived :=
   FlagMaskBounds.zesu_flag_goal_head;
-  FlagMaskBounds.zesu_flag_shape;
+  first [FlagMaskBounds.zesu_flag_shape | FlagMaskBounds.zesu_flag_remainder_goal];
   progress ZesuSsz.Automation2.PureFacts.zesu_saturate_derived_facts;
+  FlagMaskBounds.zesu_flag_closed_moduli;
   FlagMaskBounds.zesu_flag_mask_bound.
 
 (* Preserve the machine normalization used by the existing finisher. *)
