@@ -3,11 +3,44 @@ Require Import ZesuSsz.Contracts.RlpDecodeItem.
 Require Import ZesuSsz.Contracts.ParentHeaderRootFacts.
 Require Import ZesuSsz.Contracts.NextUint64BlockEntries.
 Require Import ZesuSsz.Contracts.AbiBytes.
-Require Import ZesuSsz.Contracts.DecodeItemFrameImage.
 Require Import ZesuSsz.Contracts.DecodeItemPayloadBounds.
 From Coq Require Import List ZArith.ZArith Lia.
 From stdpp Require Import list_numbers bitvector.definitions.
 Open Scope Z_scope.
+
+(* Little-endian decoding inverts the machine byte image of a word in range
+   (moved from the retired DecodeItemFrameImage.v). *)
+Lemma littleEndian_machine_bytes count z :
+  0 <= z < 2 ^ (8 * Z.of_nat count) ->
+  littleEndian (bv_to_little_endian (Z.of_nat count) 8 z) = z.
+Proof.
+  revert z. induction count as [|count IH]; intros z Hz.
+  - replace z with 0 by (simpl in Hz; lia).
+    reflexivity.
+  - rewrite Nat2Z.inj_succ.
+    unfold bv_to_little_endian at 1.
+    rewrite Z_to_little_endian_succ by lia.
+    simpl.
+    rewrite Z.land_ones by lia.
+    change (2 ^ 8) with 256.
+    rewrite Z_to_bv_small by
+      (unfold bv_modulus; cbn; apply Z.mod_pos_bound; lia).
+    rewrite Z.shiftr_div_pow2 by lia.
+    change (2 ^ 8) with 256.
+    change (list_fmap Z (bv 8) (fun b => Z_to_bv 8 b)
+      (Z_to_little_endian (Z.of_nat count) 8 (z / 256))) with
+      (bv_to_little_endian (Z.of_nat count) 8 (z / 256)).
+    rewrite IH.
+    + rewrite Z.mod_eq by lia. lia.
+    + split.
+      * apply Z.div_pos; lia.
+      * rewrite Nat2Z.inj_succ in Hz.
+        replace (8 * (Z.of_nat count + 1)) with
+            (8 * Z.of_nat count + 8) in Hz by lia.
+        rewrite Z.pow_add_r in Hz by lia.
+        change (2 ^ 8) with 256 in Hz.
+        apply Z.div_lt_upper_bound; lia.
+Qed.
 
 (* The Z ranges of nextUint64's domain quantities, as separate derived facts
    of the folded domain (the decodeItem mechanism, DecodeItemDomainRanges.v).
