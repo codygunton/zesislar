@@ -217,7 +217,15 @@ Ltac zesu_store_memory_lookup_core :=
     zesu_store_unsigned_splice_indices;
     progress ZesuSsz.Automation2.Hooks.zesu_integer_array_address_if_enabled;
     liEnsureInvariant;
-    liStep ].
+    liStep
+  (* A lookup whose address needs a range that sits only behind a folded
+     domain predicate: saturate the derived facts once, in the main context,
+     and let the next step retry the lookup. Runs only when every other route
+     failed; `progress` stops it when the facts are already there. *)
+  | lazymatch goal with
+    | |- iris.proofmode.environments.envs_entails _ (find_in_context (FindMemMapsTo _) _) => idtac
+    end;
+    progress ZesuSsz.Automation2.PureFacts.zesu_saturate_derived_facts ].
 
 (* A wider access to a run of owned byte cells reads the run as one array. *)
 Lemma zesu_byte_cells_one `{!islaG Sigma} (base : Z) (index : nat) (fraction : dfrac)
