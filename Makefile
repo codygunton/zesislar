@@ -197,8 +197,12 @@ _check-fast: stock-native-indexes check-evidence-tools check-signatures
 	  $(RETAINED_TARGETS)
 	$(PYTHON) tools/module_memory.py observation-summary --observations $(CHECK_FAST_OBSERVATIONS)
 
+# Its compiles run in a guard batch aggregate: run alone, a guarded compile
+# outside any aggregate needs a named writer identity. Inside a gate the batch
+# reuses the gate's aggregate.
 .PHONY: check-signatures
 check-signatures: gate-workspace
+	$(GUARD_BATCH) check-signatures -- \
 	$(PYTHON) tools/dune_trace_guard.py --canonical-build-dir -- \
 	$(OPAM) dune build --root . --build-dir $(AGENT_BUILD_DIR) \
 	  --cache=enabled -j$(FAST_JOBS) @install \
