@@ -28,7 +28,7 @@ Lemma intro_views_or_disequality (args : literal_args) :
   bv_or (literal_head args) (literal_low args) <> 0%bv -> True.
 Proof.
   liImpl.
-  let expected := constr:(bv_unsigned (bv_or (literal_head args) (literal_low args)) <> 0) in
+  let expected := constr:(bv_unsigned (bv_or (literal_head args) (literal_low args)) <> 0%Z) in
   match goal with view : ?statement |- _ => constr_eq statement expected; exact I end.
 Qed.
 
@@ -38,7 +38,7 @@ Lemma intro_views_local_definition (args : literal_args) :
   let word := bv_or (literal_head args) (literal_low args) in word = 0%bv -> True.
 Proof.
   intros word. liImpl. unfold word in *.
-  let expected := constr:(bv_unsigned (bv_or (literal_head args) (literal_low args)) = 0) in
+  let expected := constr:(bv_unsigned (bv_or (literal_head args) (literal_low args)) = 0%Z) in
   match goal with view : ?statement |- _ => constr_eq statement expected; exact I end.
 Qed.
 
