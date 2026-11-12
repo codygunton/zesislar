@@ -48,8 +48,6 @@ Require Import ZesuSsz.Automation2.TracePrefixTail.
 Require Import ZesuSsz.Automation2.ArrayLoadPriority.
 Require Import ZesuSsz.Automation2.ConjunctMatch.
 Require Import ZesuSsz.Automation2.ArrayLoadPreselect.
-Require Import ZesuSsz.Automation2.ReturnBundle.
-Require Import ZesuSsz.Automation2.ReturnWand.
 Require Import ZesuSsz.Automation2.Diagnostics.
 From iris.proofmode Require Import environments.
 From Ltac2 Require Import Ltac2.
@@ -1146,11 +1144,11 @@ Ltac zesu_search_switches := constr:([
   ZesuSsz.Automation2.ByteMaskCast.ZesuStepByteMaskCast;
   ZesuSsz.Automation2.ByteReconstruction.ZesuStepByteReconstruction;
   ZesuSsz.Automation2.RewriteBoundGuards.ZesuStepRewriteBoundGuards;
-  ZesuSsz.Automation2.Hooks.ZesuStepRegionFaultNormalization; ZesuSsz.Automation2.Hooks.ZesuStepInstructionLookup;
-  ZesuSsz.Automation2.Hooks.ZesuStepStackWrite; ZesuSsz.Automation2.Hooks.ZesuStepRamFault; ZesuSsz.Automation2.Hooks.ZesuStepRegionFault;
+  ZesuSsz.Automation2.Hooks.ZesuStepInstructionLookup;
+  ZesuSsz.Automation2.Hooks.ZesuStepStackWrite; ZesuSsz.Automation2.Hooks.ZesuStepRamFault;
   ZesuSsz.Automation2.BitvectorFacts.ZesuStepLowMask; ZesuSsz.Automation2.EntryIntro.ZesuStepEntryIntro; ZesuSsz.Automation2.Hooks.ZesuStepIntegerArrayAddress; ZesuSsz.Automation2.Hooks.ZesuStepRecordWitness;
-  ZesuSsz.Automation2.Hooks.ZesuStepArrayBounds; ZesuSsz.Automation2.ByteArrays.ZesuStepWordArrayHandoff; ZesuSsz.Automation2.ReturnBundle.ZesuStepReturnBundle;
-  ZesuSsz.Automation2.ReturnWand.ZesuStepReturnWand; ZesuSsz.Automation2.BitvectorFacts.ZesuStepStrictSigned; ZesuSsz.Automation2.Hooks.ZesuStepListWitness;
+  ZesuSsz.Automation2.Hooks.ZesuStepArrayBounds; ZesuSsz.Automation2.ByteArrays.ZesuStepWordArrayHandoff;
+  ZesuSsz.Automation2.BitvectorFacts.ZesuStepStrictSigned; ZesuSsz.Automation2.Hooks.ZesuStepListWitness;
   ZesuSsz.Automation2.Hooks.ZesuStepTupleWitness; ZesuSsz.Automation2.ByteArrayLengths.ZesuStepArrayRegionBounds; ZesuSsz.Automation2.Hooks.ZesuStepPureFactHints;
   ZesuSsz.Automation2.Hooks.ZesuStepKnownPairWitness; ZesuSsz.Automation2.Hooks.ZesuStepPureWitnessConstraints;
   ZesuSsz.Automation2.Hooks.ZesuStepRegisterCollectionSelection; ZesuSsz.Automation2.Hooks.ZesuStepEvarSideconditionGuard;
@@ -1158,9 +1156,7 @@ Ltac zesu_search_switches := constr:([
   ZesuSsz.Automation2.Hooks.ZesuStepCanonicalAnchor;
   ZesuSsz.Automation2.Hooks.ZesuStepCanonicalPureConjunction;
   ZesuSsz.Automation2.Hooks.ZesuStepByteListContainment;
-  ZesuSsz.Automation2.Hooks.ZesuStepRegionFaultCastHypotheses;
   ZesuSsz.Automation2.BitvectorFacts.ZesuStepMaskNormalizer;
-  ZesuSsz.Automation2.Hooks.ZesuStepPureFactExistential;
   ZesuSsz.Automation2.IntegerReturn.ZesuStepIntegerReturn;
   ZesuSsz.Automation2.ExitMeaning.ZesuStepExitMeaning;
   ZesuSsz.Automation2.ConjunctMatch.ZesuStepConjunctMatch;

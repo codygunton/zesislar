@@ -35,12 +35,10 @@ Require Import ZesuSsz.Automation2.LoadedTrace.
 Require Import ZesuSsz.Automation2.LookupReduce.
 Require Import ZesuSsz.Automation2.CallReturn.
 Require Import ZesuSsz.Automation2.CallReturnSpecTable.
-Require Import ZesuSsz.Automation2.ReturnWand.
 Require Import ZesuSsz.Automation2.SealedCoverage.
 Require Import ZesuSsz.Automation2.ExistentialArrayRestore.
 Require Import ZesuSsz.Automation2.OutcomeHandoff.
 Require Import ZesuSsz.Automation2.InteriorByteSlice.
-Require Import ZesuSsz.Automation2.ReturnBundle.
 Require Import ZesuSsz.Automation2.ResourceGroups.
 
 Ltac zesu_rule_set_v2_steps :=
@@ -61,20 +59,11 @@ Ltac zesu_rule_set_v2_steps :=
       zesu_reduce_instr_lookup_if_enabled
   (* C7: the continuation a returning call leaves. *)
   | |- envs_entails _ ((_ -∗ _ -∗ WPasm _) ∗ True)%I =>
-      first [(zesu_enter_return_bundle_if_enabled; zesu_open_resource_groups)
-            | zesu_enter_call_return_if_enabled
-            | zesu_enter_return_wand_if_enabled]
+      zesu_enter_call_return_if_enabled
   | |- envs_entails _ ((_ -∗ WPasm _) ∗ True)%I =>
-      first [(zesu_enter_return_bundle_if_enabled; zesu_open_resource_groups)
-            | zesu_enter_call_return_if_enabled
-            | zesu_enter_return_wand_if_enabled]
+      zesu_enter_call_return_if_enabled
   | |- envs_entails _ ((_ -∗ zesu_ld_spec _ _ _ _) ∗ True)%I =>
-      first [zesu_enter_return_bundle_if_enabled
-            | zesu_enter_return_wand_if_enabled
-            | zesu_enter_call_return_spec_table_if_enabled]
-  | |- envs_entails _ ((_ -∗ _) ∗ True)%I =>
-      first [zesu_enter_return_bundle_if_enabled
-            | zesu_enter_return_wand_if_enabled]
+      zesu_enter_call_return_spec_table_if_enabled
   (* C3: a sealed bundle, opened for the lookup that failed. *)
   | |- envs_entails _ (find_in_context (FindMemMapsTo _) _) =>
       zesu_open_sealed_for_lookup_if_enabled

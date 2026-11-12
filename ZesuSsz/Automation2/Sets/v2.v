@@ -34,7 +34,6 @@ Require Export ZesuSsz.Automation2.PureFacts.
 Require Export ZesuSsz.Automation2.Switches.WitnessArith.
 Require Export ZesuSsz.Automation2.Switches.SpecTail.
 Require Export ZesuSsz.Automation2.Switches.LoadedTrace.
-Require Export ZesuSsz.Automation2.Switches.ReturnWand.
 Require Export ZesuSsz.Automation2.Switches.LookupReduce.
 Require Export ZesuSsz.Automation2.Switches.SealedOpen.
 Require Export ZesuSsz.Automation2.Switches.ExistentialArrayRestore.
