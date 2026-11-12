@@ -3,6 +3,7 @@ Require Import isla.riscv64.riscv64.
 Require Import ZesuMachineMap.Machine.
 Require Import ZesuSsz.Automation2.ByteArrayLengths.
 Require Import ZesuSsz.Automation2.RangeFacts.
+Require ZesuSsz.Automation2.PureFacts.
 From Ltac2 Require Import Ltac2.
 Set Default Proof Mode "Classic".
 
@@ -105,7 +106,11 @@ Ltac zesu_region_selected_facts :=
   end;
   ltac2:(ZesuSsz.Automation2.RangeFacts.zesu_range_isolate ()).
 
+(* A bound can sit inside a folded hypothesis, such as a contract's domain
+   predicate. The fact selection keeps only arithmetic facts, so split such
+   hypotheses first; the split is local to this side condition. *)
 Ltac zesu_region_bounds := once (
+  ZesuSsz.Automation2.PureFacts.zesu_split_folded_pure;
   zesu_region_selected_facts;
   first [
     ZesuSsz.Automation2.ByteArrayLengths.zesu_byte_array_bound_goal_if_enabled;
