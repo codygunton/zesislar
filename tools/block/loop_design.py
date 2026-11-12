@@ -94,7 +94,7 @@ def loop_class(report, design, profile):
     return source, record
 
 
-def loop_head_seed(report, design, profile, *, root_seed, vocabulary, continuation):
+def loop_head_seed(report, design, profile, *, root_seed, vocabulary, continuation, live_registers=None):
     """Return a forward-pass seed at the loop head from its entry edge and design.
 
     The seed keeps the entry edge's resources and path conditions. Each changed
@@ -114,7 +114,8 @@ def loop_head_seed(report, design, profile, *, root_seed, vocabulary, continuati
         raise ValueError('The loop head has no entry edge from ' + design['entry_predecessor'])
     # Several entry paths join as at any cut; the changed registers then become binders.
     joined = generalize_owned_join(entries, original_seed=root_seed, entry_pc=int(head, 0), vocabulary=vocabulary,
-                                   continuation=continuation, outer_names=['args', 'returnAddress'])
+                                   continuation=continuation, outer_names=['args', 'returnAddress'],
+                                   live_registers=live_registers)
     seed = joined['seed']
     cursor = design.get('array_cursor')
     added = []

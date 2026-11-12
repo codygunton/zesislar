@@ -16,7 +16,7 @@ from pathlib import Path
 import argparse, hashlib, json, re, sys
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from function_profiles import load_profile
+from function_profiles import load_profile, return_sites
 from render_fp301_statements import render_block_caller, return_precondition, successor_precondition
 
 
@@ -25,11 +25,21 @@ def bind(path):
     return {'path': str(path), 'sha256': hashlib.sha256(path.read_bytes()).hexdigest()}
 
 
+def return_site(sites, start, end):
+    """The suffix of the return site inside [start, end); None if none lies there."""
+    if len(sites) <= 1:
+        return sites[0][0] if sites else ''   # One package serves every return block.
+    inside = [suffix for suffix, design in sites
+              if end is not None and start <= int(design['return_instruction_pc'], 0) < end]
+    return inside[0] if len(inside) == 1 else None
+
+
 def plan_callers(profile, cases, function):
     """Return (block, successors, refusal) for each profile block."""
     rendered = {case['pc'] for case in cases if case['status'] == 'source_declarations_rendered'}
-    returns = 'function_return' in rendered
     blocks = {block['start']: sorted(block['successors']) for block in function['blocks']}
+    ends = {block['start']: block.get('end') for block in function['blocks']}
+    sites = return_sites(profile)
     rows = []
     for suffix in profile['blocks']:
         pc = int(profile.pc(suffix), 16)
@@ -40,7 +50,9 @@ def plan_callers(profile, cases, function):
         if hex(pc) not in rendered:
             refusal = 'own entry not rendered'
         elif not successors:
-            refusal = None if returns else 'function-return package not rendered'
+            site = return_site(sites, pc, ends[pc])
+            package = 'function_return' + ('_' + site if site else '')
+            refusal = None if site is not None and package in rendered else 'function-return package not rendered'
         else:
             missing = [name for name in names if profile.pc(name) not in rendered]
             refusal = ('successor entry not rendered: ' + ', '.join(missing)) if missing else None
@@ -71,8 +83,11 @@ def main():
         preconditions = [successor_precondition(profile, name) for name in successors]
         if not successors:
             # A return block exits to the function-return package at returnAddress.
-            imports += [profile.qualified('FunctionReturn' + kind) for kind in ('Entries', 'Structural')]
-            preconditions.append(return_precondition(profile))
+            start = int(row['pc'], 16)
+            end = next(block.get('end') for block in function['blocks'] if block['start'] == start)
+            site = return_site(return_sites(profile), start, end)
+            imports += [profile.qualified('FunctionReturn' + site + kind) for kind in ('Entries', 'Structural')]
+            preconditions.append(return_precondition(profile, site))
         block = next(row for row in function['blocks'] if row['start'] == int(profile.pc(suffix), 16))
         for call in profile.get('calls', []):
             if block['start'] <= int(call['call_site_pc'], 16) < block['end']:
