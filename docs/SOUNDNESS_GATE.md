@@ -23,6 +23,8 @@ The gate performs these stages:
 
 1. It builds both existing plugins, then the PUBLIC dependency closure.
 2. It compiles five isolated negative candidates and requires the expected checker refusals.
+   Each MCP compile may run 600 s once the guard admits it; the guarded compiler wrappers start that limit inside the guard scope.
+   A separate allowance (`ZESU_ADMISSION_WAIT_SECONDS`, default 7200 s) bounds the admission wait. A call that exceeds it is logged and retried, up to `ZESU_ADMISSION_RETRIES` (default 3) times.
 3. It verifies the four protected PUBLIC statements and compiles four checker-owned typed wrappers
    (selected, registers, compositional, and the generated theorem).
 4. It runs recursive `coqchk` with the compiler recipe's supported load-path flags.
