@@ -57,7 +57,7 @@ This avoids selecting an unrelated generated module as a statement target.
 Each stage uses existing canonical admission and guard tools.
 The aggregate claim and fence are 64 GiB.
 Source compilation uses two Dune workers.
-The source, negative, and wrapper stages use 8 GiB module fences; their compiles peak at most 1.25 GiB.
+The source stage uses 16 GiB module fences: closure callers peak at 10.9 GiB. The negative and wrapper stages use 8 GiB fences; their compiles peak at most 1.25 GiB.
 The coqchk stage uses a 24 GiB fence.
 Every TMPDIR belongs to the output directory under `/home`.
 The proof cache stays disabled.

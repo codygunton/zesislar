@@ -553,8 +553,10 @@ def main():
     costs = {}
     try:
         for name in ('source', 'negative', 'wrappers', 'coqchk'):
-            # Compiles peak at most 1.25 GiB; coqchk keeps its larger fence.
-            limit = '24' if name == 'coqchk' else '8'
+            # Bookings come from measured peaks; the fence caps a compile and books an
+            # unmeasured one. The closure has callers that peak at 10.9 GiB; the
+            # negative and wrapper compiles peak at most 1.25 GiB.
+            limit = {'source': '16', 'coqchk': '24'}.get(name, '8')
             os.environ.update(ZESU_GATE_MODULE_LIMIT_GIB=limit, ZESU_MODULE_LIMIT_GIB=limit)
             run_id = 'soundness-' + token + '-' + name
             command = [sys.executable, '-B', str(workspace / 'tools/run_registry.py'), 'run', '--id', run_id,
