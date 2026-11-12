@@ -754,6 +754,13 @@ Ltac zesu_wrap_prepare :=
   zesu_wrap_goal_head;
   progress (try zesu_wrap_divisibility; try zesu_wrap_linearize).
 
+(* The lia front: lia reads the cached unwrap equations as linear facts, so it
+   needs no rewrite; only a remainder is linearized here. A goal without a
+   remainder fails at once, before any walk of the goal or the context. *)
+Ltac zesu_wrap_prepare_lia :=
+  lazymatch goal with |- context [Z.modulo _ _] => idtac end;
+  zesu_wrap_prepare.
+
 (* ---- Block cache step. ---- *)
 
 Require Import isla.riscv64.riscv64.

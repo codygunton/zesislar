@@ -2827,12 +2827,11 @@ Ltac liAAsm ::=
   end.
 
 
-(* Wrap-to-linear rewrites bv_unsigned of a wrapping sum in the goal with the
-   cached unwrap equations, and linearizes a remainder by a divisor of the
-   modulus; the filtered closer then reads linear terms. It changes nothing
-   when the goal has no such term. *)
+(* lia reads the cached unwrap equations of wrap-to-linear as linear facts.
+   Only a goal with a remainder goes through its front, which linearizes a
+   remainder by a divisor of the modulus. *)
 Ltac Lia.lia ::= first [solve [ZesuSsz.Automation2.BvLinear.zesu_bv_linear_with ltac:(lia)] |
-  (try ZesuSsz.Automation2.WrapLinear.zesu_wrap_prepare;
+  (try ZesuSsz.Automation2.WrapLinear.zesu_wrap_prepare_lia;
    zesu_context_filter ltac:(zesu_lia_linear_first3)) |
   ResidualLemmas.zesu_residual_lemma].
 
