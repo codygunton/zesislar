@@ -379,10 +379,11 @@ Ltac zesu_strict_signed_if_enabled :=
 (* Library solvers also call these primitives without the project finisher.
    A linear address (in)equality closes first by the reflective normal form
    (BvLinear); other goals fail there at once. Wrap-to-linear (WrapLinear)
-   rewrites bv_unsigned of a wrapping sum to its linear form and closes with
-   linear arithmetic; it fails at once without such a term. The library
-   closer below unfolds bv_unsigned and cannot use those equations. A residual
-   lemma is the last attempt after the solver fails. *)
+   rewrites bv_unsigned of a wrapping sum with the unwrap equations that its
+   cache step posed, and linearizes a remainder by a divisor of the modulus;
+   it fails at once when it changes nothing. The library closer below
+   unfolds bv_unsigned and cannot use those equations. A residual lemma is
+   the last attempt after the solver fails. *)
 Ltac bv_solve ::= first [solve [ZesuSsz.Automation2.BvLinear.zesu_bv_linear_with ltac:(lia)] |
   solve [ZesuSsz.Automation2.WrapLinear.zesu_wrap_prepare;
     zesu_context_filter ltac:(zesu_lia_linear_first3)] |
@@ -2826,9 +2827,10 @@ Ltac liAAsm ::=
   end.
 
 
-(* Wrap-to-linear rewrites bv_unsigned of a wrapping sum in the goal to its
-   linear form and keeps the equation; the filtered closer then reads linear
-   terms. It changes nothing when the goal has no such term. *)
+(* Wrap-to-linear rewrites bv_unsigned of a wrapping sum in the goal with the
+   cached unwrap equations, and linearizes a remainder by a divisor of the
+   modulus; the filtered closer then reads linear terms. It changes nothing
+   when the goal has no such term. *)
 Ltac Lia.lia ::= first [solve [ZesuSsz.Automation2.BvLinear.zesu_bv_linear_with ltac:(lia)] |
   (try ZesuSsz.Automation2.WrapLinear.zesu_wrap_prepare;
    zesu_context_filter ltac:(zesu_lia_linear_first3)) |

@@ -9,6 +9,10 @@
    wrapped term a that the context bounds (anchored form); a remainder by a
    divisor of 2^n is linear with no range at all.
 
+   Ranges are proved at the block cache step only (once per term and block),
+   which poses the equations in the main context; a solver call rewrites with
+   them and linearizes remainders, which need no range.
+
    The range proof is one linear call on the facts linked to the goal. Inside
    that proof only, it reads signed comparisons of zero-extended values into
    unsigned facts, adds the quotient equation of each wrapped operand of those
@@ -606,8 +610,21 @@ Ltac2 zesu_wrap_after (rewrite_goal : bool) (name : ident) : unit :=
 
 (* One candidate: linear form, else anchored form, else (solver calls only)
    the remainder by a divisor of the modulus. *)
-Ltac2 zesu_wrap_one (budget : zesu_wrap_budget) (rewrite_goal : bool) (modulo_ok : bool)
+(* Inside a solver call (solver_mode) only the remainder by a divisor of the
+   modulus is linearized: it needs no range proof. Ranges are proved at the
+   cache step, once per term and block; a solver call rewrites with the
+   cached equations. *)
+Ltac2 zesu_wrap_has_remainder (width : constr) (term : constr) : bool :=
+  let target := constr:(@bv_unsigned $width $term) in
+  List.exist (fun remainder =>
+    lazy_match! remainder with
+    | Z.modulo ?x _ => Constr.equal x target
+    | _ => false
+    end) (zesu_wrap_collect constr:(Z.modulo) 8 (Control.goal ()) []).
+
+Ltac2 zesu_wrap_one (budget : zesu_wrap_budget) (rewrite_goal : bool) (solver_mode : bool)
     (width : constr) (term : constr) : bool :=
+  if Bool.and solver_mode (Bool.neg (zesu_wrap_has_remainder width term)) then false else
   match zesu_wrap_form width term with
   | None => false
   | Some f =>
@@ -667,10 +684,9 @@ Ltac2 zesu_wrap_one (budget : zesu_wrap_budget) (rewrite_goal : bool) (modulo_ok
                 else false
             | _ => false
             end) false (zesu_wrap_collect constr:(Z.modulo) 8 (Control.goal ()) []) in
-      if linear () then true
-      else if anchored () then true
-      else if modulo_ok then modulo ()
-      else false
+      if solver_mode then modulo ()
+      else if linear () then true
+      else anchored ()
   end.
 
 Ltac2 zesu_wrap_refuse (terms : constr list) : unit :=
