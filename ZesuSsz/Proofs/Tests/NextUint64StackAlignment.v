@@ -5,6 +5,7 @@ Require Import ZesuSsz.Automation2.All.
 Require Import ZesuSsz.Contracts.ParentHeaderRootFacts.
 Require Import ZesuSsz.Contracts.NextUint64BlockEntries.
 Require Import ZesuSsz.Contracts.NextUint64DomainRanges.
+Require Import ZesuSsz.Automation2.All.
 Local Open Scope Z_scope.
 
 (* The callee stack pointer of nextUint64's decodeItem call, sp - 96, must be
