@@ -861,14 +861,21 @@ def unmeasured_shell(data, key):
 
 
 def sum_gate_compiles(data, claims, observations, new_observation=None, new_bytes=0, new_unmeasured=False):
-    """Book a measured gate as its own claim plus its running compiles.
+    """Book a measured gate as its own claim plus its running compiles, at most its basis.
 
     Shared-aggregate grouping counts members as max(), so a gate claim had to
     cover every compile inside it: 47.3 GiB booked at a 0.55 GiB anon peak on a
     cached check-fast. A gate with a measured own claim (it records its cold
-    basis in correctness_gate_cold_claims) now books own + the sum of its
-    running compile claims, and at least its cold basis while any of them is
-    unmeasured. An unmeasured gate keeps the max() rule.
+    basis in correctness_gate_cold_claims) books own + the sum of its running
+    compile claims. An unmeasured gate keeps the max() rule.
+
+    The cold basis is the largest measured peak of the whole gate aggregate, or
+    its fence: its compiles reach their peaks at different times. A check-iris
+    booked 126.5 GiB for 19 compiles at 16.1 GiB live, against a 47.3 GiB basis,
+    a 35 GiB largest measured check-iris peak and a 120 GiB aggregate fence
+    (2026-11-11). The sum is therefore capped at the basis plus the claims of
+    unmeasured compiles (each bounded by its own fence), and at the aggregate
+    fence, which the aggregate cannot exceed.
     """
     cold_claims = data.get('correctness_gate_cold_claims', {})
     for gate, cold in cold_claims.items():
@@ -881,15 +888,20 @@ def sum_gate_compiles(data, claims, observations, new_observation=None, new_byte
                    and observations.get(key, {}).get('verified') is True
                    and observations[key].get('scope') == sample.get('scope')]
         total = own + sum(claims[key] for key in members)
+        unmeasured = sum(claims[key] for key in members if unmeasured_shell(data, key))
         # A compile asking to start inside this gate adds to the sum too;
         # grouped with the gate it would otherwise count as max().
         joining = ((new_observation or {}).get('scope') == sample.get('scope')
                    and new_observation.get('verified') is True)
         if joining:
             total += new_bytes
-        if any(unmeasured_shell(data, key) for key in members) or (joining and new_unmeasured):
-            total = max(total, cold)
-        claims[gate] = total
+            if new_unmeasured:
+                unmeasured += new_bytes
+        cap = cold + unmeasured
+        fence = data.get('claim_fences', {}).get(gate, {}).get('physical_fence_bytes')
+        if type(fence) is int and fence > 0:
+            cap = min(cap, fence)
+        claims[gate] = min(total, cap)
         for key in members:
             claims[key] = 0
 
