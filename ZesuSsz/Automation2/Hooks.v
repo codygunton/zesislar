@@ -2334,12 +2334,12 @@ Ltac zesu_liAStep :=
   | liLetBindHint
   | liUnfoldLate
   | zesu_canonical_fact_views_if_enabled
- ]; liSimpl)].
-
-(* A memory lookup that no step takes may need a byte array whose cells were
-   opened into one hypothesis; fold them back (ByteCellWords). *)
-Ltac liAStep ::= first [progress zesu_union_witness_step | zesu_liAStep |
+ ]; liSimpl) |
+  (* Last: a memory lookup that no step takes may need a byte array whose
+     cells were opened into one hypothesis; fold them back. *)
   ByteCellWords.zesu_byte_cells_fold].
+
+Ltac liAStep ::= first [progress zesu_union_witness_step | zesu_liAStep].
 
 (* C1: the trace tail a call returns with.
 
