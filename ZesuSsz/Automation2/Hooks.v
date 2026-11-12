@@ -6,6 +6,7 @@ Require Import ZesuSsz.Automation2.ByteArrayAssemblyCodec.
 Require Import ZesuSsz.Automation2.MemoryAddress.
 Require Import ZesuSsz.Automation2.CodecArrayRead.
 Require Import ZesuSsz.Automation2.WrappedWord.
+Require ZesuSsz.Automation2.ByteCellWords.
 Require Import ZesuSsz.Automation2.SourceWitnessInputs.
 Ltac zesu_witness_metadata_type kind :=
   lazymatch kind with
@@ -2335,7 +2336,10 @@ Ltac zesu_liAStep :=
   | zesu_canonical_fact_views_if_enabled
  ]; liSimpl)].
 
-Ltac liAStep ::= first [progress zesu_union_witness_step | zesu_liAStep].
+(* A memory lookup that no step takes may need a byte array whose cells were
+   opened into one hypothesis; fold them back (ByteCellWords). *)
+Ltac liAStep ::= first [progress zesu_union_witness_step | zesu_liAStep |
+  ByteCellWords.zesu_byte_cells_fold].
 
 (* C1: the trace tail a call returns with.
 
