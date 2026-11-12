@@ -1,4 +1,4 @@
-"""Run the pinned source engine (FP-20261112) from the entry seed, adding generated seeds.
+"""Run the pinned source engine (FP-20261113) from the entry seed, adding generated seeds.
 
 A join is seeded only after every join that can reach it has its seed, so its
 incoming edges are complete. A call's return site is seeded from the callee
@@ -68,6 +68,9 @@ def main():
     index = json.loads(checked(manifest['trace_index']).read_text())
     function = json.loads(checked(index['function']).read_text())['functions'][0]
     traces = {int(pair['pc'], 0): checked(pair['raw']).read_text() for pair in index['instruction_pairs']}
+    # Source register liveness at each block: a join drops an unheld binder only where no
+    # successor reads a register that mentions it.
+    from forward_design import source_liveness
     owned = seed_owned_resources(public, entry_pc=int(public['entry_pc'], 0), vocabulary=vocabulary,
                                  constants=domain['constants'], facts=domain['projection']['facts'])
     owned.state = seed_system_shapes(owned.state, shapes['rows'],
@@ -79,6 +82,8 @@ def main():
     joins = joins_of(function)
     successors = cfg_successors(function)
     seeds = {public['entry_pc']: owned}
+    liveness = {hex(pc): registers for pc, registers in source_liveness(
+        function, traces, {int(public['entry_pc'], 0): owned.state}).items()}
     # The seed whose ownership tree a seed's edges share: an entry or call-return seed is its own root.
     roots = {public['entry_pc']: public['entry_pc']}
     plans, refusals, rounds = {}, {}, []
@@ -125,7 +130,8 @@ def main():
             root = origins.pop()
             try:
                 seeds[head] = loop_head_seed(report, design, profile, root_seed=seeds[root],
-                                             vocabulary=vocabulary, continuation=continuation)
+                                             vocabulary=vocabulary, continuation=continuation,
+                                             live_registers=liveness.get(head))
             except ValueError as error:
                 refusals[head] = 'loop head seed refused: ' + str(error)
                 continue
@@ -156,7 +162,8 @@ def main():
                 joined = generalize_owned_join(incoming, original_seed=seeds[root], entry_pc=pc, vocabulary=vocabulary,
                                                continuation=continuation, outer_names=['args', 'returnAddress'],
                                                design_facts=next((facts for suffix, facts in designs.items()
-                                                                  if profile.pc(suffix) == hex(pc)), []))
+                                                                  if profile.pc(suffix) == hex(pc)), []),
+                                               live_registers=liveness.get(hex(pc)))
             except ValueError as error:
                 refusals[hex(pc)] = 'join generalization refused: ' + str(error) + ' (edge seeds: ' + \
                     ', '.join(sorted(origins)) + ')'
@@ -168,13 +175,16 @@ def main():
                               'binders': [row['name'] for row in joined['plan']['owned_binders']],
                               'relations': [row.get('coq') for row in joined['plan']['relations']],
                               'common_guards': len(joined['plan']['common_guards']),
-                              'join_refusals': joined['plan']['join_refusals']}
+                              'join_refusals': joined['plan']['join_refusals'],
+                              **({'dropped_binders': joined['plan']['dropped_binders']}
+                                 if joined['plan'].get('dropped_binders') else {})}
             added = hex(pc)
             break
         rounds.append({'seeds': sorted(seeds), 'added': added})
         if added is None:
             break
     elapsed = time.monotonic_ns() - started
+    report['liveness'] = liveness
     (output / 'FORWARD.json').write_text(json.dumps(report, indent=1) + '\n')
     rows = []
     for boundary in report['boundaries']:
@@ -191,7 +201,7 @@ def main():
          'calls': calls}, indent=1, ensure_ascii=False) + '\n')
     receipt = {'source_pass': bind(output / 'FORWARD.json'), 'level1_K_source': bind(level1),
                'vocabulary': bind(vocabulary_path), 'system_shapes': bind(shapes_path),
-               'engine': bind(ROOT / 'tools/block/FP-20261112.json'), 'joins': bind(output / 'JOINS.json'),
+               'engine': bind(ROOT / 'tools/block/FP-20261113.json'), 'joins': bind(output / 'JOINS.json'),
                'call_seeds': bind(output / 'CALL-SEEDS.json')}
     (output / 'INPUT-RECEIPT.json').write_text(json.dumps(receipt, indent=2) + '\n')
     stops = {}

@@ -282,10 +282,10 @@ def successor_precondition(profile, suffix):
     return 'instr_pre ' + profile.pc(suffix) + ' (' + entry + ' (args) (returnAddress) (K))%I'
 
 
-def return_precondition(profile):
-    """Return the `instr_pre` premise of the function-return package."""
+def return_precondition(profile, suffix=''):
+    """Return the `instr_pre` premise of a function-return package (one per return site)."""
     return ('instr_pre returnAddress ('
-            + profile.qualified('FunctionReturnEntries', 'fp_machineReturn')
+            + profile.qualified('FunctionReturn' + suffix + 'Entries', 'fp_machineReturn' + suffix)
             + ' args returnAddress K)')
 
 
