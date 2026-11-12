@@ -116,7 +116,6 @@ regenerate-evm-sail-snapshot:
 check-support-freshness: stock-native-indexes
 	$(PYTHON) ZesuSsz/Evidence/generate_block_design.py --function decodeItem --check
 	$(PYTHON) tools/block/render_support.py --function decodeItem --check
-	$(PYTHON) tools/block/generate_table.py --function decodeItem --recipe build/stock-zisk/build-recipe.json --cfg build/stock-zisk/cfg.json --design ZesuSsz/Evidence/decode_item_block_design.json --coverage ZesuSsz/Generated/DecodeItem/block_table_metadata.json --output ZesuSsz/Generated/DecodeItem/BlockTable.v --check
 
 check-evidence-tools: check-support-freshness check-tool-tests
 
@@ -167,7 +166,6 @@ check-proof-hygiene:
 # InstrSpecs, ZesuMachineMap, EvmSail and SailStdpp build as dependencies.
 # Native index datasets must exist before retained Dune targets start.
 RETAINED_TARGETS := \
-  ZesuSsz/Generated/DecodeItem/PromotedBodiesAssumptions.vo \
   @ZesuSsz/Contracts/all \
   @ZesuSsz/Automation/all \
   $(if $(wildcard ZesuSsz/Automation2),@ZesuSsz/Automation2/all) \
@@ -420,7 +418,10 @@ traces-closure-indexes:
 	  --check-manifest $(STOCK_TRACE_MANIFEST) --trace-name closure
 
 # Restore tracked native index datasets before checkers or Dune start.
-STOCK_NATIVE_TRACE_CACHE_DIR ?= $(CURDIR)/_build/stock-zisk/native-trace-cache
+# All worktrees share one cache: a fresh worktree otherwise regenerates every
+# closure trace (about 8,500 CPU seconds). Each restore checks every file
+# against the tracked manifest hashes.
+STOCK_NATIVE_TRACE_CACHE_DIR ?= /home/cody/zesislar-archive/stock-inputs/native-trace-cache
 .PHONY: stock-native-indexes
 .PHONY: gate-workspace
 gate-workspace:
