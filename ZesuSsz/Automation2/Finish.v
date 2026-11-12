@@ -1281,7 +1281,9 @@ Ltac zesu_block2 :=
   try first [
     (zesu_finish_package_deferring; try zesu_finish_split_conjunct; zesu_clear_split_baseline)
   | solve [zesu_finish_source_tail]];
-  try (zesu_diag_stage "residual_lemma"; ResidualLemmas.zesu_residual_lemma);
+  try (zesu_diag_stage "residual_lemma";
+    first [solve [ZesuSsz.Automation2.Hooks.zesu_bv_literal_unsigned_goal] |
+      ResidualLemmas.zesu_residual_lemma]);
   zesu_diag_refusal "final".
 
 Ltac zesu_block_simpl :=
