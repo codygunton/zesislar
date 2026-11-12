@@ -94,6 +94,23 @@ def function_returns(profile):
     return list(rows)
 
 
+def return_sites(profile):
+    """(suffix, design) per function-return design. One site keeps the plain names
+    `fp_machineReturn` / `FunctionReturn*`; several sites suffix each name with the return
+    instruction's address digits after the profile prefix."""
+    designs = function_returns(profile)
+    if len(designs) <= 1:
+        return [('', design) for design in designs]
+    prefix = profile['pc_prefix']
+    sites = []
+    for design in designs:
+        pc = hex(int(design['return_instruction_pc'], 0))
+        if not pc.startswith(prefix):
+            raise ValueError('A return instruction lies outside the profile address prefix: ' + pc)
+        sites.append((pc[len(prefix):], design))
+    return sites
+
+
 def return_alignment_fact(profile):
     """The pure conjunct of a `return_address` design row: the register's value at the function
     entry is aligned, stated on bv_unsigned of that value (F44). None without a row."""
