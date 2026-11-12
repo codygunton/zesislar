@@ -50,6 +50,26 @@ class SymbolicIndexRead(unittest.TestCase):
         address = operation('bvadd', bits(0x1000, 64), INDEX)
         self.assertEqual(evaluator(LISTS, other).memory_byte(address).op, 'unknown_read')
 
+    def test_a_list_length_array_states_its_actual_length_not_its_minimum(self):
+        # The seed knows only that the length is at least 1; a later element is beyond 1.
+        length = input_expr('List.length (input args)', None)
+        array = MemoryRegion(input_expr('input_base'), (), input_expr('input args', None), length,
+                             ownership_id='resource_7', minimum_length=1)
+        machine = evaluator(array)
+        address = operation('bvadd', input_expr('input_base'), input_expr('cursor'))
+        self.assertEqual(machine.memory_byte(address).op, 'owned_array_byte')
+        bound = input_expr('(Z_to_bv 64%N (Z.of_nat (List.length (input args))))', 64)
+        self.assertEqual(machine.state.conditions,
+                         [operation('bvult', operation('bvsub', address, input_expr('input_base')), bound)])
+
+    def test_an_array_without_a_length_term_stops_the_read(self):
+        array = MemoryRegion(input_expr('input_base'), (), input_expr('input args', None),
+                             input_expr('opaque_extent', None), ownership_id='resource_7', minimum_length=1)
+        machine = evaluator(array)
+        address = operation('bvadd', input_expr('input_base'), input_expr('cursor'))
+        self.assertEqual(machine.memory_byte(address).op, 'unknown_read')
+        self.assertEqual(machine.state.conditions, [])
+
 
 if __name__ == '__main__':
     unittest.main()

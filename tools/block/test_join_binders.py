@@ -7,6 +7,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 from join_generalize import _register_definition, drop_unheld_binders
 from symbolic_state import SymbolicState, bits, input_expr, operation
 from render_function_callers import return_site
+from loop_design import reseat_orphaned
 
 
 def state_with(registers, conditions):
@@ -90,6 +91,25 @@ class RegisterDefinition(unittest.TestCase):
         self.assertEqual(state.registers['x15'], operation('bvor', definition, input_expr('(Z_to_bv 64%N (n args))', 64)))
         self.assertEqual(state.conditions[1], operation('bvule', definition, bits(1, 64)))
         self.assertEqual(plan['dropped_binders'][0]['rule'], 'register_definition')
+
+
+class OrphanedLoopBinders(unittest.TestCase):
+    def test_a_register_naming_an_overwritten_holders_binder_gets_a_fresh_binder(self):
+        entry = input_expr('machine_x13_1', 64)
+        flag = operation('bvor', operation('bvsub', entry, input_expr('(Z_to_bv 64%N (out args))', 64)), bits(2, 64))
+        before = {'x13': entry, 'x15': flag, 'x1': input_expr('ra', 64)}
+        registers = dict(before, x13=input_expr('machine_x13', 64))
+        added = reseat_orphaned(registers, before, {'x13': 'machine_x13'}, {'machine_x15_1'})
+        self.assertEqual(registers['x15'], input_expr('machine_x15_2', 64))
+        self.assertEqual(registers['x1'], input_expr('ra', 64))
+        self.assertEqual([row['name'] for row in added], ['machine_x15_2'])
+
+    def test_a_binder_another_register_still_holds_is_not_orphaned(self):
+        entry = input_expr('machine_x13_1', 64)
+        before = {'x13': entry, 'x14': entry, 'x15': operation('bvadd', entry, bits(1, 64))}
+        registers = dict(before, x13=input_expr('machine_x13', 64))
+        self.assertEqual(reseat_orphaned(registers, before, {'x13': 'machine_x13'}, set()), [])
+        self.assertEqual(registers['x15'], operation('bvadd', entry, bits(1, 64)))
 
 
 class ReturnSites(unittest.TestCase):
