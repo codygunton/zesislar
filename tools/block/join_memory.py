@@ -18,6 +18,8 @@ def affine_memory_image(resource, paths, *, basis, expressions, register_names, 
     """
     if not paths or resource.byte_array is None or resource.element_bits != 8:
         return {'status': 'refused', 'kind': 'join_memory_refusal', 'detail': 'The array needs explicit packaging'}
+    if any(type(offset) is not int for path in paths for _, offset in path):
+        return {'status': 'refused', 'kind': 'join_memory_refusal', 'detail': 'A store has a symbolic offset'}
     layout = [(offset, write.size) for write, offset in paths[0]]
     if any([(offset, write.size) for write, offset in path] != layout for path in paths):
         return {'status': 'refused', 'kind': 'join_memory_refusal', 'detail': 'The source store layouts differ'}

@@ -12,10 +12,10 @@ import re
 
 try:
     from .entry_seed import _code_mask
-    from .symbolic_state import Expr, MemoryWrite, _offset, bits, operation
+    from .symbolic_state import Expr, MemoryWrite, _addends, _offset, bits, operation
 except ImportError:
     from entry_seed import _code_mask
-    from symbolic_state import Expr, MemoryWrite, _offset, bits, operation
+    from symbolic_state import Expr, MemoryWrite, _addends, _offset, bits, operation
 
 
 def _strip_enclosure(text):
@@ -373,12 +373,38 @@ class ResourceResult:
                               for resource in self.resources],
                 'writes': [write.to_dict() for write in self.writes],
                 'processed_writes': self.processed_writes,
-                'updates': {key: [{'offset': offset, **record} for offset, record in sorted(updates.items())]
+                'updates': {key: [{'offset': offset, **record} for offset, record
+                                  in sorted(updates.items(), key=_update_order)]
                             for key, updates in self.updates.items()}, 'reports': self.reports,
                 'transitions': self.transitions,
                 'processed_prefix': {'write_count': self.processed_writes, 'transitions': self.transitions},
                 'blocked_event': {'write': self.writes[self.processed_writes].to_dict(),
                                   'report': self.reports[-1]} if self.status != 'complete' else None}
+
+
+def _update_order(item):
+    # Constant offsets first, in order; then stores at a symbolic offset, in write order.
+    key = item[0]
+    return (isinstance(key, str), key if isinstance(key, int) else int(key.split(':')[1]))
+
+
+def _symbolic_write_owners(address, resources, known):
+    """The owned initialized byte arrays whose base terms are all addends of a symbolic address.
+
+    The rest of the address must keep a symbolic addend. As for a read at a symbolic
+    index, the index range is not proved here; the transition records it as open."""
+    terms, _ = _addends(known.canonical(address))
+    owners = []
+    for resource in resources:
+        if resource.byte_array is None:
+            continue
+        base_terms, _ = _addends(known.canonical(resource.base))
+        rest = list(terms)
+        if not base_terms or any(term not in rest or rest.remove(term) for term in base_terms):
+            continue
+        if rest:
+            owners.append(resource)
+    return owners
 
 
 def apply_owned_writes(resources, writes, *, conditions=(), facts=(), endianness='little'):
@@ -403,6 +429,24 @@ def apply_owned_writes(resources, writes, *, conditions=(), facts=(), endianness
                                'address': write.address.to_dict(), **details})
         return result
 
+    def admitted(owner, index, write):
+        if owner.writable is not True:
+            return halt('write_permission_denied' if owner.writable is False else 'unknown_write_permission',
+                        index, write, resource_id=owner.id, fraction=owner.fraction), None, None
+        permission = known.permission(owner)
+        if permission is None:
+            return halt('unknown_write_permission', index, write, resource_id=owner.id, fraction=owner.fraction), None, None
+        nonwrap = known.nonwrap(owner)
+        if nonwrap is None:
+            return halt('unknown_write_nonwrap', index, write, resource_id=owner.id), None, None
+        if owner.element_bits != 8:
+            return halt('unknown_byte_element_type', index, write, resource_id=owner.id), None, None
+        if write.size not in (1, 2, 4, 8):
+            return halt('unsupported_write_size', index, write), None, None
+        if write.value.width != write.size*8:
+            return halt('write_width_mismatch', index, write), None, None
+        return None, permission, nonwrap
+
     for index, write in enumerate(writes):
         candidates, relations = [], []
         for resource in resources:
@@ -412,6 +456,36 @@ def apply_owned_writes(resources, writes, *, conditions=(), facts=(), endianness
                 bound, evidence = known.lower_bound(resource)
                 if offset+write.size <= bound:
                     candidates.append((resource, offset, relation, evidence))
+        if not candidates and all(offset is None for _, offset in relations):
+            owners = _symbolic_write_owners(write.address, resources, known)
+            if not owners:
+                return halt('unknown_write_owner', index, write)
+            if len(owners) != 1:
+                return halt('ambiguous_write_owner', index, write, resource_ids=[owner.id for owner in owners])
+            owner, = owners
+            # The open index range puts the store inside the owner; only a disjoint
+            # resource is then untouched.
+            for other in resources:
+                if other.id != owner.id and not known.disjoint(owner.id, other.id):
+                    return halt('ambiguous_write_alias', index, write, resource_ids=[owner.id, other.id])
+            stopped, permission, nonwrap = admitted(owner, index, write)
+            if stopped is not None:
+                return stopped
+            extent, bound = known.lower_bound(owner)
+            if not extent or bound is None:
+                return halt('unknown_write_bounds', index, write, resource_id=owner.id)
+            at = operation('bvsub', write.address, owner.base)
+            relation = {'kind': 'symbolic_index', 'index': at.to_dict(), 'size': write.size, 'status': 'OPEN',
+                        'goal': 'the index plus the store size is at most the owned array length'}
+            result.updates[owner.id]['symbolic:%d' % index] = {
+                'value': write.value.to_dict(), 'size': write.size, 'write_index': index,
+                'offset_justification': relation, 'bound_justification': bound}
+            result.transitions.append({'write_index': index, 'resource_id': owner.id, 'offset': None,
+                                       'symbolic_offset': at.to_dict(),
+                                       'offset_justification': relation, 'bound_justification': bound,
+                                       'nonwrap_justification': nonwrap, 'permission_justification': permission})
+            result.processed_writes += 1
+            continue
         if not candidates:
             return halt('unknown_write_owner' if all(offset is None for _, offset in relations)
                         else 'unknown_write_bounds', index, write)
@@ -429,21 +503,9 @@ def apply_owned_writes(resources, writes, *, conditions=(), facts=(), endianness
             reverse, _ = known.offset(other.base, write.address)
             if other_offset is None or exact_length is None or other_offset < exact_length or (reverse is not None and reverse < write.size):
                 return halt('ambiguous_write_alias', index, write, resource_ids=[owner.id, other.id])
-        if owner.writable is not True:
-            return halt('write_permission_denied' if owner.writable is False else 'unknown_write_permission',
-                        index, write, resource_id=owner.id, fraction=owner.fraction)
-        permission = known.permission(owner)
-        if permission is None:
-            return halt('unknown_write_permission', index, write, resource_id=owner.id, fraction=owner.fraction)
-        nonwrap = known.nonwrap(owner)
-        if nonwrap is None:
-            return halt('unknown_write_nonwrap', index, write, resource_id=owner.id)
-        if owner.element_bits != 8:
-            return halt('unknown_byte_element_type', index, write, resource_id=owner.id)
-        if write.size not in (1, 2, 4, 8):
-            return halt('unsupported_write_size', index, write)
-        if write.value.width != write.size*8:
-            return halt('write_width_mismatch', index, write)
+        stopped, permission, nonwrap = admitted(owner, index, write)
+        if stopped is not None:
+            return stopped
         for byte in range(write.size):
             value = operation('extract', write.value, width=8, value=byte*8)
             result.updates[owner.id][offset+byte] = {'value': value.to_dict(), 'write_index': index,
@@ -522,11 +584,17 @@ def _memory_source(resource, image, transitions, aliases, vocabulary):
         value = _scoped_coq(resource.byte_array, aliases)
         for write, offset in transitions:
             stored = _scoped_coq(write.value, aliases)
-            value = (f'(Coq.Init.Datatypes.app (take {offset}%nat {value}) '
+            # A store at a symbolic offset updates the list at its index, as a symbolic read looks it up.
+            at = (f'{offset}%nat' if isinstance(offset, int) else
+                  f'(Z.to_nat ((bv_unsigned {_scoped_coq(write.address, aliases)} - '
+                  f'bv_unsigned {_scoped_coq(resource.base, aliases)})%Z))')
+            value = (f'(Coq.Init.Datatypes.app (take {at} {value}) '
                      f'(Coq.Init.Datatypes.app (bv_to_little_endian (Z.of_nat {write.size}%nat) 8%N '
                      f'(bv_unsigned ({stored} : bv {write.value.width}%N))) '
-                     f'(drop (Nat.add {offset}%nat {write.size}%nat) {value})))')
+                     f'(drop (Nat.add {at} {write.size}%nat) {value})))')
         return f'({resource.address_z}) ↦ₘ{{{fraction}}}∗ ({value})'
+    if any(isinstance(position, str) for position in image):
+        raise ValueError('A store at a symbolic offset needs an initialized byte array')
     complete = _complete_cell_image(resource, image, transitions, aliases, vocabulary)
     if complete is not None:
         return f'({resource.address_z}) ↦ₘ{{{fraction}}}∗ {complete}'
@@ -595,7 +663,8 @@ def render_resource_boundary(ownership, result, final_state, *, retained_registe
                 if resource_id not in resources:
                     raise ValueError('The source memory resource has no ownership record')
                 resource = resources[resource_id]
-                transitions = [(result.writes[step['write_index']], step['offset'])
+                transitions = [(result.writes[step['write_index']], step['offset'] if step['offset'] is not None
+                                else Expr.from_dict(step['symbolic_offset']))
                                for step in result.transitions if step['resource_id'] == resource_id]
                 source = _memory_source(resource, result.updates[resource_id], transitions, aliases, vocabulary)
                 seen.add(resource_id)
