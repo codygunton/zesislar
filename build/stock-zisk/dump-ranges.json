@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "artifact_identity": "799534fcb570b2713df7c1aed999b1e78c70622d5861b9cd05d48536ac19cb6a",
+  "artifact_identity": "d9fbe18b42c81272b2f8b63316df0f492ce775ffad14c041848b4e8acef7899a",
   "functions": [
     {
       "name": "rlp.decodeItem",
@@ -61,6 +61,21 @@
       "name": "memcpy",
       "start": 2148402880,
       "end": 2148402892
+    },
+    {
+      "name": "nibbles.hpDecode",
+      "start": 2147907348,
+      "end": 2147907524
+    },
+    {
+      "name": "modexp.berlinGasCalc",
+      "start": 2148350372,
+      "end": 2148351764
+    },
+    {
+      "name": "opcodes.call.resumeCall",
+      "start": 2148183752,
+      "end": 2148184212
     }
   ],
   "inline_decodeSingleTx": [

@@ -1,0 +1,671 @@
+{
+  "status": "SOURCE_DECLARATIONS_ONLY",
+  "function": "berlinGasCalc",
+  "entries": {
+    "path": "/home/cody/zesislar/_build/agents/heldout-render/w0/bg1/render-2/RESULT.json",
+    "sha256": "d03ee4dbed6407c658aa7754ae1b366232288154c3fefc322a0e28c90c527c07"
+  },
+  "cfg": {
+    "path": "/home/cody/zesislar/_build/agents/heldout-render/w0/bg1/inputs-2/FUNCTION.json",
+    "sha256": "0a882c7859d09fe37835aff236fd27f24cae8ad7c1e9d26736a5166e0949db54"
+  },
+  "rows": [
+    {
+      "case": "39a4",
+      "pc": "0x800d39a4",
+      "successors": [
+        "39b8",
+        "39bc"
+      ],
+      "status": "rendered",
+      "caller": {
+        "path": "/home/cody/zesislar/_build/agents/heldout-render/w0/bg1/callers-2/Caller39a4.v",
+        "sha256": "24cf9d80b6b612cdb5f3c53422f8de1560334e6a49e82dd3f8a9ae626f1458e2"
+      },
+      "lemma": "DesignedBoundary_800d39a4",
+      "preconditions": [
+        "instr_pre 0x800d39b8 (ZesuSsz.Generated.BerlinGasCalc.FP301.Pilot39b8Entries.fp_machineAt39b8 (args) (returnAddress) (K))%I",
+        "instr_pre 0x800d39bc (ZesuSsz.Generated.BerlinGasCalc.FP301.Pilot39bcEntries.fp_machineAt39bc (args) (returnAddress) (K))%I"
+      ]
+    },
+    {
+      "case": "39b8",
+      "pc": "0x800d39b8",
+      "successors": [
+        "39bc"
+      ],
+      "status": "rendered",
+      "caller": {
+        "path": "/home/cody/zesislar/_build/agents/heldout-render/w0/bg1/callers-2/Caller39b8.v",
+        "sha256": "3dfe38dcc84ffc0abf69ee18e43ff61f50da746e883c6ace3535eaef7e6f2f88"
+      },
+      "lemma": "DesignedBoundary_800d39b8",
+      "preconditions": [
+        "instr_pre 0x800d39bc (ZesuSsz.Generated.BerlinGasCalc.FP301.Pilot39bcEntries.fp_machineAt39bc (args) (returnAddress) (K))%I"
+      ]
+    },
+    {
+      "case": "39bc",
+      "pc": "0x800d39bc",
+      "successors": [
+        "39cc",
+        "39ec"
+      ],
+      "status": "rendered",
+      "caller": {
+        "path": "/home/cody/zesislar/_build/agents/heldout-render/w0/bg1/callers-2/Caller39bc.v",
+        "sha256": "7e379904f3c4825902c086da064ebbee1077dc1909377ac9acbcd9aa286dcea7"
+      },
+      "lemma": "DesignedBoundary_800d39bc",
+      "preconditions": [
+        "instr_pre 0x800d39cc (ZesuSsz.Generated.BerlinGasCalc.FP301.Pilot39ccEntries.fp_machineAt39cc (args) (returnAddress) (K))%I",
+        "instr_pre 0x800d39ec (ZesuSsz.Generated.BerlinGasCalc.FP301.Pilot39ecEntries.fp_machineAt39ec (args) (returnAddress) (K))%I"
+      ]
+    },
+    {
+      "case": "39cc",
+      "pc": "0x800d39cc",
+      "successors": [
+        "39d4",
+        "39ec"
+      ],
+      "status": "rendered",
+      "caller": {
+        "path": "/home/cody/zesislar/_build/agents/heldout-render/w0/bg1/callers-2/Caller39cc.v",
+        "sha256": "18864975bb8986eef77bc7fdf57c35beaba96a3be27c279731205f70381fc942"
+      },
+      "lemma": "DesignedBoundary_800d39cc",
+      "preconditions": [
+        "instr_pre 0x800d39d4 (ZesuSsz.Generated.BerlinGasCalc.FP301.Pilot39d4Entries.fp_machineAt39d4 (args) (returnAddress) (K))%I",
+        "instr_pre 0x800d39ec (ZesuSsz.Generated.BerlinGasCalc.FP301.Pilot39ecEntries.fp_machineAt39ec (args) (returnAddress) (K))%I"
+      ]
+    },
+    {
+      "case": "39d4",
+      "pc": "0x800d39d4",
+      "successors": [
+        "39e8",
+        "3ec8"
+      ],
+      "status": "rendered",
+      "caller": {
+        "path": "/home/cody/zesislar/_build/agents/heldout-render/w0/bg1/callers-2/Caller39d4.v",
+        "sha256": "8f355eb2931803a8cd605c6676ef0d7a33f57cb3baf2fd1044fb2020340dcf9c"
+      },
+      "lemma": "DesignedBoundary_800d39d4",
+      "preconditions": [
+        "instr_pre 0x800d39e8 (ZesuSsz.Generated.BerlinGasCalc.FP301.Pilot39e8Entries.fp_machineAt39e8 (args) (returnAddress) (K))%I",
+        "instr_pre 0x800d3ec8 (ZesuSsz.Generated.BerlinGasCalc.FP301.Pilot3ec8Entries.fp_machineAt3ec8 (args) (returnAddress) (K))%I"
+      ]
+    },
+    {
+      "case": "39e8",
+      "pc": "0x800d39e8",
+      "successors": [
+        "3e98"
+      ],
+      "status": "rendered",
+      "caller": {
+        "path": "/home/cody/zesislar/_build/agents/heldout-render/w0/bg1/callers-2/Caller39e8.v",
+        "sha256": "1be2f418fb8ebf747e4fa9493ff41ffc7936645489101cf8237c4ee1a41f95b9"
+      },
+      "lemma": "DesignedBoundary_800d39e8",
+      "preconditions": [
+        "instr_pre 0x800d3e98 (ZesuSsz.Generated.BerlinGasCalc.FP301.Pilot3e98Entries.fp_machineAt3e98 (args) (returnAddress) (K))%I"
+      ]
+    },
+    {
+      "case": "39ec",
+      "pc": "0x800d39ec",
+      "successors": [
+        "39f4",
+        "3b1c"
+      ],
+      "status": "rendered",
+      "caller": {
+        "path": "/home/cody/zesislar/_build/agents/heldout-render/w0/bg1/callers-2/Caller39ec.v",
+        "sha256": "aab9231c039e68597c03ba94d19740b195f0d6d81d7f7ee2e491f5c73d6f0bfa"
+      },
+      "lemma": "DesignedBoundary_800d39ec",
+      "preconditions": [
+        "instr_pre 0x800d39f4 (ZesuSsz.Generated.BerlinGasCalc.FP301.Pilot39f4Entries.fp_machineAt39f4 (args) (returnAddress) (K))%I",
+        "instr_pre 0x800d3b1c (ZesuSsz.Generated.BerlinGasCalc.FP301.Pilot3b1cEntries.fp_machineAt3b1c (args) (returnAddress) (K))%I"
+      ]
+    },
+    {
+      "case": "39f4",
+      "pc": "0x800d39f4",
+      "successors": [
+        "39fc",
+        "3d28"
+      ],
+      "status": "rendered",
+      "caller": {
+        "path": "/home/cody/zesislar/_build/agents/heldout-render/w0/bg1/callers-2/Caller39f4.v",
+        "sha256": "1ff2de0f725cb227752af7fbafe8bdf7ca2d6f03e4bf5369f5481bba6b15d7e1"
+      },
+      "lemma": "DesignedBoundary_800d39f4",
+      "preconditions": [
+        "instr_pre 0x800d39fc (ZesuSsz.Generated.BerlinGasCalc.FP301.Pilot39fcEntries.fp_machineAt39fc (args) (returnAddress) (K))%I",
+        "instr_pre 0x800d3d28 (ZesuSsz.Generated.BerlinGasCalc.FP301.Pilot3d28Entries.fp_machineAt3d28 (args) (returnAddress) (K))%I"
+      ]
+    },
+    {
+      "case": "39fc",
+      "pc": "0x800d39fc",
+      "successors": [
+        "3a40",
+        "3c44"
+      ],
+      "status": "rendered",
+      "caller": {
+        "path": "/home/cody/zesislar/_build/agents/heldout-render/w0/bg1/callers-2/Caller39fc.v",
+        "sha256": "b775a2358ed50e8e8594f7ccaa686dae06f6c850a67c891ea1b07d0ae2b2f335"
+      },
+      "lemma": "DesignedBoundary_800d39fc",
+      "preconditions": [
+        "instr_pre 0x800d3a40 (ZesuSsz.Generated.BerlinGasCalc.FP301.Pilot3a40Entries.fp_machineAt3a40 (args) (returnAddress) (K))%I",
+        "instr_pre 0x800d3c44 (ZesuSsz.Generated.BerlinGasCalc.FP301.Pilot3c44Entries.fp_machineAt3c44 (args) (returnAddress) (K))%I"
+      ]
+    },
+    {
+      "case": "3a40",
+      "pc": "0x800d3a40",
+      "successors": [
+        "3aac",
+        "3cac"
+      ],
+      "status": "rendered",
+      "caller": {
+        "path": "/home/cody/zesislar/_build/agents/heldout-render/w0/bg1/callers-2/Caller3a40.v",
+        "sha256": "87b0bf8271826f686e31b9ca25dd91634eb45002e452fb8757632903d240f2d6"
+      },
+      "lemma": "DesignedBoundary_800d3a40",
+      "preconditions": [
+        "instr_pre 0x800d3aac (ZesuSsz.Generated.BerlinGasCalc.FP301.Pilot3aacEntries.fp_machineAt3aac (args) (returnAddress) (K))%I",
+        "instr_pre 0x800d3cac (ZesuSsz.Generated.BerlinGasCalc.FP301.Pilot3cacEntries.fp_machineAt3cac (args) (returnAddress) (K))%I"
+      ]
+    },
+    {
+      "case": "3aac",
+      "pc": "0x800d3aac",
+      "successors": [
+        "3b18",
+        "3d1c"
+      ],
+      "status": "rendered",
+      "caller": {
+        "path": "/home/cody/zesislar/_build/agents/heldout-render/w0/bg1/callers-2/Caller3aac.v",
+        "sha256": "eac4f8df8dbabf32dedde44fb972dabf0100e03f75b30d4c30bb93234a2b8633"
+      },
+      "lemma": "DesignedBoundary_800d3aac",
+      "preconditions": [
+        "instr_pre 0x800d3b18 (ZesuSsz.Generated.BerlinGasCalc.FP301.Pilot3b18Entries.fp_machineAt3b18 (args) (returnAddress) (K))%I",
+        "instr_pre 0x800d3d1c (ZesuSsz.Generated.BerlinGasCalc.FP301.Pilot3d1cEntries.fp_machineAt3d1c (args) (returnAddress) (K))%I"
+      ]
+    },
+    {
+      "case": "3b18",
+      "pc": "0x800d3b18",
+      "successors": [
+        "3d20"
+      ],
+      "status": "rendered",
+      "caller": {
+        "path": "/home/cody/zesislar/_build/agents/heldout-render/w0/bg1/callers-2/Caller3b18.v",
+        "sha256": "ba8b9407abf382851c712f403ca19736d0b8d73ac6db3ce93973c367f83979fe"
+      },
+      "lemma": "DesignedBoundary_800d3b18",
+      "preconditions": [
+        "instr_pre 0x800d3d20 (ZesuSsz.Generated.BerlinGasCalc.FP301.Pilot3d20Entries.fp_machineAt3d20 (args) (returnAddress) (K))%I"
+      ]
+    },
+    {
+      "case": "3b1c",
+      "pc": "0x800d3b1c",
+      "successors": [
+        "3b24",
+        "3e30"
+      ],
+      "status": "rendered",
+      "caller": {
+        "path": "/home/cody/zesislar/_build/agents/heldout-render/w0/bg1/callers-2/Caller3b1c.v",
+        "sha256": "f2e0ee6933c9e019c55df27cbd4d8e05cd0e9294a157ad80575e4221e904a6db"
+      },
+      "lemma": "DesignedBoundary_800d3b1c",
+      "preconditions": [
+        "instr_pre 0x800d3b24 (ZesuSsz.Generated.BerlinGasCalc.FP301.Pilot3b24Entries.fp_machineAt3b24 (args) (returnAddress) (K))%I",
+        "instr_pre 0x800d3e30 (ZesuSsz.Generated.BerlinGasCalc.FP301.Pilot3e30Entries.fp_machineAt3e30 (args) (returnAddress) (K))%I"
+      ]
+    },
+    {
+      "case": "3b24",
+      "pc": "0x800d3b24",
+      "successors": [
+        "3b68",
+        "3d4c"
+      ],
+      "status": "rendered",
+      "caller": {
+        "path": "/home/cody/zesislar/_build/agents/heldout-render/w0/bg1/callers-2/Caller3b24.v",
+        "sha256": "d31d586adaf30dc9dcc34e7ee3bc8e92f9de7f9cc5ab7427d860ff93c0f364df"
+      },
+      "lemma": "DesignedBoundary_800d3b24",
+      "preconditions": [
+        "instr_pre 0x800d3b68 (ZesuSsz.Generated.BerlinGasCalc.FP301.Pilot3b68Entries.fp_machineAt3b68 (args) (returnAddress) (K))%I",
+        "instr_pre 0x800d3d4c (ZesuSsz.Generated.BerlinGasCalc.FP301.Pilot3d4cEntries.fp_machineAt3d4c (args) (returnAddress) (K))%I"
+      ]
+    },
+    {
+      "case": "3b68",
+      "pc": "0x800d3b68",
+      "successors": [
+        "3bd4",
+        "3db4"
+      ],
+      "status": "rendered",
+      "caller": {
+        "path": "/home/cody/zesislar/_build/agents/heldout-render/w0/bg1/callers-2/Caller3b68.v",
+        "sha256": "a694f60b7c5385b3a559e1f1ebf1a6637e08da95c875d00250a72d5ea4517b7a"
+      },
+      "lemma": "DesignedBoundary_800d3b68",
+      "preconditions": [
+        "instr_pre 0x800d3bd4 (ZesuSsz.Generated.BerlinGasCalc.FP301.Pilot3bd4Entries.fp_machineAt3bd4 (args) (returnAddress) (K))%I",
+        "instr_pre 0x800d3db4 (ZesuSsz.Generated.BerlinGasCalc.FP301.Pilot3db4Entries.fp_machineAt3db4 (args) (returnAddress) (K))%I"
+      ]
+    },
+    {
+      "case": "3bd4",
+      "pc": "0x800d3bd4",
+      "successors": [
+        "3c40",
+        "3e24"
+      ],
+      "status": "rendered",
+      "caller": {
+        "path": "/home/cody/zesislar/_build/agents/heldout-render/w0/bg1/callers-2/Caller3bd4.v",
+        "sha256": "9dee5a514797a40c10c7cd4075db67c9de1ad7a052119d052ae723b445a42f1a"
+      },
+      "lemma": "DesignedBoundary_800d3bd4",
+      "preconditions": [
+        "instr_pre 0x800d3c40 (ZesuSsz.Generated.BerlinGasCalc.FP301.Pilot3c40Entries.fp_machineAt3c40 (args) (returnAddress) (K))%I",
+        "instr_pre 0x800d3e24 (ZesuSsz.Generated.BerlinGasCalc.FP301.Pilot3e24Entries.fp_machineAt3e24 (args) (returnAddress) (K))%I"
+      ]
+    },
+    {
+      "case": "3c40",
+      "pc": "0x800d3c40",
+      "successors": [
+        "3e28"
+      ],
+      "status": "rendered",
+      "caller": {
+        "path": "/home/cody/zesislar/_build/agents/heldout-render/w0/bg1/callers-2/Caller3c40.v",
+        "sha256": "6b0a36366e7d1326fbd41920f34b32d96ba8a1b6656fbe425e76081d55cd24b7"
+      },
+      "lemma": "DesignedBoundary_800d3c40",
+      "preconditions": [
+        "instr_pre 0x800d3e28 (ZesuSsz.Generated.BerlinGasCalc.FP301.Pilot3e28Entries.fp_machineAt3e28 (args) (returnAddress) (K))%I"
+      ]
+    },
+    {
+      "case": "3c44",
+      "pc": "0x800d3c44",
+      "successors": [
+        "3aac",
+        "3cac"
+      ],
+      "status": "rendered",
+      "caller": {
+        "path": "/home/cody/zesislar/_build/agents/heldout-render/w0/bg1/callers-2/Caller3c44.v",
+        "sha256": "10f1120cffdef1a079ed8a7b1df3ca60dd93521ee323c20bc91a43254252d3b9"
+      },
+      "lemma": "DesignedBoundary_800d3c44",
+      "preconditions": [
+        "instr_pre 0x800d3aac (ZesuSsz.Generated.BerlinGasCalc.FP301.Pilot3aacEntries.fp_machineAt3aac (args) (returnAddress) (K))%I",
+        "instr_pre 0x800d3cac (ZesuSsz.Generated.BerlinGasCalc.FP301.Pilot3cacEntries.fp_machineAt3cac (args) (returnAddress) (K))%I"
+      ]
+    },
+    {
+      "case": "3cac",
+      "pc": "0x800d3cac",
+      "successors": [
+        "3d1c",
+        "3d20"
+      ],
+      "status": "rendered",
+      "caller": {
+        "path": "/home/cody/zesislar/_build/agents/heldout-render/w0/bg1/callers-2/Caller3cac.v",
+        "sha256": "dfcc837c6aeb87b9b294ed1a1a0620392f7155b85ba0fcceac6d83ae8ae0c331"
+      },
+      "lemma": "DesignedBoundary_800d3cac",
+      "preconditions": [
+        "instr_pre 0x800d3d1c (ZesuSsz.Generated.BerlinGasCalc.FP301.Pilot3d1cEntries.fp_machineAt3d1c (args) (returnAddress) (K))%I",
+        "instr_pre 0x800d3d20 (ZesuSsz.Generated.BerlinGasCalc.FP301.Pilot3d20Entries.fp_machineAt3d20 (args) (returnAddress) (K))%I"
+      ]
+    },
+    {
+      "case": "3d1c",
+      "pc": "0x800d3d1c",
+      "successors": [
+        "3d20"
+      ],
+      "status": "rendered",
+      "caller": {
+        "path": "/home/cody/zesislar/_build/agents/heldout-render/w0/bg1/callers-2/Caller3d1c.v",
+        "sha256": "eac2cf7c52cb68ee24fb23a04e892ca1c43aa8fc5b74e83f58883e30085bd57d"
+      },
+      "lemma": "DesignedBoundary_800d3d1c",
+      "preconditions": [
+        "instr_pre 0x800d3d20 (ZesuSsz.Generated.BerlinGasCalc.FP301.Pilot3d20Entries.fp_machineAt3d20 (args) (returnAddress) (K))%I"
+      ]
+    },
+    {
+      "case": "3d20",
+      "pc": "0x800d3d20",
+      "successors": [
+        "3d28"
+      ],
+      "status": "rendered",
+      "caller": {
+        "path": "/home/cody/zesislar/_build/agents/heldout-render/w0/bg1/callers-2/Caller3d20.v",
+        "sha256": "df5b02d25be4f3959087b0c2e72d34ec1e752add3c90a4631d504906062ce59d"
+      },
+      "lemma": "DesignedBoundary_800d3d20",
+      "preconditions": [
+        "instr_pre 0x800d3d28 (ZesuSsz.Generated.BerlinGasCalc.FP301.Pilot3d28Entries.fp_machineAt3d28 (args) (returnAddress) (K))%I"
+      ]
+    },
+    {
+      "case": "3d28",
+      "pc": "0x800d3d28",
+      "successors": [
+        "3d48",
+        "3ec8"
+      ],
+      "status": "rendered",
+      "caller": {
+        "path": "/home/cody/zesislar/_build/agents/heldout-render/w0/bg1/callers-2/Caller3d28.v",
+        "sha256": "b07f969f1e6a4115a7d97362e8dbf0cdf2c726aff961ed9204f274d86b340ab3"
+      },
+      "lemma": "DesignedBoundary_800d3d28",
+      "preconditions": [
+        "instr_pre 0x800d3d48 (ZesuSsz.Generated.BerlinGasCalc.FP301.Pilot3d48Entries.fp_machineAt3d48 (args) (returnAddress) (K))%I",
+        "instr_pre 0x800d3ec8 (ZesuSsz.Generated.BerlinGasCalc.FP301.Pilot3ec8Entries.fp_machineAt3ec8 (args) (returnAddress) (K))%I"
+      ]
+    },
+    {
+      "case": "3d48",
+      "pc": "0x800d3d48",
+      "successors": [
+        "3e98"
+      ],
+      "status": "rendered",
+      "caller": {
+        "path": "/home/cody/zesislar/_build/agents/heldout-render/w0/bg1/callers-2/Caller3d48.v",
+        "sha256": "0079eaa519ab5d6ffde0d8d0f92a4ef24aafe372b76a154a2c1a3a76433e6b57"
+      },
+      "lemma": "DesignedBoundary_800d3d48",
+      "preconditions": [
+        "instr_pre 0x800d3e98 (ZesuSsz.Generated.BerlinGasCalc.FP301.Pilot3e98Entries.fp_machineAt3e98 (args) (returnAddress) (K))%I"
+      ]
+    },
+    {
+      "case": "3d4c",
+      "pc": "0x800d3d4c",
+      "successors": [
+        "3bd4",
+        "3db4"
+      ],
+      "status": "rendered",
+      "caller": {
+        "path": "/home/cody/zesislar/_build/agents/heldout-render/w0/bg1/callers-2/Caller3d4c.v",
+        "sha256": "229b08fde3b33a3bbb92f6c58a1f6f0434619449435db77538b0ef6b22e152bd"
+      },
+      "lemma": "DesignedBoundary_800d3d4c",
+      "preconditions": [
+        "instr_pre 0x800d3bd4 (ZesuSsz.Generated.BerlinGasCalc.FP301.Pilot3bd4Entries.fp_machineAt3bd4 (args) (returnAddress) (K))%I",
+        "instr_pre 0x800d3db4 (ZesuSsz.Generated.BerlinGasCalc.FP301.Pilot3db4Entries.fp_machineAt3db4 (args) (returnAddress) (K))%I"
+      ]
+    },
+    {
+      "case": "3db4",
+      "pc": "0x800d3db4",
+      "successors": [
+        "3e24",
+        "3e28"
+      ],
+      "status": "rendered",
+      "caller": {
+        "path": "/home/cody/zesislar/_build/agents/heldout-render/w0/bg1/callers-2/Caller3db4.v",
+        "sha256": "8cb915d26e876344b8f84639d3b4c168d6b2258fbd24600692742349e25855ac"
+      },
+      "lemma": "DesignedBoundary_800d3db4",
+      "preconditions": [
+        "instr_pre 0x800d3e24 (ZesuSsz.Generated.BerlinGasCalc.FP301.Pilot3e24Entries.fp_machineAt3e24 (args) (returnAddress) (K))%I",
+        "instr_pre 0x800d3e28 (ZesuSsz.Generated.BerlinGasCalc.FP301.Pilot3e28Entries.fp_machineAt3e28 (args) (returnAddress) (K))%I"
+      ]
+    },
+    {
+      "case": "3e24",
+      "pc": "0x800d3e24",
+      "successors": [
+        "3e28"
+      ],
+      "status": "rendered",
+      "caller": {
+        "path": "/home/cody/zesislar/_build/agents/heldout-render/w0/bg1/callers-2/Caller3e24.v",
+        "sha256": "706865e1d7877a1c1e6f2adff47587ac7a9a7f1b1cce72798bf9b3de4b2f605a"
+      },
+      "lemma": "DesignedBoundary_800d3e24",
+      "preconditions": [
+        "instr_pre 0x800d3e28 (ZesuSsz.Generated.BerlinGasCalc.FP301.Pilot3e28Entries.fp_machineAt3e28 (args) (returnAddress) (K))%I"
+      ]
+    },
+    {
+      "case": "3e28",
+      "pc": "0x800d3e28",
+      "successors": [
+        "3e30"
+      ],
+      "status": "rendered",
+      "caller": {
+        "path": "/home/cody/zesislar/_build/agents/heldout-render/w0/bg1/callers-2/Caller3e28.v",
+        "sha256": "39193cf409a77574eee25df1556ec977ebc8533fdb55c2cb3bfbdcc81337c418"
+      },
+      "lemma": "DesignedBoundary_800d3e28",
+      "preconditions": [
+        "instr_pre 0x800d3e30 (ZesuSsz.Generated.BerlinGasCalc.FP301.Pilot3e30Entries.fp_machineAt3e30 (args) (returnAddress) (K))%I"
+      ]
+    },
+    {
+      "case": "3e30",
+      "pc": "0x800d3e30",
+      "successors": [
+        "3e44",
+        "3e68"
+      ],
+      "status": "rendered",
+      "caller": {
+        "path": "/home/cody/zesislar/_build/agents/heldout-render/w0/bg1/callers-2/Caller3e30.v",
+        "sha256": "1e3ac32147c2fedbce932f606832403b0a28ab92b9b59996e9420e3eb5454161"
+      },
+      "lemma": "DesignedBoundary_800d3e30",
+      "preconditions": [
+        "instr_pre 0x800d3e44 (ZesuSsz.Generated.BerlinGasCalc.FP301.Pilot3e44Entries.fp_machineAt3e44 (args) (returnAddress) (K))%I",
+        "instr_pre 0x800d3e68 (ZesuSsz.Generated.BerlinGasCalc.FP301.Pilot3e68Entries.fp_machineAt3e68 (args) (returnAddress) (K))%I"
+      ]
+    },
+    {
+      "case": "3e44",
+      "pc": "0x800d3e44",
+      "successors": [
+        "3e68",
+        "3e80"
+      ],
+      "status": "rendered",
+      "caller": {
+        "path": "/home/cody/zesislar/_build/agents/heldout-render/w0/bg1/callers-2/Caller3e44.v",
+        "sha256": "97ef596460d1ae5ae67f09eb94d4165f254be9583a9e6c6519a85d85f84e504d"
+      },
+      "lemma": "DesignedBoundary_800d3e44",
+      "preconditions": [
+        "instr_pre 0x800d3e68 (ZesuSsz.Generated.BerlinGasCalc.FP301.Pilot3e68Entries.fp_machineAt3e68 (args) (returnAddress) (K))%I",
+        "instr_pre 0x800d3e80 (ZesuSsz.Generated.BerlinGasCalc.FP301.Pilot3e80Entries.fp_machineAt3e80 (args) (returnAddress) (K))%I"
+      ]
+    },
+    {
+      "case": "3e68",
+      "pc": "0x800d3e68",
+      "successors": [
+        "3e7c",
+        "3e98"
+      ],
+      "status": "rendered",
+      "caller": {
+        "path": "/home/cody/zesislar/_build/agents/heldout-render/w0/bg1/callers-2/Caller3e68.v",
+        "sha256": "4c34bb2cf8e5c33cdc45e91d33903ab8dd3b35bd9bae172c26b2df51010aeee4"
+      },
+      "lemma": "DesignedBoundary_800d3e68",
+      "preconditions": [
+        "instr_pre 0x800d3e7c (ZesuSsz.Generated.BerlinGasCalc.FP301.Pilot3e7cEntries.fp_machineAt3e7c (args) (returnAddress) (K))%I",
+        "instr_pre 0x800d3e98 (ZesuSsz.Generated.BerlinGasCalc.FP301.Pilot3e98Entries.fp_machineAt3e98 (args) (returnAddress) (K))%I"
+      ]
+    },
+    {
+      "case": "3e7c",
+      "pc": "0x800d3e7c",
+      "successors": [
+        "3ec8"
+      ],
+      "status": "rendered",
+      "caller": {
+        "path": "/home/cody/zesislar/_build/agents/heldout-render/w0/bg1/callers-2/Caller3e7c.v",
+        "sha256": "1ab9c6cb6b7a218a774201d663a9fcb220f188b0642ffea0b8f117ef243828a0"
+      },
+      "lemma": "DesignedBoundary_800d3e7c",
+      "preconditions": [
+        "instr_pre 0x800d3ec8 (ZesuSsz.Generated.BerlinGasCalc.FP301.Pilot3ec8Entries.fp_machineAt3ec8 (args) (returnAddress) (K))%I"
+      ]
+    },
+    {
+      "case": "3e80",
+      "pc": "0x800d3e80",
+      "successors": [
+        "3e98",
+        "3ec8"
+      ],
+      "status": "rendered",
+      "caller": {
+        "path": "/home/cody/zesislar/_build/agents/heldout-render/w0/bg1/callers-2/Caller3e80.v",
+        "sha256": "ea1a6f49fad035788a26c06bf78c4603818de246726e2ca39bab3edde81d2736"
+      },
+      "lemma": "DesignedBoundary_800d3e80",
+      "preconditions": [
+        "instr_pre 0x800d3e98 (ZesuSsz.Generated.BerlinGasCalc.FP301.Pilot3e98Entries.fp_machineAt3e98 (args) (returnAddress) (K))%I",
+        "instr_pre 0x800d3ec8 (ZesuSsz.Generated.BerlinGasCalc.FP301.Pilot3ec8Entries.fp_machineAt3ec8 (args) (returnAddress) (K))%I"
+      ]
+    },
+    {
+      "case": "3e98",
+      "pc": "0x800d3e98",
+      "successors": [
+        "3eac",
+        "3ec8"
+      ],
+      "status": "rendered",
+      "caller": {
+        "path": "/home/cody/zesislar/_build/agents/heldout-render/w0/bg1/callers-2/Caller3e98.v",
+        "sha256": "118ad62f738cf7214afd51bf0d71f89ad4a84e8d58b3dd6042f0d74112fd8dc1"
+      },
+      "lemma": "DesignedBoundary_800d3e98",
+      "preconditions": [
+        "instr_pre 0x800d3eac (ZesuSsz.Generated.BerlinGasCalc.FP301.Pilot3eacEntries.fp_machineAt3eac (args) (returnAddress) (K))%I",
+        "instr_pre 0x800d3ec8 (ZesuSsz.Generated.BerlinGasCalc.FP301.Pilot3ec8Entries.fp_machineAt3ec8 (args) (returnAddress) (K))%I"
+      ]
+    },
+    {
+      "case": "3eac",
+      "pc": "0x800d3eac",
+      "successors": [
+        "3ec8",
+        "3edc"
+      ],
+      "status": "rendered",
+      "caller": {
+        "path": "/home/cody/zesislar/_build/agents/heldout-render/w0/bg1/callers-2/Caller3eac.v",
+        "sha256": "7c3140d9c9dbad23f0ac1542d7dd497ef113eb7d692f14895a4312c105bdd1ff"
+      },
+      "lemma": "DesignedBoundary_800d3eac",
+      "preconditions": [
+        "instr_pre 0x800d3ec8 (ZesuSsz.Generated.BerlinGasCalc.FP301.Pilot3ec8Entries.fp_machineAt3ec8 (args) (returnAddress) (K))%I",
+        "instr_pre 0x800d3edc (ZesuSsz.Generated.BerlinGasCalc.FP301.Pilot3edcEntries.fp_machineAt3edc (args) (returnAddress) (K))%I"
+      ]
+    },
+    {
+      "case": "3ec8",
+      "pc": "0x800d3ec8",
+      "successors": [],
+      "status": "rendered",
+      "caller": {
+        "path": "/home/cody/zesislar/_build/agents/heldout-render/w0/bg1/callers-2/Caller3ec8.v",
+        "sha256": "93f29afea37378b380d0395c658666e275306a77ba8ebf2ed18a5f966fc26af5"
+      },
+      "lemma": "DesignedBoundary_800d3ec8",
+      "preconditions": [
+        "instr_pre returnAddress (ZesuSsz.Generated.BerlinGasCalc.FP301.FunctionReturn3ed8Entries.fp_machineReturn3ed8 args returnAddress K)"
+      ]
+    },
+    {
+      "case": "3edc",
+      "pc": "0x800d3edc",
+      "successors": [
+        "3f00",
+        "3f04"
+      ],
+      "status": "rendered",
+      "caller": {
+        "path": "/home/cody/zesislar/_build/agents/heldout-render/w0/bg1/callers-2/Caller3edc.v",
+        "sha256": "9b574a9180fc680e33e30f55951ba6c34e170b74fd178c506fca1632851ff9c3"
+      },
+      "lemma": "DesignedBoundary_800d3edc",
+      "preconditions": [
+        "instr_pre 0x800d3f00 (ZesuSsz.Generated.BerlinGasCalc.FP301.Pilot3f00Entries.fp_machineAt3f00 (args) (returnAddress) (K))%I",
+        "instr_pre 0x800d3f04 (ZesuSsz.Generated.BerlinGasCalc.FP301.Pilot3f04Entries.fp_machineAt3f04 (args) (returnAddress) (K))%I"
+      ]
+    },
+    {
+      "case": "3f00",
+      "pc": "0x800d3f00",
+      "successors": [
+        "3f04"
+      ],
+      "status": "rendered",
+      "caller": {
+        "path": "/home/cody/zesislar/_build/agents/heldout-render/w0/bg1/callers-2/Caller3f00.v",
+        "sha256": "49d452aac431a468df6bce0e13461780c42c9851b44aad73044cc217c127d44f"
+      },
+      "lemma": "DesignedBoundary_800d3f00",
+      "preconditions": [
+        "instr_pre 0x800d3f04 (ZesuSsz.Generated.BerlinGasCalc.FP301.Pilot3f04Entries.fp_machineAt3f04 (args) (returnAddress) (K))%I"
+      ]
+    },
+    {
+      "case": "3f04",
+      "pc": "0x800d3f04",
+      "successors": [],
+      "status": "rendered",
+      "caller": {
+        "path": "/home/cody/zesislar/_build/agents/heldout-render/w0/bg1/callers-2/Caller3f04.v",
+        "sha256": "1bb6a038b93a62212c1d30580604e3a3542690902d9459bd10aad9b741cd1e0e"
+      },
+      "lemma": "DesignedBoundary_800d3f04",
+      "preconditions": [
+        "instr_pre returnAddress (ZesuSsz.Generated.BerlinGasCalc.FP301.FunctionReturn3f10Entries.fp_machineReturn3f10 args returnAddress K)"
+      ]
+    }
+  ],
+  "rendered": 38,
+  "refused": 0,
+  "proof_ran": false
+}

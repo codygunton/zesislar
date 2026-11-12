@@ -1,0 +1,196 @@
+{
+  "function": "resumeCall",
+  "args_type": "ResumeCallArgs",
+  "pc_prefix": "0x800a",
+  "generated_directory": "ZesuSsz/Generated/ResumeCall/FP301",
+  "callers_directory": "tools/block/generated/resumecall_fp301_callers",
+  "contract_requires": [
+    "Require Import InstrSpecs.Machine.",
+    "Require Import EvmSailRlp.evm_rlp_types.",
+    "Require Import ZesuSsz.Contracts.ResumeCallContract.",
+    "Require Export ZesuSsz.Compliance.ResumeCallHints."
+  ],
+  "loop_contract_requires": [
+    "Require Import InstrSpecs.Machine.",
+    "Require Import EvmSailRlp.evm_rlp_types.",
+    "Require Import ZesuSsz.Contracts.ResumeCallContract.",
+    "Require Export ZesuSsz.Compliance.ResumeCallHints."
+  ],
+  "caller_contract_requires": [
+    "Require Import ZesuSsz.Contracts.ResumeCallContract."
+  ],
+  "selected_code": {
+    "module": "ZesuSsz.Contracts.ResumeCallSelected",
+    "premise": "resumeCallSelectedCode"
+  },
+  "return_address": {
+    "register": "x1",
+    "value": "(Z_to_bv 64 (resumeCallReturnAddress args))",
+    "alignment": 4,
+    "source": "Each caller reaches the entry by jal or jalr from a 4-aligned pc (no compressed instructions), so ra = pc + 4 is 4-aligned; resumeCallArgsWellFormed states returnAddress mod 4 = 0 (#195 return-address conjunct)."
+  },
+  "domain_component": "⌜resumeCallDomainAt returnAddress args⌝",
+  "entry_interface": {
+    "entry_resources": "resumeCallEntryResources",
+    "well_formed": "resumeCallArgsWellFormed",
+    "exit_resources": "resumeCallExitResources",
+    "source": "ZesuSsz/Contracts/ResumeCallContract.v"
+  },
+  "blocks": [
+    "aec8",
+    "af28",
+    "af34",
+    "af38",
+    "af54",
+    "af58",
+    "af64",
+    "af68",
+    "afb0",
+    "afb8",
+    "afbc",
+    "afd0",
+    "afdc",
+    "aff4",
+    "b00c",
+    "b010",
+    "b018",
+    "b02c",
+    "b040",
+    "b074"
+  ],
+  "loop_heads": [
+    "aff4",
+    "b018"
+  ],
+  "cfg_function": "opcodes.call.resumeCall",
+  "calls": [],
+  "loop_designs": [
+    {
+      "head": "aff4",
+      "entry_predecessor": "afdc",
+      "registers": {
+        "x12": "loop_x12",
+        "x13": "loop_x13",
+        "x14": "loop_x14",
+        "x17": "loop_x17"
+      },
+      "index": "i",
+      "facts": [
+        {
+          "kind": "index_link",
+          "coq": "bv_unsigned loop_x13 = (bv_unsigned {x13} + i)%Z"
+        },
+        {
+          "kind": "index_link",
+          "coq": "bv_unsigned loop_x12 = (bv_unsigned {x12} - i)%Z"
+        },
+        {
+          "kind": "index_link",
+          "coq": "bv_unsigned loop_x14 = (bv_unsigned {x14} - i)%Z"
+        },
+        {
+          "kind": "index_range",
+          "coq": "(0 <= i)%Z"
+        },
+        {
+          "kind": "bound",
+          "coq": "(bv_unsigned {x13} + i < 2 ^ 64)%Z"
+        },
+        {
+          "kind": "meaning",
+          "need": "the loop counter starts at the negated copy length (neg at 0x800aafdc) and the loop ends when it reaches zero (bnez at 0x800ab008)",
+          "coq": "(bv_unsigned {x13} = 2 ^ 64 - Z.min (resumeCallReturnDataLength args) (resumeCallReturnSize args))%Z"
+        },
+        {
+          "kind": "meaning",
+          "need": "the lbu at 0x800aaff4 reads the return data backwards from its last copied byte (addi at 0x800aafe8)",
+          "coq": "(bv_unsigned {x12} = resumeCallReturnDataPointer args + Z.min (resumeCallReturnDataLength args) (resumeCallReturnSize args) - 1)%Z"
+        },
+        {
+          "kind": "meaning",
+          "need": "the sb at 0x800ab000 writes the memory window backwards from its last copied byte (addi at 0x800aaff0)",
+          "coq": "(bv_unsigned {x14} = resumeCallMemoryPointer args + resumeCallReturnOffset args + Z.min (resumeCallReturnDataLength args) (resumeCallReturnSize args) - 1)%Z"
+        }
+      ],
+      "array_cursor": [
+        {
+          "register": "x12",
+          "array": "resumeCallReturnDataBytes args",
+          "extent_reason": "1 <= length (resumeCallReturnDataBytes args): the beqz at 0x800aafcc leaves the empty copy, so 0 < min(return data length, ret_size) <= return data length; the lbu at 0x800aaff4 reads x12"
+        },
+        {
+          "register": "x14",
+          "array": "resumeCallBeforeMemory args",
+          "extent_reason": "1 <= length (resumeCallBeforeMemory args): the copy length is positive on this path (beqz at 0x800aafcc) and ret_off + ret_size <= the memory length (resumeCallArgsWellFormed); the sb at 0x800ab000 writes x14"
+        }
+      ]
+    },
+    {
+      "head": "b018",
+      "entry_predecessor": "b010",
+      "registers": {
+        "x12": "loop_x12",
+        "x13": "loop_x13",
+        "x17": "loop_x17"
+      },
+      "index": "i",
+      "facts": [
+        {
+          "kind": "index_link",
+          "coq": "bv_unsigned loop_x12 = (bv_unsigned {x12} + i)%Z"
+        },
+        {
+          "kind": "index_link",
+          "coq": "bv_unsigned loop_x13 = (bv_unsigned {x13} + i)%Z"
+        },
+        {
+          "kind": "index_range",
+          "coq": "(0 <= i)%Z"
+        },
+        {
+          "kind": "bound",
+          "coq": "(bv_unsigned loop_x12 < bv_unsigned {x14})%Z"
+        },
+        {
+          "kind": "meaning",
+          "need": "the lbu at 0x800ab018 reads the return data: the cursor starts at its first byte (mv at 0x800ab014)",
+          "coq": "(bv_unsigned {x12} = resumeCallReturnDataPointer args)%Z"
+        },
+        {
+          "kind": "meaning",
+          "need": "the loop ends after the copied bytes of the return data (add at 0x800ab010, bne at 0x800ab028)",
+          "coq": "(bv_unsigned {x14} = resumeCallReturnDataPointer args + Z.min (resumeCallReturnDataLength args) (resumeCallReturnSize args))%Z"
+        },
+        {
+          "kind": "meaning",
+          "need": "the sb at 0x800ab020 writes the memory window from its first byte (add at 0x800aafd4)",
+          "coq": "(bv_unsigned {x13} = resumeCallMemoryPointer args + resumeCallReturnOffset args)%Z"
+        }
+      ],
+      "array_cursor": [
+        {
+          "register": "x12",
+          "array": "resumeCallReturnDataBytes args",
+          "extent_reason": "1 <= length (resumeCallReturnDataBytes args): the beqz at 0x800aafcc leaves the empty copy, so 0 < min(return data length, ret_size) <= return data length; the lbu at 0x800ab018 reads x12"
+        },
+        {
+          "register": "x13",
+          "array": "resumeCallBeforeMemory args",
+          "extent_reason": "1 <= length (resumeCallBeforeMemory args): the copy length is positive on this path (beqz at 0x800aafcc) and ret_off + ret_size <= the memory length (resumeCallArgsWellFormed); the sb at 0x800ab020 writes x13"
+        }
+      ]
+    }
+  ],
+  "function_returns": [
+    {
+      "return_instruction_pc": "0x800ab070",
+      "return_fact": "True",
+      "source": "push return: exit resources only (ResumeCallContract.v resumeCallExitResources)"
+    },
+    {
+      "return_instruction_pc": "0x800ab090",
+      "return_fact": "True",
+      "source": "stack-overflow return: exit resources only (ResumeCallContract.v resumeCallExitResources)"
+    }
+  ]
+}

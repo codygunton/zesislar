@@ -1,5 +1,5 @@
 {
-  "artifact_identity": "799534fcb570b2713df7c1aed999b1e78c70622d5861b9cd05d48536ac19cb6a",
+  "artifact_identity": "d9fbe18b42c81272b2f8b63316df0f492ce775ffad14c041848b4e8acef7899a",
   "inputs": {
     "static-sites/collect.py": {
       "path": "tools/stock_zisk/static_sites/collect.py",
@@ -12,13 +12,13 @@
   },
   "derived": {
     "static-sites/sites.json": {
-      "sha256": "79a05b6614fc74d3ab69e99ca0ec2b95fd38cdd244ec153877370ed11b7d085f",
-      "artifact_identity": "799534fcb570b2713df7c1aed999b1e78c70622d5861b9cd05d48536ac19cb6a",
+      "sha256": "5c238fd474a118a04d8cd317dec6894597003391d0a715a32724853dfc8ae9ca",
+      "artifact_identity": "d9fbe18b42c81272b2f8b63316df0f492ce775ffad14c041848b4e8acef7899a",
       "schema_version": 1
     },
     "static-sites/README.md": {
       "sha256": "200254f825ebbb3506a1ad4353c94ab31dbce014716d30558bdf8c5452dad013",
-      "artifact_identity": "799534fcb570b2713df7c1aed999b1e78c70622d5861b9cd05d48536ac19cb6a",
+      "artifact_identity": "d9fbe18b42c81272b2f8b63316df0f492ce775ffad14c041848b4e8acef7899a",
       "schema_version": 1
     }
   }

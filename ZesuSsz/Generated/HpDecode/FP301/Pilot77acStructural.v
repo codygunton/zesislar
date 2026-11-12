@@ -1,0 +1,24 @@
+(* Generated from FP-20261102-Level1-domain-v1. No proof script. *)
+Require ZesuSsz.Automation.Hooks.
+Require Import isla.riscv64.riscv64.
+From Coq Require Import Lists.List ZArith.ZArith NArith.NArith.
+Require Import stdpp.bitvector.definitions.
+Require Import InstrSpecs.Machine.
+Require Import EvmSailRlp.evm_rlp_types.
+Require Import ZesuSsz.Contracts.HpDecodeContract.
+Require Export ZesuSsz.Compliance.HpDecodeHints.
+Require Import ZesuSsz.Contracts.Level1.
+Local Open Scope Z_scope.
+Require Import ZesuSsz.Generated.HpDecode.FP301.Pilot77acEntries.
+#[export] Instance fp_machineAt77ac_ForwardA0N0_unfold : LithiumUnfold (@fp_machineAt77ac_ForwardA0N0) := I.
+#[export] Typeclasses Opaque fp_machineAt77ac_ForwardA0N0.
+#[export] Instance fp_machineAt77ac_ForwardA0N0_intro `{!islaG Sigma} `{!threadG} (args : HpDecodeArgs) (returnAddress : Z) :
+  @ZesuSsz.Automation.Hooks.ZesuPureFactIntro Sigma (fp_machineAt77ac_ForwardA0N0 (args) (returnAddress))
+  (∃ (machine_x2 : bv 64) (machine_x11 : bv 64) (machine_x12 : bv 64) (machine_x13 : bv 64) (machine_x14 : bv 64) (machine_x15_2 : bv 64) (machine_x16 : bv 64) (machine_x17 : bv 64) (join_resource_13_bytes : list byte) (fp_seed_mstatus_bits : bv 64) (fp_seed_satp : bv 64) (fp_seed_zisk_input_end : bv 64) (fp_seed_zisk_free_input : bv 64) (forward_witness_87e5cadc5c04d5d4 : bv 64) (forward_witness_1492ef7bd46b3b7a : bv 64) (forward_witness_88383840afa7af74 : bv 64), (reg_col (zesu_sys_regs) ∗ "x1" ↦ᵣ (RVal_Bits (((Z_to_bv 64%N (hpDecodeReturnAddress args))) : bv 64%N)) ∗ "x2" ↦ᵣ (RVal_Bits (machine_x2 : bv 64%N)) ∗ "x8" ↦ᵣ (RVal_Bits ((hpDecodeSavedFramePointer args) : bv 64%N)) ∗ "x10" ↦ᵣ (RVal_Bits (((Z_to_bv 64%N (hpDecodeResultPointer args))) : bv 64%N)) ∗ "x11" ↦ᵣ (RVal_Bits (machine_x11 : bv 64%N)) ∗ "x12" ↦ᵣ (RVal_Bits (machine_x12 : bv 64%N)) ∗ "x13" ↦ᵣ (RVal_Bits (machine_x13 : bv 64%N)) ∗ "x14" ↦ᵣ (RVal_Bits (machine_x14 : bv 64%N)) ∗ "x15" ↦ᵣ (RVal_Bits (machine_x15_2 : bv 64%N)) ∗ "x16" ↦ᵣ (RVal_Bits (machine_x16 : bv 64%N)) ∗ "x17" ↦ᵣ (RVal_Bits (machine_x17 : bv 64%N)) ∗ (hpDecodeInputPointer args) ↦ₘ∗ (hpDecodeInputBytes args) ∗ (hpDecodeOutputPointer args) ↦ₘ∗ (join_resource_13_bytes) ∗ (hpDecodeResultPointer args) ↦ₘ∗ (hpDecodeBeforeResult args) ∗ (((hpDecodeStackPointer args - hpDecodeStackBytes))%Z) ↦ₘ? (hpDecodeStackBytes) ∗ ⌜(hpDecodeDomainAt returnAddress args)⌝ ∗ ⌜((bv_unsigned (Z_to_bv 64 (hpDecodeReturnAddress args)) mod 4 = 0)%Z)⌝ ∗ ⌜((List.length join_resource_13_bytes = List.length (hpDecodeBeforeOutput args))%nat)⌝ ∗ ⌜((bool_decide ((bv_and fp_seed_mstatus_bits (BV 64%N 131072%Z)) = (BV 64%N 0%Z))) = true) /\ ((((bv_unsigned (bv_and fp_seed_mstatus_bits (BV 64%N 131072%Z))) = (0%Z))%Z))⌝ ∗ ⌜((negb (bool_decide (((Z_to_bv 64%N (hpDecodeInputLength args))) = (BV 64%N 0%Z)))) = true) /\ ((((bv_unsigned ((Z_to_bv 64%N (hpDecodeInputLength args)))) <> (0%Z))%Z))⌝ ∗ ⌜((negb (bool_decide ((bv_extract 17%N 1%N fp_seed_mstatus_bits) = (BV 1%N 1%Z)))) = true) /\ ((((bv_unsigned (bv_extract 17%N 1%N fp_seed_mstatus_bits)) <> (1%Z))%Z))⌝ ∗ ⌜((bool_decide ((bv_and forward_witness_87e5cadc5c04d5d4 (BV 64%N 131072%Z)) = (BV 64%N 0%Z))) = true) /\ ((((bv_unsigned (bv_and forward_witness_87e5cadc5c04d5d4 (BV 64%N 131072%Z))) = (0%Z))%Z))⌝ ∗ ⌜((bool_decide ((bv_and forward_witness_1492ef7bd46b3b7a (BV 64%N 131072%Z)) = (BV 64%N 0%Z))) = true) /\ ((((bv_unsigned (bv_and forward_witness_1492ef7bd46b3b7a (BV 64%N 131072%Z))) = (0%Z))%Z))⌝ ∗ ⌜((bool_decide ((bv_unsigned machine_x14 >= bv_unsigned (BV 64%N 0%Z))%Z)) = true) /\ ((((bv_unsigned machine_x14) >= (0%Z))%Z))⌝ ∗ ⌜((bool_decide ((bv_unsigned machine_x14 <= bv_unsigned (BV 64%N 63%Z))%Z)) = true) /\ ((((bv_unsigned machine_x14) <= (63%Z))%Z))⌝ ∗ ⌜((bool_decide ((bv_and forward_witness_88383840afa7af74 (BV 64%N 131072%Z)) = (BV 64%N 0%Z))) = true) /\ ((((bv_unsigned (bv_and forward_witness_88383840afa7af74 (BV 64%N 131072%Z))) = (0%Z))%Z))⌝))%I := @PreOrder_Reflexive _ _ bi.entails_po _.
+
+#[export] Instance fp_machineAt77ac_unfold : LithiumUnfold (@fp_machineAt77ac) := I.
+#[export] Typeclasses Opaque fp_machineAt77ac.
+#[export] Instance fp_machineAt77ac_intro `{!islaG Sigma} `{!threadG} (args : HpDecodeArgs) (returnAddress : Z) (K : iProp Sigma) :
+  @ZesuSsz.Automation.Hooks.ZesuPureFactIntro Sigma (fp_machineAt77ac (args) (returnAddress) (K))
+  (fp_machineAt77ac_ForwardA0N0 (args) (returnAddress) ∗ K)%I := @PreOrder_Reflexive _ _ bi.entails_po _.
+
