@@ -85,6 +85,54 @@ class PlanTests(unittest.TestCase):
                 scale.callers_of(root, ["9999"])
 
 
+class ModuleAndBankTests(unittest.TestCase):
+    def test_module_names_come_from_the_function_symbol(self):
+        self.assertEqual(scale.module_for("rlp.decodeItem", "6960"), "Residual_rlp_decodeItem_6960")
+        self.assertEqual(scale.module_for("berlinGasCalc", "39b8"), "Residual_berlinGasCalc_39b8")
+
+    def test_export_takes_a_later_bank_and_refreshes_a_rerendered_caller(self):
+        with tempfile.TemporaryDirectory() as root:
+            root = Path(root)
+            (root / "callers").mkdir()
+            (root / "callers" / "Caller1234.v").write_text("old\n")
+            (root / "fake_loop.py").write_text(FAKE_LOOP)
+            with redirect_stdout(io.StringIO()):
+                scale.main(["plan", "--function", "f", "--callers", str(root / "callers"),
+                            "--bank", str(root / "later"), "--out", str(root / "run")])
+                self.assertEqual(scale.read_json(root / "run" / "PLAN.json")["blocks"][0]["module"],
+                                 "Residual_f_1234")
+                with self.assertRaises(SystemExit):  # the planned bank does not exist yet
+                    scale.main(["export", "--run", str(root / "run")])
+                (root / "bank").mkdir()
+                (root / "bank" / "ARGS.json").write_text("[]")
+                (root / "callers" / "Caller1234.v").write_text("new\n")
+                saved = scale.LOOP
+                scale.LOOP = root / "fake_loop.py"
+                try:
+                    scale.main(["export", "--run", str(root / "run"), "--bank", str(root / "bank")])
+                finally:
+                    scale.LOOP = saved
+            plan = scale.read_json(root / "run" / "PLAN.json")
+            copy = (root / "run" / "blocks" / "1234" / "caller.v").read_text()
+        self.assertEqual(plan["bank"], str((root / "bank").resolve()))
+        self.assertEqual(copy, "new\n")
+
+
+class BankTargetTests(unittest.TestCase):
+    def test_targets_are_the_switch_and_the_callers_zesussz_imports(self):
+        with tempfile.TemporaryDirectory() as root:
+            caller = Path(root) / "Caller39b8.v"
+            caller.write_text("Require Import ZesuSsz.Generated.BerlinGasCalc.FP301.Pilot39b8Entries.\n"
+                              "Require Import isla.riscv64.riscv64.\n"
+                              "Require Import ZesuSsz.Contracts.BerlinGasCalcSelected.\n")
+            targets = scale.bank_targets(dict(blocks=[dict(block="39b8", caller=str(caller))]))
+        self.assertEqual(targets[0], "@install")
+        self.assertIn("ZesuSsz/Automation2/ResidualExportOn.vo", targets)
+        self.assertIn("ZesuSsz/Generated/BerlinGasCalc/FP301/Pilot39b8Entries.vo", targets)
+        self.assertIn("ZesuSsz/Contracts/BerlinGasCalcSelected.vo", targets)
+        self.assertFalse(any("isla" in target for target in targets))
+
+
 class StateTests(unittest.TestCase):
     def test_rules_only_states(self):
         with tempfile.TemporaryDirectory() as run:
@@ -152,6 +200,7 @@ class DriverTests(unittest.TestCase):
             for b in ("open", "shut"):
                 (root / "callers" / ("Caller%s.v" % b)).write_text("")
             (root / "fake_loop.py").write_text(FAKE_LOOP)
+            (root / "ARGS.json").write_text("[]")
             saved = scale.LOOP
             scale.LOOP = root / "fake_loop.py"
             try:
@@ -174,6 +223,7 @@ class DriverTests(unittest.TestCase):
             calls_open = (root / "run" / "blocks" / "open" / "CALLS").read_text().split()
             self.assertFalse((root / "run" / "blocks" / "shut" / "CALLS").exists())
         self.assertIn("--claim-gib", first)
+        self.assertIn("--module|Residual_f_open", first)
         self.assertEqual(calls_open, ["register", "rerun"])
         report = out.getvalue()
         self.assertIn("RESULT open rules=open goals=1 exact=1 pass=1 fail=0 unexported=0 rerun=closed final=closed",

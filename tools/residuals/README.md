@@ -62,7 +62,9 @@ tools/block/residual_scale.py rerun --run <run>       # register in RUN/residual
 tools/block/residual_scale.py report --run <run> [--counts-only]
 ```
 
-The export compile of a block is its rules-only result. The report gives rules-only closures against
+Each block's scratch residual module is named from the function symbol (`Residual_<symbol>_<block>`).
+`export --bank` replaces the plan's bank, so a plan can wait for a bank built later; `bank-targets`
+prints that bank's Dune targets. The export compile of a block is its rules-only result. The report gives rules-only closures against
 closures after the rerun, RESULT lines without proof text, and only counts with `--counts-only`.
 Whoever runs a standing agent may write `RUN/blocks/<block>/loop/answers/<goal>.json` with `{"tokens": N}`;
 the RESULT lines then report the tokens per goal.
