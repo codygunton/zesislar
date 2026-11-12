@@ -61,6 +61,6 @@ Lemma intro_skips_present_view (args : literal_args) :
   bv_unsigned (literal_head args) <> 0 -> literal_head args <> 0%bv -> True.
 Proof.
   liImpl. liImpl.
-  tryif lazymatch goal with HbvUnsigned : _ |- _ => idtac end then fail else idtac.
+  tryif clear HbvUnsigned then fail else idtac.
   exact I.
 Qed.
