@@ -291,6 +291,16 @@ class ResultTests(unittest.TestCase):
         self.assertEqual(lines[2], "RESULT 1234 rerun round=3 closed seconds=99.0")
         self.assertFalse(any("unique-proof-token" in line or "lia" in line for line in lines))
 
+    def test_a_conclusion_with_local_definitions_matches_after_unfolding(self):
+        with tempfile.TemporaryDirectory() as root:
+            run = Path(root)
+            d, name = goal_dir(run / "goals", "1234-1")
+            loop.write_json(d / "STATUS.json", dict(result="OPEN", attempts=[]))
+            loop.write_json(run / "MANIFEST.json", dict(block="1234", reruns=[], goals=[
+                dict(id="1234-1", name=name, statement=STATEMENT, source="final", binders=["x", "Hx"],
+                     reparse="exact", conclusion_definitions=["LET0"])]))
+            self.assertTrue(loop.result_lines(run)[0].endswith("tier=matchable-after-unfold"))
+
 
 if __name__ == "__main__":
     unittest.main()

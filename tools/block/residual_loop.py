@@ -723,7 +723,8 @@ def result_lines(run):
         tokens = [t.get("tokens") for t in attempts if t.get("tokens") is not None]
         minimized = status.get("minimized") or {}
         used = minimized.get("binders_after") if minimized.get("state") == "kept" else None
-        tier = "local-definition" if goal.get("conclusion_definitions") else "matchable"
+        # The tier unfolds local definitions in the conclusion before its second try.
+        tier = "matchable-after-unfold" if goal.get("conclusion_definitions") else "matchable"
         lines.append("RESULT %s %s source=%s reparse=%s binders=%d%s attempts=%d tokens=%s tier=%s" % (
             goal["id"], status.get("result", "OPEN"), goal["source"], goal["reparse"], len(goal["binders"]),
             " minimized=%d" % used if used is not None else "", len(attempts),
