@@ -1,5 +1,6 @@
 """Exercise Dune compiler admission with a fake compiler and private guard state."""
 
+import fcntl
 import json
 import os
 import shutil
@@ -98,12 +99,17 @@ class GateQueueTest(unittest.TestCase):
             if self.events.exists() else []
 
     def waiter_records(self):
+        # The guard writes each waiter record under its gate mutex. Reading under
+        # the same mutex never sees a record half written: an unlocked read once
+        # found an empty record under gate load (IndexError, 2026-11-11).
         records = []
-        for path in self.waiters.glob("*.waiter"):
-            try:
-                records.append((path, path.read_text().split()))
-            except FileNotFoundError:
-                continue
+        with open(str(self.fixture.lock) + ".mutex", "a") as mutex:
+            fcntl.flock(mutex, fcntl.LOCK_EX)
+            for path in self.waiters.glob("*.waiter"):
+                try:
+                    records.append((path, path.read_text().split()))
+                except FileNotFoundError:
+                    continue
         return records
 
     def start(self, name, gate_class):
