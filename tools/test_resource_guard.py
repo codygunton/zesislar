@@ -182,6 +182,29 @@ release_coqc "$marker"
         self.assertNotIn("memory_measured_peak_bytes", unmeasured.stdout)
         self.assertNotEqual(self.confirmed_marker(ZESU_MODULE_MEASURED_PEAK_BYTES="many").returncode, 0)
 
+    def test_a_fence_kill_is_named_recorded_and_lowers_a_later_probe_claim(self):
+        result = self.run_guard(r'''
+MEMORY_TOOL="$(dirname "$0")/module_memory.py"
+cd "$STATE_DIR" || exit 9
+printf 'Lemma probe : True. Proof. exact I. Qed.\n' > Probe.v
+scope_result() { echo exit-code; }
+report_fence_kill zesudet-other.scope coqc Probe.v
+[ ! -e "$FENCE_KILLS" ] || exit 10
+scope_result() { echo oom-kill; }
+report_fence_kill zesudet-af28.scope python3 measure.py measure.json coqc Probe.v
+MEMORY_CLAIM_BYTES=$((48 * GIB))
+probe_fence_claim python3 measure.py measure.json coqc Probe.v || exit 11
+echo "claim=$MEMORY_CLAIM_BYTES"
+cat "$FENCE_KILLS"
+''', ZESU_MODULE_LIMIT_GIB="16", ZESU_GATE_MODULE_LIMIT_GIB="16")
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertIn("memory fence kill: zesudet-af28.scope reached its 16 GiB fence", result.stderr)
+        self.assertIn(f"claim={20 * 1024 ** 3}\n", result.stdout)
+        rows = [json.loads(line) for line in result.stdout.splitlines() if line.startswith("{")]
+        self.assertEqual([(row["unit"], row["fence_bytes"]) for row in rows],
+                         [("zesudet-af28.scope", 16 * 1024 ** 3)])
+        self.assertEqual(len(rows[0]["source_sha256"]), 64)
+
     def test_disk_trim_threshold_uses_decimal_bytes(self):
         for free, trimmed in ((60000000000, False), (59999999999, True)):
             with self.subTest(free=free):

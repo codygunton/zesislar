@@ -147,6 +147,32 @@ class QuietStopTests(unittest.TestCase):
             self.assertTrue(log[0].endswith(" @@X begin split"))
 
 
+FENCE_KILL_GUARD = """#!/bin/sh
+echo 'resource guard: memory fence kill: zesudet-export-af28-1-2.scope reached its 16 GiB fence' >&2
+exit 137
+"""
+
+
+class FenceKillTests(unittest.TestCase):
+    def test_a_compile_killed_at_its_fence_records_the_kill(self):
+        with tempfile.TemporaryDirectory() as root:
+            root = Path(root)
+            (root / "guard.sh").write_text(FENCE_KILL_GUARD)
+            (root / "guard.sh").chmod(0o755)
+            (root / "Exportaf28.v").write_text("")
+            saved = loop.GUARD
+            loop.GUARD = root / "guard.sh"
+            try:
+                result = loop.scoped(root / "Exportaf28.v", "t", [], "")
+            finally:
+                loop.GUARD = saved
+            self.assertEqual(result["returncode"], 137)
+            self.assertEqual(result["fence_kill"], {"unit": "zesudet-export-af28-1-2.scope", "fence_gib": 16})
+
+    def test_an_ordinary_failure_names_no_kill(self):
+        self.assertIsNone(loop.guard_fence_kill("Error: tactic failure"))
+
+
 class CallerTests(unittest.TestCase):
     def test_export_caller_imports_the_switch_last(self):
         text = loop.export_caller(CALLER)
