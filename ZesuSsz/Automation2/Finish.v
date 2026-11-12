@@ -825,14 +825,22 @@ Ltac zesu_union_pure_finish :=
      zesu_union_pure_leaf)].
 
 
+(* Neither the goal nor a hypothesis holds an open evar. A closer run on
+   such a goal cannot instantiate an evar that another goal shares. *)
+Ltac zesu_goal_without_evars :=
+  lazymatch goal with |- ?target => tryif has_evar target then fail else idtac end;
+  tryif (match goal with H : ?T |- _ => has_evar T end) then fail else idtac.
+
 (* The common pure path uses existing facts and bounded address rewrites.
    The first arm of `zesu_finish_final_pure` ends in `try solve`, so it
    succeeds on every pure goal; the common path therefore also runs, under
-   `solve`, on the goal that arm leaves open. Only the final finisher does
-   this: the search loop calls the other finishers on every pass, and the
-   common path is too costly to fail there (block 800d6a78 ran over 2.3 times
-   longer). The `| zesu_finish_common_pure` arms still cover a goal that a
-   first arm refuses outright. *)
+   `solve`, on the goal that arm leaves open, when that goal holds no open
+   evar: closing it there by instantiating a shared evar left a later goal in
+   a form no stage revisits (berlinGasCalc 3d20 and 3e28). Only the final
+   finisher does this: the search loop calls the other finishers on every
+   pass, and the common path is too costly to fail there (block 800d6a78 ran
+   over 2.3 times longer). The `| zesu_finish_common_pure` arms still cover
+   a goal that a first arm refuses outright. *)
 Ltac zesu_finish_common_pure :=
   zesu_final_pure_head_gate;
   first [zesu_union_required_pure | solve [
@@ -880,7 +888,7 @@ Ltac zesu_finish_final_pure :=
           lazymatch goal with |- and _ _ => split; finish_leaf end]
       in finish_leaf
     | zesu_finish_list_cons_final]];
-  try solve [zesu_finish_common_pure] | zesu_finish_common_pure].
+  try solve [zesu_goal_without_evars; zesu_finish_common_pure] | zesu_finish_common_pure].
 
 
 

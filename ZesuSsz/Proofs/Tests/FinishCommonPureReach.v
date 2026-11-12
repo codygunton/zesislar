@@ -27,3 +27,16 @@ Proof.
   assert_succeeds (assert (reach_cursor args < 5); [zesu_finish_pure_goal |]).
   exact I.
 Qed.
+
+(* The fallthrough runs only on goals without open evars. *)
+Lemma goal_without_evars_guard (args : reach_args) : reach_domain args -> True.
+Proof.
+  intros Hdomain.
+  assert_succeeds (assert (reach_cursor args - 8 + 8 < 2 ^ 64);
+    [ZesuSsz.Automation2.Finish.zesu_goal_without_evars; zesu_finish_final_pure |]).
+  assert_fails (eassert (reach_cursor args - 8 + 8 < ?[bound]);
+    [ZesuSsz.Automation2.Finish.zesu_goal_without_evars |]).
+  assert_fails (eassert (?[witness] = reach_cursor args -> True);
+    [intros Hwitness; ZesuSsz.Automation2.Finish.zesu_goal_without_evars |]).
+  exact I.
+Qed.
