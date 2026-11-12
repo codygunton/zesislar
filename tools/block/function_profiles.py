@@ -76,7 +76,22 @@ def load_profile(name=None):
     path = Path(name)
     if not path.suffix:
         path = PROFILE_DIRECTORY / (name + '.json')
-    return FunctionProfile(json.loads(path.read_text()), path)
+    data = json.loads(path.read_text())
+    if data.get('loop_heads') and 'loop_head_fixture' not in data:
+        # The loop-head rows of a design-table loop live beside the other fixtures.
+        data['loop_head_fixture'] = 'tools/block/fixtures/%s-loop-heads.json' % data['function'].lower()
+    return FunctionProfile(data, path)
+
+
+def function_returns(profile):
+    """The function-return design rows: `function_returns` (a list), or the older single
+    `function_return`. Each row names its `return_instruction_pc` and a `return_fact`;
+    `True` (or JSON true) allows the exit resources only and adds no meaning."""
+    rows = profile.get('function_returns') if profile else None
+    if rows is None:
+        row = profile.get('function_return') if profile else None
+        rows = [row] if row else []
+    return list(rows)
 
 
 def return_alignment_fact(profile):
