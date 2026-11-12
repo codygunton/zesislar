@@ -197,8 +197,12 @@ _check-fast: stock-native-indexes check-evidence-tools check-signatures
 	  $(RETAINED_TARGETS)
 	$(PYTHON) tools/module_memory.py observation-summary --observations $(CHECK_FAST_OBSERVATIONS)
 
+# Its compiles run in a guard batch aggregate: run alone, a guarded compile
+# outside any aggregate needs a named writer identity. Inside a gate the batch
+# reuses the gate's aggregate.
 .PHONY: check-signatures
 check-signatures: gate-workspace
+	$(GUARD_BATCH) check-signatures -- \
 	$(PYTHON) tools/dune_trace_guard.py --canonical-build-dir -- \
 	$(OPAM) dune build --root . --build-dir $(AGENT_BUILD_DIR) \
 	  --cache=enabled -j$(FAST_JOBS) @install \
@@ -418,7 +422,10 @@ traces-closure-indexes:
 	  --check-manifest $(STOCK_TRACE_MANIFEST) --trace-name closure
 
 # Restore tracked native index datasets before checkers or Dune start.
-STOCK_NATIVE_TRACE_CACHE_DIR ?= $(CURDIR)/_build/stock-zisk/native-trace-cache
+# All worktrees share one cache: a fresh worktree otherwise regenerates every
+# closure trace (about 8,500 CPU seconds). Each restore checks every file
+# against the tracked manifest hashes.
+STOCK_NATIVE_TRACE_CACHE_DIR ?= /home/cody/zesislar-archive/stock-inputs/native-trace-cache
 .PHONY: stock-native-indexes
 .PHONY: gate-workspace
 gate-workspace:

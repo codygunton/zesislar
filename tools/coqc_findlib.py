@@ -136,6 +136,20 @@ def compiler_environment(start, environment):
     return result
 
 
+def compile_seconds(environment):
+    """Return the compile-only time limit, or None.
+
+    The limit applies inside the guard scope, so time spent waiting for
+    admission does not count against it.
+    """
+    value = environment.get("ZESU_COMPILE_SECONDS")
+    if not value:
+        return None
+    if not value.isdigit() or int(value) <= 0:
+        raise ValueError("ZESU_COMPILE_SECONDS must be a positive integer")
+    return int(value)
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     commands = parser.add_subparsers(dest="operation", required=True)
@@ -158,6 +172,9 @@ def main():
             if not command:
                 raise ValueError("The guarded compiler command is absent")
             environment = compiler_environment(Path.cwd(), os.environ)
+            seconds = compile_seconds(os.environ)
+            if seconds is not None:
+                command = ["timeout", "--verbose", "--kill-after=10", str(seconds), *command]
             os.execvpe(args.guard, [args.guard, "scope", "rocq-mcp-coqc", "--", *command], environment)
     except (ValueError, OSError) as error:
         parser.exit(2, f"compiler findlib setup: {error}\n")

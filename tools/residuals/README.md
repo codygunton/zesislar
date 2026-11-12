@@ -30,3 +30,39 @@ Control proofs and the census files stay in `<out>/_work/`, outside the goal dir
 Use `--heavy` for heavy blocks (6a78, 698c, 69b0, 6ae0, 6a40, 6b08): the issue-10 probe class
 with a 64 GiB scope. Timeouts are allowed here only because this is a diagnostic tool.
 The tool writes no proof text and calls no model.
+
+## Exact export and the residual loop
+
+`tools/block/residual_loop.py` replaces this census exporter as the export source. It runs the
+production tactics unchanged: a copy of the block caller imports `ZesuSsz.Automation2.ResidualExportOn`,
+and the hooks in `Diagnostics.v` print the exact source of each pure goal at the split point and at the
+end of `zesu_block2` (`ResidualExport.v`: every implicit argument and literal width is explicit, and the
+premises are the facts that the conclusion reaches).
+
+```
+tools/block/residual_loop.py export --block 69a4 --caller <caller.v> --bank <bank> --out <run> [--stop-quiet S]
+tools/block/residual_loop.py collect --run <run>     # check RUN/answers/<id>.v, minimize premises
+tools/block/residual_loop.py register --run <run>    # add the passing lemmas to ZesuSsz/Residuals/Block800d<B>.v
+tools/block/residual_loop.py rerun --run <run>       # compile the module and the caller; open goals start the next round
+tools/block/residual_loop.py results --run <run>     # one RESULT line per goal, no proof text
+```
+
+The tool calls no model. The coordinator starts one standing agent per block on `RUN/tasks/`.
+
+## At scale: every block of a function
+
+`tools/block/residual_scale.py` runs the loop on each block of a function and compares closures.
+
+```
+tools/block/residual_scale.py plan --function nextUint64 --callers tools/block/generated/nextuint64_fp301_callers --bank <bank> --out <run>
+tools/block/residual_scale.py export --run <run> [--jobs 4] [--launch-gap 300] [--stop-quiet S]
+tools/block/residual_scale.py bundle --run <run>      # RUN/bundles/<block>/README.md and AGENT_PROMPT.txt
+tools/block/residual_scale.py collect --run <run>     # after the standing agents wrote their answers
+tools/block/residual_scale.py rerun --run <run>       # register in RUN/residuals (scratch), compile again
+tools/block/residual_scale.py report --run <run> [--counts-only]
+```
+
+The export compile of a block is its rules-only result. The report gives rules-only closures against
+closures after the rerun, RESULT lines without proof text, and only counts with `--counts-only`.
+Whoever runs a standing agent may write `RUN/blocks/<block>/loop/answers/<goal>.json` with `{"tokens": N}`;
+the RESULT lines then report the tokens per goal.

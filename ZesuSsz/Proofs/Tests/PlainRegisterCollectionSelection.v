@@ -1,24 +1,7 @@
-Require Import ZesuSsz.Automation.All.
-Require Import ZesuSsz.Generated.DecodeItem.BootstrapRegistrations.
 Require Import isla.riscv64.riscv64.
 Require Import ZesuSsz.Contracts.RlpDecodeItemContract.
-Require Import ZesuSsz.Contracts.RlpDecodeItemBlockEntries.
 From iris.proofmode Require Import environments.
-
-(* Remove release instances locally to preserve the switch-off checks. *)
-Section ReleaseSwitchOff.
-#[local] Remove Hints RegisterCollectionSelection.zesu_register_collection_selection_enabled : typeclass_instances.
-
-Lemma plain_register_selection_opt_in : True.
-Proof.
-  Fail let _ := constr:(_ : ZesuStepRegisterCollectionSelection) in idtac.
-  exact I.
-Qed.
-
-End ReleaseSwitchOff.
-
-Require Import ZesuSsz.Automation.Switches.RegisterCollectionSelection.
-Require Import ZesuSsz.Generated.DecodeItem.Registrations.
+Require Import ZesuSsz.Automation2.All.
 
 Lemma plain_register_selection_array_first `{!islaG Sigma} `{!threadG}
     (address : Z) (bytes : list byte) (shape : valu_shape)
@@ -61,18 +44,14 @@ Proof.
   exact I.
 Qed.
 
+(* The FP301 entry at 0x800d6ae0 owns the decoder system registers and the
+   caller's output storage (`fp_machineAt6ae0`). *)
 Lemma plain_register_selection_captured_6ae0 `{!islaG Sigma} `{!threadG}
-    (args : DecodeItemArgs) (locals : DecodeItemReturnLocals)
-    (T : reg_mapsto_kind -> iProp Sigma) :
+    (args : DecodeItemArgs) (T : reg_mapsto_kind -> iProp Sigma) :
   reg_col (decodeItemSysRegs args) -∗
-  decodeItemOutputPointer args ↦ₘ∗
-    (take 32 (returnStorage locals) ++
-     bv_to_little_endian 8 8 (bv_unsigned (4 : bv 64)) ++
-     drop 40 (returnStorage locals)) -∗
-  (decodeItemOutputPointer args ↦ₘ∗
-    (take 32 (returnStorage locals) ++
-     bv_to_little_endian 8 8 (bv_unsigned (4 : bv 64)) ++
-     drop 40 (returnStorage locals)) -∗ T (RKCol (decodeItemSysRegs args))) -∗
+  decodeItemOutputPointer args ↦ₘ∗ decodeItemBeforeStorage args -∗
+  (decodeItemOutputPointer args ↦ₘ∗ decodeItemBeforeStorage args -∗
+    T (RKCol (decodeItemSysRegs args))) -∗
   find_in_context (FindRegMapsTo "rv_enable_pmp") T.
 Proof.
   iStartProof. iIntros "Hregs Harray HT".
@@ -95,5 +74,3 @@ Proof.
   iStartProof. iIntros "Hregs".
   zesu_register_collection_selection_if_enabled. done.
 Qed.
-
-Require Import ZesuSsz.Automation.All.
