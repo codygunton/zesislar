@@ -337,6 +337,7 @@ def scoped(path, tag, args, ocamlpath, claim=CHECK_CLAIM, run_id=None, watch=Non
         cache.unlink()
     start = time.monotonic()
     stopped = False
+    fence_kill = None
     with log.open("w") as out:
         proc = subprocess.Popen(command, cwd=path.parent, env=env, stdout=subprocess.PIPE,
                                 stderr=subprocess.STDOUT)
@@ -361,6 +362,7 @@ def scoped(path, tag, args, ocamlpath, claim=CHECK_CLAIM, run_id=None, watch=Non
                 line = raw.decode("utf-8", "replace").rstrip("\n")
                 out.write("%.3f %s\n" % (elapsed, line))
                 out.flush()
+                fence_kill = fence_kill or guard_fence_kill(line)
             if watch and not stopped and watch(line, elapsed):
                 stopped = True
                 subprocess.run([sys.executable, str(REGISTRY), "stop", "--run-id", run_id],
@@ -371,7 +373,17 @@ def scoped(path, tag, args, ocamlpath, claim=CHECK_CLAIM, run_id=None, watch=Non
     (path.parent / ("." + path.stem + ".aux")).unlink(missing_ok=True)
     for cache in path.parent.glob(".*.cache"):
         cache.unlink()
-    return dict(returncode=code, seconds=round(time.monotonic() - start, 1), stopped=stopped, log=str(log))
+    return dict(returncode=code, seconds=round(time.monotonic() - start, 1), stopped=stopped, log=str(log),
+                fence_kill=fence_kill)
+
+
+FENCE_KILL = re.compile(r"resource guard: memory fence kill: (\S+) reached its (\d+) GiB fence")
+
+
+def guard_fence_kill(line):
+    """The guard names a kill at the scope's memory fence; record it, not just a nonzero status."""
+    match = FENCE_KILL.search(line or "")
+    return {"unit": match.group(1), "fence_gib": int(match.group(2))} if match else None
 
 
 class QuietWatch:
