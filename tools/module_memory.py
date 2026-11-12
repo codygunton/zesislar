@@ -293,6 +293,11 @@ def peak_exec(output, payload):
     import signal
     import subprocess
     import time
+    # A compile-only limit starts here, inside the scope, after admission.
+    value = os.environ.get("ZESU_COMPILE_SECONDS")
+    if value and (not value.isdigit() or int(value) <= 0):
+        raise ValueError("ZESU_COMPILE_SECONDS must be a positive integer")
+    limit = int(value) if value else None
     admitted = time.time_ns()
     child = subprocess.Popen(payload)
 
@@ -301,7 +306,17 @@ def peak_exec(output, payload):
             child.send_signal(number)
     for number in (signal.SIGTERM, signal.SIGINT, signal.SIGHUP):
         signal.signal(number, forward)
-    status = child.wait()
+    try:
+        status = child.wait(timeout=limit)
+    except subprocess.TimeoutExpired:
+        print(f"module memory: compile time limit of {limit} s reached after admission", file=sys.stderr)
+        child.terminate()
+        try:
+            child.wait(timeout=10)
+        except subprocess.TimeoutExpired:
+            child.kill()
+            child.wait()
+        return 124
     if status == 0:
         try:
             usage = resource.getrusage(resource.RUSAGE_CHILDREN)

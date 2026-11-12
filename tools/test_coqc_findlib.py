@@ -197,6 +197,37 @@ class CompilerFindlibTests(unittest.TestCase):
         self.assertEqual(result.returncode, 75)
         self.assertEqual(result.stderr, "")
 
+    def guarded_compile(self, admission_seconds, compile_seconds, limit):
+        # The fake guard waits before it admits the compile, as a busy guard does.
+        guard = self.root / "guard"
+        guard.write_text(f"#!/bin/sh\nsleep {admission_seconds}\nshift 3\nexec \"$@\"\n")
+        guard.chmod(0o755)
+        compiler = self.root / "coqc"
+        compiler.write_text(f"#!/bin/sh\nsleep {compile_seconds}\n")
+        compiler.chmod(0o755)
+        return subprocess.run(["python3", str(TOOLS / "coqc_findlib.py"), "guarded",
+                               "--guard", str(guard), "--", str(compiler), "Probe.v"],
+                              cwd=self.root, env=fixture_environment(ZESU_COMPILE_SECONDS=str(limit)),
+                              capture_output=True, text=True)
+
+    def test_compile_limit_excludes_the_admission_wait(self):
+        # Scaled from a 10 minute admission wait and a 5 s compile under a 600 s limit.
+        result = self.guarded_compile(3, 0.2, 2)
+        self.assertEqual(result.returncode, 0, result.stderr)
+
+    def test_compile_limit_stops_a_long_compile_after_admission(self):
+        result = self.guarded_compile(0, 30, 1)
+        self.assertEqual(result.returncode, 124)
+        self.assertIn("sending signal TERM", result.stderr)
+
+    def test_invalid_compile_limit_is_refused(self):
+        result = subprocess.run(["python3", str(TOOLS / "coqc_findlib.py"), "guarded",
+                                 "--guard", "/absent/guard", "--", "/absent/coqc", "Probe.v"],
+                                cwd=self.root, env=fixture_environment(ZESU_COMPILE_SECONDS="ten"),
+                                capture_output=True, text=True)
+        self.assertEqual(result.returncode, 2)
+        self.assertIn("ZESU_COMPILE_SECONDS", result.stderr)
+
     def test_wrappers_preserve_arguments_and_the_normal_guard(self):
         (self.tools / "guard-bin").mkdir()
         shutil.copy2(TOOLS / "dune_coqc_guarded.sh", self.tools / "guard-bin/coqc")
