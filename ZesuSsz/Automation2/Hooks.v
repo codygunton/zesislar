@@ -2089,7 +2089,10 @@ Ltac zesu_array_bounds_extended :=
 
 Ltac zesu_array_bounds_if_enabled :=
   first [CodecArrayRead.zesu_codec_array_read_sidecond |
-    zesu_array_bounds_base | zesu_array_bounds_extended].
+    zesu_array_bounds_base | zesu_array_bounds_extended |
+    progress WrappedWord.zesu_wrapped_closed_terms;
+    first [CodecArrayRead.zesu_codec_array_read_sidecond |
+      zesu_array_bounds_base | zesu_array_bounds_extended]].
 
 Ltac zesu_integer_array_address_if_enabled :=
   zesu_expose_environment_alias;
