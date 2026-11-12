@@ -18,6 +18,7 @@ from pathlib import Path
 import shutil
 import subprocess
 import sys
+import uuid
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import run_registry as R
@@ -43,11 +44,17 @@ def detach_stop(registry, run_id):
     so the stopper starts as its own transient user unit when systemd-run
     exists (2026-11-10: a forked stopper died with the batch and left the
     row at 'stopping'). Otherwise it is double-forked out of the tree.
+
+    Each stopper unit has its own name: a name derived from the run ID alone
+    collided when tool suites of parallel gates stopped fixture runs with the
+    same ID in different registries, and systemd-run refused the second unit
+    (2026-11-11).
     """
     command = [sys.executable, '-B', str(Path(R.__file__).resolve()),
                '--store', str(registry.directory), 'stop', '--run-id', run_id]
     if shutil.which('systemd-run'):
-        unit = 'zesu-wall-stop-' + hashlib.sha256(run_id.encode()).hexdigest()[:16]
+        unit = 'zesu-wall-stop-' + hashlib.sha256(
+            f'{registry.directory.resolve()}\0{run_id}\0{uuid.uuid4().hex}'.encode()).hexdigest()[:16]
         subprocess.run(['systemd-run', '--user', '--quiet', '--collect', '--unit', unit, '--', *command],
                        check=True)
         return
