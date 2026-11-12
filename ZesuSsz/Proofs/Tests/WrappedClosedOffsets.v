@@ -94,7 +94,26 @@ Proof.
   solve [ZesuSsz.Automation2.Hooks.zesu_array_bounds_if_enabled].
 Qed.
 
+(* The store address behind a local definition, as Lithium keeps it. *)
+Lemma wrapped_closed_local_address `{!islaG Sigma} `{!threadG} (base : Z) (value : bv 64) :
+  64 <= base < bv_modulus 64 ->
+  (base - 16) ↦ₘ value -∗
+  find_in_context
+    (FindMemMapsTo (bv_unsigned (Z_to_bv 64 base + 18446744073709551552 + 48)))
+    (fun _ => True%I).
+Proof.
+  intros Hrange. iIntros "Hword".
+  set (pointer := (Z_to_bv 64 base + 18446744073709551552 + 48)%bv).
+  ZesuSsz.Automation2.WrappedWord.zesu_wrapped_closed_address_step.
+  lazymatch goal with
+  | |- iris.proofmode.environments.envs_entails _ (find_in_context (FindMemMapsTo ?address) _) =>
+      constr_eq address (base - 16)
+  end.
+  liStep. done.
+Qed.
+
 Print Assumptions wrapped_closed_two_offsets.
+Print Assumptions wrapped_closed_local_address.
 Print Assumptions wrapped_closed_array_bound.
 Print Assumptions wrapped_closed_three_offsets.
 Print Assumptions wrapped_closed_positive_offset.
