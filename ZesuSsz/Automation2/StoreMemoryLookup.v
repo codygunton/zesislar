@@ -217,15 +217,7 @@ Ltac zesu_store_memory_lookup_core :=
     zesu_store_unsigned_splice_indices;
     progress ZesuSsz.Automation2.Hooks.zesu_integer_array_address_if_enabled;
     liEnsureInvariant;
-    liStep
-  (* A lookup whose address needs a range that sits only behind a folded
-     domain predicate: saturate the derived facts once, in the main context,
-     and let the next step retry the lookup. Runs only when every other route
-     failed; `progress` stops it when the facts are already there. *)
-  | lazymatch goal with
-    | |- iris.proofmode.environments.envs_entails _ (find_in_context (FindMemMapsTo _) _) => idtac
-    end;
-    progress ZesuSsz.Automation2.PureFacts.zesu_saturate_derived_facts ].
+    liStep ].
 
 (* A wider access to a run of owned byte cells reads the run as one array. *)
 Lemma zesu_byte_cells_one `{!islaG Sigma} (base : Z) (index : nat) (fraction : dfrac)
@@ -529,3 +521,14 @@ Ltac zesu_store_memory_lookup :=
   | progress (zesu_store_fold_indexed_byte_tail;
       ZesuSsz.Automation2.ResourceGroups.zesu_open_resource_groups)
   | zesu_store_fold_byte_cells ].
+
+(* A lookup whose address needs a range that sits only behind a folded
+   domain predicate: saturate the derived facts once, in the main context,
+   and let the next step retry the lookup. The pass tries this step last,
+   only when every other step failed on the lookup; `progress` stops it
+   when the facts are already there. *)
+Ltac zesu_store_lookup_saturate_retry :=
+  zesu_store_lookup_goal;
+  ZesuSsz.Automation2.SwitchDispatch.zesu_switch_enabled
+    constr:(ZesuStepStoreMemoryLookup);
+  progress ZesuSsz.Automation2.PureFacts.zesu_saturate_derived_facts.
