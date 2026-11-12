@@ -9,6 +9,7 @@
     residual_scale.py rerun    --run RUN [--jobs N] [--launch-gap S] [--blocks B,...]
     residual_scale.py report   --run RUN [--counts-only]
     residual_scale.py bank-targets --run RUN     (Dune targets of a bank for the plan)
+    residual_scale.py bank-args --build-dir DIR --out BANK   (BANK/ARGS.json for a Dune build dir)
 
 plan lists the callers of the function (`Caller<block>.v` in DIR) and copies each one
 to RUN/blocks/<block>/caller.v; a block's scratch residual module is named from the
@@ -348,6 +349,29 @@ def bank_targets(plan):
     return ["@install"] + sorted(targets)
 
 
+LOAD_PATH = (("-Q", "ZesuSsz", "ZesuSsz"), ("-Q", "ZesuStock", "ZesuStock"), ("-Q", "InstrSpecs", "InstrSpecs"),
+             ("-Q", "Scaffolding", "Scaffolding"), ("-Q", "MachineMap", "ZesuMachineMap"),
+             ("-R", "generated/isla-traces", "IslaTraces"),
+             ("-Q", "generated/isla-traces/stock-zisk/decodeItem", "ZesuSsz.Stock.DecodeItem"),
+             ("-Q", "generated/isla-traces/stock-zisk/closure", "ZesuSsz.Stock.Closure"),
+             ("-Q", "generated/isla-traces/stock-zisk/free", "ZesuSsz.Stock.Free"),
+             ("-Q", "generated/evm-sail-coq", "EvmSail"), ("-Q", "generated/evm-sail-coq/rlp", "EvmSailRlp"),
+             ("-Q", "generated/sail-stdpp", "SailStdpp"))
+COQC = "/home/cody/islaris/_opam/bin/coqc"
+
+
+def bank_args(build_dir):
+    """The coqc arguments of a bank: the Dune build dir's `default` tree with the
+    project's load path and warning flags."""
+    default = Path(build_dir).resolve() / "default"
+    if not (default / "ZesuSsz").is_dir():
+        raise ScaleError("No ZesuSsz tree in %s." % default)
+    args = [COQC]
+    for flag, path, name in LOAD_PATH:
+        args += [flag, str(default / path), name]
+    return args + ["-w", "-notation-overridden", "-w", "-redundant-canonical-projection"]
+
+
 # ---- report ----
 
 def block_lines(state):
@@ -419,6 +443,9 @@ def main(argv=None):
             s.add_argument("--bank", help="the bank to export against (replaces the plan's bank)")
     t = sub.add_parser("bank-targets")
     t.add_argument("--run", required=True)
+    g = sub.add_parser("bank-args")
+    g.add_argument("--build-dir", required=True)
+    g.add_argument("--out", required=True)
     b = sub.add_parser("bundle")
     b.add_argument("--run", required=True)
     r = sub.add_parser("report")
@@ -428,6 +455,8 @@ def main(argv=None):
     try:
         {"plan": cmd_plan, "export": cmd_export, "bundle": cmd_bundle, "collect": cmd_collect,
          "bank-targets": lambda a: print(" ".join(bank_targets(read_json(Path(a.run) / "PLAN.json")))),
+         "bank-args": lambda a: (Path(a.out).mkdir(parents=True, exist_ok=True),
+                                 write_json(Path(a.out) / "ARGS.json", bank_args(a.build_dir))),
          "rerun": cmd_rerun, "report": lambda a: print_report(a.run, a.counts_only)}[a.command](a)
     except ScaleError as error:
         sys.exit("residual_scale: %s" % error)

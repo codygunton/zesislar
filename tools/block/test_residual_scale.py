@@ -133,6 +133,20 @@ class BankTargetTests(unittest.TestCase):
         self.assertFalse(any("isla" in target for target in targets))
 
 
+class BankArgsTests(unittest.TestCase):
+    def test_bank_args_map_the_build_tree(self):
+        with tempfile.TemporaryDirectory() as root:
+            (Path(root) / "build" / "default" / "ZesuSsz").mkdir(parents=True)
+            with redirect_stdout(io.StringIO()):
+                scale.main(["bank-args", "--build-dir", str(Path(root) / "build"), "--out", str(Path(root) / "bank")])
+            args = scale.read_json(Path(root) / "bank" / "ARGS.json")
+            with self.assertRaises(scale.ScaleError):
+                scale.bank_args(Path(root) / "missing")
+        default = str((Path(root) / "build" / "default").resolve())
+        self.assertEqual(args[1:4], ["-Q", default + "/ZesuSsz", "ZesuSsz"])
+        self.assertIn("ZesuSsz.Stock.Closure", args)
+
+
 class StateTests(unittest.TestCase):
     def test_rules_only_states(self):
         with tempfile.TemporaryDirectory() as run:
