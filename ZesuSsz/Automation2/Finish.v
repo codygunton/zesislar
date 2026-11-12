@@ -825,7 +825,11 @@ Ltac zesu_union_pure_finish :=
      zesu_union_pure_leaf)].
 
 
-(* The common pure path uses existing facts and bounded address rewrites. *)
+(* The common pure path uses existing facts and bounded address rewrites.
+   The first arm of each finisher below ends in `try solve`, so it succeeds
+   on every pure goal; the common path therefore also runs, under `solve`,
+   on the goal that arm leaves open. The `| zesu_finish_common_pure` arm
+   still covers a goal that the first arm refuses outright. *)
 Ltac zesu_finish_common_pure :=
   zesu_final_pure_head_gate;
   first [zesu_union_required_pure | solve [
@@ -872,7 +876,8 @@ Ltac zesu_finish_final_pure :=
           zesu_finish_simpl_and_leaf |
           lazymatch goal with |- and _ _ => split; finish_leaf end]
       in finish_leaf
-    | zesu_finish_list_cons_final]] | zesu_finish_common_pure].
+    | zesu_finish_list_cons_final]];
+  try solve [zesu_finish_common_pure] | zesu_finish_common_pure].
 
 
 
@@ -884,7 +889,8 @@ zesu_finish_pure_goal_base;
       zesu_finish_negated_ge; zesu_finish_implication_pair; repeat split;
       first [reflexivity | assumption | eassumption | lia | bv_solve |
         zesu_finish_forall_leaf]
-    | repeat split; zesu_finish_forall_leaf]] | zesu_finish_common_pure].
+    | repeat split; zesu_finish_forall_leaf]];
+  try solve [zesu_finish_common_pure] | zesu_finish_common_pure].
 
 Ltac zesu_finish_entailment :=
   lazymatch goal with
@@ -927,7 +933,7 @@ Ltac zesu_finish_base :=
   then tryif let _ := constr:(_ : ZesuStepBoundedArithmetic) in idtac
        then try (zesu_finish_v2)
        else zesu_finish_v2
-  else zesu_finish_v1) | zesu_finish_common_pure].
+  else (zesu_finish_v1; try solve [zesu_finish_common_pure])) | zesu_finish_common_pure].
 
 
 Ltac zesu_finish := zesu_finish_once_if_enabled ltac:(zesu_finish_base).
