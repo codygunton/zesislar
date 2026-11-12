@@ -59,7 +59,7 @@ from forward_resources import load_resource_vocabulary
 from symbolic_state import Expr
 from resource_seed import load_public_seed, seed_owned_resources
 from system_shape_seed import seed_system_shapes
-from function_profiles import load_profile, pilot_header
+from function_profiles import add_return_alignment, function_returns, load_profile, pilot_header
 from boundary_guards import (
     BoundaryRefused,
     RocqContradictionCheck,
@@ -88,7 +88,8 @@ system_binders = [
     if row["shape"] in ("mask", "bits")
 ]
 seedpath = Path(seed_manifest["seed"]["path"])
-public_seed = load_public_seed(seedpath, bind(seedpath)["sha256"])
+public_seed = add_return_alignment(load_public_seed(seedpath, bind(seedpath)["sha256"]),
+                                   load_profile(options.function))
 domain = json.loads(Path(seed_manifest["domain"]["path"]).read_text())
 owned = seed_owned_resources(
     public_seed,
@@ -133,7 +134,7 @@ profile = load_profile(options.function)
 pilots = list(profile["blocks"])
 blocks = list(pilots)
 # A function-return design adds the return package as one more rendered entry.
-if profile.get("function_return"):
+if function_returns(profile):
     pilots.append("Return")
 loop_heads = set(profile["loop_heads"])
 cases = []
@@ -162,41 +163,53 @@ check = RocqContradictionCheck(
     profile.args_type,
 )
 
-def return_boundary(design):
-    """The function_return exit as one alternative, with the design's return fact.
+def return_boundary(designs):
+    """The function_return exits as alternatives, each with its design's return fact.
 
-    The exit renders on its seed's root tree (as a single join edge does), and
-    the return fact is a pure component of that scope. `{bytes@ADDR}` names the
-    exit value of the owned array at ADDR."""
+    Each design row names its return instruction; every exit at that instruction
+    is one alternative. An exit renders on its seed's root tree (as a single join
+    edge does), and a return fact is a pure component of that scope.
+    `{bytes@ADDR}` names the exit value of the owned array at ADDR. A return fact
+    `True` allows the exit resources only: no component is added."""
     from join_generalize import align_join_edges
-    exits = [row for row in data["exits"] if row["kind"] == "function_return"]
-    if len(exits) != 1:
-        raise ValueError("The return package needs exactly one function_return exit.")
-    exit = exits[0]
-    alternative = {"predecessor_pc": exit["block_pc"], "seed_pc": exit["seed_pc"], "state": exit["state"],
-                   "path": exit["path"], "back_edge": False, "resource_boundary": deepcopy(exit["resource_boundary"])}
-    root = root_seeds[roots.get(exit["seed_pc"], public_seed["entry_pc"])]
-    terminal = next(row["id"] for row in root.ownership["components"] if row["source"] == "True")
-    alternative, = align_join_edges([alternative], root.ownership, terminal, "K", keep_binders=True)[0]
-    resource = alternative["resource_boundary"]
     from forward_resources import _strip_enclosure
-    values = {}
-    for row in resource["components"]:
-        match = re.fullmatch(r"(.*?)\s*↦ₘ(?:\{[^}]*\})?∗\s*(.*)", row["source"], re.S)
-        if match:
-            values[_strip_enclosure(match[1].strip())] = _strip_enclosure(match[2].strip())
-    def array_value(match):
-        if match[1] not in values:
-            raise ValueError("The return design names no owned array at " + match[1])
-        return values[match[1]]
-    fact = re.sub(r"\{bytes@([^}]*)\}", array_value, design["return_fact"])
-    resource["components"].append({"id": "function_return_fact", "source": "⌜" + fact + "⌝",
-                                   "provenance": {"function_return_design": design["return_fact"]}})
-    tree = resource["tree"] if resource["tree"]["kind"] == "exists" else resource["tree"]["left"]
-    tree["body"]["children"].append({"kind": "component", "id": "function_return_fact"})
-    return {"pc": "function_return", "status": "generated", "alternatives": [alternative],
-            "reaching_stops": []}
+    from return_exit import allows_exit_resources_only, match_return_exits
+    # A design that no path reaches renders no alternative; its blocks do not render either.
+    pairs, unreached = match_return_exits(designs, [row for row in data["exits"] if row["kind"] == "function_return"])
+    if not pairs:
+        raise ValueError("The return package has no function_return exit.")
+    alternatives = []
+    for design, exit in pairs:
+        alternative = {"predecessor_pc": exit["block_pc"], "seed_pc": exit["seed_pc"], "state": exit["state"],
+                       "path": exit["path"], "back_edge": False,
+                       "resource_boundary": deepcopy(exit["resource_boundary"])}
+        root = root_seeds[roots.get(exit["seed_pc"], public_seed["entry_pc"])]
+        terminal = next(row["id"] for row in root.ownership["components"] if row["source"] == "True")
+        alternative, = align_join_edges([alternative], root.ownership, terminal, "K", keep_binders=True)[0]
+        if allows_exit_resources_only(design):
+            alternatives.append(alternative)
+            continue
+        fact = design["return_fact"]
+        resource = alternative["resource_boundary"]
+        values = {}
+        for row in resource["components"]:
+            match = re.fullmatch(r"(.*?)\s*↦ₘ(?:\{[^}]*\})?∗\s*(.*)", row["source"], re.S)
+            if match:
+                values[_strip_enclosure(match[1].strip())] = _strip_enclosure(match[2].strip())
 
+        def array_value(match):
+            if match[1] not in values:
+                raise ValueError("The return design names no owned array at " + match[1])
+            return values[match[1]]
+
+        fact = re.sub(r"\{bytes@([^}]*)\}", array_value, fact)
+        resource["components"].append({"id": "function_return_fact", "source": "⌜" + fact + "⌝",
+                                       "provenance": {"function_return_design": design["return_fact"]}})
+        tree = resource["tree"] if resource["tree"]["kind"] == "exists" else resource["tree"]["left"]
+        tree["body"]["children"].append({"kind": "component", "id": "function_return_fact"})
+        alternatives.append(alternative)
+    return {"pc": "function_return", "status": "generated", "alternatives": alternatives,
+            "reaching_stops": [], "unreached_return_sites": unreached}
 
 for suffix in pilots:
     if suffix == "Return":
@@ -227,7 +240,7 @@ for suffix in pilots:
                       "reports": [{"kind": "reaching_stop_guard", "detail": guard_refusals[suffix]}],
                       "proof_ran": False})
         continue
-    boundary = (return_boundary(profile["function_return"]) if suffix == "Return"
+    boundary = (return_boundary(function_returns(profile)) if suffix == "Return"
                 else deepcopy(data["boundaries"][index]))
     if boundary["status"] == "generated_call_return":
         # A return site renders from its call-return seed alternative.

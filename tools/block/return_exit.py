@@ -132,3 +132,27 @@ def add_entry_facts(source, facts):
         raise ValueError("The entry needs exactly one pure fact tail.")
     added = "".join(" ∗ ⌜" + fact + "⌝" for fact in facts)
     return source.replace(ENTRY_TAIL, "⌝" + added + "))%I")
+
+
+def match_return_exits(designs, exits):
+    """Pair each function_return exit with the design row of its return instruction.
+
+    Returns (pairs, unreached): every exit at a design's `return_instruction_pc`
+    pairs with that design, in design order; a design that no exit reaches is
+    unreached. An exit without a design row is refused."""
+    pairs, unreached = [], []
+    for design in designs:
+        at = int(design["return_instruction_pc"], 0)
+        rows = [row for row in exits if int(row["instruction_pc"], 0) == at]
+        if not rows:
+            unreached.append(design["return_instruction_pc"])
+        pairs += [(design, row) for row in rows]
+    if len(pairs) != len(exits):
+        raise ValueError("A function_return exit has no return design.")
+    return pairs, unreached
+
+
+def allows_exit_resources_only(design):
+    """A return fact `True` (or JSON true) states no meaning: the exit resources only."""
+    fact = design["return_fact"]
+    return fact is True or str(fact).strip() == "True"
