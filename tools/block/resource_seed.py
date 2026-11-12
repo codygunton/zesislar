@@ -242,6 +242,23 @@ def seed_owned_resources(seed, *, entry_pc, vocabulary, constants=None, facts=()
                                   f'Z.add ({component["address_z"]}) '
                                   f'({"Z.of_nat ("+original_length+")" if array is not None else original_length}) <= 2^64)%Z'},
                         'origin': origin, 'status': 'derived-by-pass'})
+    # Two separately owned resources with full permission own disjoint bytes:
+    # an address inside one cannot be a byte of the other. Explicit range
+    # facts keep precedence; this adds only the pairs that they omit.
+    explicit = {frozenset((fact['terms']['left'], fact['terms']['right']))
+                for fact in derived if fact.get('kind') == 'disjoint_ranges'}
+    full = [resource for resource in resources if resource.writable is True]
+    for index, first in enumerate(full):
+        for second in full[index + 1:]:
+            if frozenset((first.id, second.id)) in explicit:
+                continue
+            derived.append({'fact_id': first.id + ':' + second.id + ':separation', 'kind': 'disjoint_ranges',
+                            'terms': {'left': first.id, 'right': second.id,
+                                      'coq_statement': 'separately owned DfracOwn 1 points-to: '
+                                                       + first.address_z + ' and ' + second.address_z},
+                            'origin': {'rule': 'separating conjunction of two full-permission resources',
+                                       **provenance},
+                            'status': 'derived-by-pass'})
     state.reports.append({'kind': 'source_owned_seed', 'ownership_ids': [r.id for r in resources],
                           'uninitialized_values_created': False})
     return OwnedSeed(state, ownership, resources, derived, reports)

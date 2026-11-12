@@ -197,6 +197,37 @@ class CompilerFindlibTests(unittest.TestCase):
         self.assertEqual(result.returncode, 75)
         self.assertEqual(result.stderr, "")
 
+    def guarded_compile(self, admission_seconds, compile_seconds, limit):
+        # The fake guard waits before it admits the compile, as a busy guard does.
+        guard = self.root / "guard"
+        guard.write_text(f"#!/bin/sh\nsleep {admission_seconds}\nshift 3\nexec \"$@\"\n")
+        guard.chmod(0o755)
+        compiler = self.root / "coqc"
+        compiler.write_text(f"#!/bin/sh\nsleep {compile_seconds}\n")
+        compiler.chmod(0o755)
+        return subprocess.run(["python3", str(TOOLS / "coqc_findlib.py"), "guarded",
+                               "--guard", str(guard), "--", str(compiler), "Probe.v"],
+                              cwd=self.root, env=fixture_environment(ZESU_COMPILE_SECONDS=str(limit)),
+                              capture_output=True, text=True)
+
+    def test_compile_limit_excludes_the_admission_wait(self):
+        # Scaled from a 10 minute admission wait and a 5 s compile under a 600 s limit.
+        result = self.guarded_compile(3, 0.2, 2)
+        self.assertEqual(result.returncode, 0, result.stderr)
+
+    def test_compile_limit_stops_a_long_compile_after_admission(self):
+        result = self.guarded_compile(0, 30, 1)
+        self.assertEqual(result.returncode, 124)
+        self.assertIn("sending signal TERM", result.stderr)
+
+    def test_invalid_compile_limit_is_refused(self):
+        result = subprocess.run(["python3", str(TOOLS / "coqc_findlib.py"), "guarded",
+                                 "--guard", "/absent/guard", "--", "/absent/coqc", "Probe.v"],
+                                cwd=self.root, env=fixture_environment(ZESU_COMPILE_SECONDS="ten"),
+                                capture_output=True, text=True)
+        self.assertEqual(result.returncode, 2)
+        self.assertIn("ZESU_COMPILE_SECONDS", result.stderr)
+
     def test_wrappers_preserve_arguments_and_the_normal_guard(self):
         (self.tools / "guard-bin").mkdir()
         shutil.copy2(TOOLS / "dune_coqc_guarded.sh", self.tools / "guard-bin/coqc")
@@ -276,8 +307,9 @@ class CompilerFindlibTests(unittest.TestCase):
         source.write_text("Check unit.\n")
         subprocess.run([str(wrapper), "Probe.v"], cwd=source.parent, env=environment, check=True)
         rows = [json.loads(line) for line in log.read_text().splitlines()]
+        # A changed source books its directory prior (at least 2 GiB); the fence stays 16 GiB.
         self.assertEqual([int(row["ZESU_MODULE_CLAIM_BYTES"]) for row in rows],
-                         [booking(600 * 1024 ** 2, 16 * GIB), 16 * GIB])
+                         [booking(600 * 1024 ** 2, 16 * GIB), 2 * GIB])
         self.assertTrue(all(row["ZESU_MODULE_LIMIT_GIB"] == "16" for row in rows))
         # A damaged profile books the full fence; it never blocks a compile.
         profile.write_text("invalid JSON")

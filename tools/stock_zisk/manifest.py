@@ -50,6 +50,31 @@ def elf_layout(path):
                 'flags': elf['e_flags'], 'segments': segments, 'sections': sections}
 
 
+APPROVED_ADAPTERS = {'guest/build.zig'}
+
+
+def adapter_record(upstream, patch_path, result, reason):
+    """Record one declared patch of a staged author file."""
+    return {'kind': 'patch', 'patch': file_record(patch_path),
+            'upstream_sha256': digest(upstream), 'result_sha256': digest(result),
+            'reason': reason}
+
+
+def check_adapters(recipe):
+    """Accept only declared patches that reproduce their recorded staged file."""
+    adapters = recipe['adapters']
+    if not isinstance(adapters, dict) or set(adapters) - APPROVED_ADAPTERS:
+        raise ValueError(f'Source adapters differ: {sorted(adapters)!r}')
+    for name, record in adapters.items():
+        if not isinstance(record, dict) or record.get('kind') != 'patch' or not record.get('reason'):
+            raise ValueError(f'Invalid source adapter: {name}')
+        require_equal(record['upstream_sha256'], recipe['inputs'][name]['sha256'], f'{name} adapter base')
+        require_equal(digest(record['patch']['path']), record['patch']['sha256'], f'{name} adapter patch')
+        result = subprocess.run(['patch', '-s', '-o', '-', recipe['inputs'][name]['path'],
+                                 record['patch']['path']], check=True, stdout=subprocess.PIPE).stdout
+        require_equal(hashlib.sha256(result).hexdigest(), record['result_sha256'], f'{name} adapter result')
+
+
 def artifact_identity(recipe):
     """Derived files bind to inputs and ELF, without a circular manifest hash."""
     fields = ['sources', 'zig_version', 'object_command', 'link_command',
@@ -192,7 +217,7 @@ def check(out, pins):
     require_equal(recipe['zig_version'], '0.16.0', 'Zig version')
     require_equal(subprocess.check_output([recipe['zig_executable'], 'version'], text=True).strip(), '0.16.0', 'Installed Zig')
     require_equal(digest(recipe['zig_executable']), recipe['zig_executable_sha256'], 'Zig executable')
-    require_equal(recipe['adapters'], {}, 'Source adapters')
+    check_adapters(recipe)
     jobs = recipe['jobs']
     if not isinstance(jobs, int) or not 1 <= jobs <= 48:
         raise ValueError('Invalid worker count')

@@ -24,14 +24,17 @@ def tools_digest(workspace):
 
 def tools_unchanged(ledger, digest, *, closed, guard_reader=None):
     from gate_exit_peaks import latest
-    entries = ledger.get('gate_exit_peaks', [])
-    if not entries or digest is None:
+    if digest is None:
         return False
-    entry = entries[-1]
+    # Gates from all worktrees share the ledger. Use the newest entry for these
+    # tools bytes; an invalid newest match does not fall back to an older one.
+    entry = next((entry for entry in reversed(ledger.get('gate_exit_peaks', []))
+                  if isinstance(entry, dict) and isinstance(entry.get('code_identity'), dict)
+                  and entry['code_identity'].get('tools_tree_sha256') == digest), None)
+    if entry is None:
+        return False
     try:
         identity = entry['code_identity']
-        if identity.get('tools_tree_sha256') != digest:
-            return False
         target = entry['run_kind']
         from block.harness.code.entry_chain import read_bound
         request = read_bound(entry['request'])

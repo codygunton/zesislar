@@ -1,5 +1,6 @@
 """Preserve explicit array fractions with the source-bound helper signature."""
 from copy import deepcopy
+import re
 import hashlib
 from pathlib import Path
 
@@ -51,6 +52,12 @@ class FractionalSourceArrays:
             fraction = leaf.get('fraction')
             if fraction is None:
                 result.extend(self.plain_adapter({**record, 'source': leaf['source']}, context))
+                continue
+            if (leaf['kind'] == 'unknown_byte_array'
+                    and re.fullmatch(r'\{\s*DfracOwn\s+1\s*\}', fraction)):
+                # isla's `a ↦ₘ? n` is notation for `a ↦ₘ{DfracOwn 1}? n`.
+                result.extend(self.plain_adapter({**record, 'source': '(' + leaf['address_z'] + ') ↦ₘ? '
+                                                  + leaf['length']}, context))
                 continue
             if leaf['kind'] != 'byte_array':
                 raise ValueError('The source-bound array adapter cannot preserve this fractional resource')

@@ -20,6 +20,8 @@
     "module": "ZesuSsz.Contracts.DecodeItemSelected",
     "premise": "decodeItemSelectedCode"
   },
+  "return_address": {"register": "x1", "value": "(Z_to_bv 64 (decodeItemReturnAddress args))", "alignment": 4,
+    "source": "Each caller reaches the entry by jal or jalr from a 4-aligned pc (the proved code has no compressed instructions), so ra = pc + 4 is 4-aligned. The Level-1 domain states it: decodeItemEntryLayout (RlpDecodeItem.v) has returnAddress mod 4 = 0, and fp301_start_bridge (DecodeItemComplianceGenerated.v) proves this conjunct from it."},
   "entry_facts": {"fp_machineAt698c_ForwardA0N0": {"facts": ["decodeItemAcceptedFacts args false (bv_unsigned machine_x11 - decodeItemInputPointer args) (bv_unsigned machine_x12 - (bv_unsigned machine_x11 - decodeItemInputPointer args))", "bv_unsigned (List.nth 0%nat (decodeItemInputBytes args) (BV 8%N 0%Z)) <> 128"], "requires": ["Require Import ZesuSsz.Contracts.DecodeItemReturnFacts."]}, "fp_machineAt6ae0_ForwardA0N0": {"facts": ["decodeItemRejectedFacts args"], "requires": ["Require Import ZesuSsz.Contracts.DecodeItemReturnFacts."]}},
   "return_facts": ["DecodeMeaningModuloKnownBugs args currentStorage"],
   "return_requires": ["Require Import ZesuSsz.Compliance.DecodeItemMeaningPorted."],

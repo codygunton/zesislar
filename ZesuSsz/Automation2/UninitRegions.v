@@ -3,6 +3,8 @@ Require Import isla.riscv64.riscv64.
 Require Import ZesuMachineMap.Machine.
 Require Import ZesuSsz.Automation2.ByteArrayLengths.
 Require Import ZesuSsz.Automation2.RangeFacts.
+Require ZesuSsz.Contracts.IslarisMemory.
+Require ZesuSsz.Automation2.ContextCollection.
 From Ltac2 Require Import Ltac2.
 Set Default Proof Mode "Classic".
 
@@ -113,7 +115,11 @@ Ltac zesu_region_bounds := once (
       ZesuSsz.Automation2.ByteArrayLengths.zesu_byte_array_lengths_if_enabled; solve [lia | bv_solve]]
   | ZesuSsz.Automation2.UninitRegions.zesu_region_bounds_legacy]).
 
-Global Hint Extern 0 (ZesuSsz.Automation.UninitRegions.ZesuRegionBounds ?P) =>
+(* Its own class: the frozen core keeps a priority-0 extern on its class,
+   and with a shared class that extern ran its legacy bound solver on every
+   side condition that this rule refused. *)
+Class ZesuRegionBounds (P : Prop) : Prop := zesu_region_bounds_proof : P.
+Global Hint Extern 0 (ZesuRegionBounds ?P) =>
   (change P; zesu_region_bounds) : typeclass_instances.
 
 Inductive ZesuMemRegionSearch (address : Z) : Set :=.
@@ -158,7 +164,7 @@ Global Hint Extern 0 (FindHypEqual (ZesuMemRegionSearch _) (mmio_range _ _)
   (apply find_mem_region_mmio; zesu_region_bounds) : typeclass_instances.
 
 Lemma subsume_uninit_region `{!islaG Sigma} A a1 a2 n1 n2 G
-    `{!ZesuSsz.Automation.UninitRegions.ZesuRegionBounds (0 <= n2 /\ a1 <= a2 /\ a2 + n2 <= a1 + n1)%Z} :
+    `{!ZesuRegionBounds (0 <= n2 /\ a1 <= a2 /\ a2 + n2 <= a1 + n1)%Z} :
   (li_tactic (normalize_bv_wrap (a2 - a1)) (fun m1 => ⌜0 <= m1 < 2 ^ 64⌝ ∗
    li_tactic (normalize_bv_wrap (n1 - n2 - m1)) (fun m2 =>
      ⌜0 <= m2 < 2 ^ 64 /\ n1 < 2 ^ 64⌝ ∗
@@ -166,7 +172,7 @@ Lemma subsume_uninit_region `{!islaG Sigma} A a1 a2 n1 n2 G
   subsume (a1 ↦ₘ? n1) (fun x : A => a2 ↦ₘ? n2) G.
 Proof.
   have Hbounds : BvSolve (0 <= n2 /\ a1 <= a2 /\ a2 + n2 <= a1 + n1)%Z.
-  { unfold BvSolve. exact ZesuSsz.Automation.UninitRegions.zesu_region_bounds_proof. }
+  { unfold BvSolve. exact zesu_region_bounds_proof. }
   exact (subsume_mem_uninit_mem_uninit A a1 a2 n1 n2 G).
 Qed.
 Print Assumptions subsume_uninit_region.
@@ -175,8 +181,35 @@ Definition subsume_uninit_region_inst := [instance @subsume_uninit_region].
 Global Existing Instance subsume_uninit_region_inst.
 Global Remove Hints subsume_mem_uninit_mem_uninit_inst : typeclass_instances.
 
+(* The contract's fallback rule for an uninitialized region raises the
+   containment as an obligation. Refuse it when the facts already show the
+   containment fails, so the search does not commit to a false goal. The
+   class carries no proof; its instance only checks the refutation. *)
+Class ZesuRegionNotRefuted (P : Prop) : Prop := zesu_region_not_refuted : True.
+Ltac zesu_region_refute :=
+  first [zesu_region_bounds |
+    ZesuSsz.Automation2.ContextCollection.zesu_solve_goal_selected
+      ("region.refute"%string) ltac:(first [lia | bv_solve])].
+Global Hint Extern 0 (ZesuRegionNotRefuted (0 <= ?n2 /\ ?a1 <= ?a2 /\ ?a2 + ?n2 <= ?a1 + ?n1)%Z) =>
+  (assert_fails (assert (n2 < 0 \/ a2 < a1 \/ a1 + n1 < a2 + n2)%Z by zesu_region_refute);
+   exact I) : typeclass_instances.
+
+Lemma subsume_mem_uninit_region_checked `{!islaG Sigma} A a1 a2 n1 n2 G
+    `{!ZesuRegionNotRefuted (0 <= n2 /\ a1 <= a2 /\ a2 + n2 <= a1 + n1)%Z} :
+  ((⌜(0 <= n2 /\ a1 <= a2 /\ a2 + n2 <= a1 + n1)%Z⌝ ∗
+    (a1 ↦ₘ? (a2 - a1) -∗
+     (a2 + n2) ↦ₘ? (a1 + n1 - (a2 + n2)) -∗
+     ∃ x : A, G x))%I)
+  ⊢ subsume (a1 ↦ₘ? n1) (fun _ : A => a2 ↦ₘ? n2) G.
+Proof. exact (ZesuSsz.Contracts.IslarisMemory.subsume_mem_uninit_region A a1 a2 n1 n2 G). Qed.
+
+Definition subsume_mem_uninit_region_checked_inst :=
+  [instance @subsume_mem_uninit_region_checked].
+Global Existing Instance subsume_mem_uninit_region_checked_inst | 100.
+Global Remove Hints ZesuSsz.Contracts.IslarisMemory.subsume_mem_uninit_region_inst : typeclass_instances.
+
 Lemma subsume_uninit_region_crossing `{!islaG Sigma} A a1 a2 n1 n2 G
-    `{!ZesuSsz.Automation.UninitRegions.ZesuRegionBounds (0 <= n2 /\ a1 <= a2 /\ a2 <= a1 + n1 /\ a1 + n1 <= a2 + n2)%Z} :
+    `{!ZesuRegionBounds (0 <= n2 /\ a1 <= a2 /\ a2 <= a1 + n1 /\ a1 + n1 <= a2 + n2)%Z} :
   (li_tactic (normalize_bv_wrap (a2 - a1)) (fun m1 => ⌜0 <= m1 < 2 ^ 64⌝ ∗
    li_tactic (normalize_bv_wrap (n2 - (n1 - m1))) (fun m2 => ⌜0 <= m2 < 2 ^ 64⌝ ∗
    li_tactic (normalize_bv_wrap (a2 + n1 - m1)) (fun m3 =>
@@ -185,7 +218,7 @@ Lemma subsume_uninit_region_crossing `{!islaG Sigma} A a1 a2 n1 n2 G
   subsume (a1 ↦ₘ? n1) (fun x : A => a2 ↦ₘ? n2) G.
 Proof.
   have Hbounds : BvSolve (0 <= n2 /\ a1 <= a2 /\ a2 <= a1 + n1 /\ a1 + n1 <= a2 + n2)%Z.
-  { unfold BvSolve. exact ZesuSsz.Automation.UninitRegions.zesu_region_bounds_proof. }
+  { unfold BvSolve. exact zesu_region_bounds_proof. }
   exact (subsume_mem_uninit_mem_uninit2 A a1 a2 n1 n2 G).
 Qed.
 Print Assumptions subsume_uninit_region_crossing.
@@ -195,7 +228,7 @@ Global Existing Instance subsume_uninit_region_crossing_inst.
 Global Remove Hints subsume_mem_uninit_mem_uninit2_inst : typeclass_instances.
 
 Lemma simplify_uninit_empty_hyp `{!islaG Sigma} a n G
-    `{!ZesuSsz.Automation.UninitRegions.ZesuRegionBounds (n = 0)%Z} :
+    `{!ZesuRegionBounds (n = 0)%Z} :
   G ⊢ simplify_hyp (a ↦ₘ? n) G.
 Proof. by iIntros "$ ?". Qed.
 Definition simplify_uninit_empty_hyp_inst := [instance @simplify_uninit_empty_hyp with 0%N].
@@ -203,11 +236,11 @@ Global Existing Instance simplify_uninit_empty_hyp_inst.
 Global Remove Hints simpl_hyp_uninit_0_inst : typeclass_instances.
 
 Lemma simplify_uninit_empty_goal `{!islaG Sigma} a n G
-    `{!ZesuSsz.Automation.UninitRegions.ZesuRegionBounds (n = 0)%Z} :
+    `{!ZesuRegionBounds (n = 0)%Z} :
   ⌜0 <= a <= 2 ^ 64⌝ ∗ G ⊢ simplify_goal (a ↦ₘ? n) G.
 Proof.
   have Hbounds : BvSolve (n = 0)%Z.
-  { unfold BvSolve. exact ZesuSsz.Automation.UninitRegions.zesu_region_bounds_proof. }
+  { unfold BvSolve. exact zesu_region_bounds_proof. }
   exact (simpl_goal_uninit_0 a n G).
 Qed.
 Print Assumptions simplify_uninit_empty_goal.
@@ -216,11 +249,11 @@ Global Existing Instance simplify_uninit_empty_goal_inst.
 Global Remove Hints simpl_goal_uninit_0_inst : typeclass_instances.
 
 Lemma subsume_mem_word_address `{!islaG Sigma} A (a1 a2 : Z) n (word : bv n) G
-    `{!ZesuSsz.Automation.UninitRegions.ZesuRegionBounds (a1 = a2)%Z} :
+    `{!ZesuRegionBounds (a1 = a2)%Z} :
   (∃ x : A, G x) ⊢ subsume (a1 ↦ₘ word) (fun _ : A => a2 ↦ₘ word) G.
 Proof.
   iDestruct 1 as (x) "HG". iIntros "Hword".
-  have -> : a1 = a2 by exact ZesuSsz.Automation.UninitRegions.zesu_region_bounds_proof.
+  have -> : a1 = a2 by exact zesu_region_bounds_proof.
   iExists x. iFrame.
 Qed.
 Definition subsume_mem_word_address_inst := [instance @subsume_mem_word_address].

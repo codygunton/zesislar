@@ -135,8 +135,8 @@ class UnifiedAdmission(unittest.TestCase):
     def canonical(self,key,amount):
         policy={'ledger':str(self.ledger),'lock':str(self.ledger.with_suffix('.lock')),
                 'claim_key':key,'claim_bytes':amount}
-        def projection(data,claims,new,free):
-            return M.projection(data,claims,new,free,reader=self.reader)
+        def projection(data,claims,new,free,**options):
+            return M.projection(data,claims,new,free,reader=self.reader,**options)
         class Refused(Exception):pass
         def stop(_):raise Refused()
         with patch.object(G,'projection',projection):

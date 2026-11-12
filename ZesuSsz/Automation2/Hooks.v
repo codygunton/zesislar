@@ -376,8 +376,11 @@ Ltac zesu_strict_signed_if_enabled :=
   end.
 
 (* Library solvers also call these primitives without the project finisher.
-   A residual lemma is the last attempt after the solver fails. *)
-Ltac bv_solve ::= first [zesu_context_filter ltac:(first [solve [zesu_strict_signed_if_enabled] |
+   A linear address (in)equality closes first by the reflective normal form
+   (BvLinear); other goals fail there at once. A residual lemma is the last
+   attempt after the solver fails. *)
+Ltac bv_solve ::= first [solve [ZesuSsz.Automation2.BvLinear.zesu_bv_linear_with ltac:(lia)] |
+  zesu_context_filter ltac:(first [solve [zesu_strict_signed_if_enabled] |
   solve [zesu_low_mask_sub_modulus_if_enabled] |
   solve [zesu_low_mask_if_closed] |
   (
@@ -2299,7 +2302,6 @@ Ltac zesu_liAStep :=
   | LoopBackedgeJoin.zesu_loop_backedge_choice
   | ZesuSsz.Automation2.UnionRuleComponents.zesu_region_fault_if_enabled
   | zesu_expose_instruction_lookup
-  | zesu_region_fault_if_enabled
   | zesu_ram_fault_if_enabled
   | zesu_signed_address_if_enabled
   | zesu_stack_write_if_enabled
@@ -2817,7 +2819,8 @@ Ltac liAAsm ::=
   end.
 
 
-Ltac Lia.lia ::= first [zesu_context_filter ltac:(zesu_lia_linear_first3) |
+Ltac Lia.lia ::= first [solve [ZesuSsz.Automation2.BvLinear.zesu_bv_linear_with ltac:(lia)] |
+  zesu_context_filter ltac:(zesu_lia_linear_first3) |
   ResidualLemmas.zesu_residual_lemma].
 
 

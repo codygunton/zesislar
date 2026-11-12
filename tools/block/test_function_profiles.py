@@ -115,6 +115,15 @@ class CallerPlan(unittest.TestCase):
         cases[1]['status'] = 'stopped'
         self.assertEqual(plan_callers(profile, cases, function)[0][2], 'successor entry not rendered: 1010')
 
+    def test_return_block_renders_once_the_return_package_renders(self):
+        profile = other_profile()
+        function = {'blocks': [{'start': 0x800d1000, 'successors': [0x800d1010]},
+                               {'start': 0x800d1010, 'successors': []}]}
+        cases = [{'pc': '0x800d1000', 'status': 'source_declarations_rendered'},
+                 {'pc': '0x800d1010', 'status': 'source_declarations_rendered'},
+                 {'pc': 'function_return', 'status': 'source_declarations_rendered'}]
+        self.assertEqual(plan_callers(profile, cases, function)[-1], ('1010', [], None))
+
 
 class JoinEdgeAlignment(unittest.TestCase):
     ORIGINAL = {'kind': 'exists', 'binders': [{'name': 'x10', 'type': 'bv 64'}], 'scope': [],
@@ -140,6 +149,16 @@ class JoinEdgeAlignment(unittest.TestCase):
         self.assertEqual(extra, [{'name': 'machine_x12', 'type': 'bv 64'}])
         kept, _ = align_join_edges([joined], ownership, 'r1', 'K', keep_binders=True)
         self.assertEqual([b['name'] for b in kept[0]['resource_boundary']['tree']['binders']], ['x10', 'machine_x12'])
+
+    def test_join_design_components_leave_like_relations(self):
+        ownership = {'tree': self.ORIGINAL, 'components': [{'id': 'r0', 'source': 'A'}, {'id': 'r1', 'source': 'True'}]}
+        seeded = {'kind': 'sep', 'right': {'kind': 'component', 'id': 'r1'},
+                  'left': {'kind': 'exists', 'binders': [], 'scope': [0], 'body': {'kind': 'sep_list', 'children': [
+                      {'kind': 'component', 'id': 'r0'}, {'kind': 'component', 'id': 'join_design_0'}]}}}
+        joined = self.edge(seeded, 'K', [{'id': 'join_design_0', 'source': '⌜Q⌝'}])
+        aligned, _ = align_join_edges([joined], ownership, 'r1', 'K')
+        self.assertEqual(aligned[0]['resource_boundary']['tree'], self.ORIGINAL)
+        self.assertEqual([c['source'] for c in aligned[0]['resource_boundary']['components']], ['A', 'True'])
 
     def test_other_differences_stay_for_the_refusal(self):
         ownership = {'tree': self.ORIGINAL, 'components': [{'id': 'r0', 'source': 'A'}, {'id': 'r1', 'source': 'True'}]}

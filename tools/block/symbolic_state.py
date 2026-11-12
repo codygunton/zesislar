@@ -380,6 +380,24 @@ def _addends(expr):
     return [expr], 0
 
 
+def _length_bound(length, width):
+    """An owned array's actual length as a bitvector term, or None.
+
+    A constant stays a constant. A list length becomes `Z_to_bv width (Z.of_nat n)`,
+    equal to n for every array that memory can hold."""
+    if isinstance(length, int):
+        return bits(length, width)
+    if not isinstance(length, Expr):
+        return None
+    if length.op == 'bits':
+        return bits(length.value, width)
+    if length.width == width:
+        return length
+    if length.width is None and length.op == 'input' and re.match(r'(?:List\.)?length ', str(length.value)):
+        return input_expr('(Z_to_bv %d%%N (Z.of_nat (%s)))' % (width, length.value), width)
+    return None
+
+
 def _symbolic_owner(address, regions):
     """Return the one initialized owned array that a symbolic in-array address names.
 
@@ -626,7 +644,13 @@ class _Evaluator:
         block proof discharges it at the boundary that states it.
         """
         index = operation('bvsub', address, region.base)
-        in_range = operation('bvult', index, bits(extent, address.width))
+        # The index is below the array's actual length, which every real read satisfies;
+        # a known lower bound of the length would be false on a later element.
+        length = _length_bound(region.length, address.width)
+        if length is None:
+            self.report('unknown_memory_bound', address=address.to_dict())
+            return Expr('unknown_read', (address,), 8)
+        in_range = operation('bvult', index, length)
         if in_range not in self.state.conditions:
             self.state.conditions.append(in_range)
         identity = hashlib.sha256(json.dumps([address.to_dict(), region.base.to_dict(),

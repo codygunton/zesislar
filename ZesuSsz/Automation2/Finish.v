@@ -50,6 +50,7 @@ Require Import ZesuSsz.Automation2.ConjunctMatch.
 Require Import ZesuSsz.Automation2.ArrayLoadPreselect.
 Require Import ZesuSsz.Automation2.ReturnBundle.
 Require Import ZesuSsz.Automation2.ReturnWand.
+Require Import ZesuSsz.Automation2.Diagnostics.
 From iris.proofmode Require Import environments.
 From Ltac2 Require Import Ltac2.
 Set Default Proof Mode "Classic".
@@ -375,6 +376,7 @@ Ltac zesu_finish_v1 :=
   | |- environments.envs_entails _ _ => idtac
   | _ =>
       try (zesu_saturate_alignment);
+      zesu_diag_stage "finish_v1.solvers";
       try zesu_finish_lia;
       try (zesu_bv_solver_goal;
         ZesuSsz.Automation2.ContextCollection.zesu_solve_goal_selected
@@ -473,6 +475,7 @@ Ltac zesu_finish_pure_goal_base :=
   try (zesu_finish_ram_address);
   try (zesu_finish_pointer_alignment);
   try (zesu_saturate_alignment);
+  zesu_diag_stage "finish_pure_goal.solvers";
   try zesu_finish_lia;
   try (tryif zesu_finish_defer_cancel_shape then idtac else bv_solve);
   (* C6, last: the goal is arithmetic and everything above has refused it,
@@ -722,14 +725,37 @@ Ltac zesu_finish_source_tail :=
       SourceFactMatching.zesu_source_match_tree requested ltac:(idtac))
     ltac:(fun _ => SourceFactMatching.zesu_source_finish_package).
 
-(* The direct source tail runs last, after the switched closers fail. *)
+(* The switched closers. The witness telescope runs on any goal; the other
+   closers run only on a goal without open witnesses. Neither the full
+   source-package route nor the direct source tail is tried here: the deferring step after this cascade
+   runs the route once, closes a package whose fixed facts the source closers
+   prove, and splits off the rest; the tail runs only when the route fails
+   outright. Before, a package that could not close opened its memory tuple
+   three times (strict route, tail, deferring route). *)
+(* A goal that still holds open existential witnesses: an existential
+   package, or open evars. The cascade's closers traverse the whole goal
+   term; on a large open package each traversal normalizes its evars again,
+   and none of these closers chooses witnesses. *)
+Ltac zesu_goal_holds_open_witnesses :=
+  lazymatch goal with
+  | |- environments.envs_entails _ ?target =>
+      first [has_evar target
+        | lazymatch target with
+          | @bi_exist _ _ _ => idtac
+          | @bi_sep _ (@bi_exist _ _ _) _ => idtac
+          end]
+  | |- ?target => has_evar target
+  end.
+
 Ltac zesu_finish_residual_cascade :=
+  zesu_diag_stage "residual_cascade";
   first [solve [
     zesu_finish_residual_switches;
     first [ solve [ZesuSsz.Automation2.MaskWitness.zesu_mask_witness_telescope;
               unshelve (repeat liAStep); zesu_finish_v1]
-          | solve [SourceFactMatching.zesu_source_registered_disjunction ltac:(zesu_finish_source_package)]
-          | solve [zesu_finish_source_package]
+          | tryif zesu_goal_holds_open_witnesses then fail else idtac;
+            first [
+            solve [SourceFactMatching.zesu_source_registered_disjunction ltac:(zesu_finish_source_package)]
           | solve [ZesuSsz.Automation2.WordIdentity.zesu_word_identity]
           | solve [zesu_masked_add_branch_finish]
           | solve [ZesuSsz.Automation2.HypothesisCast.zesu_hypothesis_cast_finish]
@@ -746,17 +772,23 @@ Ltac zesu_finish_residual_cascade :=
           | solve [ZesuSsz.Automation2.CodecFrame.zesu_codec_frame]
           | solve [ZesuSsz.Automation2.ArrayPayloadPresentation.zesu_array_payload_presentation
               ltac:(first [ZesuSsz.Automation2.SymbolicByteCodec.zesu_symbolic_byte_codec |
-      ZesuSsz.Automation2.FramePackingFinish.zesu_frame_packing_finish])] ]
-  ] | solve [zesu_finish_source_tail]].
+      ZesuSsz.Automation2.FramePackingFinish.zesu_frame_packing_finish])] ] ]
+  ]].
 
 (* A package that the cascade cannot close because of fixed pure conjuncts.
    The source route commits the witnesses and the resources. Each fixed
    conjunct that the source closers cannot prove gets the residual tier, and
    a conjunct that the tier cannot close stays as its own pure goal. Runs only
    after the cascade fails, so a package that closes today is not changed. *)
+Inductive zesu_split_baseline : Prop := zesu_split_baseline_intro.
+
 Ltac zesu_finish_package_deferring :=
   lazymatch goal with |- environments.envs_entails _ _ => idtac end;
+  zesu_diag_stage "package_deferring";
   zesu_finish_residual_switches;
+  (* Marks where the facts that the route introduces begin. *)
+  let baseline := fresh "HsplitBaseline" in
+  pose proof zesu_split_baseline_intro as baseline;
   unshelve (zesu_finish_source_package_with
     ltac:(fun requested => SourceFactMatching.zesu_source_defer_fixed_tree requested)).
 
@@ -793,7 +825,14 @@ Ltac zesu_union_pure_finish :=
      zesu_union_pure_leaf)].
 
 
-(* The common pure path uses existing facts and bounded address rewrites. *)
+(* The common pure path uses existing facts and bounded address rewrites.
+   The first arm of `zesu_finish_final_pure` ends in `try solve`, so it
+   succeeds on every pure goal; the common path therefore also runs, under
+   `solve`, on the goal that arm leaves open. Only the final finisher does
+   this: the search loop calls the other finishers on every pass, and the
+   common path is too costly to fail there (block 800d6a78 ran over 2.3 times
+   longer). The `| zesu_finish_common_pure` arms still cover a goal that a
+   first arm refuses outright. *)
 Ltac zesu_finish_common_pure :=
   zesu_final_pure_head_gate;
   first [zesu_union_required_pure | solve [
@@ -822,6 +861,7 @@ Ltac zesu_finish_final_pure :=
   tryif progress zesu_saturate_derived_facts
   then try solve [zesu_array_bounds_if_enabled]
   else idtac;
+  zesu_diag_stage "final_pure";
   try solve [
     first [
       zesu_finish_negated_ge; zesu_finish_implication_pair; repeat split;
@@ -839,7 +879,8 @@ Ltac zesu_finish_final_pure :=
           zesu_finish_simpl_and_leaf |
           lazymatch goal with |- and _ _ => split; finish_leaf end]
       in finish_leaf
-    | zesu_finish_list_cons_final]] | zesu_finish_common_pure].
+    | zesu_finish_list_cons_final]];
+  try solve [zesu_finish_common_pure] | zesu_finish_common_pure].
 
 
 
@@ -1055,7 +1096,8 @@ Ltac zesu_run_pass_v1 :=
   try zesu_prepare_uninit_goal;
   try zesu_normalize_find_mem_address;
   unshelve (time "zesu_run" repeat first
-    [SourceFactMatching.zesu_source_destruct_registered_disjunction |
+    [zesu_diag_step |
+     SourceFactMatching.zesu_source_destruct_registered_disjunction |
      ZesuSsz.Automation2.CodecArrayRead.zesu_codec_array_read_consumer |
      zesu_v34_array_continuation |
      zesu_union_witness_step | zesu_target_registered_intro_if_enabled |
@@ -1072,7 +1114,7 @@ Ltac zesu_run_pass_v1 :=
      zesu_liAStep |
      ZesuSsz.Automation2.CodecArrayRead.zesu_codec_array_read_sidecond |
      zesu_open_matching_two_level_frame |
-     zesu_extract_matching_descriptor_pure]; liShow;
+     zesu_extract_matching_descriptor_pure]; zesu_diag_step_end; liShow;
     try zesu_finish_closed_wand;
     try zesu_finish_framed_wand;
     zesu_finish).
@@ -1082,7 +1124,7 @@ Ltac zesu_run_pass_v2 :=
   try zesu_prepare_uninit_goal;
   try zesu_normalize_find_mem_address;
   unshelve (time "zesu_run" repeat first
-    [zesu_target_registered_intro_if_enabled | zesu_array_load_preselect | zesu_array_load_priority | zesu_conjunct_match_if_enabled | zesu_run_pass_steps | zesu_close_matching_trace_tail | zesu_open_trace_exist | zesu_rule_set_v2_steps]; liShow;
+    [zesu_diag_step | zesu_target_registered_intro_if_enabled | zesu_array_load_preselect | zesu_array_load_priority | zesu_conjunct_match_if_enabled | zesu_run_pass_steps | zesu_close_matching_trace_tail | zesu_open_trace_exist | zesu_rule_set_v2_steps]; zesu_diag_step_end; liShow;
     try zesu_finish_closed_wand;
     try zesu_finish_framed_wand;
     zesu_finish).
@@ -1213,17 +1255,33 @@ Ltac zesu_block_base :=
 (* The package route opens the package's resource groups, so a conjunct that
    it splits off can see facts that no finisher call saw. The pure finisher
    runs once on each split conjunct before the final residual tier. *)
+Ltac zesu_clear_split_baseline :=
+  repeat match goal with H : zesu_split_baseline |- _ => clear H end.
+
+(* The finisher already ran with the facts that were present before the
+   split. A conjunct that no new fact reaches (no shared atom) gets nothing
+   new from another run, so the run is skipped. The residual lemmas go
+   first: a registered lemma closes its goal at once, while a goal that the
+   finisher cannot close can spin there before the residual tier runs. With
+   no registered lemma the tier fails at once. *)
 Ltac zesu_finish_split_conjunct :=
   lazymatch goal with
   | |- environments.envs_entails _ _ => fail
-  | _ => solve [zesu_finish]
+  | _ =>
+      zesu_diag_export_split;
+      ZesuSsz.Automation2.ContextCollection.zesu_facts_after_share_term constr:(zesu_split_baseline);
+      zesu_clear_split_baseline;
+      first [ResidualLemmas.zesu_residual_lemma | solve [zesu_finish]]
   end.
 
 (* Residual lemmas close the pure goals that every other tier leaves open. *)
 Ltac zesu_block2 :=
   zesu_block_base; try zesu_finish_residual_cascade;
-  try (zesu_finish_package_deferring; try zesu_finish_split_conjunct);
-  try ResidualLemmas.zesu_residual_lemma.
+  try first [
+    (zesu_finish_package_deferring; try zesu_finish_split_conjunct; zesu_clear_split_baseline)
+  | solve [zesu_finish_source_tail]];
+  try (zesu_diag_stage "residual_lemma"; ResidualLemmas.zesu_residual_lemma);
+  zesu_diag_refusal "final".
 
 Ltac zesu_block_simpl :=
   iStartProof;

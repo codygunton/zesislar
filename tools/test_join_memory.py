@@ -61,6 +61,13 @@ class MemoryJoinTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, 'typed source owner'):
             self.image(resource, paths, basis, expressions)
 
+    def test_a_symbolic_offset_store_leaves_the_array_to_packaging(self):
+        resource, paths, basis, expressions = self.fixture()
+        write, _ = paths[0][0]
+        paths[0][0] = write, operation('bvsub', write.address, resource.base)
+        result = self.image(resource, paths, basis, expressions)
+        self.assertEqual((result['status'], result['detail']), ('refused', 'A store has a symbolic offset'))
+
     def test_source_paths_remain_unchanged(self):
         resource, paths, basis, expressions = self.fixture()
         before = deepcopy(paths)

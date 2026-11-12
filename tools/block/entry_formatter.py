@@ -436,6 +436,9 @@ def format_owned_entry_boundary(boundary, *, original_seed, vocabulary, continua
             raise ValueError('An entry cut needs a source-bound outer continuation')
         # Edges through an earlier join seed share the original tree. A single
         # edge keeps the seed's binders in that tree's witness scope.
+        # The join generalization aligns the raw edges itself, so it keeps the
+        # binders that edges through an earlier join seed inherit.
+        raw_alternatives = boundary.get('alternatives', [])
         boundary = {**boundary, 'alternatives': align_join_edges(
             boundary['alternatives'], original_seed.ownership, continuation['terminal_id'],
             continuation['name'], keep_binders=len(boundary.get('alternatives', [])) == 1)[0]}
@@ -447,7 +450,7 @@ def format_owned_entry_boundary(boundary, *, original_seed, vocabulary, continua
                 'kind': 'exact_deduplication' if first.manifest['exact_duplicate_alternatives']
                         else 'single_alternative', 'proof_established': False}
             return first
-        joined = generalize_owned_join(boundary['alternatives'], original_seed=original_seed,
+        joined = generalize_owned_join(raw_alternatives, original_seed=original_seed,
             entry_pc=int(boundary['pc'], 0), vocabulary=vocabulary, continuation=continuation,
             **(join_options or {}))
         if joined['plan']['join_refusals']:

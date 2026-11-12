@@ -6,6 +6,7 @@ source arithmetic only. They never certify an Iris entailment or a native proof.
 from copy import deepcopy
 from dataclasses import dataclass, replace
 import hashlib
+import json
 from pathlib import Path
 import re
 
@@ -179,9 +180,14 @@ def hull(values, conditions, *, name, scalar_ranges=None):
             'coq': f'({low}%Z <= bv_unsigned {name} <= {high}%Z)%Z'}
 
 
-def witness_plan(binders, *, register_bindings, source_bindings=None, source_context=None):
-    """Use only the selector's existing register/pair input constructors."""
+def witness_plan(binders, *, register_bindings, source_bindings=None, source_context=None,
+                 array_bindings=None):
+    """Use only the selector's existing register/pair input constructors.
+
+    array_bindings maps a binder to the owned byte array whose value it is.
+    """
     inputs, witnesses = [], []
+    array_bindings = array_bindings or {}
     sources = {}
     if source_bindings is not None:
         from source_witness_bindings import authenticate_sources
@@ -196,6 +202,10 @@ def witness_plan(binders, *, register_bindings, source_bindings=None, source_con
             inputs.append(sources[name])
             witnesses.append({'binder': name, 'source_key': sources[name]['source_key'],
                               'type': binder['type']})
+            continue
+        if name in array_bindings and name not in register_bindings:
+            inputs.append({'kind': 'owned_array', 'resource_id': array_bindings[name]})
+            witnesses.append({'binder': name, 'resource_id': array_bindings[name], 'type': binder['type']})
             continue
         if name not in register_bindings:
             raise ValueError('A join witness needs array packaging or an approved input interface: ' + name)
@@ -444,7 +454,7 @@ def align_join_edges(alternatives, ownership, terminal_id, continuation_name, ke
         body = left.get('body') or {}
         if body.get('kind') == 'sep_list':
             relations = {child.get('id') for child in body['children']
-                         if str(child.get('id', '')).startswith('join_relation_')}
+                         if str(child.get('id', '')).startswith(('join_relation_', 'join_design_'))}
             body = {**body, 'children': [child for child in body['children']
                                          if child.get('id') not in relations]}
         shape = {key: value for key, value in left.items() if key not in ('binders', 'scope', 'body')}
@@ -472,10 +482,217 @@ def align_join_edges(alternatives, ownership, terminal_id, continuation_name, ke
     return aligned, extra
 
 
+# Registers an exit may observe: return address, stack pointer, callee-saved, return values.
+EXIT_OBSERVED = {'x1', 'x2', 'x8', 'x9', 'x10', 'x11', *('x%d' % number for number in range(18, 28))}
+
+
+def _mentions(text, name):
+    return re.search(r"(?<![\w'])" + re.escape(name) + r"(?![\w'])", text) is not None
+
+
+def _render_span(key, writes, original_seed, ownership, state, apply_owned_writes, render_resource_boundary,
+                 vocabulary):
+    """The source of one owned span after `writes`, as an edge renders it."""
+    image = apply_owned_writes(original_seed.resources, writes, conditions=state.conditions,
+                               facts=original_seed.facts, endianness=state.endianness)
+    span = render_resource_boundary(ownership, image, state, retained_registers=state.registers,
+                                    vocabulary=vocabulary)
+    if span['block_status'] != 'completed':
+        raise ValueError('The agreed bytes of a join span cannot render: ' + key)
+    return next(row['source'] for row in span['components'] if row['id'] == key)
+
+
+def drop_unheld_binders(state, components, carried, binders, plan, live_registers, render_span):
+    """Remove inherited binders that no register or whole array holds.
+
+    1. A pure equation `b = e` defines b: substitute e and drop the equation.
+    2. Otherwise, if no successor needs b's value, drop b: a dead register that mentions it
+       gets a fresh binder it holds, an agreed span byte that mentions it becomes
+       uninitialized again, and the path conditions that mention it are dropped. Each is a
+       sound weakening.
+    3. A live register or a whole array value that mentions b needs it: refuse with the facts.
+    """
+    held = {value.value for value in state.registers.values() if value.op == 'input'}
+    held |= {component.get('value') for component in components if component['kind'] == 'byte_array'}
+    taken = {binder['name'] for binder in binders} | {binder['name'] for binder in plan['binders']}
+    for name in [binder['name'] for binder in binders]:
+        if name in held:
+            continue
+        text = lambda value: json.dumps(value.to_dict(), sort_keys=True)
+        occurs = (any(_mentions(text(value), name) for value in state.registers.values())
+                  or any(_mentions(component.get('source', ''), name) for component in components
+                         if component['kind'] != 'register')
+                  or any(_mentions(text(condition), name) for condition in state.conditions))
+        if not occurs:
+            continue
+        definition = None
+        for condition in state.conditions:
+            if condition.op == '=' and len(condition.args) == 2:
+                for side, other in (condition.args, reversed(condition.args)):
+                    if side.op == 'input' and side.value == name and not _mentions(text(other), name):
+                        definition = (condition, side, other)
+        if definition is not None:
+            condition, side, other = definition
+            mapping = {side: other}
+            state.conditions[:] = [substitute(c, mapping) for c in state.conditions if c is not condition]
+            for register, value in list(state.registers.items()):
+                state.registers[register] = substitute(value, mapping)
+            for key, writes in carried.items():
+                carried[key] = [replace(w, value=substitute(w.value, mapping), address=substitute(w.address, mapping))
+                                for w in writes]
+            for component in components:
+                if component['kind'] != 'register' and _mentions(component.get('source', ''), name):
+                    component['source'] = re.sub(r"(?<![\w'])" + re.escape(name) + r"(?![\w'])",
+                                                 lambda _: '(' + other.coq() + ')', component['source'])
+            plan.setdefault('dropped_binders', []).append({'binder': name, 'rule': 'definition',
+                                                           'definition': other.to_dict()})
+            continue
+        defined = _register_definition(state, name, unheld=[row['name'] for row in binders
+                                                            if row['name'] not in held])
+        if defined is not None:
+            register, fresh_width, rest = defined
+            index = 1
+            while 'machine_%s_%d' % (register, index) in taken:
+                index += 1
+            fresh = input_expr('machine_%s_%d' % (register, index), fresh_width)
+            taken.add(fresh.value)
+            binder = input_expr(name, fresh_width)
+            definition = operation('bvsub', fresh, rest)
+            mapping = {binder: definition}
+            state.registers[register] = fresh
+            for other, value in list(state.registers.items()):
+                if other != register:
+                    state.registers[other] = substitute(value, mapping)
+            state.conditions[:] = [substitute(c, mapping) for c in state.conditions]
+            for key, writes in carried.items():
+                carried[key] = [replace(w, value=substitute(w.value, mapping), address=substitute(w.address, mapping))
+                                for w in writes]
+            for component in components:
+                if component['kind'] != 'register' and _mentions(component.get('source', ''), name):
+                    component['source'] = re.sub(r"(?<![\w'])" + re.escape(name) + r"(?![\w'])",
+                                                 lambda _: '(' + definition.coq() + ')', component['source'])
+            plan['binders'].append({'name': fresh.value, 'type': 'bv %d' % fresh_width, 'value_key': register})
+            held.add(fresh.value)
+            plan.setdefault('dropped_binders', []).append({'binder': name, 'rule': 'register_definition',
+                                                           'register': register, 'definition': definition.to_dict()})
+            continue
+        live = None if live_registers is None else set(live_registers) | EXIT_OBSERVED
+        needed = [register for register, value in state.registers.items()
+                  if REGISTER.fullmatch(register) and _mentions(text(value), name)
+                  and (live is None or register in live)]
+        arrays = [component['id'] for component in components
+                  if component['kind'] == 'byte_array' and _mentions(component.get('source', ''), name)]
+        if needed or arrays:
+            raise ValueError('An inherited join binder has no holder and a successor needs it: %s (registers %s, '
+                             'arrays %s, live %s)' % (name, needed, arrays,
+                                                     'unknown' if live is None else sorted(live)))
+        record = {'binder': name, 'rule': 'not_needed', 'registers': [], 'spans': [], 'conditions': 0}
+        for register, value in list(state.registers.items()):
+            if REGISTER.fullmatch(register) and _mentions(text(value), name):
+                index = 1
+                while 'machine_%s_%d' % (register, index) in taken:
+                    index += 1
+                fresh = 'machine_%s_%d' % (register, index)
+                taken.add(fresh)
+                state.registers[register] = input_expr(fresh, value.width)
+                plan['binders'].append({'name': fresh, 'type': 'bv %d' % value.width, 'value_key': register})
+                record['registers'].append(register)
+        for key, writes in list(carried.items()):
+            kept = [w for w in writes if not _mentions(text(w.value) + text(w.address), name)]
+            if len(kept) != len(writes):
+                carried[key] = kept
+                component = next(component for component in components if component['id'] == key)
+                component['source'] = render_span(key, kept)
+                record['spans'].append(key)
+        before = len(state.conditions)
+        state.conditions[:] = [c for c in state.conditions if not _mentions(text(c), name)]
+        record['conditions'] = before - len(state.conditions)
+        if any(_mentions(component.get('source', ''), name) for component in components
+               if component['kind'] != 'register'):
+            raise ValueError('An inherited join binder stays in an owned resource: ' + name)
+        plan.setdefault('dropped_binders', []).append(record)
+    state.writes = [w for rows in carried.values() for w in rows]
+
+
+def _addends(value):
+    return _addends(value.args[0]) + _addends(value.args[1]) if value.op == 'bvadd' else [value]
+
+
+def _register_definition(state, name, unheld=()):
+    """A register whose value is `name + t`, where `name` occurs once with coefficient 1 and
+    t mentions no unheld binder, and `name + t` cannot wrap under the seed's ranges.
+
+    Returns (register, width, t). The register then holds a fresh binder c, and `name` is
+    c - t on every edge: bitvector subtraction inverts the addition, and the range check
+    keeps the same equation true on the unsigned integers."""
+    text = lambda value: json.dumps(value.to_dict(), sort_keys=True)
+    lower, upper = 0, None
+    for condition in state.conditions:
+        if condition.op in ('bvuge', 'bvule') and len(condition.args) == 2:
+            left, right = condition.args
+            if left.op == 'input' and left.value == name and right.op == 'bits':
+                if condition.op == 'bvuge':
+                    lower = max(lower, right.value)
+                else:
+                    upper = right.value if upper is None else min(upper, right.value)
+    try:
+        from .symbolic_state import _source_interval
+    except ImportError:
+        from symbolic_state import _source_interval
+    for register in sorted(state.registers, key=lambda key: (len(key), key)):
+        value = state.registers[register]
+        if not REGISTER.fullmatch(register) or value.op != 'bvadd':
+            continue
+        terms = _addends(value)
+        mine = [term for term in terms if term.op == 'input' and term.value == name]
+        rest = [term for term in terms if not (term.op == 'input' and term.value == name)]
+        if len(mine) != 1 or not rest or any(_mentions(text(term), other) for term in rest for other in unheld):
+            continue
+        total = rest[0]
+        for term in rest[1:]:
+            total = operation('bvadd', total, term)
+        interval = _source_interval(total, state.source_intervals)
+        if interval is None or upper is None:
+            continue
+        if not (0 <= lower + interval[0] and upper + interval[1] < 1 << value.width):
+            continue
+        return register, value.width, total
+    return None
+
+
+def _agreed_writes(images, resource_id):
+    """The writes of the first edge into a resource whose bytes every edge holds at the end."""
+    first = images[0]
+    agreed = []
+    for step in first.transitions:
+        if step['resource_id'] != resource_id:
+            continue
+        write = first.writes[step['write_index']]
+        offsets = range(step['offset'], step['offset'] + write.size)
+        if all(first.updates[resource_id].get(offset, {}).get('write_index') == step['write_index']
+               and all(image.updates[resource_id].get(offset, {}).get('value')
+                       == first.updates[resource_id][offset]['value'] for image in images[1:])
+               for offset in offsets):
+            agreed.append(write)
+    return agreed
+
+
+def _write_steps(image, resource_id):
+    """The writes of an edge's image into one resource: address, size, value, offset."""
+    return tuple((json.dumps(image.writes[step['write_index']].address.to_dict(), sort_keys=True),
+                  image.writes[step['write_index']].size,
+                  json.dumps(image.writes[step['write_index']].value.to_dict(), sort_keys=True), step['offset'])
+                 for step in image.transitions if step['resource_id'] == resource_id)
+
+
 def generalize_owned_join(alternatives, *, original_seed, entry_pc, vocabulary,
                           continuation, outer_names=(), liveness=None, observables=None,
-                          relational_registers=()):
+                          relational_registers=(), design_facts=(), live_registers=None):
     """Build a seed when every incoming non-register resource is identical.
+
+    design_facts are join-design conjuncts (Coq text). `{bytes@ADDR}` names the
+    current value of the owned array at ADDR; each fact is a pure component of
+    the join scope, which the edges into the join must establish.
 
     This first case needs no memory witness. A differing memory image refuses
     here until affine elimination or whole-array packaging supplies its binder.
@@ -543,7 +760,7 @@ def generalize_owned_join(alternatives, *, original_seed, entry_pc, vocabulary,
         right = {key: value for key, value in state.registers.items() if not REGISTER.fullmatch(key)}
         if left != right:
             raise ValueError('A join changes system state')
-    resources, components = [], []
+    resources, components, carried = [], [], {}
     memory_by_id = {resource.id: resource for resource in original_seed.resources}
     memory_basis, memory_expressions = _memory_basis(states, plan, original_seed)
     plan['memory_relations'] = []
@@ -552,6 +769,25 @@ def generalize_owned_join(alternatives, *, original_seed, entry_pc, vocabulary,
         current = deepcopy(component)
         if component['kind'] != 'register':
             source = records[0][key]['source']
+            if (any(record[key]['source'] != source for record in records[1:]) and key in memory_by_id
+                    and memory_by_id[key].byte_array is None
+                    and not any('{bytes@' + memory_by_id[key].address_z + '}' in fact for fact in design_facts)):
+                # An uninitialized span the edges write differently. The bytes every edge
+                # holds stay exact; the others stay uninitialized, which each edge's bytes
+                # witness. No binder: the gaps are `↦ₘ?` spans. A join design that names the
+                # span states a meaning of its whole value, so that span keeps array packaging.
+                agreed = _agreed_writes(images, key)
+                image = apply_owned_writes(original_seed.resources, agreed, conditions=first.conditions,
+                                           facts=original_seed.facts, endianness=first.endianness)
+                span = render_resource_boundary(ownership, image, first, retained_registers=first.registers,
+                                                vocabulary=vocabulary)
+                if span['block_status'] != 'completed':
+                    raise ValueError('The agreed bytes of a join span cannot render: ' + key)
+                current['source'] = next(row['source'] for row in span['components'] if row['id'] == key)
+                resources.append(memory_by_id[key])
+                components.append(current)
+                carried[key] = list(agreed)
+                continue
             if any(record[key]['source'] != source for record in records[1:]):
                 if key not in memory_by_id:
                     raise ValueError('A non-memory join resource differs: ' + key)
@@ -563,6 +799,20 @@ def generalize_owned_join(alternatives, *, original_seed, entry_pc, vocabulary,
                           if step['resource_id'] == key] for image in images]
                 reconstruction = affine_memory_image(memory_by_id[key], paths, basis=memory_basis,
                     expressions=memory_expressions, register_names=register_order, vocabulary=vocabulary)
+                old = memory_by_id[key]
+                length = (str(old.length) if isinstance(old.length, int) else
+                          'List.length (' + component['value'] + ')' if component.get('value') else None)
+                if reconstruction['status'] != 'generated' and length is not None:
+                    # Whole-array packaging: the edges disagree on the bytes, so the
+                    # join owns an existential array of the same length. An
+                    # uninitialized byte on an edge is any byte, so this weakens soundly.
+                    binder = 'join_' + key + '_bytes'
+                    fraction = component.get('fraction') or ''
+                    reconstruction = {'status': 'generated', 'kind': 'array_packaging', 'resource_id': key,
+                                      'binder': binder, 'length': length,
+                                      'source': '%s ↦ₘ%s∗ %s' % (old.address_z, fraction, binder),
+                                      'coq': '(List.length %s = %s)%%nat' % (binder, length),
+                                      'detail': reconstruction['detail']}
                 if reconstruction['status'] != 'generated':
                     raise ValueError('A join memory value needs explicit array packaging: ' + key + ': ' + reconstruction['detail'])
                 source = reconstruction['source']
@@ -574,7 +824,26 @@ def generalize_owned_join(alternatives, *, original_seed, entry_pc, vocabulary,
             continue
         if key in memory_by_id:
             old = memory_by_id[key]
-            parsed, = parse_source_ownership(current['source'], provenance=current['provenance'])['components']
+            if (old.byte_array is None and current['source'] == component['source']
+                    and not any(image.updates[key] for image in images)):
+                # No edge wrote this uninitialized span; it joins unchanged.
+                resources.append(old)
+                components.append(current)
+                continue
+            pieces = parse_source_ownership(current['source'], provenance=current['provenance'])['components']
+            if (old.byte_array is None and len(pieces) > 1
+                    and len({_write_steps(image, key) for image in images}) == 1):
+                # Every edge wrote the same bytes into this uninitialized span, so every edge
+                # states the same pieces: the written runs and the unwritten gaps. The join
+                # keeps them exactly; its seed carries those writes for the successors.
+                resources.append(old)
+                components.append(current)
+                carried[key] = [images[0].writes[step['write_index']] for step in images[0].transitions
+                                if step['resource_id'] == key]
+                continue
+            if len(pieces) != 1:
+                raise ValueError('A join edge writes only part of an owned span differently: ' + key)
+            parsed, = pieces
             if parsed['kind'] != 'byte_array':
                 raise ValueError('An owned join array has no complete incoming image')
             current.update(kind='byte_array', value=parsed['value'], address_z=parsed['address_z'],
@@ -621,11 +890,13 @@ def generalize_owned_join(alternatives, *, original_seed, entry_pc, vocabulary,
         else:
             state.conditions.extend([operation('bvuge', word, bits(relation['lower'], word.width)),
                                      operation('bvule', word, bits(relation['upper'], word.width))])
-    state.writes, state.reports, state.register_writes = [], [], []
+    state.writes, state.reports, state.register_writes = [w for rows in carried.values() for w in rows], [], []
     state.memory = []
 
     def stored_byte(index, resource_id, offset):
         """Return the byte an edge holds at offset: its own write, else its seed's known byte."""
+        if any(isinstance(key, str) for key in images[index].updates[resource_id]):
+            return None   # A store at a symbolic offset may have replaced any byte.
         update = images[index].updates[resource_id].get(offset)
         if update is not None:
             return normalize(Expr.from_dict(update['value']))
@@ -646,11 +917,15 @@ def generalize_owned_join(alternatives, *, original_seed, entry_pc, vocabulary,
             prefix.append(value)
             offset += 1
         state.memory.append(MemoryRegion(resource.base, tuple(prefix), resource.byte_array, resource.length,
-                                         ownership_id=resource.id))
+                                         uninitialized=resource.byte_array is None, ownership_id=resource.id))
     state.trace_count = 0
     def source_inputs(value):
         return ([str(value.value)] if value.op == 'input' else []) + [
             text for child in value.args for text in source_inputs(child)]
+    drop_unheld_binders(state, components, carried, [*original_binders, *inherited_binders], plan,
+                        live_registers, lambda key, writes: _render_span(
+                            key, writes, original_seed, ownership, first, apply_owned_writes,
+                            render_resource_boundary, vocabulary))
     source_text = ' '.join([*(component['source'] for component in components if component['kind'] != 'register'),
                             *(text for value in state.registers.values() for text in source_inputs(value)),
                             *(text for value in state.conditions for text in source_inputs(value))])
@@ -663,6 +938,8 @@ def generalize_owned_join(alternatives, *, original_seed, entry_pc, vocabulary,
         raise ValueError('The join needs one explicit source witness scope')
     additions = [{**binder, 'expression': input_expr(binder['name'], int(binder['type'].split()[1])).to_dict()}
                  for binder in plan['binders']]
+    additions += [{'name': row['binder'], 'type': 'list byte', 'expression': input_expr(row['binder'], None).to_dict()}
+                  for row in plan['memory_relations'] if row.get('kind') == 'array_packaging']
     available = {binder['name']: binder for binder in [*used_binders, *additions]}
     ordered = []
     for register in register_order:
@@ -685,6 +962,24 @@ def generalize_owned_join(alternatives, *, original_seed, entry_pc, vocabulary,
         components.append({'id': key, 'kind': 'opaque', 'source': '⌜' + relation['coq'] + '⌝', 'scope': [[0]],
                            'provenance': {'join_edge_count': len(alternatives), 'relation': deepcopy(relation)}})
         tree['body']['children'].append({'kind': 'component', 'id': key})
+    values = {component.get('address_z'): component.get('value') for component in components
+              if component['kind'] == 'byte_array'}
+    for index, fact in enumerate(design_facts):
+        def array_value(match):
+            if match[1] not in values:
+                raise ValueError('A join design names no owned array at ' + match[1])
+            return values[match[1]]
+        text = re.sub(r'\{bytes@([^}]*)\}', array_value, fact)
+        key = f'join_design_{index}'
+        components.append({'id': key, 'kind': 'opaque', 'source': '⌜' + text + '⌝', 'scope': [[0]],
+                           'provenance': {'join_design': fact}})
+        tree['body']['children'].append({'kind': 'component', 'id': key})
+    packaged = [row for row in plan['memory_relations'] if row.get('kind') == 'array_packaging']
+    for index, row in enumerate(packaged, start=len(plan['relations'])):
+        key = f'join_relation_{index}'
+        components.append({'id': key, 'kind': 'opaque', 'source': '⌜' + row['coq'] + '⌝', 'scope': [[0]],
+                           'provenance': {'join_edge_count': len(alternatives), 'relation': deepcopy(row)}})
+        tree['body']['children'].append({'kind': 'component', 'id': key})
     provenance = {'contract_exit': deepcopy(continuation['source_binding'])}
     components.append({'id': terminal_id, 'kind': 'opaque', 'source': name, 'scope': [],
                        'provenance': provenance, 'seed_component': {'kind': 'opaque', 'coq': name}})
@@ -696,19 +991,28 @@ def generalize_owned_join(alternatives, *, original_seed, entry_pc, vocabulary,
             value = state.registers[register]
             if value == input_expr(binder['name'], value.width):
                 register_bindings.setdefault(binder['name'], (register, value.width))
-    full_witness_plan = witness_plan(ordered, register_bindings=register_bindings)
+    array_bindings = {component['value']: component['id'] for component in components
+                      if component['kind'] == 'byte_array' and component.get('value') in
+                      {binder['name'] for binder in ordered}}
+    full_witness_plan = witness_plan(ordered, register_bindings=register_bindings,
+                                     array_bindings=array_bindings)
     owned_edges = []
     for edge in plan['edges']:
         record = deepcopy(edge)
+        # An array witness is the inherited array value, the same on every edge.
         record['ordered_witnesses'] = [{'binder': binder['name'],
-            'expression': deepcopy(edge['original_values'][register_bindings[binder['name']][0]])}
+            'expression': deepcopy(edge['original_values'][register_bindings[binder['name']][0]])
+            if binder['name'] in register_bindings else input_expr(binder['name'], None).to_dict()}
             for binder in ordered]
         record['widened_substitution'] = {row['binder']: row['expression'] for row in record['ordered_witnesses']}
         owned_edges.append(record)
     plan.update(owned_binders=deepcopy(ordered), owned_edges=owned_edges, join_witness_plan=full_witness_plan)
     seed = OwnedSeed(state, ownership, resources, deepcopy(original_seed.facts), [],
                      deepcopy(plan['join_refusals']), owned_edges, full_witness_plan, 'join')
-    rendered = render_resource_boundary(ownership, apply_owned_writes(resources, [], facts=seed.facts),
+    # The seed carries the writes that every edge holds (the saved frame slots of a
+    # partial span); its entry states them, as the seed state does.
+    rendered = render_resource_boundary(ownership, apply_owned_writes(
+        resources, state.writes, conditions=state.conditions, facts=seed.facts, endianness=state.endianness),
                                         state, vocabulary=vocabulary)
     if rendered['block_status'] != 'completed':
         raise ValueError('The generalized join ownership cannot render')
@@ -787,8 +1091,9 @@ def attach_exit_pullback(join, traversal, *, output_resource_id, return_expressi
     owned.ownership['components'].insert(-1, {'id': key, 'kind': 'opaque', 'source': source, 'scope': [[0]],
         'provenance': {'contract_allows': deepcopy(allows['source_binding']), 'proof_established': False}})
     owned.ownership['tree']['left']['body']['children'].append({'kind': 'component', 'id': key})
-    body = render_resource_boundary(owned.ownership, apply_owned_writes(owned.resources, [], facts=owned.facts),
-                                    owned.state, vocabulary=vocabulary)
+    body = render_resource_boundary(owned.ownership, apply_owned_writes(
+        owned.resources, owned.state.writes, conditions=owned.state.conditions, facts=owned.facts,
+        endianness=owned.state.endianness), owned.state, vocabulary=vocabulary)
     boundary = deepcopy(join['boundary'])
     boundary['alternatives'][0]['resource_boundary'] = body
     return {**join, 'seed': owned, 'boundary': boundary, 'pullback': pullback}

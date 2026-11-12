@@ -14,6 +14,13 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 import run_registry
 
 
+# Discovery pauses until the update ends. A loaded host may delay the update
+# by seconds, so the bound is generous; the update must still end inside the
+# pause, which a retained lock would prevent.
+UPDATE_BOUND = 60
+DISCOVERY_PAUSE = 2 * UPDATE_BOUND
+
+
 class RegistryRefreshTests(unittest.TestCase):
     module = run_registry
     per_run = False
@@ -40,7 +47,7 @@ class RegistryRefreshTests(unittest.TestCase):
 
     def concurrent_refresh(self, mutation):
         entered, resume, completed = (threading.Event() for _ in range(3))
-        failures, results, discoveries = [], [], []
+        failures, results, discoveries, paused = [], [], [], []
         actual = self.module.descendants
 
         def discover(actors):
@@ -48,7 +55,7 @@ class RegistryRefreshTests(unittest.TestCase):
                 discoveries.append(actors)
                 if len(discoveries) == 1:
                     entered.set()
-                    if not resume.wait(5):
+                    if not resume.wait(DISCOVERY_PAUSE):
                         raise TimeoutError('The fixture did not release discovery.')
             return actual(actors)
 
@@ -64,6 +71,9 @@ class RegistryRefreshTests(unittest.TestCase):
             except BaseException as error:
                 failures.append(error)
             finally:
+                # The update must finish while discovery is still paused; under a
+                # retained lock it could finish only after the pause ends.
+                paused.append(not resume.is_set())
                 completed.set()
 
         refresher = threading.Thread(target=refresh)
@@ -73,7 +83,7 @@ class RegistryRefreshTests(unittest.TestCase):
             try:
                 self.assertTrue(entered.wait(5), 'Discovery did not start.')
                 updater.start()
-                self.assertTrue(completed.wait(2),
+                self.assertTrue(completed.wait(UPDATE_BOUND) and paused == [True],
                                 'Slow discovery retained the registry lock.')
             finally:
                 resume.set()

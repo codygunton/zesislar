@@ -73,6 +73,12 @@ def evaluate_owned_function(function, traces, initial_seeds, *, vocabulary, max_
     report = evaluate_function(function, traces, initial, max_paths=max_paths, check_state=check,
                                generated_seeds={pc: seed.join_kind for pc, seed in seeds.items() if seed.join_kind})
     report['resource_layer_schema'] = 'owned-resources.v1'
+    for row in report.get('exits', []):
+        seed = seeds[int(row['seed_pc'], 0)]
+        state = _state_from_result(row['state'])
+        result = apply_owned_writes(seed.resources, state.writes, conditions=state.conditions,
+                                    facts=seed.facts, endianness=state.endianness)
+        row['resource_boundary'] = render_resource_boundary(seed.ownership, result, state, vocabulary=vocabulary)
     for boundary in report['boundaries']:
         for alternative in boundary['alternatives']:
             seed = seeds[int(alternative['seed_pc'], 0)]

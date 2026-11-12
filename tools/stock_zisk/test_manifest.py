@@ -210,6 +210,24 @@ class ManifestTests(unittest.TestCase):
                 manifest.refresh(self.out, bad)
                 with self.assertRaises(ValueError): manifest.check(self.out, self.pins)
 
+    def test_declared_guest_patch(self):
+        upstream = Path(self.recipe['inputs']['guest/build.zig']['path'])
+        upstream.write_text('one\ntwo\n')
+        self.recipe['inputs']['guest/build.zig'] = manifest.file_record(upstream)
+        patch_file = self.root/'guest.patch'
+        patch_file.write_text('--- a/zisk/build.zig\n+++ b/zisk/build.zig\n@@ -1,2 +1,2 @@\n one\n-two\n+three\n')
+        staged = self.root/'staged.zig'
+        staged.write_text('one\nthree\n')
+        good = copy.deepcopy(self.recipe)
+        good['adapters'] = {'guest/build.zig': manifest.adapter_record(upstream, patch_file, staged, 'test reason')}
+        manifest.refresh(self.out, good)
+        manifest.check(self.out, self.pins)
+        bad = copy.deepcopy(good)
+        bad['adapters']['guest/build.zig']['result_sha256'] = manifest.digest(upstream)
+        manifest.refresh(self.out, bad)
+        with self.assertRaisesRegex(ValueError, 'adapter result'):
+            manifest.check(self.out, self.pins)
+
     def test_changed_compiler(self):
         Path(self.recipe['zig_executable']).write_text('changed')
         with self.assertRaisesRegex(ValueError, 'Zig executable'):

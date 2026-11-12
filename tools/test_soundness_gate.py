@@ -14,7 +14,7 @@ import soundness_gate as gate
 class SoundnessGateTests(unittest.TestCase):
     def test_checker_wrapper_is_the_accepted_exact_source(self):
         self.assertEqual(hashlib.sha256(gate.WRAPPERS.encode()).hexdigest(),
-                         'd13ef899c73649d078654cb983d537048a443ce7a8d81b45990d5d9017916580')
+                         '4a2bad6927e41035c11318c583f2c4d5e92fd1eae60a2dedc0c7ca34f78ecf82')
 
     def test_wrapper_generator_stays_outside_the_production_shape_inventory(self):
         with tempfile.TemporaryDirectory() as directory:
@@ -25,8 +25,11 @@ class SoundnessGateTests(unittest.TestCase):
             source, artifact = gate.wrapper_paths(workspace, out, build)
             calls = []
 
+            kinds = []
+
             async def verify(root, sources, pc, report, **kwargs):
                 calls.append(list(sources))
+                kinds.append((kwargs.get('timeout'), kwargs.get('admission_seconds')))
                 artifact.parent.mkdir(parents=True, exist_ok=True)
                 artifact.write_bytes(b'fixture object')
                 result = {'checks': [{'compile_file': {'output': '\n'.join(['Closed under the global context'] * 4)},
@@ -42,6 +45,8 @@ class SoundnessGateTests(unittest.TestCase):
                 gate.stage(config, 'wrappers')
             self.assertEqual(len(calls), 4)
             self.assertEqual(calls[-1], [source])
+            # Each compile gets its limit after guard admission; admission has its own bound.
+            self.assertEqual(kinds, [(gate.COMPILE_SECONDS, gate.verification.ADMISSION_WAIT_SECONDS)] * 4)
             self.assertEqual(source.read_text(), gate.WRAPPERS)
             self.assertFalse((workspace / 'ZesuSsz').exists())
             self.assertEqual(artifact, build / 'default/_build/agents/test-gate/scratch/SoundnessGateWrappers.vo')
@@ -112,7 +117,7 @@ class SoundnessGateTests(unittest.TestCase):
 
     def test_public_selection_keeps_the_four_reviewed_statements(self):
         self.assertEqual(set(gate.PUBLIC), {'decodeItemSelectedCompliance', 'decodeItemSelectedComplianceRegisters',
-            'decodeItemSelectedComplianceCompositional', 'decodeItemSlotBody800d698c'})
+            'decodeItemSelectedComplianceCompositional', 'decodeItemGeneratedCompliance'})
         self.assertEqual(len(set(gate.PUBLIC.values())), 3)
 
     def test_changed_bound_tool_refuses_before_stage_execution(self):

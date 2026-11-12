@@ -1,6 +1,8 @@
 Require Import ZesuSsz.Automation.PureFacts.
+Require Import ZesuSsz.Contracts.RlpDecodeItem.
 Require Import ZesuSsz.Contracts.RlpDecodeItemContract.
 From Coq Require Import ZArith.ZArith Lia.
+From stdpp Require Import bitvector.definitions.
 
 #[export] Instance decodeItemDomainAtInputPointerRangeDerivedFacts
     (returnAddress : Coq.Numbers.BinNums.Z)
@@ -51,3 +53,15 @@ Proof.
   exact (Z.le_lt_trans _ _ _ Hstep Hupper).
 Qed.
 Print Assumptions decodeItemDomainAtInputLengthRangeDerivedFacts.
+
+(* The function-entry statement's return-address conjunct: the Level-1
+   layout keeps returnAddress in range and 4-aligned. *)
+Lemma decodeItemDomainAtReturnAlignment (returnAddress : Z) (args : DecodeItemArgs) :
+  decodeItemDomainAt returnAddress decodeItemC1BDomain args ->
+  (bv_unsigned (Z_to_bv 64 (decodeItemReturnAddress args)) mod 4 = 0)%Z.
+Proof.
+  unfold decodeItemDomainAt, decodeItemC1BDomain, decodeItemArgsWellFormed, decodeItemEntryLayout.
+  intros domain. repeat match goal with H : _ /\ _ |- _ => destruct H end.
+  rewrite Z_to_bv_unsigned, bv_wrap_small by (unfold bv_modulus; cbn; lia).
+  assumption.
+Qed.

@@ -3,6 +3,7 @@ Require Import ZesuSsz.Automation2.VmClosed.
 Require Import ZesuSsz.Automation2.PureFacts.
 Require Import ZesuSsz.Automation2.RangeFacts.
 Require Import ZesuSsz.Automation2.SearchBudget.
+Require ZesuSsz.Automation2.BvLinear.
 From Ltac2 Require Import Ltac2 Ref List Int Array.
 Local Open Scope Z_scope.
 Set Default Proof Mode "Classic".
@@ -332,7 +333,11 @@ Ltac2 zesu_stack_arithmetic_bounded () :=
      ZesuSsz.Automation2.SearchBudget.zesu_budget_checker failed] Ltac1.run;
   ZesuSsz.Automation2.SearchBudget.zesu_budget_check failed.
 
-Ltac zesu_stack_arithmetic := ltac2:(zesu_stack_arithmetic_bounded ()).
+(* A linear address (in)equality closes by the reflective normal form first;
+   only its range, if any, goes to lia. *)
+Ltac zesu_stack_arithmetic :=
+  first [solve [ZesuSsz.Automation2.BvLinear.zesu_bv_linear_with ltac:(lia)] |
+    ltac2:(zesu_stack_arithmetic_bounded ())].
 
 Ltac zesu_stack_integer_address pointer :=
   lazymatch pointer with

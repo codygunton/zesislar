@@ -19,18 +19,18 @@ from check_function_closure import PUBLIC, PUBLIC_CONTEXTS
 from coqc_findlib import check_record
 from gate_workspace import prepare as prepare_sources
 
-BASELINE = 'dbefab796f99635e1ba87542625f792df5aeb46d'
+BASELINE = 'd73a7a5a5610c2312b7c27ea9b41363f36324a29'
 PLUGINS = (
     '_dune-cache/install/default/lib/zesu-signature-gates/plugin/signature_gates_plugin.cmxs',
     '_dune-cache/install/default/lib/zesu-signature-gates/trace-observer/trace_block_plugin.cmxs',
 )
-WRAPPERS = '''Require Import ZesuSsz.Automation.All.
+# Each gate compile may run this long once the guard admits it.
+COMPILE_SECONDS = 600
+WRAPPERS = '''Require Import ZesuSsz.Automation2.All.
 Require Import isla.riscv64.riscv64.
-Require Import ZesuSsz.Automation.BlockTable.
-Require Import ZesuSsz.Generated.DecodeItem.BlockTable.
 Require Import ZesuSsz.Compliance.DecodeItemCompliance.
 Require Import ZesuSsz.Compliance.DecodeItemCompositionalCompliance.
-Require Import ZesuSsz.Proofs.DecodeItem.TableSlots.Adapter800d698c.
+Require Import ZesuSsz.Compliance.DecodeItemComplianceGenerated.
 
 Definition certified_selected :
   forall returnAddress,
@@ -53,18 +53,20 @@ Definition certified_compositional :
       (ZesuSsz.Contracts.DecodeItemCompositional.decodeItemSelectedModelCompositional returnAddress) :=
   ZesuSsz.Compliance.DecodeItemCompositionalCompliance.decodeItemSelectedComplianceCompositional.
 
-Lemma certified_slot `{!islaG Sigma} `{!threadG} :
-  ⊢ block_table_pre decodeItemBlockTable -∗
-    instr_body 0x800d698c decodeItemState800d698c.
+Lemma certified_generated :
+  forall returnAddress,
+    ZesuSsz.Contracts.Level1.IslarisContractCorrect
+      ZesuSsz.Contracts.RlpDecodeItem.decodeItemEntry returnAddress
+      (ZesuSsz.Contracts.DecodeItemSelected.decodeItemSelectedModel returnAddress).
 Proof.
-  exact ZesuSsz.Proofs.DecodeItem.TableSlots.Adapter800d698c.decodeItemSlotBody800d698c.
+  exact ZesuSsz.Compliance.DecodeItemComplianceGenerated.decodeItemGeneratedCompliance.
 Qed.
 
 Set Printing Fully Qualified.
 Print Assumptions certified_selected.
 Print Assumptions certified_registers.
 Print Assumptions certified_compositional.
-Print Assumptions certified_slot.
+Print Assumptions certified_generated.
 '''
 
 
@@ -221,7 +223,8 @@ async def negative_checks(config):
                    AGENT_BUILD_DIR=str(build), ZESU_MCP_PYTHON=config['mcp_python'],
                    ZESU_PROMOTION_SERVER=str(workspace / 'tools/block/promotion_verify_server.py'),
                    ZESU_ROCQ_MCP_BINARY=str(binary),
-                   ZESU_ROCQ_COQC_WRAPPER=str(workspace / 'tools/rocq_coqc_guarded.sh'))
+                   ZESU_ROCQ_COQC_WRAPPER=str(workspace / 'tools/rocq_coqc_guarded.sh'),
+                   ZESU_COMPILE_SECONDS=str(COMPILE_SECONDS))
         try:
             async with stdio_client(StdioServerParameters(
                     command=str(workspace / 'tools/rocq_mcp_guarded.sh'), env=env)) as streams:
@@ -241,13 +244,16 @@ async def negative_checks(config):
                     if not owner.get('success') or not verification.live(owner):
                         raise ValueError('The MCP owner identity is unavailable.')
                     try:
-                        compiled = await call('rocq_compile_file', dict(workspace=str(workspace), file=str(source),
-                                              timing=True, keep_vo=True, timeout=600))
+                        # Each compile gets COMPILE_SECONDS after guard admission;
+                        # a long admission wait is logged and retried.
+                        compiled = await verification.call_with_admission(call, 'rocq_compile_file',
+                            dict(workspace=str(workspace), file=str(source), timing=True, keep_vo=True),
+                            COMPILE_SECONDS)
                         if compiled.get('success') is not True:
                             raise ValueError('A negative fixture failed to compile; inspect its first error.')
-                        outcome = await call('rocq_verify', dict(workspace=str(workspace),
-                            problem_statement='Lemma challenge : False.\n', proof=source.read_text(),
-                            problem_name='challenge', timeout=600))
+                        outcome = await verification.call_with_admission(call, 'rocq_verify', dict(
+                            workspace=str(workspace), problem_statement='Lemma challenge : False.\n',
+                            proof=source.read_text(), problem_name='challenge'), COMPILE_SECONDS)
                         rejected_control(name, compiled, outcome)
                         report.update(success=True, expected_rejection=outcome,
                                       Print_Assumptions=compiled.get('output', ''))
@@ -292,6 +298,7 @@ def stage(config, name):
         for index, source in enumerate([workspace / p for p in sorted(set(PUBLIC.values()))] + [wrapper]):
             protected = [r for r in records if r['candidate_source'] == str(source)]
             result = asyncio.run(verification.verify(workspace, [source], 0, out / f'verify-{index}',
+                timeout=COMPILE_SECONDS, admission_seconds=verification.ADMISSION_WAIT_SECONDS,
                 protected_expectations=protected or None,
                 mcp_launcher=workspace / 'tools/rocq_mcp_guarded.sh',
                 compiler_launcher=workspace / 'tools/rocq_coqc_guarded.sh'))

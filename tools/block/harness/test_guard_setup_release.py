@@ -91,6 +91,21 @@ class GuardSetupRelease(unittest.TestCase):
         self.assertEqual(self.ledger.read_bytes(), before)
         self.assertTrue(self.marker.exists())
 
+    def test_killed_compiler_leaf_keeps_its_booking_until_it_drains(self):
+        # An out-of-memory kill: the scope's main process has ended while the
+        # killed compiler still frees its memory inside the leaf.
+        self.reject()
+        shutil.rmtree(self.proc / '15')
+        before = self.ledger.read_bytes()
+        with self.assertRaises(M.LeafNotClosed):
+            self.release()
+        self.assertEqual(self.ledger.read_bytes(), before)
+        self.assertTrue(self.marker.exists())
+        (self.leaf / 'cgroup.events').write_text('populated 0\n')
+        self.assertTrue(self.release())
+        self.assertEqual(self.read()['fixed_claims'][self.key], 0)
+        self.assertFalse(self.marker.exists())
+
     def test_live_actor_retains_booking_even_with_empty_leaf_report(self):
         self.reject()
         (self.leaf / 'cgroup.events').write_text('populated 0\n')
