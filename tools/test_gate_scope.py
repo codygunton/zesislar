@@ -58,6 +58,12 @@ class GateScopeTests(GatePeaks):
         self.ledger['gate_exit_peaks'].append(bad)
         self.assertFalse(self.unchanged())
 
+    def test_newer_green_gate_for_other_tools_does_not_hide_matching_green(self):
+        other = deepcopy(self.ledger['gate_exit_peaks'][-1])
+        other['code_identity']['tools_tree_sha256'] = 'b'*64
+        self.ledger['gate_exit_peaks'].append(other)
+        self.assertTrue(self.unchanged())
+
 
 class ToolsDigestTests(unittest.TestCase):
     def test_source_changes_additions_deletions_and_modes_change_digest(self):
