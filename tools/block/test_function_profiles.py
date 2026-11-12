@@ -20,7 +20,8 @@ ROOT = Path(__file__).resolve().parents[2]
 
 
 def other_profile():
-    data = json.loads((ROOT / 'tools/block/functions/decodeItem.json').read_text())
+    data = dict(load_profile('decodeItem').data)  # the resolved table, in the address form
+    data.pop('symbol', None)
     data.update({
         'function': 'otherFunction',
         'args_type': 'OtherArgs',
