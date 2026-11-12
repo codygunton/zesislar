@@ -157,6 +157,20 @@ Ltac zesu_wrapped_closed_address_step :=
         zesu_reduce_closed_Z_aliases; cbv [bv_unsigned bv_modulus] in *; lia)
   end.
 
+(* Reduce every closed-chain `bv_unsigned` in a pure goal, such as the array
+   bound `Z.to_nat (addr - base) + k <= length L` of a load or store whose
+   address was not reduced at its lookup. *)
+Ltac zesu_wrapped_closed_terms :=
+  repeat match goal with
+  | |- context [bv_unsigned ?word] =>
+      zesu_wrapped_closed_chain word;
+      zesu_wrapped_closed_offset word ltac:(
+        ZesuSsz.Automation2.PureFacts.zesu_saturate_derived_facts;
+        repeat first [progress ZesuSsz.Automation2.PureFacts.zesu_split_folded_pure |
+          match goal with Hpair : _ /\ _ |- _ => destruct Hpair end];
+        zesu_reduce_closed_Z_aliases; cbv [bv_unsigned bv_modulus] in *; lia)
+  end.
+
 Ltac zesu_wrapped_memory_lookup :=
   lazymatch goal with
   | |- iris.proofmode.environments.envs_entails _

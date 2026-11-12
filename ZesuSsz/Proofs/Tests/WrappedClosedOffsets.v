@@ -82,6 +82,19 @@ Proof.
   exact I.
 Qed.
 
+(* An array bound side goal of a load at sp + closed offsets
+   (callee output at sp - 88, 40 bytes): the bound solver reduces the
+   address first. *)
+Lemma wrapped_closed_array_bound (sp : Z) (bytes : list (bv 8)) :
+  4096 <= sp < 4294967296 -> length bytes = 40%nat ->
+  (Z.to_nat (bv_unsigned (Z_to_bv 64 sp + 18446744073709551520 + 96 +
+    18446744073709551536) - (sp - 88)) + 8 <= length bytes)%nat.
+Proof.
+  intros Hsp Hlength.
+  solve [ZesuSsz.Automation2.Hooks.zesu_array_bounds_if_enabled].
+Qed.
+
 Print Assumptions wrapped_closed_two_offsets.
+Print Assumptions wrapped_closed_array_bound.
 Print Assumptions wrapped_closed_three_offsets.
 Print Assumptions wrapped_closed_positive_offset.
