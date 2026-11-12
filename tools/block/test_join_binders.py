@@ -4,9 +4,10 @@ import sys
 import unittest
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from join_generalize import drop_unheld_binders
+from join_generalize import _register_definition, drop_unheld_binders
 from symbolic_state import SymbolicState, bits, input_expr, operation
 from render_function_callers import return_site
+from loop_design import reseat_orphaned
 
 
 def state_with(registers, conditions):
@@ -56,6 +57,59 @@ class UnheldBinders(unittest.TestCase):
         plan = self.run_rules(state, live=['x1'])
         self.assertEqual(state.registers['x13'], operation('bvadd', self.b, bits(1, 64)))
         self.assertNotIn('dropped_binders', plan)
+
+
+class RegisterDefinition(unittest.TestCase):
+    b = input_expr('machine_x15', 64)
+    out = input_expr('(Z_to_bv 64%N (outPointer args))', 64)
+
+    def state(self, ranged=True):
+        cursor = operation('bvadd', operation('bvadd', self.b, self.out), bits(1, 64))
+        flag = operation('bvor', self.b, input_expr('(Z_to_bv 64%N (n args))', 64))
+        state = state_with({'x13': cursor, 'x15': flag},
+                           [operation('bvuge', self.b, bits(0, 64)), operation('bvule', self.b, bits(1, 64))]
+                           if ranged else [])
+        state.source_intervals = [{'expression': self.out.to_dict(), 'minimum': 0xa0000000,
+                                   'maximum': 0xa0400000, 'origin': {'source': 'test'}}]
+        return state
+
+    def test_a_live_register_determines_the_binder(self):
+        register, width, rest = _register_definition(self.state(), 'machine_x15')
+        self.assertEqual((register, width), ('x13', 64))
+        self.assertEqual(rest, operation('bvadd', self.out, bits(1, 64)))
+
+    def test_no_range_no_definition(self):
+        self.assertIsNone(_register_definition(self.state(ranged=False), 'machine_x15'))
+
+    def test_the_definition_replaces_the_binder_everywhere(self):
+        state = self.state()
+        plan = {'binders': []}
+        drop_unheld_binders(state, [], {}, [{'name': 'machine_x15'}], plan, ['x13', 'x15'], lambda key, writes: '')
+        fresh = input_expr('machine_x13_1', 64)
+        self.assertEqual(state.registers['x13'], fresh)
+        definition = operation('bvsub', fresh, operation('bvadd', self.out, bits(1, 64)))
+        self.assertEqual(state.registers['x15'], operation('bvor', definition, input_expr('(Z_to_bv 64%N (n args))', 64)))
+        self.assertEqual(state.conditions[1], operation('bvule', definition, bits(1, 64)))
+        self.assertEqual(plan['dropped_binders'][0]['rule'], 'register_definition')
+
+
+class OrphanedLoopBinders(unittest.TestCase):
+    def test_a_register_naming_an_overwritten_holders_binder_gets_a_fresh_binder(self):
+        entry = input_expr('machine_x13_1', 64)
+        flag = operation('bvor', operation('bvsub', entry, input_expr('(Z_to_bv 64%N (out args))', 64)), bits(2, 64))
+        before = {'x13': entry, 'x15': flag, 'x1': input_expr('ra', 64)}
+        registers = dict(before, x13=input_expr('machine_x13', 64))
+        added = reseat_orphaned(registers, before, {'x13': 'machine_x13'}, {'machine_x15_1'})
+        self.assertEqual(registers['x15'], input_expr('machine_x15_2', 64))
+        self.assertEqual(registers['x1'], input_expr('ra', 64))
+        self.assertEqual([row['name'] for row in added], ['machine_x15_2'])
+
+    def test_a_binder_another_register_still_holds_is_not_orphaned(self):
+        entry = input_expr('machine_x13_1', 64)
+        before = {'x13': entry, 'x14': entry, 'x15': operation('bvadd', entry, bits(1, 64))}
+        registers = dict(before, x13=input_expr('machine_x13', 64))
+        self.assertEqual(reseat_orphaned(registers, before, {'x13': 'machine_x13'}, set()), [])
+        self.assertEqual(registers['x15'], operation('bvadd', entry, bits(1, 64)))
 
 
 class ReturnSites(unittest.TestCase):
