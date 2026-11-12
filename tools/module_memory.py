@@ -229,8 +229,9 @@ def module_claim(profile, arguments, cwd, compiler, *, fallback_bytes=16 * GIB):
     peak = row.get("peak_bytes")
     if type(peak) is not int or peak <= 0:
         return {"claim_bytes": fallback_bytes, "reason": "missing_peak", "source": source}
+    measured = max(value for value in (peak, row.get("rss_peak_bytes")) if type(value) is int)
     return {"claim_bytes": booking(peak, fallback_bytes, row.get("rss_peak_bytes")),
-            "reason": "measured_module", "source": source}
+            "reason": "measured_module", "source": source, "measured_peak_bytes": measured}
 
 
 def record_measurement(profile_path, source, bound, peak_bytes, *, rss_peak_bytes=None, ended_ns=None):
@@ -350,8 +351,12 @@ def observe(profile_path, output, guard, compiler, cwd, arguments, *, fallback_b
         payload = [str(guard), "scope", "dune-coqc", "--", sys.executable, "-B",
                    str(Path(__file__).resolve()), "peak-exec", "--output", peak_file,
                    "--", str(compiler), *arguments]
-        child = subprocess.Popen(payload, env=dict(os.environ, ZESU_MODULE_CLAIM_BYTES=str(claim["claim_bytes"]),
-                                                   ZESU_MODULE_MEMORY_PROFILE=str(profile_path)))
+        environment = dict(os.environ, ZESU_MODULE_CLAIM_BYTES=str(claim["claim_bytes"]),
+                           ZESU_MODULE_MEMORY_PROFILE=str(profile_path))
+        environment.pop("ZESU_MODULE_MEASURED_PEAK_BYTES", None)
+        if claim.get("measured_peak_bytes"):
+            environment["ZESU_MODULE_MEASURED_PEAK_BYTES"] = str(claim["measured_peak_bytes"])
+        child = subprocess.Popen(payload, env=environment)
 
         def forward(number, _frame):
             if child.poll() is None:
@@ -569,6 +574,22 @@ def probe_measurement(marker, metadata, physical, proc):
     return {"claim_bytes": sum(peaks), "covered": covered, "child_start": child_identity[1]}
 
 
+def growth_booking(resident_bytes, measured_peak_bytes=None):
+    """Book a running compile from its resident high-water mark.
+
+    An unmeasured module, or one above its measured peak, keeps a 1.5x margin
+    over its resident set: its final peak is unknown. A measured module at or
+    below its measured peak books 1.25x the larger of the two, the margin of
+    its measured booking: a 1.5x raise kept compiles at their known peak
+    booked 50% above use (2026-11-12 audit).
+    """
+    if not resident_bytes:
+        return 0
+    if measured_peak_bytes and resident_bytes <= measured_peak_bytes:
+        return -(-max(measured_peak_bytes, resident_bytes) * MARGIN_NUMERATOR // MARGIN_DENOMINATOR)
+    return -(-resident_bytes * RSS_NUMERATOR // RSS_DENOMINATOR)
+
+
 def reservation_claims(markers, *, proc=Path("/proc"), fallback_bytes=32 * GIB,
                        refresh=False, retained_claims=None):
     """Read live reservations under the caller's existing guard mutex.
@@ -592,7 +613,8 @@ def reservation_claims(markers, *, proc=Path("/proc"), fallback_bytes=32 * GIB,
                 if name in metadata:
                     raise ValueError("The reservation repeats an ownership field.")
                 metadata[name] = value
-            if separator and name in {"memory_claim_bytes", "memory_fence_bytes", "memory_gib", "memory_probe_claim_bytes"}:
+            if separator and name in {"memory_claim_bytes", "memory_fence_bytes", "memory_gib", "memory_probe_claim_bytes",
+                                      "memory_measured_peak_bytes"}:
                 if name in values:
                     raise ValueError("The reservation repeats a memory field.")
                 values[name] = positive_integer(int(value), "retained memory field")
@@ -624,7 +646,7 @@ def reservation_claims(markers, *, proc=Path("/proc"), fallback_bytes=32 * GIB,
             continue
         claim = max(values.get("memory_claim_bytes", fence), retained_claims.get(str(marker), 0)) if "memory_fence_bytes" in values else fence
         pending = [int(lines[0])] if lines[0].isdecimal() else []
-        visited, peaks = set(), []
+        visited, peaks, resident = set(), [], []
         while pending:
             pid = pending.pop()
             if pid in visited:
@@ -635,7 +657,7 @@ def reservation_claims(markers, *, proc=Path("/proc"), fallback_bytes=32 * GIB,
                 try:
                     status = (proc / str(pid) / "status").read_text().splitlines()
                     peak = next(int(line.split()[1]) for line in status if line.startswith("VmHWM:"))
-                    peaks.append(positive_integer(peak, "observed compiler peak") * 1536)
+                    resident.append(positive_integer(peak, "observed compiler peak") * 1024)
                 except (FileNotFoundError, ProcessLookupError):
                     # A compiler that exited after the snapshot holds no memory.
                     # Counting its fence made a finished compile "grow" past its
@@ -652,7 +674,7 @@ def reservation_claims(markers, *, proc=Path("/proc"), fallback_bytes=32 * GIB,
                 pending.extend(map(int, (proc / str(pid) / "task" / str(pid) / "children").read_text().split()))
             except FileNotFoundError:
                 pass
-        increased = max(claim, sum(peaks))
+        increased = max(claim, sum(peaks) + growth_booking(sum(resident), values.get("memory_measured_peak_bytes")))
         if proc == Path('/proc'):
             scopes[str(len(claims))] = reader.compiler(marker)
         claims.append(increased)
