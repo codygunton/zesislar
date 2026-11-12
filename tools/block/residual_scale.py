@@ -8,9 +8,14 @@
     residual_scale.py collect  --run RUN [--jobs N] [--blocks B,...]
     residual_scale.py rerun    --run RUN [--jobs N] [--launch-gap S] [--blocks B,...]
     residual_scale.py report   --run RUN [--counts-only]
+    residual_scale.py bank-targets --run RUN     (Dune targets of a bank for the plan)
+    residual_scale.py bank-args --build-dir DIR --out BANK   (BANK/ARGS.json for a Dune build dir)
 
 plan lists the callers of the function (`Caller<block>.v` in DIR) and copies each one
-to RUN/blocks/<block>/caller.v. export runs `residual_loop.py export` on each block,
+to RUN/blocks/<block>/caller.v; a block's scratch residual module is named from the
+function symbol (`Residual_<symbol>_<block>`). export --bank replaces the plan's bank
+(the bank can be built after the plan), and a caller whose source changed after the
+plan is copied again before its export. export runs `residual_loop.py export` on each block,
 in its own run dir RUN/blocks/<block>/loop, at most N at a time and S seconds apart.
 That compile is also the rules-only result of the block: it closes, it ends with pure
 goals (they become the goals of the block), it ends with only spatial or refused
@@ -76,6 +81,13 @@ def callers_of(directory, only=None):
     if not found:
         raise ScaleError("No Caller<block>.v in %s." % directory)
     return found
+
+
+def module_for(function, block):
+    """The scratch residual module of a block, named from the function symbol:
+    `Residual_<symbol>_<block>`, with every character that is not a letter, a digit
+    or `_` replaced by `_` (rlp.decodeItem becomes rlp_decodeItem)."""
+    return "Residual_%s_%s" % (re.sub(r"[^A-Za-z0-9_]", "_", function), re.sub(r"[^A-Za-z0-9_]", "_", block))
 
 
 def selected(plan, blocks):
@@ -165,7 +177,8 @@ def cmd_plan(a):
         d = run / "blocks" / block
         d.mkdir(parents=True)
         shutil.copyfile(path, d / "caller.v")
-        blocks.append(dict(block=block, caller=str(path.resolve()), caller_sha256=sha(path)))
+        blocks.append(dict(block=block, caller=str(path.resolve()), caller_sha256=sha(path),
+                           module=module_for(a.function, block)))
     (run / "residuals").mkdir()
     write_json(run / "PLAN.json", dict(function=a.function, callers=str(Path(a.callers).resolve()),
                                        bank=str(Path(a.bank).resolve()), residuals=str((run / "residuals").resolve()),
@@ -173,10 +186,29 @@ def cmd_plan(a):
     print("planned %d block(s) of %s in %s" % (len(blocks), a.function, run))
 
 
+def refresh_caller(run, entry):
+    """Copy the caller again when its source changed after the plan (a re-render)."""
+    source, copy = Path(entry["caller"]), Path(run) / "blocks" / entry["block"] / "caller.v"
+    if source.exists() and sha(source) != entry["caller_sha256"]:
+        shutil.copyfile(source, copy)
+        entry["caller_sha256"] = sha(source)
+        return True
+    return False
+
+
 def cmd_export(a):
     run = Path(a.run)
     plan = read_json(run / "PLAN.json")
+    if a.bank:
+        plan["bank"] = str(Path(a.bank).resolve())
+    if not (Path(plan["bank"]) / "ARGS.json").exists():
+        raise ScaleError("The bank has no ARGS.json: %s" % plan["bank"])
     blocks = selected(plan, [b for b in (a.blocks or "").split(",") if b])
+    entries = {entry["block"]: entry for entry in plan["blocks"]}
+    for block in blocks:
+        if not (loop_dir(run, block) / "MANIFEST.json").exists() and refresh_caller(run, entries[block]):
+            print("refreshed the caller of %s" % block)
+    write_json(run / "PLAN.json", plan)
 
     def export(block):
         out = loop_dir(run, block)
@@ -184,6 +216,8 @@ def cmd_export(a):
             return block, "done"
         arguments = ["export", "--block", block, "--caller", str(run / "blocks" / block / "caller.v"),
                      "--bank", plan["bank"], "--out", str(out), "--jobs", "1", "--claim-gib", str(a.claim_gib)]
+        if entries[block].get("module"):
+            arguments += ["--module", entries[block]["module"]]
         if a.stop_quiet:
             arguments += ["--stop-quiet", str(a.stop_quiet)]
         code = run_loop(arguments, run / "blocks" / block / "export.out")
@@ -295,6 +329,49 @@ def cmd_rerun(a):
     print_report(run)
 
 
+BANK_BASE = ("ZesuSsz/Automation2/ResidualExportOn.vo", "ZesuSsz/Automation2/ResidualExport.vo")
+ZESU_IMPORT = re.compile(r"^(?:From ZesuSsz )?Require (?:Import|Export) ((?:ZesuSsz\.[\w.]+\s*)+)\.$")
+
+
+def bank_targets(plan):
+    """The Dune targets a bank needs for the plan's callers: `@install`, the export
+    switch, and every ZesuSsz module that a caller imports."""
+    targets = set(BANK_BASE)
+    for entry in plan["blocks"]:
+        source = Path(entry["caller"])
+        if not source.exists():
+            continue
+        for line in source.read_text().splitlines():
+            match = ZESU_IMPORT.match(line.strip())
+            if match:
+                for module in match[1].split():
+                    targets.add(module.replace(".", "/") + ".vo")
+    return ["@install"] + sorted(targets)
+
+
+LOAD_PATH = (("-Q", "ZesuSsz", "ZesuSsz"), ("-Q", "ZesuStock", "ZesuStock"), ("-Q", "InstrSpecs", "InstrSpecs"),
+             ("-Q", "Scaffolding", "Scaffolding"), ("-Q", "MachineMap", "ZesuMachineMap"),
+             ("-R", "generated/isla-traces", "IslaTraces"),
+             ("-Q", "generated/isla-traces/stock-zisk/decodeItem", "ZesuSsz.Stock.DecodeItem"),
+             ("-Q", "generated/isla-traces/stock-zisk/closure", "ZesuSsz.Stock.Closure"),
+             ("-Q", "generated/isla-traces/stock-zisk/free", "ZesuSsz.Stock.Free"),
+             ("-Q", "generated/evm-sail-coq", "EvmSail"), ("-Q", "generated/evm-sail-coq/rlp", "EvmSailRlp"),
+             ("-Q", "generated/sail-stdpp", "SailStdpp"))
+COQC = "/home/cody/islaris/_opam/bin/coqc"
+
+
+def bank_args(build_dir):
+    """The coqc arguments of a bank: the Dune build dir's `default` tree with the
+    project's load path and warning flags."""
+    default = Path(build_dir).resolve() / "default"
+    if not (default / "ZesuSsz").is_dir():
+        raise ScaleError("No ZesuSsz tree in %s." % default)
+    args = [COQC]
+    for flag, path, name in LOAD_PATH:
+        args += [flag, str(default / path), name]
+    return args + ["-w", "-notation-overridden", "-w", "-redundant-canonical-projection"]
+
+
 # ---- report ----
 
 def block_lines(state):
@@ -363,6 +440,12 @@ def main(argv=None):
             s.add_argument("--claim-gib", type=float, default=8.0)
         if name == "export":
             s.add_argument("--stop-quiet", type=float, default=None)
+            s.add_argument("--bank", help="the bank to export against (replaces the plan's bank)")
+    t = sub.add_parser("bank-targets")
+    t.add_argument("--run", required=True)
+    g = sub.add_parser("bank-args")
+    g.add_argument("--build-dir", required=True)
+    g.add_argument("--out", required=True)
     b = sub.add_parser("bundle")
     b.add_argument("--run", required=True)
     r = sub.add_parser("report")
@@ -371,6 +454,9 @@ def main(argv=None):
     a = ap.parse_args(argv)
     try:
         {"plan": cmd_plan, "export": cmd_export, "bundle": cmd_bundle, "collect": cmd_collect,
+         "bank-targets": lambda a: print(" ".join(bank_targets(read_json(Path(a.run) / "PLAN.json")))),
+         "bank-args": lambda a: (Path(a.out).mkdir(parents=True, exist_ok=True),
+                                 write_json(Path(a.out) / "ARGS.json", bank_args(a.build_dir))),
          "rerun": cmd_rerun, "report": lambda a: print_report(a.run, a.counts_only)}[a.command](a)
     except ScaleError as error:
         sys.exit("residual_scale: %s" % error)
