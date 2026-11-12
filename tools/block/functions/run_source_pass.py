@@ -17,13 +17,11 @@ ROOT = Path(__file__).resolve().parents[3]
 sys.path.insert(0, str(ROOT / 'tools/block'))
 from boundary_guards import can_reach, cfg_successors
 from call_boundary import CallRefused, call_return_seed
-from function_profiles import load_profile
+from function_profiles import add_return_alignment, load_profile
 from loop_design import loop_head_seed
 from forward_resource_design import evaluate_owned_function
 from forward_resources import load_resource_vocabulary
 from join_generalize import generalize_owned_join
-from function_profiles import load_profile
-from loop_design import loop_head_seed
 from resource_seed import load_public_seed, seed_owned_resources
 from system_shape_seed import seed_system_shapes
 
@@ -61,7 +59,7 @@ def main():
     output.mkdir(exist_ok=False)
     manifest = json.loads((inputs / 'SEED-MANIFEST.json').read_text())
     seed_path = checked(manifest['seed'])
-    public = load_public_seed(seed_path, manifest['seed']['sha256'])
+    public = add_return_alignment(load_public_seed(seed_path, manifest['seed']['sha256']), profile)
     domain = json.loads(checked(manifest['domain']).read_text())
     shapes_path = inputs / 'SYSTEM-SHAPES.json'
     shapes = json.loads(shapes_path.read_text())

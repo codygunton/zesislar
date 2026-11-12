@@ -79,6 +79,36 @@ def load_profile(name=None):
     return FunctionProfile(json.loads(path.read_text()), path)
 
 
+def return_alignment_fact(profile):
+    """The pure conjunct of a `return_address` design row: the register's value at the function
+    entry is aligned, stated on bv_unsigned of that value (F44). None without a row."""
+    row = profile.get('return_address') if profile else None
+    if not row:
+        return None
+    # An equation, not (n | x): an introduced divisibility hypothesis becomes x = c * n, and the
+    # same goal at a successor then has no proof.
+    return '\u231c(bv_unsigned %s mod %d = 0)%%Z\u231d' % (row['value'], row['alignment'])
+
+
+def add_return_alignment(public, profile):
+    """Give the function-entry seed the return-address conjunct, before its terminal True. The
+    forward pass carries it to every entry; loop-head classes get it beside the domain."""
+    fact = return_alignment_fact(profile)
+    components = public['assertion_tree']['components']
+    if fact is None or any(component.get('id') == 'return_address_alignment' for component in components):
+        return public
+    row = profile.get('return_address')
+    register, = [component for component in components
+                 if component.get('kind') == 'register' and component.get('register') == row['register']]
+    if register['value_coq'] != row['value']:
+        raise ValueError('The return-address row names %s; the entry seed gives %s %s'
+                         % (row['value'], row['register'], register['value_coq']))
+    terminal = next(index for index, component in enumerate(components) if component.get('coq') == 'True')
+    components.insert(terminal, {'kind': 'opaque', 'id': 'return_address_alignment',
+                                 'original_component': fact, 'coq': fact})
+    return public
+
+
 def _lines(rows):
     return ''.join(row + '\n' for row in rows)
 
