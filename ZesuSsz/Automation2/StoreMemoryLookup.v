@@ -505,13 +505,19 @@ Ltac zesu_store_fold_byte_cells :=
       run integer count
   end.
 
+(* Every alternative below acts only on a memory lookup, and none of the steps
+   before that test (alias exposure, unfolding local names, splice rewrites)
+   changes the target's head. Test the head once, before any of them. *)
+Ltac zesu_store_lookup_goal :=
+  lazymatch goal with
+  | |- environments.envs_entails _ (find_in_context (FindMemMapsTo _) _) => idtac
+  end.
+
 Ltac zesu_store_memory_lookup :=
+  zesu_store_lookup_goal;
   ZesuSsz.Automation2.SwitchDispatch.zesu_switch_enabled
     constr:(ZesuStepStoreMemoryLookup);
   first [ zesu_store_memory_lookup_core
-  | lazymatch goal with
-    | |- environments.envs_entails _ (find_in_context (FindMemMapsTo _) _) => idtac
-    end;
-    progress (zesu_store_fold_indexed_byte_tail;
+  | progress (zesu_store_fold_indexed_byte_tail;
       ZesuSsz.Automation2.ResourceGroups.zesu_open_resource_groups)
   | zesu_store_fold_byte_cells ].
