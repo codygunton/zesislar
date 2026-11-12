@@ -22,10 +22,13 @@ def bind(path, **more):
     return {'path': str(path), 'sha256': hashlib.sha256(path.read_bytes()).hexdigest(), **more}
 
 
-def trace_index(output, name, namespace):
-    cfg = BASE / 'build/stock-zisk/cfg.json'
-    recipe = BASE / 'build/stock-zisk/build-recipe.json'
-    traces = BASE / 'generated/isla-traces/stock-zisk/closure'
+def trace_index(output, name, namespace, root=None):
+    """Bind the CFG row of `name` and its pinned traces. `root` is the checkout that holds
+    build/stock-zisk and generated/isla-traces (default: the base checkout)."""
+    root = Path(root) if root is not None else BASE
+    cfg = root / 'build/stock-zisk/cfg.json'
+    recipe = root / 'build/stock-zisk/build-recipe.json'
+    traces = root / 'generated/isla-traces/stock-zisk/closure'
     function = next(row for row in json.loads(cfg.read_text())['functions'] if row['name'] == name)
     elf = json.loads(recipe.read_text())['elf_sha256']
     coverage = json.loads((traces / 'coverage.json').read_text())

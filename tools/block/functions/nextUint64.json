@@ -31,6 +31,12 @@
     "module": "ZesuSsz.Contracts.NextUint64Selected",
     "premise": "nextUint64SelectedCode"
   },
+  "return_address": {
+    "register": "x1",
+    "value": "(Z_to_bv 64 (nextReturnAddress (nextUint64Base args)))",
+    "alignment": 4,
+    "source": "Each caller reaches the entry by jal or jalr from a 4-aligned pc (the proved code has no compressed instructions), so ra = pc + 4 is 4-aligned. The Level-1 domain states it: nextUint64EntryLayout (ParentHeaderRootFacts.v) has returnAddress mod 4 = 0, and nextUint64BoundaryDomainReturnAlignment (NextUint64DomainRanges.v) derives this conjunct."
+  },
   "domain_component": "⌜nextReturnAddress (nextUint64Base args) = returnAddress /\\ nextUint64BoundaryDomain args⌝",
   "blocks": [
     "6274",
