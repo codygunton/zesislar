@@ -144,7 +144,12 @@ Ltac zesu_wrapped_closed_address_step :=
   lazymatch goal with
   | |- iris.proofmode.environments.envs_entails _
       (find_in_context (FindMemMapsTo (bv_unsigned ?word)) _) =>
-      zesu_wrapped_closed_chain word
+      first [zesu_wrapped_closed_chain word |
+        (* A local definition whose body is a closed chain: unfold that
+           binder in the goal only. *)
+        is_var word;
+        let body := eval cbv delta [word] in word in
+        zesu_wrapped_closed_chain body; change word with body]
   end;
   ZesuSsz.Automation2.PureFacts.zesu_saturate_derived_facts;
   repeat first [progress ZesuSsz.Automation2.PureFacts.zesu_split_folded_pure |
