@@ -2750,6 +2750,41 @@ Ltac zesu_branch_guard_derived_facts :=
   end.
 #[export] Hint Extern 4 (ZesuSsz.Automation.PureFacts.ZesuDerivedFacts _ _) => zesu_branch_guard_derived_facts : typeclass_instances.
 
+(* A branch fact compares a word with a literal, `w = BV n z` or `w <> BV n z`,
+   while a successor guard states the same condition over `bv_unsigned w`.
+   lia and bv_solve read no bit-vector hypothesis, so the intro keeps the fact
+   and adds its unsigned view beside it. A variable equal to a literal is
+   substituted by the intro, so it needs no view. *)
+Lemma zesu_bv_literal_unsigned_eq (n : N) (word : bv n) (z : Z) proof :
+  word = @BV n z proof -> bv_unsigned word = z.
+Proof. intros ->. reflexivity. Qed.
+
+Lemma zesu_bv_literal_unsigned_neq (n : N) (word : bv n) (z : Z) proof :
+  word <> @BV n z proof -> bv_unsigned word <> z.
+Proof. intros different same. apply different, bv_eq. exact same. Qed.
+
+Ltac zesu_bv_literal_unsigned_view :=
+  lazymatch goal with
+  | |- SimplImplUnsafe ?changed ?fact ?view =>
+    zesu_switch_enabled constr:(ZesuStepBranchGuards);
+    tryif has_evar fact then fail 0 else idtac;
+    lazymatch fact with
+    | @eq (bv ?n) ?word (@BV _ ?z ?proof) =>
+        tryif is_var word then fail 0 else idtac;
+        lazymatch goal with _ : bv_unsigned word = z |- _ => fail 0 | _ => idtac end;
+        unify changed false;
+        exact (zesu_bv_literal_unsigned_eq n word z proof)
+    | not (@eq (bv ?n) ?word (@BV _ ?z ?proof)) =>
+        lazymatch goal with _ : bv_unsigned word <> z |- _ => fail 0 | _ => idtac end;
+        unify changed false;
+        exact (zesu_bv_literal_unsigned_neq n word z proof)
+    end
+  end.
+#[export] Hint Extern 10 (SimplImplUnsafe _ (@eq (bv _) _ _) _) =>
+  zesu_bv_literal_unsigned_view : typeclass_instances.
+#[export] Hint Extern 10 (SimplImplUnsafe _ (not (@eq (bv _) _ _)) _) =>
+  zesu_bv_literal_unsigned_view : typeclass_instances.
+
 
 Ltac zesu_branch_guard_normalize_hook :=
   zesu_switch_enabled constr:(ZesuStepBranchGuards);
