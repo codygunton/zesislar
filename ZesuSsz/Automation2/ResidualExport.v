@@ -1,4 +1,5 @@
 Require ZesuSsz.Automation2.ContextCollection.
+Require ZesuSsz.Automation2.ResidualLemmas.
 From Coq Require Import BinNums.
 From Ltac2 Require Import Ltac2.
 Set Default Proof Mode "Classic".
@@ -317,16 +318,11 @@ Ltac2 zesu_export_variables (term : constr) : ident list option :=
   | Err _ => None
   end.
 
-(* Substitute every local definition of the context into TERM, newest first,
-   so a body that mentions an older definition is unfolded too. *)
+(* Substitute every local definition of the context into TERM: the form in
+   which the residual tier matches a goal whose conclusion mentions a local
+   definition (ResidualLemmas.v). *)
 Ltac2 zesu_export_unfold_local (term : constr) : constr :=
-  List.fold_left (fun current declaration =>
-    let (name, body, _) := declaration in
-    match body with
-    | Some value =>
-        Constr.Unsafe.substnl [value] 0 (Constr.Unsafe.closenl [name] 1 current)
-    | None => current
-    end) term (List.rev (Control.hyps ())).
+  ZesuSsz.Automation2.ResidualLemmas.zesu_residual_unfold_local term.
 
 Ltac2 zesu_export_proposition (typ : constr) : bool :=
   match Control.case (fun () => Constr.equal (Constr.type typ) 'Prop) with
@@ -424,9 +420,9 @@ Ltac2 zesu_export_reach (limit : int) : ident list * int * int :=
     let (name, _) := entry in if zesu_export_member name kept then name :: found else found) candidates [] in
   (ordered, props, List.length candidates).
 
-(* The local definitions that the conclusion mentions: the residual tier
-   matches local definitions only syntactically, so it cannot apply a lemma
-   whose conclusion unfolds them. *)
+(* The local definitions that the conclusion mentions. The residual tier
+   unfolds them in the goal before its second try, so a lemma in the
+   exported form (definitions unfolded) matches. *)
 Ltac2 zesu_export_conclusion_definitions () : ident list :=
   let found := match zesu_export_variables (Control.goal ()) with
     | Some names => names
