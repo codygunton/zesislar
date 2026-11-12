@@ -396,12 +396,27 @@ class GateCompileSumTests(unittest.TestCase):
         result = self.booked(self.ledger([GIB, GIB]))
         self.assertEqual(result['active_claim_bytes'], 3 * GIB)
 
-    def test_cold_gate_total_is_at_least_its_old_claim(self):
-        # One running compile is unmeasured (booked at its 16 GiB fence).
+    def test_an_unmeasured_compile_adds_its_fence_but_no_floor(self):
+        # One running compile is unmeasured (booked at its 16 GiB fence). Its
+        # fence bounds it, so the gate no longer jumps to its 47 GiB basis.
         result = self.booked(self.ledger([GIB, 16 * GIB]))
-        self.assertEqual(result['active_claim_bytes'], 47 * GIB)
+        self.assertEqual(result['active_claim_bytes'], 18 * GIB)
         many = self.booked(self.ledger([16 * GIB] * 4))
         self.assertEqual(many['active_claim_bytes'], GIB + 64 * GIB)
+
+    def test_measured_compiles_together_book_at_most_the_gate_basis(self):
+        # Ten measured compiles at 8 GiB each sum to 81 GiB; their peaks do not
+        # coincide, and the measured whole-gate basis is 47 GiB.
+        result = self.booked(self.ledger([8 * GIB] * 10))
+        self.assertEqual(result['active_claim_bytes'], 47 * GIB)
+        # An unmeasured compile raises the cap by its own fence booking.
+        mixed = self.booked(self.ledger([8 * GIB] * 10 + [16 * GIB]))
+        self.assertEqual(mixed['active_claim_bytes'], 63 * GIB)
+
+    def test_a_gate_never_books_above_its_aggregate_fence(self):
+        data = self.ledger([16 * GIB] * 4)
+        data['claim_fences'] = {'CorrectnessGate_g': {'owner': {}, 'physical_fence_bytes': 40 * GIB}}
+        self.assertEqual(self.booked(data)['active_claim_bytes'], 40 * GIB)
 
     def test_compile_joining_a_gate_adds_to_its_sum(self):
         data = self.ledger([GIB])
