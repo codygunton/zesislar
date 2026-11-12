@@ -212,6 +212,12 @@ name lemmas by their exact full names; clear hypotheses you do not need before a
 solver call. A goal may be false: if you find a counterexample, say so instead of an
 answer. Report only one line per goal, `RESULT <goal> PASS|FAIL|FALSE`, never proof text.
 
+Environment notes: iris and ssreflect are loaded, so `rewrite lemma by tac` and
+`rewrite <- lemma` do not parse; write `rewrite lemma; [|tac]` or `rewrite -lemma`. The
+stdpp bit-vector lemmas take their widths as arguments of type `N`, often implicit
+(`bv_unsigned_in_range _ b`). Prove a general helper with `assert` and `clear.` inside
+it, then apply it to the goal.
+
 Goals:
 {goals}
 """

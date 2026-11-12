@@ -64,3 +64,5 @@ tools/block/residual_scale.py report --run <run> [--counts-only]
 
 The export compile of a block is its rules-only result. The report gives rules-only closures against
 closures after the rerun, RESULT lines without proof text, and only counts with `--counts-only`.
+Whoever runs a standing agent may write `RUN/blocks/<block>/loop/answers/<goal>.json` with `{"tokens": N}`;
+the RESULT lines then report the tokens per goal.

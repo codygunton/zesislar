@@ -132,6 +132,7 @@ class BundleTests(unittest.TestCase):
         self.assertNotIn("`a-2`", readme)
         self.assertNotIn("`a-4`", readme)
         self.assertIn("never proof text", readme)
+        self.assertIn("rewrite lemma by tac", readme)
         self.assertIn("Read and Write tools", prompt)
 
 
