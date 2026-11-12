@@ -12,7 +12,9 @@ import run_registry as R
 import run_wall_stop as W
 
 TOOLS = Path(__file__).resolve().parent
-CEILING = 30.0
+# Waits end on their condition or on the fixture's exit. This bound only stops
+# a hung test; a loaded gate host delayed the 30 s bound it replaces (2026-11-11).
+EVENT_CEILING = 600.0
 
 # A run command that starts one nested process and records its PID, as a
 # guard batch starts a scope. With an argument it then stops its own run.
@@ -54,14 +56,21 @@ class RunWallStopTests(unittest.TestCase):
                 process.kill()
             process.wait()
 
-    def wait_for(self, predicate):
-        deadline = time.monotonic() + CEILING
-        while time.monotonic() < deadline:
+    def wait_for(self, predicate, process=None):
+        """Wait for predicate; fail as soon as the watched fixture process exits without it."""
+        deadline = time.monotonic() + EVENT_CEILING
+        while True:
             result = predicate()
             if result:
                 return result
+            if process is not None and process.poll() is not None:
+                result = predicate()
+                if result:
+                    return result
+                self.fail('The fixture exited before it reached its expected state.')
+            if time.monotonic() > deadline:
+                self.fail('The fixture did not reach its expected state.')
             time.sleep(0.05)
-        self.fail('The fixture did not reach its expected state.')
 
     def start(self, run_id, mode='none'):
         process = subprocess.Popen(
@@ -71,7 +80,7 @@ class RunWallStopTests(unittest.TestCase):
             stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
         self.processes.append(process)
         pid_file = self.root / 'nested.pid'
-        self.wait_for(lambda: pid_file.exists() and pid_file.read_text())
+        self.wait_for(lambda: pid_file.exists() and pid_file.read_text(), process)
         return process, int(pid_file.read_text())
 
     def closed(self, run_id):
@@ -87,20 +96,31 @@ class RunWallStopTests(unittest.TestCase):
         process, nested = self.start('outside')
         self.assertEqual(W.stop_containing(nested, self.registry), ('outside', 'stopped'))
         self.assertTrue(self.closed('outside'))
-        self.assertIsNotNone(process.wait(timeout=CEILING))
+        self.assertIsNotNone(process.wait(timeout=EVENT_CEILING))
 
     def test_caller_inside_the_run_hands_the_stop_to_a_detached_process(self):
         process, _ = self.start('inside', 'helper')
         self.wait_for(lambda: self.closed('inside'))
         self.assertEqual((self.root / 'how').read_text(), 'detached')
-        self.assertIsNotNone(process.wait(timeout=CEILING))
+        self.assertIsNotNone(process.wait(timeout=EVENT_CEILING))
 
     def test_registry_refuses_a_stop_from_inside_its_own_run(self):
         process, _ = self.start('refused', 'direct')
         refused = self.root / 'refused'
-        self.wait_for(refused.exists)
+        self.wait_for(refused.exists, process)
         self.assertIn('contains its caller', refused.read_text())
         self.assertEqual(self.registry.read()['runs']['refused']['status'], 'running')
+
+    def test_parallel_stoppers_of_equal_run_ids_get_distinct_units(self):
+        from unittest.mock import patch
+        units = []
+        with patch.object(W.shutil, 'which', return_value='/usr/bin/systemd-run'), \
+                patch.object(W.subprocess, 'run', side_effect=lambda command, **_: units.append(
+                    command[command.index('--unit') + 1])):
+            other = R.Registry(self.root / 'other-registry')
+            for registry in (self.registry, other, self.registry):
+                W.detach_stop(registry, 'inside')
+        self.assertEqual(len(set(units)), 3)
 
     def test_process_outside_every_run_has_nothing_to_stop(self):
         self.assertEqual(W.stop_containing(R.os.getpid(), self.registry), (None, 'no_active_run'))

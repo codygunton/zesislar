@@ -7,7 +7,6 @@ Require Import ZesuSsz.Contracts.RlpDecodeItemContract.
 Require Import ZesuSsz.Contracts.DecodeItemSelected.
 Require Import Scaffolding.DecodeItemComplianceStatement.
 Require Import Scaffolding.DecodeItemSignatureGates.
-Require Import Scaffolding.DecodeItemApplyChain.
 
 Definition fixtureExtraPremise : Prop :=
   False -> DecodeItemComplianceStatement.
@@ -137,8 +136,6 @@ Definition fixtureHiddenEvaluator
     IslarisContractCorrect decodeItemEntry returnAddress
       (fixtureEvaluatorModel evaluator returnAddress).
 Fail Check (@fixtureHiddenEvaluator : ReviewedDecodeItemComplianceType).
-
-Require Import Scaffolding.DecodeItemSemanticEntryFixtures.
 
 Check (decodeItemSelectedCompliance : ReviewedDecodeItemComplianceType).
 Print Assumptions decodeItemSelectedCompliance.

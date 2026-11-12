@@ -1,12 +1,8 @@
-Require Import ZesuSsz.Automation.All.
-Require Import ZesuSsz.Automation.ByteArrayLengths.
-Require Import ZesuSsz.Automation.Switches.ArrayBounds.
-Require Import ZesuSsz.Automation.Switches.ArrayRegionBounds.
-Require Import ZesuSsz.Automation.Switches.TupleWitness.
-Require Import ZesuSsz.Compliance.DecodeItemHeaderWitnessFacts.
-Require Import ZesuSsz.Contracts.RlpDecodeItemBlockEntries.
 Require Import isla.riscv64.riscv64.
 From Coq Require Import List ZArith.
+Require Import ZesuSsz.Contracts.RlpDecodeItem.
+Require Import ZesuSsz.Contracts.RlpDecodeItemContract.
+Require Import ZesuSsz.Automation2.All.
 Open Scope Z_scope.
 
 Lemma store_updated_width (out : Z) (storage : list byte) (value : byte)
@@ -38,26 +34,8 @@ Proof.
   exact I.
 Qed.
 
-Lemma store_nat_opener_guard `{!islaG Sigma} `{!threadG} :
-  ⊢ ((∃ index : nat, ⌜index = 3%nat⌝)%I : iProp Sigma).
-Proof.
-  iStartProof.
-  Fail zesu_primitive_tuple_if_enabled.
-  iExists 3%nat. done.
-Qed.
-
-Lemma store_protected_nat_guard `{!islaG Sigma} `{!threadG} :
-  ⊢ ((∃ index : li_prod nat unit, ⌜index.1ₗ = 3%nat⌝)%I : iProp Sigma).
-Proof.
-  iStartProof.
-  Fail zesu_primitive_tuple_if_enabled.
-  iExists (3%nat, tt)ₗ. done.
-Qed.
-
 Print Assumptions store_updated_width.
 Print Assumptions store_updated_strict.
-Print Assumptions store_nat_opener_guard.
-Print Assumptions store_protected_nat_guard.
 
 Lemma store_restored_sp (SP : Z) :
   (Z_to_bv 64 (SP - RlpDecodeItem.decodeItemStackBytes) + 16)%bv = Z_to_bv 64 SP.
@@ -71,20 +49,27 @@ Proof.
   exact I.
 Qed.
 
-Lemma store_frame_end (SP : Z) (locals : DecodeItemReturnLocals)
-    (Hsp : (RlpDecodeItem.decodeItemStackBytes <= SP < 2 ^ 64)%Z)
-    (Hlength : length (returnFrame locals) = 16%nat) :
-  (SP - RlpDecodeItem.decodeItemStackBytes +
-    Z.of_nat (length (returnFrame locals)) <= 2 ^ 64)%Z.
+(* The FP301 entries own the 16-byte frame image: the saved frame pointer
+   followed by the return address (`fp_machineAt6a24_LoopClass0`). *)
+Lemma store_frame_end (args : DecodeItemArgs)
+    (Hsp : (RlpDecodeItem.decodeItemStackBytes <= decodeItemStackPointer args < 2 ^ 64)%Z) :
+  (decodeItemStackPointer args - RlpDecodeItem.decodeItemStackBytes +
+    Z.of_nat (length
+      (bv_to_little_endian 8 8 (bv_unsigned (decodeItemSavedFramePointer args)) ++
+       bv_to_little_endian 8 8
+         (bv_unsigned (Z_to_bv 64 (decodeItemReturnAddress args))))) <= 2 ^ 64)%Z.
 Proof. zesu_finish_contract_arithmetic. Qed.
 
-Lemma store_frame_end_wrong_offset (SP : Z) (locals : DecodeItemReturnLocals)
-    (Hsp : (RlpDecodeItem.decodeItemStackBytes <= SP < 2 ^ 64)%Z)
-    (Hlength : length (returnFrame locals) = 16%nat) : True.
+Lemma store_frame_end_wrong_offset (args : DecodeItemArgs)
+    (Hsp : (RlpDecodeItem.decodeItemStackBytes <= decodeItemStackPointer args < 2 ^ 64)%Z) :
+  True.
 Proof.
   Fail assert (Hbad :
-    (SP - RlpDecodeItem.decodeItemStackBytes + 8 +
-      Z.of_nat (length (returnFrame locals)) <= 2 ^ 64)%Z)
+    (decodeItemStackPointer args - RlpDecodeItem.decodeItemStackBytes + 8 +
+      Z.of_nat (length
+        (bv_to_little_endian 8 8 (bv_unsigned (decodeItemSavedFramePointer args)) ++
+         bv_to_little_endian 8 8
+           (bv_unsigned (Z_to_bv 64 (decodeItemReturnAddress args))))) <= 2 ^ 64)%Z)
     by zesu_finish_contract_arithmetic.
   exact I.
 Qed.

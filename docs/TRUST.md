@@ -17,8 +17,9 @@ context"):
 
 The registers and compositional variants in `DecodeItemCompositionalCompliance.v` rest on
 the same chain. The October block, slot and composition proofs are retired. Some October
-fact modules remain for nextUint64, the termination export, frozen-core tests and the
-signature fixtures; no production theorem uses them. The user selected C1-B: the public result records exact
+fact modules remain because the block design binds them as sources, the generated support
+files import them, or nextUint64's frozen-core exit meanings use them; no production theorem
+uses them. The user selected C1-B: the public result records exact
 machine bytes and permits only the named `RlpLongLengthWrap` divergence from Sail.
 The `KnownBugs` list has one constructor. A wrap case requires the exact binary
 result and Sail rejection. `headerFits` remains a caller lemma, not a public domain.
