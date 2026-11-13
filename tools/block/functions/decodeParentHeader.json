@@ -30,23 +30,23 @@
     "Require Import ZesuSsz.Contracts.ParentHeaderContract."
   ],
   "selected_code": {
-    "module": "ZesuSsz.Contracts.ParentHeaderLookupCode",
-    "premise": "parentHeaderLookupCode"
+    "module": "ZesuSsz.Contracts.ParentHeaderContract",
+    "premise": "parentHeaderSelectedCode"
   },
   "return_address": {
     "register": "x1",
-    "value": "(Z_to_bv 64 (parentHeaderReturnAddress args))",
+    "value": "(parentHeaderReturnAddress args)",
     "alignment": 4,
-    "source": "parentHeaderArgsWellFormed (ParentHeaderContract.v): parentHeaderReturnAddress args mod 4 = 0"
+    "source": "parentHeaderArgsWellFormed (ParentHeaderContract.v): bv_unsigned (parentHeaderReturnAddress args) mod 4 = 0"
   },
-  "domain_component": "⌜parentHeaderDomainAt returnAddress args⌝",
+  "domain_component": "⌜bv_unsigned (parentHeaderReturnAddress args) = returnAddress /\\ parentHeaderArgsWellFormed args⌝",
   "entry_interface": {
     "entry_resources": "parentHeaderEntryResources",
     "well_formed": "parentHeaderArgsWellFormed",
     "exit_resources": "parentHeaderExitResources",
     "source": "ZesuSsz/Contracts/ParentHeaderContract.v",
     "exact_system_registers": {
-      "zisk_input_end": "parentHeaderInputEnd args"
+      "zisk_input_end": "bv_unsigned (parentHeaderInputEnd args)"
     }
   },
   "trace_namespace": "ZesuSsz.Stock.Closure",
@@ -184,7 +184,7 @@
           "binder": "input",
           "argument": 1,
           "slice_of": "parentHeaderInputBytes args",
-          "caller_value": "take (Z.to_nat (bv_unsigned {argv:2})) (drop (Z.to_nat (bv_unsigned {argv:1} - parentHeaderInputPointer args)) (parentHeaderInputBytes args))"
+          "caller_value": "take (Z.to_nat (bv_unsigned {argv:2})) (drop (Z.to_nat (bv_unsigned {argv:1} - bv_unsigned (parentHeaderInputPointer args))) (parentHeaderInputBytes args))"
         },
         {
           "binder": "before",
@@ -209,7 +209,7 @@
           "binder": "input",
           "argument": 1,
           "slice_of": "parentHeaderInputBytes args",
-          "caller_value": "take (Z.to_nat (bv_unsigned {argv:2})) (drop (Z.to_nat (bv_unsigned {argv:1} - parentHeaderInputPointer args)) (parentHeaderInputBytes args))"
+          "caller_value": "take (Z.to_nat (bv_unsigned {argv:2})) (drop (Z.to_nat (bv_unsigned {argv:1} - bv_unsigned (parentHeaderInputPointer args))) (parentHeaderInputBytes args))"
         },
         {
           "binder": "before",
@@ -234,7 +234,7 @@
           "binder": "input",
           "argument": 1,
           "slice_of": "parentHeaderInputBytes args",
-          "caller_value": "take (Z.to_nat (bv_unsigned {argv:2})) (drop (Z.to_nat (bv_unsigned {argv:1} - parentHeaderInputPointer args)) (parentHeaderInputBytes args))"
+          "caller_value": "take (Z.to_nat (bv_unsigned {argv:2})) (drop (Z.to_nat (bv_unsigned {argv:1} - bv_unsigned (parentHeaderInputPointer args))) (parentHeaderInputBytes args))"
         },
         {
           "binder": "before",
@@ -259,7 +259,7 @@
           "binder": "input",
           "argument": 1,
           "slice_of": "parentHeaderInputBytes args",
-          "caller_value": "take (Z.to_nat (bv_unsigned {argv:2})) (drop (Z.to_nat (bv_unsigned {argv:1} - parentHeaderInputPointer args)) (parentHeaderInputBytes args))"
+          "caller_value": "take (Z.to_nat (bv_unsigned {argv:2})) (drop (Z.to_nat (bv_unsigned {argv:1} - bv_unsigned (parentHeaderInputPointer args))) (parentHeaderInputBytes args))"
         },
         {
           "binder": "before",
@@ -284,7 +284,7 @@
           "binder": "input",
           "argument": 1,
           "slice_of": "parentHeaderInputBytes args",
-          "caller_value": "take (Z.to_nat (bv_unsigned {argv:2})) (drop (Z.to_nat (bv_unsigned {argv:1} - parentHeaderInputPointer args)) (parentHeaderInputBytes args))"
+          "caller_value": "take (Z.to_nat (bv_unsigned {argv:2})) (drop (Z.to_nat (bv_unsigned {argv:1} - bv_unsigned (parentHeaderInputPointer args))) (parentHeaderInputBytes args))"
         },
         {
           "binder": "before",
@@ -309,7 +309,7 @@
           "binder": "input",
           "argument": 1,
           "slice_of": "parentHeaderInputBytes args",
-          "caller_value": "take (Z.to_nat (bv_unsigned {argv:2})) (drop (Z.to_nat (bv_unsigned {argv:1} - parentHeaderInputPointer args)) (parentHeaderInputBytes args))"
+          "caller_value": "take (Z.to_nat (bv_unsigned {argv:2})) (drop (Z.to_nat (bv_unsigned {argv:1} - bv_unsigned (parentHeaderInputPointer args))) (parentHeaderInputBytes args))"
         },
         {
           "binder": "before",
@@ -334,7 +334,7 @@
           "binder": "input",
           "argument": 1,
           "slice_of": "parentHeaderInputBytes args",
-          "caller_value": "take (Z.to_nat (bv_unsigned {argv:2})) (drop (Z.to_nat (bv_unsigned {argv:1} - parentHeaderInputPointer args)) (parentHeaderInputBytes args))"
+          "caller_value": "take (Z.to_nat (bv_unsigned {argv:2})) (drop (Z.to_nat (bv_unsigned {argv:1} - bv_unsigned (parentHeaderInputPointer args))) (parentHeaderInputBytes args))"
         },
         {
           "binder": "before",
@@ -359,7 +359,7 @@
           "binder": "input",
           "argument": 1,
           "slice_of": "parentHeaderInputBytes args",
-          "caller_value": "take (Z.to_nat (bv_unsigned {argv:2})) (drop (Z.to_nat (bv_unsigned {argv:1} - parentHeaderInputPointer args)) (parentHeaderInputBytes args))"
+          "caller_value": "take (Z.to_nat (bv_unsigned {argv:2})) (drop (Z.to_nat (bv_unsigned {argv:1} - bv_unsigned (parentHeaderInputPointer args))) (parentHeaderInputBytes args))"
         },
         {
           "binder": "before",
@@ -384,7 +384,7 @@
           "binder": "input",
           "argument": 1,
           "slice_of": "parentHeaderInputBytes args",
-          "caller_value": "take (Z.to_nat (bv_unsigned {argv:2})) (drop (Z.to_nat (bv_unsigned {argv:1} - parentHeaderInputPointer args)) (parentHeaderInputBytes args))"
+          "caller_value": "take (Z.to_nat (bv_unsigned {argv:2})) (drop (Z.to_nat (bv_unsigned {argv:1} - bv_unsigned (parentHeaderInputPointer args))) (parentHeaderInputBytes args))"
         },
         {
           "binder": "before",
@@ -409,7 +409,7 @@
           "binder": "input",
           "argument": 1,
           "slice_of": "parentHeaderInputBytes args",
-          "caller_value": "take (Z.to_nat (bv_unsigned {argv:2})) (drop (Z.to_nat (bv_unsigned {argv:1} - parentHeaderInputPointer args)) (parentHeaderInputBytes args))"
+          "caller_value": "take (Z.to_nat (bv_unsigned {argv:2})) (drop (Z.to_nat (bv_unsigned {argv:1} - bv_unsigned (parentHeaderInputPointer args))) (parentHeaderInputBytes args))"
         },
         {
           "binder": "before",
@@ -434,7 +434,7 @@
           "binder": "input",
           "argument": 1,
           "slice_of": "parentHeaderInputBytes args",
-          "caller_value": "take (Z.to_nat (bv_unsigned {argv:2})) (drop (Z.to_nat (bv_unsigned {argv:1} - parentHeaderInputPointer args)) (parentHeaderInputBytes args))"
+          "caller_value": "take (Z.to_nat (bv_unsigned {argv:2})) (drop (Z.to_nat (bv_unsigned {argv:1} - bv_unsigned (parentHeaderInputPointer args))) (parentHeaderInputBytes args))"
         },
         {
           "binder": "before",
@@ -459,7 +459,7 @@
           "binder": "input",
           "argument": 1,
           "slice_of": "parentHeaderInputBytes args",
-          "caller_value": "take (Z.to_nat (bv_unsigned {argv:2})) (drop (Z.to_nat (bv_unsigned {argv:1} - parentHeaderInputPointer args)) (parentHeaderInputBytes args))"
+          "caller_value": "take (Z.to_nat (bv_unsigned {argv:2})) (drop (Z.to_nat (bv_unsigned {argv:1} - bv_unsigned (parentHeaderInputPointer args))) (parentHeaderInputBytes args))"
         },
         {
           "binder": "before",
@@ -484,7 +484,7 @@
           "binder": "input",
           "argument": 1,
           "slice_of": "parentHeaderInputBytes args",
-          "caller_value": "take (Z.to_nat (bv_unsigned {argv:2})) (drop (Z.to_nat (bv_unsigned {argv:1} - parentHeaderInputPointer args)) (parentHeaderInputBytes args))"
+          "caller_value": "take (Z.to_nat (bv_unsigned {argv:2})) (drop (Z.to_nat (bv_unsigned {argv:1} - bv_unsigned (parentHeaderInputPointer args))) (parentHeaderInputBytes args))"
         },
         {
           "binder": "before",
@@ -509,7 +509,7 @@
           "binder": "input",
           "argument": 1,
           "slice_of": "parentHeaderInputBytes args",
-          "caller_value": "take (Z.to_nat (bv_unsigned {argv:2})) (drop (Z.to_nat (bv_unsigned {argv:1} - parentHeaderInputPointer args)) (parentHeaderInputBytes args))"
+          "caller_value": "take (Z.to_nat (bv_unsigned {argv:2})) (drop (Z.to_nat (bv_unsigned {argv:1} - bv_unsigned (parentHeaderInputPointer args))) (parentHeaderInputBytes args))"
         },
         {
           "binder": "before",
@@ -534,7 +534,7 @@
           "binder": "input",
           "argument": 1,
           "slice_of": "parentHeaderInputBytes args",
-          "caller_value": "take (Z.to_nat (bv_unsigned {argv:2})) (drop (Z.to_nat (bv_unsigned {argv:1} - parentHeaderInputPointer args)) (parentHeaderInputBytes args))"
+          "caller_value": "take (Z.to_nat (bv_unsigned {argv:2})) (drop (Z.to_nat (bv_unsigned {argv:1} - bv_unsigned (parentHeaderInputPointer args))) (parentHeaderInputBytes args))"
         },
         {
           "binder": "before",
@@ -559,7 +559,7 @@
           "binder": "input",
           "argument": 1,
           "slice_of": "parentHeaderInputBytes args",
-          "caller_value": "take (Z.to_nat (bv_unsigned {argv:2})) (drop (Z.to_nat (bv_unsigned {argv:1} - parentHeaderInputPointer args)) (parentHeaderInputBytes args))"
+          "caller_value": "take (Z.to_nat (bv_unsigned {argv:2})) (drop (Z.to_nat (bv_unsigned {argv:1} - bv_unsigned (parentHeaderInputPointer args))) (parentHeaderInputBytes args))"
         },
         {
           "binder": "before",
@@ -597,12 +597,12 @@
         {
           "kind": "meaning",
           "need": "the lbu at the loop head reads the input array: the payload starts inside it",
-          "coq": "(parentHeaderInputPointer args <= bv_unsigned {x11})%Z"
+          "coq": "(bv_unsigned (parentHeaderInputPointer args) <= bv_unsigned {x11})%Z"
         },
         {
           "kind": "meaning",
           "need": "the lbu at the loop head reads the input array: the payload ends inside it",
-          "coq": "(bv_unsigned {x12} <= parentHeaderInputPointer args + parentHeaderInputLength args)%Z"
+          "coq": "(bv_unsigned {x12} <= bv_unsigned (parentHeaderInputPointer args) + bv_unsigned (parentHeaderInputLength args))%Z"
         }
       ],
       "array_cursor": {
@@ -636,12 +636,12 @@
         {
           "kind": "meaning",
           "need": "the lbu at the loop head reads the input array: the payload starts inside it",
-          "coq": "(parentHeaderInputPointer args <= bv_unsigned {x11})%Z"
+          "coq": "(bv_unsigned (parentHeaderInputPointer args) <= bv_unsigned {x11})%Z"
         },
         {
           "kind": "meaning",
           "need": "the lbu at the loop head reads the input array: the payload ends inside it",
-          "coq": "(bv_unsigned {x12} <= parentHeaderInputPointer args + parentHeaderInputLength args)%Z"
+          "coq": "(bv_unsigned {x12} <= bv_unsigned (parentHeaderInputPointer args) + bv_unsigned (parentHeaderInputLength args))%Z"
         }
       ],
       "array_cursor": {
@@ -675,12 +675,12 @@
         {
           "kind": "meaning",
           "need": "the lbu at the loop head reads the input array: the payload starts inside it",
-          "coq": "(parentHeaderInputPointer args <= bv_unsigned {x11})%Z"
+          "coq": "(bv_unsigned (parentHeaderInputPointer args) <= bv_unsigned {x11})%Z"
         },
         {
           "kind": "meaning",
           "need": "the lbu at the loop head reads the input array: the payload ends inside it",
-          "coq": "(bv_unsigned {x12} <= parentHeaderInputPointer args + parentHeaderInputLength args)%Z"
+          "coq": "(bv_unsigned {x12} <= bv_unsigned (parentHeaderInputPointer args) + bv_unsigned (parentHeaderInputLength args))%Z"
         }
       ],
       "array_cursor": {
