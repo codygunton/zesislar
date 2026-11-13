@@ -8905,10 +8905,6 @@
       "function": "rlp_decode.decodeParentHeader"
     },
     {
-      "path": "ZesuSsz/Contracts/ParentHeaderSelected.v",
-      "function": "rlp_decode.decodeParentHeader"
-    },
-    {
       "path": "ZesuSsz/Evidence/ParentHeaderDifferential.v",
       "function": "rlp_decode.decodeParentHeader"
     },
@@ -8958,8 +8954,6 @@
         "ZesuSsz/Contracts/Level1.v",
         "ZesuSsz/Contracts/NextUint64Selected.v",
         "ZesuSsz/Contracts/ParentHeaderLevel1.v",
-        "ZesuSsz/Contracts/ParentHeaderMemcpyService.v",
-        "ZesuSsz/Contracts/ParentHeaderSelected.v",
         "ZesuSsz/Contracts/ResultImage.v",
         "ZesuSsz/Contracts/RlpDecodeItem.v",
         "ZesuSsz/Contracts/RlpDecodeItemBlockEntries.v",
@@ -9041,8 +9035,6 @@
         "ZesuSsz/Contracts/Level1.v",
         "ZesuSsz/Contracts/NextUint64Selected.v",
         "ZesuSsz/Contracts/ParentHeaderLevel1.v",
-        "ZesuSsz/Contracts/ParentHeaderMemcpyService.v",
-        "ZesuSsz/Contracts/ParentHeaderSelected.v",
         "ZesuSsz/Contracts/ResultImage.v",
         "ZesuSsz/Contracts/RlpDecodeItem.v",
         "ZesuSsz/Contracts/RlpDecodeItemBlockEntries.v",

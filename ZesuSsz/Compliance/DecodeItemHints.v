@@ -8,8 +8,6 @@ Require Import ZesuSsz.Contracts.Level1.
 Require Import ZesuSsz.Contracts.ParentHeaderLevel1.
 Require Import ZesuSsz.Contracts.RlpDecodeItemContract.
 Require Import ZesuSsz.Contracts.DecodeItemSelected.
-Require Import ZesuSsz.Contracts.ParentHeaderMemcpyService.
-Require Import ZesuSsz.Contracts.ParentHeaderSelected.
 Require Import ZesuSsz.Contracts.RlpDecodeItemByteFold.
 Require Import ZesuSsz.Contracts.RlpDecodeItemByteFoldSites.
 Require Import ZesuSsz.Contracts.RlpDecodeItemByteFoldBlocks.
@@ -35,27 +33,6 @@ Global Typeclasses Opaque ZesuSsz.Contracts.RlpDecodeItemContract.decodeItemExit
 
 Global Instance : LithiumUnfold (@ZesuSsz.Contracts.DecodeItemSelected.decodeItemSelectedCode) := I.
 Global Typeclasses Opaque ZesuSsz.Contracts.DecodeItemSelected.decodeItemSelectedCode.
-
-Global Instance : LithiumUnfold (@ZesuSsz.Contracts.ParentHeaderMemcpyService.ziskMemcpyServiceEntry) := I.
-Global Typeclasses Opaque ZesuSsz.Contracts.ParentHeaderMemcpyService.ziskMemcpyServiceEntry.
-
-Global Instance : LithiumUnfold (@ZesuSsz.Contracts.ParentHeaderMemcpyService.ziskMemcpyServiceExit) := I.
-Global Typeclasses Opaque ZesuSsz.Contracts.ParentHeaderMemcpyService.ziskMemcpyServiceExit.
-
-Global Instance : LithiumUnfold (@ZesuSsz.Contracts.ParentHeaderMemcpyService.ziskMemcpyServiceInstrSpec) := I.
-Global Typeclasses Opaque ZesuSsz.Contracts.ParentHeaderMemcpyService.ziskMemcpyServiceInstrSpec.
-
-Global Instance : LithiumUnfold (@ZesuSsz.Contracts.ParentHeaderMemcpyService.memcpyServicePremise) := I.
-Global Typeclasses Opaque ZesuSsz.Contracts.ParentHeaderMemcpyService.memcpyServicePremise.
-
-Global Instance : LithiumUnfold (@ZesuSsz.Contracts.ParentHeaderSelected.parentHeaderSelectedCode) := I.
-Global Typeclasses Opaque ZesuSsz.Contracts.ParentHeaderSelected.parentHeaderSelectedCode.
-
-Global Instance : LithiumUnfold (@ZesuSsz.Contracts.ParentHeaderSelected.parentHeaderSelectedEntry) := I.
-Global Typeclasses Opaque ZesuSsz.Contracts.ParentHeaderSelected.parentHeaderSelectedEntry.
-
-Global Instance : LithiumUnfold (@ZesuSsz.Contracts.ParentHeaderSelected.parentHeaderSelectedExit) := I.
-Global Typeclasses Opaque ZesuSsz.Contracts.ParentHeaderSelected.parentHeaderSelectedExit.
 
 Global Instance : LithiumUnfold (@ZesuSsz.Contracts.RlpDecodeItemByteFold.decodeItemByteFoldResources) := I.
 Global Typeclasses Opaque ZesuSsz.Contracts.RlpDecodeItemByteFold.decodeItemByteFoldResources.

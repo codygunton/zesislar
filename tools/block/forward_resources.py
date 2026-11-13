@@ -573,6 +573,47 @@ def _complete_cell_image(resource, image, transitions, aliases, vocabulary):
     return '(' + ' ++ '.join(chunks) + ')'
 
 
+def _linear_splice(value, transitions, chunks):
+    """Splice stores at constant offsets into the list `value`, naming `value` once per kept run.
+
+    Each byte comes from the last store that covers it, else from `value`. Splicing store by
+    store would name the previous list twice per store, doubling the term with every store.
+    A single store keeps the form take/store/drop.
+    """
+    source = {}
+    for index, (write, offset) in enumerate(transitions):
+        for byte in range(write.size):
+            source[offset + byte] = (index, byte)
+    runs = []  # [start, length, index or None, first byte of the store]
+    for position in sorted(source):
+        index, byte = source[position]
+        last = runs[-1] if runs else None
+        if last and last[0] + last[1] == position and last[2] == index and last[3] + last[1] == byte:
+            last[1] += 1
+        else:
+            runs.append([position, 1, index, byte])
+    parts, end = [f'(take {runs[0][0]}%nat {value})'], None
+    for start, length, index, byte in runs:
+        if end is not None and start > end[0] + end[1]:
+            gap = start - end[0] - end[1]
+            parts.append(f'(take {gap}%nat (drop (Nat.add {end[0]}%nat {end[1]}%nat) {value}))')
+        size, chunk = transitions[index][0].size, chunks[index]
+        if byte == 0 and length == size:
+            parts.append(chunk)
+        elif byte == 0:
+            parts.append(f'(take {length}%nat {chunk})')
+        elif byte + length == size:
+            parts.append(f'(drop {byte}%nat {chunk})')
+        else:
+            parts.append(f'(take {length}%nat (drop {byte}%nat {chunk}))')
+        end = (start, length)
+    parts.append(f'(drop (Nat.add {end[0]}%nat {end[1]}%nat) {value})')
+    result = parts[-1]
+    for part in reversed(parts[:-1]):
+        result = f'(Coq.Init.Datatypes.app {part} {result})'
+    return result
+
+
 def _memory_source(resource, image, transitions, aliases, vocabulary):
     """Use the existing whole-array splice and uninitialized-span vocabulary."""
     if not image:
@@ -582,16 +623,19 @@ def _memory_source(resource, image, transitions, aliases, vocabulary):
         raise ValueError('The resource has no inherited memory fraction')
     if resource.byte_array is not None:
         value = _scoped_coq(resource.byte_array, aliases)
-        for write, offset in transitions:
-            stored = _scoped_coq(write.value, aliases)
-            # A store at a symbolic offset updates the list at its index, as a symbolic read looks it up.
-            at = (f'{offset}%nat' if isinstance(offset, int) else
-                  f'(Z.to_nat ((bv_unsigned {_scoped_coq(write.address, aliases)} - '
-                  f'bv_unsigned {_scoped_coq(resource.base, aliases)})%Z))')
-            value = (f'(Coq.Init.Datatypes.app (take {at} {value}) '
-                     f'(Coq.Init.Datatypes.app (bv_to_little_endian (Z.of_nat {write.size}%nat) 8%N '
-                     f'(bv_unsigned ({stored} : bv {write.value.width}%N))) '
-                     f'(drop (Nat.add {at} {write.size}%nat) {value})))')
+        chunks = [f'(bv_to_little_endian (Z.of_nat {write.size}%nat) 8%N '
+                  f'(bv_unsigned ({_scoped_coq(write.value, aliases)} : bv {write.value.width}%N)))'
+                  for write, _ in transitions]
+        if all(isinstance(offset, int) for _, offset in transitions):
+            value = _linear_splice(value, transitions, chunks)
+        else:
+            for (write, offset), chunk in zip(transitions, chunks):
+                # A store at a symbolic offset updates the list at its index, as a symbolic read looks it up.
+                at = (f'{offset}%nat' if isinstance(offset, int) else
+                      f'(Z.to_nat ((bv_unsigned {_scoped_coq(write.address, aliases)} - '
+                      f'bv_unsigned {_scoped_coq(resource.base, aliases)})%Z))')
+                value = (f'(Coq.Init.Datatypes.app (take {at} {value}) '
+                         f'(Coq.Init.Datatypes.app {chunk} (drop (Nat.add {at} {write.size}%nat) {value})))')
         return f'({resource.address_z}) ↦ₘ{{{fraction}}}∗ ({value})'
     if any(isinstance(position, str) for position in image):
         raise ValueError('A store at a symbolic offset needs an initialized byte array')

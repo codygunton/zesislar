@@ -47,9 +47,11 @@ Gates exclude validated probe records only when they drain earlier work.
 Probes still count toward compiler limits and memory holds.
 The guard measures memory in our account cgroup, `user-$UID.slice`, against its MemoryMax.
 Account use excludes the file cache and reclaimable slab.
-A launch requires account use below 80 % of the cap.
+A launch requires account use below the cap less 40 GiB.
 A launch also requires its job limit plus 20 GiB below the cap.
-The guard holds at 88 % of the cap and kills the youngest scope at 95 %.
+The guard holds at the cap less 24 GiB and kills the youngest scope at the cap less 10 GiB.
+Proof workloads share `zesuworkloads.slice`, fenced at the cap less 40 GiB.
+Each workload has `oom_score_adj` 1000, so a kernel OOM kills a workload before a session.
 A probe therefore requires 84 GiB below the cap.
 The guard also holds while machine MemAvailable is below 12 GiB.
 Without the account cgroup files, the guard uses MemAvailable.
