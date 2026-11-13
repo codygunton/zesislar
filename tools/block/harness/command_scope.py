@@ -1,12 +1,20 @@
 """Enter the shared workload parent before any preparation or proof input read."""
 from pathlib import Path
+import importlib.util
 import os
 import subprocess
 import sys
 
 PARENT = 'zesuworkloads.slice'
-sys.path.insert(0, str(Path(__file__).resolve().parent / 'code'))
-from admission_memory import workload_parent_bytes  # noqa: E402
+
+
+def workload_parent_bytes(root):
+    """The account-derived fence, from the sibling admission ledger helper."""
+    path = Path(__file__).resolve().parent / 'code' / 'admission_memory.py'
+    spec = importlib.util.spec_from_file_location('_command_scope_admission', path)
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module.workload_parent_bytes(root)
 
 
 def contained(*, proc=Path('/proc/self/cgroup'), cgroups=Path('/sys/fs/cgroup')):
