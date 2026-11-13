@@ -668,24 +668,12 @@ Ltac zesu_v34_array_continuation :=
       ZesuSsz.Automation2.FramePackingFinish.zesu_frame_packing_finish |
       assumption | reflexivity]).
 
-(* Keep the shared route first. Assemble after matching only when it refuses.
-   `check` validates the fixed facts after saturation. *)
-Ltac zesu_finish_source_package_with check :=
-  first [solve [
-  MemoryTupleConsumer.zesu_memory_tuple
-    ltac:(fun requested =>
-      once
-        (SourceFactByteViews.zesu_source_byte_views;
-         SourceFactByteViews.zesu_source_byte_order_tree requested;
-         ZesuSsz.Automation2.BitvectorFacts.zesu_source_biased_mask_tree requested);
-      (tryif SourceFactMatching.zesu_source_check_fixed_tree requested
-       then idtac
-       else (once (repeat JoinEntailment.zesu_join_project_once);
-         PureFacts.zesu_saturate_derived_facts;
-         check requested));
-      once (SourceFactMatching.zesu_source_match_tree requested ltac:(idtac)))
-    ltac:(fun _ => SourceFactMatching.zesu_source_finish_package)
-  ] | solve [
+(* The assembling route: open and frame the memory package, then match the
+   requested facts. `check` validates the fixed facts after saturation. Like
+   the shared route, it keeps only the first match: a refused package does
+   not retry the witnesses of shared evars, which can have unboundedly many
+   combinations. *)
+Ltac zesu_finish_source_assembled check :=
 let run := ltac:(fun consume_facts finish =>
 once (try zesu_memory_registered_intro;
   ResourceGroups.zesu_open_resource_groups;
@@ -709,9 +697,26 @@ once (try zesu_memory_registered_intro;
        else (once (repeat JoinEntailment.zesu_join_project_once);
          PureFacts.zesu_saturate_derived_facts;
          check requested));
-      SourceFactMatching.zesu_source_match_tree requested ltac:(idtac))
+      once (SourceFactMatching.zesu_source_match_tree requested ltac:(idtac)))
+    ltac:(fun _ => SourceFactMatching.zesu_source_finish_package).
+
+(* Keep the shared route first. Assemble after matching only when it refuses. *)
+Ltac zesu_finish_source_package_with check :=
+  first [solve [
+  MemoryTupleConsumer.zesu_memory_tuple
+    ltac:(fun requested =>
+      once
+        (SourceFactByteViews.zesu_source_byte_views;
+         SourceFactByteViews.zesu_source_byte_order_tree requested;
+         ZesuSsz.Automation2.BitvectorFacts.zesu_source_biased_mask_tree requested);
+      (tryif SourceFactMatching.zesu_source_check_fixed_tree requested
+       then idtac
+       else (once (repeat JoinEntailment.zesu_join_project_once);
+         PureFacts.zesu_saturate_derived_facts;
+         check requested));
+      once (SourceFactMatching.zesu_source_match_tree requested ltac:(idtac)))
     ltac:(fun _ => SourceFactMatching.zesu_source_finish_package)
-  ]].
+  ] | solve [zesu_finish_source_assembled check]].
 
 Ltac zesu_finish_source_package :=
   zesu_finish_source_package_with

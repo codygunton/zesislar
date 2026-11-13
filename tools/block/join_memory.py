@@ -16,7 +16,9 @@ def affine_memory_image(resource, paths, *, basis, expressions, register_names, 
     A field that cannot use the existing register inputs refuses. This helper
     introduces no memory input constructor or independent memory witness.
     """
-    if not paths or resource.byte_array is None or resource.element_bits != 8:
+    # The caller asks only when the edges state the array differently. With no store on any
+    # edge, the difference comes from the edges' seeds, which no store layout reconstructs.
+    if not any(paths) or resource.byte_array is None or resource.element_bits != 8:
         return {'status': 'refused', 'kind': 'join_memory_refusal', 'detail': 'The array needs explicit packaging'}
     if any(type(offset) is not int for path in paths for _, offset in path):
         return {'status': 'refused', 'kind': 'join_memory_refusal', 'detail': 'A store has a symbolic offset'}

@@ -811,8 +811,12 @@ def _source_interval(expression, rows):
     return low - wrap, high - wrap, left[2] | right[2]
 
 
-def _refuted_ram_guard(condition, rows):
-    """Refuse guards outside a source-bound RAM endpoint comparison."""
+def _ram_guard_decision(condition, rows):
+    """Decide a source-bound RAM endpoint comparison on its source interval.
+
+    Return (holds, evidence): holds is True when every value of the interval
+    satisfies the condition, False when none does. Otherwise return None.
+    """
     negated = condition.op == 'not' and len(condition.args) == 1
     comparison = condition.args[0] if negated else condition
     if comparison.op not in ('bvsge', 'bvsle', 'bvuge', 'bvule') or len(comparison.args) != 2:
@@ -841,10 +845,43 @@ def _refuted_ram_guard(condition, rows):
         limit = _signed(limit, right.width)
     true = low >= limit if comparison.op.endswith('ge') else high <= limit
     false = high < limit if comparison.op.endswith('ge') else low > limit
-    if not (true if negated else false):
+    holds = false if negated else true
+    if not (holds or (true if negated else false)):
         return None
-    return {'condition': condition.to_dict(), 'interval': [low, high],
-            'endpoint': endpoint, 'endpoint_value': limit, 'source_intervals': used}
+    return holds, {'condition': condition.to_dict(), 'interval': [low, high],
+                   'endpoint': endpoint, 'endpoint_value': limit, 'source_intervals': used}
+
+
+def _refuted_ram_guard(condition, rows):
+    """Refuse guards outside a source-bound RAM endpoint comparison."""
+    decision = _ram_guard_decision(condition, rows)
+    return decision[1] if decision is not None and not decision[0] else None
+
+
+def _implied_ram_guard(condition, rows):
+    """Return the evidence when the source intervals alone imply a RAM guard."""
+    decision = _ram_guard_decision(condition, rows)
+    return decision[1] if decision is not None and decision[0] else None
+
+
+def _drop_source_implied_ram_guards(initial, evaluator):
+    """Carry no new RAM guard that the source intervals already imply.
+
+    Every successor entry states the domain those intervals come from, so the
+    guard adds no fact; carried, it adds two widened bounds per access to every
+    later entry. The block proof still discharges the trace guard itself.
+    """
+    if evaluator.status != 'complete' or not initial.source_intervals:
+        return
+    kept = []
+    for condition in evaluator.state.conditions:
+        evidence = (None if condition in initial.conditions
+                    else _implied_ram_guard(condition, initial.source_intervals))
+        if evidence is None:
+            kept.append(condition)
+        else:
+            evaluator.report('source_implied_ram_guard', **evidence)
+    evaluator.state.conditions = kept
 
 
 def _refute_ram_fault(source, initial, evaluator):
@@ -1039,6 +1076,7 @@ def evaluate_trace(source, state, *, live_registers=None, instruction_index=0, m
     for evaluator in evaluators:
         _refute_ram_fault(source, state, evaluator)
         _apply_source_guard_facts(state, evaluator)
+        _drop_source_implied_ram_guards(state, evaluator)
         if live_registers is not None:
             live = set(live_registers)
             evaluator.state.registers = {k: v for k, v in evaluator.state.registers.items() if k in live}
