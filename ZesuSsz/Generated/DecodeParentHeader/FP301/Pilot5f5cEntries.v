@@ -10,6 +10,7 @@ Require Import ZesuSsz.Contracts.RlpDecodeItemContract.
 Require Import ZesuSsz.Contracts.DecodeItemCompositional.
 Require Import ZesuSsz.Contracts.DecodeItemCallData.
 Require Import ZesuSsz.Contracts.ParentHeaderContract.
+Require Import ZesuSsz.Contracts.ParentHeaderRootFacts.
 Require Export ZesuSsz.Contracts.DecodeItemPayloadBounds.
 Require Export ZesuSsz.Compliance.ParentHeaderHints.
 Require Import ZesuSsz.Contracts.Level1.
