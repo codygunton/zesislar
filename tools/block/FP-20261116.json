@@ -1,0 +1,65 @@
+{
+  "version": "FP-20261116",
+  "kind": "source engine pin",
+  "supersedes": "FP-20261115",
+  "provenance": "Array stores at constant offsets render as one list of kept runs and store chunks (forward_resources._linear_splice), not as nested take/drop splices whose size doubles per store.",
+  "files": [
+    {
+      "path": "tools/block/entry_helper_resources.py",
+      "sha256": "56ae1ee71de43b0141712e7635264bccdfeb90943724ea50a91ec1b7c7ee09c4"
+    },
+    {
+      "path": "tools/block/entry_seed.py",
+      "sha256": "746bc86c4c47ebd22a94a88704caa971fe70a47c5b5406355312485da77e4b02"
+    },
+    {
+      "path": "tools/block/forward_design.py",
+      "sha256": "2207bc2953e14435a70ad9d64161347a297261619f5290871729dcd904f5e5ea"
+    },
+    {
+      "path": "tools/block/forward_resource_design.py",
+      "sha256": "e93335b1ed27ad934c33938edb89244c7c3a32ad1eb0d7ead29650971c388a05"
+    },
+    {
+      "path": "tools/block/forward_resources.py",
+      "sha256": "314cec771095b9d0aec377b1d85a0dc550a6d786e91ad7b62b864a185f976373"
+    },
+    {
+      "path": "tools/block/resource_seed.py",
+      "sha256": "9ee331ec099b10b002a89e3f67c0fa71c523db90943004f7f45aca9dae5b6075"
+    },
+    {
+      "path": "tools/block/symbolic_state.py",
+      "sha256": "5cc072fb567954142734e24028b3bec7e22c8a7ffa93e98acbb65ebc3e24e447"
+    },
+    {
+      "path": "tools/block/system_shape_seed.py",
+      "sha256": "99e0c444987ce264a676479c4986772ec355ae8a1546daf81ad83838f784e73b"
+    },
+    {
+      "path": "tools/test_forward_resource_design.py",
+      "sha256": "f55c12db1333426ead2dbf5662bc9f7b717817f476cce56008dcc41628297344"
+    },
+    {
+      "path": "tools/test_forward_resources.py",
+      "sha256": "27e5fe56c08e0e22f2319839d91af38354a98db6b24493ee1beffe552d3b2d71"
+    },
+    {
+      "path": "tools/test_resource_seed.py",
+      "sha256": "5a9d4935c3a59ecd9696f76ae39f44ea7b194735eb70933ce283b343541748f2"
+    },
+    {
+      "path": "tools/test_system_shape_seed.py",
+      "sha256": "c3b68a03eb9f444c25b1f0b2e12b19097cc42ff6392ceb6ea5cd77a5e7d3745a"
+    }
+  ],
+  "entrypoint": "forward_resource_design.evaluate_owned_function",
+  "statement": "Source evaluation does not establish any generated contract or predecessor entailment.",
+  "limitations": [
+    "Unknown ownership stops propagation.",
+    "Unsupported source expressions remain explicit.",
+    "A jump at a CFG return site leaves the function as a function_return exit; any other unknown target stops the path.",
+    "An address that carries an owned array base and a symbolic addend reads that array as a list lookup; its index range (below the actual array length) is a path condition and an open read obligation; an array without a length term stops the read. A store at a symbolic index has an owner only when one initialized owned array base is its addend and every other memory resource is disjoint from that array; its index range is an open obligation.",
+    "A call ends its block; its return site is a cut that continues only from a call-return seed (call_boundary.call_return_seed). Loop cuts require source-bound inputs."
+  ]
+}
