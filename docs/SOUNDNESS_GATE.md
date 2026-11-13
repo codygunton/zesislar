@@ -71,8 +71,7 @@ It stops at the first failed stage and retains the attempt.
 
 A Dune cache entry is keyed by the digests of the compile action's inputs: the source file, the dependency objects, and the compiler command.
 A cached dependency object therefore comes from an earlier compile of the same source with the same dependencies, if the local cache is intact.
-The key also covers the `coqc` executable's bytes: a changed compiler misses the cache (checked by hand on 2026-11-13).
-`DuneCacheKeyTests` in `tools/test_soundness_gate.py` runs real Dune and `coqc` with a private cache: a changed source under the same file name, and an unchanged source whose dependency changed, both recompile.
+`DuneCacheKeyTests` in `tools/test_soundness_gate.py` runs real Dune and `coqc` with a private cache: unchanged inputs hit the cache; a changed source under the same file name, and an unchanged source whose dependency changed, both recompile.
 Recursive `coqchk` re-checks every object, cached or fresh, against the kernel.
 A cached object cannot add an unchecked proof or a hidden axiom: `coqchk` rejects an ill-typed term, and the wrapper assumption reports must stay closed.
 `coqchk` does not compare an object with its source file.

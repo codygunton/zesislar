@@ -272,22 +272,27 @@ class DuneCacheKeyTests(unittest.TestCase):
                 pass
         return found
 
-    def test_a_changed_source_with_a_stale_cache_entry_misses_the_cache(self):
-        b = 'Require Import T.A.\nDefinition y := x.\n'
+    B = 'Require Import T.A.\nDefinition y := x.\n'
+
+    def test_unchanged_inputs_hit_the_cache(self):
         with tempfile.TemporaryDirectory(dir=os.environ.get('TMPDIR')) as directory:
             root = Path(directory)
-            build, first = self.build(root, 'fill', {'A.v': 'Definition x := 1.\n', 'B.v': b})
+            build, first = self.build(root, 'fill', {'A.v': 'Definition x := 1.\n', 'B.v': self.B})
             self.assertEqual(self.compiled(build), {'A.vo', 'B.vo'})
-            # Positive control: identical inputs in a new build directory are served by the cache.
-            build, hit = self.build(root, 'hit', {'A.v': 'Definition x := 1.\n', 'B.v': b})
+            build, hit = self.build(root, 'hit', {'A.v': 'Definition x := 1.\n', 'B.v': self.B})
             self.assertEqual(self.compiled(build), set())
             self.assertEqual(hit, first)
+
+    def test_a_changed_source_or_dependency_misses_a_stale_cache_entry(self):
+        with tempfile.TemporaryDirectory(dir=os.environ.get('TMPDIR')) as directory:
+            root = Path(directory)
+            build, first = self.build(root, 'fill', {'A.v': 'Definition x := 1.\n', 'B.v': self.B})
+            self.assertEqual(self.compiled(build), {'A.vo', 'B.vo'})
             # Same file name, changed source: the stale entry for A.v must not serve A.vo, and
             # B.vo, whose own source is unchanged, must miss because its dependency changed.
-            build, changed = self.build(root, 'changed', {'A.v': 'Definition x := 2.\n', 'B.v': b})
+            build, changed = self.build(root, 'changed', {'A.v': 'Definition x := 2.\n', 'B.v': self.B})
             self.assertEqual(self.compiled(build), {'A.vo', 'B.vo'})
             self.assertNotEqual(changed['A.vo'], first['A.vo'])
-
 
 if __name__ == '__main__':
     unittest.main()
