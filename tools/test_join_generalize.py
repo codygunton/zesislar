@@ -425,6 +425,68 @@ class OwnedJoinTests(unittest.TestCase):
                          '⌜(base <= bv_unsigned machine_x13 <= base + Z.of_nat (List.length (bytes)))%Z⌝')
         self.assertEqual(joined['plan']['relations'][-1]['kind'], 'array_placement')
 
+    def slot_join(self, values, stored, *, initialized=True):
+        """A join of edges whose 8-byte slot holds the bytes of `stored[i]` from the edge's seed."""
+        seed, alternatives, vocabulary, continuation = self.fixture(values)
+        old = 'slot ↦ₘ∗ slot_bytes' if initialized else 'slot ↦ₘ? 8'
+        slot = {'id': 'slot', 'kind': 'byte_array' if initialized else 'unknown_byte_array', 'source': old,
+                'address_z': 'slot', 'provenance': {'source': 'fixture'}, 'scope': [[]]}
+        if initialized:
+            slot['value'] = 'slot_bytes'
+        listed = lambda word: '[' + '; '.join(operation('extract', word, width=8, value=8 * index).coq()
+                                              for index in range(8)) + ']'
+        self.add_component(seed, alternatives, slot, ['slot ↦ₘ∗ ' + listed(word) for word in stored])
+        seed.resources = [OwnedBytes('slot', bits(4096, 64), 'slot',
+                                     input_expr('slot_bytes', None) if initialized else None,
+                                     8, True, 'DfracOwn 1', slot, {'source': 'fixture'}, 8)]
+        for alternative, word in zip(alternatives, stored):
+            state = _state_from_result(alternative['state'])
+            state.memory = [MemoryRegion(bits(4096, 64), tuple(operation('extract', word, width=8, value=8 * index)
+                                                                 for index in range(8)),
+                                         input_expr(listed(word), None), 8, ownership_id='slot')]
+            alternative['state'] = state.to_dict()
+        joined = generalize_owned_join(alternatives, original_seed=seed, entry_pc=32,
+                                       vocabulary=vocabulary, continuation=continuation)
+        rows = {row['id']: row['source'] for row in
+                joined['boundary']['alternatives'][0]['resource_boundary']['components']}
+        return joined, rows, listed
+
+    def test_a_slot_holding_each_edges_register_value_states_the_register_binder(self):
+        moved = operation('bvadd', input_expr('old'), bits(8, 64))
+        joined, rows, listed = self.slot_join([input_expr('old'), moved], [input_expr('old'), moved])
+        binder = input_expr('machine_x13')
+        self.assertEqual(rows['slot'], 'slot ↦ₘ∗ ' + listed(binder))
+        self.assertNotIn('join_slot_bytes', [row['name'] for row in joined['seed'].ownership['binders']])
+        self.assertEqual(joined['plan']['memory_relations'][0]['kind'], 'register_image')
+        region, = [row for row in joined['seed'].state.memory if row.ownership_id == 'slot']
+        self.assertEqual(region.bytes, tuple(operation('extract', binder, width=8, value=8 * index)
+                                             for index in range(8)))
+
+    def test_an_uninitialized_slot_holding_each_edges_register_value_states_the_register_binder(self):
+        moved = operation('bvadd', input_expr('old'), bits(8, 64))
+        _, rows, listed = self.slot_join([input_expr('old'), moved], [input_expr('old'), moved], initialized=False)
+        self.assertEqual(rows['slot'], 'slot ↦ₘ∗ ' + listed(input_expr('machine_x13')))
+
+    def test_a_slot_holding_another_value_on_one_edge_stays_packed(self):
+        moved = operation('bvadd', input_expr('old'), bits(8, 64))
+        joined, rows, _ = self.slot_join([input_expr('old'), moved], [input_expr('old'), bits(5, 64)])
+        self.assertEqual(rows['slot'], 'slot ↦ₘ∗ join_slot_bytes')
+        self.assertEqual(joined['plan']['memory_relations'][0]['kind'], 'array_packaging')
+
+    def test_a_register_value_without_a_coq_rendering_states_no_slot(self):
+        from join_generalize import register_image
+        unrendered = Expr('owned_array_byte', (input_expr('frame', None),), 64, 0)
+        word = input_expr('machine_x13')
+        listed = '[' + '; '.join(operation('extract', word, width=8, value=8 * index).coq()
+                                 for index in range(8)) + ']'
+        plan = {'values': {'x13': word.to_dict()}, 'edges': [{'original_values': {'x13': value.to_dict()}}
+                                                           for value in (word, unrendered)]}
+        slot = OwnedBytes('slot', bits(4096, 64), 'slot', input_expr('slot_bytes', None), 8, True,
+                          'DfracOwn 1', {}, {'source': 'fixture'}, 8)
+        self.assertIsNone(register_image(slot, ['slot ↦ₘ∗ ' + listed] * 2, plan, ['x13'], 'little'))
+        self.assertEqual(register_image(slot, ['slot ↦ₘ∗ ' + listed] * 2, {**plan, 'edges': plan['edges'][:1] * 2},
+                                        ['x13'], 'little')[0], 'x13')
+
 
 class LiftedEdges(unittest.TestCase):
     def test_an_edge_from_a_seed_below_another_root_lifts_on_its_own_tree(self):

@@ -756,6 +756,45 @@ def array_placements(components, binders):
     return found
 
 
+def register_image(resource, sources, plan, register_order, endianness):
+    """The register whose value, as bytes, is a whole owned span on every edge, or None.
+
+    sources[i] is the span's source on edge i. Returns (register, bytes): the join states the
+    span as the bytes of the register's join value (its binders), and each edge proves it by
+    its own register value, the witness of those binders."""
+    try:
+        from .forward_resources import parse_source_ownership
+    except ImportError:
+        from forward_resources import parse_source_ownership
+    length = resource.length.value if hasattr(resource.length, 'op') and resource.length.op == 'bits' else resource.length
+    if type(length) is not int or endianness != 'little':
+        return None
+    edges = []
+    for source in sources:
+        pieces = parse_source_ownership(source, provenance={})['components']
+        if len(pieces) != 1 or pieces[0]['kind'] != 'byte_array':
+            return None
+        items = _list_items(input_expr(pieces[0]['value'], None))
+        if items is None or len(items) != length:
+            return None
+        edges.append([_byte(input_expr(item, 8))[0] for item in items])
+
+    def spelled(value):
+        try:
+            return [_byte(operation('extract', value, width=8, value=8 * index))[0] for index in range(length)]
+        except ValueError:
+            return None   # A value without a Coq rendering states no span.
+
+    for register in register_order:
+        value = Expr.from_dict(plan['values'][register])
+        if value.width != 8 * length or not _symbolic(value) or spelled(value) is None:
+            continue
+        if all(spelled(Expr.from_dict(edge['original_values'][register])) == stated
+               for edge, stated in zip(plan['edges'], edges)):
+            return register, tuple(operation('extract', value, width=8, value=8 * index) for index in range(length))
+    return None
+
+
 def _render_span(key, writes, original_seed, ownership, state, apply_owned_writes, render_resource_boundary,
                  vocabulary):
     """The source of one owned span after `writes`, as an edge renders it."""
@@ -1080,6 +1119,8 @@ def generalize_owned_join(alternatives, *, original_seed, entry_pc, vocabulary,
     when each edge's fact is its instance under that edge's binder values
     (generalize_fact); a register binder that such a fact uses as a slice pointer into an
     owned array gets that array's placement as a join relation (array_placements).
+    A memory span whose bytes on every edge are one register's value states the bytes of that
+    register's join value (register_image), so the join keeps what the span holds.
 
     This first case needs no memory witness. A differing memory image refuses
     here until affine elimination or whole-array packaging supplies its binder.
@@ -1157,7 +1198,7 @@ def generalize_owned_join(alternatives, *, original_seed, entry_pc, vocabulary,
     resources, components, carried = [], [], {}
     memory_by_id = {resource.id: resource for resource in original_seed.resources}
     memory_basis, memory_expressions = _memory_basis(states, plan, original_seed)
-    plan['memory_relations'] = []
+    plan['memory_relations'], register_spans = [], {}
     # Each edge's value of each join binder, as Coq text, to generalize the pure facts.
     witnesses = [_witness_texts({name: normalize(Expr.from_dict(value))
                                  for name, value in edge['widened_substitution'].items()})
@@ -1167,9 +1208,22 @@ def generalize_owned_join(alternatives, *, original_seed, entry_pc, vocabulary,
         current = deepcopy(component)
         if component['kind'] != 'register':
             source = records[0][key]['source']
-            if (any(record[key]['source'] != source for record in records[1:]) and key in memory_by_id
-                    and memory_by_id[key].byte_array is None
-                    and not any('{bytes@' + memory_by_id[key].address_z + '}' in fact for fact in design_facts)):
+            differ = any(record[key]['source'] != source for record in records[1:])
+            named = key in memory_by_id and any('{bytes@' + memory_by_id[key].address_z + '}' in fact
+                                                for fact in design_facts)
+            spelled = (register_image(memory_by_id[key], [record[key]['source'] for record in records], plan,
+                                      register_order, first.endianness)
+                       if differ and key in memory_by_id and not named else None)
+            if spelled is not None:
+                # Every edge holds one register's value in the whole span: the join states the
+                # bytes of that register's join value, which each edge's register value witnesses.
+                register, known = spelled
+                source = '%s ↦ₘ%s∗ [%s]' % (memory_by_id[key].address_z, component.get('fraction') or '',
+                                             '; '.join(byte.coq() for byte in known))
+                register_spans[key] = known
+                plan['memory_relations'].append({'status': 'generated', 'kind': 'register_image',
+                                                 'resource_id': key, 'register': register, 'source': source})
+            elif differ and key in memory_by_id and memory_by_id[key].byte_array is None and not named:
                 # An uninitialized span the edges write differently. The bytes every edge
                 # holds stay exact; the others stay uninitialized, which each edge's bytes
                 # witness. No binder: the gaps are `↦ₘ?` spans. A join design that names the
@@ -1186,7 +1240,7 @@ def generalize_owned_join(alternatives, *, original_seed, entry_pc, vocabulary,
                 components.append(current)
                 carried[key] = list(agreed)
                 continue
-            if any(record[key]['source'] != source for record in records[1:]):
+            elif differ:
                 if key not in memory_by_id and all(record[key]['source'].startswith('⌜') for record in records):
                     # A pure fact that the edges state differently stays when it is one fact over
                     # the join binders (each edge's fact is its instance under the edge's values);
@@ -1315,9 +1369,10 @@ def generalize_owned_join(alternatives, *, original_seed, entry_pc, vocabulary,
         return None
 
     for resource in resources:
-        prefix = []
+        # A register image holds its register's join value as bytes, so a load reads it back.
+        prefix = list(register_spans.get(resource.id, ()))
         offset = 0
-        while True:
+        while resource.id not in register_spans:
             value = stored_byte(0, resource.id, offset)
             if value is None or any(stored_byte(index, resource.id, offset) != value
                                     for index in range(1, len(images))):
