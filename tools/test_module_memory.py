@@ -669,6 +669,20 @@ class ModuleMemoryTests(unittest.TestCase):
         (self.root / name).write_text(text)
         return ["python3", "measure.py", "measure.json", "coqc", "-q", name]
 
+    def test_a_shared_slice_kill_is_recorded_but_never_lowers_a_probe_claim(self):
+        ledger = self.root / "fence-kills.jsonl"
+        (self.root / "Probe.v").write_text("Lemma probe : True. Proof. exact I. Qed.\n")
+        command = ["coqc", "Probe.v"]
+        row = memory.record_fence_kill(ledger, "zesudet-5cb8.scope", 16 * memory.GIB, command, self.root,
+                                       kind="shared-slice", own_peak_bytes=3 * memory.GIB,
+                                       aggregate="zesuworkloads-aggregate1p2r3.slice",
+                                       aggregate_limit_bytes=16 * memory.GIB, aggregate_peak_bytes=16 * memory.GIB)
+        self.assertEqual((row["kind"], row["own_peak_bytes"], row["aggregate_limit_bytes"]),
+                         ("shared-slice", 3 * memory.GIB, 16 * memory.GIB))
+        self.assertEqual(memory.fence_kill_claim(ledger, 48 * memory.GIB, command, self.root), 48 * memory.GIB)
+        with self.assertRaises(ValueError):
+            memory.record_fence_kill(ledger, "zesudet-5cb8.scope", 16 * memory.GIB, command, self.root, kind="guess")
+
     def test_a_recorded_fence_kill_books_a_later_probe_at_one_and_a_quarter_fences(self):
         ledger = self.root / "fence-kills.jsonl"
         command = self.kill_source()

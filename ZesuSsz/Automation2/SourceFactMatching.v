@@ -13,6 +13,8 @@ From iris.proofmode Require Import tactics environments.
 From Coq Require Import Bool.Bool.
 From stdpp Require Import decidable.
 From stdpp.bitvector Require Import definitions.
+From Ltac2 Require Import Ltac2.
+Set Default Proof Mode "Classic".
 
 (* Select constrained values through source propositions, with correlated
    alternatives. Pure completion introduces no new arithmetic premise. *)
@@ -217,41 +219,202 @@ Ltac zesu_source_finish_package :=
   | |- environments.envs_entails _ (@bi_emp _) => iEmpIntro
   end.
 
-Ltac zesu_source_match_fact requested finish :=
-  lazymatch requested with
-  | bool_decide ?fact = true => zesu_source_match_fact fact finish
-  | bool_decide ?fact = false => zesu_source_match_fact (~ fact) finish
-  | negb (bool_decide ?fact) = true => zesu_source_match_fact (~ fact) finish
-  | negb (bool_decide ?fact) = false => zesu_source_match_fact fact finish
-  | ?left /\ ?right =>
-      zesu_source_match_fact left
-        ltac:(zesu_source_match_fact right finish)
-  | _ =>
-      tryif has_evar requested then
-        multimatch goal with
-        | source_fact : ?available |- _ =>
-            let available_sort := type of available in
-            lazymatch available_sort with Prop => idtac
-            | _ => fail 0 "The source candidate is not a proposition." end;
-            assert_fails (has_evar available);
-            unify requested available;
-            finish
+(* Occurrences of [target] in [term]. Subterms without an open evar count
+   zero; an open evar inside an unsupported term former refuses. *)
+Ltac2 rec zesu_source_evar_occurrences (target : evar) (term : constr) :=
+  if Constr.has_evar term then
+    let sum := fun (start : int) (terms : constr array) =>
+      Array.fold_left (fun count item =>
+        Int.add count (zesu_source_evar_occurrences target item)) start terms in
+    match Constr.Unsafe.kind term with
+    | Constr.Unsafe.Evar found arguments =>
+        sum (if Evar.equal found target then 1 else 0) arguments
+    | Constr.Unsafe.App head arguments =>
+        sum (zesu_source_evar_occurrences target head) arguments
+    | Constr.Unsafe.Cast body _ ty => sum 0 [|body; ty|]
+    | Constr.Unsafe.Prod binder body => sum 0 [|Constr.Binder.type binder; body|]
+    | Constr.Unsafe.Lambda binder body => sum 0 [|Constr.Binder.type binder; body|]
+    | Constr.Unsafe.LetIn binder value body =>
+        sum 0 [|Constr.Binder.type binder; value; body|]
+    | Constr.Unsafe.Proj _ _ body => zesu_source_evar_occurrences target body
+    | Constr.Unsafe.Case _ return_clause case_inversion scrutinee branches =>
+        let (return_type, _) := return_clause in
+        let start := sum (sum 0 [|return_type; scrutinee|]) branches in
+        match case_inversion with
+        | Constr.Unsafe.NoInvert => start
+        | Constr.Unsafe.CaseInvert indices => sum start indices
         end
-      else
-        let checked := fresh "HspatialConstraint" in
-        assert (checked : requested) by
-          (zesu_source_fact);
-        clear checked; finish
+    | _ => Control.zero (Tactic_failure None)
+    end
+  else 0.
+
+Ltac2 rec zesu_source_open_evars (found : evar list) (term : constr) :=
+  if Constr.has_evar term then
+    let collect := fun (start : evar list) (terms : constr array) =>
+      Array.fold_left zesu_source_open_evars start terms in
+    match Constr.Unsafe.kind term with
+    | Constr.Unsafe.Evar candidate_evar arguments =>
+        let known := List.exist (Evar.equal candidate_evar) found in
+        collect (if known then found else candidate_evar :: found) arguments
+    | Constr.Unsafe.App head arguments => collect (zesu_source_open_evars found head) arguments
+    | Constr.Unsafe.Cast body _ ty => collect found [|body; ty|]
+    | Constr.Unsafe.Prod binder body => collect found [|Constr.Binder.type binder; body|]
+    | Constr.Unsafe.Lambda binder body => collect found [|Constr.Binder.type binder; body|]
+    | Constr.Unsafe.LetIn binder value body =>
+        collect found [|Constr.Binder.type binder; value; body|]
+    | Constr.Unsafe.Proj _ _ body => zesu_source_open_evars found body
+    | _ => Control.zero (Tactic_failure None)
+    end
+  else found.
+
+Ltac2 zesu_source_mentions (evars : evar list) (term : constr) :=
+  List.exist (fun candidate_evar => Int.lt 0 (zesu_source_evar_occurrences candidate_evar term)) evars.
+
+(* The leaf list is [@cons Prop leaf rest] ... [@nil Prop]. *)
+Ltac2 rec zesu_source_leaf_items (leaves : constr) :=
+  match Constr.Unsafe.kind leaves with
+  | Constr.Unsafe.App _ arguments =>
+      if Int.equal (Array.length arguments) 3
+      then Array.get arguments 1 :: zesu_source_leaf_items (Array.get arguments 2)
+      else []
+  | _ => []
   end.
 
-Ltac zesu_source_match_tree requested finish :=
-  lazymatch requested with
-  | @bi_pure _ ?fact => zesu_source_match_fact fact finish
-  | @bi_sep _ ?left ?right =>
-      zesu_source_match_tree left
-        ltac:(zesu_source_match_tree right finish)
-  | _ => finish
+Ltac2 rec zesu_source_leaf_list (items : constr list) :=
+  match items with
+  | [] => constr:(@nil Prop)
+  | item :: rest =>
+      Constr.Unsafe.make (Constr.Unsafe.App constr:(@cons)
+        [|constr:(Prop); item; zesu_source_leaf_list rest|])
   end.
+
+(* Number of leading [items] up to the last one that mentions [evars]. *)
+Ltac2 rec zesu_source_last_mention (evars : evar list) (items : constr list) (index : int) (found : int) :=
+  match items with
+  | [] => found
+  | item :: rest =>
+      let index := Int.add index 1 in
+      zesu_source_last_mention evars rest index
+        (if zesu_source_mentions evars item then index else found)
+  end.
+
+Ltac2 rec zesu_source_grow_segment (segment : constr list) (evars : evar list) (remaining : constr list) :=
+  let count := zesu_source_last_mention evars remaining 0 0 in
+  if Int.equal count 0 then (segment, evars, remaining)
+  else
+    let taken := List.firstn count remaining in
+    zesu_source_grow_segment (List.append segment taken)
+      (List.fold_left zesu_source_open_evars evars taken) (List.skipn count remaining).
+
+(* The leading segment of [leaves] is the shortest prefix that shares no open
+   evar with the later leaves. It commits when none of its evars occurs in the
+   goal outside the segment; otherwise, or when a term former is unsupported,
+   every leaf stays in one uncommitted segment. *)
+Ltac2 zesu_source_split_segment (leaves : constr) :=
+  match zesu_source_leaf_items leaves with
+  | [] => ([], [], true)
+  | leading :: later =>
+      let attempt := fun () =>
+        let (segment, evars, remaining) :=
+          zesu_source_grow_segment [leading] (zesu_source_open_evars [] leading) later in
+        let goal := Control.goal () in
+        let segment_local := List.for_all (fun candidate_evar =>
+          Int.equal
+            (List.fold_left (fun count item =>
+              Int.add count (zesu_source_evar_occurrences candidate_evar item)) 0 segment)
+            (zesu_source_evar_occurrences candidate_evar goal)) evars in
+        if segment_local then (segment, remaining, true) else (leading :: later, [], false) in
+      match Control.case attempt with
+      | Val result => let (value, _) := result in value
+      | Err _ => (leading :: later, [], false)
+      end
+  end.
+
+Ltac zesu_source_with_segment leaves continuation :=
+  let segment_split := ltac2:(leaves continuation |-
+    let (segment, remaining, committed) :=
+      zesu_source_split_segment (Option.get (Ltac1.to_constr leaves)) in
+    Ltac1.apply continuation
+      [Ltac1.of_constr (zesu_source_leaf_list segment);
+       Ltac1.of_constr (zesu_source_leaf_list remaining);
+       Ltac1.of_constr (if committed then constr:(true) else constr:(false))] Ltac1.run) in
+  segment_split leaves continuation.
+
+(* Each success unifies [requested] with one closed source proposition. The
+   sort check matters only for a bare evar: unification with any other
+   proposition already fixes the sort. *)
+Ltac zesu_source_match_candidate requested :=
+  multimatch goal with
+  | source_fact : ?available |- _ =>
+      tryif has_evar available then fail else idtac;
+      tryif is_evar requested then
+        (let available_sort := type of available in
+         lazymatch available_sort with Prop => idtac
+         | _ => fail 0 "The source candidate is not a proposition." end)
+      else idtac;
+      unify requested available
+  end.
+
+Ltac zesu_source_match_leaf requested :=
+  tryif has_evar requested then zesu_source_match_candidate requested
+  else
+    let checked := fresh "HspatialConstraint" in
+    assert (checked : requested) by
+      (zesu_source_fact);
+    clear checked.
+
+Ltac zesu_source_match_leaves leaves :=
+  lazymatch leaves with
+  | @nil _ => idtac
+  | @cons _ ?leaf ?rest => zesu_source_match_leaf leaf; zesu_source_match_leaves rest
+  end.
+
+(* A segment whose evars occur nowhere else in the goal keeps only its first
+   solution: no later leaf can observe the choice, and every choice proves the
+   same facts. Inside a segment, a shared evar keeps backtracking over
+   candidates. [finish] must depend only on the goal. *)
+Ltac zesu_source_match_segments leaves finish :=
+  lazymatch leaves with
+  | @nil _ => finish
+  | _ =>
+      zesu_source_with_segment leaves ltac:(fun segment rest committed =>
+        lazymatch committed with
+        | true => once (zesu_source_match_leaves segment);
+            zesu_source_match_segments rest finish
+        | false => zesu_source_match_leaves segment;
+            zesu_source_match_segments rest finish
+        end)
+  end.
+
+(* Requested facts in order: conjunctions split, Boolean decisions exposed. *)
+Ltac zesu_source_fact_leaves requested leaves :=
+  lazymatch requested with
+  | bool_decide ?fact = true => zesu_source_fact_leaves fact leaves
+  | bool_decide ?fact = false => zesu_source_fact_leaves (~ fact) leaves
+  | negb (bool_decide ?fact) = true => zesu_source_fact_leaves (~ fact) leaves
+  | negb (bool_decide ?fact) = false => zesu_source_fact_leaves fact leaves
+  | ?left /\ ?right =>
+      let later := zesu_source_fact_leaves right leaves in
+      zesu_source_fact_leaves left later
+  | _ => constr:(@cons Prop requested leaves)
+  end.
+
+Ltac zesu_source_tree_leaves requested leaves :=
+  lazymatch requested with
+  | @bi_pure _ ?fact => zesu_source_fact_leaves fact leaves
+  | @bi_sep _ ?left ?right =>
+      let later := zesu_source_tree_leaves right leaves in
+      zesu_source_tree_leaves left later
+  | _ => leaves
+  end.
+
+Ltac zesu_source_match_fact requested finish :=
+  let leaves := zesu_source_fact_leaves requested constr:(@nil Prop) in
+  zesu_source_match_segments leaves finish.
+
+Ltac zesu_source_match_tree requested finish :=
+  let leaves := zesu_source_tree_leaves requested constr:(@nil Prop) in
+  zesu_source_match_segments leaves finish.
 
 (* Check fixed facts before any source-value alternatives can branch. *)
 Ltac zesu_source_check_fixed_fact requested :=
