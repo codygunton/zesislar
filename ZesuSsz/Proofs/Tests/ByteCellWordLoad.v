@@ -32,6 +32,9 @@ Proof.
   iSplitL "Hcells"; [rewrite /mem_mapsto_kind_prop; iExact "Hcells" | done].
 Qed.
 
+(* Positive pair for the refusals below: the fold closes the 8-cell lookup. *)
+Check byte_cells_word_lookup.
+
 (* Seven cells cannot hold a word: the fold refuses them. *)
 Lemma byte_cells_short_refusal `{!islaG Sigma} `{!threadG} (base : Z) (word : bv 64) :
   ((base + Z.of_nat 0 * 1) ↦ₘ bv_extract 0 8 word ∗
@@ -45,7 +48,14 @@ Lemma byte_cells_short_refusal `{!islaG Sigma} `{!threadG} (base : Z) (word : bv
 Proof.
   iIntros "Hcells".
   Fail ZesuSsz.Automation2.ByteCellWords.zesu_byte_cells_fold.
-Abort.
+  (* Same goal, closed by the plain lookup of cell 0. *)
+  iApply find_in_context_mem_mapsto_semantic.
+  iExists (MKMapsTo 8%N (bv_extract 0 8 word)).
+  iDestruct "Hcells" as "[H0 _]".
+  rewrite /mem_mapsto_kind_prop.
+  replace (base + Z.of_nat 0 * 1) with base by lia.
+  iSplitL "H0"; [iExact "H0" | done].
+Qed.
 
 (* A cell chain with a stride other than one byte is not a byte array. *)
 Lemma byte_cells_stride_refusal `{!islaG Sigma} `{!threadG} (base : Z) (word : bv 64) :
@@ -61,7 +71,14 @@ Lemma byte_cells_stride_refusal `{!islaG Sigma} `{!threadG} (base : Z) (word : b
 Proof.
   iIntros "Hcells".
   Fail ZesuSsz.Automation2.ByteCellWords.zesu_byte_cells_fold.
-Abort.
+  (* Same goal, closed by the plain lookup of cell 0. *)
+  iApply find_in_context_mem_mapsto_semantic.
+  iExists (MKMapsTo 8%N (bv_extract 0 8 word)).
+  iDestruct "Hcells" as "[H0 _]".
+  rewrite /mem_mapsto_kind_prop.
+  replace (base + Z.of_nat 0 * 2) with base by lia.
+  iSplitL "H0"; [iExact "H0" | done].
+Qed.
 
 (* The loaded window of a saved frame (fp then ra bytes) is the saved word. *)
 Lemma byte_cells_word_reload (base : Z) (saved returned : bv 64) :
