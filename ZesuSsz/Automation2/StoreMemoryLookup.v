@@ -521,3 +521,14 @@ Ltac zesu_store_memory_lookup :=
   | progress (zesu_store_fold_indexed_byte_tail;
       ZesuSsz.Automation2.ResourceGroups.zesu_open_resource_groups)
   | zesu_store_fold_byte_cells ].
+
+(* A lookup whose address needs a range that sits only behind a folded
+   domain predicate: saturate the derived facts once, in the main context,
+   and let the next step retry the lookup. The pass tries this step last,
+   only when every other step failed on the lookup; `progress` stops it
+   when the facts are already there. *)
+Ltac zesu_store_lookup_saturate_retry :=
+  zesu_store_lookup_goal;
+  ZesuSsz.Automation2.SwitchDispatch.zesu_switch_enabled
+    constr:(ZesuStepStoreMemoryLookup);
+  progress ZesuSsz.Automation2.PureFacts.zesu_saturate_derived_facts.
