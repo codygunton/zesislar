@@ -44,14 +44,18 @@ class UnheldBinders(unittest.TestCase):
         self.assertEqual(plan['binders'], [{'name': 'machine_x13_1', 'type': 'bv 64', 'value_key': 'x13'}])
         self.assertEqual(plan['dropped_binders'][0]['registers'], ['x13'])
 
-    def test_a_live_register_needs_the_binder(self):
-        state = state_with({'x13': operation('bvadd', self.b, bits(1, 64))}, [])
-        with self.assertRaisesRegex(ValueError, 'a successor needs it: machine_x10'):
-            self.run_rules(state, live=['x13'])
-        # Without liveness every register counts as live.
-        with self.assertRaisesRegex(ValueError, 'a successor needs it'):
-            self.run_rules(state_with({'x13': operation('bvadd', self.b, bits(1, 64))}, []),
-                           live=None)
+    def test_a_live_register_forgets_the_binder(self):
+        guard = operation('bvult', self.b, bits(8, 64))
+        for live in (['x13'], None):  # Without liveness every register counts as live.
+            state = state_with({'x13': operation('bvadd', self.b, bits(1, 64))}, [guard])
+            components = [{'id': 'fact', 'kind': 'opaque', 'source': '⌜bv_unsigned machine_x10 < 8⌝'},
+                          {'id': 'other', 'kind': 'opaque', 'source': '⌜True⌝'}]
+            plan = self.run_rules(state, live=live, components=components)
+            self.assertEqual(state.registers['x13'], input_expr('machine_x13_1', 64))
+            self.assertEqual(state.conditions, [])
+            self.assertEqual(components[0]['source'], '⌜True⌝')
+            self.assertEqual(plan['dropped_binders'][0]['rule'], 'forgotten')
+            self.assertEqual(plan['dropped_binders'][0]['facts'], ['fact'])
 
     def test_a_held_binder_stays(self):
         state = state_with({'x10': self.b, 'x13': operation('bvadd', self.b, bits(1, 64))}, [])

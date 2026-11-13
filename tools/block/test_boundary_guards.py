@@ -148,6 +148,14 @@ class CallBoundary(unittest.TestCase):
         # With a return-site seed the call stop drops no path; block 24 itself has no trace here.
         self.assertEqual([row['reason'] for row in boundary(seeded, 24)['reaching_stops']], ['missing_trace'])
 
+    def test_a_tail_jump_is_an_exit_not_a_call(self):
+        tail = {**self.CALLER, 'end': 24, 'rows': [{'pc': pc} for pc in range(16, 24, 4)],
+                'blocks': [{'start': 16, 'end': 24, 'successors': []}],
+                'calls': [{'pc': 20, 'target': 64, 'kind': 'tail'}]}
+        result = evaluate_function(tail, {16: self.PLAIN, 20: self.CALL}, {16: SymbolicState(registers={'PC': bits(16, 64)})})
+        self.assertEqual(result['cuts'], [])
+        self.assertNotIn('call_boundary', [row['reason'] for row in result['stops']])
+
     def test_machine_call_spec_summary(self):
         from call_boundary import parse_machine_call_spec
         source = (Path(__file__).resolve().parents[2] / 'ZesuSsz/Contracts/DecodeItemCallSpec.v').read_text()

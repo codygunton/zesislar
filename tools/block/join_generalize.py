@@ -6,7 +6,6 @@ source arithmetic only. They never certify an Iris entailment or a native proof.
 from copy import deepcopy
 from dataclasses import dataclass, replace
 import hashlib
-import os
 import json
 from pathlib import Path
 import re
@@ -660,15 +659,15 @@ def drop_unheld_binders(state, components, carried, binders, plan, live_register
     """Remove inherited binders that no register or whole array holds.
 
     1. A pure equation `b = e` defines b: substitute e and drop the equation.
-    2. Otherwise, if no successor needs b's value, drop b: a dead register that mentions it
-       gets a fresh binder it holds, an agreed span byte that mentions it becomes
-       uninitialized again, and the path conditions that mention it are dropped. Each is a
-       sound weakening.
+    2. Otherwise drop b: a register that mentions it gets a fresh binder it holds (for a
+       register a successor needs, the facts on b's value are lost), an agreed span byte that
+       mentions it becomes uninitialized again, and the path conditions and pure facts that
+       mention it are dropped. Each is a sound weakening.
     3. If the stores that mention b store only copies of one register's value v (which
        mentions b), that register holds a fresh binder c and every copy of v becomes c (exact:
        c is the register's value on each edge). The rest of b (other registers, path
        conditions, pure facts) is then handled as in 2 and 4.
-    4. A live register or a whole array value that mentions b needs it: refuse with the facts.
+    4. A whole array value that mentions b needs it: refuse with the facts.
     """
     held = {value.value for value in state.registers.values() if value.op == 'input'}
     held |= {component.get('value') for component in components if component['kind'] == 'byte_array'}
@@ -770,14 +769,14 @@ def drop_unheld_binders(state, components, carried, binders, plan, live_register
                   and (live is None or register in live)]
         arrays = [component['id'] for component in components
                   if component['kind'] == 'byte_array' and _mentions(component.get('source', ''), name)]
-        # Measurement-only (ZESU_JOIN_FORGET_UNHELD=1): a register that a successor needs
-        # forgets the binder and takes a fresh value, as for a binder no successor needs.
-        # The class is weaker and stays sound; facts on the forgotten value are lost.
-        if (needed and not os.environ.get('ZESU_JOIN_FORGET_UNHELD')) or arrays:
+        # A register that a successor needs forgets the binder too and takes a fresh value:
+        # the class is weaker and stays sound; the facts on the forgotten value are lost.
+        if arrays:
             raise ValueError('An inherited join binder has no holder and a successor needs it: %s (registers %s, '
                              'arrays %s, live %s)' % (name, needed, arrays,
                                                      'unknown' if live is None else sorted(live)))
-        record = {'binder': name, 'rule': 'not_needed', 'registers': [], 'spans': [], 'conditions': 0}
+        record = {'binder': name, 'rule': 'forgotten' if needed else 'not_needed', 'registers': [], 'spans': [],
+                  'conditions': 0}
         record.update(word_row or {})
         for register, value in list(state.registers.items()):
             if REGISTER.fullmatch(register) and _mentions(text(value), name):
@@ -799,13 +798,12 @@ def drop_unheld_binders(state, components, carried, binders, plan, live_register
         before = len(state.conditions)
         state.conditions[:] = [c for c in state.conditions if not _mentions(text(c), name)]
         record['conditions'] = before - len(state.conditions)
-        if os.environ.get('ZESU_JOIN_FORGET_UNHELD'):
-            # Measurement-only: a pure fact on the forgotten binder is dropped with it.
-            for component in components:
-                if (component['kind'] != 'register' and component.get('source', '').startswith('⌜')
-                        and _mentions(component['source'], name)):
-                    component['source'] = '⌜True⌝'
-                    record.setdefault('facts', []).append(component['id'])
+        # A pure fact on the dropped binder is dropped with it.
+        for component in components:
+            if (component['kind'] != 'register' and component.get('source', '').startswith('⌜')
+                    and _mentions(component['source'], name)):
+                component['source'] = '⌜True⌝'
+                record.setdefault('facts', []).append(component['id'])
         if any(_mentions(component.get('source', ''), name) for component in components
                if component['kind'] != 'register'):
             raise ValueError('An inherited join binder stays in an owned resource: ' + name)
@@ -1030,9 +1028,8 @@ def generalize_owned_join(alternatives, *, original_seed, entry_pc, vocabulary,
                 carried[key] = list(agreed)
                 continue
             if any(record[key]['source'] != source for record in records[1:]):
-                if (key not in memory_by_id and os.environ.get('ZESU_JOIN_FORGET_UNHELD')
-                        and all(record[key]['source'].startswith('⌜') for record in records)):
-                    # Measurement-only: a pure fact that the edges state differently is dropped.
+                if key not in memory_by_id and all(record[key]['source'].startswith('⌜') for record in records):
+                    # A pure fact that the edges state differently is dropped (a sound weakening).
                     current['source'] = '⌜True⌝'
                     components.append(current)
                     continue

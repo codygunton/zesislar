@@ -359,6 +359,21 @@ class OwnedJoinTests(unittest.TestCase):
         self.assertIn('bv_extract 56%N 8%N saved_ra', frame)
         self.assertNotIn('? 16%Z', frame)
 
+    def test_a_pure_fact_the_edges_state_differently_is_dropped(self):
+        seed, alternatives, vocabulary, continuation = self.fixture()
+        component = {'id': 'fact', 'kind': 'opaque', 'source': '⌜P 0⌝', 'provenance': {'source': 'fixture'},
+                     'scope': [[]]}
+        seed.ownership['components'].insert(-1, component)
+        seed.ownership['tree']['body']['children'].insert(-1, {'kind': 'component', 'id': 'fact'})
+        for index, alternative in enumerate(alternatives):
+            alternative['resource_boundary']['tree'] = deepcopy(seed.ownership['tree'])
+            alternative['resource_boundary']['components'].insert(-1, {**component, 'source': '⌜P %d⌝' % index})
+        joined = generalize_owned_join(alternatives, original_seed=seed, entry_pc=32,
+                                       vocabulary=vocabulary, continuation=continuation)
+        fact, = [row['source'] for row in joined['boundary']['alternatives'][0]['resource_boundary']['components']
+                 if row['id'] == 'fact']
+        self.assertEqual(fact, '⌜True⌝')
+
 
 if __name__ == '__main__':
     unittest.main()
