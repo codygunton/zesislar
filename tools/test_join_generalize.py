@@ -245,7 +245,7 @@ class ExitPullbackTests(unittest.TestCase):
 
 
 class OwnedJoinTests(unittest.TestCase):
-    def fixture(self):
+    def fixture(self, values=None):
         tree = {'kind': 'exists', 'binders': [{'name': 'old', 'type': 'bv 64',
                                               'expression': input_expr('old').to_dict()}],
                 'components': [{'kind': 'register', 'id': 'r', 'register': 'x13', 'value_coq': 'old'},
@@ -255,7 +255,7 @@ class OwnedJoinTests(unittest.TestCase):
                          ownership, [], [], [])
         vocabulary = {'input_sha256': 'fixture', 'source_vocabulary': {'imports': []}}
         alternatives = []
-        for value in [input_expr('old'), bits(2, 64)]:
+        for value in values or [input_expr('old'), bits(2, 64)]:
             state = seed.state.copy()
             state.registers['x13'] = value
             resource = render_resource_boundary(ownership, apply_owned_writes([], []), state, vocabulary=vocabulary)
@@ -359,20 +359,71 @@ class OwnedJoinTests(unittest.TestCase):
         self.assertIn('bv_extract 56%N 8%N saved_ra', frame)
         self.assertNotIn('? 16%Z', frame)
 
+    def add_component(self, seed, alternatives, component, sources):
+        seed.ownership['components'].insert(-1, component)
+        seed.ownership['tree']['body']['children'].insert(-1, {'kind': 'component', 'id': component['id']})
+        for alternative, source in zip(alternatives, sources):
+            alternative['resource_boundary']['tree'] = deepcopy(seed.ownership['tree'])
+            alternative['resource_boundary']['components'].insert(-1, {**component, 'source': source})
+
     def test_a_pure_fact_the_edges_state_differently_is_dropped(self):
         seed, alternatives, vocabulary, continuation = self.fixture()
-        component = {'id': 'fact', 'kind': 'opaque', 'source': '⌜P 0⌝', 'provenance': {'source': 'fixture'},
-                     'scope': [[]]}
-        seed.ownership['components'].insert(-1, component)
-        seed.ownership['tree']['body']['children'].insert(-1, {'kind': 'component', 'id': 'fact'})
-        for index, alternative in enumerate(alternatives):
-            alternative['resource_boundary']['tree'] = deepcopy(seed.ownership['tree'])
-            alternative['resource_boundary']['components'].insert(-1, {**component, 'source': '⌜P %d⌝' % index})
+        self.add_component(seed, alternatives, {'id': 'fact', 'kind': 'opaque', 'source': '⌜P 0⌝',
+                                                'provenance': {'source': 'fixture'}, 'scope': [[]]},
+                           ['⌜P 0⌝', '⌜P 1⌝'])
         joined = generalize_owned_join(alternatives, original_seed=seed, entry_pc=32,
                                        vocabulary=vocabulary, continuation=continuation)
         fact, = [row['source'] for row in joined['boundary']['alternatives'][0]['resource_boundary']['components']
                  if row['id'] == 'fact']
         self.assertEqual(fact, '⌜True⌝')
+
+    def test_a_pure_fact_over_each_edges_register_value_generalizes(self):
+        moved = operation('bvadd', input_expr('old'), bits(8, 64))
+        seed, alternatives, vocabulary, continuation = self.fixture([input_expr('old'), moved])
+        self.add_component(seed, alternatives, {'id': 'fact', 'kind': 'opaque', 'source': '⌜P old⌝',
+                                                'provenance': {'source': 'fixture'}, 'scope': [[]]},
+                           ['⌜P old⌝', '⌜P %s⌝' % moved.coq()])
+        joined = generalize_owned_join(alternatives, original_seed=seed, entry_pc=32,
+                                       vocabulary=vocabulary, continuation=continuation)
+        fact, = [row['source'] for row in joined['boundary']['alternatives'][0]['resource_boundary']['components']
+                 if row['id'] == 'fact']
+        self.assertEqual(fact, '⌜P machine_x13⌝')
+        self.assertEqual(joined['plan']['generalized_facts'], ['fact'])
+
+    def test_a_join_binder_avoids_a_name_that_an_edge_fact_binds(self):
+        moved = operation('bvadd', input_expr('old'), bits(8, 64))
+        seed, alternatives, vocabulary, continuation = self.fixture([input_expr('old'), moved])
+        local = '⌜∃ machine_x13, P %s machine_x13⌝'
+        self.add_component(seed, alternatives, {'id': 'fact', 'kind': 'opaque', 'source': local % 'old',
+                                                'provenance': {'source': 'fixture'}, 'scope': [[]]},
+                           [local % 'old', local % moved.coq()])
+        joined = generalize_owned_join(alternatives, original_seed=seed, entry_pc=32,
+                                       vocabulary=vocabulary, continuation=continuation)
+        self.assertEqual([binder['name'] for binder in joined['seed'].ownership['binders']], ['machine_x13_1'])
+        fact, = [row['source'] for row in joined['boundary']['alternatives'][0]['resource_boundary']['components']
+                 if row['id'] == 'fact']
+        self.assertEqual(fact, local % 'machine_x13_1')
+
+    def test_a_pure_fact_naming_a_value_slice_keeps_the_binders_placement(self):
+        moved = operation('bvadd', input_expr('old'), bits(8, 64))
+        seed, alternatives, vocabulary, continuation = self.fixture([input_expr('old'), moved])
+        array = {'id': 'input', 'kind': 'byte_array', 'source': 'base ↦ₘ∗ bytes',
+                 'provenance': {'source': 'fixture'}, 'scope': [[]]}
+        self.add_component(seed, alternatives, array, ['base ↦ₘ∗ bytes'] * 2)
+        seed.resources = [OwnedBytes('input', bits(4096, 64), 'base', input_expr('bytes', None),
+                                     4, True, 'DfracOwn 1', array, {'source': 'fixture'}, 8)]
+        slice_of = '⌜Q (drop (Z.to_nat (bv_unsigned (%s) - base)) bytes)⌝'
+        self.add_component(seed, alternatives, {'id': 'fact', 'kind': 'opaque', 'source': slice_of % 'old',
+                                                'provenance': {'source': 'fixture'}, 'scope': [[]]},
+                           [slice_of % 'old', slice_of % moved.coq()])
+        joined = generalize_owned_join(alternatives, original_seed=seed, entry_pc=32,
+                                       vocabulary=vocabulary, continuation=continuation)
+        rows = {row['id']: row['source'] for row in
+                joined['boundary']['alternatives'][0]['resource_boundary']['components']}
+        self.assertEqual(rows['fact'], slice_of % 'machine_x13')
+        self.assertEqual(rows['join_relation_0'],
+                         '⌜(base <= bv_unsigned machine_x13 <= base + Z.of_nat (List.length (bytes)))%Z⌝')
+        self.assertEqual(joined['plan']['relations'][-1]['kind'], 'array_placement')
 
 
 class LiftedEdges(unittest.TestCase):

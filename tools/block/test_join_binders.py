@@ -57,6 +57,29 @@ class UnheldBinders(unittest.TestCase):
             self.assertEqual(plan['dropped_binders'][0]['rule'], 'forgotten')
             self.assertEqual(plan['dropped_binders'][0]['facts'], ['fact'])
 
+    def test_a_fact_on_the_whole_forgotten_value_keeps_it_through_the_fresh_binder(self):
+        value = operation('bvadd', self.b, bits(1, 64))
+        state = state_with({'x13': value}, [operation('bvult', value, bits(8, 64)),
+                                            operation('bvult', self.b, bits(8, 64))])
+        components = [{'id': 'slice', 'kind': 'opaque', 'source': '⌜P (%s) (%s)⌝' % (value.coq(), value.coq())},
+                      {'id': 'inner', 'kind': 'opaque', 'source': '⌜bv_unsigned machine_x10 < 8⌝'}]
+        plan = self.run_rules(state, live=['x13'], components=components)
+        fresh = input_expr('machine_x13_1', 64)
+        self.assertEqual(state.registers['x13'], fresh)
+        self.assertEqual(state.conditions, [operation('bvult', fresh, bits(8, 64))])
+        self.assertEqual(components[0]['source'], '⌜P (machine_x13_1) (machine_x13_1)⌝')
+        self.assertEqual(components[1]['source'], '⌜True⌝')
+        self.assertEqual(plan['dropped_binders'][0]['kept_facts'], ['slice'])
+        self.assertEqual(plan['dropped_binders'][0]['facts'], ['inner'])
+
+    def test_a_fact_that_binds_the_name_itself_does_not_use_the_binder(self):
+        state = state_with({'x13': operation('bvadd', self.b, bits(1, 64))}, [])
+        closed = '⌜∃ (x14 : bv 64) (machine_x10 : bv 64), Q x14 machine_x10⌝'
+        components = [{'id': 'closed', 'kind': 'opaque', 'source': closed}]
+        plan = self.run_rules(state, live=['x13'], components=components)
+        self.assertEqual(components[0]['source'], closed)
+        self.assertNotIn('facts', plan['dropped_binders'][0])
+
     def test_a_held_binder_stays(self):
         state = state_with({'x10': self.b, 'x13': operation('bvadd', self.b, bits(1, 64))}, [])
         plan = self.run_rules(state, live=['x1'])
@@ -125,6 +148,20 @@ class StoredRegisterValue(unittest.TestCase):
         self.assertEqual(state.conditions, [])
         self.assertEqual(plan['dropped_binders'][0]['rule'], 'stored_register_value')
         self.assertEqual([row['name'] for row in plan['binders']], ['machine_x19_1', 'machine_x13_1'])
+
+    def test_a_pure_fact_on_the_stored_value_keeps_it_through_the_fresh_binder(self):
+        stored = operation('bvadd', input_expr('t', 16), self.word)
+        state = state_with({'x19': stored}, [])
+        stored_bytes = tuple(operation('extract', stored, width=8, value=8 * i) for i in range(2))
+        text = '[' + '; '.join(byte.coq() for byte in stored_bytes) + ']'
+        state.memory = [MemoryRegion(input_expr('base', 64), stored_bytes, input_expr(text, None), 2,
+                                     ownership_id='span')]
+        components = [{'id': 'span', 'kind': 'byte_array', 'source': 'base ↦ₘ∗ ' + text, 'value': text},
+                      {'id': 'fact', 'kind': 'opaque', 'source': '⌜P (%s)⌝' % stored.coq()}]
+        plan = {'binders': []}
+        drop_unheld_binders(state, components, {}, [{'name': 'call_after'}], plan, ['x19'], lambda key, writes: '')
+        self.assertEqual(components[1]['source'], '⌜P (machine_x19_1)⌝')
+        self.assertEqual(plan['dropped_binders'][0]['kept_facts'], ['fact'])
 
     def test_an_array_with_another_use_of_the_binder_becomes_uninitialized(self):
         stored = operation('bvadd', input_expr('t', 16), self.word)
