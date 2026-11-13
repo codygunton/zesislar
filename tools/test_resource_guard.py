@@ -518,15 +518,59 @@ cat() {
 }
 systemctl() {
   [ "$*" = '--user show zesuworkloads.slice -p MemoryMax -p MemorySwapMax' ] || return 2
-  printf 'MemoryMax=187904819200\nMemorySwapMax=0\n'
+  printf 'MemoryMax=171798691840\nMemorySwapMax=0\n'
 }
 ulimit -S -s 8192
-set -- scope-exec fixture -- python3 -c 'import json, resource; print(json.dumps({"stack":resource.getrlimit(resource.RLIMIT_STACK), "cpu":resource.getrlimit(resource.RLIMIT_CPU)}))'
+set -- scope-exec fixture -- python3 -c 'import json, resource; print(json.dumps({"stack":resource.getrlimit(resource.RLIMIT_STACK), "cpu":resource.getrlimit(resource.RLIMIT_CPU), "oom":open("/proc/self/oom_score_adj").read().strip()}))'
 """ + DISPATCH, **variables)
                 self.assertEqual(result.returncode, 0, result.stderr)
                 limits = json.loads(result.stdout)
                 self.assertEqual(limits["stack"], [-1, -1])
                 self.assertEqual(limits["cpu"], [cpu, cpu])
+                # The compiler is the kernel's preferred OOM victim.
+                self.assertEqual(limits["oom"], "1000")
+
+    def test_parent_exec_makes_the_workload_the_preferred_oom_victim(self):
+        result = self.run_guard(r"""
+cat() {
+  if [[ "$1" == /proc/*/cgroup ]]; then
+    printf '0::/user.slice/zesuworkloads.slice/fixture.scope\n'
+  else command cat "$@"; fi
+}
+systemctl() {
+  [ "$*" = '--user show zesuworkloads.slice -p MemoryMax -p MemorySwapMax' ] || return 2
+  printf 'MemoryMax=171798691840\nMemorySwapMax=0\n'
+}
+set -- parent-exec -- python3 -c 'print(open("/proc/self/oom_score_adj").read().strip())'
+""" + DISPATCH)
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertEqual(result.stdout.strip(), "1000")
+
+    def test_workload_parent_and_lines_follow_the_account_limit(self):
+        for account, parent in ((None, 160), (200, 160), (210, 170), (235, 175)):
+            with self.subTest(account=account):
+                result = self.run_guard(r"""
+mkdir -p "$ACCOUNT_CGROUP"
+[ -z "$TEST_ACCOUNT_GIB" ] || echo $(( TEST_ACCOUNT_GIB * GIB )) > "$ACCOUNT_CGROUP/memory.max"
+bash -c "$TEST_LIBRARY"'
+echo "$WORKLOAD_PARENT_BYTES"
+systemctl() { printf "MemoryMax=%s\nMemorySwapMax=0\n" "$(( (TEST_PARENT_GIB + 1) * GIB ))"; }
+ZESU_AGGREGATE_SLICE=zesuworkloads-aggregate1000p1r1.slice ZESU_AGGREGATE_LIMIT=$(( TEST_PARENT_GIB + 1 ))G aggregate_slice >/dev/null 2>&1 && exit 93
+systemctl() { printf "MemoryMax=%s\nMemorySwapMax=0\n" "$(( TEST_PARENT_GIB * GIB ))"; }
+ZESU_AGGREGATE_SLICE=zesuworkloads-aggregate1000p1r1.slice ZESU_AGGREGATE_LIMIT=${TEST_PARENT_GIB}G aggregate_slice >/dev/null || exit 94' "$0"
+""", TEST_LIBRARY=LIBRARY + self.FIXTURE_PREFIX, TEST_ACCOUNT_GIB=str(account or ""),
+                    TEST_PARENT_GIB=str(parent))
+                self.assertEqual(result.returncode, 0, result.stderr)
+                self.assertEqual(result.stdout.strip(), str(parent * 1024 ** 3))
+
+    def test_parent_set_by_an_older_guard_is_accepted(self):
+        for value, status in (("187904819200", 0), ("171798691840", 0), ("180388626432", 2)):
+            with self.subTest(value=value):
+                result = self.run_guard(r"""
+systemctl() { printf 'MemoryMax=%s\nMemorySwapMax=0\n' "$TEST_MAX"; }
+verify_workload_parent_properties
+""", TEST_MAX=value)
+                self.assertEqual(result.returncode, status, result.stderr)
 
     def test_termination_record_retains_actual_stack_limits(self):
         for soft, hard, expected in (("8388608", "unlimited", [8388608, None]),
@@ -657,24 +701,28 @@ echo "fallback=$(hold_reason)"
         self.assertEqual(result.stdout.splitlines(), [
             "cpu-pressure 5 50", "io-pressure 1 50", "432",
             "163208757248 33225204464", "30", "121",
-            "account of 152 GiB (launch <80 %, hold 88 %, kill 95 %), "
+            "account of 152 GiB (launch <112, hold 128, kill 142 GiB), "
             "machine available 140 GiB (backstop 12)",
             "33225204464", "hold=", "fallback=load5 432"])
 
-    def test_account_memory_lines_are_fractions_of_the_cap(self):
-        cap = 152 * 1024 ** 3
-        edges = {pct: -(-cap * pct // 100) for pct in (80, 88, 95)}
-        launch, hold = "launch line 80 %", "at the 88 % hold"
-        for used, reason, killed in ((edges[80] - 1, "", False), (edges[80], launch, False),
-                                     (edges[88] - 1, launch, False), (edges[88], hold, False),
-                                     (edges[95] - 1, hold, False), (edges[95], hold, True)):
-            with self.subTest(used=used):
+    def test_account_memory_lines_sit_at_fixed_margins_below_the_cap(self):
+        gib = 1024 ** 3
+        for cap_gib in (152, 200, 235):
+            cap = cap_gib * gib
+            launch_at, hold_at, kill_at = cap - 40 * gib, cap - 24 * gib, cap - 10 * gib
+            launch = f"launch line {cap_gib - 40} GiB"
+            hold = f"at the {cap_gib - 24} GiB hold"
+            for used, reason, killed in ((launch_at - 1, "", False), (launch_at, launch, False),
+                                         (hold_at - 1, launch, False), (hold_at, hold, False),
+                                         (kill_at - 1, hold, False), (kill_at, hold, True)):
+              with self.subTest(cap=cap_gib, used=used):
                 result = self.account_guard(r"""
+echo "$TEST_CAP" > "$ACCOUNT_CGROUP/memory.max"
 echo $(( TEST_USED + 3 )) > "$ACCOUNT_CGROUP/memory.current"
 printf 'anon %s\nactive_file 1\ninactive_file 1\nslab_reclaimable 1\n' "$TEST_USED" > "$ACCOUNT_CGROUP/memory.stat"
 echo "reason=$(memory_hold_reason)"
 if memory_kill_required; then echo killed; fi
-""", ZESU_MODULE_LIMIT_GIB="6", TEST_USED=str(used))
+""", ZESU_MODULE_LIMIT_GIB="6", TEST_USED=str(used), TEST_CAP=str(cap))
                 self.assertEqual(result.returncode, 0, result.stderr)
                 lines = result.stdout.splitlines()
                 self.assertTrue(lines[0].startswith("reason="), result.stdout)
@@ -696,8 +744,8 @@ memory_hold_reason
 """)
         self.assertEqual(result.returncode, 0, result.stderr)
         self.assertEqual(result.stdout.splitlines(), [
-            "87 reason=", "140 reason=account memory 140 of 152 GiB, at the 88 % hold",
-            "account memory 134 of 152 GiB, at the 88 % hold"])
+            "87 reason=", "140 reason=account memory 140 of 152 GiB, at the 128 GiB hold",
+            "account memory 134 of 152 GiB, at the 128 GiB hold"])
 
     def test_machine_memory_holds_only_below_its_backstop_and_never_kills(self):
         for available, reason in ((25, ""), (12, ""),
@@ -717,20 +765,21 @@ memory_hold_reason
         self.assertEqual(result.stdout.strip(),
                          "machine memory available 25 GiB, below the 30 GiB backstop")
 
-    def test_account_job_room_and_percent_overrides(self):
+    def test_account_job_room_and_margin_overrides(self):
         result = self.account_guard(r"""
 printf 'anon 1\n' > "$ACCOUNT_CGROUP/memory.stat"
 echo $(( 100 * GIB )) > "$ACCOUNT_CGROUP/memory.current"
 memory_hold_reason
 if memory_kill_required; then echo killed; fi
-""", ZESU_MODULE_LIMIT_GIB="64", ZESU_LAUNCH_PCT="70", ZESU_KILL_PCT="65")
+""", ZESU_MODULE_LIMIT_GIB="64", ZESU_LAUNCH_MARGIN_GIB="50", ZESU_HOLD_MARGIN_GIB="50",
+            ZESU_KILL_MARGIN_GIB="50")
         self.assertEqual(result.returncode, 0, result.stderr)
         self.assertEqual(result.stdout.splitlines(), [
-            "account memory available 52 GiB, requires 84 GiB for a 64 GiB job", "killed"])
-        for name, value in (("ZESU_HOLD_PCT", "0"), ("ZESU_HOLD_PCT", "101"),
-                            ("ZESU_LAUNCH_PCT", "8x")):
-            with self.subTest(**{name: value}):
-                self.assertEqual(self.run_guard("true", **{name: value}).returncode, 2)
+            "account memory available 52 GiB, requires 84 GiB for a 64 GiB job"])
+        for variables in ({"ZESU_HOLD_MARGIN_GIB": "1000"}, {"ZESU_LAUNCH_MARGIN_GIB": "8x"},
+                          {"ZESU_LAUNCH_MARGIN_GIB": "20"}, {"ZESU_KILL_MARGIN_GIB": "30"}):
+            with self.subTest(**variables):
+                self.assertEqual(self.run_guard("true", **variables).returncode, 2)
 
     def test_account_pressure_limits_use_some_cpu_and_full_io(self):
         for cpu, io, limit, reason in (("50.00", "50.00", "50", ""),

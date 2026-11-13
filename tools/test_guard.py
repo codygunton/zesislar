@@ -244,7 +244,7 @@ class GuardLockTest(unittest.TestCase):
                         f"MemoryMax={limit}", "MemorySwapMax=0"],
                        env=self.environment, check=True)
         subprocess.run(["systemctl", "--user", "set-property", "--runtime", "zesuworkloads.slice",
-                        "MemoryMax=187904819200", "MemorySwapMax=0"], env=self.environment, check=True)
+                        "MemoryMax=171798691840", "MemorySwapMax=0"], env=self.environment, check=True)
         self.cgroup.write_text("0::/user.slice/user-1000.slice/user@1000.service/zesuworkloads.slice/" + slice_name + "/fixture.scope\n")
         return {"ZESU_IN_BATCH": "1", "ZESU_AGGREGATE_SLICE": slice_name,
                 "ZESU_AGGREGATE_LIMIT": limit}
@@ -1198,7 +1198,7 @@ class GuardLockTest(unittest.TestCase):
         (account / "memory.current").write_text(f"{140 * 1024 ** 3}\n")
         (account / "memory.stat").write_text("anon 1\n")
         self.assertEqual(self.guard("hold").stdout.strip(),
-                         "account memory 140 of 152 GiB, at the 88 % hold")
+                         "account memory 140 of 152 GiB, at the 128 GiB hold")
 
     def test_single_proof_batch_accepts_64_gib_fence(self):
         self.environment["ZESU_BATCH_LIMIT"] = "64G"
@@ -1216,7 +1216,7 @@ class GuardLockTest(unittest.TestCase):
         self.assertEqual(result.returncode, 0, result.stderr)
         state = json.loads(Path(self.environment["GUARD_TEST_SLICE_STATE"]).read_text())
         self.assertEqual(state["zesuworkloads.slice"],
-                         {"MemoryMax": "187904819200", "MemorySwapMax": "0"})
+                         {"MemoryMax": "171798691840", "MemorySwapMax": "0"})
         self.assertIn("--slice=zesuworkloads.slice", result.stdout)
 
     def test_parent_setup_failure_prevents_launch(self):
