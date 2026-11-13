@@ -6,11 +6,18 @@ directory, the domain fact, the block list, and the loop inputs. The
 renderers keep their structure; they read these values from the profile.
 A profile holds declarations data only. It never holds a proof script.
 """
+from functools import lru_cache
 import json
 from pathlib import Path
 
 PROFILE_DIRECTORY = Path(__file__).resolve().parent / 'functions'
 DEFAULT_FUNCTION = 'decodeItem'
+SYMBOL_TABLE = Path(__file__).resolve().parents[2] / 'build/stock-zisk/symbols.txt'
+
+# Fields that hold a block of the function itself: a 4-digit suffix in the legacy form,
+# an offset `+0x..` from the function symbol in the symbol form.
+BLOCK_LISTS = ['blocks', 'loop_heads']
+ADDRESS_FIELDS = ['call_site_pc', 'callee_pc', 'return_site_pc', 'return_instruction_pc']
 
 REQUIRED = [
     'function', 'args_type', 'pc_prefix', 'generated_directory', 'callers_directory',
@@ -69,6 +76,69 @@ class FunctionProfile:
         return self.data['selected_code']['premise']
 
 
+@lru_cache(maxsize=None)
+def symbol_table(path=SYMBOL_TABLE):
+    """The ELF symbol addresses from `readelf -Ws` output (tools/stock_zisk/build.py)."""
+    result = {}
+    for row in Path(path).read_text().splitlines():
+        fields = row.split()
+        if len(fields) >= 8 and fields[0].endswith(':') and fields[0][:-1].isdigit():
+            result.setdefault(fields[7], int(fields[1], 16))
+    return result
+
+
+def resolve_symbol_keys(data, symbols):
+    """Rewrite a table keyed by symbol and offset to the address form the renderers read.
+
+    The table names its function's ELF `symbol`. A block is `+0xOFFSET` from that symbol;
+    an address field (a call site, a callee, a return instruction) is `+0xOFFSET` or
+    `SYMBOL+0xOFFSET`. Blocks become 4-digit suffixes under `pc_prefix`, as the generated
+    names use them; address fields become absolute addresses. A relink then changes only
+    the symbol table, not the design table."""
+    if 'symbol' not in data:
+        return data
+    if data['symbol'] not in symbols:
+        raise ValueError('The ELF has no symbol ' + data['symbol'])
+    base = symbols[data['symbol']]
+
+    def absolute(text):
+        name, _, offset = text.partition('+')
+        if not offset.startswith('0x'):
+            raise ValueError('A symbol key needs a hex offset: ' + text)
+        if name and name not in symbols:
+            raise ValueError('The ELF has no symbol ' + name)
+        return (symbols[name] if name else base) + int(offset, 16)
+
+    first = absolute(data['blocks'][0])
+    prefix = hex(first)[:-4]
+
+    def suffix(text):
+        if not text.startswith('+'):
+            raise ValueError('A block of the function is an offset from its symbol: ' + text)
+        address = hex(absolute(text))
+        if not address.startswith(prefix):
+            raise ValueError('A block lies outside the address prefix of the first block: ' + text)
+        return address[len(prefix):]
+
+    def walk(value, key=None):
+        if isinstance(value, dict):
+            return {(suffix(k) if isinstance(k, str) and k.startswith('+') else k): walk(v, k)
+                    for k, v in value.items()}
+        if isinstance(value, list):
+            return [walk(item, key) for item in value]
+        if isinstance(value, str) and key in ADDRESS_FIELDS:
+            return hex(absolute(value))
+        if isinstance(value, str) and key in BLOCK_LISTS:
+            return suffix(value)
+        if isinstance(value, str) and value.startswith('+0x'):
+            return suffix(value)
+        return value
+
+    resolved = walk({key: value for key, value in data.items() if key != 'symbol'})
+    resolved.update(symbol=data['symbol'], pc_prefix=prefix)
+    return resolved
+
+
 def load_profile(name=None):
     """Load a profile by function name or by path. No name means decodeItem."""
     if name is None:
@@ -77,6 +147,8 @@ def load_profile(name=None):
     if not path.suffix:
         path = PROFILE_DIRECTORY / (name + '.json')
     data = json.loads(path.read_text())
+    if 'symbol' in data:
+        data = resolve_symbol_keys(data, symbol_table())
     if data.get('loop_heads') and 'loop_head_fixture' not in data:
         # The loop-head rows of a design-table loop live beside the other fixtures.
         data['loop_head_fixture'] = 'tools/block/fixtures/%s-loop-heads.json' % data['function'].lower()
@@ -92,6 +164,23 @@ def function_returns(profile):
         row = profile.get('function_return') if profile else None
         rows = [row] if row else []
     return list(rows)
+
+
+def return_sites(profile):
+    """(suffix, design) per function-return design. One site keeps the plain names
+    `fp_machineReturn` / `FunctionReturn*`; several sites suffix each name with the return
+    instruction's address digits after the profile prefix."""
+    designs = function_returns(profile)
+    if len(designs) <= 1:
+        return [('', design) for design in designs]
+    prefix = profile['pc_prefix']
+    sites = []
+    for design in designs:
+        pc = hex(int(design['return_instruction_pc'], 0))
+        if not pc.startswith(prefix):
+            raise ValueError('A return instruction lies outside the profile address prefix: ' + pc)
+        sites.append((pc[len(prefix):], design))
+    return sites
 
 
 def return_alignment_fact(profile):

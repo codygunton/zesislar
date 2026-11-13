@@ -15,7 +15,8 @@ from join_generalize import (anti_unify, exit_pullback, generalize_registers, hu
 from forward_resources import (OwnedBytes, ownership_from_assertion_tree,
                                render_resource_boundary, apply_owned_writes)
 from resource_seed import OwnedSeed
-from symbolic_state import Expr, MemoryRegion, SymbolicState, bits, input_expr, operation
+from forward_resource_design import _state_from_result
+from symbolic_state import Expr, MemoryRegion, MemoryWrite, SymbolicState, bits, input_expr, operation
 
 
 class FootprintTests(unittest.TestCase):
@@ -331,6 +332,33 @@ class OwnedJoinTests(unittest.TestCase):
                                      allows={}, vocabulary=vocabulary)
         self.assertEqual(result['pullback']['status'], 'refused')
         self.assertFalse(any(c['id'] == 'join_exit_meaning' for c in joined['seed'].ownership['components']))
+    def test_a_partial_frame_join_states_the_agreed_saved_word(self):
+        seed, alternatives, vocabulary, continuation = self.fixture()
+        component = {'id': 'frame', 'kind': 'unknown_byte_array', 'source': 'frame ↦ₘ{DfracOwn 1}? 16%Z',
+                     'address_z': 'frame', 'length': '16', 'provenance': {'source': 'fixture'}, 'scope': [[]]}
+        seed.ownership['components'].insert(-1, component)
+        seed.ownership['tree']['body']['children'].insert(-1, {'kind': 'component', 'id': 'frame'})
+        seed.resources = [OwnedBytes('frame', bits(4096, 64), 'frame', None, 16, True, 'DfracOwn 1',
+                                     component, {'source': 'fixture'}, 8)]
+        seed.facts = [{'fact_id': kind, 'kind': kind, 'status': 'supplied', 'origin': {'source': 'fixture'},
+                       'terms': {'resource_id': 'frame', 'fraction': 'DfracOwn 1'}}
+                      for kind in ('permission', 'nonwrap')]
+        saved = MemoryWrite(bits(4104, 64), input_expr('saved_ra'), 8, True)
+        for index, alternative in enumerate(alternatives):
+            state = _state_from_result(alternative['state'])
+            state.writes = [saved] + ([MemoryWrite(bits(4096, 64), bits(7, 8), 1, True)] if index else [])
+            image = apply_owned_writes(seed.resources, state.writes, facts=seed.facts)
+            alternative['state'] = state.to_dict()
+            alternative['resource_boundary'] = render_resource_boundary(seed.ownership, image, state,
+                                                                        vocabulary=vocabulary)
+        joined = generalize_owned_join(alternatives, original_seed=seed, entry_pc=32,
+                                       vocabulary=vocabulary, continuation=continuation)
+        frame, = [row['source'] for row in joined['boundary']['alternatives'][0]['resource_boundary']['components']
+                  if row['id'] == 'frame']
+        self.assertIn('(frame) ↦ₘ{DfracOwn 1}? 8%Z', frame)
+        self.assertIn('bv_extract 56%N 8%N saved_ra', frame)
+        self.assertNotIn('? 16%Z', frame)
+
 
 if __name__ == '__main__':
     unittest.main()

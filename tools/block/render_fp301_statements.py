@@ -282,10 +282,10 @@ def successor_precondition(profile, suffix):
     return 'instr_pre ' + profile.pc(suffix) + ' (' + entry + ' (args) (returnAddress) (K))%I'
 
 
-def return_precondition(profile):
-    """Return the `instr_pre` premise of the function-return package."""
+def return_precondition(profile, suffix=''):
+    """Return the `instr_pre` premise of a function-return package (one per return site)."""
     return ('instr_pre returnAddress ('
-            + profile.qualified('FunctionReturnEntries', 'fp_machineReturn')
+            + profile.qualified('FunctionReturn' + suffix + 'Entries', 'fp_machineReturn' + suffix)
             + ' args returnAddress K)')
 
 
@@ -293,6 +293,9 @@ def render_block_caller(profile, block, preconditions, imports):
     """Render one block caller from its entry, its exit premises and the selected code.
 
     The statement is declarations data; the proof is always `zesu_block2.`.
+    The caller makes the selected code transparent locally: a function's hint
+    umbrella may declare it opaque (with its unfold marker), and an opaque code
+    premise stops the block at its first instruction lookup.
     """
     pc = profile.pc(block)[2:]
     entry = profile.qualified('Pilot' + block + 'Entries', 'fp_machineAt' + block)
@@ -305,7 +308,8 @@ def render_block_caller(profile, block, preconditions, imports):
             + ''.join(line + '\n' for line in profile['caller_contract_requires'])
             + profile.selected_import()
             + CORE_IMPORT + '\n'
-            + 'Local Open Scope Z_scope.\n\n'
+            + 'Local Open Scope Z_scope.\n'
+            + '#[local] Typeclasses Transparent ' + profile.selected_premise() + '.\n\n'
             + 'Definition DesignedEntry_' + pc + '\n'
             + '    `{!islaG Sigma} `{!threadG} (args : ' + profile.args_type
             + ') (returnAddress : Z) (K : iProp Sigma) : iProp Sigma :=\n'

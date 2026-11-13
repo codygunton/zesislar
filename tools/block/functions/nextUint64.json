@@ -1,7 +1,7 @@
 {
   "function": "nextUint64",
   "args_type": "NextUint64Args",
-  "pc_prefix": "0x800d",
+  "symbol": "rlp_decode.nextUint64",
   "generated_directory": "ZesuSsz/Generated/NextUint64/FP301",
   "callers_directory": "tools/block/generated/nextuint64_fp301_callers",
   "contract_requires": [
@@ -12,6 +12,7 @@
     "Require Import ZesuSsz.Contracts.NextUint64BlockEntries.",
     "Require Import ZesuSsz.Contracts.DecodeItemCompositional.",
     "Require Import ZesuSsz.Contracts.DecodeItemCallData.",
+    "Require Export ZesuSsz.Contracts.DecodeItemPayloadBounds.",
     "Require Export ZesuSsz.Contracts.NextUint64DomainRanges."
   ],
   "loop_contract_requires": [
@@ -39,28 +40,28 @@
   },
   "domain_component": "⌜nextReturnAddress (nextUint64Base args) = returnAddress /\\ nextUint64BoundaryDomain args⌝",
   "blocks": [
-    "6274",
-    "62b8",
-    "62c0",
-    "62cc",
-    "62d8",
-    "62e4",
-    "6304",
-    "6310",
-    "6318",
-    "632c"
+    "+0x0",
+    "+0x44",
+    "+0x4c",
+    "+0x58",
+    "+0x64",
+    "+0x70",
+    "+0x90",
+    "+0x9c",
+    "+0xa4",
+    "+0xb8"
   ],
   "loop_heads": [
-    "6318"
+    "+0xa4"
   ],
   "loop_head_fixture": "tools/block/fixtures/nextuint64-loop-heads.json",
   "cfg_function": "rlp_decode.nextUint64",
   "calls": [
     {
       "function": "rlp_decode.nextUint64",
-      "call_site_pc": "0x800d62b4",
-      "callee_pc": "0x800d6960",
-      "return_site_pc": "0x800d62b8",
+      "call_site_pc": "+0x40",
+      "callee_pc": "rlp.decodeItem+0x0",
+      "return_site_pc": "+0x44",
       "spec": "decodeItemCallSpec2",
       "spec_module": "ZesuSsz.Contracts.DecodeItemCallSpec2",
       "spec_source": "ZesuSsz/Contracts/DecodeItemCallSpec2.v",
@@ -78,13 +79,21 @@
           "length_source": "decodeItemArgsWellFormed (RlpDecodeItemContract.v): (List.length (decodeItemBeforeStorage args) = 40)%nat"
         }
       ],
-      "output_length_source": "C1BResult (RlpDecodeItem.v): candidateResult40 is errorResult40 or successResult40, each of 40 bytes"
+      "output_length_source": "C1BResult (RlpDecodeItem.v): candidateResult40 is errorResult40 or successResult40, each of 40 bytes",
+      "return_facts": [
+        {
+          "kind": "meaning",
+          "need": "the lbu at 0x800d6318 reads the input array: the decoded payload lies inside it",
+          "coq": "(0 < bv_unsigned {word:after:8} -> bv_unsigned {word:after:8} <= 8 -> nextInputPointer (nextUint64Base args) <= bv_unsigned {word:after:0} /\\ bv_unsigned {word:after:0} + bv_unsigned {word:after:8} <= nextInputPointer (nextUint64Base args) + Z.of_nat (length (nextInputBytes (nextUint64Base args))))%Z",
+          "source": "decodeItemCallPayloadInInputDerivedFacts (DecodeItemPayloadBounds.v): the call post's C1BResult bounds a nonempty payload shorter than 2^64 - 9 by argument 1 and the input length; nextUint64BoundaryDomainSliceWord0DerivedFacts (NextUint64DomainRanges.v): argument 1, the slice's first word, is nextInputPointer"
+        }
+      ]
     }
   ],
   "loop_designs": [
     {
-      "head": "6318",
-      "entry_predecessor": "6310",
+      "head": "+0xa4",
+      "entry_predecessor": "+0x9c",
       "registers": {
         "x11": "machine_x11",
         "x12": "machine_x12",
@@ -128,12 +137,12 @@
     }
   ],
   "function_return": {
-    "return_instruction_pc": "0x800d6300",
+    "return_instruction_pc": "+0x8c",
     "return_fact": "∃ result : NextUint64Return, nextResultBytes result = {bytes@nextResultPointer (nextUint64Base args)} /\\ {bytes@nextSlicePointer (nextUint64Base args)} = nextUint64SliceImage (nextRestPointer result) (nextRestLength result) /\\ nextUint64RootResult (nextUint64Base args) result",
     "source": "NextUint64Contract.v: nextUint64ContractExit owns the slice as nextUint64SliceImage (nextRestPointer result) (nextRestLength result) and the result as nextResultBytes result; nextUint64ContractAllows requires nextUint64RootResult (nextUint64Base params) result"
   },
   "join_designs": {
-    "62e4": [
+    "+0x70": [
       "∃ result : NextUint64Return, nextResultBytes result = {bytes@nextResultPointer (nextUint64Base args)} /\\ {bytes@nextSlicePointer (nextUint64Base args)} = nextUint64SliceImage (nextRestPointer result) (nextRestLength result) /\\ nextUint64RootResult (nextUint64Base args) result"
     ]
   }

@@ -32,7 +32,10 @@ Definition tArgsWellFormed (args : TArgs) : Prop :=
   0 <= tReturnAddress args < 2 ^ 64 /\\ tReturnAddress args mod 4 = 0 /\\
   2 * tInputLength args <= tHigh /\\
   tSeparate (tInputPointer args) (tInputLength args) (tResultPointer args) tResultBytes /\\
-  tSeparate (tResultPointer args) tResultBytes (tStackPointer args - tStackBytes) tStackBytes.
+  tSeparate (tResultPointer args) tResultBytes (tStackPointer args - tStackBytes) tStackBytes /\\
+  0 <= tOutputLength args < 2 ^ 64 /\\
+  Z.of_nat (length (tBeforeOutput args)) = tOutputLength args /\\
+  2 * tInputLength args <= tOutputLength args.
 
 Definition tEntryResources `{!islaG Sigma} `{!threadG} (args : TArgs) : iProp Sigma :=
   (∃ (x15 x16 : bv 64),
@@ -43,9 +46,12 @@ Definition tEntryResources `{!islaG Sigma} `{!threadG} (args : TArgs) : iProp Si
    "x10" ↦ᵣ RVal_Bits (Z_to_bv 64 (tResultPointer args)) ∗
    "x11" ↦ᵣ RVal_Bits (Z_to_bv 64 (tInputPointer args)) ∗
    "x12" ↦ᵣ RVal_Bits (Z_to_bv 64 (tInputLength args)) ∗
+   "x13" ↦ᵣ RVal_Bits (Z_to_bv 64 (tOutputPointer args)) ∗
+   "x14" ↦ᵣ RVal_Bits (Z_to_bv 64 (tOutputLength args)) ∗
    "x15" ↦ᵣ RVal_Bits x15 ∗ "x16" ↦ᵣ RVal_Bits x16 ∗
    tInputPointer args ↦ₘ∗ tInputBytes args ∗
    tResultPointer args ↦ₘ∗ tBeforeResult args ∗
+   tOutputPointer args ↦ₘ∗ tBeforeOutput args ∗
    (tStackPointer args - tStackBytes) ↦ₘ? tStackBytes ∗
    ⌜tArgsWellFormed args⌝ ∗ True)%I.
 '''
@@ -78,7 +84,7 @@ class EntryInterface(unittest.TestCase):
         tree = self.seed['assertion_tree']
         self.assertEqual([binder['name'] for binder in tree['binders']], ['x15', 'x16'])
         kinds = [node['kind'] for node in tree['components']]
-        self.assertEqual(kinds.count('byte_array'), 2)
+        self.assertEqual(kinds.count('byte_array'), 3)
         self.assertEqual(kinds.count('uninitialized_memory'), 1)
         self.assertIn('⌜domain args⌝', [node.get('coq') for node in tree['components']])
         self.assertEqual(self.seed['domain_binding']['actual_domain'], 'tDomainAt returnAddress args')
@@ -100,9 +106,30 @@ class EntryInterface(unittest.TestCase):
             'left': ids['tInputPointer args'], 'right': ids['tResultPointer args'],
             'coq_statement': facts['wellformed:separate-12']['terms']['coq_statement']})
         self.assertEqual(facts['wellformed:separate-13']['terms']['right'], ids['(tStackPointer args - tStackBytes)'])
-        # A full-range bound and a scaled relation are recorded, not used.
+        # A scaled register quantity bounds the output array's length from below.
+        relation = facts['wellformed:length-relation-16']['terms']
+        self.assertEqual(relation['resource_id'], ids['tOutputPointer args'])
+        self.assertEqual(relation['length_relation'], {
+            'view': {'op': 'input', 'width': 64, 'value': '(Z_to_bv 64%N (tInputLength args))'},
+            'scale': 2, 'offset': 0})
+        # A full-range bound and a scaled relation to a constant are recorded, not used.
         self.assertIn(9, self.domain['projection']['unused_clauses'])
         self.assertIn(11, self.domain['projection']['unused_clauses'])
+
+
+class LengthRelation(unittest.TestCase):
+    def test_a_path_condition_on_the_related_value_bounds_the_array(self):
+        from forward_resources import OwnedBytes, _Facts
+        from symbolic_state import bits, input_expr, operation
+        count = input_expr('(Z_to_bv 64%N (n args))', 64)
+        out = OwnedBytes('out', input_expr('(Z_to_bv 64%N (p args))', 64), 'p args', input_expr('o', None),
+                         input_expr('List.length o', None), True, 'DfracOwn 1', {}, {}, 8)
+        fact = {'fact_id': 'relation', 'kind': 'bounds', 'status': 'supplied', 'origin': {'source': 'test'},
+                'terms': {'resource_id': 'out', 'length_relation': {'view': count.to_dict(), 'scale': 2, 'offset': 1}}}
+        nonzero = operation('not', operation('=', count, bits(0, 64)))
+        self.assertEqual(_Facts([], [fact]).lower_bound(out)[0], 1)
+        self.assertEqual(_Facts([nonzero], [fact]).lower_bound(out)[0], 3)
+        self.assertEqual(_Facts([nonzero], []).lower_bound(out)[0], 0)
 
 
 class ReturnDesigns(unittest.TestCase):

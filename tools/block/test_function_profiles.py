@@ -20,7 +20,8 @@ ROOT = Path(__file__).resolve().parents[2]
 
 
 def other_profile():
-    data = json.loads((ROOT / 'tools/block/functions/decodeItem.json').read_text())
+    data = dict(load_profile('decodeItem').data)  # the resolved table, in the address form
+    data.pop('symbol', None)
     data.update({
         'function': 'otherFunction',
         'args_type': 'OtherArgs',
@@ -86,6 +87,18 @@ class OtherProfile(unittest.TestCase):
         self.assertIn('instr_pre 0x800d1010 (ZesuSsz.Generated.Other.FP301.Pilot1010Entries.fp_machineAt1010', source)
         self.assertEqual(source.count('Proof.\n  zesu_block2.\nQed.\n'), 1)
         self.assertIsNone(re.search(r'\b(?:Ltac|Admitted|Axiom)\b|::=', source))
+
+    def test_caller_makes_its_selected_code_transparent_after_every_import(self):
+        # A hint umbrella may declare the selected code opaque; the caller must undo it
+        # locally after its last import, or the block stops at its first instruction lookup.
+        profile = other_profile()
+        source = render_block_caller(profile, '1000', [return_precondition(profile)],
+                                     [profile.qualified('Pilot1000Entries')])
+        hint = '#[local] Typeclasses Transparent otherSelectedCode.\n'
+        self.assertEqual(source.count(hint), 1)
+        last_import = max(source.rfind('\nRequire '), source.rfind('\nFrom '))
+        self.assertLess(last_import, source.index(hint))
+        self.assertLess(source.index(hint), source.index('Lemma DesignedBoundary_'))
 
     def test_headers_and_loop_selection(self):
         profile = other_profile()

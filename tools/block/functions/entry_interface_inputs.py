@@ -263,8 +263,35 @@ def domain(profile, contract, text, seed, constants, ram):
                                         input_expr('(Z_to_bv 64%N (' + quantity + '))', 64).to_dict()},
                               'origin': clause(index)})
                 used.add(index)
-    # Alignments and intervals of fixed register quantities.
     low, high, low_from, high_from = bounds(clauses, constants)
+    # Length relations: `scale * Q + offset <= L`, where L spells an owned array's length and Q
+    # is a fixed register's quantity inside the 64-bit range, so its register value is Q.
+    lengths = {spelling: key for key, (_, spellings) in ranges.items() for spelling in spellings
+               if not re.fullmatch(r'[0-9]+', spelling) and spelling not in constants}
+    for index, item in enumerate(clauses):
+        for left, relation, right in comparisons(item) or []:
+            a, b = Linear.parse(left, constants), Linear.parse(right, constants)
+            if a is None or b is None:
+                continue
+            atoms, constant = Linear.add(a, b, -1)
+            constant += relation == '<'
+            arrays_ = [atom for atom, c in atoms.items() if c == -1 and atom in lengths]
+            others = [(atom, c) for atom, c in atoms.items() if atom not in arrays_]
+            if len(arrays_) != 1 or len(others) != 1 or others[0][1] <= 0 or others[0][0] not in fixed:
+                continue
+            quantity, scale = others[0]
+            if not (low.get(quantity, -1) >= 0 and high.get(quantity, WORD) < WORD):
+                continue
+            facts.append({'fact_id': 'wellformed:length-relation-%d' % index, 'kind': 'bounds',
+                          'status': 'supplied',
+                          'terms': {'resource_id': lengths[arrays_[0]], 'coq_statement': item,
+                                    'length_relation': {
+                                        'view': input_expr('(Z_to_bv 64%N (' + quantity + '))', 64).to_dict(),
+                                        'scale': scale, 'offset': constant}},
+                          'origin': {**clause(index), 'range': clause(low_from[quantity]),
+                                     'derivation': 'the quantity lies in [0, 2^64), so its register value is it'}})
+            used.add(index)
+    # Alignments and intervals of fixed register quantities.
     for index, item in enumerate(clauses):
         match = re.fullmatch(r'(.+) mod ([0-9]+) = 0', normal(item))
         if match and normal(match[1]) in fixed:

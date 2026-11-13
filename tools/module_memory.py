@@ -229,8 +229,9 @@ def module_claim(profile, arguments, cwd, compiler, *, fallback_bytes=16 * GIB):
     peak = row.get("peak_bytes")
     if type(peak) is not int or peak <= 0:
         return {"claim_bytes": fallback_bytes, "reason": "missing_peak", "source": source}
+    measured = max(value for value in (peak, row.get("rss_peak_bytes")) if type(value) is int)
     return {"claim_bytes": booking(peak, fallback_bytes, row.get("rss_peak_bytes")),
-            "reason": "measured_module", "source": source}
+            "reason": "measured_module", "source": source, "measured_peak_bytes": measured}
 
 
 def record_measurement(profile_path, source, bound, peak_bytes, *, rss_peak_bytes=None, ended_ns=None):
@@ -350,8 +351,12 @@ def observe(profile_path, output, guard, compiler, cwd, arguments, *, fallback_b
         payload = [str(guard), "scope", "dune-coqc", "--", sys.executable, "-B",
                    str(Path(__file__).resolve()), "peak-exec", "--output", peak_file,
                    "--", str(compiler), *arguments]
-        child = subprocess.Popen(payload, env=dict(os.environ, ZESU_MODULE_CLAIM_BYTES=str(claim["claim_bytes"]),
-                                                   ZESU_MODULE_MEMORY_PROFILE=str(profile_path)))
+        environment = dict(os.environ, ZESU_MODULE_CLAIM_BYTES=str(claim["claim_bytes"]),
+                           ZESU_MODULE_MEMORY_PROFILE=str(profile_path))
+        environment.pop("ZESU_MODULE_MEASURED_PEAK_BYTES", None)
+        if claim.get("measured_peak_bytes"):
+            environment["ZESU_MODULE_MEASURED_PEAK_BYTES"] = str(claim["measured_peak_bytes"])
+        child = subprocess.Popen(payload, env=environment)
 
         def forward(number, _frame):
             if child.poll() is None:
@@ -569,6 +574,22 @@ def probe_measurement(marker, metadata, physical, proc):
     return {"claim_bytes": sum(peaks), "covered": covered, "child_start": child_identity[1]}
 
 
+def growth_booking(resident_bytes, measured_peak_bytes=None):
+    """Book a running compile from its resident high-water mark.
+
+    An unmeasured module, or one above its measured peak, keeps a 1.5x margin
+    over its resident set: its final peak is unknown. A measured module at or
+    below its measured peak books 1.25x the larger of the two, the margin of
+    its measured booking: a 1.5x raise kept compiles at their known peak
+    booked 50% above use (2026-11-12 audit).
+    """
+    if not resident_bytes:
+        return 0
+    if measured_peak_bytes and resident_bytes <= measured_peak_bytes:
+        return -(-max(measured_peak_bytes, resident_bytes) * MARGIN_NUMERATOR // MARGIN_DENOMINATOR)
+    return -(-resident_bytes * RSS_NUMERATOR // RSS_DENOMINATOR)
+
+
 def reservation_claims(markers, *, proc=Path("/proc"), fallback_bytes=32 * GIB,
                        refresh=False, retained_claims=None):
     """Read live reservations under the caller's existing guard mutex.
@@ -592,7 +613,8 @@ def reservation_claims(markers, *, proc=Path("/proc"), fallback_bytes=32 * GIB,
                 if name in metadata:
                     raise ValueError("The reservation repeats an ownership field.")
                 metadata[name] = value
-            if separator and name in {"memory_claim_bytes", "memory_fence_bytes", "memory_gib", "memory_probe_claim_bytes"}:
+            if separator and name in {"memory_claim_bytes", "memory_fence_bytes", "memory_gib", "memory_probe_claim_bytes",
+                                      "memory_measured_peak_bytes"}:
                 if name in values:
                     raise ValueError("The reservation repeats a memory field.")
                 values[name] = positive_integer(int(value), "retained memory field")
@@ -613,8 +635,9 @@ def reservation_claims(markers, *, proc=Path("/proc"), fallback_bytes=32 * GIB,
             if measured is not None:
                 covered.update(measured["covered"])
             previous = max(values.get("memory_probe_claim_bytes", 0), retained_claims.get(str(marker), 0))
-            increased = max(authorized if authorized is not None else fence, previous,
-                            measured["claim_bytes"] if measured is not None else 0)
+            # A probe grows by the resident rule, but never past its own fence.
+            increased = min(fence, max(authorized if authorized is not None else fence, previous,
+                                       measured["claim_bytes"] if measured is not None else 0))
             if proc == Path('/proc'):
                 scopes[str(len(claims))] = reader.compiler(marker)
             claims.append(increased)
@@ -624,7 +647,7 @@ def reservation_claims(markers, *, proc=Path("/proc"), fallback_bytes=32 * GIB,
             continue
         claim = max(values.get("memory_claim_bytes", fence), retained_claims.get(str(marker), 0)) if "memory_fence_bytes" in values else fence
         pending = [int(lines[0])] if lines[0].isdecimal() else []
-        visited, peaks = set(), []
+        visited, peaks, resident = set(), [], []
         while pending:
             pid = pending.pop()
             if pid in visited:
@@ -635,7 +658,7 @@ def reservation_claims(markers, *, proc=Path("/proc"), fallback_bytes=32 * GIB,
                 try:
                     status = (proc / str(pid) / "status").read_text().splitlines()
                     peak = next(int(line.split()[1]) for line in status if line.startswith("VmHWM:"))
-                    peaks.append(positive_integer(peak, "observed compiler peak") * 1536)
+                    resident.append(positive_integer(peak, "observed compiler peak") * 1024)
                 except (FileNotFoundError, ProcessLookupError):
                     # A compiler that exited after the snapshot holds no memory.
                     # Counting its fence made a finished compile "grow" past its
@@ -652,7 +675,7 @@ def reservation_claims(markers, *, proc=Path("/proc"), fallback_bytes=32 * GIB,
                 pending.extend(map(int, (proc / str(pid) / "task" / str(pid) / "children").read_text().split()))
             except FileNotFoundError:
                 pass
-        increased = max(claim, sum(peaks))
+        increased = max(claim, sum(peaks) + growth_booking(sum(resident), values.get("memory_measured_peak_bytes")))
         if proc == Path('/proc'):
             scopes[str(len(claims))] = reader.compiler(marker)
         claims.append(increased)
@@ -663,9 +686,98 @@ def reservation_claims(markers, *, proc=Path("/proc"), fallback_bytes=32 * GIB,
             "scope_observations": scopes}
 
 
+FENCE_KILL_SCHEMA = "zesu.fence-kill.v1"
+
+
+def compiled_source(arguments, cwd):
+    """Return (path, sha256) of the last existing .v argument, or None."""
+    for value in reversed(list(arguments)):
+        if value.endswith(".v"):
+            path = Path(value) if os.path.isabs(value) else Path(cwd) / value
+            if path.is_file():
+                return path.resolve(), hashlib.sha256(path.read_bytes()).hexdigest()
+    return None
+
+
+FENCE_KILL_KINDS = ("fence", "shared-slice")
+
+
+def record_fence_kill(ledger, unit, fence_bytes, arguments, cwd, *, utc=None, kind="fence", own_peak_bytes=None,
+                      aggregate=None, aggregate_limit_bytes=None, aggregate_peak_bytes=None):
+    """Append one memory kill of a scope, with the compiled source's hash.
+
+    A fence kill otherwise ends as a plain nonzero status with no peak, and a
+    later probe of the same source cannot know the fence it reached. kind
+    "shared-slice" is a kill in a full batch aggregate below the scope's own
+    fence; it names the aggregate and the victim's peak. A row without a kind
+    (older rows) is a fence kill.
+    """
+    import fcntl
+    import time
+    if kind not in FENCE_KILL_KINDS:
+        raise ValueError("Unknown memory kill kind: %r." % (kind,))
+    found = compiled_source(arguments, cwd)
+    row = {"schema": FENCE_KILL_SCHEMA, "utc": utc or time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
+           "unit": unit, "kind": kind, "fence_bytes": positive_integer(fence_bytes, "killed scope fence"),
+           "own_peak_bytes": None if own_peak_bytes is None else positive_integer(own_peak_bytes, "killed scope peak"),
+           "aggregate": aggregate,
+           "aggregate_limit_bytes": None if aggregate_limit_bytes is None else positive_integer(aggregate_limit_bytes, "aggregate limit"),
+           "aggregate_peak_bytes": None if aggregate_peak_bytes is None else positive_integer(aggregate_peak_bytes, "aggregate peak"),
+           "source": str(found[0]) if found else None, "source_sha256": found[1] if found else None}
+    ledger = Path(ledger)
+    ledger.parent.mkdir(parents=True, exist_ok=True)
+    with ledger.open("a") as stream:
+        fcntl.flock(stream, fcntl.LOCK_EX)
+        stream.write(json.dumps(row, sort_keys=True) + "\n")
+    return row
+
+
+def fence_kill_claim(ledger, requested_bytes, arguments, cwd):
+    """Book a probe of a source killed at a known fence at 1.25x that fence.
+
+    The last recorded fence kill of the same source hash counts; the claim never
+    exceeds the request. A source with no recorded fence kill keeps its request.
+    A shared-slice kill never reached the fence and does not count.
+    """
+    requested_bytes = positive_integer(requested_bytes, "requested probe claim")
+    found = compiled_source(arguments, cwd)
+    if found is None or not Path(ledger).is_file():
+        return requested_bytes
+    fence = None
+    for line in Path(ledger).read_text().splitlines():
+        try:
+            row = json.loads(line)
+        except ValueError:
+            continue
+        if (isinstance(row, dict) and row.get("schema") == FENCE_KILL_SCHEMA
+                and row.get("kind", "fence") == "fence"
+                and row.get("source_sha256") == found[1] and type(row.get("fence_bytes")) is int
+                and row["fence_bytes"] > 0):
+            fence = row["fence_bytes"]
+    if fence is None:
+        return requested_bytes
+    return min(requested_bytes, -(-fence * MARGIN_NUMERATOR // MARGIN_DENOMINATOR))
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     commands = parser.add_subparsers(dest="command", required=True)
+    kill_record = commands.add_parser("fence-kill-record")
+    kill_record.add_argument("--ledger", type=Path, required=True)
+    kill_record.add_argument("--unit", required=True)
+    kill_record.add_argument("--fence-bytes", type=int, required=True)
+    kill_record.add_argument("--kind", choices=FENCE_KILL_KINDS, default="fence")
+    kill_record.add_argument("--own-peak-bytes", type=int)
+    kill_record.add_argument("--aggregate")
+    kill_record.add_argument("--aggregate-limit-bytes", type=int)
+    kill_record.add_argument("--aggregate-peak-bytes", type=int)
+    kill_record.add_argument("--cwd", type=Path, required=True)
+    kill_record.add_argument("arguments", nargs=argparse.REMAINDER)
+    kill_claim = commands.add_parser("fence-kill-claim")
+    kill_claim.add_argument("--ledger", type=Path, required=True)
+    kill_claim.add_argument("--requested-bytes", type=int, required=True)
+    kill_claim.add_argument("--cwd", type=Path, required=True)
+    kill_claim.add_argument("arguments", nargs=argparse.REMAINDER)
     commands.add_parser("test-ledger-policy")
     role_exit = commands.add_parser('role-exit-exec')
     role_exit.add_argument('--marker', type=Path, required=True)
@@ -722,6 +834,16 @@ def main():
     staging_exit.add_argument('--marker', type=Path, required=True)
     staging_exit.add_argument('payload', nargs=argparse.REMAINDER)
     args = parser.parse_args()
+    if args.command in ("fence-kill-record", "fence-kill-claim"):
+        arguments = args.arguments[1:] if args.arguments[:1] == ["--"] else args.arguments
+        if args.command == "fence-kill-record":
+            print(json.dumps(record_fence_kill(
+                args.ledger, args.unit, args.fence_bytes, arguments, args.cwd, kind=args.kind,
+                own_peak_bytes=args.own_peak_bytes, aggregate=args.aggregate,
+                aggregate_limit_bytes=args.aggregate_limit_bytes, aggregate_peak_bytes=args.aggregate_peak_bytes)))
+        else:
+            print(fence_kill_claim(args.ledger, args.requested_bytes, arguments, args.cwd))
+        return 0
     if args.command == "observe":
         arguments = args.arguments[1:] if args.arguments[:1] == ["--"] else args.arguments
         return observe(args.profile, args.output, args.guard, args.compiler, args.cwd, arguments,

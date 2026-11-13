@@ -525,6 +525,36 @@ class ModuleMemoryTests(unittest.TestCase):
         self.assertEqual(result["claims"], [3 * memory.GIB])
         self.assertEqual(result["growth"], [])
 
+    def growth(self, measured_peak=None, resident_gib=8):
+        self.pid = getattr(self, "pid", 122) + 1
+        proc = self.physical(self.pid, peak=resident_gib * 1024 ** 2)
+        extra = f"memory_measured_peak_bytes={measured_peak}\n" if measured_peak else ""
+        marker = self.marker(f"{self.pid}\nwriter=fixture\naggregate=test\nmemory_claim_bytes={memory.GIB}\n"
+                             f"memory_fence_bytes={32 * memory.GIB}\n{extra}")
+        # Only this compile is a live compiler in the fixture's process table.
+        with patch.object(memory, "compiler_pids", return_value={self.pid}):
+            return memory.reservation_claims([marker], proc=proc, refresh=True)["claims"][0]
+
+    def test_a_measured_module_at_its_peak_grows_by_the_measured_margin(self):
+        # 8 GiB resident at a 10 GiB measured peak: 1.25 x 10 GiB, not 1.5 x 8 GiB.
+        self.assertEqual(self.growth(measured_peak=10 * memory.GIB), 25 * memory.GIB // 2)
+        # 8 GiB resident at exactly its 8 GiB measured peak: 1.25 x 8 GiB.
+        self.assertEqual(self.growth(measured_peak=8 * memory.GIB), 10 * memory.GIB)
+
+    def test_unmeasured_or_above_peak_modules_keep_the_resident_margin(self):
+        self.assertEqual(self.growth(), 12 * memory.GIB)
+        # 8 GiB resident above a 6 GiB measured peak: the final peak is unknown.
+        self.assertEqual(self.growth(measured_peak=6 * memory.GIB), 12 * memory.GIB)
+
+    def test_measured_claims_carry_their_peak_to_the_guard(self):
+        name, bound = self.bound("Small.v")
+        memory.record_measurement(self.profile_path, name, bound, 3 * memory.GIB, rss_peak_bytes=4 * memory.GIB)
+        claim = self.claim()
+        self.assertEqual(claim["reason"], "measured_module")
+        self.assertEqual(claim["measured_peak_bytes"], 4 * memory.GIB)
+        self.profile([("Small.v", 3 * memory.GIB)])
+        self.assertNotIn("measured_peak_bytes", self.claim("Large.v"))
+
     def test_unrepresented_compilers_keep_full_fallback_reservations(self):
         proc = self.physical(123)
         result = memory.reservation_claims([], proc=proc)
@@ -629,6 +659,53 @@ class ModuleMemoryTests(unittest.TestCase):
         marker = self.root / "111.1.1"
         marker.write_text("122\nwriter=probe\nprobe=issue10\nmemory_gib=64\ncpu=unlimited\nowner_start=100\n")
         return proc, marker
+
+    def test_a_probe_grows_by_the_resident_rule_but_not_past_its_fence(self):
+        # 50 GiB resident is 75 GiB under the 1.5x rule; the probe's fence is 64 GiB.
+        proc, marker = self.live_probe(peak=50 * 1024 ** 2)
+        self.assertEqual(memory.reservation_claims([marker], proc=proc, refresh=True)["claims"], [64 * memory.GIB])
+
+    def kill_source(self, name="Probe.v", text="Lemma probe : True. Proof. exact I. Qed.\n"):
+        (self.root / name).write_text(text)
+        return ["python3", "measure.py", "measure.json", "coqc", "-q", name]
+
+    def test_a_shared_slice_kill_is_recorded_but_never_lowers_a_probe_claim(self):
+        ledger = self.root / "fence-kills.jsonl"
+        (self.root / "Probe.v").write_text("Lemma probe : True. Proof. exact I. Qed.\n")
+        command = ["coqc", "Probe.v"]
+        row = memory.record_fence_kill(ledger, "zesudet-5cb8.scope", 16 * memory.GIB, command, self.root,
+                                       kind="shared-slice", own_peak_bytes=3 * memory.GIB,
+                                       aggregate="zesuworkloads-aggregate1p2r3.slice",
+                                       aggregate_limit_bytes=16 * memory.GIB, aggregate_peak_bytes=16 * memory.GIB)
+        self.assertEqual((row["kind"], row["own_peak_bytes"], row["aggregate_limit_bytes"]),
+                         ("shared-slice", 3 * memory.GIB, 16 * memory.GIB))
+        self.assertEqual(memory.fence_kill_claim(ledger, 48 * memory.GIB, command, self.root), 48 * memory.GIB)
+        with self.assertRaises(ValueError):
+            memory.record_fence_kill(ledger, "zesudet-5cb8.scope", 16 * memory.GIB, command, self.root, kind="guess")
+
+    def test_a_recorded_fence_kill_books_a_later_probe_at_one_and_a_quarter_fences(self):
+        ledger = self.root / "fence-kills.jsonl"
+        command = self.kill_source()
+        self.assertEqual(memory.fence_kill_claim(ledger, 48 * memory.GIB, command, self.root), 48 * memory.GIB)
+        row = memory.record_fence_kill(ledger, "zesudet-af28.scope", 16 * memory.GIB, command, self.root)
+        import hashlib
+        self.assertEqual(row["source_sha256"], hashlib.sha256((self.root / "Probe.v").read_bytes()).hexdigest())
+        self.assertEqual(row["fence_bytes"], 16 * memory.GIB)
+        self.assertEqual(memory.fence_kill_claim(ledger, 48 * memory.GIB, command, self.root), 20 * memory.GIB)
+        # The claim never exceeds the request.
+        self.assertEqual(memory.fence_kill_claim(ledger, 8 * memory.GIB, command, self.root), 8 * memory.GIB)
+        # The last kill of the same source counts.
+        memory.record_fence_kill(ledger, "zesudet-af28-2.scope", 32 * memory.GIB, command, self.root)
+        self.assertEqual(memory.fence_kill_claim(ledger, 64 * memory.GIB, command, self.root), 40 * memory.GIB)
+
+    def test_a_probe_of_changed_or_unrecorded_source_keeps_its_request(self):
+        ledger = self.root / "fence-kills.jsonl"
+        command = self.kill_source()
+        memory.record_fence_kill(ledger, "zesudet-af28.scope", 16 * memory.GIB, command, self.root)
+        changed = self.kill_source(text="Lemma probe : True. Proof. trivial. Qed.\n")
+        self.assertEqual(memory.fence_kill_claim(ledger, 48 * memory.GIB, changed, self.root), 48 * memory.GIB)
+        self.assertEqual(memory.fence_kill_claim(ledger, 48 * memory.GIB, ["coqc", "Absent.v"], self.root),
+                         48 * memory.GIB)
 
     def test_live_probe_keeps_full_physical_fence_despite_small_partial_peak(self):
         proc, marker = self.live_probe(peak=3)
