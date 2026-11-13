@@ -6,7 +6,7 @@ import unittest
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from join_generalize import _list_items, _register_definition, _span_bytes, common_root_ancestor, drop_unheld_binders
 from forward_resources import OwnedBytes
-from symbolic_state import MemoryRegion, SymbolicState, bits, input_expr, operation
+from symbolic_state import Expr, MemoryRegion, SymbolicState, bits, input_expr, operation
 from render_function_callers import return_site
 from loop_design import reseat_orphaned
 
@@ -92,6 +92,47 @@ class RegisterDefinition(unittest.TestCase):
         self.assertEqual(state.registers['x15'], operation('bvor', definition, input_expr('(Z_to_bv 64%N (n args))', 64)))
         self.assertEqual(state.conditions[1], operation('bvule', definition, bits(1, 64)))
         self.assertEqual(plan['dropped_binders'][0]['rule'], 'register_definition')
+
+
+class StoredRegisterValue(unittest.TestCase):
+    """An inherited array binder that an owned span holds only through a stored register value."""
+    array = input_expr('call_after', None)
+    word = operation('concat', Expr('array_byte', (array,), 8, 1), Expr('array_byte', (array,), 8, 0))
+
+    def test_the_stored_value_gets_a_fresh_binder(self):
+        stored = operation('bvadd', input_expr('t', 16), self.word)
+        state = state_with({'x19': stored, 'x13': operation('bvsub', input_expr('u', 16), self.word)},
+                           [operation('=', Expr('array_byte', (self.array,), 8, 5), bits(0, 8))])
+        stored_bytes = tuple(operation('extract', stored, width=8, value=8 * i) for i in range(2))
+        text = '[' + '; '.join(byte.coq() for byte in stored_bytes) + ']'
+        state.memory = [MemoryRegion(input_expr('base', 64), stored_bytes, input_expr(text, None), 2,
+                                     ownership_id='span')]
+        components = [{'id': 'span', 'kind': 'byte_array', 'source': 'base ↦ₘ∗ ' + text, 'value': text}]
+        plan = {'binders': []}
+        drop_unheld_binders(state, components, {}, [{'name': 'call_after'}], plan, ['x19'], lambda key, writes: '')
+        fresh = input_expr('machine_x19_1', 16)
+        self.assertEqual(state.registers['x19'], fresh)
+        self.assertEqual(state.memory[0].bytes, tuple(operation('extract', fresh, width=8, value=8 * i)
+                                                      for i in range(2)))
+        self.assertNotIn('call_after', components[0]['source'] + components[0]['value']
+                         + state.memory[0].byte_array.value)
+        # The dead register x13 forgets the binder; the path condition on another byte goes.
+        self.assertEqual(state.registers['x13'], input_expr('machine_x13_1', 16))
+        self.assertEqual(state.conditions, [])
+        self.assertEqual(plan['dropped_binders'][0]['rule'], 'stored_register_value')
+        self.assertEqual([row['name'] for row in plan['binders']], ['machine_x19_1', 'machine_x13_1'])
+
+    def test_an_array_with_another_use_of_the_binder_is_still_refused(self):
+        stored = operation('bvadd', input_expr('t', 16), self.word)
+        state = state_with({'x19': stored}, [])
+        other = Expr('array_byte', (self.array,), 8, 7)
+        state.memory = [MemoryRegion(input_expr('base', 64), (other,), input_expr('[x]', None), 1,
+                                     ownership_id='span')]
+        components = [{'id': 'span', 'kind': 'byte_array', 'source': 'base ↦ₘ∗ [' + other.coq() + ']'}]
+        with self.assertRaisesRegex(ValueError, 'a successor needs it: call_after'):
+            drop_unheld_binders(state, components, {}, [{'name': 'call_after'}], {'binders': []}, ['x19'],
+                                lambda key, writes: '')
+
 
 
 class OrphanedLoopBinders(unittest.TestCase):

@@ -664,7 +664,11 @@ def drop_unheld_binders(state, components, carried, binders, plan, live_register
        gets a fresh binder it holds, an agreed span byte that mentions it becomes
        uninitialized again, and the path conditions that mention it are dropped. Each is a
        sound weakening.
-    3. A live register or a whole array value that mentions b needs it: refuse with the facts.
+    3. If the stores that mention b store only copies of one register's value v (which
+       mentions b), that register holds a fresh binder c and every copy of v becomes c (exact:
+       c is the register's value on each edge). The rest of b (other registers, path
+       conditions, pure facts) is then handled as in 2 and 4.
+    4. A live register or a whole array value that mentions b needs it: refuse with the facts.
     """
     held = {value.value for value in state.registers.values() if value.op == 'input'}
     held |= {component.get('value') for component in components if component['kind'] == 'byte_array'}
@@ -730,6 +734,36 @@ def drop_unheld_binders(state, components, carried, binders, plan, live_register
             plan.setdefault('dropped_binders', []).append({'binder': name, 'rule': 'register_definition',
                                                            'register': register, 'definition': definition.to_dict()})
             continue
+        word_row = None
+        stored = _stored_register_value(state, name, carried, components)
+        if stored is not None:
+            register, word = stored
+            index = 1
+            while 'machine_%s_%d' % (register, index) in taken:
+                index += 1
+            fresh = input_expr('machine_%s_%d' % (register, index), word.width)
+            taken.add(fresh.value)
+            mapping, rendered = {word: fresh}, word.coq()
+            for other, value in list(state.registers.items()):
+                state.registers[other] = substitute(value, mapping)
+            state.conditions[:] = [substitute(c, mapping) for c in state.conditions]
+            state.memory = [replace(region, bytes=tuple(substitute(byte, mapping) for byte in region.bytes),
+                                    byte_array=_replace_text(region.byte_array, rendered, fresh.coq()))
+                            for region in state.memory]
+            for key, writes in carried.items():
+                carried[key] = [replace(w, value=substitute(w.value, mapping), address=substitute(w.address, mapping))
+                                for w in writes]
+            for component in components:
+                if component['kind'] == 'byte_array' and _mentions(component.get('source', ''), name):
+                    if component['id'] in carried:
+                        component['source'] = render_span(component['id'], carried[component['id']])
+                    else:
+                        component['source'] = component['source'].replace(rendered, fresh.coq())
+                        if component.get('value'):
+                            component['value'] = component['value'].replace(rendered, fresh.coq())
+            plan['binders'].append({'name': fresh.value, 'type': 'bv %d' % word.width, 'value_key': register})
+            held.add(fresh.value)
+            word_row = {'rule': 'stored_register_value', 'register': register, 'value': word.to_dict()}
         live = None if live_registers is None else set(live_registers) | EXIT_OBSERVED
         needed = [register for register, value in state.registers.items()
                   if REGISTER.fullmatch(register) and _mentions(text(value), name)
@@ -744,6 +778,7 @@ def drop_unheld_binders(state, components, carried, binders, plan, live_register
                              'arrays %s, live %s)' % (name, needed, arrays,
                                                      'unknown' if live is None else sorted(live)))
         record = {'binder': name, 'rule': 'not_needed', 'registers': [], 'spans': [], 'conditions': 0}
+        record.update(word_row or {})
         for register, value in list(state.registers.items()):
             if REGISTER.fullmatch(register) and _mentions(text(value), name):
                 index = 1
@@ -821,6 +856,43 @@ def _register_definition(state, name, unheld=()):
         if not (0 <= lower + interval[0] and upper + interval[1] < 1 << value.width):
             continue
         return register, value.width, total
+    return None
+
+
+def _replace_text(value, old, new):
+    """A byte array named by its rendered text, with `old` replaced by `new` in that text."""
+    if value is None or value.op != 'input' or not isinstance(value.value, str):
+        return value
+    return replace(value, value=value.value.replace(old, new))
+
+
+def _stored_register_value(state, name, carried, components):
+    """A register whose value v mentions `name`, where some store or owned array mentions
+    `name` and each mentions it only inside copies of v (arrays that hold a stored register).
+    Returns (register, v)."""
+    text = lambda value: json.dumps(value.to_dict(), sort_keys=True)
+
+    def inside(value, word):
+        if value == word:
+            return True
+        if not value.args:
+            return not (value.op == 'input' and value.value == name)
+        return all(inside(arg, word) for arg in value.args)
+
+    parts = [*(part for writes in carried.values() for write in writes for part in (write.value, write.address)),
+             *(byte for region in state.memory for byte in region.bytes)]
+    arrays = [component['source'] for component in components
+              if component['kind'] == 'byte_array' and _mentions(component.get('source', ''), name)]
+    if not arrays and not any(_mentions(text(part), name) for part in parts):
+        return None
+    for register in sorted(state.registers, key=lambda key: (len(key), key)):
+        value = state.registers[register]
+        if not (REGISTER.fullmatch(register) and value.args and value.width and _mentions(text(value), name)):
+            continue
+        rendered = value.coq()
+        if (all(inside(part, value) for part in parts)
+                and not any(_mentions(source.replace(rendered, ''), name) for source in arrays)):
+            return register, value
     return None
 
 
