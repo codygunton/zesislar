@@ -2,7 +2,7 @@ From Coq Require Import ZArith.
 Require Import ZesuSsz.Contracts.Level1.
 Require Import ZesuSsz.Contracts.ParentHeader.
 Require Import ZesuSsz.Contracts.NextUint64Selected.
-Require Import ZesuSsz.Contracts.ParentHeaderSelected.
+Require Import ZesuSsz.Contracts.ParentHeaderContract.
 
 (* These statements remain outside the production Dune targets. *)
 Definition NextUint64ComplianceStatement : Prop :=
@@ -13,9 +13,9 @@ Definition NextUint64ComplianceStatement : Prop :=
 Definition ParentHeaderComplianceStatement : Prop :=
   forall returnAddress,
     IslarisContractCorrect decodeParentHeaderEntry returnAddress
-      (parentHeaderSelectedModel returnAddress).
+      (parentHeaderContractModel returnAddress).
 
 Check (eq_refl : NextUint64ComplianceStatement =
                  NextUint64SelectedCorrect).
 Check (eq_refl : ParentHeaderComplianceStatement =
-                 ParentHeaderSelectedCorrect).
+                 ParentHeaderContractCorrect).

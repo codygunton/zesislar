@@ -506,6 +506,27 @@
       "uninferable_existentials": 0,
       "predicates_without_unfold": 0,
       "disjunctive_specs": 0
+    },
+    "ZesuSsz/Compliance/NextUint64CallSpec2.v": {
+      "frame_parameters_in_closed_specs": 0,
+      "unfold_without_typeclasses_opaque": 0,
+      "uninferable_existentials": 0,
+      "predicates_without_unfold": 0,
+      "disjunctive_specs": 0
+    },
+    "ZesuSsz/Compliance/ParentHeaderHints.v": {
+      "frame_parameters_in_closed_specs": 0,
+      "unfold_without_typeclasses_opaque": 0,
+      "uninferable_existentials": 0,
+      "predicates_without_unfold": 0,
+      "disjunctive_specs": 0
+    },
+    "ZesuSsz/Compliance/ParentHeaderUnfoldRegistrations.v": {
+      "frame_parameters_in_closed_specs": 0,
+      "unfold_without_typeclasses_opaque": 0,
+      "uninferable_existentials": 0,
+      "predicates_without_unfold": 0,
+      "disjunctive_specs": 0
     }
   },
   "fixture_allowance_reasons": {
