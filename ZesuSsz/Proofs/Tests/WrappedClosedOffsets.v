@@ -112,8 +112,25 @@ Proof.
   liStep. done.
 Qed.
 
+(* A 16-byte frame restore after both frame stores were reduced (free 1f38):
+   the saved fp at `base - 16`, the array base itself, and the return address
+   at `base - 8`, with the empty uninitialized residues of the two splits.
+   The array rebuild joins the two 8-byte cells into the requested 16-byte
+   array; the cell written at the base needs no address rewrite. *)
+Lemma wrapped_closed_frame_restore `{!islaG Sigma} `{!threadG} (base : Z) (fp ra : bv 64) :
+  (base - 8) ↦ₘ ra -∗ (base - 8 + 8) ↦ₘ? 0 -∗
+  (base - 16) ↦ₘ fp -∗ (base - 16) ↦ₘ? 0 -∗
+  isla.ghost_state.mem_mapsto_array_def (base - 16) (DfracOwn 1)
+    (bv_to_little_endian 8 8 (bv_unsigned fp) ++
+     bv_to_little_endian 8 8 (bv_unsigned ra)) ∗ True.
+Proof.
+  iIntros "Hra Hra_rest Hfp Hfp_rest".
+  solve [ZesuSsz.Automation2.ByteArrayAssemblyCodec.zesu_byte_array_rebuild_requested; done].
+Qed.
+
 Print Assumptions wrapped_closed_two_offsets.
 Print Assumptions wrapped_closed_local_address.
 Print Assumptions wrapped_closed_array_bound.
 Print Assumptions wrapped_closed_three_offsets.
 Print Assumptions wrapped_closed_positive_offset.
+Print Assumptions wrapped_closed_frame_restore.
