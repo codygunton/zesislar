@@ -200,6 +200,38 @@ class CallBoundary(unittest.TestCase):
         self.assertFalse(stored_caller_span(array(input_expr('before', None)), {0: {'value': None}}))
         self.assertFalse(stored_caller_span(array(None), {'i': {'value': None}}))
 
+    def test_a_spec_reaches_its_input_through_stored_words(self):
+        from call_boundary import parse_machine_call_spec
+        source = (Path(__file__).resolve().parents[2] / 'ZesuSsz/Contracts/NextUint64CallSpec2.v').read_text()
+        spec = parse_machine_call_spec(source, 'nextUint64CallSpec2')
+        self.assertEqual(spec['pre']['words'], [{'argument': 1, 'offset': 0, 'value': 'inputPointer'},
+                                                {'argument': 1, 'offset': 8, 'value': 'inputLength'}])
+        self.assertEqual(spec['post']['words'][1],
+                         {'argument': 1, 'offset': 8, 'value': 'Z_to_bv 64 (nextRestLength result)'})
+        self.assertEqual(spec['pre']['arrays'], [{'pointer': 'inputPointer', 'binder': 'input'}])
+        self.assertEqual(spec['pre']['uninitialized'], [{'argument': 0, 'length': '16'}])
+        self.assertEqual(spec['post']['arrays'], [{'pointer': 'inputPointer', 'binder': 'input'},
+                                                 {'argument': 0, 'value': 'nextResultBytes result'}])
+        self.assertEqual(spec['post_binders'], [('result', 'NextUint64Return')])
+
+    def test_a_word_at_a_call_argument_is_the_value_the_caller_holds(self):
+        from call_boundary import CallRefused, stored_word
+        from forward_resources import OwnedBytes
+        from symbolic_state import MemoryRegion, input_expr, operation
+        frame = OwnedBytes('frame', input_expr('sp', 64), 'sp', None, 32, True, 'DfracOwn 1',
+                           {'source': 'sp ↦ₘ? 32'}, {'source': 'fixture'})
+        pointer = input_expr('pointer', 64)
+        chunks = [operation('extract', pointer, width=8, value=8 * index) for index in range(8)]
+        stored = {8 + index: {'value': chunk.to_dict()} for index, chunk in enumerate(chunks)}
+        address = operation('bvadd', input_expr('sp', 64), bits(8, 64))
+        self.assertEqual(stored_word({'frame': frame}, {'frame': stored}, address), ('frame', 8, pointer))
+        # A byte the paths did not store is read from the caller's known bytes, if any.
+        del stored[15]
+        with self.assertRaises(CallRefused):
+            stored_word({'frame': frame}, {'frame': stored}, address)
+        known = MemoryRegion(input_expr('sp', 64), bytes=(bits(0, 8),) * 8 + tuple(chunks), ownership_id='frame')
+        self.assertEqual(stored_word({'frame': frame}, {'frame': stored}, address, [known]), ('frame', 8, pointer))
+
 
 class PureExistentials(unittest.TestCase):
     def test_existential_inside_a_pure_fact_is_not_hoisted(self):

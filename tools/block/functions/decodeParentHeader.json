@@ -13,6 +13,7 @@
     "Require Import ZesuSsz.Contracts.DecodeItemCallData.",
     "Require Import ZesuSsz.Contracts.ParentHeaderContract.",
     "Require Import ZesuSsz.Contracts.ParentHeaderRootFacts.",
+    "Require Import ZesuSsz.Contracts.NextUint64BlockEntries.",
     "Require Import ZesuSsz.Contracts.ParentHeaderMemcpyService.",
     "Require Import ZesuSsz.Contracts.ZiskRuntime.",
     "Require Export ZesuSsz.Contracts.DecodeItemPayloadBounds.",
@@ -27,6 +28,7 @@
     "Require Import ZesuSsz.Contracts.DecodeItemCallData.",
     "Require Import ZesuSsz.Contracts.ParentHeaderContract.",
     "Require Import ZesuSsz.Contracts.ParentHeaderRootFacts.",
+    "Require Import ZesuSsz.Contracts.NextUint64BlockEntries.",
     "Require Import ZesuSsz.Contracts.ParentHeaderMemcpyService.",
     "Require Import ZesuSsz.Contracts.ZiskRuntime.",
     "Require Export ZesuSsz.Contracts.DecodeItemPayloadBounds.",
@@ -553,6 +555,25 @@
     },
     {
       "function": "rlp_decode.decodeParentHeader",
+      "call_site_pc": "+0x4a4",
+      "callee_pc": "rlp_decode.nextUint64+0x0",
+      "return_site_pc": "+0x4a8",
+      "spec": "nextUint64CallSpec2",
+      "spec_module": "ZesuSsz.Contracts.NextUint64CallSpec2",
+      "spec_source": "ZesuSsz/Contracts/NextUint64CallSpec2.v",
+      "stack_bytes": 112,
+      "arrays": [
+        {
+          "binder": "input",
+          "pointer": "inputPointer",
+          "slice_of": "parentHeaderInputBytes args",
+          "caller_value": "take (Z.to_nat (bv_unsigned inputLength)) (drop (Z.to_nat (bv_unsigned inputPointer - bv_unsigned (parentHeaderInputPointer args))) (parentHeaderInputBytes args))"
+        }
+      ],
+      "output_length_source": "nextUint64RootResult (ParentHeaderRootFacts.v): nextUint64Error16 and nextUint64Success16 (ParentHeader.v) each state List.length (nextResultBytes ret) = 16"
+    },
+    {
+      "function": "rlp_decode.decodeParentHeader",
       "call_site_pc": "+0x4e0",
       "callee_pc": "rlp.decodeItem+0x0",
       "return_site_pc": "+0x4e4",
@@ -575,6 +596,44 @@
         }
       ],
       "output_length_source": "C1BResult (RlpDecodeItem.v): candidateResult40 is errorResult40 or successResult40, each of 40 bytes"
+    },
+    {
+      "function": "rlp_decode.decodeParentHeader",
+      "call_site_pc": "+0x564",
+      "callee_pc": "rlp_decode.nextUint64+0x0",
+      "return_site_pc": "+0x568",
+      "spec": "nextUint64CallSpec2",
+      "spec_module": "ZesuSsz.Contracts.NextUint64CallSpec2",
+      "spec_source": "ZesuSsz/Contracts/NextUint64CallSpec2.v",
+      "stack_bytes": 112,
+      "arrays": [
+        {
+          "binder": "input",
+          "pointer": "inputPointer",
+          "slice_of": "parentHeaderInputBytes args",
+          "caller_value": "take (Z.to_nat (bv_unsigned inputLength)) (drop (Z.to_nat (bv_unsigned inputPointer - bv_unsigned (parentHeaderInputPointer args))) (parentHeaderInputBytes args))"
+        }
+      ],
+      "output_length_source": "nextUint64RootResult (ParentHeaderRootFacts.v): nextUint64Error16 and nextUint64Success16 (ParentHeader.v) each state List.length (nextResultBytes ret) = 16"
+    },
+    {
+      "function": "rlp_decode.decodeParentHeader",
+      "call_site_pc": "+0x598",
+      "callee_pc": "rlp_decode.nextUint64+0x0",
+      "return_site_pc": "+0x59c",
+      "spec": "nextUint64CallSpec2",
+      "spec_module": "ZesuSsz.Contracts.NextUint64CallSpec2",
+      "spec_source": "ZesuSsz/Contracts/NextUint64CallSpec2.v",
+      "stack_bytes": 112,
+      "arrays": [
+        {
+          "binder": "input",
+          "pointer": "inputPointer",
+          "slice_of": "parentHeaderInputBytes args",
+          "caller_value": "take (Z.to_nat (bv_unsigned inputLength)) (drop (Z.to_nat (bv_unsigned inputPointer - bv_unsigned (parentHeaderInputPointer args))) (parentHeaderInputBytes args))"
+        }
+      ],
+      "output_length_source": "nextUint64RootResult (ParentHeaderRootFacts.v): nextUint64Error16 and nextUint64Success16 (ParentHeader.v) each state List.length (nextResultBytes ret) = 16"
     }
   ],
   "loop_designs": [

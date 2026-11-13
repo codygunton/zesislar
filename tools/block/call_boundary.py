@@ -11,8 +11,13 @@ applies the callee summary to make the seed of the return site:
   returns a fresh value (with its mask fact);
 * memory: an array that the spec returns under its own pre binder is the
   caller's resource unchanged; an array that it returns under a post binder
-  replaces the caller's bytes at that argument with a fresh owned array; the
-  callee frame comes back uninitialized;
+  (or a post expression, over uninitialized bytes) replaces the caller's bytes
+  at that argument with a fresh owned array; the callee frame comes back
+  uninitialized;
+* words: a spec word at an argument (`ARG + K ↦ₘ w`, e.g. a slice's pointer and
+  length) binds w to the word the caller holds there; an array at `bv_unsigned w`
+  is found through it; the callee's new value of the word becomes a fresh word
+  binder in the caller's bytes;
 * pure facts: the spec's pre-fact (which the caller proves at the call) and
   its post-fact, under one existential for each pre binder that no caller
   resource fixes.
@@ -91,13 +96,30 @@ def parse_machine_call_spec(source, name):
         raise CallRefused('The return assertion does not end in True.')
     names = {'argv': argv, 'sp': sp}
 
+    def place(text):
+        """`bv_unsigned (argv !!! N%nat)` (plus a constant) is an argument; `bv_unsigned B`
+        names an address that the pre binder B holds (a word the caller stored)."""
+        text = _strip_enclosure(text)
+        argument = re.fullmatch(r'bv_unsigned\s+\(' + argv + r'\s+!!!\s+(\d+)%nat\)(?:\s*\+\s*(\d+))?', text)
+        if argument:
+            return {'argument': int(argument[1]), **({'offset': int(argument[2])} if argument[2] else {})}
+        pointer = re.fullmatch(r'bv_unsigned\s+(\w+)', text)
+        return {'pointer': pointer[1]} if pointer else None
+
     def classify(parts):
-        rows = {'registers': [], 'collections': [], 'arrays': [], 'facts': []}
+        rows = {'registers': [], 'collections': [], 'arrays': [], 'words': [], 'uninitialized': [], 'facts': []}
         for part in parts:
-            array = re.fullmatch(r'bv_unsigned\s+\(' + argv + r'\s+!!!\s+(\d+)%nat\)\s+↦ₘ∗\s+(\w+)', part)
+            points = re.fullmatch(r'(.+?)\s+(↦ₘ∗|↦ₘ\?|↦ₘ)\s+(.+)', part)
             register = re.fullmatch(r'"(\w+)"\s+↦ᵣ\s+RVal_Bits\s+(\w+)', part)
-            if array:
-                rows['arrays'].append({'argument': int(array[1]), 'binder': array[2]})
+            address = place(points[1]) if points else None
+            if address is not None and points[2] == '↦ₘ∗':
+                # A binder, or (after the call) an expression over the post binders.
+                value = _strip_enclosure(points[3])
+                rows['arrays'].append({**address, ('binder' if re.fullmatch(r'\w+', value) else 'value'): value})
+            elif address is not None and points[2] == '↦ₘ' and 'argument' in address:
+                rows['words'].append({'offset': 0, **address, 'value': _strip_enclosure(points[3])})
+            elif address is not None and points[2] == '↦ₘ?' and 'argument' in address:
+                rows['uninitialized'].append({**address, 'length': points[3].strip()})
             elif register:
                 rows['registers'].append({'register': register[1], 'binder': register[2]})
             elif part.startswith('reg_col'):
@@ -254,6 +276,25 @@ def stored_caller_span(resource, updates):
     return resource.byte_array is None or set(range(resource.length)) <= set(updates)
 
 
+def stored_word(resources, updates, address, memory=()):
+    """The caller resource, offset and value of the 64-bit word at `address` (little-endian):
+    each byte is a store of the call-site paths or a known byte of the caller's region."""
+    for resource in resources.values():
+        offset = _offset(address, resource.base)
+        if offset is None or not isinstance(resource.length, int) or not 0 <= offset <= resource.length - 8:
+            continue
+        known = next((region.bytes for region in memory if region.ownership_id == resource.id), ())
+        chunks = [Expr.from_dict(updates[resource.id][offset + index]['value'])
+                  if offset + index in updates[resource.id] else
+                  known[offset + index] if offset + index < len(known) else None for index in range(8)]
+        if None in chunks:
+            raise CallRefused('The caller does not know the word at a call argument: ' + resource.id)
+        value = chunks[7]
+        for chunk in reversed(chunks[:7]):
+            value = operation('concat', value, chunk)
+        return resource.id, offset, value
+    raise CallRefused('No caller resource holds the word at a call argument.')
+
 
 def call_return_seed(edges, *, call, function_root, root_seed, shapes, vocabulary, constants=None, origin_seeds=()):
     """Return the OwnedSeed of a call's return site and a report of what it carries.
@@ -291,29 +332,62 @@ def call_return_seed(edges, *, call, function_root, root_seed, shapes, vocabular
     values = {'sp': state.registers['x2'],
               'argv': ['(' + _coq(state.registers[name]) + ')' for name in ARGUMENTS]}
 
-    # Spec arrays: the caller resource at each argument.
-    design = {row['binder']: row for row in call['arrays']}
+    post_binder_names = [name for name, _ in spec['post_binders']]
+    fresh = {name: prefix + name for name in post_binder_names}
+    # Spec words at an argument (a slice's pointer and length): the pre binder is the word
+    # the call-site paths stored there; after the call the bytes hold the spec's new value,
+    # named by a fresh word binder (equal to that value when it is an expression).
+    instantiation, splits, kept, word_names, word_facts = {}, {}, set(), {}, []
+    post_words = {(row['argument'], row['offset']): row['value'] for row in spec['post']['words']}
+    for row in spec['pre']['words']:
+        spot = (row['argument'], row['offset'])
+        if not re.fullmatch(r'\w+', row['value']) or spot not in post_words:
+            raise CallRefused('The spec word at argument %d + %d is not a binder that the spec returns' % spot)
+        address = operation('bvadd', state.registers[ARGUMENTS[spot[0]]], bits(spot[1], 64))
+        key, offset, value = stored_word(resources, image.updates, address, state.memory)
+        instantiation[row['value']] = '(' + _coq(value) + ')'
+        returned = post_words[spot]
+        name = fresh[returned] if returned in fresh else prefix + 'word_%d_%d' % spot
+        word_names[(key, offset)] = name
+        if returned not in fresh:
+            word_facts.append((name, returned))
+    words = {name: value for name, value in instantiation.items()}
+
+    # Spec arrays: the caller resource at each argument, or at a stored word.
+    def spot(row):
+        return ('pointer', row['pointer']) if 'pointer' in row else ('argument', row['argument'], row.get('offset', 0))
+    design = {row['binder']: row for row in call.get('arrays', [])}
     pre_arrays = {row['binder']: row for row in spec['pre']['arrays']}
-    post_arrays = {row['binder']: row for row in spec['post']['arrays']}
+    returned_at = {spot(row): row for row in spec['post']['arrays']}
     if set(design) != set(pre_arrays):
         raise CallRefused('The call design binds other arrays than the spec: ' + ', '.join(sorted(design)))
-    instantiation, splits, kept = {}, {}, set()
+
+    def caller_span(row, length):
+        """The unique caller resource that holds `length` bytes at an argument."""
+        if 'argument' not in row:
+            raise CallRefused('A replaced array is not at a call argument.')
+        address = operation('bvadd', state.registers[ARGUMENTS[row['argument']]], bits(row.get('offset', 0), 64))
+        found = [(resource, _offset(address, resource.base)) for resource in resources.values()]
+        found = [(resource, offset) for resource, offset in found if offset is not None
+                 and 0 <= offset and isinstance(resource.length, int) and offset + length <= resource.length]
+        if len(found) != 1:
+            raise CallRefused('The replaced array has no unique caller resource at argument ' + str(row['argument']))
+        return found[0]
     for binder, row in pre_arrays.items():
-        argument = row['argument']
-        if design[binder]['argument'] != argument:
+        if spot(design[binder]) != spot(row):
             raise CallRefused('The call design moves the spec array ' + binder)
-        address = state.registers[ARGUMENTS[argument]]
-        returned = [post for post in post_arrays.values() if post['argument'] == argument]
-        if len(returned) != 1:
-            raise CallRefused('The spec does not return its array at argument ' + str(argument))
-        if returned[0]['binder'] == binder:
+        returned = returned_at.get(spot(row))
+        if returned is None:
+            raise CallRefused('The spec does not return its array ' + binder)
+        if returned.get('binder') == binder:
             # The callee keeps these bytes: the design names the caller value. A value
-            # that is a slice of a caller array names that array as `slice_of`, and
-            # `{argv:N}` in it stands for the call-site value of argument N.
+            # that is a slice of a caller array names that array as `slice_of`; `{argv:N}`
+            # in it stands for the call-site value of argument N, and a spec word binder
+            # for the word the caller stored.
             value = design[binder]['caller_value']
             for number, argument in enumerate(values['argv']):
                 value = value.replace('{argv:%d}' % number, argument)
-            instantiation[binder] = value
+            instantiation[binder] = substitute(value, words) if words else value
             whole = design[binder].get('slice_of', design[binder]['caller_value'])
             owner = [resource for resource in resources.values()
                      if resource.byte_array is not None and resource.byte_array.value == whole]
@@ -322,16 +396,20 @@ def call_return_seed(edges, *, call, function_root, root_seed, shapes, vocabular
             kept.add(owner[0].id)
             continue
         # The callee replaces these bytes: find the caller resource by offset.
-        found = [(resource, _offset(address, resource.base)) for resource in resources.values()]
-        found = [(resource, offset) for resource, offset in found if offset is not None
-                 and 0 <= offset and isinstance(resource.length, int)
-                 and offset + design[binder]['length'] <= resource.length]
-        if len(found) != 1:
-            raise CallRefused('The replaced array has no unique caller resource: ' + binder)
-        resource, offset = found[0]
+        resource, offset = caller_span(row, design[binder]['length'])
         splits[resource.id] = {'offset': offset, 'length': design[binder]['length'],
-                               'pre': binder, 'post': returned[0]['binder']}
+                               'pre': binder, 'post': returned.get('binder'), 'post_value': returned.get('value')}
         instantiation[binder] = None  # an existential of the carried facts
+    # Uninitialized spec bytes at an argument: the callee writes the array it returns there.
+    for row in spec['pre']['uninitialized']:
+        returned = returned_at.get(spot(row))
+        length = int(row['length']) if row['length'].isdigit() else (constants or {}).get(row['length'], {}).get('value')
+        if returned is None or not isinstance(length, int):
+            raise CallRefused('The spec does not return a sized array for its uninitialized bytes at argument '
+                              + str(row['argument']))
+        resource, offset = caller_span(row, length)
+        splits[resource.id] = {'offset': offset, 'length': length, 'pre': None,
+                               'post': returned.get('binder'), 'post_value': returned.get('value')}
     # The callee frame: (sp - STACK) ↦ₘ? STACK, returned uninitialized.
     stack = constants.get(spec['stack'], {}).get('value') if constants else None
     stack = stack if stack is not None else call['stack_bytes']
@@ -356,8 +434,6 @@ def call_return_seed(edges, *, call, function_root, root_seed, shapes, vocabular
         if row not in spec['post']['registers']:
             raise CallRefused('The spec does not return its register ' + row['register'])
         instantiation[row['binder']] = '(' + _coq(state.registers[row['register']]) + ')'
-    post_binder_names = [name for name, _ in spec['post_binders']]
-    fresh = {name: prefix + name for name in post_binder_names}
 
     # The seed's general registers.
     registers, binders = {}, []
@@ -397,8 +473,10 @@ def call_return_seed(edges, *, call, function_root, root_seed, shapes, vocabular
     existential = [(name, kind) for name, kind in spec['pre_binders'] if instantiation.get(name, '') is None]
     # A definition of the spec file is unfolded: the entry cannot import the spec module.
     raw = spec['pre']['facts'] + spec['post']['facts']
-    local = _local_definitions(spec_text, sorted(_atoms(' '.join(raw)) - {call['spec']}))
+    local = _local_definitions(spec_text, sorted(_atoms(' '.join(raw + [value for _, value in word_facts]))
+                                                 - {call['spec']}))
     facts = [instantiate(_unfold(fact, local), {}) for fact in raw]
+    facts += ['%s = %s' % (name, instantiate(_unfold(value, local), {})) for name, value in word_facts]
     # A call argument that nothing else in the seed mentions (an entry witness, or
     # a call-site register that the paths disagree on) is closed inside the facts.
     elsewhere = set(_atoms(' '.join(_coq(value) for key, value in registers.items() if GPR.fullmatch(key))))
@@ -415,7 +493,15 @@ def call_return_seed(edges, *, call, function_root, root_seed, shapes, vocabular
     rendered = render_resource_boundary(ownership, image, state, vocabulary=vocabulary)
     if rendered['block_status'] != 'completed':
         raise CallRefused('The call-site state does not render.')
-    current = {row['id']: row['source'] for row in rendered['components']}
+    # The stored words now hold the callee's values; the other known bytes of their
+    # resources stay as they were.
+    for (key, offset), name in word_names.items():
+        known = next((region.bytes for region in state.memory if region.ownership_id == key), ())
+        for index, byte in enumerate(known):
+            image.updates[key].setdefault(index, {'value': byte.to_dict()})
+        for index in range(8):
+            image.updates[key][offset + index] = {
+                'value': operation('extract', input_expr(name, 64), width=8, value=8 * index).to_dict()}
     nodes, regions, extra_facts = [], {}, []
     piece_name = PieceNames(ownership['components'])
     for component in ownership['components']:
@@ -461,7 +547,7 @@ def call_return_seed(edges, *, call, function_root, root_seed, shapes, vocabular
                 address = '(' + resource.address_z + ' + ' + str(start) + ')' if start else resource.address_z
                 written = [offset for offset in range(start, end) if offset in updates]
                 if index == 1:
-                    value = fresh[split['post']]
+                    value = fresh[split['post']] if split['post'] else '(' + instantiate(split['post_value'], {}) + ')'
                     nodes.append({'kind': 'byte_array', 'id': piece_id, 'original_component':
                                   '%s ↦ₘ∗ %s' % (address, value), 'address_z': address,
                                   'byte_array_expr': input_expr(value, None).to_dict(), 'element_bits': 8,
@@ -519,10 +605,11 @@ def call_return_seed(edges, *, call, function_root, root_seed, shapes, vocabular
         for row in extra_facts] + [{'kind': 'opaque', 'id': prefix + 'facts', 'coq': '⌜' + carried + '⌝'}] + [
         {'kind': 'opaque', 'id': prefix + 'return_fact_%d' % index, 'coq': '⌜' + _return_fact(row['coq'], fresh) + '⌝'}
         for index, row in enumerate(call.get('return_facts', []))]
-    post_types = dict(spec['post_binders'])
-    for split in [split for split in splits.values() if 'post' in split]:
-        binders.append({'name': fresh[split['post']], 'type': post_types[split['post']],
-                        'expression': input_expr(fresh[split['post']], None).to_dict()})
+    # Every post binder, and the word binders that stand for a returned word expression.
+    for name, kind in spec['post_binders']:
+        binders.append({'name': fresh[name], 'type': kind, 'expression': input_expr(fresh[name], None).to_dict()})
+    for name, _ in word_facts:
+        binders.append({'name': name, 'type': 'bv 64', 'expression': input_expr(name, 64).to_dict()})
     # Inherited binders that the seed still mentions (entry witnesses passed as arguments,
     # join and loop-head binders of the origin seeds).
     text = ' '.join([node.get('original_component', node.get('coq', '')) for node in nodes
