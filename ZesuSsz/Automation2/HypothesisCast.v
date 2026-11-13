@@ -3,6 +3,7 @@ Require Import ZesuSsz.Automation2.SwitchDispatch.
 Require Import ZesuSsz.Automation2.MaskWrapPresentation.
 From stdpp Require Import bitvector.tactics.
 From Coq Require Import ZArith Lia.
+Require ZesuSsz.Automation2.VmClosed.
 Local Open Scope Z_scope.
 
 Class ZesuStepHypothesisCast : Prop := {}.
@@ -13,7 +14,7 @@ Ltac zesu_hypothesis_cast_range width value :=
     | bv_unsigned ?word =>
         let kind := type of word in
         lazymatch kind with bv ?source =>
-          is_closed_term source;
+          ZesuSsz.Automation2.VmClosed.zesu_closed_term source;
           let Hwidth := fresh "HcastWidth" in
           assert (Hwidth : (source <= width)%N) by (vm_compute; congruence);
           pose proof (bv_unsigned_in_range source word);
@@ -25,7 +26,7 @@ Ltac zesu_hypothesis_cast_range width value :=
 Ltac zesu_hypothesis_casts :=
   repeat match goal with
   | H : context [bv_unsigned (Z_to_bv ?width ?value)] |- _ =>
-      is_closed_term width; assert_fails (has_evar value);
+      ZesuSsz.Automation2.VmClosed.zesu_closed_term width; assert_fails (has_evar value);
       let Hrange := fresh "HcastRange" in
       let Hequal := fresh "HcastEqual" in
       assert (Hrange : 0 <= value < bv_modulus width) by
@@ -39,10 +40,10 @@ Ltac zesu_hypothesis_casts :=
 Ltac zesu_hypothesis_mask_wraps :=
   repeat match goal with
   | H : context [bv_unsigned (bv_and ?value ?mask)] |- _ =>
-      is_closed_term mask; assert_fails (has_evar value);
+      ZesuSsz.Automation2.VmClosed.zesu_closed_term mask; assert_fails (has_evar value);
       let kind := type of value in
       lazymatch kind with bv ?width =>
-        is_closed_term width;
+        ZesuSsz.Automation2.VmClosed.zesu_closed_term width;
         let modulus := eval vm_compute in (bv_unsigned mask + 1) in
         let requested := constr:(bv_unsigned value - modulus) in
         let Hequal := fresh "HmaskEqual" in
@@ -73,7 +74,7 @@ Ltac zesu_cast_nonzero_derived :=
   | |- ZesuSsz.Automation.PureFacts.ZesuDerivedFacts ?premise ?derived =>
     lazymatch premise with
     | Z_to_bv ?width ?value <> ?zero =>
-      is_closed_term width; assert_fails (has_evar value);
+      ZesuSsz.Automation2.VmClosed.zesu_closed_term width; assert_fails (has_evar value);
       first [constr_eq zero constr:((0%bv : bv width)) |
         constr_eq zero constr:(Z_to_bv width 0)];
       let wanted := constr:((value <> 0)%Z) in

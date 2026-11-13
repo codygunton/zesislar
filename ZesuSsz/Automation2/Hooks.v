@@ -72,7 +72,7 @@ Ltac zesu_regcol_compute_hint :=
   lazymatch goal with
   | |- LiTactic (regcol_compute_hint ?f ?a) =>
     let input := constr:(f a) in
-    tryif is_closed_term input then
+    tryif ZesuSsz.Automation2.VmClosed.zesu_closed_term input then
       let result := eval vm_compute in input in
       lazymatch result with
       | Some ?value => apply (regcol_compute_hint_hint value)
@@ -169,7 +169,7 @@ Ltac zesu_low_mask_integer_offset width offset continuation :=
   | Z_to_bv width ?integer =>
       assert_fails (has_evar integer); continuation integer
   | _ =>
-      is_closed_term offset;
+      ZesuSsz.Automation2.VmClosed.zesu_closed_term offset;
       let integer := ZesuSsz.Automation2.VmClosed.zesu_vm_eval_closed (bv_unsigned offset) in
       continuation integer
   end.
@@ -179,9 +179,9 @@ Ltac zesu_low_mask_sub_modulus_goal :=
   | |- bv_unsigned (bv_and (bv_add ?value ?offset) ?mask) = ?requested =>
       assert_fails (has_evar value);
       assert_fails (has_evar requested);
-      is_closed_term mask;
+      ZesuSsz.Automation2.VmClosed.zesu_closed_term mask;
       lazymatch type of value with bv ?width =>
-        is_closed_term width;
+        ZesuSsz.Automation2.VmClosed.zesu_closed_term width;
         let low := ZesuSsz.Automation2.VmClosed.zesu_vm_eval_closed (N.log2 (Z.to_N (bv_unsigned mask + 1))) in
         let modulus := ZesuSsz.Automation2.VmClosed.zesu_vm_eval_closed (bv_modulus low) in
         let Hwidth := fresh "HmaskWidth" in
@@ -192,7 +192,7 @@ Ltac zesu_low_mask_sub_modulus_goal :=
         zesu_low_mask_integer_offset width offset ltac:(fun integer =>
           let Hoffset := fresh "HmaskOffset" in
           assert (Hoffset : offset = Z_to_bv width integer) by
-            first [reflexivity | is_closed_term offset;
+            first [reflexivity | ZesuSsz.Automation2.VmClosed.zesu_closed_term offset;
               apply bv_eq; first [ZesuSsz.Automation2.VmClosed.zesu_vm_closed_decide | reflexivity]];
           let Hrange := fresh "HmaskRange" in
           assert (Hrange : modulus <= bv_unsigned value + integer < 2 * modulus)
@@ -221,7 +221,7 @@ Ltac zesu_low_mask_branch_hypotheses :=
       zesu_low_mask_guard_fact H;
       assert_fails (has_evar value);
       assert_fails (has_evar offset);
-      is_closed_term mask;
+      ZesuSsz.Automation2.VmClosed.zesu_closed_term mask;
       progress (repeat match type of H with
         | context [bv_signed (bv_zero_extend 128 ?word)] =>
             lazymatch type of word with bv 64 => idtac end;
@@ -231,9 +231,9 @@ Ltac zesu_low_mask_branch_hypotheses :=
   | H : context [bv_unsigned (bv_and (bv_add ?value ?offset) ?mask)] |- _ =>
       zesu_low_mask_guard_fact H;
       assert_fails (has_evar value);
-      is_closed_term mask;
+      ZesuSsz.Automation2.VmClosed.zesu_closed_term mask;
       lazymatch type of value with bv ?width =>
-        is_closed_term width;
+        ZesuSsz.Automation2.VmClosed.zesu_closed_term width;
         let low := ZesuSsz.Automation2.VmClosed.zesu_vm_eval_closed (N.log2 (Z.to_N (bv_unsigned mask + 1))) in
         let modulus := ZesuSsz.Automation2.VmClosed.zesu_vm_eval_closed (bv_modulus low) in
         zesu_low_mask_integer_offset width offset ltac:(fun integer =>
@@ -253,8 +253,8 @@ Ltac zesu_low_mask_bv_goal :=
   | |- bv_and (bv_add ?value ?offset) ?mask = Z_to_bv ?width ?requested =>
       assert_fails (has_evar value);
       assert_fails (has_evar requested);
-      is_closed_term mask;
-      is_closed_term width;
+      ZesuSsz.Automation2.VmClosed.zesu_closed_term mask;
+      ZesuSsz.Automation2.VmClosed.zesu_closed_term width;
       let low := ZesuSsz.Automation2.VmClosed.zesu_vm_eval_closed (N.log2 (Z.to_N (bv_unsigned mask + 1))) in
       let modulus := ZesuSsz.Automation2.VmClosed.zesu_vm_eval_closed (bv_modulus low) in
       let Hwidth := fresh "HmaskWidth" in
@@ -265,7 +265,7 @@ Ltac zesu_low_mask_bv_goal :=
       zesu_low_mask_integer_offset width offset ltac:(fun integer =>
         let Hoffset := fresh "HmaskOffset" in
         assert (Hoffset : offset = Z_to_bv width integer) by
-          first [reflexivity | is_closed_term offset;
+          first [reflexivity | ZesuSsz.Automation2.VmClosed.zesu_closed_term offset;
             apply bv_eq; first [ZesuSsz.Automation2.VmClosed.zesu_vm_closed_decide | reflexivity]];
         let Hrange := fresh "HmaskRange" in
         assert (Hrange : modulus <= bv_unsigned value + integer < 2 * modulus)
@@ -377,11 +377,11 @@ Ltac zesu_strict_signed_if_enabled :=
       end
   end.
 
-(* A closed comparison decides by computation; is_closed_term refuses a goal
+(* A closed comparison decides by computation; the closedness check refuses a goal
    with a local name before the VM runs. A closed comparison that computes to
    false goes on to the solvers: a contradictory context still proves it. *)
 Ltac zesu_closed_goal_decide :=
-  lazymatch goal with |- ?goal => is_closed_term goal end;
+  lazymatch goal with |- ?goal => ZesuSsz.Automation2.VmClosed.zesu_closed_term goal end;
   first [ZesuSsz.Automation2.VmClosed.zesu_vm_closed_decide |
     ZesuSsz.Automation2.RewriteBoundGuards.a3n_closed_bound].
 
@@ -567,7 +567,7 @@ Ltac zesu_lookup_side_condition :=
   | |- (((?base <= ?address)%Z /\ _) \/ _) =>
       match address with
       | context [Z_to_bv _ ?integer] =>
-          tryif stdpp.tactics.is_closed_term integer then fail else idtac;
+          tryif ZesuSsz.Automation2.VmClosed.zesu_closed_term integer then fail else idtac;
           tryif constr_eq integer base then fail else idtac;
           lazymatch base with context [integer] => idtac end
       end
