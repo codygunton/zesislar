@@ -635,8 +635,9 @@ def reservation_claims(markers, *, proc=Path("/proc"), fallback_bytes=32 * GIB,
             if measured is not None:
                 covered.update(measured["covered"])
             previous = max(values.get("memory_probe_claim_bytes", 0), retained_claims.get(str(marker), 0))
-            increased = max(authorized if authorized is not None else fence, previous,
-                            measured["claim_bytes"] if measured is not None else 0)
+            # A probe grows by the resident rule, but never past its own fence.
+            increased = min(fence, max(authorized if authorized is not None else fence, previous,
+                                       measured["claim_bytes"] if measured is not None else 0))
             if proc == Path('/proc'):
                 scopes[str(len(claims))] = reader.compiler(marker)
             claims.append(increased)
@@ -685,9 +686,98 @@ def reservation_claims(markers, *, proc=Path("/proc"), fallback_bytes=32 * GIB,
             "scope_observations": scopes}
 
 
+FENCE_KILL_SCHEMA = "zesu.fence-kill.v1"
+
+
+def compiled_source(arguments, cwd):
+    """Return (path, sha256) of the last existing .v argument, or None."""
+    for value in reversed(list(arguments)):
+        if value.endswith(".v"):
+            path = Path(value) if os.path.isabs(value) else Path(cwd) / value
+            if path.is_file():
+                return path.resolve(), hashlib.sha256(path.read_bytes()).hexdigest()
+    return None
+
+
+FENCE_KILL_KINDS = ("fence", "shared-slice")
+
+
+def record_fence_kill(ledger, unit, fence_bytes, arguments, cwd, *, utc=None, kind="fence", own_peak_bytes=None,
+                      aggregate=None, aggregate_limit_bytes=None, aggregate_peak_bytes=None):
+    """Append one memory kill of a scope, with the compiled source's hash.
+
+    A fence kill otherwise ends as a plain nonzero status with no peak, and a
+    later probe of the same source cannot know the fence it reached. kind
+    "shared-slice" is a kill in a full batch aggregate below the scope's own
+    fence; it names the aggregate and the victim's peak. A row without a kind
+    (older rows) is a fence kill.
+    """
+    import fcntl
+    import time
+    if kind not in FENCE_KILL_KINDS:
+        raise ValueError("Unknown memory kill kind: %r." % (kind,))
+    found = compiled_source(arguments, cwd)
+    row = {"schema": FENCE_KILL_SCHEMA, "utc": utc or time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
+           "unit": unit, "kind": kind, "fence_bytes": positive_integer(fence_bytes, "killed scope fence"),
+           "own_peak_bytes": None if own_peak_bytes is None else positive_integer(own_peak_bytes, "killed scope peak"),
+           "aggregate": aggregate,
+           "aggregate_limit_bytes": None if aggregate_limit_bytes is None else positive_integer(aggregate_limit_bytes, "aggregate limit"),
+           "aggregate_peak_bytes": None if aggregate_peak_bytes is None else positive_integer(aggregate_peak_bytes, "aggregate peak"),
+           "source": str(found[0]) if found else None, "source_sha256": found[1] if found else None}
+    ledger = Path(ledger)
+    ledger.parent.mkdir(parents=True, exist_ok=True)
+    with ledger.open("a") as stream:
+        fcntl.flock(stream, fcntl.LOCK_EX)
+        stream.write(json.dumps(row, sort_keys=True) + "\n")
+    return row
+
+
+def fence_kill_claim(ledger, requested_bytes, arguments, cwd):
+    """Book a probe of a source killed at a known fence at 1.25x that fence.
+
+    The last recorded fence kill of the same source hash counts; the claim never
+    exceeds the request. A source with no recorded fence kill keeps its request.
+    A shared-slice kill never reached the fence and does not count.
+    """
+    requested_bytes = positive_integer(requested_bytes, "requested probe claim")
+    found = compiled_source(arguments, cwd)
+    if found is None or not Path(ledger).is_file():
+        return requested_bytes
+    fence = None
+    for line in Path(ledger).read_text().splitlines():
+        try:
+            row = json.loads(line)
+        except ValueError:
+            continue
+        if (isinstance(row, dict) and row.get("schema") == FENCE_KILL_SCHEMA
+                and row.get("kind", "fence") == "fence"
+                and row.get("source_sha256") == found[1] and type(row.get("fence_bytes")) is int
+                and row["fence_bytes"] > 0):
+            fence = row["fence_bytes"]
+    if fence is None:
+        return requested_bytes
+    return min(requested_bytes, -(-fence * MARGIN_NUMERATOR // MARGIN_DENOMINATOR))
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     commands = parser.add_subparsers(dest="command", required=True)
+    kill_record = commands.add_parser("fence-kill-record")
+    kill_record.add_argument("--ledger", type=Path, required=True)
+    kill_record.add_argument("--unit", required=True)
+    kill_record.add_argument("--fence-bytes", type=int, required=True)
+    kill_record.add_argument("--kind", choices=FENCE_KILL_KINDS, default="fence")
+    kill_record.add_argument("--own-peak-bytes", type=int)
+    kill_record.add_argument("--aggregate")
+    kill_record.add_argument("--aggregate-limit-bytes", type=int)
+    kill_record.add_argument("--aggregate-peak-bytes", type=int)
+    kill_record.add_argument("--cwd", type=Path, required=True)
+    kill_record.add_argument("arguments", nargs=argparse.REMAINDER)
+    kill_claim = commands.add_parser("fence-kill-claim")
+    kill_claim.add_argument("--ledger", type=Path, required=True)
+    kill_claim.add_argument("--requested-bytes", type=int, required=True)
+    kill_claim.add_argument("--cwd", type=Path, required=True)
+    kill_claim.add_argument("arguments", nargs=argparse.REMAINDER)
     commands.add_parser("test-ledger-policy")
     role_exit = commands.add_parser('role-exit-exec')
     role_exit.add_argument('--marker', type=Path, required=True)
@@ -744,6 +834,16 @@ def main():
     staging_exit.add_argument('--marker', type=Path, required=True)
     staging_exit.add_argument('payload', nargs=argparse.REMAINDER)
     args = parser.parse_args()
+    if args.command in ("fence-kill-record", "fence-kill-claim"):
+        arguments = args.arguments[1:] if args.arguments[:1] == ["--"] else args.arguments
+        if args.command == "fence-kill-record":
+            print(json.dumps(record_fence_kill(
+                args.ledger, args.unit, args.fence_bytes, arguments, args.cwd, kind=args.kind,
+                own_peak_bytes=args.own_peak_bytes, aggregate=args.aggregate,
+                aggregate_limit_bytes=args.aggregate_limit_bytes, aggregate_peak_bytes=args.aggregate_peak_bytes)))
+        else:
+            print(fence_kill_claim(args.ledger, args.requested_bytes, arguments, args.cwd))
+        return 0
     if args.command == "observe":
         arguments = args.arguments[1:] if args.arguments[:1] == ["--"] else args.arguments
         return observe(args.profile, args.output, args.guard, args.compiler, args.cwd, arguments,
@@ -782,7 +882,7 @@ def main():
         result = confirm_shell(args.marker, args.replacement, args.request_bytes, args.available_bytes)
         publish_admission_totals(result)
         if not result['fits']:
-            print('unified memory ledger refuses the reservation')
+            print('unified memory ledger refuses the reservation', file=sys.stderr)
             return 3
         return 0
     if args.command == 'ledger-mark':

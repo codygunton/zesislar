@@ -19,10 +19,13 @@ Require Import ZesuSsz.Contracts.DecodeItemSelected.
 Require Import ZesuSsz.Contracts.NextUint64Selected.
 Require Import InstrSpecs.Lookup.
 Require Import ZesuSsz.Contracts.SelectedCodeLookup.
-Require Import ZesuSsz.Contracts.ParentHeaderSelected.
+Require Import ZesuSsz.Contracts.ParentHeaderContract.
+Require Import ZesuSsz.Contracts.AbiBytes.
+Require Import ZesuSsz.Contracts.ZiskRuntime.
+Require Import ZesuSsz.Contracts.DecodeItemCallData.
+Require Import ZesuSsz.Automation2.Calls.
 Require Import ZesuSsz.Stock.Closure.index_nextUint64.
 Require Import ZesuSsz.Stock.Closure.index_decodeParentHeader.
-Require Import ZesuSsz.Stock.Closure.index_memcpyStub.
 Require Import ZesuSsz.Evidence.SignatureAxiomAllowlist.
 
 Open Scope Z_scope.
@@ -167,11 +170,33 @@ Print Assumptions emptyParentListMissesRequired.
 Ltac2 Eval exact_axioms 'emptyParentListMissesRequired
   (approved_library_axioms ()).
 
-Definition ReviewedMemcpyServicePremise `{!islaG Sigma} `{!threadG} :
-    iProp Sigma :=
-  (□ instr_pre memcpyCsrPc ziskMemcpyServiceInstrSpec)%I.
+Local Open Scope stdpp_scope.
 
-Check (eq_refl : @memcpyServicePremise = @ReviewedMemcpyServicePremise).
+Definition ReviewedMemcpyCallSpec2 `{!islaG Sigma} `{!threadG} : iProp Sigma :=
+  (machine_call decodeItemCallMap 0
+    (fun argv sp RET =>
+      ∃ (source scratch : list byte) (inputEndBits : bv 64),
+      "zisk_input_end" ↦ᵣ RVal_Bits inputEndBits ∗
+      reg_col [(KindReg "zisk_free_input", BitsShape 64)] ∗
+      bv_unsigned (argv !!! 1%nat) ↦ₘ∗ source ∗
+      bv_unsigned (argv !!! 0%nat) ↦ₘ? bv_unsigned (argv !!! 2%nat) ∗
+      ziskExtraParamsAddress ↦ₘ∗ scratch ∗
+      ⌜Z.of_nat (length source) = bv_unsigned (argv !!! 2%nat)⌝ ∗
+      ⌜length scratch = 8%nat⌝ ∗
+      RET (fun _ =>
+        "zisk_input_end" ↦ᵣ RVal_Bits inputEndBits ∗
+        reg_col [(KindReg "zisk_free_input", BitsShape 64)] ∗
+        bv_unsigned (argv !!! 1%nat) ↦ₘ∗ source ∗
+        bv_unsigned (argv !!! 0%nat) ↦ₘ∗ source ∗
+        ziskExtraParamsAddress ↦ₘ∗ word64Bytes (bv_unsigned (argv !!! 2%nat)) ∗
+        True)))%I.
+
+Definition ReviewedMemcpyCallPremise `{!islaG Sigma} `{!threadG} :
+    iProp Sigma :=
+  (□ instr_pre memcpyCsrPc ReviewedMemcpyCallSpec2)%I.
+
+Check (eq_refl : @memcpyCallSpec2 = @ReviewedMemcpyCallSpec2).
+Check (eq_refl : @memcpyCallPremise = @ReviewedMemcpyCallPremise).
 Check (eq_refl : parentHeaderMemcpyLength = 80%Z).
 Check (eq_refl : parentHeaderMemcpySource = 0x80114fb8%Z).
 
@@ -182,17 +207,30 @@ Definition ReviewedNextUint64SelectedCode `{!islaG Sigma} `{!threadG} :
 
 Definition ReviewedParentHeaderSelectedCode `{!islaG Sigma} `{!threadG} :
     iProp Sigma :=
-  (([∗ list] instruction ∈
-     ZesuSsz.Stock.Closure.index_decodeParentHeader.instr_map,
-     instr instruction.1 (Some instruction.2)) ∗
-   nextUint64SelectedCode ∗
-   ([∗ list] instruction ∈
-     ZesuSsz.Stock.Closure.index_memcpyStub.instr_map,
-     instr instruction.1 (Some instruction.2)) ∗
-   memcpyServicePremise)%I.
+  instr_lookup_resources
+    (selectedCodeLookup ZesuSsz.Stock.Closure.index_decodeParentHeader.instr_map).
+
+Definition ReviewedParentHeaderContractCode `{!islaG Sigma} `{!threadG} :
+    iProp Sigma :=
+  (ReviewedParentHeaderSelectedCode ∗ nextUint64SelectedCode ∗
+   decodeItemSelectedCode ∗ memcpyCallPremise)%I.
+
+(* The meaning conjuncts of decodeParentHeader's Level 1 contract. *)
+Definition ReviewedParentHeaderAllows
+    (args : ParentHeaderCall) (outcome : ParentHeaderOutcome) : Prop :=
+  ParentHeaderMeaningModuloKnownBugs args outcome.(headerResultBytes) /\
+  List.length outcome.(headerAfterFrame) = 400%nat /\
+  match outcome.(headerExitPath) with
+  | ParentHeaderDirect => True
+  | ParentHeaderMemcpyTail =>
+      outcome.(headerResultBytes) = args.(headerMemcpySourceBefore)
+  end.
 
 Check (eq_refl : @nextUint64SelectedCode = @ReviewedNextUint64SelectedCode).
 Check (eq_refl : @parentHeaderSelectedCode =
                  @ReviewedParentHeaderSelectedCode).
+Check (eq_refl : @parentHeaderContractCode =
+                 @ReviewedParentHeaderContractCode).
+Check (eq_refl : parentHeaderAllows = ReviewedParentHeaderAllows).
 Check (@NextUint64SelectedCorrect : Prop).
-Check (@ParentHeaderSelectedCorrect : Prop).
+Check (@ParentHeaderContractCorrect : Prop).

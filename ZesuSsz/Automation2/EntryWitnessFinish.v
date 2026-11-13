@@ -8,13 +8,14 @@ From iris.proofmode Require Import environments.
 From lithium Require Import pure_definitions.
 From Coq Require Import ZArith Lia.
 From stdpp Require Import bitvector.tactics.
+Require ZesuSsz.Automation2.VmClosed.
 Local Open Scope Z_scope.
 
 (* Reuse the proved byte cast and one-wrap family. No source fact is added. *)
 Ltac zesu_byte_bias_finish :=
   solve [lazymatch goal with
   | |- context [bv_and (bv_add (bv_and (bv_sign_extend ?width ?word) ?mask) ?offset) ?mask] =>
-      is_closed_term width; is_closed_term mask; is_closed_term offset;
+      ZesuSsz.Automation2.VmClosed.zesu_closed_term width; ZesuSsz.Automation2.VmClosed.zesu_closed_term mask; ZesuSsz.Automation2.VmClosed.zesu_closed_term offset;
       assert_fails (has_evar word);
       lazymatch type of word with bv 8%N => idtac end;
       let integer := eval vm_compute in (bv_unsigned offset) in

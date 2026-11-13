@@ -1,11 +1,24 @@
 """Enter the shared workload parent before any preparation or proof input read."""
 from pathlib import Path
+import importlib.util
 import os
 import subprocess
 import sys
 
 PARENT = 'zesuworkloads.slice'
-PARENT_BYTES = 175 * 1024**3
+
+
+def _admission():
+    """The sibling admission ledger helper, loaded by path."""
+    path = Path(__file__).resolve().parent / 'code' / 'admission_memory.py'
+    spec = importlib.util.spec_from_file_location('_command_scope_admission', path)
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module
+
+
+def workload_parent_bytes(root):
+    return _admission().workload_parent_bytes(root)
 
 
 def contained(*, proc=Path('/proc/self/cgroup'), cgroups=Path('/sys/fs/cgroup')):
@@ -17,7 +30,7 @@ def contained(*, proc=Path('/proc/self/cgroup'), cgroups=Path('/sys/fs/cgroup'))
     if PARENT not in parts:
         return False
     parent = cgroups.joinpath(*parts[:parts.index(PARENT) + 1])
-    if ((parent / 'memory.max').read_text().strip() != str(PARENT_BYTES)
+    if ((parent / 'memory.max').read_text().strip() not in _admission().accepted_parent_bytes(cgroups)
             or (parent / 'memory.swap.max').read_text().strip() != '0'):
         raise ValueError('The shared command parent lacks its exact memory backstop.')
     return True

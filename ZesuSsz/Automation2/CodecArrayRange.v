@@ -2,6 +2,7 @@ Require Import ZesuSsz.Automation2.SwitchDispatch.
 Require Import ZesuSsz.Automation2.MemoryAddress.
 From Coq Require Import Lists.List ZArith.ZArith Lia.
 From stdpp Require Import bitvector.definitions.
+Require ZesuSsz.Automation2.VmClosed.
 Local Open Scope Z_scope.
 
 Class ZesuStepCodecArrayRange : Prop := {}.
@@ -14,7 +15,7 @@ Ltac zesu_codec_range_lengths :=
   end;
   repeat match goal with
   | |- context [length (bv_to_little_endian ?count ?width ?value)] =>
-      is_closed_term count; is_closed_term width;
+      ZesuSsz.Automation2.VmClosed.zesu_closed_term count; ZesuSsz.Automation2.VmClosed.zesu_closed_term width;
       let nonnegative := fresh "HcodecCount" in
       assert (nonnegative : (0 <= count)%Z) by lia;
       rewrite (length_bv_to_little_endian count width value nonnegative);

@@ -15,13 +15,20 @@ ai-coord watch --label soundness-release -- \
 `SOURCE_WORKSPACE` owns the pinned guest, Zesu, and Zisk source checkouts.
 `TRACE_SOURCE` supplies the trace sources that the tracked build recipe binds.
 The script checks every trace hash before staging.
-It copies no compiled project object into the fresh build.
+It copies no compiled project object into the build itself.
+The dependency closure may restore objects from the Dune cache (stage 1).
 Existing local trace sources need no `--trace-source` option.
 The script refuses an existing output directory.
 
 The gate performs these stages:
 
-1. It builds both existing plugins, then the PUBLIC dependency closure.
+1. It keeps the Dune cache enabled in every step, because Dune reruns every rule when the cache mode changes.
+   It builds both existing plugins from the cache: a fresh native plugin records its worktree path and changes every Coq rule digest.
+   It builds the dependencies of the three PUBLIC theorem files from the cache, without the PUBLIC files themselves.
+   Then it builds the PUBLIC files with the reproducibility check: Dune reruns `coqc` for each file.
+   The compiler route keeps each new object before Dune links the target to an equal cache entry.
+   `PUBLIC-FRESH.json` records, for each PUBLIC object, the `coqc` run from the Dune trace and the hashes of the fresh object and of the object in `_build`.
+   The gate fails when a run is absent or when the two hashes differ.
 2. It compiles five isolated negative candidates and requires the expected checker refusals.
    Each MCP compile may run 600 s once the guard admits it; the guarded compiler wrappers start that limit inside the guard scope.
    A separate allowance (`ZESU_ADMISSION_WAIT_SECONDS`, default 7200 s) bounds the admission wait. A call that exceeds it is logged and retried, up to `ZESU_ADMISSION_RETRIES` (default 3) times.
@@ -49,14 +56,31 @@ This avoids selecting an unrelated generated module as a statement target.
 
 Each stage uses existing canonical admission and guard tools.
 The aggregate claim and fence are 64 GiB.
-Source compilation uses 32 GiB module fences and two Dune workers.
-The remaining stages use 24 GiB fences.
+Source compilation uses two Dune workers.
+The source stage uses 16 GiB module fences: closure callers peak at 10.9 GiB. The negative and wrapper stages use 8 GiB fences; their compiles peak at most 1.25 GiB.
+The coqchk stage uses a 24 GiB fence.
 Every TMPDIR belongs to the output directory under `/home`.
-Both caches stay disabled.
+The proof cache stays disabled.
+The Dune cache serves the PUBLIC dependency closure and the plugins; the PUBLIC theorem files compile again in the gate.
 The script freezes source receipts before the verification stages.
 It preserves raw MCP responses, exact types, object hashes, costs, actor closure, and claim release.
 It checks that `coqchk` changes no project object.
 It stops at the first failed stage and retains the attempt.
+
+## Cache trust
+
+A Dune cache entry is keyed by the digests of the compile action's inputs: the source file, the dependency objects, and the compiler command.
+A cached dependency object therefore comes from an earlier compile of the same source with the same dependencies, if the local cache is intact.
+`DuneCacheKeyTests` in `tools/test_soundness_gate.py` runs real Dune and `coqc` with a private cache: unchanged inputs hit the cache; a changed source under the same file name, and an unchanged source whose dependency changed, both recompile.
+Recursive `coqchk` re-checks every object, cached or fresh, against the kernel.
+A cached object cannot add an unchecked proof or a hidden axiom: `coqchk` rejects an ill-typed term, and the wrapper assumption reports must stay closed.
+`coqchk` does not compare an object with its source file.
+A tampered cache entry could therefore change a dependency definition that a PUBLIC statement unfolds to, while every term still checks.
+The fresh compile of the PUBLIC theorem files, together with the statement checks against the reviewed baseline source, binds the statements themselves; the definitions they unfold to rely on the integrity of the account's Dune cache.
+The gate does not rely on Dune's handling of a reproducibility mismatch: it compares the fresh object with the object in `_build` itself.
+Compiling the trust-context files fresh as well (`PUBLIC_CONTEXTS`, option `--fresh-contexts`) narrows this to definitions outside those files.
+The option takes only the context files inside the PUBLIC closure; `Evidence/SignatureGates.v` is outside it, so no PUBLIC term can come from it.
+Every closure object above a fresh file then compiles in the fresh step too.
 
 This gate checks the PUBLIC closure.
 It does not replace `make check-fast` or the full `make check-iris` gate.
