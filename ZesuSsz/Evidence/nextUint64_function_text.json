@@ -22,7 +22,7 @@
   "correction": "Accepted payload selection uses pointer 1 for prefix 128. Schema/relateItem admits this modeled behavior; this is not a new defect.",
   "excluded_shared": [
     {
-      "path": "ZesuSsz/Contracts/ParentHeaderSelected.v",
+      "path": "ZesuSsz/Contracts/ParentHeaderContract.v",
       "reason": "The parent-header caller consumes nextUint64; it is not this function implementation."
     },
     {
