@@ -294,6 +294,20 @@ class TaskTests(unittest.TestCase):
         self.assertIn("`1234-1.md`", index)
 
 
+class CpuTests(unittest.TestCase):
+    def test_cpu_line_of_a_compile_log(self):
+        log = "0.1 coqc output\n95.0 @@CPU user=93.10 sys=1.95 maxrss_kib=1510000\n"
+        self.assertEqual(loop.cpu_of(log), (95.0, 1510000))
+        self.assertEqual(loop.cpu_of("no line"), (None, None))
+
+    def test_cpu_exec_reports_its_child(self):
+        import subprocess
+        out = subprocess.run([sys.executable, "-c", loop.CPU_EXEC, sys.executable, "-c", "pass"],
+                             capture_output=True, text=True)
+        self.assertEqual(out.returncode, 0)
+        self.assertIsNotNone(loop.cpu_of(out.stdout)[0])
+
+
 class ModuleNameTests(unittest.TestCase):
     def test_a_named_module_replaces_the_block_name(self):
         manifest = dict(block="1234", module="Residual_f_1234")
