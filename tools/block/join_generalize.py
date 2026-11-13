@@ -483,6 +483,159 @@ def align_join_edges(alternatives, ownership, terminal_id, continuation_name, ke
     return aligned, extra
 
 
+def common_root_ancestor(roots, parents):
+    """The deepest seed on every root's parent chain, or None.
+
+    `parents` maps a call-return seed to the root its call-site paths start from;
+    the entry seed has no parent.
+    """
+    chains = []
+    for root in roots:
+        chain = []
+        while root is not None and root not in chain:
+            chain.append(root)
+            root = parents.get(root)
+        chains.append(chain)
+    common = set(chains[0]).intersection(*(set(chain) for chain in chains[1:]))
+    return next((pc for pc in chains[0] if pc in common), None)
+
+
+def _list_items(value):
+    """The top-level items of a Coq list literal `[a; b; ...]`, or None."""
+    if value is None or value.op != 'input':
+        return None
+    text = str(value.value).strip()
+    if not (text.startswith('[') and text.endswith(']')):
+        return None
+    items, depth, start = [], 0, 1
+    for index, char in enumerate(text[1:-1], start=1):
+        depth += char in '([{'
+        depth -= char in ')]}'
+        if char == ';' and depth == 0:
+            items.append(text[start:index].strip())
+            start = index + 1
+    items.append(text[start:-1].strip())
+    return [] if items == [''] else items
+
+
+def _byte(value):
+    """A byte as (normalized Coq text, Expr); equal texts state the same byte."""
+    try:
+        from .forward_resources import _strip_enclosure
+    except ImportError:
+        from forward_resources import _strip_enclosure
+    return re.sub(r'\s+', ' ', _strip_enclosure(value.coq())), value
+
+
+def _span_bytes(resource, region):
+    """Each byte of an owned span of constant length, or None when it is unknown."""
+    items = _list_items(resource.byte_array)
+    if items is not None and len(items) != resource.length:
+        raise ValueError('A literal byte list disagrees with its owned length: ' + resource.id)
+    known = region.bytes if region is not None else ()
+    result = []
+    for index in range(resource.length):
+        if items is not None:
+            result.append(_byte(input_expr(items[index], 8)))
+        elif index < len(known):
+            result.append(_byte(known[index]))
+        elif resource.byte_array is not None:
+            result.append(_byte(Expr('array_byte', (resource.byte_array,), 8, index)))
+        else:
+            result.append(None)
+    return result
+
+
+def lift_call_return_edges(alternatives, *, seeds, roots, ancestor, vocabulary):
+    """Express join edges that start at call-return roots below `ancestor` on its tree.
+
+    A call-return seed refines its parent's tree: it splits frame spans around the call
+    output and appends the call's pure facts. An edge from such a root becomes one-byte
+    writes into the ancestor span that contains each byte it knows (its own store, its
+    seed's stored byte, or element i of its seed's array) wherever that byte differs from
+    the ancestor's own byte. A byte it does not know stays uninitialized, a sound
+    weakening; an unknown byte that the ancestor states refuses. The deeper layers' pure
+    components are dropped (a weakening, as for a join seed's relations); their binders
+    are returned as existential binders for the join. Edges from the ancestor's own
+    tree are unchanged. Return (alternatives, binders).
+    """
+    try:
+        from .forward_resource_design import _state_from_result
+        from .forward_resources import apply_owned_writes, render_resource_boundary
+        from .symbolic_state import MemoryWrite, _offset
+    except ImportError:
+        from forward_resource_design import _state_from_result
+        from forward_resources import apply_owned_writes, render_resource_boundary
+        from symbolic_state import MemoryWrite, _offset
+    base = seeds[ancestor]
+    names = {binder['name'] for binder in base.ownership['binders']}
+    own = {resource.id: _span_bytes(resource, next((region for region in base.state.memory
+                                                    if region.ownership_id == resource.id), None))
+           for resource in base.resources if isinstance(resource.length, int)}
+    lifted, binders = [], []
+    for alternative in alternatives:
+        seed_pc = alternative['seed_pc']
+        if roots.get(seed_pc) == ancestor:
+            lifted.append(alternative)
+            continue
+        if roots.get(seed_pc) != seed_pc or seed_pc not in seeds:
+            raise ValueError('A join edge starts below a root other than the common ancestor: ' + seed_pc)
+        seed = seeds[seed_pc]
+        state = _state_from_result(alternative['state'])
+        image = apply_owned_writes(seed.resources, state.writes, conditions=state.conditions,
+                                   facts=seed.facts, endianness=state.endianness)
+        if image.status != 'complete':
+            raise ValueError('A lifted join edge has no complete write image')
+        regions = {region.ownership_id: region for region in state.memory}
+        writes = []
+        for resource in seed.resources:
+            updates = image.updates[resource.id]
+            if any(isinstance(offset, str) for offset in updates):
+                raise ValueError('A lifted join edge stores at a symbolic offset: ' + resource.id)
+            if not isinstance(resource.length, int):
+                same = [owner for owner in base.resources if owner.base == resource.base
+                        and owner.length == resource.length and owner.byte_array == resource.byte_array]
+                if len(same) != 1 or updates:
+                    raise ValueError('A lifted join edge changes a span of symbolic length: ' + resource.id)
+                continue
+            containing = [(owner, _offset(resource.base, owner.base)) for owner in base.resources
+                          if isinstance(owner.length, int)]
+            containing = [(owner, offset) for owner, offset in containing
+                          if offset is not None and offset + resource.length <= owner.length]
+            if len(containing) != 1:
+                raise ValueError('A lifted span has no unique ancestor span: ' + resource.id)
+            owner, offset = containing[0]
+            current = _span_bytes(resource, regions.get(resource.id))
+            for index in range(resource.length):
+                byte = _byte(Expr.from_dict(updates[index]['value'])) if index in updates else current[index]
+                previous = own[owner.id][offset + index]
+                if byte is None:
+                    if owner.byte_array is not None or previous is not None:
+                        raise ValueError('A lifted edge does not know a byte its ancestor states: ' + owner.id)
+                    continue
+                if previous is not None and previous[0] == byte[0]:
+                    continue
+                writes.append(MemoryWrite(operation('bvadd', owner.base, bits(offset + index, 64)), byte[1], 1))
+        image = apply_owned_writes(base.resources, writes, conditions=state.conditions,
+                                   facts=base.facts, endianness=state.endianness)
+        if image.status != 'complete':
+            raise ValueError('A lifted join edge has no complete ancestor image: '
+                             + json.dumps(image.reports[:1]))
+        owners = {transition['write_index']: transition['resource_id'] for transition in image.transitions}
+        state.writes = [replace(write, ownership_id=owners[index]) for index, write in enumerate(writes)]
+        state.memory = list(base.state.memory)
+        rendered = render_resource_boundary(base.ownership, image, state, vocabulary=vocabulary)
+        if rendered['block_status'] != 'completed':
+            raise ValueError('A lifted join edge does not render on the ancestor tree')
+        edge = deepcopy(alternative)
+        edge.update(state=state.to_dict(), resource_boundary=rendered, lifted_from=seed_pc)
+        lifted.append(edge)
+        for binder in seed.ownership['binders']:
+            if binder['name'] not in names and binder['name'] not in [row['name'] for row in binders]:
+                binders.append({key: value for key, value in binder.items() if key != 'scope'})
+    return lifted, binders
+
+
 # Registers an exit may observe: return address, stack pointer, callee-saved, return values.
 EXIT_OBSERVED = {'x1', 'x2', 'x8', 'x9', 'x10', 'x11', *('x%d' % number for number in range(18, 28))}
 
@@ -698,8 +851,11 @@ def _write_steps(image, resource_id):
 
 def generalize_owned_join(alternatives, *, original_seed, entry_pc, vocabulary,
                           continuation, outer_names=(), liveness=None, observables=None,
-                          relational_registers=(), design_facts=(), live_registers=None):
+                          relational_registers=(), design_facts=(), live_registers=None, lifted_binders=()):
     """Build a seed when every incoming non-register resource is identical.
+
+    lifted_binders are the binders of edges lifted from deeper call-return roots
+    (lift_call_return_edges); the join keeps them as it keeps a join seed's binders.
 
     design_facts are join-design conjuncts (Coq text). `{bytes@ADDR}` names the
     current value of the owned array at ADDR; each fact is a pure component of
@@ -733,6 +889,8 @@ def generalize_owned_join(alternatives, *, original_seed, entry_pc, vocabulary,
         raise ValueError('The continuation captures a source binder')
     register_order = [component['name'] for component in ownership['components'] if component['kind'] == 'register']
     alternatives, inherited_binders = align_join_edges(alternatives, ownership, terminal_id, name)
+    inherited_binders += [binder for binder in lifted_binders
+                          if binder['name'] not in [row['name'] for row in inherited_binders]]
     dead = set()
     if liveness is not None or observables is not None:
         if (not isinstance(liveness, dict) or liveness.get('pc') != hex(entry_pc)

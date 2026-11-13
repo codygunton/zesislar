@@ -21,7 +21,7 @@ from function_profiles import add_return_alignment, load_profile
 from loop_design import loop_head_seed
 from forward_resource_design import evaluate_owned_function
 from forward_resources import load_resource_vocabulary
-from join_generalize import generalize_owned_join
+from join_generalize import common_root_ancestor, generalize_owned_join, lift_call_return_edges
 from resource_seed import load_public_seed, seed_owned_resources
 from system_shape_seed import seed_system_shapes
 
@@ -86,6 +86,8 @@ def main():
         function, traces, {int(public['entry_pc'], 0): owned.state}).items()}
     # The seed whose ownership tree a seed's edges share: an entry or call-return seed is its own root.
     roots = {public['entry_pc']: public['entry_pc']}
+    # A call-return root's parent: the root its call-site paths start from.
+    parents = {}
     plans, refusals, rounds = {}, {}, []
     call_seeds, call_reports = {}, {}
     started = time.monotonic_ns()
@@ -115,6 +117,7 @@ def main():
                 refusals[site] = 'call boundary refused: ' + str(error)
                 continue
             seeds[site], roots[site] = seed, site
+            parents[site] = roots[next(iter(origins))]
             call_seeds[site] = {'public': call_public, 'state': seed.state.to_dict(), 'facts': seed.facts}
             call_reports[site] = call_report
             refusals.pop(site, None)
@@ -153,10 +156,21 @@ def main():
                                      'incomplete incoming edges: ' + str(boundary['reaching_stops'][0]))
                 continue
             origins = {row['seed_pc'] for row in incoming}
+            lifted_binders = []
             if len({roots.get(origin) for origin in origins}) != 1:
-                refusals[hex(pc)] = 'join edges from different roots: ' + ', '.join(sorted(origins))
-                continue
-            root = roots[next(iter(origins))]
+                # Edges from different call-return roots join on their deepest common ancestor.
+                root = common_root_ancestor(sorted({roots.get(origin) for origin in origins}), parents)
+                if root is None:
+                    refusals[hex(pc)] = 'join edges from different roots: ' + ', '.join(sorted(origins))
+                    continue
+                try:
+                    incoming, lifted_binders = lift_call_return_edges(incoming, seeds=seeds, roots=roots,
+                                                                      ancestor=root, vocabulary=vocabulary)
+                except ValueError as error:
+                    refusals[hex(pc)] = 'join lift to ' + root + ' refused: ' + str(error)
+                    continue
+            else:
+                root = roots[next(iter(origins))]
             try:
                 # Edges through an earlier join seed are aligned on their root seed's tree.
                 designs = profile.get('join_designs', {}) if profile else {}
@@ -164,7 +178,7 @@ def main():
                                                continuation=continuation, outer_names=['args', 'returnAddress'],
                                                design_facts=next((facts for suffix, facts in designs.items()
                                                                   if profile.pc(suffix) == hex(pc)), []),
-                                               live_registers=liveness.get(hex(pc)))
+                                               live_registers=liveness.get(hex(pc)), lifted_binders=lifted_binders)
             except ValueError as error:
                 refusals[hex(pc)] = 'join generalization refused: ' + str(error) + ' (edge seeds: ' + \
                     ', '.join(sorted(origins)) + ')'
@@ -196,7 +210,7 @@ def main():
                      'reaching_stops': boundary['reaching_stops']})
     (output / 'JOINS.json').write_text(json.dumps({'joins': [hex(pc) for pc in joins], 'plans': plans,
                                                    'refusals': refusals, 'rounds': rounds,
-                                                   'roots': roots, 'calls': call_reports}, indent=2) + '\n')
+                                                   'roots': roots, 'parents': parents, 'calls': call_reports}, indent=2) + '\n')
     (output / 'CALL-SEEDS.json').write_text(json.dumps(
         {'schema': 'fp301.call-return-seeds.v1', 'seeds': call_seeds,
          'calls': calls}, indent=1, ensure_ascii=False) + '\n')

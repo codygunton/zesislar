@@ -4,8 +4,9 @@ import sys
 import unittest
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from join_generalize import _register_definition, drop_unheld_binders
-from symbolic_state import SymbolicState, bits, input_expr, operation
+from join_generalize import _list_items, _register_definition, _span_bytes, common_root_ancestor, drop_unheld_binders
+from forward_resources import OwnedBytes
+from symbolic_state import MemoryRegion, SymbolicState, bits, input_expr, operation
 from render_function_callers import return_site
 from loop_design import reseat_orphaned
 
@@ -110,6 +111,33 @@ class OrphanedLoopBinders(unittest.TestCase):
         registers = dict(before, x13=input_expr('machine_x13', 64))
         self.assertEqual(reseat_orphaned(registers, before, {'x13': 'machine_x13'}, set()), [])
         self.assertEqual(registers['x15'], operation('bvadd', entry, bits(1, 64)))
+
+
+class CallReturnLift(unittest.TestCase):
+    def test_the_deepest_common_ancestor_of_call_return_roots(self):
+        parents = {'c1': 'entry', 'c2': 'c1', 'c3': 'c2', 'side': 'c1'}
+        self.assertEqual(common_root_ancestor(['c3', 'c2'], parents), 'c2')
+        self.assertEqual(common_root_ancestor(['c3', 'side'], parents), 'c1')
+        self.assertEqual(common_root_ancestor(['c3', 'entry'], parents), 'entry')
+        self.assertIsNone(common_root_ancestor(['c3', 'other'], parents))
+
+    def test_literal_lists_split_at_top_level_only(self):
+        self.assertEqual(_list_items(input_expr('[(f a; b) ; c]', None)), ['(f a; b)', 'c'])
+        self.assertEqual(_list_items(input_expr('[]', None)), [])
+        self.assertIsNone(_list_items(input_expr('call_after', None)))
+
+    def test_span_bytes_name_each_known_byte_and_leave_gaps_unknown(self):
+        def span(array, length):
+            return OwnedBytes('r', input_expr('sp', 64), 'sp', array, length, True, None, {}, {}, 8)
+        listed = _span_bytes(span(input_expr('[(BV 8 1); x]', None), 2), None)
+        self.assertEqual([text for text, _ in listed], ['BV 8 1', 'x'])
+        array = _span_bytes(span(input_expr('call_after', None), 2), None)
+        self.assertEqual(array[1][0], 'List.nth 1%nat call_after (BV 8%N 0%Z)')
+        region = MemoryRegion(input_expr('sp', 64), (bits(7, 8),), None, 3, True, 'r')
+        self.assertEqual([None if byte is None else byte[0] for byte in _span_bytes(span(None, 3), region)],
+                         ['BV 8%N 7%Z', None, None])
+        with self.assertRaisesRegex(ValueError, 'disagrees with its owned length'):
+            _span_bytes(span(input_expr('[a]', None), 2), None)
 
 
 class ReturnSites(unittest.TestCase):
