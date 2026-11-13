@@ -3,7 +3,7 @@ from pathlib import Path
 import time
 import sys
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
-from admission_memory import projection
+from admission_memory import projection, region_release_verified
 from io_helpers import read, sha, atomic_json, locked, memory_available
 
 LEDGER = Path('/home/cody/zesislar/_build/agents/worker-build-2/native-region-release-v1/LEDGER.json')
@@ -22,7 +22,7 @@ def active_claims(data, legacy):
         release = data.get('released_region_claims', {}).get(name)
         bound = legacy.get(name)
         if bound is not None:
-            if release != bound or bound['bytes'] != amount or sha(bound['receipt']) != bound['sha256']:
+            if release != bound or bound['bytes'] != amount or not region_release_verified(name, bound):
                 raise ValueError('changed-root-legacy-release')
         else:
             # An unbound release cannot remove an old reservation.
