@@ -22,6 +22,8 @@ ROOT = Path(__file__).resolve().parents[2]
 def other_profile():
     data = dict(load_profile('decodeItem').data)  # the resolved table, in the address form
     data.pop('symbol', None)
+    data.pop('pc_base', None)
+    data['pc_prefix'] = '0x800d'   # the legacy address-suffix form
     data.update({
         'function': 'otherFunction',
         'args_type': 'OtherArgs',
@@ -46,13 +48,13 @@ class DecodeItemProfile(unittest.TestCase):
     def test_headers_open_the_committed_outputs(self):
         profile = load_profile()
         directory = ROOT / profile.generated_directory
-        self.assertTrue((directory / 'Pilot6960Entries.v').read_text().startswith(pilot_header(profile)))
+        self.assertTrue((directory / 'Pilot0000Entries.v').read_text().startswith(pilot_header(profile)))
         self.assertTrue((directory / 'FunctionReturnEntries.v').read_text().startswith(return_header(profile)))
-        self.assertTrue((directory / 'Pilot6a38Entries.v').read_text().startswith(loop_header(profile)))
+        self.assertTrue((directory / 'Pilot00d8Entries.v').read_text().startswith(loop_header(profile)))
 
     def test_loop_head_callers_render_from_the_generic_caller(self):
         profile = load_profile()
-        for head, exit_pc in [('6a24', '6a38'), ('6ac4', '6ad8')]:
+        for head, exit_pc in [('00c4', '00d8'), ('0164', '0178')]:
             imports = [profile.qualified('Pilot' + pc + kind) for pc in (head, exit_pc)
                        for kind in ('Entries', 'Structural')]
             source = render_block_caller(profile, head, [successor_precondition(profile, head),
@@ -68,7 +70,7 @@ class DecodeItemProfile(unittest.TestCase):
 
     def test_return_precondition_matches_the_committed_caller(self):
         profile = load_profile()
-        caller = (ROOT / profile['callers_directory'] / 'Caller6a78.v').read_text()
+        caller = (ROOT / profile['callers_directory'] / 'Caller0118.v').read_text()
         self.assertIn('  ' + return_precondition(profile) + ' -∗\n', caller)
 
 
@@ -105,7 +107,7 @@ class OtherProfile(unittest.TestCase):
         for header in [pilot_header(profile), return_header(profile), loop_header(profile)]:
             self.assertNotRegex(header, r'(?i)decodeitem')
             self.assertIn('ZesuSsz.Contracts.OtherContract', header)
-        self.assertIsNone(selected_loop_declaration('Definition fp_machineAt6a24 x.', 'header', profile))
+        self.assertIsNone(selected_loop_declaration('Definition fp_machineAt00c4 x.', 'header', profile))
 
     def test_profile_requires_every_function_value(self):
         with self.assertRaises(ValueError):
