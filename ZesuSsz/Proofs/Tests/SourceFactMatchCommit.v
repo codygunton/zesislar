@@ -18,7 +18,7 @@ Definition source_match_commit_pairs (bound : Z) : Prop :=
 
 Ltac source_match_commit_goal :=
   lazymatch goal with
-  | |- ?requested => SourceFactMatching.zesu_source_match_fact requested ltac:(idtac)
+  | |- ?requested => ZesuSsz.Automation2.SourceFactMatching.zesu_source_match_fact requested ltac:(idtac)
   end.
 
 Lemma source_match_commit_pairs_fail_fast
@@ -55,7 +55,7 @@ Proof.
   eexists;
   lazymatch goal with
   | |- ?left /\ _ =>
-      SourceFactMatching.zesu_source_match_fact left
+      ZesuSsz.Automation2.SourceFactMatching.zesu_source_match_fact left
         ltac:(split; [assumption | assumption])
   end.
 Qed.
