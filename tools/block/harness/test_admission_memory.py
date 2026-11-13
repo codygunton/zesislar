@@ -299,6 +299,27 @@ class WaiterTests(unittest.TestCase):
 GIB = M.GIB
 
 
+class RegionReleaseTests(unittest.TestCase):
+    """A recorded region release stands when its receipt was deleted, not when it changed."""
+
+    def test_deleted_receipt_keeps_the_release(self):
+        with tempfile.TemporaryDirectory() as directory:
+            receipt = Path(directory) / 'REPORT.json'
+            receipt.write_text('{"released": true}\n')
+            import hashlib
+            data = {'fixed_claims': {'a': 5}, 'region_claims': {'6ae0': 17 * GIB},
+                    'released_region_claims': {'6ae0': {'bytes': 17 * GIB, 'receipt': str(receipt),
+                                                        'sha256': hashlib.sha256(receipt.read_bytes()).hexdigest()}}}
+            self.assertEqual(M.ledger_claims(data), {'a': 5})
+            receipt.unlink()
+            warnings = io.StringIO()
+            with redirect_stderr(warnings):
+                self.assertEqual(M.ledger_claims(data), {'a': 5})
+            self.assertIn('region release 6ae0: receipt', warnings.getvalue())
+            receipt.write_text('{"released": false}\n')
+            self.assertEqual(M.ledger_claims(data), {'a': 5, 'legacy:6ae0': 17 * GIB})
+
+
 class RetainedHoldTests(unittest.TestCase):
     """A batch hold books live anonymous use plus its running compiles."""
 
