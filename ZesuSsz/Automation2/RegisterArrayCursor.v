@@ -4,7 +4,10 @@
    address `bv_unsigned R`, and the region-fault rules cannot see the array
    range of R. This module derives `root <= bv_unsigned R < root + extent`
    once per path from selected facts, and looks up a load or store at the
-   address T. It names no address, offset, register, or contract predicate. *)
+   address T. When T names no array root (the cursor's base is a word that
+   another function returned), the range comes from bound facts alone, for
+   the owned array they place it in. It names no address, offset, register,
+   or contract predicate. *)
 Require Import isla.riscv64.riscv64.
 Require Import ZesuSsz.Automation2.ResourceGroups.
 Require Import ZesuSsz.Automation2.ContextCollection.
@@ -48,6 +51,17 @@ Ltac zesu_cursor_array target continuation :=
     | @mem_mapsto_array _ _ ?width ?lower _ ?values =>
         assert_fails (has_evar lower); assert_fails (has_evar values);
         lazymatch target with context [lower] => continuation width lower values end
+    end).
+
+(* Any owned array without open evars, for a cursor whose equation names no
+   root. *)
+Ltac zesu_cursor_bounded_array continuation :=
+  zesu_expose_environment_alias;
+  iMatchHyp ltac:(fun _ body =>
+    lazymatch body with
+    | @mem_mapsto_array _ _ ?width ?lower _ ?values =>
+        assert_fails (has_evar lower); assert_fails (has_evar values);
+        continuation width lower values
     end).
 
 Ltac zesu_cursor_extent width values :=
@@ -179,7 +193,18 @@ Ltac zesu_register_cursor_range register :=
       let extent := zesu_cursor_extent width values in
       let Hrange := fresh "HcursorRange" in
       assert (Hrange : lower <= bv_unsigned register < lower + extent) by
-        (clear marker; zesu_cursor_range_solve)))).
+        (clear marker; zesu_cursor_range_solve))));
+  lazymatch goal with
+  | _ : _ <= bv_unsigned register < _ |- _ => idtac
+  | _ =>
+      try (tryif zesu_cursor_equation register ltac:(fun _ _ => idtac) then
+        zesu_cursor_bounded_array ltac:(fun width lower values =>
+          let extent := zesu_cursor_extent width values in
+          let Hrange := fresh "HcursorRange" in
+          assert (Hrange : lower <= bv_unsigned register < lower + extent) by
+            (clear marker; zesu_cursor_range_solve))
+       else fail)
+  end.
 
 (* Follow local definitions and zero offsets to the register word. *)
 Ltac zesu_cursor_register word continuation :=
@@ -249,3 +274,21 @@ Ltac zesu_register_array_address :=
 
 Ltac zesu_register_cursor_step :=
   first [zesu_register_array_address | zesu_register_cursor_assert].
+
+(* The semantic array finder proves its range with bv_solve over the whole
+   context, which can fail in a large context even when a derived range fact
+   states the inclusion. This hint runs after the others and uses that fact
+   alone. *)
+Ltac zesu_cursor_range_premise :=
+  lazymatch goal with
+  | |- ((?lower <= ?address < ?lower + _ * Z.of_N (?width `div` 8)) \/ _)%Z =>
+      match goal with
+      | Hrange : (lower <= address < _)%Z |- _ =>
+          left;
+          let stride := eval vm_compute in (Z.of_N (width `div` 8)) in
+          change (Z.of_N (width `div` 8)) with stride;
+          clear - Hrange; lia
+      end
+  end.
+#[export] Hint Extern 12 (FindHypEqual (FICMemMapstoSemantic _) (_ ↦ₘ∗ _) (mem_mapsto_kind_prop _ _) _) =>
+  (apply tac_mem_mapsto_array_eq; zesu_cursor_range_premise) : typeclass_instances.
