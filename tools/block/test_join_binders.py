@@ -4,8 +4,9 @@ import sys
 import unittest
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from join_generalize import _register_definition, drop_unheld_binders
-from symbolic_state import SymbolicState, bits, input_expr, operation
+from join_generalize import _list_items, _register_definition, _span_bytes, common_root_ancestor, drop_unheld_binders
+from forward_resources import OwnedBytes
+from symbolic_state import Expr, MemoryRegion, SymbolicState, bits, input_expr, operation
 from render_function_callers import return_site
 from loop_design import reseat_orphaned
 
@@ -43,14 +44,18 @@ class UnheldBinders(unittest.TestCase):
         self.assertEqual(plan['binders'], [{'name': 'machine_x13_1', 'type': 'bv 64', 'value_key': 'x13'}])
         self.assertEqual(plan['dropped_binders'][0]['registers'], ['x13'])
 
-    def test_a_live_register_needs_the_binder(self):
-        state = state_with({'x13': operation('bvadd', self.b, bits(1, 64))}, [])
-        with self.assertRaisesRegex(ValueError, 'a successor needs it: machine_x10'):
-            self.run_rules(state, live=['x13'])
-        # Without liveness every register counts as live.
-        with self.assertRaisesRegex(ValueError, 'a successor needs it'):
-            self.run_rules(state_with({'x13': operation('bvadd', self.b, bits(1, 64))}, []),
-                           live=None)
+    def test_a_live_register_forgets_the_binder(self):
+        guard = operation('bvult', self.b, bits(8, 64))
+        for live in (['x13'], None):  # Without liveness every register counts as live.
+            state = state_with({'x13': operation('bvadd', self.b, bits(1, 64))}, [guard])
+            components = [{'id': 'fact', 'kind': 'opaque', 'source': '⌜bv_unsigned machine_x10 < 8⌝'},
+                          {'id': 'other', 'kind': 'opaque', 'source': '⌜True⌝'}]
+            plan = self.run_rules(state, live=live, components=components)
+            self.assertEqual(state.registers['x13'], input_expr('machine_x13_1', 64))
+            self.assertEqual(state.conditions, [])
+            self.assertEqual(components[0]['source'], '⌜True⌝')
+            self.assertEqual(plan['dropped_binders'][0]['rule'], 'forgotten')
+            self.assertEqual(plan['dropped_binders'][0]['facts'], ['fact'])
 
     def test_a_held_binder_stays(self):
         state = state_with({'x10': self.b, 'x13': operation('bvadd', self.b, bits(1, 64))}, [])
@@ -93,6 +98,61 @@ class RegisterDefinition(unittest.TestCase):
         self.assertEqual(plan['dropped_binders'][0]['rule'], 'register_definition')
 
 
+class StoredRegisterValue(unittest.TestCase):
+    """An inherited array binder that an owned span holds only through a stored register value."""
+    array = input_expr('call_after', None)
+    word = operation('concat', Expr('array_byte', (array,), 8, 1), Expr('array_byte', (array,), 8, 0))
+
+    def test_the_stored_value_gets_a_fresh_binder(self):
+        stored = operation('bvadd', input_expr('t', 16), self.word)
+        state = state_with({'x19': stored, 'x13': operation('bvsub', input_expr('u', 16), self.word)},
+                           [operation('=', Expr('array_byte', (self.array,), 8, 5), bits(0, 8))])
+        stored_bytes = tuple(operation('extract', stored, width=8, value=8 * i) for i in range(2))
+        text = '[' + '; '.join(byte.coq() for byte in stored_bytes) + ']'
+        state.memory = [MemoryRegion(input_expr('base', 64), stored_bytes, input_expr(text, None), 2,
+                                     ownership_id='span')]
+        components = [{'id': 'span', 'kind': 'byte_array', 'source': 'base ↦ₘ∗ ' + text, 'value': text}]
+        plan = {'binders': []}
+        drop_unheld_binders(state, components, {}, [{'name': 'call_after'}], plan, ['x19'], lambda key, writes: '')
+        fresh = input_expr('machine_x19_1', 16)
+        self.assertEqual(state.registers['x19'], fresh)
+        self.assertEqual(state.memory[0].bytes, tuple(operation('extract', fresh, width=8, value=8 * i)
+                                                      for i in range(2)))
+        self.assertNotIn('call_after', components[0]['source'] + components[0]['value']
+                         + state.memory[0].byte_array.value)
+        # The dead register x13 forgets the binder; the path condition on another byte goes.
+        self.assertEqual(state.registers['x13'], input_expr('machine_x13_1', 16))
+        self.assertEqual(state.conditions, [])
+        self.assertEqual(plan['dropped_binders'][0]['rule'], 'stored_register_value')
+        self.assertEqual([row['name'] for row in plan['binders']], ['machine_x19_1', 'machine_x13_1'])
+
+    def test_an_array_with_another_use_of_the_binder_becomes_uninitialized(self):
+        stored = operation('bvadd', input_expr('t', 16), self.word)
+        state = state_with({'x19': stored}, [])
+        other = Expr('array_byte', (self.array,), 8, 7)
+        state.memory = [MemoryRegion(input_expr('base', 64), (other,), input_expr('[x]', None), 1,
+                                     ownership_id='span')]
+        components = [{'id': 'span', 'kind': 'byte_array', 'source': 'base ↦ₘ∗ [' + other.coq() + ']',
+                       'address_z': 'base', 'value': '[' + other.coq() + ']', 'fraction': None}]
+        plan = {'binders': []}
+        drop_unheld_binders(state, components, {}, [{'name': 'call_after'}], plan, ['x19'], lambda key, writes: '')
+        self.assertEqual((components[0]['kind'], components[0]['source']), ('unknown_byte_array', 'base ↦ₘ? 1'))
+        self.assertNotIn('value', components[0])
+        self.assertEqual((state.memory[0].bytes, state.memory[0].byte_array, state.memory[0].uninitialized),
+                         ((), None, True))
+        self.assertEqual(plan['dropped_binders'][0]['arrays'], ['span'])
+
+    def test_a_shared_array_is_not_forgotten(self):
+        from join_generalize import forget_array_bytes
+        state = state_with({}, [])
+        state.memory = [MemoryRegion(input_expr('base', 64), (), input_expr('[x]', None), 1, ownership_id='span')]
+        component = {'id': 'span', 'kind': 'byte_array', 'source': 'base ↦ₘ{#1/2}∗ [x]', 'address_z': 'base',
+                     'value': '[x]', 'fraction': '{#1/2}'}
+        with self.assertRaisesRegex(ValueError, 'not a wholly owned array'):
+            forget_array_bytes(state, component)
+
+
+
 class OrphanedLoopBinders(unittest.TestCase):
     def test_a_register_naming_an_overwritten_holders_binder_gets_a_fresh_binder(self):
         entry = input_expr('machine_x13_1', 64)
@@ -110,6 +170,33 @@ class OrphanedLoopBinders(unittest.TestCase):
         registers = dict(before, x13=input_expr('machine_x13', 64))
         self.assertEqual(reseat_orphaned(registers, before, {'x13': 'machine_x13'}, set()), [])
         self.assertEqual(registers['x15'], operation('bvadd', entry, bits(1, 64)))
+
+
+class CallReturnLift(unittest.TestCase):
+    def test_the_deepest_common_ancestor_of_call_return_roots(self):
+        parents = {'c1': 'entry', 'c2': 'c1', 'c3': 'c2', 'side': 'c1'}
+        self.assertEqual(common_root_ancestor(['c3', 'c2'], parents), 'c2')
+        self.assertEqual(common_root_ancestor(['c3', 'side'], parents), 'c1')
+        self.assertEqual(common_root_ancestor(['c3', 'entry'], parents), 'entry')
+        self.assertIsNone(common_root_ancestor(['c3', 'other'], parents))
+
+    def test_literal_lists_split_at_top_level_only(self):
+        self.assertEqual(_list_items(input_expr('[(f a; b) ; c]', None)), ['(f a; b)', 'c'])
+        self.assertEqual(_list_items(input_expr('[]', None)), [])
+        self.assertIsNone(_list_items(input_expr('call_after', None)))
+
+    def test_span_bytes_name_each_known_byte_and_leave_gaps_unknown(self):
+        def span(array, length):
+            return OwnedBytes('r', input_expr('sp', 64), 'sp', array, length, True, None, {}, {}, 8)
+        listed = _span_bytes(span(input_expr('[(BV 8 1); x]', None), 2), None)
+        self.assertEqual([text for text, _ in listed], ['BV 8 1', 'x'])
+        array = _span_bytes(span(input_expr('call_after', None), 2), None)
+        self.assertEqual(array[1][0], 'List.nth 1%nat call_after (BV 8%N 0%Z)')
+        region = MemoryRegion(input_expr('sp', 64), (bits(7, 8),), None, 3, True, 'r')
+        self.assertEqual([None if byte is None else byte[0] for byte in _span_bytes(span(None, 3), region)],
+                         ['BV 8%N 7%Z', None, None])
+        with self.assertRaisesRegex(ValueError, 'disagrees with its owned length'):
+            _span_bytes(span(input_expr('[a]', None), 2), None)
 
 
 class ReturnSites(unittest.TestCase):

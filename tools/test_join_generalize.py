@@ -359,6 +359,44 @@ class OwnedJoinTests(unittest.TestCase):
         self.assertIn('bv_extract 56%N 8%N saved_ra', frame)
         self.assertNotIn('? 16%Z', frame)
 
+    def test_a_pure_fact_the_edges_state_differently_is_dropped(self):
+        seed, alternatives, vocabulary, continuation = self.fixture()
+        component = {'id': 'fact', 'kind': 'opaque', 'source': '⌜P 0⌝', 'provenance': {'source': 'fixture'},
+                     'scope': [[]]}
+        seed.ownership['components'].insert(-1, component)
+        seed.ownership['tree']['body']['children'].insert(-1, {'kind': 'component', 'id': 'fact'})
+        for index, alternative in enumerate(alternatives):
+            alternative['resource_boundary']['tree'] = deepcopy(seed.ownership['tree'])
+            alternative['resource_boundary']['components'].insert(-1, {**component, 'source': '⌜P %d⌝' % index})
+        joined = generalize_owned_join(alternatives, original_seed=seed, entry_pc=32,
+                                       vocabulary=vocabulary, continuation=continuation)
+        fact, = [row['source'] for row in joined['boundary']['alternatives'][0]['resource_boundary']['components']
+                 if row['id'] == 'fact']
+        self.assertEqual(fact, '⌜True⌝')
+
+
+class LiftedEdges(unittest.TestCase):
+    def test_an_edge_from_a_seed_below_another_root_lifts_on_its_own_tree(self):
+        from test_resource_seed import ORIGIN, VOCABULARY, public_seed
+        from join_generalize import lift_call_return_edges
+        from resource_seed import seed_owned_resources
+        from symbolic_state import MemoryWrite, bits, input_expr, operation
+        vocabulary = {**VOCABULARY, 'input_sha256': 'fixture', 'source_vocabulary': {'imports': []}}
+        base = seed_owned_resources(public_seed(), entry_pc=16, vocabulary=vocabulary,
+                                    constants={'frame_size': {'value': 16, 'origin': ORIGIN}})
+        state = base.state.copy()
+        frame = base.resources[1]
+        state.writes = [MemoryWrite(operation('bvadd', frame.base, bits(8, 64)), input_expr('v', 64), 8,
+                                    ownership_id='frame')]
+        edge = {'seed_pc': 'J', 'predecessor_pc': '0x10', 'path': [], 'state': state.to_dict()}
+        # J is a join seed whose root R lies below the ancestor A: its edge lifts byte by byte.
+        lifted, _ = lift_call_return_edges([edge], seeds={'A': base, 'J': base}, roots={'A': 'A', 'J': 'R'},
+                                           ancestor='A', vocabulary=vocabulary)
+        self.assertEqual((lifted[0]['lifted_from'], len(lifted[0]['state']['writes'])), ('J', 8))
+        with self.assertRaisesRegex(ValueError, 'without a root'):
+            lift_call_return_edges([edge], seeds={'A': base, 'J': base}, roots={'A': 'A'},
+                                   ancestor='A', vocabulary=vocabulary)
+
 
 if __name__ == '__main__':
     unittest.main()

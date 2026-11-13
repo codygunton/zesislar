@@ -122,6 +122,10 @@ def source_z_expression(term, constants, width=64):
         return operation('bvadd' if term[position] == '+' else 'bvsub',
                          source_z_expression(term[:position], constants, width),
                          source_z_expression(term[position+1:], constants, width))
+    # Z_to_bv w (bv_unsigned V) is V itself: a register value quantity (F44) stays its bv value.
+    unsigned = re.fullmatch(r'bv_unsigned\s+(.+)', term, re.S)
+    if unsigned:
+        return input_expr(_strip_enclosure(unsigned[1].strip()), width)
     return input_expr(f'(Z_to_bv {width}%N ({term}))', width)
 
 

@@ -139,6 +139,18 @@ class CallerPlan(unittest.TestCase):
                  {'pc': 'function_return', 'status': 'source_declarations_rendered'}]
         self.assertEqual(plan_callers(profile, cases, function)[-1], ('1010', [], None))
 
+    def test_a_tail_jump_with_a_callee_spec_exits_through_the_return_package(self):
+        profile = other_profile()
+        function = {'blocks': [{'start': 0x800d1000, 'end': 0x800d1010, 'successors': [0x800e06c0]},
+                               {'start': 0x800d1010, 'end': 0x800d1020, 'successors': []}]}
+        cases = [{'pc': '0x800d1000', 'status': 'source_declarations_rendered'},
+                 {'pc': 'function_return', 'status': 'source_declarations_rendered'}]
+        self.assertEqual(plan_callers(profile, cases, function)[0][2],
+                         'successor outside the function (tail jump without a tail_calls row)')
+        profile.data['tail_calls'] = [{'call_site_pc': '0x800d100c', 'callee_pc': '0x800e06c0',
+                                       'spec': 'calleeSpec', 'spec_module': 'Callee'}]
+        self.assertEqual(plan_callers(profile, cases, function)[0], ('1000', [], None))
+
 
 class JoinEdgeAlignment(unittest.TestCase):
     ORIGINAL = {'kind': 'exists', 'binders': [{'name': 'x10', 'type': 'bv 64'}], 'scope': [],

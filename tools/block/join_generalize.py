@@ -482,6 +482,160 @@ def align_join_edges(alternatives, ownership, terminal_id, continuation_name, ke
     return aligned, extra
 
 
+def common_root_ancestor(roots, parents):
+    """The deepest seed on every root's parent chain, or None.
+
+    `parents` maps a call-return seed to the root its call-site paths start from;
+    the entry seed has no parent.
+    """
+    chains = []
+    for root in roots:
+        chain = []
+        while root is not None and root not in chain:
+            chain.append(root)
+            root = parents.get(root)
+        chains.append(chain)
+    common = set(chains[0]).intersection(*(set(chain) for chain in chains[1:]))
+    return next((pc for pc in chains[0] if pc in common), None)
+
+
+def _list_items(value):
+    """The top-level items of a Coq list literal `[a; b; ...]`, or None."""
+    if value is None or value.op != 'input':
+        return None
+    text = str(value.value).strip()
+    if not (text.startswith('[') and text.endswith(']')):
+        return None
+    items, depth, start = [], 0, 1
+    for index, char in enumerate(text[1:-1], start=1):
+        depth += char in '([{'
+        depth -= char in ')]}'
+        if char == ';' and depth == 0:
+            items.append(text[start:index].strip())
+            start = index + 1
+    items.append(text[start:-1].strip())
+    return [] if items == [''] else items
+
+
+def _byte(value):
+    """A byte as (normalized Coq text, Expr); equal texts state the same byte."""
+    try:
+        from .forward_resources import _strip_enclosure
+    except ImportError:
+        from forward_resources import _strip_enclosure
+    return re.sub(r'\s+', ' ', _strip_enclosure(value.coq())), value
+
+
+def _span_bytes(resource, region):
+    """Each byte of an owned span of constant length, or None when it is unknown."""
+    items = _list_items(resource.byte_array)
+    if items is not None and len(items) != resource.length:
+        raise ValueError('A literal byte list disagrees with its owned length: ' + resource.id)
+    known = region.bytes if region is not None else ()
+    result = []
+    for index in range(resource.length):
+        if items is not None:
+            result.append(_byte(input_expr(items[index], 8)))
+        elif index < len(known):
+            result.append(_byte(known[index]))
+        elif resource.byte_array is not None:
+            result.append(_byte(Expr('array_byte', (resource.byte_array,), 8, index)))
+        else:
+            result.append(None)
+    return result
+
+
+def lift_call_return_edges(alternatives, *, seeds, roots, ancestor, vocabulary):
+    """Express join edges that start at seeds below `ancestor` on its tree.
+
+    A call-return seed refines its parent's tree: it splits frame spans around the call
+    output and appends the call's pure facts; a join or loop-head seed below it keeps that
+    tree. An edge from such a seed becomes one-byte
+    writes into the ancestor span that contains each byte it knows (its own store, its
+    seed's stored byte, or element i of its seed's array) wherever that byte differs from
+    the ancestor's own byte. A byte it does not know stays uninitialized, a sound
+    weakening; an unknown byte that the ancestor states refuses. The deeper layers' pure
+    components are dropped (a weakening, as for a join seed's relations); their binders
+    are returned as existential binders for the join. Edges from the ancestor's own
+    tree are unchanged. Return (alternatives, binders).
+    """
+    try:
+        from .forward_resource_design import _state_from_result
+        from .forward_resources import apply_owned_writes, render_resource_boundary
+        from .symbolic_state import MemoryWrite, _offset
+    except ImportError:
+        from forward_resource_design import _state_from_result
+        from forward_resources import apply_owned_writes, render_resource_boundary
+        from symbolic_state import MemoryWrite, _offset
+    base = seeds[ancestor]
+    names = {binder['name'] for binder in base.ownership['binders']}
+    own = {resource.id: _span_bytes(resource, next((region for region in base.state.memory
+                                                    if region.ownership_id == resource.id), None))
+           for resource in base.resources if isinstance(resource.length, int)}
+    lifted, binders = [], []
+    for alternative in alternatives:
+        seed_pc = alternative['seed_pc']
+        if roots.get(seed_pc) == ancestor:
+            lifted.append(alternative)
+            continue
+        if seed_pc not in seeds or roots.get(seed_pc) is None:
+            raise ValueError('A join edge starts at a seed without a root: ' + seed_pc)
+        seed = seeds[seed_pc]
+        state = _state_from_result(alternative['state'])
+        image = apply_owned_writes(seed.resources, state.writes, conditions=state.conditions,
+                                   facts=seed.facts, endianness=state.endianness)
+        if image.status != 'complete':
+            raise ValueError('A lifted join edge has no complete write image')
+        regions = {region.ownership_id: region for region in state.memory}
+        writes = []
+        for resource in seed.resources:
+            updates = image.updates[resource.id]
+            if any(isinstance(offset, str) for offset in updates):
+                raise ValueError('A lifted join edge stores at a symbolic offset: ' + resource.id)
+            if not isinstance(resource.length, int):
+                same = [owner for owner in base.resources if owner.base == resource.base
+                        and owner.length == resource.length and owner.byte_array == resource.byte_array]
+                if len(same) != 1 or updates:
+                    raise ValueError('A lifted join edge changes a span of symbolic length: ' + resource.id)
+                continue
+            containing = [(owner, _offset(resource.base, owner.base)) for owner in base.resources
+                          if isinstance(owner.length, int)]
+            containing = [(owner, offset) for owner, offset in containing
+                          if offset is not None and offset + resource.length <= owner.length]
+            if len(containing) != 1:
+                raise ValueError('A lifted span has no unique ancestor span: ' + resource.id)
+            owner, offset = containing[0]
+            current = _span_bytes(resource, regions.get(resource.id))
+            for index in range(resource.length):
+                byte = _byte(Expr.from_dict(updates[index]['value'])) if index in updates else current[index]
+                previous = own[owner.id][offset + index]
+                if byte is None:
+                    if owner.byte_array is not None or previous is not None:
+                        raise ValueError('A lifted edge does not know a byte its ancestor states: ' + owner.id)
+                    continue
+                if previous is not None and previous[0] == byte[0]:
+                    continue
+                writes.append(MemoryWrite(operation('bvadd', owner.base, bits(offset + index, 64)), byte[1], 1))
+        image = apply_owned_writes(base.resources, writes, conditions=state.conditions,
+                                   facts=base.facts, endianness=state.endianness)
+        if image.status != 'complete':
+            raise ValueError('A lifted join edge has no complete ancestor image: '
+                             + json.dumps(image.reports[:1]))
+        owners = {transition['write_index']: transition['resource_id'] for transition in image.transitions}
+        state.writes = [replace(write, ownership_id=owners[index]) for index, write in enumerate(writes)]
+        state.memory = list(base.state.memory)
+        rendered = render_resource_boundary(base.ownership, image, state, vocabulary=vocabulary)
+        if rendered['block_status'] != 'completed':
+            raise ValueError('A lifted join edge does not render on the ancestor tree')
+        edge = deepcopy(alternative)
+        edge.update(state=state.to_dict(), resource_boundary=rendered, lifted_from=seed_pc)
+        lifted.append(edge)
+        for binder in seed.ownership['binders']:
+            if binder['name'] not in names and binder['name'] not in [row['name'] for row in binders]:
+                binders.append({key: value for key, value in binder.items() if key != 'scope'})
+    return lifted, binders
+
+
 # Registers an exit may observe: return address, stack pointer, callee-saved, return values.
 EXIT_OBSERVED = {'x1', 'x2', 'x8', 'x9', 'x10', 'x11', *('x%d' % number for number in range(18, 28))}
 
@@ -502,15 +656,37 @@ def _render_span(key, writes, original_seed, ownership, state, apply_owned_write
     return next(row['source'] for row in span['components'] if row['id'] == key)
 
 
+def forget_array_bytes(state, component):
+    """Make an owned array uninitialized: its component becomes `↦ₘ? LENGTH` and its
+    region forgets the bytes. Each edge's bytes are some bytes, so this weakens soundly."""
+    key = component['id']
+    region = next((region for region in state.memory if region.ownership_id == key), None)
+    if region is None or not isinstance(region.length, int) or component.get('fraction'):
+        raise ValueError('An array to forget at a join is not a wholly owned array of known length: ' + key)
+    source = '%s ↦ₘ? %d' % (component['address_z'], region.length)
+    component.pop('value', None)
+    component.update(kind='unknown_byte_array', source=source, length=str(region.length),
+                     seed_component={'kind': 'uninitialized_memory', 'id': key, 'original_component': source,
+                                     'address_z': component['address_z'],
+                                     'length_original_coq': str(region.length)})
+    state.memory = [replace(row, bytes=(), byte_array=None, uninitialized=True) if row.ownership_id == key else row
+                    for row in state.memory]
+
+
 def drop_unheld_binders(state, components, carried, binders, plan, live_registers, render_span):
     """Remove inherited binders that no register or whole array holds.
 
     1. A pure equation `b = e` defines b: substitute e and drop the equation.
-    2. Otherwise, if no successor needs b's value, drop b: a dead register that mentions it
-       gets a fresh binder it holds, an agreed span byte that mentions it becomes
-       uninitialized again, and the path conditions that mention it are dropped. Each is a
-       sound weakening.
-    3. A live register or a whole array value that mentions b needs it: refuse with the facts.
+    2. Otherwise drop b: a register that mentions it gets a fresh binder it holds (for a
+       register a successor needs, the facts on b's value are lost), an agreed span byte that
+       mentions it becomes uninitialized again, and the path conditions and pure facts that
+       mention it are dropped. Each is a sound weakening.
+    3. If the stores that mention b store only copies of one register's value v (which
+       mentions b), that register holds a fresh binder c and every copy of v becomes c (exact:
+       c is the register's value on each edge). The rest of b (other registers, path
+       conditions, pure facts) is then handled as in 2 and 4.
+    4. An owned array whose bytes mention b (b has no other holder) becomes uninitialized:
+       `↦ₘ?` of its length holds whatever bytes each edge stores, a sound weakening.
     """
     held = {value.value for value in state.registers.values() if value.op == 'input'}
     held |= {component.get('value') for component in components if component['kind'] == 'byte_array'}
@@ -576,17 +752,50 @@ def drop_unheld_binders(state, components, carried, binders, plan, live_register
             plan.setdefault('dropped_binders', []).append({'binder': name, 'rule': 'register_definition',
                                                            'register': register, 'definition': definition.to_dict()})
             continue
+        word_row = None
+        stored = _stored_register_value(state, name, carried, components)
+        if stored is not None:
+            register, word = stored
+            index = 1
+            while 'machine_%s_%d' % (register, index) in taken:
+                index += 1
+            fresh = input_expr('machine_%s_%d' % (register, index), word.width)
+            taken.add(fresh.value)
+            mapping, rendered = {word: fresh}, word.coq()
+            for other, value in list(state.registers.items()):
+                state.registers[other] = substitute(value, mapping)
+            state.conditions[:] = [substitute(c, mapping) for c in state.conditions]
+            state.memory = [replace(region, bytes=tuple(substitute(byte, mapping) for byte in region.bytes),
+                                    byte_array=_replace_text(region.byte_array, rendered, fresh.coq()))
+                            for region in state.memory]
+            for key, writes in carried.items():
+                carried[key] = [replace(w, value=substitute(w.value, mapping), address=substitute(w.address, mapping))
+                                for w in writes]
+            for component in components:
+                if component['kind'] == 'byte_array' and _mentions(component.get('source', ''), name):
+                    if component['id'] in carried:
+                        component['source'] = render_span(component['id'], carried[component['id']])
+                    else:
+                        component['source'] = component['source'].replace(rendered, fresh.coq())
+                        if component.get('value'):
+                            component['value'] = component['value'].replace(rendered, fresh.coq())
+            plan['binders'].append({'name': fresh.value, 'type': 'bv %d' % word.width, 'value_key': register})
+            held.add(fresh.value)
+            word_row = {'rule': 'stored_register_value', 'register': register, 'value': word.to_dict()}
         live = None if live_registers is None else set(live_registers) | EXIT_OBSERVED
         needed = [register for register, value in state.registers.items()
                   if REGISTER.fullmatch(register) and _mentions(text(value), name)
                   and (live is None or register in live)]
         arrays = [component['id'] for component in components
-                  if component['kind'] == 'byte_array' and _mentions(component.get('source', ''), name)]
-        if needed or arrays:
-            raise ValueError('An inherited join binder has no holder and a successor needs it: %s (registers %s, '
-                             'arrays %s, live %s)' % (name, needed, arrays,
-                                                     'unknown' if live is None else sorted(live)))
-        record = {'binder': name, 'rule': 'not_needed', 'registers': [], 'spans': [], 'conditions': 0}
+                  if component['kind'] == 'byte_array' and component['id'] not in carried
+                  and _mentions(component.get('source', ''), name)]
+        # A register that a successor needs forgets the binder too and takes a fresh value:
+        # the class is weaker and stays sound; the facts on the forgotten value are lost.
+        for key in arrays:
+            forget_array_bytes(state, next(component for component in components if component['id'] == key))
+        record = {'binder': name, 'rule': 'forgotten' if needed else 'not_needed', 'registers': [], 'spans': [],
+                  'arrays': arrays, 'conditions': 0}
+        record.update(word_row or {})
         for register, value in list(state.registers.items()):
             if REGISTER.fullmatch(register) and _mentions(text(value), name):
                 index = 1
@@ -607,6 +816,12 @@ def drop_unheld_binders(state, components, carried, binders, plan, live_register
         before = len(state.conditions)
         state.conditions[:] = [c for c in state.conditions if not _mentions(text(c), name)]
         record['conditions'] = before - len(state.conditions)
+        # A pure fact on the dropped binder is dropped with it.
+        for component in components:
+            if (component['kind'] != 'register' and component.get('source', '').startswith('⌜')
+                    and _mentions(component['source'], name)):
+                component['source'] = '⌜True⌝'
+                record.setdefault('facts', []).append(component['id'])
         if any(_mentions(component.get('source', ''), name) for component in components
                if component['kind'] != 'register'):
             raise ValueError('An inherited join binder stays in an owned resource: ' + name)
@@ -660,6 +875,43 @@ def _register_definition(state, name, unheld=()):
     return None
 
 
+def _replace_text(value, old, new):
+    """A byte array named by its rendered text, with `old` replaced by `new` in that text."""
+    if value is None or value.op != 'input' or not isinstance(value.value, str):
+        return value
+    return replace(value, value=value.value.replace(old, new))
+
+
+def _stored_register_value(state, name, carried, components):
+    """A register whose value v mentions `name`, where some store or owned array mentions
+    `name` and each mentions it only inside copies of v (arrays that hold a stored register).
+    Returns (register, v)."""
+    text = lambda value: json.dumps(value.to_dict(), sort_keys=True)
+
+    def inside(value, word):
+        if value == word:
+            return True
+        if not value.args:
+            return not (value.op == 'input' and value.value == name)
+        return all(inside(arg, word) for arg in value.args)
+
+    parts = [*(part for writes in carried.values() for write in writes for part in (write.value, write.address)),
+             *(byte for region in state.memory for byte in region.bytes)]
+    arrays = [component['source'] for component in components
+              if component['kind'] == 'byte_array' and _mentions(component.get('source', ''), name)]
+    if not arrays and not any(_mentions(text(part), name) for part in parts):
+        return None
+    for register in sorted(state.registers, key=lambda key: (len(key), key)):
+        value = state.registers[register]
+        if not (REGISTER.fullmatch(register) and value.args and value.width and _mentions(text(value), name)):
+            continue
+        rendered = value.coq()
+        if (all(inside(part, value) for part in parts)
+                and not any(_mentions(source.replace(rendered, ''), name) for source in arrays)):
+            return register, value
+    return None
+
+
 def _agreed_writes(images, resource_id):
     """The writes of the first edge into a resource whose bytes every edge holds at the end."""
     first = images[0]
@@ -687,8 +939,11 @@ def _write_steps(image, resource_id):
 
 def generalize_owned_join(alternatives, *, original_seed, entry_pc, vocabulary,
                           continuation, outer_names=(), liveness=None, observables=None,
-                          relational_registers=(), design_facts=(), live_registers=None):
+                          relational_registers=(), design_facts=(), live_registers=None, lifted_binders=()):
     """Build a seed when every incoming non-register resource is identical.
+
+    lifted_binders are the binders of edges lifted from deeper call-return roots
+    (lift_call_return_edges); the join keeps them as it keeps a join seed's binders.
 
     design_facts are join-design conjuncts (Coq text). `{bytes@ADDR}` names the
     current value of the owned array at ADDR; each fact is a pure component of
@@ -722,6 +977,8 @@ def generalize_owned_join(alternatives, *, original_seed, entry_pc, vocabulary,
         raise ValueError('The continuation captures a source binder')
     register_order = [component['name'] for component in ownership['components'] if component['kind'] == 'register']
     alternatives, inherited_binders = align_join_edges(alternatives, ownership, terminal_id, name)
+    inherited_binders += [binder for binder in lifted_binders
+                          if binder['name'] not in [row['name'] for row in inherited_binders]]
     dead = set()
     if liveness is not None or observables is not None:
         if (not isinstance(liveness, dict) or liveness.get('pc') != hex(entry_pc)
@@ -789,6 +1046,11 @@ def generalize_owned_join(alternatives, *, original_seed, entry_pc, vocabulary,
                 carried[key] = list(agreed)
                 continue
             if any(record[key]['source'] != source for record in records[1:]):
+                if key not in memory_by_id and all(record[key]['source'].startswith('⌜') for record in records):
+                    # A pure fact that the edges state differently is dropped (a sound weakening).
+                    current['source'] = '⌜True⌝'
+                    components.append(current)
+                    continue
                 if key not in memory_by_id:
                     raise ValueError('A non-memory join resource differs: ' + key)
                 try:
@@ -926,6 +1188,9 @@ def generalize_owned_join(alternatives, *, original_seed, entry_pc, vocabulary,
                         live_registers, lambda key, writes: _render_span(
                             key, writes, original_seed, ownership, first, apply_owned_writes,
                             render_resource_boundary, vocabulary))
+    forgotten = {key for row in plan.get('dropped_binders', []) for key in row.get('arrays', [])}
+    resources = [replace(resource, byte_array=None, component=next(row for row in components if row['id'] == resource.id))
+                 if resource.id in forgotten else resource for resource in resources]
     source_text = ' '.join([*(component['source'] for component in components if component['kind'] != 'register'),
                             *(text for value in state.registers.values() for text in source_inputs(value)),
                             *(text for value in state.conditions for text in source_inputs(value))])
