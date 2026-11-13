@@ -249,6 +249,18 @@ class ModuleMemoryTests(unittest.TestCase):
         (leaf / "memory.peak").unlink()
         self.assertIsNone(read("zesu-dune-coqc-1.scope"))
 
+    def test_ledger_refusal_keeps_the_guarded_command_stdout_clean(self):
+        # Guard retries share stdout with the compiler; a refusal on stdout corrupted Print Assumptions output.
+        stdout, stderr = io.StringIO(), io.StringIO()
+        with patch("sys.argv", ["module_memory.py", "ledger-confirm", "--marker", str(self.root / "m"),
+                               "--replacement", str(self.root / "r"), "--request-bytes", "1",
+                               "--available-bytes", "0"]), \
+                patch.object(memory, "confirm_shell", return_value={"fits": False}), \
+                redirect_stdout(stdout), patch("sys.stderr", stderr):
+            self.assertEqual(memory.main(), 3)
+        self.assertEqual(stdout.getvalue(), "")
+        self.assertIn("refuses the reservation", stderr.getvalue())
+
     def test_admission_cli_passes_the_actual_fence_to_unknown_compilers(self):
         ledger = self.root / "LEDGER.json"
         ledger.write_text('{"fixed_claims": {}, "region_claims": {}}\n')
