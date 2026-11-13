@@ -3,6 +3,8 @@ Require Import isla.riscv64.riscv64.
 Require Import ZesuMachineMap.Machine.
 Require Import ZesuSsz.Automation2.ByteArrayLengths.
 Require Import ZesuSsz.Automation2.RangeFacts.
+Require ZesuSsz.Contracts.IslarisMemory.
+Require ZesuSsz.Automation2.ContextCollection.
 From Ltac2 Require Import Ltac2.
 Set Default Proof Mode "Classic".
 
@@ -178,6 +180,33 @@ Print Assumptions subsume_uninit_region.
 Definition subsume_uninit_region_inst := [instance @subsume_uninit_region].
 Global Existing Instance subsume_uninit_region_inst.
 Global Remove Hints subsume_mem_uninit_mem_uninit_inst : typeclass_instances.
+
+(* The contract's fallback rule for an uninitialized region raises the
+   containment as an obligation. Refuse it when the facts already show the
+   containment fails, so the search does not commit to a false goal. The
+   class carries no proof; its instance only checks the refutation. *)
+Class ZesuRegionNotRefuted (P : Prop) : Prop := zesu_region_not_refuted : True.
+Ltac zesu_region_refute :=
+  first [zesu_region_bounds |
+    ZesuSsz.Automation2.ContextCollection.zesu_solve_goal_selected
+      ("region.refute"%string) ltac:(first [lia | bv_solve])].
+Global Hint Extern 0 (ZesuRegionNotRefuted (0 <= ?n2 /\ ?a1 <= ?a2 /\ ?a2 + ?n2 <= ?a1 + ?n1)%Z) =>
+  (assert_fails (assert (n2 < 0 \/ a2 < a1 \/ a1 + n1 < a2 + n2)%Z by zesu_region_refute);
+   exact I) : typeclass_instances.
+
+Lemma subsume_mem_uninit_region_checked `{!islaG Sigma} A a1 a2 n1 n2 G
+    `{!ZesuRegionNotRefuted (0 <= n2 /\ a1 <= a2 /\ a2 + n2 <= a1 + n1)%Z} :
+  ((⌜(0 <= n2 /\ a1 <= a2 /\ a2 + n2 <= a1 + n1)%Z⌝ ∗
+    (a1 ↦ₘ? (a2 - a1) -∗
+     (a2 + n2) ↦ₘ? (a1 + n1 - (a2 + n2)) -∗
+     ∃ x : A, G x))%I)
+  ⊢ subsume (a1 ↦ₘ? n1) (fun _ : A => a2 ↦ₘ? n2) G.
+Proof. exact (ZesuSsz.Contracts.IslarisMemory.subsume_mem_uninit_region A a1 a2 n1 n2 G). Qed.
+
+Definition subsume_mem_uninit_region_checked_inst :=
+  [instance @subsume_mem_uninit_region_checked].
+Global Existing Instance subsume_mem_uninit_region_checked_inst | 100.
+Global Remove Hints ZesuSsz.Contracts.IslarisMemory.subsume_mem_uninit_region_inst : typeclass_instances.
 
 Lemma subsume_uninit_region_crossing `{!islaG Sigma} A a1 a2 n1 n2 G
     `{!ZesuRegionBounds (0 <= n2 /\ a1 <= a2 /\ a2 <= a1 + n1 /\ a1 + n1 <= a2 + n2)%Z} :
