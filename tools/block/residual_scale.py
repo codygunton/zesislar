@@ -112,21 +112,48 @@ def run_loop(arguments, log):
     return proc.returncode
 
 
-def paced(blocks, work, jobs, gap):
-    """Run WORK(block) for each block, at most JOBS at a time, starts GAP seconds apart."""
-    lock = threading.Lock()
-    last = [0.0]
+def slice_memory_file():
+    return Path(os.environ.get("ZESU_SLICE_MEMORY_FILE",
+                               "/sys/fs/cgroup/user.slice/user-%d.slice/memory.current" % os.getuid()))
 
-    def start(block):
-        with lock:
-            wait = last[0] + gap - time.monotonic()
-            if wait > 0:
-                time.sleep(wait)
-            last[0] = time.monotonic()
-        return work(block)
 
-    with ThreadPoolExecutor(max_workers=max(1, jobs)) as pool:
-        return list(pool.map(start, blocks))
+def slice_gib():
+    try:
+        return int(slice_memory_file().read_text().split()[0]) / 2**30
+    except (OSError, ValueError, IndexError):
+        return None
+
+
+def paced(blocks, work, jobs, gap, hold_above_gib=None, poll=30.0, fast=None):
+    """Run WORK(block) for each block, at most JOBS at a time, starts GAP seconds
+    apart; results in block order. With HOLD_ABOVE_GIB, no start while the account
+    slice uses more memory. FAST = (below_gib, jobs, gap, above_gib) switches to the
+    faster setting while the slice is below BELOW_GIB and back above ABOVE_GIB."""
+    results, threads, queue = {}, [], list(blocks)
+    last, quick = float("-inf"), False
+    tick = 0.02 if gap < 1 else min(poll, 5.0)
+
+    def run(block):
+        results[block] = work(block)
+
+    while queue or any(thread.is_alive() for thread in threads):
+        gib = slice_gib()
+        if fast and gib is not None:
+            if gib < fast[0]:
+                quick = True
+            elif gib > fast[3]:
+                quick = False
+        limit, spacing = (fast[1], fast[2]) if quick else (jobs, gap)
+        alive = sum(thread.is_alive() for thread in threads)
+        held = hold_above_gib is not None and (gib or 0) > hold_above_gib
+        if queue and alive < max(1, limit) and time.monotonic() - last >= spacing and not held:
+            thread = threading.Thread(target=run, args=(queue.pop(0),), daemon=True)
+            thread.start()
+            threads.append(thread)
+            last = time.monotonic()
+            continue
+        time.sleep(tick if not held else min(poll, 30.0))
+    return [results[block] for block in blocks]
 
 
 # ---- block state ----
@@ -135,7 +162,7 @@ def block_state(run, block):
     """The rules-only and the after-rerun state of one block, from its loop manifest."""
     manifest = read_json(loop_dir(run, block) / "MANIFEST.json")
     if manifest is None:
-        return dict(block=block, rules="not-run", goals=0)
+        return dict(block=block, rules="not-run", goals=0, final="not-run")
     export = manifest["exports"][0] if manifest["exports"] else {}
     goals = manifest["goals"]
     statuses = [read_json(loop_dir(run, block) / "goals" / g["id"] / "STATUS.json", {}) for g in goals]
@@ -156,12 +183,18 @@ def block_state(run, block):
                  failed=sum(s.get("result") == "FAIL" for s in statuses),
                  skipped=len(manifest["skipped"]),
                  skipped_reasons=sorted({s["reason"] for s in manifest["skipped"]}),
-                 export_seconds=export.get("seconds"), attempts=sum(len(s.get("attempts", [])) for s in statuses))
+                 export_seconds=export.get("seconds"), export_cpu=export.get("cpu_seconds"),
+                 attempts=sum(len(s.get("attempts", [])) for s in statuses),
+                 tokens=sum(t.get("tokens") or 0 for s in statuses for t in s.get("attempts", [])))
     if reruns:
         last = reruns[-1]
         state.update(rerun="closed" if last["closed"] else "open", rerun_seconds=last["seconds"],
+                     rerun_cpu=last.get("cpu_seconds"),
                      open_again=len(last.get("open_again", [])), new_goals=len(last.get("new_goals", [])))
     state["final"] = "closed" if rules == "closed" or state.get("rerun") == "closed" else "open"
+    # CPU of the compile that closed the block: the export, or else the rerun.
+    state["closing_cpu"] = (state["export_cpu"] if rules == "closed"
+                            else state.get("rerun_cpu") if state.get("rerun") == "closed" else None)
     return state
 
 
@@ -196,6 +229,14 @@ def refresh_caller(run, entry):
     return False
 
 
+def fast_setting(a):
+    """--fast BELOW:JOBS:GAP:ABOVE, for example 150:12:120:170."""
+    if not getattr(a, "fast", None):
+        return None
+    below, jobs, gap, above = a.fast.split(":")
+    return float(below), int(jobs), float(gap), float(above)
+
+
 def cmd_export(a):
     run = Path(a.run)
     plan = read_json(run / "PLAN.json")
@@ -223,7 +264,7 @@ def cmd_export(a):
         code = run_loop(arguments, run / "blocks" / block / "export.out")
         return block, "rc=%d" % code
 
-    for block, outcome in paced(blocks, export, a.jobs, a.launch_gap):
+    for block, outcome in paced(blocks, export, a.jobs, a.launch_gap, a.hold_above_gib, fast=fast_setting(a)):
         print("export %s %s" % (block, outcome))
     print_report(run)
 
@@ -324,7 +365,7 @@ def cmd_rerun(a):
                          "--jobs", "1", "--claim-gib", str(a.claim_gib)], run / "blocks" / block / "rerun.out")
         return block, "rerun rc=%d" % code
 
-    for block, outcome in paced(blocks, rerun, a.jobs, a.launch_gap):
+    for block, outcome in paced(blocks, rerun, a.jobs, a.launch_gap, a.hold_above_gib, fast=fast_setting(a)):
         print("%s %s" % (block, outcome))
     print_report(run)
 
@@ -369,6 +410,15 @@ def bank_args(build_dir):
     args = [COQC]
     for flag, path, name in LOAD_PATH:
         args += [flag, str(default / path), name]
+    # Trace theories that bind_traces.py added for other functions (free, hpDecode, ...). Dune does not
+    # copy the `dune` file into the build tree, so the theory name comes from a compiled module's `.glob`.
+    known = {name for _, _, name in LOAD_PATH}
+    for theory_dir in sorted(p for p in (default / "generated/isla-traces/stock-zisk").glob("*") if p.is_dir()):
+        for glob in sorted(theory_dir.glob("*.glob")):
+            match = re.search(r"^F(ZesuSsz\.Stock\.\w+)\.\w+$", glob.read_text(errors="replace"), re.M)
+            if match and match[1] not in known:
+                known.add(match[1])
+                args += ["-Q", str(theory_dir), match[1]]
     return args + ["-w", "-notation-overridden", "-w", "-redundant-canonical-projection"]
 
 
@@ -380,7 +430,12 @@ def block_lines(state):
         state.get("failed", 0), state.get("skipped", 0))
     if "rerun" in state:
         line += " rerun=%s" % state["rerun"]
-    return line + " final=%s" % state["final"]
+    line += " final=%s" % state["final"]
+    if state.get("closing_cpu") is not None:
+        line += " cpu=%s" % state["closing_cpu"]
+    if state.get("tokens"):
+        line += " tokens=%d" % state["tokens"]
+    return line
 
 
 def summary(states):
@@ -437,6 +492,10 @@ def main(argv=None):
         s.add_argument("--blocks")
         if name != "collect":
             s.add_argument("--launch-gap", type=float, default=0.0)
+            s.add_argument("--hold-above-gib", type=float, default=None,
+                           help="hold each start while the account slice uses more memory")
+            s.add_argument("--fast", help="BELOW:JOBS:GAP:ABOVE: use JOBS and GAP while the slice is below "
+                                          "BELOW GiB, and the base setting again above ABOVE GiB")
             s.add_argument("--claim-gib", type=float, default=8.0)
         if name == "export":
             s.add_argument("--stop-quiet", type=float, default=None)
