@@ -1,7 +1,9 @@
 """Check release-gate selection and refusal without invoking a proof tool."""
 import hashlib
 import json
+import os
 from pathlib import Path
+import subprocess
 import sys
 import tempfile
 import unittest
@@ -239,6 +241,52 @@ class SoundnessGateTests(unittest.TestCase):
             (captured / target).unlink()
             with self.assertRaisesRegex(ValueError, 'fresh object is missing'):
                 gate.public_fresh_receipt(build, [target], captured, 0)
+
+
+class DuneCacheKeyTests(unittest.TestCase):
+    """Run the real Dune and coqc with a private cache: a changed input must miss."""
+
+    def build(self, root, name, sources):
+        project = root / ('project-' + name)
+        project.mkdir()
+        (project / 'dune-project').write_text('(lang dune 3.8)\n(using coq 0.8)\n')
+        (project / 'dune').write_text('(coq.theory (name T) (mode vo))\n')
+        for source, text in sources.items():
+            (project / source).write_text(text)
+        switch = os.environ.get('OPAM_SWITCH', str(Path.home() / 'islaris'))
+        build = project / '_build'
+        subprocess.run(['opam', 'exec', '--switch=' + switch, '--', 'dune', 'build', '--root', str(project),
+                        '--cache=enabled', '--display', 'quiet', 'A.vo', 'B.vo'], cwd=project, check=True,
+                       env=dict(os.environ, DUNE_CACHE='enabled', DUNE_CACHE_ROOT=str(root / 'cache')),
+                       stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+        objects = {t: (build / 'default' / t).read_bytes() for t in ('A.vo', 'B.vo')}
+        return build, objects
+
+    def compiled(self, build):
+        found = set()
+        for target in ('A.vo', 'B.vo'):
+            try:
+                gate.fresh_compiler_runs(build / 'trace.csexp', [target])
+                found.add(target)
+            except ValueError:
+                pass
+        return found
+
+    def test_a_changed_source_with_a_stale_cache_entry_misses_the_cache(self):
+        b = 'Require Import T.A.\nDefinition y := x.\n'
+        with tempfile.TemporaryDirectory(dir=os.environ.get('TMPDIR')) as directory:
+            root = Path(directory)
+            build, first = self.build(root, 'fill', {'A.v': 'Definition x := 1.\n', 'B.v': b})
+            self.assertEqual(self.compiled(build), {'A.vo', 'B.vo'})
+            # Positive control: identical inputs in a new build directory are served by the cache.
+            build, hit = self.build(root, 'hit', {'A.v': 'Definition x := 1.\n', 'B.v': b})
+            self.assertEqual(self.compiled(build), set())
+            self.assertEqual(hit, first)
+            # Same file name, changed source: the stale entry for A.v must not serve A.vo, and
+            # B.vo, whose own source is unchanged, must miss because its dependency changed.
+            build, changed = self.build(root, 'changed', {'A.v': 'Definition x := 2.\n', 'B.v': b})
+            self.assertEqual(self.compiled(build), {'A.vo', 'B.vo'})
+            self.assertNotEqual(changed['A.vo'], first['A.vo'])
 
 
 if __name__ == '__main__':
