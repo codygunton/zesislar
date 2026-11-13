@@ -5,7 +5,8 @@
 # A run dir belongs to the branch when its ITEM.json has {"branch": "<branch>"},
 # or, without ITEM.json, when its name is the branch name, the branch name with
 # "/" replaced by "-", or the last part of the branch name.
-# The script keeps anything that a live process uses and everything under
+# The script keeps anything that a live process uses or that holds a release
+# receipt named by the admission ledger, and everything under
 # _build/agents/orch/. It does not delete the branch.
 #
 # usage: tools/cleanup_after_merge.sh [--dry-run] <branch>
@@ -49,7 +50,7 @@ if [ -z "$worktree" ]; then
 elif [ "$(realpath "$worktree")" = "$(realpath "$root")" ]; then
   echo "kept worktree $worktree: it is the base checkout"
 elif "${janitor[@]}" --root "$root" in-use "$worktree"; then
-  echo "kept worktree $worktree: a live process uses it"
+  echo "kept worktree $worktree: a live process or an admission ledger receipt uses it"
 elif [ -n "$(git -C "$worktree" status --porcelain --untracked-files=all)" ]; then
   echo "kept worktree $worktree: it has uncommitted or untracked files"
 elif [ "$dry_run" = 1 ]; then
