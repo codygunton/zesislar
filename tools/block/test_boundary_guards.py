@@ -178,6 +178,27 @@ class CallBoundary(unittest.TestCase):
         self.assertEqual(_return_fact('0 < bv_unsigned {word:after:8}', {'after': 'call_after'}),
                          '0 < bv_unsigned ' + load.coq())
 
+    def test_a_new_piece_never_reuses_a_coalesced_pieces_name(self):
+        from call_boundary import PieceNames
+        names = PieceNames([{'id': 'frame'}, {'id': 'frame_call_output_length'}])
+        self.assertEqual(names('frame_call_output'), 'frame_call_output_2')
+        self.assertEqual(names('frame_call_output'), 'frame_call_output_3')
+        self.assertEqual(names('frame_call_after'), 'frame_call_after')
+
+    def test_a_caller_array_with_stores_keeps_its_bytes_only_when_they_are_known(self):
+        from call_boundary import stored_caller_span
+        from forward_resources import OwnedBytes
+        from symbolic_state import input_expr
+        def array(value):
+            return OwnedBytes('span', input_expr('base'), 'base', value, 8, True, 'DfracOwn 1',
+                              {'source': 'base ↦ₘ∗ before'}, {'source': 'fixture'}, 8)
+        stored = {offset: {'value': None} for offset in range(8)}
+        self.assertTrue(stored_caller_span(array(None), {0: {'value': None}}))
+        self.assertTrue(stored_caller_span(array(input_expr('before', None)), stored))
+        # An initialized array that keeps some old bytes, or a store at a symbolic offset, refuses.
+        self.assertFalse(stored_caller_span(array(input_expr('before', None)), {0: {'value': None}}))
+        self.assertFalse(stored_caller_span(array(None), {'i': {'value': None}}))
+
 
 class PureExistentials(unittest.TestCase):
     def test_existential_inside_a_pure_fact_is_not_hoisted(self):

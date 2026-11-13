@@ -225,6 +225,36 @@ def _atoms(text):
     return set(re.findall(r"(?<![\w'.])[A-Za-z_][\w']*", re.sub(r'"[^"]*"', '', text)))
 
 
+class PieceNames:
+    """Fresh ownership ids for the pieces a call splits off a caller resource.
+
+    An earlier layer may have used a piece name for a piece that a join has since
+    coalesced; its length fact still carries the name, so a new piece takes the first
+    free numbered name instead."""
+
+    def __init__(self, components):
+        self.used = {component['id'] for component in components}
+        self.used |= {name[:-len('_length')] for name in self.used if name.endswith('_length')}
+
+    def __call__(self, base):
+        name, number = base, 1
+        while name in self.used:
+            number += 1
+            name = '%s_%d' % (base, number)
+        self.used.add(name)
+        return name
+
+
+def stored_caller_span(resource, updates):
+    """A caller array the callee does not name may hold stores at constant offsets when
+    it is uninitialized (written runs become byte lists, the rest stays uninitialized)
+    or when every byte is stored (it becomes the stored bytes)."""
+    if not isinstance(resource.length, int) or any(isinstance(offset, str) for offset in updates):
+        return False
+    return resource.byte_array is None or set(range(resource.length)) <= set(updates)
+
+
+
 def call_return_seed(edges, *, call, function_root, root_seed, shapes, vocabulary, constants=None, origin_seeds=()):
     """Return the OwnedSeed of a call's return site and a report of what it carries.
 
@@ -387,6 +417,7 @@ def call_return_seed(edges, *, call, function_root, root_seed, shapes, vocabular
         raise CallRefused('The call-site state does not render.')
     current = {row['id']: row['source'] for row in rendered['components']}
     nodes, regions, extra_facts = [], {}, []
+    piece_name = PieceNames(ownership['components'])
     for component in ownership['components']:
         key, kind = component['id'], component['kind']
         node = dict(component['seed_component'])
@@ -424,6 +455,8 @@ def call_return_seed(edges, *, call, function_root, root_seed, shapes, vocabular
                 piece_id = key if number == 0 else key + ('_call_output' if index == 1 else '_call_after')
                 if index != 1 and number > 0 and any(other[0] == index for other in runs[:number]):
                     piece_id = '%s_call_%s_%d' % (key, 'before' if index == 0 else 'after', start)
+                if number > 0:
+                    piece_id = piece_name(piece_id)
                 split['pieces'].append(piece_id)
                 address = '(' + resource.address_z + ' + ' + str(start) + ')' if start else resource.address_z
                 written = [offset for offset in range(start, end) if offset in updates]
@@ -453,11 +486,9 @@ def call_return_seed(edges, *, call, function_root, root_seed, shapes, vocabular
             continue
         elif kind in ('byte_array', 'unknown_byte_array') and image.updates[key]:
             resource, updates = resources[key], image.updates[key]
-            if (resource.byte_array is not None or not isinstance(resource.length, int)
-                    or any(isinstance(offset, str) for offset in updates)):
+            if not stored_caller_span(resource, updates):
                 raise CallRefused('A caller array that the callee does not name holds a write: ' + key)
-            # An uninitialized caller span with stores at constant offsets: maximal runs of
-            # written bytes become byte lists, the other runs stay uninitialized.
+            # Maximal runs of stored bytes become byte lists, the other runs stay uninitialized.
             cut, pieces = 0, []
             for offset in range(1, resource.length + 1):
                 if offset == resource.length or (offset in updates) != (cut in updates):
@@ -465,7 +496,7 @@ def call_return_seed(edges, *, call, function_root, root_seed, shapes, vocabular
                     cut = offset
             splits[key] = {'pieces': []}
             for start, end in pieces:
-                piece_id = key if start == 0 else '%s_span_%d' % (key, start)
+                piece_id = key if start == 0 else piece_name('%s_span_%d' % (key, start))
                 splits[key]['pieces'].append(piece_id)
                 address = '(' + resource.address_z + ' + ' + str(start) + ')' if start else resource.address_z
                 if start in updates:
