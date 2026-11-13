@@ -26,6 +26,7 @@ Require Import ZesuSsz.Automation2.MaskWrapPresentation.
 Require Import ZesuSsz.Automation2.FramePackingFinish.
 Require Import ZesuSsz.Automation2.ArrayPayloadPresentation.
 Require Import ZesuSsz.Automation2.StoreMemoryLookup.
+Require ZesuSsz.Automation2.WrapLookup.
 Require Import ZesuSsz.Automation2.ContextCollection.
 Require Export ZesuSsz.Automation2.ArrayCursors.
 Require Import ZesuSsz.Automation2.ArrayByteValues.
@@ -1106,7 +1107,8 @@ Ltac zesu_run_pass_v1 :=
      zesu_liAStep |
      ZesuSsz.Automation2.CodecArrayRead.zesu_codec_array_read_sidecond |
      zesu_open_matching_two_level_frame |
-     zesu_extract_matching_descriptor_pure]; zesu_diag_step_end; liShow;
+     zesu_extract_matching_descriptor_pure |
+     ZesuSsz.Automation2.WrapLookup.zesu_wrap_lookup_retry]; zesu_diag_step_end; liShow;
     try zesu_finish_closed_wand;
     try zesu_finish_framed_wand;
     zesu_finish).
@@ -1116,7 +1118,7 @@ Ltac zesu_run_pass_v2 :=
   try zesu_prepare_uninit_goal;
   try zesu_normalize_find_mem_address;
   unshelve (time "zesu_run" repeat first
-    [zesu_diag_step | zesu_target_registered_intro_if_enabled | zesu_array_load_preselect | zesu_array_load_priority | zesu_conjunct_match_if_enabled | zesu_run_pass_steps | zesu_close_matching_trace_tail | zesu_open_trace_exist | zesu_rule_set_v2_steps]; zesu_diag_step_end; liShow;
+    [zesu_diag_step | zesu_target_registered_intro_if_enabled | zesu_array_load_preselect | zesu_array_load_priority | zesu_conjunct_match_if_enabled | zesu_run_pass_steps | zesu_close_matching_trace_tail | zesu_open_trace_exist | zesu_rule_set_v2_steps | ZesuSsz.Automation2.WrapLookup.zesu_wrap_lookup_retry]; zesu_diag_step_end; liShow;
     try zesu_finish_closed_wand;
     try zesu_finish_framed_wand;
     zesu_finish).
