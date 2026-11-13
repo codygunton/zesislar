@@ -11,9 +11,29 @@ Ltac zesu_vm_has_unresolved term :=
         end
     end].
 
+(* Keep only the hypotheses the goal needs, then unfold the newest one in the
+   goal. Only the goal needs the newest hypothesis, so each round removes it.
+   A remaining hypothesis that is not a definition makes the goal open. *)
+Ltac zesu_vm_closed_goal :=
+  let keep := fresh in
+  pose proof I as keep; clear - keep; clear keep;
+  lazymatch goal with
+  | local := _ |- _ => progress unfold local; zesu_vm_closed_goal
+  | _ : _ |- _ => fail
+  | _ => idtac
+  end.
+
+(* Accept the terms that stdpp `is_closed_term` accepts, without its
+   `unfold H in *` per hypothesis (quadratic in the context size). *)
+Ltac zesu_vm_closed_term term :=
+  first [
+    assert_succeeds (exfalso; change_no_check (const False term);
+      zesu_vm_closed_goal) |
+    fail 1 "The term" term "is not closed"].
+
 Ltac zesu_vm_closed term :=
   assert_fails ltac:(zesu_vm_has_unresolved term);
-  is_closed_term term.
+  zesu_vm_closed_term term.
 
 (* Check the full input before VM evaluation. *)
 Ltac zesu_vm_eval_closed term :=
