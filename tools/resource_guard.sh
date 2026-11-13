@@ -1873,7 +1873,7 @@ run_scope() {
   wait "$child"
   status=$?
   child=""
-  [ "$status" -eq 0 ] || report_fence_kill "$unit.scope" "$@"
+  [ "$status" -eq 0 ] || report_fence_kill "$unit.scope" "$slice" "$@"
   cleanup_scope
   trap - EXIT TERM INT
   return "$status"
@@ -1885,15 +1885,58 @@ scope_result() {
   systemctl --user show "$1" -p Result --value 2>/dev/null
 }
 
+# The memory peak of an ended scope: systemd keeps it for a failed unit.
+scope_peak_bytes() {
+  local peak
+  peak=$(systemctl --user show "$1" -p MemoryPeak --value 2>/dev/null)
+  [[ "$peak" =~ ^[0-9]+$ ]] && echo "$peak"
+}
+
+# "LIMIT PEAK" of a slice's cgroup in bytes.
+slice_memory() {
+  local group limit peak
+  group=$(systemctl --user show "$1" -p ControlGroup --value 2>/dev/null) && [ -n "$group" ] || return 1
+  read -r limit < "$CGROUP_ROOT$group/memory.max" && read -r peak < "$CGROUP_ROOT$group/memory.peak" || return 1
+  echo "$limit $peak"
+}
+
+gib_text() { awk -v b="$1" 'BEGIN { printf "%.1f", b / 1073741824 }'; }
+
 # A kill at the scope's memory fence otherwise ends as a plain nonzero status
 # with no peak. Name it to the caller and record it with the compiled source's
 # hash, so a later probe of that source books from the fence it reached.
+#
+# A scope in a batch aggregate shares that aggregate's MemoryMax with every
+# block the batch runs at once. When the aggregate runs out, the kernel kills
+# one of them, and its scope also ends with oom-kill. Of the 62 kills recorded
+# as fence kills on 2026-11-12/13, 42 were such kills: other blocks held
+# 1.1-12.6 GiB of the full 16 GiB aggregate. A kill whose own peak stays below 99% of the fence, or
+# whose peak is unknown inside an aggregate, is a shared-slice kill: it names
+# the aggregate and the victim's peak, and it never lowers a probe's claim.
 report_fence_kill() {
-  local unit=$1; shift
+  local unit=$1 slice=$2; shift 2
   [ "$(scope_result "$unit")" = oom-kill ] || return 0
-  echo "resource guard: memory fence kill: $unit reached its ${MODULE_LIMIT_GIB} GiB fence" >&2
+  local fence=$(( MODULE_LIMIT_GIB * GIB )) peak="" limit="" aggregate_peak="" kind=fence detail="" own
+  local -a fields=()
+  peak=$(scope_peak_bytes "$unit") || peak=""
+  if [[ "$slice" == zesuworkloads-aggregate*.slice ]] && read -r limit aggregate_peak < <(slice_memory "$slice") &&
+     [[ "$limit" =~ ^[0-9]+$ && "$aggregate_peak" =~ ^[0-9]+$ ]]; then
+    fields+=(--aggregate "$slice" --aggregate-limit-bytes "$limit" --aggregate-peak-bytes "$aggregate_peak")
+    detail="; aggregate $slice limit $(gib_text "$limit") GiB, peak $(gib_text "$aggregate_peak") GiB"
+  fi
+  if [ -n "$peak" ]; then
+    fields+=(--own-peak-bytes "$peak")
+    own="own peak $(gib_text "$peak") GiB"
+  else own="own peak unknown"; fi
+  if { [ -n "$peak" ] && (( peak * 100 < fence * 99 )); } ||
+     { [ -z "$peak" ] && [[ "$slice" == zesuworkloads-aggregate*.slice ]]; }; then
+    kind=shared-slice
+    echo "resource guard: shared-slice memory kill: $unit did not reach its ${MODULE_LIMIT_GIB} GiB fence ($own${detail:-; aggregate $slice})" >&2
+  else
+    echo "resource guard: memory fence kill: $unit reached its ${MODULE_LIMIT_GIB} GiB fence ($own$detail)" >&2
+  fi
   python3 "$MEMORY_TOOL" fence-kill-record --ledger "$FENCE_KILLS" --unit "$unit" \
-    --fence-bytes "$(( MODULE_LIMIT_GIB * GIB ))" --cwd "$PWD" -- "$@" >/dev/null ||
+    --fence-bytes "$fence" --kind "$kind" "${fields[@]}" --cwd "$PWD" -- "$@" >/dev/null ||
     note "fence kill record failed: $unit"
 }
 
