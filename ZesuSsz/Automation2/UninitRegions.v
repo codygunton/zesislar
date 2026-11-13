@@ -45,6 +45,15 @@ Ltac zesu_region_bounds_legacy :=
     end;
     bv_solve].
 
+(* A word whose unsigned value appears in the region base reaches the
+   address through a bitvector offset: the address reads
+   `bv_unsigned (bv_add word offset)`, not `bv_unsigned word`. The word's
+   facts then decide whether the offset wraps. *)
+Ltac zesu_region_offset_word word address :=
+  assert_fails (has_evar word);
+  assert_fails (ZesuSsz.Automation2.VmClosed.zesu_vm_closed word);
+  lazymatch address with context[bv_unsigned (bv_add word _)] => idtac end.
+
 (* Bounds search uses only facts connected to the candidate region. *)
 Ltac zesu_region_address_carries base address :=
   first [lazymatch address with context[base] => idtac end |
@@ -53,6 +62,7 @@ Ltac zesu_region_address_carries base address :=
         assert_fails (ZesuSsz.Automation2.VmClosed.zesu_vm_closed term);
         lazymatch address with context[term] => idtac end |
         lazymatch term with
+        | bv_unsigned ?word => zesu_region_offset_word word address
         | Z.add ?left ?right => first [carries left | carries right]
         | Z.sub ?left ?right => first [carries left | carries right]
         | Z.mul ?left ?right => first [carries left | carries right]
@@ -70,11 +80,22 @@ Ltac zesu_region_collect base address :=
         [Ltac1.of_constr constr:(8%nat); Ltac1.of_constr base;
          Ltac1.of_constr address; Ltac1.of_constr base;
          Ltac1.of_constr (Control.hyp name)] Ltac1.run) original) in
+  (* The word's facts may sit folded in a predicate over the value the word
+     is read from, so the search root is the word's argument. *)
+  let collect_word := ltac2:(v w |-
+    let value := Option.get (Ltac1.to_constr v) in
+    let word := Option.get (Ltac1.to_constr w) in
+    let root := match Constr.Unsafe.kind word with
+      | Constr.Unsafe.App _ args => Array.get args (Int.sub (Array.length args) 1)
+      | _ => word end in
+    ZesuSsz.Automation2.RangeFacts.zesu_range_collect value value root) in
   let rec choose_atom term :=
     first [assert_fails (has_evar term);
       assert_fails (ZesuSsz.Automation2.VmClosed.zesu_vm_closed term);
       lazymatch address with context[term] => collect term address end |
       lazymatch term with
+      | bv_unsigned ?word =>
+          zesu_region_offset_word word address; collect_word term word
       | Z.add ?left ?right => first [choose_atom left | choose_atom right]
       | Z.sub ?left ?right => first [choose_atom left | choose_atom right]
       | Z.mul ?left ?right => first [choose_atom left | choose_atom right]
