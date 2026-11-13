@@ -196,7 +196,8 @@ def exit_obligations():
 def check_record(row, body):
     name = f'fp_machineAt{row["pc"]}_LoopExit'
     binders, facts = alternative_facts(f'Definition {name}{SIGNATURE} : iProp Sigma := {body}.')
-    source = contradiction_source(HEADER, binders, facts)
+    # One group with every fact: the recorded check read them together.
+    source = contradiction_source(HEADER, [([binders], facts)])
     return name, binders, facts, hashlib.sha256(source.encode()).hexdigest()
 
 
