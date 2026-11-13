@@ -1,7 +1,9 @@
 """Check release-gate selection and refusal without invoking a proof tool."""
 import hashlib
 import json
+import os
 from pathlib import Path
+import subprocess
 import sys
 import tempfile
 import unittest
@@ -174,6 +176,123 @@ class SoundnessGateTests(unittest.TestCase):
                     gate.public_records(candidate, baseline, root / 'build')
             self.assertFalse((baseline / '_build').exists())
 
+    def fresh_build(self, root):
+        theory = root / 'build/default/ZesuSsz'
+        theory.mkdir(parents=True)
+        (theory / '.ZesuSsz.theory.d').write_text(
+            'A.vo A.glob: A.v B.vo /opam/lib/List.vo \\\n  Sub/C.vo\n'
+            'B.vo B.glob: B.v ../generated/D.vo\n'
+            'Sub/C.vo: Sub/C.v\n')
+        return root / 'build'
+
+    def test_fresh_dependencies_skip_fresh_members_and_installed_libraries(self):
+        with tempfile.TemporaryDirectory() as directory:
+            graph = gate.project_graph(self.fresh_build(Path(directory)))
+            self.assertEqual(gate.fresh_dependencies(graph, ['ZesuSsz/A.vo', 'ZesuSsz/B.vo']),
+                             ['ZesuSsz/Sub/C.vo', 'generated/D.vo'])
+            self.assertEqual(gate.fresh_dependencies(graph, ['ZesuSsz/A.vo']),
+                             ['ZesuSsz/B.vo', 'ZesuSsz/Sub/C.vo', 'generated/D.vo'])
+            with self.assertRaisesRegex(ValueError, 'lacks a module'):
+                gate.fresh_dependencies(graph, ['ZesuSsz/Absent.vo'])
+
+    def test_objects_above_a_fresh_member_wait_for_the_fresh_step(self):
+        graph = {'P.vo': ['M.vo', 'Context.vo'], 'M.vo': ['Context.vo', 'Low.vo'],
+                 'Context.vo': [], 'Low.vo': []}
+        self.assertEqual(gate.fresh_dependencies(graph, ['P.vo', 'Context.vo']), ['Low.vo'])
+        self.assertEqual(gate.dependency_closure(graph, ['M.vo']), {'M.vo', 'Context.vo', 'Low.vo'})
+
+    @staticmethod
+    def atom(value):
+        return f'{len(value.encode())}:{value}'
+
+    def finish(self, source, target, exit_code='0', program='.bin/coqc'):
+        a = self.atom
+        return (f'({a("process")}{a("finish")}(({a("1")}{a("2")}))({a("process_args")}({a("-q")}{a(source)}))'
+                f'({a("pid")}{a("7")})({a("prog")}{a(program)})({a("exit")}{a(exit_code)})'
+                f'({a("target_files")}({a("_dune-cache/default/" + target)})))')
+
+    def test_trace_must_show_a_successful_coqc_run_for_each_fresh_object(self):
+        with tempfile.TemporaryDirectory() as directory:
+            trace = Path(directory) / 'trace.csexp'
+            target = 'ZesuSsz/A.vo'
+            trace.write_text(self.finish('ZesuSsz/A.v', target))
+            self.assertEqual(gate.fresh_compiler_runs(trace, [target])[target]['source'], 'ZesuSsz/A.v')
+            for event in [self.finish('ZesuSsz/A.v', target, exit_code='1'),
+                          self.finish('ZesuSsz/A.v', target, program='.bin/coqdep'),
+                          self.finish('ZesuSsz/Other.v', target)]:
+                trace.write_text(event)
+                with self.assertRaisesRegex(ValueError, 'no fresh coqc run'):
+                    gate.fresh_compiler_runs(trace, [target])
+
+    def test_receipt_refuses_a_linked_object_that_differs_from_the_fresh_compile(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            build, captured, target = root / 'build', root / 'captured', 'ZesuSsz/A.vo'
+            (build / 'default/ZesuSsz').mkdir(parents=True)
+            (captured / 'ZesuSsz').mkdir(parents=True)
+            (build / 'trace.csexp').write_text(self.finish('ZesuSsz/A.v', target))
+            (build / 'default' / target).write_bytes(b'object')
+            (captured / target).write_bytes(b'object')
+            receipt = gate.public_fresh_receipt(build, [target], captured, 0)
+            self.assertTrue(receipt['fresh_objects'][0]['equal'])
+            (build / 'default' / target).write_bytes(b'cached object')
+            with self.assertRaisesRegex(ValueError, 'differs from the fresh compile'):
+                gate.public_fresh_receipt(build, [target], captured, 0)
+            (captured / target).unlink()
+            with self.assertRaisesRegex(ValueError, 'fresh object is missing'):
+                gate.public_fresh_receipt(build, [target], captured, 0)
+
+
+class DuneCacheKeyTests(unittest.TestCase):
+    """Run the real Dune and coqc with a private cache: a changed input must miss."""
+
+    def build(self, root, name, sources):
+        project = root / ('project-' + name)
+        project.mkdir()
+        (project / 'dune-project').write_text('(lang dune 3.8)\n(using coq 0.8)\n')
+        (project / 'dune').write_text('(coq.theory (name T) (mode vo))\n')
+        for source, text in sources.items():
+            (project / source).write_text(text)
+        switch = os.environ.get('OPAM_SWITCH', str(Path.home() / 'islaris'))
+        build = project / '_build'
+        subprocess.run(['opam', 'exec', '--switch=' + switch, '--', 'dune', 'build', '--root', str(project),
+                        '--cache=enabled', '--display', 'quiet', 'A.vo', 'B.vo'], cwd=project, check=True,
+                       env=dict(os.environ, DUNE_CACHE='enabled', DUNE_CACHE_ROOT=str(root / 'cache')),
+                       stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+        objects = {t: (build / 'default' / t).read_bytes() for t in ('A.vo', 'B.vo')}
+        return build, objects
+
+    def compiled(self, build):
+        found = set()
+        for target in ('A.vo', 'B.vo'):
+            try:
+                gate.fresh_compiler_runs(build / 'trace.csexp', [target])
+                found.add(target)
+            except ValueError:
+                pass
+        return found
+
+    B = 'Require Import T.A.\nDefinition y := x.\n'
+
+    def test_unchanged_inputs_hit_the_cache(self):
+        with tempfile.TemporaryDirectory(dir=os.environ.get('TMPDIR')) as directory:
+            root = Path(directory)
+            build, first = self.build(root, 'fill', {'A.v': 'Definition x := 1.\n', 'B.v': self.B})
+            self.assertEqual(self.compiled(build), {'A.vo', 'B.vo'})
+            build, hit = self.build(root, 'hit', {'A.v': 'Definition x := 1.\n', 'B.v': self.B})
+            self.assertEqual(self.compiled(build), set())
+            self.assertEqual(hit, first)
+
+    def test_a_changed_source_or_dependency_misses_a_stale_cache_entry(self):
+        with tempfile.TemporaryDirectory(dir=os.environ.get('TMPDIR')) as directory:
+            root = Path(directory)
+            build, first = self.build(root, 'fill', {'A.v': 'Definition x := 1.\n', 'B.v': self.B})
+            self.assertEqual(self.compiled(build), {'A.vo', 'B.vo'})
+            # Same file name, changed source: the stale entry for A.v must not serve A.vo, and
+            # B.vo, whose own source is unchanged, must miss because its dependency changed.
+            build, changed = self.build(root, 'changed', {'A.v': 'Definition x := 2.\n', 'B.v': self.B})
+            self.assertEqual(self.compiled(build), {'A.vo', 'B.vo'})
+            self.assertNotEqual(changed['A.vo'], first['A.vo'])
 
 if __name__ == '__main__':
     unittest.main()
