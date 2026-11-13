@@ -34,5 +34,5 @@ class LegacyControls(unittest.TestCase):
   with patch.object(P,'completed',side_effect=checked):value,_=P.select([modern,legacy],{'module':'M'})
   self.assertEqual(value['claim_bytes'],24*P.GIB)
  def test_full_native_fence_is_unchanged(self):
-  job=P.apply_job({'phase':'native','target':target(ROWS[0])},[ROWS[0]]);self.assertEqual(job['physical_fence_bytes'],64*P.GIB)
+  job=P.apply_job({'phase':'native','target':target(ROWS[0])},[ROWS[0]]);self.assertEqual(job['physical_fence_bytes'],64*P.GIB);self.assertEqual(P.PARENT_FENCE,175*P.GIB)
 if __name__=='__main__':unittest.main()

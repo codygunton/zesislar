@@ -35,7 +35,7 @@ class PolicyControls(unittest.TestCase):
  def test_compile_and_kernel_fences_are_24(self):
   for phase in ['prerequisites','compile_only','kernel']:
    job=P.apply_job({'phase':phase});self.assertEqual(P.validate_job(job),24*P.GIB);self.assertEqual(job['physical_fence_bytes'],64*P.GIB)
- def test_native_fence_stays_fixed(self):self.assertEqual(P.NATIVE_FENCE,64*P.GIB)
+ def test_parent_and_native_fences_stay_fixed(self):self.assertEqual(P.PARENT_FENCE,175*P.GIB);self.assertEqual(P.NATIVE_FENCE,64*P.GIB)
  def test_reduced_native_environment_preserves_physical_fence(self):
   env=P.environment('native',8*P.GIB);self.assertEqual(env['ZESU_MODULE_CLAIM_BYTES'],str(8*P.GIB));self.assertEqual(env['ZESU_MODULE_LIMIT_GIB'],'64');self.assertEqual(env['ROCQ_MAX_PET_RSS_MB'],'65536')
  def test_native_reduced_claim_requires_bound_basis(self):

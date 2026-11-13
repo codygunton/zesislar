@@ -64,7 +64,7 @@ class PortCpuPolicy(unittest.TestCase):
     def aggregate_fixture(self):
         parent = self.root / 'zesuworkloads.slice'
         parent.mkdir()
-        (parent / 'memory.max').write_text(str(memory_policy.PARENT_FENCE))
+        (parent / 'memory.max').write_text(str(175 * memory_policy.GIB))
         (parent / 'memory.swap.max').write_text('0')
         group = parent / 'zesuworkloads-aggregate1000p1r2.slice'
         group.mkdir()

@@ -37,6 +37,11 @@ def workload_parent_bytes(root=Path('/sys/fs/cgroup'), uid=None):
     return min(account - WORKLOAD_RESERVE_BYTES, LEGACY_PARENT_BYTES)
 
 
+def accepted_parent_bytes(root=Path('/sys/fs/cgroup'), uid=None):
+    """Parent MemoryMax texts a workload may run under: ours, or an older guard's 175 GiB."""
+    return {str(workload_parent_bytes(root, uid)), str(LEGACY_PARENT_BYTES)}
+
+
 SLICE_MAX_BYTES = workload_parent_bytes()
 STATIC_KERNEL_ACCOUNT_SCHEMA = 'legacy_kernel_accounts.v1'
 CGROUP_ROOT = Path('/sys/fs/cgroup')

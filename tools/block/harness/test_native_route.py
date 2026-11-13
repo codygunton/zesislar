@@ -65,6 +65,7 @@ class NativeRoute(unittest.TestCase):
   value,route,c,j=self.fixture();profile=self.js('profile.json',{'schema':'scratch.admission-profile.v1','kind':N.KIND,'authority':route})
   work=M.workload_for_job(profile,j,c);job=M.apply_job(j,workload=work)
   self.assertEqual(M.validate_job(job),8*M.GIB);self.assertEqual(job['physical_fence_bytes'],64*M.GIB)
+  self.assertEqual(M.PARENT_FENCE,175*M.GIB)
  def test_changed_native_source_refuses(self):
   v,r,c,j=self.fixture();Path(v['native_source']['path']).write_text('changed')
   with self.assertRaises(ValueError):N.validate(r,workspace=self.root,modules=c['proof_runtime']['module_files'],target=j['target'],ordered=[])
