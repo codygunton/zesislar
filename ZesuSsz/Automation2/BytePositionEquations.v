@@ -2,6 +2,7 @@ From Coq Require Import ZArith.ZArith Lists.List NArith.NArith Lia.
 From stdpp.bitvector Require Import definitions.
 Require Import isla.riscv64.riscv64.
 Require ZesuSsz.Automation2.VmClosed.
+Require ZesuSsz.Automation2.WrappedWord.
 Local Open Scope Z_scope.
 
 (* Specs state a value loaded from a byte list as byte positions of the list:
@@ -80,25 +81,51 @@ Ltac zesu_le_window_prove :=
       rewrite (zesu_le_window_concat width inner_width rest start bytes eq_refl)
   end; reflexivity.
 
-(* Rewrite one window whose width is 8 bits per byte, with a closed count of
-   at least one and a closed start. *)
+(* Prove the concatenation form of one window whose width is 8 bits per byte,
+   with a closed count of at least one and a closed start, and pass the
+   equation to [location]. *)
+Ltac zesu_le_window_equation width count start bytes location :=
+  ZesuSsz.Automation2.VmClosed.zesu_vm_closed start;
+  let c := eval vm_compute in count in
+  let k := eval vm_compute in start in
+  let w := eval vm_compute in width in
+  lazymatch eval vm_compute in
+    (bool_decide (w = 8 * N.of_nat c)%N && bool_decide (1 <= c)%nat)%bool with
+  | true => idtac end;
+  let window := constr:(Z_to_bv width (little_endian_to_bv 8 (take count (drop start bytes)))) in
+  let concat := zesu_le_window_bytes w c k bytes in
+  let Hwindow := fresh "Hwindow" in
+  assert (Hwindow : window = concat) by
+    (change window with (Z_to_bv w (little_endian_to_bv 8 (take c (drop k bytes))));
+     zesu_le_window_prove);
+  location Hwindow;
+  clear Hwindow.
+
 Ltac zesu_le_window_rewrite_one :=
   match goal with
   | |- context [Z_to_bv ?width (little_endian_to_bv 8 (take ?count (drop ?start ?bytes)))] =>
-      ZesuSsz.Automation2.VmClosed.zesu_vm_closed start;
-      let c := eval vm_compute in count in
-      let k := eval vm_compute in start in
-      let w := eval vm_compute in width in
-      lazymatch eval vm_compute in
-        (bool_decide (w = 8 * N.of_nat c)%N && bool_decide (1 <= c)%nat)%bool with
-      | true => idtac end;
-      let window := constr:(Z_to_bv width (little_endian_to_bv 8 (take count (drop start bytes)))) in
-      let concat := zesu_le_window_bytes w c k bytes in
-      let Hwindow := fresh "Hwindow" in
-      assert (Hwindow : window = concat) by
-        (change window with (Z_to_bv w (little_endian_to_bv 8 (take c (drop k bytes))));
-         zesu_le_window_prove);
-      rewrite Hwindow; clear Hwindow
+      zesu_le_window_equation width count start bytes ltac:(fun Hwindow => rewrite Hwindow)
+  end.
+
+(* The same rewrite in an equation or disequation hypothesis (a branch fact
+   on a loaded value) while the goal reads the list by byte positions, so
+   that the fact states the value as the goal does. A start that is a word
+   offset chain becomes a literal first. *)
+Ltac zesu_le_window_rewrite_hypothesis :=
+  match goal with
+  | Hfact : context [Z_to_bv ?width (little_endian_to_bv 8 (take ?count (drop ?start ?bytes)))] |- _ =>
+      lazymatch type of Hfact with
+      | _ = _ => idtac
+      | not (_ = _) => idtac
+      end;
+      lazymatch goal with |- context [@nth (bv 8) _ bytes _] => idtac end;
+      first [
+        zesu_le_window_equation width count start bytes ltac:(fun Hwindow => rewrite Hwindow in Hfact)
+      | lazymatch start with
+        | Z.to_nat ?expression =>
+            ZesuSsz.Automation2.WrappedWord.zesu_wrapped_index_literal expression
+              ltac:(fun Hindex => rewrite Hindex in Hfact)
+        end ]
   end.
 
 (* A byte variable known from a lookup becomes its list position, when the

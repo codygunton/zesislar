@@ -28,6 +28,32 @@ Goal forall (bytes : list (bv 8)) (address : bv 64),
   Z_to_bv 16 0 -> True.
 Proof. intros bytes address. Fail zesu_le_window_rewrite_one. intros _. exact I. Qed.
 
+Record WindowFrame := { windowPointer : bv 64 }.
+Definition windowFrameWellFormed (frame : WindowFrame) : Prop :=
+  (4096 <= bv_unsigned (windowPointer frame))%Z /\
+  (bv_unsigned (windowPointer frame) < 4294967296)%Z.
+
+(* A branch fact on the halfword at w - 360 of an array at w - 392, while the
+   goal reads the array by byte positions: the fact's index becomes a literal,
+   then its window the concatenation. *)
+Goal forall frame (bytes : list (bv 8)), windowFrameWellFormed frame ->
+  bv_zero_extend 64 (Z_to_bv 16 (little_endian_to_bv 8 (take (N.to_nat 2)
+    (drop (Z.to_nat (bv_unsigned (windowPointer frame + BV 64 18446744073709551216 +
+      BV 64 400 + BV 64 18446744073709551256) -
+      (bv_unsigned (windowPointer frame) - 400 + 8))) bytes)))) <> BV 64 0 ->
+  bv_zero_extend 64 (bv_concat 16 (nth 33 bytes (BV 8 0)) (nth 32 bytes (BV 8 0))) <> BV 64 0.
+Proof.
+  intros frame bytes Hframe Hfact.
+  zesu_le_window_rewrite_hypothesis.
+  zesu_le_window_rewrite_hypothesis.
+  exact Hfact.
+Qed.
+
+(* The goal does not read the list: the fact stays. *)
+Goal forall (bytes : list (bv 8)),
+  Z_to_bv 16 (little_endian_to_bv 8 (take 2 (drop 32 bytes))) = BV 16 0 -> True.
+Proof. intros bytes Hfact. Fail zesu_le_window_rewrite_hypothesis. exact I. Qed.
+
 Definition byte_outcome : Type := list (bv 8).
 
 Section lazy_existential.

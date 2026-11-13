@@ -855,6 +855,25 @@ Ltac zesu_final_solver_goal :=
   | _ => idtac
   end.
 
+(* An existential whose conjuncts are hypotheses once its witnesses are set
+   (a successor restating a call's facts over fresh names): each conjunct is
+   closed by a hypothesis with the same head, which sets the witnesses. Only
+   syntactic existentials and conjunctions are opened: `eexists` and `split`
+   would also open definitions that unfold to an equation or a record. *)
+Ltac zesu_finish_exists_from_hypotheses :=
+  lazymatch goal with |- ex _ => idtac end;
+  solve [repeat lazymatch goal with |- ex _ => eexists end;
+    repeat lazymatch goal with |- _ /\ _ => split end;
+    multimatch goal with |- ?conjunct =>
+      let head := get_head conjunct in
+      multimatch goal with
+      | Hfact : ?fact |- _ =>
+          let fact_head := get_head fact in
+          constr_eq head fact_head;
+          exact Hfact
+      end
+    end].
+
 (* The common pure path and final tail share the union helper. Baseline closers remain available. *)
 Ltac zesu_finish_final_pure :=
   first [
@@ -866,7 +885,7 @@ Ltac zesu_finish_final_pure :=
   try solve [
     first [
       zesu_finish_negated_ge; zesu_finish_implication_pair; repeat split;
-      first [reflexivity | assumption | eassumption |
+      first [reflexivity | assumption | eassumption | zesu_finish_exists_from_hypotheses |
         zesu_final_solver_goal; lia | zesu_final_solver_goal; bv_solve |
         zesu_finish_forall_leaf | zesu_finish_contract_arithmetic |
         zesu_finish_simpl_and_leaf]
@@ -891,7 +910,7 @@ zesu_finish_pure_goal_base;
   try solve [
     first [
       zesu_finish_negated_ge; zesu_finish_implication_pair; repeat split;
-      first [reflexivity | assumption | eassumption | lia | bv_solve |
+      first [reflexivity | assumption | eassumption | zesu_finish_exists_from_hypotheses | lia | bv_solve |
         zesu_finish_forall_leaf]
     | repeat split; zesu_finish_forall_leaf]] | zesu_finish_common_pure].
 
@@ -1130,8 +1149,10 @@ Ltac zesu_run_pass_v1 :=
         literal; it fires only when every other step refused. *)
      WrappedWord.zesu_wrapped_index_step |
      (* Then: a pure equation on byte positions of an existential list is
-        rewritten so that unification sets the list. *)
+        rewritten so that unification sets the list; a branch fact holding
+        such a window states it as byte positions too. *)
      BytePositionEquations.zesu_byte_position_pure_step |
+     BytePositionEquations.zesu_le_window_rewrite_hypothesis |
      zesu_unfold_let_id_goal]; zesu_diag_step_end; liShow;
     try zesu_finish_closed_wand;
     try zesu_finish_framed_wand;
@@ -1142,7 +1163,7 @@ Ltac zesu_run_pass_v2 :=
   try zesu_prepare_uninit_goal;
   try zesu_normalize_find_mem_address;
   unshelve (time "zesu_run" repeat first
-    [zesu_diag_step | zesu_target_registered_intro_if_enabled | zesu_array_load_preselect | zesu_array_load_priority | zesu_conjunct_match_if_enabled | zesu_run_pass_steps | zesu_close_matching_trace_tail | zesu_open_trace_exist | zesu_rule_set_v2_steps | WrappedWord.zesu_wrapped_index_step | BytePositionEquations.zesu_byte_position_pure_step | zesu_unfold_let_id_goal]; zesu_diag_step_end; liShow;
+    [zesu_diag_step | zesu_target_registered_intro_if_enabled | zesu_array_load_preselect | zesu_array_load_priority | zesu_conjunct_match_if_enabled | zesu_run_pass_steps | zesu_close_matching_trace_tail | zesu_open_trace_exist | zesu_rule_set_v2_steps | WrappedWord.zesu_wrapped_index_step | BytePositionEquations.zesu_byte_position_pure_step | BytePositionEquations.zesu_le_window_rewrite_hypothesis | zesu_unfold_let_id_goal]; zesu_diag_step_end; liShow;
     try zesu_finish_closed_wand;
     try zesu_finish_framed_wand;
     zesu_finish).
