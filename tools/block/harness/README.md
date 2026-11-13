@@ -155,7 +155,7 @@ They are not measurements of prover time.
 Direct operation timings must confirm any remaining overhead.
 
 Every shared CLI command enters `zesuworkloads.slice` before preparation.
-The parent retains its 175 GiB fence and zero swap.
+The parent retains its fence (the account MemoryMax less 40 GiB) and zero swap.
 Imported preparation and execution operations also require that parent.
 An environment flag cannot replace the actual cgroup check.
 
@@ -211,7 +211,7 @@ Later accounting checks that attestation and the exact inner identity.
 `compiler()` retains its separate strict token checks.
 Legacy actors without this attestation receive no new identity permission.
 Growth updates use the same transaction and preserve the token file identity.
-The 175 GiB slice fence, 20 GiB headroom, and account limits remain unchanged.
+The workload slice fence, 20 GiB headroom, and account limits remain unchanged.
 
 A token release requires its exact generation, file identity, and closed compiler leaf.
 Released token paths cannot serve another reservation.
