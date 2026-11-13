@@ -1092,6 +1092,16 @@ Ltac zesu_run_pass_steps :=
      zesu_open_matching_two_level_frame |
      zesu_extract_matching_descriptor_pure].
 
+(* A pass that stopped inside a let-bound continuation leaves it in the next
+   pass's goal as `LET_ID T args`, the let variable gone. Lithium's let step
+   unfolds only a variable head, so it stops there; unfold the wrapper. *)
+Ltac zesu_unfold_let_id_goal :=
+  lazymatch goal with
+  | |- environments.envs_entails _ ?conclusion =>
+      lazymatch conclusion with context [@LET_ID] => idtac end;
+      progress unfold LET_ID
+  end.
+
 Ltac zesu_run_pass_v1 :=
   zesu_expose_environment_alias;
   try zesu_prepare_uninit_goal;
@@ -1121,7 +1131,8 @@ Ltac zesu_run_pass_v1 :=
      WrappedWord.zesu_wrapped_index_step |
      (* Then: a pure equation on byte positions of an existential list is
         rewritten so that unification sets the list. *)
-     BytePositionEquations.zesu_byte_position_pure_step]; zesu_diag_step_end; liShow;
+     BytePositionEquations.zesu_byte_position_pure_step |
+     zesu_unfold_let_id_goal]; zesu_diag_step_end; liShow;
     try zesu_finish_closed_wand;
     try zesu_finish_framed_wand;
     zesu_finish).
@@ -1131,7 +1142,7 @@ Ltac zesu_run_pass_v2 :=
   try zesu_prepare_uninit_goal;
   try zesu_normalize_find_mem_address;
   unshelve (time "zesu_run" repeat first
-    [zesu_diag_step | zesu_target_registered_intro_if_enabled | zesu_array_load_preselect | zesu_array_load_priority | zesu_conjunct_match_if_enabled | zesu_run_pass_steps | zesu_close_matching_trace_tail | zesu_open_trace_exist | zesu_rule_set_v2_steps | WrappedWord.zesu_wrapped_index_step | BytePositionEquations.zesu_byte_position_pure_step]; zesu_diag_step_end; liShow;
+    [zesu_diag_step | zesu_target_registered_intro_if_enabled | zesu_array_load_preselect | zesu_array_load_priority | zesu_conjunct_match_if_enabled | zesu_run_pass_steps | zesu_close_matching_trace_tail | zesu_open_trace_exist | zesu_rule_set_v2_steps | WrappedWord.zesu_wrapped_index_step | BytePositionEquations.zesu_byte_position_pure_step | zesu_unfold_let_id_goal]; zesu_diag_step_end; liShow;
     try zesu_finish_closed_wand;
     try zesu_finish_framed_wand;
     zesu_finish).
