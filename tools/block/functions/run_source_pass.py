@@ -109,7 +109,8 @@ def main():
             try:
                 seed, call_public, call_report = call_return_seed(
                     edges, call=call, function_root=ROOT, root_seed=seeds[roots[next(iter(origins))]],
-                    shapes=shapes, vocabulary=vocabulary, constants=domain['constants'])
+                    shapes=shapes, vocabulary=vocabulary, constants=domain['constants'],
+                    origin_seeds=[seeds[pc] for pc in sorted(origins)])
             except CallRefused as error:
                 refusals[site] = 'call boundary refused: ' + str(error)
                 continue

@@ -225,16 +225,24 @@ def _atoms(text):
     return set(re.findall(r"(?<![\w'.])[A-Za-z_][\w']*", re.sub(r'"[^"]*"', '', text)))
 
 
-def call_return_seed(edges, *, call, function_root, root_seed, shapes, vocabulary, constants=None):
-    """Return the OwnedSeed of a call's return site and a report of what it carries."""
+def call_return_seed(edges, *, call, function_root, root_seed, shapes, vocabulary, constants=None, origin_seeds=()):
+    """Return the OwnedSeed of a call's return site and a report of what it carries.
+
+    `origin_seeds` are the seeds the call-site paths start from. A join or loop-head seed
+    between the root and the call binds its own names (e.g. machine_x18); the call-site
+    state mentions them, so the return seed declares them as it declares root binders."""
     if not edges:
         raise CallRefused('No path reaches the call site.')
     source_path = Path(function_root) / call['spec_source']
     spec_text = source_path.read_text()
     spec = parse_machine_call_spec(spec_text, call['spec'])
+    inherited = {}
+    for seed in (root_seed, *origin_seeds):
+        for binder in seed.ownership['binders']:
+            inherited.setdefault(binder['name'], binder)
     # A call after an earlier call keeps the earlier call's binders: its own
     # binders take the first free prefix call_, call2_, call3_, ...
-    taken = {binder['name'] for binder in root_seed.ownership['binders']}
+    taken = set(inherited)
     for edge in edges:
         for value in _state_from_result(edge['state']).registers.values():
             taken.update(_inputs(value))
@@ -364,7 +372,7 @@ def call_return_seed(edges, *, call, function_root, root_seed, shapes, vocabular
     # A call argument that nothing else in the seed mentions (an entry witness, or
     # a call-site register that the paths disagree on) is closed inside the facts.
     elsewhere = set(_atoms(' '.join(_coq(value) for key, value in registers.items() if GPR.fullmatch(key))))
-    candidates = {binder['name']: binder['type'] for binder in ownership['binders']}
+    candidates = {name: binder['type'] for name, binder in inherited.items()}
     candidates.update({prefix + 'site_' + key: 'bv 64' for key in widened})
     inner = [(name, kind) for name, kind in candidates.items()
              if name in _atoms(' '.join(facts)) and name not in elsewhere]
@@ -484,13 +492,14 @@ def call_return_seed(edges, *, call, function_root, root_seed, shapes, vocabular
     for split in [split for split in splits.values() if 'post' in split]:
         binders.append({'name': fresh[split['post']], 'type': post_types[split['post']],
                         'expression': input_expr(fresh[split['post']], None).to_dict()})
-    # Root binders that the seed still mentions (entry witnesses passed as arguments).
+    # Inherited binders that the seed still mentions (entry witnesses passed as arguments,
+    # join and loop-head binders of the origin seeds).
     text = ' '.join([node.get('original_component', node.get('coq', '')) for node in nodes
                      if node.get('id') != prefix + 'facts']
                     + [name for value in registers.values() for name in _inputs(value)]
                     + [name for condition in state.conditions for name in _inputs(condition)])
     names = {binder['name'] for binder in binders}
-    for binder in ownership['binders']:
+    for binder in inherited.values():
         if binder['name'] in _atoms(text) and binder['name'] not in names:
             binders.append({key: value for key, value in binder.items() if key != 'scope'})
             names.add(binder['name'])
