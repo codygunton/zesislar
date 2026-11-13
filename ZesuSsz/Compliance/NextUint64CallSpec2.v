@@ -61,9 +61,9 @@ Proof.
   reflexivity.
 Qed.
 
-Lemma nextUint64_slice_to_words `{!islaG Sigma} (address pointer length : Z) :
-  address ↦ₘ∗ nextUint64SliceImage pointer length -∗
-  address ↦ₘ Z_to_bv 64 pointer ∗ (address + 8) ↦ₘ Z_to_bv 64 length.
+Lemma nextUint64_slice_to_words `{!islaG Sigma} (address pointer count : Z) :
+  address ↦ₘ∗ nextUint64SliceImage pointer count -∗
+  address ↦ₘ Z_to_bv 64 pointer ∗ (address + 8) ↦ₘ Z_to_bv 64 count.
 Proof.
   iIntros "Hslice". unfold nextUint64SliceImage.
   iDestruct (mem_mapsto_array_app with "Hslice") as "[Hpointer Hlength]".
