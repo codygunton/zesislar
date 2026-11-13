@@ -5,6 +5,7 @@ Require Import ZesuSsz.Evidence.EntryWitnessSelector.
 Require Import ZesuSsz.Automation2.ResourceGroups.
 From Coq Require Import Strings.String Lists.List.
 From iris.proofmode Require Import environments.
+Require ZesuSsz.Automation2.VmClosed.
 Set Default Proof Mode "Classic".
 
 Class ZesuStepSourceWitnesses : Prop := zesu_step_source_witnesses : True.
@@ -187,7 +188,7 @@ End DeclareSource.
 
 (* The owned PC and declaration number select the source location before intro. *)
 Ltac zesu_read_source_declaration_key pc variable width continuation :=
-  is_closed_term pc;
+  ZesuSsz.Automation2.VmClosed.zesu_closed_term pc;
   let address := eval vm_compute in (bv_unsigned pc) in
   let location := constr:(_ :
     ZesuSourceDeclaration (@BV 64%N address _) variable width _) in

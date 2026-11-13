@@ -40,7 +40,7 @@ Ltac zesu_finish_mask :=
 Ltac zesu_finish_constant :=
   lazymatch goal with
   | |- @eq (bv _) ?left ?right =>
-      is_closed_term left; is_closed_term right;
+      ZesuSsz.Automation2.VmClosed.zesu_closed_term left; ZesuSsz.Automation2.VmClosed.zesu_closed_term right;
       (solve [apply bv_eq; first [ZesuSsz.Automation2.VmClosed.zesu_vm_closed_decide | reflexivity]])
   end.
 
@@ -48,7 +48,7 @@ Ltac zesu_normalize_memory_constants :=
   repeat match goal with
   | |- context[mem_mapsto _ _ (bv_add ?left ?right)] =>
       let value := constr:(bv_add left right) in
-      is_closed_term value;
+      ZesuSsz.Automation2.VmClosed.zesu_closed_term value;
       let integer := ZesuSsz.Automation2.VmClosed.zesu_vm_eval_closed (bv_unsigned value) in
       lazymatch integer with Z0 => idtac | Zpos _ => idtac | Zneg _ => idtac end;
       let Hconstant := fresh "Hconstant" in
