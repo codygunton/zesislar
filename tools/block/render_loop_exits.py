@@ -80,10 +80,12 @@ WITNESS = re.compile(r'\b(fp_seed_\w+|forward_witness_\w+)\b')
 
 def forward_declaration(pc):
     import subprocess
-    path = f'{PROFILE.generated_directory}/Pilot{pc}Entries.v'
+    # At FORWARD_BASE the generated names carried the block's last four address digits.
+    digits = PROFILE.pc(pc)[-4:]
+    path = f'{PROFILE.generated_directory}/Pilot{digits}Entries.v'
     source = subprocess.run(['git', '-C', str(ROOT), 'show', FORWARD_BASE + ':' + path],
                             capture_output=True, text=True, check=True).stdout
-    match = re.search(r'^Definition fp_machineAt' + pc + r'_ForwardA0N0' + re.escape(SIGNATURE) +
+    match = re.search(r'^Definition fp_machineAt' + digits + r'_ForwardA0N0' + re.escape(SIGNATURE) +
                       r' : iProp Sigma := \(∃ (.*?), \((.*)\)\)%I\.$', source, re.M)
     if match is None:
         raise ValueError('The forward declaration shape changed: ' + pc)
