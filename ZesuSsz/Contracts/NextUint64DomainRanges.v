@@ -97,6 +97,14 @@ Proof. intro domain. pose proof (nextUint64BoundaryDomainRanges params domain). 
     (0 <= nextUint64InputEnd params < bv_modulus 64%N)%Z.
 Proof. intro domain. pose proof (nextUint64BoundaryDomainRanges params domain). tauto. Qed.
 
+(* The decodeItem call needs its stack pointer 16-byte aligned. The domain
+   states this as a divisibility fact; registered here, a block proof
+   saturates it beside the ranges while the domain stays folded. *)
+#[export] Instance nextUint64BoundaryDomainStackAlignmentDerivedFacts (params : NextUint64Args) :
+  ZesuDerivedFacts (nextUint64BoundaryDomain params)
+    (16 | nextStackPointer (nextUint64Base params))%Z.
+Proof. unfold nextUint64BoundaryDomain; cbv zeta. intro domain. tauto. Qed.
+
 (* The function-entry statement's return-address conjunct: the Level-1
    layout keeps the return address in range and 4-aligned. *)
 Lemma nextUint64BoundaryDomainReturnAlignment (params : NextUint64Args) :

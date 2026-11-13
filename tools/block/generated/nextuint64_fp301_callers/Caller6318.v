@@ -12,6 +12,7 @@ Require Import ZesuSsz.Contracts.NextUint64BlockEntries.
 Require Import ZesuSsz.Contracts.NextUint64Selected.
 Require Import ZesuSsz.Automation2.All.
 Local Open Scope Z_scope.
+#[local] Typeclasses Transparent nextUint64SelectedCode.
 
 Definition DesignedEntry_800d6318
     `{!islaG Sigma} `{!threadG} (args : NextUint64Args) (returnAddress : Z) (K : iProp Sigma) : iProp Sigma :=
