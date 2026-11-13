@@ -4,6 +4,7 @@ Require Import stdpp.bitvector.definitions.
 From lithium Require Import instances.
 From iris.algebra Require Import dfrac.
 From Coq Require Import List NArith ZArith.
+Require ZesuSsz.Automation2.VmClosed.
 Import ListNotations.
 Set Default Proof Mode "Classic".
 
@@ -45,7 +46,7 @@ End scalar_identity.
     lazymatch value_type with
     | _ -> bv ?width =>
         tryif has_evar width then fail 1 "The word width contains an evar." else idtac;
-        tryif is_closed_term width then idtac else fail 1 "The word width is symbolic.";
+        tryif ZesuSsz.Automation2.VmClosed.zesu_closed_term width then idtac else fail 1 "The word width is symbolic.";
         let permitted := eval vm_compute in
           (N.ltb 0 width && N.eqb (width mod 8) 0)%bool in
         lazymatch permitted with

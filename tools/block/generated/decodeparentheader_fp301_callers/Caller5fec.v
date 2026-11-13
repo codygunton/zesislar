@@ -9,9 +9,10 @@ Require Import isla.riscv64.riscv64.
 From Coq Require Import Lists.List ZArith.ZArith NArith.NArith.
 Require Import stdpp.bitvector.definitions.
 Require Import ZesuSsz.Contracts.ParentHeaderContract.
-Require Import ZesuSsz.Contracts.ParentHeaderLookupCode.
+Require Import ZesuSsz.Contracts.ParentHeaderContract.
 Require Import ZesuSsz.Automation2.All.
 Local Open Scope Z_scope.
+#[local] Typeclasses Transparent parentHeaderSelectedCode.
 
 Definition DesignedEntry_800d5fec
     `{!islaG Sigma} `{!threadG} (args : ParentHeaderArgs) (returnAddress : Z) (K : iProp Sigma) : iProp Sigma :=
@@ -23,7 +24,7 @@ Global Typeclasses Opaque DesignedEntry_800d5fec.
 Lemma DesignedBoundary_800d5fec `{!islaG Sigma} `{!threadG} (args : ParentHeaderArgs) (returnAddress : Z) (K : iProp Sigma)  :
   instr_pre 0x800d5fec (ZesuSsz.Generated.DecodeParentHeader.FP301.Pilot5fecEntries.fp_machineAt5fec (args) (returnAddress) (K))%I -∗
   instr_pre 0x800d6000 (ZesuSsz.Generated.DecodeParentHeader.FP301.Pilot6000Entries.fp_machineAt6000 (args) (returnAddress) (K))%I -∗
-  parentHeaderLookupCode -∗
+  parentHeaderSelectedCode -∗
   instr_body 0x800d5fec
     (DesignedEntry_800d5fec args returnAddress K).
 Proof.
