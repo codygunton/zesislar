@@ -282,6 +282,7 @@ Proof.
   pose proof (bv_unsigned_in_range 64 (parentHeaderStackPointer args)).
   pose proof (bv_unsigned_in_range 64 (parentHeaderReturnAddress args)).
   unfold bv_modulus in *. cbn in *.
-  intros (Hlength & _ & _ & _ & Hlow & Hhigh & _ & Hres & Hresh & Hsp & Hsph & _ & Hra & _).
+  intros (Hlength & _ & _ & _ & Hlow & Hhigh & _ & Hres & Hresh & Hsp & Hsph &
+    _ & Hra & Hsep & _).
   rewrite Hlength. lia.
 Qed.

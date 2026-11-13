@@ -13,9 +13,66 @@ Require Import ZesuSsz.Contracts.NextUint64BlockEntries.
 Require Import ZesuSsz.Contracts.NextUint64Selected.
 Require Import ZesuSsz.Contracts.NextUint64Contract.
 Require Import ZesuSsz.Contracts.NextUint64CallSpec2.
+Require Import ZesuSsz.Contracts.NextUint64DomainRanges.
+Require Import ZesuSsz.Contracts.IslarisMemory.
+Require Import ZesuSsz.Contracts.AbiBytes.
 Import ListNotations.
 Open Scope Z_scope.
 Open Scope stdpp_scope.
+
+(* The slice is two 64-bit words; the contract states it as 16 bytes. *)
+Lemma nextUint64_word_to_bytes `{!islaG Sigma} (address : Z) (word : bv 64) :
+  address ↦ₘ word -∗ address ↦ₘ∗ word64Bytes (bv_unsigned word).
+Proof.
+  iIntros "Hword".
+  iDestruct (mem_mapsto_mapsto_to_byte_array_len 8 address _ word with "Hword")
+    as "Hbytes".
+  rewrite nextUint64Word64BytesEncoding. iExact "Hbytes".
+Qed.
+
+Lemma nextUint64_bytes_to_word `{!islaG Sigma} (address value : Z) :
+  address ↦ₘ∗ word64Bytes value -∗ address ↦ₘ Z_to_bv 64 value.
+Proof.
+  iIntros "Hbytes".
+  iDestruct (mem_mapsto_byte_array_to_mapsto_len 8 address _ (word64Bytes value)
+    with "Hbytes") as "Hword"; [reflexivity |].
+  rewrite -nextUint64Word64BytesEncoding little_endian_to_bv_to_little_endian;
+    [| lia].
+  have -> : Z_to_bv (8 * N.of_nat 8) (value `mod` 2 ^ (8 * Z.of_N 8)) =
+    Z_to_bv 64 value.
+  { apply bv_eq. rewrite !Z_to_bv_unsigned. unfold bv_wrap, bv_modulus.
+    cbn. apply Z.mod_mod. lia. }
+  iExact "Hword".
+Qed.
+
+Lemma nextUint64_words_to_slice `{!islaG Sigma} (address : Z)
+    (pointer length : bv 64) :
+  address ↦ₘ pointer -∗ (address + 8) ↦ₘ length -∗
+  address ↦ₘ∗ nextUint64SliceImage (bv_unsigned pointer) (bv_unsigned length).
+Proof.
+  iIntros "Hpointer Hlength". unfold nextUint64SliceImage.
+  iDestruct (nextUint64_word_to_bytes with "Hpointer") as "Hpointer".
+  iDestruct (nextUint64_word_to_bytes with "Hlength") as "Hlength".
+  have Hnext : address + 8 = address + Z.of_N (8 `div` 8) * Z.of_nat 8
+    by cbn; lia.
+  iEval (rewrite Hnext) in "Hlength".
+  iApply (mem_mapsto_array_app_combine_at 8 address _ _ _ 8
+    with "Hpointer Hlength").
+  reflexivity.
+Qed.
+
+Lemma nextUint64_slice_to_words `{!islaG Sigma} (address pointer length : Z) :
+  address ↦ₘ∗ nextUint64SliceImage pointer length -∗
+  address ↦ₘ Z_to_bv 64 pointer ∗ (address + 8) ↦ₘ Z_to_bv 64 length.
+Proof.
+  iIntros "Hslice". unfold nextUint64SliceImage.
+  iDestruct (mem_mapsto_array_app with "Hslice") as "[Hpointer Hlength]".
+  have Hnext : address + Z.of_N (8 `div` 8) *
+      Z.of_nat (length (word64Bytes pointer)) = address + 8
+    by cbn; lia.
+  iEval (rewrite Hnext) in "Hlength".
+  iSplitL "Hpointer"; by iApply nextUint64_bytes_to_word.
+Qed.
 
 (* nextUint64CallSpec2 follows from the compositional theorem
    NextUint64ContractCorrect: the call boundary supplies its entry, and its
@@ -32,7 +89,7 @@ Proof.
   zesu_unpack_call "Hspec".
   subst r10 r11 r12 r13 r14 r15 r16 r17.
   iDestruct "Hrest" as (inputPointer inputLength inputEndBits input)
-    "(Hend & Hfree & Hslice & Hinput & Hresult & %Hlength & %Hdomain & Hret)".
+    "(Hend & Hfree & HsliceP & HsliceL & Hinput & Hresult & %Hlength & %Hdomain & Hret)".
   destruct (valu_has_bits_shape r8 64 Hr8) as [b8 ->].
   destruct (valu_has_bits_shape r9 64 Hr9) as [b9 ->].
   destruct (valu_has_bits_shape r18 64 Hr18) as [b18 ->].
@@ -45,7 +102,8 @@ Proof.
   destruct (valu_has_bits_shape r25 64 Hr25) as [b25 ->].
   destruct (valu_has_bits_shape r26 64 Hr26) as [b26 ->].
   destruct (valu_has_bits_shape r27 64 Hr27) as [b27 ->].
-  iEval (cbn [lookup_total list_lookup_total]) in "Hslice Hresult Hret".
+  iEval (cbn [lookup_total list_lookup_total]) in "HsliceP HsliceL Hresult Hret".
+  iDestruct (nextUint64_words_to_slice with "HsliceP HsliceL") as "Hslice".
   set (base := {| nextInputPointer := bv_unsigned inputPointer;
     nextInputBytes := input;
     nextSlicePointer := bv_unsigned b11;
@@ -206,7 +264,8 @@ Proof.
   iExists (RVal_Bits f11). iFrame "R11". iExists f11.
   iSplit; [done|].
   iFrame "R2 Hstack".
-  iExists result. iFrame "Hend Hfree Hinput Hslice Hresult".
+  iDestruct (nextUint64_slice_to_words with "Hslice") as "[HsliceP HsliceL]".
+  iExists result. iFrame "Hend Hfree Hinput HsliceP HsliceL Hresult".
   iPureIntro. split; [| exact I].
   unfold nextUint64RootResult in Hmeaning |- *.
   cbn in Hmeaning |- *. exact Hmeaning.
