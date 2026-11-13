@@ -6220,15 +6220,7 @@
             "mode": "import"
           },
           {
-            "module": "ZesuSsz.Contracts.ParentHeaderMemcpyService",
-            "mode": "import"
-          },
-          {
             "module": "ZesuSsz.Contracts.NextUint64Selected",
-            "mode": "import"
-          },
-          {
-            "module": "ZesuSsz.Contracts.ParentHeaderSelected",
             "mode": "import"
           },
           {
@@ -6265,9 +6257,7 @@
           "ZesuSsz/Contracts/ParentHeaderLevel1.v": "7d665aa12d4c32fbb08f1e41421744501a2ca8d0c2dae8c3870405da75a78ba6",
           "ZesuSsz/Contracts/RlpDecodeItemContract.v": "595fab72b6fcaa0603a8bd35f5e3b4433a380493a076f2bf8d05116738355d9a",
           "ZesuSsz/Contracts/DecodeItemSelected.v": "a8d22f12124a5c2eace1696bb13de3e774caa0e1b2a354819c03bffec26fe804",
-          "ZesuSsz/Contracts/ParentHeaderMemcpyService.v": "77248046b593e864631350b0092743d3ccbf5a5fe144968317adb8911f6998c8",
           "ZesuSsz/Contracts/NextUint64Selected.v": "895a07a3a322537d848aa1e190515e5163e3a4e50edd2f7d241358b2f7766640",
-          "ZesuSsz/Contracts/ParentHeaderSelected.v": "21c4ae10ca952f07291508caba10dcc836a78afad4260661a4ffc26acfd74f7c",
           "ZesuSsz/Contracts/RlpDecodeItemByteFold.v": "6f80226eadadd5468b46aebc8c48561f54815f94c1989e465d530f6896e4237d",
           "ZesuSsz/Contracts/RlpDecodeItemByteFoldSites.v": "8f8a64ac921387fef087cafeb68204e045dc5e40f7c2ec9d55c4475b9981bee3",
           "ZesuSsz/Contracts/RlpDecodeItemByteFoldBlocks.v": "a504dfa090e1ec91f709ad3c3b5c7df1823dc64159b0b53960a0606a5ffe92a9",
@@ -6284,16 +6274,9 @@
           "ZesuSsz.Contracts.RlpDecodeItemContract.decodeItemEntryResources",
           "ZesuSsz.Contracts.RlpDecodeItemContract.decodeItemExitResources",
           "ZesuSsz.Contracts.DecodeItemSelected.decodeItemSelectedCode",
-          "ZesuSsz.Contracts.ParentHeaderMemcpyService.ziskMemcpyServiceEntry",
-          "ZesuSsz.Contracts.ParentHeaderMemcpyService.ziskMemcpyServiceExit",
-          "ZesuSsz.Contracts.ParentHeaderMemcpyService.ziskMemcpyServiceInstrSpec",
-          "ZesuSsz.Contracts.ParentHeaderMemcpyService.memcpyServicePremise",
           "ZesuSsz.Contracts.NextUint64Selected.nextUint64SelectedCode",
           "ZesuSsz.Contracts.NextUint64Selected.nextUint64SelectedEntry",
           "ZesuSsz.Contracts.NextUint64Selected.nextUint64SelectedExit",
-          "ZesuSsz.Contracts.ParentHeaderSelected.parentHeaderSelectedCode",
-          "ZesuSsz.Contracts.ParentHeaderSelected.parentHeaderSelectedEntry",
-          "ZesuSsz.Contracts.ParentHeaderSelected.parentHeaderSelectedExit",
           "ZesuSsz.Contracts.RlpDecodeItemByteFold.decodeItemByteFoldResources",
           "ZesuSsz.Contracts.RlpDecodeItemByteFold.decodeItemByteFoldStringHeader",
           "ZesuSsz.Contracts.RlpDecodeItemByteFold.decodeItemByteFoldListHeader",
