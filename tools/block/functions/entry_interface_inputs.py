@@ -402,7 +402,14 @@ def main():
     seed = public_seed(profile, contract, text)
     facts = domain(profile, contract, text, seed, constants, ram_ends(mapfile))
     (output / 'DOMAIN.json').write_text(json.dumps(facts, indent=2) + '\n')
-    (output / 'SYSTEM-SHAPES.json').write_text(json.dumps(system_shapes(machine, mapfile), indent=2) + '\n')
+    shapes = system_shapes(machine, mapfile)
+    # A system register that the entry fixes to a quantity (as decodeItemSysRegs fixes
+    # zisk_input_end): the interface row names the quantity.
+    for name, quantity in profile['entry_interface'].get('exact_system_registers', {}).items():
+        row, = [row for row in shapes['rows'] if row['key'] == name]
+        row.update(shape='exact', value=input_expr('(Z_to_bv 64%N (' + quantity + '))', 64).to_dict())
+        row.pop('symbol', None)
+    (output / 'SYSTEM-SHAPES.json').write_text(json.dumps(shapes, indent=2) + '\n')
     seed['entry_pc'] = hex(function['entry'])
     seed['source_domain_binding'] = bind(output / 'DOMAIN.json')
     (output / 'SEED.json').write_text(json.dumps(seed, indent=2, ensure_ascii=False) + '\n')

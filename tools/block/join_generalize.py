@@ -6,6 +6,7 @@ source arithmetic only. They never certify an Iris entailment or a native proof.
 from copy import deepcopy
 from dataclasses import dataclass, replace
 import hashlib
+import os
 import json
 from pathlib import Path
 import re
@@ -582,7 +583,10 @@ def drop_unheld_binders(state, components, carried, binders, plan, live_register
                   and (live is None or register in live)]
         arrays = [component['id'] for component in components
                   if component['kind'] == 'byte_array' and _mentions(component.get('source', ''), name)]
-        if needed or arrays:
+        # Measurement-only (ZESU_JOIN_FORGET_UNHELD=1): a register that a successor needs
+        # forgets the binder and takes a fresh value, as for a binder no successor needs.
+        # The class is weaker and stays sound; facts on the forgotten value are lost.
+        if (needed and not os.environ.get('ZESU_JOIN_FORGET_UNHELD')) or arrays:
             raise ValueError('An inherited join binder has no holder and a successor needs it: %s (registers %s, '
                              'arrays %s, live %s)' % (name, needed, arrays,
                                                      'unknown' if live is None else sorted(live)))
@@ -607,6 +611,13 @@ def drop_unheld_binders(state, components, carried, binders, plan, live_register
         before = len(state.conditions)
         state.conditions[:] = [c for c in state.conditions if not _mentions(text(c), name)]
         record['conditions'] = before - len(state.conditions)
+        if os.environ.get('ZESU_JOIN_FORGET_UNHELD'):
+            # Measurement-only: a pure fact on the forgotten binder is dropped with it.
+            for component in components:
+                if (component['kind'] != 'register' and component.get('source', '').startswith('⌜')
+                        and _mentions(component['source'], name)):
+                    component['source'] = '⌜True⌝'
+                    record.setdefault('facts', []).append(component['id'])
         if any(_mentions(component.get('source', ''), name) for component in components
                if component['kind'] != 'register'):
             raise ValueError('An inherited join binder stays in an owned resource: ' + name)
@@ -789,6 +800,12 @@ def generalize_owned_join(alternatives, *, original_seed, entry_pc, vocabulary,
                 carried[key] = list(agreed)
                 continue
             if any(record[key]['source'] != source for record in records[1:]):
+                if (key not in memory_by_id and os.environ.get('ZESU_JOIN_FORGET_UNHELD')
+                        and all(record[key]['source'].startswith('⌜') for record in records)):
+                    # Measurement-only: a pure fact that the edges state differently is dropped.
+                    current['source'] = '⌜True⌝'
+                    components.append(current)
+                    continue
                 if key not in memory_by_id:
                     raise ValueError('A non-memory join resource differs: ' + key)
                 try:

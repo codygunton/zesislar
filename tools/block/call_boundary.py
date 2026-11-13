@@ -189,7 +189,7 @@ def _return_fact(text, fresh):
     return RETURN_WORD.sub(word, text)
 
 
-def _merge_call_sites(edges):
+def _merge_call_sites(edges, prefix=PREFIX):
     """One call-site state: equal values stay; a register that differs becomes a binder."""
     states = [_state_from_result(edge['state']) for edge in edges]
     first = states[0]
@@ -205,7 +205,7 @@ def _merge_call_sites(edges):
         if any(state.registers.get(key) != value for state in states[1:]):
             if not GPR.fullmatch(key):
                 raise CallRefused('The call-site paths hold different system state: ' + key)
-            merged.registers[key] = input_expr(PREFIX + 'site_' + key, value.width)
+            merged.registers[key] = input_expr(prefix + 'site_' + key, value.width)
             widened.append(key)
     merged.conditions = [condition for condition in first.conditions
                          if all(condition in state.conditions for state in states[1:])]
@@ -232,7 +232,17 @@ def call_return_seed(edges, *, call, function_root, root_seed, shapes, vocabular
     source_path = Path(function_root) / call['spec_source']
     spec_text = source_path.read_text()
     spec = parse_machine_call_spec(spec_text, call['spec'])
-    state, widened = _merge_call_sites(edges)
+    # A call after an earlier call keeps the earlier call's binders: its own
+    # binders take the first free prefix call_, call2_, call3_, ...
+    taken = {binder['name'] for binder in root_seed.ownership['binders']}
+    for edge in edges:
+        for value in _state_from_result(edge['state']).registers.values():
+            taken.update(_inputs(value))
+    prefix, layer = PREFIX, 1
+    while any(name.startswith(prefix) for name in taken):
+        layer += 1
+        prefix = 'call%d_' % layer
+    state, widened = _merge_call_sites(edges, prefix)
     return_pc = int(call['return_site_pc'], 0)
     ownership = root_seed.ownership
     image = apply_owned_writes(root_seed.resources, state.writes, conditions=state.conditions,
@@ -259,10 +269,16 @@ def call_return_seed(edges, *, call, function_root, root_seed, shapes, vocabular
         if len(returned) != 1:
             raise CallRefused('The spec does not return its array at argument ' + str(argument))
         if returned[0]['binder'] == binder:
-            # The callee keeps these bytes: the design names the caller value.
-            instantiation[binder] = design[binder]['caller_value']
+            # The callee keeps these bytes: the design names the caller value. A value
+            # that is a slice of a caller array names that array as `slice_of`, and
+            # `{argv:N}` in it stands for the call-site value of argument N.
+            value = design[binder]['caller_value']
+            for number, argument in enumerate(values['argv']):
+                value = value.replace('{argv:%d}' % number, argument)
+            instantiation[binder] = value
+            whole = design[binder].get('slice_of', design[binder]['caller_value'])
             owner = [resource for resource in resources.values()
-                     if resource.byte_array is not None and resource.byte_array.value == design[binder]['caller_value']]
+                     if resource.byte_array is not None and resource.byte_array.value == whole]
             if len(owner) != 1 or image.updates[owner[0].id]:
                 raise CallRefused('The kept array has no unchanged caller resource: ' + binder)
             kept.add(owner[0].id)
@@ -285,6 +301,14 @@ def call_return_seed(edges, *, call, function_root, root_seed, shapes, vocabular
     frames = [resource for resource in resources.values()
               if _offset(frame_address, resource.base) == 0 and resource.byte_array is None
               and resource.length == stack]
+    if not frames:
+        # The callee frame lies inside a larger uninitialized caller region that holds
+        # no store; the region comes back uninitialized as a whole.
+        frames = [resource for resource in resources.values()
+                  if resource.byte_array is None and isinstance(resource.length, int)
+                  and _offset(frame_address, resource.base) is not None
+                  and _offset(frame_address, resource.base) + stack <= resource.length
+                  and not image.updates[resource.id]]
     if len(frames) != 1:
         raise CallRefused('The caller owns no uninitialized callee frame of ' + str(stack) + ' bytes.')
     callee_frame = frames[0].id
@@ -295,7 +319,7 @@ def call_return_seed(edges, *, call, function_root, root_seed, shapes, vocabular
             raise CallRefused('The spec does not return its register ' + row['register'])
         instantiation[row['binder']] = '(' + _coq(state.registers[row['register']]) + ')'
     post_binder_names = [name for name, _ in spec['post_binders']]
-    fresh = {name: PREFIX + name for name in post_binder_names}
+    fresh = {name: prefix + name for name in post_binder_names}
 
     # The seed's general registers.
     registers, binders = {}, []
@@ -306,9 +330,9 @@ def call_return_seed(edges, *, call, function_root, root_seed, shapes, vocabular
         if name in PRESERVED:
             registers[name] = state.registers[name]
         else:
-            registers[name] = input_expr(PREFIX + name, 64)
-            binders.append({'name': PREFIX + name, 'type': 'bv 64',
-                            'expression': input_expr(PREFIX + name, 64).to_dict()})
+            registers[name] = input_expr(prefix + name, 64)
+            binders.append({'name': prefix + name, 'type': 'bv 64',
+                            'expression': input_expr(prefix + name, 64).to_dict()})
     # System registers: a mask or bits shape comes back as a new value. It keeps
     # the seed's scoped symbol, so every call-site fact on the old value is dropped
     # and only the shape's mask fact is stated again.
@@ -341,7 +365,7 @@ def call_return_seed(edges, *, call, function_root, root_seed, shapes, vocabular
     # a call-site register that the paths disagree on) is closed inside the facts.
     elsewhere = set(_atoms(' '.join(_coq(value) for key, value in registers.items() if GPR.fullmatch(key))))
     candidates = {binder['name']: binder['type'] for binder in ownership['binders']}
-    candidates.update({PREFIX + 'site_' + key: 'bv 64' for key in widened})
+    candidates.update({prefix + 'site_' + key: 'bv 64' for key in widened})
     inner = [(name, kind) for name, kind in candidates.items()
              if name in _atoms(' '.join(facts)) and name not in elsewhere]
     existential = inner + existential
@@ -362,7 +386,7 @@ def call_return_seed(edges, *, call, function_root, root_seed, shapes, vocabular
             node.update(original_component='"%s" ↦ᵣ RVal_Bits %s' % (component['name'], _coq(registers[component['name']])),
                         value_coq=_coq(registers[component['name']]))
             node.pop('symbolic_witness', None)
-            if registers[component['name']].op == 'input' and registers[component['name']].value.startswith(PREFIX):
+            if registers[component['name']].op == 'input' and registers[component['name']].value.startswith(prefix):
                 node['symbolic_witness'] = registers[component['name']].value
         elif key == callee_frame:
             pass
@@ -373,10 +397,26 @@ def call_return_seed(edges, *, call, function_root, root_seed, shapes, vocabular
             updates = image.updates[key]
             if any(isinstance(offset, str) for offset in updates):
                 raise CallRefused('A caller span next to the callee output holds a store at a symbolic offset: ' + key)
+            # A span beside the callee output splits further into maximal runs that are
+            # all written or all unwritten.
+            runs = []
             for index, (start, end) in enumerate(pieces):
+                if index == 1 or start == end:
+                    runs.append((index, start, end))
+                    continue
+                cut = start
+                for offset in range(start + 1, end + 1):
+                    if offset == end or (offset in updates) != (cut in updates):
+                        runs.append((index, cut, offset))
+                        cut = offset
+            split['pieces'] = []
+            for number, (index, start, end) in enumerate(runs):
                 if start == end:
                     continue
-                piece_id = key if index == 0 else key + ('_call_output' if index == 1 else '_call_after')
+                piece_id = key if number == 0 else key + ('_call_output' if index == 1 else '_call_after')
+                if index != 1 and number > 0 and any(other[0] == index for other in runs[:number]):
+                    piece_id = '%s_call_%s_%d' % (key, 'before' if index == 0 else 'after', start)
+                split['pieces'].append(piece_id)
                 address = '(' + resource.address_z + ' + ' + str(start) + ')' if start else resource.address_z
                 written = [offset for offset in range(start, end) if offset in updates]
                 if index == 1:
@@ -409,8 +449,8 @@ def call_return_seed(edges, *, call, function_root, root_seed, shapes, vocabular
     terminal = next(index for index, node in enumerate(nodes) if node.get('coq') == 'True')
     nodes[terminal:terminal] = [
         {'kind': 'opaque', 'id': row['resource_id'] + '_length', 'coq': '⌜' + row['coq'] + '⌝'}
-        for row in extra_facts] + [{'kind': 'opaque', 'id': 'call_facts', 'coq': '⌜' + carried + '⌝'}] + [
-        {'kind': 'opaque', 'id': 'call_return_fact_%d' % index, 'coq': '⌜' + _return_fact(row['coq'], fresh) + '⌝'}
+        for row in extra_facts] + [{'kind': 'opaque', 'id': prefix + 'facts', 'coq': '⌜' + carried + '⌝'}] + [
+        {'kind': 'opaque', 'id': prefix + 'return_fact_%d' % index, 'coq': '⌜' + _return_fact(row['coq'], fresh) + '⌝'}
         for index, row in enumerate(call.get('return_facts', []))]
     post_types = dict(spec['post_binders'])
     for split in splits.values():
@@ -418,7 +458,7 @@ def call_return_seed(edges, *, call, function_root, root_seed, shapes, vocabular
                         'expression': input_expr(fresh[split['post']], None).to_dict()})
     # Root binders that the seed still mentions (entry witnesses passed as arguments).
     text = ' '.join([node.get('original_component', node.get('coq', '')) for node in nodes
-                     if node.get('id') != 'call_facts']
+                     if node.get('id') != prefix + 'facts']
                     + [name for value in registers.values() for name in _inputs(value)]
                     + [name for condition in state.conditions for name in _inputs(condition)])
     names = {binder['name'] for binder in binders}
@@ -427,7 +467,7 @@ def call_return_seed(edges, *, call, function_root, root_seed, shapes, vocabular
             binders.append({key: value for key, value in binder.items() if key != 'scope'})
             names.add(binder['name'])
     for key in widened:
-        name = PREFIX + 'site_' + key
+        name = prefix + 'site_' + key
         if name in _atoms(text) and name not in names:
             binders.append({'name': name, 'type': 'bv 64', 'expression': input_expr(name, 64).to_dict()})
 
@@ -446,7 +486,7 @@ def call_return_seed(edges, *, call, function_root, root_seed, shapes, vocabular
             continue
         copied.append(fact)
         for key in ids & set(splits):
-            for piece in (key + '_call_output', key + '_call_after'):
+            for piece in [piece for piece in splits[key]['pieces'] if piece != key]:
                 clone = json.loads(json.dumps(fact))
                 for field in ('left', 'right', 'resource_id'):
                     if clone['terms'].get(field) == key:
@@ -473,5 +513,5 @@ def call_return_seed(edges, *, call, function_root, root_seed, shapes, vocabular
               'spec': call['spec_module'] + '.' + call['spec'], 'edges': len(edges),
               'widened_call_site_registers': widened, 'replaced': splits, 'kept': sorted(kept),
               'callee_frame': callee_frame, 'carried_fact': carried,
-              'havoc_registers': [binder['name'] for binder in binders if binder['name'].startswith(PREFIX + 'x')]}
+              'havoc_registers': [binder['name'] for binder in binders if binder['name'].startswith(prefix + 'x')]}
     return seed, public, report
