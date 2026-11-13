@@ -219,7 +219,10 @@ Ltac zesu_byte_array_owner_offset expanded base width count continuation :=
    little-endian bytes. The offset comes from the modular image, so an owner
    that cannot match costs no solver call. The equality is closed by ring or
    by the stack address solver, which normalizes wrapped `bv_unsigned` sums.
-   An owner that matches no offset stays as it is. *)
+   An owner already written at the requested address (a word cell at the
+   base after closed offsets were reduced) needs no rewrite: `iEval` refuses
+   a rewrite that changes nothing. An owner that matches no offset stays as
+   it is. *)
 Ltac zesu_byte_array_place_owner name base count :=
   iMatchHyp ltac:(fun H owner =>
     constr_eq H name;
@@ -227,12 +230,13 @@ Ltac zesu_byte_array_place_owner name base count :=
       let expanded := zesu_byte_array_expand_locals available in
       zesu_byte_array_owner_offset expanded base width count ltac:(fun offset =>
         let requested := zesu_byte_array_offset_requested base offset in
-        let Heq := fresh "HarrayOwnerAddress" in
-        assert (Heq : available = requested) by
-          (change (expanded = requested);
-           first [ring | zesu_byte_array_address_equal]);
-        iEval (rewrite Heq) in H; clear Heq;
-        convert H)) in
+        tryif constr_eq available requested then convert H else (
+          let Heq := fresh "HarrayOwnerAddress" in
+          assert (Heq : available = requested) by
+            (change (expanded = requested);
+             first [ring | zesu_byte_array_address_equal]);
+          iEval (rewrite Heq) in H; clear Heq;
+          convert H))) in
     lazymatch owner with
     | @mem_mapsto _ _ 64%N ?available _ _ =>
         place available 8%Z ltac:(fun H =>

@@ -320,7 +320,8 @@ Ltac zesu_solve_goal_selected site closer :=
     ZesuSsz.Automation2.SearchBudget.zesu_solve_selected site closer].
 (* Whether a fact that entered the context after the hypothesis of type
    `marker` shares an atom with the goal. Without such a hypothesis the
-   answer is yes. *)
+   answer is yes, and so it is for a goal without atoms: a closed goal
+   needs no fact, so the finisher must still run on it. *)
 Ltac2 zesu_facts_after_share_atom (marker : constr) : bool :=
   let hyps := Control.hyps () in
   let rec after hyps :=
@@ -335,6 +336,9 @@ Ltac2 zesu_facts_after_share_atom (marker : constr) : bool :=
   | Some later =>
       let goal := Ref.ref [] in
       let _ := zesu_select_atoms goal (Control.goal ()) in
+      match Ref.get goal with
+      | [] => true
+      | _ :: _ =>
       List.exist (fun declaration =>
         let (_, body, typ) := declaration in
         match body with
@@ -346,6 +350,7 @@ Ltac2 zesu_facts_after_share_atom (marker : constr) : bool :=
               List.exist (fun atom => List.exist (Constr.equal atom) (Ref.get goal)) (Ref.get mine)
             else false
         end) later
+      end
   end.
 
 Ltac zesu_facts_after_share_term marker :=

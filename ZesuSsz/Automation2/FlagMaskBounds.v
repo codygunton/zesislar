@@ -318,6 +318,24 @@ Ltac zesu_flag_divisibility_shape :=
       lazymatch goal with _ : Z.divide _ _ |- _ => idtac end
   end.
 
+(* A remainder by a closed divisor, before any divisibility fact is in the
+   context: the divisibility may still be folded behind a registered
+   derivation. *)
+Ltac zesu_flag_remainder_goal :=
+  lazymatch goal with
+  | |- context [Z.modulo _ ?divisor] => stdpp.tactics.is_closed_term divisor
+  end.
+
+(* Derived ranges state their bound as `bv_modulus n`; lia reads it as an
+   atom. Evaluate each closed modulus in the hypotheses. *)
+Ltac zesu_flag_closed_moduli :=
+  repeat match goal with
+  | H : context [bv_modulus ?width] |- _ =>
+      stdpp.tactics.is_closed_term width;
+      let value := eval vm_compute in (bv_modulus width) in
+      change (bv_modulus width) with value in H
+  end.
+
 Ltac zesu_flag_goal_head :=
   lazymatch goal with
   | |- (_ < _)%Z => idtac
