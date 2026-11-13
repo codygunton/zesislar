@@ -13,6 +13,7 @@ Require Import ZesuSsz.Contracts.DecodeItemSelected.
 Require Import ZesuSsz.Automation2.All.
 Require Import ZesuSsz.Residuals.Block800d6a38.
 Local Open Scope Z_scope.
+#[local] Typeclasses Transparent decodeItemSelectedCode.
 
 Definition DesignedEntry_800d6a38
     `{!islaG Sigma} `{!threadG} (args : DecodeItemArgs) (returnAddress : Z) (K : iProp Sigma) : iProp Sigma :=

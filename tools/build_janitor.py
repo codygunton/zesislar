@@ -12,13 +12,15 @@ and deletes nothing. `--apply` also deletes:
 
 The janitor never touches `_build/agents/orch/`, a path that a live process
 uses (cwd, executable, command line, environment, open or mapped files), a
-fresh unsealed run, the bank of the newest main commit, or a run that one of
+path under which the admission ledger names a release receipt, a fresh
+unsealed run, the bank of the newest main commit, or a run that one of
 those names by a symbolic link or by a path in a manifest. It logs every
 deletion under `_build/janitor/`.
 
 Subcommands for other tools:
   admit                   exit 3 when this agent is over its budget (no scan)
-  in-use PATH...          exit 0 when a live process uses one of the paths
+  in-use PATH...          exit 0 when a live process uses one of the paths, or the
+                          admission ledger names a release receipt under one
   branch-items BRANCH     list (or --delete) the run dirs tied to a branch
 """
 
@@ -346,6 +348,35 @@ def process_paths(base):
     return result
 
 
+# --- admission ledger ----------------------------------------------------------
+
+LEDGER = Path('_build/agents/worker-build-2/native-region-release-v1/LEDGER.json')
+
+
+def ledger_receipts(root):
+    """Return the release receipts the admission ledger reads on every admission.
+
+    On 2026-11-12 a worktree removal deleted the 6ae0 release receipt, and every
+    admission crashed until the entry was dropped from the ledger.
+    """
+    path = Path(os.environ.get('ZESU_CANONICAL_LEDGER', Path(root) / LEDGER))
+    try:
+        data = json.loads(path.read_text())
+    except FileNotFoundError:
+        return []
+    receipts = []
+    for release in data.get('released_region_claims', {}).values():
+        for name in ('receipt', 'stop_receipt'):
+            if isinstance(release.get(name), str):
+                receipts.append(release[name])
+    return receipts
+
+
+def receipts_under(receipts, path):
+    prefix = os.path.realpath(path).rstrip(os.sep) + os.sep
+    return [receipt for receipt in receipts if os.path.realpath(receipt).startswith(prefix)]
+
+
 # --- repository and git --------------------------------------------------------
 
 def base_root(start=None):
@@ -500,6 +531,7 @@ class Janitor:
             return False
 
         main = commit(self.root, self.main_ref)
+        receipts = ledger_receipts(self.root)
         banks = []
         for key, result in items.items():
             for bank_root, head in result['banks']:
@@ -516,6 +548,8 @@ class Janitor:
                 protect(key, 'protected agent')
             elif live.user(result['path']):
                 protect(key, 'live process uses ' + live.user(result['path']))
+            elif receipts_under(receipts, result['path']):
+                protect(key, 'admission ledger receipt ' + receipts_under(receipts, result['path'])[0])
             elif self.now - result['newest'] < RUN_IDLE_SECONDS and not result['sealed']:
                 protect(key, 'changed in the last 24 h')
             elif any(head in newest_heads for _, head in result['banks']):
@@ -591,6 +625,9 @@ class Janitor:
                 row.update(action='keep', reason='live process uses ' + user)
             elif os.path.realpath(checkout) in locked:
                 row.update(action='keep', reason='worktree is locked')
+            elif receipts_under(receipts, unit['path']):
+                row.update(action='keep', reason='admission ledger receipt '
+                           + receipts_under(receipts, unit['path'])[0])
             elif unit['worktree'] in referenced_worktrees:
                 row.update(action='keep', reason='named by a kept run')
             elif self.now - result['newest'] < WORKTREE_IDLE_SECONDS:
@@ -898,11 +935,15 @@ def admit(args, environment=os.environ):
 def in_use(args):
     root = Path(args.root) if args.root else base_root()
     live = LivePaths.scan(root, exclude={os.getpid(), os.getppid()})
+    receipts = ledger_receipts(root)
     status = 1
     for path in args.paths:
         user = live.user(path)
         if user:
             print(f'{path}: live process {live.owners.get(user, "?")} uses {user}')
+            status = 0
+        for receipt in receipts_under(receipts, path):
+            print(f'{path}: the admission ledger names receipt {receipt}')
             status = 0
     return status
 
@@ -913,6 +954,7 @@ def branch_items(args):
     janitor = Janitor(root, log_dir=args.log_dir)
     names = {args.branch, args.branch.replace('/', '-'), args.branch.rsplit('/', 1)[-1]}
     live = LivePaths.scan(root, exclude={os.getpid(), os.getppid()})
+    receipts = ledger_receipts(root)
     rows = []
     for unit in janitor.run_units():
         if unit['item'] is None:
@@ -926,6 +968,9 @@ def branch_items(args):
             rows.append((unit['path'], 'kept: protected agent'))
         elif live.user(unit['path']):
             rows.append((unit['path'], 'kept: live process uses ' + live.user(unit['path'])))
+        elif receipts_under(receipts, unit['path']):
+            rows.append((unit['path'], 'kept: admission ledger receipt '
+                         + receipts_under(receipts, unit['path'])[0]))
         else:
             rows.append((unit['path'], None))
     if not rows:
