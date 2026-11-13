@@ -636,6 +636,14 @@
       "output_length_source": "nextUint64RootResult (ParentHeaderRootFacts.v): nextUint64Error16 and nextUint64Success16 (ParentHeader.v) each state List.length (nextResultBytes ret) = 16"
     }
   ],
+  "tail_calls": [
+    {
+      "call_site_pc": "+0xe8",
+      "callee_pc": "memcpy+0x0",
+      "spec": "memcpyCallSpec2",
+      "spec_module": "ZesuSsz.Contracts.ParentHeaderMemcpyService"
+    }
+  ],
   "loop_designs": [
     {
       "head": "+0x2d0",

@@ -126,16 +126,30 @@ class StoredRegisterValue(unittest.TestCase):
         self.assertEqual(plan['dropped_binders'][0]['rule'], 'stored_register_value')
         self.assertEqual([row['name'] for row in plan['binders']], ['machine_x19_1', 'machine_x13_1'])
 
-    def test_an_array_with_another_use_of_the_binder_is_still_refused(self):
+    def test_an_array_with_another_use_of_the_binder_becomes_uninitialized(self):
         stored = operation('bvadd', input_expr('t', 16), self.word)
         state = state_with({'x19': stored}, [])
         other = Expr('array_byte', (self.array,), 8, 7)
         state.memory = [MemoryRegion(input_expr('base', 64), (other,), input_expr('[x]', None), 1,
                                      ownership_id='span')]
-        components = [{'id': 'span', 'kind': 'byte_array', 'source': 'base ↦ₘ∗ [' + other.coq() + ']'}]
-        with self.assertRaisesRegex(ValueError, 'a successor needs it: call_after'):
-            drop_unheld_binders(state, components, {}, [{'name': 'call_after'}], {'binders': []}, ['x19'],
-                                lambda key, writes: '')
+        components = [{'id': 'span', 'kind': 'byte_array', 'source': 'base ↦ₘ∗ [' + other.coq() + ']',
+                       'address_z': 'base', 'value': '[' + other.coq() + ']', 'fraction': None}]
+        plan = {'binders': []}
+        drop_unheld_binders(state, components, {}, [{'name': 'call_after'}], plan, ['x19'], lambda key, writes: '')
+        self.assertEqual((components[0]['kind'], components[0]['source']), ('unknown_byte_array', 'base ↦ₘ? 1'))
+        self.assertNotIn('value', components[0])
+        self.assertEqual((state.memory[0].bytes, state.memory[0].byte_array, state.memory[0].uninitialized),
+                         ((), None, True))
+        self.assertEqual(plan['dropped_binders'][0]['arrays'], ['span'])
+
+    def test_a_shared_array_is_not_forgotten(self):
+        from join_generalize import forget_array_bytes
+        state = state_with({}, [])
+        state.memory = [MemoryRegion(input_expr('base', 64), (), input_expr('[x]', None), 1, ownership_id='span')]
+        component = {'id': 'span', 'kind': 'byte_array', 'source': 'base ↦ₘ{#1/2}∗ [x]', 'address_z': 'base',
+                     'value': '[x]', 'fraction': '{#1/2}'}
+        with self.assertRaisesRegex(ValueError, 'not a wholly owned array'):
+            forget_array_bytes(state, component)
 
 
 

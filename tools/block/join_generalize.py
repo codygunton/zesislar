@@ -546,10 +546,11 @@ def _span_bytes(resource, region):
 
 
 def lift_call_return_edges(alternatives, *, seeds, roots, ancestor, vocabulary):
-    """Express join edges that start at call-return roots below `ancestor` on its tree.
+    """Express join edges that start at seeds below `ancestor` on its tree.
 
     A call-return seed refines its parent's tree: it splits frame spans around the call
-    output and appends the call's pure facts. An edge from such a root becomes one-byte
+    output and appends the call's pure facts; a join or loop-head seed below it keeps that
+    tree. An edge from such a seed becomes one-byte
     writes into the ancestor span that contains each byte it knows (its own store, its
     seed's stored byte, or element i of its seed's array) wherever that byte differs from
     the ancestor's own byte. A byte it does not know stays uninitialized, a sound
@@ -577,8 +578,8 @@ def lift_call_return_edges(alternatives, *, seeds, roots, ancestor, vocabulary):
         if roots.get(seed_pc) == ancestor:
             lifted.append(alternative)
             continue
-        if roots.get(seed_pc) != seed_pc or seed_pc not in seeds:
-            raise ValueError('A join edge starts below a root other than the common ancestor: ' + seed_pc)
+        if seed_pc not in seeds or roots.get(seed_pc) is None:
+            raise ValueError('A join edge starts at a seed without a root: ' + seed_pc)
         seed = seeds[seed_pc]
         state = _state_from_result(alternative['state'])
         image = apply_owned_writes(seed.resources, state.writes, conditions=state.conditions,
@@ -655,6 +656,23 @@ def _render_span(key, writes, original_seed, ownership, state, apply_owned_write
     return next(row['source'] for row in span['components'] if row['id'] == key)
 
 
+def forget_array_bytes(state, component):
+    """Make an owned array uninitialized: its component becomes `↦ₘ? LENGTH` and its
+    region forgets the bytes. Each edge's bytes are some bytes, so this weakens soundly."""
+    key = component['id']
+    region = next((region for region in state.memory if region.ownership_id == key), None)
+    if region is None or not isinstance(region.length, int) or component.get('fraction'):
+        raise ValueError('An array to forget at a join is not a wholly owned array of known length: ' + key)
+    source = '%s ↦ₘ? %d' % (component['address_z'], region.length)
+    component.pop('value', None)
+    component.update(kind='unknown_byte_array', source=source, length=str(region.length),
+                     seed_component={'kind': 'uninitialized_memory', 'id': key, 'original_component': source,
+                                     'address_z': component['address_z'],
+                                     'length_original_coq': str(region.length)})
+    state.memory = [replace(row, bytes=(), byte_array=None, uninitialized=True) if row.ownership_id == key else row
+                    for row in state.memory]
+
+
 def drop_unheld_binders(state, components, carried, binders, plan, live_registers, render_span):
     """Remove inherited binders that no register or whole array holds.
 
@@ -667,7 +685,8 @@ def drop_unheld_binders(state, components, carried, binders, plan, live_register
        mentions b), that register holds a fresh binder c and every copy of v becomes c (exact:
        c is the register's value on each edge). The rest of b (other registers, path
        conditions, pure facts) is then handled as in 2 and 4.
-    4. A whole array value that mentions b needs it: refuse with the facts.
+    4. An owned array whose bytes mention b (b has no other holder) becomes uninitialized:
+       `↦ₘ?` of its length holds whatever bytes each edge stores, a sound weakening.
     """
     held = {value.value for value in state.registers.values() if value.op == 'input'}
     held |= {component.get('value') for component in components if component['kind'] == 'byte_array'}
@@ -768,15 +787,14 @@ def drop_unheld_binders(state, components, carried, binders, plan, live_register
                   if REGISTER.fullmatch(register) and _mentions(text(value), name)
                   and (live is None or register in live)]
         arrays = [component['id'] for component in components
-                  if component['kind'] == 'byte_array' and _mentions(component.get('source', ''), name)]
+                  if component['kind'] == 'byte_array' and component['id'] not in carried
+                  and _mentions(component.get('source', ''), name)]
         # A register that a successor needs forgets the binder too and takes a fresh value:
         # the class is weaker and stays sound; the facts on the forgotten value are lost.
-        if arrays:
-            raise ValueError('An inherited join binder has no holder and a successor needs it: %s (registers %s, '
-                             'arrays %s, live %s)' % (name, needed, arrays,
-                                                     'unknown' if live is None else sorted(live)))
+        for key in arrays:
+            forget_array_bytes(state, next(component for component in components if component['id'] == key))
         record = {'binder': name, 'rule': 'forgotten' if needed else 'not_needed', 'registers': [], 'spans': [],
-                  'conditions': 0}
+                  'arrays': arrays, 'conditions': 0}
         record.update(word_row or {})
         for register, value in list(state.registers.items()):
             if REGISTER.fullmatch(register) and _mentions(text(value), name):
@@ -1170,6 +1188,9 @@ def generalize_owned_join(alternatives, *, original_seed, entry_pc, vocabulary,
                         live_registers, lambda key, writes: _render_span(
                             key, writes, original_seed, ownership, first, apply_owned_writes,
                             render_resource_boundary, vocabulary))
+    forgotten = {key for row in plan.get('dropped_binders', []) for key in row.get('arrays', [])}
+    resources = [replace(resource, byte_array=None, component=next(row for row in components if row['id'] == resource.id))
+                 if resource.id in forgotten else resource for resource in resources]
     source_text = ' '.join([*(component['source'] for component in components if component['kind'] != 'register'),
                             *(text for value in state.registers.values() for text in source_inputs(value)),
                             *(text for value in state.conditions for text in source_inputs(value))])
