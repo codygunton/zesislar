@@ -1,77 +1,47 @@
 From Coq Require Import List ZArith.
-From stdpp Require Import bitvector.definitions.
-Require Import SailStdpp.MachineWord.
+From stdpp Require Import base list bitvector.definitions.
 Require Import EvmSailRlp.evm_rlp_types.
 Require Import isla.riscv64.riscv64.
-Require Import InstrSpecs.Machine.
-Require Import ZesuSsz.Contracts.ParentHeaderRootFacts.
+Require Import ZesuSsz.Contracts.AbiBytes.
 Require Import ZesuSsz.Contracts.ZiskRuntime.
-
+Require Import ZesuSsz.Automation2.Calls.
+Require Import ZesuSsz.Contracts.DecodeItemCallData.
 Open Scope Z_scope.
+Open Scope stdpp_scope.
 
 Notation memcpyCsrPc := ((0x800e06c0) : Z) (only parsing).
 Notation parentHeaderMemcpySource := ((0x80114fb8) : Z) (only parsing).
 Notation parentHeaderMemcpyLength := ((80) : Z) (only parsing).
 
-Definition parentHeaderMemcpyArguments (destination returnAddress : Z) :
-    ZiskMemcpyArguments :=
-  {| ziskMemcpyDestination := destination;
-     ziskMemcpySource := parentHeaderMemcpySource;
-     ziskMemcpyLength := parentHeaderMemcpyLength;
-     ziskMemcpyReturnAddress := returnAddress |}.
+(* The ZisK memcpy service (ZiskRuntime.v, from memcpy.s and dma_memcpy.rs)
+   in the machine_call shape. It is a runtime boundary, not a proved spec:
+   memcpy returns to ra with sp and the callee-saved registers preserved,
+   stores the count at the extra-params word, and copies the source bytes
+   to the destination. The three separately owned arrays exclude overlap,
+   so this covers only the non-overlapping case of ziskMemcpyMemory.
+   It uses no stack. The tail transfer at 0x800d5da0 reaches it with the
+   caller's ra, so the caller's return continuation follows the copy. *)
+Definition memcpyCallSpec2 `{!islaG Sigma} `{!threadG} : iProp Sigma :=
+  (machine_call decodeItemCallMap 0
+    (fun argv sp RET =>
+      ∃ (source scratch : list byte) (inputEndBits : bv 64),
+      "zisk_input_end" ↦ᵣ RVal_Bits inputEndBits ∗
+      reg_col [(KindReg "zisk_free_input", BitsShape 64)] ∗
+      bv_unsigned (argv !!! 1%nat) ↦ₘ∗ source ∗
+      bv_unsigned (argv !!! 0%nat) ↦ₘ? bv_unsigned (argv !!! 2%nat) ∗
+      ziskExtraParamsAddress ↦ₘ∗ scratch ∗
+      ⌜Z.of_nat (length source) = bv_unsigned (argv !!! 2%nat)⌝ ∗
+      ⌜length scratch = 8%nat⌝ ∗
+      RET (fun _ =>
+        "zisk_input_end" ↦ᵣ RVal_Bits inputEndBits ∗
+        reg_col [(KindReg "zisk_free_input", BitsShape 64)] ∗
+        bv_unsigned (argv !!! 1%nat) ↦ₘ∗ source ∗
+        bv_unsigned (argv !!! 0%nat) ↦ₘ∗ source ∗
+        ziskExtraParamsAddress ↦ₘ∗ word64Bytes (bv_unsigned (argv !!! 2%nat)) ∗
+        True)))%I.
+Global Instance : LithiumUnfold (@memcpyCallSpec2) := I.
+Global Typeclasses Opaque memcpyCallSpec2.
 
-Definition ziskRuntimeBytesAt (state : ZiskRuntimeState unit)
-    (address : Z) (count : nat) : list byte :=
-  List.map (fun offset => Z_to_bv 8
-    (ziskRuntimeMemory state (address + Z.of_nat offset)))
-    (List.seq 0 count).
-
-(* This premise covers only the reached 80-byte copy. The three array
-   resources exclude overlap. The generic overlapping memcpy contract
-   in ZiskRuntime.v is outside this Islaris premise. *)
-Definition ziskMemcpyServiceEntry `{!islaG Sigma} `{!threadG}
-    (permissions : ZiskRuntimePermissions) (destination returnAddress : Z)
-    (before : ZiskRuntimeState unit) : iProp Sigma :=
-  (reg_col zesu_sys_regs ∗
-   "x10" ↦ᵣ RVal_Bits (Z_to_bv 64 destination) ∗
-   "x11" ↦ᵣ RVal_Bits (Z_to_bv 64 parentHeaderMemcpySource) ∗
-   "x12" ↦ᵣ RVal_Bits (Z_to_bv 64 parentHeaderMemcpyLength) ∗
-   "x1" ↦ᵣ RVal_Bits (Z_to_bv 64 returnAddress) ∗
-   parentHeaderMemcpySource ↦ₘ∗
-     ziskRuntimeBytesAt before parentHeaderMemcpySource 80 ∗
-   destination ↦ₘ∗ ziskRuntimeBytesAt before destination 80 ∗
-   ziskExtraParamsAddress ↦ₘ∗
-     ziskRuntimeBytesAt before ziskExtraParamsAddress 8 ∗
-   ⌜ziskMemcpyEntry permissions memcpyCsrPc
-      (parentHeaderMemcpyArguments destination returnAddress) before⌝ ∗
-   True)%I.
-
-Definition ziskMemcpyServiceExit `{!islaG Sigma} `{!threadG}
-    (destination returnAddress : Z) (after : ZiskRuntimeState unit) :
-    iProp Sigma :=
-  (reg_col zesu_sys_regs ∗
-   "x10" ↦ᵣ RVal_Bits (Z_to_bv 64 destination) ∗
-   "x11" ↦ᵣ RVal_Bits (Z_to_bv 64 parentHeaderMemcpySource) ∗
-   "x12" ↦ᵣ RVal_Bits (Z_to_bv 64 parentHeaderMemcpyLength) ∗
-   "x1" ↦ᵣ RVal_Bits (Z_to_bv 64 returnAddress) ∗
-   parentHeaderMemcpySource ↦ₘ∗
-     ziskRuntimeBytesAt after parentHeaderMemcpySource 80 ∗
-   destination ↦ₘ∗ ziskRuntimeBytesAt after destination 80 ∗
-   ziskExtraParamsAddress ↦ₘ∗
-     ziskRuntimeBytesAt after ziskExtraParamsAddress 8 ∗
-   True)%I.
-
-Definition ziskMemcpyServiceInstrSpec `{!islaG Sigma} `{!threadG} :
-    iProp Sigma :=
-  (∀ (permissions : ZiskRuntimePermissions) (destination returnAddress : Z)
-     (before : ZiskRuntimeState unit),
-     ziskMemcpyServiceEntry permissions destination returnAddress before -∗
-     instr_pre (Z.land returnAddress (-2))
-       (∃ after : ZiskRuntimeState unit,
-          ⌜ziskMemcpyAllows selectedMemcpy permissions
-             (parentHeaderMemcpyArguments destination returnAddress)
-             before after⌝ ∗
-          ziskMemcpyServiceExit destination returnAddress after))%I.
-
-Definition memcpyServicePremise `{!islaG Sigma} `{!threadG} : iProp Sigma :=
-  (□ instr_pre memcpyCsrPc ziskMemcpyServiceInstrSpec)%I.
+(* The reviewed runtime premise: the memcpy entry satisfies memcpyCallSpec2. *)
+Definition memcpyCallPremise `{!islaG Sigma} `{!threadG} : iProp Sigma :=
+  (□ instr_pre memcpyCsrPc memcpyCallSpec2)%I.

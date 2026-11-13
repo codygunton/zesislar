@@ -4,6 +4,7 @@ Require Import SailStdpp.Prompt SailStdpp.Operators_mwords SailStdpp.Instances.
 From stdpp Require Import bitvector.definitions.
 Require Import EvmSailRlp.evm_rlp_types EvmSailRlp.evm_rlp.
 Require Import ZesuSsz.Compliance.SailRun.
+Require ZesuSsz.Automation2.VmClosed.
 Import ListNotations.
 Local Open Scope Z_scope.
 
@@ -79,7 +80,7 @@ Ltac sail_rec_step :=
   | |- context [?recursive ?access] =>
     lazymatch type of access with
     | Acc (Zwf 0) ?fuel =>
-      tryif is_closed_term fuel then
+      tryif ZesuSsz.Automation2.VmClosed.zesu_closed_term fuel then
         (let Hbound := fresh "HsailRecBound" in
          assert (Hbound : 0 <= fuel <= 8) by lia;
          progress (autounfold_one with zesu_sail_rec))
@@ -143,7 +144,7 @@ Ltac sail_nat_literal term :=
   lazymatch term with O => idtac | S ?tail => sail_nat_literal tail end.
 Ltac sail_reduce_closed term :=
   tryif has_evar term then (fail 0) else idtac;
-  is_closed_term term;
+  ZesuSsz.Automation2.VmClosed.zesu_closed_term term;
   let reduced := eval cbv in term in
   lazymatch reduced with
   | true => idtac

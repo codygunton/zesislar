@@ -11,6 +11,7 @@ Require Import lithium.interpreter lithium.pure_definitions.
 From iris.proofmode Require Import tactics environments spec_patterns.
 From Coq Require Import ZArith Lia.
 From stdpp Require Import bitvector.definitions list.
+Require ZesuSsz.Automation2.VmClosed.
 Local Open Scope Z_scope.
 
 Ltac zesu_memory_witness_occurs candidate expression :=
@@ -90,7 +91,7 @@ Ltac zesu_memory_array_count bytes word continuation :=
   | Some _ => continuation constr:(8%nat)
   | None => lazymatch bytes with
     | bv_to_little_endian ?digits _ _ =>
-        tryif is_closed_term digits
+        tryif ZesuSsz.Automation2.VmClosed.zesu_closed_term digits
         then let count := eval vm_compute in (Z.to_nat digits) in continuation count
         else continuation constr:(length bytes)
     | _ => continuation constr:(length bytes)

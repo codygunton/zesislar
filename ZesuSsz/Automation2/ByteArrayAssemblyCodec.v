@@ -7,13 +7,14 @@ Require Import ZesuSsz.Automation2.ResourceGroups.
 Require Import ZesuSsz.Automation2.MemoryAddress.
 Require Import ZesuSsz.Contracts.IslarisMemory.
 From Coq Require Import Lia.
+Require ZesuSsz.Automation2.VmClosed.
 
 Ltac zesu_byte_array_closed_counts bytes :=
   lazymatch bytes with
   | @app _ ?left ?right =>
       zesu_byte_array_closed_counts left;
       zesu_byte_array_closed_counts right
-  | bv_to_little_endian ?count _ _ => is_closed_term count
+  | bv_to_little_endian ?count _ _ => ZesuSsz.Automation2.VmClosed.zesu_closed_term count
   | _ => idtac
   end.
 
