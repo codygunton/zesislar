@@ -136,7 +136,7 @@ class LiveAdmissionTests(unittest.TestCase):
             self.assertTrue(self.decide(request=20*M.GIB)['fits'])
 
     def test_invalid_live_ceiling_keeps_booking_and_all_claims(self):
-        for value in ('0','-1','176','1.5','invalid',''):
+        for value in ('0','-1',str(M.SLICE_MAX_BYTES // M.GIB + 1),'1.5','invalid',''):
             with self.subTest(value=value),patch.dict(os.environ, {'ZESU_LIVE_REQUEST_LIMIT_GIB':value}):
                 result=self.decide(request=M.GIB)
                 self.assertFalse(result['fits'])
@@ -452,7 +452,7 @@ class GateCompileSumTests(unittest.TestCase):
         self.assertEqual(result['active_claim_bytes'], 47 * GIB)
 
     def test_gate_sum_above_the_slice_cap_waits_for_admission(self):
-        result = self.booked(self.ledger([16 * GIB] * 10))
+        result = self.booked(self.ledger([16 * GIB] * (M.SLICE_MAX_BYTES // (16 * GIB) + 1)))
         self.assertGreater(result['active_claim_bytes'], result['slice_claim_cap_bytes'])
         self.assertFalse(result['fits'])
 
@@ -635,6 +635,19 @@ class ScopeTests(unittest.TestCase):
         self.assertFalse(self.reader.compiler(marker)['verified'])
         marker.write_text(f'13\naggregate={self.group.name}\n')
         self.assertFalse(self.reader.compiler(marker)['verified'])
+
+
+class WorkloadParentTests(unittest.TestCase):
+    def test_parent_fence_follows_the_account_limit(self):
+        with tempfile.TemporaryDirectory() as temp:
+            account = Path(temp) / 'user.slice' / 'user-1000.slice'
+            self.assertEqual(M.workload_parent_bytes(temp, uid=1000), 160 * M.GIB)
+            account.mkdir(parents=True)
+            for account_gib, parent_gib in ((200, 160), (235, 195)):
+                (account / 'memory.max').write_text(f'{account_gib * M.GIB}\n')
+                self.assertEqual(M.workload_parent_bytes(temp, uid=1000), parent_gib * M.GIB)
+            (account / 'memory.max').write_text('max\n')
+            self.assertEqual(M.workload_parent_bytes(temp, uid=1000), 160 * M.GIB)
 
 
 if __name__=='__main__':unittest.main()

@@ -12,7 +12,7 @@ class Minimal8(unittest.TestCase):
  fixture=F.NativeRoute.fixture
  def test_stock_family_default_stays16(self):self.assertEqual(M.FAMILY_DEFAULT_CLAIM,16*M.GIB)
  def test_native_parent_and_compile_limits_stay(self):
-  self.assertEqual(M.NATIVE_FENCE,64*M.GIB);self.assertEqual(M.PARENT_FENCE,175*M.GIB);self.assertEqual(M.apply_job({'phase':'prerequisites'})['claim_bytes'],24*M.GIB)
+  self.assertEqual(M.NATIVE_FENCE,64*M.GIB);self.assertEqual(M.apply_job({'phase':'prerequisites'})['claim_bytes'],24*M.GIB)
  def test_unknown_native_keeps_full_fence(self):self.assertEqual(M.apply_job({'phase':'native','target':{}})['claim_bytes'],64*M.GIB)
  def test_bad_source_does_not_get_minimal8(self):
   value,route,c,j=self.fixture();profile=self.js('profile.json',{'schema':'scratch.admission-profile.v1','kind':'minimal_native_tactic','authority':route});Path(value['native_source']['path']).write_text('changed')

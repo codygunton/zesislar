@@ -1,10 +1,10 @@
 """Select phase fences and claims from completed, source-bound stock returns."""
 from pathlib import Path
 import hashlib,json,re
+from admission_memory import SLICE_MAX_BYTES as PARENT_FENCE
 GIB=1024**3
 NATIVE_FENCE=64*GIB
 COMPILE_FENCE=24*GIB
-PARENT_FENCE=175*GIB
 QUANTUM=8*GIB
 COMPILE_PHASES={'prerequisites','kernel','compile_only'}
 

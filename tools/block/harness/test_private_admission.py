@@ -95,7 +95,7 @@ class Controls(unittest.TestCase):
    r=subprocess.run(['bash',str(wrapper),'source.v'],capture_output=True,text=True,env=dict(os.environ,OPAM_SWITCH_PREFIX='/home/cody/islaris/_opam',**env));self.assertEqual(r.returncode,0,r.stderr);actual=json.loads(r.stdout)
    for key in ['ZESU_MODULE_LIMIT_GIB','ZESU_MODULE_CLAIM_BYTES','ZESU_DIAGNOSTIC_PROBE','ZESU_PROBE_ISSUE']:self.assertEqual(actual[key],env[key])
  def test_cpu_stops_unchanged(self):
-  self.assertEqual(L.CPU_STOP_SECONDS,7200);self.assertIsNone(L.SETUP_CPU_STOP_SECONDS);self.assertIsNone(L.stop_reason(7200,0,8*P.GIB));self.assertEqual(L.stop_reason(7201,0,8*P.GIB,origin_cpu=1),'external_CPU_stop');self.assertEqual(P.PARENT_FENCE,175*P.GIB)
+  self.assertEqual(L.CPU_STOP_SECONDS,7200);self.assertIsNone(L.SETUP_CPU_STOP_SECONDS);self.assertIsNone(L.stop_reason(7200,0,8*P.GIB));self.assertEqual(L.stop_reason(7201,0,8*P.GIB,origin_cpu=1),'external_CPU_stop')
  def test_measured_memory_stop_uses_actual_fence(self):
   j=self.job()
   with patch.object(P,'workload_for_job',return_value=j['workload']):
@@ -137,7 +137,7 @@ class Controls(unittest.TestCase):
   before=copy.deepcopy(original)
   with patch.object(P,'workload_for_job',return_value=j['workload']):value=P.attempt_for_job(original,j)
   self.assertEqual(original,before);self.assertEqual(value['limits']['memory_bytes'],16*P.GIB)
-  for row in value['scope_limits']:self.assertEqual(row['memory_bytes'],(175 if row['role']=='workloads' else 16)*P.GIB)
+  for row in value['scope_limits']:self.assertEqual(row['memory_bytes'],P.PARENT_FENCE if row['role']=='workloads' else 16*P.GIB)
   value['limits']['memory_bytes']=before['limits']['memory_bytes']
   for a,b in zip(value['scope_limits'],before['scope_limits']):a['memory_bytes']=b['memory_bytes']
   self.assertEqual(value,before)

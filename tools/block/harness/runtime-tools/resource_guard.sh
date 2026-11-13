@@ -93,7 +93,6 @@ BATCH_LIMIT=${ZESU_BATCH_LIMIT:-150G}
 GATE_LIMIT=${ZESU_GATE_LIMIT:-120G}
 # All proof workloads share this kernel backstop across independent runs.
 WORKLOAD_PARENT_SLICE=zesuworkloads.slice
-WORKLOAD_PARENT_BYTES=187904819200
 MAX_JOBS=${ZESU_MAX_JOBS:-48}
 # Account memory lines, in percent of the account's MemoryMax.
 LAUNCH_PCT=${ZESU_LAUNCH_PCT:-80}
@@ -121,6 +120,11 @@ MAX_LOAD=${ZESU_MAX_LOAD:-80}
 MAX_BLOCKED=${ZESU_MAX_BLOCKED:-16}
 # Our account's cgroup. Its pressure limits are percent of the last 60 s.
 ACCOUNT_CGROUP=$CGROUP_ROOT/user.slice/user-$UID.slice
+# The workload parent leaves 40 GiB of the account for sessions and other
+# tools; tools/resource_guard.sh derives the same fence.
+{ read -r WORKLOAD_ACCOUNT_BYTES < "$ACCOUNT_CGROUP/memory.max"; } 2>/dev/null || WORKLOAD_ACCOUNT_BYTES=""
+[[ "$WORKLOAD_ACCOUNT_BYTES" =~ ^[1-9][0-9]*$ ]] || WORKLOAD_ACCOUNT_BYTES=$(( 200 * 1024 * 1024 * 1024 ))
+WORKLOAD_PARENT_BYTES=$(( WORKLOAD_ACCOUNT_BYTES - 40 * 1024 * 1024 * 1024 ))
 MAX_CPU_PRESSURE=${ZESU_MAX_CPU_PRESSURE:-50}
 MAX_IO_PRESSURE=${ZESU_MAX_IO_PRESSURE:-50}
 # Two launches per second, shared by every guard of every agent.

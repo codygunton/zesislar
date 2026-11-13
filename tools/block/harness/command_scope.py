@@ -5,7 +5,8 @@ import subprocess
 import sys
 
 PARENT = 'zesuworkloads.slice'
-PARENT_BYTES = 175 * 1024**3
+sys.path.insert(0, str(Path(__file__).resolve().parent / 'code'))
+from admission_memory import workload_parent_bytes  # noqa: E402
 
 
 def contained(*, proc=Path('/proc/self/cgroup'), cgroups=Path('/sys/fs/cgroup')):
@@ -17,7 +18,7 @@ def contained(*, proc=Path('/proc/self/cgroup'), cgroups=Path('/sys/fs/cgroup'))
     if PARENT not in parts:
         return False
     parent = cgroups.joinpath(*parts[:parts.index(PARENT) + 1])
-    if ((parent / 'memory.max').read_text().strip() != str(PARENT_BYTES)
+    if ((parent / 'memory.max').read_text().strip() != str(workload_parent_bytes(cgroups))
             or (parent / 'memory.swap.max').read_text().strip() != '0'):
         raise ValueError('The shared command parent lacks its exact memory backstop.')
     return True

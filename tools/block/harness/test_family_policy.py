@@ -26,7 +26,7 @@ class FamilyPolicyTests(unittest.TestCase):
   path=self.root/'profile.json';path.write_text(json.dumps(value));return binding(path)
  def test_unknown_native_keeps64(self):self.assertEqual(P.apply_job(self.job)['claim_bytes'],64*P.GIB)
  def test_source_bound_family_without_own_measurement_uses16(self):
-  w=P.workload_for_job(self.profile(),self.job,self.config);j=P.apply_job(self.job,workload=w);self.assertEqual(P.validate_job(j),16*P.GIB);self.assertEqual(j['physical_fence_bytes'],64*P.GIB);self.assertEqual(P.PARENT_FENCE,175*P.GIB)
+  w=P.workload_for_job(self.profile(),self.job,self.config);j=P.apply_job(self.job,workload=w);self.assertEqual(P.validate_job(j),16*P.GIB);self.assertEqual(j['physical_fence_bytes'],64*P.GIB)
  def test_family_source_mismatch_refuses(self):
   profile=self.profile();self.native.write_text('changed')
   with self.assertRaises(ValueError):P.workload_for_job(profile,self.job,self.config)

@@ -1,5 +1,6 @@
 """Check whole-command containment without starting systemd or proof tools."""
 import ast
+import os
 from pathlib import Path
 import subprocess
 import sys
@@ -20,11 +21,26 @@ class CommandScopeTests(unittest.TestCase):
         self.cgroups = self.root / 'sys'
         self.parent = self.cgroups / 'user.slice/zesuworkloads.slice'
         self.parent.mkdir(parents=True)
-        (self.parent / 'memory.max').write_text(str(command_scope.PARENT_BYTES))
+        (self.parent / 'memory.max').write_text(str(160 * 1024**3))
         (self.parent / 'memory.swap.max').write_text('0')
 
     def contained(self):
         return command_scope.contained(proc=self.proc, cgroups=self.cgroups)
+
+    def test_parent_fence_follows_the_account_limit(self):
+        self.proc.write_text('0::/user.slice/zesuworkloads.slice/job.scope\n')
+        account = self.cgroups / 'user.slice' / f'user-{os.getuid()}.slice'
+        account.mkdir(parents=True)
+        for account_gib, parent_gib in ((200, 160), (235, 195)):
+            with self.subTest(account=account_gib):
+                (account / 'memory.max').write_text(str(account_gib * 1024**3))
+                self.assertEqual(command_scope.workload_parent_bytes(self.cgroups),
+                                 parent_gib * 1024**3)
+                (self.parent / 'memory.max').write_text(str(parent_gib * 1024**3))
+                self.assertTrue(self.contained())
+                (self.parent / 'memory.max').write_text(str((parent_gib + 1) * 1024**3))
+                with self.assertRaises(ValueError):
+                    self.contained()
 
     def test_existing_parent_and_nested_aggregate_are_accepted(self):
         for group in ['/user.slice/zesuworkloads.slice/job.scope',
