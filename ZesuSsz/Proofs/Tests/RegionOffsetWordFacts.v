@@ -27,6 +27,21 @@ Lemma region_offset_word_contained (args : OffsetWordArgs) :
        bv_unsigned (offsetWord args) - 400 - 112 + 112).
 Proof. intros Hwf. typeclasses eauto. Qed.
 
+(* A load through a frame pointer: the address offsets the word three times
+   (word - 400 + 400 - 360) and lands 32 bytes into a 40-byte array that
+   starts 8 bytes above `word - 400`. *)
+Lemma region_offset_word_chain_in_array (args : OffsetWordArgs) (values : list (bv 8)) :
+  offsetWordWellFormed args -> length values = 40%nat ->
+  ZesuSsz.Automation2.UninitRegions.ZesuRegionBounds
+    (bv_unsigned (offsetWord args) - 400 + 8 <=
+       bv_unsigned (bv_add (bv_add (bv_add (offsetWord args) (BV 64 18446744073709551216))
+         (BV 64 400)) (BV 64 18446744073709551256)) <
+       bv_unsigned (offsetWord args) - 400 + 8 + Z.of_nat (length values) * Z.of_N (8 `div` 8)%N \/
+     bv_unsigned (offsetWord args) - 400 + 8 =
+       bv_unsigned (bv_add (bv_add (bv_add (offsetWord args) (BV 64 18446744073709551216))
+         (BV 64 400)) (BV 64 18446744073709551256))).
+Proof. intros Hwf Hlength. typeclasses eauto. Qed.
+
 (* The same frame at offset -300 lies outside the region. *)
 Lemma region_offset_word_outside (args : OffsetWordArgs) :
   offsetWordWellFormed args -> True.

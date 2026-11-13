@@ -46,13 +46,17 @@ Ltac zesu_region_bounds_legacy :=
     bv_solve].
 
 (* A word whose unsigned value appears in the region base reaches the
-   address through a bitvector offset: the address reads
-   `bv_unsigned (bv_add word offset)`, not `bv_unsigned word`. The word's
-   facts then decide whether the offset wraps. *)
+   address through bitvector offsets: the address reads
+   `bv_unsigned (bv_add (bv_add word c1) c2)`, not `bv_unsigned word`. The
+   word's facts then decide whether the offsets wrap. *)
 Ltac zesu_region_offset_word word address :=
   assert_fails (has_evar word);
   assert_fails (ZesuSsz.Automation2.VmClosed.zesu_vm_closed word);
-  lazymatch address with context[bv_unsigned (bv_add word _)] => idtac end.
+  let rec offsets term :=
+    lazymatch term with
+    | bv_add ?inner _ => first [constr_eq inner word | offsets inner]
+    end in
+  match address with context[bv_unsigned ?value] => offsets value end.
 
 (* Bounds search uses only facts connected to the candidate region. *)
 Ltac zesu_region_address_carries base address :=
