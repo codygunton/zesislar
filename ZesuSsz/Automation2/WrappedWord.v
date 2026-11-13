@@ -137,9 +137,10 @@ Ltac zesu_normalize_wrapped_findmem arithmetic :=
   end.
 
 (* Rewrite a lookup address with two or more closed offsets on one integer
-   cast to its reduced form, before any lookup rule sees the address. Stores
-   then split regions at `base - k` instead of at `bv_unsigned (...)`. The
-   range side condition uses the facts of [zesu_wrapped_memory_lookup]. *)
+   cast to its reduced form. The run loops try this only after every other
+   route refused the lookup, then retry the lookup once (s0-relative stores
+   with three offsets, and two-offset forms no other rule takes). The range
+   side condition uses the facts of [zesu_wrapped_memory_lookup]. *)
 Ltac zesu_wrapped_closed_address_step :=
   lazymatch goal with
   | |- iris.proofmode.environments.envs_entails _

@@ -1072,8 +1072,7 @@ Ltac zesu_finish_initialized_array_read :=
    of its own tactics in `timeout`. *)
 Ltac zesu_run_pass_steps :=
   first
-    [WrappedWord.zesu_wrapped_closed_address_step |
-     SourceFactMatching.zesu_source_destruct_registered_disjunction |
+    [SourceFactMatching.zesu_source_destruct_registered_disjunction |
      ZesuSsz.Automation2.CodecArrayRead.zesu_codec_array_read_consumer |
      zesu_v34_array_continuation |
      zesu_union_witness_step | zesu_target_registered_intro_if_enabled |
@@ -1092,13 +1091,25 @@ Ltac zesu_run_pass_steps :=
      zesu_open_matching_two_level_frame |
      zesu_extract_matching_descriptor_pure].
 
+(* The rule set v2 search list, without the diagnostics step. *)
+Ltac zesu_run_pass_v2_steps :=
+  first
+    [zesu_target_registered_intro_if_enabled | zesu_array_load_preselect |
+     zesu_array_load_priority | zesu_conjunct_match_if_enabled |
+     zesu_run_pass_steps | zesu_close_matching_trace_tail |
+     zesu_open_trace_exist | zesu_rule_set_v2_steps].
+
+(* The last alternative of both run loops: a lookup that every other route
+   refused, at an address with closed offsets on one integer cast, is
+   retried once with the reduced address (`base - k`). A lookup that some
+   route takes keeps its address, so a block whose proof works with the
+   original form keeps its proof path. *)
 Ltac zesu_run_pass_v1 :=
   zesu_expose_environment_alias;
   try zesu_prepare_uninit_goal;
   try zesu_normalize_find_mem_address;
   unshelve (time "zesu_run" repeat first
     [zesu_diag_step |
-     WrappedWord.zesu_wrapped_closed_address_step |
      SourceFactMatching.zesu_source_destruct_registered_disjunction |
      ZesuSsz.Automation2.CodecArrayRead.zesu_codec_array_read_consumer |
      zesu_v34_array_continuation |
@@ -1116,7 +1127,9 @@ Ltac zesu_run_pass_v1 :=
      zesu_liAStep |
      ZesuSsz.Automation2.CodecArrayRead.zesu_codec_array_read_sidecond |
      zesu_open_matching_two_level_frame |
-     zesu_extract_matching_descriptor_pure]; zesu_diag_step_end; liShow;
+     zesu_extract_matching_descriptor_pure |
+     (WrappedWord.zesu_wrapped_closed_address_step; zesu_run_pass_steps)];
+    zesu_diag_step_end; liShow;
     try zesu_finish_closed_wand;
     try zesu_finish_framed_wand;
     zesu_finish).
@@ -1126,7 +1139,9 @@ Ltac zesu_run_pass_v2 :=
   try zesu_prepare_uninit_goal;
   try zesu_normalize_find_mem_address;
   unshelve (time "zesu_run" repeat first
-    [zesu_diag_step | zesu_target_registered_intro_if_enabled | zesu_array_load_preselect | zesu_array_load_priority | zesu_conjunct_match_if_enabled | zesu_run_pass_steps | zesu_close_matching_trace_tail | zesu_open_trace_exist | zesu_rule_set_v2_steps]; zesu_diag_step_end; liShow;
+    [zesu_diag_step | zesu_run_pass_v2_steps |
+     (WrappedWord.zesu_wrapped_closed_address_step; zesu_run_pass_v2_steps)];
+    zesu_diag_step_end; liShow;
     try zesu_finish_closed_wand;
     try zesu_finish_framed_wand;
     zesu_finish).
