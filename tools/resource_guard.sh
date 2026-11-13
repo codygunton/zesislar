@@ -35,9 +35,12 @@
 #
 # Memory admission measures our account, user-$UID.slice, against its
 # MemoryMax (152 GiB when unset), because another account shares the host.
-# Used memory excludes the file cache and reclaimable slab. A launch needs
-# use below 80 % of the cap and its job limit plus 20 GiB below the cap.
-# Hold at 88 %; kill at 95 % (ZESU_LAUNCH_PCT, ZESU_HOLD_PCT, ZESU_KILL_PCT).
+# Used memory excludes the file cache and reclaimable slab. The account lines
+# sit at fixed margins below the cap, so they keep their room when the cap
+# changes: launch below cap - 40 GiB, hold at cap - 24, kill at cap - 10
+# (160, 176 and 190 GiB of a 200 GiB account; ZESU_LAUNCH_MARGIN_GIB,
+# ZESU_HOLD_MARGIN_GIB, ZESU_KILL_MARGIN_GIB). A launch also needs its job
+# limit plus 20 GiB below the cap.
 # Hold while machine MemAvailable is below 12 GiB
 # (ZESU_MACHINE_MIN_AVAILABLE_GIB). Without the account's cgroup files,
 # the machine applies: hold below 20 GiB MemAvailable; kill at 10 GiB or less.
@@ -91,16 +94,18 @@ JOB_GIB=${ZESU_JOB_GIB:-3}
 BATCH_LIMIT=${ZESU_BATCH_LIMIT:-150G}
 GATE_LIMIT=${ZESU_GATE_LIMIT:-120G}
 # All proof workloads share this kernel backstop across independent runs.
+# Its fence is set below, from the account's MemoryMax.
 WORKLOAD_PARENT_SLICE=zesuworkloads.slice
-WORKLOAD_PARENT_BYTES=187904819200
 MAX_JOBS=${ZESU_MAX_JOBS:-48}
-# Account memory lines, in percent of the account's MemoryMax.
-LAUNCH_PCT=${ZESU_LAUNCH_PCT:-80}
-HOLD_PCT=${ZESU_HOLD_PCT:-88}
-KILL_PCT=${ZESU_KILL_PCT:-95}
-for pct in "$LAUNCH_PCT" "$HOLD_PCT" "$KILL_PCT"; do
-  [[ "$pct" =~ ^([1-9][0-9]?|100)$ ]] || { echo "resource guard: invalid memory percent" >&2; exit 2; }
+LAUNCH_MARGIN_GIB=${ZESU_LAUNCH_MARGIN_GIB:-40}
+HOLD_MARGIN_GIB=${ZESU_HOLD_MARGIN_GIB:-24}
+KILL_MARGIN_GIB=${ZESU_KILL_MARGIN_GIB:-10}
+for margin in "$LAUNCH_MARGIN_GIB" "$HOLD_MARGIN_GIB" "$KILL_MARGIN_GIB"; do
+  [[ "$margin" =~ ^[0-9]{1,3}$ ]] || { echo "resource guard: invalid memory margin" >&2; exit 2; }
 done
+if (( LAUNCH_MARGIN_GIB < HOLD_MARGIN_GIB || HOLD_MARGIN_GIB < KILL_MARGIN_GIB )); then
+  echo "resource guard: memory margins must order launch >= hold >= kill" >&2; exit 2
+fi
 ACCOUNT_DEFAULT_CAP_GIB=152
 MACHINE_MIN_AVAILABLE_GIB=${ZESU_MACHINE_MIN_AVAILABLE_GIB:-12}
 MEMORY_HEADROOM_GIB=20
@@ -120,6 +125,22 @@ MAX_LOAD=${ZESU_MAX_LOAD:-80}
 MAX_BLOCKED=${ZESU_MAX_BLOCKED:-16}
 # Our account's cgroup. Its pressure limits are percent of the last 60 s.
 ACCOUNT_CGROUP=$CGROUP_ROOT/user.slice/user-$UID.slice
+# The workload parent leaves 40 GiB of the account for the session scopes,
+# their Dune processes, clifv.slice and other tools (25-35 GiB on 2026-11-13),
+# so the kernel kills inside the parent before the account fills and kills a
+# session: 160 GiB of a 200 GiB account. Without a numeric account limit the
+# 200 GiB account applies. block/harness/code/admission_memory.py derives
+# the same fence.
+WORKLOAD_RESERVE_GIB=40
+WORKLOAD_ACCOUNT_FALLBACK_GIB=200
+{ read -r WORKLOAD_ACCOUNT_BYTES < "$ACCOUNT_CGROUP/memory.max"; } 2>/dev/null || WORKLOAD_ACCOUNT_BYTES=""
+[[ "$WORKLOAD_ACCOUNT_BYTES" =~ ^[1-9][0-9]*$ ]] ||
+  WORKLOAD_ACCOUNT_BYTES=$(( WORKLOAD_ACCOUNT_FALLBACK_GIB * 1024 * 1024 * 1024 ))
+WORKLOAD_PARENT_BYTES=$(( WORKLOAD_ACCOUNT_BYTES - WORKLOAD_RESERVE_GIB * 1024 * 1024 * 1024 ))
+# Older guards set exactly 175 GiB; never exceed it while they still run, so
+# the shared parent does not flip between guards. Raise this once they end.
+WORKLOAD_PARENT_CEILING_BYTES=187904819200
+(( WORKLOAD_PARENT_BYTES <= WORKLOAD_PARENT_CEILING_BYTES )) || WORKLOAD_PARENT_BYTES=$WORKLOAD_PARENT_CEILING_BYTES
 MAX_CPU_PRESSURE=${ZESU_MAX_CPU_PRESSURE:-50}
 MAX_IO_PRESSURE=${ZESU_MAX_IO_PRESSURE:-50}
 # Two launches per second, shared by every guard of every agent.
@@ -282,10 +303,10 @@ memory_hold_reason() {
   if read -r cap used < <(account_memory); then
     available=$(( (cap - used) / GIB ))
     read -r total _ machine < <(memory)
-    if (( used * 100 >= cap * HOLD_PCT )); then
-      echo "account memory $(( used / GIB )) of $(( cap / GIB )) GiB, at the ${HOLD_PCT} % hold"
-    elif (( used * 100 >= cap * LAUNCH_PCT )); then
-      echo "account memory $(( used / GIB )) of $(( cap / GIB )) GiB, launch line ${LAUNCH_PCT} %"
+    if (( used >= cap - HOLD_MARGIN_GIB * GIB )); then
+      echo "account memory $(( used / GIB )) of $(( cap / GIB )) GiB, at the $(( cap / GIB - HOLD_MARGIN_GIB )) GiB hold"
+    elif (( used >= cap - LAUNCH_MARGIN_GIB * GIB )); then
+      echo "account memory $(( used / GIB )) of $(( cap / GIB )) GiB, launch line $(( cap / GIB - LAUNCH_MARGIN_GIB )) GiB"
     elif (( available < required )); then
       echo "account memory available $available GiB, requires $required GiB for a $job_gib GiB job"
     elif (( machine < MACHINE_MIN_AVAILABLE_GIB * GIB )); then
@@ -305,8 +326,9 @@ memory_scope() {
   local cap used total available
   if read -r cap used < <(account_memory); then
     read -r total _ available < <(memory)
-    printf 'account of %s GiB (launch <%s %%, hold %s %%, kill %s %%), machine available %s GiB (backstop %s)\n' \
-      $(( cap / GIB )) "$LAUNCH_PCT" "$HOLD_PCT" "$KILL_PCT" $(( available / GIB )) "$MACHINE_MIN_AVAILABLE_GIB"
+    printf 'account of %s GiB (launch <%s, hold %s, kill %s GiB), machine available %s GiB (backstop %s)\n' \
+      $(( cap / GIB )) $(( cap / GIB - LAUNCH_MARGIN_GIB )) $(( cap / GIB - HOLD_MARGIN_GIB )) \
+      $(( cap / GIB - KILL_MARGIN_GIB )) $(( available / GIB )) "$MACHINE_MIN_AVAILABLE_GIB"
   else
     echo machine
   fi
@@ -316,7 +338,7 @@ memory_scope() {
 memory_kill_required() {
   local cap total used available
   if read -r cap used < <(account_memory); then
-    (( used * 100 >= cap * KILL_PCT ))
+    (( used >= cap - KILL_MARGIN_GIB * GIB ))
   else
     read -r total used available < <(memory)
     (( available <= MEMORY_KILL_AVAILABLE_GIB * GIB ))
@@ -1662,12 +1684,16 @@ ensure_workload_parent() {
   verify_workload_parent_properties
 }
 
+# Guards older than the account-derived fence set 175 GiB on each launch
+# until their batches end; accept that value so they never refuse ours.
+WORKLOAD_PARENT_LEGACY_BYTES=187904819200
 verify_workload_parent_properties() {
   local properties max swap
   properties=$(systemctl --user show "$WORKLOAD_PARENT_SLICE" -p MemoryMax -p MemorySwapMax) || return $?
   max=$(printf '%s\n' "$properties" | awk -F= '$1 == "MemoryMax" {print $2}')
   swap=$(printf '%s\n' "$properties" | awk -F= '$1 == "MemorySwapMax" {print $2}')
-  if [ "$max" != "$WORKLOAD_PARENT_BYTES" ] || [ "$swap" != 0 ]; then
+  if { [ "$max" != "$WORKLOAD_PARENT_BYTES" ] && [ "$max" != "$WORKLOAD_PARENT_LEGACY_BYTES" ]; } ||
+     [ "$swap" != 0 ]; then
     echo "resource guard: shared workload parent lacks its memory fence" >&2
     return 2
   fi
@@ -1683,6 +1709,14 @@ verify_workload_ancestor() {
   verify_workload_parent_properties
 }
 
+# Workloads are the kernel's preferred OOM victims, so an account-wide OOM
+# kills a workload scope and never a session scope (two session losses on
+# 2026-11-13). An unprivileged process may raise its own score.
+prefer_oom_victim() {
+  echo 1000 > /proc/self/oom_score_adj || {
+    echo "resource guard: cannot raise the workload OOM score" >&2; return 2; }
+}
+
 aggregate_slice() {
   local slice="${ZESU_AGGREGATE_SLICE:-}" limit="${ZESU_AGGREGATE_LIMIT:-}" properties
   if [ -z "$slice" ]; then
@@ -1695,7 +1729,7 @@ aggregate_slice() {
   fi
   if [[ ! "$slice" =~ ^zesuworkloads-aggregate[0-9]+p[0-9]+r[0-9]+\.slice$ ]] ||
      [[ ! "$limit" =~ ^[1-9][0-9]{0,2}G$ ]] ||
-     (( ${limit%G} > 175 )); then
+     (( ${limit%G} * GIB > WORKLOAD_PARENT_BYTES )); then
     echo "resource guard: invalid aggregate slice or limit" >&2
     return 2
   fi
@@ -1873,7 +1907,7 @@ run_scope() {
   wait "$child"
   status=$?
   child=""
-  [ "$status" -eq 0 ] || report_fence_kill "$unit.scope" "$@"
+  [ "$status" -eq 0 ] || report_fence_kill "$unit.scope" "$slice" "$@"
   cleanup_scope
   trap - EXIT TERM INT
   return "$status"
@@ -1885,15 +1919,58 @@ scope_result() {
   systemctl --user show "$1" -p Result --value 2>/dev/null
 }
 
+# The memory peak of an ended scope: systemd keeps it for a failed unit.
+scope_peak_bytes() {
+  local peak
+  peak=$(systemctl --user show "$1" -p MemoryPeak --value 2>/dev/null)
+  [[ "$peak" =~ ^[0-9]+$ ]] && echo "$peak"
+}
+
+# "LIMIT PEAK" of a slice's cgroup in bytes.
+slice_memory() {
+  local group limit peak
+  group=$(systemctl --user show "$1" -p ControlGroup --value 2>/dev/null) && [ -n "$group" ] || return 1
+  read -r limit < "$CGROUP_ROOT$group/memory.max" && read -r peak < "$CGROUP_ROOT$group/memory.peak" || return 1
+  echo "$limit $peak"
+}
+
+gib_text() { awk -v b="$1" 'BEGIN { printf "%.1f", b / 1073741824 }'; }
+
 # A kill at the scope's memory fence otherwise ends as a plain nonzero status
 # with no peak. Name it to the caller and record it with the compiled source's
 # hash, so a later probe of that source books from the fence it reached.
+#
+# A scope in a batch aggregate shares that aggregate's MemoryMax with every
+# block the batch runs at once. When the aggregate runs out, the kernel kills
+# one of them, and its scope also ends with oom-kill. Of the 62 kills recorded
+# as fence kills on 2026-11-12/13, 42 were such kills: other blocks held
+# 1.1-12.6 GiB of the full 16 GiB aggregate. A kill whose own peak stays below 99% of the fence, or
+# whose peak is unknown inside an aggregate, is a shared-slice kill: it names
+# the aggregate and the victim's peak, and it never lowers a probe's claim.
 report_fence_kill() {
-  local unit=$1; shift
+  local unit=$1 slice=$2; shift 2
   [ "$(scope_result "$unit")" = oom-kill ] || return 0
-  echo "resource guard: memory fence kill: $unit reached its ${MODULE_LIMIT_GIB} GiB fence" >&2
+  local fence=$(( MODULE_LIMIT_GIB * GIB )) peak="" limit="" aggregate_peak="" kind=fence detail="" own
+  local -a fields=()
+  peak=$(scope_peak_bytes "$unit") || peak=""
+  if [[ "$slice" == zesuworkloads-aggregate*.slice ]] && read -r limit aggregate_peak < <(slice_memory "$slice") &&
+     [[ "$limit" =~ ^[0-9]+$ && "$aggregate_peak" =~ ^[0-9]+$ ]]; then
+    fields+=(--aggregate "$slice" --aggregate-limit-bytes "$limit" --aggregate-peak-bytes "$aggregate_peak")
+    detail="; aggregate $slice limit $(gib_text "$limit") GiB, peak $(gib_text "$aggregate_peak") GiB"
+  fi
+  if [ -n "$peak" ]; then
+    fields+=(--own-peak-bytes "$peak")
+    own="own peak $(gib_text "$peak") GiB"
+  else own="own peak unknown"; fi
+  if { [ -n "$peak" ] && (( peak * 100 < fence * 99 )); } ||
+     { [ -z "$peak" ] && [[ "$slice" == zesuworkloads-aggregate*.slice ]]; }; then
+    kind=shared-slice
+    echo "resource guard: shared-slice memory kill: $unit did not reach its ${MODULE_LIMIT_GIB} GiB fence ($own${detail:-; aggregate $slice})" >&2
+  else
+    echo "resource guard: memory fence kill: $unit reached its ${MODULE_LIMIT_GIB} GiB fence ($own$detail)" >&2
+  fi
   python3 "$MEMORY_TOOL" fence-kill-record --ledger "$FENCE_KILLS" --unit "$unit" \
-    --fence-bytes "$(( MODULE_LIMIT_GIB * GIB ))" --cwd "$PWD" -- "$@" >/dev/null ||
+    --fence-bytes "$fence" --kind "$kind" "${fields[@]}" --cwd "$PWD" -- "$@" >/dev/null ||
     note "fence kill record failed: $unit"
 }
 
@@ -2064,6 +2141,7 @@ case "${1:-report}" in
     verify_workload_ancestor || exit $?
     shift; [ "${1:-}" = -- ] && shift
     check_python_driver "$@" || exit $?
+    prefer_oom_victim || exit $?
     exec "$@" ;;
   parent-setup) ensure_workload_parent ;;
   gate-module-limit)
@@ -2098,6 +2176,7 @@ case "${1:-report}" in
     mark_coqc "$token" $$ || exit $?
     export ZESU_COQC_RESERVATION="$token" ZESU_COQC_SCOPE="$token" ZESU_OWNED_GUARD_TOKEN="$token"
     apply_scope_limits || exit $?
+    prefer_oom_victim || exit $?
     register_run_actor || exit $?
     if [ -n "${ZESU_STAGING_CONTEXT_JSON:-}" ] || [ -n "${ZESU_STAGING_CONTEXT_SHA256:-}" ]; then
       exec python3 -B "$MEMORY_TOOL" staging-exit-exec --marker "$token" -- "$@"

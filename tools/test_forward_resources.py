@@ -214,6 +214,40 @@ class ForwardResourcesTests(unittest.TestCase):
         self.assertIn('take 0%nat old_bytes', source)
         self.assertIn('drop (Nat.add 0%nat 2%nat) old_bytes', source)
 
+    def splice_source(self, writes, length=64):
+        ownership = parse_source_ownership('address ↦ₘ∗ old_bytes', provenance=PROVENANCE)
+        component, = ownership['components']
+        resource = OwnedBytes(component['id'], bits(32, 64), 'address', input_expr('old_bytes', None),
+                              length, True, '(DfracOwn (1%Qp))', component, PROVENANCE, 8)
+        output = render_resource_boundary(ownership, apply([resource], writes), SymbolicState(),
+                                          vocabulary=VOCABULARY)
+        self.assertEqual(output['block_status'], 'completed')
+        return output['components'][0]['source']
+
+    def test_constant_offset_stores_render_in_size_linear_in_their_count(self):
+        # One-byte stores at every other byte: each store is its own run between kept runs.
+        def source(count):
+            return self.splice_source([MemoryWrite(bits(32 + 2 * k, 64), bits(k, 8), 1) for k in range(count)],
+                                      length=96)
+        small, double = len(source(8)), len(source(16))
+        self.assertLess(double, 2.5 * small)
+        forty = source(40)
+        self.assertLess(len(forty), 6 * small)
+        self.assertEqual(forty.count('old_bytes'), 41)
+
+    def test_constant_offset_stores_take_each_byte_from_its_last_store(self):
+        chunk = '(bv_to_little_endian (Z.of_nat {0}%nat) 8%N (bv_unsigned ((BV {1}%N {2}%Z) : bv {1}%N)))'
+        first, second = chunk.format(2, 16, 0x1234), chunk.format(1, 8, 7)
+        source = self.splice_source([MemoryWrite(bits(33, 64), bits(0x1234, 16), 2),
+                                     MemoryWrite(bits(34, 64), bits(7, 8), 1),
+                                     MemoryWrite(bits(37, 64), bits(0x1234, 16), 2)])
+        expected = ('(Coq.Init.Datatypes.app (take 1%nat old_bytes) '
+                    f'(Coq.Init.Datatypes.app (take 1%nat {first}) '
+                    f'(Coq.Init.Datatypes.app {second} '
+                    '(Coq.Init.Datatypes.app (take 2%nat (drop (Nat.add 2%nat 1%nat) old_bytes)) '
+                    f'(Coq.Init.Datatypes.app {first} (drop (Nat.add 5%nat 2%nat) old_bytes))))))')
+        self.assertEqual(source, '(address) ↦ₘ{(DfracOwn (1%Qp))}∗ (' + expected + ')')
+
     def test_uninitialized_rendering_keeps_unknown_prefix_and_suffix(self):
         ownership = parse_source_ownership('address ↦ₘ? 4%Z', provenance=PROVENANCE)
         component, = ownership['components']
