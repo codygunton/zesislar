@@ -1,6 +1,7 @@
 From Coq Require Import ZArith.ZArith Lists.List NArith.NArith Lia.
 From stdpp.bitvector Require Import definitions.
 Require Import isla.riscv64.riscv64.
+Require ZesuSsz.Automation2.VmClosed.
 Local Open Scope Z_scope.
 
 (* Specs state a value loaded from a byte list as byte positions of the list:
@@ -84,6 +85,7 @@ Ltac zesu_le_window_prove :=
 Ltac zesu_le_window_rewrite_one :=
   match goal with
   | |- context [Z_to_bv ?width (little_endian_to_bv 8 (take ?count (drop ?start ?bytes)))] =>
+      ZesuSsz.Automation2.VmClosed.zesu_vm_closed start;
       let c := eval vm_compute in count in
       let k := eval vm_compute in start in
       let w := eval vm_compute in width in
@@ -122,6 +124,25 @@ Ltac zesu_lookup_value_rewrite_one :=
       end
   end.
 
+(* A local definition (a trace let) that the left side mentions is unfolded
+   in the equation when it holds a window or sits in a window's start; the
+   window rewrite and the index step then see the terms. *)
+Ltac zesu_byte_position_unfold_let :=
+  lazymatch goal with
+  | |- ?lhs = _ =>
+      match goal with
+      | local := ?body |- _ =>
+          lazymatch lhs with context [local] => idtac end;
+          first [
+            lazymatch body with context [little_endian_to_bv _ _] => idtac end
+          | match lhs with
+            | context [little_endian_to_bv _ (take _ (drop ?start _))] =>
+                lazymatch start with context [local] => idtac end
+            end ];
+          unfold local
+      end
+  end.
+
 (* The run-loop step: a pure equation at the head of a lazy existential that
    reads byte positions of a list. Lithium's side-condition step refused it
    (the step runs last). *)
@@ -132,7 +153,9 @@ Ltac zesu_byte_position_pure_step :=
       lazymatch P with context [@nth (bv 8) _ _ _] => idtac end;
       notypeclasses refine (tac_normalize_goal_and_liex _ _ _ _ _ _);
         [intros ?;
-         progress (repeat first [zesu_le_window_rewrite_one | zesu_lookup_value_rewrite_one]);
+         progress (repeat first [zesu_byte_position_unfold_let
+                                | zesu_le_window_rewrite_one
+                                | zesu_lookup_value_rewrite_one]);
          reflexivity
         | cbv beta]
   end.
