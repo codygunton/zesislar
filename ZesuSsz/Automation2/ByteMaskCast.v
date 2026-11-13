@@ -1,6 +1,7 @@
 Require Import ZesuSsz.Automation2.SwitchDispatch.
 From stdpp Require Import bitvector.tactics.
 From Coq Require Import ZArith Lia.
+Require ZesuSsz.Automation2.VmClosed.
 Local Open Scope Z_scope.
 
 Class ZesuStepByteMaskCast : Prop := {}.
@@ -38,7 +39,7 @@ Ltac zesu_byte_mask_cast :=
   zesu_switch_enabled constr:(ZesuStepByteMaskCast);
   progress (repeat match goal with
   | |- context [bv_and (bv_sign_extend ?width ?word) ?mask] =>
-      is_closed_term width; is_closed_term mask;
+      ZesuSsz.Automation2.VmClosed.zesu_closed_term width; ZesuSsz.Automation2.VmClosed.zesu_closed_term mask;
       assert_fails (has_evar word);
       let expected := eval vm_compute in (2 ^ 8 - 1) in
       let actual := eval vm_compute in (bv_unsigned mask) in

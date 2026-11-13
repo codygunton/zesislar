@@ -8,18 +8,18 @@ Require Import ZesuSsz.Automation2.All.
 (* Both checks accept, or both refuse. *)
 Ltac vm_closed_term_agrees term :=
   tryif stdpp.tactics.is_closed_term term then
-    ZesuSsz.Automation2.VmClosed.zesu_vm_closed_term term
+    ZesuSsz.Automation2.VmClosed.zesu_closed_term term
   else
-    tryif ZesuSsz.Automation2.VmClosed.zesu_vm_closed_term term then fail
+    tryif ZesuSsz.Automation2.VmClosed.zesu_closed_term term then fail
     else idtac.
 
 Ltac vm_closed_term_accepts term :=
   stdpp.tactics.is_closed_term term;
-  ZesuSsz.Automation2.VmClosed.zesu_vm_closed_term term.
+  ZesuSsz.Automation2.VmClosed.zesu_closed_term term.
 
 Ltac vm_closed_term_refuses term :=
   tryif stdpp.tactics.is_closed_term term then fail else idtac;
-  tryif ZesuSsz.Automation2.VmClosed.zesu_vm_closed_term term then fail else idtac.
+  tryif ZesuSsz.Automation2.VmClosed.zesu_closed_term term then fail else idtac.
 
 Lemma vm_closed_term_corpus (x : Z) (n : nat) (word : bv 64) (Hx : (0 <= x)%Z) : True.
 Proof.
@@ -55,6 +55,26 @@ Proof.
   vm_closed_term_refuses (forall z : Z, z = open).
   vm_closed_term_agrees (sum = twice).
   vm_closed_term_agrees (open = twice).
+  exact I.
+Qed.
+
+(* Terms with evars: an evar keeps its whole context through `clear -`, so
+   the check falls back to the stdpp loop and agrees with it. *)
+Lemma vm_closed_term_evars (x : Z) : True.
+Proof.
+  set (literal := 3%Z).
+  evar (value : Z).
+  set (closedAlias := (value + literal)%Z).
+  evar (proof : x = x).
+  set (openAlias := (x + value)%Z).
+  vm_closed_term_accepts value.
+  vm_closed_term_accepts closedAlias.
+  vm_closed_term_accepts (value + 1)%Z.
+  vm_closed_term_refuses openAlias.
+  vm_closed_term_refuses (value + x)%Z.
+  vm_closed_term_refuses proof.
+  instantiate (value := 0%Z).
+  instantiate (proof := eq_refl).
   exact I.
 Qed.
 

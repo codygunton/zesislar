@@ -2,6 +2,7 @@ Require Import ZesuSsz.Automation2.SwitchDispatch.
 Require Import ZesuSsz.Automation2.AdditiveDecoder.
 From Coq Require Import Lists.List ZArith.ZArith Lia.
 From stdpp Require Import bitvector.definitions list_numbers.
+Require ZesuSsz.Automation2.VmClosed.
 Local Open Scope Z_scope.
 
 Class ZesuStepCodecRoundtrip : Prop := {}.
@@ -46,7 +47,7 @@ Ltac zesu_codec_roundtrip :=
   | |- ?image = bv_unsigned ?word =>
       lazymatch image with context [Z.land _ (Z.ones ?digit_width)] =>
       lazymatch type of word with bv ?source_width =>
-        is_closed_term source_width; is_closed_term digit_width;
+        ZesuSsz.Automation2.VmClosed.zesu_closed_term source_width; ZesuSsz.Automation2.VmClosed.zesu_closed_term digit_width;
         let positive := eval vm_compute in (0 <? digit_width)%Z in
         constr_eq positive true;
         let width := eval vm_compute in (Z.to_N digit_width) in

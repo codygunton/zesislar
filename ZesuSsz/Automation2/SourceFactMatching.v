@@ -21,7 +21,7 @@ Ltac zesu_source_signed_lookup :=
   lazymatch goal with
   | |- (bv_signed (bv_sign_extend ?wide (bv_sign_extend ?middle ?byte)) < bv_signed ?zero)%Z =>
     assert_fails (has_evar byte);
-    is_closed_term wide; is_closed_term middle;
+    ZesuSsz.Automation2.VmClosed.zesu_closed_term wide; ZesuSsz.Automation2.VmClosed.zesu_closed_term middle;
     multimatch goal with
     | Hsource : (bv_signed (bv_sign_extend wide (bv_sign_extend middle ?loaded)) < bv_signed zero)%Z |- _ =>
       let equality := fresh "HsourceLoadedByte" in

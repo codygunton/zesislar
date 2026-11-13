@@ -152,7 +152,7 @@ Ltac zesu_flag_mark term :=
 Ltac zesu_flag_numerals_in H :=
   repeat match type of H with
   | context [bv_unsigned ?constant] =>
-      stdpp.tactics.is_closed_term constant;
+      ZesuSsz.Automation2.VmClosed.zesu_closed_term constant;
       let value := eval vm_compute in (bv_unsigned constant) in
       change (bv_unsigned constant) with value in H
   end.
@@ -160,19 +160,19 @@ Ltac zesu_flag_numerals_in H :=
 Ltac zesu_flag_numerals_goal :=
   repeat match goal with
   | |- context [bv_unsigned ?constant] =>
-      stdpp.tactics.is_closed_term constant;
+      ZesuSsz.Automation2.VmClosed.zesu_closed_term constant;
       let value := eval vm_compute in (bv_unsigned constant) in
       change (bv_unsigned constant) with value
   end.
 
 Ltac zesu_flag_modulus n :=
-  let _ := constr:(ltac:(stdpp.tactics.is_closed_term n; exact I) : True) in
+  let _ := constr:(ltac:(ZesuSsz.Automation2.VmClosed.zesu_closed_term n; exact I) : True) in
   eval vm_compute in (bv_modulus n).
 
 Ltac zesu_flag_range value :=
   lazymatch type of value with
   | bv ?n =>
-      tryif stdpp.tactics.is_closed_term value then idtac else (
+      tryif ZesuSsz.Automation2.VmClosed.zesu_closed_term value then idtac else (
       zesu_flag_unseen (bv_unsigned value); zesu_flag_mark (bv_unsigned value);
       let modulus := zesu_flag_modulus n in
       let H := fresh "HflagRange" in
@@ -214,10 +214,10 @@ Ltac zesu_flag_xor_facts :=
       zesu_flag_unseen term; zesu_flag_mark term;
       let H := fresh "HflagXor" in
       first [
-        stdpp.tactics.is_closed_term right;
+        ZesuSsz.Automation2.VmClosed.zesu_closed_term right;
         pose proof (zesu_xor_one_right n left right ltac:(vm_compute; reflexivity)) as H;
         zesu_flag_range left
-      | stdpp.tactics.is_closed_term left;
+      | ZesuSsz.Automation2.VmClosed.zesu_closed_term left;
         pose proof (zesu_xor_one_left n left right ltac:(vm_compute; reflexivity)) as H;
         zesu_flag_range right]
   end.
@@ -250,7 +250,7 @@ Ltac zesu_flag_mask_width mask :=
 Ltac zesu_flag_mask_facts :=
   repeat match goal with
   | |- context [@bv_and ?n ?source ?mask] =>
-      stdpp.tactics.is_closed_term mask;
+      ZesuSsz.Automation2.VmClosed.zesu_closed_term mask;
       let term := constr:(@bv_and n source mask) in
       zesu_flag_unseen term; zesu_flag_mark term;
       let width := zesu_flag_mask_width mask in
@@ -278,7 +278,7 @@ Ltac zesu_flag_mask_facts :=
 Ltac zesu_flag_cast_facts :=
   repeat match goal with
   | |- context [@Z_to_bv ?n ?value] =>
-      tryif stdpp.tactics.is_closed_term value then fail else idtac;
+      tryif ZesuSsz.Automation2.VmClosed.zesu_closed_term value then fail else idtac;
       let term := constr:(@Z_to_bv n value) in
       zesu_flag_unseen term; zesu_flag_mark term;
       let modulus := zesu_flag_modulus n in
@@ -292,7 +292,7 @@ Ltac zesu_flag_cast_facts :=
 Ltac zesu_flag_modulo_facts :=
   repeat match goal with
   | |- context [Z.modulo ?value ?divisor] =>
-      stdpp.tactics.is_closed_term divisor;
+      ZesuSsz.Automation2.VmClosed.zesu_closed_term divisor;
       lazymatch eval vm_compute in (0 <? divisor)%Z with true => idtac end;
       let term := constr:(Z.modulo value divisor) in
       zesu_flag_unseen term; zesu_flag_mark term;
@@ -303,7 +303,7 @@ Ltac zesu_flag_modulo_facts :=
   end;
   repeat match goal with
   | Hdivide : Z.divide ?divisor ?value |- _ =>
-      stdpp.tactics.is_closed_term divisor;
+      ZesuSsz.Automation2.VmClosed.zesu_closed_term divisor;
       let term := constr:(Z.divide divisor value) in
       zesu_flag_unseen term; zesu_flag_mark term;
       let quotient := fresh "flagQuotient" in
@@ -314,7 +314,7 @@ Ltac zesu_flag_modulo_facts :=
 Ltac zesu_flag_divisibility_shape :=
   lazymatch goal with
   | |- context [Z.modulo _ ?divisor] =>
-      stdpp.tactics.is_closed_term divisor;
+      ZesuSsz.Automation2.VmClosed.zesu_closed_term divisor;
       lazymatch goal with _ : Z.divide _ _ |- _ => idtac end
   end.
 
