@@ -1,7 +1,7 @@
 {
   "function": "decodeItem",
   "args_type": "DecodeItemArgs",
-  "pc_prefix": "0x800d",
+  "symbol": "rlp.decodeItem",
   "generated_directory": "ZesuSsz/Generated/DecodeItem/FP301",
   "callers_directory": "tools/block/generated/fp301_callers",
   "contract_requires": [
@@ -26,14 +26,14 @@
   "return_facts": ["DecodeMeaningModuloKnownBugs args currentStorage"],
   "return_requires": ["Require Import ZesuSsz.Compliance.DecodeItemMeaningPorted."],
   "domain_component": "⌜decodeItemDomainAt returnAddress decodeItemC1BDomain args⌝",
-  "blocks": ["6960", "6974", "697c", "69a4", "69b0", "69d8", "69e0", "69e8", "6a00", "6a08",
-             "6a14", "6a64", "6a6c", "6a78", "6aa8", "6ab4", "698c", "6a24", "6ac4", "6ae0"],
-  "loop_heads": ["6a24", "6ac4"],
+  "blocks": ["+0x0", "+0x14", "+0x1c", "+0x44", "+0x50", "+0x78", "+0x80", "+0x88", "+0xa0", "+0xa8",
+             "+0xb4", "+0x104", "+0x10c", "+0x118", "+0x148", "+0x154", "+0x2c", "+0xc4", "+0x164", "+0x180"],
+  "loop_heads": ["+0xc4", "+0x164"],
   "loop_head_fixture": "tools/block/fixtures/fp301-loop-heads.json",
   "loop_designs": [
     {
-      "head": "6a24",
-      "entry_predecessor": "6a14",
+      "head": "+0xc4",
+      "entry_predecessor": "+0xb4",
       "registers": {
         "x13": "loop_seed_x13",
         "x15": "loop_seed_x15",
@@ -47,8 +47,8 @@
       }
     },
     {
-      "head": "6ac4",
-      "entry_predecessor": "6ab4",
+      "head": "+0x164",
+      "entry_predecessor": "+0x154",
       "registers": {
         "x13": "loop_seed_x13",
         "x15": "loop_seed_x15",
@@ -76,19 +76,19 @@
     "witness_exclusion": "machine_x\\d+|decodeItem|\\bi\\b",
     "contradiction_directory": "_build/agents/loop-exit-contradiction-checks",
     "design": [
-      {"pc": "6a38", "head": "6a24"},
-      {"pc": "6a40", "head": "6a24", "block": "6a38", "update": ["x14", "x13"], "branch": ["ltu", "x12", "x14", false]},
-      {"pc": "6ad8", "head": "6ac4"},
-      {"pc": "6b08", "head": "6ac4", "block": "6ad8", "update": ["x14", "x13"], "branch": ["ltu", "x12", "x14", true]}
+      {"pc": "+0xd8", "head": "+0xc4"},
+      {"pc": "+0xe0", "head": "+0xc4", "block": "+0xd8", "update": ["x14", "x13"], "branch": ["ltu", "x12", "x14", false]},
+      {"pc": "+0x178", "head": "+0x164"},
+      {"pc": "+0x1a8", "head": "+0x164", "block": "+0x178", "update": ["x14", "x13"], "branch": ["ltu", "x12", "x14", true]}
     ]
   },
   "design_callers": {
     "fixture": "tools/block/fixtures/fp301-design-callers.json",
     "design": "ZesuSsz/Evidence/decode_item_block_design.json",
-    "blocks": ["698c", "6a38", "6a40", "6ad8", "6ae0", "6b08"]
+    "blocks": ["+0x2c", "+0xd8", "+0xe0", "+0x178", "+0x180", "+0x1a8"]
   },
   "loop_successors": {
-    "pairs": [["6a38", "6a24"], ["6a40", "6a24"], ["6ad8", "6ac4"], ["6b08", "6ac4"]],
+    "pairs": [["+0xd8", "+0xc4"], ["+0xe0", "+0xc4"], ["+0x178", "+0x164"], ["+0x1a8", "+0x164"]],
     "classes_per_head": 4,
     "continuation_id": "resource_15"
   }

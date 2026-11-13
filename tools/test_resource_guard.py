@@ -1214,6 +1214,78 @@ echo $(( SECONDS - started ))
         # The first change still leaves no room; the second release does.
         self.assertIn(int(result.stdout.split()[-1]), (1, 2, 3))
 
+    def test_queued_admission_attempt_leaves_the_gate_mutex_free(self):
+        # On 2026-11-12 about 100 held launches queued on the gate mutex, which
+        # was held 97 % of the time; releases and marks waited minutes behind them.
+        result = self.run_guard(r"""
+hold_reason() { :; }
+compiler_admission_reason() { :; }
+module_memory_admission_reason() { :; }
+recover_stale_reservations() { :; }
+memory() { echo $((256*GIB)) 0 $((200*GIB)); }
+# Another attempt holds the queue; this shell must not inherit its lock.
+flock "$ADMISSION_QUEUE" -c "touch '$STATE_DIR/queued'; sleep 1.5" & holder=$!
+while [ ! -e "$STATE_DIR/queued" ]; do sleep 0.05; done
+marker=$(reserve_coqc $$) || exit 11
+( confirm_coqc "$marker" ) & attempt=$!
+sleep 0.5
+( exec 7>>"$GATE_MUTEX"; flock -n 7 ) && echo mutex-free || echo mutex-taken
+[ -f "$marker" ] && echo admitted-past-queue || echo queued
+wait "$holder"
+wait "$attempt" || exit 12
+[ -f "$marker" ] && echo admitted
+""", ZESU_IN_BATCH="1")
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertEqual(result.stdout.split(), ["mutex-free", "queued", "admitted"])
+
+    def test_slot_refusal_runs_no_stale_ledger_recovery(self):
+        result = self.run_guard(r"""
+hold_reason() { :; }
+compiler_admission_reason() { echo "coqc 31 with 17 reservations machine-wide"; }
+recover_stale_reservations() { echo recovery; }
+module_memory_admission_reason() { echo ledger; }
+wait_for_admission_change() { echo "held ${2:-slots}"; exit 0; }
+marker=$(reserve_coqc $$) || exit 11
+confirm_coqc "$marker"
+""", ZESU_IN_BATCH="1")
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertEqual(result.stdout.split(), ["held", "slots"])
+
+    def test_ledger_refused_launch_waits_for_room_not_for_a_release(self):
+        if shutil.which("inotifywait") is None:
+            self.skipTest("inotifywait is not installed")
+        result = self.run_guard(r"""
+MEMORY_CLAIM_BYTES=$((2 * GIB)); LEDGER_RECHECK=60
+publish() { printf '%s\n' "$1" > "$ADMISSION_SUMMARY.tmp"; mv "$ADMISSION_SUMMARY.tmp" "$ADMISSION_SUMMARY"; }
+# Bookings are full and live memory is above half the slice.
+publish "$((300 * GIB)) $((200 * GIB)) $((50 * GIB)) $((155 * GIB)) $((120 * GIB)) $((175 * GIB))"
+stamp=$(cat "$ADMISSION_WAKE" 2>/dev/null)
+( sleep 1; wake_admissions
+  sleep 1; publish "$((300 * GIB)) $((200 * GIB)) $((50 * GIB)) $((155 * GIB)) $((120 * GIB)) $((175 * GIB))"
+  sleep 1; touch "$STATE_DIR/room"; publish "$((300 * GIB)) $((200 * GIB)) $((50 * GIB)) $((155 * GIB)) $((80 * GIB)) $((175 * GIB))" ) &
+wait_for_admission_change "$stamp" "$SECONDS"
+[ -e "$STATE_DIR/room" ] && echo room || echo early
+wait
+""")
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertEqual(result.stdout.split(), ["room"])
+
+    def test_aged_ledger_waiter_may_fill_live_memory_to_the_slice_cap(self):
+        result = self.run_guard(r"""
+MEMORY_CLAIM_BYTES=$((2 * GIB))
+printf '%s\n' "$((300 * GIB)) $((200 * GIB)) $((50 * GIB)) $((155 * GIB)) $((120 * GIB)) $((175 * GIB))" > "$ADMISSION_SUMMARY"
+admission_plausible && echo room || echo full
+admission_plausible senior && echo room || echo full
+# A fresh slice sample replaces the summary's live figure.
+mkdir -p "$WORKLOAD_SLICE_CGROUP"
+printf 'anon %s\nfile 0\n' "$((160 * GIB))" > "$WORKLOAD_SLICE_CGROUP/memory.stat"
+admission_plausible senior && echo room || echo full
+printf 'anon %s\nfile 0\n' "$((10 * GIB))" > "$WORKLOAD_SLICE_CGROUP/memory.stat"
+admission_plausible && echo room || echo full
+""")
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertEqual(result.stdout.split(), ["full", "room", "full", "room"])
+
     def test_gate_does_not_wait_for_unadmitted_probe_request(self):
         result = self.run_guard(r"""
 marker="$COQC_RESERVATIONS/$$.probe"
