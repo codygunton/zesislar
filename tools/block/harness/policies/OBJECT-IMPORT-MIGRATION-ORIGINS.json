@@ -416,227 +416,227 @@
       },
       "module_allowlist": [
         "ZesuSsz.Evidence.RuleScratchRules",
-        "ZesuSsz.Generated.DecodeItem.FP301.Pilot6960Entries",
-        "ZesuSsz.Generated.DecodeItem.FP301.Pilot6960Structural",
-        "ZesuSsz.Generated.DecodeItem.FP301.Pilot6974Entries",
-        "ZesuSsz.Generated.DecodeItem.FP301.Pilot6974Structural",
-        "ZesuSsz.Generated.DecodeItem.FP301.Pilot697cEntries",
-        "ZesuSsz.Generated.DecodeItem.FP301.Pilot697cStructural",
-        "ZesuSsz.Generated.DecodeItem.FP301.Pilot69a4Entries",
-        "ZesuSsz.Generated.DecodeItem.FP301.Pilot69a4Structural",
-        "ZesuSsz.Generated.DecodeItem.FP301.Pilot69b0Entries",
-        "ZesuSsz.Generated.DecodeItem.FP301.Pilot69b0Structural",
-        "ZesuSsz.Generated.DecodeItem.FP301.Pilot69d8Entries",
-        "ZesuSsz.Generated.DecodeItem.FP301.Pilot69d8Structural",
-        "ZesuSsz.Generated.DecodeItem.FP301.Pilot69e0Entries",
-        "ZesuSsz.Generated.DecodeItem.FP301.Pilot69e0Structural",
-        "ZesuSsz.Generated.DecodeItem.FP301.Pilot69e8Entries",
-        "ZesuSsz.Generated.DecodeItem.FP301.Pilot69e8Structural",
-        "ZesuSsz.Generated.DecodeItem.FP301.Pilot6a00Entries",
-        "ZesuSsz.Generated.DecodeItem.FP301.Pilot6a00Structural",
-        "ZesuSsz.Generated.DecodeItem.FP301.Pilot6a08Entries",
-        "ZesuSsz.Generated.DecodeItem.FP301.Pilot6a08Structural",
-        "ZesuSsz.Generated.DecodeItem.FP301.Pilot6a14Entries",
-        "ZesuSsz.Generated.DecodeItem.FP301.Pilot6a14Structural",
-        "ZesuSsz.Generated.DecodeItem.FP301.Pilot6a64Entries",
-        "ZesuSsz.Generated.DecodeItem.FP301.Pilot6a64Structural",
-        "ZesuSsz.Generated.DecodeItem.FP301.Pilot6a6cEntries",
-        "ZesuSsz.Generated.DecodeItem.FP301.Pilot6a6cStructural",
-        "ZesuSsz.Generated.DecodeItem.FP301.Pilot6a78Entries",
-        "ZesuSsz.Generated.DecodeItem.FP301.Pilot6a78Structural",
-        "ZesuSsz.Generated.DecodeItem.FP301.Pilot6aa8Entries",
-        "ZesuSsz.Generated.DecodeItem.FP301.Pilot6aa8Structural",
-        "ZesuSsz.Generated.DecodeItem.FP301.Pilot6ab4Entries",
-        "ZesuSsz.Generated.DecodeItem.FP301.Pilot6ab4Structural"
+        "ZesuSsz.Generated.DecodeItem.FP301.Pilot0000Entries",
+        "ZesuSsz.Generated.DecodeItem.FP301.Pilot0000Structural",
+        "ZesuSsz.Generated.DecodeItem.FP301.Pilot0014Entries",
+        "ZesuSsz.Generated.DecodeItem.FP301.Pilot0014Structural",
+        "ZesuSsz.Generated.DecodeItem.FP301.Pilot001cEntries",
+        "ZesuSsz.Generated.DecodeItem.FP301.Pilot001cStructural",
+        "ZesuSsz.Generated.DecodeItem.FP301.Pilot0044Entries",
+        "ZesuSsz.Generated.DecodeItem.FP301.Pilot0044Structural",
+        "ZesuSsz.Generated.DecodeItem.FP301.Pilot0050Entries",
+        "ZesuSsz.Generated.DecodeItem.FP301.Pilot0050Structural",
+        "ZesuSsz.Generated.DecodeItem.FP301.Pilot0078Entries",
+        "ZesuSsz.Generated.DecodeItem.FP301.Pilot0078Structural",
+        "ZesuSsz.Generated.DecodeItem.FP301.Pilot0080Entries",
+        "ZesuSsz.Generated.DecodeItem.FP301.Pilot0080Structural",
+        "ZesuSsz.Generated.DecodeItem.FP301.Pilot0088Entries",
+        "ZesuSsz.Generated.DecodeItem.FP301.Pilot0088Structural",
+        "ZesuSsz.Generated.DecodeItem.FP301.Pilot00a0Entries",
+        "ZesuSsz.Generated.DecodeItem.FP301.Pilot00a0Structural",
+        "ZesuSsz.Generated.DecodeItem.FP301.Pilot00a8Entries",
+        "ZesuSsz.Generated.DecodeItem.FP301.Pilot00a8Structural",
+        "ZesuSsz.Generated.DecodeItem.FP301.Pilot00b4Entries",
+        "ZesuSsz.Generated.DecodeItem.FP301.Pilot00b4Structural",
+        "ZesuSsz.Generated.DecodeItem.FP301.Pilot0104Entries",
+        "ZesuSsz.Generated.DecodeItem.FP301.Pilot0104Structural",
+        "ZesuSsz.Generated.DecodeItem.FP301.Pilot010cEntries",
+        "ZesuSsz.Generated.DecodeItem.FP301.Pilot010cStructural",
+        "ZesuSsz.Generated.DecodeItem.FP301.Pilot0118Entries",
+        "ZesuSsz.Generated.DecodeItem.FP301.Pilot0118Structural",
+        "ZesuSsz.Generated.DecodeItem.FP301.Pilot0148Entries",
+        "ZesuSsz.Generated.DecodeItem.FP301.Pilot0148Structural",
+        "ZesuSsz.Generated.DecodeItem.FP301.Pilot0154Entries",
+        "ZesuSsz.Generated.DecodeItem.FP301.Pilot0154Structural"
       ],
       "individual_receipts": {
-        "ZesuSsz.Generated.DecodeItem.FP301.Pilot6960Entries": [
+        "ZesuSsz.Generated.DecodeItem.FP301.Pilot0000Entries": [
           {
             "path": "/home/cody/zesislar/_build/agents/worker-build-1/pilot-declarations302/compile002/jobs/prerequisites/native/validated-objects/OBJECT-000000.json",
             "sha256": "5e541dc9520ae3c01656dbbd2a5323a753c758fc60371984d4f931fece4e1b36"
           }
         ],
-        "ZesuSsz.Generated.DecodeItem.FP301.Pilot6960Structural": [
+        "ZesuSsz.Generated.DecodeItem.FP301.Pilot0000Structural": [
           {
             "path": "/home/cody/zesislar/_build/agents/worker-build-1/pilot-declarations302/compile002/jobs/prerequisites/native/validated-objects/OBJECT-000001.json",
             "sha256": "46ef1aec0a887563c627605fa1a303b713c19ce9cd1b080ada91e7fde55c2d29"
           }
         ],
-        "ZesuSsz.Generated.DecodeItem.FP301.Pilot6974Entries": [
+        "ZesuSsz.Generated.DecodeItem.FP301.Pilot0014Entries": [
           {
             "path": "/home/cody/zesislar/_build/agents/worker-build-1/pilot-declarations302/compile002/jobs/prerequisites/native/validated-objects/OBJECT-000002.json",
             "sha256": "0398b06bd3859caa75526d2f2bb699f861f74cba47c560f796189c74bd54a900"
           }
         ],
-        "ZesuSsz.Generated.DecodeItem.FP301.Pilot6974Structural": [
+        "ZesuSsz.Generated.DecodeItem.FP301.Pilot0014Structural": [
           {
             "path": "/home/cody/zesislar/_build/agents/worker-build-1/pilot-declarations302/compile002/jobs/prerequisites/native/validated-objects/OBJECT-000003.json",
             "sha256": "fe01a7c1059f0a0cb971b76b13f3edae5b80e5d45de41bbd0991aeda076aa525"
           }
         ],
-        "ZesuSsz.Generated.DecodeItem.FP301.Pilot697cEntries": [
+        "ZesuSsz.Generated.DecodeItem.FP301.Pilot001cEntries": [
           {
             "path": "/home/cody/zesislar/_build/agents/worker-build-1/pilot-declarations302/compile002/jobs/prerequisites/native/validated-objects/OBJECT-000004.json",
             "sha256": "97fa583c496d47467d0a02dc85f0881549f2f3a412c8c5ef4556e4325d275432"
           }
         ],
-        "ZesuSsz.Generated.DecodeItem.FP301.Pilot697cStructural": [
+        "ZesuSsz.Generated.DecodeItem.FP301.Pilot001cStructural": [
           {
             "path": "/home/cody/zesislar/_build/agents/worker-build-1/pilot-declarations302/compile002/jobs/prerequisites/native/validated-objects/OBJECT-000005.json",
             "sha256": "6f5a3fff85636fb78e64c1b1efcb31141a1ee1137cd5706be12b4d5fa4952a6d"
           }
         ],
-        "ZesuSsz.Generated.DecodeItem.FP301.Pilot69a4Entries": [
+        "ZesuSsz.Generated.DecodeItem.FP301.Pilot0044Entries": [
           {
             "path": "/home/cody/zesislar/_build/agents/worker-build-1/pilot-declarations302/compile002/jobs/prerequisites/native/validated-objects/OBJECT-000006.json",
             "sha256": "9c4ed95722ed4af6614cc3c798e61a40e898a99a9149526a15557d8458cc6ea7"
           }
         ],
-        "ZesuSsz.Generated.DecodeItem.FP301.Pilot69a4Structural": [
+        "ZesuSsz.Generated.DecodeItem.FP301.Pilot0044Structural": [
           {
             "path": "/home/cody/zesislar/_build/agents/worker-build-1/pilot-declarations302/compile002/jobs/prerequisites/native/validated-objects/OBJECT-000007.json",
             "sha256": "d0d2d66814ca1e40b27686b314c2979fdc2ed6d3f3272eeaa186a1490810e221"
           }
         ],
-        "ZesuSsz.Generated.DecodeItem.FP301.Pilot69b0Entries": [
+        "ZesuSsz.Generated.DecodeItem.FP301.Pilot0050Entries": [
           {
             "path": "/home/cody/zesislar/_build/agents/worker-build-1/pilot-declarations302/compile002/jobs/prerequisites/native/validated-objects/OBJECT-000008.json",
             "sha256": "67f1dc302e965696c815e2900b76e73359525287a44125debb55fecd932e2b38"
           }
         ],
-        "ZesuSsz.Generated.DecodeItem.FP301.Pilot69b0Structural": [
+        "ZesuSsz.Generated.DecodeItem.FP301.Pilot0050Structural": [
           {
             "path": "/home/cody/zesislar/_build/agents/worker-build-1/pilot-declarations302/compile002/jobs/prerequisites/native/validated-objects/OBJECT-000009.json",
             "sha256": "e33071c6865df37b8da3d4c327a210cb87084d4a614c0325aee028f7e0e59265"
           }
         ],
-        "ZesuSsz.Generated.DecodeItem.FP301.Pilot69d8Entries": [
+        "ZesuSsz.Generated.DecodeItem.FP301.Pilot0078Entries": [
           {
             "path": "/home/cody/zesislar/_build/agents/worker-build-1/pilot-declarations302/compile002/jobs/prerequisites/native/validated-objects/OBJECT-000010.json",
             "sha256": "2aa2b326a8c232e6d17006e82d9776db8fcec249aa6f58d23c60b0d1fa08ad95"
           }
         ],
-        "ZesuSsz.Generated.DecodeItem.FP301.Pilot69d8Structural": [
+        "ZesuSsz.Generated.DecodeItem.FP301.Pilot0078Structural": [
           {
             "path": "/home/cody/zesislar/_build/agents/worker-build-1/pilot-declarations302/compile002/jobs/prerequisites/native/validated-objects/OBJECT-000011.json",
             "sha256": "d8f79008ab66f33dfbc3a9852fa4db8955a6cb02fa7d73624ac44ec8b602585e"
           }
         ],
-        "ZesuSsz.Generated.DecodeItem.FP301.Pilot69e0Entries": [
+        "ZesuSsz.Generated.DecodeItem.FP301.Pilot0080Entries": [
           {
             "path": "/home/cody/zesislar/_build/agents/worker-build-1/pilot-declarations302/compile002/jobs/prerequisites/native/validated-objects/OBJECT-000012.json",
             "sha256": "d771124c62e888d2eff00945002d2930709ec88e9e88cd9aa1935a51d87e53bc"
           }
         ],
-        "ZesuSsz.Generated.DecodeItem.FP301.Pilot69e0Structural": [
+        "ZesuSsz.Generated.DecodeItem.FP301.Pilot0080Structural": [
           {
             "path": "/home/cody/zesislar/_build/agents/worker-build-1/pilot-declarations302/compile002/jobs/prerequisites/native/validated-objects/OBJECT-000013.json",
             "sha256": "5c13ab69f12654a7772271d789d18f121b294299b9e46e2aef1ba8ff784179fa"
           }
         ],
-        "ZesuSsz.Generated.DecodeItem.FP301.Pilot69e8Entries": [
+        "ZesuSsz.Generated.DecodeItem.FP301.Pilot0088Entries": [
           {
             "path": "/home/cody/zesislar/_build/agents/worker-build-1/pilot-declarations302/compile002/jobs/prerequisites/native/validated-objects/OBJECT-000014.json",
             "sha256": "809e596a0eeeb76b2c2aa7132044ed8278ae9501f8042f740e9af9e5ffb2f869"
           }
         ],
-        "ZesuSsz.Generated.DecodeItem.FP301.Pilot69e8Structural": [
+        "ZesuSsz.Generated.DecodeItem.FP301.Pilot0088Structural": [
           {
             "path": "/home/cody/zesislar/_build/agents/worker-build-1/pilot-declarations302/compile002/jobs/prerequisites/native/validated-objects/OBJECT-000015.json",
             "sha256": "063a823252c8c655728373ccdc25e987904bc5902e6acce71ec94d8f1b2f1243"
           }
         ],
-        "ZesuSsz.Generated.DecodeItem.FP301.Pilot6a00Entries": [
+        "ZesuSsz.Generated.DecodeItem.FP301.Pilot00a0Entries": [
           {
             "path": "/home/cody/zesislar/_build/agents/worker-build-1/pilot-declarations302/compile002/jobs/prerequisites/native/validated-objects/OBJECT-000016.json",
             "sha256": "191e9e862f6f068d535f2fcdadfbbdf47129002eb4fe0213e680d567731068cd"
           }
         ],
-        "ZesuSsz.Generated.DecodeItem.FP301.Pilot6a00Structural": [
+        "ZesuSsz.Generated.DecodeItem.FP301.Pilot00a0Structural": [
           {
             "path": "/home/cody/zesislar/_build/agents/worker-build-1/pilot-declarations302/compile002/jobs/prerequisites/native/validated-objects/OBJECT-000017.json",
             "sha256": "f54f066f6b008694b50efd57f2462224c7a79334e2a474522e876acf0541faa2"
           }
         ],
-        "ZesuSsz.Generated.DecodeItem.FP301.Pilot6a08Entries": [
+        "ZesuSsz.Generated.DecodeItem.FP301.Pilot00a8Entries": [
           {
             "path": "/home/cody/zesislar/_build/agents/worker-build-1/pilot-declarations302/compile002/jobs/prerequisites/native/validated-objects/OBJECT-000018.json",
             "sha256": "d1660236c99f26a70e132880d4d2b902cd1db43559d541a88b87206b1405dd84"
           }
         ],
-        "ZesuSsz.Generated.DecodeItem.FP301.Pilot6a08Structural": [
+        "ZesuSsz.Generated.DecodeItem.FP301.Pilot00a8Structural": [
           {
             "path": "/home/cody/zesislar/_build/agents/worker-build-1/pilot-declarations302/compile002/jobs/prerequisites/native/validated-objects/OBJECT-000019.json",
             "sha256": "a9946d7495ca4b5ee05ba042d07378d01af97ced0b2373de77cfee35ae55c166"
           }
         ],
-        "ZesuSsz.Generated.DecodeItem.FP301.Pilot6a14Entries": [
+        "ZesuSsz.Generated.DecodeItem.FP301.Pilot00b4Entries": [
           {
             "path": "/home/cody/zesislar/_build/agents/worker-build-1/pilot-declarations302/compile002/jobs/prerequisites/native/validated-objects/OBJECT-000020.json",
             "sha256": "c2e1dc519e0430d54e01aa6b397625a170c51bb3a6ceb12a5e8ec22e2d947139"
           }
         ],
-        "ZesuSsz.Generated.DecodeItem.FP301.Pilot6a14Structural": [
+        "ZesuSsz.Generated.DecodeItem.FP301.Pilot00b4Structural": [
           {
             "path": "/home/cody/zesislar/_build/agents/worker-build-1/pilot-declarations302/compile002/jobs/prerequisites/native/validated-objects/OBJECT-000021.json",
             "sha256": "0213c216bb27a656071cd2d4c9e2e9bb7862cf46dec5c3944b584b4a8089c494"
           }
         ],
-        "ZesuSsz.Generated.DecodeItem.FP301.Pilot6a64Entries": [
+        "ZesuSsz.Generated.DecodeItem.FP301.Pilot0104Entries": [
           {
             "path": "/home/cody/zesislar/_build/agents/worker-build-1/pilot-declarations302/compile002/jobs/prerequisites/native/validated-objects/OBJECT-000022.json",
             "sha256": "c7593cb91b679f7bbcf78b5425891431f9a86a7812aa6e9b34f3011f35fe06b4"
           }
         ],
-        "ZesuSsz.Generated.DecodeItem.FP301.Pilot6a64Structural": [
+        "ZesuSsz.Generated.DecodeItem.FP301.Pilot0104Structural": [
           {
             "path": "/home/cody/zesislar/_build/agents/worker-build-1/pilot-declarations302/compile002/jobs/prerequisites/native/validated-objects/OBJECT-000023.json",
             "sha256": "1051ddb46ad05527b59f0cb4cc10477a68f43731b164a981d61981ffbbb1f017"
           }
         ],
-        "ZesuSsz.Generated.DecodeItem.FP301.Pilot6a6cEntries": [
+        "ZesuSsz.Generated.DecodeItem.FP301.Pilot010cEntries": [
           {
             "path": "/home/cody/zesislar/_build/agents/worker-build-1/pilot-declarations302/compile002/jobs/prerequisites/native/validated-objects/OBJECT-000024.json",
             "sha256": "6257cc4235b51e99b5eba00928374948fda225c298de44519409988cba59bc1d"
           }
         ],
-        "ZesuSsz.Generated.DecodeItem.FP301.Pilot6a6cStructural": [
+        "ZesuSsz.Generated.DecodeItem.FP301.Pilot010cStructural": [
           {
             "path": "/home/cody/zesislar/_build/agents/worker-build-1/pilot-declarations302/compile002/jobs/prerequisites/native/validated-objects/OBJECT-000025.json",
             "sha256": "d9995068d6dc017fe965faa22b0fbc1d01c8e97fc320272596a0f02ff8958c26"
           }
         ],
-        "ZesuSsz.Generated.DecodeItem.FP301.Pilot6a78Entries": [
+        "ZesuSsz.Generated.DecodeItem.FP301.Pilot0118Entries": [
           {
             "path": "/home/cody/zesislar/_build/agents/worker-build-1/pilot-declarations302/compile002/jobs/prerequisites/native/validated-objects/OBJECT-000026.json",
             "sha256": "b8f13d1a44f6313d70dd28fce5f75684554a92148bd1e15420547c547f36ee69"
           }
         ],
-        "ZesuSsz.Generated.DecodeItem.FP301.Pilot6a78Structural": [
+        "ZesuSsz.Generated.DecodeItem.FP301.Pilot0118Structural": [
           {
             "path": "/home/cody/zesislar/_build/agents/worker-build-1/pilot-declarations302/compile002/jobs/prerequisites/native/validated-objects/OBJECT-000027.json",
             "sha256": "eeac0444c6223a6ac1cc2f6e99c4035066ac312869601684f0cb77c239122e54"
           }
         ],
-        "ZesuSsz.Generated.DecodeItem.FP301.Pilot6aa8Entries": [
+        "ZesuSsz.Generated.DecodeItem.FP301.Pilot0148Entries": [
           {
             "path": "/home/cody/zesislar/_build/agents/worker-build-1/pilot-declarations302/compile002/jobs/prerequisites/native/validated-objects/OBJECT-000028.json",
             "sha256": "f7121fb3e6d13b53aac3d8b30cffb7c7118225dbe2c1516b39d93325e12aaad3"
           }
         ],
-        "ZesuSsz.Generated.DecodeItem.FP301.Pilot6aa8Structural": [
+        "ZesuSsz.Generated.DecodeItem.FP301.Pilot0148Structural": [
           {
             "path": "/home/cody/zesislar/_build/agents/worker-build-1/pilot-declarations302/compile002/jobs/prerequisites/native/validated-objects/OBJECT-000029.json",
             "sha256": "08184c24aa5e8e8e06427adb98cc8cdd49805837d4a735d53e56ec6a537d4866"
           }
         ],
-        "ZesuSsz.Generated.DecodeItem.FP301.Pilot6ab4Entries": [
+        "ZesuSsz.Generated.DecodeItem.FP301.Pilot0154Entries": [
           {
             "path": "/home/cody/zesislar/_build/agents/worker-build-1/pilot-declarations302/compile002/jobs/prerequisites/native/validated-objects/OBJECT-000030.json",
             "sha256": "1108e29b7af9a578905ceedfa7f3d902641fee7da0a25d4a6747d0617449336b"
           }
         ],
-        "ZesuSsz.Generated.DecodeItem.FP301.Pilot6ab4Structural": [
+        "ZesuSsz.Generated.DecodeItem.FP301.Pilot0154Structural": [
           {
             "path": "/home/cody/zesislar/_build/agents/worker-build-1/pilot-declarations302/compile002/jobs/prerequisites/native/validated-objects/OBJECT-000031.json",
             "sha256": "c8f143966dd27237f5c215956efaccc0fa3679507fb9fb0f2ad14751d60a5a63"

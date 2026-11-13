@@ -6,7 +6,7 @@ Require Import ZesuSsz.Automation2.All.
 Open Scope Z_scope.
 
 (* The cursor facts are the pure conjuncts of the generated 6a24 loop entry
-   (fp_machineAt6a24_LoopClass0): x15 is the input cursor below the limit x11.
+   (fp_machineAt00c4_LoopClass0): x15 is the input cursor below the limit x11.
    The entry fixes x11 only as a bitvector sum under the length guard; the
    upper-bound lemmas state its consequence, x11 <= input pointer + length,
    in the arithmetic form that the region rule reads. *)

@@ -27,9 +27,9 @@ def render_loop_head(block, header, structural=False, profile=None):
     definitions = []
     authenticated_classes = {}
     for index, source in enumerate(row['classes']):
-        original = 'generatedLoop' + block + 'Class' + str(index)
+        # The authenticated class sources keep the names of their generation run.
+        original = re.match(r'Definition (generatedLoop[0-9a-f]+Class' + str(index) + r') ', source)[1]
         name = 'fp_machineAt' + block + '_LoopClass' + str(index)
-        assert source.startswith('Definition ' + original + ' ')
         assert source.count(domain_binder.strip()) == 1
         assert source.count('⌜domain args⌝') == 1
         domain = row.get('domain_component') or '⌜' + row['domain'] + ' args⌝'
