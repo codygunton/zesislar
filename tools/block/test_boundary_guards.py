@@ -1,12 +1,13 @@
 """Refuse incomplete and contradictory generated boundaries."""
 from pathlib import Path
 import sys
+import tempfile
 import unittest
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from boundary_guards import (BoundaryRefused, alternative_facts, annotate_reaching_stops,
-                             contradiction_source, contradictory_alternatives,
-                             contradictory_sources,
+from boundary_guards import (BoundaryRefused, RocqContradictionCheck, alternative_facts, annotate_reaching_stops,
+                             check_groups, contradiction_source, contradictory_alternatives,
+                             contradictory_sources, fact_conjuncts,
                              refused_alternative_indices, require_complete_boundary,
                              require_consistent_alternatives, without_alternatives)
 from forward_design import evaluate_function
@@ -269,13 +270,64 @@ class Contradictions(unittest.TestCase):
 
     def test_check_compiles_only_when_the_solver_fails(self):
         binders, facts = alternative_facts(FORWARD)
-        source = contradiction_source('Require Import Header.\n', binders, facts)
+        source = contradiction_source('Require Import Header.\n', check_groups(binders, facts))
         self.assertIn('Goal forall (args : DecodeItemArgs) (returnAddress : Z) (machine_x15 : bv 64),', source)
         self.assertIn('Fail solve [zesu_contradiction_check]', source)
         self.assertLess(source.index('Ltac zesu_contradiction_check'), source.index('Fail solve'))
         self.assertNotRegex(source, r'\b(?:Timeout|timeout|Qed|Admitted)\b')
-        other = contradiction_source('Require Import Header.\n', binders, facts, 'FreeArgs')
+        other = contradiction_source('Require Import Header.\n', check_groups(binders, facts), 'FreeArgs')
         self.assertIn('Goal forall (args : FreeArgs) (returnAddress : Z) (machine_x15 : bv 64),', other)
+
+
+class GroupedChecks(unittest.TestCase):
+    BINDERS = '(a : bv 64) (b : bv 64) (c : list (bv 8)) (d : bv 64)'
+    FACTS = ['((bool_decide (a = b) = true) /\\ ((bv_unsigned a = bv_unsigned b)%Z))',
+             '(∃ (x : bv 64), P x a c)',
+             '((List.length c = 4)%nat)',
+             'bv_unsigned b < 8',
+             '(bv_unsigned d < 2) /\\ (∃ y, Q y d)']
+
+    def test_conjunctions_split_and_an_existential_is_not_read(self):
+        self.assertEqual(fact_conjuncts(self.FACTS[0]),
+                         ['(bool_decide (a = b) = true)', '((bv_unsigned a = bv_unsigned b)%Z)'])
+        self.assertEqual(fact_conjuncts('(A -> B) /\\ C'), ['(A -> B) /\\ C'])
+        self.assertEqual(fact_conjuncts('~ (A /\\ B)'), ['~ (A /\\ B)'])
+
+    def test_facts_that_share_no_name_are_checked_apart(self):
+        groups = check_groups(self.BINDERS, self.FACTS)
+        self.assertEqual(groups, [
+            (['(a : bv 64)', '(b : bv 64)'],
+             ['(bool_decide (a = b) = true)', '((bv_unsigned a = bv_unsigned b)%Z)', 'bv_unsigned b < 8']),
+            (['(c : list (bv 8))'], ['((List.length c = 4)%nat)']),
+            (['(d : bv 64)'], ['(bv_unsigned d < 2)'])])
+        source = contradiction_source('Require Import Header.\n', groups)
+        self.assertEqual(source.count('Fail solve [zesu_contradiction_check]'), 3)
+        self.assertNotIn('P x a c', source)
+
+    def test_a_group_inside_an_unrefuted_group_is_not_checked_again(self):
+        with tempfile.TemporaryDirectory() as directory:
+            check = RocqContradictionCheck(['true'], 'Require Import Header.\n', directory)
+            self.assertFalse(check('first', self.BINDERS, self.FACTS))
+            # The same facts, fewer facts in a group: every group was checked before.
+            self.assertFalse(check('second', self.BINDERS, self.FACTS[:2] + self.FACTS[3:]))
+            # A new fact joins the group of d; only that group is checked.
+            self.assertFalse(check('third', self.BINDERS, self.FACTS + ['bv_unsigned d > 0']))
+            first, second, third = check.runs
+            self.assertEqual((first['groups'], first['checked_groups']), (3, 3))
+            self.assertEqual((second['check'], second['reused']), (None, [first['check']]))
+            self.assertEqual((third['groups'], third['checked_groups']), (3, 1))
+            source = Path(third['check']).read_text()
+            self.assertEqual(source.count('Goal forall'), 1)
+            self.assertIn('(bv_unsigned d > 0)', source)
+            self.assertNotIn('bv_unsigned b < 8', source)
+
+    def test_a_refuted_group_is_not_reused(self):
+        with tempfile.TemporaryDirectory() as directory:
+            check = RocqContradictionCheck(['sh', '-c', 'echo "The command has not failed"; exit 1', 'check'],
+                                           'Require Import Header.\n', directory)
+            self.assertTrue(check('first', self.BINDERS, self.FACTS))
+            self.assertTrue(check('second', self.BINDERS, self.FACTS))
+            self.assertEqual(check.checked, [])
 
 
 if __name__ == '__main__':
