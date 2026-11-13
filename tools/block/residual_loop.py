@@ -319,6 +319,25 @@ def clean_env(extra=None):
     return env
 
 
+# Runs the compiler as a child and prints its CPU time and peak memory: the guard
+# starts compiles in a systemd scope, outside this process tree.
+CPU_EXEC = ("import resource, subprocess, sys\n"
+            "code = subprocess.call(sys.argv[1:])\n"
+            "u = resource.getrusage(resource.RUSAGE_CHILDREN)\n"
+            "print('@@CPU user=%.2f sys=%.2f maxrss_kib=%d' % (u.ru_utime, u.ru_stime, u.ru_maxrss), flush=True)\n"
+            "sys.exit(code)\n")
+CPU_LINE = re.compile(r"@@CPU user=([\d.]+) sys=([\d.]+) maxrss_kib=(\d+)")
+
+
+def cpu_of(log_text):
+    """User plus system CPU seconds and peak memory (KiB) of a compile, from its log."""
+    found = CPU_LINE.findall(log_text)
+    if not found:
+        return None, None
+    user, system, rss = found[-1]
+    return round(float(user) + float(system), 1), int(rss)
+
+
 def scoped(path, tag, args, ocamlpath, claim=CHECK_CLAIM, run_id=None, watch=None, extra_args=(), keep=False):
     """Compile PATH in its own guard scope, stamping each output line with the
     seconds since start into PATH.log. WATCH(text, elapsed) may return True to stop
@@ -327,7 +346,8 @@ def scoped(path, tag, args, ocamlpath, claim=CHECK_CLAIM, run_id=None, watch=Non
     result dict."""
     path = Path(path)
     log = path.with_suffix(".log")
-    command = [str(GUARD), "scope", tag, "--"] + list(args) + list(extra_args) + [path.name]
+    command = ([str(GUARD), "scope", tag, "--", sys.executable, "-c", CPU_EXEC]
+               + list(args) + list(extra_args) + [path.name])
     if run_id:
         command = [sys.executable, str(REGISTRY), "run", "--id", run_id, "--kind", "diagnostic",
                    "--owner", "residual-loop", "--"] + command
@@ -373,8 +393,9 @@ def scoped(path, tag, args, ocamlpath, claim=CHECK_CLAIM, run_id=None, watch=Non
     (path.parent / ("." + path.stem + ".aux")).unlink(missing_ok=True)
     for cache in path.parent.glob(".*.cache"):
         cache.unlink()
+    cpu, rss = cpu_of(log.read_text(errors="replace"))
     return dict(returncode=code, seconds=round(time.monotonic() - start, 1), stopped=stopped, log=str(log),
-                fence_kill=fence_kill)
+                cpu_seconds=cpu, max_rss_kib=rss, fence_kill=fence_kill)
 
 
 FENCE_KILL = re.compile(r"resource guard: memory fence kill: (\S+) reached its (\d+) GiB fence")
