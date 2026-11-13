@@ -33,7 +33,8 @@ def workload_parent_bytes(root=Path('/sys/fs/cgroup'), uid=None):
         account = int((Path(root) / 'user.slice' / f'user-{uid}.slice' / 'memory.max').read_text())
     except (OSError, ValueError):
         account = ACCOUNT_FALLBACK_BYTES  # Without a numeric limit the 200 GiB account applies.
-    return account - WORKLOAD_RESERVE_BYTES
+    # Older guards set exactly 175 GiB; never exceed it while they still run.
+    return min(account - WORKLOAD_RESERVE_BYTES, LEGACY_PARENT_BYTES)
 
 
 SLICE_MAX_BYTES = workload_parent_bytes()

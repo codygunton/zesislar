@@ -547,7 +547,7 @@ set -- parent-exec -- python3 -c 'print(open("/proc/self/oom_score_adj").read().
         self.assertEqual(result.stdout.strip(), "1000")
 
     def test_workload_parent_and_lines_follow_the_account_limit(self):
-        for account, parent in ((None, 160), (200, 160), (235, 195)):
+        for account, parent in ((None, 160), (200, 160), (210, 170), (235, 175)):
             with self.subTest(account=account):
                 result = self.run_guard(r"""
 mkdir -p "$ACCOUNT_CGROUP"

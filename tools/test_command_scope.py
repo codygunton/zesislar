@@ -31,7 +31,7 @@ class CommandScopeTests(unittest.TestCase):
         self.proc.write_text('0::/user.slice/zesuworkloads.slice/job.scope\n')
         account = self.cgroups / 'user.slice' / f'user-{os.getuid()}.slice'
         account.mkdir(parents=True)
-        for account_gib, parent_gib in ((200, 160), (235, 195)):
+        for account_gib, parent_gib in ((200, 160), (235, 175)):
             with self.subTest(account=account_gib):
                 (account / 'memory.max').write_text(str(account_gib * 1024**3))
                 self.assertEqual(command_scope.workload_parent_bytes(self.cgroups),

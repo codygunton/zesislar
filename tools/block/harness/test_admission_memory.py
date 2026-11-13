@@ -643,7 +643,7 @@ class WorkloadParentTests(unittest.TestCase):
             account = Path(temp) / 'user.slice' / 'user-1000.slice'
             self.assertEqual(M.workload_parent_bytes(temp, uid=1000), 160 * M.GIB)
             account.mkdir(parents=True)
-            for account_gib, parent_gib in ((200, 160), (235, 195)):
+            for account_gib, parent_gib in ((200, 160), (210, 170), (235, 175)):
                 (account / 'memory.max').write_text(f'{account_gib * M.GIB}\n')
                 self.assertEqual(M.workload_parent_bytes(temp, uid=1000), parent_gib * M.GIB)
             (account / 'memory.max').write_text('max\n')
