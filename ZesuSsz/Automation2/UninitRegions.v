@@ -188,6 +188,21 @@ Global Hint Extern 0 (FindHypEqual (ZesuMemRegionSearch _) (mmio_range _ _)
     (mem_mapsto_kind_prop _ _) _) =>
   (apply find_mem_region_mmio; zesu_region_bounds) : typeclass_instances.
 
+(* The region split below measures offsets with [normalize_bv_wrap], which
+   reads a constant as negative only within 256 of 2^64. A frame offset of
+   -400 then stays 2^64 - 400, and the split length becomes 2^64 + 96 with a
+   false range obligation. Read constants within 64 KiB of 2^64 as negative
+   too; both forms are equal modulo 2^64. *)
+Global Hint Extern 9 (BvWrapSimplify 64 (Z.pos ?p) ?z) =>
+  assert_succeeds (
+    lazymatch isPcst p with | true => idtac end;
+    assert (bv_modulus 64 - 65536 <= Z.pos p)%Z by done);
+  let x := eval vm_compute in (Z.pos p - bv_modulus 64)%Z in
+  unify z x;
+  constructor;
+  done
+  : bv_wrap_simplify_db.
+
 Lemma subsume_uninit_region `{!islaG Sigma} A a1 a2 n1 n2 G
     `{!ZesuRegionBounds (0 <= n2 /\ a1 <= a2 /\ a2 + n2 <= a1 + n1)%Z} :
   (li_tactic (normalize_bv_wrap (a2 - a1)) (fun m1 => ⌜0 <= m1 < 2 ^ 64⌝ ∗
