@@ -4,6 +4,7 @@ Require Import isla.riscv64.riscv64.
 Require Import stdpp.bitvector.definitions.
 From iris.algebra Require Import dfrac.
 From Coq Require Import List NArith ZArith.
+Require ZesuSsz.Automation2.VmClosed.
 
 Section adjacent_word_subsumption.
   Context `{!islaG Sigma}.
@@ -30,11 +31,11 @@ Ltac adjacent_word_counts low bytes continuation :=
   lazymatch low_type with
   | bv ?width =>
       tryif has_evar width then fail 1 "The word width contains an evar." else idtac;
-      tryif is_closed_term width then idtac else fail 1 "The word width is symbolic.";
+      tryif ZesuSsz.Automation2.VmClosed.zesu_closed_term width then idtac else fail 1 "The word width is symbolic.";
       let width := eval vm_compute in width in
       let whole := eval cbn [List.length] in (List.length bytes) in
       tryif has_evar whole then fail 1 "The array length contains an evar." else idtac;
-      tryif is_closed_term whole then idtac else fail 1 "The array length is symbolic.";
+      tryif ZesuSsz.Automation2.VmClosed.zesu_closed_term whole then idtac else fail 1 "The array length is symbolic.";
       let n := eval vm_compute in (Nat.div (N.to_nat width) 8) in
       let m := eval vm_compute in (whole - n)%nat in
       let permitted := eval vm_compute in

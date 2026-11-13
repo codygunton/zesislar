@@ -4,6 +4,7 @@ Require Import ZesuSsz.Automation2.BitvectorFacts.
 Require Import ZesuSsz.Automation2.Hooks.
 From stdpp Require Import bitvector.definitions bitvector.tactics list.
 From Coq Require Import ZArith.ZArith NArith.NArith Lia Lists.List.
+Require ZesuSsz.Automation2.VmClosed.
 Local Open Scope Z_scope.
 
 (* Replace a sign-extended word's exact low-bit mask with its unsigned cast. *)
@@ -13,11 +14,11 @@ Ltac zesu_mask_sign_extend_presentation :=
   repeat match goal with
   | |- context [bv_and (bv_sign_extend ?width ?value) ?mask] =>
       assert_fails (has_evar value);
-      is_closed_term width;
-      is_closed_term mask;
+      ZesuSsz.Automation2.VmClosed.zesu_closed_term width;
+      ZesuSsz.Automation2.VmClosed.zesu_closed_term mask;
       let kind := type of value in
       lazymatch kind with bv ?low =>
-        is_closed_term low;
+        ZesuSsz.Automation2.VmClosed.zesu_closed_term low;
         let Hwidth := fresh "HmaskWidth" in
         let Hmask := fresh "HmaskValue" in
         let Hrange := fresh "HmaskCastRange" in

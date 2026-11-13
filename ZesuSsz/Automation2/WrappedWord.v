@@ -1,5 +1,6 @@
 Require Import isla.riscv64.riscv64.
 Require Import ZesuSsz.Automation2.PureFacts.
+Require ZesuSsz.Automation2.VmClosed.
 Local Open Scope Z_scope.
 
 (* Wrapped-word helpers. The versioned proof profile controls their activation. *)
@@ -27,7 +28,7 @@ Ltac zesu_reduce_closed_Z_aliases :=
   | Hconstant : context [?scalar] |- _ =>
     let scalar_type := type of scalar in
     constr_eq scalar_type Z;
-    is_closed_term scalar;
+    ZesuSsz.Automation2.VmClosed.zesu_closed_term scalar;
     let head := get_head scalar in
     constr_eq head scalar;
     assert_fails (is_var scalar);
