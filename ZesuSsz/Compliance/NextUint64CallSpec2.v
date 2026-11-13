@@ -146,6 +146,9 @@ Proof.
     as "Hsys".
   { rewrite /nextUint64SysRegs decodeItemSysRegs_exact /reg_col big_sepL_app.
     fold (reg_col (machine_static_sys_regs defaultMap)).
+    fold (reg_col [(KindReg "zisk_input_end", ExactShape
+      (RVal_Bits (Z_to_bv 64 (decodeItemInputEnd (nextUint64CalleeBase params [])))));
+      (KindReg "zisk_free_input", BitsShape 64)]).
     iFrame "Hsys". rewrite reg_col_cons.
     iSplitL "Hend".
     { iExists (RVal_Bits inputEndBits).
@@ -191,17 +194,26 @@ Proof.
       R18 R19 R20 R21 R22 R23 R24 R25 R26 R27 R28 R29 R30 R31
       Hinput Hslice Hresult Hhigh Hlow".
     iPureIntro.
-    split; [exact HactualDomain |].
-    repeat split; reflexivity. }
+    repeat match goal with
+    | |- nextUint64BoundaryDomain _ => exact HactualDomain
+    | |- _ ∧ _ => split
+    | |- _ = _ => reflexivity
+    | |- True => exact I
+    end. }
   iApply (instr_pre_wand (bv_unsigned ret) (bv_unsigned ret)
     true true with "Hret"); [done | reflexivity |].
   iIntros "Hpost".
   iDestruct "Hpost" as (result [_ [_ Hmeaning]]) "Hexit".
-  iEval (unfold nextUint64ContractExit, nextUint64Registers) in "Hexit".
+  iEval (cbn [islarisExit islarisContractResources nextUint64ContractModel
+    nextUint64ContractResources]) in "Hexit".
+  iEval (unfold nextUint64ContractExit) in "Hexit".
   iDestruct "Hexit" as (f5 f6 f7 f10 f11 f12 f13 f14 f15 f16 f17 f28 f29 f30 f31)
-    "(Hsys & R1 & R2 & R5 & R6 & R7 & R8 & R9 & R10 & R11 & R12 & R13 & R14 &
+    "(Hsys & Hregs & Hinput & Hslice & Hresult & Hhigh & Hlow & _)".
+  iEval (unfold nextUint64Registers) in "Hregs".
+  iDestruct "Hregs" as
+    "(R1 & R2 & R5 & R6 & R7 & R8 & R9 & R10 & R11 & R12 & R13 & R14 &
       R15 & R16 & R17 & R18 & R19 & R20 & R21 & R22 & R23 & R24 & R25 & R26 &
-      R27 & R28 & R29 & R30 & R31 & Hinput & Hslice & Hresult & Hhigh & Hlow & _)".
+      R27 & R28 & R29 & R30 & R31)".
   iEval (cbn [nextUint64Base nextUint64InputEnd nextUint64SavedX21
     nextUint64SavedX22 nextUint64SavedX23 nextUint64SavedX24 nextUint64SavedX25
     nextUint64SavedX26 nextUint64SavedX27 nextInputPointer nextInputBytes
