@@ -46,7 +46,9 @@ def plan_callers(profile, cases, function):
         successors = blocks[pc]
         names = [format(target, 'x')[-len(suffix):] for target in successors]
         if any(profile.pc(name) != hex(target) for name, target in zip(names, successors)):
-            raise ValueError('A successor lies outside the profile address prefix: ' + suffix)
+            # A tail jump: the successor is another function's entry, and no tail boundary exists.
+            rows.append((suffix, names, 'successor outside the function (tail jump)'))
+            continue
         if hex(pc) not in rendered:
             refusal = 'own entry not rendered'
         elif not successors:

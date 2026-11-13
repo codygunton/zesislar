@@ -16,6 +16,7 @@ generalized, so an infeasible arm cannot widen a register value. The check is a 
 written into a generated file.
 """
 from pathlib import Path
+import os
 import re
 import subprocess
 
@@ -198,6 +199,11 @@ class RocqContradictionCheck:
         self.directory.mkdir(parents=True, exist_ok=True)
         path = self.directory / ('Contradiction_' + re.sub(r'\W', '_', name) + '.v')
         path.write_text(contradiction_source(self.header, binders, facts, self.args_type))
+        if os.environ.get('ZESU_DEFER_CONTRADICTION_CHECKS'):
+            # Measurement-only: write the check, keep the alternative, and run the
+            # checks afterwards (in parallel); a contradictory one then voids its entry.
+            self.runs.append({'name': name, 'check': str(path), 'contradictory': False, 'deferred': True})
+            return False
         result = subprocess.run(self.command + [path.name], cwd=self.directory,
                                 capture_output=True, text=True)
         output = result.stdout + result.stderr

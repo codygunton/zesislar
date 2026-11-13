@@ -1,0 +1,1020 @@
+{
+  "status": "SOURCE_DECLARATIONS_ONLY",
+  "function": "decodeParentHeader",
+  "entries": {
+    "path": "/home/cody/zesislar/_build/agents/parent-header/r1/render3/RESULT.json",
+    "sha256": "e1dfb50ec80ae1433213502c38a76d9472f59a8ab557ba237aa685959a02687d"
+  },
+  "cfg": {
+    "path": "/home/cody/zesislar/_build/agents/parent-header/r1/inputs/FUNCTION.json",
+    "sha256": "53bffcfa14c6b47918d12895f02b3605bc6785697a16cda039b68f73d105fad4"
+  },
+  "rows": [
+    {
+      "case": "5cb8",
+      "pc": "0x800d5cb8",
+      "successors": [
+        "5cf8"
+      ],
+      "status": "rendered",
+      "caller": {
+        "path": "/home/cody/zesislar/_build/agents/parent-header/r1/callers/Caller5cb8.v",
+        "sha256": "233eec05eff0aeb2d1500818f73eff046494dad866c8383d14491953a705f095"
+      },
+      "lemma": "DesignedBoundary_800d5cb8",
+      "preconditions": [
+        "instr_pre 0x800d5cf8 (ZesuSsz.Generated.DecodeParentHeader.FP301.Pilot5cf8Entries.fp_machineAt5cf8 (args) (returnAddress) (K))%I",
+        "instr_pre 0x800d6960 (ZesuSsz.Contracts.DecodeItemCallSpec2.decodeItemCallSpec2)%I"
+      ]
+    },
+    {
+      "case": "5cf8",
+      "pc": "0x800d5cf8",
+      "successors": [
+        "5d00",
+        "5d0c"
+      ],
+      "status": "rendered",
+      "caller": {
+        "path": "/home/cody/zesislar/_build/agents/parent-header/r1/callers/Caller5cf8.v",
+        "sha256": "2ba1b6d3430b27176b7a793fca3a875d8450dfaf7023ff52700325b32c10c3c8"
+      },
+      "lemma": "DesignedBoundary_800d5cf8",
+      "preconditions": [
+        "instr_pre 0x800d5d00 (ZesuSsz.Generated.DecodeParentHeader.FP301.Pilot5d00Entries.fp_machineAt5d00 (args) (returnAddress) (K))%I",
+        "instr_pre 0x800d5d0c (ZesuSsz.Generated.DecodeParentHeader.FP301.Pilot5d0cEntries.fp_machineAt5d0c (args) (returnAddress) (K))%I"
+      ]
+    },
+    {
+      "case": "5d00",
+      "pc": "0x800d5d00",
+      "successors": [
+        "5d68"
+      ],
+      "status": "refused",
+      "reason": "successor entry not rendered: 5d68"
+    },
+    {
+      "case": "5d0c",
+      "pc": "0x800d5d0c",
+      "successors": [
+        "5d18",
+        "5d4c"
+      ],
+      "status": "rendered",
+      "caller": {
+        "path": "/home/cody/zesislar/_build/agents/parent-header/r1/callers/Caller5d0c.v",
+        "sha256": "2aa6d4c0295baaac818e63e6595778b869ea80bd007605b8ae5ee6614d330f3d"
+      },
+      "lemma": "DesignedBoundary_800d5d0c",
+      "preconditions": [
+        "instr_pre 0x800d5d18 (ZesuSsz.Generated.DecodeParentHeader.FP301.Pilot5d18Entries.fp_machineAt5d18 (args) (returnAddress) (K))%I",
+        "instr_pre 0x800d5d4c (ZesuSsz.Generated.DecodeParentHeader.FP301.Pilot5d4cEntries.fp_machineAt5d4c (args) (returnAddress) (K))%I"
+      ]
+    },
+    {
+      "case": "5d18",
+      "pc": "0x800d5d18",
+      "successors": [
+        "5d20",
+        "5d60"
+      ],
+      "status": "refused",
+      "reason": "successor entry not rendered: 5d60"
+    },
+    {
+      "case": "5d20",
+      "pc": "0x800d5d20",
+      "successors": [
+        "5d38"
+      ],
+      "status": "rendered",
+      "caller": {
+        "path": "/home/cody/zesislar/_build/agents/parent-header/r1/callers/Caller5d20.v",
+        "sha256": "88f8da353964f020c0fd989fefcabd6dc8d8450b33361bfef5eb40c2bd39f482"
+      },
+      "lemma": "DesignedBoundary_800d5d20",
+      "preconditions": [
+        "instr_pre 0x800d5d38 (ZesuSsz.Generated.DecodeParentHeader.FP301.Pilot5d38Entries.fp_machineAt5d38 (args) (returnAddress) (K))%I",
+        "instr_pre 0x800d6960 (ZesuSsz.Contracts.DecodeItemCallSpec2.decodeItemCallSpec2)%I"
+      ]
+    },
+    {
+      "case": "5d38",
+      "pc": "0x800d5d38",
+      "successors": [
+        "5d40",
+        "5d58"
+      ],
+      "status": "refused",
+      "reason": "successor entry not rendered: 5d40"
+    },
+    {
+      "case": "5d40",
+      "pc": "0x800d5d40",
+      "successors": [
+        "5d68"
+      ],
+      "status": "refused",
+      "reason": "own entry not rendered"
+    },
+    {
+      "case": "5d4c",
+      "pc": "0x800d5d4c",
+      "successors": [
+        "5d68"
+      ],
+      "status": "refused",
+      "reason": "successor entry not rendered: 5d68"
+    },
+    {
+      "case": "5d58",
+      "pc": "0x800d5d58",
+      "successors": [
+        "5d60",
+        "5da4"
+      ],
+      "status": "refused",
+      "reason": "successor entry not rendered: 5d60"
+    },
+    {
+      "case": "5d60",
+      "pc": "0x800d5d60",
+      "successors": [
+        "5d68"
+      ],
+      "status": "refused",
+      "reason": "own entry not rendered"
+    },
+    {
+      "case": "5d68",
+      "pc": "0x800d5d68",
+      "successors": [
+        "06c0"
+      ],
+      "status": "refused",
+      "reason": "successor outside the function (tail jump)"
+    },
+    {
+      "case": "5da4",
+      "pc": "0x800d5da4",
+      "successors": [
+        "5dc0"
+      ],
+      "status": "rendered",
+      "caller": {
+        "path": "/home/cody/zesislar/_build/agents/parent-header/r1/callers/Caller5da4.v",
+        "sha256": "f9c27b0d70b8c5f370bf2614c0467b2b2557ea5c6f47161ca7a27a6de45529ab"
+      },
+      "lemma": "DesignedBoundary_800d5da4",
+      "preconditions": [
+        "instr_pre 0x800d5dc0 (ZesuSsz.Generated.DecodeParentHeader.FP301.Pilot5dc0Entries.fp_machineAt5dc0 (args) (returnAddress) (K))%I",
+        "instr_pre 0x800d6960 (ZesuSsz.Contracts.DecodeItemCallSpec2.decodeItemCallSpec2)%I"
+      ]
+    },
+    {
+      "case": "5dc0",
+      "pc": "0x800d5dc0",
+      "successors": [
+        "5d40",
+        "5dc8"
+      ],
+      "status": "refused",
+      "reason": "successor entry not rendered: 5d40"
+    },
+    {
+      "case": "5dc8",
+      "pc": "0x800d5dc8",
+      "successors": [
+        "5d60",
+        "5dd0"
+      ],
+      "status": "refused",
+      "reason": "successor entry not rendered: 5d60"
+    },
+    {
+      "case": "5dd0",
+      "pc": "0x800d5dd0",
+      "successors": [
+        "5dec"
+      ],
+      "status": "rendered",
+      "caller": {
+        "path": "/home/cody/zesislar/_build/agents/parent-header/r1/callers/Caller5dd0.v",
+        "sha256": "b11f65ffc82cf35d557f9486cea09447107043dc83815afb25b936e16acb9219"
+      },
+      "lemma": "DesignedBoundary_800d5dd0",
+      "preconditions": [
+        "instr_pre 0x800d5dec (ZesuSsz.Generated.DecodeParentHeader.FP301.Pilot5decEntries.fp_machineAt5dec (args) (returnAddress) (K))%I",
+        "instr_pre 0x800d6960 (ZesuSsz.Contracts.DecodeItemCallSpec2.decodeItemCallSpec2)%I"
+      ]
+    },
+    {
+      "case": "5dec",
+      "pc": "0x800d5dec",
+      "successors": [
+        "5d40",
+        "5df4"
+      ],
+      "status": "refused",
+      "reason": "successor entry not rendered: 5d40"
+    },
+    {
+      "case": "5df4",
+      "pc": "0x800d5df4",
+      "successors": [
+        "5d60",
+        "5dfc"
+      ],
+      "status": "refused",
+      "reason": "successor entry not rendered: 5d60"
+    },
+    {
+      "case": "5dfc",
+      "pc": "0x800d5dfc",
+      "successors": [
+        "5e18"
+      ],
+      "status": "rendered",
+      "caller": {
+        "path": "/home/cody/zesislar/_build/agents/parent-header/r1/callers/Caller5dfc.v",
+        "sha256": "42051fcf6fddeff09734c5b796060e49ec4daa735ea5924204bc80f44eab4a23"
+      },
+      "lemma": "DesignedBoundary_800d5dfc",
+      "preconditions": [
+        "instr_pre 0x800d5e18 (ZesuSsz.Generated.DecodeParentHeader.FP301.Pilot5e18Entries.fp_machineAt5e18 (args) (returnAddress) (K))%I",
+        "instr_pre 0x800d6960 (ZesuSsz.Contracts.DecodeItemCallSpec2.decodeItemCallSpec2)%I"
+      ]
+    },
+    {
+      "case": "5e18",
+      "pc": "0x800d5e18",
+      "successors": [
+        "5d40",
+        "5e20"
+      ],
+      "status": "refused",
+      "reason": "successor entry not rendered: 5d40"
+    },
+    {
+      "case": "5e20",
+      "pc": "0x800d5e20",
+      "successors": [
+        "5d60",
+        "5e28"
+      ],
+      "status": "refused",
+      "reason": "successor entry not rendered: 5d60"
+    },
+    {
+      "case": "5e28",
+      "pc": "0x800d5e28",
+      "successors": [
+        "5e44"
+      ],
+      "status": "rendered",
+      "caller": {
+        "path": "/home/cody/zesislar/_build/agents/parent-header/r1/callers/Caller5e28.v",
+        "sha256": "21ab237aba1ef2c2bfb82e394f8ed3f58997c546efb07fa8c48b5dce0f049eba"
+      },
+      "lemma": "DesignedBoundary_800d5e28",
+      "preconditions": [
+        "instr_pre 0x800d5e44 (ZesuSsz.Generated.DecodeParentHeader.FP301.Pilot5e44Entries.fp_machineAt5e44 (args) (returnAddress) (K))%I",
+        "instr_pre 0x800d6960 (ZesuSsz.Contracts.DecodeItemCallSpec2.decodeItemCallSpec2)%I"
+      ]
+    },
+    {
+      "case": "5e44",
+      "pc": "0x800d5e44",
+      "successors": [
+        "5d40",
+        "5e4c"
+      ],
+      "status": "refused",
+      "reason": "successor entry not rendered: 5d40"
+    },
+    {
+      "case": "5e4c",
+      "pc": "0x800d5e4c",
+      "successors": [
+        "5d60",
+        "5e54"
+      ],
+      "status": "refused",
+      "reason": "successor entry not rendered: 5d60"
+    },
+    {
+      "case": "5e54",
+      "pc": "0x800d5e54",
+      "successors": [
+        "5e70"
+      ],
+      "status": "rendered",
+      "caller": {
+        "path": "/home/cody/zesislar/_build/agents/parent-header/r1/callers/Caller5e54.v",
+        "sha256": "74e078001a0502cb9817f27f1e0f640825cee63432dd8cd074ae97fb8320af55"
+      },
+      "lemma": "DesignedBoundary_800d5e54",
+      "preconditions": [
+        "instr_pre 0x800d5e70 (ZesuSsz.Generated.DecodeParentHeader.FP301.Pilot5e70Entries.fp_machineAt5e70 (args) (returnAddress) (K))%I",
+        "instr_pre 0x800d6960 (ZesuSsz.Contracts.DecodeItemCallSpec2.decodeItemCallSpec2)%I"
+      ]
+    },
+    {
+      "case": "5e70",
+      "pc": "0x800d5e70",
+      "successors": [
+        "5d40",
+        "5e78"
+      ],
+      "status": "refused",
+      "reason": "successor entry not rendered: 5d40"
+    },
+    {
+      "case": "5e78",
+      "pc": "0x800d5e78",
+      "successors": [
+        "5d60",
+        "5e80"
+      ],
+      "status": "refused",
+      "reason": "successor entry not rendered: 5d60"
+    },
+    {
+      "case": "5e80",
+      "pc": "0x800d5e80",
+      "successors": [
+        "5e9c"
+      ],
+      "status": "rendered",
+      "caller": {
+        "path": "/home/cody/zesislar/_build/agents/parent-header/r1/callers/Caller5e80.v",
+        "sha256": "8269872dd10d2bb5c0d410762e9a3912145c7d2cea1e02e34c3f5b2794d5e34e"
+      },
+      "lemma": "DesignedBoundary_800d5e80",
+      "preconditions": [
+        "instr_pre 0x800d5e9c (ZesuSsz.Generated.DecodeParentHeader.FP301.Pilot5e9cEntries.fp_machineAt5e9c (args) (returnAddress) (K))%I",
+        "instr_pre 0x800d6960 (ZesuSsz.Contracts.DecodeItemCallSpec2.decodeItemCallSpec2)%I"
+      ]
+    },
+    {
+      "case": "5e9c",
+      "pc": "0x800d5e9c",
+      "successors": [
+        "5d40",
+        "5ea4"
+      ],
+      "status": "refused",
+      "reason": "successor entry not rendered: 5d40"
+    },
+    {
+      "case": "5ea4",
+      "pc": "0x800d5ea4",
+      "successors": [
+        "5d60",
+        "5eac"
+      ],
+      "status": "refused",
+      "reason": "successor entry not rendered: 5d60"
+    },
+    {
+      "case": "5eac",
+      "pc": "0x800d5eac",
+      "successors": [
+        "5ec8"
+      ],
+      "status": "rendered",
+      "caller": {
+        "path": "/home/cody/zesislar/_build/agents/parent-header/r1/callers/Caller5eac.v",
+        "sha256": "1ba13530a1473a20fcba4bdda04542bfc5aa37248c6f896d38ceea007a562e23"
+      },
+      "lemma": "DesignedBoundary_800d5eac",
+      "preconditions": [
+        "instr_pre 0x800d5ec8 (ZesuSsz.Generated.DecodeParentHeader.FP301.Pilot5ec8Entries.fp_machineAt5ec8 (args) (returnAddress) (K))%I",
+        "instr_pre 0x800d6960 (ZesuSsz.Contracts.DecodeItemCallSpec2.decodeItemCallSpec2)%I"
+      ]
+    },
+    {
+      "case": "5ec8",
+      "pc": "0x800d5ec8",
+      "successors": [
+        "5d40",
+        "5ed0"
+      ],
+      "status": "refused",
+      "reason": "successor entry not rendered: 5d40"
+    },
+    {
+      "case": "5ed0",
+      "pc": "0x800d5ed0",
+      "successors": [
+        "5d60",
+        "5ed8"
+      ],
+      "status": "refused",
+      "reason": "successor entry not rendered: 5d60"
+    },
+    {
+      "case": "5ed8",
+      "pc": "0x800d5ed8",
+      "successors": [
+        "5ef4"
+      ],
+      "status": "rendered",
+      "caller": {
+        "path": "/home/cody/zesislar/_build/agents/parent-header/r1/callers/Caller5ed8.v",
+        "sha256": "05c682a84d550543a59bf7003a4209443bbd85675e563dde50b642f68b41d609"
+      },
+      "lemma": "DesignedBoundary_800d5ed8",
+      "preconditions": [
+        "instr_pre 0x800d5ef4 (ZesuSsz.Generated.DecodeParentHeader.FP301.Pilot5ef4Entries.fp_machineAt5ef4 (args) (returnAddress) (K))%I",
+        "instr_pre 0x800d6960 (ZesuSsz.Contracts.DecodeItemCallSpec2.decodeItemCallSpec2)%I"
+      ]
+    },
+    {
+      "case": "5ef4",
+      "pc": "0x800d5ef4",
+      "successors": [
+        "5d40",
+        "5efc"
+      ],
+      "status": "refused",
+      "reason": "successor entry not rendered: 5d40"
+    },
+    {
+      "case": "5efc",
+      "pc": "0x800d5efc",
+      "successors": [
+        "5f1c"
+      ],
+      "status": "rendered",
+      "caller": {
+        "path": "/home/cody/zesislar/_build/agents/parent-header/r1/callers/Caller5efc.v",
+        "sha256": "ffd821752a64c9a7b18e21a21f0f563fa4c25a3a2b153dc1315f7a7c826f01ef"
+      },
+      "lemma": "DesignedBoundary_800d5efc",
+      "preconditions": [
+        "instr_pre 0x800d5f1c (ZesuSsz.Generated.DecodeParentHeader.FP301.Pilot5f1cEntries.fp_machineAt5f1c (args) (returnAddress) (K))%I",
+        "instr_pre 0x800d6960 (ZesuSsz.Contracts.DecodeItemCallSpec2.decodeItemCallSpec2)%I"
+      ]
+    },
+    {
+      "case": "5f1c",
+      "pc": "0x800d5f1c",
+      "successors": [
+        "5f24",
+        "5f5c"
+      ],
+      "status": "refused",
+      "reason": "successor entry not rendered: 5f24"
+    },
+    {
+      "case": "5f24",
+      "pc": "0x800d5f24",
+      "successors": [
+        "5f28"
+      ],
+      "status": "refused",
+      "reason": "own entry not rendered"
+    },
+    {
+      "case": "5f28",
+      "pc": "0x800d5f28",
+      "successors": [
+        "5f2c"
+      ],
+      "status": "refused",
+      "reason": "own entry not rendered"
+    },
+    {
+      "case": "5f2c",
+      "pc": "0x800d5f2c",
+      "successors": [],
+      "status": "refused",
+      "reason": "own entry not rendered"
+    },
+    {
+      "case": "5f5c",
+      "pc": "0x800d5f5c",
+      "successors": [
+        "5f24",
+        "5f68"
+      ],
+      "status": "refused",
+      "reason": "successor entry not rendered: 5f24"
+    },
+    {
+      "case": "5f68",
+      "pc": "0x800d5f68",
+      "successors": [
+        "5f24",
+        "5f74"
+      ],
+      "status": "refused",
+      "reason": "successor entry not rendered: 5f24"
+    },
+    {
+      "case": "5f74",
+      "pc": "0x800d5f74",
+      "successors": [
+        "5f80",
+        "5f9c"
+      ],
+      "status": "rendered",
+      "caller": {
+        "path": "/home/cody/zesislar/_build/agents/parent-header/r1/callers/Caller5f74.v",
+        "sha256": "55b7d67ef4887e535182a0c7d08b6c4dedefaf51c2b21719a7dd23cbafd6ed21"
+      },
+      "lemma": "DesignedBoundary_800d5f74",
+      "preconditions": [
+        "instr_pre 0x800d5f80 (ZesuSsz.Generated.DecodeParentHeader.FP301.Pilot5f80Entries.fp_machineAt5f80 (args) (returnAddress) (K))%I",
+        "instr_pre 0x800d5f9c (ZesuSsz.Generated.DecodeParentHeader.FP301.Pilot5f9cEntries.fp_machineAt5f9c (args) (returnAddress) (K))%I"
+      ]
+    },
+    {
+      "case": "5f80",
+      "pc": "0x800d5f80",
+      "successors": [
+        "5f88"
+      ],
+      "status": "rendered",
+      "caller": {
+        "path": "/home/cody/zesislar/_build/agents/parent-header/r1/callers/Caller5f80.v",
+        "sha256": "e6534a1f6a071b00ee4f35860d4847c25e85bc8142d8a84ad446639f82c6813b"
+      },
+      "lemma": "DesignedBoundary_800d5f80",
+      "preconditions": [
+        "instr_pre 0x800d5f88 (ZesuSsz.Generated.DecodeParentHeader.FP301.Pilot5f88Entries.fp_machineAt5f88 (args) (returnAddress) (K))%I"
+      ]
+    },
+    {
+      "case": "5f88",
+      "pc": "0x800d5f88",
+      "successors": [
+        "5f88",
+        "5f9c"
+      ],
+      "status": "rendered",
+      "caller": {
+        "path": "/home/cody/zesislar/_build/agents/parent-header/r1/callers/Caller5f88.v",
+        "sha256": "562111888ebaab477c94116a0813372cb321ddf9ce10168055e3e467b8c7a450"
+      },
+      "lemma": "DesignedBoundary_800d5f88",
+      "preconditions": [
+        "instr_pre 0x800d5f88 (ZesuSsz.Generated.DecodeParentHeader.FP301.Pilot5f88Entries.fp_machineAt5f88 (args) (returnAddress) (K))%I",
+        "instr_pre 0x800d5f9c (ZesuSsz.Generated.DecodeParentHeader.FP301.Pilot5f9cEntries.fp_machineAt5f9c (args) (returnAddress) (K))%I"
+      ]
+    },
+    {
+      "case": "5f9c",
+      "pc": "0x800d5f9c",
+      "successors": [
+        "5fb8"
+      ],
+      "status": "rendered",
+      "caller": {
+        "path": "/home/cody/zesislar/_build/agents/parent-header/r1/callers/Caller5f9c.v",
+        "sha256": "2202a3031fe3565429c647b292aaa01d83718efc637617cf4b43a17a21c06d62"
+      },
+      "lemma": "DesignedBoundary_800d5f9c",
+      "preconditions": [
+        "instr_pre 0x800d5fb8 (ZesuSsz.Generated.DecodeParentHeader.FP301.Pilot5fb8Entries.fp_machineAt5fb8 (args) (returnAddress) (K))%I",
+        "instr_pre 0x800d6960 (ZesuSsz.Contracts.DecodeItemCallSpec2.decodeItemCallSpec2)%I"
+      ]
+    },
+    {
+      "case": "5fb8",
+      "pc": "0x800d5fb8",
+      "successors": [
+        "5f24",
+        "5fc0"
+      ],
+      "status": "refused",
+      "reason": "successor entry not rendered: 5f24"
+    },
+    {
+      "case": "5fc0",
+      "pc": "0x800d5fc0",
+      "successors": [
+        "5f24",
+        "5fcc"
+      ],
+      "status": "refused",
+      "reason": "successor entry not rendered: 5f24"
+    },
+    {
+      "case": "5fcc",
+      "pc": "0x800d5fcc",
+      "successors": [
+        "5f24",
+        "5fd8"
+      ],
+      "status": "refused",
+      "reason": "successor entry not rendered: 5f24"
+    },
+    {
+      "case": "5fd8",
+      "pc": "0x800d5fd8",
+      "successors": [
+        "5fe4",
+        "6000"
+      ],
+      "status": "rendered",
+      "caller": {
+        "path": "/home/cody/zesislar/_build/agents/parent-header/r1/callers/Caller5fd8.v",
+        "sha256": "924d7bf623c468d77f39799c9105ce9a3574a370dde7b18aa828ef333e18e6b5"
+      },
+      "lemma": "DesignedBoundary_800d5fd8",
+      "preconditions": [
+        "instr_pre 0x800d5fe4 (ZesuSsz.Generated.DecodeParentHeader.FP301.Pilot5fe4Entries.fp_machineAt5fe4 (args) (returnAddress) (K))%I",
+        "instr_pre 0x800d6000 (ZesuSsz.Generated.DecodeParentHeader.FP301.Pilot6000Entries.fp_machineAt6000 (args) (returnAddress) (K))%I"
+      ]
+    },
+    {
+      "case": "5fe4",
+      "pc": "0x800d5fe4",
+      "successors": [
+        "5fec"
+      ],
+      "status": "rendered",
+      "caller": {
+        "path": "/home/cody/zesislar/_build/agents/parent-header/r1/callers/Caller5fe4.v",
+        "sha256": "df2ea5d2a477d5ca0fc89223d7974cc2331cc1d66add83a85cdc330ee00b88c2"
+      },
+      "lemma": "DesignedBoundary_800d5fe4",
+      "preconditions": [
+        "instr_pre 0x800d5fec (ZesuSsz.Generated.DecodeParentHeader.FP301.Pilot5fecEntries.fp_machineAt5fec (args) (returnAddress) (K))%I"
+      ]
+    },
+    {
+      "case": "5fec",
+      "pc": "0x800d5fec",
+      "successors": [
+        "5fec",
+        "6000"
+      ],
+      "status": "rendered",
+      "caller": {
+        "path": "/home/cody/zesislar/_build/agents/parent-header/r1/callers/Caller5fec.v",
+        "sha256": "285e7a8bc6945d16ce3215a1626faa55a00d70a5712a0018edbc2b875689bd40"
+      },
+      "lemma": "DesignedBoundary_800d5fec",
+      "preconditions": [
+        "instr_pre 0x800d5fec (ZesuSsz.Generated.DecodeParentHeader.FP301.Pilot5fecEntries.fp_machineAt5fec (args) (returnAddress) (K))%I",
+        "instr_pre 0x800d6000 (ZesuSsz.Generated.DecodeParentHeader.FP301.Pilot6000Entries.fp_machineAt6000 (args) (returnAddress) (K))%I"
+      ]
+    },
+    {
+      "case": "6000",
+      "pc": "0x800d6000",
+      "successors": [
+        "6020"
+      ],
+      "status": "rendered",
+      "caller": {
+        "path": "/home/cody/zesislar/_build/agents/parent-header/r1/callers/Caller6000.v",
+        "sha256": "5fdedc72f57870c8dd5a0d7424e7a6748537da4cff41649b8332f178cf12ad1d"
+      },
+      "lemma": "DesignedBoundary_800d6000",
+      "preconditions": [
+        "instr_pre 0x800d6020 (ZesuSsz.Generated.DecodeParentHeader.FP301.Pilot6020Entries.fp_machineAt6020 (args) (returnAddress) (K))%I",
+        "instr_pre 0x800d6960 (ZesuSsz.Contracts.DecodeItemCallSpec2.decodeItemCallSpec2)%I"
+      ]
+    },
+    {
+      "case": "6020",
+      "pc": "0x800d6020",
+      "successors": [
+        "5f24",
+        "6028"
+      ],
+      "status": "refused",
+      "reason": "successor entry not rendered: 5f24"
+    },
+    {
+      "case": "6028",
+      "pc": "0x800d6028",
+      "successors": [
+        "5f24",
+        "6034"
+      ],
+      "status": "refused",
+      "reason": "successor entry not rendered: 5f24"
+    },
+    {
+      "case": "6034",
+      "pc": "0x800d6034",
+      "successors": [
+        "5f24",
+        "6040"
+      ],
+      "status": "refused",
+      "reason": "successor entry not rendered: 5f24"
+    },
+    {
+      "case": "6040",
+      "pc": "0x800d6040",
+      "successors": [
+        "604c",
+        "6068"
+      ],
+      "status": "refused",
+      "reason": "successor entry not rendered: 6068"
+    },
+    {
+      "case": "604c",
+      "pc": "0x800d604c",
+      "successors": [
+        "6054"
+      ],
+      "status": "rendered",
+      "caller": {
+        "path": "/home/cody/zesislar/_build/agents/parent-header/r1/callers/Caller604c.v",
+        "sha256": "e34ac0cd35eabfc269aebfb0531873cb6d8040f6a86d3740384ba136202208de"
+      },
+      "lemma": "DesignedBoundary_800d604c",
+      "preconditions": [
+        "instr_pre 0x800d6054 (ZesuSsz.Generated.DecodeParentHeader.FP301.Pilot6054Entries.fp_machineAt6054 (args) (returnAddress) (K))%I"
+      ]
+    },
+    {
+      "case": "6054",
+      "pc": "0x800d6054",
+      "successors": [
+        "6054",
+        "6068"
+      ],
+      "status": "refused",
+      "reason": "successor entry not rendered: 6068"
+    },
+    {
+      "case": "6068",
+      "pc": "0x800d6068",
+      "successors": [
+        "6074",
+        "60a0"
+      ],
+      "status": "refused",
+      "reason": "own entry not rendered"
+    },
+    {
+      "case": "6074",
+      "pc": "0x800d6074",
+      "successors": [
+        "5f2c"
+      ],
+      "status": "refused",
+      "reason": "own entry not rendered"
+    },
+    {
+      "case": "60a0",
+      "pc": "0x800d60a0",
+      "successors": [
+        "60b8"
+      ],
+      "status": "refused",
+      "reason": "own entry not rendered"
+    },
+    {
+      "case": "60b8",
+      "pc": "0x800d60b8",
+      "successors": [
+        "60c0",
+        "60cc"
+      ],
+      "status": "refused",
+      "reason": "own entry not rendered"
+    },
+    {
+      "case": "60c0",
+      "pc": "0x800d60c0",
+      "successors": [
+        "5d68"
+      ],
+      "status": "refused",
+      "reason": "own entry not rendered"
+    },
+    {
+      "case": "60cc",
+      "pc": "0x800d60cc",
+      "successors": [
+        "6074",
+        "60d4"
+      ],
+      "status": "refused",
+      "reason": "own entry not rendered"
+    },
+    {
+      "case": "60d4",
+      "pc": "0x800d60d4",
+      "successors": [
+        "60f0"
+      ],
+      "status": "refused",
+      "reason": "own entry not rendered"
+    },
+    {
+      "case": "60f0",
+      "pc": "0x800d60f0",
+      "successors": [
+        "60c0",
+        "60f8"
+      ],
+      "status": "refused",
+      "reason": "own entry not rendered"
+    },
+    {
+      "case": "60f8",
+      "pc": "0x800d60f8",
+      "successors": [
+        "6074",
+        "6100"
+      ],
+      "status": "refused",
+      "reason": "own entry not rendered"
+    },
+    {
+      "case": "6100",
+      "pc": "0x800d6100",
+      "successors": [
+        "611c"
+      ],
+      "status": "refused",
+      "reason": "own entry not rendered"
+    },
+    {
+      "case": "611c",
+      "pc": "0x800d611c",
+      "successors": [
+        "60c0",
+        "6124"
+      ],
+      "status": "refused",
+      "reason": "own entry not rendered"
+    },
+    {
+      "case": "6124",
+      "pc": "0x800d6124",
+      "successors": [
+        "6144",
+        "6150"
+      ],
+      "status": "refused",
+      "reason": "own entry not rendered"
+    },
+    {
+      "case": "6144",
+      "pc": "0x800d6144",
+      "successors": [
+        "61cc"
+      ],
+      "status": "refused",
+      "reason": "own entry not rendered"
+    },
+    {
+      "case": "6150",
+      "pc": "0x800d6150",
+      "successors": [
+        "6160"
+      ],
+      "status": "refused",
+      "reason": "own entry not rendered"
+    },
+    {
+      "case": "6160",
+      "pc": "0x800d6160",
+      "successors": [
+        "5f28",
+        "6168"
+      ],
+      "status": "refused",
+      "reason": "own entry not rendered"
+    },
+    {
+      "case": "6168",
+      "pc": "0x800d6168",
+      "successors": [
+        "6184",
+        "61c8"
+      ],
+      "status": "refused",
+      "reason": "own entry not rendered"
+    },
+    {
+      "case": "6184",
+      "pc": "0x800d6184",
+      "successors": [
+        "619c"
+      ],
+      "status": "refused",
+      "reason": "own entry not rendered"
+    },
+    {
+      "case": "619c",
+      "pc": "0x800d619c",
+      "successors": [
+        "61a4",
+        "61b0"
+      ],
+      "status": "refused",
+      "reason": "own entry not rendered"
+    },
+    {
+      "case": "61a4",
+      "pc": "0x800d61a4",
+      "successors": [
+        "5d68"
+      ],
+      "status": "refused",
+      "reason": "own entry not rendered"
+    },
+    {
+      "case": "61b0",
+      "pc": "0x800d61b0",
+      "successors": [
+        "61c8",
+        "6210"
+      ],
+      "status": "refused",
+      "reason": "own entry not rendered"
+    },
+    {
+      "case": "61c8",
+      "pc": "0x800d61c8",
+      "successors": [
+        "61cc"
+      ],
+      "status": "refused",
+      "reason": "own entry not rendered"
+    },
+    {
+      "case": "61cc",
+      "pc": "0x800d61cc",
+      "successors": [
+        "5f2c"
+      ],
+      "status": "refused",
+      "reason": "own entry not rendered"
+    },
+    {
+      "case": "6210",
+      "pc": "0x800d6210",
+      "successors": [
+        "6220"
+      ],
+      "status": "refused",
+      "reason": "own entry not rendered"
+    },
+    {
+      "case": "6220",
+      "pc": "0x800d6220",
+      "successors": [
+        "5f28",
+        "6228"
+      ],
+      "status": "refused",
+      "reason": "own entry not rendered"
+    },
+    {
+      "case": "6228",
+      "pc": "0x800d6228",
+      "successors": [
+        "61cc",
+        "6244"
+      ],
+      "status": "refused",
+      "reason": "own entry not rendered"
+    },
+    {
+      "case": "6244",
+      "pc": "0x800d6244",
+      "successors": [
+        "6254"
+      ],
+      "status": "refused",
+      "reason": "own entry not rendered"
+    },
+    {
+      "case": "6254",
+      "pc": "0x800d6254",
+      "successors": [
+        "5f28",
+        "625c"
+      ],
+      "status": "refused",
+      "reason": "own entry not rendered"
+    },
+    {
+      "case": "625c",
+      "pc": "0x800d625c",
+      "successors": [
+        "61cc"
+      ],
+      "status": "refused",
+      "reason": "own entry not rendered"
+    }
+  ],
+  "rendered": 22,
+  "refused": 65,
+  "proof_ran": false
+}
