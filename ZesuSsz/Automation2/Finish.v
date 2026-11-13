@@ -113,7 +113,7 @@ Ltac zesu_finish_list_slice_length :=
 Ltac zesu_finish_constant :=
   lazymatch goal with
   | |- @eq (bv _) ?left ?right =>
-      is_closed_term left; is_closed_term right;
+      ZesuSsz.Automation2.VmClosed.zesu_closed_term left; ZesuSsz.Automation2.VmClosed.zesu_closed_term right;
       (solve [apply bv_eq; first [ZesuSsz.Automation2.VmClosed.zesu_vm_closed_decide | reflexivity]])
   end.
 
@@ -121,7 +121,7 @@ Ltac zesu_normalize_memory_constants :=
   repeat match goal with
   | |- context[mem_mapsto _ _ (bv_add ?left ?right)] =>
       let value := constr:(bv_add left right) in
-      is_closed_term value;
+      ZesuSsz.Automation2.VmClosed.zesu_closed_term value;
       let integer := ZesuSsz.Automation2.VmClosed.zesu_vm_eval_closed (bv_unsigned value) in
       lazymatch integer with Z0 => idtac | Zpos _ => idtac | Zneg _ => idtac end;
       let Hconstant := fresh "Hconstant" in
@@ -219,7 +219,7 @@ Ltac zesu_finish_known_list_shape :=
   (* A singleton codec count can retain a closed nat-to-Z conversion. *)
   repeat match goal with
   | |- context[bv_to_little_endian ?count 8 (bv_unsigned ?value)] =>
-      is_closed_term count;
+      ZesuSsz.Automation2.VmClosed.zesu_closed_term count;
       let normalized := eval cbv beta iota zeta delta
         [Z.of_nat Pos.of_succ_nat Pos.succ] in count in
       constr_eq normalized constr:(1%Z);
@@ -309,7 +309,7 @@ Ltac zesu_finish_zero_offset_u64_roundtrip :=
   lazymatch goal with
   | |- Z_to_bv 64 (little_endian_to_bv 8
       (take ?count (drop (Z.to_nat ?offset) ?bytes))) = ?word =>
-      is_closed_term count;
+      ZesuSsz.Automation2.VmClosed.zesu_closed_term count;
       assert_fails (has_evar offset);
       assert_fails (has_evar bytes);
       assert_fails (has_evar word);
@@ -416,8 +416,8 @@ Ltac zesu_finish_entailment_base :=
 
 (* Defer matching cancellation shapes to the later contract arithmetic. *)
 Ltac zesu_finish_same_closed_Z left right :=
- stdpp.tactics.is_closed_term left;
- stdpp.tactics.is_closed_term right;
+ ZesuSsz.Automation2.VmClosed.zesu_closed_term left;
+ ZesuSsz.Automation2.VmClosed.zesu_closed_term right;
  let l := ZesuSsz.Automation2.VmClosed.zesu_vm_eval_closed left in
  let r := ZesuSsz.Automation2.VmClosed.zesu_vm_eval_closed right in
  constr_eq l r.
@@ -585,7 +585,7 @@ Ltac zesu_finish_list_cons_atom :=
         | Hlength : length ?root = ?size |- _ =>
             lazymatch goal with
             | |- context [root] =>
-                is_closed_term size;
+                ZesuSsz.Automation2.VmClosed.zesu_closed_term size;
                 clear - Hlength
             end
         end;
@@ -622,7 +622,7 @@ Ltac zesu_masked_add_branch_finish :=
     | branch : ~ (?masked_expression >= ?bound_expression)%Z |- _ =>
       lazymatch masked_expression with
       | bv_unsigned (bv_and (bv_add (Z_to_bv ?width ?value) ?offset) ?mask) =>
-        is_closed_term width; is_closed_term offset; is_closed_term mask;
+        ZesuSsz.Automation2.VmClosed.zesu_closed_term width; ZesuSsz.Automation2.VmClosed.zesu_closed_term offset; ZesuSsz.Automation2.VmClosed.zesu_closed_term mask;
         assert_fails (has_evar value);
         let delta := eval vm_compute in (bv_unsigned offset) in
         let low := eval vm_compute in (N.log2 (Z.to_N (bv_unsigned mask + 1)%Z)) in
