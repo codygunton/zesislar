@@ -1460,12 +1460,28 @@ def write_ledger(path, data):
         Path(name).unlink(missing_ok=True)
 
 
+def region_release_verified(name, release):
+    """Check a recorded region release against its receipt.
+
+    The release was verified with this hash when it was recorded. A receipt
+    that no longer exists keeps the release (a deleted receipt is not a forged
+    one): on 2026-11-12 a worktree removal deleted the 6ae0 receipt, and every
+    admission that read it crashed. A receipt with other bytes does not.
+    """
+    try:
+        actual = hashlib.sha256(Path(release['receipt']).read_bytes()).hexdigest()
+    except FileNotFoundError:
+        print(f'region release {name}: receipt {release["receipt"]} is missing; '
+              'the recorded release stands', file=sys.stderr)
+        return True
+    return actual == release['sha256']
+
+
 def ledger_claims(data):
     claims = dict(data['fixed_claims'])
     for name, amount in data.get('region_claims', {}).items():
         release = data.get('released_region_claims', {}).get(name)
-        if (release and release.get('bytes') == amount
-                and hashlib.sha256(Path(release['receipt']).read_bytes()).hexdigest() == release['sha256']):
+        if release and release.get('bytes') == amount and region_release_verified(name, release):
             continue
         claims['legacy:' + name] = amount
     return claims

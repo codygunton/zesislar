@@ -198,6 +198,18 @@ class Plan(JanitorTree):
         self.assertTrue(recent.exists())
         self.assertTrue(used.exists())
 
+    def test_worktree_build_holding_a_ledger_receipt_stays(self):
+        worktrees = self.root / '.worktrees'
+        receipt = write(worktrees / 'cut/_build/native-cut/REPORT.json')
+        ledger = write(self.root / 'LEDGER.json', json.dumps({'released_region_claims': {
+            '6ae0': {'bytes': 1, 'receipt': str(receipt), 'sha256': '0'}}}).encode())
+        janitor = self.janitor(now=time.time() + 49 * HOUR)
+        with patch.dict(os.environ, {'ZESU_CANONICAL_LEDGER': str(ledger)}):
+            plan, _ = self.plan_and_apply(janitor, self.live())
+        self.assertTrue(receipt.exists())
+        [row] = [row for row in plan['rows'] if row['kind'] == 'worktree-build']
+        self.assertEqual(row['reason'], 'admission ledger receipt ' + str(receipt))
+
     def test_banks_of_older_main_commits_go_and_the_newest_stays(self):
         heads = self.repository(2)
         older = self.agents / 'a/bank-old'
@@ -331,6 +343,31 @@ class Commands(JanitorTree):
         self.assertTrue(orch.exists())
         self.assertIn('protected agent', printed)
         self.assertIn('removed run dir', printed)
+
+    def ledger(self, *receipts):
+        ledger = write(self.root / 'LEDGER.json', json.dumps({'released_region_claims': {
+            str(index): {'bytes': 1, 'receipt': str(receipt), 'sha256': '0'}
+            for index, receipt in enumerate(receipts)}}).encode())
+        return patch.dict(os.environ, {'ZESU_CANONICAL_LEDGER': str(ledger)})
+
+    def test_ledger_receipts_keep_their_worktree_and_run_dir(self):
+        # A worktree removal deleted the 6ae0 release receipt on 2026-11-12; every admission crashed.
+        worktree = self.root / '.worktrees/w'
+        receipt = write(worktree / '_build/native-cut/6AE0-CLAIM-RELEASE-v1/REPORT.json')
+        run_receipt = write(self.agents / 'a/run9/RELEASE.json')
+        write(self.agents / 'a/run9/ITEM.json', json.dumps({'branch': 'w/feature'}).encode())
+        with self.ledger(receipt, run_receipt), \
+                patch.object(J.LivePaths, 'scan', return_value=J.LivePaths([], {})), \
+                patch('builtins.print') as output:
+            self.assertEqual(J.in_use(argparse.Namespace(root=str(self.root), paths=[str(worktree)])), 0)
+            self.assertEqual(J.in_use(argparse.Namespace(root=str(self.root),
+                                                         paths=[str(self.root / '.worktrees/x')])), 1)
+            J.branch_items(argparse.Namespace(root=str(self.root), log_dir=None, branch='w/feature',
+                                              delete=True))
+        printed = '\n'.join(call.args[0] for call in output.call_args_list)
+        self.assertIn('the admission ledger names receipt ' + str(receipt), printed)
+        self.assertIn('kept: admission ledger receipt ' + str(run_receipt), printed)
+        self.assertTrue(run_receipt.exists())
 
 
 if __name__ == '__main__':
