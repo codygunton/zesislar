@@ -444,7 +444,35 @@ def call_return_seed(edges, *, call, function_root, root_seed, shapes, vocabular
                     raise CallRefused('A caller span next to the callee output is partly written: ' + key)
             continue
         elif kind in ('byte_array', 'unknown_byte_array') and image.updates[key]:
-            raise CallRefused('A caller array that the callee does not name holds a write: ' + key)
+            resource, updates = resources[key], image.updates[key]
+            if (resource.byte_array is not None or not isinstance(resource.length, int)
+                    or any(isinstance(offset, str) for offset in updates)):
+                raise CallRefused('A caller array that the callee does not name holds a write: ' + key)
+            # An uninitialized caller span with stores at constant offsets: maximal runs of
+            # written bytes become byte lists, the other runs stay uninitialized.
+            cut, pieces = 0, []
+            for offset in range(1, resource.length + 1):
+                if offset == resource.length or (offset in updates) != (cut in updates):
+                    pieces.append((cut, offset))
+                    cut = offset
+            splits[key] = {'pieces': []}
+            for start, end in pieces:
+                piece_id = key if start == 0 else '%s_span_%d' % (key, start)
+                splits[key]['pieces'].append(piece_id)
+                address = '(' + resource.address_z + ' + ' + str(start) + ')' if start else resource.address_z
+                if start in updates:
+                    known = tuple(Expr.from_dict(updates[offset]['value']) for offset in range(start, end))
+                    value = '[' + '; '.join(_coq(byte) for byte in known) + ']'
+                    nodes.append({'kind': 'byte_array', 'id': piece_id, 'original_component':
+                                  '%s ↦ₘ∗ %s' % (address, value), 'address_z': address,
+                                  'byte_array_expr': input_expr(value, None).to_dict(), 'element_bits': 8,
+                                  'length_original_coq': str(end - start)})
+                    regions[piece_id] = known
+                else:
+                    nodes.append({'kind': 'uninitialized_memory', 'id': piece_id, 'original_component':
+                                  '%s ↦ₘ? %d' % (address, end - start), 'address_z': address,
+                                  'length_original_coq': str(end - start)})
+            continue
         nodes.append(node)
     terminal = next(index for index, node in enumerate(nodes) if node.get('coq') == 'True')
     nodes[terminal:terminal] = [
@@ -453,7 +481,7 @@ def call_return_seed(edges, *, call, function_root, root_seed, shapes, vocabular
         {'kind': 'opaque', 'id': prefix + 'return_fact_%d' % index, 'coq': '⌜' + _return_fact(row['coq'], fresh) + '⌝'}
         for index, row in enumerate(call.get('return_facts', []))]
     post_types = dict(spec['post_binders'])
-    for split in splits.values():
+    for split in [split for split in splits.values() if 'post' in split]:
         binders.append({'name': fresh[split['post']], 'type': post_types[split['post']],
                         'expression': input_expr(fresh[split['post']], None).to_dict()})
     # Root binders that the seed still mentions (entry witnesses passed as arguments).
