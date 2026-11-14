@@ -115,7 +115,9 @@ def main():
     table = []
     for suffix, slot, successors, refusal in plan_callers(profile, result['cases'], function):
         row = {'case': suffix + slot_suffix(slot), 'pc': profile.pc(suffix),
-               'successors': [name + slot_suffix(index) for name, index in successors]}
+               'successors': [name + slot_suffix(index) for name, index in successors],
+               # A slot row names its block (entry module Pilot<block>Entries) and slot index.
+               **({'block': suffix, 'slot': slot} if slot is not None else {})}
         if refusal:
             table.append({**row, 'status': 'refused', 'reason': refusal})
             continue
