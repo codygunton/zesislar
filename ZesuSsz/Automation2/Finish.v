@@ -380,6 +380,7 @@ Ltac zesu_finish_v1 :=
       try (zesu_saturate_alignment);
       zesu_diag_stage "finish_v1.solvers";
       try zesu_finish_lia;
+      try zesu_finish_goal_domain;
       try (zesu_bv_solver_goal;
         ZesuSsz.Automation2.ContextCollection.zesu_solve_goal_selected
         ("finish.v1_tail"%string) ltac:(bv_solve))
