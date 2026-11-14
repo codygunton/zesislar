@@ -226,10 +226,11 @@ def evaluate_function(function, traces, initial_states, *, max_paths=4096, check
         raise ValueError('A loop head is not a block start')
     # A call ends its block; its callee runs outside the function. The return
     # site is a cut: a path continues there only from a call-return seed.
-    calls = {}
+    calls, tails = {}, {}
     for call in function.get('calls', []):
         if call.get('kind') == 'tail':
             # A tail jump leaves the function; its block is an exit, not a call.
+            tails[_pc(call['pc'])] = _pc(call['target'])
             continue
         site = _pc(call['pc'])
         block = next((pc for pc, row in blocks.items() if pc <= site < row['end']), None)
@@ -366,6 +367,14 @@ def evaluate_function(function, traces, initial_states, *, max_paths=4096, check
         for state, path in states:
             actual = state.registers.get('PC')
             routed = _Work(work.block_pc, work.seed_pc, state, path, work.visited + (work.block_pc,), work.entry)
+            last = instructions[work.block_pc][-1]
+            if actual is not None and actual.op == 'bits' and tails.get(last) == actual.value:
+                # A CFG tail jump leaves the function to its callee, which returns to the
+                # function's own return address; its exit is not a dropped path.
+                result['exits'].append({'kind': 'tail_call', 'block_pc': hex(work.block_pc),
+                                        'instruction_pc': hex(last), 'seed_pc': hex(work.seed_pc),
+                                        'target': actual.to_dict(), 'path': list(path), 'state': state.to_dict()})
+                continue
             if (actual is not None and actual.op != 'bits' and not blocks[work.block_pc]['successors']
                     and instructions[work.block_pc][-1] in returns):
                 # A CFG return site leaves the function; its exit is not a dropped path.
