@@ -276,9 +276,14 @@ def core_import_last(source):
     return "\n".join(lines)
 
 
-def successor_precondition(profile, suffix):
-    """Return the `instr_pre` premise that a successor block's entry owns."""
-    entry = profile.qualified('Pilot' + suffix + 'Entries', 'fp_machineAt' + suffix)
+def slot_suffix(slot):
+    """The name suffix of entry slot `slot` of a slot block; '' for a block with one entry."""
+    return '' if slot is None else '_slot' + str(slot)
+
+
+def successor_precondition(profile, suffix, slot=None):
+    """Return the `instr_pre` premise that a successor block's entry (or entry slot) owns."""
+    entry = profile.qualified('Pilot' + suffix + 'Entries', 'fp_machineAt' + suffix + slot_suffix(slot))
     return 'instr_pre ' + profile.pc(suffix) + ' (' + entry + ' (args) (returnAddress) (K))%I'
 
 
@@ -289,16 +294,18 @@ def return_precondition(profile, suffix=''):
             + ' args returnAddress K)')
 
 
-def render_block_caller(profile, block, preconditions, imports):
+def render_block_caller(profile, block, preconditions, imports, slot=None):
     """Render one block caller from its entry, its exit premises and the selected code.
 
     The statement is declarations data; the proof is always `zesu_block2.`.
     The caller makes the selected code transparent locally: a function's hint
     umbrella may declare it opaque (with its unfold marker), and an opaque code
-    premise stops the block at its first instruction lookup.
+    premise stops the block at its first instruction lookup. An entry slot's
+    caller proves `instr_body` at the block's address for that slot's entry.
     """
-    pc = profile.pc(block)[2:]
-    entry = profile.qualified('Pilot' + block + 'Entries', 'fp_machineAt' + block)
+    address = profile.pc(block)[2:]
+    pc = address + slot_suffix(slot)
+    entry = profile.qualified('Pilot' + block + 'Entries', 'fp_machineAt' + block + slot_suffix(slot))
     premises = ''.join('  ' + premise + ' -∗\n' for premise in preconditions)
     return (''.join('Require Import ' + module + '.\n' for module in imports)
             + CORE_IMPORT + '\n'
@@ -321,7 +328,7 @@ def render_block_caller(profile, block, preconditions, imports):
             + profile.args_type + ') (returnAddress : Z) (K : iProp Sigma)  :\n'
             + premises
             + '  ' + profile.selected_premise() + ' -∗\n'
-            + '  instr_body 0x' + pc + '\n'
+            + '  instr_body 0x' + address + '\n'
             + '    (DesignedEntry_' + pc + ' args returnAddress K).\n'
             + 'Proof.\n'
             + '  zesu_block2.\n'

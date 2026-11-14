@@ -1,5 +1,5 @@
 ; The closed decodeParentHeader block proofs, compiled in place. The caller renderer writes each caller under
 ; tools/block/generated/decodeparentheader_fp301_callers; this directory only copies the closed ones into the ZesuSsz
 ; theory, so the compliance theorem can consume them. Edit the callers through their renderers.
-(rule (targets Caller5cf8.v) (deps ../../../../tools/block/generated/decodeparentheader_fp301_callers/Caller5cf8.v) (action (copy ../../../../tools/block/generated/decodeparentheader_fp301_callers/Caller5cf8.v Caller5cf8.v)))
-(rule (targets Caller5d0c.v) (deps ../../../../tools/block/generated/decodeparentheader_fp301_callers/Caller5d0c.v) (action (copy ../../../../tools/block/generated/decodeparentheader_fp301_callers/Caller5d0c.v Caller5d0c.v)))
+(rule (targets Caller0040.v) (deps ../../../../tools/block/generated/decodeparentheader_fp301_callers/Caller0040.v) (action (copy ../../../../tools/block/generated/decodeparentheader_fp301_callers/Caller0040.v Caller0040.v)))
+(rule (targets Caller0054.v) (deps ../../../../tools/block/generated/decodeparentheader_fp301_callers/Caller0054.v) (action (copy ../../../../tools/block/generated/decodeparentheader_fp301_callers/Caller0054.v Caller0054.v)))

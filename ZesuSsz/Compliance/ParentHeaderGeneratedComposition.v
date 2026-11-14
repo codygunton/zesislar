@@ -24,7 +24,7 @@ Require Import ZesuSsz.Compliance.DecodeItemCallSpec2.
 Require Import ZesuSsz.Compliance.NextUint64CallSpec2.
 Require Import ZesuSsz.Compliance.ParentHeaderCompositionBoundary.
 Require Import ZesuSsz.Compliance.ParentHeaderBlockObligations.
-Require ZesuSsz.Generated.DecodeParentHeader.FP301.Pilot5cb8Entries.
+Require ZesuSsz.Generated.DecodeParentHeader.FP301.Pilot0000Entries.
 Local Open Scope Z_scope.
 #[local] Typeclasses Transparent parentHeaderSelectedCode nextUint64SelectedCode
   decodeItemSelectedCode.
@@ -68,23 +68,23 @@ Ltac parentHeader_premise :=
   end.
 
 (* The generic slot step: the block statement tagged with the slot's address
-   (several per-path statements may share it; the first that applies closes
-   the slot). Its successor premises come from the table, its callee and code
-   premises from the table code. *)
+   and entry constant (slots of one block share the address; the entry tag
+   selects syntactically, without trying another slot's statement). Its
+   successor premises come from the table, its callee and code premises from
+   the table code. *)
 Ltac parentHeader_slot :=
   iIntros "#Htab";
   iPoseProof (block_table_pre_code with "Htab") as "#Hcode";
   iEval (unfold parentHeaderBlockTable; cbn [block_table_code];
          unfold parentHeaderTableCode, memcpyCallPremise) in "Hcode";
   iDestruct "Hcode" as "(Hsel & Hdi & Hnu & Hmc)";
-  iApply parentHeader_body_weaken;
   lazymatch goal with
-  | |- environments.envs_entails _ (instr_body ?address _) =>
-      match goal with
-      | H : parentHeaderBlockAt address _ |- _ =>
+  | |- environments.envs_entails _ (instr_body ?address (?entry _ _ _)) =>
+      lazymatch goal with
+      | H : parentHeaderBlockAt address entry _ |- _ =>
           let statement := fresh "Hstatement" in
           pose proof H as statement; unfold parentHeaderBlockAt in statement;
-          iApply statement; parentHeader_premise
+          iApply parentHeader_body_weaken; iApply statement; parentHeader_premise
       end
   end.
 
@@ -102,7 +102,7 @@ Lemma parentHeader_entry_body `{!islaG Sigma} `{!threadG} :
   forall (args : ParentHeaderArgs) (returnAddress : Z),
   ⊢ □ parentHeaderTableCode -∗
     instr_body decodeParentHeaderEntry
-      (ZesuSsz.Generated.DecodeParentHeader.FP301.Pilot5cb8Entries.fp_machineAt5cb8 args returnAddress
+      (ZesuSsz.Generated.DecodeParentHeader.FP301.Pilot0000Entries.fp_machineAt0000 args returnAddress
         (parentHeaderContinuation args returnAddress)).
 Proof.
   intros Hopen args returnAddress.
@@ -124,12 +124,12 @@ Lemma parentHeader_start_bridge `{!islaG Sigma} `{!threadG}
     (args : ParentHeaderArgs) (returnAddress : Z) :
   (⌜bv_unsigned (parentHeaderReturnAddress args) = returnAddress⌝ ∗
    parentHeaderEntryResources args) ⊢
-  ZesuSsz.Generated.DecodeParentHeader.FP301.Pilot5cb8Entries.fp_machineAt5cb8_ForwardA0N0
+  ZesuSsz.Generated.DecodeParentHeader.FP301.Pilot0000Entries.fp_machineAt0000_ForwardA0N0
     args returnAddress.
 Proof.
   rewrite /parentHeaderEntryResources
-    /ZesuSsz.Generated.DecodeParentHeader.FP301.Pilot5cb8Entries.fp_machineAt5cb8_ForwardA0N0.
-  iIntros "[%Hreturn (%x5 & %x6 & %x7 & %x13 & %x14 & %x15 & %x16 & %x17 & %x28 & %x29 & %x30 & %x31 & Hsys & H1 & H2 & H5 & H6 & H7 & H8 & H9 & H10 & H11 & H12 & H13 & H14 & H15 & H16 & H17 & H18 & H19 & H20 & H21 & H22 & H23 & H24 & H25 & H26 & H27 & H28 & H29 & H30 & H31 & Hinput & Hresult & Hframe & Hcallee & Hsource & Hscratch & %Hwf & _)]".
+    /ZesuSsz.Generated.DecodeParentHeader.FP301.Pilot0000Entries.fp_machineAt0000_ForwardA0N0.
+  iIntros "[%Hreturn (%x5 & %x6 & %x7 & %x13 & %x14 & %x15 & %x16 & %x17 & %x28 & %x29 & %x30 & %x31 & Hsys & H1 & H2 & H5 & H6 & H7 & H8 & H9 & H10 & H11 & H12 & H13 & H14 & H15 & H16 & H17 & H18 & H19 & H20 & H21 & H22 & H23 & H24 & H25 & H26 & H27 & H28 & H29 & H30 & H31 & Hinput & Hresult & Hframe & Hcallee & Hsource & Hnone & Hscratch & %Hwf & _)]".
   iExists x5, x6, x7, x13, x14, x15, x16, x17, x28, x29, x30, x31.
   iExists (BV 64 0), (BV 64 0), (BV 64 0).
   assert (Hmod : bv_unsigned (parentHeaderReturnAddress args) mod 4 = 0)
@@ -161,7 +161,7 @@ Proof.
     iSplitR; [iModIntro; iExact "Hnu2"|]. iModIntro. iExact "Hmc". }
   iApply (instr_pre_wand with "Hbody"); [done|done|].
   iIntros "[Hentry Hcontinuation]".
-  rewrite /ZesuSsz.Generated.DecodeParentHeader.FP301.Pilot5cb8Entries.fp_machineAt5cb8.
+  rewrite /ZesuSsz.Generated.DecodeParentHeader.FP301.Pilot0000Entries.fp_machineAt0000.
   iFrame "Hcontinuation".
   by iApply (parentHeader_start_bridge with "Hentry").
 Qed.
