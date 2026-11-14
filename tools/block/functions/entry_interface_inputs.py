@@ -46,13 +46,38 @@ def normal(term):
     return _strip_enclosure(term).strip()
 
 
+def register_view(quantity):
+    """The 64-bit register value whose unsigned reading is the integer `quantity`.
+
+    `bv_unsigned V` reads back as V itself (F44: bounds on bv_unsigned of the binder);
+    any other quantity is cast with Z_to_bv.
+    """
+    match = re.fullmatch(r'bv_unsigned (.+)', normal(quantity))
+    return normal(match[1]) if match else '(Z_to_bv 64%N (' + normal(quantity) + '))'
+
+
+def required_sources(source, text):
+    """The source and the ZesuSsz modules it requires directly, as (path, text)."""
+    files = [(source, text)]
+    for module in re.findall(r'Require\s+(?:Import|Export)\s+ZesuSsz\.([\w.]+)\.', text):
+        path = ROOT / 'ZesuSsz' / (module.replace('.', '/') + '.v')
+        if path.exists():
+            files.append((path, path.read_text()))
+    return files
+
+
 def notations(source, text):
-    """The closed Z notations of the source, with their values and provenance."""
+    """The closed Z notations of the source and of the ZesuSsz modules it requires,
+    with their values and provenance."""
     values = {}
-    for name, literal in NOTATION.findall(text):
-        values[name] = constant_from_source(bind(source, declaration=name))
-        if values[name]['value'] != int(literal, 0):
-            raise ValueError('A notation value differs from its source text: ' + name)
+    for path, body in required_sources(source, text):
+        for name, literal in NOTATION.findall(body):
+            value = constant_from_source(bind(path, declaration=name))
+            if value['value'] != int(literal, 0):
+                raise ValueError('A notation value differs from its source text: ' + name)
+            if name in values and values[name]['value'] != value['value']:
+                raise ValueError('Two required modules give a notation different values: ' + name)
+            values.setdefault(name, value)
     return values
 
 
@@ -111,8 +136,13 @@ def comparisons(clause):
     return [(parts[i], parts[i + 1], parts[i + 2]) for i in range(0, len(parts) - 2, 2)]
 
 
+BV_RANGE = 'bv_unsigned range'
+
+
 def bounds(clauses, constants):
-    """Lower and upper bounds of atoms, propagated through the linear conjuncts."""
+    """Lower and upper bounds of atoms, propagated through the linear conjuncts.
+
+    An atom `bv_unsigned V` starts in [0, 2^64 - 1] (its source index is BV_RANGE)."""
     rows = []
     for index, clause in enumerate(clauses):
         for left, relation, right in comparisons(clause) or []:
@@ -121,7 +151,8 @@ def bounds(clauses, constants):
                 continue
             row = Linear.add(a, b, -1)   # row <= 0, or row < 0
             rows.append((Linear.add(row, ({}, 1)) if relation == '<' else row, index))
-    low, high = {}, {}
+    unsigned = {atom for (atoms, _), _ in rows for atom in atoms if re.fullmatch(r'bv_unsigned \S.*', atom)}
+    low, high = {atom: (0, BV_RANGE) for atom in unsigned}, {atom: (WORD - 1, BV_RANGE) for atom in unsigned}
     for _ in range(3):
         for (atoms, constant), index in rows:
             for atom, coefficient in atoms.items():
@@ -207,15 +238,18 @@ def domain(profile, contract, text, seed, constants, ram):
     origin = {'source': bind(contract, declaration=wellformed)}
 
     def clause(index):
+        if index == BV_RANGE:
+            return {'derivation': 'bv_unsigned of a 64-bit value lies in [0, 2^64)'}
         return {**origin, 'conjunct_index': index, 'source_clause': clauses[index]}
 
     components = seed['assertion_tree']['components']
+    # A fixed register's integer quantity: Q for `Z_to_bv 64 Q`, or `bv_unsigned V` for a bv value V.
     fixed = {}
     for node in components:
         if node['kind'] == 'register' and 'symbolic_witness' not in node:
-            match = re.fullmatch(r'Z_to_bv 64 (.+)', normal(node['value_coq']))
-            if match:
-                fixed[normal(match[1])] = node
+            value = normal(node['value_coq'])
+            match = re.fullmatch(r'Z_to_bv 64 (.+)', value)
+            fixed[normal(match[1]) if match else normal('bv_unsigned (' + value + ')')] = node
     arrays = {normal(Expr_value(node)): node for node in components if node['kind'] == 'byte_array'}
     ranges = {}   # resource id -> (address, {length spellings})
     for node in components:
@@ -260,7 +294,7 @@ def domain(profile, contract, text, seed, constants, ram):
                 facts.append({'fact_id': 'wellformed:length-view-%d' % index, 'kind': 'bounds',
                               'status': 'supplied',
                               'terms': {'resource_id': node['id'], 'coq_statement': item, 'length_view':
-                                        input_expr('(Z_to_bv 64%N (' + quantity + '))', 64).to_dict()},
+                                        input_expr(register_view(quantity), 64).to_dict()},
                               'origin': clause(index)})
                 used.add(index)
     low, high, low_from, high_from = bounds(clauses, constants)
@@ -286,7 +320,7 @@ def domain(profile, contract, text, seed, constants, ram):
                           'status': 'supplied',
                           'terms': {'resource_id': lengths[arrays_[0]], 'coq_statement': item,
                                     'length_relation': {
-                                        'view': input_expr('(Z_to_bv 64%N (' + quantity + '))', 64).to_dict(),
+                                        'view': input_expr(register_view(quantity), 64).to_dict(),
                                         'scale': scale, 'offset': constant}},
                           'origin': {**clause(index), 'range': clause(low_from[quantity]),
                                      'derivation': 'the quantity lies in [0, 2^64), so its register value is it'}})
@@ -297,7 +331,7 @@ def domain(profile, contract, text, seed, constants, ram):
         if match and normal(match[1]) in fixed:
             facts.append({'fact_id': 'wellformed:alignment-%d' % index, 'kind': 'alignment', 'status': 'supplied',
                           'terms': {'alignment': {
-                              'expression': input_expr('(Z_to_bv 64%N (' + normal(match[1]) + '))', 64).to_dict(),
+                              'expression': input_expr(register_view(match[1]), 64).to_dict(),
                               'modulus': int(match[2]), 'residue': 0}},
                           'origin': clause(index)})
             used.add(index)
@@ -307,7 +341,7 @@ def domain(profile, contract, text, seed, constants, ram):
         minimum, maximum = low[quantity], high[quantity]
         if not 0 <= minimum <= maximum < WORD or (minimum, maximum) == (0, WORD - 1):
             continue
-        interval = {'expression': input_expr('(Z_to_bv 64%N (' + quantity + '))', 64).to_dict(),
+        interval = {'expression': input_expr(register_view(quantity), 64).to_dict(),
                     'minimum': minimum, 'maximum': maximum}
         if ram[0] <= minimum and maximum <= ram[1]:
             interval.update(ram_base=ram[0], ram_end=ram[1])
@@ -315,11 +349,12 @@ def domain(profile, contract, text, seed, constants, ram):
                       'status': 'supplied', 'terms': {'unsigned_interval': interval},
                       'origin': {**clause(low_from[quantity]), 'upper_bound': clause(high_from[quantity]),
                                  'derivation': 'linear bounds of the conjuncts; closed notations resolved'}})
-        used.update({low_from[quantity], high_from[quantity]})
+        used.update(index for index in (low_from[quantity], high_from[quantity]) if index != BV_RANGE)
     # Separations of two owned ranges.
+    separators = separating(contract, text)
     for index, item in enumerate(clauses):
         head, *arguments = split_application(normal(item))
-        if len(arguments) != 4 or head not in separating(text):
+        if len(arguments) != 4 or head not in separators:
             continue
         pairs = [(normal(arguments[0]), normal(arguments[1])), (normal(arguments[2]), normal(arguments[3]))]
         ids = []
@@ -354,17 +389,19 @@ def split_application(term):
     return [piece for piece in pieces if piece]
 
 
-def separating(text):
-    """Definitions of the source whose body states that two ranges do not overlap."""
+def separating(source, text):
+    """Definitions of the source and its required modules whose body states that
+    two ranges do not overlap."""
     names = set()
-    for name, parameters in re.findall(r'Definition\s+(\w+)\s+\(([^)]*)\)\s*:\s*Prop\s*:=', text):
-        params = parameters.split(':')[0].split()
-        if len(params) != 4:
-            continue
-        body = re.sub(r'\s+', '', definition_body(text, name))
-        p, n, q, m = params
-        if body == '{p}+{n}<={q}\\/{q}+{m}<={p}'.format(p=p, n=n, q=q, m=m):
-            names.add(name)
+    for _, body_text in required_sources(source, text):
+        for name, parameters in re.findall(r'Definition\s+(\w+)\s+\(([^)]*)\)\s*:\s*Prop\s*:=', body_text):
+            params = parameters.split(':')[0].split()
+            if len(params) != 4:
+                continue
+            body = re.sub(r'\s+', '', definition_body(body_text, name))
+            p, n, q, m = params
+            if body == '{p}+{n}<={q}\\/{q}+{m}<={p}'.format(p=p, n=n, q=q, m=m):
+                names.add(name)
     return names
 
 
@@ -402,7 +439,14 @@ def main():
     seed = public_seed(profile, contract, text)
     facts = domain(profile, contract, text, seed, constants, ram_ends(mapfile))
     (output / 'DOMAIN.json').write_text(json.dumps(facts, indent=2) + '\n')
-    (output / 'SYSTEM-SHAPES.json').write_text(json.dumps(system_shapes(machine, mapfile), indent=2) + '\n')
+    shapes = system_shapes(machine, mapfile)
+    # A system register that the entry fixes to a quantity (as decodeItemSysRegs fixes
+    # zisk_input_end): the interface row names the quantity.
+    for name, quantity in profile['entry_interface'].get('exact_system_registers', {}).items():
+        row, = [row for row in shapes['rows'] if row['key'] == name]
+        row.update(shape='exact', value=input_expr(register_view(quantity), 64).to_dict())
+        row.pop('symbol', None)
+    (output / 'SYSTEM-SHAPES.json').write_text(json.dumps(shapes, indent=2) + '\n')
     seed['entry_pc'] = hex(function['entry'])
     seed['source_domain_binding'] = bind(output / 'DOMAIN.json')
     (output / 'SEED.json').write_text(json.dumps(seed, indent=2, ensure_ascii=False) + '\n')

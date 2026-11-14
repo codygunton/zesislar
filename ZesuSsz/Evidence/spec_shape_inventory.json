@@ -437,6 +437,13 @@
       "frame_parameters_in_closed_specs": 0,
       "unfold_without_typeclasses_opaque": 0
     },
+    "ZesuSsz/Evidence/MemcpyBaselinePremiseDegenerate.v": {
+      "uninferable_existentials": 1,
+      "predicates_without_unfold": 4,
+      "disjunctive_specs": 0,
+      "frame_parameters_in_closed_specs": 0,
+      "unfold_without_typeclasses_opaque": 0
+    },
     "ZesuSsz/Evidence/MemoryTupleRoutingControls.v": {
       "uninferable_existentials": 1,
       "predicates_without_unfold": 0,
@@ -506,6 +513,16 @@
     }
   },
   "fixture_allowance_reasons": {
+    "ZesuSsz/Evidence/MemcpyBaselinePremiseDegenerate.v": {
+      "ruling": "Main (memcpy boundary dispatch). No production allowance.",
+      "predicates": [
+        "baselineMemcpyServiceEntry",
+        "baselineMemcpyServiceExit",
+        "baselineMemcpyServiceInstrSpec",
+        "baselineMemcpyServicePremise"
+      ],
+      "reason": "Verbatim evidence copies of the d73a7a5a5 memcpy premise, used only to prove its degeneracy; no automation consumes them. The after-state existential is the baseline's own."
+    },
     "ZesuSsz/Evidence/LoopResourceBackedgeControls.v": {
       "ruling": "Orch15:52, relayed by Root. No production allowance.",
       "predicates": [

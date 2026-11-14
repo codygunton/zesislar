@@ -1,0 +1,773 @@
+{
+  "function": "decodeParentHeader",
+  "args_type": "ParentHeaderArgs",
+  "symbol": "rlp_decode.decodeParentHeader",
+  "generated_directory": "ZesuSsz/Generated/DecodeParentHeader/FP301",
+  "callers_directory": "tools/block/generated/decodeparentheader_fp301_callers",
+  "contract_requires": [
+    "Require Import InstrSpecs.Machine.",
+    "Require Import EvmSailRlp.evm_rlp_types.",
+    "Require Import ZesuSsz.Contracts.RlpDecodeItem.",
+    "Require Import ZesuSsz.Contracts.RlpDecodeItemContract.",
+    "Require Import ZesuSsz.Contracts.DecodeItemCompositional.",
+    "Require Import ZesuSsz.Contracts.DecodeItemCallData.",
+    "Require Import ZesuSsz.Contracts.ParentHeaderContract.",
+    "Require Import ZesuSsz.Contracts.ParentHeaderRootFacts.",
+    "Require Import ZesuSsz.Contracts.NextUint64BlockEntries.",
+    "Require Import ZesuSsz.Contracts.ParentHeaderMemcpyService.",
+    "Require Import ZesuSsz.Contracts.ZiskRuntime.",
+    "Require Export ZesuSsz.Contracts.DecodeItemPayloadBounds.",
+    "Require Export ZesuSsz.Compliance.ParentHeaderHints."
+  ],
+  "loop_contract_requires": [
+    "Require Import InstrSpecs.Machine.",
+    "Require Import EvmSailRlp.evm_rlp_types.",
+    "Require Import ZesuSsz.Contracts.RlpDecodeItem.",
+    "Require Import ZesuSsz.Contracts.RlpDecodeItemContract.",
+    "Require Import ZesuSsz.Contracts.DecodeItemCompositional.",
+    "Require Import ZesuSsz.Contracts.DecodeItemCallData.",
+    "Require Import ZesuSsz.Contracts.ParentHeaderContract.",
+    "Require Import ZesuSsz.Contracts.ParentHeaderRootFacts.",
+    "Require Import ZesuSsz.Contracts.NextUint64BlockEntries.",
+    "Require Import ZesuSsz.Contracts.ParentHeaderMemcpyService.",
+    "Require Import ZesuSsz.Contracts.ZiskRuntime.",
+    "Require Export ZesuSsz.Contracts.DecodeItemPayloadBounds.",
+    "Require Export ZesuSsz.Compliance.ParentHeaderHints."
+  ],
+  "caller_contract_requires": [
+    "Require Import ZesuSsz.Contracts.ParentHeaderContract."
+  ],
+  "selected_code": {
+    "module": "ZesuSsz.Contracts.ParentHeaderContract",
+    "premise": "parentHeaderSelectedCode"
+  },
+  "return_address": {
+    "register": "x1",
+    "value": "(parentHeaderReturnAddress args)",
+    "alignment": 4,
+    "source": "parentHeaderArgsWellFormed (ParentHeaderContract.v): bv_unsigned (parentHeaderReturnAddress args) mod 4 = 0"
+  },
+  "domain_component": "⌜bv_unsigned (parentHeaderReturnAddress args) = returnAddress /\\ parentHeaderArgsWellFormed args⌝",
+  "entry_interface": {
+    "entry_resources": "parentHeaderEntryResources",
+    "well_formed": "parentHeaderArgsWellFormed",
+    "exit_resources": "parentHeaderExitResources",
+    "source": "ZesuSsz/Contracts/ParentHeaderContract.v",
+    "exact_system_registers": {
+      "zisk_input_end": "bv_unsigned (parentHeaderInputEnd args)"
+    }
+  },
+  "trace_namespace": "ZesuSsz.Stock.Closure",
+  "blocks": [
+    "+0x0",
+    "+0x40",
+    "+0x48",
+    "+0x54",
+    "+0x60",
+    "+0x68",
+    "+0x80",
+    "+0x88",
+    "+0x94",
+    "+0xa0",
+    "+0xa8",
+    "+0xb0",
+    "+0xec",
+    "+0x108",
+    "+0x110",
+    "+0x118",
+    "+0x134",
+    "+0x13c",
+    "+0x144",
+    "+0x160",
+    "+0x168",
+    "+0x170",
+    "+0x18c",
+    "+0x194",
+    "+0x19c",
+    "+0x1b8",
+    "+0x1c0",
+    "+0x1c8",
+    "+0x1e4",
+    "+0x1ec",
+    "+0x1f4",
+    "+0x210",
+    "+0x218",
+    "+0x220",
+    "+0x23c",
+    "+0x244",
+    "+0x264",
+    "+0x26c",
+    "+0x270",
+    "+0x274",
+    "+0x2a4",
+    "+0x2b0",
+    "+0x2bc",
+    "+0x2c8",
+    "+0x2d0",
+    "+0x2e4",
+    "+0x300",
+    "+0x308",
+    "+0x314",
+    "+0x320",
+    "+0x32c",
+    "+0x334",
+    "+0x348",
+    "+0x368",
+    "+0x370",
+    "+0x37c",
+    "+0x388",
+    "+0x394",
+    "+0x39c",
+    "+0x3b0",
+    "+0x3bc",
+    "+0x3e8",
+    "+0x400",
+    "+0x408",
+    "+0x414",
+    "+0x41c",
+    "+0x438",
+    "+0x440",
+    "+0x448",
+    "+0x464",
+    "+0x46c",
+    "+0x48c",
+    "+0x498",
+    "+0x4a8",
+    "+0x4b0",
+    "+0x4cc",
+    "+0x4e4",
+    "+0x4ec",
+    "+0x4f8",
+    "+0x510",
+    "+0x514",
+    "+0x558",
+    "+0x568",
+    "+0x570",
+    "+0x58c",
+    "+0x59c",
+    "+0x5a4"
+  ],
+  "loop_heads": [
+    "+0x2d0",
+    "+0x334",
+    "+0x39c"
+  ],
+  "cfg_function": "rlp_decode.decodeParentHeader",
+  "calls": [
+    {
+      "function": "rlp_decode.decodeParentHeader",
+      "call_site_pc": "+0x3c",
+      "callee_pc": "rlp.decodeItem+0x0",
+      "return_site_pc": "+0x40",
+      "spec": "decodeItemCallSpec2",
+      "spec_module": "ZesuSsz.Contracts.DecodeItemCallSpec2",
+      "spec_source": "ZesuSsz/Contracts/DecodeItemCallSpec2.v",
+      "stack_bytes": 16,
+      "arrays": [
+        {
+          "binder": "input",
+          "argument": 1,
+          "caller_value": "parentHeaderInputBytes args"
+        },
+        {
+          "binder": "before",
+          "argument": 0,
+          "length": 40,
+          "length_source": "decodeItemArgsWellFormed (RlpDecodeItemContract.v): (List.length (decodeItemBeforeStorage args) = 40)%nat"
+        }
+      ],
+      "output_length_source": "C1BResult (RlpDecodeItem.v): candidateResult40 is errorResult40 or successResult40, each of 40 bytes"
+    },
+    {
+      "function": "rlp_decode.decodeParentHeader",
+      "call_site_pc": "+0x7c",
+      "callee_pc": "rlp.decodeItem+0x0",
+      "return_site_pc": "+0x80",
+      "spec": "decodeItemCallSpec2",
+      "spec_module": "ZesuSsz.Contracts.DecodeItemCallSpec2",
+      "spec_source": "ZesuSsz/Contracts/DecodeItemCallSpec2.v",
+      "stack_bytes": 16,
+      "arrays": [
+        {
+          "binder": "input",
+          "argument": 1,
+          "slice_of": "parentHeaderInputBytes args",
+          "caller_value": "take (Z.to_nat (bv_unsigned {argv:2})) (drop (Z.to_nat (bv_unsigned {argv:1} - bv_unsigned (parentHeaderInputPointer args))) (parentHeaderInputBytes args))"
+        },
+        {
+          "binder": "before",
+          "argument": 0,
+          "length": 40,
+          "length_source": "decodeItemArgsWellFormed (RlpDecodeItemContract.v): (List.length (decodeItemBeforeStorage args) = 40)%nat"
+        }
+      ],
+      "output_length_source": "C1BResult (RlpDecodeItem.v): candidateResult40 is errorResult40 or successResult40, each of 40 bytes"
+    },
+    {
+      "function": "rlp_decode.decodeParentHeader",
+      "call_site_pc": "+0x104",
+      "callee_pc": "rlp.decodeItem+0x0",
+      "return_site_pc": "+0x108",
+      "spec": "decodeItemCallSpec2",
+      "spec_module": "ZesuSsz.Contracts.DecodeItemCallSpec2",
+      "spec_source": "ZesuSsz/Contracts/DecodeItemCallSpec2.v",
+      "stack_bytes": 16,
+      "arrays": [
+        {
+          "binder": "input",
+          "argument": 1,
+          "slice_of": "parentHeaderInputBytes args",
+          "caller_value": "take (Z.to_nat (bv_unsigned {argv:2})) (drop (Z.to_nat (bv_unsigned {argv:1} - bv_unsigned (parentHeaderInputPointer args))) (parentHeaderInputBytes args))"
+        },
+        {
+          "binder": "before",
+          "argument": 0,
+          "length": 40,
+          "length_source": "decodeItemArgsWellFormed (RlpDecodeItemContract.v): (List.length (decodeItemBeforeStorage args) = 40)%nat"
+        }
+      ],
+      "output_length_source": "C1BResult (RlpDecodeItem.v): candidateResult40 is errorResult40 or successResult40, each of 40 bytes"
+    },
+    {
+      "function": "rlp_decode.decodeParentHeader",
+      "call_site_pc": "+0x130",
+      "callee_pc": "rlp.decodeItem+0x0",
+      "return_site_pc": "+0x134",
+      "spec": "decodeItemCallSpec2",
+      "spec_module": "ZesuSsz.Contracts.DecodeItemCallSpec2",
+      "spec_source": "ZesuSsz/Contracts/DecodeItemCallSpec2.v",
+      "stack_bytes": 16,
+      "arrays": [
+        {
+          "binder": "input",
+          "argument": 1,
+          "slice_of": "parentHeaderInputBytes args",
+          "caller_value": "take (Z.to_nat (bv_unsigned {argv:2})) (drop (Z.to_nat (bv_unsigned {argv:1} - bv_unsigned (parentHeaderInputPointer args))) (parentHeaderInputBytes args))"
+        },
+        {
+          "binder": "before",
+          "argument": 0,
+          "length": 40,
+          "length_source": "decodeItemArgsWellFormed (RlpDecodeItemContract.v): (List.length (decodeItemBeforeStorage args) = 40)%nat"
+        }
+      ],
+      "output_length_source": "C1BResult (RlpDecodeItem.v): candidateResult40 is errorResult40 or successResult40, each of 40 bytes"
+    },
+    {
+      "function": "rlp_decode.decodeParentHeader",
+      "call_site_pc": "+0x15c",
+      "callee_pc": "rlp.decodeItem+0x0",
+      "return_site_pc": "+0x160",
+      "spec": "decodeItemCallSpec2",
+      "spec_module": "ZesuSsz.Contracts.DecodeItemCallSpec2",
+      "spec_source": "ZesuSsz/Contracts/DecodeItemCallSpec2.v",
+      "stack_bytes": 16,
+      "arrays": [
+        {
+          "binder": "input",
+          "argument": 1,
+          "slice_of": "parentHeaderInputBytes args",
+          "caller_value": "take (Z.to_nat (bv_unsigned {argv:2})) (drop (Z.to_nat (bv_unsigned {argv:1} - bv_unsigned (parentHeaderInputPointer args))) (parentHeaderInputBytes args))"
+        },
+        {
+          "binder": "before",
+          "argument": 0,
+          "length": 40,
+          "length_source": "decodeItemArgsWellFormed (RlpDecodeItemContract.v): (List.length (decodeItemBeforeStorage args) = 40)%nat"
+        }
+      ],
+      "output_length_source": "C1BResult (RlpDecodeItem.v): candidateResult40 is errorResult40 or successResult40, each of 40 bytes"
+    },
+    {
+      "function": "rlp_decode.decodeParentHeader",
+      "call_site_pc": "+0x188",
+      "callee_pc": "rlp.decodeItem+0x0",
+      "return_site_pc": "+0x18c",
+      "spec": "decodeItemCallSpec2",
+      "spec_module": "ZesuSsz.Contracts.DecodeItemCallSpec2",
+      "spec_source": "ZesuSsz/Contracts/DecodeItemCallSpec2.v",
+      "stack_bytes": 16,
+      "arrays": [
+        {
+          "binder": "input",
+          "argument": 1,
+          "slice_of": "parentHeaderInputBytes args",
+          "caller_value": "take (Z.to_nat (bv_unsigned {argv:2})) (drop (Z.to_nat (bv_unsigned {argv:1} - bv_unsigned (parentHeaderInputPointer args))) (parentHeaderInputBytes args))"
+        },
+        {
+          "binder": "before",
+          "argument": 0,
+          "length": 40,
+          "length_source": "decodeItemArgsWellFormed (RlpDecodeItemContract.v): (List.length (decodeItemBeforeStorage args) = 40)%nat"
+        }
+      ],
+      "output_length_source": "C1BResult (RlpDecodeItem.v): candidateResult40 is errorResult40 or successResult40, each of 40 bytes"
+    },
+    {
+      "function": "rlp_decode.decodeParentHeader",
+      "call_site_pc": "+0x1b4",
+      "callee_pc": "rlp.decodeItem+0x0",
+      "return_site_pc": "+0x1b8",
+      "spec": "decodeItemCallSpec2",
+      "spec_module": "ZesuSsz.Contracts.DecodeItemCallSpec2",
+      "spec_source": "ZesuSsz/Contracts/DecodeItemCallSpec2.v",
+      "stack_bytes": 16,
+      "arrays": [
+        {
+          "binder": "input",
+          "argument": 1,
+          "slice_of": "parentHeaderInputBytes args",
+          "caller_value": "take (Z.to_nat (bv_unsigned {argv:2})) (drop (Z.to_nat (bv_unsigned {argv:1} - bv_unsigned (parentHeaderInputPointer args))) (parentHeaderInputBytes args))"
+        },
+        {
+          "binder": "before",
+          "argument": 0,
+          "length": 40,
+          "length_source": "decodeItemArgsWellFormed (RlpDecodeItemContract.v): (List.length (decodeItemBeforeStorage args) = 40)%nat"
+        }
+      ],
+      "output_length_source": "C1BResult (RlpDecodeItem.v): candidateResult40 is errorResult40 or successResult40, each of 40 bytes"
+    },
+    {
+      "function": "rlp_decode.decodeParentHeader",
+      "call_site_pc": "+0x1e0",
+      "callee_pc": "rlp.decodeItem+0x0",
+      "return_site_pc": "+0x1e4",
+      "spec": "decodeItemCallSpec2",
+      "spec_module": "ZesuSsz.Contracts.DecodeItemCallSpec2",
+      "spec_source": "ZesuSsz/Contracts/DecodeItemCallSpec2.v",
+      "stack_bytes": 16,
+      "arrays": [
+        {
+          "binder": "input",
+          "argument": 1,
+          "slice_of": "parentHeaderInputBytes args",
+          "caller_value": "take (Z.to_nat (bv_unsigned {argv:2})) (drop (Z.to_nat (bv_unsigned {argv:1} - bv_unsigned (parentHeaderInputPointer args))) (parentHeaderInputBytes args))"
+        },
+        {
+          "binder": "before",
+          "argument": 0,
+          "length": 40,
+          "length_source": "decodeItemArgsWellFormed (RlpDecodeItemContract.v): (List.length (decodeItemBeforeStorage args) = 40)%nat"
+        }
+      ],
+      "output_length_source": "C1BResult (RlpDecodeItem.v): candidateResult40 is errorResult40 or successResult40, each of 40 bytes"
+    },
+    {
+      "function": "rlp_decode.decodeParentHeader",
+      "call_site_pc": "+0x20c",
+      "callee_pc": "rlp.decodeItem+0x0",
+      "return_site_pc": "+0x210",
+      "spec": "decodeItemCallSpec2",
+      "spec_module": "ZesuSsz.Contracts.DecodeItemCallSpec2",
+      "spec_source": "ZesuSsz/Contracts/DecodeItemCallSpec2.v",
+      "stack_bytes": 16,
+      "arrays": [
+        {
+          "binder": "input",
+          "argument": 1,
+          "slice_of": "parentHeaderInputBytes args",
+          "caller_value": "take (Z.to_nat (bv_unsigned {argv:2})) (drop (Z.to_nat (bv_unsigned {argv:1} - bv_unsigned (parentHeaderInputPointer args))) (parentHeaderInputBytes args))"
+        },
+        {
+          "binder": "before",
+          "argument": 0,
+          "length": 40,
+          "length_source": "decodeItemArgsWellFormed (RlpDecodeItemContract.v): (List.length (decodeItemBeforeStorage args) = 40)%nat"
+        }
+      ],
+      "output_length_source": "C1BResult (RlpDecodeItem.v): candidateResult40 is errorResult40 or successResult40, each of 40 bytes"
+    },
+    {
+      "function": "rlp_decode.decodeParentHeader",
+      "call_site_pc": "+0x238",
+      "callee_pc": "rlp.decodeItem+0x0",
+      "return_site_pc": "+0x23c",
+      "spec": "decodeItemCallSpec2",
+      "spec_module": "ZesuSsz.Contracts.DecodeItemCallSpec2",
+      "spec_source": "ZesuSsz/Contracts/DecodeItemCallSpec2.v",
+      "stack_bytes": 16,
+      "arrays": [
+        {
+          "binder": "input",
+          "argument": 1,
+          "slice_of": "parentHeaderInputBytes args",
+          "caller_value": "take (Z.to_nat (bv_unsigned {argv:2})) (drop (Z.to_nat (bv_unsigned {argv:1} - bv_unsigned (parentHeaderInputPointer args))) (parentHeaderInputBytes args))"
+        },
+        {
+          "binder": "before",
+          "argument": 0,
+          "length": 40,
+          "length_source": "decodeItemArgsWellFormed (RlpDecodeItemContract.v): (List.length (decodeItemBeforeStorage args) = 40)%nat"
+        }
+      ],
+      "output_length_source": "C1BResult (RlpDecodeItem.v): candidateResult40 is errorResult40 or successResult40, each of 40 bytes"
+    },
+    {
+      "function": "rlp_decode.decodeParentHeader",
+      "call_site_pc": "+0x260",
+      "callee_pc": "rlp.decodeItem+0x0",
+      "return_site_pc": "+0x264",
+      "spec": "decodeItemCallSpec2",
+      "spec_module": "ZesuSsz.Contracts.DecodeItemCallSpec2",
+      "spec_source": "ZesuSsz/Contracts/DecodeItemCallSpec2.v",
+      "stack_bytes": 16,
+      "arrays": [
+        {
+          "binder": "input",
+          "argument": 1,
+          "slice_of": "parentHeaderInputBytes args",
+          "caller_value": "take (Z.to_nat (bv_unsigned {argv:2})) (drop (Z.to_nat (bv_unsigned {argv:1} - bv_unsigned (parentHeaderInputPointer args))) (parentHeaderInputBytes args))"
+        },
+        {
+          "binder": "before",
+          "argument": 0,
+          "length": 40,
+          "length_source": "decodeItemArgsWellFormed (RlpDecodeItemContract.v): (List.length (decodeItemBeforeStorage args) = 40)%nat"
+        }
+      ],
+      "output_length_source": "C1BResult (RlpDecodeItem.v): candidateResult40 is errorResult40 or successResult40, each of 40 bytes"
+    },
+    {
+      "function": "rlp_decode.decodeParentHeader",
+      "call_site_pc": "+0x2fc",
+      "callee_pc": "rlp.decodeItem+0x0",
+      "return_site_pc": "+0x300",
+      "spec": "decodeItemCallSpec2",
+      "spec_module": "ZesuSsz.Contracts.DecodeItemCallSpec2",
+      "spec_source": "ZesuSsz/Contracts/DecodeItemCallSpec2.v",
+      "stack_bytes": 16,
+      "arrays": [
+        {
+          "binder": "input",
+          "argument": 1,
+          "slice_of": "parentHeaderInputBytes args",
+          "caller_value": "take (Z.to_nat (bv_unsigned {argv:2})) (drop (Z.to_nat (bv_unsigned {argv:1} - bv_unsigned (parentHeaderInputPointer args))) (parentHeaderInputBytes args))"
+        },
+        {
+          "binder": "before",
+          "argument": 0,
+          "length": 40,
+          "length_source": "decodeItemArgsWellFormed (RlpDecodeItemContract.v): (List.length (decodeItemBeforeStorage args) = 40)%nat"
+        }
+      ],
+      "output_length_source": "C1BResult (RlpDecodeItem.v): candidateResult40 is errorResult40 or successResult40, each of 40 bytes"
+    },
+    {
+      "function": "rlp_decode.decodeParentHeader",
+      "call_site_pc": "+0x364",
+      "callee_pc": "rlp.decodeItem+0x0",
+      "return_site_pc": "+0x368",
+      "spec": "decodeItemCallSpec2",
+      "spec_module": "ZesuSsz.Contracts.DecodeItemCallSpec2",
+      "spec_source": "ZesuSsz/Contracts/DecodeItemCallSpec2.v",
+      "stack_bytes": 16,
+      "arrays": [
+        {
+          "binder": "input",
+          "argument": 1,
+          "slice_of": "parentHeaderInputBytes args",
+          "caller_value": "take (Z.to_nat (bv_unsigned {argv:2})) (drop (Z.to_nat (bv_unsigned {argv:1} - bv_unsigned (parentHeaderInputPointer args))) (parentHeaderInputBytes args))"
+        },
+        {
+          "binder": "before",
+          "argument": 0,
+          "length": 40,
+          "length_source": "decodeItemArgsWellFormed (RlpDecodeItemContract.v): (List.length (decodeItemBeforeStorage args) = 40)%nat"
+        }
+      ],
+      "output_length_source": "C1BResult (RlpDecodeItem.v): candidateResult40 is errorResult40 or successResult40, each of 40 bytes"
+    },
+    {
+      "function": "rlp_decode.decodeParentHeader",
+      "call_site_pc": "+0x3fc",
+      "callee_pc": "rlp.decodeItem+0x0",
+      "return_site_pc": "+0x400",
+      "spec": "decodeItemCallSpec2",
+      "spec_module": "ZesuSsz.Contracts.DecodeItemCallSpec2",
+      "spec_source": "ZesuSsz/Contracts/DecodeItemCallSpec2.v",
+      "stack_bytes": 16,
+      "arrays": [
+        {
+          "binder": "input",
+          "argument": 1,
+          "slice_of": "parentHeaderInputBytes args",
+          "caller_value": "take (Z.to_nat (bv_unsigned {argv:2})) (drop (Z.to_nat (bv_unsigned {argv:1} - bv_unsigned (parentHeaderInputPointer args))) (parentHeaderInputBytes args))"
+        },
+        {
+          "binder": "before",
+          "argument": 0,
+          "length": 40,
+          "length_source": "decodeItemArgsWellFormed (RlpDecodeItemContract.v): (List.length (decodeItemBeforeStorage args) = 40)%nat"
+        }
+      ],
+      "output_length_source": "C1BResult (RlpDecodeItem.v): candidateResult40 is errorResult40 or successResult40, each of 40 bytes"
+    },
+    {
+      "function": "rlp_decode.decodeParentHeader",
+      "call_site_pc": "+0x434",
+      "callee_pc": "rlp.decodeItem+0x0",
+      "return_site_pc": "+0x438",
+      "spec": "decodeItemCallSpec2",
+      "spec_module": "ZesuSsz.Contracts.DecodeItemCallSpec2",
+      "spec_source": "ZesuSsz/Contracts/DecodeItemCallSpec2.v",
+      "stack_bytes": 16,
+      "arrays": [
+        {
+          "binder": "input",
+          "argument": 1,
+          "slice_of": "parentHeaderInputBytes args",
+          "caller_value": "take (Z.to_nat (bv_unsigned {argv:2})) (drop (Z.to_nat (bv_unsigned {argv:1} - bv_unsigned (parentHeaderInputPointer args))) (parentHeaderInputBytes args))"
+        },
+        {
+          "binder": "before",
+          "argument": 0,
+          "length": 40,
+          "length_source": "decodeItemArgsWellFormed (RlpDecodeItemContract.v): (List.length (decodeItemBeforeStorage args) = 40)%nat"
+        }
+      ],
+      "output_length_source": "C1BResult (RlpDecodeItem.v): candidateResult40 is errorResult40 or successResult40, each of 40 bytes"
+    },
+    {
+      "function": "rlp_decode.decodeParentHeader",
+      "call_site_pc": "+0x460",
+      "callee_pc": "rlp.decodeItem+0x0",
+      "return_site_pc": "+0x464",
+      "spec": "decodeItemCallSpec2",
+      "spec_module": "ZesuSsz.Contracts.DecodeItemCallSpec2",
+      "spec_source": "ZesuSsz/Contracts/DecodeItemCallSpec2.v",
+      "stack_bytes": 16,
+      "arrays": [
+        {
+          "binder": "input",
+          "argument": 1,
+          "slice_of": "parentHeaderInputBytes args",
+          "caller_value": "take (Z.to_nat (bv_unsigned {argv:2})) (drop (Z.to_nat (bv_unsigned {argv:1} - bv_unsigned (parentHeaderInputPointer args))) (parentHeaderInputBytes args))"
+        },
+        {
+          "binder": "before",
+          "argument": 0,
+          "length": 40,
+          "length_source": "decodeItemArgsWellFormed (RlpDecodeItemContract.v): (List.length (decodeItemBeforeStorage args) = 40)%nat"
+        }
+      ],
+      "output_length_source": "C1BResult (RlpDecodeItem.v): candidateResult40 is errorResult40 or successResult40, each of 40 bytes"
+    },
+    {
+      "function": "rlp_decode.decodeParentHeader",
+      "call_site_pc": "+0x4a4",
+      "callee_pc": "rlp_decode.nextUint64+0x0",
+      "return_site_pc": "+0x4a8",
+      "spec": "nextUint64CallSpec2",
+      "spec_module": "ZesuSsz.Contracts.NextUint64CallSpec2",
+      "spec_source": "ZesuSsz/Contracts/NextUint64CallSpec2.v",
+      "stack_bytes": 112,
+      "arrays": [
+        {
+          "binder": "input",
+          "pointer": "inputPointer",
+          "slice_of": "parentHeaderInputBytes args",
+          "caller_value": "take (Z.to_nat (bv_unsigned inputLength)) (drop (Z.to_nat (bv_unsigned inputPointer - bv_unsigned (parentHeaderInputPointer args))) (parentHeaderInputBytes args))"
+        }
+      ],
+      "output_length_source": "nextUint64RootResult (ParentHeaderRootFacts.v): nextUint64Error16 and nextUint64Success16 (ParentHeader.v) each state List.length (nextResultBytes ret) = 16"
+    },
+    {
+      "function": "rlp_decode.decodeParentHeader",
+      "call_site_pc": "+0x4e0",
+      "callee_pc": "rlp.decodeItem+0x0",
+      "return_site_pc": "+0x4e4",
+      "spec": "decodeItemCallSpec2",
+      "spec_module": "ZesuSsz.Contracts.DecodeItemCallSpec2",
+      "spec_source": "ZesuSsz/Contracts/DecodeItemCallSpec2.v",
+      "stack_bytes": 16,
+      "arrays": [
+        {
+          "binder": "input",
+          "argument": 1,
+          "slice_of": "parentHeaderInputBytes args",
+          "caller_value": "take (Z.to_nat (bv_unsigned {argv:2})) (drop (Z.to_nat (bv_unsigned {argv:1} - bv_unsigned (parentHeaderInputPointer args))) (parentHeaderInputBytes args))"
+        },
+        {
+          "binder": "before",
+          "argument": 0,
+          "length": 40,
+          "length_source": "decodeItemArgsWellFormed (RlpDecodeItemContract.v): (List.length (decodeItemBeforeStorage args) = 40)%nat"
+        }
+      ],
+      "output_length_source": "C1BResult (RlpDecodeItem.v): candidateResult40 is errorResult40 or successResult40, each of 40 bytes"
+    },
+    {
+      "function": "rlp_decode.decodeParentHeader",
+      "call_site_pc": "+0x564",
+      "callee_pc": "rlp_decode.nextUint64+0x0",
+      "return_site_pc": "+0x568",
+      "spec": "nextUint64CallSpec2",
+      "spec_module": "ZesuSsz.Contracts.NextUint64CallSpec2",
+      "spec_source": "ZesuSsz/Contracts/NextUint64CallSpec2.v",
+      "stack_bytes": 112,
+      "arrays": [
+        {
+          "binder": "input",
+          "pointer": "inputPointer",
+          "slice_of": "parentHeaderInputBytes args",
+          "caller_value": "take (Z.to_nat (bv_unsigned inputLength)) (drop (Z.to_nat (bv_unsigned inputPointer - bv_unsigned (parentHeaderInputPointer args))) (parentHeaderInputBytes args))"
+        }
+      ],
+      "output_length_source": "nextUint64RootResult (ParentHeaderRootFacts.v): nextUint64Error16 and nextUint64Success16 (ParentHeader.v) each state List.length (nextResultBytes ret) = 16"
+    },
+    {
+      "function": "rlp_decode.decodeParentHeader",
+      "call_site_pc": "+0x598",
+      "callee_pc": "rlp_decode.nextUint64+0x0",
+      "return_site_pc": "+0x59c",
+      "spec": "nextUint64CallSpec2",
+      "spec_module": "ZesuSsz.Contracts.NextUint64CallSpec2",
+      "spec_source": "ZesuSsz/Contracts/NextUint64CallSpec2.v",
+      "stack_bytes": 112,
+      "arrays": [
+        {
+          "binder": "input",
+          "pointer": "inputPointer",
+          "slice_of": "parentHeaderInputBytes args",
+          "caller_value": "take (Z.to_nat (bv_unsigned inputLength)) (drop (Z.to_nat (bv_unsigned inputPointer - bv_unsigned (parentHeaderInputPointer args))) (parentHeaderInputBytes args))"
+        }
+      ],
+      "output_length_source": "nextUint64RootResult (ParentHeaderRootFacts.v): nextUint64Error16 and nextUint64Success16 (ParentHeader.v) each state List.length (nextResultBytes ret) = 16"
+    }
+  ],
+  "tail_calls": [
+    {
+      "call_site_pc": "+0xe8",
+      "callee_pc": "memcpy+0x0",
+      "spec": "memcpyCallSpec2",
+      "spec_module": "ZesuSsz.Contracts.ParentHeaderMemcpyService"
+    }
+  ],
+  "loop_designs": [
+    {
+      "head": "+0x2d0",
+      "entry_predecessor": "+0x2c8",
+      "registers": {
+        "x11": "machine_x11",
+        "x13": "machine_x13",
+        "x21": "machine_x21"
+      },
+      "index": "i",
+      "facts": [
+        {
+          "kind": "index_link",
+          "coq": "bv_unsigned machine_x11 = (bv_unsigned {x11} + i)%Z"
+        },
+        {
+          "kind": "index_range",
+          "coq": "(0 <= i)%Z"
+        },
+        {
+          "kind": "bound",
+          "coq": "bv_unsigned machine_x11 < bv_unsigned {x12}"
+        },
+        {
+          "kind": "meaning",
+          "need": "the lbu at the loop head reads the input array: the payload starts inside it",
+          "coq": "(bv_unsigned (parentHeaderInputPointer args) <= bv_unsigned {x11})%Z"
+        },
+        {
+          "kind": "meaning",
+          "need": "the lbu at the loop head reads the input array: the payload ends inside it",
+          "coq": "(bv_unsigned {x12} <= bv_unsigned (parentHeaderInputPointer args) + bv_unsigned (parentHeaderInputLength args))%Z"
+        }
+      ],
+      "array_cursor": {
+        "register": "x11",
+        "array": "parentHeaderInputBytes args",
+        "extent_reason": "1 <= length (parentHeaderInputBytes args): the payload lies inside the input array and is not empty (beq before the loop)"
+      }
+    },
+    {
+      "head": "+0x334",
+      "entry_predecessor": "+0x32c",
+      "registers": {
+        "x11": "machine_x11",
+        "x13": "machine_x13",
+        "x22": "machine_x22"
+      },
+      "index": "i",
+      "facts": [
+        {
+          "kind": "index_link",
+          "coq": "bv_unsigned machine_x11 = (bv_unsigned {x11} + i)%Z"
+        },
+        {
+          "kind": "index_range",
+          "coq": "(0 <= i)%Z"
+        },
+        {
+          "kind": "bound",
+          "coq": "bv_unsigned machine_x11 < bv_unsigned {x12}"
+        },
+        {
+          "kind": "meaning",
+          "need": "the lbu at the loop head reads the input array: the payload starts inside it",
+          "coq": "(bv_unsigned (parentHeaderInputPointer args) <= bv_unsigned {x11})%Z"
+        },
+        {
+          "kind": "meaning",
+          "need": "the lbu at the loop head reads the input array: the payload ends inside it",
+          "coq": "(bv_unsigned {x12} <= bv_unsigned (parentHeaderInputPointer args) + bv_unsigned (parentHeaderInputLength args))%Z"
+        }
+      ],
+      "array_cursor": {
+        "register": "x11",
+        "array": "parentHeaderInputBytes args",
+        "extent_reason": "1 <= length (parentHeaderInputBytes args): the payload lies inside the input array and is not empty (beq before the loop)"
+      }
+    },
+    {
+      "head": "+0x39c",
+      "entry_predecessor": "+0x394",
+      "registers": {
+        "x11": "machine_x11",
+        "x13": "machine_x13",
+        "x20": "machine_x20"
+      },
+      "index": "i",
+      "facts": [
+        {
+          "kind": "index_link",
+          "coq": "bv_unsigned machine_x11 = (bv_unsigned {x11} + i)%Z"
+        },
+        {
+          "kind": "index_range",
+          "coq": "(0 <= i)%Z"
+        },
+        {
+          "kind": "bound",
+          "coq": "bv_unsigned machine_x11 < bv_unsigned {x12}"
+        },
+        {
+          "kind": "meaning",
+          "need": "the lbu at the loop head reads the input array: the payload starts inside it",
+          "coq": "(bv_unsigned (parentHeaderInputPointer args) <= bv_unsigned {x11})%Z"
+        },
+        {
+          "kind": "meaning",
+          "need": "the lbu at the loop head reads the input array: the payload ends inside it",
+          "coq": "(bv_unsigned {x12} <= bv_unsigned (parentHeaderInputPointer args) + bv_unsigned (parentHeaderInputLength args))%Z"
+        }
+      ],
+      "array_cursor": {
+        "register": "x11",
+        "array": "parentHeaderInputBytes args",
+        "extent_reason": "1 <= length (parentHeaderInputBytes args): the payload lies inside the input array and is not empty (beq before the loop)"
+      }
+    }
+  ],
+  "function_returns": [
+    {
+      "return_instruction_pc": "+0x2a0",
+      "return_fact": "True",
+      "source": "measurement entry interface: exit resources only (ParentHeaderContract.v parentHeaderExitResources)"
+    }
+  ]
+}

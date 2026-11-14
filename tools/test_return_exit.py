@@ -8,6 +8,7 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).parent / "block"))
 from return_exit import add_return_facts, add_return_precondition, return_blocks, return_package
 from render_fp301_statements import render
+from function_profiles import load_profile
 
 
 class ReturnExitTests(unittest.TestCase):
@@ -23,13 +24,13 @@ class ReturnExitTests(unittest.TestCase):
         blocks, callers, cases = [], [], []
         names = [format(0x1000 + n, "x") for n in range(11)]
         for index, name in enumerate(names):
-            pc = "0x800d" + name
+            pc = load_profile().pc(name)   # the block key is an offset from the symbol
             row = {"entry_pc": pc, "successor_pcs": ["0x800d2000"]}
             if index == 10:
                 row.update(successor_pcs=[], return_clause={"return_instruction_pc": pc})
             blocks.append(row)
             text = ("Require Import ZesuSsz.Automation.All.\n"
-                    "Lemma DesignedBoundary_800d" + name + " (args : DecodeItemArgs) "
+                    "Lemma DesignedBoundary_" + pc[2:] + " (args : DecodeItemArgs) "
                     "(returnAddress : Z) (K : iProp Sigma) :\n  code -∗ body.\n"
                     "Proof.\n  zesu_block.\nQed.\n")
             callers.append({"case": name, "caller": bound(name + ".v", text)})

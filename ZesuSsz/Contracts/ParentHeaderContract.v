@@ -201,13 +201,22 @@ Definition parentHeaderScratchAfter (args : ParentHeaderArgs)
   | ParentHeaderMemcpyTail => word64Bytes parentHeaderMemcpyLength
   end.
 
+(* The memcpy premise returns zisk_input_end with shape only, so the
+   memcpy tail exit cannot state its entry value. *)
+Definition parentHeaderExitSysRegs (args : ParentHeaderArgs)
+    (path : ParentHeaderExitPath) : list (reg_kind * valu_shape) :=
+  match path with
+  | ParentHeaderDirect => parentHeaderSysRegs args
+  | ParentHeaderMemcpyTail => zesu_sys_regs
+  end.
+
 (* The ABI returns the caller-saved registers, x1 among them, with arbitrary
    values: the memcpy tail returns through the caller's ra itself. It
    preserves the callee-saved registers and the stack pointer. *)
 Definition parentHeaderExitResources `{!islaG Sigma} `{!threadG}
     (args : ParentHeaderArgs) (outcome : ParentHeaderOutcome) : iProp Sigma :=
   (∃ (x1 x5 x6 x7 x10 x11 x12 x13 x14 x15 x16 x17 x28 x29 x30 x31 : bv 64),
-   reg_col (parentHeaderSysRegs args) ∗
+   reg_col (parentHeaderExitSysRegs args outcome.(headerExitPath)) ∗
    "x1" ↦ᵣ RVal_Bits x1 ∗
    "x2" ↦ᵣ RVal_Bits (parentHeaderStackPointer args) ∗
    "x5" ↦ᵣ RVal_Bits x5 ∗ "x6" ↦ᵣ RVal_Bits x6 ∗ "x7" ↦ᵣ RVal_Bits x7 ∗

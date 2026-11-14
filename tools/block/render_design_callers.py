@@ -65,10 +65,7 @@ def load_design(profile):
 
 
 def suffix(profile, pc):
-    prefix = profile['pc_prefix']
-    if not pc.startswith(prefix):
-        raise ValueError('A design address lies outside the function: ' + pc)
-    return pc[len(prefix):]
+    return profile.key(pc)
 
 
 def exits(profile, design, block):

@@ -48,6 +48,13 @@ class ResourceSeedTests(unittest.TestCase):
         self.assertEqual(memory, operation('bvsub', register, bits(16, 64)))
         self.assertEqual(source_z_expression('(-1)%Z', constants), bits(-1, 64))
 
+    def test_unsigned_view_of_a_register_value_is_the_value(self):
+        # Z_to_bv (bv_unsigned V) is V: a bv register quantity (F44) keeps its bv value.
+        constants = {'frame_size': {'value': 16, 'origin': ORIGIN}}
+        memory = source_z_expression('(bv_unsigned (stack_pointer args) - frame_size)', constants)
+        register = source_bv_expression('(stack_pointer args)', constants)
+        self.assertEqual(memory, operation('bvsub', register, bits(16, 64)))
+
     def test_bound_seed_retains_three_resource_kinds_and_the_caller_scope(self):
         seed = seed_owned_resources(public_seed(), entry_pc=16, vocabulary=VOCABULARY,
                                     constants={'frame_size': {'value': 16, 'origin': ORIGIN}})

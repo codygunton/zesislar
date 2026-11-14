@@ -50,7 +50,7 @@ Proof.
 Qed.
 
 (* The FP301 entries own the 16-byte frame image: the saved frame pointer
-   followed by the return address (`fp_machineAt6a24_LoopClass0`). *)
+   followed by the return address (`fp_machineAt00c4_LoopClass0`). *)
 Lemma store_frame_end (args : DecodeItemArgs)
     (Hsp : (RlpDecodeItem.decodeItemStackBytes <= decodeItemStackPointer args < 2 ^ 64)%Z) :
   (decodeItemStackPointer args - RlpDecodeItem.decodeItemStackBytes +

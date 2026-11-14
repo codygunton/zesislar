@@ -1,12 +1,13 @@
 """Refuse incomplete and contradictory generated boundaries."""
 from pathlib import Path
 import sys
+import tempfile
 import unittest
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from boundary_guards import (BoundaryRefused, alternative_facts, annotate_reaching_stops,
-                             contradiction_source, contradictory_alternatives,
-                             contradictory_sources,
+from boundary_guards import (BoundaryRefused, RocqContradictionCheck, alternative_facts, annotate_reaching_stops,
+                             check_groups, contradiction_source, contradictory_alternatives,
+                             contradictory_sources, fact_conjuncts,
                              refused_alternative_indices, require_complete_boundary,
                              require_consistent_alternatives, without_alternatives)
 from forward_design import evaluate_function
@@ -148,6 +149,14 @@ class CallBoundary(unittest.TestCase):
         # With a return-site seed the call stop drops no path; block 24 itself has no trace here.
         self.assertEqual([row['reason'] for row in boundary(seeded, 24)['reaching_stops']], ['missing_trace'])
 
+    def test_a_tail_jump_is_an_exit_not_a_call(self):
+        tail = {**self.CALLER, 'end': 24, 'rows': [{'pc': pc} for pc in range(16, 24, 4)],
+                'blocks': [{'start': 16, 'end': 24, 'successors': []}],
+                'calls': [{'pc': 20, 'target': 64, 'kind': 'tail'}]}
+        result = evaluate_function(tail, {16: self.PLAIN, 20: self.CALL}, {16: SymbolicState(registers={'PC': bits(16, 64)})})
+        self.assertEqual(result['cuts'], [])
+        self.assertNotIn('call_boundary', [row['reason'] for row in result['stops']])
+
     def test_machine_call_spec_summary(self):
         from call_boundary import parse_machine_call_spec
         source = (Path(__file__).resolve().parents[2] / 'ZesuSsz/Contracts/DecodeItemCallSpec.v').read_text()
@@ -169,6 +178,59 @@ class CallBoundary(unittest.TestCase):
             load = operation('concat', load, chunk)
         self.assertEqual(_return_fact('0 < bv_unsigned {word:after:8}', {'after': 'call_after'}),
                          '0 < bv_unsigned ' + load.coq())
+
+    def test_a_new_piece_never_reuses_a_coalesced_pieces_name(self):
+        from call_boundary import PieceNames
+        names = PieceNames([{'id': 'frame'}, {'id': 'frame_call_output_length'}])
+        self.assertEqual(names('frame_call_output'), 'frame_call_output_2')
+        self.assertEqual(names('frame_call_output'), 'frame_call_output_3')
+        self.assertEqual(names('frame_call_after'), 'frame_call_after')
+
+    def test_a_caller_array_with_stores_keeps_its_bytes_only_when_they_are_known(self):
+        from call_boundary import stored_caller_span
+        from forward_resources import OwnedBytes
+        from symbolic_state import input_expr
+        def array(value):
+            return OwnedBytes('span', input_expr('base'), 'base', value, 8, True, 'DfracOwn 1',
+                              {'source': 'base ↦ₘ∗ before'}, {'source': 'fixture'}, 8)
+        stored = {offset: {'value': None} for offset in range(8)}
+        self.assertTrue(stored_caller_span(array(None), {0: {'value': None}}))
+        self.assertTrue(stored_caller_span(array(input_expr('before', None)), stored))
+        # An initialized array that keeps some old bytes, or a store at a symbolic offset, refuses.
+        self.assertFalse(stored_caller_span(array(input_expr('before', None)), {0: {'value': None}}))
+        self.assertFalse(stored_caller_span(array(None), {'i': {'value': None}}))
+
+    def test_a_spec_reaches_its_input_through_stored_words(self):
+        from call_boundary import parse_machine_call_spec
+        source = (Path(__file__).resolve().parents[2] / 'ZesuSsz/Contracts/NextUint64CallSpec2.v').read_text()
+        spec = parse_machine_call_spec(source, 'nextUint64CallSpec2')
+        self.assertEqual(spec['pre']['words'], [{'argument': 1, 'offset': 0, 'value': 'inputPointer'},
+                                                {'argument': 1, 'offset': 8, 'value': 'inputLength'}])
+        self.assertEqual(spec['post']['words'][1],
+                         {'argument': 1, 'offset': 8, 'value': 'Z_to_bv 64 (nextRestLength result)'})
+        self.assertEqual(spec['pre']['arrays'], [{'pointer': 'inputPointer', 'binder': 'input'}])
+        self.assertEqual(spec['pre']['uninitialized'], [{'argument': 0, 'length': '16'}])
+        self.assertEqual(spec['post']['arrays'], [{'pointer': 'inputPointer', 'binder': 'input'},
+                                                 {'argument': 0, 'value': 'nextResultBytes result'}])
+        self.assertEqual(spec['post_binders'], [('result', 'NextUint64Return')])
+
+    def test_a_word_at_a_call_argument_is_the_value_the_caller_holds(self):
+        from call_boundary import CallRefused, stored_word
+        from forward_resources import OwnedBytes
+        from symbolic_state import MemoryRegion, input_expr, operation
+        frame = OwnedBytes('frame', input_expr('sp', 64), 'sp', None, 32, True, 'DfracOwn 1',
+                           {'source': 'sp ↦ₘ? 32'}, {'source': 'fixture'})
+        pointer = input_expr('pointer', 64)
+        chunks = [operation('extract', pointer, width=8, value=8 * index) for index in range(8)]
+        stored = {8 + index: {'value': chunk.to_dict()} for index, chunk in enumerate(chunks)}
+        address = operation('bvadd', input_expr('sp', 64), bits(8, 64))
+        self.assertEqual(stored_word({'frame': frame}, {'frame': stored}, address), ('frame', 8, pointer))
+        # A byte the paths did not store is read from the caller's known bytes, if any.
+        del stored[15]
+        with self.assertRaises(CallRefused):
+            stored_word({'frame': frame}, {'frame': stored}, address)
+        known = MemoryRegion(input_expr('sp', 64), bytes=(bits(0, 8),) * 8 + tuple(chunks), ownership_id='frame')
+        self.assertEqual(stored_word({'frame': frame}, {'frame': stored}, address, [known]), ('frame', 8, pointer))
 
 
 class PureExistentials(unittest.TestCase):
@@ -261,13 +323,64 @@ class Contradictions(unittest.TestCase):
 
     def test_check_compiles_only_when_the_solver_fails(self):
         binders, facts = alternative_facts(FORWARD)
-        source = contradiction_source('Require Import Header.\n', binders, facts)
+        source = contradiction_source('Require Import Header.\n', check_groups(binders, facts))
         self.assertIn('Goal forall (args : DecodeItemArgs) (returnAddress : Z) (machine_x15 : bv 64),', source)
         self.assertIn('Fail solve [zesu_contradiction_check]', source)
         self.assertLess(source.index('Ltac zesu_contradiction_check'), source.index('Fail solve'))
         self.assertNotRegex(source, r'\b(?:Timeout|timeout|Qed|Admitted)\b')
-        other = contradiction_source('Require Import Header.\n', binders, facts, 'FreeArgs')
+        other = contradiction_source('Require Import Header.\n', check_groups(binders, facts), 'FreeArgs')
         self.assertIn('Goal forall (args : FreeArgs) (returnAddress : Z) (machine_x15 : bv 64),', other)
+
+
+class GroupedChecks(unittest.TestCase):
+    BINDERS = '(a : bv 64) (b : bv 64) (c : list (bv 8)) (d : bv 64)'
+    FACTS = ['((bool_decide (a = b) = true) /\\ ((bv_unsigned a = bv_unsigned b)%Z))',
+             '(∃ (x : bv 64), P x a c)',
+             '((List.length c = 4)%nat)',
+             'bv_unsigned b < 8',
+             '(bv_unsigned d < 2) /\\ (∃ y, Q y d)']
+
+    def test_conjunctions_split_and_an_existential_is_not_read(self):
+        self.assertEqual(fact_conjuncts(self.FACTS[0]),
+                         ['(bool_decide (a = b) = true)', '((bv_unsigned a = bv_unsigned b)%Z)'])
+        self.assertEqual(fact_conjuncts('(A -> B) /\\ C'), ['(A -> B) /\\ C'])
+        self.assertEqual(fact_conjuncts('~ (A /\\ B)'), ['~ (A /\\ B)'])
+
+    def test_facts_that_share_no_name_are_checked_apart(self):
+        groups = check_groups(self.BINDERS, self.FACTS)
+        self.assertEqual(groups, [
+            (['(a : bv 64)', '(b : bv 64)'],
+             ['(bool_decide (a = b) = true)', '((bv_unsigned a = bv_unsigned b)%Z)', 'bv_unsigned b < 8']),
+            (['(c : list (bv 8))'], ['((List.length c = 4)%nat)']),
+            (['(d : bv 64)'], ['(bv_unsigned d < 2)'])])
+        source = contradiction_source('Require Import Header.\n', groups)
+        self.assertEqual(source.count('Fail solve [zesu_contradiction_check]'), 3)
+        self.assertNotIn('P x a c', source)
+
+    def test_a_group_inside_an_unrefuted_group_is_not_checked_again(self):
+        with tempfile.TemporaryDirectory() as directory:
+            check = RocqContradictionCheck(['true'], 'Require Import Header.\n', directory)
+            self.assertFalse(check('first', self.BINDERS, self.FACTS))
+            # The same facts, fewer facts in a group: every group was checked before.
+            self.assertFalse(check('second', self.BINDERS, self.FACTS[:2] + self.FACTS[3:]))
+            # A new fact joins the group of d; only that group is checked.
+            self.assertFalse(check('third', self.BINDERS, self.FACTS + ['bv_unsigned d > 0']))
+            first, second, third = check.runs
+            self.assertEqual((first['groups'], first['checked_groups']), (3, 3))
+            self.assertEqual((second['check'], second['reused']), (None, [first['check']]))
+            self.assertEqual((third['groups'], third['checked_groups']), (3, 1))
+            source = Path(third['check']).read_text()
+            self.assertEqual(source.count('Goal forall'), 1)
+            self.assertIn('(bv_unsigned d > 0)', source)
+            self.assertNotIn('bv_unsigned b < 8', source)
+
+    def test_a_refuted_group_is_not_reused(self):
+        with tempfile.TemporaryDirectory() as directory:
+            check = RocqContradictionCheck(['sh', '-c', 'echo "The command has not failed"; exit 1', 'check'],
+                                           'Require Import Header.\n', directory)
+            self.assertTrue(check('first', self.BINDERS, self.FACTS))
+            self.assertTrue(check('second', self.BINDERS, self.FACTS))
+            self.assertEqual(check.checked, [])
 
 
 if __name__ == '__main__':
