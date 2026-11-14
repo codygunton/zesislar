@@ -1,21 +1,23 @@
-"""Render block callers from the design table.
+"""Render block callers from the selected control-flow graph.
 
 A design caller states the block's entry, one `instr_pre` premise for each
 exit, and the selected code. A block with successors gets the entry of each
-successor, in design-table order; a block with a return clause gets the
-function-return package. The statement comes from render_block_caller and the
+successor, in the inventory's successor order; a block that ends in a return gets
+the function-return package. The statement comes from render_block_caller and the
 proof is always `zesu_block2.`; this renderer writes declarations only. A block
 that has a residual module imports it, as render_caller does.
 
-The fixture binds the design table by sha256 and stores one sha256 for each
-rendered caller. --check renders again and compares the design hash, the
+The table comes from the stock inventory (build/stock-zisk/inventory.json), the
+same control-flow graph the block design was checked against. The fixture binds
+the inventory by sha256 (under its `design` key) and stores one sha256 for each
+rendered caller. --check renders again and compares the inventory hash, the
 caller hashes and the committed files. --compare renders other blocks and
 reports, without writing, whether a committed caller is byte-identical or
-statement-identical to the design rendering.
+statement-identical to the rendering.
 
 Usage: render_design_callers.py [--function NAME] (--write | --check | --compare CASE...)
 
-The block list, the fixture and the design table come from the function
+The block list, the fixture and the inventory path come from the function
 profile (`design_callers` in tools/block/functions/NAME.json).
 """
 from pathlib import Path
@@ -38,12 +40,28 @@ def sha256(text):
 
 
 def design_binding(profile):
-    path = profile['design_callers']['design']
+    path = profile['design_callers']['cfg']
     return {'path': path, 'sha256': hashlib.sha256((ROOT / path).read_bytes()).hexdigest()}
 
 
 def load_design(profile):
-    return json.loads((ROOT / profile['design_callers']['design']).read_text())
+    """Return the caller table (entry, successors, return clause) of the selected function."""
+    inventory = json.loads((ROOT / profile['design_callers']['cfg']).read_text())
+    name = profile['function']
+    functions = [row for row in inventory['functions'] if row['name'] == name] or \
+        [row for row in inventory['functions'] if row['name'].rsplit('.', 1)[-1] == name]
+    if len(functions) != 1:
+        raise ValueError('The inventory must contain one selected function: ' + name)
+    function = functions[0]
+    returns = set(function['returns'])
+    blocks = []
+    for block in sorted(function['blocks'], key=lambda row: row['start']):
+        row = {'entry_pc': '0x%x' % block['start'],
+               'successor_pcs': ['0x%x' % target for target in block['successors']]}
+        if block['end'] - 4 in returns:
+            row['return_clause'] = {'return_instruction_pc': '0x%x' % (block['end'] - 4)}
+        blocks.append(row)
+    return {'blocks': blocks}
 
 
 def suffix(profile, pc):

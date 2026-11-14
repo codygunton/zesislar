@@ -7,6 +7,7 @@ import unittest
 
 from function_profiles import load_profile, pilot_header, return_header
 from render_fp301_statements import render_declaration
+from render_design_callers import load_design
 from return_exit import return_blocks
 
 
@@ -18,10 +19,13 @@ class FP301ReturnBindings(unittest.TestCase):
         packet = json.loads(
             (ROOT / "tools/block/fixtures/fp301-return-bindings.json").read_text()
         )
+        profile = load_profile()
+        # The return exits come from the inventory CFG, the source of the design callers.
+        self.assertEqual(packet["design"]["path"], profile["design_callers"]["cfg"])
         design = ROOT / packet["design"]["path"]
         self.assertEqual(hashlib.sha256(design.read_bytes()).hexdigest(),
                          packet["design"]["sha256"])
-        exits = return_blocks(json.loads(design.read_text()))
+        exits = return_blocks(load_design(profile))
         for row in packet["reusable_return_exits"]:
             source = exits[int(row["entry_pc"], 0)]
             self.assertEqual(source["return_clause"]["return_instruction_pc"],
@@ -29,7 +33,6 @@ class FP301ReturnBindings(unittest.TestCase):
             self.assertEqual(row["address"], "returnAddress")
 
         canonical = json.loads((ROOT / packet["canonical_fixture"]).read_text())
-        profile = load_profile()
         headers = {"pilot": pilot_header(profile), "return": return_header(profile)}
         for row in packet["declarations"]:
             with self.subTest(output=row["output"]):

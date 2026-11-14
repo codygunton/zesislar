@@ -2,8 +2,8 @@
   "schema": "fp301-return-bindings-v1",
   "declaration_source_head": "54f11047d7d097f2b3cf1acbfe79563657bf29eb",
   "design": {
-    "path": "ZesuSsz/Evidence/decode_item_block_design.json",
-    "sha256": "b6dcf4f82e88fdf7aecb8fc864ecb18bf3a8e07d6875916c5f21c8a8de1878bc"
+    "path": "build/stock-zisk/inventory.json",
+    "sha256": "68013e60bfb285c63589a2eb3fdac4592a956b3f6d86382b70e73b38810322d4"
   },
   "canonical_fixture": "tools/block/fixtures/fp301-generation.json",
   "measurement_scope": [

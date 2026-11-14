@@ -10,7 +10,7 @@ Order: move the recipe to the ELF; render the layout constants; rebuild the
 platform snapshot and its smoke traces; rerun the inventory generators;
 render Machine.v and re-extract the region-policy windows; generate and bind
 each missing trace group; repeat the generators until the artifact identity
-is stable; regenerate the block design and table; run every check. A trace
+is stable; re-pin the design callers to the inventory; run every check. A trace
 group regenerates only when the recipe lacks it, and its output directory
 must then be absent. The test-trace fixture check reports fixtures that need
 a new address or new traces; this tool does not choose fixtures.
@@ -128,7 +128,7 @@ def platform_current():
 
 
 def refresh_design_pins(design, before, after):
-    """Block fixtures pin the design table by hash; its provenance hashes follow the artifact identity."""
+    """Block fixtures pin their control-flow source by hash; the pin follows the artifact identity."""
     if before == after:
         return
     for path in sorted((ROOT / 'tools/block/fixtures').glob('*.json')):
@@ -146,6 +146,8 @@ def main():
     if args.built:
         rebase = [PY, 'tools/stock_zisk/recipe.py', 'rebase', '--built', str(args.built.resolve())]
         run('rebase', rebase + (['--keep-object'] if args.keep_object else []))
+    inventory = BUILD + '/inventory.json'
+    inventory_before = sha(inventory)
     run('layout', [PY, 'tools/stock_zisk/layout.py'])
     if platform_current():
         print('[regenerate] platform snapshot and smoke traces are current; their reports keep their measurements')
@@ -169,15 +171,11 @@ def main():
         raise SystemExit('The artifact identity did not settle in three rounds.')
     run('selected free binding', [PY, 'tools/stock_zisk/selected/bind_traces.py', '--out',
                                   TRACES + '/closure', '--function', 'alt_fl_alloc.free', '--trace-name', 'free'])
-    design = 'ZesuSsz/Evidence/decode_item_block_design.json'
-    before = sha(design)
-    run('block design', [PY, 'ZesuSsz/Evidence/generate_block_design.py', '--function', 'decodeItem'])
-    refresh_design_pins(design, before, sha(design))
+    refresh_design_pins(inventory, inventory_before, sha(inventory))
     checks = [('stock check', [PY, 'tools/stock_zisk/build.py', '--check', '--out', BUILD]),
               ('machine map check', [PY, 'tools/stock_zisk/machine_map/generate.py', '--build', BUILD, '--check']),
               ('layout check', [PY, 'tools/stock_zisk/layout.py', '--check']),
               ('region windows check', [PY, 'tools/stock_zisk/platform/region_windows.py']),
-              ('support check', [PY, 'tools/block/render_support.py', '--function', 'decodeItem', '--check']),
               ('design callers check', [PY, 'tools/block/render_design_callers.py', '--check']),
               ('test-trace fixtures', [PY, 'tools/stock_zisk/check_test_traces.py'])]
     failed = []

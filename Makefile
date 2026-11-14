@@ -114,8 +114,7 @@ regenerate-evm-sail-snapshot:
 
 .PHONY: check-support-freshness
 check-support-freshness: stock-native-indexes
-	$(PYTHON) ZesuSsz/Evidence/generate_block_design.py --function decodeItem --check
-	$(PYTHON) tools/block/render_support.py --function decodeItem --check
+	$(PYTHON) tools/block/render_design_callers.py --check
 
 check-evidence-tools: check-support-freshness check-tool-tests
 

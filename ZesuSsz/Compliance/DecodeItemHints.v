@@ -1,50 +1,86 @@
-Require Import ZesuSsz.Generated.DecodeItem.Entries.
-Require Export ZesuSsz.Contracts.DecodeItemCallSpec.
-Require Export ZesuSsz.Generated.DecodeItem.BootstrapRegistrations.
-Require Export ZesuSsz.Generated.DecodeItem.Registrations.
+(* The decodeItem hint umbrella. Since the October retirement it holds only the
+   LithiumUnfold instances of contract predicates that the retired October
+   registrations (Generated/DecodeItem/BootstrapRegistrations.v) declared and no other
+   module declares: decodeItem contracts, its byte-fold contracts, and the parent-header
+   contracts that shared that bootstrap. No production module imports it. *)
 Require Import isla.automation.
-Require Import ZesuSsz.Contracts.RlpDecodeItemBlockEntries.
-Require Export ZesuSsz.Compliance.DecodeItemBranchGuardFacts.
-Require Export ZesuSsz.Compliance.DecodeItemCompletedFoldFacts.
-Require Export ZesuSsz.Compliance.DecodeItemCorrectedWitnessSelections.
-Require Export ZesuSsz.Compliance.DecodeItemDataWitnessFacts.
-Require Export ZesuSsz.Compliance.DecodeItemEntryByteIndexFacts.
-Require Export ZesuSsz.Compliance.DecodeItemEntryGuardFacts.
-Require Export ZesuSsz.Compliance.DecodeItemFoldBackEdgeWitnesses.
-Require Export ZesuSsz.Compliance.DecodeItemFoldExitFacts.
-Require Export ZesuSsz.Compliance.DecodeItemFoldRejectionFacts.
-Require Export ZesuSsz.Compliance.DecodeItemFoldZeroFacts.
-Require Export ZesuSsz.Compliance.DecodeItemHeaderWitnessFacts.
-Require Export ZesuSsz.Compliance.DecodeItemInitializationPureFacts.
-Require Export ZesuSsz.Compliance.DecodeItemInputHeadWordFacts.
-Require Export ZesuSsz.Compliance.DecodeItemLoadedEntryFacts.
-Require Export ZesuSsz.Compliance.DecodeItemOutputBaseWitnessFacts.
-Require Export ZesuSsz.Compliance.DecodeItemRawOutputFacts.
-Require Export ZesuSsz.Compliance.DecodeItemS40GuardFacts.
-Require Export ZesuSsz.Compliance.DecodeItemSavedFrameWitnesses.
-Require Export ZesuSsz.Compliance.DecodeItemReturnRestorationFacts.
-Require Export ZesuSsz.Compliance.DecodeItemDataRegistrations.
+Require Import ZesuSsz.Contracts.Level1.
+Require Import ZesuSsz.Contracts.ParentHeaderLevel1.
+Require Import ZesuSsz.Contracts.RlpDecodeItemContract.
+Require Import ZesuSsz.Contracts.DecodeItemSelected.
+Require Import ZesuSsz.Contracts.RlpDecodeItemByteFold.
+Require Import ZesuSsz.Contracts.RlpDecodeItemByteFoldSites.
+Require Import ZesuSsz.Contracts.RlpDecodeItemByteFoldBlocks.
+Require Import ZesuSsz.Contracts.DecodeItemCompositional.
 
-#[export] Instance decodeItemSysRegs_unfold :
-  LithiumUnfold (@ZesuSsz.Contracts.RlpDecodeItemContract.decodeItemSysRegs) := I.
-Global Typeclasses Opaque ZesuSsz.Contracts.RlpDecodeItemContract.decodeItemSysRegs.
+Global Instance : LithiumUnfold (@ZesuSsz.Contracts.Level1.IslarisContractSpec) := I.
+Global Typeclasses Opaque ZesuSsz.Contracts.Level1.IslarisContractSpec.
 
-(* Derive the source domain and its exact length interval together. *)
-#[export] Instance decodeItemDomainAtLengthDerivedFacts
-    (returnAddress : Coq.Numbers.BinNums.Z) (args : ZesuSsz.Contracts.RlpDecodeItemContract.DecodeItemArgs) :
-  ZesuSsz.Automation.PureFacts.ZesuDerivedFacts
-    (ZesuSsz.Contracts.RlpDecodeItemContract.decodeItemDomainAt
-      returnAddress ZesuSsz.Contracts.RlpDecodeItemContract.decodeItemC1BDomain args)
-    (ZesuSsz.Contracts.RlpDecodeItemContract.decodeItemC1BDomain args /\
-     (0 <= ZesuSsz.Contracts.RlpDecodeItemContract.decodeItemInputLength args <
-       stdpp.bitvector.definitions.bv_modulus 64%N)%Z).
-Proof.
-  intro Hdomain.
-  exact (Coq.Init.Logic.conj (Coq.Init.Logic.proj2 Hdomain)
-    (Coq.Init.Logic.proj2 (Coq.Init.Logic.proj2
-      (ZesuSsz.Compliance.DecodeItemFoldRejectionFacts.decodeItemDomainFoldDerivedFacts
-        args (Coq.Init.Logic.proj2 Hdomain))))).
-Qed.
-Print Assumptions decodeItemDomainAtLengthDerivedFacts.
+Global Instance : LithiumUnfold (@ZesuSsz.Contracts.ParentHeaderLevel1.NextUint64InternalHandoffSpec) := I.
+Global Typeclasses Opaque ZesuSsz.Contracts.ParentHeaderLevel1.NextUint64InternalHandoffSpec.
 
-Require Export ZesuSsz.Contracts.DecodeItemDomainRanges.
+Global Instance : LithiumUnfold (@ZesuSsz.Contracts.ParentHeaderLevel1.ParentHeaderDirectHandoffSpec) := I.
+Global Typeclasses Opaque ZesuSsz.Contracts.ParentHeaderLevel1.ParentHeaderDirectHandoffSpec.
+
+Global Instance : LithiumUnfold (@ZesuSsz.Contracts.ParentHeaderLevel1.ParentHeaderTailHandoffSpec) := I.
+Global Typeclasses Opaque ZesuSsz.Contracts.ParentHeaderLevel1.ParentHeaderTailHandoffSpec.
+
+Global Instance : LithiumUnfold (@ZesuSsz.Contracts.RlpDecodeItemContract.decodeItemEntryResources) := I.
+Global Typeclasses Opaque ZesuSsz.Contracts.RlpDecodeItemContract.decodeItemEntryResources.
+
+Global Instance : LithiumUnfold (@ZesuSsz.Contracts.RlpDecodeItemContract.decodeItemExitResources) := I.
+Global Typeclasses Opaque ZesuSsz.Contracts.RlpDecodeItemContract.decodeItemExitResources.
+
+Global Instance : LithiumUnfold (@ZesuSsz.Contracts.DecodeItemSelected.decodeItemSelectedCode) := I.
+Global Typeclasses Opaque ZesuSsz.Contracts.DecodeItemSelected.decodeItemSelectedCode.
+
+Global Instance : LithiumUnfold (@ZesuSsz.Contracts.RlpDecodeItemByteFold.decodeItemByteFoldResources) := I.
+Global Typeclasses Opaque ZesuSsz.Contracts.RlpDecodeItemByteFold.decodeItemByteFoldResources.
+
+Global Instance : LithiumUnfold (@ZesuSsz.Contracts.RlpDecodeItemByteFold.decodeItemByteFoldStringHeader) := I.
+Global Typeclasses Opaque ZesuSsz.Contracts.RlpDecodeItemByteFold.decodeItemByteFoldStringHeader.
+
+Global Instance : LithiumUnfold (@ZesuSsz.Contracts.RlpDecodeItemByteFold.decodeItemByteFoldListHeader) := I.
+Global Typeclasses Opaque ZesuSsz.Contracts.RlpDecodeItemByteFold.decodeItemByteFoldListHeader.
+
+Global Instance : LithiumUnfold (@ZesuSsz.Contracts.RlpDecodeItemByteFoldSites.decodeItemStringFoldAt) := I.
+Global Typeclasses Opaque ZesuSsz.Contracts.RlpDecodeItemByteFoldSites.decodeItemStringFoldAt.
+
+Global Instance : LithiumUnfold (@ZesuSsz.Contracts.RlpDecodeItemByteFoldSites.decodeItemListFoldAt) := I.
+Global Typeclasses Opaque ZesuSsz.Contracts.RlpDecodeItemByteFoldSites.decodeItemListFoldAt.
+
+Global Instance : LithiumUnfold (@ZesuSsz.Contracts.RlpDecodeItemByteFoldBlocks.decodeItemFoldInitResources) := I.
+Global Typeclasses Opaque ZesuSsz.Contracts.RlpDecodeItemByteFoldBlocks.decodeItemFoldInitResources.
+
+Global Instance : LithiumUnfold (@ZesuSsz.Contracts.RlpDecodeItemByteFoldBlocks.decodeItemFoldCheckedResources) := I.
+Global Typeclasses Opaque ZesuSsz.Contracts.RlpDecodeItemByteFoldBlocks.decodeItemFoldCheckedResources.
+
+Global Instance : LithiumUnfold (@ZesuSsz.Contracts.RlpDecodeItemByteFoldBlocks.decodeItemFoldEntryObligation) := I.
+Global Typeclasses Opaque ZesuSsz.Contracts.RlpDecodeItemByteFoldBlocks.decodeItemFoldEntryObligation.
+
+Global Instance : LithiumUnfold (@ZesuSsz.Contracts.RlpDecodeItemByteFoldBlocks.decodeItemFoldPreservationObligation) := I.
+Global Typeclasses Opaque ZesuSsz.Contracts.RlpDecodeItemByteFoldBlocks.decodeItemFoldPreservationObligation.
+
+Global Instance : LithiumUnfold (@ZesuSsz.Contracts.RlpDecodeItemByteFoldBlocks.decodeItemFoldExitObligation) := I.
+Global Typeclasses Opaque ZesuSsz.Contracts.RlpDecodeItemByteFoldBlocks.decodeItemFoldExitObligation.
+
+Global Instance : LithiumUnfold (@ZesuSsz.Contracts.DecodeItemCompositional.decodeItemReturnedCallerRegisters) := I.
+Global Typeclasses Opaque ZesuSsz.Contracts.DecodeItemCompositional.decodeItemReturnedCallerRegisters.
+
+Global Instance : LithiumUnfold (@ZesuSsz.Contracts.DecodeItemCompositional.decodeItemOtherCallerRegisters) := I.
+Global Typeclasses Opaque ZesuSsz.Contracts.DecodeItemCompositional.decodeItemOtherCallerRegisters.
+
+Global Instance : LithiumUnfold (@ZesuSsz.Contracts.DecodeItemCompositional.decodeItemOtherCalleeRegisters) := I.
+Global Typeclasses Opaque ZesuSsz.Contracts.DecodeItemCompositional.decodeItemOtherCalleeRegisters.
+
+Global Instance : LithiumUnfold (@ZesuSsz.Contracts.DecodeItemCompositional.decodeItemUntouchedRegisters) := I.
+Global Typeclasses Opaque ZesuSsz.Contracts.DecodeItemCompositional.decodeItemUntouchedRegisters.
+
+Global Instance : LithiumUnfold (@ZesuSsz.Contracts.DecodeItemCompositional.decodeItemExitResourcesRegisters) := I.
+Global Typeclasses Opaque ZesuSsz.Contracts.DecodeItemCompositional.decodeItemExitResourcesRegisters.
+
+Global Instance : LithiumUnfold (@ZesuSsz.Contracts.DecodeItemCompositional.decodeItemEntryResourcesCompositional) := I.
+Global Typeclasses Opaque ZesuSsz.Contracts.DecodeItemCompositional.decodeItemEntryResourcesCompositional.
+
+Global Instance : LithiumUnfold (@ZesuSsz.Contracts.DecodeItemCompositional.decodeItemExitResourcesCompositional) := I.
+Global Typeclasses Opaque ZesuSsz.Contracts.DecodeItemCompositional.decodeItemExitResourcesCompositional.
