@@ -1122,8 +1122,8 @@
       "path": "ZesuSsz/Compliance/KnownBugs.v",
       "category": "introductions",
       "scope": "mixed_file",
-      "sha256": "3c33b577c074de65ce4bdc554d787458754af24ab1bb006f19bfe5d9cfc945ce",
-      "file_lines": 16,
+      "sha256": "b2ca50cc8900a8d1a9e465365bf7e8bbf754c48e15e193d0fe32d5facd010f9e",
+      "file_lines": 27,
       "line_ranges": [
         [
           4,

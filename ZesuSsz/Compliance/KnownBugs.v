@@ -14,3 +14,14 @@ Inductive KnownBug : Type :=
 
 (** This fixed list prevents later proofs from adding exceptions. *)
 Definition knownBugs : list KnownBug := [RlpLongLengthWrap].
+
+(* decodeParentHeader: excluded inputs, unsafe downstream read.
+   decodeParentHeader's first decodeItem call (0x800d5cf4) decodes the whole
+   input. When it takes the RlpLongLengthWrap branch on a list, it reports
+   success with payload length at least 2^64 - 9, and the next decodeItem
+   call (0x800d5d34, block 0x800d5d20) receives that payload range, so it
+   would read beyond the input. parentHeaderArgsWellFormed
+   (ParentHeaderContract.v) excludes exactly these inputs through
+   parentHeaderOuterListWrap; ParentHeaderOuterWrapFacts.v proves the
+   exclusion exact. A wrapped string at the first call and a wrap at any
+   later call stay in the domain. *)
