@@ -89,6 +89,66 @@ Ltac zesu_byte_slice_count size :=
   | _ => constr:(Z.to_nat size)
   end.
 
+(* Bounds of a slice whose start or size is symbolic: the derived facts of
+   the context (a callee's consumed count, its input length), slice lengths
+   unfolded, sums and differences of words without wrap, and element-type and
+   width aliases normalized so that the arithmetic sees one atom per term. *)
+Ltac zesu_byte_slice_alias_normalize :=
+  repeat match goal with
+  | H : context[MachineWord.MachineWord.Z_idx ?z] |- _ =>
+      let v := eval vm_compute in (MachineWord.MachineWord.Z_idx z) in
+      change (MachineWord.MachineWord.Z_idx z) with v in H
+  | |- context[MachineWord.MachineWord.Z_idx ?z] =>
+      let v := eval vm_compute in (MachineWord.MachineWord.Z_idx z) in
+      change (MachineWord.MachineWord.Z_idx z) with v
+  | H : context[@length ?T ?l] |- _ =>
+      let T' := eval cbv in T in assert_fails (constr_eq T T');
+      change (@length T l) with (@length T' l) in H
+  | |- context[@length ?T ?l] =>
+      let T' := eval cbv in T in assert_fails (constr_eq T T');
+      change (@length T l) with (@length T' l)
+  | H : context[@List.nth ?T ?k ?l ?d] |- _ =>
+      let T' := eval cbv in T in assert_fails (constr_eq T T');
+      change (@List.nth T k l d) with (@List.nth T' k l d) in H
+  | |- context[@List.nth ?T ?k ?l ?d] =>
+      let T' := eval cbv in T in assert_fails (constr_eq T T');
+      change (@List.nth T k l d) with (@List.nth T' k l d)
+  end.
+
+Ltac zesu_byte_slice_unsigned_ranges :=
+  repeat match goal with
+  | |- context[@bv_unsigned ?n ?x] =>
+      assert_fails (has_evar x);
+      lazymatch goal with
+      | _ : (0 <= @bv_unsigned n x < _)%Z |- _ => fail
+      | _ => pose proof (bv_unsigned_in_range n x)
+      end
+  end.
+
+Ltac zesu_byte_slice_moduli :=
+  repeat match goal with
+  | H : context[bv_modulus ?n] |- _ =>
+      let v := eval vm_compute in (bv_modulus n) in change (bv_modulus n) with v in H
+  | |- context[bv_modulus ?n] =>
+      let v := eval vm_compute in (bv_modulus n) in change (bv_modulus n) with v
+  end.
+
+Ltac zesu_byte_slice_bound_arith :=
+  ZesuSsz.Automation.PureFacts.zesu_saturate_derived_facts;
+  repeat match goal with H : _ /\ _ |- _ => destruct H end;
+  repeat match goal with
+  | H : context[length (take _ _)] |- _ => rewrite length_take in H
+  | H : context[length (drop _ _)] |- _ => rewrite length_drop in H
+  end;
+  rewrite ?length_take ?length_drop ?bv_add_unsigned ?bv_sub_unsigned; unfold bv_wrap;
+  zesu_byte_slice_unsigned_ranges;
+  zesu_byte_slice_alias_normalize;
+  zesu_byte_slice_moduli;
+  repeat match goal with
+  | |- context[(?a mod ?m)%Z] => rewrite (Z.mod_small a m); [|lia]
+  end;
+  lia.
+
 Ltac zesu_lend_interior_byte_slice :=
   zesu_expose_environment_alias;
   lazymatch goal with
@@ -111,9 +171,11 @@ Ltac zesu_lend_interior_byte_slice :=
                     let Haddress := fresh "HsliceAddress" in
                     let Hbounds := fresh "HsliceBounds" in
                     assert (Haddress : (base + Z.of_nat start = address)%Z)
-                      by (rewrite ?length_take ?length_drop; first [lia | bv_solve]);
+                      by (rewrite ?length_take ?length_drop;
+                          first [lia | bv_solve | zesu_byte_slice_bound_arith]);
                     assert (Hbounds : (start + count <= length bytes)%nat)
-                      by (rewrite ?length_take ?length_drop; first [lia | bv_solve]);
+                      by (rewrite ?length_take ?length_drop;
+                          first [lia | bv_solve | zesu_byte_slice_bound_arith]);
                     let Hsize := fresh "HsliceSize" in
                     let Hlength := fresh "HsliceLength" in
                     assert (Hsize : size = Z.of_nat count)
