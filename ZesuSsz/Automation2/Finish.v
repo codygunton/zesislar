@@ -381,7 +381,13 @@ Ltac zesu_finish_v1 :=
       try zesu_finish_lia;
       try (zesu_bv_solver_goal;
         ZesuSsz.Automation2.ContextCollection.zesu_solve_goal_selected
-        ("finish.v1_tail"%string) ltac:(bv_solve))
+        ("finish.v1_tail"%string) ltac:(bv_solve));
+      (* A conjunct that the package split leaves here never saw the final
+         pure step: its branch facts get their byte-position view last. The
+         view acts only when the goal reads such a form. *)
+      try solve [BytePositionEquations.zesu_byte_position_facts;
+        first [assumption | zesu_finish_lia |
+          zesu_bv_solver_goal; bv_solve]]
   end;
   try (zesu_finish_little_endian_if_closed);
   try solve [SymbolicByteCodec.zesu_symbolic_byte_codec].
