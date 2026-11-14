@@ -48,7 +48,9 @@ Ltac zesu_region_bounds_legacy :=
 (* A word whose unsigned value appears in the region base reaches the
    address through bitvector offsets: the address reads
    `bv_unsigned (bv_add (bv_add word c1) c2)`, not `bv_unsigned word`. The
-   word's facts then decide whether the offsets wrap. *)
+   word's facts then decide whether the offsets wrap. This selection runs
+   only in the second bounds attempt below, and only a closed bound keeps
+   it. *)
 Ltac zesu_region_offset_word word address :=
   assert_fails (has_evar word);
   assert_fails (ZesuSsz.Automation2.VmClosed.zesu_vm_closed word);
@@ -58,22 +60,24 @@ Ltac zesu_region_offset_word word address :=
     end in
   match address with context[bv_unsigned ?value] => offsets value end.
 
+Ltac zesu_region_no_offset_word word address := fail.
+
 (* Bounds search uses only facts connected to the candidate region. *)
-Ltac zesu_region_address_carries base address :=
+Ltac zesu_region_address_carries offset_word base address :=
   first [lazymatch address with context[base] => idtac end |
     let rec carries term :=
       first [assert_fails (has_evar term);
         assert_fails (ZesuSsz.Automation2.VmClosed.zesu_vm_closed term);
         lazymatch address with context[term] => idtac end |
         lazymatch term with
-        | bv_unsigned ?word => zesu_region_offset_word word address
+        | bv_unsigned ?word => offset_word word address
         | Z.add ?left ?right => first [carries left | carries right]
         | Z.sub ?left ?right => first [carries left | carries right]
         | Z.mul ?left ?right => first [carries left | carries right]
         end] in
     carries base].
 
-Ltac zesu_region_collect base address :=
+Ltac zesu_region_collect offset_word base address :=
   let collect := ltac2:(b a |-
     let base := Option.get (Ltac1.to_constr b) in
     let address := Option.get (Ltac1.to_constr a) in
@@ -99,21 +103,21 @@ Ltac zesu_region_collect base address :=
       lazymatch address with context[term] => collect term address end |
       lazymatch term with
       | bv_unsigned ?word =>
-          zesu_region_offset_word word address; collect_word term word
+          offset_word word address; collect_word term word
       | Z.add ?left ?right => first [choose_atom left | choose_atom right]
       | Z.sub ?left ?right => first [choose_atom left | choose_atom right]
       | Z.mul ?left ?right => first [choose_atom left | choose_atom right]
       end] in
   first [choose_atom base | collect address address].
 
-Ltac zesu_region_selected_facts :=
+Ltac zesu_region_selected_facts offset_word :=
   repeat match goal with
   | Hlocal := _ |- ?target =>
       lazymatch target with context[Hlocal] => unfold Hlocal in *; clear Hlocal end
   end;
   let choose_atom base address :=
-    zesu_region_address_carries base address;
-    zesu_region_collect base address in
+    zesu_region_address_carries offset_word base address;
+    zesu_region_collect offset_word base address in
   lazymatch goal with
   | |- ((?base <= ?address < ?upper)%Z \/ _) => choose_atom base address
   | |- (?base <= ?address <= ?upper)%Z => choose_atom base address
@@ -124,21 +128,39 @@ Ltac zesu_region_selected_facts :=
         lazymatch target with
         | ?left /\ ?right => collect left; collect right
         | ?left \/ ?right => collect left; collect right
-        | @eq Z ?left ?right => zesu_region_collect left right
-        | Z.le ?left ?right => zesu_region_collect left right
-        | Z.lt ?left ?right => zesu_region_collect left right
+        | @eq Z ?left ?right => zesu_region_collect offset_word left right
+        | Z.le ?left ?right => zesu_region_collect offset_word left right
+        | Z.lt ?left ?right => zesu_region_collect offset_word left right
         end in
       collect target
   end;
   ltac2:(ZesuSsz.Automation2.RangeFacts.zesu_range_isolate ()).
 
-Ltac zesu_region_bounds := once (
-  zesu_region_selected_facts;
+Ltac zesu_region_bounds_with offset_word :=
+  zesu_region_selected_facts offset_word;
   first [
     ZesuSsz.Automation2.ByteArrayLengths.zesu_byte_array_bound_goal_if_enabled;
     first [solve [lia] |
       ZesuSsz.Automation2.ByteArrayLengths.zesu_byte_array_lengths_if_enabled; solve [lia | bv_solve]]
-  | ZesuSsz.Automation2.UninitRegions.zesu_region_bounds_legacy]).
+  | ZesuSsz.Automation2.UninitRegions.zesu_region_bounds_legacy].
+
+(* The offset-word selection changes which facts the bound sees. Try the
+   bound without it first. The second attempt runs only when the goal offsets
+   a word whose value it also reads, and keeps the selection only when the
+   bound then closes, so a failed bound leaves no trace of it. *)
+Ltac zesu_region_offset_candidate :=
+  lazymatch goal with
+  | |- ?target =>
+      match target with
+      | context[bv_unsigned ?word] =>
+          ZesuSsz.Automation2.UninitRegions.zesu_region_offset_word word target
+      end
+  end.
+
+Ltac zesu_region_bounds := once (first [
+  solve [zesu_region_bounds_with ZesuSsz.Automation2.UninitRegions.zesu_region_no_offset_word] |
+  zesu_region_offset_candidate;
+  solve [zesu_region_bounds_with ZesuSsz.Automation2.UninitRegions.zesu_region_offset_word]]).
 
 (* Its own class: the frozen core keeps a priority-0 extern on its class,
    and with a shared class that extern ran its legacy bound solver on every

@@ -72,6 +72,22 @@ Proof. intros frame bytes Hframe Hfact. zesu_finish_final_pure. Qed.
 Goal forall (value : bv 16), bv_zero_extend 64 value = BV 64 0 -> True.
 Proof. intros value Hfact. Fail zesu_word_fact_unsigned. exact I. Qed.
 
+(* A zero-extended word fact: the width condition is closed, so the view is
+   stated from the fact alone. *)
+Goal forall (value : bv 16), bv_zero_extend 64 value = BV 64 0 ->
+  bv_unsigned value = 0%Z.
+Proof. intros value Hfact. zesu_word_fact_unsigned. exact Hview. Qed.
+
+(* A narrowing "extension" is refused by computing the widths, never by
+   searching the context: a contradictory hypothesis does not admit it. *)
+Goal forall (value : bv 64), (0 = 1)%nat -> @bv_zero_extend 64 16 value = BV 16 0 ->
+  bv_unsigned value = 0%Z -> True.
+Proof.
+  intros value Hcontra Hfact Hgoal. revert Hgoal.
+  Fail zesu_word_fact_unsigned.
+  intros _. exact I.
+Qed.
+
 (* A branch fact on a byte variable known from a lookup, while the goal reads
    the byte's position: the fact moves to the position, then to bv_unsigned. *)
 Goal forall (bytes : list (bv 8)) (value : bv 8), bytes !! 16%nat = Some value ->
