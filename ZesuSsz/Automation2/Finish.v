@@ -381,13 +381,7 @@ Ltac zesu_finish_v1 :=
       try zesu_finish_lia;
       try (zesu_bv_solver_goal;
         ZesuSsz.Automation2.ContextCollection.zesu_solve_goal_selected
-        ("finish.v1_tail"%string) ltac:(bv_solve));
-      (* A conjunct that the package split leaves here never saw the final
-         pure step: its branch facts get their byte-position view last. The
-         view acts only when the goal reads such a form. *)
-      try solve [BytePositionEquations.zesu_byte_position_facts;
-        first [assumption | zesu_finish_lia |
-          zesu_bv_solver_goal; bv_solve]]
+        ("finish.v1_tail"%string) ltac:(bv_solve))
   end;
   try (zesu_finish_little_endian_if_closed);
   try solve [SymbolicByteCodec.zesu_symbolic_byte_codec].
@@ -1319,15 +1313,22 @@ Ltac zesu_clear_split_baseline :=
    new from another run, so the run is skipped. The residual lemmas go
    first: a registered lemma closes its goal at once, while a goal that the
    finisher cannot close can spin there before the residual tier runs. With
-   no registered lemma the tier fails at once. *)
+   no registered lemma the tier fails at once.
+   The final pure step never saw a conjunct that the split made, so an
+   older branch fact may still close it once stated in the conjunct's
+   byte-position form. That view acts only when the goal reads such a form. *)
 Ltac zesu_finish_split_conjunct :=
   lazymatch goal with
   | |- environments.envs_entails _ _ => fail
   | _ =>
       zesu_diag_export_split;
-      ZesuSsz.Automation2.ContextCollection.zesu_facts_after_share_term constr:(zesu_split_baseline);
-      zesu_clear_split_baseline;
-      first [ResidualLemmas.zesu_residual_lemma | solve [zesu_finish]]
+      first [
+        ZesuSsz.Automation2.ContextCollection.zesu_facts_after_share_term constr:(zesu_split_baseline);
+        zesu_clear_split_baseline;
+        first [ResidualLemmas.zesu_residual_lemma | solve [zesu_finish]]
+      | zesu_clear_split_baseline;
+        solve [BytePositionEquations.zesu_byte_position_facts;
+          first [assumption | zesu_finish_lia | zesu_bv_solver_goal; bv_solve]] ]
   end.
 
 (* Residual lemmas close the pure goals that every other tier leaves open. *)

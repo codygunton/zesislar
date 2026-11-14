@@ -95,29 +95,39 @@ Goal forall (bytes : list (bv 8)),
   Z_to_bv 16 (little_endian_to_bv 8 (take 2 (drop 32 bytes))) = BV 16 0 -> True.
 Proof. intros bytes Hfact. Fail zesu_le_window_rewrite_hypothesis. exact I. Qed.
 
-(* A guard conjunct that the package split hands to the per-goal finisher,
-   after the final pure step has run: the finisher states the branch fact in
-   the goal's byte-position form last. Without that step it does not close. *)
+(* Guard conjuncts that the package split makes after the final pure step.
+   The branch facts are older than the split (no fact after the baseline
+   reaches the conjunct), so only their byte-position view closes it. *)
+Goal forall (bytes : list (bv 8)),
+  bv_zero_extend 64 (bv_concat 16 (nth 33 bytes (BV 8 0)) (nth 32 bytes (BV 8 0))) = BV 64 0 ->
+  bv_unsigned (bv_concat 16 (nth 33 bytes (BV 8 0)) (nth 32 bytes (BV 8 0))) = 0%Z.
+Proof.
+  intros bytes Hfact.
+  pose proof ZesuSsz.Automation2.Finish.zesu_split_baseline_intro as Hbaseline.
+  ZesuSsz.Automation2.Finish.zesu_finish_split_conjunct.
+Qed.
+
 Goal forall frame (bytes : list (bv 8)), windowFrameWellFormed frame ->
   bv_zero_extend 64 (Z_to_bv 16 (little_endian_to_bv 8 (take (N.to_nat 2)
     (drop (Z.to_nat (bv_unsigned (windowPointer frame + BV 64 18446744073709551216 +
       BV 64 400 + BV 64 18446744073709551256) -
       (bv_unsigned (windowPointer frame) - 400 + 8))) bytes)))) <> BV 64 0 ->
   bv_unsigned (bv_concat 16 (nth 33 bytes (BV 8 0)) (nth 32 bytes (BV 8 0))) <> 0%Z.
-Proof. intros frame bytes Hframe Hfact. solve [ZesuSsz.Automation2.Finish.zesu_finish_v1]. Qed.
-
-Goal forall (bytes : list (bv 8)) (value : bv 8), bytes !! 16%nat = Some value ->
-  bv_and (bv_zero_extend 64 value) (BV 64 1) = BV 64 0 ->
-  bv_unsigned (bv_and (bv_zero_extend 64 (nth 16 bytes (BV 8 0))) (BV 64 1)) = 0%Z.
-Proof. intros bytes value Hlookup Hfact. solve [ZesuSsz.Automation2.Finish.zesu_finish_v1]. Qed.
-
-(* The goal reads another position: the per-goal finisher does not close it. *)
-Goal forall (bytes : list (bv 8)) (value : bv 8), bytes !! 16%nat = Some value ->
-  bv_and (bv_zero_extend 64 value) (BV 64 1) = BV 64 0 -> True.
 Proof.
-  intros bytes value Hlookup Hfact.
-  Fail assert (bv_unsigned (bv_and (bv_zero_extend 64 (nth 17 bytes (BV 8 0))) (BV 64 1)) = 0%Z)
-    by solve [ZesuSsz.Automation2.Finish.zesu_finish_v1].
+  intros frame bytes Hframe Hfact.
+  pose proof ZesuSsz.Automation2.Finish.zesu_split_baseline_intro as Hbaseline.
+  ZesuSsz.Automation2.Finish.zesu_finish_split_conjunct.
+Qed.
+
+(* The conjunct reads another position: the split conjunct stays open. *)
+Goal forall (bytes : list (bv 8)),
+  bv_zero_extend 64 (bv_concat 16 (nth 33 bytes (BV 8 0)) (nth 32 bytes (BV 8 0))) = BV 64 0 ->
+  True.
+Proof.
+  intros bytes Hfact.
+  pose proof ZesuSsz.Automation2.Finish.zesu_split_baseline_intro as Hbaseline.
+  Fail assert (bv_unsigned (bv_concat 16 (nth 35 bytes (BV 8 0)) (nth 34 bytes (BV 8 0))) = 0%Z)
+    by ZesuSsz.Automation2.Finish.zesu_finish_split_conjunct.
   exact I.
 Qed.
 
