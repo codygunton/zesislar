@@ -1712,9 +1712,12 @@ verify_workload_ancestor() {
 # Workloads are the kernel's preferred OOM victims, so an account-wide OOM
 # kills a workload scope and never a session scope (two session losses on
 # 2026-11-13). An unprivileged process may raise its own score.
+# Workloads also get the compiler GC setting (#255: -28% peak, +4% instructions)
+# unless the caller chose one; s=32M,a=2 keep Rocq's own minor heap and policy.
 prefer_oom_victim() {
   echo 1000 > /proc/self/oom_score_adj || {
     echo "resource guard: cannot raise the workload OOM score" >&2; return 2; }
+  export OCAMLRUNPARAM="${OCAMLRUNPARAM:-s=32M,a=2,o=40}"
 }
 
 aggregate_slice() {
