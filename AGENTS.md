@@ -76,6 +76,29 @@ for each instruction.
 Ordinary hint modules must remain globally exported through their function's hint umbrella.
 Selected proofs may import scoped hints directly only through the explicit `SCOPED_HINT_IMPORTS` policy in `check_decode_item_hints.py`.
 
+## Proved functions are black boxes
+
+Once a function has a proved (or assumed) contract, every caller treats it as a black box. A caller never
+unfolds the callee's predicates; it imports only the callee's interface and uses only its interface lemmas.
+- Registry: `ZesuSsz/Contracts/proved_functions.json`, one entry per function with a compliance theorem: its
+  call-spec template, sealed predicates, interface lemmas (each with a hand-written proof over the real
+  definitions, e.g. `Contracts/DecodeItemCallFacts.v`), owned modules and re-exported type modules.
+- Generator: `tools/block/render_interfaces.py` renders `ZesuSsz/Interfaces/<F>.v` (a `Module Type` that
+  declares the sealed predicates and lemmas, an opaque module ascribed to it that realizes them, the public
+  call spec over the sealed names, and one `ZesuDerivedFacts` instance per registered lemma) and
+  `ZesuSsz/Interfaces/<F>Correct.v` (the public spec's correctness for other functions' composition).
+  Declarations only; never edit them by hand.
+- Checks (check-fast): `tools/block/check_proved_functions.py` refuses a caller module (another function's
+  generated entries or callers, Automation2, another function's Compliance) that requires an internal module
+  of a registered function, a call design that does not name the callee's interface spec (the block
+  generator refuses it too: `call_boundary.interface_of`), a `*Compliance` theorem without a registry entry,
+  and a stale interface. `check_proof_hygiene.py` refuses `unfold`/`Transparent`/`Strategy` of a sealed name
+  outside its interface, an unsealed callee predicate in another function's generated module, and
+  `Parameter`/`Axiom` anywhere except the `Module Type` of a fresh generated interface.
+- Adding a function: add its registry entry, its proofs module and its call-spec template; run
+  `render_interfaces.py`; point its callers' function profiles (`spec_module`, `spec_source`,
+  `contract_requires`) at the interface; re-render the callers.
+
 ## Constants
 
 Use parsing-only `Notation` for closed numeric literals and literal-only arithmetic or bitvector constants.

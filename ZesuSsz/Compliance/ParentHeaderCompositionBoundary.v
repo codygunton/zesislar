@@ -4,12 +4,11 @@
 Require Import ZesuSsz.Automation2.All.
 Require Import isla.riscv64.riscv64.
 From Coq Require Import ZArith.ZArith.
-Require Import ZesuSsz.Contracts.RlpDecodeItem.
 Require Import ZesuSsz.Contracts.ParentHeader.
 Require Import ZesuSsz.Contracts.ParentHeaderContract.
 Require Import ZesuSsz.Contracts.ParentHeaderMemcpyService.
-Require Import ZesuSsz.Contracts.DecodeItemCallSpec2.
-Require Import ZesuSsz.Contracts.NextUint64CallSpec2.
+Require Import ZesuSsz.Interfaces.DecodeItem.
+Require Import ZesuSsz.Interfaces.NextUint64.
 Local Open Scope Z_scope.
 
 (* The contract continuation of ParentHeaderContractCorrect at returnAddress.

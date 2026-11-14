@@ -56,6 +56,36 @@ class CallRefused(ValueError):
     """The call-return seed cannot be built from these inputs."""
 
 
+PROVED_FUNCTIONS = Path(__file__).resolve().parents[2] / 'ZesuSsz/Contracts/proved_functions.json'
+
+
+def interface_of(call, registry=None):
+    """The registry entry of a call's callee when the callee is a black box (has an
+    interface), else None. A call to a black box must name the interface's public spec:
+    its spec_module, spec_source and spec are the generated interface's, never the
+    callee's internal modules (ZesuSsz/Contracts/proved_functions.json)."""
+    registry = registry if registry is not None else json.loads(PROVED_FUNCTIONS.read_text())
+    # A loaded profile resolves callee_pc to an address, so the callee is also known by
+    # its public spec name or by naming its internal template module.
+    symbol = call.get('callee_pc', '').split('+', 1)[0]
+    for entry in registry['functions']:
+        if not entry.get('interface'):
+            continue
+        spec = entry['call_spec']
+        if symbol != entry['symbol'] and call.get('spec') != spec['name'] and \
+                call.get('spec_source') != spec['template_source']:
+            continue
+        module = entry['interface']['module']
+        source = 'ZesuSsz/' + module[len('ZesuSsz.'):].replace('.', '/') + '.v'
+        expected = {'spec_module': module, 'spec_source': source, 'spec': entry['call_spec']['name']}
+        actual = {key: call.get(key) for key in expected}
+        if actual != expected:
+            raise CallRefused('A call to the proved function %s must use its interface %s (spec %s); the design '
+                              'names %s' % (entry['function'], module, expected['spec'], actual))
+        return entry
+    return None
+
+
 def _split(text, token):
     positions = [-1, *_top_positions(text, token), len(text)]
     return [text[left + 1:right].strip() for left, right in zip(positions, positions[1:])]
@@ -316,6 +346,8 @@ def call_return_seed(edges, *, call, function_root, root_seed, shapes, vocabular
     call site holds in x1: the seed is the state there, with that address as its PC."""
     if not edges:
         raise CallRefused('No path reaches the call site.')
+    # A black-box callee is rendered only through its interface, which the entries import.
+    black_box = interface_of(call) is not None
     source_path = Path(function_root) / call['spec_source']
     spec_text = source_path.read_text()
     spec = parse_machine_call_spec(spec_text, call['spec'])
@@ -520,10 +552,11 @@ def call_return_seed(edges, *, call, function_root, root_seed, shapes, vocabular
         mapping.update(outer)
         return substitute(fact, mapping)
     existential = [(name, kind) for name, kind in spec['pre_binders'] if instantiation.get(name, '') is None]
-    # A definition of the spec file is unfolded: the entry cannot import the spec module.
+    # A definition of a spec file is unfolded: the entry cannot import an internal spec module.
+    # A black box's interface is imported, and its sealed names are never unfolded.
     raw = spec['pre']['facts'] + spec['post']['facts']
-    local = _local_definitions(spec_text, sorted(_atoms(' '.join(raw + [value for _, value in word_facts]))
-                                                 - {call['spec']}))
+    local = {} if black_box else _local_definitions(
+        spec_text, sorted(_atoms(' '.join(raw + [value for _, value in word_facts])) - {call['spec']}))
     facts = [instantiate(_unfold(fact, local), {}) for fact in raw]
     facts += ['%s = %s' % (name, instantiate(_unfold(value, local), {})) for name, value in word_facts]
     # A call argument that nothing else in the seed mentions (an entry witness, or
