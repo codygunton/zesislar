@@ -6,7 +6,9 @@ order. A return block's premise is the function-return package at
 returnAddress. A block that ends in a call (a profile `calls` row) also gets the
 callee spec at the callee address, `instr_pre CALLEE SPEC`; its successor is
 the return site. A block without successors needs the function-return package; this
-renderer refuses it until that package exists. Each caller's proof is exactly
+renderer refuses it until that package exists. A block that tail-jumps to a callee
+with a profile `tail_calls` row gets the callee spec and the function-return package:
+the callee returns to returnAddress. Each caller's proof is exactly
 `zesu_block2.`; no other proof text is written.
 
 Usage: render_function_callers.py --function NAME --entries RESULT.json
@@ -45,8 +47,16 @@ def plan_callers(profile, cases, function):
         pc = int(profile.pc(suffix), 16)
         successors = blocks[pc]
         names = [format(target, 'x')[-len(suffix):] for target in successors]
-        if any(profile.pc(name) != hex(target) for name, target in zip(names, successors)):
-            raise ValueError('A successor lies outside the profile address prefix: ' + suffix)
+        outside = [target for name, target in zip(names, successors) if profile.pc(name) != hex(target)]
+        if outside:
+            tails = {int(call['callee_pc'], 16) for call in profile.get('tail_calls', [])
+                     if pc <= int(call['call_site_pc'], 16) < ends[pc]}
+            if len(outside) != len(successors) or set(outside) - tails:
+                rows.append((suffix, names, 'successor outside the function (tail jump without a tail_calls row)'))
+                continue
+            # A tail jump to a callee with a profile spec: the callee returns to returnAddress,
+            # so the block exits as a return block does, through the callee spec.
+            successors, names = [], []
         if hex(pc) not in rendered:
             refusal = 'own entry not rendered'
         elif not successors:
@@ -89,7 +99,7 @@ def main():
             imports += [profile.qualified('FunctionReturn' + site + kind) for kind in ('Entries', 'Structural')]
             preconditions.append(return_precondition(profile, site))
         block = next(row for row in function['blocks'] if row['start'] == int(profile.pc(suffix), 16))
-        for call in profile.get('calls', []):
+        for call in profile.get('calls', []) + profile.get('tail_calls', []):
             if block['start'] <= int(call['call_site_pc'], 16) < block['end']:
                 imports.append(call['spec_module'])
                 preconditions.append('instr_pre ' + call['callee_pc'] + ' ('

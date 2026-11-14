@@ -115,8 +115,11 @@ if receipt.get("call_seeds"):
             constants=domain["constants"], facts=row["facts"])
         call_seed.state = _state_from_result(row["state"])
         root_seeds[site] = call_seed
+parents = {}
 if receipt.get("joins"):
-    roots.update(json.loads(Path(receipt["joins"]["path"]).read_text()).get("roots", {}))
+    joins_record = json.loads(Path(receipt["joins"]["path"]).read_text())
+    roots.update(joins_record.get("roots", {}))
+    parents = joins_record.get("parents", {})
 terminal_ids = [
     row["id"] for row in owned.ownership["components"] if row["source"] == "True"
 ]
@@ -280,10 +283,25 @@ for suffix in pilots:
     # A seed without a recorded root (a join seed of an older pass) shares the entry tree.
     origin_roots = {roots.get(alternative["seed_pc"], public_seed["entry_pc"])
                     for alternative in boundary["alternatives"]}
-    if len(origin_roots) != 1 or None in origin_roots:
+    lifted_binders = []
+    if None in origin_roots:
         cases.append({"pc": pc, "status": "refused_mixed_roots", "roots": sorted(map(str, origin_roots)),
                       "proof_ran": False})
         continue
+    if len(origin_roots) != 1:
+        # Edges from different call-return roots render on their deepest common ancestor.
+        from join_generalize import common_root_ancestor, lift_call_return_edges
+        ancestor = common_root_ancestor(sorted(origin_roots), parents)
+        try:
+            if ancestor is None:
+                raise ValueError("no common ancestor")
+            boundary["alternatives"], lifted_binders = lift_call_return_edges(
+                boundary["alternatives"], seeds=root_seeds, roots=roots, ancestor=ancestor, vocabulary=vocabulary)
+        except ValueError as error:
+            cases.append({"pc": pc, "status": "refused_mixed_roots", "roots": sorted(map(str, origin_roots)),
+                          "reports": [{"kind": "join_lift_refused", "detail": str(error)}], "proof_ran": False})
+            continue
+        origin_roots = {ancestor}
     original_seed = root_seeds[origin_roots.pop()]
     name = "fp_machine" + suffix if suffix in sites else "fp_machineAt" + suffix
     name = identifier(name, "generated entry")
@@ -329,7 +347,7 @@ for suffix in pilots:
             vocabulary=vocabulary,
             continuation=continuation,
             join_options={"outer_names": base_arguments, "design_facts": join_design,
-                          "live_registers": data.get("liveness", {}).get(pc)},
+                          "live_registers": data.get("liveness", {}).get(pc), "lifted_binders": lifted_binders},
             case_id=pc,
             source_policy="source-only",
             handwritten_owner="Level1.IslarisContractSpec",
@@ -585,7 +603,7 @@ print(
                 c["status"] == "source_declarations_rendered" for c in cases
             ),
             "refused": [
-                (c["pc"], c["reports"])
+                (c["pc"], c.get("reports", c["status"]))
                 for c in cases
                 if c["status"] != "source_declarations_rendered"
             ],

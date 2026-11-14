@@ -35,9 +35,12 @@
 #
 # Memory admission measures our account, user-$UID.slice, against its
 # MemoryMax (152 GiB when unset), because another account shares the host.
-# Used memory excludes the file cache and reclaimable slab. A launch needs
-# use below 80 % of the cap and its job limit plus 20 GiB below the cap.
-# Hold at 88 %; kill at 95 % (ZESU_LAUNCH_PCT, ZESU_HOLD_PCT, ZESU_KILL_PCT).
+# Used memory excludes the file cache and reclaimable slab. The account lines
+# sit at fixed margins below the cap, so they keep their room when the cap
+# changes: launch below cap - 40 GiB, hold at cap - 24, kill at cap - 10
+# (160, 176 and 190 GiB of a 200 GiB account; ZESU_LAUNCH_MARGIN_GIB,
+# ZESU_HOLD_MARGIN_GIB, ZESU_KILL_MARGIN_GIB). A launch also needs its job
+# limit plus 20 GiB below the cap.
 # Hold while machine MemAvailable is below 12 GiB
 # (ZESU_MACHINE_MIN_AVAILABLE_GIB). Without the account's cgroup files,
 # the machine applies: hold below 20 GiB MemAvailable; kill at 10 GiB or less.
@@ -91,16 +94,18 @@ JOB_GIB=${ZESU_JOB_GIB:-3}
 BATCH_LIMIT=${ZESU_BATCH_LIMIT:-150G}
 GATE_LIMIT=${ZESU_GATE_LIMIT:-120G}
 # All proof workloads share this kernel backstop across independent runs.
+# Its fence is set below, from the account's MemoryMax.
 WORKLOAD_PARENT_SLICE=zesuworkloads.slice
-WORKLOAD_PARENT_BYTES=187904819200
 MAX_JOBS=${ZESU_MAX_JOBS:-48}
-# Account memory lines, in percent of the account's MemoryMax.
-LAUNCH_PCT=${ZESU_LAUNCH_PCT:-80}
-HOLD_PCT=${ZESU_HOLD_PCT:-88}
-KILL_PCT=${ZESU_KILL_PCT:-95}
-for pct in "$LAUNCH_PCT" "$HOLD_PCT" "$KILL_PCT"; do
-  [[ "$pct" =~ ^([1-9][0-9]?|100)$ ]] || { echo "resource guard: invalid memory percent" >&2; exit 2; }
+LAUNCH_MARGIN_GIB=${ZESU_LAUNCH_MARGIN_GIB:-40}
+HOLD_MARGIN_GIB=${ZESU_HOLD_MARGIN_GIB:-24}
+KILL_MARGIN_GIB=${ZESU_KILL_MARGIN_GIB:-10}
+for margin in "$LAUNCH_MARGIN_GIB" "$HOLD_MARGIN_GIB" "$KILL_MARGIN_GIB"; do
+  [[ "$margin" =~ ^[0-9]{1,3}$ ]] || { echo "resource guard: invalid memory margin" >&2; exit 2; }
 done
+if (( LAUNCH_MARGIN_GIB < HOLD_MARGIN_GIB || HOLD_MARGIN_GIB < KILL_MARGIN_GIB )); then
+  echo "resource guard: memory margins must order launch >= hold >= kill" >&2; exit 2
+fi
 ACCOUNT_DEFAULT_CAP_GIB=152
 MACHINE_MIN_AVAILABLE_GIB=${ZESU_MACHINE_MIN_AVAILABLE_GIB:-12}
 MEMORY_HEADROOM_GIB=20
@@ -120,6 +125,22 @@ MAX_LOAD=${ZESU_MAX_LOAD:-80}
 MAX_BLOCKED=${ZESU_MAX_BLOCKED:-16}
 # Our account's cgroup. Its pressure limits are percent of the last 60 s.
 ACCOUNT_CGROUP=$CGROUP_ROOT/user.slice/user-$UID.slice
+# The workload parent leaves 40 GiB of the account for the session scopes,
+# their Dune processes, clifv.slice and other tools (25-35 GiB on 2026-11-13),
+# so the kernel kills inside the parent before the account fills and kills a
+# session: 160 GiB of a 200 GiB account. Without a numeric account limit the
+# 200 GiB account applies. block/harness/code/admission_memory.py derives
+# the same fence.
+WORKLOAD_RESERVE_GIB=40
+WORKLOAD_ACCOUNT_FALLBACK_GIB=200
+{ read -r WORKLOAD_ACCOUNT_BYTES < "$ACCOUNT_CGROUP/memory.max"; } 2>/dev/null || WORKLOAD_ACCOUNT_BYTES=""
+[[ "$WORKLOAD_ACCOUNT_BYTES" =~ ^[1-9][0-9]*$ ]] ||
+  WORKLOAD_ACCOUNT_BYTES=$(( WORKLOAD_ACCOUNT_FALLBACK_GIB * 1024 * 1024 * 1024 ))
+WORKLOAD_PARENT_BYTES=$(( WORKLOAD_ACCOUNT_BYTES - WORKLOAD_RESERVE_GIB * 1024 * 1024 * 1024 ))
+# Older guards set exactly 175 GiB; never exceed it while they still run, so
+# the shared parent does not flip between guards. Raise this once they end.
+WORKLOAD_PARENT_CEILING_BYTES=187904819200
+(( WORKLOAD_PARENT_BYTES <= WORKLOAD_PARENT_CEILING_BYTES )) || WORKLOAD_PARENT_BYTES=$WORKLOAD_PARENT_CEILING_BYTES
 MAX_CPU_PRESSURE=${ZESU_MAX_CPU_PRESSURE:-50}
 MAX_IO_PRESSURE=${ZESU_MAX_IO_PRESSURE:-50}
 # Two launches per second, shared by every guard of every agent.
@@ -156,6 +177,8 @@ touch "$REGISTRY" "$LOG" "$PEAK"
 
 GIB=$((1024 * 1024 * 1024))
 MEMORY_TOOL=${ZESU_MODULE_MEMORY_TOOL:-$(dirname "$0")/module_memory.py}
+# Kills at a scope's memory fence, with the compiled source's hash (module_memory.py).
+FENCE_KILLS="$STATE_DIR/fence-kills.jsonl"
 # Ledger writers publish admission totals here; a held launch waits for it to
 # change instead of rerunning every check each poll.
 ADMISSION_SUMMARY="$STATE_DIR/admission-summary"
@@ -164,6 +187,19 @@ ADMISSION_SUMMARY="$STATE_DIR/admission-summary"
 # every recovery, so held launches slept a full WAKE_TIMEOUT round.
 ADMISSION_WAKE="$STATE_DIR/admission-wake"
 WAKE_TIMEOUT=${ZESU_ADMISSION_WAKE_TIMEOUT:-30}
+# One admission attempt at a time takes the gate mutex. On 2026-11-12 about
+# 100 held launches woke on each release and queued for the mutex, which was
+# held 97 % of the time; releases and marks waited minutes behind them, so
+# finished compiles kept their claims and slots. Attempts now queue here, and
+# a release or mark waits for at most one attempt.
+ADMISSION_QUEUE="$STATE_DIR/admission-queue.lock"
+# A launch the ledger refused rejoins the queue when the published totals or a
+# fresh live sample leave room, and at least this often.
+LEDGER_RECHECK=${ZESU_ADMISSION_LEDGER_RECHECK:-300}
+# The ledger lets a request it has refused this long fill live memory to the
+# slice cap (admission_memory.py wait_bound_ns).
+LEDGER_WAIT_BOUND=${ZESU_ADMISSION_WAIT_BOUND_S:-300}
+WORKLOAD_SLICE_CGROUP="$ACCOUNT_CGROUP/user@$UID.service/$WORKLOAD_PARENT_SLICE"
 if ! [[ "$MODULE_LIMIT_GIB" =~ ^[1-9][0-9]{0,2}$ ]]; then
   echo "resource guard: invalid module memory limit" >&2; exit 2
 fi
@@ -267,10 +303,10 @@ memory_hold_reason() {
   if read -r cap used < <(account_memory); then
     available=$(( (cap - used) / GIB ))
     read -r total _ machine < <(memory)
-    if (( used * 100 >= cap * HOLD_PCT )); then
-      echo "account memory $(( used / GIB )) of $(( cap / GIB )) GiB, at the ${HOLD_PCT} % hold"
-    elif (( used * 100 >= cap * LAUNCH_PCT )); then
-      echo "account memory $(( used / GIB )) of $(( cap / GIB )) GiB, launch line ${LAUNCH_PCT} %"
+    if (( used >= cap - HOLD_MARGIN_GIB * GIB )); then
+      echo "account memory $(( used / GIB )) of $(( cap / GIB )) GiB, at the $(( cap / GIB - HOLD_MARGIN_GIB )) GiB hold"
+    elif (( used >= cap - LAUNCH_MARGIN_GIB * GIB )); then
+      echo "account memory $(( used / GIB )) of $(( cap / GIB )) GiB, launch line $(( cap / GIB - LAUNCH_MARGIN_GIB )) GiB"
     elif (( available < required )); then
       echo "account memory available $available GiB, requires $required GiB for a $job_gib GiB job"
     elif (( machine < MACHINE_MIN_AVAILABLE_GIB * GIB )); then
@@ -290,8 +326,9 @@ memory_scope() {
   local cap used total available
   if read -r cap used < <(account_memory); then
     read -r total _ available < <(memory)
-    printf 'account of %s GiB (launch <%s %%, hold %s %%, kill %s %%), machine available %s GiB (backstop %s)\n' \
-      $(( cap / GIB )) "$LAUNCH_PCT" "$HOLD_PCT" "$KILL_PCT" $(( available / GIB )) "$MACHINE_MIN_AVAILABLE_GIB"
+    printf 'account of %s GiB (launch <%s, hold %s, kill %s GiB), machine available %s GiB (backstop %s)\n' \
+      $(( cap / GIB )) $(( cap / GIB - LAUNCH_MARGIN_GIB )) $(( cap / GIB - HOLD_MARGIN_GIB )) \
+      $(( cap / GIB - KILL_MARGIN_GIB )) $(( available / GIB )) "$MACHINE_MIN_AVAILABLE_GIB"
   else
     echo machine
   fi
@@ -301,7 +338,7 @@ memory_scope() {
 memory_kill_required() {
   local cap total used available
   if read -r cap used < <(account_memory); then
-    (( used * 100 >= cap * KILL_PCT ))
+    (( used >= cap - KILL_MARGIN_GIB * GIB ))
   else
     read -r total used available < <(memory)
     (( available <= MEMORY_KILL_AVAILABLE_GIB * GIB ))
@@ -951,15 +988,27 @@ confirmed_reservation() {
   [ "$(reservation_writer "$marker")" = "$WRITER_ID" ]
 }
 
-# A launch can fit only if the published totals leave room for its claim.
-# Missing or unreadable totals count as room: the full check decides.
+# A launch can fit only if the published totals or live slice memory leave
+# room for its claim. Missing or unreadable totals count as room: the full
+# check decides. Live memory is read from the slice when readable: the
+# summary's figure dates from the last confirmation. SENIOR mirrors the
+# ledger's aged waiter, which may fill live memory to the slice maximum less
+# the fixed headroom (admission_memory.py live_memory_admission).
 admission_plausible() {
-  local accounted unrealized budget cap live maximum
+  local senior=${1-} accounted unrealized budget cap live maximum key value
   read -r accounted unrealized budget cap live maximum < "$ADMISSION_SUMMARY" 2>/dev/null || return 0
   [[ "$accounted$unrealized$budget$cap$maximum" =~ ^[0-9]+$ && "$live" =~ ^-?[0-9]+$ ]] || return 0
   (( accounted + MEMORY_CLAIM_BYTES <= cap && unrealized + MEMORY_CLAIM_BYTES <= budget )) && return 0
-  # The small-request path admits on verified live slice memory instead.
-  (( live >= 0 && MEMORY_CLAIM_BYTES <= ${ZESU_LIVE_REQUEST_LIMIT_GIB:-16} * GIB && live + MEMORY_CLAIM_BYTES <= maximum / 2 ))
+  while read -r key value; do
+    if [ "$key" = anon ]; then [[ "$value" =~ ^[0-9]+$ ]] && live=$value; break; fi
+  done 2>/dev/null < "$WORKLOAD_SLICE_CGROUP/memory.stat"
+  (( live >= 0 && MEMORY_CLAIM_BYTES <= budget )) || return 1
+  if [ -n "$senior" ]; then
+    (( live + MEMORY_CLAIM_BYTES <= maximum - MEMORY_HEADROOM_GIB * GIB ))
+  else
+    # The small-request path admits on verified live slice memory instead.
+    (( MEMORY_CLAIM_BYTES <= ${ZESU_LIVE_REQUEST_LIMIT_GIB:-16} * GIB && live + MEMORY_CLAIM_BYTES <= maximum / 2 ))
+  fi
 }
 
 # Wait for a release (the summary changes) that can make room, at most
@@ -970,161 +1019,195 @@ wake_admissions() {
   printf '%s\n' "$(date +%s%N)" > "$ADMISSION_WAKE" 2>/dev/null || true
 }
 
+# LEDGER_SINCE (the SECONDS of the ledger's first refusal) marks a launch the
+# unified ledger refused. A release alone does not end its wait: it rejoins
+# the admission queue when the published totals or live memory leave room for
+# it, checked on every summary change and every 5 s, and at least every
+# LEDGER_RECHECK seconds. Each refused ledger check holds the gate mutex for
+# about a second, and about 100 such launches rechecked on every release.
 wait_for_admission_change() {
-  local stamp=${1-} started=$SECONDS left round
+  local stamp=${1-} ledger_since=${2-} started=$SECONDS left round limit=$WAKE_TIMEOUT senior=""
   if ! command -v inotifywait >/dev/null 2>&1; then
     sleep "$POLL_SECONDS"; return 0
   fi
+  [ -z "$ledger_since" ] || limit=$LEDGER_RECHECK
   while :; do
     # A release since this attempt began (even one before the wait) returns
     # at once; short rounds bound a wake missed in the gap to 5 s.
-    [ "$(cat "$ADMISSION_WAKE" 2>/dev/null)" != "$stamp" ] && return 0
-    left=$(( WAKE_TIMEOUT - (SECONDS - started) ))
+    if [ -z "$ledger_since" ]; then
+      [ "$(cat "$ADMISSION_WAKE" 2>/dev/null)" != "$stamp" ] && return 0
+    fi
+    left=$(( limit - (SECONDS - started) ))
     (( left > 0 )) || return 0
     round=$(( left < 5 ? left : 5 ))
     if inotifywait -qq -t "$round" -e close_write -e moved_to --include '/admission-(summary|wake)$' \
-        "$STATE_DIR" >/dev/null 2>&1; then
+        "$STATE_DIR" >/dev/null 2>&1 && [ -z "$ledger_since" ]; then
       [ "$(cat "$ADMISSION_WAKE" 2>/dev/null)" != "$stamp" ] && return 0
       admission_plausible && return 0
     fi
+    if [ -n "$ledger_since" ]; then
+      (( SECONDS - ledger_since < LEDGER_WAIT_BOUND )) || senior=1
+      admission_plausible "$senior" && return 0
+    fi
   done
+}
+
+# One admission attempt under the gate mutex. It returns 0 when admitted,
+# ATTEMPT_HELD or ATTEMPT_LEDGER_HELD (the unified ledger refused) when the
+# caller should wait, else the error. `held` is the caller's last reason.
+ATTEMPT_HELD=100
+ATTEMPT_LEDGER_HELD=101
+confirm_attempt() {
+  local marker=$1 reason holder admission owner status state replacement aggregate
+  exec 7>>"$GATE_MUTEX"
+  flock 7 || { echo "resource guard: confirmation mutex failed" >&2; return 2; }
+  owner=${marker##*/}; owner=${owner%%.*}
+  if [[ "$(dirname "$marker")" != "$COQC_RESERVATIONS" ]] \
+     || ! [[ "$owner" =~ ^[0-9]+$ ]] || ! kill -0 "$owner" 2>/dev/null; then
+    echo "resource guard: invalid reservation path or dead owner: $marker" >&2
+    flock -u 7; exec 7>&-; return 2
+  fi
+  if reservation_path "$marker"; then
+    if [ "$(reservation_writer "$marker")" != "$WRITER_ID" ]; then
+      echo "resource guard: reservation writer mismatch: $marker" >&2
+      flock -u 7; exec 7>&-; return 2
+    fi
+    if ! read -r state < "$marker"; then
+      echo "resource guard: cannot read reservation: $marker" >&2
+      flock -u 7; exec 7>&-; return 2
+    fi
+    if [ "$state" != pending ]; then
+      flock -u 7; exec 7>&-; return 0
+    fi
+    # Remove requests from the old protocol before any wait.
+    rm -f -- "$marker"
+  fi
+  holder=""
+  if [ -z "${ZESU_IN_GATE:-}${ZESU_IN_BATCH:-}$WRITER_ID" ]; then
+    holder=$(lock_live_unlocked 2>/dev/null) || holder=""
+  fi
+  if [ -n "$holder" ]; then
+    echo "resource guard: confirmation refused by gate lock: $holder" >&2
+    flock -u 7; exec 7>&-; return 3
+  fi
+  # Stale-ledger recovery is a Python run; a slot refusal does not need it.
+  local STALE_RECOVERED=1
+  reason=$(hold_reason no-lock) || {
+    status=$?; echo "resource guard: confirmation resource check failed ($status)" >&2
+    flock -u 7; exec 7>&-; return "$status"
+  }
+  admission=$(compiler_admission_reason) || {
+    status=$?; echo "resource guard: confirmation admission check failed ($status)" >&2
+    flock -u 7; exec 7>&-; return "$status"
+  }
+  if [ -z "$admission" ]; then
+    recover_stale_reservations || {
+      status=$?; echo "resource guard: stale reservation recovery failed ($status)" >&2
+      flock -u 7; exec 7>&-; return "$status"
+    }
+    admission=$(module_memory_admission_reason) || {
+      status=$?; echo "resource guard: module memory check failed ($status)" >&2
+      flock -u 7; exec 7>&-; return "$status"
+    }
+  fi
+  if diagnostic_probe; then
+    local probe_admission
+    probe_admission=$(probe_admission_reason "$owner") || {
+      status=$?; echo "resource guard: probe admission check failed ($status)" >&2
+      flock -u 7; exec 7>&-; return "$status"
+    }
+    [ -z "$probe_admission" ] || admission="$probe_admission"
+  fi
+  if [ -z "$reason$holder$admission" ]; then
+    replacement=$(mktemp "$STATE_DIR/coqc-confirm.XXXXXXXX") || {
+      echo "resource guard: cannot create confirmation file" >&2
+      flock -u 7; exec 7>&-; return 2
+    }
+    aggregate=""
+    [ -n "$WRITER_ID" ] || aggregate="${ZESU_AGGREGATE_SLICE:-}"
+    if ! printf 'confirmed\nwriter=%s\naggregate=%s\n' "$WRITER_ID" "$aggregate" > "$replacement"; then
+      rm -f -- "$replacement"
+      flock -u 7; exec 7>&-; return 2
+    fi
+    printf 'memory_claim_bytes=%s\nmemory_fence_bytes=%s\n' \
+      "$MEMORY_CLAIM_BYTES" "$(( MODULE_LIMIT_GIB * GIB ))" >> "$replacement" || {
+        rm -f -- "$replacement"; flock -u 7; exec 7>&-; return 2;
+      }
+    if [ -n "$MEASURED_PEAK_BYTES" ]; then
+      printf 'memory_measured_peak_bytes=%s\n' "$MEASURED_PEAK_BYTES" >> "$replacement" || {
+        rm -f -- "$replacement"; flock -u 7; exec 7>&-; return 2;
+      }
+    fi
+    printf 'owner_start=%s\n' "$(process_start "$owner")" >> "$replacement" || {
+      rm -f -- "$replacement"; flock -u 7; exec 7>&-; return 2;
+    }
+    printf 'reservation_generation=%s\n' "${marker##*.}" >> "$replacement" || {
+      rm -f -- "$replacement"; flock -u 7; exec 7>&-; return 2;
+    }
+    local guard_source guard_sha
+    guard_source=$(realpath "$0") || { rm -f -- "$replacement"; flock -u 7; exec 7>&-; return 2; }
+    guard_sha=$(sha256sum "$guard_source") || { rm -f -- "$replacement"; flock -u 7; exec 7>&-; return 2; }
+    printf 'guard_source_path=%s\nguard_source_sha256=%s\n' "$guard_source" "${guard_sha%% *}" >> "$replacement" || {
+      rm -f -- "$replacement"; flock -u 7; exec 7>&-; return 2;
+    }
+    if diagnostic_probe; then
+      local probe_tag=issue10
+      [ "${ZESU_DIAGNOSTIC_PROBE:-0}" != cpu-only ] || probe_tag=issue10-cpu-only
+      if ! printf 'probe=%s\nmemory_gib=%s\ncpu=unlimited\n' \
+          "$probe_tag" "$MODULE_LIMIT_GIB" >> "$replacement"; then
+        rm -f -- "$replacement"
+        flock -u 7; exec 7>&-; return 2
+      fi
+    fi
+    local unified_status total used available
+    read -r total used available < <(memory)
+    ZESU_GUARD_MUTEX_FD=7 ZESU_ADMISSION_SUMMARY="$ADMISSION_SUMMARY" python3 "$MEMORY_TOOL" ledger-confirm \
+      --marker "$marker" --replacement "$replacement" \
+      --request-bytes "$MEMORY_CLAIM_BYTES" --available-bytes "$available"
+    unified_status=$?
+    if [ "$unified_status" -ne 0 ]; then
+      rm -f -- "$replacement"
+      if [ "$unified_status" -ne 3 ]; then
+        flock -u 7; exec 7>&-; return "$unified_status"
+      fi
+      note "HOLD reservation launch: unified memory ledger; owner=$owner claim_bytes=$MEMORY_CLAIM_BYTES marker=${marker##*/}"
+      flock -u 7; exec 7>&-
+      return "$ATTEMPT_LEDGER_HELD"
+    fi
+    [ -z "$held" ] || note "RESUME reservation launch: $held"
+    flock -u 7; exec 7>&-; return 0
+  fi
+  reason=${reason:-${holder:+gate lock: $holder}}
+  reason=${reason:-$admission}
+  if [ "$reason" != "$held" ]; then
+    note "HOLD reservation launch: class=$(reservation_class) $reason holders=$(reservation_holders)"
+    held=$reason
+  fi
+  flock -u 7; exec 7>&-
+  return "$ATTEMPT_HELD"
 }
 
 # Take the slot atomically immediately before launch. An admitted caller
 # can confirm again without waiting for admission while it holds its slot.
 confirm_coqc() {
-  local marker=$1 reason holder admission owner status state replacement aggregate held="" wake_stamp
+  local marker=$1 held="" wake_stamp status queue ledger_since=""
   validate_probe_scope || return $?
   confirmed_reservation "$marker" && return 0
   while :; do
     wake_stamp=$(cat "$ADMISSION_WAKE" 2>/dev/null)
     cache_disk_admission || return $?
-    exec 7>>"$GATE_MUTEX"
-    flock 7 || { echo "resource guard: confirmation mutex failed" >&2; return 2; }
-    owner=${marker##*/}; owner=${owner%%.*}
-    if [[ "$(dirname "$marker")" != "$COQC_RESERVATIONS" ]] \
-       || ! [[ "$owner" =~ ^[0-9]+$ ]] || ! kill -0 "$owner" 2>/dev/null; then
-      echo "resource guard: invalid reservation path or dead owner: $marker" >&2
-      flock -u 7; exec 7>&-; return 2
-    fi
-    if reservation_path "$marker"; then
-      if [ "$(reservation_writer "$marker")" != "$WRITER_ID" ]; then
-        echo "resource guard: reservation writer mismatch: $marker" >&2
-        flock -u 7; exec 7>&-; return 2
-      fi
-      if ! read -r state < "$marker"; then
-        echo "resource guard: cannot read reservation: $marker" >&2
-        flock -u 7; exec 7>&-; return 2
-      fi
-      if [ "$state" != pending ]; then
-        flock -u 7; exec 7>&-; return 0
-      fi
-      # Remove requests from the old protocol before any wait.
-      rm -f -- "$marker"
-    fi
-    holder=""
-    if [ -z "${ZESU_IN_GATE:-}${ZESU_IN_BATCH:-}$WRITER_ID" ]; then
-      holder=$(lock_live_unlocked 2>/dev/null) || holder=""
-    fi
-    if [ -n "$holder" ]; then
-      echo "resource guard: confirmation refused by gate lock: $holder" >&2
-      flock -u 7; exec 7>&-; return 3
-    fi
-    recover_stale_reservations || {
-      status=$?; echo "resource guard: stale reservation recovery failed ($status)" >&2
-      flock -u 7; exec 7>&-; return "$status"
-    }
-    local STALE_RECOVERED=1
-    reason=$(hold_reason no-lock) || {
-      status=$?; echo "resource guard: confirmation resource check failed ($status)" >&2
-      flock -u 7; exec 7>&-; return "$status"
-    }
-    admission=$(compiler_admission_reason) || {
-      status=$?; echo "resource guard: confirmation admission check failed ($status)" >&2
-      flock -u 7; exec 7>&-; return "$status"
-    }
-    if [ -z "$admission" ]; then
-      admission=$(module_memory_admission_reason) || {
-        status=$?; echo "resource guard: module memory check failed ($status)" >&2
-        flock -u 7; exec 7>&-; return "$status"
-      }
-    fi
-    if diagnostic_probe; then
-      local probe_admission
-      probe_admission=$(probe_admission_reason "$owner") || {
-        status=$?; echo "resource guard: probe admission check failed ($status)" >&2
-        flock -u 7; exec 7>&-; return "$status"
-      }
-      [ -z "$probe_admission" ] || admission="$probe_admission"
-    fi
-    if [ -z "$reason$holder$admission" ]; then
-      replacement=$(mktemp "$STATE_DIR/coqc-confirm.XXXXXXXX") || {
-        echo "resource guard: cannot create confirmation file" >&2
-        flock -u 7; exec 7>&-; return 2
-      }
-      aggregate=""
-      [ -n "$WRITER_ID" ] || aggregate="${ZESU_AGGREGATE_SLICE:-}"
-      if ! printf 'confirmed\nwriter=%s\naggregate=%s\n' "$WRITER_ID" "$aggregate" > "$replacement"; then
-        rm -f -- "$replacement"
-        flock -u 7; exec 7>&-; return 2
-      fi
-      printf 'memory_claim_bytes=%s\nmemory_fence_bytes=%s\n' \
-        "$MEMORY_CLAIM_BYTES" "$(( MODULE_LIMIT_GIB * GIB ))" >> "$replacement" || {
-          rm -f -- "$replacement"; flock -u 7; exec 7>&-; return 2;
-        }
-      if [ -n "$MEASURED_PEAK_BYTES" ]; then
-        printf 'memory_measured_peak_bytes=%s\n' "$MEASURED_PEAK_BYTES" >> "$replacement" || {
-          rm -f -- "$replacement"; flock -u 7; exec 7>&-; return 2;
-        }
-      fi
-      printf 'owner_start=%s\n' "$(process_start "$owner")" >> "$replacement" || {
-        rm -f -- "$replacement"; flock -u 7; exec 7>&-; return 2;
-      }
-      printf 'reservation_generation=%s\n' "${marker##*.}" >> "$replacement" || {
-        rm -f -- "$replacement"; flock -u 7; exec 7>&-; return 2;
-      }
-      local guard_source guard_sha
-      guard_source=$(realpath "$0") || { rm -f -- "$replacement"; flock -u 7; exec 7>&-; return 2; }
-      guard_sha=$(sha256sum "$guard_source") || { rm -f -- "$replacement"; flock -u 7; exec 7>&-; return 2; }
-      printf 'guard_source_path=%s\nguard_source_sha256=%s\n' "$guard_source" "${guard_sha%% *}" >> "$replacement" || {
-        rm -f -- "$replacement"; flock -u 7; exec 7>&-; return 2;
-      }
-      if diagnostic_probe; then
-        local probe_tag=issue10
-        [ "${ZESU_DIAGNOSTIC_PROBE:-0}" != cpu-only ] || probe_tag=issue10-cpu-only
-        if ! printf 'probe=%s\nmemory_gib=%s\ncpu=unlimited\n' \
-            "$probe_tag" "$MODULE_LIMIT_GIB" >> "$replacement"; then
-          rm -f -- "$replacement"
-          flock -u 7; exec 7>&-; return 2
-        fi
-      fi
-      local unified_status total used available
-      read -r total used available < <(memory)
-      ZESU_GUARD_MUTEX_FD=7 ZESU_ADMISSION_SUMMARY="$ADMISSION_SUMMARY" python3 "$MEMORY_TOOL" ledger-confirm \
-        --marker "$marker" --replacement "$replacement" \
-        --request-bytes "$MEMORY_CLAIM_BYTES" --available-bytes "$available"
-      unified_status=$?
-      if [ "$unified_status" -ne 0 ]; then
-        rm -f -- "$replacement"
-        if [ "$unified_status" -ne 3 ]; then
-          flock -u 7; exec 7>&-; return "$unified_status"
-        fi
-        note "HOLD reservation launch: unified memory ledger; owner=$owner claim_bytes=$MEMORY_CLAIM_BYTES marker=${marker##*/}"
-        flock -u 7; exec 7>&-
-        wait_for_admission_change "$wake_stamp"
-        continue
-      fi
-      [ -z "$held" ] || note "RESUME reservation launch: $held"
-      flock -u 7; exec 7>&-; return 0
-    fi
-    reason=${reason:-${holder:+gate lock: $holder}}
-    reason=${reason:-$admission}
-    if [ "$reason" != "$held" ]; then
-      note "HOLD reservation launch: class=$(reservation_class) $reason holders=$(reservation_holders)"
-      held=$reason
-    fi
-    flock -u 7; exec 7>&-
-    wait_for_admission_change "$wake_stamp"
+    exec {queue}>>"$ADMISSION_QUEUE" || { echo "resource guard: admission queue failed" >&2; return 2; }
+    flock "$queue" || { exec {queue}>&-; echo "resource guard: admission queue failed" >&2; return 2; }
+    confirm_attempt "$marker"; status=$?
+    exec {queue}>&-
+    case "$status" in
+      "$ATTEMPT_LEDGER_HELD")
+        # The ledger dates its waiter from its first refusal of this marker.
+        ledger_since=${ledger_since:-$SECONDS}
+        wait_for_admission_change "$wake_stamp" "$ledger_since" ;;
+      "$ATTEMPT_HELD") wait_for_admission_change "$wake_stamp" ;;
+      *) return "$status" ;;
+    esac
   done
 }
 
@@ -1601,12 +1684,16 @@ ensure_workload_parent() {
   verify_workload_parent_properties
 }
 
+# Guards older than the account-derived fence set 175 GiB on each launch
+# until their batches end; accept that value so they never refuse ours.
+WORKLOAD_PARENT_LEGACY_BYTES=187904819200
 verify_workload_parent_properties() {
   local properties max swap
   properties=$(systemctl --user show "$WORKLOAD_PARENT_SLICE" -p MemoryMax -p MemorySwapMax) || return $?
   max=$(printf '%s\n' "$properties" | awk -F= '$1 == "MemoryMax" {print $2}')
   swap=$(printf '%s\n' "$properties" | awk -F= '$1 == "MemorySwapMax" {print $2}')
-  if [ "$max" != "$WORKLOAD_PARENT_BYTES" ] || [ "$swap" != 0 ]; then
+  if { [ "$max" != "$WORKLOAD_PARENT_BYTES" ] && [ "$max" != "$WORKLOAD_PARENT_LEGACY_BYTES" ]; } ||
+     [ "$swap" != 0 ]; then
     echo "resource guard: shared workload parent lacks its memory fence" >&2
     return 2
   fi
@@ -1622,6 +1709,14 @@ verify_workload_ancestor() {
   verify_workload_parent_properties
 }
 
+# Workloads are the kernel's preferred OOM victims, so an account-wide OOM
+# kills a workload scope and never a session scope (two session losses on
+# 2026-11-13). An unprivileged process may raise its own score.
+prefer_oom_victim() {
+  echo 1000 > /proc/self/oom_score_adj || {
+    echo "resource guard: cannot raise the workload OOM score" >&2; return 2; }
+}
+
 aggregate_slice() {
   local slice="${ZESU_AGGREGATE_SLICE:-}" limit="${ZESU_AGGREGATE_LIMIT:-}" properties
   if [ -z "$slice" ]; then
@@ -1634,7 +1729,7 @@ aggregate_slice() {
   fi
   if [[ ! "$slice" =~ ^zesuworkloads-aggregate[0-9]+p[0-9]+r[0-9]+\.slice$ ]] ||
      [[ ! "$limit" =~ ^[1-9][0-9]{0,2}G$ ]] ||
-     (( ${limit%G} > 175 )); then
+     (( ${limit%G} * GIB > WORKLOAD_PARENT_BYTES )); then
     echo "resource guard: invalid aggregate slice or limit" >&2
     return 2
   fi
@@ -1747,6 +1842,7 @@ run_scope() {
   fi
   [ "${1:-}" = "--" ] && shift
   check_python_driver "$@" || return $?
+  if diagnostic_probe; then probe_fence_claim "$@"; fi
   # An admitted launch must drain before a later gate can acquire its lock.
   if ! reservation_path "${ZESU_COQC_RESERVATION:-}"; then
     wait_for_gate
@@ -1811,9 +1907,89 @@ run_scope() {
   wait "$child"
   status=$?
   child=""
+  [ "$status" -eq 0 ] || report_fence_kill "$unit.scope" "$slice" "$@"
   cleanup_scope
   trap - EXIT TERM INT
   return "$status"
+}
+
+# systemd keeps a failed transient scope with its result: oom-kill after a
+# kill at its MemoryMax.
+scope_result() {
+  systemctl --user show "$1" -p Result --value 2>/dev/null
+}
+
+# The memory peak of an ended scope: systemd keeps it for a failed unit.
+scope_peak_bytes() {
+  local peak
+  peak=$(systemctl --user show "$1" -p MemoryPeak --value 2>/dev/null)
+  [[ "$peak" =~ ^[0-9]+$ ]] && echo "$peak"
+}
+
+# "LIMIT PEAK" of a slice's cgroup in bytes.
+slice_memory() {
+  local group limit peak
+  group=$(systemctl --user show "$1" -p ControlGroup --value 2>/dev/null) && [ -n "$group" ] || return 1
+  read -r limit < "$CGROUP_ROOT$group/memory.max" && read -r peak < "$CGROUP_ROOT$group/memory.peak" || return 1
+  echo "$limit $peak"
+}
+
+gib_text() { awk -v b="$1" 'BEGIN { printf "%.1f", b / 1073741824 }'; }
+
+# A kill at the scope's memory fence otherwise ends as a plain nonzero status
+# with no peak. Name it to the caller and record it with the compiled source's
+# hash, so a later probe of that source books from the fence it reached.
+#
+# A scope in a batch aggregate shares that aggregate's MemoryMax with every
+# block the batch runs at once. When the aggregate runs out, the kernel kills
+# one of them, and its scope also ends with oom-kill. Of the 62 kills recorded
+# as fence kills on 2026-11-12/13, 42 were such kills: other blocks held
+# 1.1-12.6 GiB of the full 16 GiB aggregate. A kill whose own peak stays below 99% of the fence, or
+# whose peak is unknown inside an aggregate, is a shared-slice kill: it names
+# the aggregate and the victim's peak, and it never lowers a probe's claim.
+report_fence_kill() {
+  local unit=$1 slice=$2; shift 2
+  [ "$(scope_result "$unit")" = oom-kill ] || return 0
+  local fence=$(( MODULE_LIMIT_GIB * GIB )) peak="" limit="" aggregate_peak="" kind=fence detail="" own
+  local -a fields=()
+  peak=$(scope_peak_bytes "$unit") || peak=""
+  if [[ "$slice" == zesuworkloads-aggregate*.slice ]] && read -r limit aggregate_peak < <(slice_memory "$slice") &&
+     [[ "$limit" =~ ^[0-9]+$ && "$aggregate_peak" =~ ^[0-9]+$ ]]; then
+    fields+=(--aggregate "$slice" --aggregate-limit-bytes "$limit" --aggregate-peak-bytes "$aggregate_peak")
+    detail="; aggregate $slice limit $(gib_text "$limit") GiB, peak $(gib_text "$aggregate_peak") GiB"
+  fi
+  if [ -n "$peak" ]; then
+    fields+=(--own-peak-bytes "$peak")
+    own="own peak $(gib_text "$peak") GiB"
+  else own="own peak unknown"; fi
+  if { [ -n "$peak" ] && (( peak * 100 < fence * 99 )); } ||
+     { [ -z "$peak" ] && [[ "$slice" == zesuworkloads-aggregate*.slice ]]; }; then
+    kind=shared-slice
+    echo "resource guard: shared-slice memory kill: $unit did not reach its ${MODULE_LIMIT_GIB} GiB fence ($own${detail:-; aggregate $slice})" >&2
+  else
+    echo "resource guard: memory fence kill: $unit reached its ${MODULE_LIMIT_GIB} GiB fence ($own$detail)" >&2
+  fi
+  python3 "$MEMORY_TOOL" fence-kill-record --ledger "$FENCE_KILLS" --unit "$unit" \
+    --fence-bytes "$fence" --kind "$kind" "${fields[@]}" --cwd "$PWD" -- "$@" >/dev/null ||
+    note "fence kill record failed: $unit"
+}
+
+# A probe of a source already killed at a known fence books 1.25x that fence,
+# not its full request; it then grows by the resident rule up to its fence.
+# Without a record, or if the lookup fails, the probe keeps its full request.
+probe_fence_claim() {
+  local lowered
+  [ -s "$FENCE_KILLS" ] || return 0
+  if ! lowered=$(python3 "$MEMORY_TOOL" fence-kill-claim --ledger "$FENCE_KILLS" \
+      --requested-bytes "$MEMORY_CLAIM_BYTES" --cwd "$PWD" -- "$@") ||
+     ! [[ "$lowered" =~ ^[1-9][0-9]{0,11}$ ]]; then
+    note "PROBE fence-kill lookup failed; keeping claim $MEMORY_CLAIM_BYTES"
+    return 0
+  fi
+  if [ "$lowered" != "$MEMORY_CLAIM_BYTES" ]; then
+    note "PROBE claim $MEMORY_CLAIM_BYTES lowered to $lowered after a recorded fence kill"
+    MEMORY_CLAIM_BYTES=$lowered
+  fi
 }
 
 new_batch_limit() {
@@ -1965,6 +2141,7 @@ case "${1:-report}" in
     verify_workload_ancestor || exit $?
     shift; [ "${1:-}" = -- ] && shift
     check_python_driver "$@" || exit $?
+    prefer_oom_victim || exit $?
     exec "$@" ;;
   parent-setup) ensure_workload_parent ;;
   gate-module-limit)
@@ -1999,6 +2176,7 @@ case "${1:-report}" in
     mark_coqc "$token" $$ || exit $?
     export ZESU_COQC_RESERVATION="$token" ZESU_COQC_SCOPE="$token" ZESU_OWNED_GUARD_TOKEN="$token"
     apply_scope_limits || exit $?
+    prefer_oom_victim || exit $?
     register_run_actor || exit $?
     if [ -n "${ZESU_STAGING_CONTEXT_JSON:-}" ] || [ -n "${ZESU_STAGING_CONTEXT_SHA256:-}" ]; then
       exec python3 -B "$MEMORY_TOOL" staging-exit-exec --marker "$token" -- "$@"

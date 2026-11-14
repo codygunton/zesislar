@@ -188,6 +188,9 @@ def evaluate_function(function, traces, initial_states, *, max_paths=4096, check
     # site is a cut: a path continues there only from a call-return seed.
     calls = {}
     for call in function.get('calls', []):
+        if call.get('kind') == 'tail':
+            # A tail jump leaves the function; its block is an exit, not a call.
+            continue
         site = _pc(call['pc'])
         block = next((pc for pc, row in blocks.items() if pc <= site < row['end']), None)
         if block is None or instructions[block][-1] != site or blocks[block]['successors'] != [site + 4]:

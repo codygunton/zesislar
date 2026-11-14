@@ -53,4 +53,11 @@ set +e
 wait "$scope_pid"
 status=$?
 scope_pid=""
+# The soundness gate keeps each fresh object before Dune can link the target
+# to an equal cache entry; the gate then compares both hashes.
+if [[ "$status" -eq 0 && -n "${ZESU_FRESH_OBJECT_DIR:-}" && "${!#}" == *.v ]]; then
+  object="${!#%.v}.vo"
+  mkdir -p -- "$ZESU_FRESH_OBJECT_DIR/$(dirname -- "$object")" || exit 1
+  cp --reflink=always -- "$object" "$ZESU_FRESH_OBJECT_DIR/$object" || exit 1
+fi
 exit "$status"

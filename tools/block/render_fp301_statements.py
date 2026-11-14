@@ -27,9 +27,9 @@ def render_loop_head(block, header, structural=False, profile=None):
     definitions = []
     authenticated_classes = {}
     for index, source in enumerate(row['classes']):
-        original = 'generatedLoop' + block + 'Class' + str(index)
+        # The authenticated class sources keep the names of their generation run.
+        original = re.match(r'Definition (generatedLoop[0-9a-f]+Class' + str(index) + r') ', source)[1]
         name = 'fp_machineAt' + block + '_LoopClass' + str(index)
-        assert source.startswith('Definition ' + original + ' ')
         assert source.count(domain_binder.strip()) == 1
         assert source.count('⌜domain args⌝') == 1
         domain = row.get('domain_component') or '⌜' + row['domain'] + ' args⌝'
@@ -293,6 +293,9 @@ def render_block_caller(profile, block, preconditions, imports):
     """Render one block caller from its entry, its exit premises and the selected code.
 
     The statement is declarations data; the proof is always `zesu_block2.`.
+    The caller makes the selected code transparent locally: a function's hint
+    umbrella may declare it opaque (with its unfold marker), and an opaque code
+    premise stops the block at its first instruction lookup.
     """
     pc = profile.pc(block)[2:]
     entry = profile.qualified('Pilot' + block + 'Entries', 'fp_machineAt' + block)
@@ -305,7 +308,8 @@ def render_block_caller(profile, block, preconditions, imports):
             + ''.join(line + '\n' for line in profile['caller_contract_requires'])
             + profile.selected_import()
             + CORE_IMPORT + '\n'
-            + 'Local Open Scope Z_scope.\n\n'
+            + 'Local Open Scope Z_scope.\n'
+            + '#[local] Typeclasses Transparent ' + profile.selected_premise() + '.\n\n'
             + 'Definition DesignedEntry_' + pc + '\n'
             + '    `{!islaG Sigma} `{!threadG} (args : ' + profile.args_type
             + ') (returnAddress : Z) (K : iProp Sigma) : iProp Sigma :=\n'

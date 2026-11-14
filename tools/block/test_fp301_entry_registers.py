@@ -13,7 +13,7 @@ class EntryRegisterDeclarations(unittest.TestCase):
         self.rule = json.loads((ROOT / 'tools/block/fixtures/fp301-entry-registers.json').read_text())['rows'][0]
         rows = json.loads((ROOT / 'tools/block/fixtures/fp301-generation.json').read_text())['declarations']
         self.sources = [row['canonical_source'] for row in rows
-                        if row['output'].endswith(('Pilot6ae0Entries.v', 'Pilot6ae0Structural.v'))]
+                        if row['output'].endswith(('Pilot0180Entries.v', 'Pilot0180Structural.v'))]
 
     def test_only_the_dead_register_and_its_binder_change(self):
         self.assertEqual(len(self.sources), 2)

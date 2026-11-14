@@ -249,6 +249,18 @@ class ModuleMemoryTests(unittest.TestCase):
         (leaf / "memory.peak").unlink()
         self.assertIsNone(read("zesu-dune-coqc-1.scope"))
 
+    def test_ledger_refusal_keeps_the_guarded_command_stdout_clean(self):
+        # Guard retries share stdout with the compiler; a refusal on stdout corrupted Print Assumptions output.
+        stdout, stderr = io.StringIO(), io.StringIO()
+        with patch("sys.argv", ["module_memory.py", "ledger-confirm", "--marker", str(self.root / "m"),
+                               "--replacement", str(self.root / "r"), "--request-bytes", "1",
+                               "--available-bytes", "0"]), \
+                patch.object(memory, "confirm_shell", return_value={"fits": False}), \
+                redirect_stdout(stdout), patch("sys.stderr", stderr):
+            self.assertEqual(memory.main(), 3)
+        self.assertEqual(stdout.getvalue(), "")
+        self.assertIn("refuses the reservation", stderr.getvalue())
+
     def test_admission_cli_passes_the_actual_fence_to_unknown_compilers(self):
         ledger = self.root / "LEDGER.json"
         ledger.write_text('{"fixed_claims": {}, "region_claims": {}}\n')
@@ -659,6 +671,53 @@ class ModuleMemoryTests(unittest.TestCase):
         marker = self.root / "111.1.1"
         marker.write_text("122\nwriter=probe\nprobe=issue10\nmemory_gib=64\ncpu=unlimited\nowner_start=100\n")
         return proc, marker
+
+    def test_a_probe_grows_by_the_resident_rule_but_not_past_its_fence(self):
+        # 50 GiB resident is 75 GiB under the 1.5x rule; the probe's fence is 64 GiB.
+        proc, marker = self.live_probe(peak=50 * 1024 ** 2)
+        self.assertEqual(memory.reservation_claims([marker], proc=proc, refresh=True)["claims"], [64 * memory.GIB])
+
+    def kill_source(self, name="Probe.v", text="Lemma probe : True. Proof. exact I. Qed.\n"):
+        (self.root / name).write_text(text)
+        return ["python3", "measure.py", "measure.json", "coqc", "-q", name]
+
+    def test_a_shared_slice_kill_is_recorded_but_never_lowers_a_probe_claim(self):
+        ledger = self.root / "fence-kills.jsonl"
+        (self.root / "Probe.v").write_text("Lemma probe : True. Proof. exact I. Qed.\n")
+        command = ["coqc", "Probe.v"]
+        row = memory.record_fence_kill(ledger, "zesudet-5cb8.scope", 16 * memory.GIB, command, self.root,
+                                       kind="shared-slice", own_peak_bytes=3 * memory.GIB,
+                                       aggregate="zesuworkloads-aggregate1p2r3.slice",
+                                       aggregate_limit_bytes=16 * memory.GIB, aggregate_peak_bytes=16 * memory.GIB)
+        self.assertEqual((row["kind"], row["own_peak_bytes"], row["aggregate_limit_bytes"]),
+                         ("shared-slice", 3 * memory.GIB, 16 * memory.GIB))
+        self.assertEqual(memory.fence_kill_claim(ledger, 48 * memory.GIB, command, self.root), 48 * memory.GIB)
+        with self.assertRaises(ValueError):
+            memory.record_fence_kill(ledger, "zesudet-5cb8.scope", 16 * memory.GIB, command, self.root, kind="guess")
+
+    def test_a_recorded_fence_kill_books_a_later_probe_at_one_and_a_quarter_fences(self):
+        ledger = self.root / "fence-kills.jsonl"
+        command = self.kill_source()
+        self.assertEqual(memory.fence_kill_claim(ledger, 48 * memory.GIB, command, self.root), 48 * memory.GIB)
+        row = memory.record_fence_kill(ledger, "zesudet-af28.scope", 16 * memory.GIB, command, self.root)
+        import hashlib
+        self.assertEqual(row["source_sha256"], hashlib.sha256((self.root / "Probe.v").read_bytes()).hexdigest())
+        self.assertEqual(row["fence_bytes"], 16 * memory.GIB)
+        self.assertEqual(memory.fence_kill_claim(ledger, 48 * memory.GIB, command, self.root), 20 * memory.GIB)
+        # The claim never exceeds the request.
+        self.assertEqual(memory.fence_kill_claim(ledger, 8 * memory.GIB, command, self.root), 8 * memory.GIB)
+        # The last kill of the same source counts.
+        memory.record_fence_kill(ledger, "zesudet-af28-2.scope", 32 * memory.GIB, command, self.root)
+        self.assertEqual(memory.fence_kill_claim(ledger, 64 * memory.GIB, command, self.root), 40 * memory.GIB)
+
+    def test_a_probe_of_changed_or_unrecorded_source_keeps_its_request(self):
+        ledger = self.root / "fence-kills.jsonl"
+        command = self.kill_source()
+        memory.record_fence_kill(ledger, "zesudet-af28.scope", 16 * memory.GIB, command, self.root)
+        changed = self.kill_source(text="Lemma probe : True. Proof. trivial. Qed.\n")
+        self.assertEqual(memory.fence_kill_claim(ledger, 48 * memory.GIB, changed, self.root), 48 * memory.GIB)
+        self.assertEqual(memory.fence_kill_claim(ledger, 48 * memory.GIB, ["coqc", "Absent.v"], self.root),
+                         48 * memory.GIB)
 
     def test_live_probe_keeps_full_physical_fence_despite_small_partial_peak(self):
         proc, marker = self.live_probe(peak=3)
