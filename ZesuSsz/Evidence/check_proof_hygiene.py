@@ -205,6 +205,23 @@ def executable_form_failures(name: str, text: str) -> list[str]:
     return failures
 
 
+# The project's `assert_fails` takes a tactic value. A bare `match` argument
+# is evaluated when the argument is built, before `assert_fails` runs, so its
+# failure escapes the guard (LESSONS 2026-11-10; f59fb0c55). The safe form
+# delays it: `assert_fails (idtac; match ...)`.
+ASSERT_FAILS_MATCH = re.compile(r"\bassert_fails\s*(?:ltac:)?\(\s*(?:lazy|multi)?match\b")
+ASSERT_FAILS_MATCH_PREFIXES = ("ZesuSsz/Automation2/", PROOFS_PREFIX)
+
+
+def assert_fails_match_failures(name: str, text: str) -> list[str]:
+    if not name.startswith(ASSERT_FAILS_MATCH_PREFIXES):
+        return []
+    code = executable_text(text)
+    return [f"assert_fails with an undelayed match (use `idtac; match`): {name}:"
+            f"{code.count(chr(10), 0, match.start()) + 1}"
+            for match in ASSERT_FAILS_MATCH.finditer(code)]
+
+
 def retired_module_failures(name: str, text: str) -> list[str]:
     """Prevent superseded hand modules and their imports from returning."""
     failures = []
@@ -600,6 +617,7 @@ def main() -> None:
         if name.startswith("ZesuSsz/Automation2/"):
             core_sources[name] = text
         failures.extend(executable_form_failures(name, text))
+        failures.extend(assert_fails_match_failures(name, text))
         failures.extend(closed_literal_failures(name, text, literal_exceptions))
         failures.extend(trusted_declaration_failures(name, text, trusted))
         failures.extend(generated_hand_line_failures(name, text))

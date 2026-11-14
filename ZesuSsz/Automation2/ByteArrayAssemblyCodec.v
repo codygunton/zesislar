@@ -199,7 +199,7 @@ Ltac zesu_byte_array_owner_offset expanded base width count continuation :=
   let image := zesu_byte_array_mod_image expanded in
   (* A difference can only be constant if the image mentions a variable of
      the base, or the base has none. *)
-  first [assert_fails (multimatch base with context [?atom] => is_var atom end) |
+  first [assert_fails (idtac; multimatch base with context [?atom] => is_var atom end) |
     multimatch base with
     | context [?atom] => is_var atom; lazymatch image with context [atom] => idtac end
     end];
