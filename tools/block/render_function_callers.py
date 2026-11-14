@@ -63,15 +63,24 @@ def plan_callers(profile, cases, function):
     return rows
 
 
+def _block_key(profile, target):
+    """The design-table key of a successor address; None outside the function's blocks."""
+    try:
+        key = profile.key(target)
+    except ValueError:
+        return None
+    return key if key in profile['blocks'] else None
+
+
 def _plan_caller(profile, suffix, pc, slot, own, rendered, slot_cases, blocks, ends, sites):
     successors = blocks[pc]
-    names = [format(target, 'x')[-len(suffix):] for target in successors]
-    outside = [target for name, target in zip(names, successors) if profile.pc(name) != hex(target)]
+    names = [_block_key(profile, target) for target in successors]
+    outside = [target for name, target in zip(names, successors) if name is None]
     if outside:
         tails = {int(call['callee_pc'], 16) for call in profile.get('tail_calls', [])
                  if pc <= int(call['call_site_pc'], 16) < ends[pc]}
         if len(outside) != len(successors) or set(outside) - tails:
-            return (suffix, slot, [(name, None) for name in names],
+            return (suffix, slot, [(name or hex(target), None) for name, target in zip(names, successors)],
                     'successor outside the function (tail jump without a tail_calls row)')
         # A tail jump to a callee with a profile spec: the callee returns to returnAddress,
         # so the block exits as a return block does, through the callee spec.

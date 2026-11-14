@@ -131,6 +131,18 @@ class CallerPlan(unittest.TestCase):
         cases[1]['status'] = 'stopped'
         self.assertEqual(plan_callers(profile, cases, function)[0][3], 'successor entry not rendered: 1010')
 
+    def test_a_symbol_keyed_table_names_successors_by_their_offset(self):
+        # Blocks keyed by offset from the symbol: the successor at base + 0x40 is block 0040.
+        data = dict(other_profile().data)
+        data.pop('pc_prefix')
+        data.update(pc_base='0x800d5cb8', blocks=['0000', '0040'])
+        profile = FunctionProfile(data)
+        function = {'blocks': [{'start': 0x800d5cb8, 'successors': [0x800d5cf8]},
+                               {'start': 0x800d5cf8, 'successors': []}]}
+        cases = [{'pc': '0x800d5cb8', 'status': 'source_declarations_rendered'},
+                 {'pc': '0x800d5cf8', 'status': 'source_declarations_rendered'}]
+        self.assertEqual(plan_callers(profile, cases, function)[0], ('0000', None, [('0040', None)], None))
+
     def test_return_block_renders_once_the_return_package_renders(self):
         profile = other_profile()
         function = {'blocks': [{'start': 0x800d1000, 'successors': [0x800d1010]},
