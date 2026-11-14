@@ -1,6 +1,5 @@
 From Coq Require Import Lists.List ZArith.ZArith.
 Require Import isla.riscv64.riscv64.
-From lithium Require Import definitions proof_state.
 Require Export ZesuSsz.Contracts.IslarisEndian.
 
 Import ListNotations.
@@ -674,88 +673,24 @@ Section uninitialized_region_subsumption.
 
 End uninitialized_region_subsumption.
 
-(* An array that a continuation requests inside an uninitialized region.
-   The bytes of the region are only known after the split, so the witness of
-   the request is chosen after them; its length is chosen before. Any length
-   is sound (the split checks that it fits); `mem_uninit_request_length_solve`
-   reads the one that a pure fact of the continuation states. *)
-Definition mem_uninit_request_length {Sigma A} (requested : A -> list (bv 8))
-    (G : A -> iProp Sigma) (T : nat -> iProp Sigma) : iProp Sigma :=
-  ∃ n, T n.
-Arguments mem_uninit_request_length : simpl never.
-Global Typeclasses Opaque mem_uninit_request_length.
-
-Program Definition mem_uninit_request_length_hint {Sigma A} requested G n :
-  LiTactic (@mem_uninit_request_length Sigma A requested G) := {|
-    li_tactic_P T := T n;
-|}.
-Next Obligation. intros. unfold mem_uninit_request_length. iIntros "?". iExists _. iFrame. Qed.
-
-(* The body of a continuation that Lithium let-bound. *)
-Ltac mem_uninit_request_unlet term :=
-  match goal with
-  | H := LET_ID ?T |- _ => match constr:((H, term)) with (?a, ?a) => T end
-  | _ => term
-  end.
-
-(* A fact that, unfolded at its head, states `length target = N` for a closed N;
-   N is the let-bound evar `hole`. Only the measured list is compared: the
-   element type of `length` may sit behind an alias on either side. *)
-Ltac mem_uninit_request_length_in fact target hole :=
-  let fact := eval hnf in fact in
-  lazymatch fact with
-  | ?left /\ ?right =>
-      first [mem_uninit_request_length_in left target hole
-            | mem_uninit_request_length_in right target hole]
-  | @eq nat ?lhs ?rhs =>
-      let lhs := eval cbn in lhs in
-      lazymatch lhs with
-      | @length _ ?measured =>
-          let wanted := eval cbn in target in
-          constr_eq measured wanted;
-          let evar_hole := eval unfold hole in hole in
-          unify evar_hole rhs
-      end
-  end.
-
-Ltac mem_uninit_request_length_solve :=
-  lazymatch goal with
-  | |- LiTactic (@mem_uninit_request_length _ ?A ?requested ?G) =>
-      let N := fresh "N" in
-      evar (N : nat);
-      let found := fresh "found" in
-      assert (found : forall y : A, True);
-      [ intros y;
-        let body := mem_uninit_request_unlet G in
-        let continuation := eval cbv beta in (body y) in
-        let target := eval cbv beta in (requested y) in
-        match continuation with
-        | context [@bi_pure _ ?fact] => mem_uninit_request_length_in fact target N
-        end; exact I
-      | clear found;
-        let n := eval unfold N in N in
-        clear N; exact (mem_uninit_request_length_hint requested G n) ]
-  end.
-Global Hint Extern 10 (LiTactic (mem_uninit_request_length _ _)) =>
-  mem_uninit_request_length_solve : typeclass_instances.
-
 Section uninitialized_array_subsumption.
   Context `{!islaG Sigma}.
 
   Lemma subsume_mem_uninit_byte_array A a1 a2 n1
       (requested : A -> list (bv 8)) G :
-    (li_tactic (mem_uninit_request_length requested G) (fun n2 =>
-      ⌜(a1 <= a2 ∧ a2 + n2 <= a1 + n1)%Z⌝ ∗
+    ((∃ x,
+      let n2 := Z.of_nat (length (requested x)) in
+      ⌜(0 <= n2 ∧ a1 <= a2 ∧ a2 + n2 <= a1 + n1)%Z⌝ ∗
       (a1 ↦ₘ? (a2 - a1) -∗
       (a2 + n2) ↦ₘ? (a1 + n1 - (a2 + n2)) -∗
       ∀ values : list (bv 8),
-        ⌜length values = n2⌝ -∗
-        ∃ x, ⌜requested x = values⌝ ∗ G x)))%I
+        ⌜Z.of_nat (length values) = n2⌝ -∗
+        ⌜requested x = values⌝ ∗ G x))%I)
     ⊢ subsume (a1 ↦ₘ? n1) (fun x : A => a2 ↦ₘ∗ requested x) G.
   Proof.
     iIntros "Hrule Hmemory".
-    unfold li_tactic, mem_uninit_request_length.
-    iDestruct "Hrule" as (n2 Hbounds) "Hcontinue".
+    iDestruct "Hrule" as (x) "(%Hbounds & Hcontinue)".
+    set (n2 := Z.of_nat (length (requested x))) in *.
     iDestruct (mem_mapsto_uninit_split (a2 - a1) with "Hmemory") as
       "[Hprefix Hrest]"; [lia |].
     have Hbase : (a1 + (a2 - a1) = a2)%Z by lia.
@@ -768,8 +703,9 @@ Section uninitialized_array_subsumption.
     { replace (n1 - (a2 - a1) - n2)%Z with
         (a1 + n1 - (a2 + n2))%Z by lia.
       iExact "Hsuffix". }
-    iDestruct ("Hcontinue" $! values with "[]") as (x Hrequested) "Hcontinue".
-    { iPureIntro. lia. }
+    iSpecialize ("Hcontinue" $! values).
+    iDestruct ("Hcontinue" with "[]") as "(%Hrequested & Hcontinue)".
+    { iPureIntro. exact Hlength. }
     iExists x. rewrite Hrequested. iFrame.
   Qed.
 
