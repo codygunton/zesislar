@@ -13,6 +13,9 @@ Require Export ZesuSsz.Automation2.Hooks.
 Require Export ZesuSsz.Automation2.ResidualLemmas.
 Require Export ZesuSsz.Automation2.UninitRegions.
 Require Export ZesuSsz.Automation2.UninitRequest.
+Require Export ZesuSsz.Automation2.GoalDomain.
+#[export] Instance zesu_union_goal_domain_enabled :
+  ZesuSsz.Automation2.GoalDomain.ZesuStepGoalDomain := I.
 Require Export ZesuSsz.Automation2.FrozenDuplicates.
 Require Export ZesuSsz.Automation2.NatBitvectors.
 Require Export ZesuSsz.Automation2.ArrayPacking.

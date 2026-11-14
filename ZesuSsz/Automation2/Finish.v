@@ -41,6 +41,7 @@ Require Import ZesuSsz.Automation2.NatBounds.
 Require Import ZesuSsz.Automation2.PureFacts.
 Require Import ZesuSsz.Automation2.VmClosed.
 Require Import ZesuSsz.Automation2.BoundedArithmetic.
+Require Import ZesuSsz.Automation2.GoalDomain.
 (* Names `zesu_rule_set_v2_steps` for `zesu_run_pass_v2` below. The
    module declares one tactic and installs no instance and no hint,
    so importing it changes nothing for a rule set v1 module. *)
@@ -479,6 +480,7 @@ Ltac zesu_finish_pure_goal_base :=
   zesu_diag_stage "finish_pure_goal.solvers";
   try zesu_finish_lia;
   try (tryif zesu_finish_defer_cancel_shape then idtac else bv_solve);
+  try zesu_finish_goal_domain;
   (* C6, last: the goal is arithmetic and everything above has refused it,
      so the facts it needs are still folded inside a hypothesis. Unfold
      them and ask once more. `solve` keeps the step honest: it either
