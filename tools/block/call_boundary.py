@@ -23,7 +23,12 @@ applies the callee summary to make the seed of the return site:
   binder in the caller's bytes;
 * pure facts: the spec's pre-fact (which the caller proves at the call) and
   its post-fact, under one existential for each pre binder that no caller
-  resource fixes.
+  resource fixes;
+* named values: a register the callee keeps whose value an earlier call's
+  result computes (a cursor that adds each call's consumed length) becomes a
+  fresh binder with one equation to its value. The facts and the seed's
+  registers name it, so a later call's facts do not restate every earlier
+  call's results.
 
 The callee summary comes from the spec's source text. The call design row
 names the spec, binds each spec array to its argument and the caller value
@@ -50,6 +55,8 @@ PRESERVED = ['x2', 'x8', 'x9'] + ['x%d' % number for number in range(18, 28)]
 ARGUMENTS = ['x%d' % number for number in range(10, 18)]
 GPR = re.compile(r'x(?:[0-9]|[12][0-9]|3[01])\Z')
 PREFIX = 'call_'
+# The names call_return_seed binds: its prefix call_, call2_, call3_, ... and a suffix.
+CALL_NAME = re.compile(r'call\d*_\w+')
 
 
 class CallRefused(ValueError):
@@ -252,6 +259,15 @@ def _inputs(value):
     return own + [name for child in value.args for name in _inputs(child)]
 
 
+def _named(value, names):
+    """`value` with each subterm that `names` maps replaced by its name."""
+    if value in names:
+        return names[value]
+    if not value.args:
+        return value
+    return replace(value, args=tuple(_named(arg, names) for arg in value.args))
+
+
 def _atoms(text):
     return set(re.findall(r"(?<![\w'.])[A-Za-z_][\w']*", re.sub(r'"[^"]*"', '', text)))
 
@@ -342,8 +358,14 @@ def call_return_seed(edges, *, call, function_root, root_seed, shapes, vocabular
     if image.status != 'complete':
         raise CallRefused('The call-site writes have no complete owned image.')
     resources = {resource.id: resource for resource in image.resources}
+    # A kept register that an earlier call's result computes is named once, here.
+    named = {}
+    for name in PRESERVED:
+        value = state.registers.get(name)
+        if value is not None and value.op != 'input' and any(CALL_NAME.fullmatch(atom) for atom in _inputs(value)):
+            named.setdefault(value, input_expr(prefix + 'kept_' + name, value.width))
     values = {'sp': state.registers['x2'],
-              'argv': ['(' + _coq(state.registers[name]) + ')' for name in ARGUMENTS]}
+              'argv': ['(' + _coq(_named(state.registers[name], named)) + ')' for name in ARGUMENTS]}
 
     post_binder_names = [name for name, _ in spec['post_binders']]
     fresh = {name: prefix + name for name in post_binder_names}
@@ -471,7 +493,7 @@ def call_return_seed(edges, *, call, function_root, root_seed, shapes, vocabular
     for row in spec['pre']['registers']:
         if row not in spec['post']['registers']:
             raise CallRefused('The spec does not return its register ' + row['register'])
-        instantiation[row['binder']] = '(' + _coq(state.registers[row['register']]) + ')'
+        instantiation[row['binder']] = '(' + _coq(_named(state.registers[row['register']], named)) + ')'
 
     # The seed's general registers.
     registers, binders = {}, []
@@ -480,7 +502,7 @@ def call_return_seed(edges, *, call, function_root, root_seed, shapes, vocabular
             continue
         name = component['name']
         if name in PRESERVED:
-            registers[name] = state.registers[name]
+            registers[name] = named.get(state.registers[name], state.registers[name])
         else:
             registers[name] = input_expr(prefix + name, 64)
             binders.append({'name': prefix + name, 'type': 'bv 64',
@@ -528,7 +550,9 @@ def call_return_seed(edges, *, call, function_root, root_seed, shapes, vocabular
     facts += ['%s = %s' % (name, instantiate(_unfold(value, local), {})) for name, value in word_facts]
     # A call argument that nothing else in the seed mentions (an entry witness, or
     # a call-site register that the paths disagree on) is closed inside the facts.
-    elsewhere = set(_atoms(' '.join(_coq(value) for key, value in registers.items() if GPR.fullmatch(key))))
+    # A named value's equation mentions its names outside the facts.
+    elsewhere = set(_atoms(' '.join([_coq(value) for key, value in registers.items() if GPR.fullmatch(key)]
+                                    + [_coq(value) for value in named])))
     candidates = {name: binder['type'] for name, binder in inherited.items()}
     candidates.update({prefix + 'site_' + key: 'bv 64' for key in widened})
     inner = [(name, kind) for name, kind in candidates.items()
@@ -665,7 +689,9 @@ def call_return_seed(edges, *, call, function_root, root_seed, shapes, vocabular
     terminal = next(index for index, node in enumerate(nodes) if node.get('coq') == 'True')
     nodes[terminal:terminal] = [
         {'kind': 'opaque', 'id': row['resource_id'] + '_length', 'coq': '⌜' + row['coq'] + '⌝'}
-        for row in extra_facts] + [{'kind': 'opaque', 'id': prefix + 'facts', 'coq': '⌜' + carried + '⌝'}] + [
+        for row in extra_facts] + [
+        {'kind': 'opaque', 'id': name.value + '_value', 'coq': '⌜(%s = %s)⌝' % (name.value, _coq(value))}
+        for value, name in named.items()] + [{'kind': 'opaque', 'id': prefix + 'facts', 'coq': '⌜' + carried + '⌝'}] + [
         {'kind': 'opaque', 'id': prefix + 'return_fact_%d' % index, 'coq': '⌜' + _return_fact(row['coq'], fresh) + '⌝'}
         for index, row in enumerate(call.get('return_facts', []))]
     # Every post binder, and the word binders that stand for a returned word expression.
@@ -673,6 +699,8 @@ def call_return_seed(edges, *, call, function_root, root_seed, shapes, vocabular
         binders.append({'name': fresh[name], 'type': kind, 'expression': input_expr(fresh[name], None).to_dict()})
     for name, _ in word_facts:
         binders.append({'name': name, 'type': 'bv 64', 'expression': input_expr(name, 64).to_dict()})
+    for name in named.values():
+        binders.append({'name': name.value, 'type': 'bv %d' % name.width, 'expression': name.to_dict()})
     # Inherited binders that the seed still mentions (entry witnesses passed as arguments,
     # join and loop-head binders of the origin seeds).
     text = ' '.join([node.get('original_component', node.get('coq', '')) for node in nodes
@@ -733,6 +761,7 @@ def call_return_seed(edges, *, call, function_root, root_seed, shapes, vocabular
               'spec': call['spec_module'] + '.' + call['spec'], 'edges': len(edges),
               'widened_call_site_registers': widened, 'replaced': splits, 'kept': sorted(kept),
               'callee_frame': callee_frame, 'carried_fact': carried,
+              'named_registers': {key: value.value for key, value in registers.items() if value in named.values()},
               'havoc_registers': [binder['name'] for binder in binders if binder['name'].startswith(prefix + 'x')],
               **({'renewed_system_registers': renewed_exact} if renewed_exact else {})}
     return seed, public, report
