@@ -1,5 +1,5 @@
 From Coq Require Import List ZArith Lia.
-From stdpp Require Import base list numbers bitvector.definitions.
+From stdpp Require Import base list numbers list_numbers bitvector.definitions.
 Require Import EvmSailRlp.evm_rlp_types.
 Require Import ZesuSsz.Automation.PureFacts.
 Require Import ZesuSsz.Contracts.RlpDecodeItem.
@@ -117,4 +117,85 @@ Proof.
     + rewrite (H128 prefix rest eq_refl E) in Hpos. lia.
     + change (2 ^ 64) with 18446744073709551616 in Hfit.
       rewrite Z.mod_small in Hfit by lia. lia.
+Qed.
+
+(* decodeItem output words in the other form a caller's later code reads
+   them. The bound above is stated over the byte concatenation of bytes 0..7;
+   a caller that passes the payload pointer on as a call argument reads it as
+   an 8-byte little-endian window. The interface lemmas of
+   DecodeItemCallFacts.v state the call facts in this form. *)
+
+Notation leWord64 bytes offset :=
+  (Z_to_bv 64 (little_endian_to_bv 8 (take (N.to_nat 8) (drop offset bytes)))) (only parsing).
+
+Lemma littleEndianBv (bytes : list byte) : little_endian_to_bv 8 bytes = littleEndian bytes.
+Proof.
+  induction bytes as [|b bytes IH]; [reflexivity|].
+  unfold little_endian_to_bv in *. cbn [fmap list_fmap little_endian_to_Z littleEndian].
+  rewrite IH. change (Z.of_N 8) with 8.
+  pose proof (bv_unsigned_in_range _ b) as Hb. unfold bv_modulus in Hb.
+  change (2 ^ Z.of_N (MachineWord.MachineWord.Z_idx 8)) with 256 in Hb.
+  change (MachineWord.MachineWord.Z_idx 8) with 8%N in *.
+  rewrite Z.shiftl_mul_pow2 by lia. change (2 ^ 8) with 256.
+  rewrite <- Z.add_nocarry_lor; [lia|].
+  rewrite <- (Z.mod_small (@bv_unsigned 8 b) 256) by lia.
+  change 256 with (2 ^ 8). rewrite <- Z.land_ones by lia.
+  rewrite <- Z.land_assoc, (Z.land_comm (Z.ones 8)), Z.land_ones by lia.
+  rewrite Z.mod_mul by lia. apply Z.land_0_r.
+Qed.
+
+Lemma littleEndianRange (bytes : list byte) :
+  0 <= littleEndian bytes < 2 ^ (8 * Z.of_nat (length bytes)).
+Proof.
+  induction bytes as [|b bytes IH]; cbn [littleEndian length]; [lia|].
+  pose proof (bv_unsigned_in_range _ b) as Hb. unfold bv_modulus in Hb.
+  change (2 ^ Z.of_N (MachineWord.MachineWord.Z_idx 8)) with 256 in Hb.
+  change (MachineWord.MachineWord.Z_idx 8) with 8%N in *.
+  rewrite Nat2Z.inj_succ, Z.mul_succ_r, Z.pow_add_r by lia. change (2 ^ 8) with 256. nia.
+Qed.
+
+(* The caller reads a callee output word as a little-endian window of 8 bytes. *)
+Lemma leWord64Value (bytes : list byte) offset value :
+  word64At bytes offset value -> bv_unsigned (leWord64 bytes offset) = value.
+Proof.
+  unfold word64At. intros [Hlen <-]. change (N.to_nat 8) with 8%nat.
+  rewrite Z_to_bv_unsigned, littleEndianBv. apply bv_wrap_small.
+  pose proof (littleEndianRange (firstn 8 (skipn offset bytes))) as H.
+  rewrite Hlen in H. unfold bv_modulus. exact H.
+Qed.
+
+Lemma errorResult40Word0Le (after : list byte) :
+  errorResult40 after -> bv_unsigned (leWord64 after 0) = 0.
+Proof.
+  unfold errorResult40. intros [Hlen Hbytes]. apply leWord64Value.
+  do 8 (destruct after as [|? after]; [simpl in Hlen; discriminate|]).
+  unfold word64At. cbn [skipn firstn length]. split; [reflexivity|].
+  pose proof (Hbytes 0%nat ltac:(lia)) as H0. pose proof (Hbytes 1%nat ltac:(lia)) as H1.
+  pose proof (Hbytes 2%nat ltac:(lia)) as H2. pose proof (Hbytes 3%nat ltac:(lia)) as H3.
+  pose proof (Hbytes 4%nat ltac:(lia)) as H4. pose proof (Hbytes 5%nat ltac:(lia)) as H5.
+  pose proof (Hbytes 6%nat ltac:(lia)) as H6. pose proof (Hbytes 7%nat ltac:(lia)) as H7.
+  unfold byteAt in *. cbn in H0, H1, H2, H3, H4, H5, H6, H7. simplify_eq.
+  cbn [littleEndian]. rewrite ?take_0, ?firstn_O. cbn [littleEndian].
+  change (MachineWord.MachineWord.Z_idx 8) with 8%N in *. lia.
+Qed.
+
+(* The payload pointer in the window form equals the concatenation form. *)
+Lemma decodeItemPayloadPointerLe inputPointer input before after :
+  C1BResult inputPointer input before after ->
+  bv_unsigned (leWord64 after 0) = bv_unsigned (listWord64At0 after).
+Proof.
+  unfold C1BResult, candidateResult40. intros (_ & Hresult & _).
+  destruct (candidateDecodeItem input) as [|isList h p].
+  - rewrite (errorResult40Word0Le after Hresult).
+    unfold errorResult40 in Hresult. destruct Hresult as [Hlen Hbytes].
+    do 8 (destruct after as [|? after]; [simpl in Hlen; discriminate|]).
+    cbn [List.nth]. rewrite !concatByteUnsigned by reflexivity.
+    pose proof (Hbytes 0%nat ltac:(lia)) as H0. pose proof (Hbytes 1%nat ltac:(lia)) as H1.
+    pose proof (Hbytes 2%nat ltac:(lia)) as H2. pose proof (Hbytes 3%nat ltac:(lia)) as H3.
+    pose proof (Hbytes 4%nat ltac:(lia)) as H4. pose proof (Hbytes 5%nat ltac:(lia)) as H5.
+    pose proof (Hbytes 6%nat ltac:(lia)) as H6. pose proof (Hbytes 7%nat ltac:(lia)) as H7.
+    unfold byteAt in *. cbn in H0, H1, H2, H3, H4, H5, H6, H7. simplify_eq.
+    change (MachineWord.MachineWord.Z_idx 8) with 8%N in *. lia.
+  - destruct Hresult as (_ & _ & H0 & _).
+    rewrite (leWord64Value _ _ _ H0). symmetry. exact (listWord64At0Value _ _ H0).
 Qed.

@@ -56,6 +56,39 @@ Ltac zesu_byte_slice_start address base :=
   | _ => constr:(Z.to_nat (address - base))
   end.
 
+(* The size that a pure fact states for the requested slice, as a value: a
+   fact `size = Z.of_nat (length slice)`, or such an equation among the
+   conjuncts of a fact that mentions the slice (unfolded at each head). *)
+Ltac zesu_byte_slice_size_in fact slice :=
+  let fact := eval hnf in fact in
+  match fact with
+  | ?left /\ _ => zesu_byte_slice_size_in left slice
+  | _ /\ ?right => zesu_byte_slice_size_in right slice
+  | @eq Z ?size ?measure =>
+      let measure := eval cbn in measure in
+      lazymatch measure with
+      | Z.of_nat (@length _ ?measured) =>
+          let measured := eval cbn in measured in
+          lazymatch constr:((measured, slice)) with
+          | (?same, ?same) => let size := eval cbn in size in constr:(size)
+          end
+      end
+  end.
+
+Ltac zesu_byte_slice_size rest slice :=
+  match rest with
+  | context[(⌜?size = Z.of_nat (length slice)⌝)%I] => constr:(size)
+  | context[@bi_pure _ ?fact] =>
+      lazymatch fact with context[slice] => zesu_byte_slice_size_in fact slice end
+  end.
+
+(* A closed size is evaluated; any other size is counted as it stands. *)
+Ltac zesu_byte_slice_count size :=
+  match constr:(tt) with
+  | _ => ZesuSsz.Automation2.VmClosed.zesu_vm_eval_closed (Z.to_nat size)
+  | _ => constr:(Z.to_nat size)
+  end.
+
 Ltac zesu_lend_interior_byte_slice :=
   zesu_expose_environment_alias;
   lazymatch goal with
@@ -66,10 +99,9 @@ Ltac zesu_lend_interior_byte_slice :=
       | ((?address ↦ₘ∗ ?slice) ∗ ?rest)%I =>
           has_evar slice;
           assert_fails (has_evar address);
-          lazymatch rest with
-          | context[(⌜?size = Z.of_nat (length slice)⌝)%I] =>
-              let count := ZesuSsz.Automation2.VmClosed.zesu_vm_eval_closed (Z.to_nat size) in
-              assert_fails (has_evar count);
+          let size := zesu_byte_slice_size rest slice in
+          let count := zesu_byte_slice_count size in
+          assert_fails (has_evar count);
               iMatchHyp ltac:(fun Harray resource =>
                 lazymatch resource with
                 | (?base ↦ₘ∗ ?bytes)%I =>
@@ -85,7 +117,8 @@ Ltac zesu_lend_interior_byte_slice :=
                     let Hsize := fresh "HsliceSize" in
                     let Hlength := fresh "HsliceLength" in
                     assert (Hsize : size = Z.of_nat count)
-                      by (first [reflexivity | lia | bv_solve]);
+                      by (first [reflexivity | lia | bv_solve
+                                | (rewrite Z2Nat.id; [reflexivity | first [lia | bv_solve]])]);
                     assert (Hlength :
                       size = Z.of_nat (length (take count (drop start bytes))))
                       by (rewrite Hsize length_take length_drop; lia);
@@ -117,7 +150,6 @@ Ltac zesu_lend_interior_byte_slice :=
                     | idtac];
                     iExists witness
                 end)
-          end
       end
   end.
 
