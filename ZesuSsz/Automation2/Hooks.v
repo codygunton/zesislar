@@ -1208,6 +1208,29 @@ Ltac liImpl ::=
   then fail 0 "unresolved implication premise"
   else normalize_and_simpl_impl false.
 
+(* Lithium drops an introduced premise that it proves trivially, by `split`
+   and `fast_done`. That proof unfolds a defined predicate and compares it by
+   conversion with every hypothesis. A forwarded call fact (a contract
+   predicate on call arguments built from earlier results) is never trivial
+   that way, but one test on it took minutes, growing with its size and with
+   the number of similar facts already introduced. A premise that applies a
+   defined predicate to terms with free variables therefore counts as trivial
+   only when an identical hypothesis is present. *)
+Ltac zesu_defined_open_premise P :=
+  let head := get_head P in
+  is_const head;
+  match P with context [?x] => is_var x end.
+
+Ltac assert_is_trivial P ::=
+  tryif zesu_defined_open_premise P
+  then (match goal with _ : ?R |- _ => constr_eq R P end)
+  else assert_succeeds (assert (P) as _; [splitting_fast_done|]).
+
+Ltac assert_is_not_trivial P ::=
+  tryif zesu_defined_open_premise P
+  then assert_fails (match goal with _ : ?R |- _ => constr_eq R P end)
+  else assert_fails (assert (P) as _; [splitting_fast_done|]).
+
 Class ZesuStepPureWitnessConstraints : Prop :=
   zesu_step_pure_witness_constraints : True.
 
