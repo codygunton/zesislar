@@ -246,15 +246,19 @@ Global Remove Hints subsume_mem_uninit_mem_uninit_inst : typeclass_instances.
 (* The contract's fallback rule for an uninitialized region raises the
    containment as an obligation. Refuse it when the facts already show the
    containment fails, so the search does not commit to a false goal. The
-   class carries no proof; its instance only checks the refutation. *)
-Class ZesuRegionNotRefuted (P : Prop) : Prop := zesu_region_not_refuted : True.
+   class carries no proof; its instance only checks the refutation. It is an
+   inductive: a definitional class whose body is `True` reaches instance
+   search as `True`, so the hint below never saw it and the rule never
+   applied. *)
+Inductive ZesuRegionNotRefuted (P : Prop) : Prop := zesu_region_not_refuted.
+Existing Class ZesuRegionNotRefuted.
 Ltac zesu_region_refute :=
   first [zesu_region_bounds |
     ZesuSsz.Automation2.ContextCollection.zesu_solve_goal_selected
       ("region.refute"%string) ltac:(first [lia | bv_solve])].
 Global Hint Extern 0 (ZesuRegionNotRefuted (0 <= ?n2 /\ ?a1 <= ?a2 /\ ?a2 + ?n2 <= ?a1 + ?n1)%Z) =>
   (assert_fails (assert (n2 < 0 \/ a2 < a1 \/ a1 + n1 < a2 + n2)%Z by zesu_region_refute);
-   exact I) : typeclass_instances.
+   exact (zesu_region_not_refuted _)) : typeclass_instances.
 
 Lemma subsume_mem_uninit_region_checked `{!islaG Sigma} A a1 a2 n1 n2 G
     `{!ZesuRegionNotRefuted (0 <= n2 /\ a1 <= a2 /\ a2 + n2 <= a1 + n1)%Z} :
