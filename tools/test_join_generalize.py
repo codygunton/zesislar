@@ -425,6 +425,50 @@ class OwnedJoinTests(unittest.TestCase):
                          '⌜(base <= bv_unsigned machine_x13 <= base + Z.of_nat (List.length (bytes)))%Z⌝')
         self.assertEqual(joined['plan']['relations'][-1]['kind'], 'array_placement')
 
+    def test_a_dropped_defining_equation_keeps_the_exact_binders_placement(self):
+        # Every edge holds the kept name `old` in x13, so the register stays exact and makes no
+        # join binder; the edges define `old` differently, so the join drops the equation. The
+        # facts still read the input at old's offset, so the join keeps old's placement.
+        seed, alternatives, vocabulary, continuation = self.fixture([input_expr('old')] * 2)
+        array = {'id': 'input', 'kind': 'byte_array', 'source': 'base ↦ₘ∗ bytes',
+                 'provenance': {'source': 'fixture'}, 'scope': [[]]}
+        self.add_component(seed, alternatives, array, ['base ↦ₘ∗ bytes'] * 2)
+        seed.resources = [OwnedBytes('input', bits(4096, 64), 'base', input_expr('bytes', None),
+                                     4, True, 'DfracOwn 1', array, {'source': 'fixture'}, 8)]
+        self.add_component(seed, alternatives, {'id': 'old_value', 'kind': 'opaque', 'source': '⌜(old = a)⌝',
+                                                'provenance': {'source': 'fixture'}, 'scope': [[]]},
+                           ['⌜(old = a)⌝', '⌜(old = (bv_add a b))⌝'])
+        slice_of = '⌜Q (drop (Z.to_nat (bv_unsigned (old) - base)) bytes)⌝'
+        self.add_component(seed, alternatives, {'id': 'fact', 'kind': 'opaque', 'source': slice_of,
+                                                'provenance': {'source': 'fixture'}, 'scope': [[]]},
+                           [slice_of] * 2)
+        joined = generalize_owned_join(alternatives, original_seed=seed, entry_pc=32,
+                                       vocabulary=vocabulary, continuation=continuation)
+        rows = {row['id']: row['source'] for row in
+                joined['boundary']['alternatives'][0]['resource_boundary']['components']}
+        self.assertEqual(joined['plan']['binders'], [])
+        self.assertEqual(rows['old_value'], '⌜True⌝')
+        self.assertEqual(rows['join_relation_0'],
+                         '⌜(base <= bv_unsigned old <= base + Z.of_nat (List.length (bytes)))%Z⌝')
+
+    def test_an_agreed_defining_equation_adds_no_placement(self):
+        seed, alternatives, vocabulary, continuation = self.fixture([input_expr('old')] * 2)
+        array = {'id': 'input', 'kind': 'byte_array', 'source': 'base ↦ₘ∗ bytes',
+                 'provenance': {'source': 'fixture'}, 'scope': [[]]}
+        self.add_component(seed, alternatives, array, ['base ↦ₘ∗ bytes'] * 2)
+        seed.resources = [OwnedBytes('input', bits(4096, 64), 'base', input_expr('bytes', None),
+                                     4, True, 'DfracOwn 1', array, {'source': 'fixture'}, 8)]
+        self.add_component(seed, alternatives, {'id': 'old_value', 'kind': 'opaque', 'source': '⌜(old = a)⌝',
+                                                'provenance': {'source': 'fixture'}, 'scope': [[]]},
+                           ['⌜(old = a)⌝'] * 2)
+        slice_of = '⌜Q (drop (Z.to_nat (bv_unsigned (old) - base)) bytes)⌝'
+        self.add_component(seed, alternatives, {'id': 'fact', 'kind': 'opaque', 'source': slice_of,
+                                                'provenance': {'source': 'fixture'}, 'scope': [[]]},
+                           [slice_of] * 2)
+        joined = generalize_owned_join(alternatives, original_seed=seed, entry_pc=32,
+                                       vocabulary=vocabulary, continuation=continuation)
+        self.assertEqual(joined['plan']['relations'], [])
+
 
 class LiftedEdges(unittest.TestCase):
     def test_an_edge_from_a_seed_below_another_root_lifts_on_its_own_tree(self):
