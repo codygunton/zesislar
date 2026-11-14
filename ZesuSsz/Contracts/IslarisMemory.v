@@ -699,7 +699,8 @@ Ltac mem_uninit_request_unlet term :=
   end.
 
 (* A fact that, unfolded at its head, states `length target = N` for a closed N;
-   N is the let-bound evar `hole`. *)
+   N is the let-bound evar `hole`. Only the measured list is compared: the
+   element type of `length` may sit behind an alias on either side. *)
 Ltac mem_uninit_request_length_in fact target hole :=
   let fact := eval hnf in fact in
   lazymatch fact with
@@ -708,10 +709,13 @@ Ltac mem_uninit_request_length_in fact target hole :=
             | mem_uninit_request_length_in right target hole]
   | @eq nat ?lhs ?rhs =>
       let lhs := eval cbn in lhs in
-      let wanted := eval cbn in (length target) in
-      constr_eq lhs wanted;
-      let evar_hole := eval unfold hole in hole in
-      unify evar_hole rhs
+      lazymatch lhs with
+      | @length _ ?measured =>
+          let wanted := eval cbn in target in
+          constr_eq measured wanted;
+          let evar_hole := eval unfold hole in hole in
+          unify evar_hole rhs
+      end
   end.
 
 Ltac mem_uninit_request_length_solve :=

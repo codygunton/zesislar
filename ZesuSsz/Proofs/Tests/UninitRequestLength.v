@@ -30,11 +30,24 @@ Proof.
   Unshelve. all: try (prepare_sidecond; first [assumption | lia | (split; [lia | assumption])]).
 Qed.
 
+(* A callee's arguments, built from the requested list. The record and its
+   domain measure lists of `bv 8`; the requested list's type is an alias. *)
+Definition request_octet : Type := bv 8.
+Record request_args := {
+  request_args_input : list (bv 8);
+  request_args_output : list (bv 8)
+}.
+Definition request_args_of (input output : list request_octet) : request_args :=
+  {| request_args_input := input; request_args_output := output |}.
+Definition request_args_domain (args : request_args) : Prop :=
+  (length (request_args_input args) <= 64)%nat /\
+  length (request_args_output args) = 40%nat.
+
 Section length_choice.
   Context `{!islaG Sigma}.
 
   (* No fact of the continuation states the length: the step does not choose one. *)
-  Goal LiTactic (mem_uninit_request_length (fun x : list (bv 8) => x)
+  Goal @LiTactic Sigma _ (mem_uninit_request_length (fun x : list (bv 8) => x)
     (fun x => ⌜x = x⌝ ∗ True)%I).
   Proof.
     Fail mem_uninit_request_length_solve.
@@ -43,7 +56,7 @@ Section length_choice.
 
   (* A fact about another list's length does not choose it either. *)
   Goal forall other : list (bv 8),
-    LiTactic (mem_uninit_request_length (fun x : list (bv 8) => x)
+    @LiTactic Sigma _ (mem_uninit_request_length (fun x : list (bv 8) => x)
       (fun _ => ⌜length other = 8%nat⌝ ∗ True)%I).
   Proof.
     intros other.
@@ -52,7 +65,18 @@ Section length_choice.
   Qed.
 
   (* The length the fact states is the one chosen. *)
-  Goal LiTactic (mem_uninit_request_length (fun x : list (bv 8) => x)
+  Goal @LiTactic Sigma _ (mem_uninit_request_length (fun x : list (bv 8) => x)
     (fun x => ⌜length x = 24%nat⌝ ∗ True)%I).
   Proof. mem_uninit_request_length_solve. Qed.
+
+  (* The length is read through the callee's domain and argument record, at
+     another name of the list's element type. *)
+  Goal forall input : list request_octet,
+    @LiTactic Sigma _ (mem_uninit_request_length
+      (fun x : list request_octet *ₗ unit => x.1ₗ)
+      (fun x => ⌜request_args_domain (request_args_of input x.1ₗ)⌝ ∗ True)%I).
+  Proof.
+    intros input.
+    mem_uninit_request_length_solve.
+  Qed.
 End length_choice.
