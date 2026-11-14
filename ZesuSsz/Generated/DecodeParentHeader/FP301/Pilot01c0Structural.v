@@ -13,6 +13,7 @@ Require Import ZesuSsz.Contracts.ParentHeaderContract.
 Require Import ZesuSsz.Contracts.ParentHeaderRootFacts.
 Require Import ZesuSsz.Contracts.NextUint64BlockEntries.
 Require Import ZesuSsz.Contracts.ParentHeaderMemcpyService.
+Require Import ZesuSsz.Contracts.AbiBytes.
 Require Import ZesuSsz.Contracts.ZiskRuntime.
 Require Export ZesuSsz.Contracts.DecodeItemPayloadBounds.
 Require Export ZesuSsz.Compliance.ParentHeaderHints.
