@@ -4,6 +4,7 @@ Require Import ZesuSsz.Automation2.SourceFactMatching.
 Require Import ZesuSsz.Automation2.SourceFactByteViews.
 Require Import ZesuSsz.Automation2.EntryWitnessFinish.
 Require Import ZesuSsz.Automation2.WrappedWord.
+Require ZesuSsz.Automation2.BytePositionEquations.
 Require Import isla.riscv64.riscv64.
 Require Import ZesuSsz.Automation2.EntryIntro.
 Require Import ZesuMachineMap.Machine.
@@ -859,10 +860,34 @@ Ltac zesu_final_solver_goal :=
   | _ => idtac
   end.
 
-(* The common pure path and final tail share the union helper. Baseline closers remain available. *)
+(* An existential whose conjuncts are hypotheses once its witnesses are set
+   (a successor restating a call's facts over fresh names): each conjunct is
+   closed by a hypothesis with the same head, which sets the witnesses. Only
+   syntactic existentials and conjunctions are opened: `eexists` and `split`
+   would also open definitions that unfold to an equation or a record. *)
+Ltac zesu_finish_exists_from_hypotheses :=
+  lazymatch goal with |- ex _ => idtac end;
+  solve [repeat lazymatch goal with |- ex _ => eexists end;
+    repeat lazymatch goal with |- _ /\ _ => split end;
+    multimatch goal with |- ?conjunct =>
+      let head := get_head conjunct in
+      multimatch goal with
+      | Hfact : ?fact |- _ =>
+          let fact_head := get_head fact in
+          constr_eq head fact_head;
+          exact Hfact
+      end
+    end].
+
+(* The common pure path and final tail share the union helper. Baseline closers remain available.
+   The existential leaf goes first: the first arm below fails outright when
+   its implication-pair step finds no pair, so a leaf inside it is never
+   reached on such a context. *)
 Ltac zesu_finish_final_pure :=
   first [
+  zesu_finish_exists_from_hypotheses |
   zesu_final_pure_head_gate;
+  try BytePositionEquations.zesu_byte_position_facts;
   tryif progress zesu_saturate_derived_facts
   then try solve [zesu_array_bounds_if_enabled]
   else idtac;
@@ -891,6 +916,7 @@ Ltac zesu_finish_final_pure :=
 
 Ltac zesu_finish_pure_goal :=
   first [
+  zesu_finish_exists_from_hypotheses |
 zesu_finish_pure_goal_base;
   try solve [
     first [
@@ -1096,6 +1122,16 @@ Ltac zesu_run_pass_steps :=
      zesu_open_matching_two_level_frame |
      zesu_extract_matching_descriptor_pure].
 
+(* A pass that stopped inside a let-bound continuation leaves it in the next
+   pass's goal as `LET_ID T args`, the let variable gone. Lithium's let step
+   unfolds only a variable head, so it stops there; unfold the wrapper. *)
+Ltac zesu_unfold_let_id_goal :=
+  lazymatch goal with
+  | |- environments.envs_entails _ ?conclusion =>
+      lazymatch conclusion with context [@LET_ID] => idtac end;
+      progress unfold LET_ID
+  end.
+
 Ltac zesu_run_pass_v1 :=
   zesu_expose_environment_alias;
   try zesu_prepare_uninit_goal;
@@ -1119,7 +1155,16 @@ Ltac zesu_run_pass_v1 :=
      zesu_liAStep |
      ZesuSsz.Automation2.CodecArrayRead.zesu_codec_array_read_sidecond |
      zesu_open_matching_two_level_frame |
-     zesu_extract_matching_descriptor_pure]; zesu_diag_step_end; liShow;
+     zesu_extract_matching_descriptor_pure |
+     (* Last: a list index on a closed-offset chain of a word becomes a
+        literal; it fires only when every other step refused. *)
+     WrappedWord.zesu_wrapped_index_step |
+     (* Then: a pure equation on byte positions of an existential list is
+        rewritten so that unification sets the list; a branch fact holding
+        such a window states it as byte positions too. *)
+     BytePositionEquations.zesu_byte_position_pure_step |
+     BytePositionEquations.zesu_le_window_rewrite_hypothesis |
+     zesu_unfold_let_id_goal]; zesu_diag_step_end; liShow;
     try zesu_finish_closed_wand;
     try zesu_finish_framed_wand;
     zesu_finish).
@@ -1129,7 +1174,7 @@ Ltac zesu_run_pass_v2 :=
   try zesu_prepare_uninit_goal;
   try zesu_normalize_find_mem_address;
   unshelve (time "zesu_run" repeat first
-    [zesu_diag_step | zesu_target_registered_intro_if_enabled | zesu_array_load_preselect | zesu_array_load_priority | zesu_conjunct_match_if_enabled | zesu_run_pass_steps | zesu_close_matching_trace_tail | zesu_open_trace_exist | zesu_rule_set_v2_steps]; zesu_diag_step_end; liShow;
+    [zesu_diag_step | zesu_target_registered_intro_if_enabled | zesu_array_load_preselect | zesu_array_load_priority | zesu_conjunct_match_if_enabled | zesu_run_pass_steps | zesu_close_matching_trace_tail | zesu_open_trace_exist | zesu_rule_set_v2_steps | WrappedWord.zesu_wrapped_index_step | BytePositionEquations.zesu_byte_position_pure_step | BytePositionEquations.zesu_le_window_rewrite_hypothesis | zesu_unfold_let_id_goal]; zesu_diag_step_end; liShow;
     try zesu_finish_closed_wand;
     try zesu_finish_framed_wand;
     zesu_finish).
@@ -1268,15 +1313,22 @@ Ltac zesu_clear_split_baseline :=
    new from another run, so the run is skipped. The residual lemmas go
    first: a registered lemma closes its goal at once, while a goal that the
    finisher cannot close can spin there before the residual tier runs. With
-   no registered lemma the tier fails at once. *)
+   no registered lemma the tier fails at once.
+   The final pure step never saw a conjunct that the split made, so an
+   older branch fact may still close it once stated in the conjunct's
+   byte-position form. That view acts only when the goal reads such a form. *)
 Ltac zesu_finish_split_conjunct :=
   lazymatch goal with
   | |- environments.envs_entails _ _ => fail
   | _ =>
       zesu_diag_export_split;
-      ZesuSsz.Automation2.ContextCollection.zesu_facts_after_share_term constr:(zesu_split_baseline);
-      zesu_clear_split_baseline;
-      first [ResidualLemmas.zesu_residual_lemma | solve [zesu_finish]]
+      first [
+        ZesuSsz.Automation2.ContextCollection.zesu_facts_after_share_term constr:(zesu_split_baseline);
+        zesu_clear_split_baseline;
+        first [ResidualLemmas.zesu_residual_lemma | solve [zesu_finish]]
+      | zesu_clear_split_baseline;
+        solve [BytePositionEquations.zesu_byte_position_facts;
+          first [assumption | zesu_finish_lia | zesu_bv_solver_goal; bv_solve]] ]
   end.
 
 (* Residual lemmas close the pure goals that every other tier leaves open. *)
