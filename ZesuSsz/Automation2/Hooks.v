@@ -1228,7 +1228,7 @@ Ltac assert_is_trivial P ::=
 
 Ltac assert_is_not_trivial P ::=
   tryif zesu_defined_open_premise P
-  then assert_fails (match goal with _ : ?R |- _ => constr_eq R P end)
+  then assert_fails (idtac; match goal with _ : ?R |- _ => constr_eq R P end)
   else assert_fails (assert (P) as _; [splitting_fast_done|]).
 
 Class ZesuStepPureWitnessConstraints : Prop :=
@@ -1340,12 +1340,51 @@ Ltac zesu_witness_open_existentials fuel :=
   | O => fail 0 "The witness shape exceeds the structural step limit."
   end.
 
+(* The witness hooks below open existentials one per fuel unit; on a chain of
+   at least this many existentials they run out and fail. *)
+Ltac zesu_witness_intro_fuel := constr:(12%nat).
+
+(* Whether `term` starts with `fuel` nested existentials of head `head`. *)
+Ltac2 rec zesu_exist_chain_reaches (head : constr) (term : constr) (fuel : constr) : bool :=
+  lazy_match! fuel with
+  | O => true
+  | S ?rest =>
+      match Constr.Unsafe.kind term with
+      | Constr.Unsafe.App f args =>
+          if Constr.equal f head then
+            match Constr.Unsafe.kind (Array.get args (Int.sub (Array.length args) 1)) with
+            | Constr.Unsafe.Lambda _ body => zesu_exist_chain_reaches head body rest
+            | _ => false
+            end
+          else false
+      | _ => false
+      end
+  end.
+
+(* Succeeds when the goal's proposition starts with `fuel` nested
+   existentials, so that opening them one per fuel unit runs out. *)
+Ltac zesu_exist_chain_exhausts fuel :=
+  let check := ltac2:(fuel |-
+    let fuel := Option.get (Ltac1.to_constr fuel) in
+    match Constr.Unsafe.kind (Control.goal ()) with
+    | Constr.Unsafe.App _ args =>
+        let p := Array.get args (Int.sub (Array.length args) 1) in
+        match Constr.Unsafe.kind p with
+        | Constr.Unsafe.App f _ =>
+            if zesu_exist_chain_reaches f p fuel then ()
+            else Control.zero (Tactic_failure None)
+        | _ => Control.zero (Tactic_failure None)
+        end
+    | _ => Control.zero (Tactic_failure None)
+    end) in
+  check fuel.
+
 Ltac zesu_pure_witness_constraints_if_enabled :=
   zesu_switch_enabled constr:(ZesuStepPureWitnessConstraints);
   zesu_expose_environment_alias;
   lazymatch goal with
   | |- envs_entails _ (@bi_exist _ _ _) =>
-      let introFuel := constr:(12%nat) in
+      let introFuel := zesu_witness_intro_fuel in
       zesu_witness_open_existentials introFuel;
       lazymatch goal with
       | |- envs_entails _ ?requested =>
@@ -1364,7 +1403,7 @@ Ltac zesu_conjunct_head_if_enabled :=
   zesu_expose_environment_alias;
   lazymatch goal with
   | |- envs_entails _ (@bi_exist _ _ _) =>
-      let introFuel := constr:(12%nat) in
+      let introFuel := zesu_witness_intro_fuel in
       zesu_witness_open_existentials introFuel
   | |- envs_entails _ _ => idtac
   end;
@@ -2361,6 +2400,74 @@ Ltac zesu_prefer_owned_instr_pre :=
       end
   end.
 
+(* Entry and exit steps in one pass. A large entry (many existential binders
+   and pure facts, as forwarded call facts produce) cost about one second per
+   Lithium step in `liSimpl` and in the hooks over the whole goal, and the
+   number of steps grows with the entry.
+
+   An entry premise introduces all its existential binders in one step. *)
+Ltac zesu_wand_exist_binders :=
+  lazymatch goal with
+  | |- envs_entails _ (bi_wand (bi_exist _) _) =>
+      liForall;
+      repeat (lazymatch goal with
+        | |- envs_entails _ (bi_wand (bi_exist _) _) => liForall
+        end)
+  end.
+
+(* A separating premise is split with the rest of the entry held in a `let`,
+   so that later steps do not traverse the parts not yet introduced; the
+   `let` is unfolded when it becomes the next premise. *)
+Ltac zesu_wand_premise_step :=
+  lazymatch goal with
+  | |- envs_entails ?Δ (bi_wand (bi_sep ?P ?Q) ?T) =>
+      lazymatch Q with bi_sep _ _ => idtac end;
+      li_let_bind T (fun H => constr:(envs_entails Δ (bi_wand (bi_sep P Q) H)));
+      lazymatch goal with
+      | |- envs_entails _ (bi_wand _ ?T') =>
+          li_let_bind Q (fun H => constr:(envs_entails Δ (bi_wand (bi_sep P H) T')))
+      end;
+      notypeclasses refine (tac_wand_sep_assoc _ _ _ _ _)
+  | |- envs_entails _ (bi_wand ?Q _) =>
+      is_var Q;
+      match goal with R := LET_ID _ |- _ => constr_eq R Q end;
+      unfold LET_ID in Q; unfold Q; clear Q
+  end.
+
+(* The successor's existentials are folded into Lithium's tuple one binder per
+   step, each step wrapping every earlier binder in one more projection. The
+   fold continues in one step while no witness hook could act on the goal
+   between binders: no pending entry witness; with the tuple witness enabled,
+   a tuple that is not all primitive; with the constraint or conjunct
+   witnesses enabled, a tuple that is not all primitive or a chain that
+   exhausts their fuel; with the record witness enabled, a tuple not headed by
+   a record. The first fold comes after every hook has refused the goal. *)
+Ltac zesu_exist_fold_more :=
+  lazymatch goal with
+  | _ : @ZesuSsz.Evidence.EntryWitnessSelector.ZesuEntryWitnessPending _ _ _ _ |- _ => fail
+  | |- envs_entails _ (@bi_exist _ (li_prod ?A ?B) (fun _ => @bi_exist _ _ _)) =>
+      let T := constr:(li_prod A B) in
+      tryif zesu_switch_enabled constr:(ZesuStepTupleWitness)
+      then assert_fails (idtac; let _ := zesu_primitive_tuple_witness T in idtac)
+      else idtac;
+      tryif first [zesu_switch_enabled constr:(ZesuStepPureWitnessConstraints)
+                  | zesu_switch_enabled constr:(ZesuStepConjunctMatch)]
+      then first [assert_fails (idtac; let _ := zesu_primitive_tuple_witness T in idtac)
+                 | let fuel := zesu_witness_intro_fuel in zesu_exist_chain_exhausts fuel]
+      else idtac;
+      tryif zesu_switch_enabled constr:(ZesuStepRecordWitness)
+      then assert_fails (idtac; let _ := zesu_record_constructor_witness A in idtac)
+      else idtac;
+      liExist
+  end.
+
+Ltac zesu_exist_fold :=
+  lazymatch goal with
+  | |- envs_entails _ (@bi_exist _ (li_prod _ _) (fun _ => @bi_exist _ _ _)) => idtac
+  end;
+  liExist;
+  repeat zesu_exist_fold_more.
+
 Ltac zesu_liAStep :=
   first [solve [zesu_refute_aligned_return_fault] |
     WrappedWord.zesu_wrapped_memory_lookup | (
@@ -2407,6 +2514,9 @@ Ltac zesu_liAStep :=
   | zesu_liInstrPreMatch
   | zesu_preserve_current_unsigned
   | zesu_register_collection_selection_if_enabled
+  | zesu_exist_fold
+  | zesu_wand_exist_binders
+  | zesu_wand_premise_step
   | liStep
   | liLetBindHint
   | liUnfoldLate
