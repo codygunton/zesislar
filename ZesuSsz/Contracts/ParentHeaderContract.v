@@ -33,6 +33,10 @@ Notation parentHeaderRamLow := ((0xa0000000) : Z) (only parsing).
 Notation parentHeaderRamHigh := ((0xc0000000) : Z) (only parsing).
 Notation parentHeaderInputLow := ((0x40000000) : Z) (only parsing).
 Notation parentHeaderInputHigh := ((0x80000000) : Z) (only parsing).
+(* The read-only None constant in rodata: 16 zero bytes. The function reads
+   it; the contract owns it at entry and returns it unchanged at exit. *)
+Notation parentHeaderNoneConstant := ((0x801152b0) : Z) (only parsing).
+Definition parentHeaderNoneBytes : list byte := replicate 16%nat (BV 8 0).
 
 Inductive ParentHeaderExitPath :=
 | ParentHeaderDirect
@@ -191,6 +195,7 @@ Definition parentHeaderEntryResources `{!islaG Sigma} `{!threadG}
    (bv_unsigned (parentHeaderStackPointer args) - parentHeaderStackBytes -
       parentHeaderCalleeBytes) ↦ₘ? parentHeaderCalleeBytes ∗
    parentHeaderMemcpySource ↦ₘ∗ parentHeaderMemcpySourceBefore args ∗
+   parentHeaderNoneConstant ↦ₘ∗ parentHeaderNoneBytes ∗
    ziskExtraParamsAddress ↦ₘ∗ parentHeaderMemcpyScratchBefore args ∗
    ⌜parentHeaderArgsWellFormed args⌝ ∗ True)%I.
 
@@ -244,6 +249,7 @@ Definition parentHeaderExitResources `{!islaG Sigma} `{!threadG}
    (bv_unsigned (parentHeaderStackPointer args) - parentHeaderStackBytes -
       parentHeaderCalleeBytes) ↦ₘ? parentHeaderCalleeBytes ∗
    parentHeaderMemcpySource ↦ₘ∗ parentHeaderMemcpySourceBefore args ∗
+   parentHeaderNoneConstant ↦ₘ∗ parentHeaderNoneBytes ∗
    ziskExtraParamsAddress ↦ₘ∗
      parentHeaderScratchAfter args outcome.(headerExitPath) ∗ True)%I.
 
