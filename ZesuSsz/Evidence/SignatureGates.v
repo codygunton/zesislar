@@ -25,6 +25,12 @@ Require Import ZesuSsz.Contracts.ZiskRuntime.
 Require Import ZesuSsz.Contracts.DecodeItemCallData.
 Require Import ZesuSsz.Automation2.Calls.
 Require Import ZesuSsz.Stock.Closure.index_nextUint64.
+Require Import ZesuSsz.Stock.Closure.index_decodeItem.
+Require Import ZesuSsz.Stock.Closure.index_memcpyStub.
+Require Import ZesuMachineMap.Machine.
+Require Import InstrSpecs.Machine.
+Require Import ZesuSsz.Contracts.Level1.
+Require Import ZesuSsz.Contracts.ParentHeaderRootFacts.
 Require Import ZesuSsz.Stock.Closure.index_decodeParentHeader.
 Require Import ZesuSsz.Evidence.SignatureAxiomAllowlist.
 
@@ -172,33 +178,61 @@ Ltac2 Eval exact_axioms 'emptyParentListMissesRequired
 
 Local Open Scope stdpp_scope.
 
+Definition ReviewedStockZiskPermissions : ZiskRuntimePermissions :=
+  {| ziskReadableSection := fun address count =>
+       Exists (fun section =>
+         sectionReadable section = true /\
+         sectionBase section <= address /\
+         address + count <= sectionEnd section)
+         (mapPopulatedSections defaultMap);
+     ziskWritableSection := fun address count =>
+       mapRamBase defaultMap <= address /\
+       address + count <= machineRamEnd defaultMap /\
+       Forall (fun section =>
+         sectionWritable section = true \/
+         address + count <= sectionBase section \/
+         sectionEnd section <= address)
+         (mapPopulatedSections defaultMap) |}.
+
+Definition ReviewedParentHeaderMemcpyDomain (destination : Z) : Prop :=
+  ziskMemcpyRange destination 80 /\
+  ziskReadableSection ReviewedStockZiskPermissions 0x80114fb8 80 /\
+  ziskWritableSection ReviewedStockZiskPermissions destination 80 /\
+  ziskWritableSection ReviewedStockZiskPermissions 0xa0400f00 8.
+
 Definition ReviewedMemcpyCallSpec2 `{!islaG Sigma} `{!threadG} : iProp Sigma :=
   (machine_call decodeItemCallMap 0
     (fun argv sp RET =>
-      ∃ (source scratch : list byte) (inputEndBits : bv 64),
-      "zisk_input_end" ↦ᵣ RVal_Bits inputEndBits ∗
-      reg_col [(KindReg "zisk_free_input", BitsShape 64)] ∗
-      bv_unsigned (argv !!! 1%nat) ↦ₘ∗ source ∗
-      bv_unsigned (argv !!! 0%nat) ↦ₘ? bv_unsigned (argv !!! 2%nat) ∗
-      ziskExtraParamsAddress ↦ₘ∗ scratch ∗
-      ⌜Z.of_nat (length source) = bv_unsigned (argv !!! 2%nat)⌝ ∗
+      ∃ (source scratch : list byte),
+      ⌜bv_unsigned (argv !!! 1%nat) = 0x80114fb8⌝ ∗
+      ⌜bv_unsigned (argv !!! 2%nat) = 80⌝ ∗
+      ⌜ReviewedParentHeaderMemcpyDomain (bv_unsigned (argv !!! 0%nat))⌝ ∗
+      reg_col [(KindReg "zisk_input_end", BitsShape 64);
+               (KindReg "zisk_free_input", BitsShape 64)] ∗
+      0x80114fb8 ↦ₘ∗ source ∗
+      bv_unsigned (argv !!! 0%nat) ↦ₘ? 80 ∗
+      0xa0400f00 ↦ₘ∗ scratch ∗
+      ⌜Z.of_nat (length source) = 80⌝ ∗
       ⌜length scratch = 8%nat⌝ ∗
       RET (fun _ =>
-        "zisk_input_end" ↦ᵣ RVal_Bits inputEndBits ∗
-        reg_col [(KindReg "zisk_free_input", BitsShape 64)] ∗
-        bv_unsigned (argv !!! 1%nat) ↦ₘ∗ source ∗
+        reg_col [(KindReg "zisk_input_end", BitsShape 64);
+                 (KindReg "zisk_free_input", BitsShape 64)] ∗
+        0x80114fb8 ↦ₘ∗ source ∗
         bv_unsigned (argv !!! 0%nat) ↦ₘ∗ source ∗
-        ziskExtraParamsAddress ↦ₘ∗ word64Bytes (bv_unsigned (argv !!! 2%nat)) ∗
+        0xa0400f00 ↦ₘ∗ word64Bytes 80 ∗
         True)))%I.
 
 Definition ReviewedMemcpyCallPremise `{!islaG Sigma} `{!threadG} :
     iProp Sigma :=
   (□ instr_pre memcpyCsrPc ReviewedMemcpyCallSpec2)%I.
 
+Check (eq_refl : stockZiskPermissions = ReviewedStockZiskPermissions).
+Check (eq_refl : parentHeaderMemcpyDomain = ReviewedParentHeaderMemcpyDomain).
 Check (eq_refl : @memcpyCallSpec2 = @ReviewedMemcpyCallSpec2).
 Check (eq_refl : @memcpyCallPremise = @ReviewedMemcpyCallPremise).
 Check (eq_refl : parentHeaderMemcpyLength = 80%Z).
 Check (eq_refl : parentHeaderMemcpySource = 0x80114fb8%Z).
+Check (eq_refl : memcpyCsrPc = 0x800e06c0%Z).
 
 Definition ReviewedNextUint64SelectedCode `{!islaG Sigma} `{!threadG} :
     iProp Sigma :=
@@ -233,4 +267,179 @@ Check (eq_refl : @parentHeaderContractCode =
                  @ReviewedParentHeaderContractCode).
 Check (eq_refl : parentHeaderAllows = ReviewedParentHeaderAllows).
 Check (@NextUint64SelectedCorrect : Prop).
-Check (@ParentHeaderContractCorrect : Prop).
+
+(* The complete reviewed statement of the parent contract. *)
+Definition ReviewedParentHeaderCall (args : ParentHeaderArgs) : ParentHeaderCall :=
+  {| headerInputPointer := bv_unsigned (parentHeaderInputPointer args);
+     headerInputBytes := parentHeaderInputBytes args;
+     headerResultPointer := bv_unsigned (parentHeaderResultPointer args);
+     headerStackPointer := bv_unsigned (parentHeaderStackPointer args);
+     headerReturnAddress := bv_unsigned (parentHeaderReturnAddress args);
+     headerSavedS0 := parentHeaderSavedX8 args;
+     headerSavedS1 := parentHeaderSavedX9 args;
+     headerSavedS2 := parentHeaderSavedX18 args;
+     headerSavedS3 := parentHeaderSavedX19 args;
+     headerSavedS4 := parentHeaderSavedX20 args;
+     headerSavedS5 := parentHeaderSavedX21 args;
+     headerSavedS6 := parentHeaderSavedX22 args;
+     headerSavedS7 := parentHeaderSavedX23 args;
+     headerSavedS8 := parentHeaderSavedX24 args;
+     headerBeforeFrame := [];
+     headerMemcpySourceBefore := parentHeaderMemcpySourceBefore args;
+     headerMemcpyScratchBefore := parentHeaderMemcpyScratchBefore args |}.
+
+Definition ReviewedParentHeaderArgsWellFormed (args : ParentHeaderArgs) : Prop :=
+  Z.of_nat (length (parentHeaderInputBytes args)) =
+    bv_unsigned (parentHeaderInputLength args) /\
+  length (parentHeaderMemcpySourceBefore args) = 80%nat /\
+  length (parentHeaderMemcpyScratchBefore args) = 8%nat /\
+  length (replicate 16%nat (BV 8 0)) = 16%nat /\
+  parentHeaderError80 (parentHeaderMemcpySourceBefore args) /\
+  0x40000000 <= bv_unsigned (parentHeaderInputPointer args) /\
+  bv_unsigned (parentHeaderInputPointer args) +
+    bv_unsigned (parentHeaderInputLength args) <= 0x80000000 /\
+  bv_unsigned (parentHeaderInputPointer args) +
+    bv_unsigned (parentHeaderInputLength args) <=
+    bv_unsigned (parentHeaderInputEnd args) /\
+  0xa0000000 <= bv_unsigned (parentHeaderResultPointer args) /\
+  bv_unsigned (parentHeaderResultPointer args) + 80 <= 0xc0000000 /\
+  0xa0000000 + 400 + 112 <= bv_unsigned (parentHeaderStackPointer args) /\
+  bv_unsigned (parentHeaderStackPointer args) < 0xc0000000 /\
+  bv_unsigned (parentHeaderStackPointer args) mod 16 = 0 /\
+  bv_unsigned (parentHeaderReturnAddress args) mod 4 = 0 /\
+  separateRanges (bv_unsigned (parentHeaderResultPointer args)) 80
+    (bv_unsigned (parentHeaderStackPointer args) - 400) 400 /\
+  separateRanges (bv_unsigned (parentHeaderResultPointer args)) 80
+    (bv_unsigned (parentHeaderStackPointer args) - 400 - 112) 112 /\
+  separateRanges 0xa0400f00 8
+    (bv_unsigned (parentHeaderResultPointer args)) 80 /\
+  separateRanges 0xa0400f00 8
+    (bv_unsigned (parentHeaderStackPointer args) - 400) 400 /\
+  separateRanges 0xa0400f00 8
+    (bv_unsigned (parentHeaderStackPointer args) - 400 - 112) 112.
+
+Definition ReviewedParentHeaderSysRegs (args : ParentHeaderArgs) :
+    list (reg_kind * valu_shape) :=
+  map (fun '(r, shape) =>
+    (r, if decide (r = KindReg "zisk_input_end")
+        then ExactShape (RVal_Bits (parentHeaderInputEnd args))
+        else shape)) zesu_sys_regs.
+
+Definition ReviewedParentHeaderEntryResources `{!islaG Sigma} `{!threadG}
+    (args : ParentHeaderArgs) : iProp Sigma :=
+  (∃ (x5 x6 x7 x13 x14 x15 x16 x17 x28 x29 x30 x31 : bv 64),
+   reg_col (ReviewedParentHeaderSysRegs args) ∗
+   "x1" ↦ᵣ RVal_Bits (parentHeaderReturnAddress args) ∗
+   "x2" ↦ᵣ RVal_Bits (parentHeaderStackPointer args) ∗
+   "x5" ↦ᵣ RVal_Bits x5 ∗ "x6" ↦ᵣ RVal_Bits x6 ∗ "x7" ↦ᵣ RVal_Bits x7 ∗
+   "x8" ↦ᵣ RVal_Bits (parentHeaderSavedX8 args) ∗
+   "x9" ↦ᵣ RVal_Bits (parentHeaderSavedX9 args) ∗
+   "x10" ↦ᵣ RVal_Bits (parentHeaderResultPointer args) ∗
+   "x11" ↦ᵣ RVal_Bits (parentHeaderInputPointer args) ∗
+   "x12" ↦ᵣ RVal_Bits (parentHeaderInputLength args) ∗
+   "x13" ↦ᵣ RVal_Bits x13 ∗ "x14" ↦ᵣ RVal_Bits x14 ∗ "x15" ↦ᵣ RVal_Bits x15 ∗
+   "x16" ↦ᵣ RVal_Bits x16 ∗ "x17" ↦ᵣ RVal_Bits x17 ∗
+   "x18" ↦ᵣ RVal_Bits (parentHeaderSavedX18 args) ∗
+   "x19" ↦ᵣ RVal_Bits (parentHeaderSavedX19 args) ∗
+   "x20" ↦ᵣ RVal_Bits (parentHeaderSavedX20 args) ∗
+   "x21" ↦ᵣ RVal_Bits (parentHeaderSavedX21 args) ∗
+   "x22" ↦ᵣ RVal_Bits (parentHeaderSavedX22 args) ∗
+   "x23" ↦ᵣ RVal_Bits (parentHeaderSavedX23 args) ∗
+   "x24" ↦ᵣ RVal_Bits (parentHeaderSavedX24 args) ∗
+   "x25" ↦ᵣ RVal_Bits (parentHeaderSavedX25 args) ∗
+   "x26" ↦ᵣ RVal_Bits (parentHeaderSavedX26 args) ∗
+   "x27" ↦ᵣ RVal_Bits (parentHeaderSavedX27 args) ∗
+   "x28" ↦ᵣ RVal_Bits x28 ∗ "x29" ↦ᵣ RVal_Bits x29 ∗
+   "x30" ↦ᵣ RVal_Bits x30 ∗ "x31" ↦ᵣ RVal_Bits x31 ∗
+   bv_unsigned (parentHeaderInputPointer args) ↦ₘ∗ parentHeaderInputBytes args ∗
+   bv_unsigned (parentHeaderResultPointer args) ↦ₘ? 80 ∗
+   (bv_unsigned (parentHeaderStackPointer args) - 400) ↦ₘ? 400 ∗
+   (bv_unsigned (parentHeaderStackPointer args) - 400 - 112) ↦ₘ? 112 ∗
+   0x80114fb8 ↦ₘ∗ parentHeaderMemcpySourceBefore args ∗
+   0x801152b0 ↦ₘ∗ replicate 16%nat (BV 8 0) ∗
+   0xa0400f00 ↦ₘ∗ parentHeaderMemcpyScratchBefore args ∗
+   ⌜ReviewedParentHeaderArgsWellFormed args⌝ ∗ True)%I.
+
+Definition ReviewedParentHeaderScratchAfter (args : ParentHeaderArgs)
+    (path : ParentHeaderExitPath) : list byte :=
+  match path with
+  | ParentHeaderDirect => parentHeaderMemcpyScratchBefore args
+  | ParentHeaderMemcpyTail => word64Bytes 80
+  end.
+
+Definition ReviewedParentHeaderExitSysRegs (args : ParentHeaderArgs)
+    (path : ParentHeaderExitPath) : list (reg_kind * valu_shape) :=
+  match path with
+  | ParentHeaderDirect => ReviewedParentHeaderSysRegs args
+  | ParentHeaderMemcpyTail => zesu_sys_regs
+  end.
+
+Definition ReviewedParentHeaderExitResources `{!islaG Sigma} `{!threadG}
+    (args : ParentHeaderArgs) (outcome : ParentHeaderOutcome) : iProp Sigma :=
+  (∃ (x1 x5 x6 x7 x10 x11 x12 x13 x14 x15 x16 x17 x28 x29 x30 x31 : bv 64),
+   reg_col (ReviewedParentHeaderExitSysRegs args outcome.(headerExitPath)) ∗
+   "x1" ↦ᵣ RVal_Bits x1 ∗
+   "x2" ↦ᵣ RVal_Bits (parentHeaderStackPointer args) ∗
+   "x5" ↦ᵣ RVal_Bits x5 ∗ "x6" ↦ᵣ RVal_Bits x6 ∗ "x7" ↦ᵣ RVal_Bits x7 ∗
+   "x8" ↦ᵣ RVal_Bits (parentHeaderSavedX8 args) ∗
+   "x9" ↦ᵣ RVal_Bits (parentHeaderSavedX9 args) ∗
+   "x10" ↦ᵣ RVal_Bits x10 ∗ "x11" ↦ᵣ RVal_Bits x11 ∗ "x12" ↦ᵣ RVal_Bits x12 ∗
+   "x13" ↦ᵣ RVal_Bits x13 ∗ "x14" ↦ᵣ RVal_Bits x14 ∗ "x15" ↦ᵣ RVal_Bits x15 ∗
+   "x16" ↦ᵣ RVal_Bits x16 ∗ "x17" ↦ᵣ RVal_Bits x17 ∗
+   "x18" ↦ᵣ RVal_Bits (parentHeaderSavedX18 args) ∗
+   "x19" ↦ᵣ RVal_Bits (parentHeaderSavedX19 args) ∗
+   "x20" ↦ᵣ RVal_Bits (parentHeaderSavedX20 args) ∗
+   "x21" ↦ᵣ RVal_Bits (parentHeaderSavedX21 args) ∗
+   "x22" ↦ᵣ RVal_Bits (parentHeaderSavedX22 args) ∗
+   "x23" ↦ᵣ RVal_Bits (parentHeaderSavedX23 args) ∗
+   "x24" ↦ᵣ RVal_Bits (parentHeaderSavedX24 args) ∗
+   "x25" ↦ᵣ RVal_Bits (parentHeaderSavedX25 args) ∗
+   "x26" ↦ᵣ RVal_Bits (parentHeaderSavedX26 args) ∗
+   "x27" ↦ᵣ RVal_Bits (parentHeaderSavedX27 args) ∗
+   "x28" ↦ᵣ RVal_Bits x28 ∗ "x29" ↦ᵣ RVal_Bits x29 ∗
+   "x30" ↦ᵣ RVal_Bits x30 ∗ "x31" ↦ᵣ RVal_Bits x31 ∗
+   bv_unsigned (parentHeaderInputPointer args) ↦ₘ∗ parentHeaderInputBytes args ∗
+   bv_unsigned (parentHeaderResultPointer args) ↦ₘ∗ outcome.(headerResultBytes) ∗
+   (bv_unsigned (parentHeaderStackPointer args) - 400) ↦ₘ∗
+     outcome.(headerAfterFrame) ∗
+   (bv_unsigned (parentHeaderStackPointer args) - 400 - 112) ↦ₘ? 112 ∗
+   0x80114fb8 ↦ₘ∗ parentHeaderMemcpySourceBefore args ∗
+   0x801152b0 ↦ₘ∗ replicate 16%nat (BV 8 0) ∗
+   0xa0400f00 ↦ₘ∗
+     ReviewedParentHeaderScratchAfter args outcome.(headerExitPath) ∗ True)%I.
+
+Definition ReviewedParentHeaderContractResources `{!islaG Sigma} `{!threadG}
+    (returnAddress : Z) :
+    IslarisContractResources ParentHeaderArgs ParentHeaderOutcome :=
+  {| islarisCode := ReviewedParentHeaderContractCode;
+     islarisEntry := fun args =>
+       (⌜bv_unsigned (parentHeaderReturnAddress args) = returnAddress⌝ ∗
+        ReviewedParentHeaderEntryResources args)%I;
+     islarisExit := ReviewedParentHeaderExitResources |}.
+
+Definition ReviewedParentHeaderContractModel (returnAddress : Z) :
+    IslarisContractModel ParentHeaderArgs ParentHeaderOutcome :=
+  {| islarisContractAllows := fun args outcome =>
+       bv_unsigned (parentHeaderReturnAddress args) = returnAddress /\
+       ReviewedParentHeaderAllows (ReviewedParentHeaderCall args) outcome;
+     islarisContractStep := fun source target =>
+       ZesuSsz.Stock.Closure.index_decodeParentHeader.decodeParentHeader_cfg_step
+         source target \/
+       ZesuSsz.Stock.Closure.index_nextUint64.nextUint64_cfg_step
+         source target \/
+       ZesuSsz.Stock.Closure.index_decodeItem.decodeItem_cfg_step
+         source target \/
+       ZesuSsz.Stock.Closure.index_memcpyStub.memcpyStub_cfg_step
+         source target;
+     islarisContractResources := fun Sigma HG HT =>
+       @ReviewedParentHeaderContractResources Sigma HG HT returnAddress |}.
+
+Definition ReviewedParentHeaderContractCorrect : Prop :=
+  forall returnAddress,
+    IslarisContractCorrect 0x800d5cb8 returnAddress
+      (ReviewedParentHeaderContractModel returnAddress).
+
+Check (eq_refl : parentHeaderCall = ReviewedParentHeaderCall).
+Check (eq_refl : parentHeaderArgsWellFormed = ReviewedParentHeaderArgsWellFormed).
+Check (eq_refl : parentHeaderExitSysRegs = ReviewedParentHeaderExitSysRegs).
+Check (eq_refl : ParentHeaderContractCorrect = ReviewedParentHeaderContractCorrect).

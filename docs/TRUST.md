@@ -28,6 +28,14 @@ reached slice. The candidate reached-slice walk needs machine-call correspondenc
 before a proof can use it. Machine proofs establish partial correctness only. Phase 5 of the
 active plan must prove termination with the verified executor in `ZesuSsz/Export/Executor.v`.
 
+`parentHeaderGeneratedCompliance` in `ZesuSsz/Compliance/ParentHeaderGeneratedComposition.v`
+derives `ParentHeaderContractCorrect` from two premises: `NextUint64ContractCorrect` and
+`ParentHeaderOpenBlocks`, a record with one field per decodeParentHeader block whose proof is
+not closed (generated in `ParentHeaderBlockObligations.v` by
+`tools/block/render_open_blocks.py`). It is not an unconditional result: its premises are the
+remaining work. The memcpy runtime premise enters through the contract code
+(`memcpyCallPremise`), as `ParentHeaderContractCorrect` states it.
+
 ## Selected artifact and machine semantics
 
 The selected stock ELF has raw SHA-256

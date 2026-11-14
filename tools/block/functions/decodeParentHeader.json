@@ -15,6 +15,7 @@
     "Require Import ZesuSsz.Contracts.ParentHeaderRootFacts.",
     "Require Import ZesuSsz.Contracts.NextUint64BlockEntries.",
     "Require Import ZesuSsz.Contracts.ParentHeaderMemcpyService.",
+    "Require Import ZesuSsz.Contracts.AbiBytes.",
     "Require Import ZesuSsz.Contracts.ZiskRuntime.",
     "Require Export ZesuSsz.Contracts.DecodeItemPayloadBounds.",
     "Require Export ZesuSsz.Compliance.ParentHeaderHints."
@@ -638,11 +639,34 @@
   ],
   "tail_calls": [
     {
+      "function": "rlp_decode.decodeParentHeader",
       "call_site_pc": "+0xe8",
       "callee_pc": "memcpy+0x0",
       "spec": "memcpyCallSpec2",
-      "spec_module": "ZesuSsz.Contracts.ParentHeaderMemcpyService"
+      "spec_module": "ZesuSsz.Contracts.ParentHeaderMemcpyService",
+      "spec_source": "ZesuSsz/Contracts/ParentHeaderMemcpyService.v",
+      "arrays": [
+        {
+          "binder": "source",
+          "constant": "parentHeaderMemcpySource",
+          "caller_value": "parentHeaderMemcpySourceBefore args"
+        },
+        {
+          "binder": "scratch",
+          "constant": "ziskExtraParamsAddress",
+          "length": 8,
+          "length_source": "memcpyCallSpec2 (ParentHeaderMemcpyService.v): length scratch = 8%nat"
+        }
+      ],
+      "output_length_source": "memcpyCallSpec2 (ParentHeaderMemcpyService.v): the destination receives source, Z.of_nat (length source) = parentHeaderMemcpyLength; the extra-params word receives word64Bytes parentHeaderMemcpyLength (AbiBytes.v), 8 bytes",
+      "collection_after": "reg_col zesu_sys_regs",
+      "collection_source": "machine_call_ret returns reg_col (machine_sys_regs decodeItemCallMap); the RET of memcpyCallSpec2 returns zisk_input_end and zisk_free_input with BitsShape 64; zesu_sys_regs (InstrSpecs/Machine.v) is their union, as parentHeaderExitSysRegs states on the ParentHeaderMemcpyTail path (ParentHeaderContract.v)",
+      "exit": "parentHeaderExitResources (ParentHeaderContract.v) on the ParentHeaderMemcpyTail path: the callee returns to the function's return address"
     }
+  ],
+  "duplicated_joins": [
+    "+0x510",
+    "+0x514"
   ],
   "loop_designs": [
     {

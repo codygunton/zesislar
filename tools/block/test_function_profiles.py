@@ -7,7 +7,7 @@ import unittest
 
 from function_profiles import FunctionProfile, load_profile, loop_header, pilot_header, return_header
 from join_generalize import align_join_edges, binder_names
-from render_function_callers import plan_callers
+from render_function_callers import exit_package, plan_callers
 from symbolic_state import input_expr
 from render_fp301_statements import (
     render_block_caller,
@@ -126,9 +126,22 @@ class CallerPlan(unittest.TestCase):
         cases = [{'pc': '0x800d1000', 'status': 'source_declarations_rendered'},
                  {'pc': '0x800d1010', 'status': 'source_declarations_rendered'}]
         self.assertEqual(plan_callers(profile, cases, function),
-                         [('1000', ['1010'], None), ('1010', [], 'function-return package not rendered')])
+                         [('1000', None, [('1010', None)], None),
+                          ('1010', None, [], 'function-return package not rendered')])
         cases[1]['status'] = 'stopped'
-        self.assertEqual(plan_callers(profile, cases, function)[0][2], 'successor entry not rendered: 1010')
+        self.assertEqual(plan_callers(profile, cases, function)[0][3], 'successor entry not rendered: 1010')
+
+    def test_a_symbol_keyed_table_names_successors_by_their_offset(self):
+        # Blocks keyed by offset from the symbol: the successor at base + 0x40 is block 0040.
+        data = dict(other_profile().data)
+        data.pop('pc_prefix')
+        data.update(pc_base='0x800d5cb8', blocks=['0000', '0040'])
+        profile = FunctionProfile(data)
+        function = {'blocks': [{'start': 0x800d5cb8, 'successors': [0x800d5cf8]},
+                               {'start': 0x800d5cf8, 'successors': []}]}
+        cases = [{'pc': '0x800d5cb8', 'status': 'source_declarations_rendered'},
+                 {'pc': '0x800d5cf8', 'status': 'source_declarations_rendered'}]
+        self.assertEqual(plan_callers(profile, cases, function)[0], ('0000', None, [('0040', None)], None))
 
     def test_return_block_renders_once_the_return_package_renders(self):
         profile = other_profile()
@@ -137,19 +150,53 @@ class CallerPlan(unittest.TestCase):
         cases = [{'pc': '0x800d1000', 'status': 'source_declarations_rendered'},
                  {'pc': '0x800d1010', 'status': 'source_declarations_rendered'},
                  {'pc': 'function_return', 'status': 'source_declarations_rendered'}]
-        self.assertEqual(plan_callers(profile, cases, function)[-1], ('1010', [], None))
+        self.assertEqual(plan_callers(profile, cases, function)[-1], ('1010', None, [], None))
 
-    def test_a_tail_jump_with_a_callee_spec_exits_through_the_return_package(self):
+    def test_a_tail_jump_with_a_callee_spec_exits_through_its_tail_return_package(self):
         profile = other_profile()
         function = {'blocks': [{'start': 0x800d1000, 'end': 0x800d1010, 'successors': [0x800e06c0]},
                                {'start': 0x800d1010, 'end': 0x800d1020, 'successors': []}]}
         cases = [{'pc': '0x800d1000', 'status': 'source_declarations_rendered'},
                  {'pc': 'function_return', 'status': 'source_declarations_rendered'}]
-        self.assertEqual(plan_callers(profile, cases, function)[0][2],
+        self.assertEqual(plan_callers(profile, cases, function)[0][3],
                          'successor outside the function (tail jump without a tail_calls row)')
         profile.data['tail_calls'] = [{'call_site_pc': '0x800d100c', 'callee_pc': '0x800e06c0',
                                        'spec': 'calleeSpec', 'spec_module': 'Callee'}]
-        self.assertEqual(plan_callers(profile, cases, function)[0], ('1000', [], None))
+        # The callee returns to returnAddress with the tail's own exit state, not the return block's.
+        self.assertEqual(plan_callers(profile, cases, function)[0],
+                         ('1000', None, [], 'function-return package not rendered'))
+        cases.append({'pc': 'function_return_Tail100c', 'status': 'source_declarations_rendered'})
+        self.assertEqual(plan_callers(profile, cases, function)[0], ('1000', None, [], None))
+        self.assertEqual(exit_package(profile, [], 0x800d1000, 0x800d1010), 'Tail100c')
+
+    def test_entry_slots_get_one_caller_each_and_exit_to_their_own_successor_slot(self):
+        # 1020 is a duplicated join with one slot per incoming edge; 1030 continues each slot.
+        profile = other_profile()
+        profile.data['blocks'] = ['1000', '1010', '1020', '1030']
+        function = {'blocks': [{'start': 0x800d1000, 'successors': [0x800d1020]},
+                               {'start': 0x800d1010, 'successors': [0x800d1020]},
+                               {'start': 0x800d1020, 'successors': [0x800d1030]},
+                               {'start': 0x800d1030, 'successors': []}]}
+        rendered = 'source_declarations_rendered'
+
+        def slot(pc, index, predecessor, predecessor_slot, status=rendered):
+            return {'pc': pc, 'status': status, 'slot': {'index': index, 'predecessor_pc': predecessor,
+                                                         'predecessor_slot': predecessor_slot}}
+        cases = [{'pc': '0x800d1000', 'status': rendered}, {'pc': '0x800d1010', 'status': rendered},
+                 slot('0x800d1020', 0, '0x800d1000', None), slot('0x800d1020', 1, '0x800d1010', None),
+                 slot('0x800d1030', 0, '0x800d1020', 0), slot('0x800d1030', 1, '0x800d1020', 1, 'stopped')]
+        self.assertEqual(plan_callers(profile, cases, function), [
+            ('1000', None, [('1020', 0)], None),
+            ('1010', None, [('1020', 1)], None),
+            ('1020', 0, [('1030', 0)], None),
+            ('1020', 1, [('1030', 1)], 'successor entry not rendered: 1030_slot1'),
+            ('1030', 0, [], 'function-return package not rendered'),
+            ('1030', 1, [], 'own entry not rendered')])
+        self.assertIn('fp_machineAt1030_slot0 (args)', successor_precondition(profile, '1030', 0))
+        source = render_block_caller(profile, '1020', [successor_precondition(profile, '1030', 1)], [], 1)
+        self.assertIn('Lemma DesignedBoundary_800d1020_slot1 ', source)
+        self.assertIn('  instr_body 0x800d1020\n    (DesignedEntry_800d1020_slot1 args returnAddress K).', source)
+        self.assertIn('fp_machineAt1020_slot1 (args)', source)
 
 
 class JoinEdgeAlignment(unittest.TestCase):

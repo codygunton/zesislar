@@ -33,6 +33,10 @@ Notation parentHeaderRamLow := ((0xa0000000) : Z) (only parsing).
 Notation parentHeaderRamHigh := ((0xc0000000) : Z) (only parsing).
 Notation parentHeaderInputLow := ((0x40000000) : Z) (only parsing).
 Notation parentHeaderInputHigh := ((0x80000000) : Z) (only parsing).
+(* The read-only None constant in rodata: 16 zero bytes. The function reads
+   it; the contract owns it at entry and returns it unchanged at exit. *)
+Notation parentHeaderNoneConstant := ((0x801152b0) : Z) (only parsing).
+Definition parentHeaderNoneBytes : list byte := replicate 16%nat (BV 8 0).
 
 Inductive ParentHeaderExitPath :=
 | ParentHeaderDirect
@@ -102,6 +106,7 @@ Definition parentHeaderArgsWellFormed (args : ParentHeaderArgs) : Prop :=
     bv_unsigned (parentHeaderInputLength args) /\
   length (parentHeaderMemcpySourceBefore args) = 80%nat /\
   length (parentHeaderMemcpyScratchBefore args) = 8%nat /\
+  length parentHeaderNoneBytes = 16%nat /\
   parentHeaderError80 (parentHeaderMemcpySourceBefore args) /\
   parentHeaderInputLow <= bv_unsigned (parentHeaderInputPointer args) /\
   bv_unsigned (parentHeaderInputPointer args) +
@@ -191,6 +196,7 @@ Definition parentHeaderEntryResources `{!islaG Sigma} `{!threadG}
    (bv_unsigned (parentHeaderStackPointer args) - parentHeaderStackBytes -
       parentHeaderCalleeBytes) ↦ₘ? parentHeaderCalleeBytes ∗
    parentHeaderMemcpySource ↦ₘ∗ parentHeaderMemcpySourceBefore args ∗
+   parentHeaderNoneConstant ↦ₘ∗ parentHeaderNoneBytes ∗
    ziskExtraParamsAddress ↦ₘ∗ parentHeaderMemcpyScratchBefore args ∗
    ⌜parentHeaderArgsWellFormed args⌝ ∗ True)%I.
 
@@ -201,13 +207,22 @@ Definition parentHeaderScratchAfter (args : ParentHeaderArgs)
   | ParentHeaderMemcpyTail => word64Bytes parentHeaderMemcpyLength
   end.
 
+(* The memcpy premise returns zisk_input_end with shape only, so the
+   memcpy tail exit cannot state its entry value. *)
+Definition parentHeaderExitSysRegs (args : ParentHeaderArgs)
+    (path : ParentHeaderExitPath) : list (reg_kind * valu_shape) :=
+  match path with
+  | ParentHeaderDirect => parentHeaderSysRegs args
+  | ParentHeaderMemcpyTail => zesu_sys_regs
+  end.
+
 (* The ABI returns the caller-saved registers, x1 among them, with arbitrary
    values: the memcpy tail returns through the caller's ra itself. It
    preserves the callee-saved registers and the stack pointer. *)
 Definition parentHeaderExitResources `{!islaG Sigma} `{!threadG}
     (args : ParentHeaderArgs) (outcome : ParentHeaderOutcome) : iProp Sigma :=
   (∃ (x1 x5 x6 x7 x10 x11 x12 x13 x14 x15 x16 x17 x28 x29 x30 x31 : bv 64),
-   reg_col (parentHeaderSysRegs args) ∗
+   reg_col (parentHeaderExitSysRegs args outcome.(headerExitPath)) ∗
    "x1" ↦ᵣ RVal_Bits x1 ∗
    "x2" ↦ᵣ RVal_Bits (parentHeaderStackPointer args) ∗
    "x5" ↦ᵣ RVal_Bits x5 ∗ "x6" ↦ᵣ RVal_Bits x6 ∗ "x7" ↦ᵣ RVal_Bits x7 ∗
@@ -235,6 +250,7 @@ Definition parentHeaderExitResources `{!islaG Sigma} `{!threadG}
    (bv_unsigned (parentHeaderStackPointer args) - parentHeaderStackBytes -
       parentHeaderCalleeBytes) ↦ₘ? parentHeaderCalleeBytes ∗
    parentHeaderMemcpySource ↦ₘ∗ parentHeaderMemcpySourceBefore args ∗
+   parentHeaderNoneConstant ↦ₘ∗ parentHeaderNoneBytes ∗
    ziskExtraParamsAddress ↦ₘ∗
      parentHeaderScratchAfter args outcome.(headerExitPath) ∗ True)%I.
 
@@ -282,7 +298,7 @@ Proof.
   pose proof (bv_unsigned_in_range 64 (parentHeaderStackPointer args)).
   pose proof (bv_unsigned_in_range 64 (parentHeaderReturnAddress args)).
   unfold bv_modulus in *. cbn in *.
-  intros (Hlength & _ & _ & _ & Hlow & Hhigh & _ & Hres & Hresh & Hsp & Hsph &
+  intros (Hlength & _ & _ & _ & _ & Hlow & Hhigh & _ & Hres & Hresh & Hsp & Hsph &
     _ & Hra & Hsep & _).
   rewrite Hlength. lia.
 Qed.

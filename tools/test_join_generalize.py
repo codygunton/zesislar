@@ -448,6 +448,26 @@ class LiftedEdges(unittest.TestCase):
             lift_call_return_edges([edge], seeds={'A': base, 'J': base}, roots={'A': 'A'},
                                    ancestor='A', vocabulary=vocabulary)
 
+    def test_an_edge_from_a_recorded_join_seed_lifts_as_on_the_pass_seed(self):
+        # The renderer has the join seeds only as the pass recorded them: an edge from a
+        # join seed lifts onto the ancestor exactly as on the pass's own seed.
+        from join_generalize import lift_call_return_edges, seed_from_record, seed_record
+        seed, alternatives, vocabulary, continuation = OwnedJoinTests().fixture()
+        joined = generalize_owned_join(alternatives, original_seed=seed, entry_pc=32,
+                                       vocabulary=vocabulary, continuation=continuation)['seed']
+        restored = seed_from_record(json.loads(json.dumps(seed_record(joined))))
+        self.assertEqual(seed_record(restored), json.loads(json.dumps(seed_record(joined))))
+        state = joined.state.copy()
+        state.registers['PC'] = bits(48, 64)
+        edge = {'seed_pc': '0x20', 'predecessor_pc': '0x24', 'path': [], 'state': state.to_dict()}
+        roots = {'A': 'A', '0x20': 'R'}
+        expected = lift_call_return_edges([edge], seeds={'A': seed, '0x20': joined}, roots=roots,
+                                          ancestor='A', vocabulary=vocabulary)
+        lifted = lift_call_return_edges([edge], seeds={'A': seed, '0x20': restored}, roots=roots,
+                                        ancestor='A', vocabulary=vocabulary)
+        self.assertEqual(lifted, expected)
+        self.assertEqual([binder['name'] for binder in lifted[1]], ['machine_x13'])
+
 
 if __name__ == '__main__':
     unittest.main()

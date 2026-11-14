@@ -115,11 +115,21 @@ if receipt.get("call_seeds"):
             constants=domain["constants"], facts=row["facts"])
         call_seed.state = _state_from_result(row["state"])
         root_seeds[site] = call_seed
-parents = {}
+parents, joins_record = {}, {}
 if receipt.get("joins"):
     joins_record = json.loads(Path(receipt["joins"]["path"]).read_text())
     roots.update(joins_record.get("roots", {}))
     parents = joins_record.get("parents", {})
+# An edge into a mixed-root join may start at a join or loop-head seed: it lifts on the
+# seed the source pass lifted it on.
+lift_seeds = dict(root_seeds)
+if receipt.get("join_seeds"):
+    from join_generalize import seed_from_record
+    seeds_path = Path(receipt["join_seeds"]["path"])
+    if bind(seeds_path)["sha256"] != receipt["join_seeds"]["sha256"]:
+        raise ValueError("A frozen renderer source changed: " + str(seeds_path))
+    for pc, row in json.loads(seeds_path.read_text())["seeds"].items():
+        lift_seeds[pc] = seed_from_record(row)
 terminal_ids = [
     row["id"] for row in owned.ownership["components"] if row["source"] == "True"
 ]
@@ -138,7 +148,11 @@ pilots = list(profile["blocks"])
 blocks = list(pilots)
 # A function-return design adds the return package as one more rendered entry.
 sites = dict(("Return" + suffix, design) for suffix, design in return_sites(profile))
+# A tail call's callee returns to the function's return address: its package is the state
+# the function exits with on that path (the source pass's `tail_returns`).
+tails = {"ReturnTail" + profile.key(call["call_site_pc"]): call for call in profile.get("tail_calls", [])}
 pilots.extend(sites)
+pilots.extend(tails)
 if sites:
     # Every return exit belongs to a design row; a site without an exit is reported.
     from return_exit import match_return_exits
@@ -226,8 +240,30 @@ def return_pc(suffix):
     """The case name of a return package pilot."""
     return "function_return" + ("_" + suffix[len("Return"):] if suffix != "Return" else "")
 
-for suffix in pilots:
-    if suffix in sites:
+def entry_units(suffix):
+    """(suffix, slot) per rendered entry: one per entry slot of a slot block, else one."""
+    if suffix not in sites and suffix not in tails:
+        slots = next(b for b in data["boundaries"] if b["pc"] == profile.pc(suffix)).get("slots")
+        if slots:
+            return [(suffix, slot) for slot in range(len(slots))]
+    return [(suffix, None)]
+
+
+units = [unit for suffix in pilots for unit in entry_units(suffix)]
+module_definitions = {}
+for suffix, slot in units:
+    if suffix in tails:
+        pc = return_pc(suffix)
+        index = None
+        tail_return = next((row for row in data.get("tail_returns", [])
+                            if row["call_site_pc"] == tails[suffix]["call_site_pc"]), None)
+        if tail_return is None:
+            cases.append({"pc": pc, "status": "refused_no_tail_return", "proof_ran": False,
+                          "reports": [{"kind": "no_tail_return_seed",
+                                       "detail": joins_record.get("refusals", {}).get(
+                                           tails[suffix]["call_site_pc"], "no tail-call exit")}]})
+            continue
+    elif suffix in sites:
         pc = return_pc(suffix)
         index = None
         if sites[suffix]["return_instruction_pc"] in unreached_sites:
@@ -267,8 +303,13 @@ for suffix in pilots:
                       "reports": [{"kind": "reaching_stop_guard", "detail": guard_refusals[suffix]}],
                       "proof_ran": False})
         continue
-    boundary = (return_boundary([sites[suffix]]) if suffix in sites
-                else deepcopy(data["boundaries"][index]))
+    if suffix in tails:
+        # The tail return renders from its seed alternative, as a call-return site does.
+        boundary = {"pc": pc, "status": "generated", "alternatives": deepcopy(tail_return["alternatives"]),
+                    "reaching_stops": []}
+    else:
+        boundary = (return_boundary([sites[suffix]]) if suffix in sites
+                    else deepcopy(data["boundaries"][index]))
     if boundary["status"] == "generated_call_return":
         # A return site renders from its call-return seed alternative.
         boundary["status"] = "generated"
@@ -280,6 +321,10 @@ for suffix in pilots:
             if alternative["predecessor_pc"] is not None
         ]
         boundary["status"] = "handwritten_cut"
+    if slot is not None:
+        # An entry slot renders the alternatives of its own incoming edge only.
+        boundary["alternatives"] = [boundary["alternatives"][number]
+                                    for number in boundary["slots"][slot]["alternatives"]]
     # A seed without a recorded root (a join seed of an older pass) shares the entry tree.
     origin_roots = {roots.get(alternative["seed_pc"], public_seed["entry_pc"])
                     for alternative in boundary["alternatives"]}
@@ -296,16 +341,19 @@ for suffix in pilots:
             if ancestor is None:
                 raise ValueError("no common ancestor")
             boundary["alternatives"], lifted_binders = lift_call_return_edges(
-                boundary["alternatives"], seeds=root_seeds, roots=roots, ancestor=ancestor, vocabulary=vocabulary)
+                boundary["alternatives"], seeds=lift_seeds, roots=roots, ancestor=ancestor, vocabulary=vocabulary)
         except ValueError as error:
             cases.append({"pc": pc, "status": "refused_mixed_roots", "roots": sorted(map(str, origin_roots)),
                           "reports": [{"kind": "join_lift_refused", "detail": str(error)}], "proof_ran": False})
             continue
         origin_roots = {ancestor}
     original_seed = root_seeds[origin_roots.pop()]
-    name = "fp_machine" + suffix if suffix in sites else "fp_machineAt" + suffix
+    package = suffix in sites or suffix in tails
+    name = ("fp_machine" + suffix if package else "fp_machineAt" + suffix
+            + ("" if slot is None else "_slot" + str(slot)))
     name = identifier(name, "generated entry")
-    source_ref = str(forward) + ("#/exits" if index is None else "#/boundaries/" + str(index))
+    source_ref = str(forward) + ("#/tail_returns" if suffix in tails else "#/exits" if index is None
+                                 else "#/boundaries/" + str(index))
     join_design = profile.get("join_designs", {}).get(suffix, [])
 
     def provenance(*args, **kwargs):
@@ -518,16 +566,19 @@ for suffix in pilots:
     if definitions is None:
         cases.append(record)
         continue
-    stem = "Function" + suffix if suffix in sites else "Pilot" + suffix
+    stem = "Function" + suffix if package else "Pilot" + suffix
     module = stem + "Entries"
     relative = Path(profile.generated_directory)
     directory = O / "sources" / relative
     directory.mkdir(parents=True, exist_ok=True)
     entry = directory / (module + ".v")
-    entry.write_text(header + "\n".join(definition for _, definition in definitions))
+    # The slots of one block share its module.
+    written = module_definitions.setdefault(stem, [])
+    written.extend(definitions)
+    entry.write_text(header + "\n".join(definition for _, definition in written))
     structural = directory / (stem + "Structural.v")
     source = header + "Require Import " + ".".join((relative / module).parts) + ".\n"
-    for symbol, definition in definitions:
+    for symbol, definition in written:
         source += (
             unfold_declaration(
                 symbol, instance_name=symbol + "_unfold", locality="export"
@@ -544,13 +595,25 @@ for suffix in pilots:
         entry=bind(entry),
         structural=bind(structural),
         qualified_entry=".".join((relative / module).parts) + "." + name,
-        definition_count=len(definitions),
+        definition_count=len(written),
         facts=facts,
         physical_declaration_check="pending",
         byte_identity_with_OLD="not_assumed",
     )
     emitted.extend([bind(entry), bind(structural)])
     cases.append(record)
+
+# A slot block's module grew after its earlier slots rendered: bind every case to its final files.
+assert len(cases) == len(units)
+for (suffix, slot), case in zip(units, cases):
+    if slot is not None:
+        boundary = next(b for b in data["boundaries"] if b["pc"] == profile.pc(suffix))
+        case["slot"] = {"index": slot, "predecessor_pc": boundary["slots"][slot]["predecessor_pc"],
+                        "predecessor_slot": boundary["slots"][slot]["predecessor_slot"]}
+        for key in ("entry", "structural"):
+            if key in case:
+                case[key] = bind(case[key]["path"])
+emitted = list({row["path"]: bind(row["path"]) for row in emitted}.values())
 
 (O / "RESULT.json").write_text(
     json.dumps(
