@@ -35,6 +35,7 @@ Definition parentHeaderTableCode `{!islaG Sigma} `{!threadG} : iProp Sigma :=
 Global Instance : LithiumUnfold (@parentHeaderTableCode) := I.
 Global Typeclasses Opaque parentHeaderTableCode.
 
-(* A block statement tagged with its block address. The composition selects
-   the statement of a table slot by the tag; the tag unfolds to the statement. *)
-Definition parentHeaderBlockAt (address : Z) (statement : Prop) : Prop := statement.
+(* A block statement tagged with its block address and its entry constant.
+   Slots of one block share the address; the composition selects the statement
+   of a table slot syntactically by both tags; the tag unfolds to the statement. *)
+Definition parentHeaderBlockAt (address : Z) {A : Type} (entry : A) (statement : Prop) : Prop := statement.

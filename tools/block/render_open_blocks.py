@@ -106,18 +106,28 @@ def main():
     profile = load_profile(options.function)
     rows = json.loads(options.callers.read_text())['rows']
     generated = ROOT / profile.generated_directory
-    entry_exists = lambda case: (generated / ('Pilot' + case + 'Entries.v')).exists()
+    # A slot case (`<block>_slot<n>`) lives in its block's entry module.
+    block_of = {row['case']: row.get('block', row['case']) for row in rows}
+    entry_module = lambda case: 'Pilot' + block_of.get(case, case) + 'Entries'
+    entry_exists = lambda case: (generated / (entry_module(case) + '.v')).exists()
     closed = closed_cases(options.closed_dir)
     entries, open_fields, closed_fields, by_case = plan(profile, rows, closed, entry_exists)
     stem, low = options.stem, lower_first(options.stem)
     continuation = low + 'Continuation args returnAddress'
 
     def entry(case):
-        return profile.qualified('Pilot' + case + 'Entries', 'fp_machineAt' + case)
+        return profile.qualified(entry_module(case), 'fp_machineAt' + case)
 
-    def binders(pc, with_k):
-        # The address tag lets the composition pick a slot's statement by its address.
-        return ('forall (Sigma : gFunctors) `{!islaG Sigma} `{!threadG},\n    ' + low + 'BlockAt ' + pc
+    def field_suffix(case):
+        # Slots of one block share its address; the slot number keeps their field names apart.
+        slot = by_case[case].get('slot')
+        return by_case[case]['pc'][2:] + ('' if slot is None else '_slot' + str(slot))
+
+    def binders(case, with_k):
+        # The address and entry-constant tags let the composition pick a slot's statement
+        # syntactically; slots of one block share the address.
+        return ('forall (Sigma : gFunctors) `{!islaG Sigma} `{!threadG},\n    ' + low + 'BlockAt '
+                + by_case[case]['pc'] + ' (@' + entry(case) + ' Sigma _ _)'
                 + ' (forall (args : ' + profile.args_type + ') (returnAddress : Z)'
                 + (' (K : iProp Sigma)' if with_k else '') + ',\n')
 
@@ -133,7 +143,7 @@ def main():
                 calls, _ = call_premises(profile, int(by_case[block]['pc'], 16), region['ends'][block])
                 premises += [premise for premise in calls if premise not in premises]
             k = '(' + continuation + ')'
-        return (binders(pc, region is None)
+        return (binders(case, region is None)
                 + '    ⊢ ' + ''.join(premise + ' -∗\n      ' for premise in premises)
                 + profile.selected_premise() + ' -∗\n'
                 + '      instr_body ' + pc + ' ((' + entry(case) + ' (args) (returnAddress) ' + k + ') ∗ True))')
@@ -141,7 +151,7 @@ def main():
     open_statements = [statement(case, row, region) for case, row, region in open_fields]
     closed_statements = [statement(case, row, None) for case, row, _ in closed_fields]
     text = '\n'.join(open_statements + closed_statements)
-    modules = [profile.qualified('Pilot' + case + 'Entries') for case in entries]
+    modules = [profile.qualified(entry_module(case)) for case in entries]
     modules += [call['spec_module'] for call in profile.get('calls', []) + profile.get('tail_calls', [])
                 if call['spec_module'] + '.' in text]
     closed_module = '.'.join(Path(options.closed_dir).parts) if options.closed_dir else None
@@ -170,18 +180,18 @@ def main():
             folded = [block for block in region['region'] if block != case]
             note = ('  (* No caller (' + row.get('reason', 'refused') + ')'
                     + ('; covers ' + ', '.join(folded) + ' (no entry)' if folded else '') + '. *)\n')
-        fields.append(note + '  ' + low + 'Open_' + by_case[case]['pc'][2:] + ' :\n    ' + text)
+        fields.append(note + '  ' + low + 'Open_' + field_suffix(case) + ' :\n    ' + text)
     lines.append(';\n'.join(fields))
     lines += ['}.', '']
 
     lines.append('(* The ' + str(len(closed_fields)) + ' closed blocks, from their compiled callers. *)')
     if closed_fields:
         lines.append('Record ' + stem + 'ClosedBlocks : Prop := {')
-        lines.append(';\n'.join('  ' + low + 'Closed_' + by_case[case]['pc'][2:] + ' :\n    ' + text
+        lines.append(';\n'.join('  ' + low + 'Closed_' + field_suffix(case) + ' :\n    ' + text
                                 for (case, _, _), text in zip(closed_fields, closed_statements)))
         lines += ['}.', '']
         lines.append('Definition ' + low + 'ClosedBlocks : ' + stem + 'ClosedBlocks := {|')
-        lines.append(';\n'.join('  ' + low + 'Closed_' + by_case[case]['pc'][2:] + ' := @'
+        lines.append(';\n'.join('  ' + low + 'Closed_' + field_suffix(case) + ' := @'
                                 + closed_module + '.Caller' + case + '.' + row['lemma']
                                 for case, row, _ in closed_fields))
         lines += ['|}.', '']
