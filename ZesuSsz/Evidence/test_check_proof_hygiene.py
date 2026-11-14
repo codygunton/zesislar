@@ -6,6 +6,7 @@ from unittest.mock import patch
 
 from check_proof_hygiene import (
     PLACEHOLDER,
+    assert_fails_match_failures,
     automation_entry_failures,
     FROZEN_AUTOMATION_TREE,
     frozen_automation_failures,
@@ -97,6 +98,22 @@ class ProofHygieneTests(unittest.TestCase):
                   'Unset Guard Checking bypass_check ""timeout""".\n')
         self.assertEqual(executable_form_failures("Test.v", source), [])
         self.assertEqual(executable_text(source).count("\n"), source.count("\n"))
+
+    def test_assert_fails_match_requires_idtac_delay(self):
+        name = "ZesuSsz/Automation2/Planted.v"
+        bad = ("Ltac a := assert_fails (match goal with _ => idtac end).\n"
+               "Ltac b := assert_fails(lazymatch goal with _ => idtac end).\n"
+               "Ltac c := assert_fails ltac:(\n  multimatch goal with _ => idtac end).\n")
+        self.assertEqual(assert_fails_match_failures(name, bad), [
+            f"assert_fails with an undelayed match (use `idtac; match`): {name}:{n}"
+            for n in (1, 2, 3)])
+        self.assertEqual(len(assert_fails_match_failures("ZesuSsz/Proofs/P.v", bad)), 3)
+        self.assertEqual(assert_fails_match_failures("ZesuSsz/Automation/P.v", bad), [])
+        good = ("Ltac a := assert_fails (idtac; match goal with _ => idtac end).\n"
+                "Ltac b := assert_fails ltac:(idtac; multimatch goal with _ => idtac end).\n"
+                "Ltac c := assert_fails (has_evar x).\n"
+                "(* assert_fails (match goal with _ => idtac end) *)\n")
+        self.assertEqual(assert_fails_match_failures(name, good), [])
 
     def test_identifier_boundaries_and_enabled_checks_remain_valid(self):
         source = ("Ltac my_timeout := idtac.\n"

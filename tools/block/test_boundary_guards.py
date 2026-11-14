@@ -198,8 +198,8 @@ class CallBoundary(unittest.TestCase):
                                                  {'constant': 'extra', 'binder': 'two'}])
         self.assertEqual(spec['post']['collections'], ['reg_col [(KindReg "input_end", BitsShape 64)]'])
 
-    def test_a_tail_call_seeds_the_exit_at_the_callers_return_address(self):
-        from call_boundary import CallRefused, call_return_seed
+    def tail_call_fixture(self, directory):
+        """A root seed, a call-site edge, the shapes and the call row of a tail call to tailSpec."""
         from resource_seed import seed_owned_resources
         from symbolic_state import input_expr
         origin = {'path': 'fixture.v', 'sha256': 'fixture'}
@@ -228,22 +228,26 @@ class CallBoundary(unittest.TestCase):
         state = root.state.copy()
         state.registers.update({'PC': bits(64, 64), 'input_end': input_expr('end_value', 64),
                                 **{'x%d' % number: bits(0, 64) for number in range(12, 18)}})
-        edge = {'seed_pc': '0x10', 'state': state.to_dict()}
         shapes = {'collection_ownership_id': 'collection', 'rows': [{'key': 'input_end', 'shape': 'exact'}]}
         call = {'call_site_pc': '0x14', 'spec': 'tailSpec', 'spec_module': 'Spec', 'spec_source': 'Spec.v',
                 'arrays': [{'binder': 'source', 'constant': 'src', 'caller_value': 'src_bytes'},
                            {'binder': 'scratch', 'constant': 'extra', 'length': 2, 'length_source': 'fixture'}],
-                'output_length_source': 'fixture'}
+                'output_length_source': 'fixture', 'collection_after': 'reg_col shape_regs'}
+        Path(directory, 'Spec.v').write_text(self.TAIL_SPEC)
+        return {'root_seed': root, 'shapes': shapes, 'vocabulary': vocabulary, 'constants': constants}, state, call
+
+    def test_a_tail_call_seeds_the_exit_at_the_callers_return_address(self):
+        from call_boundary import CallRefused, call_return_seed
+        from symbolic_state import input_expr
         with tempfile.TemporaryDirectory() as directory:
-            Path(directory, 'Spec.v').write_text(self.TAIL_SPEC)
+            fixture, state, call = self.tail_call_fixture(directory)
+            edge = {'seed_pc': '0x10', 'state': state.to_dict()}
             # The spec returns the exact register input_end with a shape only.
+            del call['collection_after']
             with self.assertRaisesRegex(CallRefused, 'exact system registers input_end'):
-                call_return_seed([edge], call=call, function_root=directory, root_seed=root, shapes=shapes,
-                                 vocabulary=vocabulary, constants=constants)
+                call_return_seed([edge], call=call, function_root=directory, **fixture)
             call['collection_after'] = 'reg_col shape_regs'
-            seed, public_after, report = call_return_seed([edge], call=call, function_root=directory,
-                                                          root_seed=root, shapes=shapes,
-                                                          vocabulary=vocabulary, constants=constants)
+            seed, public_after, report = call_return_seed([edge], call=call, function_root=directory, **fixture)
         # The callee returns to the caller's return address: the seed's PC is x1 at the call.
         self.assertEqual(seed.state.registers['PC'], input_expr('ra', 64))
         self.assertEqual(seed.state.registers['x1'], input_expr('call_x1', 64))
@@ -259,6 +263,32 @@ class CallBoundary(unittest.TestCase):
         self.assertIsNone(report['callee_frame'])
         self.assertEqual(report['renewed_system_registers'], ['input_end'])
         self.assertIn('∃ (scratch : list byte)', report['carried_fact'])
+
+    def test_a_kept_register_that_an_earlier_call_computes_is_named_once(self):
+        from call_boundary import call_return_seed
+        from symbolic_state import input_expr, operation
+        with tempfile.TemporaryDirectory() as directory:
+            fixture, state, call = self.tail_call_fixture(directory)
+            # x8 is kept across the call and holds a cursor that an earlier call's result
+            # (call_consumed) moved; the call reads it as its argument x11.
+            cursor = operation('bvadd', input_expr('call_consumed', 64), bits(8, 64))
+            state.registers.update({'x8': cursor, 'x11': cursor})
+            edge = {'seed_pc': '0x10', 'state': state.to_dict()}
+            seed, public_after, report = call_return_seed([edge], call=call, function_root=directory, **fixture)
+        self.assertEqual(seed.state.registers['x8'], input_expr('call2_kept_x8', 64))
+        self.assertEqual(report['named_registers'], {'x8': 'call2_kept_x8'})
+        nodes = public_after['assertion_tree']['components']
+        ids = [node['id'] for node in nodes]
+        # One equation states the value, before the facts that name it.
+        self.assertEqual(nodes[ids.index('call2_kept_x8_value')]['coq'],
+                         '⌜(call2_kept_x8 = (bv_add call_consumed (BV 64%N 8%Z)))⌝')
+        self.assertLess(ids.index('call2_kept_x8_value'), ids.index('call2_facts'))
+        self.assertIn('(call2_kept_x8)', report['carried_fact'])
+        self.assertNotIn('call_consumed', report['carried_fact'])
+        self.assertIn({'name': 'call2_kept_x8', 'type': 'bv 64', 'expression': input_expr('call2_kept_x8', 64).to_dict()},
+                      public_after['assertion_tree']['binders'])
+        # A kept value that no call computes stays as it is.
+        self.assertEqual(seed.state.registers['x2'], fixture['root_seed'].state.registers['x2'])
 
     def test_machine_call_spec_summary(self):
         from call_boundary import parse_machine_call_spec
