@@ -69,3 +69,23 @@ Proof.
        bv_unsigned (offsetWord args) - 400 - 112 + 112)) in idtac.
   exact I.
 Qed.
+
+(* The offset-word attempt runs on this goal (the guard fires) but the bound
+   is unprovable, so the attempt fails as a whole: no fact selection or
+   cleared hypothesis survives, and the caller's goal and context stay as
+   they were. *)
+Lemma region_offset_word_unprovable_no_commit (args : OffsetWordArgs) :
+  bv_unsigned (offsetOther args) < 64 ->
+  (0 <= 16 /\
+   bv_unsigned (offsetWord args) - 400 - 112 <=
+     bv_unsigned (bv_add (offsetWord args) (BV 64 18446744073709551216)) - 16 /\
+   bv_unsigned (bv_add (offsetWord args) (BV 64 18446744073709551216)) - 16 + 16 <=
+     bv_unsigned (offsetWord args) - 400 - 112 + 112) \/
+  bv_unsigned (offsetOther args) < 64.
+Proof.
+  intros Hother.
+  assert_succeeds (left; ZesuSsz.Automation2.UninitRegions.zesu_region_offset_candidate).
+  Fail (left; ZesuSsz.Automation2.UninitRegions.zesu_region_bounds).
+  try (left; ZesuSsz.Automation2.UninitRegions.zesu_region_bounds).
+  right. exact Hother.
+Qed.
