@@ -232,6 +232,7 @@ Check (eq_refl : @memcpyCallSpec2 = @ReviewedMemcpyCallSpec2).
 Check (eq_refl : @memcpyCallPremise = @ReviewedMemcpyCallPremise).
 Check (eq_refl : parentHeaderMemcpyLength = 80%Z).
 Check (eq_refl : parentHeaderMemcpySource = 0x80114fb8%Z).
+Check (eq_refl : memcpyCsrPc = 0x800e06c0%Z).
 
 Definition ReviewedNextUint64SelectedCode `{!islaG Sigma} `{!threadG} :
     iProp Sigma :=
