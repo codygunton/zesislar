@@ -11,7 +11,13 @@ PREFIX = "ZesuSsz.Compliance."
 UMBRELLA = "DecodeItemHints.v"
 # These hints apply only at their declared consumers.
 # The October scoped hint modules and their importers are retired.
-SCOPED_HINT_IMPORTS: dict[str, tuple[str, ...]] = {}
+SCOPED_HINT_IMPORTS: dict[str, tuple[str, ...]] = {
+    # Only the decodeParentHeader block obligations and composition use the boundary's unfolds.
+    "ZesuSsz.Compliance.ParentHeaderCompositionBoundary": (
+        "ZesuSsz.Compliance.ParentHeaderBlockObligations",
+        "ZesuSsz.Compliance.ParentHeaderGeneratedComposition",
+    ),
+}
 
 
 def source_commands(text: str) -> list[str]:
