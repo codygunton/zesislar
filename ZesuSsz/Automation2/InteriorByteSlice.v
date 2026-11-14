@@ -6,6 +6,7 @@ Require Import ZesuSsz.Automation2.TracePrefixTail.
 From iris.proofmode Require Import environments.
 Require Import ZesuSsz.Contracts.IslarisMemory.
 Require Import isla.riscv64.riscv64.
+Require SailStdpp.MachineWord.
 
 Section interior_byte_slice.
 Context `{!islaG Sigma}.
@@ -95,12 +96,12 @@ Ltac zesu_byte_slice_count size :=
    width aliases normalized so that the arithmetic sees one atom per term. *)
 Ltac zesu_byte_slice_alias_normalize :=
   repeat match goal with
-  | H : context[MachineWord.MachineWord.Z_idx ?z] |- _ =>
-      let v := eval vm_compute in (MachineWord.MachineWord.Z_idx z) in
-      change (MachineWord.MachineWord.Z_idx z) with v in H
-  | |- context[MachineWord.MachineWord.Z_idx ?z] =>
-      let v := eval vm_compute in (MachineWord.MachineWord.Z_idx z) in
-      change (MachineWord.MachineWord.Z_idx z) with v
+  | H : context[SailStdpp.MachineWord.MachineWord.Z_idx ?z] |- _ =>
+      let v := eval vm_compute in (SailStdpp.MachineWord.MachineWord.Z_idx z) in
+      change (SailStdpp.MachineWord.MachineWord.Z_idx z) with v in H
+  | |- context[SailStdpp.MachineWord.MachineWord.Z_idx ?z] =>
+      let v := eval vm_compute in (SailStdpp.MachineWord.MachineWord.Z_idx z) in
+      change (SailStdpp.MachineWord.MachineWord.Z_idx z) with v
   | H : context[@length ?T ?l] |- _ =>
       let T' := eval cbv in T in assert_fails (constr_eq T T');
       change (@length T l) with (@length T' l) in H
