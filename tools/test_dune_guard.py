@@ -410,7 +410,7 @@ class DuneCompilerGuardTest(unittest.TestCase):
             "source=next((pathlib.Path(x) for x in args if x.endswith('.v')),None)\n"
             "if source is None: sys.exit(0)\n"
             "fd=os.open(os.environ['FAKE_COMPILER_EVENTS'],os.O_WRONLY|os.O_CREAT|os.O_APPEND,0o600)\n"
-            "os.write(fd,(json.dumps({'source':str(source),'args':args,'OCAMLPATH':os.environ.get('OCAMLPATH'),'token':os.environ.get('ZESU_COQC_RESERVATION'),'scope':os.environ.get('ZESU_COQC_SCOPE'),'slots':len(list(pathlib.Path(os.environ['ZESU_GUARD_STATE'],'coqc-reservations').iterdir())),'cpu':resource.getrlimit(resource.RLIMIT_CPU)[0],'memory':os.environ.get('ZESU_MODULE_LIMIT_GIB')})+'\\n').encode());os.close(fd)\n"
+            "os.write(fd,(json.dumps({'source':str(source),'args':args,'OCAMLPATH':os.environ.get('OCAMLPATH'),'token':os.environ.get('ZESU_COQC_RESERVATION'),'scope':os.environ.get('ZESU_COQC_SCOPE'),'slots':len(list(pathlib.Path(os.environ['ZESU_GUARD_STATE'],'coqc-reservations').iterdir())),'cpu':resource.getrlimit(resource.RLIMIT_CPU)[0],'memory':os.environ.get('ZESU_MODULE_LIMIT_GIB'),'gc':os.environ.get('OCAMLRUNPARAM')})+'\\n').encode());os.close(fd)\n"
             "for suffix in ['.vo','.glob','.vos','.vok']: source.with_suffix(suffix).write_text('fixture')\n"
             "if os.environ.get('FAKE_BLOCK_AFTER_FIRST')=='1' and source.stem=='First':\n"
             " pathlib.Path(os.environ['GUARD_TEST_BLOCKED_COUNT']).write_text('17\\n')\n")
@@ -447,6 +447,7 @@ class DuneCompilerGuardTest(unittest.TestCase):
                 self.assertEqual(result.returncode, 0, result.stderr)
                 memory = limit or McpThresholdTest.guard_default_memory()
                 self.assertEqual(self.compiler_events()[-1]["memory"], memory)
+                self.assertEqual(self.compiler_events()[-1]["gc"], "s=32M,a=2,o=40")
                 scopes = [json.loads(line) for line in self.scope_log.read_text().splitlines()]
                 self.assertIn(f"MemoryMax={memory}G", scopes[-1])
                 self.assertIn("MemorySwapMax=0", scopes[-1])
@@ -914,7 +915,7 @@ class McpThresholdTest(unittest.TestCase):
             stub = ("#!/usr/bin/env python3\nimport json,os,sys\n"
                     "with open(os.environ['WRAPPER_EVENTS'],'a') as f:\n"
                     " f.write(json.dumps({'executable':os.path.basename(sys.argv[0]),'hold':os.environ.get('ZESU_HOLD_GIB'),"
-                    "'memory':os.environ.get('ZESU_MODULE_LIMIT_GIB'),"
+                    "'memory':os.environ.get('ZESU_MODULE_LIMIT_GIB'),'gc':os.environ.get('OCAMLRUNPARAM'),"
                     "'pet_rss_mb':os.environ.get('ROCQ_MAX_PET_RSS_MB'),"
                     "'arguments':sys.argv[1:]})+'\\n')\n"
                     "if sys.argv[1:]==['parent-slice']:print('zesuworkloads.slice')\n")
@@ -948,6 +949,8 @@ class McpThresholdTest(unittest.TestCase):
                 self.assertTrue(all(row["hold"] == (hold or "180") for row in rows))
                 memory = limit or McpThresholdTest.guard_default_memory()
                 self.assertTrue(all(row["memory"] == memory for row in rows))
+                if name == "rocq_coqc_guarded.sh":
+                    self.assertTrue(all(row["gc"] == "s=32M,a=2,o=40" for row in rows))
                 if name == "rocq_mcp_guarded.sh":
                     scopes = [row for row in rows if row["executable"] == "systemd-run"]
                     self.assertEqual(len(scopes), 1)
