@@ -118,7 +118,7 @@ check-support-freshness: stock-native-indexes
 	$(PYTHON) tools/block/render_support.py --function decodeItem --check
 	$(PYTHON) tools/block/render_open_blocks.py --function decodeParentHeader \
 	  --callers tools/block/generated/decodeparentheader_fp301_callers/CALLERS.json \
-	  --stem ParentHeader --boundary ZesuSsz.Compliance.ParentHeaderCompositionBoundary \
+	  --stem ParentHeader \
 	  --closed-dir ZesuSsz/Proofs/DecodeParentHeader/FP301 \
 	  --output ZesuSsz/Compliance/ParentHeaderBlockObligations.v --check
 

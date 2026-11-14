@@ -43,10 +43,9 @@ class OpenBlocks(unittest.TestCase):
                                     '(ZesuSsz.Contracts.ParentHeaderMemcpyService.memcpyCallSpec2)%I'])
 
     def test_a_return_block_has_no_slot_and_its_predecessors_cover_it(self):
-        # 5d00 -> 5d68 (return block: its caller takes the return package at returnAddress).
-        rows = [row('5d00', '0x800d5d00', ['5d68']), row('5d68', '0x800d5d68', []),
+        # 5d00 -> 5d68 (return block: the caller table inlines it into 5d00's caller).
+        rows = [row('5d00', '0x800d5d00', ['5d68']), row('5d68', '0x800d5d68', [], 'inlined'),
                 row('5da4', '0x800d5da4', [])]
-        rows[1]['preconditions'] = ['instr_pre returnAddress (Tail.fp_machineReturnTail args returnAddress K)']
         returns = open_blocks.return_blocks(rows)
         self.assertEqual(returns, {'5d68'})
         entries, open_fields, _, _ = open_blocks.plan(

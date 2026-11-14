@@ -4,10 +4,12 @@ import re
 from pathlib import Path
 import tempfile
 import unittest
+import unittest.mock
 
 from function_profiles import FunctionProfile, load_profile, loop_header, pilot_header, return_header
 from join_generalize import align_join_edges, binder_names
-from render_function_callers import exit_package, plan_callers
+import render_function_callers
+from render_function_callers import exit_package, inlined_returns, plan_callers
 from symbolic_state import input_expr
 from render_fp301_statements import (
     render_block_caller,
@@ -197,6 +199,47 @@ class CallerPlan(unittest.TestCase):
         self.assertIn('Lemma DesignedBoundary_800d1020_slot1 ', source)
         self.assertIn('  instr_body 0x800d1020\n    (DesignedEntry_800d1020_slot1 args returnAddress K).', source)
         self.assertIn('fp_machineAt1020_slot1 (args)', source)
+
+    def test_a_compliance_record_inlines_return_blocks_into_their_predecessors_callers(self):
+        # 1000 -> 1010 (tail jump to 0x800e06c0) and 1020 (return). Neither return block
+        # has a slot: 1000's caller runs through both and ends with the contract continuation.
+        profile = other_profile()
+        data = dict(profile.data, blocks=['1000', '1010', '1020'],
+                    tail_calls=[{'call_site_pc': '0x800d101c', 'callee_pc': '0x800e06c0',
+                                 'spec': 'calleeSpec', 'spec_module': 'Callee'}],
+                    compliance={'boundary': 'Other.Boundary', 'continuation': 'otherContinuation'})
+        function = {'blocks': [{'start': 0x800d1000, 'end': 0x800d1010, 'successors': [0x800d1010, 0x800d1020]},
+                               {'start': 0x800d1010, 'end': 0x800d1020, 'successors': [0x800e06c0]},
+                               {'start': 0x800d1020, 'end': 0x800d1030, 'successors': []}]}
+        rendered = 'source_declarations_rendered'
+        cases = [{'pc': '0x800d1000', 'status': rendered}]   # No return package, no return block entry.
+        self.assertEqual(inlined_returns(FunctionProfile(data), function), {'1010', '1020'})
+        self.assertEqual(inlined_returns(profile, function), set())   # No compliance record: unchanged.
+        with tempfile.TemporaryDirectory() as directory:
+            directory = Path(directory)
+            (directory / 'other.json').write_text(json.dumps(data))
+            (directory / 'RESULT.json').write_text(json.dumps({'cases': cases}))
+            (directory / 'FUNCTION.json').write_text(json.dumps({'functions': [function]}))
+            argv = ['render_function_callers.py', '--function', str(directory / 'other.json'),
+                    '--entries', str(directory / 'RESULT.json'), '--cfg', str(directory / 'FUNCTION.json'),
+                    '--output', str(directory / 'callers')]
+            with unittest.mock.patch('sys.argv', argv), unittest.mock.patch('builtins.print'):
+                render_function_callers.main()
+            table = json.loads((directory / 'callers' / 'CALLERS.json').read_text())
+            self.assertEqual([(row['case'], row['status']) for row in table['rows']],
+                             [('1000', 'rendered'), ('1010', 'inlined'), ('1020', 'inlined')])
+            self.assertEqual(table['rows'][0]['successors'], ['1010', '1020'])
+            self.assertEqual(table['rows'][0]['preconditions'], ['instr_pre 0x800e06c0 (Callee.calleeSpec)%I'])
+            source = (directory / 'callers' / 'Caller1000.v').read_text()
+            self.assertEqual(sorted(path.name for path in (directory / 'callers').iterdir()),
+                             ['CALLERS.json', 'Caller1000.v'])
+        self.assertIn('Require Import Other.Boundary.\n', source)
+        self.assertIn('(args : OtherArgs) (returnAddress : Z)  :\n'
+                      '  instr_pre 0x800e06c0 (Callee.calleeSpec)%I -∗\n  otherSelectedCode -∗\n'
+                      '  instr_body 0x800d1000\n'
+                      '    (DesignedEntry_800d1000 args returnAddress (otherContinuation args returnAddress)).',
+                      source)
+        self.assertNotIn('instr_pre returnAddress', source)
 
 
 class JoinEdgeAlignment(unittest.TestCase):
