@@ -619,7 +619,10 @@ class _Evaluator:
                 candidates.append((region.bytes[offset], region.ownership_id))
             elif region.byte_array is not None and ((isinstance(length, int) and offset < length) or offset < region.minimum_length):
                 candidates.append((Expr('array_byte', (region.byte_array,), 8, offset), region.ownership_id))
-            elif region.byte_array is not None and isinstance(length, Expr):
+            elif region.byte_array is not None and isinstance(length, Expr) and not (
+                    set(owners) - {region.ownership_id, None}):
+                # An unknown length may reach the byte, unless another owned region
+                # provably holds it: owned regions are separate.
                 self.report('unknown_memory_bound', address=address.to_dict(), length=length.to_dict())
                 return Expr('unknown_read', (address, region.byte_array, length), 8)
         def separated(region):
