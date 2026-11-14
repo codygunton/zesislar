@@ -6,6 +6,7 @@ Require Import ZesuMachineMap.Machine.
 Require Import ZesuSsz.Contracts.RlpDecodeItem.
 Require Import ZesuSsz.Contracts.RlpDecodeItemContract.
 Require Import ZesuSsz.Automation2.Calls.
+Require Import ZesuSsz.Automation2.GoalDomain.
 Require Import ZesuSsz.Contracts.DecodeItemCompositional.
 Require Export ZesuSsz.Contracts.DecodeItemCallData.
 Import ListNotations.
@@ -37,3 +38,8 @@ Definition decodeItemCallSpec2 `{!islaG Sigma} `{!threadG} : iProp Sigma :=
         True)))%I.
 Global Instance : LithiumUnfold (@decodeItemCallSpec2) := I.
 Global Typeclasses Opaque decodeItemCallSpec2.
+
+(* The call-site domain is address arithmetic over the call's arguments:
+   a caller proves it with the registered-goal step of GoalDomain.v. *)
+#[export] Hint Unfold decodeItemC1BDomain decodeItemArgsWellFormed decodeItemEntryLayout
+  separateRanges decodeItemCallDataArgs : zesu_goal_domain.
