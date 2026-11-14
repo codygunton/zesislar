@@ -1,8 +1,10 @@
 From Coq Require Import List ZArith Lia.
 From stdpp Require Import base list numbers bitvector.definitions.
 Require Import EvmSailRlp.evm_rlp_types.
+Require Import ZesuSsz.Automation.PureFacts.
 Require Import ZesuSsz.Contracts.RlpDecodeItem.
 Require Import ZesuSsz.Contracts.RlpDecodeItemContract.
+Require Import ZesuSsz.Contracts.DecodeItemCallData.
 Require Import ZesuSsz.Contracts.DecodeItemPayloadBounds.
 Require Import ZesuSsz.Contracts.ParentHeader.
 Require Import ZesuSsz.Contracts.Candidates.ParentHeaderDomain.
@@ -86,6 +88,56 @@ Proof.
     + exact (parentHeaderOuterPayloadBound args _ _ Hwf Hc).
     + unfold byteAt in Hlist, H16. rewrite H16 in Hlist. discriminate.
 Qed.
+
+(* decodeParentHeader's first call: under the contract domain, a list result
+   with a nonempty payload places the payload, read as the pointer window the
+   next call receives, inside the input. *)
+Lemma parentHeaderOuterPayloadWindowInInput (args : ParentHeaderArgs)
+    argv0 rest sp inputEnd before after :
+  DecodeMeaningModuloKnownBugs
+    (decodeItemCallDataArgs (argv0 :: parentHeaderInputPointer args :: rest) sp inputEnd
+       (parentHeaderInputBytes args) before) after ->
+  parentHeaderArgsWellFormed args ->
+  bv_unsigned (bv_and (bv_zero_extend 64 (List.nth 16 after (BV 8 0))) 1) <> 0 ->
+  0 < bv_unsigned (listWord64At8 after) ->
+  bv_unsigned (parentHeaderInputPointer args) <= bv_unsigned (leWord64 after 0) /\
+  bv_unsigned (leWord64 after 0) + bv_unsigned (listWord64At8 after) <=
+    bv_unsigned (parentHeaderInputPointer args) + Z.of_nat (length (parentHeaderInputBytes args)).
+Proof.
+  intros [Hc1b _] Hwf Hlist Hpos.
+  unfold decodeItemAllowsC1B, decodeItemAllows, decodeItemCallDataArgs in Hc1b.
+  cbn [decodeItemInputPointer decodeItemInputBytes decodeItemBeforeStorage lookup_total list_lookup_total] in Hc1b.
+  rewrite (decodeItemPayloadPointerLe _ _ _ _ Hc1b).
+  apply (decodeItemPayloadInInput _ _ before); [exact Hc1b | exact Hpos |].
+  pose proof Hc1b as (_ & Hresult & _).
+  unfold candidateResult40 in Hresult.
+  destruct (candidateDecodeItem (parentHeaderInputBytes args))
+    as [|isList headerLength payloadLength] eqn:Hc.
+  - rewrite (errorResult40Word8 after Hresult) in Hpos. lia.
+  - destruct Hresult as (_ & _ & _ & H8 & H16 & _).
+    apply listWord64At8Value in H8. rewrite H8.
+    destruct isList.
+    + exact (parentHeaderOuterPayloadBound args _ _ Hwf Hc).
+    + exfalso. apply Hlist.
+      unfold byteAt in H16.
+      destruct (nth_error after 16) as [b|] eqn:Hb; rewrite Hb in H16; cbn in H16; [|discriminate].
+      injection H16 as H16. rewrite (nth_error_nth _ _ _ Hb).
+      rewrite bv_and_unsigned, bv_zero_extend_unsigned, H16; [reflexivity|..]; vm_compute; congruence.
+Qed.
+
+#[export] Instance parentHeaderOuterPayloadWindowDerivedFacts (args : ParentHeaderArgs)
+    argv0 rest sp inputEnd before after :
+  ZesuDerivedFacts
+    (DecodeMeaningModuloKnownBugs
+       (decodeItemCallDataArgs (argv0 :: parentHeaderInputPointer args :: rest) sp inputEnd
+          (parentHeaderInputBytes args) before) after)
+    (parentHeaderArgsWellFormed args ->
+     bv_unsigned (bv_and (bv_zero_extend 64 (List.nth 16 after (BV 8 0))) 1) <> 0 ->
+     0 < bv_unsigned (listWord64At8 after) ->
+     bv_unsigned (parentHeaderInputPointer args) <= bv_unsigned (leWord64 after 0) /\
+     bv_unsigned (leWord64 after 0) + bv_unsigned (listWord64At8 after) <=
+       bv_unsigned (parentHeaderInputPointer args) + Z.of_nat (length (parentHeaderInputBytes args))).
+Proof. intros H. exact (parentHeaderOuterPayloadWindowInInput args _ _ _ _ _ _ H). Qed.
 
 (* Sanity. A list that wraps to consumed count 0 is excluded. *)
 Lemma parentHeaderOuterListWrapWitness :
