@@ -20,6 +20,11 @@ Import ListNotations.
 Open Scope Z_scope.
 Open Scope stdpp_scope.
 
+(* The template is a spec only in this proof of its correctness; callers use the
+   sealed public spec of ZesuSsz/Interfaces/NextUint64.v. *)
+Global Instance : LithiumUnfold (@nextUint64CallSpecDefinition) := I.
+Global Typeclasses Opaque nextUint64CallSpecDefinition.
+
 (* The slice is two 64-bit words; the contract states it as 16 bytes. *)
 Lemma nextUint64_word_to_bytes `{!islaG Sigma} (address : Z) (word : bv 64) :
   address ↦ₘ word -∗ address ↦ₘ∗ word64Bytes (bv_unsigned word).

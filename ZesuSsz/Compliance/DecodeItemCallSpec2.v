@@ -6,6 +6,11 @@ Require Import ZesuSsz.Contracts.DecodeItemCallSpec.
 Require Import ZesuSsz.Contracts.DecodeItemCallSpec2.
 Require Import ZesuSsz.Compliance.DecodeItemCallSpec.
 
+(* The template is a spec only in this proof of its correctness; callers use the
+   sealed public spec of ZesuSsz/Interfaces/DecodeItem.v. *)
+Global Instance : LithiumUnfold (@decodeItemCallSpecDefinition) := I.
+Global Typeclasses Opaque decodeItemCallSpecDefinition.
+
 (* The template differs from the frozen-core spec only in which identical
    machine_call it names. ZesuSsz/Interfaces/DecodeItemCorrect.v carries this
    proof over to the sealed public spec decodeItemCallSpec2. *)
