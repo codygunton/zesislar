@@ -292,6 +292,7 @@ Definition ReviewedParentHeaderArgsWellFormed (args : ParentHeaderArgs) : Prop :
     bv_unsigned (parentHeaderInputLength args) /\
   length (parentHeaderMemcpySourceBefore args) = 80%nat /\
   length (parentHeaderMemcpyScratchBefore args) = 8%nat /\
+  length (replicate 16%nat (BV 8 0)) = 16%nat /\
   parentHeaderError80 (parentHeaderMemcpySourceBefore args) /\
   0x40000000 <= bv_unsigned (parentHeaderInputPointer args) /\
   bv_unsigned (parentHeaderInputPointer args) +

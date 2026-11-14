@@ -106,6 +106,7 @@ Definition parentHeaderArgsWellFormed (args : ParentHeaderArgs) : Prop :=
     bv_unsigned (parentHeaderInputLength args) /\
   length (parentHeaderMemcpySourceBefore args) = 80%nat /\
   length (parentHeaderMemcpyScratchBefore args) = 8%nat /\
+  length parentHeaderNoneBytes = 16%nat /\
   parentHeaderError80 (parentHeaderMemcpySourceBefore args) /\
   parentHeaderInputLow <= bv_unsigned (parentHeaderInputPointer args) /\
   bv_unsigned (parentHeaderInputPointer args) +
@@ -297,7 +298,7 @@ Proof.
   pose proof (bv_unsigned_in_range 64 (parentHeaderStackPointer args)).
   pose proof (bv_unsigned_in_range 64 (parentHeaderReturnAddress args)).
   unfold bv_modulus in *. cbn in *.
-  intros (Hlength & _ & _ & _ & Hlow & Hhigh & _ & Hres & Hresh & Hsp & Hsph &
+  intros (Hlength & _ & _ & _ & _ & Hlow & Hhigh & _ & Hres & Hresh & Hsp & Hsph &
     _ & Hra & Hsep & _).
   rewrite Hlength. lia.
 Qed.
