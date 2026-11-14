@@ -266,9 +266,11 @@ def domain(profile, contract, text, seed, constants, ram):
     # Array lengths; they also give each owned array its length spellings.
     for index, item in enumerate(clauses):
         text_ = normal(item)
-        match = re.fullmatch(r'length \((.+)\) = ([0-9]+)%nat', text_)
-        if match and normal(match[1]) in arrays:
-            node, count = arrays[normal(match[1])], int(match[2])
+        # The array is an application in parentheses, or a constant's bare name.
+        match = re.fullmatch(r"length (?:\((.+)\)|([\w.']+)) = ([0-9]+)%nat", text_)
+        array = match and normal(match[1] or match[2])
+        if match and array in arrays:
+            node, count = arrays[array], int(match[3])
             ranges[node['id']][1].update({str(count), *[name for name, row in constants.items()
                                                         if row['value'] == count]})
             facts.append({'fact_id': 'wellformed:length-%d' % index, 'kind': 'bounds', 'status': 'supplied',
