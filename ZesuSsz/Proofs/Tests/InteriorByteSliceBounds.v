@@ -35,3 +35,23 @@ Lemma test_interior_byte_slice_symbolic_bounds :
    Z.to_nat (bv_unsigned (remaining - listWord64At24 after)) <= length bytes)%nat.
 Proof using All. zesu_byte_slice_bound_arith. Qed.
 End bounds.
+
+(* The slice size is a word read from a callee's output bytes: its count is
+   `Z.to_nat` of the word, equal to the size because the word is unsigned. *)
+Section word_size.
+Context `{!islaG Sigma} `{!threadG}.
+Lemma test_interior_byte_slice_word_size (base start : Z) (bytes out : list byte) :
+  0 <= start ->
+  start + bv_unsigned (bv_concat 16 (List.nth 1 out (BV 8 0)) (List.nth 0 out (BV 8 0))) <=
+    Z.of_nat (length bytes) ->
+  base ↦ₘ∗ bytes -∗
+  ∃ x : list byte *ₗ (),
+    (base + start) ↦ₘ∗ x.1ₗ ∗
+    ⌜bv_unsigned (bv_concat 16 (List.nth 1 out (BV 8 0)) (List.nth 0 out (BV 8 0))) =
+       Z.of_nat (length x.1ₗ)⌝ ∗ True.
+Proof.
+  iIntros (Hstart Hfits) "Harray".
+  zesu_lend_interior_byte_slice.
+  cbn [li_fst]. iFrame. iPureIntro. zesu_byte_slice_bound_arith.
+Qed.
+End word_size.
