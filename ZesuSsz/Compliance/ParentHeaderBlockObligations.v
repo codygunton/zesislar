@@ -97,10 +97,11 @@ Require ZesuSsz.Contracts.NextUint64CallSpec2.
 Require ZesuSsz.Contracts.ParentHeaderMemcpyService.
 Require ZesuSsz.Proofs.DecodeParentHeader.FP301.Caller0040.
 Require ZesuSsz.Proofs.DecodeParentHeader.FP301.Caller0054.
+Require ZesuSsz.Proofs.DecodeParentHeader.FP301.Caller026c.
 Import ListNotations.
 Local Open Scope Z_scope.
 
-(* The 88 open blocks: each field is the statement its block proof must close. *)
+(* The 87 open blocks: each field is the statement its block proof must close. *)
 Record ParentHeaderOpenBlocks : Prop := {
   parentHeaderOpen_800d5cb8 :
     forall (Sigma : gFunctors) `{!islaG Sigma} `{!threadG},
@@ -340,12 +341,6 @@ Record ParentHeaderOpenBlocks : Prop := {
       instr_pre 0x800d5f5c (ZesuSsz.Generated.DecodeParentHeader.FP301.Pilot02a4Entries.fp_machineAt02a4 (args) (returnAddress) (K))%I -∗
       parentHeaderSelectedCode -∗
       instr_body 0x800d5f1c ((ZesuSsz.Generated.DecodeParentHeader.FP301.Pilot0264Entries.fp_machineAt0264 (args) (returnAddress) K) ∗ True));
-  parentHeaderOpen_800d5f24 :
-    forall (Sigma : gFunctors) `{!islaG Sigma} `{!threadG},
-    parentHeaderBlockAt 0x800d5f24 (@ZesuSsz.Generated.DecodeParentHeader.FP301.Pilot026cEntries.fp_machineAt026c Sigma _ _) (forall (args : ParentHeaderArgs) (returnAddress : Z) (K : iProp Sigma),
-    ⊢ instr_pre 0x800d5f28 (ZesuSsz.Generated.DecodeParentHeader.FP301.Pilot0270Entries.fp_machineAt0270 (args) (returnAddress) (K))%I -∗
-      parentHeaderSelectedCode -∗
-      instr_body 0x800d5f24 ((ZesuSsz.Generated.DecodeParentHeader.FP301.Pilot026cEntries.fp_machineAt026c (args) (returnAddress) K) ∗ True));
   (* Successor without a slot: 0274; covers 0274 (no slot). *)
   parentHeaderOpen_800d5f28 :
     forall (Sigma : gFunctors) `{!islaG Sigma} `{!threadG},
@@ -705,7 +700,7 @@ Record ParentHeaderOpenBlocks : Prop := {
       instr_body 0x800d625c ((ZesuSsz.Generated.DecodeParentHeader.FP301.Pilot05a4Entries.fp_machineAt05a4 (args) (returnAddress) K) ∗ True))
 }.
 
-(* The 2 closed blocks, from their compiled callers. *)
+(* The 3 closed blocks, from their compiled callers. *)
 Record ParentHeaderClosedBlocks : Prop := {
   parentHeaderClosed_800d5cf8 :
     forall (Sigma : gFunctors) `{!islaG Sigma} `{!threadG},
@@ -720,12 +715,19 @@ Record ParentHeaderClosedBlocks : Prop := {
     ⊢ instr_pre 0x800d5d18 (ZesuSsz.Generated.DecodeParentHeader.FP301.Pilot0060Entries.fp_machineAt0060 (args) (returnAddress) (K))%I -∗
       instr_pre 0x800d5d4c (ZesuSsz.Generated.DecodeParentHeader.FP301.Pilot0094Entries.fp_machineAt0094 (args) (returnAddress) (K))%I -∗
       parentHeaderSelectedCode -∗
-      instr_body 0x800d5d0c ((ZesuSsz.Generated.DecodeParentHeader.FP301.Pilot0054Entries.fp_machineAt0054 (args) (returnAddress) K) ∗ True))
+      instr_body 0x800d5d0c ((ZesuSsz.Generated.DecodeParentHeader.FP301.Pilot0054Entries.fp_machineAt0054 (args) (returnAddress) K) ∗ True));
+  parentHeaderClosed_800d5f24 :
+    forall (Sigma : gFunctors) `{!islaG Sigma} `{!threadG},
+    parentHeaderBlockAt 0x800d5f24 (@ZesuSsz.Generated.DecodeParentHeader.FP301.Pilot026cEntries.fp_machineAt026c Sigma _ _) (forall (args : ParentHeaderArgs) (returnAddress : Z) (K : iProp Sigma),
+    ⊢ instr_pre 0x800d5f28 (ZesuSsz.Generated.DecodeParentHeader.FP301.Pilot0270Entries.fp_machineAt0270 (args) (returnAddress) (K))%I -∗
+      parentHeaderSelectedCode -∗
+      instr_body 0x800d5f24 ((ZesuSsz.Generated.DecodeParentHeader.FP301.Pilot026cEntries.fp_machineAt026c (args) (returnAddress) K) ∗ True))
 }.
 
 Definition parentHeaderClosedBlocks : ParentHeaderClosedBlocks := {|
   parentHeaderClosed_800d5cf8 := @ZesuSsz.Proofs.DecodeParentHeader.FP301.Caller0040.DesignedBoundary_800d5cf8;
-  parentHeaderClosed_800d5d0c := @ZesuSsz.Proofs.DecodeParentHeader.FP301.Caller0054.DesignedBoundary_800d5d0c
+  parentHeaderClosed_800d5d0c := @ZesuSsz.Proofs.DecodeParentHeader.FP301.Caller0054.DesignedBoundary_800d5d0c;
+  parentHeaderClosed_800d5f24 := @ZesuSsz.Proofs.DecodeParentHeader.FP301.Caller026c.DesignedBoundary_800d5f24
 |}.
 
 (* The block table: every rendered entry, with the contract continuation as K. *)

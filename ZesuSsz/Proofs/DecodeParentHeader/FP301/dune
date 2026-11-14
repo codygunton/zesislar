@@ -3,3 +3,4 @@
 ; theory, so the compliance theorem can consume them. Edit the callers through their renderers.
 (rule (targets Caller0040.v) (deps ../../../../tools/block/generated/decodeparentheader_fp301_callers/Caller0040.v) (action (copy ../../../../tools/block/generated/decodeparentheader_fp301_callers/Caller0040.v Caller0040.v)))
 (rule (targets Caller0054.v) (deps ../../../../tools/block/generated/decodeparentheader_fp301_callers/Caller0054.v) (action (copy ../../../../tools/block/generated/decodeparentheader_fp301_callers/Caller0054.v Caller0054.v)))
+(rule (targets Caller026c.v) (deps ../../../../tools/block/generated/decodeparentheader_fp301_callers/Caller026c.v) (action (copy ../../../../tools/block/generated/decodeparentheader_fp301_callers/Caller026c.v Caller026c.v)))
