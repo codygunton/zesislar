@@ -521,17 +521,21 @@ systemctl() {
   printf 'MemoryMax=171798691840\nMemorySwapMax=0\n'
 }
 ulimit -S -s 8192
-set -- scope-exec fixture -- python3 -c 'import json, resource; print(json.dumps({"stack":resource.getrlimit(resource.RLIMIT_STACK), "cpu":resource.getrlimit(resource.RLIMIT_CPU), "oom":open("/proc/self/oom_score_adj").read().strip()}))'
+unset OCAMLRUNPARAM
+set -- scope-exec fixture -- python3 -c 'import json, os, resource; print(json.dumps({"stack":resource.getrlimit(resource.RLIMIT_STACK), "cpu":resource.getrlimit(resource.RLIMIT_CPU), "oom":open("/proc/self/oom_score_adj").read().strip(), "gc":os.environ.get("OCAMLRUNPARAM")}))'
 """ + DISPATCH, **variables)
                 self.assertEqual(result.returncode, 0, result.stderr)
                 limits = json.loads(result.stdout)
                 self.assertEqual(limits["stack"], [-1, -1])
                 self.assertEqual(limits["cpu"], [cpu, cpu])
-                # The compiler is the kernel's preferred OOM victim.
+                # The compiler is the kernel's preferred OOM victim and runs the #255 GC setting.
                 self.assertEqual(limits["oom"], "1000")
+                self.assertEqual(limits["gc"], "s=32M,a=2,o=40")
 
     def test_parent_exec_makes_the_workload_the_preferred_oom_victim(self):
-        result = self.run_guard(r"""
+        for explicit, expected in (("", "s=32M,a=2,o=40"), ("o=80", "o=80")):
+            with self.subTest(explicit=explicit):
+                result = self.run_guard(r"""
 cat() {
   if [[ "$1" == /proc/*/cgroup ]]; then
     printf '0::/user.slice/zesuworkloads.slice/fixture.scope\n'
@@ -541,10 +545,11 @@ systemctl() {
   [ "$*" = '--user show zesuworkloads.slice -p MemoryMax -p MemorySwapMax' ] || return 2
   printf 'MemoryMax=171798691840\nMemorySwapMax=0\n'
 }
-set -- parent-exec -- python3 -c 'print(open("/proc/self/oom_score_adj").read().strip())'
-""" + DISPATCH)
-        self.assertEqual(result.returncode, 0, result.stderr)
-        self.assertEqual(result.stdout.strip(), "1000")
+if [ -n "$TEST_GC" ]; then export OCAMLRUNPARAM=$TEST_GC; else unset OCAMLRUNPARAM; fi
+set -- parent-exec -- python3 -c 'import os; print(open("/proc/self/oom_score_adj").read().strip(), os.environ.get("OCAMLRUNPARAM"))'
+""" + DISPATCH, TEST_GC=explicit)
+                self.assertEqual(result.returncode, 0, result.stderr)
+                self.assertEqual(result.stdout.strip(), f"1000 {expected}")
 
     def test_workload_parent_and_lines_follow_the_account_limit(self):
         for account, parent in ((None, 160), (200, 160), (210, 170), (235, 175)):
