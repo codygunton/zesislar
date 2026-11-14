@@ -20,13 +20,14 @@ the blocks without slots that it reaches, and its premises are the table entries
 those blocks reach and the callee specs of their call sites. No proof script is
 written.
 
-A return block (its caller takes a return-package premise at returnAddress) has
-no slot: the return package keeps only the facts common to its predecessors, not
-the branch facts the contract meaning needs. Each predecessor therefore runs
-through the return block and proves the contract continuation itself.
+A return block (status `inlined` in the caller table: the caller renderer gives it
+no caller) has no slot: the return package keeps only the facts common to its
+predecessors, not the branch facts the contract meaning needs. Each predecessor's
+caller therefore runs through the return block and proves the contract
+continuation (profile `compliance`) itself; its field is that caller's statement.
 
 Usage: render_open_blocks.py --function NAME --callers CALLERS.json
-       --stem ParentHeader --boundary MODULE --output FILE [--closed-dir DIR] [--check]
+       --stem ParentHeader --output FILE [--closed-dir DIR] [--check]
 """
 from pathlib import Path
 import argparse, json, re, sys
@@ -104,10 +105,8 @@ def plan(profile, rows, closed, entry_exists):
 
 
 def return_blocks(rows):
-    """The cases whose callers take a return-package premise at returnAddress."""
-    return {row['case'] for row in rows
-            if row['status'] == 'rendered'
-            and any(premise.startswith('instr_pre returnAddress ') for premise in row['preconditions'])}
+    """The return blocks the caller table inlines into their predecessors' callers."""
+    return {row['case'] for row in rows if row['status'] == 'inlined'}
 
 
 def main():
@@ -115,7 +114,6 @@ def main():
     parser.add_argument('--function', required=True)
     parser.add_argument('--callers', type=Path, required=True)
     parser.add_argument('--stem', required=True)
-    parser.add_argument('--boundary', required=True)
     parser.add_argument('--output', type=Path, required=True)
     parser.add_argument('--closed-dir')
     parser.add_argument('--check', action='store_true', help='fail if OUTPUT differs from a fresh render')
@@ -131,7 +129,8 @@ def main():
     closed = closed_cases(options.closed_dir)
     entries, open_fields, closed_fields, by_case = plan(profile, rows, closed, entry_exists)
     stem, low = options.stem, lower_first(options.stem)
-    continuation = low + 'Continuation args returnAddress'
+    compliance = profile['compliance']
+    continuation = compliance['continuation'] + ' args returnAddress'
 
     def entry(case):
         return profile.qualified(entry_module(case), 'fp_machineAt' + case)
@@ -184,7 +183,7 @@ def main():
              'From Coq Require Import Lists.List ZArith.ZArith.',
              'Require Import ZesuSsz.Automation2.BlockTable.']
     requires = profile['caller_contract_requires'] + [profile.selected_import().strip(),
-                                                       'Require Import ' + options.boundary + '.']
+                                                       'Require Import ' + compliance['boundary'] + '.']
     lines += list(dict.fromkeys(requires))
     lines += ['Require ' + module + '.' for module in modules]
     lines += ['Import ListNotations.', 'Local Open Scope Z_scope.', '']

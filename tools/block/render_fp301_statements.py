@@ -281,10 +281,10 @@ def slot_suffix(slot):
     return '' if slot is None else '_slot' + str(slot)
 
 
-def successor_precondition(profile, suffix, slot=None):
+def successor_precondition(profile, suffix, slot=None, k='K'):
     """Return the `instr_pre` premise that a successor block's entry (or entry slot) owns."""
     entry = profile.qualified('Pilot' + suffix + 'Entries', 'fp_machineAt' + suffix + slot_suffix(slot))
-    return 'instr_pre ' + profile.pc(suffix) + ' (' + entry + ' (args) (returnAddress) (K))%I'
+    return 'instr_pre ' + profile.pc(suffix) + ' (' + entry + ' (args) (returnAddress) (' + k + '))%I'
 
 
 def return_precondition(profile, suffix=''):
@@ -294,7 +294,7 @@ def return_precondition(profile, suffix=''):
             + ' args returnAddress K)')
 
 
-def render_block_caller(profile, block, preconditions, imports, slot=None):
+def render_block_caller(profile, block, preconditions, imports, slot=None, continuation=None):
     """Render one block caller from its entry, its exit premises and the selected code.
 
     The statement is declarations data; the proof is always `zesu_block2.`.
@@ -302,6 +302,8 @@ def render_block_caller(profile, block, preconditions, imports, slot=None):
     umbrella may declare it opaque (with its unfold marker), and an opaque code
     premise stops the block at its first instruction lookup. An entry slot's
     caller proves `instr_body` at the block's address for that slot's entry.
+    With `continuation` (a block that runs through the function return), the
+    statement has no K: the entry ends with that contract continuation.
     """
     address = profile.pc(block)[2:]
     pc = address + slot_suffix(slot)
@@ -325,11 +327,12 @@ def render_block_caller(profile, block, preconditions, imports, slot=None):
             + 'Global Instance : LithiumUnfold (@DesignedEntry_' + pc + ') := I.\n'
             + 'Global Typeclasses Opaque DesignedEntry_' + pc + '.\n\n'
             + 'Lemma DesignedBoundary_' + pc + ' `{!islaG Sigma} `{!threadG} (args : '
-            + profile.args_type + ') (returnAddress : Z) (K : iProp Sigma)  :\n'
+            + profile.args_type + ') (returnAddress : Z)' + ('' if continuation else ' (K : iProp Sigma)') + '  :\n'
             + premises
             + '  ' + profile.selected_premise() + ' -∗\n'
             + '  instr_body 0x' + address + '\n'
-            + '    (DesignedEntry_' + pc + ' args returnAddress K).\n'
+            + '    (DesignedEntry_' + pc + ' args returnAddress '
+            + ('(' + continuation + ')' if continuation else 'K') + ').\n'
             + 'Proof.\n'
             + '  zesu_block2.\n'
             + 'Qed.\n\n'
