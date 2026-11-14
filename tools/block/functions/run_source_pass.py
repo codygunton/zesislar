@@ -1,12 +1,16 @@
-"""Run the pinned source engine (FP-20261119) from the entry seed, adding generated seeds.
+"""Run the pinned source engine (FP-20261120) from the entry seed, adding generated seeds.
 
 A join is seeded only after every join that can reach it has its seed, so its
 incoming edges are complete. A call's return site is seeded from the callee
 summary (call_boundary.call_return_seed) once every path into the call block
 is complete; the profile's `calls` rows name each callee spec. generalize_owned_join builds the seed from the
 incoming edges; a join it refuses stays a cut, and the guards refuse what lies
-beyond it. The run writes FORWARD.json, JOINS.json and the input receipt that
-render_fp301_entries.py reads. No proof runs.
+beyond it. A `tail_calls` row's callee returns to the function's own return address:
+once the traversal ends, its tail-call exits (which must hold that address in x1) make
+the seed of the state the function exits with there (`tail_returns` in FORWARD.json, the
+seed in CALL-SEEDS.json). The run writes FORWARD.json, JOINS.json, the join and loop-head
+seeds (JOIN-SEEDS.json, on which the renderer lifts edges as this pass did) and the input
+receipt that render_fp301_entries.py reads. No proof runs.
 
 Usage: run_source_pass.py --inputs DIR --output DIR [--function NAME]
 """
@@ -19,9 +23,10 @@ from boundary_guards import can_reach, cfg_successors
 from call_boundary import CallRefused, call_return_seed
 from function_profiles import add_return_alignment, load_profile
 from loop_design import loop_head_seed
-from forward_resource_design import evaluate_owned_function
-from forward_resources import load_resource_vocabulary
-from join_generalize import common_root_ancestor, generalize_owned_join, lift_call_return_edges
+from forward_resource_design import _state_from_result, evaluate_owned_function
+from forward_resources import apply_owned_writes, load_resource_vocabulary, render_resource_boundary
+from join_generalize import (common_root_ancestor, generalize_owned_join, lift_call_return_edges, normalize,
+                             seed_record)
 from resource_seed import load_public_seed, seed_owned_resources
 from system_shape_seed import seed_system_shapes
 
@@ -200,6 +205,35 @@ def main():
         rounds.append({'seeds': sorted(seeds), 'added': added})
         if added is None:
             break
+    # A tail call returns to the function's return address: its seed is the exit state there.
+    entry_return = owned.state.registers.get('x1')
+    for call in profile.get('tail_calls', []) if profile else []:
+        site = call['call_site_pc']
+        edges = [row for row in report['exits'] if row['kind'] == 'tail_call' and row['instruction_pc'] == site]
+        origins = {row['seed_pc'] for row in edges}
+        if not edges or len({roots.get(pc) for pc in origins}) != 1:
+            refusals[site] = 'no path reaches the tail call' if not edges else 'tail-call paths from different roots'
+            continue
+        if any(entry_return is None or normalize(_state_from_result(row['state']).registers.get('x1', entry_return))
+               != normalize(entry_return) for row in edges):
+            refusals[site] = "a tail call without the caller's return address in x1"
+            continue
+        root = roots[next(iter(origins))]
+        try:
+            seed, call_public, call_report = call_return_seed(
+                edges, call=call, function_root=ROOT, root_seed=seeds[root], shapes=shapes, vocabulary=vocabulary,
+                constants=domain['constants'], origin_seeds=[seeds[pc] for pc in sorted(origins)])
+        except CallRefused as error:
+            refusals[site] = 'tail call refused: ' + str(error)
+            continue
+        roots[site], parents[site] = site, root
+        call_seeds[site] = {'public': call_public, 'state': seed.state.to_dict(), 'facts': seed.facts}
+        call_reports[site] = call_report
+        image = apply_owned_writes(seed.resources, seed.state.writes, conditions=seed.state.conditions,
+                                   facts=seed.facts, endianness=seed.state.endianness)
+        report.setdefault('tail_returns', []).append({'call_site_pc': site, 'alternatives': [{
+            'predecessor_pc': None, 'seed_pc': site, 'path': [], 'state': seed.state.to_dict(),
+            'resource_boundary': render_resource_boundary(seed.ownership, image, seed.state, vocabulary=vocabulary)}]})
     elapsed = time.monotonic_ns() - started
     report['liveness'] = liveness
     (output / 'FORWARD.json').write_text(json.dumps(report, indent=1) + '\n')
@@ -217,11 +251,15 @@ def main():
                                                       if duplicated else {})}, indent=2) + '\n')
     (output / 'CALL-SEEDS.json').write_text(json.dumps(
         {'schema': 'fp301.call-return-seeds.v1', 'seeds': call_seeds,
-         'calls': calls}, indent=1, ensure_ascii=False) + '\n')
+         'calls': calls, **({'tail_calls': profile['tail_calls']} if profile and profile.get('tail_calls') else {})},
+        indent=1, ensure_ascii=False) + '\n')
+    (output / 'JOIN-SEEDS.json').write_text(json.dumps(
+        {'schema': 'fp301.join-seeds.v1', 'seeds': {pc: seed_record(seed) for pc, seed in seeds.items()
+                                                    if roots.get(pc) != pc}}, ensure_ascii=False) + '\n')
     receipt = {'source_pass': bind(output / 'FORWARD.json'), 'level1_K_source': bind(level1),
                'vocabulary': bind(vocabulary_path), 'system_shapes': bind(shapes_path),
-               'engine': bind(ROOT / 'tools/block/FP-20261119.json'), 'joins': bind(output / 'JOINS.json'),
-               'call_seeds': bind(output / 'CALL-SEEDS.json')}
+               'engine': bind(ROOT / 'tools/block/FP-20261120.json'), 'joins': bind(output / 'JOINS.json'),
+               'call_seeds': bind(output / 'CALL-SEEDS.json'), 'join_seeds': bind(output / 'JOIN-SEEDS.json')}
     (output / 'INPUT-RECEIPT.json').write_text(json.dumps(receipt, indent=2) + '\n')
     stops = {}
     for stop in report['stops']:

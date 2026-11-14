@@ -7,8 +7,9 @@ returnAddress. A block that ends in a call (a profile `calls` row) also gets the
 callee spec at the callee address, `instr_pre CALLEE SPEC`; its successor is
 the return site. A block without successors needs the function-return package; this
 renderer refuses it until that package exists. A block that tail-jumps to a callee
-with a profile `tail_calls` row gets the callee spec and the function-return package:
-the callee returns to returnAddress. Each caller's proof is exactly
+with a profile `tail_calls` row gets the callee spec and that tail's return package
+(`FunctionReturnTail<key>`, the state the function exits with after the callee
+returns to returnAddress). Each caller's proof is exactly
 `zesu_block2.`; no other proof text is written.
 
 Usage: render_function_callers.py --function NAME --entries RESULT.json
@@ -35,6 +36,15 @@ def return_site(sites, start, end):
     inside = [suffix for suffix, design in sites
               if end is not None and start <= int(design['return_instruction_pc'], 0) < end]
     return inside[0] if len(inside) == 1 else None
+
+
+def exit_package(profile, sites, start, end):
+    """The return package suffix of a block without successors: its tail call's
+    `Tail<key>` package, else its function-return site (return_site)."""
+    tails = [call for call in profile.get('tail_calls', []) if start <= int(call['call_site_pc'], 16) < end]
+    if tails:
+        return 'Tail' + profile.key(tails[0]['call_site_pc'])
+    return return_site(sites, start, end)
 
 
 def plan_callers(profile, cases, function):
@@ -101,7 +111,7 @@ def _plan_caller(profile, suffix, pc, slot, own, rendered, slot_cases, blocks, e
             next(case for case in own if case['slot']['index'] == slot)['status'] != 'source_declarations_rendered'):
         refusal = 'own entry not rendered'
     elif not successors:
-        site = return_site(sites, pc, ends[pc])
+        site = exit_package(profile, sites, pc, ends[pc])
         package = 'function_return' + ('_' + site if site else '')
         refusal = None if site is not None and package in rendered else 'function-return package not rendered'
     else:
@@ -135,10 +145,11 @@ def main():
                    for kind in ('Entries', 'Structural')]
         preconditions = [successor_precondition(profile, name, index) for name, index in successors]
         if not successors:
-            # A return block exits to the function-return package at returnAddress.
+            # A return block exits to the function-return package at returnAddress; a tail
+            # block to its tail's package, where the callee returns.
             start = int(row['pc'], 16)
             end = next(block.get('end') for block in function['blocks'] if block['start'] == start)
-            site = return_site(return_sites(profile), start, end)
+            site = exit_package(profile, return_sites(profile), start, end)
             imports += [profile.qualified('FunctionReturn' + site + kind) for kind in ('Entries', 'Structural')]
             preconditions.append(return_precondition(profile, site))
         block = next(row for row in function['blocks'] if row['start'] == int(profile.pc(suffix), 16))

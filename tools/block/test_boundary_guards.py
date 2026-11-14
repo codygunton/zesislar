@@ -150,12 +150,115 @@ class CallBoundary(unittest.TestCase):
         self.assertEqual([row['reason'] for row in boundary(seeded, 24)['reaching_stops']], ['missing_trace'])
 
     def test_a_tail_jump_is_an_exit_not_a_call(self):
+        # The CFG names the tail callee 64 as the block's successor outside the function.
         tail = {**self.CALLER, 'end': 24, 'rows': [{'pc': pc} for pc in range(16, 24, 4)],
-                'blocks': [{'start': 16, 'end': 24, 'successors': []}],
+                'blocks': [{'start': 16, 'end': 24, 'successors': [64]}],
                 'calls': [{'pc': 20, 'target': 64, 'kind': 'tail'}]}
         result = evaluate_function(tail, {16: self.PLAIN, 20: self.CALL}, {16: SymbolicState(registers={'PC': bits(16, 64)})})
         self.assertEqual(result['cuts'], [])
-        self.assertNotIn('call_boundary', [row['reason'] for row in result['stops']])
+        # The jump leaves the function to its callee: a tail-call exit, not a dropped path.
+        self.assertEqual(result['stops'], [])
+        self.assertEqual([(row['kind'], row['instruction_pc']) for row in result['exits']], [('tail_call', hex(20))])
+        require_complete_boundary(boundary(result, 16))
+        # A jump elsewhere from the tail-call instruction still stops.
+        elsewhere = {**tail, 'calls': [{'pc': 20, 'target': 68, 'kind': 'tail'}]}
+        result = evaluate_function(elsewhere, {16: self.PLAIN, 20: self.CALL},
+                                   {16: SymbolicState(registers={'PC': bits(16, 64)})})
+        self.assertEqual([row['reason'] for row in result['stops']], ['outside_pc'])
+        self.assertEqual(result['exits'], [])
+
+    TAIL_SPEC = '''Definition tailSpec `{!islaG Sigma} `{!threadG} : iProp Sigma :=
+  (machine_call someMap 0
+    (fun argv sp RET =>
+      ∃ (source scratch : list byte),
+      ⌜bv_unsigned (argv !!! 1%nat) = src⌝ ∗
+      reg_col [(KindReg "input_end", BitsShape 64)] ∗
+      src ↦ₘ∗ source ∗
+      bv_unsigned (argv !!! 0%nat) ↦ₘ? 4 ∗
+      extra ↦ₘ∗ scratch ∗
+      ⌜length scratch = 2%nat⌝ ∗
+      RET (fun _ =>
+        reg_col [(KindReg "input_end", BitsShape 64)] ∗
+        src ↦ₘ∗ source ∗
+        bv_unsigned (argv !!! 0%nat) ↦ₘ∗ source ∗
+        extra ↦ₘ∗ two ∗
+        True)))%I.
+'''
+
+    def test_a_spec_names_arrays_at_fixed_addresses(self):
+        from call_boundary import parse_machine_call_spec
+        spec = parse_machine_call_spec(self.TAIL_SPEC, 'tailSpec')
+        self.assertEqual(spec['stack'], '0')
+        self.assertEqual(spec['pre']['arrays'], [{'constant': 'src', 'binder': 'source'},
+                                                {'constant': 'extra', 'binder': 'scratch'}])
+        self.assertEqual(spec['pre']['uninitialized'], [{'argument': 0, 'length': '4'}])
+        # A returned word is a binder of the parse; the seed reads one that is no post binder as a value.
+        self.assertEqual(spec['post']['arrays'], [{'constant': 'src', 'binder': 'source'},
+                                                 {'argument': 0, 'binder': 'source'},
+                                                 {'constant': 'extra', 'binder': 'two'}])
+        self.assertEqual(spec['post']['collections'], ['reg_col [(KindReg "input_end", BitsShape 64)]'])
+
+    def test_a_tail_call_seeds_the_exit_at_the_callers_return_address(self):
+        from call_boundary import CallRefused, call_return_seed
+        from resource_seed import seed_owned_resources
+        from symbolic_state import input_expr
+        origin = {'path': 'fixture.v', 'sha256': 'fixture'}
+        constants = {name: {'value': value, 'origin': origin}
+                     for name, value in [('src', 0x100), ('dst', 0x200), ('extra', 0x300)]}
+        registers = [{'id': name, 'kind': 'register', 'register': name, 'width': 64,
+                      'value_coq': value, 'symbolic_witness': None}
+                     for name, value in [('x1', 'ra'), ('x2', 'Z_to_bv 64 dst'), ('x10', 'Z_to_bv 64 dst'),
+                                         ('x11', 'Z_to_bv 64 src'), ('x8', 's0')]]
+        public = {'_input_sha256': 'fixture', 'source_bindings': [origin], 'assertion_tree': {
+            'kind': 'exists', 'binders': [], 'components': [
+                {'id': 'collection', 'kind': 'opaque', 'coq': 'reg_col (exact_regs args)'}, *registers,
+                {'id': 'source', 'kind': 'byte_array', 'original_component': 'src ↦ₘ∗ src_bytes',
+                 'original_address_z': 'src', 'byte_array_expr': {'op': 'input', 'value': 'src_bytes'},
+                 'element_bits': 8, 'length_original_coq': '4'},
+                {'id': 'dest', 'kind': 'uninitialized_memory', 'original_component': 'dst ↦ₘ? 4',
+                 'original_address_z': 'dst', 'length_original_coq': '4'},
+                {'id': 'scratch', 'kind': 'byte_array', 'original_component': 'extra ↦ₘ∗ old',
+                 'original_address_z': 'extra', 'byte_array_expr': {'op': 'input', 'value': 'old'},
+                 'element_bits': 8, 'length_original_coq': '2'},
+                {'id': 'terminal', 'kind': 'opaque', 'coq': 'True'}]}}
+        vocabulary = {'rows': [{'kind': kind, 'source_bindings': []} for kind in
+                               ('owned_byte_array', 'uninitialized_stack_span', 'permission_fraction')],
+                      'input_sha256': 'fixture', 'source_vocabulary': {'imports': []}}
+        root = seed_owned_resources(public, entry_pc=16, vocabulary=vocabulary, constants=constants)
+        state = root.state.copy()
+        state.registers.update({'PC': bits(64, 64), 'input_end': input_expr('end_value', 64),
+                                **{'x%d' % number: bits(0, 64) for number in range(12, 18)}})
+        edge = {'seed_pc': '0x10', 'state': state.to_dict()}
+        shapes = {'collection_ownership_id': 'collection', 'rows': [{'key': 'input_end', 'shape': 'exact'}]}
+        call = {'call_site_pc': '0x14', 'spec': 'tailSpec', 'spec_module': 'Spec', 'spec_source': 'Spec.v',
+                'arrays': [{'binder': 'source', 'constant': 'src', 'caller_value': 'src_bytes'},
+                           {'binder': 'scratch', 'constant': 'extra', 'length': 2, 'length_source': 'fixture'}],
+                'output_length_source': 'fixture'}
+        with tempfile.TemporaryDirectory() as directory:
+            Path(directory, 'Spec.v').write_text(self.TAIL_SPEC)
+            # The spec returns the exact register input_end with a shape only.
+            with self.assertRaisesRegex(CallRefused, 'exact system registers input_end'):
+                call_return_seed([edge], call=call, function_root=directory, root_seed=root, shapes=shapes,
+                                 vocabulary=vocabulary, constants=constants)
+            call['collection_after'] = 'reg_col shape_regs'
+            seed, public_after, report = call_return_seed([edge], call=call, function_root=directory,
+                                                          root_seed=root, shapes=shapes,
+                                                          vocabulary=vocabulary, constants=constants)
+        # The callee returns to the caller's return address: the seed's PC is x1 at the call.
+        self.assertEqual(seed.state.registers['PC'], input_expr('ra', 64))
+        self.assertEqual(seed.state.registers['x1'], input_expr('call_x1', 64))
+        self.assertEqual(seed.state.registers['x8'], input_expr('s0', 64))
+        self.assertEqual(seed.state.registers['input_end'], input_expr('call_input_end', 64))
+        nodes = {node['id']: node for node in public_after['assertion_tree']['components']}
+        self.assertEqual(nodes['collection']['coq'], 'reg_col shape_regs')
+        self.assertEqual(nodes['source']['original_component'], 'src ↦ₘ∗ src_bytes')
+        self.assertEqual(nodes['dest_call_output']['original_component'], 'dst ↦ₘ∗ (src_bytes)')
+        # The whole array at the fixed address holds the post value; its length is stated.
+        self.assertEqual(nodes['scratch']['original_component'], 'extra ↦ₘ∗ (two)')
+        self.assertEqual(nodes['scratch_length']['coq'], '⌜(List.length (two) = 2)%nat⌝')
+        self.assertIsNone(report['callee_frame'])
+        self.assertEqual(report['renewed_system_registers'], ['input_end'])
+        self.assertIn('∃ (scratch : list byte)', report['carried_fact'])
 
     def test_machine_call_spec_summary(self):
         from call_boundary import parse_machine_call_spec

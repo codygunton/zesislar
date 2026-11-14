@@ -7,7 +7,7 @@ import unittest
 
 from function_profiles import FunctionProfile, load_profile, loop_header, pilot_header, return_header
 from join_generalize import align_join_edges, binder_names
-from render_function_callers import plan_callers
+from render_function_callers import exit_package, plan_callers
 from symbolic_state import input_expr
 from render_fp301_statements import (
     render_block_caller,
@@ -152,7 +152,7 @@ class CallerPlan(unittest.TestCase):
                  {'pc': 'function_return', 'status': 'source_declarations_rendered'}]
         self.assertEqual(plan_callers(profile, cases, function)[-1], ('1010', None, [], None))
 
-    def test_a_tail_jump_with_a_callee_spec_exits_through_the_return_package(self):
+    def test_a_tail_jump_with_a_callee_spec_exits_through_its_tail_return_package(self):
         profile = other_profile()
         function = {'blocks': [{'start': 0x800d1000, 'end': 0x800d1010, 'successors': [0x800e06c0]},
                                {'start': 0x800d1010, 'end': 0x800d1020, 'successors': []}]}
@@ -162,7 +162,12 @@ class CallerPlan(unittest.TestCase):
                          'successor outside the function (tail jump without a tail_calls row)')
         profile.data['tail_calls'] = [{'call_site_pc': '0x800d100c', 'callee_pc': '0x800e06c0',
                                        'spec': 'calleeSpec', 'spec_module': 'Callee'}]
+        # The callee returns to returnAddress with the tail's own exit state, not the return block's.
+        self.assertEqual(plan_callers(profile, cases, function)[0],
+                         ('1000', None, [], 'function-return package not rendered'))
+        cases.append({'pc': 'function_return_Tail100c', 'status': 'source_declarations_rendered'})
         self.assertEqual(plan_callers(profile, cases, function)[0], ('1000', None, [], None))
+        self.assertEqual(exit_package(profile, [], 0x800d1000, 0x800d1010), 'Tail100c')
 
     def test_entry_slots_get_one_caller_each_and_exit_to_their_own_successor_slot(self):
         # 1020 is a duplicated join with one slot per incoming edge; 1030 continues each slot.

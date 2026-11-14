@@ -552,7 +552,8 @@ def lift_call_return_edges(alternatives, *, seeds, roots, ancestor, vocabulary):
 
     A call-return seed refines its parent's tree: it splits frame spans around the call
     output and appends the call's pure facts; a join or loop-head seed below it keeps that
-    tree. An edge from such a seed becomes one-byte
+    tree. An edge from such a seed (call-return, join or loop-head alike: `seeds` holds
+    every seed an edge starts from) becomes one-byte
     writes into the ancestor span that contains each byte it knows (its own store, its
     seed's stored byte, or element i of its seed's array) wherever that byte differs from
     the ancestor's own byte. A byte it does not know stays uninitialized, a sound
@@ -636,6 +637,39 @@ def lift_call_return_edges(alternatives, *, seeds, roots, ancestor, vocabulary):
             if binder['name'] not in names and binder['name'] not in [row['name'] for row in binders]:
                 binders.append({key: value for key, value in binder.items() if key != 'scope'})
     return lifted, binders
+
+
+def seed_record(seed):
+    """A JSON record of an OwnedSeed that seed_from_record restores exactly.
+
+    The forward pass writes its join and loop-head seeds this way, so the renderer lifts
+    an edge from such a seed on the same seed the pass lifted it on."""
+    return {'state': seed.state.to_dict(), 'ownership': seed.ownership,
+            'resources': [resource.to_dict() for resource in seed.resources], 'facts': seed.facts,
+            'reports': seed.reports, 'join_refusals': seed.join_refusals, 'join_edges': seed.join_edges,
+            'join_witness_plan': seed.join_witness_plan, 'join_kind': seed.join_kind}
+
+
+def seed_from_record(record):
+    """The OwnedSeed of a seed_record."""
+    try:
+        from .forward_resource_design import _state_from_result
+        from .forward_resources import OwnedBytes
+        from .resource_seed import OwnedSeed
+    except ImportError:
+        from forward_resource_design import _state_from_result
+        from forward_resources import OwnedBytes
+        from resource_seed import OwnedSeed
+
+    def expression(value):
+        return Expr.from_dict(value) if isinstance(value, dict) else value
+    resources = [OwnedBytes(row['id'], Expr.from_dict(row['base']), row['address_z'], expression(row['byte_array']),
+                            expression(row['length']), row['writable'], row['fraction'], row['component'],
+                            row['provenance'], row['element_bits'])
+                 for row in record['resources']]
+    return OwnedSeed(_state_from_result(record['state']), record['ownership'], resources, record['facts'],
+                     record['reports'], record['join_refusals'], record['join_edges'], record['join_witness_plan'],
+                     record['join_kind'])
 
 
 # Registers an exit may observe: return address, stack pointer, callee-saved, return values.

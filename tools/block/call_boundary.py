@@ -8,12 +8,15 @@ applies the callee summary to make the seed of the return site:
   unchanged; every other general register returns an arbitrary word, which
   becomes a fresh binder;
 * system registers: exact shapes return unchanged; a mask or bits shape
-  returns a fresh value (with its mask fact);
+  returns a fresh value (with its mask fact); an exact register that the spec's
+  return collection gives a bits shape only returns a fresh value, and the design
+  row's `collection_after` states the owned collection after the call;
 * memory: an array that the spec returns under its own pre binder is the
   caller's resource unchanged; an array that it returns under a post binder
-  (or a post expression, over uninitialized bytes) replaces the caller's bytes
-  at that argument with a fresh owned array; the callee frame comes back
-  uninitialized;
+  (or a post expression, or a pre binder's value, over uninitialized bytes)
+  replaces the caller's bytes at that argument or fixed address (a source
+  constant) with a fresh owned array; the callee frame comes back
+  uninitialized (a callee without stack bytes has none);
 * words: a spec word at an argument (`ARG + K ↦ₘ w`, e.g. a slice's pointer and
   length) binds w to the word the caller holds there; an array at `bv_unsigned w`
   is found through it; the callee's new value of the word becomes a fresh word
@@ -26,6 +29,9 @@ The callee summary comes from the spec's source text. The call design row
 names the spec, binds each spec array to its argument and the caller value
 of an array that the callee keeps, and states the output length with its
 source. Generic code names no address. No proof runs.
+
+A tail call (a design row without a return site) is a call whose return site is
+the caller's own return address: its seed is the state the function exits with.
 """
 from dataclasses import replace
 from pathlib import Path
@@ -36,7 +42,7 @@ import re
 from entry_seed import definition_body
 from forward_resources import _strip_enclosure, _top_positions, apply_owned_writes, render_resource_boundary
 from forward_resource_design import _state_from_result
-from resource_seed import seed_owned_resources
+from resource_seed import seed_owned_resources, source_z_expression
 from source_domain import substitute
 from symbolic_state import Expr, _offset, bits, input_expr, operation
 
@@ -98,13 +104,16 @@ def parse_machine_call_spec(source, name):
 
     def place(text):
         """`bv_unsigned (argv !!! N%nat)` (plus a constant) is an argument; `bv_unsigned B`
-        names an address that the pre binder B holds (a word the caller stored)."""
+        names an address that the pre binder B holds (a word the caller stored); a bare
+        name is a fixed address (a source constant)."""
         text = _strip_enclosure(text)
         argument = re.fullmatch(r'bv_unsigned\s+\(' + argv + r'\s+!!!\s+(\d+)%nat\)(?:\s*\+\s*(\d+))?', text)
         if argument:
             return {'argument': int(argument[1]), **({'offset': int(argument[2])} if argument[2] else {})}
         pointer = re.fullmatch(r'bv_unsigned\s+(\w+)', text)
-        return {'pointer': pointer[1]} if pointer else None
+        if pointer:
+            return {'pointer': pointer[1]}
+        return {'constant': text} if re.fullmatch(r"[A-Za-z_][\w'.]*", text) else None
 
     def classify(parts):
         rows = {'registers': [], 'collections': [], 'arrays': [], 'words': [], 'uninitialized': [], 'facts': []}
@@ -301,7 +310,10 @@ def call_return_seed(edges, *, call, function_root, root_seed, shapes, vocabular
 
     `origin_seeds` are the seeds the call-site paths start from. A join or loop-head seed
     between the root and the call binds its own names (e.g. machine_x18); the call-site
-    state mentions them, so the return seed declares them as it declares root binders."""
+    state mentions them, so the return seed declares them as it declares root binders.
+
+    A tail call (a design row without `return_site_pc`) returns to the return address the
+    call site holds in x1: the seed is the state there, with that address as its PC."""
     if not edges:
         raise CallRefused('No path reaches the call site.')
     source_path = Path(function_root) / call['spec_source']
@@ -322,7 +334,8 @@ def call_return_seed(edges, *, call, function_root, root_seed, shapes, vocabular
         layer += 1
         prefix = 'call%d_' % layer
     state, widened = _merge_call_sites(edges, prefix)
-    return_pc = int(call['return_site_pc'], 0)
+    tail = 'return_site_pc' not in call
+    return_pc = int(call['call_site_pc' if tail else 'return_site_pc'], 0)
     ownership = root_seed.ownership
     image = apply_owned_writes(root_seed.resources, state.writes, conditions=state.conditions,
                                facts=root_seed.facts, endianness=state.endianness)
@@ -355,6 +368,8 @@ def call_return_seed(edges, *, call, function_root, root_seed, shapes, vocabular
 
     # Spec arrays: the caller resource at each argument, or at a stored word.
     def spot(row):
+        if 'constant' in row:
+            return ('constant', row['constant'])
         return ('pointer', row['pointer']) if 'pointer' in row else ('argument', row['argument'], row.get('offset', 0))
     design = {row['binder']: row for row in call.get('arrays', [])}
     pre_arrays = {row['binder']: row for row in spec['pre']['arrays']}
@@ -373,6 +388,13 @@ def call_return_seed(edges, *, call, function_root, root_seed, shapes, vocabular
         if len(found) != 1:
             raise CallRefused('The replaced array has no unique caller resource at argument ' + str(row['argument']))
         return found[0]
+
+    def returned_value(row):
+        """(post binder, post value) of a returned array: a pre binder there is a value."""
+        binder = row.get('binder')
+        if binder is not None and binder not in fresh:
+            return None, binder
+        return binder, row.get('value')
     for binder, row in pre_arrays.items():
         if spot(design[binder]) != spot(row):
             raise CallRefused('The call design moves the spec array ' + binder)
@@ -395,10 +417,23 @@ def call_return_seed(edges, *, call, function_root, root_seed, shapes, vocabular
                 raise CallRefused('The kept array has no unchanged caller resource: ' + binder)
             kept.add(owner[0].id)
             continue
+        post, post_value = returned_value(returned)
+        if 'constant' in row:
+            # The callee takes the whole caller array at a fixed address (its pre binder is
+            # that array's value) and returns the whole array with its post value.
+            address = source_z_expression(row['constant'], constants or {})
+            owner = [resource for resource in resources.values()
+                     if resource.byte_array is not None and _offset(address, resource.base) == 0]
+            if len(owner) != 1:
+                raise CallRefused('The replaced array has no unique caller array at ' + row['constant'])
+            splits[owner[0].id] = {'whole': True, 'length': design[binder]['length'],
+                                   'pre': binder, 'post': post, 'post_value': post_value}
+            instantiation[binder] = None
+            continue
         # The callee replaces these bytes: find the caller resource by offset.
         resource, offset = caller_span(row, design[binder]['length'])
         splits[resource.id] = {'offset': offset, 'length': design[binder]['length'],
-                               'pre': binder, 'post': returned.get('binder'), 'post_value': returned.get('value')}
+                               'pre': binder, 'post': post, 'post_value': post_value}
         instantiation[binder] = None  # an existential of the carried facts
     # Uninitialized spec bytes at an argument: the callee writes the array it returns there.
     for row in spec['pre']['uninitialized']:
@@ -408,10 +443,13 @@ def call_return_seed(edges, *, call, function_root, root_seed, shapes, vocabular
             raise CallRefused('The spec does not return a sized array for its uninitialized bytes at argument '
                               + str(row['argument']))
         resource, offset = caller_span(row, length)
+        post, post_value = returned_value(returned)
         splits[resource.id] = {'offset': offset, 'length': length, 'pre': None,
-                               'post': returned.get('binder'), 'post_value': returned.get('value')}
-    # The callee frame: (sp - STACK) ↦ₘ? STACK, returned uninitialized.
-    stack = constants.get(spec['stack'], {}).get('value') if constants else None
+                               'post': post, 'post_value': post_value}
+    # The callee frame: (sp - STACK) ↦ₘ? STACK, returned uninitialized. A callee that uses
+    # no stack owns no frame.
+    stack = int(spec['stack']) if spec['stack'].isdigit() else (
+        constants.get(spec['stack'], {}).get('value') if constants else None)
     stack = stack if stack is not None else call['stack_bytes']
     frame_address = operation('bvsub', state.registers['x2'], bits(stack, 64))
     frames = [resource for resource in resources.values()
@@ -425,9 +463,9 @@ def call_return_seed(edges, *, call, function_root, root_seed, shapes, vocabular
                   and _offset(frame_address, resource.base) is not None
                   and _offset(frame_address, resource.base) + stack <= resource.length
                   and not image.updates[resource.id]]
-    if len(frames) != 1:
+    if stack and len(frames) != 1:
         raise CallRefused('The caller owns no uninitialized callee frame of ' + str(stack) + ' bytes.')
-    callee_frame = frames[0].id
+    callee_frame = frames[0].id if stack else None
 
     # Registers the spec keeps (zisk_input_end): their binder is the caller value.
     for row in spec['pre']['registers']:
@@ -449,10 +487,18 @@ def call_return_seed(edges, *, call, function_root, root_seed, shapes, vocabular
                             'expression': input_expr(prefix + name, 64).to_dict()})
     # System registers: a mask or bits shape comes back as a new value. It keeps
     # the seed's scoped symbol, so every call-site fact on the old value is dropped
-    # and only the shape's mask fact is stated again.
-    system_conditions, renewed = [], set()
+    # and only the shape's mask fact is stated again. An exact register that the spec
+    # returns with a bits shape only (`reg_col [(KindReg "r", BitsShape w)]`) comes back
+    # as a fresh value; the design row then states the owned collection after the call
+    # (`collection_after`), since the seed's collection names the exact value.
+    returned_shapes = {key: int(width) for text in spec['post']['collections']
+                       for key, width in re.findall(r'KindReg\s+"(\w+)"\s*,\s*BitsShape\s+(\d+)', text)}
+    system_conditions, renewed, renewed_exact = [], set(), []
     for row in shapes['rows']:
         if row['shape'] == 'exact':
+            if row['key'] in returned_shapes:
+                registers[row['key']] = input_expr(prefix + row['key'], returned_shapes[row['key']])
+                renewed_exact.append(row['key'])
             continue
         symbol = Expr.from_dict(row['symbol'])
         registers[row['key']] = symbol
@@ -460,6 +506,9 @@ def call_return_seed(edges, *, call, function_root, root_seed, shapes, vocabular
         if row['shape'] == 'mask':
             system_conditions.append(operation('=', operation('bvand', symbol, Expr.from_dict(row['mask'])),
                                                Expr.from_dict(row['expected'])))
+    if renewed_exact and not call.get('collection_after'):
+        raise CallRefused('The callee returns the exact system registers ' + ', '.join(renewed_exact)
+                          + ' with a shape only; the call design states no collection after the call.')
     state.conditions = [condition for condition in state.conditions if not renewed & set(_inputs(condition))]
 
     # The carried facts.
@@ -507,6 +556,8 @@ def call_return_seed(edges, *, call, function_root, root_seed, shapes, vocabular
     for component in ownership['components']:
         key, kind = component['id'], component['kind']
         node = dict(component['seed_component'])
+        if key == shapes['collection_ownership_id'] and renewed_exact:
+            node.update(original_component=call['collection_after'], coq=call['collection_after'])
         if kind == 'register':
             node.update(original_component='"%s" ↦ᵣ RVal_Bits %s' % (component['name'], _coq(registers[component['name']])),
                         value_coq=_coq(registers[component['name']]))
@@ -515,6 +566,17 @@ def call_return_seed(edges, *, call, function_root, root_seed, shapes, vocabular
                 node['symbolic_witness'] = registers[component['name']].value
         elif key == callee_frame:
             pass
+        elif key in splits and splits[key].get('whole'):
+            # The whole array at a fixed address now holds the callee's post value.
+            resource, split = resources[key], splits[key]
+            value = fresh[split['post']] if split['post'] else \
+                '(' + _strip_enclosure(instantiate(split['post_value'], {})) + ')'
+            node = {'kind': 'byte_array', 'id': key, 'original_component': '%s ↦ₘ∗ %s' % (resource.address_z, value),
+                    'address_z': resource.address_z, 'byte_array_expr': input_expr(value, None).to_dict(),
+                    'element_bits': 8, 'length_original_coq': str(split['length'])}
+            extra_facts.append({'resource_id': key, 'count': split['length'],
+                                'coq': '(List.length %s = %d)%%nat' % (value, split['length'])})
+            split['pieces'] = [key]
         elif key in splits:
             resource, split = resources[key], splits[key]
             pieces = [(0, split['offset']), (split['offset'], split['offset'] + split['length']),
@@ -547,7 +609,8 @@ def call_return_seed(edges, *, call, function_root, root_seed, shapes, vocabular
                 address = '(' + resource.address_z + ' + ' + str(start) + ')' if start else resource.address_z
                 written = [offset for offset in range(start, end) if offset in updates]
                 if index == 1:
-                    value = fresh[split['post']] if split['post'] else '(' + instantiate(split['post_value'], {}) + ')'
+                    value = fresh[split['post']] if split['post'] else \
+                        '(' + _strip_enclosure(instantiate(split['post_value'], {})) + ')'
                     nodes.append({'kind': 'byte_array', 'id': piece_id, 'original_component':
                                   '%s ↦ₘ∗ %s' % (address, value), 'address_z': address,
                                   'byte_array_expr': input_expr(value, None).to_dict(), 'element_bits': 8,
@@ -659,14 +722,17 @@ def call_return_seed(edges, *, call, function_root, root_seed, shapes, vocabular
     for name, value in state.registers.items():
         if not GPR.fullmatch(name) and name not in registers and name != 'PC':
             seed.state.registers[name] = value
+    if tail:
+        seed.state.registers['PC'] = state.registers['x1']
     seed.state.retained_registers = dict(seed.state.registers)
     seed.state.conditions = list(state.conditions) + system_conditions
     seed.state.memory = [replace(region, bytes=regions.get(region.ownership_id, region.bytes))
                          for region in seed.state.memory]
-    seed.join_kind = 'call_return'
-    report = {'call_site_pc': call['call_site_pc'], 'return_site_pc': call['return_site_pc'],
+    seed.join_kind = 'tail_return' if tail else 'call_return'
+    report = {'call_site_pc': call['call_site_pc'], 'return_site_pc': call.get('return_site_pc'),
               'spec': call['spec_module'] + '.' + call['spec'], 'edges': len(edges),
               'widened_call_site_registers': widened, 'replaced': splits, 'kept': sorted(kept),
               'callee_frame': callee_frame, 'carried_fact': carried,
-              'havoc_registers': [binder['name'] for binder in binders if binder['name'].startswith(prefix + 'x')]}
+              'havoc_registers': [binder['name'] for binder in binders if binder['name'].startswith(prefix + 'x')],
+              **({'renewed_system_registers': renewed_exact} if renewed_exact else {})}
     return seed, public, report
