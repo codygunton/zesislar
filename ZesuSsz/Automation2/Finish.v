@@ -879,10 +879,15 @@ Ltac zesu_finish_exists_from_hypotheses :=
       end
     end].
 
-(* The common pure path and final tail share the union helper. Baseline closers remain available. *)
+(* The common pure path and final tail share the union helper. Baseline closers remain available.
+   The existential leaf goes first: the first arm below fails outright when
+   its implication-pair step finds no pair, so a leaf inside it is never
+   reached on such a context. *)
 Ltac zesu_finish_final_pure :=
   first [
+  zesu_finish_exists_from_hypotheses |
   zesu_final_pure_head_gate;
+  try BytePositionEquations.zesu_byte_position_facts;
   tryif progress zesu_saturate_derived_facts
   then try solve [zesu_array_bounds_if_enabled]
   else idtac;
@@ -890,7 +895,7 @@ Ltac zesu_finish_final_pure :=
   try solve [
     first [
       zesu_finish_negated_ge; zesu_finish_implication_pair; repeat split;
-      first [reflexivity | assumption | eassumption | zesu_finish_exists_from_hypotheses |
+      first [reflexivity | assumption | eassumption |
         zesu_final_solver_goal; lia | zesu_final_solver_goal; bv_solve |
         zesu_finish_forall_leaf | zesu_finish_contract_arithmetic |
         zesu_finish_simpl_and_leaf]
@@ -911,11 +916,12 @@ Ltac zesu_finish_final_pure :=
 
 Ltac zesu_finish_pure_goal :=
   first [
+  zesu_finish_exists_from_hypotheses |
 zesu_finish_pure_goal_base;
   try solve [
     first [
       zesu_finish_negated_ge; zesu_finish_implication_pair; repeat split;
-      first [reflexivity | assumption | eassumption | zesu_finish_exists_from_hypotheses | lia | bv_solve |
+      first [reflexivity | assumption | eassumption | lia | bv_solve |
         zesu_finish_forall_leaf]
     | repeat split; zesu_finish_forall_leaf]] | zesu_finish_common_pure].
 

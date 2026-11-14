@@ -128,6 +128,77 @@ Ltac zesu_le_window_rewrite_hypothesis :=
         end ]
   end.
 
+(* A branch fact on a word against a closed word, as an equation (or
+   disequation) of the word's bv_unsigned, when the goal states that
+   bv_unsigned. A zero-extended word states the bv_unsigned of the value it
+   extends. *)
+Lemma zesu_zero_extend_eq_unsigned (n z : N) (value : bv n) (word : bv z) :
+  (n <= z)%N -> bv_zero_extend z value = word -> bv_unsigned value = bv_unsigned word.
+Proof. intros Hle <-. rewrite bv_zero_extend_unsigned; [reflexivity | exact Hle]. Qed.
+
+Lemma zesu_zero_extend_neq_unsigned (n z : N) (value : bv n) (word : bv z) :
+  (n <= z)%N -> bv_zero_extend z value <> word -> bv_unsigned value <> bv_unsigned word.
+Proof.
+  intros Hle Hne Heq. apply Hne, bv_eq. rewrite bv_zero_extend_unsigned; [exact Heq | exact Hle].
+Qed.
+
+Lemma zesu_word_eq_unsigned (n : N) (value word : bv n) :
+  value = word -> bv_unsigned value = bv_unsigned word.
+Proof. intros ->. reflexivity. Qed.
+
+Lemma zesu_word_neq_unsigned (n : N) (value word : bv n) :
+  value <> word -> bv_unsigned value <> bv_unsigned word.
+Proof. intros Hne Heq. apply Hne, bv_eq, Heq. Qed.
+
+Ltac zesu_word_fact_view Hfact value word view :=
+  ZesuSsz.Automation2.VmClosed.zesu_vm_closed word;
+  lazymatch goal with |- context [bv_unsigned value] => idtac end;
+  let unsigned := eval vm_compute in (bv_unsigned word) in
+  let Hview := fresh "Hview" in
+  pose proof (view Hfact) as Hview;
+  change (bv_unsigned word) with unsigned in Hview;
+  clear Hfact.
+
+Ltac zesu_word_fact_unsigned :=
+  match goal with
+  | Hfact : @bv_zero_extend ?n ?z ?value = ?word |- _ =>
+      zesu_word_fact_view Hfact value word
+        constr:(zesu_zero_extend_eq_unsigned n z value word ltac:(vm_compute; congruence))
+  | Hfact : not (@bv_zero_extend ?n ?z ?value = ?word) |- _ =>
+      zesu_word_fact_view Hfact value word
+        constr:(zesu_zero_extend_neq_unsigned n z value word ltac:(vm_compute; congruence))
+  | Hfact : @eq (bv ?n) ?value ?word |- _ =>
+      zesu_word_fact_view Hfact value word constr:(zesu_word_eq_unsigned n value word)
+  | Hfact : not (@eq (bv ?n) ?value ?word) |- _ =>
+      zesu_word_fact_view Hfact value word constr:(zesu_word_neq_unsigned n value word)
+  end.
+
+(* A byte variable known from a lookup becomes its list position in an
+   equation or disequation hypothesis, when the goal reads that position. *)
+Ltac zesu_lookup_value_rewrite_hypothesis :=
+  match goal with
+  | Hlookup : ?bytes !! ?index = Some ?value |- _ =>
+      is_var value;
+      lazymatch goal with |- context [@nth (bv 8) index bytes _] => idtac end;
+      match goal with
+      | Hfact : ?fact |- _ =>
+          lazymatch fact with
+          | _ !! _ = Some _ => fail
+          | _ = _ => idtac
+          | not (_ = _) => idtac
+          end;
+          lazymatch fact with context [value] => idtac end;
+          rewrite <- (nth_lookup_Some bytes index (BV 8 0) value Hlookup) in Hfact
+      end
+  end.
+
+(* Final pure goals: the branch facts in the goal's byte-position form. A
+   pass's goal reads the list through a bound name, so the run-loop step
+   leaves these facts to the finisher. *)
+Ltac zesu_byte_position_facts :=
+  progress repeat first [zesu_le_window_rewrite_hypothesis | zesu_lookup_value_rewrite_hypothesis
+    | zesu_word_fact_unsigned].
+
 (* A byte variable known from a lookup becomes its list position, when the
    left side reads the same position. The goal is `lhs = ?normalized`; the
    replacement is proved apart, so that the variable in the evar's instance

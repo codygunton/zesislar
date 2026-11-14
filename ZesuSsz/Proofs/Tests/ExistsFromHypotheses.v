@@ -26,3 +26,10 @@ Proof.
   Fail zesu_finish_exists_from_hypotheses.
   exists first, second, before. split; [exact Hdomain | reflexivity].
 Qed.
+
+(* The final finisher reaches the step on a context with no implication pair. *)
+Goal forall (first second : bv 64) (before after : list (bv 8)),
+  call_domain [first; second] before -> call_meaning [first; second] before after ->
+  exists (x y : bv 64) (before0 : list (bv 8)),
+    call_domain [x; y] before0 /\ call_meaning [x; y] before0 after.
+Proof. intros first second before after Hdomain Hmeaning. zesu_finish_final_pure. Qed.

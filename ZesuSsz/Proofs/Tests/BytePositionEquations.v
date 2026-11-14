@@ -49,6 +49,47 @@ Proof.
   exact Hfact.
 Qed.
 
+(* The residual shape of a branch: the final finisher states the fact the
+   way the goal does (byte positions, then the bv_unsigned of the extended
+   value) and closes the equation and the disequation. *)
+Goal forall frame (bytes : list (bv 8)), windowFrameWellFormed frame ->
+  bv_zero_extend 64 (Z_to_bv 16 (little_endian_to_bv 8 (take (N.to_nat 2)
+    (drop (Z.to_nat (bv_unsigned (windowPointer frame + BV 64 18446744073709551216 +
+      BV 64 400 + BV 64 18446744073709551256) -
+      (bv_unsigned (windowPointer frame) - 400 + 8))) bytes)))) = BV 64 0 ->
+  bv_unsigned (bv_concat 16 (nth 33 bytes (BV 8 0)) (nth 32 bytes (BV 8 0))) = 0%Z.
+Proof. intros frame bytes Hframe Hfact. zesu_byte_position_facts. assumption. Qed.
+
+Goal forall frame (bytes : list (bv 8)), windowFrameWellFormed frame ->
+  bv_zero_extend 64 (Z_to_bv 16 (little_endian_to_bv 8 (take (N.to_nat 2)
+    (drop (Z.to_nat (bv_unsigned (windowPointer frame + BV 64 18446744073709551216 +
+      BV 64 400 + BV 64 18446744073709551256) -
+      (bv_unsigned (windowPointer frame) - 400 + 8))) bytes)))) <> BV 64 0 ->
+  bv_unsigned (bv_concat 16 (nth 33 bytes (BV 8 0)) (nth 32 bytes (BV 8 0))) <> 0%Z.
+Proof. intros frame bytes Hframe Hfact. zesu_finish_final_pure. Qed.
+
+(* A word fact on a value the goal does not state: it stays. *)
+Goal forall (value : bv 16), bv_zero_extend 64 value = BV 64 0 -> True.
+Proof. intros value Hfact. Fail zesu_word_fact_unsigned. exact I. Qed.
+
+(* A branch fact on a byte variable known from a lookup, while the goal reads
+   the byte's position: the fact moves to the position, then to bv_unsigned. *)
+Goal forall (bytes : list (bv 8)) (value : bv 8), bytes !! 16%nat = Some value ->
+  bv_and (bv_zero_extend 64 value) (BV 64 1) = BV 64 0 ->
+  bv_unsigned (bv_and (bv_zero_extend 64 (nth 16 bytes (BV 8 0))) (BV 64 1)) = 0%Z.
+Proof. intros bytes value Hlookup Hfact. zesu_finish_final_pure. Qed.
+
+Goal forall (bytes : list (bv 8)) (value : bv 8), bytes !! 16%nat = Some value ->
+  bv_and (bv_zero_extend 64 value) (BV 64 1) <> BV 64 0 ->
+  bv_unsigned (bv_and (bv_zero_extend 64 (nth 16 bytes (BV 8 0))) (BV 64 1)) <> 0%Z.
+Proof. intros bytes value Hlookup Hfact. zesu_byte_position_facts. assumption. Qed.
+
+(* The goal reads another position: the fact stays. *)
+Goal forall (bytes : list (bv 8)) (value : bv 8), bytes !! 16%nat = Some value ->
+  bv_and (bv_zero_extend 64 value) (BV 64 1) = BV 64 0 ->
+  bv_unsigned (nth 17 bytes (BV 8 0)) = 0%Z -> True.
+Proof. intros bytes value Hlookup Hfact. Fail zesu_lookup_value_rewrite_hypothesis. intros _. exact I. Qed.
+
 (* The goal does not read the list: the fact stays. *)
 Goal forall (bytes : list (bv 8)),
   Z_to_bv 16 (little_endian_to_bv 8 (take 2 (drop 32 bytes))) = BV 16 0 -> True.
