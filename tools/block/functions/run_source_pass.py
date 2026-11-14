@@ -79,7 +79,9 @@ def main():
     level1 = ROOT / 'ZesuSsz/Contracts/Level1.v'
     continuation = {'name': 'K', 'coq': 'K', 'source_binding': {'source': str(level1) + '#IslarisContractSpec'},
                     'terminal_id': terminal}
-    joins = joins_of(function)
+    # A design-table duplicated join is no cut: each incoming edge keeps its own entry slot.
+    duplicated = [int(profile.pc(key), 0) for key in profile.get('duplicated_joins', [])] if profile else []
+    joins = [pc for pc in joins_of(function) if pc not in duplicated]
     successors = cfg_successors(function)
     seeds = {public['entry_pc']: owned}
     liveness = {hex(pc): registers for pc, registers in source_liveness(
@@ -92,7 +94,7 @@ def main():
     call_seeds, call_reports = {}, {}
     started = time.monotonic_ns()
     while True:
-        report = evaluate_owned_function(function, traces, seeds, vocabulary=vocabulary)
+        report = evaluate_owned_function(function, traces, seeds, vocabulary=vocabulary, duplicated_joins=duplicated)
         added = None
         for call in calls:
             site = call['return_site_pc']
@@ -210,7 +212,9 @@ def main():
                      'reaching_stops': boundary['reaching_stops']})
     (output / 'JOINS.json').write_text(json.dumps({'joins': [hex(pc) for pc in joins], 'plans': plans,
                                                    'refusals': refusals, 'rounds': rounds,
-                                                   'roots': roots, 'parents': parents, 'calls': call_reports}, indent=2) + '\n')
+                                                   'roots': roots, 'parents': parents, 'calls': call_reports,
+                                                   **({'duplicated_joins': [hex(pc) for pc in sorted(duplicated)]}
+                                                      if duplicated else {})}, indent=2) + '\n')
     (output / 'CALL-SEEDS.json').write_text(json.dumps(
         {'schema': 'fp301.call-return-seeds.v1', 'seeds': call_seeds,
          'calls': calls}, indent=1, ensure_ascii=False) + '\n')

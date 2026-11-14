@@ -332,6 +332,57 @@ class Contradictions(unittest.TestCase):
         self.assertIn('Goal forall (args : FreeArgs) (returnAddress : Z) (machine_x15 : bv 64),', other)
 
 
+class DuplicatedJoins(unittest.TestCase):
+    # 16 branches to 20 or 24; both reach the join 28, and 24 splits into two paths
+    # inside its block. 32 (two instructions) follows the join; 40 is the exit.
+    FUNCTION = {'name': 'diamond', 'entry': 16, 'end': 44, 'rows': [{'pc': pc} for pc in range(16, 44, 4)],
+                'blocks': [{'start': 16, 'end': 20, 'successors': [20, 24]},
+                           {'start': 20, 'end': 24, 'successors': [28]},
+                           {'start': 24, 'end': 28, 'successors': [28]},
+                           {'start': 28, 'end': 32, 'successors': [32]},
+                           {'start': 32, 'end': 40, 'successors': [40]},
+                           {'start': 40, 'end': 44, 'successors': []}]}
+
+    @staticmethod
+    def jump(*targets):
+        arms = ['(trace (write-reg |PC| nil #x%016x))' % target for target in targets]
+        return arms[0] if len(arms) == 1 else '(trace (cases "branch" ' + ' '.join(arms) + '))'
+
+    def run_pass(self, duplicated):
+        traces = {16: self.jump(20, 24), 20: self.jump(28), 24: self.jump(28, 28), 28: self.jump(32),
+                  32: self.jump(36), 36: self.jump(40)}
+        return evaluate_function(self.FUNCTION, traces, {16: SymbolicState(registers={'PC': bits(16, 64)})},
+                                 duplicated_joins=duplicated)
+
+    def test_a_duplicated_join_is_no_cut_and_keeps_one_slot_per_incoming_edge(self):
+        result = self.run_pass([28])
+        self.assertNotIn('handwritten_cut', [row['reason'] for row in result['stops']])
+        self.assertEqual(result['cuts'], [])
+        self.assertEqual(result['duplicated_joins'], [hex(28)])
+        join = boundary(result, 28)
+        self.assertEqual(join['status'], 'generated')
+        self.assertEqual(join['slots'], [{'predecessor_pc': hex(20), 'predecessor_slot': None, 'alternatives': [0]},
+                                         {'predecessor_pc': hex(24), 'predecessor_slot': None,
+                                          'alternatives': [1, 2]}])
+        # The blocks after the join keep the slots: each continues its own join slot.
+        for pc, predecessor in ((32, 28), (40, 32)):
+            self.assertEqual([(row['predecessor_pc'], row['predecessor_slot'], len(row['alternatives']))
+                              for row in boundary(result, pc)['slots']],
+                             [(hex(predecessor), 0, 1), (hex(predecessor), 1, 2)])
+        self.assertNotIn('slots', boundary(result, 20))
+
+    def test_without_duplication_the_join_stays_a_cut(self):
+        result = self.run_pass(())
+        self.assertEqual(result['cuts'], [{'pc': hex(28), 'reason': 'join'}])
+        self.assertNotIn('slots', boundary(result, 28))
+        self.assertNotIn('predecessor_alternative', boundary(result, 28)['alternatives'][0])
+
+    def test_only_a_plain_join_can_be_duplicated(self):
+        with self.assertRaisesRegex(ValueError, 'must be a join and nothing else'):
+            self.run_pass([32])
+
+
+
 class GroupedChecks(unittest.TestCase):
     BINDERS = '(a : bv 64) (b : bv 64) (c : list (bv 8)) (d : bv 64)'
     FACTS = ['((bool_decide (a = b) = true) /\\ ((bv_unsigned a = bv_unsigned b)%Z))',

@@ -142,16 +142,56 @@ class _Work:
     state: SymbolicState
     path: tuple = ()
     visited: tuple = ()
+    entry: int = 0
+
+
+def _entry_slots(blocks, boundaries, cuts, duplicated):
+    """Group each slot block's alternatives into entry slots, one per incoming edge.
+
+    A duplicated join and every non-cut block after it carry slots. A slot's key is
+    its predecessor block and, when that block carries slots too, the predecessor slot
+    its paths continue from; alternatives that split inside a block share a slot.
+    """
+    carrying, pending = set(), list(duplicated)
+    while pending:
+        pc = pending.pop()
+        if pc not in carrying:
+            carrying.add(pc)
+            pending.extend(target for target in blocks[pc]['successors'] if target in blocks and target not in cuts)
+    slot_of = {}
+
+    def slots(pc):
+        if pc not in slot_of:
+            rows, index = [], {}
+            for number, alternative in enumerate(boundaries[pc]['alternatives']):
+                predecessor = _pc(alternative['predecessor_pc'])
+                key = (predecessor, slots(predecessor)[alternative['predecessor_alternative']]
+                       if predecessor in carrying else None)
+                if key not in index:
+                    index[key] = len(rows)
+                    rows.append({'predecessor_pc': hex(key[0]), 'predecessor_slot': key[1], 'alternatives': []})
+                rows[index[key]]['alternatives'].append(number)
+            boundaries[pc]['slots'] = rows
+            slot_of[pc] = {number: slot for slot, row in enumerate(rows) for number in row['alternatives']}
+        return slot_of[pc]
+
+    for pc in sorted(carrying):
+        slots(pc)
 
 
 def evaluate_function(function, traces, initial_states, *, max_paths=4096, check_state=None,
-                      generated_seeds=None):
+                      generated_seeds=None, duplicated_joins=()):
     """Return a complete boundary inventory and explicit propagation stops.
 
     max_paths bounds the total leaf alternatives created during this traversal.
     Infeasible and stopped alternatives count toward the same explicit budget.
     Each boundary lists, as reaching_stops, the stops that dropped a path whose
     block can reach it; a renderer refuses a boundary with any such stop.
+
+    Each pc in duplicated_joins is a join that is not a cut: every incoming path
+    continues through it, and its block, with the non-cut blocks after it, records
+    one entry slot per incoming edge (`slots`). Their alternatives name the
+    alternative they continue from (`predecessor_alternative`).
     """
     if isinstance(max_paths, bool) or not isinstance(max_paths, int) or max_paths < 1:
         raise ValueError('The path limit must be a positive integer')
@@ -208,6 +248,11 @@ def evaluate_function(function, traces, initial_states, *, max_paths=4096, check
             reasons.add('call_return')
         if reasons:
             cuts[pc] = reasons
+    duplicated = {_pc(pc) for pc in duplicated_joins}
+    if any(cuts.get(pc) != {'join'} for pc in duplicated):
+        raise ValueError('A duplicated join must be a join and nothing else')
+    for pc in duplicated:
+        del cuts[pc]
     seeds = {_pc(pc): state for pc, state in initial_states.items()}
     generated_seeds = {_pc(pc): kind for pc, kind in (generated_seeds or {}).items()}
     if any(pc not in seeds or pc not in cuts or kind not in {'join', 'loop_head', 'call_return'}
@@ -249,10 +294,12 @@ def evaluate_function(function, traces, initial_states, *, max_paths=4096, check
                                               'seed_pc': hex(work.seed_pc), 'state': projected.to_dict(),
                                               'path': list(work.path),
                                               'back_edge': pc in loop_heads and predecessor is not None
-                                              and (pc == work.seed_pc or pc in work.visited)})
+                                              and (pc == work.seed_pc or pc in work.visited),
+                                              **({'predecessor_alternative': work.entry}
+                                                 if duplicated and predecessor is not None else {})})
         if pc not in cuts:
             boundaries[pc]['status'] = 'generated'
-        return projected
+        return projected, len(boundaries[pc]['alternatives']) - 1
 
     for pc, state in sorted(seeds.items()):
         work = _Work(pc, pc, state.copy())
@@ -260,7 +307,7 @@ def evaluate_function(function, traces, initial_states, *, max_paths=4096, check
             stop('path_limit', work, state=state, max_paths=max_paths, discarded_alternatives=1)
             continue
         paths_created += 1
-        work.state = boundary(pc, state, work, None)
+        work.state, work.entry = boundary(pc, state, work, None)
         pending.append(work)
     while pending:
         work = pending.popleft()
@@ -318,7 +365,7 @@ def evaluate_function(function, traces, initial_states, *, max_paths=4096, check
                 break
         for state, path in states:
             actual = state.registers.get('PC')
-            routed = _Work(work.block_pc, work.seed_pc, state, path, work.visited + (work.block_pc,))
+            routed = _Work(work.block_pc, work.seed_pc, state, path, work.visited + (work.block_pc,), work.entry)
             if (actual is not None and actual.op != 'bits' and not blocks[work.block_pc]['successors']
                     and instructions[work.block_pc][-1] in returns):
                 # A CFG return site leaves the function; its exit is not a dropped path.
@@ -342,10 +389,13 @@ def evaluate_function(function, traces, initial_states, *, max_paths=4096, check
                 stop('outside_pc', routed, instructions[work.block_pc][-1], state,
                      actual_pc=hex(target), allowed_successors=[hex(pc) for pc in blocks[work.block_pc]['successors']])
                 continue
-            projected = boundary(target, state, routed, work.block_pc)
+            projected, index = boundary(target, state, routed, work.block_pc)
             if target in cuts:
                 stop('handwritten_cut', routed, instructions[work.block_pc][-1], state,
                      target_pc=hex(target), cut_reasons=sorted(cuts[target]))
                 continue
-            pending.append(_Work(target, work.seed_pc, projected, path, routed.visited))
+            pending.append(_Work(target, work.seed_pc, projected, path, routed.visited, index))
+    if duplicated:
+        result['duplicated_joins'] = [hex(pc) for pc in sorted(duplicated)]
+        _entry_slots(blocks, boundaries, cuts, duplicated)
     return annotate_reaching_stops(result, function)

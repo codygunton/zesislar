@@ -39,7 +39,8 @@ def _prepare_state(state, seed):
                     if region.ownership_id in owned else region for region in state.memory]
 
 
-def evaluate_owned_function(function, traces, initial_seeds, *, vocabulary, max_paths=4096, capture_witness_origins=False):
+def evaluate_owned_function(function, traces, initial_seeds, *, vocabulary, max_paths=4096, capture_witness_origins=False,
+                            duplicated_joins=()):
     """Stop a block before another instruction when ownership checks fail.
 
     Each seed carries public source ownership or an explicit handwritten cut.
@@ -71,7 +72,8 @@ def evaluate_owned_function(function, traces, initial_seeds, *, vocabulary, max_
         return None
 
     report = evaluate_function(function, traces, initial, max_paths=max_paths, check_state=check,
-                               generated_seeds={pc: seed.join_kind for pc, seed in seeds.items() if seed.join_kind})
+                               generated_seeds={pc: seed.join_kind for pc, seed in seeds.items() if seed.join_kind},
+                               duplicated_joins=duplicated_joins)
     report['resource_layer_schema'] = 'owned-resources.v1'
     for row in report.get('exits', []):
         seed = seeds[int(row['seed_pc'], 0)]
