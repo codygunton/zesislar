@@ -272,3 +272,10 @@ Ltac zesu_restore_interior_byte_slice :=
 Ltac zesu_restore_interior_byte_slice_if_enabled :=
   let _ := constr:(_ : ZesuStepInteriorByteSlice) in
   zesu_restore_interior_byte_slice.
+
+(* Both halves as one search step, for a pass that lists steps by goal. *)
+Ltac zesu_interior_byte_slice_step :=
+  lazymatch goal with
+  | |- envs_entails _ (@bi_exist _ _ _) => zesu_lend_interior_byte_slice_if_enabled
+  | |- envs_entails _ ((_ ↦ₘ∗ _) ∗ _)%I => zesu_restore_interior_byte_slice_if_enabled
+  end.
