@@ -1243,7 +1243,9 @@ def generalize_owned_join(alternatives, *, original_seed, entry_pc, vocabulary,
                     if general is not None:
                         plan.setdefault('generalized_facts', []).append(key)
                     else:
-                        defined = {_defined_name(record[key]['source']) for record in records}
+                        # An edge may already state it as True (an earlier join dropped it).
+                        defined = {_defined_name(record[key]['source']) for record in records
+                                   if record[key]['source'] != '⌜True⌝'}
                         if len(defined) == 1 and None not in defined:
                             plan.setdefault('dropped_definitions', []).append(defined.pop())
                     components.append(current)
