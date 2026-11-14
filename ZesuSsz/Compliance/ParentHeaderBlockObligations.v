@@ -114,7 +114,7 @@ Record ParentHeaderOpenBlocks : Prop := {
       instr_pre 0x800d5d0c (ZesuSsz.Generated.DecodeParentHeader.FP301.Pilot0054Entries.fp_machineAt0054 (args) (returnAddress) (K))%I -∗
       parentHeaderSelectedCode -∗
       instr_body 0x800d5cf8 ((ZesuSsz.Generated.DecodeParentHeader.FP301.Pilot0040Entries.fp_machineAt0040 (args) (returnAddress) K) ∗ True));
-  (* No caller (successor entry not rendered: 00b0); covers 00b0 (no entry). *)
+  (* Successor without a slot: 00b0; covers 00b0 (no slot). *)
   parentHeaderOpen_800d5d00 :
     forall (Sigma : gFunctors) `{!islaG Sigma} `{!threadG},
     parentHeaderBlockAt 0x800d5d00 (@ZesuSsz.Generated.DecodeParentHeader.FP301.Pilot0048Entries.fp_machineAt0048 Sigma _ _) (forall (args : ParentHeaderArgs) (returnAddress : Z),
@@ -149,14 +149,14 @@ Record ParentHeaderOpenBlocks : Prop := {
       instr_pre 0x800d5d58 (ZesuSsz.Generated.DecodeParentHeader.FP301.Pilot00a0Entries.fp_machineAt00a0 (args) (returnAddress) (K))%I -∗
       parentHeaderSelectedCode -∗
       instr_body 0x800d5d38 ((ZesuSsz.Generated.DecodeParentHeader.FP301.Pilot0080Entries.fp_machineAt0080 (args) (returnAddress) K) ∗ True));
-  (* No caller (successor entry not rendered: 00b0); covers 00b0 (no entry). *)
+  (* Successor without a slot: 00b0; covers 00b0 (no slot). *)
   parentHeaderOpen_800d5d40 :
     forall (Sigma : gFunctors) `{!islaG Sigma} `{!threadG},
     parentHeaderBlockAt 0x800d5d40 (@ZesuSsz.Generated.DecodeParentHeader.FP301.Pilot0088Entries.fp_machineAt0088 Sigma _ _) (forall (args : ParentHeaderArgs) (returnAddress : Z),
     ⊢ instr_pre 0x800e06c0 (ZesuSsz.Contracts.ParentHeaderMemcpyService.memcpyCallSpec2)%I -∗
       parentHeaderSelectedCode -∗
       instr_body 0x800d5d40 ((ZesuSsz.Generated.DecodeParentHeader.FP301.Pilot0088Entries.fp_machineAt0088 (args) (returnAddress) (parentHeaderContinuation args returnAddress)) ∗ True));
-  (* No caller (successor entry not rendered: 00b0); covers 00b0 (no entry). *)
+  (* Successor without a slot: 00b0; covers 00b0 (no slot). *)
   parentHeaderOpen_800d5d4c :
     forall (Sigma : gFunctors) `{!islaG Sigma} `{!threadG},
     parentHeaderBlockAt 0x800d5d4c (@ZesuSsz.Generated.DecodeParentHeader.FP301.Pilot0094Entries.fp_machineAt0094 Sigma _ _) (forall (args : ParentHeaderArgs) (returnAddress : Z),
@@ -170,7 +170,7 @@ Record ParentHeaderOpenBlocks : Prop := {
       instr_pre 0x800d5da4 (ZesuSsz.Generated.DecodeParentHeader.FP301.Pilot00ecEntries.fp_machineAt00ec (args) (returnAddress) (K))%I -∗
       parentHeaderSelectedCode -∗
       instr_body 0x800d5d58 ((ZesuSsz.Generated.DecodeParentHeader.FP301.Pilot00a0Entries.fp_machineAt00a0 (args) (returnAddress) K) ∗ True));
-  (* No caller (successor entry not rendered: 00b0); covers 00b0 (no entry). *)
+  (* Successor without a slot: 00b0; covers 00b0 (no slot). *)
   parentHeaderOpen_800d5d60 :
     forall (Sigma : gFunctors) `{!islaG Sigma} `{!threadG},
     parentHeaderBlockAt 0x800d5d60 (@ZesuSsz.Generated.DecodeParentHeader.FP301.Pilot00a8Entries.fp_machineAt00a8 Sigma _ _) (forall (args : ParentHeaderArgs) (returnAddress : Z),
@@ -358,7 +358,7 @@ Record ParentHeaderOpenBlocks : Prop := {
     ⊢ instr_pre 0x800d5f28 (ZesuSsz.Generated.DecodeParentHeader.FP301.Pilot0270Entries.fp_machineAt0270 (args) (returnAddress) (K))%I -∗
       parentHeaderSelectedCode -∗
       instr_body 0x800d5f24 ((ZesuSsz.Generated.DecodeParentHeader.FP301.Pilot026cEntries.fp_machineAt026c (args) (returnAddress) K) ∗ True));
-  (* No caller (successor entry not rendered: 0274); covers 0274 (no entry). *)
+  (* Successor without a slot: 0274; covers 0274 (no slot). *)
   parentHeaderOpen_800d5f28 :
     forall (Sigma : gFunctors) `{!islaG Sigma} `{!threadG},
     parentHeaderBlockAt 0x800d5f28 (@ZesuSsz.Generated.DecodeParentHeader.FP301.Pilot0270Entries.fp_machineAt0270 Sigma _ _) (forall (args : ParentHeaderArgs) (returnAddress : Z),
@@ -501,7 +501,7 @@ Record ParentHeaderOpenBlocks : Prop := {
       instr_pre 0x800d60a0 (ZesuSsz.Generated.DecodeParentHeader.FP301.Pilot03e8Entries.fp_machineAt03e8 (args) (returnAddress) (K))%I -∗
       parentHeaderSelectedCode -∗
       instr_body 0x800d6068 ((ZesuSsz.Generated.DecodeParentHeader.FP301.Pilot03b0Entries.fp_machineAt03b0 (args) (returnAddress) K) ∗ True));
-  (* No caller (successor entry not rendered: 0274); covers 0274 (no entry). *)
+  (* Successor without a slot: 0274; covers 0274 (no slot). *)
   parentHeaderOpen_800d6074 :
     forall (Sigma : gFunctors) `{!islaG Sigma} `{!threadG},
     parentHeaderBlockAt 0x800d6074 (@ZesuSsz.Generated.DecodeParentHeader.FP301.Pilot03bcEntries.fp_machineAt03bc Sigma _ _) (forall (args : ParentHeaderArgs) (returnAddress : Z),
@@ -521,7 +521,7 @@ Record ParentHeaderOpenBlocks : Prop := {
       instr_pre 0x800d60cc (ZesuSsz.Generated.DecodeParentHeader.FP301.Pilot0414Entries.fp_machineAt0414 (args) (returnAddress) (K))%I -∗
       parentHeaderSelectedCode -∗
       instr_body 0x800d60b8 ((ZesuSsz.Generated.DecodeParentHeader.FP301.Pilot0400Entries.fp_machineAt0400 (args) (returnAddress) K) ∗ True));
-  (* No caller (successor entry not rendered: 00b0); covers 00b0 (no entry). *)
+  (* Successor without a slot: 00b0; covers 00b0 (no slot). *)
   parentHeaderOpen_800d60c0 :
     forall (Sigma : gFunctors) `{!islaG Sigma} `{!threadG},
     parentHeaderBlockAt 0x800d60c0 (@ZesuSsz.Generated.DecodeParentHeader.FP301.Pilot0408Entries.fp_machineAt0408 Sigma _ _) (forall (args : ParentHeaderArgs) (returnAddress : Z),
@@ -618,7 +618,7 @@ Record ParentHeaderOpenBlocks : Prop := {
       instr_pre 0x800d61b0 (ZesuSsz.Generated.DecodeParentHeader.FP301.Pilot04f8Entries.fp_machineAt04f8 (args) (returnAddress) (K))%I -∗
       parentHeaderSelectedCode -∗
       instr_body 0x800d619c ((ZesuSsz.Generated.DecodeParentHeader.FP301.Pilot04e4Entries.fp_machineAt04e4 (args) (returnAddress) K) ∗ True));
-  (* No caller (successor entry not rendered: 00b0); covers 00b0 (no entry). *)
+  (* Successor without a slot: 00b0; covers 00b0 (no slot). *)
   parentHeaderOpen_800d61a4 :
     forall (Sigma : gFunctors) `{!islaG Sigma} `{!threadG},
     parentHeaderBlockAt 0x800d61a4 (@ZesuSsz.Generated.DecodeParentHeader.FP301.Pilot04ecEntries.fp_machineAt04ec Sigma _ _) (forall (args : ParentHeaderArgs) (returnAddress : Z),
@@ -644,31 +644,31 @@ Record ParentHeaderOpenBlocks : Prop := {
     ⊢ instr_pre 0x800d61cc (ZesuSsz.Generated.DecodeParentHeader.FP301.Pilot0514Entries.fp_machineAt0514_slot4 (args) (returnAddress) (K))%I -∗
       parentHeaderSelectedCode -∗
       instr_body 0x800d61c8 ((ZesuSsz.Generated.DecodeParentHeader.FP301.Pilot0510Entries.fp_machineAt0510_slot1 (args) (returnAddress) K) ∗ True));
-  (* No caller (successor entry not rendered: 0274); covers 0274 (no entry). *)
+  (* Successor without a slot: 0274; covers 0274 (no slot). *)
   parentHeaderOpen_800d61cc_slot0 :
     forall (Sigma : gFunctors) `{!islaG Sigma} `{!threadG},
     parentHeaderBlockAt 0x800d61cc (@ZesuSsz.Generated.DecodeParentHeader.FP301.Pilot0514Entries.fp_machineAt0514_slot0 Sigma _ _) (forall (args : ParentHeaderArgs) (returnAddress : Z),
     ⊢ parentHeaderSelectedCode -∗
       instr_body 0x800d61cc ((ZesuSsz.Generated.DecodeParentHeader.FP301.Pilot0514Entries.fp_machineAt0514_slot0 (args) (returnAddress) (parentHeaderContinuation args returnAddress)) ∗ True));
-  (* No caller (successor entry not rendered: 0274); covers 0274 (no entry). *)
+  (* Successor without a slot: 0274; covers 0274 (no slot). *)
   parentHeaderOpen_800d61cc_slot1 :
     forall (Sigma : gFunctors) `{!islaG Sigma} `{!threadG},
     parentHeaderBlockAt 0x800d61cc (@ZesuSsz.Generated.DecodeParentHeader.FP301.Pilot0514Entries.fp_machineAt0514_slot1 Sigma _ _) (forall (args : ParentHeaderArgs) (returnAddress : Z),
     ⊢ parentHeaderSelectedCode -∗
       instr_body 0x800d61cc ((ZesuSsz.Generated.DecodeParentHeader.FP301.Pilot0514Entries.fp_machineAt0514_slot1 (args) (returnAddress) (parentHeaderContinuation args returnAddress)) ∗ True));
-  (* No caller (successor entry not rendered: 0274); covers 0274 (no entry). *)
+  (* Successor without a slot: 0274; covers 0274 (no slot). *)
   parentHeaderOpen_800d61cc_slot2 :
     forall (Sigma : gFunctors) `{!islaG Sigma} `{!threadG},
     parentHeaderBlockAt 0x800d61cc (@ZesuSsz.Generated.DecodeParentHeader.FP301.Pilot0514Entries.fp_machineAt0514_slot2 Sigma _ _) (forall (args : ParentHeaderArgs) (returnAddress : Z),
     ⊢ parentHeaderSelectedCode -∗
       instr_body 0x800d61cc ((ZesuSsz.Generated.DecodeParentHeader.FP301.Pilot0514Entries.fp_machineAt0514_slot2 (args) (returnAddress) (parentHeaderContinuation args returnAddress)) ∗ True));
-  (* No caller (successor entry not rendered: 0274); covers 0274 (no entry). *)
+  (* Successor without a slot: 0274; covers 0274 (no slot). *)
   parentHeaderOpen_800d61cc_slot3 :
     forall (Sigma : gFunctors) `{!islaG Sigma} `{!threadG},
     parentHeaderBlockAt 0x800d61cc (@ZesuSsz.Generated.DecodeParentHeader.FP301.Pilot0514Entries.fp_machineAt0514_slot3 Sigma _ _) (forall (args : ParentHeaderArgs) (returnAddress : Z),
     ⊢ parentHeaderSelectedCode -∗
       instr_body 0x800d61cc ((ZesuSsz.Generated.DecodeParentHeader.FP301.Pilot0514Entries.fp_machineAt0514_slot3 (args) (returnAddress) (parentHeaderContinuation args returnAddress)) ∗ True));
-  (* No caller (successor entry not rendered: 0274); covers 0274 (no entry). *)
+  (* Successor without a slot: 0274; covers 0274 (no slot). *)
   parentHeaderOpen_800d61cc_slot4 :
     forall (Sigma : gFunctors) `{!islaG Sigma} `{!threadG},
     parentHeaderBlockAt 0x800d61cc (@ZesuSsz.Generated.DecodeParentHeader.FP301.Pilot0514Entries.fp_machineAt0514_slot4 Sigma _ _) (forall (args : ParentHeaderArgs) (returnAddress : Z),

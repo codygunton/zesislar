@@ -14,11 +14,16 @@ hand-written composition over the Automation2 block table:
 
 A block is closed when the closed-proofs directory compiles its caller (a copy
 rule for `Caller<block>.v` in that directory's dune file). A rendered block's
-field is the caller statement, for every K. A block without a caller but with
-an entry gets the contract continuation as K; its field covers the blocks
-without entries that it reaches (they have no slot in the table), and its
-premises are the table entries those blocks reach and the callee specs of their
-call sites. No proof script is written.
+field is the caller statement, for every K. A block without a caller, or whose
+successor has no slot, gets the contract continuation as K; its field covers
+the blocks without slots that it reaches, and its premises are the table entries
+those blocks reach and the callee specs of their call sites. No proof script is
+written.
+
+A return block (its caller takes a return-package premise at returnAddress) has
+no slot: the return package keeps only the facts common to its predecessors, not
+the branch facts the contract meaning needs. Each predecessor therefore runs
+through the return block and proves the contract continuation itself.
 
 Usage: render_open_blocks.py --function NAME --callers CALLERS.json
        --stem ParentHeader --boundary MODULE --output FILE [--closed-dir DIR] [--check]
@@ -61,20 +66,26 @@ def call_premises(profile, start, end):
 def plan(profile, rows, closed, entry_exists):
     """Return the open fields, the closed fields and the table slots, in address order."""
     by_case = {row['case']: row for row in rows}
-    order = sorted(by_case, key=lambda case: int(by_case[case]['pc'], 16))
-    ends = {case: (int(by_case[after]['pc'], 16) if after else 1 << 64)
-            for case, after in zip(order, order[1:] + [None])}
+    address = lambda block: int(by_case[block]['pc'], 16)
+    order = sorted(by_case, key=address)
+    # A block ends where the next block address starts; slots of one block share its end.
+    starts = sorted({address(case) for case in order})
+    ends = {case: next((start for start in starts if start > address(case)), 1 << 64) for case in order}
     entries = [case for case in order if entry_exists(case)]
     open_fields, closed_fields = [], []
     for case in entries:
         row = by_case[case]
-        if row['status'] == 'rendered':
+        missing = [name for name in row['successors'] if not entry_exists(name)]
+        if row['status'] == 'rendered' and not missing:
             if case in closed:
                 closed_fields.append((case, row, None))
             else:
                 open_fields.append((case, row, None))
             continue
-        # No caller: the block and the entry-less blocks it reaches form one obligation.
+        # No caller, or a successor without a slot: the block and the slot-less
+        # blocks it reaches form one obligation.
+        reason = ('No caller (' + row.get('reason', 'refused') + ')' if row['status'] != 'rendered'
+                  else 'Successor without a slot: ' + ', '.join(missing))
         region, successors, stack = [], [], [case]
         while stack:
             block = stack.pop()
@@ -86,11 +97,17 @@ def plan(profile, rows, closed, entry_exists):
                     stack.append(name)
                 elif name not in successors:
                     successors.append(name)
-        address = lambda block: int(by_case[block]['pc'], 16)
         open_fields.append((case, row, {'region': sorted(region, key=address),
                                         'successors': sorted(successors, key=address),
-                                        'ends': ends}))
+                                        'ends': ends, 'reason': reason}))
     return entries, open_fields, closed_fields, by_case
+
+
+def return_blocks(rows):
+    """The cases whose callers take a return-package premise at returnAddress."""
+    return {row['case'] for row in rows
+            if row['status'] == 'rendered'
+            and any(premise.startswith('instr_pre returnAddress ') for premise in row['preconditions'])}
 
 
 def main():
@@ -109,7 +126,8 @@ def main():
     # A slot case (`<block>_slot<n>`) lives in its block's entry module.
     block_of = {row['case']: row.get('block', row['case']) for row in rows}
     entry_module = lambda case: 'Pilot' + block_of.get(case, case) + 'Entries'
-    entry_exists = lambda case: (generated / (entry_module(case) + '.v')).exists()
+    returns = return_blocks(rows)
+    entry_exists = lambda case: case not in returns and (generated / (entry_module(case) + '.v')).exists()
     closed = closed_cases(options.closed_dir)
     entries, open_fields, closed_fields, by_case = plan(profile, rows, closed, entry_exists)
     stem, low = options.stem, lower_first(options.stem)
@@ -178,8 +196,8 @@ def main():
         note = ''
         if region is not None:
             folded = [block for block in region['region'] if block != case]
-            note = ('  (* No caller (' + row.get('reason', 'refused') + ')'
-                    + ('; covers ' + ', '.join(folded) + ' (no entry)' if folded else '') + '. *)\n')
+            note = ('  (* ' + region['reason']
+                    + ('; covers ' + ', '.join(folded) + ' (no slot)' if folded else '') + '. *)\n')
         fields.append(note + '  ' + low + 'Open_' + field_suffix(case) + ' :\n    ' + text)
     lines.append(';\n'.join(fields))
     lines += ['}.', '']
