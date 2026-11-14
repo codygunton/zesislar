@@ -293,6 +293,7 @@ Definition ReviewedParentHeaderArgsWellFormed (args : ParentHeaderArgs) : Prop :
     bv_unsigned (parentHeaderInputLength args) /\
   length (parentHeaderMemcpySourceBefore args) = 80%nat /\
   length (parentHeaderMemcpyScratchBefore args) = 8%nat /\
+  length (replicate 16%nat (BV 8 0)) = 16%nat /\
   parentHeaderError80 (parentHeaderMemcpySourceBefore args) /\
   0x40000000 <= bv_unsigned (parentHeaderInputPointer args) /\
   bv_unsigned (parentHeaderInputPointer args) +
@@ -355,6 +356,7 @@ Definition ReviewedParentHeaderEntryResources `{!islaG Sigma} `{!threadG}
    (bv_unsigned (parentHeaderStackPointer args) - 400) ↦ₘ? 400 ∗
    (bv_unsigned (parentHeaderStackPointer args) - 400 - 112) ↦ₘ? 112 ∗
    0x80114fb8 ↦ₘ∗ parentHeaderMemcpySourceBefore args ∗
+   0x801152b0 ↦ₘ∗ replicate 16%nat (BV 8 0) ∗
    0xa0400f00 ↦ₘ∗ parentHeaderMemcpyScratchBefore args ∗
    ⌜ReviewedParentHeaderArgsWellFormed args⌝ ∗ True)%I.
 
@@ -402,6 +404,7 @@ Definition ReviewedParentHeaderExitResources `{!islaG Sigma} `{!threadG}
      outcome.(headerAfterFrame) ∗
    (bv_unsigned (parentHeaderStackPointer args) - 400 - 112) ↦ₘ? 112 ∗
    0x80114fb8 ↦ₘ∗ parentHeaderMemcpySourceBefore args ∗
+   0x801152b0 ↦ₘ∗ replicate 16%nat (BV 8 0) ∗
    0xa0400f00 ↦ₘ∗
      ReviewedParentHeaderScratchAfter args outcome.(headerExitPath) ∗ True)%I.
 
