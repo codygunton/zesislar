@@ -305,7 +305,7 @@ class CallBoundary(unittest.TestCase):
 
     def test_a_spec_reaches_its_input_through_stored_words(self):
         from call_boundary import parse_machine_call_spec
-        source = (Path(__file__).resolve().parents[2] / 'ZesuSsz/Contracts/NextUint64CallSpec2.v').read_text()
+        source = (Path(__file__).resolve().parents[2] / 'ZesuSsz/Interfaces/NextUint64.v').read_text()
         spec = parse_machine_call_spec(source, 'nextUint64CallSpec2')
         self.assertEqual(spec['pre']['words'], [{'argument': 1, 'offset': 0, 'value': 'inputPointer'},
                                                 {'argument': 1, 'offset': 8, 'value': 'inputLength'}])
