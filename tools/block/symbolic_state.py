@@ -32,6 +32,15 @@ class Expr:
         return cls(value['op'], tuple(cls.from_dict(a) for a in value.get('args', [])),
                    value.get('width'), value.get('value'))
 
+    def uninitialized_reads(self):
+        """The fresh uninitialized-byte values this term mentions, in first-occurrence order."""
+        if self.op == 'uninit_byte':
+            return [self]
+        found = []
+        for arg in self.args:
+            found.extend(value for value in arg.uninitialized_reads() if value not in found)
+        return found
+
     def coq(self):
         """Render supported terms. Reject unknown inputs and unresolved reads."""
         if self.op == 'input':
@@ -43,6 +52,8 @@ class Expr:
             return f'(BV {self.width}%N {self.value}%Z)'
         if self.op == 'bool':
             return 'true' if self.value else 'false'
+        if self.op == 'uninit_byte':
+            return uninitialized_binder(self)['name']
         rendered = [arg.coq() for arg in self.args]
         binary = {'bvadd': 'bv_add', 'bvsub': 'bv_sub', 'bvmul': 'bv_mul',
                   'bvand': 'bv_and', 'bvor': 'bv_or', 'bvxor': 'bv_xor',
@@ -76,6 +87,13 @@ class Expr:
         if self.op == 'array_byte':
             return f'(List.nth {self.value}%nat {rendered[0]} (BV 8%N 0%Z))'
         raise ValueError('The expression cannot render as Coq: ' + self.op)
+
+
+def uninitialized_binder(value):
+    """The existential binder of one uninitialized-byte read: a byte with no facts."""
+    if value.op != 'uninit_byte' or value.width != 8 or not isinstance(value.value, str) or value.args:
+        raise ValueError('The term is not an uninitialized-byte read')
+    return {'name': 'uninit_byte_' + value.value[:16], 'type': 'bv 8'}
 
 
 def input_expr(coq_text, width=64):
@@ -619,7 +637,13 @@ class _Evaluator:
                 candidates.append((region.bytes[offset], region.ownership_id))
             elif region.byte_array is not None and ((isinstance(length, int) and offset < length) or offset < region.minimum_length):
                 candidates.append((Expr('array_byte', (region.byte_array,), 8, offset), region.ownership_id))
-            elif region.byte_array is not None and isinstance(length, Expr):
+            elif region.uninitialized and region.ownership_id is not None and (
+                    (isinstance(length, int) and offset < length) or offset < region.minimum_length):
+                candidates.append((self.uninitialized_byte(address, region), region.ownership_id))
+            elif region.byte_array is not None and isinstance(length, Expr) and not (
+                    set(owners) - {region.ownership_id, None}):
+                # An unknown length may reach the byte, unless another owned region
+                # provably holds it: owned regions are separate.
                 self.report('unknown_memory_bound', address=address.to_dict(), length=length.to_dict())
                 return Expr('unknown_read', (address, region.byte_array, length), 8)
         def separated(region):
@@ -635,6 +659,21 @@ class _Evaluator:
             return candidates[0][0]
         self.report('ambiguous_memory_alias' if candidates else 'unknown_memory_read', address=address.to_dict())
         return Expr('unknown_read', (address,), 8)
+
+    def uninitialized_byte(self, address, region):
+        """Read an owned uninitialized byte as a fresh existential value.
+
+        `a ↦ₘ? n` owns each byte as `∃ v : bv 8, a + i ↦ v`, so a load returns some
+        owned byte; the value is a binder with no facts. Each read is fresh: two reads of
+        one unwritten byte forget that they agree, which only weakens the state.
+        """
+        identity = hashlib.sha256(json.dumps([self.state.trace_count, self.instruction_index, self.event_index,
+                                              list(self.path), address.to_dict(), region.ownership_id],
+                                             sort_keys=True).encode()).hexdigest()
+        value = Expr('uninit_byte', (), 8, identity)
+        self.report('uninitialized_read', owner=region.ownership_id, address=address.to_dict(),
+                    value=value.to_dict())
+        return value
 
     def symbolic_array_byte(self, address, region, extent):
         """Read an owned array at a symbolic index as a list lookup.

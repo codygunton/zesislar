@@ -287,7 +287,7 @@ def format_entry_boundary(boundary, *, case_id, source_policy, handwritten_owner
                     guard_visits.append(path)
                     if kind != 'exists' and guard_scope:
                         raise ValueError('The condition scope does not select an existential node')
-                    local = _binders(local + extra_binders)
+                    local = _binders(local + extra_binders + resource.get('fresh_binders', []))
                 nested_scope = scope + local
                 if len({item['name'] for item in nested_scope}) != len(nested_scope):
                     raise ValueError('A source existential shadows an outer formatter binder')

@@ -1,4 +1,4 @@
-"""Run the pinned source engine (FP-20261117) from the entry seed, adding generated seeds.
+"""Run the pinned source engine (FP-20261119) from the entry seed, adding generated seeds.
 
 A join is seeded only after every join that can reach it has its seed, so its
 incoming edges are complete. A call's return site is seeded from the callee
@@ -79,7 +79,9 @@ def main():
     level1 = ROOT / 'ZesuSsz/Contracts/Level1.v'
     continuation = {'name': 'K', 'coq': 'K', 'source_binding': {'source': str(level1) + '#IslarisContractSpec'},
                     'terminal_id': terminal}
-    joins = joins_of(function)
+    # A design-table duplicated join is no cut: each incoming edge keeps its own entry slot.
+    duplicated = [int(profile.pc(key), 0) for key in profile.get('duplicated_joins', [])] if profile else []
+    joins = [pc for pc in joins_of(function) if pc not in duplicated]
     successors = cfg_successors(function)
     seeds = {public['entry_pc']: owned}
     liveness = {hex(pc): registers for pc, registers in source_liveness(
@@ -92,7 +94,7 @@ def main():
     call_seeds, call_reports = {}, {}
     started = time.monotonic_ns()
     while True:
-        report = evaluate_owned_function(function, traces, seeds, vocabulary=vocabulary)
+        report = evaluate_owned_function(function, traces, seeds, vocabulary=vocabulary, duplicated_joins=duplicated)
         added = None
         for call in calls:
             site = call['return_site_pc']
@@ -210,13 +212,15 @@ def main():
                      'reaching_stops': boundary['reaching_stops']})
     (output / 'JOINS.json').write_text(json.dumps({'joins': [hex(pc) for pc in joins], 'plans': plans,
                                                    'refusals': refusals, 'rounds': rounds,
-                                                   'roots': roots, 'parents': parents, 'calls': call_reports}, indent=2) + '\n')
+                                                   'roots': roots, 'parents': parents, 'calls': call_reports,
+                                                   **({'duplicated_joins': [hex(pc) for pc in sorted(duplicated)]}
+                                                      if duplicated else {})}, indent=2) + '\n')
     (output / 'CALL-SEEDS.json').write_text(json.dumps(
         {'schema': 'fp301.call-return-seeds.v1', 'seeds': call_seeds,
          'calls': calls}, indent=1, ensure_ascii=False) + '\n')
     receipt = {'source_pass': bind(output / 'FORWARD.json'), 'level1_K_source': bind(level1),
                'vocabulary': bind(vocabulary_path), 'system_shapes': bind(shapes_path),
-               'engine': bind(ROOT / 'tools/block/FP-20261117.json'), 'joins': bind(output / 'JOINS.json'),
+               'engine': bind(ROOT / 'tools/block/FP-20261119.json'), 'joins': bind(output / 'JOINS.json'),
                'call_seeds': bind(output / 'CALL-SEEDS.json')}
     (output / 'INPUT-RECEIPT.json').write_text(json.dumps(receipt, indent=2) + '\n')
     stops = {}

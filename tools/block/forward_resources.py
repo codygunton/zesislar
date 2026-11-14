@@ -12,10 +12,10 @@ import re
 
 try:
     from .entry_seed import _code_mask
-    from .symbolic_state import Expr, MemoryWrite, _addends, _offset, bits, operation
+    from .symbolic_state import Expr, MemoryWrite, _addends, _offset, bits, operation, uninitialized_binder
 except ImportError:
     from entry_seed import _code_mask
-    from symbolic_state import Expr, MemoryWrite, _addends, _offset, bits, operation
+    from symbolic_state import Expr, MemoryWrite, _addends, _offset, bits, operation, uninitialized_binder
 
 
 def _strip_enclosure(text):
@@ -734,6 +734,13 @@ def render_resource_boundary(ownership, result, final_state, *, retained_registe
                   existential_prefixes=ownership['existential_prefixes'],
                   path_conditions=[condition.to_dict() for condition in final_state.conditions],
                   imports=vocabulary['source_vocabulary']['imports'])
+    # Uninitialized-byte reads are existential bytes with no facts; the guard scope binds them.
+    fresh = []
+    terms = [registers[component['name']] for component in ownership['components'] if component['kind'] == 'register']
+    for term in [*terms, *(write.value for write in result.writes), *final_state.conditions]:
+        fresh.extend(value for value in term.uninitialized_reads() if value not in fresh)
+    if fresh:
+        output['fresh_binders'] = [uninitialized_binder(value) for value in fresh]
     if 'tree' in ownership:
         output['tree'] = ownership['tree']
         output['body'] = _render_tree(ownership['tree'], {record['id']: record['source'] for record in rendered})
