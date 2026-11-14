@@ -197,7 +197,9 @@ Ltac zesu_lend_interior_byte_slice :=
               iMatchHyp ltac:(fun Harray resource =>
                 lazymatch resource with
                 | (?base ↦ₘ∗ ?bytes)%I =>
-                    lazymatch type of bytes with list (bv 8) => idtac end;
+                    let element := type of bytes in
+                    let element := eval cbv in element in
+                    lazymatch element with list (bv 8) => idtac end;
                     assert_fails (unify address base);
                     let start := zesu_byte_slice_start address base in
                     let Haddress := fresh "HsliceAddress" in
