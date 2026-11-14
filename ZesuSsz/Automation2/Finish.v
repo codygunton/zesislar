@@ -1153,6 +1153,9 @@ Ltac zesu_run_pass_v1 :=
      zesu_finish_initialized_array_read |
      ZesuSsz.Automation2.StoreMemoryLookup.zesu_store_memory_lookup |
      zesu_liAStep |
+     (* A switched-on interior slice: lend it where the search stopped at
+        an existential byte array inside a held array, restore it after. *)
+     ZesuSsz.Automation2.InteriorByteSlice.zesu_interior_byte_slice_step |
      ZesuSsz.Automation2.CodecArrayRead.zesu_codec_array_read_sidecond |
      zesu_open_matching_two_level_frame |
      zesu_extract_matching_descriptor_pure |
