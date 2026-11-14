@@ -280,3 +280,17 @@ Qed.
     (bv_unsigned (listWord64At24 after) <= Z.of_nat (length input)).
 Proof. intros [Hc1b _]. exact (decodeItemConsumedInInput _ _ _ _ Hc1b). Qed.
 
+(* A caller's call-site domain: the length argument is the input's length and
+   the input range does not wrap. *)
+#[export] Instance decodeItemCallDomainInputDerivedFacts
+    argv0 argv1 argv2 rest sp inputEnd input before :
+  ZesuDerivedFacts
+    (decodeItemC1BDomain
+       (decodeItemCallDataArgs (argv0 :: argv1 :: argv2 :: rest) sp inputEnd input before))
+    (bv_unsigned argv2 = Z.of_nat (length input) /\
+     bv_unsigned argv1 + bv_unsigned argv2 < bv_modulus 64).
+Proof.
+  intros [Hlen [_ Hlayout]]. unfold decodeItemEntryLayout in Hlayout.
+  destruct Hlayout as (_ & _ & Hfit & _). split; [exact Hlen | exact Hfit].
+Qed.
+
