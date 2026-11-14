@@ -793,5 +793,10 @@
       "return_fact": "True",
       "source": "measurement entry interface: exit resources only (ParentHeaderContract.v parentHeaderExitResources)"
     }
-  ]
+  ],
+  "compliance": {
+    "boundary": "ZesuSsz.Compliance.ParentHeaderCompositionBoundary",
+    "continuation": "parentHeaderContinuation",
+    "source": "The compliance record (render_open_blocks.py) gives a return block no slot; its predecessors' callers run through it and end with this contract continuation."
+  }
 }

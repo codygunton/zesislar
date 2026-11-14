@@ -1,7 +1,7 @@
 Require Import ZesuSsz.Generated.DecodeParentHeader.FP301.Pilot0088Entries.
 Require Import ZesuSsz.Generated.DecodeParentHeader.FP301.Pilot0088Structural.
-Require Import ZesuSsz.Generated.DecodeParentHeader.FP301.Pilot00b0Entries.
-Require Import ZesuSsz.Generated.DecodeParentHeader.FP301.Pilot00b0Structural.
+Require Import ZesuSsz.Compliance.ParentHeaderCompositionBoundary.
+Require Import ZesuSsz.Contracts.ParentHeaderMemcpyService.
 Require Import ZesuSsz.Automation2.All.
 Require Import isla.riscv64.riscv64.
 From Coq Require Import Lists.List ZArith.ZArith NArith.NArith.
@@ -19,11 +19,11 @@ Definition DesignedEntry_800d5d40
 Global Instance : LithiumUnfold (@DesignedEntry_800d5d40) := I.
 Global Typeclasses Opaque DesignedEntry_800d5d40.
 
-Lemma DesignedBoundary_800d5d40 `{!islaG Sigma} `{!threadG} (args : ParentHeaderArgs) (returnAddress : Z) (K : iProp Sigma)  :
-  instr_pre 0x800d5d68 (ZesuSsz.Generated.DecodeParentHeader.FP301.Pilot00b0Entries.fp_machineAt00b0 (args) (returnAddress) (K))%I -∗
+Lemma DesignedBoundary_800d5d40 `{!islaG Sigma} `{!threadG} (args : ParentHeaderArgs) (returnAddress : Z)  :
+  instr_pre 0x800e06c0 (ZesuSsz.Contracts.ParentHeaderMemcpyService.memcpyCallSpec2)%I -∗
   parentHeaderSelectedCode -∗
   instr_body 0x800d5d40
-    (DesignedEntry_800d5d40 args returnAddress K).
+    (DesignedEntry_800d5d40 args returnAddress (parentHeaderContinuation args returnAddress)).
 Proof.
   zesu_block2.
 Qed.
