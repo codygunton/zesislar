@@ -713,6 +713,19 @@ def generalize_fact(texts, witnesses):
     return general
 
 
+def _defined_name(source):
+    """The name a pure equation `⌜(n = e)⌝` defines, or None."""
+    match = re.fullmatch(r"⌜\(([A-Za-z_][\w']*) = (.*)\)⌝", source, re.S)
+    if not match or _mentions(match[2], match[1]):
+        return None
+    depth = 0
+    for char in match[2]:
+        depth += {'(': 1, ')': -1}.get(char, 0)
+        if depth < 0:
+            return None
+    return match[1] if depth == 0 else None
+
+
 def _bound_names(source):
     """The names a pure fact `⌜∃ (n : T) ..., P⌝` binds in its leading telescope."""
     text = source[1:].lstrip() if source.startswith('⌜') else ''
@@ -1229,6 +1242,12 @@ def generalize_owned_join(alternatives, *, original_seed, entry_pc, vocabulary,
                     current['source'] = general if general is not None else '⌜True⌝'
                     if general is not None:
                         plan.setdefault('generalized_facts', []).append(key)
+                    else:
+                        # An edge may already state it as True (an earlier join dropped it).
+                        defined = {_defined_name(record[key]['source']) for record in records
+                                   if record[key]['source'] != '⌜True⌝'}
+                        if len(defined) == 1 and None not in defined:
+                            plan.setdefault('dropped_definitions', []).append(defined.pop())
                     components.append(current)
                     continue
                 if key not in memory_by_id:
@@ -1403,8 +1422,12 @@ def generalize_owned_join(alternatives, *, original_seed, entry_pc, vocabulary,
     if tree['body']['kind'] != 'sep_list':
         raise ValueError('The join relation scope is not an owned resource list')
     # A register binder that a kept fact uses as a pointer into an owned array keeps its
-    # placement in that array (the edges' facts name the bytes at the binder's offset).
-    plan['relations'].extend(array_placements(components, plan['binders']))
+    # placement in that array (the edges' facts name the bytes at the binder's offset). So does
+    # a binder whose defining equation the join dropped (a call's kept register that the edges
+    # compute differently): each edge establishes the placement for its own value.
+    placed = [*plan['binders'], *({'name': name} for name in plan.get('dropped_definitions', [])
+                                  if name in {binder['name'] for binder in ordered})]
+    plan['relations'].extend(array_placements(components, placed))
     for index, relation in enumerate(plan['relations']):
         key = f'join_relation_{index}'
         if key in records[0]:
