@@ -47,8 +47,9 @@ The compiler uses its existing private artifact mapping.
 `coqchk` receives one exact load-path entry for that scratch object.
 The gate leaves no wrapper source in the production tree.
 
-The gate pins its PUBLIC sources and trust contexts to the reviewed `d73a7a5a` baseline,
-the switch of the PUBLIC theorems to the 24 generated block proofs (the earlier baseline was `dbefab79`).
+The gate pins its PUBLIC sources and trust contexts to the reviewed `0140e687` baseline,
+the merge of PR #251 (memcpy boundary; review record `docs/soundness-reviews/2026-11-13-pr244-memcpy-boundary.md`).
+Earlier baselines were `d73a7a5a` (PUBLIC theorems switched to the 24 generated block proofs) and `dbefab79`.
 It refuses a changed protected source before proof work.
 A maintainer must review that boundary before updating the baseline.
 It verifies each PUBLIC source independently.

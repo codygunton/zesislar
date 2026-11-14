@@ -19,7 +19,7 @@ from check_function_closure import PUBLIC, PUBLIC_CONTEXTS
 from coqc_findlib import check_record
 from gate_workspace import prepare as prepare_sources
 
-BASELINE = 'd73a7a5a5610c2312b7c27ea9b41363f36324a29'
+BASELINE = '0140e68747d7f3f0c4ac8ff44609f42ba9da65b4'
 PLUGINS = (
     '_dune-cache/install/default/lib/zesu-signature-gates/plugin/signature_gates_plugin.cmxs',
     '_dune-cache/install/default/lib/zesu-signature-gates/trace-observer/trace_block_plugin.cmxs',
