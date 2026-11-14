@@ -12,6 +12,8 @@ Require Export ZesuSsz.Automation2.Rewrites.
 Require Export ZesuSsz.Automation2.Hooks.
 Require Export ZesuSsz.Automation2.ResidualLemmas.
 Require Export ZesuSsz.Automation2.UninitRegions.
+#[export] Instance zesu_union_interior_byte_slice_enabled :
+  ZesuSsz.Automation2.InteriorByteSlice.ZesuStepInteriorByteSlice := I.
 Require Export ZesuSsz.Automation2.FrozenDuplicates.
 Require Export ZesuSsz.Automation2.NatBitvectors.
 Require Export ZesuSsz.Automation2.ArrayPacking.
