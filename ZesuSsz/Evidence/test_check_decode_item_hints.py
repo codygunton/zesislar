@@ -173,7 +173,7 @@ class FunctionHintCoverageTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary)
             self.scoped_fixture(root)
-            self.assertEqual(manifest_errors(root), ([], 5))
+            self.assertEqual(manifest_errors(root), ([], 6))
 
     def test_each_scoped_import_is_required(self):
         with tempfile.TemporaryDirectory() as temporary:
