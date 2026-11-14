@@ -4,8 +4,8 @@ Require Import isla.riscv64.riscv64.
 Require Import ZesuSsz.Contracts.RlpDecodeItemContract.
 Require Import ZesuSsz.Contracts.DecodeItemCallSpec2.
 Require Import ZesuSsz.Contracts.ParentHeaderContract.
-Require Import ZesuSsz.Automation2.All.
 Import ListNotations.
+Require Import ZesuSsz.Automation2.All.
 Local Open Scope Z_scope.
 
 (* A caller's first decodeItem call: the result buffer sits in the caller's
