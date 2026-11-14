@@ -214,7 +214,8 @@ Ltac zesu_lend_interior_byte_slice :=
                     let Hlength := fresh "HsliceLength" in
                     assert (Hsize : size = Z.of_nat count)
                       by (first [reflexivity | lia | bv_solve
-                                | (rewrite Z2Nat.id; [reflexivity | first [lia | bv_solve]])]);
+                                | (rewrite Z2Nat.id;
+                                   [reflexivity | first [lia | bv_solve | zesu_byte_slice_bound_arith]])]);
                     assert (Hlength :
                       size = Z.of_nat (length (take count (drop start bytes))))
                       by (rewrite Hsize length_take length_drop; lia);
