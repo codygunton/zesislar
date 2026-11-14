@@ -33,6 +33,10 @@ Notation parentHeaderRamLow := ((0xa0000000) : Z) (only parsing).
 Notation parentHeaderRamHigh := ((0xc0000000) : Z) (only parsing).
 Notation parentHeaderInputLow := ((0x40000000) : Z) (only parsing).
 Notation parentHeaderInputHigh := ((0x80000000) : Z) (only parsing).
+(* The read-only None constant in rodata: 16 zero bytes. The function reads
+   it; the contract owns it at entry and returns it unchanged at exit. *)
+Notation parentHeaderNoneConstant := ((0x801152b0) : Z) (only parsing).
+Definition parentHeaderNoneBytes : list byte := replicate 16%nat (BV 8 0).
 
 Inductive ParentHeaderExitPath :=
 | ParentHeaderDirect
@@ -102,6 +106,7 @@ Definition parentHeaderArgsWellFormed (args : ParentHeaderArgs) : Prop :=
     bv_unsigned (parentHeaderInputLength args) /\
   length (parentHeaderMemcpySourceBefore args) = 80%nat /\
   length (parentHeaderMemcpyScratchBefore args) = 8%nat /\
+  length parentHeaderNoneBytes = 16%nat /\
   parentHeaderError80 (parentHeaderMemcpySourceBefore args) /\
   parentHeaderInputLow <= bv_unsigned (parentHeaderInputPointer args) /\
   bv_unsigned (parentHeaderInputPointer args) +
@@ -191,6 +196,7 @@ Definition parentHeaderEntryResources `{!islaG Sigma} `{!threadG}
    (bv_unsigned (parentHeaderStackPointer args) - parentHeaderStackBytes -
       parentHeaderCalleeBytes) ↦ₘ? parentHeaderCalleeBytes ∗
    parentHeaderMemcpySource ↦ₘ∗ parentHeaderMemcpySourceBefore args ∗
+   parentHeaderNoneConstant ↦ₘ∗ parentHeaderNoneBytes ∗
    ziskExtraParamsAddress ↦ₘ∗ parentHeaderMemcpyScratchBefore args ∗
    ⌜parentHeaderArgsWellFormed args⌝ ∗ True)%I.
 
@@ -244,6 +250,7 @@ Definition parentHeaderExitResources `{!islaG Sigma} `{!threadG}
    (bv_unsigned (parentHeaderStackPointer args) - parentHeaderStackBytes -
       parentHeaderCalleeBytes) ↦ₘ? parentHeaderCalleeBytes ∗
    parentHeaderMemcpySource ↦ₘ∗ parentHeaderMemcpySourceBefore args ∗
+   parentHeaderNoneConstant ↦ₘ∗ parentHeaderNoneBytes ∗
    ziskExtraParamsAddress ↦ₘ∗
      parentHeaderScratchAfter args outcome.(headerExitPath) ∗ True)%I.
 
@@ -291,7 +298,7 @@ Proof.
   pose proof (bv_unsigned_in_range 64 (parentHeaderStackPointer args)).
   pose proof (bv_unsigned_in_range 64 (parentHeaderReturnAddress args)).
   unfold bv_modulus in *. cbn in *.
-  intros (Hlength & _ & _ & _ & Hlow & Hhigh & _ & Hres & Hresh & Hsp & Hsph &
+  intros (Hlength & _ & _ & _ & _ & Hlow & Hhigh & _ & Hres & Hresh & Hsp & Hsph &
     _ & Hra & Hsep & _).
   rewrite Hlength. lia.
 Qed.
