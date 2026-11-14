@@ -8,6 +8,7 @@ Require Import ZesuSsz.Automation2.SourceFaultProof.
 From stdpp Require Import bitvector.tactics.
 From Coq Require Import ZArith Lia Bool.Bool Strings.String.
 From iris.proofmode Require Import tactics environments.
+Require ZesuSsz.Automation2.VmClosed.
 Local Open Scope string_scope.
 Local Open Scope Z_scope.
 
@@ -166,7 +167,7 @@ Qed.
 Ltac zesu_join_nonzero_once :=
   multimatch goal with
   | Hnonzero : Z_to_bv ?width ?quantity <> ?zero |- _ =>
-    is_closed_term width; is_closed_term zero;
+    ZesuSsz.Automation2.VmClosed.zesu_closed_term width; ZesuSsz.Automation2.VmClosed.zesu_closed_term zero;
     let Hzero := constr:(ltac:(vm_compute; reflexivity) : bv_unsigned zero = 0) in
     zesu_join_add_fact constr:(zesu_join_nonzero_cast width quantity zero Hzero Hnonzero)
   end.

@@ -14,7 +14,8 @@ def aggregate_root(environment=os.environ, proc=Path('/proc'), root=CGROUP_ROOT)
     selected = root/Path(*parts[1:parts.index(name)+1])
     if selected.parent.name != 'zesuworkloads.slice':
         raise ValueError('The stock aggregate is outside the shared workload parent.')
-    if ((selected.parent/'memory.max').read_text().strip() != '187904819200' or
+    from admission_memory import accepted_parent_bytes
+    if ((selected.parent/'memory.max').read_text().strip() not in accepted_parent_bytes(root) or
             (selected.parent/'memory.swap.max').read_text().strip() != '0'):
         raise ValueError('The shared workload parent lacks its exact memory fence.')
     if not (selected/'cpu.stat').is_file():

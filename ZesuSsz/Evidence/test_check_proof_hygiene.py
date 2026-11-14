@@ -528,3 +528,53 @@ class FrozenGlobalTests(unittest.TestCase):
                        "Global Remove Hints ZesuSsz.Automation.Frozen.frozen_inst : typeclass_instances.\n")
             self.assertEqual(frozen_global_failures(
                 root, allowlist={"ZesuSsz.Automation.Frozen.frozen_other": "reason"}), [])
+
+
+class SealedCalleeTests(unittest.TestCase):
+    """A caller treats a proved callee as a black box."""
+
+    CALLEES = [{
+        "interfaces": ["ZesuSsz/Interfaces/Callee.v", "ZesuSsz/Interfaces/CalleeCorrect.v"],
+        "sealed": ["calleeCallMeaning"],
+        "restricted": ["calleeCallSpec2CorrectFrom", "calleeCallMeaningLink"],
+        "unsealed": ["CalleeMeaning"],
+        "owned_prefixes": ["ZesuSsz/Generated/Callee/"],
+    }]
+
+    def failures(self, name, text):
+        from check_proof_hygiene import sealed_callee_failures
+        return sealed_callee_failures(name, text, self.CALLEES)
+
+    def test_interface_modules_may_use_the_bridge(self):
+        text = "Definition c := calleeCallSpec2CorrectFrom code entry template_correct.\n"
+        self.assertEqual(self.failures("ZesuSsz/Interfaces/CalleeCorrect.v", text), [])
+
+    def test_bridge_or_link_outside_the_interface_fails(self):
+        self.assertEqual(self.failures("ZesuSsz/Proofs/Block.v", "Proof. apply calleeCallMeaningLink. Qed.\n"),
+                         ["sealed callee interface used outside it: ZesuSsz/Proofs/Block.v:1: calleeCallMeaningLink"])
+
+    def test_unfolding_a_sealed_name_fails(self):
+        for text in ("Proof. unfold foo, calleeCallMeaning in H. Qed.\n",
+                     "Transparent calleeCallMeaning.\n"):
+            with self.subTest(text=text):
+                self.assertEqual(self.failures("ZesuSsz/Automation2/Rule.v", text),
+                                 ["sealed callee predicate unfolded: ZesuSsz/Automation2/Rule.v:1: calleeCallMeaning"])
+
+    def test_unsealed_predicate_in_another_functions_entry_fails(self):
+        text = "Definition e := ⌜CalleeMeaning args after⌝.\n"
+        self.assertEqual(self.failures("ZesuSsz/Generated/Caller/Pilot0040Entries.v", text),
+                         ["unsealed callee predicate in a caller entry: "
+                          "ZesuSsz/Generated/Caller/Pilot0040Entries.v:1: CalleeMeaning"])
+        self.assertEqual(self.failures("ZesuSsz/Generated/Callee/Pilot0040Entries.v", text), [])
+
+    def test_sealed_use_comments_and_longer_names_pass(self):
+        text = ("(* apply calleeCallMeaningLink; unfold calleeCallMeaning *)\n"
+                "Definition e := ⌜calleeCallMeaning args after⌝.\n"
+                "Lemma calleeCallMeaningLink2 : True. Proof. unfold calleeCallMeaningX. Qed.\n")
+        self.assertEqual(self.failures("ZesuSsz/Generated/Caller/Pilot0040Entries.v", text), [])
+
+    def test_parameter_and_axiom_only_inside_an_interface_signature(self):
+        from check_proof_hygiene import interface_signature_lines
+        text = ("Module Type SealedSignature.\n  Parameter p : Prop.\n  Axiom a : p.\nEnd SealedSignature.\n"
+                "Module Sealed : SealedSignature.\nEnd Sealed.\nAxiom outside : False.\n")
+        self.assertEqual(interface_signature_lines(text), {2, 3})

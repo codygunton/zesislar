@@ -6,10 +6,10 @@ From Coq Require Import Lists.List ZArith.ZArith NArith.NArith.
 Require Import stdpp.bitvector.definitions.
 Require Import ZesuSsz.Contracts.RlpDecodeItemContract.
 Require Import ZesuSsz.Contracts.DecodeItemSelected.
-Require Import ZesuSsz.Generated.DecodeItem.FP301.Pilot697cEntries.
-Require Import ZesuSsz.Generated.DecodeItem.FP301.Pilot697cStructural.
-Require Import ZesuSsz.Generated.DecodeItem.FP301.Pilot698cStructural.
-Require Import ZesuSsz.Generated.DecodeItem.FP301.Pilot698cEntries.
+Require Import ZesuSsz.Generated.DecodeItem.FP301.Pilot001cEntries.
+Require Import ZesuSsz.Generated.DecodeItem.FP301.Pilot001cStructural.
+Require Import ZesuSsz.Generated.DecodeItem.FP301.Pilot002cStructural.
+Require Import ZesuSsz.Generated.DecodeItem.FP301.Pilot002cEntries.
 Require Import ZesuSsz.Automation2.All.
 Require Import ZesuSsz.Compliance.DecodeItemMeaningPorted.
 Local Open Scope Z_scope.

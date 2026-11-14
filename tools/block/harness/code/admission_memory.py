@@ -18,7 +18,31 @@ import time
 
 GIB = 1024 ** 3
 HEADROOM_BYTES = 20 * GIB
-SLICE_MAX_BYTES = 175 * GIB
+# The workload parent leaves 40 GiB of the account for the session scopes,
+# their Dune processes, clifv.slice and other tools (25-35 GiB on 2026-11-13):
+# 160 GiB of a 200 GiB account. resource_guard.sh derives the same fence.
+WORKLOAD_RESERVE_BYTES = 40 * GIB
+ACCOUNT_FALLBACK_BYTES = 200 * GIB
+LEGACY_PARENT_BYTES = 175 * GIB
+
+
+def workload_parent_bytes(root=Path('/sys/fs/cgroup'), uid=None):
+    """The shared workload fence: the account's MemoryMax less the reserve."""
+    uid = os.getuid() if uid is None else uid
+    try:
+        account = int((Path(root) / 'user.slice' / f'user-{uid}.slice' / 'memory.max').read_text())
+    except (OSError, ValueError):
+        account = ACCOUNT_FALLBACK_BYTES  # Without a numeric limit the 200 GiB account applies.
+    # Older guards set exactly 175 GiB; never exceed it while they still run.
+    return min(account - WORKLOAD_RESERVE_BYTES, LEGACY_PARENT_BYTES)
+
+
+def accepted_parent_bytes(root=Path('/sys/fs/cgroup'), uid=None):
+    """Parent MemoryMax texts a workload may run under: ours, or an older guard's 175 GiB."""
+    return {str(workload_parent_bytes(root, uid)), str(LEGACY_PARENT_BYTES)}
+
+
+SLICE_MAX_BYTES = workload_parent_bytes()
 STATIC_KERNEL_ACCOUNT_SCHEMA = 'legacy_kernel_accounts.v1'
 CGROUP_ROOT = Path('/sys/fs/cgroup')
 PROC = Path('/proc')
@@ -183,9 +207,11 @@ class ScopeReader:
             before = self.directory(self.parent)
             maximum = int((self.parent / 'memory.max').read_text())
             swap = (self.parent / 'memory.swap.max').read_text().strip()
-            if maximum != SLICE_MAX_BYTES or swap != '0' or self.directory(self.parent) != before:
+            # An older guard sets 175 GiB until its batches end; book against ours.
+            if (maximum not in (workload_parent_bytes(), LEGACY_PARENT_BYTES) or swap != '0'
+                    or self.directory(self.parent) != before):
                 raise ValueError('The shared slice fence changed.')
-            return maximum
+            return workload_parent_bytes()
         except (OSError, ValueError):
             return 0  # An unverifiable backstop cannot grant admission.
 
@@ -1082,7 +1108,7 @@ def live_memory_admission(result, reader, *, senior=False):
     request = result['new_claim_bytes']
     try:
         ceiling = int(os.environ.get('ZESU_LIVE_REQUEST_LIMIT_GIB', '16'))
-        if not 1 <= ceiling <= 175:
+        if not 1 <= ceiling <= SLICE_MAX_BYTES // GIB:
             return result
     except ValueError:
         return result
@@ -1460,12 +1486,28 @@ def write_ledger(path, data):
         Path(name).unlink(missing_ok=True)
 
 
+def region_release_verified(name, release):
+    """Check a recorded region release against its receipt.
+
+    The release was verified with this hash when it was recorded. A receipt
+    that no longer exists keeps the release (a deleted receipt is not a forged
+    one): on 2026-11-12 a worktree removal deleted the 6ae0 receipt, and every
+    admission that read it crashed. A receipt with other bytes does not.
+    """
+    try:
+        actual = hashlib.sha256(Path(release['receipt']).read_bytes()).hexdigest()
+    except FileNotFoundError:
+        print(f'region release {name}: receipt {release["receipt"]} is missing; '
+              'the recorded release stands', file=sys.stderr)
+        return True
+    return actual == release['sha256']
+
+
 def ledger_claims(data):
     claims = dict(data['fixed_claims'])
     for name, amount in data.get('region_claims', {}).items():
         release = data.get('released_region_claims', {}).get(name)
-        if (release and release.get('bytes') == amount
-                and hashlib.sha256(Path(release['receipt']).read_bytes()).hexdigest() == release['sha256']):
+        if release and release.get('bytes') == amount and region_release_verified(name, release):
             continue
         claims['legacy:' + name] = amount
     return claims

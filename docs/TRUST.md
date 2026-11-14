@@ -28,6 +28,14 @@ reached slice. The candidate reached-slice walk needs machine-call correspondenc
 before a proof can use it. Machine proofs establish partial correctness only. Phase 5 of the
 active plan must prove termination with the verified executor in `ZesuSsz/Export/Executor.v`.
 
+`parentHeaderGeneratedCompliance` in `ZesuSsz/Compliance/ParentHeaderGeneratedComposition.v`
+derives `ParentHeaderContractCorrect` from two premises: `NextUint64ContractCorrect` and
+`ParentHeaderOpenBlocks`, a record with one field per decodeParentHeader block whose proof is
+not closed (generated in `ParentHeaderBlockObligations.v` by
+`tools/block/render_open_blocks.py`). It is not an unconditional result: its premises are the
+remaining work. The memcpy runtime premise enters through the contract code
+(`memcpyCallPremise`), as `ParentHeaderContractCorrect` states it.
+
 ## Selected artifact and machine semantics
 
 The selected stock ELF has raw SHA-256
@@ -105,6 +113,14 @@ with `DecodeItemComplianceStatement` by `eq_refl`. The PUBLIC soundness gate
 (`tools/soundness_gate.py`, `docs/SOUNDNESS_GATE.md`) checks the four PUBLIC theorems with an
 empty axiom allow-list and recursive `coqchk`. Every later public theorem needs its own
 reviewed closed type and axiom check.
+
+The PUBLIC soundness gate (`tools/soundness_gate.py`, `docs/SOUNDNESS_GATE.md`) compiles
+the PUBLIC theorem files fresh and checks that each fresh object equals the object in
+`_build`. It takes their dependency objects from the Dune cache, runs
+the five negative controls and the statement and wrapper checks, and re-checks every object
+with recursive `coqchk`. `coqchk` re-checks cached objects against the kernel, but it does
+not compare an object with its source, so the meaning of a cached dependency definition
+rests on the integrity of the local Dune cache.
 
 The user approved seven named C4 host premises for the rung-3 transaction snapshot.
 Its generated roots declare those seven host extern axioms.

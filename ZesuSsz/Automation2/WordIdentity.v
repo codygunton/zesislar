@@ -1,6 +1,7 @@
 Require Import ZesuSsz.Automation2.SwitchDispatch.
 From stdpp Require Import bitvector.tactics.
 From Coq Require Import ZArith.ZArith.
+Require ZesuSsz.Automation2.VmClosed.
 Local Open Scope Z_scope.
 
 Class ZesuStepWordIdentity : Prop := {}.
@@ -13,7 +14,7 @@ Ltac zesu_word_identity :=
   lazymatch goal with
   | |- @eq (bv ?width) ?lhs (Z_to_bv ?target_width ?value) =>
       constr_eq width target_width;
-      is_closed_term width;
+      ZesuSsz.Automation2.VmClosed.zesu_closed_term width;
       lazymatch lhs with
       | @BV _ Z0 _ =>
           solve [apply bv_eq; change (0%Z = 0%Z); reflexivity]
@@ -23,8 +24,8 @@ Ltac zesu_word_identity :=
           | Z.sub ?target_base ?displacement =>
               constr_eq base target_base;
               assert_fails (has_evar base);
-              is_closed_term offset;
-              is_closed_term displacement;
+              ZesuSsz.Automation2.VmClosed.zesu_closed_term offset;
+              ZesuSsz.Automation2.VmClosed.zesu_closed_term displacement;
               let reduced := eval vm_compute in displacement in
               let reduced_offset := eval vm_compute in offset in
               solve [change (bv_add (Z_to_bv width base) reduced_offset =
