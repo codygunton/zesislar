@@ -159,14 +159,18 @@ Ltac zesu_word_fact_view Hfact value word view :=
   change (bv_unsigned word) with unsigned in Hview;
   clear Hfact.
 
+(* The width side condition `n <= z` is closed: it is decided by computing
+   `N.leb n z`, never by a context-wide tactic. `congruence` here ran over every
+   hypothesis of the block for each zero-extended fact the match tried; on a
+   split conjunct with 266 hypotheses one call took over 800 s. *)
 Ltac zesu_word_fact_unsigned :=
   match goal with
   | Hfact : @bv_zero_extend ?n ?z ?value = ?word |- _ =>
       zesu_word_fact_view Hfact value word
-        constr:(zesu_zero_extend_eq_unsigned n z value word ltac:(vm_compute; congruence))
+        constr:(zesu_zero_extend_eq_unsigned n z value word (proj1 (N.leb_le n z) eq_refl))
   | Hfact : not (@bv_zero_extend ?n ?z ?value = ?word) |- _ =>
       zesu_word_fact_view Hfact value word
-        constr:(zesu_zero_extend_neq_unsigned n z value word ltac:(vm_compute; congruence))
+        constr:(zesu_zero_extend_neq_unsigned n z value word (proj1 (N.leb_le n z) eq_refl))
   | Hfact : @eq (bv ?n) ?value ?word |- _ =>
       zesu_word_fact_view Hfact value word constr:(zesu_word_eq_unsigned n value word)
   | Hfact : not (@eq (bv ?n) ?value ?word) |- _ =>
