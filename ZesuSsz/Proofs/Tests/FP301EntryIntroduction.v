@@ -7,8 +7,8 @@
 Require Import isla.riscv64.riscv64.
 From iris.proofmode Require Import environments.
 Require Import ZesuSsz.Contracts.RlpDecodeItemContract.
-Require Import ZesuSsz.Generated.DecodeItem.FP301.Pilot69b0Entries.
-Require Import ZesuSsz.Generated.DecodeItem.FP301.Pilot69b0Structural.
+Require Import ZesuSsz.Generated.DecodeItem.FP301.Pilot0050Entries.
+Require Import ZesuSsz.Generated.DecodeItem.FP301.Pilot0050Structural.
 Require Import ZesuSsz.Automation2.All.
 
 Set Default Proof Using "Type".
@@ -18,12 +18,12 @@ Section tests.
 
   (* The entry goal becomes its forward alternative and the continuation. *)
   Lemma fp301_entry_introduction_step (args : DecodeItemArgs) (returnAddress : Z) (K : iProp Sigma) :
-    fp_machineAt69b0_ForwardA0N0 args returnAddress ∗ K ⊢ fp_machineAt69b0 args returnAddress K.
+    fp_machineAt0050_ForwardA0N0 args returnAddress ∗ K ⊢ fp_machineAt0050 args returnAddress K.
   Proof.
     iIntros "H".
     ZesuSsz.Automation2.Hooks.zesu_pure_fact_hints_if_enabled.
     lazymatch goal with
-    | |- envs_entails _ (fp_machineAt69b0_ForwardA0N0 args returnAddress ∗ K)%I => idtac
+    | |- envs_entails _ (fp_machineAt0050_ForwardA0N0 args returnAddress ∗ K)%I => idtac
     end.
     iExact "H".
   Qed.
@@ -33,11 +33,11 @@ Section tests.
   Lemma fp301_alternative_introduction_step (args : DecodeItemArgs) (returnAddress : Z) :
     let body := ltac:(
       let evidence := constr:(_ : ZesuSsz.Automation.Hooks.ZesuPureFactIntro
-                                    (fp_machineAt69b0_ForwardA0N0 args returnAddress) _) in
+                                    (fp_machineAt0050_ForwardA0N0 args returnAddress) _) in
       lazymatch type of evidence with
       | ZesuSsz.Automation.Hooks.ZesuPureFactIntro _ ?source => exact source
       end) in
-    body ⊢ fp_machineAt69b0_ForwardA0N0 args returnAddress.
+    body ⊢ fp_machineAt0050_ForwardA0N0 args returnAddress.
   Proof.
     intros body. iIntros "H".
     ZesuSsz.Automation2.Hooks.zesu_pure_fact_hints_if_enabled.
