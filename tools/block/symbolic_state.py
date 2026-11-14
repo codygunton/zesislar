@@ -32,6 +32,15 @@ class Expr:
         return cls(value['op'], tuple(cls.from_dict(a) for a in value.get('args', [])),
                    value.get('width'), value.get('value'))
 
+    def uninitialized_reads(self):
+        """The fresh uninitialized-byte values this term mentions, in first-occurrence order."""
+        if self.op == 'uninit_byte':
+            return [self]
+        found = []
+        for arg in self.args:
+            found.extend(value for value in arg.uninitialized_reads() if value not in found)
+        return found
+
     def coq(self):
         """Render supported terms. Reject unknown inputs and unresolved reads."""
         if self.op == 'input':
@@ -43,6 +52,8 @@ class Expr:
             return f'(BV {self.width}%N {self.value}%Z)'
         if self.op == 'bool':
             return 'true' if self.value else 'false'
+        if self.op == 'uninit_byte':
+            return uninitialized_binder(self)['name']
         rendered = [arg.coq() for arg in self.args]
         binary = {'bvadd': 'bv_add', 'bvsub': 'bv_sub', 'bvmul': 'bv_mul',
                   'bvand': 'bv_and', 'bvor': 'bv_or', 'bvxor': 'bv_xor',
@@ -76,6 +87,13 @@ class Expr:
         if self.op == 'array_byte':
             return f'(List.nth {self.value}%nat {rendered[0]} (BV 8%N 0%Z))'
         raise ValueError('The expression cannot render as Coq: ' + self.op)
+
+
+def uninitialized_binder(value):
+    """The existential binder of one uninitialized-byte read: a byte with no facts."""
+    if value.op != 'uninit_byte' or value.width != 8 or not isinstance(value.value, str) or value.args:
+        raise ValueError('The term is not an uninitialized-byte read')
+    return {'name': 'uninit_byte_' + value.value[:16], 'type': 'bv 8'}
 
 
 def input_expr(coq_text, width=64):
@@ -619,7 +637,13 @@ class _Evaluator:
                 candidates.append((region.bytes[offset], region.ownership_id))
             elif region.byte_array is not None and ((isinstance(length, int) and offset < length) or offset < region.minimum_length):
                 candidates.append((Expr('array_byte', (region.byte_array,), 8, offset), region.ownership_id))
-            elif region.byte_array is not None and isinstance(length, Expr):
+            elif region.uninitialized and region.ownership_id is not None and (
+                    (isinstance(length, int) and offset < length) or offset < region.minimum_length):
+                candidates.append((self.uninitialized_byte(address, region), region.ownership_id))
+            elif region.byte_array is not None and isinstance(length, Expr) and not (
+                    set(owners) - {region.ownership_id, None}):
+                # An unknown length may reach the byte, unless another owned region
+                # provably holds it: owned regions are separate.
                 self.report('unknown_memory_bound', address=address.to_dict(), length=length.to_dict())
                 return Expr('unknown_read', (address, region.byte_array, length), 8)
         def separated(region):
@@ -635,6 +659,21 @@ class _Evaluator:
             return candidates[0][0]
         self.report('ambiguous_memory_alias' if candidates else 'unknown_memory_read', address=address.to_dict())
         return Expr('unknown_read', (address,), 8)
+
+    def uninitialized_byte(self, address, region):
+        """Read an owned uninitialized byte as a fresh existential value.
+
+        `a ↦ₘ? n` owns each byte as `∃ v : bv 8, a + i ↦ v`, so a load returns some
+        owned byte; the value is a binder with no facts. Each read is fresh: two reads of
+        one unwritten byte forget that they agree, which only weakens the state.
+        """
+        identity = hashlib.sha256(json.dumps([self.state.trace_count, self.instruction_index, self.event_index,
+                                              list(self.path), address.to_dict(), region.ownership_id],
+                                             sort_keys=True).encode()).hexdigest()
+        value = Expr('uninit_byte', (), 8, identity)
+        self.report('uninitialized_read', owner=region.ownership_id, address=address.to_dict(),
+                    value=value.to_dict())
+        return value
 
     def symbolic_array_byte(self, address, region, extent):
         """Read an owned array at a symbolic index as a list lookup.
@@ -811,8 +850,12 @@ def _source_interval(expression, rows):
     return low - wrap, high - wrap, left[2] | right[2]
 
 
-def _refuted_ram_guard(condition, rows):
-    """Refuse guards outside a source-bound RAM endpoint comparison."""
+def _ram_guard_decision(condition, rows):
+    """Decide a source-bound RAM endpoint comparison on its source interval.
+
+    Return (holds, evidence): holds is True when every value of the interval
+    satisfies the condition, False when none does. Otherwise return None.
+    """
     negated = condition.op == 'not' and len(condition.args) == 1
     comparison = condition.args[0] if negated else condition
     if comparison.op not in ('bvsge', 'bvsle', 'bvuge', 'bvule') or len(comparison.args) != 2:
@@ -841,10 +884,43 @@ def _refuted_ram_guard(condition, rows):
         limit = _signed(limit, right.width)
     true = low >= limit if comparison.op.endswith('ge') else high <= limit
     false = high < limit if comparison.op.endswith('ge') else low > limit
-    if not (true if negated else false):
+    holds = false if negated else true
+    if not (holds or (true if negated else false)):
         return None
-    return {'condition': condition.to_dict(), 'interval': [low, high],
-            'endpoint': endpoint, 'endpoint_value': limit, 'source_intervals': used}
+    return holds, {'condition': condition.to_dict(), 'interval': [low, high],
+                   'endpoint': endpoint, 'endpoint_value': limit, 'source_intervals': used}
+
+
+def _refuted_ram_guard(condition, rows):
+    """Refuse guards outside a source-bound RAM endpoint comparison."""
+    decision = _ram_guard_decision(condition, rows)
+    return decision[1] if decision is not None and not decision[0] else None
+
+
+def _implied_ram_guard(condition, rows):
+    """Return the evidence when the source intervals alone imply a RAM guard."""
+    decision = _ram_guard_decision(condition, rows)
+    return decision[1] if decision is not None and decision[0] else None
+
+
+def _drop_source_implied_ram_guards(initial, evaluator):
+    """Carry no new RAM guard that the source intervals already imply.
+
+    Every successor entry states the domain those intervals come from, so the
+    guard adds no fact; carried, it adds two widened bounds per access to every
+    later entry. The block proof still discharges the trace guard itself.
+    """
+    if evaluator.status != 'complete' or not initial.source_intervals:
+        return
+    kept = []
+    for condition in evaluator.state.conditions:
+        evidence = (None if condition in initial.conditions
+                    else _implied_ram_guard(condition, initial.source_intervals))
+        if evidence is None:
+            kept.append(condition)
+        else:
+            evaluator.report('source_implied_ram_guard', **evidence)
+    evaluator.state.conditions = kept
 
 
 def _refute_ram_fault(source, initial, evaluator):
@@ -1039,6 +1115,7 @@ def evaluate_trace(source, state, *, live_registers=None, instruction_index=0, m
     for evaluator in evaluators:
         _refute_ram_fault(source, state, evaluator)
         _apply_source_guard_facts(state, evaluator)
+        _drop_source_implied_ram_guards(state, evaluator)
         if live_registers is not None:
             live = set(live_registers)
             evaluator.state.registers = {k: v for k, v in evaluator.state.registers.items() if k in live}
