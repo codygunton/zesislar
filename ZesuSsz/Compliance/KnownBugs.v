@@ -23,5 +23,10 @@ Definition knownBugs : list KnownBug := [RlpLongLengthWrap].
    would read beyond the input. parentHeaderArgsWellFormed
    (ParentHeaderContract.v) excludes exactly these inputs through
    parentHeaderOuterListWrap; ParentHeaderOuterWrapFacts.v proves the
-   exclusion exact. A wrapped string at the first call and a wrap at any
-   later call stay in the domain. *)
+   exclusion exact. A wrapped string at the first call stays in the domain:
+   it fails the list check and the function returns with no further call. A
+   wrap at any later call stays in the domain as well: the parent advances
+   past that item by the call's consumed count, which its C1-B result bounds
+   by the length of the slice it was passed, so no later call reads beyond the
+   input. A later block that needs a later-call exclusion is a separate
+   contract change and review item. *)
