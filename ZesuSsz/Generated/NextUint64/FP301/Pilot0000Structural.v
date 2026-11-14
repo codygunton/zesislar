@@ -4,13 +4,9 @@ Require Import isla.riscv64.riscv64.
 From Coq Require Import Lists.List ZArith.ZArith NArith.NArith.
 Require Import stdpp.bitvector.definitions.
 Require Import EvmSailRlp.evm_rlp_types.
-Require Import ZesuSsz.Contracts.RlpDecodeItem.
-Require Import ZesuSsz.Contracts.RlpDecodeItemContract.
+Require Export ZesuSsz.Interfaces.DecodeItem.
 Require Import ZesuSsz.Contracts.ParentHeaderRootFacts.
 Require Import ZesuSsz.Contracts.NextUint64BlockEntries.
-Require Import ZesuSsz.Contracts.DecodeItemCompositional.
-Require Import ZesuSsz.Contracts.DecodeItemCallData.
-Require Export ZesuSsz.Contracts.DecodeItemPayloadBounds.
 Require Export ZesuSsz.Contracts.NextUint64DomainRanges.
 Require Import ZesuSsz.Contracts.Level1.
 Local Open Scope Z_scope.

@@ -4,6 +4,9 @@ Fails the gate when:
 (a) a caller module -- another function's generated entries or callers, an
     Automation2 module, or another function's Compliance module -- requires an
     internal module of a registered function instead of its interface;
+    A `legacy_callers` row needs a reason; beyond the grandfathered frozen-core
+    nextUint64 rows, only a frozen ZesuSsz/Automation/ module or a frozen
+    class-R module (hygiene baseline legacy_entry_files) may be listed;
 (c) a function profile's call to a registered black box does not name the
     interface's public spec (call_boundary.interface_of, which the block
     generator applies to every call it renders);
@@ -21,6 +24,38 @@ from call_boundary import CallRefused, interface_of
 from render_interfaces import stale
 
 REQUIRE = re.compile(r'(?:\bFrom\s+(\S+)\s+)?\bRequire\s+(?:(?:Import|Export)\s+)?(.*?)\.(?=\s|$)', re.S)
+# Legacy callers admitted before the admission rule below (2026-11-14 ruling): frozen-core nextUint64
+# Compliance modules, kept until they retire. No row may join this set.
+GRANDFATHERED_LEGACY = frozenset({
+    ('ZesuSsz/Compliance/NextUint64ExitMeanings.v', 'ZesuSsz.Compliance.DecodeItemReturnRestorationFacts'),
+    ('ZesuSsz/Compliance/NextUint64CallBridge.v', 'ZesuSsz.Contracts.DecodeItemCompositional'),
+    ('ZesuSsz/Compliance/NextUint64CallBridge.v', 'ZesuSsz.Compliance.DecodeItemCompositionalCompliance'),
+})
+
+
+def frozen_class_r(root=ROOT):
+    """The frozen class-R modules: the hygiene baseline's approved AllLegacy entry files."""
+    baseline = Path(root) / 'ZesuSsz/Evidence/hygiene_baseline.json'
+    return set(json.loads(baseline.read_text())['legacy_entry_files']) if baseline.exists() else set()
+
+
+def legacy_admission_violations(registry, root=ROOT):
+    """A `legacy_callers` row needs a reason, and a new row is admitted only for a module under the
+    frozen ZesuSsz/Automation/ core or a frozen class-R module."""
+    class_r = frozen_class_r(root)
+    errors = []
+    for entry in registry['functions']:
+        for row in entry.get('legacy_callers', []):
+            if not row.get('reason', '').strip():
+                errors.append('%s: legacy caller %s lists no reason' % (entry['function'], row['path']))
+            if ((row['path'], row['module']) not in GRANDFATHERED_LEGACY
+                    and not row['path'].startswith('ZesuSsz/Automation/') and row['path'] not in class_r):
+                errors.append('%s: new legacy caller %s (%s) refused: only a frozen ZesuSsz/Automation/ module '
+                              'or a frozen class-R module may be listed; import %s'
+                              % (entry['function'], row['path'], row['module'],
+                                 (entry.get('interface') or {}).get('module')))
+    return errors
+
 THEOREM = re.compile(r'^\s*(?:Theorem|Lemma)\s+(\w*Compliance)\b', re.M)
 
 
@@ -137,7 +172,8 @@ def coverage_violations(registry, root=ROOT):
 
 def violations(root=ROOT):
     registry = json.loads((Path(root) / 'ZesuSsz/Contracts/proved_functions.json').read_text())
-    errors = import_violations(registry, root) + call_violations(registry, root) + coverage_violations(registry, root)
+    errors = (import_violations(registry, root) + legacy_admission_violations(registry, root)
+              + call_violations(registry, root) + coverage_violations(registry, root))
     errors += ['interface module not fresh (run tools/block/render_interfaces.py): ' + path
                for path in stale(registry)]
     return errors

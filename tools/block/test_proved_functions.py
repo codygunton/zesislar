@@ -99,6 +99,22 @@ class ProvedFunctionCheckTests(unittest.TestCase):
                 'ZesuSsz/Compliance/Other.v: compliance theorem otherGeneratedCompliance has no entry in '
                 'ZesuSsz/Contracts/proved_functions.json'])
 
+    def test_a_new_legacy_caller_is_refused_outside_frozen_modules(self):
+        rows = [{'path': 'ZesuSsz/Compliance/Other.v', 'module': 'ZesuSsz.Contracts.CalleeSpec', 'reason': 'r'},
+                {'path': 'ZesuSsz/Automation/Old.v', 'module': 'ZesuSsz.Contracts.CalleeSpec', 'reason': 'r'},
+                {'path': 'ZesuSsz/Proofs/Tests/ClassR.v', 'module': 'ZesuSsz.Contracts.CalleeSpec', 'reason': 'r'},
+                {'path': 'ZesuSsz/Compliance/NextUint64CallBridge.v',
+                 'module': 'ZesuSsz.Contracts.DecodeItemCompositional', 'reason': ''}]
+        registry = {'functions': [dict(REGISTRY['functions'][0], legacy_callers=rows)]}
+        with tempfile.TemporaryDirectory() as root:
+            self.write(root, 'ZesuSsz/Evidence/hygiene_baseline.json',
+                       json.dumps({'legacy_entry_files': ['ZesuSsz/Proofs/Tests/ClassR.v']}))
+            self.assertEqual(C.legacy_admission_violations(registry, Path(root)), [
+                'callee: new legacy caller ZesuSsz/Compliance/Other.v (ZesuSsz.Contracts.CalleeSpec) refused: only '
+                'a frozen ZesuSsz/Automation/ module or a frozen class-R module may be listed; import '
+                'ZesuSsz.Interfaces.Callee',
+                'callee: legacy caller ZesuSsz/Compliance/NextUint64CallBridge.v lists no reason'])
+
     def test_the_repository_passes(self):
         self.assertEqual(C.violations(), [])
 
