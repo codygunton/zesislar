@@ -115,15 +115,44 @@ Ltac zesu_byte_slice_alias_normalize :=
       change (@List.nth T k l d) with (@List.nth T' k l d)
   end.
 
-Ltac zesu_byte_slice_unsigned_ranges :=
+(* A hypothesis word convertible to a goal word is restated in the goal's
+   form, whatever alias it was elaborated at. *)
+Ltac zesu_byte_slice_goal_atoms :=
   repeat match goal with
-  | |- context[@bv_unsigned ?n ?x] =>
-      assert_fails (has_evar x);
-      lazymatch goal with
-      | _ : (0 <= @bv_unsigned n x < _)%Z |- _ => fail
-      | _ => pose proof (bv_unsigned_in_range n x)
+  | |- context[@bv_unsigned ?n ?a] =>
+      match goal with
+      | H : context[@bv_unsigned ?m ?b] |- _ =>
+          assert_fails (constr_eq a b);
+          assert_fails (has_evar b);
+          unify (@bv_unsigned m b) (@bv_unsigned n a);
+          change (@bv_unsigned m b) with (@bv_unsigned n a) in H
       end
   end.
+
+Ltac zesu_byte_slice_unsigned_range n x :=
+  assert_fails (has_evar x);
+  lazymatch goal with
+  | _ : (0 <= @bv_unsigned n x < _)%Z |- _ => fail
+  | _ => pose proof (bv_unsigned_in_range n x)
+  end.
+
+Ltac zesu_byte_slice_unsigned_ranges :=
+  repeat match goal with
+  | |- context[@bv_unsigned ?n ?x] => zesu_byte_slice_unsigned_range n x
+  | _ : context[@bv_unsigned ?n ?x] |- _ => zesu_byte_slice_unsigned_range n x
+  end.
+
+(* A derived fact stated under premises: each premise the context shows,
+   directly or by arithmetic, is discharged. *)
+Ltac zesu_byte_slice_discharge_premises :=
+  repeat match goal with
+  | H : ?P -> ?Q |- _ =>
+      lazymatch type of P with Prop => idtac end;
+      let Hp := fresh "Hpremise" in
+      assert (Hp : P) by (first [assumption | lia]);
+      specialize (H Hp); clear Hp
+  end;
+  repeat match goal with H : _ /\ _ |- _ => destruct H end.
 
 Ltac zesu_byte_slice_moduli :=
   repeat match goal with
@@ -144,6 +173,8 @@ Ltac zesu_byte_slice_bound_arith :=
   zesu_byte_slice_unsigned_ranges;
   zesu_byte_slice_alias_normalize;
   zesu_byte_slice_moduli;
+  zesu_byte_slice_discharge_premises;
+  zesu_byte_slice_goal_atoms;
   repeat match goal with
   | |- context[(?a mod ?m)%Z] => rewrite (Z.mod_small a m); [|lia]
   end;
