@@ -237,3 +237,23 @@ Ltac2 zesu_linear_clear_unrelated () :=
 (* The library solver on the facts linked to the goal. *)
 Ltac zesu_lia_linked_facts :=
   once ltac2:(zesu_linear_clear_unrelated ()); Zify.zify; xlia Lia.zchecker.
+
+(* The goal and every Prop fact fit the whole-context node budget. Guards a
+   solver call on the whole context: on the decodeItem blocks every
+   whole-context `lia` that succeeded ran on at most 26708 nodes (16384 lost
+   a closure), while failing ones reached 212738 nodes. *)
+Ltac2 zesu_linear_context_node_budget () := 32768.
+
+Ltac2 zesu_linear_context_within_budget () :=
+  let budget := Ref.ref (zesu_linear_context_node_budget ()) in
+  zesu_linear_spend budget (Control.goal ());
+  List.iter (fun declaration =>
+    let (_, body, typ) := declaration in
+    match body with
+    | Some _ => ()
+    | None =>
+        if Constr.equal (Constr.type typ) constr:(Prop) then zesu_linear_spend budget typ else ()
+    end) (Control.hyps ());
+  if Int.le (Ref.get budget) 0 then Control.zero (Tactic_failure None) else ().
+
+Ltac zesu_lia_context_within_budget := ltac2:(zesu_linear_context_within_budget ()).
