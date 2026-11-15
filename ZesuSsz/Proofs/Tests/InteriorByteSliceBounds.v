@@ -64,9 +64,9 @@ Notation outWord8 bytes :=
    after the bytes the second call consumed. The payload lies in the input
    only under the interface's premise that its length is below 2^64 - 9,
    which follows from the input's own range: the input pointer's lower bound
-   sits folded in the caller's precondition, with a named constant. *)
+   sits folded in the caller's precondition. *)
 Record CursorArgs := { cursorInput : bv 64; cursorLength : bv 64; cursorBytes : list byte }.
-Definition cursorInputLow : Z := 4096.
+Notation cursorInputLow := ((4096) : Z) (only parsing).
 Definition cursorWellFormed (args : CursorArgs) : Prop :=
   Z.of_nat (length (cursorBytes args)) = bv_unsigned (cursorLength args) /\
   cursorInputLow <= bv_unsigned (cursorInput args).
