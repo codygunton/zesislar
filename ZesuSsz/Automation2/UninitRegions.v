@@ -45,26 +45,13 @@ Ltac zesu_region_bounds_legacy :=
     end;
     bv_solve].
 
-(* A word stripped of its closed bitvector offsets: the word that both the
-   region base and the address offset. A store that splits a region leaves a
-   remainder whose base reads `bv_unsigned (bv_add word c1) + n`, so the base
-   and a later address share only that root. *)
-Ltac zesu_region_word_root word :=
-  match word with
-  | bv_add ?inner ?offset =>
-      let _ := ZesuSsz.Automation2.VmClosed.zesu_vm_eval_closed offset in
-      zesu_region_word_root inner
-  | _ => word
-  end.
-
 (* A word whose unsigned value appears in the region base reaches the
    address through bitvector offsets: the address reads
-   `bv_unsigned (bv_add (bv_add word c1) c2)`, not `bv_unsigned word`. Base
-   and address are compared at the word's root. The root's facts then decide
-   whether the offsets wrap. This selection runs only in the second bounds
-   attempt below, and only a closed bound keeps it. *)
+   `bv_unsigned (bv_add (bv_add word c1) c2)`, not `bv_unsigned word`. The
+   word's facts then decide whether the offsets wrap. This selection runs
+   only in the second bounds attempt below, and only a closed bound keeps
+   it. *)
 Ltac zesu_region_offset_word word address :=
-  let word := zesu_region_word_root word in
   assert_fails (has_evar word);
   assert_fails (ZesuSsz.Automation2.VmClosed.zesu_vm_closed word);
   let rec offsets term :=
@@ -102,8 +89,7 @@ Ltac zesu_region_collect offset_word base address :=
          Ltac1.of_constr address; Ltac1.of_constr base;
          Ltac1.of_constr (Control.hyp name)] Ltac1.run) original) in
   (* The word's facts may sit folded in a predicate over the value the word
-     is read from, so the search root is the word's argument. Facts state the
-     root word, not its offsets, so the selection reads the root's value. *)
+     is read from, so the search root is the word's argument. *)
   let collect_word := ltac2:(v w |-
     let value := Option.get (Ltac1.to_constr v) in
     let word := Option.get (Ltac1.to_constr w) in
@@ -117,9 +103,7 @@ Ltac zesu_region_collect offset_word base address :=
       lazymatch address with context[term] => collect term address end |
       lazymatch term with
       | bv_unsigned ?word =>
-          offset_word word address;
-          let root := zesu_region_word_root word in
-          collect_word constr:(bv_unsigned root) root
+          offset_word word address; collect_word term word
       | Z.add ?left ?right => first [choose_atom left | choose_atom right]
       | Z.sub ?left ?right => first [choose_atom left | choose_atom right]
       | Z.mul ?left ?right => first [choose_atom left | choose_atom right]
