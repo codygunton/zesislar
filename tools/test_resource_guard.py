@@ -120,6 +120,25 @@ class ResourceGuard(unittest.TestCase):
         self.assertEqual(result.returncode, 0, result.stderr)
         self.assertEqual(result.stdout, "")
 
+    def test_a_claim_above_the_module_limit_is_refused_with_its_own_status(self):
+        # A 16.13 GiB claim against the 16 GiB fence ran nothing and left no
+        # trace, so two column blocks never ran (2026-11-15).
+        claim = str(17314994483)
+        for command in ("run_batch over -- touch \"$1.ran\"", "run_scope over -- touch \"$1.ran\""):
+            with self.subTest(command=command), tempfile.TemporaryDirectory() as directory:
+                ran = Path(directory) / "x.ran"
+                result = self.run_guard(f'set -- {Path(directory) / "x"}; {command}',
+                                        ZESU_MODULE_LIMIT_GIB="16", ZESU_MODULE_CLAIM_BYTES=claim)
+                self.assertEqual(result.returncode, 5, result.stderr)
+                self.assertFalse(ran.exists())
+                lines = result.stderr.strip().splitlines()
+                self.assertEqual(len(lines), 1, result.stderr)
+                self.assertIn(f"memory claim {claim} bytes (16.13 GiB) exceeds the 16 GiB module limit", lines[0])
+                self.assertIn("ZESU_MODULE_LIMIT_GIB", lines[0])
+        result = self.run_guard("claim_fits_fence", ZESU_MODULE_LIMIT_GIB="16",
+                                ZESU_MODULE_CLAIM_BYTES=str(16 * 1024 ** 3))
+        self.assertEqual(result.returncode, 0, result.stderr)
+
     def test_profile_memory_admission_is_atomic_across_requests(self):
         with tempfile.TemporaryDirectory() as directory:
             result = self.run_guard(r'''
