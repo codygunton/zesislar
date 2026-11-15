@@ -41,6 +41,10 @@ of an array that the callee keeps (for a slice: the array, offset and
 length), and states the output length with its source. Generic code names no
 address. No proof runs.
 
+A call's own block declares the call's input slice in its entry (call_site_declarations):
+the slice under the names the return site uses, a bounds fact, the slice as its own piece
+at the call's argument address, and the wand that restores the whole array after the call.
+
 A tail call (a design row without a return site) is a call whose return site is
 the caller's own return address: its seed is the state the function exits with.
 """
@@ -838,3 +842,131 @@ def call_return_seed(edges, *, call, function_root, root_seed, shapes, vocabular
               'havoc_registers': [binder['name'] for binder in binders if binder['name'].startswith(prefix + 'x')],
               **({'renewed_system_registers': renewed_exact} if renewed_exact else {})}
     return seed, public, report
+
+
+def call_site_declarations(edges, alternative, *, call, report):
+    """The resource boundary of the call's own block, with the call's input slices and output
+    regions declared.
+
+    `edges` are the call-site stops, `alternative` the block's single entry alternative and
+    `report` the call's return-seed report (its layer prefix and the caller regions the callee
+    replaces). For each spec array that the design row takes as an interior slice of an owned
+    caller array (`slice_of`), the entry states, in this order:
+
+    * the named equations of `call<k>_<binder>_offset`, `_length` and `call<k>_<binder>` (the
+      names and values the return site states, over the call-site argument values);
+    * the bounds fact `0 <= offset /\\ 0 <= length /\\ offset + length <= length array`;
+    * the slice as its own piece, at the call's argument address term;
+    * the wand from that piece back to the whole array.
+
+    For each caller region the callee replaces at an argument (its output buffer), the entry
+    states the buffer as its own region of the stated length, split from an uninitialized region
+    at the return site's offsets, and `zesu_call_address (bv_unsigned ARGV) REGION`: the call's
+    argument address is the region's.
+
+    The predecessor's exit lends the slice at the stated offset and length (the generic step in
+    Automation2/CallDeclarations.v reads them from the entry) and carves the regions (Islaris's
+    uninitialized-region subsumption); the call finds the slice at its own address and the buffer
+    at the declared one; after the call the wand gives the array back. Returns None when there is
+    nothing to declare. No proof runs."""
+    rows = [row for row in call.get('arrays', []) if 'slice_of' in row]
+    by_binder = {row['binder']: row for row in call.get('arrays', [])}
+    outputs = [(key, split) for key, split in sorted(report.get('replaced', {}).items())
+               if not split.get('whole') and split.get('pre') in by_binder
+               and 'argument' in by_binder[split['pre']]]
+    if not rows and not outputs:
+        return None
+    if any(edge['seed_pc'] != alternative['seed_pc'] for edge in edges):
+        raise CallRefused('The call-site paths start from another seed than the call block entry.')
+    prefix = report['prefix']
+    state, widened = _merge_call_sites(edges, prefix)
+    if widened:
+        raise CallRefused('The call-site paths disagree on the call arguments: ' + ', '.join(widened))
+    try:
+        argv = ['(' + _coq(state.registers[name]) + ')' for name in ARGUMENTS]
+    except (KeyError, ValueError) as error:
+        raise CallRefused('A call argument has no entry rendering: ' + str(error))
+    resource = json.loads(json.dumps(alternative['resource_boundary']))
+    # The scope is the tree, or its left side when a join seed framed its terminal beside it.
+    tree = resource['tree']['left'] if resource['tree'].get('kind') == 'sep' else resource['tree']
+    if tree.get('kind') != 'exists' or tree['body'].get('kind') != 'sep_list':
+        raise CallRefused('The call block entry is not one existential scope.')
+    children = tree['body']['children']
+    provenance = {'call_site_declaration': call['call_site_pc']}
+
+    def at_call(text):
+        for number, argument in enumerate(argv):
+            text = text.replace('{argv:%d}' % number, argument)
+        if '{' in text:
+            raise CallRefused('A slice template names a value the call block entry does not hold: ' + text)
+        return text
+
+    def declare(owner, declared):
+        """Replace the owner component by the declared components, in place in the scope."""
+        if [child.get('id') for child in children].count(owner['id']) != 1:
+            raise CallRefused('The call block entry scope does not hold ' + owner['id'])
+        clash = {key for key, _ in declared} & {component['id'] for component in resource['components']
+                                                 if component['id'] != owner['id']}
+        if clash:
+            raise CallRefused('A declared component id is taken: ' + ', '.join(sorted(clash)))
+        resource['components'] = [component for component in resource['components']
+                                  if component['id'] != owner['id']] + [
+            {'id': key, 'source': source, 'provenance': provenance} for key, source in declared]
+        at = next(index for index, child in enumerate(children) if child.get('id') == owner['id'])
+        children[at:at + 1] = [{'kind': 'component', 'id': key} for key, _ in declared]
+
+    for row in rows:
+        name = prefix + row['binder']
+        owners = []
+        for component in resource['components']:
+            match = re.fullmatch(r'(.*?)\s*↦ₘ∗\s*(.*)', component['source'], re.S)
+            if match and _strip_enclosure(match[2].strip()) == row['slice_of']:
+                owners.append(component)
+        if len(owners) != 1:
+            raise CallRefused('The call block entry owns no unique whole array ' + row['slice_of'])
+        if 'argument' not in row:
+            raise CallRefused('A slice input is not at a call argument: ' + row['binder'])
+        piece = 'bv_unsigned %s ↦ₘ∗ %s' % (argv[row['argument']], name)
+        declare(owners[0], [
+            (name + '_offset_value', '⌜(zesu_named_eq %s_offset (%s))⌝' % (name, at_call(row['slice_offset']))),
+            (name + '_length_value', '⌜(zesu_named_eq %s_length (%s))⌝' % (name, at_call(row['slice_length']))),
+            (name + '_value', '⌜(zesu_named_eq %s (take (Z.to_nat %s_length) (drop (Z.to_nat %s_offset) (%s))))⌝'
+             % (name, name, name, row['slice_of'])),
+            (name + '_bounds', '⌜((0 <= %s_offset /\\ 0 <= %s_length /\\ %s_offset + %s_length <= '
+             'Z.of_nat (List.length (%s)))%%Z)⌝' % (name, name, name, name, row['slice_of'])),
+            (name + '_piece', piece),
+            (name + '_restore', '(%s -∗ %s)' % (piece, owners[0]['source']))])
+        taken = {binder['name'] for binder in tree['binders']}
+        for binder, kind in [(name + '_offset', 'Z'), (name + '_length', 'Z'), (name, 'list byte')]:
+            if binder in taken:
+                raise CallRefused('A declared name is already bound in the call block entry: ' + binder)
+            tree['binders'].append({'name': binder, 'type': kind, 'expression': input_expr(binder, None).to_dict()})
+    for key, split in outputs:
+        owner = next((component for component in resource['components'] if component['id'] == key), None)
+        if owner is None:
+            raise CallRefused('The call block entry does not own the replaced region ' + key)
+        argument = argv[by_binder[split['pre']]['argument']]
+        start, end = split['offset'], split['offset'] + split['length']
+        uninitialized = re.fullmatch(r'(.*?)\s*↦ₘ\?\s*(.*)', owner['source'], re.S)
+        array = re.fullmatch(r'(.*?)\s*↦ₘ∗\s*(.*)', owner['source'], re.S)
+        if uninitialized:
+            address, size = _strip_enclosure(uninitialized[1].strip()), _strip_enclosure(uninitialized[2].strip())
+        elif array and start == 0 and len(split.get('pieces', [])) == 1:
+            address, size = _strip_enclosure(array[1].strip()), None
+        else:
+            raise CallRefused('The replaced region is neither uninitialized nor exactly the output: ' + key)
+        # The return site's pieces: ADDR, (ADDR + start), (ADDR + end).
+        region = '(%s + %d)' % (address, start) if start else '(%s)' % address
+        declared = []
+        if size is not None:
+            remaining = int(size) - end if re.fullmatch(r'\d+', size) else '(%s - %d)' % (size, end)
+            if start:
+                declared.append((key, '(%s) ↦ₘ? %d' % (address, start)))
+            declared.append((key + '_call_output' if start else key, '%s ↦ₘ? %d' % (region, split['length'])))
+            if remaining != 0:
+                declared.append((key + '_call_after', '(%s + %d) ↦ₘ? %s' % (address, end, remaining)))
+        else:
+            declared.append((key, owner['source']))
+        declared.append((prefix + 'output_address', '⌜(zesu_call_address (bv_unsigned %s) (%s))⌝' % (argument, region)))
+        declare(owner, declared)
+    return resource

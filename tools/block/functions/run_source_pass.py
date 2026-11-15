@@ -20,7 +20,7 @@ import argparse, hashlib, json, sys, time
 ROOT = Path(__file__).resolve().parents[3]
 sys.path.insert(0, str(ROOT / 'tools/block'))
 from boundary_guards import can_reach, cfg_successors
-from call_boundary import CallRefused, call_return_seed
+from call_boundary import CallRefused, call_return_seed, call_site_declarations
 from function_profiles import add_return_alignment, load_profile
 from loop_design import loop_head_seed
 from forward_resource_design import _state_from_result, evaluate_owned_function
@@ -234,6 +234,28 @@ def main():
         report.setdefault('tail_returns', []).append({'call_site_pc': site, 'alternatives': [{
             'predecessor_pc': None, 'seed_pc': site, 'path': [], 'state': seed.state.to_dict(),
             'resource_boundary': render_resource_boundary(seed.ownership, image, seed.state, vocabulary=vocabulary)}]})
+    # The block that makes a call declares the call's input slices in its entry.
+    declarations = {}
+    for call in calls:
+        site = call['return_site_pc']
+        if site not in call_reports:
+            continue
+        block = next(row for row in report['calls'] if row['return_pc'] == site)['block_pc']
+        boundary = next(row for row in report['boundaries'] if row['pc'] == block)
+        edges = [stop for stop in report['stops'] if stop['reason'] == 'call_boundary' and stop['target_pc'] == site]
+        try:
+            if len(boundary['alternatives']) != 1:
+                raise CallRefused('The call block entry has %d alternatives.' % len(boundary['alternatives']))
+            declared = call_site_declarations(edges, boundary['alternatives'][0], call=call,
+                                              report=call_reports[site])
+        except CallRefused as error:
+            declarations[block] = {'call_site_pc': call['call_site_pc'], 'refused': str(error)}
+            continue
+        if declared is not None:
+            boundary['alternatives'][0]['resource_boundary'] = declared
+            declarations[block] = {'call_site_pc': call['call_site_pc'],
+                                   'declared': [component['id'] for component in declared['components']
+                                                if 'call_site_declaration' in component.get('provenance', {})]}
     elapsed = time.monotonic_ns() - started
     report['liveness'] = liveness
     (output / 'FORWARD.json').write_text(json.dumps(report, indent=1) + '\n')
@@ -247,6 +269,7 @@ def main():
     (output / 'JOINS.json').write_text(json.dumps({'joins': [hex(pc) for pc in joins], 'plans': plans,
                                                    'refusals': refusals, 'rounds': rounds,
                                                    'roots': roots, 'parents': parents, 'calls': call_reports,
+                                                   'call_site_declarations': declarations,
                                                    **({'duplicated_joins': [hex(pc) for pc in sorted(duplicated)]}
                                                       if duplicated else {})}, indent=2) + '\n')
     (output / 'CALL-SEEDS.json').write_text(json.dumps(

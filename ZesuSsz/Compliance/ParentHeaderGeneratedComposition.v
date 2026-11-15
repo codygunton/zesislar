@@ -139,8 +139,20 @@ Proof.
   iExists (BV 64 0), (BV 64 0), (BV 64 0).
   assert (Hmod : bv_unsigned (parentHeaderReturnAddress args) mod 4 = 0)
     by (unfold parentHeaderArgsWellFormed in Hwf; tauto).
+  (* The entry block's call output is its own region of the frame, at the offset the entry
+     declares (call_boundary.call_site_declarations): Islaris's uninitialized-region split, the
+     lemma that the call sites' region subsumption uses. *)
+  assert (Hsp : parentHeaderRamLow + 400 + parentHeaderCalleeBytes <=
+                bv_unsigned (parentHeaderStackPointer args) < parentHeaderRamHigh)
+    by (unfold parentHeaderArgsWellFormed in Hwf; tauto).
+  iDestruct (mem_mapsto_uninit_split 8 with "Hframe") as "[Hframe Hrest]"; [lia|].
+  iDestruct (mem_mapsto_uninit_split 40 with "Hrest") as "[Houtput Hafter]"; [lia|].
+  replace (bv_unsigned (parentHeaderStackPointer args) - 400 + 8 + 40)
+    with (bv_unsigned (parentHeaderStackPointer args) - 400 + 48) by lia.
+  replace (400 - 8 - 40) with (400 - 48) by lia.
   iFrame. iPureIntro. split_and!;
-    first [ assumption | exact I | vm_compute; reflexivity ].
+    first [ assumption | exact I | vm_compute; reflexivity
+          | unfold zesu_call_address; bv_solve ].
 Qed.
 
 (* ---- The theorem: decodeParentHeader compliance, given the open blocks

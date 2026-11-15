@@ -55,6 +55,7 @@ Require Export ZesuSsz.Automation2.IntegerReturn.
 Require Import ZesuSsz.Contracts.SelectedCodeLookup.
 Require Import InstrSpecs.Lookup.
 Require Import ZesuSsz.Automation2.ResourceGroups.
+Require Import ZesuSsz.Automation2.CallDeclarations.
 Require Import ZesuSsz.Automation2.ConjunctMatch.
 Require Import ZesuSsz.Automation2.RegisterArrayCursor.
 Require Import ZesuSsz.Automation2.LoopBackedgeJoin.
@@ -2346,7 +2347,12 @@ Ltac zesu_liAStep :=
  try progress (unfold TRACE_LET);
  try liAIntroduceLetInGoal;
  first [
-    progress ZesuSsz.Automation2.ByteWordReload.zesu_reload_byte_word_step
+    (* What a call's own block declares about the call (CallDeclarations.v). *)
+    zesu_rewrite_declared_call_address
+  | zesu_call_address_goal
+  | zesu_lend_declared_call_input
+  | zesu_restore_declared_call_input
+  | progress ZesuSsz.Automation2.ByteWordReload.zesu_reload_byte_word_step
   | ltac2:(Ltac1.run (Ltac1.ref
       [@ZesuSsz; @Automation2; @StoreMemoryLookup; @zesu_join_frame_byte_array]))
   | progress ResourceGroups.zesu_open_nested_existential_packages

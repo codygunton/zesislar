@@ -332,6 +332,51 @@ class CallBoundary(unittest.TestCase):
         self.assertEqual(report['named_slices']['call1_input_length'], '2')
         self.assertEqual(nodes[ids.index('source')]['original_component'], 'src ↦ₘ∗ src_bytes')
 
+    def test_the_call_block_entry_declares_the_slice_and_the_output_region(self):
+        """The call's own block states the slice under the return site's names (equations first,
+        then bounds, the piece at the call's argument address and the restore wand) and the
+        output as its own region, split from an uninitialized region, at a declared address."""
+        from call_boundary import CallRefused, call_site_declarations
+        with tempfile.TemporaryDirectory() as directory:
+            _, state, _ = self.tail_call_fixture(directory)
+        call = {'call_site_pc': '0x14', 'arrays': [
+            {'binder': 'input', 'argument': 1, 'slice_of': 'src_bytes',
+             'slice_offset': 'bv_unsigned {argv:1} - src', 'slice_length': '2'},
+            {'binder': 'before', 'argument': 0, 'length': 2, 'length_source': 'fixture'}]}
+        report = {'prefix': 'call3_', 'replaced': {'dest': {'offset': 1, 'length': 2, 'pre': 'before',
+                                                             'pieces': ['dest', 'dest_call_output', 'dest_call_after']}}}
+        alternative = {'seed_pc': '0x10', 'resource_boundary': {
+            'tree': {'kind': 'exists', 'binders': [], 'body': {'kind': 'sep_list', 'children': [
+                {'kind': 'component', 'id': 'source'}, {'kind': 'component', 'id': 'dest'},
+                {'kind': 'component', 'id': 'terminal'}]}},
+            'components': [{'id': 'source', 'source': 'src ↦ₘ∗ src_bytes'}, {'id': 'dest', 'source': 'dst ↦ₘ? 4'},
+                           {'id': 'terminal', 'source': 'True'}]}}
+        edge = {'seed_pc': '0x10', 'state': state.to_dict()}
+        resource = call_site_declarations([edge], alternative, call=call, report=report)
+        sources = {row['id']: row['source'] for row in resource['components']}
+        order = [child['id'] for child in resource['tree']['body']['children']]
+        argument, output = ('(' + state.registers[name].coq() + ')' for name in ('x11', 'x10'))
+        self.assertEqual(order, ['call3_input_offset_value', 'call3_input_length_value', 'call3_input_value',
+                                 'call3_input_bounds', 'call3_input_piece', 'call3_input_restore',
+                                 'dest', 'dest_call_output', 'dest_call_after', 'call3_output_address', 'terminal'])
+        self.assertEqual(sources['call3_input_offset_value'],
+                         '⌜(zesu_named_eq call3_input_offset (bv_unsigned %s - src))⌝' % argument)
+        self.assertEqual(sources['call3_input_bounds'],
+                         '⌜((0 <= call3_input_offset /\\ 0 <= call3_input_length /\\ call3_input_offset + '
+                         'call3_input_length <= Z.of_nat (List.length (src_bytes)))%Z)⌝')
+        self.assertEqual(sources['call3_input_piece'], 'bv_unsigned %s ↦ₘ∗ call3_input' % argument)
+        self.assertEqual(sources['call3_input_restore'],
+                         '(bv_unsigned %s ↦ₘ∗ call3_input -∗ src ↦ₘ∗ src_bytes)' % argument)
+        self.assertEqual([sources[key] for key in ('dest', 'dest_call_output', 'dest_call_after')],
+                         ['(dst) ↦ₘ? 1', '(dst + 1) ↦ₘ? 2', '(dst + 3) ↦ₘ? 1'])
+        self.assertEqual(sources['call3_output_address'],
+                         '⌜(zesu_call_address (bv_unsigned %s) ((dst + 1)))⌝' % output)
+        self.assertEqual([(row['name'], row['type']) for row in resource['tree']['binders']],
+                         [('call3_input_offset', 'Z'), ('call3_input_length', 'Z'), ('call3_input', 'list byte')])
+        # The declaration is stated over the entry's names: a call-site path from another seed is refused.
+        with self.assertRaisesRegex(CallRefused, 'another seed'):
+            call_site_declarations([{**edge, 'seed_pc': '0x20'}], alternative, call=call, report=report)
+
     def test_a_kept_register_that_an_earlier_call_computes_is_named_once(self):
         from call_boundary import call_return_seed
         from symbolic_state import input_expr, operation

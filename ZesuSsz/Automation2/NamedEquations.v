@@ -34,6 +34,12 @@ Section zesu_named_equation.
   Qed.
 End zesu_named_equation.
 
+(* A named equation over binders Lithium still holds packed (a successor's names that the block
+   does not have, e.g. the slice a call's own block declares) is an ordinary equation, so
+   Lithium instantiates the binder with the value. *)
+Global Instance zesu_named_eq_simpl_and {A : Type} (name value : A) :
+  SimplAndUnsafe (zesu_named_eq name value) (name = value) := zesu_named_eq_intro name value.
+
 (* A named equation the block must establish: a hypothesis with the same
    name and value closes it (instantiating the successor's binders with the
    block's names); otherwise it is an ordinary equation. *)

@@ -10,3 +10,10 @@ Inductive zesu_named_eq {A : Type} (name value : A) : Prop :=
 Lemma zesu_named_eq_iff {A : Type} (name value : A) :
   zesu_named_eq name value <-> name = value.
 Proof. split; [intros [equality]; exact equality | exact (zesu_named_eq_intro name value)]. Qed.
+
+From Coq Require Import ZArith.
+
+(** A call's output buffer, as the call's own block declares it: the call's argument address
+    [call_address] (the term the call computes) is the region's address [declared] (the form the
+    return site states). The block's predecessor proves the equation. *)
+Definition zesu_call_address (call_address declared : Z) : Prop := call_address = declared.
