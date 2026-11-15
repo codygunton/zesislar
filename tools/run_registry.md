@@ -89,6 +89,14 @@ Its first pass records the ledger position and posts nothing, so historical entr
 the ledger only. `make install-run-watchdog` installs and starts a user timer that runs it every
 two minutes from the checkout that runs the target.
 
+The timer passes `--follow-main <that checkout>` (`.worktrees/ops-tools`), so the tools checkout follows
+main by itself: at the start of each run the watchdog fetches origin and, when the checkout has no
+tracked changes and its HEAD is an ancestor of origin/main, runs `git checkout --detach origin/main`.
+Each move is printed (journal) and appended to `<store>/follow-main.log`. A checkout held by tracked
+changes, local commits, or a refused checkout is posted to STATUS.md once (marker
+`<store>/follow-main.held`, cleared when it moves again). Untracked files such as `tools/bg` logs
+do not hold it.
+
 ## Fixture verification
 
 ```sh

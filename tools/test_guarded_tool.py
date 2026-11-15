@@ -1,12 +1,31 @@
 """Check that guarded_tool.sh fences a heavy tool in its own workload scope."""
 import json
 import os
+import re
+import shutil
 from pathlib import Path
 import subprocess
 import tempfile
 import unittest
 
 WRAPPER = Path(__file__).with_name("guarded_tool.sh")
+TOOLS = Path(__file__).resolve().parent
+LITERAL = "pid $$ home $HOME braces ${HOME}"
+PASSTHROUGH_GUARD = """#!/bin/sh
+[ "$1" = parent-setup ] && exit 0
+shift 2
+exec "$@"
+"""
+
+
+def user_systemd_available():
+    if shutil.which("systemd-run") is None:
+        return False
+    probe = subprocess.run(["systemd-run", "--user", "--scope", "--quiet", "--collect", "--", "true"],
+                           capture_output=True, timeout=60)
+    return probe.returncode == 0
+
+
 RECORDER = """#!/usr/bin/env python3
 import json, os, sys
 with open(os.environ['TEST_LOG'], 'a') as stream:
@@ -45,7 +64,7 @@ class GuardedTool(unittest.TestCase):
         self.assertEqual(setup, {"tool": "resource_guard.sh", "args": ["parent-setup"]})
         self.assertEqual(launch["tool"], "systemd-run")
         args = launch["args"]
-        for expected in ("--user", "--scope", "--slice=zesuworkloads.slice",
+        for expected in ("--user", "--scope", "--slice=zesuworkloads.slice", "--expand-environment=no",
                          "MemoryMax=16G", "MemorySwapMax=0"):
             self.assertIn(expected, args)
         tail = args[args.index("--") + 1:]
@@ -84,6 +103,41 @@ class GuardedTool(unittest.TestCase):
         cgroup, oom = result.stdout.splitlines()
         self.assertIn("/zesuworkloads.slice/zesutool-python3-", cgroup)
         self.assertEqual(oom, "1000")
+
+
+class ExpandEnvironment(unittest.TestCase):
+    """systemd-run expands $VAR and turns $$ into $ unless --expand-environment=no (systemd 262)."""
+
+    def test_every_systemd_run_call_in_tools_turns_expansion_off(self):
+        call = re.compile(r"""systemd-run['"]?\s*,?\s*['"]?--user""")
+        missing = []
+        for path in sorted(TOOLS.rglob("*")):
+            if (not path.is_file() or path.name.startswith("test_") or "__pycache__" in path.parts
+                    or path.suffix not in (".sh", ".py", ".service", "")):
+                continue
+            try:
+                text = path.read_text()
+            except UnicodeDecodeError:
+                continue
+            for match in call.finditer(text):
+                command = re.split(r"""\s--\s|'--',|"--",""", text[match.start():])[0]
+                if "--expand-environment=no" not in command:
+                    missing.append(f"{path.relative_to(TOOLS)}:{text.count(chr(10), 0, match.start()) + 1}")
+        self.assertEqual(missing, [])
+
+    @unittest.skipUnless(user_systemd_available(), "needs a systemd user manager")
+    def test_live_command_with_dollars_reaches_the_job_unchanged(self):
+        with tempfile.TemporaryDirectory() as temp:
+            guard = Path(temp) / "resource_guard.sh"
+            guard.write_text(PASSTHROUGH_GUARD)
+            guard.chmod(0o755)
+            environment = {k: v for k, v in os.environ.items() if not k.startswith("ZESU_")}
+            environment["ZESU_RESOURCE_GUARD"] = str(guard)
+            result = subprocess.run(
+                [str(WRAPPER), "--memory", "1", "--", "python3", "-c", "import sys; print(sys.argv[1])", LITERAL],
+                env=environment, capture_output=True, text=True, timeout=120)
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertEqual(result.stdout, LITERAL + "\n")
 
 
 if __name__ == "__main__":

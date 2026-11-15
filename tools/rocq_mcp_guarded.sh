@@ -25,7 +25,7 @@ if [ "$slice" != zesuworkloads.slice ] &&
   exit 2
 fi
 export ZESU_MCP_SCOPE_UNIT="rocq-writer-${UID}-$$.scope"
-exec systemd-run --user --scope --quiet --collect --slice="$slice" \
+exec systemd-run --user --scope --quiet --collect --expand-environment=no --slice="$slice" \
   --unit="rocq-writer-${UID}-$$" \
   -p "MemoryMax=${ZESU_MODULE_LIMIT_GIB}G" -p MemorySwapMax=0 -- \
   "$resource_guard" parent-exec -- "$mcp_binary" "$@"
