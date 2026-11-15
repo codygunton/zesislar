@@ -12,6 +12,7 @@ Require Import ZesuSsz.Contracts.DecodeItemCallSpec2.
 Require Export ZesuSsz.Contracts.RlpDecodeItem.
 Require Export ZesuSsz.Contracts.RlpDecodeItemContract.
 Require Export ZesuSsz.Contracts.DecodeItemCallData.
+Require Export ZesuSsz.Contracts.NamedEquation.
 Import ListNotations.
 Local Open Scope Z_scope.
 Local Open Scope stdpp_scope.

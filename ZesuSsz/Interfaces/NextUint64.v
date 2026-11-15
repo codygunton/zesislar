@@ -12,6 +12,7 @@ Require Import ZesuSsz.Contracts.NextUint64CallSpec2.
 Require Export ZesuSsz.Contracts.DecodeItemCallData.
 Require Export ZesuSsz.Contracts.NextUint64BlockEntries.
 Require Export ZesuSsz.Contracts.NextUint64CallData.
+Require Export ZesuSsz.Contracts.NamedEquation.
 Import ListNotations.
 Local Open Scope Z_scope.
 Local Open Scope stdpp_scope.

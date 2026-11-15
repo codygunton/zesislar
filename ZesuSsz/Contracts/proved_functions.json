@@ -39,7 +39,8 @@
         "exports": [
           "ZesuSsz.Contracts.RlpDecodeItem",
           "ZesuSsz.Contracts.RlpDecodeItemContract",
-          "ZesuSsz.Contracts.DecodeItemCallData"
+          "ZesuSsz.Contracts.DecodeItemCallData",
+          "ZesuSsz.Contracts.NamedEquation"
         ],
         "correct": {
           "module": "ZesuSsz.Interfaces.DecodeItemCorrect",
@@ -115,7 +116,8 @@
         "exports": [
           "ZesuSsz.Contracts.DecodeItemCallData",
           "ZesuSsz.Contracts.NextUint64BlockEntries",
-          "ZesuSsz.Contracts.NextUint64CallData"
+          "ZesuSsz.Contracts.NextUint64CallData",
+          "ZesuSsz.Contracts.NamedEquation"
         ],
         "correct": {
           "module": "ZesuSsz.Interfaces.NextUint64Correct",
