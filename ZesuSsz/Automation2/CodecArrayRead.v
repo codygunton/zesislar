@@ -7,6 +7,7 @@ Require Import ZesuSsz.Automation2.CodecArrayRange.
 From Coq Require Import Lists.List ZArith.ZArith Lia.
 From stdpp Require Import bitvector.definitions list.
 From iris.proofmode Require Import environments.
+Require ZesuSsz.Automation2.VmClosed.
 Local Open Scope Z_scope.
 
 Class ZesuStepCodecArrayRead : Prop := {}.
@@ -110,7 +111,7 @@ Ltac zesu_codec_array_read_image image :=
         lazymatch values with
         | _ :: ?tail => check_extent tail
         | bv_to_little_endian ?digits ?width _ =>
-            is_closed_term digits; is_closed_term width
+            ZesuSsz.Automation2.VmClosed.zesu_closed_term digits; ZesuSsz.Automation2.VmClosed.zesu_closed_term width
         end in
       check_extent values;
       let index := fresh "HcodecIndex" in
@@ -142,7 +143,7 @@ Ltac zesu_codec_array_read_image image :=
   | lazymatch type of image with
     | context [Z_to_bv ?bits (little_endian_to_bv ?width
         (bv_to_little_endian ?digits ?width ?value))] =>
-        is_closed_term bits; is_closed_term digits; is_closed_term width;
+        ZesuSsz.Automation2.VmClosed.zesu_closed_term bits; ZesuSsz.Automation2.VmClosed.zesu_closed_term digits; ZesuSsz.Automation2.VmClosed.zesu_closed_term width;
         let roundtrip := fresh "HcodecRoundtrip" in
         assert (roundtrip :
           Z_to_bv bits (little_endian_to_bv width

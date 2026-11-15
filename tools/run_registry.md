@@ -42,11 +42,69 @@ Registry operations refuse a v2 marker without its run directory.
 
 No live-store migration is part of the fixture tests or source preparation.
 
+## Launching long jobs
+
+```sh
+tools/bg NAME [--] COMMAND [ARGS...]      # prints the run ID; output in ./NAME.log
+tools/bg stop RUN_ID                      # or: tools/run_registry.py stop RUN_ID
+tools/bg list                             # active runs
+```
+
+`tools/bg` runs `run_registry.py launch --name NAME -- COMMAND...`.
+Options before NAME: `--dir DIR` (run and working directory), `--log FILE`, `--owner NAME`, `--memory GIB`.
+The launcher starts the command in a new session whose parent is init, inside its own
+`systemd-run --user --scope` unit `zesubg-<owner>-<name>-<UTC>-<hex>.scope`.
+The job is never a child of the caller, so a kill by the caller's parent PID cannot reach it.
+The run records owner, unit, scheduler and job PIDs, command, run directory, and log.
+The job does not inherit `ZESU_RUN_ID`; guard batches it starts register their own runs.
+It gets `ZESU_BG_RUN_ID` instead.
+
+Before it starts anything, the launcher scans the command line, every script it names, and the
+scripts those name (four levels) with `tools/kill_scan.py`.
+It refuses with exit 3 when an executable line kills by process name, by a pgrep match, or by
+the parent PID `$$`. The message names the file, the line, and the safe form.
+The proof hygiene check applies the same scan to committed `tools/` scripts.
+
+`stop` records `stop_requested_ns`, closes the recorded actors, and then kills and stops the
+run's unit, which ends any process that left the process tree.
+
+## Signal deaths
+
+The reaper runs at every registration, every active listing, and `run_registry.py reap`.
+It writes one entry to `signal-deaths.jsonl` in the store for each run that ended without a
+stop record in one of these ways:
+
+- by a signal (the scheduler was signalled, or the command died by a signal);
+- with exit status 129, 130, 137, or 143 (a shell reporting a child killed by a signal);
+- with every actor dead while the row still says `running` (the scheduler was killed).
+
+Each entry names the run, owner, kind, unit, signal, end time, and cause.
+The cause is `memory fence` when the guard's fence-kill ledger
+(`$XDG_RUNTIME_DIR/zesu-guard/fence-kills.jsonl`) has a kill with the run's ID or unit, or when a
+launched run's scope recorded an OOM kill under `--memory`; otherwise it is `unknown`.
+Fence-kill rows carry the `ZESU_RUN_ID` of the run that started the guard.
+
+`run_registry.py watchdog --status docs/ai/STATUS.md` reaps and appends one line per new entry.
+Its first pass records the ledger position and posts nothing, so historical entries stay in
+the ledger only. `make install-run-watchdog` installs and starts a user timer that runs it every
+two minutes from the checkout that runs the target.
+
+The timer passes `--follow-main <that checkout>` (`.worktrees/ops-tools`), so the tools checkout follows
+main by itself: at the start of each run the watchdog fetches origin and, when the checkout has no
+tracked changes and its HEAD is an ancestor of origin/main, runs `git checkout --detach origin/main`.
+Each move is printed (journal) and appended to `<store>/follow-main.log`. A checkout held by tracked
+changes, local commits, or a refused checkout is posted to STATUS.md once (marker
+`<store>/follow-main.held`, cleared when it moves again). Untracked files such as `tools/bg` logs
+do not hold it.
+
 ## Fixture verification
 
 ```sh
-python3 -B -m unittest -v tools.test_run_registry
+python3 -B -m unittest -v tools.test_run_registry tools.test_run_launch
+ZESU_RUN_LAUNCH_LIVE=1 python3 -B -m unittest -v tools.test_run_launch   # adds a real user scope
 ```
 
 The suite repeats actor, stop, release, and supersession tests in both formats.
 Additional controls test migration refusal, partial migration, targeted updates, and discovery timing.
+`tools.test_run_launch` tests launch outside the caller's tree, refusal of unsafe kills, the
+signal-death ledger, the fence label, and the watchdog.

@@ -8,4 +8,4 @@ Type=oneshot
 WorkingDirectory=@ROOT@
 Nice=19
 IOSchedulingClass=idle
-ExecStart=/usr/bin/systemd-run --user --scope --quiet -p MemoryMax=12G -p MemorySwapMax=0 @PYTHON@ @ROOT@/tools/build_janitor.py --apply
+ExecStart=/usr/bin/systemd-run --user --scope --quiet --expand-environment=no -p MemoryMax=12G -p MemorySwapMax=0 @PYTHON@ @ROOT@/tools/build_janitor.py --apply

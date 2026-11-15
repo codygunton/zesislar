@@ -1,11 +1,24 @@
 """Enter the shared workload parent before any preparation or proof input read."""
 from pathlib import Path
+import importlib.util
 import os
 import subprocess
 import sys
 
 PARENT = 'zesuworkloads.slice'
-PARENT_BYTES = 175 * 1024**3
+
+
+def _admission():
+    """The sibling admission ledger helper, loaded by path."""
+    path = Path(__file__).resolve().parent / 'code' / 'admission_memory.py'
+    spec = importlib.util.spec_from_file_location('_command_scope_admission', path)
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module
+
+
+def workload_parent_bytes(root):
+    return _admission().workload_parent_bytes(root)
 
 
 def contained(*, proc=Path('/proc/self/cgroup'), cgroups=Path('/sys/fs/cgroup')):
@@ -17,7 +30,7 @@ def contained(*, proc=Path('/proc/self/cgroup'), cgroups=Path('/sys/fs/cgroup'))
     if PARENT not in parts:
         return False
     parent = cgroups.joinpath(*parts[:parts.index(PARENT) + 1])
-    if ((parent / 'memory.max').read_text().strip() != str(PARENT_BYTES)
+    if ((parent / 'memory.max').read_text().strip() not in _admission().accepted_parent_bytes(cgroups)
             or (parent / 'memory.swap.max').read_text().strip() != '0'):
         raise ValueError('The shared command parent lacks its exact memory backstop.')
     return True
@@ -38,7 +51,7 @@ def enter(script, arguments, *, check=contained, run=subprocess.run, execute=os.
     environment.setdefault('XDG_RUNTIME_DIR', '/run/user/' + str(os.getuid()))
     environment.setdefault('DBUS_SESSION_BUS_ADDRESS',
                            'unix:path=' + environment['XDG_RUNTIME_DIR'] + '/bus')
-    command = ['systemd-run', '--user', '--scope', '--quiet', '--collect',
+    command = ['systemd-run', '--user', '--scope', '--quiet', '--collect', '--expand-environment=no',
                '--slice=' + PARENT, '--unit=zesu-block-command-' + str(os.getuid()) + '-' + str(os.getpid()),
                '-p', 'MemorySwapMax=0', '--', str(guard), 'parent-exec', '--',
                sys.executable, '-B', str(script), *arguments]

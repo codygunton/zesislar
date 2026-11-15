@@ -461,6 +461,32 @@ Ltac zesu_source_single_bit_zero_views :=
       zesu_source_single_bit_zero_view source word width mask
   end.
 
+(* A pure goal on one bit of a word: the bit is 0, or is not 1, as a bit or
+   as its bv_unsigned. A source fact that masks the same word with that bit
+   alone and gets 0 proves it through the view above. Only facts on the
+   goal's word are read; the view is made for that word alone. *)
+Ltac zesu_single_bit_zero_goal :=
+  let word := lazymatch goal with
+    | |- not (@eq (bv _) (bv_extract _ 1 ?word) _) => word
+    | |- not (@eq Z (bv_unsigned (bv_extract _ 1 ?word)) _) => word
+    | |- @eq (bv _) (bv_extract _ 1 ?word) _ => word
+    | |- @eq Z (bv_unsigned (bv_extract _ 1 ?word)) _ => word
+    end in
+  assert_fails (has_evar word);
+  first [assumption |
+    match goal with
+    | source : @bv_and ?width word ?mask = ?zero |- _ =>
+        constr_eq zero constr:((0%bv : bv width));
+        ZesuSsz.Automation2.VmClosed.zesu_vm_closed mask;
+        let magnitude := eval vm_compute in (bv_unsigned mask) in
+        zesu_source_single_bit_zero_view source word width magnitude;
+        assumption
+    | source : Z.land (bv_unsigned word) ?mask = 0%Z |- _ =>
+        let width := lazymatch type of word with bv ?width => width end in
+        zesu_source_single_bit_zero_view source word width mask;
+        assumption
+    end].
+
 Ltac zesu_source_unsigned_bound :=
   lazymatch goal with
   | |- bv_unsigned ?word <= ?bound =>

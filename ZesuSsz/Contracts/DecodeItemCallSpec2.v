@@ -12,11 +12,14 @@ Import ListNotations.
 Open Scope Z_scope.
 Open Scope stdpp_scope.
 
-(* decodeItemCallSpec with the Automation2 machine_call. A caller that
-   imports this module loads no frozen-core module.
-   Compliance/DecodeItemCallSpec2.v derives its correctness from
-   decodeItemCallSpec_correct. *)
-Definition decodeItemCallSpec2 `{!islaG Sigma} `{!threadG} : iProp Sigma :=
+(* The template of decodeItem's public call spec, over the unsealed domain
+   and meaning (decodeItemCallSpec with the Automation2 machine_call; it
+   loads no frozen-core module). Callers never import this module: the
+   public spec decodeItemCallSpec2 is rendered from this body over sealed
+   names in ZesuSsz/Interfaces/DecodeItem.v (tools/block/render_interfaces.py,
+   registry ZesuSsz/Contracts/proved_functions.json).
+   Compliance/DecodeItemCallSpec2.v proves this template correct. *)
+Definition decodeItemCallSpecDefinition `{!islaG Sigma} `{!threadG} : iProp Sigma :=
   (machine_call decodeItemCallMap decodeItemStackBytes
     (fun argv sp RET =>
       ∃ (input before : list byte) (inputEndBits : bv 64),
@@ -35,5 +38,10 @@ Definition decodeItemCallSpec2 `{!islaG Sigma} `{!threadG} : iProp Sigma :=
         ⌜DecodeMeaningModuloKnownBugs
             (decodeItemCallDataArgs argv sp (bv_unsigned inputEndBits) input before) after⌝ ∗
         True)))%I.
-Global Instance : LithiumUnfold (@decodeItemCallSpec2) := I.
-Global Typeclasses Opaque decodeItemCallSpec2.
+
+(* Inside the sealed interface the public spec is this template, so a proof
+   of the template is a proof of the public spec. *)
+Lemma decodeItemCallSpecCorrectFrom `{!islaG Sigma} `{!threadG} (code : iProp Sigma) (entry : Z) :
+  (⊢ code -∗ instr_body entry decodeItemCallSpecDefinition) ->
+  ⊢ code -∗ instr_body entry decodeItemCallSpecDefinition.
+Proof. exact id. Qed.

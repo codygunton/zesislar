@@ -10,8 +10,15 @@ Require Export ZesuSsz.Automation2.WordIdentity.
 Require Export ZesuSsz.Automation2.CodecArrayRead.
 Require Export ZesuSsz.Automation2.Rewrites.
 Require Export ZesuSsz.Automation2.Hooks.
+Require Export ZesuSsz.Automation2.NamedEquations.
 Require Export ZesuSsz.Automation2.ResidualLemmas.
 Require Export ZesuSsz.Automation2.UninitRegions.
+Require Export ZesuSsz.Automation2.UninitRequest.
+#[export] Instance zesu_union_interior_byte_slice_enabled :
+  ZesuSsz.Automation2.InteriorByteSlice.ZesuStepInteriorByteSlice := I.
+Require Export ZesuSsz.Automation2.GoalDomain.
+#[export] Instance zesu_union_goal_domain_enabled :
+  ZesuSsz.Automation2.GoalDomain.ZesuStepGoalDomain := I.
 Require Export ZesuSsz.Automation2.FrozenDuplicates.
 Require Export ZesuSsz.Automation2.NatBitvectors.
 Require Export ZesuSsz.Automation2.ArrayPacking.
@@ -69,6 +76,7 @@ Require Export ZesuSsz.Automation2.Switches.RegisterCollectionSelection.
 Require Export ZesuSsz.Automation2.Switches.PureFactHints.
 Require Export ZesuSsz.Automation2.MemoryAddress.
 Require Export ZesuSsz.Automation2.WrappedWord.
+Require Export ZesuSsz.Automation2.BytePositionEquations.
 Require Export ZesuSsz.Automation2.EntryWitnessFinish.
 Require Export ZesuSsz.Automation2.MemoryTupleConsumer.
 Require Export ZesuSsz.Automation2.SourceFactMatching.

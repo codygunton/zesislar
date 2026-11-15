@@ -70,6 +70,19 @@ class SymbolicIndexRead(unittest.TestCase):
         self.assertEqual(machine.memory_byte(address).op, 'unknown_read')
         self.assertEqual(machine.state.conditions, [])
 
+    def test_an_array_of_unknown_length_does_not_reach_a_byte_another_owned_array_holds(self):
+        # 0x1084 lies past the source array's known 80 bytes and inside the 16-byte constant.
+        source = MemoryRegion(bits(0x1000, 64), (), input_expr('source args', None),
+                              input_expr('List.length (source args)', None), ownership_id='resource_34',
+                              minimum_length=80)
+        constant = MemoryRegion(bits(0x1080, 64), (), input_expr('noneBytes', None),
+                                input_expr('List.length (noneBytes)', None), ownership_id='resource_35',
+                                minimum_length=16)
+        value = evaluator(source, constant).memory_byte(bits(0x1084, 64))
+        self.assertEqual((value.op, value.args, value.value), ('array_byte', (constant.byte_array,), 4))
+        # Alone, the source array's unknown length may still reach the byte.
+        self.assertEqual(evaluator(source).memory_byte(bits(0x1084, 64)).op, 'unknown_read')
+
 
 if __name__ == '__main__':
     unittest.main()

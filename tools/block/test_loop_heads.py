@@ -14,7 +14,7 @@ class LoopHeads(unittest.TestCase):
     def test_source_classes_and_committed_outputs(self):
         fixture = json.loads((ROOT / 'tools/block/fixtures/fp301-loop-heads.json').read_text())
         header = pilot_header(load_profile())
-        self.assertEqual([r['block'] for r in fixture['rows']], ['6a24', '6ac4'])
+        self.assertEqual([r['block'] for r in fixture['rows']], ['00c4', '0164'])
         for row in fixture['rows']:
             self.assertEqual(len(row['classes']), 4)
             for source in row['classes']:
@@ -28,7 +28,7 @@ class LoopHeads(unittest.TestCase):
 
     def test_predecessor_and_backedge_owner_names(self):
         fixture = json.loads((ROOT / 'tools/block/fixtures/fp301-generation.json').read_text())
-        for block, predecessor in [('6a24', '6a14'), ('6ac4', '6ab4')]:
+        for block, predecessor in [('00c4', '00b4'), ('0164', '0154')]:
             source = next(r['canonical_source'] for r in fixture['callers']
                           if r['output'].endswith('Caller' + predecessor + '.v'))
             self.assertIn('Pilot' + block + 'Entries.fp_machineAt' + block, source)

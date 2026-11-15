@@ -109,7 +109,8 @@ with tempfile.TemporaryDirectory(prefix="zesu-coqc-") as output_dir:
             [guard, "scope", "scratch-coqc", "--", compiler, *flags, "-o", str(output), str(source)],
             cwd=working_dir,
             env={**os.environ, "ZESU_COQC_RESERVATION": reservation,
-                 "ZESU_MODULE_LIMIT_GIB": str(memory_gib)},
+                 "ZESU_MODULE_LIMIT_GIB": str(memory_gib),
+                 "OCAMLRUNPARAM": "s=32M,a=2,o=40"},
         )
         limit = None
         while process.poll() is None:
