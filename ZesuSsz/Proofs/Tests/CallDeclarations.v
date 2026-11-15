@@ -105,3 +105,35 @@ Proof.
   iSplit; [done|]. done.
 Qed.
 Print Assumptions call_declarations_named_packed.
+
+(* The callee claims its frame at the caller's stack register: inside an owned frame region the
+   claim's address takes the region's normal form, in the whole goal (the claim and the frame
+   the callee returns). *)
+Lemma call_declarations_frame_claim `{!islaG Sigma} (sp : bv 64) :
+  (512 <= bv_unsigned sp)%Z ->
+  (bv_unsigned sp - 400 - 16) ↦ₘ? 16 ⊢
+  (bv_unsigned (bv_add sp (BV 64 18446744073709551216)) - 16) ↦ₘ? 16 ∗
+  ((bv_unsigned (bv_add sp (BV 64 18446744073709551216)) - 16) ↦ₘ? 16 -∗ True).
+Proof.
+  iIntros (Hsp) "Hframe". iStartProof.
+  zesu_frame_claim_address.
+  lazymatch goal with
+  | |- envs_entails _ (((bv_unsigned sp - 400 - 16) ↦ₘ? 16) ∗
+                       ((bv_unsigned sp - 400 - 16) ↦ₘ? 16 -∗ True))%I => idtac
+  end.
+  iFrame "Hframe". by iIntros "_".
+Qed.
+Print Assumptions call_declarations_frame_claim.
+
+(* Without an owned region that holds the claim, the address stays as the callee states it. *)
+Lemma call_declarations_frame_claim_needs_owner `{!islaG Sigma} (sp : bv 64) (Q : iProp Sigma) :
+  (512 <= bv_unsigned sp)%Z ->
+  (bv_unsigned sp - 400 - 112) ↦ₘ? 96 ∗ Q ∗
+  (Q -∗ (bv_unsigned (bv_add sp (BV 64 18446744073709551216)) - 16) ↦ₘ? 16) ⊢
+  (bv_unsigned (bv_add sp (BV 64 18446744073709551216)) - 16) ↦ₘ? 16 ∗ True.
+Proof.
+  iIntros (Hsp) "(Hframe & HQ & Hclaim)". iStartProof.
+  tryif zesu_frame_claim_address then fail else idtac.
+  iDestruct ("Hclaim" with "HQ") as "$".
+Qed.
+Print Assumptions call_declarations_frame_claim_needs_owner.

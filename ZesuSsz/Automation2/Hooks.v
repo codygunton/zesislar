@@ -89,6 +89,15 @@ Ltac zesu_regcol_compute_hint :=
 
 Ltac isla.automation.solve_regcol_compute_hint ::= zesu_regcol_compute_hint.
 
+(* The redefinition above holds only until a later `Import` of isla's automation (any
+   `Require Import isla.riscv64.riscv64` after this module) reinstates upstream's body, which
+   runs the VM on symbolic inputs: a record projection of a variable (`parentHeaderInputEnd args`
+   in a system-register collection) then comes back as its unfolded `match`, and no hypothesis
+   states that form. Its own hint (priority 9, before upstream's 10) keeps the kernel path
+   whatever the import order. *)
+#[export] Hint Extern 9 (LiTactic (regcol_compute_hint _ _)) =>
+  zesu_regcol_compute_hint : typeclass_instances.
+
 (* The pure closer must not unfold an Iris entailment into arithmetic. *)
 Ltac zesu_final_pure_head_gate :=
   lazymatch goal with
@@ -2353,6 +2362,7 @@ Ltac zesu_liAStep :=
   | zesu_lend_declared_call_input ltac:(ltac2:(Ltac1.run (Ltac1.ref
       [@ZesuSsz; @Automation2; @InteriorByteSlice; @zesu_byte_slice_bound_arith])))
   | zesu_restore_declared_call_input
+  | zesu_frame_claim_address
   | progress ZesuSsz.Automation2.ByteWordReload.zesu_reload_byte_word_step
   | ltac2:(Ltac1.run (Ltac1.ref
       [@ZesuSsz; @Automation2; @StoreMemoryLookup; @zesu_join_frame_byte_array]))

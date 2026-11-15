@@ -27,6 +27,9 @@ Require Import isla.riscv64.riscv64.
 Require Import ZesuSsz.Automation2.ResourceGroups.
 Require Import ZesuSsz.Contracts.IslarisMemory.
 Require Export ZesuSsz.Contracts.NamedEquation.
+Require ZesuSsz.Automation2.VmClosed.
+Require ZesuSsz.Automation2.PureFacts.
+Require ZesuSsz.Automation2.MemoryAddress.
 Set Default Proof Mode "Classic".
 
 Section zesu_call_declarations.
@@ -151,3 +154,39 @@ Ltac zesu_restore_declared_call_input :=
           constr_eq returned borrowed;
           iPoseProof (Hrestore with Hslice) as "?")
     end).
+
+(** The callee's frame: a call spec claims its frame at [bv_unsigned SP - k] where SP is the
+    caller's stack register, typically [bv_add sp (BV 64 c)] for a negative [c]; the caller's
+    entries own that frame in their normal form [bv_unsigned sp - d - ...]. Where the claim is
+    asked inside an owned uninitialized region (its bounds justify the conversion, as for a stack
+    write), the step states [bv_unsigned (bv_add sp c) = bv_unsigned sp - |c|] and rewrites the
+    whole goal: the claim, the frame the callee returns (in the same goal) and any context
+    resource then share the entries' normal form, so the return site's frame is found by its
+    address. *)
+Ltac zesu_frame_claim_arithmetic :=
+  first [ZesuSsz.Automation2.MemoryAddress.zesu_stack_arithmetic |
+    ZesuSsz.Automation2.PureFacts.zesu_saturate_derived_facts;
+    ZesuSsz.Automation2.MemoryAddress.zesu_stack_arithmetic].
+
+Ltac zesu_frame_claim_address :=
+  lazymatch goal with
+  | |- envs_entails _ ((?address ↦ₘ? _) ∗ _)%I =>
+    match address with
+    | context [bv_unsigned (bv_add ?base ?offset)] =>
+        ZesuSsz.Automation2.VmClosed.zesu_vm_closed offset;
+        let displacement := ZesuSsz.Automation2.VmClosed.zesu_vm_eval_closed (bv_signed offset) in
+        lazymatch displacement with Zneg _ => idtac end;
+        let distance := ZesuSsz.Automation2.VmClosed.zesu_vm_eval_closed (Z.opp displacement) in
+        iMatchHyp ltac:(fun _ body =>
+          lazymatch body with
+          | (?lower ↦ₘ? ?count)%I =>
+              let Heq := fresh "HframeClaimAddress" in
+              assert (Heq : bv_unsigned (bv_add base offset) = (bv_unsigned base - distance)%Z)
+                by zesu_frame_claim_arithmetic;
+              let Hbound := fresh "HframeClaimRegion" in
+              assert (Hbound : (lower <= address < lower + count)%Z)
+                by (rewrite Heq; zesu_frame_claim_arithmetic);
+              clear Hbound; rewrite Heq; clear Heq
+          end)
+    end
+  end.
