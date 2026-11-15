@@ -72,10 +72,11 @@ Ltac zesu_unfold_let_mem_address :=
   end.
 
 (* A successor's binder named like a block variable of the same type takes
-   that variable: the generator names a value once, so the successor's
-   [call_after] is the block's [call_after]. Otherwise Lithium packs the
-   binders into one tuple, and each later binder deepens the projections of
-   all earlier ones.
+   that variable: the generator names a value once, each call's names under
+   that call's own layer (call1_, call2_, ...), so the successor's
+   [call1_after] is the block's [call1_after]. The name must match exactly.
+   Otherwise Lithium packs the binders into one tuple, and each later binder
+   deepens the projections of all earlier ones.
 
    Once a binder without a namesake has opened Lithium's tuple, the later
    binders of a framed package arrive as [∃ₗ x, (∃ y, _) ∗ Q]; that shape is
@@ -90,29 +91,6 @@ Ltac zesu_unfold_let_mem_address :=
    caller blocks ran past their CPU limit). Such a block keeps Lithium's
    instantiation. *)
 Ltac2 zesu_no_namesake () := Control.zero (Tactic_failure None).
-
-(* A name the generator used for more than one value: Rocq renamed the later
-   ones by a digit suffix (`before`, `before0`), so the name is not one value
-   across blocks (each call's facts reuse a callee binder's name). A name that
-   itself ends in a digit gives no such evidence. *)
-Ltac2 zesu_name_reused (name : ident) : bool :=
-  let base := Ident.to_string name in
-  let size := String.length base in
-  let is_digit c := let code := Char.to_int c in Bool.and (Int.le 48 code) (Int.le code 57) in
-  if Int.equal size 0 then false else
-  if is_digit (String.get base (Int.sub size 1)) then false else
-  List.exist (fun (hypothesis, _, _) =>
-    let other := Ident.to_string hypothesis in
-    let length := String.length other in
-    let rec prefix i :=
-      if Int.equal i size then true
-      else if Char.equal (String.get other i) (String.get base i) then prefix (Int.add i 1)
-      else false in
-    let rec digits i :=
-      if Int.equal i length then true
-      else if is_digit (String.get other i) then digits (Int.add i 1) else false in
-    if Int.le length size then false else Bool.and (prefix 0) (digits size))
-    (Control.hyps ()).
 
 Ltac2 zesu_named_equation_in_context () :=
   List.exist (fun (_, _, hypothesis_type) =>
@@ -130,8 +108,7 @@ Ltac2 zesu_binder_namesake (binder_type : constr) (body : constr) : constr :=
                   (Control.hyps ()) with
           | Some (_, _, hypothesis_type) =>
               if Bool.and (Constr.equal hypothesis_type binder_type)
-                   (Bool.and (zesu_named_equation_in_context ())
-                     (Bool.neg (zesu_name_reused name)))
+                   (zesu_named_equation_in_context ())
               then Control.hyp name else zesu_no_namesake ()
           | None => zesu_no_namesake ()
           end
