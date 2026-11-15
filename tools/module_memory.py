@@ -710,7 +710,9 @@ def record_fence_kill(ledger, unit, fence_bytes, arguments, cwd, *, utc=None, ki
     later probe of the same source cannot know the fence it reached. kind
     "shared-slice" is a kill in a full batch aggregate below the scope's own
     fence; it names the aggregate and the victim's peak. A row without a kind
-    (older rows) is a fence kill.
+    (older rows) is a fence kill. run_id names the registered run whose
+    process started the guard (ZESU_RUN_ID), so the run registry labels that
+    run's signal death a memory fence, not an unknown signal.
     """
     import fcntl
     import time
@@ -723,7 +725,8 @@ def record_fence_kill(ledger, unit, fence_bytes, arguments, cwd, *, utc=None, ki
            "aggregate": aggregate,
            "aggregate_limit_bytes": None if aggregate_limit_bytes is None else positive_integer(aggregate_limit_bytes, "aggregate limit"),
            "aggregate_peak_bytes": None if aggregate_peak_bytes is None else positive_integer(aggregate_peak_bytes, "aggregate peak"),
-           "source": str(found[0]) if found else None, "source_sha256": found[1] if found else None}
+           "source": str(found[0]) if found else None, "source_sha256": found[1] if found else None,
+           "run_id": os.environ.get("ZESU_RUN_ID") or None}
     ledger = Path(ledger)
     ledger.parent.mkdir(parents=True, exist_ok=True)
     with ledger.open("a") as stream:

@@ -1,0 +1,10 @@
+# Installed by `make install-run-watchdog`, which fills in @TOOLS@, @STATUS@ and @PYTHON@.
+# Reaps the run registry and posts every run that ended by a signal without a
+# registry stop to STATUS.md (ledger: <git common dir>/zesu-runs/signal-deaths.jsonl).
+[Unit]
+Description=Zesislar run registry watchdog (tools/run_registry.py watchdog)
+
+[Service]
+Type=oneshot
+Nice=10
+ExecStart=/usr/bin/systemd-run --user --scope --quiet -p MemoryMax=2G -p MemorySwapMax=0 @PYTHON@ -B @TOOLS@/tools/run_registry.py watchdog --status @STATUS@
