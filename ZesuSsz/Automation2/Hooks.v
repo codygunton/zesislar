@@ -2878,12 +2878,19 @@ Ltac liAAsm ::=
      notypeclasses refine (tac_fast_apply (li_wpreadreg_field _ _ _) _)
   end.
 
-(* The last arm runs on the pruned context only: no whole-context fallback. *)
+(* The last arm tries the pruned context, then the whole context only within
+   the node budget: without the budget the whole context reached 24 GiB on
+   decodeParentHeader; without the whole context decodeItem lost 8 closures. *)
+Ltac zesu_lia_whole_context_bounded closer :=
+  tryif zesu_switch_enabled constr:(ZesuStepFinisherOnce)
+  then first [solve [zesu_context_prune_goal; closer] | (zesu_lia_context_within_budget; closer)]
+  else (zesu_lia_context_within_budget; closer).
+
 Ltac Lia.lia ::= first [solve [zesu_closed_goal_decide] |
   solve [ZesuSsz.Automation2.BvLinear.zesu_bv_linear_with ltac:(lia)] |
   (tryif ZesuSsz.Automation2.BvLinear.zesu_bv_linear_refutes
    then first [zesu_refuted_solve ltac:(zesu_lia_linear_first3) | ResidualLemmas.zesu_residual_lemma]
-   else first [solve [ContextCollection.zesu_context_prune_goal; zesu_lia_linear_first3]
+   else first [zesu_lia_whole_context_bounded ltac:(zesu_lia_linear_first3)
               | ResidualLemmas.zesu_residual_lemma])].
 
 
