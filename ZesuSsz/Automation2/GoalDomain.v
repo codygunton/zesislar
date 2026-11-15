@@ -54,12 +54,18 @@ Ltac zesu_goal_domain_part :=
          unfold bv_modulus in *; cbn [Z.of_N] in *; lia
      end].
 
+(* The context reads sums the same way as the goal: a declared slice's offset is stated over
+   `bv_unsigned (pointer + delta)` (its named equation, opened by the finisher), and the goal's
+   address `pointer + delta` becomes a wrapped sum; both sides must name the same atom. *)
 Ltac zesu_finish_goal_domain :=
   let _ := constr:(_ : ZesuStepGoalDomain) in
   solve [
     zesu_goal_domain_open; cbn;
     zesu_witness_facts;
     autounfold with zesu_contract_constants zesu_goal_domain in *;
+    repeat match goal with
+      | H : context [bv_unsigned (bv_add _ _)] |- _ => rewrite bv_add_unsigned in H
+      end;
     rewrite ?bv_add_unsigned;
     unfold bv_wrap, bv_modulus in *; cbn [Z.of_N] in *;
     repeat split; zesu_goal_domain_part].

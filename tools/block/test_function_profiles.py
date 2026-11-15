@@ -277,6 +277,27 @@ class JoinEdgeAlignment(unittest.TestCase):
         self.assertEqual(aligned[0]['resource_boundary']['tree'], self.ORIGINAL)
         self.assertEqual([c['source'] for c in aligned[0]['resource_boundary']['components']], ['A', 'True'])
 
+    def test_call_site_declarations_survive_the_alignment(self):
+        """A call block entry reached through a join seed: its declared components (each naming
+        the owner it replaces) are compared as the owner and kept on the original tree."""
+        ownership = {'tree': self.ORIGINAL, 'components': [{'id': 'r0', 'source': 'A'}, {'id': 'r1', 'source': 'True'}]}
+        replaces = {'call_site_declaration': '0x10', 'replaces': 'r0'}
+        seeded = {'kind': 'sep', 'right': {'kind': 'component', 'id': 'r1'},
+                  'left': {'kind': 'exists', 'binders': [{'name': 'call1_input', 'type': 'list byte'}], 'scope': [0],
+                           'body': {'kind': 'sep_list', 'children': [
+                               {'kind': 'component', 'id': 'call1_input_piece'},
+                               {'kind': 'component', 'id': 'call1_input_restore'}]}}}
+        joined = {'resource_boundary': {'tree': seeded, 'components': [
+            {'id': 'r1', 'source': 'K'},
+            {'id': 'call1_input_piece', 'source': 'p ↦ₘ∗ call1_input', 'provenance': replaces},
+            {'id': 'call1_input_restore', 'source': '(p ↦ₘ∗ call1_input -∗ A)', 'provenance': replaces}]}}
+        kept, _ = align_join_edges([joined], ownership, 'r1', 'K', keep_binders=True)
+        tree = kept[0]['resource_boundary']['tree']
+        self.assertEqual([child['id'] for child in tree['body']['children']],
+                         ['call1_input_piece', 'call1_input_restore', 'r1'])
+        self.assertEqual([b['name'] for b in tree['binders']], ['x10', 'call1_input'])
+        self.assertEqual(self.ORIGINAL['body']['children'][0], {'kind': 'component', 'id': 'r0'})
+
     def test_other_differences_stay_for_the_refusal(self):
         ownership = {'tree': self.ORIGINAL, 'components': [{'id': 'r0', 'source': 'A'}, {'id': 'r1', 'source': 'True'}]}
         other = {'kind': 'sep', 'right': {'kind': 'component', 'id': 'r1'},

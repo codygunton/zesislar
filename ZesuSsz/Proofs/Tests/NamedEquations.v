@@ -56,6 +56,15 @@ Proof.
 Qed.
 Print Assumptions named_equation_opens_mentioned_names.
 
+(* An integer name (a declared slice's offset) opens even when the goal does not mention it: its
+   bounds fact relates the goal's value to the array. *)
+Lemma named_equation_integer_name_opens (offset : Z) (pointer base : bv 64) (bytes : list (bv 8))
+    (named : zesu_named_eq offset (bv_unsigned pointer - bv_unsigned base))
+    (bounds : (0 <= offset /\ offset <= Z.of_nat (length bytes))%Z) :
+  (bv_unsigned base <= bv_unsigned pointer)%Z.
+Proof. ZesuSsz.Automation2.NamedEquations.zesu_open_named_equations. lia. Qed.
+Print Assumptions named_equation_integer_name_opens.
+
 (* A load whose address mentions a local alias sees the alias's body; the
    step refuses an address with no alias. *)
 Lemma named_equation_load_through_alias `{!islaG Sigma} `{!threadG}

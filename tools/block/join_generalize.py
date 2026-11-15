@@ -436,6 +436,9 @@ def align_join_edges(alternatives, ownership, terminal_id, continuation_name, ke
     own binders. Such an edge is rewritten onto the original tree with the
     original terminal. Its binders are returned so the new join keeps them as
     existential binders; with keep_binders the rewritten tree binds them too.
+    A call block entry's declarations (call_boundary.call_site_declarations:
+    components that each name the owner component they replace) are undone for
+    the comparison and redone on the rewritten tree.
     Any other difference is left for the caller to refuse.
     """
     original = ownership['tree']
@@ -452,13 +455,27 @@ def align_join_edges(alternatives, ownership, terminal_id, continuation_name, ke
         left, right = tree.get('left', {}), tree.get('right')
         terminal = [component for component in boundary.get('components', [])
                     if component['id'] == terminal_id]
-        relations = set()
+        replaces = {component['id']: component['provenance']['replaces']
+                    for component in boundary.get('components', [])
+                    if 'replaces' in (component.get('provenance') or {})}
+        relations, declared = set(), {}
         body = left.get('body') or {}
         if body.get('kind') == 'sep_list':
             relations = {child.get('id') for child in body['children']
                          if str(child.get('id', '')).startswith(('join_relation_', 'join_design_'))}
-            body = {**body, 'children': [child for child in body['children']
-                                         if child.get('id') not in relations]}
+            children = []
+            for child in body['children']:
+                if child.get('id') in relations:
+                    continue
+                owner = replaces.get(child.get('id'))
+                if owner is None:
+                    children.append(child)
+                    continue
+                if owner not in declared:
+                    declared[owner] = []
+                    children.append({'kind': 'component', 'id': owner})
+                declared[owner].append(child)
+            body = {**body, 'children': children}
         shape = {key: value for key, value in left.items() if key not in ('binders', 'scope', 'body')}
         expected_shape = {key: value for key, value in expected.items() if key not in ('binders', 'scope', 'body')}
         if (right != {'kind': 'component', 'id': terminal_id} or left.get('kind') != 'exists'
@@ -476,6 +493,10 @@ def align_join_edges(alternatives, ownership, terminal_id, continuation_name, ke
         rewritten = deepcopy(original)
         if keep_binders:
             rewritten['binders'] = [*rewritten.get('binders', []), *deepcopy(own)]
+        if declared:
+            rewritten['body']['children'] = [
+                item for child in rewritten['body']['children']
+                for item in deepcopy(declared.get(child.get('id'), [child]))]
         edge['resource_boundary']['tree'] = rewritten
         edge['resource_boundary']['components'] = [
             {**component, 'source': terminal_source} if component['id'] == terminal_id else component

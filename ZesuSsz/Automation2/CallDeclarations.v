@@ -7,7 +7,8 @@
       ⌜zesu_named_eq callk_input (take (Z.to_nat callk_input_length)
                                       (drop (Z.to_nat callk_input_offset) BYTES))⌝ ∗
       ⌜0 <= callk_input_offset /\ 0 <= callk_input_length /\
-       callk_input_offset + callk_input_length <= Z.of_nat (length BYTES)⌝ ∗
+       callk_input_offset + callk_input_length <= Z.of_nat (length BYTES) /\
+       Z.of_nat (length callk_input) = callk_input_length⌝ ∗
       bv_unsigned ARGV ↦ₘ∗ callk_input ∗
       (bv_unsigned ARGV ↦ₘ∗ callk_input -∗ BASE ↦ₘ∗ BYTES)
 
@@ -61,16 +62,19 @@ Proof.
 Qed.
 
 (* The predecessor's exit: the stated bounds stay the goal's pure fact, with the equation of the
-   piece's address to [base + off]; the owned whole array pays for the piece and the wand. *)
+   piece's address to [base + off]; the slice's length follows from them. The owned whole array
+   pays for the piece and the wand. *)
 Lemma zesu_tac_lend_declared_slice Δ (base address off len : Z) (bytes : list (bv 8)) (R : iProp Sigma) :
   envs_entails Δ (⌜((0 <= off /\ 0 <= len /\ off + len <= Z.of_nat (List.length bytes)) /\
                     base + off = address)%Z⌝ ∗ (base ↦ₘ∗ bytes ∗ R)) ->
-  envs_entails Δ (⌜(0 <= off /\ 0 <= len /\ off + len <= Z.of_nat (List.length bytes))%Z⌝ ∗
+  envs_entails Δ (⌜(0 <= off /\ 0 <= len /\ off + len <= Z.of_nat (List.length bytes) /\
+                    Z.of_nat (List.length (take (Z.to_nat len) (drop (Z.to_nat off) bytes))) = len)%Z⌝ ∗
     ((address ↦ₘ∗ take (Z.to_nat len) (drop (Z.to_nat off) bytes)) ∗
      (((address ↦ₘ∗ take (Z.to_nat len) (drop (Z.to_nat off) bytes)) -∗ base ↦ₘ∗ bytes) ∗ R))).
 Proof.
   rewrite envs_entails_unseal => ->. iIntros "[%Hfacts [Hbytes $]]".
   destruct Hfacts as [(Hoff & Hlen & Hend) <-].
+  iSplitR; [iPureIntro; rewrite length_take length_drop; lia|].
   iDestruct (zesu_byte_array_lend_declared base off len bytes with "Hbytes") as "[$ $]"; done.
 Qed.
 
@@ -80,25 +84,34 @@ Lemma zesu_tac_lend_declared_slice_ex {A B} Δ (base address off len : Z) (bytes
     (R : A *ₗ B → iProp Sigma) :
   envs_entails Δ (⌜((0 <= off /\ 0 <= len /\ off + len <= Z.of_nat (List.length bytes)) /\
                     base + off = address)%Z⌝ ∗ (base ↦ₘ∗ bytes ∗ ∃ₗ x, R x)) ->
-  envs_entails Δ (∃ₗ x, ⌜(0 <= off /\ 0 <= len /\ off + len <= Z.of_nat (List.length bytes))%Z⌝ ∗
+  envs_entails Δ (∃ₗ x, ⌜(0 <= off /\ 0 <= len /\ off + len <= Z.of_nat (List.length bytes) /\
+                    Z.of_nat (List.length (take (Z.to_nat len) (drop (Z.to_nat off) bytes))) = len)%Z⌝ ∗
     ((address ↦ₘ∗ take (Z.to_nat len) (drop (Z.to_nat off) bytes)) ∗
      (((address ↦ₘ∗ take (Z.to_nat len) (drop (Z.to_nat off) bytes)) -∗ base ↦ₘ∗ bytes) ∗ R x))).
 Proof.
   rewrite envs_entails_unseal => ->. iIntros "[%Hfacts [Hbytes [%x HR]]]". iExists x.
   destruct Hfacts as [(Hoff & Hlen & Hend) <-].
+  iSplitR; [iPureIntro; rewrite length_take length_drop; lia|].
   iDestruct (zesu_byte_array_lend_declared base off len bytes with "Hbytes") as "[$ $]"; done.
 Qed.
 End zesu_call_declarations.
 
-Ltac zesu_lend_declared_call_input :=
+(* The step recognizes the declaration by its bounds fact at the head of the goal (the slice-length
+   conjunct over [take]/[drop] is the declaration's own); the lemma's unification checks the piece
+   and the wand behind it (up to conversion: Iris's connectives are primitive projections, so a
+   syntactic pattern on the nested separating conjunctions misses forms Lithium leaves).
+   [bounds] closes the lend's pure premise (the stated bounds over the predecessor's values, and
+   the address equation) when it can; otherwise the premise stays Lithium's pure goal. Hooks passes
+   the interior-slice bound arithmetic (InteriorByteSlice.v, which imports Hooks). *)
+Ltac zesu_lend_declared_call_input bounds :=
   lazymatch goal with
-  | |- envs_entails _ (bi_sep (bi_pure (_ /\ _ /\ _))
-         (bi_sep (_ ↦ₘ∗ take _ (drop _ _)) (bi_sep (bi_wand (_ ↦ₘ∗ _) (_ ↦ₘ∗ _)) _))) =>
+  | |- envs_entails _ (bi_sep (bi_pure (_ /\ _ /\ _ /\ Z.of_nat (List.length (take _ (drop _ _))) = _)) _) =>
       notypeclasses refine (zesu_tac_lend_declared_slice _ _ _ _ _ _ _ _)
-  | |- envs_entails _ (@bi_exist _ (li_prod _ _) (λ x, bi_sep (bi_pure (_ /\ _ /\ _))
-         (bi_sep (_ ↦ₘ∗ take _ (drop _ _)) (bi_sep (bi_wand (_ ↦ₘ∗ _) (_ ↦ₘ∗ _)) (@?R x))))) =>
+  | |- envs_entails _ (@bi_exist _ (li_prod _ _) (λ x, bi_sep
+         (bi_pure (_ /\ _ /\ _ /\ Z.of_nat (List.length (take _ (drop _ _))) = _)) _)) =>
       notypeclasses refine (zesu_tac_lend_declared_slice_ex _ _ _ _ _ _ _ _)
-  end.
+  end;
+  try (notypeclasses refine (tac_sep_pure _ _ _ _ _); [solve [bounds] |]).
 
 (** The call's output buffer: the entry states it as its own region at the region's address
     (the form the return site states), with [zesu_call_address (bv_unsigned ARGV) REGION]
@@ -121,19 +134,20 @@ Ltac zesu_call_address_goal :=
       unfold zesu_call_address
   end.
 
-(* The whole array a goal asks for, from the declared wand and the piece the call returned. *)
+(* The whole array a goal asks for (first conjunct, also under an existential that does not
+   bind it), from the declared wand and the piece the call returned. *)
 Ltac zesu_restore_declared_call_input :=
   zesu_expose_environment_alias;
-  lazymatch goal with
-  | |- envs_entails _ ((?address ↦ₘ∗ ?bytes) ∗ _)%I =>
-      let target := constr:((address ↦ₘ∗ bytes)%I) in
-      assert_fails (has_evar target);
-      iMatchHyp ltac:(fun Hrestore resource =>
-        lazymatch resource with
-        | (?borrowed -∗ ?whole)%I =>
-            constr_eq whole target;
-            iMatchHyp ltac:(fun Hslice returned =>
-              constr_eq returned borrowed;
-              iPoseProof (Hrestore with Hslice) as "?")
-        end)
-  end.
+  let target := lazymatch goal with
+    | |- envs_entails _ ((?address ↦ₘ∗ ?bytes) ∗ _)%I => constr:((address ↦ₘ∗ bytes)%I)
+    | |- envs_entails _ (@bi_exist _ _ (λ x, bi_sep (?address ↦ₘ∗ ?bytes) _)) => constr:((address ↦ₘ∗ bytes)%I)
+    end in
+  assert_fails (has_evar target);
+  iMatchHyp ltac:(fun Hrestore resource =>
+    lazymatch resource with
+    | (?borrowed -∗ ?whole)%I =>
+        constr_eq whole target;
+        iMatchHyp ltac:(fun Hslice returned =>
+          constr_eq returned borrowed;
+          iPoseProof (Hrestore with Hslice) as "?")
+    end).

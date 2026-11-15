@@ -363,7 +363,8 @@ class CallBoundary(unittest.TestCase):
                          '⌜(zesu_named_eq call3_input_offset (bv_unsigned %s - src))⌝' % argument)
         self.assertEqual(sources['call3_input_bounds'],
                          '⌜((0 <= call3_input_offset /\\ 0 <= call3_input_length /\\ call3_input_offset + '
-                         'call3_input_length <= Z.of_nat (List.length (src_bytes)))%Z)⌝')
+                         'call3_input_length <= Z.of_nat (List.length (src_bytes)) /\\ '
+                         'Z.of_nat (List.length call3_input) = call3_input_length)%Z)⌝')
         self.assertEqual(sources['call3_input_piece'], 'bv_unsigned %s ↦ₘ∗ call3_input' % argument)
         self.assertEqual(sources['call3_input_restore'],
                          '(bv_unsigned %s ↦ₘ∗ call3_input -∗ src ↦ₘ∗ src_bytes)' % argument)

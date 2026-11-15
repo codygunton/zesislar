@@ -2350,7 +2350,8 @@ Ltac zesu_liAStep :=
     (* What a call's own block declares about the call (CallDeclarations.v). *)
     zesu_rewrite_declared_call_address
   | zesu_call_address_goal
-  | zesu_lend_declared_call_input
+  | zesu_lend_declared_call_input ltac:(ltac2:(Ltac1.run (Ltac1.ref
+      [@ZesuSsz; @Automation2; @InteriorByteSlice; @zesu_byte_slice_bound_arith])))
   | zesu_restore_declared_call_input
   | progress ZesuSsz.Automation2.ByteWordReload.zesu_reload_byte_word_step
   | ltac2:(Ltac1.run (Ltac1.ref

@@ -294,6 +294,13 @@ def _coq(value):
     return value.coq()
 
 
+def _slice_bounds(name, array):
+    """The bounds fact of a named slice `name` of `array`: offset and length in range, and the
+    slice's own length (the lend lemma proves it from the first three)."""
+    return ('(0 <= {n}_offset /\\ 0 <= {n}_length /\\ {n}_offset + {n}_length <= Z.of_nat (List.length ({a}))'
+            ' /\\ Z.of_nat (List.length {n}) = {n}_length)%Z').format(n=name, a=array)
+
+
 def _inputs(value):
     own = [str(value.value)] if value.op == 'input' else []
     return own + [name for child in value.args for name in _inputs(child)]
@@ -465,7 +472,7 @@ def call_return_seed(edges, *, call, function_root, root_seed, shapes, vocabular
             text = text.replace('{argv:%d}' % number, argument)
         return substitute(text, words) if words else text
     # Named interior slices: (name, value) equations and (name, type) binders.
-    slice_equations, slice_binders = [], []
+    slice_equations, slice_binders, slice_bounds = [], [], []
     for binder, row in pre_arrays.items():
         if spot(design[binder]) != spot(row):
             raise CallRefused('The call design moves the spec array ' + binder)
@@ -489,6 +496,9 @@ def call_return_seed(edges, *, call, function_root, root_seed, shapes, vocabular
                      % (name, name, chosen['slice_of']))])
                 slice_binders.extend([(name + '_offset', 'Z'), (name + '_length', 'Z'),
                                       (name, dict(spec['pre_binders'])[binder])])
+                # The call block entry declares this fact (call_site_declarations); the
+                # return site keeps it so a later call can lend a sub-slice of the array.
+                slice_bounds.append((name, _slice_bounds(name, chosen['slice_of'])))
                 instantiation[binder] = name
             else:
                 instantiation[binder] = at_call(chosen['caller_value'])
@@ -765,7 +775,9 @@ def call_return_seed(edges, *, call, function_root, root_seed, shapes, vocabular
         {'kind': 'opaque', 'id': name.value + '_value', 'coq': '⌜(zesu_named_eq %s %s)⌝' % (name.value, _coq(value))}
         for value, name in named.items()] + [
         {'kind': 'opaque', 'id': name + '_value', 'coq': '⌜(zesu_named_eq %s (%s))⌝' % (name, value)}
-        for name, value in slice_equations] + [{'kind': 'opaque', 'id': prefix + 'facts', 'coq': '⌜' + carried + '⌝'}] + [
+        for name, value in slice_equations] + [
+        {'kind': 'opaque', 'id': name + '_bounds', 'coq': '⌜(%s)⌝' % fact}
+        for name, fact in slice_bounds] + [{'kind': 'opaque', 'id': prefix + 'facts', 'coq': '⌜' + carried + '⌝'}] + [
         {'kind': 'opaque', 'id': prefix + 'return_fact_%d' % index, 'coq': '⌜' + _return_fact(row['coq'], fresh) + '⌝'}
         for index, row in enumerate(call.get('return_facts', []))]
     # Every post binder, and the word binders that stand for a returned word expression.
@@ -855,7 +867,8 @@ def call_site_declarations(edges, alternative, *, call, report):
 
     * the named equations of `call<k>_<binder>_offset`, `_length` and `call<k>_<binder>` (the
       names and values the return site states, over the call-site argument values);
-    * the bounds fact `0 <= offset /\\ 0 <= length /\\ offset + length <= length array`;
+    * the bounds fact `0 <= offset /\\ 0 <= length /\\ offset + length <= length array /\\
+      length slice = length`;
     * the slice as its own piece, at the call's argument address term;
     * the wand from that piece back to the whole array.
 
@@ -892,6 +905,9 @@ def call_site_declarations(edges, alternative, *, call, report):
     if tree.get('kind') != 'exists' or tree['body'].get('kind') != 'sep_list':
         raise CallRefused('The call block entry is not one existential scope.')
     children = tree['body']['children']
+    # `replaces` names the owner component a declaration stands for: a join-framed entry is
+    # aligned on the seed's original tree by undoing and redoing the replacement
+    # (join_generalize.align_join_edges).
     provenance = {'call_site_declaration': call['call_site_pc']}
 
     def at_call(text):
@@ -911,7 +927,8 @@ def call_site_declarations(edges, alternative, *, call, report):
             raise CallRefused('A declared component id is taken: ' + ', '.join(sorted(clash)))
         resource['components'] = [component for component in resource['components']
                                   if component['id'] != owner['id']] + [
-            {'id': key, 'source': source, 'provenance': provenance} for key, source in declared]
+            {'id': key, 'source': source, 'provenance': {**provenance, 'replaces': owner['id']}}
+            for key, source in declared]
         at = next(index for index, child in enumerate(children) if child.get('id') == owner['id'])
         children[at:at + 1] = [{'kind': 'component', 'id': key} for key, _ in declared]
 
@@ -932,8 +949,7 @@ def call_site_declarations(edges, alternative, *, call, report):
             (name + '_length_value', '⌜(zesu_named_eq %s_length (%s))⌝' % (name, at_call(row['slice_length']))),
             (name + '_value', '⌜(zesu_named_eq %s (take (Z.to_nat %s_length) (drop (Z.to_nat %s_offset) (%s))))⌝'
              % (name, name, name, row['slice_of'])),
-            (name + '_bounds', '⌜((0 <= %s_offset /\\ 0 <= %s_length /\\ %s_offset + %s_length <= '
-             'Z.of_nat (List.length (%s)))%%Z)⌝' % (name, name, name, name, row['slice_of'])),
+            (name + '_bounds', '⌜(%s)⌝' % _slice_bounds(name, row['slice_of'])),
             (name + '_piece', piece),
             (name + '_restore', '(%s -∗ %s)' % (piece, owners[0]['source']))])
         taken = {binder['name'] for binder in tree['binders']}

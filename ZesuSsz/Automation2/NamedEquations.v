@@ -51,12 +51,15 @@ Ltac zesu_named_equation_goal :=
   end.
 
 (* A pure goal sees the values of the names it mentions, and of the names
-   those values mention. *)
+   those values mention. An integer name (a declared slice's offset or length)
+   is always opened: the facts about it (the slice bounds) are inequalities a
+   goal about the slice's address or length needs through its value. *)
 Ltac zesu_open_named_equations :=
   lazymatch goal with
   | |- envs_entails _ _ => idtac
   | |- _ =>
       repeat match goal with
+      | named : @zesu_named_eq Z _ _ |- _ => apply zesu_named_eq_iff in named
       | named : zesu_named_eq ?name _ |- ?target =>
           first [lazymatch target with context [name] => idtac end
                 | match goal with _ : _ = ?value |- _ => lazymatch value with context [name] => idtac end end];

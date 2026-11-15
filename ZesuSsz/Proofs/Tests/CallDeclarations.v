@@ -12,12 +12,13 @@ Local Open Scope Z_scope.
 Lemma call_declarations_lend `{!islaG Sigma} (base argument length : Z) (bytes : list (bv 8)) (R : iProp Sigma) :
   (0 <= argument - base)%Z -> (0 <= length)%Z -> (argument - base + length <= Z.of_nat (List.length bytes))%Z ->
   base ↦ₘ∗ bytes ∗ R ⊢
-  ⌜(0 <= argument - base /\ 0 <= length /\ argument - base + length <= Z.of_nat (List.length bytes))%Z⌝ ∗
+  ⌜(0 <= argument - base /\ 0 <= length /\ argument - base + length <= Z.of_nat (List.length bytes) /\
+    Z.of_nat (List.length (take (Z.to_nat length) (drop (Z.to_nat (argument - base)) bytes))) = length)%Z⌝ ∗
   ((argument ↦ₘ∗ take (Z.to_nat length) (drop (Z.to_nat (argument - base)) bytes)) ∗
    (((argument ↦ₘ∗ take (Z.to_nat length) (drop (Z.to_nat (argument - base)) bytes)) -∗ base ↦ₘ∗ bytes) ∗ R)).
 Proof.
   iIntros (Hoff Hlen Hend) "[Hbytes HR]". iStartProof.
-  zesu_lend_declared_call_input.
+  zesu_lend_declared_call_input ltac:(fail).
   lazymatch goal with
   | |- envs_entails _ (⌜_ /\ base + (argument - base) = argument⌝ ∗ (base ↦ₘ∗ bytes ∗ R))%I => idtac
   end.
@@ -25,17 +26,19 @@ Proof.
 Qed.
 Print Assumptions call_declarations_lend.
 
-(* Inside Lithium's packed binders: the declaration mentions none of them. *)
+(* Inside Lithium's packed binders: the declaration mentions none of them. The given solver
+   closes the bounds premise. *)
 Lemma call_declarations_lend_packed `{!islaG Sigma} (base argument length : Z) (bytes : list (bv 8)) (P : Z → iProp Sigma) :
   (0 <= argument - base)%Z -> (0 <= length)%Z -> (argument - base + length <= Z.of_nat (List.length bytes))%Z ->
   base ↦ₘ∗ bytes ∗ P 1 ⊢
-  ∃ₗ x : Z *ₗ unit, ⌜(0 <= argument - base /\ 0 <= length /\ argument - base + length <= Z.of_nat (List.length bytes))%Z⌝ ∗
+  ∃ₗ x : Z *ₗ unit, ⌜(0 <= argument - base /\ 0 <= length /\ argument - base + length <= Z.of_nat (List.length bytes) /\
+    Z.of_nat (List.length (take (Z.to_nat length) (drop (Z.to_nat (argument - base)) bytes))) = length)%Z⌝ ∗
   ((argument ↦ₘ∗ take (Z.to_nat length) (drop (Z.to_nat (argument - base)) bytes)) ∗
    (((argument ↦ₘ∗ take (Z.to_nat length) (drop (Z.to_nat (argument - base)) bytes)) -∗ base ↦ₘ∗ bytes) ∗ P x.1ₗ)).
 Proof.
   iIntros (Hoff Hlen Hend) "[Hbytes HP]". iStartProof.
-  zesu_lend_declared_call_input.
-  iSplit; [iPureIntro; lia|]. iFrame. iExists (1, tt)ₗ. iFrame.
+  zesu_lend_declared_call_input ltac:(lia).
+  iFrame. iExists (1, tt)ₗ. iFrame.
 Qed.
 Print Assumptions call_declarations_lend_packed.
 
@@ -44,15 +47,16 @@ Print Assumptions call_declarations_lend_packed.
 Lemma call_declarations_lend_needs_wand `{!islaG Sigma} (base argument length : Z) (bytes : list (bv 8)) :
   (0 <= argument - base)%Z -> (0 <= length)%Z -> (argument - base + length <= Z.of_nat (List.length bytes))%Z ->
   base ↦ₘ∗ bytes ⊢
-  ⌜(0 <= argument - base /\ 0 <= length /\ argument - base + length <= Z.of_nat (List.length bytes))%Z⌝ ∗
+  ⌜(0 <= argument - base /\ 0 <= length /\ argument - base + length <= Z.of_nat (List.length bytes) /\
+    Z.of_nat (List.length (take (Z.to_nat length) (drop (Z.to_nat (argument - base)) bytes))) = length)%Z⌝ ∗
   ((argument ↦ₘ∗ take (Z.to_nat length) (drop (Z.to_nat (argument - base)) bytes)) ∗ True).
 Proof.
   iIntros (Hoff Hlen Hend) "Hbytes". iStartProof.
-  tryif zesu_lend_declared_call_input then fail else idtac.
+  tryif zesu_lend_declared_call_input ltac:(lia) then fail else idtac.
   iDestruct (zesu_byte_array_lend_declared base (argument - base) length bytes with "Hbytes")
     as "[Hpiece _]"; [done..|].
   replace (base + (argument - base)) with argument by lia.
-  iSplit; [iPureIntro; lia|]. iFrame.
+  iSplit; [iPureIntro; rewrite length_take length_drop; lia|]. iFrame.
 Qed.
 Print Assumptions call_declarations_lend_needs_wand.
 
@@ -65,6 +69,17 @@ Proof.
   iFrame.
 Qed.
 Print Assumptions call_declarations_restore.
+
+(* The same when the goal's remaining binders are still open (a successor entry under ∃ₗ). *)
+Lemma call_declarations_restore_packed `{!islaG Sigma} (base argument : Z) (bytes piece : list (bv 8)) (P : Z → iProp Sigma) :
+  (argument ↦ₘ∗ piece -∗ base ↦ₘ∗ bytes) ∗ argument ↦ₘ∗ piece ∗ P 1 ⊢
+  ∃ₗ x : Z *ₗ unit, base ↦ₘ∗ bytes ∗ P x.1ₗ.
+Proof.
+  iIntros "(Hrestore & Hpiece & HP)". iStartProof.
+  zesu_restore_declared_call_input.
+  iExists (1, tt)ₗ. iFrame.
+Qed.
+Print Assumptions call_declarations_restore_packed.
 
 (* The call's argument address reads as the declared region address. *)
 Lemma call_declarations_address `{!islaG Sigma} (argument region : Z) (after : list (bv 8)) :
