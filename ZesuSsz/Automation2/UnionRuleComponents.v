@@ -1606,6 +1606,7 @@ Require Import ZesuSsz.Automation2.SwitchDispatch.
 Require Import ZesuSsz.Automation2.BitvectorFacts.
 Require Import ZesuSsz.Automation2.PureFacts.
 Require Import ZesuSsz.Evidence.Block2Core.
+Require ZesuSsz.Automation2.ContextCollection.
 Import ListNotations.
 Local Open Scope Z_scope.
 
@@ -2132,12 +2133,7 @@ Ltac block2_f7_context :=
       end
   end.
 
-Ltac block2_f7_arithmetic :=
-  lazymatch goal with
-  | |- envs_entails _ _ => fail 0 "F7 refuses Iris entailments"
-  | |- ?proposition => ZesuSsz.Evidence.Block2Core.block2_fixed proposition
-  end;
-  unLET;
+Ltac block2_f7_on_context :=
   block2_f7_context;
   first [solve [multimatch goal with
          | |- context[bv_unsigned ?word] =>
@@ -2156,6 +2152,20 @@ Ltac block2_f7_arithmetic :=
              lia
          end] |
          solve [bv_solve]].
+
+(* F7 reads the facts its goal reaches, never the whole context. On a
+   decodeParentHeader caller's 445-hypothesis context, its range arm's `lia`
+   grew past 9.7 GiB in 400 s without closing an index bound that the
+   selected facts close in about a second; a context pruned only by shared
+   variables kept enough of the block to grow the same way. *)
+Ltac block2_f7_arithmetic :=
+  lazymatch goal with
+  | |- envs_entails _ _ => fail 0 "F7 refuses Iris entailments"
+  | |- ?proposition => ZesuSsz.Evidence.Block2Core.block2_fixed proposition
+  end;
+  unLET;
+  ZesuSsz.Automation2.ContextCollection.zesu_solve_goal_selected
+    ("union.f7"%string) ltac:(block2_f7_on_context).
 
 Ltac block2_f7_numeric_shape proposition :=
   lazymatch proposition with

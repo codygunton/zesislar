@@ -17,7 +17,8 @@ import uuid
 
 from coqc_findlib import preflight
 from module_memory import measurement_claim
-from block.harness.code.admission_memory import projection, guard_lock, check_test_ledger, record_waiter, clear_waiter
+from block.harness.code.admission_memory import (projection, guard_lock, check_test_ledger, record_waiter, clear_waiter,
+                                                  region_release_verified)
 
 
 TARGETS = {"check-fast", "check-iris"}
@@ -200,8 +201,7 @@ def active_claims(ledger):
         if type(amount) is not int or amount < 0:
             raise ValueError("A canonical legacy claim is invalid.")
         released = ledger.get("released_region_claims", {}).get(name)
-        if (released and released.get("bytes") == amount
-                and digest(released["receipt"]) == released["sha256"]):
+        if released and released.get("bytes") == amount and region_release_verified(name, released):
             continue
         result["legacy:" + name] = amount
     return result

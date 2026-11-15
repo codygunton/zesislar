@@ -5,7 +5,6 @@ Require Import ZesuSsz.Automation2.ByteArrayLengths.
 Require Import ZesuSsz.Automation2.RangeFacts.
 Require ZesuSsz.Contracts.IslarisMemory.
 Require ZesuSsz.Automation2.ContextCollection.
-Require ZesuSsz.Automation2.PureFacts.
 From Ltac2 Require Import Ltac2.
 Set Default Proof Mode "Classic".
 
@@ -46,21 +45,39 @@ Ltac zesu_region_bounds_legacy :=
     end;
     bv_solve].
 
+(* A word whose unsigned value appears in the region base reaches the
+   address through bitvector offsets: the address reads
+   `bv_unsigned (bv_add (bv_add word c1) c2)`, not `bv_unsigned word`. The
+   word's facts then decide whether the offsets wrap. This selection runs
+   only in the second bounds attempt below, and only a closed bound keeps
+   it. *)
+Ltac zesu_region_offset_word word address :=
+  assert_fails (has_evar word);
+  assert_fails (ZesuSsz.Automation2.VmClosed.zesu_vm_closed word);
+  let rec offsets term :=
+    lazymatch term with
+    | bv_add ?inner _ => first [constr_eq inner word | offsets inner]
+    end in
+  match address with context[bv_unsigned ?value] => offsets value end.
+
+Ltac zesu_region_no_offset_word word address := fail.
+
 (* Bounds search uses only facts connected to the candidate region. *)
-Ltac zesu_region_address_carries base address :=
+Ltac zesu_region_address_carries offset_word base address :=
   first [lazymatch address with context[base] => idtac end |
     let rec carries term :=
       first [assert_fails (has_evar term);
         assert_fails (ZesuSsz.Automation2.VmClosed.zesu_vm_closed term);
         lazymatch address with context[term] => idtac end |
         lazymatch term with
+        | bv_unsigned ?word => offset_word word address
         | Z.add ?left ?right => first [carries left | carries right]
         | Z.sub ?left ?right => first [carries left | carries right]
         | Z.mul ?left ?right => first [carries left | carries right]
         end] in
     carries base].
 
-Ltac zesu_region_collect base address :=
+Ltac zesu_region_collect offset_word base address :=
   let collect := ltac2:(b a |-
     let base := Option.get (Ltac1.to_constr b) in
     let address := Option.get (Ltac1.to_constr a) in
@@ -71,25 +88,36 @@ Ltac zesu_region_collect base address :=
         [Ltac1.of_constr constr:(8%nat); Ltac1.of_constr base;
          Ltac1.of_constr address; Ltac1.of_constr base;
          Ltac1.of_constr (Control.hyp name)] Ltac1.run) original) in
+  (* The word's facts may sit folded in a predicate over the value the word
+     is read from, so the search root is the word's argument. *)
+  let collect_word := ltac2:(v w |-
+    let value := Option.get (Ltac1.to_constr v) in
+    let word := Option.get (Ltac1.to_constr w) in
+    let root := match Constr.Unsafe.kind word with
+      | Constr.Unsafe.App _ args => Array.get args (Int.sub (Array.length args) 1)
+      | _ => word end in
+    ZesuSsz.Automation2.RangeFacts.zesu_range_collect value value root) in
   let rec choose_atom term :=
     first [assert_fails (has_evar term);
       assert_fails (ZesuSsz.Automation2.VmClosed.zesu_vm_closed term);
       lazymatch address with context[term] => collect term address end |
       lazymatch term with
+      | bv_unsigned ?word =>
+          offset_word word address; collect_word term word
       | Z.add ?left ?right => first [choose_atom left | choose_atom right]
       | Z.sub ?left ?right => first [choose_atom left | choose_atom right]
       | Z.mul ?left ?right => first [choose_atom left | choose_atom right]
       end] in
   first [choose_atom base | collect address address].
 
-Ltac zesu_region_selected_facts :=
+Ltac zesu_region_selected_facts offset_word :=
   repeat match goal with
   | Hlocal := _ |- ?target =>
       lazymatch target with context[Hlocal] => unfold Hlocal in *; clear Hlocal end
   end;
   let choose_atom base address :=
-    zesu_region_address_carries base address;
-    zesu_region_collect base address in
+    zesu_region_address_carries offset_word base address;
+    zesu_region_collect offset_word base address in
   lazymatch goal with
   | |- ((?base <= ?address < ?upper)%Z \/ _) => choose_atom base address
   | |- (?base <= ?address <= ?upper)%Z => choose_atom base address
@@ -100,25 +128,39 @@ Ltac zesu_region_selected_facts :=
         lazymatch target with
         | ?left /\ ?right => collect left; collect right
         | ?left \/ ?right => collect left; collect right
-        | @eq Z ?left ?right => zesu_region_collect left right
-        | Z.le ?left ?right => zesu_region_collect left right
-        | Z.lt ?left ?right => zesu_region_collect left right
+        | @eq Z ?left ?right => zesu_region_collect offset_word left right
+        | Z.le ?left ?right => zesu_region_collect offset_word left right
+        | Z.lt ?left ?right => zesu_region_collect offset_word left right
         end in
       collect target
   end;
   ltac2:(ZesuSsz.Automation2.RangeFacts.zesu_range_isolate ()).
 
-(* A bound can sit inside a folded hypothesis, such as a contract's domain
-   predicate. The fact selection keeps only arithmetic facts, so split such
-   hypotheses first; the split is local to this side condition. *)
-Ltac zesu_region_bounds := once (
-  ZesuSsz.Automation2.PureFacts.zesu_split_folded_pure;
-  zesu_region_selected_facts;
+Ltac zesu_region_bounds_with offset_word :=
+  zesu_region_selected_facts offset_word;
   first [
     ZesuSsz.Automation2.ByteArrayLengths.zesu_byte_array_bound_goal_if_enabled;
     first [solve [lia] |
       ZesuSsz.Automation2.ByteArrayLengths.zesu_byte_array_lengths_if_enabled; solve [lia | bv_solve]]
-  | ZesuSsz.Automation2.UninitRegions.zesu_region_bounds_legacy]).
+  | ZesuSsz.Automation2.UninitRegions.zesu_region_bounds_legacy].
+
+(* The offset-word selection changes which facts the bound sees. Try the
+   bound without it first. The second attempt runs only when the goal offsets
+   a word whose value it also reads, and keeps the selection only when the
+   bound then closes, so a failed bound leaves no trace of it. *)
+Ltac zesu_region_offset_candidate :=
+  lazymatch goal with
+  | |- ?target =>
+      match target with
+      | context[bv_unsigned ?word] =>
+          ZesuSsz.Automation2.UninitRegions.zesu_region_offset_word word target
+      end
+  end.
+
+Ltac zesu_region_bounds := once (first [
+  solve [zesu_region_bounds_with ZesuSsz.Automation2.UninitRegions.zesu_region_no_offset_word] |
+  zesu_region_offset_candidate;
+  solve [zesu_region_bounds_with ZesuSsz.Automation2.UninitRegions.zesu_region_offset_word]]).
 
 (* Its own class: the frozen core keeps a priority-0 extern on its class,
    and with a shared class that extern ran its legacy bound solver on every
@@ -168,6 +210,21 @@ Global Hint Extern 0 (FindHypEqual (ZesuMemRegionSearch _) (mmio_range _ _)
     (mem_mapsto_kind_prop _ _) _) =>
   (apply find_mem_region_mmio; zesu_region_bounds) : typeclass_instances.
 
+(* The region split below measures offsets with [normalize_bv_wrap], which
+   reads a constant as negative only within 256 of 2^64. A frame offset of
+   -400 then stays 2^64 - 400, and the split length becomes 2^64 + 96 with a
+   false range obligation. Read constants within 64 KiB of 2^64 as negative
+   too; both forms are equal modulo 2^64. *)
+Global Hint Extern 9 (BvWrapSimplify 64 (Z.pos ?p) ?z) =>
+  assert_succeeds (
+    lazymatch isPcst p with | true => idtac end;
+    assert (bv_modulus 64 - 65536 <= Z.pos p)%Z by done);
+  let x := eval vm_compute in (Z.pos p - bv_modulus 64)%Z in
+  unify z x;
+  constructor;
+  done
+  : bv_wrap_simplify_db.
+
 Lemma subsume_uninit_region `{!islaG Sigma} A a1 a2 n1 n2 G
     `{!ZesuRegionBounds (0 <= n2 /\ a1 <= a2 /\ a2 + n2 <= a1 + n1)%Z} :
   (li_tactic (normalize_bv_wrap (a2 - a1)) (fun m1 => ⌜0 <= m1 < 2 ^ 64⌝ ∗
@@ -189,15 +246,19 @@ Global Remove Hints subsume_mem_uninit_mem_uninit_inst : typeclass_instances.
 (* The contract's fallback rule for an uninitialized region raises the
    containment as an obligation. Refuse it when the facts already show the
    containment fails, so the search does not commit to a false goal. The
-   class carries no proof; its instance only checks the refutation. *)
-Class ZesuRegionNotRefuted (P : Prop) : Prop := zesu_region_not_refuted : True.
+   class carries no proof; its instance only checks the refutation. It is an
+   inductive: a definitional class whose body is `True` reaches instance
+   search as `True`, so the hint below never saw it and the rule never
+   applied. *)
+Inductive ZesuRegionNotRefuted (P : Prop) : Prop := zesu_region_not_refuted.
+Existing Class ZesuRegionNotRefuted.
 Ltac zesu_region_refute :=
   first [zesu_region_bounds |
     ZesuSsz.Automation2.ContextCollection.zesu_solve_goal_selected
       ("region.refute"%string) ltac:(first [lia | bv_solve])].
 Global Hint Extern 0 (ZesuRegionNotRefuted (0 <= ?n2 /\ ?a1 <= ?a2 /\ ?a2 + ?n2 <= ?a1 + ?n1)%Z) =>
   (assert_fails (assert (n2 < 0 \/ a2 < a1 \/ a1 + n1 < a2 + n2)%Z by zesu_region_refute);
-   exact I) : typeclass_instances.
+   exact (zesu_region_not_refuted _)) : typeclass_instances.
 
 Lemma subsume_mem_uninit_region_checked `{!islaG Sigma} A a1 a2 n1 n2 G
     `{!ZesuRegionNotRefuted (0 <= n2 /\ a1 <= a2 /\ a2 + n2 <= a1 + n1)%Z} :

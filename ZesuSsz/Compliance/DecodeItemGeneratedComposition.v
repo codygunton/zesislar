@@ -14,54 +14,54 @@ Require Import ZesuSsz.Contracts.RlpDecodeItem.
 Require Import ZesuSsz.Contracts.DecodeItemCompositional.
 Require Import ZesuSsz.Contracts.DecodeItemDomainRanges.
 Require Import ZesuSsz.Generated.DecodeItem.FP301.FunctionReturnEntries.
-Require Import ZesuSsz.Generated.DecodeItem.FP301.Pilot6960Entries.
-Require Import ZesuSsz.Generated.DecodeItem.FP301.Pilot6974Entries.
-Require Import ZesuSsz.Generated.DecodeItem.FP301.Pilot697cEntries.
-Require Import ZesuSsz.Generated.DecodeItem.FP301.Pilot698cEntries.
-Require Import ZesuSsz.Generated.DecodeItem.FP301.Pilot69a4Entries.
-Require Import ZesuSsz.Generated.DecodeItem.FP301.Pilot69b0Entries.
-Require Import ZesuSsz.Generated.DecodeItem.FP301.Pilot69d8Entries.
-Require Import ZesuSsz.Generated.DecodeItem.FP301.Pilot69e0Entries.
-Require Import ZesuSsz.Generated.DecodeItem.FP301.Pilot69e8Entries.
-Require Import ZesuSsz.Generated.DecodeItem.FP301.Pilot6a00Entries.
-Require Import ZesuSsz.Generated.DecodeItem.FP301.Pilot6a08Entries.
-Require Import ZesuSsz.Generated.DecodeItem.FP301.Pilot6a14Entries.
-Require Import ZesuSsz.Generated.DecodeItem.FP301.Pilot6a24Entries.
-Require Import ZesuSsz.Generated.DecodeItem.FP301.Pilot6a38Entries.
-Require Import ZesuSsz.Generated.DecodeItem.FP301.Pilot6a40Entries.
-Require Import ZesuSsz.Generated.DecodeItem.FP301.Pilot6a64Entries.
-Require Import ZesuSsz.Generated.DecodeItem.FP301.Pilot6a6cEntries.
-Require Import ZesuSsz.Generated.DecodeItem.FP301.Pilot6a78Entries.
-Require Import ZesuSsz.Generated.DecodeItem.FP301.Pilot6aa8Entries.
-Require Import ZesuSsz.Generated.DecodeItem.FP301.Pilot6ab4Entries.
-Require Import ZesuSsz.Generated.DecodeItem.FP301.Pilot6ac4Entries.
-Require Import ZesuSsz.Generated.DecodeItem.FP301.Pilot6ad8Entries.
-Require Import ZesuSsz.Generated.DecodeItem.FP301.Pilot6ae0Entries.
-Require Import ZesuSsz.Generated.DecodeItem.FP301.Pilot6b08Entries.
-Require ZesuSsz.Proofs.DecodeItem.FP301.Caller6960.
-Require ZesuSsz.Proofs.DecodeItem.FP301.Caller6974.
-Require ZesuSsz.Proofs.DecodeItem.FP301.Caller697c.
-Require ZesuSsz.Proofs.DecodeItem.FP301.Caller698c.
-Require ZesuSsz.Proofs.DecodeItem.FP301.Caller69a4.
-Require ZesuSsz.Proofs.DecodeItem.FP301.Caller69b0.
-Require ZesuSsz.Proofs.DecodeItem.FP301.Caller69d8.
-Require ZesuSsz.Proofs.DecodeItem.FP301.Caller69e0.
-Require ZesuSsz.Proofs.DecodeItem.FP301.Caller69e8.
-Require ZesuSsz.Proofs.DecodeItem.FP301.Caller6a00.
-Require ZesuSsz.Proofs.DecodeItem.FP301.Caller6a08.
-Require ZesuSsz.Proofs.DecodeItem.FP301.Caller6a14.
-Require ZesuSsz.Proofs.DecodeItem.FP301.Caller6a24.
-Require ZesuSsz.Proofs.DecodeItem.FP301.Caller6a38.
-Require ZesuSsz.Proofs.DecodeItem.FP301.Caller6a40.
-Require ZesuSsz.Proofs.DecodeItem.FP301.Caller6a64.
-Require ZesuSsz.Proofs.DecodeItem.FP301.Caller6a6c.
-Require ZesuSsz.Proofs.DecodeItem.FP301.Caller6a78.
-Require ZesuSsz.Proofs.DecodeItem.FP301.Caller6aa8.
-Require ZesuSsz.Proofs.DecodeItem.FP301.Caller6ab4.
-Require ZesuSsz.Proofs.DecodeItem.FP301.Caller6ac4.
-Require ZesuSsz.Proofs.DecodeItem.FP301.Caller6ad8.
-Require ZesuSsz.Proofs.DecodeItem.FP301.Caller6ae0.
-Require ZesuSsz.Proofs.DecodeItem.FP301.Caller6b08.
+Require Import ZesuSsz.Generated.DecodeItem.FP301.Pilot0000Entries.
+Require Import ZesuSsz.Generated.DecodeItem.FP301.Pilot0014Entries.
+Require Import ZesuSsz.Generated.DecodeItem.FP301.Pilot001cEntries.
+Require Import ZesuSsz.Generated.DecodeItem.FP301.Pilot002cEntries.
+Require Import ZesuSsz.Generated.DecodeItem.FP301.Pilot0044Entries.
+Require Import ZesuSsz.Generated.DecodeItem.FP301.Pilot0050Entries.
+Require Import ZesuSsz.Generated.DecodeItem.FP301.Pilot0078Entries.
+Require Import ZesuSsz.Generated.DecodeItem.FP301.Pilot0080Entries.
+Require Import ZesuSsz.Generated.DecodeItem.FP301.Pilot0088Entries.
+Require Import ZesuSsz.Generated.DecodeItem.FP301.Pilot00a0Entries.
+Require Import ZesuSsz.Generated.DecodeItem.FP301.Pilot00a8Entries.
+Require Import ZesuSsz.Generated.DecodeItem.FP301.Pilot00b4Entries.
+Require Import ZesuSsz.Generated.DecodeItem.FP301.Pilot00c4Entries.
+Require Import ZesuSsz.Generated.DecodeItem.FP301.Pilot00d8Entries.
+Require Import ZesuSsz.Generated.DecodeItem.FP301.Pilot00e0Entries.
+Require Import ZesuSsz.Generated.DecodeItem.FP301.Pilot0104Entries.
+Require Import ZesuSsz.Generated.DecodeItem.FP301.Pilot010cEntries.
+Require Import ZesuSsz.Generated.DecodeItem.FP301.Pilot0118Entries.
+Require Import ZesuSsz.Generated.DecodeItem.FP301.Pilot0148Entries.
+Require Import ZesuSsz.Generated.DecodeItem.FP301.Pilot0154Entries.
+Require Import ZesuSsz.Generated.DecodeItem.FP301.Pilot0164Entries.
+Require Import ZesuSsz.Generated.DecodeItem.FP301.Pilot0178Entries.
+Require Import ZesuSsz.Generated.DecodeItem.FP301.Pilot0180Entries.
+Require Import ZesuSsz.Generated.DecodeItem.FP301.Pilot01a8Entries.
+Require ZesuSsz.Proofs.DecodeItem.FP301.Caller0000.
+Require ZesuSsz.Proofs.DecodeItem.FP301.Caller0014.
+Require ZesuSsz.Proofs.DecodeItem.FP301.Caller001c.
+Require ZesuSsz.Proofs.DecodeItem.FP301.Caller002c.
+Require ZesuSsz.Proofs.DecodeItem.FP301.Caller0044.
+Require ZesuSsz.Proofs.DecodeItem.FP301.Caller0050.
+Require ZesuSsz.Proofs.DecodeItem.FP301.Caller0078.
+Require ZesuSsz.Proofs.DecodeItem.FP301.Caller0080.
+Require ZesuSsz.Proofs.DecodeItem.FP301.Caller0088.
+Require ZesuSsz.Proofs.DecodeItem.FP301.Caller00a0.
+Require ZesuSsz.Proofs.DecodeItem.FP301.Caller00a8.
+Require ZesuSsz.Proofs.DecodeItem.FP301.Caller00b4.
+Require ZesuSsz.Proofs.DecodeItem.FP301.Caller00c4.
+Require ZesuSsz.Proofs.DecodeItem.FP301.Caller00d8.
+Require ZesuSsz.Proofs.DecodeItem.FP301.Caller00e0.
+Require ZesuSsz.Proofs.DecodeItem.FP301.Caller0104.
+Require ZesuSsz.Proofs.DecodeItem.FP301.Caller010c.
+Require ZesuSsz.Proofs.DecodeItem.FP301.Caller0118.
+Require ZesuSsz.Proofs.DecodeItem.FP301.Caller0148.
+Require ZesuSsz.Proofs.DecodeItem.FP301.Caller0154.
+Require ZesuSsz.Proofs.DecodeItem.FP301.Caller0164.
+Require ZesuSsz.Proofs.DecodeItem.FP301.Caller0178.
+Require ZesuSsz.Proofs.DecodeItem.FP301.Caller0180.
+Require ZesuSsz.Proofs.DecodeItem.FP301.Caller01a8.
 Local Open Scope Z_scope.
 
 
@@ -73,30 +73,30 @@ Local Notation fp301Continuation args returnAddress :=
 Definition fp301Table `{!islaG Sigma} `{!threadG} (args : DecodeItemArgs) (returnAddress : Z) : blockTable Sigma := {|
   block_table_code := decodeItemSelectedCode;
   block_table_entries := [
-    (0x800d6960, (ZesuSsz.Generated.DecodeItem.FP301.Pilot6960Entries.fp_machineAt6960 args returnAddress (fp301Continuation args returnAddress))%I);
-    (0x800d6974, (ZesuSsz.Generated.DecodeItem.FP301.Pilot6974Entries.fp_machineAt6974 args returnAddress (fp301Continuation args returnAddress))%I);
-    (0x800d697c, (ZesuSsz.Generated.DecodeItem.FP301.Pilot697cEntries.fp_machineAt697c args returnAddress (fp301Continuation args returnAddress))%I);
-    (0x800d698c, (ZesuSsz.Generated.DecodeItem.FP301.Pilot698cEntries.fp_machineAt698c args returnAddress (fp301Continuation args returnAddress))%I);
-    (0x800d69a4, (ZesuSsz.Generated.DecodeItem.FP301.Pilot69a4Entries.fp_machineAt69a4 args returnAddress (fp301Continuation args returnAddress))%I);
-    (0x800d69b0, (ZesuSsz.Generated.DecodeItem.FP301.Pilot69b0Entries.fp_machineAt69b0 args returnAddress (fp301Continuation args returnAddress))%I);
-    (0x800d69d8, (ZesuSsz.Generated.DecodeItem.FP301.Pilot69d8Entries.fp_machineAt69d8 args returnAddress (fp301Continuation args returnAddress))%I);
-    (0x800d69e0, (ZesuSsz.Generated.DecodeItem.FP301.Pilot69e0Entries.fp_machineAt69e0 args returnAddress (fp301Continuation args returnAddress))%I);
-    (0x800d69e8, (ZesuSsz.Generated.DecodeItem.FP301.Pilot69e8Entries.fp_machineAt69e8 args returnAddress (fp301Continuation args returnAddress))%I);
-    (0x800d6a00, (ZesuSsz.Generated.DecodeItem.FP301.Pilot6a00Entries.fp_machineAt6a00 args returnAddress (fp301Continuation args returnAddress))%I);
-    (0x800d6a08, (ZesuSsz.Generated.DecodeItem.FP301.Pilot6a08Entries.fp_machineAt6a08 args returnAddress (fp301Continuation args returnAddress))%I);
-    (0x800d6a14, (ZesuSsz.Generated.DecodeItem.FP301.Pilot6a14Entries.fp_machineAt6a14 args returnAddress (fp301Continuation args returnAddress))%I);
-    (0x800d6a24, (ZesuSsz.Generated.DecodeItem.FP301.Pilot6a24Entries.fp_machineAt6a24 args returnAddress (fp301Continuation args returnAddress))%I);
-    (0x800d6a38, (ZesuSsz.Generated.DecodeItem.FP301.Pilot6a38Entries.fp_machineAt6a38 args returnAddress (fp301Continuation args returnAddress))%I);
-    (0x800d6a40, (ZesuSsz.Generated.DecodeItem.FP301.Pilot6a40Entries.fp_machineAt6a40 args returnAddress (fp301Continuation args returnAddress))%I);
-    (0x800d6a64, (ZesuSsz.Generated.DecodeItem.FP301.Pilot6a64Entries.fp_machineAt6a64 args returnAddress (fp301Continuation args returnAddress))%I);
-    (0x800d6a6c, (ZesuSsz.Generated.DecodeItem.FP301.Pilot6a6cEntries.fp_machineAt6a6c args returnAddress (fp301Continuation args returnAddress))%I);
-    (0x800d6a78, (ZesuSsz.Generated.DecodeItem.FP301.Pilot6a78Entries.fp_machineAt6a78 args returnAddress (fp301Continuation args returnAddress))%I);
-    (0x800d6aa8, (ZesuSsz.Generated.DecodeItem.FP301.Pilot6aa8Entries.fp_machineAt6aa8 args returnAddress (fp301Continuation args returnAddress))%I);
-    (0x800d6ab4, (ZesuSsz.Generated.DecodeItem.FP301.Pilot6ab4Entries.fp_machineAt6ab4 args returnAddress (fp301Continuation args returnAddress))%I);
-    (0x800d6ac4, (ZesuSsz.Generated.DecodeItem.FP301.Pilot6ac4Entries.fp_machineAt6ac4 args returnAddress (fp301Continuation args returnAddress))%I);
-    (0x800d6ad8, (ZesuSsz.Generated.DecodeItem.FP301.Pilot6ad8Entries.fp_machineAt6ad8 args returnAddress (fp301Continuation args returnAddress))%I);
-    (0x800d6ae0, (ZesuSsz.Generated.DecodeItem.FP301.Pilot6ae0Entries.fp_machineAt6ae0 args returnAddress (fp301Continuation args returnAddress))%I);
-    (0x800d6b08, (ZesuSsz.Generated.DecodeItem.FP301.Pilot6b08Entries.fp_machineAt6b08 args returnAddress (fp301Continuation args returnAddress))%I)
+    (0x800d6960, (ZesuSsz.Generated.DecodeItem.FP301.Pilot0000Entries.fp_machineAt0000 args returnAddress (fp301Continuation args returnAddress))%I);
+    (0x800d6974, (ZesuSsz.Generated.DecodeItem.FP301.Pilot0014Entries.fp_machineAt0014 args returnAddress (fp301Continuation args returnAddress))%I);
+    (0x800d697c, (ZesuSsz.Generated.DecodeItem.FP301.Pilot001cEntries.fp_machineAt001c args returnAddress (fp301Continuation args returnAddress))%I);
+    (0x800d698c, (ZesuSsz.Generated.DecodeItem.FP301.Pilot002cEntries.fp_machineAt002c args returnAddress (fp301Continuation args returnAddress))%I);
+    (0x800d69a4, (ZesuSsz.Generated.DecodeItem.FP301.Pilot0044Entries.fp_machineAt0044 args returnAddress (fp301Continuation args returnAddress))%I);
+    (0x800d69b0, (ZesuSsz.Generated.DecodeItem.FP301.Pilot0050Entries.fp_machineAt0050 args returnAddress (fp301Continuation args returnAddress))%I);
+    (0x800d69d8, (ZesuSsz.Generated.DecodeItem.FP301.Pilot0078Entries.fp_machineAt0078 args returnAddress (fp301Continuation args returnAddress))%I);
+    (0x800d69e0, (ZesuSsz.Generated.DecodeItem.FP301.Pilot0080Entries.fp_machineAt0080 args returnAddress (fp301Continuation args returnAddress))%I);
+    (0x800d69e8, (ZesuSsz.Generated.DecodeItem.FP301.Pilot0088Entries.fp_machineAt0088 args returnAddress (fp301Continuation args returnAddress))%I);
+    (0x800d6a00, (ZesuSsz.Generated.DecodeItem.FP301.Pilot00a0Entries.fp_machineAt00a0 args returnAddress (fp301Continuation args returnAddress))%I);
+    (0x800d6a08, (ZesuSsz.Generated.DecodeItem.FP301.Pilot00a8Entries.fp_machineAt00a8 args returnAddress (fp301Continuation args returnAddress))%I);
+    (0x800d6a14, (ZesuSsz.Generated.DecodeItem.FP301.Pilot00b4Entries.fp_machineAt00b4 args returnAddress (fp301Continuation args returnAddress))%I);
+    (0x800d6a24, (ZesuSsz.Generated.DecodeItem.FP301.Pilot00c4Entries.fp_machineAt00c4 args returnAddress (fp301Continuation args returnAddress))%I);
+    (0x800d6a38, (ZesuSsz.Generated.DecodeItem.FP301.Pilot00d8Entries.fp_machineAt00d8 args returnAddress (fp301Continuation args returnAddress))%I);
+    (0x800d6a40, (ZesuSsz.Generated.DecodeItem.FP301.Pilot00e0Entries.fp_machineAt00e0 args returnAddress (fp301Continuation args returnAddress))%I);
+    (0x800d6a64, (ZesuSsz.Generated.DecodeItem.FP301.Pilot0104Entries.fp_machineAt0104 args returnAddress (fp301Continuation args returnAddress))%I);
+    (0x800d6a6c, (ZesuSsz.Generated.DecodeItem.FP301.Pilot010cEntries.fp_machineAt010c args returnAddress (fp301Continuation args returnAddress))%I);
+    (0x800d6a78, (ZesuSsz.Generated.DecodeItem.FP301.Pilot0118Entries.fp_machineAt0118 args returnAddress (fp301Continuation args returnAddress))%I);
+    (0x800d6aa8, (ZesuSsz.Generated.DecodeItem.FP301.Pilot0148Entries.fp_machineAt0148 args returnAddress (fp301Continuation args returnAddress))%I);
+    (0x800d6ab4, (ZesuSsz.Generated.DecodeItem.FP301.Pilot0154Entries.fp_machineAt0154 args returnAddress (fp301Continuation args returnAddress))%I);
+    (0x800d6ac4, (ZesuSsz.Generated.DecodeItem.FP301.Pilot0164Entries.fp_machineAt0164 args returnAddress (fp301Continuation args returnAddress))%I);
+    (0x800d6ad8, (ZesuSsz.Generated.DecodeItem.FP301.Pilot0178Entries.fp_machineAt0178 args returnAddress (fp301Continuation args returnAddress))%I);
+    (0x800d6ae0, (ZesuSsz.Generated.DecodeItem.FP301.Pilot0180Entries.fp_machineAt0180 args returnAddress (fp301Continuation args returnAddress))%I);
+    (0x800d6b08, (ZesuSsz.Generated.DecodeItem.FP301.Pilot01a8Entries.fp_machineAt01a8 args returnAddress (fp301Continuation args returnAddress))%I)
   ] |}.
 
 (* ---- Infrastructure (hand-written once; no step names a block). ---- *)
@@ -164,59 +164,59 @@ Ltac fp301_slot :=
    (the callers make it typeclass-opaque); the slot tactic picks the proof
    whose conclusion matches the slot. *)
 Ltac fp301_block_proofs Sigma :=
-  pose proof (@ZesuSsz.Proofs.DecodeItem.FP301.Caller6960.DesignedBoundary_800d6960 Sigma _ _) as Fp301Block_800d6960;
-  unfold ZesuSsz.Proofs.DecodeItem.FP301.Caller6960.DesignedEntry_800d6960 in Fp301Block_800d6960;
-  pose proof (@ZesuSsz.Proofs.DecodeItem.FP301.Caller6974.DesignedBoundary_800d6974 Sigma _ _) as Fp301Block_800d6974;
-  unfold ZesuSsz.Proofs.DecodeItem.FP301.Caller6974.DesignedEntry_800d6974 in Fp301Block_800d6974;
-  pose proof (@ZesuSsz.Proofs.DecodeItem.FP301.Caller697c.DesignedBoundary_800d697c Sigma _ _) as Fp301Block_800d697c;
-  unfold ZesuSsz.Proofs.DecodeItem.FP301.Caller697c.DesignedEntry_800d697c in Fp301Block_800d697c;
-  pose proof (@ZesuSsz.Proofs.DecodeItem.FP301.Caller698c.DesignedBoundary_800d698c Sigma _ _) as Fp301Block_800d698c;
-  unfold ZesuSsz.Proofs.DecodeItem.FP301.Caller698c.DesignedEntry_800d698c in Fp301Block_800d698c;
-  pose proof (@ZesuSsz.Proofs.DecodeItem.FP301.Caller69a4.DesignedBoundary_800d69a4 Sigma _ _) as Fp301Block_800d69a4;
-  unfold ZesuSsz.Proofs.DecodeItem.FP301.Caller69a4.DesignedEntry_800d69a4 in Fp301Block_800d69a4;
-  pose proof (@ZesuSsz.Proofs.DecodeItem.FP301.Caller69b0.DesignedBoundary_800d69b0 Sigma _ _) as Fp301Block_800d69b0;
-  unfold ZesuSsz.Proofs.DecodeItem.FP301.Caller69b0.DesignedEntry_800d69b0 in Fp301Block_800d69b0;
-  pose proof (@ZesuSsz.Proofs.DecodeItem.FP301.Caller69d8.DesignedBoundary_800d69d8 Sigma _ _) as Fp301Block_800d69d8;
-  unfold ZesuSsz.Proofs.DecodeItem.FP301.Caller69d8.DesignedEntry_800d69d8 in Fp301Block_800d69d8;
-  pose proof (@ZesuSsz.Proofs.DecodeItem.FP301.Caller69e0.DesignedBoundary_800d69e0 Sigma _ _) as Fp301Block_800d69e0;
-  unfold ZesuSsz.Proofs.DecodeItem.FP301.Caller69e0.DesignedEntry_800d69e0 in Fp301Block_800d69e0;
-  pose proof (@ZesuSsz.Proofs.DecodeItem.FP301.Caller69e8.DesignedBoundary_800d69e8 Sigma _ _) as Fp301Block_800d69e8;
-  unfold ZesuSsz.Proofs.DecodeItem.FP301.Caller69e8.DesignedEntry_800d69e8 in Fp301Block_800d69e8;
-  pose proof (@ZesuSsz.Proofs.DecodeItem.FP301.Caller6a00.DesignedBoundary_800d6a00 Sigma _ _) as Fp301Block_800d6a00;
-  unfold ZesuSsz.Proofs.DecodeItem.FP301.Caller6a00.DesignedEntry_800d6a00 in Fp301Block_800d6a00;
-  pose proof (@ZesuSsz.Proofs.DecodeItem.FP301.Caller6a08.DesignedBoundary_800d6a08 Sigma _ _) as Fp301Block_800d6a08;
-  unfold ZesuSsz.Proofs.DecodeItem.FP301.Caller6a08.DesignedEntry_800d6a08 in Fp301Block_800d6a08;
-  pose proof (@ZesuSsz.Proofs.DecodeItem.FP301.Caller6a14.DesignedBoundary_800d6a14 Sigma _ _) as Fp301Block_800d6a14;
-  unfold ZesuSsz.Proofs.DecodeItem.FP301.Caller6a14.DesignedEntry_800d6a14 in Fp301Block_800d6a14;
-  pose proof (@ZesuSsz.Proofs.DecodeItem.FP301.Caller6a24.DesignedBoundary_800d6a24 Sigma _ _) as Fp301Block_800d6a24;
-  unfold ZesuSsz.Proofs.DecodeItem.FP301.Caller6a24.DesignedEntry_800d6a24 in Fp301Block_800d6a24;
-  pose proof (@ZesuSsz.Proofs.DecodeItem.FP301.Caller6a38.DesignedBoundary_800d6a38 Sigma _ _) as Fp301Block_800d6a38;
-  unfold ZesuSsz.Proofs.DecodeItem.FP301.Caller6a38.DesignedEntry_800d6a38 in Fp301Block_800d6a38;
-  pose proof (@ZesuSsz.Proofs.DecodeItem.FP301.Caller6a40.DesignedBoundary_800d6a40 Sigma _ _) as Fp301Block_800d6a40;
-  unfold ZesuSsz.Proofs.DecodeItem.FP301.Caller6a40.DesignedEntry_800d6a40 in Fp301Block_800d6a40;
-  pose proof (@ZesuSsz.Proofs.DecodeItem.FP301.Caller6a64.DesignedBoundary_800d6a64 Sigma _ _) as Fp301Block_800d6a64;
-  unfold ZesuSsz.Proofs.DecodeItem.FP301.Caller6a64.DesignedEntry_800d6a64 in Fp301Block_800d6a64;
-  pose proof (@ZesuSsz.Proofs.DecodeItem.FP301.Caller6a6c.DesignedBoundary_800d6a6c Sigma _ _) as Fp301Block_800d6a6c;
-  unfold ZesuSsz.Proofs.DecodeItem.FP301.Caller6a6c.DesignedEntry_800d6a6c in Fp301Block_800d6a6c;
-  pose proof (@ZesuSsz.Proofs.DecodeItem.FP301.Caller6a78.DesignedBoundary_800d6a78 Sigma _ _) as Fp301Block_800d6a78;
-  unfold ZesuSsz.Proofs.DecodeItem.FP301.Caller6a78.DesignedEntry_800d6a78 in Fp301Block_800d6a78;
-  pose proof (@ZesuSsz.Proofs.DecodeItem.FP301.Caller6aa8.DesignedBoundary_800d6aa8 Sigma _ _) as Fp301Block_800d6aa8;
-  unfold ZesuSsz.Proofs.DecodeItem.FP301.Caller6aa8.DesignedEntry_800d6aa8 in Fp301Block_800d6aa8;
-  pose proof (@ZesuSsz.Proofs.DecodeItem.FP301.Caller6ab4.DesignedBoundary_800d6ab4 Sigma _ _) as Fp301Block_800d6ab4;
-  unfold ZesuSsz.Proofs.DecodeItem.FP301.Caller6ab4.DesignedEntry_800d6ab4 in Fp301Block_800d6ab4;
-  pose proof (@ZesuSsz.Proofs.DecodeItem.FP301.Caller6ac4.DesignedBoundary_800d6ac4 Sigma _ _) as Fp301Block_800d6ac4;
-  unfold ZesuSsz.Proofs.DecodeItem.FP301.Caller6ac4.DesignedEntry_800d6ac4 in Fp301Block_800d6ac4;
-  pose proof (@ZesuSsz.Proofs.DecodeItem.FP301.Caller6ad8.DesignedBoundary_800d6ad8 Sigma _ _) as Fp301Block_800d6ad8;
-  unfold ZesuSsz.Proofs.DecodeItem.FP301.Caller6ad8.DesignedEntry_800d6ad8 in Fp301Block_800d6ad8;
-  pose proof (@ZesuSsz.Proofs.DecodeItem.FP301.Caller6ae0.DesignedBoundary_800d6ae0 Sigma _ _) as Fp301Block_800d6ae0;
-  unfold ZesuSsz.Proofs.DecodeItem.FP301.Caller6ae0.DesignedEntry_800d6ae0 in Fp301Block_800d6ae0;
-  pose proof (@ZesuSsz.Proofs.DecodeItem.FP301.Caller6b08.DesignedBoundary_800d6b08 Sigma _ _) as Fp301Block_800d6b08;
-  unfold ZesuSsz.Proofs.DecodeItem.FP301.Caller6b08.DesignedEntry_800d6b08 in Fp301Block_800d6b08.
+  pose proof (@ZesuSsz.Proofs.DecodeItem.FP301.Caller0000.DesignedBoundary_800d6960 Sigma _ _) as Fp301Block_800d6960;
+  unfold ZesuSsz.Proofs.DecodeItem.FP301.Caller0000.DesignedEntry_800d6960 in Fp301Block_800d6960;
+  pose proof (@ZesuSsz.Proofs.DecodeItem.FP301.Caller0014.DesignedBoundary_800d6974 Sigma _ _) as Fp301Block_800d6974;
+  unfold ZesuSsz.Proofs.DecodeItem.FP301.Caller0014.DesignedEntry_800d6974 in Fp301Block_800d6974;
+  pose proof (@ZesuSsz.Proofs.DecodeItem.FP301.Caller001c.DesignedBoundary_800d697c Sigma _ _) as Fp301Block_800d697c;
+  unfold ZesuSsz.Proofs.DecodeItem.FP301.Caller001c.DesignedEntry_800d697c in Fp301Block_800d697c;
+  pose proof (@ZesuSsz.Proofs.DecodeItem.FP301.Caller002c.DesignedBoundary_800d698c Sigma _ _) as Fp301Block_800d698c;
+  unfold ZesuSsz.Proofs.DecodeItem.FP301.Caller002c.DesignedEntry_800d698c in Fp301Block_800d698c;
+  pose proof (@ZesuSsz.Proofs.DecodeItem.FP301.Caller0044.DesignedBoundary_800d69a4 Sigma _ _) as Fp301Block_800d69a4;
+  unfold ZesuSsz.Proofs.DecodeItem.FP301.Caller0044.DesignedEntry_800d69a4 in Fp301Block_800d69a4;
+  pose proof (@ZesuSsz.Proofs.DecodeItem.FP301.Caller0050.DesignedBoundary_800d69b0 Sigma _ _) as Fp301Block_800d69b0;
+  unfold ZesuSsz.Proofs.DecodeItem.FP301.Caller0050.DesignedEntry_800d69b0 in Fp301Block_800d69b0;
+  pose proof (@ZesuSsz.Proofs.DecodeItem.FP301.Caller0078.DesignedBoundary_800d69d8 Sigma _ _) as Fp301Block_800d69d8;
+  unfold ZesuSsz.Proofs.DecodeItem.FP301.Caller0078.DesignedEntry_800d69d8 in Fp301Block_800d69d8;
+  pose proof (@ZesuSsz.Proofs.DecodeItem.FP301.Caller0080.DesignedBoundary_800d69e0 Sigma _ _) as Fp301Block_800d69e0;
+  unfold ZesuSsz.Proofs.DecodeItem.FP301.Caller0080.DesignedEntry_800d69e0 in Fp301Block_800d69e0;
+  pose proof (@ZesuSsz.Proofs.DecodeItem.FP301.Caller0088.DesignedBoundary_800d69e8 Sigma _ _) as Fp301Block_800d69e8;
+  unfold ZesuSsz.Proofs.DecodeItem.FP301.Caller0088.DesignedEntry_800d69e8 in Fp301Block_800d69e8;
+  pose proof (@ZesuSsz.Proofs.DecodeItem.FP301.Caller00a0.DesignedBoundary_800d6a00 Sigma _ _) as Fp301Block_800d6a00;
+  unfold ZesuSsz.Proofs.DecodeItem.FP301.Caller00a0.DesignedEntry_800d6a00 in Fp301Block_800d6a00;
+  pose proof (@ZesuSsz.Proofs.DecodeItem.FP301.Caller00a8.DesignedBoundary_800d6a08 Sigma _ _) as Fp301Block_800d6a08;
+  unfold ZesuSsz.Proofs.DecodeItem.FP301.Caller00a8.DesignedEntry_800d6a08 in Fp301Block_800d6a08;
+  pose proof (@ZesuSsz.Proofs.DecodeItem.FP301.Caller00b4.DesignedBoundary_800d6a14 Sigma _ _) as Fp301Block_800d6a14;
+  unfold ZesuSsz.Proofs.DecodeItem.FP301.Caller00b4.DesignedEntry_800d6a14 in Fp301Block_800d6a14;
+  pose proof (@ZesuSsz.Proofs.DecodeItem.FP301.Caller00c4.DesignedBoundary_800d6a24 Sigma _ _) as Fp301Block_800d6a24;
+  unfold ZesuSsz.Proofs.DecodeItem.FP301.Caller00c4.DesignedEntry_800d6a24 in Fp301Block_800d6a24;
+  pose proof (@ZesuSsz.Proofs.DecodeItem.FP301.Caller00d8.DesignedBoundary_800d6a38 Sigma _ _) as Fp301Block_800d6a38;
+  unfold ZesuSsz.Proofs.DecodeItem.FP301.Caller00d8.DesignedEntry_800d6a38 in Fp301Block_800d6a38;
+  pose proof (@ZesuSsz.Proofs.DecodeItem.FP301.Caller00e0.DesignedBoundary_800d6a40 Sigma _ _) as Fp301Block_800d6a40;
+  unfold ZesuSsz.Proofs.DecodeItem.FP301.Caller00e0.DesignedEntry_800d6a40 in Fp301Block_800d6a40;
+  pose proof (@ZesuSsz.Proofs.DecodeItem.FP301.Caller0104.DesignedBoundary_800d6a64 Sigma _ _) as Fp301Block_800d6a64;
+  unfold ZesuSsz.Proofs.DecodeItem.FP301.Caller0104.DesignedEntry_800d6a64 in Fp301Block_800d6a64;
+  pose proof (@ZesuSsz.Proofs.DecodeItem.FP301.Caller010c.DesignedBoundary_800d6a6c Sigma _ _) as Fp301Block_800d6a6c;
+  unfold ZesuSsz.Proofs.DecodeItem.FP301.Caller010c.DesignedEntry_800d6a6c in Fp301Block_800d6a6c;
+  pose proof (@ZesuSsz.Proofs.DecodeItem.FP301.Caller0118.DesignedBoundary_800d6a78 Sigma _ _) as Fp301Block_800d6a78;
+  unfold ZesuSsz.Proofs.DecodeItem.FP301.Caller0118.DesignedEntry_800d6a78 in Fp301Block_800d6a78;
+  pose proof (@ZesuSsz.Proofs.DecodeItem.FP301.Caller0148.DesignedBoundary_800d6aa8 Sigma _ _) as Fp301Block_800d6aa8;
+  unfold ZesuSsz.Proofs.DecodeItem.FP301.Caller0148.DesignedEntry_800d6aa8 in Fp301Block_800d6aa8;
+  pose proof (@ZesuSsz.Proofs.DecodeItem.FP301.Caller0154.DesignedBoundary_800d6ab4 Sigma _ _) as Fp301Block_800d6ab4;
+  unfold ZesuSsz.Proofs.DecodeItem.FP301.Caller0154.DesignedEntry_800d6ab4 in Fp301Block_800d6ab4;
+  pose proof (@ZesuSsz.Proofs.DecodeItem.FP301.Caller0164.DesignedBoundary_800d6ac4 Sigma _ _) as Fp301Block_800d6ac4;
+  unfold ZesuSsz.Proofs.DecodeItem.FP301.Caller0164.DesignedEntry_800d6ac4 in Fp301Block_800d6ac4;
+  pose proof (@ZesuSsz.Proofs.DecodeItem.FP301.Caller0178.DesignedBoundary_800d6ad8 Sigma _ _) as Fp301Block_800d6ad8;
+  unfold ZesuSsz.Proofs.DecodeItem.FP301.Caller0178.DesignedEntry_800d6ad8 in Fp301Block_800d6ad8;
+  pose proof (@ZesuSsz.Proofs.DecodeItem.FP301.Caller0180.DesignedBoundary_800d6ae0 Sigma _ _) as Fp301Block_800d6ae0;
+  unfold ZesuSsz.Proofs.DecodeItem.FP301.Caller0180.DesignedEntry_800d6ae0 in Fp301Block_800d6ae0;
+  pose proof (@ZesuSsz.Proofs.DecodeItem.FP301.Caller01a8.DesignedBoundary_800d6b08 Sigma _ _) as Fp301Block_800d6b08;
+  unfold ZesuSsz.Proofs.DecodeItem.FP301.Caller01a8.DesignedEntry_800d6b08 in Fp301Block_800d6b08.
 
 (* ---- Composition over the block table. ---- *)
 Lemma fp301_decodeItem_body `{!islaG Sigma} `{!threadG} (args : DecodeItemArgs) (returnAddress : Z) :
   ⊢ □ decodeItemSelectedCode -∗
-    instr_body 0x800d6960 (ZesuSsz.Generated.DecodeItem.FP301.Pilot6960Entries.fp_machineAt6960 args returnAddress
+    instr_body 0x800d6960 (ZesuSsz.Generated.DecodeItem.FP301.Pilot0000Entries.fp_machineAt0000 args returnAddress
       (fp301Continuation args returnAddress)).
 Proof.
   fp301_block_proofs Sigma.
@@ -255,7 +255,7 @@ Qed.
 (* ---- Start bridge (gap report item (c)), keeping the domain fact. ---- *)
 Lemma fp301_start_bridge `{!islaG Sigma} `{!threadG} (args : DecodeItemArgs) (returnAddress : Z) :
   decodeItemEntryResources (decodeItemDomainAt returnAddress decodeItemC1BDomain) args ⊢
-  ZesuSsz.Generated.DecodeItem.FP301.Pilot6960Entries.fp_machineAt6960_ForwardA0N0 args returnAddress ∗
+  ZesuSsz.Generated.DecodeItem.FP301.Pilot0000Entries.fp_machineAt0000_ForwardA0N0 args returnAddress ∗
   ⌜decodeItemDomainAt returnAddress decodeItemC1BDomain args⌝.
 Proof.
   iIntros "(%a3 & %a4 & %a5 & %a6 & Hsys & H10 & H11 & H12 & H13 & H14 & H15 & H16 & H2 & H1 & H8 & Hin & Hout & Hstack & %Hdomain & _)".
@@ -281,7 +281,7 @@ Proof.
   iApply (instr_pre_wand with "Hbody"); [done|done|].
   iIntros "[Hentry Hexit]".
   iDestruct (fp301_start_bridge with "Hentry") as "[Hforward %Hdomain]".
-  rewrite /ZesuSsz.Generated.DecodeItem.FP301.Pilot6960Entries.fp_machineAt6960.
+  rewrite /ZesuSsz.Generated.DecodeItem.FP301.Pilot0000Entries.fp_machineAt0000.
   iFrame "Hforward".
   iApply (instr_pre_wand with "Hexit"); [done|done|].
   iIntros "Hreturn". by iApply (fp301_end_bridge with "Hreturn").

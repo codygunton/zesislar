@@ -3,6 +3,7 @@ Require Import ZesuSsz.Automation2.Hooks.
 Require Import ZesuSsz.Automation2.CodecArrayRead.
 From Coq Require Import Lia.
 From stdpp Require Import bitvector.definitions list.
+Require ZesuSsz.Automation2.VmClosed.
 
 (* Close only the definitionally exact image of the target word. *)
 Ltac zesu_frame_image_to_word :=
@@ -10,7 +11,7 @@ Ltac zesu_frame_image_to_word :=
   lazymatch goal with
   | |- Z_to_bv ?bits (little_endian_to_bv ?width
          (take ?count (drop (Z.to_nat ?offset) ?values))) = ?word =>
-      is_closed_term bits; is_closed_term width; is_closed_term count;
+      ZesuSsz.Automation2.VmClosed.zesu_closed_term bits; ZesuSsz.Automation2.VmClosed.zesu_closed_term width; ZesuSsz.Automation2.VmClosed.zesu_closed_term count;
       assert_fails (has_evar values); assert_fails (has_evar word);
       let index := fresh "HframeImageIndex" in
       assert (index : Z.to_nat offset = 0%nat) by
