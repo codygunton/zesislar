@@ -22,7 +22,7 @@ Open Scope stdpp_scope.
 
 (* The template is a spec only in this proof of its correctness; callers use the
    sealed public spec of ZesuSsz/Interfaces/NextUint64.v. *)
-Global Instance : LithiumUnfold (@nextUint64CallSpecDefinition) := I.
+#[local] Instance : LithiumUnfold (@nextUint64CallSpecDefinition) := I.
 Global Typeclasses Opaque nextUint64CallSpecDefinition.
 
 (* The slice is two 64-bit words; the contract states it as 16 bytes. *)
