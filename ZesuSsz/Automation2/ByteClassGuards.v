@@ -3,6 +3,7 @@ Require Import ZesuSsz.Automation2.BitvectorFacts.
 Require Import ZesuSsz.Automation2.ListSliceWindows.
 From Coq Require Import Bool.Bool ZArith.ZArith Lia.
 From stdpp Require Import bitvector.tactics list decidable.
+Require ZesuSsz.Automation2.VmClosed.
 Local Open Scope Z_scope.
 
 Lemma zesu_masked_byte_class (byte : bv 8) (lengthWord : bv 64) (upper : Z) :
@@ -73,7 +74,7 @@ Ltac zesu_byte_class_image :=
   lazymatch target with @eq (list (bv 8)) _ _ => idtac end;
   first [solve [zesu_list_slice_windows; reflexivity] |
     let closed := ltac:(fun term =>
-      is_closed_term term;
+      ZesuSsz.Automation2.VmClosed.zesu_closed_term term;
       let reduced := eval vm_compute in term in
       progress change term with reduced) in
     once (do 128 first
@@ -105,7 +106,7 @@ Ltac zesu_byte_class_image :=
         | Hlength : List.length ?bytes = ?count |-
             context [drop ?index ?bytes] =>
             assert_fails (has_evar bytes);
-            is_closed_term count; is_closed_term index;
+            ZesuSsz.Automation2.VmClosed.zesu_closed_term count; ZesuSsz.Automation2.VmClosed.zesu_closed_term index;
             let Hbound := fresh "HimageDropBound" in
             assert (Hbound : (List.length bytes <= index)%nat) by
               (clear - Hlength; rewrite Hlength; Lia.lia);
@@ -131,13 +132,13 @@ Ltac zesu_byte_class_image :=
           assert (Hequal : left = right) by
             (apply bv_eq; first [reflexivity |
               let scalar := match goal with |- ?scalar => scalar end in
-              is_closed_term scalar; vm_compute; reflexivity]);
+              ZesuSsz.Automation2.VmClosed.zesu_closed_term scalar; vm_compute; reflexivity]);
           rewrite Hequal; clear Hequal; apply (f_equal (cons right))
         end
       | idtac ]);
     first [reflexivity |
       let remaining := match goal with |- ?remaining => remaining end in
-      is_closed_term remaining; vm_compute; reflexivity] ].
+      ZesuSsz.Automation2.VmClosed.zesu_closed_term remaining; vm_compute; reflexivity] ].
 
 Ltac zesu_byte_class_guards :=
   multimatch goal with
@@ -145,7 +146,7 @@ Ltac zesu_byte_class_guards :=
     Hnot128 : negb (bool_decide (bv_and (bv_sign_extend 64 ?byte) (BV 64 255) = BV 64 128)) = true,
     Hupper : negb (bool_decide (bv_signed ?upperWord < bv_signed (bv_zero_extend 128 (bv_and (bv_sign_extend 64 ?byte) (BV 64 255))))) = true,
     Hlength : negb (bool_decide (bv_signed (bv_zero_extend 128 ?actualPayload) >= bv_signed (bv_zero_extend 128 ?lengthWord))) = true |- _ =>
-      is_closed_term upperWord;
+      ZesuSsz.Automation2.VmClosed.zesu_closed_term upperWord;
       let upper := eval vm_compute in (bv_signed upperWord) in
       let Hrange := fresh "HbyteClassUpperRange" in
       assert (Hrange : 0 <= upper < bv_half_modulus 128) by

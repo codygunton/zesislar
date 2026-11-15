@@ -1,5 +1,6 @@
 From stdpp Require Import tactics bitvector.definitions.
 Require Import ZesuSsz.Automation2.SwitchDispatch.
+Require ZesuSsz.Automation2.VmClosed.
 
 Class ZesuStepSignedMaskBranch : Prop := {}.
 
@@ -15,10 +16,10 @@ Ltac zesu_signed_mask_branch :=
   lazymatch relation with
   | Z.ge (@bv_signed ?wide (@bv_zero_extend ?width ?wide
               (@bv_and ?width ?payload ?mask))) (@bv_signed ?wide ?bound) =>
-      is_closed_term width;
-      is_closed_term wide;
-      is_closed_term mask;
-      is_closed_term bound;
+      ZesuSsz.Automation2.VmClosed.zesu_closed_term width;
+      ZesuSsz.Automation2.VmClosed.zesu_closed_term wide;
+      ZesuSsz.Automation2.VmClosed.zesu_closed_term mask;
+      ZesuSsz.Automation2.VmClosed.zesu_closed_term bound;
       let widening := eval cbv in (N.ltb width wide) in
       lazymatch widening with true => idtac | _ => fail 0 end;
       match goal with

@@ -1,0 +1,66 @@
+{
+  "version": "FP-20261119",
+  "kind": "source engine pin",
+  "supersedes": "FP-20261118",
+  "provenance": "A load from an owned uninitialized span reads one fresh existential byte per byte, with no facts (symbolic_state); the boundary records them as binders and the entry formatter binds them at the guard scope (forward_resources, entry_formatter).",
+  "files": [
+    {
+      "path": "tools/block/entry_helper_resources.py",
+      "sha256": "56ae1ee71de43b0141712e7635264bccdfeb90943724ea50a91ec1b7c7ee09c4"
+    },
+    {
+      "path": "tools/block/entry_seed.py",
+      "sha256": "746bc86c4c47ebd22a94a88704caa971fe70a47c5b5406355312485da77e4b02"
+    },
+    {
+      "path": "tools/block/forward_design.py",
+      "sha256": "68d4ff88fadc81fe782b37813a74ce7411cd5ffe1bf3a73000fbf98704350909"
+    },
+    {
+      "path": "tools/block/forward_resource_design.py",
+      "sha256": "85461260dbb0dce95fc7eb5c889b7743f7f0a4678309804e68343ac1def0ec55"
+    },
+    {
+      "path": "tools/block/forward_resources.py",
+      "sha256": "11674888c64cbccb6484b7af2f7d2e1e880efffcb76bcf1de4453c4ae5db6440"
+    },
+    {
+      "path": "tools/block/resource_seed.py",
+      "sha256": "303299a02af187425e1af194888d84e26888ae24e8229869f45b23bacf23e635"
+    },
+    {
+      "path": "tools/block/symbolic_state.py",
+      "sha256": "af86470e231db33ba5b6bb56aa02a6bbf8c911eeda7fd4457a425abd66e9228f"
+    },
+    {
+      "path": "tools/block/system_shape_seed.py",
+      "sha256": "99e0c444987ce264a676479c4986772ec355ae8a1546daf81ad83838f784e73b"
+    },
+    {
+      "path": "tools/test_forward_resource_design.py",
+      "sha256": "f55c12db1333426ead2dbf5662bc9f7b717817f476cce56008dcc41628297344"
+    },
+    {
+      "path": "tools/test_forward_resources.py",
+      "sha256": "27e5fe56c08e0e22f2319839d91af38354a98db6b24493ee1beffe552d3b2d71"
+    },
+    {
+      "path": "tools/test_resource_seed.py",
+      "sha256": "9fd099b5d09b568370a0881e09cc8aac418d13b092c10b5d04887108130a510b"
+    },
+    {
+      "path": "tools/test_system_shape_seed.py",
+      "sha256": "c3b68a03eb9f444c25b1f0b2e12b19097cc42ff6392ceb6ea5cd77a5e7d3745a"
+    }
+  ],
+  "entrypoint": "forward_resource_design.evaluate_owned_function",
+  "statement": "Source evaluation does not establish any generated contract or predecessor entailment.",
+  "limitations": [
+    "A load inside an owned uninitialized span (`↦ₘ?`, Islaris' per-byte ∃ v : bv 8) reads fresh existential bytes with no facts; an unowned or out-of-extent uninitialized byte stays unknown.",
+    "Unknown ownership stops propagation.",
+    "Unsupported source expressions remain explicit.",
+    "A jump at a CFG return site leaves the function as a function_return exit; any other unknown target stops the path.",
+    "An address that carries an owned array base and a symbolic addend reads that array as a list lookup; its index range (below the actual array length) is a path condition and an open read obligation; an array without a length term stops the read. A store at a symbolic index has an owner only when one initialized owned array base is its addend and every other memory resource is disjoint from that array; its index range is an open obligation.",
+    "A call ends its block; its return site is a cut that continues only from a call-return seed (call_boundary.call_return_seed). Loop cuts require source-bound inputs."
+  ]
+}

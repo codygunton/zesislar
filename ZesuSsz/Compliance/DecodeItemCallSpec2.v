@@ -6,11 +6,18 @@ Require Import ZesuSsz.Contracts.DecodeItemCallSpec.
 Require Import ZesuSsz.Contracts.DecodeItemCallSpec2.
 Require Import ZesuSsz.Compliance.DecodeItemCallSpec.
 
-(* The two specs differ only in which identical machine_call they name. *)
-Lemma decodeItemCallSpec2_eq `{!islaG Sigma} `{!threadG} :
-  @decodeItemCallSpec2 Sigma _ _ = @decodeItemCallSpec Sigma _ _.
+(* The template is a spec only in this proof of its correctness; callers use the
+   sealed public spec of ZesuSsz/Interfaces/DecodeItem.v. *)
+#[local] Instance : LithiumUnfold (@decodeItemCallSpecDefinition) := I.
+Global Typeclasses Opaque decodeItemCallSpecDefinition.
+
+(* The template differs from the frozen-core spec only in which identical
+   machine_call it names. ZesuSsz/Interfaces/DecodeItemCorrect.v carries this
+   proof over to the sealed public spec decodeItemCallSpec2. *)
+Lemma decodeItemCallSpecDefinition_eq `{!islaG Sigma} `{!threadG} :
+  @decodeItemCallSpecDefinition Sigma _ _ = @decodeItemCallSpec Sigma _ _.
 Proof. reflexivity. Qed.
 
-Lemma decodeItemCallSpec2_correct `{!islaG Sigma} `{!threadG} :
-  decodeItemSelectedCode -∗ instr_body decodeItemEntry decodeItemCallSpec2.
-Proof. rewrite decodeItemCallSpec2_eq. apply decodeItemCallSpec_correct. Qed.
+Lemma decodeItemCallSpecDefinition_correct `{!islaG Sigma} `{!threadG} :
+  decodeItemSelectedCode -∗ instr_body decodeItemEntry decodeItemCallSpecDefinition.
+Proof. rewrite decodeItemCallSpecDefinition_eq. apply decodeItemCallSpec_correct. Qed.
