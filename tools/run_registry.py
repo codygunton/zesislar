@@ -267,7 +267,9 @@ def launch(registry, args):
     run_id = f'{slug(owner)}-{slug(args.name)}-{stamp}-{uuid.uuid4().hex[:6]}'
     unit = f'zesubg-{run_id}.scope'
     log = Path(args.log).resolve() if args.log else run_dir / f'{slug(args.name)}.log'
-    scope = [systemd_run, '--user', '--scope', '--quiet', '--collect', f'--unit={unit}']
+    # systemd-run expands $VAR and turns $$ into $ in the command unless told
+    # not to; a launched command must run exactly as written.
+    scope = [systemd_run, '--user', '--scope', '--quiet', '--collect', '--expand-environment=no', f'--unit={unit}']
     details = ['--unit', unit, '--run-dir', str(run_dir), '--log', str(log), '--no-run-id-env']
     if args.memory:
         scope += ['-p', f'MemoryMax={args.memory}G', '-p', 'MemorySwapMax=0']

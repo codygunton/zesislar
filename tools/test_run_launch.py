@@ -115,7 +115,8 @@ class LaunchTests(Fixture):
                          ('tester', 'bg', unit, str(self.root), str(self.root / 'watch.log')))
         self.assertEqual(row['command'][-1], 'import time; print("started", flush=True); time.sleep(60)')
         launch = self.systemd_calls()[0]
-        self.assertEqual(launch[:6], ['systemd-run', '--user', '--scope', '--quiet', '--collect', f'--unit={unit}'])
+        self.assertEqual(launch[:7], ['systemd-run', '--user', '--scope', '--quiet', '--collect',
+                                      '--expand-environment=no', f'--unit={unit}'])
         mine = {R.actor_key(actor) for actor in R.descendants([R.identity(os.getpid())])}
         for actor in [row['scheduler']] + row['jobs']:
             self.assertTrue(R.live(actor))
@@ -179,10 +180,13 @@ class LaunchTests(Fixture):
     @unittest.skipUnless(os.environ.get('ZESU_RUN_LAUNCH_LIVE') == '1', 'opt-in live systemd scope')
     def test_live_launch_holds_the_job_in_its_own_user_scope(self):
         self.environment['PATH'] = os.environ['PATH']
-        result = self.cli('launch', '--name', 'live', '--owner', 'tester', '--', 'sleep', '60')
+        # systemd-run expands variables by default and would run `sleep 60; echo $ /home/...`.
+        script = 'sleep 60; echo $$ ${HOME}'
+        result = self.cli('launch', '--name', 'live', '--owner', 'tester', '--', 'sh', '-c', script)
         self.assertEqual(result.returncode, 0, result.stderr)
         run_id = result.stdout.strip()
         row = self.registry.read_run(run_id)
+        self.assertEqual(row['command'], ['sh', '-c', script])
         cgroup = Path(f"/proc/{row['jobs'][0]['pid']}/cgroup").read_text()
         self.assertTrue(cgroup.strip().endswith('/' + row['unit']), cgroup)
         self.assertNotIn(os.getpid(), ancestors(row['scheduler']['pid']))
