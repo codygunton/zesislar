@@ -6,6 +6,7 @@ Require Import isla.riscv64.riscv64.
 Require Import EvmSailRlp.evm_rlp_types.
 Require Import ZesuSsz.Automation.PureFacts.
 Require Import ZesuSsz.Automation2.Calls.
+Require Import ZesuSsz.Automation2.GoalDomain.
 Require Import ZesuSsz.Contracts.DecodeItemPayloadBounds.
 Require Import ZesuSsz.Contracts.DecodeItemCallFacts.
 Require Import ZesuSsz.Contracts.DecodeItemCallSpec2.
@@ -48,6 +49,9 @@ Module Type DecodeItemSealedSignature.
   Axiom decodeItemCallPayloadInInput : forall argv0 argv1 rest sp inputEnd input before after, decodeItemCallMeaning (decodeItemCallDataArgs (argv0 :: argv1 :: rest) sp inputEnd input before) after -> 0 < bv_unsigned (listWord64At8 after) -> bv_unsigned (listWord64At8 after) < 18446744073709551607 -> bv_unsigned argv1 <= bv_unsigned (listWord64At0 after) /\ bv_unsigned (listWord64At0 after) + bv_unsigned (listWord64At8 after) <= bv_unsigned argv1 + Z.of_nat (length input).
   Axiom decodeItemCallInputFits : forall argv0 argv1 rest sp inputEnd input before after, decodeItemCallMeaning (decodeItemCallDataArgs (argv0 :: argv1 :: rest) sp inputEnd input before) after -> 0 <= bv_unsigned argv1 /\ bv_unsigned argv1 + Z.of_nat (length input) < 18446744073709551616.
   Axiom decodeItemCallKind : forall args after, decodeItemCallMeaning args after -> (bv_unsigned (List.nth 32 after (BV 8%N 0%Z)) = 0 \/ bv_unsigned (List.nth 32 after (BV 8%N 0%Z)) = 4) /\ (bv_unsigned (List.nth 32 after (BV 8%N 0%Z)) = 4 -> bv_unsigned (listWord64At0 after) = 0 /\ bv_unsigned (listWord64At8 after) = 0) /\ (bv_unsigned (List.nth 32 after (BV 8%N 0%Z)) = 0 -> bv_unsigned (List.nth 16 after (BV 8%N 0%Z)) <= 1 /\ bv_unsigned (listWord64At24 after) <= Z.of_nat (length (decodeItemInputBytes args))).
+  Axiom decodeItemCallPayloadInInputLe : forall argv0 argv1 rest sp inputEnd input before after, decodeItemCallMeaning (decodeItemCallDataArgs (argv0 :: argv1 :: rest) sp inputEnd input before) after -> 0 < bv_unsigned (listWord64At8 after) -> bv_unsigned (listWord64At8 after) < 18446744073709551607 -> bv_unsigned argv1 <= bv_unsigned (leWord64 after 0) /\ bv_unsigned (leWord64 after 0) + bv_unsigned (listWord64At8 after) <= bv_unsigned argv1 + Z.of_nat (length input).
+  Axiom decodeItemCallConsumed : forall argv sp inputEnd input before after, decodeItemCallMeaning (decodeItemCallDataArgs argv sp inputEnd input before) after -> bv_unsigned (listWord64At24 after) <= Z.of_nat (length input).
+  Axiom decodeItemCallDomainInput : forall argv0 argv1 argv2 rest sp inputEnd input before, decodeItemCallDomain (decodeItemCallDataArgs (argv0 :: argv1 :: argv2 :: rest) sp inputEnd input before) -> bv_unsigned argv2 = Z.of_nat (length input) /\ bv_unsigned argv1 + bv_unsigned argv2 < bv_modulus 64.
   Axiom decodeItemCallDomainIntro : forall args, decodeItemC1BDomain args -> decodeItemCallDomain args.
   Axiom decodeItemCallMeaningLink : forall args after, decodeItemCallMeaning args after -> DecodeMeaningModuloKnownBugs args after.
 End DecodeItemSealedSignature.
@@ -80,6 +84,9 @@ Module DecodeItemSealed : DecodeItemSealedSignature.
   Definition decodeItemCallPayloadInInput := decodeItemMeaningPayloadInInput.
   Definition decodeItemCallInputFits := decodeItemMeaningInputFits.
   Definition decodeItemCallKind := decodeItemMeaningKind.
+  Definition decodeItemCallPayloadInInputLe := decodeItemMeaningPayloadInInputLe.
+  Definition decodeItemCallConsumed := decodeItemMeaningConsumed.
+  Definition decodeItemCallDomainInput := decodeItemDomainInput.
   Definition decodeItemCallDomainIntro := decodeItemDomainIntro.
   Definition decodeItemCallMeaningLink := decodeItemMeaningLink.
 End DecodeItemSealed.
@@ -117,3 +124,22 @@ Global Typeclasses Opaque decodeItemCallSpec2.
   ZesuDerivedFacts (decodeItemCallMeaning (decodeItemCallDataArgs (argv0 :: argv1 :: rest) sp inputEnd input before) after)
     (0 < bv_unsigned (listWord64At8 after) -> bv_unsigned (listWord64At8 after) < 18446744073709551607 -> bv_unsigned argv1 <= bv_unsigned (listWord64At0 after) /\ bv_unsigned (listWord64At0 after) + bv_unsigned (listWord64At8 after) <= bv_unsigned argv1 + Z.of_nat (length input)) :=
   decodeItemCallPayloadInInput argv0 argv1 rest sp inputEnd input before after.
+#[export] Instance decodeItemCallPayloadInInputLeDerivedFacts argv0 argv1 rest sp inputEnd input before after :
+  ZesuDerivedFacts (decodeItemCallMeaning (decodeItemCallDataArgs (argv0 :: argv1 :: rest) sp inputEnd input before) after)
+    (0 < bv_unsigned (listWord64At8 after) -> bv_unsigned (listWord64At8 after) < 18446744073709551607 -> bv_unsigned argv1 <= bv_unsigned (leWord64 after 0) /\ bv_unsigned (leWord64 after 0) + bv_unsigned (listWord64At8 after) <= bv_unsigned argv1 + Z.of_nat (length input)) :=
+  decodeItemCallPayloadInInputLe argv0 argv1 rest sp inputEnd input before after.
+#[export] Instance decodeItemCallConsumedDerivedFacts argv sp inputEnd input before after :
+  ZesuDerivedFacts (decodeItemCallMeaning (decodeItemCallDataArgs argv sp inputEnd input before) after)
+    (bv_unsigned (listWord64At24 after) <= Z.of_nat (length input)) :=
+  decodeItemCallConsumed argv sp inputEnd input before after.
+#[export] Instance decodeItemCallDomainInputDerivedFacts argv0 argv1 argv2 rest sp inputEnd input before :
+  ZesuDerivedFacts (decodeItemCallDomain (decodeItemCallDataArgs (argv0 :: argv1 :: argv2 :: rest) sp inputEnd input before))
+    (bv_unsigned argv2 = Z.of_nat (length input) /\ bv_unsigned argv1 + bv_unsigned argv2 < bv_modulus 64) :=
+  decodeItemCallDomainInput argv0 argv1 argv2 rest sp inputEnd input before.
+
+(* A caller proves the sealed call-site domain from the stated precondition (GoalDomain.v). *)
+#[export] Instance decodeItemCallDomainIntroGoalDomain args :
+  ZesuGoalDomainIntro (decodeItemCallDomain args)
+    (decodeItemC1BDomain args) :=
+  decodeItemCallDomainIntro args.
+#[export] Hint Unfold decodeItemC1BDomain decodeItemArgsWellFormed decodeItemEntryLayout separateRanges decodeItemCallDataArgs : zesu_goal_domain.

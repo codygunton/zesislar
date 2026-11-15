@@ -269,6 +269,85 @@ class SignalDeathTests(Fixture):
         self.assertEqual((result.returncode, result.stdout), (0, ''), result.stderr)
 
 
+class FollowMainTests(Fixture):
+    def git(self, checkout, *arguments, check=True):
+        result = subprocess.run(['git', '-C', str(checkout), *arguments], env=self.environment,
+                                capture_output=True, text=True, timeout=EVENT_CEILING_SECONDS)
+        if check:
+            self.assertEqual(result.returncode, 0, result.stderr)
+        return result.stdout.strip()
+
+    def setUp(self):
+        super().setUp()
+        self.environment.update(GIT_AUTHOR_NAME='t', GIT_AUTHOR_EMAIL='t@t', GIT_COMMITTER_NAME='t',
+                                GIT_COMMITTER_EMAIL='t@t')
+        self.origin = self.root / 'origin.git'
+        self.writer = self.root / 'writer'
+        self.tools = self.root / 'ops-tools'
+        self.status = self.root / 'STATUS.md'
+        self.git(self.root, 'init', '--quiet', '--bare', '--initial-branch=main', str(self.origin))
+        self.git(self.root, 'clone', '--quiet', str(self.origin), str(self.writer))
+        self.commit('one')
+        self.git(self.root, 'clone', '--quiet', str(self.origin), str(self.tools))
+        self.git(self.tools, 'checkout', '--quiet', '--detach')
+
+    def commit(self, text):
+        (self.writer / 'tool.txt').write_text(text + '\n')
+        self.git(self.writer, 'add', 'tool.txt')
+        self.git(self.writer, 'commit', '--quiet', '-m', text)
+        self.git(self.writer, 'push', '--quiet', 'origin', 'HEAD:main')
+        return self.git(self.writer, 'rev-parse', 'HEAD')
+
+    def follow(self):
+        result = self.cli('watchdog', '--follow-main', str(self.tools), '--status', str(self.status))
+        self.assertEqual(result.returncode, 0, result.stderr)
+        return result.stdout
+
+    def test_clean_checkout_fast_forwards_to_origin_main_and_logs_the_move(self):
+        self.assertEqual(self.follow(), '')
+        (self.tools / 'bg-run.log').write_text('untracked logs do not hold the checkout\n')
+        old = self.git(self.tools, 'rev-parse', 'HEAD')
+        new = self.commit('two')
+        output = self.follow()
+        self.assertEqual(self.git(self.tools, 'rev-parse', 'HEAD'), new)
+        self.assertEqual(self.git(self.tools, 'symbolic-ref', '-q', 'HEAD', check=False), '')
+        self.assertIn(f'moved {self.tools} from {old[:12]} to origin/main {new[:12]}', output)
+        self.assertIn(f'from {old[:12]} to origin/main {new[:12]}', (self.store / 'follow-main.log').read_text())
+        self.assertFalse(self.status.exists())
+        self.assertEqual(self.follow(), '')
+
+    def test_dirty_checkout_stays_and_is_posted_to_status_once(self):
+        old = self.git(self.tools, 'rev-parse', 'HEAD')
+        (self.tools / 'tool.txt').write_text('local edit\n')
+        self.commit('two')
+        first = self.follow()
+        self.assertIn('held at', first)
+        self.assertEqual(self.git(self.tools, 'rev-parse', 'HEAD'), old)
+        posted = self.status.read_text().splitlines()
+        self.assertEqual(len(posted), 1, posted)
+        self.assertIn(f'tools checkout {self.tools} no longer follows main: it has uncommitted changes', posted[0])
+        self.assertIn('held at', self.follow())
+        self.assertEqual(self.status.read_text().splitlines(), posted)
+        self.git(self.tools, 'checkout', '--quiet', '--', 'tool.txt')
+        new = self.commit('three')
+        self.assertIn('moved', self.follow())
+        self.assertEqual(self.git(self.tools, 'rev-parse', 'HEAD'), new)
+        (self.tools / 'tool.txt').write_text('dirty again\n')
+        self.commit('four')
+        self.follow()
+        self.assertEqual(len(self.status.read_text().splitlines()), 2)
+
+    def test_local_commits_hold_the_checkout(self):
+        (self.tools / 'tool.txt').write_text('local commit\n')
+        self.git(self.tools, 'commit', '--quiet', '-am', 'local')
+        local = self.git(self.tools, 'rev-parse', 'HEAD')
+        self.commit('two')
+        self.assertIn('not an ancestor of origin/main', self.follow())
+        self.assertEqual(self.git(self.tools, 'rev-parse', 'HEAD'), local)
+        self.assertIn('not an ancestor of origin/main', self.status.read_text())
+
+
+
 class KillScanTests(unittest.TestCase):
     def test_patterns(self):
         unsafe = [PARENT_KILL, 'p' + 'kill -f qseq.sh', '/usr/bin/p' + 'kill x', 'kill' + 'all coqc',

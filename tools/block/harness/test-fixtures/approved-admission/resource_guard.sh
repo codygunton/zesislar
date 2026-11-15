@@ -1710,7 +1710,7 @@ run_scope() {
   trap cleanup_scope EXIT
   trap 'exit 143' TERM
   trap 'exit 130' INT
-  ZESU_OWNED_GUARD_TOKEN="" ZESU_SCOPE_CPU="$cpu" ZESU_SCOPE_UNIT="$unit.scope" systemd-run --user --scope --quiet --unit="$unit" --slice="$slice" \
+  ZESU_OWNED_GUARD_TOKEN="" ZESU_SCOPE_CPU="$cpu" ZESU_SCOPE_UNIT="$unit.scope" systemd-run --user --scope --quiet --expand-environment=no --unit="$unit" --slice="$slice" \
     -p "MemoryMax=${MODULE_LIMIT_GIB}G" -p MemorySwapMax=0 -- \
     $(io_class) "$(realpath "$0")" scope-exec "$reservation" -- "$@" &
   child=$!
@@ -1798,7 +1798,7 @@ run_batch() {
   echo "$unit.scope" >> "$REGISTRY"
   # Remove private Dune headers before a completed batch returns to its caller.
   env ZESU_IN_BATCH=1 ZESU_AGGREGATE_SLICE="$slice" ZESU_AGGREGATE_LIMIT="$limit" ZESU_BATCH_UNIT="$unit.scope" \
-    systemd-run --user --scope --quiet --unit="$unit" --slice="$slice" \
+    systemd-run --user --scope --quiet --expand-environment=no --unit="$unit" --slice="$slice" \
     -p "MemoryMax=$limit" -p MemorySwapMax=0 -- $(io_class) \
     "$(realpath "$0")" batch-exec -- \
     python3 -B "$(dirname "$(realpath "$0")")/dune_trace_guard.py" --canonical-build-dir -- "$@" &

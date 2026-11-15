@@ -54,7 +54,7 @@ def main():
         result["parent_path"] = str(parent_path)
         result["before"] = read_events(parent_path)
         allocator = "import time; blocks=[]\nfor _ in range(160):\n blocks.append(bytearray(1024*1024)); time.sleep(.01)\ntime.sleep(1)\n"
-        argv = ["systemd-run", "--user", "--scope", "--quiet", "--unit=" + unit,
+        argv = ["systemd-run", "--user", "--scope", "--quiet", "--expand-environment=no", "--unit=" + unit,
                 "--slice=" + child, sys.executable, "-c", allocator]
         result["command"] = argv
         process = subprocess.Popen(argv, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
