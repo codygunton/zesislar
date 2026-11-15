@@ -6,23 +6,16 @@
   "callers_directory": "tools/block/generated/nextuint64_fp301_callers",
   "contract_requires": [
     "Require Import EvmSailRlp.evm_rlp_types.",
-    "Require Import ZesuSsz.Contracts.RlpDecodeItem.",
-    "Require Import ZesuSsz.Contracts.RlpDecodeItemContract.",
+    "Require Export ZesuSsz.Interfaces.DecodeItem.",
     "Require Import ZesuSsz.Contracts.ParentHeaderRootFacts.",
     "Require Import ZesuSsz.Contracts.NextUint64BlockEntries.",
-    "Require Import ZesuSsz.Contracts.DecodeItemCompositional.",
-    "Require Import ZesuSsz.Contracts.DecodeItemCallData.",
-    "Require Export ZesuSsz.Contracts.DecodeItemPayloadBounds.",
     "Require Export ZesuSsz.Contracts.NextUint64DomainRanges."
   ],
   "loop_contract_requires": [
     "Require Import EvmSailRlp.evm_rlp_types.",
-    "Require Import ZesuSsz.Contracts.RlpDecodeItem.",
-    "Require Import ZesuSsz.Contracts.RlpDecodeItemContract.",
+    "Require Export ZesuSsz.Interfaces.DecodeItem.",
     "Require Import ZesuSsz.Contracts.ParentHeaderRootFacts.",
     "Require Import ZesuSsz.Contracts.NextUint64BlockEntries.",
-    "Require Import ZesuSsz.Contracts.DecodeItemCompositional.",
-    "Require Import ZesuSsz.Contracts.DecodeItemCallData.",
     "Require Export ZesuSsz.Contracts.NextUint64DomainRanges."
   ],
   "caller_contract_requires": [
@@ -63,8 +56,8 @@
       "callee_pc": "rlp.decodeItem+0x0",
       "return_site_pc": "+0x44",
       "spec": "decodeItemCallSpec2",
-      "spec_module": "ZesuSsz.Contracts.DecodeItemCallSpec2",
-      "spec_source": "ZesuSsz/Contracts/DecodeItemCallSpec2.v",
+      "spec_module": "ZesuSsz.Interfaces.DecodeItem",
+      "spec_source": "ZesuSsz/Interfaces/DecodeItem.v",
       "stack_bytes": 16,
       "arrays": [
         {
@@ -85,7 +78,7 @@
           "kind": "meaning",
           "need": "the lbu at 0x800d6318 reads the input array: the decoded payload lies inside it",
           "coq": "(0 < bv_unsigned {word:after:8} -> bv_unsigned {word:after:8} <= 8 -> nextInputPointer (nextUint64Base args) <= bv_unsigned {word:after:0} /\\ bv_unsigned {word:after:0} + bv_unsigned {word:after:8} <= nextInputPointer (nextUint64Base args) + Z.of_nat (length (nextInputBytes (nextUint64Base args))))%Z",
-          "source": "decodeItemCallPayloadInInputDerivedFacts (DecodeItemPayloadBounds.v): the call post's C1BResult bounds a nonempty payload shorter than 2^64 - 9 by argument 1 and the input length; nextUint64BoundaryDomainSliceWord0DerivedFacts (NextUint64DomainRanges.v): argument 1, the slice's first word, is nextInputPointer"
+          "source": "decodeItemCallPayloadInInputDerivedFacts (DecodeItemCallFacts.v): the sealed call meaning bounds a nonempty payload shorter than 2^64 - 9 by argument 1 and the input length; nextUint64BoundaryDomainSliceWord0DerivedFacts (NextUint64DomainRanges.v): argument 1, the slice's first word, is nextInputPointer"
         }
       ]
     }

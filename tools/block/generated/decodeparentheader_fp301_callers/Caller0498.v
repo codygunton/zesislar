@@ -2,7 +2,7 @@ Require Import ZesuSsz.Generated.DecodeParentHeader.FP301.Pilot0498Entries.
 Require Import ZesuSsz.Generated.DecodeParentHeader.FP301.Pilot0498Structural.
 Require Import ZesuSsz.Generated.DecodeParentHeader.FP301.Pilot04a8Entries.
 Require Import ZesuSsz.Generated.DecodeParentHeader.FP301.Pilot04a8Structural.
-Require Import ZesuSsz.Contracts.NextUint64CallSpec2.
+Require Import ZesuSsz.Interfaces.NextUint64.
 Require Import ZesuSsz.Automation2.All.
 Require Import isla.riscv64.riscv64.
 From Coq Require Import Lists.List ZArith.ZArith NArith.NArith.
@@ -22,7 +22,7 @@ Global Typeclasses Opaque DesignedEntry_800d6150.
 
 Lemma DesignedBoundary_800d6150 `{!islaG Sigma} `{!threadG} (args : ParentHeaderArgs) (returnAddress : Z) (K : iProp Sigma)  :
   instr_pre 0x800d6160 (ZesuSsz.Generated.DecodeParentHeader.FP301.Pilot04a8Entries.fp_machineAt04a8 (args) (returnAddress) (K))%I -∗
-  instr_pre 0x800d6274 (ZesuSsz.Contracts.NextUint64CallSpec2.nextUint64CallSpec2)%I -∗
+  instr_pre 0x800d6274 (ZesuSsz.Interfaces.NextUint64.nextUint64CallSpec2)%I -∗
   parentHeaderSelectedCode -∗
   instr_body 0x800d6150
     (DesignedEntry_800d6150 args returnAddress K).

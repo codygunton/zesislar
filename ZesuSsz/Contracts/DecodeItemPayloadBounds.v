@@ -118,17 +118,3 @@ Proof.
     + change (2 ^ 64) with 18446744073709551616 in Hfit.
       rewrite Z.mod_small in Hfit by lia. lia.
 Qed.
-
-(* The call post states C1BResult on the caller's argument 1, so the callee
-   output bounds the payload by that pointer and the input length. *)
-#[export] Instance decodeItemCallPayloadInInputDerivedFacts
-    argv0 argv1 rest sp inputEnd input before after :
-  ZesuDerivedFacts
-    (DecodeMeaningModuloKnownBugs
-       (decodeItemCallDataArgs (argv0 :: argv1 :: rest) sp inputEnd input before) after)
-    (0 < bv_unsigned (listWord64At8 after) ->
-     bv_unsigned (listWord64At8 after) < 18446744073709551607 ->
-     bv_unsigned argv1 <= bv_unsigned (listWord64At0 after) /\
-     bv_unsigned (listWord64At0 after) + bv_unsigned (listWord64At8 after) <=
-       bv_unsigned argv1 + Z.of_nat (length input)).
-Proof. intros [Hc1b _]. exact (decodeItemPayloadInInput _ _ _ _ Hc1b). Qed.

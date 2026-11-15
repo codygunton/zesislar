@@ -20,6 +20,11 @@ Import ListNotations.
 Open Scope Z_scope.
 Open Scope stdpp_scope.
 
+(* The template is a spec only in this proof of its correctness; callers use the
+   sealed public spec of ZesuSsz/Interfaces/NextUint64.v. *)
+#[local] Instance : LithiumUnfold (@nextUint64CallSpecDefinition) := I.
+Global Typeclasses Opaque nextUint64CallSpecDefinition.
+
 (* The slice is two 64-bit words; the contract states it as 16 bytes. *)
 Lemma nextUint64_word_to_bytes `{!islaG Sigma} (address : Z) (word : bv 64) :
   address ↦ₘ word -∗ address ↦ₘ∗ word64Bytes (bv_unsigned word).
@@ -74,18 +79,19 @@ Proof.
   iSplitL "Hpointer"; by iApply nextUint64_bytes_to_word.
 Qed.
 
-(* nextUint64CallSpec2 follows from the compositional theorem
-   NextUint64ContractCorrect: the call boundary supplies its entry, and its
-   exit supplies the return boundary. *)
-Lemma nextUint64CallSpec2_correct `{!islaG Sigma} `{!threadG} :
+(* The template nextUint64CallSpecDefinition follows from the compositional
+   theorem NextUint64ContractCorrect: the call boundary supplies its entry,
+   and its exit supplies the return boundary. ZesuSsz/Interfaces/
+   NextUint64Correct.v carries it over to the sealed public spec. *)
+Lemma nextUint64CallSpecDefinition_correct `{!islaG Sigma} `{!threadG} :
   NextUint64ContractCorrect ->
-  nextUint64SelectedCode -∗ instr_body nextUint64Entry nextUint64CallSpec2.
+  nextUint64SelectedCode -∗ instr_body nextUint64Entry nextUint64CallSpecDefinition.
 Proof.
   intros Hcontract.
   iStartProof. iIntros "Hcode".
   rewrite instr_pre'_eq /instr_pre'_def /=.
   iIntros "Hspec".
-  iEval (unfold nextUint64CallSpec2) in "Hspec".
+  iEval (unfold nextUint64CallSpecDefinition) in "Hspec".
   zesu_unpack_call "Hspec".
   subst r10 r11 r12 r13 r14 r15 r16 r17.
   iDestruct "Hrest" as (inputPointer inputLength inputEndBits input)
@@ -281,15 +287,4 @@ Proof.
   iPureIntro. split; [| exact I].
   unfold nextUint64RootResult in Hmeaning |- *.
   cbn in Hmeaning |- *. exact Hmeaning.
-Qed.
-
-Lemma nextUint64CallSpec2_boxed `{!islaG Sigma} `{!threadG} :
-  NextUint64ContractCorrect ->
-  nextUint64SelectedCode -∗ □ instr_pre nextUint64Entry nextUint64CallSpec2.
-Proof.
-  intros Hcontract.
-  rewrite /ZesuSsz.Contracts.NextUint64Selected.nextUint64SelectedCode.
-  iIntros "#Hcode". iModIntro.
-  iApply instr_pre_to_body. iNext.
-  iApply (nextUint64CallSpec2_correct Hcontract). iExact "Hcode".
 Qed.

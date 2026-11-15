@@ -11,17 +11,13 @@ Require Import isla.riscv64.riscv64.
 From Coq Require Import Lists.List ZArith.ZArith.
 Require Import ZesuSsz.Automation2.BlockTable.
 Require Import ZesuSsz.Contracts.Level1.
-Require Import ZesuSsz.Contracts.RlpDecodeItem.
-Require Import ZesuSsz.Contracts.DecodeItemSelected.
-Require Import ZesuSsz.Contracts.NextUint64Selected.
-Require Import ZesuSsz.Contracts.NextUint64Contract.
+Require Import ZesuSsz.Interfaces.DecodeItem.
+Require Import ZesuSsz.Interfaces.NextUint64.
+Require Import ZesuSsz.Interfaces.DecodeItemCorrect.
+Require Import ZesuSsz.Interfaces.NextUint64Correct.
 Require Import ZesuSsz.Contracts.ParentHeader.
 Require Import ZesuSsz.Contracts.ParentHeaderContract.
 Require Import ZesuSsz.Contracts.ParentHeaderMemcpyService.
-Require Import ZesuSsz.Contracts.DecodeItemCallSpec2.
-Require Import ZesuSsz.Contracts.NextUint64CallSpec2.
-Require Import ZesuSsz.Compliance.DecodeItemCallSpec2.
-Require Import ZesuSsz.Compliance.NextUint64CallSpec2.
 Require Import ZesuSsz.Compliance.ParentHeaderCompositionBoundary.
 Require Import ZesuSsz.Compliance.ParentHeaderBlockObligations.
 Require ZesuSsz.Generated.DecodeParentHeader.FP301.Pilot0000Entries.
@@ -41,6 +37,15 @@ Proof.
   iIntros "#Hcode". iModIntro.
   iApply instr_pre_to_body. iNext.
   iApply decodeItemCallSpec2_correct. iExact "Hcode".
+Qed.
+
+Lemma parentHeader_nextUint64_boxed `{!islaG Sigma} `{!threadG} :
+  NextUint64ContractCorrect ->
+  nextUint64SelectedCode -∗ □ instr_pre nextUint64Entry nextUint64CallSpec2.
+Proof.
+  intros Hcontract. iIntros "#Hcode". iModIntro.
+  iApply instr_pre_to_body. iNext.
+  iApply (nextUint64CallSpec2_correct Hcontract). iExact "Hcode".
 Qed.
 
 (* The membership of a slot: address and state both match, so several
@@ -154,7 +159,7 @@ Proof.
        parentHeaderContinuation args returnAddress))%I.
   iIntros "(#Hsel & #Hnu & #Hdi & #Hmc)" (args).
   iPoseProof (parentHeader_decodeItem_boxed with "Hdi") as "#Hdi2".
-  iPoseProof (nextUint64CallSpec2_boxed Hnext with "Hnu") as "#Hnu2".
+  iPoseProof (parentHeader_nextUint64_boxed Hnext with "Hnu") as "#Hnu2".
   iPoseProof (parentHeader_entry_body Hopen args returnAddress with "[]") as "Hbody".
   { iModIntro. unfold parentHeaderTableCode, memcpyCallPremise.
     iSplitR; [iExact "Hsel"|]. iSplitR; [iModIntro; iExact "Hdi2"|].

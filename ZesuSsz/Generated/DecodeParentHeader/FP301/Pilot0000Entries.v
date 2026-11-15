@@ -5,17 +5,13 @@ From Coq Require Import Lists.List ZArith.ZArith NArith.NArith.
 Require Import stdpp.bitvector.definitions.
 Require Import InstrSpecs.Machine.
 Require Import EvmSailRlp.evm_rlp_types.
-Require Import ZesuSsz.Contracts.RlpDecodeItem.
-Require Import ZesuSsz.Contracts.RlpDecodeItemContract.
-Require Import ZesuSsz.Contracts.DecodeItemCompositional.
-Require Import ZesuSsz.Contracts.DecodeItemCallData.
+Require Export ZesuSsz.Interfaces.DecodeItem.
+Require Export ZesuSsz.Interfaces.NextUint64.
 Require Import ZesuSsz.Contracts.ParentHeaderContract.
 Require Import ZesuSsz.Contracts.ParentHeaderRootFacts.
-Require Import ZesuSsz.Contracts.NextUint64BlockEntries.
 Require Import ZesuSsz.Contracts.ParentHeaderMemcpyService.
 Require Import ZesuSsz.Contracts.AbiBytes.
 Require Import ZesuSsz.Contracts.ZiskRuntime.
-Require Export ZesuSsz.Contracts.DecodeItemPayloadBounds.
 Require Export ZesuSsz.Compliance.ParentHeaderHints.
 Require Import ZesuSsz.Contracts.Level1.
 Local Open Scope Z_scope.

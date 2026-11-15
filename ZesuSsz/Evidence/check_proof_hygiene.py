@@ -22,6 +22,8 @@ BASELINE_PATH = Path(__file__).with_name("hygiene_baseline.json")
 SIZE_BASELINE_PATH = Path(__file__).with_name("proof_size_baseline.json")
 CLOSED_LITERAL_EXCEPTIONS_PATH = Path(__file__).with_name("closed_literal_exceptions.json")
 TRUSTED_DECLARATIONS_PATH = Path(__file__).with_name("hygiene_trusted_declarations.json")
+PROVED_FUNCTIONS_PATH = ROOT / "ZesuSsz/Contracts/proved_functions.json"
+INTERFACES_PREFIX = "ZesuSsz/Interfaces/"
 AUTOMATION_PREFIX = "ZesuSsz/Automation/"
 HOOKS_PATH = "ZesuSsz/Automation/Hooks.v"
 LEGACY_PATH = "ZesuSsz/Automation/AllLegacy.v"
@@ -235,6 +237,85 @@ def retired_module_failures(name: str, text: str) -> list[str]:
         if module in code or re.search(relative, code):
             failures.append(f"imports retired proof module: {name}: {module}")
     return failures
+
+
+def interface_paths(entry: dict) -> list[str]:
+    """The generated interface modules of a registry entry."""
+    interface = entry["interface"]
+    return ["ZesuSsz/" + module[len("ZesuSsz."):].replace(".", "/") + ".v"
+            for module in (interface["module"], interface["correct"]["module"])]
+
+
+def sealed_callees(path=PROVED_FUNCTIONS_PATH) -> list[dict]:
+    """The black-box rules of every registered function that has an interface."""
+    callees = []
+    for entry in json.loads(Path(path).read_text())["functions"]:
+        if not entry.get("interface"):
+            continue
+        paths = interface_paths(entry)
+        callees.append({
+            "interfaces": paths,
+            "sealed": [row["name"] for row in entry["sealed"]],
+            # The template bridge and the meaning links reveal the sealed definitions:
+            # only the interface modules use them.
+            "restricted": [entry["call_spec"]["name"] + "CorrectFrom"] +
+                          [lemma["name"] for lemma in entry["interface_lemmas"]
+                           if lemma.get("exit_composition_only")],
+            "unsealed": [row["definition"] for row in entry["sealed"]],
+            "owned_prefixes": entry["owned_prefixes"],
+        })
+    return callees
+
+
+def sealed_callee_failures(name: str, text: str, callees: list[dict]) -> list[str]:
+    """A caller treats a proved callee as a black box.
+
+    The template bridge and meaning links of a sealed callee occur only in its
+    interface modules; no file but the interface unfolds a sealed name; and no
+    other function's generated module states an unsealed callee predicate.
+    """
+    code = executable_text(text)
+    failures = []
+
+    def line(match):
+        return code.count("\n", 0, match.start()) + 1
+
+    for callee in callees:
+        if name in callee["interfaces"]:
+            continue
+        for word in callee["restricted"]:
+            for match in re.finditer(rf"(?<![\w.']){re.escape(word)}(?![\w'])", code):
+                failures.append(f"sealed callee interface used outside it: {name}:{line(match)}: {word}")
+        for word in callee["sealed"]:
+            pattern = rf"\b(?:unfold|Transparent|Strategy)\b[^.;]*?(?<![\w.']){re.escape(word)}(?![\w'])"
+            for match in re.finditer(pattern, code):
+                failures.append(f"sealed callee predicate unfolded: {name}:{line(match)}: {word}")
+        if name.startswith(GENERATED_PROOFS_PREFIX) and not name.startswith(tuple(callee["owned_prefixes"])):
+            for word in callee["unsealed"]:
+                for match in re.finditer(rf"(?<![\w.']){re.escape(word)}(?![\w'])", code):
+                    failures.append(f"unsealed callee predicate in a caller entry: {name}:{line(match)}: {word}")
+    return failures
+
+
+def interface_signature_lines(text: str) -> set[int]:
+    """Line numbers inside a `Module Type ... End` block of a generated interface."""
+    inside, lines = False, set()
+    for number, line in enumerate(text.splitlines(), 1):
+        if re.match(r"\s*Module\s+Type\s+(\w+)", line):
+            inside = True
+        elif inside and re.match(r"\s*End\s+\w+\s*\.", line):
+            inside = False
+        elif inside:
+            lines.add(number)
+    return lines
+
+
+def fresh_interface_modules() -> set[str]:
+    """Generated interface modules that equal a fresh render of the registry."""
+    sys.path.insert(0, str(ROOT / "tools" / "block"))
+    from render_interfaces import rendered
+    return {path for path, text in rendered().items()
+            if path.startswith(INTERFACES_PREFIX) and (ROOT / path).exists() and (ROOT / path).read_text() == text}
 
 
 def tracked_files() -> list[str]:
@@ -594,6 +675,8 @@ def main() -> None:
     size_baseline_data = json.loads(SIZE_BASELINE_PATH.read_text())
     size_baseline = size_baseline_data["files"]
     trusted = trusted_declarations()
+    callees = sealed_callees()
+    fresh_interfaces = fresh_interface_modules()
     literal_exceptions = {(row["file"], row["name"]): row for row in
                           json.loads(CLOSED_LITERAL_EXCEPTIONS_PATH.read_text())["exceptions"]}
     failures: list[str] = list(frozen_automation_failures(ROOT))
@@ -624,11 +707,18 @@ def main() -> None:
         failures.extend(retired_module_failures(name, text))
         failures.extend(residual_module_failures(name, text))
         failures.extend(short_core_name_failures(name, text, shared))
+        failures.extend(sealed_callee_failures(name, text, callees))
 
         # Generated Sail interfaces contain upstream Axiom declarations.
+        # A fresh generated black-box interface declares its sealed predicates
+        # and lemmas as Parameter/Axiom inside its Module Type only; the opaque
+        # module ascribed to that signature realizes each of them.
         # Reviewed proof files remain subject to the complete placeholder check.
+        signature = interface_signature_lines(text) if name in fresh_interfaces else set()
         if name not in SHELL_ALLOWLIST and not name.startswith(GENERATED_PREFIX):
             for number, line in enumerate(lines, 1):
+                if number in signature and re.match(r"\s*(?:Parameter|Axiom)\b", line):
+                    continue
                 if PLACEHOLDER.search(line):
                     failures.append(
                         f"proof placeholder: {name}:{number}: {line.strip()}"

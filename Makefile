@@ -132,6 +132,7 @@ check-evidence-tools:
 	$(PYTHON) -m tools.block.check_generic_automation
 	$(PYTHON) -m tools.block.check_export_scopes
 	$(PYTHON) -m tools.block.check_data_only_lemmas
+	$(PYTHON) -m tools.block.check_proved_functions
 	$(PYTHON) tools/stock_zisk/machine_map/generate.py --build $(STOCK_DIR) --check
 	$(PYTHON) tools/stock_zisk/layout.py --check
 	$(PYTHON) tools/stock_zisk/platform/region_windows.py
