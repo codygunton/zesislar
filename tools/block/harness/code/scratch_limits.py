@@ -62,7 +62,8 @@ def exact_aggregate(identity,memory_fence_bytes=MEMORY_FENCE_BYTES,*,memory_job=
         raise ValueError('The scratch aggregate name is invalid.')
     if path.parent.name != 'zesuworkloads.slice':
         raise ValueError('The scratch aggregate is outside the shared workload parent.')
-    if ((path.parent/'memory.max').read_text().strip() != '187904819200' or
+    from admission_memory import accepted_parent_bytes
+    if ((path.parent/'memory.max').read_text().strip() not in accepted_parent_bytes() or
             (path.parent/'memory.swap.max').read_text().strip() != '0'):
         raise ValueError('The shared workload parent lacks its exact memory fence.')
     if ((path/'memory.max').read_text().strip()!=str(memory_fence_bytes) or

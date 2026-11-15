@@ -1,5 +1,6 @@
 From Coq Require Import ZArith.ZArith.
 From stdpp.bitvector Require Import definitions.
+Require Import isla.riscv64.riscv64.
 Require Import ZesuSsz.Automation2.All.
 Local Open Scope Z_scope.
 
@@ -49,3 +50,20 @@ Proof.
     (0 <= n2 /\ a <= a /\ a + n2 <= a + n1)) in idtac.
   exact I.
 Qed.
+
+(* The refusal check reaches the search: a containment the bound solver
+   cannot see (its facts are still a resource) and the facts do not refute
+   takes the fallback rule in one search step, which raises the containment
+   as an obligation. *)
+Section fallback.
+Context `{!islaG Sigma} `{!threadG}.
+Lemma region_fallback_applies (a n1 n2 : Z) :
+  ⊢ ⌜0 <= n2 <= n1⌝ -∗ subsume (a ↦ₘ? n1) (λ _ : (), a ↦ₘ? n2) (λ _ : (), True)%I.
+Proof.
+  iIntros "Hfits".
+  liStep.
+  iDestruct "Hfits" as %Hfits.
+  iSplit; [iPureIntro; lia|].
+  iIntros "_ _". iExists (). done.
+Qed.
+End fallback.

@@ -116,6 +116,11 @@ regenerate-evm-sail-snapshot:
 check-support-freshness: stock-native-indexes
 	$(PYTHON) ZesuSsz/Evidence/generate_block_design.py --function decodeItem --check
 	$(PYTHON) tools/block/render_support.py --function decodeItem --check
+	$(PYTHON) tools/block/render_open_blocks.py --function decodeParentHeader \
+	  --callers tools/block/generated/decodeparentheader_fp301_callers/CALLERS.json \
+	  --stem ParentHeader \
+	  --closed-dir ZesuSsz/Proofs/DecodeParentHeader/FP301 \
+	  --output ZesuSsz/Compliance/ParentHeaderBlockObligations.v --check
 
 check-evidence-tools: check-support-freshness check-tool-tests
 
@@ -127,6 +132,7 @@ check-evidence-tools:
 	$(PYTHON) -m tools.block.check_generic_automation
 	$(PYTHON) -m tools.block.check_export_scopes
 	$(PYTHON) -m tools.block.check_data_only_lemmas
+	$(PYTHON) -m tools.block.check_proved_functions
 	$(PYTHON) tools/stock_zisk/machine_map/generate.py --build $(STOCK_DIR) --check
 	$(PYTHON) tools/stock_zisk/layout.py --check
 	$(PYTHON) tools/stock_zisk/platform/region_windows.py

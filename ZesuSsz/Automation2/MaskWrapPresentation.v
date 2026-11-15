@@ -4,16 +4,17 @@ Require Import ZesuSsz.Automation2.BitvectorFacts.
 Require Import ZesuSsz.Automation2.Hooks.
 From stdpp Require Import bitvector.definitions bitvector.tactics list.
 From Coq Require Import ZArith.ZArith NArith.NArith Lia Lists.List.
+Require ZesuSsz.Automation2.VmClosed.
 Local Open Scope Z_scope.
 
 Ltac zesu_mask_wide_cast_fact :=
   match goal with
   | |- context [Z_to_bv ?width (bv_unsigned ?word)] =>
       assert_fails (has_evar word);
-      is_closed_term width;
+      ZesuSsz.Automation2.VmClosed.zesu_closed_term width;
       let kind := type of word in
       lazymatch kind with bv ?source =>
-        is_closed_term source;
+        ZesuSsz.Automation2.VmClosed.zesu_closed_term source;
         let Hwidth := fresh "HcastWidth" in
         let Hrange := fresh "HcastRange" in
         let Hbridge := fresh "HunsignedCast" in
@@ -33,8 +34,8 @@ Ltac zesu_mask_plain_wrap_goal :=
   | |- bv_and ?value ?mask = Z_to_bv ?width ?requested =>
       assert_fails (has_evar value);
       assert_fails (has_evar requested);
-      is_closed_term width;
-      is_closed_term mask;
+      ZesuSsz.Automation2.VmClosed.zesu_closed_term width;
+      ZesuSsz.Automation2.VmClosed.zesu_closed_term mask;
       let low := eval vm_compute in
         (N.log2 (Z.to_N (bv_unsigned mask + 1))) in
       let modulus := eval vm_compute in (bv_modulus low) in
