@@ -51,7 +51,7 @@ def enter(script, arguments, *, check=contained, run=subprocess.run, execute=os.
     environment.setdefault('XDG_RUNTIME_DIR', '/run/user/' + str(os.getuid()))
     environment.setdefault('DBUS_SESSION_BUS_ADDRESS',
                            'unix:path=' + environment['XDG_RUNTIME_DIR'] + '/bus')
-    command = ['systemd-run', '--user', '--scope', '--quiet', '--collect',
+    command = ['systemd-run', '--user', '--scope', '--quiet', '--collect', '--expand-environment=no',
                '--slice=' + PARENT, '--unit=zesu-block-command-' + str(os.getuid()) + '-' + str(os.getpid()),
                '-p', 'MemorySwapMax=0', '--', str(guard), 'parent-exec', '--',
                sys.executable, '-B', str(script), *arguments]

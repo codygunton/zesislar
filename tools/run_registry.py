@@ -299,6 +299,51 @@ def launch(registry, args):
     return 0
 
 
+def git(checkout, *arguments):
+    return subprocess.run(['git', '-C', str(checkout), *arguments], capture_output=True, text=True, timeout=300)
+
+
+def follow_main(registry, checkout, status):
+    """Fast-forward a clean tools checkout to origin/main; post a held checkout to STATUS.md once.
+
+    The tools checkout (.worktrees/ops-tools) runs the watchdog and `tools/bg`, so it must
+    follow main without a manual step. Untracked files (bg logs) do not hold it; tracked
+    changes, local commits, or a checkout git refuses do. Returns the log lines.
+    """
+    marker = registry.directory / 'follow-main.held'
+    now = time.strftime('%Y-%m-%dT%H:%MZ', time.gmtime())
+    fetched = git(checkout, 'fetch', '--quiet', 'origin', 'main')
+    if fetched.returncode != 0:
+        return [f'follow-main: git fetch failed in {checkout}: {fetched.stderr.strip()}']
+    head = git(checkout, 'rev-parse', 'HEAD').stdout.strip()
+    target = git(checkout, 'rev-parse', 'origin/main').stdout.strip()
+    held = None
+    if git(checkout, 'status', '--porcelain', '--untracked-files=no').stdout.strip():
+        held = 'it has uncommitted changes to tracked files'
+    elif head != target and git(checkout, 'merge-base', '--is-ancestor', head, target).returncode != 0:
+        held = f'its HEAD {head[:12]} is not an ancestor of origin/main'
+    elif head != target:
+        moved = git(checkout, 'checkout', '--quiet', '--detach', target)
+        if moved.returncode != 0:
+            held = f'git checkout --detach origin/main failed: {moved.stderr.strip()}'
+    if held is not None:
+        if not marker.exists():
+            Registry.atomic_write(marker, {'head': head, 'reason': held, 'utc': now})
+            with Path(status).open('a') as stream:
+                stream.write(f'- {now} run-watchdog: tools checkout {checkout} no longer follows main: {held} '
+                             f'(at {head[:12]}, origin/main {target[:12]}). Clean it; the watchdog then '
+                             f'fast-forwards it on its next run.\n')
+        return [f'follow-main: {checkout} held at {head[:12]}: {held}.']
+    if marker.exists():
+        marker.unlink()
+    if head == target:
+        return []
+    line = f'follow-main: {now} moved {checkout} from {head[:12]} to origin/main {target[:12]}.'
+    with (registry.directory / 'follow-main.log').open('a') as stream:
+        stream.write(line + '\n')
+    return [line]
+
+
 def watchdog(registry, status):
     """Reap, then append new signal-death entries to STATUS.md.
 
@@ -897,6 +942,8 @@ def main():
     commands.add_parser('reap', help='Record runs that ended by a signal without a stop.')
     guard = commands.add_parser('watchdog', help='Reap, then post new signal deaths to STATUS.md.')
     guard.add_argument('--status', type=Path, required=True)
+    guard.add_argument('--follow-main', type=Path, metavar='CHECKOUT',
+                       help='First fast-forward this clean tools checkout to origin/main.')
     listing = commands.add_parser('list')
     listing.add_argument('--active', action='store_true')
     listing.add_argument('--json', action='store_true')
@@ -938,6 +985,10 @@ def main():
             print(json.dumps(entry, sort_keys=True))
         return 0
     if args.action == 'watchdog':
+        if args.follow_main:
+            with registry.lock('follow-main'):
+                for line in follow_main(registry, args.follow_main, args.status):
+                    print(line)
         for message in watchdog(registry, args.status):
             print(message)
         return 0
