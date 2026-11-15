@@ -261,3 +261,26 @@ Ltac zesu_byte_position_pure_step :=
          reflexivity
         | cbv beta]
   end.
+
+(* A pure equation between a window of a list and that list's byte
+   positions: the window rewrite makes both sides the same concatenation. *)
+Ltac zesu_le_window_goal :=
+  lazymatch goal with
+  | |- @eq _ ?lhs ?rhs =>
+      lazymatch lhs with
+      | context [little_endian_to_bv 8 (take _ (drop _ ?bytes))] =>
+          lazymatch rhs with context [@nth (bv 8) _ bytes _] => idtac end
+      end
+  end;
+  progress repeat zesu_le_window_rewrite_one;
+  reflexivity.
+
+(* A pure (dis)equation on a word's bv_unsigned that a branch fact on the
+   word against a closed word states: the fact's bv_unsigned view. *)
+Ltac zesu_word_fact_goal :=
+  lazymatch goal with
+  | |- @eq Z (bv_unsigned _) _ => idtac
+  | |- not (@eq Z (bv_unsigned _) _) => idtac
+  end;
+  progress repeat zesu_word_fact_unsigned;
+  assumption.
