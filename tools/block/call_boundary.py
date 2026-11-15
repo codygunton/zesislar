@@ -723,7 +723,7 @@ def call_return_seed(edges, *, call, function_root, root_seed, shapes, vocabular
     nodes[terminal:terminal] = [
         {'kind': 'opaque', 'id': row['resource_id'] + '_length', 'coq': '⌜' + row['coq'] + '⌝'}
         for row in extra_facts] + [
-        {'kind': 'opaque', 'id': name.value + '_value', 'coq': '⌜(%s = %s)⌝' % (name.value, _coq(value))}
+        {'kind': 'opaque', 'id': name.value + '_value', 'coq': '⌜(zesu_named_eq %s %s)⌝' % (name.value, _coq(value))}
         for value, name in named.items()] + [{'kind': 'opaque', 'id': prefix + 'facts', 'coq': '⌜' + carried + '⌝'}] + [
         {'kind': 'opaque', 'id': prefix + 'return_fact_%d' % index, 'coq': '⌜' + _return_fact(row['coq'], fresh) + '⌝'}
         for index, row in enumerate(call.get('return_facts', []))]

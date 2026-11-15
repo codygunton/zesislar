@@ -279,9 +279,9 @@ class CallBoundary(unittest.TestCase):
         self.assertEqual(report['named_registers'], {'x8': 'call2_kept_x8'})
         nodes = public_after['assertion_tree']['components']
         ids = [node['id'] for node in nodes]
-        # One equation states the value, before the facts that name it.
+        # One named equation states the value, before the facts that name it.
         self.assertEqual(nodes[ids.index('call2_kept_x8_value')]['coq'],
-                         '⌜(call2_kept_x8 = (bv_add call_consumed (BV 64%N 8%Z)))⌝')
+                         '⌜(zesu_named_eq call2_kept_x8 (bv_add call_consumed (BV 64%N 8%Z)))⌝')
         self.assertLess(ids.index('call2_kept_x8_value'), ids.index('call2_facts'))
         self.assertIn('(call2_kept_x8)', report['carried_fact'])
         self.assertNotIn('call_consumed', report['carried_fact'])
