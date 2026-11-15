@@ -38,7 +38,9 @@ def _strip_enclosure(text):
     return text
 
 
-def _top_positions(text, token):
+def _top_positions(text, token, *, wands=False):
+    """Top-level positions of `token`. A star of `↦ₘ∗` is no separator, nor is the star of a
+    wand `-∗`: `wands=True` yields exactly those wand stars instead."""
     mask, depth = _code_mask(text), 0
     array_stars = {match.end()-1 for match in re.finditer(r'↦ₘ(?:\{[^}]*\})?∗', mask)}
     for index, char in enumerate(mask):
@@ -47,7 +49,8 @@ def _top_positions(text, token):
         elif char in ')]}⌝':
             depth -= 1
         elif char == token and depth == 0 and index not in array_stars:
-            yield index
+            if token != '∗' or (index > 0 and mask[index-1] == '-') == wands:
+                yield index
 
 
 def parse_source_ownership(body, *, provenance):
@@ -73,10 +76,19 @@ def parse_source_ownership(body, *, provenance):
             raise ValueError('The source contains an empty resource')
         record = {'id': f'resource_{index}', 'source': source, 'provenance': dict(provenance)}
         classified = _strip_enclosure(source)
+        wands = list(_top_positions(classified, '∗', wands=True))
         arrows = list(_top_positions(classified, '↦'))
-        memory = re.fullmatch(r'(?P<address>.*?)\s*↦ₘ(?P<fraction>\{[^}]*\})?(?P<operator>∗|\?)\s*(?P<value>.+)', classified, re.S) if len(arrows) == 1 else None
-        register = re.fullmatch(r'"(?P<name>[^"\n]+)"\s*↦ᵣ(?P<fraction>\{[^}]*\})?\s*(?P<value>.+)', classified, re.S) if len(arrows) == 1 else None
-        if memory:
+        memory = re.fullmatch(r'(?P<address>.*?)\s*↦ₘ(?P<fraction>\{[^}]*\})?(?P<operator>∗|\?)\s*(?P<value>.+)', classified, re.S) if len(arrows) == 1 and not wands else None
+        register = re.fullmatch(r'"(?P<name>[^"\n]+)"\s*↦ᵣ(?P<fraction>\{[^}]*\})?\s*(?P<value>.+)', classified, re.S) if len(arrows) == 1 and not wands else None
+        if len(wands) == 1:
+            # A wand between two single resources (a call-site restore: the lent piece back to
+            # the whole array). Each side is one parsed component.
+            sides = [parse_source_ownership(text, provenance=provenance)
+                     for text in (classified[:wands[0]-1], classified[wands[0]+1:])]
+            if any(len(side['components']) != 1 or side['existential_prefixes'] for side in sides):
+                raise ValueError('A wand side is not a single resource: ' + classified)
+            record.update(kind='wand', premise=sides[0]['components'][0], conclusion=sides[1]['components'][0])
+        elif memory:
             record.update(kind='byte_array' if memory['operator'] == '∗' else 'unknown_byte_array',
                           address_z=memory['address'].strip(), fraction=memory['fraction'],
                           writable=None)

@@ -140,6 +140,12 @@ class SourceComponents:
         if parsed['existential_prefixes']:
             raise ValueError('A source leaf contains an unrecorded existential scope')
         result = []
+        def memory(leaf):
+            if leaf.get('fraction') is not None:
+                raise ValueError('The compact resource form cannot preserve an explicit fraction')
+            key = 'value' if leaf['kind'] == 'byte_array' else 'length'
+            return {'kind': leaf['kind'], 'address': z_address_scope(leaf['address_z']), key: leaf[key]}
+
         for leaf in parsed['components']:
             kind = leaf['kind']
             if leaf.get('fraction') is not None:
@@ -147,8 +153,12 @@ class SourceComponents:
             if kind == 'register':
                 result.append({'kind': kind, 'name': leaf['name'], 'value': leaf['value']})
             elif kind in {'byte_array', 'unknown_byte_array'}:
-                key = 'value' if kind == 'byte_array' else 'length'
-                result.append({'kind': kind, 'address': z_address_scope(leaf['address_z']), key: leaf[key]})
+                result.append(memory(leaf))
+            elif kind == 'wand':
+                sides = (leaf['premise'], leaf['conclusion'])
+                if any(side['kind'] not in {'byte_array', 'unknown_byte_array'} for side in sides):
+                    raise ValueError('The compact resource form has wands between memory resources only')
+                result.append({'kind': 'wand', 'premise': memory(sides[0]), 'conclusion': memory(sides[1])})
             else:
                 source = _strip_enclosure(leaf['source'])
                 if source == 'True':

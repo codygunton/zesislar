@@ -287,6 +287,14 @@ def component_source(node, block, fields, root, generated):
         value = expression(node[value_key], "memory " + value_key)
         operator = "↦ₘ∗" if kind == "byte_array" else "↦ₘ?"
         return f"({address}) {operator} ({value})"
+    if kind == "wand":
+        record(node, {"kind", "premise", "conclusion"}, "wand component")
+        sides = [node["premise"], node["conclusion"]]
+        if any(not isinstance(side, dict) or side.get("kind") not in {"byte_array", "unknown_byte_array"}
+               for side in sides):
+            raise ValueError("The wand sides must be memory components.")
+        premise, conclusion = (component_source(side, block, fields, root, generated) for side in sides)
+        return f"({premise} -∗ {conclusion})"
     if kind == "true":
         record(node, {"kind"}, "terminal True")
         return "True"

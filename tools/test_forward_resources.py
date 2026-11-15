@@ -74,6 +74,15 @@ class ForwardResourcesTests(unittest.TestCase):
           opaque (address ↦ₘ∗ bytes) ∗ (address ↦ₘ∗ bytes))%I''', provenance=PROVENANCE)
         self.assertEqual([record['kind'] for record in result['components']], ['opaque', 'opaque', 'byte_array'])
 
+    def test_wand_is_one_component_between_two_resources(self):
+        result = parse_source_ownership('''(⌜fact⌝ ∗ piece ↦ₘ∗ slice ∗
+          (piece ↦ₘ∗ slice -∗ base ↦ₘ∗ bytes) ∗ True)%I''', provenance=PROVENANCE)
+        kinds = [record['kind'] for record in result['components']]
+        self.assertEqual(kinds, ['opaque', 'byte_array', 'wand', 'opaque'])
+        wand = result['components'][2]
+        self.assertEqual((wand['premise']['address_z'], wand['premise']['value']), ('piece', 'slice'))
+        self.assertEqual((wand['conclusion']['address_z'], wand['conclusion']['value']), ('base', 'bytes'))
+
     def test_ordered_overlapping_stores_keep_the_complete_write_log(self):
         resource = owned()
         writes = [MemoryWrite(bits(32, 64), bits(0x3412, 16), 2),
