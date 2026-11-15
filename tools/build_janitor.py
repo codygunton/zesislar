@@ -17,11 +17,16 @@ unsealed run, the bank of the newest main commit, or a run that one of
 those names by a symbolic link or by a path in a manifest. It logs every
 deletion under `_build/janitor/`.
 
+It never touches the saved-goal store `_build/goals/` (see goal_store.py) and
+reports its size against its own budget. Before it deletes a worktree build or
+a merged branch's run dir, it moves the saved goals in it into the store.
+
 Subcommands for other tools:
   admit                   exit 3 when this agent is over its budget (no scan)
   in-use PATH...          exit 0 when a live process uses one of the paths, or the
                           admission ledger names a release receipt under one
   branch-items BRANCH     list (or --delete) the run dirs tied to a branch
+  rescue-goals PATH...    move the saved goals under each PATH into the store
 """
 
 import argparse
@@ -41,6 +46,8 @@ import struct
 import subprocess
 import sys
 import time
+
+import goal_store
 
 GB = 10 ** 9
 # The only place that sets the budgets. BUDGET.json and admission read them from here.
@@ -507,6 +514,7 @@ class Janitor:
                              'protected': agent in self.protected_agents,
                              'unshared_large_json_bytes': sum(r['json_unshared'] for r in results)}
         total = total_unique + union_bytes(total_shared)
+        goals = goal_store.store_bytes(self.root)
         return {'schema': 'zesu.build-budget.v1',
                 'measured_at': time.strftime('%Y-%m-%dT%H:%M:%SZ', time.gmtime(self.now)),
                 'root': str(self.agents),
@@ -515,6 +523,9 @@ class Janitor:
                 'total_unique_bytes': total,
                 'total_over': total > self.total_budget,
                 'janitor': JANITOR_COMMAND,
+                'goal_store': {'path': str(self.root / goal_store.STORE), 'bytes': goals,
+                               'budget_bytes': goal_store.GOAL_STORE_BUDGET_BYTES,
+                               'over': goals > goal_store.GOAL_STORE_BUDGET_BYTES},
                 'agents': report}
 
     # Plan -------------------------------------------------------------------
@@ -697,6 +708,7 @@ class Janitor:
                 files, size = shrink(row['path'], log)
                 touched.add(row['agent'])
             else:
+                rescue_goals(self.root, row['path'], 'build janitor: ' + row['reason'], log)
                 files, size = remove_tree(row['path'], log)
                 agent = self.item_key({'to': row['path']})
                 if agent:
@@ -817,6 +829,17 @@ def remove_tree(path, log):
     return files, size
 
 
+def rescue_goals(root, path, reason, log=None):
+    """Move the saved goals under PATH into the store; log each one. Return the store dir."""
+    def note(line):
+        if log is not None:
+            log.write(line + '\n')
+    destination, count = goal_store.rescue(root, path, reason=reason, log=note)
+    if count:
+        print(f'saved {count} goal file(s) from {path} to {destination}')
+    return destination
+
+
 # --- commands ------------------------------------------------------------------
 
 def human(size):
@@ -875,6 +898,10 @@ def summary(plan, budget, mode, freed):
     lines = [f'build janitor ({mode}): total {human(budget["total_unique_bytes"])} of '
              f'{human(budget["total_budget_bytes"])}'
              + (' (OVER BUDGET)' if budget['total_over'] else '')]
+    store = budget.get('goal_store')
+    if store and store['over']:
+        lines.append(f'over budget: goal store {store["path"]} {human(store["bytes"])} of '
+                     f'{human(store["budget_bytes"])}')
     for agent, row in budget['agents'].items():
         if row['over']:
             lines.append(f'over budget: {agent} {human(row["unique_bytes"])} of '
@@ -986,13 +1013,39 @@ def branch_items(args):
             if kept:
                 print(f'{kept}: {path}')
             elif args.delete:
+                saved = rescue_goals(root, path, 'cleanup_after_merge: ' + args.branch, log)
                 files, size = remove_tree(path, log)
                 with open(janitor.log_dir / 'janitor.log', 'a') as summary_log:
+                    if saved:
+                        summary_log.write(f'{janitor.stamp}\tgoals\tsaved goals from {path} '
+                                          f'to {saved}\n')
                     summary_log.write(f'{janitor.stamp}\tmerge\tremoved {path} '
                                       f'({files} files, {human(size)}) for {args.branch}\n')
                 print(f'removed run dir {path} ({files} files, {human(size)} apparent)')
             else:
+                for file, relative, _ in goal_store.goal_files(path):
+                    print(f'would save goal {file}')
                 print(f'would remove run dir {path}')
+    return 0
+
+
+def rescue_goals_command(args):
+    root = Path(args.root) if args.root else base_root()
+    if args.dry_run:
+        for path in args.paths:
+            for file, _, _ in goal_store.goal_files(path):
+                print(f'would save goal {file}')
+        return 0
+    log_dir = Path(args.log_dir) if args.log_dir else root / '_build/janitor'
+    log_dir.mkdir(parents=True, exist_ok=True)
+    stamp = time.strftime('%Y%m%dT%H%M%SZ', time.gmtime())
+    with gzip.open(log_dir / f'deleted-{stamp}-goals.tsv.gz', 'at') as log:
+        for path in args.paths:
+            destination = rescue_goals(root, path, args.reason, log)
+            if destination:
+                with open(log_dir / 'janitor.log', 'a') as summary_log:
+                    summary_log.write(f'{stamp}\tgoals\tsaved goals from {path} to '
+                                      f'{destination}\n')
     return 0
 
 
@@ -1017,6 +1070,9 @@ def main(argv=None):
     branch = sub.add_parser('branch-items', help='run dirs that belong to a merged branch')
     branch.add_argument('branch')
     branch.add_argument('--delete', action='store_true')
+    goals = sub.add_parser('rescue-goals', help='move saved goals under paths into the store')
+    goals.add_argument('paths', nargs='+')
+    goals.add_argument('--reason', default='rescue-goals')
     args = parser.parse_args(argv)
     if args.apply and args.dry_run:
         parser.error('--apply and --dry-run exclude each other')
@@ -1026,6 +1082,8 @@ def main(argv=None):
         return in_use(args)
     if args.command == 'branch-items':
         return branch_items(args)
+    if args.command == 'rescue-goals':
+        return rescue_goals_command(args)
     return run(args)
 
 
