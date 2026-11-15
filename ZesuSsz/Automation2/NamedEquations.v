@@ -116,3 +116,22 @@ Ltac2 zesu_named_binder_witness () :=
   end.
 
 Ltac zesu_named_binder_witness := ltac2:(zesu_named_binder_witness ()).
+
+(* An existential whose conjuncts are hypotheses once its witnesses are set
+   (a successor restating a call's facts over fresh names): each conjunct is
+   closed by a hypothesis with the same head, which sets the witnesses. Only
+   syntactic existentials and conjunctions are opened: `eexists` and `split`
+   would also open definitions that unfold to an equation or a record. *)
+Ltac zesu_finish_exists_from_hypotheses :=
+  lazymatch goal with |- ex _ => idtac end;
+  solve [repeat lazymatch goal with |- ex _ => eexists end;
+    repeat lazymatch goal with |- _ /\ _ => split end;
+    multimatch goal with |- ?conjunct =>
+      let head := get_head conjunct in
+      multimatch goal with
+      | Hfact : ?fact |- _ =>
+          let fact_head := get_head fact in
+          constr_eq head fact_head;
+          exact Hfact
+      end
+    end].

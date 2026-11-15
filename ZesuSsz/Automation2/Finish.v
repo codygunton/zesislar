@@ -861,32 +861,13 @@ Ltac zesu_final_solver_goal :=
   | _ => idtac
   end.
 
-(* An existential whose conjuncts are hypotheses once its witnesses are set
-   (a successor restating a call's facts over fresh names): each conjunct is
-   closed by a hypothesis with the same head, which sets the witnesses. Only
-   syntactic existentials and conjunctions are opened: `eexists` and `split`
-   would also open definitions that unfold to an equation or a record. *)
-Ltac zesu_finish_exists_from_hypotheses :=
-  lazymatch goal with |- ex _ => idtac end;
-  solve [repeat lazymatch goal with |- ex _ => eexists end;
-    repeat lazymatch goal with |- _ /\ _ => split end;
-    multimatch goal with |- ?conjunct =>
-      let head := get_head conjunct in
-      multimatch goal with
-      | Hfact : ?fact |- _ =>
-          let fact_head := get_head fact in
-          constr_eq head fact_head;
-          exact Hfact
-      end
-    end].
-
 (* The common pure path and final tail share the union helper. Baseline closers remain available.
    The existential leaf goes first: the first arm below fails outright when
    its implication-pair step finds no pair, so a leaf inside it is never
    reached on such a context. *)
 Ltac zesu_finish_final_pure :=
   first [
-  zesu_finish_exists_from_hypotheses |
+  ZesuSsz.Automation2.NamedEquations.zesu_finish_exists_from_hypotheses |
   zesu_final_pure_head_gate;
   try BytePositionEquations.zesu_byte_position_facts;
   tryif progress zesu_saturate_derived_facts
@@ -917,7 +898,7 @@ Ltac zesu_finish_final_pure :=
 
 Ltac zesu_finish_pure_goal :=
   first [
-  zesu_finish_exists_from_hypotheses |
+  ZesuSsz.Automation2.NamedEquations.zesu_finish_exists_from_hypotheses |
 zesu_finish_pure_goal_base;
   try solve [
     first [
@@ -959,7 +940,7 @@ Ltac zesu_union_array_payload_finish :=
 
 Ltac zesu_finish_base :=
   try ZesuSsz.Automation2.NamedEquations.zesu_open_named_equations;
-  first [solve [zesu_union_array_payload_finish] |
+  first [solve [ZesuSsz.Automation2.NamedEquations.zesu_finish_exists_from_hypotheses] | solve [zesu_union_array_payload_finish] |
   try solve [zesu_array_region_selection_if_enabled];
   tryif zesu_defer_unresolved_sidecondition_if_enabled then idtac else (
   try solve [zesu_list_cons_witness_if_enabled |

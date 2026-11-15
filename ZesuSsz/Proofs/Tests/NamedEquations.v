@@ -121,3 +121,15 @@ Proof.
   iFrame. iPureIntro. reflexivity.
 Qed.
 Print Assumptions named_binder_in_framed_package.
+
+(* A call's precondition restated over fresh binders, one of them named
+   like an unrelated block variable: the stepping loop closes it from the
+   call's facts, not from the names. *)
+Lemma call_precondition_from_call_facts
+    (domain : bv 64 → list nat → Prop) (meaning : bv 64 → list nat → nat → Prop)
+    (x13 : bv 64) (before before0 : list nat) (after : nat)
+    (Hother : domain x13 before) (Hdomain : domain x13 before0)
+    (Hmeaning : meaning x13 before0 after) :
+  ∃ (x13 : bv 64) (before : list nat), domain x13 before ∧ meaning x13 before after.
+Proof. ZesuSsz.Automation2.Hooks.zesu_liAStep. Qed.
+Print Assumptions call_precondition_from_call_facts.

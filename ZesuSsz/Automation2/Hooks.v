@@ -2387,6 +2387,7 @@ Ltac zesu_liAStep :=
   | zesu_register_collection_selection_if_enabled
   | zesu_named_equation_goal
   | zesu_named_binder_witness
+  | solve [zesu_finish_exists_from_hypotheses]
   | liStep
   | zesu_unfold_let_mem_address
   | liLetBindHint
