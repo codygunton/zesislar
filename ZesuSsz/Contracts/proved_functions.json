@@ -32,6 +32,7 @@
           "Require Import EvmSailRlp.evm_rlp_types.",
           "Require Import ZesuSsz.Automation.PureFacts.",
           "Require Import ZesuSsz.Automation2.Calls.",
+          "Require Import ZesuSsz.Automation2.GoalDomain.",
           "Require Import ZesuSsz.Contracts.DecodeItemPayloadBounds.",
           "Require Import ZesuSsz.Contracts.DecodeItemCallFacts.",
           "Require Import ZesuSsz.Contracts.DecodeItemCallSpec2."
@@ -50,7 +51,9 @@
           "code": "decodeItemSelectedCode",
           "entry": "decodeItemEntry",
           "template_correct": "ZesuSsz.Compliance.DecodeItemCallSpec2.decodeItemCallSpecDefinition_correct"
-        }
+        },
+        "goal_domain_unfold": ["decodeItemC1BDomain", "decodeItemArgsWellFormed", "decodeItemEntryLayout",
+                               "separateRanges", "decodeItemCallDataArgs"]
       },
       "call_spec": {
         "name": "decodeItemCallSpec2",
@@ -82,9 +85,24 @@
          "premise": "decodeItemCallMeaning args after",
          "conclusion": "(bv_unsigned (List.nth 32 after (BV 8%N 0%Z)) = 0 \\/ bv_unsigned (List.nth 32 after (BV 8%N 0%Z)) = 4) /\\ (bv_unsigned (List.nth 32 after (BV 8%N 0%Z)) = 4 -> bv_unsigned (listWord64At0 after) = 0 /\\ bv_unsigned (listWord64At8 after) = 0) /\\ (bv_unsigned (List.nth 32 after (BV 8%N 0%Z)) = 0 -> bv_unsigned (List.nth 16 after (BV 8%N 0%Z)) <= 1 /\\ bv_unsigned (listWord64At24 after) <= Z.of_nat (length (decodeItemInputBytes args)))",
          "proof": "decodeItemMeaningKind", "derived_facts": false},
+        {"name": "decodeItemCallPayloadInInputLe",
+         "binders": "argv0 argv1 rest sp inputEnd input before after",
+         "premise": "decodeItemCallMeaning (decodeItemCallDataArgs (argv0 :: argv1 :: rest) sp inputEnd input before) after",
+         "conclusion": "0 < bv_unsigned (listWord64At8 after) -> bv_unsigned (listWord64At8 after) < 18446744073709551607 -> bv_unsigned argv1 <= bv_unsigned (leWord64 after 0) /\\ bv_unsigned (leWord64 after 0) + bv_unsigned (listWord64At8 after) <= bv_unsigned argv1 + Z.of_nat (length input)",
+         "proof": "decodeItemMeaningPayloadInInputLe", "derived_facts": true},
+        {"name": "decodeItemCallConsumed",
+         "binders": "argv sp inputEnd input before after",
+         "premise": "decodeItemCallMeaning (decodeItemCallDataArgs argv sp inputEnd input before) after",
+         "conclusion": "bv_unsigned (listWord64At24 after) <= Z.of_nat (length input)",
+         "proof": "decodeItemMeaningConsumed", "derived_facts": true},
+        {"name": "decodeItemCallDomainInput",
+         "binders": "argv0 argv1 argv2 rest sp inputEnd input before",
+         "premise": "decodeItemCallDomain (decodeItemCallDataArgs (argv0 :: argv1 :: argv2 :: rest) sp inputEnd input before)",
+         "conclusion": "bv_unsigned argv2 = Z.of_nat (length input) /\\ bv_unsigned argv1 + bv_unsigned argv2 < bv_modulus 64",
+         "proof": "decodeItemDomainInput", "derived_facts": true},
         {"name": "decodeItemCallDomainIntro", "binders": "args",
          "premise": "decodeItemC1BDomain args", "conclusion": "decodeItemCallDomain args",
-         "proof": "decodeItemDomainIntro", "derived_facts": false},
+         "proof": "decodeItemDomainIntro", "derived_facts": false, "goal_domain_intro": true},
         {"name": "decodeItemCallMeaningLink", "binders": "args after",
          "premise": "decodeItemCallMeaning args after", "conclusion": "DecodeMeaningModuloKnownBugs args after",
          "proof": "decodeItemMeaningLink", "derived_facts": false, "exit_composition_only": true}

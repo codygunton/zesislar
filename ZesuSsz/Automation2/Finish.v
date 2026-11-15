@@ -42,6 +42,7 @@ Require Import ZesuSsz.Automation2.NatBounds.
 Require Import ZesuSsz.Automation2.PureFacts.
 Require Import ZesuSsz.Automation2.VmClosed.
 Require Import ZesuSsz.Automation2.BoundedArithmetic.
+Require Import ZesuSsz.Automation2.GoalDomain.
 (* Names `zesu_rule_set_v2_steps` for `zesu_run_pass_v2` below. The
    module declares one tactic and installs no instance and no hint,
    so importing it changes nothing for a rule set v1 module. *)
@@ -380,6 +381,7 @@ Ltac zesu_finish_v1 :=
       try (zesu_saturate_alignment);
       zesu_diag_stage "finish_v1.solvers";
       try zesu_finish_lia;
+      try zesu_finish_goal_domain;
       try (zesu_bv_solver_goal;
         ZesuSsz.Automation2.ContextCollection.zesu_solve_goal_selected
         ("finish.v1_tail"%string) ltac:(bv_solve))
@@ -480,6 +482,7 @@ Ltac zesu_finish_pure_goal_base :=
   zesu_diag_stage "finish_pure_goal.solvers";
   try zesu_finish_lia;
   try (tryif zesu_finish_defer_cancel_shape then idtac else bv_solve);
+  try zesu_finish_goal_domain;
   (* C6, last: the goal is arithmetic and everything above has refused it,
      so the facts it needs are still folded inside a hypothesis. Unfold
      them and ask once more. `solve` keeps the step honest: it either
@@ -861,6 +864,23 @@ Ltac zesu_final_solver_goal :=
   | _ => idtac
   end.
 
+(* A final pure goal over bytes that a load reads as a little-endian window
+   while the goal or a branch fact states them as byte positions, or a goal on
+   one bit of a word that a mask fact zeroes. The window becomes its byte
+   concatenation (BytePositionEquations.v; the identity holds for any list),
+   branch facts take the goal's byte-position form, and a mask fact gets its
+   single-bit views (BitvectorFacts.v); the goal is then an identity or a
+   fact. Each arm is guarded by the goal's shape and closes or fails. *)
+Ltac zesu_finish_byte_word_views :=
+  first [
+    lazymatch goal with |- context [little_endian_to_bv _ _] => idtac end;
+    progress (repeat BytePositionEquations.zesu_le_window_rewrite_one);
+    try BytePositionEquations.zesu_byte_position_facts;
+    first [reflexivity | assumption]
+  | lazymatch goal with |- context [bv_extract _ 1 _] => idtac end;
+    ZesuSsz.Automation2.BitvectorFacts.zesu_source_single_bit_zero_views;
+    assumption].
+
 (* The common pure path and final tail share the union helper. Baseline closers remain available.
    The existential leaf goes first: the first arm below fails outright when
    its implication-pair step finds no pair, so a leaf inside it is never
@@ -876,7 +896,8 @@ Ltac zesu_finish_final_pure :=
   zesu_diag_stage "final_pure";
   try solve [
     first [
-      zesu_finish_negated_ge; zesu_finish_implication_pair; repeat split;
+      zesu_finish_byte_word_views
+    | zesu_finish_negated_ge; zesu_finish_implication_pair; repeat split;
       first [reflexivity | assumption | eassumption |
         zesu_final_solver_goal; lia | zesu_final_solver_goal; bv_solve |
         zesu_finish_forall_leaf | zesu_finish_contract_arithmetic |
@@ -1136,6 +1157,9 @@ Ltac zesu_run_pass_v1 :=
      zesu_finish_initialized_array_read |
      ZesuSsz.Automation2.StoreMemoryLookup.zesu_store_memory_lookup |
      zesu_liAStep |
+     (* A switched-on interior slice: lend it where the search stopped at
+        an existential byte array inside a held array, restore it after. *)
+     ZesuSsz.Automation2.InteriorByteSlice.zesu_interior_byte_slice_step |
      ZesuSsz.Automation2.CodecArrayRead.zesu_codec_array_read_sidecond |
      zesu_open_matching_two_level_frame |
      zesu_extract_matching_descriptor_pure |

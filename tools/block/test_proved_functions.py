@@ -14,12 +14,16 @@ REGISTRY = {'functions': [{
                   'exports': ['ZesuSsz.Contracts.CalleeData'],
                   'correct': {'module': 'ZesuSsz.Interfaces.CalleeCorrect', 'requires': [], 'exports': [],
                               'premises': [], 'code': 'calleeCode', 'entry': 'calleeEntry',
-                              'template_correct': 'calleeTemplateCorrect'}},
+                              'template_correct': 'calleeTemplateCorrect'},
+                  'goal_domain_unfold': ['CalleeDomain']},
     'call_spec': {'name': 'calleeCallSpec2', 'template': 'calleeTemplate',
                   'template_source': 'ZesuSsz/Contracts/CalleeSpec.v', 'correct_from': 'calleeCorrectFrom'},
     'sealed': [{'name': 'calleeMeaning', 'type': 'nat -> Prop', 'definition': 'CalleeMeaning'}],
     'interface_lemmas': [{'name': 'calleeMeaningSmall', 'binders': 'n', 'premise': 'calleeMeaning n',
-                          'conclusion': 'n < 3', 'proof': 'calleeMeaningSmallProof', 'derived_facts': True}]}]}
+                          'conclusion': 'n < 3', 'proof': 'calleeMeaningSmallProof', 'derived_facts': True},
+                         {'name': 'calleeMeaningIntro', 'binders': 'n', 'premise': 'CalleeDomain n',
+                          'conclusion': 'calleeMeaning n', 'proof': 'calleeMeaningIntroProof',
+                          'derived_facts': False, 'goal_domain_intro': True}]}]}
 CALL = {'callee_pc': 'lib.callee+0x0', 'spec': 'calleeCallSpec2', 'spec_module': 'ZesuSsz.Interfaces.Callee',
         'spec_source': 'ZesuSsz/Interfaces/Callee.v'}
 
@@ -68,6 +72,10 @@ class InterfaceRenderTests(unittest.TestCase):
         self.assertIn('  Definition calleeMeaningSmall := calleeMeaningSmallProof.', text)
         self.assertIn('⌜calleeMeaning 1⌝', text.split('Definition calleeCallSpec2 ')[1])
         self.assertIn('#[export] Instance calleeMeaningSmallDerivedFacts n', text)
+        self.assertNotIn('calleeMeaningIntroDerivedFacts', text)
+        self.assertIn('#[export] Instance calleeMeaningIntroGoalDomain n :\n'
+                      '  ZesuGoalDomainIntro (calleeMeaning n)\n    (CalleeDomain n) :=\n  calleeMeaningIntro n.', text)
+        self.assertIn('#[export] Hint Unfold CalleeDomain : zesu_goal_domain.', text)
 
     def test_committed_interfaces_are_fresh(self):
         self.assertEqual(R.stale(), [])

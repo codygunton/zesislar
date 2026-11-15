@@ -9,8 +9,12 @@ this writes two declaration-only modules:
   sealed names) and the interface lemmas (`Axiom`); a module ascribed to it
   opaquely, which realizes each predicate by its real definition and each
   lemma by its hand-written proof (checked once, here); the public call spec;
-  and one `ZesuDerivedFacts` instance per registered lemma. Block entries and
-  callers import only this module.
+  one `ZesuDerivedFacts` instance per registered lemma; and the call-site
+  domain registrations of GoalDomain.v: one `ZesuGoalDomainIntro` instance per
+  lemma marked `goal_domain_intro` (the sealed domain from the stated
+  precondition) and a `zesu_goal_domain` hint that unfolds the public
+  precondition names of `goal_domain_unfold`. Block entries and callers import
+  only this module.
 - ZesuSsz/Interfaces/<F>Correct.v: the public spec's correctness, from the
   template's correctness, for other functions' compliance composition.
 
@@ -94,6 +98,16 @@ def interface_text(entry):
         lines += ['#[export] Instance %sDerivedFacts %s :\n  ZesuDerivedFacts (%s)\n    (%s) :=\n  %s %s.'
                   % (lemma['name'], lemma['binders'], lemma['premise'], lemma['conclusion'],
                      lemma['name'], lemma['binders'])]
+    intros = [lemma for lemma in entry['interface_lemmas'] if lemma.get('goal_domain_intro')]
+    unfold = interface.get('goal_domain_unfold', [])
+    if intros or unfold:
+        lines += ['', '(* A caller proves the sealed call-site domain from the stated precondition (GoalDomain.v). *)']
+    for lemma in intros:
+        lines += ['#[export] Instance %sGoalDomain %s :\n  ZesuGoalDomainIntro (%s)\n    (%s) :=\n  %s %s.'
+                  % (lemma['name'], lemma['binders'], lemma['conclusion'], lemma['premise'],
+                     lemma['name'], lemma['binders'])]
+    if unfold:
+        lines += ['#[export] Hint Unfold %s : zesu_goal_domain.' % ' '.join(unfold)]
     return '\n'.join(lines) + '\n'
 
 
