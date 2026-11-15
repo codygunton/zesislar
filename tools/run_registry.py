@@ -300,48 +300,69 @@ def launch(registry, args):
 
 
 def git(checkout, *arguments):
-    return subprocess.run(['git', '-C', str(checkout), *arguments], capture_output=True, text=True, timeout=300)
+    environment = dict(os.environ, GIT_TERMINAL_PROMPT='0', GIT_SSH_COMMAND='ssh -o BatchMode=yes')
+    return subprocess.run(['git', '-C', str(checkout), *arguments], capture_output=True, text=True, timeout=300,
+                          env=environment)
+
+
+def fetch_main(checkout):
+    """Update origin/main without SSH: the timer's service has no SSH agent.
+
+    A GitHub SSH origin is fetched over HTTPS instead, authenticated by the gh credential
+    helper (the repo is public, so anonymous HTTPS also works). Other URLs are fetched as is.
+    """
+    url = git(checkout, 'remote', 'get-url', 'origin').stdout.strip()
+    for prefix in ('git@github.com:', 'ssh://git@github.com/'):
+        if url.startswith(prefix):
+            url = 'https://github.com/' + url[len(prefix):]
+    helper = ['-c', 'credential.helper=', '-c', 'credential.helper=!gh auth git-credential'] \
+        if url.startswith('https://github.com/') else []
+    return git(checkout, *helper, 'fetch', '--quiet', url, '+refs/heads/main:refs/remotes/origin/main')
 
 
 def follow_main(registry, checkout, status):
-    """Fast-forward a clean tools checkout to origin/main; post a held checkout to STATUS.md once.
+    """Fast-forward a clean tools checkout to origin/main; post each distinct failure to STATUS.md once.
 
     The tools checkout (.worktrees/ops-tools) runs the watchdog and `tools/bg`, so it must
     follow main without a manual step. Untracked files (bg logs) do not hold it; tracked
-    changes, local commits, or a checkout git refuses do. Returns the log lines.
+    changes, local commits, a failed fetch, or a checkout git refuses do. Returns the log
+    lines and whether the checkout now follows origin/main.
     """
     marker = registry.directory / 'follow-main.held'
     now = time.strftime('%Y-%m-%dT%H:%MZ', time.gmtime())
-    fetched = git(checkout, 'fetch', '--quiet', 'origin', 'main')
-    if fetched.returncode != 0:
-        return [f'follow-main: git fetch failed in {checkout}: {fetched.stderr.strip()}']
     head = git(checkout, 'rev-parse', 'HEAD').stdout.strip()
-    target = git(checkout, 'rev-parse', 'origin/main').stdout.strip()
-    held = None
-    if git(checkout, 'status', '--porcelain', '--untracked-files=no').stdout.strip():
-        held = 'it has uncommitted changes to tracked files'
-    elif head != target and git(checkout, 'merge-base', '--is-ancestor', head, target).returncode != 0:
-        held = f'its HEAD {head[:12]} is not an ancestor of origin/main'
-    elif head != target:
-        moved = git(checkout, 'checkout', '--quiet', '--detach', target)
-        if moved.returncode != 0:
-            held = f'git checkout --detach origin/main failed: {moved.stderr.strip()}'
+    target = ''
+    fetched = fetch_main(checkout)
+    if fetched.returncode != 0:
+        held = f'git fetch of origin main failed: {" ".join(fetched.stderr.split())}'
+    else:
+        target = git(checkout, 'rev-parse', 'origin/main').stdout.strip()
+        held = None
+        if git(checkout, 'status', '--porcelain', '--untracked-files=no').stdout.strip():
+            held = 'it has uncommitted changes to tracked files'
+        elif head != target and git(checkout, 'merge-base', '--is-ancestor', head, target).returncode != 0:
+            held = f'its HEAD {head[:12]} is not an ancestor of origin/main'
+        elif head != target:
+            moved = git(checkout, 'checkout', '--quiet', '--detach', target)
+            if moved.returncode != 0:
+                held = f'git checkout --detach origin/main failed: {" ".join(moved.stderr.split())}'
     if held is not None:
-        if not marker.exists():
+        posted = json.loads(marker.read_text()).get('reason') if marker.exists() else None
+        if posted != held:
             Registry.atomic_write(marker, {'head': head, 'reason': held, 'utc': now})
             with Path(status).open('a') as stream:
                 stream.write(f'- {now} run-watchdog: tools checkout {checkout} no longer follows main: {held} '
-                             f'(at {head[:12]}, origin/main {target[:12]}). Clean it; the watchdog then '
-                             f'fast-forwards it on its next run.\n')
-        return [f'follow-main: {checkout} held at {head[:12]}: {held}.']
+                             f'(at {head[:12]}, origin/main {target[:12] or "unknown"}). Fix it; the watchdog '
+                             f'then fast-forwards it on its next run.\n')
+        return [f'follow-main: {checkout} held at {head[:12]}: {held}.'], False
     if marker.exists():
         marker.unlink()
     if head == target:
-        return []
+        return [], True
     line = f'follow-main: {now} moved {checkout} from {head[:12]} to origin/main {target[:12]}.'
     with (registry.directory / 'follow-main.log').open('a') as stream:
         stream.write(line + '\n')
-    return [line]
+    return [line], True
 
 
 def watchdog(registry, status):
@@ -985,13 +1006,15 @@ def main():
             print(json.dumps(entry, sort_keys=True))
         return 0
     if args.action == 'watchdog':
+        follows = True
         if args.follow_main:
             with registry.lock('follow-main'):
-                for line in follow_main(registry, args.follow_main, args.status):
+                lines, follows = follow_main(registry, args.follow_main, args.status)
+                for line in lines:
                     print(line)
         for message in watchdog(registry, args.status):
             print(message)
-        return 0
+        return 0 if follows else 1
     if args.action == 'begin':
         actor = identity(args.pid)
         if actor is None or actor['startticks'] != args.startticks:

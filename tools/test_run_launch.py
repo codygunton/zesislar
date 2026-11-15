@@ -298,9 +298,9 @@ class FollowMainTests(Fixture):
         self.git(self.writer, 'push', '--quiet', 'origin', 'HEAD:main')
         return self.git(self.writer, 'rev-parse', 'HEAD')
 
-    def follow(self):
+    def follow(self, returncode=0):
         result = self.cli('watchdog', '--follow-main', str(self.tools), '--status', str(self.status))
-        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertEqual(result.returncode, returncode, result.stderr)
         return result.stdout
 
     def test_clean_checkout_fast_forwards_to_origin_main_and_logs_the_move(self):
@@ -320,13 +320,13 @@ class FollowMainTests(Fixture):
         old = self.git(self.tools, 'rev-parse', 'HEAD')
         (self.tools / 'tool.txt').write_text('local edit\n')
         self.commit('two')
-        first = self.follow()
+        first = self.follow(1)
         self.assertIn('held at', first)
         self.assertEqual(self.git(self.tools, 'rev-parse', 'HEAD'), old)
         posted = self.status.read_text().splitlines()
         self.assertEqual(len(posted), 1, posted)
         self.assertIn(f'tools checkout {self.tools} no longer follows main: it has uncommitted changes', posted[0])
-        self.assertIn('held at', self.follow())
+        self.assertIn('held at', self.follow(1))
         self.assertEqual(self.status.read_text().splitlines(), posted)
         self.git(self.tools, 'checkout', '--quiet', '--', 'tool.txt')
         new = self.commit('three')
@@ -334,7 +334,7 @@ class FollowMainTests(Fixture):
         self.assertEqual(self.git(self.tools, 'rev-parse', 'HEAD'), new)
         (self.tools / 'tool.txt').write_text('dirty again\n')
         self.commit('four')
-        self.follow()
+        self.follow(1)
         self.assertEqual(len(self.status.read_text().splitlines()), 2)
 
     def test_local_commits_hold_the_checkout(self):
@@ -342,9 +342,33 @@ class FollowMainTests(Fixture):
         self.git(self.tools, 'commit', '--quiet', '-am', 'local')
         local = self.git(self.tools, 'rev-parse', 'HEAD')
         self.commit('two')
-        self.assertIn('not an ancestor of origin/main', self.follow())
+        self.assertIn('not an ancestor of origin/main', self.follow(1))
         self.assertEqual(self.git(self.tools, 'rev-parse', 'HEAD'), local)
         self.assertIn('not an ancestor of origin/main', self.status.read_text())
+
+    def test_failed_fetch_is_posted_to_status_once_and_exits_nonzero(self):
+        old = self.git(self.tools, 'rev-parse', 'HEAD')
+        self.commit('two')
+        self.git(self.tools, 'remote', 'set-url', 'origin', str(self.root / 'missing.git'))
+        self.assertIn('git fetch of origin main failed', self.follow(1))
+        self.assertEqual(self.git(self.tools, 'rev-parse', 'HEAD'), old)
+        posted = self.status.read_text().splitlines()
+        self.assertEqual(len(posted), 1, posted)
+        self.assertIn(f'tools checkout {self.tools} no longer follows main: git fetch of origin main failed', posted[0])
+        self.follow(1)
+        self.assertEqual(self.status.read_text().splitlines(), posted)
+        self.git(self.tools, 'remote', 'set-url', 'origin', str(self.origin))
+        self.assertIn('moved', self.follow())
+        self.assertFalse((self.store / 'follow-main.held').exists())
+
+    def test_github_ssh_origin_is_fetched_over_https(self):
+        url = subprocess.CompletedProcess([], 0, 'git@github.com:owner/repo.git\n', '')
+        with patch.object(R, 'git', return_value=url) as git:
+            R.fetch_main(self.tools)
+        fetch = git.call_args_list[-1].args
+        self.assertIn('https://github.com/owner/repo.git', fetch)
+        self.assertIn('credential.helper=!gh auth git-credential', fetch)
+        self.assertIn('+refs/heads/main:refs/remotes/origin/main', fetch)
 
 
 
