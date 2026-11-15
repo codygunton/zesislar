@@ -194,6 +194,13 @@ Proof.
   destruct Hlayout as (_ & _ & Hfit & _). split; [exact Hlen | exact Hfit].
 Qed.
 
+(* A call-site domain: the output buffer the caller passes holds 40 bytes, the
+   length a caller's uninitialized frame region must give it. *)
+Lemma decodeItemDomainOutput argv sp inputEnd input before :
+  decodeItemC1BDomain (decodeItemCallDataArgs argv sp inputEnd input before) ->
+  length before = 40%nat.
+Proof. intros [_ [Hbefore _]]. exact Hbefore. Qed.
+
 (* The call site establishes the sealed domain from decodeItem's stated
    precondition; a caller's exit composition reads the meaning back. Inside
    the sealed implementation both are the identity. *)

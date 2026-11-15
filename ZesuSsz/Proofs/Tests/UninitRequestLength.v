@@ -93,3 +93,38 @@ Section length_choice.
     exact I.
   Qed.
 End length_choice.
+
+(* A callee's domain that unfolding cannot read (an inductive stands for a
+   sealed definition). Its interface registers two lemmas on the domain; the
+   one whose conclusion is the requested list's length gives the choice. *)
+Inductive sealed_request_domain (v : list (bv 8)) : Prop :=
+  sealed_request_intro : length v = 24%nat -> sealed_request_domain v.
+Lemma sealed_request_output v : sealed_request_domain v -> length v = 24%nat.
+Proof. intros [Hlength]. exact Hlength. Qed.
+Lemma sealed_request_trivial v : sealed_request_domain v -> (0 <= 0)%Z.
+Proof. intros _. reflexivity. Qed.
+
+#[export] Instance sealed_request_output_derived v :
+  ZesuSsz.Automation.PureFacts.ZesuDerivedFacts (sealed_request_domain v)
+    (length v = 24%nat) := sealed_request_output v.
+#[export] Instance sealed_request_trivial_derived v :
+  ZesuSsz.Automation.PureFacts.ZesuDerivedFacts (sealed_request_domain v)
+    (0 <= 0)%Z := sealed_request_trivial v.
+
+Section sealed_length_choice.
+  Context `{!islaG Sigma}.
+
+  Ltac chosen requested G :=
+    let h := constr:(_ : @LiTactic Sigma _ (zesu_uninit_request_length requested G)) in
+    let h := eval cbv beta zeta in h in
+    lazymatch h with zesu_uninit_request_length_hint _ _ ?choice => choice end.
+
+  Goal True.
+  Proof.
+    let c := chosen (fun x : list (bv 8) *ₗ unit => x.1ₗ)
+      (fun x : list (bv 8) *ₗ unit =>
+        ⌜sealed_request_domain x.1ₗ⌝ ∗ True : iProp Sigma)%I in
+    constr_eq c (Some 24%nat).
+    exact I.
+  Qed.
+End sealed_length_choice.

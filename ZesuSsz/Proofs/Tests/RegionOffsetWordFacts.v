@@ -42,6 +42,38 @@ Lemma region_offset_word_chain_in_array (args : OffsetWordArgs) (values : list (
          (BV 64 400)) (BV 64 18446744073709551256))).
 Proof. intros Hwf Hlength. typeclasses eauto. Qed.
 
+(* A store of 8 bytes at word + 64 split an 80-byte region at the word. The
+   upper remainder's base offsets the word itself, `bv_unsigned (word + 64)
+   + 8`; a 2-byte store at word + 72 lies in it. Base and address share only
+   the root word, whose facts show that neither offset wraps. *)
+Lemma region_offset_word_split_remainder (args : OffsetWordArgs) :
+  offsetWordWellFormed args ->
+  ZesuSsz.Automation2.UninitRegions.ZesuRegionBounds
+    (bv_unsigned (bv_add (offsetWord args) (BV 64 64)) + 8 <=
+       bv_unsigned (bv_add (offsetWord args) (BV 64 72)) <
+       bv_unsigned (bv_add (offsetWord args) (BV 64 64)) + 8 +
+       (bv_unsigned (offsetWord args) + 80 -
+          (bv_unsigned (bv_add (offsetWord args) (BV 64 64)) + 8)) \/
+     bv_unsigned (bv_add (offsetWord args) (BV 64 64)) + 8 =
+       bv_unsigned (bv_add (offsetWord args) (BV 64 72))).
+Proof. intros Hwf. typeclasses eauto. Qed.
+
+(* A store at word + 88 lies past the same remainder. *)
+Lemma region_offset_word_split_remainder_outside (args : OffsetWordArgs) :
+  offsetWordWellFormed args -> True.
+Proof.
+  intros Hwf.
+  Fail let _ := constr:(_ : ZesuSsz.Automation2.UninitRegions.ZesuRegionBounds
+    (bv_unsigned (bv_add (offsetWord args) (BV 64 64)) + 8 <=
+       bv_unsigned (bv_add (offsetWord args) (BV 64 88)) <
+       bv_unsigned (bv_add (offsetWord args) (BV 64 64)) + 8 +
+       (bv_unsigned (offsetWord args) + 80 -
+          (bv_unsigned (bv_add (offsetWord args) (BV 64 64)) + 8)) \/
+     bv_unsigned (bv_add (offsetWord args) (BV 64 64)) + 8 =
+       bv_unsigned (bv_add (offsetWord args) (BV 64 88)))) in idtac.
+  exact I.
+Qed.
+
 (* The same frame at offset -300 lies outside the region. *)
 Lemma region_offset_word_outside (args : OffsetWordArgs) :
   offsetWordWellFormed args -> True.
