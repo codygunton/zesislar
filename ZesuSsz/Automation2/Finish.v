@@ -876,14 +876,6 @@ Ltac zesu_finish_common_pure :=
         cbv [bv_unsigned bv_modulus] in *; lia)]
     | autorewrite with isla_coq_rewrite; zesu_union_pure_finish]]].
 
-(* lia and bv_solve never close an existential; on a large context they
-   only spend time before the shape-specific closers get their turn. *)
-Ltac zesu_final_solver_goal :=
-  lazymatch goal with
-  | |- ex _ => fail 0
-  | _ => idtac
-  end.
-
 (* A final pure goal over bytes that a load reads as a little-endian window
    while the goal or a branch fact states them as byte positions, or a goal on
    one bit of a word that a mask fact zeroes. The window becomes its byte
