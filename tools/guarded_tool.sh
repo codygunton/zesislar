@@ -28,7 +28,8 @@ fi
 name=$(basename -- "$1")
 name=${name//[^a-zA-Z0-9_.-]/-}
 "$guard" parent-setup
-exec systemd-run --user --scope --quiet --collect --slice=zesuworkloads.slice \
+# --expand-environment=no: systemd-run would expand $VAR and turn $$ into $ in the command.
+exec systemd-run --user --scope --quiet --collect --expand-environment=no --slice=zesuworkloads.slice \
   --unit="zesutool-${name}-$$-${RANDOM}" \
   -p "MemoryMax=${memory}G" -p MemorySwapMax=0 -- \
   "$guard" parent-exec -- "$@"

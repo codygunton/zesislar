@@ -1,0 +1,12 @@
+# Installed and started by `make install-run-watchdog`. Every two minutes, so a
+# signal death reaches STATUS.md within five minutes.
+[Unit]
+Description=Run the Zesislar run registry watchdog every two minutes
+
+[Timer]
+OnBootSec=1min
+OnUnitActiveSec=2min
+AccuracySec=10s
+
+[Install]
+WantedBy=timers.target
