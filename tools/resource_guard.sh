@@ -23,6 +23,8 @@
 #   watch                the polling loop; kills the youngest scope at its memory boundary
 #   scope NAME [--cpu SECONDS] -- CMD    run CMD in its configured module scope, registered
 #   batch NAME -- CMD    run CMD in the batch scope, 150 GiB (a gate 120), swap off
+#                        batch and scope exit 5, running nothing, when
+#                        ZESU_MODULE_CLAIM_BYTES exceeds ZESU_MODULE_LIMIT_GIB
 #   locked NAME -- CMD   run CMD holding the gate lock
 #   lock-status          print the gate lock, removing a stale one
 #   lock-want PID HOLDER take the lock for a gate script, state wanted
@@ -212,6 +214,15 @@ MEASURED_PEAK_BYTES=${ZESU_MODULE_MEASURED_PEAK_BYTES:-}
 if [ -n "$MEASURED_PEAK_BYTES" ] && ! [[ "$MEASURED_PEAK_BYTES" =~ ^[1-9][0-9]{0,11}$ ]]; then
   echo "resource guard: invalid measured module peak" >&2; exit 2
 fi
+# A claim above the module fence can never run inside it. Refuse it with its
+# own status (5), so a caller cannot read the refusal as an empty success.
+CLAIM_OVER_FENCE_STATUS=5
+claim_fits_fence() {
+  local fence=$(( MODULE_LIMIT_GIB * GIB ))
+  (( MEMORY_CLAIM_BYTES <= fence )) && return 0
+  echo "resource guard: memory claim $MEMORY_CLAIM_BYTES bytes ($(awk -v b="$MEMORY_CLAIM_BYTES" 'BEGIN { printf "%.2f", b / 1073741824 }') GiB) exceeds the ${MODULE_LIMIT_GIB} GiB module limit; cap ZESU_MODULE_CLAIM_BYTES at $fence, or raise ZESU_MODULE_LIMIT_GIB to cover the claim" >&2
+  return "$CLAIM_OVER_FENCE_STATUS"
+}
 
 note() { printf '%s %s\n' "$(date -Is)" "$*" >> "$LOG"; }
 
@@ -1835,6 +1846,7 @@ PY
 run_scope() {
   local name=$1 cpu=${ZESU_PROOF_CPU_LIMIT:-2400}; shift
   validate_probe_scope || return $?
+  claim_fits_fence || return $?
   if [ "${1:-}" = "--cpu" ]; then
     cpu=${2:-}; shift 2
     if diagnostic_probe; then
@@ -2021,6 +2033,7 @@ run_batch() {
   fi
   local name=$1; shift
   [ "${1:-}" = "--" ] && shift
+  claim_fits_fence || return $?
   check_python_driver "$@" || return $?
   # Nested make wrappers reuse the aggregate created by their parent.
   if [ -n "${ZESU_IN_BATCH:-}" ]; then
