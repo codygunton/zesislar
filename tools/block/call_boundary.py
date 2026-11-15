@@ -28,12 +28,18 @@ applies the callee summary to make the seed of the return site:
   result computes (a cursor that adds each call's consumed length) becomes a
   fresh binder with one equation to its value. The facts and the seed's
   registers name it, so a later call's facts do not restate every earlier
-  call's results.
+  call's results. An input that is an interior slice of a caller array is
+  named with its offset and length, each with one equation, and the facts
+  mention the slice's name;
+* names: every name the seed binds for a call, also an existential of its
+  facts, is `call<k>_<field>` with the call's own layer k (call1_, call2_,
+  ...), so no two calls' facts or results share a name in any block.
 
 The callee summary comes from the spec's source text. The call design row
 names the spec, binds each spec array to its argument and the caller value
-of an array that the callee keeps, and states the output length with its
-source. Generic code names no address. No proof runs.
+of an array that the callee keeps (for a slice: the array, offset and
+length), and states the output length with its source. Generic code names no
+address. No proof runs.
 
 A tail call (a design row without a return site) is a call whose return site is
 the caller's own return address: its seed is the state the function exits with.
@@ -54,9 +60,9 @@ from symbolic_state import Expr, _offset, bits, input_expr, operation
 PRESERVED = ['x2', 'x8', 'x9'] + ['x%d' % number for number in range(18, 28)]
 ARGUMENTS = ['x%d' % number for number in range(10, 18)]
 GPR = re.compile(r'x(?:[0-9]|[12][0-9]|3[01])\Z')
-PREFIX = 'call_'
-# The names call_return_seed binds: its prefix call_, call2_, call3_, ... and a suffix.
-CALL_NAME = re.compile(r'call\d*_\w+')
+PREFIX = 'call%d_'
+# The names call_return_seed binds: its prefix call1_, call2_, call3_, ... and a suffix.
+CALL_NAME = re.compile(r'call\d+_\w+')
 
 
 class CallRefused(ValueError):
@@ -257,7 +263,7 @@ def _return_fact(text, fresh):
     return RETURN_WORD.sub(word, text)
 
 
-def _merge_call_sites(edges, prefix=PREFIX):
+def _merge_call_sites(edges, prefix):
     """One call-site state: equal values stay; a register that differs becomes a binder."""
     states = [_state_from_result(edge['state']) for edge in edges]
     first = states[0]
@@ -372,15 +378,15 @@ def call_return_seed(edges, *, call, function_root, root_seed, shapes, vocabular
         for binder in seed.ownership['binders']:
             inherited.setdefault(binder['name'], binder)
     # A call after an earlier call keeps the earlier call's binders: its own
-    # binders take the first free prefix call_, call2_, call3_, ...
+    # binders take the first free prefix call1_, call2_, call3_, ...
     taken = set(inherited)
     for edge in edges:
         for value in _state_from_result(edge['state']).registers.values():
             taken.update(_inputs(value))
-    prefix, layer = PREFIX, 1
-    while any(name.startswith(prefix) for name in taken):
+    layer = 1
+    while any(name.startswith(PREFIX % layer) for name in taken):
         layer += 1
-        prefix = 'call%d_' % layer
+    prefix = PREFIX % layer
     state, widened = _merge_call_sites(edges, prefix)
     tail = 'return_site_pc' not in call
     return_pc = int(call['call_site_pc' if tail else 'return_site_pc'], 0)
@@ -449,6 +455,13 @@ def call_return_seed(edges, *, call, function_root, root_seed, shapes, vocabular
         if binder is not None and binder not in fresh:
             return None, binder
         return binder, row.get('value')
+    def at_call(text):
+        """A design template at the call site: arguments and stored words filled in."""
+        for number, argument in enumerate(values['argv']):
+            text = text.replace('{argv:%d}' % number, argument)
+        return substitute(text, words) if words else text
+    # Named interior slices: (name, value) equations and (name, type) binders.
+    slice_equations, slice_binders = [], []
     for binder, row in pre_arrays.items():
         if spot(design[binder]) != spot(row):
             raise CallRefused('The call design moves the spec array ' + binder)
@@ -456,15 +469,26 @@ def call_return_seed(edges, *, call, function_root, root_seed, shapes, vocabular
         if returned is None:
             raise CallRefused('The spec does not return its array ' + binder)
         if returned.get('binder') == binder:
-            # The callee keeps these bytes: the design names the caller value. A value
-            # that is a slice of a caller array names that array as `slice_of`; `{argv:N}`
-            # in it stands for the call-site value of argument N, and a spec word binder
-            # for the word the caller stored.
-            value = design[binder]['caller_value']
-            for number, argument in enumerate(values['argv']):
-                value = value.replace('{argv:%d}' % number, argument)
-            instantiation[binder] = substitute(value, words) if words else value
-            whole = design[binder].get('slice_of', design[binder]['caller_value'])
+            # The callee keeps these bytes: the design names the caller value. `{argv:N}`
+            # stands for the call-site value of argument N, and a spec word binder for the
+            # word the caller stored. A slice of a caller array names that array as
+            # `slice_of` with its offset and length: the entry names the slice, its offset
+            # and its length (`<prefix><binder>`, `_offset`, `_length`), and the facts
+            # mention the slice by its name.
+            chosen = design[binder]
+            if 'slice_of' in chosen:
+                name = prefix + binder
+                offset, length = at_call(chosen['slice_offset']), at_call(chosen['slice_length'])
+                slice_equations.extend([
+                    (name + '_offset', offset), (name + '_length', length),
+                    (name, 'take (Z.to_nat %s_length) (drop (Z.to_nat %s_offset) (%s))'
+                     % (name, name, chosen['slice_of']))])
+                slice_binders.extend([(name + '_offset', 'Z'), (name + '_length', 'Z'),
+                                      (name, dict(spec['pre_binders'])[binder])])
+                instantiation[binder] = name
+            else:
+                instantiation[binder] = at_call(chosen['caller_value'])
+            whole = chosen.get('slice_of', chosen.get('caller_value'))
             owner = [resource for resource in resources.values()
                      if resource.byte_array is not None and resource.byte_array.value == whole]
             if len(owner) != 1 or image.updates[owner[0].id]:
@@ -573,24 +597,35 @@ def call_return_seed(edges, *, call, function_root, root_seed, shapes, vocabular
         mapping.update({name: value for name, value in fresh.items()})
         mapping.update(outer)
         return substitute(fact, mapping)
-    existential = [(name, kind) for name, kind in spec['pre_binders'] if instantiation.get(name, '') is None]
+    # A spec pre binder that no caller resource fixes stays an existential of the facts,
+    # under this call's own name: two calls' facts never bind the same name.
+    existential = [(prefix + name, kind) for name, kind in spec['pre_binders'] if instantiation.get(name, '') is None]
+    own_names = {name[len(prefix):]: name for name, _ in existential}
     # A definition of a spec file is unfolded: the entry cannot import an internal spec module.
     # A black box's interface is imported, and its sealed names are never unfolded.
     raw = spec['pre']['facts'] + spec['post']['facts']
     local = {} if black_box else _local_definitions(
         spec_text, sorted(_atoms(' '.join(raw + [value for _, value in word_facts])) - {call['spec']}))
-    facts = [instantiate(_unfold(fact, local), {}) for fact in raw]
-    facts += ['%s = %s' % (name, instantiate(_unfold(value, local), {})) for name, value in word_facts]
+    facts = [instantiate(_unfold(fact, local), own_names) for fact in raw]
+    facts += ['%s = %s' % (name, instantiate(_unfold(value, local), own_names)) for name, value in word_facts]
     # A call argument that nothing else in the seed mentions (an entry witness, or
-    # a call-site register that the paths disagree on) is closed inside the facts.
-    # A named value's equation mentions its names outside the facts.
+    # a call-site register that the paths disagree on) is closed inside the facts,
+    # renamed for this call. A named value's equation mentions its names outside the facts.
     elsewhere = set(_atoms(' '.join([_coq(value) for key, value in registers.items() if GPR.fullmatch(key)]
-                                    + [_coq(value) for value in named])))
+                                    + [_coq(value) for value in named]
+                                    + [value for _, value in slice_equations])))
     candidates = {name: binder['type'] for name, binder in inherited.items()}
     candidates.update({prefix + 'site_' + key: 'bv 64' for key in widened})
     inner = [(name, kind) for name, kind in candidates.items()
              if name in _atoms(' '.join(facts)) and name not in elsewhere]
-    existential = inner + existential
+    closed = {name: name if name.startswith(prefix) else prefix + 'in_' + name for name, _ in inner}
+    clash = set(closed.values()) - set(closed) & (taken | set(fresh.values()) | {name for name, _ in existential})
+    if clash:
+        raise CallRefused('A name closed inside the call facts is already taken: ' + ', '.join(sorted(clash)))
+    renamed = {name: value for name, value in closed.items() if name != value}
+    if renamed:
+        facts = [substitute(fact, renamed) for fact in facts]
+    existential = [(closed[name], kind) for name, kind in inner] + existential
     telescope = ' '.join('(%s : %s)' % (name, kind) for name, kind in existential)
     carried = '∃ ' + telescope + ', ' + ' /\\ '.join('(' + fact + ')' for fact in facts) if existential \
         else ' /\\ '.join('(' + fact + ')' for fact in facts)
@@ -724,7 +759,9 @@ def call_return_seed(edges, *, call, function_root, root_seed, shapes, vocabular
         {'kind': 'opaque', 'id': row['resource_id'] + '_length', 'coq': '⌜' + row['coq'] + '⌝'}
         for row in extra_facts] + [
         {'kind': 'opaque', 'id': name.value + '_value', 'coq': '⌜(zesu_named_eq %s %s)⌝' % (name.value, _coq(value))}
-        for value, name in named.items()] + [{'kind': 'opaque', 'id': prefix + 'facts', 'coq': '⌜' + carried + '⌝'}] + [
+        for value, name in named.items()] + [
+        {'kind': 'opaque', 'id': name + '_value', 'coq': '⌜(zesu_named_eq %s (%s))⌝' % (name, value)}
+        for name, value in slice_equations] + [{'kind': 'opaque', 'id': prefix + 'facts', 'coq': '⌜' + carried + '⌝'}] + [
         {'kind': 'opaque', 'id': prefix + 'return_fact_%d' % index, 'coq': '⌜' + _return_fact(row['coq'], fresh) + '⌝'}
         for index, row in enumerate(call.get('return_facts', []))]
     # Every post binder, and the word binders that stand for a returned word expression.
@@ -734,6 +771,8 @@ def call_return_seed(edges, *, call, function_root, root_seed, shapes, vocabular
         binders.append({'name': name, 'type': 'bv 64', 'expression': input_expr(name, 64).to_dict()})
     for name in named.values():
         binders.append({'name': name.value, 'type': 'bv %d' % name.width, 'expression': name.to_dict()})
+    for name, kind in slice_binders:
+        binders.append({'name': name, 'type': kind, 'expression': input_expr(name, None).to_dict()})
     # Inherited binders that the seed still mentions (entry witnesses passed as arguments,
     # join and loop-head binders of the origin seeds).
     text = ' '.join([node.get('original_component', node.get('coq', '')) for node in nodes
@@ -795,6 +834,7 @@ def call_return_seed(edges, *, call, function_root, root_seed, shapes, vocabular
               'widened_call_site_registers': widened, 'replaced': splits, 'kept': sorted(kept),
               'callee_frame': callee_frame, 'carried_fact': carried,
               'named_registers': {key: value.value for key, value in registers.items() if value in named.values()},
+              'prefix': prefix, 'named_slices': dict(slice_equations),
               'havoc_registers': [binder['name'] for binder in binders if binder['name'].startswith(prefix + 'x')],
               **({'renewed_system_registers': renewed_exact} if renewed_exact else {})}
     return seed, public, report
