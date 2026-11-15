@@ -18,6 +18,8 @@ from closed_literal_definitions import closed_literal_failures
 sys.path.insert(0, str(ROOT / "tools" / "residuals"))
 from render_residual_module import (RenderError, SHARED, module_name, parse_module as parse_residual_module,
                                     parse_shared_module)
+sys.path.append(str(ROOT / "tools"))
+from kill_scan import tree_failures as unsafe_kill_failures
 BASELINE_PATH = Path(__file__).with_name("hygiene_baseline.json")
 SIZE_BASELINE_PATH = Path(__file__).with_name("proof_size_baseline.json")
 CLOSED_LITERAL_EXCEPTIONS_PATH = Path(__file__).with_name("closed_literal_exceptions.json")
@@ -684,7 +686,11 @@ def main() -> None:
     warnings: list[str] = []
     remaining = 0
     core_sources: dict[str, str] = {}
-    for name in tracked_files():
+    names = tracked_files()
+    # A kill by name or by parent PID in a committed tool reaches other agents'
+    # jobs (2026-11-15); `run_registry.py launch` refuses such a script too.
+    failures.extend(unsafe_kill_failures(ROOT, names))
+    for name in names:
         if name.startswith("generated/isla-traces/"):
             failures.append(f"tracked generated Isla trace: {name}")
         if not name.endswith(".v"):

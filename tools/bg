@@ -1,0 +1,31 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+# Start a long job (watcher, queue, pipeline) in its own systemd user scope,
+# outside the caller's process tree, and print its run ID. In the omp bash
+# tool `$$` is the shared harness PID, so a job started with `&` or
+# `setsid nohup ... &` from it can die with every other agent's jobs.
+#
+#   tools/bg [--memory GIB] [--dir DIR] [--log FILE] [--owner NAME] NAME [--] COMMAND [ARGS...]
+#   tools/bg list          active runs
+#   tools/bg stop RUN_ID   stop a run and its scope
+#
+# Output goes to DIR/NAME.log (appended). The launch refuses a command whose
+# scripts kill by name, by pgrep match, or by parent PID (tools/kill_scan.py).
+
+registry="$(dirname "$(realpath "$0")")/run_registry.py"
+usage() { sed -n '9,11s/^#   //p' "$0" >&2; exit 2; }
+case "${1:-}" in
+  ''|-h|--help) usage ;;
+  list) shift; exec python3 -B "$registry" list --active "$@" ;;
+  stop) shift; [ $# -eq 1 ] || usage; exec python3 -B "$registry" stop "$1" ;;
+esac
+options=()
+while [[ "${1:-}" == --?* ]]; do
+  [ $# -ge 2 ] || usage
+  options+=("$1" "$2"); shift 2
+done
+[ $# -ge 2 ] || usage
+name=$1; shift
+[ "$1" = -- ] && shift
+exec python3 -B "$registry" launch --name "$name" "${options[@]}" -- "$@"

@@ -166,6 +166,8 @@ Treat a non-proof module as over its production goal when it takes more than 60 
 more than 2 GiB; measure it to completion first, then split it at sound proof-state boundaries.
 If no sound split exists, report the exact dependency that prevents parallel work.
 
+Start every long job (watcher, queue, pipeline) with `tools/bg NAME CMD...` and stop it with `tools/run_registry.py stop <run id>`. The job runs in its own systemd user scope outside the caller's process tree, because `$$` in an agent's shell can be a harness PID shared by every agent. The launcher refuses a script that kills by process name, pgrep match, or parent PID, and so does the proof hygiene check for committed `tools/` scripts. A registered run that ends by a signal without a registry stop is recorded in `signal-deaths.jsonl` in the registry store and posted to `docs/ai/STATUS.md` by the run watchdog (`make install-run-watchdog`).
+
 Compile independent modules together with Dune.
 Keep the final composition proof small and sequential.
 Do not expect `-j` to parallelize tactics inside one Rocq proof.

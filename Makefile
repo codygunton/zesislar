@@ -512,3 +512,16 @@ install-janitor:
 	cp tools/systemd/zesu-build-janitor.timer "$(SYSTEMD_USER_DIR)/zesu-build-janitor.timer"
 	systemctl --user daemon-reload
 	@echo "Installed. Enable after review: systemctl --user enable --now zesu-build-janitor.timer"
+
+# The run registry watchdog posts runs that ended by a signal without a
+# registry stop to the primary checkout's docs/ai/STATUS.md. It runs this
+# checkout's tools; install it from a checkout that follows main.
+.PHONY: install-run-watchdog
+install-run-watchdog:
+	mkdir -p "$(SYSTEMD_USER_DIR)"
+	sed -e 's|@TOOLS@|$(CURDIR)|g' -e 's|@STATUS@|$(JANITOR_ROOT)/docs/ai/STATUS.md|g' \
+	  -e "s|@PYTHON@|$$(command -v $(PYTHON))|g" \
+	  tools/systemd/zesu-run-watchdog.service > "$(SYSTEMD_USER_DIR)/zesu-run-watchdog.service"
+	cp tools/systemd/zesu-run-watchdog.timer "$(SYSTEMD_USER_DIR)/zesu-run-watchdog.timer"
+	systemctl --user daemon-reload
+	systemctl --user enable --now zesu-run-watchdog.timer
