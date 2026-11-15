@@ -84,11 +84,12 @@ Proof.
 Qed.
 Print Assumptions named_equation_load_through_alias.
 
-(* A successor's binder named like a block variable of the same type takes
-   that variable, also after an unnamed binder opened a Lithium tuple; a
-   binder with no namesake is left to Lithium. *)
+(* In a block with a named equation (a call boundary), a successor's binder
+   named like a block variable of the same type takes that variable, also
+   after an unnamed binder opened a Lithium tuple; a binder with no namesake
+   is left to Lithium. *)
 Lemma named_binder_takes_block_variable `{!islaG Sigma} `{!threadG}
-    (kept : bv 64) (outcome : list nat) :
+    (kept base : bv 64) (outcome : list nat) (named : zesu_named_eq kept base) :
   ⊢@{iProp Sigma} ∃ (kept : bv 64) (fresh_value : bv 64) (outcome : list nat),
     ⌜kept = fresh_value⌝ ∗ ⌜outcome = outcome⌝.
 Proof.
@@ -110,7 +111,7 @@ Print Assumptions named_binder_takes_block_variable.
 
 (* The same for an existential package framed with the rest of the goal. *)
 Lemma named_binder_in_framed_package `{!islaG Sigma} `{!threadG}
-    (kept : bv 64) (rest : iProp Sigma) :
+    (kept base : bv 64) (named : zesu_named_eq kept base) (rest : iProp Sigma) :
   rest ⊢ (∃ kept : bv 64, ⌜kept = kept⌝) ∗ rest.
 Proof.
   iStartProof. iIntros "Hrest".
@@ -121,6 +122,19 @@ Proof.
   iFrame. iPureIntro. reflexivity.
 Qed.
 Print Assumptions named_binder_in_framed_package.
+
+(* A block with no named equation names its variables per block: the
+   successor's binder of the same name is another value, so the binder step
+   leaves it to Lithium. *)
+Lemma named_binder_needs_named_equation `{!islaG Sigma} `{!threadG}
+    (kept : bv 64) (rest : iProp Sigma) :
+  rest ⊢ (∃ kept : bv 64, ⌜kept = kept⌝) ∗ rest.
+Proof.
+  iStartProof. iIntros "Hrest".
+  Fail ZesuSsz.Automation2.NamedEquations.zesu_named_binder_witness.
+  iSplitR "Hrest"; [iExists kept; iPureIntro; reflexivity | iExact "Hrest"].
+Qed.
+Print Assumptions named_binder_needs_named_equation.
 
 (* A call's precondition restated over fresh binders, one of them named
    like an unrelated block variable: the stepping loop closes it from the

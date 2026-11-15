@@ -67,8 +67,23 @@ Ltac zesu_unfold_let_mem_address :=
    that variable: the generator names a value once, so the successor's
    [call_after] is the block's [call_after]. Otherwise Lithium packs the
    binders into one tuple, and each later binder deepens the projections of
-   all earlier ones. *)
+   all earlier ones.
+
+   Only names that hold across blocks qualify, and the generator gives such
+   names only at a call boundary, where it also records named equations. A
+   block with no named equation names its variables per block (the register
+   values at its entry), so a successor's binder of the same name is a
+   different value: taking it costs a pass per wrong witness (two decodeItem
+   caller blocks ran past their CPU limit). Such a block keeps Lithium's
+   instantiation. *)
 Ltac2 zesu_no_namesake () := Control.zero (Tactic_failure None).
+
+Ltac2 zesu_named_equation_in_context () :=
+  List.exist (fun (_, _, hypothesis_type) =>
+    match Constr.Unsafe.kind hypothesis_type with
+    | Constr.Unsafe.App head _ => Constr.equal head '(@zesu_named_eq)
+    | _ => false
+    end) (Control.hyps ()).
 
 Ltac2 zesu_binder_namesake (binder_type : constr) (body : constr) : constr :=
   match Constr.Unsafe.kind body with
@@ -78,7 +93,8 @@ Ltac2 zesu_binder_namesake (binder_type : constr) (body : constr) : constr :=
           match List.find_opt (fun (hypothesis, _, _) => Ident.equal hypothesis name)
                   (Control.hyps ()) with
           | Some (_, _, hypothesis_type) =>
-              if Constr.equal hypothesis_type binder_type
+              if Bool.and (Constr.equal hypothesis_type binder_type)
+                   (zesu_named_equation_in_context ())
               then Control.hyp name else zesu_no_namesake ()
           | None => zesu_no_namesake ()
           end
