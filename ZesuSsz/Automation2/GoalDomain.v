@@ -26,12 +26,13 @@ Class ZesuGoalDomainIntro (goal premise : Prop) : Prop :=
   zesu_goal_domain_intro : premise -> goal.
 #[global] Hint Mode ZesuGoalDomainIntro ! - : typeclass_instances.
 
-(* Unfold a registered head; or apply the registered introduction of a sealed
-   domain and unfold the precondition it leaves. *)
+(* Apply the registered introduction of a sealed domain and unfold the
+   precondition it leaves; or unfold a registered head. The introduction
+   comes first: unfolding the arguments of a sealed domain is progress that
+   leaves the domain sealed. *)
 Ltac zesu_goal_domain_open :=
   first
-    [progress (autounfold with zesu_goal_domain)
-    |lazymatch goal with
+    [lazymatch goal with
      | |- ?goal =>
          let premise := fresh "premise" in
          evar (premise : Prop);
@@ -40,7 +41,8 @@ Ltac zesu_goal_domain_open :=
          unfold premise in intro; clear premise;
          apply intro; clear intro;
          progress (autounfold with zesu_goal_domain)
-     end].
+     end
+    |progress (autounfold with zesu_goal_domain)].
 
 Ltac zesu_goal_domain_part :=
   first
