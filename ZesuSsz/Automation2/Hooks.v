@@ -45,6 +45,7 @@ Require Import ZesuSsz.Automation2.UninitRegions.
 Require Import ZesuSsz.Automation2.BoundedArithmetic.
 Require Import ZesuSsz.Automation2.TraceTailLemmas.
 Require Import ZesuSsz.Automation2.InstrPre.
+Require Import ZesuSsz.Automation2.NamedEquations.
 Require Import ZesuMachineMap.Machine.
 Require Import ZesuSsz.Automation2.BitvectorFacts.
 Require Import ZesuSsz.Automation2.PureFacts.
@@ -2384,7 +2385,10 @@ Ltac zesu_liAStep :=
   | zesu_liInstrPreMatch
   | zesu_preserve_current_unsigned
   | zesu_register_collection_selection_if_enabled
+  | zesu_named_equation_goal
+  | zesu_named_binder_witness
   | liStep
+  | zesu_unfold_let_mem_address
   | liLetBindHint
   | liUnfoldLate
   | zesu_canonical_fact_views_if_enabled

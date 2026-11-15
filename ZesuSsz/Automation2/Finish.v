@@ -1,3 +1,4 @@
+Require ZesuSsz.Automation2.NamedEquations.
 Require Import ZesuSsz.Automation2.MemoryAddress.
 Require Import ZesuSsz.Automation2.MemoryTupleConsumer.
 Require Import ZesuSsz.Automation2.SourceFactMatching.
@@ -957,6 +958,7 @@ Ltac zesu_union_array_payload_finish :=
       ZesuSsz.Automation2.FramePackingFinish.zesu_frame_packing_finish]).
 
 Ltac zesu_finish_base :=
+  try ZesuSsz.Automation2.NamedEquations.zesu_open_named_equations;
   first [solve [zesu_union_array_payload_finish] |
   try solve [zesu_array_region_selection_if_enabled];
   tryif zesu_defer_unresolved_sidecondition_if_enabled then idtac else (
