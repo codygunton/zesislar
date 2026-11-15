@@ -58,13 +58,12 @@ Ltac zesu_byte_slice_start address base :=
   end.
 
 (* The size that a pure fact states for the requested slice, as a value: a
-   fact `size = Z.of_nat (length slice)`, or such an equation among the
-   conjuncts of a fact that mentions the slice (unfolded at each head). *)
-Ltac zesu_byte_slice_size_in fact slice :=
-  let fact := eval hnf in fact in
+   fact `size = Z.of_nat (length slice)`, or such an equation among its
+   conjuncts. *)
+Ltac zesu_byte_slice_size_stated fact slice :=
   match fact with
-  | ?left /\ _ => zesu_byte_slice_size_in left slice
-  | _ /\ ?right => zesu_byte_slice_size_in right slice
+  | ?left /\ _ => zesu_byte_slice_size_stated left slice
+  | _ /\ ?right => zesu_byte_slice_size_stated right slice
   | @eq Z ?size ?measure =>
       let measure := eval cbn in measure in
       lazymatch measure with
@@ -74,6 +73,24 @@ Ltac zesu_byte_slice_size_in fact slice :=
           | (?same, ?same) => let size := eval cbn in size in constr:(size)
           end
       end
+  end.
+
+(* What a registered lemma (a `ZesuDerivedFacts` instance) derives from a
+   fact. A callee's call-site domain is sealed: its interface registers the
+   facts a caller may read from it, and the step reads them only this way,
+   never by unfolding. *)
+Ltac zesu_byte_slice_derived fact :=
+  let derivation := constr:(@ZesuSsz.Automation.PureFacts.zesu_derived_facts fact _ _) in
+  lazymatch type of derivation with _ -> ?derived => derived end.
+
+(* The size for the slice that a fact states, or that a registered lemma
+   derives from it (one derivation, no chains). *)
+Ltac zesu_byte_slice_size_in fact slice :=
+  match constr:(tt) with
+  | _ => zesu_byte_slice_size_stated fact slice
+  | _ =>
+      let derived := zesu_byte_slice_derived fact in
+      zesu_byte_slice_size_stated derived slice
   end.
 
 Ltac zesu_byte_slice_size rest slice :=

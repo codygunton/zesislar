@@ -92,6 +92,33 @@ Lemma decodeItemMeaningC1B args after :
     (decodeItemBeforeStorage args) after.
 Proof. by intros [Hc1b _]. Qed.
 
+Lemma errorResult40Word24 (after : list byte) :
+  errorResult40 after -> bv_unsigned (listWord64At24 after) = 0.
+Proof.
+  unfold errorResult40. intros [Hlen Hbytes].
+  do 32 (destruct after as [|? after]; [simpl in Hlen; discriminate|]).
+  cbn [List.nth]. rewrite !concatByteUnsigned by reflexivity.
+  pose proof (Hbytes 24%nat ltac:(lia)) as H24. pose proof (Hbytes 25%nat ltac:(lia)) as H25.
+  pose proof (Hbytes 26%nat ltac:(lia)) as H26. pose proof (Hbytes 27%nat ltac:(lia)) as H27.
+  pose proof (Hbytes 28%nat ltac:(lia)) as H28. pose proof (Hbytes 29%nat ltac:(lia)) as H29.
+  pose proof (Hbytes 30%nat ltac:(lia)) as H30. pose proof (Hbytes 31%nat ltac:(lia)) as H31.
+  unfold byteAt in *. cbn in H24, H25, H26, H27, H28, H29, H30, H31. simplify_eq.
+  change (MachineWord.MachineWord.Z_idx 8) with 8%N in *. lia.
+Qed.
+
+(* A success consumes at most the input; an error writes 0. *)
+Lemma decodeItemConsumedInInput inputPointer input before after :
+  C1BResult inputPointer input before after ->
+  bv_unsigned (listWord64At24 after) <= Z.of_nat (length input).
+Proof.
+  unfold C1BResult, candidateResult40. intros (_ & Hresult & _).
+  destruct (candidateDecodeItem input) as [|isList h p] eqn:Hc.
+  - rewrite (errorResult40Word24 after Hresult). lia.
+  - destruct (candidateDecodeItemSuccessBounds _ _ _ _ Hc) as (_ & Hfit & _).
+    destruct Hresult as (_ & _ & _ & _ & _ & H24 & _).
+    rewrite (listWord64At24Value _ _ H24). exact Hfit.
+Qed.
+
 (* ---- The interface lemmas (proof sources of proved_functions.json). ---- *)
 
 Lemma decodeItemMeaningLength args after :
@@ -130,6 +157,41 @@ Lemma decodeItemMeaningKind args after :
    bv_unsigned (listWord64At24 after) <= Z.of_nat (length (decodeItemInputBytes args))).
 Proof.
   intros H. exact (proj2 (proj2 (C1BResultCallerFacts _ _ _ _ (decodeItemMeaningC1B _ _ H)))).
+Qed.
+
+(* The payload bound in the 8-byte little-endian window form, the form in
+   which a caller passes the payload pointer on as a call argument. *)
+Lemma decodeItemMeaningPayloadInInputLe argv0 argv1 rest sp inputEnd input before after :
+  DecodeMeaningModuloKnownBugs
+    (decodeItemCallDataArgs (argv0 :: argv1 :: rest) sp inputEnd input before) after ->
+  0 < bv_unsigned (listWord64At8 after) ->
+  bv_unsigned (listWord64At8 after) < 18446744073709551607 ->
+  bv_unsigned argv1 <= bv_unsigned (leWord64 after 0) /\
+  bv_unsigned (leWord64 after 0) + bv_unsigned (listWord64At8 after) <=
+    bv_unsigned argv1 + Z.of_nat (length input).
+Proof.
+  intros H. pose proof (decodeItemMeaningC1B _ _ H) as Hc1b.
+  rewrite (decodeItemPayloadPointerLe _ _ _ _ Hc1b).
+  exact (decodeItemPayloadInInput _ _ _ _ Hc1b).
+Qed.
+
+(* The consumed count (bytes 24..31) never exceeds the input, on success and
+   on error: a caller advances its cursor by it. *)
+Lemma decodeItemMeaningConsumed argv sp inputEnd input before after :
+  DecodeMeaningModuloKnownBugs (decodeItemCallDataArgs argv sp inputEnd input before) after ->
+  bv_unsigned (listWord64At24 after) <= Z.of_nat (length input).
+Proof. intros H. exact (decodeItemConsumedInInput _ _ _ _ (decodeItemMeaningC1B _ _ H)). Qed.
+
+(* A call-site domain: the length argument is the input's length and the
+   input range does not wrap. *)
+Lemma decodeItemDomainInput argv0 argv1 argv2 rest sp inputEnd input before :
+  decodeItemC1BDomain
+    (decodeItemCallDataArgs (argv0 :: argv1 :: argv2 :: rest) sp inputEnd input before) ->
+  bv_unsigned argv2 = Z.of_nat (length input) /\
+  bv_unsigned argv1 + bv_unsigned argv2 < bv_modulus 64.
+Proof.
+  intros [Hlen [_ Hlayout]]. unfold decodeItemEntryLayout in Hlayout.
+  destruct Hlayout as (_ & _ & Hfit & _). split; [exact Hlen | exact Hfit].
 Qed.
 
 (* The call site establishes the sealed domain from decodeItem's stated

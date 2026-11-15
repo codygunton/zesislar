@@ -10,10 +10,37 @@ From Coq Require Import ZArith Lia.
    conjunctions, and closes every part with `lia` or `bv_solve` over the
    bitvector images. `solve` keeps it all-or-nothing: a goal it cannot close
    stays exactly as it was. A goal with no registered head costs one failed
-   `progress`. *)
+   `progress`.
+
+   A proved callee's call-site domain is sealed (ZesuSsz/Interfaces/<F>.v):
+   the step never unfolds it. Its interface registers the lemma that
+   introduces it from the callee's stated precondition as a
+   `ZesuGoalDomainIntro` instance, and the precondition's public names in
+   `zesu_goal_domain`; the step applies the lemma, then unfolds the
+   precondition. *)
 Create HintDb zesu_goal_domain.
 
 Class ZesuStepGoalDomain : Prop := zesu_step_goal_domain : True.
+
+Class ZesuGoalDomainIntro (goal premise : Prop) : Prop :=
+  zesu_goal_domain_intro : premise -> goal.
+#[global] Hint Mode ZesuGoalDomainIntro ! - : typeclass_instances.
+
+(* Unfold a registered head; or apply the registered introduction of a sealed
+   domain and unfold the precondition it leaves. *)
+Ltac zesu_goal_domain_open :=
+  first
+    [progress (autounfold with zesu_goal_domain)
+    |lazymatch goal with
+     | |- ?goal =>
+         let premise := fresh "premise" in
+         evar (premise : Prop);
+         let intro := fresh "intro" in
+         assert (intro : ZesuGoalDomainIntro goal premise) by (unfold premise; typeclasses eauto);
+         unfold premise in intro; clear premise;
+         apply intro; clear intro;
+         progress (autounfold with zesu_goal_domain)
+     end].
 
 Ltac zesu_goal_domain_part :=
   first
@@ -28,7 +55,7 @@ Ltac zesu_goal_domain_part :=
 Ltac zesu_finish_goal_domain :=
   let _ := constr:(_ : ZesuStepGoalDomain) in
   solve [
-    progress (autounfold with zesu_goal_domain); cbn;
+    zesu_goal_domain_open; cbn;
     zesu_witness_facts;
     autounfold with zesu_contract_constants zesu_goal_domain in *;
     rewrite ?bv_add_unsigned;
