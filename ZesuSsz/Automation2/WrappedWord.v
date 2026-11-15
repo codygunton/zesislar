@@ -202,3 +202,18 @@ Ltac zesu_wrapped_index_step :=
         zesu_wrapped_index_literal expression ltac:(fun Hindex => rewrite Hindex in Hlookup)
     end].
 
+(* An array-bound side condition on such an index: once the index is a
+   literal, the list's known length decides the bound by computation. *)
+Ltac zesu_wrapped_index_bound_goal :=
+  lazymatch goal with
+  | |- (Z.to_nat ?expression + _ <= length ?values)%nat =>
+      zesu_wrapped_index_literal expression ltac:(fun Hindex => rewrite Hindex)
+  | |- (Z.to_nat ?expression < length ?values)%nat =>
+      zesu_wrapped_index_literal expression ltac:(fun Hindex => rewrite Hindex)
+  end;
+  lazymatch goal with
+  | |- context [length ?values] =>
+      match goal with Hlength : length values = _ |- _ => rewrite Hlength end
+  end;
+  ZesuSsz.Automation2.VmClosed.zesu_vm_closed_decide.
+

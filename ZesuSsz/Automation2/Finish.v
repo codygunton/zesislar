@@ -333,6 +333,23 @@ Ltac zesu_bv_solver_goal :=
   | _ => idtac
   end.
 
+(* Pure goals of a known shape, closed from the facts on the goal's own
+   terms: one bit of a word, a list window against the list's byte
+   positions, a branch fact's bv_unsigned view, a frame-array index bound.
+   They run before the context-wide solvers: on a block context of hundreds
+   of hypotheses those spend minutes on such a goal without closing it, and
+   the common pure path grew one decodeParentHeader caller's tail past
+   16 GiB on the index bound. *)
+Ltac zesu_finish_shape_closers :=
+  lazymatch goal with
+  | |- environments.envs_entails _ _ => fail 0
+  | |- ?target => lazymatch type of target with Prop => idtac end
+  end;
+  first [solve [ZesuSsz.Automation2.BitvectorFacts.zesu_single_bit_zero_goal]
+    | solve [BytePositionEquations.zesu_le_window_goal]
+    | solve [BytePositionEquations.zesu_word_fact_goal]
+    | solve [WrappedWord.zesu_wrapped_index_bound_goal]].
+
 Ltac zesu_finish_v1 :=
   try autorewrite with zesu_indices;
   try (zesu_normalize_memory_constants);
@@ -340,11 +357,13 @@ Ltac zesu_finish_v1 :=
   try iAssumption;
   lazymatch goal with
   | |- SHELVED_SIDECOND _ =>
-      first [solve [zesu_array_bounds_if_enabled] |
+      first [solve [unshelve_sidecond; unLET; zesu_finish_shape_closers] |
+        solve [zesu_array_bounds_if_enabled] |
         solve [unshelve_sidecond; unLET; zesu_array_eight_value] |
         prepare_sidecond]
   | _ => Hooks.zesu_unlet_preserving_witness_metadata
   end;
+  try solve [zesu_finish_shape_closers];
   try zesu_finish_selectors;
   try autorewrite with zesu_indices;
   try iAssumption;
@@ -395,7 +414,8 @@ Ltac zesu_finish_normalize :=
   try (zesu_normalize_memory_addresses).
 
 Ltac zesu_finish_shelved :=
-  first [solve [zesu_array_bounds_if_enabled] |
+  first [solve [unshelve_sidecond; unLET; zesu_finish_shape_closers] |
+        solve [zesu_array_bounds_if_enabled] |
         solve [unshelve_sidecond; unLET; zesu_array_eight_value] |
     prepare_sidecond].
 
@@ -888,6 +908,7 @@ Ltac zesu_finish_byte_word_views :=
 Ltac zesu_finish_final_pure :=
   first [
   ZesuSsz.Automation2.NamedEquations.zesu_finish_exists_from_hypotheses |
+  solve [zesu_finish_shape_closers] |
   zesu_final_pure_head_gate;
   try BytePositionEquations.zesu_byte_position_facts;
   tryif progress zesu_saturate_derived_facts
@@ -920,6 +941,7 @@ Ltac zesu_finish_final_pure :=
 Ltac zesu_finish_pure_goal :=
   first [
   ZesuSsz.Automation2.NamedEquations.zesu_finish_exists_from_hypotheses |
+  solve [zesu_finish_shape_closers] |
 zesu_finish_pure_goal_base;
   try solve [
     first [
