@@ -254,6 +254,12 @@ by a symbolic link or by a path in a manifest. It logs each deletion in `_build/
    It never uses `--force`. Write `ITEM.json` with `{"branch": "<branch>"}` in each run dir.
 6. Worktree builds expire. The janitor deletes a worktree `_build` after 48 hours without change.
    The source checkout stays.
+7. Save residual goals in the goal store. `tools/save_goal.py --function F --case C --tag T FILE...`
+   copies goal files (up to 1 MiB each) to `_build/goals/<function>/<case>/<tag>/` with a
+   `MANIFEST.json` (head, bank, command, date). Neither the janitor nor
+   `tools/cleanup_after_merge.sh` deletes the store; `_build/BUDGET.json` reports its size.
+   Before they delete a run dir or worktree build, they move its `*Goal*.v` and `goals/**/*.v`
+   files to `_build/goals/<ITEM.json function or _rescued>/<run dir>/rescued-<UTC stamp>/`.
 
 ## Proof workflow
 

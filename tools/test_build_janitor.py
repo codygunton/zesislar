@@ -210,6 +210,25 @@ class Plan(JanitorTree):
         [row] = [row for row in plan['rows'] if row['kind'] == 'worktree-build']
         self.assertEqual(row['reason'], 'admission ledger receipt ' + str(receipt))
 
+    def test_worktree_build_removal_moves_saved_goals_into_the_store(self):
+        worktrees = self.root / '.worktrees'
+        goal = write(worktrees / 'probe/_build/p0300/goals/Goal1.v', b'Lemma g : True.\n')
+        copy = write(worktrees / 'probe/_build/default/ZesuSsz/GoalDomain.v', b'source')
+        stored = write(self.root / '_build/goals/decodeItem/0300/t1/Goal1.v', b'Lemma s : True.\n')
+        janitor = self.janitor(now=time.time() + 49 * HOUR)
+        with patch('builtins.print'):
+            plan, log = self.plan_and_apply(janitor, self.live())
+        self.assertFalse(goal.exists())
+        self.assertFalse(copy.exists())
+        self.assertTrue(stored.exists())
+        [run] = (self.root / '_build/goals/_rescued/probe').iterdir()
+        self.assertEqual((run / 'p0300/goals/Goal1.v').read_bytes(), b'Lemma g : True.\n')
+        self.assertFalse((run / 'default').exists())
+        self.assertIn('goal-saved\t' + str(goal), log)
+        budget = janitor.budget(janitor.survey_runs())
+        self.assertGreater(budget['goal_store']['bytes'], 0)
+        self.assertFalse(budget['goal_store']['over'])
+
     def test_banks_of_older_main_commits_go_and_the_newest_stays(self):
         heads = self.repository(2)
         older = self.agents / 'a/bank-old'
