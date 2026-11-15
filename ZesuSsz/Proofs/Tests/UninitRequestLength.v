@@ -93,3 +93,45 @@ Section length_choice.
     exact I.
   Qed.
 End length_choice.
+
+(* A callee's domain sealed behind a module signature: unfolding cannot read
+   the length. Its interface registers two lemmas on the domain; the one whose
+   conclusion is the requested list's length gives the choice. *)
+Module Type SealedRequestSignature.
+  Parameter sealed_request_domain : list (bv 8) -> Prop.
+  Parameter sealed_request_output : forall v, sealed_request_domain v -> length v = 24%nat.
+  Parameter sealed_request_trivial : forall v, sealed_request_domain v -> (0 <= 0)%Z.
+End SealedRequestSignature.
+
+Module SealedRequest : SealedRequestSignature.
+  Definition sealed_request_domain (v : list (bv 8)) : Prop := length v = 24%nat.
+  Lemma sealed_request_output v : sealed_request_domain v -> length v = 24%nat.
+  Proof. exact id. Qed.
+  Lemma sealed_request_trivial v : sealed_request_domain v -> (0 <= 0)%Z.
+  Proof. intros _. reflexivity. Qed.
+End SealedRequest.
+
+#[export] Instance sealed_request_output_derived v :
+  ZesuSsz.Automation.PureFacts.ZesuDerivedFacts (SealedRequest.sealed_request_domain v)
+    (length v = 24%nat) := SealedRequest.sealed_request_output v.
+#[export] Instance sealed_request_trivial_derived v :
+  ZesuSsz.Automation.PureFacts.ZesuDerivedFacts (SealedRequest.sealed_request_domain v)
+    (0 <= 0)%Z := SealedRequest.sealed_request_trivial v.
+
+Section sealed_length_choice.
+  Context `{!islaG Sigma}.
+
+  Ltac chosen requested G :=
+    let h := constr:(_ : @LiTactic Sigma _ (zesu_uninit_request_length requested G)) in
+    let h := eval cbv beta zeta in h in
+    lazymatch h with zesu_uninit_request_length_hint _ _ ?choice => choice end.
+
+  Goal True.
+  Proof.
+    let c := chosen (fun x : list (bv 8) *ₗ unit => x.1ₗ)
+      (fun x : list (bv 8) *ₗ unit =>
+        ⌜SealedRequest.sealed_request_domain x.1ₗ⌝ ∗ True : iProp Sigma)%I in
+    constr_eq c (Some 24%nat).
+    exact I.
+  Qed.
+End sealed_length_choice.
