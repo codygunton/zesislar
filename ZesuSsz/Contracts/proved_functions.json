@@ -1,0 +1,173 @@
+{
+  "schema": "zesu.proved-functions.v1",
+  "description": "Functions with a compliance theorem. A function with an interface is a black box to every caller: callers import only its generated interface (tools/block/render_interfaces.py renders ZesuSsz/Interfaces/<F>.v and <F>Correct.v from this file), whose call-spec predicates are sealed by module ascription. tools/block/check_proved_functions.py (check-fast) enforces the imports, the generator's call specs, theorem coverage and interface freshness; check_proof_hygiene.py refuses unfolding a sealed name outside its interface.",
+  "functions": [
+    {
+      "function": "decodeItem",
+      "symbol": "rlp.decodeItem",
+      "status": "proved",
+      "compliance_theorems": ["decodeItemGeneratedCompliance", "decodeItemSelectedCompliance"],
+      "owned_prefixes": [
+        "ZesuSsz/Contracts/DecodeItem", "ZesuSsz/Contracts/RlpDecodeItem", "ZesuSsz/Compliance/DecodeItem",
+        "ZesuSsz/Generated/DecodeItem/", "ZesuSsz/Residuals/Block800d6", "ZesuSsz/Export/DecodeItem"
+      ],
+      "legacy_callers": [
+        {"path": "ZesuSsz/Compliance/NextUint64ExitMeanings.v",
+         "module": "ZesuSsz.Compliance.DecodeItemReturnRestorationFacts",
+         "reason": "frozen-core nextUint64 registrations (pre-Automation2) use the generic byte lemma decodeItemByteDecoderBridge; no decodeItem predicate"},
+        {"path": "ZesuSsz/Compliance/NextUint64CallBridge.v",
+         "module": "ZesuSsz.Contracts.DecodeItemCompositional",
+         "reason": "frozen-core nextUint64 call bridge (pre-Automation2) installs decodeItem's compositional compliance theorem at its call site; it names the theorem's model, not a block-level predicate"},
+        {"path": "ZesuSsz/Compliance/NextUint64CallBridge.v",
+         "module": "ZesuSsz.Compliance.DecodeItemCompositionalCompliance",
+         "reason": "the same frozen-core call bridge: decodeItem's compositional compliance theorem"}
+      ],
+      "interface": {
+        "module": "ZesuSsz.Interfaces.DecodeItem",
+        "sealed_module": "DecodeItemSealed",
+        "requires": [
+          "From Coq Require Import List ZArith.",
+          "From stdpp Require Import base list bitvector.definitions.",
+          "Require Import isla.riscv64.riscv64.",
+          "Require Import EvmSailRlp.evm_rlp_types.",
+          "Require Import ZesuSsz.Automation.PureFacts.",
+          "Require Import ZesuSsz.Automation2.Calls.",
+          "Require Import ZesuSsz.Contracts.DecodeItemPayloadBounds.",
+          "Require Import ZesuSsz.Contracts.DecodeItemCallFacts.",
+          "Require Import ZesuSsz.Contracts.DecodeItemCallSpec2."
+        ],
+        "exports": [
+          "ZesuSsz.Contracts.RlpDecodeItem",
+          "ZesuSsz.Contracts.RlpDecodeItemContract",
+          "ZesuSsz.Contracts.DecodeItemCallData",
+          "ZesuSsz.Contracts.NamedEquation"
+        ],
+        "correct": {
+          "module": "ZesuSsz.Interfaces.DecodeItemCorrect",
+          "requires": ["Require ZesuSsz.Compliance.DecodeItemCallSpec2."],
+          "exports": ["ZesuSsz.Contracts.DecodeItemSelected"],
+          "premises": [],
+          "code": "decodeItemSelectedCode",
+          "entry": "decodeItemEntry",
+          "template_correct": "ZesuSsz.Compliance.DecodeItemCallSpec2.decodeItemCallSpecDefinition_correct"
+        }
+      },
+      "call_spec": {
+        "name": "decodeItemCallSpec2",
+        "template": "decodeItemCallSpecDefinition",
+        "template_source": "ZesuSsz/Contracts/DecodeItemCallSpec2.v",
+        "correct_from": "decodeItemCallSpecCorrectFrom"
+      },
+      "sealed": [
+        {"name": "decodeItemCallDomain", "type": "DecodeItemArgs -> Prop", "definition": "decodeItemC1BDomain"},
+        {"name": "decodeItemCallMeaning", "type": "DecodeItemArgs -> DecodeItemOutcome -> Prop",
+         "definition": "DecodeMeaningModuloKnownBugs"}
+      ],
+      "interface_lemmas": [
+        {"name": "decodeItemCallMeaningLength", "binders": "args after",
+         "premise": "decodeItemCallMeaning args after",
+         "conclusion": "(List.length after = 40)%nat",
+         "proof": "decodeItemMeaningLength", "derived_facts": true},
+        {"name": "decodeItemCallPayloadInInput",
+         "binders": "argv0 argv1 rest sp inputEnd input before after",
+         "premise": "decodeItemCallMeaning (decodeItemCallDataArgs (argv0 :: argv1 :: rest) sp inputEnd input before) after",
+         "conclusion": "0 < bv_unsigned (listWord64At8 after) -> bv_unsigned (listWord64At8 after) < 18446744073709551607 -> bv_unsigned argv1 <= bv_unsigned (listWord64At0 after) /\\ bv_unsigned (listWord64At0 after) + bv_unsigned (listWord64At8 after) <= bv_unsigned argv1 + Z.of_nat (length input)",
+         "proof": "decodeItemMeaningPayloadInInput", "derived_facts": true},
+        {"name": "decodeItemCallInputFits",
+         "binders": "argv0 argv1 rest sp inputEnd input before after",
+         "premise": "decodeItemCallMeaning (decodeItemCallDataArgs (argv0 :: argv1 :: rest) sp inputEnd input before) after",
+         "conclusion": "0 <= bv_unsigned argv1 /\\ bv_unsigned argv1 + Z.of_nat (length input) < 18446744073709551616",
+         "proof": "decodeItemMeaningInputFits", "derived_facts": false},
+        {"name": "decodeItemCallKind", "binders": "args after",
+         "premise": "decodeItemCallMeaning args after",
+         "conclusion": "(bv_unsigned (List.nth 32 after (BV 8%N 0%Z)) = 0 \\/ bv_unsigned (List.nth 32 after (BV 8%N 0%Z)) = 4) /\\ (bv_unsigned (List.nth 32 after (BV 8%N 0%Z)) = 4 -> bv_unsigned (listWord64At0 after) = 0 /\\ bv_unsigned (listWord64At8 after) = 0) /\\ (bv_unsigned (List.nth 32 after (BV 8%N 0%Z)) = 0 -> bv_unsigned (List.nth 16 after (BV 8%N 0%Z)) <= 1 /\\ bv_unsigned (listWord64At24 after) <= Z.of_nat (length (decodeItemInputBytes args)))",
+         "proof": "decodeItemMeaningKind", "derived_facts": false},
+        {"name": "decodeItemCallDomainIntro", "binders": "args",
+         "premise": "decodeItemC1BDomain args", "conclusion": "decodeItemCallDomain args",
+         "proof": "decodeItemDomainIntro", "derived_facts": false},
+        {"name": "decodeItemCallMeaningLink", "binders": "args after",
+         "premise": "decodeItemCallMeaning args after", "conclusion": "DecodeMeaningModuloKnownBugs args after",
+         "proof": "decodeItemMeaningLink", "derived_facts": false, "exit_composition_only": true}
+      ]
+    },
+    {
+      "function": "nextUint64",
+      "symbol": "rlp_decode.nextUint64",
+      "status": "assumed",
+      "assumption": "NextUint64ContractCorrect",
+      "compliance_theorems": [],
+      "owned_prefixes": [
+        "ZesuSsz/Contracts/NextUint64", "ZesuSsz/Compliance/NextUint64", "ZesuSsz/Generated/NextUint64/"
+      ],
+      "interface": {
+        "module": "ZesuSsz.Interfaces.NextUint64",
+        "sealed_module": "NextUint64Sealed",
+        "requires": [
+          "From Coq Require Import List ZArith.",
+          "From stdpp Require Import base list bitvector.definitions.",
+          "Require Import isla.riscv64.riscv64.",
+          "Require Import EvmSailRlp.evm_rlp_types.",
+          "Require Import ZesuSsz.Automation.PureFacts.",
+          "Require Import ZesuSsz.Automation2.Calls.",
+          "Require Import ZesuSsz.Contracts.ParentHeaderRootFacts.",
+          "Require Import ZesuSsz.Contracts.NextUint64CallFacts.",
+          "Require Import ZesuSsz.Contracts.NextUint64CallSpec2."
+        ],
+        "exports": [
+          "ZesuSsz.Contracts.DecodeItemCallData",
+          "ZesuSsz.Contracts.NextUint64BlockEntries",
+          "ZesuSsz.Contracts.NextUint64CallData",
+          "ZesuSsz.Contracts.NamedEquation"
+        ],
+        "correct": {
+          "module": "ZesuSsz.Interfaces.NextUint64Correct",
+          "requires": ["Require Import ZesuSsz.Contracts.ParentHeader.",
+                       "Require ZesuSsz.Compliance.NextUint64CallSpec2."],
+          "exports": ["ZesuSsz.Contracts.NextUint64Selected", "ZesuSsz.Contracts.NextUint64Contract"],
+          "premises": [["Hcontract", "NextUint64ContractCorrect"]],
+          "code": "nextUint64SelectedCode",
+          "entry": "nextUint64Entry",
+          "template_correct": "ZesuSsz.Compliance.NextUint64CallSpec2.nextUint64CallSpecDefinition_correct"
+        }
+      },
+      "call_spec": {
+        "name": "nextUint64CallSpec2",
+        "template": "nextUint64CallSpecDefinition",
+        "template_source": "ZesuSsz/Contracts/NextUint64CallSpec2.v",
+        "correct_from": "nextUint64CallSpecCorrectFrom"
+      },
+      "sealed": [
+        {"name": "nextUint64CallDomain", "type": "NextUint64Args -> Prop", "definition": "nextUint64BoundaryDomain"},
+        {"name": "nextUint64CallResult", "type": "NextUint64Call -> NextUint64Return -> Prop",
+         "definition": "nextUint64RootResult"}
+      ],
+      "interface_lemmas": [
+        {"name": "nextUint64CallResultLength", "binders": "call result",
+         "premise": "nextUint64CallResult call result",
+         "conclusion": "(List.length (nextResultBytes result) = 16)%nat",
+         "proof": "nextUint64ResultLength", "derived_facts": true},
+        {"name": "nextUint64CallResultRest",
+         "binders": "inputPointer input slice resultPointer stack returnAddress s0 s1 s2 s3 s4 result",
+         "premise": "nextUint64CallResult {| nextInputPointer := inputPointer; nextInputBytes := input; nextSlicePointer := slice; nextResultPointer := resultPointer; nextStackPointer := stack; nextReturnAddress := returnAddress; nextSavedS0 := s0; nextSavedS1 := s1; nextSavedS2 := s2; nextSavedS3 := s3; nextSavedS4 := s4 |} result",
+         "conclusion": "0 <= inputPointer /\\ inputPointer + Z.of_nat (length input) < 18446744073709551616 /\\ inputPointer <= nextRestPointer result /\\ nextRestPointer result + nextRestLength result = inputPointer + Z.of_nat (length input) /\\ 0 <= nextRestLength result <= Z.of_nat (length input)",
+         "proof": "nextUint64ResultRest", "derived_facts": true},
+        {"name": "nextUint64CallDomainIntro", "binders": "params",
+         "premise": "nextUint64BoundaryDomain params", "conclusion": "nextUint64CallDomain params",
+         "proof": "nextUint64DomainIntro", "derived_facts": false},
+        {"name": "nextUint64CallResultLink", "binders": "call result",
+         "premise": "nextUint64CallResult call result", "conclusion": "nextUint64RootResult call result",
+         "proof": "nextUint64ResultLink", "derived_facts": false, "exit_composition_only": true}
+      ]
+    },
+    {
+      "function": "decodeParentHeader",
+      "symbol": "rlp_decode.decodeParentHeader",
+      "status": "conditional",
+      "condition": "parentHeaderGeneratedCompliance assumes NextUint64ContractCorrect and ParentHeaderOpenBlocks; no interface until both are discharged",
+      "compliance_theorems": ["parentHeaderGeneratedCompliance"],
+      "owned_prefixes": ["ZesuSsz/Contracts/ParentHeader", "ZesuSsz/Compliance/ParentHeader",
+                         "ZesuSsz/Generated/DecodeParentHeader/"],
+      "interface": null
+    }
+  ]
+}

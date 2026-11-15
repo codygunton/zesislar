@@ -136,7 +136,7 @@ class LiveAdmissionTests(unittest.TestCase):
             self.assertTrue(self.decide(request=20*M.GIB)['fits'])
 
     def test_invalid_live_ceiling_keeps_booking_and_all_claims(self):
-        for value in ('0','-1','176','1.5','invalid',''):
+        for value in ('0','-1',str(M.SLICE_MAX_BYTES // M.GIB + 1),'1.5','invalid',''):
             with self.subTest(value=value),patch.dict(os.environ, {'ZESU_LIVE_REQUEST_LIMIT_GIB':value}):
                 result=self.decide(request=M.GIB)
                 self.assertFalse(result['fits'])
@@ -299,6 +299,27 @@ class WaiterTests(unittest.TestCase):
 GIB = M.GIB
 
 
+class RegionReleaseTests(unittest.TestCase):
+    """A recorded region release stands when its receipt was deleted, not when it changed."""
+
+    def test_deleted_receipt_keeps_the_release(self):
+        with tempfile.TemporaryDirectory() as directory:
+            receipt = Path(directory) / 'REPORT.json'
+            receipt.write_text('{"released": true}\n')
+            import hashlib
+            data = {'fixed_claims': {'a': 5}, 'region_claims': {'6ae0': 17 * GIB},
+                    'released_region_claims': {'6ae0': {'bytes': 17 * GIB, 'receipt': str(receipt),
+                                                        'sha256': hashlib.sha256(receipt.read_bytes()).hexdigest()}}}
+            self.assertEqual(M.ledger_claims(data), {'a': 5})
+            receipt.unlink()
+            warnings = io.StringIO()
+            with redirect_stderr(warnings):
+                self.assertEqual(M.ledger_claims(data), {'a': 5})
+            self.assertIn('region release 6ae0: receipt', warnings.getvalue())
+            receipt.write_text('{"released": false}\n')
+            self.assertEqual(M.ledger_claims(data), {'a': 5, 'legacy:6ae0': 17 * GIB})
+
+
 class RetainedHoldTests(unittest.TestCase):
     """A batch hold books live anonymous use plus its running compiles."""
 
@@ -431,7 +452,7 @@ class GateCompileSumTests(unittest.TestCase):
         self.assertEqual(result['active_claim_bytes'], 47 * GIB)
 
     def test_gate_sum_above_the_slice_cap_waits_for_admission(self):
-        result = self.booked(self.ledger([16 * GIB] * 10))
+        result = self.booked(self.ledger([16 * GIB] * (M.SLICE_MAX_BYTES // (16 * GIB) + 1)))
         self.assertGreater(result['active_claim_bytes'], result['slice_claim_cap_bytes'])
         self.assertFalse(result['fits'])
 
@@ -614,6 +635,19 @@ class ScopeTests(unittest.TestCase):
         self.assertFalse(self.reader.compiler(marker)['verified'])
         marker.write_text(f'13\naggregate={self.group.name}\n')
         self.assertFalse(self.reader.compiler(marker)['verified'])
+
+
+class WorkloadParentTests(unittest.TestCase):
+    def test_parent_fence_follows_the_account_limit(self):
+        with tempfile.TemporaryDirectory() as temp:
+            account = Path(temp) / 'user.slice' / 'user-1000.slice'
+            self.assertEqual(M.workload_parent_bytes(temp, uid=1000), 160 * M.GIB)
+            account.mkdir(parents=True)
+            for account_gib, parent_gib in ((200, 160), (210, 170), (235, 175)):
+                (account / 'memory.max').write_text(f'{account_gib * M.GIB}\n')
+                self.assertEqual(M.workload_parent_bytes(temp, uid=1000), parent_gib * M.GIB)
+            (account / 'memory.max').write_text('max\n')
+            self.assertEqual(M.workload_parent_bytes(temp, uid=1000), 160 * M.GIB)
 
 
 if __name__=='__main__':unittest.main()

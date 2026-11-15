@@ -9,6 +9,10 @@ tools_dir=$(dirname "$(realpath "$0")")
 if [[ "$(basename "$tools_dir")" == guard-bin ]]; then
   tools_dir=$(dirname "$tools_dir")
 fi
+# Measured 18-25% lower peak RSS for +3-4% instructions (docs/ai/PROJECTS.md
+# "Rocq GC setting"). Setting OCAMLRUNPARAM replaces Rocq's own GC policy, so
+# keep its minor heap (s=32M) and best-fit allocator (a=2).
+export OCAMLRUNPARAM=s=32M,a=2,o=40
 export ZESU_MODULE_LIMIT_GIB=${ZESU_GATE_MODULE_LIMIT_GIB-16}
 if [[ ! "$ZESU_MODULE_LIMIT_GIB" =~ ^([6-9]|[12][0-9]|3[0-2])$ ]]; then
   echo "compiler gate memory limit must be an integer from 6 through 32 GiB" >&2
@@ -53,4 +57,11 @@ set +e
 wait "$scope_pid"
 status=$?
 scope_pid=""
+# The soundness gate keeps each fresh object before Dune can link the target
+# to an equal cache entry; the gate then compares both hashes.
+if [[ "$status" -eq 0 && -n "${ZESU_FRESH_OBJECT_DIR:-}" && "${!#}" == *.v ]]; then
+  object="${!#%.v}.vo"
+  mkdir -p -- "$ZESU_FRESH_OBJECT_DIR/$(dirname -- "$object")" || exit 1
+  cp --reflink=always -- "$object" "$ZESU_FRESH_OBJECT_DIR/$object" || exit 1
+fi
 exit "$status"

@@ -1,9 +1,11 @@
+Require ZesuSsz.Automation2.NamedEquations.
 Require Import ZesuSsz.Automation2.MemoryAddress.
 Require Import ZesuSsz.Automation2.MemoryTupleConsumer.
 Require Import ZesuSsz.Automation2.SourceFactMatching.
 Require Import ZesuSsz.Automation2.SourceFactByteViews.
 Require Import ZesuSsz.Automation2.EntryWitnessFinish.
 Require Import ZesuSsz.Automation2.WrappedWord.
+Require ZesuSsz.Automation2.BytePositionEquations.
 Require Import isla.riscv64.riscv64.
 Require Import ZesuSsz.Automation2.EntryIntro.
 Require Import ZesuMachineMap.Machine.
@@ -113,7 +115,7 @@ Ltac zesu_finish_list_slice_length :=
 Ltac zesu_finish_constant :=
   lazymatch goal with
   | |- @eq (bv _) ?left ?right =>
-      is_closed_term left; is_closed_term right;
+      ZesuSsz.Automation2.VmClosed.zesu_closed_term left; ZesuSsz.Automation2.VmClosed.zesu_closed_term right;
       (solve [apply bv_eq; first [ZesuSsz.Automation2.VmClosed.zesu_vm_closed_decide | reflexivity]])
   end.
 
@@ -121,7 +123,7 @@ Ltac zesu_normalize_memory_constants :=
   repeat match goal with
   | |- context[mem_mapsto _ _ (bv_add ?left ?right)] =>
       let value := constr:(bv_add left right) in
-      is_closed_term value;
+      ZesuSsz.Automation2.VmClosed.zesu_closed_term value;
       let integer := ZesuSsz.Automation2.VmClosed.zesu_vm_eval_closed (bv_unsigned value) in
       lazymatch integer with Z0 => idtac | Zpos _ => idtac | Zneg _ => idtac end;
       let Hconstant := fresh "Hconstant" in
@@ -219,7 +221,7 @@ Ltac zesu_finish_known_list_shape :=
   (* A singleton codec count can retain a closed nat-to-Z conversion. *)
   repeat match goal with
   | |- context[bv_to_little_endian ?count 8 (bv_unsigned ?value)] =>
-      is_closed_term count;
+      ZesuSsz.Automation2.VmClosed.zesu_closed_term count;
       let normalized := eval cbv beta iota zeta delta
         [Z.of_nat Pos.of_succ_nat Pos.succ] in count in
       constr_eq normalized constr:(1%Z);
@@ -309,7 +311,7 @@ Ltac zesu_finish_zero_offset_u64_roundtrip :=
   lazymatch goal with
   | |- Z_to_bv 64 (little_endian_to_bv 8
       (take ?count (drop (Z.to_nat ?offset) ?bytes))) = ?word =>
-      is_closed_term count;
+      ZesuSsz.Automation2.VmClosed.zesu_closed_term count;
       assert_fails (has_evar offset);
       assert_fails (has_evar bytes);
       assert_fails (has_evar word);
@@ -416,8 +418,8 @@ Ltac zesu_finish_entailment_base :=
 
 (* Defer matching cancellation shapes to the later contract arithmetic. *)
 Ltac zesu_finish_same_closed_Z left right :=
- stdpp.tactics.is_closed_term left;
- stdpp.tactics.is_closed_term right;
+ ZesuSsz.Automation2.VmClosed.zesu_closed_term left;
+ ZesuSsz.Automation2.VmClosed.zesu_closed_term right;
  let l := ZesuSsz.Automation2.VmClosed.zesu_vm_eval_closed left in
  let r := ZesuSsz.Automation2.VmClosed.zesu_vm_eval_closed right in
  constr_eq l r.
@@ -585,7 +587,7 @@ Ltac zesu_finish_list_cons_atom :=
         | Hlength : length ?root = ?size |- _ =>
             lazymatch goal with
             | |- context [root] =>
-                is_closed_term size;
+                ZesuSsz.Automation2.VmClosed.zesu_closed_term size;
                 clear - Hlength
             end
         end;
@@ -622,7 +624,7 @@ Ltac zesu_masked_add_branch_finish :=
     | branch : ~ (?masked_expression >= ?bound_expression)%Z |- _ =>
       lazymatch masked_expression with
       | bv_unsigned (bv_and (bv_add (Z_to_bv ?width ?value) ?offset) ?mask) =>
-        is_closed_term width; is_closed_term offset; is_closed_term mask;
+        ZesuSsz.Automation2.VmClosed.zesu_closed_term width; ZesuSsz.Automation2.VmClosed.zesu_closed_term offset; ZesuSsz.Automation2.VmClosed.zesu_closed_term mask;
         assert_fails (has_evar value);
         let delta := eval vm_compute in (bv_unsigned offset) in
         let low := eval vm_compute in (N.log2 (Z.to_N (bv_unsigned mask + 1)%Z)) in
@@ -667,24 +669,12 @@ Ltac zesu_v34_array_continuation :=
       ZesuSsz.Automation2.FramePackingFinish.zesu_frame_packing_finish |
       assumption | reflexivity]).
 
-(* Keep the shared route first. Assemble after matching only when it refuses.
-   `check` validates the fixed facts after saturation. *)
-Ltac zesu_finish_source_package_with check :=
-  first [solve [
-  MemoryTupleConsumer.zesu_memory_tuple
-    ltac:(fun requested =>
-      once
-        (SourceFactByteViews.zesu_source_byte_views;
-         SourceFactByteViews.zesu_source_byte_order_tree requested;
-         ZesuSsz.Automation2.BitvectorFacts.zesu_source_biased_mask_tree requested);
-      (tryif SourceFactMatching.zesu_source_check_fixed_tree requested
-       then idtac
-       else (once (repeat JoinEntailment.zesu_join_project_once);
-         PureFacts.zesu_saturate_derived_facts;
-         check requested));
-      once (SourceFactMatching.zesu_source_match_tree requested ltac:(idtac)))
-    ltac:(fun _ => SourceFactMatching.zesu_source_finish_package)
-  ] | solve [
+(* The assembling route: open and frame the memory package, then match the
+   requested facts. `check` validates the fixed facts after saturation. Like
+   the shared route, it keeps only the first match: a refused package does
+   not retry the witnesses of shared evars, which can have unboundedly many
+   combinations. *)
+Ltac zesu_finish_source_assembled check :=
 let run := ltac:(fun consume_facts finish =>
 once (try zesu_memory_registered_intro;
   ResourceGroups.zesu_open_resource_groups;
@@ -708,9 +698,26 @@ once (try zesu_memory_registered_intro;
        else (once (repeat JoinEntailment.zesu_join_project_once);
          PureFacts.zesu_saturate_derived_facts;
          check requested));
-      SourceFactMatching.zesu_source_match_tree requested ltac:(idtac))
+      once (SourceFactMatching.zesu_source_match_tree requested ltac:(idtac)))
+    ltac:(fun _ => SourceFactMatching.zesu_source_finish_package).
+
+(* Keep the shared route first. Assemble after matching only when it refuses. *)
+Ltac zesu_finish_source_package_with check :=
+  first [solve [
+  MemoryTupleConsumer.zesu_memory_tuple
+    ltac:(fun requested =>
+      once
+        (SourceFactByteViews.zesu_source_byte_views;
+         SourceFactByteViews.zesu_source_byte_order_tree requested;
+         ZesuSsz.Automation2.BitvectorFacts.zesu_source_biased_mask_tree requested);
+      (tryif SourceFactMatching.zesu_source_check_fixed_tree requested
+       then idtac
+       else (once (repeat JoinEntailment.zesu_join_project_once);
+         PureFacts.zesu_saturate_derived_facts;
+         check requested));
+      once (SourceFactMatching.zesu_source_match_tree requested ltac:(idtac)))
     ltac:(fun _ => SourceFactMatching.zesu_source_finish_package)
-  ]].
+  ] | solve [zesu_finish_source_assembled check]].
 
 Ltac zesu_finish_source_package :=
   zesu_finish_source_package_with
@@ -854,10 +861,15 @@ Ltac zesu_final_solver_goal :=
   | _ => idtac
   end.
 
-(* The common pure path and final tail share the union helper. Baseline closers remain available. *)
+(* The common pure path and final tail share the union helper. Baseline closers remain available.
+   The existential leaf goes first: the first arm below fails outright when
+   its implication-pair step finds no pair, so a leaf inside it is never
+   reached on such a context. *)
 Ltac zesu_finish_final_pure :=
   first [
+  ZesuSsz.Automation2.NamedEquations.zesu_finish_exists_from_hypotheses |
   zesu_final_pure_head_gate;
+  try BytePositionEquations.zesu_byte_position_facts;
   tryif progress zesu_saturate_derived_facts
   then try solve [zesu_array_bounds_if_enabled]
   else idtac;
@@ -886,6 +898,7 @@ Ltac zesu_finish_final_pure :=
 
 Ltac zesu_finish_pure_goal :=
   first [
+  ZesuSsz.Automation2.NamedEquations.zesu_finish_exists_from_hypotheses |
 zesu_finish_pure_goal_base;
   try solve [
     first [
@@ -926,7 +939,8 @@ Ltac zesu_union_array_payload_finish :=
       ZesuSsz.Automation2.FramePackingFinish.zesu_frame_packing_finish]).
 
 Ltac zesu_finish_base :=
-  first [solve [zesu_union_array_payload_finish] |
+  try ZesuSsz.Automation2.NamedEquations.zesu_open_named_equations;
+  first [solve [ZesuSsz.Automation2.NamedEquations.zesu_finish_exists_from_hypotheses] | solve [zesu_union_array_payload_finish] |
   try solve [zesu_array_region_selection_if_enabled];
   tryif zesu_defer_unresolved_sidecondition_if_enabled then idtac else (
   try solve [zesu_list_cons_witness_if_enabled |
@@ -1091,6 +1105,16 @@ Ltac zesu_run_pass_steps :=
      zesu_open_matching_two_level_frame |
      zesu_extract_matching_descriptor_pure].
 
+(* A pass that stopped inside a let-bound continuation leaves it in the next
+   pass's goal as `LET_ID T args`, the let variable gone. Lithium's let step
+   unfolds only a variable head, so it stops there; unfold the wrapper. *)
+Ltac zesu_unfold_let_id_goal :=
+  lazymatch goal with
+  | |- environments.envs_entails _ ?conclusion =>
+      lazymatch conclusion with context [@LET_ID] => idtac end;
+      progress unfold LET_ID
+  end.
+
 Ltac zesu_run_pass_v1 :=
   zesu_expose_environment_alias;
   try zesu_prepare_uninit_goal;
@@ -1114,7 +1138,16 @@ Ltac zesu_run_pass_v1 :=
      zesu_liAStep |
      ZesuSsz.Automation2.CodecArrayRead.zesu_codec_array_read_sidecond |
      zesu_open_matching_two_level_frame |
-     zesu_extract_matching_descriptor_pure]; zesu_diag_step_end; liShow;
+     zesu_extract_matching_descriptor_pure |
+     (* Last: a list index on a closed-offset chain of a word becomes a
+        literal; it fires only when every other step refused. *)
+     WrappedWord.zesu_wrapped_index_step |
+     (* Then: a pure equation on byte positions of an existential list is
+        rewritten so that unification sets the list; a branch fact holding
+        such a window states it as byte positions too. *)
+     BytePositionEquations.zesu_byte_position_pure_step |
+     BytePositionEquations.zesu_le_window_rewrite_hypothesis |
+     zesu_unfold_let_id_goal]; zesu_diag_step_end; liShow;
     try zesu_finish_closed_wand;
     try zesu_finish_framed_wand;
     zesu_finish).
@@ -1124,7 +1157,7 @@ Ltac zesu_run_pass_v2 :=
   try zesu_prepare_uninit_goal;
   try zesu_normalize_find_mem_address;
   unshelve (time "zesu_run" repeat first
-    [zesu_diag_step | zesu_target_registered_intro_if_enabled | zesu_array_load_preselect | zesu_array_load_priority | zesu_conjunct_match_if_enabled | zesu_run_pass_steps | zesu_close_matching_trace_tail | zesu_open_trace_exist | zesu_rule_set_v2_steps]; zesu_diag_step_end; liShow;
+    [zesu_diag_step | zesu_target_registered_intro_if_enabled | zesu_array_load_preselect | zesu_array_load_priority | zesu_conjunct_match_if_enabled | zesu_run_pass_steps | zesu_close_matching_trace_tail | zesu_open_trace_exist | zesu_rule_set_v2_steps | WrappedWord.zesu_wrapped_index_step | BytePositionEquations.zesu_byte_position_pure_step | BytePositionEquations.zesu_le_window_rewrite_hypothesis | zesu_unfold_let_id_goal]; zesu_diag_step_end; liShow;
     try zesu_finish_closed_wand;
     try zesu_finish_framed_wand;
     zesu_finish).
@@ -1263,15 +1296,22 @@ Ltac zesu_clear_split_baseline :=
    new from another run, so the run is skipped. The residual lemmas go
    first: a registered lemma closes its goal at once, while a goal that the
    finisher cannot close can spin there before the residual tier runs. With
-   no registered lemma the tier fails at once. *)
+   no registered lemma the tier fails at once.
+   The final pure step never saw a conjunct that the split made, so an
+   older branch fact may still close it once stated in the conjunct's
+   byte-position form. That view acts only when the goal reads such a form. *)
 Ltac zesu_finish_split_conjunct :=
   lazymatch goal with
   | |- environments.envs_entails _ _ => fail
   | _ =>
       zesu_diag_export_split;
-      ZesuSsz.Automation2.ContextCollection.zesu_facts_after_share_term constr:(zesu_split_baseline);
-      zesu_clear_split_baseline;
-      first [ResidualLemmas.zesu_residual_lemma | solve [zesu_finish]]
+      first [
+        ZesuSsz.Automation2.ContextCollection.zesu_facts_after_share_term constr:(zesu_split_baseline);
+        zesu_clear_split_baseline;
+        first [ResidualLemmas.zesu_residual_lemma | solve [zesu_finish]]
+      | zesu_clear_split_baseline;
+        solve [BytePositionEquations.zesu_byte_position_facts;
+          first [assumption | zesu_finish_lia | zesu_bv_solver_goal; bv_solve]] ]
   end.
 
 (* Residual lemmas close the pure goals that every other tier leaves open. *)

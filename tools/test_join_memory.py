@@ -61,6 +61,12 @@ class MemoryJoinTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, 'typed source owner'):
             self.image(resource, paths, basis, expressions)
 
+    def test_edges_without_stores_leave_the_array_to_packaging(self):
+        # The edges state the array differently only through their seeds; no store layout rebuilds that.
+        resource, _, basis, expressions = self.fixture()
+        result = self.image(resource, [[] for _ in range(9)], basis, expressions)
+        self.assertEqual((result['status'], result['detail']), ('refused', 'The array needs explicit packaging'))
+
     def test_a_symbolic_offset_store_leaves_the_array_to_packaging(self):
         resource, paths, basis, expressions = self.fixture()
         write, _ = paths[0][0]

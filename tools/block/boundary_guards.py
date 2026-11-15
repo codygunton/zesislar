@@ -14,8 +14,15 @@ facts, and the domain fact, which the check unfolds) prove False with the
 cursor solver. A generated cut checks each source alternative before it is
 generalized, so an infeasible arm cannot widen a register value. The check is a generator-time Rocq run; no proof script is
 written into a generated file.
+
+The check reads facts in groups that share no local name: facts over disjoint
+names are refuted together only if one group is refuted alone. A group that is
+part of a group an earlier check of the same run did not refute is not checked
+again, so each fact is checked where it first appears, with the facts it shares
+names with.
 """
 from pathlib import Path
+import os
 import re
 import subprocess
 
@@ -173,15 +180,112 @@ CHECK_TACTIC = '''ZesuSsz.Automation2.RegisterArrayCursor.zesu_cursor_expose_fac
 NOT_FAILED = 'The command has not failed'
 
 
-def contradiction_source(header, binders, facts, args_type='DecodeItemArgs'):
-    """Return a check that compiles exactly when the facts do not prove False."""
+LOCAL_NAME = re.compile(r"(?<![\w'.])[A-Za-z_][\w']*")
+OUTER_NAMES = ('args', 'returnAddress')
+
+
+def _closing(text, start):
+    """The index of the parenthesis that closes the one at `start`."""
+    depth = 0
+    for position in range(start, len(text)):
+        if text[position] == '(':
+            depth += 1
+        elif text[position] == ')':
+            depth -= 1
+            if depth == 0:
+                return position
+    raise BoundaryRefused('Unbalanced parentheses in a checked fact: ' + text[:200])
+
+
+def _unwrap(text):
+    text = text.strip()
+    while text.startswith('(') and _closing(text, 0) == len(text) - 1:
+        text = text[1:-1].strip()
+    return text
+
+
+def fact_conjuncts(fact):
+    """Split `(A) /\\ (B) /\\ ...` into its conjuncts; the check destructs them anyway."""
+    text = _unwrap(fact)
+    parts, position = [], 0
+    while text.startswith('(', position):
+        end = _closing(text, position)
+        parts.append(text[position:end + 1])
+        position = end + 1
+        if text.startswith(' /\\ ', position):
+            position += 4
+        elif position == len(text):
+            break
+        else:
+            return [fact]
+    if len(parts) < 2 or position != len(text):
+        return [fact]
+    return [conjunct for part in parts for conjunct in fact_conjuncts(part)]
+
+
+def binder_groups(binders):
+    """The parenthesized groups of a binder telescope, with the names each declares."""
+    groups, position = [], binders.find('(')
+    while position >= 0:
+        end = _closing(binders, position)
+        text = binders[position:end + 1]
+        groups.append((tuple(text[1:].split(':', 1)[0].split()), text))
+        position = binders.find('(', end + 1)
+    return groups
+
+
+def check_groups(binders, facts):
+    """Split the facts that the check reads into groups that share no local name.
+
+    The check destructs conjunctions, and zesu_cursor_linear clears every hypothesis
+    that is not arithmetic, so an existential fact is never read: it is not carried.
+    Each group is (binder declarations it names, its facts), in fact order.
+    """
+    declared = binder_groups(binders)
+    local = set(OUTER_NAMES) | {name for names, _ in declared for name in names}
+    read = [conjunct for fact in facts for conjunct in fact_conjuncts(fact)
+            if not _unwrap(conjunct).startswith(('∃', 'exists '))]
+    names = [set(LOCAL_NAME.findall(fact)) & local for fact in read]
+    owner, parent = {}, list(range(len(read)))
+
+    def find(index):
+        while parent[index] != index:
+            parent[index] = parent[parent[index]]
+            index = parent[index]
+        return index
+    for index, mentioned in enumerate(names):
+        for name in mentioned:
+            if name in owner:
+                parent[find(index)] = find(owner[name])
+            else:
+                owner[name] = index
+    members = {}
+    for index in range(len(read)):
+        members.setdefault(find(index), []).append(index)
+    groups = []
+    for indices in members.values():
+        used = set().union(*(names[index] for index in indices))
+        while True:
+            texts = [text for group_names, text in declared if used & set(group_names)]
+            more = set(LOCAL_NAME.findall(' '.join(texts))) & local
+            if more <= used:
+                break
+            used |= more
+        groups.append((texts, [read[index] for index in indices]))
+    return groups
+
+
+def contradiction_source(header, groups, args_type='DecodeItemArgs'):
+    """Return a check that compiles exactly when no group of facts proves False."""
     # The tactic is defined before `Fail`, so an unknown name is an error, not a pass.
-    hypotheses = ' ->\n  '.join('(' + fact + ')' for fact in facts)
+    goals = ''.join(
+        '\nGoal forall (args : ' + args_type + ') (returnAddress : Z)'
+        + ''.join(' ' + text for text in declarations) + ',\n  '
+        + ' ->\n  '.join('(' + fact + ')' for fact in facts) + ' ->\n  False.\nProof.\n  intros.\n'
+        + '  Fail solve [zesu_contradiction_check].\nAbort.\n'
+        for declarations, facts in groups)
     return (header + 'Require Import ZesuSsz.Automation2.All.\n\n'
-            + 'Ltac zesu_contradiction_check :=\n  ' + CHECK_TACTIC + '.\n\n'
-            + 'Goal forall (args : ' + args_type + ') (returnAddress : Z) ' + binders + ',\n  '
-            + hypotheses + ' ->\n  False.\nProof.\n  intros.\n'
-            + '  Fail solve [zesu_contradiction_check].\nAbort.\n')
+            + 'Ltac zesu_contradiction_check :=\n  ' + CHECK_TACTIC + '.\n' + goals)
 
 
 class RocqContradictionCheck:
@@ -193,22 +297,39 @@ class RocqContradictionCheck:
         self.args_type = args_type
         self.directory = Path(directory)
         self.runs = []
+        # Fact groups that a check of this run did not refute, with that check's file.
+        self.checked = []
 
     def __call__(self, name, binders, facts):
+        groups = check_groups(binders, facts)
+        keys = [frozenset([('binder', text) for text in declarations] + [('fact', fact) for fact in group_facts])
+                for declarations, group_facts in groups]
+        pending, reused = [], set()
+        for group, key in zip(groups, keys):
+            covering = next((path for known, path in self.checked if key <= known), None)
+            if covering is None:
+                pending.append((group, key))
+            else:
+                reused.add(covering)
+        row = {'name': name, 'groups': len(groups), 'checked_groups': len(pending), 'reused': sorted(reused)}
+        if not pending:
+            self.runs.append({**row, 'check': None, 'contradictory': False})
+            return False
         self.directory.mkdir(parents=True, exist_ok=True)
         path = self.directory / ('Contradiction_' + re.sub(r'\W', '_', name) + '.v')
-        path.write_text(contradiction_source(self.header, binders, facts, self.args_type))
+        path.write_text(contradiction_source(self.header, [group for group, _ in pending], self.args_type))
         result = subprocess.run(self.command + [path.name], cwd=self.directory,
                                 capture_output=True, text=True)
         output = result.stdout + result.stderr
         if result.returncode == 0:
             contradictory = False
+            self.checked.extend((key, str(path)) for _, key in pending)
         elif NOT_FAILED in output:
             contradictory = True
         else:
             raise BoundaryRefused('The contradiction check did not run for ' + name + ':\n'
                                   + output[-2000:])
-        self.runs.append({'name': name, 'check': str(path), 'contradictory': contradictory})
+        self.runs.append({**row, 'check': str(path), 'contradictory': contradictory})
         return contradictory
 
 
