@@ -2878,12 +2878,13 @@ Ltac liAAsm ::=
      notypeclasses refine (tac_fast_apply (li_wpreadreg_field _ _ _) _)
   end.
 
-
+(* The last arm runs on the pruned context only: no whole-context fallback. *)
 Ltac Lia.lia ::= first [solve [zesu_closed_goal_decide] |
   solve [ZesuSsz.Automation2.BvLinear.zesu_bv_linear_with ltac:(lia)] |
   (tryif ZesuSsz.Automation2.BvLinear.zesu_bv_linear_refutes
    then first [zesu_refuted_solve ltac:(zesu_lia_linear_first3) | ResidualLemmas.zesu_residual_lemma]
-   else first [zesu_context_filter ltac:(zesu_lia_linear_first3) | ResidualLemmas.zesu_residual_lemma])].
+   else first [solve [ContextCollection.zesu_context_prune_goal; zesu_lia_linear_first3]
+              | ResidualLemmas.zesu_residual_lemma])].
 
 
 (* The callback must prove the payload equality. Owners are never converted. *)
