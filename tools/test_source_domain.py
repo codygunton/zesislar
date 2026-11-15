@@ -8,7 +8,7 @@ import unittest
 
 sys.path.insert(0, str(Path(__file__).resolve().parent / 'block'))
 from source_domain import constant_from_source, project_layout_domain
-from symbolic_state import (Expr, SymbolicState, _refuted_ram_guard, bits,
+from symbolic_state import (Expr, SymbolicState, _implied_ram_guard, _refuted_ram_guard, bits,
                             _source_comparison_refutation, evaluate_trace, input_expr, operation)
 
 
@@ -310,6 +310,34 @@ class FaultTests(unittest.TestCase):
         self.assertEqual(ordinary_result.state.reports[-1]['rule'], 'source_interval_comparison')
         self.assertTrue(ordinary_result.state.reports[-1]['required_rocq_guard_projection'])
         self.assertEqual(ordinary_result.state.reports[-1]['proof_premises_added'], [])
+
+    def test_source_implied_ram_guards_hold_and_are_not_refuted(self):
+        for end in (False, True):
+            holding = self.guard(end).args[0]
+            self.assertIsNotNone(_implied_ram_guard(holding, self.rows))
+            self.assertIsNone(_refuted_ram_guard(holding, self.rows))
+            self.assertIsNone(_implied_ram_guard(self.guard(end), self.rows))
+            self.assertIsNone(_implied_ram_guard(holding, []))
+
+    def test_source_implied_ram_guard_is_not_carried(self):
+        state = SymbolicState(registers={'x2': self.pointer}, source_intervals=self.rows)
+        trace = '''(trace
+          (declare-const p (_ BitVec 64)) (read-reg |x2| nil p)
+          (define-const address (bvadd p #xfffffffffffffff8))
+          (assert (bvsge ((_ zero_extend 64) address) #x00000000000000000000000000001000))
+          (assert (bvsle (bvadd ((_ zero_extend 64) address) #x00000000000000000000000000000008)
+                         #x00000000000000000000000000002000))
+          (assert (bvsge address #x0000000000001100)))'''
+        result, = evaluate_trace(trace, state)
+        self.assertEqual(result.status, 'complete')
+        self.assertEqual([condition.op for condition in result.state.conditions], ['bvsge'])
+        self.assertEqual(result.state.conditions[0].args[1], bits(0x1100, 64))
+        implied = [row for row in result.state.reports if row['kind'] == 'source_implied_ram_guard']
+        self.assertEqual([row['endpoint'] for row in implied], ['ram_base', 'ram_end'])
+        self.assertTrue(all(row['source_intervals'] == self.rows for row in implied))
+        # Without a source interval every guard stays a path condition.
+        bare, = evaluate_trace(trace, SymbolicState(registers={'x2': self.pointer}))
+        self.assertEqual(len(bare.state.conditions), 3)
 
     def test_copy_preserves_bounds_without_changing_original(self):
         state = SymbolicState(source_intervals=self.rows)

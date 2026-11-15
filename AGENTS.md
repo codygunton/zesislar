@@ -76,6 +76,29 @@ for each instruction.
 Ordinary hint modules must remain globally exported through their function's hint umbrella.
 Selected proofs may import scoped hints directly only through the explicit `SCOPED_HINT_IMPORTS` policy in `check_decode_item_hints.py`.
 
+## Proved functions are black boxes
+
+Once a function has a proved (or assumed) contract, every caller treats it as a black box. A caller never
+unfolds the callee's predicates; it imports only the callee's interface and uses only its interface lemmas.
+- Registry: `ZesuSsz/Contracts/proved_functions.json`, one entry per function with a compliance theorem: its
+  call-spec template, sealed predicates, interface lemmas (each with a hand-written proof over the real
+  definitions, e.g. `Contracts/DecodeItemCallFacts.v`), owned modules and re-exported type modules.
+- Generator: `tools/block/render_interfaces.py` renders `ZesuSsz/Interfaces/<F>.v` (a `Module Type` that
+  declares the sealed predicates and lemmas, an opaque module ascribed to it that realizes them, the public
+  call spec over the sealed names, and one `ZesuDerivedFacts` instance per registered lemma) and
+  `ZesuSsz/Interfaces/<F>Correct.v` (the public spec's correctness for other functions' composition).
+  Declarations only; never edit them by hand.
+- Checks (check-fast): `tools/block/check_proved_functions.py` refuses a caller module (another function's
+  generated entries or callers, Automation2, another function's Compliance) that requires an internal module
+  of a registered function, a call design that does not name the callee's interface spec (the block
+  generator refuses it too: `call_boundary.interface_of`), a `*Compliance` theorem without a registry entry,
+  and a stale interface. `check_proof_hygiene.py` refuses `unfold`/`Transparent`/`Strategy` of a sealed name
+  outside its interface, an unsealed callee predicate in another function's generated module, and
+  `Parameter`/`Axiom` anywhere except the `Module Type` of a fresh generated interface.
+- Adding a function: add its registry entry, its proofs module and its call-spec template; run
+  `render_interfaces.py`; point its callers' function profiles (`spec_module`, `spec_source`,
+  `contract_requires`) at the interface; re-render the callers.
+
 ## Constants
 
 Use parsing-only `Notation` for closed numeric literals and literal-only arithmetic or bitvector constants.
@@ -128,7 +151,7 @@ The 300-second and 6 GiB figures are production goals for a finished proof modul
 on search. During development, first bound the problem: run a search or a proof to completion
 with whatever memory and time it needs (the machine has 256 GiB; a 64 GiB cap and no CPU cap are
 normal for a probe).
-Our account may use at most 200 GiB in total, because another account shares this host; `systemctl cat user-1000.slice` shows the limit and its reason. Ask the user before a job that needs more.
+Our account may use at most the MemoryMax of `user-1000.slice` (`/sys/fs/cgroup/user.slice/user-1000.slice/memory.max`), because another account shares this host; `systemctl cat user-1000.slice` shows the limit and its reason. Proof workloads share `zesuworkloads.slice`, fenced at that limit less 40 GiB (at most 175 GiB for now); the guard kills the youngest scope at the limit less 10 GiB. Run any other heavy tool (generator passes, render, bank arguments) through `tools/guarded_tool.sh`. Ask the user before a job that needs more.
 Record its peak memory, CPU, and residual goals, and optimize afterwards
 from that measurement. A run that stops at a cap mid-search has measured nothing.
 After an out-of-memory stop, profile the run one time with `perf` under a small cap (24 GiB)
@@ -142,6 +165,8 @@ cost, as the Prologue went from 435 to 218 seconds.
 Treat a non-proof module as over its production goal when it takes more than 60 seconds or uses
 more than 2 GiB; measure it to completion first, then split it at sound proof-state boundaries.
 If no sound split exists, report the exact dependency that prevents parallel work.
+
+Start every long job (watcher, queue, pipeline) with `tools/bg NAME CMD...` and stop it with `tools/run_registry.py stop <run id>`. The job runs in its own systemd user scope outside the caller's process tree, because `$$` in an agent's shell can be a harness PID shared by every agent. The launcher refuses a script that kills by process name, pgrep match, or parent PID, and so does the proof hygiene check for committed `tools/` scripts. A registered run that ends by a signal without a registry stop is recorded in `signal-deaths.jsonl` in the registry store and posted to `docs/ai/STATUS.md` by the run watchdog (`make install-run-watchdog`).
 
 Compile independent modules together with Dune.
 Keep the final composition proof small and sequential.
@@ -229,6 +254,12 @@ by a symbolic link or by a path in a manifest. It logs each deletion in `_build/
    It never uses `--force`. Write `ITEM.json` with `{"branch": "<branch>"}` in each run dir.
 6. Worktree builds expire. The janitor deletes a worktree `_build` after 48 hours without change.
    The source checkout stays.
+7. Save residual goals in the goal store. `tools/save_goal.py --function F --case C --tag T FILE...`
+   copies goal files (up to 1 MiB each) to `_build/goals/<function>/<case>/<tag>/` with a
+   `MANIFEST.json` (head, bank, command, date). Neither the janitor nor
+   `tools/cleanup_after_merge.sh` deletes the store; `_build/BUDGET.json` reports its size.
+   Before they delete a run dir or worktree build, they move its `*Goal*.v` and `goals/**/*.v`
+   files to `_build/goals/<ITEM.json function or _rescued>/<run dir>/rescued-<UTC stamp>/`.
 
 ## Proof workflow
 

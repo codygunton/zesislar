@@ -68,6 +68,50 @@ class CleanupAfterMerge(unittest.TestCase):
         self.assertIn('w/feature', self.git('branch', '--list', 'w/feature'))
         self.assertIn(str(tied), (self.root / '_build/janitor/janitor.log').read_text())
 
+    def test_saved_goals_of_a_cleaned_branch_stay_in_the_store(self):
+        # 2026-11-15: cleanup deleted 0300's probe dir with its saved residual goals.
+        self.merge()
+        tied = self.item('a/probe0300', 'w/feature')
+        (tied / 'goals').mkdir()
+        (tied / 'goals/Goal1.v').write_text('Lemma tg_goal_1 : True.\n')
+        (tied / 'goals/state.json').write_text('{}')
+        (tied / 'ProbeGoal0.v').write_text('Lemma probe : True.\n')
+        (tied / 'default').mkdir()
+        (tied / 'default/GoalDomain.v').write_text('(* build copy *)\n')
+        built = self.worktree / '_build/scratch'
+        built.mkdir(parents=True)
+        (built / 'Goal7.v').write_text('Lemma seven : True.\n')
+        result = self.cleanup('w/feature')
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertFalse(tied.exists())
+        self.assertFalse(self.worktree.exists())
+        store = self.root / '_build/goals/_rescued'
+        [run] = (store / 'a-probe0300').iterdir()
+        self.assertEqual((run / 'goals/Goal1.v').read_text(), 'Lemma tg_goal_1 : True.\n')
+        self.assertTrue((run / 'ProbeGoal0.v').exists())
+        self.assertFalse((run / 'goals/state.json').exists())
+        self.assertFalse((run / 'default').exists())
+        manifest = json.loads((run / 'MANIFEST.json').read_text())
+        self.assertEqual(manifest['branch'], 'w/feature')
+        self.assertEqual(manifest['rescued_from'], str(tied))
+        self.assertEqual(sorted(e['name'] for e in manifest['files']),
+                         ['ProbeGoal0.v', 'goals/Goal1.v'])
+        [worktree_run] = (store / 'feature').iterdir()
+        self.assertTrue((worktree_run / 'scratch/Goal7.v').exists())
+        self.assertIn('saved 2 goal file(s) from ' + str(tied), result.stdout)
+        self.assertIn('saved goals from ' + str(tied),
+                      (self.root / '_build/janitor/janitor.log').read_text())
+
+    def test_cleanup_never_deletes_the_store(self):
+        self.merge()
+        stored = self.root / '_build/goals/decodeItem/0300/lia-1/Goal1.v'
+        stored.parent.mkdir(parents=True)
+        stored.write_text('Lemma g : True.\n')
+        self.item('a/goals', 'w/feature')
+        result = self.cleanup('w/feature')
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertTrue(stored.exists())
+
     def test_long_worktree_list_does_not_stop_the_lookup(self):
         # The base checkout has hundreds of worktrees. A lookup that stops reading
         # early kills `git worktree list` with SIGPIPE, and pipefail ended the script.
@@ -111,6 +155,15 @@ class CleanupAfterMerge(unittest.TestCase):
         self.assertTrue(tied.exists())
         self.assertIn('would remove worktree', result.stdout)
         self.assertIn('would remove run dir', result.stdout)
+
+    def test_dry_run_names_the_goals_it_would_save(self):
+        self.merge()
+        tied = self.item('a/run1', 'w/feature')
+        (tied / 'Goal3.v').write_text('Lemma g : True.\n')
+        result = self.cleanup('--dry-run', 'w/feature')
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertIn('would save goal ' + str(tied / 'Goal3.v'), result.stdout)
+        self.assertFalse((self.root / '_build/goals').exists())
 
     def test_main_is_refused(self):
         result = self.cleanup('main')

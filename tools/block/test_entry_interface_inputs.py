@@ -116,6 +116,24 @@ class EntryInterface(unittest.TestCase):
         self.assertIn(9, self.domain['projection']['unused_clauses'])
         self.assertIn(11, self.domain['projection']['unused_clauses'])
 
+    def test_the_length_of_a_constant_array_names_the_constant_bare(self):
+        from entry_interface_inputs import domain, notations, public_seed
+        text = (CONTRACT
+                .replace('Notation tHigh', 'Notation tNoneConstant := ((0x80001000) : Z) (only parsing).\n'
+                                           'Notation tHigh')
+                .replace('  2 * tInputLength args <= tOutputLength args.',
+                         '  2 * tInputLength args <= tOutputLength args /\\\n  length tNoneBytes = 16%nat.')
+                .replace('   ⌜tArgsWellFormed args⌝', '   tNoneConstant ↦ₘ∗ tNoneBytes ∗\n   ⌜tArgsWellFormed args⌝'))
+        self.contract.write_text(text)
+        profile = FunctionProfile(dict(PROFILE), self.contract.parent / 'tFunction.json')
+        constants = notations(self.contract, text)
+        seed = public_seed(profile, self.contract, text)
+        facts = domain(profile, self.contract, text, seed, constants, (0xa0000000, 0xc0000000))['projection']['facts']
+        none, = [node['id'] for node in seed['assertion_tree']['components']
+                 if node.get('original_component', '').startswith('tNoneConstant ↦ₘ∗')]
+        length, = [fact['terms'] for fact in facts if fact['terms'].get('resource_id') == none]
+        self.assertEqual((length['count'], length['coq_statement']), (16, 'length tNoneBytes = 16%nat'))
+
 
 class LengthRelation(unittest.TestCase):
     def test_a_path_condition_on_the_related_value_bounds_the_array(self):

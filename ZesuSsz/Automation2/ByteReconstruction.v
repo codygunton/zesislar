@@ -1,6 +1,7 @@
 Require Import ZesuSsz.Automation2.SwitchDispatch.
 From stdpp Require Import bitvector.tactics.
 From Coq Require Import ZArith Lia.
+Require ZesuSsz.Automation2.VmClosed.
 Local Open Scope Z_scope.
 
 Class ZesuStepByteReconstruction : Prop := {}.
@@ -27,12 +28,12 @@ Ltac zesu_byte_reconstruction finish :=
   zesu_goal_word_bounds;
   repeat match goal with
   | Hbound : 0 <= bv_unsigned _ < bv_modulus ?width |- _ =>
-      is_closed_term width;
+      ZesuSsz.Automation2.VmClosed.zesu_closed_term width;
       unfold bv_modulus in Hbound; cbn in Hbound
   end;
   repeat match goal with
   | |- context [Z.land ?value (Z.ones ?bits)] =>
-      is_closed_term bits;
+      ZesuSsz.Automation2.VmClosed.zesu_closed_term bits;
       let Hbits := fresh "HdigitWidth" in
       assert (Hbits : 0 <= bits) by (vm_compute; congruence);
       rewrite (Z.land_ones value bits Hbits);
@@ -40,7 +41,7 @@ Ltac zesu_byte_reconstruction finish :=
   end;
   repeat match goal with
   | |- context [Z.shiftr ?value ?bits] =>
-      is_closed_term bits;
+      ZesuSsz.Automation2.VmClosed.zesu_closed_term bits;
       let Hbits := fresh "HdigitShift" in
       assert (Hbits : 0 <= bits) by (vm_compute; congruence);
       rewrite (Z.shiftr_div_pow2 value bits Hbits);

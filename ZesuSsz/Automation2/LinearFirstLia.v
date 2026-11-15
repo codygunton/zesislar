@@ -165,8 +165,10 @@ Ltac2 rec zesu_linear_atoms (heads : constr list) (term : constr) (found : const
   | _ => zesu_linear_add found term
   end.
 
-(* A fact without atoms stays: it can close the goal by itself. *)
-Ltac2 rec zesu_linear_unlinked (facts : (ident * constr list) list) (linked : constr list) :=
+(* A fact without atoms stays: it can close the goal by itself. Linking runs
+   at most `rounds` rounds: a fact reached only through longer chains is
+   unrelated. *)
+Ltac2 rec zesu_linear_unlinked (rounds : int) (facts : (ident * constr list) list) (linked : constr list) :=
   let (linked, rest, changed) := List.fold_left (fun state fact =>
     let (linked, rest, changed) := state in
     let (_, atoms) := fact in
@@ -174,16 +176,37 @@ Ltac2 rec zesu_linear_unlinked (facts : (ident * constr list) list) (linked : co
          (List.exist (fun atom => zesu_linear_member atom linked) atoms)
     then (List.fold_left zesu_linear_add linked atoms, rest, true)
     else (linked, fact :: rest, changed)) (linked, [], false) facts in
-  if changed then zesu_linear_unlinked rest linked
+  if Bool.and changed (Int.lt 1 rounds) then zesu_linear_unlinked (Int.sub rounds 1) rest linked
   else List.map (fun fact => let (name, _) := fact in name) rest.
 
+Ltac2 rec zesu_linear_spend (budget : int ref) (term : constr) : unit :=
+  if Int.le (Ref.get budget) 0 then () else (
+  Ref.set budget (Int.sub (Ref.get budget) 1);
+  let visit := zesu_linear_spend budget in
+  match Constr.Unsafe.kind term with
+  | Constr.Unsafe.App head arguments => visit head; Array.iter visit arguments
+  | Constr.Unsafe.Prod binder body => visit (Constr.Binder.type binder); visit body
+  | Constr.Unsafe.Lambda binder body => visit (Constr.Binder.type binder); visit body
+  | Constr.Unsafe.LetIn binder value body =>
+      visit (Constr.Binder.type binder); visit value; visit body
+  | Constr.Unsafe.Cast value _ typ => visit value; visit typ
+  | _ => ()
+  end).
+
+(* Linking rounds and the node budget of the goal and the facts kept. *)
+Ltac2 zesu_linear_rounds () := 2.
+Ltac2 zesu_linear_node_budget () := 16384.
+
 (* Clear the facts that share no linear atom with the goal, directly or
-   through other facts. Fail when the goal has no atom or nothing is clear. *)
+   through other facts within the linking rounds. Fail when the goal has no
+   atom, nothing is clear, or the goal and the kept facts exceed the node
+   budget: on a decodeParentHeader slice premise the unbounded closure kept
+   58 facts of 66555 nodes, and `xlia` on them grew past 24 GiB. *)
 Ltac2 zesu_linear_clear_unrelated () :=
   let heads := zesu_linear_heads () in
   let goal_atoms := zesu_linear_atoms heads (Control.goal ()) [] in
   if Int.equal (List.length goal_atoms) 0 then Control.zero (Tactic_failure None) else ();
-  let unrelated := zesu_linear_unlinked (List.fold_left (fun facts declaration =>
+  let unrelated := zesu_linear_unlinked (zesu_linear_rounds ()) (List.fold_left (fun facts declaration =>
     let (name, body, typ) := declaration in
     match body with
     | Some _ => facts
@@ -192,6 +215,18 @@ Ltac2 zesu_linear_clear_unrelated () :=
         then (name, zesu_linear_atoms heads typ []) :: facts else facts
     end) [] (Control.hyps ())) goal_atoms in
   if Int.equal (List.length unrelated) 0 then Control.zero (Tactic_failure None) else ();
+  let budget := Ref.ref (zesu_linear_node_budget ()) in
+  zesu_linear_spend budget (Control.goal ());
+  List.iter (fun declaration =>
+    let (name, body, typ) := declaration in
+    match body with
+    | Some _ => ()
+    | None =>
+        if List.exist (Ident.equal name) unrelated then ()
+        else if Constr.equal (Constr.type typ) constr:(Prop) then zesu_linear_spend budget typ
+        else ()
+    end) (Control.hyps ());
+  if Int.le (Ref.get budget) 0 then Control.zero (Tactic_failure None) else ();
   (* Each clear commits, so a failed call never retries clear combinations. *)
   List.iter (fun name =>
     match Control.case (fun () => Std.clear [name]) with
@@ -202,3 +237,23 @@ Ltac2 zesu_linear_clear_unrelated () :=
 (* The library solver on the facts linked to the goal. *)
 Ltac zesu_lia_linked_facts :=
   once ltac2:(zesu_linear_clear_unrelated ()); Zify.zify; xlia Lia.zchecker.
+
+(* The goal and every Prop fact fit the whole-context node budget. Guards a
+   solver call on the whole context: on the decodeItem blocks every
+   whole-context `lia` that succeeded ran on at most 26708 nodes (16384 lost
+   a closure), while failing ones reached 212738 nodes. *)
+Ltac2 zesu_linear_context_node_budget () := 32768.
+
+Ltac2 zesu_linear_context_within_budget () :=
+  let budget := Ref.ref (zesu_linear_context_node_budget ()) in
+  zesu_linear_spend budget (Control.goal ());
+  List.iter (fun declaration =>
+    let (_, body, typ) := declaration in
+    match body with
+    | Some _ => ()
+    | None =>
+        if Constr.equal (Constr.type typ) constr:(Prop) then zesu_linear_spend budget typ else ()
+    end) (Control.hyps ());
+  if Int.le (Ref.get budget) 0 then Control.zero (Tactic_failure None) else ().
+
+Ltac zesu_lia_context_within_budget := ltac2:(zesu_linear_context_within_budget ()).

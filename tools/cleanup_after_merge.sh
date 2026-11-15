@@ -5,7 +5,11 @@
 # A run dir belongs to the branch when its ITEM.json has {"branch": "<branch>"},
 # or, without ITEM.json, when its name is the branch name, the branch name with
 # "/" replaced by "-", or the last part of the branch name.
-# The script keeps anything that a live process uses and everything under
+# Before deleting a worktree build or run dir, it moves the saved goals in it
+# (*Goal*.v, goals/**/*.v) into the store _build/goals/ (tools/goal_store.py),
+# which it never deletes.
+# The script keeps anything that a live process uses or that holds a release
+# receipt named by the admission ledger, and everything under
 # _build/agents/orch/. It does not delete the branch.
 #
 # usage: tools/cleanup_after_merge.sh [--dry-run] <branch>
@@ -49,15 +53,24 @@ if [ -z "$worktree" ]; then
 elif [ "$(realpath "$worktree")" = "$(realpath "$root")" ]; then
   echo "kept worktree $worktree: it is the base checkout"
 elif "${janitor[@]}" --root "$root" in-use "$worktree"; then
-  echo "kept worktree $worktree: a live process uses it"
+  echo "kept worktree $worktree: a live process or an admission ledger receipt uses it"
 elif [ -n "$(git -C "$worktree" status --porcelain --untracked-files=all)" ]; then
   echo "kept worktree $worktree: it has uncommitted or untracked files"
 elif [ "$dry_run" = 1 ]; then
+  if [ -d "$worktree/_build" ]; then
+    "${janitor[@]}" --root "$root" --dry-run rescue-goals "$worktree/_build"
+  fi
   echo "would remove worktree $worktree"
-elif git -C "$root" worktree remove "$worktree"; then
-  echo "removed worktree $worktree"
 else
-  echo "kept worktree $worktree: git worktree remove refused"
+  if [ -d "$worktree/_build" ]; then
+    "${janitor[@]}" --root "$root" rescue-goals --reason "cleanup_after_merge: $branch" \
+      "$worktree/_build"
+  fi
+  if git -C "$root" worktree remove "$worktree"; then
+    echo "removed worktree $worktree"
+  else
+    echo "kept worktree $worktree: git worktree remove refused"
+  fi
 fi
 
 if [ "$dry_run" = 1 ]; then

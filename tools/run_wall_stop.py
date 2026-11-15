@@ -55,7 +55,8 @@ def detach_stop(registry, run_id):
     if shutil.which('systemd-run'):
         unit = 'zesu-wall-stop-' + hashlib.sha256(
             f'{registry.directory.resolve()}\0{run_id}\0{uuid.uuid4().hex}'.encode()).hexdigest()[:16]
-        subprocess.run(['systemd-run', '--user', '--quiet', '--collect', '--unit', unit, '--', *command],
+        subprocess.run(['systemd-run', '--user', '--quiet', '--collect', '--expand-environment=no', '--unit', unit,
+                        '--', *command],
                        check=True)
         return
     child = os.fork()

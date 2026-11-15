@@ -7,8 +7,8 @@ From Coq Require Import Lists.List ZArith.ZArith NArith.NArith.
 Require Import stdpp.bitvector.definitions.
 Require Import ZesuSsz.Contracts.RlpDecodeItemContract.
 Require Import ZesuSsz.Contracts.DecodeItemSelected.
-Require Import ZesuSsz.Generated.DecodeItem.FP301.Pilot6b08Entries.
-Require Import ZesuSsz.Generated.DecodeItem.FP301.Pilot6b08Structural.
+Require Import ZesuSsz.Generated.DecodeItem.FP301.Pilot01a8Entries.
+Require Import ZesuSsz.Generated.DecodeItem.FP301.Pilot01a8Structural.
 Require Import ZesuSsz.Automation2.All.
 Require Import ZesuSsz.Compliance.DecodeItemMeaningPorted.
 Require Import ZesuSsz.Compliance.DecodeItemMeaningPorted.

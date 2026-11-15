@@ -45,7 +45,7 @@ Proof.
 Qed.
 
 (* The FP301 entry at 0x800d6ae0 owns the decoder system registers and the
-   caller's output storage (`fp_machineAt6ae0`). *)
+   caller's output storage (`fp_machineAt0180`). *)
 Lemma plain_register_selection_captured_6ae0 `{!islaG Sigma} `{!threadG}
     (args : DecodeItemArgs) (T : reg_mapsto_kind -> iProp Sigma) :
   reg_col (decodeItemSysRegs args) -∗
