@@ -7,6 +7,10 @@ From iris.proofmode Require Import environments.
 Require Import ZesuSsz.Contracts.IslarisMemory.
 Require Import isla.riscv64.riscv64.
 Require SailStdpp.MachineWord.
+Require ZesuSsz.Automation2.RangeFacts.
+Require Import ZesuSsz.Contracts.NamedEquation.
+From Ltac2 Require Import Ltac2.
+Set Default Proof Mode "Classic".
 
 Section interior_byte_slice.
 Context `{!islaG Sigma}.
@@ -78,9 +82,17 @@ Ltac zesu_byte_slice_size_stated fact slice :=
 (* What a registered lemma (a `ZesuDerivedFacts` instance) derives from a
    fact. A callee's call-site domain is sealed: its interface registers the
    facts a caller may read from it, and the step reads them only this way,
-   never by unfolding. *)
-Ltac zesu_byte_slice_derived fact :=
-  let derivation := constr:(@ZesuSsz.Automation.PureFacts.zesu_derived_facts fact _ _) in
+   never by unfolding. One fact may have several registered lemmas, so the
+   search asks for a conclusion that states the slice's length (alone or as
+   a first conjunct) before it takes whichever lemma comes first. *)
+Ltac zesu_byte_slice_derived fact slice :=
+  let derivation := match constr:(tt) with
+    | _ => constr:(@ZesuSsz.Automation.PureFacts.zesu_derived_facts
+             fact (_ = Z.of_nat (length slice) /\ _) _)
+    | _ => constr:(@ZesuSsz.Automation.PureFacts.zesu_derived_facts
+             fact (_ = Z.of_nat (length slice)) _)
+    | _ => constr:(@ZesuSsz.Automation.PureFacts.zesu_derived_facts fact _ _)
+    end in
   lazymatch type of derivation with _ -> ?derived => derived end.
 
 (* The size for the slice that a fact states, or that a registered lemma
@@ -89,7 +101,7 @@ Ltac zesu_byte_slice_size_in fact slice :=
   match constr:(tt) with
   | _ => zesu_byte_slice_size_stated fact slice
   | _ =>
-      let derived := zesu_byte_slice_derived fact in
+      let derived := zesu_byte_slice_derived fact slice in
       zesu_byte_slice_size_stated derived slice
   end.
 
@@ -161,16 +173,64 @@ Ltac zesu_byte_slice_unsigned_ranges :=
   end.
 
 (* A derived fact stated under premises: each premise the context shows,
-   directly or by arithmetic, is discharged. *)
+   directly or by arithmetic, is discharged. A premise is tried once: a fact
+   whose premise fails is dropped from this local proof, so a later success
+   does not retry every failed premise. *)
 Ltac zesu_byte_slice_discharge_premises :=
   repeat match goal with
   | H : ?P -> ?Q |- _ =>
       lazymatch type of P with Prop => idtac end;
-      let Hp := fresh "Hpremise" in
-      assert (Hp : P) by (first [assumption | lia]);
-      specialize (H Hp); clear Hp
+      first [
+        let Hp := fresh "Hpremise" in
+        assert (Hp : P) by (first [assumption | lia]);
+        specialize (H Hp); clear Hp
+      | clear H ]
   end;
   repeat match goal with H : _ /\ _ |- _ => destruct H end.
+
+(* A named value (a register a call boundary kept under a name) reads as its
+   value: the arithmetic sees the name's equation, also between the unsigned
+   values of a named word. *)
+Ltac zesu_byte_slice_named_values :=
+  repeat match goal with
+  | H : zesu_named_eq ?name ?value |- _ =>
+      let E := fresh "HsliceNamed" in
+      pose proof (proj1 (zesu_named_eq_iff name value) H) as E; clear H;
+      lazymatch type of name with
+      | bv ?n => pose proof (f_equal (@bv_unsigned n) E)
+      | _ => idtac
+      end
+  end.
+
+(* Closed integer subterms of one selected fact, evaluated (a contract's
+   named constants). The fact is small; the goal is not touched. *)
+Ltac zesu_byte_slice_reduce_closed_in H :=
+  repeat match type of H with
+  | context[?term] =>
+      lazymatch type of term with Z => idtac end;
+      lazymatch term with Z0 => fail | Zpos _ => fail | Zneg _ => fail | _ => idtac end;
+      let value := ZesuSsz.Automation2.VmClosed.zesu_vm_eval_closed term in
+      progress change term with value in H
+  end.
+
+(* The owning array's base word is the caller's own value (a contract
+   argument's pointer): its range facts sit folded in the caller's
+   precondition over that argument. Project the conjuncts that state the
+   base, as the region bounds do, and evaluate their constants. *)
+Ltac zesu_byte_slice_base_ranges base :=
+  let root := lazymatch base with
+    | bv_unsigned (?accessor ?argument) => constr:(argument)
+    | _ => base end in
+  let collect := ltac2:(v p r |- ZesuSsz.Automation2.RangeFacts.zesu_range_collect
+    (Option.get (Ltac1.to_constr v)) (Option.get (Ltac1.to_constr p))
+    (Option.get (Ltac1.to_constr r))) in
+  collect base base root;
+  let reduce := ltac:(fun H => zesu_byte_slice_reduce_closed_in H) in
+  let reduce_selected := ltac2:(r |- List.iter (fun h => let (name, _, _) := h in
+    if ZesuSsz.Automation2.RangeFacts.zesu_name_prefix (Ident.to_string name) "HrangeFact" 0
+    then Ltac1.apply r [Ltac1.of_constr (Control.hyp name)] Ltac1.run
+    else ()) (Control.hyps ())) in
+  reduce_selected reduce.
 
 Ltac zesu_byte_slice_moduli :=
   repeat match goal with
@@ -181,6 +241,7 @@ Ltac zesu_byte_slice_moduli :=
   end.
 
 Ltac zesu_byte_slice_bound_arith :=
+  zesu_byte_slice_named_values;
   ZesuSsz.Automation.PureFacts.zesu_saturate_derived_facts;
   repeat match goal with H : _ /\ _ |- _ => destruct H end;
   repeat match goal with
@@ -197,6 +258,11 @@ Ltac zesu_byte_slice_bound_arith :=
   | |- context[(?a mod ?m)%Z] => rewrite (Z.mod_small a m); [|lia]
   end;
   lia.
+
+(* The bound arithmetic with the range facts of the owning array's base. *)
+Ltac zesu_byte_slice_bound_arith_at base :=
+  try zesu_byte_slice_base_ranges base;
+  zesu_byte_slice_bound_arith.
 
 Ltac zesu_lend_interior_byte_slice :=
   zesu_expose_environment_alias;
@@ -223,16 +289,16 @@ Ltac zesu_lend_interior_byte_slice :=
                     let Hbounds := fresh "HsliceBounds" in
                     assert (Haddress : (base + Z.of_nat start = address)%Z)
                       by (rewrite ?length_take ?length_drop;
-                          first [lia | bv_solve | zesu_byte_slice_bound_arith]);
+                          first [lia | bv_solve | zesu_byte_slice_bound_arith_at base]);
                     assert (Hbounds : (start + count <= length bytes)%nat)
                       by (rewrite ?length_take ?length_drop;
-                          first [lia | bv_solve | zesu_byte_slice_bound_arith]);
+                          first [lia | bv_solve | zesu_byte_slice_bound_arith_at base]);
                     let Hsize := fresh "HsliceSize" in
                     let Hlength := fresh "HsliceLength" in
                     assert (Hsize : size = Z.of_nat count)
                       by (first [reflexivity | lia | bv_solve
                                 | (rewrite Z2Nat.id;
-                                   [reflexivity | first [lia | bv_solve | zesu_byte_slice_bound_arith]])]);
+                                   [reflexivity | first [lia | bv_solve | zesu_byte_slice_bound_arith_at base]])]);
                     assert (Hlength :
                       size = Z.of_nat (length (take count (drop start bytes))))
                       by (rewrite Hsize length_take length_drop; lia);

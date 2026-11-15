@@ -123,6 +123,31 @@ Proof.
 Qed.
 Print Assumptions named_binder_in_framed_package.
 
+(* A framed package whose first binder has no namesake: Lithium opens its
+   tuple, and the later binder, still framed with the rest of the goal, takes
+   the block variable of its name before liSep moves it out under another
+   name. *)
+Lemma named_binder_after_tuple_in_framed_package `{!islaG Sigma} `{!threadG}
+    (kept base : bv 64) (named : zesu_named_eq kept base) (rest : iProp Sigma) :
+  rest ⊢ (∃ (fresh_value : bv 64) (kept : bv 64), ⌜fresh_value = kept⌝ ∗ ⌜kept = kept⌝) ∗ rest.
+Proof.
+  iStartProof. iIntros "Hrest".
+  Fail ZesuSsz.Automation2.NamedEquations.zesu_named_binder_witness.
+  ZesuSsz.Automation2.Hooks.zesu_liAStep.
+  ZesuSsz.Automation2.Hooks.zesu_liAStep.
+  lazymatch goal with
+  | |- environments.envs_entails _ (∃ _ : li_prod (bv 64) unit,
+      (∃ kept : bv 64, _) ∗ rest)%I => idtac
+  end.
+  ZesuSsz.Automation2.NamedEquations.zesu_named_binder_witness.
+  lazymatch goal with
+  | |- environments.envs_entails _ (∃ _ : li_prod (bv 64) unit,
+      (⌜_ = kept⌝ ∗ ⌜kept = kept⌝) ∗ rest)%I => idtac
+  end.
+  iExists (kept, tt)ₗ. iFrame "Hrest". iSplit; iPureIntro; reflexivity.
+Qed.
+Print Assumptions named_binder_after_tuple_in_framed_package.
+
 (* A block with no named equation names its variables per block: the
    successor's binder of the same name is another value, so the binder step
    leaves it to Lithium. *)
@@ -135,6 +160,35 @@ Proof.
   iSplitR "Hrest"; [iExists kept; iPureIntro; reflexivity | iExact "Hrest"].
 Qed.
 Print Assumptions named_binder_needs_named_equation.
+
+(* Two calls' facts each bound a callee binder `before`; Rocq renamed the
+   second `before0`. A later call's binder `before` is a third value, so the
+   binder step leaves it to Lithium, even in a block with a named equation.
+   A digit-final name gives no such evidence: `kept1` next to `kept13` still
+   takes its namesake. *)
+Lemma named_binder_skips_reused_name `{!islaG Sigma} `{!threadG}
+    (kept base : bv 64) (named : zesu_named_eq kept base)
+    (before before0 : list nat) (rest : iProp Sigma) :
+  rest ⊢ (∃ before : list nat, ⌜before = before⌝) ∗ rest.
+Proof.
+  iStartProof. iIntros "Hrest".
+  Fail ZesuSsz.Automation2.NamedEquations.zesu_named_binder_witness.
+  iSplitR "Hrest"; [iExists before; iPureIntro; reflexivity | iExact "Hrest"].
+Qed.
+Print Assumptions named_binder_skips_reused_name.
+
+Lemma named_binder_digit_final_name `{!islaG Sigma} `{!threadG}
+    (kept1 kept13 base : bv 64) (named : zesu_named_eq kept1 base) (rest : iProp Sigma) :
+  rest ⊢ (∃ kept1 : bv 64, ⌜kept1 = kept1⌝) ∗ rest.
+Proof.
+  iStartProof. iIntros "Hrest".
+  ZesuSsz.Automation2.NamedEquations.zesu_named_binder_witness.
+  lazymatch goal with
+  | |- environments.envs_entails _ (⌜kept1 = kept1⌝ ∗ rest)%I => idtac
+  end.
+  iFrame. iPureIntro. reflexivity.
+Qed.
+Print Assumptions named_binder_digit_final_name.
 
 (* A call's precondition restated over fresh binders, one of them named
    like an unrelated block variable: the stepping loop closes it from the

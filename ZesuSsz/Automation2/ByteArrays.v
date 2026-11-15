@@ -436,6 +436,40 @@ Section byte_array_write.
   Qed.
 End byte_array_write.
 
+(* The length of a byte array as a literal: the context states
+   `length bytes = N` (at any element-type alias) or the list's length
+   computes to N. An inductive, so the hint below sees the class. *)
+Inductive ZesuByteArrayKnownLength (bytes : list (bv 8)) (n : Z) : Prop :=
+  zesu_byte_array_known_length : Z.of_nat (length bytes) = n ->
+    ZesuByteArrayKnownLength bytes n.
+Existing Class ZesuByteArrayKnownLength.
+
+Ltac zesu_byte_array_nat_literal number :=
+  lazymatch number with
+  | O => idtac
+  | S ?rest => zesu_byte_array_nat_literal rest
+  end.
+
+Ltac zesu_byte_array_known_length_solve :=
+  lazymatch goal with
+  | |- ZesuByteArrayKnownLength ?bytes ?n =>
+      first [
+        match goal with
+        | Hlength : @length _ bytes = ?count |- _ =>
+            zesu_byte_array_nat_literal count;
+            let literal := eval vm_compute in (Z.of_nat count) in
+            unify n literal;
+            exact (zesu_byte_array_known_length bytes n (f_equal Z.of_nat Hlength))
+        end
+      | let count := eval cbn in (length bytes) in
+        zesu_byte_array_nat_literal count;
+        let literal := eval vm_compute in (Z.of_nat count) in
+        unify n literal;
+        exact (zesu_byte_array_known_length bytes n eq_refl) ]
+  end.
+Global Hint Extern 0 (ZesuByteArrayKnownLength _ _) =>
+  zesu_byte_array_known_length_solve : typeclass_instances.
+
 Section byte_array_uninit_subsumption.
   Context `{!islaG Sigma}.
 
@@ -473,6 +507,28 @@ Section byte_array_uninit_subsumption.
     iApply (mem_mapsto_uninit_combine (Z.of_nat (length bytes))
       with "Hhead Htail"); lia.
   Qed.
+
+  (* A byte array of any length that the context states as a literal (an
+     equation `length bytes = N`, or a list whose length computes to N)
+     weakens into an uninitialized request at its address. Without this
+     rule a whole callee output (40 bytes, say) met the 8-byte rule above,
+     which committed and left the false side condition `length bytes = 8`.
+     The tail request reads the literal, as the 8-byte rule's does. *)
+  Lemma subsume_mem_byte_array_known_uninit A a1 a2
+      (bytes : list (bv 8)) (n n2 : Z) G
+      `{!ZesuByteArrayKnownLength bytes n} :
+    (⌜a1 = a2⌝ ∗ ⌜n <= n2⌝ ∗
+      (a2 + n) ↦ₘ? (n2 - n) ∗ ∃ x : A, G x)%I ⊢
+    subsume (a1 ↦ₘ∗ bytes) (fun _ : A => a2 ↦ₘ? n2) G.
+  Proof.
+    match goal with Hknown : ZesuByteArrayKnownLength _ _ |- _ =>
+      destruct Hknown as [Hlength] end.
+    rewrite -Hlength. apply subsume_mem_byte_array_uninit.
+  Qed.
+
+  Definition subsume_mem_byte_array_known_uninit_inst :=
+    [instance @subsume_mem_byte_array_known_uninit].
+  Global Existing Instance subsume_mem_byte_array_known_uninit_inst | 84.
 
   Lemma subsume_mem_scratch_byte_array_uninit A a1 a2
       (bytes : list (bv 8)) n2 G
