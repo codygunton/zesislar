@@ -52,6 +52,7 @@ Module Type DecodeItemSealedSignature.
   Axiom decodeItemCallPayloadInInputLe : forall argv0 argv1 rest sp inputEnd input before after, decodeItemCallMeaning (decodeItemCallDataArgs (argv0 :: argv1 :: rest) sp inputEnd input before) after -> 0 < bv_unsigned (listWord64At8 after) -> bv_unsigned (listWord64At8 after) < 18446744073709551607 -> bv_unsigned argv1 <= bv_unsigned (leWord64 after 0) /\ bv_unsigned (leWord64 after 0) + bv_unsigned (listWord64At8 after) <= bv_unsigned argv1 + Z.of_nat (length input).
   Axiom decodeItemCallConsumed : forall argv sp inputEnd input before after, decodeItemCallMeaning (decodeItemCallDataArgs argv sp inputEnd input before) after -> bv_unsigned (listWord64At24 after) <= Z.of_nat (length input).
   Axiom decodeItemCallDomainInput : forall argv0 argv1 argv2 rest sp inputEnd input before, decodeItemCallDomain (decodeItemCallDataArgs (argv0 :: argv1 :: argv2 :: rest) sp inputEnd input before) -> bv_unsigned argv2 = Z.of_nat (length input) /\ bv_unsigned argv1 + bv_unsigned argv2 < bv_modulus 64.
+  Axiom decodeItemCallDomainOutput : forall argv sp inputEnd input before, decodeItemCallDomain (decodeItemCallDataArgs argv sp inputEnd input before) -> length before = 40%nat.
   Axiom decodeItemCallDomainIntro : forall args, decodeItemC1BDomain args -> decodeItemCallDomain args.
   Axiom decodeItemCallMeaningLink : forall args after, decodeItemCallMeaning args after -> DecodeMeaningModuloKnownBugs args after.
 End DecodeItemSealedSignature.
@@ -87,6 +88,7 @@ Module DecodeItemSealed : DecodeItemSealedSignature.
   Definition decodeItemCallPayloadInInputLe := decodeItemMeaningPayloadInInputLe.
   Definition decodeItemCallConsumed := decodeItemMeaningConsumed.
   Definition decodeItemCallDomainInput := decodeItemDomainInput.
+  Definition decodeItemCallDomainOutput := decodeItemDomainOutput.
   Definition decodeItemCallDomainIntro := decodeItemDomainIntro.
   Definition decodeItemCallMeaningLink := decodeItemMeaningLink.
 End DecodeItemSealed.
@@ -136,6 +138,10 @@ Global Typeclasses Opaque decodeItemCallSpec2.
   ZesuDerivedFacts (decodeItemCallDomain (decodeItemCallDataArgs (argv0 :: argv1 :: argv2 :: rest) sp inputEnd input before))
     (bv_unsigned argv2 = Z.of_nat (length input) /\ bv_unsigned argv1 + bv_unsigned argv2 < bv_modulus 64) :=
   decodeItemCallDomainInput argv0 argv1 argv2 rest sp inputEnd input before.
+#[export] Instance decodeItemCallDomainOutputDerivedFacts argv sp inputEnd input before :
+  ZesuDerivedFacts (decodeItemCallDomain (decodeItemCallDataArgs argv sp inputEnd input before))
+    (length before = 40%nat) :=
+  decodeItemCallDomainOutput argv sp inputEnd input before.
 
 (* A caller proves the sealed call-site domain from the stated precondition (GoalDomain.v). *)
 #[export] Instance decodeItemCallDomainIntroGoalDomain args :

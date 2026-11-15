@@ -1,6 +1,7 @@
 From lithium Require Import definitions proof_state.
 Require Import isla.riscv64.riscv64.
 Require Import ZesuSsz.Contracts.IslarisMemory.
+Require ZesuSsz.Automation.PureFacts.
 
 (* An array that a continuation requests inside an uninitialized region, with
    a witness that the continuation leaves open (a callee's output buffer). The
@@ -49,6 +50,16 @@ Ltac zesu_uninit_request_length_in fact target hole :=
       end
   end.
 
+(* A sealed fact (a callee's call-site domain) states the length only through
+   a lemma its interface registers (a `ZesuDerivedFacts` instance): the
+   instance whose conclusion is the target's length. *)
+Ltac zesu_uninit_request_length_derived fact target hole :=
+  let derivation := constr:(@ZesuSsz.Automation.PureFacts.zesu_derived_facts
+    fact (length target = _) _) in
+  lazymatch type of derivation with
+  | _ -> ?derived => zesu_uninit_request_length_in derived target hole
+  end.
+
 Ltac zesu_uninit_request_length_solve :=
   lazymatch goal with
   | |- LiTactic (@zesu_uninit_request_length _ ?A ?requested ?G) =>
@@ -62,7 +73,9 @@ Ltac zesu_uninit_request_length_solve :=
           let continuation := eval cbv beta in (body y) in
           let target := eval cbv beta in (requested y) in
           match continuation with
-          | context [@bi_pure _ ?fact] => zesu_uninit_request_length_in fact target N
+          | context [@bi_pure _ ?fact] =>
+              first [zesu_uninit_request_length_in fact target N
+                    | zesu_uninit_request_length_derived fact target N]
           end; exact I
         | clear found;
           let n := eval unfold N in N in
