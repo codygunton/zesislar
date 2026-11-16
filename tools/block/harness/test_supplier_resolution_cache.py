@@ -230,7 +230,7 @@ class SupplierResolutionCacheTests(unittest.TestCase):
     def test_malformed_and_interrupted_records_do_not_supply_answers(self):
         self.resolver().resolve('Example.Alpha')
         root = cache.CACHE_ROOT / self.supplier['sha256']
-        row = next(path for path in root.glob('*.json'))
+        row = next(path for path in root.glob('*/*.json'))
         row.write_text('{')
         (root / 'incomplete.tmp').write_text('partial')
         self.resolver().resolve('Example.Alpha')
@@ -240,7 +240,7 @@ class SupplierResolutionCacheTests(unittest.TestCase):
     def test_changed_cached_pair_hash_is_not_a_hit(self):
         self.resolver().resolve('Example.Alpha')
         root = cache.CACHE_ROOT / self.supplier['sha256']
-        path = next(root.glob('*.json'))
+        path = next(root.glob('*/*.json'))
         row = json.loads(path.read_text())
         row['selected']['object']['sha256'] = '0' * 64
         path.write_text(json.dumps(row))
@@ -287,6 +287,62 @@ class SupplierResolutionCacheTests(unittest.TestCase):
     def test_tool_layout_stages_the_cache_dependency(self):
         layout = json.loads((Path(scratch.__file__).parent / 'TOOL-LAYOUT.json').read_text())
         self.assertEqual(layout['block/supplier_resolution_cache.py'], 'code/supplier_resolution_cache.py')
+
+    def records(self):
+        return sorted((cache.CACHE_ROOT / self.supplier['sha256']).glob('*/*.json'))
+
+    def test_records_are_sharded_by_key_prefix(self):
+        self.resolver().resolve('Example.Alpha')
+        [record] = self.records()
+        self.assertEqual(record.parent.name, record.stem[:2])
+
+    def test_fresh_record_survives_prune_and_still_hits(self):
+        self.resolver().resolve('Example.Alpha')
+        self.assertEqual(cache.prune()['kept'], 1)
+        self.resolver().resolve('Example.Alpha')
+        self.assertEqual(self.counts()['cache_hits'], 1)
+
+    def test_record_for_a_deleted_input_is_pruned(self):
+        self.resolver().resolve('Example.Alpha')
+        self.source.with_suffix('.vo').unlink()
+        self.assertEqual(cache.prune()['removed'], 1)
+        self.assertEqual(self.records(), [])
+
+    def test_old_records_logs_and_flat_records_are_pruned(self):
+        self.resolver().resolve('Example.Alpha')
+        supplier = cache.CACHE_ROOT / self.supplier['sha256']
+        flat = supplier / ('a' * 64 + '.json')
+        flat.write_text('{}')
+        old = cache.time.time() - cache.binding_cache.MAX_AGE_SECONDS - 60
+        for path in [*self.records(), *supplier.glob('events-*.jsonl')]:
+            os.utime(path, (old, old))
+        stats = cache.prune()
+        self.assertEqual(stats['removed'], 1)
+        self.assertEqual(self.records(), [])
+        self.assertFalse(flat.exists())
+        self.assertEqual(list(supplier.glob('events-*.jsonl')), [])
+
+    def test_idle_empty_supplier_is_removed_and_recreated(self):
+        self.resolver().resolve('Example.Alpha')
+        supplier = cache.CACHE_ROOT / self.supplier['sha256']
+        old = cache.time.time() - cache.binding_cache.MAX_AGE_SECONDS - 60
+        for path in [*self.records(), *supplier.glob('events-*.jsonl'), supplier]:
+            os.utime(path, (old, old))
+        cache.prune()
+        self.assertFalse(supplier.exists())
+        self.assertEqual(self.resolver().resolve('Example.Alpha'), self.source)
+        self.assertEqual(len(self.records()), 1)
+
+    def test_count_cap_holds(self):
+        for name in ['Beta.v', 'Gamma.v', 'Delta.v']:
+            self.module(name)
+        resolver = self.resolver()
+        for name in ['Alpha', 'Beta', 'Gamma', 'Delta']:
+            resolver.resolve('Example.' + name)
+        self.assertEqual(len(self.records()), 4)
+        with patch.object(cache.binding_cache, 'MAX_ENTRIES', 2):
+            cache.prune()
+        self.assertEqual(len(self.records()), 2)
 
 
 if __name__ == '__main__':

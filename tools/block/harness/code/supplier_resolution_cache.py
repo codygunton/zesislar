@@ -1,13 +1,20 @@
-"""Share exact, source-context-bound coqdep answers for one supplier."""
-from contextlib import contextmanager
+"""Share exact, source-context-bound coqdep answers for one supplier.
+
+Records live in `CACHE_ROOT/<supplier sha256>/<key[:2]>/<key>.json`. The store is
+optional and bounded: `prune` removes records by age, by missing inputs, and by a
+count and size cap. A removed record only costs one coqdep query.
+"""
+from contextlib import contextmanager, suppress
 import fcntl
 import hashlib
 import json
 import os
 from pathlib import Path
+import stat
 import tempfile
 import time
 
+import binding_cache
 from binding_cache import digest
 
 CACHE_ROOT = Path.home() / '.cache/zesislar/supplier-import-resolution'
@@ -35,6 +42,7 @@ class SupplierResolutionCache:
                 all(word in '0123456789abcdef' for word in supplier['sha256']))
         require(file_binding(supplier['path']) == supplier)
         self.supplier = dict(supplier)
+        binding_cache.maybe_prune(Path(CACHE_ROOT), prune)
         self.root = CACHE_ROOT / supplier['sha256']
         self.root.mkdir(parents=True, exist_ok=True, mode=0o700)
         require(not self.root.is_symlink() and self.root.stat().st_uid == os.getuid())
@@ -89,7 +97,12 @@ class SupplierResolutionCache:
         self.counters[event] += 1
         row = dict(time_ns=time.time_ns(), event=event, pid=os.getpid(), **details)
         path = self.root / ('events-' + str(os.getpid()) + '.jsonl')
-        descriptor = os.open(path, os.O_WRONLY | os.O_CREAT | os.O_APPEND | os.O_NOFOLLOW, 0o600)
+        flags = os.O_WRONLY | os.O_CREAT | os.O_APPEND | os.O_NOFOLLOW
+        try:
+            descriptor = os.open(path, flags, 0o600)
+        except FileNotFoundError:  # prune removed an idle supplier directory
+            self.root.mkdir(parents=True, exist_ok=True, mode=0o700)
+            descriptor = os.open(path, flags, 0o600)
         try:
             os.write(descriptor, encoded(row) + b'\n')
         finally:
@@ -122,11 +135,18 @@ class SupplierResolutionCache:
 
     @contextmanager
     def locked(self, key):
-        descriptor = os.open(self.root / (key + '.lock'),
-                             os.O_RDWR | os.O_CREAT | os.O_NOFOLLOW, 0o600)
+        """Yield the record path under the key's lock, or None when the store is unavailable."""
+        try:
+            shard = self.root / key[:2]
+            shard.mkdir(parents=True, exist_ok=True, mode=0o700)
+            descriptor = os.open(shard / (key + '.lock'),
+                                 os.O_RDWR | os.O_CREAT | os.O_NOFOLLOW, 0o600)
+        except OSError:
+            yield None
+            return
         try:
             fcntl.flock(descriptor, fcntl.LOCK_EX)
-            yield
+            yield shard / (key + '.json')
         finally:
             os.close(descriptor)
 
@@ -155,11 +175,15 @@ class SupplierResolutionCache:
             self.record('cache_misses', module=module, reason='uncached_query_context')
             return produce(module, request)
         key = hashlib.sha256(encoded(context)).hexdigest()
-        path = self.root / (key + '.json')
-        with self.locked(key):
+        with self.locked(key) as path:
+            if path is None:
+                self.record('cache_misses', module=module, key=key, reason='store_unavailable')
+                return produce(module, request)
             entry = self.read(path, context, instance)
             if entry is not None and self.context(instance, module, request) == context:
                 self.record('cache_hits', module=module, key=key)
+                with suppress(OSError):
+                    os.utime(path)  # Age counts from the last use.
                 return entry, request
             self.record('cache_misses', module=module, key=key)
             entry, actual_request = produce(module, request)
@@ -167,7 +191,7 @@ class SupplierResolutionCache:
             selected = dict(mapping=entry['mapping'], canonical=entry['canonical'],
                             source=file_binding(entry['source']), object=file_binding(entry['object']))
             require(self.context(instance, module, request) == context)
-            descriptor, temporary = tempfile.mkstemp(prefix=key + '.', dir=self.root)
+            descriptor, temporary = tempfile.mkstemp(prefix=key + '.', dir=path.parent)
             try:
                 with os.fdopen(descriptor, 'wb') as stream:
                     stream.write(encoded(dict(context=context, selected=selected)) + b'\n')
@@ -178,6 +202,55 @@ class SupplierResolutionCache:
                 if os.path.exists(temporary):
                     os.unlink(temporary)
             return entry, actual_request
+
+
+def _inputs_gone(record):
+    """True when a file that a record binds no longer exists."""
+    try:
+        descriptor = os.open(record, os.O_RDONLY | os.O_NOFOLLOW)
+        with os.fdopen(descriptor, 'rb') as stream:
+            row = json.loads(stream.read())
+        context, selected = row['context'], row['selected']
+        paths = [context['supplier']['path'], context['resolver']['path'],
+                 selected['source']['path'], selected['object']['path']]
+        return not all(isinstance(path, str) and os.path.exists(path) for path in paths)
+    except (OSError, ValueError, TypeError, KeyError):
+        return True
+
+
+def prune(*, now=None):
+    """Bound every supplier's records; drop flat v1 records, old event logs, idle suppliers."""
+    root = Path(CACHE_ROOT)
+    now = time.time() if now is None else now
+    stats = binding_cache.new_stats()
+    if not root.is_dir() or root.is_symlink():
+        return stats
+    shards, idle = [], []
+    for supplier in os.scandir(root):
+        if not supplier.is_dir(follow_symlinks=False):
+            continue
+        if now - supplier.stat(follow_symlinks=False).st_mtime > binding_cache.MAX_AGE_SECONDS:
+            idle.append(supplier.path)
+        with os.scandir(supplier.path) as listing:
+            for entry in listing:
+                info = entry.stat(follow_symlinks=False)
+                if stat.S_ISDIR(info.st_mode):
+                    shards.append(entry.path)
+                elif (binding_cache.RECORD.fullmatch(entry.name) or
+                      now - info.st_mtime > (binding_cache.MAX_AGE_SECONDS
+                                             if entry.name.startswith('events-')
+                                             else binding_cache.TEMP_AGE_SECONDS)):
+                    # Flat records are the retired unsharded layout.
+                    binding_cache.remove_file(entry.path, stats, key='legacy_removed', info=info)
+    binding_cache.prune_records(shards, now=now, expired=_inputs_gone, stats=stats)
+    for supplier in idle:
+        for shard in os.scandir(supplier):
+            if shard.is_dir(follow_symlinks=False):
+                with suppress(OSError):
+                    os.rmdir(shard.path)
+        with suppress(OSError):
+            os.rmdir(supplier)
+    return stats
 
 
 def profile_supplier(profile_binding):
