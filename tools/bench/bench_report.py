@@ -326,6 +326,8 @@ def stage_reached(parsed, verdict, end):
     if verdict == 'CLOSED':
         return 'closed'
     classes = [command_class(command['command']) for command in parsed['commands']]
+    if parsed['errors'] and classes:  # -time also records the sentence that failed: the last one
+        return '%s (error)' % classes[-1]
     if 'qed' in classes:
         return 'assumptions'
     if 'proof' in classes:

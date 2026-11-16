@@ -138,8 +138,12 @@ class Joining(unittest.TestCase):
         stages = R.stage_times(parsed, timeline, total_cpu=75.0)
         self.assertEqual(stages['zesu_run_pass'], {'cpu': 50.0, 'steps': 1, 'rss_growth_kib': None})
         self.assertEqual(stages['zesu_finish_final_pure']['cpu'], 15.0)
-        self.assertEqual(R.stage_reached(parsed, 'NOT-CLOSED', 'failed'),
-                         'zesu_finish_final_pure (1 zesu_run_pass, failed)')
+        self.assertEqual(R.stage_reached(parsed, 'NOT-CLOSED', 'failed'), 'imports (error)')
+        killed = R.parse_log(LOG[:LOG.index('File ')])
+        self.assertEqual(R.stage_reached(killed, 'NOT-CLOSED', 'cpu-cap'),
+                         'zesu_finish_final_pure (1 zesu_run_pass, cpu-cap)')
+        at_qed = R.parse_log(LOG.replace('File ', 'Chars 91 - 95 [Qed.] 0. secs (0.u,0.s)\nFile '))
+        self.assertEqual(R.stage_reached(at_qed, 'NOT-CLOSED', 'failed'), 'qed (error)')
 
     def test_markers_with_samples(self):
         text = '@@S stage "a"\n@@S stage "b"\n'
