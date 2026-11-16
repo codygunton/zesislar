@@ -25,24 +25,29 @@ Inductive zesu_solver_kind : Set :=
 | zesu_solver_saturation
 | zesu_solver_vm.
 
-(* Node budgets per kind: (pruned context, whole context). Measured on the
-   decodeItem blocks (the largest successful context of each arm, with
-   margin); see each line. *)
+(* Node budgets per kind: (pruned context, whole context), from the largest
+   successful context of each arm on the 24 decodeItem blocks (scratch sweep
+   bs-meas2 on the batch-3 bank, every arm logged), with margin. *)
 Ltac2 zesu_bounded_budgets (kind : constr) : int * int :=
   if Constr.equal kind constr:(zesu_solver_lia) then
-    (* Pruned closures reached 64499 nodes (32768 lost 5 blocks), while on
+    (* Pruned closures reached 84937 nodes (32768 lost 5 blocks), while on
        decodeParentHeader 0300's final pure tail pruned contexts of 136615
        nodes and more grew past 8 GiB; whole-context closures reached 26708
        nodes (16384 lost a closure) and failing ones 212738. *)
     (98304, 32768)
   else if Constr.equal kind constr:(zesu_solver_bv) then
+    (* Pruned closures reached 66611 nodes. No whole-context call closed a
+       goal (2217 calls, up to 113294 nodes); the linked-facts path closed one
+       of 27089 nodes. Unbudgeted, both arms reached 8 GiB on a 454-fact
+       decodeParentHeader 0300 leaf. *)
     (98304, 32768)
   else if Constr.equal kind constr:(zesu_solver_saturation) then
-    (0, 131072)
+    (* Saturations ran on contexts of up to 209156 nodes. *)
+    (0, 262144)
   else (0, 4096).
 
-(* Linking rounds of the pruned arm. *)
-Ltac2 zesu_bounded_prune_rounds () := 8.
+(* Linking rounds of the pruned arm: closures needed at most 3. *)
+Ltac2 zesu_bounded_prune_rounds () := 6.
 
 Ltac2 zesu_bounded_kind (kind : Ltac1.t) : constr :=
   Option.get (Ltac1.to_constr kind).
