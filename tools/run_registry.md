@@ -171,6 +171,7 @@ released within one timer interval even while no guard runs an admission check:
 - `module_memory.py ledger-recover-stale --all`.
 
 Each release is printed to the journal; after any release the watchdog writes `admission-wake`.
+A watchdog given `--store` (a private registry, as in fixtures) skips these live-ledger recoveries.
 
 ## Stalled gates
 

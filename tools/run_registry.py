@@ -1421,7 +1421,12 @@ def main():
                 lines, follows = follow_main(registry, args.follow_main, args.status)
                 for line in lines:
                     print(line)
-        for message in watchdog(registry, args.status) + recover_ledgers() + stall_report(registry, args.status):
+        messages = watchdog(registry, args.status)
+        # The ledger recoveries act on the live ledger and the live registry;
+        # a watchdog given a private --store (fixtures) leaves them alone.
+        if args.store is None:
+            messages += recover_ledgers()
+        for message in messages + stall_report(registry, args.status):
             print(message)
         return 0 if follows else 1
     if args.action == 'begin':
