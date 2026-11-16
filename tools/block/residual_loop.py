@@ -349,8 +349,7 @@ def scoped(path, tag, args, ocamlpath, claim=CHECK_CLAIM, run_id=None, watch=Non
     command = ([str(GUARD), "scope", tag, "--", sys.executable, "-c", CPU_EXEC]
                + list(args) + list(extra_args) + [path.name])
     if run_id:
-        command = [sys.executable, str(REGISTRY), "run", "--id", run_id, "--kind", "diagnostic",
-                   "--owner", "residual-loop", "--"] + command
+        command = [sys.executable, str(REGISTRY), "run", "--id", run_id, "--kind", "diagnostic", "--"] + command
     env = clean_env(dict(OCAMLPATH=ocamlpath, ZESU_WRITER_ID="residual-loop-" + tag,
                          ZESU_MODULE_CLAIM_BYTES=str(claim)))
     for cache in path.parent.glob(".*.cache"):

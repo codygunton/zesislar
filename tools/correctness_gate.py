@@ -392,8 +392,8 @@ def run(args):
     workspace = Path.cwd().resolve()
     if not os.environ.get("ZESU_RUN_ID"):
         os.environ["ZESU_GATE_STARTED_MONOTONIC_NS"] = str(run_started)
-        command = [sys.executable, str(Path(__file__).with_name("run_registry.py")), "run", "--kind", "correctness-gate",
-                   "--owner", os.environ.get("COORD_AGENT", "local")]
+        # The registry resolves the owner (ZESU_OWNER, the enclosing tools/bg run, the branch, the user).
+        command = [sys.executable, str(Path(__file__).with_name("run_registry.py")), "run", "--kind", "correctness-gate"]
         if os.environ.get("ZESU_SUPERSEDES_RUN"):
             command += ["--supersedes", os.environ["ZESU_SUPERSEDES_RUN"]]
         os.execv(sys.executable, [*command, "--", sys.executable, str(Path(__file__).resolve()), *sys.argv[1:]])
