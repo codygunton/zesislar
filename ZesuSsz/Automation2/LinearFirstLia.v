@@ -273,11 +273,15 @@ Ltac2 zesu_linear_clear_unrelated () :=
 Ltac zesu_lia_linked_facts :=
   once ltac2:(zesu_linear_clear_unrelated ()); Zify.zify; xlia Lia.zchecker.
 
-(* The goal and every Prop fact fit the whole-context node budget. Guards a
-   solver call on the whole context: on the decodeItem blocks every
-   whole-context `lia` that succeeded ran on at most 26708 nodes (16384 lost
-   a closure), while failing ones reached 212738 nodes. *)
+(* The goal and every Prop fact fit a node budget. Guards a solver call on the
+   whole context: on the decodeItem blocks every whole-context `lia` that
+   succeeded ran on at most 26708 nodes (16384 lost a closure), while failing
+   ones reached 212738 nodes. Guards a solver call on the pruned context with a
+   larger budget: pruned closures on the decodeItem blocks reached 64499
+   nodes (32768 lost 5 blocks), while on decodeParentHeader 0300's final pure
+   tail pruned contexts of 136615 nodes and more grew past 8 GiB. *)
 Ltac2 zesu_linear_context_node_budget () := 32768.
+Ltac2 zesu_linear_pruned_context_node_budget () := 98304.
 
 Ltac2 rec zesu_linear_facts_remaining (budget : int) (hyps : (ident * constr option * constr) list) : int :=
   if Int.le budget 0 then budget else
@@ -294,9 +298,12 @@ Ltac2 rec zesu_linear_facts_remaining (budget : int) (hyps : (ident * constr opt
       end
   end.
 
-Ltac2 zesu_linear_context_within_budget () :=
-  let budget := zesu_linear_remaining (zesu_linear_context_node_budget ()) (Control.goal ()) in
+Ltac2 zesu_linear_context_within (nodes : int) :=
+  let budget := zesu_linear_remaining nodes (Control.goal ()) in
   if Int.le (zesu_linear_facts_remaining budget (Control.hyps ())) 0
   then Control.zero (Tactic_failure None) else ().
 
-Ltac zesu_lia_context_within_budget := ltac2:(zesu_linear_context_within_budget ()).
+Ltac zesu_lia_context_within_budget :=
+  ltac2:(zesu_linear_context_within (zesu_linear_context_node_budget ())).
+Ltac zesu_lia_pruned_context_within_budget :=
+  ltac2:(zesu_linear_context_within (zesu_linear_pruned_context_node_budget ())).

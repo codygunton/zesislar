@@ -2395,6 +2395,16 @@ Ltac zesu_liAStep :=
   | zesu_canonical_fact_views_if_enabled
  ]; liSimpl)].
 
+(* Lithium simplifies the whole goal after every step. While an entry is
+   being opened, or a successor's entry proved, the goal still holds branch
+   facts such as `negb (bool_decide (bv_signed (BV 128 k) < x)) = true`.
+   On each one simpl computes 2^128 by weak head reduction of the literal,
+   finds the comparison stuck on `x`, and leaves the fact as it was: about a
+   second per fact per step. With the moduli folded during simpl the result
+   is the same (simpl never folds a modulus into a numeral) at no cost. *)
+Ltac liSimpl ::= try progress (with_strategy opaque
+  [stdpp.bitvector.definitions.bv_modulus stdpp.bitvector.definitions.bv_half_modulus] simpl).
+
 Ltac liAStep ::= first [progress zesu_union_witness_step | zesu_liAStep].
 
 (* C1: the trace tail a call returns with.
@@ -2878,19 +2888,24 @@ Ltac liAAsm ::=
      notypeclasses refine (tac_fast_apply (li_wpreadreg_field _ _ _) _)
   end.
 
-(* The last arm tries the pruned context, then the whole context only within
-   the node budget: without the budget the whole context reached 24 GiB on
-   decodeParentHeader; without the whole context decodeItem lost 8 closures. *)
-Ltac zesu_lia_whole_context_bounded closer :=
+(* The last arm tries the pruned context, then the whole context, each only
+   within its node budget. Without the budget the whole context reached
+   24 GiB on decodeParentHeader; without the whole context decodeItem lost 8
+   closures. The pruned context keeps every fact that shares a variable with
+   the goal, transitively, so on a large block context it is nearly the
+   whole context: on the final pure tail of decodeParentHeader 0300 (451
+   facts) it grew past 8 GiB within two minutes. *)
+Ltac zesu_lia_context_bounded closer :=
   tryif zesu_switch_enabled constr:(ZesuStepFinisherOnce)
-  then first [solve [zesu_context_prune_goal; closer] | (zesu_lia_context_within_budget; closer)]
+  then first [solve [zesu_context_prune_goal; zesu_lia_pruned_context_within_budget; closer]
+             | (zesu_lia_context_within_budget; closer)]
   else (zesu_lia_context_within_budget; closer).
 
 Ltac Lia.lia ::= first [solve [zesu_closed_goal_decide] |
   solve [ZesuSsz.Automation2.BvLinear.zesu_bv_linear_with ltac:(lia)] |
   (tryif ZesuSsz.Automation2.BvLinear.zesu_bv_linear_refutes
    then first [zesu_refuted_solve ltac:(zesu_lia_linear_first3) | ResidualLemmas.zesu_residual_lemma]
-   else first [zesu_lia_whole_context_bounded ltac:(zesu_lia_linear_first3)
+   else first [zesu_lia_context_bounded ltac:(zesu_lia_linear_first3)
               | ResidualLemmas.zesu_residual_lemma])].
 
 
