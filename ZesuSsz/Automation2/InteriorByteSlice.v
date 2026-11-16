@@ -172,6 +172,37 @@ Ltac zesu_byte_slice_unsigned_ranges :=
   | _ : context[@bv_unsigned ?n ?x] |- _ => zesu_byte_slice_unsigned_range n x
   end.
 
+(* A word read from list bytes (a callee's output) is an opaque atom to
+   arithmetic: that it is positive holds only where a fact states it (a
+   branch on the word; the decodeItem interface states no such bound, since a
+   successful decode may return an empty payload). Such a premise comes from
+   that fact or fails; it never reaches `lia`, which on a decodeParentHeader
+   caller's context grew past 24 GiB on it. *)
+Lemma zesu_byte_slice_unsigned_pos_of_neq n (w : bv n) :
+  bv_unsigned w <> 0%Z -> (0 < bv_unsigned w)%Z.
+Proof. pose proof (bv_unsigned_in_range n w). lia. Qed.
+
+Ltac zesu_byte_slice_list_word_positive_goal :=
+  lazymatch goal with
+  | |- (0 < @bv_unsigned _ ?w)%Z =>
+      lazymatch w with
+      | bv_concat _ _ _ => idtac
+      | Z_to_bv _ (little_endian_to_bv _ _) => idtac
+      end
+  end.
+
+Ltac zesu_byte_slice_positive_from_facts :=
+  lazymatch goal with
+  | |- (0 < @bv_unsigned ?n ?w)%Z =>
+      first [assumption |
+        match goal with
+        | H : not (@eq Z (@bv_unsigned _ ?v) Z0) |- _ =>
+            unify v w; exact (zesu_byte_slice_unsigned_pos_of_neq n w H)
+        | H : not (@eq Z Z0 (@bv_unsigned _ ?v)) |- _ =>
+            unify v w; exact (zesu_byte_slice_unsigned_pos_of_neq n w (not_eq_sym H))
+        end]
+  end.
+
 (* A derived fact stated under premises: each premise the context shows,
    directly or by arithmetic, is discharged. A premise is tried once: a fact
    whose premise fails is dropped from this local proof, so a later success
@@ -182,7 +213,9 @@ Ltac zesu_byte_slice_discharge_premises :=
       lazymatch type of P with Prop => idtac end;
       first [
         let Hp := fresh "Hpremise" in
-        assert (Hp : P) by (first [assumption | lia]);
+        assert (Hp : P) by (first [assumption |
+          tryif zesu_byte_slice_list_word_positive_goal
+          then zesu_byte_slice_positive_from_facts else lia]);
         specialize (H Hp); clear Hp
       | clear H ]
   end;

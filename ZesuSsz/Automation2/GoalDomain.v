@@ -44,7 +44,19 @@ Ltac zesu_goal_domain_open :=
      end
     |progress (autounfold with zesu_goal_domain)].
 
+(* lia and bv_solve never close an existential, nor a witness that `split`
+   leaves as a goal of a type such as `bv 64`: on a large context they only
+   search the whole context for a contradiction (a call's precondition
+   restated over fresh names, 274 hypotheses: lia on its first witness grew
+   past 8 GiB). *)
+Ltac zesu_final_solver_goal :=
+  lazymatch goal with
+  | |- ex _ => fail 0
+  | |- ?target => lazymatch type of target with Prop => idtac end
+  end.
+
 Ltac zesu_goal_domain_part :=
+  zesu_final_solver_goal;
   first
     [lia
     |bv_solve
@@ -54,8 +66,11 @@ Ltac zesu_goal_domain_part :=
          unfold bv_modulus in *; cbn [Z.of_N] in *; lia
      end].
 
+(* An existential goal is refused before anything is unfolded: every part
+   of it would be a witness or an existential. *)
 Ltac zesu_finish_goal_domain :=
   let _ := constr:(_ : ZesuStepGoalDomain) in
+  zesu_final_solver_goal;
   solve [
     zesu_goal_domain_open; cbn;
     zesu_witness_facts;
