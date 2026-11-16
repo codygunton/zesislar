@@ -116,7 +116,7 @@ Ltac2 a3n_prune () :=
     | None => if ZesuSsz.Automation2.ContextCollection.zesu_context_proposition ty then names
         else ZesuSsz.Automation2.ContextCollection.zesu_context_add names name
     end) relevant hyps in
-  let kept := ZesuSsz.Automation2.ContextCollection.zesu_context_declaration_dependencies hyps kept in
+  let kept := ZesuSsz.Automation2.ContextCollection.zesu_context_dependencies hyps kept in
   List.iter (fun declaration =>
     let (name, _, _) := declaration in
     if ZesuSsz.Automation2.ContextCollection.zesu_context_member name kept then ()

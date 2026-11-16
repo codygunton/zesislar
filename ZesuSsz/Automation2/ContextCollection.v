@@ -58,50 +58,26 @@ Ltac2 zesu_context_declaration_variables (body : constr option) (ty : constr) :=
   | Some value => zesu_context_union (zesu_context_variables ty) (zesu_context_variables value)
   end.
 
-(* Each declaration's variables and whether it is a fact, computed once per
-   call: the relevance rounds and the dependency closure reuse them. Typing
-   and walking every declaration once per round cost 8.6% of decodeItem
-   6ac4's instructions. *)
-Ltac2 zesu_context_info (hyps : (ident * constr option * constr) list) :=
-  List.map (fun declaration =>
-    let (name, body, ty) := declaration in
-    let variables := zesu_context_declaration_variables body ty in
-    let proposition := match body with
-      | Some _ => false
-      | None => zesu_context_proposition ty
-      end in
-    (name, body, variables, proposition)) hyps.
-
-Ltac2 rec zesu_context_relevance (info : (ident * constr option * ident list * bool) list)
+Ltac2 rec zesu_context_relevance (hyps : (ident * constr option * constr) list)
     (relevant : ident list) :=
   let next := List.fold_left (fun found declaration =>
-    let (name, body, variables, proposition) := declaration in
+    let (name, body, ty) := declaration in
+    let variables := zesu_context_declaration_variables body ty in
     let selected :=
       if zesu_context_member name found then true
       else match body with
       | Some _ => false
-      | None => if proposition then
+      | None => if zesu_context_proposition ty then
           if Int.equal (List.length variables) 0 then true
           else zesu_context_intersects variables found
         else false
       end in
     if selected then zesu_context_add (zesu_context_union found variables) name else found)
-    relevant info in
+    relevant hyps in
   if Int.equal (List.length next) (List.length relevant) then next
-  else zesu_context_relevance info next.
+  else zesu_context_relevance hyps next.
 
-Ltac2 rec zesu_context_dependencies (info : (ident * constr option * ident list * bool) list)
-    (kept : ident list) :=
-  let next := List.fold_left (fun found declaration =>
-    let (name, _, variables, _) := declaration in
-    if zesu_context_member name found then zesu_context_union found variables
-    else found) kept info in
-  if Int.equal (List.length next) (List.length kept) then next
-  else zesu_context_dependencies info next.
-
-(* The same closure over raw declarations, walking only the kept ones: for a
-   caller that has not walked every declaration. *)
-Ltac2 rec zesu_context_declaration_dependencies (hyps : (ident * constr option * constr) list)
+Ltac2 rec zesu_context_dependencies (hyps : (ident * constr option * constr) list)
     (kept : ident list) :=
   let next := List.fold_left (fun found declaration =>
     let (name, body, ty) := declaration in
@@ -109,7 +85,7 @@ Ltac2 rec zesu_context_declaration_dependencies (hyps : (ident * constr option *
       zesu_context_union found (zesu_context_declaration_variables body ty)
     else found) kept hyps in
   if Int.equal (List.length next) (List.length kept) then next
-  else zesu_context_declaration_dependencies hyps next.
+  else zesu_context_dependencies hyps next.
 
 Ltac2 zesu_context_prune () :=
   let hyps := Control.hyps () in
@@ -123,23 +99,22 @@ Ltac2 zesu_context_prune () :=
     | Some value => if Constr.has_evar value
         then Control.zero (Tactic_failure None) else ()
     end) hyps;
-  let info := zesu_context_info hyps in
-  let relevant := zesu_context_relevance info (zesu_context_variables target) in
+  let relevant := zesu_context_relevance hyps (zesu_context_variables target) in
   let kept := List.fold_left (fun names declaration =>
-    let (name, body, _, proposition) := declaration in
+    let (name, body, ty) := declaration in
     match body with
     | Some _ => zesu_context_add names name
-    | None => if proposition then names else zesu_context_add names name
-    end) relevant info in
-  let kept := zesu_context_dependencies info kept in
+    | None => if zesu_context_proposition ty then names else zesu_context_add names name
+    end) relevant hyps in
+  let kept := zesu_context_dependencies hyps kept in
   List.iter (fun declaration =>
-    let (name, body, _, proposition) := declaration in
+    let (name, body, ty) := declaration in
     if zesu_context_member name kept then () else
     match body with
     | Some _ => Control.zero (Tactic_failure None)
-    | None => if proposition then Std.clear [name]
+    | None => if zesu_context_proposition ty then Std.clear [name]
         else Control.zero (Tactic_failure None)
-    end) (List.rev info).
+    end) (List.rev hyps).
 
 Ltac zesu_context_prune_goal := ltac2:(zesu_context_prune ()).
 Ltac zesu_context_filtered closer := first [solve [zesu_context_prune_goal; closer] | closer].
@@ -169,8 +144,7 @@ Ltac2 zesu_context_collect_live (roots : constr list) :=
         zesu_context_add
           (zesu_context_union found (zesu_context_declaration_variables body ty)) name
     end) seeds hyps in
-  let info := zesu_context_info hyps in
-  let kept := zesu_context_dependencies info (zesu_context_relevance info seeds) in
+  let kept := zesu_context_dependencies hyps (zesu_context_relevance hyps seeds) in
   List.iter (fun declaration =>
     let (name, _, _) := declaration in
     if zesu_context_member name kept then () else Std.clear [name]) (List.rev hyps).
