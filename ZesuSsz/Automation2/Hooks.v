@@ -2395,6 +2395,16 @@ Ltac zesu_liAStep :=
   | zesu_canonical_fact_views_if_enabled
  ]; liSimpl)].
 
+(* Lithium simplifies the whole goal after every step. While an entry is
+   being opened, or a successor's entry proved, the goal still holds branch
+   facts such as `negb (bool_decide (bv_signed (BV 128 k) < x)) = true`.
+   On each one simpl computes 2^128 by weak head reduction of the literal,
+   finds the comparison stuck on `x`, and leaves the fact as it was: about a
+   second per fact per step. With the moduli folded during simpl the result
+   is the same (simpl never folds a modulus into a numeral) at no cost. *)
+Ltac liSimpl ::= try progress (with_strategy opaque
+  [stdpp.bitvector.definitions.bv_modulus stdpp.bitvector.definitions.bv_half_modulus] simpl).
+
 Ltac liAStep ::= first [progress zesu_union_witness_step | zesu_liAStep].
 
 (* C1: the trace tail a call returns with.
