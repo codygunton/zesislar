@@ -629,6 +629,41 @@ def watchdog(registry, status):
         return messages
 
 
+# Before 2026-11-16 the memory ledger released a dead owner's booking only
+# while some guard ran an admission check, and no route released the booking
+# of a gate killed by a signal; two dead 16 GiB tokens and fourteen dead gates
+# held 48.6 GiB for hours. The watchdog runs each owned recovery every pass, so
+# a dead claim is released within one timer interval (2 min).
+LEDGER_RECOVERIES = (('correctness_gate.py', 'recover-dead'),
+                     ('module_memory.py', 'ledger-recover-dead', '--all'),
+                     ('module_memory.py', 'ledger-recover-stale', '--all'))
+
+
+def recover_ledgers(run=subprocess.run):
+    """Run the memory ledger's dead-owner recoveries; return one line per release or failure."""
+    tools = Path(__file__).resolve().parent
+    state = default_fence_ledger().parent
+    environment = dict(os.environ, ZESU_ADMISSION_SUMMARY=str(state / 'admission-summary'))
+    environment.pop('ZESU_GUARD_MUTEX_FD', None)
+    lines, released = [], []
+    for script, *arguments in LEDGER_RECOVERIES:
+        command = ' '.join([script, *arguments])
+        result = run([sys.executable, str(tools / script), *arguments], cwd=tools, env=environment,
+                     capture_output=True, text=True)
+        if result.returncode != 0:
+            lines.append(f'ledger recovery: {command} failed with exit {result.returncode}: '
+                         f'{" ".join(result.stderr.split())[-400:]}')
+            continue
+        rows = [row for row in json.loads(result.stdout or '[]')
+                if row.get('released') or row.get('released_bytes')]
+        released.extend(rows)
+        lines.extend(f'ledger recovery: {command} released {json.dumps(row, sort_keys=True)}' for row in rows)
+    if released:
+        # Wake guards held on a booking (resource_guard.sh wake_admissions).
+        (state / 'admission-wake').write_text(f'{time.time_ns()}\n')
+    return lines
+
+
 # Gates that finished this long ago with no PR or merge since are reported as stalled.
 STALL_SECONDS = 30 * 60
 GATE_MARKERS = ('gates.out', 'GATES-DONE')
@@ -1014,27 +1049,39 @@ class Registry:
             raise
 
     def reap(self):
-        """Close dead orphans and record runs that ended by a signal without a stop."""
+        """Record runs that ended by a signal without a stop, then close dead orphans."""
         rows = list(self.read()['runs'].values())
+        entries = self.reap_signal_deaths(rows)
         self.reap_orphans(rows)
-        return self.reap_signal_deaths(rows)
+        return entries
+
+    # A scheduler killed by a signal leaves its run 'running', and a stop whose
+    # release failed leaves it 'stopped', with unreleased claims either way.
+    # Only children_live runs were retried: on 2026-11-16, 93 of 111 'running'
+    # runs had no live actor and dead gates held 16.6 GiB of bookings.
+    ORPHAN_STATES = ('children_live', 'running', 'stopped')
 
     def reap_orphans(self, rows):
-        """Release claims of children_live runs whose exact actors all ended."""
+        """Release the claims of runs whose exact actors all ended, then close them.
+
+        A dead 'running' run closes only after its signal death is recorded.
+        """
         for row in rows:
-            if row['status'] != 'children_live':
-                continue
-            if any(live(a) for a in [row['scheduler']] + row['jobs']):
+            pending = any(not claim['released'] for claim in row['claims'].values())
+            if (row['status'] not in self.ORPHAN_STATES or row['status'] == 'stopped' and not pending
+                    or any(live(a) for a in [row['scheduler']] + row['jobs'])):
                 continue
             try:
-                self.release_claims(row['id'])
+                if pending:
+                    self.release_claims(row['id'])
             except (OSError, ValueError, subprocess.CalledProcessError) as error:
                 # The claim stays reserved; a later pass retries the release.
                 print(f"notice: run registry: orphan {row['id']} keeps its claims: {error}",
                       file=sys.stderr)
                 continue
             def close(current):
-                if current['status'] == 'children_live':
+                if (current['status'] == 'children_live'
+                        or current['status'] == 'running' and current.get('signal_death_ns')):
                     current.update(status='closed', closed_ns=time.time_ns(),
                                    all_actors_closed=True)
             self.update(row['id'], close)
@@ -1322,7 +1369,8 @@ def main():
                             'some avg60 under 5 %%, then launch.')
     start.add_argument('command', nargs=argparse.REMAINDER)
     commands.add_parser('reap', help='Record runs that ended by a signal without a stop.')
-    guard = commands.add_parser('watchdog', help='Reap, then post new signal deaths to STATUS.md.')
+    guard = commands.add_parser('watchdog', help='Reap, post new signal deaths to STATUS.md, and release '
+                                                 'memory-ledger claims whose owners ended.')
     guard.add_argument('--status', type=Path, required=True)
     guard.add_argument('--follow-main', type=Path, metavar='CHECKOUT',
                        help='First fast-forward this clean tools checkout to origin/main.')
@@ -1373,7 +1421,12 @@ def main():
                 lines, follows = follow_main(registry, args.follow_main, args.status)
                 for line in lines:
                     print(line)
-        for message in watchdog(registry, args.status) + stall_report(registry, args.status):
+        messages = watchdog(registry, args.status)
+        # The ledger recoveries act on the live ledger and the live registry;
+        # a watchdog given a private --store (fixtures) leaves them alone.
+        if args.store is None:
+            messages += recover_ledgers()
+        for message in messages + stall_report(registry, args.status):
             print(message)
         return 0 if follows else 1
     if args.action == 'begin':

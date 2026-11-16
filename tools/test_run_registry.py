@@ -279,6 +279,81 @@ with patch.object(registry,method,side_effect=interrupted):
         self.assertEqual(self.registry.read()['runs']['orphan']['status'], 'closed')
         self.assertEqual(output.read_text(), 'x')
 
+    def dead_run(self, run_id, status):
+        scheduler = self.sleeper()
+        self.registry.register(run_id, 'fixture', 'test', R.identity(scheduler.pid), [])
+        output = self.root / (run_id + '-release')
+        self.registry.add_claim(run_id, 'memory', [sys.executable, '-c',
+            'from pathlib import Path;import sys;p=Path(sys.argv[1]);'
+            'p.write_text(p.read_text()+"x" if p.exists() else "x")', str(output)])
+        self.registry.update(run_id, lambda row: row.update(status=status))
+        scheduler.kill()
+        scheduler.wait(timeout=EVENT_CEILING_SECONDS)
+        return output
+
+    def test_signal_killed_running_run_releases_its_claim_and_closes(self):
+        output = self.dead_run('killed', 'running')
+        entries = self.registry.reap()
+        self.assertEqual([entry['run_id'] for entry in entries], ['killed'])
+        row = self.registry.read_run('killed')
+        self.assertEqual(row['status'], 'closed')
+        self.assertTrue(row['claims']['memory']['released'])
+        self.assertTrue(row['signal_death_ns'])
+        self.assertEqual(output.read_text(), 'x')
+        self.assertEqual(self.registry.reap(), [])
+        self.assertEqual(output.read_text(), 'x')
+
+    def test_stopped_run_with_failed_release_is_retried(self):
+        output = self.dead_run('stopped-pending', 'stopped')
+        self.registry.reap()
+        row = self.registry.read_run('stopped-pending')
+        self.assertEqual(row['status'], 'stopped')
+        self.assertTrue(row['claims']['memory']['released'])
+        self.assertEqual(output.read_text(), 'x')
+
+    def test_running_run_with_live_scheduler_keeps_its_claim(self):
+        scheduler = self.sleeper()
+        self.registry.register('alive', 'fixture', 'test', R.identity(scheduler.pid), [])
+        self.registry.add_claim('alive', 'memory', [sys.executable, '-c', 'pass'])
+        self.registry.reap()
+        row = self.registry.read_run('alive')
+        self.assertEqual(row['status'], 'running')
+        self.assertFalse(row['claims']['memory']['released'])
+
+    def test_watchdog_runs_every_ledger_recovery_and_wakes_held_launches(self):
+        state = self.root / 'guard-state'
+        state.mkdir()
+        outputs = {'recover-dead': [{'key': 'gate', 'run_id': 'r', 'released_bytes': 7}],
+                   'ledger-recover-dead': [{'marker': 'm', 'released': False, 'bytes': 0, 'reason': 'live'}],
+                   'ledger-recover-stale': []}
+        calls = []
+        def run(command, **options):
+            calls.append((command, options['env']))
+            name = command[2]
+            return SimpleNamespace(returncode=0, stdout=json.dumps(outputs[name]), stderr='')
+        with patch.dict(os.environ, {'ZESU_GUARD_STATE': str(state), 'ZESU_GUARD_MUTEX_FD': '7'}):
+            lines = R.recover_ledgers(run=run)
+        self.assertEqual([[Path(command[1]).name, *command[2:]] for command, _ in calls],
+                         [['correctness_gate.py', 'recover-dead'],
+                          ['module_memory.py', 'ledger-recover-dead', '--all'],
+                          ['module_memory.py', 'ledger-recover-stale', '--all']])
+        self.assertTrue(all(env['ZESU_ADMISSION_SUMMARY'] == str(state / 'admission-summary')
+                            and 'ZESU_GUARD_MUTEX_FD' not in env for _, env in calls))
+        self.assertEqual(len(lines), 1)
+        self.assertIn('correctness_gate.py recover-dead released', lines[0])
+        self.assertTrue((state / 'admission-wake').read_text().strip().isdecimal())
+
+    def test_failed_ledger_recovery_is_reported_without_a_wake(self):
+        state = self.root / 'guard-state'
+        state.mkdir()
+        def run(command, **options):
+            return SimpleNamespace(returncode=2, stdout='', stderr='Traceback\nValueError: locked\n')
+        with patch.dict(os.environ, {'ZESU_GUARD_STATE': str(state)}):
+            lines = R.recover_ledgers(run=run)
+        self.assertEqual(len(lines), 3)
+        self.assertIn('failed with exit 2: Traceback ValueError: locked', lines[0])
+        self.assertFalse((state / 'admission-wake').exists())
+
     def check_stop_lock_order(self, target):
         """Try to hold state.lock immediately before the selected stop signal."""
         command_read, command_write = os.pipe()
