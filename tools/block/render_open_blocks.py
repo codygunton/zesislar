@@ -13,7 +13,11 @@ hand-written composition over the Automation2 block table:
   continuation as its K.
 
 A block is closed when the closed-proofs directory compiles its caller (a copy
-rule for `Caller<block>.v` in that directory's dune file). A rendered block's
+rule for `Caller<block>.v` in that directory's dune file) and a closure
+certificate (tools/closure_cert.py) exists for it at
+tools/block/closures/<callers directory>/<block>/CLOSURE.json, whose head is an
+ancestor of --head (default HEAD). The renderer refuses, in --check mode too, and
+names each missing or invalid certificate. A rendered block's
 field is the caller statement, for every K. A block without a caller, or whose
 successor has no slot, gets the contract continuation as K; its field covers
 the blocks without slots that it reaches, and its premises are the table entries
@@ -27,13 +31,15 @@ caller therefore runs through the return block and proves the contract
 continuation (profile `compliance`) itself; its field is that caller's statement.
 
 Usage: render_open_blocks.py --function NAME --callers CALLERS.json
-       --stem ParentHeader --output FILE [--closed-dir DIR] [--check]
+       --stem ParentHeader --output FILE [--closed-dir DIR] [--head REV] [--check]
 """
 from pathlib import Path
 import argparse, json, re, sys
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from function_profiles import load_profile
+sys.path.append(str(Path(__file__).resolve().parents[1]))
+from closure_cert import record_problems
 
 ROOT = Path(__file__).resolve().parents[2]
 CORE_IMPORT = 'Require Import ZesuSsz.Automation2.All.'
@@ -109,6 +115,15 @@ def return_blocks(rows):
     return {row['case'] for row in rows if row['status'] == 'inlined'}
 
 
+def require_certificates(callers, closed, head='HEAD', root=ROOT):
+    """Refuse to render a block as closed without a valid closure certificate for it."""
+    callers_dir = Path(callers).resolve().parent.relative_to(Path(root).resolve())
+    problems = record_problems(root, callers_dir, sorted(closed), head)
+    if problems:
+        sys.exit('refused: a closed block needs a valid closure certificate (tools/closure_cert.py):\n  '
+                 + '\n  '.join(problems))
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--function', required=True)
@@ -116,6 +131,7 @@ def main():
     parser.add_argument('--stem', required=True)
     parser.add_argument('--output', type=Path, required=True)
     parser.add_argument('--closed-dir')
+    parser.add_argument('--head', default='HEAD', help='the record head the certificates must precede')
     parser.add_argument('--check', action='store_true', help='fail if OUTPUT differs from a fresh render')
     options = parser.parse_args()
     profile = load_profile(options.function)
@@ -127,6 +143,7 @@ def main():
     returns = return_blocks(rows)
     entry_exists = lambda case: case not in returns and (generated / (entry_module(case) + '.v')).exists()
     closed = closed_cases(options.closed_dir)
+    require_certificates(options.callers, closed, options.head)
     entries, open_fields, closed_fields, by_case = plan(profile, rows, closed, entry_exists)
     stem, low = options.stem, lower_first(options.stem)
     compliance = profile['compliance']

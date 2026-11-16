@@ -10,8 +10,13 @@ import sweep_outcome as S
 
 
 class OutcomeTest(unittest.TestCase):
-    def test_closed(self):
-        self.assertEqual(S.outcome(0, True), 'closed')
+    def test_closed_needs_a_certificate(self):
+        self.assertEqual(S.outcome(0, True, certified=True), 'closed')
+
+    def test_exit_zero_without_a_certificate_is_not_closed(self):
+        self.assertEqual(S.outcome(0, True), 'uncertified')
+        self.assertEqual(S.row_outcome(dict(case='0300', returncode=0, cpu_seconds=5.0, stall=None,
+                                            status='closed', closed=True)), 'uncertified')
 
     def test_open_block_is_measured(self):
         self.assertEqual(S.outcome(1, True), 'open')
@@ -35,11 +40,13 @@ class OutcomeTest(unittest.TestCase):
 
     def test_recount_uses_latest_row(self):
         rows = [dict(case='a', returncode=137, cpu_seconds=None, stall=None),
-                dict(case='a', returncode=0, cpu_seconds=5.0, stall=None),
+                dict(case='a', returncode=0, cpu_seconds=5.0, stall=None, verdict='CLOSED'),
                 dict(case='b', returncode=143, cpu_seconds=None, stall=None, status='open'),
                 dict(case='c', returncode=1, cpu_seconds=9.0, stall=None),
-                dict(case='d', returncode=None, cpu_seconds=None, stall={'seconds': 7200})]
-        self.assertEqual(S.recount(json.dumps(r) for r in rows), {'closed': 1, 'open': 1, 'killed': 1, 'shared-kill': 0, 'stopped': 1})
+                dict(case='d', returncode=None, cpu_seconds=None, stall={'seconds': 7200}),
+                dict(case='e', returncode=0, cpu_seconds=3.0, stall=None, verdict='NOT-CLOSED')]
+        self.assertEqual(S.recount(json.dumps(r) for r in rows), {'closed': 1, 'uncertified': 1, 'open': 1, 'killed': 1,
+                                                                  'shared-kill': 0, 'stopped': 1})
 
 
 if __name__ == '__main__':

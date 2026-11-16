@@ -1,4 +1,10 @@
-"""Outcome of one guarded block compile in a measurement sweep: closed, open, killed, shared-kill or stopped.
+"""Outcome of one guarded block compile in a measurement sweep: closed, uncertified, open, killed,
+shared-kill or stopped.
+
+"closed" needs a closure certificate (tools/closure_cert.py, verdict CLOSED in the row). A row with
+returncode 0 and no certificate is "uncertified": exit 0 is not a closure. On 2026-11-16 a sample
+wrapper printed its own exit (`RUN-DONE rc=0`) for two incomplete proofs; rows now carry coqc's
+own status from measure.json and the certificate verdict.
 
 A block whose scope ends at its memory fence or at the account backstop measured nothing. It is
 "killed", not "open": the compile returns 137 or 143 and its measure wrapper writes no data, and
@@ -18,13 +24,15 @@ FENCE_KILL_MARK = 'memory fence kill'
 SHARED_KILL_MARK = 'shared-slice memory kill'
 
 
-def outcome(returncode, measured, stalled=False, log_text=''):
+def outcome(returncode, measured, stalled=False, log_text='', certified=False):
     """Classify one block. measured: the measure wrapper wrote its data. stalled: the sweep's
-    wall rule stopped the block. log_text: the block's compile log."""
+    wall rule stopped the block. log_text: the block's compile log. certified: a CLOSURE.json exists."""
     if stalled:
         return 'stopped'
-    if returncode == 0:
+    if certified:
         return 'closed'
+    if returncode == 0:
+        return 'uncertified'
     if SHARED_KILL_MARK in log_text:
         return 'shared-kill'
     if FENCE_KILL_MARK in log_text or (returncode in KILL_CODES and not measured):
@@ -34,7 +42,8 @@ def outcome(returncode, measured, stalled=False, log_text=''):
 
 def row_outcome(row):
     """Outcome of a recorded sweep row (status from older sweeps is ignored)."""
-    return outcome(row.get('returncode'), row.get('cpu_seconds') is not None, bool(row.get('stall')))
+    return outcome(row.get('returncode'), row.get('cpu_seconds') is not None, bool(row.get('stall')),
+                   certified=row.get('verdict') == 'CLOSED')
 
 
 def recount(lines):
@@ -43,7 +52,7 @@ def recount(lines):
         if line.strip():
             row = json.loads(line)
             rows[row['case']] = row
-    counts = {'closed': 0, 'open': 0, 'killed': 0, 'shared-kill': 0, 'stopped': 0}
+    counts = {'closed': 0, 'uncertified': 0, 'open': 0, 'killed': 0, 'shared-kill': 0, 'stopped': 0}
     for row in rows.values():
         counts[row_outcome(row)] += 1
     return counts
