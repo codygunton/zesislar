@@ -63,7 +63,8 @@ per `instr_body` handoff has found a missing rule. Report the residual goal
 to the lead and fix the rule in `Automation/`.
 
 A solver never runs on an unbounded context. Every engine (micromega, the stdpp bit-vector saturation,
-a VM run on a goal, a context saturation) runs through `ZesuSsz/Automation2/BoundedSolve.v`: prune to
+a VM run on a goal, a context saturation, an `auto`/`eauto` search, which reads every fact as a hint)
+runs through `ZesuSsz/Automation2/BoundedSolve.v`: prune to
 the facts that share a term with the goal within a step bound, check a node budget, then solve; over
 budget it fails (a saturation is skipped). `lia` and `bv_solve` reach it through their overrides in
 `Automation2/Hooks.v`. The proof hygiene check refuses the engines in other Automation2 tactics; a

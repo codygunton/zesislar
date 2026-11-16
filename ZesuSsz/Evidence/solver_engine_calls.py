@@ -1,7 +1,8 @@
 """Refuse solver engines outside BoundedSolve in Automation2 tactics.
 
 A solver never runs on an unbounded context: in Automation2 every micromega
-call, bit-vector saturation, VM run on a goal, and raw context saturation goes
+call, bit-vector saturation, VM run on a goal, raw context saturation, and
+`auto`/`eauto` search (every fact is a hint; `typeclasses eauto` is not) goes
 through `ZesuSsz/Automation2/BoundedSolve.v`, which prunes the context to the
 goal's facts within a step bound and checks a node budget first. `lia` and
 `bv_solve` stay as entry points: their global overrides in Hooks.v call the
@@ -28,7 +29,10 @@ EXEMPT_PREFIXES = (
 ALLOWLIST_PATH = Path(__file__).with_name("solver_engine_allowlist.json")
 
 # Engines: micromega, the stdpp bit-vector preparation and saturation, VM or
-# native runs on a goal, the raw lia leaf, and the raw context saturations.
+# native runs on a goal, the raw lia leaf, the raw context saturations, and
+# proof search: `auto`/`eauto` use every fact of the context as a hint (and
+# `with *` every database), so they run only through
+# `BoundedSolve.zesu_bounded_search` on the pruned context.
 ENGINES = {
     "xlia", "xnlia", "xnra", "xpsatz", "nia", "nra", "psatz", "zify", "Zify.zify",
     "bv_saturate", "bv_saturate_unsigned", "bv_simplify_arith",
@@ -38,9 +42,12 @@ ENGINES = {
     "zesu_saturate_seminaive", "PureFacts.zesu_saturate_seminaive",
     "ZesuSsz.Automation2.PureFacts.zesu_saturate_seminaive",
     "ZesuSsz.Automation.PureFacts.zesu_saturate_derived_facts",
+    "auto", "eauto", "info_auto", "info_eauto",
 }
 # `eval vm_compute in t` computes a term; only a run on a goal is an engine call.
 TERM_EVALUATION = {"vm_compute", "native_compute"}
+# `typeclasses eauto` resolves instances from their databases, not the context.
+SEARCHES = {"auto", "eauto", "info_auto", "info_eauto"}
 # A statement without `:=` opens a proof that runs until its closer.
 TACTIC_COMMANDS = {"Ltac", "Ltac2", "Tactic", "Hint"}
 PROOF_OPENERS = {"Lemma", "Theorem", "Corollary", "Fact", "Remark", "Proposition",
@@ -110,6 +117,12 @@ def solver_engine_failures(name, text, allowed):
                 if value not in ENGINES:
                     continue
                 if value in TERM_EVALUATION and index and values[index - 1] == "eval":
+                    continue
+                if value in SEARCHES and index and values[index - 1] == "typeclasses":
+                    continue
+                # `zesu_bounded_search ltac:(eauto ...)`: the search runs in the wrapper.
+                if (value in SEARCHES and index >= 4 and values[index - 3:index] == ["ltac", ":", "("]
+                        and values[index - 4].split(".")[-1] == "zesu_bounded_search"):
                     continue
                 # An engine's own definition and its recursive calls.
                 if value.split(".")[-1] == defined or (name, defined) in allowed:

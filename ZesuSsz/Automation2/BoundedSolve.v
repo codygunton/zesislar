@@ -8,7 +8,7 @@ Require Import ZesuSsz.Automation2.LinearFirstLia.
 From Ltac2 Require Import Ltac2.
 Set Default Proof Mode "Classic".
 
-(* The only caller of the solver engines: micromega (`xlia` through
+(* The only caller of the solver engines and context searches: micromega (`xlia` through
    `LinearFirstLia`), the stdpp bit-vector preparation (`bv_simplify_arith`,
    `bv_saturate*`), a VM run on a goal, and the context saturations. A solver
    never runs on an unbounded context: every call first prunes the context to
@@ -23,7 +23,8 @@ Inductive zesu_solver_kind : Set :=
 | zesu_solver_lia
 | zesu_solver_bv
 | zesu_solver_saturation
-| zesu_solver_vm.
+| zesu_solver_vm
+| zesu_solver_search.
 
 (* Node budgets per kind: (pruned context, whole context), from the largest
    successful context of each arm on the 24 decodeItem blocks (scratch sweep
@@ -44,6 +45,10 @@ Ltac2 zesu_bounded_budgets (kind : constr) : int * int :=
   else if Constr.equal kind constr:(zesu_solver_saturation) then
     (* Saturations ran on contexts of up to 209156 nodes. *)
     (0, 262144)
+  else if Constr.equal kind constr:(zesu_solver_search) then
+    (* A depth-bounded `eauto` reads every fact as a hint; it runs on the
+       pruned context only, at the lia pruned budget. *)
+    (98304, 0)
   else (0, 4096).
 
 (* Linking rounds of the pruned arm: closures needed at most 3. *)
@@ -161,3 +166,9 @@ Ltac2 zesu_bounded_goal_within (kind : constr) :=
 Ltac zesu_vm_compute_goal :=
   ltac2:(Control.enter (fun () => zesu_bounded_goal_within constr:(zesu_solver_vm)));
   vm_compute.
+
+(* A depth-bounded proof search (`eauto n`, which uses every fact of the
+   context as a hint) on the context pruned to the goal's facts, within the
+   search budget. The caller's `search` fixes the depth and the databases. *)
+Ltac zesu_bounded_search search :=
+  solve [zesu_bounded_prune_goal; zesu_bounded_pruned constr:(zesu_solver_search); search].

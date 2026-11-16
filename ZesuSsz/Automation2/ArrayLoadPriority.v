@@ -104,7 +104,8 @@ Ltac zesu_array_load_select :=
       let lookup := zesu_array_load_code persistent in
       iApply (find_in_context_instr_lookup_resources address later);
       iExists lookup; iSplit; [iAssumption |];
-      iSplit; [iPureIntro; solve [first [ZesuSsz.Automation2.VmClosed.zesu_vm_compute_closed | idtac]; eauto] |];
+      iSplit; [iPureIntro; solve [first [ZesuSsz.Automation2.VmClosed.zesu_vm_compute_closed | idtac];
+                                  ZesuSsz.Automation2.BoundedSolve.zesu_bounded_search ltac:(eauto)] |];
       let resolved := eval hnf in (lookup address) in
       change (lookup address) with resolved; cbn beta iota zeta;
       lazymatch goal with

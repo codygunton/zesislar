@@ -14,7 +14,8 @@ class SolverEngineCalls(unittest.TestCase):
         for body in ["Zify.zify; xlia Lia.zchecker", "bv_saturate_unsigned; lia", "nia",
                      "vm_compute; reflexivity", "bv_simplify_arith; bv_solve",
                      "LinearFirstLia.zesu_lia_linear_first3",
-                     "ZesuSsz.Automation.PureFacts.zesu_saturate_derived_facts"]:
+                     "ZesuSsz.Automation.PureFacts.zesu_saturate_derived_facts",
+                     "eauto 2 with nocore db", "auto with *", "eauto", "solve [info_eauto]"]:
             for source in [f"Ltac t := {body}.", f"Local Ltac t x := {body}.",
                            f"#[export] Hint Extern 1 (P _) => {body} : typeclass_instances.",
                            f'Tactic Notation "t" := {body}.']:
@@ -23,6 +24,9 @@ class SolverEngineCalls(unittest.TestCase):
 
     def test_entry_points_term_evaluation_and_proofs_pass(self):
         for source in ["Ltac t := lia.", "Ltac t := bv_solve.", "Ltac t := Lia.lia.",
+                       "Ltac t := typeclasses eauto.",
+                       "Ltac t := zesu_bounded_search ltac:(zesu_residual_search).",
+                       "Ltac t := BoundedSolve.zesu_bounded_search ltac:(eauto).",
                        "Ltac t := zesu_vm_compute_goal; reflexivity.",
                        "Ltac t x := let v := eval vm_compute in x in exact v.",
                        "Lemma l : 1 = 1.\nProof. vm_compute. Zify.zify. reflexivity. Qed.\nLtac t := lia.",

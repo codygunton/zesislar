@@ -25,6 +25,11 @@
       "file": "ZesuSsz/Automation2/Finish.v",
       "name": "zesu_finish_pointer_alignment",
       "reason": "`clear -Halign` leaves only the alignment fact before bv_simplify_arith runs on it."
+    },
+    {
+      "file": "ZesuSsz/Automation2/ResidualLemmas.v",
+      "name": "zesu_residual_search",
+      "reason": "The residual tier's depth-2 eauto over its own database (the zesu_residual hint database is defined in ResidualLemmas, after BoundedSolve). Only zesu_residual_lemma calls it, through BoundedSolve.zesu_bounded_search on the pruned context."
     }
   ]
 }
