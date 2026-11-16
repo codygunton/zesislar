@@ -97,22 +97,59 @@ Proof.
   iSplitR; [iPureIntro; rewrite length_take length_drop; lia|].
   iDestruct (zesu_byte_array_lend_declared base off len bytes with "Hbytes") as "[$ $]"; done.
 Qed.
+
+(* The same when the declaration and the entry's own resources sit left of the caller's
+   continuation: [⌜bounds⌝ ∗ ((piece ∗ (wand ∗ M)) ∗ K)] (the form an entry followed by its
+   continuation takes). *)
+Lemma zesu_tac_lend_declared_slice_framed Δ (base address off len : Z) (bytes : list (bv 8))
+    (M K : iProp Sigma) :
+  envs_entails Δ (⌜((0 <= off /\ 0 <= len /\ off + len <= Z.of_nat (List.length bytes)) /\
+                    base + off = address)%Z⌝ ∗ (base ↦ₘ∗ bytes ∗ (M ∗ K))) ->
+  envs_entails Δ (⌜(0 <= off /\ 0 <= len /\ off + len <= Z.of_nat (List.length bytes) /\
+                    Z.of_nat (List.length (take (Z.to_nat len) (drop (Z.to_nat off) bytes))) = len)%Z⌝ ∗
+    (((address ↦ₘ∗ take (Z.to_nat len) (drop (Z.to_nat off) bytes)) ∗
+     (((address ↦ₘ∗ take (Z.to_nat len) (drop (Z.to_nat off) bytes)) -∗ base ↦ₘ∗ bytes) ∗ M)) ∗ K)).
+Proof.
+  rewrite envs_entails_unseal => ->. iIntros "[%Hfacts [Hbytes [$ $]]]".
+  destruct Hfacts as [(Hoff & Hlen & Hend) <-].
+  iSplitR; [iPureIntro; rewrite length_take length_drop; lia|].
+  iDestruct (zesu_byte_array_lend_declared base off len bytes with "Hbytes") as "[$ $]"; done.
+Qed.
+
+Lemma zesu_tac_lend_declared_slice_framed_ex {A B} Δ (base address off len : Z) (bytes : list (bv 8))
+    (M K : A *ₗ B → iProp Sigma) :
+  envs_entails Δ (⌜((0 <= off /\ 0 <= len /\ off + len <= Z.of_nat (List.length bytes)) /\
+                    base + off = address)%Z⌝ ∗ (base ↦ₘ∗ bytes ∗ ∃ₗ x, M x ∗ K x)) ->
+  envs_entails Δ (∃ₗ x, ⌜(0 <= off /\ 0 <= len /\ off + len <= Z.of_nat (List.length bytes) /\
+                    Z.of_nat (List.length (take (Z.to_nat len) (drop (Z.to_nat off) bytes))) = len)%Z⌝ ∗
+    (((address ↦ₘ∗ take (Z.to_nat len) (drop (Z.to_nat off) bytes)) ∗
+     (((address ↦ₘ∗ take (Z.to_nat len) (drop (Z.to_nat off) bytes)) -∗ base ↦ₘ∗ bytes) ∗ M x)) ∗ K x)).
+Proof.
+  rewrite envs_entails_unseal => ->. iIntros "[%Hfacts [Hbytes [%x [HM HK]]]]". iExists x.
+  destruct Hfacts as [(Hoff & Hlen & Hend) <-].
+  iSplitR; [iPureIntro; rewrite length_take length_drop; lia|]. iFrame "HM HK".
+  iDestruct (zesu_byte_array_lend_declared base off len bytes with "Hbytes") as "[$ $]"; done.
+Qed.
 End zesu_call_declarations.
 
 (* The step recognizes the declaration by its bounds fact at the head of the goal (the slice-length
    conjunct over [take]/[drop] is the declaration's own); the lemma's unification checks the piece
    and the wand behind it (up to conversion: Iris's connectives are primitive projections, so a
-   syntactic pattern on the nested separating conjunctions misses forms Lithium leaves).
+   syntactic pattern on the nested separating conjunctions misses forms Lithium leaves). The
+   declaration and the entry's resources come either right-nested with the rest or grouped left
+   of the continuation ([_framed]).
    [bounds] closes the lend's pure premise (the stated bounds over the predecessor's values, and
    the address equation) when it can; otherwise the premise stays Lithium's pure goal. Hooks passes
    the interior-slice bound arithmetic (InteriorByteSlice.v, which imports Hooks). *)
 Ltac zesu_lend_declared_call_input bounds :=
   lazymatch goal with
   | |- envs_entails _ (bi_sep (bi_pure (_ /\ _ /\ _ /\ Z.of_nat (List.length (take _ (drop _ _))) = _)) _) =>
-      notypeclasses refine (zesu_tac_lend_declared_slice _ _ _ _ _ _ _ _)
+      first [notypeclasses refine (zesu_tac_lend_declared_slice _ _ _ _ _ _ _ _)
+            |notypeclasses refine (zesu_tac_lend_declared_slice_framed _ _ _ _ _ _ _ _ _)]
   | |- envs_entails _ (@bi_exist _ (li_prod _ _) (λ x, bi_sep
          (bi_pure (_ /\ _ /\ _ /\ Z.of_nat (List.length (take _ (drop _ _))) = _)) _)) =>
-      notypeclasses refine (zesu_tac_lend_declared_slice_ex _ _ _ _ _ _ _ _)
+      first [notypeclasses refine (zesu_tac_lend_declared_slice_ex _ _ _ _ _ _ _ _)
+            |notypeclasses refine (zesu_tac_lend_declared_slice_framed_ex _ _ _ _ _ _ _ _ _)]
   end;
   try (notypeclasses refine (tac_sep_pure _ _ _ _ _); [solve [bounds] |]).
 
@@ -189,4 +226,32 @@ Ltac zesu_frame_claim_address :=
               clear Hbound; rewrite Heq; clear Heq
           end)
     end
+  end.
+
+(** The frame the callee returned: it comes back in the context at the callee's claim form
+    [bv_unsigned (bv_add sp c) - k] (the callee's spec, after the claim step rewrote the goal),
+    while the caller's entry asks for the same region in its normal form. When a requested
+    [↦ₘ?] region of the same size is that context region up to the stack arithmetic, the step
+    states the equation and rewrites the context resource to the requested address. *)
+Ltac zesu_frame_return_address :=
+  lazymatch goal with
+  | |- envs_entails _ ((?address ↦ₘ? ?count) ∗ _)%I =>
+    iMatchHyp ltac:(fun H body =>
+      lazymatch body with
+      | (?owned ↦ₘ? count)%I =>
+        tryif constr_eq owned address then fail else idtac;
+        match owned with
+        | context [bv_unsigned (bv_add ?base ?offset)] =>
+            ZesuSsz.Automation2.VmClosed.zesu_vm_closed offset;
+            let displacement := ZesuSsz.Automation2.VmClosed.zesu_vm_eval_closed (bv_signed offset) in
+            lazymatch displacement with Zneg _ => idtac end;
+            let distance := ZesuSsz.Automation2.VmClosed.zesu_vm_eval_closed (Z.opp displacement) in
+            let Heq := fresh "HframeReturnAddress" in
+            assert (Heq : bv_unsigned (bv_add base offset) = (bv_unsigned base - distance)%Z)
+              by zesu_frame_claim_arithmetic;
+            let Hsame := fresh "HframeReturnSame" in
+            assert (Hsame : owned = address) by (rewrite Heq; zesu_frame_claim_arithmetic);
+            clear Heq; iEval (rewrite Hsame) in H; clear Hsame
+        end
+      end)
   end.

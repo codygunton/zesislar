@@ -2363,6 +2363,7 @@ Ltac zesu_liAStep :=
       [@ZesuSsz; @Automation2; @InteriorByteSlice; @zesu_byte_slice_bound_arith])))
   | zesu_restore_declared_call_input
   | zesu_frame_claim_address
+  | zesu_frame_return_address
   | progress ZesuSsz.Automation2.ByteWordReload.zesu_reload_byte_word_step
   | ltac2:(Ltac1.run (Ltac1.ref
       [@ZesuSsz; @Automation2; @StoreMemoryLookup; @zesu_join_frame_byte_array]))

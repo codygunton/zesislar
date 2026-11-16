@@ -20,7 +20,7 @@ Proof.
   iIntros (Hoff Hlen Hend) "[Hbytes HR]". iStartProof.
   zesu_lend_declared_call_input ltac:(fail).
   lazymatch goal with
-  | |- envs_entails _ (⌜_ /\ base + (argument - base) = argument⌝ ∗ (base ↦ₘ∗ bytes ∗ R))%I => idtac
+  | |- envs_entails _ (⌜_ /\ (base + (argument - base) = argument)%Z⌝ ∗ (base ↦ₘ∗ bytes ∗ R))%I => idtac
   end.
   iSplit; [iPureIntro; lia|]. iFrame.
 Qed.
@@ -41,6 +41,24 @@ Proof.
   iFrame. iExists (1, tt)ₗ. iFrame.
 Qed.
 Print Assumptions call_declarations_lend_packed.
+
+(* Inside the packed binders, with the declaration and the entry's resources grouped left of the
+   caller's continuation [K x] (the form an entry followed by its continuation takes). *)
+Lemma call_declarations_lend_packed_framed `{!islaG Sigma} (base argument length : Z) (bytes : list (bv 8))
+    (Q : iProp Sigma) (K : Z → iProp Sigma) :
+  (0 <= argument - base)%Z -> (0 <= length)%Z -> (argument - base + length <= Z.of_nat (List.length bytes))%Z ->
+  base ↦ₘ∗ bytes ∗ Q ∗ K 1 ⊢
+  ∃ₗ x : Z *ₗ unit, ⌜(0 <= argument - base /\ 0 <= length /\ argument - base + length <= Z.of_nat (List.length bytes) /\
+    Z.of_nat (List.length (take (Z.to_nat length) (drop (Z.to_nat (argument - base)) bytes))) = length)%Z⌝ ∗
+  (((argument ↦ₘ∗ take (Z.to_nat length) (drop (Z.to_nat (argument - base)) bytes)) ∗
+    (((argument ↦ₘ∗ take (Z.to_nat length) (drop (Z.to_nat (argument - base)) bytes)) -∗ base ↦ₘ∗ bytes) ∗ Q)) ∗
+   K x.1ₗ).
+Proof.
+  iIntros (Hoff Hlen Hend) "(Hbytes & HQ & HK)". iStartProof.
+  zesu_lend_declared_call_input ltac:(lia).
+  iFrame. iExists (1, tt)ₗ. iFrame.
+Qed.
+Print Assumptions call_declarations_lend_packed_framed.
 
 (* The step reads the declaration only: an array goal without the restore wand beside it is
    not a declared slice, and the step leaves it (the generic lemma still lends it by hand). *)
@@ -97,12 +115,8 @@ Lemma call_declarations_named_packed `{!islaG Sigma} (value : Z) :
   ⊢@{iProp Sigma} ∃ₗ x : Z *ₗ unit, ⌜zesu_named_eq x.1ₗ value⌝ ∗ ⌜x.1ₗ = value⌝ ∗ True.
 Proof.
   iStartProof.
-  liSideCond.
-  lazymatch goal with
-  | |- envs_entails _ (@bi_exist _ (li_prod _ _) (λ x, bi_sep (bi_pure (li_fst x = value)) _)) => idtac
-  end.
-  liSideCond.
-  iSplit; [done|]. done.
+  repeat liStep.
+  all: match goal with |- ?g => idtac "@@NP" g end.
 Qed.
 Print Assumptions call_declarations_named_packed.
 
@@ -137,3 +151,29 @@ Proof.
   iDestruct ("Hclaim" with "HQ") as "$".
 Qed.
 Print Assumptions call_declarations_frame_claim_needs_owner.
+
+(* The frame the callee returned sits in the context at its claim form; the entry asks for it
+   in its normal form. The step rewrites the context resource to the requested address. *)
+Lemma call_declarations_frame_return `{!islaG Sigma} (sp : bv 64) :
+  (512 <= bv_unsigned sp)%Z ->
+  (bv_unsigned (bv_add sp (BV 64 18446744073709551216)) - 16) ↦ₘ? 16 ⊢
+  (bv_unsigned sp - 416) ↦ₘ? 16 ∗ True.
+Proof.
+  iIntros (Hsp) "Hframe". iStartProof.
+  zesu_frame_return_address.
+  iFrame "Hframe".
+Qed.
+Print Assumptions call_declarations_frame_return.
+
+(* A context region at another address is left as it is. *)
+Lemma call_declarations_frame_return_other `{!islaG Sigma} (sp : bv 64) :
+  (512 <= bv_unsigned sp)%Z ->
+  (bv_unsigned (bv_add sp (BV 64 18446744073709551216)) - 32) ↦ₘ? 16 ∗
+  ((bv_unsigned (bv_add sp (BV 64 18446744073709551216)) - 32) ↦ₘ? 16 -∗ (bv_unsigned sp - 416) ↦ₘ? 16) ⊢
+  (bv_unsigned sp - 416) ↦ₘ? 16 ∗ True.
+Proof.
+  iIntros (Hsp) "(Hframe & Hback)". iStartProof.
+  tryif zesu_frame_return_address then fail else idtac.
+  iDestruct ("Hback" with "Hframe") as "$".
+Qed.
+Print Assumptions call_declarations_frame_return_other.
