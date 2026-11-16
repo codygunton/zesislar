@@ -29,7 +29,7 @@
     {
       "file": "ZesuSsz/Automation2/ResidualLemmas.v",
       "name": "zesu_residual_search",
-      "reason": "The residual tier's depth-2 eauto over its own database (the zesu_residual hint database is defined in ResidualLemmas, after BoundedSolve). Only zesu_residual_lemma calls it, through BoundedSolve.zesu_bounded_search on the pruned context."
+      "reason": "The residual tier's depth-2 eauto over its own database (the zesu_residual hint database is defined in ResidualLemmas, after BoundedSolve). Only zesu_residual_lemma calls it, through BoundedSolve.zesu_bounded_search (pruned, then whole context, within the search budget)."
     }
   ]
 }

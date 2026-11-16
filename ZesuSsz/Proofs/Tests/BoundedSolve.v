@@ -62,10 +62,10 @@ Proof.
   reflexivity.
 Qed.
 
-(* A proof search runs on the pruned context within the search budget: it
-   closes a goal from a related fact, and a related context above the budget
-   refuses it. *)
-Lemma bounded_search_within_the_pruned_budget (P : Z -> Prop) (x : Z)
+(* A proof search runs on the pruned context, then the whole context, each
+   within the search budget: it closes a goal from a related fact, and a
+   context above both budgets refuses it. *)
+Lemma bounded_search_within_budget (P : Z -> Prop) (x : Z)
     (Hp : P x) : P x \/ False.
 Proof.
   assert (Hpx : P x) by ZesuSsz.Automation2.BoundedSolve.zesu_bounded_search ltac:(eauto).

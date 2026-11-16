@@ -46,10 +46,14 @@ Ltac2 zesu_bounded_budgets (kind : constr) : int * int :=
     (* Saturations ran on contexts of up to 209156 nodes. *)
     (0, 262144)
   else if Constr.equal kind constr:(zesu_solver_search) then
-    (* A depth-bounded `eauto` reads every fact as a hint; it runs on the
-       pruned context only, at the lia pruned budget. *)
-    (98304, 0)
-  else (0, 4096).
+    (* A depth-bounded `eauto` reads every fact as a hint. Pruned closures
+       reached 21454 nodes (6 of 36 closures); whole-context closures reached
+       149011 and failing ones 212738. The prune keeps no fact for a
+       conclusion that names only a record (`decodeItemRejectedFacts args`,
+       whose premises read its fields): without the whole arm 12 of 24
+       decodeItem blocks stayed open. *)
+    (98304, 196608)
+  else (* VM goals reached 390 nodes. *) (0, 4096).
 
 (* Linking rounds of the pruned arm: closures needed at most 3. *)
 Ltac2 zesu_bounded_prune_rounds () := 6.
@@ -168,7 +172,7 @@ Ltac zesu_vm_compute_goal :=
   vm_compute.
 
 (* A depth-bounded proof search (`eauto n`, which uses every fact of the
-   context as a hint) on the context pruned to the goal's facts, within the
+   context as a hint): the pruned arm, then the whole context, each within the
    search budget. The caller's `search` fixes the depth and the databases. *)
 Ltac zesu_bounded_search search :=
-  solve [zesu_bounded_prune_goal; zesu_bounded_pruned constr:(zesu_solver_search); search].
+  solve [zesu_bounded_solve constr:(zesu_solver_search) search].

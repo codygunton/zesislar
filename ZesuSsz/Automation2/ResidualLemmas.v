@@ -57,7 +57,7 @@ Ltac zesu_residual_unfold_goal :=
 (* Depth 2: one residual lemma, then each premise by assumption. A goal
    whose conclusion mentions a local definition gets a second try with the
    definitions unfolded. `eauto` reads every fact as a hint, so the tier runs
-   only through BoundedSolve's pruned-context search. *)
+   only through BoundedSolve's budgeted search (pruned, then whole context). *)
 Ltac zesu_residual_search :=
   first [solve [eauto 2 with nocore zesu_residual]
         | solve [zesu_residual_unfold_goal; eauto 2 with nocore zesu_residual]].

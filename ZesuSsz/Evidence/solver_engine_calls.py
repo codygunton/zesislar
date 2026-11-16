@@ -32,7 +32,7 @@ ALLOWLIST_PATH = Path(__file__).with_name("solver_engine_allowlist.json")
 # native runs on a goal, the raw lia leaf, the raw context saturations, and
 # proof search: `auto`/`eauto` use every fact of the context as a hint (and
 # `with *` every database), so they run only through
-# `BoundedSolve.zesu_bounded_search` on the pruned context.
+# `BoundedSolve.zesu_bounded_search` (pruned, then whole context, within budget).
 ENGINES = {
     "xlia", "xnlia", "xnra", "xpsatz", "nia", "nra", "psatz", "zify", "Zify.zify",
     "bv_saturate", "bv_saturate_unsigned", "bv_simplify_arith",
