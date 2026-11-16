@@ -218,7 +218,8 @@ def certify(case, caller, build, measure_path, log_path=None, head=None):
         facts['theorem'], qed, assumptions = theorem(caller_bytes)
         measure_path = Path(measure_path)
         if not measure_path.is_file():
-            raise NotClosed('no measure record %s: the compile did not run under tools/measure.py' % measure_path)
+            raise NotClosed('no measure record %s: coqc never ran under tools/measure.py (see the run log)'
+                            % measure_path)
         measure = json.loads(measure_path.read_text())
         facts['measure'], facts['measure_sha256'] = str(measure_path.resolve()), sha256(measure_path)
         if measure.get('schema') != 'measure/1':
