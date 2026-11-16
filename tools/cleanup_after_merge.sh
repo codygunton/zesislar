@@ -52,9 +52,18 @@ tip=$(git -C "$root" rev-parse --verify -q "refs/heads/$branch^{commit}" || true
 if [ -z "$tip" ]; then
   echo "cleanup_after_merge: no local branch $branch" >&2; exit 2
 fi
+# A merge made on GitHub is invisible until origin is fetched; without the
+# fetch the script reported "not merged" and did nothing (2026-11-16).
+case "$main_ref" in
+  origin/*)
+    if ! git -C "$root" fetch --quiet origin \
+      "+refs/heads/${main_ref#origin/}:refs/remotes/$main_ref"; then
+      echo "cleanup_after_merge: git fetch origin failed; cannot tell whether $branch is merged." >&2
+      exit 2
+    fi ;;
+esac
 if ! git -C "$root" merge-base --is-ancestor "$tip" "$main_ref"; then
-  echo "cleanup_after_merge: $branch ($tip) is not merged into $main_ref; nothing done." >&2
-  echo "cleanup_after_merge: fetch $main_ref first if the merge is new." >&2
+  echo "cleanup_after_merge: $branch ($tip) is not merged into $main_ref (fetched); nothing done." >&2
   exit 3
 fi
 

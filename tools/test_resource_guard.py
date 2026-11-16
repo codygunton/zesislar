@@ -724,7 +724,7 @@ echo "fallback=$(hold_reason)"
         self.assertEqual(result.returncode, 0, result.stderr)
         self.assertEqual(result.stdout.splitlines(), [
             "cpu-pressure 5 50", "io-pressure 1 50", "432",
-            "163208757248 33225204464", "30", "121",
+            "163208757248 33225204464", "30", "122",
             "account of 152 GiB (launch <112, hold 128, kill 142 GiB), "
             "machine available 140 GiB (backstop 12)",
             "33225204464", "hold=", "fallback=load5 432"])
@@ -754,22 +754,25 @@ if memory_kill_required; then echo killed; fi
                                 result.stdout)
                 self.assertEqual("killed" in lines, killed)
 
-    def test_account_use_excludes_file_cache_and_reclaimable_slab(self):
+    def test_admission_counts_anon_and_shmem_while_the_kill_counts_unreclaimable_use(self):
         result = self.account_guard(r"""
-echo $(( 140 * GIB )) > "$ACCOUNT_CGROUP/memory.current"
-printf 'anon 1\nactive_file %s\ninactive_file %s\nslab_reclaimable %s\n' $GIB $GIB $(( 51 * GIB )) > "$ACCOUNT_CGROUP/memory.stat"
-echo "$(used_gib) reason=$(memory_hold_reason)"
-printf 'anon 1\nkernel %s\n' $(( 52 * GIB )) > "$ACCOUNT_CGROUP/memory.stat"
-echo "$(used_gib) reason=$(memory_hold_reason)"
+echo $(( 190 * GIB )) > "$ACCOUNT_CGROUP/memory.current"
+printf 'anon %s\nshmem %s\nactive_file %s\nkernel %s\n' $(( 30 * GIB )) $(( 10 * GIB )) $(( 120 * GIB )) $(( 30 * GIB )) > "$ACCOUNT_CGROUP/memory.stat"
+echo "$(used_gib) $(available_gib) reason=$(memory_hold_reason)"
+printf 'anon %s\nshmem %s\nactive_file %s\n' $(( 120 * GIB )) $(( 10 * GIB )) $(( 60 * GIB )) > "$ACCOUNT_CGROUP/memory.stat"
+echo "reason=$(memory_hold_reason)"
+echo $(( 150 * GIB )) > "$ACCOUNT_CGROUP/memory.current"
+printf 'anon 1\nkernel %s\n' $(( 150 * GIB )) > "$ACCOUNT_CGROUP/memory.stat"
+echo "reason=$(memory_hold_reason)"
 if memory_kill_required; then echo killed; fi
 echo max > "$ACCOUNT_CGROUP/memory.max"
-echo $(( 134 * GIB )) > "$ACCOUNT_CGROUP/memory.current"
+printf 'anon %s\n' $(( 134 * GIB )) > "$ACCOUNT_CGROUP/memory.stat"
 memory_hold_reason
 """)
         self.assertEqual(result.returncode, 0, result.stderr)
         self.assertEqual(result.stdout.splitlines(), [
-            "87 reason=", "140 reason=account memory 140 of 152 GiB, at the 128 GiB hold",
-            "account memory 134 of 152 GiB, at the 128 GiB hold"])
+            "70 112 reason=", "reason=account memory 130 of 152 GiB, at the 128 GiB hold",
+            "reason=", "killed", "account memory 134 of 152 GiB, at the 128 GiB hold"])
 
     def test_machine_memory_holds_only_below_its_backstop_and_never_kills(self):
         for available, reason in ((25, ""), (12, ""),
@@ -791,7 +794,7 @@ memory_hold_reason
 
     def test_account_job_room_and_margin_overrides(self):
         result = self.account_guard(r"""
-printf 'anon 1\n' > "$ACCOUNT_CGROUP/memory.stat"
+printf 'anon %s\n' $(( 100 * GIB )) > "$ACCOUNT_CGROUP/memory.stat"
 echo $(( 100 * GIB )) > "$ACCOUNT_CGROUP/memory.current"
 memory_hold_reason
 if memory_kill_required; then echo killed; fi

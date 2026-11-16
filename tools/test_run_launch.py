@@ -486,5 +486,132 @@ class KillScanTests(unittest.TestCase):
         self.assertTrue(failures[0].startswith('tools/watch.sh:2: '), failures)
 
 
+GIB = 2 ** 30
+
+
+class HeavyAdmissionTests(Fixture):
+    def setUp(self):
+        super().setUp()
+        self.cgroup = self.root / 'cgroup' / 'user.slice' / f'user-{os.getuid()}.slice'
+        self.cgroup.mkdir(parents=True)
+        self.environment.update(ZESU_CGROUP_ROOT=str(self.root / 'cgroup'), ZESU_HEAVY_POLL_SECONDS='0.05')
+
+    def slice(self, anon_gib, shmem_gib, pressure, file_gib=500):
+        (self.cgroup / 'memory.stat').write_text(
+            f'anon {anon_gib * GIB}\nfile {file_gib * GIB}\nshmem {shmem_gib * GIB}\nactive_file {file_gib * GIB}\n')
+        (self.cgroup / 'memory.pressure').write_text(
+            f'some avg10=0.00 avg60={pressure:.2f} avg300=0.00 total=1\nfull avg10=0.00 avg60=0.00 avg300=0.00 total=1\n')
+
+    def test_page_cache_does_not_count(self):
+        self.slice(130, 9, 4.99, file_gib=900)
+        self.assertEqual(R.heavy_load(self.cgroup), (139 * GIB, 4.99))
+        R.wait_heavy_admission('gate', self.cgroup, sleep=lambda _: self.fail('held'))
+
+    def test_notices_at_most_once_a_minute_while_held(self):
+        clock = [0.0]
+        sleeps = []
+
+        def sleep(_seconds):
+            sleeps.append(clock[0])
+            clock[0] += 15
+            if len(sleeps) == 10:
+                self.slice(10, 0, 0.0)
+        self.slice(130, 10, 0.0)
+        with patch('sys.stderr') as stderr:
+            R.wait_heavy_admission('gate', self.cgroup, sleep=sleep, clock=lambda: clock[0])
+        notices = [call.args[0] for call in stderr.write.call_args_list if call.args[0].startswith('notice:')]
+        self.assertEqual(len(sleeps), 10)
+        self.assertEqual(len(notices), 3, notices)
+        self.assertIn('anon+shmem 140.0 GiB (limit 140)', notices[0])
+
+    def test_bg_heavy_waits_for_memory_and_pressure_then_launches(self):
+        self.slice(150, 0, 0.0)
+        process = subprocess.Popen([BG, '--heavy', '--owner', 'tester', 'gate', '--', sys.executable, '-c',
+                                    'print("ran", flush=True)'], cwd=self.root, env=self.environment,
+                                   stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+        self.processes.append(process)
+        time.sleep(1)
+        self.slice(100, 39, 6.0)
+        time.sleep(1)
+        self.assertIsNone(process.poll())
+        self.assertEqual(self.systemd_calls(), [])
+        self.slice(100, 39, 1.0)
+        stdout, stderr = process.communicate(timeout=EVENT_CEILING_SECONDS)
+        self.assertEqual(process.returncode, 0, stderr)
+        notices = [line for line in stderr.splitlines() if 'heavy launch gate waits' in line]
+        self.assertEqual(len(notices), 1, stderr)
+        self.assertTrue(notices[0].startswith('notice: '))
+        self.assertTrue(stdout.strip().startswith('tester-gate-'))
+        self.wait_for(lambda: 'ran' in (self.root / 'gate.log').read_text())
+
+    def test_unreadable_slice_is_an_error(self):
+        result = self.cli('launch', '--heavy', '--name', 'gate', '--', 'true')
+        self.assertEqual(result.returncode, 2, result.stderr)
+        self.assertEqual(self.systemd_calls(), [])
+
+
+class StallReportTests(Fixture):
+    NOW = 1_800_000_000.0
+
+    def run_dir(self, run_id, branch, gates_age_minutes=None, marker='gates.out'):
+        directory = self.root / 'runs' / run_id
+        directory.mkdir(parents=True)
+        (directory / 'ITEM.json').write_text(json.dumps({'branch': branch}))
+        if gates_age_minutes is not None:
+            (directory / marker).write_text('done\n')
+            stamp = self.NOW - gates_age_minutes * 60
+            os.utime(directory / marker, (stamp, stamp))
+        # A disposable scheduler: the fixture's close() stops live rows, never this test process.
+        scheduler = subprocess.Popen(['sleep', '60'])
+        self.registry.register(run_id, 'bg', 'tester', R.identity(scheduler.pid), ['true'],
+                               {'run_dir': str(directory)})
+        scheduler.kill()
+        scheduler.wait(timeout=EVENT_CEILING_SECONDS)
+
+    def test_posts_each_stalled_branch_once(self):
+        gates_at = R.datetime.datetime.fromtimestamp(self.NOW - 40 * 60, R.datetime.timezone.utc)
+        later = (gates_at + R.datetime.timedelta(minutes=5)).isoformat().replace('+00:00', 'Z')
+        earlier = (gates_at - R.datetime.timedelta(minutes=5)).isoformat().replace('+00:00', 'Z')
+        self.run_dir('stalled', 'w/stalled', 40)
+        self.run_dir('merged', 'w/merged', 40)
+        self.run_dir('active', 'w/active', 40, marker='GATES-DONE')
+        self.run_dir('quiet', 'w/quiet', 40, marker='GATES-DONE')
+        self.run_dir('fresh', 'w/fresh', 10)
+        self.run_dir('nogates', 'w/nogates')
+        self.run_dir('old', 'w/rerun', 90)
+        self.run_dir('new', 'w/rerun')
+        prs = {'w/stalled': [], 'w/merged': [{'state': 'MERGED', 'updatedAt': earlier}],
+               'w/active': [{'state': 'OPEN', 'updatedAt': later}],
+               'w/quiet': [{'state': 'OPEN', 'updatedAt': earlier}, {'state': 'CLOSED', 'updatedAt': later}]}
+        asked = []
+
+        def lookup(branch):
+            asked.append(branch)
+            return prs[branch]
+        status = self.root / 'STATUS.md'
+        messages = R.stall_report(self.registry, status, prs=lookup, now=self.NOW)
+        done = R.time.strftime('%Y-%m-%dT%H:%MZ', R.time.gmtime(self.NOW - 40 * 60))
+        self.assertEqual(len(messages), 2, messages)
+        self.assertIn(f'gates done at {done} for branch w/quiet; no PR/merge since (run quiet', messages[0])
+        self.assertIn(f'gates done at {done} for branch w/stalled; no PR/merge since (run stalled', messages[1])
+        self.assertEqual(status.read_text(), ''.join(message + '\n' for message in messages))
+        self.assertEqual(sorted(asked), ['w/active', 'w/merged', 'w/quiet', 'w/stalled'])
+        asked.clear()
+        self.assertEqual(R.stall_report(self.registry, status, prs=lookup, now=self.NOW), [])
+        self.assertEqual(sorted(asked), ['w/active', 'w/merged'])
+
+    def test_failed_lookup_posts_nothing_and_retries(self):
+        self.run_dir('stalled', 'w/stalled', 40)
+        status = self.root / 'STATUS.md'
+
+        def broken(_branch):
+            raise ValueError('gh: not logged in')
+        [message] = R.stall_report(self.registry, status, prs=broken, now=self.NOW)
+        self.assertIn('PR lookup for w/stalled failed: gh: not logged in', message)
+        self.assertFalse(status.exists())
+        self.assertEqual(len(R.stall_report(self.registry, status, prs=lambda _: [], now=self.NOW)), 1)
+
+
+
 if __name__ == '__main__':
     unittest.main()

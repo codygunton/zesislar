@@ -52,7 +52,16 @@ tools/bg list                             # active runs
 
 `tools/bg` runs `run_registry.py launch --name NAME -- COMMAND...`.
 Options before NAME: `--dir DIR` (run and working directory), `--log FILE`, `--owner NAME`, `--memory GIB`,
-`--allow-duplicate`.
+`--allow-duplicate`, `--heavy`.
+
+`--heavy` marks a gate, bank build, or column batch. Before it starts, the launcher waits until the user
+slice (`/sys/fs/cgroup/user.slice/user-$UID.slice`, or `$ZESU_CGROUP_ROOT/...`) has `anon + shmem`
+(memory.stat) under 140 GiB and `memory.pressure` `some avg60` under 5 %. Page cache does not count.
+While it waits it prints at most one `notice:` line a minute and rechecks every 15 s
+(`ZESU_HEAVY_POLL_SECONDS`). Unreadable slice files are an error (exit 2). The resource guard's own
+admission (hold, room, job count) counts the same `anon + shmem`; its kill check still counts
+`memory.current` less file LRU and reclaimable slab.
+
 The launcher starts the command in a new session whose parent is init, inside its own
 `systemd-run --user --scope` unit `zesubg-<owner>-<name>-<UTC>-<hex>.scope`.
 The job is never a child of the caller, so a kill by the caller's parent PID cannot reach it.
@@ -124,6 +133,15 @@ fetch, tracked changes, local commits, or a refused checkout) is posted to STATU
 reason (marker `<store>/follow-main.held`, cleared when it moves again), and the watchdog exits 1 after
 its reap, so `systemctl --user status zesu-run-watchdog` shows the unit failed. Untracked files such as
 `tools/bg` logs do not hold it.
+
+## Stalled gates
+
+Each watchdog pass also reports gates that finished with nothing after them. For each ITEM.json branch,
+it takes the branch's newest registered run (by registration time). When that run's dir has `gates.out` or
+`GATES-DONE` last modified over 30 minutes ago, it asks `gh pr list --head <branch> --state all`. With no
+merged PR and no open PR updated since the gates finished, it appends
+`gates done at <T> for branch <B>; no PR/merge since (run ..., owner ..., <run dir>).` to STATUS.md, once per
+branch (marker `<store>/gates-stall.posted`). A failed PR lookup posts nothing and is retried next pass.
 
 ## Fixture verification
 
