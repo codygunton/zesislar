@@ -170,16 +170,28 @@ def rescue(root, directory, *, reason, log=None, now=None):
     return destination, len(found)
 
 
+def closure_record(path):
+    """The parsed closure_cert record at PATH, or None. correctness_gate.py also writes a
+    CLOSURE.json (process closure of a gate run); only records with a verdict count."""
+    with contextlib.suppress(OSError, ValueError):
+        info = os.lstat(path)
+        if stat.S_ISREG(info.st_mode) and info.st_size <= GOAL_MAX_BYTES:
+            value = json.loads(Path(path).read_text())
+            if isinstance(value, dict) and value.get('verdict') in ('CLOSED', 'NOT-CLOSED'):
+                return value
+    return None
+
+
 def closure_files(directory):
-    """Yield (path, relative path) of the regular closure records under DIRECTORY."""
+    """Yield (path, relative path, record) of the closure_cert records under DIRECTORY."""
     for current, subdirectories, names in os.walk(directory):
         subdirectories[:] = sorted(d for d in subdirectories if d not in SKIP_DIRS)
         for name in sorted(names):
             if name in CLOSURE_NAMES:
                 path = os.path.join(current, name)
-                with contextlib.suppress(OSError):
-                    if stat.S_ISREG(os.lstat(path).st_mode):
-                        yield path, os.path.relpath(path, directory)
+                record = closure_record(path)
+                if record is not None:
+                    yield path, os.path.relpath(path, directory), record
 
 
 def rescue_closures(root, directory, *, reason, log=None, now=None):
@@ -192,12 +204,7 @@ def rescue_closures(root, directory, *, reason, log=None, now=None):
     run = case_name(root, directory)
     stamp = time.strftime('%Y%m%dT%H%M%SZ', time.gmtime(time.time() if now is None else now))
     moved = 0
-    for path, relative in list(closure_files(directory)):
-        record = {}
-        with contextlib.suppress(OSError, ValueError):
-            value = json.loads(Path(path).read_text())
-            if isinstance(value, dict):
-                record = value
+    for path, relative, record in list(closure_files(directory)):
         parent = Path(relative).parent
         function = record.get('function') if isinstance(record.get('function'), str) else None
         function = function or default_function

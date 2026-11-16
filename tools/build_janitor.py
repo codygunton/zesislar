@@ -1110,7 +1110,7 @@ def branch_items(args):
             else:
                 for file, relative, _ in goal_store.goal_files(path):
                     print(f'would save goal {file}')
-                for file, _ in goal_store.closure_files(path):
+                for file, _, _ in goal_store.closure_files(path):
                     print(f'would save closure record {file}')
                 print(f'would remove run dir {path}')
     return 0
@@ -1122,7 +1122,7 @@ def rescue_goals_command(args):
         for path in args.paths:
             for file, _, _ in goal_store.goal_files(path):
                 print(f'would save goal {file}')
-            for file, _ in goal_store.closure_files(path):
+            for file, _, _ in goal_store.closure_files(path):
                 print(f'would save closure record {file}')
         return 0
     log_dir = Path(args.log_dir) if args.log_dir else root / '_build/janitor'
