@@ -91,3 +91,33 @@ class ToolsDigestTests(unittest.TestCase):
             self.assertEqual(S.tools_digest(root), initial)
             source.unlink()
             self.assertIsNone(S.tools_digest(root))
+
+
+class WorkloadParentTests(unittest.TestCase):
+    def test_tool_suites_enter_the_workload_parent_through_the_tools_guard(self):
+        # 2026-11-15: `make check-tool-tests` outside zesuworkloads.slice failed
+        # suites with 'The shared operation must run inside zesuworkloads.slice'.
+        from functools import partial
+        from pathlib import Path
+        import block.harness.command_scope as C
+        tools = Path(S.__file__).resolve().parent
+        events = []
+        enter = partial(C.enter, check=lambda: False,
+                        run=lambda argv, **kwargs: events.append(('setup', argv)),
+                        execute=lambda executable, argv, environment: events.append(('exec', argv)))
+        arguments = ['--', 'make', '_check-tool-tests']
+        with self.assertRaisesRegex(RuntimeError, 'returned'):
+            S.enter_workload_parent(arguments, enter=enter)
+        self.assertEqual(events[0], ('setup', [str(tools/'resource_guard.sh'), 'parent-setup']))
+        command = events[1][1]
+        self.assertIn('--slice=zesuworkloads.slice', command)
+        self.assertEqual(command[command.index('parent-exec') - 1], str(tools/'resource_guard.sh'))
+        self.assertEqual(command[-len(arguments) - 1:], [str(tools/'gate_scope.py'), *arguments])
+
+    def test_inside_the_workload_parent_nothing_is_entered(self):
+        from functools import partial
+        import block.harness.command_scope as C
+        calls = []
+        S.enter_workload_parent([], enter=partial(C.enter, check=lambda: True,
+                                run=lambda *a, **k: calls.append(a), execute=lambda *a: calls.append(a)))
+        self.assertEqual(calls, [])

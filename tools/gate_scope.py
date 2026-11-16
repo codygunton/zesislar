@@ -47,6 +47,19 @@ def tools_unchanged(ledger, digest, *, closed, guard_reader=None):
         return False
 
 
+def enter_workload_parent(arguments, *, enter=None):
+    """Re-run inside zesuworkloads.slice, as check-fast's gate scope does.
+
+    Tool suites run shared operations that refuse outside that slice; a plain
+    `make check-tool-tests` failed them while check-fast passed (2026-11-15).
+    """
+    if enter is None:
+        from block.harness.command_scope import enter
+    here = Path(__file__).resolve().parent
+    enter(here/'gate_scope.py', arguments, guard=here/'resource_guard.sh')
+
+
+
 def main():
     from correctness_gate import aggregate_closed
     from block.harness.code.admission_memory import DEFAULT_LEDGER, ledger_transaction
@@ -68,4 +81,5 @@ def main():
 
 
 if __name__ == '__main__':
+    enter_workload_parent(sys.argv[1:])
     raise SystemExit(main())
