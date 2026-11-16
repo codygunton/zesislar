@@ -261,7 +261,7 @@ cache_disk_admission() {
   [[ "$free" =~ ^[0-9]+$ ]] || { echo "resource guard: cannot read /home free bytes" >&2; return 2; }
   if diagnostic_probe && (( free < DISK_PROBE_MIN_BYTES )); then
     note "REFUSE probe launch: /home free_bytes=$free requires=$DISK_PROBE_MIN_BYTES"
-    echo "resource guard: probe refused: /home has $free free bytes, requires $DISK_PROBE_MIN_BYTES" >&2
+    echo "refused: resource guard: probe launch: /home has $free free bytes, requires $DISK_PROBE_MIN_BYTES" >&2
     return 3
   fi
 }
@@ -499,7 +499,7 @@ lock_live_unlocked() {
   local text; text=$(cat "$GATE_LOCK" 2>/dev/null)
   rm -f "$GATE_LOCK"
   note "STALE gate lock removed: $text"
-  echo "resource guard: stale gate lock removed: $text" >&2
+  echo "notice: resource guard: stale gate lock removed: $text" >&2
   return 1
 }
 
@@ -576,7 +576,7 @@ lock_acquire() (
     flock -u 7
     exec 7>&-
     if (( queued == 0 )); then
-      echo "refusing: a gate holds or waits for $GATE_LOCK: ${current:-higher-priority waiter}" >&2
+      echo "refused: a gate holds or waits for $GATE_LOCK: ${current:-higher-priority waiter}" >&2
       return 3
     fi
     sleep "$POLL_SECONDS"
@@ -591,7 +591,7 @@ lock_hold() {
   # A registered launch can precede its systemd scope. Wait for both.
   while live=$(( $(gate_scopes | wc -l) + $(gate_launches | wc -l) + $(gate_reservations | wc -l) )); (( live > 0 )); do
     if (( SECONDS - start >= limit )); then
-      echo "refusing: $live job scopes or launches still alive after $(( SECONDS - start )) s" >&2
+      echo "refused: $live job scopes or launches still alive after $(( SECONDS - start )) s" >&2
       lock_release "$pid"; return 3
     fi
     [ -z "$noted" ] && note "LOCK wanted: waiting for $live job scopes" && noted=1
@@ -1098,7 +1098,7 @@ confirm_attempt() {
     holder=$(lock_live_unlocked 2>/dev/null) || holder=""
   fi
   if [ -n "$holder" ]; then
-    echo "resource guard: confirmation refused by gate lock: $holder" >&2
+    echo "refused: resource guard: confirmation blocked by gate lock: $holder" >&2
     flock -u 7; exec 7>&-; return 3
   fi
   # Stale-ledger recovery is a Python run; a slot refusal does not need it.
@@ -2132,6 +2132,13 @@ prune_scope_registry
 
 # Register a standalone batch or scope before its detached systemd actors start.
 # Nested scopes inherit the exact run ID. A new run never implies replacement.
+# The registry refuses (exit 6) a run whose owner, NAME, module/caller files and
+# bank dir match a live run; `batch|scope --allow-duplicate NAME ...` or
+# ZESU_ALLOW_DUPLICATE=1 starts it anyway.
+allow_duplicate=${ZESU_ALLOW_DUPLICATE:-}
+if [[ "${1:-}" =~ ^(batch|scope)$ ]] && [ "${2:-}" = --allow-duplicate ]; then
+  allow_duplicate=1; set -- "$1" "${@:3}"
+fi
 case "${1:-report}" in
   batch|scope)
     if [ -z "${ZESU_RUN_ID:-}" ] && [ -z "${ZESU_IN_BATCH:-}${ZESU_IN_GATE:-}" ]; then
@@ -2145,6 +2152,7 @@ case "${1:-report}" in
       if [ -n "${ZESU_SUPERSEDES_RUN:-}" ]; then
         registry_args+=(--supersedes "$ZESU_SUPERSEDES_RUN")
       fi
+      [ -z "$allow_duplicate" ] || registry_args+=(--allow-duplicate)
       exec "${ZESU_REGISTRY_PYTHON:-python3}" "$registry" "${registry_args[@]}" -- "$(realpath "$0")" "$@"
     fi ;;
 esac
