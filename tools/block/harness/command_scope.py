@@ -41,11 +41,11 @@ def require():
         raise ValueError('The shared operation must run inside zesuworkloads.slice.')
 
 
-def enter(script, arguments, *, check=contained, run=subprocess.run, execute=os.execvpe):
+def enter(script, arguments, *, guard=None, check=contained, run=subprocess.run, execute=os.execvpe):
     if check():
         return
     script = Path(script).absolute()
-    guard = script.parents[3] / 'tools/resource_guard.sh'
+    guard = Path(guard) if guard else script.parents[3] / 'tools/resource_guard.sh'
     run([str(guard), 'parent-setup'], check=True)
     environment = dict(os.environ)
     environment.setdefault('XDG_RUNTIME_DIR', '/run/user/' + str(os.getuid()))

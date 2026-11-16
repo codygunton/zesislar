@@ -20,7 +20,7 @@ class CleanupAfterMerge(unittest.TestCase):
                                 GIT_COMMITTER_NAME='t', GIT_COMMITTER_EMAIL='t@t')
         self.environment.pop('ZESU_MAIN_REF', None)
         self.git('init', '-q', '-b', 'main')
-        (self.root / '.gitignore').write_text('/_build/\n/.worktrees/\n')
+        (self.root / '.gitignore').write_text('/_build/\n/.worktrees/\n__pycache__/\n')
         self.git('add', '.gitignore')
         self.git('commit', '-q', '-m', 'base')
         self.worktree = self.root / '.worktrees/feature'
@@ -67,6 +67,29 @@ class CleanupAfterMerge(unittest.TestCase):
         self.assertIn('kept: protected agent', result.stdout)
         self.assertIn('w/feature', self.git('branch', '--list', 'w/feature'))
         self.assertIn(str(tied), (self.root / '_build/janitor/janitor.log').read_text())
+
+    def test_run_from_inside_the_removed_worktree_completes(self):
+        # 2026-11-15: run from the branch's own worktree, the script removed that
+        # worktree and then failed to find tools/build_janitor.py (exit 1).
+        tools = self.worktree / 'tools'
+        tools.mkdir()
+        for name in ('cleanup_after_merge.sh', 'build_janitor.py', 'goal_store.py'):
+            (tools / name).write_bytes((SCRIPT.parent / name).read_bytes())
+            (tools / name).chmod((SCRIPT.parent / name).stat().st_mode & 0o777)
+        self.git('add', 'tools', cwd=self.worktree)
+        self.git('commit', '-q', '-m', 'tools', cwd=self.worktree)
+        self.merge()
+        tied = self.item('a/run1', 'w/feature')
+        temporary = Path(self.temp.name) / 'tmp'
+        temporary.mkdir()
+        result = subprocess.run([str(tools / 'cleanup_after_merge.sh'), 'w/feature'], cwd=self.worktree,
+                                capture_output=True, text=True, timeout=60,
+                                env=dict(self.environment, TMPDIR=str(temporary)))
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertIn('removed worktree ' + str(self.worktree), result.stdout)
+        self.assertFalse(self.worktree.exists())
+        self.assertFalse(tied.exists())
+        self.assertEqual(list(temporary.iterdir()), [])
 
     def test_saved_goals_of_a_cleaned_branch_stay_in_the_store(self):
         # 2026-11-15: cleanup deleted 0300's probe dir with its saved residual goals.
