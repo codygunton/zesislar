@@ -150,6 +150,28 @@ reason (marker `<store>/follow-main.held`, cleared when it moves again), and the
 its reap, so `systemctl --user status zesu-run-watchdog` shows the unit failed. Untracked files such as
 `tools/bg` logs do not hold it.
 
+## Dead claims
+
+After recording signal deaths, the reaper releases the registered claims of every `children_live`,
+`running`, or `stopped` run whose recorded actors all ended, by running each claim's release command,
+and closes a dead `running` run (status `closed`) once its signal death is recorded. A release that
+fails stays pending and is retried on the next reap.
+
+Each watchdog pass then runs the memory ledger's own recoveries, so a dead owner's booking is
+released within one timer interval even while no guard runs an admission check:
+
+- `correctness_gate.py recover-dead`: releases each gate claim whose owner, registered run actors,
+  and batch aggregates (`zesuworkloads-aggregate<uid>p<actor pid>r*.slice`) all ended. A gate with
+  its receipt on disk takes the normal release; a gate whose worktree (receipt and release command)
+  was removed is released from the ledger's owner record. A registered gate claim of an ended run
+  that books nothing in the ledger is marked released.
+- `module_memory.py ledger-recover-dead --all`: runs `ledger-recover-dead` on every reservation token
+  whose owner PID ended (as each guard admission check does) and subtracts released claims from
+  `admission-summary`.
+- `module_memory.py ledger-recover-stale --all`.
+
+Each release is printed to the journal; after any release the watchdog writes `admission-wake`.
+
 ## Stalled gates
 
 Each watchdog pass also reports gates that finished with nothing after them. For each ITEM.json branch,
