@@ -21,10 +21,15 @@
 #   reserve-coqc PID     request a compiler launch without holding a slot
 #   confirm-coqc TOKEN   admit a compiler launch atomically
 #   watch                the polling loop; kills the youngest scope at its memory boundary
-#   scope NAME [--cpu SECONDS] -- CMD    run CMD in its configured module scope, registered
+#   scope NAME [--cpu SECONDS] -- CMD    run CMD in its configured module scope, registered;
+#                        inside a batch or with ZESU_WRITER_ID; standalone it exits
+#                        2 with a refused: line (the ledger needs a writer identity)
 #   batch NAME -- CMD    run CMD in the batch scope, 150 GiB (a gate 120), swap off
 #                        batch and scope exit 5, running nothing, when
 #                        ZESU_MODULE_CLAIM_BYTES exceeds ZESU_MODULE_LIMIT_GIB
+#                        Once CMD ran, batch and scope exit with CMD's own
+#                        status; a signal or fence kill exits 128+signal.
+#                        Refusals before CMD runs: 2, 3, 5, 6.
 #   locked NAME -- CMD   run CMD holding the gate lock
 #   lock-status          print the gate lock, removing a stale one
 #   lock-want PID HOLDER take the lock for a gate script, state wanted
@@ -2112,7 +2117,8 @@ run_batch() {
   wait "$child"
   status=$?
   child=""
-  cleanup_batch || status=2
+  # The command's own failure wins; a failed cleanup turns only a success into 2.
+  cleanup_batch || { [ "$status" -ne 0 ] || status=2; }
   trap - EXIT TERM INT
   return "$status"
 }
@@ -2168,7 +2174,10 @@ case "${1:-report}" in
       budget_tool="$(dirname "$(realpath "$0")")/build_janitor.py"
       if [ -f "$budget_tool" ]; then python3 "$budget_tool" admit || exit $?; fi
       registry=${ZESU_RUN_REGISTRY_TOOL:-$(dirname "$(realpath "$0")")/run_registry.py}
-      registry_args=(run --kind "stock-$1" --owner "${COORD_AGENT:-$USER}")
+      # The registry records the owner (ZESU_OWNER, the enclosing tools/bg run's
+      # owner, the worktree's branch, else the user), the worktree and the
+      # module/caller files.
+      registry_args=(run --kind "stock-$1")
       if [ -n "${ZESU_SUPERSEDES_RUN:-}" ]; then
         registry_args+=(--supersedes "$ZESU_SUPERSEDES_RUN")
       fi

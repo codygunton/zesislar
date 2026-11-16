@@ -1,6 +1,7 @@
 # Installed by `make install-run-watchdog`, which fills in @TOOLS@, @STATUS@ and @PYTHON@.
-# Reaps the run registry and posts every run that ended by a signal without a
-# registry stop to STATUS.md (ledger: <git common dir>/zesu-runs/signal-deaths.jsonl).
+# Reaps the run registry, posts every run that ended by a signal without a
+# registry stop to STATUS.md (ledger: <git common dir>/zesu-runs/signal-deaths.jsonl),
+# and releases memory-ledger claims whose owners ended (run_registry.md, Dead claims).
 # --follow-main first fast-forwards the clean @TOOLS@ checkout to origin/main (run_registry.md).
 [Unit]
 Description=Zesislar run registry watchdog (tools/run_registry.py watchdog)

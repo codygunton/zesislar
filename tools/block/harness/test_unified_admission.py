@@ -96,6 +96,26 @@ class UnifiedAdmission(unittest.TestCase):
         self.assertEqual(r['raw_claim_bytes'],128*M.GIB)
         self.assertEqual(len(data['shell_claim_owners']),2)
 
+    def test_admitted_shell_booking_follows_its_measured_peak_after_its_window(self):
+        self.assertTrue(self.confirm()['fits'])
+        confirmed=self.read()['shell_claim_owners'][M.shell_key(self.marker)]['token_identity'][3]
+        def booked(peak,elapsed=M.MEASURED_WINDOW_NS):
+            (self.group/'memory.peak').write_text(str(peak))
+            data=self.read()
+            with patch.object(M.time,'time_ns',return_value=confirmed+elapsed):
+                return M.projection(data,M.ledger_claims(data),0,200*M.GIB,reader=self.reader)['active_claim_bytes']
+        # Inside its window a claim keeps its requested booking.
+        self.assertEqual(booked(2*M.GIB,M.MEASURED_WINDOW_NS-1),64*M.GIB)
+        # After it, 1.5 times its scope's peak, between the floor and the request.
+        self.assertEqual(booked(2*M.GIB),3*M.GIB)
+        self.assertEqual(booked(100),M.MEASURED_FLOOR_BYTES)
+        self.assertEqual(booked(100*M.GIB),64*M.GIB)
+        (self.group/'memory.peak').unlink()
+        data=self.read()
+        with patch.object(M.time,'time_ns',return_value=confirmed+M.MEASURED_WINDOW_NS):
+            self.assertEqual(M.projection(data,M.ledger_claims(data),0,200*M.GIB,
+                                          reader=self.reader)['active_claim_bytes'],64*M.GIB)
+
     def test_authorized_booking_uses_exact_admitted_token_and_live_owner(self):
         amount = 8 * M.GIB
         self.assertTrue(self.confirm(amount=amount)['fits'])

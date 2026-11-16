@@ -314,6 +314,7 @@ class ScopeReader:
             raise ValueError('The recorded actor is outside its owned scope.')
         live = int((path / 'memory.current').read_text())
         integer(live, 'scope memory.current')
+        peak = self.peak(path)
         self.process(actor)
         self.process(batch)
         if any(self.process(item) != parent for item,parent in chain):
@@ -324,7 +325,16 @@ class ScopeReader:
             raise ValueError('The actor changed its scope during sampling.')
         return {'verified': True, 'aggregate_verified': path == aggregate,
                 'scope': str(path), 'device': before[0], 'inode': before[1],
-                'live_bytes': live, 'reason': 'exact owner and batch scope'}
+                'live_bytes': live, 'peak_bytes': peak, 'reason': 'exact owner and batch scope'}
+
+    @staticmethod
+    def peak(path):
+        """The scope's memory.peak, or None when the kernel lacks it."""
+        try:
+            value = int((Path(path) / 'memory.peak').read_text())
+        except (OSError, ValueError):
+            return None
+        return value if value > 0 else None
 
     def output(self, data, key, owner, kind):
         location = data.get('claim_locations', {}).get(key)
@@ -796,13 +806,14 @@ class ScopeReader:
                 before = self.directory(path)
                 live = int((path / 'memory.current').read_text())
                 integer(live, 'standalone compiler memory')
+                peak = self.peak(path)
                 if (self.directory(path) != before or self.file_identity(marker.lstat()) != marker_before
                         or any(self.process(item) != parent for item, parent in chain)
                         or next(line[3:] for line in (self.proc / str(actor['pid']) / 'cgroup').read_text().splitlines()
                                 if line.startswith('0::')) != relative):
                     raise ValueError('The standalone compiler identity changed.')
                 return {'verified': True, 'aggregate_verified': False, 'scope': str(path),
-                        'device': before[0], 'inode': before[1], 'live_bytes': live,
+                        'device': before[0], 'inode': before[1], 'live_bytes': live, 'peak_bytes': peak,
                         'reason': 'exact standalone writer leaf'}
             aggregate = next(p for p in path.parents if p.parent == self.parent)
             if aggregate.name != fields['aggregate']:
@@ -1007,6 +1018,34 @@ def senior_waiters(data, requester, request_bytes, reader):
     return (head['bytes'] if head else 0), bool(own) and now - since >= bound
 
 
+# A booking is an admission weight, not a fence: it comes from measured use
+# (AGENTS.md: a booking above 4 times its live peak for 15 minutes is a defect
+# in the booking rule). An admitted shell claim keeps its requested booking
+# for MEASURED_WINDOW_NS after admission; after that it weighs 1.5 times its
+# scope's memory.peak, at least the floor and at most the requested booking.
+# memory.peak only rises, so a growing compile raises its own weight at every
+# projection. On 2026-11-16 caller-chosen bookings of 6-21.6 GiB ran at
+# 1.3-2.7 GiB peaks (4.4-7.9x; 6.3x for 106 min) and held queued launches.
+MEASURED_WINDOW_NS = 10 * 60 * 10**9
+MEASURED_NUMERATOR, MEASURED_DENOMINATOR = 3, 2
+MEASURED_FLOOR_BYTES = 384 * 1024**2
+
+
+def measured_booking(record, amount, observation, now_ns):
+    """Weigh an admitted shell claim by its scope's measured peak once its window ends.
+
+    The window starts at the token's confirmation (its preserved mtime in the
+    recorded token identity). An unverified scope or an unknown peak keeps the
+    requested booking.
+    """
+    peak = observation.get('peak_bytes')
+    identity = record.get('token_identity') or ()
+    if (observation.get('verified') is not True or type(peak) is not int or peak <= 0
+            or len(identity) < 4 or now_ns - identity[3] < MEASURED_WINDOW_NS):
+        return amount
+    return min(amount, max(MEASURED_FLOOR_BYTES, -(-peak * MEASURED_NUMERATOR // MEASURED_DENOMINATOR)))
+
+
 def projection(data, claims, new_bytes, available_bytes, *, reader=None, new_observation=None,
                pending_shell=None, requester=None):
     reader = ScopeReader() if reader is None else reader
@@ -1051,6 +1090,10 @@ def projection(data, claims, new_bytes, available_bytes, *, reader=None, new_obs
             claims[key] = max(claims.get(key, 0), amount)
             if key not in data.get('shell_claim_owners', {}):
                 observations[key] = observation
+    now, owners = time.time_ns(), data.get('shell_claim_owners', {})
+    for key, observation in observations.items():
+        if key in owners and claims.get(key):
+            claims[key] = measured_booking(owners[key], claims[key], observation, now)
     retained_groups = dict(data.get('legacy_aggregate_holds', {}))
     shell_holds = data.get('shell_aggregate_holds', {})
     retained_groups.update(shell_holds)
@@ -1810,17 +1853,22 @@ def recover_dead_shell(marker, *, ledger=None, reader=None):
                     units.append(path.name)
         units = list(dict.fromkeys(units))
         writer = fields.get('writer', '')
-        if not units and lines[0] == 'confirmed' and re.fullmatch(r'[a-zA-Z0-9._-]+', writer or ''):
-            # A writer confirmed its slot and died before systemd created its
-            # scope. Every writer scope name carries the owner PID, so absence
-            # of any such scope proves no compiler ran for this token.
-            if any(reader.parent.rglob(f'*-writer-{writer}-*-{owner["pid"]}-*')):
-                raise ValueError('The orphan writer token still has a scope.')
-            units = [f'writer-{writer}-*-{owner["pid"]}-*']
+        if not units and lines[0] == 'confirmed' and re.fullmatch(r'[a-zA-Z0-9._-]*', writer):
+            # The guard confirmed its slot and died before systemd created its
+            # scope. Every guard scope name carries the owner PID
+            # (PREFIX-[writer-W-]NAME-PID-N.scope), so absence of any such
+            # scope proves no compiler ran for this token. Only writer tokens
+            # took this route before: two such 16 GiB non-writer tokens stayed
+            # booked for hours and held every queued launch (2026-11-16).
+            pattern = (f'*-writer-{writer}-*-{owner["pid"]}-*' if writer
+                       else f'*-{owner["pid"]}-*')
+            if any(reader.parent.rglob(pattern)):
+                raise ValueError('The orphan token still has a scope.')
+            units = [pattern]
         elif not units:
             raise ValueError('The orphan token lacks its recorded scope.')
         for unit in units:
-            if unit.startswith('writer-') and '*' in unit:
+            if '*' in unit:
                 continue
             if (not re.fullmatch(r'[a-zA-Z0-9_.@:-]+\.(scope|slice)', unit)
                     or any(reader.parent.rglob(unit))):
@@ -1853,6 +1901,32 @@ def recover_dead_shell(marker, *, ledger=None, reader=None):
         write_ledger(ledger, data)
         marker.unlink()
         return True
+
+
+def recover_dead_shells(*, ledger=None, reader=None):
+    """Recover every token whose owner PID ended, as each guard admission check does.
+
+    The run watchdog runs this every two minutes, so a dead owner's booking is
+    released even while no guard runs an admission check. Each token keeps
+    every check of recover_dead_shell; a refused token is reported and kept.
+    """
+    ledger = Path(ledger or os.environ.get('ZESU_CANONICAL_LEDGER', DEFAULT_LEDGER))
+    reader = ScopeReader() if reader is None else reader
+    with ledger_transaction(ledger) as data:
+        directory = Path(data.get('shell_marker_directory', marker_directory()))
+    results = []
+    for marker in sorted(directory.glob('*')):
+        owner = marker.name.split('.')[0]
+        if not owner.isdecimal() or (reader.proc / owner).exists():
+            continue
+        try:
+            fields = dict(line.split('=', 1) for line in marker.read_text().splitlines()[1:] if '=' in line)
+            claim = int(fields.get('memory_claim_bytes', 0))
+            released = recover_dead_shell(marker, ledger=ledger, reader=reader)
+            results.append({'marker': str(marker), 'released': released, 'bytes': claim if released else 0})
+        except (OSError, ValueError) as error:
+            results.append({'marker': str(marker), 'released': False, 'bytes': 0, 'reason': str(error)})
+    return results
 
 
 def recover_stale_shell(marker, *, ledger=None, reader=None):

@@ -35,8 +35,9 @@ _module = importlib.util.module_from_spec(_spec)
 _spec.loader.exec_module(_module)
 evaluate, ScopeReader = _module.evaluate, _module.ScopeReader
 confirm_shell, release_shell = _module.confirm_shell, _module.release_shell
-recover_dead_shell = _module.recover_dead_shell
+recover_dead_shell, recover_dead_shells = _module.recover_dead_shell, _module.recover_dead_shells
 LeafNotClosed = _module.LeafNotClosed
+RejectedScopeSetup = _module.RejectedScopeSetup
 # A release whose compiler leaf still drains exits with this status; the guard retries it.
 LEAF_DRAINING = 5
 recover_stale_shell = _module.recover_stale_shell
@@ -807,7 +808,9 @@ def main():
     release = commands.add_parser('ledger-release')
     release.add_argument('--marker', type=Path, required=True)
     recover = commands.add_parser('ledger-recover-dead')
-    recover.add_argument('--marker', type=Path, required=True)
+    recover_choice = recover.add_mutually_exclusive_group(required=True)
+    recover_choice.add_argument('--marker', type=Path)
+    recover_choice.add_argument('--all', action='store_true')
     stale = commands.add_parser('ledger-recover-stale')
     stale_choice = stale.add_mutually_exclusive_group(required=True)
     stale_choice.add_argument('--marker', type=Path)
@@ -891,7 +894,15 @@ def main():
             return 3
         return 0
     if args.command == 'ledger-mark':
-        return 0 if mark_shell(args.marker) else 4
+        try:
+            return 0 if mark_shell(args.marker) else 4
+        except RejectedScopeSetup:
+            # A scope in the workload parent slice must belong to a writer; the
+            # ledger keeps the booking until the leaf closes. Refuse, no traceback.
+            print('refused: resource guard: a standalone scope (no batch aggregate) needs a writer identity; '
+                  "run it inside 'tools/resource_guard.sh batch NAME -- CMD' or set ZESU_WRITER_ID",
+                  file=sys.stderr)
+            return 2
     if args.command == 'ledger-release':
         claim = marker_claim(args.marker)
         try:
@@ -903,6 +914,13 @@ def main():
             publish_admission_totals(released_bytes=claim)
         return 0 if released else 4
     if args.command == 'ledger-recover-dead':
+        if args.all:
+            results = recover_dead_shells()
+            released = sum(row['bytes'] for row in results if row['released'])
+            if released:
+                publish_admission_totals(released_bytes=released)
+            print(json.dumps(results))
+            return 0
         try:
             return 0 if recover_dead_shell(args.marker) else 4
         except LeafNotClosed:

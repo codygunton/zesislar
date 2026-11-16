@@ -24,6 +24,7 @@ import hashlib
 import json
 import os
 from pathlib import Path
+import pwd
 import re
 import shutil
 import signal
@@ -38,7 +39,10 @@ LAUNCH_SECONDS = 120.0
 LAUNCH_REFUSED = 3
 # A launch whose identity matches a live registered run (tools/bg, guard batch/scope).
 DUPLICATE_REFUSED = 6
-SIGNAL_DEATH_SCHEMA = 'zesu.signal-death.v1'
+SIGNAL_DEATH_SCHEMA = 'zesu.signal-death.v2'
+# A child that dies this close to a tools/bg stop of its parent run was stopped by it.
+PARENT_STOP_SECONDS = 5.0
+FORWARDED_SIGNALS = (signal.SIGTERM, signal.SIGINT, signal.SIGHUP)
 # A shell reports a child killed by one of these signals as exit status 128+N.
 SIGNAL_EXIT_CODES = {128 + number: number for number in
                      (signal.SIGHUP, signal.SIGINT, signal.SIGKILL, signal.SIGTERM)}
@@ -193,17 +197,102 @@ def stop_unit(unit):
                        stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, check=False)
 
 
+def own_unit():
+    """The systemd unit (scope or service) that holds the caller, or None."""
+    for part in reversed((own_cgroup() or '').split('/')):
+        if part.endswith(('.scope', '.service')):
+            return part
+    return None
+
+
+def stop_job(unit, system):
+    """The ID of the queued stop job for unit, or None."""
+    systemctl = shutil.which('systemctl')
+    if systemctl is None or unit is None:
+        return None
+    try:
+        result = subprocess.run([systemctl, *([] if system else ['--user']), 'list-jobs', '--no-legend',
+                                 '--plain'], capture_output=True, text=True, timeout=10, check=False)
+    except (OSError, subprocess.TimeoutExpired):
+        return None
+    for line in result.stdout.splitlines():
+        fields = line.split()
+        if len(fields) >= 3 and fields[1] == unit and fields[2] == 'stop':
+            return fields[0]
+    return None
+
+
+def signal_sender(info):
+    """Name the sender of a received signal from its siginfo.
+
+    systemd (PID 1 or the user manager) sends a unit's stop signal: name that
+    stop job. Another process is named by PID, command name and command line.
+    Without a sending PID (kernel, or no siginfo) the sender is 'unknown'.
+    """
+    pid = getattr(info, 'si_pid', 0)
+    if not pid or pid <= 0:
+        return 'unknown'
+    try:
+        comm = Path(f'/proc/{pid}/comm').read_text().strip()
+        line = Path(f'/proc/{pid}/cmdline').read_bytes().replace(b'\0', b' ').decode(errors='replace').strip()
+    except OSError:
+        return f'pid {pid} (exited)'
+    if comm == 'systemd':
+        unit = own_unit()
+        job = stop_job(unit, system=pid == 1)
+        manager = 'system' if pid == 1 else 'user'
+        if job is None:
+            return f'systemd {manager} manager stopping {unit or "an unknown unit"} (stop job unknown)'
+        return f'systemd {manager} stop job {job} for {unit}'
+    return f'pid {pid} ({comm}): {line[:200]}'
+
+
 def slug(text, limit=32):
     value = re.sub(r'[^A-Za-z0-9_.-]+', '-', text).strip('-.')[:limit].strip('-.')
     return value or 'run'
 
 
 def default_owner():
-    """COORD_AGENT, else the omp agent name (its session file), else the user ID."""
-    if os.environ.get('COORD_AGENT'):
-        return os.environ['COORD_AGENT']
+    """ZESU_OWNER, else COORD_AGENT, else the omp agent name (its session file), else the user ID."""
+    for key in ('ZESU_OWNER', 'COORD_AGENT'):
+        if os.environ.get(key):
+            return os.environ[key]
     session = os.environ.get('PI_SESSION_FILE')
     return Path(session).stem if session else str(os.getuid())
+
+
+def git_text(cwd, *arguments):
+    try:
+        result = subprocess.run(['git', '-C', str(cwd), *arguments], capture_output=True, text=True, timeout=30,
+                                env=dict(os.environ, GIT_TERMINAL_PROMPT='0'))
+    except (OSError, subprocess.TimeoutExpired):
+        return None
+    text = result.stdout.strip()
+    return text if result.returncode == 0 and text else None
+
+
+def worktree_of(cwd):
+    return git_text(cwd, 'rev-parse', '--show-toplevel')
+
+
+def user_name():
+    try:
+        return pwd.getpwuid(os.getuid()).pw_name
+    except KeyError:
+        return str(os.getuid())
+
+
+def resolve_owner(registry, cwd):
+    """ZESU_OWNER; the enclosing tools/bg run's owner; the worktree's branch; the user name."""
+    if os.environ.get('ZESU_OWNER'):
+        return os.environ['ZESU_OWNER']
+    parent = os.environ.get('ZESU_PARENT_RUN_ID')
+    if parent:
+        try:
+            return registry.read_run(parent)['owner']
+        except (KeyError, ValueError, OSError):
+            pass
+    return git_text(cwd, 'symbolic-ref', '--short', '-q', 'HEAD') or user_name()
 
 
 def launch_identity(owner, name):
@@ -211,22 +300,51 @@ def launch_identity(owner, name):
     return json.dumps(['bg', owner, name])
 
 
-def stock_identity(owner, command, cwd):
-    """A guard batch or scope: owner, NAME, the module/caller files it runs, and the bank dir.
-
-    command is [guard, batch|scope, NAME, ..., '--', payload...]. Retries keep
-    NAME; distinct work under one script (export_block.py per block) does not.
-    The files are the payload arguments that name existing files, without the
-    program itself when it runs another file (`python3 col.py` is col.py); with
-    none, the whole payload.
-    """
+def guard_payload(command):
+    """Split [guard, batch|scope, NAME, ..., '--', payload...] into NAME and payload."""
     name, rest = (command[2], command[3:]) if len(command) > 2 else ('', [])
-    payload = rest[rest.index('--') + 1:] if '--' in rest else rest
+    return name, rest[rest.index('--') + 1:] if '--' in rest else rest
+
+
+def command_files(payload, cwd):
+    """The payload arguments that name existing files, without the program itself when
+    it runs another file (`python3 col.py` is col.py)."""
     def files_of(items):
         return sorted({str((cwd / item).resolve()) for item in items
                        if item and not item.startswith('-') and (cwd / item).is_file()})
-    files = files_of(payload[1:]) or files_of(payload[:1])
-    return json.dumps(['guard', owner, name, files or payload, str(cwd.resolve())])
+    return files_of(payload[1:]) or files_of(payload[:1])
+
+
+def module_files(payload, cwd):
+    """The run's module/caller files: command_files without executables (an interpreter
+    running inline code has none)."""
+    def binary(name):
+        try:
+            with open(name, 'rb') as stream:
+                return stream.read(4) == b'\x7fELF'
+        except OSError:
+            return True
+    return [name for name in command_files(payload, cwd) if not binary(name)]
+
+
+def stock_identity(owner, command, cwd):
+    """A guard batch or scope: owner, NAME, the module/caller files it runs, and the bank dir.
+
+    Retries keep NAME; distinct work under one script (export_block.py per
+    block) does not. With no files, the whole payload stands in for them.
+    """
+    name, payload = guard_payload(command)
+    return json.dumps(['guard', owner, name, command_files(payload, cwd) or payload, str(cwd.resolve())])
+
+
+def module_text(row):
+    """The run's module/caller files, relative to its worktree when inside it."""
+    root = row.get('worktree')
+    shown = []
+    for name in row.get('modules') or []:
+        shown.append(os.path.relpath(name, root) if root and (name + '/').startswith(root.rstrip('/') + '/')
+                     else name)
+    return ','.join(shown) or 'none'
 
 
 def live_duplicate(registry, key):
@@ -342,9 +460,10 @@ def launch(registry, args):
         raise ValueError(f'The run directory {run_dir} does not exist.')
     findings = kill_scan.scan_command(command, run_dir)
     if findings:
-        print('refused: run registry: launch refused: the command can kill jobs it does not own.', file=sys.stderr)
+        print('refused: run registry: launch refused: the command or a script it starts can kill jobs it does '
+              'not own or logs a false exit code.', file=sys.stderr)
         for finding in findings:
-            print(finding.message(), file=sys.stderr)
+            print(f'refused: {finding.message()}', file=sys.stderr)
         return LAUNCH_REFUSED
     systemd_run = shutil.which('systemd-run')
     if systemd_run is None:
@@ -494,17 +613,56 @@ def watchdog(registry, status):
         messages = []
         for line in lines[posted:]:
             entry = json.loads(line)
+            if entry.get('cause') == 'parent stopped':
+                continue
             ended = entry['signal_name'] or 'an unrecorded signal'
             fence = f" ({entry['fence_unit']})" if entry.get('fence_unit') else ''
             messages.append(
                 f"- {now} run-watchdog: run {entry['run_id']} (owner {entry['owner']}, kind {entry['kind']}, "
-                f"unit {entry['unit'] or 'none'}) ended by {ended} at {entry['utc']} without a registry stop "
+                f"unit {entry['unit'] or 'none'}, worktree {entry.get('worktree') or 'none'}, "
+                f"module {module_text(entry)}) ended by {ended} from {entry.get('sender') or 'unknown'} "
+                f"at {entry['utc']} without a registry stop "
                 f"({entry['evidence']}); cause: {entry['cause']}{fence}. Ledger: {registry.signal_ledger}.")
         if messages:
             with Path(status).open('a') as stream:
                 stream.write(''.join(message + '\n' for message in messages))
         Registry.atomic_write(cursor, {'posted': len(lines)})
         return messages
+
+
+# Before 2026-11-16 the memory ledger released a dead owner's booking only
+# while some guard ran an admission check, and no route released the booking
+# of a gate killed by a signal; two dead 16 GiB tokens and fourteen dead gates
+# held 48.6 GiB for hours. The watchdog runs each owned recovery every pass, so
+# a dead claim is released within one timer interval (2 min).
+LEDGER_RECOVERIES = (('correctness_gate.py', 'recover-dead'),
+                     ('module_memory.py', 'ledger-recover-dead', '--all'),
+                     ('module_memory.py', 'ledger-recover-stale', '--all'))
+
+
+def recover_ledgers(run=subprocess.run):
+    """Run the memory ledger's dead-owner recoveries; return one line per release or failure."""
+    tools = Path(__file__).resolve().parent
+    state = default_fence_ledger().parent
+    environment = dict(os.environ, ZESU_ADMISSION_SUMMARY=str(state / 'admission-summary'))
+    environment.pop('ZESU_GUARD_MUTEX_FD', None)
+    lines, released = [], []
+    for script, *arguments in LEDGER_RECOVERIES:
+        command = ' '.join([script, *arguments])
+        result = run([sys.executable, str(tools / script), *arguments], cwd=tools, env=environment,
+                     capture_output=True, text=True)
+        if result.returncode != 0:
+            lines.append(f'ledger recovery: {command} failed with exit {result.returncode}: '
+                         f'{" ".join(result.stderr.split())[-400:]}')
+            continue
+        rows = [row for row in json.loads(result.stdout or '[]')
+                if row.get('released') or row.get('released_bytes')]
+        released.extend(rows)
+        lines.extend(f'ledger recovery: {command} released {json.dumps(row, sort_keys=True)}' for row in rows)
+    if released:
+        # Wake guards held on a booking (resource_guard.sh wake_admissions).
+        (state / 'admission-wake').write_text(f'{time.time_ns()}\n')
+    return lines
 
 
 # Gates that finished this long ago with no PR or merge since are reported as stalled.
@@ -892,27 +1050,39 @@ class Registry:
             raise
 
     def reap(self):
-        """Close dead orphans and record runs that ended by a signal without a stop."""
+        """Record runs that ended by a signal without a stop, then close dead orphans."""
         rows = list(self.read()['runs'].values())
+        entries = self.reap_signal_deaths(rows)
         self.reap_orphans(rows)
-        return self.reap_signal_deaths(rows)
+        return entries
+
+    # A scheduler killed by a signal leaves its run 'running', and a stop whose
+    # release failed leaves it 'stopped', with unreleased claims either way.
+    # Only children_live runs were retried: on 2026-11-16, 93 of 111 'running'
+    # runs had no live actor and dead gates held 16.6 GiB of bookings.
+    ORPHAN_STATES = ('children_live', 'running', 'stopped')
 
     def reap_orphans(self, rows):
-        """Release claims of children_live runs whose exact actors all ended."""
+        """Release the claims of runs whose exact actors all ended, then close them.
+
+        A dead 'running' run closes only after its signal death is recorded.
+        """
         for row in rows:
-            if row['status'] != 'children_live':
-                continue
-            if any(live(a) for a in [row['scheduler']] + row['jobs']):
+            pending = any(not claim['released'] for claim in row['claims'].values())
+            if (row['status'] not in self.ORPHAN_STATES or row['status'] == 'stopped' and not pending
+                    or any(live(a) for a in [row['scheduler']] + row['jobs'])):
                 continue
             try:
-                self.release_claims(row['id'])
+                if pending:
+                    self.release_claims(row['id'])
             except (OSError, ValueError, subprocess.CalledProcessError) as error:
                 # The claim stays reserved; a later pass retries the release.
                 print(f"notice: run registry: orphan {row['id']} keeps its claims: {error}",
                       file=sys.stderr)
                 continue
             def close(current):
-                if current['status'] == 'children_live':
+                if (current['status'] == 'children_live'
+                        or current['status'] == 'running' and current.get('signal_death_ns')):
                     current.update(status='closed', closed_ns=time.time_ns(),
                                    all_actors_closed=True)
             self.update(row['id'], close)
@@ -973,8 +1143,24 @@ class Registry:
                 return 'memory fence', fence.get('unit')
         return 'unknown', None
 
+    def parent_stopped(self, row, ended_ns):
+        """True when a tools/bg stop of the run's parent was requested within 5 s of its end."""
+        parent = row.get('parent_run_id')
+        if not parent:
+            return False
+        try:
+            # The caller holds state.lock; files are replaced atomically.
+            requested = self.read_run_unlocked(parent).get('stop_requested_ns')
+        except (KeyError, ValueError, OSError):
+            return False
+        return bool(requested) and abs(ended_ns - requested) <= PARENT_STOP_SECONDS * 1e9
+
     def reap_signal_deaths(self, rows):
-        """Append one ledger entry per run that ended by a signal without a stop."""
+        """Append one ledger entry per run that ended by a signal without a stop.
+
+        A run whose parent tools/bg run was stopped within 5 s of its end gets
+        cause 'parent stopped': it is not a signal death and is not posted.
+        """
         candidates = [row for row in rows if self.death_signal(row)]
         if not candidates:
             return []
@@ -986,11 +1172,17 @@ class Registry:
                 if found is None:
                     return
                 number, evidence = found
-                cause, fence_unit = self.death_cause(row, fences)
                 ended_ns = row.get('closed_ns') or time.time_ns()
+                if self.parent_stopped(row, row.get('signal_ns') or ended_ns):
+                    cause, fence_unit = 'parent stopped', None
+                else:
+                    cause, fence_unit = self.death_cause(row, fences)
                 entry = {
                     'schema': SIGNAL_DEATH_SCHEMA, 'run_id': row['id'], 'owner': row['owner'],
                     'kind': row['kind'], 'unit': row.get('unit'), 'run_dir': row.get('run_dir'),
+                    'worktree': row.get('worktree'), 'modules': row.get('modules', []),
+                    'parent_run_id': row.get('parent_run_id'),
+                    'sender': row.get('signal_sender') or 'unknown',
                     'command': row.get('command'), 'signal': number,
                     'signal_name': signal.Signals(number).name if number else None,
                     'evidence': evidence, 'exit_code': row.get('exit_code'),
@@ -1024,13 +1216,15 @@ def run_command(registry, args):
         command = command[1:]
     if not command:
         raise ValueError('The run command is empty.')
-    owner = args.owner or os.environ.get('COORD_AGENT') or str(os.getuid())
+    cwd = Path.cwd()
+    owner = args.owner or resolve_owner(registry, cwd)
     run_id = args.id or f'{args.kind}-{time.time_ns()}-{os.getpid()}'
     interrupted = []
     actor = None
     process = None
     command_ended = False
     registered = False
+    blocked = False
     def interrupt(signum, _frame):
         interrupted.append(signum)
         if registered and actor is not None:
@@ -1051,23 +1245,27 @@ def run_command(registry, args):
                 registry.stop(old_id)
             run_identity = getattr(args, 'identity', None)
             if run_identity is None and args.kind.startswith('stock-'):
-                run_identity = stock_identity(owner, command, Path.cwd())
+                run_identity = stock_identity(owner, command, cwd)
             if run_identity is not None and not getattr(args, 'allow_duplicate', False):
                 duplicate = live_duplicate(registry, run_identity)
                 if duplicate is not None:
                     return refuse_duplicate(duplicate)
+            payload = guard_payload(command)[1] if args.kind.startswith('stock-') else command
             details = {key: value for key, value in (
                 ('unit', getattr(args, 'unit', None)), ('run_dir', getattr(args, 'run_dir', None)),
                 ('log', getattr(args, 'log', None)), ('memory_gib', getattr(args, 'memory_gib', None)),
-                ('identity', run_identity))
+                ('identity', run_identity), ('worktree', worktree_of(cwd)),
+                ('modules', module_files(payload, cwd)),
+                ('parent_run_id', os.environ.get('ZESU_PARENT_RUN_ID') or None))
                 if value is not None}
             registry.register(run_id, args.kind, owner, identity(os.getpid()), command, details)
             if getattr(args, 'no_run_id_env', False):
                 # A launched job is a top-level run: the guard batches it starts
-                # register their own runs, as they would from a terminal.
+                # register their own runs, as they would from a terminal, under
+                # this run's owner and with this run as their parent.
                 environment = {key: value for key, value in os.environ.items()
                                if key not in ('ZESU_RUN_ID', 'ZESU_RUN_REGISTRY')}
-                environment['ZESU_BG_RUN_ID'] = run_id
+                environment.update(ZESU_OWNER=owner, ZESU_PARENT_RUN_ID=run_id)
             else:
                 environment = dict(os.environ, ZESU_RUN_ID=run_id,
                                    ZESU_RUN_REGISTRY=str(registry.directory))
@@ -1084,13 +1282,33 @@ def run_command(registry, args):
         if interrupted and actor is not None:
             for current in descendants([actor]):
                 send_signal(current, interrupted[0])
+        def received(info):
+            # Name the sender while it still exists, forward, then record it, so
+            # a later SIGKILL of this scheduler still leaves the sender.
+            interrupted.append(info.si_signo)
+            sender = signal_sender(info)
+            for current in descendants([actor]):
+                send_signal(current, info.si_signo)
+            received_ns = time.time_ns()
+            def note(row):
+                row.setdefault('signal_sender', sender)
+                row.setdefault('signal_ns', received_ns)
+            registry.update(run_id, note)
+        if process is not None:
+            # siginfo names the sender; a handler cannot see it.
+            signal.pthread_sigmask(signal.SIG_BLOCK, FORWARDED_SIGNALS)
+            blocked = True
         next_refresh = 0.0
         while process is not None and process.poll() is None:
             now = time.monotonic()
             if now >= next_refresh:
                 registry.refresh(run_id)
                 next_refresh = time.monotonic() + REFRESH_SECONDS
+            while (info := signal.sigtimedwait(FORWARDED_SIGNALS, 0)) is not None:
+                received(info)
             time.sleep(0.1)
+        while blocked and (info := signal.sigtimedwait(FORWARDED_SIGNALS, 0)) is not None:
+            received(info)
         status = process.wait() if process is not None else 128 + interrupted[0]
         command_ended = True
         row = registry.refresh(run_id)
@@ -1112,6 +1330,8 @@ def run_command(registry, args):
         if process is not None and not command_ended and actor is not None and process.poll() is None:
             for current in descendants([actor]):send_signal(current, signal.SIGTERM)
             process.wait(timeout=60)
+        if blocked:
+            signal.pthread_sigmask(signal.SIG_UNBLOCK, FORWARDED_SIGNALS)
         for signum, handler in previous.items():
             signal.signal(signum, handler)
 
@@ -1150,7 +1370,8 @@ def main():
                             'some avg60 under 5 %%, then launch.')
     start.add_argument('command', nargs=argparse.REMAINDER)
     commands.add_parser('reap', help='Record runs that ended by a signal without a stop.')
-    guard = commands.add_parser('watchdog', help='Reap, then post new signal deaths to STATUS.md.')
+    guard = commands.add_parser('watchdog', help='Reap, post new signal deaths to STATUS.md, and release '
+                                                 'memory-ledger claims whose owners ended.')
     guard.add_argument('--status', type=Path, required=True)
     guard.add_argument('--follow-main', type=Path, metavar='CHECKOUT',
                        help='First fast-forward this clean tools checkout to origin/main.')
@@ -1201,7 +1422,12 @@ def main():
                 lines, follows = follow_main(registry, args.follow_main, args.status)
                 for line in lines:
                     print(line)
-        for message in watchdog(registry, args.status) + stall_report(registry, args.status):
+        messages = watchdog(registry, args.status)
+        # The ledger recoveries act on the live ledger and the live registry;
+        # a watchdog given a private --store (fixtures) leaves them alone.
+        if args.store is None:
+            messages += recover_ledgers()
+        for message in messages + stall_report(registry, args.status):
             print(message)
         return 0 if follows else 1
     if args.action == 'begin':
@@ -1226,7 +1452,8 @@ def main():
             for row in rows:
                 print(f"{row['id']} {row['kind']} {row['owner']} {row['status']} "
                       f"scheduler={row['scheduler']['pid']}:{row['scheduler']['startticks']} "
-                      f"jobs={len(row['jobs'])}" + (f" unit={row['unit']}" if row.get('unit') else ''))
+                      f"jobs={len(row['jobs'])}" + (f" unit={row['unit']}" if row.get('unit') else '')
+                      + f" worktree={row.get('worktree') or 'none'} module={module_text(row)}")
         return 0
     if args.action == 'stop' and args.id:
         args.run_id = args.id

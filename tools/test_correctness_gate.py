@@ -6,11 +6,15 @@ import io
 import json
 import os
 from pathlib import Path
+import subprocess
+import sys
 import tempfile
+import time
 import unittest
 from unittest.mock import patch
 
 import correctness_gate
+import run_registry
 
 from correctness_gate import active_claims, digest, gate_environment, read, release, reserve, save, select_peak
 
@@ -272,6 +276,62 @@ class GateClaimsTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "owner changed"):
             release(request)
         self.assertEqual(read(self.ledger)["fixed_claims"]["gate-one"], 30)
+
+    def sleeper(self):
+        process = subprocess.Popen([sys.executable, "-c", "import time; time.sleep(60)"])
+        self.addCleanup(process.wait)
+        self.addCleanup(process.kill)
+        while run_registry.identity(process.pid) is None:
+            time.sleep(0.01)
+        return process
+
+    def ended_run(self, run_id, claim_key, *, live_job=False):
+        """Register a gate run whose scheduler ended; optionally keep one job alive."""
+        registry = run_registry.Registry(self.root / "registry")
+        scheduler = self.sleeper()
+        registry.register(run_id, "correctness-gate", "test", run_registry.identity(scheduler.pid), [])
+        registry.add_claim(run_id, claim_key, [sys.executable, "-c", "raise SystemExit(1)"])
+        if live_job:
+            registry.add_job(run_id, run_registry.identity(self.sleeper().pid))
+        scheduler.kill()
+        scheduler.wait()
+        return registry
+
+    def recover(self):
+        return correctness_gate.recover_dead(self.ledger, registry_store=self.root / "registry")
+
+    def test_dead_gate_without_receipt_releases_from_its_ledger_owner(self):
+        reserve(self.policy, self.owner, self.root / "ADMISSION.json", available=lambda: 100)
+        registry = self.ended_run("one", "gate-one")
+        self.assertEqual(self.recover(), [{"key": "gate-one", "run_id": "one", "released_bytes": 30}])
+        ledger = read(self.ledger)
+        self.assertEqual(ledger["fixed_claims"], {"healthy": 40, "gate-one": 0})
+        self.assertTrue(ledger["correctness_gate_releases"]["gate-one"]["dead_owner_recovery"])
+        self.assertTrue(registry.read_run("one")["claims"]["gate-one"]["released"])
+        self.assertEqual(self.recover(), [])
+
+    def test_dead_gate_with_receipt_takes_the_normal_release(self):
+        reserve(self.policy, self.owner, self.root / "ADMISSION.json", available=lambda: 100)
+        save(self.root / "REQUEST.json", {"policy": self.policy, "owner": self.owner})
+        self.ended_run("one", "gate-one")
+        self.assertEqual(self.recover(), [{"key": "gate-one", "run_id": "one", "released_bytes": 30}])
+        released = read(self.ledger)["correctness_gate_releases"]["gate-one"]
+        self.assertEqual(released["receipt_sha256"], digest(self.root / "REQUEST.json"))
+        self.assertNotIn("dead_owner_recovery", released)
+
+    def test_gate_with_a_live_run_actor_keeps_its_claim(self):
+        reserve(self.policy, self.owner, self.root / "ADMISSION.json", available=lambda: 100)
+        registry = self.ended_run("one", "gate-one", live_job=True)
+        [result] = self.recover()
+        self.assertEqual(result["released_bytes"], 0)
+        self.assertIn("remain live", result["reason"])
+        self.assertEqual(read(self.ledger)["fixed_claims"]["gate-one"], 30)
+        self.assertFalse(registry.read_run("one")["claims"]["gate-one"]["released"])
+
+    def test_unbooked_claim_of_an_ended_run_is_marked_released(self):
+        registry = self.ended_run("two", "CorrectnessGate_unbooked")
+        self.assertEqual(self.recover(), [{"key": "CorrectnessGate_unbooked", "run_id": "two", "released_bytes": 0}])
+        self.assertTrue(registry.read_run("two")["claims"]["CorrectnessGate_unbooked"]["released"])
 
 
 class GateSizingCliTests(unittest.TestCase):

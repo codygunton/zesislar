@@ -293,6 +293,47 @@ class DeadOwnerRecoveryTests(unittest.TestCase):
         self.assertEqual(f.ledger.read_bytes(), before)
         self.assertTrue(f.marker.exists())
 
+    def drop_scope(self):
+        """A guard outside any batch confirmed its token and died before systemd made its scope."""
+        self.drop_aggregate()
+        f = self.fixture
+        f.marker.write_text(f.marker.read_text().replace('aggregate=' + f.group.name + '\n', 'aggregate=\n'))
+
+    def test_scopeless_guard_token_releases_after_its_named_scope_is_absent(self):
+        f = self.fixture
+        self.drop_scope()
+        self.end_owner()
+        scope = f.reader.parent / 'zesudet-cb2-0000-s3-14-4242.scope'
+        scope.mkdir()
+        before = f.ledger.read_bytes()
+        with self.assertRaisesRegex(ValueError, 'still has a scope'):
+            self.recover()
+        self.assertEqual(f.ledger.read_bytes(), before)
+        scope.rmdir()
+        self.assertTrue(self.recover())
+        data = f.read()
+        key = M.shell_key(f.marker)
+        self.assertFalse(f.marker.exists())
+        self.assertEqual(data['fixed_claims'][key], 0)
+        self.assertEqual(data['shell_recovery_audits'][key]['absent_scope_names'], ['*-14-*'])
+
+    def test_scopeless_guard_token_with_live_owner_stays_refused(self):
+        f = self.fixture
+        self.drop_scope()
+        with self.assertRaisesRegex(ValueError, 'owner or actor is still present'):
+            self.recover()
+        self.assertTrue(f.marker.exists())
+
+    def test_sweep_recovers_only_tokens_whose_owner_ended(self):
+        f = self.fixture
+        self.drop_scope()
+        self.assertEqual(M.recover_dead_shells(ledger=f.ledger, reader=f.reader), [])
+        self.assertTrue(f.marker.exists())
+        self.end_owner()
+        [row] = M.recover_dead_shells(ledger=f.ledger, reader=f.reader)
+        self.assertEqual((row['marker'], row['released'], row['bytes']), (str(f.marker), True, 64 * M.GIB))
+        self.assertEqual(f.read()['fixed_claims'][M.shell_key(f.marker)], 0)
+
     def archive_stale_release(self):
         """Archive a stale-owner release that observed a later token."""
         import shell_archive

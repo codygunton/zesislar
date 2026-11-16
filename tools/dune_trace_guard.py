@@ -87,7 +87,8 @@ def main():
         result = subprocess.run(rewritten, check=False)
         for path in paths:
             scrub_trace(path)
-    return result.returncode
+    # A signal death is 128+N, as a shell reports it; SystemExit(-N) would exit 256-N.
+    return result.returncode if result.returncode >= 0 else 128 - result.returncode
 
 
 if __name__ == "__main__":

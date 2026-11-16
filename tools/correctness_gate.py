@@ -18,7 +18,7 @@ import uuid
 from coqc_findlib import preflight
 from module_memory import measurement_claim
 from block.harness.code.admission_memory import (projection, guard_lock, check_test_ledger, record_waiter, clear_waiter,
-                                                  region_release_verified)
+                                                  region_release_verified, DEFAULT_LEDGER)
 
 
 TARGETS = {"check-fast", "check-iris"}
@@ -331,6 +331,66 @@ def release(receipt):
     return result
 
 
+def recover_dead(ledger, registry_store=None):
+    """Release the claims of gates whose owner, run actors and batch aggregates all ended.
+
+    A gate killed by a signal never runs its release, and removing its worktree
+    removes its receipt and its registered release command: on 2026-11-16
+    fourteen ended gates held 16.6 GiB. The ledger names each gate's owner and
+    run. The run registry names every actor the run started (the guard batch
+    among them), and each batch aggregate carries its creator's PID. A gate
+    with its receipt still on disk takes the normal release. A registered
+    claim of an ended run that books nothing (never admitted, or released in
+    the ledger) is marked released, so the reaper stops retrying its command.
+    """
+    import run_registry
+    ledger = Path(ledger)
+    lock = ledger.with_name("LEDGER.lock")
+    registry = run_registry.Registry(registry_store or run_registry.default_store())
+    with locked(lock):
+        snapshot = read(ledger)
+    results = []
+    for key, owner in snapshot.get("correctness_gate_owners", {}).items():
+        if not snapshot["fixed_claims"].get(key) or alive(owner):
+            continue
+        try:
+            row = registry.read_run(owner["run_id"])
+            location = snapshot.get("claim_locations", {}).get(key, {}).get("output_path")
+            receipt = Path(location) / "REQUEST.json" if location else None
+            if receipt is not None and receipt.is_file():
+                result = release(receipt)
+            else:
+                actors = [owner, row["scheduler"], *row["jobs"]]
+                if not all(aggregate_closed({"actors": actors, "batch_pid": actor["pid"]}) for actor in actors):
+                    raise ValueError("The gate run actors or aggregate remain live. The claim stays assigned.")
+                with locked(lock):
+                    current = read(ledger)
+                    amount = current["fixed_claims"].get(key, 0)
+                    if current.get("correctness_gate_owners", {}).get(key) != owner or not amount or alive(owner):
+                        continue
+                    result = {"released": True, "claim_key": key, "bytes": amount, "owner": owner,
+                              "dead_owner_recovery": True, "receipt": str(receipt) if receipt else None,
+                              "closed_actors": actors, "time_ns": time.time_ns()}
+                    current["fixed_claims"][key] = 0
+                    current.setdefault("correctness_gate_releases", {})[key] = result
+                    save(ledger, current)
+            if key in row["claims"] and not row["claims"][key]["released"]:
+                registry.claim_released(row["id"], key)
+            results.append({"key": key, "run_id": row["id"], "released_bytes": result["bytes"]})
+        except (KeyError, OSError, ValueError) as error:
+            results.append({"key": key, "run_id": owner.get("run_id"), "released_bytes": 0, "reason": str(error)})
+    with locked(lock):
+        booked = {key for key, amount in read(ledger)["fixed_claims"].items() if amount}
+    for row in registry.read()["runs"].values():
+        pending = [key for key, claim in row["claims"].items()
+                   if not claim["released"] and key.startswith("CorrectnessGate_") and key not in booked]
+        if pending and not any(run_registry.live(actor) for actor in [row["scheduler"], *row["jobs"]]):
+            for key in pending:
+                registry.claim_released(row["id"], key)
+                results.append({"key": key, "run_id": row["id"], "released_bytes": 0})
+    return results
+
+
 def registry(*arguments):
     subprocess.run([sys.executable, str(Path(__file__).with_name("run_registry.py")),
                     *arguments], check=True)
@@ -392,8 +452,8 @@ def run(args):
     workspace = Path.cwd().resolve()
     if not os.environ.get("ZESU_RUN_ID"):
         os.environ["ZESU_GATE_STARTED_MONOTONIC_NS"] = str(run_started)
-        command = [sys.executable, str(Path(__file__).with_name("run_registry.py")), "run", "--kind", "correctness-gate",
-                   "--owner", os.environ.get("COORD_AGENT", "local")]
+        # The registry resolves the owner (ZESU_OWNER, the enclosing tools/bg run, the branch, the user).
+        command = [sys.executable, str(Path(__file__).with_name("run_registry.py")), "run", "--kind", "correctness-gate"]
         if os.environ.get("ZESU_SUPERSEDES_RUN"):
             command += ["--supersedes", os.environ["ZESU_SUPERSEDES_RUN"]]
         os.execv(sys.executable, [*command, "--", sys.executable, str(Path(__file__).resolve()), *sys.argv[1:]])
@@ -494,12 +554,16 @@ def main():
     execute.add_argument("command", nargs=argparse.REMAINDER)
     close = commands.add_parser("release")
     close.add_argument("--receipt", type=Path, required=True)
+    commands.add_parser("recover-dead", help="Release the claims of gates whose owner, actors and aggregates ended.")
     nested = commands.add_parser("inside")
     nested.add_argument("output", type=Path)
     args = parser.parse_args()
     try:
         if args.action == "release":
             release(args.receipt)
+            return 0
+        if args.action == "recover-dead":
+            print(json.dumps(recover_dead(os.environ.get("ZESU_CANONICAL_LEDGER", DEFAULT_LEDGER))))
             return 0
         return inside(args.output) if args.action == "inside" else run(args)
     except (ValueError, OSError) as error:

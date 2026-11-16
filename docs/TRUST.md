@@ -36,6 +36,14 @@ not closed (generated in `ParentHeaderBlockObligations.v` by
 remaining work. The memcpy runtime premise enters through the contract code
 (`memcpyCallPremise`), as `ParentHeaderContractCorrect` states it.
 
+A block leaves that record only with a closure certificate,
+`tools/block/closures/<callers directory>/<block>/CLOSURE.json`, written by
+`tools/closure_cert.py`. The certificate binds the unmodified generated caller at a head that
+precedes the record, coqc's own exit status 0, the `-time` records of the theorem's `Qed` and of
+its `Print Assumptions` ("Closed under the global context"), and a bank whose load path holds
+only that head's sources (no tactic redefinition from elsewhere). The renderer refuses a closed
+block without one. Check-iris still compiles every closed caller on the merged head.
+
 ## Selected artifact and machine semantics
 
 The selected stock ELF has raw SHA-256

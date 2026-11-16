@@ -1,4 +1,10 @@
 """Block obligations of a compliance theorem: open, closed and entry-less blocks."""
+import hashlib
+import json
+from pathlib import Path
+import shutil
+import subprocess
+import tempfile
 import unittest
 
 import render_open_blocks as open_blocks
@@ -63,6 +69,68 @@ class OpenBlocks(unittest.TestCase):
         region = dict((case, region) for case, _, region in open_fields)['6210']
         self.assertEqual(region['ends']['61cc_slot0'], 0x800d6210)
         self.assertEqual(region['ends']['61cc_slot1'], 0x800d6210)
+
+
+def git(workspace, *args):
+    return subprocess.run(['git', '-C', str(workspace), *args], check=True, capture_output=True,
+                          text=True).stdout.strip()
+
+
+class RecordCertificates(unittest.TestCase):
+    """The record moves a block to closed only with a CLOSURE.json at an ancestor head."""
+    CALLER = b'Lemma DesignedBoundary_1 : True.\nProof. exact I. Qed.\nPrint Assumptions DesignedBoundary_1.\n'
+
+    def setUp(self):
+        self.workspace = Path(tempfile.mkdtemp())
+        self.addCleanup(shutil.rmtree, self.workspace)
+        self.callers = self.workspace / 'tools/block/generated/x_callers'
+        self.callers.mkdir(parents=True)
+        (self.callers / 'Caller0001.v').write_bytes(self.CALLER)
+        (self.callers / 'CALLERS.json').write_text('{"rows": []}\n')
+        git(self.workspace, 'init', '-q')
+        self.commit('callers')
+        self.certified = git(self.workspace, 'rev-parse', 'HEAD')
+
+    def commit(self, message):
+        git(self.workspace, 'add', '.')
+        git(self.workspace, '-c', 'user.name=t', '-c', 'user.email=t@t', 'commit', '-qm', message)
+
+    def certificate(self, **fields):
+        path = self.workspace / 'tools/block/closures/x_callers/0001/CLOSURE.json'
+        path.parent.mkdir(parents=True, exist_ok=True)
+        record = dict(schema='closure/1', verdict='CLOSED', case='0001', head=self.certified,
+                      generated_caller='tools/block/generated/x_callers/Caller0001.v',
+                      caller_sha256=hashlib.sha256(self.CALLER).hexdigest())
+        path.write_text(json.dumps(dict(record, **fields)))
+
+    def refusal(self, head='HEAD'):
+        with self.assertRaises(SystemExit) as raised:
+            open_blocks.require_certificates(self.callers / 'CALLERS.json', {'0001'}, head, self.workspace)
+        return str(raised.exception.code)
+
+    def test_refuses_without_a_certificate(self):
+        self.assertIn('tools/block/closures/x_callers/0001/CLOSURE.json: missing', self.refusal())
+
+    def test_refuses_a_not_closed_or_foreign_certificate(self):
+        self.certificate(verdict='NOT-CLOSED')
+        self.assertIn('not a CLOSED certificate of 0001', self.refusal())
+        self.certificate(caller_sha256='0' * 64)
+        self.assertIn('caller hash differs', self.refusal())
+
+    def test_refuses_a_certificate_whose_head_is_not_an_ancestor(self):
+        git(self.workspace, 'checkout', '-qb', 'side')
+        (self.workspace / 'scaffold.v').write_text('(* copied rules *)\n')
+        self.commit('scaffold')
+        side = git(self.workspace, 'rev-parse', 'HEAD')
+        git(self.workspace, 'checkout', '-q', '-')
+        self.certificate(head=side)
+        self.assertIn('is not an ancestor of', self.refusal())
+
+    def test_accepts_a_certificate_at_an_ancestor_head(self):
+        self.certificate()
+        self.commit('record')
+        open_blocks.require_certificates(self.callers / 'CALLERS.json', {'0001'}, 'HEAD', self.workspace)
+        open_blocks.require_certificates(self.callers / 'CALLERS.json', set(), 'HEAD', self.workspace)
 
 
 if __name__ == '__main__':

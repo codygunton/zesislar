@@ -3,6 +3,7 @@
 import json
 import os
 from pathlib import Path
+import re
 import shutil
 import signal
 import subprocess
@@ -62,7 +63,8 @@ class Fixture(unittest.TestCase):
         self.environment = {**os.environ, 'PATH': f"{bin_dir}:{os.environ['PATH']}",
                             'TEST_SYSTEMD_LOG': str(self.systemd_log), 'ZESU_RUN_REGISTRY': str(self.store),
                             'ZESU_GUARD_STATE': str(self.root)}
-        self.environment.pop('ZESU_RUN_ID', None)
+        for key in ('ZESU_RUN_ID', 'ZESU_OWNER', 'ZESU_PARENT_RUN_ID'):
+            self.environment.pop(key, None)
         self.processes = []
         self.addCleanup(self.close)
 
@@ -97,7 +99,7 @@ class Fixture(unittest.TestCase):
         process = subprocess.Popen(
             [sys.executable, '-B', REGISTRY, '--store', str(self.store), 'run', '--id', run_id,
              '--kind', 'fixture', '--owner', 'test', *options, '--', sys.executable, '-c', code],
-            env=self.environment, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+            env=self.environment, cwd=self.root, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
         self.processes.append(process)
         return process
 
@@ -134,11 +136,35 @@ class LaunchTests(Fixture):
     def test_launched_job_does_not_inherit_the_callers_run_id(self):
         self.environment['ZESU_RUN_ID'] = 'outer-run'
         result = self.cli('launch', '--name', 'env', '--owner', 'tester', '--', sys.executable, '-c',
-                          'import os; print(os.environ.get("ZESU_RUN_ID"), os.environ.get("ZESU_BG_RUN_ID"))')
+                          'import os; print(*(os.environ.get(key) for key in '
+                          '("ZESU_RUN_ID", "ZESU_PARENT_RUN_ID", "ZESU_OWNER")))')
         self.assertEqual(result.returncode, 0, result.stderr)
         run_id = result.stdout.strip()
         self.wait_for(lambda: self.registry.read_run(run_id)['status'] == 'completed')
-        self.assertEqual((self.root / 'env.log').read_text().split(), ['None', run_id])
+        self.assertEqual((self.root / 'env.log').read_text().split(), ['None', run_id, 'tester'])
+
+    def test_guard_run_inside_a_bg_run_takes_its_owner_parent_and_records_worktree_and_module(self):
+        checkout = self.root / 'checkout'
+        checkout.mkdir()
+        subprocess.run(['git', 'init', '-q', '-b', 'lane-branch', str(checkout)], check=True,
+                       timeout=EVENT_CEILING_SECONDS)
+        (checkout / 'column.py').write_text('pass\n')
+        guard = checkout / 'guard.sh'
+        guard.write_text('#!/usr/bin/env bash\nexit 0\n')
+        guard.chmod(0o755)
+        child = [sys.executable, '-B', REGISTRY, '--store', str(self.store), 'run', '--id', 'child',
+                 '--kind', 'stock-batch', '--', str(guard), 'batch', 'block-0514', '--', sys.executable, 'column.py']
+        result = self.cli('launch', '--name', 'lane', '--owner', 'tester', '--dir', str(checkout), '--', *child)
+        self.assertEqual(result.returncode, 0, result.stderr)
+        parent = result.stdout.strip()
+        self.wait_for(lambda: self.registry.contains('child')
+                      and self.registry.read_run('child')['status'] == 'completed')
+        row = self.registry.read_run('child')
+        self.assertEqual((row['owner'], row['parent_run_id'], row['worktree'], row['modules']),
+                         ('tester', parent, str(checkout.resolve()), [str((checkout / 'column.py').resolve())]))
+        listed = self.cli('list')
+        self.assertRegex(listed.stdout, rf'(?m)^child stock-batch tester completed .* '
+                                        rf'worktree={re.escape(str(checkout.resolve()))} module=column\.py$')
 
     def test_bg_wrapper_launches_lists_and_stops(self):
         result = subprocess.run([BG, 'loop', 'sleep', '60'], cwd=self.root, env=self.environment,
@@ -160,6 +186,16 @@ class LaunchTests(Fixture):
         self.assertEqual(result.returncode, R.LAUNCH_REFUSED, result.stderr)
         self.assertIn(f'{script}:3: {PARENT_KILL}', result.stderr)
         self.assertIn('Safe form', result.stderr)
+        self.assertEqual(self.systemd_calls(), [])
+        self.assertEqual(self.registry.read()['runs'], {})
+
+    def test_launch_refuses_a_script_that_logs_a_false_exit_code(self):
+        script = self.root / 'lane.sh'
+        script.write_text(FALSE_RC_SCRIPT)
+        result = self.cli('launch', '--name', 'lane', '--', 'bash', 'lane.sh')
+        self.assertEqual(result.returncode, R.LAUNCH_REFUSED, result.stderr)
+        self.assertIn(f'refused: {script}:3: ', result.stderr)
+        self.assertIn('rc=$? on its own line right after the command', result.stderr)
         self.assertEqual(self.systemd_calls(), [])
         self.assertEqual(self.registry.read()['runs'], {})
 
@@ -193,6 +229,27 @@ class LaunchTests(Fixture):
         self.assertEqual(self.cli('stop', run_id).returncode, 0)
         state = subprocess.run(['systemctl', '--user', 'is-active', row['unit']], capture_output=True, text=True)
         self.assertNotEqual(state.stdout.strip(), 'active')
+
+
+class OwnerTests(Fixture):
+    def test_owner_order_is_env_then_parent_run_then_branch_then_user(self):
+        checkout = self.root / 'checkout'
+        checkout.mkdir()
+        subprocess.run(['git', 'init', '-q', '-b', 'lane-branch', str(checkout)], check=True,
+                       timeout=EVENT_CEILING_SECONDS)
+        sleeper = subprocess.Popen([sys.executable, '-c', 'import time; time.sleep(60)'])
+        self.processes.append(sleeper)
+        self.registry.register('bg-parent', 'bg', 'parent-owner', self.wait_for(lambda: R.identity(sleeper.pid)), [])
+        cases = [({'ZESU_OWNER': 'explicit', 'ZESU_PARENT_RUN_ID': 'bg-parent'}, checkout, 'explicit'),
+                 ({'ZESU_PARENT_RUN_ID': 'bg-parent'}, checkout, 'parent-owner'),
+                 ({'ZESU_PARENT_RUN_ID': 'missing'}, checkout, 'lane-branch'),
+                 ({}, checkout, 'lane-branch'),
+                 ({}, self.root, R.user_name())]
+        for extra, cwd, owner in cases:
+            with patch.dict(os.environ, extra):
+                for key in {'ZESU_OWNER', 'ZESU_PARENT_RUN_ID'} - set(extra):
+                    os.environ.pop(key, None)
+                self.assertEqual(R.resolve_owner(self.registry, cwd), owner, extra)
 
 
 class DuplicateLaunchTests(Fixture):
@@ -349,12 +406,62 @@ class SignalDeathTests(Fixture):
         process = self.run_fixture('posted', 'import os, signal; os.kill(os.getpid(), signal.SIGKILL)')
         process.wait(timeout=EVENT_CEILING_SECONDS)
         [message] = R.watchdog(self.registry, status)
-        self.assertIn('run posted (owner test, kind fixture, unit none) ended by SIGKILL', message)
+        self.assertIn('run posted (owner test, kind fixture, unit none, worktree none, module none) '
+                      'ended by SIGKILL from unknown', message)
         self.assertIn('cause: unknown', message)
         self.assertEqual(status.read_text(), message + '\n')
         self.assertEqual(R.watchdog(self.registry, status), [])
         result = self.cli('watchdog', '--status', str(status))
         self.assertEqual((result.returncode, result.stdout), (0, ''), result.stderr)
+
+    def test_sender_of_a_signal_to_the_scheduler_is_recorded(self):
+        process = self.run_fixture('sent', 'import time; time.sleep(60)')
+        self.wait_for(lambda: self.registry.contains('sent') and self.registry.read_run('sent')['jobs'])
+        sender = subprocess.Popen([sys.executable, '-c', f'import os, signal, time; '
+                                   f'os.kill({process.pid}, signal.SIGTERM); time.sleep(60)'])
+        self.processes.append(sender)
+        process.wait(timeout=EVENT_CEILING_SECONDS)
+        [entry] = self.registry.reap()
+        self.assertEqual(entry['signal_name'], 'SIGTERM')
+        self.assertTrue(entry['sender'].startswith(f'pid {sender.pid} ('), entry['sender'])
+        self.assertIn('os.kill', entry['sender'])
+        self.assertEqual(entry['cause'], 'unknown')
+
+    def test_systemd_sender_names_the_units_stop_job(self):
+        bin_dir = self.root / 'fake-systemd'
+        bin_dir.mkdir()
+        (bin_dir / 'systemctl').write_text('#!/bin/sh\necho "4242 zesubg-x.scope stop running"\n'
+                                           'echo "4243 other.scope stop running"\n')
+        (bin_dir / 'systemctl').chmod(0o755)
+        (bin_dir / 'systemd').symlink_to(shutil.which('sleep'))
+        manager = subprocess.Popen([str(bin_dir / 'systemd'), '60'])
+        self.processes.append(manager)
+        self.wait_for(lambda: Path(f'/proc/{manager.pid}/comm').read_text().strip() == 'systemd')
+        info = type('Info', (), {'si_pid': manager.pid})()
+        with patch.dict(os.environ, {'PATH': f"{bin_dir}:{os.environ['PATH']}"}), \
+                patch.object(R, 'own_unit', return_value='zesubg-x.scope'):
+            self.assertEqual(R.signal_sender(info), 'systemd user stop job 4242 for zesubg-x.scope')
+        with patch.object(R, 'own_unit', return_value='gone.scope'), patch.object(R, 'stop_job', return_value=None):
+            self.assertEqual(R.signal_sender(info),
+                             'systemd user manager stopping gone.scope (stop job unknown)')
+        self.assertEqual(R.signal_sender(type('Info', (), {'si_pid': 0})()), 'unknown')
+
+    def test_child_of_a_stopped_bg_run_is_labelled_parent_stopped_and_not_posted(self):
+        status = self.root / 'STATUS.md'
+        self.assertEqual(R.watchdog(self.registry, status), [])
+        child = [sys.executable, '-B', REGISTRY, '--store', str(self.store), 'run', '--id', 'child',
+                 '--kind', 'fixture', '--', sys.executable, '-c', 'import time; time.sleep(60)']
+        result = self.cli('launch', '--name', 'lane', '--owner', 'tester', '--', *child)
+        self.assertEqual(result.returncode, 0, result.stderr)
+        parent = result.stdout.strip()
+        self.wait_for(lambda: self.registry.contains('child') and self.registry.read_run('child')['jobs'])
+        self.assertEqual(self.cli('stop', parent).returncode, 0)
+        self.wait_for(lambda: self.registry.read_run('child')['status'] != 'running')
+        [entry] = self.registry.reap()
+        self.assertEqual((entry['run_id'], entry['cause'], entry['parent_run_id'], entry['owner']),
+                         ('child', 'parent stopped', parent, 'tester'))
+        self.assertEqual(R.watchdog(self.registry, status), [])
+        self.assertFalse(status.exists())
 
 
 class FollowMainTests(Fixture):
@@ -484,6 +591,41 @@ class KillScanTests(unittest.TestCase):
             failures = kill_scan.tree_failures(root, ['tools/watch.sh', 'tools/notes.txt', 'docs.sh', 'tools/gone.sh'])
         self.assertEqual(len(failures), 1)
         self.assertTrue(failures[0].startswith('tools/watch.sh:2: '), failures)
+
+
+def status(line):
+    """Spell `$` + `?` at run time, so this file passes its own scan."""
+    return line.replace('$RC', '$' + '?')
+
+
+FALSE_RC_SCRIPT = status('#!/usr/bin/env bash\ncoqc X.v\necho "$(date -u +%FT%TZ) RUN-DONE rc=$RC"\n')
+
+
+class StatusScanTests(unittest.TestCase):
+    def test_status_read_after_substitution(self):
+        unsafe = map(status, ['echo "$(date -u +%FT%TZ) RUN-DONE rc=$RC"', 'echo "`date` rc=$RC"',
+                              'printf "%s %s\\n" "$(date)" $RC', 'x=$(cmd) rc=$RC', 'a; echo "$(date) $RC" >> log'])
+        safe = map(status, ['rc=$RC', 'echo "$(date -u +%FT%TZ) RUN-DONE rc=$rc"', 'x=$(cmd) || exit $RC',
+                            'current=$(lock); s=$RC', 'echo "rc=$RC at $(date)"', 'echo $((1 + 2)) $RC',
+                            "echo '$(date) $RC'", 'v=$(cmd; echo $RC)', '# echo "$(date) rc=$RC"',
+                            'x=$(cmd)  # rc=$RC'])
+        for line in unsafe:
+            with self.subTest(line=line):
+                findings = kill_scan.scan_text(line, 'x')
+                self.assertEqual(len(findings), 1)
+                self.assertIn('rc=$? on its own line', findings[0].message())
+        for line in safe:
+            with self.subTest(line=line):
+                self.assertEqual(kill_scan.scan_text(line, 'x'), [])
+
+    def test_tree_failures_report_false_exit_codes(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            (root / 'tools').mkdir()
+            (root / 'tools' / 'lane.sh').write_text(status('coqc X.v\necho "$(date) RUN-DONE rc=$RC"\n'))
+            failures = kill_scan.tree_failures(root, ['tools/lane.sh'])
+        self.assertEqual(len(failures), 1)
+        self.assertTrue(failures[0].startswith('tools/lane.sh:2: '), failures)
 
 
 GIB = 2 ** 30
