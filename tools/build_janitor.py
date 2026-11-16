@@ -21,6 +21,10 @@ It never touches the saved-goal store `_build/goals/` (see goal_store.py) and
 reports its size against its own budget. Before it deletes a worktree build or
 a merged branch's run dir, it moves the saved goals in it into the store.
 
+It also reports the per-user harness caches under ~/.cache/zesislar (size and
+file count per directory) against CACHE_BUDGET_BYTES. Those caches bound
+themselves; `tools/prune_caches.py` prunes them on demand.
+
 Subcommands for other tools:
   admit                   exit 3 when this agent is over its budget (no scan)
   in-use PATH...          exit 0 when a live process uses one of the paths, or the
@@ -53,6 +57,8 @@ GB = 10 ** 9
 # The only place that sets the budgets. BUDGET.json and admission read them from here.
 AGENT_BUDGET_BYTES = 80 * GB
 TOTAL_BUDGET_BYTES = 200 * GB
+CACHE_BUDGET_BYTES = 5 * GB
+CACHE_ROOT = Path.home() / '.cache/zesislar'
 RUN_IDLE_SECONDS = 24 * 3600
 WORKTREE_IDLE_SECONDS = 48 * 3600
 BANK_IDLE_SECONDS = 24 * 3600
@@ -102,6 +108,29 @@ def extents(descriptor):
 
 def compiled_or_large(name, size):
     return size >= SMALL_BYTES or name.endswith(COMPILED)
+
+
+def cache_usage(root):
+    """Allocated bytes and file counts of each directory under the per-user cache root."""
+    dirs, total = {}, 0
+    try:
+        names = sorted(os.listdir(root))
+    except OSError:
+        names = []
+    for name in names:
+        size = files = 0
+        for current, _, entries in os.walk(os.path.join(root, name)):
+            for entry in entries:
+                with contextlib.suppress(OSError):
+                    size += os.lstat(os.path.join(current, entry)).st_blocks * 512
+                    files += 1
+        with contextlib.suppress(OSError):
+            # The directory's own blocks: a flat store with millions of entries keeps
+            # a large directory file even after they are deleted.
+            size += os.lstat(os.path.join(root, name)).st_blocks * 512
+        dirs[name] = {'bytes': size, 'files': files}
+        total += size
+    return {'bytes': total, 'dirs': dirs}
 
 
 def survey(unit):
@@ -427,7 +456,7 @@ def locked_worktrees(root):
 class Janitor:
     def __init__(self, root, *, now=None, jobs=8, proc='/proc', main_ref='origin/main',
                  agent_budget=AGENT_BUDGET_BYTES, total_budget=TOTAL_BUDGET_BYTES,
-                 protected_agents=PROTECTED_AGENTS, log_dir=None):
+                 protected_agents=PROTECTED_AGENTS, log_dir=None, cache_root=None):
         self.root = Path(root).resolve()
         self.build = self.root / '_build'
         self.agents = self.build / 'agents'
@@ -440,6 +469,7 @@ class Janitor:
         self.protected_agents = set(protected_agents)
         self.log_dir = Path(log_dir) if log_dir else self.build / 'janitor'
         self.stamp = time.strftime('%Y%m%dT%H%M%SZ', time.gmtime(self.now))
+        self.cache_root = Path(CACHE_ROOT if cache_root is None else cache_root)
 
     # Units ------------------------------------------------------------------
 
@@ -515,6 +545,7 @@ class Janitor:
                              'unshared_large_json_bytes': sum(r['json_unshared'] for r in results)}
         total = total_unique + union_bytes(total_shared)
         goals = goal_store.store_bytes(self.root)
+        caches = cache_usage(self.cache_root)
         return {'schema': 'zesu.build-budget.v1',
                 'measured_at': time.strftime('%Y-%m-%dT%H:%M:%SZ', time.gmtime(self.now)),
                 'root': str(self.agents),
@@ -526,6 +557,10 @@ class Janitor:
                 'goal_store': {'path': str(self.root / goal_store.STORE), 'bytes': goals,
                                'budget_bytes': goal_store.GOAL_STORE_BUDGET_BYTES,
                                'over': goals > goal_store.GOAL_STORE_BUDGET_BYTES},
+                'caches': {'path': str(self.cache_root), 'bytes': caches['bytes'],
+                           'budget_bytes': CACHE_BUDGET_BYTES,
+                           'over': caches['bytes'] > CACHE_BUDGET_BYTES,
+                           'prune': 'tools/prune_caches.py', 'dirs': caches['dirs']},
                 'agents': report}
 
     # Plan -------------------------------------------------------------------
@@ -942,6 +977,10 @@ def summary(plan, budget, mode, freed):
     if store and store['over']:
         lines.append(f'over budget: goal store {store["path"]} {human(store["bytes"])} of '
                      f'{human(store["budget_bytes"])}')
+    caches = budget.get('caches')
+    if caches and caches['over']:
+        lines.append(f'over budget: caches {caches["path"]} {human(caches["bytes"])} of '
+                     f'{human(caches["budget_bytes"])} (run {caches["prune"]})')
     for agent, row in budget['agents'].items():
         if row['over']:
             lines.append(f'over budget: {agent} {human(row["unique_bytes"])} of '
@@ -984,13 +1023,13 @@ def admit(args, environment=os.environ):
     except FileNotFoundError:
         return 0
     except (OSError, ValueError, KeyError, TypeError) as error:
-        print(f'build budget: ignoring unreadable {path}: {error}', file=sys.stderr)
+        print(f'notice: build budget: ignoring unreadable {path}: {error}', file=sys.stderr)
         return 0
     agent = agent_of(environment, path.parent)
     row = rows.get(agent) if agent else None
     if not isinstance(row, dict) or not row.get('over') or row.get('protected'):
         return 0
-    print(f'resource guard: refused: agent {agent} uses {human(row["unique_bytes"])} of its '
+    print(f'refused: resource guard: agent {agent} uses {human(row["unique_bytes"])} of its '
           f'{human(row["budget_bytes"])} build budget under _build/agents/{agent} '
           f'({path}, measured {budget.get("measured_at", "?")}).\n'
           f'Run `{JANITOR_COMMAND}` to see what the janitor frees, `{JANITOR_COMMAND}-apply` '

@@ -704,7 +704,7 @@ class GuardLockTest(unittest.TestCase):
         try:
             result = self.guard("confirm-coqc", token)
             self.assertEqual(result.returncode, 3)
-            self.assertIn("confirmation refused by gate lock", result.stderr)
+            self.assertIn("refused: resource guard: confirmation blocked by gate lock", result.stderr)
         finally:
             self.guard("release-coqc", token)
         self.assertEqual(self.guard("lock-hold", str(os.getpid())).returncode, 0)
@@ -1070,6 +1070,21 @@ class GuardLockTest(unittest.TestCase):
         self.assertEqual(refused.returncode, 3, refused.stderr)
         self.assertIn("build budget", refused.stderr)
         self.assertFalse(started.exists())
+
+    def test_batch_allow_duplicate_reaches_the_registry_and_leaves_the_command(self):
+        recorded = Path(self.directory.name) / "registry-args.json"
+        stub = Path(self.directory.name) / "registry_stub.py"
+        stub.write_text("import json, sys\n"
+                        f"open({str(recorded)!r}, 'w').write(json.dumps(sys.argv[1:]))\n")
+        for flag, environment in ((["--allow-duplicate"], {}), ([], {"ZESU_ALLOW_DUPLICATE": "1"}), ([], {})):
+            result = subprocess.run([str(GUARD), "batch", *flag, "arm", "--", "true"],
+                                    env={**self.environment, **environment, "ZESU_RUN_REGISTRY_TOOL": str(stub)},
+                                    capture_output=True, text=True, timeout=EVENT_CEILING_SECONDS)
+            self.assertEqual(result.returncode, 0, result.stderr)
+            argv = json.loads(recorded.read_text())
+            options, command = argv[:argv.index("--")], argv[argv.index("--") + 1:]
+            self.assertEqual("--allow-duplicate" in options, bool(flag or environment), argv)
+            self.assertEqual(command[1:], ["batch", "arm", "--", "true"])
 
     def test_registered_launch_blocks_gate_transition(self):
         started = Path(self.directory.name) / "launch-started"
