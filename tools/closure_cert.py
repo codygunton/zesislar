@@ -316,9 +316,10 @@ def recipe_command(build, coqc, caller, output):
     return [str(coqc), '-time', *flags, '-o', str(output), str(Path(caller).resolve())], working
 
 
-def compile_caller(case, caller, build, out, limit_gib=16, cpu=None, coqc=None, name=None):
+def compile_caller(case, caller, build, out, limit_gib=16, cpu=None, coqc=None, name=None, claim_gib=None):
     """Compile the caller in the bank under the resource guard. Returns the guard's exit status,
-    which says nothing about coqc: read coqc's status from out/measure.json."""
+    which says nothing about coqc: read coqc's status from out/measure.json. The guard books
+    claim_gib (default: 90 % of limit_gib) and fences the compile at limit_gib."""
     out = Path(out).resolve()
     out.mkdir(parents=True, exist_ok=True)
     for stale in ('measure.json', 'measure.json.log', 'CLOSURE.json', 'NOT-CLOSED.json'):
@@ -334,7 +335,8 @@ def compile_caller(case, caller, build, out, limit_gib=16, cpu=None, coqc=None, 
     if ocamlpath.is_file():
         environment['OCAMLPATH'] = json.loads(ocamlpath.read_text())['OCAMLPATH']
     cpu_limit = str(cpu) if cpu else 'unlimited'
-    environment.update(ZESU_MODULE_CLAIM_BYTES=str(limit_gib * 1024**3 * 9 // 10),
+    claim_bytes = int(claim_gib * 1024**3) if claim_gib else limit_gib * 1024**3 * 9 // 10
+    environment.update(ZESU_MODULE_CLAIM_BYTES=str(min(claim_bytes, limit_gib * 1024**3)),
                        ZESU_MODULE_LIMIT_GIB=str(limit_gib), ZESU_GATE_MODULE_LIMIT_GIB=str(limit_gib),
                        ZESU_PROOF_CPU_LIMIT=cpu_limit, ZESU_SCOPE_CPU=cpu_limit,
                        OCAMLRUNPARAM='s=32M,a=2,o=40')

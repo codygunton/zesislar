@@ -1,0 +1,50 @@
+{
+ "name": "BENCH-v1",
+ "created": "2026-11-16",
+ "purpose": "Small, fixed, data-rich subset for the automation loop: rank where CPU, memory and failures go, fix the biggest item, rerun. Judge a change by its delta across every function here.",
+ "caps": {"cpu_seconds": 3600, "limit_gib": 24},
+ "jobs": 6,
+ "overlays": [
+  {
+   "name": "berlinGasCalc",
+   "commit": "60d507881a43364cb50ba535a283942343b75d25",
+   "branch": "bench/bg-overlay-v1",
+   "make_vars": {"STOCK_NATIVE_TRACE_CACHE_DIR": "/home/cody/zesislar/.worktrees/heldout-free-gate/_build/stock-zisk/native-trace-cache"},
+   "why": "berlinGasCalc is not on main. This measurement-only branch (two commits on main 670878e92) adds its contracts, hints, entries, callers, the stock-zisk roots and the binding of its stock trace theory, taken from the held-out column worktree heldout-w0-bslog (ca6e02a87; entries and callers from its latest render, closed set 9/9). The clean reserve (hpDecode, resumeCall) contracts, entries, callers and trace theories are left out; build/stock-zisk keeps all three roots because it is generated for the three together. The native trace cache is the one the held-out columns use. bench.py merges this commit into the measured head."
+  }
+ ],
+ "members": [
+  {"function": "decodeParentHeader", "callers": "decodeparentheader_fp301_callers", "case": "0300", "claim_gib": 24, "expected_cpu": 3600,
+   "why": "dies in solvers at 24 GiB (417 facts); col-r9..r11 early-stopped at 5.8-12.1 GiB"},
+  {"function": "decodeParentHeader", "callers": "decodeparentheader_fp301_callers", "case": "01e4", "claim_gib": 24, "expected_cpu": 3600,
+   "why": "dies in solvers at 24 GiB (287 facts); col-r9..r11 early-stopped at 6.3-12.3 GiB"},
+  {"function": "decodeParentHeader", "callers": "decodeparentheader_fp301_callers", "case": "032c", "claim_gib": 15, "expected_cpu": 3600,
+   "why": "first-pass simplification/literal cost; col-r9..r11 peak 12.0 GiB"},
+  {"function": "decodeParentHeader", "callers": "decodeparentheader_fp301_callers", "case": "0514_slot0", "claim_gib": 7, "expected_cpu": 3600,
+   "why": "17-instruction loop block that never finished a first pass; col-r10/r11 peak 5.6 GiB"},
+  {"function": "decodeParentHeader", "callers": "decodeparentheader_fp301_callers", "case": "0244", "claim_gib": 12, "expected_cpu": 3600,
+   "why": "block with calls; cost not yet attributed; col-r9..r11 peak 9.2 GiB"},
+  {"function": "decodeParentHeader", "callers": "decodeparentheader_fp301_callers", "case": "0000", "claim_gib": 7, "expected_cpu": 1700,
+   "why": "output buffer; col-r11 1678 CPU-s, 5.5 GiB, open"},
+  {"function": "decodeParentHeader", "callers": "decodeparentheader_fp301_callers", "case": "00ec", "claim_gib": 3, "expected_cpu": 350,
+   "why": "slice input; col-r11 301 CPU-s, 1.7 GiB, open"},
+  {"function": "decodeParentHeader", "callers": "decodeparentheader_fp301_callers", "case": "0080", "claim_gib": 3, "expected_cpu": 350,
+   "why": "pure bytes; col-r11 307 CPU-s, 2.2 GiB, open"},
+  {"function": "decodeParentHeader", "callers": "decodeparentheader_fp301_callers", "case": "0040", "claim_gib": 3, "expected_cpu": 160,
+   "why": "control: closes (certified at 670878e92's ancestors); col-r11 148 CPU-s, 1.9 GiB"},
+  {"function": "decodeItem", "callers": "fp301_callers", "case": "0164", "label": "6ac4", "claim_gib": 14, "expected_cpu": 900,
+   "why": "cost guard (block 0x800d6ac4), must stay closed; 8.5-10.7 GiB in the 24-block sweeps"},
+  {"function": "decodeItem", "callers": "fp301_callers", "case": "00c4", "label": "6a24", "claim_gib": 13, "expected_cpu": 900,
+   "why": "cost guard (block 0x800d6a24), must stay closed; 9.8-10.4 GiB in the 24-block sweeps"},
+  {"function": "decodeItem", "callers": "fp301_callers", "case": "0014", "label": "6974", "claim_gib": 4, "expected_cpu": 800,
+   "why": "cost guard (block 0x800d6974), must stay closed; 2.5-2.6 GiB, about 773 CPU-s"},
+  {"function": "nextUint64", "callers": "nextuint64_fp301_callers", "case": "0064", "label": "62d8", "claim_gib": 4, "expected_cpu": 700,
+   "why": "generality: cheapest open nextUint64 block in the latest full held-out columns (r2o 658 CPU-s, ma2b3 667 CPU-s, 3.1 GiB, coqc exit 1). Callers re-rendered over the sealed interfaces since (#269)."},
+  {"function": "nextUint64", "callers": "nextuint64_fp301_callers", "case": "00a4", "label": "6318", "claim_gib": 5, "expected_cpu": 1500,
+   "why": "generality: second cheapest open nextUint64 block (r2o 1482 CPU-s, ma2b3 1300 CPU-s, 3.9 GiB, coqc exit 1)"},
+  {"function": "berlinGasCalc", "callers": "berlingascalc_fp301_callers", "case": "3ec8", "claim_gib": 3, "expected_cpu": 120,
+   "why": "generality: cheapest open berlinGasCalc block in the latest full columns (ma2b3 58 CPU-s, r2o 110 CPU-s, 1.1 GiB, coqc exit 1); later columns ran only the closed set"},
+  {"function": "berlinGasCalc", "callers": "berlingascalc_fp301_callers", "case": "3b1c", "claim_gib": 3, "expected_cpu": 120,
+   "why": "generality: second cheapest open berlinGasCalc block by the mean of both columns (ma2b3 90 CPU-s, r2o 93 CPU-s, 1.2 GiB, coqc exit 1)"}
+ ]
+}
