@@ -2,6 +2,7 @@ Require Import ZesuSsz.Automation2.ByteMaskCast.
 Require Import ZesuSsz.Automation2.BitvectorFacts.
 Require Import ZesuSsz.Automation2.VmClosed.
 Require Import ZesuSsz.Automation2.RangeFacts.
+Require Import ZesuSsz.Automation2.Telemetry.
 From iris.proofmode Require Import tactics environments.
 From Coq Require Import ZArith NArith Lia.
 From stdpp Require Import bitvector.tactics.
@@ -274,10 +275,11 @@ Ltac zesu_source_byte_order_tree requested :=
   end.
 
 Ltac zesu_source_byte_views :=
-  BitvectorFacts.zesu_source_single_bit_zero_views;
+  let run := ltac2:(tac |- zesu_telemetry_ltac1 "byte_views" "zesu_source_byte_views" tac) in
+  run ltac:(BitvectorFacts.zesu_source_single_bit_zero_views;
   zesu_source_byte_distinct_views; zesu_source_byte_equal_views;
   lazymatch goal with
   | |- environments.envs_entails _ ?requested =>
       zesu_source_byte_order_tree requested
   | _ => idtac
-  end.
+  end).

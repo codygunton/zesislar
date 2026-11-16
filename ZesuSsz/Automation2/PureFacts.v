@@ -27,6 +27,7 @@ Require Import isla.riscv64.riscv64.
 Require Import ZesuMachineMap.Machine.
 From Coq Require Import Lists.List ZArith.ZArith.
 Require ZesuSsz.Automation2.ContextCollection.
+Require Import ZesuSsz.Automation2.Telemetry.
 From Ltac2 Require Import Ltac2.
 Set Default Proof Mode "Classic".
 
@@ -131,7 +132,8 @@ Ltac2 zesu_saturate_seminaive () :=
     end in
   round true [].
 
-Ltac zesu_saturate_derived_facts := ltac2:(Control.enter zesu_saturate_seminaive).
+Ltac zesu_saturate_derived_facts := ltac2:(zesu_telemetry_run "derived_facts"
+  "zesu_saturate_derived_facts" (fun () => Control.enter zesu_saturate_seminaive)).
 
 
 (* Everything the witness says, in the form a solver reads. *)
