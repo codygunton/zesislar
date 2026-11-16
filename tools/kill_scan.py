@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Find process kills that can reach jobs the caller does not own.
+"""Find process kills that can reach jobs the caller does not own, and false exit codes.
 
 In the omp bash tool `$$` is the shared harness PID, so every agent's
 background jobs are its children. On 2026-11-15 one agent's kill by parent
@@ -8,7 +8,12 @@ name or by a pgrep match has the same reach. `run_registry.py launch`
 refuses a command whose scripts contain such a kill, and the proof hygiene
 check refuses one in a committed `tools/` script.
 
-Usage: kill_scan.py PATH...   (exit 1 when a file contains an unsafe kill)
+A second check refuses a line that reads `$?` after a `$(...)` or backtick
+substitution in the same simple command: the substitution runs first and
+resets `$?`, so `echo "$(date) RUN-DONE rc=$?"` always logged rc=0 and
+produced false closures (2026-11-16).
+
+Usage: kill_scan.py PATH...   (exit 1 when a file contains a finding)
 """
 
 from __future__ import annotations
@@ -25,8 +30,11 @@ PATTERNS = (
     (re.compile(r'(?<![\w.-])kill\b[^\n;|&#]*(?:\$\(|`)\s*p' r'grep\b'), 'kill of a process-name match'),
     (re.compile(r'(?<![\w])-P\s*["\']?\$' r'\$'), 'match by parent PID of the shared shell'),
 )
-SAFE_FORM = ('Safe form: save the PID from $! at launch and kill only "$pid", or launch the job with '
-             'tools/bg NAME CMD... and stop it with tools/run_registry.py stop <run id>.')
+KILL_SAFE_FORM = ('Safe form: save the PID from $! at launch and kill only "$pid", or launch the job with '
+                  'tools/bg NAME CMD... and stop it with tools/run_registry.py stop <run id>.')
+STATUS_PROBLEM = 'false exit code: $? is read after a command substitution on the same line, which resets it'
+STATUS_SAFE_FORM = ('Safe form: put rc=$? on its own line right after the command, then use "$rc" '
+                    '(echo "$(date -u +%FT%TZ) RUN-DONE rc=$rc").')
 SCRIPT_SUFFIXES = ('.sh', '.bash', '.py')
 MAX_SCRIPT_BYTES = 4 * 1024 * 1024
 MAX_DEPTH = 4
@@ -39,22 +47,90 @@ class Finding:
     source: str
     line: int
     text: str
-    reason: str
+    problem: str
+    safe_form: str
 
     def message(self):
-        return f'{self.source}:{self.line}: {self.text.strip()}: unsafe process kill ({self.reason}). {SAFE_FORM}'
+        return f'{self.source}:{self.line}: {self.text.strip()}: {self.problem}. {self.safe_form}'
+
+
+def skip_substitution(line, i):
+    """Index just past the `$(...)` or backtick substitution that starts at `i`."""
+    if line[i] == '`':
+        end = line.find('`', i + 1)
+        return len(line) if end < 0 else end + 1
+    depth = 0
+    i += 1
+    while i < len(line):
+        c = line[i]
+        if c == '\\':
+            i += 2
+            continue
+        if c == "'":
+            end = line.find("'", i + 1)
+            i = len(line) if end < 0 else end + 1
+            continue
+        if c == '(':
+            depth += 1
+        elif c == ')':
+            depth -= 1
+            if depth == 0:
+                return i + 1
+        i += 1
+    return len(line)
+
+
+def status_after_substitution(line):
+    """True when `$?` follows a command substitution in the same simple command.
+
+    Separators (`;`, `&`, `|`) outside quotes and substitutions start a new
+    command, so `x=$(cmd) || exit $?` and `x=$(cmd); rc=$?` stay safe. Text
+    inside a substitution is its own command and is not checked; `$((...))` is
+    arithmetic and runs no command.
+    """
+    seen = False
+    quoted = False
+    i = 0
+    while i < len(line):
+        c = line[i]
+        if c == '\\':
+            i += 2
+            continue
+        if c == "'" and not quoted:
+            end = line.find("'", i + 1)
+            i = len(line) if end < 0 else end + 1
+            continue
+        if line.startswith('$?', i):
+            if seen:
+                return True
+            i += 2
+            continue
+        if line.startswith('$(', i) or c == '`':
+            seen = seen or not line.startswith('$((', i)
+            i = skip_substitution(line, i)
+            continue
+        if c == '"':
+            quoted = not quoted
+        elif not quoted and c == '#' and (i == 0 or line[i - 1] in ' \t'):
+            break
+        elif not quoted and c in ';&|':
+            seen = False
+        i += 1
+    return False
 
 
 def scan_text(text, source):
-    """Return the unsafe kills on executable lines; comment lines do not run."""
+    """Return the unsafe kills and false exit codes on executable lines; comment lines do not run."""
     findings = []
     for number, line in enumerate(text.splitlines(), 1):
         if line.lstrip().startswith('#'):
             continue
         for pattern, reason in PATTERNS:
             if pattern.search(line):
-                findings.append(Finding(source, number, line, reason))
+                findings.append(Finding(source, number, line, f'unsafe process kill ({reason})', KILL_SAFE_FORM))
                 break
+        if status_after_substitution(line):
+            findings.append(Finding(source, number, line, STATUS_PROBLEM, STATUS_SAFE_FORM))
     return findings
 
 

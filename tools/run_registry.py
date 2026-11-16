@@ -460,9 +460,10 @@ def launch(registry, args):
         raise ValueError(f'The run directory {run_dir} does not exist.')
     findings = kill_scan.scan_command(command, run_dir)
     if findings:
-        print('refused: run registry: launch refused: the command can kill jobs it does not own.', file=sys.stderr)
+        print('refused: run registry: launch refused: the command or a script it starts can kill jobs it does '
+              'not own or logs a false exit code.', file=sys.stderr)
         for finding in findings:
-            print(finding.message(), file=sys.stderr)
+            print(f'refused: {finding.message()}', file=sys.stderr)
         return LAUNCH_REFUSED
     systemd_run = shutil.which('systemd-run')
     if systemd_run is None:

@@ -21,7 +21,9 @@
 #   reserve-coqc PID     request a compiler launch without holding a slot
 #   confirm-coqc TOKEN   admit a compiler launch atomically
 #   watch                the polling loop; kills the youngest scope at its memory boundary
-#   scope NAME [--cpu SECONDS] -- CMD    run CMD in its configured module scope, registered
+#   scope NAME [--cpu SECONDS] -- CMD    run CMD in its configured module scope, registered;
+#                        inside a batch or with ZESU_WRITER_ID; standalone it exits
+#                        2 with a refused: line (the ledger needs a writer identity)
 #   batch NAME -- CMD    run CMD in the batch scope, 150 GiB (a gate 120), swap off
 #                        batch and scope exit 5, running nothing, when
 #                        ZESU_MODULE_CLAIM_BYTES exceeds ZESU_MODULE_LIMIT_GIB

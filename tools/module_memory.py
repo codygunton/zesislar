@@ -37,6 +37,7 @@ evaluate, ScopeReader = _module.evaluate, _module.ScopeReader
 confirm_shell, release_shell = _module.confirm_shell, _module.release_shell
 recover_dead_shell, recover_dead_shells = _module.recover_dead_shell, _module.recover_dead_shells
 LeafNotClosed = _module.LeafNotClosed
+RejectedScopeSetup = _module.RejectedScopeSetup
 # A release whose compiler leaf still drains exits with this status; the guard retries it.
 LEAF_DRAINING = 5
 recover_stale_shell = _module.recover_stale_shell
@@ -893,7 +894,15 @@ def main():
             return 3
         return 0
     if args.command == 'ledger-mark':
-        return 0 if mark_shell(args.marker) else 4
+        try:
+            return 0 if mark_shell(args.marker) else 4
+        except RejectedScopeSetup:
+            # A scope in the workload parent slice must belong to a writer; the
+            # ledger keeps the booking until the leaf closes. Refuse, no traceback.
+            print('refused: resource guard: a standalone scope (no batch aggregate) needs a writer identity; '
+                  "run it inside 'tools/resource_guard.sh batch NAME -- CMD' or set ZESU_WRITER_ID",
+                  file=sys.stderr)
+            return 2
     if args.command == 'ledger-release':
         claim = marker_claim(args.marker)
         try:

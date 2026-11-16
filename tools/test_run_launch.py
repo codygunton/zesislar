@@ -189,6 +189,16 @@ class LaunchTests(Fixture):
         self.assertEqual(self.systemd_calls(), [])
         self.assertEqual(self.registry.read()['runs'], {})
 
+    def test_launch_refuses_a_script_that_logs_a_false_exit_code(self):
+        script = self.root / 'lane.sh'
+        script.write_text(FALSE_RC_SCRIPT)
+        result = self.cli('launch', '--name', 'lane', '--', 'bash', 'lane.sh')
+        self.assertEqual(result.returncode, R.LAUNCH_REFUSED, result.stderr)
+        self.assertIn(f'refused: {script}:3: ', result.stderr)
+        self.assertIn('rc=$? on its own line right after the command', result.stderr)
+        self.assertEqual(self.systemd_calls(), [])
+        self.assertEqual(self.registry.read()['runs'], {})
+
     def test_launch_refuses_an_unsafe_kill_in_a_queue_script_the_command_starts(self):
         (self.root / 'q').mkdir()
         (self.root / 'q' / 'xrun.sh').write_text('#!/bin/bash\n' + PGREP_KILL + '\n')
@@ -581,6 +591,41 @@ class KillScanTests(unittest.TestCase):
             failures = kill_scan.tree_failures(root, ['tools/watch.sh', 'tools/notes.txt', 'docs.sh', 'tools/gone.sh'])
         self.assertEqual(len(failures), 1)
         self.assertTrue(failures[0].startswith('tools/watch.sh:2: '), failures)
+
+
+def status(line):
+    """Spell `$` + `?` at run time, so this file passes its own scan."""
+    return line.replace('$RC', '$' + '?')
+
+
+FALSE_RC_SCRIPT = status('#!/usr/bin/env bash\ncoqc X.v\necho "$(date -u +%FT%TZ) RUN-DONE rc=$RC"\n')
+
+
+class StatusScanTests(unittest.TestCase):
+    def test_status_read_after_substitution(self):
+        unsafe = map(status, ['echo "$(date -u +%FT%TZ) RUN-DONE rc=$RC"', 'echo "`date` rc=$RC"',
+                              'printf "%s %s\\n" "$(date)" $RC', 'x=$(cmd) rc=$RC', 'a; echo "$(date) $RC" >> log'])
+        safe = map(status, ['rc=$RC', 'echo "$(date -u +%FT%TZ) RUN-DONE rc=$rc"', 'x=$(cmd) || exit $RC',
+                            'current=$(lock); s=$RC', 'echo "rc=$RC at $(date)"', 'echo $((1 + 2)) $RC',
+                            "echo '$(date) $RC'", 'v=$(cmd; echo $RC)', '# echo "$(date) rc=$RC"',
+                            'x=$(cmd)  # rc=$RC'])
+        for line in unsafe:
+            with self.subTest(line=line):
+                findings = kill_scan.scan_text(line, 'x')
+                self.assertEqual(len(findings), 1)
+                self.assertIn('rc=$? on its own line', findings[0].message())
+        for line in safe:
+            with self.subTest(line=line):
+                self.assertEqual(kill_scan.scan_text(line, 'x'), [])
+
+    def test_tree_failures_report_false_exit_codes(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            (root / 'tools').mkdir()
+            (root / 'tools' / 'lane.sh').write_text(status('coqc X.v\necho "$(date) RUN-DONE rc=$RC"\n'))
+            failures = kill_scan.tree_failures(root, ['tools/lane.sh'])
+        self.assertEqual(len(failures), 1)
+        self.assertTrue(failures[0].startswith('tools/lane.sh:2: '), failures)
 
 
 GIB = 2 ** 30
