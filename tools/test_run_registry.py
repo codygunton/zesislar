@@ -642,6 +642,7 @@ class RegistryScalingTests(unittest.TestCase):
         args = SimpleNamespace(command=['true'], owner='test', id='fixture',
                                kind='fixture', supersedes=[])
         with patch.object(R.subprocess, 'Popen', return_value=process), \
+                patch.object(R, 'worktree_of', return_value=None), \
                 patch.object(R.time, 'monotonic', side_effect=lambda: clock[0]), \
                 patch.object(R.time, 'sleep', side_effect=lambda t: clock.__setitem__(0, clock[0] + t)):
             self.assertEqual(R.run_command(registry, args), 0)

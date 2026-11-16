@@ -2168,7 +2168,10 @@ case "${1:-report}" in
       budget_tool="$(dirname "$(realpath "$0")")/build_janitor.py"
       if [ -f "$budget_tool" ]; then python3 "$budget_tool" admit || exit $?; fi
       registry=${ZESU_RUN_REGISTRY_TOOL:-$(dirname "$(realpath "$0")")/run_registry.py}
-      registry_args=(run --kind "stock-$1" --owner "${COORD_AGENT:-$USER}")
+      # The registry records the owner (ZESU_OWNER, the enclosing tools/bg run's
+      # owner, the worktree's branch, else the user), the worktree and the
+      # module/caller files.
+      registry_args=(run --kind "stock-$1")
       if [ -n "${ZESU_SUPERSEDES_RUN:-}" ]; then
         registry_args+=(--supersedes "$ZESU_SUPERSEDES_RUN")
       fi

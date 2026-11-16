@@ -67,7 +67,7 @@ The launcher starts the command in a new session whose parent is init, inside it
 The job is never a child of the caller, so a kill by the caller's parent PID cannot reach it.
 The run records owner, unit, scheduler and job PIDs, command, run directory, and log.
 The job does not inherit `ZESU_RUN_ID`; guard batches it starts register their own runs.
-It gets `ZESU_BG_RUN_ID` instead.
+It gets `ZESU_OWNER` (the run's owner) and `ZESU_PARENT_RUN_ID` (the run's ID) instead.
 
 Before it starts anything, the launcher scans the command line, every script it names, and the
 scripts those name (four levels) with `tools/kill_scan.py`.
@@ -77,6 +77,16 @@ The proof hygiene check applies the same scan to committed `tools/` scripts.
 
 `stop` records `stop_requested_ns`, closes the recorded actors, and then kills and stops the
 run's unit, which ends any process that left the process tree.
+
+## Owner, worktree and module
+
+Every run records `owner`, `worktree` (the git top level of its working directory) and `modules`
+(the module/caller files: payload arguments that name existing non-executable files, e.g. `col.py`
+in `python3 col.py`). Without `--owner`, `run` and guard `batch`/`scope` take the owner from, in
+order: `ZESU_OWNER`; the owner of the enclosing `tools/bg` run (`ZESU_PARENT_RUN_ID`); the
+worktree's branch; the user name. A run inside a `tools/bg` run records `parent_run_id`.
+`tools/bg` without `--owner` uses `ZESU_OWNER`, `COORD_AGENT`, the omp session, else the user ID.
+`run_registry.py list` (and `tools/bg list`) print `worktree=` and `module=` after each run.
 
 ## Duplicate launches
 
@@ -112,8 +122,14 @@ stop record in one of these ways:
 - with exit status 129, 130, 137, or 143 (a shell reporting a child killed by a signal);
 - with every actor dead while the row still says `running` (the scheduler was killed).
 
-Each entry names the run, owner, kind, unit, signal, end time, and cause.
-The cause is `memory fence` when the guard's fence-kill ledger
+Each entry names the run, owner, kind, unit, worktree, modules, parent run, signal, sender, end
+time, and cause. The sender comes from the signal's siginfo, read while the scheduler waits: for a
+systemd stop, `systemd <user|system> stop job <id> for <unit>`; for a process, its PID, name and
+command line; `unknown` when the scheduler died without recording one (SIGKILL, or a signal before
+the command started).
+The cause is `parent stopped` when the run's parent `tools/bg` run got a registry stop within 5 s
+of the run's end; such an entry is not a signal death and the watchdog does not post it.
+Otherwise the cause is `memory fence` when the guard's fence-kill ledger
 (`$XDG_RUNTIME_DIR/zesu-guard/fence-kills.jsonl`) has a kill with the run's ID or unit, or when a
 launched run's scope recorded an OOM kill under `--memory`; otherwise it is `unknown`.
 Fence-kill rows carry the `ZESU_RUN_ID` of the run that started the guard.
