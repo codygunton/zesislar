@@ -2879,11 +2879,12 @@ Ltac liAAsm ::=
   end.
 
 (* The last arm tries the pruned context, then the whole context only within
-   the node budget: without the budget the whole context reached 24 GiB on
-   decodeParentHeader; without the whole context decodeItem lost 8 closures. *)
+   the node budget and only when the prune cleared a fact or failed: without
+   the budget the whole context reached 24 GiB on decodeParentHeader; without
+   the whole context decodeItem lost 8 closures. *)
 Ltac zesu_lia_whole_context_bounded closer :=
   tryif zesu_switch_enabled constr:(ZesuStepFinisherOnce)
-  then first [solve [zesu_context_prune_goal; closer] | (zesu_lia_context_within_budget; closer)]
+  then zesu_context_pruned_else ltac:(zesu_lia_context_within_budget; closer) closer
   else (zesu_lia_context_within_budget; closer).
 
 Ltac Lia.lia ::= first [solve [zesu_closed_goal_decide] |

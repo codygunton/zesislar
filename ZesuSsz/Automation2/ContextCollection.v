@@ -119,6 +119,25 @@ Ltac2 zesu_context_prune () :=
 Ltac zesu_context_prune_goal := ltac2:(zesu_context_prune ()).
 Ltac zesu_context_filtered closer := first [solve [zesu_context_prune_goal; closer] | closer].
 
+(* The closer on the pruned context, else `whole` on the whole context. When
+   the prune cleared nothing, the pruned attempt already ran on the whole
+   context and failed, so `whole` is skipped: on decodeItem 6ac4, 558 of 1296
+   whole-context calls repeated such a failed attempt. *)
+Ltac2 zesu_context_pruned_else_whole (closer : Ltac1.t) (whole : Ltac1.t) :=
+  Control.once (fun () =>
+    let before := List.length (Control.hyps ()) in
+    let unchanged := Ref.ref false in
+    Control.plus
+      (fun () =>
+        zesu_context_prune ();
+        Ref.set unchanged (Int.equal (List.length (Control.hyps ())) before);
+        Ltac1.run closer;
+        Control.enter (fun () => Control.zero (Tactic_failure None)))
+      (fun _ => if Ref.get unchanged then Control.zero (Tactic_failure None) else Ltac1.run whole)).
+Ltac zesu_context_pruned_else whole closer :=
+  let run := ltac2:(whole closer |- zesu_context_pruned_else_whole closer whole) in
+  run whole closer.
+
 Ltac2 zesu_context_collect_live (roots : constr list) :=
   let hyps := Control.hyps () in
   let target := Control.goal () in
