@@ -560,7 +560,7 @@ def main():
             os.environ.update(ZESU_GATE_MODULE_LIMIT_GIB=limit, ZESU_MODULE_LIMIT_GIB=limit)
             run_id = 'soundness-' + token + '-' + name
             command = [sys.executable, '-B', str(workspace / 'tools/run_registry.py'), 'run', '--id', run_id,
-                '--kind', 'correctness-gate', '--owner', os.environ.get('COORD_AGENT', 'soundness'), '--',
+                '--kind', 'correctness-gate', '--',
                 sys.executable, '-B', str(workspace / 'tools/correctness_gate.py'), 'run', '--target', 'check-iris',
                 '--build-dir', str(build), '--', sys.executable, '-B', str(frozen_script),
                 '--stage', name, '--config', str(out / 'INPUTS.json')]
