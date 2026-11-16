@@ -180,22 +180,35 @@ Ltac2 rec zesu_linear_unlinked (rounds : int) (facts : (ident * constr list) lis
   else List.map (fun fact => let (name, _) := fact in name) rest.
 
 (* The budget left after the nodes of a term, stopping at zero. One pass
-   without a reference cell or a closure per node. *)
+   without a reference cell or a closure per node. Every Ltac2 call and
+   binding costs an environment insertion, so a leaf head and one or two
+   arguments take no extra call: a 120005-node term walks in 190 ms instead
+   of 370 ms. *)
 Ltac2 rec zesu_linear_remaining (budget : int) (term : constr) : int :=
   if Int.le budget 0 then budget else
-  let budget := Int.sub budget 1 in
   match Constr.Unsafe.kind term with
   | Constr.Unsafe.App head arguments =>
-      zesu_linear_remaining_arguments (zesu_linear_remaining budget head) arguments 0 (Array.length arguments)
+      let budget := match Constr.Unsafe.kind head with
+        | Constr.Unsafe.Constant _ _ => Int.sub budget 2
+        | Constr.Unsafe.Constructor _ _ => Int.sub budget 2
+        | Constr.Unsafe.Ind _ _ => Int.sub budget 2
+        | Constr.Unsafe.Var _ => Int.sub budget 2
+        | _ => zesu_linear_remaining (Int.sub budget 1) head
+        end in
+      let length := Array.length arguments in
+      if Int.equal length 2 then
+        zesu_linear_remaining (zesu_linear_remaining budget (Array.get arguments 0)) (Array.get arguments 1)
+      else if Int.equal length 1 then zesu_linear_remaining budget (Array.get arguments 0)
+      else zesu_linear_remaining_arguments budget arguments 0 length
   | Constr.Unsafe.Prod binder body =>
-      zesu_linear_remaining (zesu_linear_remaining budget (Constr.Binder.type binder)) body
+      zesu_linear_remaining (zesu_linear_remaining (Int.sub budget 1) (Constr.Binder.type binder)) body
   | Constr.Unsafe.Lambda binder body =>
-      zesu_linear_remaining (zesu_linear_remaining budget (Constr.Binder.type binder)) body
+      zesu_linear_remaining (zesu_linear_remaining (Int.sub budget 1) (Constr.Binder.type binder)) body
   | Constr.Unsafe.LetIn binder value body =>
       zesu_linear_remaining
-        (zesu_linear_remaining (zesu_linear_remaining budget (Constr.Binder.type binder)) value) body
-  | Constr.Unsafe.Cast value _ typ => zesu_linear_remaining (zesu_linear_remaining budget value) typ
-  | _ => budget
+        (zesu_linear_remaining (zesu_linear_remaining (Int.sub budget 1) (Constr.Binder.type binder)) value) body
+  | Constr.Unsafe.Cast value _ typ => zesu_linear_remaining (zesu_linear_remaining (Int.sub budget 1) value) typ
+  | _ => Int.sub budget 1
   end
 with zesu_linear_remaining_arguments (budget : int) (arguments : constr array) (index : int) (length : int) : int :=
   if Int.equal index length then budget
@@ -273,11 +286,15 @@ Ltac2 zesu_linear_clear_unrelated () :=
 Ltac zesu_lia_linked_facts :=
   once ltac2:(zesu_linear_clear_unrelated ()); Zify.zify; xlia Lia.zchecker.
 
-(* The goal and every Prop fact fit the whole-context node budget. Guards a
-   solver call on the whole context: on the decodeItem blocks every
-   whole-context `lia` that succeeded ran on at most 26708 nodes (16384 lost
-   a closure), while failing ones reached 212738 nodes. *)
+(* The goal and every Prop fact fit a node budget. Guards a solver call on the
+   whole context: on the decodeItem blocks every whole-context `lia` that
+   succeeded ran on at most 26708 nodes (16384 lost a closure), while failing
+   ones reached 212738 nodes. Guards a solver call on the pruned context with a
+   larger budget: pruned closures on the decodeItem blocks reached 64499
+   nodes (32768 lost 5 blocks), while on decodeParentHeader 0300's final pure
+   tail pruned contexts of 136615 nodes and more grew past 8 GiB. *)
 Ltac2 zesu_linear_context_node_budget () := 32768.
+Ltac2 zesu_linear_pruned_context_node_budget () := 98304.
 
 Ltac2 rec zesu_linear_facts_remaining (budget : int) (hyps : (ident * constr option * constr) list) : int :=
   if Int.le budget 0 then budget else
@@ -294,9 +311,12 @@ Ltac2 rec zesu_linear_facts_remaining (budget : int) (hyps : (ident * constr opt
       end
   end.
 
-Ltac2 zesu_linear_context_within_budget () :=
-  let budget := zesu_linear_remaining (zesu_linear_context_node_budget ()) (Control.goal ()) in
+Ltac2 zesu_linear_context_within (nodes : int) :=
+  let budget := zesu_linear_remaining nodes (Control.goal ()) in
   if Int.le (zesu_linear_facts_remaining budget (Control.hyps ())) 0
   then Control.zero (Tactic_failure None) else ().
 
-Ltac zesu_lia_context_within_budget := ltac2:(zesu_linear_context_within_budget ()).
+Ltac zesu_lia_context_within_budget :=
+  ltac2:(zesu_linear_context_within (zesu_linear_context_node_budget ())).
+Ltac zesu_lia_pruned_context_within_budget :=
+  ltac2:(zesu_linear_context_within (zesu_linear_pruned_context_node_budget ())).
