@@ -1,6 +1,6 @@
 {
   "schema": 2,
-  "artifact_identity": "799534fcb570b2713df7c1aed999b1e78c70622d5861b9cd05d48536ac19cb6a",
+  "artifact_identity": "d9fbe18b42c81272b2f8b63316df0f492ce775ffad14c041848b4e8acef7899a",
   "static_closure": "passed under the inventory conditions",
   "unsupported_instructions": [],
   "unresolved_transfers": [],
@@ -12,7 +12,7 @@
       "csr": 2067
     }
   ],
-  "trace_generation": "116/116 decodeItem traces; 4503/4504 closure traces; CSR 0x813 remains unmodeled",
+  "trace_generation": "116/116 decodeItem traces; 5010/5011 closure traces; CSR 0x813 remains unmodeled",
   "entry_block_smoke": "not run",
   "return_site_chain": "not run",
   "proof_status": "not proved",
@@ -25,12 +25,12 @@
       "unsupported_runtime_boundaries": [],
       "instruction_modules_validated": true,
       "manifest_binding_pending": false,
-      "bound_artifact_identity": "799534fcb570b2713df7c1aed999b1e78c70622d5861b9cd05d48536ac19cb6a"
+      "bound_artifact_identity": "11c768eddd34efaff60506705c3b37dda282fce707bea53c5415870977f55ed3"
     },
     "closure": {
       "elf_sha256": "e44c18d54ae3d77832df92aceb6eb7119de8eb2e8f1f1b4e585a6e33ea04ff95",
-      "instruction_count": 4504,
-      "generated_count": 4503,
+      "instruction_count": 5011,
+      "generated_count": 5010,
       "full_closure_coverage": false,
       "unsupported_runtime_boundaries": [
         {
@@ -42,7 +42,7 @@
       ],
       "instruction_modules_validated": true,
       "manifest_binding_pending": false,
-      "bound_artifact_identity": "799534fcb570b2713df7c1aed999b1e78c70622d5861b9cd05d48536ac19cb6a"
+      "bound_artifact_identity": "11c768eddd34efaff60506705c3b37dda282fce707bea53c5415870977f55ed3"
     }
   }
 }
