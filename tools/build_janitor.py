@@ -21,6 +21,10 @@ It never touches the saved-goal store `_build/goals/` (see goal_store.py) and
 reports its size against its own budget. Before it deletes a worktree build or
 a merged branch's run dir, it moves the saved goals in it into the store.
 
+It also reports the per-user harness caches under ~/.cache/zesislar (size and
+file count per directory) against CACHE_BUDGET_BYTES. Those caches bound
+themselves; `tools/prune_caches.py` prunes them on demand.
+
 Subcommands for other tools:
   admit                   exit 3 when this agent is over its budget (no scan)
   in-use PATH...          exit 0 when a live process uses one of the paths, or the
@@ -53,6 +57,8 @@ GB = 10 ** 9
 # The only place that sets the budgets. BUDGET.json and admission read them from here.
 AGENT_BUDGET_BYTES = 80 * GB
 TOTAL_BUDGET_BYTES = 200 * GB
+CACHE_BUDGET_BYTES = 5 * GB
+CACHE_ROOT = Path.home() / '.cache/zesislar'
 RUN_IDLE_SECONDS = 24 * 3600
 WORKTREE_IDLE_SECONDS = 48 * 3600
 BANK_IDLE_SECONDS = 24 * 3600
@@ -102,6 +108,29 @@ def extents(descriptor):
 
 def compiled_or_large(name, size):
     return size >= SMALL_BYTES or name.endswith(COMPILED)
+
+
+def cache_usage(root):
+    """Allocated bytes and file counts of each directory under the per-user cache root."""
+    dirs, total = {}, 0
+    try:
+        names = sorted(os.listdir(root))
+    except OSError:
+        names = []
+    for name in names:
+        size = files = 0
+        for current, _, entries in os.walk(os.path.join(root, name)):
+            for entry in entries:
+                with contextlib.suppress(OSError):
+                    size += os.lstat(os.path.join(current, entry)).st_blocks * 512
+                    files += 1
+        with contextlib.suppress(OSError):
+            # The directory's own blocks: a flat store with millions of entries keeps
+            # a large directory file even after they are deleted.
+            size += os.lstat(os.path.join(root, name)).st_blocks * 512
+        dirs[name] = {'bytes': size, 'files': files}
+        total += size
+    return {'bytes': total, 'dirs': dirs}
 
 
 def survey(unit):
@@ -427,7 +456,7 @@ def locked_worktrees(root):
 class Janitor:
     def __init__(self, root, *, now=None, jobs=8, proc='/proc', main_ref='origin/main',
                  agent_budget=AGENT_BUDGET_BYTES, total_budget=TOTAL_BUDGET_BYTES,
-                 protected_agents=PROTECTED_AGENTS, log_dir=None):
+                 protected_agents=PROTECTED_AGENTS, log_dir=None, cache_root=None):
         self.root = Path(root).resolve()
         self.build = self.root / '_build'
         self.agents = self.build / 'agents'
@@ -440,6 +469,7 @@ class Janitor:
         self.protected_agents = set(protected_agents)
         self.log_dir = Path(log_dir) if log_dir else self.build / 'janitor'
         self.stamp = time.strftime('%Y%m%dT%H%M%SZ', time.gmtime(self.now))
+        self.cache_root = Path(CACHE_ROOT if cache_root is None else cache_root)
 
     # Units ------------------------------------------------------------------
 
@@ -515,6 +545,7 @@ class Janitor:
                              'unshared_large_json_bytes': sum(r['json_unshared'] for r in results)}
         total = total_unique + union_bytes(total_shared)
         goals = goal_store.store_bytes(self.root)
+        caches = cache_usage(self.cache_root)
         return {'schema': 'zesu.build-budget.v1',
                 'measured_at': time.strftime('%Y-%m-%dT%H:%M:%SZ', time.gmtime(self.now)),
                 'root': str(self.agents),
@@ -526,6 +557,10 @@ class Janitor:
                 'goal_store': {'path': str(self.root / goal_store.STORE), 'bytes': goals,
                                'budget_bytes': goal_store.GOAL_STORE_BUDGET_BYTES,
                                'over': goals > goal_store.GOAL_STORE_BUDGET_BYTES},
+                'caches': {'path': str(self.cache_root), 'bytes': caches['bytes'],
+                           'budget_bytes': CACHE_BUDGET_BYTES,
+                           'over': caches['bytes'] > CACHE_BUDGET_BYTES,
+                           'prune': 'tools/prune_caches.py', 'dirs': caches['dirs']},
                 'agents': report}
 
     # Plan -------------------------------------------------------------------
@@ -688,9 +723,14 @@ class Janitor:
     # Apply ------------------------------------------------------------------
 
     def apply(self, plan, live, log):
-        """Delete what the plan names. Check every target before the first deletion."""
+        """Delete what the plan names. Check every target before the first deletion.
+
+        A deletion that fails (ENOTEMPTY, EBUSY, a path in use) is logged, recorded on its
+        row, and skipped; the run continues. Return (freed, touched, failures).
+        """
         freed = {'files': 0, 'bytes': 0}
         touched = set()
+        failures = 0
         targets = []
         for row in plan['rows']:
             if row.get('action') not in ('shrink', 'delete'):
@@ -704,19 +744,27 @@ class Janitor:
                 targets.append(row)
         targets.sort(key=lambda row: row['kind'] == 'run')
         for row in targets:
-            if row['kind'] == 'run':
-                files, size = shrink(row['path'], log)
-                touched.add(row['agent'])
-            else:
-                rescue_goals(self.root, row['path'], 'build janitor: ' + row['reason'], log)
-                files, size = remove_tree(row['path'], log)
-                agent = self.item_key({'to': row['path']})
-                if agent:
-                    touched.add(agent[0])
+            try:
+                if row['kind'] == 'run':
+                    files, size, failed = shrink(row['path'], log)
+                    touched.add(row['agent'])
+                else:
+                    rescue_goals(self.root, row['path'], 'build janitor: ' + row['reason'], log)
+                    files, size, failed = remove_tree(row['path'], log)
+                    agent = self.item_key({'to': row['path']})
+                    if agent:
+                        touched.add(agent[0])
+            except OSError as error:
+                log.write(f'{time.time():.0f}\tfailed\t{row["path"]}\t0\t{error}\n')
+                print(f'build janitor: skipped {row["path"]}: {error}', file=sys.stderr)
+                files, size, failed = 0, 0, 1
             row.update(deleted_files=files, deleted_bytes=size)
+            if failed:
+                row['failed'] = failed
+                failures += 1
             freed['files'] += files
             freed['bytes'] += size
-        return freed, touched
+        return freed, touched, failures
 
     def write_json(self, path, value):
         path.parent.mkdir(parents=True, exist_ok=True)
@@ -796,20 +844,21 @@ def shrink(path, log):
     for directory, subdirectories, files in os.walk(path):
         if 'KEEP.json' in files:
             keep.append(os.path.join(directory, 'KEEP.json'))
-    files = size = 0
+    files = size = failed = 0
     for file, length in shrink_candidates({'path': path, 'keep_files': keep}):
         try:
             unlink(file)
         except OSError as error:
             log.write(f'{time.time():.0f}\tfailed\t{file}\t{length}\t{error}\n')
+            failed += 1
             continue
         log.write(f'{time.time():.0f}\tshrink\t{file}\t{length}\n')
         files += 1
         size += length
-    return files, size
+    return files, size, failed
 
 
-def remove_tree(path, log):
+def tree_totals(path):
     files = size = 0
     for directory, subdirectories, names in os.walk(path):
         for name in names:
@@ -817,16 +866,38 @@ def remove_tree(path, log):
                 info = os.lstat(os.path.join(directory, name))
                 files += 1
                 size += info.st_size if stat.S_ISREG(info.st_mode) else 0
+    return files, size
 
-    def writable(function, failed, error):
-        parent = os.path.dirname(failed)
+
+def remove_tree(path, log):
+    """Remove PATH. Log and skip each entry that cannot go; return (files, bytes, failures).
+
+    Files and bytes count what was actually removed (before minus what is left).
+    """
+    files, size = tree_totals(path)
+    failed = []
+
+    def writable(function, entry, error):
+        parent = os.path.dirname(entry)
         with contextlib.suppress(OSError):
             os.chmod(parent, os.stat(parent).st_mode | stat.S_IWUSR | stat.S_IXUSR)
-        function(failed)
+        try:
+            function(entry)
+        except FileNotFoundError:
+            pass
+        except OSError as again:
+            failed.append(entry)
+            log.write(f'{time.time():.0f}\tfailed\t{entry}\t0\t{again}\n')
 
     shutil.rmtree(path, onexc=writable)
-    log.write(f'{time.time():.0f}\tremove-tree\t{path}\t{size}\tfiles={files}\n')
-    return files, size
+    if failed:
+        left_files, left_size = tree_totals(path)
+        files, size = max(files - left_files, 0), max(size - left_size, 0)
+        print(f'build janitor: {len(failed)} entr{"y" if len(failed) == 1 else "ies"} under '
+              f'{path} could not be removed (see log)', file=sys.stderr)
+    log.write(f'{time.time():.0f}\tremove-tree\t{path}\t{size}\tfiles={files}'
+              + (f'\tfailed={len(failed)}' if failed else '') + '\n')
+    return files, size, len(failed)
 
 
 def rescue_goals(root, path, reason, log=None):
@@ -871,11 +942,12 @@ def run(args):
         plan = janitor.plan(runs, live)
         budget = janitor.budget(runs)
         freed = None
+        failures = 0
         if args.apply:
             live = LivePaths.scan(janitor.root, janitor.proc, exclude)
             deleted = janitor.log_dir / f'deleted-{janitor.stamp}.tsv.gz'
             with gzip.open(deleted, 'wt') as log:
-                freed, touched = janitor.apply(plan, live, log)
+                freed, touched, failures = janitor.apply(plan, live, log)
             if touched:
                 again = janitor.survey_runs(touched)
                 runs = [r for r in runs if r['agent'] not in touched] + again
@@ -886,12 +958,15 @@ def run(args):
                            {'mode': mode, 'root': str(janitor.root), 'main': plan['main'],
                             'freed': freed, 'rows': plan['rows']})
         lines = summary(plan, budget, mode, freed)
+        if failures:
+            lines.append(f'failed: {failures} target(s) could not be fully deleted; '
+                         f'see {janitor.log_dir / f"deleted-{janitor.stamp}.tsv.gz"}')
         with open(janitor.log_dir / 'janitor.log', 'a') as log:
             for line in lines:
                 log.write(f'{janitor.stamp}\t{mode}\t{line}\n')
         print('\n'.join(lines))
         print('plan: ' + str(janitor.log_dir / f'plan-{janitor.stamp}-{mode}.json'))
-    return 0
+    return min(failures, 125)
 
 
 def summary(plan, budget, mode, freed):
@@ -902,6 +977,10 @@ def summary(plan, budget, mode, freed):
     if store and store['over']:
         lines.append(f'over budget: goal store {store["path"]} {human(store["bytes"])} of '
                      f'{human(store["budget_bytes"])}')
+    caches = budget.get('caches')
+    if caches and caches['over']:
+        lines.append(f'over budget: caches {caches["path"]} {human(caches["bytes"])} of '
+                     f'{human(caches["budget_bytes"])} (run {caches["prune"]})')
     for agent, row in budget['agents'].items():
         if row['over']:
             lines.append(f'over budget: {agent} {human(row["unique_bytes"])} of '
@@ -944,13 +1023,13 @@ def admit(args, environment=os.environ):
     except FileNotFoundError:
         return 0
     except (OSError, ValueError, KeyError, TypeError) as error:
-        print(f'build budget: ignoring unreadable {path}: {error}', file=sys.stderr)
+        print(f'notice: build budget: ignoring unreadable {path}: {error}', file=sys.stderr)
         return 0
     agent = agent_of(environment, path.parent)
     row = rows.get(agent) if agent else None
     if not isinstance(row, dict) or not row.get('over') or row.get('protected'):
         return 0
-    print(f'resource guard: refused: agent {agent} uses {human(row["unique_bytes"])} of its '
+    print(f'refused: resource guard: agent {agent} uses {human(row["unique_bytes"])} of its '
           f'{human(row["budget_bytes"])} build budget under _build/agents/{agent} '
           f'({path}, measured {budget.get("measured_at", "?")}).\n'
           f'Run `{JANITOR_COMMAND}` to see what the janitor frees, `{JANITOR_COMMAND}-apply` '
@@ -1014,7 +1093,7 @@ def branch_items(args):
                 print(f'{kept}: {path}')
             elif args.delete:
                 saved = rescue_goals(root, path, 'cleanup_after_merge: ' + args.branch, log)
-                files, size = remove_tree(path, log)
+                files, size, _ = remove_tree(path, log)
                 with open(janitor.log_dir / 'janitor.log', 'a') as summary_log:
                     if saved:
                         summary_log.write(f'{janitor.stamp}\tgoals\tsaved goals from {path} '

@@ -259,7 +259,8 @@ class ModuleMemoryTests(unittest.TestCase):
                 redirect_stdout(stdout), patch("sys.stderr", stderr):
             self.assertEqual(memory.main(), 3)
         self.assertEqual(stdout.getvalue(), "")
-        self.assertIn("refuses the reservation", stderr.getvalue())
+        self.assertIn("notice: unified memory ledger holds the reservation", stderr.getvalue())
+        self.assertNotIn("refuse", stderr.getvalue())
 
     def test_admission_cli_passes_the_actual_fence_to_unknown_compilers(self):
         ledger = self.root / "LEDGER.json"

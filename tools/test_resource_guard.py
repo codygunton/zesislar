@@ -1418,7 +1418,7 @@ confirm_coqc "$marker"; status=$?
 [ ! -f "$marker" ] || exit 96
 """)
         self.assertEqual(result.returncode, 0, result.stderr)
-        self.assertIn("confirmation refused by gate lock", result.stderr)
+        self.assertIn("refused: resource guard: confirmation blocked by gate lock", result.stderr)
         self.assertNotIn("unexpected-gate-wait", result.stderr)
 
     def test_gate_still_waits_for_confirmed_and_running_launches(self):
