@@ -6,12 +6,14 @@ set -euo pipefail
 # tool `$$` is the shared harness PID, so a job started with `&` or
 # `setsid nohup ... &` from it can die with every other agent's jobs.
 #
-#   tools/bg [--memory GIB] [--dir DIR] [--log FILE] [--owner NAME] NAME [--] COMMAND [ARGS...]
+#   tools/bg [--memory GIB] [--dir DIR] [--log FILE] [--owner NAME] [--allow-duplicate] NAME [--] COMMAND [ARGS...]
 #   tools/bg list          active runs
 #   tools/bg stop RUN_ID   stop a run and its scope
 #
-# Output goes to DIR/NAME.log (appended). The launch refuses a command whose
-# scripts kill by name, by pgrep match, or by parent PID (tools/kill_scan.py).
+# Output goes to DIR/NAME.log (appended). The launch refuses (exit 3) a command
+# whose scripts kill by name, by pgrep match, or by parent PID (tools/kill_scan.py),
+# and refuses (exit 6) a launch whose owner and NAME match a live run; a retry
+# under the same NAME is the same run. --allow-duplicate starts it anyway.
 
 registry="$(dirname "$(realpath "$0")")/run_registry.py"
 usage() { sed -n '9,11s/^#   //p' "$0" >&2; exit 2; }
@@ -22,6 +24,7 @@ case "${1:-}" in
 esac
 options=()
 while [[ "${1:-}" == --?* ]]; do
+  if [ "$1" = --allow-duplicate ]; then options+=("$1"); shift; continue; fi
   [ $# -ge 2 ] || usage
   options+=("$1" "$2"); shift 2
 done

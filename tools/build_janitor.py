@@ -983,13 +983,13 @@ def admit(args, environment=os.environ):
     except FileNotFoundError:
         return 0
     except (OSError, ValueError, KeyError, TypeError) as error:
-        print(f'build budget: ignoring unreadable {path}: {error}', file=sys.stderr)
+        print(f'notice: build budget: ignoring unreadable {path}: {error}', file=sys.stderr)
         return 0
     agent = agent_of(environment, path.parent)
     row = rows.get(agent) if agent else None
     if not isinstance(row, dict) or not row.get('over') or row.get('protected'):
         return 0
-    print(f'resource guard: refused: agent {agent} uses {human(row["unique_bytes"])} of its '
+    print(f'refused: resource guard: agent {agent} uses {human(row["unique_bytes"])} of its '
           f'{human(row["budget_bytes"])} build budget under _build/agents/{agent} '
           f'({path}, measured {budget.get("measured_at", "?")}).\n'
           f'Run `{JANITOR_COMMAND}` to see what the janitor frees, `{JANITOR_COMMAND}-apply` '

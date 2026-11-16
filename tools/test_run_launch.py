@@ -195,6 +195,94 @@ class LaunchTests(Fixture):
         self.assertNotEqual(state.stdout.strip(), 'active')
 
 
+class DuplicateLaunchTests(Fixture):
+    def launch(self, name, *options):
+        return self.cli('launch', '--name', name, '--owner', 'tester', *options, '--',
+                        sys.executable, '-c', 'import time; time.sleep(60)')
+
+    def assert_notices_are_not_refusals(self, stderr):
+        for line in stderr.splitlines():
+            if line.startswith('notice:'):
+                self.assertNotIn('refused:', line)
+
+    def test_retry_with_the_same_owner_and_name_is_refused_until_the_first_ends(self):
+        first = self.launch('retry')
+        self.assertEqual(first.returncode, 0, first.stderr)
+        self.assertTrue(first.stderr.startswith('notice: '), first.stderr)
+        self.assert_notices_are_not_refusals(first.stderr)
+        run_id = first.stdout.strip()
+        calls = len(self.systemd_calls())
+        second = self.launch('retry')
+        self.assertEqual(second.returncode, R.DUPLICATE_REFUSED, second.stderr)
+        self.assertEqual(second.stdout, '')
+        self.assertTrue(second.stderr.startswith('refused: duplicate launch: '), second.stderr)
+        self.assertIn(f'live run {run_id}', second.stderr)
+        self.assertIn(f'tools/bg stop {run_id}', second.stderr)
+        self.assertEqual(len(self.systemd_calls()), calls)
+        self.assertEqual(list(self.registry.read()['runs']), [run_id])
+        # Another name is another run.
+        other = self.launch('other')
+        self.assertEqual(other.returncode, 0, other.stderr)
+        self.assertEqual(self.cli('stop', run_id).returncode, 0)
+        again = self.launch('retry')
+        self.assertEqual(again.returncode, 0, again.stderr)
+        self.assert_notices_are_not_refusals(again.stderr)
+
+    def test_bg_refuses_a_live_duplicate_with_exit_6_and_allow_duplicate_overrides(self):
+        def bg(*arguments):
+            return subprocess.run([BG, '--owner', 'tester', *arguments, 'loop', 'sleep', '60'], cwd=self.root,
+                                  env=self.environment, capture_output=True, text=True,
+                                  timeout=EVENT_CEILING_SECONDS)
+        first = bg()
+        self.assertEqual(first.returncode, 0, first.stderr)
+        second = bg()
+        self.assertEqual(second.returncode, 6, second.stderr)
+        self.assertIn(first.stdout.strip(), second.stderr)
+        forced = bg('--allow-duplicate')
+        self.assertEqual(forced.returncode, 0, forced.stderr)
+        self.assertEqual(len(self.registry.active()), 2)
+
+    def stock_batch(self, run_id, name, *options, wait=False):
+        # The registry derives a stock run's identity from the guard command it runs.
+        command = [sys.executable, '-B', REGISTRY, '--store', str(self.store), 'run', '--id', run_id,
+                   '--kind', 'stock-batch', '--owner', 'tester', *options, '--',
+                   str(self.root / 'guard.sh'), 'batch', name, '--', sys.executable, 'column.py']
+        if wait:
+            return subprocess.run(command, cwd=self.root, env=self.environment, capture_output=True, text=True,
+                                  timeout=EVENT_CEILING_SECONDS)
+        process = subprocess.Popen(command, cwd=self.root, env=self.environment,
+                                   stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+        self.processes.append(process)
+        self.wait_for(lambda: self.registry.contains(run_id) and self.registry.read_run(run_id)['jobs'])
+        return process
+
+    def test_guard_batch_identity_is_owner_name_caller_file_and_bank_dir(self):
+        (self.root / 'column.py').write_text('pass\n')
+        guard = self.root / 'guard.sh'
+        guard.write_text('#!/usr/bin/env bash\n[ -e hold ] && exec sleep 60\nexit 0\n')
+        guard.chmod(0o755)
+        (self.root / 'hold').write_text('')
+        first = self.stock_batch('first', 'block-0514')
+        self.assertEqual(json.loads(self.registry.read_run('first')['identity']),
+                         ['guard', 'tester', 'block-0514', [str(self.root / 'column.py')],
+                          str(self.root.resolve())])
+        # A retry script relaunches the same name, caller file and bank dir.
+        refused = self.stock_batch('second', 'block-0514', wait=True)
+        self.assertEqual(refused.returncode, R.DUPLICATE_REFUSED, refused.stderr)
+        self.assertTrue(refused.stderr.startswith('refused: duplicate launch: live run first '), refused.stderr)
+        self.assertIn('tools/bg stop first', refused.stderr)
+        self.assertFalse(self.registry.contains('second'))
+        (self.root / 'hold').unlink()
+        other = self.stock_batch('other', 'block-0244', wait=True)
+        self.assertEqual(other.returncode, 0, other.stderr)
+        forced = self.stock_batch('forced', 'block-0514', '--allow-duplicate', wait=True)
+        self.assertEqual(forced.returncode, 0, forced.stderr)
+        self.assertEqual(self.cli('stop', 'first').returncode, 0)
+        first.wait(timeout=EVENT_CEILING_SECONDS)
+        again = self.stock_batch('third', 'block-0514', wait=True)
+        self.assertEqual(again.returncode, 0, again.stderr)
+
+
 class SignalDeathTests(Fixture):
     def entries(self):
         if not self.registry.signal_ledger.exists():
