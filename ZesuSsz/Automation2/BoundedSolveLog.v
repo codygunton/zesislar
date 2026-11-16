@@ -102,11 +102,6 @@ Ltac ZesuSsz.Automation2.BoundedSolve.zesu_bounded_solve kind closer ::=
              | bsl_w kind ltac:(ZesuSsz.Automation2.BoundedSolve.zesu_bounded_whole kind; closer)]
   else bsl_w kind ltac:(ZesuSsz.Automation2.BoundedSolve.zesu_bounded_whole kind; closer).
 
-Ltac ZesuSsz.Automation2.BoundedSolve.zesu_bounded_search search ::=
-  solve [ZesuSsz.Automation2.BoundedSolve.zesu_bounded_prune_goal;
-    bsl_p constr:(ZesuSsz.Automation2.BoundedSolve.zesu_solver_search)
-      ltac:(ZesuSsz.Automation2.BoundedSolve.zesu_bounded_pruned constr:(ZesuSsz.Automation2.BoundedSolve.zesu_solver_search); search)].
-
 Ltac ZesuSsz.Automation2.BoundedSolve.zesu_bounded_saturate saturation ::=
   tryif ZesuSsz.Automation2.BoundedSolve.zesu_bounded_whole constr:(ZesuSsz.Automation2.BoundedSolve.zesu_solver_saturation)
   then saturation else ltac2:(Control.enter bsl_skip).
