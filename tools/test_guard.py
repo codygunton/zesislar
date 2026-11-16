@@ -1211,7 +1211,7 @@ class GuardLockTest(unittest.TestCase):
                                 ZESU_MAX_BLOCKED="16")
         self.assertEqual(self.guard("hold").stdout.strip(), "none")
         (account / "memory.current").write_text(f"{140 * 1024 ** 3}\n")
-        (account / "memory.stat").write_text("anon 1\n")
+        (account / "memory.stat").write_text(f"anon {130 * 1024 ** 3}\nshmem {10 * 1024 ** 3}\n")
         self.assertEqual(self.guard("hold").stdout.strip(),
                          "account memory 140 of 152 GiB, at the 128 GiB hold")
 

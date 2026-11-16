@@ -23,6 +23,10 @@ class CleanupAfterMerge(unittest.TestCase):
         (self.root / '.gitignore').write_text('/_build/\n/.worktrees/\n__pycache__/\n')
         self.git('add', '.gitignore')
         self.git('commit', '-q', '-m', 'base')
+        self.origin = Path(self.temp.name) / 'origin.git'
+        self.git('init', '-q', '--bare', '-b', 'main', str(self.origin))
+        self.git('remote', 'add', 'origin', str(self.origin))
+        self.git('push', '-q', 'origin', 'main')
         self.worktree = self.root / '.worktrees/feature'
         self.git('worktree', 'add', '-q', str(self.worktree), '-b', 'w/feature')
         (self.worktree / 'feature.txt').write_text('feature\n')
@@ -34,8 +38,32 @@ class CleanupAfterMerge(unittest.TestCase):
                               capture_output=True, text=True, env=self.environment).stdout
 
     def merge(self):
+        """Merge on the remote, as GitHub does: the local origin/main stays at the old main."""
+        base = self.git('rev-parse', 'main').strip()
         self.git('merge', '-q', '--no-ff', '-m', 'merge', 'w/feature')
-        self.git('update-ref', 'refs/remotes/origin/main', 'main')
+        self.git('push', '-q', 'origin', 'main')
+        self.git('update-ref', 'refs/remotes/origin/main', base)
+        self.git('reset', '-q', '--hard', base)
+
+    def test_merge_seen_only_on_origin_is_fetched(self):
+        self.merge()
+        tied = self.item('a/run1', 'w/feature')
+        result = self.cleanup('w/feature')
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertFalse(self.worktree.exists())
+        self.assertFalse(tied.exists())
+        self.assertEqual(self.git('rev-parse', 'origin/main'), self.git('--git-dir', str(self.origin),
+                                                                        'rev-parse', 'main'))
+
+    def test_failed_fetch_stops_before_deciding(self):
+        self.merge()
+        self.git('remote', 'set-url', 'origin', str(Path(self.temp.name) / 'missing.git'))
+        tied = self.item('a/run1', 'w/feature')
+        result = self.cleanup('w/feature')
+        self.assertEqual(result.returncode, 2)
+        self.assertIn('git fetch origin failed', result.stderr)
+        self.assertTrue(self.worktree.exists())
+        self.assertTrue(tied.exists())
 
     def item(self, relative, branch=None):
         path = self.root / '_build/agents' / relative

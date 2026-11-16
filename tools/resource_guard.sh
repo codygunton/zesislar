@@ -286,6 +286,26 @@ account_memory() {
   echo "$cap $current"
 }
 
+# Print the account's cap and admission bytes: anon + shmem from memory.stat.
+# Admission (holds, room, job count) ignores page cache and kernel memory:
+# memory.current read 200 GiB with 42 GiB anon on 2026-11-16. The kill check
+# keeps account_memory.
+admission_memory() {
+  local cap key value used=0 seen=0
+  { read -r cap < "$ACCOUNT_CGROUP/memory.max"; } 2>/dev/null || return 1
+  [ "$cap" != max ] || cap=$(( ACCOUNT_DEFAULT_CAP_GIB * GIB ))
+  [[ "$cap" =~ ^[1-9][0-9]*$ ]] || return 1
+  [ -r "$ACCOUNT_CGROUP/memory.stat" ] || return 1
+  while read -r key value; do
+    case "$key" in
+      anon) [[ "$value" =~ ^[0-9]+$ ]] || return 1; used=$(( used + value )); seen=1 ;;
+      shmem) [[ "$value" =~ ^[0-9]+$ ]] || return 1; used=$(( used + value )) ;;
+    esac
+  done < "$ACCOUNT_CGROUP/memory.stat"
+  (( seen )) || return 1
+  echo "$cap $used"
+}
+
 # Used means the account's figure, else total minus available, the figure
 # Prometheus reports (`MemTotal - MemAvailable`).
 used_bytes() {
@@ -297,10 +317,10 @@ used_bytes() {
 
 used_gib() { echo $(( $(used_bytes) / GIB )); }
 
-# Available means the account's room below its cap, else MemAvailable.
+# Available means the account's room below its cap (admission bytes), else MemAvailable.
 available_gib() {
   local cap total used available
-  if read -r cap used < <(account_memory); then echo $(( (cap - used) / GIB )); return 0; fi
+  if read -r cap used < <(admission_memory); then echo $(( (cap - used) / GIB )); return 0; fi
   read -r total used available < <(memory)
   echo $(( available / GIB ))
 }
@@ -311,7 +331,7 @@ memory_hold_reason() {
     job_gib=$(( (MEMORY_CLAIM_BYTES + GIB - 1) / GIB ))
   fi
   required=$(( job_gib + MEMORY_HEADROOM_GIB ))
-  if read -r cap used < <(account_memory); then
+  if read -r cap used < <(admission_memory); then
     available=$(( (cap - used) / GIB ))
     read -r total _ machine < <(memory)
     if (( used >= cap - HOLD_MARGIN_GIB * GIB )); then

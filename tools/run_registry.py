@@ -284,6 +284,53 @@ def spawn_detached(command, cwd, log):
     return int(text)
 
 
+# `launch --heavy` (tools/bg --heavy) waits until the user slice has room: anon + shmem from
+# memory.stat under 140 GiB and memory.pressure `some avg60` under 5 %. Page cache does not count.
+HEAVY_MEMORY_BYTES = 140 * 2 ** 30
+HEAVY_PRESSURE_PERCENT = 5.0
+HEAVY_NOTICE_SECONDS = 60.0
+
+
+def account_cgroup():
+    root = Path(os.environ.get('ZESU_CGROUP_ROOT') or '/sys/fs/cgroup')
+    return root / 'user.slice' / f'user-{os.getuid()}.slice'
+
+
+def heavy_load(cgroup):
+    """Return the slice's anon + shmem bytes and its `some avg60` memory pressure (percent)."""
+    stat = {}
+    for line in (cgroup / 'memory.stat').read_text().splitlines():
+        fields = line.split()
+        if len(fields) == 2:
+            stat[fields[0]] = int(fields[1])
+    if 'anon' not in stat:
+        raise ValueError(f'{cgroup}/memory.stat has no anon line.')
+    for line in (cgroup / 'memory.pressure').read_text().splitlines():
+        fields = line.split()
+        if fields[:1] == ['some']:
+            pressure = dict(field.split('=', 1) for field in fields[1:])
+            return stat['anon'] + stat.get('shmem', 0), float(pressure['avg60'])
+    raise ValueError(f'{cgroup}/memory.pressure has no some line.')
+
+
+def wait_heavy_admission(name, cgroup=None, sleep=time.sleep, clock=time.monotonic):
+    """Block until the slice admits a heavy launch; print at most one notice a minute while held."""
+    cgroup = cgroup or account_cgroup()
+    poll = float(os.environ.get('ZESU_HEAVY_POLL_SECONDS') or 15)
+    noticed = None
+    while True:
+        used, pressure = heavy_load(cgroup)
+        if used < HEAVY_MEMORY_BYTES and pressure < HEAVY_PRESSURE_PERCENT:
+            return
+        if noticed is None or clock() - noticed >= HEAVY_NOTICE_SECONDS:
+            noticed = clock()
+            print(f'notice: run registry: heavy launch {name} waits: user slice anon+shmem '
+                  f'{used / 2 ** 30:.1f} GiB (limit {HEAVY_MEMORY_BYTES // 2 ** 30}), memory pressure some avg60 '
+                  f'{pressure:.2f}% (limit {HEAVY_PRESSURE_PERCENT:g}); page cache does not count.',
+                  file=sys.stderr, flush=True)
+        sleep(poll)
+
+
 def launch(registry, args):
     """Start a long job in its own systemd user scope outside the caller's process tree."""
     import kill_scan
@@ -309,6 +356,8 @@ def launch(registry, args):
             row = live_duplicate(registry, key)
         if row is not None:
             return refuse_duplicate(row)
+    if args.heavy:
+        wait_heavy_admission(args.name)
     stamp = time.strftime('%Y%m%dT%H%M%SZ', time.gmtime())
     run_id = f'{slug(owner)}-{slug(args.name)}-{stamp}-{uuid.uuid4().hex[:6]}'
     unit = f'zesubg-{run_id}.scope'
@@ -455,6 +504,72 @@ def watchdog(registry, status):
             with Path(status).open('a') as stream:
                 stream.write(''.join(message + '\n' for message in messages))
         Registry.atomic_write(cursor, {'posted': len(lines)})
+        return messages
+
+
+# Gates that finished this long ago with no PR or merge since are reported as stalled.
+STALL_SECONDS = 30 * 60
+GATE_MARKERS = ('gates.out', 'GATES-DONE')
+
+
+def pull_requests(branch):
+    """The branch's PRs (state, updatedAt) from gh, in this checkout's repository."""
+    result = subprocess.run(['gh', 'pr', 'list', '--head', branch, '--state', 'all', '--limit', '50',
+                             '--json', 'state,updatedAt'], capture_output=True, text=True, timeout=120,
+                            cwd=Path(__file__).resolve().parent)
+    if result.returncode != 0:
+        raise ValueError(' '.join(result.stderr.split()) or f'gh exited {result.returncode}')
+    return json.loads(result.stdout)
+
+
+def gate_runs(registry):
+    """The newest registered run of each ITEM.json branch: (branch, row, gates finish time or None)."""
+    newest = {}
+    for row in registry.read()['runs'].values():
+        run_dir = Path(row['run_dir']) if row.get('run_dir') else None
+        try:
+            branch = json.loads((run_dir / 'ITEM.json').read_text()).get('branch') if run_dir else None
+        except (OSError, ValueError, AttributeError):
+            branch = None
+        if not isinstance(branch, str) or not branch:
+            continue
+        if branch not in newest or row.get('registered_ns', 0) > newest[branch].get('registered_ns', 0):
+            newest[branch] = row
+    for branch, row in sorted(newest.items()):
+        times = [path.stat().st_mtime for path in (Path(row['run_dir']) / name for name in GATE_MARKERS)
+                 if path.is_file()]
+        yield branch, row, max(times) if times else None
+
+
+def stall_report(registry, status, prs=pull_requests, now=None):
+    """Post one STATUS.md line per branch whose newest run's gates finished over 30 minutes ago
+    with no merged PR and no open PR updated since. Marker: <store>/gates-stall.posted."""
+    now = time.time() if now is None else now
+    marker = registry.directory / 'gates-stall.posted'
+    with registry.lock('watchdog'):
+        posted = json.loads(marker.read_text()) if marker.exists() else {}
+        stamp = time.strftime('%Y-%m-%dT%H:%MZ', time.gmtime(now))
+        messages = []
+        for branch, row, finished in gate_runs(registry):
+            if finished is None or branch in posted or now - finished < STALL_SECONDS:
+                continue
+            try:
+                found = prs(branch)
+            except (OSError, ValueError, subprocess.SubprocessError) as error:
+                messages.append(f'stall-report: PR lookup for {branch} failed: {error}')
+                continue
+            if any(pr['state'] == 'MERGED' for pr in found) or any(
+                    pr['state'] == 'OPEN' and datetime.datetime.fromisoformat(
+                        pr['updatedAt'].replace('Z', '+00:00')).timestamp() >= finished for pr in found):
+                continue
+            done = time.strftime('%Y-%m-%dT%H:%MZ', time.gmtime(finished))
+            line = (f"- {stamp} run-watchdog: gates done at {done} for branch {branch}; no PR/merge since "
+                    f"(run {row['id']}, owner {row['owner']}, {row['run_dir']}).")
+            with Path(status).open('a') as stream:
+                stream.write(line + '\n')
+            posted[branch] = {'run_id': row['id'], 'gates_done': done, 'posted': stamp}
+            Registry.atomic_write(marker, posted)
+            messages.append(line)
         return messages
 
 
@@ -1030,6 +1145,9 @@ def main():
                        help='Scope MemoryMax in GiB, with swap off.')
     start.add_argument('--allow-duplicate', action='store_true',
                        help='Start even when a live run has the same owner and name.')
+    start.add_argument('--heavy', action='store_true',
+                       help='Wait until the user slice anon+shmem is under 140 GiB and memory pressure '
+                            'some avg60 under 5 %%, then launch.')
     start.add_argument('command', nargs=argparse.REMAINDER)
     commands.add_parser('reap', help='Record runs that ended by a signal without a stop.')
     guard = commands.add_parser('watchdog', help='Reap, then post new signal deaths to STATUS.md.')
@@ -1083,7 +1201,7 @@ def main():
                 lines, follows = follow_main(registry, args.follow_main, args.status)
                 for line in lines:
                     print(line)
-        for message in watchdog(registry, args.status):
+        for message in watchdog(registry, args.status) + stall_report(registry, args.status):
             print(message)
         return 0 if follows else 1
     if args.action == 'begin':
