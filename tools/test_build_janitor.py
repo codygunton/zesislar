@@ -288,6 +288,36 @@ class Commands(JanitorTree):
         with gzip.open(log, 'rt') as stream:
             self.assertIn(str(run / 'Module.vo'), stream.read())
 
+    def test_directory_gaining_a_file_during_deletion_is_skipped_and_counted(self):
+        worktrees = self.root / '.worktrees'
+        busy = write(worktrees / 'busy/_build/default/Module.vo').parent
+        other = write(worktrees / 'other/_build/default/Module.vo')
+        real_unlink = os.unlink
+
+        def unlink(path, *args, **kwargs):
+            real_unlink(path, *args, **kwargs)
+            if not (busy / 'late.o').exists():
+                write(busy / 'late.o')  # a writer adds a file while rmtree empties the dir
+
+        original = J.Janitor.__init__
+        now = time.time() + 49 * HOUR
+
+        def init(janitor, root, **options):
+            options['now'] = now
+            original(janitor, root, **options)
+        with patch.object(J, 'base_root', return_value=self.root), \
+                patch.object(J.Janitor, '__init__', init), patch('builtins.print'), \
+                patch.object(J.shutil.os, 'unlink', unlink):
+            status = J.main(['--jobs', '1', '--apply'])
+        self.assertEqual(status, 1)
+        self.assertTrue((busy / 'late.o').exists())
+        self.assertFalse(other.exists())
+        [log] = (self.root / '_build/janitor').glob('deleted-*.tsv.gz')
+        with gzip.open(log, 'rt') as stream:
+            text = stream.read()
+        self.assertIn('failed\t' + str(busy), text)
+        self.assertIn('remove-tree\t' + str(other.parent.parent), text)
+
     def clocked_init(self):
         original = J.Janitor.__init__
         now = self.now
