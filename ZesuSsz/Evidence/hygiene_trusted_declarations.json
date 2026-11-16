@@ -92,6 +92,26 @@
     {
       "path": "ZesuSsz/Automation2/Hooks.v",
       "statement": "Ltac2 @ external zesu_target_registration : constr -> unit := \"zesu-signature-gates.plugin\" \"target_registration\" ."
+    },
+    {
+      "path": "ZesuSsz/Automation2/Telemetry.v",
+      "statement": "Declare ML Module \"zesu-signature-gates.plugin\" ."
+    },
+    {
+      "path": "ZesuSsz/Automation2/Telemetry.v",
+      "statement": "Ltac2 @ external zesu_telemetry_enabled : unit -> bool := \"zesu-signature-gates.plugin\" \"telemetry_enabled\" ."
+    },
+    {
+      "path": "ZesuSsz/Automation2/Telemetry.v",
+      "statement": "Ltac2 @ external zesu_telemetry_sample : unit -> int list := \"zesu-signature-gates.plugin\" \"telemetry_sample\" ."
+    },
+    {
+      "path": "ZesuSsz/Automation2/Telemetry.v",
+      "statement": "Ltac2 @ external zesu_telemetry_emit : string -> string -> int -> int -> int -> int list -> bool -> unit := \"zesu-signature-gates.plugin\" \"telemetry_emit\" ."
+    },
+    {
+      "path": "ZesuSsz/Automation2/Telemetry.v",
+      "statement": "Ltac2 @ external zesu_telemetry_stage_swap : string -> string := \"zesu-signature-gates.plugin\" \"telemetry_stage_swap\" ."
     }
   ]
 }
