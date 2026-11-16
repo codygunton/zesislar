@@ -24,28 +24,19 @@ Ltac a3n_closed_bound :=
   | |- _ /\ _ => split; a3n_closed_bound
   end.
 
-(* A word read from a byte window, `little_endian_to_bv n (take k bytes)`, is below
-   2^(k*n) whatever the bytes are. The library solver has no fact about
-   `little_endian_to_bv`, so it searched the whole context and failed (~4.5 s in
-   032c), the rewrite of `bv_unsigned (Z_to_bv 64 word)` did not fire, and the
-   same side condition came back at every later binder of the entry. *)
-Lemma zesu_little_endian_take_in_range (n m : N) (k : nat) (bytes : list (bv n)) :
-  (Z.of_nat k * Z.of_N n <= Z.of_N m)%Z ->
-  (0 <= little_endian_to_bv n (take k bytes) < bv_modulus m)%Z.
-Proof.
-  intros Hk. pose proof (little_endian_to_bv_bound n (take k bytes)) as [Hlow Hhigh].
-  split; [exact Hlow|]. unfold bv_modulus.
-  eapply Z.lt_le_trans; [exact Hhigh|]. apply Z.pow_le_mono_r; [lia|].
-  assert (Hlength : (length (take k bytes) <= k)%nat) by (rewrite length_take; lia).
-  apply Nat2Z.inj_le in Hlength. pose proof (N2Z.is_nonneg n). nia.
-Qed.
-
-Ltac zesu_little_endian_take_bound :=
-  lazymatch goal with
-  | |- (0 <= little_endian_to_bv ?n (take ?k ?bytes) < bv_modulus ?m)%Z =>
-      apply (zesu_little_endian_take_in_range n m k bytes); a3n_closed_bound
-  end.
+(* A word read from a byte window, `little_endian_to_bv n (take k bytes)`, as the
+   range side condition of a conditional rewrite: refused outright, so the
+   consumer's `bv_solve` fallback does not run either (`fail 2` leaves the
+   consumer's `first`). bv_solve has no fact about `little_endian_to_bv`; it
+   searched the whole context and failed (~4.5 s per entry binder in 032c). Proving
+   the bound instead lets the rewrite fire, and the unwrapped words then cost
+   +60-96% instructions in decodeItem blocks (zify div/mod equations in later
+   bound solves), so the rewrite stays unfired, as before, at no solver cost. *)
 Ltac a3n_closed_bound_if_enabled :=
   ZesuSsz.Automation2.SwitchDispatch.zesu_switch_enabled constr:(ZesuStepRewriteBoundGuards);
-  solve [first [a3n_closed_bound | zesu_little_endian_take_bound]].
+  lazymatch goal with
+  | |- (0 <= little_endian_to_bv _ (take _ _) < bv_modulus _)%Z =>
+      fail 2 "byte-window word bound: no solver runs"
+  | |- _ => solve [a3n_closed_bound]
+  end.
 (* The ordinary consumer adds this branch before its existing bv_solve call. *)
