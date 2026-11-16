@@ -1,6 +1,7 @@
 Require Import ZesuSsz.Automation2.ByteMaskCast.
 Require Import ZesuSsz.Automation2.BitvectorFacts.
 Require Import ZesuSsz.Automation2.VmClosed.
+Require Import ZesuSsz.Automation2.BoundedSolve.
 Require Import ZesuSsz.Automation2.RangeFacts.
 From iris.proofmode Require Import tactics environments.
 From Coq Require Import ZArith NArith Lia.
@@ -33,11 +34,11 @@ Ltac zesu_source_byte_distinct :=
           let Hwidth := fresh "HbyteViewWidth" in
           let Hmask := fresh "HbyteViewMask" in
           let Hresult := fresh "HbyteViewResult" in
-          assert (Hwidth : (8 <= width)%N) by (vm_compute; congruence);
+          assert (Hwidth : (8 <= width)%N) by (zesu_vm_compute_goal; congruence);
           assert (Hmask : mask = Z_to_bv width (2 ^ 8 - 1)) by
-            (apply bv_eq; vm_compute; reflexivity);
+            (apply bv_eq; zesu_vm_compute_goal; reflexivity);
           assert (Hresult : result = Z_to_bv width value) by
-            (apply bv_eq; vm_compute; reflexivity);
+            (apply bv_eq; zesu_vm_compute_goal; reflexivity);
           apply (zesu_masked_byte_distinct width byte value Hwidth);
           rewrite <- Hmask; rewrite <- Hresult; exact Hsource
       end
@@ -87,11 +88,11 @@ Ltac zesu_source_byte_equal :=
           let Hwidth := fresh "HbyteViewWidth" in
           let Hmask := fresh "HbyteViewMask" in
           let Hresult := fresh "HbyteViewResult" in
-          assert (Hwidth : (8 <= width)%N) by (vm_compute; congruence);
+          assert (Hwidth : (8 <= width)%N) by (zesu_vm_compute_goal; congruence);
           assert (Hmask : mask = Z_to_bv width (2 ^ 8 - 1)) by
-            (apply bv_eq; vm_compute; reflexivity);
+            (apply bv_eq; zesu_vm_compute_goal; reflexivity);
           assert (Hresult : bv_unsigned result = value) by
-            (vm_compute; reflexivity);
+            (zesu_vm_compute_goal; reflexivity);
           transitivity (bv_unsigned result);
           [apply (zesu_masked_byte_equal width byte result Hwidth);
            rewrite <- Hmask; exact Hsource | exact Hresult]
@@ -165,7 +166,7 @@ Ltac zesu_source_signed_order_goal :=
           VmClosed.zesu_vm_closed offset;
           let Hoffset := fresh "HsignedOrderOffset" in
           assert (Hoffset : bv_unsigned offset < 2 ^ 64) by
-            (vm_compute; congruence);
+            (zesu_vm_compute_goal; congruence);
           rewrite (BitvectorFacts.zesu_signed_zero_extend_add_64_128
             value offset Hoffset); clear Hoffset
         end;
@@ -229,10 +230,10 @@ Ltac zesu_source_byte_order_goal :=
           let Hwidth := fresh "HbyteOrderWidth" in
           let Hwide := fresh "HbyteOrderWide" in
           let Hmask := fresh "HbyteOrderMask" in
-          assert (Hwidth : (8 <= width)%N) by (vm_compute; congruence);
-          assert (Hwide : (9 <= wide)%N) by (vm_compute; congruence);
+          assert (Hwidth : (8 <= width)%N) by (zesu_vm_compute_goal; congruence);
+          assert (Hwide : (9 <= wide)%N) by (zesu_vm_compute_goal; congruence);
           assert (Hmask : mask = Z_to_bv width (2 ^ 8 - 1)) by
-            (apply bv_eq; vm_compute; reflexivity);
+            (apply bv_eq; zesu_vm_compute_goal; reflexivity);
           let Hview := fresh "HbyteOrderView" in
           pose proof (zesu_masked_byte_signed_order_view
             width wide byte Hwidth Hwide) as Hview;

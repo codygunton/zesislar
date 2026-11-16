@@ -29,9 +29,8 @@ Require Import ZesuSsz.Automation2.EntryIntro.
 Require Import ZesuSsz.Automation2.SwitchDispatch.
 Require Import ZesuSsz.Automation2.ContextCollection.
 Require Import ZesuSsz.Automation2.RecordFieldPruning.
-Ltac ZesuSsz.Automation2.ContextCollection.zesu_context_prune_goal ::= ltac2:(a3n_prune ()).
-
 Require Import ZesuSsz.Automation2.LinearFirstLia.
+Require Import ZesuSsz.Automation2.BoundedSolve.
 Require ZesuSsz.Automation2.RewriteBoundGuards.
 (** Project-wide Lithium hook redefinitions belong in this module. *)
 
@@ -77,7 +76,7 @@ Ltac zesu_regcol_compute_hint :=
       lazymatch result with
       | Some ?value => apply (regcol_compute_hint_hint value)
       end;
-      abstract (vm_compute; exact eq_refl)
+      abstract (zesu_vm_compute_goal; exact eq_refl)
     else
       let result := eval hnf in input in
       lazymatch result with
@@ -385,49 +384,33 @@ Ltac zesu_closed_goal_decide :=
   first [ZesuSsz.Automation2.VmClosed.zesu_vm_closed_decide |
     ZesuSsz.Automation2.RewriteBoundGuards.a3n_closed_bound].
 
-Ltac zesu_bv_solve_closer :=
+(* Closers that prove a bit-vector goal outright, before the arithmetic. *)
+Ltac zesu_bv_solve_special :=
   first [solve [zesu_strict_signed_if_enabled] |
   solve [zesu_low_mask_sub_modulus_if_enabled] |
-  solve [zesu_low_mask_if_closed] |
-  (
-  bv_simplify_arith;
-  bv_saturate_unsigned;
-  bv_solve_unfold_tac;
-  unfold bv_signed, bv_swrap, bv_wrap, bv_half_modulus, bv_modulus, bv_unsigned in *;
-  simpl; lia)].
-
-(* A goal that the normal form refutes is false for every value of its atoms;
-   only a contradictory context proves it. Look for the contradiction among
-   the facts that share terms with the goal only. *)
-Ltac zesu_refuted_solve closer :=
-  ZesuSsz.Automation2.ContextCollection.zesu_solve_goal_selected ("refuted"%string) closer.
+  solve [zesu_low_mask_if_closed]].
 
 (* Library solvers also call these primitives without the project finisher.
    A closed comparison decides by computation first. A linear address
    (in)equality closes next by the reflective normal form (BvLinear); other
    goals fail there at once. An equality that the normal form refutes goes to
-   the solver on its linked facts only. A residual lemma is the last attempt
-   after the solver fails. *)
+   the solver on its selected facts only (a contradictory context is the only
+   proof); any other goal goes to the bounded solver (BoundedSolve). A
+   residual lemma is the last attempt after the solver fails. *)
 Ltac bv_solve ::= first [solve [zesu_closed_goal_decide] |
   solve [ZesuSsz.Automation2.BvLinear.zesu_bv_linear_with ltac:(lia)] |
   (tryif ZesuSsz.Automation2.BvLinear.zesu_bv_linear_refutes
-   then first [zesu_refuted_solve ltac:(zesu_bv_solve_closer) | ResidualLemmas.zesu_residual_lemma]
-   else first [zesu_context_filter ltac:(zesu_bv_solve_closer) | ResidualLemmas.zesu_residual_lemma])].
-
-(* A caller that imports isla after this module restores the library lia
-   and bv_solve, which read the whole context. Try the facts linked to the
-   goal first; the library solver remains the second attempt. *)
-Ltac zesu_bv_solve_linked_facts :=
-  solve [bv_simplify_arith; bv_saturate_unsigned; bv_solve_unfold_tac;
-    unfold bv_signed, bv_swrap, bv_wrap, bv_half_modulus, bv_modulus, bv_unsigned in *;
-    simpl; zesu_lia_linked_facts].
+   then first [zesu_bounded_bv_selected ("refuted"%string) ltac:(zesu_bv_solve_special)
+              | ResidualLemmas.zesu_residual_lemma]
+   else first [zesu_bounded_bv_with ltac:(zesu_bv_solve_special)
+              | ResidualLemmas.zesu_residual_lemma])].
 
 Ltac zesu_solve_machine_bounds :=
   first [solve [zesu_low_mask_sub_modulus_if_enabled] |
     solve [zesu_low_mask_if_closed] |
     (solve [zesu_normalize_binary_nat_hypotheses;
       zesu_normalize_binary_nat_goal; zesu_normalize_machine_map;
-      first [zesu_bv_solve_linked_facts | bv_solve]])].
+      first [zesu_bounded_bv_linked_facts | bv_solve]])].
 (* Without a natural-number order fact or goal, the binary-nat alternative of
    `zesu_solve_machine_linear` repeats the first one on the same goal and facts:
    the first clears nothing and the nat normalizers change nothing. *)
@@ -2523,7 +2506,7 @@ Ltac zesu_guard_sign_extend_mask :=
    name. On a whole context a range that lia cannot prove ran for minutes. *)
 Ltac zesu_guard_one_wrap_range :=
   repeat zesu_guard_sign_extend_mask;
-  ContextCollection.zesu_solve_goal_selected ("branch_guard.one_wrap_range"%string) ltac:(lia).
+  zesu_bounded_selected ("branch_guard.one_wrap_range"%string) ltac:(lia).
 
 (* A guard and the goal it decides can spell the same term differently: one
    side evaluates a sum of constants or an `if` whose condition is decided,
@@ -2545,24 +2528,24 @@ Proof. intros ->. reflexivity. Qed.
    decided proposition, by lia on the facts that share its terms. *)
 Ltac zesu_guard_condition_true condition :=
   first [
-    zesu_stack_closed_term condition; vm_compute; reflexivity
+    zesu_stack_closed_term condition; zesu_vm_compute_goal; reflexivity
   | assumption
   | lazymatch condition with
     | @bool_decide ?P ?decision =>
         apply (@bool_decide_eq_true_2 P decision);
         first [assumption |
-          ContextCollection.zesu_solve_goal_selected ("branch_guard.ite"%string) ltac:(lia)]
+          zesu_bounded_selected ("branch_guard.ite"%string) ltac:(lia)]
     end].
 
 Ltac zesu_guard_condition_false condition :=
   first [
-    zesu_stack_closed_term condition; vm_compute; reflexivity
+    zesu_stack_closed_term condition; zesu_vm_compute_goal; reflexivity
   | assumption
   | lazymatch condition with
     | @bool_decide ?P ?decision =>
         apply (@bool_decide_eq_false_2 P decision);
         first [assumption |
-          ContextCollection.zesu_solve_goal_selected ("branch_guard.ite"%string) ltac:(lia)]
+          zesu_bounded_selected ("branch_guard.ite"%string) ltac:(lia)]
     end].
 
 Ltac zesu_guard_positive_numeral digits :=
@@ -2771,7 +2754,7 @@ Ltac zesu_branch_guard_rewrite :=
           let value := ZesuSsz.Automation2.VmClosed.zesu_vm_eval_closed (bv_unsigned term) in
           let literal := constr:(BV size value) in
           let Hliteral := fresh "HguardLiteral" in
-          assert (Hliteral : term = literal) by (apply bv_eq; vm_compute; reflexivity);
+          assert (Hliteral : term = literal) by (apply bv_eq; zesu_vm_compute_goal; reflexivity);
           rewrite Hliteral; clear Hliteral
         end
     end
@@ -2888,25 +2871,13 @@ Ltac liAAsm ::=
      notypeclasses refine (tac_fast_apply (li_wpreadreg_field _ _ _) _)
   end.
 
-(* The last arm tries the pruned context, then the whole context, each only
-   within its node budget. Without the budget the whole context reached
-   24 GiB on decodeParentHeader; without the whole context decodeItem lost 8
-   closures. The pruned context keeps every fact that shares a variable with
-   the goal, transitively, so on a large block context it is nearly the
-   whole context: on the final pure tail of decodeParentHeader 0300 (451
-   facts) it grew past 8 GiB within two minutes. *)
-Ltac zesu_lia_context_bounded closer :=
-  tryif zesu_switch_enabled constr:(ZesuStepFinisherOnce)
-  then first [solve [zesu_context_prune_goal; zesu_lia_pruned_context_within_budget; closer]
-             | (zesu_lia_context_within_budget; closer)]
-  else (zesu_lia_context_within_budget; closer).
-
+(* A refuted equality goes to the solver on its selected facts only; any other
+   goal goes to the bounded solver (BoundedSolve). *)
 Ltac Lia.lia ::= first [solve [zesu_closed_goal_decide] |
   solve [ZesuSsz.Automation2.BvLinear.zesu_bv_linear_with ltac:(lia)] |
   (tryif ZesuSsz.Automation2.BvLinear.zesu_bv_linear_refutes
-   then first [zesu_refuted_solve ltac:(zesu_lia_linear_first3) | ResidualLemmas.zesu_residual_lemma]
-   else first [zesu_lia_context_bounded ltac:(zesu_lia_linear_first3)
-              | ResidualLemmas.zesu_residual_lemma])].
+   then first [zesu_bounded_lia_selected ("refuted"%string) | ResidualLemmas.zesu_residual_lemma]
+   else first [zesu_bounded_lia | ResidualLemmas.zesu_residual_lemma])].
 
 
 (* The callback must prove the payload equality. Owners are never converted. *)

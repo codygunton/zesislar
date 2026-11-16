@@ -1,3 +1,4 @@
+Require Import ZesuSsz.Automation2.BoundedSolve.
 Require Import isla.riscv64.riscv64.
 Require Import ZesuSsz.Automation2.SwitchDispatch.
 Require Import ZesuSsz.Automation2.BitvectorFacts.
@@ -28,9 +29,9 @@ Ltac zesu_mask_sign_extend_presentation :=
         let Hrange := fresh "HmaskCastRange" in
         let Hnormalized := fresh "HmaskUnsigned" in
         let Hequal := fresh "HmaskPresentation" in
-        assert (Hwidth : (low <= width)%N) by (vm_compute; congruence);
+        assert (Hwidth : (low <= width)%N) by (zesu_vm_compute_goal; congruence);
         assert (Hmask : bv_unsigned mask = Z.ones (Z.of_N low)) by
-          (vm_compute; reflexivity);
+          (zesu_vm_compute_goal; reflexivity);
         assert (Hrange : 0 <= bv_unsigned value < bv_modulus width) by
           (pose proof (bv_unsigned_in_range low value);
            pose proof (bv_modulus_le_mono low width Hwidth); lia);

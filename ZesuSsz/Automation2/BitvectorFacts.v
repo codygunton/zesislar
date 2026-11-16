@@ -3,6 +3,7 @@ From Coq Require Import Lists.List ZArith.ZArith.
 Require Import isla.riscv64.riscv64.
 Require Import ZesuSsz.Contracts.IslarisMachine.
 Require Import ZesuSsz.Automation2.VmClosed.
+Require Import ZesuSsz.Automation2.BoundedSolve.
 From iris.bi Require Import interface.
 Local Open Scope Z_scope.
 
@@ -202,7 +203,7 @@ Ltac zesu_bias_unsigned_as_signed wide word :=
       let modulus := eval vm_compute in (bv_modulus width) in
       let half := eval vm_compute in (bv_half_modulus wide) in
       let Hfits := fresh "HbiasedSignedWidth" in
-      assert (Hfits : modulus <= half) by (vm_compute; congruence);
+      assert (Hfits : modulus <= half) by (zesu_vm_compute_goal; congruence);
       rewrite bv_zero_extend_signed;
       apply bv_swrap_small;
       let Hrange := fresh "HbiasedUnsignedRange" in
@@ -219,10 +220,10 @@ Ltac zesu_bias_byte_base width byte inner :=
   VmClosed.zesu_vm_closed width;
   VmClosed.zesu_vm_closed inner;
   let Hwidth := fresh "HbiasedByteWidth" in
-  assert (Hwidth : (8 <= width)%N) by (vm_compute; congruence);
+  assert (Hwidth : (8 <= width)%N) by (zesu_vm_compute_goal; congruence);
   let Hinner := fresh "HbiasedInnerMask" in
   assert (Hinner : bv_unsigned inner = Z.ones (Z.of_N 8)) by
-    (vm_compute; reflexivity);
+    (zesu_vm_compute_goal; reflexivity);
   change (bv_unsigned (bv_and (Z_to_bv width (bv_signed byte)) inner) =
     bv_unsigned byte);
   exact (zesu_guard_mask_signed_value width 8 byte inner Hwidth Hinner).
@@ -249,16 +250,16 @@ Ltac zesu_bias_mask_image width byte base inner offset mask masked :=
   let low := eval vm_compute in (N.log2 (Z.to_N (bv_unsigned mask + 1))) in
   let modulus := eval vm_compute in (bv_modulus low) in
   let Hwidth := fresh "HbiasedMaskWidth" in
-  assert (Hwidth : (low <= width)%N) by (vm_compute; congruence);
+  assert (Hwidth : (low <= width)%N) by (zesu_vm_compute_goal; congruence);
   let Hmask := fresh "HbiasedLowMask" in
   assert (Hmask : bv_unsigned mask = Z.ones (Z.of_N low)) by
-    (vm_compute; reflexivity);
+    (zesu_vm_compute_goal; reflexivity);
   let Hbase := fresh "HbiasedByteBase" in
   assert (Hbase : bv_unsigned base = bv_unsigned byte) by
     zesu_bias_byte_base width byte inner;
   let Hoffset := fresh "HbiasedOffset" in
   assert (Hoffset : offset = Z_to_bv width delta) by
-    (apply bv_eq; vm_compute; reflexivity);
+    (apply bv_eq; zesu_vm_compute_goal; reflexivity);
   let Hshape := fresh "HbiasedMaskShape" in
   assert (Hshape : masked = bv_and (base + Z_to_bv width delta) mask) by
     first [exact (f_equal (fun rhs => bv_and (base + rhs) mask) Hoffset) |

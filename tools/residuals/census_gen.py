@@ -29,9 +29,9 @@ SOLVERS = [
     # before its bv_solve): bounded and logged like a solver layer.
     'UnionRuleComponents.zesu_region_fault_prepare',
     'Automation.UnionRuleComponents.zesu_region_fault_prepare',
-    # Selected-facts solvers on main 1c0c0bfce and later (skipped when absent).
-    'LinearFirstLia.zesu_lia_linked_facts', 'LinearFirstLia.zesu_lia_whole_context',
-    'zesu_bv_solve_linked_facts',
+    # Selected-facts and bounded solvers (skipped when absent).
+    'BoundedSolve.zesu_lia_linked_facts', 'BoundedSolve.zesu_bounded_bv_linked_facts',
+    'BoundedSolve.zesu_bounded_solve',
 ]
 # Site brackets beyond the Ltacs that call a solver directly.
 EXTRA_BRACKETS = [

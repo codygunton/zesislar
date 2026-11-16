@@ -275,7 +275,7 @@ Ltac zesu_byte_slice_moduli :=
 
 Ltac zesu_byte_slice_bound_arith :=
   zesu_byte_slice_named_values;
-  ZesuSsz.Automation.PureFacts.zesu_saturate_derived_facts;
+  ZesuSsz.Automation2.PureFacts.zesu_saturate_frozen_derived_facts;
   repeat match goal with H : _ /\ _ |- _ => destruct H end;
   repeat match goal with
   | H : context[length (take _ _)] |- _ => rewrite length_take in H

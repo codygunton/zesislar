@@ -7,6 +7,7 @@ From stdpp Require Import base decidable bitvector.definitions bitvector.tactics
 From isla Require Import opsem.
 Require Import ZesuSsz.Automation2.VmClosed.
 Require Import ZesuSsz.Automation2.ContextCollection.
+Require Import ZesuSsz.Automation2.BoundedSolve.
 Local Open Scope Z_scope.
 
 (* A 0/1 flag: a one-bit value from a condition, zero-extended. *)
@@ -176,7 +177,7 @@ Ltac zesu_flag_range value :=
       zesu_flag_unseen (bv_unsigned value); zesu_flag_mark (bv_unsigned value);
       let modulus := zesu_flag_modulus n in
       let H := fresh "HflagRange" in
-      pose proof (zesu_unsigned_range n modulus value ltac:(vm_compute; reflexivity)) as H)
+      pose proof (zesu_unsigned_range n modulus value ltac:(zesu_vm_compute_goal; reflexivity)) as H)
   end.
 
 (* Unfold the local definitions that the goal mentions. *)
@@ -192,13 +193,13 @@ Ltac zesu_flag_facts :=
       zesu_flag_unseen flag; zesu_flag_mark flag;
       let H := fresh "HflagValue" in
       pose proof (zesu_flag_zero_extend_decide n P HP one zero ltac:(lia)
-        ltac:(vm_compute; reflexivity) ltac:(vm_compute; reflexivity)) as H
+        ltac:(zesu_vm_compute_goal; reflexivity) ltac:(zesu_vm_compute_goal; reflexivity)) as H
   | |- context [bv_zero_extend ?n (@ite (bv 1) ?c ?one ?zero)] =>
       let flag := constr:(bv_zero_extend n (@ite (bv 1) c one zero)) in
       zesu_flag_unseen flag; zesu_flag_mark flag;
       let H := fresh "HflagValue" in
       pose proof (zesu_flag_zero_extend n c one zero ltac:(lia)
-        ltac:(vm_compute; reflexivity) ltac:(vm_compute; reflexivity)) as H
+        ltac:(zesu_vm_compute_goal; reflexivity) ltac:(zesu_vm_compute_goal; reflexivity)) as H
   | |- context [bv_zero_extend ?n ?bit] =>
       lazymatch type of bit with bv 1 => idtac end;
       let flag := constr:(bv_zero_extend n bit) in
@@ -215,10 +216,10 @@ Ltac zesu_flag_xor_facts :=
       let H := fresh "HflagXor" in
       first [
         ZesuSsz.Automation2.VmClosed.zesu_closed_term right;
-        pose proof (zesu_xor_one_right n left right ltac:(vm_compute; reflexivity)) as H;
+        pose proof (zesu_xor_one_right n left right ltac:(zesu_vm_compute_goal; reflexivity)) as H;
         zesu_flag_range left
       | ZesuSsz.Automation2.VmClosed.zesu_closed_term left;
-        pose proof (zesu_xor_one_left n left right ltac:(vm_compute; reflexivity)) as H;
+        pose proof (zesu_xor_one_left n left right ltac:(zesu_vm_compute_goal; reflexivity)) as H;
         zesu_flag_range right]
   end.
 
@@ -229,7 +230,7 @@ Ltac zesu_flag_wrap_facts :=
       zesu_flag_unseen term; zesu_flag_mark term;
       let modulus := zesu_flag_modulus n in
       let H := fresh "HflagSub" in
-      pose proof (zesu_sub_cases n modulus left right ltac:(vm_compute; reflexivity)) as H;
+      pose proof (zesu_sub_cases n modulus left right ltac:(zesu_vm_compute_goal; reflexivity)) as H;
       zesu_flag_numerals_in H;
       zesu_flag_range left; zesu_flag_range right
   | |- context [@bv_add ?n ?left ?right] =>
@@ -237,7 +238,7 @@ Ltac zesu_flag_wrap_facts :=
       zesu_flag_unseen term; zesu_flag_mark term;
       let modulus := zesu_flag_modulus n in
       let H := fresh "HflagAdd" in
-      pose proof (zesu_add_cases n modulus left right ltac:(vm_compute; reflexivity)) as H;
+      pose proof (zesu_add_cases n modulus left right ltac:(zesu_vm_compute_goal; reflexivity)) as H;
       zesu_flag_numerals_in H;
       zesu_flag_range left; zesu_flag_range right
   end.
@@ -257,20 +258,20 @@ Ltac zesu_flag_mask_facts :=
       let limit := eval vm_compute in (2 ^ width) in
       let H := fresh "HflagMask" in
       pose proof (zesu_low_mask n width limit source mask ltac:(lia)
-        ltac:(vm_compute; reflexivity) ltac:(vm_compute; reflexivity)) as H;
+        ltac:(zesu_vm_compute_goal; reflexivity) ltac:(zesu_vm_compute_goal; reflexivity)) as H;
       zesu_flag_range source;
       try (lazymatch source with
       | Z_to_bv _ ?value =>
           let modulus := zesu_flag_modulus n in
           let Hcast := fresh "HflagMaskCast" in
           pose proof (zesu_low_mask_cast n width limit modulus value mask ltac:(lia)
-            ltac:(vm_compute; reflexivity) ltac:(vm_compute; reflexivity)
-            ltac:(vm_compute; reflexivity) ltac:(lia)) as Hcast
+            ltac:(zesu_vm_compute_goal; reflexivity) ltac:(zesu_vm_compute_goal; reflexivity)
+            ltac:(zesu_vm_compute_goal; reflexivity) ltac:(lia)) as Hcast
       | @bv_zero_extend ?w _ ?inner =>
           let Hcast := fresh "HflagMaskCast" in
           pose proof (zesu_low_mask_zero_extend n w width limit inner mask
-            ltac:(lia) ltac:(lia) ltac:(vm_compute; reflexivity)
-            ltac:(vm_compute; reflexivity) ltac:(vm_compute; reflexivity)) as Hcast
+            ltac:(lia) ltac:(lia) ltac:(zesu_vm_compute_goal; reflexivity)
+            ltac:(zesu_vm_compute_goal; reflexivity) ltac:(zesu_vm_compute_goal; reflexivity)) as Hcast
       end)
   end.
 
@@ -283,7 +284,7 @@ Ltac zesu_flag_cast_facts :=
       zesu_flag_unseen term; zesu_flag_mark term;
       let modulus := zesu_flag_modulus n in
       let H := fresh "HflagCast" in
-      pose proof (zesu_cast_small n modulus value ltac:(vm_compute; reflexivity)) as H
+      pose proof (zesu_cast_small n modulus value ltac:(zesu_vm_compute_goal; reflexivity)) as H
   end.
 
 (* A remainder by a closed positive divisor, as a linear equation over the
@@ -383,5 +384,5 @@ Ltac zesu_flag_mask_bound :=
   zesu_flag_cast_facts; zesu_flag_modulo_facts;
   zesu_flag_numerals_goal;
   repeat match goal with H : zesu_flag_seen _ |- _ => clear H end;
-  ZesuSsz.Automation2.ContextCollection.zesu_solve_goal_selected
+  zesu_bounded_selected
     ("flag_mask_bound"%string) ltac:(lia).

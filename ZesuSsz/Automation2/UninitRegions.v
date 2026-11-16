@@ -5,6 +5,7 @@ Require Import ZesuSsz.Automation2.ByteArrayLengths.
 Require Import ZesuSsz.Automation2.RangeFacts.
 Require ZesuSsz.Contracts.IslarisMemory.
 Require ZesuSsz.Automation2.ContextCollection.
+Require ZesuSsz.Automation2.BoundedSolve.
 From Ltac2 Require Import Ltac2.
 Set Default Proof Mode "Classic".
 
@@ -254,7 +255,7 @@ Inductive ZesuRegionNotRefuted (P : Prop) : Prop := zesu_region_not_refuted.
 Existing Class ZesuRegionNotRefuted.
 Ltac zesu_region_refute :=
   first [zesu_region_bounds |
-    ZesuSsz.Automation2.ContextCollection.zesu_solve_goal_selected
+    ZesuSsz.Automation2.BoundedSolve.zesu_bounded_selected
       ("region.refute"%string) ltac:(first [lia | bv_solve])].
 Global Hint Extern 0 (ZesuRegionNotRefuted (0 <= ?n2 /\ ?a1 <= ?a2 /\ ?a2 + ?n2 <= ?a1 + ?n1)%Z) =>
   (assert_fails (assert (n2 < 0 \/ a2 < a1 \/ a1 + n1 < a2 + n2)%Z by zesu_region_refute);

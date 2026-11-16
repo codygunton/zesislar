@@ -1,3 +1,4 @@
+Require Import ZesuSsz.Automation2.BoundedSolve.
 Require Import isla.riscv64.riscv64.
 Require Import ZesuSsz.Automation2.PureFacts.
 Require ZesuSsz.Automation2.VmClosed.
@@ -175,7 +176,7 @@ Ltac zesu_wrapped_index_literal expression location :=
           let Haddress := fresh "HindexAddress" in
           assert (Haddress : bv_unsigned word = address) by
             (refine (zesu_wrapped_offset_small width (bv_unsigned root) sum offset address word chain _ _ _);
-             [vm_compute; reflexivity | reflexivity | zesu_wrapped_index_range root]);
+             [zesu_vm_compute_goal; reflexivity | reflexivity | zesu_wrapped_index_range root]);
           let reduced := lazymatch eval pattern (bv_unsigned word) in expression with
             | ?shape _ => eval cbv beta in (shape address) end in
           let literal := lazymatch eval pattern (bv_unsigned root) in reduced with

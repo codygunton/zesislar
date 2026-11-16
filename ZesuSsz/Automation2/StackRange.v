@@ -9,6 +9,7 @@
    does not finish (decodeParentHeader 0300). *)
 From Coq Require Import ZArith.ZArith micromega.Lia micromega.Zify.
 From stdpp.bitvector Require Import definitions tactics.
+Require Import ZesuSsz.Automation2.BoundedSolve.
 Local Open Scope Z_scope.
 
 Ltac zesu_stack_range_fact T :=
@@ -62,7 +63,7 @@ Ltac zesu_stack_range_lia :=
   end;
   unfold bv_signed, bv_swrap, bv_wrap, bv_half_modulus, bv_modulus in *;
   zesu_stack_fold_constants;
-  Zify.zify; xlia Lia.zchecker.
+  zesu_bounded_lia_on_context.
 
 Ltac zesu_stack_offset_term e :=
   match e with

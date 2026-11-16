@@ -1,3 +1,4 @@
+Require Import ZesuSsz.Automation2.BoundedSolve.
 Require ZesuSsz.Automation.Hooks.
 Require isla.automation.
 Require Import ZesuSsz.Automation2.ResourceGroups.
@@ -178,7 +179,7 @@ end
     VmClosed.zesu_vm_closed bound;
     let Hbound := fresh "HclosedMaskBound" in
     assert (Hbound : (bv_unsigned mask <= bound)%Z) by
-      (vm_compute; congruence);
+      (zesu_vm_compute_goal; congruence);
     rewrite bv_and_unsigned; rewrite Z.land_comm;
     let Hremaining := fresh "HmaskRemainder" in
     assert (Hremaining :
@@ -193,7 +194,7 @@ end
     VmClosed.zesu_vm_closed bound;
     let Hbound := fresh "HclosedMaskBound" in
     assert (Hbound : (bv_unsigned mask < bound)%Z) by
-      (vm_compute; congruence);
+      (zesu_vm_compute_goal; congruence);
     rewrite bv_and_unsigned; rewrite Z.land_comm;
     let Hremaining := fresh "HmaskRemainder" in
     assert (Hremaining :

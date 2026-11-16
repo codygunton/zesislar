@@ -58,7 +58,9 @@ Ltac2 rec a3n_keys (records : ident list) (term : constr) :=
       if a3n_record_name records body then [term] else a3n_keys records body
   | _ => Control.zero (Tactic_failure None)
   end.
-Ltac2 rec a3n_relevance (facts : (ident * constr list) list)
+(* At most `rounds` linking rounds: a fact reached only through a longer
+   chain of shared terms is unrelated. *)
+Ltac2 rec a3n_relevance (rounds : int) (facts : (ident * constr list) list)
     (keys : constr list) (names : ident list) :=
   let (next_keys, next_names) := List.fold_left (fun found fact =>
     let (found_keys, found_names) := found in
@@ -68,8 +70,8 @@ Ltac2 rec a3n_relevance (facts : (ident * constr list) list)
         (List.exist (fun term => a3n_member term found_keys) variables) then
       (a3n_union found_keys variables, name :: found_names)
     else found) (keys, names) facts in
-  if Int.equal (List.length next_names) (List.length names) then next_names
-  else a3n_relevance facts next_keys next_names.
+  if Bool.or (Int.equal (List.length next_names) (List.length names)) (Int.le rounds 1) then next_names
+  else a3n_relevance (Int.sub rounds 1) facts next_keys next_names.
 (* A local definition stands for its body: a key that names one also brings
    the keys of its body, so facts about the fields behind it stay relevant. *)
 Ltac2 rec a3n_unfold_keys (records : ident list)
@@ -89,7 +91,7 @@ Ltac2 rec a3n_unfold_keys (records : ident list)
     end) keys keys in
   if Int.equal (List.length next) (List.length keys) then keys
   else a3n_unfold_keys records hyps next.
-Ltac2 a3n_prune () :=
+Ltac2 a3n_prune (rounds : int) :=
   let hyps := Control.hyps () in
   let target := Control.goal () in
   if Constr.has_evar target then Control.zero (Tactic_failure None) else ();
@@ -108,7 +110,7 @@ Ltac2 a3n_prune () :=
     match body with Some _ => found | None =>
       if ZesuSsz.Automation2.ContextCollection.zesu_context_proposition ty
       then (name, a3n_unfold_keys records hyps (a3n_keys records ty)) :: found else found end) [] hyps in
-  let relevant := a3n_relevance facts (a3n_unfold_keys records hyps (a3n_keys records target)) [] in
+  let relevant := a3n_relevance rounds facts (a3n_unfold_keys records hyps (a3n_keys records target)) [] in
   let kept := List.fold_left (fun names declaration =>
     let (name, body, ty) := declaration in
     match body with

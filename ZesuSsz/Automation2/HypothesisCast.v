@@ -1,3 +1,4 @@
+Require Import ZesuSsz.Automation2.BoundedSolve.
 Require Import ZesuSsz.Automation2.ContextRange.
 Require Import ZesuSsz.Automation2.SwitchDispatch.
 Require Import ZesuSsz.Automation2.MaskWrapPresentation.
@@ -16,7 +17,7 @@ Ltac zesu_hypothesis_cast_range width value :=
         lazymatch kind with bv ?source =>
           ZesuSsz.Automation2.VmClosed.zesu_closed_term source;
           let Hwidth := fresh "HcastWidth" in
-          assert (Hwidth : (source <= width)%N) by (vm_compute; congruence);
+          assert (Hwidth : (source <= width)%N) by (zesu_vm_compute_goal; congruence);
           pose proof (bv_unsigned_in_range source word);
           pose proof (bv_modulus_le_mono source width Hwidth);
           lia

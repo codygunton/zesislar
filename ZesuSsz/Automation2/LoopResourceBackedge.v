@@ -1,3 +1,4 @@
+Require Import ZesuSsz.Automation2.BoundedSolve.
 From Coq Require Import ZArith.ZArith Bool.Bool.
 From stdpp Require Import bitvector.definitions decidable.
 From iris.proofmode Require Import tactics environments.
@@ -45,7 +46,7 @@ Ltac zesu_loop_resource_backedge values next_accumulator derive_fold :=
       let unit_unsigned := fresh "sourceUnitUnsigned" in
       assert (unit_unsigned : bv_unsigned unit = 1) by
         (let closed := constr:(bv_unsigned unit = 1) in
-         zesu_vm_closed closed; vm_compute; reflexivity);
+         zesu_vm_closed closed; zesu_vm_compute_goal; reflexivity);
       let unit_view := fresh "sourceUnitView" in
       pose proof (Z_to_bv_bv_unsigned width unit) as unit_view;
       rewrite unit_unsigned in unit_view;

@@ -1,3 +1,4 @@
+Require Import ZesuSsz.Automation2.BoundedSolve.
 Require Import ZesuSsz.Automation2.Hooks.
 Require Import isla.riscv64.riscv64.
 Require Import ZesuSsz.Automation2.BitvectorFacts.
@@ -21,10 +22,10 @@ Ltac zesu_byte_bias_finish :=
       let integer := eval vm_compute in (bv_unsigned offset) in
       let modulus := eval vm_compute in (bv_modulus 8) in
       let Hwidth := fresh "HbyteBiasWidth" in
-      assert (Hwidth : (8 <= width)%N) by (vm_compute; congruence);
+      assert (Hwidth : (8 <= width)%N) by (zesu_vm_compute_goal; congruence);
       let Hmask := fresh "HbyteBiasMask" in
       assert (Hmask : mask = Z_to_bv width (2 ^ 8 - 1)) by
-        (apply bv_eq; vm_compute; reflexivity);
+        (apply bv_eq; zesu_vm_compute_goal; reflexivity);
       let Hcast := fresh "HbyteBiasCast" in
       assert (Hcast : bv_unsigned (Z_to_bv width (bv_unsigned word)) = bv_unsigned word) by
         (apply Z_to_bv_small;

@@ -14,6 +14,7 @@ Require Import ZesuSsz.Automation2.ContextCollection.
 Require Import ZesuSsz.Automation2.PureFacts.
 Require Import ZesuSsz.Automation2.BitvectorFacts.
 Require Import ZesuSsz.Automation2.SearchBudget.
+Require Import ZesuSsz.Automation2.BoundedSolve.
 Require Import ZesuSsz.Automation2.VmClosed.
 From iris.proofmode Require Import environments.
 From stdpp Require Import bitvector.definitions bitvector.tactics.
@@ -93,7 +94,7 @@ Ltac zesu_cursor_low_masks :=
       let value := eval vm_compute in (bv_unsigned mask) in
       let bits := eval vm_compute in (Z.to_N (Z.log2 (value + 1))) in
       let Hmask := fresh "HcursorMask" in
-      assert (Hmask : bv_unsigned mask = Z.ones (Z.of_N bits)) by (vm_compute; reflexivity);
+      assert (Hmask : bv_unsigned mask = Z.ones (Z.of_N bits)) by (zesu_vm_compute_goal; reflexivity);
       rewrite (zesu_cursor_low_mask width bits word mask Hmask); clear Hmask
   end.
 
@@ -138,11 +139,7 @@ Ltac zesu_cursor_linear :=
       lazymatch type of statement with Prop => idtac end;
       tryif zesu_cursor_arithmetic statement then fail else clear H
   end;
-  zesu_cursor_unsigned_atoms;
-  bv_saturate_unsigned;
-  unfold bv_signed, bv_swrap, bv_wrap, bv_half_modulus, bv_modulus, bv_unsigned in *;
-  simpl;
-  lia.
+  zesu_bounded_bv_on_context ltac:(zesu_cursor_unsigned_atoms).
 
 (* Expose loop binders at their carrier type, retained conjunctions, guards,
    and widened comparisons as integer facts. Solve with the facts the goal
@@ -168,7 +165,7 @@ Ltac zesu_cursor_expose_facts :=
 
 Ltac zesu_cursor_range_solve :=
   zesu_cursor_expose_facts;
-  ContextCollection.zesu_solve_goal_selected ("register_array_cursor"%string)
+  zesu_bounded_selected ("register_array_cursor"%string)
     ltac:(zesu_cursor_linear).
 
 (* A loop step relates the index to the cursor, the limit, and the guards

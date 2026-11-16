@@ -15,6 +15,7 @@ ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / "tools" / "residual"))
 from modules import PROOF_OPENER, parse_module
 from closed_literal_definitions import closed_literal_failures
+from solver_engine_calls import allowlist as solver_engine_allowlist, solver_engine_failures
 sys.path.insert(0, str(ROOT / "tools" / "residuals"))
 from render_residual_module import (RenderError, SHARED, module_name, parse_module as parse_residual_module,
                                     parse_shared_module)
@@ -681,6 +682,7 @@ def main() -> None:
     fresh_interfaces = fresh_interface_modules()
     literal_exceptions = {(row["file"], row["name"]): row for row in
                           json.loads(CLOSED_LITERAL_EXCEPTIONS_PATH.read_text())["exceptions"]}
+    engine_allowed = solver_engine_allowlist()
     failures: list[str] = list(frozen_automation_failures(ROOT))
     shared = shared_core_modules(ROOT)
     warnings: list[str] = []
@@ -714,6 +716,7 @@ def main() -> None:
         failures.extend(residual_module_failures(name, text))
         failures.extend(short_core_name_failures(name, text, shared))
         failures.extend(sealed_callee_failures(name, text, callees))
+        failures.extend(solver_engine_failures(name, text, engine_allowed))
 
         # Generated Sail interfaces contain upstream Axiom declarations.
         # A fresh generated black-box interface declares its sealed predicates

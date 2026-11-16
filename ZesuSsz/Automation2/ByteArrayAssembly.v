@@ -1,3 +1,4 @@
+Require Import ZesuSsz.Automation2.BoundedSolve.
 From Coq Require Import List ZArith Lia.
 From stdpp Require Import list bitvector.definitions.
 From iris.proofmode Require Import tactics environments.
@@ -91,7 +92,7 @@ Ltac zesu_byte_array_prefix spatial address fraction bytes continuation :=
             let tail := eval cbn [drop app] in (drop count bytes) in
             let _ := constr:(@eq_refl (list (bv 8)) bytes : bytes = values ++ tail) in
             let Hcount := fresh "HarrayPrefixLength" in
-            assert (Hcount : length values = count) by (vm_compute; reflexivity);
+            assert (Hcount : length values = count) by (zesu_vm_compute_goal; reflexivity);
             lazymatch goal with
             | |- envs_entails ?environment _ =>
                 change (envs_entails environment

@@ -1,6 +1,5 @@
 Require Import isla.riscv64.riscv64.
 Require Import ZesuSsz.Automation2.SwitchDispatch.
-Require ZesuSsz.Automation2.SearchBudget.
 From Ltac2 Require Import Ltac2.
 Set Default Proof Mode "Classic".
 
@@ -87,38 +86,6 @@ Ltac2 rec zesu_context_dependencies (hyps : (ident * constr option * constr) lis
   if Int.equal (List.length next) (List.length kept) then next
   else zesu_context_dependencies hyps next.
 
-Ltac2 zesu_context_prune () :=
-  let hyps := Control.hyps () in
-  let target := Control.goal () in
-  if Constr.has_evar target then Control.zero (Tactic_failure None) else ();
-  List.iter (fun declaration =>
-    let (_, body, ty) := declaration in
-    if Constr.has_evar ty then Control.zero (Tactic_failure None) else ();
-    match body with
-    | None => ()
-    | Some value => if Constr.has_evar value
-        then Control.zero (Tactic_failure None) else ()
-    end) hyps;
-  let relevant := zesu_context_relevance hyps (zesu_context_variables target) in
-  let kept := List.fold_left (fun names declaration =>
-    let (name, body, ty) := declaration in
-    match body with
-    | Some _ => zesu_context_add names name
-    | None => if zesu_context_proposition ty then names else zesu_context_add names name
-    end) relevant hyps in
-  let kept := zesu_context_dependencies hyps kept in
-  List.iter (fun declaration =>
-    let (name, body, ty) := declaration in
-    if zesu_context_member name kept then () else
-    match body with
-    | Some _ => Control.zero (Tactic_failure None)
-    | None => if zesu_context_proposition ty then Std.clear [name]
-        else Control.zero (Tactic_failure None)
-    end) (List.rev hyps).
-
-Ltac zesu_context_prune_goal := ltac2:(zesu_context_prune ()).
-Ltac zesu_context_filtered closer := first [solve [zesu_context_prune_goal; closer] | closer].
-
 Ltac2 zesu_context_collect_live (roots : constr list) :=
   let hyps := Control.hyps () in
   let target := Control.goal () in
@@ -188,10 +155,6 @@ Ltac zesu_context_finish_once closer :=
     | closer]
   end.
 
-Ltac zesu_context_filter closer :=
-  tryif zesu_switch_enabled constr:(ZesuStepFinisherOnce)
-  then zesu_context_filtered closer else closer.
-
 Ltac zesu_collect_if_enabled :=
   tryif zesu_switch_enabled constr:(ZesuStepContextCollection)
   then tryif (match goal with _ : zesu_context_collection_off |- _ => idtac end)
@@ -207,8 +170,8 @@ Ltac zesu_finish_once_if_enabled closer :=
    that mentions a local name; its subterms are atoms too. A fact is kept
    when it shares an atom with the goal or with a fact kept in an earlier
    round. Facts above the node limit are never kept: a solver cannot use
-   their full expressions, and they make it spin. The guard in
-   SearchBudget then checks the kept context against the solver policy. *)
+   their full expressions, and they make it spin. BoundedSolve's selected
+   mode then checks the kept context against the solver policy. *)
 Ltac2 zesu_select_arith (typ : constr) : bool :=
   if Constr.equal typ constr:(Z) then true else
   if Constr.equal typ constr:(nat) then true else
@@ -315,9 +278,6 @@ Ltac2 zesu_select_goal_facts (depth : int) (cap : int) (limit : int) :=
       end) (List.rev props).
 
 Ltac zesu_select_goal_facts := ltac2:(zesu_select_goal_facts 2 48 2048).
-Ltac zesu_solve_goal_selected site closer :=
-  solve [once zesu_select_goal_facts;
-    ZesuSsz.Automation2.SearchBudget.zesu_solve_selected site closer].
 (* Whether a fact that entered the context after the hypothesis of type
    `marker` shares an atom with the goal. Without such a hypothesis the
    answer is yes, and so it is for a goal without atoms: a closed goal

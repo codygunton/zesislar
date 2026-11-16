@@ -1,3 +1,4 @@
+Require Import ZesuSsz.Automation2.BoundedSolve.
 Require Import lithium.interpreter.
 Require Import ZesuSsz.Automation2.ResourceGroups.
 Require Import ZesuSsz.Automation2.AdditiveDecoder.
@@ -168,7 +169,7 @@ Ltac zesu_join_nonzero_once :=
   multimatch goal with
   | Hnonzero : Z_to_bv ?width ?quantity <> ?zero |- _ =>
     ZesuSsz.Automation2.VmClosed.zesu_closed_term width; ZesuSsz.Automation2.VmClosed.zesu_closed_term zero;
-    let Hzero := constr:(ltac:(vm_compute; reflexivity) : bv_unsigned zero = 0) in
+    let Hzero := constr:(ltac:(zesu_vm_compute_goal; reflexivity) : bv_unsigned zero = 0) in
     zesu_join_add_fact constr:(zesu_join_nonzero_cast width quantity zero Hzero Hnonzero)
   end.
 

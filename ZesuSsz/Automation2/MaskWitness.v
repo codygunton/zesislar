@@ -5,6 +5,7 @@
    them. The step instantiates such a telescope when its body holds no owned
    resource; the closer proves the facts from the context word. No rule names
    an address, register, or contract predicate. *)
+Require Import ZesuSsz.Automation2.BoundedSolve.
 Require Import isla.riscv64.riscv64.
 Require Import ZesuSsz.Automation2.BitvectorFacts.
 From iris.proofmode Require Import environments tactics.
@@ -37,7 +38,7 @@ Ltac zesu_mask_bit_zero bit word continuation :=
       assert (Hzero : bv_extract bit 1 word = (0%bv : bv 1)) by
         (change bit with (Z.to_N index);
          apply (BitvectorFacts.zesu_single_bit_land_zero _ index word);
-         [split; vm_compute; congruence | exact H]);
+         [split; zesu_vm_compute_goal; congruence | exact H]);
       continuation Hzero
   end.
 
@@ -60,7 +61,7 @@ Ltac zesu_mask_fact_close :=
   | |- ~ (bv_extract ?bit 1 ?word = _) =>
       zesu_mask_bit_zero bit word ltac:(fun Hzero => rewrite Hzero; discriminate)
   | |- bv_unsigned (bv_extract ?bit 1 ?word) <> 1%Z =>
-      zesu_mask_bit_zero bit word ltac:(fun Hzero => rewrite Hzero; vm_compute; congruence)
+      zesu_mask_bit_zero bit word ltac:(fun Hzero => rewrite Hzero; zesu_vm_compute_goal; congruence)
   end.
 
 (* Commit to the witnesses only when the closer proves every pure fact of

@@ -29,6 +29,7 @@ Require Import ZesuSsz.Automation2.MaskWrapPresentation.
 Require Import ZesuSsz.Automation2.FramePackingFinish.
 Require Import ZesuSsz.Automation2.ArrayPayloadPresentation.
 Require Import ZesuSsz.Automation2.StoreMemoryLookup.
+Require Import ZesuSsz.Automation2.BoundedSolve.
 Require Import ZesuSsz.Automation2.ContextCollection.
 Require Export ZesuSsz.Automation2.ArrayCursors.
 Require Import ZesuSsz.Automation2.ArrayByteValues.
@@ -61,8 +62,8 @@ Set Default Proof Mode "Classic".
 
 Ltac zesu_saturate_alignment :=
   match goal with
-  | H : bv_extract 0 _ _ = _ |- _ => bv_saturate
-  | H : Z.land (bv_unsigned _) _ = _ |- _ => bv_saturate
+  | H : bv_extract 0 _ _ = _ |- _ => zesu_bounded_bv_saturate
+  | H : Z.land (bv_unsigned _) _ = _ |- _ => zesu_bounded_bv_saturate
   end.
 
 Ltac zesu_finish_little_endian :=
@@ -246,8 +247,7 @@ Ltac zesu_finish_known_list_shape :=
     solve [zesu_normalize_known_list_lengths; lia] |
     (* The bit-vector solver reads the facts the goal reaches, never the
        whole context: on a 199-fact context it ran for hours. *)
-    solve [ZesuSsz.Automation2.ContextCollection.zesu_solve_goal_selected
-      ("finish.list_shape"%string) ltac:(bv_solve)]].
+    solve [zesu_bounded_selected ("finish.list_shape"%string) ltac:(bv_solve)]].
 
 Ltac zesu_finish_selectors :=
   first [zesu_array_region_selection_if_enabled | lazymatch goal with
@@ -403,8 +403,7 @@ Ltac zesu_finish_v1 :=
       try zesu_finish_lia;
       try zesu_finish_goal_domain;
       try (zesu_bv_solver_goal;
-        ZesuSsz.Automation2.ContextCollection.zesu_solve_goal_selected
-        ("finish.v1_tail"%string) ltac:(bv_solve))
+        zesu_bounded_selected ("finish.v1_tail"%string) ltac:(bv_solve))
   end;
   try (zesu_finish_little_endian_if_closed);
   try solve [SymbolicByteCodec.zesu_symbolic_byte_codec].
@@ -659,10 +658,10 @@ Ltac zesu_masked_add_branch_finish :=
           (apply Z_to_bv_small;
            ZesuSsz.Automation2.HypothesisCast.zesu_hypothesis_cast_range width value);
         let widths := fresh "HmaskedWidths" in
-        assert (widths : (low <= width)%N) by (vm_compute; congruence);
+        assert (widths : (low <= width)%N) by (zesu_vm_compute_goal; congruence);
         let bits := fresh "HmaskedBits" in
         assert (bits : bv_unsigned mask = Z.ones (Z.of_N low)) by
-          (vm_compute; reflexivity);
+          (zesu_vm_compute_goal; reflexivity);
         let range := fresh "HmaskedOneWrap" in
         assert (range : (bv_modulus low <= bv_unsigned base + delta < 2 * bv_modulus low)%Z) by
           (rewrite cast; change (modulus <= value + delta < 2 * modulus)%Z; lia);
@@ -887,14 +886,14 @@ Ltac zesu_finish_common_pure :=
    pass runs once: a failed close never backtracks into its match choice
    points (decodeParentHeader 0300 reran the single-bit pass 4 times in 240 s). *)
 Ltac zesu_finish_byte_word_views :=
-  first [
+  zesu_bounded_views ltac:(first [
     lazymatch goal with |- context [little_endian_to_bv _ _] => idtac end;
     once (progress (repeat BytePositionEquations.zesu_le_window_rewrite_one));
     try once BytePositionEquations.zesu_byte_position_facts;
     first [reflexivity | assumption]
   | lazymatch goal with |- context [bv_extract _ 1 _] => idtac end;
     once ZesuSsz.Automation2.BitvectorFacts.zesu_source_single_bit_zero_views;
-    assumption].
+    assumption]).
 
 (* The common pure path and final tail share the union helper. Baseline closers remain available.
    The existential leaf goes first: the first arm below fails outright when

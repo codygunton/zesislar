@@ -1,3 +1,4 @@
+Require Import ZesuSsz.Automation2.BoundedSolve.
 Require Import ZesuSsz.Automation2.SwitchDispatch.
 From stdpp Require Import bitvector.tactics.
 From Coq Require Import ZArith Lia.
@@ -35,7 +36,7 @@ Ltac zesu_byte_reconstruction finish :=
   | |- context [Z.land ?value (Z.ones ?bits)] =>
       ZesuSsz.Automation2.VmClosed.zesu_closed_term bits;
       let Hbits := fresh "HdigitWidth" in
-      assert (Hbits : 0 <= bits) by (vm_compute; congruence);
+      assert (Hbits : 0 <= bits) by (zesu_vm_compute_goal; congruence);
       rewrite (Z.land_ones value bits Hbits);
       clear Hbits
   end;
@@ -43,7 +44,7 @@ Ltac zesu_byte_reconstruction finish :=
   | |- context [Z.shiftr ?value ?bits] =>
       ZesuSsz.Automation2.VmClosed.zesu_closed_term bits;
       let Hbits := fresh "HdigitShift" in
-      assert (Hbits : 0 <= bits) by (vm_compute; congruence);
+      assert (Hbits : 0 <= bits) by (zesu_vm_compute_goal; congruence);
       rewrite (Z.shiftr_div_pow2 value bits Hbits);
       clear Hbits
   end;

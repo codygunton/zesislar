@@ -1,3 +1,4 @@
+Require Import ZesuSsz.Automation2.BoundedSolve.
 Require Import ZesuSsz.Automation2.All.
 Require Import ZesuSsz.Automation2.JoinEntailment.
 Require Import ZesuSsz.Automation2.VmClosed.
@@ -17,8 +18,8 @@ Ltac zesu_spatial_mask_fact :=
       let result_value := eval vm_compute in (bv_unsigned result) in
       let Hmask := fresh "HspatialMaskValue" in
       let Hresult := fresh "HspatialResultValue" in
-      assert (Hmask : bv_unsigned mask = mask_value) by (vm_compute; reflexivity);
-      assert (Hresult : bv_unsigned result = result_value) by (vm_compute; reflexivity);
+      assert (Hmask : bv_unsigned mask = mask_value) by (zesu_vm_compute_goal; reflexivity);
+      assert (Hresult : bv_unsigned result = result_value) by (zesu_vm_compute_goal; reflexivity);
       apply bv_eq; rewrite bv_and_unsigned;
       rewrite Hmask; rewrite Hresult; assumption
   end.

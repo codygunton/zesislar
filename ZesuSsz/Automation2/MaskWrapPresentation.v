@@ -1,3 +1,4 @@
+Require Import ZesuSsz.Automation2.BoundedSolve.
 Require Import isla.riscv64.riscv64.
 Require Import ZesuSsz.Automation2.SwitchDispatch.
 Require Import ZesuSsz.Automation2.BitvectorFacts.
@@ -18,7 +19,7 @@ Ltac zesu_mask_wide_cast_fact :=
         let Hwidth := fresh "HcastWidth" in
         let Hrange := fresh "HcastRange" in
         let Hbridge := fresh "HunsignedCast" in
-        assert (Hwidth : (source <= width)%N) by (vm_compute; congruence);
+        assert (Hwidth : (source <= width)%N) by (zesu_vm_compute_goal; congruence);
         assert (Hrange : 0 <= bv_unsigned word < bv_modulus width) by
           (pose proof (bv_unsigned_in_range source word);
            pose proof (bv_modulus_le_mono source width Hwidth); lia);
@@ -44,9 +45,9 @@ Ltac zesu_mask_plain_wrap_goal :=
       let Hrange := fresh "HmaskWindow" in
       let Hresult := fresh "HmaskResult" in
       let Hsmall := fresh "HmaskResultRange" in
-      assert (Hwidth : (low <= width)%N) by (vm_compute; congruence);
+      assert (Hwidth : (low <= width)%N) by (zesu_vm_compute_goal; congruence);
       assert (Hmask : bv_unsigned mask = Z.ones (Z.of_N low)) by
-        (vm_compute; reflexivity);
+        (zesu_vm_compute_goal; reflexivity);
       assert (Hrange : modulus <= bv_unsigned value < 2 * modulus) by lia;
       assert (Hresult : requested = bv_unsigned value - modulus) by lia;
       assert (Hsmall : 0 <= requested < bv_modulus width) by

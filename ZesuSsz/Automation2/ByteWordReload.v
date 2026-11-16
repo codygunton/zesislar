@@ -1,3 +1,4 @@
+Require Import ZesuSsz.Automation2.BoundedSolve.
 From Coq Require Import Lists.List ZArith.ZArith NArith.NArith Lia.
 From stdpp Require Import list bitvector.definitions.
 Require Import isla.riscv64.riscv64.
@@ -67,10 +68,10 @@ Ltac zesu_reload_spliced_word_step :=
       let Hsame := fresh "HreloadSameIndex" in
       let Hinside := fresh "HreloadInside" in
       assert (Hsame : loaded = stored) by
-        (first [reflexivity | ZesuSsz.Automation2.ContextCollection.zesu_solve_goal_selected
+        (first [reflexivity | zesu_bounded_selected
           ("reload.spliced_index"%string) ltac:(lia)]);
       assert (Hinside : (stored <= length bytes)%nat) by
-        (ZesuSsz.Automation2.ContextCollection.zesu_solve_goal_selected
+        (zesu_bounded_selected
           ("reload.spliced_bound"%string) ltac:(lia));
       rewrite (zesu_reload_spliced_word bytes tail stored loaded word Hsame Hinside);
       clear Hsame Hinside
@@ -95,7 +96,7 @@ Ltac zesu_reload_encoded_word_step :=
             change (take count (drop (Z.to_nat value) bytes)) with window;
             change window with (bv_to_little_endian size 8 word);
             apply zesu_reload_byte_word;
-            [first [apply (proj1 (bv_unsigned_in_range _ _)) | lia] | vm_compute; reflexivity]);
+            [first [apply (proj1 (bv_unsigned_in_range _ _)) | lia] | zesu_vm_compute_goal; reflexivity]);
           rewrite Hreload; clear Hreload
       end
   end.

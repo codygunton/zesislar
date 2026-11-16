@@ -1,0 +1,30 @@
+{
+  "schema": "zesu.solver-engine-allowlist.v1",
+  "allowed": [
+    {
+      "file": "ZesuSsz/Automation2/LinearFirstLia.v",
+      "name": "zesu_lia_linear_first3",
+      "reason": "The micromega leaf itself. Only BoundedSolve calls it; the check refuses its name everywhere else."
+    },
+    {
+      "file": "ZesuSsz/Automation2/PureFacts.v",
+      "name": "zesu_saturate_derived_facts",
+      "reason": "The derived-facts saturation's only entry point: it runs the seminaive engine through BoundedSolve.zesu_bounded_saturate."
+    },
+    {
+      "file": "ZesuSsz/Automation2/PureFacts.v",
+      "name": "zesu_saturate_frozen_derived_facts",
+      "reason": "The frozen copy of the saturation, run through BoundedSolve.zesu_bounded_saturate."
+    },
+    {
+      "file": "ZesuSsz/Automation2/VmClosed.v",
+      "name": "zesu_vm_compute_closed",
+      "reason": "Refuses a goal with a local name or an unresolved evar before the VM runs, so the goal is closed and reads no fact. VmClosed loads before BoundedSolve (SearchBudget requires it)."
+    },
+    {
+      "file": "ZesuSsz/Automation2/Finish.v",
+      "name": "zesu_finish_pointer_alignment",
+      "reason": "`clear -Halign` leaves only the alignment fact before bv_simplify_arith runs on it."
+    }
+  ]
+}

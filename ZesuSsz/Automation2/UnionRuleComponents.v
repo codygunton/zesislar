@@ -1607,6 +1607,7 @@ Require Import ZesuSsz.Automation2.BitvectorFacts.
 Require Import ZesuSsz.Automation2.PureFacts.
 Require Import ZesuSsz.Evidence.Block2Core.
 Require ZesuSsz.Automation2.ContextCollection.
+Require ZesuSsz.Automation2.BoundedSolve.
 Import ListNotations.
 Local Open Scope Z_scope.
 
@@ -2164,7 +2165,7 @@ Ltac block2_f7_arithmetic :=
   | |- ?proposition => ZesuSsz.Evidence.Block2Core.block2_fixed proposition
   end;
   unLET;
-  ZesuSsz.Automation2.ContextCollection.zesu_solve_goal_selected
+  ZesuSsz.Automation2.BoundedSolve.zesu_bounded_selected
     ("union.f7"%string) ltac:(block2_f7_on_context).
 
 Ltac block2_f7_numeric_shape proposition :=

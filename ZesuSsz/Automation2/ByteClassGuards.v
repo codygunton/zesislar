@@ -1,3 +1,4 @@
+Require Import ZesuSsz.Automation2.BoundedSolve.
 Require Import ZesuSsz.Automation2.ByteMaskCast.
 Require Import ZesuSsz.Automation2.BitvectorFacts.
 Require Import ZesuSsz.Automation2.ListSliceWindows.
@@ -132,13 +133,13 @@ Ltac zesu_byte_class_image :=
           assert (Hequal : left = right) by
             (apply bv_eq; first [reflexivity |
               let scalar := match goal with |- ?scalar => scalar end in
-              ZesuSsz.Automation2.VmClosed.zesu_closed_term scalar; vm_compute; reflexivity]);
+              ZesuSsz.Automation2.VmClosed.zesu_closed_term scalar; zesu_vm_compute_goal; reflexivity]);
           rewrite Hequal; clear Hequal; apply (f_equal (cons right))
         end
       | idtac ]);
     first [reflexivity |
       let remaining := match goal with |- ?remaining => remaining end in
-      ZesuSsz.Automation2.VmClosed.zesu_closed_term remaining; vm_compute; reflexivity] ].
+      ZesuSsz.Automation2.VmClosed.zesu_closed_term remaining; zesu_vm_compute_goal; reflexivity] ].
 
 Ltac zesu_byte_class_guards :=
   multimatch goal with
@@ -150,10 +151,10 @@ Ltac zesu_byte_class_guards :=
       let upper := eval vm_compute in (bv_signed upperWord) in
       let Hrange := fresh "HbyteClassUpperRange" in
       assert (Hrange : 0 <= upper < bv_half_modulus 128) by
-        (vm_compute; split; congruence);
+        (zesu_vm_compute_goal; split; congruence);
       let Hpresentation := fresh "HbyteClassUpperPresentation" in
       assert (Hpresentation : upperWord = Z_to_bv 128 upper) by
-        (apply bv_eq; vm_compute; reflexivity);
+        (apply bv_eq; zesu_vm_compute_goal; reflexivity);
       let Hguard := fresh "HbyteClassUpperGuard" in
       pose proof Hupper as Hguard;
       rewrite Hpresentation in Hguard;

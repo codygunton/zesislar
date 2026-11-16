@@ -1,3 +1,4 @@
+Require Import ZesuSsz.Automation2.BoundedSolve.
 Require Import ZesuSsz.Automation2.SwitchDispatch.
 From stdpp Require Import bitvector.tactics.
 From Coq Require Import ZArith Lia.
@@ -46,10 +47,10 @@ Ltac zesu_byte_mask_cast :=
       constr_eq actual expected;
       let Hmask := fresh "HbyteMaskValue" in
       assert (Hmask : mask = Z_to_bv width (2 ^ 8 - 1)) by
-        (apply bv_eq; vm_compute; reflexivity);
+        (apply bv_eq; zesu_vm_compute_goal; reflexivity);
       try rewrite Hmask;
       let Hwidth := fresh "HbyteMaskWidth" in
-      assert (Hwidth : (8 <= width)%N) by (vm_compute; congruence);
+      assert (Hwidth : (8 <= width)%N) by (zesu_vm_compute_goal; congruence);
       rewrite (zesu_sign_extended_byte_mask width word Hwidth);
       clear Hwidth Hmask
   end);
