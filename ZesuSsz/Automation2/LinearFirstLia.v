@@ -1,11 +1,13 @@
 From Coq Require Import ZArith.ZArith micromega.Lia micromega.Zify omega.PreOmega.
 From Ltac2 Require Ltac2.
+Require Import ZesuSsz.Automation2.Telemetry.
 Set Default Proof Mode "Classic".
 Local Open Scope Z_scope.
 
 Ltac zesu_zify_prefix :=
-  intros; Zify.zify_pre_hook; Zify.zify_elim_let; Zify.zify_op; (Zify.zify_iter_specs);
-  Zify.zify_to_euclidean_division_equations.
+  let run := ltac2:(tac |- zesu_telemetry_ltac1 "zify" "zesu_zify_prefix" tac) in
+  run ltac:(intros; Zify.zify_pre_hook; Zify.zify_elim_let; Zify.zify_op; (Zify.zify_iter_specs);
+    Zify.zify_to_euclidean_division_equations).
 
 Ltac zesu_lia_has_divmod :=
   match goal with
@@ -114,10 +116,14 @@ Ltac zesu_lia_divmod_step :=
         | zesu_divmod_guard; Zify.zify_post_hook ].
 
 Ltac zesu_lia_linear_first3 :=
+  let run_xlia := ltac2:(tac |- zesu_telemetry_ltac1 "xlia" "zesu_lia_linear_first3" tac) in
+  let run_saturate :=
+    ltac2:(tac |- zesu_telemetry_ltac1 "zify_saturate" "zesu_lia_linear_first3" tac) in
   zesu_zify_prefix;
-  first [ solve [Zify.zify_saturate; xlia Lia.zchecker]
+  first [ solve [run_saturate ltac:(Zify.zify_saturate); run_xlia ltac:(xlia Lia.zchecker)]
         | zesu_lia_has_divmod;
-          zesu_lia_divmod_step; Zify.zify_saturate; xlia Lia.zchecker ].
+          zesu_lia_divmod_step; run_saturate ltac:(Zify.zify_saturate);
+          run_xlia ltac:(xlia Lia.zchecker) ].
 
 From Ltac2 Require Import Ltac2.
 Set Default Proof Mode "Classic".
@@ -282,9 +288,17 @@ Ltac2 zesu_linear_clear_unrelated () :=
     | Err _ => ()
     end) unrelated.
 
+(* Telemetry counts nodes and facts with this file's walk. *)
+Ltac2 Set zesu_telemetry_nodes := fun term =>
+  Int.sub 4611686018427387903 (zesu_linear_remaining 4611686018427387903 term).
+Ltac2 Set zesu_telemetry_is_prop := zesu_linear_is_prop.
+
 (* The library solver on the facts linked to the goal. *)
 Ltac zesu_lia_linked_facts :=
-  once ltac2:(zesu_linear_clear_unrelated ()); Zify.zify; xlia Lia.zchecker.
+  let run_zify := ltac2:(tac |- zesu_telemetry_ltac1 "zify" "zesu_lia_linked_facts" tac) in
+  let run_xlia := ltac2:(tac |- zesu_telemetry_ltac1 "xlia" "zesu_lia_linked_facts" tac) in
+  once ltac2:(zesu_linear_clear_unrelated ()); run_zify ltac:(Zify.zify);
+  run_xlia ltac:(xlia Lia.zchecker).
 
 (* The goal and every Prop fact fit a node budget. Guards a solver call on the
    whole context: on the decodeItem blocks every whole-context `lia` that

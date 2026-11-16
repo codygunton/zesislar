@@ -228,3 +228,62 @@ let () =
     (fun pointer index sidecondition equality goal ->
       array_index_constraints pointer index sidecondition equality
         (Proofview.Goal.env goal) (Proofview.Goal.sigma goal))
+
+(* Solver telemetry (ZesuSsz/Automation2/Telemetry.v). ZESU_TELEMETRY=1 in
+   the environment switches it on; the variable is read once. Each effect
+   runs when the tactic runs, not when it is defined. *)
+let telemetry_on =
+  lazy (match Sys.getenv_opt "ZESU_TELEMETRY" with Some "1" -> true | _ -> false)
+
+let telemetry_now f = Proofview.tclLIFT (Proofview.NonLogical.make f)
+
+let telemetry_clock_us () = int_of_float (Unix.gettimeofday () *. 1e6)
+
+let telemetry_cpu_us () = int_of_float (Sys.time () *. 1e6)
+
+(* Resident set in KiB: the second field of statm, in 4 KiB pages. *)
+let telemetry_rss_kb () =
+  try
+    let channel = open_in "/proc/self/statm" in
+    let line = Fun.protect ~finally:(fun () -> close_in channel)
+      (fun () -> input_line channel) in
+    Scanf.sscanf line "%d %d" (fun _ resident -> resident * 4)
+  with _ -> -1
+
+(* The innermost telemetry stage. *)
+let telemetry_stage = ref "none"
+
+type telemetry_sample = { wall : int; cpu : int; rss : int }
+
+let telemetry_sample () =
+  { wall = telemetry_clock_us (); cpu = telemetry_cpu_us (); rss = telemetry_rss_kb () }
+
+let telemetry_emit kind site facts nodes goal_nodes (start : telemetry_sample) ok =
+  let stop = telemetry_sample () in
+  Printf.printf
+    "@@T kind=%s site=%s stage=%s facts=%d nodes=%d goal_nodes=%d ms=%.3f ok=%d \
+     cpu_ms=%.3f ts_us=%d rss0_kb=%d rss1_kb=%d\n%!"
+    kind site !telemetry_stage facts nodes goal_nodes
+    (float_of_int (stop.wall - start.wall) /. 1000.) (if ok then 1 else 0)
+    (float_of_int (stop.cpu - start.cpu) /. 1000.) start.wall start.rss stop.rss
+
+let () =
+  let open Tac2externals in
+  let name tactic = { Tac2expr.mltac_plugin = "zesu-signature-gates.plugin"; mltac_tactic = tactic } in
+  define (name "telemetry_enabled") (Tac2ffi.unit @-> ret Tac2ffi.bool)
+    (fun () -> Lazy.force telemetry_on);
+  (* The sample is a (wall us, cpu us, rss KiB) triple of ints. *)
+  define (name "telemetry_sample") (Tac2ffi.unit @-> tac (Tac2ffi.list Tac2ffi.int))
+    (fun () -> telemetry_now (fun () ->
+      let s = telemetry_sample () in [s.wall; s.cpu; s.rss]));
+  define (name "telemetry_emit")
+    (Tac2ffi.string @-> Tac2ffi.string @-> Tac2ffi.int @-> Tac2ffi.int @-> Tac2ffi.int @->
+     Tac2ffi.list Tac2ffi.int @-> Tac2ffi.bool @-> tac Tac2ffi.unit)
+    (fun kind site facts nodes goal_nodes start ok -> telemetry_now (fun () ->
+      match start with
+      | [wall; cpu; rss] -> telemetry_emit kind site facts nodes goal_nodes { wall; cpu; rss } ok
+      | _ -> ()));
+  (* Sets the stage and returns the previous one. *)
+  define (name "telemetry_stage_swap") (Tac2ffi.string @-> tac Tac2ffi.string)
+    (fun stage -> telemetry_now (fun () ->
+      let previous = !telemetry_stage in telemetry_stage := stage; previous))

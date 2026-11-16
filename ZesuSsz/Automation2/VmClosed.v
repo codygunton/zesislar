@@ -1,5 +1,6 @@
 From stdpp Require Import tactics bitvector.definitions.
 From Coq Require Import ZArith.ZArith NArith.NArith.
+Require Import ZesuSsz.Automation2.Telemetry.
 
 (* Local definitions can hide unresolved evars from the outer term. *)
 Ltac zesu_vm_has_unresolved term :=
@@ -52,7 +53,8 @@ Ltac zesu_vm_eval_closed term :=
 
 (* Check the decision before installing its conversion proof. *)
 Ltac zesu_vm_closed_decide :=
-  lazymatch goal with |- ?proposition =>
+  let run := ltac2:(tac |- zesu_telemetry_ltac1 "vm_goal" "zesu_vm_closed_decide" tac) in
+  run ltac:(lazymatch goal with |- ?proposition =>
     lazymatch proposition with
     | @eq ?kind _ _ =>
         lazymatch kind with
@@ -70,10 +72,11 @@ Ltac zesu_vm_closed_decide :=
     constr_eq result true;
     refine (@bool_decide_eq_true_1 proposition decision _);
     vm_cast_no_check (eq_refl true)
-  end.
+  end).
 
 Ltac zesu_vm_compute_closed :=
-  lazymatch goal with |- ?proposition =>
+  let run := ltac2:(tac |- zesu_telemetry_ltac1 "vm_goal" "zesu_vm_compute_closed" tac) in
+  run ltac:(lazymatch goal with |- ?proposition =>
     zesu_vm_closed proposition;
     vm_compute
-  end.
+  end).

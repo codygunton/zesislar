@@ -1,4 +1,5 @@
 Require ZesuSsz.Automation2.NamedEquations.
+Require Import ZesuSsz.Automation2.Telemetry.
 Require Import ZesuSsz.Automation2.MemoryAddress.
 Require Import ZesuSsz.Automation2.MemoryTupleConsumer.
 Require Import ZesuSsz.Automation2.SourceFactMatching.
@@ -341,6 +342,8 @@ Ltac zesu_bv_solver_goal :=
    the common pure path grew one decodeParentHeader caller's tail past
    16 GiB on the index bound. *)
 Ltac zesu_finish_shape_closers :=
+  let run := ltac2:(tac |- zesu_telemetry_stage_ltac1 "zesu_finish_shape_closers" tac) in
+  run ltac:(
   lazymatch goal with
   | |- environments.envs_entails _ _ => fail 0
   | |- ?target => lazymatch type of target with Prop => idtac end
@@ -348,7 +351,7 @@ Ltac zesu_finish_shape_closers :=
   first [solve [ZesuSsz.Automation2.BitvectorFacts.zesu_single_bit_zero_goal]
     | solve [BytePositionEquations.zesu_le_window_goal]
     | solve [BytePositionEquations.zesu_word_fact_goal]
-    | solve [WrappedWord.zesu_wrapped_index_bound_goal]].
+    | solve [WrappedWord.zesu_wrapped_index_bound_goal]]).
 
 Ltac zesu_finish_v1 :=
   try autorewrite with zesu_indices;
@@ -778,6 +781,8 @@ Ltac zesu_goal_holds_open_witnesses :=
   end.
 
 Ltac zesu_finish_residual_cascade :=
+  let run := ltac2:(tac |- zesu_telemetry_stage_ltac1 "zesu_finish_residual_cascade" tac) in
+  run ltac:(
   zesu_diag_stage "residual_cascade";
   first [solve [
     zesu_finish_residual_switches;
@@ -803,7 +808,7 @@ Ltac zesu_finish_residual_cascade :=
           | solve [ZesuSsz.Automation2.ArrayPayloadPresentation.zesu_array_payload_presentation
               ltac:(first [ZesuSsz.Automation2.SymbolicByteCodec.zesu_symbolic_byte_codec |
       ZesuSsz.Automation2.FramePackingFinish.zesu_frame_packing_finish])] ] ]
-  ]].
+  ]]).
 
 (* A package that the cascade cannot close because of fixed pure conjuncts.
    The source route commits the witnesses and the resources. Each fixed
@@ -813,6 +818,8 @@ Ltac zesu_finish_residual_cascade :=
 Inductive zesu_split_baseline : Prop := zesu_split_baseline_intro.
 
 Ltac zesu_finish_package_deferring :=
+  let run := ltac2:(tac |- zesu_telemetry_stage_ltac1 "zesu_finish_package_deferring" tac) in
+  run ltac:(
   lazymatch goal with |- environments.envs_entails _ _ => idtac end;
   zesu_diag_stage "package_deferring";
   zesu_finish_residual_switches;
@@ -820,7 +827,7 @@ Ltac zesu_finish_package_deferring :=
   let baseline := fresh "HsplitBaseline" in
   pose proof zesu_split_baseline_intro as baseline;
   unshelve (zesu_finish_source_package_with
-    ltac:(fun requested => SourceFactMatching.zesu_source_defer_fixed_tree requested)).
+    ltac:(fun requested => SourceFactMatching.zesu_source_defer_fixed_tree requested))).
 
 (* Fast generic evidence transport precedes broad arithmetic. *)
 Ltac zesu_union_required_pure :=
@@ -864,6 +871,8 @@ Ltac zesu_union_pure_finish :=
    longer). The `| zesu_finish_common_pure` arms still cover a goal that a
    first arm refuses outright. *)
 Ltac zesu_finish_common_pure :=
+  let run := ltac2:(tac |- zesu_telemetry_stage_ltac1 "zesu_finish_common_pure" tac) in
+  run ltac:(
   zesu_final_pure_head_gate;
   first [zesu_union_required_pure | solve [
     zesu_saturate_derived_facts;
@@ -874,7 +883,7 @@ Ltac zesu_finish_common_pure :=
       WrappedWord.zesu_wrapped_word_range ltac:(
         WrappedWord.zesu_reduce_closed_Z_aliases;
         cbv [bv_unsigned bv_modulus] in *; lia)]
-    | autorewrite with isla_coq_rewrite; zesu_union_pure_finish]]].
+    | autorewrite with isla_coq_rewrite; zesu_union_pure_finish]]]).
 
 (* A final pure goal over bytes that a load reads as a little-endian window
    while the goal or a branch fact states them as byte positions, or a goal on
@@ -884,6 +893,8 @@ Ltac zesu_finish_common_pure :=
    single-bit views (BitvectorFacts.v); the goal is then an identity or a
    fact. Each arm is guarded by the goal's shape and closes or fails. *)
 Ltac zesu_finish_byte_word_views :=
+  let run := ltac2:(tac |- zesu_telemetry_ltac1 "byte_word_views" "zesu_finish_byte_word_views" tac) in
+  run ltac:(
   first [
     lazymatch goal with |- context [little_endian_to_bv _ _] => idtac end;
     progress (repeat BytePositionEquations.zesu_le_window_rewrite_one);
@@ -891,13 +902,15 @@ Ltac zesu_finish_byte_word_views :=
     first [reflexivity | assumption]
   | lazymatch goal with |- context [bv_extract _ 1 _] => idtac end;
     ZesuSsz.Automation2.BitvectorFacts.zesu_source_single_bit_zero_views;
-    assumption].
+    assumption]).
 
 (* The common pure path and final tail share the union helper. Baseline closers remain available.
    The existential leaf goes first: the first arm below fails outright when
    its implication-pair step finds no pair, so a leaf inside it is never
    reached on such a context. *)
 Ltac zesu_finish_final_pure :=
+  let run := ltac2:(tac |- zesu_telemetry_stage_ltac1 "zesu_finish_final_pure" tac) in
+  run ltac:(
   first [
   ZesuSsz.Automation2.NamedEquations.zesu_finish_exists_from_hypotheses |
   solve [zesu_finish_shape_closers] |
@@ -926,11 +939,13 @@ Ltac zesu_finish_final_pure :=
           lazymatch goal with |- and _ _ => split; finish_leaf end]
       in finish_leaf
     | zesu_finish_list_cons_final]];
-  try solve [zesu_finish_common_pure] | zesu_finish_common_pure].
+  try solve [zesu_finish_common_pure] | zesu_finish_common_pure]).
 
 
 
 Ltac zesu_finish_pure_goal :=
+  let run := ltac2:(tac |- zesu_telemetry_stage_ltac1 "zesu_finish_pure_goal" tac) in
+  run ltac:(
   first [
   ZesuSsz.Automation2.NamedEquations.zesu_finish_exists_from_hypotheses |
   solve [zesu_finish_shape_closers] |
@@ -940,14 +955,16 @@ zesu_finish_pure_goal_base;
       zesu_finish_negated_ge; zesu_finish_implication_pair; repeat split;
       first [reflexivity | assumption | eassumption | lia | bv_solve |
         zesu_finish_forall_leaf]
-    | repeat split; zesu_finish_forall_leaf]] | zesu_finish_common_pure].
+    | repeat split; zesu_finish_forall_leaf]] | zesu_finish_common_pure]).
 
 Ltac zesu_finish_entailment :=
+  let run := ltac2:(tac |- zesu_telemetry_stage_ltac1 "zesu_finish_entailment" tac) in
+  run ltac:(
   lazymatch goal with
   | |- envs_entails _ (@bi_pure _ _) =>
       iPureIntro; zesu_finish_pure_shape; zesu_finish_pure_goal
   | _ => zesu_finish_entailment_base
-  end.
+  end).
 
 Ltac zesu_finish_dispatch :=
   lazymatch goal with
@@ -957,6 +974,8 @@ Ltac zesu_finish_dispatch :=
   end.
 
 Ltac zesu_finish_v2 :=
+  let run := ltac2:(tac |- zesu_telemetry_stage_ltac1 "zesu_finish_v2" tac) in
+  run ltac:(
   zesu_finish_normalize;
   lazymatch goal with
   | |- envs_entails _ _ => try iAssumption
@@ -966,7 +985,7 @@ Ltac zesu_finish_v2 :=
   | |- SHELVED_SIDECOND _ => zesu_finish_shelved
   | _ => Hooks.zesu_unlet_preserving_witness_metadata
   end;
-  zesu_finish_dispatch.
+  zesu_finish_dispatch).
 
 Ltac zesu_union_array_payload_finish :=
   ZesuSsz.Automation2.Hooks.zesu_array_payload_presentation
@@ -974,6 +993,8 @@ Ltac zesu_union_array_payload_finish :=
       ZesuSsz.Automation2.FramePackingFinish.zesu_frame_packing_finish]).
 
 Ltac zesu_finish_base :=
+  let run := ltac2:(tac |- zesu_telemetry_stage_ltac1 "zesu_finish_base" tac) in
+  run ltac:(
   try ZesuSsz.Automation2.NamedEquations.zesu_open_named_equations;
   first [solve [ZesuSsz.Automation2.NamedEquations.zesu_finish_exists_from_hypotheses] | solve [zesu_union_array_payload_finish] |
   try solve [zesu_array_region_selection_if_enabled];
@@ -984,7 +1005,7 @@ Ltac zesu_finish_base :=
   then tryif let _ := constr:(_ : ZesuStepBoundedArithmetic) in idtac
        then try (zesu_finish_v2)
        else zesu_finish_v2
-  else zesu_finish_v1) | zesu_finish_common_pure].
+  else zesu_finish_v1) | zesu_finish_common_pure]).
 
 
 Ltac zesu_finish := zesu_finish_once_if_enabled ltac:(zesu_finish_base).
@@ -1210,7 +1231,8 @@ Ltac zesu_with_rule_set v1 v2 :=
   else fail 1000 "No automation rule set is selected. Import All or an explicit Sets module.".
 
 Ltac zesu_run_pass :=
-  zesu_with_rule_set ltac:(zesu_run_pass_v1) ltac:(zesu_run_pass_v2).
+  let run := ltac2:(tac |- zesu_telemetry_stage_ltac1 "zesu_run_pass" tac) in
+  run ltac:(zesu_with_rule_set ltac:(zesu_run_pass_v1) ltac:(zesu_run_pass_v2)).
 
 (* Resolve the approved switch set in the current search context. *)
 Ltac zesu_search_switches := constr:([
