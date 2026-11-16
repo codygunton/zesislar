@@ -114,6 +114,27 @@ Ltac2 zesu_name_reused (name : ident) : bool :=
     if Int.le length size then false else Bool.and (prefix 0) (digits size))
     (Control.hyps ()).
 
+(* A call's argument register binder (`call12_x13`): the value the register
+   holds when that call is entered, which the call-site facts fix. A block
+   variable of that name is the value from another path into the call, so it
+   is never the witness (decodeParentHeader 0300 took it and left
+   `call12_x13 = machine_x13` unprovable). *)
+Ltac2 zesu_call_argument_name (name : ident) : bool :=
+  let text := Ident.to_string name in
+  let size := String.length text in
+  let code_at i := if Int.lt i size then Char.to_int (String.get text i) else 0 in
+  let at_char i code := Int.equal (code_at i) code in
+  let is_digit i := let code := code_at i in Bool.and (Int.le 48 code) (Int.le code 57) in
+  let rec digits i := if is_digit i then digits (Int.add i 1) else i in
+  if Bool.and (at_char 0 99) (Bool.and (at_char 1 97) (Bool.and (at_char 2 108) (at_char 3 108))) then
+    let layer_end := digits 4 in
+    if Bool.and (at_char layer_end 95) (at_char (Int.add layer_end 1) 120) then
+      let register := Int.add layer_end 2 in
+      let register_end := digits register in
+      Bool.and (Int.lt register register_end) (Int.equal register_end size)
+    else false
+  else false.
+
 Ltac2 zesu_named_equation_in_context () :=
   List.exist (fun (_, _, hypothesis_type) =>
     match Constr.Unsafe.kind hypothesis_type with
@@ -131,7 +152,8 @@ Ltac2 zesu_binder_namesake (binder_type : constr) (body : constr) : constr :=
           | Some (_, _, hypothesis_type) =>
               if Bool.and (Constr.equal hypothesis_type binder_type)
                    (Bool.and (zesu_named_equation_in_context ())
-                     (Bool.neg (zesu_name_reused name)))
+                     (Bool.and (Bool.neg (zesu_name_reused name))
+                       (Bool.neg (zesu_call_argument_name name))))
               then Control.hyp name else zesu_no_namesake ()
           | None => zesu_no_namesake ()
           end

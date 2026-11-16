@@ -190,6 +190,33 @@ Proof.
 Qed.
 Print Assumptions named_binder_digit_final_name.
 
+(* A call's argument register binder (`call12_x13`) never takes its block
+   namesake: the call-site facts fix it. The call's result (`call12_after`)
+   still takes its namesake. *)
+Lemma named_binder_skips_call_argument `{!islaG Sigma} `{!threadG}
+    (kept base call12_x13 : bv 64) (named : zesu_named_eq kept base) (rest : iProp Sigma) :
+  rest ⊢ (∃ call12_x13 : bv 64, ⌜call12_x13 = call12_x13⌝) ∗ rest.
+Proof.
+  iStartProof. iIntros "Hrest".
+  Fail ZesuSsz.Automation2.NamedEquations.zesu_named_binder_witness.
+  iSplitR "Hrest"; [iExists call12_x13; iPureIntro; reflexivity | iExact "Hrest"].
+Qed.
+Print Assumptions named_binder_skips_call_argument.
+
+Lemma named_binder_takes_call_result `{!islaG Sigma} `{!threadG}
+    (kept base : bv 64) (named : zesu_named_eq kept base)
+    (call12_after : list nat) (rest : iProp Sigma) :
+  rest ⊢ (∃ call12_after : list nat, ⌜call12_after = call12_after⌝) ∗ rest.
+Proof.
+  iStartProof. iIntros "Hrest".
+  ZesuSsz.Automation2.NamedEquations.zesu_named_binder_witness.
+  lazymatch goal with
+  | |- environments.envs_entails _ (⌜call12_after = call12_after⌝ ∗ rest)%I => idtac
+  end.
+  iFrame. iPureIntro. reflexivity.
+Qed.
+Print Assumptions named_binder_takes_call_result.
+
 (* A call's precondition restated over fresh binders, one of them named
    like an unrelated block variable: the stepping loop closes it from the
    call's facts, not from the names. *)

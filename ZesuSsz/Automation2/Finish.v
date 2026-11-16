@@ -6,6 +6,7 @@ Require Import ZesuSsz.Automation2.SourceFactByteViews.
 Require Import ZesuSsz.Automation2.EntryWitnessFinish.
 Require Import ZesuSsz.Automation2.WrappedWord.
 Require ZesuSsz.Automation2.BytePositionEquations.
+Require ZesuSsz.Automation2.StackRange.
 Require Import isla.riscv64.riscv64.
 Require Import ZesuSsz.Automation2.EntryIntro.
 Require Import ZesuMachineMap.Machine.
@@ -882,27 +883,34 @@ Ltac zesu_finish_common_pure :=
    concatenation (BytePositionEquations.v; the identity holds for any list),
    branch facts take the goal's byte-position form, and a mask fact gets its
    single-bit views (BitvectorFacts.v); the goal is then an identity or a
-   fact. Each arm is guarded by the goal's shape and closes or fails. *)
+   fact. Each arm is guarded by the goal's shape and closes or fails. A view
+   pass runs once: a failed close never backtracks into its match choice
+   points (decodeParentHeader 0300 reran the single-bit pass 4 times in 240 s). *)
 Ltac zesu_finish_byte_word_views :=
   first [
     lazymatch goal with |- context [little_endian_to_bv _ _] => idtac end;
-    progress (repeat BytePositionEquations.zesu_le_window_rewrite_one);
-    try BytePositionEquations.zesu_byte_position_facts;
+    once (progress (repeat BytePositionEquations.zesu_le_window_rewrite_one));
+    try once BytePositionEquations.zesu_byte_position_facts;
     first [reflexivity | assumption]
   | lazymatch goal with |- context [bv_extract _ 1 _] => idtac end;
-    ZesuSsz.Automation2.BitvectorFacts.zesu_source_single_bit_zero_views;
+    once ZesuSsz.Automation2.BitvectorFacts.zesu_source_single_bit_zero_views;
     assumption].
 
 (* The common pure path and final tail share the union helper. Baseline closers remain available.
    The existential leaf goes first: the first arm below fails outright when
    its implication-pair step finds no pair, so a leaf inside it is never
-   reached on such a context. *)
+   reached on such a context. A goal on wrapped stack addresses is proved from
+   the block's stack range facts alone, and window offsets over stack
+   addresses become constants before the views (StackRange.v). *)
 Ltac zesu_finish_final_pure :=
   first [
   ZesuSsz.Automation2.NamedEquations.zesu_finish_exists_from_hypotheses |
   solve [zesu_finish_shape_closers] |
+  solve [try lazymatch goal with |- SHELVED_SIDECOND _ => unshelve_sidecond end;
+    ZesuSsz.Automation2.StackRange.zesu_stack_range_lia] |
   zesu_final_pure_head_gate;
   try BytePositionEquations.zesu_byte_position_facts;
+  try ZesuSsz.Automation2.StackRange.zesu_stack_offsets;
   tryif progress zesu_saturate_derived_facts
   then try solve [zesu_array_bounds_if_enabled]
   else idtac;
