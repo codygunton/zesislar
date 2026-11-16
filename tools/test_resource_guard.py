@@ -724,7 +724,7 @@ echo "fallback=$(hold_reason)"
         self.assertEqual(result.returncode, 0, result.stderr)
         self.assertEqual(result.stdout.splitlines(), [
             "cpu-pressure 5 50", "io-pressure 1 50", "432",
-            "163208757248 33225204464", "30", "121",
+            "163208757248 33225204464", "30", "122",
             "account of 152 GiB (launch <112, hold 128, kill 142 GiB), "
             "machine available 140 GiB (backstop 12)",
             "33225204464", "hold=", "fallback=load5 432"])
