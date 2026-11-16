@@ -72,7 +72,10 @@ It gets `ZESU_OWNER` (the run's owner) and `ZESU_PARENT_RUN_ID` (the run's ID) i
 Before it starts anything, the launcher scans the command line, every script it names, and the
 scripts those name (four levels) with `tools/kill_scan.py`.
 It refuses with exit 3 when an executable line kills by process name, by a pgrep match, or by
-the parent PID `$$`. The message names the file, the line, and the safe form.
+the parent PID `$$`, or reads `$?` after a `$(...)` or backtick substitution in the same command
+(the substitution resets `$?`: `echo "$(date) RUN-DONE rc=$?"` always logged rc=0).
+Each `refused:` line names the file, the line, and the safe form (for `$?`: `rc=$?` on its own
+line right after the command).
 The proof hygiene check applies the same scan to committed `tools/` scripts.
 
 `stop` records `stop_requested_ns`, closes the recorded actors, and then kills and stops the

@@ -286,6 +286,20 @@ class ModuleMemoryTests(unittest.TestCase):
                 self.assertIn("still draining", stderr.getvalue())
         self.assertTrue(issubclass(memory.LeafNotClosed, ValueError))
 
+    def test_standalone_scope_mark_refuses_with_status_2(self):
+        # `resource_guard.sh scope` outside a batch ended in this rejection as a
+        # Python traceback with exit 1.
+        marker = self.root / "1.token"
+        marker.write_text("15\nmemory_claim_bytes=1\n")
+        rejected = memory.RejectedScopeSetup(None)
+        with patch("sys.argv", ["module_memory.py", "ledger-mark", "--marker", str(marker)]), \
+                patch.object(memory, "mark_shell", side_effect=rejected), \
+                patch("sys.stderr", new=io.StringIO()) as stderr:
+            self.assertEqual(memory.main(), 2)
+        self.assertTrue(stderr.getvalue().startswith("refused: resource guard: a standalone scope"),
+                        stderr.getvalue())
+        self.assertIn("ZESU_WRITER_ID", stderr.getvalue())
+
     def test_admission_cli_leaves_the_budget_to_ledger_confirm(self):
         ledger = self.root / "LEDGER.json"
         ledger.write_text('{"fixed_claims": {}, "region_claims": {}}\n')
