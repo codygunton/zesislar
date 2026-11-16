@@ -114,99 +114,6 @@ Ltac2 zesu_name_reused (name : ident) : bool :=
     if Int.le length size then false else Bool.and (prefix 0) (digits size))
     (Control.hyps ()).
 
-(* Iris's connectives are primitive projections: an application's head is
-   either the projection (the BI is then not among the arguments) or its
-   constant, so a connective's own arguments are the last ones. *)
-Ltac2 zesu_constant_head (term : constr) (reference : constr) : bool :=
-  let constant_of term :=
-    match Constr.Unsafe.kind term with
-    | Constr.Unsafe.Constant constant _ => Some constant
-    | Constr.Unsafe.Proj projection _ _ => Proj.to_constant projection
-    | _ => None
-    end in
-  match constant_of term with
-  | Some constant =>
-      match constant_of reference with
-      | Some expected => Constant.equal constant expected
-      | None => false
-      end
-  | None => false
-  end.
-
-(* A successor's binder that is a register's value (`r ↦ᵣ RVal_Bits x`)
-   takes the register's value in the block, which the block's own register
-   resource fixes. A block variable of the binder's name holding another value
-   is never the witness: register binders are named per block entry
-   (`machine_x13`), and a block may name a call's argument the same way
-   while the register already holds the call's result (decodeParentHeader
-   0300's successor 026c took the argument `machine_x13` for its entry
-   register x13, which holds `call12_x13`, and left
-   `call12_x13 = machine_x13` unprovable). *)
-Ltac2 zesu_register_value (term : constr) : (constr * constr) option :=
-  match Constr.Unsafe.kind term with
-  | Constr.Unsafe.App head arguments =>
-      let count := Array.length arguments in
-      if Bool.and (Int.le 3 count) (zesu_constant_head head '(@reg_mapsto))
-      then Some (Array.get arguments (Int.sub count 3), Array.get arguments (Int.sub count 1))
-      else None
-  | _ => None
-  end.
-
-(* The register values in a term. With [Some value], only the values that
-   mention the binder of index [depth], with the binder replaced by [value]
-   and nothing else bound; with [None], every closed value. *)
-Ltac2 rec zesu_register_values (depth : int) (binder_value : constr option) (term : constr)
-    (found : (constr * constr) list) : (constr * constr) list :=
-  let found :=
-    match zesu_register_value term with
-    | Some (register, register_value) =>
-        match binder_value with
-        | Some value =>
-            (* Ltac2's occur_between counts from 0: [Rel depth] is index [depth - 1]. *)
-            if Constr.Unsafe.occur_between (Int.sub depth 1) 1 register_value then
-              let closed := Constr.Unsafe.substnl [value] (Int.sub depth 1) register_value in
-              if Constr.Unsafe.is_closed closed then (register, closed) :: found else found
-            else found
-        | None => if Constr.Unsafe.is_closed register_value then (register, register_value) :: found else found
-        end
-    | None => found
-    end in
-  match Constr.Unsafe.kind term with
-  | Constr.Unsafe.App head arguments =>
-      Array.fold_left (fun found argument => zesu_register_values depth binder_value argument found)
-        (zesu_register_values depth binder_value head found) arguments
-  | Constr.Unsafe.Lambda binder body =>
-      zesu_register_values (Int.add depth 1) binder_value body
-        (zesu_register_values depth binder_value (Constr.Binder.type binder) found)
-  | Constr.Unsafe.Prod binder body =>
-      zesu_register_values (Int.add depth 1) binder_value body
-        (zesu_register_values depth binder_value (Constr.Binder.type binder) found)
-  | _ => found
-  end.
-
-Ltac2 zesu_register_binder_conflict (body : constr) (value : constr) : bool :=
-  match Constr.Unsafe.kind body with
-  | Constr.Unsafe.Lambda _ inner =>
-      match zesu_register_values 1 (Some value) inner [] with
-      | [] => false
-      | wanted =>
-          let held :=
-            match Constr.Unsafe.kind (Control.goal ()) with
-            | Constr.Unsafe.App _ arguments =>
-                let count := Array.length arguments in
-                if Int.le 2 count
-                then zesu_register_values 0 None (Array.get arguments (Int.sub count 2)) []
-                else []
-            | _ => []
-            end in
-          List.exist (fun (register, wanted_value) =>
-            List.exist (fun (held_register, held_value) =>
-              Bool.and (Constr.equal register held_register)
-                (Bool.neg (Constr.equal wanted_value held_value))) held) wanted
-      end
-  | _ => false
-  end.
-
 Ltac2 zesu_named_equation_in_context () :=
   List.exist (fun (_, _, hypothesis_type) =>
     match Constr.Unsafe.kind hypothesis_type with
@@ -225,14 +132,31 @@ Ltac2 zesu_binder_namesake (binder_type : constr) (body : constr) : constr :=
               if Bool.and (Constr.equal hypothesis_type binder_type)
                    (Bool.and (zesu_named_equation_in_context ())
                      (Bool.neg (zesu_name_reused name)))
-              then (if zesu_register_binder_conflict body (Control.hyp name)
-                    then zesu_no_namesake () else Control.hyp name)
-              else zesu_no_namesake ()
+              then Control.hyp name else zesu_no_namesake ()
           | None => zesu_no_namesake ()
           end
       | None => zesu_no_namesake ()
       end
   | _ => zesu_no_namesake ()
+  end.
+
+(* Iris's connectives are primitive projections: an application's head is
+   either the projection (the BI is then not among the arguments) or its
+   constant, so a connective's own arguments are the last ones. *)
+Ltac2 zesu_constant_head (term : constr) (reference : constr) : bool :=
+  let constant_of term :=
+    match Constr.Unsafe.kind term with
+    | Constr.Unsafe.Constant constant _ => Some constant
+    | Constr.Unsafe.Proj projection _ _ => Proj.to_constant projection
+    | _ => None
+    end in
+  match constant_of term with
+  | Some constant =>
+      match constant_of reference with
+      | Some expected => Constant.equal constant expected
+      | None => false
+      end
+  | None => false
   end.
 
 Ltac2 zesu_named_binder_witness () :=
