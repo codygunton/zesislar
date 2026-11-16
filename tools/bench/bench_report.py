@@ -375,7 +375,7 @@ def run_end(record, measure, guard_text, caps):
     return 'killed (signal %d)' % -code
 
 
-def load_block(directory, caps=None):
+def load_block(directory, caps=None, running=False):
     """Everything the report needs about one block run directory."""
     directory = Path(directory)
     caps = caps or {}
@@ -399,7 +399,7 @@ def load_block(directory, caps=None):
         peak_kib = max((row.get('hwm_kib') or row.get('rss_kib') or 0) for row in timeline.samples)
     join_calls(parsed['calls'], timeline)
     join_calls(parsed['stage_records'], timeline)
-    end = run_end(record, measure, guard_text, caps)
+    end = 'running' if running else run_end(record, measure, guard_text, caps)
     verdict = record.get('verdict', 'NO-VERDICT')
     return {
         'dir': str(directory), 'verdict': verdict, 'reason': record.get('reason'), 'end': end,
@@ -430,7 +430,9 @@ def load_run(run_dir):
     for member in meta['members']:
         key = member_key(member)
         row = rows.get(key)
-        block = load_block(row['dir'], meta.get('caps')) if row else None
+        directory = row['dir'] if row else run_dir / 'runs' / member['case']
+        block = load_block(directory, meta.get('caps'), running=row is None) \
+            if row or Path(directory).is_dir() else None
         blocks.append({'key': key, 'member': member, 'row': row, 'block': block})
     return {'dir': str(run_dir), 'meta': meta, 'blocks': blocks}
 
