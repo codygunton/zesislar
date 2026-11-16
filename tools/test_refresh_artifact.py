@@ -2,6 +2,7 @@
 
 import fcntl
 import os
+import re
 import shutil
 import subprocess
 from pathlib import Path
@@ -10,6 +11,15 @@ import unittest
 from unittest.mock import patch
 
 import refresh_artifact as refresh
+
+
+def missing_stock_theories(root):
+    """Stock trace theories that ZesuSsz/dune needs and no generated dune file declares."""
+    wanted = set(re.findall(r"\bZesuSsz\.Stock\.\w+", (root / "ZesuSsz/dune").read_text()))
+    declared = set()
+    for dune in (root / "generated/isla-traces/stock-zisk").glob("*/dune"):
+        declared.update(re.findall(r"\(name (ZesuSsz\.Stock\.\w+)\)", dune.read_text()))
+    return sorted(wanted - declared)
 
 
 class PrivateRefresh(unittest.TestCase):
@@ -39,6 +49,12 @@ class PrivateRefresh(unittest.TestCase):
         switch = Path.home() / "islaris"
         if shutil.which("opam") is None or not switch.is_dir():
             self.skipTest("The pinned Dune toolchain is not installed.")
+        # `make stock-native-indexes` (a check-fast prerequisite) generates these theories;
+        # without them every `dune rules` query fails before reaching the target.
+        missing = missing_stock_theories(refresh.ROOT)
+        if missing:
+            self.skipTest("The generated stock theories " + ", ".join(missing) + " are absent; "
+                          "`make stock-native-indexes` builds them.")
         parent = refresh.ROOT / "_build/agents"
         parent.mkdir(parents=True, exist_ok=True)
         with tempfile.TemporaryDirectory(prefix="refresh-rules-", dir=parent) as temporary:

@@ -36,6 +36,8 @@ REFRESH_SECONDS = 5.0
 # A launched job must register within this interval; it is an event ceiling.
 LAUNCH_SECONDS = 120.0
 LAUNCH_REFUSED = 3
+# A launch whose identity matches a live registered run (tools/bg, guard batch/scope).
+DUPLICATE_REFUSED = 6
 SIGNAL_DEATH_SCHEMA = 'zesu.signal-death.v1'
 # A shell reports a child killed by one of these signals as exit status 128+N.
 SIGNAL_EXIT_CODES = {128 + number: number for number in
@@ -178,7 +180,7 @@ def stop_unit(unit):
     """End what is left in a launched run's scope; never the caller's own scope."""
     group = own_cgroup() or ''
     if group.rstrip('/').endswith('/' + unit) or '/' + unit + '/' in group:
-        print(f'run registry: {unit} holds the caller; its unit is left running.', file=sys.stderr)
+        print(f'notice: run registry: {unit} holds the caller; its unit is left running.', file=sys.stderr)
         return
     systemctl = shutil.which('systemctl')
     if systemctl is None:
@@ -202,6 +204,44 @@ def default_owner():
         return os.environ['COORD_AGENT']
     session = os.environ.get('PI_SESSION_FILE')
     return Path(session).stem if session else str(os.getuid())
+
+
+def launch_identity(owner, name):
+    """A tools/bg run is the same run when owner and name match; retries keep both."""
+    return json.dumps(['bg', owner, name])
+
+
+def stock_identity(owner, command, cwd):
+    """A guard batch or scope: owner, NAME, the module/caller files it runs, and the bank dir.
+
+    command is [guard, batch|scope, NAME, ..., '--', payload...]. Retries keep
+    NAME; distinct work under one script (export_block.py per block) does not.
+    The files are the payload arguments that name existing files, without the
+    program itself when it runs another file (`python3 col.py` is col.py); with
+    none, the whole payload.
+    """
+    name, rest = (command[2], command[3:]) if len(command) > 2 else ('', [])
+    payload = rest[rest.index('--') + 1:] if '--' in rest else rest
+    def files_of(items):
+        return sorted({str((cwd / item).resolve()) for item in items
+                       if item and not item.startswith('-') and (cwd / item).is_file()})
+    files = files_of(payload[1:]) or files_of(payload[:1])
+    return json.dumps(['guard', owner, name, files or payload, str(cwd.resolve())])
+
+
+def live_duplicate(registry, key):
+    """The live registered run with this identity, or None."""
+    for row in registry.read()['runs'].values():
+        if row.get('identity') == key and any(live(a) for a in [row['scheduler']] + row['jobs']):
+            return row
+    return None
+
+
+def refuse_duplicate(row):
+    print(f"refused: duplicate launch: live run {row['id']} (owner {row['owner']}, kind {row['kind']}) "
+          f"has the same identity {row['identity']}. Stop it with `tools/bg stop {row['id']}` "
+          f"and relaunch, or pass --allow-duplicate.", file=sys.stderr)
+    return DUPLICATE_REFUSED
 
 
 def spawn_detached(command, cwd, log):
@@ -244,6 +284,53 @@ def spawn_detached(command, cwd, log):
     return int(text)
 
 
+# `launch --heavy` (tools/bg --heavy) waits until the user slice has room: anon + shmem from
+# memory.stat under 140 GiB and memory.pressure `some avg60` under 5 %. Page cache does not count.
+HEAVY_MEMORY_BYTES = 140 * 2 ** 30
+HEAVY_PRESSURE_PERCENT = 5.0
+HEAVY_NOTICE_SECONDS = 60.0
+
+
+def account_cgroup():
+    root = Path(os.environ.get('ZESU_CGROUP_ROOT') or '/sys/fs/cgroup')
+    return root / 'user.slice' / f'user-{os.getuid()}.slice'
+
+
+def heavy_load(cgroup):
+    """Return the slice's anon + shmem bytes and its `some avg60` memory pressure (percent)."""
+    stat = {}
+    for line in (cgroup / 'memory.stat').read_text().splitlines():
+        fields = line.split()
+        if len(fields) == 2:
+            stat[fields[0]] = int(fields[1])
+    if 'anon' not in stat:
+        raise ValueError(f'{cgroup}/memory.stat has no anon line.')
+    for line in (cgroup / 'memory.pressure').read_text().splitlines():
+        fields = line.split()
+        if fields[:1] == ['some']:
+            pressure = dict(field.split('=', 1) for field in fields[1:])
+            return stat['anon'] + stat.get('shmem', 0), float(pressure['avg60'])
+    raise ValueError(f'{cgroup}/memory.pressure has no some line.')
+
+
+def wait_heavy_admission(name, cgroup=None, sleep=time.sleep, clock=time.monotonic):
+    """Block until the slice admits a heavy launch; print at most one notice a minute while held."""
+    cgroup = cgroup or account_cgroup()
+    poll = float(os.environ.get('ZESU_HEAVY_POLL_SECONDS') or 15)
+    noticed = None
+    while True:
+        used, pressure = heavy_load(cgroup)
+        if used < HEAVY_MEMORY_BYTES and pressure < HEAVY_PRESSURE_PERCENT:
+            return
+        if noticed is None or clock() - noticed >= HEAVY_NOTICE_SECONDS:
+            noticed = clock()
+            print(f'notice: run registry: heavy launch {name} waits: user slice anon+shmem '
+                  f'{used / 2 ** 30:.1f} GiB (limit {HEAVY_MEMORY_BYTES // 2 ** 30}), memory pressure some avg60 '
+                  f'{pressure:.2f}% (limit {HEAVY_PRESSURE_PERCENT:g}); page cache does not count.',
+                  file=sys.stderr, flush=True)
+        sleep(poll)
+
+
 def launch(registry, args):
     """Start a long job in its own systemd user scope outside the caller's process tree."""
     import kill_scan
@@ -255,7 +342,7 @@ def launch(registry, args):
         raise ValueError(f'The run directory {run_dir} does not exist.')
     findings = kill_scan.scan_command(command, run_dir)
     if findings:
-        print('run registry: launch refused: the command can kill jobs it does not own.', file=sys.stderr)
+        print('refused: run registry: launch refused: the command can kill jobs it does not own.', file=sys.stderr)
         for finding in findings:
             print(finding.message(), file=sys.stderr)
         return LAUNCH_REFUSED
@@ -263,6 +350,14 @@ def launch(registry, args):
     if systemd_run is None:
         raise ValueError('systemd-run is not available; the launcher needs a user scope.')
     owner = args.owner or default_owner()
+    key = launch_identity(owner, args.name)
+    if not args.allow_duplicate:
+        with registry.lock('transition'):
+            row = live_duplicate(registry, key)
+        if row is not None:
+            return refuse_duplicate(row)
+    if args.heavy:
+        wait_heavy_admission(args.name)
     stamp = time.strftime('%Y%m%dT%H%M%SZ', time.gmtime())
     run_id = f'{slug(owner)}-{slug(args.name)}-{stamp}-{uuid.uuid4().hex[:6]}'
     unit = f'zesubg-{run_id}.scope'
@@ -270,10 +365,13 @@ def launch(registry, args):
     # systemd-run expands $VAR and turns $$ into $ in the command unless told
     # not to; a launched command must run exactly as written.
     scope = [systemd_run, '--user', '--scope', '--quiet', '--collect', '--expand-environment=no', f'--unit={unit}']
-    details = ['--unit', unit, '--run-dir', str(run_dir), '--log', str(log), '--no-run-id-env']
+    details = ['--unit', unit, '--run-dir', str(run_dir), '--log', str(log), '--no-run-id-env', '--identity', key]
+    if args.allow_duplicate:
+        details.append('--allow-duplicate')
     if args.memory:
         scope += ['-p', f'MemoryMax={args.memory}G', '-p', 'MemorySwapMax=0']
         details += ['--memory-gib', str(args.memory)]
+    log_start = log.stat().st_size if log.is_file() else 0
     pid = spawn_detached(
         [*scope, '--', sys.executable, '-B', str(Path(__file__).resolve()), '--store', str(registry.directory),
          'run', '--id', run_id, '--kind', args.kind, '--owner', owner, *details, '--', *command],
@@ -288,13 +386,22 @@ def launch(registry, args):
             break
         started = identity(pid)
         if row is None and (started is None or started['state'] in ('Z', 'X')):
+            # A concurrent launch can pass the check above; the run's own check,
+            # made under the transition lock, then refuses this one.
+            with open(log, 'rb') as stream:
+                stream.seek(log_start)
+                fresh = stream.read().decode(errors='replace').splitlines()
+            refusal = [line for line in fresh if line.startswith('refused: duplicate launch:')]
+            if refusal:
+                print(refusal[-1], file=sys.stderr)
+                return DUPLICATE_REFUSED
             raise ValueError(f'The launch ended before it registered; see {log}.')
         if time.monotonic() >= deadline:
             raise ValueError(f'The launch did not register within {LAUNCH_SECONDS:.0f} s; see {log}.')
         time.sleep(0.05)
     job = row['jobs'][0]['pid'] if row['jobs'] else None
     print(run_id)
-    print(f'run registry: launched {run_id}: unit {unit}, scheduler {pid}, job {job}, status {row["status"]}, '
+    print(f'notice: run registry: launched {run_id}: unit {unit}, scheduler {pid}, job {job}, status {row["status"]}, '
           f'log {log}. Stop: tools/run_registry.py stop {run_id}', file=sys.stderr)
     return 0
 
@@ -397,6 +504,72 @@ def watchdog(registry, status):
             with Path(status).open('a') as stream:
                 stream.write(''.join(message + '\n' for message in messages))
         Registry.atomic_write(cursor, {'posted': len(lines)})
+        return messages
+
+
+# Gates that finished this long ago with no PR or merge since are reported as stalled.
+STALL_SECONDS = 30 * 60
+GATE_MARKERS = ('gates.out', 'GATES-DONE')
+
+
+def pull_requests(branch):
+    """The branch's PRs (state, updatedAt) from gh, in this checkout's repository."""
+    result = subprocess.run(['gh', 'pr', 'list', '--head', branch, '--state', 'all', '--limit', '50',
+                             '--json', 'state,updatedAt'], capture_output=True, text=True, timeout=120,
+                            cwd=Path(__file__).resolve().parent)
+    if result.returncode != 0:
+        raise ValueError(' '.join(result.stderr.split()) or f'gh exited {result.returncode}')
+    return json.loads(result.stdout)
+
+
+def gate_runs(registry):
+    """The newest registered run of each ITEM.json branch: (branch, row, gates finish time or None)."""
+    newest = {}
+    for row in registry.read()['runs'].values():
+        run_dir = Path(row['run_dir']) if row.get('run_dir') else None
+        try:
+            branch = json.loads((run_dir / 'ITEM.json').read_text()).get('branch') if run_dir else None
+        except (OSError, ValueError, AttributeError):
+            branch = None
+        if not isinstance(branch, str) or not branch:
+            continue
+        if branch not in newest or row.get('registered_ns', 0) > newest[branch].get('registered_ns', 0):
+            newest[branch] = row
+    for branch, row in sorted(newest.items()):
+        times = [path.stat().st_mtime for path in (Path(row['run_dir']) / name for name in GATE_MARKERS)
+                 if path.is_file()]
+        yield branch, row, max(times) if times else None
+
+
+def stall_report(registry, status, prs=pull_requests, now=None):
+    """Post one STATUS.md line per branch whose newest run's gates finished over 30 minutes ago
+    with no merged PR and no open PR updated since. Marker: <store>/gates-stall.posted."""
+    now = time.time() if now is None else now
+    marker = registry.directory / 'gates-stall.posted'
+    with registry.lock('watchdog'):
+        posted = json.loads(marker.read_text()) if marker.exists() else {}
+        stamp = time.strftime('%Y-%m-%dT%H:%MZ', time.gmtime(now))
+        messages = []
+        for branch, row, finished in gate_runs(registry):
+            if finished is None or branch in posted or now - finished < STALL_SECONDS:
+                continue
+            try:
+                found = prs(branch)
+            except (OSError, ValueError, subprocess.SubprocessError) as error:
+                messages.append(f'stall-report: PR lookup for {branch} failed: {error}')
+                continue
+            if any(pr['state'] == 'MERGED' for pr in found) or any(
+                    pr['state'] == 'OPEN' and datetime.datetime.fromisoformat(
+                        pr['updatedAt'].replace('Z', '+00:00')).timestamp() >= finished for pr in found):
+                continue
+            done = time.strftime('%Y-%m-%dT%H:%MZ', time.gmtime(finished))
+            line = (f"- {stamp} run-watchdog: gates done at {done} for branch {branch}; no PR/merge since "
+                    f"(run {row['id']}, owner {row['owner']}, {row['run_dir']}).")
+            with Path(status).open('a') as stream:
+                stream.write(line + '\n')
+            posted[branch] = {'run_id': row['id'], 'gates_done': done, 'posted': stamp}
+            Registry.atomic_write(marker, posted)
+            messages.append(line)
         return messages
 
 
@@ -735,7 +908,7 @@ class Registry:
                 self.release_claims(row['id'])
             except (OSError, ValueError, subprocess.CalledProcessError) as error:
                 # The claim stays reserved; a later pass retries the release.
-                print(f"run registry: orphan {row['id']} keeps its claims: {error}",
+                print(f"notice: run registry: orphan {row['id']} keeps its claims: {error}",
                       file=sys.stderr)
                 continue
             def close(current):
@@ -876,9 +1049,17 @@ def run_command(registry, args):
                 if old['owner'] != owner or old['kind'] != args.kind:
                     raise ValueError('A replacement must keep the old owner and kind.')
                 registry.stop(old_id)
+            run_identity = getattr(args, 'identity', None)
+            if run_identity is None and args.kind.startswith('stock-'):
+                run_identity = stock_identity(owner, command, Path.cwd())
+            if run_identity is not None and not getattr(args, 'allow_duplicate', False):
+                duplicate = live_duplicate(registry, run_identity)
+                if duplicate is not None:
+                    return refuse_duplicate(duplicate)
             details = {key: value for key, value in (
                 ('unit', getattr(args, 'unit', None)), ('run_dir', getattr(args, 'run_dir', None)),
-                ('log', getattr(args, 'log', None)), ('memory_gib', getattr(args, 'memory_gib', None)))
+                ('log', getattr(args, 'log', None)), ('memory_gib', getattr(args, 'memory_gib', None)),
+                ('identity', run_identity))
                 if value is not None}
             registry.register(run_id, args.kind, owner, identity(os.getpid()), command, details)
             if getattr(args, 'no_run_id_env', False):
@@ -950,6 +1131,9 @@ def main():
     run.add_argument('--memory-gib', type=int)
     run.add_argument('--no-run-id-env', action='store_true',
                      help='Do not export ZESU_RUN_ID; the command registers its own runs.')
+    run.add_argument('--identity', help='Duplicate identity (default: derived for stock-* kinds).')
+    run.add_argument('--allow-duplicate', action='store_true',
+                     help='Start even when a live run has the same identity.')
     run.add_argument('command', nargs=argparse.REMAINDER)
     start = commands.add_parser('launch', help='Start a long job in its own user scope (tools/bg).')
     start.add_argument('--name', required=True)
@@ -959,6 +1143,11 @@ def main():
     start.add_argument('--log', help='Output file (default: RUN_DIR/NAME.log, appended).')
     start.add_argument('--memory', type=int, choices=range(1, 1000), metavar='GIB',
                        help='Scope MemoryMax in GiB, with swap off.')
+    start.add_argument('--allow-duplicate', action='store_true',
+                       help='Start even when a live run has the same owner and name.')
+    start.add_argument('--heavy', action='store_true',
+                       help='Wait until the user slice anon+shmem is under 140 GiB and memory pressure '
+                            'some avg60 under 5 %%, then launch.')
     start.add_argument('command', nargs=argparse.REMAINDER)
     commands.add_parser('reap', help='Record runs that ended by a signal without a stop.')
     guard = commands.add_parser('watchdog', help='Reap, then post new signal deaths to STATUS.md.')
@@ -1012,7 +1201,7 @@ def main():
                 lines, follows = follow_main(registry, args.follow_main, args.status)
                 for line in lines:
                     print(line)
-        for message in watchdog(registry, args.status):
+        for message in watchdog(registry, args.status) + stall_report(registry, args.status):
             print(message)
         return 0 if follows else 1
     if args.action == 'begin':
@@ -1070,5 +1259,5 @@ if __name__ == '__main__':
     try:
         raise SystemExit(main())
     except (OSError, ValueError, KeyError, subprocess.CalledProcessError) as error:
-        print(f'run registry: {error}', file=sys.stderr)
+        print(f'refused: run registry: {error}', file=sys.stderr)
         raise SystemExit(2)

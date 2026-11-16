@@ -885,7 +885,9 @@ def main():
         result = confirm_shell(args.marker, args.replacement, args.request_bytes, args.available_bytes)
         publish_admission_totals(result)
         if not result['fits']:
-            print('unified memory ledger refuses the reservation', file=sys.stderr)
+            # Exit 3 is a hold: the guard waits and retries; the run continues.
+            print('notice: unified memory ledger holds the reservation; the guard waits and retries',
+                  file=sys.stderr)
             return 3
         return 0
     if args.command == 'ledger-mark':

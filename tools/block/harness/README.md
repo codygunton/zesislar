@@ -144,6 +144,12 @@ The session always runs full validation at completion, including after a tool fa
 Unchanged-runtime input mutations remain detectable at that final validation.
 
 The persistent digest cache uses private storage and serializes each full identity key.
+It shards records by key prefix (`binding-digests-v2/<xx>/<key>.json`) and stays bounded.
+Lookups prune it at most once an hour: records unused for two days, records whose file
+no longer has the recorded identity, and the oldest records beyond 100,000 or 1 GB go.
+The coqdep answer cache (`supplier-import-resolution`) is sharded and pruned the same way.
+`tools/prune_caches.py` prunes both now and drains the retired flat `binding-digests-v1`.
+A pruned record only costs a rehash or one coqdep query.
 Forced hashing bypasses both digest caches.
 Supplier validation reuses successful results only within one process.
 Each hit checks all consulted file and namespace identities.

@@ -261,7 +261,7 @@ cache_disk_admission() {
   [[ "$free" =~ ^[0-9]+$ ]] || { echo "resource guard: cannot read /home free bytes" >&2; return 2; }
   if diagnostic_probe && (( free < DISK_PROBE_MIN_BYTES )); then
     note "REFUSE probe launch: /home free_bytes=$free requires=$DISK_PROBE_MIN_BYTES"
-    echo "resource guard: probe refused: /home has $free free bytes, requires $DISK_PROBE_MIN_BYTES" >&2
+    echo "refused: resource guard: probe launch: /home has $free free bytes, requires $DISK_PROBE_MIN_BYTES" >&2
     return 3
   fi
 }
@@ -286,6 +286,26 @@ account_memory() {
   echo "$cap $current"
 }
 
+# Print the account's cap and admission bytes: anon + shmem from memory.stat.
+# Admission (holds, room, job count) ignores page cache and kernel memory:
+# memory.current read 200 GiB with 42 GiB anon on 2026-11-16. The kill check
+# keeps account_memory.
+admission_memory() {
+  local cap key value used=0 seen=0
+  { read -r cap < "$ACCOUNT_CGROUP/memory.max"; } 2>/dev/null || return 1
+  [ "$cap" != max ] || cap=$(( ACCOUNT_DEFAULT_CAP_GIB * GIB ))
+  [[ "$cap" =~ ^[1-9][0-9]*$ ]] || return 1
+  [ -r "$ACCOUNT_CGROUP/memory.stat" ] || return 1
+  while read -r key value; do
+    case "$key" in
+      anon) [[ "$value" =~ ^[0-9]+$ ]] || return 1; used=$(( used + value )); seen=1 ;;
+      shmem) [[ "$value" =~ ^[0-9]+$ ]] || return 1; used=$(( used + value )) ;;
+    esac
+  done < "$ACCOUNT_CGROUP/memory.stat"
+  (( seen )) || return 1
+  echo "$cap $used"
+}
+
 # Used means the account's figure, else total minus available, the figure
 # Prometheus reports (`MemTotal - MemAvailable`).
 used_bytes() {
@@ -297,10 +317,10 @@ used_bytes() {
 
 used_gib() { echo $(( $(used_bytes) / GIB )); }
 
-# Available means the account's room below its cap, else MemAvailable.
+# Available means the account's room below its cap (admission bytes), else MemAvailable.
 available_gib() {
   local cap total used available
-  if read -r cap used < <(account_memory); then echo $(( (cap - used) / GIB )); return 0; fi
+  if read -r cap used < <(admission_memory); then echo $(( (cap - used) / GIB )); return 0; fi
   read -r total used available < <(memory)
   echo $(( available / GIB ))
 }
@@ -311,7 +331,7 @@ memory_hold_reason() {
     job_gib=$(( (MEMORY_CLAIM_BYTES + GIB - 1) / GIB ))
   fi
   required=$(( job_gib + MEMORY_HEADROOM_GIB ))
-  if read -r cap used < <(account_memory); then
+  if read -r cap used < <(admission_memory); then
     available=$(( (cap - used) / GIB ))
     read -r total _ machine < <(memory)
     if (( used >= cap - HOLD_MARGIN_GIB * GIB )); then
@@ -499,7 +519,7 @@ lock_live_unlocked() {
   local text; text=$(cat "$GATE_LOCK" 2>/dev/null)
   rm -f "$GATE_LOCK"
   note "STALE gate lock removed: $text"
-  echo "resource guard: stale gate lock removed: $text" >&2
+  echo "notice: resource guard: stale gate lock removed: $text" >&2
   return 1
 }
 
@@ -576,7 +596,7 @@ lock_acquire() (
     flock -u 7
     exec 7>&-
     if (( queued == 0 )); then
-      echo "refusing: a gate holds or waits for $GATE_LOCK: ${current:-higher-priority waiter}" >&2
+      echo "refused: a gate holds or waits for $GATE_LOCK: ${current:-higher-priority waiter}" >&2
       return 3
     fi
     sleep "$POLL_SECONDS"
@@ -591,7 +611,7 @@ lock_hold() {
   # A registered launch can precede its systemd scope. Wait for both.
   while live=$(( $(gate_scopes | wc -l) + $(gate_launches | wc -l) + $(gate_reservations | wc -l) )); (( live > 0 )); do
     if (( SECONDS - start >= limit )); then
-      echo "refusing: $live job scopes or launches still alive after $(( SECONDS - start )) s" >&2
+      echo "refused: $live job scopes or launches still alive after $(( SECONDS - start )) s" >&2
       lock_release "$pid"; return 3
     fi
     [ -z "$noted" ] && note "LOCK wanted: waiting for $live job scopes" && noted=1
@@ -1098,7 +1118,7 @@ confirm_attempt() {
     holder=$(lock_live_unlocked 2>/dev/null) || holder=""
   fi
   if [ -n "$holder" ]; then
-    echo "resource guard: confirmation refused by gate lock: $holder" >&2
+    echo "refused: resource guard: confirmation blocked by gate lock: $holder" >&2
     flock -u 7; exec 7>&-; return 3
   fi
   # Stale-ledger recovery is a Python run; a slot refusal does not need it.
@@ -2132,6 +2152,13 @@ prune_scope_registry
 
 # Register a standalone batch or scope before its detached systemd actors start.
 # Nested scopes inherit the exact run ID. A new run never implies replacement.
+# The registry refuses (exit 6) a run whose owner, NAME, module/caller files and
+# bank dir match a live run; `batch|scope --allow-duplicate NAME ...` or
+# ZESU_ALLOW_DUPLICATE=1 starts it anyway.
+allow_duplicate=${ZESU_ALLOW_DUPLICATE:-}
+if [[ "${1:-}" =~ ^(batch|scope)$ ]] && [ "${2:-}" = --allow-duplicate ]; then
+  allow_duplicate=1; set -- "$1" "${@:3}"
+fi
 case "${1:-report}" in
   batch|scope)
     if [ -z "${ZESU_RUN_ID:-}" ] && [ -z "${ZESU_IN_BATCH:-}${ZESU_IN_GATE:-}" ]; then
@@ -2145,6 +2172,7 @@ case "${1:-report}" in
       if [ -n "${ZESU_SUPERSEDES_RUN:-}" ]; then
         registry_args+=(--supersedes "$ZESU_SUPERSEDES_RUN")
       fi
+      [ -z "$allow_duplicate" ] || registry_args+=(--allow-duplicate)
       exec "${ZESU_REGISTRY_PYTHON:-python3}" "$registry" "${registry_args[@]}" -- "$(realpath "$0")" "$@"
     fi ;;
 esac
