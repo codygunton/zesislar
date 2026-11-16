@@ -190,32 +190,29 @@ Proof.
 Qed.
 Print Assumptions named_binder_digit_final_name.
 
-(* A call's argument register binder (`call12_x13`) never takes its block
-   namesake: the call-site facts fix it. The call's result (`call12_after`)
-   still takes its namesake. *)
-Lemma named_binder_skips_call_argument `{!islaG Sigma} `{!threadG}
-    (kept base call12_x13 : bv 64) (named : zesu_named_eq kept base) (rest : iProp Sigma) :
-  rest ⊢ (∃ call12_x13 : bv 64, ⌜call12_x13 = call12_x13⌝) ∗ rest.
+(* A successor's register binder (`machine_x13`, the value of x13 at its
+   entry) never takes a block variable of its name while the block's x13
+   holds another value: the register resource fixes it. *)
+Lemma named_binder_skips_other_register_value `{!islaG Sigma} `{!threadG}
+    (kept base held machine_x13 : bv 64) (named : zesu_named_eq kept base) (rest : iProp Sigma) :
+  "x13" ↦ᵣ RVal_Bits held -∗ rest -∗ (∃ machine_x13 : bv 64, "x13" ↦ᵣ RVal_Bits machine_x13) ∗ rest.
 Proof.
-  iStartProof. iIntros "Hrest".
+  iStartProof. iIntros "Hx Hrest".
   Fail ZesuSsz.Automation2.NamedEquations.zesu_named_binder_witness.
-  iSplitR "Hrest"; [iExists call12_x13; iPureIntro; reflexivity | iExact "Hrest"].
+  iSplitL "Hx"; [iExists held; iExact "Hx" | iExact "Hrest"].
 Qed.
-Print Assumptions named_binder_skips_call_argument.
+Print Assumptions named_binder_skips_other_register_value.
 
-Lemma named_binder_takes_call_result `{!islaG Sigma} `{!threadG}
-    (kept base : bv 64) (named : zesu_named_eq kept base)
-    (call12_after : list nat) (rest : iProp Sigma) :
-  rest ⊢ (∃ call12_after : list nat, ⌜call12_after = call12_after⌝) ∗ rest.
+(* The same binder takes its namesake when x13 holds it. *)
+Lemma named_binder_takes_register_value `{!islaG Sigma} `{!threadG}
+    (kept base machine_x13 : bv 64) (named : zesu_named_eq kept base) (rest : iProp Sigma) :
+  "x13" ↦ᵣ RVal_Bits machine_x13 -∗ rest -∗ (∃ machine_x13 : bv 64, "x13" ↦ᵣ RVal_Bits machine_x13) ∗ rest.
 Proof.
-  iStartProof. iIntros "Hrest".
+  iStartProof. iIntros "Hx Hrest".
   ZesuSsz.Automation2.NamedEquations.zesu_named_binder_witness.
-  lazymatch goal with
-  | |- environments.envs_entails _ (⌜call12_after = call12_after⌝ ∗ rest)%I => idtac
-  end.
-  iFrame. iPureIntro. reflexivity.
+  iSplitL "Hx"; [iExact "Hx" | iExact "Hrest"].
 Qed.
-Print Assumptions named_binder_takes_call_result.
+Print Assumptions named_binder_takes_register_value.
 
 (* A call's precondition restated over fresh binders, one of them named
    like an unrelated block variable: the stepping loop closes it from the
