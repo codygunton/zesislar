@@ -139,6 +139,21 @@ class ExpandEnvironment(unittest.TestCase):
         self.assertEqual(result.returncode, 0, result.stderr)
         self.assertEqual(result.stdout, LITERAL + "\n")
 
+    @unittest.skipUnless(user_systemd_available(), "needs a systemd user manager")
+    def test_live_command_status_and_signal_reach_the_caller(self):
+        # guarded_tool execs into the scope, so a shell caller sees 7 or 128+15.
+        with tempfile.TemporaryDirectory() as temp:
+            guard = Path(temp) / "resource_guard.sh"
+            guard.write_text(PASSTHROUGH_GUARD)
+            guard.chmod(0o755)
+            environment = {k: v for k, v in os.environ.items() if not k.startswith("ZESU_")}
+            environment["ZESU_RESOURCE_GUARD"] = str(guard)
+            for script, expected in (("exit 7", 7), ("kill -TERM $$", -15)):
+                with self.subTest(script=script):
+                    result = subprocess.run([str(WRAPPER), "--memory", "1", "--", "sh", "-c", script],
+                                            env=environment, capture_output=True, text=True, timeout=120)
+                    self.assertEqual(result.returncode, expected, result.stderr)
+
 
 if __name__ == "__main__":
     unittest.main()

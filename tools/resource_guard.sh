@@ -25,6 +25,9 @@
 #   batch NAME -- CMD    run CMD in the batch scope, 150 GiB (a gate 120), swap off
 #                        batch and scope exit 5, running nothing, when
 #                        ZESU_MODULE_CLAIM_BYTES exceeds ZESU_MODULE_LIMIT_GIB
+#                        Once CMD ran, batch and scope exit with CMD's own
+#                        status; a signal or fence kill exits 128+signal.
+#                        Refusals before CMD runs: 2, 3, 5, 6.
 #   locked NAME -- CMD   run CMD holding the gate lock
 #   lock-status          print the gate lock, removing a stale one
 #   lock-want PID HOLDER take the lock for a gate script, state wanted
@@ -2112,7 +2115,8 @@ run_batch() {
   wait "$child"
   status=$?
   child=""
-  cleanup_batch || status=2
+  # The command's own failure wins; a failed cleanup turns only a success into 2.
+  cleanup_batch || { [ "$status" -ne 0 ] || status=2; }
   trap - EXIT TERM INT
   return "$status"
 }

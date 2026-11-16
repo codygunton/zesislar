@@ -58,6 +58,25 @@ class GuardLockTest(unittest.TestCase):
         self.assertEqual(trace.read_bytes(), event)
         self.assertNotIn("private-value", result.stdout + result.stderr)
 
+    def test_batch_and_scope_exit_with_the_command_status(self):
+        # A failed compile must not read as success (false rc=0 closures, #290);
+        # a signal death exits 128+N, not 256-N.
+        (self.bin / "systemd-run").write_text(
+            '#!/bin/sh\nwhile [ "$1" != -- ]; do shift; done; shift; exec "$@"\n')
+        (self.bin / "systemd-run").chmod(0o755)
+        failing, killed = ("sh", "-c", "exit 7"), ("sh", "-c", "kill -TERM $$")
+        for command, expected in ((failing, 7), (killed, 143)):
+            with self.subTest(route="batch", command=command):
+                result = self.guard("batch", "status", "--", *command)
+                self.assertEqual(result.returncode, expected, result.stderr)
+        context = self.batch_environment()
+        for command, expected in ((failing, 7), (killed, 143)):
+            with self.subTest(route="scope", command=command):
+                result = subprocess.run([str(GUARD), "scope", "status", "--", *command],
+                                        env={**self.environment, **context}, capture_output=True,
+                                        text=True, timeout=EVENT_CEILING_SECONDS)
+                self.assertEqual(result.returncode, expected, result.stderr)
+
     def setUp(self):
         self.directory = tempfile.TemporaryDirectory()
         base = Path(self.directory.name)
