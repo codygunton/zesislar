@@ -54,8 +54,17 @@ Ltac zesu_goal_domain_part :=
          unfold bv_modulus in *; cbn [Z.of_N] in *; lia
      end].
 
+(* An existential is refused before anything unfolds: its witnesses are not
+   chosen here, so `split` cannot open it; only a contradictory context could
+   close it, which `zesu_finish_lia` already tries just before. In 032c a callee
+   precondition `∃ x13 … before, decodeItemCallDomain … ∧ decodeItemCallMeaning …`
+   reached this step; opening and `cbn` on it reached 32 GiB. *)
 Ltac zesu_finish_goal_domain :=
   let _ := constr:(_ : ZesuStepGoalDomain) in
+  lazymatch goal with
+  | |- @ex _ _ => fail 0 "The goal domain step does not choose witnesses."
+  | |- _ => idtac
+  end;
   solve [
     zesu_goal_domain_open; cbn;
     zesu_witness_facts;
