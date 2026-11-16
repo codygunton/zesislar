@@ -85,6 +85,13 @@ class Parsing(unittest.TestCase):
     def test_goal_class(self):
         self.assertEqual(R.goal_class('final', 'forall (a : Z) (b : Z), (a < b -> a = 0) -> f a = b'), 'final = f')
         self.assertEqual(R.goal_class('split', 'P x'), 'split prop P')
+        exported = ('(forall (args : (@C.Args)), (forall (x13 : (@bv (64)%N)), ((@Coq.ZArith.BinInt.Z.le (0)%Z (x13)) '
+                    '-> (@Coq.ZArith.BinInt.Z.le (@Coq.ZArith.BinInt.Z.add (x13) (8)%Z) (400)%Z))))')
+        self.assertEqual(R.goal_class('final', exported), 'final <= add')
+        self.assertEqual(R.goal_class('final', '(forall (a : (@T)), (@Coq.Init.Logic.eq (@list (@bv (8)%N)) a b))'),
+                         'final = a')
+        self.assertEqual(R.goal_class('final', '(forall (a : (@T)), (@Sealed.decodeItemCallDomain (@f a)))'),
+                         'final prop decodeItemCallDomain')
 
     def test_command_classes(self):
         self.assertEqual(R.command_class('Qed.'), 'qed')
