@@ -15,10 +15,23 @@
 # usage: tools/cleanup_after_merge.sh [--dry-run] <branch>
 set -euo pipefail
 
+# The script may live in the worktree it removes; the janitor calls after
+# `git worktree remove` then found no tools/build_janitor.py (2026-11-15).
+# Run from a private copy of the script and the janitor, deleted on exit.
+if [ -z "${ZESU_CLEANUP_TOOLS:-}" ]; then
+  source_tools=$(dirname "$(realpath "$0")")
+  copy=$(mktemp -d "${TMPDIR:-/tmp}/cleanup-after-merge.XXXXXX")
+  cp -- "$source_tools/cleanup_after_merge.sh" "$source_tools/build_janitor.py" \
+    "$source_tools/goal_store.py" "$copy/"
+  ZESU_CLEANUP_TOOLS=$copy exec bash "$copy/cleanup_after_merge.sh" "$@"
+fi
+trap 'rm -f -- "$ZESU_CLEANUP_TOOLS/cleanup_after_merge.sh" "$ZESU_CLEANUP_TOOLS/build_janitor.py" \
+  "$ZESU_CLEANUP_TOOLS/goal_store.py"; rmdir -- "$ZESU_CLEANUP_TOOLS"' EXIT
+
 dry_run=0
 if [ "${1:-}" = --dry-run ]; then dry_run=1; shift; fi
 if [ "$#" -ne 1 ] || [ -z "$1" ]; then
-  echo "usage: $0 [--dry-run] <branch>" >&2
+  echo "usage: tools/cleanup_after_merge.sh [--dry-run] <branch>" >&2
   exit 2
 fi
 branch=${1#refs/heads/}
@@ -28,18 +41,29 @@ case "$branch" in
     echo "cleanup_after_merge: refusing to clean up $branch" >&2; exit 2 ;;
 esac
 
-tools=$(dirname "$(realpath "$0")")
-janitor=(python3 "$tools/build_janitor.py")
+tools=$ZESU_CLEANUP_TOOLS
+janitor=(python3 -B "$tools/build_janitor.py")
 common=$(git rev-parse --path-format=absolute --git-common-dir)
 root=$(dirname "$common")
+# The current directory may be the worktree this run removes.
+cd -- "$root"
 
 tip=$(git -C "$root" rev-parse --verify -q "refs/heads/$branch^{commit}" || true)
 if [ -z "$tip" ]; then
   echo "cleanup_after_merge: no local branch $branch" >&2; exit 2
 fi
+# A merge made on GitHub is invisible until origin is fetched; without the
+# fetch the script reported "not merged" and did nothing (2026-11-16).
+case "$main_ref" in
+  origin/*)
+    if ! git -C "$root" fetch --quiet origin \
+      "+refs/heads/${main_ref#origin/}:refs/remotes/$main_ref"; then
+      echo "cleanup_after_merge: git fetch origin failed; cannot tell whether $branch is merged." >&2
+      exit 2
+    fi ;;
+esac
 if ! git -C "$root" merge-base --is-ancestor "$tip" "$main_ref"; then
-  echo "cleanup_after_merge: $branch ($tip) is not merged into $main_ref; nothing done." >&2
-  echo "cleanup_after_merge: fetch $main_ref first if the merge is new." >&2
+  echo "cleanup_after_merge: $branch ($tip) is not merged into $main_ref (fetched); nothing done." >&2
   exit 3
 fi
 

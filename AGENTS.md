@@ -250,7 +250,7 @@ by a symbolic link or by a path in a manifest. It logs each deletion in `_build/
 4. Keep one bank for each main commit. Put a main-commit object bank in `_build/banks/<main-sha>/`.
    The janitor deletes a bank of an older main commit after 24 hours without change.
 5. Clean up after each merge. Run `tools/cleanup_after_merge.sh <branch>`.
-   It removes the clean worktree of the branch and the run dirs of the branch.
+   It fetches `origin/main` first, then removes the clean worktree of the branch and the run dirs of the branch.
    It never uses `--force`. Write `ITEM.json` with `{"branch": "<branch>"}` in each run dir.
 6. Worktree builds expire. The janitor deletes a worktree `_build` after 48 hours without change.
    The source checkout stays.

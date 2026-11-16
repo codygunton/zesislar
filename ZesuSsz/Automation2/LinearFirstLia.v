@@ -179,19 +179,54 @@ Ltac2 rec zesu_linear_unlinked (rounds : int) (facts : (ident * constr list) lis
   if Bool.and changed (Int.lt 1 rounds) then zesu_linear_unlinked (Int.sub rounds 1) rest linked
   else List.map (fun fact => let (name, _) := fact in name) rest.
 
-Ltac2 rec zesu_linear_spend (budget : int ref) (term : constr) : unit :=
-  if Int.le (Ref.get budget) 0 then () else (
-  Ref.set budget (Int.sub (Ref.get budget) 1);
-  let visit := zesu_linear_spend budget in
+(* The budget left after the nodes of a term, stopping at zero. One pass
+   without a reference cell or a closure per node. *)
+Ltac2 rec zesu_linear_remaining (budget : int) (term : constr) : int :=
+  if Int.le budget 0 then budget else
+  let budget := Int.sub budget 1 in
   match Constr.Unsafe.kind term with
-  | Constr.Unsafe.App head arguments => visit head; Array.iter visit arguments
-  | Constr.Unsafe.Prod binder body => visit (Constr.Binder.type binder); visit body
-  | Constr.Unsafe.Lambda binder body => visit (Constr.Binder.type binder); visit body
+  | Constr.Unsafe.App head arguments =>
+      zesu_linear_remaining_arguments (zesu_linear_remaining budget head) arguments 0 (Array.length arguments)
+  | Constr.Unsafe.Prod binder body =>
+      zesu_linear_remaining (zesu_linear_remaining budget (Constr.Binder.type binder)) body
+  | Constr.Unsafe.Lambda binder body =>
+      zesu_linear_remaining (zesu_linear_remaining budget (Constr.Binder.type binder)) body
   | Constr.Unsafe.LetIn binder value body =>
-      visit (Constr.Binder.type binder); visit value; visit body
-  | Constr.Unsafe.Cast value _ typ => visit value; visit typ
-  | _ => ()
-  end).
+      zesu_linear_remaining
+        (zesu_linear_remaining (zesu_linear_remaining budget (Constr.Binder.type binder)) value) body
+  | Constr.Unsafe.Cast value _ typ => zesu_linear_remaining (zesu_linear_remaining budget value) typ
+  | _ => budget
+  end
+with zesu_linear_remaining_arguments (budget : int) (arguments : constr array) (index : int) (length : int) : int :=
+  if Int.equal index length then budget
+  else zesu_linear_remaining_arguments
+         (zesu_linear_remaining budget (Array.get arguments index)) arguments (Int.add index 1) length.
+
+Ltac2 rec zesu_linear_codomain (typ : constr) (count : int) : constr option :=
+  if Int.equal count 0 then Some typ else
+  match Constr.Unsafe.kind typ with
+  | Constr.Unsafe.Prod _ body => zesu_linear_codomain body (Int.sub count 1)
+  | _ => None
+  end.
+
+(* A statement is a proposition. An application's sort is read off its head's
+   type, so only the head is typed; other statements are typed whole. Typing
+   every fact whole cost about 45 ms per call on a 267-fact context. *)
+Ltac2 zesu_linear_is_prop (statement : constr) : bool :=
+  let sort :=
+    match Constr.Unsafe.kind statement with
+    | Constr.Unsafe.App head arguments =>
+        match zesu_linear_codomain (Constr.type head) (Array.length arguments) with
+        | Some result =>
+            match Constr.Unsafe.kind result with
+            | Constr.Unsafe.Sort _ => result
+            | _ => Constr.type statement
+            end
+        | None => Constr.type statement
+        end
+    | _ => Constr.type statement
+    end in
+  Constr.equal sort constr:(Prop).
 
 (* Linking rounds and the node budget of the goal and the facts kept. *)
 Ltac2 zesu_linear_rounds () := 2.
@@ -211,22 +246,22 @@ Ltac2 zesu_linear_clear_unrelated () :=
     match body with
     | Some _ => facts
     | None =>
-        if Constr.equal (Constr.type typ) constr:(Prop)
+        if zesu_linear_is_prop typ
         then (name, zesu_linear_atoms heads typ []) :: facts else facts
     end) [] (Control.hyps ())) goal_atoms in
   if Int.equal (List.length unrelated) 0 then Control.zero (Tactic_failure None) else ();
-  let budget := Ref.ref (zesu_linear_node_budget ()) in
-  zesu_linear_spend budget (Control.goal ());
-  List.iter (fun declaration =>
+  let budget := zesu_linear_remaining (zesu_linear_node_budget ()) (Control.goal ()) in
+  let budget := List.fold_left (fun budget declaration =>
     let (name, body, typ) := declaration in
     match body with
-    | Some _ => ()
+    | Some _ => budget
     | None =>
-        if List.exist (Ident.equal name) unrelated then ()
-        else if Constr.equal (Constr.type typ) constr:(Prop) then zesu_linear_spend budget typ
-        else ()
-    end) (Control.hyps ());
-  if Int.le (Ref.get budget) 0 then Control.zero (Tactic_failure None) else ();
+        if Int.le budget 0 then budget
+        else if List.exist (Ident.equal name) unrelated then budget
+        else if zesu_linear_is_prop typ then zesu_linear_remaining budget typ
+        else budget
+    end) budget (Control.hyps ()) in
+  if Int.le budget 0 then Control.zero (Tactic_failure None) else ();
   (* Each clear commits, so a failed call never retries clear combinations. *)
   List.iter (fun name =>
     match Control.case (fun () => Std.clear [name]) with
@@ -248,17 +283,25 @@ Ltac zesu_lia_linked_facts :=
 Ltac2 zesu_linear_context_node_budget () := 32768.
 Ltac2 zesu_linear_pruned_context_node_budget () := 98304.
 
+Ltac2 rec zesu_linear_facts_remaining (budget : int) (hyps : (ident * constr option * constr) list) : int :=
+  if Int.le budget 0 then budget else
+  match hyps with
+  | [] => budget
+  | declaration :: rest =>
+      let (_, body, typ) := declaration in
+      match body with
+      | Some _ => zesu_linear_facts_remaining budget rest
+      | None =>
+          if zesu_linear_is_prop typ
+          then zesu_linear_facts_remaining (zesu_linear_remaining budget typ) rest
+          else zesu_linear_facts_remaining budget rest
+      end
+  end.
+
 Ltac2 zesu_linear_context_within (nodes : int) :=
-  let budget := Ref.ref nodes in
-  zesu_linear_spend budget (Control.goal ());
-  List.iter (fun declaration =>
-    let (_, body, typ) := declaration in
-    match body with
-    | Some _ => ()
-    | None =>
-        if Constr.equal (Constr.type typ) constr:(Prop) then zesu_linear_spend budget typ else ()
-    end) (Control.hyps ());
-  if Int.le (Ref.get budget) 0 then Control.zero (Tactic_failure None) else ().
+  let budget := zesu_linear_remaining nodes (Control.goal ()) in
+  if Int.le (zesu_linear_facts_remaining budget (Control.hyps ())) 0
+  then Control.zero (Tactic_failure None) else ().
 
 Ltac zesu_lia_context_within_budget :=
   ltac2:(zesu_linear_context_within (zesu_linear_context_node_budget ())).

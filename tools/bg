@@ -6,12 +6,17 @@ set -euo pipefail
 # tool `$$` is the shared harness PID, so a job started with `&` or
 # `setsid nohup ... &` from it can die with every other agent's jobs.
 #
-#   tools/bg [--memory GIB] [--dir DIR] [--log FILE] [--owner NAME] NAME [--] COMMAND [ARGS...]
+#   tools/bg [--heavy] [--memory GIB] [--dir DIR] [--log FILE] [--owner NAME] [--allow-duplicate] NAME [--] COMMAND [ARGS...]
 #   tools/bg list          active runs
 #   tools/bg stop RUN_ID   stop a run and its scope
 #
-# Output goes to DIR/NAME.log (appended). The launch refuses a command whose
-# scripts kill by name, by pgrep match, or by parent PID (tools/kill_scan.py).
+# Output goes to DIR/NAME.log (appended). The launch refuses (exit 3) a command
+# whose scripts kill by name, by pgrep match, or by parent PID (tools/kill_scan.py),
+# and refuses (exit 6) a launch whose owner and NAME match a live run; a retry
+# under the same NAME is the same run. --allow-duplicate starts it anyway.
+# --heavy (gates, bank builds, column batches) first waits until the user
+# slice's anon+shmem is under 140 GiB and memory pressure some avg60 under 5 %,
+# printing at most one `notice:` line a minute; page cache does not count.
 
 registry="$(dirname "$(realpath "$0")")/run_registry.py"
 usage() { sed -n '9,11s/^#   //p' "$0" >&2; exit 2; }
@@ -22,6 +27,7 @@ case "${1:-}" in
 esac
 options=()
 while [[ "${1:-}" == --?* ]]; do
+  if [ "$1" = --allow-duplicate ] || [ "$1" = --heavy ]; then options+=("$1"); shift; continue; fi
   [ $# -ge 2 ] || usage
   options+=("$1" "$2"); shift 2
 done

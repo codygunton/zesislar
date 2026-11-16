@@ -51,7 +51,17 @@ tools/bg list                             # active runs
 ```
 
 `tools/bg` runs `run_registry.py launch --name NAME -- COMMAND...`.
-Options before NAME: `--dir DIR` (run and working directory), `--log FILE`, `--owner NAME`, `--memory GIB`.
+Options before NAME: `--dir DIR` (run and working directory), `--log FILE`, `--owner NAME`, `--memory GIB`,
+`--allow-duplicate`, `--heavy`.
+
+`--heavy` marks a gate, bank build, or column batch. Before it starts, the launcher waits until the user
+slice (`/sys/fs/cgroup/user.slice/user-$UID.slice`, or `$ZESU_CGROUP_ROOT/...`) has `anon + shmem`
+(memory.stat) under 140 GiB and `memory.pressure` `some avg60` under 5 %. Page cache does not count.
+While it waits it prints at most one `notice:` line a minute and rechecks every 15 s
+(`ZESU_HEAVY_POLL_SECONDS`). Unreadable slice files are an error (exit 2). The resource guard's own
+admission (hold, room, job count) counts the same `anon + shmem`; its kill check still counts
+`memory.current` less file LRU and reclaimable slab.
+
 The launcher starts the command in a new session whose parent is init, inside its own
 `systemd-run --user --scope` unit `zesubg-<owner>-<name>-<UTC>-<hex>.scope`.
 The job is never a child of the caller, so a kill by the caller's parent PID cannot reach it.
@@ -67,6 +77,30 @@ The proof hygiene check applies the same scan to committed `tools/` scripts.
 
 `stop` records `stop_requested_ns`, closes the recorded actors, and then kills and stops the
 run's unit, which ends any process that left the process tree.
+
+## Duplicate launches
+
+A launch whose identity matches a live registered run is refused with exit 6, before anything starts.
+The message starts `refused: duplicate launch:` and names the live run ID and `tools/bg stop <id>`.
+Identity survives retries because it never includes the run ID or time:
+
+- `tools/bg` / `launch`: owner and NAME.
+- guard `batch` / `scope` (kinds `stock-batch`, `stock-scope`): owner, NAME, the module/caller files
+  (payload arguments that name existing files, without the interpreter), and the bank dir (the working
+  directory).
+
+The check runs under the registry's transition lock in `run`, so two concurrent launches cannot both
+start. After the live run ends (or `tools/bg stop`), the same launch succeeds. `--allow-duplicate`
+(`tools/bg --allow-duplicate NAME ...`, `resource_guard.sh batch --allow-duplicate NAME -- ...`, or
+`ZESU_ALLOW_DUPLICATE=1` for the guard) starts it anyway.
+
+## Message prefixes and exit codes
+
+Registry and guard messages that do not stop the run start with `notice:`; refusals start with
+`refused:` and exit nonzero. Scripts decide by exit status, never by grepping for "refuse".
+Launch exit codes: 0 started; 2 invalid use or registry error; 3 unsafe-kill refusal or build-budget
+refusal; 5 guard claim above the module fence; 6 duplicate launch. The unified ledger's hold
+(`notice: unified memory ledger holds the reservation`) is not a refusal: the guard waits and retries.
 
 ## Signal deaths
 
@@ -99,6 +133,15 @@ fetch, tracked changes, local commits, or a refused checkout) is posted to STATU
 reason (marker `<store>/follow-main.held`, cleared when it moves again), and the watchdog exits 1 after
 its reap, so `systemctl --user status zesu-run-watchdog` shows the unit failed. Untracked files such as
 `tools/bg` logs do not hold it.
+
+## Stalled gates
+
+Each watchdog pass also reports gates that finished with nothing after them. For each ITEM.json branch,
+it takes the branch's newest registered run (by registration time). When that run's dir has `gates.out` or
+`GATES-DONE` last modified over 30 minutes ago, it asks `gh pr list --head <branch> --state all`. With no
+merged PR and no open PR updated since the gates finished, it appends
+`gates done at <T> for branch <B>; no PR/merge since (run ..., owner ..., <run dir>).` to STATUS.md, once per
+branch (marker `<store>/gates-stall.posted`). A failed PR lookup posts nothing and is retried next pass.
 
 ## Fixture verification
 
