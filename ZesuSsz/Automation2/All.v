@@ -102,5 +102,8 @@ Require Export ZesuSsz.Automation2.CodecFrame.
 #[export] Instance zesu_codec_frame_enabled :
   ZesuSsz.Automation2.CodecFrame.ZesuStepCodecFrame := {}.
 
+(* Measurement branch only: BoundedSolve arms log their context sizes. *)
+Require ZesuSsz.Automation2.BoundedSolveLog.
+
 (* Reopen the canonical hook owner after all library imports. *)
 Require Export ZesuSsz.Automation2.Hooks.
