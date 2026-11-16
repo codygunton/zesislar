@@ -17,9 +17,10 @@ unsealed run, the bank of the newest main commit, or a run that one of
 those names by a symbolic link or by a path in a manifest. It logs every
 deletion under `_build/janitor/`.
 
-It never touches the saved-goal store `_build/goals/` (see goal_store.py) and
-reports its size against its own budget. Before it deletes a worktree build or
-a merged branch's run dir, it moves the saved goals in it into the store.
+It never touches the saved-goal store `_build/goals/` (see goal_store.py) or the
+closure-record store `_build/closures/`, and reports the goal store's size against its
+budget. Before it deletes a worktree build or a merged branch's run dir, it moves the
+saved goals and the CLOSURE.json / NOT-CLOSED.json records in it into those stores.
 
 It also reports the per-user harness caches under ~/.cache/zesislar (size and
 file count per directory) against CACHE_BUDGET_BYTES. Those caches bound
@@ -901,13 +902,18 @@ def remove_tree(path, log):
 
 
 def rescue_goals(root, path, reason, log=None):
-    """Move the saved goals under PATH into the store; log each one. Return the store dir."""
+    """Move the saved goals and closure records under PATH into their stores; log each one.
+    Return the goal store dir."""
     def note(line):
         if log is not None:
             log.write(line + '\n')
     destination, count = goal_store.rescue(root, path, reason=reason, log=note)
     if count:
         print(f'saved {count} goal file(s) from {path} to {destination}')
+    closures = goal_store.rescue_closures(root, path, reason=reason, log=note)
+    if closures:
+        print(f'saved {closures} closure record(s) from {path} to '
+              f'{Path(root) / goal_store.CLOSURES}')
     return destination
 
 
@@ -1104,6 +1110,8 @@ def branch_items(args):
             else:
                 for file, relative, _ in goal_store.goal_files(path):
                     print(f'would save goal {file}')
+                for file, _ in goal_store.closure_files(path):
+                    print(f'would save closure record {file}')
                 print(f'would remove run dir {path}')
     return 0
 
@@ -1114,6 +1122,8 @@ def rescue_goals_command(args):
         for path in args.paths:
             for file, _, _ in goal_store.goal_files(path):
                 print(f'would save goal {file}')
+            for file, _ in goal_store.closure_files(path):
+                print(f'would save closure record {file}')
         return 0
     log_dir = Path(args.log_dir) if args.log_dir else root / '_build/janitor'
     log_dir.mkdir(parents=True, exist_ok=True)

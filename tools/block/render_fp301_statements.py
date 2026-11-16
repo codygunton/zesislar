@@ -365,16 +365,25 @@ def residual_import(source, residuals=RESIDUALS):
 
 
 def render_caller(source, residuals=RESIDUALS):
-    """Keep the canonical caller and select the second automation entry point."""
+    """Keep the canonical caller, select the second automation entry point, and end with
+    `Print Assumptions <theorem>.` so tools/closure_cert.py can certify it."""
     if "::=" in source or "Ltac " in source:
         raise ValueError("A canonical caller cannot contain tactic overrides.")
     if source.count("Require Import ZesuSsz.Automation.All.") < 1:
         raise ValueError("A canonical caller lacks its automation import.")
     if source.count("  zesu_block.\nQed.") != 1:
         raise ValueError("A canonical caller lacks its plain block proof.")
-    return residual_import(core_import_last(source.replace("Require Import ZesuSsz.Automation.All.",
+    proved = source[:source.index("  zesu_block.\nQed.")]
+    theorems = re.findall(r"^(?:Lemma|Theorem) ([A-Za-z_][A-Za-z0-9_']*)", proved, re.M)
+    if not theorems:
+        raise ValueError("A canonical caller lacks its block theorem.")
+    rendered = residual_import(core_import_last(source.replace("Require Import ZesuSsz.Automation.All.",
                           CORE_IMPORT).replace(
                               "  zesu_block.\nQed.", "  zesu_block2.\nQed.")), residuals)
+    query = "Print Assumptions " + theorems[-1] + "."
+    if query not in rendered:
+        rendered = rendered.rstrip("\n") + "\n\n" + query + "\n"
+    return rendered
 
 
 def render(inputs, output):

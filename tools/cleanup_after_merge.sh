@@ -6,8 +6,9 @@
 # or, without ITEM.json, when its name is the branch name, the branch name with
 # "/" replaced by "-", or the last part of the branch name.
 # Before deleting a worktree build or run dir, it moves the saved goals in it
-# (*Goal*.v, goals/**/*.v) into the store _build/goals/ (tools/goal_store.py),
-# which it never deletes.
+# (*Goal*.v, goals/**/*.v) into the store _build/goals/ and the closure records
+# (CLOSURE.json, NOT-CLOSED.json) into _build/closures/<function>/<case>/<run>/
+# (tools/goal_store.py); it never deletes either store.
 # The script keeps anything that a live process uses or that holds a release
 # receipt named by the admission ledger, and everything under
 # _build/agents/orch/. It does not delete the branch.

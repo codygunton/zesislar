@@ -27,3 +27,5 @@ Lemma DesignedBoundary_800d69b0 `{!islaG Sigma} `{!threadG} (args : DecodeItemAr
 Proof.
   zesu_block2.
 Qed.
+
+Print Assumptions DesignedBoundary_800d69b0.
