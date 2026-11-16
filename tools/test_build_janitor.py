@@ -233,6 +233,24 @@ class Plan(JanitorTree):
         self.assertGreater(budget['goal_store']['bytes'], 0)
         self.assertFalse(budget['goal_store']['over'])
 
+    def test_worktree_build_removal_keeps_closure_records(self):
+        worktrees = self.root / '.worktrees'
+        record = write(worktrees / 'probe/_build/cert/0300/CLOSURE.json',
+                       b'{"case": "0300", "verdict": "CLOSED"}\n')
+        # correctness_gate.py's process-closure CLOSURE.json is not a block closure record.
+        gate = write(worktrees / 'probe/_build/agents/correctness-gates/g1/CLOSURE.json',
+                     b'{"all_owned_actors_closed": true}\n')
+        janitor = self.janitor(now=time.time() + 49 * HOUR)
+        with patch('builtins.print'):
+            _, log = self.plan_and_apply(janitor, self.live())
+        self.assertFalse(record.exists())
+        kept = self.root / '_build/closures/_rescued/0300/probe-cert/CLOSURE.json'
+        self.assertEqual(kept.read_bytes(), b'{"case": "0300", "verdict": "CLOSED"}\n')
+        self.assertFalse(gate.exists())
+        self.assertEqual([p.name for p in (self.root / '_build/closures/_rescued').iterdir()],
+                         ['0300'])
+        self.assertIn('closure-saved\t' + str(record), log)
+
     def test_budget_reports_each_user_cache_directory(self):
         write(self.cache / 'binding-digests-v2/ab/record.json', b'x' * 10)
         write(self.cache / 'supplier-import-resolution/s/cd/record.json')
