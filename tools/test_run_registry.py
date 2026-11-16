@@ -72,6 +72,12 @@ class RunRegistryTests(unittest.TestCase):
         self.assertTrue(row['all_actors_closed'])
         self.assertEqual(self.registry.active(), [])
 
+    def test_signal_death_of_the_command_exits_128_plus_signal(self):
+        process = self.wrapper('killed', 'import os, signal; os.kill(os.getpid(), signal.SIGTERM)')
+        self.assertEqual(process.wait(timeout=EVENT_CEILING_SECONDS), 143)
+        row = self.registry.read()['runs']['killed']
+        self.assertEqual((row['status'], row['exit_code'], row['signal']), ('failed', -15, 15))
+
     def test_signal_during_locked_update_does_not_deadlock(self):
         code = '''
 import os, signal, sys

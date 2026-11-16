@@ -36,6 +36,11 @@ class DuneTraceGuardTests(unittest.TestCase):
             self.assertEqual((build / 'trace.csexp').read_bytes(), compiler)
             self.assertNotIn(b'private-value', result.stdout + result.stderr)
 
+    def test_signal_death_exits_128_plus_signal(self):
+        result = subprocess.run([sys.executable, str(Path(__file__).with_name('dune_trace_guard.py')),
+                                 '--', 'sh', '-c', 'kill -TERM $$'], capture_output=True)
+        self.assertEqual(result.returncode, 143, result.stderr)
+
     def test_a_command_already_rewritten_by_a_stock_batch_does_not_wait_for_the_alias_lock(self):
         # A stock batch wraps its command in this guard, which holds the alias
         # lock while the command runs; the recipe's own guard must not wait for it.
