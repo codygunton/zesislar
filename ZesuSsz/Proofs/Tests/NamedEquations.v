@@ -190,6 +190,54 @@ Proof.
 Qed.
 Print Assumptions named_binder_digit_final_name.
 
+(* A successor's register binder (`machine_x13`, the value of x13 at its
+   entry) never takes a block variable of its name while the block's x13
+   holds another value: the register resource fixes it. *)
+Lemma named_binder_skips_other_register_value `{!islaG Sigma} `{!threadG}
+    (kept base held machine_x13 : bv 64) (named : zesu_named_eq kept base) (rest : iProp Sigma) :
+  "x13" ↦ᵣ RVal_Bits held -∗ rest -∗ (∃ machine_x13 : bv 64, "x13" ↦ᵣ RVal_Bits machine_x13) ∗ rest.
+Proof.
+  iStartProof. iIntros "Hx Hrest".
+  Fail ZesuSsz.Automation2.NamedEquations.zesu_named_binder_witness.
+  iSplitL "Hx"; [iExists held; iExact "Hx" | iExact "Hrest"].
+Qed.
+Print Assumptions named_binder_skips_other_register_value.
+
+(* The same binder takes its namesake when x13 holds it. *)
+Lemma named_binder_takes_register_value `{!islaG Sigma} `{!threadG}
+    (kept base machine_x13 : bv 64) (named : zesu_named_eq kept base) (rest : iProp Sigma) :
+  "x13" ↦ᵣ RVal_Bits machine_x13 -∗ rest -∗ (∃ machine_x13 : bv 64, "x13" ↦ᵣ RVal_Bits machine_x13) ∗ rest.
+Proof.
+  iStartProof. iIntros "Hx Hrest".
+  ZesuSsz.Automation2.NamedEquations.zesu_named_binder_witness.
+  iSplitL "Hx"; [iExact "Hx" | iExact "Hrest"].
+Qed.
+Print Assumptions named_binder_takes_register_value.
+
+(* The same two cases with the environment let-bound as Lithium's stepping
+   loop leaves it (`IPM_JANNO := Envs ...`). *)
+Lemma named_binder_skips_other_register_value_bound_env `{!islaG Sigma} `{!threadG}
+    (kept base held machine_x13 : bv 64) (named : zesu_named_eq kept base) (rest : iProp Sigma) :
+  "x13" ↦ᵣ RVal_Bits held -∗ rest -∗ (∃ machine_x13 : bv 64, "x13" ↦ᵣ RVal_Bits machine_x13) ∗ rest.
+Proof.
+  iStartProof. iIntros "Hx Hrest". let_bind_envs.
+  Fail ZesuSsz.Automation2.NamedEquations.zesu_named_binder_witness.
+  subst IPM_JANNO.
+  iSplitL "Hx"; [iExists held; iExact "Hx" | iExact "Hrest"].
+Qed.
+Print Assumptions named_binder_skips_other_register_value_bound_env.
+
+Lemma named_binder_takes_register_value_bound_env `{!islaG Sigma} `{!threadG}
+    (kept base machine_x13 : bv 64) (named : zesu_named_eq kept base) (rest : iProp Sigma) :
+  "x13" ↦ᵣ RVal_Bits machine_x13 -∗ rest -∗ (∃ machine_x13 : bv 64, "x13" ↦ᵣ RVal_Bits machine_x13) ∗ rest.
+Proof.
+  iStartProof. iIntros "Hx Hrest". let_bind_envs.
+  ZesuSsz.Automation2.NamedEquations.zesu_named_binder_witness.
+  subst IPM_JANNO.
+  iSplitL "Hx"; [iExact "Hx" | iExact "Hrest"].
+Qed.
+Print Assumptions named_binder_takes_register_value_bound_env.
+
 (* A call's precondition restated over fresh binders, one of them named
    like an unrelated block variable: the stepping loop closes it from the
    call's facts, not from the names. *)
