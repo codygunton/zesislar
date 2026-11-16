@@ -45,7 +45,7 @@ print(json.dumps(dict(value=value,counters=c.COUNTERS)))
         return json.loads(result.stdout)
 
     def record(self):
-        return next(self.cache.glob('*.json'))
+        return next(self.cache.glob('*/*.json'))
 
     def test_independent_process_reuses_exact_full_key(self):
         first = self.cold_process()
@@ -178,7 +178,7 @@ print(json.dumps(dict(value=value,counters=c.COUNTERS)))
         with patch.object(cache.hashlib, 'file_digest', side_effect=raced):
             with self.assertRaisesRegex(ValueError, 'changed during validation'):
                 cache.digest(self.file)
-        self.assertFalse(list(self.cache.glob('*.json')))
+        self.assertFalse(list(self.cache.rglob('*.json')))
 
     def test_lock_wait_race_refuses(self):
         @contextmanager
@@ -261,7 +261,7 @@ print(c.digest(Path(sys.argv[2])))
         published.assert_called_once()
         self.assertEqual(len(observed), 1)
         self.assertFalse(observed[0].exists())
-        self.assertFalse(list(self.cache.glob('.digest-*')))
+        self.assertFalse(list(self.cache.rglob('.digest-*')))
 
     def test_failed_publication_cleans_temporary_and_preserves_record(self):
         cache.digest(self.file)
@@ -272,7 +272,7 @@ print(c.digest(Path(sys.argv[2])))
             with self.assertRaisesRegex(OSError, 'publication refused'):
                 cache._publish(record, row['context'], row['sha256'])
         self.assertEqual(record.read_bytes(), previous)
-        self.assertFalse(list(self.cache.glob('.digest-*')))
+        self.assertFalse(list(self.cache.rglob('.digest-*')))
 
     def test_failed_publication_keeps_hash_and_input_checks(self):
         with patch.object(cache, '_publish', side_effect=OSError('publication refused')):
@@ -285,3 +285,151 @@ print(c.digest(Path(sys.argv[2])))
         with patch.object(cache, '_publish', side_effect=changed_input):
             with self.assertRaisesRegex(ValueError, 'changed during validation'):
                 cache.digest(self.file)
+
+
+class BoundedBindingCache(unittest.TestCase):
+    """The store stays bounded: unreachable, old, and excess records are pruned."""
+    setUp = PersistentBindingCache.setUp
+    record = PersistentBindingCache.record
+
+    def digest_new(self, name, content=b'x'):
+        path = self.root / name
+        path.write_bytes(content)
+        cache.digest(path)
+        return path
+
+    def records(self):
+        return sorted(self.cache.glob('*/*.json'))
+
+    def test_records_are_sharded_by_key_prefix(self):
+        cache.digest(self.file)
+        record = self.record()
+        self.assertEqual(record.parent.name, record.stem[:2])
+        self.assertTrue(record.with_suffix('.lock').exists())
+
+    def test_record_for_a_deleted_file_is_pruned(self):
+        cache.digest(self.file)
+        self.file.unlink()
+        stats = cache.prune()
+        self.assertEqual(self.records(), [])
+        self.assertEqual(list(self.cache.glob('*/*.lock')), [])
+        self.assertEqual(stats['removed'], 1)
+
+    def test_record_for_a_rewritten_file_is_pruned(self):
+        cache.digest(self.file)
+        self.file.write_bytes(b'second')
+        cache.prune()
+        self.assertEqual(self.records(), [])
+
+    def test_fresh_record_survives_and_still_hits(self):
+        cache.digest(self.file)
+        self.assertEqual(cache.prune()['kept'], 1)
+        cache._DIGESTS.clear()
+        cache.digest(self.file)
+        self.assertEqual(cache.COUNTERS['persistent_hits'], 1)
+
+    def test_record_unused_for_two_days_is_pruned(self):
+        cache.digest(self.file)
+        old = cache.time.time() - cache.MAX_AGE_SECONDS - 60
+        os.utime(self.record(), (old, old))
+        cache.prune()
+        self.assertEqual(self.records(), [])
+
+    def test_hit_refreshes_the_record_age(self):
+        cache.digest(self.file)
+        old = cache.time.time() - cache.MAX_AGE_SECONDS + 60
+        os.utime(self.record(), (old, old))
+        cache._DIGESTS.clear()
+        cache.digest(self.file)
+        cache.prune(now=cache.time.time() + 120)
+        self.assertEqual(len(self.records()), 1)
+
+    def test_count_cap_keeps_the_newest_records(self):
+        paths = [self.digest_new(f'file{index}.v', bytes([index])) for index in range(5)]
+        records = {json.loads(path.read_text())['context']['path']: path for path in self.records()}
+        for age, path in enumerate(reversed(paths)):
+            stamp = cache.time.time() - 60 * (age + 1)
+            os.utime(records[str(path)], (stamp, stamp))
+        with patch.object(cache, 'MAX_ENTRIES', 3):
+            cache.prune()
+        kept = {json.loads(path.read_text())['context']['path'] for path in self.records()}
+        self.assertEqual(kept, {str(path) for path in paths[2:]})
+
+    def test_byte_cap_holds(self):
+        for index in range(4):
+            self.digest_new(f'file{index}.v', bytes([index]))
+        size = sum(path.stat().st_blocks * 512 for path in self.cache.glob('*/*.*'))
+        with patch.object(cache, 'MAX_BYTES', size // 2):
+            cache.prune()
+        self.assertLessEqual(sum(path.stat().st_blocks * 512 for path in self.cache.glob('*/*.*')),
+                             size // 2)
+
+    def test_held_lock_keeps_its_record(self):
+        cache.digest(self.file)
+        self.file.unlink()
+        descriptor = os.open(self.record().with_suffix('.lock'), os.O_RDWR)
+        self.addCleanup(os.close, descriptor)
+        cache.fcntl.flock(descriptor, cache.fcntl.LOCK_EX)
+        self.assertEqual(cache.prune()['busy'], 1)
+        self.assertEqual(len(self.records()), 1)
+
+    def test_crash_leftovers_and_orphan_locks_expire_after_an_hour(self):
+        cache.digest(self.file)
+        shard = self.record().parent
+        leftover, orphan = shard / '.digest-crashed', shard / ('f' * 64 + '.lock')
+        leftover.write_bytes(b'partial')
+        orphan.write_bytes(b'')
+        cache.prune()
+        self.assertTrue(leftover.exists() and orphan.exists())
+        old = cache.time.time() - cache.TEMP_AGE_SECONDS - 60
+        for path in (leftover, orphan):
+            os.utime(path, (old, old))
+        cache.prune()
+        self.assertFalse(leftover.exists() or orphan.exists())
+        self.assertEqual(len(self.records()), 1)
+
+    def test_retired_flat_store_is_drained(self):
+        legacy = self.cache.parent / cache.LEGACY_NAME
+        legacy.mkdir(mode=0o700)
+        for index in range(5):
+            (legacy / f'{index:064x}.json').write_text('{}')
+        stats = cache.prune(legacy_limit=2)
+        self.assertEqual(stats['legacy_removed'], 2)
+        self.assertEqual(len(list(legacy.iterdir())), 3)
+        cache.prune()
+        self.assertFalse(legacy.exists())
+
+    def test_lookup_drains_the_retired_store_in_bounded_batches(self):
+        legacy = self.cache.parent / cache.LEGACY_NAME
+        legacy.mkdir(mode=0o700)
+        for index in range(5):
+            (legacy / f'{index:064x}.json').write_text('{}')
+        with patch.object(cache, 'LEGACY_BATCH', 2):
+            cache.digest(self.file)
+        self.assertEqual(len(list(legacy.iterdir())), 3)
+        with patch.object(cache, 'LEGACY_SECONDS', -1.0):
+            cache._NEXT_PRUNE.clear()
+            (self.cache / '.pruned').unlink()
+            self.digest_new('second.v')
+        self.assertEqual(len(list(legacy.iterdir())), 3)
+
+    def test_lookups_prune_at_most_once_an_hour(self):
+        calls = []
+        with patch.object(cache, 'prune', side_effect=lambda **_: calls.append(1)):
+            cache.digest(self.file)
+            self.digest_new('second.v')
+            self.assertEqual(len(calls), 1)
+            cache._NEXT_PRUNE.clear()
+            self.digest_new('third.v')
+            self.assertEqual(len(calls), 1)  # The shared stamp is still fresh.
+            old = cache.time.time() - cache.PRUNE_INTERVAL_SECONDS - 60
+            os.utime(self.cache / '.pruned', (old, old))
+            cache._NEXT_PRUNE.clear()
+            self.digest_new('fourth.v')
+            self.assertEqual(len(calls), 2)
+
+    def test_unavailable_store_never_prunes(self):
+        self.cache.mkdir(mode=0o755)
+        with patch.object(cache, 'prune', side_effect=AssertionError('prune')):
+            cache.digest(self.file)
+        self.assertFalse(list(self.cache.iterdir()))
