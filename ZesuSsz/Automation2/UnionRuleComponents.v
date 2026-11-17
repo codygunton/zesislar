@@ -1889,11 +1889,17 @@ Ltac zesu_region_fault_prepare :=
       repeat match goal with Hpair : _ /\ _ |- _ => destruct Hpair end
   end.
 
+(* After the goal fails, a negated region bound `~ b` refutes the context when
+   its facts prove `b`. A negated equality is a branch disequality, not a
+   region bound: refuting it needs an equality that the region facts do not
+   give. On decodeParentHeader such retries never closed (316 calls, 2,021 s);
+   a negated inequality closed dead decodeItem 6ac4 paths. *)
 Ltac zesu_region_fault_arithmetic_full :=
   zesu_region_fault_prepare;
   first [bv_solve |
     match goal with Hnegative : ~ ?bound |- _ =>
       zesu_region_arithmetic_statement bound;
+      lazymatch bound with @eq _ _ _ => fail | _ => idtac end;
       exfalso; apply Hnegative; bv_solve
     end].
 

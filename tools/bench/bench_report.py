@@ -506,11 +506,21 @@ def member_name(member):
 
 # ---------------------------------------------------------------- ranking
 
+def caller_name(call, frames=2):
+    """`site @ stage <- caller frames [goal shape]` of a caller-mode record (bench.py run --callers)."""
+    fields = call.get('fields') or {}
+    if 'caller' not in fields:
+        return None
+    caller = '>'.join(str(fields['caller']).split('>')[:frames])
+    return '%s @ %s <- %s [%s]' % (call['site'], call['stage'], caller, fields.get('shape', '-'))
+
+
 def ranking(run):
-    """CPU and memory per stage, solver kind and site, summed over the set."""
+    """CPU and memory per stage, solver kind, site and (caller mode) caller, summed over the set."""
+    calls_table = lambda: defaultdict(lambda: {'cpu': 0.0, 'rss_growth_kib': 0, 'blocks': set(), 'calls': 0,
+                                               'failed': 0})
     tables = {'stage': defaultdict(lambda: {'cpu': 0.0, 'rss_growth_kib': 0, 'blocks': set(), 'steps': 0}),
-              'kind': defaultdict(lambda: {'cpu': 0.0, 'rss_growth_kib': 0, 'blocks': set(), 'calls': 0, 'failed': 0}),
-              'site': defaultdict(lambda: {'cpu': 0.0, 'rss_growth_kib': 0, 'blocks': set(), 'calls': 0, 'failed': 0})}
+              'kind': calls_table(), 'site': calls_table(), 'caller': calls_table()}
     for entry in run['blocks']:
         block = entry['block']
         if block is None:
@@ -522,7 +532,10 @@ def ranking(run):
             row['steps'] += stage['steps'] or 0
             row['blocks'].add(entry['key'])
         for call in block['calls']:
-            for table, name in (('kind', call['kind']), ('site', '%s @ %s' % (call['site'], call['stage']))):
+            keys = [('kind', call['kind']), ('site', '%s @ %s' % (call['site'], call['stage']))]
+            if call['ok'] is False and caller_name(call):
+                keys.append(('caller', caller_name(call)))
+            for table, name in keys:
                 row = tables[table][name]
                 row['cpu'] += call['cpu'] or 0
                 row['rss_growth_kib'] += max(call['rss_growth_kib'] or 0, 0)
@@ -623,8 +636,11 @@ def render_ranking(rank, limit=10):
              'Telemetry stages include their nested stages, and a solver call includes the calls it wraps '
              '(Lia.lia over xlia and zify): compare rows of one level, do not add them up.', '']
     for table, title, extra in (('stage', 'stage', 'steps'), ('kind', 'solver kind', 'calls'),
-                                ('site', 'site @ stage', 'calls')):
-        rows = rank[table]
+                                ('site', 'site @ stage', 'calls'),
+                                ('caller', 'failing calls by site @ stage <- caller [goal shape]', 'calls')):
+        rows = rank.get(table, [])
+        if table == 'caller' and not rows:
+            continue  # recorded only with bench.py run --callers
         lines += ['by %s (CPU s, RSS growth GiB, blocks, %s%s):' % (title, extra, ', failed' if extra == 'calls' else ''), '']
         if not rows:
             lines += ['-', '']

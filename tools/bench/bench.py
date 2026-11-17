@@ -3,7 +3,7 @@
 
 usage:
   bench.py run --set NAME --head REV [--rules-commit REV] --run-dir DIR [--jobs N] [--no-telemetry]
-               [--only CASE ...]
+               [--callers] [--only CASE ...]
   bench.py report RUN_DIR [--base RUN_DIR] [--json]
 
 run (launch it with `tools/bg --heavy bench-<tag> python3 tools/bench/bench.py run ...`):
@@ -18,7 +18,9 @@ run (launch it with `tools/bg --heavy bench-<tag> python3 tools/bench/bench.py r
  3. Blocks: every member, longest expected first, JOBS at a time (default: the set's "jobs"). Each
     compiles the unmodified generated caller at the bench head through tools/closure_cert.py
     (resource guard batch + scope, CPU cap and memory limit from the set's "caps", claim from the
-    member's claim_gib) with ZESU_TELEMETRY=1, and gets CLOSURE.json or NOT-CLOSED.json. A sampler
+    member's claim_gib) with ZESU_TELEMETRY=1 (with --callers also ZESU_TELEMETRY_CALLERS=1: each
+    Ltac1 solver record names its Ltac caller; a diagnostic, it slows the run), and gets
+    CLOSURE.json or NOT-CLOSED.json. A sampler
     thread finds the compile's coqc and writes samples.jsonl every second (time, RSS, peak RSS, CPU,
     bytes of coqc output so far) and runs `perf stat -e instructions:u -p <coqc>` into perf.csv.
     Leftover goals the telemetry prints are saved with tools/save_goal.py
@@ -352,7 +354,8 @@ def command_run(options):
                 json.dumps(bench_set, sort_keys=True).encode()).hexdigest(),
             'head': head, 'rules': rules, 'bench_head': bench_head, 'workspace': str(workspace), 'bank': str(bank),
             'overlays': overlays, 'caps': caps, 'members': members,
-            'telemetry': not options.no_telemetry, 'jobs': options.jobs or bench_set.get('jobs', 6),
+            'telemetry': not options.no_telemetry, 'callers': options.callers and not options.no_telemetry,
+            'jobs': options.jobs or bench_set.get('jobs', 6),
             'started_utc': now(), 'tool_sha256': C.sha256(__file__)}
     (run_dir / 'RUN.json').write_text(json.dumps(meta, indent=1) + '\n')
     if not (run_dir / 'ITEM.json').exists():
@@ -363,6 +366,10 @@ def command_run(options):
         os.environ['ZESU_TELEMETRY'] = '1'
     else:
         os.environ.pop('ZESU_TELEMETRY', None)
+    if meta['callers']:
+        os.environ['ZESU_TELEMETRY_CALLERS'] = '1'
+    else:
+        os.environ.pop('ZESU_TELEMETRY_CALLERS', None)
     context = {'workspace': workspace, 'bench_head': bench_head, 'bank': bank, 'caps': caps}
     ordered = sorted(members, key=lambda member: -member.get('expected_cpu', 0))
     with ThreadPoolExecutor(max_workers=meta['jobs']) as pool:
@@ -398,6 +405,8 @@ def main(argv=None):
     run.add_argument('--run-dir', type=Path, required=True)
     run.add_argument('--jobs', type=int)
     run.add_argument('--no-telemetry', action='store_true')
+    run.add_argument('--callers', action='store_true',
+                     help='also record each solver call\'s Ltac caller (diagnostic; Ltac Backtrace slows it)')
     run.add_argument('--only', nargs='+', help='run only these cases (case or label)')
     report = commands.add_parser('report', help='report one run')
     report.add_argument('run', type=Path)

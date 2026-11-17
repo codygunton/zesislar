@@ -1,6 +1,7 @@
 From Coq Require Import ZArith.ZArith.
 From Ltac2 Require Import Ltac2.
 Require Import ZesuSsz.Automation2.Telemetry.
+Require Import ZesuSsz.Automation2.LinearFirstLia.
 Require Import ZesuSsz.Automation2.All.
 Set Default Proof Mode "Classic".
 Local Open Scope Z_scope.
@@ -49,3 +50,32 @@ Qed.
 (* The project solvers still close through the wrappers. *)
 Lemma telemetry_lia (x y : Z) : 0 <= x -> x < y -> 0 < y.
 Proof. intros. zesu_test_measured ltac:(lia). Qed.
+
+(* `zesu_telemetry_sizes` counts the Prop facts without a body, their nodes
+   and the goal's nodes in the units of LinearFirstLia's budget walk. *)
+Ltac2 zesu_test_walk (term : constr) : int :=
+  Int.sub 1000000 (zesu_linear_remaining 1000000 term).
+
+Ltac2 zesu_test_sizes_match () :=
+  let facts := List.filter (fun declaration =>
+    let (_, body, typ) := declaration in
+    match body with
+    | None => zesu_linear_is_prop typ
+    | Some _ => false
+    end) (Control.hyps ()) in
+  let nodes := List.fold_left (fun sum declaration =>
+    let (_, _, typ) := declaration in Int.add sum (zesu_test_walk typ)) 0 facts in
+  let expected := [List.length facts; nodes; zesu_test_walk (Control.goal ())] in
+  let sizes := zesu_telemetry_sizes () in
+  let differ () := Control.throw (Tactic_failure (Some (Message.of_string "telemetry sizes differ"))) in
+  if Int.equal (List.length sizes) 3
+  then (if List.for_all2 Int.equal sizes expected then () else differ ())
+  else differ ().
+
+Lemma telemetry_sizes_walk (x y : Z) (b : bool) (f : Z -> Z) :
+  0 <= x -> x < f y + 1 -> b = true -> (forall z, f z = z) -> 0 < f y + 1.
+Proof.
+  intros Hx Hy Hb Hf. set (w := x + 1).
+  ltac2:(zesu_test_sizes_match ()).
+  rewrite Hf in *. lia.
+Qed.
