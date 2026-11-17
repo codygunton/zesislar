@@ -5,6 +5,7 @@ set -uo pipefail
 here=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd -P)
 wt=$(python3 "$here/sweep_paths.py" repo) || exit 2
 name=$1 b=$2
+export PATH=${ISLARIS_REPO:-$HOME/islaris}/_opam/bin:$PATH
 export TMPDIR=${TMPDIR:-/home/cody/.cache/orch-checkfast-tmp}
 mkdir -p "$b/bank"; b=$(readlink -f "$b")
 cd "$wt" || exit 2
