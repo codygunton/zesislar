@@ -1,5 +1,6 @@
 Require ZesuSsz.Automation2.NamedEquations.
 Require Import ZesuSsz.Automation2.Telemetry.
+Require Import ZesuSsz.Automation2.FailureMemo.
 Require Import ZesuSsz.Automation2.MemoryAddress.
 Require Import ZesuSsz.Automation2.MemoryTupleConsumer.
 Require Import ZesuSsz.Automation2.SourceFactMatching.
@@ -377,6 +378,15 @@ Ltac zesu_finish_shape_closers :=
     | solve [BytePositionEquations.zesu_word_fact_goal]
     | solve [WrappedWord.zesu_wrapped_index_bound_goal]]).
 
+(* The three closing attempts on a shelved side condition. They are
+   deterministic, and the same goal and context recur, so a failure is
+   memoized (FailureMemo). prepare_sidecond stays outside the memo. *)
+Ltac zesu_finish_shelved_attempts :=
+  let memo := ltac2:(tac |- zesu_failure_memo_ltac1 "finish_shelved" tac) in
+  memo ltac:(first [solve [unshelve_sidecond; unLET; zesu_finish_shape_closers] |
+    solve [zesu_array_bounds_if_enabled] |
+    solve [unshelve_sidecond; unLET; zesu_array_eight_value]]).
+
 (* Each item carries a telemetry name (Telemetry.v, `zesu_talt`). *)
 Ltac zesu_finish_v1 :=
   try (zesu_talt f_autorewrite_indices (idtac; autorewrite with zesu_indices));
@@ -385,10 +395,7 @@ Ltac zesu_finish_v1 :=
   try (zesu_talt f_iAssumption (idtac; iAssumption));
   zesu_talt f_shelved_or_unlet (idtac; lazymatch goal with
   | |- SHELVED_SIDECOND _ =>
-      first [solve [unshelve_sidecond; unLET; zesu_finish_shape_closers] |
-        solve [zesu_array_bounds_if_enabled] |
-        solve [unshelve_sidecond; unLET; zesu_array_eight_value] |
-        prepare_sidecond]
+      first [zesu_finish_shelved_attempts | prepare_sidecond]
   | _ => Hooks.zesu_unlet_preserving_witness_metadata
   end);
   try (zesu_talt f_shape_closers (idtac; solve [zesu_finish_shape_closers]));
@@ -443,10 +450,7 @@ Ltac zesu_finish_normalize :=
   try (zesu_normalize_memory_addresses).
 
 Ltac zesu_finish_shelved :=
-  first [solve [unshelve_sidecond; unLET; zesu_finish_shape_closers] |
-        solve [zesu_array_bounds_if_enabled] |
-        solve [unshelve_sidecond; unLET; zesu_array_eight_value] |
-    prepare_sidecond].
+  first [zesu_finish_shelved_attempts | prepare_sidecond].
 
 (* An Iris entailment. The entries the dispatch leaves out here are the
    ones that cannot close one: `reflexivity`, the bitvector entries, `lia`
