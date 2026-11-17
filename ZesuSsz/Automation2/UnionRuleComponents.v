@@ -1889,11 +1889,24 @@ Ltac zesu_region_fault_prepare :=
       repeat match goal with Hpair : _ /\ _ |- _ => destruct Hpair end
   end.
 
+(* The pruned context of the goal still holds `H`. *)
+Ltac zesu_region_goal_keeps H :=
+  ZesuSsz.Automation2.ContextCollection.zesu_context_prune_goal;
+  let _ := type of H in idtac.
+
+(* After the goal fails, a negated bound `~ b` refutes the context when its
+   facts prove `b`. When the goal's pruned context already held `~ b`, the
+   failed run saw the same facts plus the goal's negation: `lia` decides that
+   linear problem, so proving `b` from them fails too. Only a negation outside
+   the goal's pruned context (a goal of `False` keeps none) is tried. On
+   decodeParentHeader the retried negations never closed and cost 2,270 s in
+   346 calls. *)
 Ltac zesu_region_fault_arithmetic_full :=
   zesu_region_fault_prepare;
   first [bv_solve |
     match goal with Hnegative : ~ ?bound |- _ =>
       zesu_region_arithmetic_statement bound;
+      assert_fails (zesu_region_goal_keeps Hnegative);
       exfalso; apply Hnegative; bv_solve
     end].
 

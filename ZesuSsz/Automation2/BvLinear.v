@@ -694,3 +694,49 @@ Ltac zesu_bv_linear_refutes :=
         (apply not_eq_sym; apply (zesu_bv_unsigned_ne_of_cast (width := width) term value);
          zesu_bv_linear_bv))
   end.
+
+(* ---- Address range side conditions. ---- *)
+
+Definition zesuTermsAllZero (terms : list (zesuLinKey * Z)) : bool :=
+  forallb (fun entry => Z.eqb (snd entry) 0) terms.
+
+(* `low <= address < low + size \/ low = address` is false for every value of
+   its atoms when address - low normalizes to a constant d <> 0 with d < 0 or
+   with size a constant at most d. *)
+Definition zesuAddressRangeRefuted (low address size : zesuZLin) : bool :=
+  match zesuZNorm (ZLSub address low) with
+  | Some (offset, terms) =>
+      zesuTermsAllZero terms && negb (Z.eqb offset 0) &&
+      (Z.ltb offset 0 ||
+       match zesuZNorm size with
+       | Some (extent, others) => zesuTermsAllZero others && Z.leb extent offset
+       | None => false
+       end)
+  | None => false
+  end.
+
+Ltac2 zesu_bvlin_address_range_refuted (low : constr) (address : constr) (size : constr) :=
+  let state := { bv_atoms := []; bv_literals := []; z_atoms := [] } in
+  let width := constr:(64%N) in
+  let l := zesu_bvlin_reify_z width state low in
+  let a := zesu_bvlin_reify_z width state address in
+  let s := zesu_bvlin_reify_z width state size in
+  if Constr.equal (Std.eval_vm None constr:(zesuAddressRangeRefuted $l $a $s)) constr:(true)
+  then () else Control.zero (Tactic_failure None).
+
+(* Succeed, goal unchanged, when the goal is the membership side condition of a
+   memory lookup, `low <= address < low + size \/ low = address`, and the
+   normal form proves it false for every value of its atoms. Hypotheses are
+   not read. *)
+Ltac zesu_bv_address_range_refutes :=
+  lazymatch goal with
+  | |- ((Z.le ?low ?address /\ Z.lt ?address' (Z.add ?low' ?size)) \/ @eq Z ?low'' ?address'') =>
+      constr_eq low low'; constr_eq low low''; constr_eq address address';
+      constr_eq address address'';
+      tryif has_evar (low, address, size) then fail 0 else idtac;
+      let check := ltac2:(low address size |-
+        zesu_bvlin_address_range_refuted
+          (Option.get (Ltac1.to_constr low)) (Option.get (Ltac1.to_constr address))
+          (Option.get (Ltac1.to_constr size))) in
+      check low address size
+  end.
