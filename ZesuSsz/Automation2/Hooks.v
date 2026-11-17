@@ -874,11 +874,12 @@ Ltac zesu_registered_pure_fact P :=
    Introductions take the source as an output; anchors need the relaxed
    registry view, because their global mode makes the anchor an input. *)
 Ltac zesu_pure_fact_intro_registered target :=
-  assert_succeeds (let _ := constr:(_ : ZesuSsz.Automation.Hooks.ZesuPureFactIntro target _) in idtac).
+  zesu_talt r_pure_fact_intro (idtac; assert_succeeds (let _ :=
+    constr:(_ : ZesuSsz.Automation.Hooks.ZesuPureFactIntro target _) in idtac)).
 
 Ltac zesu_pure_fact_anchor_registered target :=
-  assert_succeeds (let _ := open_constr:(ltac:(zesu_lookup_target_registration)
-    : ZesuSsz.Automation.Hooks.ZesuPureFactAnchor target _ _) in idtac).
+  zesu_talt r_pure_fact_anchor (idtac; assert_succeeds (let _ := open_constr:(ltac:(zesu_lookup_target_registration)
+    : ZesuSsz.Automation.Hooks.ZesuPureFactAnchor target _ _) in idtac)).
 
 Ltac zesu_pure_fact_anchor_scan target :=
   iMatchHyp ltac:(fun name anchor =>
@@ -2209,12 +2210,12 @@ Ltac zesu_mapping_registered_goal registered :=
   end.
 
 Ltac zesu_entry_mapping_registered requested :=
-  assert_succeeds (let _ := constr:(_ :
-    ZesuSsz.Evidence.EntryWitnessInputs.ZesuEntryWitnessMapping requested _ _) in idtac).
+  zesu_talt r_entry_mapping (idtac; assert_succeeds (let _ := constr:(_ :
+    ZesuSsz.Evidence.EntryWitnessInputs.ZesuEntryWitnessMapping requested _ _) in idtac)).
 
 Ltac zesu_source_mapping_registered requested :=
-  assert_succeeds (let _ := constr:(_ :
-    SourceWitnessInputs.ZesuEntrySourceWitnessMapping requested _ _) in idtac).
+  zesu_talt r_source_mapping (idtac; assert_succeeds (let _ := constr:(_ :
+    SourceWitnessInputs.ZesuEntrySourceWitnessMapping requested _ _) in idtac)).
 
 Ltac zesu_union_witness_step :=
   first [zesu_mapping_registered_goal zesu_entry_mapping_registered;
@@ -2374,61 +2375,62 @@ Ltac zesu_prefer_owned_instr_pre :=
       end
   end.
 
+(* Each alternative carries a telemetry name (Telemetry.v, `zesu_talt`). *)
 Ltac zesu_liAStep :=
-  first [solve [zesu_refute_aligned_return_fault] |
-    WrappedWord.zesu_wrapped_memory_lookup | (
- liEnsureInvariant;
+  first [zesu_talt l_refute_aligned_return_fault (idtac; solve [zesu_refute_aligned_return_fault]) |
+    zesu_talt l_wrapped_memory_lookup (idtac; WrappedWord.zesu_wrapped_memory_lookup) | (
+ zesu_talt l_ensure_invariant (idtac; liEnsureInvariant);
  try progress (unfold TRACE_LET);
- try liAIntroduceLetInGoal;
+ try (zesu_talt l_intro_let (idtac; liAIntroduceLetInGoal));
  first [
-    progress ZesuSsz.Automation2.ByteWordReload.zesu_reload_byte_word_step
-  | ltac2:(Ltac1.run (Ltac1.ref
-      [@ZesuSsz; @Automation2; @StoreMemoryLookup; @zesu_join_frame_byte_array]))
-  | progress ResourceGroups.zesu_open_nested_existential_packages
-  | ByteArrayAssemblyCodec.zesu_byte_array_rebuild_requested
-  | CodecArrayRead.zesu_codec_array_read
-  | zesu_prefer_owned_instr_pre
-  | zesu_source_witnesses_if_enabled
-  | RegisterArrayCursor.zesu_register_cursor_step
-  | LoopBackedgeJoin.zesu_loop_backedge_choice
-  | ZesuSsz.Automation2.UnionRuleComponents.zesu_region_fault_if_enabled
-  | zesu_expose_instruction_lookup
-  | zesu_ram_fault_if_enabled
-  | zesu_signed_address_if_enabled
-  | zesu_stack_write_if_enabled
-  | zesu_handoff_goal_address_if_enabled
-  | zesu_handoff_memory_if_enabled
-  | zesu_handoff_adjacent_words_if_enabled
-  | zesu_handoff_facts_if_enabled
-  | zesu_handoff_integer_equality_if_enabled
-  | zesu_integer_array_address_if_enabled
-  | zesu_normalize_find_mem_address
-  | ZesuSsz.Automation2.UnionRuleComponents.block2_f6_select_generic_write
-  | zesu_liAWriteMem
-  | zesu_liAReadMem
-  | liAAsm
-  | liAExp
-  | liAOther
-  | zesu_pure_fact_hints_if_enabled
-  | zesu_known_pair_conjunct_witness_if_enabled
-  | liUnfoldEarly
-  | zesu_conjunct_head_if_enabled
-  | zesu_known_pair_witness_if_enabled
-  | zesu_pure_witness_constraints_if_enabled
-  | zesu_record_witness_if_enabled
-  | zesu_primitive_tuple_if_enabled
-  | zesu_liInstrPreMatch
-  | zesu_preserve_current_unsigned
-  | zesu_register_collection_selection_if_enabled
-  | zesu_named_equation_goal
-  | zesu_named_binder_witness
-  | solve [zesu_finish_exists_from_hypotheses]
-  | liStep
-  | zesu_unfold_let_mem_address
-  | liLetBindHint
-  | liUnfoldLate
-  | zesu_canonical_fact_views_if_enabled
- ]; liSimpl)].
+    zesu_talt l_reload_byte_word (idtac; progress ZesuSsz.Automation2.ByteWordReload.zesu_reload_byte_word_step)
+  | zesu_talt l_join_frame_byte_array (idtac; ltac2:(Ltac1.run (Ltac1.ref
+      [@ZesuSsz; @Automation2; @StoreMemoryLookup; @zesu_join_frame_byte_array])))
+  | zesu_talt l_open_nested_existential (idtac; progress ResourceGroups.zesu_open_nested_existential_packages)
+  | zesu_talt l_byte_array_rebuild (idtac; ByteArrayAssemblyCodec.zesu_byte_array_rebuild_requested)
+  | zesu_talt l_codec_array_read (idtac; CodecArrayRead.zesu_codec_array_read)
+  | zesu_talt l_prefer_owned_instr_pre (idtac; zesu_prefer_owned_instr_pre)
+  | zesu_talt l_source_witnesses (idtac; zesu_source_witnesses_if_enabled)
+  | zesu_talt l_register_cursor (idtac; RegisterArrayCursor.zesu_register_cursor_step)
+  | zesu_talt l_loop_backedge (idtac; LoopBackedgeJoin.zesu_loop_backedge_choice)
+  | zesu_talt l_region_fault (idtac; ZesuSsz.Automation2.UnionRuleComponents.zesu_region_fault_if_enabled)
+  | zesu_talt l_expose_instruction_lookup (idtac; zesu_expose_instruction_lookup)
+  | zesu_talt l_ram_fault (idtac; zesu_ram_fault_if_enabled)
+  | zesu_talt l_signed_address (idtac; zesu_signed_address_if_enabled)
+  | zesu_talt l_stack_write (idtac; zesu_stack_write_if_enabled)
+  | zesu_talt l_handoff_goal_address (idtac; zesu_handoff_goal_address_if_enabled)
+  | zesu_talt l_handoff_memory (idtac; zesu_handoff_memory_if_enabled)
+  | zesu_talt l_handoff_adjacent_words (idtac; zesu_handoff_adjacent_words_if_enabled)
+  | zesu_talt l_handoff_facts (idtac; zesu_handoff_facts_if_enabled)
+  | zesu_talt l_handoff_integer_equality (idtac; zesu_handoff_integer_equality_if_enabled)
+  | zesu_talt l_integer_array_address (idtac; zesu_integer_array_address_if_enabled)
+  | zesu_talt l_normalize_find_mem_address (idtac; zesu_normalize_find_mem_address)
+  | zesu_talt l_select_generic_write (idtac; ZesuSsz.Automation2.UnionRuleComponents.block2_f6_select_generic_write)
+  | zesu_talt l_liAWriteMem (idtac; zesu_liAWriteMem)
+  | zesu_talt l_liAReadMem (idtac; zesu_liAReadMem)
+  | zesu_talt l_liAAsm (idtac; liAAsm)
+  | zesu_talt l_liAExp (idtac; liAExp)
+  | zesu_talt l_liAOther (idtac; liAOther)
+  | zesu_talt l_pure_fact_hints (idtac; zesu_pure_fact_hints_if_enabled)
+  | zesu_talt l_known_pair_conjunct_witness (idtac; zesu_known_pair_conjunct_witness_if_enabled)
+  | zesu_talt l_liUnfoldEarly (idtac; liUnfoldEarly)
+  | zesu_talt l_conjunct_head (idtac; zesu_conjunct_head_if_enabled)
+  | zesu_talt l_known_pair_witness (idtac; zesu_known_pair_witness_if_enabled)
+  | zesu_talt l_pure_witness_constraints (idtac; zesu_pure_witness_constraints_if_enabled)
+  | zesu_talt l_record_witness (idtac; zesu_record_witness_if_enabled)
+  | zesu_talt l_primitive_tuple (idtac; zesu_primitive_tuple_if_enabled)
+  | zesu_talt l_liInstrPreMatch (idtac; zesu_liInstrPreMatch)
+  | zesu_talt l_preserve_current_unsigned (idtac; zesu_preserve_current_unsigned)
+  | zesu_talt l_register_collection_selection (idtac; zesu_register_collection_selection_if_enabled)
+  | zesu_talt l_named_equation_goal (idtac; zesu_named_equation_goal)
+  | zesu_talt l_named_binder_witness (idtac; zesu_named_binder_witness)
+  | zesu_talt l_exists_from_hypotheses (idtac; solve [zesu_finish_exists_from_hypotheses])
+  | zesu_talt l_liStep (idtac; liStep)
+  | zesu_talt l_unfold_let_mem_address (idtac; zesu_unfold_let_mem_address)
+  | zesu_talt l_liLetBindHint (idtac; liLetBindHint)
+  | zesu_talt l_liUnfoldLate (idtac; liUnfoldLate)
+  | zesu_talt l_canonical_fact_views (idtac; zesu_canonical_fact_views_if_enabled)
+ ]; zesu_talt l_liSimpl (idtac; liSimpl))].
 
 (* Lithium simplifies the whole goal after every step. While an entry is
    being opened, or a successor's entry proved, the goal still holds branch

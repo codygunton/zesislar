@@ -79,3 +79,54 @@ Proof.
   ltac2:(zesu_test_sizes_match ()).
   rewrite Hf in *. lia.
 Qed.
+
+(* Step and alternative records (`zesu_tstep`, `zesu_talt`): the measuring
+   paths and the switched notations keep successes, backtracking and
+   failures. *)
+Ltac zesu_test_alt_measured tac :=
+  let run := ltac2:(tac |- zesu_telemetry_alt_measured "zesu_test_alt" tac) in
+  run tac.
+Ltac zesu_test_step_measured tac :=
+  let run := ltac2:(tac |- zesu_telemetry_step_measured tac) in
+  run tac.
+
+Lemma telemetry_alt_backtracks : exists n : nat, n = 1%nat.
+Proof.
+  zesu_test_alt_measured ltac:(multimatch constr:(true) with
+    | _ => exists 0%nat | _ => exists 1%nat end); reflexivity.
+Qed.
+
+Lemma telemetry_step_backtracks : exists n : nat, n = 1%nat.
+Proof.
+  zesu_test_step_measured ltac:(multimatch constr:(true) with
+    | _ => exists 0%nat | _ => exists 1%nat end); reflexivity.
+Qed.
+
+Lemma telemetry_talt_backtracks : exists n : nat, n = 1%nat.
+Proof.
+  zesu_tstep (zesu_talt zesu_test_alt (idtac; multimatch constr:(true) with
+    | _ => exists 0%nat | _ => exists 1%nat end)); reflexivity.
+Qed.
+
+Goal True.
+Proof.
+  Fail first [zesu_test_alt_measured ltac:(fail 1) | exact I].
+  Fail first [zesu_test_step_measured ltac:(fail 1) | exact I].
+  Fail first [zesu_talt zesu_test_alt (idtac; fail 1) | exact I].
+  Fail first [zesu_tstep (fail 1) | exact I].
+  first [zesu_talt zesu_test_alt (idtac; fail 0) | exact I].
+Qed.
+
+(* A search loop through both wrappers ends where the bare loop ends. *)
+Lemma telemetry_step_loop : True /\ True /\ True.
+Proof.
+  repeat (zesu_tstep (first [zesu_talt zesu_test_split (idtac; split) |
+    zesu_talt zesu_test_exact (idtac; exact I)])).
+Qed.
+
+(* With several goals focused the step record names no goal and still runs. *)
+Lemma telemetry_step_unfocused : True /\ True.
+Proof.
+  split.
+  all: zesu_test_step_measured ltac:(exact I).
+Qed.
