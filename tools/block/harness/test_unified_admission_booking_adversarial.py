@@ -4,6 +4,7 @@ from pathlib import Path
 import sys
 import tempfile
 import unittest
+from unittest import mock
 
 HERE = Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE / 'code'))
@@ -23,6 +24,11 @@ class LegacyBookingTests(unittest.TestCase):
 
         self.reader = Reader(proc=self.root / 'proc', cgroup_root=self.root / 'cgroup')
         self.group = self.reader.parent / f'zesuworkloads-aggregate{os.getuid()}p101r1.slice'
+        # The fixture's 150 GiB aggregate needs a parent above it. The live parent follows the
+        # host's account cap (112 GiB after the 2026-11-17 reboot), so pin the 175 GiB parent.
+        patcher = mock.patch.object(M, 'SLICE_MAX_BYTES', M.LEGACY_PARENT_BYTES)
+        patcher.start()
+        self.addCleanup(patcher.stop)
         self.group.mkdir(parents=True)
         (self.reader.parent / 'memory.max').write_text(str(M.SLICE_MAX_BYTES))
         (self.reader.parent / 'memory.swap.max').write_text('0')
