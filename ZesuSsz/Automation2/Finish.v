@@ -353,63 +353,65 @@ Ltac zesu_finish_shape_closers :=
     | solve [BytePositionEquations.zesu_word_fact_goal]
     | solve [WrappedWord.zesu_wrapped_index_bound_goal]]).
 
+(* Each item carries a telemetry name (Telemetry.v, `zesu_talt`). *)
 Ltac zesu_finish_v1 :=
-  try autorewrite with zesu_indices;
-  try (zesu_normalize_memory_constants);
-  try (zesu_normalize_memory_addresses);
-  try iAssumption;
-  lazymatch goal with
+  try (zesu_talt f_autorewrite_indices (idtac; autorewrite with zesu_indices));
+  try (zesu_talt f_normalize_memory_constants (idtac; zesu_normalize_memory_constants));
+  try (zesu_talt f_normalize_memory_addresses (idtac; zesu_normalize_memory_addresses));
+  try (zesu_talt f_iAssumption (idtac; iAssumption));
+  zesu_talt f_shelved_or_unlet (idtac; lazymatch goal with
   | |- SHELVED_SIDECOND _ =>
       first [solve [unshelve_sidecond; unLET; zesu_finish_shape_closers] |
         solve [zesu_array_bounds_if_enabled] |
         solve [unshelve_sidecond; unLET; zesu_array_eight_value] |
         prepare_sidecond]
   | _ => Hooks.zesu_unlet_preserving_witness_metadata
-  end;
-  try solve [zesu_finish_shape_closers];
-  try zesu_finish_selectors;
-  try autorewrite with zesu_indices;
-  try iAssumption;
-  try (zesu_normalize_array_cursors);
-  try (zesu_finish_known_list_shape);
-  try (zesu_finish_pure_resources_step);
-  try reflexivity;
-  try (zesu_finish_integer_word_image);
-  try (zesu_finish_packed_word_equality);
-  try solve [zesu_finish_zero_offset_u64_roundtrip];
-  try solve [ZesuSsz.Automation2.ByteWordReload.zesu_reload_spliced_word_step; reflexivity];
-  try ((lazymatch goal with
+  end);
+  try (zesu_talt f_shape_closers (idtac; solve [zesu_finish_shape_closers]));
+  try (zesu_talt f_selectors (idtac; zesu_finish_selectors));
+  try (zesu_talt f_autorewrite_indices2 (idtac; autorewrite with zesu_indices));
+  try (zesu_talt f_iAssumption2 (idtac; iAssumption));
+  try (zesu_talt f_normalize_array_cursors (idtac; zesu_normalize_array_cursors));
+  try (zesu_talt f_known_list_shape (idtac; zesu_finish_known_list_shape));
+  try (zesu_talt f_pure_resources_step (idtac; zesu_finish_pure_resources_step));
+  try (zesu_talt f_reflexivity (idtac; reflexivity));
+  try (zesu_talt f_integer_word_image (idtac; zesu_finish_integer_word_image));
+  try (zesu_talt f_packed_word_equality (idtac; zesu_finish_packed_word_equality));
+  try (zesu_talt f_zero_offset_u64 (idtac; solve [zesu_finish_zero_offset_u64_roundtrip]));
+  try (zesu_talt f_reload_spliced_word (idtac;
+    solve [ZesuSsz.Automation2.ByteWordReload.zesu_reload_spliced_word_step; reflexivity]));
+  try (zesu_talt f_array_eight_value (idtac; lazymatch goal with
     | |- @eq (bv 64) _ (Z_to_bv 64
         (little_endian_to_bv 8 (take 8 (drop _ _)))) =>
         solve [zesu_array_eight_value]
     end));
-  try simpl;
-  try done;
-  try assumption;
-  try (zesu_finish_extract_alias);
-  try (zesu_finish_list_slice_length);
-  zesu_normalize_nat_powers;
-  try (zesu_finish_tag_bound);
-  try (zesu_finish_mask);
-  try (zesu_finish_array_byte_lookup_if_closed);
-  try zesu_finish_constant;
-  try (apply Z.le_ge; assumption);
-  try (zesu_finish_ram_known);
-  try (zesu_finish_ram_address);
-  try (zesu_finish_pointer_alignment);
+  try (zesu_talt f_simpl (idtac; simpl));
+  try (zesu_talt f_done (idtac; done));
+  try (zesu_talt f_assumption (idtac; assumption));
+  try (zesu_talt f_extract_alias (idtac; zesu_finish_extract_alias));
+  try (zesu_talt f_list_slice_length (idtac; zesu_finish_list_slice_length));
+  zesu_talt f_normalize_nat_powers (idtac; zesu_normalize_nat_powers);
+  try (zesu_talt f_tag_bound (idtac; zesu_finish_tag_bound));
+  try (zesu_talt f_mask (idtac; zesu_finish_mask));
+  try (zesu_talt f_array_byte_lookup (idtac; zesu_finish_array_byte_lookup_if_closed));
+  try (zesu_talt f_constant (idtac; zesu_finish_constant));
+  try (zesu_talt f_le_ge (idtac; apply Z.le_ge; assumption));
+  try (zesu_talt f_ram_known (idtac; zesu_finish_ram_known));
+  try (zesu_talt f_ram_address (idtac; zesu_finish_ram_address));
+  try (zesu_talt f_pointer_alignment (idtac; zesu_finish_pointer_alignment));
   lazymatch goal with
   | |- environments.envs_entails _ _ => idtac
   | _ =>
-      try (zesu_saturate_alignment);
+      try (zesu_talt f_saturate_alignment (idtac; zesu_saturate_alignment));
       zesu_diag_stage "finish_v1.solvers";
-      try zesu_finish_lia;
-      try zesu_finish_goal_domain;
-      try (zesu_bv_solver_goal;
+      try (zesu_talt f_finish_lia (idtac; zesu_finish_lia));
+      try (zesu_talt f_goal_domain (idtac; zesu_finish_goal_domain));
+      try (zesu_talt f_v1_tail_bv_solve (idtac; zesu_bv_solver_goal;
         ZesuSsz.Automation2.ContextCollection.zesu_solve_goal_selected
-        ("finish.v1_tail"%string) ltac:(bv_solve))
+        ("finish.v1_tail"%string) ltac:(bv_solve)))
   end;
-  try (zesu_finish_little_endian_if_closed);
-  try solve [SymbolicByteCodec.zesu_symbolic_byte_codec].
+  try (zesu_talt f_little_endian (idtac; zesu_finish_little_endian_if_closed));
+  try (zesu_talt f_symbolic_byte_codec (idtac; solve [SymbolicByteCodec.zesu_symbolic_byte_codec])).
 
 Ltac zesu_finish_normalize :=
   try autorewrite with zesu_indices;
@@ -873,17 +875,18 @@ Ltac zesu_union_pure_finish :=
 Ltac zesu_finish_common_pure :=
   let run := ltac2:(tac |- zesu_telemetry_stage_ltac1 "zesu_finish_common_pure" tac) in
   run ltac:(
-  zesu_final_pure_head_gate;
-  first [zesu_union_required_pure | solve [
-    zesu_saturate_derived_facts;
-    repeat first [progress zesu_split_folded_pure |
-      match goal with Hpair : _ /\ _ |- _ => destruct Hpair end];
-    zesu_normalize_machine_map;
-    first [solve [apply andb_true_iff; split; apply bool_decide_eq_true_2;
+  zesu_talt c_head_gate (idtac; zesu_final_pure_head_gate);
+  first [zesu_talt c_union_required_pure (idtac; zesu_union_required_pure) | zesu_talt c_solve_body (idtac; solve [
+    zesu_talt c_derived_facts (idtac; zesu_saturate_derived_facts);
+    zesu_talt c_split_folded (idtac; repeat first [progress zesu_split_folded_pure |
+      match goal with Hpair : _ /\ _ |- _ => destruct Hpair end]);
+    zesu_talt c_normalize_machine_map (idtac; zesu_normalize_machine_map);
+    first [zesu_talt c_wrapped_word_range (idtac; solve [apply andb_true_iff; split; apply bool_decide_eq_true_2;
       WrappedWord.zesu_wrapped_word_range ltac:(
         WrappedWord.zesu_reduce_closed_Z_aliases;
-        cbv [bv_unsigned bv_modulus] in *; lia)]
-    | autorewrite with isla_coq_rewrite; zesu_union_pure_finish]]]).
+        cbv [bv_unsigned bv_modulus] in *; lia)])
+    | zesu_talt c_isla_rewrite (idtac; autorewrite with isla_coq_rewrite);
+      zesu_talt c_union_pure_finish (idtac; zesu_union_pure_finish)]])]).
 
 (* A final pure goal over bytes that a load reads as a little-endian window
    while the goal or a branch fact states them as byte positions, or a goal on
@@ -995,17 +998,20 @@ Ltac zesu_union_array_payload_finish :=
 Ltac zesu_finish_base :=
   let run := ltac2:(tac |- zesu_telemetry_stage_ltac1 "zesu_finish_base" tac) in
   run ltac:(
-  try ZesuSsz.Automation2.NamedEquations.zesu_open_named_equations;
-  first [solve [ZesuSsz.Automation2.NamedEquations.zesu_finish_exists_from_hypotheses] | solve [zesu_union_array_payload_finish] |
-  try solve [zesu_array_region_selection_if_enabled];
-  tryif zesu_defer_unresolved_sidecondition_if_enabled then idtac else (
-  try solve [zesu_list_cons_witness_if_enabled |
-    zesu_primitive_tuple_guard_if_enabled];
+  try (zesu_talt b_open_named_equations (idtac; ZesuSsz.Automation2.NamedEquations.zesu_open_named_equations));
+  first [zesu_talt b_exists_from_hypotheses (idtac;
+      solve [ZesuSsz.Automation2.NamedEquations.zesu_finish_exists_from_hypotheses]) |
+    zesu_talt b_union_array_payload (idtac; solve [zesu_union_array_payload_finish]) |
+  try (zesu_talt b_array_region_selection (idtac; solve [zesu_array_region_selection_if_enabled]));
+  tryif zesu_talt b_defer_unresolved (idtac; zesu_defer_unresolved_sidecondition_if_enabled) then idtac else (
+  try (zesu_talt b_list_cons_tuple (idtac; solve [zesu_list_cons_witness_if_enabled |
+    zesu_primitive_tuple_guard_if_enabled]));
   tryif zesu_rule_set_v2_on
   then tryif let _ := constr:(_ : ZesuStepBoundedArithmetic) in idtac
        then try (zesu_finish_v2)
        else zesu_finish_v2
-  else zesu_finish_v1) | zesu_finish_common_pure]).
+  else zesu_talt b_finish_v1 (idtac; zesu_finish_v1)) |
+    zesu_talt b_common_pure (idtac; zesu_finish_common_pure)]).
 
 
 Ltac zesu_finish := zesu_finish_once_if_enabled ltac:(zesu_finish_base).
@@ -1142,24 +1148,28 @@ Ltac zesu_finish_initialized_array_read :=
    of its own tactics in `timeout`. *)
 Ltac zesu_run_pass_steps :=
   first
-    [SourceFactMatching.zesu_source_destruct_registered_disjunction |
-     ZesuSsz.Automation2.CodecArrayRead.zesu_codec_array_read_consumer |
-     zesu_v34_array_continuation |
-     zesu_union_witness_step | zesu_target_registered_intro_if_enabled |
-     zesu_open_requested_instr_bundle |
-     zesu_open_requested_struct_sys_package |
-     zesu_open_requested_saved_x9_package |
-     zesu_open_matching_resource_package | zesu_finish_pure_resources_step |
-     zesu_pack_owned_register_goal | zesu_pack_shaped_register_goal |
-     zesu_pack_owned_word_goal | zesu_normalize_packed_word_subsume |
-     ZesuSsz.Automation2.CodecArrayRead.zesu_codec_array_find |
-     zesu_prepare_initialized_array_read |
-     zesu_finish_initialized_array_read |
-     ZesuSsz.Automation2.StoreMemoryLookup.zesu_store_memory_lookup |
-     zesu_liAStep |
-     ZesuSsz.Automation2.CodecArrayRead.zesu_codec_array_read_sidecond |
-     zesu_open_matching_two_level_frame |
-     zesu_extract_matching_descriptor_pure].
+    [zesu_talt s_source_destruct (idtac; SourceFactMatching.zesu_source_destruct_registered_disjunction) |
+     zesu_talt s_codec_read_consumer (idtac; ZesuSsz.Automation2.CodecArrayRead.zesu_codec_array_read_consumer) |
+     zesu_talt s_v34_array_continuation (idtac; zesu_v34_array_continuation) |
+     zesu_talt s_union_witness_step (idtac; zesu_union_witness_step) |
+     zesu_talt s_target_registered_intro (idtac; zesu_target_registered_intro_if_enabled) |
+     zesu_talt s_open_instr_bundle (idtac; zesu_open_requested_instr_bundle) |
+     zesu_talt s_open_struct_sys (idtac; zesu_open_requested_struct_sys_package) |
+     zesu_talt s_open_saved_x9 (idtac; zesu_open_requested_saved_x9_package) |
+     zesu_talt s_open_matching_resource (idtac; zesu_open_matching_resource_package) |
+     zesu_talt s_finish_pure_resources_step (idtac; zesu_finish_pure_resources_step) |
+     zesu_talt s_pack_owned_register (idtac; zesu_pack_owned_register_goal) |
+     zesu_talt s_pack_shaped_register (idtac; zesu_pack_shaped_register_goal) |
+     zesu_talt s_pack_owned_word (idtac; zesu_pack_owned_word_goal) |
+     zesu_talt s_normalize_packed_word (idtac; zesu_normalize_packed_word_subsume) |
+     zesu_talt s_codec_find (idtac; ZesuSsz.Automation2.CodecArrayRead.zesu_codec_array_find) |
+     zesu_talt s_prepare_init_array_read (idtac; zesu_prepare_initialized_array_read) |
+     zesu_talt s_finish_init_array_read (idtac; zesu_finish_initialized_array_read) |
+     zesu_talt s_store_memory_lookup (idtac; ZesuSsz.Automation2.StoreMemoryLookup.zesu_store_memory_lookup) |
+     zesu_talt s_liAStep (idtac; zesu_liAStep) |
+     zesu_talt s_codec_read_sidecond (idtac; ZesuSsz.Automation2.CodecArrayRead.zesu_codec_array_read_sidecond) |
+     zesu_talt s_open_two_level_frame (idtac; zesu_open_matching_two_level_frame) |
+     zesu_talt s_extract_descriptor_pure (idtac; zesu_extract_matching_descriptor_pure)].
 
 (* A pass that stopped inside a let-bound continuation leaves it in the next
    pass's goal as `LET_ID T args`, the let variable gone. Lithium's let step
@@ -1171,42 +1181,48 @@ Ltac zesu_unfold_let_id_goal :=
       progress unfold LET_ID
   end.
 
+(* Each iteration of the search loop is one telemetry step (`zesu_tstep`) and
+   each alternative carries a telemetry name (`zesu_talt`, Telemetry.v). *)
 Ltac zesu_run_pass_v1 :=
   zesu_expose_environment_alias;
   try zesu_prepare_uninit_goal;
   try zesu_normalize_find_mem_address;
-  unshelve (time "zesu_run" repeat first
+  unshelve (time "zesu_run" repeat (zesu_tstep (first
     [zesu_diag_step |
-     SourceFactMatching.zesu_source_destruct_registered_disjunction |
-     ZesuSsz.Automation2.CodecArrayRead.zesu_codec_array_read_consumer |
-     zesu_v34_array_continuation |
-     zesu_union_witness_step | zesu_target_registered_intro_if_enabled |
-     zesu_open_requested_instr_bundle |
-     zesu_open_requested_struct_sys_package |
-     zesu_open_requested_saved_x9_package |
-     zesu_open_matching_resource_package | zesu_finish_pure_resources_step |
-     zesu_pack_owned_register_goal | zesu_pack_shaped_register_goal |
-     zesu_pack_owned_word_goal | zesu_normalize_packed_word_subsume |
-     ZesuSsz.Automation2.CodecArrayRead.zesu_codec_array_find |
-     zesu_prepare_initialized_array_read |
-     zesu_finish_initialized_array_read |
-     ZesuSsz.Automation2.StoreMemoryLookup.zesu_store_memory_lookup |
-     zesu_liAStep |
+     zesu_talt v1_source_destruct (idtac; SourceFactMatching.zesu_source_destruct_registered_disjunction) |
+     zesu_talt v1_codec_read_consumer (idtac; ZesuSsz.Automation2.CodecArrayRead.zesu_codec_array_read_consumer) |
+     zesu_talt v1_v34_array_continuation (idtac; zesu_v34_array_continuation) |
+     zesu_talt v1_union_witness_step (idtac; zesu_union_witness_step) |
+     zesu_talt v1_target_registered_intro (idtac; zesu_target_registered_intro_if_enabled) |
+     zesu_talt v1_open_instr_bundle (idtac; zesu_open_requested_instr_bundle) |
+     zesu_talt v1_open_struct_sys (idtac; zesu_open_requested_struct_sys_package) |
+     zesu_talt v1_open_saved_x9 (idtac; zesu_open_requested_saved_x9_package) |
+     zesu_talt v1_open_matching_resource (idtac; zesu_open_matching_resource_package) |
+     zesu_talt v1_finish_pure_resources_step (idtac; zesu_finish_pure_resources_step) |
+     zesu_talt v1_pack_owned_register (idtac; zesu_pack_owned_register_goal) |
+     zesu_talt v1_pack_shaped_register (idtac; zesu_pack_shaped_register_goal) |
+     zesu_talt v1_pack_owned_word (idtac; zesu_pack_owned_word_goal) |
+     zesu_talt v1_normalize_packed_word (idtac; zesu_normalize_packed_word_subsume) |
+     zesu_talt v1_codec_find (idtac; ZesuSsz.Automation2.CodecArrayRead.zesu_codec_array_find) |
+     zesu_talt v1_prepare_init_array_read (idtac; zesu_prepare_initialized_array_read) |
+     zesu_talt v1_finish_init_array_read (idtac; zesu_finish_initialized_array_read) |
+     zesu_talt v1_store_memory_lookup (idtac; ZesuSsz.Automation2.StoreMemoryLookup.zesu_store_memory_lookup) |
+     zesu_talt v1_liAStep (idtac; zesu_liAStep) |
      (* A switched-on interior slice: lend it where the search stopped at
         an existential byte array inside a held array, restore it after. *)
-     ZesuSsz.Automation2.InteriorByteSlice.zesu_interior_byte_slice_step |
-     ZesuSsz.Automation2.CodecArrayRead.zesu_codec_array_read_sidecond |
-     zesu_open_matching_two_level_frame |
-     zesu_extract_matching_descriptor_pure |
+     zesu_talt v1_interior_byte_slice (idtac; ZesuSsz.Automation2.InteriorByteSlice.zesu_interior_byte_slice_step) |
+     zesu_talt v1_codec_read_sidecond (idtac; ZesuSsz.Automation2.CodecArrayRead.zesu_codec_array_read_sidecond) |
+     zesu_talt v1_open_two_level_frame (idtac; zesu_open_matching_two_level_frame) |
+     zesu_talt v1_extract_descriptor_pure (idtac; zesu_extract_matching_descriptor_pure) |
      (* Last: a list index on a closed-offset chain of a word becomes a
         literal; it fires only when every other step refused. *)
-     WrappedWord.zesu_wrapped_index_step |
+     zesu_talt v1_wrapped_index (idtac; WrappedWord.zesu_wrapped_index_step) |
      (* Then: a pure equation on byte positions of an existential list is
         rewritten so that unification sets the list; a branch fact holding
         such a window states it as byte positions too. *)
-     BytePositionEquations.zesu_byte_position_pure_step |
-     BytePositionEquations.zesu_le_window_rewrite_hypothesis |
-     zesu_unfold_let_id_goal]; zesu_diag_step_end; liShow;
+     zesu_talt v1_byte_position_pure (idtac; BytePositionEquations.zesu_byte_position_pure_step) |
+     zesu_talt v1_le_window_rewrite (idtac; BytePositionEquations.zesu_le_window_rewrite_hypothesis) |
+     zesu_talt v1_unfold_let_id (idtac; zesu_unfold_let_id_goal)])); zesu_diag_step_end; liShow;
     try zesu_finish_closed_wand;
     try zesu_finish_framed_wand;
     zesu_finish).
@@ -1215,8 +1231,20 @@ Ltac zesu_run_pass_v2 :=
   zesu_expose_environment_alias;
   try zesu_prepare_uninit_goal;
   try zesu_normalize_find_mem_address;
-  unshelve (time "zesu_run" repeat first
-    [zesu_diag_step | zesu_target_registered_intro_if_enabled | zesu_array_load_preselect | zesu_array_load_priority | zesu_conjunct_match_if_enabled | zesu_run_pass_steps | zesu_close_matching_trace_tail | zesu_open_trace_exist | zesu_rule_set_v2_steps | WrappedWord.zesu_wrapped_index_step | BytePositionEquations.zesu_byte_position_pure_step | BytePositionEquations.zesu_le_window_rewrite_hypothesis | zesu_unfold_let_id_goal]; zesu_diag_step_end; liShow;
+  unshelve (time "zesu_run" repeat (zesu_tstep (first
+    [zesu_diag_step |
+     zesu_talt v2_target_registered_intro (idtac; zesu_target_registered_intro_if_enabled) |
+     zesu_talt v2_array_load_preselect (idtac; zesu_array_load_preselect) |
+     zesu_talt v2_array_load_priority (idtac; zesu_array_load_priority) |
+     zesu_talt v2_conjunct_match (idtac; zesu_conjunct_match_if_enabled) |
+     zesu_talt v2_run_pass_steps (idtac; zesu_run_pass_steps) |
+     zesu_talt v2_close_trace_tail (idtac; zesu_close_matching_trace_tail) |
+     zesu_talt v2_open_trace_exist (idtac; zesu_open_trace_exist) |
+     zesu_talt v2_rule_set_v2_steps (idtac; zesu_rule_set_v2_steps) |
+     zesu_talt v2_wrapped_index (idtac; WrappedWord.zesu_wrapped_index_step) |
+     zesu_talt v2_byte_position_pure (idtac; BytePositionEquations.zesu_byte_position_pure_step) |
+     zesu_talt v2_le_window_rewrite (idtac; BytePositionEquations.zesu_le_window_rewrite_hypothesis) |
+     zesu_talt v2_unfold_let_id (idtac; zesu_unfold_let_id_goal)])); zesu_diag_step_end; liShow;
     try zesu_finish_closed_wand;
     try zesu_finish_framed_wand;
     zesu_finish).

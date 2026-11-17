@@ -385,6 +385,40 @@ let telemetry_goal_shape goal =
       (Proofview.Goal.concl goal) in
   String.map (fun c -> if c = ' ' then '_' else c) shape
 
+(* Caller mode: where the goal's terms come from. The modules of the
+   constants, inductives, constructors and projections in the conclusion, and,
+   marked `~`, the module of the type head of each local variable in it;
+   sorted, at most 24, joined by `,`. *)
+let telemetry_global_module sigma term =
+  match EConstr.kind sigma term with
+  | Constr.Const (constant, _) -> Some (ModPath.to_string (Constant.modpath constant))
+  | Constr.Ind ((inductive, _), _) | Constr.Construct (((inductive, _), _), _) ->
+      Some (ModPath.to_string (MutInd.modpath inductive))
+  | Constr.Proj (projection, _, _) ->
+      Some (ModPath.to_string (Constant.modpath (Projection.constant projection)))
+  | _ -> None
+
+let telemetry_goal_origins goal =
+  let env = Proofview.Goal.env goal and sigma = Proofview.Goal.sigma goal in
+  let origins = ref CString.Set.empty in
+  let add origin = origins := CString.Set.add origin !origins in
+  let rec walk term =
+    (match telemetry_global_module sigma term with Some origin -> add origin | None -> ());
+    (match EConstr.kind sigma term with
+     | Constr.Var id ->
+         (try
+            let typ = EConstr.of_constr (Context.Named.Declaration.get_type (Environ.lookup_named id env)) in
+            match telemetry_global_module sigma (fst (EConstr.decompose_app sigma typ)) with
+            | Some origin -> add ("~" ^ origin)
+            | None -> ()
+          with Not_found -> ())
+     | _ -> ());
+    EConstr.iter sigma walk term in
+  walk (Proofview.Goal.concl goal);
+  match CString.Set.elements !origins with
+  | [] -> "-"
+  | origins -> String.concat "," (List.filteri (fun index _ -> index < 24) origins)
+
 let telemetry_emit kind site caller sizes (start : telemetry_sample) ok =
   let stop = telemetry_sample () in
   let facts, nodes, goal_nodes = match sizes with
@@ -413,14 +447,16 @@ let () =
     (fun () -> Proofview.Goal.goals >>= function
       | [goal] -> goal >>= fun goal -> Proofview.tclUNIT (telemetry_goal_sizes goal)
       | _ -> Proofview.tclUNIT [-1; -1; -1]);
-  (* Caller mode: the caller frames of an Ltac1 closure and the shape of the
-     single focused goal, as `<frames> shape=<shape>`; `-` outside it. *)
+  (* Caller mode: the caller frames of an Ltac1 closure, the shape and the
+     origins of the single focused goal, as `<frames> shape=<shape>
+     origins=<origins>`; `-` outside it. *)
   define (name "telemetry_caller") (Tac2ffi.repr_ext Tac2ffi.val_ltac1 @-> tac Tac2ffi.string)
     (fun value ->
       if not (Lazy.force telemetry_callers_on) then Proofview.tclUNIT "-" else
       (Proofview.Goal.goals >>= function
-        | [goal] -> goal >>= fun goal -> Proofview.tclUNIT (telemetry_goal_shape goal)
-        | _ -> Proofview.tclUNIT "-") >>= fun shape ->
+        | [goal] -> goal >>= fun goal ->
+            Proofview.tclUNIT (telemetry_goal_shape goal ^ " origins=" ^ telemetry_goal_origins goal)
+        | _ -> Proofview.tclUNIT "- origins=-") >>= fun shape ->
       telemetry_now (fun () -> telemetry_frames value ^ " shape=" ^ shape));
   define (name "telemetry_emit")
     (Tac2ffi.string @-> Tac2ffi.string @-> Tac2ffi.string @-> Tac2ffi.list Tac2ffi.int @->

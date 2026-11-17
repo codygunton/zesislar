@@ -15,6 +15,11 @@ Log lines the parser reads:
                                               values bare or "quoted"; -1 counts mean "not one goal"
   @@T kind=stage site=<stage> ms=... cpu_ms=...   one stage, printed at its end (nested stages
                                               include their children; zesu_run_pass lines count steps)
+  @@T kind=step site=<goal skeleton> ...      one iteration of a pass's search loop (ok=0: the loop ended)
+  @@T kind=alt|altfail site=<name> ...        one named alternative that succeeded, or failed after
+                                              more than 1 ms CPU (Telemetry.v zesu_talt); alternatives
+                                              nest (liAStep's inside the pass loop's), so compare rows
+                                              of one prefix (v1_, l_, f_, c_, b_, s_, r_)
   @@X begin <kind> / binders / counts / stmt <source> / end, @@X skip <kind> <why>
                                               goal export records (ResidualExport.v); `final` records
                                               are the goals open at the end of zesu_block2
@@ -58,6 +63,7 @@ ALIASES = {
     'ts': ('ts_us',),
 }
 TRUE = {'1', 'true', 'ok', 'yes', 'success', 'solved'}
+STEP_KINDS = {'step', 'alt', 'altfail'}
 
 
 # ---------------------------------------------------------------- parsing one log
@@ -211,8 +217,8 @@ def goal_class(kind, statement):
 
 def parse_log(text):
     """Events of one coqc log, each with the byte offset just past its record ('end')."""
-    out = {'commands': [], 'zesu_runs': [], 'markers': [], 'stage_records': [], 'calls': [], 'exports': [],
-           'errors': [], 'events': 0}
+    out = {'commands': [], 'zesu_runs': [], 'markers': [], 'stage_records': [], 'calls': [], 'steps': [],
+           'exports': [], 'errors': [], 'events': 0}
     export, error = None, None
     for line, offset in records(text):
         if error is not None:
@@ -234,7 +240,10 @@ def parse_log(text):
             out['events'] += 1
             fields = telemetry_fields(line[4:])
             call = dict(solver_call(fields), end=offset, fields=fields)
-            out['stage_records' if call['kind'] == 'stage' else 'calls'].append(call)
+            if call['kind'] in STEP_KINDS:
+                out['steps'].append(call)
+            else:
+                out['stage_records' if call['kind'] == 'stage' else 'calls'].append(call)
         elif line.startswith('@@X '):
             body = line[4:]
             if body.startswith('skip '):
@@ -389,7 +398,8 @@ def stage_reached(parsed, verdict, end):
     if 'proof' in classes:
         return 'qed'
     passes = sum(record['site'] == 'zesu_run_pass' for record in parsed['stage_records'])
-    last = max(parsed['calls'] + parsed['stage_records'], key=lambda record: record['end'], default=None)
+    last = max(parsed['calls'] + parsed['stage_records'] + parsed['steps'], key=lambda record: record['end'],
+               default=None)
     if last is not None:  # the innermost stage of the last telemetry record
         where = last['site'] if last['kind'] == 'stage' else last['stage'] or 'proof'
         return '%s (%d zesu_run_pass, %s)' % (where, passes, end)
@@ -433,6 +443,26 @@ def run_end(record, measure, guard_text, caps):
     return 'killed (signal %d)' % -code
 
 
+def step_summary(steps):
+    """Step and alternative records (Telemetry.v zesu_tstep/zesu_talt) of one block: step count and CPU,
+    and per alternative and per step goal head their CPU, calls and failures."""
+    row = lambda: {'cpu': 0.0, 'rss_growth_kib': 0, 'calls': 0, 'failed': 0}
+    out = {'steps': 0, 'cpu': 0.0, 'alternatives': defaultdict(row), 'heads': defaultdict(row)}
+    for record in steps:
+        if record['kind'] == 'step':
+            out['steps'] += 1
+            out['cpu'] += record['cpu'] or 0
+            entry = out['heads'][str(record['site'])[:100]]
+        else:
+            entry = out['alternatives']['%s @ %s' % (record['site'], record['stage'])]
+        entry['cpu'] += record['cpu'] or 0
+        if record['rss_after_kib'] is not None and record['rss_before_kib'] is not None:
+            entry['rss_growth_kib'] += max(record['rss_after_kib'] - record['rss_before_kib'], 0)
+        entry['calls'] += 1
+        entry['failed'] += record['ok'] is False
+    return dict(out, cpu=round(out['cpu'], 1), alternatives=dict(out['alternatives']), heads=dict(out['heads']))
+
+
 def load_block(directory, caps=None, running=False):
     """Everything the report needs about one block run directory."""
     directory = Path(directory)
@@ -467,6 +497,7 @@ def load_block(directory, caps=None, running=False):
         'stage': stage_reached(parsed, verdict, end),
         'stages': stage_times(parsed, timeline, cpu),
         'calls': parsed['calls'], 'telemetry_events': parsed['events'],
+        'step_summary': step_summary(parsed['steps']),
         'leftovers': leftovers(parsed, verdict == 'CLOSED'), 'exports': len(parsed['exports']),
         'errors': parsed['errors'], 'samples': len(timeline.samples),
     }
@@ -516,11 +547,13 @@ def caller_name(call, frames=2):
 
 
 def ranking(run):
-    """CPU and memory per stage, solver kind, site and (caller mode) caller, summed over the set."""
+    """CPU and memory per stage, solver kind, site, (caller mode) caller, step alternative and step goal
+    head, summed over the set."""
     calls_table = lambda: defaultdict(lambda: {'cpu': 0.0, 'rss_growth_kib': 0, 'blocks': set(), 'calls': 0,
                                                'failed': 0})
     tables = {'stage': defaultdict(lambda: {'cpu': 0.0, 'rss_growth_kib': 0, 'blocks': set(), 'steps': 0}),
-              'kind': calls_table(), 'site': calls_table(), 'caller': calls_table()}
+              'kind': calls_table(), 'site': calls_table(), 'caller': calls_table(),
+              'alternative': calls_table(), 'step_head': calls_table()}
     for entry in run['blocks']:
         block = entry['block']
         if block is None:
@@ -541,6 +574,12 @@ def ranking(run):
                 row['rss_growth_kib'] += max(call['rss_growth_kib'] or 0, 0)
                 row['calls'] += 1
                 row['failed'] += call['ok'] is False
+                row['blocks'].add(entry['key'])
+        for table, source in (('alternative', 'alternatives'), ('step_head', 'heads')):
+            for name, value in block['step_summary'][source].items():
+                row = tables[table][name]
+                for field in ('cpu', 'rss_growth_kib', 'calls', 'failed'):
+                    row[field] += value[field]
                 row['blocks'].add(entry['key'])
     return {table: sorted(({'name': name, **dict(value, blocks=len(value['blocks']), cpu=round(value['cpu'], 1))}
                            for name, value in rows.items()), key=lambda row: -row['cpu'])
@@ -626,6 +665,13 @@ def render_block(entry, base_entry=None):
         if grown:
             lines += ['', 'top 5 by RSS growth:', ''] + header
             lines += [call_row(call) for call in sorted(grown, key=lambda call: -call['rss_growth_kib'])[:5]]
+    steps = block['step_summary']
+    if steps['steps'] or steps['alternatives']:
+        top = sorted(steps['alternatives'].items(), key=lambda item: -item[1]['cpu'])[:8]
+        lines += ['', 'search steps: %d, %s s; top alternatives (CPU s, calls, failed): %s' % (
+            steps['steps'], number(steps['cpu']),
+            ', '.join('%s %s/%d/%d' % (name, number(value['cpu']), value['calls'], value['failed'])
+                      for name, value in top) or '-')]
     classes = leftover_classes(block)
     lines += ['', 'leftover goal classes: ' + (', '.join('%s x%d' % item for item in sorted(classes.items())) or '-'), '']
     return lines
@@ -634,13 +680,16 @@ def render_block(entry, base_entry=None):
 def render_ranking(rank, limit=10):
     lines = ['## Ranking across the set', '',
              'Telemetry stages include their nested stages, and a solver call includes the calls it wraps '
-             '(Lia.lia over xlia and zify): compare rows of one level, do not add them up.', '']
+             '(Lia.lia over xlia and zify): compare rows of one level, do not add them up. Alternatives nest '
+             'the same way (l_ inside v1_liAStep); a failed alternative is listed only above 1 ms CPU.', '']
     for table, title, extra in (('stage', 'stage', 'steps'), ('kind', 'solver kind', 'calls'),
                                 ('site', 'site @ stage', 'calls'),
-                                ('caller', 'failing calls by site @ stage <- caller [goal shape]', 'calls')):
+                                ('caller', 'failing calls by site @ stage <- caller [goal shape]', 'calls'),
+                                ('alternative', 'step alternative @ stage', 'calls'),
+                                ('step_head', 'search step goal head', 'calls')):
         rows = rank.get(table, [])
-        if table == 'caller' and not rows:
-            continue  # recorded only with bench.py run --callers
+        if table in ('caller', 'alternative', 'step_head') and not rows:
+            continue  # callers: only with bench.py run --callers; steps: only from step telemetry
         lines += ['by %s (CPU s, RSS growth GiB, blocks, %s%s):' % (title, extra, ', failed' if extra == 'calls' else ''), '']
         if not rows:
             lines += ['-', '']

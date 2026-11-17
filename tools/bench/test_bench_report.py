@@ -268,6 +268,32 @@ class Report(unittest.TestCase):
                          [('bv_solve @ zesu_run_pass <- bv_solve@automation:1668>liStep@Hooks:10 [eq:bv]', 1, 0.9)])
         self.assertIn('failing calls by site @ stage <- caller [goal shape]', R.render(R.load_run(run)))
 
+    def test_step_ranking(self):
+        log = ('@@T kind=altfail site=l_pure_fact_hints stage=zesu_run_pass facts=-1 nodes=-1 goal_nodes=-1 ms=30 '
+               'ok=0 cpu_ms=30\n'
+               '@@T kind=alt site=l_liStep stage=zesu_run_pass facts=-1 nodes=-1 goal_nodes=-1 ms=20 ok=1 cpu_ms=20\n'
+               '@@T kind=alt site=v1_liAStep stage=zesu_run_pass facts=-1 nodes=-1 goal_nodes=-1 ms=55 ok=1 cpu_ms=55\n'
+               '@@T kind=step site=WPasm_(__::__) stage=zesu_run_pass facts=-1 nodes=-1 goal_nodes=-1 ms=60 ok=1 '
+               'cpu_ms=60\n'
+               '@@T kind=step site=WPasm_[] stage=zesu_run_pass facts=-1 nodes=-1 goal_nodes=-1 ms=40 ok=0 cpu_ms=40\n'
+               '@@T kind=bv_solve site=bv_solve stage=zesu_run_pass facts=3 nodes=40 goal_nodes=9 ms=10 ok=1 '
+               'cpu_ms=10\n')
+        run = write_run(self.root, 'steps', [dict(log=log, cpu=10.0, peak_gib=1.0, verdict='NOT-CLOSED'), None, None])
+        loaded = R.load_run(run)
+        steps = loaded['blocks'][0]['block']['step_summary']
+        self.assertEqual((steps['steps'], steps['cpu']), (2, 0.1))
+        self.assertEqual([call['kind'] for call in loaded['blocks'][0]['block']['calls']], ['bv_solve'])
+        rank = R.ranking(loaded)
+        self.assertEqual([(row['name'], row['calls'], row['failed']) for row in rank['alternative']],
+                         [('v1_liAStep @ zesu_run_pass', 1, 0), ('l_pure_fact_hints @ zesu_run_pass', 1, 1),
+                          ('l_liStep @ zesu_run_pass', 1, 0)])
+        self.assertEqual([(row['name'], row['failed']) for row in rank['step_head']],
+                         [('WPasm_(__::__)', 0), ('WPasm_[]', 1)])
+        self.assertEqual([row['name'] for row in rank['kind']], ['bv_solve'])
+        text = R.render(loaded)
+        self.assertIn('search steps: 2, 0.1 s', text)
+        self.assertIn('by step alternative @ stage', text)
+
     def test_render_with_base(self):
         text = R.render(R.load_run(self.new), R.load_run(self.base))
         self.assertIn('### decodeItem 0164 (6ac4)', text)
