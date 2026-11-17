@@ -1,6 +1,7 @@
 """Reject stale committed FP301 declarations and generated block callers."""
 import hashlib
 import json
+import re
 from pathlib import Path
 import unittest
 
@@ -25,6 +26,16 @@ class GeneratedFP301(unittest.TestCase):
                     expected = (render_caller(source) if group == "callers" else
                                 render_declaration(source, headers[row["header_kind"]]))
                     self.assertEqual((ROOT / row["output"]).read_text(), expected)
+
+    def test_every_generated_caller_prints_its_theorem_assumptions(self):
+        # closure_cert needs `Print Assumptions <theorem>.` last; 16 decodeItem callers lacked it.
+        callers = sorted((ROOT / "tools/block/generated").glob("*/Caller*.v"))
+        self.assertTrue(callers)
+        for path in callers:
+            with self.subTest(caller=path.name, directory=path.parent.name):
+                text = path.read_text()
+                theorem = re.findall(r"^(?:Lemma|Theorem) ([A-Za-z_][A-Za-z0-9_']*)", text, re.M)[-1]
+                self.assertTrue(text.endswith("\nPrint Assumptions " + theorem + ".\n"))
 
 
 if __name__ == "__main__":

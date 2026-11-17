@@ -10,6 +10,7 @@ import subprocess
 import sys
 import tempfile
 import unittest
+import unittest.mock
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import closure_cert as C
@@ -100,8 +101,10 @@ class ClosureCertificate(unittest.TestCase):
         self.assertFalse((self.run_dir / 'CLOSURE.json').exists())
         self.assertEqual(C.done_line(record), 'RUN-DONE case=0002 coqc_rc=1 verdict=NOT-CLOSED reason="coqc exit 1"')
         # The shared sweep prints coqc's status and the verdict, never the wrapper's 0.
+        # sweep finds coqc on PATH; a tools/bg scope has no opam PATH, so put COQC's dir first.
         output = io.StringIO()
-        with redirect_stdout(output):
+        path = os.path.dirname(COQC) + os.pathsep + os.environ.get('PATH', '')
+        with redirect_stdout(output), unittest.mock.patch.dict(os.environ, {'PATH': path}):
             sweep.main(['--build', str(self.bank), '--callers', 'x_callers', '--run-dir', str(self.root / 'sweep'),
                         '0002', '0001'])
         lines = output.getvalue().splitlines()

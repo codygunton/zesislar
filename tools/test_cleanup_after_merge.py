@@ -153,6 +153,26 @@ class CleanupAfterMerge(unittest.TestCase):
         self.assertIn('saved goals from ' + str(tied),
                       (self.root / '_build/janitor/janitor.log').read_text())
 
+    def test_closure_records_of_a_cleaned_branch_are_kept(self):
+        self.merge()
+        tied = self.item('a/sweep1', 'w/feature')
+        (tied / '0300').mkdir()
+        (tied / '0300/CLOSURE.json').write_text('{"case": "0300", "verdict": "CLOSED"}\n')
+        (tied / '0514').mkdir()
+        (tied / '0514/NOT-CLOSED.json').write_text('{"case": "0514", "verdict": "NOT-CLOSED"}\n')
+        (tied / 'ITEM.json').write_text(json.dumps({'branch': 'w/feature',
+                                                    'function': 'decodeItem'}))
+        dry = self.cleanup('--dry-run', 'w/feature')
+        self.assertIn('would save closure record ' + str(tied / '0300/CLOSURE.json'), dry.stdout)
+        result = self.cleanup('w/feature')
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertFalse(tied.exists())
+        store = self.root / '_build/closures/decodeItem'
+        self.assertEqual((store / '0300/a-sweep1/CLOSURE.json').read_text(),
+                         '{"case": "0300", "verdict": "CLOSED"}\n')
+        self.assertTrue((store / '0514/a-sweep1/NOT-CLOSED.json').exists())
+        self.assertIn('saved 2 closure record(s) from ' + str(tied), result.stdout)
+
     def test_cleanup_never_deletes_the_store(self):
         self.merge()
         stored = self.root / '_build/goals/decodeItem/0300/lia-1/Goal1.v'

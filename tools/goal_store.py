@@ -8,6 +8,9 @@ anything under `_build/goals/`. The janitor reports its size against its own bud
 Each tag dir holds the goal files and `MANIFEST.json` (head, bank, command, date, sources).
 `tools/save_goal.py` saves goals by hand; `rescue()` moves saved goals out of a run dir that
 cleanup is about to delete, into `_build/goals/<function or _rescued>/<run dir>/rescued-<stamp>/`.
+
+Closure records (`CLOSURE.json`, `NOT-CLOSED.json` from tools/closure_cert.py) live beside it in
+`_build/closures/<function>/<case>/<run>/`; `rescue_closures()` moves them there the same way.
 """
 
 import contextlib
@@ -25,6 +28,8 @@ GOAL_MAX_BYTES = 1 << 20
 GOAL_STORE_BUDGET_BYTES = 2 * 10 ** 9
 MANIFEST = 'MANIFEST.json'
 RESCUED_FUNCTION = '_rescued'
+CLOSURES = Path('_build/closures')
+CLOSURE_NAMES = frozenset(('CLOSURE.json', 'NOT-CLOSED.json'))
 # Build trees copy every source file, GoalDomain.v included; they hold no saved goals.
 SKIP_DIRS = frozenset(('default', 'bank', 'banks', 'IMPORT-RESOLUTION', '.git'))
 SEGMENT = re.compile(r'^[A-Za-z0-9_][A-Za-z0-9_.@+-]*$')
@@ -163,6 +168,65 @@ def rescue(root, directory, *, reason, log=None, now=None):
         if log:
             log(f'{stamp}\tgoal-saved\t{path}\t{size}\t{destination / relative}')
     return destination, len(found)
+
+
+def closure_record(path):
+    """The parsed closure_cert record at PATH, or None. correctness_gate.py also writes a
+    CLOSURE.json (process closure of a gate run); only records with a verdict count."""
+    with contextlib.suppress(OSError, ValueError):
+        info = os.lstat(path)
+        if stat.S_ISREG(info.st_mode) and info.st_size <= GOAL_MAX_BYTES:
+            value = json.loads(Path(path).read_text())
+            if isinstance(value, dict) and value.get('verdict') in ('CLOSED', 'NOT-CLOSED'):
+                return value
+    return None
+
+
+def closure_files(directory):
+    """Yield (path, relative path, record) of the closure_cert records under DIRECTORY."""
+    for current, subdirectories, names in os.walk(directory):
+        subdirectories[:] = sorted(d for d in subdirectories if d not in SKIP_DIRS)
+        for name in sorted(names):
+            if name in CLOSURE_NAMES:
+                path = os.path.join(current, name)
+                record = closure_record(path)
+                if record is not None:
+                    yield path, os.path.relpath(path, directory), record
+
+
+def rescue_closures(root, directory, *, reason, log=None, now=None):
+    """Move the closure records out of DIRECTORY into `_build/closures/<function>/<case>/<run>/`.
+
+    The case is the record's `case` (else its parent dir name); the run is DIRECTORY's name
+    (as for saved goals) plus the record's parent dirs below it. Returns the moved count."""
+    item = item_metadata(directory)
+    default_function = item.get('function') if isinstance(item.get('function'), str) else None
+    run = case_name(root, directory)
+    stamp = time.strftime('%Y%m%dT%H%M%SZ', time.gmtime(time.time() if now is None else now))
+    moved = 0
+    for path, relative, record in list(closure_files(directory)):
+        parent = Path(relative).parent
+        function = record.get('function') if isinstance(record.get('function'), str) else None
+        function = function or default_function
+        if not function or not SEGMENT.match(function):
+            function = RESCUED_FUNCTION
+        case = record.get('case') if isinstance(record.get('case'), str) else None
+        if not case or not SEGMENT.match(case):
+            case = parent.name if parent.parts and SEGMENT.match(parent.name) else 'unknown'
+        sub = '-'.join(p for p in parent.parts if p != case)
+        name = re.sub(r'[^A-Za-z0-9._@+-]', '_', run + ('-' + sub if sub else '')).lstrip('._-') or 'run'
+        target_dir = Path(root) / CLOSURES / function / case / name
+        target = target_dir / Path(relative).name
+        if target.exists() and sha256(target) != sha256(path):
+            target = target_dir / (stamp + '-' + Path(relative).name)
+        target_dir.mkdir(parents=True, exist_ok=True)
+        shutil.copyfile(path, target)
+        with contextlib.suppress(OSError):
+            os.unlink(path)
+        moved += 1
+        if log:
+            log(f'{stamp}\tclosure-saved\t{path}\t{target}\t{reason}')
+    return moved
 
 
 def store_bytes(root):
