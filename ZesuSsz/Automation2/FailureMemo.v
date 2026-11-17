@@ -18,13 +18,20 @@ Ltac2 @ external zesu_failure_memo_failed : int list -> bool :=
 Ltac2 @ external zesu_failure_memo_record : int list -> unit :=
   "zesu-signature-gates.plugin" "failure_memo_record".
 
-(* A failure after a success (backtracking into the site) is not recorded. *)
+(* A failure after a success (backtracking into the site) is not recorded.
+   The key needs exactly one focused goal; with several goals or none (a
+   site run on all side goals of a `by`), the site runs unmemoized:
+   Control.goal would throw Not_focussed, which Control.case does not catch. *)
 Ltac2 zesu_failure_memo (site : string) (tac : unit -> 'a) : 'a :=
+  let goals := Ref.ref 0 in
+  Control.enter (fun () => Ref.set goals (Int.add (Ref.get goals) 1));
   let key :=
-    match Control.case (fun () => let _ := Control.goal () in zesu_failure_memo_key site) with
-    | Val (key, _) => key
-    | Err _ => []
-    end in
+    if Int.equal (Ref.get goals) 1 then
+      match Control.case (fun () => zesu_failure_memo_key site) with
+      | Val (key, _) => key
+      | Err _ => []
+      end
+    else [] in
   match key with
   | [] => tac ()
   | _ :: _ =>
