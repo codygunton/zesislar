@@ -20,6 +20,11 @@ Log lines the parser reads:
                                               more than 1 ms CPU (Telemetry.v zesu_talt); alternatives
                                               nest (liAStep's inside the pass loop's), so compare rows
                                               of one prefix (v1_, l_, f_, c_, b_, s_, r_)
+  @@T kind=backtrack|stepbacktrack site=<name|goal skeleton> ...
+                                              a later failure backtracked into an alternative or step
+                                              that had succeeded: the CPU from its success to the
+                                              backtrack, spent in the continuation (above 1 ms CPU);
+                                              nested wrappers each record the same continuation
   @@X begin <kind> / binders / counts / stmt <source> / end, @@X skip <kind> <why>
                                               goal export records (ResidualExport.v); `final` records
                                               are the goals open at the end of zesu_block2
@@ -63,7 +68,7 @@ ALIASES = {
     'ts': ('ts_us',),
 }
 TRUE = {'1', 'true', 'ok', 'yes', 'success', 'solved'}
-STEP_KINDS = {'step', 'alt', 'altfail'}
+STEP_KINDS = {'step', 'alt', 'altfail', 'backtrack', 'stepbacktrack'}
 
 
 # ---------------------------------------------------------------- parsing one log
@@ -445,22 +450,31 @@ def run_end(record, measure, guard_text, caps):
 
 def step_summary(steps):
     """Step and alternative records (Telemetry.v zesu_tstep/zesu_talt) of one block: step count and CPU,
-    and per alternative and per step goal head their CPU, calls and failures."""
+    per alternative and per step goal head their CPU, calls and failures, and per alternative or step
+    backtracked into the continuation CPU from its success to the backtrack."""
     row = lambda: {'cpu': 0.0, 'rss_growth_kib': 0, 'calls': 0, 'failed': 0}
-    out = {'steps': 0, 'cpu': 0.0, 'alternatives': defaultdict(row), 'heads': defaultdict(row)}
+    out = {'steps': 0, 'cpu': 0.0, 'backtrack_cpu': 0.0, 'alternatives': defaultdict(row), 'heads': defaultdict(row),
+           'backtracks': defaultdict(row)}
     for record in steps:
         if record['kind'] == 'step':
             out['steps'] += 1
             out['cpu'] += record['cpu'] or 0
             entry = out['heads'][str(record['site'])[:100]]
+        elif record['kind'] == 'stepbacktrack':
+            entry = out['backtracks']['step %s' % str(record['site'])[:100]]
         else:
-            entry = out['alternatives']['%s @ %s' % (record['site'], record['stage'])]
+            entry = out['backtracks' if record['kind'] == 'backtrack' else 'alternatives'][
+                '%s @ %s' % (record['site'], record['stage'])]
         entry['cpu'] += record['cpu'] or 0
         if record['rss_after_kib'] is not None and record['rss_before_kib'] is not None:
             entry['rss_growth_kib'] += max(record['rss_after_kib'] - record['rss_before_kib'], 0)
         entry['calls'] += 1
-        entry['failed'] += record['ok'] is False
-    return dict(out, cpu=round(out['cpu'], 1), alternatives=dict(out['alternatives']), heads=dict(out['heads']))
+        if record['kind'] in ('backtrack', 'stepbacktrack'):
+            out['backtrack_cpu'] += record['cpu'] or 0
+        else:
+            entry['failed'] += record['ok'] is False
+    return dict(out, cpu=round(out['cpu'], 1), backtrack_cpu=round(out['backtrack_cpu'], 1),
+                alternatives=dict(out['alternatives']), heads=dict(out['heads']), backtracks=dict(out['backtracks']))
 
 
 def load_block(directory, caps=None, running=False):
@@ -553,7 +567,7 @@ def ranking(run):
                                                'failed': 0})
     tables = {'stage': defaultdict(lambda: {'cpu': 0.0, 'rss_growth_kib': 0, 'blocks': set(), 'steps': 0}),
               'kind': calls_table(), 'site': calls_table(), 'caller': calls_table(),
-              'alternative': calls_table(), 'step_head': calls_table()}
+              'alternative': calls_table(), 'step_head': calls_table(), 'backtrack': calls_table()}
     for entry in run['blocks']:
         block = entry['block']
         if block is None:
@@ -575,7 +589,7 @@ def ranking(run):
                 row['calls'] += 1
                 row['failed'] += call['ok'] is False
                 row['blocks'].add(entry['key'])
-        for table, source in (('alternative', 'alternatives'), ('step_head', 'heads')):
+        for table, source in (('alternative', 'alternatives'), ('step_head', 'heads'), ('backtrack', 'backtracks')):
             for name, value in block['step_summary'][source].items():
                 row = tables[table][name]
                 for field in ('cpu', 'rss_growth_kib', 'calls', 'failed'):
@@ -672,6 +686,10 @@ def render_block(entry, base_entry=None):
             steps['steps'], number(steps['cpu']),
             ', '.join('%s %s/%d/%d' % (name, number(value['cpu']), value['calls'], value['failed'])
                       for name, value in top) or '-')]
+    if steps.get('backtracks'):
+        top = sorted(steps['backtracks'].items(), key=lambda item: -item[1]['cpu'])[:5]
+        lines += ['', 'backtracks (continuation CPU after a success, nested; CPU s, backtracks): %s' % ', '.join(
+            '%s %s/%d' % (name, number(value['cpu']), value['calls']) for name, value in top)]
     classes = leftover_classes(block)
     lines += ['', 'leftover goal classes: ' + (', '.join('%s x%d' % item for item in sorted(classes.items())) or '-'), '']
     return lines
@@ -681,14 +699,17 @@ def render_ranking(rank, limit=10):
     lines = ['## Ranking across the set', '',
              'Telemetry stages include their nested stages, and a solver call includes the calls it wraps '
              '(Lia.lia over xlia and zify): compare rows of one level, do not add them up. Alternatives nest '
-             'the same way (l_ inside v1_liAStep); a failed alternative is listed only above 1 ms CPU.', '']
+             'the same way (l_ inside v1_liAStep); a failed alternative is listed only above 1 ms CPU. An '
+             'alternative or step counts its own time only; the time a later failure spent before backtracking '
+             'into it is in the backtrack table (each enclosing wrapper records that continuation again).', '']
     for table, title, extra in (('stage', 'stage', 'steps'), ('kind', 'solver kind', 'calls'),
                                 ('site', 'site @ stage', 'calls'),
                                 ('caller', 'failing calls by site @ stage <- caller [goal shape]', 'calls'),
                                 ('alternative', 'step alternative @ stage', 'calls'),
-                                ('step_head', 'search step goal head', 'calls')):
+                                ('step_head', 'search step goal head', 'calls'),
+                                ('backtrack', 'backtracked into (continuation CPU after its success)', 'backtracks')):
         rows = rank.get(table, [])
-        if table in ('caller', 'alternative', 'step_head') and not rows:
+        if table in ('caller', 'alternative', 'step_head', 'backtrack') and not rows:
             continue  # callers: only with bench.py run --callers; steps: only from step telemetry
         lines += ['by %s (CPU s, RSS growth GiB, blocks, %s%s):' % (title, extra, ', failed' if extra == 'calls' else ''), '']
         if not rows:
@@ -698,7 +719,7 @@ def render_ranking(rank, limit=10):
                   '|---|---|---|---|---|' + ('---|' if extra == 'calls' else '')]
         for row in rows[:limit]:
             lines.append('| %s | %s | %s | %d | %d |%s' % (row['name'], number(row['cpu']), gib(row['rss_growth_kib']),
-                                                         row['blocks'], row[extra],
+                                                         row['blocks'], row['calls' if extra == 'backtracks' else extra],
                                                          ' %d |' % row['failed'] if extra == 'calls' else ''))
         by_memory = sorted(rows, key=lambda row: -row['rss_growth_kib'])[:3]
         if any(row['rss_growth_kib'] for row in by_memory):
