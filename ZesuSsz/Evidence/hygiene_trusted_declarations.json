@@ -136,6 +136,22 @@
     {
       "path": "ZesuSsz/Automation2/FailureMemo.v",
       "statement": "Ltac2 @ external zesu_failure_memo_record : int list -> unit := \"zesu-signature-gates.plugin\" \"failure_memo_record\" ."
+    },
+    {
+      "path": "ZesuSsz/Automation2/SwitchDispatch.v",
+      "statement": "Declare ML Module \"zesu-signature-gates.plugin\" ."
+    },
+    {
+      "path": "ZesuSsz/Automation2/SwitchDispatch.v",
+      "statement": "Ltac2 @ external zesu_switch_memo_scope_set : bool -> unit := \"zesu-signature-gates.plugin\" \"switch_memo_scope\" ."
+    },
+    {
+      "path": "ZesuSsz/Automation2/SwitchDispatch.v",
+      "statement": "Ltac2 @ external zesu_switch_memo_lookup : constr -> constr -> int := \"zesu-signature-gates.plugin\" \"switch_memo_lookup\" ."
+    },
+    {
+      "path": "ZesuSsz/Automation2/SwitchDispatch.v",
+      "statement": "Ltac2 @ external zesu_switch_memo_record : constr -> bool -> unit := \"zesu-signature-gates.plugin\" \"switch_memo_record\" ."
     }
   ]
 }

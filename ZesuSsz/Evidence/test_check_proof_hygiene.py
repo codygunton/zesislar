@@ -301,7 +301,7 @@ class TrustedDeclarationTests(unittest.TestCase):
                 main()
 
     def test_exact_allowlist_has_nineteen_declarations(self):
-        self.assertEqual(len(trusted_declarations()), 34)
+        self.assertEqual(len(trusted_declarations()), 38)
 
     def test_automation2_keeps_the_same_hook_owner_boundary(self):
         self.scan("ZesuSsz/Automation2/Hooks.v", "Ltac liAStep ::= idtac.")
@@ -314,14 +314,16 @@ class TrustedDeclarationTests(unittest.TestCase):
             self.scan("tools/Rule.v", "Definition zesu_lbu_byte_array_at_spec (value : nat) := value.")
 
     def test_automation2_trust_mirrors_only_existing_automation_declarations(self):
-        # Telemetry.v (solver telemetry: switch, clock, RSS and print only) and
-        # FailureMemo.v (per-proof solver failure memo: hash and table only) have
-        # no Automation counterpart.
+        # Telemetry.v (solver telemetry: switch, clock, RSS and print only),
+        # FailureMemo.v (per-proof solver failure memo: hash and table only) and
+        # SwitchDispatch.v's switch memo (a per-run table only) have no
+        # Automation counterpart.
         approved = trusted_declarations()
         old = {(name, body) for name, body in approved if name.startswith("ZesuSsz/Automation/")}
         new = {(name.replace("/Automation2/", "/Automation/"), body)
                for name, body in approved if name.startswith("ZesuSsz/Automation2/")
-               and name not in ("ZesuSsz/Automation2/Telemetry.v", "ZesuSsz/Automation2/FailureMemo.v")}
+               and name not in ("ZesuSsz/Automation2/Telemetry.v", "ZesuSsz/Automation2/FailureMemo.v",
+                                "ZesuSsz/Automation2/SwitchDispatch.v")}
         self.assertEqual(new, old)
         self.assertTrue(trusted_declaration_failures("ZesuSsz/Automation2/Other.v", self.ml, approved))
         self.assertTrue(trusted_declaration_failures("ZesuSsz/Automation2/EntryIntro.v",
