@@ -155,7 +155,9 @@ class GateFamilyTests(unittest.TestCase):
                 self.write()
 
     def test_selected_profile_is_bound_in_request_and_result(self):
-        self.profile['families']['check-fast']['physical_fence_bytes'] = 120 * 1024**3
+        # The gate's default fence, derived from the live workload parent.
+        fence = correctness_gate.batch_fence_bytes({})
+        self.profile['families']['check-fast']['physical_fence_bytes'] = fence
         self.write()
         profile = self.root / 'profile.json'
         selected = {'path': str(profile), 'sha256': hashlib.sha256(profile.read_bytes()).hexdigest()}
@@ -175,12 +177,16 @@ class GateFamilyTests(unittest.TestCase):
              patch.object(correctness_gate, 'preflight', return_value={'synthetic': True}), \
              patch.object(correctness_gate.subprocess, 'check_output', return_value=str(self.root / '.git')), \
              patch('gate_exit_peaks.code_identity', return_value={'fixture':'unchanged-workload'}), \
-             patch.object(correctness_gate.subprocess, 'Popen', return_value=child), \
+             patch.object(correctness_gate.subprocess, 'Popen', return_value=child) as popen, \
+             patch.object(correctness_gate.subprocess, 'run', return_value=SimpleNamespace(returncode=0)) as setup, \
              patch.object(correctness_gate, 'identity', return_value={'startticks': 1}), \
              patch.object(correctness_gate, 'registry'), \
              patch.object(correctness_gate, 'reserve') as reserve, \
              patch.object(correctness_gate, 'release'):
             self.assertEqual(correctness_gate.run(args), 0)
+        # The gate creates or verifies the workload slice, and hands the guard its booked fence.
+        self.assertEqual(setup.call_args.args[0], [environment['ZESU_RESOURCE_GUARD'], 'parent-setup'])
+        self.assertEqual(popen.call_args.kwargs['env']['ZESU_GATE_LIMIT'], f'{fence // 1024**3}G')
         output = self.root / '_build/agents/correctness-gates/synthetic-gate'
         request = json.loads((output / 'REQUEST.json').read_text())
         result = json.loads((output / 'RESULT.json').read_text())
