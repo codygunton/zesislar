@@ -7,13 +7,13 @@
         "--no-print-directory",
         "_check-fast"
       ],
-      "physical_fence_bytes": 128849018880,
+      "physical_fence_bytes": 107374182400,
       "measurement": {
         "path": "gate-measurements/process-check-fast-v5.json",
         "sha256": "fa303e10fc93b5be3a562ae2004248d6e90bdedb959a054f40fe9bdfb4084621"
       },
       "peak_bytes": 33831407616,
-      "authority": "Root approved the completed process check-fast aggregate as the successor family basis. Preserve cache provenance as unknown."
+      "authority": "Root approved the completed process check-fast aggregate as the successor family basis. Preserve cache provenance as unknown. Re-approved 2026-11-17 (orch) at the derived gate fence of 100 GiB (152 GiB final account cap; 112 GiB workload parent less 12); the measured peak is unchanged and below that fence."
     },
     "check-iris": {
       "command": [
@@ -21,13 +21,13 @@
         "--no-print-directory",
         "_check-iris"
       ],
-      "physical_fence_bytes": 128849018880,
+      "physical_fence_bytes": 107374182400,
       "measurement": {
         "path": "gate-measurements/process-check-iris-v1.json",
         "sha256": "7ef17108c293afedeccec9e469015f0bfe22d90faac93151efa75dd34e27a601"
       },
       "peak_bytes": 4666003456,
-      "authority": "Root approved the completed process check-iris aggregate as the successor family basis. Preserve cache provenance as unknown."
+      "authority": "Root approved the completed process check-iris aggregate as the successor family basis. Preserve cache provenance as unknown. Re-approved 2026-11-17 (orch) at the derived gate fence of 100 GiB (152 GiB final account cap; 112 GiB workload parent less 12); the measured peak is unchanged and below that fence."
     }
   }
 }

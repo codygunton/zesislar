@@ -38,8 +38,13 @@ confirm_shell, release_shell = _module.confirm_shell, _module.release_shell
 recover_dead_shell, recover_dead_shells = _module.recover_dead_shell, _module.recover_dead_shells
 LeafNotClosed = _module.LeafNotClosed
 RejectedScopeSetup = _module.RejectedScopeSetup
+AdmissionRefused = _module.AdmissionRefused
 # A release whose compiler leaf still drains exits with this status; the guard retries it.
 LEAF_DRAINING = 5
+# ledger-confirm exits with this status, after one `refused:` line, when the
+# admission capacity is zero (missing or unverified workload slice): a wait
+# could never end. The guard turns it into its own refusal, exit 3.
+ADMISSION_REFUSED = 7
 recover_stale_shell = _module.recover_stale_shell
 recover_stale_shells = _module.recover_stale_shells
 current_projection = _module.current_projection
@@ -885,7 +890,11 @@ def main():
               explicit_limit_bytes=args.explicit_limit_bytes, gate_limit_bytes=args.gate_limit_bytes))
         return 0
     if args.command == 'ledger-confirm':
-        result = confirm_shell(args.marker, args.replacement, args.request_bytes, args.available_bytes)
+        try:
+            result = confirm_shell(args.marker, args.replacement, args.request_bytes, args.available_bytes)
+        except AdmissionRefused as error:
+            print(f'refused: module memory: {error}', file=sys.stderr)
+            return ADMISSION_REFUSED
         publish_admission_totals(result)
         if not result['fits']:
             # Exit 3 is a hold: the guard waits and retries; the run continues.

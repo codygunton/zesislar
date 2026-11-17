@@ -1,0 +1,16 @@
+# Installed, enabled and started by `make install-workload-slice`, which fills in
+# @MEMORY_MAX@ from `tools/resource_guard.sh parent-bytes` (the account's
+# MemoryMax less 40 GiB, at most 175 GiB). Every proof workload runs below this
+# slice, and memory admission reads its fence. After the 2026-11-17 reboot the
+# slice did not exist until a guard created it, so every admission read zero
+# capacity and waited. Enabled, the user manager starts it at boot (linger) or
+# login. The guard still resets MemoryMax at runtime when the account changes.
+[Unit]
+Description=Zesislar proof workloads: shared memory fence (tools/resource_guard.sh)
+
+[Slice]
+MemoryMax=@MEMORY_MAX@
+MemorySwapMax=0
+
+[Install]
+WantedBy=default.target
