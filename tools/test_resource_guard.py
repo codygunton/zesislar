@@ -45,7 +45,13 @@ MEMORY_HELPER = r'''
 import argparse
 import os
 from pathlib import Path
+import sys
 import module_memory
+
+# The guard reads the fixture cgroup root; size the workload parent from the
+# same root, not from the host's account limit (152 GiB after 2026-11-17).
+module_memory._module.SLICE_MAX_BYTES = module_memory._module.workload_parent_bytes(
+    Path(os.environ.get("ZESU_CGROUP_ROOT", "/sys/fs/cgroup")))
 
 parser = argparse.ArgumentParser()
 parser.add_argument("operation", choices=("admission", "ledger-confirm", "ledger-mark", "ledger-release", "ledger-recover-stale", "test-ledger-policy", "aggregate-limit"))
@@ -96,6 +102,10 @@ elif args.operation == "admission":
         print("fixture memory admission refused")
 elif args.operation == "ledger-confirm":
     assert args.replacement.parent == state
+    # The ledger's zero-capacity refusal (module_memory.ADMISSION_REFUSED).
+    if os.environ.get("GUARD_TEST_LEDGER_REFUSED"):
+        print("refused: module memory: fixture zero capacity", file=sys.stderr)
+        raise SystemExit(7)
     if os.environ.get("ZESU_MODULE_MEMORY_PROFILE") and not admitted(args.marker.parent.glob("*")):
         raise SystemExit(3)
     os.replace(args.replacement, args.marker)
@@ -1182,6 +1192,13 @@ live_scopes
         ledger.write_text(json.dumps({"fixed_claims": {}, "region_claims": {}}))
         cgroups = Path(directory) / "cgroup"
         cgroups.mkdir()
+        # The workload slice exists at the fixture parent: no account limit in
+        # this root, so 200 GiB less 40. Compiler admission requires it.
+        parent = (cgroups / "user.slice" / f"user-{os.getuid()}.slice" / f"user@{os.getuid()}.service"
+                  / "zesuworkloads.slice")
+        parent.mkdir(parents=True)
+        (parent / "memory.max").write_text(f"{(200 - 40) * 1024 ** 3}\n")
+        (parent / "memory.swap.max").write_text("0\n")
         environment = {key: value for key, value in os.environ.items()
                        if not key.startswith("ZESU_")}
         environment.update(ZESU_GUARD_STATE=directory,

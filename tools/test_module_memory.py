@@ -262,6 +262,31 @@ class ModuleMemoryTests(unittest.TestCase):
         self.assertIn("notice: unified memory ledger holds the reservation", stderr.getvalue())
         self.assertNotIn("refuse", stderr.getvalue())
 
+    def test_zero_capacity_ledger_refuses_with_one_line_instead_of_holding(self):
+        # 2026-11-17: a missing workload slice read as zero capacity, and the
+        # guard held every compiler launch on exit 3 forever.
+        stdout, stderr = io.StringIO(), io.StringIO()
+        refusal = memory.AdmissionRefused("the workload slice zesuworkloads.slice is missing")
+        with patch("sys.argv", ["module_memory.py", "ledger-confirm", "--marker", str(self.root / "m"),
+                               "--replacement", str(self.root / "r"), "--request-bytes", "1",
+                               "--available-bytes", "0"]), \
+                patch.object(memory, "confirm_shell", side_effect=refusal), \
+                patch.object(memory, "publish_admission_totals") as publish, \
+                redirect_stdout(stdout), patch("sys.stderr", stderr):
+            self.assertEqual(memory.main(), memory.ADMISSION_REFUSED)
+        self.assertEqual(stdout.getvalue(), "")
+        self.assertEqual(stderr.getvalue(),
+                         "refused: module memory: the workload slice zesuworkloads.slice is missing\n")
+        publish.assert_not_called()
+
+    def test_only_a_zero_slice_maximum_or_claim_cap_refuses(self):
+        result = {"fits": False, "slice_max_bytes": 0, "slice_claim_cap_bytes": 0}
+        with self.assertRaisesRegex(memory.AdmissionRefused, "slice_max_bytes=0"):
+            memory._module.refuse_zero_capacity(result)
+        with self.assertRaisesRegex(memory.AdmissionRefused, "slice_claim_cap_bytes=0"):
+            memory._module.refuse_zero_capacity(dict(result, slice_max_bytes=10, fixed_headroom_bytes=20))
+        memory._module.refuse_zero_capacity(dict(result, slice_max_bytes=30, slice_claim_cap_bytes=10))
+
     def test_admission_cli_passes_the_actual_fence_to_unknown_compilers(self):
         ledger = self.root / "LEDGER.json"
         ledger.write_text('{"fixed_claims": {}, "region_claims": {}}\n')

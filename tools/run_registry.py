@@ -630,6 +630,32 @@ def watchdog(registry, status):
         return messages
 
 
+# After the 2026-11-17 reboot zesuworkloads.slice did not exist and every gate
+# waited on zero admission capacity, with no error. Admissions now create the
+# slice, and `make install-workload-slice` starts it at boot; the watchdog still
+# posts a missing slice once, so a broken install is seen.
+def workload_slice_report(registry, status, cgroup_root=Path('/sys/fs/cgroup'), uid=None):
+    """Post one STATUS.md line when the workload slice's cgroup is missing; marker: <store>/workload-slice.missing."""
+    uid = os.getuid() if uid is None else uid
+    path = (Path(cgroup_root) / 'user.slice' / f'user-{uid}.slice' / f'user@{uid}.service'
+            / 'zesuworkloads.slice')
+    marker = registry.directory / 'workload-slice.missing'
+    with registry.lock('watchdog'):
+        if (path / 'memory.max').is_file():
+            marker.unlink(missing_ok=True)
+            return []
+        if marker.exists():
+            return []
+        now = time.strftime('%Y-%m-%dT%H:%MZ', time.gmtime())
+        line = (f'- {now} run-watchdog: workload slice zesuworkloads.slice is missing ({path}). '
+                f'Guard admissions create it, but it should persist: run `make install-workload-slice` '
+                f'(or `tools/resource_guard.sh parent-setup` now).')
+        Registry.atomic_write(marker, {'path': str(path), 'utc': now})
+        with Path(status).open('a') as stream:
+            stream.write(line + '\n')
+        return [line]
+
+
 # Before 2026-11-16 the memory ledger released a dead owner's booking only
 # while some guard ran an admission check, and no route released the booking
 # of a gate killed by a signal; two dead 16 GiB tokens and fourteen dead gates
@@ -1423,10 +1449,12 @@ def main():
                 for line in lines:
                     print(line)
         messages = watchdog(registry, args.status)
-        # The ledger recoveries act on the live ledger and the live registry;
-        # a watchdog given a private --store (fixtures) leaves them alone.
+        # The ledger recoveries and the slice check act on the live ledger, the
+        # live registry and the live cgroups; a watchdog given a private --store
+        # (fixtures) leaves them alone.
         if args.store is None:
             messages += recover_ledgers()
+            messages += workload_slice_report(registry, args.status)
         for message in messages + stall_report(registry, args.status):
             print(message)
         return 0 if follows else 1

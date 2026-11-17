@@ -174,7 +174,16 @@ released within one timer interval even while no guard runs an admission check:
 - `module_memory.py ledger-recover-stale --all`.
 
 Each release is printed to the journal; after any release the watchdog writes `admission-wake`.
-A watchdog given `--store` (a private registry, as in fixtures) skips these live-ledger recoveries.
+A watchdog given `--store` (a private registry, as in fixtures) skips these live-ledger recoveries
+and the workload slice check below.
+
+## Workload slice
+
+Each watchdog pass checks that `zesuworkloads.slice` exists (its cgroup's `memory.max`). A missing
+slice is posted to STATUS.md once (marker `<store>/workload-slice.missing`, cleared when it returns).
+After the 2026-11-17 reboot the slice did not exist and every admission read zero capacity and
+waited. Guard admissions now create it (`resource_guard.sh parent-setup`) or refuse with a
+`refused:` line; `make install-workload-slice` installs it as a user unit started at boot or login.
 
 ## Stalled gates
 

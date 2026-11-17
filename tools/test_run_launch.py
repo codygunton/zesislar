@@ -464,6 +464,25 @@ class SignalDeathTests(Fixture):
         self.assertFalse(status.exists())
 
 
+class WorkloadSliceTests(Fixture):
+    def test_missing_workload_slice_is_posted_once_and_again_after_it_returns(self):
+        status = self.root / 'STATUS.md'
+        cgroups = self.root / 'cgroup'
+        uid = os.getuid()
+        parent = cgroups / 'user.slice' / f'user-{uid}.slice' / f'user@{uid}.service' / 'zesuworkloads.slice'
+        [message] = R.workload_slice_report(self.registry, status, cgroups, uid)
+        self.assertIn(f'workload slice zesuworkloads.slice is missing ({parent})', message)
+        self.assertIn('make install-workload-slice', message)
+        self.assertEqual(status.read_text(), message + '\n')
+        self.assertEqual(R.workload_slice_report(self.registry, status, cgroups, uid), [])
+        parent.mkdir(parents=True)
+        (parent / 'memory.max').write_text('120259084288\n')
+        self.assertEqual(R.workload_slice_report(self.registry, status, cgroups, uid), [])
+        (parent / 'memory.max').unlink()
+        self.assertEqual(len(R.workload_slice_report(self.registry, status, cgroups, uid)), 1)
+        self.assertEqual(len(status.read_text().splitlines()), 2)
+
+
 class FollowMainTests(Fixture):
     def git(self, checkout, *arguments, check=True):
         result = subprocess.run(['git', '-C', str(checkout), *arguments], env=self.environment,

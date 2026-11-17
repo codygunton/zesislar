@@ -78,7 +78,7 @@ def canonical_functions(policy):
 
 def reserve(policy,key,owner,receipt,*,available=None,claims_fn=None,pause=time.sleep,recheck=lambda:None):
     from memory_policy import admission_claim
-    from admission_memory import projection, guard_lock
+    from admission_memory import projection, guard_lock, refuse_zero_capacity
     policy['minimum_claim_bytes'] = admission_claim(policy)
     actual_claims,actual_available=canonical_functions(policy)
     claims_fn=actual_claims if claims_fn is None else claims_fn
@@ -108,6 +108,8 @@ def reserve(policy,key,owner,receipt,*,available=None,claims_fn=None,pause=time.
             record['ledger_sha256']=digest(policy['ledger'])
             records.append(record);atomic_json(receipt,records)
         if record['admitted']:return record
+        # A zero capacity (missing workload slice) never admits: refuse, never wait.
+        refuse_zero_capacity(record)
         pause(60)
 
 
