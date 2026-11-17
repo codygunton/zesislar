@@ -855,8 +855,9 @@ Ltac zesu_finish_package_deferring :=
   unshelve (zesu_finish_source_package_with
     ltac:(fun requested => SourceFactMatching.zesu_source_defer_fixed_tree requested))).
 
-(* Fast generic evidence transport precedes broad arithmetic. *)
-Ltac zesu_union_required_pure :=
+(* Fast generic evidence transport precedes broad arithmetic. `branch` is
+   the branch evidence step (see `zesu_finish_common_pure`). *)
+Ltac zesu_union_required_pure_with branch :=
   first [ZesuSsz.Automation2.WordIdentity.zesu_word_identity |
     ZesuSsz.Automation2.HypothesisCast.zesu_hypothesis_cast_finish |
     ZesuSsz.Automation2.ByteMaskCast.zesu_byte_mask_cast |
@@ -866,9 +867,13 @@ Ltac zesu_union_required_pure :=
     ZesuSsz.Automation2.StoreMemoryLookup.zesu_store_splice_bounds |
     ZesuSsz.Automation2.SymbolicByteCodec.zesu_symbolic_byte_codec |
     ZesuSsz.Automation2.SignedMaskBranch.zesu_signed_mask_branch |
-    ZesuSsz.Automation2.BranchCastUnsigned.zesu_unsigned_branch_cast_evidence |
-    ZesuSsz.Automation2.BranchUnsigned.zesu_unsigned_branch_evidence |
+    branch |
     ZesuSsz.Automation2.FramePackingFinish.zesu_frame_packing_finish].
+
+Ltac zesu_union_required_pure :=
+  zesu_union_required_pure_with ltac:(first [
+    ZesuSsz.Automation2.BranchCastUnsigned.zesu_unsigned_branch_cast_evidence |
+    ZesuSsz.Automation2.BranchUnsigned.zesu_unsigned_branch_evidence]).
 
 Ltac zesu_union_pure_leaf :=
   first [ZesuSsz.Automation2.UnionRuleComponents.block2_signed_mask_solve |
@@ -895,12 +900,18 @@ Ltac zesu_union_pure_finish :=
    this: the search loop calls the other finishers on every pass, and the
    common path is too costly to fail there (block 800d6a78 ran over 2.3 times
    longer). The `| zesu_finish_common_pure` arms still cover a goal that a
-   first arm refuses outright. *)
+   first arm refuses outright.
+   The branch evidence closers run only in the second transport attempt,
+   after the derived facts and splits (`zesu_union_pure_finish`): each tries
+   both solvers once per branch fact, and on BENCH-v1 (09c8683e5) all 26 of
+   their closures came there, while their 205 calls in the first attempt
+   failed (about 730 s; decodeParentHeader 0000 has ten region facts on each
+   final goal). *)
 Ltac zesu_finish_common_pure :=
   let run := ltac2:(tac |- zesu_telemetry_stage_ltac1 "zesu_finish_common_pure" tac) in
   run ltac:(
   zesu_talt c_head_gate (idtac; zesu_final_pure_head_gate);
-  first [zesu_talt c_union_required_pure (idtac; zesu_union_required_pure) | zesu_talt c_solve_body (idtac; solve [
+  first [zesu_talt c_union_required_pure (idtac; zesu_union_required_pure_with ltac:(fail)) | zesu_talt c_solve_body (idtac; solve [
     zesu_talt c_derived_facts (idtac; zesu_saturate_derived_facts);
     zesu_talt c_split_folded (idtac; repeat first [progress zesu_split_folded_pure |
       match goal with Hpair : _ /\ _ |- _ => destruct Hpair end]);
