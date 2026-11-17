@@ -38,6 +38,10 @@ TOKEN = re.compile(r'([A-Za-z_][\w.-]*)=("(?:[^"\\]|\\.)*"|\S*)|("(?:[^"\\]|\\.)
 ERROR = re.compile(r'^File "[^"]*", line (\d+), characters (\d+)-(\d+):')
 NOT_CONTINUATION = ('@@', 'Chars ', 'Tactic call ', 'File ', 'Warning:', 'Error:', 'live-memory')
 RELATIONS = re.compile(r'(<=|>=|<>|≠|≤|≥|<|>|=)')
+# Prefix relations of the exported source (ResidualExport prints every application as `@f args`).
+PREFIX_RELATIONS = {'eq': '=', 'le': '<=', 'lt': '<', 'ge': '>=', 'gt': '>', 'iff': '<->', 'not': 'not',
+                    'and': 'and', 'or': 'or'}
+PREFIX_TYPED = {'eq'}  # relations whose first explicit argument is the carrier type
 ALIASES = {
     'kind': ('kind', 'solver', 'tactic'),
     'stage': ('stage', 'phase'),
@@ -134,19 +138,71 @@ def records(text):
         yield tuple(current)
 
 
+def top_level(text, separator):
+    """Split text at each occurrence of separator outside brackets."""
+    parts, depth, start, index = [], 0, 0, 0
+    while index < len(text):
+        char = text[index]
+        if char in '([{':
+            depth += 1
+        elif char in ')]}':
+            depth -= 1
+        elif depth == 0 and text.startswith(separator, index):
+            parts.append(text[start:index])
+            index += len(separator)
+            start = index
+            continue
+        index += 1
+    return parts + [text[start:]]
+
+
+def unwrap(text):
+    """text without the brackets that enclose all of it."""
+    text = text.strip()
+    while text.startswith('(') and text.endswith(')'):
+        depth = 0
+        for index, char in enumerate(text):
+            depth += char == '('
+            depth -= char == ')'
+            if depth == 0 and index < len(text) - 1:
+                return text
+        text = text[1:-1].strip()
+    return text
+
+
+def conclusion_of(statement):
+    """The statement without its binders and premises: peel outer brackets, `forall ...,` and the
+    premises before the last top-level arrow, until none is left."""
+    text = statement
+    while True:
+        text = unwrap(text)
+        if text.startswith('forall ') or text.startswith('∀'):
+            text = ','.join(top_level(text, ',')[1:])
+            continue
+        premises = top_level(text.replace('→', '->'), '->')
+        if len(premises) > 1:
+            text = premises[-1]
+            continue
+        return text
+
+
+def short_head(term):
+    """The last name component of a term's head, or the term itself when it is a bare name."""
+    words = top_level(unwrap(term), ' ')
+    head = words[0].lstrip('@') if words and words[0] else '?'
+    return head.rsplit('.', 1)[-1] if re.fullmatch(r"[A-Za-z_][\w.']*", head) else head[:20]
+
+
 def goal_class(kind, statement):
     """A coarse class of an exported goal: its kind, the conclusion's relation and left head."""
-    depth, last, index = 0, 0, 0
-    while index < len(statement):  # the conclusion follows the last top-level arrow or comma
-        char = statement[index]
-        depth += char in '([{'
-        depth -= char in ')]}'
-        if depth == 0 and (statement.startswith('->', index) or statement.startswith('→', index)):
-            last = index + (2 if statement.startswith('->', index) else 1)
-        elif depth == 0 and char == ',':
-            last = index + 1
-        index += 1
-    conclusion = statement[last:].strip()
+    conclusion = conclusion_of(statement)
+    words = [word for word in top_level(conclusion, ' ') if word]
+    if words and words[0].startswith('@'):  # prefix form: `@Coq.Init.Logic.eq T a b`, `@P args`
+        name = words[0][1:].rsplit('.', 1)[-1]
+        if name in PREFIX_RELATIONS:
+            arguments = words[2:] if name in PREFIX_TYPED else words[1:]
+            return '%s %s %s' % (kind, PREFIX_RELATIONS[name], short_head(arguments[0]) if arguments else '?')
+        return '%s prop %s' % (kind, name)
     relation = RELATIONS.search(conclusion)
     left = conclusion[:relation.start()] if relation else conclusion
     head = (re.findall(r"[A-Za-z_][\w.']*", left) or ['?'])[0]
