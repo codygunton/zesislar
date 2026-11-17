@@ -1,6 +1,5 @@
 Require ZesuSsz.Automation2.NamedEquations.
 Require Import ZesuSsz.Automation2.Telemetry.
-Require Import ZesuSsz.Automation2.FailureMemo.
 Require Import ZesuSsz.Automation2.MemoryAddress.
 Require Import ZesuSsz.Automation2.MemoryTupleConsumer.
 Require Import ZesuSsz.Automation2.SourceFactMatching.
@@ -378,14 +377,23 @@ Ltac zesu_finish_shape_closers :=
     | solve [BytePositionEquations.zesu_word_fact_goal]
     | solve [WrappedWord.zesu_wrapped_index_bound_goal]]).
 
-(* The three closing attempts on a shelved side condition. They are
-   deterministic, and the same goal and context recur, so a failure is
-   memoized (FailureMemo). prepare_sidecond stays outside the memo. *)
-Ltac zesu_finish_shelved_attempts :=
-  let memo := ltac2:(tac |- zesu_failure_memo_ltac1 "finish_shelved" tac) in
-  memo ltac:(first [solve [unshelve_sidecond; unLET; zesu_finish_shape_closers] |
-    solve [zesu_array_bounds_if_enabled] |
-    solve [unshelve_sidecond; unLET; zesu_array_eight_value]]).
+(* A shelved side condition. Every closing attempt except the codec read
+   starts with `unshelve_sidecond; unLET`, and so does prepare_sidecond; unLET
+   is the cost (each let is unfolded through the whole context). Unshelve and
+   unLET once, then run the attempts in their old order on that state. The
+   codec read attempt runs on the shelved goal, as before, but first: it and
+   the shape closers are both `solve`, so the order changes no closure. A goal
+   no attempt closes is shelved again for prepare_sidecond, whose unLET then
+   has no let left to unfold. *)
+Ltac zesu_finish_shelved :=
+  first [solve [CodecArrayRead.zesu_codec_array_read_sidecond] |
+    (unshelve_sidecond; unLET;
+     first [solve [zesu_finish_shape_closers] |
+       solve [zesu_array_bounds_base] |
+       solve [zesu_array_bounds_extended] |
+       solve [zesu_array_eight_value] |
+       (lazymatch goal with |- ?G => change_no_check (SHELVED_SIDECOND G) end;
+        prepare_sidecond)])].
 
 (* Each item carries a telemetry name (Telemetry.v, `zesu_talt`). *)
 Ltac zesu_finish_v1 :=
@@ -394,8 +402,7 @@ Ltac zesu_finish_v1 :=
   try (zesu_talt f_normalize_memory_addresses (idtac; zesu_normalize_memory_addresses));
   try (zesu_talt f_iAssumption (idtac; iAssumption));
   zesu_talt f_shelved_or_unlet (idtac; lazymatch goal with
-  | |- SHELVED_SIDECOND _ =>
-      first [zesu_finish_shelved_attempts | prepare_sidecond]
+  | |- SHELVED_SIDECOND _ => zesu_finish_shelved
   | _ => Hooks.zesu_unlet_preserving_witness_metadata
   end);
   try (zesu_talt f_shape_closers (idtac; solve [zesu_finish_shape_closers]));
@@ -448,9 +455,6 @@ Ltac zesu_finish_normalize :=
   try autorewrite with zesu_indices;
   try (zesu_normalize_memory_constants);
   try (zesu_normalize_memory_addresses).
-
-Ltac zesu_finish_shelved :=
-  first [zesu_finish_shelved_attempts | prepare_sidecond].
 
 (* An Iris entailment. The entries the dispatch leaves out here are the
    ones that cannot close one: `reflexivity`, the bitvector entries, `lia`
