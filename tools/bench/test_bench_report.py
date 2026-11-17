@@ -248,6 +248,18 @@ class Report(unittest.TestCase):
         names = [row['name'] for row in rank['stage']]
         self.assertEqual(names[0], 'zesu_run_pass')
         self.assertIn('proof', names)  # the closed block's fallback stages
+        self.assertEqual(rank['caller'], [])  # no caller-mode records
+
+    def test_caller_ranking(self):
+        log = ('@@T kind=bv_solve site=bv_solve stage=zesu_run_pass facts=3 nodes=40 goal_nodes=9 ms=900 ok=0 '
+               'cpu_ms=900 caller=bv_solve@automation:1668>liStep@Hooks:10>zesu_run_pass_v1@Finish:9 shape=eq:bv\n'
+               '@@T kind=bv_solve site=bv_solve stage=zesu_run_pass facts=3 nodes=40 goal_nodes=9 ms=100 ok=1 '
+               'cpu_ms=100 caller=bv_solve@automation:1668>liStep@Hooks:10 shape=eq:bv\n')
+        run = write_run(self.root, 'callers', [dict(log=log, cpu=10.0, peak_gib=1.0, verdict='NOT-CLOSED'), None, None])
+        rank = R.ranking(R.load_run(run))
+        self.assertEqual([(row['name'], row['calls'], row['cpu']) for row in rank['caller']],
+                         [('bv_solve @ zesu_run_pass <- bv_solve@automation:1668>liStep@Hooks:10 [eq:bv]', 1, 0.9)])
+        self.assertIn('failing calls by site @ stage <- caller [goal shape]', R.render(R.load_run(run)))
 
     def test_render_with_base(self):
         text = R.render(R.load_run(self.new), R.load_run(self.base))
