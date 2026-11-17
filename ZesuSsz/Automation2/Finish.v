@@ -59,10 +59,34 @@ From iris.proofmode Require Import environments.
 From Ltac2 Require Import Ltac2.
 Set Default Proof Mode "Classic".
 
+(* `bv_saturate` on one variable: clear it when unused, else add its two
+   range facts, each unless present. *)
+Ltac zesu_bv_saturate_variable b :=
+  first [clear b |
+    try learn_hyp (bv_unsigned_in_range_alt _ b);
+    try learn_hyp (bv_signed_in_range _ b)].
+
+(* `bv_saturate` in one pass, with the same result. `bv_saturate` repeats
+   `match goal with b : bv _` from the newest hypothesis, so each round
+   first fails again on every variable it already handled: on a residual
+   goal of 264 hypotheses (decodeParentHeader 0300, about 90 variables) one
+   run took 6 s. A round changes only its own variable: the facts it adds
+   mention that variable alone, and clearing it can only free an older
+   variable (a newer one never occurs in an older declaration). So the rounds
+   act on the variables from the newest to the oldest, each once, as here:
+   the same steps in the same order, the same hypotheses and names. *)
+Ltac2 zesu_bv_saturate_pass () :=
+  List.iter (fun (name, _, typ) =>
+    lazy_match! typ with
+    | bv _ =>
+        ltac1:(b |- zesu_bv_saturate_variable b) (Ltac1.of_constr (Control.hyp name))
+    | _ => ()
+    end) (List.rev (Control.hyps ())).
+
 Ltac zesu_saturate_alignment :=
   match goal with
-  | H : bv_extract 0 _ _ = _ |- _ => bv_saturate
-  | H : Z.land (bv_unsigned _) _ = _ |- _ => bv_saturate
+  | H : bv_extract 0 _ _ = _ |- _ => ltac2:(zesu_bv_saturate_pass ())
+  | H : Z.land (bv_unsigned _) _ = _ |- _ => ltac2:(zesu_bv_saturate_pass ())
   end.
 
 Ltac zesu_finish_little_endian :=

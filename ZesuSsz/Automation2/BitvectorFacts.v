@@ -134,6 +134,23 @@ Qed.
 (* Normalize supported branch conditions before general arithmetic. *)
 Class ZesuStepBranchGuards : Prop := zesu_step_branch_guards : True.
 
+(* The branch evidence closers (BranchUnsigned.v, BranchCastUnsigned.v) read
+   a branch fact on `bv_signed (bv_zero_extend 128 x)` as a fact on
+   `bv_unsigned x` (on `v` for a cast operand `x = Z_to_bv _ v`). That view
+   is evidence about that operand, so it is tried only on a goal that reads
+   the operand in that form. On other goals both solvers ran once per branch
+   fact and failed (decodeParentHeader 0000: ten region facts on each final
+   goal, about 125 s per goal); every success of these closers on BENCH-v1
+   was on a goal that reads the operand. *)
+Ltac zesu_branch_fact_reaches_goal target branch :=
+  match type of branch with
+  | context [bv_signed (bv_zero_extend 128 ?operand)] =>
+      first [lazymatch target with context [bv_unsigned operand] => idtac end
+        | lazymatch operand with
+          | Z_to_bv _ ?value => lazymatch target with context [value] => idtac end
+          end]
+  end.
+
 Lemma zesu_guard_low_mask_one_wrap (width low : N) (value mask : bv width) :
   (low <= width)%N ->
   bv_unsigned mask = Z.ones (Z.of_N low) ->

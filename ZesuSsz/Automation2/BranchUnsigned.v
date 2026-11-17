@@ -15,6 +15,7 @@ Ltac zesu_unsigned_branch_evidence :=
       ZesuSsz.Automation2.Hooks.zesu_region_arithmetic_statement target;
       match goal with
       | Hbranch : context [bv_signed (bv_zero_extend 128 _)] |- _ =>
+          ZesuSsz.Automation2.BitvectorFacts.zesu_branch_fact_reaches_goal target Hbranch;
           let view := fresh "HunsignedBranch" in
           pose proof Hbranch as view;
           progress (rewrite !ZesuSsz.Automation2.BitvectorFacts.zesu_signed_zero_extend_64_128 in view);

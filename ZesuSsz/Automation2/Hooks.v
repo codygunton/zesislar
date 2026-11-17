@@ -496,11 +496,21 @@ Ltac zesu_flag_mask_bound_derived :=
   FlagMaskBounds.zesu_flag_closed_moduli;
   FlagMaskBounds.zesu_flag_mask_bound.
 
+(* Linear arithmetic closes an existential or a non-Prop goal only from a
+   contradictory context; on the decodeParentHeader search contexts (250 to
+   320 facts) each such attempt failed after about two seconds, 173 times
+   over the BENCH-v1 set without a success. *)
+Ltac zesu_linear_goal_shape :=
+  lazymatch goal with
+  | |- ex _ => fail 0 "lia: an existential goal"
+  | |- ?target => lazymatch type of target with Prop => idtac end
+  end.
+
 (* Preserve the machine normalization used by the existing finisher. *)
 Ltac zesu_finish_lia ::=
   let run := ltac2:(tac |- zesu_telemetry_stage_ltac1 "zesu_finish_lia" tac) in
   run ltac:(first [LoopBackedgeJoin.zesu_loop_pure_finish | solve [MaskWitness.zesu_mask_fact_close] |
-    zesu_solve_machine_linear | solve [FlagMaskBounds.zesu_flag_mask_bound] |
+    (zesu_linear_goal_shape; zesu_solve_machine_linear) | solve [FlagMaskBounds.zesu_flag_mask_bound] |
     solve [zesu_flag_mask_bound_derived]]).
 
 Tactic Notation "lia" := zesu_solve_machine_linear.
