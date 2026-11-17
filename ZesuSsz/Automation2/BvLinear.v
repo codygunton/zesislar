@@ -694,3 +694,153 @@ Ltac zesu_bv_linear_refutes :=
         (apply not_eq_sym; apply (zesu_bv_unsigned_ne_of_cast (width := width) term value);
          zesu_bv_linear_bv))
   end.
+
+(* ---- Address range side conditions. ---- *)
+
+Definition zesuTermsAllZero (terms : list (zesuLinKey * Z)) : bool :=
+  forallb (fun entry => Z.eqb (snd entry) 0) terms.
+
+(* `low <= address < low + size \/ low = address` is false for every value of
+   its atoms when address - low normalizes to a constant d <> 0 with d < 0 or
+   with size a constant at most d. *)
+Definition zesuAddressRangeRefuted (low address size : zesuZLin) : bool :=
+  match zesuZNorm (ZLSub address low) with
+  | Some (offset, terms) =>
+      zesuTermsAllZero terms && negb (Z.eqb offset 0) &&
+      (Z.ltb offset 0 ||
+       match zesuZNorm size with
+       | Some (extent, others) => zesuTermsAllZero others && Z.leb extent offset
+       | None => false
+       end)
+  | None => false
+  end.
+
+(* Integer and 64-bit bit-vector arithmetic read modulo 2^64: the unsigned
+   value of a 64-bit term is congruent to its arithmetic. *)
+Inductive zesuModLin : Type :=
+| MLAtom (index : nat)
+| MLLit (value : Z)
+| MLAdd (lhs rhs : zesuModLin)
+| MLSub (lhs rhs : zesuModLin)
+| MLOpp (term : zesuModLin)
+| MLMul (lhs rhs : zesuModLin).
+
+Fixpoint zesuModNorm (term : zesuModLin) : option zesuLinPoly :=
+  match term with
+  | MLAtom index => Some (0, [((false, index), 1)])
+  | MLLit value => Some (value, [])
+  | MLAdd lhs rhs =>
+      match zesuModNorm lhs, zesuModNorm rhs with
+      | Some p, Some q => Some (zesuPolyAdd p q) | _, _ => None end
+  | MLSub lhs rhs =>
+      match zesuModNorm lhs, zesuModNorm rhs with
+      | Some p, Some q => Some (zesuPolyAdd p (zesuPolyNeg q)) | _, _ => None end
+  | MLOpp inner =>
+      match zesuModNorm inner with Some p => Some (zesuPolyNeg p) | None => None end
+  | MLMul lhs rhs =>
+      match zesuModNorm lhs, zesuModNorm rhs with
+      | Some p, Some q => zesuPolyMul p q | _, _ => None end
+  end.
+
+Notation zesuAddressModulus := (2 ^ 64)%Z (only parsing).
+
+(* Modulo 2^64, address - low is a constant d <> 0 and size a constant s <= d.
+   A region shorter than 2^64 then holds no address congruent to low + d. *)
+Definition zesuAddressRangeRefutedMod (low address size : zesuModLin) : bool :=
+  match zesuModNorm (MLSub address low), zesuModNorm size with
+  | Some (offset, terms), Some (extent, others) =>
+      zesuTermsZeroMod zesuAddressModulus terms && zesuTermsZeroMod zesuAddressModulus others &&
+      negb (Z.eqb (offset mod zesuAddressModulus) 0) &&
+      Z.leb (extent mod zesuAddressModulus) (offset mod zesuAddressModulus)
+  | _, _ => false
+  end.
+
+(* `locals` are the context's local definitions. A local definition in an
+   atom position reifies as its body, at most `fuel` definitions deep. Only
+   linear positions unfold: unfolding every local of a context first cost
+   184 s in one failing call on decodeItem 6960. *)
+Ltac2 rec zesu_modlin_reify (locals : (ident * constr) list) (fuel : int)
+    (state : zesu_bvlin_state) (term : constr) : constr :=
+  let width := constr:(64%N) in
+  let atom () :=
+    let (position, atoms) := zesu_bvlin_lookup (state.(z_atoms)) term in
+    state.(z_atoms) := atoms;
+    let index := zesu_bvlin_nat position in constr:(MLAtom $index) in
+  let reify := zesu_modlin_reify locals fuel state in
+  let local () :=
+    match Constr.Unsafe.kind term with
+    | Constr.Unsafe.Var name =>
+        if Int.le fuel 0 then None else
+        match List.find_opt (fun (local, _) => Ident.equal local name) locals with
+        | Some (_, body) => Some (zesu_modlin_reify locals (Int.sub fuel 1) state body)
+        | None => None
+        end
+    | _ => None
+    end in
+  lazy_match! term with
+  | Z.add ?lhs ?rhs => let l := reify lhs in let r := reify rhs in constr:(MLAdd $l $r)
+  | Z.sub ?lhs ?rhs => let l := reify lhs in let r := reify rhs in constr:(MLSub $l $r)
+  | Z.opp ?inner => let i := reify inner in constr:(MLOpp $i)
+  | Z.mul ?lhs ?rhs =>
+      if Bool.or (zesu_bvlin_closed lhs) (zesu_bvlin_closed rhs) then
+        let l := reify lhs in let r := reify rhs in constr:(MLMul $l $r)
+      else atom ()
+  | @bv_unsigned ?w ?inner => if Constr.equal w width then reify inner else atom ()
+  | Z_to_bv ?w ?value => if Constr.equal w width then reify value else atom ()
+  | bv_add ?lhs ?rhs => let l := reify lhs in let r := reify rhs in constr:(MLAdd $l $r)
+  | bv_sub ?lhs ?rhs => let l := reify lhs in let r := reify rhs in constr:(MLSub $l $r)
+  | bv_opp ?inner => let i := reify inner in constr:(MLOpp $i)
+  | bv_mul ?lhs ?rhs =>
+      if Bool.or (zesu_bvlin_closed lhs) (zesu_bvlin_closed rhs) then
+        let l := reify lhs in let r := reify rhs in constr:(MLMul $l $r)
+      else atom ()
+  | @BV _ ?value _ => if zesu_bvlin_closed value then constr:(MLLit $value) else atom ()
+  | _ =>
+      match local () with
+      | Some reified => reified
+      | None =>
+          if Bool.and (Constr.equal (Constr.type term) constr:(Z)) (zesu_bvlin_closed term)
+          then constr:(MLLit $term) else atom ()
+      end
+  end.
+
+Ltac2 zesu_bvlin_address_range_refuted (low : constr) (address : constr) (size : constr) :=
+  let integral () :=
+    let state := { bv_atoms := []; bv_literals := []; z_atoms := [] } in
+    let width := constr:(64%N) in
+    let l := zesu_bvlin_reify_z width state low in
+    let a := zesu_bvlin_reify_z width state address in
+    let s := zesu_bvlin_reify_z width state size in
+    Constr.equal (Std.eval_vm None constr:(zesuAddressRangeRefuted $l $a $s)) constr:(true) in
+  let modular () :=
+    let locals := List.fold_left (fun found declaration =>
+      let (name, body, _) := declaration in
+      match body with
+      | Some body => (name, body) :: found
+      | None => found
+      end) [] (Control.hyps ()) in
+    let state := { bv_atoms := []; bv_literals := []; z_atoms := [] } in
+    let reify := zesu_modlin_reify locals 16 state in
+    let l := reify low in
+    let a := reify address in
+    let s := reify size in
+    Constr.equal (Std.eval_vm None constr:(zesuAddressRangeRefutedMod $l $a $s)) constr:(true) in
+  if integral () then () else if modular () then () else Control.zero (Tactic_failure None).
+
+(* Succeed, goal unchanged, when the goal is the membership side condition of a
+   memory lookup, `low <= address < low + size \/ low = address`, and the
+   normal form, with the local definitions unfolded, proves it false for every
+   value of its atoms: exactly, or modulo 2^64 for a region shorter than 2^64.
+   Other hypotheses are not read. *)
+Ltac zesu_bv_address_range_refutes :=
+  lazymatch goal with
+  | |- ((Z.le ?low ?address /\ Z.lt ?address' (Z.add ?low' ?size)) \/ @eq Z ?low'' ?address'') =>
+      constr_eq low low'; constr_eq low low''; constr_eq address address';
+      constr_eq address address'';
+      tryif has_evar (low, address, size) then fail 0 else idtac;
+      let check := ltac2:(low address size |-
+        zesu_bvlin_address_range_refuted
+          (Option.get (Ltac1.to_constr low)) (Option.get (Ltac1.to_constr address))
+          (Option.get (Ltac1.to_constr size))) in
+      check low address size
+  end.

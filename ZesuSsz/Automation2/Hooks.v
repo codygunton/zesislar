@@ -426,15 +426,19 @@ Ltac zesu_bv_context_filter closer :=
   else closer.
 
 (* Library solvers also call these primitives without the project finisher.
-   A closed comparison decides by computation first. A linear address
-   (in)equality closes next by the reflective normal form (BvLinear); other
-   goals fail there at once. An equality that the normal form refutes goes to
-   the solver on its linked facts only. A residual lemma is the last attempt
-   after the solver fails. *)
+   A memory lookup's membership side condition that the normal form refutes
+   fails at once: isla's FindHypEqual hints ask it for every owned region, and
+   on decodeParentHeader none of 400 such calls closed (1,230 s). A closed
+   comparison decides by computation first. A linear address (in)equality
+   closes next by the reflective normal form (BvLinear); other goals fail
+   there at once. An equality that the normal form refutes goes to the solver
+   on its linked facts only. A residual lemma is the last attempt after the
+   solver fails. *)
 Ltac bv_solve ::=
   let run := ltac2:(tac |- zesu_telemetry_ltac1 "bv_solve" "bv_solve" tac) in
   let run_linear := ltac2:(tac |- zesu_telemetry_ltac1 "bv_linear" "bv_solve" tac) in
-  run ltac:(first [solve [zesu_closed_goal_decide] |
+  run ltac:(tryif ZesuSsz.Automation2.BvLinear.zesu_bv_address_range_refutes then fail else
+  first [solve [zesu_closed_goal_decide] |
   solve [run_linear ltac:(ZesuSsz.Automation2.BvLinear.zesu_bv_linear_with ltac:(lia))] |
   (tryif ZesuSsz.Automation2.BvLinear.zesu_bv_linear_refutes
    then first [zesu_refuted_solve ltac:(zesu_bv_solve_closer) | ResidualLemmas.zesu_residual_lemma]
