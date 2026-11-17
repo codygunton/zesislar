@@ -12,6 +12,10 @@ import gate_family
 import correctness_gate
 from correctness_gate import select_peak, select_admission_basis
 
+# The families are approved at the gate's default fence for the final 152 GiB
+# account cap: a 112 GiB workload parent less 12 GiB.
+APPROVED_FENCE = 100 * 1024**3
+
 
 class GateFamilyTests(unittest.TestCase):
     def setUp(self):
@@ -82,21 +86,28 @@ class GateFamilyTests(unittest.TestCase):
         stat.write_text(f'anon {1024**3}\nfile {29 * 1024**3}\n')
         self.assertEqual(sampler.stop(), 3 * 1024**3)
 
+    def test_approved_fence_is_the_default_gate_fence_of_the_final_cap(self):
+        # A cap change moves the default fence and must re-approve the families.
+        parent = (152 - 40) * 1024**3  # the account cap less the 40 GiB session reserve
+        self.assertEqual(correctness_gate.default_gate_limit_bytes(parent), APPROVED_FENCE)
+        families = json.loads(gate_family.PROFILE.read_text())['families']
+        self.assertEqual({row['physical_fence_bytes'] for row in families.values()}, {APPROVED_FENCE})
+
     def test_actual_approved_fast_peak(self):
-        result = gate_family.select('check-fast', ['make', '--no-print-directory', '_check-fast'], 120*1024**3)
+        result = gate_family.select('check-fast', ['make', '--no-print-directory', '_check-fast'], APPROVED_FENCE)
         self.assertEqual(result['aggregate_peak_bytes'], 33831407616)
         self.assertEqual(result['claim_bytes'], 50747111424)
-        self.assertEqual(result['physical_fence_bytes'], 120*1024**3)
+        self.assertEqual(result['physical_fence_bytes'], APPROVED_FENCE)
         self.assertEqual(result['measurement_provenance']['mode'], 'unknown')
 
     def test_actual_approved_iris_peak(self):
-        result = gate_family.select('check-iris', ['make', '--no-print-directory', '_check-iris'], 120*1024**3)
+        result = gate_family.select('check-iris', ['make', '--no-print-directory', '_check-iris'], APPROVED_FENCE)
         self.assertEqual(result['aggregate_peak_bytes'], 4666003456)
         self.assertEqual(result['claim_bytes'], 6999005184)
         self.assertEqual(result['measurement_provenance']['mode'], 'unknown')
 
     def test_actual_selector_keeps_unmatched_full_fence_and_ceiling(self):
-        fence = 120*1024**3
+        fence = APPROVED_FENCE
         basis = select_admission_basis({'runs': []}, 'check-fast', ['make', 'other-target'], fence)
         self.assertEqual((basis['reason'], basis['claim_bytes']), ('full_physical_fence', fence))
         matched = select_admission_basis({'runs': []}, 'check-fast',
