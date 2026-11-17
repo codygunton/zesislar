@@ -329,3 +329,42 @@ Ltac zesu_lia_context_within_budget :=
   ltac2:(zesu_linear_context_within (zesu_linear_context_node_budget ())).
 Ltac zesu_lia_pruned_context_within_budget :=
   ltac2:(zesu_linear_context_within (zesu_linear_pruned_context_node_budget ())).
+
+(* A lower bound of `zesu_linear_remaining` on a term after a tactic that turns
+   every application of a `collapsed` head into one node (a projection into a
+   `match` when unfolded, a closed operation into a literal when reduced) and
+   only grows the rest of the term. *)
+Ltac2 rec zesu_linear_collapsed_remaining (collapsed : constr list) (budget : int) (term : constr) : int :=
+  if Int.le budget 0 then budget else
+  let walk := zesu_linear_collapsed_remaining collapsed in
+  match Constr.Unsafe.kind term with
+  | Constr.Unsafe.App head arguments =>
+      if List.exist (Constr.equal head) collapsed then Int.sub budget 1 else
+      let budget := match Constr.Unsafe.kind head with
+        | Constr.Unsafe.Constant _ _ => Int.sub budget 2
+        | Constr.Unsafe.Constructor _ _ => Int.sub budget 2
+        | Constr.Unsafe.Ind _ _ => Int.sub budget 2
+        | Constr.Unsafe.Var _ => Int.sub budget 2
+        | _ => walk (Int.sub budget 1) head
+        end in
+      Array.fold_left walk budget arguments
+  | Constr.Unsafe.Prod binder body => walk (walk (Int.sub budget 1) (Constr.Binder.type binder)) body
+  | Constr.Unsafe.Lambda binder body => walk (walk (Int.sub budget 1) (Constr.Binder.type binder)) body
+  | Constr.Unsafe.LetIn binder value body =>
+      walk (walk (walk (Int.sub budget 1) (Constr.Binder.type binder)) value) body
+  | Constr.Unsafe.Cast value _ typ => walk (walk (Int.sub budget 1) value) typ
+  | _ => Int.sub budget 1
+  end.
+
+(* The Prop facts (not the goal) fit `nodes` by that lower bound. *)
+Ltac2 zesu_linear_collapsed_facts_within (collapsed : constr list) (nodes : int) :=
+  let rest := List.fold_left (fun budget declaration =>
+    let (_, body, typ) := declaration in
+    match body with
+    | Some _ => budget
+    | None =>
+        if Int.le budget 0 then budget
+        else if zesu_linear_is_prop typ then zesu_linear_collapsed_remaining collapsed budget typ
+        else budget
+    end) nodes (Control.hyps ()) in
+  if Int.le rest 0 then Control.zero (Tactic_failure None) else ().

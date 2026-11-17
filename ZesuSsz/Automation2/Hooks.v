@@ -403,6 +403,28 @@ Ltac zesu_bv_solve_closer :=
 Ltac zesu_refuted_solve closer :=
   ZesuSsz.Automation2.ContextCollection.zesu_solve_goal_selected ("refuted"%string) closer.
 
+(* With the finisher switch, the closer runs on the pruned context first. Its
+   whole-context run after that adds only the whole-context `lia`: everything
+   else in the closer reads the goal or the facts that share its variables,
+   which the pruned run had, and the `lia` pruned arm repeats the pruned run.
+   That `lia` refuses more than `zesu_linear_context_node_budget` nodes, and
+   the closer only grows the facts except that `bv_unsigned` and `bv_signed`
+   applications unfold into one `match` node and closed `N.add`, `Z.lor`,
+   `Z.land`, `Z.lxor` terms reduce to literals. So the whole-context run
+   starts only when the facts fit the budget by that lower bound. Saturating
+   a refused context cost 1.5 s of each 2.4 s failing range side condition of
+   a rewrite on decodeParentHeader 0514. *)
+Ltac zesu_bv_closer_context_within_budget :=
+  ltac2:(zesu_linear_collapsed_facts_within
+    [constr:(@bv_unsigned); constr:(@bv_signed); constr:(N.add); constr:(Z.lor);
+     constr:(Z.land); constr:(Z.lxor)] (zesu_linear_context_node_budget ())).
+
+Ltac zesu_bv_context_filter closer :=
+  tryif zesu_switch_enabled constr:(ZesuStepFinisherOnce)
+  then first [solve [zesu_context_prune_goal; closer] |
+              (zesu_bv_closer_context_within_budget; closer)]
+  else closer.
+
 (* Library solvers also call these primitives without the project finisher.
    A closed comparison decides by computation first. A linear address
    (in)equality closes next by the reflective normal form (BvLinear); other
@@ -416,7 +438,7 @@ Ltac bv_solve ::=
   solve [run_linear ltac:(ZesuSsz.Automation2.BvLinear.zesu_bv_linear_with ltac:(lia))] |
   (tryif ZesuSsz.Automation2.BvLinear.zesu_bv_linear_refutes
    then first [zesu_refuted_solve ltac:(zesu_bv_solve_closer) | ResidualLemmas.zesu_residual_lemma]
-   else first [zesu_context_filter ltac:(zesu_bv_solve_closer) | ResidualLemmas.zesu_residual_lemma])]).
+   else first [zesu_bv_context_filter ltac:(zesu_bv_solve_closer) | ResidualLemmas.zesu_residual_lemma])]).
 
 (* A caller that imports isla after this module restores the library lia
    and bv_solve, which read the whole context. Try the facts linked to the
