@@ -526,3 +526,16 @@ install-run-watchdog:
 	cp tools/systemd/zesu-run-watchdog.timer "$(SYSTEMD_USER_DIR)/zesu-run-watchdog.timer"
 	systemctl --user daemon-reload
 	systemctl --user enable --now zesu-run-watchdog.timer
+
+# The shared workload slice zesuworkloads.slice, with its memory fence, as a
+# user unit the user manager starts at boot (linger) or login. After the
+# 2026-11-17 reboot the slice did not exist and every admission waited on zero
+# capacity. The guard's parent-setup then applies the live account-derived fence.
+.PHONY: install-workload-slice
+install-workload-slice:
+	mkdir -p "$(SYSTEMD_USER_DIR)"
+	bytes=$$(tools/resource_guard.sh parent-bytes) && [ -n "$$bytes" ] && \
+	  sed -e "s|@MEMORY_MAX@|$$bytes|g" tools/systemd/zesuworkloads.slice > "$(SYSTEMD_USER_DIR)/zesuworkloads.slice"
+	systemctl --user daemon-reload
+	systemctl --user enable zesuworkloads.slice
+	tools/resource_guard.sh parent-setup

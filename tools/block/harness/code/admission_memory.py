@@ -42,6 +42,20 @@ def accepted_parent_bytes(root=Path('/sys/fs/cgroup'), uid=None):
     return {str(workload_parent_bytes(root, uid)), str(LEGACY_PARENT_BYTES)}
 
 
+# A gate's aggregate fence defaults to 120 GiB, lowered to the live workload
+# parent less a margin. After the 2026-11-17 reboot the account read 152 GiB,
+# the parent 112 GiB, and every gate refused its fixed 120 GiB fence.
+# resource_guard.sh derives the same default.
+GATE_DEFAULT_BYTES = 120 * GIB
+GATE_PARENT_MARGIN_BYTES = 12 * GIB
+
+
+def default_gate_limit_bytes(parent_bytes=None):
+    """The gate aggregate fence when ZESU_GATE_LIMIT is unset, in whole GiB."""
+    parent = workload_parent_bytes() if parent_bytes is None else parent_bytes
+    return min(GATE_DEFAULT_BYTES, parent // GIB * GIB - GATE_PARENT_MARGIN_BYTES)
+
+
 SLICE_MAX_BYTES = workload_parent_bytes()
 STATIC_KERNEL_ACCOUNT_SCHEMA = 'legacy_kernel_accounts.v1'
 CGROUP_ROOT = Path('/sys/fs/cgroup')
@@ -82,6 +96,26 @@ class RejectedScopeSetup(ValueError):
     def __init__(self, identity):
         super().__init__('The owned standalone scope lacks its writer identity.')
         self.identity = identity
+
+
+class AdmissionRefused(ValueError):
+    """The admission can never succeed as things stand; the caller prints `refused:` and exits nonzero.
+
+    On 2026-11-17, after a host reboot, zesuworkloads.slice did not exist. Every
+    admission read a zero slice maximum and every gate waited forever."""
+
+
+def refuse_zero_capacity(result):
+    """Raise AdmissionRefused when RESULT's capacity is zero; a wait could never end."""
+    if result.get('slice_max_bytes', 0) <= 0:
+        raise AdmissionRefused(
+            'the workload slice zesuworkloads.slice is missing or lacks its memory fence '
+            '(slice_max_bytes=0); create it with `tools/resource_guard.sh parent-setup` '
+            'or `make install-workload-slice`')
+    if result.get('slice_claim_cap_bytes', 0) <= 0:
+        raise AdmissionRefused(
+            f"the workload slice maximum {result['slice_max_bytes']} bytes leaves no claim capacity "
+            f"above the fixed headroom {result.get('fixed_headroom_bytes')} bytes (slice_claim_cap_bytes=0)")
 
 
 def integer(value, label):
@@ -1617,6 +1651,12 @@ def confirm_shell(marker, replacement, request_bytes, available_bytes, *, ledger
                             reader=reader, new_observation=observation,
                             pending_shell=(marker, replacement), requester=key)
         if not result['fits']:
+            try:
+                refuse_zero_capacity(result)
+            except AdmissionRefused:
+                if clear_waiter(data, key):
+                    write_ledger(ledger, data)
+                raise
             # The guard retries the same marker, so the first refusal dates the wait.
             if record_waiter(data, key, request_bytes, owner):
                 write_ledger(ledger, data)

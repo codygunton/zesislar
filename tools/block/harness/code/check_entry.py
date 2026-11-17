@@ -454,6 +454,9 @@ def wait_admission(runtime, output, *, pause=time.sleep):
         atomic_json(output/'ADMISSION.json', records)
         if record['admitted']:
             return record
+        # A zero capacity (missing workload slice) never admits: refuse, never wait.
+        from admission_memory import refuse_zero_capacity
+        refuse_zero_capacity(record)
         pause(60)
 
 

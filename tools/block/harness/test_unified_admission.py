@@ -152,6 +152,18 @@ class UnifiedAdmission(unittest.TestCase):
         self.assertFalse(self.marker.exists())
         self.assertNotIn(M.shell_key(self.marker),self.read()['fixed_claims'])
 
+    def test_missing_workload_slice_refuses_confirmation_without_a_waiter(self):
+        # 2026-11-17: after a reboot zesuworkloads.slice did not exist; every
+        # confirmation read a zero slice maximum and the guard waited forever.
+        data=self.read();data[M.WAITERS]={M.shell_key(self.marker):{'bytes':1,'owner':self.pending,'since_ns':1}}
+        self.save(data)
+        (self.parent/'memory.max').unlink()
+        with self.assertRaisesRegex(M.AdmissionRefused,'zesuworkloads.slice is missing'):
+            self.confirm()
+        self.assertFalse(self.marker.exists())
+        self.assertEqual(self.read()[M.WAITERS],{})
+        self.assertNotIn(M.shell_key(self.marker),self.read()['fixed_claims'])
+
     def canonical(self,key,amount):
         policy={'ledger':str(self.ledger),'lock':str(self.ledger.with_suffix('.lock')),
                 'claim_key':key,'claim_bytes':amount}
@@ -403,14 +415,16 @@ class UnifiedAdmission(unittest.TestCase):
             M.select_guard_aggregate_limit(12,32*M.GIB,8*M.GIB,
                 explicit_limit_bytes=150*M.GIB,ledger=self.ledger,reader=self.reader)
 
-    def test_canonical_gate_keeps_its_authorized_120_gib_fence(self):
+    def test_canonical_gate_keeps_its_authorized_default_fence(self):
+        # The default gate fence fits the live workload parent (100 GiB of a 112 GiB parent on 2026-11-17).
+        fence=M.default_gate_limit_bytes()
         self.rollout_writer();data=self.read()
         data['fixed_claims']={'gate':24*M.GIB}
         data['correctness_gate_owners']={'gate':self.owner}
-        data['claim_fences']={'gate':{'owner':self.owner,'physical_fence_bytes':120*M.GIB}}
+        data['claim_fences']={'gate':{'owner':self.owner,'physical_fence_bytes':fence}}
         self.save(data)
         self.assertEqual(M.select_guard_aggregate_limit(12,16*M.GIB,24*M.GIB,
-            gate_limit_bytes=120*M.GIB,ledger=self.ledger,reader=self.reader),120*M.GIB)
+            gate_limit_bytes=fence,ledger=self.ledger,reader=self.reader),fence)
 
 
 if __name__=='__main__':unittest.main()

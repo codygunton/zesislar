@@ -4,6 +4,7 @@ from pathlib import Path
 import sys
 import tempfile
 import unittest
+from unittest import mock
 
 HERE = Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE / 'code'))
@@ -23,6 +24,11 @@ class LegacyBookingTests(unittest.TestCase):
 
         self.reader = Reader(proc=self.root / 'proc', cgroup_root=self.root / 'cgroup')
         self.group = self.reader.parent / f'zesuworkloads-aggregate{os.getuid()}p101r1.slice'
+        # The fixture's 150 GiB aggregate needs a parent above it. The live parent follows the
+        # host's account cap (112 GiB after the 2026-11-17 reboot), so pin the 175 GiB parent.
+        patcher = mock.patch.object(M, 'SLICE_MAX_BYTES', M.LEGACY_PARENT_BYTES)
+        patcher.start()
+        self.addCleanup(patcher.stop)
         self.group.mkdir(parents=True)
         (self.reader.parent / 'memory.max').write_text(str(M.SLICE_MAX_BYTES))
         (self.reader.parent / 'memory.swap.max').write_text('0')
@@ -141,15 +147,14 @@ class NewAggregateLimitTests(unittest.TestCase):
                          32 * M.GIB)
 
     def test_canonical_gate_fence_stays_exact(self):
-        self.assertEqual(M.new_aggregate_limit(16 * M.GIB, 24 * M.GIB,
-                                              gate_limit_bytes=120 * M.GIB),
-                         120 * M.GIB)
+        fence = M.default_gate_limit_bytes()
+        self.assertEqual(M.new_aggregate_limit(16 * M.GIB, 24 * M.GIB, gate_limit_bytes=fence), fence)
 
     def test_conflicting_explicit_and_gate_fences_refuse(self):
         with self.assertRaises(ValueError):
             M.new_aggregate_limit(16 * M.GIB, 24 * M.GIB,
                                   explicit_limit_bytes=64 * M.GIB,
-                                  gate_limit_bytes=120 * M.GIB)
+                                  gate_limit_bytes=M.default_gate_limit_bytes())
 
 
 if __name__ == '__main__':

@@ -19,17 +19,27 @@
 #   driver-check -- CMD  refuse Python drivers whose directory shadows stdlib modules
 #   wait                 block until one more job may start
 #   reserve-coqc PID     request a compiler launch without holding a slot
-#   confirm-coqc TOKEN   admit a compiler launch atomically
+#   confirm-coqc TOKEN   admit a compiler launch atomically; first creates or
+#                        verifies zesuworkloads.slice, and refuses (exit 3, a
+#                        refused: line) when it is missing or the ledger's
+#                        capacity is zero, instead of waiting
 #   watch                the polling loop; kills the youngest scope at its memory boundary
 #   scope NAME [--cpu SECONDS] -- CMD    run CMD in its configured module scope, registered;
 #                        inside a batch or with ZESU_WRITER_ID; standalone it exits
 #                        2 with a refused: line (the ledger needs a writer identity)
-#   batch NAME -- CMD    run CMD in the batch scope, 150 GiB (a gate 120), swap off
+#   batch NAME -- CMD    run CMD in the batch scope, swap off. Its fence is
+#                        ZESU_AGGREGATE_LIMIT, else the module fence or booking;
+#                        a gate's is ZESU_GATE_LIMIT, default 120 GiB lowered to
+#                        the workload parent less 12. A configured fence above
+#                        the parent refuses (exit 3) naming both numbers.
+#                        (ZESU_BATCH_LIMIT is not read.)
 #                        batch and scope exit 5, running nothing, when
 #                        ZESU_MODULE_CLAIM_BYTES exceeds ZESU_MODULE_LIMIT_GIB
 #                        Once CMD ran, batch and scope exit with CMD's own
 #                        status; a signal or fence kill exits 128+signal.
 #                        Refusals before CMD runs: 2, 3, 5, 6.
+#   parent-setup         create zesuworkloads.slice with its fence, or verify it
+#   parent-bytes         print the workload parent fence in bytes
 #   locked NAME -- CMD   run CMD holding the gate lock
 #   lock-status          print the gate lock, removing a stale one
 #   lock-want PID HOLDER take the lock for a gate script, state wanted
@@ -54,7 +64,7 @@
 # Ordinary proofs use 6 GiB; issue-10 probes use 64 GiB and require 84 GiB
 # available. CPU-only issue-10 probes use 6 GiB and require 26 GiB available.
 # All probe classes share ZESU_PROBE_AGGREGATE_LIMIT slots (default 16).
-# Memory limits remain 150G for batches and 120G for gates, with no swap.
+# Gate fences default to 120G (lowered to fit the workload parent), with no swap.
 # Other launch checks retain 48 compiler slots, our account's CPU pressure
 # <= 50 % and IO pressure <= 50 % (ZESU_MAX_CPU_PRESSURE, ZESU_MAX_IO_PRESSURE;
 # without the pressure files, load5 <= 80 and blocked <= 16),
@@ -98,8 +108,8 @@ MODULE_LIMIT_GIB=${ZESU_MODULE_LIMIT_GIB:-$GATE_MODULE_LIMIT_GIB}
 # about 74 GiB, so 1.5. At 3 GiB the 70-percent formula allows 42
 # workers when 180 GiB is available.
 JOB_GIB=${ZESU_JOB_GIB:-3}
-BATCH_LIMIT=${ZESU_BATCH_LIMIT:-150G}
-GATE_LIMIT=${ZESU_GATE_LIMIT:-120G}
+# Unset, the gate fence is derived below: 120 GiB, lowered to fit the workload parent.
+GATE_LIMIT=${ZESU_GATE_LIMIT:-}
 # All proof workloads share this kernel backstop across independent runs.
 # Its fence is set below, from the account's MemoryMax.
 WORKLOAD_PARENT_SLICE=zesuworkloads.slice
@@ -183,6 +193,17 @@ mkdir -p "$COQC_RESERVATIONS"
 touch "$REGISTRY" "$LOG" "$PEAK"
 
 GIB=$((1024 * 1024 * 1024))
+# A gate's aggregate fence defaults to 120 GiB, lowered to the live workload
+# parent less 12 GiB. After the 2026-11-17 reboot the account read 152 GiB, the
+# parent 112 GiB, and every gate refused its fixed 120 GiB fence.
+# block/harness/code/admission_memory.py default_gate_limit_bytes derives the same.
+GATE_DEFAULT_GIB=120
+GATE_PARENT_MARGIN_GIB=12
+if [ -z "$GATE_LIMIT" ]; then
+  GATE_LIMIT=$(( WORKLOAD_PARENT_BYTES / GIB - GATE_PARENT_MARGIN_GIB ))
+  (( GATE_LIMIT <= GATE_DEFAULT_GIB )) || GATE_LIMIT=$GATE_DEFAULT_GIB
+  GATE_LIMIT=${GATE_LIMIT}G
+fi
 MEMORY_TOOL=${ZESU_MODULE_MEMORY_TOOL:-$(dirname "$0")/module_memory.py}
 # Kills at a scope's memory fence, with the compiled source's hash (module_memory.py).
 FENCE_KILLS="$STATE_DIR/fence-kills.jsonl"
@@ -1204,6 +1225,8 @@ confirm_attempt() {
     if [ "$unified_status" -ne 0 ]; then
       rm -f -- "$replacement"
       if [ "$unified_status" -ne 3 ]; then
+        # 7: the ledger printed a `refused:` line (zero capacity); refuse, never wait.
+        [ "$unified_status" -ne 7 ] || unified_status=3
         flock -u 7; exec 7>&-; return "$unified_status"
       fi
       note "HOLD reservation launch: unified memory ledger; owner=$owner claim_bytes=$MEMORY_CLAIM_BYTES marker=${marker##*/}"
@@ -1229,6 +1252,7 @@ confirm_coqc() {
   local marker=$1 held="" wake_stamp status queue ledger_since=""
   validate_probe_scope || return $?
   confirmed_reservation "$marker" && return 0
+  require_workload_parent || return $?
   while :; do
     wake_stamp=$(cat "$ADMISSION_WAKE" 2>/dev/null)
     cache_disk_admission || return $?
@@ -1714,10 +1738,37 @@ wait_for_memory_budget() {
 }
 
 # Systemd derives the parent from the child slice's dash-separated name.
+# set-property alone leaves the parent without a cgroup until some workload
+# starts in it; `start` creates it (a slice needs no unit file). After the
+# 2026-11-17 reboot the parent was missing and every admission read a zero
+# slice maximum. `make install-workload-slice` also starts it at login.
 ensure_workload_parent() {
   systemctl --user set-property --runtime "$WORKLOAD_PARENT_SLICE" \
     "MemoryMax=$WORKLOAD_PARENT_BYTES" MemorySwapMax=0 || return 2
+  systemctl --user start "$WORKLOAD_PARENT_SLICE" || return 2
   verify_workload_parent_properties
+}
+
+# Admission reads the parent's cgroup files (admission_memory.py
+# ScopeReader.slice_max): the cgroup must exist with our fence, or an older
+# guard's, and no swap.
+workload_parent_present() {
+  local max swap
+  { read -r max < "$WORKLOAD_SLICE_CGROUP/memory.max" &&
+    read -r swap < "$WORKLOAD_SLICE_CGROUP/memory.swap.max"; } 2>/dev/null || return 1
+  { [ "$max" = "$WORKLOAD_PARENT_BYTES" ] || [ "$max" = "$WORKLOAD_PARENT_LEGACY_BYTES" ]; } &&
+    [ "$swap" = 0 ]
+}
+
+# Create or verify the parent before any admission computes its capacity. A
+# parent still missing after setup refuses at once (exit 3): with a zero slice
+# maximum the admission could never succeed, and the wait never ended.
+require_workload_parent() {
+  workload_parent_present && return 0
+  ensure_workload_parent && workload_parent_present && return 0
+  echo "refused: resource guard: workload slice $WORKLOAD_PARENT_SLICE is missing or lacks its memory fence" \
+    "($WORKLOAD_SLICE_CGROUP, expected MemoryMax $WORKLOAD_PARENT_BYTES) after setup; admission capacity would be 0" >&2
+  return 3
 }
 
 # Guards older than the account-derived fence set 175 GiB on each launch
@@ -2032,16 +2083,29 @@ probe_fence_claim() {
   fi
 }
 
+# A configured aggregate fence above the workload parent can never start;
+# refuse with both numbers instead of the helper's bare ValueError.
+limit_fits_parent() {
+  local name=$1 value=$2
+  (( ${value%G} * GIB <= WORKLOAD_PARENT_BYTES )) && return 0
+  echo "refused: resource guard: $name=$value exceeds the workload parent $WORKLOAD_PARENT_SLICE" \
+    "($(( WORKLOAD_PARENT_BYTES / GIB ))G, from the account's MemoryMax); set it at most" \
+    "$(( WORKLOAD_PARENT_BYTES / GIB ))G or unset it" >&2
+  return 3
+}
+
 new_batch_limit() {
   local explicit="${ZESU_AGGREGATE_LIMIT:-}" gate="" bytes
   local -a limits=()
   if [ -n "$explicit" ]; then
     [[ "$explicit" =~ ^[1-9][0-9]{0,2}G$ ]] || return 2
+    limit_fits_parent ZESU_AGGREGATE_LIMIT "$explicit" || return $?
     limits+=(--explicit-limit-bytes "$(( ${explicit%G} * GIB ))")
   fi
   if [ -n "${ZESU_IN_GATE:-}" ] || [ "${ZESU_IO:-batch}" = gate ]; then
     gate=$GATE_LIMIT
     [[ "$gate" =~ ^[1-9][0-9]{0,2}G$ ]] || return 2
+    limit_fits_parent ZESU_GATE_LIMIT "$gate" || return $?
     limits+=(--gate-limit-bytes "$(( ${gate%G} * GIB ))")
   fi
   bytes=$(python3 "$MEMORY_TOOL" aggregate-limit --guard-pid "$$" \
@@ -2197,6 +2261,8 @@ case "${1:-report}" in
     prefer_oom_victim || exit $?
     exec "$@" ;;
   parent-setup) ensure_workload_parent ;;
+  # The parent fence in bytes (`make install-workload-slice` writes it into the unit).
+  parent-bytes) echo "$WORKLOAD_PARENT_BYTES" ;;
   gate-module-limit)
     if [[ ! "$GATE_MODULE_LIMIT_GIB" =~ ^([6-9]|[12][0-9]|3[0-2])$ ]]; then
       echo "compiler gate memory limit must be an integer from 6 through 32 GiB" >&2

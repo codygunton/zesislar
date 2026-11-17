@@ -114,15 +114,50 @@ class GateClaimsTests(unittest.TestCase):
         self.assertEqual(self.select_peak({"runs": [row]}, "check-fast", physical_fence_bytes=500)["claim_bytes"], 500)
 
     def test_actual_batch_fence_matches_guard_configuration(self):
-        self.assertEqual(correctness_gate.batch_fence_bytes({}), 120 * 1024**3)
-        self.assertEqual(correctness_gate.batch_fence_bytes({"ZESU_GATE_LIMIT": "64G"}), 64 * 1024**3)
-        self.assertEqual(correctness_gate.batch_fence_bytes({"ZESU_GATE_LIMIT": "123"}), 123)
-        self.assertEqual(correctness_gate.batch_fence_bytes(
-            {"ZESU_BATCH_LIMIT": "64G", "ZESU_GATE_LIMIT": "120G"}), 120 * 1024**3)
-        self.assertEqual(correctness_gate.batch_fence_bytes({"ZESU_AGGREGATE_LIMIT": "8G"}), 120 * 1024**3)
+        def fence(environment):
+            return correctness_gate.batch_fence_bytes(environment, parent_bytes=160 * GIB)
+        self.assertEqual(fence({}), 120 * 1024**3)
+        self.assertEqual(fence({"ZESU_GATE_LIMIT": "64G"}), 64 * 1024**3)
+        self.assertEqual(fence({"ZESU_GATE_LIMIT": "123"}), 123)
+        self.assertEqual(fence({"ZESU_BATCH_LIMIT": "64G", "ZESU_GATE_LIMIT": "120G"}), 120 * 1024**3)
+        self.assertEqual(fence({"ZESU_AGGREGATE_LIMIT": "8G"}), 120 * 1024**3)
         for value in ["max", "0", "-1", "1.5G"]:
             with self.subTest(value=value), self.assertRaises(ValueError):
-                correctness_gate.batch_fence_bytes({"ZESU_GATE_LIMIT": value})
+                correctness_gate.batch_fence_bytes({"ZESU_GATE_LIMIT": value}, parent_bytes=160 * GIB)
+
+    def test_default_gate_fence_fits_the_live_workload_parent(self):
+        # 2026-11-17: the account read 152 GiB, so the parent was 112 GiB and a
+        # fixed 120 GiB gate fence refused every gate at start.
+        for parent, expected in ((112 * GIB, 100 * GIB), (160 * GIB, 120 * GIB), (175 * GIB, 120 * GIB),
+                                 (112 * GIB + 5, 100 * GIB)):
+            with self.subTest(parent=parent):
+                self.assertEqual(correctness_gate.batch_fence_bytes({}, parent_bytes=parent), expected)
+
+    def test_gate_fence_above_the_workload_parent_refuses_naming_both(self):
+        with self.assertRaises(correctness_gate.AdmissionRefused) as caught:
+            correctness_gate.batch_fence_bytes({"ZESU_GATE_LIMIT": "120G"}, parent_bytes=112 * GIB)
+        self.assertIn("ZESU_GATE_LIMIT=120G", str(caught.exception))
+        self.assertIn("(112G,", str(caught.exception))
+        self.assertEqual(correctness_gate.batch_fence_bytes({"ZESU_GATE_LIMIT": "112G"}, parent_bytes=112 * GIB),
+                         112 * GIB)
+
+    def test_missing_workload_slice_refuses_at_once_instead_of_waiting(self):
+        # 2026-11-17: after a reboot zesuworkloads.slice did not exist, the
+        # slice maximum read 0, and every gate waited for admission forever.
+        save(self.ledger, {"fixed_claims": {"healthy": 40},
+                           "admission_waiters": {"gate-one": {"bytes": 30, "owner": self.owner, "since_ns": 1}}})
+
+        def pause(seconds):
+            raise AssertionError("a zero-capacity admission must not wait")
+
+        with patch('block.harness.code.admission_memory.ScopeReader.slice_max', return_value=0), \
+                self.assertRaisesRegex(correctness_gate.AdmissionRefused, "zesuworkloads.slice is missing"):
+            reserve(self.policy, self.owner, self.root / "ADMISSION.json", available=lambda: 1000, pause=pause)
+        receipt = read(self.root / "ADMISSION.json")
+        self.assertEqual((receipt["admitted"], receipt["slice_max_bytes"]), (False, 0))
+        ledger = read(self.ledger)
+        self.assertEqual(ledger["fixed_claims"], {"healthy": 40})
+        self.assertEqual(ledger.get("admission_waiters"), {})
 
     def test_unreleased_legacy_claim_counts(self):
         self.assertEqual(active_claims({"fixed_claims": {"a": 5}, "region_claims": {"old": 7}}),
@@ -355,6 +390,17 @@ class GateSizingCliTests(unittest.TestCase):
     def test_new_environment_overrides_legacy_ceiling(self):
         self.assertEqual(self.parse_ceiling([], {"ZESU_GATE_CLAIM_CEILING_BYTES": "600",
                                                 "ZESU_GATE_BOOTSTRAP_CLAIM_BYTES": "700"}), 600)
+
+    def test_refused_run_prints_one_refused_line_and_exits_3(self):
+        argv = ["correctness_gate.py", "run", "--target", "check-fast", "--build-dir", "private", "--", "true"]
+        refusal = correctness_gate.AdmissionRefused("the workload slice zesuworkloads.slice is missing")
+        with patch.dict("os.environ", {}, clear=True), patch("sys.argv", argv), \
+                patch.object(correctness_gate, "run", side_effect=refusal), \
+                patch("sys.stderr", new=io.StringIO()) as stderr, self.assertRaises(SystemExit) as caught:
+            correctness_gate.main()
+        self.assertEqual(caught.exception.code, 3)
+        self.assertEqual(stderr.getvalue(),
+                         "refused: correctness gate: the workload slice zesuworkloads.slice is missing\n")
 
 
 if __name__ == "__main__":
