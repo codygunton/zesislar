@@ -18,7 +18,9 @@ import uuid
 from coqc_findlib import preflight
 from module_memory import measurement_claim
 from block.harness.code.admission_memory import (projection, guard_lock, check_test_ledger, record_waiter, clear_waiter,
-                                                  region_release_verified, DEFAULT_LEDGER)
+                                                  region_release_verified, DEFAULT_LEDGER, AdmissionRefused,
+                                                  refuse_zero_capacity, default_gate_limit_bytes,
+                                                  workload_parent_bytes)
 
 
 TARGETS = {"check-fast", "check-iris"}
@@ -226,6 +228,14 @@ def reserve(policy, owner, receipt, *, available=memory_available, pause=time.sl
                       "active_claim_bytes": sum(claims.values()), "time_ns": time.time_ns()}
             record.update(projection(ledger, claims, policy["claim_bytes"], free, requester=key))
             save(receipt, record)
+            if not record["admitted"]:
+                # A zero capacity (missing workload slice) never admits: refuse, never wait.
+                try:
+                    refuse_zero_capacity(record)
+                except AdmissionRefused:
+                    if clear_waiter(ledger, key):
+                        save(policy["ledger"], ledger)
+                    raise
             if record["admitted"]:
                 clear_waiter(ledger, key)
                 ledger["fixed_claims"][key] = policy["claim_bytes"]
@@ -437,13 +447,24 @@ def gate_environment(environment):
     return result
 
 
-def batch_fence_bytes(environment):
-    """Read the guard gate route, which overrides the ordinary batch limit."""
-    value = environment.get("ZESU_GATE_LIMIT", "120G")
+def batch_fence_bytes(environment, parent_bytes=None):
+    """Read the guard gate route, which overrides the ordinary batch limit.
+
+    Unset, it is resource_guard.sh's default: 120 GiB, lowered to the workload
+    parent less 12 GiB. A configured fence above the parent refuses."""
+    parent = workload_parent_bytes() if parent_bytes is None else parent_bytes
+    value = environment.get("ZESU_GATE_LIMIT")
+    if not value:
+        return default_gate_limit_bytes(parent)
     match = re.fullmatch(r"([1-9][0-9]*)([KMGT]?)", value)
     if not match:
         raise ValueError("The batch memory fence must use bytes or an integer K/M/G/T suffix.")
-    return int(match[1]) * 1024 ** ("KMGT".index(match[2]) + 1 if match[2] else 0)
+    fence = int(match[1]) * 1024 ** ("KMGT".index(match[2]) + 1 if match[2] else 0)
+    if fence > parent:
+        raise AdmissionRefused(f"ZESU_GATE_LIMIT={value} ({fence} bytes) exceeds the workload parent "
+                               f"zesuworkloads.slice ({parent // GIB}G, {parent} bytes); set it at most "
+                               f"{parent // GIB}G or unset it")
+    return fence
 
 
 def run(args):
@@ -472,18 +493,21 @@ def run(args):
     from gate_exit_peaks import code_identity, latest
     workload = code_identity(workspace)
     ledger = Path(os.environ.get("ZESU_CANONICAL_LEDGER", base / "_build/agents/worker-build-2/native-region-release-v1/LEDGER.json"))
+    fence = batch_fence_bytes(os.environ)
+    # The guard derives the same default; pass it on so its gate fence equals the booked one.
+    os.environ.setdefault("ZESU_GATE_LIMIT", f"{fence // GIB}G")
     with locked(ledger.with_name("LEDGER.lock")):
         snapshot = read(ledger)
-    basis = latest(snapshot, args.target, command, batch_fence_bytes(os.environ), workload, closed=aggregate_closed)
+    basis = latest(snapshot, args.target, command, fence, workload, closed=aggregate_closed)
     if basis is None:
         basis = select_admission_basis(history_data, args.target, command,
-                                   batch_fence_bytes(os.environ), args.claim_ceiling_bytes,
+                                   fence, args.claim_ceiling_bytes,
                                    family_profile=args.family_profile,
                                    family_profile_sha256=args.family_profile_sha256)
     basis["claim_bytes"] = max(args.claim_ceiling_bytes, basis["claim_bytes"])
     policy = {"ledger": str(ledger), "lock": str(ledger.with_name("LEDGER.lock")),
               "claim_key": "CorrectnessGate_" + uuid.uuid4().hex, "claim_bytes": basis["claim_bytes"],
-              "physical_fence_bytes": batch_fence_bytes(os.environ)}
+              "physical_fence_bytes": fence}
     own = harness_claim(history_data, args.target)
     if own is not None and own < basis["claim_bytes"]:
         # Admission adds the claims of the gate's running compiles to this
@@ -493,6 +517,12 @@ def run(args):
     owner = {"pid": os.getpid(), "startticks": identity(os.getpid())["startticks"], "run_id": run_id}
     from block.harness.code.admission_memory import ScopeReader
     guard = Path(os.environ.get("ZESU_RESOURCE_GUARD", workspace / "tools/resource_guard.sh")).resolve()
+    # Create or verify zesuworkloads.slice before admission reads its fence, with
+    # the `parent-setup` tools/guarded_tool.sh runs. A missing slice read as zero
+    # capacity, and every gate waited forever (2026-11-17).
+    if subprocess.run([str(guard), "parent-setup"], cwd=workspace).returncode != 0:
+        raise AdmissionRefused(f"{guard} parent-setup could not create or verify the workload slice "
+                               "zesuworkloads.slice")
     guard_source = ScopeReader().guard_source(str(guard), digest(guard))
     request_record = {"guard_source": guard_source, "code_identity": workload, "policy": policy, "owner": owner, "workspace": str(workspace), "build": str(build),
           "target": args.target, "command": command, "basis": basis, "preflight": checked}
@@ -567,14 +597,18 @@ def main():
             return 0
         return inside(args.output) if args.action == "inside" else run(args)
     except (ValueError, OSError) as error:
+        refused = isinstance(error, AdmissionRefused)
         if args.action == "run" and os.environ.get("ZESU_RUN_ID"):
             out = Path.cwd() / "_build/agents/correctness-gates" / os.environ["ZESU_RUN_ID"]
             out.mkdir(parents=True, exist_ok=True)
             save(out / "RESULT.json", {"target": args.target, "success": False,
-                  "status": "setup_failed", "error": str(error), "admission_completed":
+                  "status": "refused" if refused else "setup_failed", "error": str(error), "admission_completed":
                   (out / "ADMISSION.json").is_file() and read(out / "ADMISSION.json").get("admitted", False)})
             if not (out / "REQUEST.json").is_file():
                 save(out / "RELEASE.json", {"released": True, "never_admitted": True, "bytes": 0})
+        if refused:
+            # Launch exit codes (#284): 3 is a refusal; the gate never waits on it.
+            parser.exit(3, f"refused: correctness gate: {error}\n")
         parser.exit(2, f"correctness gate setup: {error}\n")
 
 

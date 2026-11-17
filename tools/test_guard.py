@@ -25,6 +25,18 @@ if __package__:
 else:
     from test_resource_guard import MEMORY_HELPER
 
+GIB = 1024 ** 3
+# Guard fixtures read an empty cgroup root (ZESU_CGROUP_ROOT): no account
+# limit, so the 200 GiB fallback applies and the workload parent is 160 GiB.
+# The memory helper sizes its parent from the same root. Fences derive from
+# this fixture parent, never from the host's account limit (152 GiB since the
+# 2026-11-17 reboot, a 112 GiB parent that refused fixed 150/120 GiB fences).
+FIXTURE_PARENT_GIB = 200 - 40
+FIXTURE_PARENT_BYTES = str(FIXTURE_PARENT_GIB * GIB)
+# A batch fence just below the parent, and the guard's default gate fence.
+BATCH_FENCE = f"{FIXTURE_PARENT_GIB - 10}G"
+GATE_FENCE = f"{min(120, FIXTURE_PARENT_GIB - 12)}G"
+
 
 def fixture_environment(**changes):
     """Remove inherited build routes before a fixture sets its own routes."""
@@ -152,6 +164,14 @@ class GuardLockTest(unittest.TestCase):
             "elif 'list-units' in args:\n"
             " live=os.environ.get('GUARD_TEST_LIVE_SCOPES')\n"
             " if live:print(pathlib.Path(live).read_text(),end='')\n"
+            "elif 'start' in args:\n"
+            # Starting the parent slice creates its cgroup, as systemd does.
+            " unit=args[-1];props=data.get(unit,{});root=os.environ.get('ZESU_CGROUP_ROOT')\n"
+            " if unit=='zesuworkloads.slice' and props and root and not os.environ.get('GUARD_TEST_NO_PARENT_CGROUP'):\n"
+            "  uid=os.getuid();d=pathlib.Path(root)/'user.slice'/f'user-{uid}.slice'/f'user@{uid}.service'/unit\n"
+            "  d.mkdir(parents=True,exist_ok=True);m=props.get('MemoryMax','max')\n"
+            "  (d/'memory.max').write_text((str(int(m[:-1])*1073741824) if m.endswith('G') else m)+'\\n')\n"
+            "  (d/'memory.swap.max').write_text(props.get('MemorySwapMax','max')+'\\n')\n"
             "elif 'kill' in args or 'stop' in args:\n"
             " with open(os.environ['GUARD_TEST_SYSTEMCTL_LOG'],'a') as f:f.write(' '.join(args)+'\\n')\n"
         )
@@ -257,13 +277,13 @@ class GuardLockTest(unittest.TestCase):
                 self.assertIn('shadows stdlib modules: queue.py', result.stderr)
                 self.assertNotIn('must not execute', result.stderr)
 
-    def batch_environment(self, limit="150G"):
+    def batch_environment(self, limit=BATCH_FENCE):
         slice_name = f"zesuworkloads-aggregate1000p{os.getpid()}r1.slice"
         subprocess.run(["systemctl", "--user", "set-property", "--runtime", slice_name,
                         f"MemoryMax={limit}", "MemorySwapMax=0"],
                        env=self.environment, check=True)
         subprocess.run(["systemctl", "--user", "set-property", "--runtime", "zesuworkloads.slice",
-                        "MemoryMax=171798691840", "MemorySwapMax=0"], env=self.environment, check=True)
+                        f"MemoryMax={FIXTURE_PARENT_BYTES}", "MemorySwapMax=0"], env=self.environment, check=True)
         self.cgroup.write_text("0::/user.slice/user-1000.slice/user@1000.service/zesuworkloads.slice/" + slice_name + "/fixture.scope\n")
         return {"ZESU_IN_BATCH": "1", "ZESU_AGGREGATE_SLICE": slice_name,
                 "ZESU_AGGREGATE_LIMIT": limit}
@@ -1250,8 +1270,85 @@ class GuardLockTest(unittest.TestCase):
         self.assertEqual(result.returncode, 0, result.stderr)
         state = json.loads(Path(self.environment["GUARD_TEST_SLICE_STATE"]).read_text())
         self.assertEqual(state["zesuworkloads.slice"],
-                         {"MemoryMax": "171798691840", "MemorySwapMax": "0"})
+                         {"MemoryMax": FIXTURE_PARENT_BYTES, "MemorySwapMax": "0"})
         self.assertIn("--slice=zesuworkloads.slice", result.stdout)
+
+    def parent_cgroup(self):
+        return (Path(self.environment["ZESU_CGROUP_ROOT"]) / "user.slice" / f"user-{os.getuid()}.slice"
+                / f"user@{os.getuid()}.service" / "zesuworkloads.slice")
+
+    def test_guard_and_fixture_agree_on_the_workload_parent(self):
+        result = self.guard("parent-bytes")
+        self.assertEqual(result.stdout.strip(), FIXTURE_PARENT_BYTES, result.stderr)
+
+    def test_parent_setup_creates_the_missing_workload_slice(self):
+        # 2026-11-17: after a reboot the slice did not exist; set-property alone
+        # never creates it, so admission read a zero slice maximum.
+        self.assertFalse(self.parent_cgroup().exists())
+        result = self.guard("parent-setup")
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertEqual((self.parent_cgroup() / "memory.max").read_text().strip(), FIXTURE_PARENT_BYTES)
+
+    def test_compiler_admission_creates_a_missing_workload_slice_first(self):
+        self.prepare_blocked_fixture(0)
+        token = self.guard("reserve-coqc", str(os.getpid())).stdout.strip()
+        self.assertFalse(self.parent_cgroup().exists())
+        try:
+            result = self.guard("confirm-coqc", token)
+            self.assertEqual(result.returncode, 0, result.stderr)
+            self.assertEqual((self.parent_cgroup() / "memory.max").read_text().strip(), FIXTURE_PARENT_BYTES)
+        finally:
+            self.guard("release-coqc", token)
+
+    def test_compiler_admission_refuses_at_once_when_the_slice_stays_missing(self):
+        self.prepare_blocked_fixture(0)
+        self.environment["GUARD_TEST_NO_PARENT_CGROUP"] = "1"
+        token = self.guard("reserve-coqc", str(os.getpid())).stdout.strip()
+        result = self.guard("confirm-coqc", token)
+        self.assertEqual(result.returncode, 3, result.stderr)
+        [line] = result.stderr.splitlines()
+        self.assertTrue(line.startswith("refused: resource guard: workload slice zesuworkloads.slice is missing"),
+                        line)
+        self.assertFalse(Path(token).exists())
+
+    def test_zero_capacity_ledger_refusal_exits_3_without_waiting(self):
+        self.prepare_blocked_fixture(0)
+        self.environment["GUARD_TEST_LEDGER_REFUSED"] = "1"
+        token = self.guard("reserve-coqc", str(os.getpid())).stdout.strip()
+        result = self.guard("confirm-coqc", token)
+        self.assertEqual(result.returncode, 3, result.stderr)
+        self.assertIn("refused: module memory: fixture zero capacity", result.stderr)
+        self.assertFalse(Path(token).exists())
+
+    def account_152_gib(self):
+        # The host's account cap since the 2026-11-17 reboot: a 112 GiB workload parent.
+        account = Path(self.environment["ZESU_CGROUP_ROOT"]) / "user.slice" / f"user-{os.getuid()}.slice"
+        shutil.copytree(TOOLS / "fixtures" / "account-cgroup", account)
+        self.assertEqual((account / "memory.max").read_text().strip(), str(152 * GIB))
+        self.prepare_blocked_fixture(0)
+        self.environment["ZESU_IN_GATE"] = "1"
+
+    def test_default_gate_fence_fits_a_112_gib_workload_parent(self):
+        self.account_152_gib()
+        result = self.guard("batch", "gate", "--", "true")
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertIn("MemoryMax=100G", result.stdout)
+        state = json.loads(Path(self.environment["GUARD_TEST_SLICE_STATE"]).read_text())
+        self.assertEqual(state["zesuworkloads.slice"]["MemoryMax"], str(112 * GIB))
+
+    def test_configured_fence_above_the_parent_refuses_naming_both(self):
+        self.account_152_gib()
+        for name in ("ZESU_GATE_LIMIT", "ZESU_AGGREGATE_LIMIT"):
+            with self.subTest(name=name):
+                result = subprocess.run([str(GUARD), "batch", "gate", "--", "echo", "MUST_NOT_RUN"],
+                                        env={**self.environment, name: "120G"}, capture_output=True,
+                                        text=True, timeout=EVENT_CEILING_SECONDS)
+                self.assertEqual(result.returncode, 3, result.stderr)
+                self.assertEqual(result.stderr,
+                                 f"refused: resource guard: {name}=120G exceeds the workload parent "
+                                 "zesuworkloads.slice (112G, from the account's MemoryMax); set it at most "
+                                 "112G or unset it\n")
+                self.assertNotIn("MUST_NOT_RUN", result.stdout)
 
     def test_parent_setup_failure_prevents_launch(self):
         self.environment["GUARD_TEST_SLICE_FAIL"] = "1"
@@ -1289,9 +1386,9 @@ class GuardLockTest(unittest.TestCase):
         self.assertNotIn("MUST_NOT_RUN", result.stdout)
 
     def test_scope_and_batch_memory_fences(self):
-        self.environment["ZESU_AGGREGATE_LIMIT"] = "150G"
+        self.environment["ZESU_AGGREGATE_LIMIT"] = BATCH_FENCE
         for arguments, fence in (("scope", "MemoryMax=16G"),
-                                 ("batch", "MemoryMax=150G")):
+                                 ("batch", f"MemoryMax={BATCH_FENCE}")):
             with self.subTest(arguments=arguments):
                 result = self.guard(arguments, "test", "--", "true")
                 self.assertEqual(result.returncode, 0)
@@ -1313,7 +1410,7 @@ class GuardLockTest(unittest.TestCase):
             "guard=sys.argv[1]\n"
             "subprocess.run([guard,'batch','nested','--',guard,'scope','ordinary','--','true'],check=True)\n"
 )
-        for gate, limit in ((False, "150G"), (True, "120G")):
+        for gate, limit in ((False, BATCH_FENCE), (True, GATE_FENCE)):
             with self.subTest(gate=gate):
                 events.unlink(missing_ok=True)
                 if gate:self.lock.write_text(f"state=held holder=fixture pid={os.getpid()} start=x\n")
@@ -1343,7 +1440,7 @@ class GuardLockTest(unittest.TestCase):
     def test_missing_or_changed_aggregate_fence_rejects_compiler(self):
         self.prepare_blocked_fixture(0)
         for context in ({"ZESU_IN_BATCH": "1"},
-                        {**self.batch_environment("150G"), "ZESU_AGGREGATE_LIMIT": "120G"},
+                        {**self.batch_environment(BATCH_FENCE), "ZESU_AGGREGATE_LIMIT": GATE_FENCE},
                         {**self.batch_environment(), "ZESU_AGGREGATE_SLICE": "app.slice"}):
             with self.subTest(context=context):
                 result = subprocess.run([str(GUARD), "scope", "bad", "--", "echo", "WRONG"],
@@ -1430,15 +1527,15 @@ class GuardLockTest(unittest.TestCase):
         self.assertEqual(list((Path(self.environment["ZESU_GUARD_STATE"]) / "launches").iterdir()), [])
 
     def test_direct_batch_waits_at_launch_limit(self):
-        self.environment["ZESU_AGGREGATE_LIMIT"] = "150G"
+        self.environment["ZESU_AGGREGATE_LIMIT"] = BATCH_FENCE
         self.environment["GUARD_TEST_USED_GIB"] = "226"
         result = subprocess.run(
             ["timeout", "0.2", str(GUARD), "batch", "test", "--", "true"],
             capture_output=True, text=True, env=self.environment)
         self.assertEqual(result.returncode, 124)
-        self.assertNotIn("MemoryMax=150G", result.stdout)
+        self.assertNotIn(f"MemoryMax={BATCH_FENCE}", result.stdout)
         self.environment["GUARD_TEST_USED_GIB"] = "149"
-        self.assertIn("MemoryMax=150G", self.guard("batch", "test", "--", "true").stdout)
+        self.assertIn(f"MemoryMax={BATCH_FENCE}", self.guard("batch", "test", "--", "true").stdout)
 
     def test_gate_uses_120_gib_batch_fence(self):
         gate = (TOOLS / "det" / "gate.sh").read_text()
