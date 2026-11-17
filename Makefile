@@ -153,6 +153,7 @@ _check-tool-tests:
 	$(MCP_PYTHON) -B -m unittest discover -s tools/block/harness -p 'test_*.py'
 	$(PYTHON) -m unittest discover -s tools/block -p 'test_*.py'
 	$(PYTHON) -m unittest discover -s tools/bench -p 'test_*.py'
+	$(PYTHON) -m unittest discover -s tools/sweep_decodeitem -p 'test_*.py'
 	$(PYTHON) -m unittest discover -s tools/stock_zisk -p 'test_manifest.py'
 	$(PYTHON) -m unittest discover -s tools/stock_zisk -p 'test_regen.py'
 	PYTHONPATH=tools/stock_zisk/platform $(PYTHON) -m unittest discover -s tools/stock_zisk/platform -p 'test_*.py'
