@@ -258,30 +258,94 @@ type telemetry_sample = { wall : int; cpu : int; rss : int }
 let telemetry_sample () =
   { wall = telemetry_clock_us (); cpu = telemetry_cpu_us (); rss = telemetry_rss_kb () }
 
-let telemetry_emit kind site facts nodes goal_nodes (start : telemetry_sample) ok =
+(* Measurement only: a key of the focused goal for repeated-failure counts.
+   [goal hash; pruned-context hash; pruned fact count; whole-context hash].
+   The pruned context mirrors ContextCollection.zesu_context_relevance: the
+   Prop facts that share a variable with the goal, transitively (closed facts
+   always), with the declarations of the variables they use. All zero when
+   the goal or a declaration has an undefined evar. *)
+let telemetry_combine h x = (h * 65599 + x) land max_int
+
+let telemetry_key goal =
+  let env = Proofview.Goal.env goal and sigma = Proofview.Goal.sigma goal in
+  let open Context.Named.Declaration in
+  let declarations = EConstr.named_context env in
+  let closed term = EConstr.to_constr_opt sigma term in
+  let is_prop ty =
+    try Retyping.get_sort_family_of env sigma ty = Sorts.InProp with _ -> false in
+  let vars = Termops.collect_vars sigma in
+  let info = List.map (fun declaration ->
+    match declaration with
+    | LocalAssum (_, ty) -> (declaration, is_prop ty, vars ty)
+    | LocalDef (_, body, ty) -> (declaration, false, Id.Set.union (vars ty) (vars body)))
+    declarations in
+  let rec relevance found =
+    let next = List.fold_left (fun found (declaration, fact, used) ->
+      let id = get_id declaration in
+      if Id.Set.mem id found
+         || (fact && (Id.Set.is_empty used || not (Id.Set.disjoint used found)))
+      then Id.Set.add id (Id.Set.union found used) else found) found info in
+    if Id.Set.cardinal next = Id.Set.cardinal found then next else relevance next in
+  let hash_declaration declaration =
+    match declaration with
+    | LocalAssum (id, ty) ->
+        Option.map (fun ty -> telemetry_combine (Id.hash id.Context.binder_name) (Constr.hash ty))
+          (closed ty)
+    | LocalDef (id, body, ty) ->
+        (match closed body, closed ty with
+         | Some body, Some ty ->
+             Some (telemetry_combine (Id.hash id.Context.binder_name)
+                     (telemetry_combine (Constr.hash body) (Constr.hash ty)))
+         | _ -> None) in
+  match closed (Proofview.Goal.concl goal) with
+  | None -> [0; 0; 0; 0]
+  | Some concl ->
+      let relevant = relevance (Termops.collect_vars sigma (Proofview.Goal.concl goal)) in
+      let step (pruned, count, whole) (declaration, fact, _) =
+        match hash_declaration declaration with
+        | None -> raise Exit
+        | Some h ->
+            let kept = Id.Set.mem (get_id declaration) relevant in
+            ((if kept then telemetry_combine pruned h else pruned),
+             (if kept && fact then count + 1 else count),
+             telemetry_combine whole h) in
+      (try
+         let pruned, count, whole = List.fold_left step (17, 0, 17) info in
+         [Constr.hash concl; pruned; count; whole]
+       with Exit -> [0; 0; 0; 0])
+
+let telemetry_emit kind site facts nodes goal_nodes (start : telemetry_sample) key ok =
   let stop = telemetry_sample () in
+  let key = match key with
+    | [goal; pruned; count; whole] ->
+        Printf.sprintf " gk=%d pk=%d pn=%d wk=%d" goal pruned count whole
+    | _ -> "" in
   Printf.printf
     "@@T kind=%s site=%s stage=%s facts=%d nodes=%d goal_nodes=%d ms=%.3f ok=%d \
-     cpu_ms=%.3f ts_us=%d rss0_kb=%d rss1_kb=%d\n%!"
+     cpu_ms=%.3f ts_us=%d rss0_kb=%d rss1_kb=%d%s\n%!"
     kind site !telemetry_stage facts nodes goal_nodes
     (float_of_int (stop.wall - start.wall) /. 1000.) (if ok then 1 else 0)
-    (float_of_int (stop.cpu - start.cpu) /. 1000.) start.wall start.rss stop.rss
+    (float_of_int (stop.cpu - start.cpu) /. 1000.) start.wall start.rss stop.rss key
 
 let () =
   let open Tac2externals in
   let name tactic = { Tac2expr.mltac_plugin = "zesu-signature-gates.plugin"; mltac_tactic = tactic } in
   define (name "telemetry_enabled") (Tac2ffi.unit @-> ret Tac2ffi.bool)
     (fun () -> Lazy.force telemetry_on);
-  (* The sample is a (wall us, cpu us, rss KiB) triple of ints. *)
+  (* The sample is a (wall us, cpu us, rss KiB) triple of ints; a goal key
+     (telemetry_key) may follow it. *)
   define (name "telemetry_sample") (Tac2ffi.unit @-> tac (Tac2ffi.list Tac2ffi.int))
     (fun () -> telemetry_now (fun () ->
       let s = telemetry_sample () in [s.wall; s.cpu; s.rss]));
+  define (name "telemetry_key") (Tac2ffi.unit @-> gret (Tac2ffi.list Tac2ffi.int))
+    (fun () goal -> telemetry_key goal);
   define (name "telemetry_emit")
     (Tac2ffi.string @-> Tac2ffi.string @-> Tac2ffi.int @-> Tac2ffi.int @-> Tac2ffi.int @->
      Tac2ffi.list Tac2ffi.int @-> Tac2ffi.bool @-> tac Tac2ffi.unit)
     (fun kind site facts nodes goal_nodes start ok -> telemetry_now (fun () ->
       match start with
-      | [wall; cpu; rss] -> telemetry_emit kind site facts nodes goal_nodes { wall; cpu; rss } ok
+      | wall :: cpu :: rss :: key ->
+          telemetry_emit kind site facts nodes goal_nodes { wall; cpu; rss } key ok
       | _ -> ()));
   (* Sets the stage and returns the previous one. *)
   define (name "telemetry_stage_swap") (Tac2ffi.string @-> tac Tac2ffi.string)

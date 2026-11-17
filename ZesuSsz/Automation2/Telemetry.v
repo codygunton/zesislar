@@ -24,6 +24,15 @@ Ltac2 @ external zesu_telemetry_emit :
   "zesu-signature-gates.plugin" "telemetry_emit".
 Ltac2 @ external zesu_telemetry_stage_swap : string -> string :=
   "zesu-signature-gates.plugin" "telemetry_stage_swap".
+(* Measurement only: goal and pruned-context hashes (gk pk pn wk). *)
+Ltac2 @ external zesu_telemetry_key : unit -> int list :=
+  "zesu-signature-gates.plugin" "telemetry_key".
+
+Ltac2 zesu_telemetry_goal_key () :=
+  match Control.case (fun () => let _ := Control.goal () in zesu_telemetry_key ()) with
+  | Val (key, _) => key
+  | Err _ => []
+  end.
 
 (* The node walk lives in LinearFirstLia, which sets these. *)
 Ltac2 mutable zesu_telemetry_nodes : constr -> int := fun _ => -1.
@@ -50,7 +59,8 @@ Ltac2 zesu_telemetry_sizes () :=
    after backtracking print again; a failure after a success prints nothing. *)
 Ltac2 zesu_telemetry_measure (kind : string) (site : string) (tac : unit -> 'a) : 'a :=
   let (facts, nodes, goal_nodes) := zesu_telemetry_sizes () in
-  let start := zesu_telemetry_sample () in
+  let key := zesu_telemetry_goal_key () in
+  let start := List.append (zesu_telemetry_sample ()) key in
   let succeeded := Ref.ref false in
   Control.plus (fun () =>
       let result := tac () in

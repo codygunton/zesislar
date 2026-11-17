@@ -112,6 +112,10 @@
     {
       "path": "ZesuSsz/Automation2/Telemetry.v",
       "statement": "Ltac2 @ external zesu_telemetry_stage_swap : string -> string := \"zesu-signature-gates.plugin\" \"telemetry_stage_swap\" ."
+    },
+    {
+      "path": "ZesuSsz/Automation2/Telemetry.v",
+      "statement": "Ltac2 @ external zesu_telemetry_key : unit -> int list := \"zesu-signature-gates.plugin\" \"telemetry_key\" ."
     }
   ]
 }
