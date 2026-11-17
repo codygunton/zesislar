@@ -33,6 +33,7 @@ Ltac ZesuSsz.Automation2.ContextCollection.zesu_context_prune_goal ::= ltac2:(a3
 
 Require Import ZesuSsz.Automation2.LinearFirstLia.
 Require Import ZesuSsz.Automation2.Telemetry.
+Require Import ZesuSsz.Automation2.FailureMemo.
 Require ZesuSsz.Automation2.RewriteBoundGuards.
 (** Project-wide Lithium hook redefinitions belong in this module. *)
 
@@ -430,15 +431,17 @@ Ltac zesu_bv_context_filter closer :=
    (in)equality closes next by the reflective normal form (BvLinear); other
    goals fail there at once. An equality that the normal form refutes goes to
    the solver on its linked facts only. A residual lemma is the last attempt
-   after the solver fails. *)
+   after the solver fails. A goal and context that failed before in the
+   proof fail at once (FailureMemo). *)
 Ltac bv_solve ::=
   let run := ltac2:(tac |- zesu_telemetry_ltac1 "bv_solve" "bv_solve" tac) in
   let run_linear := ltac2:(tac |- zesu_telemetry_ltac1 "bv_linear" "bv_solve" tac) in
-  run ltac:(first [solve [zesu_closed_goal_decide] |
+  let memo := ltac2:(tac |- zesu_failure_memo_ltac1 "bv_solve" tac) in
+  run ltac:(memo ltac:(first [solve [zesu_closed_goal_decide] |
   solve [run_linear ltac:(ZesuSsz.Automation2.BvLinear.zesu_bv_linear_with ltac:(lia))] |
   (tryif ZesuSsz.Automation2.BvLinear.zesu_bv_linear_refutes
    then first [zesu_refuted_solve ltac:(zesu_bv_solve_closer) | ResidualLemmas.zesu_residual_lemma]
-   else first [zesu_bv_context_filter ltac:(zesu_bv_solve_closer) | ResidualLemmas.zesu_residual_lemma])]).
+   else first [zesu_bv_context_filter ltac:(zesu_bv_solve_closer) | ResidualLemmas.zesu_residual_lemma])])).
 
 (* A caller that imports isla after this module restores the library lia
    and bv_solve, which read the whole context. Try the facts linked to the
@@ -451,11 +454,12 @@ Ltac zesu_bv_solve_linked_facts :=
 
 Ltac zesu_solve_machine_bounds :=
   let run := ltac2:(tac |- zesu_telemetry_ltac1 "bv_solve" "zesu_solve_machine_bounds" tac) in
-  run ltac:(first [solve [zesu_low_mask_sub_modulus_if_enabled] |
+  let memo := ltac2:(tac |- zesu_failure_memo_ltac1 "zesu_solve_machine_bounds" tac) in
+  run ltac:(memo ltac:(first [solve [zesu_low_mask_sub_modulus_if_enabled] |
     solve [zesu_low_mask_if_closed] |
     (solve [zesu_normalize_binary_nat_hypotheses;
       zesu_normalize_binary_nat_goal; zesu_normalize_machine_map;
-      first [zesu_bv_solve_linked_facts | bv_solve]])]).
+      first [zesu_bv_solve_linked_facts | bv_solve]])])).
 (* Without a natural-number order fact or goal, the binary-nat alternative of
    `zesu_solve_machine_linear` repeats the first one on the same goal and facts:
    the first clears nothing and the nat normalizers change nothing. *)
@@ -468,7 +472,8 @@ Ltac zesu_nat_order_present :=
   end.
 Ltac zesu_solve_machine_linear :=
   let run := ltac2:(tac |- zesu_telemetry_ltac1 "lia" "zesu_solve_machine_linear" tac) in
-  run ltac:(first [zesu_byte_index_arithmetic
+  let memo := ltac2:(tac |- zesu_failure_memo_ltac1 "zesu_solve_machine_linear" tac) in
+  run ltac:(memo ltac:(first [zesu_byte_index_arithmetic
     | (first [solve [repeat match goal with
            | Hnat : (_ <= _)%nat |- _ => clear Hnat
            | Hnat : (_ < _)%nat |- _ => clear Hnat
@@ -476,7 +481,7 @@ Ltac zesu_solve_machine_linear :=
     (zesu_nat_order_present;
      solve [zesu_normalize_binary_nat_hypotheses;
       zesu_normalize_binary_nat_goal; zesu_normalize_machine_map;
-      first [solve [zesu_lia_linked_facts] | lia]])])]).
+      first [solve [zesu_lia_linked_facts] | lia]])])])).
 (* The flag and remainder closer runs before the finisher saturates derived
    facts, so a range that only a folded hypothesis states (through a
    registered `ZesuDerivedFacts` instance) is missing there. When the goal has
@@ -2934,12 +2939,13 @@ Ltac zesu_lia_context_bounded closer :=
 Ltac Lia.lia ::=
   let run := ltac2:(tac |- zesu_telemetry_ltac1 "lia" "Lia.lia" tac) in
   let run_linear := ltac2:(tac |- zesu_telemetry_ltac1 "bv_linear" "Lia.lia" tac) in
-  run ltac:(first [solve [zesu_closed_goal_decide] |
+  let memo := ltac2:(tac |- zesu_failure_memo_ltac1 "Lia.lia" tac) in
+  run ltac:(memo ltac:(first [solve [zesu_closed_goal_decide] |
   solve [run_linear ltac:(ZesuSsz.Automation2.BvLinear.zesu_bv_linear_with ltac:(lia))] |
   (tryif ZesuSsz.Automation2.BvLinear.zesu_bv_linear_refutes
    then first [zesu_refuted_solve ltac:(zesu_lia_linear_first3) | ResidualLemmas.zesu_residual_lemma]
    else first [zesu_lia_context_bounded ltac:(zesu_lia_linear_first3)
-              | ResidualLemmas.zesu_residual_lemma])]).
+              | ResidualLemmas.zesu_residual_lemma])])).
 
 
 (* The callback must prove the payload equality. Owners are never converted. *)

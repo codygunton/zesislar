@@ -120,6 +120,22 @@
     {
       "path": "ZesuSsz/Automation2/Telemetry.v",
       "statement": "Ltac2 @ external zesu_telemetry_stage_swap : string -> string := \"zesu-signature-gates.plugin\" \"telemetry_stage_swap\" ."
+    },
+    {
+      "path": "ZesuSsz/Automation2/FailureMemo.v",
+      "statement": "Declare ML Module \"zesu-signature-gates.plugin\" ."
+    },
+    {
+      "path": "ZesuSsz/Automation2/FailureMemo.v",
+      "statement": "Ltac2 @ external zesu_failure_memo_key : string -> int list := \"zesu-signature-gates.plugin\" \"failure_memo_key\" ."
+    },
+    {
+      "path": "ZesuSsz/Automation2/FailureMemo.v",
+      "statement": "Ltac2 @ external zesu_failure_memo_failed : int list -> bool := \"zesu-signature-gates.plugin\" \"failure_memo_failed\" ."
+    },
+    {
+      "path": "ZesuSsz/Automation2/FailureMemo.v",
+      "statement": "Ltac2 @ external zesu_failure_memo_record : int list -> unit := \"zesu-signature-gates.plugin\" \"failure_memo_record\" ."
     }
   ]
 }

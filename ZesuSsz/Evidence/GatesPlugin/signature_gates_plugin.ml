@@ -433,3 +433,99 @@ let () =
   define (name "telemetry_stage_swap") (Tac2ffi.string @-> tac Tac2ffi.string)
     (fun stage -> telemetry_now (fun () ->
       let previous = !telemetry_stage in telemetry_stage := stage; previous))
+
+(* Solver failure memo (ZesuSsz/Automation2/FailureMemo.v). The solver sites
+   are deterministic and their budgets count nodes, so a site that failed on a
+   goal fails again on the same conclusion and the same context. The key hashes
+   the site, the conclusion and every declaration of the context (name, type,
+   body) through defined evars; an undefined evar leaves the goal without a
+   key. Only failures are recorded. The memo belongs to one proof (its name and
+   root goals) and is emptied when another proof uses it. *)
+exception Failure_memo_unkeyed
+
+let failure_memo_combine h x = (h * 65599 + x) land max_int
+
+let rec failure_memo_hash sigma acc term =
+  let open Constr in
+  let combine = failure_memo_combine in
+  let head = match EConstr.kind sigma term with
+    | Rel n -> combine 1 n
+    | Var id -> combine 2 (Id.hash id)
+    | Meta _ | Evar _ -> raise Failure_memo_unkeyed
+    | Sort s -> combine 3 (Sorts.hash (EConstr.ESorts.kind sigma s))
+    | Cast _ -> 4
+    | Prod _ -> 5
+    | Lambda _ -> 6
+    | LetIn _ -> 7
+    | App (_, arguments) -> combine 8 (Array.length arguments)
+    | Const (constant, _) -> combine 9 (Constant.CanOrd.hash constant)
+    | Ind (ind, _) -> combine 10 (Ind.CanOrd.hash ind)
+    | Construct ((ind, n), _) -> combine 11 (combine (Ind.CanOrd.hash ind) n)
+    | Case (info, _, _, _, _, _, branches) ->
+        combine 12 (combine (Ind.CanOrd.hash info.ci_ind) (Array.length branches))
+    | Fix ((_, n), _) -> combine 13 n
+    | CoFix (n, _) -> combine 14 n
+    | Proj (projection, _, _) -> combine 15 (Projection.CanOrd.hash projection)
+    | Int n -> combine 16 (Uint63.hash n)
+    | Float f -> combine 17 (Float64.hash f)
+    | Array (_, values, _, _) -> combine 18 (Array.length values) in
+  EConstr.fold sigma (failure_memo_hash sigma) (combine acc head) term
+
+(* [goal hash; context hash], or [] without a key. *)
+let failure_memo_key site goal =
+  let sigma = Proofview.Goal.sigma goal in
+  let hash = failure_memo_hash sigma in
+  let declaration h decl =
+    let open Context.Named.Declaration in
+    let h = failure_memo_combine h (Id.hash (get_id decl)) in
+    match decl with
+    | LocalAssum (_, ty) -> hash (failure_memo_combine h 1) ty
+    | LocalDef (_, body, ty) -> hash (hash (failure_memo_combine h 2) body) ty in
+  try
+    let context = List.fold_left declaration 17
+      (EConstr.named_context (Proofview.Goal.env goal)) in
+    [hash (Hashtbl.hash site) (Proofview.Goal.concl goal); context]
+  with Failure_memo_unkeyed -> []
+
+let failure_memo_owner = ref None
+let failure_memo_table : (int list, unit) Hashtbl.t = Hashtbl.create 1024
+
+(* The current proof's name and root goal evars; None outside a proof. *)
+let failure_memo_proof () =
+  match (Vernacstate.Declare.give_me_the_proof_opt [@ocaml.alert "-deprecated"]) () with
+  | None -> None
+  | Some proof ->
+      let data = Proof.data proof in
+      let roots = List.map (fun (_, term, _) ->
+        match Constr.kind (EConstr.Unsafe.to_constr term) with
+        | Constr.Evar (evar, _) -> Evar.repr evar
+        | _ -> -1) (Proofview.initial_goals data.Proof.entry) in
+      Some (data.Proof.name, roots)
+  | exception error when CErrors.noncritical error -> None
+
+(* The table of the current proof, emptied when the proof changed. *)
+let failure_memo_current () =
+  match failure_memo_proof () with
+  | None -> None
+  | Some proof ->
+      (match !failure_memo_owner with
+       | Some (name, roots) when Id.equal name (fst proof) && roots = snd proof -> ()
+       | _ -> Hashtbl.reset failure_memo_table; failure_memo_owner := Some proof);
+      Some failure_memo_table
+
+let () =
+  let open Tac2externals in
+  let name tactic = { Tac2expr.mltac_plugin = "zesu-signature-gates.plugin"; mltac_tactic = tactic } in
+  let lift f = Proofview.tclLIFT (Proofview.NonLogical.make f) in
+  define (name "failure_memo_key") (Tac2ffi.string @-> gret (Tac2ffi.list Tac2ffi.int))
+    failure_memo_key;
+  define (name "failure_memo_failed") (Tac2ffi.list Tac2ffi.int @-> tac Tac2ffi.bool)
+    (fun key -> lift (fun () ->
+      key <> [] && (match failure_memo_current () with
+        | Some table -> Hashtbl.mem table key
+        | None -> false)));
+  define (name "failure_memo_record") (Tac2ffi.list Tac2ffi.int @-> tac Tac2ffi.unit)
+    (fun key -> lift (fun () ->
+      if key <> [] then match failure_memo_current () with
+        | Some table -> Hashtbl.replace table key ()
+        | None -> ()))
