@@ -49,6 +49,57 @@ Print Assumptions zesu_byte_array_lend_slice.
 
 Class ZesuStepInteriorByteSlice : Prop := zesu_step_interior_byte_slice : True.
 
+(* One step from an address towards the word it is an offset of: an unsigned
+   value reads as its word, a sum or difference as its left operand, a local
+   definition as its body, a named word (a register a call boundary kept) as
+   its value. Fails at a word with no such step. *)
+Ltac zesu_byte_slice_address_next term :=
+  lazymatch term with
+  | @bv_unsigned _ ?word => constr:(word)
+  | Z.add ?left _ => constr:(left)
+  | Z.sub ?left _ => constr:(left)
+  | @bv_add _ ?left _ => constr:(left)
+  | @bv_sub _ ?left _ => constr:(left)
+  | _ =>
+      match goal with
+      | local := ?body : _ |- _ =>
+          let _ := constr:(ltac:(constr_eq local term; exact I) : True) in
+          constr:(body)
+      | _ : zesu_named_eq term ?value |- _ => constr:(value)
+      end
+  end.
+
+(* The word an array's base is an offset of (no definitions unfolded: a base
+   is the caller's argument or stack pointer as the contract states it). *)
+Ltac zesu_byte_slice_base_root base :=
+  lazymatch base with
+  | @bv_unsigned _ ?word => zesu_byte_slice_base_root word
+  | Z.add ?left _ => zesu_byte_slice_base_root left
+  | Z.sub ?left _ => zesu_byte_slice_base_root left
+  | @bv_add _ ?left _ => zesu_byte_slice_base_root left
+  | @bv_sub _ ?left _ => zesu_byte_slice_base_root left
+  | _ => constr:(base)
+  end.
+
+(* An array can hold the slice only if the slice address is reached from the
+   array's base word, or a fact places a word on the address's way inside the
+   array's bytes (a callee's sealed domain over `drop (.. word ..) bytes`).
+   Syntactic: an array that fails here is skipped before any arithmetic. *)
+Ltac zesu_byte_slice_reaches term root bytes :=
+  first [
+    constr_eq term root
+  | is_var term;
+    match goal with
+    | _ : context[drop (Z.to_nat ?offset) bytes] |- _ =>
+        lazymatch offset with context[term] => idtac end
+    end
+  | let next := zesu_byte_slice_address_next term in
+    zesu_byte_slice_reaches next root bytes ].
+
+Ltac zesu_byte_slice_related address base bytes :=
+  let root := zesu_byte_slice_base_root base in
+  zesu_byte_slice_reaches address root bytes.
+
 Ltac zesu_byte_slice_start address base :=
   lazymatch address with
   | bv_unsigned (?register + ?offset)%bv =>
@@ -297,6 +348,76 @@ Ltac zesu_byte_slice_bound_arith_at base :=
   try zesu_byte_slice_base_ranges base;
   zesu_byte_slice_bound_arith.
 
+(* The facts a lend's side goal can use: those that mention a value word of
+   the goal (a word, integer, count or byte list; local definitions read
+   through to the words they are built from), and the facts over contract
+   arguments alone (the caller's precondition, where the base's range sits).
+   One hop: a fact is not kept because it shares a word with another kept
+   fact, and a contract argument links nothing (every call's sealed facts
+   mention the caller's input). A block context chains its calls (each
+   call's cursor is the last one's plus its consumed count), so the
+   transitive closure is the whole context: the derived-fact saturation on
+   it ran past 800 s on a decodeParentHeader block. A fact whose words cannot
+   be read is kept. *)
+Ltac2 zesu_byte_slice_value_word (name : ident) :=
+  let ty := Constr.type (Control.hyp name) in
+  lazy_match! ty with
+  | bv _ => true
+  | Z => true
+  | nat => true
+  | N => true
+  | bool => true
+  | list _ => true
+  | _ => false
+  end.
+
+Ltac2 zesu_byte_slice_focus () :=
+  let hyps := Control.hyps () in
+  let variables term :=
+    Control.once_plus (fun () => Some (ZesuSsz.Automation2.ContextCollection.zesu_context_variables term))
+      (fun _ => None) in
+  let seeds := match variables (Control.goal ()) with
+    | Some found => found
+    | None => Control.zero (Tactic_failure None) end in
+  let rec close found :=
+    let next := List.fold_left (fun found declaration =>
+      let (name, body, _) := declaration in
+      match body with
+      | Some value =>
+          if ZesuSsz.Automation2.ContextCollection.zesu_context_member name found then
+            match variables value with
+            | Some inner => ZesuSsz.Automation2.ContextCollection.zesu_context_union found inner
+            | None => found
+            end
+          else found
+      | None => found
+      end) found hyps in
+    if Int.equal (List.length next) (List.length found) then found else close next in
+  let seeds := List.filter zesu_byte_slice_value_word (close seeds) in
+  List.iter (fun declaration =>
+    let (name, body, ty) := declaration in
+    match body with
+    | Some _ => ()
+    | None =>
+        if ZesuSsz.Automation2.ContextCollection.zesu_context_proposition ty then
+          match variables ty with
+          | Some found =>
+              let words := List.filter zesu_byte_slice_value_word found in
+              if Int.equal (List.length words) 0 then ()
+              else if ZesuSsz.Automation2.ContextCollection.zesu_context_intersects words seeds then ()
+              else Control.once_plus (fun () => Std.clear [name]) (fun _ => ())
+          | None => ()
+          end
+        else ()
+    end) (List.rev hyps).
+
+(* One arithmetic side goal of a lend, on the focused context: `lia`
+   (budgeted), then the bound arithmetic. *)
+Ltac zesu_byte_slice_arith base :=
+  rewrite ?length_take ?length_drop;
+  ltac2:(zesu_byte_slice_focus ());
+  first [solve [lia] | solve [zesu_byte_slice_bound_arith_at base]].
+
 Ltac zesu_lend_interior_byte_slice :=
   zesu_expose_environment_alias;
   lazymatch goal with
@@ -316,22 +437,21 @@ Ltac zesu_lend_interior_byte_slice :=
                     let element := type of bytes in
                     let element := eval cbv in element in
                     lazymatch element with list (bv 8) => idtac end;
+                    zesu_byte_slice_related address base bytes;
                     assert_fails (unify address base);
                     let start := zesu_byte_slice_start address base in
                     let Haddress := fresh "HsliceAddress" in
                     let Hbounds := fresh "HsliceBounds" in
                     assert (Haddress : (base + Z.of_nat start = address)%Z)
-                      by (rewrite ?length_take ?length_drop;
-                          first [lia | bv_solve | zesu_byte_slice_bound_arith_at base]);
+                      by zesu_byte_slice_arith base;
                     assert (Hbounds : (start + count <= length bytes)%nat)
-                      by (rewrite ?length_take ?length_drop;
-                          first [lia | bv_solve | zesu_byte_slice_bound_arith_at base]);
+                      by zesu_byte_slice_arith base;
                     let Hsize := fresh "HsliceSize" in
                     let Hlength := fresh "HsliceLength" in
                     assert (Hsize : size = Z.of_nat count)
-                      by (first [reflexivity | lia | bv_solve
+                      by (first [reflexivity | solve [lia]
                                 | (rewrite Z2Nat.id;
-                                   [reflexivity | first [lia | bv_solve | zesu_byte_slice_bound_arith_at base]])]);
+                                   [reflexivity | zesu_byte_slice_arith base])]);
                     assert (Hlength :
                       size = Z.of_nat (length (take count (drop start bytes))))
                       by (rewrite Hsize length_take length_drop; lia);
