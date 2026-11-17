@@ -303,6 +303,25 @@ class Report(unittest.TestCase):
                       'c_head_gate @ final_pure 0.9/1, step WPasm_[] 0.3/1', text)
         self.assertIn('| c_head_gate @ final_pure | 0.9 | 0.00 | 1 | 1 |', text)
 
+    def test_old_backtracks(self):
+        # Before the backtrack records a backtrack into a succeeded wrapper printed altfail / step ok=0 /
+        # a second success with the start (ts_us) of its first success and all the time since.
+        line = ('@@T kind=%s site=%s stage=final_pure facts=-1 nodes=-1 goal_nodes=-1 ms=%d ok=%d cpu_ms=%d '
+                'ts_us=%d\n')
+        log = (line % ('alt', 'c_head_gate', 1, 1, 1, 5000000) + line % ('step', 'G', 2, 1, 2, 4000000) +
+               line % ('step', 'G', 902, 0, 902, 4000000) + line % ('altfail', 'c_head_gate', 901, 0, 901, 5000000) +
+               line % ('alt', 'c_multi', 1, 1, 1, 6000000) + line % ('alt', 'c_multi', 301, 1, 301, 6000000) +
+               line % ('altfail', 'c_other', 50, 0, 50, 7000000))
+        run = write_run(self.root, 'old', [dict(log=log, cpu=10.0, peak_gib=1.0, verdict='NOT-CLOSED'), None, None])
+        steps = R.load_run(run)['blocks'][0]['block']['step_summary']
+        self.assertEqual({name: (value['cpu'], value['calls'], value['failed'])
+                          for name, value in steps['alternatives'].items()},
+                         {'c_head_gate @ final_pure': (0.001, 1, 0), 'c_multi @ final_pure': (0.001, 1, 0),
+                          'c_other @ final_pure': (0.05, 1, 1)})
+        self.assertEqual({name: round(value['cpu'], 3) for name, value in steps['backtracks'].items()},
+                         {'step G': 0.9, 'c_head_gate @ final_pure': 0.9, 'c_multi @ final_pure': 0.3})
+        self.assertEqual((steps['steps'], steps['cpu']), (1, 0.0))
+
     def test_render_with_base(self):
         text = R.render(R.load_run(self.new), R.load_run(self.base))
         self.assertIn('### decodeItem 0164 (6ac4)', text)

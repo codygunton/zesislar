@@ -448,6 +448,30 @@ def run_end(record, measure, guard_text, caps):
     return 'killed (signal %d)' % -code
 
 
+def split_old_backtracks(steps):
+    """Logs written before the backtrack records (main up to 09c8683e5): when a later failure backtracked
+    into an alternative or step that had succeeded, its next record (altfail, step ok=0, or a further
+    success) kept the start (ts_us) of the success before it and counted all the time since. Such a
+    record becomes a backtrack (stepbacktrack) with the CPU and RSS growth past that success. Current
+    logs restart the start at every re-entry, so no record of theirs matches."""
+    last, out = {}, []
+    for record in steps:
+        if record['kind'] not in ('alt', 'altfail', 'step') or record['start_t'] is None:
+            out.append(record)
+            continue
+        key = (record['kind'] == 'step', record['site'], record['start_t'])
+        before = last.get(key)
+        if record['ok'] or before is not None:
+            last[key] = record
+        if before is None:
+            out.append(record)
+            continue
+        out.append(dict(record, kind='stepbacktrack' if record['kind'] == 'step' else 'backtrack', ok=False,
+                        cpu=max((record['cpu'] or 0) - (before['cpu'] or 0), 0.0),
+                        rss_before_kib=before['rss_after_kib']))
+    return out
+
+
 def step_summary(steps):
     """Step and alternative records (Telemetry.v zesu_tstep/zesu_talt) of one block: step count and CPU,
     per alternative and per step goal head their CPU, calls and failures, and per alternative or step
@@ -455,7 +479,7 @@ def step_summary(steps):
     row = lambda: {'cpu': 0.0, 'rss_growth_kib': 0, 'calls': 0, 'failed': 0}
     out = {'steps': 0, 'cpu': 0.0, 'backtrack_cpu': 0.0, 'alternatives': defaultdict(row), 'heads': defaultdict(row),
            'backtracks': defaultdict(row)}
-    for record in steps:
+    for record in split_old_backtracks(steps):
         if record['kind'] == 'step':
             out['steps'] += 1
             out['cpu'] += record['cpu'] or 0
