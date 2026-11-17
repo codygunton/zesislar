@@ -529,3 +529,70 @@ let () =
       if key <> [] then match failure_memo_current () with
         | Some table -> Hashtbl.replace table key ()
         | None -> ()))
+
+(* Switch memo (ZesuSsz/Automation2/SwitchDispatch.v). Within one zesu_run,
+   the instance search for a switch class gives the same answer every time:
+   the switch instances are global constants, and the global environment does
+   not change during a proof. Only a hypothesis whose conclusion is the switch
+   (a local override) can change the answer, so the memo is not used while
+   one is present, nor while a switch table (ZesuSwitchDispatchCache) is in
+   the context. The memo is active only inside a scope that empties it on
+   entry and on exit. *)
+let switch_memo_active = ref false
+let switch_memo_table : bool GlobRef.Map.t ref = ref GlobRef.Map.empty
+
+let switch_memo_scope active =
+  switch_memo_active := active;
+  switch_memo_table := GlobRef.Map.empty
+
+let switch_memo_key sigma switch =
+  match EConstr.kind sigma switch with
+  | Constr.Const (constant, _) -> Some (GlobRef.ConstRef constant)
+  | Constr.Ind (ind, _) -> Some (GlobRef.IndRef ind)
+  | _ -> None
+
+let rec switch_memo_conclusion sigma term =
+  match EConstr.kind sigma term with
+  | Constr.Prod (_, _, body) | Constr.LetIn (_, _, _, body) -> switch_memo_conclusion sigma body
+  | Constr.Cast (term, _, _) -> switch_memo_conclusion sigma term
+  | _ -> term
+
+(* True when a declaration's type concludes in the switch or is a switch
+   table. *)
+let switch_memo_blocked sigma cache switch decl =
+  let ty = Context.Named.Declaration.get_type decl in
+  EConstr.eq_constr_nounivs sigma (switch_memo_conclusion sigma ty) switch ||
+  (match EConstr.kind sigma ty with
+   | Constr.App (head, _) -> EConstr.eq_constr_nounivs sigma head cache
+   | _ -> false)
+
+(* 0: run the unmemoized lookup; 1: enabled; 2: disabled; 3: search and record. *)
+let switch_memo_lookup cache switch goal =
+  if not !switch_memo_active then 0 else
+  let sigma = Proofview.Goal.sigma goal in
+  match switch_memo_key sigma switch with
+  | None -> 0
+  | Some key ->
+      if List.exists (switch_memo_blocked sigma cache switch) (Proofview.Goal.hyps goal) then 0
+      else match GlobRef.Map.find_opt key !switch_memo_table with
+        | Some true -> 1
+        | Some false -> 2
+        | None -> 3
+
+let () =
+  let open Tac2externals in
+  let open Proofview.Notations in
+  let name tactic = { Tac2expr.mltac_plugin = "zesu-signature-gates.plugin"; mltac_tactic = tactic } in
+  let lift f = Proofview.tclLIFT (Proofview.NonLogical.make f) in
+  define (name "switch_memo_scope") (Tac2ffi.bool @-> tac Tac2ffi.unit)
+    (fun active -> lift (fun () -> switch_memo_scope active));
+  define (name "switch_memo_lookup") (Tac2ffi.constr @-> Tac2ffi.constr @-> tac Tac2ffi.int)
+    (fun cache switch -> Proofview.Goal.enter_one (fun goal ->
+      lift (fun () -> switch_memo_lookup cache switch goal)));
+  define (name "switch_memo_record") (Tac2ffi.constr @-> Tac2ffi.bool @-> tac Tac2ffi.unit)
+    (fun switch enabled -> Proofview.tclEVARMAP >>= fun sigma ->
+      lift (fun () ->
+        match switch_memo_key sigma switch with
+        | Some key when !switch_memo_active ->
+            switch_memo_table := GlobRef.Map.add key enabled !switch_memo_table
+        | _ -> ()))

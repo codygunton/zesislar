@@ -1275,17 +1275,19 @@ Ltac zesu_native_entry_tail :=
     ltac:(progress liAStep)
     ltac:(cbn [li_fst li_snd]; zesu_finish_pure_goal).
 
+(* One switch memo per run (SwitchDispatch.v). *)
 Ltac zesu_run :=
-  let switches := zesu_search_switches in
-  zesu_dispatch_search switches ltac:(fun _ =>
-    unshelve (repeat progress
-      (zesu_run_pass; try zesu_solve_instances; zesu_finish));
-    try zesu_solve_instances;
-    try zesu_finish_pure_resources;
-    try solve [zesu_array_bounds_if_enabled];
-    try zesu_finish;
-    try zesu_finish_final_pure);
-  try zesu_native_entry_tail.
+  zesu_switch_memo_scope ltac:(
+    let switches := zesu_search_switches in
+    zesu_dispatch_search switches ltac:(fun _ =>
+      unshelve (repeat progress
+        (zesu_run_pass; try zesu_solve_instances; zesu_finish));
+      try zesu_solve_instances;
+      try zesu_finish_pure_resources;
+      try solve [zesu_array_bounds_if_enabled];
+      try zesu_finish;
+      try zesu_finish_final_pure);
+    try zesu_native_entry_tail).
 
 Ltac zesu_expose_code_list instructions :=
   lazymatch instructions with

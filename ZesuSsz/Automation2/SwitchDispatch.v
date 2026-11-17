@@ -1,5 +1,6 @@
 From Coq Require Import Lists.List Bool.Bool.
 From Ltac2 Require Import Ltac2.
+Declare ML Module "zesu-signature-gates.plugin".
 Set Default Proof Mode "Classic".
 
 Class ZesuStepSwitchDispatch : Prop := {}.
@@ -29,12 +30,59 @@ Ltac zesu_cached_switch switch switches :=
       else zesu_cached_switch switch rest
   end.
 
-Ltac zesu_switch_enabled switch :=
+Ltac zesu_switch_enabled_unmemoized switch :=
   lazymatch goal with
   | _ : ZesuSwitchDispatchCache ?switches |- _ =>
       zesu_cached_switch switch switches
   | _ => let _ := constr:(_ : switch) in idtac
   end.
+
+(* Switch memo. Without a switch table in the context, every switch lookup is
+   an instance search in the proof context: about 2 ms, some 24 times per
+   pass-loop step. Inside `zesu_switch_memo_scope` (one zesu_run), the answer
+   of the first search for a switch is reused for later lookups of the same
+   switch. Same decisions: the switch instances are global constants and the
+   global environment does not change during a proof; the only local change
+   that can turn a switch on, a hypothesis that concludes in it, makes the
+   lookup search again (so a local override still wins), and so does a switch
+   table in the context. The scope empties the memo on entry and on exit
+   (success or failure); outside it the memo is never used. The memo lives in
+   the gates plugin because Ltac2 has no global mutable state. *)
+Ltac2 @ external zesu_switch_memo_scope_set : bool -> unit :=
+  "zesu-signature-gates.plugin" "switch_memo_scope".
+(* 0: no memo; 1: enabled; 2: disabled; 3: not yet searched. *)
+Ltac2 @ external zesu_switch_memo_lookup : constr -> constr -> int :=
+  "zesu-signature-gates.plugin" "switch_memo_lookup".
+Ltac2 @ external zesu_switch_memo_record : constr -> bool -> unit :=
+  "zesu-signature-gates.plugin" "switch_memo_record".
+
+(* The table marker is a global reference: no elaboration per lookup. *)
+Ltac2 zesu_switch_memo_enabled (switch : constr) (unmemoized : Ltac1.t) : unit :=
+  Control.enter (fun () =>
+    let state := zesu_switch_memo_lookup
+      (Env.instantiate reference:(ZesuSwitchDispatchCache)) switch in
+    if Int.equal state 1 then ()
+    else if Int.equal state 2 then Control.zero (Tactic_failure None)
+    else if Int.equal state 3 then
+      match Control.case (fun () => Ltac1.run unmemoized) with
+      | Val _ => zesu_switch_memo_record switch true
+      | Err error => zesu_switch_memo_record switch false; Control.zero error
+      end
+    else Ltac1.run unmemoized).
+
+Ltac2 zesu_switch_memo_run (tactic : Ltac1.t) : unit :=
+  zesu_switch_memo_scope_set true;
+  Control.plus (fun () => Ltac1.run tactic; zesu_switch_memo_scope_set false)
+    (fun error => zesu_switch_memo_scope_set false; Control.zero error).
+
+Ltac zesu_switch_memo_scope tactic :=
+  let scope := ltac2:(tactic |- zesu_switch_memo_run tactic) in
+  scope tactic.
+
+Ltac zesu_switch_enabled switch :=
+  let lookup := ltac2:(switch unmemoized |-
+    zesu_switch_memo_enabled (Option.get (Ltac1.to_constr switch)) unmemoized) in
+  lookup switch ltac:(idtac; zesu_switch_enabled_unmemoized switch).
 
 (* Count surviving active goals outside the proof context.
    Scoped unshelve places new shelf goals before the active suffix. *)
