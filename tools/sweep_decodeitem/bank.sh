@@ -5,7 +5,9 @@ set -uo pipefail
 here=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd -P)
 wt=$(python3 "$here/sweep_paths.py" repo) || exit 2
 name=$1 b=$2
-export PATH=${ISLARIS_REPO:-$HOME/islaris}/_opam/bin:$PATH
+islaris=${ISLARIS_REPO:-$HOME/islaris}
+export PATH=$wt/bin:$islaris/bin:$islaris/_opam/bin:$PATH
+unset OCAMLPATH
 export TMPDIR=${TMPDIR:-/home/cody/.cache/orch-checkfast-tmp}
 mkdir -p "$b/bank"; b=$(readlink -f "$b")
 cd "$wt" || exit 2
@@ -13,7 +15,7 @@ mapfile -t targets < <(grep -h '^Require Import ZesuSsz\.' tools/block/generated
 g() { env -u COORD_AGENT -u COORD_ROOT tools/resource_guard.sh batch "mq-bank-$name" -- \
   python3 tools/dune_trace_guard.py --canonical-build-dir -- \
   dune build --root . --build-dir "$b" --cache=enabled -j16 "$@"; }
-g @install && g "${targets[@]}"
+make --no-print-directory stock-native-indexes AGENT_BUILD_DIR="$b" && g @install && g "${targets[@]}"
 rc=$?
 if [ $rc = 0 ]; then
   python3 tools/block/residual_scale.py bank-args --build-dir "$b" --out "$b/bank" || rc=$?
