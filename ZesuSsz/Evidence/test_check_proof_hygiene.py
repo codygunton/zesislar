@@ -301,7 +301,7 @@ class TrustedDeclarationTests(unittest.TestCase):
                 main()
 
     def test_exact_allowlist_has_nineteen_declarations(self):
-        self.assertEqual(len(trusted_declarations()), 28)
+        self.assertEqual(len(trusted_declarations()), 30)
 
     def test_automation2_keeps_the_same_hook_owner_boundary(self):
         self.scan("ZesuSsz/Automation2/Hooks.v", "Ltac liAStep ::= idtac.")

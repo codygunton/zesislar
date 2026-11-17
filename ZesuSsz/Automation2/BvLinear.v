@@ -742,7 +742,7 @@ Fixpoint zesuModNorm (term : zesuModLin) : option zesuLinPoly :=
       | Some p, Some q => zesuPolyMul p q | _, _ => None end
   end.
 
-Definition zesuAddressModulus : Z := 2 ^ 64.
+Notation zesuAddressModulus := (2 ^ 64)%Z (only parsing).
 
 (* Modulo 2^64, address - low is a constant d <> 0 and size a constant s <= d.
    A region shorter than 2^64 then holds no address congruent to low + d. *)

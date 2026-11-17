@@ -111,7 +111,7 @@
     },
     {
       "path": "ZesuSsz/Automation2/Telemetry.v",
-      "statement": "Ltac2 @ external zesu_telemetry_caller : Ltac1.t -> string := \"zesu-signature-gates.plugin\" \"telemetry_caller\" ."
+      "statement": "Ltac2 @ external zesu_telemetry_caller : Ltac1 . t -> string := \"zesu-signature-gates.plugin\" \"telemetry_caller\" ."
     },
     {
       "path": "ZesuSsz/Automation2/Telemetry.v",
