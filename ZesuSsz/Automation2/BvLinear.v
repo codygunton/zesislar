@@ -694,3 +694,190 @@ Ltac zesu_bv_linear_refutes :=
         (apply not_eq_sym; apply (zesu_bv_unsigned_ne_of_cast (width := width) term value);
          zesu_bv_linear_bv))
   end.
+
+(* ---- Memory lookup membership pre-check. ---- *)
+
+(* isla's FindHypEqual hints ask `low <= address < low + size \/ low = address`
+   once per owned memory region during a lookup, through bv_solve. The check
+   below reads the two sides syntactically: a side is a root plus closed
+   offsets (integer offsets, or 64-bit offsets under bv_unsigned that wrap).
+   The address's local definitions are followed to their root; no other
+   definition is unfolded and no solver runs. *)
+
+(* The goal holds for a difference address - low only if it is 0 or in
+   [0, size); an unknown size admits every difference that is not negative. *)
+Definition zesuMemOutside (size : option Z) (delta : Z) : bool :=
+  negb (Z.eqb delta 0) &&
+  (Z.ltb delta 0 || match size with Some extent => Z.leb extent delta | None => false end).
+
+(* Both sides share one root r with 0 <= r < 2^64 (or both are constants). An
+   integer side is r + offset, a wrapping side is (r + offset) mod 2^64, that
+   is r + (offset mod 2^64) less 0 or 2^64. So address - low is the difference
+   of the (reduced) offsets, less 2^64 when the address wraps, plus 2^64 when
+   the region start wraps. The goal is false for every r when every such
+   difference is outside the region. *)
+Definition zesuMemRangeRefuted (size : option Z) (address : Z) (addressWraps : bool)
+    (low : Z) (lowWraps : bool) : bool :=
+  let modulus := 2 ^ 64 in
+  let delta := (if addressWraps then address mod modulus else address) -
+               (if lowWraps then low mod modulus else low) in
+  zesuMemOutside size delta &&
+  (negb addressWraps || zesuMemOutside size (delta - modulus)) &&
+  (negb lowWraps || zesuMemOutside size (delta + modulus)).
+
+Ltac zesu_mem_mentioned name := match goal with _ : context [name] |- _ => idtac end.
+Ltac zesu_mem_linked lhs rhs :=
+  match goal with H : context [lhs] |- _ => lazymatch type of H with context [rhs] => idtac end end.
+
+(* Syntactic closedness: no section variable, local definition or evar. *)
+Ltac2 rec zesu_mem_closed (term : constr) : bool :=
+  match Constr.Unsafe.kind term with
+  | Constr.Unsafe.Rel _ => true
+  | Constr.Unsafe.Sort _ => true
+  | Constr.Unsafe.Constant _ _ => true
+  | Constr.Unsafe.Ind _ _ => true
+  | Constr.Unsafe.Constructor _ _ => true
+  | Constr.Unsafe.Uint63 _ => true
+  | Constr.Unsafe.Float _ => true
+  | Constr.Unsafe.App head arguments =>
+      if zesu_mem_closed head then Array.for_all zesu_mem_closed arguments else false
+  | Constr.Unsafe.Cast body _ ty =>
+      if zesu_mem_closed body then zesu_mem_closed ty else false
+  | Constr.Unsafe.Prod binder body =>
+      if zesu_mem_closed (Constr.Binder.type binder) then zesu_mem_closed body else false
+  | Constr.Unsafe.Lambda binder body =>
+      if zesu_mem_closed (Constr.Binder.type binder) then zesu_mem_closed body else false
+  | Constr.Unsafe.LetIn binder value body =>
+      if zesu_mem_closed (Constr.Binder.type binder) then
+        if zesu_mem_closed value then zesu_mem_closed body else false
+      else false
+  | Constr.Unsafe.Case _ (result, _) _ scrutinee branches =>
+      if zesu_mem_closed result then
+        if zesu_mem_closed scrutinee then Array.for_all zesu_mem_closed branches else false
+      else false
+  | Constr.Unsafe.Proj _ _ body => zesu_mem_closed body
+  | _ => false
+  end.
+
+Ltac2 zesu_mem_body (hyps : (ident * constr option * constr) list) (term : constr) : constr option :=
+  match Constr.Unsafe.kind term with
+  | Constr.Unsafe.Var name =>
+      match List.find_opt (fun (local, _, _) => Ident.equal local name) hyps with
+      | Some (_, body, _) => body
+      | None => None
+      end
+  | _ => None
+  end.
+
+(* A side: (root, closed integer offset, wraps, names). The names are the
+   root and the local definitions followed to reach it. *)
+Ltac2 zesu_mem_atom (term : constr) := (Some term, constr:(0%Z), false, [term]).
+
+Ltac2 rec zesu_mem_bv_side (hyps : (ident * constr option * constr) list) (fuel : int)
+    (term : constr) :=
+  if zesu_mem_closed term then (None, constr:(bv_unsigned $term), false, []) else
+  let shifted inner step negative :=
+    let (root, offset, _, names) := zesu_mem_bv_side hyps fuel inner in
+    let offset := if negative then constr:(Z.sub $offset (bv_unsigned $step))
+                  else constr:(Z.add $offset (bv_unsigned $step)) in
+    (root, offset, true, names) in
+  lazy_match! term with
+  | bv_add ?inner ?step =>
+      if zesu_mem_closed step then shifted inner step false
+      else if zesu_mem_closed inner then shifted step inner false
+      else zesu_mem_atom term
+  | bv_sub ?inner ?step =>
+      if zesu_mem_closed step then shifted inner step true else zesu_mem_atom term
+  | _ =>
+      match (if Int.le fuel 0 then None else zesu_mem_body hyps term) with
+      | Some body =>
+          let (root, offset, wraps, names) := zesu_mem_bv_side hyps (Int.sub fuel 1) body in
+          (root, offset, wraps, term :: names)
+      | None => zesu_mem_atom term
+      end
+  end.
+
+Ltac2 rec zesu_mem_z_side (hyps : (ident * constr option * constr) list) (term : constr) :=
+  if zesu_mem_closed term then (None, term, false, []) else
+  let shifted inner step negative :=
+    let (root, offset, wraps, names) := zesu_mem_z_side hyps inner in
+    let offset := if negative then constr:(Z.sub $offset $step) else constr:(Z.add $offset $step) in
+    (root, offset, wraps, names) in
+  lazy_match! term with
+  | Z.add ?inner ?step =>
+      if zesu_mem_closed step then shifted inner step false
+      else if zesu_mem_closed inner then shifted step inner false
+      else zesu_mem_atom term
+  | Z.sub ?inner ?step =>
+      if zesu_mem_closed step then shifted inner step true else zesu_mem_atom term
+  | @bv_unsigned ?width ?inner =>
+      if Constr.equal width constr:(64%N) then zesu_mem_bv_side hyps 32 inner
+      else zesu_mem_atom term
+  | _ => zesu_mem_atom term
+  end.
+
+Ltac2 zesu_mem_bool (value : bool) : constr := if value then constr:(true) else constr:(false).
+
+(* Control.case, not Control.plus: a later failure must not backtrack into
+   the check and turn its success into a failure. *)
+Ltac2 zesu_mem_succeeds (check : unit -> unit) : bool :=
+  match Control.case check with
+  | Val _ => true
+  | Err _ => false
+  end.
+
+Ltac2 zesu_mem_mentions_any (names : constr list) : bool :=
+  List.exist (fun name => zesu_mem_succeeds (fun () =>
+    ltac1:(name |- zesu_mem_mentioned name) (Ltac1.of_constr name))) names.
+
+Ltac2 zesu_mem_linked_any (left : constr list) (right : constr list) : bool :=
+  List.exist (fun lhs => List.exist (fun rhs => zesu_mem_succeeds (fun () =>
+    ltac1:(lhs rhs |- zesu_mem_linked lhs rhs) (Ltac1.of_constr lhs) (Ltac1.of_constr rhs)))
+    right) left.
+
+(* True when the membership goal fails at once: the sides share a root (or
+   are both constants) and the offsets put the address outside the region for
+   every value of the root; or the roots differ and no hypothesis mentions a
+   name of each side (a constant side needs only a hypothesis on the other). *)
+Ltac2 zesu_mem_range_refuted (low : constr) (address : constr) (size : constr) : bool :=
+  let hyps := Control.hyps () in
+  let (low_root, low_offset, low_wraps, low_names) := zesu_mem_z_side hyps low in
+  let (address_root, address_offset, address_wraps, address_names) :=
+    zesu_mem_z_side hyps address in
+  let shared :=
+    match low_root, address_root with
+    | None, None => true
+    | Some lhs, Some rhs => Constr.equal lhs rhs
+    | _, _ => false
+    end in
+  if shared then
+    let extent := Std.eval_vm None size in
+    let extent := if zesu_mem_closed extent then constr:(Some $extent) else constr:(@None Z) in
+    let address_wraps := zesu_mem_bool address_wraps in
+    let low_wraps := zesu_mem_bool low_wraps in
+    Constr.equal
+      (Std.eval_vm None constr:(zesuMemRangeRefuted $extent $address_offset $address_wraps
+                                  $low_offset $low_wraps))
+      constr:(true)
+  else
+    match low_root, address_root with
+    | None, _ => Bool.neg (zesu_mem_mentions_any address_names)
+    | _, None => Bool.neg (zesu_mem_mentions_any low_names)
+    | _, _ => Bool.neg (zesu_mem_linked_any address_names low_names)
+    end.
+
+(* Succeed, goal unchanged, when the goal is a memory lookup's membership side
+   condition that zesu_mem_range_refuted rejects. Other goals fail. *)
+Ltac zesu_mem_range_refutes :=
+  lazymatch goal with
+  | |- ((Z.le ?low ?address /\ Z.lt ?address' (Z.add ?low' ?size)) \/ @eq Z ?low'' ?address'') =>
+      constr_eq low low'; constr_eq low low''; constr_eq address address';
+      constr_eq address address'';
+      tryif has_evar (low, address, size) then fail 0 else idtac;
+      let check := ltac2:(low address size |-
+        if zesu_mem_range_refuted
+             (Option.get (Ltac1.to_constr low)) (Option.get (Ltac1.to_constr address))
+             (Option.get (Ltac1.to_constr size))
+        then () else Control.zero (Tactic_failure None)) in
+      check low address size
+  end.
