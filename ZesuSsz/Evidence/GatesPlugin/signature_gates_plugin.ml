@@ -230,10 +230,15 @@ let () =
         (Proofview.Goal.env goal) (Proofview.Goal.sigma goal))
 
 (* Solver telemetry (ZesuSsz/Automation2/Telemetry.v). ZESU_TELEMETRY=1 in
-   the environment switches it on; the variable is read once. Each effect
-   runs when the tactic runs, not when it is defined. *)
+   the environment switches it on; ZESU_TELEMETRY_CALLERS=1 besides adds the
+   Ltac caller of each call. The variables are read once. Each effect runs
+   when the tactic runs, not when it is defined. *)
 let telemetry_on =
   lazy (match Sys.getenv_opt "ZESU_TELEMETRY" with Some "1" -> true | _ -> false)
+
+let telemetry_callers_on =
+  lazy (Lazy.force telemetry_on &&
+        match Sys.getenv_opt "ZESU_TELEMETRY_CALLERS" with Some "1" -> true | _ -> false)
 
 let telemetry_now f = Proofview.tclLIFT (Proofview.NonLogical.make f)
 
@@ -258,17 +263,144 @@ type telemetry_sample = { wall : int; cpu : int; rss : int }
 let telemetry_sample () =
   { wall = telemetry_clock_us (); cpu = telemetry_cpu_us (); rss = telemetry_rss_kb () }
 
-let telemetry_emit kind site facts nodes goal_nodes (start : telemetry_sample) ok =
+(* The nodes of a term as LinearFirstLia's budget walk (zesu_linear_remaining)
+   counts them: an application costs 2 for a constant, constructor, inductive
+   or variable head and 1 plus its nodes for any other head; a product,
+   abstraction, let or cast costs 1 plus its parts; every other term 1. In
+   OCaml it costs about a hundredth of the Ltac2 walk, which ran on every call. *)
+let rec telemetry_term_nodes sigma term =
+  let nodes = telemetry_term_nodes sigma in
+  match EConstr.kind sigma term with
+  | Constr.App (head, arguments) ->
+      let head_nodes = match EConstr.kind sigma head with
+        | Constr.Const _ | Constr.Construct _ | Constr.Ind _ | Constr.Var _ -> 2
+        | _ -> 1 + nodes head in
+      Array.fold_left (fun sum argument -> sum + nodes argument) head_nodes arguments
+  | Constr.Prod (_, typ, body) | Constr.Lambda (_, typ, body) -> 1 + nodes typ + nodes body
+  | Constr.LetIn (_, value, typ, body) -> 1 + nodes typ + nodes value + nodes body
+  | Constr.Cast (value, _, typ) -> 1 + nodes value + nodes typ
+  | _ -> 1
+
+let telemetry_is_prop env sigma typ =
+  try Retyping.get_sort_family_of env sigma typ == Sorts.InProp
+  with error when CErrors.noncritical error -> false
+
+(* (facts, nodes, goal_nodes): the Prop hypotheses without a body, their nodes,
+   and the goal's nodes. *)
+let telemetry_goal_sizes goal =
+  let env = Proofview.Goal.env goal and sigma = Proofview.Goal.sigma goal in
+  let facts, nodes = List.fold_left (fun (facts, nodes) declaration ->
+      match declaration with
+      | Context.Named.Declaration.LocalAssum (_, typ) when telemetry_is_prop env sigma typ ->
+          (facts + 1, nodes + telemetry_term_nodes sigma typ)
+      | _ -> (facts, nodes)) (0, 0) (Proofview.Goal.hyps goal) in
+  [facts; nodes; telemetry_term_nodes sigma (Proofview.Goal.concl goal)]
+
+(* The Ltac call stack of a closure: its frames of named tactics and tactic
+   notations, innermost first, each with the module and line it was called
+   from, joined by `>` (calls of local tactic variables such as a wrapper's
+   `run` or a `closer` argument are left out). Coq records the stack only
+   under `Ltac Backtrace`, which caller mode switches on. *)
+let telemetry_tacvalue_tag : Ltac_plugin.Taccoerce.tacvalue Geninterp.Val.typ =
+  match Geninterp.val_tag (Genarg.topwit Ltac_plugin.Taccoerce.wit_tacvalue) with
+  | Geninterp.Val.Base tag -> tag
+
+let telemetry_stack value =
+  match value with
+  | Geninterp.Val.Dyn (tag, closure) ->
+      begin match Geninterp.Val.eq tag telemetry_tacvalue_tag with
+      | Some Util.Refl ->
+          begin match closure with
+          | Ltac_plugin.Taccoerce.VFun (_, (stack, _), _, _, _, _) -> stack
+          | Ltac_plugin.Taccoerce.VRec _ -> []
+          end
+      | None -> []
+      end
+
+let telemetry_frame (loc, call) =
+  let open Ltac_plugin.Tacexpr in
+  let name = match call with
+    | LtacNameCall kn | LtacNotationCall kn -> Some (Label.to_string (KerName.label kn))
+    | LtacVarCall _ | LtacMLCall _ | LtacAtomCall _ | LtacConstrInterp _ -> None in
+  let place = match loc with
+    | Some { Loc.fname = Loc.InFile { dirpath; file }; line_nb; _ } ->
+        let unit = match dirpath with
+          | Some path -> List.hd (List.rev (String.split_on_char '.' path))
+          | None -> Filename.remove_extension (Filename.basename file) in
+        Printf.sprintf "@%s:%d" unit line_nb
+    | _ -> "" in
+  Option.map (fun name -> String.map (fun c -> if c = ' ' then '_' else c) (name ^ place)) name
+
+let telemetry_caller_frames = 8
+
+let telemetry_frames value =
+  (match Goptions.get_option_value ["Ltac"; "Backtrace"] with
+   | Some read when read () <> Goptions.BoolValue true ->
+       Goptions.set_bool_option_value ["Ltac"; "Backtrace"] true
+   | _ -> ());
+  let frames = List.filter_map telemetry_frame (telemetry_stack value) in
+  match List.filteri (fun index _ -> index < telemetry_caller_frames) frames with
+  | [] -> "-"
+  | frames -> String.concat ">" frames
+
+(* A coarse class of a goal: its relation or connective by shortest name, an
+   equality with its carrier's head, connectives with their parts, three
+   levels deep. *)
+let telemetry_global_name reference =
+  try Libnames.string_of_qualid (Nametab.shortest_qualid_of_global Id.Set.empty reference)
+  with Not_found -> "?"
+
+let rec telemetry_shape env sigma depth term =
+  if depth <= 0 then "_" else
+  let shape = telemetry_shape env sigma (depth - 1) in
+  match EConstr.kind sigma term with
+  | Constr.Prod (_, _, body) -> "forall(" ^ shape body ^ ")"
+  | Constr.App (head, arguments) ->
+      begin match EConstr.kind sigma head with
+      | Constr.Const (constant, _) ->
+          let name = telemetry_global_name (GlobRef.ConstRef constant) in
+          if name = "not" && Array.length arguments = 1 then "not(" ^ shape arguments.(0) ^ ")"
+          else name
+      | Constr.Ind (inductive, _) ->
+          let name = telemetry_global_name (GlobRef.IndRef inductive) in
+          let arity = Array.length arguments in
+          if name = "eq" && arity = 3 then
+            "eq:" ^ (match EConstr.kind sigma (fst (EConstr.decompose_app sigma arguments.(0))) with
+                     | Constr.Const (constant, _) -> telemetry_global_name (GlobRef.ConstRef constant)
+                     | Constr.Ind (inductive, _) -> telemetry_global_name (GlobRef.IndRef inductive)
+                     | _ -> "?")
+          else if List.mem name ["and"; "or"; "iff"] && arity = 2 then
+            name ^ "(" ^ shape arguments.(0) ^ "," ^ shape arguments.(1) ^ ")"
+          else name
+      | Constr.Var _ -> "var"
+      | _ -> "app"
+      end
+  | Constr.Const (constant, _) -> telemetry_global_name (GlobRef.ConstRef constant)
+  | Constr.Ind (inductive, _) -> telemetry_global_name (GlobRef.IndRef inductive)
+  | Constr.Var _ -> "var"
+  | _ -> "other"
+
+let telemetry_goal_shape goal =
+  let shape = telemetry_shape (Proofview.Goal.env goal) (Proofview.Goal.sigma goal) 3
+      (Proofview.Goal.concl goal) in
+  String.map (fun c -> if c = ' ' then '_' else c) shape
+
+let telemetry_emit kind site caller sizes (start : telemetry_sample) ok =
   let stop = telemetry_sample () in
+  let facts, nodes, goal_nodes = match sizes with
+    | [facts; nodes; goal_nodes] -> facts, nodes, goal_nodes
+    | _ -> -1, -1, -1 in
   Printf.printf
     "@@T kind=%s site=%s stage=%s facts=%d nodes=%d goal_nodes=%d ms=%.3f ok=%d \
-     cpu_ms=%.3f ts_us=%d rss0_kb=%d rss1_kb=%d\n%!"
+     cpu_ms=%.3f ts_us=%d rss0_kb=%d rss1_kb=%d%s\n%!"
     kind site !telemetry_stage facts nodes goal_nodes
     (float_of_int (stop.wall - start.wall) /. 1000.) (if ok then 1 else 0)
     (float_of_int (stop.cpu - start.cpu) /. 1000.) start.wall start.rss stop.rss
+    (if Lazy.force telemetry_callers_on then " caller=" ^ caller else "")
 
 let () =
   let open Tac2externals in
+  let open Proofview.Notations in
   let name tactic = { Tac2expr.mltac_plugin = "zesu-signature-gates.plugin"; mltac_tactic = tactic } in
   define (name "telemetry_enabled") (Tac2ffi.unit @-> ret Tac2ffi.bool)
     (fun () -> Lazy.force telemetry_on);
@@ -276,12 +408,26 @@ let () =
   define (name "telemetry_sample") (Tac2ffi.unit @-> tac (Tac2ffi.list Tac2ffi.int))
     (fun () -> telemetry_now (fun () ->
       let s = telemetry_sample () in [s.wall; s.cpu; s.rss]));
+  (* (facts, nodes, goal_nodes) of the single focused goal; -1 each off it. *)
+  define (name "telemetry_sizes") (Tac2ffi.unit @-> tac (Tac2ffi.list Tac2ffi.int))
+    (fun () -> Proofview.Goal.goals >>= function
+      | [goal] -> goal >>= fun goal -> Proofview.tclUNIT (telemetry_goal_sizes goal)
+      | _ -> Proofview.tclUNIT [-1; -1; -1]);
+  (* Caller mode: the caller frames of an Ltac1 closure and the shape of the
+     single focused goal, as `<frames> shape=<shape>`; `-` outside it. *)
+  define (name "telemetry_caller") (Tac2ffi.repr_ext Tac2ffi.val_ltac1 @-> tac Tac2ffi.string)
+    (fun value ->
+      if not (Lazy.force telemetry_callers_on) then Proofview.tclUNIT "-" else
+      (Proofview.Goal.goals >>= function
+        | [goal] -> goal >>= fun goal -> Proofview.tclUNIT (telemetry_goal_shape goal)
+        | _ -> Proofview.tclUNIT "-") >>= fun shape ->
+      telemetry_now (fun () -> telemetry_frames value ^ " shape=" ^ shape));
   define (name "telemetry_emit")
-    (Tac2ffi.string @-> Tac2ffi.string @-> Tac2ffi.int @-> Tac2ffi.int @-> Tac2ffi.int @->
+    (Tac2ffi.string @-> Tac2ffi.string @-> Tac2ffi.string @-> Tac2ffi.list Tac2ffi.int @->
      Tac2ffi.list Tac2ffi.int @-> Tac2ffi.bool @-> tac Tac2ffi.unit)
-    (fun kind site facts nodes goal_nodes start ok -> telemetry_now (fun () ->
+    (fun kind site caller sizes start ok -> telemetry_now (fun () ->
       match start with
-      | [wall; cpu; rss] -> telemetry_emit kind site facts nodes goal_nodes { wall; cpu; rss } ok
+      | [wall; cpu; rss] -> telemetry_emit kind site caller sizes { wall; cpu; rss } ok
       | _ -> ()));
   (* Sets the stage and returns the previous one. *)
   define (name "telemetry_stage_swap") (Tac2ffi.string @-> tac Tac2ffi.string)

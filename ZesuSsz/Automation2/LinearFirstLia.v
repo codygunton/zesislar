@@ -288,11 +288,6 @@ Ltac2 zesu_linear_clear_unrelated () :=
     | Err _ => ()
     end) unrelated.
 
-(* Telemetry counts nodes and facts with this file's walk. *)
-Ltac2 Set zesu_telemetry_nodes := fun term =>
-  Int.sub 4611686018427387903 (zesu_linear_remaining 4611686018427387903 term).
-Ltac2 Set zesu_telemetry_is_prop := zesu_linear_is_prop.
-
 (* The library solver on the facts linked to the goal. *)
 Ltac zesu_lia_linked_facts :=
   let run_zify := ltac2:(tac |- zesu_telemetry_ltac1 "zify" "zesu_lia_linked_facts" tac) in

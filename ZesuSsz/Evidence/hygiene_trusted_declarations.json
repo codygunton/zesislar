@@ -107,7 +107,15 @@
     },
     {
       "path": "ZesuSsz/Automation2/Telemetry.v",
-      "statement": "Ltac2 @ external zesu_telemetry_emit : string -> string -> int -> int -> int -> int list -> bool -> unit := \"zesu-signature-gates.plugin\" \"telemetry_emit\" ."
+      "statement": "Ltac2 @ external zesu_telemetry_sizes : unit -> int list := \"zesu-signature-gates.plugin\" \"telemetry_sizes\" ."
+    },
+    {
+      "path": "ZesuSsz/Automation2/Telemetry.v",
+      "statement": "Ltac2 @ external zesu_telemetry_caller : Ltac1.t -> string := \"zesu-signature-gates.plugin\" \"telemetry_caller\" ."
+    },
+    {
+      "path": "ZesuSsz/Automation2/Telemetry.v",
+      "statement": "Ltac2 @ external zesu_telemetry_emit : string -> string -> string -> int list -> int list -> bool -> unit := \"zesu-signature-gates.plugin\" \"telemetry_emit\" ."
     },
     {
       "path": "ZesuSsz/Automation2/Telemetry.v",
