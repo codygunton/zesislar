@@ -755,13 +755,28 @@ Definition zesuAddressRangeRefutedMod (low address size : zesuModLin) : bool :=
   | _, _ => false
   end.
 
-Ltac2 rec zesu_modlin_reify (state : zesu_bvlin_state) (term : constr) : constr :=
+(* `locals` are the context's local definitions. A local definition in an
+   atom position reifies as its body, at most `fuel` definitions deep. Only
+   linear positions unfold: unfolding every local of a context first cost
+   184 s in one failing call on decodeItem 6960. *)
+Ltac2 rec zesu_modlin_reify (locals : (ident * constr) list) (fuel : int)
+    (state : zesu_bvlin_state) (term : constr) : constr :=
   let width := constr:(64%N) in
   let atom () :=
     let (position, atoms) := zesu_bvlin_lookup (state.(z_atoms)) term in
     state.(z_atoms) := atoms;
     let index := zesu_bvlin_nat position in constr:(MLAtom $index) in
-  let reify := zesu_modlin_reify state in
+  let reify := zesu_modlin_reify locals fuel state in
+  let local () :=
+    match Constr.Unsafe.kind term with
+    | Constr.Unsafe.Var name =>
+        if Int.le fuel 0 then None else
+        match List.find_opt (fun (local, _) => Ident.equal local name) locals with
+        | Some (_, body) => Some (zesu_modlin_reify locals (Int.sub fuel 1) state body)
+        | None => None
+        end
+    | _ => None
+    end in
   lazy_match! term with
   | Z.add ?lhs ?rhs => let l := reify lhs in let r := reify rhs in constr:(MLAdd $l $r)
   | Z.sub ?lhs ?rhs => let l := reify lhs in let r := reify rhs in constr:(MLSub $l $r)
@@ -781,29 +796,15 @@ Ltac2 rec zesu_modlin_reify (state : zesu_bvlin_state) (term : constr) : constr 
       else atom ()
   | @BV _ ?value _ => if zesu_bvlin_closed value then constr:(MLLit $value) else atom ()
   | _ =>
-      if Bool.and (Constr.equal (Constr.type term) constr:(Z)) (zesu_bvlin_closed term)
-      then constr:(MLLit $term) else atom ()
+      match local () with
+      | Some reified => reified
+      | None =>
+          if Bool.and (Constr.equal (Constr.type term) constr:(Z)) (zesu_bvlin_closed term)
+          then constr:(MLLit $term) else atom ()
+      end
   end.
 
-(* The term with the local definitions of the context unfolded. *)
-Ltac2 zesu_modlin_unfold_locals (term : constr) : constr :=
-  let locals := List.fold_left (fun found declaration =>
-    let (name, body, _) := declaration in
-    match body with
-    | Some _ => (Std.VarRef name, Std.AllOccurrences) :: found
-    | None => found
-    end) [] (Control.hyps ()) in
-  let rec loop current fuel :=
-    if Int.equal fuel 0 then current else
-    let next := Std.eval_unfold locals current in
-    if Constr.equal next current then current else loop next (Int.sub fuel 1) in
-  if Int.equal (List.length locals) 0 then term
-  else Control.plus (fun () => loop term 16) (fun _ => term).
-
 Ltac2 zesu_bvlin_address_range_refuted (low : constr) (address : constr) (size : constr) :=
-  let low := zesu_modlin_unfold_locals low in
-  let address := zesu_modlin_unfold_locals address in
-  let size := zesu_modlin_unfold_locals size in
   let integral () :=
     let state := { bv_atoms := []; bv_literals := []; z_atoms := [] } in
     let width := constr:(64%N) in
@@ -812,10 +813,17 @@ Ltac2 zesu_bvlin_address_range_refuted (low : constr) (address : constr) (size :
     let s := zesu_bvlin_reify_z width state size in
     Constr.equal (Std.eval_vm None constr:(zesuAddressRangeRefuted $l $a $s)) constr:(true) in
   let modular () :=
+    let locals := List.fold_left (fun found declaration =>
+      let (name, body, _) := declaration in
+      match body with
+      | Some body => (name, body) :: found
+      | None => found
+      end) [] (Control.hyps ()) in
     let state := { bv_atoms := []; bv_literals := []; z_atoms := [] } in
-    let l := zesu_modlin_reify state low in
-    let a := zesu_modlin_reify state address in
-    let s := zesu_modlin_reify state size in
+    let reify := zesu_modlin_reify locals 16 state in
+    let l := reify low in
+    let a := reify address in
+    let s := reify size in
     Constr.equal (Std.eval_vm None constr:(zesuAddressRangeRefutedMod $l $a $s)) constr:(true) in
   if integral () then () else if modular () then () else Control.zero (Tactic_failure None).
 
