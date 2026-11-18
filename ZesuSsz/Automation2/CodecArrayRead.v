@@ -17,7 +17,17 @@ Class ZesuStepCodecArrayRead : Prop := {}.
 
 (* Match the existing owned byte image. The public range proof runs after
    cast normalization, so it never uses a stale payload argument. *)
+Ltac zesu_codec_array_read_lookup_goal :=
+  lazymatch goal with
+  | |- environments.envs_entails _
+      (find_in_context (FindMemMapsTo _) ?continuation) =>
+      lazymatch continuation with
+      | context [@bi_forall _ (bv _) _] => idtac
+      end
+  end.
+
 Ltac zesu_codec_array_find :=
+  zesu_codec_array_read_lookup_goal;
   zesu_switch_enabled constr:(ZesuStepCodecArrayRead);
   ZesuSsz.Automation2.ResourceGroups.zesu_expose_environment_alias;
   lazymatch goal with
@@ -137,10 +147,11 @@ Ltac zesu_codec_array_read_image image :=
 (* This rule introduces the existing full-array wand. It does not execute the
    next trace, discard an owner, or change the surrounding continuation. *)
 Ltac zesu_codec_array_read_consumer :=
-  zesu_switch_enabled constr:(ZesuStepCodecArrayRead);
   lazymatch goal with
-  | |- environments.envs_entails _ (@bi_forall _ (bv _) _) => idtac
+  | |- environments.envs_entails _
+      (∀ _ : bv _, ⌜_⌝ -∗ ⌜_⌝ -∗ _ -∗ _)%I => idtac
   end;
+  zesu_switch_enabled constr:(ZesuStepCodecArrayRead);
   let value := fresh "codecValue" in
   let image := fresh "HcodecImage" in
   let loaded := fresh "HcodecLoaded" in
