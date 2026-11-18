@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Generated.DecodeItem.Entries.
+Require Export ZesuSsz.Compliance.DecodeItemDomainProjectionHints.
 Require Export ZesuSsz.Contracts.DecodeItemCallSpec.
 Require Export ZesuSsz.Generated.DecodeItem.BootstrapRegistrations.
 Require Export ZesuSsz.Generated.DecodeItem.Registrations.

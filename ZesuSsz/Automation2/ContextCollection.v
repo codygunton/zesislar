@@ -1,5 +1,6 @@
 Require Import isla.riscv64.riscv64.
 Require Import ZesuSsz.Automation2.SwitchDispatch.
+Require Import ZesuSsz.Automation2.PureFactProjection.
 From Ltac2 Require Import Ltac2.
 Set Default Proof Mode "Classic".
 
@@ -116,7 +117,7 @@ Ltac2 zesu_context_prune () :=
     end) (List.rev hyps).
 
 Ltac zesu_context_prune_goal := ltac2:(zesu_context_prune ()).
-Ltac zesu_context_filtered closer := first [solve [zesu_context_prune_goal; closer] | closer].
+Ltac zesu_context_filtered closer := zesu_projected_context closer.
 
 Ltac2 zesu_context_collect_live (roots : constr list) :=
   let hyps := Control.hyps () in

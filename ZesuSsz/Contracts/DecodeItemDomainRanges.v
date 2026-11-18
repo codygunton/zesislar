@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.PureFacts.
+Require Export ZesuSsz.Compliance.DecodeItemDomainProjectionHints.
 Require Import ZesuSsz.Contracts.RlpDecodeItemContract.
 From Coq Require Import ZArith.ZArith Lia.
 

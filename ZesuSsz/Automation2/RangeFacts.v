@@ -3,6 +3,7 @@ From stdpp.bitvector Require Import definitions tactics.
 From Ltac2 Require Import Ltac2 Ref List Int String Ident.
 Require Import ZesuSsz.Automation2.VmClosed.
 Require Import ZesuSsz.Automation2.SearchBudget.
+Require Import ZesuSsz.Automation2.PureFactProjection.
 Set Default Proof Mode "Classic".
 Local Open Scope Z_scope.
 Ltac zesu_range_mentions values pointer T :=
@@ -159,6 +160,7 @@ Ltac2 zesu_range_atom_is_open atom :=
    false) (fun _ => true)).
 (* Each hypothesis has one cached projection. Each selected fact is committed once. *)
 Ltac2 zesu_range_collect values pointer root :=
+ PureFactProjection.zesu_project_pure_facts ();
  let original := Control.hyps () in
  let cached := List.map (fun h => let (name, _, typ) := h in
    (name, typ, zesu_range_syntax typ, Ref.ref None)) original in
