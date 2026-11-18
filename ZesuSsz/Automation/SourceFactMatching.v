@@ -60,7 +60,7 @@ Ltac zesu_source_fact := first [solve [assumption] | solve [reflexivity] |
       rewrite (Z_to_bv_small width value range); clear range;
       zesu_source_fact
   end |
-  solve [BitvectorFacts.zesu_source_unsigned_bound] |
+
   solve [BitvectorFacts.zesu_source_signed_lower] |
   solve [zesu_source_signed_lookup_lower] |
   solve [zesu_source_signed_lookup] |
