@@ -232,11 +232,11 @@ Ltac zesu_finish_known_list_shape :=
       | |- context[take ?n ?xs] =>
         let Htake := fresh "Htake" in
         assert (Htake : (length xs <= n)%nat) by
-          (zesu_normalize_known_list_lengths; lia);
+          (zesu_normalize_known_list_lengths; SearchBudget.zesu_solve_selected ("finish.known_list.take_length"%string) ltac:(lia));
         rewrite (take_ge xs n Htake); clear Htake
       end; reflexivity] |
-    solve [zesu_normalize_known_list_lengths; lia] |
-    solve [bv_solve]].
+    solve [zesu_normalize_known_list_lengths; SearchBudget.zesu_solve_selected ("finish.known_list.length"%string) ltac:(lia)] |
+    solve [SearchBudget.zesu_solve_selected ("finish.known_list.bitvector"%string) ltac:(bv_solve)]].
 
 Ltac zesu_finish_selectors :=
   first [zesu_array_region_selection_if_enabled | lazymatch goal with
@@ -358,8 +358,8 @@ Ltac zesu_finish_v1 :=
   | |- environments.envs_entails _ _ => idtac
   | _ =>
       try (zesu_saturate_alignment);
-      try zesu_finish_lia;
-      try (bv_solve)
+      try (SearchBudget.zesu_solve_selected ("finish.v1.lia_tail"%string) ltac:(zesu_finish_lia));
+      try (SearchBudget.zesu_solve_selected ("finish.v1.bitvector_tail"%string) ltac:(bv_solve))
   end;
   try (zesu_finish_little_endian_if_closed);
   try solve [SymbolicByteCodec.zesu_symbolic_byte_codec].
