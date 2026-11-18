@@ -257,13 +257,14 @@ def _released(reference, entry, data, reader, role, kind, source):
         raise ValueError('The staging transport has no reusable workload identity.')
     if selected['role'] != role or selected['run_kind'] != kind or (selected['workload'],selected['input_workload']) != source:
         raise ValueError('The staging exit has another workload.')
-    key = value['claim_key']; owner = data['shell_claim_owners'][key]
+    from shell_archive import released_records
+    key = value['claim_key']; owner, shell_release = released_records(data, key, reader)
     attestation = owner['guard_attestation']
     if (owner != value['owner_record'] or owner['guard_source'] != value['guard_source']
             or attestation['actor'] != value['scope_actor'] or attestation['leaf'] != value['scope']
             or data['fixed_claims'].get(key) != 0
-            or data['shell_releases'][key]['owner'] != owner['owner']
-            or data['shell_releases'][key]['marker'] != owner['marker']
+            or shell_release['owner'] != owner['owner']
+            or shell_release['marker'] != owner['marker']
             or Path(owner['marker']).exists() or Path(value['scope']['scope']).exists()
             or value.get('payload_process_group_closed') is not True
             or not all(memory.ended_process(reader, actor) for actor in
