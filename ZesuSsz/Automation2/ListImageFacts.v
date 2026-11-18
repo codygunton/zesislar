@@ -1,5 +1,6 @@
 From Coq Require Import List Lia.
 From stdpp Require Import list.
+Require Import ZesuSsz.Automation2.LiaHook.
 
 Set Default Proof Using "Type".
 
@@ -79,4 +80,4 @@ Create HintDb zesu_image.
 Global Hint Rewrite @image_nth_error_lookup @length_insert : zesu_image.
 Global Hint Rewrite @image_prefix_overwrite_after @image_prefix_overwrite_length
   @image_splice_lookup_absolute @image_splice_lookup_before @image_splice_lookup_after
-  @image_splice_length @take_insert @drop_insert_gt using (simpl; lia) : zesu_image.
+  @image_splice_length @take_insert @drop_insert_gt using (simpl; zesu_lia) : zesu_image.

@@ -5,6 +5,7 @@ Require Import ZesuSsz.Automation2.Hooks.
 From stdpp Require Import bitvector.definitions bitvector.tactics list.
 From Coq Require Import ZArith.ZArith NArith.NArith Lia Lists.List.
 Require ZesuSsz.Automation2.VmClosed.
+Require Import ZesuSsz.Automation2.LiaHook.
 Local Open Scope Z_scope.
 
 (* Replace a sign-extended word's exact low-bit mask with its unsigned cast.
@@ -33,7 +34,7 @@ Ltac zesu_mask_sign_extend_presentation :=
           (vm_compute; reflexivity);
         assert (Hrange : 0 <= bv_unsigned value < bv_modulus width) by
           (pose proof (bv_unsigned_in_range low value);
-           pose proof (bv_modulus_le_mono low width Hwidth); lia);
+           pose proof (bv_modulus_le_mono low width Hwidth); zesu_lia);
         pose proof (ZesuSsz.Automation2.BitvectorFacts.zesu_guard_mask_signed_value
           width low value mask Hwidth Hmask) as Hnormalized;
         rewrite bv_and_unsigned in Hnormalized;
@@ -50,4 +51,4 @@ Ltac zesu_mask_sign_extend_presentation :=
         clear Hequal Hnormalized Hrange Hmask Hwidth
       end
   end;
-  first [reflexivity | lia].
+  first [reflexivity | zesu_lia].

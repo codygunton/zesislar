@@ -4,6 +4,7 @@ Require Import ZesuSsz.Automation2.BitvectorFacts.
 Require Import ZesuSsz.Automation2.Hooks.
 From stdpp Require Import bitvector.definitions bitvector.tactics.
 From Coq Require Import ZArith.ZArith Lia.
+Require Import ZesuSsz.Automation2.LiaHook.
 Local Open Scope Z_scope.
 
 (* Pure evidence transport only. No search, address, or contract is encoded. *)
@@ -18,6 +19,6 @@ Ltac zesu_unsigned_branch_evidence :=
           let view := fresh "HunsignedBranch" in
           pose proof Hbranch as view;
           progress (rewrite !ZesuSsz.Automation2.BitvectorFacts.zesu_signed_zero_extend_64_128 in view);
-          first [exact view | solve [lia] | solve [bv_solve]]
+          first [exact view | solve [zesu_lia] | solve [bv_solve]]
       end
   end.

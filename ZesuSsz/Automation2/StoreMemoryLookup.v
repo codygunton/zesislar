@@ -4,6 +4,7 @@ Require Import ZesuSsz.Automation2.BitvectorFacts.
 Require Import ZesuSsz.Automation2.Hooks.
 From stdpp Require Import bitvector.definitions bitvector.tactics list.
 From Coq Require Import ZArith.ZArith NArith.NArith Lia Lists.List.
+Require Import ZesuSsz.Automation2.LiaHook.
 Local Open Scope Z_scope.
 Require Import ZesuSsz.Automation2.ByteArrayLengths.
 Require Import ZesuSsz.Automation2.ResourceGroups.
@@ -45,10 +46,10 @@ Ltac zesu_store_selected_linear :=
   cbn [Z.of_N Z.of_nat];
   repeat match goal with
   | |- context [(?left - ?right)%Z] =>
-      replace (left - right)%Z with 0%Z by lia
+      replace (left - right)%Z with 0%Z by zesu_lia
   end;
   rewrite ?Z.sub_diag ?Z.div_1_r ?Z.mod_1_r;
-  cbn; solve [lia].
+  cbn; solve [zesu_lia].
 
 Ltac zesu_store_select_length continuation :=
   match goal with
@@ -142,7 +143,7 @@ Ltac zesu_store_fold_indexed_byte_tail :=
         let base := eval cbn [Z.of_nat Nat.add Nat.mul] in base in
         let Haddress := fresh "HindexedAddress" in
         assert (Haddress : forall i, address i = base + Z.of_nat i) by
-          (intro i; cbn [Nat.add Nat.mul]; rewrite ?Nat2Z.inj_succ ?Nat2Z.inj_add; lia);
+          (intro i; cbn [Nat.add Nat.mul]; rewrite ?Nat2Z.inj_succ ?Nat2Z.inj_add; zesu_lia);
         let Hbound := fresh "HindexedBound" in
         assert (Hbound : 0 <= base /\ base + Z.of_nat (length cells) <= 2^64) by
           (first [assumption |
@@ -153,7 +154,7 @@ Ltac zesu_store_fold_indexed_byte_tail :=
                 clear - Hcopy;
                 cbn [List.length Z.of_N] in Hcopy;
                 rewrite ?Nat2Z.inj_succ in Hcopy;
-                lia
+                zesu_lia
             end]);
         iEval (rewrite (zesu_indexed_byte_cells_array address base fraction cells Hbound Haddress)) in name;
         clear Haddress Hbound
@@ -193,7 +194,7 @@ Ltac zesu_store_codec_array_lookup :=
                   Z.of_nat (length values) * Z.of_N (N.div width 8))%Z) by
                   (first [solve [ZesuSsz.Automation2.RangeFacts.zesu_selected_array_range] |
                     cbn [length N.to_nat];
-                    repeat (rewrite length_bv_to_little_endian; [|lia]);
+                    repeat (rewrite length_bv_to_little_endian; [|zesu_lia]);
                     cbn [length N.to_nat];
                     try (autounfold with zesu_contract_constants);
                     ZesuSsz.Automation2.MemoryAddress.zesu_stack_arithmetic]);
@@ -270,7 +271,7 @@ Ltac zesu_access_width continuation :=
   end.
 
 Ltac zesu_integer_cell_match integer address :=
-  assert_succeeds (assert (integer = address)%Z by (clear; Lia.lia)).
+  assert_succeeds (assert (integer = address)%Z by (clear; zesu_lia)).
 
 Ltac zesu_name_byte_cell address fraction :=
   iMatchHyp ltac:(fun H body =>

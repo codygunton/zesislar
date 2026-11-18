@@ -4,6 +4,7 @@ Require Import ZesuSsz.Automation2.ListSliceWindows.
 From Coq Require Import Bool.Bool ZArith.ZArith Lia.
 From stdpp Require Import bitvector.tactics list decidable.
 Require ZesuSsz.Automation2.VmClosed.
+Require Import ZesuSsz.Automation2.LiaHook.
 Local Open Scope Z_scope.
 
 Lemma zesu_masked_byte_class (byte : bv 8) (lengthWord : bv 64) (upper : Z) :
@@ -109,7 +110,7 @@ Ltac zesu_byte_class_image :=
             ZesuSsz.Automation2.VmClosed.zesu_closed_term count; ZesuSsz.Automation2.VmClosed.zesu_closed_term index;
             let Hbound := fresh "HimageDropBound" in
             assert (Hbound : (List.length bytes <= index)%nat) by
-              (clear - Hlength; rewrite Hlength; Lia.lia);
+              (clear - Hlength; rewrite Hlength; zesu_lia);
             rewrite (drop_ge bytes index Hbound); clear Hbound
         end
       | rewrite length_drop | rewrite length_app | rewrite length_take

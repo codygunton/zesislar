@@ -29,6 +29,7 @@ From Coq Require Import Lists.List ZArith.ZArith.
 Require ZesuSsz.Automation2.ContextCollection.
 Require Import ZesuSsz.Automation2.Telemetry.
 From Ltac2 Require Import Ltac2.
+Require Import ZesuSsz.Automation2.LiaHook.
 Set Default Proof Mode "Classic".
 
 (* A nonempty owned list supplies its head and tail without guessing data. *)
@@ -157,7 +158,7 @@ Ltac zesu_witness_arith :=
   (* The space before the bracket matters: a star followed straight by
      a bracket closes a Coq comment and truncates the tactic. *)
   try (cbv [machineRamEnd mapRamSize mapRamBase defaultMap] in * );
-  first [lia | bv_solve].
+  first [zesu_lia | bv_solve].
 
 (* Opt in, like every other rule on this branch.
 

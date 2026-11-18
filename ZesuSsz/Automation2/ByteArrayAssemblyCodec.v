@@ -8,6 +8,7 @@ Require Import ZesuSsz.Automation2.MemoryAddress.
 Require Import ZesuSsz.Contracts.IslarisMemory.
 From Coq Require Import Lia.
 Require ZesuSsz.Automation2.VmClosed.
+Require Import ZesuSsz.Automation2.LiaHook.
 
 Ltac zesu_byte_array_closed_counts bytes :=
   lazymatch bytes with
@@ -45,7 +46,7 @@ Ltac zesu_byte_array_normalize_stride :=
   | Hwidth : (8 = ?stride * 8)%N |- _ =>
       is_var stride;
       let Hone := fresh "HbyteStride" in
-      assert (Hone : stride = 1%N) by (clear - Hwidth; Lia.lia);
+      assert (Hone : stride = 1%N) by (clear - Hwidth; zesu_lia);
       subst stride
   end.
 

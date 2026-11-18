@@ -12,6 +12,7 @@ From iris.proofmode Require Import tactics environments spec_patterns.
 From Coq Require Import ZArith Lia.
 From stdpp Require Import bitvector.definitions list.
 Require ZesuSsz.Automation2.VmClosed.
+Require Import ZesuSsz.Automation2.LiaHook.
 Local Open Scope Z_scope.
 
 Ltac zesu_memory_witness_occurs candidate expression :=
@@ -121,7 +122,7 @@ Ltac zesu_memory_join_arrays :=
             assert (Hcount : length leftBytes = count) by
               first [reflexivity |
                 rewrite length_bv_to_little_endian;
-                  [reflexivity | Lia.lia]];
+                  [reflexivity | zesu_lia]];
             let Hnext := fresh "HmemoryArrayNext" in
             assert (Hnext : rightAddress =
               (leftAddress + Z.of_N (8 / 8) * Z.of_nat count)%Z) by

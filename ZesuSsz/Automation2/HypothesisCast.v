@@ -4,12 +4,13 @@ Require Import ZesuSsz.Automation2.MaskWrapPresentation.
 From stdpp Require Import bitvector.tactics.
 From Coq Require Import ZArith Lia.
 Require ZesuSsz.Automation2.VmClosed.
+Require Import ZesuSsz.Automation2.LiaHook.
 Local Open Scope Z_scope.
 
 Class ZesuStepHypothesisCast : Prop := {}.
 
 Ltac zesu_hypothesis_cast_range width value :=
-  first [solve [unfold bv_modulus; cbn; lia] |
+  first [solve [unfold bv_modulus; cbn; zesu_lia] |
     lazymatch value with
     | bv_unsigned ?word =>
         let kind := type of word in
@@ -19,7 +20,7 @@ Ltac zesu_hypothesis_cast_range width value :=
           assert (Hwidth : (source <= width)%N) by (vm_compute; congruence);
           pose proof (bv_unsigned_in_range source word);
           pose proof (bv_modulus_le_mono source width Hwidth);
-          lia
+          zesu_lia
         end
     end].
 
@@ -67,7 +68,7 @@ Ltac zesu_hypothesis_cast_finish :=
   solve [zesu_hypothesis_casts;
     try zesu_hypothesis_mask_wraps;
     zesu_hypothesis_casts;
-    lia].
+    zesu_lia].
 
 Ltac zesu_cast_nonzero_derived :=
   lazymatch goal with

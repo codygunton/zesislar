@@ -1,6 +1,7 @@
 Require Import ZesuSsz.Automation2.SwitchDispatch.
 From Coq Require Import Lists.List ZArith.ZArith Lia.
 From stdpp Require Import bitvector.definitions list_numbers.
+Require Import ZesuSsz.Automation2.LiaHook.
 Import ListNotations.
 Local Open Scope Z_scope.
 
@@ -56,5 +57,5 @@ Ltac zesu_frame_packing normalize_decoder :=
         | _ => eval cbn in (Z.to_nat right_count)
         end in
       solve [eapply (zesu_pack_decoded_slices width left_nat right_nat bytes
-        left_value right_value); [lia | eassumption | eassumption]]
+        left_value right_value); [zesu_lia | eassumption | eassumption]]
   end.

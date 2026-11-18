@@ -226,6 +226,34 @@ def assert_fails_match_failures(name: str, text: str) -> list[str]:
             for match in ASSERT_FAILS_MATCH.finditer(code)]
 
 
+# Importing a module re-adds the original body of each tactic it defines, so a
+# caller that imports Coq's Lia (directly, or through stdpp or iris) after the
+# umbrella gets the library `Lia.lia` back: a project tactic that calls `lia`
+# then runs another proof than in a caller without that import. Automation2
+# calls `zesu_lia` (LiaHook), which no library import restores.
+TACTIC_SENTENCE = re.compile(
+    r"(?:#\[[^\]]*\]\s*)?(?:(?:Local|Global|Export)\s+)?(?:Ltac2?|Hint|Tactic\s+Notation)\b")
+LIA_CALL = re.compile(r"(?<![\w.'])(?:Coq\.micromega\.)?(?:Lia\.)?lia(?![\w'])")
+LIA_HOOK_SENTENCES = ("Ltac zesu_lia := lia.", "Ltac Lia.lia ::= zesu_lia.")
+
+
+def automation_lia_call_failures(name: str, text: str) -> list[str]:
+    if not name.startswith("ZesuSsz/Automation2/"):
+        return []
+    code = executable_text(text)
+    failures, start = [], 0
+    for end in re.finditer(r"\.(?=\s|$)", code):
+        sentence = code[start:end.end()]
+        offset, start = start + len(sentence) - len(sentence.lstrip()), end.end()
+        if (not TACTIC_SENTENCE.match(sentence.lstrip())
+                or " ".join(sentence.split()) in LIA_HOOK_SENTENCES):
+            continue
+        failures.extend(f"Automation2 tactic calls lia (call zesu_lia): {name}:"
+                        f"{code.count(chr(10), 0, offset + match.start()) + 1}"
+                        for match in LIA_CALL.finditer(sentence.lstrip()))
+    return failures
+
+
 def retired_module_failures(name: str, text: str) -> list[str]:
     """Prevent superseded hand modules and their imports from returning."""
     failures = []
@@ -707,6 +735,7 @@ def main() -> None:
             core_sources[name] = text
         failures.extend(executable_form_failures(name, text))
         failures.extend(assert_fails_match_failures(name, text))
+        failures.extend(automation_lia_call_failures(name, text))
         failures.extend(closed_literal_failures(name, text, literal_exceptions))
         failures.extend(trusted_declaration_failures(name, text, trusted))
         failures.extend(generated_hand_line_failures(name, text))

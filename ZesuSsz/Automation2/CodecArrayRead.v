@@ -8,6 +8,7 @@ From Coq Require Import Lists.List ZArith.ZArith Lia.
 From stdpp Require Import bitvector.definitions list.
 From iris.proofmode Require Import environments.
 Require ZesuSsz.Automation2.VmClosed.
+Require Import ZesuSsz.Automation2.LiaHook.
 Local Open Scope Z_scope.
 
 Class ZesuStepCodecArrayRead : Prop := {}.
@@ -78,7 +79,7 @@ Ltac zesu_codec_array_read_sidecond :=
   lazymatch goal with
   | |- (0 <= ?offset)%Z =>
       MemoryAddress.zesu_handoff_closed_Z offset ltac:(fun reduced =>
-        change (0 <= reduced)%Z; lia)
+        change (0 <= reduced)%Z; zesu_lia)
   | |- (Z.to_nat ?offset + ?width <= ?extent)%nat =>
       MemoryAddress.zesu_handoff_closed_Z offset ltac:(fun reduced =>
         change (Z.to_nat reduced + width <= extent)%nat;
@@ -91,7 +92,7 @@ Ltac zesu_codec_array_read_sidecond :=
             end in
           literal_extent extent
         | zesu_codec_range_lengths];
-        cbn; lia)
+        cbn; zesu_lia)
   end.
 
 (* Normalize the pure image before Lithium substitutes the decoded term into
@@ -117,7 +118,7 @@ Ltac zesu_codec_array_read_image image :=
       let index := fresh "HcodecIndex" in
       assert (index : Z.to_nat offset = count) by
         (MemoryAddress.zesu_handoff_closed_Z offset ltac:(fun reduced =>
-          change (Z.to_nat reduced = count); lia));
+          change (Z.to_nat reduced = count); zesu_lia));
       rewrite index in image; clear index
   end;
   cbn [drop N.to_nat] in image;
@@ -127,8 +128,8 @@ Ltac zesu_codec_array_read_image image :=
       let bound := fresh "HcodecTake" in
       assert (bound :
         (length (bv_to_little_endian digits width value) <= count)%nat) by
-        (rewrite (length_bv_to_little_endian digits width value ltac:(lia));
-         lia);
+        (rewrite (length_bv_to_little_endian digits width value ltac:(zesu_lia));
+         zesu_lia);
       rewrite (take_ge (bv_to_little_endian digits width value) count bound)
         in image;
       clear bound
@@ -138,7 +139,7 @@ Ltac zesu_codec_array_read_image image :=
     | context [Z_to_bv ?bits (little_endian_to_bv ?width
         (bv_to_little_endian ?digits ?width (bv_unsigned ?word)))] =>
         rewrite (Z_to_bv_little_endian_to_bv_to_little_endian
-          bits digits width word ltac:(lia) ltac:(reflexivity)) in image
+          bits digits width word ltac:(zesu_lia) ltac:(reflexivity)) in image
     end
   | lazymatch type of image with
     | context [Z_to_bv ?bits (little_endian_to_bv ?width
@@ -149,9 +150,9 @@ Ltac zesu_codec_array_read_image image :=
           Z_to_bv bits (little_endian_to_bv width
             (bv_to_little_endian digits width value)) = Z_to_bv bits value) by (
           apply bv_eq; rewrite !Z_to_bv_unsigned;
-          rewrite (little_endian_to_bv_to_little_endian digits width value ltac:(lia));
+          rewrite (little_endian_to_bv_to_little_endian digits width value ltac:(zesu_lia));
           change (bv_wrap bits (bv_wrap bits value) = bv_wrap bits value);
-          apply bv_wrap_bv_wrap; lia);
+          apply bv_wrap_bv_wrap; zesu_lia);
         rewrite roundtrip in image; clear roundtrip
     end].
 

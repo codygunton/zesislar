@@ -4,6 +4,7 @@ Require Import ZesuMachineMap.Machine.
 Require Import ZesuSsz.Automation2.ArrayCursors.
 Require Import ZesuSsz.Automation2.ByteArrays.
 From Coq Require Import Lists.List ZArith.ZArith.
+Require Import ZesuSsz.Automation2.LiaHook.
 
 Lemma array_byte_lookup (bytes : list (bv 8)) (index : nat) (byte : bv 8) :
   bytes !! index = Some byte ->
@@ -141,8 +142,8 @@ Ltac zesu_normalize_array_byte_lookups :=
            exact Hupper |
            first [match goal with
              | Hbound : (index + ?limit <= length bytes)%nat |- _ =>
-                 clear - Hbound; lia
-             end | lia]]);
+                 clear - Hbound; zesu_lia
+             end | zesu_lia]]);
       rewrite Z.div_1_r Hindex in Hlookup; clear Hindex
   end;
   repeat match goal with
@@ -163,8 +164,8 @@ Ltac zesu_normalize_array_byte_lookups :=
            exact Hupper |
            first [match goal with
              | Hbound : (index + ?limit <= length bytes)%nat |- _ =>
-                 clear - Hbound; lia
-             end | lia]]);
+                 clear - Hbound; zesu_lia
+             end | zesu_lia]]);
       rewrite Hindex in Hlookup; clear Hindex
   end.
 
@@ -217,14 +218,14 @@ Ltac zesu_array_eight_value :=
   end;
   match goal with
   | |- context[take 8 (drop ?offset ?bytes)] =>
-      rewrite (zesu_take_8_drop bytes offset ltac:(lia))
+      rewrite (zesu_take_8_drop bytes offset ltac:(zesu_lia))
   end;
   repeat match goal with
   | Hread : ?bytes !! ?observed = Some ?byte
     |- context[default _ (?bytes !! ?requested)] =>
       first [rewrite Hread |
         let Hindex := fresh "HarrayEightIndex" in
-        assert (Hindex : observed = requested) by lia;
+        assert (Hindex : observed = requested) by zesu_lia;
         rewrite <- Hindex, Hread; clear Hindex]
   end;
   reflexivity.

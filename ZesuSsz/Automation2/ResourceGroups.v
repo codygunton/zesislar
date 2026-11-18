@@ -2,6 +2,7 @@ Require Import isla.riscv64.riscv64.
 Require Import InstrSpecs.Machine.
 From iris.proofmode Require Import environments.
 From Coq Require Import NArith Lia.
+Require Import ZesuSsz.Automation2.LiaHook.
 
 (* Pure extraction removes its persistent source. Separation keeps both children. *)
 Ltac zesu_expose_environment_alias :=
@@ -203,5 +204,5 @@ Ltac zesu_finish_pure_resources :=
       zesu_is_pure_resource body;
       solve [repeat first
         [solve [iPureIntro; assumption] | solve [done] | iSplit |
-         solve [iPureIntro; first [lia | bv_solve]]]]
+         solve [iPureIntro; first [zesu_lia | bv_solve]]]]
   end.

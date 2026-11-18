@@ -1,6 +1,7 @@
 Require Import ZesuSsz.Automation2.SwitchDispatch.
 Require Import ZesuSsz.Automation2.Rewrites.
 Require Import isla.riscv64.riscv64.
+Require Import ZesuSsz.Automation2.LiaHook.
 
 Class ZesuStepArrayRegionBounds : Prop :=
   zesu_step_array_region_bounds : True.
@@ -18,9 +19,9 @@ Ltac zesu_byte_array_lengths_base :=
   zesu_byte_array_bound_goal_if_enabled;
   repeat match goal with
   | |- context [?base + ?offset - ?base] =>
-      replace (base + offset - base) with offset by lia
+      replace (base + offset - base) with offset by zesu_lia
   | |- context [?base - ?base] =>
-      replace (base - base) with 0 by lia
+      replace (base - base) with 0 by zesu_lia
   end;
   repeat progress (rewrite ?length_app ?length_take ?length_drop; cbn [length]).
 
@@ -29,9 +30,9 @@ Ltac zesu_byte_array_lengths_extended :=
   try autounfold with zesu_contract_constants in *;
   repeat match goal with
   | |- context [?base + ?offset - ?base] =>
-      replace (base + offset - base) with offset by lia
+      replace (base + offset - base) with offset by zesu_lia
   | |- context [?base - ?base] =>
-      replace (base - base) with 0 by lia
+      replace (base - base) with 0 by zesu_lia
   end;
   repeat progress (rewrite ?length_app ?length_take ?length_drop ?length_insert;
     cbn [length N.to_nat]).
@@ -48,5 +49,5 @@ Ltac zesu_byte_array_base_solvable :=
   end.
 
 Ltac zesu_byte_array_lengths_if_enabled :=
-  first [solve [zesu_byte_array_lengths_base; zesu_byte_array_base_solvable; solve [lia | bv_solve]] |
+  first [solve [zesu_byte_array_lengths_base; zesu_byte_array_base_solvable; solve [zesu_lia | bv_solve]] |
     zesu_byte_array_lengths_extended].

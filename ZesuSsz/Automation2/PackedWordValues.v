@@ -2,6 +2,7 @@ Require Import isla.riscv64.riscv64.
 Require Import ZesuSsz.Contracts.IslarisMemory.
 From iris.proofmode Require Import environments.
 From Coq Require Import Lists.List ZArith.ZArith Lia.
+Require Import ZesuSsz.Automation2.LiaHook.
 Local Open Scope Z_scope.
 
 Lemma zesu_packed_u64_lookup count index (bytes : list (bv 8)) :
@@ -59,7 +60,7 @@ Ltac zesu_normalize_packed_word_value value :=
     assert (Heq : value = canonical) by
       (change (default (BV 64 0)
         (u64s_of_bytes count (take (count * 8) (drop start bytes)) !! index) = canonical);
-       apply zesu_packed_u64_window; lia);
+       apply zesu_packed_u64_window; zesu_lia);
     progress rewrite Heq; clear Heq
   end.
 Ltac zesu_normalize_packed_word_subsume :=
