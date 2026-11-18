@@ -1061,7 +1061,7 @@ Ltac zesu_run :=
   let switches := zesu_search_switches in
   zesu_dispatch_search switches ltac:(fun _ =>
     unshelve (repeat progress
-      (zesu_run_pass; try zesu_solve_instances; zesu_finish));
+      (idtac "ZESU_PHASE loop_run_pass begin"; zesu_run_pass; idtac "ZESU_PHASE loop_run_pass end"; try zesu_solve_instances; idtac "ZESU_PHASE pass_finish begin"; zesu_finish; idtac "ZESU_PHASE pass_finish end"));
     try zesu_solve_instances;
     try zesu_finish_pure_resources;
     try solve [zesu_array_bounds_if_enabled];
