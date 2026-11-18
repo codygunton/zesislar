@@ -11,7 +11,9 @@ run (launch it with `tools/bg --heavy bench-<tag> python3 tools/bench/bench.py r
     overlay commits merged (sets/NAME.json "overlays"; functions that are not on main) and, with
     --rules-commit, the rule trees (ZesuSsz/Automation2, ZesuSsz/Automation, InstrSpecs,
     ZesuSsz/Proofs/Tests) taken from that commit. <key> hashes REV, the rules commit and the overlays,
-    so a second run on the same inputs reuses the worktree and its bank.
+    so a second run on the same inputs reuses the worktree and its bank. When the run ends (also on
+    failure) bench.py removes the worktree and its bank (`build_janitor.py remove-worktree`, which
+    saves goals and closure records first) unless --keep-bank asks to keep them for that reuse.
  2. Bank: _build/agents/bench-<key> in that worktree: `make stock-native-indexes` and one Dune build
     of @install plus the modules the set's callers import (never the other callers). BANK.json
     records the targets; a later run with no new target skips the build. Blocks compile with the
@@ -52,6 +54,7 @@ TOOLS = BENCH.parent
 sys.path.insert(0, str(TOOLS))
 sys.path.insert(0, str(BENCH))
 import bench_report as R  # noqa: E402
+import build_janitor as J  # noqa: E402
 import closure_cert as C  # noqa: E402
 from coqc_recipe import project_recipe, remember_recipe  # noqa: E402
 from dune_build_dir import physical_working_dir  # noqa: E402
@@ -411,6 +414,18 @@ def command_run(options):
         print('%s %s' % (now()[:19] + 'Z', message), flush=True)
 
     key, workspace, bench_head = prepare_workspace(root, head, rules, overlays)
+    try:
+        return run_in_workspace(options, bench_set, members, overlays, head, rules, run_dir, log,
+                                key, workspace, bench_head)
+    finally:
+        if options.keep_bank:
+            log('workspace %s and its bank kept for reuse (--keep-bank)' % workspace)
+        else:
+            rc = J.main(['remove-worktree', str(workspace)])
+            log('workspace %s %s' % (workspace, 'removed' if rc == 0 else 'kept: remove-worktree refused'))
+
+
+def run_in_workspace(options, bench_set, members, overlays, head, rules, run_dir, log, key, workspace, bench_head):
     log('workspace %s at %s' % (workspace, bench_head[:12]))
     make_vars = {}
     for overlay in overlays:
@@ -476,6 +491,9 @@ def main(argv=None):
     run.add_argument('--callers', action='store_true',
                      help='also record each solver call\'s Ltac caller (diagnostic; Ltac Backtrace slows it)')
     run.add_argument('--only', nargs='+', help='run only these cases (case or label)')
+    run.add_argument('--keep-bank', action='store_true',
+                     help='keep the worktree and its bank for a rerun on the same inputs (default: '
+                          'remove them when the run ends)')
     report = commands.add_parser('report', help='report one run')
     report.add_argument('run', type=Path)
     report.add_argument('--base', type=Path)

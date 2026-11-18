@@ -666,6 +666,15 @@ LEDGER_RECOVERIES = (('correctness_gate.py', 'recover-dead'),
                      ('module_memory.py', 'ledger-recover-stale', '--all'))
 
 
+def low_disk_reap():
+    """Under 50 GB free disk, remove the reapable worktrees (build_janitor.reap_when_low)."""
+    try:
+        import build_janitor
+        return build_janitor.reap_when_low()
+    except Exception as error:  # noqa: BLE001 - the watchdog's other duties go on
+        return [f'worktree reaper failed: {error}']
+
+
 def recover_ledgers(run=subprocess.run):
     """Run the memory ledger's dead-owner recoveries; return one line per release or failure."""
     tools = Path(__file__).resolve().parent
@@ -1449,12 +1458,13 @@ def main():
                 for line in lines:
                     print(line)
         messages = watchdog(registry, args.status)
-        # The ledger recoveries and the slice check act on the live ledger, the
-        # live registry and the live cgroups; a watchdog given a private --store
-        # (fixtures) leaves them alone.
+        # The ledger recoveries, the slice check and the worktree reaper act on the live
+        # ledger, the live registry, the live cgroups and the checkout; a watchdog given a
+        # private --store (fixtures) leaves them alone.
         if args.store is None:
             messages += recover_ledgers()
             messages += workload_slice_report(registry, args.status)
+            messages += low_disk_reap()
         for message in messages + stall_report(registry, args.status):
             print(message)
         return 0 if follows else 1
