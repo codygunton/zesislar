@@ -222,11 +222,15 @@ Global Hint Extern 0 (FindHypEqual (ZesuMemRegionSearch _) (mmio_range _ _)
    same lemma and the same side condition: when the address and the region
    start share a root, arithmetic on the constants decides it
    (BvLinear.zesu_mem_range_class), and the hint's bv_solve runs only when the
-   address may lie in the region. In every other case the gate records the
-   side condition as a bv_solve failure (FailureMemo), so the hint's bv_solve
-   fails at once. A refusal that the arithmetic did not decide prints a
-   `mem_lookup_refused` telemetry record: a block that needed the solver there
-   shows the refusals. Other callers of bv_solve are unchanged. *)
+   address may lie in the region. When the arithmetic decides that the
+   address lies outside, or does not decide and no hypothesis states an
+   equation or a bound for the address, the gate records the side condition
+   as a bv_solve failure (FailureMemo), so the hint's bv_solve fails at once.
+   An address with its own equation or bound (a loop cursor whose base another
+   function returned, Tests/CalleeBoundedCursor.v) keeps the solver. A refusal
+   that the arithmetic did not decide prints a `mem_lookup_refused` telemetry
+   record: a block that needed the solver there shows the refusals. Other
+   callers of bv_solve are unchanged. *)
 Ltac2 zesu_mem_lookup_refuse () :=
   (match Control.case (fun () => zesu_failure_memo_key "bv_solve") with
    | Val (key, _) => match key with [] => () | _ :: _ => zesu_failure_memo_record key end
@@ -234,13 +238,28 @@ Ltac2 zesu_mem_lookup_refuse () :=
    end);
   Control.zero (Tactic_failure None).
 
+Ltac zesu_mem_lookup_address_has_facts :=
+  lazymatch goal with
+  | |- ((_ <= ?a < _) \/ _)%Z =>
+      match goal with
+      | _ : a = _ |- _ => idtac
+      | _ : _ = a |- _ => idtac
+      | _ : (_ <= a < _)%Z |- _ => idtac
+      | _ : (a < _)%Z |- _ => idtac
+      | _ : (a <= _)%Z |- _ => idtac
+      | _ : (_ <= a)%Z |- _ => idtac
+      | _ : (_ < a)%Z |- _ => idtac
+      end
+  end.
+
 Ltac zesu_mem_lookup_gate :=
   let outside := ltac2:(tac |- zesu_telemetry_ltac1 "mem_lookup_outside" "zesu_mem_lookup_gate" tac) in
   let refused := ltac2:(tac |- zesu_telemetry_ltac1 "mem_lookup_refused" "zesu_mem_lookup_gate" tac) in
   ZesuSsz.Automation2.BvLinear.zesu_mem_range_class
     ltac:(outside idtac; ltac2:(zesu_mem_lookup_refuse ()))
     ltac:(fail)
-    ltac:(refused idtac; ltac2:(zesu_mem_lookup_refuse ())).
+    ltac:(tryif zesu_mem_lookup_address_has_facts then fail
+          else (refused idtac; ltac2:(zesu_mem_lookup_refuse ()))).
 
 Global Hint Extern 9 (FindHypEqual (FICMemMapstoSemantic _) (_ ↦ₘ∗ _) (mem_mapsto_kind_prop _ _) _) =>
   (apply tac_mem_mapsto_array_eq; zesu_mem_lookup_gate) : typeclass_instances.
