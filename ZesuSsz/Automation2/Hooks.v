@@ -2948,17 +2948,6 @@ Ltac zesu_lia_context_bounded closer :=
              | (zesu_lia_context_within_budget; closer)]
   else (zesu_lia_context_within_budget; closer).
 
-Ltac Lia.lia ::=
-  let run := ltac2:(tac |- zesu_telemetry_ltac1 "lia" "Lia.lia" tac) in
-  let run_linear := ltac2:(tac |- zesu_telemetry_ltac1 "bv_linear" "Lia.lia" tac) in
-  let memo := ltac2:(tac |- zesu_failure_memo_ltac1 "Lia.lia" tac) in
-  run ltac:(memo ltac:(first [solve [zesu_closed_goal_decide] |
-  solve [run_linear ltac:(ZesuSsz.Automation2.BvLinear.zesu_bv_linear_with ltac:(lia))] |
-  (tryif ZesuSsz.Automation2.BvLinear.zesu_bv_linear_refutes
-   then first [zesu_refuted_solve ltac:(zesu_lia_linear_first3) | ResidualLemmas.zesu_residual_lemma]
-   else first [zesu_lia_context_bounded ltac:(zesu_lia_linear_first3)
-              | ResidualLemmas.zesu_residual_lemma])])).
-
 
 (* The callback must prove the payload equality. Owners are never converted. *)
 Ltac zesu_array_payload_from_spatial spatial sigma heap width address fraction bytes codec :=
