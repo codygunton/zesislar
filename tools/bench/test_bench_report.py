@@ -257,6 +257,11 @@ class Report(unittest.TestCase):
                 path.unlink()
         self.assertFalse((self.base / 'results.jsonl').exists())
         self.assertEqual(R.render(R.load_run(self.base)), before)
+        # A worktree's run moves to _build/agents/bench/; results.jsonl still names the old dirs.
+        moved = self.root / 'moved' / 'base'
+        moved.parent.mkdir()
+        self.base.rename(moved)
+        self.assertEqual(R.render(R.load_run(moved)), before)
 
     def test_ranking(self):
         rank = R.ranking(R.load_run(self.base))

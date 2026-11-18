@@ -573,7 +573,9 @@ def load_run(run_dir):
     for member in meta['members']:
         key = member_key(member)
         row = rows.get(key)
-        directory = row['dir'] if row else run_dir / 'runs' / member['case']
+        directory = run_dir / 'runs' / member['case']
+        if row and Path(row['dir']).is_dir():
+            directory = row['dir']  # else the run moved (the janitor keeps a worktree's BENCH runs)
         block = load_block(directory, meta.get('caps'), running=row is None) \
             if row or Path(directory).is_dir() else None
         blocks.append({'key': key, 'member': member, 'row': row, 'block': block})
