@@ -2266,7 +2266,45 @@ Ltac zesu_source_witnesses_if_enabled :=
            SourceWitnessInputs.zesu_source_mapping_capture_goal |
          EntryWitnessInputs.zesu_entry_mapping_consume_ready].
 
-Ltac zesu_refute_aligned_return_fault :=
+(* Split a conjunction tree behind one folded hypothesis; a conjunct that
+   equates a context variable with a term substitutes it. *)
+Ltac zesu_split_conjunction_tree H :=
+  let statement := type of H in
+  let unfolded := eval hnf in statement in
+  lazymatch unfolded with
+  | _ /\ _ =>
+      change unfolded in H;
+      let left := fresh "Hpre" in
+      pose proof (proj1 H) as left;
+      let right := fresh "Hpre" in
+      pose proof (proj2 H) as right;
+      clear H;
+      zesu_split_conjunction_tree left;
+      zesu_split_conjunction_tree right
+  | _ =>
+      lazymatch statement with
+      | ?term = ?variable =>
+          tryif is_var variable then
+            (tryif lazymatch term with context [variable] => idtac end then idtac
+             else (try subst variable))
+          else idtac
+      | _ => idtac
+      end
+  end.
+
+(* Open every folded precondition (a domain predicate of conjunctions) in
+   the context into its conjuncts; fails when none is folded. *)
+Ltac zesu_open_folded_facts :=
+  progress (repeat match goal with
+    | H : ?fact |- _ =>
+        lazymatch type of fact with Prop => idtac end;
+        zesu_lookup_folded_fact fact;
+        let unfolded := eval hnf in fact in
+        lazymatch unfolded with _ /\ _ => idtac end;
+        zesu_split_conjunction_tree H
+    end).
+
+Ltac zesu_refute_aligned_return_fault_core :=
   lazymatch goal with
   | Hfault : bv_extract 0 1 (bv_shiftr
       (bv_or (bv_and (bv_add (Z_to_bv 64 ?R) (BV 64 0))
@@ -2288,6 +2326,18 @@ Ltac zesu_refute_aligned_return_fault :=
       rewrite HnoFault in Hfault;
       discriminate
     end
+  end.
+
+(* The alignment-fault branch of a return jump is refuted from the target's
+   range and alignment; when only a folded precondition states them, the
+   precondition is opened first (only on a fault branch). *)
+Ltac zesu_refute_aligned_return_fault :=
+  lazymatch goal with
+  | Hfault : bv_extract 0 1 (bv_shiftr
+      (bv_or (bv_and (bv_add (Z_to_bv 64 _) (BV 64 0))
+        (BV 64 18446744073709551614)) (BV 64 0)) (BV 64 1)) = BV 1 1 |- _ =>
+      first [zesu_refute_aligned_return_fault_core |
+        zesu_open_folded_facts; zesu_refute_aligned_return_fault_core]
   end.
 
 Lemma zesu_bv64_clear_low_bit_even (value : bv 64) :
@@ -2388,32 +2438,6 @@ Ltac ZesuSsz.Automation2.CodecArrayRead.zesu_codec_array_direct_value ::=
     subst loaded;
     try zesu_return_integer_even_mask).
 
-(* Split a conjunction tree behind one folded hypothesis; a conjunct that
-   equates a context variable with a term substitutes it. *)
-Ltac zesu_split_conjunction_tree H :=
-  let statement := type of H in
-  let unfolded := eval hnf in statement in
-  lazymatch unfolded with
-  | _ /\ _ =>
-      change unfolded in H;
-      let left := fresh "Hpre" in
-      pose proof (proj1 H) as left;
-      let right := fresh "Hpre" in
-      pose proof (proj2 H) as right;
-      clear H;
-      zesu_split_conjunction_tree left;
-      zesu_split_conjunction_tree right
-  | _ =>
-      lazymatch statement with
-      | ?term = ?variable =>
-          tryif is_var variable then
-            (tryif lazymatch term with context [variable] => idtac end then idtac
-             else (try subst variable))
-          else idtac
-      | _ => idtac
-      end
-  end.
-
 (* A jump to a symbolic target (a return through a reloaded address) needs
    the target's range, alignment and identity, which a function's folded
    precondition (a domain predicate of conjunctions) states. Open each folded
@@ -2423,14 +2447,7 @@ Ltac zesu_open_folded_jump_facts :=
   | |- envs_entails _ (find_in_context (FindInstrKind ?requested _) _) =>
       tryif ZesuSsz.Automation2.VmClosed.zesu_closed_term requested then fail else idtac
   end;
-  progress (repeat match goal with
-    | H : ?fact |- _ =>
-        lazymatch type of fact with Prop => idtac end;
-        zesu_lookup_folded_fact fact;
-        let unfolded := eval hnf in fact in
-        lazymatch unfolded with _ /\ _ => idtac end;
-        zesu_split_conjunction_tree H
-    end).
+  zesu_open_folded_facts.
 
 Ltac zesu_prefer_owned_instr_pre :=
   lazymatch goal with
