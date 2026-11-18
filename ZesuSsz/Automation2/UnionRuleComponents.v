@@ -1607,6 +1607,7 @@ Require Import ZesuSsz.Automation2.BitvectorFacts.
 Require Import ZesuSsz.Automation2.PureFacts.
 Require Import ZesuSsz.Evidence.Block2Core.
 Require ZesuSsz.Automation2.ContextCollection.
+Require ZesuSsz.Automation2.VmClosed.
 Import ListNotations.
 Local Open Scope Z_scope.
 
@@ -1911,6 +1912,36 @@ Ltac zesu_region_fault_bound_if_enabled :=
   lazymatch goal with |- ?bound => zesu_region_arithmetic_statement bound end;
   solve [zesu_region_fault_arithmetic].
 
+(* A bound over numerals and closed local definitions is decided by
+   computation: bv_solve and lia spent 15-50 s failing on false closed
+   bounds. A closed condition of the other value fails at once; an open one
+   goes to the region arithmetic on `bound`. *)
+Ltac zesu_region_fault_closed_condition condition :=
+  ZesuSsz.Automation2.VmClosed.zesu_vm_closed condition;
+  let value := eval vm_compute in condition in
+  first [constr_eq value true | constr_eq value false].
+
+Ltac zesu_region_fault_decision condition bound expected Hdecision :=
+  tryif zesu_region_fault_closed_condition condition
+  then (
+    let value := eval vm_compute in condition in
+    constr_eq value expected;
+    assert (Hdecision : condition = expected) by
+      vm_cast_no_check (eq_refl expected))
+  else
+    lazymatch expected with
+    | true =>
+        let Hpositive := fresh "HregionBound" in
+        assert (Hpositive : bound) by zesu_region_fault_arithmetic;
+        assert (Hdecision : condition = true) by
+          (apply bool_decide_true; exact Hpositive)
+    | false =>
+        let Hnegative := fresh "HregionBound" in
+        assert (Hnegative : ~ bound) by zesu_region_fault_arithmetic;
+        assert (Hdecision : condition = false) by
+          (apply bool_decide_false; exact Hnegative)
+    end.
+
 (* Refute an arithmetic assertion before the trace reads fault registers. *)
 Ltac zesu_region_fault_assert :=
   lazymatch goal with
@@ -1929,16 +1960,8 @@ Ltac zesu_region_fault_assert :=
         lazymatch bound with context[bv_zero_extend 128 _] => idtac end;
         let Hdecision := fresh "HregionDecision" in
         lazymatch expression with
-        | Unop Not _ _ =>
-            let Hpositive := fresh "HregionBound" in
-            assert (Hpositive : bound) by zesu_region_fault_arithmetic;
-            assert (Hdecision : condition = true) by
-              (apply bool_decide_true; exact Hpositive)
-        | Val _ _ =>
-            let Hnegative := fresh "HregionBound" in
-            assert (Hnegative : ~ bound) by zesu_region_fault_arithmetic;
-            assert (Hdecision : condition = false) by
-              (apply bool_decide_false; exact Hnegative)
+        | Unop Not _ _ => zesu_region_fault_decision condition bound true Hdecision
+        | Val _ _ => zesu_region_fault_decision condition bound false Hdecision
         end;
         rewrite Hdecision;
         zesu_expose_environment_alias;

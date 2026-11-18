@@ -186,9 +186,14 @@ Proof.
 Qed.
 End DeclareSource.
 
-(* The owned PC and declaration number select the source location before intro. *)
+(* The owned PC and declaration number select the source location before intro.
+   A PC with no local name and no evar is closed; only a PC with a local name
+   needs the context-wide check, whose cost grows with the context (0.4-1.3 s
+   per declaration on decodeParentHeader). *)
 Ltac zesu_read_source_declaration_key pc variable width continuation :=
-  ZesuSsz.Automation2.VmClosed.zesu_closed_term pc;
+  tryif first [has_evar pc | match pc with context[?part] => is_var part end]
+  then ZesuSsz.Automation2.VmClosed.zesu_closed_term pc
+  else idtac;
   let address := eval vm_compute in (bv_unsigned pc) in
   let location := constr:(_ :
     ZesuSourceDeclaration (@BV 64%N address _) variable width _) in

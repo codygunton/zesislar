@@ -2425,8 +2425,10 @@ Ltac zesu_liAStep :=
   | zesu_talt l_named_equation_goal (idtac; zesu_named_equation_goal)
   | zesu_talt l_named_binder_witness (idtac; zesu_named_binder_witness)
   | zesu_talt l_exists_from_hypotheses (idtac; solve [zesu_finish_exists_from_hypotheses])
-  | zesu_talt l_liStep (idtac; liStep)
+  (* Before liStep: with a local alias in the address, liStep's lookup
+     failed for 7-20 s on decodeParentHeader before this step fixed it. *)
   | zesu_talt l_unfold_let_mem_address (idtac; zesu_unfold_let_mem_address)
+  | zesu_talt l_liStep (idtac; liStep)
   | zesu_talt l_liLetBindHint (idtac; liLetBindHint)
   | zesu_talt l_liUnfoldLate (idtac; liUnfoldLate)
   | zesu_talt l_canonical_fact_views (idtac; zesu_canonical_fact_views_if_enabled)

@@ -201,3 +201,23 @@ Lemma call_precondition_from_call_facts
   ∃ (x13 : bv 64) (before : list nat), domain x13 before ∧ meaning x13 before after.
 Proof. ZesuSsz.Automation2.Hooks.zesu_liAStep. Qed.
 Print Assumptions call_precondition_from_call_facts.
+
+(* The step unfolds an address alias before Lithium's lookup runs: the first
+   step removes the alias, and the load then goes through. *)
+Lemma named_equation_alias_before_lookup `{!islaG Sigma} `{!threadG}
+    (pointer : bv 64) (bytes : list (bv 8)) :
+  ⊢@{iProp Sigma} (bv_unsigned (pointer + BV 64 8)%bv) ↦ₘ∗ bytes -∗
+    find_in_context (FindMemMapsTo (bv_unsigned (pointer + BV 64 8)%bv)) (fun _ => True)%I.
+Proof.
+  iStartProof. iIntros "H".
+  pose (alias := (pointer + BV 64 8)%bv).
+  change (FindMemMapsTo (bv_unsigned (pointer + BV 64 8)%bv))
+    with (FindMemMapsTo (bv_unsigned alias)).
+  ZesuSsz.Automation2.Hooks.zesu_liAStep.
+  lazymatch goal with
+  | _ := _ : bv 64 |- _ => fail "the alias is kept"
+  | _ => idtac
+  end.
+  repeat ZesuSsz.Automation2.Hooks.zesu_liAStep.
+Qed.
+Print Assumptions named_equation_alias_before_lookup.
