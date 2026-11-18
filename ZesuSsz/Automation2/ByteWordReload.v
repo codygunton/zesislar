@@ -2,6 +2,7 @@ From Coq Require Import Lists.List ZArith.ZArith NArith.NArith Lia.
 From stdpp Require Import list bitvector.definitions.
 Require Import isla.riscv64.riscv64.
 Require ZesuSsz.Automation2.ContextCollection.
+Require Import ZesuSsz.Automation2.LiaHook.
 Local Open Scope Z_scope.
 
 (* A word read back from the little-endian bytes of a stored word is that word. *)
@@ -68,10 +69,10 @@ Ltac zesu_reload_spliced_word_step :=
       let Hinside := fresh "HreloadInside" in
       assert (Hsame : loaded = stored) by
         (first [reflexivity | ZesuSsz.Automation2.ContextCollection.zesu_solve_goal_selected
-          ("reload.spliced_index"%string) ltac:(lia)]);
+          ("reload.spliced_index"%string) ltac:(zesu_lia)]);
       assert (Hinside : (stored <= length bytes)%nat) by
         (ZesuSsz.Automation2.ContextCollection.zesu_solve_goal_selected
-          ("reload.spliced_bound"%string) ltac:(lia));
+          ("reload.spliced_bound"%string) ltac:(zesu_lia));
       rewrite (zesu_reload_spliced_word bytes tail stored loaded word Hsame Hinside);
       clear Hsame Hinside
   end.
@@ -91,11 +92,11 @@ Ltac zesu_reload_encoded_word_step :=
           assert (Hreload : Z_to_bv width
               (little_endian_to_bv 8 (take count (drop (Z.to_nat offset) bytes))) =
             Z_to_bv width word) by (
-            replace offset with value by (clear; lia);
+            replace offset with value by (clear; zesu_lia);
             change (take count (drop (Z.to_nat value) bytes)) with window;
             change window with (bv_to_little_endian size 8 word);
             apply zesu_reload_byte_word;
-            [first [apply (proj1 (bv_unsigned_in_range _ _)) | lia] | vm_compute; reflexivity]);
+            [first [apply (proj1 (bv_unsigned_in_range _ _)) | zesu_lia] | vm_compute; reflexivity]);
           rewrite Hreload; clear Hreload
       end
   end.

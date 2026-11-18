@@ -2,6 +2,7 @@ Require Import ZesuSsz.Automation2.VmClosed.
 Require Import isla.riscv64.riscv64.
 Require Import ZesuMachineMap.Machine.
 From Coq Require Import Lists.List ZArith.ZArith.
+Require Import ZesuSsz.Automation2.LiaHook.
 
 Lemma array_cursor_base_index (row : bv 64) (base : Z) (index : nat) :
   bv_unsigned row = (base + Z.of_nat index)%Z ->
@@ -60,7 +61,7 @@ Ltac zesu_normalize_array_cursor_offset :=
         (index + count)%nat) by
         (eapply array_cursor_index;
           [exact Hcursor | first [ZesuSsz.Automation2.VmClosed.zesu_vm_closed_decide | reflexivity] | exact Hlower |
-           exact Hupper | lia]);
+           exact Hupper | zesu_lia]);
       rewrite Hindex; clear Hindex
   end.
 

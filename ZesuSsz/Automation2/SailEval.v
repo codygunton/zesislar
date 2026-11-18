@@ -5,6 +5,7 @@ From stdpp Require Import bitvector.definitions.
 Require Import EvmSailRlp.evm_rlp_types EvmSailRlp.evm_rlp.
 Require Import ZesuSsz.Compliance.SailRun.
 Require ZesuSsz.Automation2.VmClosed.
+Require Import ZesuSsz.Automation2.LiaHook.
 Import ListNotations.
 Local Open Scope Z_scope.
 
@@ -52,7 +53,7 @@ Qed.
   using (first [assumption | reflexivity]) : zesu_sail.
 
 Ltac sail_guard_solver :=
-  unbool_comparisons; unbool_comparisons_goal; lia.
+  unbool_comparisons; unbool_comparisons_goal; zesu_lia.
 
 Ltac sail_guard :=
   first
@@ -82,12 +83,12 @@ Ltac sail_rec_step :=
     | Acc (Zwf 0) ?fuel =>
       tryif ZesuSsz.Automation2.VmClosed.zesu_closed_term fuel then
         (let Hbound := fresh "HsailRecBound" in
-         assert (Hbound : 0 <= fuel <= 8) by lia;
+         assert (Hbound : 0 <= fuel <= 8) by zesu_lia;
          progress (autounfold_one with zesu_sail_rec))
       else
         (let Hcases := fresh "HsailRecCases" in
          assert (Hcases : fuel = 0 \/ fuel = 1 \/ fuel = 2 \/ fuel = 3 \/
-           fuel = 4 \/ fuel = 5 \/ fuel = 6 \/ fuel = 7 \/ fuel = 8) by lia;
+           fuel = 4 \/ fuel = 5 \/ fuel = 6 \/ fuel = 7 \/ fuel = 8) by zesu_lia;
          repeat lazymatch type of Hcases with _ \/ _ => destruct Hcases as [Hcases|Hcases] end;
          progress (rewrite Hcases in *))
     end
@@ -173,13 +174,13 @@ Ltac sail_list_step :=
     lazymatch type of xs with list ?T =>
       is_var xs;
       let Hnonempty := fresh "HsailNonempty" in
-      assert (Hnonempty : (0 < length xs)%nat) by lia;
-      destruct xs; [cbn [length] in Hnonempty; lia|]
+      assert (Hnonempty : (0 < length xs)%nat) by zesu_lia;
+      destruct xs; [cbn [length] in Hnonempty; zesu_lia|]
     end
   end.
 #[export] Hint Rewrite @sail_run_bind @firstn_O : zesu_sail.
 #[export] Hint Rewrite sail_run_shim_byte
-  using (first [assumption | reflexivity | lia]) : zesu_sail.
+  using (first [assumption | reflexivity | zesu_lia]) : zesu_sail.
 Ltac sail_eval_next :=
   intros;
   repeat first
@@ -197,7 +198,7 @@ Ltac sail_eval_next :=
     | progress (autounfold_one with sail)
     | sail_guard
     | sail_list_step ];
-  try solve [repeat first [reflexivity | lia | f_equal]].
+  try solve [repeat first [reflexivity | zesu_lia | f_equal]].
 
 Ltac sail_eval :=
   sail_eval_base;
@@ -507,5 +508,5 @@ Ltac sail_load_summary :=
       (register_lookup shim_input_bytes rs) remaining off value fuel access rs allow)
       by (first [reflexivity |
         repeat sail_context_rewrite;
-        cbn [List.length word_byte_count_value] in *; lia])
+        cbn [List.length word_byte_count_value] in *; zesu_lia])
   end.

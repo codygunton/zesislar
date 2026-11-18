@@ -5,6 +5,7 @@ From iris.program_logic Require Import lifting.
 Require Import isla.riscv64.riscv64.
 Require Import InstrSpecs.Specs.
 Require Import ZesuSsz.Contracts.IslarisMemory.
+Require Import ZesuSsz.Automation2.LiaHook.
 
 Import ListNotations.
 
@@ -202,7 +203,7 @@ Proof.
   apply zesu_assemble_8_bytes.
 Qed.
 
-#[export] Hint Rewrite zesu_assemble_8_bytes zesu_assemble_8_bytes_at using lia
+#[export] Hint Rewrite zesu_assemble_8_bytes zesu_assemble_8_bytes_at using zesu_lia
   : zesu_byte_assembly.
 
 Set Default Proof Using "Type".

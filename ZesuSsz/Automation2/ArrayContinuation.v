@@ -3,6 +3,7 @@ From Coq Require Import Lists.List ZArith.ZArith NArith.NArith Lia.
 Require Import ZesuSsz.Automation2.SwitchDispatch.
 Require Import ZesuSsz.Automation2.ArrayPayloadPresentation.
 From iris.proofmode Require Import environments.
+Require Import ZesuSsz.Automation2.LiaHook.
 Local Open Scope Z_scope.
 
 Class ZesuStepArrayContinuation : Prop := {}.
@@ -12,9 +13,9 @@ Class ZesuStepArrayContinuation : Prop := {}.
 Ltac zesu_array_continuation_lengths :=
   repeat match goal with
   | |- context [(?base + ?offset - ?base)%Z] =>
-      replace (base + offset - base)%Z with offset by lia
+      replace (base + offset - base)%Z with offset by zesu_lia
   | |- context [(?base - ?base)%Z] =>
-      replace (base - base)%Z with 0%Z by lia
+      replace (base - base)%Z with 0%Z by zesu_lia
   end;
   repeat progress (rewrite ?length_app ?length_take ?length_drop;
                    cbn [length N.to_nat]);
@@ -23,7 +24,7 @@ Ltac zesu_array_continuation_lengths :=
       progress rewrite H
   end;
   cbn;
-  lia.
+  zesu_lia.
 
 (* The existing presentation rule checks width, address, fraction and payload.
    [solve] makes failure atomic, including failure of a remaining pure clause.

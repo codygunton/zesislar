@@ -5,6 +5,7 @@ Require Import ZesuSsz.Automation2.Hooks.
 From stdpp Require Import bitvector.definitions bitvector.tactics list.
 From Coq Require Import ZArith.ZArith NArith.NArith Lia Lists.List.
 Require ZesuSsz.Automation2.VmClosed.
+Require Import ZesuSsz.Automation2.LiaHook.
 Local Open Scope Z_scope.
 
 Ltac zesu_mask_wide_cast_fact :=
@@ -21,7 +22,7 @@ Ltac zesu_mask_wide_cast_fact :=
         assert (Hwidth : (source <= width)%N) by (vm_compute; congruence);
         assert (Hrange : 0 <= bv_unsigned word < bv_modulus width) by
           (pose proof (bv_unsigned_in_range source word);
-           pose proof (bv_modulus_le_mono source width Hwidth); lia);
+           pose proof (bv_modulus_le_mono source width Hwidth); zesu_lia);
         assert (Hbridge : bv_unsigned (Z_to_bv width (bv_unsigned word)) =
                           bv_unsigned word) by
           exact (Z_to_bv_small width (bv_unsigned word) Hrange);
@@ -47,19 +48,19 @@ Ltac zesu_mask_plain_wrap_goal :=
       assert (Hwidth : (low <= width)%N) by (vm_compute; congruence);
       assert (Hmask : bv_unsigned mask = Z.ones (Z.of_N low)) by
         (vm_compute; reflexivity);
-      assert (Hrange : modulus <= bv_unsigned value < 2 * modulus) by lia;
-      assert (Hresult : requested = bv_unsigned value - modulus) by lia;
+      assert (Hrange : modulus <= bv_unsigned value < 2 * modulus) by zesu_lia;
+      assert (Hresult : requested = bv_unsigned value - modulus) by zesu_lia;
       assert (Hsmall : 0 <= requested < bv_modulus width) by
         (let Hmono := fresh "HmaskModulusOrder" in
          pose proof (bv_modulus_le_mono low width Hwidth) as Hmono;
          change (modulus <= bv_modulus width)%Z in Hmono;
-         lia);
+         zesu_lia);
       apply bv_eq;
       rewrite (ZesuSsz.Automation2.BitvectorFacts.zesu_guard_low_mask_one_wrap
         width low value mask Hwidth Hmask Hrange);
       rewrite (Z_to_bv_small width requested Hsmall);
       change (bv_unsigned value - modulus = requested);
-      lia
+      zesu_lia
   end.
 
 Ltac zesu_mask_wrap_presentation :=

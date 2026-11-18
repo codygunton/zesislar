@@ -6,6 +6,7 @@ Require Import isla.riscv64.riscv64.
 Require Export ZesuSsz.Automation2.ByteArrays.
 Require Import ZesuSsz.Automation2.NatBounds.
 Require Import ZesuMachineMap.Machine.
+Require Import ZesuSsz.Automation2.LiaHook.
 
 (** Give Lithium its separating-conjunction goal form. *)
 Ltac zesu_prepare_uninit_goal :=
@@ -43,9 +44,9 @@ Ltac zesu_solve_machine_linear :=
   first [solve [repeat match goal with
            | Hnat : (_ <= _)%nat |- _ => clear Hnat
            | Hnat : (_ < _)%nat |- _ => clear Hnat
-           end; zesu_normalize_machine_map; lia] |
+           end; zesu_normalize_machine_map; zesu_lia] |
     solve [zesu_normalize_binary_nat_hypotheses;
-      zesu_normalize_binary_nat_goal; zesu_normalize_machine_map; lia]].
+      zesu_normalize_binary_nat_goal; zesu_normalize_machine_map; zesu_lia]].
 Tactic Notation "lia" := zesu_solve_machine_linear.
 
 Tactic Notation "bv_solve" := zesu_solve_machine_bounds.
@@ -123,7 +124,7 @@ Ltac zesu_normalize_memory_cell H expected :=
 Ltac zesu_solve_pending_sidecond :=
   lazymatch goal with
   | |- envs_entails _ _ => fail
-  | _ => prepare_sidecond; first [assumption | bv_solve | lia]
+  | _ => prepare_sidecond; first [assumption | bv_solve | zesu_lia]
   end.
 
 Ltac zesu_normalize_output_address :=

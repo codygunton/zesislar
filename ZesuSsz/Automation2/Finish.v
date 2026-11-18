@@ -44,6 +44,7 @@ Require Import ZesuSsz.Automation2.PureFacts.
 Require Import ZesuSsz.Automation2.VmClosed.
 Require Import ZesuSsz.Automation2.BoundedArithmetic.
 Require Import ZesuSsz.Automation2.GoalDomain.
+Require Import ZesuSsz.Automation2.LiaHook.
 (* Names `zesu_rule_set_v2_steps` for `zesu_run_pass_v2` below. The
    module declares one tactic and installs no instance and no hint,
    so importing it changes nothing for a rule set v1 module. *)
@@ -97,8 +98,8 @@ Ltac zesu_finish_little_endian :=
          lazymatch reduced with Z0 => idtac | Zpos _ => idtac | Zneg _ => idtac end;
          solve [(first [ZesuSsz.Automation2.VmClosed.zesu_vm_closed_decide | reflexivity])]
         |rewrite /Z_to_little_endian /=;
-         rewrite !Z.land_ones; [|lia..];
-         rewrite !Z.shiftr_div_pow2; [|lia..];
+         rewrite !Z.land_ones; [|zesu_lia..];
+         rewrite !Z.shiftr_div_pow2; [|zesu_lia..];
          repeat eexists; repeat split; reflexivity]
   end.
 
@@ -136,7 +137,7 @@ Ltac zesu_finish_list_slice_length :=
   | |- context[length (take _ _)] => idtac
   | |- context[length (drop _ _)] => idtac
   end;
-  solve [cbn; rewrite ?length_take ?length_drop; lia].
+  solve [cbn; rewrite ?length_take ?length_drop; zesu_lia].
 
 Ltac zesu_finish_constant :=
   lazymatch goal with
@@ -264,10 +265,10 @@ Ltac zesu_finish_known_list_shape :=
       | |- context[take ?n ?xs] =>
         let Htake := fresh "Htake" in
         assert (Htake : (length xs <= n)%nat) by
-          (zesu_normalize_known_list_lengths; lia);
+          (zesu_normalize_known_list_lengths; zesu_lia);
         rewrite (take_ge xs n Htake); clear Htake
       end; reflexivity] |
-    solve [zesu_normalize_known_list_lengths; lia] |
+    solve [zesu_normalize_known_list_lengths; zesu_lia] |
     (* The bit-vector solver reads the facts the goal reaches, never the
        whole context: on a 199-fact context it ran for hours. *)
     solve [ZesuSsz.Automation2.ContextCollection.zesu_solve_goal_selected
@@ -319,7 +320,7 @@ Ltac zesu_pure_term_budget term budget continuation :=
 Ltac zesu_small_pure_lia :=
   ltac2:(zesu_small_pure_context ());
   lazymatch goal with
-  | |- ?statement => zesu_pure_term_budget statement constr:(64%nat) ltac:(fun _ => lia)
+  | |- ?statement => zesu_pure_term_budget statement constr:(64%nat) ltac:(fun _ => zesu_lia)
   end.
 
 Ltac zesu_finish_pure_resources_step :=
@@ -342,7 +343,7 @@ Ltac zesu_finish_zero_offset_u64_roundtrip :=
       assert_fails (has_evar bytes);
       assert_fails (has_evar word);
       let Hzero := fresh "HsliceOffsetZero" in
-      assert (Hzero : offset = 0%Z) by lia;
+      assert (Hzero : offset = 0%Z) by zesu_lia;
       rewrite Hzero; clear Hzero;
       cbn [Z.to_nat drop];
       apply ByteArrays.zesu_u64_little_endian_roundtrip
@@ -567,7 +568,7 @@ Ltac zesu_finish_negated_ge :=
       | _ : (left < right)%Z |- _ => fail 0
       | _ =>
           let Hlt := fresh "HstrictBound" in
-          assert (Hlt : (left < right)%Z) by lia
+          assert (Hlt : (left < right)%Z) by zesu_lia
       end
   end.
 
@@ -616,7 +617,7 @@ Ltac zesu_finish_contract_arithmetic :=
       rewrite ?length_bv_to_little_endian;
       cbn [length N.to_nat]);
     repeat progress (rewrite ?zesu_Z_to_bv_add);
-    first [lia | bv_solve]].
+    first [zesu_lia | bv_solve]].
 
 Ltac zesu_finish_forall_leaf :=
   lazymatch goal with
@@ -701,7 +702,7 @@ Ltac zesu_masked_add_branch_finish :=
           (vm_compute; reflexivity);
         let range := fresh "HmaskedOneWrap" in
         assert (range : (bv_modulus low <= bv_unsigned base + delta < 2 * bv_modulus low)%Z) by
-          (rewrite cast; change (modulus <= value + delta < 2 * modulus)%Z; lia);
+          (rewrite cast; change (modulus <= value + delta < 2 * modulus)%Z; zesu_lia);
         let image := fresh "HmaskedAddImage" in
         assert (image : masked_expression = (value + delta - modulus)%Z) by
           (change (bv_unsigned (bv_and (bv_add base (Z_to_bv width delta)) mask) = (value + delta - modulus)%Z);
@@ -718,7 +719,7 @@ Ltac zesu_masked_add_branch_finish :=
           rewrite bound_cast in branch
         | _ => idtac
         end;
-        lia
+        zesu_lia
       end
     end].
 
@@ -829,7 +830,7 @@ Ltac zesu_finish_residual_cascade :=
           | solve [zesu_masked_add_branch_finish]
           | solve [ZesuSsz.Automation2.HypothesisCast.zesu_hypothesis_cast_finish]
           | solve [ZesuSsz.Automation2.ByteMaskCast.zesu_byte_mask_cast]
-          | solve [ZesuSsz.Automation2.ByteReconstruction.zesu_byte_reconstruction ltac:(lia)]
+          | solve [ZesuSsz.Automation2.ByteReconstruction.zesu_byte_reconstruction ltac:(zesu_lia)]
           | solve [ZesuSsz.Automation2.SymbolicByteCodec.zesu_symbolic_byte_codec]
           | solve [ZesuSsz.Automation2.MaskPresentation.zesu_mask_sign_extend_presentation]
           | solve [ZesuSsz.Automation2.MaskWrapPresentation.zesu_mask_wrap_presentation]
@@ -869,7 +870,7 @@ Ltac zesu_union_required_pure_with branch :=
   first [ZesuSsz.Automation2.WordIdentity.zesu_word_identity |
     ZesuSsz.Automation2.HypothesisCast.zesu_hypothesis_cast_finish |
     ZesuSsz.Automation2.ByteMaskCast.zesu_byte_mask_cast |
-    ZesuSsz.Automation2.ByteReconstruction.zesu_byte_reconstruction ltac:(lia) |
+    ZesuSsz.Automation2.ByteReconstruction.zesu_byte_reconstruction ltac:(zesu_lia) |
     ZesuSsz.Automation2.MaskPresentation.zesu_mask_sign_extend_presentation |
     ZesuSsz.Automation2.MaskWrapPresentation.zesu_mask_wrap_presentation |
     ZesuSsz.Automation2.StoreMemoryLookup.zesu_store_splice_bounds |
@@ -927,7 +928,7 @@ Ltac zesu_finish_common_pure :=
     first [zesu_talt c_wrapped_word_range (idtac; solve [apply andb_true_iff; split; apply bool_decide_eq_true_2;
       WrappedWord.zesu_wrapped_word_range ltac:(
         WrappedWord.zesu_reduce_closed_Z_aliases;
-        cbv [bv_unsigned bv_modulus] in *; lia)])
+        cbv [bv_unsigned bv_modulus] in *; zesu_lia)])
     | zesu_talt c_isla_rewrite (idtac; autorewrite with isla_coq_rewrite);
       zesu_talt c_union_pure_finish (idtac; zesu_union_pure_finish)]])]).
 
@@ -971,7 +972,7 @@ Ltac zesu_finish_final_pure :=
       zesu_finish_byte_word_views
     | zesu_finish_negated_ge; zesu_finish_implication_pair; repeat split;
       first [reflexivity | assumption | eassumption |
-        zesu_final_solver_goal; lia | zesu_final_solver_goal; bv_solve |
+        zesu_final_solver_goal; zesu_lia | zesu_final_solver_goal; bv_solve |
         zesu_finish_forall_leaf | zesu_finish_contract_arithmetic |
         zesu_finish_simpl_and_leaf]
     | repeat split; zesu_finish_forall_leaf
@@ -979,7 +980,7 @@ Ltac zesu_finish_final_pure :=
         zesu_finish_simpl_and_leaf]
     | let rec finish_leaf :=
         first [reflexivity | assumption | eassumption |
-          zesu_final_solver_goal; lia | zesu_final_solver_goal; bv_solve |
+          zesu_final_solver_goal; zesu_lia | zesu_final_solver_goal; bv_solve |
           zesu_finish_forall_leaf | zesu_finish_contract_arithmetic |
           zesu_finish_simpl_and_leaf |
           lazymatch goal with |- and _ _ => split; finish_leaf end]
@@ -999,7 +1000,7 @@ zesu_finish_pure_goal_base;
   try solve [
     first [
       zesu_finish_negated_ge; zesu_finish_implication_pair; repeat split;
-      first [reflexivity | assumption | eassumption | lia | bv_solve |
+      first [reflexivity | assumption | eassumption | zesu_lia | bv_solve |
         zesu_finish_forall_leaf]
     | repeat split; zesu_finish_forall_leaf]] | zesu_finish_common_pure]).
 
@@ -1162,7 +1163,7 @@ Ltac zesu_prepare_initialized_array_read :=
          | Hlength : length ?source = ?size |- context [length ?source] =>
              rewrite Hlength
          end;
-         lia |];
+         zesu_lia |];
       iExists eq_refl
   end.
 
@@ -1492,7 +1493,7 @@ Ltac zesu_finish_array_branch :=
     | Hbranch : _ <> _ |- _ => bv_simplify Hbranch; congruence
     end | match goal with
     | Htag : ?tag <> _, Hbranch : bv_zero_extend _ ?tag = _ |- _ =>
-        bv_simplify Htag; bv_simplify Hbranch; lia
+        bv_simplify Htag; bv_simplify Hbranch; zesu_lia
     end].
 
 Ltac zesu_instantiate_tuple :=

@@ -4,6 +4,7 @@ Require Import ZesuSsz.Automation2.VmClosed.
 From iris.proofmode Require Import tactics environments.
 From Coq Require Import Bool.Bool ZArith.
 From stdpp Require Import decidable bitvector.tactics.
+Require Import ZesuSsz.Automation2.LiaHook.
 Local Open Scope Z_scope.
 
 (* Reduce only the closed mask and result.  Preserve the symbolic word. *)
@@ -44,7 +45,7 @@ Ltac zesu_spatial_count_fact :=
           rewrite (BitvectorFacts.zesu_signed_zero_extend_64_128 _) in Hview;
           rewrite (BitvectorFacts.zesu_signed_zero_extend_64_128 _) in Hview;
           rewrite (JoinEntailment.zesu_join_mask_payload byte Hlower) in Hview;
-          clear - Hview; Lia.lia
+          clear - Hview; zesu_lia
       end
   end.
 

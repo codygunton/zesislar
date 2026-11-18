@@ -6,6 +6,7 @@ Require Import ZesuSsz.Automation2.Telemetry.
 From iris.proofmode Require Import tactics environments.
 From Coq Require Import ZArith NArith Lia.
 From stdpp Require Import bitvector.tactics.
+Require Import ZesuSsz.Automation2.LiaHook.
 Local Open Scope Z_scope.
 
 Lemma zesu_masked_byte_distinct (width : N) (byte : bv 8) (value : Z)
@@ -247,7 +248,7 @@ Ltac zesu_source_byte_order_goal :=
               let value := eval vm_compute in (bv_signed bound) in
               change (bv_signed bound) with value in Hderived
           end;
-          solve [clear - Hderived; lia]
+          solve [clear - Hderived; zesu_lia]
       end
   end].
 

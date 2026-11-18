@@ -3,6 +3,7 @@ Require Import ZesuSsz.Automation2.AdditiveDecoder.
 From Coq Require Import Lists.List ZArith.ZArith Lia.
 From stdpp Require Import bitvector.definitions list_numbers.
 Require ZesuSsz.Automation2.VmClosed.
+Require Import ZesuSsz.Automation2.LiaHook.
 Local Open Scope Z_scope.
 
 Class ZesuStepCodecRoundtrip : Prop := {}.
@@ -55,7 +56,7 @@ Ltac zesu_codec_roundtrip :=
         change (zesu_integer_additive_decoder width
           (Z_to_little_endian count (Z.of_N width) (bv_unsigned word)) =
           bv_unsigned word);
-        rewrite (zesu_integer_codec_roundtrip count width (bv_unsigned word) ltac:(lia));
+        rewrite (zesu_integer_codec_roundtrip count width (bv_unsigned word) ltac:(zesu_lia));
         apply Z.mod_small;
         let Hrange := fresh "HcodecWordRange" in
         pose proof (bv_unsigned_in_range source_width word) as Hrange;

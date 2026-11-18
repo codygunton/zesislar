@@ -3,6 +3,7 @@ Require Import ZesuSsz.Automation2.MemoryAddress.
 From Coq Require Import Lists.List ZArith.ZArith Lia.
 From stdpp Require Import bitvector.definitions.
 Require ZesuSsz.Automation2.VmClosed.
+Require Import ZesuSsz.Automation2.LiaHook.
 Local Open Scope Z_scope.
 
 Class ZesuStepCodecArrayRange : Prop := {}.
@@ -17,7 +18,7 @@ Ltac zesu_codec_range_lengths :=
   | |- context [length (bv_to_little_endian ?count ?width ?value)] =>
       ZesuSsz.Automation2.VmClosed.zesu_closed_term count; ZesuSsz.Automation2.VmClosed.zesu_closed_term width;
       let nonnegative := fresh "HcodecCount" in
-      assert (nonnegative : (0 <= count)%Z) by lia;
+      assert (nonnegative : (0 <= count)%Z) by zesu_lia;
       rewrite (length_bv_to_little_endian count width value nonnegative);
       clear nonnegative
   end;
@@ -38,6 +39,6 @@ Ltac zesu_codec_array_range :=
         ZesuSsz.Automation2.MemoryAddress.zesu_handoff_closed_Z pointer ltac:(fun point =>
         ZesuSsz.Automation2.MemoryAddress.zesu_handoff_closed_Z upper ltac:(fun high =>
           change (low <= point < high)%Z;
-          lia)))
+          zesu_lia)))
     end
   ].

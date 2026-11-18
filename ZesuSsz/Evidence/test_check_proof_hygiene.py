@@ -7,6 +7,7 @@ from unittest.mock import patch
 from check_proof_hygiene import (
     PLACEHOLDER,
     assert_fails_match_failures,
+    automation_lia_call_failures,
     automation_entry_failures,
     FROZEN_AUTOMATION_TREE,
     frozen_automation_failures,
@@ -114,6 +115,22 @@ class ProofHygieneTests(unittest.TestCase):
                 "Ltac c := assert_fails (has_evar x).\n"
                 "(* assert_fails (match goal with _ => idtac end) *)\n")
         self.assertEqual(assert_fails_match_failures(name, good), [])
+
+    def test_automation_tactics_call_the_project_lia(self):
+        name = "ZesuSsz/Automation2/Planted.v"
+        bad = ("Ltac a := first [zesu_lia | lia].\n"
+               "Ltac b x :=\n  assert (x = x) by Lia.lia.\n"
+               "#[export] Hint Extern 1 (_ < _) => Coq.micromega.Lia.lia : core.\n"
+               "Ltac2 c () := ltac1:(lia).\n")
+        self.assertEqual(automation_lia_call_failures(name, bad), [
+            f"Automation2 tactic calls lia (call zesu_lia): {name}:{n}" for n in (1, 3, 4, 5)])
+        self.assertEqual(automation_lia_call_failures("ZesuSsz/Contracts/P.v", bad), [])
+        good = ("Ltac zesu_lia := lia.\n"
+                "Ltac Lia.lia ::= zesu_lia.\n"
+                "Ltac a := first [zesu_lia | xlia Lia.zchecker | zesu_finish_lia].\n"
+                "(* Ltac b := lia. *)\n"
+                "Lemma l : 1 = 1.\nProof. lia. Qed.\n")
+        self.assertEqual(automation_lia_call_failures(name, good), [])
 
     def test_identifier_boundaries_and_enabled_checks_remain_valid(self):
         source = ("Ltac my_timeout := idtac.\n"

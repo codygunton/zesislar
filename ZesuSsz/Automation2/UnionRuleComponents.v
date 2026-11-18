@@ -4,6 +4,7 @@
 From Coq Require Import ZArith List Lia Bool.
 From Ltac2 Require Import Ltac2.
 From Ltac2 Require FMap FSet.
+Require Import ZesuSsz.Automation2.LiaHook.
 Set Default Proof Mode "Classic".
 Import ListNotations.
 Local Open Scope Z_scope.
@@ -1594,7 +1595,7 @@ Ltac2 rc_lia () : unit :=
 End RF.
 
 Ltac range_interval := ltac2:(RF.rc_lia ()).
-Ltac range_pre_lia := first [ range_interval | lia ].
+Ltac range_pre_lia := first [ range_interval | zesu_lia ].
 
 Require Export ZesuSsz.Automation2.AdjacentWordAddress291.
 Require Import isla.riscv64.riscv64.
@@ -2008,7 +2009,7 @@ Ltac zesu_region_fault_word_casts :=
       let modulus := eval vm_compute in (bv_modulus width) in
       let Hbound := fresh "HregionCastRange" in
       assert (Hbound : (0 <= value < bv_modulus width)%Z) by
-        (change (0 <= value < modulus)%Z; lia);
+        (change (0 <= value < modulus)%Z; zesu_lia);
       progress (rewrite (Z_to_bv_small width value Hbound) in Hcast);
       clear Hbound
     | |- context[@bv_unsigned ?width (Z_to_bv ?castWidth ?value)] =>
@@ -2018,7 +2019,7 @@ Ltac zesu_region_fault_word_casts :=
       let modulus := eval vm_compute in (bv_modulus width) in
       let Hbound := fresh "HregionCastRange" in
       assert (Hbound : (0 <= value < bv_modulus width)%Z) by
-        (change (0 <= value < modulus)%Z; lia);
+        (change (0 <= value < modulus)%Z; zesu_lia);
       progress (rewrite (Z_to_bv_small width value Hbound));
       clear Hbound
     end].
@@ -2027,7 +2028,7 @@ Ltac zesu_region_fault_late_arithmetic :=
   zesu_region_fault_prepare;
   zesu_region_fault_word_casts;
   zesu_region_reduce_closed_all;
-  first [lia | bv_solve].
+  first [zesu_lia | bv_solve].
 
 Ltac zesu_region_fault_array_address address :=
   let address_value := lazymatch address with
@@ -2185,7 +2186,7 @@ Ltac block2_f7_on_context :=
                let bound := fresh "F7TargetRange" in
                pose proof (bv_unsigned_in_range width word) as bound;
                change (0 <= bv_unsigned word < 2 ^ Z.of_N width)%Z in bound;
-               lia
+               zesu_lia
              end
          end] |
          solve [lazymatch goal with
@@ -2193,7 +2194,7 @@ Ltac block2_f7_on_context :=
              constr_eq value expected;
              apply Z_to_bv_small;
              unfold bv_modulus in *;
-             lia
+             zesu_lia
          end] |
          solve [bv_solve]].
 

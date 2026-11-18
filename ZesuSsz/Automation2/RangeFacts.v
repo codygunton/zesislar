@@ -3,6 +3,7 @@ From stdpp.bitvector Require Import definitions tactics.
 From Ltac2 Require Import Ltac2 Ref List Int String Ident.
 Require Import ZesuSsz.Automation2.VmClosed.
 Require Import ZesuSsz.Automation2.SearchBudget.
+Require Import ZesuSsz.Automation2.LiaHook.
 Set Default Proof Mode "Classic".
 Local Open Scope Z_scope.
 Ltac zesu_range_mentions values pointer T :=
@@ -250,7 +251,7 @@ Ltac zesu_selected_casts :=
    assert (range : (0 <= value < bv_modulus width)%Z) by (
      change (0 <= value < bound)%Z;
      zesu_selected_closed_bounds;
-     Lia.lia);
+     zesu_lia);
    progress rewrite (Z_to_bv_small width value range) in H;
    clear range
  end.
@@ -285,7 +286,7 @@ Ltac zesu_selected_array_range :=
       | Hlength : List.length ?xs = ?n |- context[List.length ?xs] => progress rewrite Hlength end);
      zesu_selected_casts;
      ltac2:(zesu_range_reduce_selected ());
-     lia
+     zesu_lia
    end
  end.
 
@@ -303,7 +304,7 @@ Ltac zesu_word_range base :=
    let reduced := ZesuSsz.Automation2.VmClosed.zesu_vm_eval_closed bound in
    change (0 <= value < reduced)%Z
  end;
- lia.
+ zesu_lia.
 Lemma zesu_cast_add_no_wrap width base (offset : bv width)
  (Hbase : (0 <= base < bv_modulus width)%Z)
  (Hsum : (0 <= base + bv_unsigned offset < bv_modulus width)%Z) :

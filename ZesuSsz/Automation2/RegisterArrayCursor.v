@@ -19,6 +19,7 @@ From iris.proofmode Require Import environments.
 From stdpp Require Import bitvector.definitions bitvector.tactics.
 From Coq Require Import ZArith.ZArith Lia.
 From Ltac2 Require Import Ltac2.
+Require Import ZesuSsz.Automation2.LiaHook.
 Set Default Proof Mode "Classic".
 Local Open Scope Z_scope.
 
@@ -142,7 +143,7 @@ Ltac zesu_cursor_linear :=
   bv_saturate_unsigned;
   unfold bv_signed, bv_swrap, bv_wrap, bv_half_modulus, bv_modulus, bv_unsigned in *;
   simpl;
-  lia.
+  zesu_lia.
 
 (* Expose loop binders at their carrier type, retained conjunctions, guards,
    and widened comparisons as integer facts. Solve with the facts the goal
@@ -266,7 +267,7 @@ Ltac zesu_register_array_address :=
                   (let Hequation := fresh "HcursorEquation" in
                    pose proof equation as Hequation;
                    clear - Hcursor Hequation; rewrite <- Hequation;
-                   change (Z.of_N (width `div` 8)) with stride; lia);
+                   change (Z.of_N (width `div` 8)) with stride; zesu_lia);
                 rewrite equation))
         end
       | zesu_register_cursor_range register]
@@ -287,7 +288,7 @@ Ltac zesu_cursor_range_premise :=
           left;
           let stride := eval vm_compute in (Z.of_N (width `div` 8)) in
           change (Z.of_N (width `div` 8)) with stride;
-          clear - Hrange; lia
+          clear - Hrange; zesu_lia
       end
   end.
 #[export] Hint Extern 12 (FindHypEqual (FICMemMapstoSemantic _) (_ ↦ₘ∗ _) (mem_mapsto_kind_prop _ _) _) =>

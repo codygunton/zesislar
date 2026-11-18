@@ -4,6 +4,7 @@ Require Import ZesuSsz.Automation2.BitvectorFacts.
 Require Import ZesuSsz.Automation2.Hooks.
 From stdpp Require Import bitvector.definitions bitvector.tactics.
 From Coq Require Import ZArith.ZArith Lia.
+Require Import ZesuSsz.Automation2.LiaHook.
 Local Open Scope Z_scope.
 
 (* Pure evidence transport only. No search, address, or contract is encoded. *)
@@ -22,9 +23,9 @@ Ltac zesu_unsigned_branch_cast_evidence :=
           | context [bv_unsigned (Z_to_bv ?width ?value)] =>
               let range := fresh "HcastRange" in
               assert (range : 0 <= value < bv_modulus width) by
-                (unfold bv_modulus; cbn; lia);
+                (unfold bv_modulus; cbn; zesu_lia);
               rewrite (Z_to_bv_small width value range) in view
           end;
-          first [exact view | solve [lia] | solve [bv_solve]]
+          first [exact view | solve [zesu_lia] | solve [bv_solve]]
       end
   end.

@@ -9,6 +9,7 @@ Require ZesuSsz.Automation2.BvLinear.
 Require Import ZesuSsz.Automation2.Telemetry.
 Require Import ZesuSsz.Automation2.FailureMemo.
 From Ltac2 Require Import Ltac2.
+Require Import ZesuSsz.Automation2.LiaHook.
 Set Default Proof Mode "Classic".
 
 (* Reject unrelated regions without expanding the caller's validity predicates.
@@ -32,7 +33,7 @@ Ltac zesu_region_bounds_legacy :=
       | Hlength : ?size = length values |- _ => rewrite <- Hlength
       end
   end;
-  first [repeat match goal with H : _ |- _ => clear H end; lia |
+  first [repeat match goal with H : _ |- _ => clear H end; zesu_lia |
     repeat match goal with
     | H : ?T |- _ =>
       lazymatch T with
@@ -143,8 +144,8 @@ Ltac zesu_region_bounds_with offset_word :=
   zesu_region_selected_facts offset_word;
   first [
     ZesuSsz.Automation2.ByteArrayLengths.zesu_byte_array_bound_goal_if_enabled;
-    first [solve [lia] |
-      ZesuSsz.Automation2.ByteArrayLengths.zesu_byte_array_lengths_if_enabled; solve [lia | bv_solve]]
+    first [solve [zesu_lia] |
+      ZesuSsz.Automation2.ByteArrayLengths.zesu_byte_array_lengths_if_enabled; solve [zesu_lia | bv_solve]]
   | ZesuSsz.Automation2.UninitRegions.zesu_region_bounds_legacy].
 
 (* The offset-word selection changes which facts the bound sees. Try the
@@ -311,7 +312,7 @@ Existing Class ZesuRegionNotRefuted.
 Ltac zesu_region_refute :=
   first [zesu_region_bounds |
     ZesuSsz.Automation2.ContextCollection.zesu_solve_goal_selected
-      ("region.refute"%string) ltac:(first [lia | bv_solve])].
+      ("region.refute"%string) ltac:(first [zesu_lia | bv_solve])].
 Global Hint Extern 0 (ZesuRegionNotRefuted (0 <= ?n2 /\ ?a1 <= ?a2 /\ ?a2 + ?n2 <= ?a1 + ?n1)%Z) =>
   (assert_fails (assert (n2 < 0 \/ a2 < a1 \/ a1 + n1 < a2 + n2)%Z by zesu_region_refute);
    exact (zesu_region_not_refuted _)) : typeclass_instances.

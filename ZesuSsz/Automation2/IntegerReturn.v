@@ -3,6 +3,7 @@ Require Import ZesuSsz.Automation2.SwitchDispatch.
 Require Import ZesuSsz.Automation2.PureFacts.
 Require Import ZesuSsz.Automation2.ByteArrays.
 Require Import ZesuSsz.Automation2.Rewrites.
+Require Import ZesuSsz.Automation2.LiaHook.
 
 Class ZesuStepIntegerReturn : Prop := zesu_step_integer_return : True.
 
@@ -85,7 +86,7 @@ Ltac zesu_return_integer_normalize :=
       zesu_integer_array_facts;
       let Heven := fresh "HreturnEven" in
       assert (Heven : (R mod 2 = 0)%Z) by
-        first [assumption | match goal with H : (R mod 4 = 0)%Z |- _ => lia end];
+        first [assumption | match goal with H : (R mod 4 = 0)%Z |- _ => zesu_lia end];
       exact (normalize_instr_addr_hint _ R (zesu_ret_target R Heven))
   end.
 
