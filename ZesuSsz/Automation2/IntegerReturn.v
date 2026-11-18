@@ -26,16 +26,87 @@ Proof.
  pose proof (f_equal (@bv_unsigned 1) Hhigh) as Hbit.
  rewrite bv_extract_unsigned in Hbit. exact Hbit.
 Qed.
+
+(* A return target clears bit 0; its bit 1, read as bit 0 of the target
+   shifted right once, is zero for a word aligned to four. *)
+Lemma zesu_return_target_bit_one (value : bv 64) :
+  (bv_unsigned value mod 4 = 0)%Z ->
+  bv_extract 0 1 (bv_shiftr (bv_and value (BV 64 18446744073709551614)) (BV 64 1)) = BV 1 0.
+Proof.
+  intro Haligned.
+  assert (Hlow : bv_extract 0 1 value = BV 1 0).
+  { apply bv_eq. rewrite bv_extract_0_unsigned.
+    change (bv_unsigned value mod 2 = 0)%Z. clear -Haligned. Lia.lia. }
+  assert (Hmasked : bv_and value (BV 64 18446744073709551614) = value).
+  { apply bv_eq.
+    pose proof (normalize_instr_addr_riscv64_ret_tac value _ Hlow eq_refl) as Hnormalized.
+    rewrite !bv_wrap_bv_unsigned in Hnormalized.
+    rewrite (bv_add_0_r value (BV 64 0) eq_refl) in Hnormalized.
+    rewrite (bv_or_0_r (bv_and value (BV 64 18446744073709551614)) (BV 64 0) eq_refl) in Hnormalized.
+    exact Hnormalized. }
+  rewrite Hmasked. apply bv_eq. rewrite bv_extract_0_unsigned. rewrite bv_shiftr_unsigned.
+  change (bv_unsigned (BV 64 1)) with 1%Z. rewrite Z.shiftr_div_pow2; [|Lia.lia].
+  change (bv_unsigned (BV 1 0)) with 0%Z.
+  unfold bv_wrap, bv_modulus. change (2 ^ Z.of_N 1)%Z with 2%Z. change (2 ^ 1)%Z with 2%Z.
+  clear -Haligned. Lia.lia.
+Qed.
+
+(* A requested fact about that bit (a successor entry's alignment facts):
+   rewrite the bit; the fact is then closed and computation decides it. The
+   alignment is a context fact, or follows from the range and alignment of
+   the integer the word encodes. *)
+Ltac zesu_return_target_bit_close :=
+  lazymatch goal with
+  | |- context [bv_extract 0 1 (bv_shiftr (bv_and ?value (BV 64 18446744073709551614)) (BV 64 1))] =>
+      assert_fails (has_evar value);
+      let Haligned := fresh "HreturnTargetAligned" in
+      assert (Haligned : (bv_unsigned value mod 4 = 0)%Z) by (
+        first [assumption |
+          lazymatch value with
+          | Z_to_bv 64 ?integer =>
+              match goal with
+              | Hinteger : (integer mod 4 = 0)%Z |- _ =>
+                  let Hrange := fresh "HreturnTargetRange" in
+                  assert (Hrange : (0 <= integer < 2 ^ 64)%Z) by zesu_lia;
+                  rewrite Z_to_bv_unsigned; rewrite (bv_wrap_small 64 integer Hrange); exact Hinteger
+              end
+          end]);
+      rewrite (zesu_return_target_bit_one value Haligned); clear Haligned;
+      apply (bool_decide_unpack _); vm_compute; reflexivity
+  end.
+
+(* The return address's range and alignment can sit inside a folded
+   precondition (a domain predicate whose body is a tree of conjunctions).
+   Open the conjunctions in this local proof only; the context keeps the
+   folded hypothesis. *)
+Ltac zesu_return_folded_fact :=
+  solve [repeat match goal with
+    | H : _ /\ _ |- _ => destruct H
+    | H : ?T |- _ =>
+        lazymatch type of T with Prop => idtac end;
+        let unfolded := eval hnf in T in
+        lazymatch unfolded with _ /\ _ => change unfolded in H end
+    end;
+    first [assumption | split; assumption]].
+
 Ltac zesu_return_integer_range R continuation :=
   assert_fails (has_evar R);
   zesu_integer_array_facts;
   try autounfold with zesu_contract_constants in *;
-  match goal with
-  | Hlower : (0 <= R)%Z,
-    Hupper : (R < 2 ^ 64)%Z,
-    Haligned : (R mod 4 = 0)%Z |- _ =>
-      continuation Hlower Hupper Haligned
-  end.
+  first [
+    match goal with
+    | Hlower : (0 <= R)%Z,
+      Hupper : (R < 2 ^ 64)%Z,
+      Haligned : (R mod 4 = 0)%Z |- _ =>
+        continuation Hlower Hupper Haligned
+    end
+  | let Hlower := fresh "HreturnLower" in
+    let Hupper := fresh "HreturnUpper" in
+    let Haligned := fresh "HreturnAligned" in
+    assert (Hlower : (0 <= R)%Z) by zesu_return_folded_fact;
+    assert (Hupper : (R < 2 ^ 64)%Z) by zesu_return_folded_fact;
+    assert (Haligned : (R mod 4 = 0)%Z) by zesu_return_folded_fact;
+    continuation Hlower Hupper Haligned].
 
 Lemma zesu_ret_target (R : Z) :
   (R mod 2 = 0)%Z ->
@@ -86,7 +157,10 @@ Ltac zesu_return_integer_normalize :=
       zesu_integer_array_facts;
       let Heven := fresh "HreturnEven" in
       assert (Heven : (R mod 2 = 0)%Z) by
-        first [assumption | match goal with H : (R mod 4 = 0)%Z |- _ => zesu_lia end];
+        first [assumption | match goal with H : (R mod 4 = 0)%Z |- _ => zesu_lia end |
+          let Haligned := fresh "HreturnAligned" in
+          assert (Haligned : (R mod 4 = 0)%Z) by zesu_return_folded_fact;
+          clear -Haligned; zesu_lia];
       exact (normalize_instr_addr_hint _ R (zesu_ret_target R Heven))
   end.
 

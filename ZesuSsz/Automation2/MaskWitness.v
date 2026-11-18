@@ -2,11 +2,14 @@
    generated entries as bitvector existentials that only pure low-bit facts
    constrain: `bv_and w M = 0`, its unsigned view, and the bit views of the
    same bits. A context word with `Z.land (bv_unsigned t) M = 0` satisfies
-   them. The step instantiates such a telescope when its body holds no owned
-   resource; the closer proves the facts from the context word. No rule names
+   them; without one, a constant tuple whose facts computation decides does.
+   The step instantiates such a telescope when no owned resource mentions its
+   witnesses; the closer proves the witness facts, and the facts that do not
+   mention the witnesses stay for the steps after the choice. No rule names
    an address, register, or contract predicate. *)
 Require Import isla.riscv64.riscv64.
 Require Import ZesuSsz.Automation2.BitvectorFacts.
+Require ZesuSsz.Automation2.VmClosed.
 From iris.proofmode Require Import environments tactics.
 From stdpp Require Import bitvector.definitions bitvector.tactics.
 From Coq Require Import ZArith.ZArith.
@@ -63,23 +66,52 @@ Ltac zesu_mask_fact_close :=
       zesu_mask_bit_zero bit word ltac:(fun Hzero => rewrite Hzero; vm_compute; congruence)
   end.
 
-(* Commit to the witnesses only when the closer proves every pure fact of
-   the instantiated body, so the step never preempts another witness route. *)
-Ltac zesu_mask_pure_closable body :=
-  lazymatch body with
-  | @bi_sep _ ?left ?right => zesu_mask_pure_closable left; zesu_mask_pure_closable right
-  | @bi_pure _ ?fact =>
-      assert_succeeds (idtac; let Hfact := fresh "HmaskFact" in
-        assert (Hfact : fact) by zesu_mask_fact_close)
-  | ?frame => is_var frame
+(* A closed fact (a witness chosen as a constant) is decided by computation. *)
+Ltac zesu_mask_closed_fact_close :=
+  lazymatch goal with
+  | |- ?fact =>
+      ZesuSsz.Automation2.VmClosed.zesu_closed_term fact;
+      first [vm_compute; reflexivity | apply (bool_decide_unpack _); vm_compute; reflexivity]
   end.
 
+Ltac zesu_mask_witness_fact_close :=
+  first [zesu_mask_fact_close | zesu_mask_closed_fact_close].
+
+(* The constant candidate: every component zero. *)
+Ltac zesu_mask_zero_tuple T :=
+  lazymatch T with
+  | unit => constr:(tt)
+  | li_prod (bv ?width) ?rest =>
+      let tail := zesu_mask_zero_tuple rest in
+      constr:(li_pair (BV width 0) tail)
+  end.
+
+(* Walk the telescope's body under its binder. A conjunct that does not
+   mention the witnesses is left to the steps after the choice; a pure
+   conjunct that mentions them must close for the candidate; a resource that
+   mentions them refuses the telescope, so the step never preempts a
+   resource-driven witness route. *)
+Ltac zesu_mask_pure_closable body witness :=
+  lazymatch body with
+  | (fun _ => ?independent) => idtac
+  | (fun x => @bi_sep _ (@?left x) (@?right x)) =>
+      zesu_mask_pure_closable left witness; zesu_mask_pure_closable right witness
+  | (fun x => @bi_pure _ (@?fact x)) =>
+      let instantiated := eval cbv beta iota delta [li_fst li_snd] in (fact witness) in
+      assert_succeeds (idtac; let Hfact := fresh "HmaskFact" in
+        assert (Hfact : instantiated) by zesu_mask_witness_fact_close)
+  end.
+
+Ltac zesu_mask_commit body witness :=
+  zesu_mask_pure_closable body witness;
+  notypeclasses refine (tac_ex_evar _ witness _ _); red_li_prod.
+
+(* Candidates in order: a context word whose facts entail the conjuncts,
+   then the constant zero tuple when computation decides the conjuncts. *)
 Ltac zesu_mask_witness_telescope :=
   lazymatch goal with
   | |- envs_entails _ (@bi_exist _ ?T ?body) =>
       lazymatch T with li_prod _ _ => idtac end;
-      let witness := zesu_mask_witness_tuple T in
-      let instantiated := eval cbv beta iota delta [li_fst li_snd] in (body witness) in
-      zesu_mask_pure_closable instantiated;
-      notypeclasses refine (tac_ex_evar _ witness _ _); red_li_prod
+      first [let witness := zesu_mask_witness_tuple T in zesu_mask_commit body witness
+            | let witness := zesu_mask_zero_tuple T in zesu_mask_commit body witness]
   end.

@@ -511,6 +511,7 @@ Ltac zesu_linear_goal_shape :=
 Ltac zesu_finish_lia ::=
   let run := ltac2:(tac |- zesu_telemetry_stage_ltac1 "zesu_finish_lia" tac) in
   run ltac:(first [LoopBackedgeJoin.zesu_loop_pure_finish | solve [MaskWitness.zesu_mask_fact_close] |
+    solve [IntegerReturn.zesu_return_target_bit_close] |
     (zesu_linear_goal_shape; zesu_solve_machine_linear) | solve [FlagMaskBounds.zesu_flag_mask_bound] |
     solve [zesu_flag_mask_bound_derived]]).
 
@@ -627,6 +628,8 @@ Ltac zesu_lookup_side_condition :=
   bv_solve.
 #[export] Hint Extern 11 (FindHypEqual (FICMemMapstoSemantic _) (_ ↦ₘ∗ _) (mem_mapsto_kind_prop _ _) _) =>
   (apply tac_mem_mapsto_array_eq; zesu_lookup_side_condition) : typeclass_instances.
+#[export] Hint Extern 12 (FindHypEqual (FICMemMapstoSemantic _) (_ ↦ₘ∗ _) (mem_mapsto_kind_prop _ _) _) =>
+  (apply tac_mem_mapsto_array_eq; RegisterArrayCursor.zesu_cursor_range_premise) : typeclass_instances.
 
 Ltac zesu_normalize_find_mem_address :=
   first [
@@ -643,6 +646,29 @@ Ltac zesu_normalize_find_mem_address :=
     end |
     ZesuSsz.Automation2.Hooks.zesu_normalize_symbolic_mem_address |
     ZesuSsz.Automation2.Hooks.zesu_normalize_known_word_address].
+
+(* An opened byte array (a frame slot saved byte-wise) can stay one chain
+   hypothesis `a0 ↦ₘ b0 ∗ … ∗ emp`; a memory lookup sees only whole cells.
+   Split the chain before the lookup. *)
+Ltac zesu_split_memory_cell_chain :=
+  zesu_expose_environment_alias;
+  lazymatch goal with
+  | |- environments.envs_entails _ (find_in_context (FindMemMapsTo _) _) => idtac
+  end;
+  progress repeat iDestruct select ((_ ↦ₘ _) ∗ _)%I as "[? ?]".
+
+(* A successor entry can request an opened array (`mem_mapsto_array_def`)
+   as its first resource where the context holds the sealed `↦ₘ∗`; seal the
+   requested side only. Runs after the opened-array rebuild rule. *)
+Ltac zesu_seal_requested_array :=
+  lazymatch goal with
+  | |- environments.envs_entails _ ?requested =>
+      lazymatch requested with
+      | @bi_sep _ (isla.ghost_state.mem_mapsto_array_def _ _ _) _ => idtac
+      | @bi_exist _ _ (fun _ => @bi_sep _ (isla.ghost_state.mem_mapsto_array_def _ _ _) _) => idtac
+      end;
+      iEval (rewrite <- isla.ghost_state.mem_mapsto_array_eq)
+  end.
 
 Class ZesuStepStackWrite : Prop := zesu_step_stack_write : True.
 
@@ -2329,7 +2355,8 @@ Ltac zesu_return_integer_even_mask :=
           lazymatch value with
           | Z_to_bv 64 ?integer =>
               let Hrange := fresh "HreturnIntegerRange" in
-              assert (Hrange : (0 <= integer < 2 ^ 64)%Z) by zesu_lia;
+              assert (Hrange : (0 <= integer < 2 ^ 64)%Z) by
+                first [zesu_lia | IntegerReturn.zesu_return_folded_fact];
               rewrite Z_to_bv_unsigned;
               rewrite (bv_wrap_small 64 integer Hrange);
               match goal with
@@ -2345,7 +2372,8 @@ Ltac zesu_return_integer_even_mask :=
       try (lazymatch value with
       | Z_to_bv 64 ?integer =>
           let Hrange := fresh "HreturnIntegerRange" in
-          assert (Hrange : (0 <= integer < 2 ^ 64)%Z) by zesu_lia;
+          assert (Hrange : (0 <= integer < 2 ^ 64)%Z) by
+            first [zesu_lia | IntegerReturn.zesu_return_folded_fact];
           rewrite (Z_to_bv_unsigned 64 integer);
           rewrite (bv_wrap_small 64 integer Hrange);
           clear Hrange
@@ -2359,6 +2387,50 @@ Ltac ZesuSsz.Automation2.CodecArrayRead.zesu_codec_array_direct_value ::=
     CodecArrayRead.zesu_codec_array_read_image image;
     subst loaded;
     try zesu_return_integer_even_mask).
+
+(* Split a conjunction tree behind one folded hypothesis; a conjunct that
+   equates a context variable with a term substitutes it. *)
+Ltac zesu_split_conjunction_tree H :=
+  let statement := type of H in
+  let unfolded := eval hnf in statement in
+  lazymatch unfolded with
+  | _ /\ _ =>
+      change unfolded in H;
+      let left := fresh "Hpre" in
+      pose proof (proj1 H) as left;
+      let right := fresh "Hpre" in
+      pose proof (proj2 H) as right;
+      clear H;
+      zesu_split_conjunction_tree left;
+      zesu_split_conjunction_tree right
+  | _ =>
+      lazymatch statement with
+      | ?term = ?variable =>
+          tryif is_var variable then
+            (tryif lazymatch term with context [variable] => idtac end then idtac
+             else (try subst variable))
+          else idtac
+      | _ => idtac
+      end
+  end.
+
+(* A jump to a symbolic target (a return through a reloaded address) needs
+   the target's range, alignment and identity, which a function's folded
+   precondition (a domain predicate of conjunctions) states. Open each folded
+   precondition once when the requested instruction address is symbolic. *)
+Ltac zesu_open_folded_jump_facts :=
+  lazymatch goal with
+  | |- envs_entails _ (find_in_context (FindInstrKind ?requested _) _) =>
+      tryif ZesuSsz.Automation2.VmClosed.zesu_closed_term requested then fail else idtac
+  end;
+  progress (repeat match goal with
+    | H : ?fact |- _ =>
+        lazymatch type of fact with Prop => idtac end;
+        zesu_lookup_folded_fact fact;
+        let unfolded := eval hnf in fact in
+        lazymatch unfolded with _ /\ _ => idtac end;
+        zesu_split_conjunction_tree H
+    end).
 
 Ltac zesu_prefer_owned_instr_pre :=
   lazymatch goal with
@@ -2399,7 +2471,9 @@ Ltac zesu_liAStep :=
       [@ZesuSsz; @Automation2; @StoreMemoryLookup; @zesu_join_frame_byte_array])))
   | zesu_talt l_open_nested_existential (idtac; progress ResourceGroups.zesu_open_nested_existential_packages)
   | zesu_talt l_byte_array_rebuild (idtac; ByteArrayAssemblyCodec.zesu_byte_array_rebuild_requested)
+  | zesu_talt l_seal_requested_array (idtac; zesu_seal_requested_array)
   | zesu_talt l_codec_array_read (idtac; CodecArrayRead.zesu_codec_array_read)
+  | zesu_talt l_open_folded_jump_facts (idtac; zesu_open_folded_jump_facts)
   | zesu_talt l_prefer_owned_instr_pre (idtac; zesu_prefer_owned_instr_pre)
   | zesu_talt l_source_witnesses (idtac; zesu_source_witnesses_if_enabled)
   | zesu_talt l_register_cursor (idtac; RegisterArrayCursor.zesu_register_cursor_step)
@@ -2415,6 +2489,7 @@ Ltac zesu_liAStep :=
   | zesu_talt l_handoff_facts (idtac; zesu_handoff_facts_if_enabled)
   | zesu_talt l_handoff_integer_equality (idtac; zesu_handoff_integer_equality_if_enabled)
   | zesu_talt l_integer_array_address (idtac; zesu_integer_array_address_if_enabled)
+  | zesu_talt l_split_memory_cell_chain (idtac; zesu_split_memory_cell_chain)
   | zesu_talt l_normalize_find_mem_address (idtac; zesu_normalize_find_mem_address)
   | zesu_talt l_select_generic_write (idtac; ZesuSsz.Automation2.UnionRuleComponents.block2_f6_select_generic_write)
   | zesu_talt l_liAWriteMem (idtac; zesu_liAWriteMem)

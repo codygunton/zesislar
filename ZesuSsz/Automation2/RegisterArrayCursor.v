@@ -278,8 +278,9 @@ Ltac zesu_register_cursor_step :=
 
 (* The semantic array finder proves its range with bv_solve over the whole
    context, which can fail in a large context even when a derived range fact
-   states the inclusion. This hint runs after the others and uses that fact
-   alone. *)
+   states the inclusion. This premise uses that fact alone; its hint is
+   declared in Hooks.v, which callers import (a hint exported here did not
+   reach them). *)
 Ltac zesu_cursor_range_premise :=
   lazymatch goal with
   | |- ((?lower <= ?address < ?lower + _ * Z.of_N (?width `div` 8)) \/ _)%Z =>
@@ -291,5 +292,3 @@ Ltac zesu_cursor_range_premise :=
           clear - Hrange; zesu_lia
       end
   end.
-#[export] Hint Extern 12 (FindHypEqual (FICMemMapstoSemantic _) (_ ↦ₘ∗ _) (mem_mapsto_kind_prop _ _) _) =>
-  (apply tac_mem_mapsto_array_eq; zesu_cursor_range_premise) : typeclass_instances.
