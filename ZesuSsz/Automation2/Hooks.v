@@ -55,6 +55,7 @@ Require Import ZesuSsz.Automation2.VmClosed.
 Require Export ZesuSsz.Automation2.ExitMeaning.
 Require Export ZesuSsz.Automation2.IntegerReturn.
 Require Import ZesuSsz.Contracts.SelectedCodeLookup.
+Require SailStdpp.MachineWord.
 Require Import InstrSpecs.Lookup.
 Require Import ZesuSsz.Automation2.ResourceGroups.
 Require Import ZesuSsz.Automation2.ConjunctMatch.
@@ -507,13 +508,33 @@ Ltac zesu_linear_goal_shape :=
   | |- ?target => lazymatch type of target with Prop => idtac end
   end.
 
+(* An array side condition can count elements at `bv (Z_idx 8)` while the
+   context's range fact counts them at `bv 8`; linear arithmetic sees two
+   `length` atoms. When the goal mentions `Z_idx`, compute each `Z_idx`
+   literal in the goal and context first. *)
+Ltac zesu_finish_element_alias :=
+  lazymatch goal with
+  | |- context [SailStdpp.MachineWord.MachineWord.Z_idx _] => idtac
+  end;
+  repeat match goal with
+  | H : context [SailStdpp.MachineWord.MachineWord.Z_idx ?z] |- _ =>
+      let v := eval vm_compute in (SailStdpp.MachineWord.MachineWord.Z_idx z) in
+      assert_fails (constr_eq v (SailStdpp.MachineWord.MachineWord.Z_idx z));
+      change (SailStdpp.MachineWord.MachineWord.Z_idx z) with v in H
+  | |- context [SailStdpp.MachineWord.MachineWord.Z_idx ?z] =>
+      let v := eval vm_compute in (SailStdpp.MachineWord.MachineWord.Z_idx z) in
+      assert_fails (constr_eq v (SailStdpp.MachineWord.MachineWord.Z_idx z));
+      change (SailStdpp.MachineWord.MachineWord.Z_idx z) with v
+  end.
+
 (* Preserve the machine normalization used by the existing finisher. *)
 Ltac zesu_finish_lia ::=
   let run := ltac2:(tac |- zesu_telemetry_stage_ltac1 "zesu_finish_lia" tac) in
   run ltac:(first [LoopBackedgeJoin.zesu_loop_pure_finish | solve [MaskWitness.zesu_mask_fact_close] |
     solve [IntegerReturn.zesu_return_target_bit_close] |
     (zesu_linear_goal_shape; zesu_solve_machine_linear) | solve [FlagMaskBounds.zesu_flag_mask_bound] |
-    solve [zesu_flag_mask_bound_derived]]).
+    solve [zesu_flag_mask_bound_derived] |
+    solve [zesu_finish_element_alias; zesu_linear_goal_shape; zesu_solve_machine_linear]]).
 
 Tactic Notation "lia" := zesu_solve_machine_linear.
 
