@@ -117,3 +117,55 @@ Section assertion_tests.
     iExact "Hfault".
   Qed.
 End assertion_tests.
+
+(* A closed bound, also through a local definition, is decided by
+   computation; the region arithmetic is not called. *)
+#[local] Ltac ZesuSsz.Automation2.UnionRuleComponents.zesu_region_fault_arithmetic ::=
+  fail "region arithmetic called".
+
+Section closed_assertion_tests.
+  Context `{!islaG Sigma} `{!threadG}.
+
+  Lemma region_fault_assert_closed_true es ann :
+    ⊢ WPasm (Smt (Assert (Unop Not (Val (Val_Bool
+      (bool_decide (bv_signed (bv_zero_extend 128 (BV 64 0xa0000010)) >= 0xa0000000)))
+      Mk_annot) Mk_annot)) ann :t: es).
+  Proof. iStartProof. ZesuSsz.Automation2.UnionRuleComponents.zesu_region_fault_if_enabled. Qed.
+
+  Lemma region_fault_assert_closed_local es ann :
+    ⊢ WPasm (Smt (Assert (Val (Val_Bool
+      (bool_decide (bv_signed (bv_zero_extend 128 (BV 64 0x80108bb0 + BV 64 0)) >= 0xa0000000)))
+      Mk_annot)) ann :t: es).
+  Proof.
+    iStartProof.
+    set (address := (BV 64 0x80108bb0 + BV 64 0)%bv).
+    ZesuSsz.Automation2.UnionRuleComponents.zesu_region_fault_assert.
+  Qed.
+
+  Lemma region_fault_assert_closed_false :
+    ⊢ WPasm (Smt (Assert (Unop Not (Val (Val_Bool
+      (bool_decide (bv_signed (bv_zero_extend 128 (BV 64 0x80108bb0)) >= 0xa0000000)))
+      Mk_annot) Mk_annot)) Mk_annot :t: tnil) -∗
+    WPasm (Smt (Assert (Unop Not (Val (Val_Bool
+      (bool_decide (bv_signed (bv_zero_extend 128 (BV 64 0x80108bb0)) >= 0xa0000000)))
+      Mk_annot) Mk_annot)) Mk_annot :t: tnil).
+  Proof.
+    iStartProof. iIntros "Hfault".
+    Fail ZesuSsz.Automation2.UnionRuleComponents.zesu_region_fault_if_enabled.
+    iExact "Hfault".
+  Qed.
+
+  Lemma region_fault_assert_open_uses_arithmetic (address : bv 64)
+      (Hbound : 0xa0000000 <= bv_unsigned address) :
+    ⊢ WPasm (Smt (Assert (Unop Not (Val (Val_Bool
+      (bool_decide (bv_signed (bv_zero_extend 128 address) >= 0xa0000000)))
+      Mk_annot) Mk_annot)) Mk_annot :t: tnil) -∗
+    WPasm (Smt (Assert (Unop Not (Val (Val_Bool
+      (bool_decide (bv_signed (bv_zero_extend 128 address) >= 0xa0000000)))
+      Mk_annot) Mk_annot)) Mk_annot :t: tnil).
+  Proof.
+    iStartProof. iIntros "Hfault".
+    Fail ZesuSsz.Automation2.UnionRuleComponents.zesu_region_fault_if_enabled.
+    iExact "Hfault".
+  Qed.
+End closed_assertion_tests.

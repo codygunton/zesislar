@@ -201,3 +201,33 @@ Lemma call_precondition_from_call_facts
   ∃ (x13 : bv 64) (before : list nat), domain x13 before ∧ meaning x13 before after.
 Proof. ZesuSsz.Automation2.Hooks.zesu_liAStep. Qed.
 Print Assumptions call_precondition_from_call_facts.
+
+(* The step unfolds an address alias before Lithium's lookup runs: once the
+   steps have removed the alias, the lookup is still pending, over the
+   unfolded address. (Earlier steps, such as the register cursor's marker,
+   may run first; the alias step need not be the first step.) *)
+Lemma named_equation_alias_before_lookup `{!islaG Sigma} `{!threadG}
+    (pointer : bv 64) (bytes : list (bv 8))
+    (Hlow : 400 <= bv_unsigned pointer) (Hhigh : bv_unsigned pointer < 2 ^ 63)
+    (Hlength : length bytes = 40%nat) :
+  ⊢@{iProp Sigma} (bv_unsigned pointer - 400 + 280) ↦ₘ∗ bytes -∗
+    find_in_context (FindMemMapsTo (bv_unsigned
+      (pointer + BV 64 18446744073709551216 + BV 64 400 + BV 64 18446744073709551528)%bv))
+      (fun _ => True)%I.
+Proof.
+  iStartProof. iIntros "H".
+  pose (alias := (pointer + BV 64 18446744073709551216 + BV 64 400 +
+    BV 64 18446744073709551528)%bv).
+  change (FindMemMapsTo (bv_unsigned (pointer + BV 64 18446744073709551216 +
+    BV 64 400 + BV 64 18446744073709551528)%bv))
+    with (FindMemMapsTo (bv_unsigned alias)).
+  repeat lazymatch goal with
+  | _ := _ : bv 64 |- _ => ZesuSsz.Automation2.Hooks.zesu_liAStep
+  end.
+  lazymatch goal with
+  | |- environments.envs_entails _ (find_in_context (FindMemMapsTo (bv_unsigned
+      (pointer + _ + _ + _)%bv)) _) => idtac
+  end.
+  repeat ZesuSsz.Automation2.Hooks.zesu_liAStep.
+Qed.
+Print Assumptions named_equation_alias_before_lookup.
