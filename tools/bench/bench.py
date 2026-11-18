@@ -14,7 +14,10 @@ run (launch it with `tools/bg --heavy bench-<tag> python3 tools/bench/bench.py r
     so a second run on the same inputs reuses the worktree and its bank.
  2. Bank: _build/agents/bench-<key> in that worktree: `make stock-native-indexes` and one Dune build
     of @install plus the modules the set's callers import (never the other callers). BANK.json
-    records the targets; a later run with no new target skips the build.
+    records the targets; a later run with no new target skips the build. Blocks compile with the
+    bank's coqc recipe (coqc_recipe.json). A bank built wholly from the Dune cache runs no coqc, so
+    its trace holds no recipe: then `dune rules` of one bank target gives the same command. With
+    no recipe either way the run stops with one `refused:` line (exit 3) before any block.
  3. Blocks: every member, longest expected first, JOBS at a time (default: the set's "jobs"). Each
     compiles the unmodified generated caller at the bench head through tools/closure_cert.py
     (resource guard batch + scope, CPU cap and memory limit from the set's "caps", claim from the
@@ -50,6 +53,8 @@ sys.path.insert(0, str(TOOLS))
 sys.path.insert(0, str(BENCH))
 import bench_report as R  # noqa: E402
 import closure_cert as C  # noqa: E402
+from coqc_recipe import project_recipe, remember_recipe  # noqa: E402
+from dune_build_dir import physical_working_dir  # noqa: E402
 
 RULE_TREES = ('ZesuSsz/Automation2', 'ZesuSsz/Automation', 'InstrSpecs', 'ZesuSsz/Proofs/Tests')
 ISLARIS = Path(os.environ.get('ISLARIS_REPO', str(Path.home() / 'islaris')))
@@ -155,6 +160,67 @@ def bank_environment(workspace):
     return environment
 
 
+def refuse(message):
+    print('refused: ' + message, file=sys.stderr, flush=True)
+    raise SystemExit(3)
+
+
+def rule_command(action, directory=None):
+    """(working dir, [program, *args]) of the first `run` in a `dune rules --format=json` action."""
+    if not isinstance(action, list) or not action:
+        return None
+    if action[0] == 'chdir' and len(action) == 3:
+        return rule_command(action[2], action[1])
+    if action[0] == 'run':
+        return directory, action[1:]
+    for child in action[1:]:
+        found = rule_command(child, directory)
+        if found:
+            return found
+    return None
+
+
+def rules_recipe(rules):
+    """The coqc recipe (coqc_recipe.json shape) of a project module in parsed `dune rules` JSON."""
+    for rule in rules:
+        found = rule_command(rule.get('action'))
+        if found and Path(found[1][0]).name == 'coqc':
+            recipe = {'command': found[1], 'working_dir': found[0]}
+            if project_recipe(recipe):
+                return recipe
+    return None
+
+
+def ensure_recipe(workspace, key, bank, targets, log):
+    """Give the bank a coqc recipe before any block runs. A bank built wholly from the Dune cache
+    runs no coqc, so its trace has none; `dune rules` of one target prints the command Dune would run."""
+    if project_recipe(remember_recipe(bank)):
+        return
+    target = next((target for target in targets if target.startswith('ZesuSsz/')), None)
+    fix = 'rebuild one bank target without the cache (`dune build --cache=disabled`) or copy coqc_recipe.json ' \
+          'from a bank of the same head'
+    if target is None:
+        refuse('bank %s has no coqc recipe and no project target to ask `dune rules`; %s' % (bank, fix))
+    output = bank / 'recipe-rules.json'
+    output.unlink(missing_ok=True)
+    with (workspace / ('bench-%s-bank.log' % key)).open('a') as out:
+        rc = subprocess.run([sys.executable, str(workspace / 'tools/dune_trace_guard.py'), '--canonical-build-dir', '--',
+                             'opam', 'exec', '--switch=' + str(ISLARIS), '--', 'dune', 'rules', '--format=json',
+                             '--root', '.', '--build-dir', str(bank), '--trace-file', str(bank / 'recipe-rules.trace.csexp'),
+                             '-o', str(output), target],
+                            cwd=workspace, env=bank_environment(workspace), stdout=out,
+                            stderr=subprocess.STDOUT).returncode
+    recipe = rules_recipe(json.loads(output.read_text())) if rc == 0 and output.is_file() else None
+    if recipe is None:
+        refuse('bank %s has no coqc recipe (a cache-only build runs no coqc) and `dune rules %s` gave none '
+               '(rc %d); %s' % (bank, target, rc, fix))
+    recipe['working_dir'] = physical_working_dir(bank, recipe['working_dir'])
+    pending = bank / '.coqc_recipe.json.pending'
+    pending.write_text(json.dumps(recipe) + '\n')
+    pending.replace(bank / 'coqc_recipe.json')
+    log('bank %s: coqc recipe from `dune rules %s` (the build ran no coqc)' % (bank, target))
+
+
 def build_bank(workspace, key, bench_head, targets, make_vars, log):
     bank = workspace / '_build' / 'agents' / ('bench-' + key)
     record = bank / 'BANK.json'
@@ -162,6 +228,7 @@ def build_bank(workspace, key, bench_head, targets, make_vars, log):
         old = json.loads(record.read_text())
         if old.get('rc') == 0 and old.get('head') == bench_head and set(targets) <= set(old.get('targets', [])):
             log('bank %s reused (%d targets)' % (bank, len(targets)))
+            ensure_recipe(workspace, key, bank, targets, log)
             return bank
     environment = bank_environment(workspace)
     Path(environment['TMPDIR']).mkdir(parents=True, exist_ok=True)
@@ -186,6 +253,7 @@ def build_bank(workspace, key, bench_head, targets, make_vars, log):
         raise SystemExit('bank build failed (prep rc %d, build rc %d, %d targets missing); see %s'
                          % (prep, rc, len(missing), workspace / ('bench-%s-bank.log' % key)))
     log('bank %s built (%d targets)' % (bank, len(targets)))
+    ensure_recipe(workspace, key, bank, targets, log)
     return bank
 
 

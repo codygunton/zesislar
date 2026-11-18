@@ -88,11 +88,18 @@ Ltac2 zesu_telemetry_stage_ltac1 (stage : string) (tac : Ltac1.t) :=
    wraps one alternative and prints kind=alt site=NAME when it succeeds and
    kind=altfail site=NAME when it fails after using more than 1 ms CPU
    (cheaper failures are left out to keep the log small; the step record's
-   time minus its alternatives' is their sum). Write the alternative as
-   `(idtac; T)`: Ltac1 runs a match-bodied argument (inline or through a
-   tactic name) when it reads the notation's argument, before the wrapper
-   starts, which would put its time outside the record. Off, both wrappers
-   cost one flag read and run their tactic as is. *)
+   time minus its alternatives' is their sum). Each record covers the
+   wrapped tactic's own time only. When a later failure backtracks into a
+   wrapper that succeeded, it prints kind=backtrack site=NAME (a step:
+   kind=stepbacktrack site=<skeleton>) with the time from its success to
+   the backtrack, spent in the continuation (above 1 ms CPU; the backtrack
+   records of nested wrappers cover the same continuation), and its clock
+   restarts: a further success or failure of T counts from there. A step
+   that ends after a success prints no further step record. Write the
+   alternative as `(idtac; T)`: Ltac1 runs a match-bodied argument (inline
+   or through a tactic name) when it reads the notation's argument, before
+   the wrapper starts, which would put its time outside the record. Off,
+   both wrappers cost one flag read and run their tactic as is. *)
 Ltac2 rec zesu_telemetry_literal (term : constr) : bool :=
   match Constr.Unsafe.kind term with
   | Constr.Unsafe.Constructor _ _ => true
@@ -179,23 +186,47 @@ Ltac2 zesu_telemetry_cpu_us (sample : int list) : int :=
   end.
 
 (* The measuring paths; the switched entries below run them only when on. *)
-Ltac2 zesu_telemetry_alt_measured (name : string) (tac : Ltac1.t) : unit :=
-  let start := zesu_telemetry_sample () in
-  Control.plus (fun () =>
-      Ltac1.run tac; zesu_telemetry_emit "alt" name "-" [-1; -1; -1] start true)
+Ltac2 zesu_telemetry_over_1ms (start : int list) : bool :=
+  Int.lt 1000 (Int.sub (zesu_telemetry_cpu_us (zesu_telemetry_sample ())) (zesu_telemetry_cpu_us start)).
+
+(* Run right after a wrapper's success: a choice point without a further
+   success. A later failure backtracking into the wrapper reaches its
+   handler first, which prints `kind` with the time since the success and
+   restarts the wrapper's clock `start` at the re-entry; then the failure
+   goes on into the wrapped tactic unchanged. *)
+Ltac2 zesu_telemetry_on_backtrack (kind : string) (site : string) (start : int list Ref.ref) : unit :=
+  let success := zesu_telemetry_sample () in
+  Control.plus (fun () => ())
     (fun error =>
-      (if Int.lt 1000 (Int.sub (zesu_telemetry_cpu_us (zesu_telemetry_sample ()))
-                               (zesu_telemetry_cpu_us start))
-       then zesu_telemetry_emit "altfail" name "-" [-1; -1; -1] start false else ());
+      (if zesu_telemetry_over_1ms success
+       then zesu_telemetry_emit kind site "-" [-1; -1; -1] success false else ());
+      Ref.set start (zesu_telemetry_sample ());
+      Control.zero error).
+
+Ltac2 zesu_telemetry_alt_measured (name : string) (tac : Ltac1.t) : unit :=
+  let start := Ref.ref (zesu_telemetry_sample ()) in
+  Control.plus (fun () =>
+      Ltac1.run tac;
+      zesu_telemetry_emit "alt" name "-" [-1; -1; -1] (Ref.get start) true;
+      zesu_telemetry_on_backtrack "backtrack" name start)
+    (fun error =>
+      (if zesu_telemetry_over_1ms (Ref.get start)
+       then zesu_telemetry_emit "altfail" name "-" [-1; -1; -1] (Ref.get start) false else ());
       Control.zero error).
 
 Ltac2 zesu_telemetry_step_measured (tac : Ltac1.t) : unit :=
   let head := zesu_telemetry_goal_head () in
-  let start := zesu_telemetry_sample () in
+  let start := Ref.ref (zesu_telemetry_sample ()) in
+  let succeeded := Ref.ref false in
   Control.plus (fun () =>
-      Ltac1.run tac; zesu_telemetry_emit "step" head "-" [-1; -1; -1] start true)
+      Ltac1.run tac;
+      zesu_telemetry_emit "step" head "-" [-1; -1; -1] (Ref.get start) true;
+      Ref.set succeeded true;
+      zesu_telemetry_on_backtrack "stepbacktrack" head start)
     (fun error =>
-      zesu_telemetry_emit "step" head "-" [-1; -1; -1] start false; Control.zero error).
+      (if Ref.get succeeded then ()
+       else zesu_telemetry_emit "step" head "-" [-1; -1; -1] (Ref.get start) false);
+      Control.zero error).
 
 Ltac2 zesu_telemetry_alt (name : string) (tac : Ltac1.t) : unit :=
   if zesu_telemetry_enabled () then zesu_telemetry_alt_measured name tac else Ltac1.run tac.
