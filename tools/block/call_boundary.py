@@ -590,7 +590,20 @@ def call_return_seed(edges, *, call, function_root, root_seed, shapes, vocabular
     candidates.update({prefix + 'site_' + key: 'bv 64' for key in widened})
     inner = [(name, kind) for name, kind in candidates.items()
              if name in _atoms(' '.join(facts)) and name not in elsewhere]
-    existential = inner + existential
+    # Each closed argument takes this call's own name (prefix + arg_ + register), so it never shares
+    # a name with a register binder of any seed (machine_x13, call11_x14, ...).
+    renamed = {}
+    for name, _ in inner:
+        base = prefix + 'arg_' + re.sub(r'^(?:machine|call\d*)_', '', name)
+        fresh_name, index = base, 0
+        while fresh_name in renamed.values() or fresh_name in candidates:
+            index += 1
+            fresh_name = '%s_%d' % (base, index)
+        renamed[name] = fresh_name
+    if renamed:
+        pattern = re.compile(r"(?<![\w'.])(" + '|'.join(map(re.escape, renamed)) + r")(?![\w'])")
+        facts = [pattern.sub(lambda match: renamed[match[1]], fact) for fact in facts]
+    existential = [(renamed[name], kind) for name, kind in inner] + existential
     telescope = ' '.join('(%s : %s)' % (name, kind) for name, kind in existential)
     carried = '∃ ' + telescope + ', ' + ' /\\ '.join('(' + fact + ')' for fact in facts) if existential \
         else ' /\\ '.join('(' + fact + ')' for fact in facts)
