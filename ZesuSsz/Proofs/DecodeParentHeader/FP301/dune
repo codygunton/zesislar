@@ -6,3 +6,5 @@
 (rule (targets Caller00a0.v) (deps ../../../../tools/block/generated/decodeparentheader_fp301_callers/Caller00a0.v) (action (copy ../../../../tools/block/generated/decodeparentheader_fp301_callers/Caller00a0.v Caller00a0.v)))
 (rule (targets Caller0060.v) (deps ../../../../tools/block/generated/decodeparentheader_fp301_callers/Caller0060.v) (action (copy ../../../../tools/block/generated/decodeparentheader_fp301_callers/Caller0060.v Caller0060.v)))
 (rule (targets Caller026c.v) (deps ../../../../tools/block/generated/decodeparentheader_fp301_callers/Caller026c.v) (action (copy ../../../../tools/block/generated/decodeparentheader_fp301_callers/Caller026c.v Caller026c.v)))
+(rule (targets Caller01e4.v) (deps ../../../../tools/block/generated/decodeparentheader_fp301_callers/Caller01e4.v) (action (copy ../../../../tools/block/generated/decodeparentheader_fp301_callers/Caller01e4.v Caller01e4.v)))
+(rule (targets Caller0300.v) (deps ../../../../tools/block/generated/decodeparentheader_fp301_callers/Caller0300.v) (action (copy ../../../../tools/block/generated/decodeparentheader_fp301_callers/Caller0300.v Caller0300.v)))
