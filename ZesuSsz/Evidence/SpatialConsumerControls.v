@@ -91,3 +91,31 @@ Proof.
     SpatialConsumer.zesu_spatial_count_fact.
   exact I.
 Qed.
+
+Lemma spatial_unused_bv_package (Sigma : gFunctors) (P : bv 64 -> Prop)
+    (value : bv 64) (Hvalue : P value) :
+  ((emp : iProp Sigma) ⊢ ∃ x : li_prod (bv 64) (li_prod (bv 64) unit),
+    ⌜P (li_fst x)⌝)%I.
+Proof.
+  iIntros "_".
+  SpatialConsumer.zesu_spatial_pack_package
+    ltac:(SpatialConsumer.zesu_spatial_finish_package).
+Qed.
+
+Lemma spatial_occurring_bv_refuses (P : bv 64 -> Prop) : True.
+Proof.
+  assert_succeeds (
+    let candidate := open_constr:(_ : bv 64) in
+    assert (test : P candidate);
+    [assert_fails (SpatialConsumer.zesu_spatial_default_unused_bv candidate) | idtac]).
+  exact I.
+Qed.
+
+Lemma spatial_reflexive_bv_refuses : True.
+Proof.
+  assert_succeeds (
+    let candidate := open_constr:(_ : bv 64) in
+    assert (test : candidate = candidate);
+    [assert_fails (SpatialConsumer.zesu_spatial_default_unused_bv candidate) | idtac]).
+  exact I.
+Qed.

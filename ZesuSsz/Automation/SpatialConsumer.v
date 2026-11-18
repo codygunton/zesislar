@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.All.
+Require Import lithium.interpreter lithium.pure_definitions.
 Require Import ZesuSsz.Automation.JoinEntailment.
 Require Import ZesuSsz.Automation.VmClosed.
 From iris.proofmode Require Import tactics environments.
@@ -108,14 +109,69 @@ Ltac zesu_spatial_match_tree requested finish :=
   | _ => finish
   end.
 
+(* Compare syntax without unifying the candidate with a pattern hole. *)
+Ltac zesu_spatial_occurs candidate expression :=
+  multimatch expression with
+  | context [ ?part ] => constr_eq_strict candidate part
+  end.
+
+Ltac zesu_spatial_default_unused_bv candidate :=
+  let bare := eval cbv beta iota zeta in candidate in
+  is_evar bare;
+  let T := type of bare in
+  lazymatch T with
+  | bv ?width =>
+      lazymatch goal with |- ?remaining =>
+        assert_fails (zesu_spatial_occurs bare remaining)
+      end;
+      assert_fails (
+        multimatch goal with
+        | local := ?value : ?T |- _ =>
+            first [zesu_spatial_occurs bare value |
+                   zesu_spatial_occurs bare T]
+        | local : ?T |- _ => zesu_spatial_occurs bare T
+        end);
+      unify bare (Z_to_bv width 0)
+  end.
+
+Ltac zesu_spatial_fill_unused witnesses :=
+  lazymatch witnesses with
+  | @pair _ _ ?value ?tail =>
+      zesu_spatial_fill_unused value; zesu_spatial_fill_unused tail
+  | @li_pair _ _ ?value ?tail =>
+      zesu_spatial_fill_unused value; zesu_spatial_fill_unused tail
+  | tt => idtac
+  | _ => try zesu_spatial_default_unused_bv witnesses
+  end.
+
+(* Retain every introduced witness so unused slots cannot escape as shelves. *)
+Ltac zesu_spatial_open_witnesses fuel continuation :=
+  lazymatch fuel with
+  | S ?remaining =>
+      lazymatch goal with
+      | |- environments.envs_entails _ (@bi_exist _ ?T ?body) =>
+          assert_fails (has_evar T);
+          let witness := Hooks.zesu_constraint_witness T in
+          notypeclasses refine (tac_ex_evar _ witness _ _); red_li_prod;
+          zesu_spatial_open_witnesses remaining ltac:(fun rest =>
+            let tracked := constr:((witness, rest)) in continuation tracked)
+      | |- environments.envs_entails _ ?requested =>
+          continuation constr:(tt)
+      end
+  | O => fail 0 "The package exceeds the existential step limit."
+  end.
+
 Ltac zesu_spatial_pack_package finish :=
   zesu_expose_environment_alias;
-  Hooks.zesu_witness_open_existentials constr:(16%nat);
-  try iFrame;
-  lazymatch goal with
-  | |- environments.envs_entails _ ?requested =>
-      zesu_spatial_match_tree requested ltac:(solve [finish])
-  end.
+  zesu_spatial_open_witnesses constr:(64%nat) ltac:(fun witnesses =>
+    lazymatch goal with
+    | |- environments.envs_entails _ ?requested =>
+        zesu_spatial_match_tree requested ltac:(
+          zesu_spatial_fill_unused witnesses;
+          solve [cut True;
+            [intro; finish |
+             assert_fails (has_evar witnesses); exact I]])
+    end).
 
 Ltac zesu_spatial_consumer lemma finish :=
   iApply lemma;
