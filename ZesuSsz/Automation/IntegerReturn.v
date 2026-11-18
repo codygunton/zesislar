@@ -118,3 +118,54 @@ Ltac zesu_return_integer_fault :=
 #[export] Hint Extern 5 (SimplImpl _ _) =>
   zesu_return_integer_fault : typeclass_instances.
 
+
+(* Clearing an already-zero low bit preserves the complete word. *)
+Lemma zesu_bv64_clear_low_bit_even (value : bv 64) :
+  (bv_unsigned value mod 2 = 0)%Z ->
+  bv_and value (BV 64 18446744073709551614) = value.
+Proof.
+ intro Heven.
+ assert (Hlow : bv_extract 0 1 value = BV 1 0).
+ { apply bv_eq. rewrite bv_extract_0_unsigned.
+   change (bv_unsigned value mod 2 = 0)%Z. exact Heven. }
+ apply bv_eq.
+ pose proof (normalize_instr_addr_riscv64_ret_tac value _ Hlow eq_refl) as Hnormalized.
+ rewrite !bv_wrap_bv_unsigned in Hnormalized.
+ rewrite (bv_add_0_r value (BV 64 0) eq_refl) in Hnormalized.
+ rewrite (bv_or_0_r (bv_and value (BV 64 18446744073709551614)) (BV 64 0) eq_refl) in Hnormalized.
+ exact Hnormalized.
+Qed.
+
+(* Inspect the requested low-bit mask before using existing integer bounds. *)
+Ltac zesu_return_integer_even_mask :=
+  lazymatch goal with
+  | |- context [bv_and ?value (BV 64 18446744073709551614)] =>
+      assert_fails (has_evar value);
+      let Heven := fresh "HreturnWordEven" in
+      assert (Heven : (bv_unsigned value mod 2 = 0)%Z) by (
+        first [assumption |
+          lazymatch value with
+          | Z_to_bv 64 ?integer =>
+              let Hrange := fresh "HreturnIntegerRange" in
+              assert (Hrange : (0 <= integer < 2 ^ 64)%Z) by lia;
+              rewrite Z_to_bv_unsigned;
+              rewrite (bv_wrap_small 64 integer Hrange);
+              match goal with
+              | Haligned : (integer mod 4 = 0)%Z |- _ => lia
+              end
+          end]);
+      rewrite (zesu_bv64_clear_low_bit_even value Heven);
+      clear Heven;
+      repeat match goal with
+      | |- context [bv_or ?word (BV 64 0)] =>
+          rewrite (bv_or_0_r word (BV 64 0) eq_refl)
+      end;
+      try (lazymatch value with
+      | Z_to_bv 64 ?integer =>
+          let Hrange := fresh "HreturnIntegerRange" in
+          assert (Hrange : (0 <= integer < 2 ^ 64)%Z) by lia;
+          rewrite (Z_to_bv_unsigned 64 integer);
+          rewrite (bv_wrap_small 64 integer Hrange);
+          clear Hrange
+      end)
+  end.

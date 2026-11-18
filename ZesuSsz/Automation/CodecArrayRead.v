@@ -3,6 +3,7 @@ Require Import ZesuSsz.Automation.SwitchDispatch.
 Require Import ZesuSsz.Automation.Hooks.
 Require Import ZesuSsz.Automation.ByteArrayLengths.
 Require Import ZesuSsz.Automation.CodecArrayRange.
+Require Import ZesuSsz.Automation.IntegerReturn.
 From Coq Require Import Lists.List ZArith.ZArith Lia.
 From stdpp Require Import bitvector.definitions list.
 From iris.proofmode Require Import environments.
@@ -182,7 +183,8 @@ Ltac zesu_codec_array_direct_prepare continuation :=
 Ltac zesu_codec_array_direct_value :=
   zesu_codec_array_direct_prepare ltac:(fun loaded image =>
     zesu_codec_array_read_image image;
-    subst loaded).
+    subst loaded;
+    try zesu_return_integer_even_mask).
 
 Ltac zesu_codec_array_read :=
   first [zesu_codec_array_find |

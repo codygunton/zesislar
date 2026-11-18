@@ -35,6 +35,33 @@ Ltac zesu_final_pure_head_gate :=
 Global Typeclasses Opaque selectedCodeLookup.
 Arguments selectedCodeLookup : simpl never.
 
+(* An owned continuation takes priority over the selected instruction table. *)
+Ltac zesu_prefer_owned_instr_pre :=
+  lazymatch goal with
+  | |- envs_entails _ (find_in_context (FindInstrKind _ _) _) =>
+      try zesu_return_integer_even_mask;
+      zesu_expose_environment_alias;
+      lazymatch goal with
+      | |- envs_entails _ (find_in_context (FindInstrKind ?requested ?later) ?T) =>
+          assert_fails (has_evar requested);
+          iMatchHyp ltac:(fun name body =>
+            lazymatch body with
+            | instr_pre' ?available_later ?available ?P =>
+                assert_fails (has_evar available);
+                constr_eq available requested;
+                lazymatch later with
+                | true =>
+                    iApply (find_in_context_instr_kind_pre_true requested T);
+                    iExists available_later, P; iFrame name
+                | false =>
+                    constr_eq available_later false;
+                    iApply (find_in_context_instr_kind_pre_false requested T);
+                    iExists P; iFrame name
+                end
+            end)
+      end
+  end.
+
 Class ZesuStepInstructionLookup : Prop :=
   zesu_step_instruction_lookup : True.
 
@@ -2083,7 +2110,8 @@ Ltac zesu_liAStep :=
  try progress (unfold TRACE_LET);
  try liAIntroduceLetInGoal;
  first [
-    zesu_expose_instruction_lookup
+    zesu_prefer_owned_instr_pre
+  | zesu_expose_instruction_lookup
   | zesu_region_fault_if_enabled
   | zesu_ram_fault_if_enabled
   | zesu_signed_address_if_enabled
