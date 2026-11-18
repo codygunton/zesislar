@@ -22,14 +22,17 @@ class ImportInvarianceTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             I.insert_after_imports('Lemma x : True.\n', 'From Coq Require Import Lia.')
 
-    def test_stream_keeps_every_record_in_order(self):
+    def test_stream_keeps_search_records_in_order_without_timing_filtered_kinds(self):
         log = ('@@T kind=alt site=l_liStep stage=zesu_run_pass ms=4.8 ok=1\n'
+               '@@T kind=altfail site=l_region_fault stage=zesu_run_pass ms=13181 ok=0\n'
                '@@T kind=lia site=Lia.lia stage=zesu_run_pass ms=1086 ok=0\n'
                'Chars 1 - 2 [Proof.]\n'
-               '@@T kind=altfail site=l_region_fault stage=zesu_run_pass ms=13181 ok=0\n')
+               '@@T kind=backtrack site=l_liStep stage=zesu_run_pass ms=2.0 ok=0\n'
+               '@@T kind=stepbacktrack site=(x) stage=zesu_run_pass ms=2.0 ok=0\n'
+               '@@T kind=step site=(x) stage=zesu_run_pass ms=9.1 ok=1\n')
         self.assertEqual(I.search_stream(log), [('alt', 'l_liStep', 'zesu_run_pass'),
                                                 ('lia', 'Lia.lia', 'zesu_run_pass'),
-                                                ('altfail', 'l_region_fault', 'zesu_run_pass')])
+                                                ('step', '(x)', 'zesu_run_pass')])
 
     def test_first_difference(self):
         base = [('alt', 'a', 's'), ('altfail', 'b', 's')]

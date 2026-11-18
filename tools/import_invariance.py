@@ -8,8 +8,9 @@ flipped decodeParentHeader 0300 from 9 leftover goals to Qed. Automation2 theref
 `zesu_lia` (LiaHook). This tool compiles the unmodified caller and one copy per extra import (the
 line goes after the caller's final import), all with ZESU_TELEMETRY=1, and compares their
 proof-search streams: the ordered (kind, site, stage) of every telemetry record (steps,
-alternatives, failed alternatives, solver calls: a library tactic that reaches the library `lia`
-instead of `zesu_lia` drops its `lia` records). Equal streams and equal coqc status: the proof
+alternatives, solver calls: a library tactic that reaches the library `lia` instead of `zesu_lia`
+drops its `lia` records). Failed-alternative and backtrack records are left out: telemetry prints
+them only above 1 ms CPU, so they vary with load. Equal streams and equal coqc status: the proof
 does not depend on that import.
 
 usage (launch with `tools/bg --heavy NAME python3 tools/import_invariance.py ...`):
@@ -32,6 +33,9 @@ DEFAULT_IMPORTS = (
 )
 IMPORT_LINE = re.compile(r'^\s*(?:From\s+\S+\s+)?(?:Require(?:\s+(?:Import|Export))?|Import|Export)\s')
 SEARCH_RECORD = re.compile(r'^@@T kind=(\S+) site=(\S+) stage=(\S+)')
+# Telemetry prints these only above 1 ms CPU (Automation2/Telemetry.v), so their presence follows
+# machine load: two runs of the same proof differ in them.
+TIMING_FILTERED = frozenset({'altfail', 'backtrack', 'stepbacktrack'})
 
 
 def insert_after_imports(text, line):
@@ -44,8 +48,9 @@ def insert_after_imports(text, line):
 
 
 def search_stream(log_text):
-    """The ordered proof-search records of a telemetry log."""
-    return [match.groups() for match in map(SEARCH_RECORD.match, log_text.splitlines()) if match]
+    """The ordered proof-search records of a telemetry log, without the timing-filtered kinds."""
+    return [match.groups() for match in map(SEARCH_RECORD.match, log_text.splitlines())
+            if match and match.group(1) not in TIMING_FILTERED]
 
 
 def first_difference(base, other):
