@@ -280,15 +280,21 @@ Ltac zesu_register_cursor_step :=
    context, which can fail in a large context even when a derived range fact
    states the inclusion. This premise uses that fact alone; its hint is
    declared in Hooks.v, which callers import (a hint exported here did not
-   reach them). *)
+   reach them). The requested length can be stated at an element type that
+   only computes to the fact's (`bv (Z_idx 8)` against `bv 8`); linear
+   arithmetic sees two atoms, so the fact is first restated by conversion. *)
 Ltac zesu_cursor_range_premise :=
   lazymatch goal with
-  | |- ((?lower <= ?address < ?lower + _ * Z.of_N (?width `div` 8)) \/ _)%Z =>
+  | |- ((?lower <= ?address < ?lower + ?count * Z.of_N (?width `div` 8)) \/ _)%Z =>
       match goal with
       | Hrange : (lower <= address < _)%Z |- _ =>
           left;
           let stride := eval vm_compute in (Z.of_N (width `div` 8)) in
           change (Z.of_N (width `div` 8)) with stride;
-          clear - Hrange; zesu_lia
+          first [
+            let Hcount := fresh "HcursorCount" in
+            assert (Hcount : (lower <= address < lower + count)%Z) by exact Hrange;
+            clear - Hcount; zesu_lia
+          | clear - Hrange; zesu_lia]
       end
   end.
