@@ -1,5 +1,7 @@
 From Coq Require Import ZArith.ZArith NArith.NArith.
-From Coq Require Export Strings.String.
+From Coq Require Import Strings.String.
+Export String.StringSyntax.
+Delimit Scope string_scope with string.
 From Ltac2 Require Import Ltac2 Ref List Int Array Ident.
 Require Import ZesuSsz.Automation2.VmClosed.
 Require Import ZesuSsz.Automation2.SolverContextPolicy.

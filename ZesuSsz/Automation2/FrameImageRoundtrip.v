@@ -1,3 +1,4 @@
+Require Import ZesuSsz.Automation2.ContextCollection.
 Require Import ZesuSsz.Automation2.SwitchDispatch.
 Require Import ZesuSsz.Automation2.Hooks.
 Require Import ZesuSsz.Automation2.CodecArrayRead.
@@ -15,12 +16,12 @@ Ltac zesu_frame_image_to_word :=
       let index := fresh "HframeImageIndex" in
       assert (index : Z.to_nat offset = 0%nat) by
         (MemoryAddress.zesu_handoff_closed_Z offset ltac:(fun reduced =>
-          change (Z.to_nat reduced = 0%nat); lia));
+          change (Z.to_nat reduced = 0%nat); (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("FrameImageRoundtrip.solver.18.46"%string) ltac:(lia))));
       rewrite index; clear index;
       cbn [drop N.to_nat]; rewrite ?drop_0;
       let digits := eval vm_compute in (Z.of_nat count) in
       change (Z_to_bv bits (little_endian_to_bv width
         (bv_to_little_endian digits width (bv_unsigned word))) = word);
       apply (Z_to_bv_little_endian_to_bv_to_little_endian bits digits width word);
-        [lia | reflexivity]
+        [(ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("FrameImageRoundtrip.solver.25.10"%string) ltac:(lia)) | reflexivity]
   end.

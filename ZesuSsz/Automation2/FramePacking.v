@@ -1,3 +1,4 @@
+Require Import ZesuSsz.Automation2.ContextCollection.
 Require Import ZesuSsz.Automation2.SwitchDispatch.
 From Coq Require Import Lists.List ZArith.ZArith Lia.
 From stdpp Require Import bitvector.definitions list_numbers.
@@ -17,12 +18,12 @@ Lemma zesu_pack_decoded_slices (width : N) (left_count right_count : nat)
 Proof.
   intros Hlength Hleft Hright.
   assert (Hleft_length : length (firstn left_count bytes) = left_count).
-  { rewrite firstn_length. lia. }
+  { rewrite firstn_length. (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("FramePacking.solver.20.28"%string) ltac:(lia)). }
   assert (Htail_length : length (skipn left_count bytes) = right_count).
-  { rewrite skipn_length. lia. }
+  { rewrite skipn_length. (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("FramePacking.solver.22.27"%string) ltac:(lia)). }
   assert (Hright_full : firstn right_count (skipn left_count bytes) =
       skipn left_count bytes).
-  { apply firstn_all2. lia. }
+  { apply firstn_all2. (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("FramePacking.solver.25.24"%string) ltac:(lia)). }
   rewrite <- Hleft, <- Hright.
   rewrite (bv_to_little_endian_to_bv (Z.of_nat left_count) width
     (firstn left_count bytes)); [|rewrite Hleft_length; reflexivity].
@@ -56,5 +57,5 @@ Ltac zesu_frame_packing normalize_decoder :=
         | _ => eval cbn in (Z.to_nat right_count)
         end in
       solve [eapply (zesu_pack_decoded_slices width left_nat right_nat bytes
-        left_value right_value); [lia | eassumption | eassumption]]
+        left_value right_value); [(ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("FramePacking.solver.59.35"%string) ltac:(lia)) | eassumption | eassumption]]
   end.

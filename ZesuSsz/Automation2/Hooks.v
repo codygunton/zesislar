@@ -187,12 +187,12 @@ Ltac zesu_low_mask_sub_modulus_goal :=
               apply bv_eq; first [ZesuSsz.Automation2.VmClosed.zesu_vm_closed_decide | reflexivity]];
           let Hrange := fresh "HmaskRange" in
           assert (Hrange : modulus <= bv_unsigned value + integer < 2 * modulus)
-            by lia;
+            by (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("Hooks.solver.190"%string) ltac:(lia));
           first [let checked := constr:(eq_refl :
                    offset = Z_to_bv width integer) in idtac | rewrite Hoffset];
           rewrite (zesu_unsigned_low_mask_add_sub_modulus
             width low value mask integer Hwidth Hmask Hrange);
-          solve [reflexivity | change (bv_unsigned value + integer - modulus = requested); lia])
+          solve [reflexivity | change (bv_unsigned value + integer - modulus = requested); (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("Hooks.solver.195"%string) ltac:(lia))])
       end
   end.
 
@@ -251,10 +251,10 @@ Ltac zesu_low_mask_bv_goal :=
             apply bv_eq; first [ZesuSsz.Automation2.VmClosed.zesu_vm_closed_decide | reflexivity]];
         let Hrange := fresh "HmaskRange" in
         assert (Hrange : modulus <= bv_unsigned value + integer < 2 * modulus)
-          by lia;
+          by (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("Hooks.solver.254"%string) ltac:(lia));
         let Hresult := fresh "HmaskResult" in
         assert (Hresult : requested = bv_unsigned value + integer - modulus)
-          by lia;
+          by (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("Hooks.solver.257"%string) ltac:(lia));
         first [let checked := constr:(eq_refl :
                  offset = Z_to_bv width integer) in idtac | rewrite Hoffset];
         rewrite Hresult;
@@ -266,7 +266,7 @@ Ltac zesu_low_mask_sub_modulus_if_enabled :=
   zesu_switch_enabled constr:(ZesuStepMaskNormalizer);
   first [solve [zesu_low_mask_sub_modulus_goal]
     | solve [zesu_low_mask_bv_goal]
-    | solve [progress zesu_low_mask_branch_hypotheses; lia]].
+    | solve [progress zesu_low_mask_branch_hypotheses; (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("Hooks.solver.269"%string) ltac:(lia))]].
 
 (* Keep low-bit mask equalities symbolic before general arithmetic unfolds them. *)
 Ltac zesu_low_mask_if_enabled :=
@@ -368,21 +368,21 @@ Ltac bv_solve ::= zesu_context_filter ltac:(first [solve [zesu_strict_signed_if_
   bv_saturate_unsigned;
   bv_solve_unfold_tac;
   unfold bv_signed, bv_swrap, bv_wrap, bv_half_modulus, bv_modulus, bv_unsigned in *;
-  simpl; lia)]).
+  simpl; (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("Hooks.solver.371"%string) ltac:(lia)))]).
 
 Ltac zesu_solve_machine_bounds :=
   first [solve [zesu_low_mask_sub_modulus_if_enabled] |
     solve [zesu_low_mask_if_closed] |
     (solve [zesu_normalize_binary_nat_hypotheses;
-      zesu_normalize_binary_nat_goal; zesu_normalize_machine_map; bv_solve])].
+      zesu_normalize_binary_nat_goal; zesu_normalize_machine_map; (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("Hooks.solver.377"%string) ltac:(bv_solve))])].
 Ltac zesu_solve_machine_linear :=
   first [zesu_byte_index_arithmetic
     | (first [solve [repeat match goal with
            | Hnat : (_ <= _)%nat |- _ => clear Hnat
            | Hnat : (_ < _)%nat |- _ => clear Hnat
-           end; zesu_normalize_machine_map; lia] |
+           end; zesu_normalize_machine_map; (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("Hooks.solver.383"%string) ltac:(lia))] |
     solve [zesu_normalize_binary_nat_hypotheses;
-      zesu_normalize_binary_nat_goal; zesu_normalize_machine_map; lia]])].
+      zesu_normalize_binary_nat_goal; zesu_normalize_machine_map; (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("Hooks.solver.385"%string) ltac:(lia))]])].
 (* Preserve the machine normalization used by the existing finisher. *)
 Ltac zesu_finish_lia ::= zesu_solve_machine_linear.
 
@@ -417,7 +417,7 @@ Ltac zesu_normalize_symbolic_mem_address :=
         (repeat match goal with
          | Hnat : (_ <= _)%nat |- _ => clear Hnat
          | Hnat : (_ < _)%nat |- _ => clear Hnat
-         end; bv_solve);
+         end; (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("Hooks.solver.420"%string) ltac:(bv_solve)));
       rewrite Heq; clear Heq
     end
   end.
@@ -444,7 +444,7 @@ Ltac zesu_normalize_known_word_address :=
       let spatial := eval cbn [env_spatial] in (env_spatial context) in
       zesu_has_known_word_address expected spatial;
       let Heq := fresh "HknownWordAddress" in
-      assert (Heq : bv_unsigned pointer = expected) by bv_solve;
+      assert (Heq : bv_unsigned pointer = expected) by (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("Hooks.solver.447"%string) ltac:(bv_solve));
       rewrite Heq; clear Heq
       end
   end.
@@ -522,14 +522,14 @@ Ltac zesu_normalize_memory_cell H expected :=
   lazymatch selected with
   | Some (_, (?actual ↦ₘ{?q} ?value)%I) =>
       let Heq := fresh "HcellAddress" in
-      assert (Heq : actual = expected) by bv_solve;
+      assert (Heq : actual = expected) by (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("Hooks.solver.525"%string) ltac:(bv_solve));
       iEval (rewrite Heq) in H; clear Heq
   end.
 
 Ltac zesu_solve_pending_sidecond :=
   lazymatch goal with
   | |- envs_entails _ _ => fail
-  | _ => prepare_sidecond; first [assumption | bv_solve | lia]
+  | _ => prepare_sidecond; first [assumption | (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("Hooks.solver.532"%string) ltac:(bv_solve)) | (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("Hooks.solver.532"%string) ltac:(lia))]
   end.
 
 Ltac zesu_tuple_witness T :=
@@ -785,7 +785,7 @@ Ltac zesu_primitive_tuple_guard_if_enabled :=
   solve [progress (repeat match goal with
     | H : context [bv_signed (bv_zero_extend 128 ?value)] |- _ =>
         rewrite (zesu_signed_zero_extend_64_128 value) in H
-    end); first [assumption | bv_solve]].
+    end); first [assumption | (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("Hooks.solver.788"%string) ltac:(bv_solve))]].
 
 Class ZesuStepRegisterCollectionSelection : Prop := {}.
 
@@ -1271,12 +1271,12 @@ Ltac zesu_normalize_output_address :=
       first [let output := ZesuSsz.Automation2.VmClosed.zesu_vm_eval_closed (machineOutputAddress defaultMap) in
              lazymatch output with
              | Some ?output => replace address with (Z_to_bv 64 output)
-                 by (bv_solve)
+                 by ((ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("Hooks.solver.1274"%string) ltac:(bv_solve)))
              end
             |let size := ZesuSsz.Automation2.VmClosed.zesu_vm_eval_closed (machineOutputSizeAddress defaultMap) in
              lazymatch size with
              | Some ?size => replace address with (Z_to_bv 64 size)
-                 by (bv_solve)
+                 by ((ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("Hooks.solver.1279"%string) ltac:(bv_solve)))
              end
             |idtac]
   | _ => idtac
@@ -1393,19 +1393,19 @@ Ltac zesu_signed_address_if_enabled :=
     progress (repeat match goal with
     | H : context [bv_signed (bv_zero_extend 128 ?value + ?offset)] |- _ =>
         rewrite (zesu_signed_zero_extend_add_64_128 value offset) in H;
-          last bv_solve
+          last (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("Hooks.solver.1396"%string) ltac:(bv_solve))
     | H : context [bv_signed (bv_zero_extend 128 ?value)] |- _ =>
         rewrite (zesu_signed_zero_extend_64_128 value) in H
     end);
     repeat match goal with
     | H : context [bv_unsigned (?left + ?right)] |- _ =>
-        first [rewrite bv_add_unsigned bv_wrap_small in H; last bv_solve
+        first [rewrite bv_add_unsigned bv_wrap_small in H; last (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("Hooks.solver.1402"%string) ltac:(bv_solve))
               |rewrite (zesu_unsigned_add_signed_64 left right) in H;
-                 last bv_solve]
+                 last (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("Hooks.solver.1404"%string) ltac:(bv_solve))]
     | H : context [bv_unsigned (?left - ?right)] |- _ =>
-        rewrite (zesu_unsigned_sub_no_wrap_64 left right) in H; last bv_solve
+        rewrite (zesu_unsigned_sub_no_wrap_64 left right) in H; last (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("Hooks.solver.1406"%string) ltac:(bv_solve))
     end;
-    exfalso; bv_solve].
+    exfalso; (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("Hooks.solver.1408"%string) ltac:(bv_solve))].
 
 Class ZesuStepRamFault : Prop := zesu_step_ram_fault : True.
 
@@ -1539,7 +1539,7 @@ Ltac zesu_region_fault_prepare :=
   | |- context[?term] =>
       lazymatch type of term with Z => progress (zesu_region_reduce_closed term) end
   end;
-  try (rewrite zesu_signed_zero_extend_add_64_128; last bv_solve);
+  try (rewrite zesu_signed_zero_extend_add_64_128; last (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("Hooks.solver.1542"%string) ltac:(bv_solve)));
   repeat match goal with
   | H : context[bv_signed (bv_zero_extend 128 ?value)] |- _ =>
       rewrite (zesu_signed_zero_extend_64_128 value) in H
@@ -1556,10 +1556,10 @@ Ltac zesu_region_fault_prepare :=
 
 Ltac zesu_region_fault_arithmetic_full :=
   zesu_region_fault_prepare;
-  first [bv_solve |
+  first [(ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("Hooks.solver.1559"%string) ltac:(bv_solve)) |
     match goal with Hnegative : ~ ?bound |- _ =>
       zesu_region_arithmetic_statement bound;
-      exfalso; apply Hnegative; bv_solve
+      exfalso; apply Hnegative; (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("Hooks.solver.1562"%string) ltac:(bv_solve))
     end].
 
 Ltac zesu_region_fault_arithmetic :=
@@ -1615,11 +1615,11 @@ Ltac zesu_region_fault_word_casts :=
     | Hcast : context[@bv_add ?width ?value ?amount] |- _ =>
       let zero := constr:((0%bv : bv width)) in
       constr_eq amount zero;
-      progress (rewrite (bv_add_0_r value zero ltac:(bv_solve)) in Hcast)
+      progress (rewrite (bv_add_0_r value zero ltac:((ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("Hooks.solver.1618"%string) ltac:(bv_solve)))) in Hcast)
     | |- context[@bv_add ?width ?value ?amount] =>
       let zero := constr:((0%bv : bv width)) in
       constr_eq amount zero;
-      progress (rewrite (bv_add_0_r value zero ltac:(bv_solve)))
+      progress (rewrite (bv_add_0_r value zero ltac:((ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("Hooks.solver.1622"%string) ltac:(bv_solve)))))
     end |
     match goal with
     | Hcast : context[@bv_unsigned ?width (Z_to_bv ?castWidth ?value)] |- _ =>
@@ -1629,7 +1629,7 @@ Ltac zesu_region_fault_word_casts :=
       let modulus := ZesuSsz.Automation2.VmClosed.zesu_vm_eval_closed (bv_modulus width) in
       let Hbound := fresh "HregionCastRange" in
       assert (Hbound : (0 <= value < bv_modulus width)%Z) by
-        (change (0 <= value < modulus)%Z; lia);
+        (change (0 <= value < modulus)%Z; (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("Hooks.solver.1632"%string) ltac:(lia)));
       progress (rewrite (Z_to_bv_small width value Hbound) in Hcast);
       clear Hbound
     | |- context[@bv_unsigned ?width (Z_to_bv ?castWidth ?value)] =>
@@ -1639,7 +1639,7 @@ Ltac zesu_region_fault_word_casts :=
       let modulus := ZesuSsz.Automation2.VmClosed.zesu_vm_eval_closed (bv_modulus width) in
       let Hbound := fresh "HregionCastRange" in
       assert (Hbound : (0 <= value < bv_modulus width)%Z) by
-        (change (0 <= value < modulus)%Z; lia);
+        (change (0 <= value < modulus)%Z; (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("Hooks.solver.1642"%string) ltac:(lia)));
       progress (rewrite (Z_to_bv_small width value Hbound));
       clear Hbound
     end].
@@ -1653,7 +1653,7 @@ Ltac zesu_region_fault_late_arithmetic :=
   | |- context[?term] =>
       lazymatch type of term with Z => progress (zesu_region_reduce_closed term) end
   end;
-  first [lia | bv_solve].
+  first [(ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("Hooks.solver.1656"%string) ltac:(lia)) | (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("Hooks.solver.1656"%string) ltac:(bv_solve))].
 
 Ltac zesu_region_fault_array_address address :=
   let address_value := lazymatch address with
@@ -1741,7 +1741,7 @@ Ltac zesu_handoff_goal_address_if_enabled :=
                   zesu_handoff_closed_Z available ltac:(fun availableNorm =>
                     let Heq := fresh "HhandoffAddress" in
                     assert (Heq : address = available) by
-                      (change (addressNorm = availableNorm); ring);
+                      (change (addressNorm = availableNorm); (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("Hooks.solver.1744"%string) ltac:(ring)));
                     rewrite Heq; clear Heq))
             end)
       end
@@ -1756,7 +1756,7 @@ Ltac zesu_handoff_memory_if_enabled :=
     | (?address ↦ₘ{?q}? ?count)%I =>
         zesu_handoff_closed_Z count ltac:(fun normalized =>
           let Hzero := fresh "HhandoffEmpty" in
-          assert (Hzero : count = 0%Z) by (change (normalized = 0%Z); lia);
+          assert (Hzero : count = 0%Z) by (change (normalized = 0%Z); (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("Hooks.solver.1759"%string) ltac:(lia)));
           iEval (rewrite Hzero mem_mapsto_uninit_0) in name;
           clear Hzero; iDestruct name as %?)
     end).
@@ -1775,7 +1775,7 @@ Ltac zesu_handoff_adjacent_words_if_enabled :=
               zesu_handoff_closed_Z address ltac:(fun addressNorm =>
                 let Heq := fresh "HhandoffAdjacent" in
                 assert (Heq : other = (address + 8)%Z) by
-                  (change (otherNorm = addressNorm + 8)%Z; ring);
+                  (change (otherNorm = addressNorm + 8)%Z; (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("Hooks.solver.1778"%string) ltac:(ring)));
                 iEval (rewrite Heq) in name; clear Heq;
                 iApply (subsume_mem_adjacent_u64_byte_array _ _ _ low high)))
         end)
@@ -1794,7 +1794,7 @@ Ltac zesu_handoff_integer_equality_if_enabled :=
   | |- @eq Z ?left ?right =>
       zesu_handoff_closed_Z left ltac:(fun leftNorm =>
         zesu_handoff_closed_Z right ltac:(fun rightNorm =>
-          change (leftNorm = rightNorm); solve [lia | ring]))
+          change (leftNorm = rightNorm); solve [(ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("Hooks.solver.1797"%string) ltac:(lia)) | (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("Hooks.solver.1797"%string) ltac:(ring))]))
   end.
 
 Class ZesuStepIntegerArrayAddress : Prop :=
@@ -1860,7 +1860,7 @@ Ltac zesu_array_region_selection_if_enabled :=
         | kind := _ : mem_mapsto_kind |- _ => unfold kind
         end);
       solve [apply find_mem_region_array;
-        first [right; zesu_array_bound_integer_casts; lia |
+        first [right; zesu_array_bound_integer_casts; (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("Hooks.solver.1863"%string) ltac:(lia)) |
                zesu_region_bounds]]
   end.
 
@@ -1873,31 +1873,31 @@ Ltac zesu_array_bounds_base :=
   unLET;
   lazymatch goal with
   | |- 0 <= ?address - ?base =>
-      solve [zesu_integer_array_facts; bv_solve | lia]
+      solve [zesu_integer_array_facts; (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("Hooks.solver.1876"%string) ltac:(bv_solve)) | (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("Hooks.solver.1876"%string) ltac:(lia))]
   | |- (?index + ?width <= length ?storage)%nat =>
       solve [
         zesu_integer_array_facts;
         zesu_array_bound_integer_casts;
         repeat match goal with
         | |- context [?base + ?offset - ?base] =>
-            replace (base + offset - base) with offset by lia
+            replace (base + offset - base) with offset by (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("Hooks.solver.1883"%string) ltac:(lia))
         | |- context [?base - ?base] =>
-            replace (base - base) with 0 by lia
+            replace (base - base) with 0 by (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("Hooks.solver.1885"%string) ltac:(lia))
         end;
         rewrite ?length_app ?length_take ?length_drop;
-        cbn [length]; lia]
+        cbn [length]; (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("Hooks.solver.1888"%string) ltac:(lia))]
   | |- (?index < length ?storage)%nat =>
       solve [
         zesu_integer_array_facts;
         zesu_array_bound_integer_casts;
         repeat match goal with
         | |- context [?base + ?offset - ?base] =>
-            replace (base + offset - base) with offset by lia
+            replace (base + offset - base) with offset by (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("Hooks.solver.1895"%string) ltac:(lia))
         | |- context [?base - ?base] =>
-            replace (base - base) with 0 by lia
+            replace (base - base) with 0 by (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("Hooks.solver.1897"%string) ltac:(lia))
         end;
         rewrite ?length_app ?length_take ?length_drop;
-        cbn [length]; lia]
+        cbn [length]; (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("Hooks.solver.1900"%string) ltac:(lia))]
   end.
 
 Ltac zesu_array_bounds_extended :=
@@ -1910,7 +1910,7 @@ Ltac zesu_array_bounds_extended :=
   lazymatch goal with
   | |- 0 <= ?address - ?base =>
       solve [try autounfold with zesu_contract_constants in *;
-        zesu_integer_array_facts; bv_solve | lia]
+        zesu_integer_array_facts; (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("Hooks.solver.1913"%string) ltac:(bv_solve)) | (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("Hooks.solver.1913"%string) ltac:(lia))]
   | |- (?index + ?width <= length ?storage)%nat =>
       solve [
         try autounfold with zesu_contract_constants in *;
@@ -1918,12 +1918,12 @@ Ltac zesu_array_bounds_extended :=
         zesu_array_bound_integer_casts;
         repeat match goal with
         | |- context [?base + ?offset - ?base] =>
-            replace (base + offset - base) with offset by lia
+            replace (base + offset - base) with offset by (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("Hooks.solver.1921"%string) ltac:(lia))
         | |- context [?base - ?base] =>
-            replace (base - base) with 0 by lia
+            replace (base - base) with 0 by (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("Hooks.solver.1923"%string) ltac:(lia))
         end;
         repeat progress (rewrite ?length_app ?length_take ?length_drop ?length_insert;
-          cbn [length N.to_nat]); lia]
+          cbn [length N.to_nat]); (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("Hooks.solver.1926"%string) ltac:(lia))]
   | |- (?index < length ?storage)%nat =>
       solve [
         try autounfold with zesu_contract_constants in *;
@@ -1931,12 +1931,12 @@ Ltac zesu_array_bounds_extended :=
         zesu_array_bound_integer_casts;
         repeat match goal with
         | |- context [?base + ?offset - ?base] =>
-            replace (base + offset - base) with offset by lia
+            replace (base + offset - base) with offset by (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("Hooks.solver.1934"%string) ltac:(lia))
         | |- context [?base - ?base] =>
-            replace (base - base) with 0 by lia
+            replace (base - base) with 0 by (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("Hooks.solver.1936"%string) ltac:(lia))
         end;
         repeat progress (rewrite ?length_app ?length_take ?length_drop ?length_insert;
-          cbn [length N.to_nat]); lia]
+          cbn [length N.to_nat]); (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("Hooks.solver.1939"%string) ltac:(lia))]
   end.
 
 Ltac zesu_array_bounds_if_enabled :=
@@ -1978,8 +1978,8 @@ Ltac zesu_integer_array_address_if_enabled :=
                     zesu_array_bound_integer_casts;
                     try zesu_byte_list_containment_if_enabled;
                     zesu_byte_array_lengths_if_enabled;
-                    solve [lia | bv_solve]
-                  | bv_solve]));
+                    solve [(ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("Hooks.solver.1981"%string) ltac:(lia)) | (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("Hooks.solver.1981"%string) ltac:(bv_solve))]
+                  | (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("Hooks.solver.1982"%string) ltac:(bv_solve))]));
               zesu_integer_array_facts;
               rewrite Heq; clear Heq
             end
@@ -2026,10 +2026,10 @@ Ltac zesu_refute_aligned_return_fault :=
       first [constr_eq upper maximum | change upper with maximum in Hupper];
       let Hlow := fresh "HreturnLowBit" in
       assert (Hlow : bv_extract 0 1 (Z_to_bv 64 R) = BV 1 0) by
-        (clear -Hlower Hupper Haligned; bv_solve);
+        (clear -Hlower Hupper Haligned; (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("Hooks.solver.2029"%string) ltac:(bv_solve)));
       let Hhigh := fresh "HreturnHighBit" in
       assert (Hhigh : bv_extract 1 1 (Z_to_bv 64 R) = BV 1 0) by
-        (clear -Hlower Hupper Haligned; bv_solve);
+        (clear -Hlower Hupper Haligned; (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("Hooks.solver.2032"%string) ltac:(bv_solve)));
       let HnoFault := fresh "HreturnNoFault" in
       pose proof (ZesuSsz.Automation2.IntegerReturn.zesu_return_fault_bit_from_extracts
         (Z_to_bv 64 R) Hlow Hhigh) as HnoFault;
@@ -2070,11 +2070,11 @@ Ltac zesu_return_integer_even_mask :=
           lazymatch value with
           | Z_to_bv 64 ?integer =>
               let Hrange := fresh "HreturnIntegerRange" in
-              assert (Hrange : (0 <= integer < 2 ^ 64)%Z) by lia;
+              assert (Hrange : (0 <= integer < 2 ^ 64)%Z) by (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("Hooks.solver.2073"%string) ltac:(lia));
               rewrite Z_to_bv_unsigned;
               rewrite (bv_wrap_small 64 integer Hrange);
               match goal with
-              | Haligned : (integer mod 4 = 0)%Z |- _ => lia
+              | Haligned : (integer mod 4 = 0)%Z |- _ => (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("Hooks.solver.2077"%string) ltac:(lia))
               end
           end]);
       rewrite (zesu_bv64_clear_low_bit_even value Heven);
@@ -2086,7 +2086,7 @@ Ltac zesu_return_integer_even_mask :=
       try (lazymatch value with
       | Z_to_bv 64 ?integer =>
           let Hrange := fresh "HreturnIntegerRange" in
-          assert (Hrange : (0 <= integer < 2 ^ 64)%Z) by lia;
+          assert (Hrange : (0 <= integer < 2 ^ 64)%Z) by (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("Hooks.solver.2089"%string) ltac:(lia));
           rewrite (Z_to_bv_unsigned 64 integer);
           rewrite (bv_wrap_small 64 integer Hrange);
           clear Hrange
@@ -2267,12 +2267,12 @@ Ltac zesu_branch_guard_rewrite :=
         zesu_stack_closed_term offset;
         let modulus := ZesuSsz.Automation2.VmClosed.zesu_vm_eval_closed (bv_modulus low) in
         let Hrange := fresh "HguardTruncateRange" in
-        assert (Hrange : modulus <= bv_unsigned word + offset < 2 * modulus) by lia;
+        assert (Hrange : modulus <= bv_unsigned word + offset < 2 * modulus) by (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("Hooks.solver.2270"%string) ltac:(lia));
         rewrite (guard_truncate_one_wrap low (bv_unsigned word + offset) Hrange);
         change_no_check (bv_modulus low) with modulus;
         let base := ZesuSsz.Automation2.VmClosed.zesu_vm_eval_closed (modulus - offset) in
         replace (bv_unsigned word + offset - modulus) with
-          (bv_unsigned word - base) by ring;
+          (bv_unsigned word - base) by (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("Hooks.solver.2275"%string) ltac:(ring));
         clear Hrange
     end
   | match goal with
@@ -2330,14 +2330,14 @@ Ltac zesu_branch_guard_rewrite :=
           let Hrange := fresh "HguardRange" in
           assert (Hoffset : offset = Z_to_bv width integer) by
             (apply bv_eq; first [ZesuSsz.Automation2.VmClosed.zesu_vm_closed_decide | reflexivity]);
-          assert (Hrange : modulus <= bv_unsigned word + integer < 2 * modulus) by lia;
+          assert (Hrange : modulus <= bv_unsigned word + integer < 2 * modulus) by (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("Hooks.solver.2333"%string) ltac:(lia));
           rewrite Hoffset;
           rewrite (zesu_unsigned_low_mask_add_sub_modulus width low word mask integer
             Hwidth Hmask Hrange);
           change_no_check (bv_modulus low) with modulus;
           let base := ZesuSsz.Automation2.VmClosed.zesu_vm_eval_closed (modulus - integer) in
           replace (bv_unsigned word + integer - modulus) with
-            (bv_unsigned word - base) by ring;
+            (bv_unsigned word - base) by (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("Hooks.solver.2340"%string) ltac:(ring));
           clear Hoffset Hrange)
         end
     end
@@ -2347,7 +2347,7 @@ Ltac zesu_branch_guard_rewrite :=
         lazymatch type of word with bv ?width =>
         zesu_branch_guard_mask width mask ltac:(fun low modulus Hwidth Hmask =>
           let Hrange := fresh "HguardRange" in
-          assert (Hrange : modulus <= bv_unsigned word < 2 * modulus) by lia;
+          assert (Hrange : modulus <= bv_unsigned word < 2 * modulus) by (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("Hooks.solver.2350"%string) ltac:(lia));
           rewrite (zesu_guard_low_mask_one_wrap width low word mask Hwidth Hmask Hrange);
           change_no_check (bv_modulus low) with modulus;
           clear Hrange)
@@ -2406,7 +2406,7 @@ Ltac zesu_branch_guard_normalize_hook :=
   progress zesu_branch_guard_rewrite; exact: eq_refl.
 Ltac zesu_branch_guard_solve_if_enabled :=
   zesu_switch_enabled constr:(ZesuStepBranchGuards);
-  progress zesu_branch_guard_rewrite; first [reflexivity | lia].
+  progress zesu_branch_guard_rewrite; first [reflexivity | (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("Hooks.solver.2409"%string) ltac:(lia))].
 
 (* Keep the original normalizer and low-mask alternatives after the new rule. *)
 Ltac zesu_low_mask_sub_modulus_if_enabled ::=
@@ -2414,7 +2414,7 @@ Ltac zesu_low_mask_sub_modulus_if_enabled ::=
     | (zesu_switch_enabled constr:(ZesuStepMaskNormalizer);
        first [solve [zesu_low_mask_sub_modulus_goal]
          | solve [zesu_low_mask_bv_goal]
-         | solve [progress zesu_low_mask_branch_hypotheses; lia]])].
+         | solve [progress zesu_low_mask_branch_hypotheses; (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("Hooks.solver.2417"%string) ltac:(lia))]])].
 
 (* Collect only at complete trace leaders. A failed branch restores its context. *)
 Ltac liAAsm ::=

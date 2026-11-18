@@ -1,3 +1,4 @@
+Require Import ZesuSsz.Automation2.ContextCollection.
 Require Import ZesuSsz.Automation2.SwitchDispatch.
 Require Import ZesuSsz.Automation2.Rewrites.
 Require Import isla.riscv64.riscv64.
@@ -18,9 +19,9 @@ Ltac zesu_byte_array_lengths_base :=
   zesu_byte_array_bound_goal_if_enabled;
   repeat match goal with
   | |- context [?base + ?offset - ?base] =>
-      replace (base + offset - base) with offset by lia
+      replace (base + offset - base) with offset by (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("ByteArrayLengths.solver.21"%string) ltac:(lia))
   | |- context [?base - ?base] =>
-      replace (base - base) with 0 by lia
+      replace (base - base) with 0 by (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("ByteArrayLengths.solver.23"%string) ltac:(lia))
   end;
   repeat progress (rewrite ?length_app ?length_take ?length_drop; cbn [length]).
 
@@ -29,14 +30,14 @@ Ltac zesu_byte_array_lengths_extended :=
   try autounfold with zesu_contract_constants in *;
   repeat match goal with
   | |- context [?base + ?offset - ?base] =>
-      replace (base + offset - base) with offset by lia
+      replace (base + offset - base) with offset by (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("ByteArrayLengths.solver.32"%string) ltac:(lia))
   | |- context [?base - ?base] =>
-      replace (base - base) with 0 by lia
+      replace (base - base) with 0 by (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("ByteArrayLengths.solver.34"%string) ltac:(lia))
   end;
   repeat progress (rewrite ?length_app ?length_take ?length_drop ?length_insert;
     cbn [length N.to_nat]).
 
 
 Ltac zesu_byte_array_lengths_if_enabled :=
-  first [solve [zesu_byte_array_lengths_base; solve [lia | bv_solve]] |
+  first [solve [zesu_byte_array_lengths_base; solve [(ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("ByteArrayLengths.solver.41"%string) ltac:(lia)) | (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("ByteArrayLengths.solver.41"%string) ltac:(bv_solve))]] |
     zesu_byte_array_lengths_extended].

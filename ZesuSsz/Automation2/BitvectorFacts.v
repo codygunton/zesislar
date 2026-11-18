@@ -1,3 +1,4 @@
+Require Import ZesuSsz.Automation2.ContextCollection.
 (* Generic bit-vector facts, moved from the writeSuccess proof tree. *)
 From Coq Require Import Lists.List ZArith.ZArith.
 Require Import isla.riscv64.riscv64.
@@ -28,7 +29,7 @@ Proof.
   apply bv_wrap_small.
   pose proof (bv_unsigned_in_range 64 left).
   pose proof (bv_unsigned_in_range 64 right).
-  unfold bv_modulus in *. cbn in *. lia.
+  unfold bv_modulus in *. cbn in *. (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("BitvectorFacts.solver.31.37"%string) ltac:(lia)).
 Qed.
 
 (* Select this rule explicitly. Unselected proofs keep their search order. *)
@@ -36,7 +37,7 @@ Class ZesuStepSignedAddress : Prop := zesu_step_signed_address : True.
 
 Lemma zesu_signed_zero_extend_64_128 (value : bv 64) :
   bv_signed (bv_zero_extend 128 value) = bv_unsigned value.
-Proof. rewrite bv_zero_extend_signed bv_swrap_small; bv_solve. Qed.
+Proof. rewrite bv_zero_extend_signed bv_swrap_small; (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("BitvectorFacts.solver.39.54"%string) ltac:(bv_solve)). Qed.
 
 Class ZesuStepStrictSigned : Prop := zesu_step_strict_signed : True.
 
@@ -54,18 +55,18 @@ Lemma zesu_signed_zero_extend_add_64_128
 Proof.
   move => Hoffset.
   rewrite bv_add_signed bv_zero_extend_signed.
-  rewrite !bv_swrap_small; bv_solve.
+  rewrite !bv_swrap_small; (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("BitvectorFacts.solver.57.28"%string) ltac:(bv_solve)).
 Qed.
 
 Lemma zesu_unsigned_add_signed_64 (left right : bv 64) :
   0 <= bv_unsigned left + bv_signed right < 2 ^ 64 ->
   bv_unsigned (left + right) = bv_unsigned left + bv_signed right.
-Proof. move => Hsum. bv_solve. Qed.
+Proof. move => Hsum. (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("BitvectorFacts.solver.63.22"%string) ltac:(bv_solve)). Qed.
 
 Lemma zesu_unsigned_sub_no_wrap_64 (left right : bv 64) :
   bv_unsigned right <= bv_unsigned left ->
   bv_unsigned (left - right) = bv_unsigned left - bv_unsigned right.
-Proof. move => Hsub. rewrite bv_sub_unsigned bv_wrap_small; bv_solve. Qed.
+Proof. move => Hsub. rewrite bv_sub_unsigned bv_wrap_small; (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("BitvectorFacts.solver.68.61"%string) ltac:(bv_solve)). Qed.
 
 Class ZesuStepLowMask : Prop := zesu_step_low_mask : True.
 
@@ -110,7 +111,7 @@ Proof.
   rewrite (zesu_unsigned_low_mask_add_integer width low value mask offset Hwidth Hmask).
   rewrite Z_to_bv_unsigned.
   rewrite -(bv_wrap_sub_modulus_1 low (bv_unsigned value + offset)).
-  apply bv_wrap_small. lia.
+  apply bv_wrap_small. (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("BitvectorFacts.solver.113.24"%string) ltac:(lia)).
 Qed.
 
 
@@ -128,7 +129,7 @@ Proof.
     width low value mask offset Hwidth Hmask Hrange) as Hunsigned.
   rewrite bv_and_unsigned in Hunsigned. rewrite Hunsigned.
   symmetry. apply bv_wrap_small.
-  pose proof (bv_modulus_le_mono low width Hwidth). lia.
+  pose proof (bv_modulus_le_mono low width Hwidth). (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("BitvectorFacts.solver.131.53"%string) ltac:(lia)).
 Qed.
 
 (* Normalize supported branch conditions before general arithmetic. *)
@@ -144,7 +145,7 @@ Proof.
   rewrite bv_and_unsigned Hmask.
   rewrite <- (bv_wrap_land low (bv_unsigned value)).
   rewrite <- (bv_wrap_sub_modulus_1 low (bv_unsigned value)).
-  apply bv_wrap_small. lia.
+  apply bv_wrap_small. (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("BitvectorFacts.solver.147.24"%string) ltac:(lia)).
 Qed.
 
 Lemma zesu_guard_mask_signed_value (width low : N) (value : bv low) (mask : bv width) :
@@ -158,7 +159,7 @@ Proof.
   rewrite Z_to_bv_unsigned bv_wrap_bv_wrap; last exact Hwidth.
   unfold bv_signed, bv_swrap. rewrite bv_wrap_sub_idemp_l.
   replace (bv_unsigned value + bv_half_modulus low - bv_half_modulus low)
-    with (bv_unsigned value) by ring.
+    with (bv_unsigned value) by (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("BitvectorFacts.solver.161.33"%string) ltac:(ring)).
   apply bv_wrap_bv_unsigned.
 Qed.
 
@@ -174,8 +175,8 @@ Proof.
   destruct (Z_le_gt_dec (bv_half_modulus width) (bv_unsigned value)).
   - rewrite <- (bv_wrap_sub_modulus_1 width
       (bv_unsigned value + bv_half_modulus width)).
-    rewrite bv_wrap_small; lia.
-  - rewrite bv_wrap_small; lia.
+    rewrite bv_wrap_small; (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("BitvectorFacts.solver.177.28"%string) ltac:(lia)).
+  - rewrite bv_wrap_small; (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("BitvectorFacts.solver.178.28"%string) ltac:(lia)).
 Qed.
 
 
@@ -189,7 +190,7 @@ Lemma guard_truncate_one_wrap (width : N) (value : Z) :
 Proof.
   intro Hrange. rewrite Z_to_bv_unsigned.
   rewrite <- (bv_wrap_sub_modulus_1 width value).
-  apply bv_wrap_small. lia.
+  apply bv_wrap_small. (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("BitvectorFacts.solver.192.24"%string) ltac:(lia)).
 Qed.
 
 (* Closed widths select a presentation. The source supplies every value bound. *)
@@ -212,7 +213,7 @@ Ltac zesu_bias_unsigned_as_signed wide word :=
       clear - Hrange Hfits;
       revert Hrange;
       generalize (bv_unsigned word);
-      intros; Lia.lia
+      intros; (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("BitvectorFacts.solver.215.15"%string) ltac:(Lia.lia))
   end.
 
 Ltac zesu_bias_byte_base width byte inner :=
@@ -237,7 +238,7 @@ Ltac zesu_bias_one_wrap byte delta modulus :=
       clear - Hlower Hupper;
       revert Hlower Hupper;
       generalize (bv_unsigned byte);
-      intros; Lia.lia
+      intros; (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("BitvectorFacts.solver.240.15"%string) ltac:(Lia.lia))
   end.
 
 Ltac zesu_bias_mask_image width byte base inner offset mask masked :=
@@ -307,10 +308,10 @@ Ltac zesu_source_biased_mask_goal :=
         let masked := constr:(bv_and (bv_add base offset) mask) in
         let Himage := fresh "HbiasedLowerImage" in
         assert (Himage : bv_unsigned masked = bv_unsigned byte - difference) by
-          (zesu_bias_mask_image width byte base inner offset mask masked; ring);
+          (zesu_bias_mask_image width byte base inner offset mask masked; (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("BitvectorFacts.solver.310.75"%string) ltac:(ring)));
         rewrite Himage;
         clear - Hlower Hupper;
-        Lia.lia
+        (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("BitvectorFacts.solver.313.9"%string) ltac:(Lia.lia))
       end
     | |- (bv_unsigned ?byte - ?difference < bv_unsigned ?limit)%Z =>
       assert_fails (has_evar byte);
@@ -343,7 +344,7 @@ Ltac zesu_source_biased_mask_goal :=
             constr_eq difference expected;
             let base := constr:(bv_and (bv_sign_extend width byte) inner) in
             assert (Himage : bv_unsigned masked = bv_unsigned byte - difference) by
-              (zesu_bias_mask_image width byte base inner offset mask masked; ring)
+              (zesu_bias_mask_image width byte base inner offset mask masked; (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("BitvectorFacts.solver.346.79"%string) ltac:(ring)))
         | bv_and (bv_and (bv_sign_extend ?width byte) ?inner) ?mask =>
             VmClosed.zesu_vm_closed width;
             VmClosed.zesu_vm_closed inner;
@@ -354,7 +355,7 @@ Ltac zesu_source_biased_mask_goal :=
             let base := constr:(bv_and (bv_sign_extend width byte) inner) in
             let offset := constr:(Z_to_bv width 0) in
             assert (Himage : bv_unsigned masked = bv_unsigned byte - difference) by
-              (zesu_bias_mask_image width byte base inner offset mask masked; ring)
+              (zesu_bias_mask_image width byte base inner offset mask masked; (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("BitvectorFacts.solver.357.79"%string) ltac:(ring)))
         end;
         rewrite Himage in Hview;
         rewrite Z.ge_le_iff in Hview;
@@ -392,16 +393,16 @@ Lemma zesu_single_bit_land_zero (width : N) (index : Z) (word : bv width) :
   bv_extract (Z.to_N index) 1 word = (0%bv : bv 1).
 Proof.
  intros [Hnonnegative Hbelow] Hland.
- assert (Hpower : (0 < 2 ^ index)%Z) by (apply Z.pow_pos_nonneg; lia).
+ assert (Hpower : (0 < 2 ^ index)%Z) by (apply Z.pow_pos_nonneg; (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("BitvectorFacts.solver.395.66"%string) ltac:(lia))).
  pose proof (f_equal (fun value : Z => Z.shiftr value index) Hland) as Hshift.
  cbv beta iota zeta in Hshift.
  rewrite Z.shiftr_land in Hshift.
- rewrite !Z.shiftr_div_pow2 in Hshift; try lia.
- rewrite Z.div_same in Hshift; try lia.
- apply bv_eq; rewrite bv_extract_unsigned Z2N.id; try lia.
+ rewrite !Z.shiftr_div_pow2 in Hshift; try (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("BitvectorFacts.solver.399.44"%string) ltac:(lia)).
+ rewrite Z.div_same in Hshift; try (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("BitvectorFacts.solver.400.36"%string) ltac:(lia)).
+ apply bv_eq; rewrite bv_extract_unsigned Z2N.id; try (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("BitvectorFacts.solver.401.55"%string) ltac:(lia)).
  change ((Z.shiftr (bv_unsigned word) index) mod (2 ^ 1) = 0)%Z.
- rewrite Z.shiftr_div_pow2; try lia.
- rewrite <- Z.land_ones; try lia.
+ rewrite Z.shiftr_div_pow2; try (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("BitvectorFacts.solver.403.33"%string) ltac:(lia)).
+ rewrite <- Z.land_ones; try (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("BitvectorFacts.solver.404.30"%string) ltac:(lia)).
  change (Z.land (bv_unsigned word / 2 ^ index) 1 = 0)%Z.
  exact Hshift.
 Qed.
@@ -477,7 +478,7 @@ Ltac zesu_source_unsigned_bound :=
       pose proof (bv_unsigned_in_range width word) as range;
       change (0 <= bv_unsigned word < limit)%Z in range;
       change (bv_unsigned word <= ceiling)%Z;
-      clear -range adequate; Lia.lia
+      clear -range adequate; (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("BitvectorFacts.solver.480.30"%string) ltac:(Lia.lia))
     end
   | |- bv_unsigned ?word < ?bound =>
     assert_fails (has_evar word);
@@ -493,7 +494,7 @@ Ltac zesu_source_unsigned_bound :=
       pose proof (bv_unsigned_in_range width word) as range;
       change (0 <= bv_unsigned word < limit)%Z in range;
       change (bv_unsigned word < ceiling)%Z;
-      clear -range adequate; Lia.lia
+      clear -range adequate; (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("BitvectorFacts.solver.496.30"%string) ltac:(Lia.lia))
     end
   end.
 
@@ -603,15 +604,15 @@ Ltac zesu_source_signed_upper :=
        unfold bv_signed;
        let signedRange := fresh "HsignedUpperSmall" in
        assert (signedRange : (-bv_half_modulus width <= bv_unsigned byte < bv_half_modulus width)%Z) by
-         (change (-half <= bv_unsigned byte < half)%Z; lia);
+         (change (-half <= bv_unsigned byte < half)%Z; (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("BitvectorFacts.solver.606.56"%string) ltac:(lia)));
        rewrite (bv_swrap_small width (bv_unsigned byte) signedRange);
        let wideRange := fresh "HsignedUpperWideRange" in
-       assert (wideRange : (0 <= bv_unsigned byte < bv_modulus wide)%Z) by lia;
+       assert (wideRange : (0 <= bv_unsigned byte < bv_modulus wide)%Z) by (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("BitvectorFacts.solver.609.76"%string) ltac:(lia));
        rewrite (bv_wrap_small wide (bv_unsigned byte) wideRange)
      | _ => idtac
      end;
      change (bv_unsigned byte <= ceiling)%Z;
-     clear -transported adequate; lia
+     clear -transported adequate; (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("BitvectorFacts.solver.614.35"%string) ltac:(lia))
    end
    end
  end.

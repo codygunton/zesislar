@@ -1,3 +1,4 @@
+Require Import ZesuSsz.Automation2.ContextCollection.
 Require Import ZesuSsz.Automation2.SwitchDispatch.
 Require Import ZesuSsz.Automation2.AdditiveDecoder.
 From Coq Require Import Lists.List ZArith.ZArith Lia.
@@ -34,8 +35,8 @@ Lemma zesu_integer_codec_roundtrip (count : Z) (width : N) (value : Z) :
     value mod 2 ^ (count * Z.of_N width).
 Proof.
   intros Hcount. rewrite zesu_integer_additive_decoder_view.
-  - apply little_endian_to_Z_to_little_endian; lia.
-  - apply Z_to_little_endian_bound; lia.
+  - apply little_endian_to_Z_to_little_endian; (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("CodecRoundtrip.solver.37.48"%string) ltac:(lia)).
+  - apply Z_to_little_endian_bound; (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("CodecRoundtrip.solver.38.37"%string) ltac:(lia)).
 Qed.
 
 (* A mask exposes the digit width. Closed widths determine the complete image.
@@ -54,7 +55,7 @@ Ltac zesu_codec_roundtrip :=
         change (zesu_integer_additive_decoder width
           (Z_to_little_endian count (Z.of_N width) (bv_unsigned word)) =
           bv_unsigned word);
-        rewrite (zesu_integer_codec_roundtrip count width (bv_unsigned word) ltac:(lia));
+        rewrite (zesu_integer_codec_roundtrip count width (bv_unsigned word) ltac:((ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("CodecRoundtrip.solver.57.84"%string) ltac:(lia))));
         apply Z.mod_small;
         let Hrange := fresh "HcodecWordRange" in
         pose proof (bv_unsigned_in_range source_width word) as Hrange;

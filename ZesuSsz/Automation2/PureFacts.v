@@ -1,3 +1,4 @@
+Require Import ZesuSsz.Automation2.ContextCollection.
 Require ZesuSsz.Automation.PureFacts.
 (* C6: the facts a side condition needs are folded inside one hypothesis.
 
@@ -96,7 +97,7 @@ Ltac zesu_witness_arith :=
   (* The space before the bracket matters: a star followed straight by
      a bracket closes a Coq comment and truncates the tactic. *)
   try (cbv [machineRamEnd mapRamSize mapRamBase defaultMap] in * );
-  first [lia | bv_solve].
+  first [(ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("PureFacts.solver.99.10"%string) ltac:(lia)) | (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("PureFacts.solver.99.16"%string) ltac:(bv_solve))].
 
 (* Opt in, like every other rule on this branch.
 

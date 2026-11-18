@@ -6,7 +6,7 @@
   (:standard \
    Contracts.Machine))
  (flags :standard -w -notation-overridden -w -redundant-canonical-projection)
- (plugins zesu-signature-gates.plugin)
+ (plugins zesu-signature-gates.plugin zesu-solver-context.plugin)
  (theories
    isla isla.riscv64 InstrSpecs EvmSail EvmSailRlp SailStdpp
    ZesuStock ZesuSsz.Stock.DecodeItem ZesuSsz.Stock.Closure ZesuSsz.Stock.Free

@@ -1,3 +1,4 @@
+Require Import ZesuSsz.Automation2.ContextCollection.
 (* Copyright 2026 Anthropic PBC *)
 (* SPDX-License-Identifier: Apache-2.0 OR MIT *)
 (* Pinned upstream RC core. The declaration bodies remain byte-identical. *)
@@ -101,23 +102,23 @@ Definition imod (V W : itv) : itv :=
 Definition imeet (V W : itv) : itv := (omax (fst V) (fst W), omin (snd V) (snd W)).
 
 Lemma in_itv_top : forall x, in_itv x itop. Proof. intros; split; exact Logic.I. Qed.
-Lemma in_itv_pt : forall x, in_itv x (ipt x). Proof. intros; split; cbn; lia. Qed.
+Lemma in_itv_pt : forall x, in_itv x (ipt x). Proof. intros; split; cbn; (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("UnionRuleComponents.solver.104.74"%string) ltac:(lia)). Qed.
 Lemma ipoint_ok : forall x V c, in_itv x V -> ipoint V = Some c -> x = c.
 Proof.
   intros x [[l|] [h|]] c [H1 H2]; cbn in *; try discriminate.
-  destruct (Z.eqb_spec l h); [|discriminate]. intros [= <-]. lia.
+  destruct (Z.eqb_spec l h); [|discriminate]. intros [= <-]. (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("UnionRuleComponents.solver.108.62"%string) ltac:(lia)).
 Qed.
 Lemma iadd_ok : forall x y V W, in_itv x V -> in_itv y W -> in_itv (x + y) (iadd V W).
-Proof. intros x y [[?|] [?|]] [[?|] [?|]] [? ?] [? ?]; split; cbn in *; lia. Qed.
+Proof. intros x y [[?|] [?|]] [[?|] [?|]] [? ?] [? ?]; split; cbn in *; (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("UnionRuleComponents.solver.111.73"%string) ltac:(lia)). Qed.
 Lemma iopp_ok : forall x V, in_itv x V -> in_itv (- x) (iopp V).
-Proof. intros x [[?|] [?|]] [? ?]; split; cbn in *; lia. Qed.
+Proof. intros x [[?|] [?|]] [? ?]; split; cbn in *; (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("UnionRuleComponents.solver.113.53"%string) ltac:(lia)). Qed.
 Lemma isub_ok : forall x y V W, in_itv x V -> in_itv y W -> in_itv (x - y) (isub V W).
-Proof. intros. unfold isub. replace (x - y) with (x + - y) by lia. apply iadd_ok; [assumption| apply iopp_ok; assumption]. Qed.
+Proof. intros. unfold isub. replace (x - y) with (x + - y) by (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("UnionRuleComponents.solver.115.63"%string) ltac:(lia)). apply iadd_ok; [assumption| apply iopp_ok; assumption]. Qed.
 Lemma iscale_ok : forall c x V, in_itv x V -> in_itv (c * x) (iscale c V).
 Proof.
   intros c x V [H1 H2]. unfold iscale.
   destruct (Z.eqb_spec c 0) as [->|]; [rewrite Z.mul_0_l; apply in_itv_pt|].
-  destruct (Z.ltb_spec 0 c); destruct V as [[l|] [h|]]; split; cbn in *; try exact Logic.I; nia.
+  destruct (Z.ltb_spec 0 c); destruct V as [[l|] [h|]]; split; cbn in *; try exact Logic.I; (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("UnionRuleComponents.solver.120.93"%string) ltac:(nia)).
 Qed.
 Lemma imul_ok : forall x y V W, in_itv x V -> in_itv y W -> in_itv (x * y) (imul V W).
 Proof.
@@ -132,21 +133,21 @@ Proof.
   intros x y V W HI HJ. unfold idiv.
   destruct (ipoint W) as [c|] eqn:E; [|apply in_itv_top].
   rewrite (ipoint_ok y W c HJ E). destruct (Z.ltb_spec 0 c) as [Hc|Hc]; [|apply in_itv_top].
-  destruct HI as [HI1 HI2]. destruct V as [[l|] [h|]]; split; cbn in *; try exact Logic.I; apply Z.div_le_mono; lia.
+  destruct HI as [HI1 HI2]. destruct V as [[l|] [h|]]; split; cbn in *; try exact Logic.I; apply Z.div_le_mono; (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("UnionRuleComponents.solver.135.113"%string) ltac:(lia)).
 Qed.
 Lemma imod_ok : forall x y V W, in_itv x V -> in_itv y W -> in_itv (x mod y) (imod V W).
 Proof.
   intros x y V W HI HJ. unfold imod.
   destruct (ipoint W) as [c|] eqn:E; [|apply in_itv_top].
   rewrite (ipoint_ok y W c HJ E). destruct (Z.ltb_spec 0 c) as [Hc|Hc]; [|apply in_itv_top].
-  pose proof (Z.mod_pos_bound x c ltac:(lia)) as HM.
-  assert (D : in_itv (x mod c) (Some 0, Some (c - 1))) by (split; cbn; lia).
+  pose proof (Z.mod_pos_bound x c ltac:((ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("UnionRuleComponents.solver.142.41"%string) ltac:(lia)))) as HM.
+  assert (D : in_itv (x mod c) (Some 0, Some (c - 1))) by (split; cbn; (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("UnionRuleComponents.solver.143.72"%string) ltac:(lia))).
   destruct V as [[l|] [h|]]; try exact D.
   destruct (Z.leb_spec 0 l) as [Hl|Hl]; cbn [andb]; [|exact D]. destruct (Z.ltb_spec h c) as [Hh|Hh]; [|exact D].
-  destruct HI as [HI1 HI2]; cbn in HI1, HI2. rewrite Z.mod_small by lia. split; cbn; lia.
+  destruct HI as [HI1 HI2]; cbn in HI1, HI2. rewrite Z.mod_small by (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("UnionRuleComponents.solver.146.69"%string) ltac:(lia)). split; cbn; (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("UnionRuleComponents.solver.146.86"%string) ltac:(lia)).
 Qed.
 Lemma imeet_ok : forall x V W, in_itv x V -> in_itv x W -> in_itv x (imeet V W).
-Proof. intros x [[?|] [?|]] [[?|] [?|]] [? ?] [? ?]; split; cbn in *; lia. Qed.
+Proof. intros x [[?|] [?|]] [[?|] [?|]] [? ?] [? ?]; split; cbn in *; (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("UnionRuleComponents.solver.149.71"%string) ltac:(lia)). Qed.
 
 (* [comment removed for export] *)
 (* [comment removed for export] *)
@@ -214,19 +215,19 @@ Definition lf_scale (c : Z) (a : lform) : lform := (lscale c (fst a), c * snd a)
 
 Lemma ladd1_ok : forall env k c l, eval_lin env (ladd1 k c l) = c * interp env k + eval_lin env l.
 Proof.
-  induction l as [|[k' c'] t IH]; cbn; [lia|].
+  induction l as [|[k' c'] t IH]; cbn; [(ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("UnionRuleComponents.solver.217.41"%string) ltac:(lia))|].
   destruct (expr_eqb k k') eqn:E; cbn.
-  - apply expr_eqb_eq in E. subst. lia.
-  - rewrite IH. lia.
+  - apply expr_eqb_eq in E. subst. (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("UnionRuleComponents.solver.219.36"%string) ltac:(lia)).
+  - rewrite IH. (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("UnionRuleComponents.solver.220.17"%string) ltac:(lia)).
 Qed.
 Lemma ladd_ok : forall env l1 l2, eval_lin env (ladd l1 l2) = eval_lin env l1 + eval_lin env l2.
-Proof. induction l1 as [|[k c] t IH]; intros l2; cbn; [lia|]. rewrite ladd1_ok, IH. lia. Qed.
+Proof. induction l1 as [|[k c] t IH]; intros l2; cbn; [(ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("UnionRuleComponents.solver.223.56"%string) ltac:(lia))|]. rewrite ladd1_ok, IH. (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("UnionRuleComponents.solver.223.85"%string) ltac:(lia)). Qed.
 Lemma lscale_ok : forall env c l, eval_lin env (lscale c l) = c * eval_lin env l.
-Proof. induction l as [|[k d] t IH]; cbn [lscale map eval_lin fst snd]; [lia|]. fold (lscale c t). rewrite IH. lia. Qed.
+Proof. induction l as [|[k d] t IH]; cbn [lscale map eval_lin fst snd]; [(ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("UnionRuleComponents.solver.225.74"%string) ltac:(lia))|]. fold (lscale c t). rewrite IH. (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("UnionRuleComponents.solver.225.112"%string) ltac:(lia)). Qed.
 Lemma lf_add_ok : forall env a b, eval_lf env (lf_add a b) = eval_lf env a + eval_lf env b.
-Proof. intros env [l1 c1] [l2 c2]. unfold eval_lf, lf_add; cbn [fst snd]. rewrite ladd_ok. lia. Qed.
+Proof. intros env [l1 c1] [l2 c2]. unfold eval_lf, lf_add; cbn [fst snd]. rewrite ladd_ok. (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("UnionRuleComponents.solver.227.92"%string) ltac:(lia)). Qed.
 Lemma lf_scale_ok : forall env c a, eval_lf env (lf_scale c a) = c * eval_lf env a.
-Proof. intros env c [l d]. unfold eval_lf, lf_scale; cbn [fst snd]. rewrite lscale_ok. lia. Qed.
+Proof. intros env c [l d]. unfold eval_lf, lf_scale; cbn [fst snd]. rewrite lscale_ok. (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("UnionRuleComponents.solver.229.88"%string) ltac:(lia)). Qed.
 
 Fixpoint lin_of (e : expr) : lform :=
   match e with
@@ -248,19 +249,19 @@ Fixpoint lin_of (e : expr) : lform :=
 Lemma lin_of_ok : forall env e, eval_lf env (lin_of e) = interp env e.
 Proof.
   intros env e. induction e; cbn [lin_of interp].
-  - unfold eval_lf; cbn [eval_lin fst snd interp]. lia.
-  - unfold eval_lf; cbn [eval_lin fst snd interp]. lia.
-  - unfold eval_lf; cbn [eval_lin fst snd interp]. lia.
+  - unfold eval_lf; cbn [eval_lin fst snd interp]. (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("UnionRuleComponents.solver.251.52"%string) ltac:(lia)).
+  - unfold eval_lf; cbn [eval_lin fst snd interp]. (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("UnionRuleComponents.solver.252.52"%string) ltac:(lia)).
+  - unfold eval_lf; cbn [eval_lin fst snd interp]. (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("UnionRuleComponents.solver.253.52"%string) ltac:(lia)).
   - rewrite lf_add_ok, IHe1, IHe2. reflexivity.
-  - rewrite lf_add_ok, lf_scale_ok, IHe1, IHe2. lia.
-  - rewrite lf_scale_ok, IHe. lia.
+  - rewrite lf_add_ok, lf_scale_ok, IHe1, IHe2. (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("UnionRuleComponents.solver.255.49"%string) ltac:(lia)).
+  - rewrite lf_scale_ok, IHe. (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("UnionRuleComponents.solver.256.31"%string) ltac:(lia)).
   - destruct (lin_of e1) as [[|p1 t1] c1] eqn:E1.
-    + rewrite lf_scale_ok, IHe2. rewrite <- IHe1. unfold eval_lf; cbn [eval_lin fst snd]. lia.
+    + rewrite lf_scale_ok, IHe2. rewrite <- IHe1. unfold eval_lf; cbn [eval_lin fst snd]. (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("UnionRuleComponents.solver.258.91"%string) ltac:(lia)).
     + destruct (lin_of e2) as [[|p2 t2] c2] eqn:E2.
-      * rewrite lf_scale_ok, IHe1. rewrite <- IHe2. unfold eval_lf; cbn [eval_lin fst snd]. lia.
-      * unfold eval_lf; cbn [eval_lin fst snd interp]. lia.
-  - unfold eval_lf; cbn [eval_lin fst snd interp]. lia.
-  - unfold eval_lf; cbn [eval_lin fst snd interp]. lia.
+      * rewrite lf_scale_ok, IHe1. rewrite <- IHe2. unfold eval_lf; cbn [eval_lin fst snd]. (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("UnionRuleComponents.solver.260.93"%string) ltac:(lia)).
+      * unfold eval_lf; cbn [eval_lin fst snd interp]. (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("UnionRuleComponents.solver.261.56"%string) ltac:(lia)).
+  - unfold eval_lf; cbn [eval_lin fst snd interp]. (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("UnionRuleComponents.solver.262.52"%string) ltac:(lia)).
+  - unfold eval_lf; cbn [eval_lin fst snd interp]. (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("UnionRuleComponents.solver.263.52"%string) ltac:(lia)).
 Qed.
 
 Fixpoint ival_lin (B : bnds) (l : lin) : itv :=
@@ -298,7 +299,7 @@ Proof. intros A x y E. congruence. Qed.
 Lemma fact_lf_ok : forall env f dir lf, interp_fact env f -> fact_lf f dir = Some lf -> eval_lf env lf <= 0.
 Proof.
   intros env f dir lf H E. destruct f; destruct dir; cbn [fact_lf interp_fact] in *; try discriminate;
-    apply some_inj in E; subst lf; rewrite lin_of_ok; cbn [interp]; lia.
+    apply some_inj in E; subst lf; rewrite lin_of_ok; cbn [interp]; (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("UnionRuleComponents.solver.301.69"%string) ltac:(lia)).
 Qed.
 Lemma interp_facts_nth : forall env fs j f, interp_facts env fs -> nth_error fs j = Some f -> interp_fact env f.
 Proof.
@@ -324,7 +325,7 @@ Proof.
   induction p as [|q IH]; intros [|[k' c'] t] k c r E; cbn in *; try discriminate.
   - injection E as -> -> ->. reflexivity.
   - destruct (lsplit q t) as [[[k2 c2] r2]|] eqn:E2; [|discriminate]. injection E as -> -> <-.
-    cbn. rewrite (IH t k c r2 E2). lia.
+    cbn. rewrite (IH t k c r2 E2). (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("UnionRuleComponents.solver.327.36"%string) ltac:(lia)).
 Qed.
 
 (* [comment removed for export] *)
@@ -348,9 +349,9 @@ Proof.
   pose proof (ival_lf_ok env B (r, d) HB) as [HR _]. unfold eval_lf in HR, HL; cbn [fst snd] in HR, HL.
   destruct (fst (ival_lf B (r, d))) as [lo|]; [|discriminate]. cbn in HR.
   destruct (Z.ltb_spec 0 c).
-  - injection E as <- <-. split; cbn; [exact Logic.I|]. apply Z.div_le_lower_bound; lia.
+  - injection E as <- <-. split; cbn; [exact Logic.I|]. apply Z.div_le_lower_bound; (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("UnionRuleComponents.solver.351.85"%string) ltac:(lia)).
   - destruct (Z.ltb_spec c 0); [|discriminate]. injection E as <- <-. split; cbn; [|exact Logic.I].
-    assert (- nth i0 env 0 <= (- lo) / (- c)) by (apply Z.div_le_lower_bound; lia). lia.
+    assert (- nth i0 env 0 <= (- lo) / (- c)) by (apply Z.div_le_lower_bound; (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("UnionRuleComponents.solver.353.79"%string) ltac:(lia))). (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("UnionRuleComponents.solver.353.85"%string) ltac:(lia)).
 Qed.
 
 Definition apply_step (fs : list fact) (B : bnds) (s : step) : bnds :=
@@ -414,12 +415,12 @@ Fixpoint sub_uses (fs : list fact) (lf : lform) (us : list use) : option lform :
 Lemma sub_uses_ok : forall env fs us lf lf', interp_facts env fs -> sub_uses fs lf us = Some lf' -> eval_lf env lf <= eval_lf env lf'.
 Proof.
   intros env fs us. induction us as [|[[j dir] la] t IH]; intros lf lf' HF E; cbn in E.
-  - injection E as <-. lia.
+  - injection E as <-. (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("UnionRuleComponents.solver.417.24"%string) ltac:(lia)).
   - destruct (Z.ltb_spec la 0); [discriminate|].
     destruct (nth_error fs j) as [f|] eqn:EN; [|discriminate].
     destruct (fact_lf f dir) as [lj|] eqn:EL; [|discriminate].
     specialize (IH _ _ HF E). rewrite lf_add_ok, lf_scale_ok in IH.
-    pose proof (fact_lf_ok env f dir lj (interp_facts_nth env fs j f HF EN) EL). nia.
+    pose proof (fact_lf_ok env f dir lj (interp_facts_nth env fs j f HF EN) EL). (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("UnionRuleComponents.solver.422.82"%string) ltac:(nia)).
 Qed.
 
 (* [comment removed for export] *)
@@ -436,7 +437,7 @@ Proof.
   destruct (sub_uses fs (lf_scale mu lf) us) as [lf'|] eqn:ES; [|discriminate].
   pose proof (sub_uses_ok env fs us _ lf' HF ES) as H1. rewrite lf_scale_ok in H1.
   pose proof (ival_lf_ok env B lf' HB) as [_ HH].
-  destruct (snd (ival_lf B lf')) as [h|]; [|discriminate]. cbn in HH. apply Z.leb_le in E. nia.
+  destruct (snd (ival_lf B lf')) as [h|]; [|discriminate]. cbn in HH. apply Z.leb_le in E. (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("UnionRuleComponents.solver.439.92"%string) ltac:(nia)).
 Qed.
 
 Fixpoint check_goal (fs : list fact) (B : bnds) (g : goal) (c : gcert) : bool :=
@@ -456,17 +457,17 @@ Fixpoint check_goal (fs : list fact) (B : bnds) (g : goal) (c : gcert) : bool :=
 Lemma check_goal_ok : forall env fs B g c, interp_facts env fs -> bvalid env B -> check_goal fs B g c = true -> interp_goal env g.
 Proof.
   intros env fs B g. induction g; intros c HF HB E; destruct c; cbn [check_goal] in E; try discriminate.
-  - pose proof (check_le0_ok env fs B _ _ _ HF HB E) as H. rewrite lin_of_ok in H. cbn [interp interp_goal] in *. lia.
-  - pose proof (check_le0_ok env fs B _ _ _ HF HB E) as H. rewrite lin_of_ok in H. cbn [interp interp_goal] in *. lia.
-  - pose proof (check_le0_ok env fs B _ _ _ HF HB E) as H. rewrite lin_of_ok in H. cbn [interp interp_goal] in *. lia.
-  - pose proof (check_le0_ok env fs B _ _ _ HF HB E) as H. rewrite lin_of_ok in H. cbn [interp interp_goal] in *. lia.
+  - pose proof (check_le0_ok env fs B _ _ _ HF HB E) as H. rewrite lin_of_ok in H. cbn [interp interp_goal] in *. (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("UnionRuleComponents.solver.459.115"%string) ltac:(lia)).
+  - pose proof (check_le0_ok env fs B _ _ _ HF HB E) as H. rewrite lin_of_ok in H. cbn [interp interp_goal] in *. (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("UnionRuleComponents.solver.460.115"%string) ltac:(lia)).
+  - pose proof (check_le0_ok env fs B _ _ _ HF HB E) as H. rewrite lin_of_ok in H. cbn [interp interp_goal] in *. (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("UnionRuleComponents.solver.461.115"%string) ltac:(lia)).
+  - pose proof (check_le0_ok env fs B _ _ _ HF HB E) as H. rewrite lin_of_ok in H. cbn [interp interp_goal] in *. (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("UnionRuleComponents.solver.462.115"%string) ltac:(lia)).
   - apply andb_true_iff in E. destruct E as [E1 E2].
     pose proof (check_le0_ok env fs B _ _ _ HF HB E1) as H1. pose proof (check_le0_ok env fs B _ _ _ HF HB E2) as H2.
-    rewrite lin_of_ok in H1, H2. cbn [interp interp_goal] in *. lia.
+    rewrite lin_of_ok in H1, H2. cbn [interp interp_goal] in *. (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("UnionRuleComponents.solver.465.65"%string) ltac:(lia)).
   - destruct c; try discriminate.
-    pose proof (check_le0_ok env fs B _ _ _ HF HB E) as H. rewrite lin_of_ok in H. cbn [interp interp_goal] in *. lia.
+    pose proof (check_le0_ok env fs B _ _ _ HF HB E) as H. rewrite lin_of_ok in H. cbn [interp interp_goal] in *. (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("UnionRuleComponents.solver.467.115"%string) ltac:(lia)).
   - destruct c; try discriminate.
-    pose proof (check_le0_ok env fs B _ _ _ HF HB E) as H. rewrite lin_of_ok in H. cbn [interp interp_goal] in *. lia.
+    pose proof (check_le0_ok env fs B _ _ _ HF HB E) as H. rewrite lin_of_ok in H. cbn [interp interp_goal] in *. (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("UnionRuleComponents.solver.469.115"%string) ltac:(lia)).
   - apply andb_true_iff in E. destruct E as [E1 E2]. split; [eapply IHg1| eapply IHg2]; eassumption.
   - left. eapply IHg1; eassumption.
   - right. eapply IHg2; eassumption.
@@ -1593,8 +1594,10 @@ Ltac2 rc_lia () : unit :=
     end).
 End RF.
 
-Ltac range_interval := ltac2:(RF.rc_lia ()).
-Ltac range_pre_lia := first [ range_interval | lia ].
+Ltac range_interval :=
+  ContextCollection.zesu_solve_solver ("union_rule.interval"%string)
+    ltac:(ltac2:(RF.rc_lia ())).
+Ltac range_pre_lia := first [ range_interval | (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("UnionRuleComponents.solver.1597.48"%string) ltac:(lia)) ].
 
 Require Export ZesuSsz.Automation2.AdjacentWordAddress291.
 Require Import isla.riscv64.riscv64.
@@ -1744,7 +1747,7 @@ Ltac zesu_region_fault_prepare :=
   | |- context[?term] =>
       lazymatch type of term with Z => progress (zesu_region_reduce_closed term) end
   end;
-  try (rewrite zesu_signed_zero_extend_add_64_128; last bv_solve);
+  try (rewrite zesu_signed_zero_extend_add_64_128; last (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("UnionRuleComponents.solver.1747.57"%string) ltac:(bv_solve)));
   repeat match goal with
   | H : context[bv_signed (bv_zero_extend 128 ?value)] |- _ =>
       rewrite (zesu_signed_zero_extend_64_128 value) in H
@@ -1761,10 +1764,10 @@ Ltac zesu_region_fault_prepare :=
 
 Ltac zesu_region_fault_arithmetic_full :=
   zesu_region_fault_prepare;
-  first [bv_solve |
+  first [(ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("UnionRuleComponents.solver.1764.10"%string) ltac:(bv_solve)) |
     match goal with Hnegative : ~ ?bound |- _ =>
       zesu_region_arithmetic_statement bound;
-      exfalso; apply Hnegative; bv_solve
+      exfalso; apply Hnegative; (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("UnionRuleComponents.solver.1767.33"%string) ltac:(bv_solve))
     end].
 
 Ltac zesu_region_fault_arithmetic :=
@@ -1820,11 +1823,11 @@ Ltac zesu_region_fault_word_casts :=
     | Hcast : context[@bv_add ?width ?value ?amount] |- _ =>
       let zero := constr:((0%bv : bv width)) in
       constr_eq amount zero;
-      progress (rewrite (bv_add_0_r value zero ltac:(bv_solve)) in Hcast)
+      progress (rewrite (bv_add_0_r value zero ltac:((ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("UnionRuleComponents.solver.1823.54"%string) ltac:(bv_solve)))) in Hcast)
     | |- context[@bv_add ?width ?value ?amount] =>
       let zero := constr:((0%bv : bv width)) in
       constr_eq amount zero;
-      progress (rewrite (bv_add_0_r value zero ltac:(bv_solve)))
+      progress (rewrite (bv_add_0_r value zero ltac:((ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("UnionRuleComponents.solver.1827.54"%string) ltac:(bv_solve)))))
     end |
     match goal with
     | Hcast : context[@bv_unsigned ?width (Z_to_bv ?castWidth ?value)] |- _ =>
@@ -1834,7 +1837,7 @@ Ltac zesu_region_fault_word_casts :=
       let modulus := eval vm_compute in (bv_modulus width) in
       let Hbound := fresh "HregionCastRange" in
       assert (Hbound : (0 <= value < bv_modulus width)%Z) by
-        (change (0 <= value < modulus)%Z; lia);
+        (change (0 <= value < modulus)%Z; (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("UnionRuleComponents.solver.1837.43"%string) ltac:(lia)));
       progress (rewrite (Z_to_bv_small width value Hbound) in Hcast);
       clear Hbound
     | |- context[@bv_unsigned ?width (Z_to_bv ?castWidth ?value)] =>
@@ -1844,7 +1847,7 @@ Ltac zesu_region_fault_word_casts :=
       let modulus := eval vm_compute in (bv_modulus width) in
       let Hbound := fresh "HregionCastRange" in
       assert (Hbound : (0 <= value < bv_modulus width)%Z) by
-        (change (0 <= value < modulus)%Z; lia);
+        (change (0 <= value < modulus)%Z; (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("UnionRuleComponents.solver.1847.43"%string) ltac:(lia)));
       progress (rewrite (Z_to_bv_small width value Hbound));
       clear Hbound
     end].
@@ -1858,7 +1861,7 @@ Ltac zesu_region_fault_late_arithmetic :=
   | |- context[?term] =>
       lazymatch type of term with Z => progress (zesu_region_reduce_closed term) end
   end;
-  first [lia | bv_solve].
+  first [(ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("UnionRuleComponents.solver.1861.10"%string) ltac:(lia)) | (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("UnionRuleComponents.solver.1861.16"%string) ltac:(bv_solve))].
 
 Ltac zesu_region_fault_array_address address :=
   let address_value := lazymatch address with
@@ -1980,7 +1983,7 @@ Lemma block2_f7_nonzero_unsigned (width : N) (word zero : bv width) :
 Proof.
   intros zero_unsigned different. apply bv_neq in different.
   rewrite zero_unsigned in different.
-  pose proof (bv_unsigned_in_range width word). lia.
+  pose proof (bv_unsigned_in_range width word). (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("UnionRuleComponents.solver.1983.49"%string) ltac:(lia)).
 Qed.
 
 Lemma block2_f7_head {A : Type} `{Inhabited A} (values : list A) :
@@ -1992,7 +1995,7 @@ destruct (nth_lookup_or_length values 0 inhabitant) as [found | missing].
 - rewrite <- head_lookup in found.
   apply head_Some in found as [tail shape].
   rewrite shape. reflexivity.
-- lia.
+- (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("UnionRuleComponents.solver.1995.3"%string) ltac:(lia)).
 Qed.
 
 Ltac block2_f7_context :=
@@ -2021,7 +2024,7 @@ Ltac block2_f7_arithmetic :=
                let bound := fresh "F7TargetRange" in
                pose proof (bv_unsigned_in_range width word) as bound;
                change (0 <= bv_unsigned word < 2 ^ Z.of_N width)%Z in bound;
-               lia
+               (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("UnionRuleComponents.solver.2024.16"%string) ltac:(lia))
              end
          end] |
          solve [lazymatch goal with
@@ -2029,9 +2032,9 @@ Ltac block2_f7_arithmetic :=
              constr_eq value expected;
              apply Z_to_bv_small;
              unfold bv_modulus in *;
-             lia
+             (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("UnionRuleComponents.solver.2032.14"%string) ltac:(lia))
          end] |
-         solve [bv_solve]].
+         solve [(ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("UnionRuleComponents.solver.2034.17"%string) ltac:(bv_solve))]].
 
 Ltac block2_f7_numeric_shape proposition :=
   lazymatch proposition with
@@ -2272,7 +2275,7 @@ Proof.
   rewrite (zesu_guard_mask_signed_value width low value mask width_bound mask_value).
   symmetry. apply Z_to_bv_small.
   pose proof (bv_unsigned_in_range low value).
-  pose proof (bv_modulus_le_mono low width width_bound). lia.
+  pose proof (bv_modulus_le_mono low width width_bound). (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("UnionRuleComponents.solver.2275.58"%string) ltac:(lia)).
 Qed.
 
 Ltac block2_signed_mask_solve :=
@@ -2283,7 +2286,7 @@ Ltac block2_signed_mask_solve :=
       block2_closed width; block2_closed low; block2_closed mask;
       block2_fixed value;
       apply block2_signed_mask_equal;
-      [ solve [bv_solve] | reflexivity ]
+      [ solve [(ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("UnionRuleComponents.solver.2286.16"%string) ltac:(bv_solve))] | reflexivity ]
   end.
 
 Ltac block2_signed_mask_finish :=
@@ -2325,7 +2328,7 @@ Ltac block2_range_add_zero_goal :=
       block2_closed amount;
       let zero := constr:((0%bv : bv width)) in
       constr_eq amount zero;
-      progress (rewrite (bv_add_0_r value zero ltac:(bv_solve)))
+      progress (rewrite (bv_add_0_r value zero ltac:((ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("UnionRuleComponents.solver.2328.54"%string) ltac:(bv_solve)))))
   end).
 
 (* V11 keeps the accepted v9 search and excludes the return component and F6. *)

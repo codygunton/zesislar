@@ -1,3 +1,4 @@
+Require Import ZesuSsz.Automation2.ContextCollection.
 From Coq Require Import Lists.List ZArith.ZArith.
 Require Import ZesuSsz.Automation2.RewriteBoundGuards.
 From iris.proofmode Require Import environments.
@@ -22,7 +23,7 @@ Proof.
   iDestruct (mem_mapsto_array_region 8 address q bytes offset (count * 8)
     Hbound with "Hbytes") as "(Hprefix & Hwords & Hsuffix)".
   have Hlength : length (take (count * 8) (drop offset bytes)) = (count * 8)%nat.
-  { rewrite length_take length_drop. lia. }
+  { rewrite length_take length_drop. (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("ByteArrays.solver.25.38"%string) ltac:(lia)). }
   have Hwords : bytes_of_u64s
       (u64s_of_bytes count (take (count * 8) (drop offset bytes))) =
       take (count * 8) (drop offset bytes).
@@ -47,20 +48,20 @@ Lemma zesu_bv_unsigned_add_Z_64 (base : bv 64) (offset : Z) :
   (0 <= offset)%Z ->
   (bv_unsigned base + offset < 2 ^ 64)%Z ->
   bv_unsigned (base + Z_to_bv 64 offset)%bv - bv_unsigned base = offset.
-Proof. intros. bv_solve. Qed.
+Proof. intros. (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("ByteArrays.solver.50.16"%string) ltac:(bv_solve)). Qed.
 
 Lemma zesu_bv_unsigned_add_no_wrap_64 (base offset : bv 64) :
   (bv_unsigned base + bv_unsigned offset < 2 ^ 64)%Z ->
   bv_unsigned (base + offset)%bv - bv_unsigned base = bv_unsigned offset.
-Proof. intros. bv_solve. Qed.
+Proof. intros. (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("ByteArrays.solver.55.16"%string) ltac:(bv_solve)). Qed.
 
 Lemma zesu_bv_sub_twice_64 (base first second : bv 64) :
   (base - first - second)%bv = (base - (first + second))%bv.
-Proof. bv_solve. Qed.
+Proof. (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("ByteArrays.solver.59.8"%string) ltac:(bv_solve)). Qed.
 
 Lemma zesu_bv_add_zero_64 (value : bv 64) :
   (value + BV 64 0)%bv = value.
-Proof. bv_solve. Qed.
+Proof. (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("ByteArrays.solver.63.8"%string) ltac:(bv_solve)). Qed.
 
 Lemma zesu_aligned_tag_end (pointer : bv 64) (limit : Z) :
   bv_extract 0 3 pointer = BV 3 0 ->
@@ -69,14 +70,14 @@ Lemma zesu_aligned_tag_end (pointer : bv 64) (limit : Z) :
   bv_unsigned pointer + 9 < limit.
 Proof.
   intros Halign Hlimit Hupper. bv_simplify Halign.
-  change (bv_unsigned pointer `mod` 8 = 0) in Halign. lia.
+  change (bv_unsigned pointer `mod` 8 = 0) in Halign. (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("ByteArrays.solver.72.55"%string) ltac:(lia)).
 Qed.
 
 Lemma zesu_u64_little_endian_roundtrip (value : bv 64) :
   Z_to_bv 64 (little_endian_to_bv 8
     (bv_to_little_endian 8 8 (bv_unsigned value))) = value.
 Proof.
-  apply Z_to_bv_little_endian_to_bv_to_little_endian; [lia | reflexivity].
+  apply Z_to_bv_little_endian_to_bv_to_little_endian; [(ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("ByteArrays.solver.79.56"%string) ltac:(lia)) | reflexivity].
 Qed.
 
 Lemma zesu_array_region_start_8_same base :
@@ -91,9 +92,9 @@ Proof. rewrite /array_region_start Z.sub_diag. reflexivity. Qed.
   zesu_array_region_start_8_same zesu_bv_add_zero_64 : zesu_indices.
 #[export] Hint Rewrite (@Z_to_bv_bv_unsigned 64)
   : zesu_indices isla_coq_rewrite lithium_rewrite.
-#[export] Hint Rewrite zesu_bv_unsigned_add_Z_64 using (first [ZesuSsz.Automation2.RewriteBoundGuards.a3n_closed_bound_if_enabled | bv_solve])
+#[export] Hint Rewrite zesu_bv_unsigned_add_Z_64 using (first [ZesuSsz.Automation2.RewriteBoundGuards.a3n_closed_bound_if_enabled | (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("ByteArrays.solver.94.133"%string) ltac:(bv_solve))])
   : zesu_indices isla_coq_rewrite lithium_rewrite.
-#[export] Hint Rewrite zesu_bv_unsigned_add_no_wrap_64 using (first [ZesuSsz.Automation2.RewriteBoundGuards.a3n_closed_bound_if_enabled | bv_solve])
+#[export] Hint Rewrite zesu_bv_unsigned_add_no_wrap_64 using (first [ZesuSsz.Automation2.RewriteBoundGuards.a3n_closed_bound_if_enabled | (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("ByteArrays.solver.96.139"%string) ltac:(bv_solve))])
   : zesu_indices isla_coq_rewrite lithium_rewrite.
 
 Lemma zesu_take_8_drop (bytes : list (bv 8)) (offset : nat) :
@@ -113,34 +114,34 @@ Proof.
       bytes !! index = Some (default (BV 8 0) (bytes !! index)).
   { destruct (nth_lookup_or_length bytes index (BV 8 0)) as [Hlookup|Hlookup].
     - rewrite Hlookup. reflexivity.
-    - lia. }
+    - (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("ByteArrays.solver.116.7"%string) ltac:(lia)). }
   apply list_eq. intros index.
   destruct index as [|index].
-  { rewrite lookup_take; [|lia]. rewrite lookup_drop /=.
-    replace (offset + 0)%nat with offset by lia.
-    rewrite (Hbyte offset ltac:(lia)). reflexivity. }
+  { rewrite lookup_take; [|(ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("ByteArrays.solver.119.28"%string) ltac:(lia))]. rewrite lookup_drop /=.
+    replace (offset + 0)%nat with offset by (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("ByteArrays.solver.120.45"%string) ltac:(lia)).
+    rewrite (Hbyte offset ltac:((ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("ByteArrays.solver.121.33"%string) ltac:(lia)))). reflexivity. }
   destruct index as [|index].
-  { rewrite lookup_take; [|lia]. rewrite lookup_drop /=.
-    rewrite (Hbyte (offset + 1)%nat ltac:(lia)). reflexivity. }
+  { rewrite lookup_take; [|(ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("ByteArrays.solver.123.28"%string) ltac:(lia))]. rewrite lookup_drop /=.
+    rewrite (Hbyte (offset + 1)%nat ltac:((ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("ByteArrays.solver.124.43"%string) ltac:(lia)))). reflexivity. }
   destruct index as [|index].
-  { rewrite lookup_take; [|lia]. rewrite lookup_drop /=.
-    rewrite (Hbyte (offset + 2)%nat ltac:(lia)). reflexivity. }
+  { rewrite lookup_take; [|(ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("ByteArrays.solver.126.28"%string) ltac:(lia))]. rewrite lookup_drop /=.
+    rewrite (Hbyte (offset + 2)%nat ltac:((ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("ByteArrays.solver.127.43"%string) ltac:(lia)))). reflexivity. }
   destruct index as [|index].
-  { rewrite lookup_take; [|lia]. rewrite lookup_drop /=.
-    rewrite (Hbyte (offset + 3)%nat ltac:(lia)). reflexivity. }
+  { rewrite lookup_take; [|(ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("ByteArrays.solver.129.28"%string) ltac:(lia))]. rewrite lookup_drop /=.
+    rewrite (Hbyte (offset + 3)%nat ltac:((ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("ByteArrays.solver.130.43"%string) ltac:(lia)))). reflexivity. }
   destruct index as [|index].
-  { rewrite lookup_take; [|lia]. rewrite lookup_drop /=.
-    rewrite (Hbyte (offset + 4)%nat ltac:(lia)). reflexivity. }
+  { rewrite lookup_take; [|(ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("ByteArrays.solver.132.28"%string) ltac:(lia))]. rewrite lookup_drop /=.
+    rewrite (Hbyte (offset + 4)%nat ltac:((ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("ByteArrays.solver.133.43"%string) ltac:(lia)))). reflexivity. }
   destruct index as [|index].
-  { rewrite lookup_take; [|lia]. rewrite lookup_drop /=.
-    rewrite (Hbyte (offset + 5)%nat ltac:(lia)). reflexivity. }
+  { rewrite lookup_take; [|(ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("ByteArrays.solver.135.28"%string) ltac:(lia))]. rewrite lookup_drop /=.
+    rewrite (Hbyte (offset + 5)%nat ltac:((ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("ByteArrays.solver.136.43"%string) ltac:(lia)))). reflexivity. }
   destruct index as [|index].
-  { rewrite lookup_take; [|lia]. rewrite lookup_drop /=.
-    rewrite (Hbyte (offset + 6)%nat ltac:(lia)). reflexivity. }
+  { rewrite lookup_take; [|(ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("ByteArrays.solver.138.28"%string) ltac:(lia))]. rewrite lookup_drop /=.
+    rewrite (Hbyte (offset + 6)%nat ltac:((ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("ByteArrays.solver.139.43"%string) ltac:(lia)))). reflexivity. }
   destruct index as [|index].
-  { rewrite lookup_take; [|lia]. rewrite lookup_drop /=.
-    rewrite (Hbyte (offset + 7)%nat ltac:(lia)). reflexivity. }
-  rewrite lookup_take_ge; [done|lia].
+  { rewrite lookup_take; [|(ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("ByteArrays.solver.141.28"%string) ltac:(lia))]. rewrite lookup_drop /=.
+    rewrite (Hbyte (offset + 7)%nat ltac:((ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("ByteArrays.solver.142.43"%string) ltac:(lia)))). reflexivity. }
+  rewrite lookup_take_ge; [done|(ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("ByteArrays.solver.143.33"%string) ltac:(lia))].
 Qed.
 
 Lemma zesu_assemble_8_bytes
@@ -167,7 +168,7 @@ Proof.
   unfold little_endian_to_bv, little_endian_to_Z.
   rewrite !fmap_cons. cbn.
   apply bv_eq. bv_simplify. bitblast as index.
-  all: (f_equal; lia).
+  all: (f_equal; (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("ByteArrays.solver.170.18"%string) ltac:(lia))).
 Qed.
 
 Lemma zesu_assemble_8_bytes_at (bytes : list (bv 8)) (offset : nat) :
@@ -202,7 +203,7 @@ Proof.
   apply zesu_assemble_8_bytes.
 Qed.
 
-#[export] Hint Rewrite zesu_assemble_8_bytes zesu_assemble_8_bytes_at using lia
+#[export] Hint Rewrite zesu_assemble_8_bytes zesu_assemble_8_bytes_at using (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("ByteArrays.solver.205.77"%string) ltac:(lia))
   : zesu_byte_assembly.
 
 Set Default Proof Using "Type".
@@ -254,15 +255,15 @@ Section byte_array_read.
   Proof.
     iDestruct 1 as (?? mk) "[Hmem Hcont]" => /=. case_match.
     - iDestruct "Hcont" as (?) "Hcont". subst => /=.
-      iApply (wp_read_mem with "Hmem Hcont"); [done|lia].
+      iApply (wp_read_mem with "Hmem Hcont"); [done|(ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("ByteArrays.solver.257.53"%string) ltac:(lia))].
     - rename a0 into a'. destruct (n0 =? n)%N eqn:Hn.
       + apply N.eqb_eq in Hn.
         iDestruct "Hcont" as (? i Heqi [??]%lookup_lt_is_Some_2 ?) "Hcont".
         clear Hn. subst => /=.
         have {} Heqi: a' = bv_unsigned a - i * Z.of_N len.
-        { rewrite Heqi Z.mul_comm -Z_div_exact_full_2; [lia|lia|done]. }
+        { rewrite Heqi Z.mul_comm -Z_div_exact_full_2; [(ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("ByteArrays.solver.263.57"%string) ltac:(lia))|(ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("ByteArrays.solver.263.61"%string) ltac:(lia))|done]. }
         iApply (wp_read_mem_array with "Hmem [Hcont]");
-          [done|lia|done|done|].
+          [done|(ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("ByteArrays.solver.265.17"%string) ltac:(lia))|done|done|].
         iIntros (?) "Hvalue". by iApply "Hcont".
       + destruct (zesu_byte_access_size len) eqn:Hsize; [|done].
         iDestruct "Hcont" as (-> i Hi Hbounds) "Hcont".
@@ -272,14 +273,14 @@ Section byte_array_read.
           "[Hprefix [Hregion Hsuffix]]"; [done|].
         have Hbytes :
           length (take (N.to_nat len) (drop i l)) = N.to_nat len.
-        { rewrite length_take length_drop. lia. }
+        { rewrite length_take length_drop. (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("ByteArrays.solver.275.44"%string) ltac:(lia)). }
         iDestruct (mem_mapsto_byte_array_to_mapsto_len
           (N.to_nat len) with "Hregion") as "Hregion"; [done|].
         iEval (rewrite N2Nat.id) in "Hregion".
-        have Haddress : (a' + Z.of_nat i)%Z = bv_unsigned a by lia.
+        have Haddress : (a' + Z.of_nat i)%Z = bv_unsigned a by (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("ByteArrays.solver.279.64"%string) ltac:(lia)).
         iEval (rewrite /= Z.mul_1_l Haddress) in "Hregion".
         iApply (wp_read_mem with "Hregion [Hcont Hprefix Hsuffix]");
-          [done|lia|].
+          [done|(ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("ByteArrays.solver.282.17"%string) ltac:(lia))|].
         iIntros (->) "Hword".
         iApply ("Hcont" with "[//] [//]").
         iApply (mem_mapsto_array_recombine_read (N.to_nat len) a'
@@ -288,7 +289,7 @@ Section byte_array_read.
           iEval (rewrite -Haddress) in "Hword". iExact "Hword".
         * iPureIntro.
           change (a' + 1 * Z.of_nat (i + N.to_nat len) =
-            a' + Z.of_nat (i + N.to_nat len))%Z. lia.
+            a' + Z.of_nat (i + N.to_nat len))%Z. (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("ByteArrays.solver.291.50"%string) ltac:(lia)).
         * iPureIntro. reflexivity.
         * iPureIntro. exact Hbounds.
     - done.
@@ -296,12 +297,12 @@ Section byte_array_read.
         simplify_eq/=.
       iApply (wp_read_mmio with "[] [] [Hmem] Hks").
       + done.
-      + lia.
+      + (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("ByteArrays.solver.299.9"%string) ltac:(lia)).
       + intros snapshot _ _. specialize (Hscons [SReadMem a vread snapshot]).
         apply Hscons. right. eexists _, []. split; [done|by left].
       + rewrite /snapshot_reg_resources. done.
       + rewrite /snapshot_mem_resources. done.
-      + iApply (mmio_range_shorten with "Hmem"); lia.
+      + iApply (mmio_range_shorten with "Hmem"); (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("ByteArrays.solver.304.50"%string) ltac:(lia)).
       + iIntros (snapshot) "_ _ Hspec". iApply "Hcont".
         iApply (spec_trace_mono with "Hspec"). spec_solver.
   Qed.
@@ -359,15 +360,15 @@ Section byte_array_write.
   Proof.
     iDestruct 1 as (? ? mk) "[Hmem Hcont]" => /=. case_match.
     - iDestruct "Hcont" as (->) "Hcont".
-      iApply (wp_write_mem with "Hmem Hcont"); [done | lia].
+      iApply (wp_write_mem with "Hmem Hcont"); [done | (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("ByteArrays.solver.362.56"%string) ltac:(lia))].
     - rename a0 into a'. destruct (n0 =? n)%N eqn:Hn.
       + apply N.eqb_eq in Hn.
         iDestruct "Hcont" as (? i Heqi ? Heq) "Hcont".
         clear Hn. subst => /=.
         have {} Heqi: a' = bv_unsigned a - i * Z.of_N len.
-        { rewrite Heqi Z.mul_comm -Z_div_exact_full_2; [lia|lia|done]. }
+        { rewrite Heqi Z.mul_comm -Z_div_exact_full_2; [(ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("ByteArrays.solver.368.57"%string) ltac:(lia))|(ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("ByteArrays.solver.368.61"%string) ltac:(lia))|done]. }
         iApply (wp_write_mem_array with "Hmem [Hcont]");
-          [done|lia|done|done|].
+          [done|(ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("ByteArrays.solver.370.17"%string) ltac:(lia))|done|done|].
         iIntros "Hvalues". by iApply "Hcont".
       + destruct (zesu_byte_access_size len) eqn:Hsize; [|done].
         iDestruct "Hcont" as (-> i Hi Hbounds) "Hcont".
@@ -377,14 +378,14 @@ Section byte_array_write.
           "[Hprefix [Hregion Hsuffix]]"; [done|].
         have HregionLength :
           length (take (N.to_nat len) (drop i l)) = N.to_nat len.
-        { rewrite length_take length_drop. lia. }
+        { rewrite length_take length_drop. (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("ByteArrays.solver.380.44"%string) ltac:(lia)). }
         iDestruct (mem_mapsto_byte_array_to_mapsto_len
           (N.to_nat len) with "Hregion") as "Hregion"; [done|].
         iEval (rewrite N2Nat.id) in "Hregion".
-        have Haddress : (a' + Z.of_nat i)%Z = bv_unsigned a by lia.
+        have Haddress : (a' + Z.of_nat i)%Z = bv_unsigned a by (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("ByteArrays.solver.384.64"%string) ltac:(lia)).
         iEval (rewrite /= Z.mul_1_l Haddress) in "Hregion".
         iApply (wp_write_mem with "Hregion [Hcont Hprefix Hsuffix]");
-          [done|lia|].
+          [done|(ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("ByteArrays.solver.387.17"%string) ltac:(lia))|].
         iIntros "Hword".
         iDestruct (mem_mapsto_mapsto_to_byte_array_N len with "Hword")
           as "Hmiddle".
@@ -393,7 +394,7 @@ Section byte_array_write.
           (DfracOwn 1) (take i l)
           (bv_to_little_endian (N.to_nat len) 8 (bv_unsigned vnew)) i
           with "Hprefix") as "Hleft".
-        { rewrite length_take. lia. }
+        { rewrite length_take. (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("ByteArrays.solver.396.32"%string) ltac:(lia)). }
         iEval (rewrite /= Z.mul_1_l) in "Hleft".
         iSpecialize ("Hleft" with "Hmiddle").
         iPoseProof (mem_mapsto_array_app_combine_at 8%N a'
@@ -403,34 +404,34 @@ Section byte_array_write.
           (drop (i + N.to_nat len) l) (i + N.to_nat len)
           with "Hleft") as "Hupdated".
         { rewrite length_app length_take length_bv_to_little_endian;
-            [lia|lia]. }
+            [(ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("ByteArrays.solver.406.14"%string) ltac:(lia))|(ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("ByteArrays.solver.406.18"%string) ltac:(lia))]. }
         iEval (rewrite /= Z.mul_1_l) in "Hupdated".
         iEval (rewrite -app_assoc) in "Hupdated".
         iEval (rewrite /= Z.mul_1_l) in "Hsuffix".
         iApply "Hcont". iApply "Hupdated". iExact "Hsuffix".
     - iDestruct "Hcont" as (??) "Hcont". subst n.
       iDestruct (mem_mapsto_uninit_split (bv_unsigned a - a0)
-        with "Hmem") as "[Ha1 Ha2]"; [lia|].
+        with "Hmem") as "[Ha1 Ha2]"; [(ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("ByteArrays.solver.413.39"%string) ltac:(lia))|].
       iDestruct (mem_mapsto_uninit_split (Z.of_N len)
-        with "Ha2") as "[Ha2 Ha3]"; [lia|].
+        with "Ha2") as "[Ha2 Ha3]"; [(ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("ByteArrays.solver.415.38"%string) ltac:(lia))|].
       iDestruct (mem_mapsto_uninit_to_mapsto with "Ha2") as (?? Heq) "Hl".
       rewrite N2Z.id N.mul_comm in Heq. subst.
-      have -> : a0 + (bv_unsigned a - a0) = bv_unsigned a by bv_solve.
-      iApply (wp_write_mem with "Hl"); [done|lia|]. iIntros "Hl".
+      have -> : a0 + (bv_unsigned a - a0) = bv_unsigned a by (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("ByteArrays.solver.418.62"%string) ltac:(bv_solve)).
+      iApply (wp_write_mem with "Hl"); [done|(ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("ByteArrays.solver.419.46"%string) ltac:(lia))|]. iIntros "Hl".
       iApply ("Hcont" with "Hl Ha1").
       have -> : (n0 - (bv_unsigned a - a0) - Z.of_N len) =
-        (a0 + n0 - (bv_unsigned a + Z.of_N len)) by lia.
+        (a0 + n0 - (bv_unsigned a + Z.of_N len)) by (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("ByteArrays.solver.422.53"%string) ltac:(lia)).
       done.
     - iDestruct "Hcont" as (?? Pks Pks') "[Hks [%Hscons Hcont]]";
         simplify_eq/=.
       iApply (wp_write_mmio with "[] [] [Hmem] Hks").
       + done.
-      + lia.
+      + (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("ByteArrays.solver.428.9"%string) ltac:(lia)).
       + intros snapshot _ _. specialize (Hscons [SWriteMem a vnew snapshot]).
         apply Hscons. right. eexists _, []. split; [done|by left].
       + rewrite /snapshot_reg_resources. done.
       + rewrite /snapshot_mem_resources. done.
-      + iApply (mmio_range_shorten with "Hmem"); lia.
+      + iApply (mmio_range_shorten with "Hmem"); (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("ByteArrays.solver.433.50"%string) ltac:(lia)).
       + iIntros (snapshot) "_ _ Hspec". iApply "Hcont".
         iApply (spec_trace_mono with "Hspec"). spec_solver.
   Qed.
@@ -450,7 +451,7 @@ Section byte_array_uninit_subsumption.
     iDestruct (mem_mapsto_byte_array_to_mapsto_len 8 with "Hbytes")
       as "Hword"; first exact Hlength.
     iDestruct (mem_mapsto_mapsto_to_uninit with "Hword") as "Hhead".
-    iApply (mem_mapsto_uninit_combine 8 with "Hhead Htail"); lia.
+    iApply (mem_mapsto_uninit_combine 8 with "Hhead Htail"); (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("ByteArrays.solver.453.62"%string) ltac:(lia)).
   Qed.
 
   Definition subsume_mem_byte_array_8_uninit_inst :=
@@ -471,7 +472,7 @@ Section byte_array_uninit_subsumption.
     iDestruct (mem_mapsto_mapsto_to_uninit with "Hword") as "Hhead".
     iEval (rewrite N.mul_comm N.div_mul; [rewrite nat_N_Z | done]) in "Hhead".
     iApply (mem_mapsto_uninit_combine (Z.of_nat (length bytes))
-      with "Hhead Htail"); lia.
+      with "Hhead Htail"); (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("ByteArrays.solver.474.28"%string) ltac:(lia)).
   Qed.
 
   Lemma subsume_mem_scratch_byte_array_uninit A a1 a2
@@ -532,9 +533,9 @@ Section word_byte_array_subsumption.
     iDestruct (mem_mapsto_mapsto_to_byte_array_N with "Hhigh") as "Hhigh".
     iApply (mem_mapsto_array_app_combine_at 8 a2 (DfracOwn 1) _ _
       (N.to_nat lowBytes) with "Hlow").
-    { rewrite length_bv_to_little_endian; lia. }
+    { rewrite length_bv_to_little_endian; (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("ByteArrays.solver.535.43"%string) ltac:(lia)). }
     rewrite /= Z.mul_1_l.
-    replace (Z.of_nat (N.to_nat lowBytes)) with (Z.of_N lowBytes) by lia.
+    replace (Z.of_nat (N.to_nat lowBytes)) with (Z.of_N lowBytes) by (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("ByteArrays.solver.537.70"%string) ltac:(lia)).
     iExact "Hhigh".
   Qed.
 
@@ -566,7 +567,7 @@ Section word_byte_array_subsumption.
     iExists x. iSplitL "Hhead Htail".
     - iEval (rewrite -(take_drop 8 (requested x))).
       iApply (mem_mapsto_array_app_combine_at 8 a2 _ _ _ 8 with "[Hhead] [Htail]").
-      + rewrite Hprefix. apply length_bv_to_little_endian. lia.
+      + rewrite Hprefix. apply length_bv_to_little_endian. (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("ByteArrays.solver.569.60"%string) ltac:(lia)).
       + rewrite Hprefix. iExact "Hhead".
       + iExact "Htail".
     - iExact "HG".
@@ -608,7 +609,7 @@ Section word_byte_array_subsumption.
     iApply (mem_mapsto_array_app_combine_at 8%N a (DfracOwn 1)
       (bv_to_little_endian 8 8 (bv_unsigned low))
       (bv_to_little_endian 8 8 (bv_unsigned high)) 8 with "Hlow").
-    { rewrite length_bv_to_little_endian; [done | lia]. }
+    { rewrite length_bv_to_little_endian; [done | (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("ByteArrays.solver.611.51"%string) ltac:(lia))]. }
     rewrite /= Z.mul_1_l. iExact "Hhigh".
   Qed.
 
@@ -622,7 +623,7 @@ Section word_byte_array_subsumption.
   Proof.
     iIntros "H0 H1 H2 H3".
     iDestruct (mem_mapsto_u64_pair_to_byte_array with "H0 H1") as "Hlower".
-    iEval (replace (a + 24)%Z with (a + 16 + 8)%Z by lia) in "H3".
+    iEval (replace (a + 24)%Z with (a + 16 + 8)%Z by (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("ByteArrays.solver.625.54"%string) ltac:(lia))) in "H3".
     iDestruct (mem_mapsto_u64_pair_to_byte_array with "H2 H3") as "Hupper".
     iApply (mem_mapsto_array_app_combine_at 8%N a (DfracOwn 1) _ _ 16
       with "Hlower"); first reflexivity.

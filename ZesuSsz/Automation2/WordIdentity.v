@@ -1,3 +1,4 @@
+Require Import ZesuSsz.Automation2.ContextCollection.
 Require Import ZesuSsz.Automation2.SwitchDispatch.
 From stdpp Require Import bitvector.tactics.
 From Coq Require Import ZArith.ZArith.
@@ -29,7 +30,7 @@ Ltac zesu_word_identity :=
               let reduced_offset := eval vm_compute in offset in
               solve [change (bv_add (Z_to_bv width base) reduced_offset =
                              Z_to_bv width (base - reduced)%Z);
-                     bv_solve]
+                     (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("WordIdentity.solver.32.22"%string) ltac:(bv_solve))]
           end
       end
   end.

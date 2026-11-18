@@ -1,0 +1,7 @@
+(include_subdirs no)
+
+(library
+ (name solver_context_plugin)
+ (public_name zesu-solver-context.plugin)
+ (modules solver_context_plugin)
+ (libraries unix coq-core.vernac coq-core.plugins.ltac yojson))

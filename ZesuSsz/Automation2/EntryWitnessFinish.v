@@ -1,3 +1,4 @@
+Require Import ZesuSsz.Automation2.ContextCollection.
 Require Import ZesuSsz.Automation2.Hooks.
 Require Import isla.riscv64.riscv64.
 Require Import ZesuSsz.Automation2.BitvectorFacts.
@@ -28,7 +29,7 @@ Ltac zesu_byte_bias_finish :=
       assert (Hcast : bv_unsigned (Z_to_bv width (bv_unsigned word)) = bv_unsigned word) by
         (apply Z_to_bv_small;
          pose proof (bv_unsigned_in_range 8 word);
-         pose proof (bv_modulus_le_mono 8 width Hwidth); lia);
+         pose proof (bv_modulus_le_mono 8 width Hwidth); (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("EntryWitnessFinish.solver.31.58"%string) ltac:(lia)));
       let Hresult := fresh "HbyteBiasPresentation" in
       assert (Hresult : bv_and (bv_add (bv_and (bv_sign_extend width word) mask) offset) mask =
           Z_to_bv width (bv_unsigned word + integer - modulus)) by
@@ -36,7 +37,7 @@ Ltac zesu_byte_bias_finish :=
          rewrite (ByteMaskCast.zesu_sign_extended_byte_mask width word Hwidth);
          Hooks.zesu_low_mask_bv_goal);
       rewrite Hresult;
-      bv_solve
+      (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("EntryWitnessFinish.solver.39.7"%string) ltac:(bv_solve))
   end].
 
 (* A bounded transition delegates witness choice to the unchanged selector. *)

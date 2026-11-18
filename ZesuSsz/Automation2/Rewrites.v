@@ -1,3 +1,4 @@
+Require Import ZesuSsz.Automation2.ContextCollection.
 Require Import isla.riscv64.riscv64.
 Require Import ZesuSsz.Automation2.RewriteBoundGuards.
 Require Import ZesuSsz.Automation2.ByteArrays.
@@ -28,7 +29,7 @@ Lemma zesu_integer_array_byte_equality (base offset : Z)
     (take 8 (drop (Z.to_nat offset) bytes))).
 Proof.
   replace (Z.to_nat (base + offset - base)) with (Z.to_nat offset)
-    by (f_equal; lia).
+    by (f_equal; (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("Rewrites.solver.31.18"%string) ltac:(lia))).
   reflexivity.
 Qed.
 Print Assumptions zesu_integer_array_byte_equality.
@@ -63,9 +64,9 @@ Create HintDb zesu_selectors.
   (@bv_sign_extend_idemp 64) zesu_bv_sign_extend_same
   : isla_coq_rewrite lithium_rewrite.
 #[export] Hint Rewrite zesu_bv_unsigned_add_Z_64
-  zesu_bv_unsigned_add_no_wrap_64 using (first [ZesuSsz.Automation2.RewriteBoundGuards.a3n_closed_bound_if_enabled | bv_solve])
+  zesu_bv_unsigned_add_no_wrap_64 using (first [ZesuSsz.Automation2.RewriteBoundGuards.a3n_closed_bound_if_enabled | (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("Rewrites.solver.66.118"%string) ltac:(bv_solve))])
   : isla_coq_rewrite lithium_rewrite.
-#[export] Hint Rewrite zesu_bv_unsigned_Z_to_bv_small using (first [ZesuSsz.Automation2.RewriteBoundGuards.a3n_closed_bound_if_enabled | bv_solve])
+#[export] Hint Rewrite zesu_bv_unsigned_Z_to_bv_small using (first [ZesuSsz.Automation2.RewriteBoundGuards.a3n_closed_bound_if_enabled | (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("Rewrites.solver.68.138"%string) ltac:(bv_solve))])
   : isla_coq_rewrite lithium_rewrite.
 #[export] Hint Rewrite Z_to_bv_add Z_to_bv_unsigned
   : lithium_rewrite.

@@ -1,3 +1,4 @@
+Require Import ZesuSsz.Automation2.ContextCollection.
 Require Import ZesuSsz.Automation2.VmClosed.
 (* Select the raw load trace when its source is an owned initialized array.
    A failed guard backtracks before instruction selection. *)
@@ -151,12 +152,12 @@ Ltac zesu_normalize_word_array_lookup :=
         (bv_unsigned sp + integer)%Z) by
         (try zesu_witness_facts;
          cbv [machineRamEnd mapRamSize mapRamBase defaultMap] in *;
-         bv_solve);
+         (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("ArrayLoadPriority.solver.154.10"%string) ltac:(bv_solve)));
       let Hindex := fresh "HwordArrayIndex" in
       assert (Hindex : Z.to_nat
         ((bv_unsigned (bv_add sp offset) - (bv_unsigned sp + start))
           `div` stride) = index) by
-        (rewrite Hsum; f_equal; f_equal; lia);
+        (rewrite Hsum; f_equal; f_equal; (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("ArrayLoadPriority.solver.159.42"%string) ltac:(lia)));
       rewrite Hindex in Hlookup; clear Hsum Hindex;
       rewrite ?lookup_cons ?lookup_nil in Hlookup;
       lazymatch type of Hlookup with

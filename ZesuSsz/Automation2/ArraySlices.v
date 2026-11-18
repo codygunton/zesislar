@@ -1,3 +1,4 @@
+Require Import ZesuSsz.Automation2.ContextCollection.
 Require Import isla.riscv64.riscv64.
 Require Import ZesuSsz.Automation2.RewriteBoundGuards.
 Require Import ZesuSsz.Contracts.IslarisMemory.
@@ -11,7 +12,7 @@ Lemma array_slice_stack_index (sp first second : bv 64) :
   Z.to_nat (bv_unsigned second - bv_unsigned first).
 Proof.
   intros. unfold array_region_start. cbn. rewrite Z.div_1_r.
-  f_equal. bv_solve.
+  f_equal. (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("ArraySlices.solver.14.12"%string) ltac:(bv_solve)).
 Qed.
 Print Assumptions array_slice_stack_index.
 
@@ -59,9 +60,9 @@ Lemma mem_array_slice_restore (base : Z) (bytes : list (bv 8))
 Proof.
   iIntros (Hbound) "Hprefix Hslice Hsuffix".
   have Hstart : length (take start bytes) = start.
-  { rewrite length_take Nat.min_l; lia. }
+  { rewrite length_take Nat.min_l; (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("ArraySlices.solver.62.36"%string) ltac:(lia)). }
   have Hcount : length (take count (drop start bytes)) = count.
-  { rewrite length_take length_drop Nat.min_l; lia. }
+  { rewrite length_take length_drop Nat.min_l; (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("ArraySlices.solver.64.48"%string) ltac:(lia)). }
   iPoseProof (mem_mapsto_array_app_combine_at 8 base (DfracOwn 1)
     (take start bytes) (take count (drop start bytes)) start Hstart
     with "Hprefix [Hslice]") as "Hleft".
@@ -104,7 +105,7 @@ Proof.
   iIntros "(%Hbound & Hsuffix & Hcontinue) Hprefix".
   iDestruct "Hcontinue" as (x) "HG". iExists x. iFrame "HG".
   have Hstart : length (take start bytes) = start.
-  { rewrite length_take Nat.min_l; lia. }
+  { rewrite length_take Nat.min_l; (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("ArraySlices.solver.107.36"%string) ltac:(lia)). }
   iPoseProof (mem_mapsto_array_app_combine_at 8 base (DfracOwn 1)
     (take start bytes) (drop start bytes) start Hstart with "Hprefix [Hsuffix]") as "Hwhole".
   { cbn. rewrite Z.mul_1_l. iExact "Hsuffix". }
@@ -124,6 +125,6 @@ Module SliceMatching.
   #[export] Existing Instance subsume_mem_array_restore_inst | 1.
   #[export] Existing Instance subsume_mem_array_slice_inst | 1.
   #[export] Existing Instance subsume_mem_array_region_inst | 2.
-  #[export] Hint Rewrite array_slice_stack_index using (first [ZesuSsz.Automation2.RewriteBoundGuards.a3n_closed_bound_if_enabled | bv_solve])
+  #[export] Hint Rewrite array_slice_stack_index using (first [ZesuSsz.Automation2.RewriteBoundGuards.a3n_closed_bound_if_enabled | (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("ArraySlices.solver.127.133"%string) ltac:(bv_solve))])
     : lithium_rewrite isla_coq_rewrite.
 End SliceMatching.

@@ -1,3 +1,4 @@
+Require Import ZesuSsz.Automation2.ContextCollection.
 Require Import ZesuSsz.Automation2.ByteMaskCast.
 Require Import ZesuSsz.Automation2.BitvectorFacts.
 Require Import ZesuSsz.Automation2.ListSliceWindows.
@@ -19,23 +20,23 @@ Proof.
   set (payloadWord := bv_and (bv_and (bv_sign_extend 64 byte) (BV 64 255)) (BV 64 127)) in *.
   pose proof (bv_unsigned_in_range 8 byte) as Hrange.
   change (0 <= bv_unsigned byte < 256) in Hrange.
-  pose proof (zesu_sign_extended_byte_mask 64 byte ltac:(lia)) as Hmask.
+  pose proof (zesu_sign_extended_byte_mask 64 byte ltac:((ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("ByteClassGuards.solver.22.58"%string) ltac:(lia)))) as Hmask.
   assert (HmaskLiteral : Z_to_bv 64 (2 ^ 8 - 1) = BV 64 255).
   { apply bv_eq. vm_compute. reflexivity. }
   rewrite HmaskLiteral in Hmask.
   assert (HcastByte : bv_unsigned (Z_to_bv 64 (bv_unsigned byte)) = bv_unsigned byte).
-  { apply Z_to_bv_small. change (0 <= bv_unsigned byte < 18446744073709551616). lia. }
+  { apply Z_to_bv_small. change (0 <= bv_unsigned byte < 18446744073709551616). (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("ByteClassGuards.solver.27.81"%string) ltac:(lia)). }
   apply bool_decide_eq_true_1 in Hnegative.
-  rewrite (bv_sign_extend_signed 128 (bv_sign_extend 64 byte) ltac:(lia)) in Hnegative.
-  rewrite (bv_sign_extend_signed 64 byte ltac:(lia)) in Hnegative.
+  rewrite (bv_sign_extend_signed 128 (bv_sign_extend 64 byte) ltac:((ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("ByteClassGuards.solver.29.69"%string) ltac:(lia)))) in Hnegative.
+  rewrite (bv_sign_extend_signed 64 byte ltac:((ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("ByteClassGuards.solver.30.48"%string) ltac:(lia)))) in Hnegative.
   rewrite bv_signed_BV in Hnegative.
   rewrite bv_swrap_0 in Hnegative.
   assert (Hlower : 128 <= bv_unsigned byte).
-  { destruct (Z_lt_ge_dec (bv_unsigned byte) 128); [|lia].
+  { destruct (Z_lt_ge_dec (bv_unsigned byte) 128); [|(ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("ByteClassGuards.solver.34.54"%string) ltac:(lia))].
     assert (Hsmall : - bv_half_modulus 8 <= bv_unsigned byte < bv_half_modulus 8).
-    { change (-128 <= bv_unsigned byte < 128). lia. }
+    { change (-128 <= bv_unsigned byte < 128). (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("ByteClassGuards.solver.36.48"%string) ltac:(lia)). }
     unfold bv_signed in Hnegative.
-    rewrite (bv_swrap_small 8 (bv_unsigned byte) Hsmall) in Hnegative. lia. }
+    rewrite (bv_swrap_small 8 (bv_unsigned byte) Hsmall) in Hnegative. (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("ByteClassGuards.solver.38.72"%string) ltac:(lia)). }
   apply Bool.negb_true_iff in HupperGuard.
   apply bool_decide_eq_false_1 in HupperGuard.
   rewrite Hmask in HupperGuard.
@@ -43,7 +44,7 @@ Proof.
   rewrite HcastByte in HupperGuard.
   assert (HupperSigned : bv_signed (Z_to_bv 128 upper) = upper).
   { rewrite Z_to_bv_signed. apply bv_swrap_small.
-    pose proof (bv_half_modulus_nonneg 128). lia. }
+    pose proof (bv_half_modulus_nonneg 128). (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("ByteClassGuards.solver.46.46"%string) ltac:(lia)). }
   rewrite HupperSigned in HupperGuard.
   apply Bool.negb_true_iff in Hnot128.
   apply bool_decide_eq_false_1 in Hnot128.
@@ -53,17 +54,17 @@ Proof.
   assert (Hpayload : bv_unsigned payloadWord = bv_unsigned byte - 128).
   { unfold payloadWord. rewrite Hmask. rewrite bv_and_unsigned. rewrite HcastByte. rewrite bv_unsigned_BV.
     change (Z.land (bv_unsigned byte) (Z.ones 7) = bv_unsigned byte - 128).
-    rewrite (Z.land_ones (bv_unsigned byte) 7 ltac:(lia)).
+    rewrite (Z.land_ones (bv_unsigned byte) 7 ltac:((ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("ByteClassGuards.solver.56.53"%string) ltac:(lia)))).
     change (bv_unsigned byte mod 128 = bv_unsigned byte - 128).
-    replace (bv_unsigned byte) with (bv_unsigned byte - 128 + 1 * 128) at 1 by lia.
-    rewrite (Z.mod_add (bv_unsigned byte - 128) 1 128 ltac:(lia)).
-    apply Z.mod_small. lia. }
+    replace (bv_unsigned byte) with (bv_unsigned byte - 128 + 1 * 128) at 1 by (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("ByteClassGuards.solver.58.80"%string) ltac:(lia)).
+    rewrite (Z.mod_add (bv_unsigned byte - 128) 1 128 ltac:((ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("ByteClassGuards.solver.59.61"%string) ltac:(lia)))).
+    apply Z.mod_small. (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("ByteClassGuards.solver.60.24"%string) ltac:(lia)). }
   apply Bool.negb_true_iff in HlengthGuard.
   apply bool_decide_eq_false_1 in HlengthGuard.
   rewrite (BitvectorFacts.zesu_signed_zero_extend_64_128 payloadWord) in HlengthGuard.
   rewrite (BitvectorFacts.zesu_signed_zero_extend_64_128 lengthWord) in HlengthGuard.
   rewrite Hpayload in HlengthGuard.
-  repeat split; try exact Hpayload; lia.
+  repeat split; try exact Hpayload; (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("ByteClassGuards.solver.66.37"%string) ltac:(lia)).
 Qed.
 
 (* Normalize a byte-list image without selecting machine resources. *)
@@ -108,7 +109,7 @@ Ltac zesu_byte_class_image :=
             is_closed_term count; is_closed_term index;
             let Hbound := fresh "HimageDropBound" in
             assert (Hbound : (List.length bytes <= index)%nat) by
-              (clear - Hlength; rewrite Hlength; Lia.lia);
+              (clear - Hlength; rewrite Hlength; (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("ByteClassGuards.solver.111.50"%string) ltac:(Lia.lia)));
             rewrite (drop_ge bytes index Hbound); clear Hbound
         end
       | rewrite length_drop | rewrite length_app | rewrite length_take

@@ -126,6 +126,8 @@ check-evidence-tools:
 	$(PYTHON) tools/machine_config.py --check
 	$(PYTHON) -m tools.block.check_approved_switches
 	$(PYTHON) -m tools.block.check_generic_automation
+	$(PYTHON) tools/solver_context_policy.py
+	$(PYTHON) tools/check_solver_context.py
 	$(PYTHON) -m tools.block.check_export_scopes
 	$(PYTHON) -m tools.block.check_data_only_lemmas
 	$(PYTHON) tools/stock_zisk/machine_map/generate.py --build $(STOCK_DIR) --check

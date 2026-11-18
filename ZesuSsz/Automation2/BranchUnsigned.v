@@ -1,3 +1,4 @@
+Require Import ZesuSsz.Automation2.ContextCollection.
 Require Import isla.riscv64.riscv64.
 Require Import ZesuSsz.Automation2.SwitchDispatch.
 Require Import ZesuSsz.Automation2.BitvectorFacts.
@@ -18,6 +19,6 @@ Ltac zesu_unsigned_branch_evidence :=
           let view := fresh "HunsignedBranch" in
           pose proof Hbranch as view;
           progress (rewrite !ZesuSsz.Automation2.BitvectorFacts.zesu_signed_zero_extend_64_128 in view);
-          first [exact view | solve [lia] | solve [bv_solve]]
+          first [exact view | solve [(ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("BranchUnsigned.solver.21.38"%string) ltac:(lia))] | solve [(ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("BranchUnsigned.solver.21.52"%string) ltac:(bv_solve))]]
       end
   end.

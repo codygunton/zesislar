@@ -1,3 +1,4 @@
+Require Import ZesuSsz.Automation2.ContextCollection.
 (* Automation library: Hooks requires this file without importing its opt-in instance. *)
 Require Import isla.riscv64.riscv64.
 From Coq Require Import Lists.List ZArith.ZArith NArith.NArith Bool.Bool.
@@ -81,14 +82,14 @@ Proof. apply zesu_bv_unsigned_add_Z_64. Qed.
 
 Lemma access_end (address region_end width : Z) :
   address <= region_end - width -> address + width <= region_end.
-Proof. intros Hbound. lia. Qed.
+Proof. intros Hbound. (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("CanonicalFactAdapter.solver.84.23"%string) ltac:(lia)). Qed.
 
 (* Modulo is not an implemented input form. This view needs a proven multiple. *)
 Lemma congruence_from_multiple (address multiple modulus : Z) :
   0 < modulus -> address = multiple * modulus -> address mod modulus = 0.
 Proof.
   intros Hmodulus Hmultiple. rewrite Hmultiple.
-  apply Z.mod_mul. lia.
+  apply Z.mod_mul. (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("CanonicalFactAdapter.solver.91.20"%string) ltac:(lia)).
 Qed.
 
 Lemma list_length_view {A : Type} (left right : list A) :

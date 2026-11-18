@@ -1,3 +1,4 @@
+Require Import ZesuSsz.Automation2.ContextCollection.
 Require Import lithium.interpreter.
 Require Import ZesuSsz.Automation2.ResourceGroups.
 Require Import ZesuSsz.Automation2.AdditiveDecoder.
@@ -19,7 +20,7 @@ Proof.
   rewrite bv_add_unsigned.
   rewrite bv_wrap_sub_idemp_l.
   replace (bv_unsigned left + bv_unsigned right - bv_unsigned right)
-    with (bv_unsigned left) by lia.
+    with (bv_unsigned left) by (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("JoinEntailment.solver.22.32"%string) ltac:(lia)).
   apply bv_wrap_bv_unsigned.
 Qed.
 
@@ -33,10 +34,10 @@ Proof.
   rewrite bv_wrap_sub_idemp_r.
   replace (bv_wrap width (bv_unsigned left + bv_unsigned common) + bv_unsigned right -
     (bv_unsigned right + bv_unsigned common))
-    with (bv_wrap width (bv_unsigned left + bv_unsigned common) - bv_unsigned common) by lia.
+    with (bv_wrap width (bv_unsigned left + bv_unsigned common) - bv_unsigned common) by (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("JoinEntailment.solver.36.90"%string) ltac:(lia)).
   rewrite bv_wrap_sub_idemp_l.
   replace (bv_unsigned left + bv_unsigned common - bv_unsigned common)
-    with (bv_unsigned left) by lia.
+    with (bv_unsigned left) by (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("JoinEntailment.solver.39.32"%string) ltac:(lia)).
   apply bv_wrap_bv_unsigned.
 Qed.
 
@@ -123,16 +124,16 @@ Lemma zesu_join_literal_guard (word : bv 8) :
 Proof.
   intros Hguard. apply Bool.negb_true_iff in Hguard.
   apply bool_decide_eq_false_1 in Hguard.
-  rewrite (bv_sign_extend_signed 128 (bv_sign_extend 64 word) ltac:(lia)) in Hguard.
-  rewrite (bv_sign_extend_signed 64 word ltac:(lia)) in Hguard.
+  rewrite (bv_sign_extend_signed 128 (bv_sign_extend 64 word) ltac:((ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("JoinEntailment.solver.126.69"%string) ltac:(lia)))) in Hguard.
+  rewrite (bv_sign_extend_signed 64 word ltac:((ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("JoinEntailment.solver.127.48"%string) ltac:(lia)))) in Hguard.
   rewrite bv_signed_BV in Hguard. rewrite bv_swrap_0 in Hguard.
   pose proof (bv_signed_in_range 8 word ltac:(discriminate)) as Hrange.
   assert (Hrepr : Z_to_bv 8 (bv_signed word) = word).
   { apply bv_eq_signed. rewrite Z_to_bv_signed. apply bv_swrap_bv_signed. }
   assert (Hsmall : 0 <= bv_signed word < bv_modulus 8).
-  { change (0 <= bv_signed word < 256). change (-128 <= bv_signed word < 128) in Hrange. lia. }
+  { change (0 <= bv_signed word < 256). change (-128 <= bv_signed word < 128) in Hrange. (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("JoinEntailment.solver.133.90"%string) ltac:(lia)). }
   rewrite <- Hrepr at 1. rewrite (Z_to_bv_small 8 (bv_signed word) Hsmall).
-  change (-128 <= bv_signed word < 128) in Hrange. lia.
+  change (-128 <= bv_signed word < 128) in Hrange. (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("JoinEntailment.solver.135.52"%string) ltac:(lia)).
 Qed.
 
 Lemma zesu_join_mask_payload (word : bv 8) :
@@ -141,18 +142,18 @@ Lemma zesu_join_mask_payload (word : bv 8) :
 Proof.
   intros Hhigh. pose proof (bv_unsigned_in_range 8 word) as Hrange.
   change (0 <= bv_unsigned word < 256) in Hrange.
-  pose proof (zesu_sign_extended_byte_mask 64 word ltac:(lia)) as Hmask.
+  pose proof (zesu_sign_extended_byte_mask 64 word ltac:((ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("JoinEntailment.solver.144.58"%string) ltac:(lia)))) as Hmask.
   assert (Hliteral : Z_to_bv 64 (2 ^ 8 - 1) = BV 64 255).
   { apply bv_eq. vm_compute. reflexivity. }
   rewrite Hliteral in Hmask. rewrite Hmask. rewrite bv_and_unsigned.
-  rewrite (Z_to_bv_small 64 (bv_unsigned word) ltac:(change (0 <= bv_unsigned word < 18446744073709551616); lia)).
+  rewrite (Z_to_bv_small 64 (bv_unsigned word) ltac:(change (0 <= bv_unsigned word < 18446744073709551616); (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("JoinEntailment.solver.148.109"%string) ltac:(lia)))).
   rewrite bv_unsigned_BV.
   change (Z.land (bv_unsigned word) (Z.ones 7) = bv_unsigned word - 128).
-  rewrite (Z.land_ones (bv_unsigned word) 7 ltac:(lia)).
+  rewrite (Z.land_ones (bv_unsigned word) 7 ltac:((ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("JoinEntailment.solver.151.51"%string) ltac:(lia)))).
   change (bv_unsigned word mod 128 = bv_unsigned word - 128).
-  replace (bv_unsigned word) with (bv_unsigned word - 128 + 1 * 128) at 1 by lia.
-  rewrite (Z.mod_add (bv_unsigned word - 128) 1 128 ltac:(lia)).
-  apply Z.mod_small. lia.
+  replace (bv_unsigned word) with (bv_unsigned word - 128 + 1 * 128) at 1 by (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("JoinEntailment.solver.153.78"%string) ltac:(lia)).
+  rewrite (Z.mod_add (bv_unsigned word - 128) 1 128 ltac:((ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("JoinEntailment.solver.154.59"%string) ltac:(lia)))).
+  apply Z.mod_small. (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("JoinEntailment.solver.155.22"%string) ltac:(lia)).
 Qed.
 
 Lemma zesu_join_nonzero_cast width quantity (zero : bv width) :
@@ -175,7 +176,7 @@ Ltac zesu_join_positive_once :=
   multimatch goal with Hnonzero : ?quantity <> 0 |- _ =>
     let positive := constr:(0 < quantity) in
     zesu_join_fact_absent positive;
-    let Hpositive := fresh "HjoinPositive" in assert (Hpositive : positive) by lia
+    let Hpositive := fresh "HjoinPositive" in assert (Hpositive : positive) by (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("JoinEntailment.solver.178.80"%string) ltac:(lia))
   end.
 
 Ltac zesu_join_cast_once :=
@@ -223,7 +224,7 @@ Ltac zesu_join_class_side :=
         multimatch goal with Hhi : ?valueHi <= ?upperHi |- _ =>
           unify valueHi value; unify upperHi upper;
           change (lower <= valueLo <= upper);
-          clear - Hlo Hhi Hne; lia
+          clear - Hlo Hhi Hne; (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("JoinEntailment.solver.226.32"%string) ltac:(lia))
         end
       end
     end
@@ -234,7 +235,7 @@ Ltac zesu_join_semantic_side views :=
     solve [zesu_join_class_side] |
     solve [split; zesu_join_semantic_side views] |
     solve [progress views; zesu_join_semantic_side views] |
-    solve [zesu_join_head_goal] | solve [lia] |
+    solve [zesu_join_head_goal] | solve [(ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("JoinEntailment.solver.237.42"%string) ltac:(lia))] |
     solve [MemoryAddress.zesu_stack_arithmetic]].
 
 Ltac zesu_join_contradiction :=

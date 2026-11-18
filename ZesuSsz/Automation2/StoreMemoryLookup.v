@@ -1,3 +1,4 @@
+Require Import ZesuSsz.Automation2.ContextCollection.
 Require Import isla.riscv64.riscv64.
 Require Import ZesuSsz.Automation2.SwitchDispatch.
 Require Import ZesuSsz.Automation2.BitvectorFacts.
@@ -43,10 +44,10 @@ Ltac zesu_store_selected_linear :=
   cbn [Z.of_N Z.of_nat];
   repeat match goal with
   | |- context [(?left - ?right)%Z] =>
-      replace (left - right)%Z with 0%Z by lia
+      replace (left - right)%Z with 0%Z by (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("StoreMemoryLookup.solver.46.44"%string) ltac:(lia))
   end;
   rewrite ?Z.sub_diag ?Z.div_1_r ?Z.mod_1_r;
-  cbn; solve [lia].
+  cbn; solve [(ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("StoreMemoryLookup.solver.49.15"%string) ltac:(lia))].
 
 Ltac zesu_store_select_length continuation :=
   match goal with
@@ -91,13 +92,13 @@ Lemma zesu_indexed_byte_cells_array `{!islaG Sigma}
 Proof.
  intros Hbound Haddress. rewrite mem_mapsto_array_eq. iSplit.
  - iIntros "Hcells". iExists 1%N. iSplit; first done.
-   cbn [Z.of_N]. iSplit; first (iPureIntro; lia).
+   cbn [Z.of_N]. iSplit; first (iPureIntro; (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("StoreMemoryLookup.solver.94.45"%string) ltac:(lia))).
    iApply (big_sepL_mono with "Hcells"). intros i v Hlookup.
-   rewrite Haddress. replace (Z.of_nat i * 1) with (Z.of_nat i) by lia. done.
+   rewrite Haddress. replace (Z.of_nat i * 1) with (Z.of_nat i) by (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("StoreMemoryLookup.solver.96.68"%string) ltac:(lia)). done.
  - iIntros "[%len [%Hwidth [%Hrange Hcells]]]".
-   assert (len = 1)%N by lia. subst len. cbn [Z.of_N].
+   assert (len = 1)%N by (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("StoreMemoryLookup.solver.98.26"%string) ltac:(lia)). subst len. cbn [Z.of_N].
    iApply (big_sepL_mono with "Hcells"). intros i v Hlookup.
-   rewrite Haddress. replace (Z.of_nat i * 1) with (Z.of_nat i) by lia. done.
+   rewrite Haddress. replace (Z.of_nat i * 1) with (Z.of_nat i) by (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("StoreMemoryLookup.solver.100.68"%string) ltac:(lia)). done.
 Qed.
 (* Test the owner before traversing its pure source facts. *)
 Ltac zesu_store_has_indexed_byte_tail :=
@@ -140,7 +141,7 @@ Ltac zesu_store_fold_indexed_byte_tail :=
         let base := eval cbn [Z.of_nat Nat.add Nat.mul] in base in
         let Haddress := fresh "HindexedAddress" in
         assert (Haddress : forall i, address i = base + Z.of_nat i) by
-          (intro i; cbn [Nat.add Nat.mul]; rewrite ?Nat2Z.inj_succ ?Nat2Z.inj_add; lia);
+          (intro i; cbn [Nat.add Nat.mul]; rewrite ?Nat2Z.inj_succ ?Nat2Z.inj_add; (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("StoreMemoryLookup.solver.143.84"%string) ltac:(lia)));
         let Hbound := fresh "HindexedBound" in
         assert (Hbound : 0 <= base /\ base + Z.of_nat (length cells) <= 2^64) by
           (first [assumption |
@@ -151,7 +152,7 @@ Ltac zesu_store_fold_indexed_byte_tail :=
                 clear - Hcopy;
                 cbn [List.length Z.of_N] in Hcopy;
                 rewrite ?Nat2Z.inj_succ in Hcopy;
-                lia
+                (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("StoreMemoryLookup.solver.154.17"%string) ltac:(lia))
             end]);
         iEval (rewrite (zesu_indexed_byte_cells_array address base fraction cells Hbound Haddress)) in name;
         clear Haddress Hbound
@@ -191,7 +192,7 @@ Ltac zesu_store_codec_array_lookup :=
                   Z.of_nat (length values) * Z.of_N (N.div width 8))%Z) by
                   (first [solve [ZesuSsz.Automation2.RangeFacts.zesu_selected_array_range] |
                     cbn [length N.to_nat];
-                    repeat (rewrite length_bv_to_little_endian; [|lia]);
+                    repeat (rewrite length_bv_to_little_endian; [|(ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("StoreMemoryLookup.solver.194.67"%string) ltac:(lia))]);
                     cbn [length N.to_nat];
                     try (autounfold with zesu_contract_constants);
                     ZesuSsz.Automation2.MemoryAddress.zesu_stack_arithmetic]);

@@ -1,3 +1,4 @@
+Require Import ZesuSsz.Automation2.ContextCollection.
 Require Import isla.riscv64.riscv64.
 From lithium Require Import interpreter.
 From iris.algebra Require Import dfrac.
@@ -27,7 +28,7 @@ Section fractional_read.
     iDestruct "Hcont" as (index Heqi Hbound) "Hcont".
     destruct (lookup_lt_is_Some_2 values index Hbound) as [stored Hlookup].
     have Hbase : base = bv_unsigned address - index * Z.of_N len.
-    { rewrite Heqi Z.mul_comm -Z_div_exact_full_2; [lia|lia|done]. }
+    { rewrite Heqi Z.mul_comm -Z_div_exact_full_2; [(ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("FractionalRead.solver.30.53"%string) ltac:(lia))|(ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("FractionalRead.solver.30.57"%string) ltac:(lia))|done]. }
     iApply (wp_read_mem_array with "Hmem [Hcont]");
       [exact Hwidth|exact Hpositive|exact Hlookup|exact Hbase|].
     iIntros (Heq) "Hmem".
@@ -49,7 +50,7 @@ Ltac block2_fractional_read_array address width spatial continuation :=
             ((base <= bv_unsigned address <
               base + Z.of_nat (length values) * Z.of_N (width `div` 8))%Z
              \/ base = bv_unsigned address)) by
-            (first [right; reflexivity | left; bv_solve]);
+            (first [right; reflexivity | left; (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("FractionalRead.solver.52.48"%string) ltac:(bv_solve))]);
           clear range;
           continuation fraction base values
         end

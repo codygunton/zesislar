@@ -1,3 +1,4 @@
+Require Import ZesuSsz.Automation2.ContextCollection.
 Require Import isla.riscv64.riscv64.
 Require Import ZesuSsz.Automation2.SwitchDispatch.
 Require Import ZesuSsz.Automation2.PureFacts.
@@ -43,7 +44,7 @@ Lemma zesu_ret_target (R : Z) :
       (BV 64 0xfffffffffffffffe)) (BV 64 0))) = bv_wrap 64 R.
 Proof.
   intro Heven.
-  assert (Hlow : bv_extract 0 1 (Z_to_bv 64 R) = BV 1 0) by bv_solve.
+  assert (Hlow : bv_extract 0 1 (Z_to_bv 64 R) = BV 1 0) by (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("IntegerReturn.solver.46.61"%string) ltac:(bv_solve)).
   apply (normalize_instr_addr_riscv64_ret_tac (Z_to_bv 64 R) _ Hlow).
   rewrite Z_to_bv_unsigned. apply bv_wrap_bv_wrap. apply N.le_refl.
 Qed.
@@ -85,7 +86,7 @@ Ltac zesu_return_integer_normalize :=
       zesu_integer_array_facts;
       let Heven := fresh "HreturnEven" in
       assert (Heven : (R mod 2 = 0)%Z) by
-        first [assumption | match goal with H : (R mod 4 = 0)%Z |- _ => lia end];
+        first [assumption | match goal with H : (R mod 4 = 0)%Z |- _ => (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("IntegerReturn.solver.88.73"%string) ltac:(lia)) end];
       exact (normalize_instr_addr_hint _ R (zesu_ret_target R Heven))
   end.
 
@@ -104,9 +105,9 @@ Ltac zesu_return_integer_fault :=
       let Hlow := fresh "HreturnLowBit" in
       let Hhigh := fresh "HreturnHighBit" in
       assert (Hlow : bv_extract 0 1 (Z_to_bv 64 R) = BV 1 0) by
-        (clear -Hlower Hupper Haligned; bv_solve);
+        (clear -Hlower Hupper Haligned; (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("IntegerReturn.solver.107.41"%string) ltac:(bv_solve)));
       assert (Hhigh : bv_extract 1 1 (Z_to_bv 64 R) = BV 1 0) by
-        (clear -Hlower Hupper Haligned; bv_solve);
+        (clear -Hlower Hupper Haligned; (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("IntegerReturn.solver.109.41"%string) ltac:(bv_solve)));
       unify Q False; unfold SimplImpl; split; [intros [] |];
       let Hfault := fresh "Hfault" in intro Hfault;
       rewrite (zesu_return_fault_bit_from_extracts (Z_to_bv 64 R) Hlow Hhigh) in Hfault;

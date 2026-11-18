@@ -1,3 +1,4 @@
+Require Import ZesuSsz.Automation2.ContextCollection.
 Require Import isla.riscv64.riscv64.
 Require Import ZesuSsz.Automation2.PureFacts.
 Local Open Scope Z_scope.
@@ -15,7 +16,7 @@ Ltac zesu_wrapped_word_range arithmetic :=
     assert (Hrange : 0 <= base + adjusted < bv_modulus width) by arithmetic;
     let Hword := fresh "HwrappedWord" in
     assert (Hword : bv_wrap width (base + offset) = base + adjusted) by
-      (replace (base + offset) with (base + adjusted + bv_modulus width) by ring;
+      (replace (base + offset) with (base + adjusted + bv_modulus width) by (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("WrappedWord.solver.18.77"%string) ltac:(ring));
        rewrite bv_wrap_add_modulus_1; apply bv_wrap_small; exact Hrange);
     rewrite Hword
   end;
@@ -46,7 +47,7 @@ Proof.
   rewrite bv_wrap_add_idemp_l.
   rewrite <- Z.add_assoc, bv_wrap_add_idemp_l, Z.add_assoc.
   replace (base + bv_unsigned left + bv_unsigned right) with
-    (base + (bv_unsigned left + bv_unsigned right - bv_modulus width) + bv_modulus width) by ring.
+    (base + (bv_unsigned left + bv_unsigned right - bv_modulus width) + bv_modulus width) by (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("WrappedWord.solver.49.94"%string) ltac:(ring)).
   rewrite bv_wrap_add_modulus_1.
   apply bv_wrap_small. exact Hrange.
 Qed.
@@ -77,7 +78,7 @@ Ltac zesu_wrapped_memory_lookup :=
     match goal with Hpair : _ /\ _ |- _ => destruct Hpair end];
   zesu_reduce_closed_Z_aliases;
   zesu_normalize_wrapped_findmem ltac:(
-    zesu_reduce_closed_Z_aliases; cbv [bv_unsigned bv_modulus] in *; lia);
+    zesu_reduce_closed_Z_aliases; cbv [bv_unsigned bv_modulus] in *; (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("WrappedWord.solver.80.70"%string) ltac:(lia)));
   liStep.
 
 

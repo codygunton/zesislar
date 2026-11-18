@@ -1,3 +1,4 @@
+Require Import ZesuSsz.Automation2.ContextCollection.
 From Coq Require Import Bool List String ZArith Lia Logic.Eqdep_dec.
 Require Import SailStdpp.MachineWord SailStdpp.Values SailStdpp.Prompt_monad.
 Require Import SailStdpp.Prompt SailStdpp.Operators_mwords SailStdpp.Instances.
@@ -51,7 +52,7 @@ Qed.
   using (first [assumption | reflexivity]) : zesu_sail.
 
 Ltac sail_guard_solver :=
-  unbool_comparisons; unbool_comparisons_goal; lia.
+  unbool_comparisons; unbool_comparisons_goal; (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("SailEval.solver.54.48"%string) ltac:(lia)).
 
 Ltac sail_guard :=
   first
@@ -81,12 +82,12 @@ Ltac sail_rec_step :=
     | Acc (Zwf 0) ?fuel =>
       tryif is_closed_term fuel then
         (let Hbound := fresh "HsailRecBound" in
-         assert (Hbound : 0 <= fuel <= 8) by lia;
+         assert (Hbound : 0 <= fuel <= 8) by (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("SailEval.solver.84.46"%string) ltac:(lia));
          progress (autounfold_one with zesu_sail_rec))
       else
         (let Hcases := fresh "HsailRecCases" in
          assert (Hcases : fuel = 0 \/ fuel = 1 \/ fuel = 2 \/ fuel = 3 \/
-           fuel = 4 \/ fuel = 5 \/ fuel = 6 \/ fuel = 7 \/ fuel = 8) by lia;
+           fuel = 4 \/ fuel = 5 \/ fuel = 6 \/ fuel = 7 \/ fuel = 8) by (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("SailEval.solver.89.73"%string) ltac:(lia));
          repeat lazymatch type of Hcases with _ \/ _ => destruct Hcases as [Hcases|Hcases] end;
          progress (rewrite Hcases in *))
     end
@@ -120,7 +121,7 @@ Proof.
     intros [|index] value Hlookup; simpl in Hlookup; try discriminate.
   - inversion Hlookup; subst. reflexivity.
   - cbn [EvmSailRlp.evm_rlp.shim_byte_at].
-    replace (Z.of_nat (S index) - 1) with (Z.of_nat index) by lia.
+    replace (Z.of_nat (S index) - 1) with (Z.of_nat index) by (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("SailEval.solver.123.63"%string) ltac:(lia)).
     apply IH. exact Hlookup.
 Qed.
 
@@ -130,7 +131,7 @@ Lemma sail_run_shim_byte bytes offset value rs allow :
     (Success value, rs).
 Proof.
   intros Hoffset Hlookup.
-  replace offset with (Z.of_nat (Z.to_nat offset)) at 1 by (rewrite Z2Nat.id; lia).
+  replace offset with (Z.of_nat (Z.to_nat offset)) at 1 by (rewrite Z2Nat.id; (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("SailEval.solver.133.79"%string) ltac:(lia))).
   apply sail_run_shim_byte_nat. exact Hlookup.
 Qed.
 Ltac sail_positive_literal term :=
@@ -172,13 +173,13 @@ Ltac sail_list_step :=
     lazymatch type of xs with list ?T =>
       is_var xs;
       let Hnonempty := fresh "HsailNonempty" in
-      assert (Hnonempty : (0 < length xs)%nat) by lia;
-      destruct xs; [cbn [length] in Hnonempty; lia|]
+      assert (Hnonempty : (0 < length xs)%nat) by (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("SailEval.solver.175.51"%string) ltac:(lia));
+      destruct xs; [cbn [length] in Hnonempty; (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("SailEval.solver.176.48"%string) ltac:(lia))|]
     end
   end.
 #[export] Hint Rewrite @sail_run_bind @firstn_O : zesu_sail.
 #[export] Hint Rewrite sail_run_shim_byte
-  using (first [assumption | reflexivity | lia]) : zesu_sail.
+  using (first [assumption | reflexivity | (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("SailEval.solver.181.44"%string) ltac:(lia))]) : zesu_sail.
 Ltac sail_eval_next :=
   intros;
   repeat first
@@ -196,7 +197,7 @@ Ltac sail_eval_next :=
     | progress (autounfold_one with sail)
     | sail_guard
     | sail_list_step ];
-  try solve [repeat first [reflexivity | lia | f_equal]].
+  try solve [repeat first [reflexivity | (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("SailEval.solver.199.42"%string) ltac:(lia)) | f_equal]].
 
 Ltac sail_eval :=
   sail_eval_base;
@@ -226,9 +227,9 @@ Proof.
   intros Hn. apply (Eqdep_dec.eq_dep_eq_dec Z.eq_dec).
   eapply EqdepFacts.eq_dep_trans.
   2: apply TypeCasts.autocast_eq_dep.
-  2: (apply MachineWord.idx_Z_idx; lia).
+  2: (apply MachineWord.idx_Z_idx; (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("SailEval.solver.229.36"%string) ltac:(lia))).
   unfold to_word_idx, to_word, mword.
-  apply sail_Z_idx_eq_dep; [assumption|rewrite MachineWord.idx_Z_idx; lia|].
+  apply sail_Z_idx_eq_dep; [assumption|rewrite MachineWord.idx_Z_idx; (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("SailEval.solver.231.71"%string) ltac:(lia))|].
   apply cast_idx_eq_dep. constructor.
 Qed.
 Print Assumptions sail_to_word_to_word_nat.
@@ -239,24 +240,24 @@ Lemma sail_get_slice_int (width value offset : Z) :
     Z_to_bv (Z.to_N width) (Z.shiftr value offset).
 Proof.
   intros Hwidth Hoffset. rewrite get_slice_int_eta. unfold get_slice_int'.
-  rewrite (proj2 (Z.geb_ge width 0) ltac:(lia)). cbn.
+  rewrite (proj2 (Z.geb_ge width 0) ltac:((ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("SailEval.solver.242.43"%string) ltac:(lia)))). cbn.
   unfold subrange_vec_dec.
-  replace (offset + width - 1 - offset + 1) with width by lia.
+  replace (offset + width - 1 - offset + 1) with width by (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("SailEval.solver.244.59"%string) ltac:(lia)).
   rewrite TypeCasts.autocast_refl.
-  rewrite <- sail_to_word_to_word_nat by lia.
+  rewrite <- sail_to_word_to_word_nat by (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("SailEval.solver.246.42"%string) ltac:(lia)).
   unfold to_word, MachineWord.slice, get_word, mword_of_int,
     MachineWord.Z_to_word, MachineWord.Z_idx.
   apply bv_eq. rewrite bv_extract_unsigned, !Z_to_bv_unsigned.
-  unfold bv_wrap, bv_modulus. rewrite !Z2N.id by lia.
-  replace (offset + width - 1 + 1) with (offset + width) by lia.
+  unfold bv_wrap, bv_modulus. rewrite !Z2N.id by (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("SailEval.solver.250.50"%string) ltac:(lia)).
+  replace (offset + width - 1 + 1) with (offset + width) by (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("SailEval.solver.251.61"%string) ltac:(lia)).
   apply Z.bits_inj. intro index.
   destruct (Z_lt_ge_dec index 0) as [Hnegative|Hnonnegative].
-  { rewrite !Z.testbit_neg_r by lia. reflexivity. }
+  { rewrite !Z.testbit_neg_r by (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("SailEval.solver.254.33"%string) ltac:(lia)). reflexivity. }
   destruct (Z_lt_ge_dec index width) as [Hlow|Hhigh].
-  { rewrite !Z.mod_pow2_bits_low by lia.
-    rewrite !Z.shiftr_spec by lia.
-    rewrite Z.mod_pow2_bits_low by lia. reflexivity. }
-  rewrite !Z.mod_pow2_bits_high by lia. reflexivity.
+  { rewrite !Z.mod_pow2_bits_low by (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("SailEval.solver.256.37"%string) ltac:(lia)).
+    rewrite !Z.shiftr_spec by (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("SailEval.solver.257.31"%string) ltac:(lia)).
+    rewrite Z.mod_pow2_bits_low by (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("SailEval.solver.258.36"%string) ltac:(lia)). reflexivity. }
+  rewrite !Z.mod_pow2_bits_high by (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("SailEval.solver.259.36"%string) ltac:(lia)). reflexivity.
 Qed.
 Print Assumptions sail_get_slice_int.
 
@@ -360,9 +361,9 @@ Proof.
   destruct state as [[fuel access] [off value]]. destruct access.
   cbn [sail_shim_loop sail_shim_advance EvmSailRlp.evm_rlp._rec_shim_load_n].
   fold (@EvmSailRlp.evm_rlp._rec_shim_load_n).
-  replace (Z.sub (Z.of_nat (S remaining)) 1) with (Z.of_nat remaining) by lia.
+  replace (Z.sub (Z.of_nat (S remaining)) 1) with (Z.of_nat remaining) by (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("SailEval.solver.363.75"%string) ltac:(lia)).
   repeat rewrite sail_run_bind_assoc.
-  assert (Hzero : (Z.of_nat (S remaining) =? 0) = false) by (apply Z.eqb_neq; lia). rewrite Hzero. clear Hzero.
+  assert (Hzero : (Z.of_nat (S remaining) =? 0) = false) by (apply Z.eqb_neq; (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("SailEval.solver.365.79"%string) ltac:(lia))). rewrite Hzero. clear Hzero.
   repeat rewrite sail_run_bind.
   destruct (runPrompt (assert_exp' (Z.geb fuel 0) "recursion limit reached") rs allow) as [[guard|error|message] state] eqn:Hguard; cbv beta iota zeta; try reflexivity.
   rewrite sail_run_bind_assoc. repeat rewrite sail_run_bind.
@@ -400,7 +401,7 @@ Proof.
   intros Hinvariant. destruct state as [[fuel access] [off value]]. cbn [sail_load_invariant] in Hinvariant. destruct Hinvariant as [Hoff [Hslice [Hfuel Hresult]]].
   rewrite firstn_O in Hresult. cbn [List.fold_left] in Hresult. subst expected. destruct access.
   cbn [sail_shim_loop EvmSailRlp.evm_rlp._rec_shim_load_n]. replace (Z.of_nat O =? 0) with true by reflexivity. cbv beta iota zeta.
-  assert (Hguard : Z.geb fuel 0 = true) by (apply Z.geb_ge; lia). rewrite Hguard.
+  assert (Hguard : Z.geb fuel 0 = true) by (apply Z.geb_ge; (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("SailEval.solver.403.61"%string) ltac:(lia))). rewrite Hguard.
   reflexivity.
 Qed.
 Print Assumptions sail_shim_loop_base.
@@ -428,16 +429,16 @@ Lemma sail_shim_advance_invariant sourceOff sourceLen
     sail_load_invariant sourceOff sourceLen input expected remaining next.
 Proof.
   intros Hsource Hbound Hinput Hinvariant. destruct state as [[fuel access] [off value]]. cbn [sail_load_invariant] in Hinvariant. destruct Hinvariant as [Hoff [Hslice [Hfuel Hresult]]].
-  assert (Hguard : Z.geb fuel 0 = true) by (apply Z.geb_ge; lia). assert (Hinside : Z.ltb off sourceLen = true) by (apply Z.ltb_lt; lia).
-  assert (Hindex : (Z.to_nat (Z.add sourceOff off) < length input)%nat) by (apply Nat2Z.inj_lt; rewrite Z2Nat.id by lia; lia).
+  assert (Hguard : Z.geb fuel 0 = true) by (apply Z.geb_ge; (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("SailEval.solver.431.61"%string) ltac:(lia))). assert (Hinside : Z.ltb off sourceLen = true) by (apply Z.ltb_lt; (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("SailEval.solver.431.133"%string) ltac:(lia))).
+  assert (Hindex : (Z.to_nat (Z.add sourceOff off) < length input)%nat) by (apply Nat2Z.inj_lt; rewrite Z2Nat.id by (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("SailEval.solver.432.117"%string) ltac:(lia)); (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("SailEval.solver.432.122"%string) ltac:(lia))).
   assert (Hsome : exists item, nth_error input (Z.to_nat (Z.add sourceOff off)) = Some item) by (assert (Hnotnone : nth_error input (Z.to_nat (Z.add sourceOff off)) <> None) by (apply nth_error_Some; exact Hindex); destruct (nth_error input (Z.to_nat (Z.add sourceOff off))) as [item|] eqn:Hlookup; [eauto|contradiction]). destruct Hsome as [item Hlookup].
   unfold sail_shim_advance. rewrite sail_run_bind. rewrite (sail_run_assert_true _ _ Hguard). cbv beta iota zeta. rewrite Hinside.
   repeat rewrite sail_run_bind_assoc. repeat rewrite sail_run_bind.
   change (runPrompt (read_reg shim_input_bytes) rs allow) with (Success (register_lookup shim_input_bytes rs), rs). rewrite Hinput. cbv beta iota zeta.
-  repeat rewrite sail_run_bind_assoc. repeat rewrite sail_run_bind. rewrite (sail_run_shim_byte input (Z.add sourceOff off) item rs allow) by (first [assumption|lia]). cbv beta iota zeta.
+  repeat rewrite sail_run_bind_assoc. repeat rewrite sail_run_bind. rewrite (sail_run_shim_byte input (Z.add sourceOff off) item rs allow) by (first [assumption|(ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("SailEval.solver.437.162"%string) ltac:(lia))]). cbv beta iota zeta.
   eexists. split; [reflexivity |].
-  cbn [sail_load_invariant]. repeat split; try lia.
-  assert (HnextIndex : Z.to_nat (Z.add sourceOff (Z.add off 1)) = S (Z.to_nat (Z.add sourceOff off))) by (replace (Z.add sourceOff (Z.add off 1)) with (Z.succ (Z.add sourceOff off)) by lia; rewrite Z2Nat.inj_succ by lia; reflexivity). rewrite HnextIndex.
+  cbn [sail_load_invariant]. repeat split; try (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("SailEval.solver.439.48"%string) ltac:(lia)).
+  assert (HnextIndex : Z.to_nat (Z.add sourceOff (Z.add off 1)) = S (Z.to_nat (Z.add sourceOff off))) by (replace (Z.add sourceOff (Z.add off 1)) with (Z.succ (Z.add sourceOff off)) by (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("SailEval.solver.440.186"%string) ltac:(lia)); rewrite Z2Nat.inj_succ by (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("SailEval.solver.440.217"%string) ltac:(lia)); reflexivity). rewrite HnextIndex.
   rewrite (sail_firstn_skipn_read input (Z.to_nat (Z.add sourceOff off)) item remaining Hlookup) in Hresult. cbn [List.fold_left] in Hresult. exact Hresult.
 Qed.
 Print Assumptions sail_shim_advance_invariant.
@@ -506,5 +507,5 @@ Ltac sail_load_summary :=
       (register_lookup shim_input_bytes rs) remaining off value fuel access rs allow)
       by (first [reflexivity |
         repeat sail_context_rewrite;
-        cbn [List.length word_byte_count_value] in *; lia])
+        cbn [List.length word_byte_count_value] in *; (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("SailEval.solver.509.55"%string) ltac:(lia))])
   end.
