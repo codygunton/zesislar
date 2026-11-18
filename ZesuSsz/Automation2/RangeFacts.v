@@ -46,6 +46,7 @@ Ltac zesu_range_project depth values pointer root evidence :=
  then lazymatch T with ?left /\ ?right => descend depth left right end
  else lazymatch T with
  | @eq Z _ _ => leaf | @eq nat _ _ => leaf
+ | @eq (bv _) _ _ => leaf
  | @eq _ _ _ => idtac
  | Z.le _ _ => leaf | Z.lt _ _ => leaf
  | Z.ge _ _ => leaf | Z.gt _ _ => leaf
@@ -69,6 +70,7 @@ Ltac2 rec zesu_range_atoms (term : constr) : constr list :=
  lazy_match! term with
  | @eq Z ?lhs ?rhs => List.append (zesu_range_atoms lhs) (zesu_range_atoms rhs)
  | @eq nat ?lhs ?rhs => [lhs; rhs]
+ | @eq (bv _) ?lhs ?rhs => [lhs; rhs]
  | Z.le ?lhs ?rhs => List.append (zesu_range_atoms lhs) (zesu_range_atoms rhs)
  | Z.lt ?lhs ?rhs => List.append (zesu_range_atoms lhs) (zesu_range_atoms rhs)
  | Z.ge ?lhs ?rhs => List.append (zesu_range_atoms lhs) (zesu_range_atoms rhs)
@@ -77,6 +79,7 @@ Ltac2 rec zesu_range_atoms (term : constr) : constr list :=
  | Z.sub ?lhs ?rhs => List.append (zesu_range_atoms lhs) (zesu_range_atoms rhs)
  | Z.mul ?lhs ?rhs => List.append (zesu_range_atoms lhs) (zesu_range_atoms rhs)
  | bv_unsigned (Z_to_bv ?width ?value) => [term; value]
+ | bv_unsigned ?value => [term; value]
  | _ => [term]
  end.
 Ltac2 rec zesu_range_has_atom atom atoms :=
@@ -138,6 +141,7 @@ Ltac2 rec zesu_range_leaves depth evidence typ paths :=
  | Some (lhs, rhs) => descend depth lhs rhs
  | None => lazy_match! typ with
    | @eq Z _ _ => leaf () | @eq nat _ _ => leaf ()
+   | @eq (bv _) _ _ => leaf ()
    | @eq _ _ _ => []
    | Z.le _ _ => leaf () | Z.lt _ _ => leaf ()
    | Z.ge _ _ => leaf () | Z.gt _ _ => leaf ()
@@ -159,6 +163,7 @@ Ltac2 zesu_range_atom_is_open atom :=
    false) (fun _ => true)).
 (* Each hypothesis has one cached projection. Each selected fact is committed once. *)
 Ltac2 zesu_range_collect values pointer root :=
+ ZesuSsz.Automation2.SearchBudget.zesu_atomic_input_bound ();
  let original := Control.hyps () in
  let cached := List.map (fun h => let (name, _, typ) := h in
    (name, typ, zesu_range_syntax typ, Ref.ref None)) original in
@@ -199,7 +204,8 @@ Ltac2 zesu_range_collect values pointer root :=
          else ())) (zesu_range_atoms typ)) selected;
      select (Ref.get selectors);
      close (Int.sub remaining 1)) in
- close 2.
+ close 2;
+ ZesuSsz.Automation2.SearchBudget.zesu_atomic_input_bound ().
 Ltac2 rec zesu_range_erase_list hyps :=
  match hyps with
  | [] => []
