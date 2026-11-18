@@ -1949,10 +1949,6 @@ Ltac zesu_integer_array_address_if_enabled :=
   | Hlocal := _ |- envs_entails _ (find_in_context (FindMemMapsTo ?address) _) =>
       lazymatch address with context[Hlocal] => unfold Hlocal in *; clear Hlocal end
   end;
-  lazymatch goal with
-  | |- envs_entails _ (find_in_context (FindMemMapsTo ?address) _) =>
-      MemoryAddress.zesu_owned_array_address address
-  end;
   zesu_switch_enabled constr:(ZesuStepIntegerArrayAddress);
   lazymatch goal with
   | |- envs_entails _ (find_in_context (FindMemMapsTo (bv_unsigned ?pointer)) _) =>
@@ -1963,23 +1959,15 @@ Ltac zesu_integer_array_address_if_enabled :=
       iMatchHyp ltac:(fun H body =>
         lazymatch body with
         | (?lower ↦ₘ{?q}∗ ?values)%I =>
+            lazymatch (bv_unsigned pointer) with context[lower] => idtac end;
             lazymatch type of values with list (bv ?width) =>
-              let Heq := fresh "HarrayAddress" in
-              assert (Heq : bv_unsigned pointer = integer) by
-                (zesu_stack_arithmetic);
               let Hrange := fresh "HarrayAddressRange" in
               assert (Hrange : (lower <= integer < lower +
                 Z.of_nat (length values) * Z.of_N (width `div` 8))%Z) by
-                ((repeat first [progress zesu_split_folded_pure |
-                  match goal with Hpure : _ /\ _ |- _ => destruct Hpure end];
-                  zesu_normalize_binary_nat_hypotheses;
-                  first [
-                    zesu_switch_enabled constr:(ZesuStepArrayRegionBounds);
-                    zesu_array_bound_integer_casts;
-                    try zesu_byte_list_containment_if_enabled;
-                    zesu_byte_array_lengths_if_enabled;
-                    solve [lia | bv_solve]
-                  | bv_solve]));
+                (solve [RangeFacts.zesu_selected_array_range]);
+              let Heq := fresh "HarrayAddress" in
+              assert (Heq : bv_unsigned pointer = integer) by
+                (solve [RangeFacts.zesu_address_equality]);
               zesu_integer_array_facts;
               rewrite Heq; clear Heq
             end
