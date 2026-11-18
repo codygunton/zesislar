@@ -615,22 +615,8 @@ Ltac zesu_v34_array_continuation :=
       assumption | reflexivity]).
 
 Ltac zesu_finish_source_package :=
-  let run := ltac:(fun consume_facts finish =>
-once (try zesu_memory_registered_intro;
-  ResourceGroups.zesu_open_resource_groups;
-  ByteArrayAssemblyCodec.zesu_byte_array_normalize_stride;
-  zesu_memory_open_tuple constr:(16%nat);
-  repeat iMatchHyp ltac:(fun name body => is_var body; progress (iFrame name));
-  repeat first [progress zesu_memory_frame_first |
-    progress zesu_memory_join_arrays]);
-  lazymatch goal with
-  | |- environments.envs_entails _ ?requested => consume_facts requested
-  end;
-  try MemoryTupleConsumer.zesu_memory_assemble_leading;
-  try (iEval (rewrite big_sepL_nil));
-  try iFrame;
-  finish constr:(tt)) in
-  run ltac:(fun requested =>
+  MemoryTupleConsumer.zesu_memory_tuple
+    ltac:(fun requested =>
       once
         (SourceFactByteViews.zesu_source_byte_views;
          SourceFactByteViews.zesu_source_byte_order_tree requested;
@@ -641,7 +627,7 @@ once (try zesu_memory_registered_intro;
          PureFacts.zesu_saturate_derived_facts;
          SourceFactMatching.zesu_source_check_fixed_tree requested));
       SourceFactMatching.zesu_source_match_tree requested ltac:(idtac))
-    ltac:(fun _ => SourceFactMatching.zesu_source_finish_package).
+    ltac:(fun _ => try MemoryTupleConsumer.zesu_memory_assemble_leading; try (iEval (rewrite big_sepL_nil)); try iFrame; SourceFactMatching.zesu_source_finish_package).
 
 
 (* Match the requested facts directly against the source facts. This adds no
