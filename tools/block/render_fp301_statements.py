@@ -6,6 +6,7 @@ import json
 from pathlib import Path
 
 from production_modules import statement as caller_statement
+from loop_heads import selected_loop_declaration
 from render_support import definition_introduction_source, unfold_declaration
 from return_exit import add_return_precondition, return_blocks, return_package
 
@@ -29,7 +30,8 @@ def render_declaration(source, header):
         raise ValueError("A generated declaration lacks its exact header boundary.")
     if "Automation.All." in header or "Automation2.All." in header:
         raise ValueError("A generated declaration cannot import a core.")
-    return header + source.split(boundary, 1)[1]
+    selected = selected_loop_declaration(source, header)
+    return selected if selected is not None else header + source.split(boundary, 1)[1]
 
 
 def render_caller(source):

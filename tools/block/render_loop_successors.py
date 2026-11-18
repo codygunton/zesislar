@@ -10,6 +10,7 @@ from fractional_source import FractionalSourceArrays,array_declaration
 from render_support import component_source,definition_introduction_source,expression,identifier
 from forward_resources import load_resource_vocabulary
 from symbolic_state import Expr
+from render_support import unfold_declaration
 
 def bind(p):p=Path(p);return {'path':str(p),'sha256':hashlib.sha256(p.read_bytes()).hexdigest()}
 forward=options.source_receipt; assert bind(forward)['sha256']==options.source_receipt_sha256, 'The loop source receipt changed'; packet=json.loads(forward.read_text()); data={'boundaries': []}
@@ -85,7 +86,7 @@ for suffix in pilots:
  definition='Definition '+name+base_telescope+' (K : iProp Sigma) : iProp Sigma := '+body_source(formatted.response['body'])+'%I.\n';definition_introduction_source(definition,name);definitions.append((name,definition))
  module='Pilot'+suffix+'Entries';relative=Path('ZesuSsz/Generated/DecodeItem/FP301');directory=O/'sources'/relative;directory.mkdir(parents=True,exist_ok=True);entry=directory/(module+'.v');entry.write_text(header+'\n'.join(definition for _,definition in definitions))
  structural=directory/('Pilot'+suffix+'Structural.v');source=header+'Require Import '+'.'.join((relative/module).parts)+'.\n'
- for symbol,definition in definitions:source+='#[export] Instance '+symbol+'_unfold : LithiumUnfold (@'+symbol+') := I.\n'+definition_introduction_source(definition,symbol)+'\n'
+ for symbol,definition in definitions:source+=unfold_declaration(symbol, instance_name=symbol+'_unfold', locality='export')+definition_introduction_source(definition,symbol)+'\n'
  structural.write_text(source)
  for file in[entry,structural]:
   text=file.read_text();assert not re.search(r'\b(?:Proof|Qed|Admitted|Axiom|Ltac|Ltac2)\b',text)
