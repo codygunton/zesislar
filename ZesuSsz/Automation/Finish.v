@@ -626,7 +626,6 @@ once (try zesu_memory_registered_intro;
   lazymatch goal with
   | |- environments.envs_entails _ ?requested => consume_facts requested
   end;
-  try MemoryTupleConsumer.zesu_memory_assemble_leading;
   try (iEval (rewrite big_sepL_nil));
   try iFrame;
   finish constr:(tt)) in
