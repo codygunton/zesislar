@@ -59,10 +59,34 @@ From iris.proofmode Require Import environments.
 From Ltac2 Require Import Ltac2.
 Set Default Proof Mode "Classic".
 
+(* `bv_saturate` on one variable: clear it when unused, else add its two
+   range facts, each unless present. *)
+Ltac zesu_bv_saturate_variable b :=
+  first [clear b |
+    try learn_hyp (bv_unsigned_in_range_alt _ b);
+    try learn_hyp (bv_signed_in_range _ b)].
+
+(* `bv_saturate` in one pass, with the same result. `bv_saturate` repeats
+   `match goal with b : bv _` from the newest hypothesis, so each round
+   first fails again on every variable it already handled: on a residual
+   goal of 264 hypotheses (decodeParentHeader 0300, about 90 variables) one
+   run took 6 s. A round changes only its own variable: the facts it adds
+   mention that variable alone, and clearing it can only free an older
+   variable (a newer one never occurs in an older declaration). So the rounds
+   act on the variables from the newest to the oldest, each once, as here:
+   the same steps in the same order, the same hypotheses and names. *)
+Ltac2 zesu_bv_saturate_pass () :=
+  List.iter (fun (name, _, typ) =>
+    lazy_match! typ with
+    | bv _ =>
+        ltac1:(b |- zesu_bv_saturate_variable b) (Ltac1.of_constr (Control.hyp name))
+    | _ => ()
+    end) (List.rev (Control.hyps ())).
+
 Ltac zesu_saturate_alignment :=
   match goal with
-  | H : bv_extract 0 _ _ = _ |- _ => bv_saturate
-  | H : Z.land (bv_unsigned _) _ = _ |- _ => bv_saturate
+  | H : bv_extract 0 _ _ = _ |- _ => ltac2:(zesu_bv_saturate_pass ())
+  | H : Z.land (bv_unsigned _) _ = _ |- _ => ltac2:(zesu_bv_saturate_pass ())
   end.
 
 Ltac zesu_finish_little_endian :=
@@ -353,6 +377,24 @@ Ltac zesu_finish_shape_closers :=
     | solve [BytePositionEquations.zesu_word_fact_goal]
     | solve [WrappedWord.zesu_wrapped_index_bound_goal]]).
 
+(* A shelved side condition. Every closing attempt except the codec read
+   starts with `unshelve_sidecond; unLET`, and so does prepare_sidecond; unLET
+   is the cost (each let is unfolded through the whole context). Unshelve and
+   unLET once, then run the attempts in their old order on that state. The
+   codec read attempt runs on the shelved goal, as before, but first: it and
+   the shape closers are both `solve`, so the order changes no closure. A goal
+   no attempt closes is shelved again for prepare_sidecond, whose unLET then
+   has no let left to unfold. *)
+Ltac zesu_finish_shelved :=
+  first [solve [CodecArrayRead.zesu_codec_array_read_sidecond] |
+    (unshelve_sidecond; unLET;
+     first [solve [zesu_finish_shape_closers] |
+       solve [zesu_array_bounds_base] |
+       solve [zesu_array_bounds_extended] |
+       solve [zesu_array_eight_value] |
+       (lazymatch goal with |- ?G => change_no_check (SHELVED_SIDECOND G) end;
+        prepare_sidecond)])].
+
 (* Each item carries a telemetry name (Telemetry.v, `zesu_talt`). *)
 Ltac zesu_finish_v1 :=
   try (zesu_talt f_autorewrite_indices (idtac; autorewrite with zesu_indices));
@@ -360,11 +402,7 @@ Ltac zesu_finish_v1 :=
   try (zesu_talt f_normalize_memory_addresses (idtac; zesu_normalize_memory_addresses));
   try (zesu_talt f_iAssumption (idtac; iAssumption));
   zesu_talt f_shelved_or_unlet (idtac; lazymatch goal with
-  | |- SHELVED_SIDECOND _ =>
-      first [solve [unshelve_sidecond; unLET; zesu_finish_shape_closers] |
-        solve [zesu_array_bounds_if_enabled] |
-        solve [unshelve_sidecond; unLET; zesu_array_eight_value] |
-        prepare_sidecond]
+  | |- SHELVED_SIDECOND _ => zesu_finish_shelved
   | _ => Hooks.zesu_unlet_preserving_witness_metadata
   end);
   try (zesu_talt f_shape_closers (idtac; solve [zesu_finish_shape_closers]));
@@ -417,12 +455,6 @@ Ltac zesu_finish_normalize :=
   try autorewrite with zesu_indices;
   try (zesu_normalize_memory_constants);
   try (zesu_normalize_memory_addresses).
-
-Ltac zesu_finish_shelved :=
-  first [solve [unshelve_sidecond; unLET; zesu_finish_shape_closers] |
-        solve [zesu_array_bounds_if_enabled] |
-        solve [unshelve_sidecond; unLET; zesu_array_eight_value] |
-    prepare_sidecond].
 
 (* An Iris entailment. The entries the dispatch leaves out here are the
    ones that cannot close one: `reflexivity`, the bitvector entries, `lia`
@@ -831,8 +863,9 @@ Ltac zesu_finish_package_deferring :=
   unshelve (zesu_finish_source_package_with
     ltac:(fun requested => SourceFactMatching.zesu_source_defer_fixed_tree requested))).
 
-(* Fast generic evidence transport precedes broad arithmetic. *)
-Ltac zesu_union_required_pure :=
+(* Fast generic evidence transport precedes broad arithmetic. `branch` is
+   the branch evidence step (see `zesu_finish_common_pure`). *)
+Ltac zesu_union_required_pure_with branch :=
   first [ZesuSsz.Automation2.WordIdentity.zesu_word_identity |
     ZesuSsz.Automation2.HypothesisCast.zesu_hypothesis_cast_finish |
     ZesuSsz.Automation2.ByteMaskCast.zesu_byte_mask_cast |
@@ -842,9 +875,13 @@ Ltac zesu_union_required_pure :=
     ZesuSsz.Automation2.StoreMemoryLookup.zesu_store_splice_bounds |
     ZesuSsz.Automation2.SymbolicByteCodec.zesu_symbolic_byte_codec |
     ZesuSsz.Automation2.SignedMaskBranch.zesu_signed_mask_branch |
-    ZesuSsz.Automation2.BranchCastUnsigned.zesu_unsigned_branch_cast_evidence |
-    ZesuSsz.Automation2.BranchUnsigned.zesu_unsigned_branch_evidence |
+    branch |
     ZesuSsz.Automation2.FramePackingFinish.zesu_frame_packing_finish].
+
+Ltac zesu_union_required_pure :=
+  zesu_union_required_pure_with ltac:(first [
+    ZesuSsz.Automation2.BranchCastUnsigned.zesu_unsigned_branch_cast_evidence |
+    ZesuSsz.Automation2.BranchUnsigned.zesu_unsigned_branch_evidence]).
 
 Ltac zesu_union_pure_leaf :=
   first [ZesuSsz.Automation2.UnionRuleComponents.block2_signed_mask_solve |
@@ -871,12 +908,18 @@ Ltac zesu_union_pure_finish :=
    this: the search loop calls the other finishers on every pass, and the
    common path is too costly to fail there (block 800d6a78 ran over 2.3 times
    longer). The `| zesu_finish_common_pure` arms still cover a goal that a
-   first arm refuses outright. *)
+   first arm refuses outright.
+   The branch evidence closers run only in the second transport attempt,
+   after the derived facts and splits (`zesu_union_pure_finish`): each tries
+   both solvers once per branch fact, and on BENCH-v1 (09c8683e5) all 26 of
+   their closures came there, while their 205 calls in the first attempt
+   failed (about 730 s; decodeParentHeader 0000 has ten region facts on each
+   final goal). *)
 Ltac zesu_finish_common_pure :=
   let run := ltac2:(tac |- zesu_telemetry_stage_ltac1 "zesu_finish_common_pure" tac) in
   run ltac:(
   zesu_talt c_head_gate (idtac; zesu_final_pure_head_gate);
-  first [zesu_talt c_union_required_pure (idtac; zesu_union_required_pure) | zesu_talt c_solve_body (idtac; solve [
+  first [zesu_talt c_union_required_pure (idtac; zesu_union_required_pure_with ltac:(fail)) | zesu_talt c_solve_body (idtac; solve [
     zesu_talt c_derived_facts (idtac; zesu_saturate_derived_facts);
     zesu_talt c_split_folded (idtac; repeat first [progress zesu_split_folded_pure |
       match goal with Hpair : _ /\ _ |- _ => destruct Hpair end]);

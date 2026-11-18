@@ -8,7 +8,14 @@ and deletes nothing. `--apply` also deletes:
     or have no change for 24 h shrink to their non-compiled files under 1 MiB,
     plus the files that a `KEEP.json` names;
   * worktree `_build` dirs with no change for 48 h (the checkout stays);
-  * banks of older main commits with no change for 24 h.
+  * banks of older main commits with no change for 24 h;
+  * whole worktrees under `.worktrees/` (`git worktree remove`, never --force) that are
+    clean (no tracked change), not in use (live process, admission receipt, or live
+    registered run naming a path in them), unchanged for 6 h, and whose head is in
+    origin/main, on a measurement branch (bench/*, orch/heldout-*; the branch stays) or
+    a detached head that a branch or remote ref holds. Each removal goes to
+    `_build/janitor/worktrees.log`. The run watchdog does the same when free disk is
+    under 50 GB (reap_when_low).
 
 The janitor never touches `_build/agents/orch/`, a path that a live process
 uses (cwd, executable, command line, environment, open or mapped files), a
@@ -32,8 +39,13 @@ Subcommands for other tools:
                           admission ledger names a release receipt under one
   branch-items BRANCH     list (or --delete) the run dirs tied to a branch
   rescue-goals PATH...    move the saved goals under each PATH into the store
+  worktrees [--json F]    report every worktree's verdict (global --apply removes)
+  remove-worktree [--wait] PATH...
+                          a creator's end-of-run removal (bench.py, gate and
+                          closed-set scripts): rescue goals, then git worktree remove
 """
 
+from concurrent.futures import ThreadPoolExecutor
 import argparse
 import array
 import bisect
@@ -917,6 +929,259 @@ def rescue_goals(root, path, reason, log=None):
     return destination
 
 
+# --- worktree reaping ----------------------------------------------------------
+
+# A checkout under .worktrees/ goes (`git worktree remove`, never --force) when it is clean
+# (no tracked change), no live process or live registered run uses it, nothing in it changed
+# for 6 h, nothing tracked on main names it, and its head is safe to drop: contained in
+# origin/main, on a bench/* branch (the branch stays), or a detached head that a branch or
+# remote ref still holds.
+WORKTREE_REAP_IDLE_SECONDS = 6 * 3600
+REAP_FREE_BYTES = 50 * GB  # the run watchdog reaps when free disk falls below this
+SCRATCH_BRANCHES = ('bench/',)
+# tools/bg and the run watchdog run from ops-tools (run_registry.md); the closed-set column
+# takes early_verdict.py from ev-tools for worktrees older than it.
+PROTECTED_WORKTREES = ('ops-tools', 'ev-tools')
+WORKTREE_NAME = re.compile(r'\.worktrees/([A-Za-z0-9_.+-]+)')
+
+
+def named_worktrees(root, main):
+    """Worktree names that a tracked file at MAIN names (bench sets, harness pins, records)."""
+    if not main:
+        return frozenset()
+    result = git(root, 'grep', '-hoIE', WORKTREE_NAME.pattern, main, '--')
+    return frozenset(WORKTREE_NAME.search(line).group(1) for line in result.stdout.splitlines()
+                     if WORKTREE_NAME.search(line))
+
+
+def list_worktrees(root):
+    """Rows of `git worktree list --porcelain` for checkouts under ROOT/.worktrees."""
+    result = git(root, 'worktree', 'list', '--porcelain')
+    if result.returncode:
+        return []
+    top = os.path.realpath(Path(root) / '.worktrees') + os.sep
+    rows, row = [], None
+    for line in result.stdout.splitlines():
+        if line.startswith('worktree '):
+            row = {'path': line[len('worktree '):], 'head': None, 'branch': None,
+                   'locked': False, 'prunable': False}
+            if os.path.realpath(row['path']).startswith(top):
+                rows.append(row)
+        elif row is None:
+            continue
+        elif line.startswith('HEAD '):
+            row['head'] = line[len('HEAD '):]
+        elif line.startswith('branch '):
+            row['branch'] = line[len('branch '):].removeprefix('refs/heads/')
+        elif line.startswith('locked'):
+            row['locked'] = True
+        elif line.startswith('prunable'):
+            row['prunable'] = True
+    return rows
+
+
+def worktree_newest(path):
+    """Newest mtime of the checkout top, its Git admin files, and `_build` two levels deep."""
+    candidates = [path]
+    with contextlib.suppress(OSError):
+        text = (Path(path) / '.git').read_text()
+        if text.startswith('gitdir: '):
+            admin = Path(path) / text[len('gitdir: '):].strip()
+            # Not the index: `git status` (this survey too) rewrites it.
+            candidates += [admin / 'HEAD', admin / 'logs/HEAD']
+    build = os.path.join(path, '_build')
+    candidates.append(build)
+    with contextlib.suppress(OSError):
+        for name in os.listdir(build):
+            entry = os.path.join(build, name)
+            candidates.append(entry)
+            if os.path.isdir(entry) and not os.path.islink(entry):
+                with contextlib.suppress(OSError):
+                    candidates += [os.path.join(entry, child) for child in os.listdir(entry)]
+    newest = 0.0
+    for candidate in candidates:
+        with contextlib.suppress(OSError):
+            newest = max(newest, os.lstat(candidate).st_mtime)
+    return newest
+
+
+def registry_paths(exclude=frozenset()):
+    """Paths that live registered runs name (worktree, run dir, log, command), or None
+    when the registry cannot be read (then nothing is reaped). Runs whose scheduler PID is
+    in EXCLUDE (this process's own run) do not count."""
+    try:
+        import run_registry
+        rows = run_registry.Registry(run_registry.default_store()).read()['runs'].values()
+        paths = []
+        for row in rows:
+            if row['scheduler'].get('pid') in exclude:
+                continue
+            actors = [row['scheduler']] + row.get('jobs', [])
+            if not (any(run_registry.live(a) for a in actors)
+                    or any(not c.get('released') for c in row.get('claims', {}).values())):
+                continue
+            paths += [row[key] for key in ('worktree', 'run_dir', 'log', 'cwd')
+                      if isinstance(row.get(key), str)]
+            paths += [word for word in row.get('command', []) if isinstance(word, str)
+                      and word.startswith('/')]
+        return [os.path.realpath(path) for path in paths]
+    except Exception as error:  # noqa: BLE001 - an unreadable registry keeps every worktree
+        print(f'notice: build janitor: run registry unreadable ({error}); no worktree is reaped',
+              file=sys.stderr)
+        return None
+
+
+def worktree_user(path, live, receipts, registered):
+    """Why PATH is in use, else None."""
+    user = live.user(path)
+    if user:
+        return f'live process {live.owners.get(user, "?")} uses {user}'
+    under = receipts_under(receipts, path)
+    if under:
+        return 'the admission ledger names ' + under[0]
+    prefix = os.path.realpath(path)
+    for named in registered:
+        if named == prefix or named.startswith(prefix + os.sep):
+            return 'a live registered run names ' + named
+    return None
+
+
+def held_by_ref(root, head):
+    """True when a branch or remote ref contains HEAD (dropping the checkout loses no commit)."""
+    result = git(root, 'for-each-ref', '--count=1', '--format=%(refname)', '--contains', head,
+                 'refs/heads', 'refs/remotes')
+    return result.returncode == 0 and bool(result.stdout.strip())
+
+
+def classify_worktree(root, row, main, now, live, receipts, registered,
+                      idle=WORKTREE_REAP_IDLE_SECONDS, named=frozenset(), creator=False):
+    """Fill ROW with the facts and set action 'remove' or 'keep' with a reason. CREATOR (the
+    run that made the checkout removes it at its end) also drops a checkout of a branch."""
+    path = row['path']
+    row['name'] = os.path.basename(path)
+    row['newest'] = worktree_newest(path)
+    row['idle_hours'] = round((now - row['newest']) / 3600, 1)
+    status = git(path, 'status', '--porcelain', '--untracked-files=no')
+    row['dirty'] = status.returncode != 0 or bool(status.stdout.strip())
+    row['merged'] = bool(main and row['head'] and is_ancestor(root, row['head'], main))
+    row['in_use'] = worktree_user(path, live, receipts, registered)
+    if row['merged']:
+        row['kind'] = 'merged'
+    elif row['branch'] and row['branch'].startswith(SCRATCH_BRANCHES):
+        row['kind'] = 'scratch branch'
+    elif row['branch'] is None and row['head'] and held_by_ref(root, row['head']):
+        row['kind'] = 'detached'
+    else:
+        row['kind'] = 'unmerged branch' if row['branch'] else 'detached head on no ref'
+    if row['name'] in named and not creator:
+        reason = 'named by a tracked file on main'
+    elif row['name'] in PROTECTED_WORKTREES or row['locked']:
+        reason = 'protected' if row['name'] in PROTECTED_WORKTREES else 'locked'
+    elif row['prunable'] or not os.path.isdir(path):
+        reason = 'missing checkout (git worktree prune)'
+    elif row['dirty']:
+        reason = 'tracked changes'
+    elif row['in_use']:
+        reason = row['in_use']
+    elif now - row['newest'] < idle:
+        reason = f'changed {row["idle_hours"]} h ago'
+    elif row['kind'] == 'detached head on no ref' or (row['kind'] == 'unmerged branch'
+                                                      and not creator):
+        reason = row['kind']
+    else:
+        reason = None
+    row.update(action='keep' if reason else 'remove', reason=reason or row['kind'])
+    return row
+
+
+def remove_worktree(root, row, log):
+    """Rescue goals and closure records, then `git worktree remove` (no --force). Log it."""
+    path = row['path']
+    rescue_goals(root, path, 'worktree reaper: ' + row['reason'])
+    result = git(root, 'worktree', 'remove', path)
+    stamp = time.strftime('%Y-%m-%dT%H:%M:%SZ', time.gmtime())
+    if result.returncode:
+        row.update(action='keep', reason='git worktree remove: ' + result.stderr.strip())
+        log.write(f'{stamp}\tfailed\t{path}\t{row["branch"] or "detached"}\t{row["head"]}\t'
+                  f'{row["reason"]}\n')
+        return False
+    log.write(f'{stamp}\tremoved\t{path}\t{row["branch"] or "detached"}\t{row["head"]}\t'
+              f'{row["kind"]}, idle {row["idle_hours"]} h\n')
+    log.flush()
+    print(f'build janitor: removed worktree {path} ({row["kind"]}, idle {row["idle_hours"]} h)')
+    return True
+
+
+def reap_worktrees(root, *, apply, log_dir=None, main_ref='origin/main', now=None, proc='/proc',
+                   idle=WORKTREE_REAP_IDLE_SECONDS, registered=None):
+    """Classify every worktree under ROOT/.worktrees; with APPLY remove the reapable ones.
+    Removals go to LOG_DIR/worktrees.log. Return the rows."""
+    root = Path(root).resolve()
+    log_dir = Path(log_dir) if log_dir else root / '_build/janitor'
+    now = time.time() if now is None else now
+    rows = list_worktrees(root)
+    if not rows:
+        return []
+    if registered is None:
+        registered = registry_paths(ancestors())
+        if registered is None:
+            return []
+    main = commit(root, main_ref)
+    named = named_worktrees(root, main)
+    receipts = ledger_receipts(root)
+    live = LivePaths.scan(root, proc, ancestors())
+    with ThreadPoolExecutor(max_workers=8) as pool:
+        rows = list(pool.map(lambda row: classify_worktree(
+            root, row, main, now, live, receipts, registered, idle, named), rows))
+    if apply and any(row['action'] == 'remove' for row in rows):
+        log_dir.mkdir(parents=True, exist_ok=True)
+        live = LivePaths.scan(root, proc, ancestors())
+        with open(log_dir / 'worktrees.log', 'a') as log:
+            for row in rows:
+                if row['action'] != 'remove':
+                    continue
+                user = worktree_user(row['path'], live, receipts, registered)
+                if user:
+                    row.update(action='keep', reason=user)
+                elif worktree_newest(row['path']) > row['newest']:
+                    row.update(action='keep', reason='changed during the janitor run')
+                else:
+                    remove_worktree(root, row, log)
+    return rows
+
+
+def ancestors(pid=None, proc='/proc'):
+    """This process and its ancestors: a caller's own cwd never keeps its worktree."""
+    found, pid = set(), pid or os.getpid()
+    while pid and pid not in found:
+        found.add(pid)
+        try:
+            with open(f'{proc}/{pid}/stat') as stream:
+                pid = int(stream.read().rsplit(')', 1)[1].split()[1])
+        except (OSError, ValueError, IndexError):
+            break
+    return found
+
+
+def reap_when_low(root=None, threshold=REAP_FREE_BYTES):
+    """The run watchdog's hook: reap worktrees when free disk is under THRESHOLD.
+    Return message lines (empty when there is room or another reaper holds the lock)."""
+    root = Path(root) if root else base_root()
+    free = shutil.disk_usage(root).free
+    if free >= threshold:
+        return []
+    log_dir = root / '_build/janitor'
+    try:
+        with exclusive(log_dir, '.worktrees.lock'):
+            rows = reap_worktrees(root, apply=True, log_dir=log_dir)
+    except SystemExit:
+        return []
+    removed = [row for row in rows if row['action'] == 'remove']
+    after = shutil.disk_usage(root).free
+    return [f'worktree reaper: free disk {human(free)} < {human(threshold)}: removed '
+            f'{len(removed)} worktree(s), free now {human(after)} (log {log_dir / "worktrees.log"})']
+
+
 # --- commands ------------------------------------------------------------------
 
 def human(size):
@@ -924,14 +1189,14 @@ def human(size):
 
 
 @contextlib.contextmanager
-def exclusive(log_dir):
+def exclusive(log_dir, name='.lock'):
     log_dir.mkdir(parents=True, exist_ok=True)
-    with open(log_dir / '.lock', 'w') as lock:
+    with open(log_dir / name, 'w') as lock:
         try:
             fcntl.flock(lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
         except OSError as error:
             if error.errno in (errno.EAGAIN, errno.EACCES):
-                raise SystemExit('build janitor: another janitor holds ' + str(log_dir / '.lock'))
+                raise SystemExit('build janitor: another janitor holds ' + str(log_dir / name))
             raise
         yield
 
@@ -958,12 +1223,26 @@ def run(args):
                 again = janitor.survey_runs(touched)
                 runs = [r for r in runs if r['agent'] not in touched] + again
                 budget = janitor.budget(runs)
+        try:
+            with exclusive(janitor.log_dir, '.worktrees.lock'):
+                worktrees = reap_worktrees(janitor.root, apply=args.apply,
+                                           log_dir=janitor.log_dir, main_ref=janitor.main_ref,
+                                           now=janitor.now, proc=janitor.proc)
+        except SystemExit as busy:
+            print(busy, file=sys.stderr)
+            worktrees = []
         janitor.write_json(Path(args.budget) if args.budget else janitor.build / 'BUDGET.json',
                            budget)
         janitor.write_json(janitor.log_dir / f'plan-{janitor.stamp}-{mode}.json',
                            {'mode': mode, 'root': str(janitor.root), 'main': plan['main'],
-                            'freed': freed, 'rows': plan['rows']})
+                            'freed': freed, 'rows': plan['rows'], 'worktrees': worktrees})
         lines = summary(plan, budget, mode, freed)
+        removable = [row for row in worktrees if row['action'] == 'remove']
+        if worktrees:
+            lines.append(f'worktrees: {len(removable)} of {len(worktrees)} '
+                         + ('removed' if args.apply else 'removable')
+                         + f' (clean, idle {WORKTREE_REAP_IDLE_SECONDS // 3600} h, merged or '
+                         f'measurement heads; log {janitor.log_dir / "worktrees.log"})')
         if failures:
             lines.append(f'failed: {failures} target(s) could not be fully deleted; '
                          f'see {janitor.log_dir / f"deleted-{janitor.stamp}.tsv.gz"}')
@@ -1138,6 +1417,67 @@ def rescue_goals_command(args):
     return 0
 
 
+def worktrees_command(args):
+    """Report every worktree's facts and verdict; with --apply remove the reapable ones."""
+    root = Path(args.root) if args.root else base_root()
+    log_dir = Path(args.log_dir) if args.log_dir else root / '_build/janitor'
+    with exclusive(log_dir, '.worktrees.lock'):
+        rows = reap_worktrees(root, apply=args.apply, log_dir=log_dir, main_ref=args.main_ref,
+                              idle=args.idle_hours * 3600)
+    if args.json:
+        Path(args.json).write_text(json.dumps(rows, indent=1, sort_keys=True) + '\n')
+    for row in sorted(rows, key=lambda row: (row['action'], row['name'])):
+        print(f'{row["action"]}\t{row["name"]}\t{row["branch"] or "detached " + (row["head"] or "?")[:12]}'
+              f'\t{row["kind"]}\t{"dirty" if row["dirty"] else "clean"}\tidle {row["idle_hours"]} h'
+              f'\t{row["reason"]}')
+    removed = sum(row['action'] == 'remove' for row in rows)
+    print(f'worktrees: {removed} of {len(rows)} ' + ('removed' if args.apply else 'removable'))
+    return 0
+
+
+def remove_worktree_command(args, sleep=time.sleep):
+    """A creator's end-of-run removal: rescue goals and closure records, then `git worktree
+    remove`. Refuses a dirty checkout or a head that no ref holds. With --wait, waits until no
+    live process (other than this one's ancestors) or live registered run uses the checkout and
+    nothing in it changed for --idle-minutes."""
+    root = Path(args.root) if args.root else base_root()
+    log_dir = Path(args.log_dir) if args.log_dir else root / '_build/janitor'
+    status = 0
+    for path in args.paths:
+        path = os.path.realpath(path)
+        [row] = [row for row in list_worktrees(root) if os.path.realpath(row['path']) == path] or [None]
+        if row is None:
+            print(f'remove-worktree: {path} is not a worktree under {root / ".worktrees"}', file=sys.stderr)
+            status = 1
+            continue
+        while True:
+            registered = registry_paths(ancestors())
+            if registered is None:
+                reason = 'run registry unreadable'
+            else:
+                row = classify_worktree(root, row, commit(root, args.main_ref), time.time(),
+                                        LivePaths.scan(root, exclude=ancestors()),
+                                        ledger_receipts(root), registered, args.idle_minutes * 60,
+                                        creator=True)
+                reason = None if row['action'] == 'remove' else row['reason']
+            waiting = reason and (reason.startswith(('live process', 'a live registered run', 'changed '))
+                                  or registered is None)
+            if not (args.wait and waiting):
+                break
+            sleep(60)
+        if reason:
+            print(f'remove-worktree: kept {path}: {reason}', file=sys.stderr)
+            status = 1
+            continue
+        log_dir.mkdir(parents=True, exist_ok=True)
+        with open(log_dir / 'worktrees.log', 'a') as log:
+            row['reason'] = 'end of run (' + row['kind'] + ')'
+            if not remove_worktree(root, row, log):
+                print(f'remove-worktree: kept {path}: {row["reason"]}', file=sys.stderr)
+                status = 1
+    return status
+
+
 def main(argv=None):
     parser = argparse.ArgumentParser(description=__doc__,
                                      formatter_class=argparse.RawDescriptionHelpFormatter)
@@ -1162,6 +1502,15 @@ def main(argv=None):
     goals = sub.add_parser('rescue-goals', help='move saved goals under paths into the store')
     goals.add_argument('paths', nargs='+')
     goals.add_argument('--reason', default='rescue-goals')
+    trees = sub.add_parser('worktrees', help='report (with --apply remove) reapable worktrees')
+    trees.add_argument('--idle-hours', type=float, default=WORKTREE_REAP_IDLE_SECONDS / 3600)
+    trees.add_argument('--json', help='write every row to this file')
+    remove = sub.add_parser('remove-worktree', help='remove worktrees a run created, at its end')
+    remove.add_argument('paths', nargs='+')
+    remove.add_argument('--wait', action='store_true',
+                        help='wait until no live process or run uses the checkout')
+    remove.add_argument('--idle-minutes', type=float, default=0,
+                        help='also wait until nothing in it changed for this long')
     args = parser.parse_args(argv)
     if args.apply and args.dry_run:
         parser.error('--apply and --dry-run exclude each other')
@@ -1173,6 +1522,10 @@ def main(argv=None):
         return branch_items(args)
     if args.command == 'rescue-goals':
         return rescue_goals_command(args)
+    if args.command == 'worktrees':
+        return worktrees_command(args)
+    if args.command == 'remove-worktree':
+        return remove_worktree_command(args)
     return run(args)
 
 
