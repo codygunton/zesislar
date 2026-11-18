@@ -1,3 +1,4 @@
+Require Import ZesuSsz.Automation2.ContextCollection.
 From Coq Require Import Lists.List ZArith.ZArith Lia.
 From stdpp Require Import bitvector.definitions.
 Local Open Scope Z_scope.
@@ -5,17 +6,17 @@ Local Open Scope Z_scope.
 Lemma zesu_loop_read_range (base start cursor limit length : Z) :
   base <= start -> start <= cursor -> cursor < limit -> limit <= base + length ->
   0 <= cursor - base < length.
-Proof. intros. lia. Qed.
+Proof. intros. (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("LoopCursorRanges.solver.8.16"%string) ltac:(lia)). Qed.
 
 Lemma zesu_loop_read_lookup {A} (bytes : list A) (offset : Z) (default : A) :
   0 <= offset < Z.of_nat (length bytes) ->
   nth_error bytes (Z.to_nat offset) = Some (nth (Z.to_nat offset) bytes default).
-Proof. intros Hrange. apply nth_error_nth'. lia. Qed.
+Proof. intros Hrange. apply nth_error_nth'. (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("LoopCursorRanges.solver.13.45"%string) ltac:(lia)). Qed.
 
 Lemma zesu_loop_cursor_backedge (start cursor limit : Z) :
   start <= cursor -> cursor < limit -> cursor + 1 <> limit ->
   start <= cursor + 1 < limit.
-Proof. intros. lia. Qed.
+Proof. intros. (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("LoopCursorRanges.solver.18.16"%string) ltac:(lia)). Qed.
 
 Lemma zesu_loop_unsigned_step (width : N) (cursor limit : bv width) :
   bv_unsigned cursor < bv_unsigned limit ->
@@ -25,12 +26,12 @@ Proof.
   pose proof (bv_unsigned_in_range width cursor) as Hcursor.
   pose proof (bv_unsigned_in_range width limit) as Hlimit.
   rewrite bv_add_unsigned.
-  rewrite (Z_to_bv_small width 1) by lia.
-  apply bv_wrap_small. lia.
+  rewrite (Z_to_bv_small width 1) by (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("LoopCursorRanges.solver.28.38"%string) ltac:(lia)).
+  apply bv_wrap_small. (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("LoopCursorRanges.solver.29.24"%string) ltac:(lia)).
 Qed.
 
 Lemma zesu_loop_index_step (width : N) (cursor limit : bv width) (origin : Z) :
   bv_unsigned cursor < bv_unsigned limit ->
   bv_unsigned (bv_add cursor (Z_to_bv width 1)) - origin =
     (bv_unsigned cursor - origin) + 1.
-Proof. intros Hless. rewrite (zesu_loop_unsigned_step width cursor limit Hless). lia. Qed.
+Proof. intros Hless. rewrite (zesu_loop_unsigned_step width cursor limit Hless). (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("LoopCursorRanges.solver.36.82"%string) ltac:(lia)). Qed.

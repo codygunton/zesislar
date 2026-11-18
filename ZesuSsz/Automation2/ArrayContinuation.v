@@ -1,3 +1,4 @@
+Require Import ZesuSsz.Automation2.ContextCollection.
 Require Import isla.riscv64.riscv64.
 From Coq Require Import Lists.List ZArith.ZArith NArith.NArith Lia.
 Require Import ZesuSsz.Automation2.SwitchDispatch.
@@ -12,9 +13,9 @@ Class ZesuStepArrayContinuation : Prop := {}.
 Ltac zesu_array_continuation_lengths :=
   repeat match goal with
   | |- context [(?base + ?offset - ?base)%Z] =>
-      replace (base + offset - base)%Z with offset by lia
+      replace (base + offset - base)%Z with offset by (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("ArrayContinuation.solver.15.55"%string) ltac:(lia))
   | |- context [(?base - ?base)%Z] =>
-      replace (base - base)%Z with 0%Z by lia
+      replace (base - base)%Z with 0%Z by (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("ArrayContinuation.solver.17.43"%string) ltac:(lia))
   end;
   repeat progress (rewrite ?length_app ?length_take ?length_drop;
                    cbn [length N.to_nat]);
@@ -23,7 +24,7 @@ Ltac zesu_array_continuation_lengths :=
       progress rewrite H
   end;
   cbn;
-  lia.
+  (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("ArrayContinuation.solver.26.3"%string) ltac:(lia)).
 
 (* The existing presentation rule checks width, address, fraction and payload.
    [solve] makes failure atomic, including failure of a remaining pure clause.

@@ -1,3 +1,4 @@
+Require Import ZesuSsz.Automation2.ContextCollection.
 Require Import isla.riscv64.riscv64.
 Require Import ZesuSsz.Automation2.VmClosed.
 Require Import ZesuSsz.Automation2.PureFacts.
@@ -312,7 +313,7 @@ Ltac zesu_stack_arithmetic_steps outer split_pure prune_visits clears
   let _ := check constr:(tt) in
   ZesuSsz.Automation2.SearchBudget.zesu_normalize_closed_goal;
   ltac2:(zesu_stack_isolate_goal ());
-  bv_solve.
+  (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("MemoryAddress.solver.315.3"%string) ltac:(bv_solve)).
 
 Ltac2 zesu_stack_arithmetic_bounded () :=
   let failed := Ref.ref false in

@@ -1,3 +1,4 @@
+Require Import ZesuSsz.Automation2.ContextCollection.
 From Coq Require Import List ZArith.
 From stdpp Require Import list list_numbers tactics bitvector.definitions.
 From iris.proofmode Require Import tactics environments spec_patterns.
@@ -37,7 +38,7 @@ Ltac zesu_byte_array_normalize_stride :=
   | Hwidth : (8 = ?stride * 8)%N |- _ =>
       is_var stride;
       let Hone := fresh "HbyteStride" in
-      assert (Hone : stride = 1%N) by (clear - Hwidth; Lia.lia);
+      assert (Hone : stride = 1%N) by (clear - Hwidth; (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("ByteArrayAssemblyCodec.solver.40.56"%string) ltac:(Lia.lia)));
       subst stride
   end.
 

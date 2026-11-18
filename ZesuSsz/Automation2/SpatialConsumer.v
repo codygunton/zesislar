@@ -1,3 +1,4 @@
+Require Import ZesuSsz.Automation2.ContextCollection.
 Require Import ZesuSsz.Automation2.All.
 Require Import ZesuSsz.Automation2.JoinEntailment.
 Require Import ZesuSsz.Automation2.VmClosed.
@@ -44,7 +45,7 @@ Ltac zesu_spatial_count_fact :=
           rewrite (BitvectorFacts.zesu_signed_zero_extend_64_128 _) in Hview;
           rewrite (BitvectorFacts.zesu_signed_zero_extend_64_128 _) in Hview;
           rewrite (JoinEntailment.zesu_join_mask_payload byte Hlower) in Hview;
-          clear - Hview; Lia.lia
+          clear - Hview; (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("SpatialConsumer.solver.47.26"%string) ltac:(Lia.lia))
       end
   end.
 

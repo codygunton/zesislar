@@ -1,3 +1,4 @@
+Require Import ZesuSsz.Automation2.ContextCollection.
 Require Import ZesuSsz.Automation2.All.
 Require Import ZesuSsz.Automation2.SailEval.
 From Coq Require Import Bool List ZArith Lia.
@@ -13,20 +14,20 @@ Proof.
   assert (Hland : Z.land (bv_unsigned item) (Z.shiftl value 8) = 0).
   { apply Z.bits_inj. intro index. rewrite Z.land_spec, Z.bits_0.
     destruct (Z_lt_ge_dec index 0) as [Hnegative|Hnonnegative].
-    { rewrite Z.testbit_neg_r by lia. reflexivity. }
+    { rewrite Z.testbit_neg_r by (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("SailBytes.solver.16.34"%string) ltac:(lia)). reflexivity. }
     destruct (Z_lt_ge_dec index 8) as [Hlow|Hhigh].
-    { rewrite Z.shiftl_spec by lia. rewrite (Z.testbit_neg_r value (index - 8)) by lia.
+    { rewrite Z.shiftl_spec by (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("SailBytes.solver.18.32"%string) ltac:(lia)). rewrite (Z.testbit_neg_r value (index - 8)) by (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("SailBytes.solver.18.84"%string) ltac:(lia)).
       apply andb_false_r. }
     assert (Hitem : 0 <= bv_unsigned item < 2 ^ 8).
     { exact (bv_unsigned_in_range _ item). }
     replace (bv_unsigned item) with (Z.modulo (bv_unsigned item) (2 ^ 8))
       at 1 by (apply Z.mod_small; exact Hitem).
-    rewrite Z.mod_pow2_bits_high by lia. reflexivity. }
+    rewrite Z.mod_pow2_bits_high by (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("SailBytes.solver.24.37"%string) ltac:(lia)). reflexivity. }
   pose proof (Z.add_lor_land (bv_unsigned item) (Z.shiftl value 8)) as Hsum.
   rewrite Hland in Hsum.
-  rewrite Z.shiftl_mul_pow2 in * by lia.
+  rewrite Z.shiftl_mul_pow2 in * by (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("SailBytes.solver.27.37"%string) ltac:(lia)).
   change (2 ^ 8) with 256 in *.
-  lia.
+  (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("SailBytes.solver.29.3"%string) ltac:(lia)).
 Qed.
 Print Assumptions sail_byte_lor_shift.
 

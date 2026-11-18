@@ -1,3 +1,4 @@
+Require Import ZesuSsz.Automation2.ContextCollection.
 Require Import Coq.ssr.ssreflect.
 Require Import ZesuSsz.Automation2.SwitchDispatch.
 From stdpp Require Import bitvector.tactics list list_numbers.
@@ -39,8 +40,8 @@ Ltac zesu_symbolic_byte_codec :=
     rewrite /Z_to_little_endian /=;
     repeat rewrite zesu_low_mask_cast;
     try (rewrite !Z_to_bv_small;
-      [| unfold bv_modulus; cbn; lia]);
-    repeat (rewrite Z.shiftr_shiftr; [| lia]);
+      [| unfold bv_modulus; cbn; (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("SymbolicByteCodec.solver.42.34"%string) ltac:(lia))]);
+    repeat (rewrite Z.shiftr_shiftr; [| (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("SymbolicByteCodec.solver.43.41"%string) ltac:(lia))]);
     rewrite ?Z.shiftr_0_r;
     cbn;
     reflexivity

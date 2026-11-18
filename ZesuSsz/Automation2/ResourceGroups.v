@@ -1,3 +1,4 @@
+Require Import ZesuSsz.Automation2.ContextCollection.
 Require Import isla.riscv64.riscv64.
 Require Import InstrSpecs.Machine.
 From iris.proofmode Require Import environments.
@@ -187,5 +188,5 @@ Ltac zesu_finish_pure_resources :=
       zesu_is_pure_resource body;
       solve [repeat first
         [solve [iPureIntro; assumption] | solve [done] | iSplit |
-         solve [iPureIntro; first [lia | bv_solve]]]]
+         solve [iPureIntro; first [(ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("ResourceGroups.solver.190.36"%string) ltac:(lia)) | (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("ResourceGroups.solver.190.42"%string) ltac:(bv_solve))]]]]
   end.

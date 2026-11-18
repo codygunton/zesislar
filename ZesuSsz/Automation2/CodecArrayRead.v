@@ -1,3 +1,4 @@
+Require Import ZesuSsz.Automation2.ContextCollection.
 Require Import ZesuSsz.Automation2.ResourceGroups.
 Require Import isla.riscv64.riscv64.
 Require Import ZesuSsz.Automation2.SwitchDispatch.
@@ -77,7 +78,7 @@ Ltac zesu_codec_array_read_sidecond :=
   lazymatch goal with
   | |- (0 <= ?offset)%Z =>
       MemoryAddress.zesu_handoff_closed_Z offset ltac:(fun reduced =>
-        change (0 <= reduced)%Z; lia)
+        change (0 <= reduced)%Z; (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("CodecArrayRead.solver.80.34"%string) ltac:(lia)))
   | |- (Z.to_nat ?offset + ?width <= ?extent)%nat =>
       MemoryAddress.zesu_handoff_closed_Z offset ltac:(fun reduced =>
         change (Z.to_nat reduced + width <= extent)%nat;
@@ -90,7 +91,7 @@ Ltac zesu_codec_array_read_sidecond :=
             end in
           literal_extent extent
         | zesu_codec_range_lengths];
-        cbn; lia)
+        cbn; (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("CodecArrayRead.solver.93.14"%string) ltac:(lia)))
   end.
 
 (* Normalize the pure image before Lithium substitutes the decoded term into
@@ -116,7 +117,7 @@ Ltac zesu_codec_array_read_image image :=
       let index := fresh "HcodecIndex" in
       assert (index : Z.to_nat offset = count) by
         (MemoryAddress.zesu_handoff_closed_Z offset ltac:(fun reduced =>
-          change (Z.to_nat reduced = count); lia));
+          change (Z.to_nat reduced = count); (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("CodecArrayRead.solver.119.46"%string) ltac:(lia))));
       rewrite index in image; clear index
   end;
   cbn [drop N.to_nat] in image;
@@ -126,8 +127,8 @@ Ltac zesu_codec_array_read_image image :=
       let bound := fresh "HcodecTake" in
       assert (bound :
         (length (bv_to_little_endian digits width value) <= count)%nat) by
-        (rewrite (length_bv_to_little_endian digits width value ltac:(lia));
-         lia);
+        (rewrite (length_bv_to_little_endian digits width value ltac:((ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("CodecArrayRead.solver.129.71"%string) ltac:(lia))));
+         (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("CodecArrayRead.solver.130.10"%string) ltac:(lia)));
       rewrite (take_ge (bv_to_little_endian digits width value) count bound)
         in image;
       clear bound
@@ -137,7 +138,7 @@ Ltac zesu_codec_array_read_image image :=
     | context [Z_to_bv ?bits (little_endian_to_bv ?width
         (bv_to_little_endian ?digits ?width (bv_unsigned ?word)))] =>
         rewrite (Z_to_bv_little_endian_to_bv_to_little_endian
-          bits digits width word ltac:(lia) ltac:(reflexivity)) in image
+          bits digits width word ltac:((ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("CodecArrayRead.solver.140.40"%string) ltac:(lia))) ltac:(reflexivity)) in image
     end
   | lazymatch type of image with
     | context [Z_to_bv ?bits (little_endian_to_bv ?width
@@ -148,9 +149,9 @@ Ltac zesu_codec_array_read_image image :=
           Z_to_bv bits (little_endian_to_bv width
             (bv_to_little_endian digits width value)) = Z_to_bv bits value) by (
           apply bv_eq; rewrite !Z_to_bv_unsigned;
-          rewrite (little_endian_to_bv_to_little_endian digits width value ltac:(lia));
+          rewrite (little_endian_to_bv_to_little_endian digits width value ltac:((ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("CodecArrayRead.solver.151.82"%string) ltac:(lia))));
           change (bv_wrap bits (bv_wrap bits value) = bv_wrap bits value);
-          apply bv_wrap_bv_wrap; lia);
+          apply bv_wrap_bv_wrap; (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("CodecArrayRead.solver.153.34"%string) ltac:(lia)));
         rewrite roundtrip in image; clear roundtrip
     end].
 

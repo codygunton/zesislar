@@ -1,3 +1,4 @@
+Require Import ZesuSsz.Automation2.ContextCollection.
 Require Import ZesuSsz.Automation2.MemoryAddress.
 Require Import ZesuSsz.Automation2.Hooks.
 Require Import ZesuSsz.Automation2.ResourceGroups.
@@ -83,7 +84,7 @@ Ltac zesu_memory_address_equal available requested :=
   first [solve [constr_eq available requested; reflexivity] |
     MemoryAddress.zesu_handoff_closed_Z available ltac:(fun left =>
       MemoryAddress.zesu_handoff_closed_Z requested ltac:(fun right =>
-        change (left = right); solve [ring | MemoryAddress.zesu_stack_arithmetic]))].
+        change (left = right); solve [(ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("MemoryTupleConsumer.solver.86.39"%string) ltac:(ring)) | MemoryAddress.zesu_stack_arithmetic]))].
 
 Ltac zesu_memory_array_count bytes word continuation :=
   lazymatch word with
@@ -120,7 +121,7 @@ Ltac zesu_memory_join_arrays :=
             assert (Hcount : length leftBytes = count) by
               first [reflexivity |
                 rewrite length_bv_to_little_endian;
-                  [reflexivity | Lia.lia]];
+                  [reflexivity | (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("MemoryTupleConsumer.solver.123.34"%string) ltac:(Lia.lia))]];
             let Hnext := fresh "HmemoryArrayNext" in
             assert (Hnext : rightAddress =
               (leftAddress + Z.of_N (8 / 8) * Z.of_nat count)%Z) by

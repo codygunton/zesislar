@@ -1,3 +1,4 @@
+Require Import ZesuSsz.Automation2.ContextCollection.
 Require Import isla.riscv64.riscv64.
 Require Import ZesuSsz.Automation2.SwitchDispatch.
 Require Import ZesuSsz.Automation2.BitvectorFacts.
@@ -28,7 +29,7 @@ Ltac zesu_mask_sign_extend_presentation :=
           (vm_compute; reflexivity);
         assert (Hrange : 0 <= bv_unsigned value < bv_modulus width) by
           (pose proof (bv_unsigned_in_range low value);
-           pose proof (bv_modulus_le_mono low width Hwidth); lia);
+           pose proof (bv_modulus_le_mono low width Hwidth); (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("MaskPresentation.solver.31.62"%string) ltac:(lia)));
         pose proof (ZesuSsz.Automation2.BitvectorFacts.zesu_guard_mask_signed_value
           width low value mask Hwidth Hmask) as Hnormalized;
         rewrite bv_and_unsigned in Hnormalized;
@@ -45,4 +46,4 @@ Ltac zesu_mask_sign_extend_presentation :=
         clear Hequal Hnormalized Hrange Hmask Hwidth
       end
   end;
-  first [reflexivity | lia].
+  first [reflexivity | (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("MaskPresentation.solver.48.24"%string) ltac:(lia))].

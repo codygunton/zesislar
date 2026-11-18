@@ -1,3 +1,4 @@
+Require Import ZesuSsz.Automation2.ContextCollection.
 From Coq Require Import List ZArith Lia.
 From stdpp Require Import list bitvector.definitions.
 From iris.proofmode Require Import tactics environments.
@@ -23,7 +24,7 @@ Qed.
 Ltac zesu_byte_array_same_address available requested :=
   first [constr_eq available requested |
     let Heq := fresh "HarrayAssemblyAddress" in
-    assert (Heq : available = requested) by ring;
+    assert (Heq : available = requested) by (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("ByteArrayAssembly.solver.26.45"%string) ltac:(ring));
     rewrite Heq; clear Heq].
 
 Ltac zesu_byte_array_head spatial address fraction byte :=

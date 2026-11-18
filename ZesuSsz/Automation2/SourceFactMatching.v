@@ -1,3 +1,4 @@
+Require Import ZesuSsz.Automation2.ContextCollection.
 Require ZesuSsz.Automation.Hooks.
 Require isla.automation.
 Require Import ZesuSsz.Automation2.ResourceGroups.
@@ -167,7 +168,7 @@ end
       (0 <= bv_unsigned mask - Z.land (bv_unsigned mask) (bv_unsigned value))%Z) by
       (rewrite Coq.ZArith.Zbitwise.Z.sub_land_same_l; apply Z.land_nonneg;
        left; exact (proj1 (bv_unsigned_in_range _ mask)));
-    clear -Hbound Hremaining; lia
+    clear -Hbound Hremaining; (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("SourceFactMatching.solver.158.31"%string) ltac:(lia))
 | |- Z.lt (bv_unsigned (bv_and ?value ?mask)) ?bound =>
     assert_fails (has_evar mask);
     assert_fails (has_evar bound);
@@ -182,7 +183,7 @@ end
       (0 <= bv_unsigned mask - Z.land (bv_unsigned mask) (bv_unsigned value))%Z) by
       (rewrite Coq.ZArith.Zbitwise.Z.sub_land_same_l; apply Z.land_nonneg;
        left; exact (proj1 (bv_unsigned_in_range _ mask)));
-    clear -Hbound Hremaining; lia
+    clear -Hbound Hremaining; (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("SourceFactMatching.solver.173.31"%string) ltac:(lia))
 end
  | lazymatch goal with | |- bool_decide ?fact = true => apply bool_decide_eq_true_2; zesu_source_fact | |- bool_decide ?fact = false => apply bool_decide_eq_false_2; zesu_source_fact | |- negb ?b = true => apply Bool.negb_true_iff; zesu_source_fact | |- ?a /\ ?b => split; zesu_source_fact | |- Z.le Z0 (@bv_unsigned ?width ?value) => assert_fails (has_evar value); exact (proj1 (bv_unsigned_in_range width value)) | |- Z.lt (@bv_unsigned ?width ?value) ?bound => assert_fails (has_evar value); assert_fails (has_evar bound); exact (proj2 (bv_unsigned_in_range width value)) | |- ?fact => let exposed := eval hnf in fact in lazymatch exposed with | ?left /\ ?right => change exposed; split; zesu_source_fact end end].
 

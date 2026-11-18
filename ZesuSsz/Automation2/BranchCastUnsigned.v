@@ -1,3 +1,4 @@
+Require Import ZesuSsz.Automation2.ContextCollection.
 Require Import isla.riscv64.riscv64.
 Require Import ZesuSsz.Automation2.SwitchDispatch.
 Require Import ZesuSsz.Automation2.BitvectorFacts.
@@ -22,9 +23,9 @@ Ltac zesu_unsigned_branch_cast_evidence :=
           | context [bv_unsigned (Z_to_bv ?width ?value)] =>
               let range := fresh "HcastRange" in
               assert (range : 0 <= value < bv_modulus width) by
-                (unfold bv_modulus; cbn; lia);
+                (unfold bv_modulus; cbn; (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("BranchCastUnsigned.solver.25.42"%string) ltac:(lia)));
               rewrite (Z_to_bv_small width value range) in view
           end;
-          first [exact view | solve [lia] | solve [bv_solve]]
+          first [exact view | solve [(ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("BranchCastUnsigned.solver.28.38"%string) ltac:(lia))] | solve [(ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("BranchCastUnsigned.solver.28.52"%string) ltac:(bv_solve))]]
       end
   end.

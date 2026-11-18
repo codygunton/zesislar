@@ -1,3 +1,4 @@
+Require Import ZesuSsz.Automation2.ContextCollection.
 Require Import ZesuSsz.Automation2.VmClosed.
 Require Import ZesuSsz.Automation2.Hooks.
 Require Import ZesuSsz.Automation2.PureFacts.
@@ -28,13 +29,13 @@ Proof.
   iPoseProof (mem_mapsto_array_app_combine_at 8%N base (DfracOwn 1)
     (take start bytes) (take count (drop start bytes)) start
     with "Hprefix [Hslice]") as "Hfirst".
-  { rewrite length_take. lia. }
+  { rewrite length_take. (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("InteriorByteSlice.solver.31.26"%string) ltac:(lia)). }
   { rewrite Hstride Z.mul_1_l. iExact "Hslice". }
   iPoseProof (mem_mapsto_array_app_combine_at 8%N base (DfracOwn 1)
     (take start bytes ++ take count (drop start bytes))
     (drop (start + count) bytes) (start + count)
     with "Hfirst [Hsuffix]") as "Hwhole".
-  { rewrite length_app !length_take length_drop. lia. }
+  { rewrite length_app !length_take length_drop. (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("InteriorByteSlice.solver.37.50"%string) ltac:(lia)). }
   { rewrite Hstride Z.mul_1_l. iExact "Hsuffix". }
   rewrite -drop_drop -app_assoc take_drop take_drop.
   iExact "Hwhole".
@@ -79,16 +80,16 @@ Ltac zesu_lend_interior_byte_slice :=
                     let Haddress := fresh "HsliceAddress" in
                     let Hbounds := fresh "HsliceBounds" in
                     assert (Haddress : (base + Z.of_nat start = address)%Z)
-                      by (rewrite ?length_take ?length_drop; first [lia | bv_solve]);
+                      by (rewrite ?length_take ?length_drop; first [(ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("InteriorByteSlice.solver.82.69"%string) ltac:(lia)) | (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("InteriorByteSlice.solver.82.75"%string) ltac:(bv_solve))]);
                     assert (Hbounds : (start + count <= length bytes)%nat)
-                      by (rewrite ?length_take ?length_drop; first [lia | bv_solve]);
+                      by (rewrite ?length_take ?length_drop; first [(ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("InteriorByteSlice.solver.84.69"%string) ltac:(lia)) | (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("InteriorByteSlice.solver.84.75"%string) ltac:(bv_solve))]);
                     let Hsize := fresh "HsliceSize" in
                     let Hlength := fresh "HsliceLength" in
                     assert (Hsize : size = Z.of_nat count)
-                      by (first [reflexivity | lia | bv_solve]);
+                      by (first [reflexivity | (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("InteriorByteSlice.solver.88.48"%string) ltac:(lia)) | (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("InteriorByteSlice.solver.88.54"%string) ltac:(bv_solve))]);
                     assert (Hlength :
                       size = Z.of_nat (length (take count (drop start bytes))))
-                      by (rewrite Hsize length_take length_drop; lia);
+                      by (rewrite Hsize length_take length_drop; (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("InteriorByteSlice.solver.91.66"%string) ltac:(lia)));
                     iDestruct (zesu_byte_array_lend_slice base bytes start count
                       Hbounds with Harray) as "[Hslice Hrestore]";
                     iEval (rewrite Haddress) in "Hslice Hrestore";

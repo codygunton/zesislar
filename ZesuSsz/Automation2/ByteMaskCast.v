@@ -1,3 +1,4 @@
+Require Import ZesuSsz.Automation2.ContextCollection.
 Require Import ZesuSsz.Automation2.SwitchDispatch.
 From stdpp Require Import bitvector.tactics.
 From Coq Require Import ZArith Lia.
@@ -14,7 +15,7 @@ Proof.
   pose proof (bv_modulus_le_mono 8 width Hwidth) as Hmodulus.
   pose proof (bv_unsigned_in_range 8 word) as Hword.
   assert (Hmask : 0 <= 2 ^ 8 - 1 < bv_modulus width).
-  { change (256 <= bv_modulus width) in Hmodulus. lia. }
+  { change (256 <= bv_modulus width) in Hmodulus. (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("ByteMaskCast.solver.17.51"%string) ltac:(lia)). }
   apply bv_eq.
   rewrite bv_and_unsigned.
   rewrite bv_sign_extend_unsigned.
@@ -27,11 +28,11 @@ Proof.
   unfold bv_signed, bv_swrap.
   rewrite bv_wrap_sub_idemp_l.
   replace (bv_unsigned word + bv_half_modulus 8 - bv_half_modulus 8)
-    with (bv_unsigned word) by lia.
+    with (bv_unsigned word) by (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("ByteMaskCast.solver.30.32"%string) ltac:(lia)).
   rewrite bv_wrap_bv_unsigned.
   rewrite bv_wrap_small; [reflexivity |].
   change (256 <= bv_modulus width) in Hmodulus.
-  change (0 <= bv_unsigned word < 256) in Hword. lia.
+  change (0 <= bv_unsigned word < 256) in Hword. (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("ByteMaskCast.solver.34.50"%string) ltac:(lia)).
 Qed.
 
 Ltac zesu_byte_mask_cast :=

@@ -1,3 +1,4 @@
+Require Import ZesuSsz.Automation2.ContextCollection.
 From Coq Require Import Lists.List ZArith.ZArith.
 Require Import ZesuMachineMap.Machine.
 Require Import isla.riscv64.riscv64.
@@ -35,14 +36,14 @@ Lemma reg_col_exact_bv_to_bits `{!islaG Sigma} `{!threadG}
   reg_col ((fun register => (KindReg register, BitsShape 64)) <$> registers).
 Proof.
   revert values. induction registers as [|register registers IH];
-    intros [|value values] Hlength; simpl in Hlength; try lia.
+    intros [|value values] Hlength; simpl in Hlength; try (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("Calls.solver.38.59"%string) ltac:(lia)).
   - iIntros "_". rewrite reg_col_nil. done.
   - rewrite !reg_col_cons. iIntros "[Hhead Htail]".
     iDestruct "Hhead" as (actual Hactual) "Hregister".
     simpl in Hactual. subst actual.
     iSplitL "Hregister".
     { iExists (RVal_Bits value). iFrame. done. }
-    iApply (IH values); [lia | iExact "Htail"].
+    iApply (IH values); [(ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("Calls.solver.45.26"%string) ltac:(lia)) | iExact "Htail"].
 Qed.
 
 Definition machine_call_ret `{!islaG Sigma} `{!threadG}

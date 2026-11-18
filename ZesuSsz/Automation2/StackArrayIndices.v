@@ -1,3 +1,4 @@
+Require Import ZesuSsz.Automation2.ContextCollection.
 Require Import ZesuSsz.Automation2.VmClosed.
 Require Import isla.riscv64.riscv64.
 Require Import ZesuMachineMap.Machine.
@@ -12,8 +13,8 @@ Proof.
   intros Hoffset Hlow Hhigh.
   cbv [mapRamBase mapRamSize defaultMap machineRamEnd] in *.
   have Hsum : bv_unsigned (sp + Z_to_bv 64 offset)%bv =
-    (bv_unsigned sp + offset)%Z by bv_solve.
-  rewrite Hsum. f_equal. lia.
+    (bv_unsigned sp + offset)%Z by (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("StackArrayIndices.solver.15.36"%string) ltac:(bv_solve)).
+  rewrite Hsum. f_equal. (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("StackArrayIndices.solver.16.26"%string) ltac:(lia)).
 Qed.
 
 Ltac zesu_normalize_stack_array_indices :=
@@ -22,7 +23,7 @@ Ltac zesu_normalize_stack_array_indices :=
    let integer := ZesuSsz.Automation2.VmClosed.zesu_vm_eval_closed (bv_unsigned offset) in
    let Hindex := fresh "HstackArrayIndex" in
    assert (Hindex : (bv_unsigned (bv_add sp offset) - (bv_unsigned sp + start))%Z = (integer - start)%Z) by
-     (cbv [mapRamBase mapRamSize defaultMap machineRamEnd] in *; bv_solve);
+     (cbv [mapRamBase mapRamSize defaultMap machineRamEnd] in *; (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("StackArrayIndices.solver.25.66"%string) ltac:(bv_solve)));
    rewrite Hindex; clear Hindex
  end.
 

@@ -1,3 +1,4 @@
+Require Import ZesuSsz.Automation2.ContextCollection.
 From Coq Require Import Lists.List ZArith.ZArith Lia.
 From stdpp Require Import bitvector.definitions bitvector.tactics.
 From stdpp.unstable Require Import bitblast.
@@ -12,7 +13,7 @@ Proof.
   assert (Hland : Z.land
     (bv_unsigned (bv_shiftl (Z_to_bv 64 acc) (BV 64 8)))
     (bv_unsigned (bv_zero_extend 64 next)) = 0).
-  { bv_simplify. bitblast as index. all: (f_equal; lia). }
+  { bv_simplify. bitblast as index. all: (f_equal; (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("ByteWindowFoldWord.solver.15.52"%string) ltac:(lia))). }
   pose proof (bv_unsigned_in_range 64
     (bv_or (bv_shiftl (Z_to_bv 64 acc) (BV 64 8)) (bv_zero_extend 64 next))) as Hsum.
   rewrite bv_or_unsigned in Hsum.
@@ -20,15 +21,15 @@ Proof.
   apply bv_eq. rewrite bv_or_unsigned.
   rewrite <- Z.add_nocarry_lor by exact Hland.
   rewrite <- (bv_wrap_small 64 _ Hsum).
-  rewrite bv_shiftl_unsigned, bv_zero_extend_unsigned by lia.
+  rewrite bv_shiftl_unsigned, bv_zero_extend_unsigned by (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("ByteWindowFoldWord.solver.23.58"%string) ltac:(lia)).
   rewrite Z_to_bv_unsigned, bv_unsigned_BV.
-  rewrite Z.shiftl_mul_pow2 by lia.
+  rewrite Z.shiftl_mul_pow2 by (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("ByteWindowFoldWord.solver.25.32"%string) ltac:(lia)).
   change (bv_wrap 64 (bv_wrap 64 (bv_wrap 64 acc * 256) + bv_unsigned next) =
     bv_wrap 64 (256 * acc + bv_unsigned next)).
   rewrite bv_wrap_add_idemp_l.
   rewrite <- (bv_wrap_add_idemp_l 64 (bv_wrap 64 acc * 256) (bv_unsigned next)).
   rewrite bv_wrap_mul_idemp_l, bv_wrap_add_idemp_l.
-  replace (acc * 256) with (256 * acc) by lia. reflexivity.
+  replace (acc * 256) with (256 * acc) by (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("ByteWindowFoldWord.solver.31.43"%string) ltac:(lia)). reflexivity.
 Qed.
 
 Lemma zesu_byte_window_word_snoc (bytes : list (bv 8)) (start count : nat) (next : bv 8) :
@@ -45,13 +46,13 @@ Lemma zesu_big_endian8_range (bytes : list (bv 8)) :
   0 <= zesu_big_endian8 bytes < 256 ^ Z.of_nat (length bytes).
 Proof.
   induction bytes using rev_ind;
-    [unfold zesu_big_endian8; simpl; lia |].
+    [unfold zesu_big_endian8; simpl; (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("ByteWindowFoldWord.solver.48.38"%string) ltac:(lia)) |].
   rewrite zesu_big_endian8_snoc, app_length. simpl.
   rewrite Nat2Z.inj_add. simpl.
-  rewrite Z.pow_add_r; try lia.
+  rewrite Z.pow_add_r; try (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("ByteWindowFoldWord.solver.51.28"%string) ltac:(lia)).
   pose proof (bv_unsigned_in_range 8 x) as Hbyte.
   change (0 <= bv_unsigned x < 256) in Hbyte.
-  simpl. nia.
+  simpl. (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("ByteWindowFoldWord.solver.54.10"%string) ltac:(nia)).
 Qed.
 
 Lemma zesu_byte_window_fits64 (bytes : list (bv 8)) (start count : nat) :
@@ -62,9 +63,9 @@ Proof.
   pose proof (zesu_big_endian8_range (firstn count (skipn start bytes))) as Hrange.
   pose proof (firstn_le_length count (skipn start bytes)) as Hlength.
   assert (Hpower : 256 ^ Z.of_nat (length (firstn count (skipn start bytes))) <= 256 ^ 8)
-    by (apply Z.pow_le_mono_r; lia).
+    by (apply Z.pow_le_mono_r; (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("ByteWindowFoldWord.solver.65.32"%string) ltac:(lia))).
   change (0 <= zesu_big_endian8 (firstn count (skipn start bytes)) < 256 ^ 8).
-  lia.
+  (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("ByteWindowFoldWord.solver.67.3"%string) ltac:(lia)).
 Qed.
 
 Lemma zesu_byte_window_unsigned_step (bytes : list (bv 8)) (start count : nat) (next : bv 8) :

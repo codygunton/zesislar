@@ -1,11 +1,12 @@
+Require Import ZesuSsz.Automation2.ContextCollection.
 From Coq Require Import ZArith.ZArith micromega.Lia micromega.Zify omega.PreOmega.
 From Ltac2 Require Ltac2.
 Set Default Proof Mode "Classic".
 Local Open Scope Z_scope.
 
 Ltac zesu_zify_prefix :=
-  intros; Zify.zify_pre_hook; Zify.zify_elim_let; Zify.zify_op; (Zify.zify_iter_specs);
-  Zify.zify_to_euclidean_division_equations.
+  intros; (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("LinearFirstLia.solver.8.11"%string) ltac:(Zify.zify_pre_hook)); (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("LinearFirstLia.solver.8.31"%string) ltac:(Zify.zify_elim_let)); (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("LinearFirstLia.solver.8.51"%string) ltac:(Zify.zify_op)); ((ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("LinearFirstLia.solver.8.66"%string) ltac:(Zify.zify_iter_specs)));
+  (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("LinearFirstLia.solver.9.3"%string) ltac:(Zify.zify_to_euclidean_division_equations)).
 
 Ltac zesu_lia_has_divmod :=
   match goal with
@@ -111,10 +112,10 @@ Ltac zesu_divmod_guard :=
 
 Ltac zesu_lia_divmod_step :=
   first [ zesu_divmod_all_literal; zesu_divmod_literal_facts
-        | zesu_divmod_guard; Zify.zify_post_hook ].
+        | zesu_divmod_guard; (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("LinearFirstLia.solver.115.30"%string) ltac:(Zify.zify_post_hook)) ].
 
 Ltac zesu_lia_linear_first3 :=
   zesu_zify_prefix;
-  first [ solve [Zify.zify_saturate; xlia Lia.zchecker]
+  first [ solve [(ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("LinearFirstLia.solver.119.18"%string) ltac:(Zify.zify_saturate)); (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("LinearFirstLia.solver.118.38"%string) ltac:(xlia Lia.zchecker))]
         | zesu_lia_has_divmod;
-          zesu_lia_divmod_step; Zify.zify_saturate; xlia Lia.zchecker ].
+          zesu_lia_divmod_step; (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("LinearFirstLia.solver.121.33"%string) ltac:(Zify.zify_saturate)); (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("LinearFirstLia.solver.120.53"%string) ltac:(xlia Lia.zchecker)) ].

@@ -1,3 +1,4 @@
+Require Import ZesuSsz.Automation2.ContextCollection.
 Require Import ZesuSsz.Contracts.IslarisMemory.
 Require Import isla.riscv64.riscv64.
 Require Import stdpp.bitvector.definitions.
@@ -21,7 +22,7 @@ Proof.
   iApply (mem_mapsto_array_app_combine_at 8%N base q
     (bv_to_little_endian (Z.of_nat n) 8 (bv_unsigned low))
     (bv_to_little_endian (Z.of_nat m) 8 (bv_unsigned high)) n with "Hlow").
-  { rewrite length_bv_to_little_endian; [rewrite Nat2Z.id; reflexivity|lia]. }
+  { rewrite length_bv_to_little_endian; [rewrite Nat2Z.id; reflexivity|(ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("AdjacentWordResources140.solver.24.72"%string) ltac:(lia))]. }
   rewrite /= Z.mul_1_l.
   iExact "Hhigh".
 Qed.

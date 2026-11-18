@@ -1,3 +1,4 @@
+Require Import ZesuSsz.Automation2.ContextCollection.
 From Coq Require Import Lists.List ZArith.ZArith Lia.
 From stdpp Require Import bitvector.definitions list_numbers.
 Local Open Scope Z_scope.
@@ -14,13 +15,13 @@ Proof.
   unfold bv_modulus in Hbound.
   assert (Hmask : Z.land (bv_unsigned word) (Z.ones (Z.of_N width)) =
       bv_unsigned word).
-  { rewrite Z.land_ones; [apply Z.mod_small; exact Hbound|lia]. }
-  rewrite Z.shiftl_mul_pow2; [|lia].
+  { rewrite Z.land_ones; [apply Z.mod_small; exact Hbound|(ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("AdditiveDecoder.solver.17.59"%string) ltac:(lia))]. }
+  rewrite Z.shiftl_mul_pow2; [|(ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("AdditiveDecoder.solver.18.32"%string) ltac:(lia))].
   rewrite (Z.mul_comm (2 ^ Z.of_N width) tail).
   apply Z.add_nocarry_lor.
   assert (Htail : Z.land (tail * 2 ^ Z.of_N width)
       (Z.ones (Z.of_N width)) = 0).
-  { rewrite Z.land_ones; [apply Z.mod_mul; apply Z.pow_nonzero; lia|lia]. }
+  { rewrite Z.land_ones; [apply Z.mod_mul; apply Z.pow_nonzero; (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("AdditiveDecoder.solver.23.65"%string) ltac:(lia))|(ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("AdditiveDecoder.solver.23.69"%string) ltac:(lia))]. }
   rewrite <- Hmask at 1.
   rewrite <- Z.land_assoc.
   rewrite (Z.land_comm (Z.ones (Z.of_N width))

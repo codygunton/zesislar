@@ -1,3 +1,4 @@
+Require Import ZesuSsz.Automation2.ContextCollection.
 Require Import ZesuSsz.Automation2.ContextRange.
 Require Import ZesuSsz.Automation2.SwitchDispatch.
 Require Import ZesuSsz.Automation2.MaskWrapPresentation.
@@ -8,7 +9,7 @@ Local Open Scope Z_scope.
 Class ZesuStepHypothesisCast : Prop := {}.
 
 Ltac zesu_hypothesis_cast_range width value :=
-  first [solve [unfold bv_modulus; cbn; lia] |
+  first [solve [unfold bv_modulus; cbn; (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("HypothesisCast.solver.11.41"%string) ltac:(lia))] |
     lazymatch value with
     | bv_unsigned ?word =>
         let kind := type of word in
@@ -18,7 +19,7 @@ Ltac zesu_hypothesis_cast_range width value :=
           assert (Hwidth : (source <= width)%N) by (vm_compute; congruence);
           pose proof (bv_unsigned_in_range source word);
           pose proof (bv_modulus_le_mono source width Hwidth);
-          lia
+          (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("HypothesisCast.solver.21.11"%string) ltac:(lia))
         end
     end].
 
@@ -66,7 +67,7 @@ Ltac zesu_hypothesis_cast_finish :=
   solve [zesu_hypothesis_casts;
     try zesu_hypothesis_mask_wraps;
     zesu_hypothesis_casts;
-    lia].
+    (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("HypothesisCast.solver.69.5"%string) ltac:(lia))].
 
 Ltac zesu_cast_nonzero_derived :=
   lazymatch goal with

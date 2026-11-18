@@ -1,3 +1,4 @@
+Require Import ZesuSsz.Automation2.ContextCollection.
 From Coq Require Import ZArith.ZArith Lia.
 From stdpp Require Import bitvector.definitions.
 Require Import ZesuSsz.Automation2.LoopCursorRanges.
@@ -12,7 +13,7 @@ Proof.
   pose proof (zesu_loop_unsigned_step width cursor limit Hhead) as Hstep.
   assert (Hdifferent : bv_unsigned cursor + 1 <> bv_unsigned limit).
   { intros Hequal. apply Hbranch. apply bv_eq. rewrite Hstep. exact Hequal. }
-  rewrite Hstep. lia.
+  rewrite Hstep. (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("LoopCursorBackedge.solver.15.18"%string) ltac:(lia)).
 Qed.
 
 Lemma zesu_loop_index_backedge (width : N) (cursor limit : bv width)
@@ -29,5 +30,5 @@ Proof.
   intros Hindex Horigin Hhead Hbranch. cbn zeta.
   pose proof (zesu_loop_unsigned_step width cursor limit Hhead) as Hstep.
   pose proof (zesu_loop_unsigned_backedge width cursor limit Hhead Hbranch) as Hnext.
-  rewrite Hstep in Hnext |- *. repeat split; lia.
+  rewrite Hstep in Hnext |- *. repeat split; (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("LoopCursorBackedge.solver.32.46"%string) ltac:(lia)).
 Qed.

@@ -1,3 +1,4 @@
+Require Import ZesuSsz.Automation2.ContextCollection.
 Require Import ZesuSsz.Automation2.VmClosed.
 Require Import isla.riscv64.riscv64.
 Require Import ZesuMachineMap.Machine.
@@ -8,7 +9,7 @@ Lemma array_cursor_base_index (row : bv 64) (base : Z) (index : nat) :
   Z.to_nat (bv_unsigned row - base) = index.
 Proof.
   intros Hrow. rewrite Hrow.
-  replace (base + Z.of_nat index - base)%Z with (Z.of_nat index) by lia.
+  replace (base + Z.of_nat index - base)%Z with (Z.of_nat index) by (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("ArrayCursors.solver.11.69"%string) ltac:(lia)).
   apply Nat2Z.id.
 Qed.
 
@@ -24,9 +25,9 @@ Proof.
   intros Hrow Hoffset Hmin Hmax Hbound.
   cbv [machineRamEnd defaultMap mapRamBase mapRamSize] in Hmin, Hmax.
   have Hsum : bv_unsigned (row + offset)%bv =
-      (bv_unsigned row + Z.of_nat count)%Z by bv_solve.
+      (bv_unsigned row + Z.of_nat count)%Z by (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("ArrayCursors.solver.27.47"%string) ltac:(bv_solve)).
   rewrite Hsum Hrow. apply Nat2Z.inj.
-  rewrite Z2Nat.id; lia.
+  rewrite Z2Nat.id; (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("ArrayCursors.solver.29.21"%string) ltac:(lia)).
 Qed.
 
 Ltac zesu_normalize_array_cursor_base :=
@@ -60,7 +61,7 @@ Ltac zesu_normalize_array_cursor_offset :=
         (index + count)%nat) by
         (eapply array_cursor_index;
           [exact Hcursor | first [ZesuSsz.Automation2.VmClosed.zesu_vm_closed_decide | reflexivity] | exact Hlower |
-           exact Hupper | lia]);
+           exact Hupper | (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("ArrayCursors.solver.63.27"%string) ltac:(lia))]);
       rewrite Hindex; clear Hindex
   end.
 

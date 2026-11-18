@@ -1,3 +1,4 @@
+Require Import ZesuSsz.Automation2.ContextCollection.
 Require Import ZesuSsz.Automation2.SwitchDispatch.
 Require Import ZesuSsz.Automation2.BitvectorFacts.
 Require Import ZesuSsz.Automation2.Hooks.
@@ -14,7 +15,7 @@ Ltac zesu_source_fault_offset_bound :=
   lazymatch goal with |- ?bound =>
     tryif VmClosed.zesu_vm_closed bound
     then RewriteBoundGuards.a3n_closed_bound
-    else bv_solve
+    else (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("SourceFaultProof.solver.17.10"%string) ltac:(bv_solve))
   end.
 
 (* Check offsets before the existing integer-address parser evaluates them. *)
@@ -56,5 +57,5 @@ Ltac zesu_source_fault_proof project leaf :=
         end;
         rewrite Heq in leaf;
         MemoryAddress.zesu_stack_normalize_hypothesis leaf;
-        lia
+        (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("SourceFaultProof.solver.59.9"%string) ltac:(lia))
     end ].

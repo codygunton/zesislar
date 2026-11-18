@@ -8,3 +8,5 @@
 (package (name p0-filtered-trace) (depends coq-core))
 
 (package (name p0-bounded-trace) (depends coq-core))
+
+(package (name zesu-solver-context) (depends coq-core))

@@ -1,3 +1,4 @@
+Require Import ZesuSsz.Automation2.ContextCollection.
 From Coq Require Import List Lia Arith.
 From stdpp Require Import list tactics.
 
@@ -27,7 +28,7 @@ Ltac zesu_list_window_bounds :=
   | Hlength : List.length ?bytes = ?count |- context [List.length ?bytes] =>
       is_closed_term count; progress (rewrite Hlength)
   end;
-  lia.
+  (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("ListSliceWindows.solver.30.3"%string) ltac:(lia)).
 
 Ltac zesu_list_slice_windows :=
   first

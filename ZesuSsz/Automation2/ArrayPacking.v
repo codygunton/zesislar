@@ -1,3 +1,4 @@
+Require Import ZesuSsz.Automation2.ContextCollection.
 Require Import isla.riscv64.riscv64.
 Require Import ZesuSsz.Contracts.IslarisMemory.
 
@@ -16,11 +17,11 @@ Proof.
   iDestruct (mem_mapsto_array_app 64 (base + 8) (DfracOwn 1) [b] [c;d]
     with "Hbcd") as "[Hb Hcd]".
   iEval (cbn) in "Hcd".
-  iEval (replace (base + 8 + 8)%Z with (base + 16)%Z by lia) in "Hcd".
+  iEval (replace (base + 8 + 8)%Z with (base + 16)%Z by (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("ArrayPacking.solver.19.57"%string) ltac:(lia))) in "Hcd".
   iDestruct (mem_mapsto_array_app 64 (base + 16) (DfracOwn 1) [c] [d]
     with "Hcd") as "[Hc Hd]".
   iEval (cbn) in "Hd".
-  iEval (replace (base + 16 + 8)%Z with (base + 24)%Z by lia) in "Hd".
+  iEval (replace (base + 16 + 8)%Z with (base + 24)%Z by (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("ArrayPacking.solver.23.58"%string) ltac:(lia))) in "Hd".
   iEval (rewrite !mem_mapsto_array_singleton) in "Ha Hb Hc Hd".
   iFrame.
 Qed.

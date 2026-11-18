@@ -1,3 +1,4 @@
+From Coq Require Export Strings.String.
 Require Import isla.riscv64.riscv64.
 Require Import ZesuSsz.Automation2.SwitchDispatch.
 Require Import ZesuSsz.Automation2.SearchBudget.
@@ -24,6 +25,9 @@ Ltac2 rec zesu_context_variables (term : constr) :=
   match Constr.Unsafe.kind term with
   | Constr.Unsafe.Var name => [name]
   | Constr.Unsafe.Rel _ => []
+  | Constr.Unsafe.Evar _ arguments =>
+      Array.fold_left (fun found argument =>
+        zesu_context_union found (zesu_context_variables argument)) [] arguments
   | Constr.Unsafe.Sort _ => []
   | Constr.Unsafe.Constant _ _ => []
   | Constr.Unsafe.Ind _ _ => []
@@ -43,7 +47,7 @@ Ltac2 rec zesu_context_variables (term : constr) :=
       zesu_context_union (zesu_context_variables (Constr.Binder.type binder))
         (zesu_context_union (zesu_context_variables value) (zesu_context_variables body))
   | Constr.Unsafe.Proj _ _ body => zesu_context_variables body
-  | _ => Control.zero (Tactic_failure None)
+  | _ => Control.zero (Tactic_failure (Some (Message.of_string "Unsupported selected-context syntax")))
   end.
 
 Ltac2 zesu_context_proposition (ty : constr) :=
@@ -90,20 +94,12 @@ Ltac2 rec zesu_context_dependencies (hyps : (ident * constr option * constr) lis
 Ltac2 zesu_context_prune () :=
   let hyps := Control.hyps () in
   let target := Control.goal () in
-  if Constr.has_evar target then Control.zero (Tactic_failure None) else ();
-  List.iter (fun declaration =>
-    let (_, body, ty) := declaration in
-    if Constr.has_evar ty then Control.zero (Tactic_failure None) else ();
-    match body with
-    | None => ()
-    | Some value => if Constr.has_evar value
-        then Control.zero (Tactic_failure None) else ()
-    end) hyps;
+  if Constr.has_evar target then Control.zero (Tactic_failure (Some (Message.of_string "Selected target contains an evar"))) else ();
   let relevant := zesu_context_relevance hyps (zesu_context_variables target) in
   let kept := List.fold_left (fun names declaration =>
     let (name, body, ty) := declaration in
     match body with
-    | Some _ => zesu_context_add names name
+    | Some value => if Constr.has_evar value then names else zesu_context_add names name
     | None => if zesu_context_proposition ty then names else zesu_context_add names name
     end) relevant hyps in
   let kept := zesu_context_dependencies hyps kept in
@@ -111,10 +107,21 @@ Ltac2 zesu_context_prune () :=
     let (name, body, ty) := declaration in
     if zesu_context_member name kept then () else
     match body with
-    | Some _ => Control.zero (Tactic_failure None)
+    | Some value => if Constr.has_evar value then Std.clear [name]
+        else Control.zero (Tactic_failure None)
     | None => if zesu_context_proposition ty then Std.clear [name]
         else Control.zero (Tactic_failure None)
-    end) (List.rev hyps).
+    end) (List.rev hyps);
+  List.iter (fun declaration =>
+    let (name, body, ty) := declaration in
+    if Constr.has_evar ty then Control.zero (Tactic_failure (Some (Message.of_string "Retained hypothesis type contains an evar"))) else ();
+    match body with
+    | None => ()
+    | Some value => if Constr.has_evar value
+        then Control.zero (Tactic_failure (Some (Message.concat
+          (Message.concat (Message.of_string "Retained evar definition: ") (Message.of_ident name))
+          (Message.concat (Message.of_string "; selected target: ") (Message.of_constr target))))) else ()
+    end) (Control.hyps ()).
 
 Ltac zesu_context_prune_goal := ltac2:(zesu_context_prune ()).
 Ltac zesu_solve_solver site closer :=
@@ -158,7 +165,6 @@ Ltac zesu_context_collect := ltac2:(zesu_context_collect_live []).
 Polymorphic Inductive zesu_context_finish_attempted {A : Type} (target : A) : Prop :=
   zesu_context_finish_token : zesu_context_finish_attempted target.
 
-Inductive zesu_context_collection_off : Prop := zesu_context_collection_off_intro.
 
 Ltac zesu_context_has_evar :=
   first [
@@ -196,9 +202,7 @@ Ltac zesu_context_filter closer := zesu_context_filtered closer.
 
 Ltac zesu_collect_if_enabled :=
   tryif zesu_switch_enabled constr:(ZesuStepContextCollection)
-  then tryif (match goal with _ : zesu_context_collection_off |- _ => idtac end)
-       then idtac else (try zesu_context_collect)
-  else idtac.
+  then try zesu_context_collect else idtac.
 
 Ltac zesu_finish_once_if_enabled closer :=
   tryif zesu_switch_enabled constr:(ZesuStepFinisherOnce)

@@ -1,3 +1,4 @@
+Require Import ZesuSsz.Automation2.ContextCollection.
 Require ZesuSsz.Automation.UninitRegions.
 Require Import isla.riscv64.riscv64.
 Require Import ZesuMachineMap.Machine.
@@ -27,7 +28,7 @@ Ltac zesu_region_bounds_legacy :=
       | Hlength : ?size = length values |- _ => rewrite <- Hlength
       end
   end;
-  first [repeat match goal with H : _ |- _ => clear H end; lia |
+  first [repeat match goal with H : _ |- _ => clear H end; (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("UninitRegions.solver.30.60"%string) ltac:(lia)) |
     repeat match goal with
     | H : ?T |- _ =>
       lazymatch T with
@@ -41,7 +42,7 @@ Ltac zesu_region_bounds_legacy :=
       | _ => clear H
       end
     end;
-    bv_solve].
+    (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("UninitRegions.solver.44.5"%string) ltac:(bv_solve))].
 
 (* Bounds search uses only facts connected to the candidate region. *)
 Ltac zesu_region_address_carries base address :=
@@ -109,8 +110,8 @@ Ltac zesu_region_bounds := once (
   zesu_region_selected_facts;
   first [
     ZesuSsz.Automation2.ByteArrayLengths.zesu_byte_array_bound_goal_if_enabled;
-    first [solve [lia] |
-      ZesuSsz.Automation2.ByteArrayLengths.zesu_byte_array_lengths_if_enabled; solve [lia | bv_solve]]
+    first [solve [(ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("UninitRegions.solver.112.19"%string) ltac:(lia))] |
+      ZesuSsz.Automation2.ByteArrayLengths.zesu_byte_array_lengths_if_enabled; solve [(ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("UninitRegions.solver.113.87"%string) ltac:(lia)) | (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("UninitRegions.solver.113.93"%string) ltac:(bv_solve))]]
   | ZesuSsz.Automation2.UninitRegions.zesu_region_bounds_legacy]).
 
 Global Hint Extern 0 (ZesuSsz.Automation.UninitRegions.ZesuRegionBounds ?P) =>

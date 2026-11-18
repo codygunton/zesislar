@@ -1,3 +1,4 @@
+Require Import ZesuSsz.Automation2.ContextCollection.
 Require Import ZesuSsz.Automation2.VmClosed.
 Require Import isla.riscv64.riscv64.
 Require Import ZesuMachineMap.Machine.
@@ -15,7 +16,7 @@ Proof.
   { rewrite lookup_drop Nat.add_0_r. exact Hlookup. }
   destruct (drop index bytes) as [|head rest] eqn:Hdrop; simpl in Hhead;
     inversion Hhead; subst.
-  cbn. bv_solve.
+  cbn. (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("ArrayByteValues.solver.18.8"%string) ltac:(bv_solve)).
 Qed.
 
 Lemma array_byte_pair (low high : bv 8) :
@@ -26,7 +27,7 @@ Proof.
   unfold little_endian_to_bv, little_endian_to_Z.
   rewrite !fmap_cons. cbn.
   apply bv_eq. bv_simplify. bitblast as index.
-  all: (f_equal; lia).
+  all: (f_equal; (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("ArrayByteValues.solver.29.18"%string) ltac:(lia))).
 Qed.
 
 Lemma array_byte_pair_value (low high : bv 8) :
@@ -34,15 +35,15 @@ Lemma array_byte_pair_value (low high : bv 8) :
     Z_to_bv 64 (bv_unsigned low + bv_unsigned high * 256).
 Proof.
   have Hshift : Z_to_bv 64 (bv_unsigned high * 256) =
-      bv_shiftl (bv_zero_extend 64 high) (BV 64 8) by bv_solve.
+      bv_shiftl (bv_zero_extend 64 high) (BV 64 8) by (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("ArrayByteValues.solver.37.55"%string) ltac:(bv_solve)).
   rewrite Hshift array_byte_pair.
   unfold little_endian_to_bv, little_endian_to_Z.
   rewrite !fmap_cons. cbn.
   rewrite Z.shiftl_0_l Z.lor_0_r.
   have Hland : Z.land (bv_unsigned low) (Z.shiftl (bv_unsigned high) 8) = 0.
-  { bitblast as index. all: (f_equal; lia). }
+  { bitblast as index. all: (f_equal; (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("ArrayByteValues.solver.43.39"%string) ltac:(lia))). }
   rewrite -Z.add_nocarry_lor //.
-  rewrite Z.shiftl_mul_pow2; [|lia]. cbn. reflexivity.
+  rewrite Z.shiftl_mul_pow2; [|(ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("ArrayByteValues.solver.45.32"%string) ltac:(lia))]. cbn. reflexivity.
 Qed.
 Lemma array_byte_pair_value16 (low high : bv 8) :
   bv_or (Z_to_bv 64 (bv_unsigned high * 16777216))
@@ -50,20 +51,20 @@ Lemma array_byte_pair_value16 (low high : bv 8) :
   Z_to_bv 64 (bv_unsigned low * 65536 + bv_unsigned high * 16777216).
 Proof.
   have Hlow : bv_unsigned low * 65536 = Z.shiftl (bv_unsigned low) 16.
-  { rewrite Z.shiftl_mul_pow2; [|lia]. cbn. reflexivity. }
+  { rewrite Z.shiftl_mul_pow2; [|(ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("ArrayByteValues.solver.53.34"%string) ltac:(lia))]. cbn. reflexivity. }
   have Hhigh : bv_unsigned high * 16777216 = Z.shiftl (bv_unsigned high) 24.
-  { rewrite Z.shiftl_mul_pow2; [|lia]. cbn. reflexivity. }
+  { rewrite Z.shiftl_mul_pow2; [|(ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("ArrayByteValues.solver.55.34"%string) ltac:(lia))]. cbn. reflexivity. }
   have Hland : Z.land (bv_unsigned low * 65536)
       (bv_unsigned high * 16777216) = 0.
-  { rewrite Hlow Hhigh. bitblast as index. all: (f_equal; lia). }
+  { rewrite Hlow Hhigh. bitblast as index. all: (f_equal; (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("ArrayByteValues.solver.58.59"%string) ltac:(lia))). }
   rewrite (Z.add_nocarry_lor _ _ Hland).
   apply bv_eq. bv_simplify.
   rewrite -(Z.add_nocarry_lor _ _ Hland).
   rewrite !bv_wrap_small.
   - rewrite Z.lor_comm -(Z.add_nocarry_lor _ _ Hland). reflexivity.
-  - bv_saturate; unfold bv_modulus in *; cbn in *; lia.
-  - bv_saturate; unfold bv_modulus in *; cbn in *; lia.
-  - bv_saturate; unfold bv_modulus in *; cbn in *; lia.
+  - bv_saturate; unfold bv_modulus in *; cbn in *; (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("ArrayByteValues.solver.64.52"%string) ltac:(lia)).
+  - bv_saturate; unfold bv_modulus in *; cbn in *; (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("ArrayByteValues.solver.65.52"%string) ltac:(lia)).
+  - bv_saturate; unfold bv_modulus in *; cbn in *; (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("ArrayByteValues.solver.66.52"%string) ltac:(lia)).
 Qed.
 
 Lemma array_byte_four_value (a b c d : bv 8) :
@@ -73,16 +74,16 @@ Lemma array_byte_four_value (a b c d : bv 8) :
 Proof.
   rewrite -array_byte_pair_value16 -array_byte_pair_value.
   have Hc : Z_to_bv 64 (bv_unsigned c * 65536) =
-    bv_shiftl (bv_zero_extend 64 c) (BV 64 16) by bv_solve.
+    bv_shiftl (bv_zero_extend 64 c) (BV 64 16) by (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("ArrayByteValues.solver.76.51"%string) ltac:(bv_solve)).
   have Hd : Z_to_bv 64 (bv_unsigned d * 16777216) =
-    bv_shiftl (bv_zero_extend 64 d) (BV 64 24) by bv_solve.
+    bv_shiftl (bv_zero_extend 64 d) (BV 64 24) by (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("ArrayByteValues.solver.78.51"%string) ltac:(bv_solve)).
   have Hb : Z_to_bv 64 (bv_unsigned b * 256) =
-    bv_shiftl (bv_zero_extend 64 b) (BV 64 8) by bv_solve.
+    bv_shiftl (bv_zero_extend 64 b) (BV 64 8) by (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("ArrayByteValues.solver.80.50"%string) ltac:(bv_solve)).
   rewrite Hc Hd Hb.
   unfold little_endian_to_bv, little_endian_to_Z.
   rewrite !fmap_cons. cbn.
   apply bv_eq. bv_simplify. bitblast as index.
-  all: (f_equal; lia).
+  all: (f_equal; (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("ArrayByteValues.solver.85.18"%string) ltac:(lia))).
 Qed.
 Print Assumptions array_byte_four_value.
 
@@ -94,7 +95,7 @@ Proof.
   unfold little_endian_to_bv, little_endian_to_Z.
   rewrite !fmap_cons. cbn.
   apply bv_eq. bv_simplify. bitblast as index.
-  all: (f_equal; lia).
+  all: (f_equal; (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("ArrayByteValues.solver.97.18"%string) ltac:(lia))).
 Qed.
 Print Assumptions array_byte_eight.
 
@@ -104,7 +105,7 @@ Lemma array_byte_pair_shift_value (low high : bv 8) :
   Z_to_bv 64 (bv_unsigned low + bv_unsigned high * 256).
 Proof.
   replace (bv_shiftl (bv_zero_extend 64 high) (BV 64 8))
-    with (Z_to_bv 64 (bv_unsigned high * 256)) by bv_solve.
+    with (Z_to_bv 64 (bv_unsigned high * 256)) by (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("ArrayByteValues.solver.107.51"%string) ltac:(bv_solve)).
   apply array_byte_pair_value.
 Qed.
 Print Assumptions array_byte_pair_shift_value.
@@ -115,9 +116,9 @@ Lemma array_byte_pair_shift_value16 (low high : bv 8) :
   Z_to_bv 64 (bv_unsigned low * 65536 + bv_unsigned high * 16777216).
 Proof.
   replace (bv_shiftl (bv_zero_extend 64 high) (BV 64 24))
-    with (Z_to_bv 64 (bv_unsigned high * 16777216)) by bv_solve.
+    with (Z_to_bv 64 (bv_unsigned high * 16777216)) by (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("ArrayByteValues.solver.118.56"%string) ltac:(bv_solve)).
   replace (bv_shiftl (bv_zero_extend 64 low) (BV 64 16))
-    with (Z_to_bv 64 (bv_unsigned low * 65536)) by bv_solve.
+    with (Z_to_bv 64 (bv_unsigned low * 65536)) by (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("ArrayByteValues.solver.120.52"%string) ltac:(bv_solve)).
   apply array_byte_pair_value16.
 Qed.
 Print Assumptions array_byte_pair_shift_value16.
@@ -141,8 +142,8 @@ Ltac zesu_normalize_array_byte_lookups :=
            exact Hupper |
            first [match goal with
              | Hbound : (index + ?limit <= length bytes)%nat |- _ =>
-                 clear - Hbound; lia
-             end | lia]]);
+                 clear - Hbound; (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("ArrayByteValues.solver.144.34"%string) ltac:(lia))
+             end | (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("ArrayByteValues.solver.145.20"%string) ltac:(lia))]]);
       rewrite Z.div_1_r Hindex in Hlookup; clear Hindex
   end;
   repeat match goal with
@@ -163,8 +164,8 @@ Ltac zesu_normalize_array_byte_lookups :=
            exact Hupper |
            first [match goal with
              | Hbound : (index + ?limit <= length bytes)%nat |- _ =>
-                 clear - Hbound; lia
-             end | lia]]);
+                 clear - Hbound; (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("ArrayByteValues.solver.166.34"%string) ltac:(lia))
+             end | (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("ArrayByteValues.solver.167.20"%string) ltac:(lia))]]);
       rewrite Hindex in Hlookup; clear Hindex
   end.
 
@@ -217,14 +218,14 @@ Ltac zesu_array_eight_value :=
   end;
   match goal with
   | |- context[take 8 (drop ?offset ?bytes)] =>
-      rewrite (zesu_take_8_drop bytes offset ltac:(lia))
+      rewrite (zesu_take_8_drop bytes offset ltac:((ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("ArrayByteValues.solver.220.52"%string) ltac:(lia))))
   end;
   repeat match goal with
   | Hread : ?bytes !! ?observed = Some ?byte
     |- context[default _ (?bytes !! ?requested)] =>
       first [rewrite Hread |
         let Hindex := fresh "HarrayEightIndex" in
-        assert (Hindex : observed = requested) by lia;
+        assert (Hindex : observed = requested) by (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("ArrayByteValues.solver.227.51"%string) ltac:(lia));
         rewrite <- Hindex, Hread; clear Hindex]
   end;
   reflexivity.

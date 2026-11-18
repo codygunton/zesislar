@@ -1,3 +1,4 @@
+Require Import ZesuSsz.Automation2.ContextCollection.
 Require Import isla.riscv64.riscv64.
 Require Import ZesuSsz.Automation2.SwitchDispatch.
 Require Import ZesuSsz.Automation2.BitvectorFacts.
@@ -20,7 +21,7 @@ Ltac zesu_mask_wide_cast_fact :=
         assert (Hwidth : (source <= width)%N) by (vm_compute; congruence);
         assert (Hrange : 0 <= bv_unsigned word < bv_modulus width) by
           (pose proof (bv_unsigned_in_range source word);
-           pose proof (bv_modulus_le_mono source width Hwidth); lia);
+           pose proof (bv_modulus_le_mono source width Hwidth); (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("MaskWrapPresentation.solver.23.65"%string) ltac:(lia)));
         assert (Hbridge : bv_unsigned (Z_to_bv width (bv_unsigned word)) =
                           bv_unsigned word) by
           exact (Z_to_bv_small width (bv_unsigned word) Hrange);
@@ -46,19 +47,19 @@ Ltac zesu_mask_plain_wrap_goal :=
       assert (Hwidth : (low <= width)%N) by (vm_compute; congruence);
       assert (Hmask : bv_unsigned mask = Z.ones (Z.of_N low)) by
         (vm_compute; reflexivity);
-      assert (Hrange : modulus <= bv_unsigned value < 2 * modulus) by lia;
-      assert (Hresult : requested = bv_unsigned value - modulus) by lia;
+      assert (Hrange : modulus <= bv_unsigned value < 2 * modulus) by (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("MaskWrapPresentation.solver.49.71"%string) ltac:(lia));
+      assert (Hresult : requested = bv_unsigned value - modulus) by (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("MaskWrapPresentation.solver.50.69"%string) ltac:(lia));
       assert (Hsmall : 0 <= requested < bv_modulus width) by
         (let Hmono := fresh "HmaskModulusOrder" in
          pose proof (bv_modulus_le_mono low width Hwidth) as Hmono;
          change (modulus <= bv_modulus width)%Z in Hmono;
-         lia);
+         (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("MaskWrapPresentation.solver.55.10"%string) ltac:(lia)));
       apply bv_eq;
       rewrite (ZesuSsz.Automation2.BitvectorFacts.zesu_guard_low_mask_one_wrap
         width low value mask Hwidth Hmask Hrange);
       rewrite (Z_to_bv_small width requested Hsmall);
       change (bv_unsigned value - modulus = requested);
-      lia
+      (ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("MaskWrapPresentation.solver.61.7"%string) ltac:(lia))
   end.
 
 Ltac zesu_mask_wrap_presentation :=

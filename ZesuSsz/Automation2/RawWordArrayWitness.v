@@ -1,3 +1,4 @@
+Require Import ZesuSsz.Automation2.ContextCollection.
 Require Import ZesuSsz.Automation2.MemoryAddress.
 Require Import ZesuSsz.Automation2.VmClosed.
 Require Import isla.riscv64.riscv64.
@@ -41,7 +42,7 @@ Ltac zesu_raw_array_pair_high low_name low_base low_value spatial accumulated co
             assert_fails (constr_eq low_name name);
             assert_fails (has_evar high_base);
             zesu_raw_array_check_word high_value;
-            let adjacent := constr:((ltac:(lia) : high_base = (low_base + Z.of_N count)%Z)) in
+            let adjacent := constr:((ltac:((ZesuSsz.Automation2.ContextCollection.zesu_solve_solver ("RawWordArrayWitness.solver.44.44"%string) ltac:(lia))) : high_base = (low_base + Z.of_N count)%Z)) in
             assert_fails (has_evar adjacent)
           end)
         then scan previous constr:((low_name,name) :: pairs)
