@@ -2,6 +2,7 @@ From stdpp Require Import bitvector.definitions bitvector.tactics.
 Require Import ZesuSsz.Automation2.PureFacts.
 Require Import ZesuSsz.Automation2.Rewrites.
 From Coq Require Import ZArith Lia.
+Require Import ZesuSsz.Automation2.LiaHook.
 
 (* A pure goal whose head a contract registers in `zesu_goal_domain`: a
    callee's call-site domain that is a conjunction of address arithmetic
@@ -58,12 +59,12 @@ Ltac zesu_final_solver_goal :=
 Ltac zesu_goal_domain_part :=
   zesu_final_solver_goal;
   first
-    [lia
+    [zesu_lia
     |bv_solve
     |match goal with
      | |- context [bv_unsigned ?word] =>
          pose proof (bv_unsigned_in_range _ word);
-         unfold bv_modulus in *; cbn [Z.of_N] in *; lia
+         unfold bv_modulus in *; cbn [Z.of_N] in *; zesu_lia
      end].
 
 (* An existential goal is refused before anything is unfolded: every part

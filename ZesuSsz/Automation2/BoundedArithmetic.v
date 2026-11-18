@@ -1,5 +1,6 @@
 Require Import ZesuSsz.Automation2.PureFacts.
 Require Import isla.riscv64.riscv64.
+Require Import ZesuSsz.Automation2.LiaHook.
 
 Class ZesuStepBoundedArithmetic : Prop := zesu_step_bounded_arithmetic : True.
 
@@ -43,13 +44,13 @@ Ltac zesu_byte_index_arithmetic :=
       | H : (bv_unsigned ?pointer = ?base + Z.of_nat ?index)%Z |- _ =>
           is_var index;
           zesu_select_index_facts bytes index pointer base;
-          solve [rewrite ?length_take ?length_drop; lia]
+          solve [rewrite ?length_take ?length_drop; zesu_lia]
       end
   end.
 
 Ltac zesu_finish_lia :=
   first [zesu_byte_index_arithmetic
-        |lia].
+        |zesu_lia].
 
 Ltac zesu_finish_witness_arithmetic :=
   solve [zesu_witness_arith_if_enabled].

@@ -2,6 +2,7 @@ Require Import Coq.ssr.ssreflect.
 Require Import ZesuSsz.Automation2.SwitchDispatch.
 From stdpp Require Import bitvector.tactics list list_numbers.
 From Coq Require Import Lists.List ZArith.ZArith Lia.
+Require Import ZesuSsz.Automation2.LiaHook.
 Import ListNotations.
 Local Open Scope Z_scope.
 
@@ -39,8 +40,8 @@ Ltac zesu_symbolic_byte_codec :=
     rewrite /Z_to_little_endian /=;
     repeat rewrite zesu_low_mask_cast;
     try (rewrite !Z_to_bv_small;
-      [| unfold bv_modulus; cbn; lia]);
-    repeat (rewrite Z.shiftr_shiftr; [| lia]);
+      [| unfold bv_modulus; cbn; zesu_lia]);
+    repeat (rewrite Z.shiftr_shiftr; [| zesu_lia]);
     rewrite ?Z.shiftr_0_r;
     cbn;
     reflexivity

@@ -9,6 +9,7 @@ From stdpp Require Import bitvector.tactics.
 From Coq Require Import ZArith Lia Bool.Bool Strings.String.
 From iris.proofmode Require Import tactics environments.
 Require ZesuSsz.Automation2.VmClosed.
+Require Import ZesuSsz.Automation2.LiaHook.
 Local Open Scope string_scope.
 Local Open Scope Z_scope.
 
@@ -176,7 +177,7 @@ Ltac zesu_join_positive_once :=
   multimatch goal with Hnonzero : ?quantity <> 0 |- _ =>
     let positive := constr:(0 < quantity) in
     zesu_join_fact_absent positive;
-    let Hpositive := fresh "HjoinPositive" in assert (Hpositive : positive) by lia
+    let Hpositive := fresh "HjoinPositive" in assert (Hpositive : positive) by zesu_lia
   end.
 
 Ltac zesu_join_cast_once :=
@@ -224,7 +225,7 @@ Ltac zesu_join_class_side :=
         multimatch goal with Hhi : ?valueHi <= ?upperHi |- _ =>
           unify valueHi value; unify upperHi upper;
           change (lower <= valueLo <= upper);
-          clear - Hlo Hhi Hne; lia
+          clear - Hlo Hhi Hne; zesu_lia
         end
       end
     end
@@ -235,7 +236,7 @@ Ltac zesu_join_semantic_side views :=
     solve [zesu_join_class_side] |
     solve [split; zesu_join_semantic_side views] |
     solve [progress views; zesu_join_semantic_side views] |
-    solve [zesu_join_head_goal] | solve [lia] |
+    solve [zesu_join_head_goal] | solve [zesu_lia] |
     solve [MemoryAddress.zesu_stack_arithmetic]].
 
 Ltac zesu_join_contradiction :=

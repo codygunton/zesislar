@@ -5,6 +5,7 @@ Require Import ZesuSsz.Automation2.VmClosed.
 Require Import ZesuSsz.Automation2.RewriteBoundGuards.
 From Coq Require Import Bool.Bool ZArith.ZArith.
 From stdpp Require Import bitvector.definitions decidable.
+Require Import ZesuSsz.Automation2.LiaHook.
 
 Class ZesuStepSourceFaultProof : Prop := {}.
 
@@ -56,5 +57,5 @@ Ltac zesu_source_fault_proof project leaf :=
         end;
         rewrite Heq in leaf;
         MemoryAddress.zesu_stack_normalize_hypothesis leaf;
-        lia
+        zesu_lia
     end ].

@@ -4,6 +4,7 @@ Require Import isla.riscv64.riscv64.
 Require Import ZesuSsz.Contracts.IslarisMachine.
 Require Import ZesuSsz.Automation2.VmClosed.
 From iris.bi Require Import interface.
+Require Import ZesuSsz.Automation2.LiaHook.
 Local Open Scope Z_scope.
 
 Import ListNotations.
@@ -212,7 +213,7 @@ Ltac zesu_bias_unsigned_as_signed wide word :=
       clear - Hrange Hfits;
       revert Hrange;
       generalize (bv_unsigned word);
-      intros; Lia.lia
+      intros; zesu_lia
   end.
 
 Ltac zesu_bias_byte_base width byte inner :=
@@ -237,7 +238,7 @@ Ltac zesu_bias_one_wrap byte delta modulus :=
       clear - Hlower Hupper;
       revert Hlower Hupper;
       generalize (bv_unsigned byte);
-      intros; Lia.lia
+      intros; zesu_lia
   end.
 
 Ltac zesu_bias_mask_image width byte base inner offset mask masked :=
@@ -310,7 +311,7 @@ Ltac zesu_source_biased_mask_goal :=
           (zesu_bias_mask_image width byte base inner offset mask masked; ring);
         rewrite Himage;
         clear - Hlower Hupper;
-        Lia.lia
+        zesu_lia
       end
     | |- (bv_unsigned ?byte - ?difference < bv_unsigned ?limit)%Z =>
       assert_fails (has_evar byte);
@@ -503,7 +504,7 @@ Ltac zesu_source_unsigned_bound :=
       pose proof (bv_unsigned_in_range width word) as range;
       change (0 <= bv_unsigned word < limit)%Z in range;
       change (bv_unsigned word <= ceiling)%Z;
-      clear -range adequate; Lia.lia
+      clear -range adequate; zesu_lia
     end
   | |- bv_unsigned ?word < ?bound =>
     assert_fails (has_evar word);
@@ -519,7 +520,7 @@ Ltac zesu_source_unsigned_bound :=
       pose proof (bv_unsigned_in_range width word) as range;
       change (0 <= bv_unsigned word < limit)%Z in range;
       change (bv_unsigned word < ceiling)%Z;
-      clear -range adequate; Lia.lia
+      clear -range adequate; zesu_lia
     end
   end.
 
@@ -629,15 +630,15 @@ Ltac zesu_source_signed_upper :=
        unfold bv_signed;
        let signedRange := fresh "HsignedUpperSmall" in
        assert (signedRange : (-bv_half_modulus width <= bv_unsigned byte < bv_half_modulus width)%Z) by
-         (change (-half <= bv_unsigned byte < half)%Z; lia);
+         (change (-half <= bv_unsigned byte < half)%Z; zesu_lia);
        rewrite (bv_swrap_small width (bv_unsigned byte) signedRange);
        let wideRange := fresh "HsignedUpperWideRange" in
-       assert (wideRange : (0 <= bv_unsigned byte < bv_modulus wide)%Z) by lia;
+       assert (wideRange : (0 <= bv_unsigned byte < bv_modulus wide)%Z) by zesu_lia;
        rewrite (bv_wrap_small wide (bv_unsigned byte) wideRange)
      | _ => idtac
      end;
      change (bv_unsigned byte <= ceiling)%Z;
-     clear -transported adequate; lia
+     clear -transported adequate; zesu_lia
    end
    end
  end.

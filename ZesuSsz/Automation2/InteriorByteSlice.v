@@ -10,6 +10,7 @@ Require SailStdpp.MachineWord.
 Require ZesuSsz.Automation2.RangeFacts.
 Require Import ZesuSsz.Contracts.NamedEquation.
 From Ltac2 Require Import Ltac2.
+Require Import ZesuSsz.Automation2.LiaHook.
 Set Default Proof Mode "Classic".
 
 Section interior_byte_slice.
@@ -266,7 +267,7 @@ Ltac zesu_byte_slice_discharge_premises :=
         let Hp := fresh "Hpremise" in
         assert (Hp : P) by (first [assumption |
           tryif zesu_byte_slice_list_word_positive_goal
-          then zesu_byte_slice_positive_from_facts else lia]);
+          then zesu_byte_slice_positive_from_facts else zesu_lia]);
         specialize (H Hp); clear Hp
       | clear H ]
   end;
@@ -339,9 +340,9 @@ Ltac zesu_byte_slice_bound_arith :=
   zesu_byte_slice_discharge_premises;
   zesu_byte_slice_goal_atoms;
   repeat match goal with
-  | |- context[(?a mod ?m)%Z] => rewrite (Z.mod_small a m); [|lia]
+  | |- context[(?a mod ?m)%Z] => rewrite (Z.mod_small a m); [|zesu_lia]
   end;
-  lia.
+  zesu_lia.
 
 (* The bound arithmetic with the range facts of the owning array's base. *)
 Ltac zesu_byte_slice_bound_arith_at base :=
@@ -416,7 +417,7 @@ Ltac2 zesu_byte_slice_focus () :=
 Ltac zesu_byte_slice_arith base :=
   rewrite ?length_take ?length_drop;
   ltac2:(zesu_byte_slice_focus ());
-  first [solve [lia] | solve [zesu_byte_slice_bound_arith_at base]].
+  first [solve [zesu_lia] | solve [zesu_byte_slice_bound_arith_at base]].
 
 Ltac zesu_lend_interior_byte_slice :=
   zesu_expose_environment_alias;
@@ -449,12 +450,12 @@ Ltac zesu_lend_interior_byte_slice :=
                     let Hsize := fresh "HsliceSize" in
                     let Hlength := fresh "HsliceLength" in
                     assert (Hsize : size = Z.of_nat count)
-                      by (first [reflexivity | solve [lia]
+                      by (first [reflexivity | solve [zesu_lia]
                                 | (rewrite Z2Nat.id;
                                    [reflexivity | zesu_byte_slice_arith base])]);
                     assert (Hlength :
                       size = Z.of_nat (length (take count (drop start bytes))))
-                      by (rewrite Hsize length_take length_drop; lia);
+                      by (rewrite Hsize length_take length_drop; zesu_lia);
                     iDestruct (zesu_byte_array_lend_slice base bytes start count
                       Hbounds with Harray) as "[Hslice Hrestore]";
                     iEval (rewrite Haddress) in "Hslice Hrestore";

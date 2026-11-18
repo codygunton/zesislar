@@ -1,6 +1,7 @@
 From Coq Require Import List Lia Arith.
 From stdpp Require Import list tactics.
 Require ZesuSsz.Automation2.VmClosed.
+Require Import ZesuSsz.Automation2.LiaHook.
 
 Lemma zesu_take_drop_prefix {A : Type} (before suffix : list A)
     (prefix start count : nat) :
@@ -28,7 +29,7 @@ Ltac zesu_list_window_bounds :=
   | Hlength : List.length ?bytes = ?count |- context [List.length ?bytes] =>
       ZesuSsz.Automation2.VmClosed.zesu_closed_term count; progress (rewrite Hlength)
   end;
-  lia.
+  zesu_lia.
 
 Ltac zesu_list_slice_windows :=
   first

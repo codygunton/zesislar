@@ -11,6 +11,7 @@ Require Import ZesuSsz.Automation2.PackedWordValues.
 Require Export ZesuSsz.Automation2.ResourceGroups.
 Require Import ZesuSsz.Automation2.NatBounds.
 From iris.proofmode Require Import environments.
+Require Import ZesuSsz.Automation2.LiaHook.
 
 Ltac zesu_saturate_alignment :=
   match goal with
@@ -22,8 +23,8 @@ Ltac zesu_finish_little_endian :=
   match goal with
   | |- context[Z_to_little_endian _ _ _] =>
       rewrite /Z_to_little_endian /=;
-      rewrite !Z.land_ones; [|lia..];
-      rewrite !Z.shiftr_div_pow2; [|lia..];
+      rewrite !Z.land_ones; [|zesu_lia..];
+      rewrite !Z.shiftr_div_pow2; [|zesu_lia..];
       repeat eexists; repeat split; reflexivity
   end.
 
@@ -155,10 +156,10 @@ Ltac zesu_finish_known_list_shape :=
       | |- context[take ?n ?xs] =>
         let Htake := fresh "Htake" in
         assert (Htake : (length xs <= n)%nat) by
-          (zesu_normalize_known_list_lengths; lia);
+          (zesu_normalize_known_list_lengths; zesu_lia);
         rewrite (take_ge xs n Htake); clear Htake
       end; reflexivity] |
-    solve [zesu_normalize_known_list_lengths; lia] |
+    solve [zesu_normalize_known_list_lengths; zesu_lia] |
     solve [bv_solve]].
 
 Ltac zesu_finish :=
@@ -197,7 +198,7 @@ Ltac zesu_finish :=
   try zesu_finish_ram_address;
   try zesu_finish_pointer_alignment;
   try zesu_saturate_alignment;
-  try lia;
+  try zesu_lia;
   try bv_solve;
   try zesu_finish_little_endian.
 
@@ -330,7 +331,7 @@ Ltac zesu_finish_array_branch :=
     | Hbranch : _ <> _ |- _ => bv_simplify Hbranch; congruence
     end | match goal with
     | Htag : ?tag <> _, Hbranch : bv_zero_extend _ ?tag = _ |- _ =>
-        bv_simplify Htag; bv_simplify Hbranch; lia
+        bv_simplify Htag; bv_simplify Hbranch; zesu_lia
     end].
 
 Ltac zesu_tuple_witness T :=

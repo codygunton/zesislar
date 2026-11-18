@@ -9,6 +9,7 @@ From lithium Require Import pure_definitions.
 From Coq Require Import ZArith Lia.
 From stdpp Require Import bitvector.tactics.
 Require ZesuSsz.Automation2.VmClosed.
+Require Import ZesuSsz.Automation2.LiaHook.
 Local Open Scope Z_scope.
 
 (* Reuse the proved byte cast and one-wrap family. No source fact is added. *)
@@ -29,7 +30,7 @@ Ltac zesu_byte_bias_finish :=
       assert (Hcast : bv_unsigned (Z_to_bv width (bv_unsigned word)) = bv_unsigned word) by
         (apply Z_to_bv_small;
          pose proof (bv_unsigned_in_range 8 word);
-         pose proof (bv_modulus_le_mono 8 width Hwidth); lia);
+         pose proof (bv_modulus_le_mono 8 width Hwidth); zesu_lia);
       let Hresult := fresh "HbyteBiasPresentation" in
       assert (Hresult : bv_and (bv_add (bv_and (bv_sign_extend width word) mask) offset) mask =
           Z_to_bv width (bv_unsigned word + integer - modulus)) by

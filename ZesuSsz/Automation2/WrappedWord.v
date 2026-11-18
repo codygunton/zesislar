@@ -3,6 +3,7 @@ Require Import ZesuSsz.Automation2.PureFacts.
 Require ZesuSsz.Automation2.VmClosed.
 Require ZesuSsz.Automation2.RangeFacts.
 From Ltac2 Require Import Ltac2.
+Require Import ZesuSsz.Automation2.LiaHook.
 Set Default Proof Mode "Classic".
 Local Open Scope Z_scope.
 
@@ -81,7 +82,7 @@ Ltac zesu_wrapped_memory_lookup :=
     match goal with Hpair : _ /\ _ |- _ => destruct Hpair end];
   zesu_reduce_closed_Z_aliases;
   zesu_normalize_wrapped_findmem ltac:(
-    zesu_reduce_closed_Z_aliases; cbv [bv_unsigned bv_modulus] in *; lia);
+    zesu_reduce_closed_Z_aliases; cbv [bv_unsigned bv_modulus] in *; zesu_lia);
   liStep.
 
 (* A list index `Z.to_nat e` whose `e` holds `bv_unsigned` of a chain of
@@ -149,7 +150,7 @@ Ltac zesu_wrapped_index_range root :=
     let reduced := ZesuSsz.Automation2.VmClosed.zesu_vm_eval_closed bound in
     change (0 <= value < reduced)%Z
   end;
-  lia.
+  zesu_lia.
 
 (* Prove `Z.to_nat expression = n` for a nat literal n and pass the equation
    to [location]. The address range, the offset and the index are proved,
@@ -184,7 +185,7 @@ Ltac zesu_wrapped_index_literal expression location :=
           let index := eval vm_compute in (Z.to_nat literal) in
           let Hindex := fresh "HindexLiteral" in
           assert (Hindex : Z.to_nat expression = index) by
-            (rewrite Haddress; rewrite ?Z.div_1_r; lia);
+            (rewrite Haddress; rewrite ?Z.div_1_r; zesu_lia);
           clear Haddress;
           location Hindex;
           clear Hindex

@@ -10,6 +10,7 @@ Require Import InstrSpecs.Lookup InstrSpecs.Specs.
 Require Import ZesuSsz.Automation2.ByteArrayLoadSpec.
 Require Import isla.riscv64.riscv64.
 From iris.proofmode Require Import environments.
+Require Import ZesuSsz.Automation2.LiaHook.
 
 Class ZesuStepArrayLoadPriority : Prop := zesu_step_array_load_priority : True.
 
@@ -156,7 +157,7 @@ Ltac zesu_normalize_word_array_lookup :=
       assert (Hindex : Z.to_nat
         ((bv_unsigned (bv_add sp offset) - (bv_unsigned sp + start))
           `div` stride) = index) by
-        (rewrite Hsum; f_equal; f_equal; lia);
+        (rewrite Hsum; f_equal; f_equal; zesu_lia);
       rewrite Hindex in Hlookup; clear Hsum Hindex;
       rewrite ?lookup_cons ?lookup_nil in Hlookup;
       lazymatch type of Hlookup with
