@@ -1890,11 +1890,20 @@ Ltac zesu_region_fault_prepare :=
       repeat match goal with Hpair : _ /\ _ |- _ => destruct Hpair end
   end.
 
+(* The bitvector arithmetic of bv_solve closed by Coq's own lia (zify, then
+   xlia), whatever `lia` means at the call site. *)
+Ltac zesu_region_fault_library_solve :=
+  bv_simplify_arith; bv_saturate_unsigned; bv_solve_unfold_tac;
+  unfold bv_signed, bv_swrap, bv_wrap, bv_half_modulus, bv_modulus, bv_unsigned in *;
+  simpl; Coq.micromega.Zify.zify; xlia Coq.micromega.Lia.zchecker.
+
 (* After the goal fails, a negated region bound `~ b` refutes the context when
    its facts prove `b`. A negated equality is a branch disequality, not a
    region bound: refuting it needs an equality that the region facts do not
    give. On decodeParentHeader such retries never closed (316 calls, 2,021 s);
-   a negated inequality closed dead decodeItem 6ac4 paths. *)
+   a negated inequality closed dead decodeItem 6ac4 paths. When bv_solve
+   fails both, the library lia tries them: the project lia failed the
+   region-fault bound of decodeParentHeader 0300 that the library lia proves. *)
 Ltac zesu_region_fault_arithmetic_full :=
   zesu_region_fault_prepare;
   first [bv_solve |
@@ -1902,6 +1911,12 @@ Ltac zesu_region_fault_arithmetic_full :=
       zesu_region_arithmetic_statement bound;
       lazymatch bound with @eq _ _ _ => fail | _ => idtac end;
       exfalso; apply Hnegative; bv_solve
+    end |
+    zesu_region_fault_library_solve |
+    match goal with Hnegative : ~ ?bound |- _ =>
+      zesu_region_arithmetic_statement bound;
+      lazymatch bound with @eq _ _ _ => fail | _ => idtac end;
+      exfalso; apply Hnegative; zesu_region_fault_library_solve
     end].
 
 Ltac zesu_region_fault_arithmetic :=
