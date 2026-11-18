@@ -52,7 +52,7 @@ Goal forall (args : FocusArgs) (x y z : Z),
   let w := z + 1 in x = z + 1 -> x = w.
 Proof.
   intros args x y z Hy Hpointer Hz w Hx.
-  ltac2:(zesu_byte_slice_focus ()).
+  zesu_arith_focus.
   tryif (match goal with _ : y = 2 |- _ => idtac end) then fail else idtac.
   match goal with _ : 0 <= bv_unsigned (focusPointer args) |- _ => idtac end.
   match goal with _ : z = 3 |- _ => idtac end.

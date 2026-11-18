@@ -37,12 +37,12 @@ Lemma test_interior_byte_slice_symbolic_start :
   bv_unsigned base +
     Z.of_nat (Z.to_nat (bv_unsigned (cursor + listWord64At24 after) - bv_unsigned base)) =
   bv_unsigned (cursor + listWord64At24 after).
-Proof using All. zesu_byte_slice_bound_arith. Qed.
+Proof using All. zesu_arith_context_solve. Qed.
 
 Lemma test_interior_byte_slice_symbolic_bounds :
   (Z.to_nat (bv_unsigned (cursor + listWord64At24 after) - bv_unsigned base) +
    Z.to_nat (bv_unsigned (remaining - listWord64At24 after)) <= length bytes)%nat.
-Proof using All. zesu_byte_slice_bound_arith. Qed.
+Proof using All. zesu_arith_context_solve. Qed.
 End bounds.
 
 (* The words bytes 0..7 and 8..15 of a callee output, in the load form. *)
@@ -100,15 +100,17 @@ Lemma test_interior_byte_slice_kept_cursor_start :
     Z.of_nat (Z.to_nat (bv_unsigned (kept_ptr + listWord64At24 second) -
       bv_unsigned (cursorInput args))) =
   bv_unsigned (kept_ptr + listWord64At24 second).
+(* The input pointer's range is read from the folded precondition over the
+   argument the goal mentions; plain arithmetic does not see it. *)
 Proof using All.
-  Fail zesu_byte_slice_bound_arith.
-  zesu_byte_slice_bound_arith_at (bv_unsigned (cursorInput args)).
+  Fail zesu_lia.
+  zesu_arith_context_solve.
 Qed.
 
 Lemma test_interior_byte_slice_kept_cursor_bounds :
   (Z.to_nat (bv_unsigned (kept_ptr + listWord64At24 second) - bv_unsigned (cursorInput args)) +
    Z.to_nat (bv_unsigned (kept_len - listWord64At24 second)) <= length (cursorBytes args))%nat.
-Proof using All. zesu_byte_slice_bound_arith_at (bv_unsigned (cursorInput args)). Qed.
+Proof using All. zesu_arith_context_solve. Qed.
 End kept_cursor.
 
 (* The slice size is a word read from a callee's output bytes: its count is
@@ -127,6 +129,6 @@ Lemma test_interior_byte_slice_word_size (base start : Z) (bytes out : list byte
 Proof.
   iIntros (Hstart Hfits) "Harray".
   zesu_lend_interior_byte_slice.
-  cbn [li_fst]. iFrame. iPureIntro. zesu_byte_slice_bound_arith.
+  cbn [li_fst]. iFrame. iPureIntro. zesu_arith_context_solve.
 Qed.
 End word_size.

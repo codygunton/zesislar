@@ -16,6 +16,7 @@ Require Export ZesuSsz.Automation2.UninitRegions.
 Require Export ZesuSsz.Automation2.UninitRequest.
 #[export] Instance zesu_union_interior_byte_slice_enabled :
   ZesuSsz.Automation2.InteriorByteSlice.ZesuStepInteriorByteSlice := I.
+Require Export ZesuSsz.Automation2.ArithContext.
 Require Export ZesuSsz.Automation2.GoalDomain.
 #[export] Instance zesu_union_goal_domain_enabled :
   ZesuSsz.Automation2.GoalDomain.ZesuStepGoalDomain := I.

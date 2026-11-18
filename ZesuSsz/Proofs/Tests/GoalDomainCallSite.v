@@ -118,3 +118,77 @@ Proof.
   Fail zesu_finish_goal_domain.
   split; [lia | exists x13; zesu_finish_goal_domain].
 Qed.
+
+(* The words at bytes 0..7, 8..15 and 24..31 of a decodeItem output, in the
+   load form the block generator renders. *)
+Notation outWordAt k bytes :=
+  (bv_concat 64%N (bv_concat 56%N (bv_concat 48%N (bv_concat 40%N (bv_concat 32%N (bv_concat 24%N
+    (bv_concat 16%N (List.nth (k + 7)%nat bytes (BV 8%N 0%Z)) (List.nth (k + 6)%nat bytes (BV 8%N 0%Z)))
+    (List.nth (k + 5)%nat bytes (BV 8%N 0%Z))) (List.nth (k + 4)%nat bytes (BV 8%N 0%Z)))
+    (List.nth (k + 3)%nat bytes (BV 8%N 0%Z))) (List.nth (k + 2)%nat bytes (BV 8%N 0%Z)))
+    (List.nth (k + 1)%nat bytes (BV 8%N 0%Z))) (List.nth k bytes (BV 8%N 0%Z))) (only parsing).
+
+(* A third call over the rest of a payload: the first call's payload pointer
+   and length are kept under names, the second call decodes the payload's
+   slice, and the third gets the cursor advanced by the second call's
+   consumed count. Its domain reads the kept names' values, the second
+   call's window over the input, the consumed bound that decodeItem's
+   interface derives from the sealed second call, and the input's range in
+   the caller's folded precondition; plain lia and bv_solve see none of
+   them. *)
+Lemma goal_domain_kept_cursor (args : ParentHeaderArgs)
+    (kept_ptr kept_len a13 a14 a15 a16 a17 b13 b14 b15 b16 b17 x13 x14 x15 x16 x17 : bv 64)
+    (before before0 values first second : list (bv 8)) :
+  parentHeaderArgsWellFormed args ->
+  length before = 40%nat -> length before0 = 40%nat -> length values = 40%nat ->
+  decodeItemCallDomain
+    (decodeItemCallDataArgs
+       [(parentHeaderStackPointer args + 18446744073709551216 + 400 +
+         18446744073709551224)%bv; parentHeaderInputPointer args;
+        parentHeaderInputLength args; a13; a14; a15; a16; a17]
+       (parentHeaderStackPointer args + 18446744073709551216)
+       (bv_unsigned (parentHeaderInputEnd args))
+       (parentHeaderInputBytes args) before) ->
+  decodeItemCallMeaning
+    (decodeItemCallDataArgs
+       [(parentHeaderStackPointer args + 18446744073709551216 + 400 +
+         18446744073709551224)%bv; parentHeaderInputPointer args;
+        parentHeaderInputLength args; a13; a14; a15; a16; a17]
+       (parentHeaderStackPointer args + 18446744073709551216)
+       (bv_unsigned (parentHeaderInputEnd args))
+       (parentHeaderInputBytes args) before) first ->
+  zesu_named_eq kept_ptr (outWordAt 0 first) ->
+  zesu_named_eq kept_len (outWordAt 8 first) ->
+  bv_unsigned (parentHeaderInputPointer args) <= bv_unsigned kept_ptr ->
+  bv_unsigned kept_ptr + bv_unsigned kept_len <=
+    bv_unsigned (parentHeaderInputPointer args) + bv_unsigned (parentHeaderInputLength args) ->
+  decodeItemCallDomain
+    (decodeItemCallDataArgs
+       [(parentHeaderStackPointer args + 18446744073709551216 + 400 +
+         18446744073709551280)%bv; kept_ptr; kept_len; b13; b14; b15; b16; b17]
+       (parentHeaderStackPointer args + 18446744073709551216)
+       (bv_unsigned (parentHeaderInputEnd args))
+       (take (Z.to_nat (bv_unsigned kept_len))
+          (drop (Z.to_nat (bv_unsigned kept_ptr - bv_unsigned (parentHeaderInputPointer args)))
+             (parentHeaderInputBytes args))) before0) ->
+  decodeItemCallMeaning
+    (decodeItemCallDataArgs
+       [(parentHeaderStackPointer args + 18446744073709551216 + 400 +
+         18446744073709551280)%bv; kept_ptr; kept_len; b13; b14; b15; b16; b17]
+       (parentHeaderStackPointer args + 18446744073709551216)
+       (bv_unsigned (parentHeaderInputEnd args))
+       (take (Z.to_nat (bv_unsigned kept_len))
+          (drop (Z.to_nat (bv_unsigned kept_ptr - bv_unsigned (parentHeaderInputPointer args)))
+             (parentHeaderInputBytes args))) before0) second ->
+  decodeItemCallDomain
+    (decodeItemCallDataArgs
+       [(parentHeaderStackPointer args + 18446744073709551216 + 400 +
+         18446744073709551280)%bv; (kept_ptr + outWordAt 24 second)%bv;
+        (kept_len - outWordAt 24 second)%bv; x13; x14; x15; x16; x17]
+       (parentHeaderStackPointer args + 18446744073709551216)
+       (bv_unsigned (parentHeaderInputEnd args))
+       (take (Z.to_nat (bv_unsigned (kept_len - outWordAt 24 second)))
+          (drop (Z.to_nat (bv_unsigned (kept_ptr + outWordAt 24 second) -
+                           bv_unsigned (parentHeaderInputPointer args)))
+             (parentHeaderInputBytes args))) values).
+Proof. intros. zesu_finish_goal_domain. Qed.

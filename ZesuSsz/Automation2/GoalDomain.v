@@ -3,6 +3,7 @@ Require Import ZesuSsz.Automation2.PureFacts.
 Require Import ZesuSsz.Automation2.Rewrites.
 From Coq Require Import ZArith Lia.
 Require Import ZesuSsz.Automation2.LiaHook.
+Require ZesuSsz.Automation2.ArithContext.
 
 (* A pure goal whose head a contract registers in `zesu_goal_domain`: a
    callee's call-site domain that is a conjunction of address arithmetic
@@ -56,10 +57,15 @@ Ltac zesu_final_solver_goal :=
   | |- ?target => lazymatch type of target with Prop => idtac end
   end.
 
+(* A part first runs the shared context arithmetic (ArithContext): a call's
+   domain over a cursor a previous call returned reads that call's window
+   (kept registers under names), its sealed derived facts and the caller's
+   folded precondition, which plain `lia` and `bv_solve` do not see. *)
 Ltac zesu_goal_domain_part :=
   zesu_final_solver_goal;
   first
-    [zesu_lia
+    [solve [ZesuSsz.Automation2.ArithContext.zesu_arith_context_solve]
+    |zesu_lia
     |bv_solve
     |match goal with
      | |- context [bv_unsigned ?word] =>
