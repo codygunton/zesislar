@@ -8,7 +8,12 @@
 # Before deleting a worktree build or run dir, it moves the saved goals in it
 # (*Goal*.v, goals/**/*.v) into the store _build/goals/ and the closure records
 # (CLOSURE.json, NOT-CLOSED.json) into _build/closures/<function>/<case>/<run>/
-# (tools/goal_store.py); it never deletes either store.
+# (tools/goal_store.py); it never deletes either store. BENCH runs (tools/bench RUN.json +
+# REPORT*.md, or anything under _build/agents/bench/) and gate cycle dirs
+# (_build/agents/<lane>/gates-*) are reference data: they are kept and shrunk (build
+# products dropped, BENCH logs gzip'd, a gate dir keeps its small files) instead of deleted,
+# and a worktree's BENCH runs move to _build/agents/bench/ before the worktree goes
+# (2026-11-18: cleanup of orch/finish-gate deleted the BENCH-v1 base run).
 # The script keeps anything that a live process uses or that holds a release
 # receipt named by the admission ledger, and everything under
 # _build/agents/orch/. It does not delete the branch.

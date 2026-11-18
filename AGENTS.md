@@ -252,6 +252,11 @@ by a symbolic link or by a path in a manifest. It logs each deletion in `_build/
 5. Clean up after each merge. Run `tools/cleanup_after_merge.sh <branch>`.
    It fetches `origin/main` first, then removes the clean worktree of the branch and the run dirs of the branch.
    It never uses `--force`. Write `ITEM.json` with `{"branch": "<branch>"}` in each run dir.
+   BENCH runs (tools/bench `RUN.json` + `REPORT*.md`, or any dir under `_build/agents/bench/`) and gate
+   cycle dirs (`_build/agents/<lane>/gates-*`) are reference data: cleanup and the janitor shrink them
+   (build products dropped, BENCH logs gzip'd in place; `bench.py report` reads them) and never delete
+   them; a worktree's BENCH runs move to `_build/agents/bench/` before the worktree goes.
+   `_build/BUDGET.json` reports their size under `bench`.
 6. Worktree builds expire. The janitor deletes a worktree `_build` after 48 hours without change.
    The source checkout stays.
 7. Save residual goals in the goal store. `tools/save_goal.py --function F --case C --tag T FILE...`

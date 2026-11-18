@@ -125,6 +125,58 @@ class Plan(JanitorTree):
         row = next(row for row in plan['rows'] if row['path'] == str(run))
         self.assertEqual(row['deleted_files'], 2)
 
+    def bench_run(self, run):
+        write(run / 'RUN.json', json.dumps({'schema': 'bench-run/1', 'members': []}).encode())
+        write(run / 'REPORT.md', b'# BENCH-v1 run\n')
+        write(run / 'results.jsonl', b'{"key": "f/0300"}\n')
+        write(run / 'runs/0300/measure.json', b'{"returncode": 0}\n')
+        write(run / 'runs/0300/CLOSURE.json', b'{"verdict": "CLOSED"}\n')
+        write(run / 'runs/0300/Caller0300.vo', b'object')
+        write(run / 'runs/0300/measure.json.log', b'@@T kind=lia ms=1\n' * 200000)
+        write(run / 'runs/0300/REPORT-big.json', b' ' * (2 << 20))
+        return run / 'runs/0300'
+
+    def test_idle_bench_runs_keep_their_records_and_gzip_their_logs(self):
+        # 2026-11-18: BENCH runs are reference data; shrinking must keep what bench.py report reads.
+        blocks = [self.bench_run(self.agents / 'bench/v1-a'),
+                  self.bench_run(self.agents / 'a/old/nested')]
+        write(self.agents / 'bench/v1-b/runs/0300/measure.json.log', b'line\n' * 400000)
+        janitor = self.janitor()
+        budget = janitor.budget(janitor.survey_runs())
+        self.assertEqual(budget['bench']['runs'], 3)
+        self.assertGreater(budget['bench']['bytes'], 2 << 20)
+        self.assertEqual(budget['bench']['budget_bytes'], J.BENCH_BUDGET_BYTES)
+        self.assertFalse(budget['bench']['over'])
+        plan, log = self.plan_and_apply(janitor, self.live())
+        for block in blocks:
+            run = block.parent.parent
+            for name in ('RUN.json', 'REPORT.md', 'results.jsonl'):
+                self.assertTrue((run / name).exists())
+            for name in ('measure.json', 'CLOSURE.json', 'REPORT-big.json'):
+                self.assertTrue((block / name).exists())
+            self.assertFalse((block / 'Caller0300.vo').exists())
+            self.assertFalse((block / 'measure.json.log').exists())
+            with gzip.open(block / 'measure.json.log.gz') as stream:
+                self.assertEqual(stream.read(), b'@@T kind=lia ms=1\n' * 200000)
+            self.assertIn('compress\t' + str(block / 'measure.json.log'), log)
+        self.assertTrue((self.agents / 'bench/v1-b/runs/0300/measure.json.log.gz').exists())
+        again = self.janitor(now=self.now + 25 * HOUR)
+        rows = again.plan(again.survey_runs(), self.live())['rows']
+        self.assertEqual({row['path']: row['reason'] for row in rows}[str(self.agents / 'bench/v1-a')],
+                         'already small')
+
+    def test_worktree_build_removal_moves_its_bench_runs_to_the_bench_dir(self):
+        block = self.bench_run(self.root / '.worktrees/probe/_build/v1-wt')
+        janitor = self.janitor(now=time.time() + 49 * HOUR)
+        with patch('builtins.print'):
+            _, log = self.plan_and_apply(janitor, self.live())
+        self.assertFalse(block.exists())
+        kept = self.agents / 'bench/v1-wt/runs/0300'
+        self.assertTrue((kept / 'CLOSURE.json').exists())
+        self.assertTrue((kept / 'measure.json.log.gz').exists())
+        self.assertFalse((kept / 'Caller0300.vo').exists())
+        self.assertIn('bench-saved\t' + str(block.parent.parent), log)
+
     def test_protected_runs_keep_every_file(self):
         fresh = self.agents / 'a/fresh'
         write(fresh / 'Module.vo')

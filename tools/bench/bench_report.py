@@ -6,6 +6,8 @@ A block's run directory (RUN/runs/<case>) holds what bench.py run wrote:
   samples.jsonl                    the external 1 s sampler: {"t", "rss_kib", "cpu_s", "log_bytes"}
   perf.csv                         `perf stat -x, -e instructions:u -p <coqc>` output
   run.log                          the resource guard's output
+A kept run (tools/build_janitor.py shrinks BENCH runs, never deletes them) has its large logs
+gzip'd in place (measure.json.log.gz, run.log.gz); every reader here takes either form.
 
 Log lines the parser reads:
   Chars A - B [cmd] T secs (Uu,Ss)            coqc -time record of one sentence
@@ -37,6 +39,7 @@ the row at (arrival - its duration). The sampler's resolution is 1 s.
 """
 from collections import defaultdict
 import bisect
+import gzip
 import json
 from pathlib import Path
 import re
@@ -298,12 +301,25 @@ def command_class(command):
 
 # ---------------------------------------------------------------- samples
 
-def read_samples(path):
+def read_text(path):
+    """PATH's text, else its gzip'd copy PATH.gz (the janitor compresses a kept run's large logs),
+    else None."""
     path = Path(path)
-    if not path.is_file():
+    if path.is_file():
+        return path.read_text(errors='replace')
+    packed = path.with_name(path.name + '.gz')
+    if packed.is_file():
+        with gzip.open(packed, 'rt', errors='replace') as stream:
+            return stream.read()
+    return None
+
+
+def read_samples(path):
+    text = read_text(path)
+    if text is None:
         return []
     rows = []
-    for line in path.read_text().splitlines():
+    for line in text.splitlines():
         try:
             rows.append(json.loads(line))
         except ValueError:
@@ -414,10 +430,10 @@ def stage_reached(parsed, verdict, end):
 
 
 def instructions(path):
-    path = Path(path)
-    if not path.is_file():
+    text = read_text(path)
+    if text is None:
         return None
-    for line in path.read_text(errors='replace').splitlines():
+    for line in text.splitlines():
         fields = line.split(',')
         if len(fields) > 2 and fields[2].startswith('instructions'):
             try:
@@ -510,9 +526,8 @@ def load_block(directory, caps=None, running=False):
         if (directory / name).is_file():
             record = json.loads((directory / name).read_text())
     measure = json.loads((directory / 'measure.json').read_text()) if (directory / 'measure.json').is_file() else None
-    log = directory / 'measure.json.log'
-    text = log.read_text(errors='replace') if log.is_file() else ''
-    guard_text = (directory / 'run.log').read_text(errors='replace') if (directory / 'run.log').is_file() else ''
+    text = read_text(directory / 'measure.json.log') or ''
+    guard_text = read_text(directory / 'run.log') or ''
     parsed = parse_log(text)
     timeline = Timeline(read_samples(directory / 'samples.jsonl'))
     cpu = None
@@ -548,8 +563,9 @@ def load_run(run_dir):
     run_dir = Path(run_dir)
     meta = json.loads((run_dir / 'RUN.json').read_text())
     rows = {}
-    if (run_dir / 'results.jsonl').is_file():
-        for line in (run_dir / 'results.jsonl').read_text().splitlines():
+    results = read_text(run_dir / 'results.jsonl')
+    if results is not None:
+        for line in results.splitlines():
             if line.strip():
                 row = json.loads(line)
                 rows[row['key']] = row
@@ -557,7 +573,9 @@ def load_run(run_dir):
     for member in meta['members']:
         key = member_key(member)
         row = rows.get(key)
-        directory = row['dir'] if row else run_dir / 'runs' / member['case']
+        directory = run_dir / 'runs' / member['case']
+        if row and Path(row['dir']).is_dir():
+            directory = row['dir']  # else the run moved (the janitor keeps a worktree's BENCH runs)
         block = load_block(directory, meta.get('caps'), running=row is None) \
             if row or Path(directory).is_dir() else None
         blocks.append({'key': key, 'member': member, 'row': row, 'block': block})

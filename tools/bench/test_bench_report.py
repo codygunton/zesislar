@@ -1,6 +1,7 @@
 """Check BENCH run parsing and the report (tools/bench/bench_report.py, bench.py report)."""
 
 import contextlib
+import gzip
 import io
 import json
 from pathlib import Path
@@ -245,6 +246,22 @@ class Report(unittest.TestCase):
         self.assertEqual(block['leftovers'][0]['statement'][:6], 'forall')
         self.assertIsNone(run['blocks'][2]['block'])
         self.assertEqual(R.load_run(self.new)['blocks'][0]['block']['end'], 'cpu-cap')
+
+    def test_gzipped_logs_of_a_kept_run_read_the_same(self):
+        # The janitor keeps BENCH runs and gzips their large logs in place (#17, 2026-11-18).
+        before = R.render(R.load_run(self.base))
+        for path in sorted(self.base.rglob('*')):
+            if path.is_file() and path.name.endswith(('.log', '.jsonl', '.csv')):
+                with gzip.open(path.with_name(path.name + '.gz'), 'wb') as stream:
+                    stream.write(path.read_bytes())
+                path.unlink()
+        self.assertFalse((self.base / 'results.jsonl').exists())
+        self.assertEqual(R.render(R.load_run(self.base)), before)
+        # A worktree's run moves to _build/agents/bench/; results.jsonl still names the old dirs.
+        moved = self.root / 'moved' / 'base'
+        moved.parent.mkdir()
+        self.base.rename(moved)
+        self.assertEqual(R.render(R.load_run(moved)), before)
 
     def test_ranking(self):
         rank = R.ranking(R.load_run(self.base))
