@@ -749,7 +749,8 @@ Ltac zesu_primitive_tuple_witness T :=
   let guard := constr:(ltac:(assert_fails (has_evar T); exact I) : True) in
   lazymatch T with
   | li_prod ?A ?B =>
-      let allowed := lazymatch A with
+      let reduced := eval hnf in A in
+      let allowed := lazymatch reduced with
         | Z => constr:(true) | nat => constr:(true) | N => constr:(true)
         | bool => constr:(true) | list _ => constr:(true) | bv _ => constr:(true)
       end in
