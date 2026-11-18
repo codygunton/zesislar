@@ -202,22 +202,33 @@ Lemma call_precondition_from_call_facts
 Proof. ZesuSsz.Automation2.Hooks.zesu_liAStep. Qed.
 Print Assumptions call_precondition_from_call_facts.
 
-(* The step unfolds an address alias before Lithium's lookup runs: the first
-   step removes the alias, and the load then goes through. *)
+(* The step unfolds an address alias before Lithium's lookup runs: liStep
+   never sees a memory lookup whose address mentions a local alias. *)
+#[local] Ltac liStep ::=
+  lazymatch goal with
+  | alias := _ |- environments.envs_entails _ (find_in_context (FindMemMapsTo ?address) _) =>
+      lazymatch address with context [alias] => fail "liStep saw the alias" end
+  | _ => idtac
+  end;
+  first [liExtensible | liSep | liAnd | liWand | liExist | liImpl | liForall |
+    liSideCond | liFindInContext | liCase | liTrace | liTactic | liPersistent |
+    liTrue | liFalse | liAccu | liDoneEvar | liUnfoldLetGoal].
+
 Lemma named_equation_alias_before_lookup `{!islaG Sigma} `{!threadG}
-    (pointer : bv 64) (bytes : list (bv 8)) :
-  ⊢@{iProp Sigma} (bv_unsigned (pointer + BV 64 8)%bv) ↦ₘ∗ bytes -∗
-    find_in_context (FindMemMapsTo (bv_unsigned (pointer + BV 64 8)%bv)) (fun _ => True)%I.
+    (pointer : bv 64) (bytes : list (bv 8))
+    (Hlow : 400 <= bv_unsigned pointer) (Hhigh : bv_unsigned pointer < 2 ^ 63)
+    (Hlength : length bytes = 40%nat) :
+  ⊢@{iProp Sigma} (bv_unsigned pointer - 400 + 280) ↦ₘ∗ bytes -∗
+    find_in_context (FindMemMapsTo (bv_unsigned
+      (pointer + BV 64 18446744073709551216 + BV 64 400 + BV 64 18446744073709551528)%bv))
+      (fun _ => True)%I.
 Proof.
   iStartProof. iIntros "H".
-  pose (alias := (pointer + BV 64 8)%bv).
-  change (FindMemMapsTo (bv_unsigned (pointer + BV 64 8)%bv))
+  pose (alias := (pointer + BV 64 18446744073709551216 + BV 64 400 +
+    BV 64 18446744073709551528)%bv).
+  change (FindMemMapsTo (bv_unsigned (pointer + BV 64 18446744073709551216 +
+    BV 64 400 + BV 64 18446744073709551528)%bv))
     with (FindMemMapsTo (bv_unsigned alias)).
-  ZesuSsz.Automation2.Hooks.zesu_liAStep.
-  lazymatch goal with
-  | _ := _ : bv 64 |- _ => fail "the alias is kept"
-  | _ => idtac
-  end.
   repeat ZesuSsz.Automation2.Hooks.zesu_liAStep.
 Qed.
 Print Assumptions named_equation_alias_before_lookup.
