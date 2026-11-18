@@ -694,3 +694,237 @@ Ltac zesu_bv_linear_refutes :=
         (apply not_eq_sym; apply (zesu_bv_unsigned_ne_of_cast (width := width) term value);
          zesu_bv_linear_bv))
   end.
+
+(* ---- Memory lookup membership side conditions. ---- *)
+
+(* isla's semantic memory lookup asks `low <= address < low + size \/
+   low = address` once per owned memory region. The classifier below reads
+   the two sides syntactically: a side is a root plus numeral offsets
+   (integer offsets, or 64-bit literal offsets under bv_unsigned that wrap).
+   The sides' own local definitions are followed to their root; no other
+   definition is unfolded, no term but numerals is computed and no solver
+   runs. *)
+
+(* The goal holds for a difference address - low only if it is 0 or in
+   [0, size); an unknown size admits every difference that is not negative. *)
+Definition zesuMemOutside (size : option Z) (delta : Z) : bool :=
+  negb (Z.eqb delta 0) &&
+  (Z.ltb delta 0 || match size with Some extent => Z.leb extent delta | None => false end).
+
+(* Both sides share one root r with 0 <= r < 2^64 (or both are constants). An
+   integer side is r + offset, a wrapping side is (r + offset) mod 2^64, that
+   is r + (offset mod 2^64) less 0 or 2^64. So address - low is the difference
+   of the (reduced) offsets, less 2^64 when the address wraps, plus 2^64 when
+   the region start wraps. The goal is false for every r when every such
+   difference is outside the region. *)
+Definition zesuMemRangeRefuted (size : option Z) (address : Z) (addressWraps : bool)
+    (low : Z) (lowWraps : bool) : bool :=
+  let modulus := 2 ^ 64 in
+  let delta := (if addressWraps then address mod modulus else address) -
+               (if lowWraps then low mod modulus else low) in
+  zesuMemOutside size delta &&
+  (negb addressWraps || zesuMemOutside size (delta - modulus)) &&
+  (negb lowWraps || zesuMemOutside size (delta + modulus)).
+
+(* Syntactic closedness: no section variable, local definition or evar. *)
+Ltac2 rec zesu_mem_closed (term : constr) : bool :=
+  match Constr.Unsafe.kind term with
+  | Constr.Unsafe.Rel _ => true
+  | Constr.Unsafe.Sort _ => true
+  | Constr.Unsafe.Constant _ _ => true
+  | Constr.Unsafe.Ind _ _ => true
+  | Constr.Unsafe.Constructor _ _ => true
+  | Constr.Unsafe.Uint63 _ => true
+  | Constr.Unsafe.Float _ => true
+  | Constr.Unsafe.App head arguments =>
+      if zesu_mem_closed head then Array.for_all zesu_mem_closed arguments else false
+  | Constr.Unsafe.Cast body _ ty =>
+      if zesu_mem_closed body then zesu_mem_closed ty else false
+  | Constr.Unsafe.Prod binder body =>
+      if zesu_mem_closed (Constr.Binder.type binder) then zesu_mem_closed body else false
+  | Constr.Unsafe.Lambda binder body =>
+      if zesu_mem_closed (Constr.Binder.type binder) then zesu_mem_closed body else false
+  | Constr.Unsafe.LetIn binder value body =>
+      if zesu_mem_closed (Constr.Binder.type binder) then
+        if zesu_mem_closed value then zesu_mem_closed body else false
+      else false
+  | Constr.Unsafe.Case _ (result, _) _ scrutinee branches =>
+      if zesu_mem_closed result then
+        if zesu_mem_closed scrutinee then Array.for_all zesu_mem_closed branches else false
+      else false
+  | Constr.Unsafe.Proj _ _ body => zesu_mem_closed body
+  | _ => false
+  end.
+
+Ltac2 rec zesu_mem_positive (term : constr) : bool :=
+  lazy_match! term with
+  | xH => true
+  | xO ?rest => zesu_mem_positive rest
+  | xI ?rest => zesu_mem_positive rest
+  | _ => false
+  end.
+
+Ltac2 zesu_mem_numeral (term : constr) : bool :=
+  lazy_match! term with
+  | Z0 => true
+  | Zpos ?digits => zesu_mem_positive digits
+  | Zneg ?digits => zesu_mem_positive digits
+  | _ => false
+  end.
+
+(* The value of a bit-vector literal `BV w n` with a numeral n. *)
+Ltac2 zesu_mem_bv_literal (term : constr) : constr option :=
+  lazy_match! term with
+  | @BV _ ?value _ => if zesu_mem_numeral value then Some value else None
+  | _ => None
+  end.
+
+Ltac2 zesu_mem_body (hyps : (ident * constr option * constr) list) (term : constr) : constr option :=
+  match Constr.Unsafe.kind term with
+  | Constr.Unsafe.Var name =>
+      match List.find_opt (fun (local, _, _) => Ident.equal local name) hyps with
+      | Some (_, body, _) => body
+      | None => None
+      end
+  | _ => None
+  end.
+
+(* A side: (root, numeral integer offset, wraps). A closed leaf that is not a
+   numeral fails: the side is then not read. *)
+Ltac2 zesu_mem_atom (term : constr) :=
+  if zesu_mem_closed term then Control.zero (Tactic_failure None)
+  else (Some term, constr:(0%Z), false).
+
+Ltac2 rec zesu_mem_bv_side (hyps : (ident * constr option * constr) list) (fuel : int)
+    (term : constr) :=
+  let shifted inner value negative :=
+    let (root, offset, _) := zesu_mem_bv_side hyps fuel inner in
+    let offset := if negative then constr:(Z.sub $offset $value)
+                  else constr:(Z.add $offset $value) in
+    (root, offset, true) in
+  match zesu_mem_bv_literal term with
+  | Some value => (None, value, false)
+  | None =>
+      lazy_match! term with
+      | bv_add ?inner ?step =>
+          match zesu_mem_bv_literal step with
+          | Some value => shifted inner value false
+          | None =>
+              match zesu_mem_bv_literal inner with
+              | Some value => shifted step value false
+              | None => zesu_mem_atom term
+              end
+          end
+      | bv_sub ?inner ?step =>
+          match zesu_mem_bv_literal step with
+          | Some value => shifted inner value true
+          | None => zesu_mem_atom term
+          end
+      | _ =>
+          match (if Int.le fuel 0 then None else zesu_mem_body hyps term) with
+          | Some body => zesu_mem_bv_side hyps (Int.sub fuel 1) body
+          | None => zesu_mem_atom term
+          end
+      end
+  end.
+
+Ltac2 rec zesu_mem_z_side (hyps : (ident * constr option * constr) list) (term : constr) :=
+  let shifted inner step negative :=
+    let (root, offset, wraps) := zesu_mem_z_side hyps inner in
+    let offset := if negative then constr:(Z.sub $offset $step) else constr:(Z.add $offset $step) in
+    (root, offset, wraps) in
+  if zesu_mem_numeral term then (None, term, false) else
+  lazy_match! term with
+  | Z.add ?inner ?step =>
+      if zesu_mem_numeral step then shifted inner step false
+      else if zesu_mem_numeral inner then shifted step inner false
+      else zesu_mem_atom term
+  | Z.sub ?inner ?step =>
+      if zesu_mem_numeral step then shifted inner step true else zesu_mem_atom term
+  | @bv_unsigned ?width ?inner =>
+      if Constr.equal width constr:(64%N) then zesu_mem_bv_side hyps 32 inner
+      else zesu_mem_atom term
+  | _ => zesu_mem_atom term
+  end.
+
+Ltac2 rec zesu_mem_list_length (items : constr) (count : int) : int option :=
+  if Int.lt 4096 count then None else
+  lazy_match! items with
+  | nil => Some count
+  | cons _ ?rest => zesu_mem_list_length rest (Int.add count 1)
+  | _ => None
+  end.
+
+(* The region size as `option Z` syntax: a numeral, or the byte length of an
+   array given as a list literal; None otherwise. *)
+Ltac2 zesu_mem_extent (size : constr) : constr :=
+  if zesu_mem_numeral size then constr:(Some $size) else
+  lazy_match! size with
+  | Z.mul (Z.of_nat (length ?items)) (Z.of_N (N.div (Npos ?width) 8)) =>
+      match zesu_mem_list_length items 0 with
+      | Some count =>
+          if zesu_mem_positive width then
+            let count := zesu_bvlin_nat count in
+            constr:(Some (Z.mul (Z.of_nat $count) (Z.of_N (N.div (Npos $width) 8))))
+          else constr:(@None Z)
+      | None => constr:(@None Z)
+      end
+  | _ => constr:(@None Z)
+  end.
+
+Ltac2 zesu_mem_bool (value : bool) : constr := if value then constr:(true) else constr:(false).
+
+Ltac2 Type zesu_mem_verdict := [ ZesuMemOutside | ZesuMemPossible | ZesuMemUnread ].
+
+(* Outside: the sides share a root (or are both constants) and the offsets
+   put the address outside the region for every value of the root. Possible:
+   shared root, known size, and some difference lies in the region. Unread:
+   every other case (different roots, an unknown size that the offsets do not
+   exclude, a side the reading does not cover, or an evar). *)
+Ltac2 zesu_mem_range_verdict (low : constr) (address : constr) (size : constr) : zesu_mem_verdict :=
+  let read () :=
+    if Constr.has_evar low then ZesuMemUnread
+    else if Constr.has_evar address then ZesuMemUnread
+    else if Constr.has_evar size then ZesuMemUnread else
+    let hyps := Control.hyps () in
+    let (low_root, low_offset, low_wraps) := zesu_mem_z_side hyps low in
+    let (address_root, address_offset, address_wraps) := zesu_mem_z_side hyps address in
+    let shared :=
+      match low_root, address_root with
+      | None, None => true
+      | Some lhs, Some rhs => Constr.equal lhs rhs
+      | _, _ => false
+      end in
+    if shared then
+      let extent := zesu_mem_extent size in
+      let address_wraps := zesu_mem_bool address_wraps in
+      let low_wraps := zesu_mem_bool low_wraps in
+      if Constr.equal
+           (Std.eval_vm None constr:(zesuMemRangeRefuted $extent $address_offset $address_wraps
+                                       $low_offset $low_wraps))
+           constr:(true)
+      then ZesuMemOutside
+      else if Constr.equal extent constr:(@None Z) then ZesuMemUnread else ZesuMemPossible
+    else ZesuMemUnread in
+  match Control.case read with
+  | Val (verdict, _) => verdict
+  | Err _ => ZesuMemUnread
+  end.
+
+(* On the membership goal, run `outside`, `possible` or `unread` by the
+   verdict above. Other goals fail. *)
+Ltac zesu_mem_range_class outside possible unread :=
+  lazymatch goal with
+  | |- ((Z.le ?low ?address /\ Z.lt ?address' (Z.add ?low' ?size)) \/ @eq Z ?low'' ?address'') =>
+      constr_eq low low'; constr_eq low low''; constr_eq address address';
+      constr_eq address address'';
+      let dispatch := ltac2:(low address size outside possible unread |-
+        match zesu_mem_range_verdict
+                (Option.get (Ltac1.to_constr low)) (Option.get (Ltac1.to_constr address))
+                (Option.get (Ltac1.to_constr size)) with
+        | ZesuMemOutside => Ltac1.run outside
+        | ZesuMemPossible => Ltac1.run possible
+        | ZesuMemUnread => Ltac1.run unread
+        end) in
+      dispatch low address size outside possible unread
+  end.
