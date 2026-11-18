@@ -651,6 +651,29 @@ class WorktreeRescue(WorktreeReaper):
         rows = self.reap(now=self.stale)
         self.assertEqual(rows['lane']['action'], 'remove', rows['lane'])
 
+    def test_dirty_worktree_in_an_unfinished_revert_is_rescued(self):
+        loose = self.worktree('loose', '--detach', commit=True)
+        write(loose / 'loose', b'edited\n')
+        self.git('-c', 'user.name=t', '-c', 'user.email=t@t', 'commit', '-qam', 'edit', cwd=loose)
+        subprocess.run(['git', 'revert', '--no-commit', 'HEAD'], cwd=loose, capture_output=True)
+        write(loose / 'loose', b'conflict work\n')
+        branch = 'rescue/loose-' + time.strftime('%Y%m%d', time.gmtime(self.stale))
+        rows = self.reap(now=self.stale)
+        self.assertEqual(rows['loose']['action'], 'remove', rows['loose'])
+        self.assertEqual(self.show(branch, 'loose'), 'conflict work\n')
+        self.assertFalse(loose.exists())
+
+    def test_tracked_closure_record_moved_to_the_store_does_not_block_removal(self):
+        merged = self.worktree('merged', '-b', 'lane/merged')
+        write(self.root / 'cert/0300/CLOSURE.json', b'{"case": "0300", "verdict": "CLOSED"}\n')
+        self.git('add', 'cert')
+        self.git('-c', 'user.name=t', '-c', 'user.email=t@t', 'commit', '-q', '-m', 'record')
+        self.git('merge', '-q', '--ff-only', 'main', cwd=merged)
+        rows = self.reap()
+        self.assertEqual(rows['merged']['action'], 'remove', rows['merged'])
+        self.assertFalse(merged.exists())
+        self.assertTrue(list((self.root / '_build/closures').rglob('CLOSURE.json')))
+
     def test_branch_ahead_of_origin_is_pushed_then_removed(self):
         lane = self.worktree('lane', '-b', 'orch/lane', commit=True)
         self.git('push', '-q', 'origin', 'orch/lane', cwd=lane)

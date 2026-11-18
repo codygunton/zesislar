@@ -947,6 +947,7 @@ WORKTREE_REAP_IDLE_SECONDS = 6 * 3600
 # _build/janitor/rescued-worktrees.tsv (time, worktree, branch, head, pushed branch, commit, what).
 RESCUE_IDLE_SECONDS = 7 * 24 * 3600
 RESCUE_MAX_FILE_BYTES = 95 * 2**20  # GitHub refuses files over 100 MB: keep such checkouts
+PENDING_HEADS = ('MERGE_HEAD', 'REVERT_HEAD', 'CHERRY_PICK_HEAD', 'REBASE_HEAD')
 REAP_FREE_BYTES = 50 * GB  # the run watchdog reaps when free disk falls below this
 SCRATCH_BRANCHES = ('bench/',)
 # tools/bg and the run watchdog run from ops-tools (run_registry.md); the closed-set column
@@ -1234,12 +1235,17 @@ def rescue_worktree(root, row, now, mapping):
         if not error:
             record(branch, head, 'detached head')
         return error
+    # Plumbing, not `git switch`: switch refuses during an unfinished revert, cherry-pick or
+    # merge. The commit records which operation was pending (a pending merge commits as one).
+    pending = [f'{name} {commit(path, name)}' for name in PENDING_HEADS if commit(path, name)]
     identity = ['-c', 'user.name=build janitor', '-c', 'user.email=build-janitor@localhost']
-    steps = [('switch', '-q', '-c', branch), ('add', '-A'),
-             (*identity, 'commit', '-q', '--no-verify', '-m',
+    steps = [('branch', branch, 'HEAD'), ('symbolic-ref', 'HEAD', 'refs/heads/' + branch),
+             ('add', '-A'),
+             (*identity, 'commit', '-q', '--no-verify', '--allow-empty', '-m',
               f'rescue: uncommitted work of worktree {row["name"]}\n\n'
               f'Worktree {path} on {row["branch"] or "detached " + head} was idle '
-              f'{row["idle_hours"]} h; build_janitor committed every change before removing it.')]
+              f'{row["idle_hours"]} h; build_janitor committed every change before removing it.'
+              + (f'\nPending operation: {", ".join(pending)}.' if pending else ''))]
     for step in steps:
         result = git(path, *step)
         if result.returncode:
@@ -1267,7 +1273,15 @@ def remove_worktree(root, row, log, now=None, mapping=None):
             log.write(f'{stamp}\tfailed\t{path}\t{row["branch"] or "detached"}\t{row["head"]}\t'
                       f'{row["reason"]}\n')
             return False
+    clean = changed_paths(path) == ([], [])
     rescue_goals(root, path, 'worktree reaper: ' + row['reason'])
+    if clean:
+        # The stores now hold the tracked goal files and closure records the rescue moved;
+        # put back HEAD's copies so the checkout is clean again for `git worktree remove`.
+        moved = [name for name in (changed_paths(path) or ([], []))[0]
+                 if not os.path.lexists(os.path.join(path, name))]
+        if moved:
+            git(path, 'checkout', 'HEAD', '--', *moved)
     result = drop_checkout(root, path)
     if result.returncode:
         row.update(action='keep', reason='git worktree remove: ' + result.stderr.strip())
