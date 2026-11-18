@@ -1,0 +1,3814 @@
+{
+  "schema": "join-register-fixture.v1",
+  "origin": {
+    "path": "/home/cody/zesislar/_build/agents/worker-build-1/forward-domain300/inventory001/FORWARD.json",
+    "sha256": "f75f7c9f89f3cb741e6bd5d31a6b5b8b25aa1be8dbf7221b7947c321b206fadc"
+  },
+  "pc": "0x800d6ae0",
+  "register_order": [
+    "x10",
+    "x11",
+    "x12",
+    "x13",
+    "x14",
+    "x15",
+    "x16",
+    "x2",
+    "x1",
+    "x8"
+  ],
+  "alternatives": [
+    {
+      "predecessor_pc": "0x800d6960",
+      "seed_pc": "0x800d6960",
+      "path": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "registers": {
+        "x13": {
+          "op": "input",
+          "width": 64,
+          "value": "a3"
+        },
+        "x14": {
+          "op": "input",
+          "width": 64,
+          "value": "a4"
+        }
+      },
+      "condition_ids": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ]
+    },
+    {
+      "predecessor_pc": "0x800d69e0",
+      "seed_pc": "0x800d6960",
+      "path": [
+        0,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0
+      ],
+      "registers": {
+        "x13": {
+          "op": "bvand",
+          "width": 64,
+          "args": [
+            {
+              "op": "bvand",
+              "width": 64,
+              "args": [
+                {
+                  "op": "sign_extend",
+                  "width": 64,
+                  "args": [
+                    {
+                      "op": "array_byte",
+                      "width": 8,
+                      "value": 0,
+                      "args": [
+                        {
+                          "op": "input",
+                          "value": "decodeItemInputBytes args"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "op": "bits",
+                  "width": 64,
+                  "value": 255
+                }
+              ]
+            },
+            {
+              "op": "bits",
+              "width": 64,
+              "value": 127
+            }
+          ]
+        },
+        "x14": {
+          "op": "bits",
+          "width": 64,
+          "value": 183
+        }
+      },
+      "condition_ids": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21,
+        22,
+        23,
+        24
+      ]
+    },
+    {
+      "predecessor_pc": "0x800d69e0",
+      "seed_pc": "0x800d6960",
+      "path": [
+        0,
+        0,
+        0,
+        0,
+        1,
+        1,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0
+      ],
+      "registers": {
+        "x13": {
+          "op": "bvand",
+          "width": 64,
+          "args": [
+            {
+              "op": "bvand",
+              "width": 64,
+              "args": [
+                {
+                  "op": "sign_extend",
+                  "width": 64,
+                  "args": [
+                    {
+                      "op": "array_byte",
+                      "width": 8,
+                      "value": 0,
+                      "args": [
+                        {
+                          "op": "input",
+                          "value": "decodeItemInputBytes args"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "op": "bits",
+                  "width": 64,
+                  "value": 255
+                }
+              ]
+            },
+            {
+              "op": "bits",
+              "width": 64,
+              "value": 127
+            }
+          ]
+        },
+        "x14": {
+          "op": "bits",
+          "width": 64,
+          "value": 183
+        }
+      },
+      "condition_ids": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        10,
+        25,
+        26,
+        27,
+        28,
+        29,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21,
+        22,
+        23,
+        24
+      ]
+    },
+    {
+      "predecessor_pc": "0x800d69e0",
+      "seed_pc": "0x800d6960",
+      "path": [
+        0,
+        0,
+        0,
+        0,
+        1,
+        1,
+        1,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0
+      ],
+      "registers": {
+        "x13": {
+          "op": "bvand",
+          "width": 64,
+          "args": [
+            {
+              "op": "bvand",
+              "width": 64,
+              "args": [
+                {
+                  "op": "sign_extend",
+                  "width": 64,
+                  "args": [
+                    {
+                      "op": "array_byte",
+                      "width": 8,
+                      "value": 0,
+                      "args": [
+                        {
+                          "op": "input",
+                          "value": "decodeItemInputBytes args"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "op": "bits",
+                  "width": 64,
+                  "value": 255
+                }
+              ]
+            },
+            {
+              "op": "bits",
+              "width": 64,
+              "value": 127
+            }
+          ]
+        },
+        "x14": {
+          "op": "bits",
+          "width": 64,
+          "value": 183
+        }
+      },
+      "condition_ids": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        10,
+        25,
+        30,
+        27,
+        28,
+        29,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21,
+        22,
+        23,
+        24
+      ]
+    },
+    {
+      "predecessor_pc": "0x800d69e0",
+      "seed_pc": "0x800d6960",
+      "path": [
+        0,
+        0,
+        0,
+        0,
+        1,
+        1,
+        1,
+        0,
+        1,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0
+      ],
+      "registers": {
+        "x13": {
+          "op": "bvand",
+          "width": 64,
+          "args": [
+            {
+              "op": "bvand",
+              "width": 64,
+              "args": [
+                {
+                  "op": "sign_extend",
+                  "width": 64,
+                  "args": [
+                    {
+                      "op": "array_byte",
+                      "width": 8,
+                      "value": 0,
+                      "args": [
+                        {
+                          "op": "input",
+                          "value": "decodeItemInputBytes args"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "op": "bits",
+                  "width": 64,
+                  "value": 255
+                }
+              ]
+            },
+            {
+              "op": "bits",
+              "width": 64,
+              "value": 127
+            }
+          ]
+        },
+        "x14": {
+          "op": "bits",
+          "width": 64,
+          "value": 183
+        }
+      },
+      "condition_ids": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        10,
+        25,
+        30,
+        27,
+        31,
+        32,
+        33,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21,
+        22,
+        23,
+        24
+      ]
+    },
+    {
+      "predecessor_pc": "0x800d6a08",
+      "seed_pc": "0x800d6960",
+      "path": [
+        0,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0
+      ],
+      "registers": {
+        "x13": {
+          "op": "bvadd",
+          "width": 64,
+          "args": [
+            {
+              "op": "bvand",
+              "width": 64,
+              "args": [
+                {
+                  "op": "sign_extend",
+                  "width": 64,
+                  "args": [
+                    {
+                      "op": "array_byte",
+                      "width": 8,
+                      "value": 0,
+                      "args": [
+                        {
+                          "op": "input",
+                          "value": "decodeItemInputBytes args"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "op": "bits",
+                  "width": 64,
+                  "value": 255
+                }
+              ]
+            },
+            {
+              "op": "bits",
+              "width": 64,
+              "value": 73
+            }
+          ]
+        },
+        "x14": {
+          "op": "bvand",
+          "width": 64,
+          "args": [
+            {
+              "op": "bvadd",
+              "width": 64,
+              "args": [
+                {
+                  "op": "bvand",
+                  "width": 64,
+                  "args": [
+                    {
+                      "op": "sign_extend",
+                      "width": 64,
+                      "args": [
+                        {
+                          "op": "array_byte",
+                          "width": 8,
+                          "value": 0,
+                          "args": [
+                            {
+                              "op": "input",
+                              "value": "decodeItemInputBytes args"
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "op": "bits",
+                      "width": 64,
+                      "value": 255
+                    }
+                  ]
+                },
+                {
+                  "op": "bits",
+                  "width": 64,
+                  "value": 73
+                }
+              ]
+            },
+            {
+              "op": "bits",
+              "width": 64,
+              "value": 255
+            }
+          ]
+        }
+      },
+      "condition_ids": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        34,
+        22,
+        23,
+        35,
+        36,
+        37,
+        38,
+        39
+      ]
+    },
+    {
+      "predecessor_pc": "0x800d6a08",
+      "seed_pc": "0x800d6960",
+      "path": [
+        0,
+        0,
+        0,
+        0,
+        1,
+        1,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0
+      ],
+      "registers": {
+        "x13": {
+          "op": "bvadd",
+          "width": 64,
+          "args": [
+            {
+              "op": "bvand",
+              "width": 64,
+              "args": [
+                {
+                  "op": "sign_extend",
+                  "width": 64,
+                  "args": [
+                    {
+                      "op": "array_byte",
+                      "width": 8,
+                      "value": 0,
+                      "args": [
+                        {
+                          "op": "input",
+                          "value": "decodeItemInputBytes args"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "op": "bits",
+                  "width": 64,
+                  "value": 255
+                }
+              ]
+            },
+            {
+              "op": "bits",
+              "width": 64,
+              "value": 73
+            }
+          ]
+        },
+        "x14": {
+          "op": "bvand",
+          "width": 64,
+          "args": [
+            {
+              "op": "bvadd",
+              "width": 64,
+              "args": [
+                {
+                  "op": "bvand",
+                  "width": 64,
+                  "args": [
+                    {
+                      "op": "sign_extend",
+                      "width": 64,
+                      "args": [
+                        {
+                          "op": "array_byte",
+                          "width": 8,
+                          "value": 0,
+                          "args": [
+                            {
+                              "op": "input",
+                              "value": "decodeItemInputBytes args"
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "op": "bits",
+                      "width": 64,
+                      "value": 255
+                    }
+                  ]
+                },
+                {
+                  "op": "bits",
+                  "width": 64,
+                  "value": 73
+                }
+              ]
+            },
+            {
+              "op": "bits",
+              "width": 64,
+              "value": 255
+            }
+          ]
+        }
+      },
+      "condition_ids": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        10,
+        25,
+        26,
+        27,
+        28,
+        29,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        34,
+        22,
+        23,
+        35,
+        36,
+        37,
+        38,
+        39
+      ]
+    },
+    {
+      "predecessor_pc": "0x800d6a08",
+      "seed_pc": "0x800d6960",
+      "path": [
+        0,
+        0,
+        0,
+        0,
+        1,
+        1,
+        1,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0
+      ],
+      "registers": {
+        "x13": {
+          "op": "bvadd",
+          "width": 64,
+          "args": [
+            {
+              "op": "bvand",
+              "width": 64,
+              "args": [
+                {
+                  "op": "sign_extend",
+                  "width": 64,
+                  "args": [
+                    {
+                      "op": "array_byte",
+                      "width": 8,
+                      "value": 0,
+                      "args": [
+                        {
+                          "op": "input",
+                          "value": "decodeItemInputBytes args"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "op": "bits",
+                  "width": 64,
+                  "value": 255
+                }
+              ]
+            },
+            {
+              "op": "bits",
+              "width": 64,
+              "value": 73
+            }
+          ]
+        },
+        "x14": {
+          "op": "bvand",
+          "width": 64,
+          "args": [
+            {
+              "op": "bvadd",
+              "width": 64,
+              "args": [
+                {
+                  "op": "bvand",
+                  "width": 64,
+                  "args": [
+                    {
+                      "op": "sign_extend",
+                      "width": 64,
+                      "args": [
+                        {
+                          "op": "array_byte",
+                          "width": 8,
+                          "value": 0,
+                          "args": [
+                            {
+                              "op": "input",
+                              "value": "decodeItemInputBytes args"
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "op": "bits",
+                      "width": 64,
+                      "value": 255
+                    }
+                  ]
+                },
+                {
+                  "op": "bits",
+                  "width": 64,
+                  "value": 73
+                }
+              ]
+            },
+            {
+              "op": "bits",
+              "width": 64,
+              "value": 255
+            }
+          ]
+        }
+      },
+      "condition_ids": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        10,
+        25,
+        30,
+        27,
+        28,
+        29,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        34,
+        22,
+        23,
+        35,
+        36,
+        37,
+        38,
+        39
+      ]
+    },
+    {
+      "predecessor_pc": "0x800d6a08",
+      "seed_pc": "0x800d6960",
+      "path": [
+        0,
+        0,
+        0,
+        0,
+        1,
+        1,
+        1,
+        0,
+        1,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0
+      ],
+      "registers": {
+        "x13": {
+          "op": "bvadd",
+          "width": 64,
+          "args": [
+            {
+              "op": "bvand",
+              "width": 64,
+              "args": [
+                {
+                  "op": "sign_extend",
+                  "width": 64,
+                  "args": [
+                    {
+                      "op": "array_byte",
+                      "width": 8,
+                      "value": 0,
+                      "args": [
+                        {
+                          "op": "input",
+                          "value": "decodeItemInputBytes args"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "op": "bits",
+                  "width": 64,
+                  "value": 255
+                }
+              ]
+            },
+            {
+              "op": "bits",
+              "width": 64,
+              "value": 73
+            }
+          ]
+        },
+        "x14": {
+          "op": "bvand",
+          "width": 64,
+          "args": [
+            {
+              "op": "bvadd",
+              "width": 64,
+              "args": [
+                {
+                  "op": "bvand",
+                  "width": 64,
+                  "args": [
+                    {
+                      "op": "sign_extend",
+                      "width": 64,
+                      "args": [
+                        {
+                          "op": "array_byte",
+                          "width": 8,
+                          "value": 0,
+                          "args": [
+                            {
+                              "op": "input",
+                              "value": "decodeItemInputBytes args"
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "op": "bits",
+                      "width": 64,
+                      "value": 255
+                    }
+                  ]
+                },
+                {
+                  "op": "bits",
+                  "width": 64,
+                  "value": 73
+                }
+              ]
+            },
+            {
+              "op": "bits",
+              "width": 64,
+              "value": 255
+            }
+          ]
+        }
+      },
+      "condition_ids": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        10,
+        25,
+        30,
+        27,
+        31,
+        32,
+        33,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        34,
+        22,
+        23,
+        35,
+        36,
+        37,
+        38,
+        39
+      ]
+    },
+    {
+      "predecessor_pc": "0x800d6aa8",
+      "seed_pc": "0x800d6960",
+      "path": [
+        0,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "registers": {
+        "x13": {
+          "op": "bvadd",
+          "width": 64,
+          "args": [
+            {
+              "op": "bvand",
+              "width": 64,
+              "args": [
+                {
+                  "op": "sign_extend",
+                  "width": 64,
+                  "args": [
+                    {
+                      "op": "array_byte",
+                      "width": 8,
+                      "value": 0,
+                      "args": [
+                        {
+                          "op": "input",
+                          "value": "decodeItemInputBytes args"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "op": "bits",
+                  "width": 64,
+                  "value": 255
+                }
+              ]
+            },
+            {
+              "op": "bits",
+              "width": 64,
+              "value": 9
+            }
+          ]
+        },
+        "x14": {
+          "op": "bvand",
+          "width": 64,
+          "args": [
+            {
+              "op": "bvadd",
+              "width": 64,
+              "args": [
+                {
+                  "op": "bvand",
+                  "width": 64,
+                  "args": [
+                    {
+                      "op": "sign_extend",
+                      "width": 64,
+                      "args": [
+                        {
+                          "op": "array_byte",
+                          "width": 8,
+                          "value": 0,
+                          "args": [
+                            {
+                              "op": "input",
+                              "value": "decodeItemInputBytes args"
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "op": "bits",
+                      "width": 64,
+                      "value": 255
+                    }
+                  ]
+                },
+                {
+                  "op": "bits",
+                  "width": 64,
+                  "value": 9
+                }
+              ]
+            },
+            {
+              "op": "bits",
+              "width": 64,
+              "value": 255
+            }
+          ]
+        }
+      },
+      "condition_ids": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        34,
+        22,
+        23,
+        40,
+        36,
+        37,
+        41,
+        38,
+        42,
+        43,
+        44
+      ]
+    },
+    {
+      "predecessor_pc": "0x800d6a6c",
+      "seed_pc": "0x800d6960",
+      "path": [
+        0,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0
+      ],
+      "registers": {
+        "x13": {
+          "op": "bvand",
+          "width": 64,
+          "args": [
+            {
+              "op": "bvadd",
+              "width": 64,
+              "args": [
+                {
+                  "op": "bvand",
+                  "width": 64,
+                  "args": [
+                    {
+                      "op": "sign_extend",
+                      "width": 64,
+                      "args": [
+                        {
+                          "op": "array_byte",
+                          "width": 8,
+                          "value": 0,
+                          "args": [
+                            {
+                              "op": "input",
+                              "value": "decodeItemInputBytes args"
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "op": "bits",
+                      "width": 64,
+                      "value": 255
+                    }
+                  ]
+                },
+                {
+                  "op": "bits",
+                  "width": 64,
+                  "value": 64
+                }
+              ]
+            },
+            {
+              "op": "bits",
+              "width": 64,
+              "value": 255
+            }
+          ]
+        },
+        "x14": {
+          "op": "bits",
+          "width": 64,
+          "value": 248
+        }
+      },
+      "condition_ids": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        34,
+        22,
+        23,
+        40,
+        36,
+        37,
+        45,
+        38,
+        42,
+        43,
+        46
+      ]
+    },
+    {
+      "predecessor_pc": "0x800d6aa8",
+      "seed_pc": "0x800d6960",
+      "path": [
+        0,
+        0,
+        0,
+        0,
+        1,
+        1,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "registers": {
+        "x13": {
+          "op": "bvadd",
+          "width": 64,
+          "args": [
+            {
+              "op": "bvand",
+              "width": 64,
+              "args": [
+                {
+                  "op": "sign_extend",
+                  "width": 64,
+                  "args": [
+                    {
+                      "op": "array_byte",
+                      "width": 8,
+                      "value": 0,
+                      "args": [
+                        {
+                          "op": "input",
+                          "value": "decodeItemInputBytes args"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "op": "bits",
+                  "width": 64,
+                  "value": 255
+                }
+              ]
+            },
+            {
+              "op": "bits",
+              "width": 64,
+              "value": 9
+            }
+          ]
+        },
+        "x14": {
+          "op": "bvand",
+          "width": 64,
+          "args": [
+            {
+              "op": "bvadd",
+              "width": 64,
+              "args": [
+                {
+                  "op": "bvand",
+                  "width": 64,
+                  "args": [
+                    {
+                      "op": "sign_extend",
+                      "width": 64,
+                      "args": [
+                        {
+                          "op": "array_byte",
+                          "width": 8,
+                          "value": 0,
+                          "args": [
+                            {
+                              "op": "input",
+                              "value": "decodeItemInputBytes args"
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "op": "bits",
+                      "width": 64,
+                      "value": 255
+                    }
+                  ]
+                },
+                {
+                  "op": "bits",
+                  "width": 64,
+                  "value": 9
+                }
+              ]
+            },
+            {
+              "op": "bits",
+              "width": 64,
+              "value": 255
+            }
+          ]
+        }
+      },
+      "condition_ids": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        10,
+        25,
+        26,
+        27,
+        28,
+        29,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        34,
+        22,
+        23,
+        40,
+        36,
+        37,
+        41,
+        38,
+        42,
+        43,
+        44
+      ]
+    },
+    {
+      "predecessor_pc": "0x800d6a6c",
+      "seed_pc": "0x800d6960",
+      "path": [
+        0,
+        0,
+        0,
+        0,
+        1,
+        1,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0
+      ],
+      "registers": {
+        "x13": {
+          "op": "bvand",
+          "width": 64,
+          "args": [
+            {
+              "op": "bvadd",
+              "width": 64,
+              "args": [
+                {
+                  "op": "bvand",
+                  "width": 64,
+                  "args": [
+                    {
+                      "op": "sign_extend",
+                      "width": 64,
+                      "args": [
+                        {
+                          "op": "array_byte",
+                          "width": 8,
+                          "value": 0,
+                          "args": [
+                            {
+                              "op": "input",
+                              "value": "decodeItemInputBytes args"
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "op": "bits",
+                      "width": 64,
+                      "value": 255
+                    }
+                  ]
+                },
+                {
+                  "op": "bits",
+                  "width": 64,
+                  "value": 64
+                }
+              ]
+            },
+            {
+              "op": "bits",
+              "width": 64,
+              "value": 255
+            }
+          ]
+        },
+        "x14": {
+          "op": "bits",
+          "width": 64,
+          "value": 248
+        }
+      },
+      "condition_ids": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        10,
+        25,
+        26,
+        27,
+        28,
+        29,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        34,
+        22,
+        23,
+        40,
+        36,
+        37,
+        45,
+        38,
+        42,
+        43,
+        46
+      ]
+    },
+    {
+      "predecessor_pc": "0x800d6aa8",
+      "seed_pc": "0x800d6960",
+      "path": [
+        0,
+        0,
+        0,
+        0,
+        1,
+        1,
+        1,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "registers": {
+        "x13": {
+          "op": "bvadd",
+          "width": 64,
+          "args": [
+            {
+              "op": "bvand",
+              "width": 64,
+              "args": [
+                {
+                  "op": "sign_extend",
+                  "width": 64,
+                  "args": [
+                    {
+                      "op": "array_byte",
+                      "width": 8,
+                      "value": 0,
+                      "args": [
+                        {
+                          "op": "input",
+                          "value": "decodeItemInputBytes args"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "op": "bits",
+                  "width": 64,
+                  "value": 255
+                }
+              ]
+            },
+            {
+              "op": "bits",
+              "width": 64,
+              "value": 9
+            }
+          ]
+        },
+        "x14": {
+          "op": "bvand",
+          "width": 64,
+          "args": [
+            {
+              "op": "bvadd",
+              "width": 64,
+              "args": [
+                {
+                  "op": "bvand",
+                  "width": 64,
+                  "args": [
+                    {
+                      "op": "sign_extend",
+                      "width": 64,
+                      "args": [
+                        {
+                          "op": "array_byte",
+                          "width": 8,
+                          "value": 0,
+                          "args": [
+                            {
+                              "op": "input",
+                              "value": "decodeItemInputBytes args"
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "op": "bits",
+                      "width": 64,
+                      "value": 255
+                    }
+                  ]
+                },
+                {
+                  "op": "bits",
+                  "width": 64,
+                  "value": 9
+                }
+              ]
+            },
+            {
+              "op": "bits",
+              "width": 64,
+              "value": 255
+            }
+          ]
+        }
+      },
+      "condition_ids": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        10,
+        25,
+        30,
+        27,
+        28,
+        29,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        34,
+        22,
+        23,
+        40,
+        36,
+        37,
+        41,
+        38,
+        42,
+        43,
+        44
+      ]
+    },
+    {
+      "predecessor_pc": "0x800d6a6c",
+      "seed_pc": "0x800d6960",
+      "path": [
+        0,
+        0,
+        0,
+        0,
+        1,
+        1,
+        1,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0
+      ],
+      "registers": {
+        "x13": {
+          "op": "bvand",
+          "width": 64,
+          "args": [
+            {
+              "op": "bvadd",
+              "width": 64,
+              "args": [
+                {
+                  "op": "bvand",
+                  "width": 64,
+                  "args": [
+                    {
+                      "op": "sign_extend",
+                      "width": 64,
+                      "args": [
+                        {
+                          "op": "array_byte",
+                          "width": 8,
+                          "value": 0,
+                          "args": [
+                            {
+                              "op": "input",
+                              "value": "decodeItemInputBytes args"
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "op": "bits",
+                      "width": 64,
+                      "value": 255
+                    }
+                  ]
+                },
+                {
+                  "op": "bits",
+                  "width": 64,
+                  "value": 64
+                }
+              ]
+            },
+            {
+              "op": "bits",
+              "width": 64,
+              "value": 255
+            }
+          ]
+        },
+        "x14": {
+          "op": "bits",
+          "width": 64,
+          "value": 248
+        }
+      },
+      "condition_ids": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        10,
+        25,
+        30,
+        27,
+        28,
+        29,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        34,
+        22,
+        23,
+        40,
+        36,
+        37,
+        45,
+        38,
+        42,
+        43,
+        46
+      ]
+    },
+    {
+      "predecessor_pc": "0x800d6aa8",
+      "seed_pc": "0x800d6960",
+      "path": [
+        0,
+        0,
+        0,
+        0,
+        1,
+        1,
+        1,
+        0,
+        1,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "registers": {
+        "x13": {
+          "op": "bvadd",
+          "width": 64,
+          "args": [
+            {
+              "op": "bvand",
+              "width": 64,
+              "args": [
+                {
+                  "op": "sign_extend",
+                  "width": 64,
+                  "args": [
+                    {
+                      "op": "array_byte",
+                      "width": 8,
+                      "value": 0,
+                      "args": [
+                        {
+                          "op": "input",
+                          "value": "decodeItemInputBytes args"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "op": "bits",
+                  "width": 64,
+                  "value": 255
+                }
+              ]
+            },
+            {
+              "op": "bits",
+              "width": 64,
+              "value": 9
+            }
+          ]
+        },
+        "x14": {
+          "op": "bvand",
+          "width": 64,
+          "args": [
+            {
+              "op": "bvadd",
+              "width": 64,
+              "args": [
+                {
+                  "op": "bvand",
+                  "width": 64,
+                  "args": [
+                    {
+                      "op": "sign_extend",
+                      "width": 64,
+                      "args": [
+                        {
+                          "op": "array_byte",
+                          "width": 8,
+                          "value": 0,
+                          "args": [
+                            {
+                              "op": "input",
+                              "value": "decodeItemInputBytes args"
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "op": "bits",
+                      "width": 64,
+                      "value": 255
+                    }
+                  ]
+                },
+                {
+                  "op": "bits",
+                  "width": 64,
+                  "value": 9
+                }
+              ]
+            },
+            {
+              "op": "bits",
+              "width": 64,
+              "value": 255
+            }
+          ]
+        }
+      },
+      "condition_ids": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        10,
+        25,
+        30,
+        27,
+        31,
+        32,
+        33,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        34,
+        22,
+        23,
+        40,
+        36,
+        37,
+        41,
+        38,
+        42,
+        43,
+        44
+      ]
+    },
+    {
+      "predecessor_pc": "0x800d6a6c",
+      "seed_pc": "0x800d6960",
+      "path": [
+        0,
+        0,
+        0,
+        0,
+        1,
+        1,
+        1,
+        0,
+        1,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0
+      ],
+      "registers": {
+        "x13": {
+          "op": "bvand",
+          "width": 64,
+          "args": [
+            {
+              "op": "bvadd",
+              "width": 64,
+              "args": [
+                {
+                  "op": "bvand",
+                  "width": 64,
+                  "args": [
+                    {
+                      "op": "sign_extend",
+                      "width": 64,
+                      "args": [
+                        {
+                          "op": "array_byte",
+                          "width": 8,
+                          "value": 0,
+                          "args": [
+                            {
+                              "op": "input",
+                              "value": "decodeItemInputBytes args"
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "op": "bits",
+                      "width": 64,
+                      "value": 255
+                    }
+                  ]
+                },
+                {
+                  "op": "bits",
+                  "width": 64,
+                  "value": 64
+                }
+              ]
+            },
+            {
+              "op": "bits",
+              "width": 64,
+              "value": 255
+            }
+          ]
+        },
+        "x14": {
+          "op": "bits",
+          "width": 64,
+          "value": 248
+        }
+      },
+      "condition_ids": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        10,
+        25,
+        30,
+        27,
+        31,
+        32,
+        33,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        34,
+        22,
+        23,
+        40,
+        36,
+        37,
+        45,
+        38,
+        42,
+        43,
+        46
+      ]
+    }
+  ],
+  "common_registers": {
+    "x10": {
+      "op": "input",
+      "width": 64,
+      "value": "(Z_to_bv 64%N (decodeItemOutputPointer args))"
+    },
+    "x11": {
+      "op": "input",
+      "width": 64,
+      "value": "(Z_to_bv 64%N (decodeItemInputPointer args))"
+    },
+    "x12": {
+      "op": "input",
+      "width": 64,
+      "value": "(Z_to_bv 64%N (decodeItemInputLength args))"
+    },
+    "x15": {
+      "op": "input",
+      "width": 64,
+      "value": "a5"
+    },
+    "x16": {
+      "op": "input",
+      "width": 64,
+      "value": "a6"
+    },
+    "x2": {
+      "op": "bvadd",
+      "width": 64,
+      "args": [
+        {
+          "op": "input",
+          "width": 64,
+          "value": "(Z_to_bv 64%N (decodeItemStackPointer args))"
+        },
+        {
+          "op": "bits",
+          "width": 64,
+          "value": 18446744073709551600
+        }
+      ]
+    },
+    "x1": {
+      "op": "input",
+      "width": 64,
+      "value": "(Z_to_bv 64%N (decodeItemReturnAddress args))"
+    },
+    "x8": {
+      "op": "bvadd",
+      "width": 64,
+      "args": [
+        {
+          "op": "bvadd",
+          "width": 64,
+          "args": [
+            {
+              "op": "input",
+              "width": 64,
+              "value": "(Z_to_bv 64%N (decodeItemStackPointer args))"
+            },
+            {
+              "op": "bits",
+              "width": 64,
+              "value": 18446744073709551600
+            }
+          ]
+        },
+        {
+          "op": "bits",
+          "width": 64,
+          "value": 16
+        }
+      ]
+    }
+  },
+  "conditions": [
+    {
+      "op": "=",
+      "args": [
+        {
+          "op": "bvand",
+          "width": 64,
+          "args": [
+            {
+              "op": "input",
+              "width": 64,
+              "value": "fp_seed_mstatus_bits"
+            },
+            {
+              "op": "bits",
+              "width": 64,
+              "value": 131072
+            }
+          ]
+        },
+        {
+          "op": "bits",
+          "width": 64,
+          "value": 0
+        }
+      ]
+    },
+    {
+      "op": "=",
+      "args": [
+        {
+          "op": "bvand",
+          "width": 64,
+          "args": [
+            {
+              "op": "local",
+              "width": 64,
+              "value": "1:v4"
+            },
+            {
+              "op": "bits",
+              "width": 64,
+              "value": 131072
+            }
+          ]
+        },
+        {
+          "op": "bits",
+          "width": 64,
+          "value": 0
+        }
+      ]
+    },
+    {
+      "op": "not",
+      "args": [
+        {
+          "op": "=",
+          "args": [
+            {
+              "op": "extract",
+              "width": 1,
+              "value": 17,
+              "args": [
+                {
+                  "op": "input",
+                  "width": 64,
+                  "value": "fp_seed_mstatus_bits"
+                }
+              ]
+            },
+            {
+              "op": "bits",
+              "width": 1,
+              "value": 1
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "op": "bvsge",
+      "args": [
+        {
+          "op": "zero_extend",
+          "width": 128,
+          "args": [
+            {
+              "op": "bvadd",
+              "width": 64,
+              "args": [
+                {
+                  "op": "bvadd",
+                  "width": 64,
+                  "args": [
+                    {
+                      "op": "input",
+                      "width": 64,
+                      "value": "(Z_to_bv 64%N (decodeItemStackPointer args))"
+                    },
+                    {
+                      "op": "bits",
+                      "width": 64,
+                      "value": 18446744073709551600
+                    }
+                  ]
+                },
+                {
+                  "op": "bits",
+                  "width": 64,
+                  "value": 8
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "op": "bits",
+          "width": 128,
+          "value": 2684354560
+        }
+      ]
+    },
+    {
+      "op": "bvsle",
+      "args": [
+        {
+          "op": "bvadd",
+          "width": 128,
+          "args": [
+            {
+              "op": "zero_extend",
+              "width": 128,
+              "args": [
+                {
+                  "op": "bvadd",
+                  "width": 64,
+                  "args": [
+                    {
+                      "op": "bvadd",
+                      "width": 64,
+                      "args": [
+                        {
+                          "op": "input",
+                          "width": 64,
+                          "value": "(Z_to_bv 64%N (decodeItemStackPointer args))"
+                        },
+                        {
+                          "op": "bits",
+                          "width": 64,
+                          "value": 18446744073709551600
+                        }
+                      ]
+                    },
+                    {
+                      "op": "bits",
+                      "width": 64,
+                      "value": 8
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "op": "bits",
+              "width": 128,
+              "value": 8
+            }
+          ]
+        },
+        {
+          "op": "bits",
+          "width": 128,
+          "value": 3221225472
+        }
+      ]
+    },
+    {
+      "op": "bvsge",
+      "args": [
+        {
+          "op": "zero_extend",
+          "width": 128,
+          "args": [
+            {
+              "op": "bvadd",
+              "width": 64,
+              "args": [
+                {
+                  "op": "input",
+                  "width": 64,
+                  "value": "(Z_to_bv 64%N (decodeItemStackPointer args))"
+                },
+                {
+                  "op": "bits",
+                  "width": 64,
+                  "value": 18446744073709551600
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "op": "bits",
+          "width": 128,
+          "value": 2684354560
+        }
+      ]
+    },
+    {
+      "op": "bvsle",
+      "args": [
+        {
+          "op": "bvadd",
+          "width": 128,
+          "args": [
+            {
+              "op": "zero_extend",
+              "width": 128,
+              "args": [
+                {
+                  "op": "bvadd",
+                  "width": 64,
+                  "args": [
+                    {
+                      "op": "input",
+                      "width": 64,
+                      "value": "(Z_to_bv 64%N (decodeItemStackPointer args))"
+                    },
+                    {
+                      "op": "bits",
+                      "width": 64,
+                      "value": 18446744073709551600
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "op": "bits",
+              "width": 128,
+              "value": 8
+            }
+          ]
+        },
+        {
+          "op": "bits",
+          "width": 128,
+          "value": 3221225472
+        }
+      ]
+    },
+    {
+      "op": "=",
+      "args": [
+        {
+          "op": "bvand",
+          "width": 64,
+          "args": [
+            {
+              "op": "local",
+              "width": 64,
+              "value": "4:v4"
+            },
+            {
+              "op": "bits",
+              "width": 64,
+              "value": 131072
+            }
+          ]
+        },
+        {
+          "op": "bits",
+          "width": 64,
+          "value": 0
+        }
+      ]
+    },
+    {
+      "op": "=",
+      "args": [
+        {
+          "op": "bvand",
+          "width": 64,
+          "args": [
+            {
+              "op": "local",
+              "width": 64,
+              "value": "5:v4"
+            },
+            {
+              "op": "bits",
+              "width": 64,
+              "value": 131072
+            }
+          ]
+        },
+        {
+          "op": "bits",
+          "width": 64,
+          "value": 0
+        }
+      ]
+    },
+    {
+      "op": "=",
+      "args": [
+        {
+          "op": "input",
+          "width": 64,
+          "value": "(Z_to_bv 64%N (decodeItemInputLength args))"
+        },
+        {
+          "op": "bits",
+          "width": 64,
+          "value": 0
+        }
+      ]
+    },
+    {
+      "op": "not",
+      "args": [
+        {
+          "op": "=",
+          "args": [
+            {
+              "op": "input",
+              "width": 64,
+              "value": "(Z_to_bv 64%N (decodeItemInputLength args))"
+            },
+            {
+              "op": "bits",
+              "width": 64,
+              "value": 0
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "op": "bvsge",
+      "args": [
+        {
+          "op": "zero_extend",
+          "width": 128,
+          "args": [
+            {
+              "op": "input",
+              "width": 64,
+              "value": "(Z_to_bv 64%N (decodeItemInputPointer args))"
+            }
+          ]
+        },
+        {
+          "op": "bits",
+          "width": 128,
+          "value": 2684354560
+        }
+      ]
+    },
+    {
+      "op": "bvsle",
+      "args": [
+        {
+          "op": "bvadd",
+          "width": 128,
+          "args": [
+            {
+              "op": "zero_extend",
+              "width": 128,
+              "args": [
+                {
+                  "op": "input",
+                  "width": 64,
+                  "value": "(Z_to_bv 64%N (decodeItemInputPointer args))"
+                }
+              ]
+            },
+            {
+              "op": "bits",
+              "width": 128,
+              "value": 1
+            }
+          ]
+        },
+        {
+          "op": "bits",
+          "width": 128,
+          "value": 3221225472
+        }
+      ]
+    },
+    {
+      "op": "=",
+      "args": [
+        {
+          "op": "bvand",
+          "width": 64,
+          "args": [
+            {
+              "op": "local",
+              "width": 64,
+              "value": "7:v4"
+            },
+            {
+              "op": "bits",
+              "width": 64,
+              "value": 131072
+            }
+          ]
+        },
+        {
+          "op": "bits",
+          "width": 64,
+          "value": 0
+        }
+      ]
+    },
+    {
+      "op": "bvslt",
+      "args": [
+        {
+          "op": "sign_extend",
+          "width": 128,
+          "args": [
+            {
+              "op": "sign_extend",
+              "width": 64,
+              "args": [
+                {
+                  "op": "array_byte",
+                  "width": 8,
+                  "value": 0,
+                  "args": [
+                    {
+                      "op": "input",
+                      "value": "decodeItemInputBytes args"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "op": "bits",
+          "width": 128,
+          "value": 0
+        }
+      ]
+    },
+    {
+      "op": "=",
+      "args": [
+        {
+          "op": "bvand",
+          "width": 64,
+          "args": [
+            {
+              "op": "local",
+              "width": 64,
+              "value": "8:v4"
+            },
+            {
+              "op": "bits",
+              "width": 64,
+              "value": 131072
+            }
+          ]
+        },
+        {
+          "op": "bits",
+          "width": 64,
+          "value": 0
+        }
+      ]
+    },
+    {
+      "op": "=",
+      "args": [
+        {
+          "op": "bvand",
+          "width": 64,
+          "args": [
+            {
+              "op": "local",
+              "width": 64,
+              "value": "9:v4"
+            },
+            {
+              "op": "bits",
+              "width": 64,
+              "value": 131072
+            }
+          ]
+        },
+        {
+          "op": "bits",
+          "width": 64,
+          "value": 0
+        }
+      ]
+    },
+    {
+      "op": "=",
+      "args": [
+        {
+          "op": "bvand",
+          "width": 64,
+          "args": [
+            {
+              "op": "local",
+              "width": 64,
+              "value": "10:v4"
+            },
+            {
+              "op": "bits",
+              "width": 64,
+              "value": 131072
+            }
+          ]
+        },
+        {
+          "op": "bits",
+          "width": 64,
+          "value": 0
+        }
+      ]
+    },
+    {
+      "op": "not",
+      "args": [
+        {
+          "op": "=",
+          "args": [
+            {
+              "op": "bvand",
+              "width": 64,
+              "args": [
+                {
+                  "op": "sign_extend",
+                  "width": 64,
+                  "args": [
+                    {
+                      "op": "array_byte",
+                      "width": 8,
+                      "value": 0,
+                      "args": [
+                        {
+                          "op": "input",
+                          "value": "decodeItemInputBytes args"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "op": "bits",
+                  "width": 64,
+                  "value": 255
+                }
+              ]
+            },
+            {
+              "op": "bits",
+              "width": 64,
+              "value": 128
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "op": "=",
+      "args": [
+        {
+          "op": "bvand",
+          "width": 64,
+          "args": [
+            {
+              "op": "local",
+              "width": 64,
+              "value": "11:v4"
+            },
+            {
+              "op": "bits",
+              "width": 64,
+              "value": 131072
+            }
+          ]
+        },
+        {
+          "op": "bits",
+          "width": 64,
+          "value": 0
+        }
+      ]
+    },
+    {
+      "op": "=",
+      "args": [
+        {
+          "op": "bvand",
+          "width": 64,
+          "args": [
+            {
+              "op": "local",
+              "width": 64,
+              "value": "12:v4"
+            },
+            {
+              "op": "bits",
+              "width": 64,
+              "value": 131072
+            }
+          ]
+        },
+        {
+          "op": "bits",
+          "width": 64,
+          "value": 0
+        }
+      ]
+    },
+    {
+      "op": "not",
+      "args": [
+        {
+          "op": "bvslt",
+          "args": [
+            {
+              "op": "bits",
+              "width": 128,
+              "value": 183
+            },
+            {
+              "op": "zero_extend",
+              "width": 128,
+              "args": [
+                {
+                  "op": "bvand",
+                  "width": 64,
+                  "args": [
+                    {
+                      "op": "sign_extend",
+                      "width": 64,
+                      "args": [
+                        {
+                          "op": "array_byte",
+                          "width": 8,
+                          "value": 0,
+                          "args": [
+                            {
+                              "op": "input",
+                              "value": "decodeItemInputBytes args"
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "op": "bits",
+                      "width": 64,
+                      "value": 255
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "op": "=",
+      "args": [
+        {
+          "op": "bvand",
+          "width": 64,
+          "args": [
+            {
+              "op": "local",
+              "width": 64,
+              "value": "13:v4"
+            },
+            {
+              "op": "bits",
+              "width": 64,
+              "value": 131072
+            }
+          ]
+        },
+        {
+          "op": "bits",
+          "width": 64,
+          "value": 0
+        }
+      ]
+    },
+    {
+      "op": "=",
+      "args": [
+        {
+          "op": "bvand",
+          "width": 64,
+          "args": [
+            {
+              "op": "local",
+              "width": 64,
+              "value": "14:v4"
+            },
+            {
+              "op": "bits",
+              "width": 64,
+              "value": 131072
+            }
+          ]
+        },
+        {
+          "op": "bits",
+          "width": 64,
+          "value": 0
+        }
+      ]
+    },
+    {
+      "op": "bvsge",
+      "args": [
+        {
+          "op": "zero_extend",
+          "width": 128,
+          "args": [
+            {
+              "op": "bvand",
+              "width": 64,
+              "args": [
+                {
+                  "op": "bvand",
+                  "width": 64,
+                  "args": [
+                    {
+                      "op": "sign_extend",
+                      "width": 64,
+                      "args": [
+                        {
+                          "op": "array_byte",
+                          "width": 8,
+                          "value": 0,
+                          "args": [
+                            {
+                              "op": "input",
+                              "value": "decodeItemInputBytes args"
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "op": "bits",
+                      "width": 64,
+                      "value": 255
+                    }
+                  ]
+                },
+                {
+                  "op": "bits",
+                  "width": 64,
+                  "value": 127
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "op": "zero_extend",
+          "width": 128,
+          "args": [
+            {
+              "op": "input",
+              "width": 64,
+              "value": "(Z_to_bv 64%N (decodeItemInputLength args))"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "op": "not",
+      "args": [
+        {
+          "op": "bvsge",
+          "args": [
+            {
+              "op": "zero_extend",
+              "width": 128,
+              "args": [
+                {
+                  "op": "input",
+                  "width": 64,
+                  "value": "(Z_to_bv 64%N (decodeItemInputPointer args))"
+                }
+              ]
+            },
+            {
+              "op": "bits",
+              "width": 128,
+              "value": 2684354560
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "op": "=",
+      "args": [
+        {
+          "op": "zero_extend",
+          "width": 128,
+          "args": [
+            {
+              "op": "input",
+              "width": 64,
+              "value": "(Z_to_bv 64%N (decodeItemInputPointer args))"
+            }
+          ]
+        },
+        {
+          "op": "bits",
+          "width": 128,
+          "value": 1073741824
+        }
+      ]
+    },
+    {
+      "op": "bvsge",
+      "args": [
+        {
+          "op": "zero_extend",
+          "width": 128,
+          "args": [
+            {
+              "op": "input",
+              "width": 64,
+              "value": "(Z_to_bv 64%N (decodeItemInputPointer args))"
+            }
+          ]
+        },
+        {
+          "op": "bits",
+          "width": 128,
+          "value": 1073741824
+        }
+      ]
+    },
+    {
+      "op": "bvsle",
+      "args": [
+        {
+          "op": "bvadd",
+          "width": 128,
+          "args": [
+            {
+              "op": "zero_extend",
+              "width": 128,
+              "args": [
+                {
+                  "op": "input",
+                  "width": 64,
+                  "value": "(Z_to_bv 64%N (decodeItemInputPointer args))"
+                }
+              ]
+            },
+            {
+              "op": "bits",
+              "width": 128,
+              "value": 1
+            }
+          ]
+        },
+        {
+          "op": "bits",
+          "width": 128,
+          "value": 2147483648
+        }
+      ]
+    },
+    {
+      "op": "bvsle",
+      "args": [
+        {
+          "op": "bvadd",
+          "width": 128,
+          "args": [
+            {
+              "op": "zero_extend",
+              "width": 128,
+              "args": [
+                {
+                  "op": "input",
+                  "width": 64,
+                  "value": "(Z_to_bv 64%N (decodeItemInputPointer args))"
+                }
+              ]
+            },
+            {
+              "op": "bits",
+              "width": 128,
+              "value": 1
+            }
+          ]
+        },
+        {
+          "op": "zero_extend",
+          "width": 128,
+          "args": [
+            {
+              "op": "input",
+              "width": 64,
+              "value": "(Z_to_bv 64%N (decodeItemInputEnd args))"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "op": "not",
+      "args": [
+        {
+          "op": "=",
+          "args": [
+            {
+              "op": "zero_extend",
+              "width": 128,
+              "args": [
+                {
+                  "op": "input",
+                  "width": 64,
+                  "value": "(Z_to_bv 64%N (decodeItemInputPointer args))"
+                }
+              ]
+            },
+            {
+              "op": "bits",
+              "width": 128,
+              "value": 1073741824
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "op": "not",
+      "args": [
+        {
+          "op": "bvsle",
+          "args": [
+            {
+              "op": "bvadd",
+              "width": 128,
+              "args": [
+                {
+                  "op": "zero_extend",
+                  "width": 128,
+                  "args": [
+                    {
+                      "op": "input",
+                      "width": 64,
+                      "value": "(Z_to_bv 64%N (decodeItemInputPointer args))"
+                    }
+                  ]
+                },
+                {
+                  "op": "bits",
+                  "width": 128,
+                  "value": 1
+                }
+              ]
+            },
+            {
+              "op": "bits",
+              "width": 128,
+              "value": 2147483648
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "op": "bvsge",
+      "args": [
+        {
+          "op": "zero_extend",
+          "width": 128,
+          "args": [
+            {
+              "op": "input",
+              "width": 64,
+              "value": "(Z_to_bv 64%N (decodeItemInputPointer args))"
+            }
+          ]
+        },
+        {
+          "op": "bits",
+          "width": 128,
+          "value": 2148597120
+        }
+      ]
+    },
+    {
+      "op": "bvsle",
+      "args": [
+        {
+          "op": "bvadd",
+          "width": 128,
+          "args": [
+            {
+              "op": "zero_extend",
+              "width": 128,
+              "args": [
+                {
+                  "op": "input",
+                  "width": 64,
+                  "value": "(Z_to_bv 64%N (decodeItemInputPointer args))"
+                }
+              ]
+            },
+            {
+              "op": "bits",
+              "width": 128,
+              "value": 1
+            }
+          ]
+        },
+        {
+          "op": "bits",
+          "width": 128,
+          "value": 2148632184
+        }
+      ]
+    },
+    {
+      "op": "bvslt",
+      "args": [
+        {
+          "op": "bits",
+          "width": 128,
+          "value": 183
+        },
+        {
+          "op": "zero_extend",
+          "width": 128,
+          "args": [
+            {
+              "op": "bvand",
+              "width": 64,
+              "args": [
+                {
+                  "op": "sign_extend",
+                  "width": 64,
+                  "args": [
+                    {
+                      "op": "array_byte",
+                      "width": 8,
+                      "value": 0,
+                      "args": [
+                        {
+                          "op": "input",
+                          "value": "decodeItemInputBytes args"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "op": "bits",
+                  "width": 64,
+                  "value": 255
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "op": "not",
+      "args": [
+        {
+          "op": "bvsge",
+          "args": [
+            {
+              "op": "zero_extend",
+              "width": 128,
+              "args": [
+                {
+                  "op": "bvand",
+                  "width": 64,
+                  "args": [
+                    {
+                      "op": "sign_extend",
+                      "width": 64,
+                      "args": [
+                        {
+                          "op": "array_byte",
+                          "width": 8,
+                          "value": 0,
+                          "args": [
+                            {
+                              "op": "input",
+                              "value": "decodeItemInputBytes args"
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "op": "bits",
+                      "width": 64,
+                      "value": 255
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "op": "bits",
+              "width": 128,
+              "value": 192
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "op": "=",
+      "args": [
+        {
+          "op": "bvand",
+          "width": 64,
+          "args": [
+            {
+              "op": "local",
+              "width": 64,
+              "value": "15:v4"
+            },
+            {
+              "op": "bits",
+              "width": 64,
+              "value": 131072
+            }
+          ]
+        },
+        {
+          "op": "bits",
+          "width": 64,
+          "value": 0
+        }
+      ]
+    },
+    {
+      "op": "=",
+      "args": [
+        {
+          "op": "bvand",
+          "width": 64,
+          "args": [
+            {
+              "op": "local",
+              "width": 64,
+              "value": "16:v4"
+            },
+            {
+              "op": "bits",
+              "width": 64,
+              "value": 131072
+            }
+          ]
+        },
+        {
+          "op": "bits",
+          "width": 64,
+          "value": 0
+        }
+      ]
+    },
+    {
+      "op": "=",
+      "args": [
+        {
+          "op": "bvand",
+          "width": 64,
+          "args": [
+            {
+              "op": "local",
+              "width": 64,
+              "value": "17:v4"
+            },
+            {
+              "op": "bits",
+              "width": 64,
+              "value": 131072
+            }
+          ]
+        },
+        {
+          "op": "bits",
+          "width": 64,
+          "value": 0
+        }
+      ]
+    },
+    {
+      "op": "bvsge",
+      "args": [
+        {
+          "op": "zero_extend",
+          "width": 128,
+          "args": [
+            {
+              "op": "bvand",
+              "width": 64,
+              "args": [
+                {
+                  "op": "bvadd",
+                  "width": 64,
+                  "args": [
+                    {
+                      "op": "bvand",
+                      "width": 64,
+                      "args": [
+                        {
+                          "op": "sign_extend",
+                          "width": 64,
+                          "args": [
+                            {
+                              "op": "array_byte",
+                              "width": 8,
+                              "value": 0,
+                              "args": [
+                                {
+                                  "op": "input",
+                                  "value": "decodeItemInputBytes args"
+                                }
+                              ]
+                            }
+                          ]
+                        },
+                        {
+                          "op": "bits",
+                          "width": 64,
+                          "value": 255
+                        }
+                      ]
+                    },
+                    {
+                      "op": "bits",
+                      "width": 64,
+                      "value": 73
+                    }
+                  ]
+                },
+                {
+                  "op": "bits",
+                  "width": 64,
+                  "value": 255
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "op": "zero_extend",
+          "width": 128,
+          "args": [
+            {
+              "op": "input",
+              "width": 64,
+              "value": "(Z_to_bv 64%N (decodeItemInputLength args))"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "op": "bvsge",
+      "args": [
+        {
+          "op": "zero_extend",
+          "width": 128,
+          "args": [
+            {
+              "op": "bvand",
+              "width": 64,
+              "args": [
+                {
+                  "op": "sign_extend",
+                  "width": 64,
+                  "args": [
+                    {
+                      "op": "array_byte",
+                      "width": 8,
+                      "value": 0,
+                      "args": [
+                        {
+                          "op": "input",
+                          "value": "decodeItemInputBytes args"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "op": "bits",
+                  "width": 64,
+                  "value": 255
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "op": "bits",
+          "width": 128,
+          "value": 192
+        }
+      ]
+    },
+    {
+      "op": "bvsge",
+      "args": [
+        {
+          "op": "zero_extend",
+          "width": 128,
+          "args": [
+            {
+              "op": "bvand",
+              "width": 64,
+              "args": [
+                {
+                  "op": "sign_extend",
+                  "width": 64,
+                  "args": [
+                    {
+                      "op": "array_byte",
+                      "width": 8,
+                      "value": 0,
+                      "args": [
+                        {
+                          "op": "input",
+                          "value": "decodeItemInputBytes args"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "op": "bits",
+                  "width": 64,
+                  "value": 255
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "op": "bits",
+          "width": 128,
+          "value": 248
+        }
+      ]
+    },
+    {
+      "op": "=",
+      "args": [
+        {
+          "op": "bvand",
+          "width": 64,
+          "args": [
+            {
+              "op": "local",
+              "width": 64,
+              "value": "18:v4"
+            },
+            {
+              "op": "bits",
+              "width": 64,
+              "value": 131072
+            }
+          ]
+        },
+        {
+          "op": "bits",
+          "width": 64,
+          "value": 0
+        }
+      ]
+    },
+    {
+      "op": "=",
+      "args": [
+        {
+          "op": "bvand",
+          "width": 64,
+          "args": [
+            {
+              "op": "local",
+              "width": 64,
+              "value": "19:v4"
+            },
+            {
+              "op": "bits",
+              "width": 64,
+              "value": 131072
+            }
+          ]
+        },
+        {
+          "op": "bits",
+          "width": 64,
+          "value": 0
+        }
+      ]
+    },
+    {
+      "op": "bvsge",
+      "args": [
+        {
+          "op": "zero_extend",
+          "width": 128,
+          "args": [
+            {
+              "op": "bvand",
+              "width": 64,
+              "args": [
+                {
+                  "op": "bvadd",
+                  "width": 64,
+                  "args": [
+                    {
+                      "op": "bvand",
+                      "width": 64,
+                      "args": [
+                        {
+                          "op": "sign_extend",
+                          "width": 64,
+                          "args": [
+                            {
+                              "op": "array_byte",
+                              "width": 8,
+                              "value": 0,
+                              "args": [
+                                {
+                                  "op": "input",
+                                  "value": "decodeItemInputBytes args"
+                                }
+                              ]
+                            }
+                          ]
+                        },
+                        {
+                          "op": "bits",
+                          "width": 64,
+                          "value": 255
+                        }
+                      ]
+                    },
+                    {
+                      "op": "bits",
+                      "width": 64,
+                      "value": 9
+                    }
+                  ]
+                },
+                {
+                  "op": "bits",
+                  "width": 64,
+                  "value": 255
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "op": "zero_extend",
+          "width": 128,
+          "args": [
+            {
+              "op": "input",
+              "width": 64,
+              "value": "(Z_to_bv 64%N (decodeItemInputLength args))"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "op": "not",
+      "args": [
+        {
+          "op": "bvsge",
+          "args": [
+            {
+              "op": "zero_extend",
+              "width": 128,
+              "args": [
+                {
+                  "op": "bvand",
+                  "width": 64,
+                  "args": [
+                    {
+                      "op": "sign_extend",
+                      "width": 64,
+                      "args": [
+                        {
+                          "op": "array_byte",
+                          "width": 8,
+                          "value": 0,
+                          "args": [
+                            {
+                              "op": "input",
+                              "value": "decodeItemInputBytes args"
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "op": "bits",
+                      "width": 64,
+                      "value": 255
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "op": "bits",
+              "width": 128,
+              "value": 248
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "op": "bvsge",
+      "args": [
+        {
+          "op": "zero_extend",
+          "width": 128,
+          "args": [
+            {
+              "op": "bvand",
+              "width": 64,
+              "args": [
+                {
+                  "op": "bvadd",
+                  "width": 64,
+                  "args": [
+                    {
+                      "op": "bvand",
+                      "width": 64,
+                      "args": [
+                        {
+                          "op": "sign_extend",
+                          "width": 64,
+                          "args": [
+                            {
+                              "op": "array_byte",
+                              "width": 8,
+                              "value": 0,
+                              "args": [
+                                {
+                                  "op": "input",
+                                  "value": "decodeItemInputBytes args"
+                                }
+                              ]
+                            }
+                          ]
+                        },
+                        {
+                          "op": "bits",
+                          "width": 64,
+                          "value": 255
+                        }
+                      ]
+                    },
+                    {
+                      "op": "bits",
+                      "width": 64,
+                      "value": 64
+                    }
+                  ]
+                },
+                {
+                  "op": "bits",
+                  "width": 64,
+                  "value": 255
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "op": "zero_extend",
+          "width": 128,
+          "args": [
+            {
+              "op": "input",
+              "width": 64,
+              "value": "(Z_to_bv 64%N (decodeItemInputLength args))"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

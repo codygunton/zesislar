@@ -163,6 +163,17 @@ class GuardNormalForm:
         if value.op == 'sign_extend' and value.width == value.args[0].width:
             self._record('bv_sign_extend_identity')
             return self.unsigned(value.args[0])
+        if value.op == 'sign_extend' and value.width > value.args[0].width:
+            viewed = self.unsigned(value.args[0])
+            lower, upper = self.interval(viewed)
+            if upper < 1 << (value.args[0].width - 1):
+                self._record('bv_sign_extend_unsigned_nonnegative', lower=lower, upper=upper)
+                return viewed
+            viewed = self.signed(value.args[0])
+            lower, upper = self.interval(viewed)
+            if lower >= 0:
+                self._record('bv_sign_extend_unsigned_nonnegative', lower=lower, upper=upper)
+                return viewed
         if value.op == 'bvand' and value.args[1].op == 'bits':
             word, mask = value.args
             modulus = mask.value + 1

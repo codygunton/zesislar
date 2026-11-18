@@ -3,7 +3,18 @@ Require Import ZesuSsz.Automation.EntryIntro.
 Require Import ZesuMachineMap.Machine.
 Require Export ZesuSsz.Automation.ByteArrays.
 Require Export ZesuSsz.Automation.Hooks.
+Require Import ZesuSsz.Automation.HypothesisCast.
+Require Import ZesuSsz.Automation.ByteMaskCast.
+Require Import ZesuSsz.Automation.ByteReconstruction.
 Require Import ZesuSsz.Automation.SwitchDispatch.
+Require Import ZesuSsz.Automation.BranchUnsigned.
+Require Import ZesuSsz.Automation.BranchCastUnsigned.
+Require Import ZesuSsz.Automation.SymbolicByteCodec.
+Require Import ZesuSsz.Automation.MaskPresentation.
+Require Import ZesuSsz.Automation.MaskWrapPresentation.
+Require Import ZesuSsz.Automation.FramePackingFinish.
+Require Import ZesuSsz.Automation.ArrayPayloadPresentation.
+Require Import ZesuSsz.Automation.StoreMemoryLookup.
 Require Import ZesuSsz.Automation.ContextCollection.
 Require Export ZesuSsz.Automation.ArrayCursors.
 Require Import ZesuSsz.Automation.ArrayByteValues.
@@ -526,8 +537,87 @@ Ltac zesu_finish_list_cons_final :=
       solve [zesu_finish_contract_arithmetic]
   end.
 
-(* The search keeps the baseline closers. New work runs only in the tail. *)
+(* Restore only an already-enabled capability after the search scope ends. *)
+Ltac zesu_finish_unsigned_branch :=
+  ZesuSsz.Automation.SwitchDispatch.zesu_switch_enabled
+    constr:(ZesuSsz.Automation.BitvectorFacts.ZesuStepBranchGuards);
+  let capability := constr:(_ : ZesuSsz.Automation.BitvectorFacts.ZesuStepBranchGuards) in
+  assert_fails ltac:(idtac; has_evar capability);
+  let enabled := fresh "HbranchSwitch" in
+  pose proof capability as enabled;
+  first [ZesuSsz.Automation.BranchUnsigned.zesu_unsigned_branch_evidence |
+    ZesuSsz.Automation.BranchCastUnsigned.zesu_unsigned_branch_cast_evidence].
+
+(* Enable capabilities only while closing a residual after the search. *)
+Ltac zesu_finish_residual_switches :=
+  let branch := fresh "HlocalBranchSwitch" in
+  let mask := fresh "HlocalMaskSwitch" in
+  let codec := fresh "HlocalCodecSwitch" in
+  assert (branch : ZesuSsz.Automation.BitvectorFacts.ZesuStepBranchGuards) by exact I;
+  assert (mask : ZesuSsz.Automation.BitvectorFacts.ZesuStepMaskNormalizer) by exact I;
+  assert (codec : ZesuSsz.Automation.SymbolicByteCodec.ZesuStepSymbolicByteCodec) by constructor.
+
+(* An unsuccessful cascade restores the goal and its original capabilities. *)
+Ltac zesu_finish_residual_cascade :=
+  solve [
+    zesu_finish_residual_switches;
+    first [ solve [ZesuSsz.Automation.HypothesisCast.zesu_hypothesis_cast_finish]
+          | solve [ZesuSsz.Automation.ByteMaskCast.zesu_byte_mask_cast]
+          | solve [ZesuSsz.Automation.ByteReconstruction.zesu_byte_reconstruction ltac:(lia)]
+          | solve [ZesuSsz.Automation.SymbolicByteCodec.zesu_symbolic_byte_codec]
+          | solve [ZesuSsz.Automation.MaskPresentation.zesu_mask_sign_extend_presentation]
+          | solve [ZesuSsz.Automation.MaskWrapPresentation.zesu_mask_wrap_presentation]
+          | solve [ZesuSsz.Automation.BranchCastUnsigned.zesu_unsigned_branch_cast_evidence]
+          | solve [ZesuSsz.Automation.BranchUnsigned.zesu_unsigned_branch_evidence]
+          | solve [ZesuSsz.Automation.FramePackingFinish.zesu_frame_packing_finish]
+          | solve [ZesuSsz.Automation.ArrayPayloadPresentation.zesu_array_payload_presentation
+              ltac:(first [ZesuSsz.Automation.SymbolicByteCodec.zesu_symbolic_byte_codec |
+      ZesuSsz.Automation.FramePackingFinish.zesu_frame_packing_finish])] ]
+  ].
+
+(* Fast generic evidence transport precedes broad arithmetic. *)
+Ltac zesu_union_required_pure :=
+  first [ZesuSsz.Automation.HypothesisCast.zesu_hypothesis_cast_finish |
+    ZesuSsz.Automation.ByteMaskCast.zesu_byte_mask_cast |
+    ZesuSsz.Automation.ByteReconstruction.zesu_byte_reconstruction ltac:(lia) |
+    ZesuSsz.Automation.MaskPresentation.zesu_mask_sign_extend_presentation |
+    ZesuSsz.Automation.MaskWrapPresentation.zesu_mask_wrap_presentation |
+    ZesuSsz.Automation.StoreMemoryLookup.zesu_store_splice_bounds |
+    ZesuSsz.Automation.SymbolicByteCodec.zesu_symbolic_byte_codec |
+    ZesuSsz.Automation.BranchCastUnsigned.zesu_unsigned_branch_cast_evidence |
+    ZesuSsz.Automation.BranchUnsigned.zesu_unsigned_branch_evidence |
+    ZesuSsz.Automation.FramePackingFinish.zesu_frame_packing_finish].
+
+Ltac zesu_union_pure_leaf :=
+  first [ZesuSsz.Automation.UnionRuleComponents.block2_signed_mask_solve |
+    ZesuSsz.Automation.UnionRuleComponents.block2_f7_arithmetic |
+    assumption | ZesuSsz.Automation.UnionRuleComponents.range_interval].
+
+Ltac zesu_union_pure_finish :=
+  zesu_final_pure_head_gate;
+  first [zesu_union_required_pure |
+    ZesuSsz.Automation.UnionRuleComponents.block2_signed_mask_solve |
+    ZesuSsz.Automation.UnionRuleComponents.block2_f7_arithmetic |
+    (try ZesuSsz.Automation.UnionRuleComponents.block2_range_add_zero_goal;
+     try ZesuSsz.Automation.UnionRuleComponents.block2_range_boolean_goal;
+     try ZesuSsz.Automation.UnionRuleComponents.range_unsigned_facts;
+     zesu_union_pure_leaf)].
+
+
+(* The common pure path uses existing facts and bounded address rewrites. *)
+Ltac zesu_finish_common_pure :=
+  zesu_final_pure_head_gate;
+  first [zesu_union_required_pure | solve [
+    zesu_saturate_derived_facts;
+    repeat first [progress zesu_split_folded_pure |
+      match goal with Hpair : _ /\ _ |- _ => destruct Hpair end];
+    zesu_normalize_machine_map;
+    autorewrite with isla_coq_rewrite;
+    zesu_union_pure_finish]].
+
+(* The common pure path and final tail share the union helper. Baseline closers remain available. *)
 Ltac zesu_finish_final_pure :=
+  first [zesu_finish_common_pure |
   zesu_final_pure_head_gate;
   zesu_saturate_derived_facts;
   try solve [
@@ -545,17 +635,19 @@ Ltac zesu_finish_final_pure :=
           zesu_finish_simpl_and_leaf |
           lazymatch goal with |- and _ _ => split; finish_leaf end]
       in finish_leaf
-    | zesu_finish_list_cons_final]].
+    | zesu_finish_list_cons_final]]].
+
 
 
 Ltac zesu_finish_pure_goal :=
-  zesu_finish_pure_goal_base;
+  first [zesu_finish_common_pure |
+zesu_finish_pure_goal_base;
   try solve [
     first [
       zesu_finish_negated_ge; zesu_finish_implication_pair; repeat split;
       first [reflexivity | assumption | eassumption | lia | bv_solve |
         zesu_finish_forall_leaf]
-    | repeat split; zesu_finish_forall_leaf]].
+    | repeat split; zesu_finish_forall_leaf]]].
 
 Ltac zesu_finish_entailment :=
   lazymatch goal with
@@ -583,7 +675,14 @@ Ltac zesu_finish_v2 :=
   end;
   zesu_finish_dispatch.
 
+Ltac zesu_union_array_payload_finish :=
+  ZesuSsz.Automation.Hooks.zesu_array_payload_presentation
+    ltac:(first [ZesuSsz.Automation.SymbolicByteCodec.zesu_symbolic_byte_codec |
+      ZesuSsz.Automation.FramePackingFinish.zesu_frame_packing_finish]).
+
 Ltac zesu_finish_base :=
+  first [solve [zesu_union_array_payload_finish] |
+  zesu_finish_common_pure |
   try solve [zesu_array_region_selection_if_enabled];
   tryif zesu_defer_unresolved_sidecondition_if_enabled then idtac else (
   try solve [zesu_list_cons_witness_if_enabled |
@@ -592,7 +691,7 @@ Ltac zesu_finish_base :=
   then tryif let _ := constr:(_ : ZesuStepBoundedArithmetic) in idtac
        then try (zesu_finish_v2)
        else zesu_finish_v2
-  else zesu_finish_v1).
+  else zesu_finish_v1)].
 
 Ltac zesu_finish := zesu_finish_once_if_enabled ltac:(zesu_finish_base).
 
@@ -728,7 +827,7 @@ Ltac zesu_finish_initialized_array_read :=
    of its own tactics in `timeout`. *)
 Ltac zesu_run_pass_steps :=
   first
-    [zesu_target_registered_intro_if_enabled |
+    [zesu_union_witness_step | zesu_target_registered_intro_if_enabled |
      zesu_open_requested_instr_bundle |
      zesu_open_requested_struct_sys_package |
      zesu_open_requested_saved_x9_package |
@@ -737,6 +836,7 @@ Ltac zesu_run_pass_steps :=
      zesu_pack_owned_word_goal | zesu_normalize_packed_word_subsume |
      zesu_prepare_initialized_array_read |
      zesu_finish_initialized_array_read |
+     ZesuSsz.Automation.StoreMemoryLookup.zesu_store_memory_lookup |
      zesu_liAStep | zesu_open_matching_two_level_frame |
      zesu_extract_matching_descriptor_pure].
 
@@ -745,7 +845,7 @@ Ltac zesu_run_pass_v1 :=
   try zesu_prepare_uninit_goal;
   try zesu_normalize_find_mem_address;
   unshelve (time "zesu_run" repeat first
-    [zesu_target_registered_intro_if_enabled |
+    [zesu_union_witness_step | zesu_target_registered_intro_if_enabled |
      zesu_open_requested_instr_bundle |
      zesu_open_requested_struct_sys_package |
      zesu_open_requested_saved_x9_package |
@@ -754,6 +854,7 @@ Ltac zesu_run_pass_v1 :=
      zesu_pack_owned_word_goal | zesu_normalize_packed_word_subsume |
      zesu_prepare_initialized_array_read |
      zesu_finish_initialized_array_read |
+     ZesuSsz.Automation.StoreMemoryLookup.zesu_store_memory_lookup |
      zesu_liAStep | zesu_open_matching_two_level_frame |
      zesu_extract_matching_descriptor_pure]; liShow;
     try zesu_finish_closed_wand;
@@ -785,6 +886,10 @@ Ltac zesu_run_pass :=
 (* Resolve the approved switch set in the current search context. *)
 Ltac zesu_search_switches := constr:([
   ZesuStepContextCollection; ZesuStepFinisherOnce;
+  ZesuSsz.Automation.HypothesisCast.ZesuStepHypothesisCast;
+  ZesuSsz.Automation.ByteMaskCast.ZesuStepByteMaskCast;
+  ZesuSsz.Automation.ByteReconstruction.ZesuStepByteReconstruction;
+  ZesuSsz.Automation.RewriteBoundGuards.ZesuStepRewriteBoundGuards;
   ZesuSsz.Automation.Hooks.ZesuStepRegionFaultNormalization; ZesuSsz.Automation.Hooks.ZesuStepInstructionLookup;
   ZesuSsz.Automation.Hooks.ZesuStepStackWrite; ZesuSsz.Automation.Hooks.ZesuStepRamFault; ZesuSsz.Automation.Hooks.ZesuStepRegionFault;
   ZesuSsz.Automation.BitvectorFacts.ZesuStepLowMask; ZesuSsz.Automation.EntryIntro.ZesuStepEntryIntro; ZesuSsz.Automation.Hooks.ZesuStepIntegerArrayAddress; ZesuSsz.Automation.Hooks.ZesuStepRecordWitness;
@@ -803,7 +908,10 @@ Ltac zesu_search_switches := constr:([
   ZesuSsz.Automation.IntegerReturn.ZesuStepIntegerReturn;
   ZesuSsz.Automation.ExitMeaning.ZesuStepExitMeaning;
   ZesuSsz.Automation.ConjunctMatch.ZesuStepConjunctMatch;
-  ZesuSsz.Automation.BitvectorFacts.ZesuStepBranchGuards]).
+  ZesuSsz.Automation.BitvectorFacts.ZesuStepBranchGuards;
+  ZesuSsz.Automation.StoreMemoryLookup.ZesuStepStoreMemoryLookup;
+  ZesuSsz.Automation.SymbolicByteCodec.ZesuStepSymbolicByteCodec;
+  ZesuSsz.Automation.FramePacking.ZesuStepFramePacking]).
 
 Ltac zesu_run :=
   let switches := zesu_search_switches in
@@ -875,12 +983,13 @@ Ltac zesu_block_base :=
   zesu_with_rule_set ltac:(zesu_block_v1) ltac:(zesu_block_v2).
 
 Ltac zesu_block :=
-  tryif zesu_switch_enabled constr:(ZesuStepContextCollection)
+  (tryif zesu_switch_enabled constr:(ZesuStepContextCollection)
   then first [solve [zesu_block_base] |
     idtac "ZESU_COLLECTION_FALLBACK";
     pose proof zesu_context_collection_off_intro;
     zesu_block_base]
-  else zesu_block_base.
+  else zesu_block_base);
+  try zesu_finish_residual_cascade.
 
 Ltac zesu_block_simpl :=
   iStartProof;

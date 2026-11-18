@@ -6,6 +6,7 @@ equalities.  Rocq must still check the emitted terms and their application.
 """
 
 import hashlib
+import re
 from pathlib import Path
 
 from check_data_only_lemmas import atom, rocq_commands, rocq_tokens, top_level_positions
@@ -24,6 +25,16 @@ def _words(command):
             result.append(token)
         previous_end = position + len(token)
     return result
+
+
+def closed_bitvector_width(kind):
+    """Read a literal bv width; the optional N scope does not change its type."""
+    values = _words(rocq_tokens(kind))
+    if values[-2:] == ["%", "N"]:
+        values = values[:-2]
+    if len(values) != 2 or values[0] != "bv" or not values[1].isdigit():
+        raise ValueError("The source register needs an explicit bitvector width.")
+    return int(values[1])
 
 
 def _unwrap(values):
@@ -54,24 +65,8 @@ def _register_owners(body):
     return result
 
 
-def has_witness_slots(source, name):
-    commands = [command for command in rocq_commands(source)
-                if [token for token, _ in command[:2]] == ["Definition", name]]
-    if len(commands) != 1:
-        raise ValueError("The witness target needs one source Definition.")
-    values = _words(commands[0])
-    position = values.index(":=") + 1
-    while position < len(values) and values[position] == "(":
-        position += 1
-    return values[position:position + 1] == ["∃"]
-
-
-def declared_witness_slots(source, name):
-    """Read one flat leading telescope, retaining every used existential.
-
-    Only syntactically unused slots disappear.  Resource ownership never makes
-    a slot disappear.  Nested binders are refused rather than guessed through.
-    """
+def _entry_body(source, name):
+    """Locate the telescope after exact, typed, non-recursive source lets."""
     commands = [command for command in rocq_commands(source)
                 if [token for token, _ in command[:2]] == ["Definition", name]]
     if len(commands) != 1:
@@ -80,8 +75,94 @@ def declared_witness_slots(source, name):
     if ":=" not in values:
         raise ValueError("The witness target has no body.")
     position = values.index(":=") + 1
-    while position < len(values) and values[position] == "(":
-        position += 1
+    reserved = {slot["name"] for slot in declared_binders(source, name)}
+    lets = []
+    while True:
+        while position < len(values) and values[position] == "(":
+            position += 1
+        if values[position:position + 1] != ["let"]:
+            return values, position, lets
+        local = values[position + 1:position + 2]
+        if (not local or not re.fullmatch(r"[A-Za-z_][A-Za-z_0-9']*", local[0])
+                or local[0] == "_" or values[position + 2:position + 3] != [":"]):
+            raise ValueError("An outer source let needs one named, typed binder.")
+        if local[0] in reserved:
+            raise ValueError("An outer source let shadows an existing binder.")
+        typed = position + 3
+        assignments = top_level_positions(values[typed:], {":="})
+        if not assignments:
+            raise ValueError("An outer source let has no value.")
+        assignment = typed + assignments[0]
+        starts = assignment + 1
+        ends = top_level_positions(values[starts:], {"in"})
+        if not ends:
+            raise ValueError("An outer source let has no continuation.")
+        end = starts + ends[0]
+        kind, value = values[typed:assignment], values[starts:end]
+        if (not kind or not value or local[0] in kind + value
+                or set(value).intersection({"let", "match"})):
+            raise ValueError("An outer source let has an unsupported value or binder scope.")
+        lets.append(dict(name=local[0], type=kind, value=value))
+        reserved.add(local[0])
+        position = end + 1
+
+
+def has_witness_slots(source, name):
+    values, position, _ = _entry_body(source, name)
+    return values[position:position + 1] == ["∃"]
+
+
+def _resource_body(body, reserved):
+    """Inspect resource tokens while checking lambdas inside pure facts only."""
+    resources, pure, lambda_names = [], False, set()
+    for index, token in enumerate(body):
+        if token == "⌜":
+            if pure:
+                raise ValueError("The witness body has nested pure facts.")
+            pure, lambda_names = True, set()
+        elif token == "⌝":
+            if not pure:
+                raise ValueError("The witness body has an unmatched pure fact.")
+            pure = False
+        elif token in {"∃", "∀", "forall", "let", "match"}:
+            raise ValueError("The witness body has unsupported nested binders.")
+        elif token in {"fun", "λ"}:
+            if not pure:
+                raise ValueError("The witness body has unsupported nested binders outside pure facts.")
+            end = body.index("⌝", index)
+            tail = body[index + 1:end]
+            arrows = top_level_positions(tail, {"=>"})
+            if not arrows:
+                raise ValueError("A pure lambda needs an explicit typed telescope.")
+            telescope = tail[:arrows[0]]
+            if not telescope or ":" not in telescope:
+                raise ValueError("A pure lambda needs an explicit typed telescope.")
+            if telescope[0] != "(":
+                telescope = ["(", *telescope, ")"]
+            parameters = declared_binders("Definition lambda_slots " + " ".join(telescope)
+                                           + " : Type := unit.", "lambda_slots")
+            names = [parameter["name"] for parameter in parameters]
+            if (not names or len(set(names)) != len(names)
+                    or set(names).intersection(reserved | lambda_names)):
+                raise ValueError("A pure lambda shadows a parameter or witness binder.")
+            if any(set(_words(rocq_tokens(parameter["type"]))).intersection(reserved | set(names))
+                   for parameter in parameters):
+                raise ValueError("A pure lambda type depends on a local binder.")
+            lambda_names.update(names)
+        if not pure and token not in {"⌜", "⌝"}:
+            resources.append(token)
+    if pure:
+        raise ValueError("The witness body has an unfinished pure fact.")
+    return resources
+
+
+def declared_witness_slots(source, name):
+    """Read one flat leading telescope, retaining every used existential.
+
+    Only syntactically unused slots disappear.  Resource ownership never makes
+    a slot disappear.  Nested binders are refused rather than guessed through.
+    """
+    values, position, lets = _entry_body(source, name)
     if values[position:position + 1] != ["∃"]:
         raise ValueError("The witness target needs a leading existential telescope.")
     position += 1
@@ -95,16 +176,20 @@ def declared_witness_slots(source, name):
     if not slots or len({slot["name"] for slot in slots}) != len(slots):
         raise ValueError("The witness telescope is empty or repeats a name.")
     outer = {slot["name"] for slot in declared_binders(source, name)}
+    locals_ = {item["name"] for item in lets}
     names = {slot["name"] for slot in slots}
-    if names.intersection(outer):
+    if names.intersection(outer | locals_):
         raise ValueError("The witness telescope shadows a declaration parameter.")
+    if any(names.intersection(item["value"] + item["type"]) for item in lets):
+        raise ValueError("An outer source let refers to a witness outside its scope.")
+    if any(locals_.intersection(_words(rocq_tokens(slot["type"]))) for slot in slots):
+        raise ValueError("The witness telescope depends on a source-local let.")
     if any(names.intersection(token for token, _ in rocq_tokens(slot["type"])) for slot in slots):
         raise ValueError("The witness telescope needs a dependent product.")
     body = values[position + 1:]
-    if set(body).intersection({"∃", "∀", "forall", "fun", "let", "match"}):
-        raise ValueError("The witness body has unsupported nested binders.")
+    resources = _resource_body(body, outer | locals_ | names)
     register_slots = {}
-    for register, word in _register_owners(body):
+    for register, word in _register_owners(resources):
         # Only a direct existential variable, with an optional annotation,
         # determines a register slot. Compound expressions are not inverted.
         if word and (len(word) == 1 or word[1:2] == [":"]):
@@ -114,7 +199,7 @@ def declared_witness_slots(source, name):
                 register_slots[word[0]] = register
     return dict(declared=slots, vacuous=[slot for slot in slots if slot["name"] not in body],
                 remaining=[slot for slot in slots if slot["name"] in body],
-                register_slots=register_slots)
+                register_slots=register_slots, outer_lets=lets)
 
 
 def check_witness_shape(expected, supplied):
@@ -126,6 +211,27 @@ def check_witness_shape(expected, supplied):
             raise ValueError("The witness slot order differs at slot " + str(index) + ".")
         if normalize_type(target["type"]) != normalize_type(source["type"]):
             raise ValueError("The witness slot type differs at slot " + str(index) + ".")
+
+
+def runtime_witness_slots(binding):
+    """Keep the complete telescope and authenticate each vacuous bitvector."""
+    _source_declaration(binding)
+    layout = declared_witness_slots(Path(binding['path']).read_text(), binding['declaration'])
+    result = []
+    for index, slot in enumerate(layout['declared']):
+        vacuous = slot in layout['vacuous']
+        row = dict(slot, declaration_index=index, vacuous=vacuous,
+                   name_origin={'declaration': binding, 'pointer': '/declared/' + str(index)})
+        if vacuous:
+            kind = slot['type'].split()
+            if len(kind) != 2 or kind[0] != 'bv' or not kind[1].isdigit() or int(kind[1]) < 1:
+                raise ValueError('A vacuous slot has no authorized fixed bitvector inhabitant.')
+            row['value_rule'] = {'kind': 'proven_vacuous_fixed_inhabitant',
+                                 'term': 'BV ' + kind[1] + '%N 0%Z'}
+        else:
+            row['value_rule'] = {'kind': 'authenticated_source_required'}
+        result.append(row)
+    return result
 
 
 def product(types):
@@ -202,11 +308,45 @@ def _array_owners(source, name):
         raise ValueError("The array source needs one bound Definition.")
     command = commands[0]
     values = [token for token, _ in command]
-    marker = [token for token, _ in rocq_tokens("↦ₘ∗")]
+    marker = [token for token, _ in rocq_tokens("↦ₘ")]
     result = []
     for position in range(values.index(":=") + 1, len(values)):
+        explicit = ["isla.ghost_state.mem_mapsto_array_def"]
+        if values[position:position + len(explicit)] == explicit:
+            begin = position + len(explicit)
+            if values[begin:begin + 1] != ["("]:
+                raise ValueError("The explicit array owner needs a grouped address.")
+            address, end = atom(values, begin)
+            fraction_begin = end
+            fraction, end = atom(values, end)
+            if _unwrap(fraction) != ["DfracOwn", "1"]:
+                raise ValueError("The array witness has an unsupported explicit fraction.")
+            payload_begin = end
+            payload, end = atom(values, end)
+            address_text = source[command[begin][1]:command[fraction_begin - 1][1] + 1]
+            address = _unwrap(_words(rocq_tokens(address_text)))
+            if address[-2:] == ["%", "Z"]:
+                address = _unwrap(address[:-2])
+            text = source[command[payload_begin][1]:command[end - 1][1] + len(command[end - 1][0])]
+            result.append(dict(address=address, payload=_unwrap(_words(rocq_tokens(text))),
+                               value=text, fraction=dict(term="DfracOwn 1", source=source[
+                                   command[fraction_begin][1]:command[payload_begin - 1][1] + 1])))
+            continue
         if values[position:position + len(marker)] != marker:
             continue
+        begin = position + len(marker)
+        fraction = None
+        if values[begin:begin + 1] == ["{"]:
+            terms, end = atom(values, begin)
+            if terms != ["DfracOwn", "1"] or values[end:end + 1] != ["∗"]:
+                raise ValueError("The array witness has an unsupported explicit fraction.")
+            fraction = dict(term="DfracOwn 1", source=source[
+                command[begin][1]:command[end - 1][1] + len(command[end - 1][0])])
+            begin = end + 1
+        elif values[begin:begin + 1] == ["∗"]:
+            begin += 1
+        else:
+            continue  # This is a scalar memory owner, not an array owner.
         # Require a grouped address. Never guess an ungrouped application or
         # commute address arithmetic to make two owners appear identical.
         if values[position - 1] != ")":
@@ -226,12 +366,12 @@ def _array_owners(source, name):
                 address = address[:-2]
             if address == previous:
                 break
-        begin = position + len(marker)
-        if values[begin] == "{":
+        if begin >= len(values) or values[begin] == "{":
             raise ValueError("The array witness needs an explicit supported fraction view.")
         payload, end = atom(values, begin)
         text = source[command[begin][1]:command[end - 1][1] + len(command[end - 1][0])]
-        result.append(dict(address=address, payload=_unwrap(_words(rocq_tokens(text))), value=text))
+        result.append(dict(address=address, payload=_unwrap(_words(rocq_tokens(text))),
+                           value=text, fraction=fraction))
     return result
 
 
@@ -282,6 +422,14 @@ def resolved_witness_data(source, target, value, *, source_texts=None):
     internal = [dict(name=slot["name"], type=slot["type"]) for slot in reversed(slots)]
     check_witness_shape(list(reversed(layout["remaining"])), internal)
     registers, terms = [], []
+    # Derived source expressions can precede the register slots they observe.
+    # Capture order remains the first occurrence in declaration order.
+    for slot in slots:
+        origin = slot['source']
+        if isinstance(origin, dict) and origin.get('kind') == 'register':
+            key = (origin.get('register'), origin.get('width'))
+            if key not in registers:
+                registers.append(key)
     for slot in slots:
         origin = slot["source"]
         if not isinstance(origin, dict) or not origin.get("provenance"):
@@ -305,7 +453,7 @@ def resolved_witness_data(source, target, value, *, source_texts=None):
             if type(width) is not int or width <= 0:
                 raise ValueError("The witness register width is unresolved.")
             kind = "bv " + str(width) + "%N"
-            if normalize_type(slot["type"]) != normalize_type(kind):
+            if closed_bitvector_width(slot["type"]) != width:
                 raise ValueError("The witness register width differs from its slot type.")
             if slot["value"] is not None:
                 raise ValueError("A register witness must use its resolved owned value.")
@@ -316,7 +464,7 @@ def resolved_witness_data(source, target, value, *, source_texts=None):
                 raise ValueError("The resolved source has ambiguous register owners.")
             word = owners[0]
             if len(word) > 1 and word[1] == ":":
-                if normalize_type(" ".join(word[2:])) != normalize_type(kind):
+                if closed_bitvector_width(" ".join(word[2:])) != width:
                     raise ValueError("The resolved source register annotation has a different width.")
             key = (register, width)
             if any(other[0] == register and other != key for other in registers):
@@ -355,3 +503,67 @@ def resolved_witness_data(source, target, value, *, source_texts=None):
                 witness_type=witness_type, registers=registers,
                 declaration_order=layout["remaining"], internal_order=internal,
                 vacuous=layout["vacuous"], provenance=[slot["source"] for slot in slots])
+
+
+def witness_profile_metadata(source, target, slots, *, name, typed, entry,
+                             witness_type, mapping_fragment, locality="export", phase_metadata=None):
+    """Render profiles for authenticated source and unchanged emitted data.
+
+    The caller binds source bytes and the complete mapping fragment. Names come
+    from the declaration parser and the original emitted-slot metadata.
+    """
+    from render_support import identifier, expression
+    name = identifier(name, "witness profile name")
+    entry = expression(entry, "witness profile entry")
+    if locality not in {"local", "global", "export"}:
+        raise ValueError("The profile locality is unsupported.")
+    expected = declared_witness_slots(source, target)["remaining"]
+    phase_binding = None
+    if phase_metadata is not None:
+        import json
+        if set(phase_metadata) != {"path", "sha256", "pointer"}:
+            raise ValueError("The witness phase needs a bound metadata pointer.")
+        raw = Path(phase_metadata["path"]).read_bytes()
+        if hashlib.sha256(raw).hexdigest() != phase_metadata["sha256"]:
+            raise ValueError("The witness phase metadata changed.")
+        names = json.loads(raw)
+        pointer = phase_metadata["pointer"]
+        if not isinstance(pointer, str) or not pointer.startswith("/"):
+            raise ValueError("The witness phase needs an exact metadata pointer.")
+        for component in pointer[1:].split("/"):
+            key = component.replace("~1", "/").replace("~0", "~")
+            names = names[int(key)] if isinstance(names, list) else names[key]
+        if (not isinstance(names, list) or not names or
+                any(not isinstance(n, str) for n in names) or len(set(names)) != len(names)):
+            raise ValueError("The witness phase needs distinct source names.")
+        source_order = [slot["name"] for slot in expected]
+        if any(name not in source_order for name in names):
+            raise ValueError("The witness phase contains an absent source slot.")
+        if names != [name for name in source_order if name in names]:
+            raise ValueError("The witness phase changes source declaration order.")
+        expected = [slot for slot in expected if slot["name"] in names]
+        phase_binding = dict(phase_metadata)
+    check_witness_shape(expected, slots)
+    if normalize_type(witness_type) != normalize_type(product([s["type"] for s in expected])):
+        raise ValueError("The profile changes the ordinary witness product.")
+    def profile(values):
+        result = "ZesuWitnessProfileEnd"
+        for slot in reversed(values):
+            label = identifier(slot["name"], "witness profile slot")
+            result = '(ZesuWitnessProfileSlot "' + label + '" (' + slot["type"] + ') ' + result + ')'
+        return result
+    declaration_hash = hashlib.sha256(source.encode()).hexdigest()
+    mapping_hash = hashlib.sha256(mapping_fragment.encode()).hexdigest()
+    source_record = (f"#[{locality}] Instance {name}_source_profile{typed} :\n"
+                     f"  ZesuEntryWitnessSourceProfile ({entry}) ({witness_type}) :=\n"
+                     '  {| zesu_source_profile_declaration := "' + declaration_hash + '";\n'
+                     '     zesu_source_profile_slots := ' + profile(expected) + ' |}.\n')
+    data_record = (f"#[{locality}] Instance {name}_data_profile{typed} :\n"
+                   f"  ZesuEntryWitnessDataProfile ({entry}) ({witness_type}) :=\n"
+                   '  {| zesu_data_profile_declaration := "' + declaration_hash + '";\n'
+                   '     zesu_data_profile_mapping := "' + mapping_hash + '";\n'
+                   '     zesu_data_profile_slots := ' + profile(slots) + ' |}.\n')
+    return {"source": source_record + data_record, "declaration_sha256": declaration_hash,
+            "mapping_fragment_sha256": mapping_hash,
+            "source_slots": expected, "data_slots": slots, "phase_metadata": phase_binding,
+            "runtime_names_recovered": False}

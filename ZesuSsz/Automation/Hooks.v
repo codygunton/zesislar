@@ -1,6 +1,14 @@
+Require Import ZesuSsz.Automation.FractionalRead.
+Require ZesuSsz.Evidence.EntryWitnessInputs.
+Require ZesuSsz.Automation.CanonicalFactAdapter.
+Require ZesuSsz.Automation.UnionRuleComponents.
+Require Export ZesuSsz.Automation.UnionArrayContainment.
 Require Import ZesuSsz.Automation.EntryIntro.
 Require Import ZesuSsz.Automation.SwitchDispatch.
 Require Import ZesuSsz.Automation.ContextCollection.
+Require Import ZesuSsz.Automation.SourceWitnessInputs.
+Require Import ZesuSsz.Automation.RecordFieldPruning.
+Require Import ZesuSsz.Automation.LinearFirstLia.
 (** Project-wide Lithium hook redefinitions belong in this module. *)
 
 From iris.proofmode Require Import environments.
@@ -22,6 +30,32 @@ Require Import ZesuSsz.Contracts.SelectedCodeLookup.
 Require Import InstrSpecs.Lookup.
 Require Import ZesuSsz.Automation.ResourceGroups.
 Require Import ZesuSsz.Automation.ConjunctMatch.
+
+(* Expose symbolic lookup results with kernel reduction. Do not normalize their
+   payloads in the VM. Closed inputs retain the upstream VM path. *)
+Ltac zesu_regcol_compute_hint :=
+  clear;
+  autounfold with regcol_compute_unfold;
+  repeat match goal with H := _ |- _ => clearbody H end;
+  remember_regcol;
+  lazymatch goal with
+  | |- LiTactic (regcol_compute_hint ?f ?a) =>
+    let input := constr:(f a) in
+    tryif is_closed_term input then
+      let result := eval vm_compute in input in
+      lazymatch result with
+      | Some ?value => apply (regcol_compute_hint_hint value)
+      end;
+      abstract (vm_compute; exact eq_refl)
+    else
+      let result := eval hnf in input in
+      lazymatch result with
+      | Some ?value => apply (regcol_compute_hint_hint value)
+      end;
+      abstract (reflexivity)
+  end.
+
+Ltac isla.automation.solve_regcol_compute_hint ::= zesu_regcol_compute_hint.
 
 (* The pure closer must not unfold an Iris entailment into arithmetic. *)
 Ltac zesu_final_pure_head_gate :=
@@ -1333,8 +1367,9 @@ Ltac zesu_liAReadMem :=
   lazymatch goal with
   | |- envs_entails ?Delta
       (WPasm (ReadMem _ _ _ _ _ _ :t: _)) =>
-      notypeclasses refine
-        (tac_fast_apply (li_wp_read_mem_zesu _ _ _ _ _ _ _ _) _)
+      first [ZesuSsz.Automation.FractionalRead.block2_fractional_read_step |
+        notypeclasses refine
+          (tac_fast_apply (li_wp_read_mem_zesu _ _ _ _ _ _ _ _) _)]
   end.
 
 Ltac zesu_liAWriteMem :=
@@ -2078,12 +2113,54 @@ Ltac zesu_integer_array_address_if_enabled :=
         end))
   end.
 
+Ltac zesu_refute_aligned_return_fault :=
+  lazymatch goal with
+  | Hfault : bv_extract 0 1 (bv_shiftr
+      (bv_or (bv_and (bv_add (Z_to_bv 64 ?R) (BV 64 0))
+        (BV 64 18446744073709551614)) (BV 64 0)) (BV 64 1)) = BV 1 1 |- _ =>
+    lazymatch goal with
+    | Hlower : (0 <= R)%Z, Hupper : (R < ?upper)%Z,
+      Haligned : (R mod 4 = 0)%Z |- _ =>
+      let maximum := constr:(18446744073709551616%Z) in
+      constr_eq upper maximum;
+      let Hlow := fresh "HreturnLowBit" in
+      assert (Hlow : bv_extract 0 1 (Z_to_bv 64 R) = BV 1 0) by
+        (clear -Hlower Hupper Haligned; bv_solve);
+      let Hhigh := fresh "HreturnHighBit" in
+      assert (Hhigh : bv_extract 1 1 (Z_to_bv 64 R) = BV 1 0) by
+        (clear -Hlower Hupper Haligned; bv_solve);
+      let HnoFault := fresh "HreturnNoFault" in
+      pose proof (ZesuSsz.Automation.IntegerReturn.zesu_return_fault_bit_from_extracts
+        (Z_to_bv 64 R) Hlow Hhigh) as HnoFault;
+      rewrite HnoFault in Hfault;
+      discriminate
+    end
+  end.
+
+Ltac zesu_canonical_fact_views_if_enabled :=
+  zesu_switch_enabled constr:(ZesuSsz.Automation.CanonicalFactAdapter.ZesuStepCanonicalFactAdapter);
+  ZesuSsz.Automation.CanonicalFactAdapter.zesu_canonical_context_step.
+
+(* Retain the entry key before ordinary matching exposes its binders. *)
+Ltac zesu_union_witness_step :=
+  first [ZesuSsz.Evidence.EntryWitnessInputs.zesu_entry_mapping_capture_goal |
+    ZesuSsz.Evidence.EntryWitnessInputs.zesu_entry_mapping_consume_ready].
+
+Ltac zesu_source_witnesses_if_enabled :=
+  zesu_switch_enabled constr:(ZesuStepSourceWitnesses);
+  first [SourceWitnessInputs.zesu_capture_source_owner |
+         SourceWitnessInputs.zesu_source_mapping_capture_goal |
+         EntryWitnessInputs.zesu_entry_mapping_consume_ready].
+
 Ltac zesu_liAStep :=
+  first [solve [zesu_refute_aligned_return_fault] | (
  liEnsureInvariant;
  try progress (unfold TRACE_LET);
  try liAIntroduceLetInGoal;
  first [
-    zesu_expose_instruction_lookup
+    zesu_source_witnesses_if_enabled
+  | ZesuSsz.Automation.UnionRuleComponents.zesu_region_fault_if_enabled
+  | zesu_expose_instruction_lookup
   | zesu_region_fault_if_enabled
   | zesu_ram_fault_if_enabled
   | zesu_signed_address_if_enabled
@@ -2095,6 +2172,7 @@ Ltac zesu_liAStep :=
   | zesu_handoff_integer_equality_if_enabled
   | zesu_integer_array_address_if_enabled
   | zesu_normalize_find_mem_address
+  | ZesuSsz.Automation.UnionRuleComponents.block2_f6_select_generic_write
   | zesu_liAWriteMem
   | zesu_liAReadMem
   | liAAsm
@@ -2114,7 +2192,8 @@ Ltac zesu_liAStep :=
   | liStep
   | liLetBindHint
   | liUnfoldLate
- ]; liSimpl.
+  | zesu_canonical_fact_views_if_enabled
+ ]; liSimpl)].
 
 Ltac liAStep ::= zesu_liAStep.
 
@@ -2377,7 +2456,10 @@ Ltac liAAsm ::=
       | Branch _ _ _ => notypeclasses refine (tac_fast_apply (li_wp_branch _ _ _ _) _)
       | ReadMem _ _ _ _ _ _ => notypeclasses refine (tac_fast_apply (li_wp_read_mem _ _ _ _ _ _ _ _) _)
       | WriteMem _ _ _ _ _ _ _ => notypeclasses refine (tac_fast_apply (li_wp_write_mem _ _ _ _ _ _ _ _ _) _)
-      | Smt (DeclareConst _ (Ty_BitVec _)) _ => notypeclasses refine (tac_fast_apply (li_wp_declare_const_bv _ _ _ _) _)
+      | Smt (DeclareConst _ (Ty_BitVec _)) _ =>
+          first [zesu_switch_enabled constr:(ZesuStepSourceWitnesses);
+                 SourceWitnessInputs.zesu_capture_source_declaration |
+                 notypeclasses refine (tac_fast_apply (li_wp_declare_const_bv _ _ _ _) _)]
       | Smt (DeclareConst _ Ty_Bool) _ => notypeclasses refine (tac_fast_apply (li_wp_declare_const_bool _ _ _) _)
       | Smt (DeclareConst _ (Ty_Enum _)) _ => notypeclasses refine (tac_fast_apply (li_wp_declare_const_enum _ _ _ _) _)
       | Smt (DefineConst _ _) _ => notypeclasses refine (tac_fast_apply (li_wp_define_const _ _ _ _) _)
@@ -2401,4 +2483,46 @@ Ltac liAAsm ::=
   end.
 
 
-Ltac lia ::= zesu_context_filter ltac:(Zify.zify; xlia Lia.zchecker).
+Ltac Lia.lia ::= zesu_context_filter ltac:(zesu_lia_linear_first3).
+
+
+(* The callback must prove the payload equality. Owners are never converted. *)
+Ltac zesu_array_payload_from_spatial spatial sigma heap width address fraction bytes codec :=
+  lazymatch spatial with
+  | environments.Esnoc ?rest ?name ?available =>
+      first [
+        lazymatch available with
+        | @mem_mapsto_array ?sourceSigma ?sourceHeap ?sourceWidth
+            ?sourceAddress ?sourceFraction ?sourceBytes =>
+            constr_eq sigma sourceSigma;
+            constr_eq heap sourceHeap;
+            constr_eq width sourceWidth;
+            constr_eq fraction sourceFraction;
+            assert_fails (has_evar sourceAddress);
+            assert_fails (has_evar sourceBytes);
+            let Haddress := fresh "HarrayAddressPresentation" in
+            let Hbytes := fresh "HarrayPayloadPresentation" in
+            assert (Haddress : sourceAddress = address) by reflexivity;
+            assert (Hbytes : sourceBytes = bytes) by
+              first [solve [codec] | solve [symmetry; codec]];
+            try rewrite Haddress;
+            rewrite Hbytes;
+            clear Haddress Hbytes;
+            iFrame;
+            try (iPureIntro; repeat split;
+                 ZesuSsz.Automation.Hooks.zesu_stack_arithmetic)
+        end
+      | zesu_array_payload_from_spatial rest sigma heap width address fraction bytes codec]
+  end.
+
+Ltac zesu_array_payload_presentation codec :=
+  lazymatch goal with
+  | |- environments.envs_entails (environments.Envs _ ?spatial _) ?requested =>
+      lazymatch requested with
+      | context [@mem_mapsto_array ?sigma ?heap ?width ?address ?fraction ?bytes] =>
+          assert_fails (has_evar address);
+          assert_fails (has_evar fraction);
+          assert_fails (has_evar bytes);
+          zesu_array_payload_from_spatial spatial sigma heap width address fraction bytes codec
+      end
+  end.
