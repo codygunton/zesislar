@@ -2436,6 +2436,10 @@ Ltac zesu_liAStep :=
   | zesu_talt l_named_equation_goal (idtac; zesu_named_equation_goal)
   | zesu_talt l_named_binder_witness (idtac; zesu_named_binder_witness)
   | zesu_talt l_exists_from_hypotheses (idtac; solve [zesu_finish_exists_from_hypotheses])
+  | zesu_talt l_loop_entry_index (idtac; zesu_expose_environment_alias;
+      ZesuSsz.Automation2.LoopIndex.zesu_loop_entry_index)
+  | zesu_talt l_offset_chain_address (idtac; zesu_expose_environment_alias;
+      ZesuSsz.Automation2.MemoryAddress.zesu_offset_chain_array_address)
   (* Before liStep: with a local alias in the address, liStep's lookup
      failed for 7-20 s on decodeParentHeader before this step fixed it. *)
   | zesu_talt l_unfold_let_mem_address (idtac; zesu_unfold_let_mem_address)

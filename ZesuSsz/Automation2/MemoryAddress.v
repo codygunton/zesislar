@@ -405,3 +405,101 @@ Ltac zesu_handoff_closed_Z term continuation :=
         let reduced := constr:(Z.opp value) in continuation reduced)
   | _ => continuation term
   end.
+
+(* A word address `root + c1 + ... + cn` with closed offsets ci (a frame pointer
+   stepped by constants) is the integer `bv_unsigned root + k`, k the signed sum
+   of the offsets, when no partial sum wraps; the root's range facts (its
+   contract argument's bounds) show that. *)
+Lemma zesu_offset_chain_step (x c : bv 64) (a b s t : Z) :
+  bv_unsigned x = (a + b)%Z -> bv_unsigned c = bv_wrap 64 s -> t = (b + s)%Z ->
+  (0 <= a + t < bv_modulus 64)%Z ->
+  bv_unsigned (bv_add x c) = (a + t)%Z.
+Proof.
+  intros Hx Hc Ht Hrange. subst t. rewrite bv_add_unsigned. rewrite Hx. rewrite Hc.
+  rewrite bv_wrap_add_idemp_r. rewrite <- Z.add_assoc.
+  apply bv_wrap_small. exact Hrange.
+Qed.
+
+Ltac zesu_offset_closed offset :=
+  let _ := ZesuSsz.Automation2.VmClosed.zesu_vm_eval_closed (bv_signed offset) in idtac.
+
+(* The word the closed offsets are added to. *)
+Ltac zesu_offset_chain_root pointer :=
+  match pointer with
+  | bv_add ?inner ?offset =>
+      let _ := ZesuSsz.Automation2.VmClosed.zesu_vm_eval_closed (bv_signed offset) in
+      zesu_offset_chain_root inner
+  | _ => constr:(pointer)
+  end.
+
+(* The signed sum of the closed offsets, evaluated. *)
+Ltac zesu_offset_chain_sum pointer :=
+  match pointer with
+  | bv_add ?inner ?offset =>
+      let s := ZesuSsz.Automation2.VmClosed.zesu_vm_eval_closed (bv_signed offset) in
+      let rest := zesu_offset_chain_sum inner in
+      ZesuSsz.Automation2.VmClosed.zesu_vm_eval_closed (rest + s)%Z
+  | _ => constr:(0%Z)
+  end.
+
+(* Pass `bv_unsigned pointer = bv_unsigned root + k` to the continuation, one
+   offset at a time from the root; each partial sum's range by arithmetic. *)
+Ltac zesu_offset_chain_equation pointer continuation :=
+  let base := ltac:(
+    let H := fresh "HoffsetChain" in
+    assert (H : bv_unsigned pointer = (bv_unsigned pointer + 0)%Z) by (symmetry; apply Z.add_0_r);
+    continuation H) in
+  lazymatch pointer with
+  | bv_add ?inner ?offset =>
+      tryif zesu_offset_closed offset then
+        let s := ZesuSsz.Automation2.VmClosed.zesu_vm_eval_closed (bv_signed offset) in
+        zesu_offset_chain_equation inner ltac:(fun Hinner =>
+          lazymatch type of Hinner with
+          | bv_unsigned _ = (?root + ?sum)%Z =>
+              let total := ZesuSsz.Automation2.VmClosed.zesu_vm_eval_closed (sum + s)%Z in
+              let H := fresh "HoffsetChain" in
+              assert (H : bv_unsigned pointer = (root + total)%Z) by
+                (apply (zesu_offset_chain_step inner offset root sum s total Hinner);
+                 [vm_compute; reflexivity | vm_compute; reflexivity |
+                  let m := ZesuSsz.Automation2.VmClosed.zesu_vm_eval_closed (bv_modulus 64) in
+                  change (bv_modulus 64) with m; zesu_lia]);
+              clear Hinner; continuation H
+          end)
+      else base
+  | _ => base
+  end.
+
+(* The equation on the root's selected range facts only. *)
+Ltac zesu_offset_chain_prove root pointer :=
+  (let collect := ltac2:(v p r |- ZesuSsz.Automation2.RangeFacts.zesu_range_collect
+     (Option.get (Ltac1.to_constr v)) (Option.get (Ltac1.to_constr p))
+     (Option.get (Ltac1.to_constr r))) in
+   let argument := lazymatch root with ?accessor ?value => constr:(value) | _ => constr:(root) end in
+   collect (bv_unsigned root) (bv_unsigned root) argument);
+  ltac2:(ZesuSsz.Automation2.RangeFacts.zesu_range_isolate ());
+  ZesuSsz.Automation2.RangeFacts.zesu_selected_casts;
+  ltac2:(ZesuSsz.Automation2.RangeFacts.zesu_range_reduce_selected ());
+  zesu_offset_chain_equation pointer ltac:(fun H => exact H).
+
+(* A requested array at a word-sum address that an owned array holds at the
+   same integer, written as the root's integer plus constants (a frame span):
+   the request takes the owned address, so the lookup is syntactic. *)
+Ltac zesu_offset_chain_array_address :=
+  lazymatch goal with
+  | |- iris.proofmode.environments.envs_entails _ ((bv_unsigned ?pointer ↦ₘ{?q}∗ _) ∗ _)%I =>
+      let root := zesu_offset_chain_root pointer in
+      assert_fails (constr_eq root pointer);
+      let total := zesu_offset_chain_sum pointer in
+      iMatchHyp ltac:(fun H body =>
+        lazymatch body with
+        | (?available ↦ₘ{?fraction}∗ _)%I =>
+            lazymatch available with context [bv_unsigned root] => idtac end;
+            assert_fails (constr_eq available (bv_unsigned pointer));
+            let Hsame := fresh "HoffsetChainSame" in
+            assert (Hsame : (bv_unsigned root + total)%Z = available) by ring;
+            let Heq := fresh "HoffsetChainAddress" in
+            assert (Heq : bv_unsigned pointer = available) by
+              (rewrite <- Hsame; zesu_offset_chain_prove root pointer);
+            clear Hsame; rewrite Heq; clear Heq
+        end)
+  end.

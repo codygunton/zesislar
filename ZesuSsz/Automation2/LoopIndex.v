@@ -107,6 +107,18 @@ Ltac zesu_simpl_exist_loop_index :=
         constructor; by unlock
     end].
 
+(* An edge into a loop head whose linear index equation `A = B + i` states the
+   same word on both sides (an entry from outside the loop, at the loop's start):
+   the equation fixes the index at zero. *)
+Ltac zesu_loop_entry_index :=
+  lazymatch goal with
+  | |- iris.proofmode.environments.envs_entails _
+         (@bi_exist _ (li_prod (lvar "zesuLoopIndex" Z) unit)
+            (fun x => bi_sep (bi_pure (@eq Z ?A (Z.add ?B (li_fst x)))) _)) =>
+      constr_eq A B;
+      iExists (li_pair 0%Z tt)
+  end.
+
 #[export] Hint Extern 1 (SimplExist (lvar "zesuLoopCount" Z) _) =>
   zesu_simpl_exist_loop_count : typeclass_instances.
 #[export] Hint Extern 1 (SimplExist (lvar "zesuLoopIndex" Z) _) =>
