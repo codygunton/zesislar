@@ -463,5 +463,140 @@ class Commands(JanitorTree):
         self.assertTrue(run_receipt.exists())
 
 
+class WorktreeReaper(unittest.TestCase):
+    """Whole worktrees: merged, clean, idle, unused ones go; dirty, used, unmerged ones stay."""
+
+    def setUp(self):
+        self.temp = tempfile.TemporaryDirectory()
+        self.addCleanup(self.temp.cleanup)
+        self.root = Path(self.temp.name) / 'repo'
+        self.proc = Path(self.temp.name) / 'proc'
+        self.proc.mkdir()
+        self.git('init', '-q', '-b', 'main', str(self.root), cwd=self.temp.name)
+        write(self.root / 'README', b'base\n')
+        write(self.root / '.gitignore', b'_build/\n.worktrees/\n')
+        self.git('add', 'README', '.gitignore')
+        self.git('-c', 'user.name=t', '-c', 'user.email=t@t', 'commit', '-q', '-m', 'base')
+        self.now = time.time() + 7 * HOUR
+
+    def git(self, *arguments, cwd=None):
+        return subprocess.run(['git', *arguments], cwd=cwd or self.root, check=True,
+                              capture_output=True, text=True).stdout.strip()
+
+    def worktree(self, name, *options, commit=False):
+        path = self.root / '.worktrees' / name
+        self.git('worktree', 'add', '-q', *options, str(path), 'main')
+        if commit:
+            write(path / name, b'work\n')
+            self.git('add', name, cwd=path)
+            self.git('-c', 'user.name=t', '-c', 'user.email=t@t', 'commit', '-q', '-m', name, cwd=path)
+        return path
+
+    def reap(self, live=(), apply=True, now=None):
+        for index, path in enumerate(live):
+            entry = self.proc / str(1000 + index)
+            entry.mkdir()
+            (entry / 'cwd').symlink_to(path)
+        with patch('builtins.print'):
+            rows = J.reap_worktrees(self.root, apply=apply, main_ref='main', now=now or self.now,
+                                    proc=str(self.proc), registered=[])
+        return {row['name']: row for row in rows}
+
+    def test_merged_clean_idle_worktree_is_removed_and_its_closure_records_saved(self):
+        merged = self.worktree('merged', '-b', 'lane/merged')
+        record = write(merged / '_build/cert/0300/CLOSURE.json',
+                       b'{"case": "0300", "verdict": "CLOSED"}\n')
+        rows = self.reap()
+        self.assertEqual(rows['merged']['action'], 'remove', rows['merged'])
+        self.assertFalse(merged.exists())
+        self.assertNotIn(str(merged), self.git('worktree', 'list'))
+        self.assertFalse(record.exists())
+        self.assertTrue(list((self.root / '_build/closures').rglob('CLOSURE.json')))
+        log = (self.root / '_build/janitor/worktrees.log').read_text()
+        self.assertIn('removed\t' + str(merged), log)
+
+    def test_dry_run_removes_nothing(self):
+        merged = self.worktree('merged', '--detach')
+        rows = self.reap(apply=False)
+        self.assertEqual(rows['merged']['action'], 'remove')
+        self.assertTrue(merged.exists())
+
+    def test_dirty_worktree_stays(self):
+        dirty = self.worktree('dirty', '--detach')
+        write(dirty / 'README', b'changed\n')
+        rows = self.reap()
+        self.assertEqual((rows['dirty']['action'], rows['dirty']['reason']), ('keep', 'tracked changes'))
+        self.assertTrue(dirty.exists())
+
+    def test_worktree_in_use_stays(self):
+        used = self.worktree('used', '--detach')
+        rows = self.reap(live=[used])
+        self.assertEqual(rows['used']['action'], 'keep')
+        self.assertIn('live process', rows['used']['reason'])
+        self.assertTrue(used.exists())
+
+    def test_worktree_a_live_registered_run_names_stays(self):
+        used = self.worktree('used', '--detach')
+        with patch('builtins.print'):
+            [row] = J.reap_worktrees(self.root, apply=True, main_ref='main', now=self.now,
+                                     proc=str(self.proc), registered=[str(used / '_build/x')])
+        self.assertIn('live registered run', row['reason'])
+        self.assertTrue(used.exists())
+
+    def test_recently_changed_worktree_stays(self):
+        recent = self.worktree('recent', '--detach')
+        rows = self.reap(now=time.time() + HOUR)
+        self.assertEqual(rows['recent']['action'], 'keep')
+        self.assertTrue(recent.exists())
+
+    def test_unmerged_branch_stays_and_bench_branch_goes(self):
+        lane = self.worktree('lane', '-b', 'orch/lane', commit=True)
+        bench = self.worktree('bench-abc', '-b', 'bench/abc', commit=True)
+        rows = self.reap()
+        self.assertEqual((rows['lane']['action'], rows['lane']['reason']), ('keep', 'unmerged branch'))
+        self.assertTrue(lane.exists())
+        self.assertEqual(rows['bench-abc']['action'], 'remove')
+        self.assertFalse(bench.exists())
+        self.assertTrue(self.git('rev-parse', '--verify', 'bench/abc'))
+
+    def test_detached_head_on_no_ref_stays(self):
+        loose = self.worktree('loose', '--detach', commit=True)
+        rows = self.reap()
+        self.assertEqual(rows['loose']['reason'], 'detached head on no ref')
+        self.assertTrue(loose.exists())
+
+    def test_protected_and_main_named_worktrees_stay(self):
+        tools = self.worktree('ops-tools', '--detach')
+        named = self.worktree('heldout-gate', '--detach')
+        write(self.root / 'set.json', b'{"cache": "/r/.worktrees/heldout-gate/_build/c"}\n')
+        self.git('add', 'set.json')
+        self.git('-c', 'user.name=t', '-c', 'user.email=t@t', 'commit', '-q', '-m', 'set')
+        rows = self.reap()
+        self.assertEqual(rows['ops-tools']['reason'], 'protected')
+        self.assertEqual(rows['heldout-gate']['reason'], 'named by a tracked file on main')
+        self.assertTrue(tools.exists() and named.exists())
+
+    def test_creator_removes_its_branch_worktree_at_the_end_of_its_run(self):
+        column = self.worktree('heldout-free-x', '-b', 'orch/heldout-free-x', commit=True)
+        with patch.object(J, 'registry_paths', return_value=[]), patch('builtins.print'):
+            status = J.main(['--root', str(self.root), 'remove-worktree', str(column)])
+        self.assertEqual(status, 0)
+        self.assertFalse(column.exists())
+        self.assertTrue(self.git('rev-parse', '--verify', 'orch/heldout-free-x'))
+
+    def test_creator_keeps_a_dirty_worktree(self):
+        column = self.worktree('heldout-free-y', '--detach')
+        write(column / 'README', b'changed\n')
+        with patch.object(J, 'registry_paths', return_value=[]), patch('builtins.print'):
+            status = J.main(['--root', str(self.root), 'remove-worktree', str(column)])
+        self.assertEqual(status, 1)
+        self.assertTrue(column.exists())
+
+    def test_low_disk_hook_does_nothing_with_room(self):
+        merged = self.worktree('merged', '--detach')
+        self.assertEqual(J.reap_when_low(self.root, threshold=0), [])
+        self.assertTrue(merged.exists())
+
+
 if __name__ == '__main__':
     unittest.main()

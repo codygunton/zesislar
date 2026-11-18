@@ -185,6 +185,16 @@ After the 2026-11-17 reboot the slice did not exist and every admission read zer
 waited. Guard admissions now create it (`resource_guard.sh parent-setup`) or refuse with a
 `refused:` line; `make install-workload-slice` installs it as a user unit started at boot or login.
 
+## Low disk: worktree reaper
+
+When the checkout's disk has under 50 GB free, each watchdog pass runs the janitor's worktree reaper
+(`build_janitor.reap_when_low`): it removes (`git worktree remove`, never `--force`, after saving goals
+and closure records) every worktree under `.worktrees/` that is clean, used by no live process or live
+registered run, unchanged for 6 h, not named by a tracked file on main, and whose head is in origin/main,
+on a `bench/*` branch, or a detached head that a ref holds. Each removal goes to
+`_build/janitor/worktrees.log`; the pass prints one summary line. `build_janitor.py --apply` (nightly)
+applies the same rule; `build_janitor.py worktrees` reports every worktree's verdict.
+
 ## Stalled gates
 
 Each watchdog pass also reports gates that finished with nothing after them. For each ITEM.json branch,
