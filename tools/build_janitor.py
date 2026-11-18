@@ -13,9 +13,12 @@ and deletes nothing. `--apply` also deletes:
     clean (no tracked change), not in use (live process, admission receipt, or live
     registered run naming a path in them), unchanged for 6 h, and whose head is in
     origin/main, on a measurement branch (bench/*, orch/heldout-*; the branch stays) or
-    a detached head that a branch or remote ref holds. Each removal goes to
-    `_build/janitor/worktrees.log`. The run watchdog does the same when free disk is
-    under 50 GB (reap_when_low).
+    a detached head that a branch or remote ref holds. A checkout idle over 7 days goes
+    losslessly whatever its head: its unmerged branch is pushed to origin (no force), a
+    detached head on no ref and any uncommitted work (tracked changes, untracked non-ignored
+    files) go to a pushed `rescue/<name>-<date>` branch (`_build/janitor/rescued-worktrees.tsv`).
+    Each removal goes to `_build/janitor/worktrees.log`. The run watchdog does the same when
+    free disk is under 50 GB (reap_when_low).
 
 The janitor never touches `_build/agents/orch/`, a path that a live process
 uses (cwd, executable, command line, environment, open or mapped files), a
@@ -937,6 +940,13 @@ def rescue_goals(root, path, reason, log=None):
 # origin/main, on a bench/* branch (the branch stays), or a detached head that a branch or
 # remote ref still holds.
 WORKTREE_REAP_IDLE_SECONDS = 6 * 3600
+# Over 7 days idle, a checkout also goes when its work is put on origin first (no force):
+# an unmerged branch is pushed; a detached head on no ref gets a pushed rescue/<name>-<date>
+# branch; tracked changes and untracked non-ignored files are committed (git add -A) on a
+# new rescue/<name>-<date> branch from HEAD and pushed. Every pushed branch is recorded in
+# _build/janitor/rescued-worktrees.tsv (time, worktree, branch, head, pushed branch, commit, what).
+RESCUE_IDLE_SECONDS = 7 * 24 * 3600
+RESCUE_MAX_FILE_BYTES = 95 * 2**20  # GitHub refuses files over 100 MB: keep such checkouts
 REAP_FREE_BYTES = 50 * GB  # the run watchdog reaps when free disk falls below this
 SCRATCH_BRANCHES = ('bench/',)
 # tools/bg and the run watchdog run from ops-tools (run_registry.md); the closed-set column
@@ -980,15 +990,28 @@ def list_worktrees(root):
     return rows
 
 
+def reflog_time(path):
+    """Time of the last entry in the reflog file PATH, or 0. (The file's mtime is no
+    activity signal: `git gc` reflog expiry rewrites every worktree's reflog.)"""
+    with contextlib.suppress(OSError, ValueError, IndexError):
+        with open(path, 'rb') as stream:
+            stream.seek(max(os.fstat(stream.fileno()).st_size - 4096, 0))
+            line = stream.read().rstrip(b'\n').rsplit(b'\n', 1)[-1]
+        return float(line.split(b'\t', 1)[0].rsplit(b' ', 2)[1])
+    return 0.0
+
+
 def worktree_newest(path):
-    """Newest mtime of the checkout top, its Git admin files, and `_build` two levels deep."""
-    candidates = [path]
+    """Newest mtime of the checkout top, its Git admin HEAD, and `_build` two levels deep,
+    and the time of its last reflog entry."""
+    candidates, logged = [path], 0.0
     with contextlib.suppress(OSError):
         text = (Path(path) / '.git').read_text()
         if text.startswith('gitdir: '):
             admin = Path(path) / text[len('gitdir: '):].strip()
             # Not the index: `git status` (this survey too) rewrites it.
-            candidates += [admin / 'HEAD', admin / 'logs/HEAD']
+            candidates.append(admin / 'HEAD')
+            logged = reflog_time(admin / 'logs/HEAD')
     build = os.path.join(path, '_build')
     candidates.append(build)
     with contextlib.suppress(OSError):
@@ -998,7 +1021,7 @@ def worktree_newest(path):
             if os.path.isdir(entry) and not os.path.islink(entry):
                 with contextlib.suppress(OSError):
                     candidates += [os.path.join(entry, child) for child in os.listdir(entry)]
-    newest = 0.0
+    newest = logged
     for candidate in candidates:
         with contextlib.suppress(OSError):
             newest = max(newest, os.lstat(candidate).st_mtime)
@@ -1053,18 +1076,59 @@ def held_by_ref(root, head):
     return result.returncode == 0 and bool(result.stdout.strip())
 
 
+def origin_heads(root):
+    """{branch: commit} on origin (one `git ls-remote`), or None when origin is unreachable."""
+    result = git(root, 'ls-remote', '--heads', 'origin')
+    if result.returncode:
+        return None
+    heads = {}
+    for line in result.stdout.splitlines():
+        sha, _, ref = line.partition('\t')
+        heads[ref.removeprefix('refs/heads/')] = sha
+    return heads
+
+
+def changed_paths(path):
+    """(tracked changes, untracked non-ignored files) in the checkout PATH, or None on error."""
+    status = git(path, 'status', '--porcelain=v1', '-z', '--untracked-files=all')
+    if status.returncode:
+        return None
+    tracked, untracked = [], []
+    entries = iter(status.stdout.split('\0'))
+    for entry in entries:
+        if not entry:
+            continue
+        (untracked if entry.startswith('??') else tracked).append(entry[3:])
+        if entry[0] in 'RC':
+            next(entries, None)  # the rename's source path
+    return tracked, untracked
+
+
 def classify_worktree(root, row, main, now, live, receipts, registered,
-                      idle=WORKTREE_REAP_IDLE_SECONDS, named=frozenset(), creator=False):
+                      idle=WORKTREE_REAP_IDLE_SECONDS, named=frozenset(), creator=False,
+                      remote=None):
     """Fill ROW with the facts and set action 'remove' or 'keep' with a reason. CREATOR (the
-    run that made the checkout removes it at its end) also drops a checkout of a branch."""
+    run that made the checkout removes it at its end) also drops a checkout of a branch.
+    A checkout idle over RESCUE_IDLE_SECONDS (not for a creator) also goes when its work
+    can be pushed to origin first: ROW['rescue'] says how (see rescue_worktree). REMOTE is
+    origin_heads()."""
     path = row['path']
     row['name'] = os.path.basename(path)
     row['newest'] = worktree_newest(path)
+    changes = changed_paths(path)
+    tracked, untracked = changes or ([], [])
+    row['dirty'] = changes is None or bool(tracked)
+    row['untracked'] = len(untracked)
+    sizes = {}
+    for name in tracked + untracked:
+        with contextlib.suppress(OSError):
+            info = os.lstat(os.path.join(path, name))
+            row['newest'] = max(row['newest'], info.st_mtime)
+            sizes[name] = info.st_size
     row['idle_hours'] = round((now - row['newest']) / 3600, 1)
-    status = git(path, 'status', '--porcelain', '--untracked-files=no')
-    row['dirty'] = status.returncode != 0 or bool(status.stdout.strip())
     row['merged'] = bool(main and row['head'] and is_ancestor(root, row['head'], main))
     row['in_use'] = worktree_user(path, live, receipts, registered)
+    row['rescue'] = None
     if row['merged']:
         row['kind'] = 'merged'
     elif row['branch'] and row['branch'].startswith(SCRATCH_BRANCHES):
@@ -1073,33 +1137,138 @@ def classify_worktree(root, row, main, now, live, receipts, registered,
         row['kind'] = 'detached'
     else:
         row['kind'] = 'unmerged branch' if row['branch'] else 'detached head on no ref'
+    stale = not creator and now - row['newest'] >= RESCUE_IDLE_SECONDS
+    unpushed = (row['kind'] == 'unmerged branch' and not creator
+                and (remote or {}).get(row['branch']) != row['head'])
+    large = sorted(name for name, size in sizes.items() if size > RESCUE_MAX_FILE_BYTES)
     if row['name'] in named and not creator:
         reason = 'named by a tracked file on main'
     elif row['name'] in PROTECTED_WORKTREES or row['locked']:
         reason = 'protected' if row['name'] in PROTECTED_WORKTREES else 'locked'
     elif row['prunable'] or not os.path.isdir(path):
         reason = 'missing checkout (git worktree prune)'
-    elif row['dirty']:
-        reason = 'tracked changes'
+    elif changes is None:
+        reason = 'git status failed'
+    elif (row['dirty'] or untracked) and not stale:
+        reason = 'tracked changes' if row['dirty'] else 'untracked files'
     elif row['in_use']:
         reason = row['in_use']
     elif now - row['newest'] < idle:
         reason = f'changed {row["idle_hours"]} h ago'
-    elif row['kind'] == 'detached head on no ref' or (row['kind'] == 'unmerged branch'
-                                                      and not creator):
-        reason = row['kind']
+    elif (row['dirty'] or untracked) and large:
+        reason = (f'{len(large)} changed file(s) over {RESCUE_MAX_FILE_BYTES // 2**20} MiB '
+                  f'(origin refuses them), e.g. {large[0]}')
+    elif (row['dirty'] or untracked or row['kind'] == 'detached head on no ref' or unpushed) \
+            and remote is None and stale:
+        reason = 'origin unreachable'
+    elif row['dirty'] or untracked:
+        reason, row['rescue'] = None, 'commit'
+    elif row['kind'] == 'detached head on no ref':
+        reason, row['rescue'] = (None, 'branch') if stale else (row['kind'], None)
+    elif row['kind'] == 'unmerged branch' and not creator:
+        if not stale:
+            reason = row['kind']
+        else:
+            reason, row['rescue'] = None, 'push' if unpushed else None
     else:
         reason = None
-    row.update(action='keep' if reason else 'remove', reason=reason or row['kind'])
+    if not reason and row['kind'] == 'unmerged branch' and not row['rescue'] and not creator:
+        row['kind'] = 'unmerged branch on origin'
+    row.update(action='keep' if reason else 'remove',
+               reason=reason or (row['kind'] + (f', rescue: {row["rescue"]}' if row['rescue'] else '')))
     return row
 
 
-def remove_worktree(root, row, log):
-    """Rescue goals and closure records, then `git worktree remove` (no --force). Log it."""
-    path = row['path']
-    rescue_goals(root, path, 'worktree reaper: ' + row['reason'])
-    result = git(root, 'worktree', 'remove', path)
+def rescue_name(root, name, now):
+    """A free branch name `rescue/<name>-<YYYYMMDD>` (with -2, -3, ... when taken)."""
+    base = f'rescue/{name}-{time.strftime("%Y%m%d", time.gmtime(now))}'
+    candidate, count = base, 1
+    while commit(root, 'refs/heads/' + candidate) or git(
+            root, 'ls-remote', '--exit-code', '--heads', 'origin', candidate).returncode == 0:
+        count += 1
+        candidate = f'{base}-{count}'
+    return candidate
+
+
+def push(root, commit_id, branch):
+    """Push COMMIT_ID to origin's BRANCH (no force) and confirm origin holds it. Return an
+    error string or None."""
+    result = git(root, 'push', '--quiet', 'origin', f'{commit_id}:refs/heads/{branch}')
+    if result.returncode:
+        return f'push {branch} failed: ' + (result.stderr.strip().splitlines() or ['?'])[-1]
+    check = git(root, 'ls-remote', '--exit-code', 'origin', 'refs/heads/' + branch)
+    if check.returncode or not check.stdout.startswith(commit_id):
+        return f'push {branch}: origin does not hold {commit_id[:12]}'
+    return None
+
+
+def rescue_worktree(root, row, now, mapping):
+    """Put the checkout's work on origin before it is removed. Return an error or None.
+      push:   push the unmerged branch (no force).
+      branch: detached head on no ref: create and push rescue/<name>-<date> at it.
+      commit: tracked changes or untracked files: on a new branch rescue/<name>-<date> from
+              HEAD, `git add -A` and commit everything (nothing discarded), push it; an
+              unmerged branch under it is pushed too.
+    Each pushed branch goes to MAPPING (rescued-worktrees.tsv)."""
+    path, head, kind = row['path'], row['head'], row['rescue']
     stamp = time.strftime('%Y-%m-%dT%H:%M:%SZ', time.gmtime())
+
+    def record(branch, commit_id, what):
+        mapping.write(f'{stamp}\t{path}\t{row["branch"] or "detached"}\t{head}\t{branch}\t'
+                      f'{commit_id}\t{what}\n')
+        mapping.flush()
+
+    if row['kind'] == 'unmerged branch' and kind in ('push', 'commit'):
+        error = push(root, head, row['branch'])
+        if error:
+            return error
+        record(row['branch'], head, 'pushed')
+    if kind == 'push':
+        return None
+    branch = rescue_name(root, row['name'], now)
+    if kind == 'branch':
+        result = git(root, 'branch', branch, head)
+        if result.returncode:
+            return 'git branch: ' + result.stderr.strip()
+        error = push(root, head, branch)
+        if not error:
+            record(branch, head, 'detached head')
+        return error
+    identity = ['-c', 'user.name=build janitor', '-c', 'user.email=build-janitor@localhost']
+    steps = [('switch', '-q', '-c', branch), ('add', '-A'),
+             (*identity, 'commit', '-q', '--no-verify', '-m',
+              f'rescue: uncommitted work of worktree {row["name"]}\n\n'
+              f'Worktree {path} on {row["branch"] or "detached " + head} was idle '
+              f'{row["idle_hours"]} h; build_janitor committed every change before removing it.')]
+    for step in steps:
+        result = git(path, *step)
+        if result.returncode:
+            return f'git {step[-1] if step[0] == "-c" else step[0]}: ' + result.stderr.strip()
+    rescued = commit(path, 'HEAD')
+    error = push(root, rescued, branch)
+    if not error:
+        record(branch, rescued, 'uncommitted work')
+    return error
+
+
+def drop_checkout(root, path):
+    return git(root, 'worktree', 'remove', path)
+
+
+def remove_worktree(root, row, log, now=None, mapping=None):
+    """Push the checkout's work to origin when ROW['rescue'] says so, rescue goals and closure
+    records, then `git worktree remove` (no --force). Log it."""
+    path = row['path']
+    stamp = time.strftime('%Y-%m-%dT%H:%M:%SZ', time.gmtime())
+    if row.get('rescue'):
+        error = rescue_worktree(root, row, time.time() if now is None else now, mapping)
+        if error:
+            row.update(action='keep', reason='rescue: ' + error)
+            log.write(f'{stamp}\tfailed\t{path}\t{row["branch"] or "detached"}\t{row["head"]}\t'
+                      f'{row["reason"]}\n')
+            return False
+    rescue_goals(root, path, 'worktree reaper: ' + row['reason'])
+    result = drop_checkout(root, path)
     if result.returncode:
         row.update(action='keep', reason='git worktree remove: ' + result.stderr.strip())
         log.write(f'{stamp}\tfailed\t{path}\t{row["branch"] or "detached"}\t{row["head"]}\t'
@@ -1130,13 +1299,15 @@ def reap_worktrees(root, *, apply, log_dir=None, main_ref='origin/main', now=Non
     named = named_worktrees(root, main)
     receipts = ledger_receipts(root)
     live = LivePaths.scan(root, proc, ancestors())
+    remote = origin_heads(root)
     with ThreadPoolExecutor(max_workers=8) as pool:
         rows = list(pool.map(lambda row: classify_worktree(
-            root, row, main, now, live, receipts, registered, idle, named), rows))
+            root, row, main, now, live, receipts, registered, idle, named, remote=remote), rows))
     if apply and any(row['action'] == 'remove' for row in rows):
         log_dir.mkdir(parents=True, exist_ok=True)
         live = LivePaths.scan(root, proc, ancestors())
-        with open(log_dir / 'worktrees.log', 'a') as log:
+        with open(log_dir / 'worktrees.log', 'a') as log, \
+                open(log_dir / 'rescued-worktrees.tsv', 'a') as mapping:
             for row in rows:
                 if row['action'] != 'remove':
                     continue
@@ -1146,7 +1317,7 @@ def reap_worktrees(root, *, apply, log_dir=None, main_ref='origin/main', now=Non
                 elif worktree_newest(row['path']) > row['newest']:
                     row.update(action='keep', reason='changed during the janitor run')
                 else:
-                    remove_worktree(root, row, log)
+                    remove_worktree(root, row, log, now, mapping)
     return rows
 
 
@@ -1242,7 +1413,9 @@ def run(args):
             lines.append(f'worktrees: {len(removable)} of {len(worktrees)} '
                          + ('removed' if args.apply else 'removable')
                          + f' (clean, idle {WORKTREE_REAP_IDLE_SECONDS // 3600} h, merged or '
-                         f'measurement heads; log {janitor.log_dir / "worktrees.log"})')
+                         f'measurement heads; idle {RESCUE_IDLE_SECONDS // 86400} days: '
+                         f'{sum(bool(row.get("rescue")) for row in removable)} pushed to origin '
+                         f'first; log {janitor.log_dir / "worktrees.log"})')
         if failures:
             lines.append(f'failed: {failures} target(s) could not be fully deleted; '
                          f'see {janitor.log_dir / f"deleted-{janitor.stamp}.tsv.gz"}')

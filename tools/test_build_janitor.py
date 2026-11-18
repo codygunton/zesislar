@@ -598,5 +598,148 @@ class WorktreeReaper(unittest.TestCase):
         self.assertTrue(merged.exists())
 
 
+DAY = 24 * HOUR
+
+
+class WorktreeRescue(WorktreeReaper):
+    """Worktrees idle over 7 days go losslessly: their work is pushed to origin first."""
+
+    def setUp(self):
+        super().setUp()
+        self.origin = Path(self.temp.name) / 'origin.git'
+        self.git('init', '-q', '--bare', str(self.origin), cwd=self.temp.name)
+        self.git('remote', 'add', 'origin', str(self.origin))
+        self.git('push', '-q', 'origin', 'main')
+        self.stale = time.time() + 8 * DAY
+
+    def on_origin(self, ref):
+        result = subprocess.run(['git', '--git-dir', str(self.origin), 'rev-parse', '--verify', '-q',
+                                 ref], capture_output=True, text=True)
+        return result.stdout.strip() if result.returncode == 0 else None
+
+    def show(self, ref, path):
+        return subprocess.run(['git', '--git-dir', str(self.origin), 'show', f'{ref}:{path}'],
+                              capture_output=True, text=True, check=True).stdout
+
+    def mapping(self):
+        return (self.root / '_build/janitor/rescued-worktrees.tsv').read_text()
+
+    def test_pushed_unmerged_branch_checkout_goes_and_the_branch_stays_on_origin(self):
+        lane = self.worktree('lane', '-b', 'orch/lane', commit=True)
+        head = self.git('rev-parse', 'HEAD', cwd=lane)
+        self.git('push', '-q', 'origin', 'orch/lane', cwd=lane)
+        rows = self.reap(now=self.stale)
+        self.assertEqual(rows['lane']['action'], 'remove', rows['lane'])
+        self.assertFalse(lane.exists())
+        self.assertEqual(self.on_origin('refs/heads/orch/lane'), head)
+
+    def test_unpushed_branch_is_pushed_then_removed(self):
+        lane = self.worktree('lane', '-b', 'orch/lane', commit=True)
+        head = self.git('rev-parse', 'HEAD', cwd=lane)
+        rows = self.reap(now=self.stale)
+        self.assertEqual(rows['lane']['action'], 'remove', rows['lane'])
+        self.assertEqual(self.on_origin('refs/heads/orch/lane'), head)
+        self.assertFalse(lane.exists())
+        self.assertIn(f'\torch/lane\t{head}\tpushed\n', self.mapping())
+
+    def test_reflog_rewrite_by_gc_does_not_count_as_activity(self):
+        lane = self.worktree('lane', '-b', 'orch/lane', commit=True)
+        reflog = Path(self.git('rev-parse', '--git-path', 'logs/HEAD', cwd=lane))
+        if not reflog.is_absolute():
+            reflog = lane / reflog
+        os.utime(reflog, (self.stale - HOUR, self.stale - HOUR))
+        rows = self.reap(now=self.stale)
+        self.assertEqual(rows['lane']['action'], 'remove', rows['lane'])
+
+    def test_branch_ahead_of_origin_is_pushed_then_removed(self):
+        lane = self.worktree('lane', '-b', 'orch/lane', commit=True)
+        self.git('push', '-q', 'origin', 'orch/lane', cwd=lane)
+        write(lane / 'more', b'more\n')
+        self.git('add', 'more', cwd=lane)
+        self.git('-c', 'user.name=t', '-c', 'user.email=t@t', 'commit', '-q', '-m', 'more', cwd=lane)
+        head = self.git('rev-parse', 'HEAD', cwd=lane)
+        rows = self.reap(now=self.stale)
+        self.assertEqual(rows['lane']['action'], 'remove', rows['lane'])
+        self.assertEqual(self.on_origin('refs/heads/orch/lane'), head)
+        self.assertFalse(lane.exists())
+
+    def test_branch_diverged_from_origin_stays(self):
+        lane = self.worktree('lane', '-b', 'orch/lane', commit=True)
+        self.git('push', '-q', 'origin', 'HEAD~1:refs/heads/orch/lane', cwd=lane)
+        other = self.worktree('other', '--detach', commit=True)
+        self.git('push', '-q', '-f', 'origin', 'HEAD:refs/heads/orch/lane', cwd=other)
+        rows = self.reap(now=self.stale)
+        self.assertEqual(rows['lane']['action'], 'keep', rows['lane'])
+        self.assertIn('push', rows['lane']['reason'])
+        self.assertTrue(lane.exists())
+
+    def test_dirty_worktree_changes_are_on_the_pushed_rescue_branch_before_removal(self):
+        dirty = self.worktree('dirty', '-b', 'orch/dirty', commit=True)
+        head = self.git('rev-parse', 'HEAD', cwd=dirty)
+        write(dirty / 'README', b'changed\n')
+        write(dirty / 'notes/new.txt', b'untracked work\n')
+        write(dirty / '_build/ignored', b'build output\n')
+        branch = 'rescue/dirty-' + time.strftime('%Y%m%d', time.gmtime(self.stale))
+        seen = []
+        drop = J.drop_checkout
+
+        def check_then_drop(root, path):
+            seen.append((self.show(branch, 'README'), self.show(branch, 'notes/new.txt'),
+                         self.on_origin(branch + '~1')))
+            return drop(root, path)
+
+        with patch.object(J, 'drop_checkout', side_effect=check_then_drop):
+            rows = self.reap(now=self.stale)
+        self.assertEqual(rows['dirty']['action'], 'remove', rows['dirty'])
+        self.assertEqual(seen, [('changed\n', 'untracked work\n', head)])
+        self.assertFalse(dirty.exists())
+        self.assertEqual(self.on_origin('refs/heads/orch/dirty'), head)
+        self.assertIn(f'{dirty}\torch/dirty\t{head}\t{branch}\t', self.mapping())
+
+    def test_dirty_worktree_idle_under_7_days_stays(self):
+        dirty = self.worktree('dirty', '--detach')
+        write(dirty / 'README', b'changed\n')
+        rows = self.reap(now=time.time() + 6 * DAY)
+        self.assertEqual((rows['dirty']['action'], rows['dirty']['reason']), ('keep', 'tracked changes'))
+        self.assertTrue(dirty.exists())
+
+    def test_untracked_files_alone_are_rescued(self):
+        loose = self.worktree('loose', '--detach')
+        write(loose / 'scratch.v', b'Lemma x : True.\n')
+        branch = 'rescue/loose-' + time.strftime('%Y%m%d', time.gmtime(self.stale))
+        rows = self.reap(now=self.stale)
+        self.assertEqual(rows['loose']['action'], 'remove', rows['loose'])
+        self.assertEqual(self.show(branch, 'scratch.v'), 'Lemma x : True.\n')
+        self.assertFalse(loose.exists())
+
+    def test_detached_head_on_no_ref_gets_a_pushed_rescue_branch(self):
+        loose = self.worktree('loose', '--detach', commit=True)
+        head = self.git('rev-parse', 'HEAD', cwd=loose)
+        branch = 'rescue/loose-' + time.strftime('%Y%m%d', time.gmtime(self.stale))
+        rows = self.reap(now=self.stale)
+        self.assertEqual(rows['loose']['action'], 'remove', rows['loose'])
+        self.assertEqual(self.on_origin('refs/heads/' + branch), head)
+        self.assertFalse(loose.exists())
+        self.assertIn(f'\t{branch}\t{head}\t', self.mapping())
+
+    def test_report_only_rescues_nothing(self):
+        lane = self.worktree('lane', '-b', 'orch/lane', commit=True)
+        write(lane / 'README', b'changed\n')
+        rows = self.reap(now=self.stale, apply=False)
+        self.assertEqual(rows['lane']['action'], 'remove')
+        self.assertEqual(rows['lane']['rescue'], 'commit')
+        self.assertTrue(lane.exists())
+        self.assertIsNone(self.on_origin('refs/heads/orch/lane'))
+
+    def test_protected_and_in_use_stale_worktrees_stay(self):
+        tools = self.worktree('ops-tools', '-b', 'orch/tools', commit=True)
+        used = self.worktree('used', '-b', 'orch/used', commit=True)
+        rows = self.reap(live=[used], now=self.stale)
+        self.assertEqual(rows['ops-tools']['reason'], 'protected')
+        self.assertIn('live process', rows['used']['reason'])
+        self.assertTrue(tools.exists() and used.exists())
+        self.assertIsNone(self.on_origin('refs/heads/orch/used'))
+
+
 if __name__ == '__main__':
     unittest.main()
