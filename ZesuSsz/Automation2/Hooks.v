@@ -2948,11 +2948,17 @@ Ltac zesu_lia_context_bounded closer :=
              | (zesu_lia_context_within_budget; closer)]
   else (zesu_lia_context_within_budget; closer).
 
+(* The library `lia` (Coq's own body) on the pruned context runs first. *)
+Ltac zesu_library_lia := Coq.micromega.Zify.zify; xlia Coq.micromega.Lia.zchecker.
+
 Ltac Lia.lia ::=
   let run := ltac2:(tac |- zesu_telemetry_ltac1 "lia" "Lia.lia" tac) in
   let run_linear := ltac2:(tac |- zesu_telemetry_ltac1 "bv_linear" "Lia.lia" tac) in
+  let run_library := ltac2:(tac |- zesu_telemetry_ltac1 "lia_library" "Lia.lia" tac) in
   let memo := ltac2:(tac |- zesu_failure_memo_ltac1 "Lia.lia" tac) in
-  run ltac:(memo ltac:(first [solve [zesu_closed_goal_decide] |
+  run ltac:(memo ltac:(first [
+  solve [zesu_context_prune_goal; run_library ltac:(zesu_library_lia)] |
+  solve [zesu_closed_goal_decide] |
   solve [run_linear ltac:(ZesuSsz.Automation2.BvLinear.zesu_bv_linear_with ltac:(lia))] |
   (tryif ZesuSsz.Automation2.BvLinear.zesu_bv_linear_refutes
    then first [zesu_refuted_solve ltac:(zesu_lia_linear_first3) | ResidualLemmas.zesu_residual_lemma]
