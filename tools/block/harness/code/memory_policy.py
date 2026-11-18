@@ -153,7 +153,7 @@ def relocated_authority(actual,expected,legacy_paths=()):
  return True
 
 def production_port_authority(profile):
- if set(profile)!={'schema','kind','authority','memory_route'} or profile.get('schema')!='scratch.admission-profile.v1' or profile.get('kind')!=PORT_KIND or profile.get('memory_route')!='measured_native':
+ if set(profile) not in ({'schema','kind','authority','memory_route'},{'schema','kind','authority','memory_route','supplier_ready'}) or profile.get('schema')!='scratch.admission-profile.v1' or profile.get('kind')!=PORT_KIND or profile.get('memory_route')!='measured_native':
   raise ValueError('The production PORT profile is invalid.')
  if not relocated_authority(profile['authority'],PORT_AUTHORITY,('/home/cody/zesislar/_build/agents/worker-build-2/PORT-union-v2/matrix005-authority-v1/PORT-FAMILY-AUTHORITY-22.json', '/home/cody/zesislar/_build/agents/worker-build-2/PORT-matrix006-authority-v1/PORT-FAMILY-AUTHORITY-22.json')):raise ValueError('The production PORT authority is not authorized.')
  authority=read(profile['authority'])
@@ -169,6 +169,10 @@ def production_port_authority(profile):
      or cases!=extension['original_cases']+extension['additional_cases']
      or len(cases)!=22 or len({r['block'] for r in cases})!=22 or len({r['module'] for r in cases})!=22):
   raise ValueError('The production PORT case set differs from the exact released22 inventory.')
+ if 'supplier_ready' in profile:
+  from supplier_ready import validate,ROOTS
+  supplier=validate(profile['supplier_ready'])
+  authority=dict(authority,production_sources=[dict(row['source'],module=row['module']) for row in supplier['modules'] if row['module'] in ROOTS])
  for row in authority['production_sources']:bound(row)
  if {r['module'] for r in authority['production_sources']}!={'ZesuSsz.Automation.All','ZesuSsz.Automation.Hooks','ZesuSsz.Automation.Finish'}:
   raise ValueError('The production PORT owners differ.')
@@ -218,7 +222,15 @@ def workload_for_job(profile_binding,job,config):
   if hashlib.sha256(specification['statement'].encode()).hexdigest()!=case['statement_sha256']:
    raise ValueError('The production PORT declaration differs.')
   for row in authority['production_sources']:actual(row)
-  return {'kind':kind,'profile':profile_binding,'owned_sources':owned,'declarations_only':False,'prerequisite_modules':[]}
+  result={'kind':kind,'profile':profile_binding,'owned_sources':owned,'declarations_only':False,'prerequisite_modules':[]}
+  if 'supplier_ready' in profile:
+   from supplier_ready import validate,staged
+   sources=staged(validate(profile['supplier_ready']),config)
+   known={row['module'] for row in owned}
+   owned.extend(row for row in sources if row['module'] not in known)
+   result['supplier_context']={key:config[key] for key in ['expected_mcp_flags','physical_flags','effective_compiler_version','cache_import_graph']}
+   result['supplier_context']['supplier_flag_workspace']=str(config.get('supplier_flag_workspace',config['prepared_workspace']))
+  return result
  if kind==FOCUSED_KIND:
   if not config.get('declarations_only'):raise ValueError('A focused check must use declaration-only execution.')
   rows=profile['sources']
@@ -259,7 +271,12 @@ def workload_claim(workload,job,basis):
  if not workload:return basis['claim_bytes'] if basis else (COMPILE_FENCE if job['phase'] in COMPILE_PHASES else fence(job['phase']))
  owned=workload['owned_sources']
  for row in owned:bound(row)
- actual=workload_for_job(workload['profile'],job,{'proof_runtime':{'module_files':{r['module']:r['path'] for r in owned}},'prepared_workspace':'/','declarations_only':workload['declarations_only'],'prerequisite_modules':workload.get('prerequisite_modules')})
+ context={'proof_runtime':{'module_files':{r['module']:r['path'] for r in owned}},'prepared_workspace':'/','declarations_only':workload['declarations_only'],'prerequisite_modules':workload.get('prerequisite_modules')}
+ if 'supplier_context' in workload:
+  if (workload['kind']!=PORT_KIND or set(workload['supplier_context'])!={'expected_mcp_flags','physical_flags','effective_compiler_version','cache_import_graph','supplier_flag_workspace'}):
+   raise ValueError('The supplier workload context is invalid.')
+  context.update(workload['supplier_context'])
+ actual=workload_for_job(workload['profile'],job,context)
  if actual is None or actual['kind']!=workload['kind']:raise ValueError('The workload evidence is invalid.')
  kind=read(workload['profile']).get('kind')
  if kind!=workload['kind']:raise ValueError('The workload profile kind changed.')
@@ -337,9 +354,13 @@ def profile_bindings(context):
  if profile.get('kind')==PORT_KIND:
   authority=production_port_authority(profile)
   values += [profile['authority'],authority['completed_common_ready'],authority['source_packet']]
+  if 'supplier_ready' in profile:
+   from supplier_ready import validate
+   values += validate(profile['supplier_ready'])['bindings']
  for key in ['observed_growth','observed_completion']:
   for value in (profile.get(key) or {}).values():bound(value);values.append(value)
  for value in values:bound(value)
+ if 'supplier_ready' in profile:return list({(row['path'],row['sha256']):row for row in values}.values())
  return values
 
 def apply_job(job,rows=(),workload=None):
