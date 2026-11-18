@@ -1,0 +1,103 @@
+"""Check that bench.py gives a bank a coqc recipe before any block runs (tools/bench/bench.py)."""
+
+import contextlib
+import io
+import json
+import os
+from pathlib import Path
+import tempfile
+import unittest
+from unittest import mock
+
+import bench
+
+FAKE_OPAM = '''#!/usr/bin/env python3
+import os, shutil, sys
+arguments = sys.argv[1:]
+with open(os.environ['FAKE_RULES_ARGS'], 'a') as out:
+    out.write(' '.join(arguments) + '\\n')
+shutil.copy(os.environ['FAKE_RULES'], arguments[arguments.index('-o') + 1])
+'''
+HEAD = 'c' * 40
+TARGETS = ['ZesuSsz/Automation2/All.vo', 'ZesuSsz/Generated/X/Entries.vo']
+
+
+class CacheOnlyBank(unittest.TestCase):
+    """A bank whose Dune build came wholly from the cache: BANK.json says rc 0, the trace ran no coqc."""
+
+    def setUp(self):
+        temporary = tempfile.TemporaryDirectory(prefix='bench-recipe-')
+        self.addCleanup(temporary.cleanup)
+        self.root = Path(temporary.name).resolve()
+        self.workspace = self.root / 'workspace'
+        (self.workspace / '_build').mkdir(parents=True)
+        (self.workspace / 'tools').symlink_to(bench.TOOLS, target_is_directory=True)
+        self.bank = self.workspace / '_build' / 'agents' / 'bench-k1'
+        self.bank.mkdir(parents=True)
+        (self.bank / 'BANK.json').write_text(json.dumps({'head': HEAD, 'targets': TARGETS, 'prep_rc': 0, 'rc': 0,
+                                                         'missing': []}))
+        (self.bank / 'trace.csexp').write_bytes(b'')
+        fake = self.root / 'fakebin'
+        fake.mkdir()
+        (fake / 'opam').write_text(FAKE_OPAM)
+        (fake / 'opam').chmod(0o755)
+        self.rules = self.root / 'rules.json'
+        self.calls = self.root / 'calls.txt'
+        self.calls.write_text('')
+        environment = {'PATH': str(fake) + os.pathsep + os.environ.get('PATH', ''),
+                       'FAKE_RULES': str(self.rules), 'FAKE_RULES_ARGS': str(self.calls),
+                       'TMPDIR': str(self.root)}
+        patches = [mock.patch.dict(os.environ, environment), mock.patch.object(bench, 'ISLARIS', self.root / 'islaris')]
+        for patch in patches:
+            patch.start()
+            self.addCleanup(patch.stop)
+        self.logged = []
+
+    def write_rules(self, program, source):
+        logical = str(self.workspace / '_dune-cache' / 'default')
+        self.rules.write_text(json.dumps([{'deps': [], 'targets': [], 'context': 'default', 'action': [
+            'chdir', logical, ['run', program, '-q', '-R', '.', 'ZesuSsz', '-o', 'out.vo', source]]}]))
+
+    def build(self):
+        return bench.build_bank(self.workspace, 'k1', HEAD, TARGETS, {}, self.logged.append)
+
+    def test_recipe_comes_from_dune_rules(self):
+        self.write_rules('.bin/coqc', 'ZesuSsz/Automation2/All.v')
+        self.assertEqual(self.build(), self.bank)
+        recipe = json.loads((self.bank / 'coqc_recipe.json').read_text())
+        self.assertEqual(recipe['command'][0], '.bin/coqc')
+        self.assertIn('ZesuSsz/Automation2/All.v', recipe['command'])
+        # The rules ran under the canonical alias; the saved recipe names the physical bank.
+        self.assertEqual(recipe['working_dir'], str(self.bank / 'default'))
+        calls = self.calls.read_text().splitlines()
+        self.assertEqual(len(calls), 1)
+        self.assertIn('dune rules --format=json', calls[0])
+        self.assertTrue(calls[0].endswith(' ' + TARGETS[0]))
+        # The block compile reads it back.
+        command, working = bench.C.recipe_command(self.bank, Path('/usr/bin/coqc'), self.root / 'Caller.v',
+                                                  self.root / 'Caller.vo')
+        self.assertEqual(command[:3], ['/usr/bin/coqc', '-time', '-q'])
+        self.assertEqual(working, self.bank / 'default')
+
+    def test_existing_recipe_is_kept(self):
+        recipe = {'command': ['.bin/coqc', '-q', 'ZesuSsz/A.v'], 'working_dir': str(self.bank / 'default')}
+        (self.bank / 'coqc_recipe.json').write_text(json.dumps(recipe))
+        self.build()
+        self.assertEqual(self.calls.read_text(), '')
+        self.assertEqual(json.loads((self.bank / 'coqc_recipe.json').read_text()), recipe)
+
+    def test_no_recipe_refuses_once_up_front(self):
+        self.write_rules('/bin/cp', 'ZesuSsz/Automation2/All.v')
+        stderr = io.StringIO()
+        with contextlib.redirect_stderr(stderr), self.assertRaises(SystemExit) as stop:
+            self.build()
+        self.assertEqual(stop.exception.code, 3)
+        lines = stderr.getvalue().splitlines()
+        self.assertEqual(len(lines), 1)
+        self.assertTrue(lines[0].startswith('refused: '))
+        self.assertIn('--cache=disabled', lines[0])
+        self.assertFalse((self.bank / 'coqc_recipe.json').exists())
+
+
+if __name__ == '__main__':
+    unittest.main()
