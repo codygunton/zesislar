@@ -1,3 +1,10 @@
+From Ltac2 Require Import Ltac2.
+Declare ML Module "b113-step-observer.observer".
+Ltac2 @ external zesu_observer_reset : unit -> unit := "b113-step-observer.observer" "reset".
+Ltac2 @ external zesu_observer_begin : unit -> unit := "b113-step-observer.observer" "begin".
+Ltac2 @ external zesu_observer_end : unit -> unit := "b113-step-observer.observer" "end".
+Set Default Proof Mode "Classic".
+
 Require Import ZesuSsz.Automation2.MemoryAddress.
 Require Import ZesuSsz.Automation2.MemoryTupleConsumer.
 Require Import ZesuSsz.Automation2.SourceFactMatching.
@@ -969,10 +976,11 @@ Ltac zesu_run_pass_steps :=
      zesu_extract_matching_descriptor_pure].
 
 Ltac zesu_run_pass_v1 :=
+  ltac2:(zesu_observer_reset ());
   zesu_expose_environment_alias;
   try zesu_prepare_uninit_goal;
   try zesu_normalize_find_mem_address;
-  unshelve (time "zesu_run" repeat first
+  unshelve (time "zesu_run" repeat (ltac2:(zesu_observer_begin ()); first
     [ZesuSsz.Automation2.CodecArrayRead.zesu_codec_array_read_consumer |
      zesu_v34_array_continuation |
      zesu_union_witness_step | zesu_target_registered_intro_if_enabled |
@@ -989,17 +997,18 @@ Ltac zesu_run_pass_v1 :=
      zesu_liAStep |
      ZesuSsz.Automation2.CodecArrayRead.zesu_codec_array_read_sidecond |
      zesu_open_matching_two_level_frame |
-     zesu_extract_matching_descriptor_pure]; liShow;
+     zesu_extract_matching_descriptor_pure]; ltac2:(zesu_observer_end ())); liShow;
     try zesu_finish_closed_wand;
     try zesu_finish_framed_wand;
     zesu_finish).
 
 Ltac zesu_run_pass_v2 :=
+  ltac2:(zesu_observer_reset ());
   zesu_expose_environment_alias;
   try zesu_prepare_uninit_goal;
   try zesu_normalize_find_mem_address;
-  unshelve (time "zesu_run" repeat first
-    [zesu_target_registered_intro_if_enabled | zesu_array_load_preselect | zesu_array_load_priority | zesu_conjunct_match_if_enabled | zesu_run_pass_steps | zesu_close_matching_trace_tail | zesu_open_trace_exist | zesu_rule_set_v2_steps]; liShow;
+  unshelve (time "zesu_run" repeat (ltac2:(zesu_observer_begin ()); first
+    [zesu_target_registered_intro_if_enabled | zesu_array_load_preselect | zesu_array_load_priority | zesu_conjunct_match_if_enabled | zesu_run_pass_steps | zesu_close_matching_trace_tail | zesu_open_trace_exist | zesu_rule_set_v2_steps]; ltac2:(zesu_observer_end ())); liShow;
     try zesu_finish_closed_wand;
     try zesu_finish_framed_wand;
     zesu_finish).
@@ -1061,7 +1070,7 @@ Ltac zesu_run :=
   let switches := zesu_search_switches in
   zesu_dispatch_search switches ltac:(fun _ =>
     unshelve (repeat progress
-      (zesu_run_pass; try zesu_solve_instances; zesu_finish));
+      (idtac "ZESU_PHASE loop_run_pass begin"; zesu_run_pass; idtac "ZESU_PHASE loop_run_pass end"; try zesu_solve_instances; idtac "ZESU_PHASE pass_finish begin"; zesu_finish; idtac "ZESU_PHASE pass_finish end"));
     try zesu_solve_instances;
     try zesu_finish_pure_resources;
     try solve [zesu_array_bounds_if_enabled];
