@@ -7,6 +7,12 @@ and deletes nothing. `--apply` also deletes:
   * run dirs (`_build/agents/<agent>/<item>`) that are sealed (`SEALED.json`)
     or have no change for 24 h shrink to their non-compiled files under 1 MiB,
     plus the files that a `KEEP.json` names;
+  * BENCH runs (a dir with a tools/bench RUN.json and a REPORT*.md, or any run dir under
+    `_build/agents/bench/`) are reference data: shrinking drops their build products and
+    gzips their large files in place (measure.json.log.gz, run.log.gz; bench.py report reads
+    both forms), and nothing ever deletes them. BUDGET.json reports them against
+    BENCH_BUDGET_BYTES. Before a worktree build or checkout goes, its BENCH runs move to
+    `_build/agents/bench/`;
   * worktree `_build` dirs with no change for 48 h (the checkout stays);
   * banks of older main commits with no change for 24 h;
   * whole worktrees under `.worktrees/` (`git worktree remove`, never --force) that are
@@ -40,7 +46,8 @@ Subcommands for other tools:
   admit                   exit 3 when this agent is over its budget (no scan)
   in-use PATH...          exit 0 when a live process uses one of the paths, or the
                           admission ledger names a release receipt under one
-  branch-items BRANCH     list (or --delete) the run dirs tied to a branch
+  branch-items BRANCH     list (or --delete) the run dirs tied to a branch; BENCH runs
+                          and gate cycle dirs (`gates-*`) shrink instead of going
   rescue-goals PATH...    move the saved goals under each PATH into the store
   worktrees [--json F]    report every worktree's verdict (global --apply removes)
   remove-worktree [--wait] PATH...
@@ -56,6 +63,7 @@ import contextlib
 import errno
 import fcntl
 import gzip
+import io
 import json
 import os
 from pathlib import Path
@@ -74,6 +82,9 @@ GB = 10 ** 9
 AGENT_BUDGET_BYTES = 80 * GB
 TOTAL_BUDGET_BYTES = 200 * GB
 CACHE_BUDGET_BYTES = 5 * GB
+# BENCH runs are kept, shrunk, never deleted (2026-11-18: merge cleanup of orch/finish-gate
+# deleted the BENCH-v1 base run v1-b5f1564a8-fg4). BUDGET.json reports their size against this.
+BENCH_BUDGET_BYTES = 10 * GB
 CACHE_ROOT = Path.home() / '.cache/zesislar'
 RUN_IDLE_SECONDS = 24 * 3600
 WORKTREE_IDLE_SECONDS = 48 * 3600
@@ -81,6 +92,9 @@ BANK_IDLE_SECONDS = 24 * 3600
 SMALL_BYTES = 1 << 20
 MANIFEST_MAX_BYTES = 256 << 20
 PROTECTED_AGENTS = ('orch',)
+BENCH_AGENT = 'bench'  # every run dir under _build/agents/bench/ is a BENCH run
+BENCH_SCHEMA = 'bench-run/'  # RUN.json schema that tools/bench/bench.py writes
+GATE_PREFIX = 'gates-'  # a lane's gate cycle dir _build/agents/<lane>/gates-<tag>/
 COMPILED = ('.vo', '.vok', '.vos', '.glob', '.aux', '.cmi', '.cmo', '.cmx', '.cmxs', '.cma',
             '.cmxa', '.cmt', '.cmti', '.o', '.a', '.so', '.exe', '.bc', '.lia.cache',
             '.nia.cache', '.d', '.csexp', '.db', '-db')
@@ -122,8 +136,50 @@ def extents(descriptor):
         start = logical + length
 
 
-def compiled_or_large(name, size):
-    return size >= SMALL_BYTES or name.endswith(COMPILED)
+def shrink_action(name, size, bench=False):
+    """What shrinking does to one file: None (keep), 'delete', or 'compress' (gzip in place). A
+    BENCH run loses only its build products; its records (*.json, *.md) stay as they are and its
+    other large files (the logs) are compressed."""
+    if name.endswith(COMPILED):
+        return 'delete'
+    if size < SMALL_BYTES or (bench and name.endswith(('.gz', '.json', '.md'))):
+        return None
+    return 'compress' if bench else 'delete'
+
+
+def is_bench_run(directory, names):
+    """True when DIRECTORY (holding NAMES) is a tools/bench run: RUN.json of schema bench-run/*
+    and a REPORT*.md."""
+    if 'RUN.json' not in names or not any(name.startswith('REPORT') and name.endswith('.md')
+                                          for name in names):
+        return False
+    try:
+        with open(os.path.join(directory, 'RUN.json'), 'rb') as stream:
+            if os.fstat(stream.fileno()).st_size > MANIFEST_MAX_BYTES:
+                return False
+            value = json.load(stream)
+    except (OSError, ValueError):
+        return False
+    return isinstance(value, dict) and str(value.get('schema', '')).startswith(BENCH_SCHEMA)
+
+
+def bench_unit(unit):
+    """A run dir directly under _build/agents/bench/ is a BENCH run whatever it holds."""
+    return unit.get('agent') == BENCH_AGENT and unit.get('item') is not None
+
+
+def bench_runs(path, whole=False):
+    """The outermost BENCH run dirs at or under PATH (PATH itself when WHOLE)."""
+    if whole:
+        return [str(path)]
+    found = []
+    for directory, subdirectories, files in os.walk(path):
+        if is_bench_run(directory, files):
+            found.append(directory)
+            subdirectories[:] = []
+        else:
+            subdirectories[:] = sorted(d for d in subdirectories if d not in goal_store.SKIP_DIRS)
+    return found
 
 
 def cache_usage(root):
@@ -153,14 +209,15 @@ def survey(unit):
     """Walk one run dir (or a list of loose files) without following links.
 
     Return its newest change time, its shrinkable files, its symbolic link
-    targets, its seal, KEEP.json and bank markers, and its extent usage:
-    bytes in unshared extents plus the shared (or hard-linked) extents.
+    targets, its seal, KEEP.json and bank markers, its BENCH runs, and its extent
+    usage: bytes in unshared extents plus the shared (or hard-linked) extents.
     """
     path, measure = unit['path'], unit.get('measure', True)
+    whole = bench_unit(unit)
     result = {key: unit[key] for key in ('agent', 'item', 'worktree', 'head') if key in unit}
     result.update(path=path, newest=0.0, files=0, bytes=0, shrink_files=0, shrink_bytes=0,
                   unique=0, json_unshared=0, links=[], sealed=False, keep_files=[], banks=[],
-                  errors=0)
+                  errors=0, bench=whole, bench_runs=[path] if whole else [], bench_bytes=0)
     shared = {}
     pending = []
     for entry in unit.get('files') or [path]:
@@ -169,14 +226,14 @@ def survey(unit):
         except OSError:
             result['errors'] += 1
             continue
-        pending.append((entry, info, 0))
+        pending.append((entry, info, 0, whole))
     if not unit.get('files') and pending and stat.S_ISDIR(pending[0][1].st_mode):
         names = set()
         with contextlib.suppress(OSError):
             names = set(os.listdir(path))
         result['sealed'] = any(name in names for name in SEALED)
     while pending:
-        entry, info, depth = pending.pop()
+        entry, info, depth, bench = pending.pop()
         result['newest'] = max(result['newest'], info.st_mtime, info.st_ctime)
         mode = info.st_mode
         if stat.S_ISDIR(mode):
@@ -186,6 +243,9 @@ def survey(unit):
                 result['errors'] += 1
                 continue
             names = {child.name for child in children}
+            if not bench and is_bench_run(entry, names):
+                bench = True
+                result['bench_runs'].append(entry)
             if 'KEEP.json' in names:
                 result['keep_files'].append(os.path.join(entry, 'KEEP.json'))
             if 'bank' in names and depth <= 2:
@@ -194,7 +254,8 @@ def survey(unit):
                     result['banks'].append([entry, head])
             for child in children:
                 try:
-                    pending.append((child.path, child.stat(follow_symlinks=False), depth + 1))
+                    pending.append((child.path, child.stat(follow_symlinks=False), depth + 1,
+                                    bench))
                 except OSError:
                     result['errors'] += 1
             continue
@@ -208,9 +269,11 @@ def survey(unit):
         result['files'] += 1
         result['bytes'] += info.st_size
         name = os.path.basename(entry)
-        if compiled_or_large(name, info.st_size):
+        if shrink_action(name, info.st_size, bench):
             result['shrink_files'] += 1
             result['shrink_bytes'] += info.st_size
+        if bench:
+            result['bench_bytes'] += info.st_blocks * 512
         if measure and info.st_blocks:
             measure_file(entry, info, result, shared)
     if shared:
@@ -560,6 +623,7 @@ class Janitor:
                              'protected': agent in self.protected_agents,
                              'unshared_large_json_bytes': sum(r['json_unshared'] for r in results)}
         total = total_unique + union_bytes(total_shared)
+        bench_bytes = sum(result['bench_bytes'] for result in runs)
         goals = goal_store.store_bytes(self.root)
         caches = cache_usage(self.cache_root)
         return {'schema': 'zesu.build-budget.v1',
@@ -577,6 +641,12 @@ class Janitor:
                            'budget_bytes': CACHE_BUDGET_BYTES,
                            'over': caches['bytes'] > CACHE_BUDGET_BYTES,
                            'prune': 'tools/prune_caches.py', 'dirs': caches['dirs']},
+                'bench': {'path': str(self.agents / BENCH_AGENT),
+                          'runs': sum(len(result['bench_runs']) for result in runs),
+                          'bytes': bench_bytes, 'budget_bytes': BENCH_BUDGET_BYTES,
+                          'over': bench_bytes > BENCH_BUDGET_BYTES,
+                          'policy': 'reference data: shrunk (logs gzip\'d), never deleted; '
+                                    'prune old runs by hand'},
                 'agents': report}
 
     # Plan -------------------------------------------------------------------
@@ -642,7 +712,8 @@ class Janitor:
         rows = []
         for key, result in sorted(items.items()):
             row = {'kind': 'run', 'path': result['path'], 'check': result['path'],
-                   'agent': key[0], 'bytes': result['bytes'], 'files': result['files']}
+                   'agent': key[0], 'bytes': result['bytes'], 'files': result['files'],
+                   'bench': result['bench'], 'bench_runs': len(result['bench_runs'])}
             if key in reasons:
                 row.update(action='keep', reason=reasons[key])
             elif result['keep_files'] and keep_paths(result) is None:
@@ -762,7 +833,7 @@ class Janitor:
         for row in targets:
             try:
                 if row['kind'] == 'run':
-                    files, size, failed = shrink(row['path'], log)
+                    files, size, failed = shrink(row['path'], log, row.get('bench', False))
                     touched.add(row['agent'])
                 else:
                     rescue_goals(self.root, row['path'], 'build janitor: ' + row['reason'], log)
@@ -819,24 +890,32 @@ def is_kept(path, kept):
 
 
 def shrink_candidates(result):
+    """Yield (path, size, action) for each file that shrinking deletes or (in a BENCH run)
+    compresses; RESULT['bench'] marks the whole dir as one BENCH run."""
     kept = keep_paths(result) if result['keep_files'] else []
     if kept is None:
         return
-    for directory, subdirectories, files in os.walk(result['path']):
+    root = result['path']
+    inside = {}
+    for directory, subdirectories, files in os.walk(root):
+        bench = result.get('bench', False) if directory == root else inside[os.path.dirname(directory)]
+        bench = inside[directory] = bench or is_bench_run(directory, files)
         for name in files:
             path = os.path.join(directory, name)
             try:
                 info = os.lstat(path)
             except OSError:
                 continue
-            if stat.S_ISREG(info.st_mode) and compiled_or_large(name, info.st_size) \
-                    and not is_kept(path, kept):
-                yield path, info.st_size
+            if not stat.S_ISREG(info.st_mode) or is_kept(path, kept):
+                continue
+            action = shrink_action(name, info.st_size, bench)
+            if action:
+                yield path, info.st_size, action
 
 
 def shrink_totals(result):
     files = size = 0
-    for _, length in shrink_candidates(result):
+    for _, length, _ in shrink_candidates(result):
         files += 1
         size += length
     return files, size
@@ -855,22 +934,49 @@ def unlink(path):
             os.chmod(parent, stat.S_IMODE(mode))
 
 
-def shrink(path, log):
+def compress(path):
+    """gzip PATH into PATH.gz (same times) and remove PATH. Return the bytes freed."""
+    info = os.lstat(path)
+    target = path + '.gz'
+    temporary = os.path.join(os.path.dirname(path), '.' + os.path.basename(target) + '.tmp')
+    try:
+        with open(path, 'rb') as source, gzip.open(temporary, 'wb') as sink:
+            shutil.copyfileobj(source, sink, 1 << 20)
+        os.utime(temporary, ns=(info.st_atime_ns, info.st_mtime_ns))
+        os.replace(temporary, target)
+    except BaseException:
+        with contextlib.suppress(OSError):
+            os.unlink(temporary)
+        raise
+    unlink(path)
+    return info.st_size - os.lstat(target).st_size
+
+
+def shrink(path, log, bench=False):
+    """Delete the build products and large files under PATH, except what a KEEP.json names; in a
+    BENCH run (all of PATH when BENCH) gzip large non-compiled files instead. Return
+    (files deleted or compressed, bytes freed, failures)."""
     keep = []
     for directory, subdirectories, files in os.walk(path):
         if 'KEEP.json' in files:
             keep.append(os.path.join(directory, 'KEEP.json'))
     files = size = failed = 0
-    for file, length in shrink_candidates({'path': path, 'keep_files': keep}):
+    for file, length, action in list(shrink_candidates({'path': path, 'keep_files': keep,
+                                                        'bench': bench})):
         try:
-            unlink(file)
+            if action == 'compress':
+                freed = compress(file)
+            else:
+                unlink(file)
+                freed = length
         except OSError as error:
             log.write(f'{time.time():.0f}\tfailed\t{file}\t{length}\t{error}\n')
             failed += 1
             continue
-        log.write(f'{time.time():.0f}\tshrink\t{file}\t{length}\n')
+        log.write(f'{time.time():.0f}\t{action if action == "compress" else "shrink"}\t{file}'
+                  f'\t{length}\n')
         files += 1
-        size += length
+        size += freed
     return files, size, failed
 
 
@@ -916,12 +1022,34 @@ def remove_tree(path, log):
     return files, size, len(failed)
 
 
+def rescue_bench_runs(root, path, reason, log=None):
+    """Shrink each BENCH run under PATH (a worktree build or checkout about to go) and move it to
+    _build/agents/bench/<name> (<name>-<stamp> when taken). Return the new paths."""
+    target_root = Path(root) / '_build/agents' / BENCH_AGENT
+    moved = []
+    for run in bench_runs(path):
+        if os.path.realpath(run).startswith(os.path.realpath(target_root) + os.sep):
+            continue
+        shrink(run, log if log is not None else io.StringIO(), bench=True)
+        target_root.mkdir(parents=True, exist_ok=True)
+        target = target_root / os.path.basename(run)
+        if os.path.lexists(target):
+            target = target_root / f'{os.path.basename(run)}-{time.strftime("%Y%m%dT%H%M%SZ", time.gmtime())}'
+        shutil.move(run, target)
+        if log is not None:
+            log.write(f'{time.time():.0f}\tbench-saved\t{run}\t{target}\t{reason}\n')
+        print(f'kept BENCH run {run}: moved to {target}')
+        moved.append(str(target))
+    return moved
+
+
 def rescue_goals(root, path, reason, log=None):
-    """Move the saved goals and closure records under PATH into their stores; log each one.
-    Return the goal store dir."""
+    """Move the BENCH runs (rescue_bench_runs), saved goals and closure records under PATH into
+    their stores; log each one. Return the goal store dir."""
     def note(line):
         if log is not None:
             log.write(line + '\n')
+    rescue_bench_runs(root, path, reason, log)
     destination, count = goal_store.rescue(root, path, reason=reason, log=note)
     if count:
         print(f'saved {count} goal file(s) from {path} to {destination}')
@@ -1446,6 +1574,11 @@ def summary(plan, budget, mode, freed):
              f'{human(budget["total_budget_bytes"])}'
              + (' (OVER BUDGET)' if budget['total_over'] else '')]
     store = budget.get('goal_store')
+    bench = budget.get('bench')
+    if bench and bench['over']:
+        lines.append(f'over budget: BENCH runs {bench["path"]} {human(bench["bytes"])} of '
+                     f'{human(bench["budget_bytes"])} (reference data, never deleted by the '
+                     f'janitor; prune old runs by hand)')
     if store and store['over']:
         lines.append(f'over budget: goal store {store["path"]} {human(store["bytes"])} of '
                      f'{human(store["budget_bytes"])}')
@@ -1527,7 +1660,10 @@ def in_use(args):
 
 
 def branch_items(args):
-    """List or delete the `_build/agents/*/<item>` dirs that belong to BRANCH."""
+    """List or delete the `_build/agents/*/<item>` dirs that belong to BRANCH. A BENCH run (or an
+    item holding one) and a gate cycle dir (`gates-*`) are reference data: they shrink instead
+    (BENCH logs gzip'd; a gate dir keeps its small files: gates.out, sweep tables, closed-set
+    results)."""
     root = Path(args.root) if args.root else base_root()
     janitor = Janitor(root, log_dir=args.log_dir)
     names = {args.branch, args.branch.replace('/', '-'), args.branch.rsplit('/', 1)[-1]}
@@ -1542,15 +1678,20 @@ def branch_items(args):
             owner = json.loads((Path(unit['path']) / 'ITEM.json').read_text()).get('branch')
         if owner != args.branch and not (owner is None and unit['item'] in names):
             continue
+        path, whole, reference = unit['path'], bench_unit(unit), None
         if unit['agent'] in janitor.protected_agents:
-            rows.append((unit['path'], 'kept: protected agent'))
-        elif live.user(unit['path']):
-            rows.append((unit['path'], 'kept: live process uses ' + live.user(unit['path'])))
-        elif receipts_under(receipts, unit['path']):
-            rows.append((unit['path'], 'kept: admission ledger receipt '
-                         + receipts_under(receipts, unit['path'])[0]))
+            kept = 'kept: protected agent'
+        elif live.user(path):
+            kept = 'kept: live process uses ' + live.user(path)
+        elif receipts_under(receipts, path):
+            kept = 'kept: admission ledger receipt ' + receipts_under(receipts, path)[0]
         else:
-            rows.append((unit['path'], None))
+            kept = None
+            if whole or bench_runs(path):
+                reference = 'BENCH run'
+            elif unit['item'].startswith(GATE_PREFIX):
+                reference = 'gate cycle dir'
+        rows.append((path, kept, reference, whole))
     if not rows:
         print(f'no run dirs under {janitor.agents} belong to {args.branch}')
         return 0
@@ -1560,9 +1701,18 @@ def branch_items(args):
             stack.enter_context(exclusive(janitor.log_dir))
             log = stack.enter_context(gzip.open(
                 janitor.log_dir / f'deleted-{janitor.stamp}-merge.tsv.gz', 'at'))
-        for path, kept in rows:
+        for path, kept, reference, whole in rows:
             if kept:
                 print(f'{kept}: {path}')
+            elif reference and args.delete:
+                files, size, _ = shrink(path, log, whole)
+                with open(janitor.log_dir / 'janitor.log', 'a') as summary_log:
+                    summary_log.write(f'{janitor.stamp}\tmerge\tkept {path} ({reference}; shrank '
+                                      f'{files} files, {human(size)}) for {args.branch}\n')
+                print(f'kept {reference} {path}: reference data; shrank {files} files '
+                      f'({human(size)} freed)')
+            elif reference:
+                print(f'would keep {reference} {path} (reference data) and shrink it')
             elif args.delete:
                 saved = rescue_goals(root, path, 'cleanup_after_merge: ' + args.branch, log)
                 files, size, _ = remove_tree(path, log)
@@ -1586,6 +1736,8 @@ def rescue_goals_command(args):
     root = Path(args.root) if args.root else base_root()
     if args.dry_run:
         for path in args.paths:
+            for run in bench_runs(path):
+                print(f'would keep BENCH run {run} (moved to {root / "_build/agents" / BENCH_AGENT})')
             for file, _, _ in goal_store.goal_files(path):
                 print(f'would save goal {file}')
             for file, _, _ in goal_store.closure_files(path):
