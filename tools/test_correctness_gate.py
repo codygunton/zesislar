@@ -110,7 +110,6 @@ class GateClaimsTests(unittest.TestCase):
         self.assertEqual(correctness_gate.batch_fence_bytes({"ZESU_GATE_LIMIT": "123"}), 123)
         self.assertEqual(correctness_gate.batch_fence_bytes(
             {"ZESU_BATCH_LIMIT": "64G", "ZESU_GATE_LIMIT": "120G"}), 120 * 1024**3)
-        self.assertEqual(correctness_gate.batch_fence_bytes({"ZESU_AGGREGATE_LIMIT": "8G"}), 120 * 1024**3)
         for value in ["max", "0", "-1", "1.5G"]:
             with self.subTest(value=value), self.assertRaises(ValueError):
                 correctness_gate.batch_fence_bytes({"ZESU_GATE_LIMIT": value})
@@ -140,11 +139,8 @@ class GateClaimsTests(unittest.TestCase):
             waits.append(seconds)
             free[0] = 100
 
-        # This fixture supplies synthetic booking amounts, not a kernel sample.
-        with patch('block.harness.code.admission_memory.ScopeReader.slice_sample',
-                   side_effect=OSError('This booking fixture has no live slice sample.')):
-            record = reserve(self.policy, self.owner, self.root / "ADMISSION.json",
-                             available=lambda: free[0], pause=pause)
+        record = reserve(self.policy, self.owner, self.root / "ADMISSION.json",
+                         available=lambda: free[0], pause=pause)
         self.assertEqual(waits, [60])
         self.assertTrue(record["admitted"])
         self.assertEqual(read(self.ledger)["fixed_claims"], {"healthy": 40, "gate-one": 30})

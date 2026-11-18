@@ -49,32 +49,6 @@ class UnifiedAdmission(unittest.TestCase):
         return M.confirm_shell(marker or self.marker,replacement or self.token(amount=amount),
                                amount,200*M.GIB,ledger=self.ledger,reader=self.reader)
 
-    def test_shared_transaction_preserves_admission_and_parses_once(self):
-        self.assertTrue(self.confirm()['fits'])
-        expected = M.current_projection(64*M.GIB, 200*M.GIB,
-                                        ledger=self.ledger, reader=self.reader)
-        with patch.object(M.json, 'loads', wraps=M.json.loads) as loads:
-            with M.ledger_transaction(self.ledger):
-                bookings = M.read_shell_bookings(ledger=self.ledger)
-                authorized = M.authorized_shell_booking(self.marker, 64*M.GIB,
-                                                        ledger=self.ledger, reader=self.reader)
-                actual = M.current_projection(64*M.GIB, 200*M.GIB,
-                                              ledger=self.ledger, reader=self.reader)
-            self.assertEqual(loads.call_count, 1)
-        self.assertEqual(bookings[str(self.marker)], 64*M.GIB)
-        self.assertEqual(authorized, 64*M.GIB)
-        self.assertEqual(actual, expected)
-
-    def test_failed_transaction_does_not_reuse_old_ledger(self):
-        with self.assertRaisesRegex(RuntimeError, 'injected'):
-            with M.ledger_transaction(self.ledger):
-                raise RuntimeError('injected')
-        data = self.read()
-        data['fixed_claims']['new-owner'] = 8*M.GIB
-        self.save(data)
-        with M.ledger_transaction(self.ledger) as actual:
-            self.assertEqual(actual['fixed_claims']['new-owner'], 8*M.GIB)
-
     def test_unverified_aggregate_flag_cannot_collapse_two_bookings(self):
         observation={'verified':False,'aggregate_verified':True,'scope':'/untrusted',
                      'device':1,'inode':2,'live_bytes':64*M.GIB}
@@ -95,30 +69,6 @@ class UnifiedAdmission(unittest.TestCase):
         self.assertEqual(r['active_claim_bytes'],64*M.GIB)
         self.assertEqual(r['raw_claim_bytes'],128*M.GIB)
         self.assertEqual(len(data['shell_claim_owners']),2)
-
-    def test_authorized_booking_uses_exact_admitted_token_and_live_owner(self):
-        amount = 8 * M.GIB
-        self.assertTrue(self.confirm(amount=amount)['fits'])
-        self.assertEqual(M.authorized_shell_booking(self.marker, amount,
-                         ledger=self.ledger, reader=self.reader), amount)
-        self.assertIsNone(M.authorized_shell_booking(self.marker, amount+1,
-                          ledger=self.ledger, reader=self.reader))
-        self.process(dict(self.pending, startticks=999),12,['guard','scope'],
-                     str(self.group.relative_to(self.reader.root)))
-        self.assertIsNone(M.authorized_shell_booking(self.marker, amount,
-                          ledger=self.ledger, reader=self.reader))
-
-    def test_changed_token_and_released_booking_grant_no_authority(self):
-        amount = 8 * M.GIB
-        self.assertTrue(self.confirm(amount=amount)['fits'])
-        self.marker.write_text(self.marker.read_text()+'changed=1\n')
-        self.assertIsNone(M.authorized_shell_booking(self.marker, amount,
-                          ledger=self.ledger, reader=self.reader))
-        data = self.read()
-        data['fixed_claims'][M.shell_key(self.marker)] = 0
-        self.save(data)
-        self.assertIsNone(M.authorized_shell_booking(self.marker, amount,
-                          ledger=self.ledger, reader=self.reader))
 
     def test_measured_booking_stays_below_fence(self):
         self.assertTrue(self.confirm(amount=24*M.GIB)['fits'])
@@ -234,52 +184,6 @@ class UnifiedAdmission(unittest.TestCase):
             M.refresh_shell_growth([{'reservation':str(self.marker),'claim_bytes':80*M.GIB}],
                                    ledger=self.ledger,reader=self.reader)
         self.assertEqual(self.read()['fixed_claims'][M.shell_key(self.marker)],64*M.GIB)
-
-    def test_dead_owner_recovery_accepts_replaced_token_with_matching_binding(self):
-        self.assertTrue(self.confirm()['fits'])
-        original=self.reader.file_identity(self.marker.lstat())
-        replacement=self.root/'changed-token'
-        replacement.write_bytes(self.marker.read_bytes())
-        replacement.replace(self.marker)
-        observed=self.reader.file_identity(self.marker.lstat())
-        self.assertNotEqual(original,observed)
-        with self.assertRaisesRegex(ValueError,'still live'):
-            M.recover_dead_shell(self.marker,ledger=self.ledger,reader=self.reader)
-        self.process(dict(self.pending,startticks=999),12,['guard','scope'],
-                     str(self.group.relative_to(self.reader.root)))
-        text=self.marker.read_text()
-        for changed in (text.replace('owner_start=104','owner_start=105'),
-                        text.replace('fixture-generation-1234','other-generation')):
-            self.marker.write_text(changed)
-            with self.assertRaisesRegex(ValueError,'owner differs'):
-                M.recover_dead_shell(self.marker,ledger=self.ledger,reader=self.reader)
-        self.marker.write_text(text)
-        observed=self.reader.file_identity(self.marker.lstat())
-        (self.group/'cgroup.events').write_text('populated 0\n')
-        self.assertTrue(M.recover_dead_shell(self.marker,ledger=self.ledger,reader=self.reader))
-        data=self.read();key=M.shell_key(self.marker)
-        self.assertEqual(data['fixed_claims'][key],0)
-        self.assertEqual(M._shell_recovery_record(data, key, self.reader)[1]['previous_token_identity'],list(original))
-        self.assertEqual(M._shell_recovery_record(data, key, self.reader)[1]['observed_token_identity'],list(observed))
-
-    def test_released_zero_claim_marker_is_removed_once(self):
-        self.assertTrue(self.confirm()['fits'])
-        text=self.marker.read_text()
-        self.process(dict(self.pending,startticks=999),12,['guard','scope'],
-                     str(self.group.relative_to(self.reader.root)))
-        data=self.read();key=M.shell_key(self.marker)
-        data['fixed_claims'][key]=0
-        data['shell_releases']={key:{'marker':str(self.marker),'owner':self.pending}}
-        self.save(data)
-        self.marker.write_text(text)
-        observed=self.reader.file_identity(self.marker.lstat())
-        self.assertTrue(M.recover_dead_shell(self.marker,ledger=self.ledger,reader=self.reader))
-        self.assertFalse(self.marker.exists())
-        cleanup=M._shell_recovery_record(self.read(), key, self.reader)[1]['marker_cleanup']
-        self.assertEqual(cleanup['observed_token_identity'],list(observed))
-        before=self.ledger.read_bytes()
-        self.assertEqual(M.recover_stale_shells(ledger=self.ledger,reader=self.reader),[])
-        self.assertEqual(self.ledger.read_bytes(),before)
 
     def test_unknown_legacy_release_preserves_marker(self):
         self.token().rename(self.marker)

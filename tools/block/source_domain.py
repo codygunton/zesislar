@@ -4,13 +4,11 @@ The output is untrusted generator input. Each fact retains its exact source
 clause and substitution. A later native proof must establish the full contract.
 """
 import ast
-from copy import deepcopy
 import hashlib
 from pathlib import Path
 import re
 
 from entry_seed import definition_body
-from check_data_only_lemmas import rocq_commands
 from forward_resources import _strip_enclosure, _top_positions
 from resource_seed import source_z_expression
 from render_support import declared_binders
@@ -70,38 +68,9 @@ def closed_integer(source):
         raise ValueError('The source integer syntax is unsupported.') from error
 
 
-def numeric_constant_body(source, declaration):
-    """Read numeric abbreviations without changing the entry-resource parser."""
-    commands = rocq_commands(source)
-    notations = [command for command in commands if len(command) > 3
-                 and [token for token, _ in command[:3]] == ["Notation", declaration, ":="]]
-    if not notations:
-        return definition_body(source, declaration)
-    definitions = [command for command in commands if any(
-        token == "Definition" and index + 1 < len(command)
-        and command[index + 1][0] == declaration
-        for index, (token, _) in enumerate(command))]
-    if len(notations) != 1 or definitions:
-        raise ValueError('The numeric source declaration is ambiguous.')
-    command = notations[0]
-    if [token for token, _ in command[-4:]] != ['(', 'only', 'parsing', ')']:
-        raise ValueError('A numeric notation must use only parsing.')
-    body = _strip_enclosure(source[command[2][1] + 2:command[-4][1]].strip())
-    casts = list(_top_positions(body, ':'))
-    if casts:
-        if len(casts) != 1 or _strip_enclosure(body[casts[0] + 1:]) not in {
-                'Z', 'N', 'nat', 'positive', 'Coq.Numbers.BinNums.Z',
-                'Coq.Numbers.BinNums.N', 'Coq.Numbers.BinNums.positive',
-                'Coq.Init.Datatypes.nat'}:
-            raise ValueError('The numeric notation has an unsupported type annotation.')
-        body = body[:casts[0]].strip()
-    closed_integer(body)
-    return body
-
-
 def constant_from_source(origin):
     source = read_source(origin)
-    body = numeric_constant_body(source, origin['declaration'])
+    body = definition_body(source, origin['declaration'])
     if 'field' in origin:
         values = re.findall(r'\b' + re.escape(origin['field']) + r'\s*:=\s*([^;|]+)', body)
         if len(values) != 1:
@@ -120,12 +89,11 @@ def constant_from_source(origin):
 
 
 def project_layout_domain(*, layout_source, wellformed_source, arguments,
-                          resource_roles, source_constants, interval_layout, layout_projections=None):
+                          resource_roles, source_constants, interval_layout):
     """Project source clauses and a bounded stack interval from a checked layout.
 
     interval_layout names existing source terms. It supplies no numeric bound.
     Closed values come from separately hash-bound source constants.
-    Optional projections name their parameters and literals in that same source.
     """
     layout_text = read_source(layout_source)
     layout = definition_body(layout_text, layout_source['declaration'])
@@ -170,70 +138,16 @@ def project_layout_domain(*, layout_source, wellformed_source, arguments,
               'wellformed_declaration': wellformed_source['declaration'],
               'parameter_substitution': dict(arguments)}
     facts = []
-    projections = layout_projections or {}
-    if layout_projections is not None and (not isinstance(projections, dict)
-            or not {'source'} < set(projections) <= {'source', 'output', 'return'}
-            or projections['source'] != layout_source):
-        raise ValueError('The optional layout projections lack their exact source binding.')
-
-    def projected_clauses(statements, label):
-        selected = []
-        for statement in statements:
-            matches = [clause for clause in clauses if _key(clause) == _key(statement)]
-            if len(matches) != 1:
-                raise ValueError('A required source ' + label + ' is absent or ambiguous.')
-            selected.append(matches[0])
-        return selected
-
-    def descriptor(role, keys):
-        value = projections[role]
-        if not isinstance(value, dict) or set(value) != set(keys) or any(not isinstance(v, str) for v in value.values()):
-            raise ValueError('An optional layout descriptor has unsupported fields.')
-        if value['pointer'] not in arguments:
-            raise ValueError('An optional layout pointer is not a source parameter.')
-        return value
-
-    projection_constants = {}
-
-    def source_integer(term):
-        if term not in source_constants:
-            return closed_integer(term)
-        bound = source_constants[term]
-        if (not isinstance(bound, dict) or type(bound.get('value')) is not int or not bound.get('origin')
-                or constant_from_source(bound['origin'])['value'] != bound['value']):
-            raise ValueError('An optional layout constant differs from its source.')
-        projection_constants[term] = deepcopy(bound)
-        return bound['value']
-
-    output = descriptor('output', {'pointer', 'extent'}) if 'output' in projections else None
-    if output is not None:
-        pointer, extent = output['pointer'], output['extent']
-        length = source_integer(extent)
-        if not 0 < length <= ram_end - ram_base:
-            raise ValueError('The complete output array exceeds the source RAM interval.')
-        selected = projected_clauses([f'0 <= {pointer}', f'{pointer} + {extent} < {modulus}',
-                                     f'{base} <= {pointer}', f'{pointer} + {extent} <= {end}'], 'output/RAM bound')
-        facts.append({'fact_id': 'layout:output-interval', 'kind': 'bounds', 'status': 'supplied',
-                      'terms': {'unsigned_interval': {
-                          'expression': source_z_expression(arguments[pointer], source_constants).to_dict(),
-                          'minimum': ram_base, 'maximum': ram_end - length,
-                          'ram_base': ram_base, 'ram_end': ram_end}},
-                      'origin': {**origin, 'source_clauses': selected, 'descriptor': layout_projections,
-                                 'constants': {**{term: source_constants[term] for term in values},
-                                               **deepcopy(projection_constants)},
-                                 'derivation': 'Conjunction projection, closed subtraction, and unsigned non-wrap.'}})
     pairs = [('input', 'output'), ('input', 'stack'), ('output', 'stack')]
     separate = [(i, clause) for i, clause in enumerate(clauses)
                 if clause.startswith('separateRanges ')]
     if len(separate) != 3:
         raise ValueError('The source layout has no exact three-range separation.')
     # Validate each complete source application before assigning ownership IDs.
-    # Preserve the original adapter when callers request no new projection.
-    output_pointer, output_extent = (output['pointer'], output['extent']) if output else ('resultPointer', '40')
     expected_separation = [
-        f'separateRanges inputPointer inputLength {output_pointer} {output_extent}',
+        'separateRanges inputPointer inputLength resultPointer 40',
         f'separateRanges inputPointer inputLength ({stack} - {frame}) {frame}',
-        f'separateRanges {output_pointer} {output_extent} ({stack} - {frame}) {frame}']
+        f'separateRanges resultPointer 40 ({stack} - {frame}) {frame}']
     for (index, clause), (left, right), expected_clause in zip(separate, pairs, expected_separation):
         if _key(clause) != _key(expected_clause):
             raise ValueError('A source separation application differs from its ownership roles.')
@@ -252,23 +166,6 @@ def project_layout_domain(*, layout_source, wellformed_source, arguments,
             facts.append({'fact_id': 'wellformed:input-length', 'kind': 'bounds',
                           'status': 'supplied', 'terms': terms,
                           'origin': {**origin, 'source_clause': clause, 'conjunct_index': index}})
-    # Keep the modulus equation separate from its unsigned range. Both are
-    # existing layout conjuncts, not new assumptions about a return path.
-    if 'return' in projections:
-        returned = descriptor('return', {'pointer', 'modulus', 'residue'})
-        pointer, period, residue = (returned[key] for key in ('pointer', 'modulus', 'residue'))
-        count, remainder = source_integer(period), source_integer(residue)
-        if not 1 < count <= word or count & (count - 1) or not 0 <= remainder < count:
-            raise ValueError('The source return congruence is unsupported.')
-        selected = projected_clauses([f'0 <= {pointer} < {modulus}',
-                                     f'{pointer} mod {period} = {residue}'], 'return alignment')
-        facts.append({'fact_id': 'layout:return-alignment', 'kind': 'alignment', 'status': 'supplied',
-                      'terms': {'alignment': {
-                          'expression': source_z_expression(arguments[pointer], source_constants).to_dict(),
-                          'modulus': count, 'residue': remainder}},
-                      'origin': {**origin, 'source_clauses': selected, 'descriptor': layout_projections,
-                                 'constants': deepcopy(projection_constants),
-                                 'derivation': 'Conjunction projection and unsigned non-wrap.'}})
     expression = source_z_expression(arguments[stack], source_constants)
     facts.append({'fact_id': 'layout:stack-interval', 'kind': 'bounds', 'status': 'supplied',
                   'terms': {'unsigned_interval': {'expression': expression.to_dict(),

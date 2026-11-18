@@ -11,7 +11,6 @@ import json
 import os
 from pathlib import Path, PurePosixPath
 import shlex
-import sys
 import tempfile
 
 try:
@@ -26,25 +25,17 @@ if not _admission.is_file():
     _admission = _directory / 'block/admission_memory.py'
 if not _admission.is_file() or not _admission.resolve().is_relative_to(_directory):
     raise ImportError('The module memory helper lacks its owned admission dependency.')
-# The admission reader imports owned siblings and block helpers after loading.
-_block = (_directory / "block").resolve()
-if not _block.is_dir() or not _block.is_relative_to(_directory):
-    raise ImportError("The module memory helper lacks its owned block dependency.")
-sys.path[:0] = list(dict.fromkeys((str(_admission.resolve().parent), str(_block))))
 _spec = importlib.util.spec_from_file_location('_zesu_owned_admission_memory', _admission)
 _module = importlib.util.module_from_spec(_spec)
 _spec.loader.exec_module(_module)
 evaluate, ScopeReader = _module.evaluate, _module.ScopeReader
 confirm_shell, release_shell = _module.confirm_shell, _module.release_shell
 recover_dead_shell = _module.recover_dead_shell
-recover_stale_shell = _module.recover_stale_shell
-recover_stale_shells = _module.recover_stale_shells
 current_projection = _module.current_projection
 mark_shell = _module.mark_shell
 refresh_shell_growth = _module.refresh_shell_growth
 check_test_ledger = _module.check_test_ledger
 read_shell_bookings = _module.read_shell_bookings
-authorized_shell_booking = _module.authorized_shell_booking
 select_guard_aggregate_limit = _module.select_guard_aggregate_limit
 
 
@@ -269,24 +260,18 @@ def reservation_claims(markers, *, proc=Path("/proc"), fallback_bytes=32 * GIB,
             expected_fence = (64 if probe == "issue10" else 6) * GIB
             if fence != expected_fence or metadata.get("cpu") != "unlimited":
                 raise ValueError("The probe physical policy differs from its marker.")
-            recorded = max(values.get("memory_claim_bytes", 0),
-                           values.get("memory_probe_claim_bytes", 0), retained_claims.get(str(marker), 0))
-            authorized = (authorized_shell_booking(marker, recorded)
-                          if recorded and "memory_fence_bytes" in values else None)
             measured = probe_measurement(marker, metadata, physical, proc)
-            if measured is None and authorized is None:
+            if measured is None:
                 claims.append(fence)
                 continue
-            if measured is not None:
-                covered.update(measured["covered"])
+            covered.update(measured["covered"])
             previous = max(values.get("memory_probe_claim_bytes", 0), retained_claims.get(str(marker), 0))
-            increased = max(authorized if authorized is not None else fence, previous,
-                            measured["claim_bytes"] if measured is not None else 0)
+            increased = max(fence, previous, measured["claim_bytes"])
             if proc == Path('/proc'):
                 scopes[str(len(claims))] = reader.compiler(marker)
             claims.append(increased)
-            if increased > max(authorized or 0, previous):
-                growth.append({"reservation": str(marker), "previous_bytes": max(authorized or 0, previous),
+            if increased > previous:
+                growth.append({"reservation": str(marker), "previous_bytes": previous,
                                "claim_bytes": increased, "probe": True})
             continue
         claim = max(values.get("memory_claim_bytes", fence), retained_claims.get(str(marker), 0)) if "memory_fence_bytes" in values else fence
@@ -324,9 +309,6 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     commands = parser.add_subparsers(dest="command", required=True)
     commands.add_parser("test-ledger-policy")
-    role_exit = commands.add_parser('role-exit-exec')
-    role_exit.add_argument('--marker', type=Path, required=True)
-    role_exit.add_argument('payload', nargs=argparse.REMAINDER)
     claim = commands.add_parser("claim")
     claim.add_argument("--profile", type=Path, required=True)
     claim.add_argument("--cwd", type=Path, required=True)
@@ -350,10 +332,6 @@ def main():
     release.add_argument('--marker', type=Path, required=True)
     recover = commands.add_parser('ledger-recover-dead')
     recover.add_argument('--marker', type=Path, required=True)
-    stale = commands.add_parser('ledger-recover-stale')
-    stale_choice = stale.add_mutually_exclusive_group(required=True)
-    stale_choice.add_argument('--marker', type=Path)
-    stale_choice.add_argument('--all', action='store_true')
     mark = commands.add_parser('ledger-mark')
     mark.add_argument('--marker', type=Path, required=True)
     aggregate = commands.add_parser('aggregate-limit')
@@ -362,22 +340,7 @@ def main():
     aggregate.add_argument('--booking-bytes', type=int, required=True)
     aggregate.add_argument('--explicit-limit-bytes', type=int)
     aggregate.add_argument('--gate-limit-bytes', type=int)
-    staging_exit = commands.add_parser('staging-exit-exec')
-    staging_exit.add_argument('--marker', type=Path, required=True)
-    staging_exit.add_argument('payload', nargs=argparse.REMAINDER)
     args = parser.parse_args()
-    if args.command == 'staging-exit-exec':
-        from staging_peaks import supervise
-        payload = args.payload[1:] if args.payload[:1] == ['--'] else args.payload
-        if not payload:
-            parser.error('The staging supervisor requires its exact payload.')
-        return supervise(args.marker, payload)
-    if args.command == 'role-exit-exec':
-        from role_peaks import supervise
-        payload = args.payload[1:] if args.payload[:1] == ['--'] else args.payload
-        if not payload:
-            parser.error('The controller exit supervisor requires its exact payload.')
-        return supervise(args.marker, payload)
     if args.command == 'test-ledger-policy':
         try:
             check_test_ledger()
@@ -400,23 +363,16 @@ def main():
         return 0 if release_shell(args.marker) else 4
     if args.command == 'ledger-recover-dead':
         return 0 if recover_dead_shell(args.marker) else 4
-    if args.command == 'ledger-recover-stale':
-        if args.all:
-            print(json.dumps(recover_stale_shells()))
-            return 0
-        return 0 if recover_stale_shell(args.marker) else 4
     if args.command == "claim":
         arguments = args.arguments[1:] if args.arguments[:1] == ["--"] else args.arguments
         result = module_claim(json.loads(args.profile.read_text()), arguments, args.cwd, args.compiler,
                               fallback_bytes=args.fallback_bytes)
         print(result["claim_bytes"])
     else:
-        ledger = Path(os.environ.get('ZESU_CANONICAL_LEDGER', _module.DEFAULT_LEDGER))
-        with _module.ledger_transaction(ledger):
-            observed = reservation_claims(args.markers, proc=args.proc, fallback_bytes=args.fallback_bytes,
-                                          refresh=False, retained_claims=read_shell_bookings())
-            refresh_shell_growth(observed['growth'])
-            result = current_projection(args.request_bytes, args.available_bytes)
+        observed = reservation_claims(args.markers, proc=args.proc, fallback_bytes=args.fallback_bytes,
+                                      refresh=False, retained_claims=read_shell_bookings())
+        refresh_shell_growth(observed['growth'])
+        result = current_projection(args.request_bytes, args.available_bytes)
         result['admitted'] = result['fits'] and len(observed['claims']) < args.maximum_compilers
         result['reason'] = 'compiler_limit' if len(observed['claims']) >= args.maximum_compilers else 'memory_budget'
         if not result["admitted"]:

@@ -99,60 +99,13 @@ class ModuleMemoryTests(unittest.TestCase):
                          (64 * memory.GIB, "changed_arguments"))
 
     def test_admission_cli_passes_the_actual_fence_to_unknown_compilers(self):
-        ledger = self.root / "LEDGER.json"
-        ledger.write_text('{"fixed_claims": {}, "region_claims": {}}\n')
         with patch("sys.argv", ["module_memory.py", "admission", "--request-bytes", "1",
                                "--available-bytes", "1000000000000", "--fallback-bytes", str(64*memory.GIB)]), \
                 patch.object(memory, "reservation_claims", return_value={"claims": [], "growth": [], "unrepresented_compilers": []}) as observed, \
                 patch.object(memory, "current_projection", return_value={"fits": True}), \
-                patch.object(memory, "read_shell_bookings", return_value={}), \
-                patch.dict(memory.os.environ, {"ZESU_CANONICAL_LEDGER": str(ledger),
-                                             "ZESU_GATE_LOCK": str(self.root / "gate.lock")}):
+                patch.object(memory, "read_shell_bookings", return_value={}):
             self.assertEqual(memory.main(), 0)
         self.assertEqual(observed.call_args.kwargs['fallback_bytes'], 64*memory.GIB)
-
-    def test_owned_loader_resolves_late_controller_booking_import(self):
-        import os
-        import subprocess
-        import sys
-        import textwrap
-
-        tools = Path(__file__).resolve().parent
-        script = textwrap.dedent("""
-            from pathlib import Path
-            import sys
-
-            tools = Path(sys.argv[1]).resolve()
-            harness = tools / "block/harness"
-            code = harness / "code"
-            sys.path[:0] = [str(harness), str(code), str(tools / "block"), str(tools)]
-            from test_controller_association import ControllerAssociationTests
-
-            fixture = ControllerAssociationTests()
-            fixture.setUp()
-            try:
-                sys.path[:] = [p for p in sys.path
-                               if Path(p).resolve() not in (harness, code, tools / "block")]
-                for name in ("scope_bookings", "entry_chain",
-                             "entry_pilot_checker", "complete_goals_mcp"):
-                    sys.modules.pop(name, None)
-                sys.path.insert(0, str(tools))
-                import module_memory
-
-                f = fixture.f
-                sample = module_memory.ScopeReader.claim(
-                    f.reader, f.data, f.key, pending_shell=(f.marker, f.token))
-                assert sample["verified"], sample
-                assert sample["aggregate_verified"], sample
-            finally:
-                fixture.doCleanups()
-        """)
-        environment = dict(os.environ)
-        environment.pop("PYTHONPATH", None)
-        result = subprocess.run([sys.executable, "-c", script, str(tools)],
-                                cwd=self.root, env=environment,
-                                capture_output=True, text=True)
-        self.assertEqual(result.returncode, 0, result.stderr)
 
     def test_admission_uses_exact_seventy_percent_boundary(self):
         self.assertTrue(memory.admission(40, [30], 100, headroom_bytes=0)["admitted"])
@@ -188,7 +141,7 @@ class ModuleMemoryTests(unittest.TestCase):
         self.assertEqual(manifest.count(dependency), 1)
         names = ['dune_coqc_guarded.sh','resource_guard.sh','coqc_findlib.py',
                  'module_memory.py','run_registry.py','det/coqc_slots.py',
-                 'block/harness/code/admission_memory.py','block/harness/code/shell_archive.py']
+                 'block/harness/code/admission_memory.py']
         for declared in (True, False):
             with self.subTest(declared=declared):
                 workspace = self.root/('declared' if declared else 'missing')
@@ -235,75 +188,6 @@ class ModuleMemoryTests(unittest.TestCase):
                     self.assertNotEqual(result.returncode,0)
                     self.assertIn('owned admission dependency',result.stderr)
                     self.assertFalse(events.exists())
-
-    def test_build_copy_release_requires_the_archive_dependency(self):
-        """Execute the release CLI inside Dune's real copy sandbox."""
-        import json
-        import os
-        import shutil
-        import subprocess
-        import sys
-        tools = Path(__file__).resolve().parent
-        sys.path.insert(0, str(tools/'block/harness'))
-        import test_unified_admission as fixtures
-        dune = Path.home()/'islaris/_opam/bin/dune'
-        dependency = '../block/harness/code/shell_archive.py'
-        manifest = (tools/'guard-bin/dune').read_text()
-        self.assertEqual(manifest.count(dependency), 1)
-        for declared in (True, False):
-            with self.subTest(declared=declared):
-                fixture = fixtures.UnifiedAdmission()
-                fixture.setUp()
-                try:
-                    fixture.confirm()
-                    before = fixture.ledger.read_bytes()
-                    workspace = self.root/('release-declared' if declared else 'release-missing')
-                    workspace.mkdir()
-                    (workspace/'dune-project').write_text('(lang dune 3.7)\n')
-                    names = ['dune_coqc_guarded.sh', 'resource_guard.sh', 'coqc_findlib.py',
-                             'module_memory.py', 'run_registry.py', 'det/coqc_slots.py',
-                             'block/harness/code/admission_memory.py', 'block/harness/code/shell_archive.py']
-                    for name in names:
-                        target = workspace/'tools'/name
-                        target.parent.mkdir(parents=True, exist_ok=True)
-                        shutil.copy2(tools/name, target)
-                    control = workspace/'tools/ReleaseControl.py'
-                    control.write_text("import os,sys\nfrom pathlib import Path\n"
-                        "sys.path.insert(0,str(Path(__file__).resolve().parent))\n"
-                        "import module_memory as m\n"
-                        "reader=m.ScopeReader(proc=Path(os.environ['FIXTURE_PROC']),cgroup_root=Path(os.environ['FIXTURE_CGROUP']))\n"
-                        "release=m.release_shell\n"
-                        "m.release_shell=lambda marker:release(marker,reader=reader)\n"
-                        "sys.argv=['module_memory.py','ledger-release','--marker',os.environ['FIXTURE_MARKER']]\n"
-                        "raise SystemExit(m.main())\n")
-                    directory = workspace/'tools/guard-bin'
-                    directory.mkdir()
-                    rule = manifest if declared else manifest.replace(' '+dependency, '')
-                    rule = rule.replace('../det/coqc_slots.py)', '../det/coqc_slots.py ../ReleaseControl.py)')
-                    rule = rule.replace('(action (copy %{dep:../dune_coqc_guarded.sh} %{target})))',
-                        '(action (progn (copy %{dep:../dune_coqc_guarded.sh} %{target}) (run python3 ../ReleaseControl.py))))')
-                    (directory/'dune').write_text(rule)
-                    environment = dict(os.environ, ZESU_CANONICAL_LEDGER=str(fixture.ledger),
-                        FIXTURE_PROC=str(fixture.proc), FIXTURE_CGROUP=str(fixture.reader.root),
-                        FIXTURE_MARKER=str(fixture.marker), PYTHONPATH='',
-                        PATH=str(dune.parent)+os.pathsep+os.environ.get('PATH', ''))
-                    result = subprocess.run([str(dune), 'build', '--sandbox=copy', '--cache=disabled',
-                        'tools/guard-bin/coqc'], cwd=workspace, env=environment, capture_output=True, text=True)
-                    if declared:
-                        self.assertEqual(result.returncode, 0, result.stderr)
-                        data = fixture.read()
-                        key = fixtures.M.shell_key(fixture.marker)
-                        self.assertEqual(data['fixed_claims'][key], 0)
-                        self.assertIn(key, data['shell_archive'])
-                        self.assertFalse(fixture.marker.exists())
-                    else:
-                        self.assertNotEqual(result.returncode, 0)
-                        self.assertIn("No module named 'shell_archive'", result.stderr)
-                        self.assertEqual(fixture.ledger.read_bytes(), before)
-                        self.assertTrue(fixture.marker.exists())
-                finally:
-                    fixture.tearDown()
-                    fixture.doCleanups()
 
     def physical(self, pid, peak=2 * 1024 ** 2, children=""):
         proc = self.root / "proc"
@@ -485,40 +369,6 @@ class ModuleMemoryTests(unittest.TestCase):
         self.identity(proc, 124, 122, 301)
         (proc / "122/task/122/children").write_text("123 124")
         self.assertEqual(memory.reservation_claims([marker], proc=proc)["claims"], [64 * memory.GIB])
-
-    def measured_probe(self, proc, marker):
-        with marker.open('a') as stream:
-            stream.write(f'memory_claim_bytes={8 * memory.GIB}\nmemory_fence_bytes={64 * memory.GIB}\n')
-        return {str(marker): 8 * memory.GIB}
-
-    def test_authorized_measured_pet_probe_keeps_claim_without_coqc(self):
-        proc, marker = self.live_probe()
-        retained = self.measured_probe(proc, marker)
-        (proc/'123/comm').write_text('python\n')
-        with patch.object(memory, 'authorized_shell_booking', return_value=8 * memory.GIB) as authorize:
-            result = memory.reservation_claims([marker], proc=proc, retained_claims=retained)
-        self.assertEqual(result['claims'], [8 * memory.GIB])
-        self.assertEqual(result['unrepresented_compilers'], [])
-        authorize.assert_called_once_with(marker, 8 * memory.GIB)
-        self.assertEqual(result['growth'], [])
-
-    def test_unauthorized_measured_pet_probe_retains_fence(self):
-        proc, marker = self.live_probe()
-        retained = self.measured_probe(proc, marker)
-        (proc/'123/comm').write_text('python\n')
-        with patch.object(memory, 'authorized_shell_booking', return_value=None):
-            result = memory.reservation_claims([marker], proc=proc, retained_claims=retained)
-        self.assertEqual(result['claims'], [64 * memory.GIB])
-
-    def test_authorized_probe_growth_never_reduces_recorded_booking(self):
-        proc, marker = self.live_probe(peak=8 * 1024 ** 2)
-        retained = self.measured_probe(proc, marker)
-        before = marker.read_bytes()
-        with patch.object(memory, 'authorized_shell_booking', return_value=8 * memory.GIB):
-            result = memory.reservation_claims([marker], proc=proc, retained_claims=retained)
-        self.assertEqual(result['claims'], [12 * memory.GIB])
-        self.assertEqual(result['growth'][0]['previous_bytes'], 8 * memory.GIB)
-        self.assertEqual(marker.read_bytes(), before)
 
     def test_probe_conflicting_physical_fence_refuses(self):
         proc, marker = self.live_probe()

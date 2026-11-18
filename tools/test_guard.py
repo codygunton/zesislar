@@ -3,7 +3,6 @@
 import os
 import fcntl
 import json
-import shutil
 import subprocess
 import sys
 import tempfile
@@ -381,17 +380,8 @@ class GuardLockTest(unittest.TestCase):
             self.guard("release-coqc", token)
 
     def test_failed_snapshot_prevents_scope_and_batch_commands(self):
-        from run_registry import Registry, identity
-
         self.enter_parent_fixture()
         self.prepare_blocked_fixture(0)
-        registry = Registry(Path(self.environment['ZESU_RUN_REGISTRY']))
-        run_id = 'snapshot-parent'
-        scheduler = identity(os.getpid())
-        # Authenticate the parent before the timed guard refusal checks.
-        registry.register(run_id, 'fixture', 'guard-test', scheduler, [])
-        self.assertEqual(registry.read_run(run_id)['scheduler'], scheduler)
-        self.environment['ZESU_RUN_ID'] = run_id
         executed = Path(self.directory.name) / "command-executed"
         for status in (2, 3):
             (self.bin / "pgrep").write_text(f"#!/bin/sh\nexit {status}\n")
@@ -406,34 +396,6 @@ class GuardLockTest(unittest.TestCase):
                                             capture_output=True, text=True, timeout=3)
                     self.assertEqual(result.returncode, status, result.stderr)
                     self.assertFalse(executed.exists())
-        self.assertEqual(list(registry.read()['runs']), [run_id])
-        self.assertEqual(registry.read_run(run_id)['jobs'], [])
-        self.assertEqual(registry.read_run(run_id)['claims'], {})
-
-    def test_failed_snapshot_keeps_standalone_registration_coverage(self):
-        from run_registry import Registry, live
-
-        self.enter_parent_fixture()
-        self.prepare_blocked_fixture(0)
-        (self.bin / 'pgrep').write_text('#!/bin/sh\nexit 2\n')
-        executed = Path(self.directory.name) / 'command-executed'
-        registry = Registry(Path(self.environment['ZESU_RUN_REGISTRY']))
-        self.assertNotIn('ZESU_RUN_ID', self.environment)
-        for route in ('scope', 'batch'):
-            with self.subTest(route=route):
-                result = self.guard(route, 'failure', '--', 'touch', str(executed))
-                self.assertEqual(result.returncode, 2, result.stderr)
-                self.assertFalse(executed.exists())
-                rows = [row for row in registry.read()['runs'].values()
-                        if row['kind'] == 'stock-' + route]
-                self.assertEqual(len(rows), 1)
-                row = rows[0]
-                self.assertEqual(row['exit_code'], 2)
-                self.assertEqual(row['status'], 'failed')
-                self.assertTrue(row['all_actors_closed'])
-                self.assertFalse(live(row['scheduler']))
-                self.assertTrue(all(not live(actor) for actor in row['jobs']))
-                self.assertEqual(row['claims'], {})
 
     def test_failed_snapshot_prevents_scope_exec_command(self):
         self.enter_parent_fixture()
@@ -1154,20 +1116,6 @@ class GuardLockTest(unittest.TestCase):
                     self.assertIn(expected, result.stdout)
                 else:
                     self.assertNotIn("memory", result.stdout)
-
-    def test_account_cgroup_replaces_machine_memory_and_load(self):
-        account = (Path(self.environment["ZESU_CGROUP_ROOT"]) / "user.slice"
-                   / f"user-{os.getuid()}.slice")
-        shutil.copytree(TOOLS / "fixtures" / "account-cgroup", account)
-        # The machine has 25 GiB available and the load limits stay at their
-        # defaults; our account uses 31 of 152 GiB with 5 % CPU pressure.
-        self.environment.update(GUARD_TEST_USED_GIB="226", ZESU_MAX_LOAD="80",
-                                ZESU_MAX_BLOCKED="16")
-        self.assertEqual(self.guard("hold").stdout.strip(), "none")
-        (account / "memory.current").write_text(f"{140 * 1024 ** 3}\n")
-        (account / "memory.stat").write_text("anon 1\n")
-        self.assertEqual(self.guard("hold").stdout.strip(),
-                         "account memory 140 of 152 GiB, at the 88 % hold")
 
     def test_single_proof_batch_accepts_64_gib_fence(self):
         self.environment["ZESU_BATCH_LIMIT"] = "64G"

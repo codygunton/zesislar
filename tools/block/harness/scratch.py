@@ -11,8 +11,6 @@ if __name__=='__main__':
     sys.path.insert(0,str(HERE/'code'))
     from harness_commit import bootstrap
     bootstrap(__file__,sys.argv[1:])
-    from staging_peaks import enter_prepare
-    enter_prepare(__file__,sys.argv[1:])
 W=HERE.parents[2]
 os.environ['PATH']='/home/cody/islaris/_opam/bin:/home/cody/.local/bin:/usr/local/bin:/usr/bin:/bin'
 os.environ['OPAM_SWITCH_PREFIX']='/home/cody/islaris/_opam'
@@ -61,7 +59,6 @@ PYTHON=Path('/home/cody/.local/share/uv/tools/rocq-mcp/bin/python')
 def arguments(argv):
     p=argparse.ArgumentParser(description=__doc__)
     p.add_argument('--harness-commit',required=True);p.add_argument('--supplier-controls',type=Path);p.add_argument('--object-import-migrations',type=Path);p.add_argument('--dependency-batch',type=Path);p.add_argument('--seed-reference',type=Path);p.add_argument('--dependency-cache',type=Path);p.add_argument('--end-cleanup',choices=['on','off'],default='on',help='Use off for reusable prefixes, seeds, and queued inputs.');p.add_argument('--admission-profile',type=Path);p.add_argument('--completed-stock-measurements',type=Path);p.add_argument('--cache',choices=['off','on'],default='off');p.add_argument('block');p.add_argument('entry_file',type=Path);p.add_argument('--rules',type=Path);p.add_argument('--output',type=Path);p.add_argument('--prepare-only',action='store_true');p.add_argument('--source-overrides',type=Path);p.add_argument('--declarations-only',action='store_true');p.add_argument('--target-adapter',type=Path);p.add_argument('--sizing',type=Path);p.add_argument('--base-runtime',type=Path);p.add_argument('--base-runtime-sha256');p.add_argument('--normalization-policy',type=Path);p.add_argument('--prerequisite-target-union',action='store_true');p.add_argument('--declaration-checks',type=Path);p.add_argument('--control-session',type=Path)
-    p.add_argument('--phase-attribution',action='store_true',help='Retain metadata timing for this future launch.')
     from declaration_parallel_plan import arguments as dag_arguments,check_arguments as check_dag_arguments
     dag_arguments(p)
     a=p.parse_args(argv);a.block=a.block.lower().removeprefix('0x')
@@ -270,11 +267,11 @@ def prepare(a):
     out=a.output;out.mkdir(parents=True,exist_ok=False)
     baseline={'path':str(a.base_runtime),'sha256':a.base_runtime_sha256}
     c=read_bound(baseline)
-    c.pop('phase_attribution',None)
-    if getattr(a,'phase_attribution',False):c['phase_attribution']={'enabled':True}
     if getattr(a,'parallel_declarations',False):
         from declaration_parallel_plan import planning_compiler
         planning_compiler(c)
+    if getattr(a,'object_import_migrations',None):
+        install_object_import_migrations(c,a.object_import_migrations)
     c['harness']=harness
     from supplier_release import releases
     c['supplier_releases']=releases(read_bound(binding(a.supplier_controls))) if a.supplier_controls else []
@@ -317,8 +314,6 @@ def prepare(a):
     modules=c['proof_runtime']['module_files'];graph=read_bound(c['cache_import_graph']);adapter=None
     if a.target_adapter:
         adapter=read_bound(binding(a.target_adapter));graph=read_bound(adapter['graph']);modules.update(graph['module_files'])
-    if getattr(a,'object_import_migrations',None):
-        install_object_import_migrations(c,a.object_import_migrations)
     edges=graph['import_edges'];changed=[];changes=[]
     installed=InstalledMappings([word.replace(str(source),str(workspace)) for word in c['physical_flags']],receipt_dir=out/'IMPORT-RESOLUTION',supplier=profile_supplier(binding(a.admission_profile) if a.admission_profile else c.get('admission_profile')),planning_workspace=workspace,source_files=modules)
     entry=workspace/modules[ENTRY];before=entry.read_text();entry_text=a.entry_file.read_text()
@@ -359,12 +354,6 @@ def prepare(a):
     plan_targets=[row['module'] for row in targets] if a.prerequisite_target_union else ([RULES] if a.declarations_only and a.rules else [module])
     closure_targets=list(dict.fromkeys([row['module'] for row in targets]+[name for name in modules if '.Generated.' in name]+plan_targets))
     edges=reconcile_import_closure(closure_targets,edges,modules,workspace,installed)
-    from closed_object_staging import stage as stage_closed_objects
-    closed_install=stage_closed_objects(c,workspace,modules)
-    if closed_install['count']:
-        save(out/'CLOSED-OBJECT-INSTALL.json',closed_install)
-        inherited=[row[key] for row in closed_install['installed'] for key in ['object','sidecar'] if key!='sidecar' or row[key] is not None]
-        c['bindings']=combined_bindings(c['bindings']+inherited+[binding(out/'CLOSED-OBJECT-INSTALL.json')])
     forward={}
     for edge in edges:forward.setdefault(edge['from'],set()).add(edge['to'])
     missing=missing_prerequisite_objects(closure_targets,forward,modules,workspace)
@@ -373,7 +362,7 @@ def prepare(a):
         c['effective_compiler_version']['compiler'],
         [word.replace(str(source),str(workspace)) for word in c['physical_flags']])
     save(out/'OBJECT-IMPORT-COMPATIBILITY.json',imports)
-    changed=list((set(changed)-set(imports['compatible_owned_modules']))|set(missing)|set(imports['rebuild_modules']))
+    changed=list(set(changed)|set(missing)|set(imports['rebuild_modules']))
     plan=invalidation(edges,changed,plan_targets)
     native_targets={row['module'] for row in targets}
     plan['prerequisites']=[name for name in plan['ordered_required'] if name not in native_targets]
@@ -441,7 +430,7 @@ def prepare(a):
     if getattr(a,'parallel_declarations',False):
         from declaration_parallel_plan import attach
         dag_plan=attach(c,measurements=(binding(a.declaration_module_measurements)
-            if a.declaration_module_measurements else None),maximum_workers=a.declaration_workers,keep_going=getattr(a,'declaration_keep_going',False),transport=getattr(a,'declaration_transport','dag'))
+            if a.declaration_module_measurements else None),maximum_workers=a.declaration_workers,keep_going=getattr(a,'declaration_keep_going',False))
     implementations=[binding(out/'HARNESS.json')]
     c['cache_producer_files']={'implementation':[dict(r,id='scratch-implementation:'+str(i),kind='source') for i,r in enumerate(implementations)],'inputs':[dict(binding(a.entry_file),id='scratch-entry',kind='source')]+([dict(binding(a.declaration_checks),id='declaration-checks',kind='configuration')] if a.declaration_checks else [])+([dict(binding(a.normalization_policy),id='entry-normalization-policy',kind='configuration')] if a.normalization_policy else [])+([dict(binding(a.rules),id='scratch-rules',kind='source')] if a.rules else []),'outputs':[dict(binding(native),id='scratch-native',kind='source'),dict(binding(entry),id='scratch-entries',kind='source')]}
     if a.supplier_controls:c['cache_producer_files']['inputs'].append(dict(binding(a.supplier_controls),id='supplier-activation-controls',kind='configuration'))
@@ -540,14 +529,7 @@ def execute(path,expected):
 def execute_retained(path,expected):
     from command_scope import require
     require()
-    from phase_attribution import capture,for_runtime
-    before=capture()
-    path=Path(path);c=read_bound({'path':str(path),'sha256':expected});out=path.parent
-    attribution=for_runtime(c,out,runtime_reference={'path':str(path),'sha256':expected})
-    attribution.complete('outer_runtime_loading',before)
-    with attribution.span('outer_runtime_validation'):
-        __import__('restart_bindings').verify_restart_runtime(c,HERE);check_proof_bindings(c)
-    pre,job=c['jobs'];cache_setting=runtime_cache_setting(c)
+    path=Path(path);c=read_bound({'path':str(path),'sha256':expected});out=path.parent;__import__('restart_bindings').verify_restart_runtime(c,HERE);check_proof_bindings(c);pre,job=c['jobs'];cache_setting=runtime_cache_setting(c)
     check_declaration_target(c)
     if c.get('dependency_batch') and not c.get('declarations_only'):raise ValueError('Dependency waves cannot execute a native runtime.')
     if c.get('native_route') and cache_setting!='off':raise ValueError('The minimal native route requires cache off.')
@@ -656,7 +638,6 @@ def refresh_memory(argv):
     parser.add_argument('--admission-profile',type=Path)
     parser.add_argument('--harness-commit')
     parser.add_argument('--unadmitted-retirement',type=Path)
-    parser.add_argument('--phase-attribution',action='store_true',help='Retain metadata timing for this future launch.')
     parser.add_argument('--output',type=Path,required=True)
     from declaration_parallel_plan import arguments as dag_arguments,check_arguments as check_dag_arguments
     dag_arguments(parser)
@@ -664,8 +645,6 @@ def refresh_memory(argv):
     check_dag_arguments(args,parser)
     prior={'path':str(args.prior_runtime.resolve()),'sha256':args.prior_sha256}
     c=read_bound(prior);out=args.output.resolve()
-    c.pop('phase_attribution',None)
-    if args.phase_attribution:c['phase_attribution']={'enabled':True}
     from harness_commit import pin
     previous_harness=c['harness']
     c['harness']=pin(args.harness_commit or previous_harness['commit'])
@@ -699,7 +678,7 @@ def refresh_memory(argv):
     if args.parallel_declarations:
         from declaration_parallel_plan import attach
         dag_plan=attach(c,measurements=(binding(args.declaration_module_measurements)
-            if args.declaration_module_measurements else None),maximum_workers=args.declaration_workers,keep_going=getattr(args,'declaration_keep_going',False),transport=getattr(args,'declaration_transport','dag'))
+            if args.declaration_module_measurements else None),maximum_workers=args.declaration_workers,keep_going=getattr(args,'declaration_keep_going',False))
         from declaration_parallel_plan import references
         c['bindings']=combined_bindings(c['bindings']+references(dag_plan))
     if context:c['admission_profile']=context
