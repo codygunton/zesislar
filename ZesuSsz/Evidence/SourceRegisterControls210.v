@@ -50,3 +50,39 @@ Qed.
 Print Assumptions source_field_actual196.
 Print Assumptions source_field_wrong_width196.
 Print Assumptions source_field_symbolic_width196.
+
+Lemma source_field_expanded210 `{!islaG Sigma} `{!threadG}
+    (register field : string) q (word other : bv 64) :
+  register # field ↦ᵣ{q} RegVal_Base (Val_Bits word) ⊢
+  (⌜ZesuSourceWitness "field.expanded" word⌝ -∗
+    register # field ↦ᵣ{q} RegVal_Base (Val_Bits word)).
+Proof.
+  iIntros "Hfield".
+  zesu_capture_source_register_post203.
+  Fail SourceWitnessInputs.zesu_read_source_value constr:(bv 64)
+    constr:("field.expanded") ltac:(fun actual => constr_eq actual other).
+  SourceWitnessInputs.zesu_read_source_value constr:(bv 64)
+    constr:("field.expanded") ltac:(fun actual => constr_eq actual word).
+  iFrame.
+Qed.
+
+Lemma source_expanded_symbolic_width210 `{!islaG Sigma} `{!threadG}
+    (width : N) (word : bv width) :
+  ⊢ ((⌜ZesuSourceWitness "field.expanded.symbolic" word⌝ -∗ True)%I : iProp Sigma).
+Proof.
+  iStartProof.
+  Fail zesu_capture_source_register_post203.
+  iIntros "_". done.
+Qed.
+
+Lemma source_expanded_wrong_kind210 `{!islaG Sigma} `{!threadG}
+    (value : bool) :
+  ⊢ ((⌜ZesuSourceWitness "field.expanded.kind" value⌝ -∗ True)%I : iProp Sigma).
+Proof.
+  iStartProof.
+  Fail zesu_capture_source_register_post203.
+  iIntros "_". done.
+Qed.
+Print Assumptions source_field_expanded210.
+Print Assumptions source_expanded_symbolic_width210.
+Print Assumptions source_expanded_wrong_kind210.
