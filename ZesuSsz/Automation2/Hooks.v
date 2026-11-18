@@ -408,10 +408,61 @@ Ltac zesu_solve_machine_linear :=
     solve [zesu_normalize_binary_nat_hypotheses;
       zesu_normalize_binary_nat_goal; zesu_normalize_machine_map;
       first [solve [zesu_lia_linked_facts] | lia]]])].
+(* lia and bv_solve interpret order relations and equations between
+   integers, naturals, booleans and bit vectors, and the connectives over
+   them. Any other proposition (a defined predicate, an equation between
+   lists or records, an existential) is an opaque atom to them: they can
+   close it only by refuting every fact in the context. A finisher does not
+   ask for that refutation on a large context; a goal of this kind goes to
+   the shape-specific closers and to the residual tier instead. A proof that
+   wants the refutation says `exfalso` first. *)
+Ltac zesu_solver_carrier carrier :=
+  lazymatch carrier with
+  | Z => idtac
+  | nat => idtac
+  | N => idtac
+  | positive => idtac
+  | bool => idtac
+  | bv _ => idtac
+  end.
+
+Ltac zesu_solver_statement statement :=
+  lazymatch statement with
+  | False => idtac
+  | True => idtac
+  | ~ ?inner => zesu_solver_statement inner
+  | ?left /\ ?right => zesu_solver_statement left; zesu_solver_statement right
+  | ?left <-> ?right => zesu_solver_statement left; zesu_solver_statement right
+  | ?left \/ ?right => first [zesu_solver_statement left | zesu_solver_statement right]
+  | @eq ?carrier _ _ => zesu_solver_carrier carrier
+  | Z.le _ _ => idtac
+  | Z.lt _ _ => idtac
+  | Z.ge _ _ => idtac
+  | Z.gt _ _ => idtac
+  | le _ _ => idtac
+  | lt _ _ => idtac
+  | ge _ _ => idtac
+  | gt _ _ => idtac
+  | Nat.le _ _ => idtac
+  | Nat.lt _ _ => idtac
+  | N.le _ _ => idtac
+  | N.lt _ _ => idtac
+  | N.ge _ _ => idtac
+  | N.gt _ _ => idtac
+  | Pos.le _ _ => idtac
+  | Pos.lt _ _ => idtac
+  | _ -> ?conclusion => zesu_solver_statement conclusion
+  | forall _, _ => idtac
+  | _ => is_var statement
+  end.
+
+Ltac zesu_solver_goal :=
+  lazymatch goal with |- ?statement => zesu_solver_statement statement end.
+
 (* Preserve the machine normalization used by the existing finisher. *)
 Ltac zesu_finish_lia ::=
   first [LoopBackedgeJoin.zesu_loop_pure_finish | solve [MaskWitness.zesu_mask_fact_close] |
-    zesu_solve_machine_linear].
+    zesu_solver_goal; zesu_solve_machine_linear].
 
 Tactic Notation "lia" := zesu_solve_machine_linear.
 
