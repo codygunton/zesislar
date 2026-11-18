@@ -49,6 +49,32 @@ class UnifiedAdmission(unittest.TestCase):
         return M.confirm_shell(marker or self.marker,replacement or self.token(amount=amount),
                                amount,200*M.GIB,ledger=self.ledger,reader=self.reader)
 
+    def test_shared_transaction_preserves_admission_and_parses_once(self):
+        self.assertTrue(self.confirm()['fits'])
+        expected = M.current_projection(64*M.GIB, 200*M.GIB,
+                                        ledger=self.ledger, reader=self.reader)
+        with patch.object(M.json, 'loads', wraps=M.json.loads) as loads:
+            with M.ledger_transaction(self.ledger):
+                bookings = M.read_shell_bookings(ledger=self.ledger)
+                authorized = M.authorized_shell_booking(self.marker, 64*M.GIB,
+                                                        ledger=self.ledger, reader=self.reader)
+                actual = M.current_projection(64*M.GIB, 200*M.GIB,
+                                              ledger=self.ledger, reader=self.reader)
+            self.assertEqual(loads.call_count, 1)
+        self.assertEqual(bookings[str(self.marker)], 64*M.GIB)
+        self.assertEqual(authorized, 64*M.GIB)
+        self.assertEqual(actual, expected)
+
+    def test_failed_transaction_does_not_reuse_old_ledger(self):
+        with self.assertRaisesRegex(RuntimeError, 'injected'):
+            with M.ledger_transaction(self.ledger):
+                raise RuntimeError('injected')
+        data = self.read()
+        data['fixed_claims']['new-owner'] = 8*M.GIB
+        self.save(data)
+        with M.ledger_transaction(self.ledger) as actual:
+            self.assertEqual(actual['fixed_claims']['new-owner'], 8*M.GIB)
+
     def test_unverified_aggregate_flag_cannot_collapse_two_bookings(self):
         observation={'verified':False,'aggregate_verified':True,'scope':'/untrusted',
                      'device':1,'inode':2,'live_bytes':64*M.GIB}

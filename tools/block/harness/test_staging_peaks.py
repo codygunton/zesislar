@@ -176,6 +176,15 @@ class StagingPeaks(unittest.TestCase):
         self.assertNotEqual(value['scope']['scope'],str(self.f.group))
         self.assertEqual(value['returncode'],7)
 
+    def test_archived_release_preserves_the_exact_staging_receipt(self):
+        import shell_archive
+        reference = self.close(7)
+        raw = Path(reference['path']).read_bytes()
+        expected = self.latest()
+        shell_archive.archive_released_shells(self.f.ledger, self.f.root/'archive', reader=self.f.reader)
+        self.assertEqual(self.latest(), expected)
+        self.assertEqual(Path(reference['path']).read_bytes(), raw)
+
     def test_live_actors_unreleased_claim_and_existing_leaf_refuse(self):
         reference=role_peaks.finish(self.begin(),self.payload,0)
         self.assertIsNone(self.latest())

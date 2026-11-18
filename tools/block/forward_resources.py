@@ -157,6 +157,38 @@ def _scoped_coq(expr, aliases):
     return replace(expr).coq()
 
 
+def _owned_byte_terms(state, resources, transitions):
+    """Lower only reads tied to the same unchanged, initialized source array."""
+    terms, records = {}, []
+    owners = {resource.id: resource for resource in resources}
+    for row in state.read_obligations:
+        if row.get('kind') != 'owned_symbolic_byte_range':
+            continue
+        owner = owners.get(row.get('owner'))
+        if (owner is None or owner.byte_array is None or owner.element_bits != 8
+                or owner.byte_array.to_dict() != row.get('array')
+                or owner.base.to_dict() != row.get('base')):
+            raise ValueError('The symbolic byte read lacks its exact owned source array')
+        if any(step['resource_id'] == owner.id for step in transitions):
+            raise ValueError('The symbolic byte source array has an intervening write')
+        value = Expr.from_dict(row['value'])
+        array, address, base = (Expr.from_dict(row[key]) for key in ['array', 'address', 'base'])
+        if (value.op != 'owned_array_byte' or value.width != 8
+                or value.args != (array, address, base)
+                or address.width is None or address.width != base.width
+                or not isinstance(value.value, str) or re.fullmatch('[0-9a-f]{64}', value.value) is None
+                or not row.get('source') or not row.get('source_chain') or not row.get('goal')):
+            raise ValueError('The symbolic byte expression differs from its source read relation')
+        term = ('(List.nth (Z.to_nat ((bv_unsigned ' + address.coq() +
+                ' - bv_unsigned ' + base.coq() + ')%Z)) ' + array.coq() + ' (BV 8%N 0%Z))')
+        if value in terms and terms[value] != term:
+            raise ValueError('The symbolic byte read has conflicting source renderings')
+        terms[value] = term
+        records.append({'expression': value.to_dict(), 'term': term,
+                        'source_obligation': row, 'bounds_status': row.get('status', 'OPEN')})
+    return terms, records
+
+
 @dataclass(frozen=True)
 class OwnedBytes:
     id: str
@@ -206,7 +238,7 @@ class _Facts:
                 raise ValueError('An ownership fact must include source provenance')
             if fact.get('status') not in ('supplied', 'derived-by-pass', 'required-unavailable'):
                 raise ValueError('The ownership fact status is unsupported')
-            if fact.get('kind') not in ('address_equality', 'bounds', 'nonwrap', 'disjoint_ranges', 'permission', 'element_lookup'):
+            if fact.get('kind') not in ('address_equality', 'bounds', 'alignment', 'nonwrap', 'disjoint_ranges', 'permission', 'element_lookup'):
                 raise ValueError('The ownership fact kind is unsupported')
             if not isinstance(fact.get('terms'), dict):
                 raise ValueError('An ownership fact needs typed terms')
@@ -523,14 +555,22 @@ def render_resource_boundary(ownership, result, final_state, *, retained_registe
     if result.status != 'complete' or result.processed_writes != len(result.writes):
         return output
     resources = {resource.id: resource for resource in result.resources}
+    try:
+        read_terms, read_records = _owned_byte_terms(final_state, result.resources, result.transitions)
+    except (ValueError, KeyError) as error:
+        output['reports'].append({'kind': 'resource_render_stop', 'detail': str(error)})
+        return output
+    if read_records:
+        output['owned_read_renderings'] = read_records
     registers = dict(final_state.retained_registers)
     registers.update(retained_registers or {})
     registers.update(final_state.registers)
     rendered, seen = [], set()
     for component in ownership['components']:
         resource_id = component['id']
-        aliases = {Expr.from_dict(binder['expression']): binder['name'] for binder in ownership.get('binders', [])
-                   if 'expression' in binder and binder['scope'] in component.get('scope', [])}
+        aliases = {**read_terms, **{Expr.from_dict(binder['expression']): binder['name']
+                   for binder in ownership.get('binders', [])
+                   if 'expression' in binder and binder['scope'] in component.get('scope', [])}}
         try:
             if component['kind'] in ('byte_array', 'unknown_byte_array'):
                 if resource_id not in resources:

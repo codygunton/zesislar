@@ -99,11 +99,15 @@ class ModuleMemoryTests(unittest.TestCase):
                          (64 * memory.GIB, "changed_arguments"))
 
     def test_admission_cli_passes_the_actual_fence_to_unknown_compilers(self):
+        ledger = self.root / "LEDGER.json"
+        ledger.write_text('{"fixed_claims": {}, "region_claims": {}}\n')
         with patch("sys.argv", ["module_memory.py", "admission", "--request-bytes", "1",
                                "--available-bytes", "1000000000000", "--fallback-bytes", str(64*memory.GIB)]), \
                 patch.object(memory, "reservation_claims", return_value={"claims": [], "growth": [], "unrepresented_compilers": []}) as observed, \
                 patch.object(memory, "current_projection", return_value={"fits": True}), \
-                patch.object(memory, "read_shell_bookings", return_value={}):
+                patch.object(memory, "read_shell_bookings", return_value={}), \
+                patch.dict(memory.os.environ, {"ZESU_CANONICAL_LEDGER": str(ledger),
+                                             "ZESU_GATE_LOCK": str(self.root / "gate.lock")}):
             self.assertEqual(memory.main(), 0)
         self.assertEqual(observed.call_args.kwargs['fallback_bytes'], 64*memory.GIB)
 

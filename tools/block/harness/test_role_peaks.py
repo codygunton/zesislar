@@ -86,6 +86,17 @@ class RolePeaks(unittest.TestCase):
         for role,kind in [(P.ROLES[1],'declarations-serial'),(P.ROLES[0],'declarations-dag')]:
             self.assertIsNone(P.last_peak(role,kind,ledger=self.f.ledger,reader=self.f.reader))
 
+    def test_archived_release_preserves_the_exact_peak_receipt(self):
+        import shell_archive
+        reference = self.closed(code=9)
+        raw = Path(reference['path']).read_bytes()
+        expected = P.recorded_peak(reference, P.ROLES[0], 'declarations-serial',
+                                   ledger=self.f.ledger, reader=self.f.reader)
+        shell_archive.archive_released_shells(self.f.ledger, self.f.root/'archive', reader=self.f.reader)
+        self.assertEqual(P.recorded_peak(reference, P.ROLES[0], 'declarations-serial',
+                                        ledger=self.f.ledger, reader=self.f.reader), expected)
+        self.assertEqual(Path(reference['path']).read_bytes(), raw)
+
     def test_signal_exit_is_recorded_but_cannot_size_a_new_role(self):
         reference=self.closed(code=-signal.SIGTERM)
         self.assertEqual(json.loads(Path(reference['path']).read_text())['returncode'],-signal.SIGTERM)
