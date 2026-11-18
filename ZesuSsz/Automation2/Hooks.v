@@ -2950,16 +2950,26 @@ Ltac zesu_lia_context_bounded closer :=
              | (zesu_lia_context_within_budget; closer)]
   else (zesu_lia_context_within_budget; closer).
 
+(* Coq's own lia body. *)
+Ltac zesu_library_lia := Coq.micromega.Zify.zify; xlia Coq.micromega.Lia.zchecker.
+
+(* The last resort, after every project arm failed: the library lia on the
+   pruned context within the pruned-context node budget. The project arms
+   failed the region-fault bound of decodeParentHeader 0300 that the library
+   lia proves. *)
 Ltac Lia.lia ::=
   let run := ltac2:(tac |- zesu_telemetry_ltac1 "lia" "Lia.lia" tac) in
   let run_linear := ltac2:(tac |- zesu_telemetry_ltac1 "bv_linear" "Lia.lia" tac) in
+  let run_library := ltac2:(tac |- zesu_telemetry_ltac1 "lia_library" "Lia.lia" tac) in
   let memo := ltac2:(tac |- zesu_failure_memo_ltac1 "Lia.lia" tac) in
   run ltac:(memo ltac:(first [solve [zesu_closed_goal_decide] |
   solve [run_linear ltac:(ZesuSsz.Automation2.BvLinear.zesu_bv_linear_with ltac:(lia))] |
   (tryif ZesuSsz.Automation2.BvLinear.zesu_bv_linear_refutes
    then first [zesu_refuted_solve ltac:(zesu_lia_linear_first3) | ResidualLemmas.zesu_residual_lemma]
    else first [zesu_lia_context_bounded ltac:(zesu_lia_linear_first3)
-              | ResidualLemmas.zesu_residual_lemma])])).
+              | ResidualLemmas.zesu_residual_lemma]) |
+  solve [zesu_context_prune_goal; zesu_lia_pruned_context_within_budget;
+         run_library ltac:(zesu_library_lia)]])).
 
 
 (* The callback must prove the payload equality. Owners are never converted. *)
