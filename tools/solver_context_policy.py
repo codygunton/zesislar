@@ -9,7 +9,7 @@ import sys
 def render(policy):
     if policy.get('version') != 1:
         raise ValueError('Unsupported solver policy version.')
-    for key in ('prop_facts', 'kernel_nodes'):
+    for key in ('prop_facts', 'kernel_nodes', 'saturation_rounds'):
         if type(policy.get(key)) is not int or policy[key] <= 0:
             raise ValueError(f'{key} must be a positive integer.')
     if policy.get('exceptions') != []:
@@ -19,6 +19,7 @@ def render(policy):
         'From Coq Require Import ZArith.ZArith Lists.List Strings.String.\n'
         f'Notation zesu_solver_prop_limit := ({policy["prop_facts"]}%Z) (only parsing).\n'
         f'Notation zesu_solver_node_limit := ({policy["kernel_nodes"]}%Z) (only parsing).\n'
+        f'Notation zesu_saturation_round_limit := ({policy["saturation_rounds"]}%nat) (only parsing).\n'
         'Definition zesu_solver_exception_labels : list string := nil.\n'
     )
 

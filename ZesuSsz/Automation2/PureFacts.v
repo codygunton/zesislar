@@ -1,4 +1,5 @@
 Require ZesuSsz.Automation.PureFacts.
+Require Import ZesuSsz.Automation2.SolverContextPolicy.
 (* C6: the facts a side condition needs are folded inside one hypothesis.
 
    A segment carries its witness's well-formedness as a single premise.
@@ -52,27 +53,55 @@ Ltac zesu_split_folded_pure :=
       end
   end.
 
-Ltac zesu_saturate_derived_facts :=
- repeat (once (multimatch goal with
- | H : ?T |- _ =>
-   lazymatch type of T with Prop => idtac end;
-   assert_fails (has_evar T);
-   let fact := fresh "derivedFact" in
-   evar (fact : Prop);
-   let instance := fresh "derivedInstance" in
-   assert (instance : ZesuSsz.Automation.PureFacts.ZesuDerivedFacts T fact);
-   [ unfold fact; typeclasses eauto
-   | let derived := eval unfold fact in fact in
-     assert_fails (has_evar derived);
-     lazymatch goal with
-     | _ : derived |- _ => fail 0
-     | _ =>
-       let result := fresh "Hderived" in
-       pose proof (ZesuSsz.Automation.PureFacts.zesu_derived_facts
+(* Visit each premise type once per round. Enumerate all registered results
+   before another premise, and reject retained result types before insertion. *)
+Ltac zesu_derived_type_seen wanted seen :=
+  lazymatch seen with
+  | @nil Prop => fail 0
+  | @cons Prop ?head ?tail =>
+      first [constr_eq wanted head | zesu_derived_type_seen wanted tail]
+  end.
+
+Ltac zesu_derive_from_premise H T :=
+  once (let fact := fresh "derivedFact" in
+    evar (fact : Prop);
+    let instance := fresh "derivedInstance" in
+    assert (instance : ZesuSsz.Automation.PureFacts.ZesuDerivedFacts T fact);
+    [ unfold fact; typeclasses eauto
+    | let derived := eval unfold fact in fact in
+      assert_fails (has_evar derived);
+      lazymatch goal with
+      | _ : derived |- _ => fail 0
+      | _ =>
+        let result := fresh "Hderived" in
+        pose proof (ZesuSsz.Automation.PureFacts.zesu_derived_facts
           (ZesuDerivedFacts := instance) H) as result;
-       unfold fact in result; clear instance fact
-     end ]
- end)).
+        unfold fact in result; clear instance fact
+      end ]).
+
+Ltac zesu_derived_round seen :=
+  first [multimatch goal with
+  | H : ?T |- _ =>
+      lazymatch type of T with Prop => idtac end;
+      assert_fails (has_evar T);
+      assert_fails (zesu_derived_type_seen T seen);
+      let next := constr:(@cons Prop T seen) in
+      repeat zesu_derive_from_premise H T;
+      zesu_derived_round next
+  end | idtac].
+
+Ltac zesu_saturate_derived_rounds fuel :=
+  lazymatch fuel with
+  | O => fail 0 "Derived-fact saturation exhausted its round budget."
+  | S ?rest =>
+      tryif progress (zesu_derived_round constr:(@nil Prop))
+      then zesu_saturate_derived_rounds rest
+      else idtac
+  end.
+
+Ltac zesu_saturate_derived_facts :=
+  let fuel := eval cbv in SolverContextPolicy.zesu_saturation_round_limit in
+  zesu_saturate_derived_rounds fuel.
 
 
 (* Everything the witness says, in the form a solver reads. *)
