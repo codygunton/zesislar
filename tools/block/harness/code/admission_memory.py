@@ -8,6 +8,7 @@ import fcntl
 import hashlib
 import tempfile
 from contextlib import contextmanager
+from contextvars import ContextVar
 import os
 from pathlib import Path
 import re
@@ -1203,10 +1204,17 @@ def check_test_ledger(ledger=None):
         raise ValueError('Tests refuse the live ledger without explicit live mode.')
 
 
+_ledger_transaction = ContextVar("admission_ledger_transaction", default=None)
+
+
 @contextmanager
 def ledger_transaction(ledger):
     check_test_ledger(ledger)
     ledger = Path(ledger)
+    active = _ledger_transaction.get()
+    if active is not None and active[0] == ledger.absolute():
+        yield active[1]
+        return
     if ledger.is_symlink() or ledger.name != 'LEDGER.json':
         raise ValueError('The unified ledger path is invalid.')
     lock = ledger.with_name('LEDGER.lock')
@@ -1217,7 +1225,12 @@ def ledger_transaction(ledger):
         info = ledger.lstat()
         if info.st_uid != os.getuid() or info.st_mode & 0o022 or not stat.S_ISREG(info.st_mode):
             raise ValueError('The unified ledger is not owned.')
-        yield json.loads(ledger.read_text())
+        data = json.loads(ledger.read_text())
+        token = _ledger_transaction.set((ledger.absolute(), data))
+        try:
+            yield data
+        finally:
+            _ledger_transaction.reset(token)
 
 
 def write_ledger(path, data):
@@ -1226,7 +1239,7 @@ def write_ledger(path, data):
     fd, name = tempfile.mkstemp(prefix='.LEDGER.', dir=path.parent)
     try:
         with os.fdopen(fd, 'w') as stream:
-            json.dump(data, stream, indent=2)
+            json.dump(data, stream, separators=(",", ":"))
             stream.write('\n'); stream.flush(); os.fsync(stream.fileno())
         os.replace(name, path)
     finally:
@@ -1275,7 +1288,8 @@ def confirm_shell(marker, replacement, request_bytes, available_bytes, *, ledger
         guard_source = reader.guard_source(fields['guard_source_path'], fields['guard_source_sha256'])
     key = shell_key(marker)
     with ledger_transaction(ledger) as data:
-        if marker.exists() or marker.is_symlink() or key in data.get('shell_claim_owners', {}):
+        if (marker.exists() or marker.is_symlink() or key in data.get('shell_claim_owners', {})
+                or key in data.get('shell_archive', {})):
             raise ValueError('The shell token already exists.')
         if marker.name.partition('.')[2] != generation:
             raise ValueError('The token path differs from its immutable generation.')
