@@ -130,3 +130,24 @@ Proof.
   split.
   all: zesu_test_step_measured ltac:(exact I).
 Qed.
+
+(* A later failure backtracks through an alternative and a step that
+   succeeded once: the failure goes on to the next branch unchanged. With
+   ZESU_TELEMETRY=1 the measured alternative prints kind=alt for its own
+   time and kind=backtrack for the failing continuation, never altfail. *)
+Ltac zesu_test_slow_failure := do 20000 idtac; fail.
+
+Lemma telemetry_alt_backtrack_through : True.
+Proof.
+  first [zesu_test_alt_measured ltac:(idtac); zesu_test_slow_failure | exact I].
+Qed.
+
+Lemma telemetry_step_backtrack_through : True.
+Proof.
+  first [zesu_test_step_measured ltac:(idtac); zesu_test_slow_failure | exact I].
+Qed.
+
+Lemma telemetry_talt_backtrack_through : True.
+Proof.
+  first [zesu_tstep (zesu_talt zesu_test_gate (idtac; idtac)); zesu_test_slow_failure | exact I].
+Qed.
