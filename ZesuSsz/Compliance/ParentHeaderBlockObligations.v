@@ -99,11 +99,13 @@ Require ZesuSsz.Proofs.DecodeParentHeader.FP301.Caller0040.
 Require ZesuSsz.Proofs.DecodeParentHeader.FP301.Caller0054.
 Require ZesuSsz.Proofs.DecodeParentHeader.FP301.Caller0060.
 Require ZesuSsz.Proofs.DecodeParentHeader.FP301.Caller00a0.
+Require ZesuSsz.Proofs.DecodeParentHeader.FP301.Caller01e4.
 Require ZesuSsz.Proofs.DecodeParentHeader.FP301.Caller026c.
+Require ZesuSsz.Proofs.DecodeParentHeader.FP301.Caller0300.
 Import ListNotations.
 Local Open Scope Z_scope.
 
-(* The 85 open blocks: each field is the statement its block proof must close. *)
+(* The 83 open blocks: each field is the statement its block proof must close. *)
 Record ParentHeaderOpenBlocks : Prop := {
   parentHeaderOpen_800d5cb8 :
     forall (Sigma : gFunctors) `{!islaG Sigma} `{!threadG},
@@ -266,13 +268,6 @@ Record ParentHeaderOpenBlocks : Prop := {
       instr_pre 0x800d6960 (ZesuSsz.Interfaces.DecodeItem.decodeItemCallSpec2)%I -∗
       parentHeaderSelectedCode -∗
       instr_body 0x800d5e80 ((ZesuSsz.Generated.DecodeParentHeader.FP301.Pilot01c8Entries.fp_machineAt01c8 (args) (returnAddress) K) ∗ True));
-  parentHeaderOpen_800d5e9c :
-    forall (Sigma : gFunctors) `{!islaG Sigma} `{!threadG},
-    parentHeaderBlockAt 0x800d5e9c (@ZesuSsz.Generated.DecodeParentHeader.FP301.Pilot01e4Entries.fp_machineAt01e4 Sigma _ _) (forall (args : ParentHeaderArgs) (returnAddress : Z) (K : iProp Sigma),
-    ⊢ instr_pre 0x800d5d40 (ZesuSsz.Generated.DecodeParentHeader.FP301.Pilot0088Entries.fp_machineAt0088 (args) (returnAddress) (K))%I -∗
-      instr_pre 0x800d5ea4 (ZesuSsz.Generated.DecodeParentHeader.FP301.Pilot01ecEntries.fp_machineAt01ec (args) (returnAddress) (K))%I -∗
-      parentHeaderSelectedCode -∗
-      instr_body 0x800d5e9c ((ZesuSsz.Generated.DecodeParentHeader.FP301.Pilot01e4Entries.fp_machineAt01e4 (args) (returnAddress) K) ∗ True));
   parentHeaderOpen_800d5ea4 :
     forall (Sigma : gFunctors) `{!islaG Sigma} `{!threadG},
     parentHeaderBlockAt 0x800d5ea4 (@ZesuSsz.Generated.DecodeParentHeader.FP301.Pilot01ecEntries.fp_machineAt01ec Sigma _ _) (forall (args : ParentHeaderArgs) (returnAddress : Z) (K : iProp Sigma),
@@ -376,13 +371,6 @@ Record ParentHeaderOpenBlocks : Prop := {
       instr_pre 0x800d6960 (ZesuSsz.Interfaces.DecodeItem.decodeItemCallSpec2)%I -∗
       parentHeaderSelectedCode -∗
       instr_body 0x800d5f9c ((ZesuSsz.Generated.DecodeParentHeader.FP301.Pilot02e4Entries.fp_machineAt02e4 (args) (returnAddress) K) ∗ True));
-  parentHeaderOpen_800d5fb8 :
-    forall (Sigma : gFunctors) `{!islaG Sigma} `{!threadG},
-    parentHeaderBlockAt 0x800d5fb8 (@ZesuSsz.Generated.DecodeParentHeader.FP301.Pilot0300Entries.fp_machineAt0300 Sigma _ _) (forall (args : ParentHeaderArgs) (returnAddress : Z) (K : iProp Sigma),
-    ⊢ instr_pre 0x800d5f24 (ZesuSsz.Generated.DecodeParentHeader.FP301.Pilot026cEntries.fp_machineAt026c (args) (returnAddress) (K))%I -∗
-      instr_pre 0x800d5fc0 (ZesuSsz.Generated.DecodeParentHeader.FP301.Pilot0308Entries.fp_machineAt0308 (args) (returnAddress) (K))%I -∗
-      parentHeaderSelectedCode -∗
-      instr_body 0x800d5fb8 ((ZesuSsz.Generated.DecodeParentHeader.FP301.Pilot0300Entries.fp_machineAt0300 (args) (returnAddress) K) ∗ True));
   parentHeaderOpen_800d5fc0 :
     forall (Sigma : gFunctors) `{!islaG Sigma} `{!threadG},
     parentHeaderBlockAt 0x800d5fc0 (@ZesuSsz.Generated.DecodeParentHeader.FP301.Pilot0308Entries.fp_machineAt0308 Sigma _ _) (forall (args : ParentHeaderArgs) (returnAddress : Z) (K : iProp Sigma),
@@ -688,7 +676,7 @@ Record ParentHeaderOpenBlocks : Prop := {
       instr_body 0x800d625c ((ZesuSsz.Generated.DecodeParentHeader.FP301.Pilot05a4Entries.fp_machineAt05a4 (args) (returnAddress) K) ∗ True))
 }.
 
-(* The 5 closed blocks, from their compiled callers. *)
+(* The 7 closed blocks, from their compiled callers. *)
 Record ParentHeaderClosedBlocks : Prop := {
   parentHeaderClosed_800d5cf8 :
     forall (Sigma : gFunctors) `{!islaG Sigma} `{!threadG},
@@ -718,12 +706,26 @@ Record ParentHeaderClosedBlocks : Prop := {
       instr_pre 0x800d5da4 (ZesuSsz.Generated.DecodeParentHeader.FP301.Pilot00ecEntries.fp_machineAt00ec (args) (returnAddress) (K))%I -∗
       parentHeaderSelectedCode -∗
       instr_body 0x800d5d58 ((ZesuSsz.Generated.DecodeParentHeader.FP301.Pilot00a0Entries.fp_machineAt00a0 (args) (returnAddress) K) ∗ True));
+  parentHeaderClosed_800d5e9c :
+    forall (Sigma : gFunctors) `{!islaG Sigma} `{!threadG},
+    parentHeaderBlockAt 0x800d5e9c (@ZesuSsz.Generated.DecodeParentHeader.FP301.Pilot01e4Entries.fp_machineAt01e4 Sigma _ _) (forall (args : ParentHeaderArgs) (returnAddress : Z) (K : iProp Sigma),
+    ⊢ instr_pre 0x800d5d40 (ZesuSsz.Generated.DecodeParentHeader.FP301.Pilot0088Entries.fp_machineAt0088 (args) (returnAddress) (K))%I -∗
+      instr_pre 0x800d5ea4 (ZesuSsz.Generated.DecodeParentHeader.FP301.Pilot01ecEntries.fp_machineAt01ec (args) (returnAddress) (K))%I -∗
+      parentHeaderSelectedCode -∗
+      instr_body 0x800d5e9c ((ZesuSsz.Generated.DecodeParentHeader.FP301.Pilot01e4Entries.fp_machineAt01e4 (args) (returnAddress) K) ∗ True));
   parentHeaderClosed_800d5f24 :
     forall (Sigma : gFunctors) `{!islaG Sigma} `{!threadG},
     parentHeaderBlockAt 0x800d5f24 (@ZesuSsz.Generated.DecodeParentHeader.FP301.Pilot026cEntries.fp_machineAt026c Sigma _ _) (forall (args : ParentHeaderArgs) (returnAddress : Z) (K : iProp Sigma),
     ⊢ instr_pre 0x800d5f28 (ZesuSsz.Generated.DecodeParentHeader.FP301.Pilot0270Entries.fp_machineAt0270 (args) (returnAddress) (K))%I -∗
       parentHeaderSelectedCode -∗
-      instr_body 0x800d5f24 ((ZesuSsz.Generated.DecodeParentHeader.FP301.Pilot026cEntries.fp_machineAt026c (args) (returnAddress) K) ∗ True))
+      instr_body 0x800d5f24 ((ZesuSsz.Generated.DecodeParentHeader.FP301.Pilot026cEntries.fp_machineAt026c (args) (returnAddress) K) ∗ True));
+  parentHeaderClosed_800d5fb8 :
+    forall (Sigma : gFunctors) `{!islaG Sigma} `{!threadG},
+    parentHeaderBlockAt 0x800d5fb8 (@ZesuSsz.Generated.DecodeParentHeader.FP301.Pilot0300Entries.fp_machineAt0300 Sigma _ _) (forall (args : ParentHeaderArgs) (returnAddress : Z) (K : iProp Sigma),
+    ⊢ instr_pre 0x800d5f24 (ZesuSsz.Generated.DecodeParentHeader.FP301.Pilot026cEntries.fp_machineAt026c (args) (returnAddress) (K))%I -∗
+      instr_pre 0x800d5fc0 (ZesuSsz.Generated.DecodeParentHeader.FP301.Pilot0308Entries.fp_machineAt0308 (args) (returnAddress) (K))%I -∗
+      parentHeaderSelectedCode -∗
+      instr_body 0x800d5fb8 ((ZesuSsz.Generated.DecodeParentHeader.FP301.Pilot0300Entries.fp_machineAt0300 (args) (returnAddress) K) ∗ True))
 }.
 
 Definition parentHeaderClosedBlocks : ParentHeaderClosedBlocks := {|
@@ -731,7 +733,9 @@ Definition parentHeaderClosedBlocks : ParentHeaderClosedBlocks := {|
   parentHeaderClosed_800d5d0c := @ZesuSsz.Proofs.DecodeParentHeader.FP301.Caller0054.DesignedBoundary_800d5d0c;
   parentHeaderClosed_800d5d18 := @ZesuSsz.Proofs.DecodeParentHeader.FP301.Caller0060.DesignedBoundary_800d5d18;
   parentHeaderClosed_800d5d58 := @ZesuSsz.Proofs.DecodeParentHeader.FP301.Caller00a0.DesignedBoundary_800d5d58;
-  parentHeaderClosed_800d5f24 := @ZesuSsz.Proofs.DecodeParentHeader.FP301.Caller026c.DesignedBoundary_800d5f24
+  parentHeaderClosed_800d5e9c := @ZesuSsz.Proofs.DecodeParentHeader.FP301.Caller01e4.DesignedBoundary_800d5e9c;
+  parentHeaderClosed_800d5f24 := @ZesuSsz.Proofs.DecodeParentHeader.FP301.Caller026c.DesignedBoundary_800d5f24;
+  parentHeaderClosed_800d5fb8 := @ZesuSsz.Proofs.DecodeParentHeader.FP301.Caller0300.DesignedBoundary_800d5fb8
 |}.
 
 (* The block table: every rendered entry, with the contract continuation as K. *)
