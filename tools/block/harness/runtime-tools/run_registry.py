@@ -24,8 +24,6 @@ import sys
 import time
 import uuid
 
-REFRESH_SECONDS = 5.0
-
 
 def identity(pid, proc=Path('/proc')):
     try:
@@ -364,12 +362,8 @@ def run_command(registry, args):
         if interrupted and actor is not None:
             for current in descendants([actor]):
                 send_signal(current, interrupted[0])
-        next_refresh = 0.0
         while process is not None and process.poll() is None:
-            now = time.monotonic()
-            if now >= next_refresh:
-                registry.refresh(run_id)
-                next_refresh = time.monotonic() + REFRESH_SECONDS
+            registry.refresh(run_id)
             time.sleep(0.1)
         status = process.wait() if process is not None else 128 + interrupted[0]
         command_ended = True

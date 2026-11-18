@@ -1,7 +1,6 @@
 {
   "block/complete_goals_mcp.py": "../complete_goals_mcp.py",
   "block/declaration_preflight.py": "code/declaration_preflight.py",
-  "block/native_start_guard.py": "code/native_start_guard.py",
   "block/declaration_source.py": "code/declaration_source.py",
   "block/start_feedback_mcp.py": "../start_feedback_mcp.py",
   "block/entry_admission/__init__.py": "code/entry_admission/__init__.py",
@@ -50,7 +49,6 @@
   "block/compile_measure.py": "code/compile_measure.py",
   "block/entry_chain_compiler.py": "code/entry_chain_compiler.py",
   "block/memory_policy.py": "code/memory_policy.py",
-  "block/verification_peak.py": "code/verification_peak.py",
   "block/port_heldout_authority.py": "code/port_heldout_authority.py",
   "block/supplier_ready.py": "code/supplier_ready.py",
   "block/verification_supplement.py": "code/verification_supplement.py",
@@ -93,14 +91,5 @@
   "block/check_data_only_lemmas.py": "../check_data_only_lemmas.py",
   "policies/PORT-V33-OPEN-AUTHORITY.json": "policies/PORT-V33-OPEN-AUTHORITY.json",
   "block/scope_bookings.py": "code/scope_bookings.py",
-  "block/role_peaks.py": "code/role_peaks.py",
-  "policies/CONTROLLER-PEAK-OBSERVATIONS.json": "policies/CONTROLLER-PEAK-OBSERVATIONS.json",
-  "block/phase_attribution.py": "code/phase_attribution.py",
-  "block/closed_compilation_origin.py": "code/closed_compilation_origin.py",
-  "block/closed_object_staging.py": "code/closed_object_staging.py",
-  "block/gate_object_origin.py": "code/gate_object_origin.py",
-  "block/declaration_mcp.py": "code/declaration_mcp.py",
-  "block/replay_object_view.py": "code/replay_object_view.py",
-  "block/staging_peaks.py": "code/staging_peaks.py",
-  "block/shell_archive.py": "code/shell_archive.py"
+  "policies/CONTROLLER-PEAK-OBSERVATIONS.json": "policies/CONTROLLER-PEAK-OBSERVATIONS.json"
 }

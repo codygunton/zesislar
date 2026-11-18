@@ -6,8 +6,6 @@ import subprocess
 import tempfile
 import unittest
 
-import admission_memory as M
-
 
 class UnifiedGuardRoute(unittest.TestCase):
     def test_request_path_contains_a_fresh_generation_without_reserving(self):
@@ -39,12 +37,8 @@ class UnifiedGuardRoute(unittest.TestCase):
             marker=tokens/'2147483647.legacy'
             marker.write_text('confirmed\nwriter=\naggregate=\nmemory_fence_bytes=68719476736\n')
             original=marker.read_bytes()
-            ledger=directory/'LEDGER.json'
-            ledger.write_text(json.dumps({'fixed_claims':{},'shell_claim_owners':{}}))
             environment={k:v for k,v in os.environ.items() if not k.startswith('ZESU_')}
-            environment.update(ZESU_GUARD_STATE=str(directory),ZESU_GATE_LOCK=str(directory/'gate.lock'),
-                               ZESU_CANONICAL_LEDGER=str(ledger),
-                               ZESU_MODULE_MEMORY_TOOL=str(root/'tools/module_memory.py'))
+            environment.update(ZESU_GUARD_STATE=str(directory),ZESU_GATE_LOCK=str(directory/'gate.lock'))
             library=(root/'tools/resource_guard.sh').read_text().split('\nprune_scope_registry\n',1)[0]
             result=subprocess.run(['bash'],input=library+'\nlive_reservations\n',env=environment,
                                   text=True,capture_output=True,timeout=10)
@@ -135,12 +129,8 @@ release_coqc "$marker" || exit 14
             self.assertEqual(result.returncode,0,result.stderr)
             data=json.loads(ledger.read_text())
             self.assertEqual(list(data['fixed_claims'].values()),[0])
-            self.assertEqual(len(data['shell_archive']),1)
-            key=next(iter(data['shell_archive']))
-            owner,released,archived=M._shell_recovery_record(data,key,M.ScopeReader())
-            self.assertTrue(archived)
-            self.assertEqual(released['owner'],owner['owner'])
-            self.assertEqual(released['marker'],owner['marker'])
+            self.assertEqual(len(data['shell_claim_owners']),1)
+            self.assertEqual(len(data['shell_releases']),1)
             log=(directory/'guard.log').read_text()
             self.assertEqual(log.count('HOLD reservation launch: unified memory ledger;'),2)
 

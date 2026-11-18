@@ -5,14 +5,11 @@ os.environ['PYTHONDONTWRITEBYTECODE']='1'
 """Run one chain block or its shared prerequisites through pinned MCP."""
 import asyncio,functools,hashlib,json,os,resource,sys,time,traceback
 from pathlib import Path
-from contextlib import asynccontextmanager
 sys.path[1:1] = [str(Path(__file__).resolve().parents[2]), str(Path(__file__).resolve().parents[3])]
-from phase_attribution import capture,for_runtime
 from mcp import ClientSession, StdioServerParameters
 from mcp.client.stdio import stdio_client
 from scratch_statement import source_statement,compiled_verification
 from declaration_preflight import declaration_search_fixture,checked_fixture
-from native_start_guard import theorem_span,compare_initial
 from entry_chain import binding,save as atomic_json,check_bindings as bound_rows,digest,relative,strict_loads
 from entry_pilot import retain_residual
 from entry_pilot_checker import bound_json,complete_groups
@@ -20,8 +17,6 @@ from entry_chain_resources import check_operation,normalize_cpu,session_validati
 from supplier_ready import ENTRYINTRO_MCP_REFUSAL,entry_intro_plugin_refusal
 from declaration_parallel import run as run_declaration_dag
 from declaration_names import check as check_declaration_names
-from declaration_mcp import run as run_mcp_levels
-from declaration_parallel_plan import validate as validate_mcp_plan
 from scope_bookings import descriptor,mcp_environment,require_tool
 
 
@@ -224,32 +219,22 @@ def validated_session(function):
 
 @validated_session
 async def execute(request):
-    before=capture()
     runtime = bound_json(request['runtime'], request['runtime_sha256'])
-    attribution=for_runtime(runtime,request['output'],runtime_reference={'path':request['runtime'],'sha256':request['runtime_sha256']})
-    attribution.complete('provider_runtime_loading',before)
     if runtime.get('dependency_batch') and runtime.get('phase')!='prerequisites':
         raise ValueError('Dependency waves cannot execute in native phase.')
     if runtime.get('declaration_dag') and runtime.get('phase')!='prerequisites':
         raise ValueError('The declaration DAG cannot execute in native phase.')
     runtime.update(runtime_path=request['runtime'],runtime_sha256=request['runtime_sha256'])
     workspace, output = Path(request['workspace']), Path(request['output'])
-    with attribution.span('proof_environment'):
-        environment = proof_environment(runtime, workspace, output)
+    environment = proof_environment(runtime, workspace, output)
     from coqc_findlib import compiler_environment
-    with attribution.span('compiler_environment'):
-        compiler_context=compiler_environment(workspace,environment)
-    with attribution.span('provider_operation_check'):
-        check_operation(runtime)
+    compiler_context=compiler_environment(workspace,environment)
+    check_operation(runtime)
     if runtime['phase']=='prerequisites':
         check_declaration_names(runtime, workspace, output)
     from compiler_snapshot import publish
-    def forced_snapshot_validation():
-        with attribution.span('snapshot_forced_validation'):
-            return check_operation(runtime,force_full=True)
-    with attribution.span('snapshot_publication'):
-        snapshot=publish(runtime,forced_snapshot_validation,
-                         Path(request['output'])/'COMPILER-SNAPSHOT.json',environment=compiler_context)
+    snapshot=publish(runtime,lambda:check_operation(runtime,force_full=True),
+                     Path(request['output'])/'COMPILER-SNAPSHOT.json',environment=compiler_context)
     accepted_objects=None
     if snapshot is not None:
         from compiler_snapshot import OutputReceipts
@@ -375,56 +360,12 @@ async def execute(request):
     mcp_environment_values,controller_booking=mcp_environment(runtime,environment)
     timeout = 604800
     try:
-        async with attribution.enter('MCP_transport_startup',stdio_client(StdioServerParameters(command=launcher[0], args=launcher[1:],
-                                                      env=mcp_environment_values, cwd=str(workspace)))) as streams:
+        async with stdio_client(StdioServerParameters(command=launcher[0], args=launcher[1:],
+                                                      env=mcp_environment_values, cwd=str(workspace))) as streams:
             async with ClientSession(*streams) as session:
-                with attribution.span('MCP_initialize'):
-                    await session.initialize()
-                with attribution.span('initial_health'):
-                    await call(session, 'rocq_health', {})
-                if runtime.get('declaration_dag',{}).get('transport')=='mcp':
-                    validate_mcp_plan(runtime,workspace)
-                    @asynccontextmanager
-                    async def extra_session(index):
-                        async with stdio_client(StdioServerParameters(command=launcher[0],args=launcher[1:],
-                                env=mcp_environment_values,cwd=str(workspace))) as extra_streams:
-                            async with ClientSession(*extra_streams) as extra:
-                                await extra.initialize()
-                                await call(extra,'rocq_health',{})
-                                try:
-                                    yield extra
-                                finally:
-                                    await call(extra,'rocq_health',{})
-                    async def compile_mcp(selected_session,module):
-                        source=workspace/relative(runtime['module_files'][module])
-                        atomic_json(output/'PROGRESS.json',{'phase':'MCP_dependency_compile','module':module})
-                        result=await compile_dependency(module,source,workspace,
-                            workspace/relative(runtime['coqc_wrapper']),runtime['expected_mcp_flags'],output,environment,
-                            lambda name,args:call(selected_session,name,args),lambda:check_operation(runtime),timeout)
-                        obj=source.with_suffix('.vo')
-                        if not obj.is_file():raise ToolFailure('An MCP dependency object is absent.')
-                        reference=accept_guarded_dependency(accepted_objects,module,source,obj,
-                            runtime['physical_flags'],result,lambda:check_operation(runtime))
-                        if not reference:
-                            matching=[entry.get('accepted_object_receipt') for entry in calls
-                                if entry['tool']=='rocq_compile_file' and entry['arguments'].get('file')==str(source)
-                                and entry.get('accepted_object_receipt')]
-                            if len(matching)!=1:raise ToolFailure('An MCP dependency lacks one accepted receipt.')
-                            reference=matching[0]
-                        atomic_json(output/('dependency-'+module+'.json'),{'source':str(source),
-                            'source_sha256':digest(source),'object':str(obj),'object_sha256':digest(obj),
-                            'result':result,'accepted_object_receipt':reference})
-                        return reference
-                    if accepted_objects is None:raise ToolFailure('MCP levels require authenticated compiler snapshots.')
-                    controller_bytes=(controller_booking or {}).get('mcp_claim_bytes',
-                        runtime['canonical_admission']['minimum_claim_bytes'])
-                    mcp_result=await run_mcp_levels(runtime,output,session,extra_session,compile_mcp,
-                        controller_bytes=controller_bytes,client_bytes=(controller_booking or {}).get('client_claim_bytes',0),
-                        normal_failure=lambda error:isinstance(error,ToolFailure) and isinstance(error.result,dict)
-                            and error.result.get('reason')=='compile_error' and not error.result.get('pet_restarted')
-                            and not error.result.get('restarted'))
-                    completed_dependencies.update(mcp_result['receipts'])
-                elif runtime.get('declaration_dag'):
+                await session.initialize()
+                await call(session, 'rocq_health', {})
+                if runtime.get('declaration_dag'):
                     async def protected_compile(module):
                         source=workspace/relative(runtime['module_files'][module])
                         atomic_json(output/'PROGRESS.json',{'phase':'protected_declaration','module':module})
@@ -515,9 +456,6 @@ async def execute(request):
                     if statement_sha != target['statement_sha256']:
                         raise ValueError('The original public statement changed.')
                     search_fixture, proof_line = checked_fixture(runtime,workspace,source,specification)
-                    native_span = theorem_span(search_fixture,specification['statement'],specification['name'])
-                    if native_span['proof_line'] != proof_line:
-                        raise ValueError('The native cursor differs from its authenticated theorem span.')
                     atomic_json(output/'PROGRESS.json', {'phase': 'declaration_preflight', 'side': side})
                     try:
                         parsed = await call(session, 'rocq_compile_file', {'workspace': str(workspace),
@@ -538,17 +476,10 @@ async def execute(request):
                         raise
                     atomic_json(output/'PROGRESS.json', {'phase': 'native_start', 'side': side,
                         'start_mode': 'proof_sentence'})
-                    reference = await call(session, 'rocq_start', {'workspace': str(workspace),
-                        'file': str(search_fixture), 'theorem': native_span['name'], 'timeout': timeout})
-                    reference_export = await export(session, reference)
                     state = await call(session, 'rocq_start', {'workspace': str(workspace),
                         'file': str(search_fixture), 'theorem': '', 'line': proof_line,
                         'character': len('Proof.')-1, 'timeout': timeout})
                     pre_call_export = await export(session, state)
-                    initial_identity = compare_initial(pre_call_export,reference_export)
-                    if theorem_span(search_fixture,specification['statement'],specification['name']) != native_span:
-                        raise ValueError('The native theorem changed during its initial kernel check.')
-                    atomic_json(output/'INITIAL-IDENTITY.json',dict(initial_identity,theorem_span=native_span))
                     atomic_json(output/'PRE-CALL-STATE.json', {
                         'side': side, 'export': pre_call_export,
                         'state_source': 'retained_pre_call_state',

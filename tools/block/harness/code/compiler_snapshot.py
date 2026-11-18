@@ -22,11 +22,7 @@ SCHEMA = 'entry-chain.compiler-validation.v1'
 # These caches belong to one process and one authenticated chain. File identity
 # changes invalidate a hit; no cache publishes acceptance or changes a receipt.
 _VERIFIED_READS = ContextVar('compiler_verified_reads', default=None)
-_VERIFIED_NAMESPACES = ContextVar('compiler_verified_namespaces', default=None)
 _ACCEPTED_PREFIXES = {}
-_SNAPSHOT_READS = {}
-_SNAPSHOT_OBJECTS = {}
-_COMPILATION_ROWS = {}
 _CHAIN_SNAPSHOTS = {}
 _COMPILER_BINDINGS = {}
 _IMPORT_CONTEXTS = {}
@@ -54,70 +50,15 @@ def _unchanged(rows):
         return False
 
 
-def _same_namespaces(rows):
-    try:
-        return all(_namespace(path) == expected for path, expected in rows.items())
-    except OSError:
-        return False
-
-
-def _read_snapshot(reference):
-    """Parse one hash-bound snapshot once per process and file identity."""
-    path = Path(reference['path'])
-    try:
-        info = path.lstat()
-    except OSError:
-        return _read_private(reference)
-    key = (os.getpid(), _encoded(reference))
-    cached = _SNAPSHOT_READS.get(key)
-    if reference.get('sha256') is None or cached is None or cached[0] != _fields(info) or not _private(info):
-        value = _read_private(reference)
-        if reference.get('sha256') is not None:
-            _SNAPSHOT_READS.clear()
-            _SNAPSHOT_READS[key] = (_fields(info), value)
-        return value
-    tracker = _VERIFIED_READS.get()
-    if tracker is not None and path.name != 'INDEX.json':
-        tracker[str(path)] = _identity(path)
-    return cached[1]
-
-
-def _release_provider_snapshot(reference, value):
-    """Keep only the authenticated publication path in the provider process."""
-    key = (os.getpid(), _encoded(reference))
-    cached = _SNAPSHOT_READS.pop(key, None)
-    if cached is not None and cached[1] is value:
-        _SNAPSHOT_OBJECTS.clear()
-        _SNAPSHOT_OBJECTS[key] = (cached[0], value['objects'])
-
-
-def publication_objects(reference):
-    """Reuse the provider's path only while the private snapshot stays exact."""
-    key = (os.getpid(), _encoded(reference))
-    cached = _SNAPSHOT_OBJECTS.get(key)
-    if cached is not None:
-        path = Path(reference['path'])
-        info = path.lstat()
-        if _fields(info) == cached[0] and _private(info):
-            tracker = _VERIFIED_READS.get()
-            if tracker is not None and path.name != 'INDEX.json':
-                tracker[str(path)] = _identity(path)
-            return cached[1]
-        _SNAPSHOT_OBJECTS.pop(key, None)
-    return _read_snapshot(reference)['objects']
-
-
-def _chain_snapshot(reference, runtime_reference, compiler_inputs):
-    # The strict public read remains available. A compiler process stats only
-    # the rows that its compilation reads: the sealed load-path files, which
-    # include the initial plugins and objects, and its source and compiler. The
-    # provider's first read and the binding gates keep the whole-inventory
-    # check. Actual compiler inputs are hashed and checked on every invocation.
+def _chain_snapshot(reference, runtime_reference):
+    # The strict public read remains available. Only a compiler chain reuses
+    # its initial whole-inventory stat pass. Actual compiler inputs are hashed
+    # and checked on every invocation below.
     key = (os.getpid(), _encoded(reference), _encoded(runtime_reference))
     current = (_identity(reference['path']), _namespace(reference['path']))
     cached = _CHAIN_SNAPSHOTS.get(key)
     if cached is None or cached[0] != current:
-        value = read(reference, runtime_reference, compiler_inputs=compiler_inputs)
+        value = read(reference, runtime_reference)
         _CHAIN_SNAPSHOTS.clear()
         _CHAIN_SNAPSHOTS[key] = (current, value)
     else:
@@ -400,27 +341,9 @@ def _read_private(reference, *, with_binding=False):
     return value
 
 
-def _compilation_rows(value, compiler_inputs):
-    """Return the row paths that one compilation reads: source, compiler, load path."""
-    # Bound rows name canonical paths. The sealed load-path files are lexical.
-    key = (os.getpid(), id(value), frozenset(compiler_inputs))
-    if key not in _COMPILATION_ROWS:
-        names = value['load_path_files']
-        rows = set(compiler_inputs) | set(names) | {str(Path(name).resolve()) for name in names}
-        _COMPILATION_ROWS.clear()
-        _COMPILATION_ROWS[key] = (value, rows)
-    return _COMPILATION_ROWS[key][1]
-
-
-def read(reference, runtime_reference, *, compiler_inputs=None):
-    """Authenticate the immutable snapshot before consulting any cached identity.
-
-    Without compiler_inputs, stat every classified row. With the paths of one
-    compilation's source and compiler, stat those rows and the rows of the
-    sealed load-path files, which hold its import closure. Every row keeps its
-    shape and uniqueness check.
-    """
-    value = _read_snapshot(reference)
+def read(reference, runtime_reference):
+    """Authenticate the immutable snapshot before consulting any cached identity."""
+    value = _read_private(reference)
     required={'schema', 'runtime', 'producer', 'objects', 'mapping_context', 'compiler', 'initial_plugins', 'load_path_files', 'rows'}
     if not isinstance(value, dict) or not required <= set(value) or set(value)-required-{'initial_objects'} or value['schema'] != SCHEMA or value['runtime'] != runtime_reference:
         raise ValueError('The compiler snapshot names another runtime.')
@@ -432,12 +355,11 @@ def read(reference, runtime_reference, *, compiler_inputs=None):
     if not all(isinstance(value.get(name,[]),list) for name in ['rows','initial_plugins','initial_objects']):
         raise ValueError('The compiler snapshot rows are invalid.')
     seen = set()
-    selected = None if compiler_inputs is None else _compilation_rows(value, compiler_inputs)
     for row in value['rows']+value['initial_plugins']+value.get('initial_objects',[]):
         if not isinstance(row, dict) or set(row) != {'path', 'sha256', 'identity'} or row['path'] in seen:
             raise ValueError('The compiler snapshot repeats or changes a classified row.')
         seen.add(row['path'])
-        if (selected is None or row['path'] in selected) and _identity(row['path']) != row['identity']:
+        if _identity(row['path']) != row['identity']:
             raise ValueError('A compiler input identity changed: ' + row['path'])
     return value
 
@@ -549,14 +471,9 @@ def import_selection(runtime, source, workspace, report):
 def check_import_selection(selection, report):
     """Refuse a selected dependency that changes across physical compilation."""
     if selection is None:return
-    # Resolve each hashed input once per check, not once per imported object.
-    # Each check resolves again, so an alias change across compilation refuses.
-    resolved={}
-    if selection['imported_objects']:
-        for row in report['directly_hashed_inputs']:
-            resolved.setdefault(Path(row['path']).resolve(),[]).append(row)
     for imported in selection['imported_objects']:
-        rows=resolved.get(Path(imported['object']['path']),[])
+        path=Path(imported['object']['path'])
+        rows=[row for row in report['directly_hashed_inputs'] if Path(row['path']).resolve()==path]
         if not rows or any(_identity(row['path'])!=row['identity'] for row in rows):
             raise ValueError('An imported compiler object changed during physical compilation.')
 
@@ -607,11 +524,6 @@ def _physical_record(reference, snapshot, snapshot_reference, source, compiler, 
     if private_output or published is not None:
         from declaration_outputs import output_context
         private_context=output_context(runtime,source,physical_obj['path'],inputs['owned_workspace'])
-        namespaces=_VERIFIED_NAMESPACES.get()
-        if namespaces is not None:
-            # A verified prefix reuses this check only while both aliases stay exact.
-            for path in [physical_obj['path'],inputs['owned_workspace']]:
-                namespaces[path]=_namespace(path)
         selected_flags=private_context['physical_flags']
         if (inputs.get('output_context')!=private_context or
                 published is not None and published['output_context']!=private_context):
@@ -724,7 +636,6 @@ class OutputReceipts:
     def __init__(self, reference, runtime_reference, key=None):
         snapshot=read(reference,runtime_reference)
         self.snapshot={name:json.loads(json.dumps(snapshot[name])) for name in ('runtime','producer','objects','compiler')}
-        _release_provider_snapshot(reference, snapshot)
         self.reference = dict(reference)
         self.key = key or secrets.token_hex(32)
         self.rows = []
@@ -792,50 +703,6 @@ class OutputReceipts:
         return reference
 
 
-PREFIX_SCHEMA = 'entry-chain.verified-receipt-prefix.v1'
-
-
-def _prefix_scope(cache_key):
-    parts = [part if isinstance(part, bytes) else part.encode() for part in cache_key[1:]]
-    return hashlib.sha256(b'\0'.join(parts)).hexdigest()
-
-
-def _signed_prefix(root, key, scope):
-    """Return a prefix that a holder of the index key verified, or None."""
-    # The index key signs this file. The physical compiler never receives it.
-    try:
-        value = _read_private({'path': str(root / 'VERIFIED-PREFIX.json')})
-        body = value['prefix']
-        expected = hmac.new(bytes.fromhex(key), _encoded(body), 'sha256').hexdigest()
-        if (set(value) != {'prefix', 'mac'} or not isinstance(value['mac'], str) or
-                not hmac.compare_digest(expected, value['mac'])):
-            return None
-        if (set(body) != {'schema', 'scope', 'prefix_sha256', 'documents', 'namespaces', 'state'} or
-                body['schema'] != PREFIX_SCHEMA or body['scope'] != scope):
-            return None
-        rows, latest, prior, physical_seen = body['state']
-        if body['prefix_sha256'] != hashlib.sha256(_encoded(prior)).hexdigest():
-            return None
-    except (OSError, ValueError, TypeError, KeyError):
-        return None
-    return {'prior': prior, 'documents': body['documents'], 'namespaces': body['namespaces'],
-            'state': (rows, latest, prior, physical_seen)}
-
-
-def _sign_prefix(root, key, scope, verified):
-    rows, latest, prior, physical_seen = verified['state']
-    body = {'schema': PREFIX_SCHEMA, 'scope': scope,
-            'prefix_sha256': hashlib.sha256(_encoded(prior)).hexdigest(),
-            'documents': verified['documents'], 'namespaces': verified['namespaces'],
-            'state': [rows, latest, prior, physical_seen]}
-    value = {'prefix': body, 'mac': hmac.new(bytes.fromhex(key), _encoded(body), 'sha256').hexdigest()}
-    try:
-        _publish(root / 'VERIFIED-PREFIX.json', value, replace=True)
-    except OSError:
-        # The signed prefix only saves work. A later process replays instead.
-        pass
-
-
 def accepted_objects(snapshot, reference, key, compiler, flags):
     """Check the authenticated receipt index before accepting a later object."""
     root = Path(snapshot['objects'])
@@ -860,30 +727,27 @@ def accepted_objects(snapshot, reference, key, compiler, flags):
     cache_key = (os.getpid(), _encoded(reference), _encoded(snapshot['producer']),
                  hashlib.sha256(bytes.fromhex(key)).hexdigest(), _encoded(compiler), _encoded(flags))
     cached = _ACCEPTED_PREFIXES.get(cache_key)
-    if cached is None:
-        # A new process resumes from the prefix that an earlier process verified.
-        cached = _signed_prefix(root, key, _prefix_scope(cache_key))
     start = 0
     documents = {}
-    namespaces = {}
     rows = [];latest={};prior=[];physical_seen=[]
-    # DAG publication receipts also bind their private output and workspace
-    # namespaces. A changed prefix, document, or namespace replays every receipt.
-    if (cached is not None and
+    publication_free = True
+    # DAG publication validates additional cross-worker records. Keep its full
+    # replay until those records can join the same verified-input inventory.
+    if (cached is not None and cached['publication_free'] and
             index['receipts'][:len(cached['prior'])] == cached['prior'] and
-            _unchanged(cached['documents']) and _same_namespaces(cached['namespaces'])):
+            _unchanged(cached['documents'])):
         rows, latest, prior, physical_seen = deepcopy(cached['state'])
         documents.update(cached['documents'])
-        namespaces.update(cached['namespaces'])
         start = len(prior)
     token = _VERIFIED_READS.set(documents)
-    namespace_token = _VERIFIED_NAMESPACES.set(namespaces)
     try:
         for number in range(start, len(index['receipts'])):
             receipt_reference = index['receipts'][number]
             if receipt_reference['path'] != str(root / ('OBJECT-%06d.json' % number)):
                 raise ValueError('An accepted-object receipt leaves its exact directory.')
             receipt = _read_private(receipt_reference)
+            if receipt.get('publication') is not None:
+                publication_free = False
             selected_flags=effective_flags(flags,receipt['source'])
             if (receipt.get('snapshot') != reference or receipt.get('runtime') != snapshot['runtime'] or receipt.get('producer') != snapshot['producer'] or
                     receipt.get('successful_compilation') is not True or receipt.get('tool_result', {}).get('success') is not True or
@@ -936,7 +800,6 @@ def accepted_objects(snapshot, reference, key, compiler, flags):
                 documents[item['path']] = _identity(item['path'])
             rows.append(receipt['object']);prior.append(receipt_reference);physical_seen.append(receipt['physical_result'])
     finally:
-        _VERIFIED_NAMESPACES.reset(namespace_token)
         _VERIFIED_READS.reset(token)
     authenticated=[]
     for value in latest.values():
@@ -948,9 +811,7 @@ def accepted_objects(snapshot, reference, key, compiler, flags):
             source=value['source'],kind=value['kind'],receipt=value['receipt'],primary_object=value['primary_object']))
     _ACCEPTED_PREFIXES.clear()
     _ACCEPTED_PREFIXES[cache_key] = {'prior': deepcopy(prior), 'documents': documents,
-                                   'namespaces': namespaces, 'state': deepcopy((rows, latest, prior, physical_seen))}
-    if start < len(prior):
-        _sign_prefix(root, key, _prefix_scope(cache_key), _ACCEPTED_PREFIXES[cache_key])
+                                   'publication_free': publication_free, 'state': deepcopy((rows, latest, prior, physical_seen))}
     return rows, version, index['receipts'], authenticated
 
 
@@ -1001,46 +862,17 @@ def hash_inputs(source, compiler, flags):
     return rows
 
 
-def _publication_unchanged(report, source, compiler):
-    """Recheck, under the shared lock, each input that a publication can change."""
-    try:
-        index=report['accepted_output_index']
-        if index is not None:
-            root=Path(index['path']).parent
-            _,current=_read_private({'path':str(root/'INDEX.json')},with_binding=True)
-            names=['OBJECT-%06d.json'%number for number in range(len(report['accepted_output_receipts']))]
-            if (current['sha256']!=index['sha256'] or
-                    sorted(path.name for path in root.glob('OBJECT-*.json'))!=names):
-                return False
-        inputs=report['directly_hashed_inputs']
-        paths=sorted({Path(source).absolute(),Path(compiler).absolute(),
-                      *load_files(compiler,report['physical_flags'],os.environ)})
-        return ([str(path) for path in paths]==[row['path'] for row in inputs] and
-                all(_identity(row['path'])==row['identity'] for row in inputs))
-    except (OSError,ValueError):
-        return False
-
-
 def validate_compiler(runtime, runtime_reference, snapshot_reference, source_binding, compiler, *, output_key=None,
                       private_output=None, private_workspace=None):
-    def validate():
-        return _validate_compiler(runtime,runtime_reference,snapshot_reference,source_binding,
-                                  compiler,output_key=output_key,private_output=private_output,
-                                  private_workspace=private_workspace)
     if runtime.get('declaration_dag') is not None:
         from declaration_outputs import publication_lock
-        # Validate before the shared lock, so an exclusive publication never
-        # waits for it. Under the lock, recheck the receipt index and the load
-        # path. A change or a refusal repeats the full validation under the lock.
-        try:
-            report=validate()
-        except Exception:
-            report=None
         with publication_lock(snapshot_reference):
-            if report is not None and _publication_unchanged(report,source_binding['path'],compiler):
-                return report
-            return validate()
-    return validate()
+            return _validate_compiler(runtime,runtime_reference,snapshot_reference,source_binding,
+                                      compiler,output_key=output_key,private_output=private_output,
+                                      private_workspace=private_workspace)
+    return _validate_compiler(runtime,runtime_reference,snapshot_reference,source_binding,
+                              compiler,output_key=output_key,private_output=private_output,
+                              private_workspace=private_workspace)
 
 
 def _validate_compiler(runtime, runtime_reference, snapshot_reference, source_binding, compiler, *, output_key=None,
@@ -1061,10 +893,7 @@ def _validate_compiler(runtime, runtime_reference, snapshot_reference, source_bi
     usage=resource.getrusage(resource.RUSAGE_SELF)
     if runtime.get('harness') is not None:
         check(runtime['harness'])
-    compiler_inputs = {str(source.absolute()), str(Path(compiler).absolute())}
-    # Resolve the load-path rows once per validation, for both identity passes.
-    _COMPILATION_ROWS.clear()
-    snapshot = _chain_snapshot(snapshot_reference, runtime_reference, compiler_inputs)
+    snapshot = _chain_snapshot(snapshot_reference, runtime_reference)
     if str(Path(compiler).absolute())!=snapshot['compiler']['path']:
         raise ValueError('The physical compiler differs from the selected executable.')
     if physical_context(compiler,runtime['physical_flags'],os.environ) != snapshot['mapping_context']:
@@ -1107,14 +936,11 @@ def _validate_compiler(runtime, runtime_reference, snapshot_reference, source_bi
                 raise ValueError('A compiler dependency lacks an original binding: '+row['path'])
         if selected is not None and selected!=row['sha256']:
             raise ValueError('A physical compiler input hash differs: '+row['path'])
-    # Hashing can overlap a mutation of an earlier retained input that this
-    # compilation reads: its source, its compiler, or a load-path file.
-    reads = _compilation_rows(snapshot, compiler_inputs) | {row['path'] for row in inputs}
-    checked = 0
-    for number, row in enumerate(retained):
-        if row['path'] not in reads:
+    # Hashing can overlap a mutation of an earlier retained input.
+    for row in retained:
+        if (Path(row['path']).suffix not in DEPENDENCIES and
+                row['path'] not in {str(source.absolute()), str(Path(compiler).absolute())}):
             continue
-        checked += number < len(snapshot['rows'])
         if _identity(row['path']) != row['identity']:
             raise ValueError('A compiler input changed during input hashing: ' + row['path'])
     for row in authenticated_objects:
@@ -1130,10 +956,10 @@ def _validate_compiler(runtime, runtime_reference, snapshot_reference, source_bi
             'final_identity_wall_seconds':ended-hashing_done,
             'total_wall_seconds':ended-started,
             'self_CPU_seconds':final_usage.ru_utime+final_usage.ru_stime-usage.ru_utime-usage.ru_stime}
-    return {'snapshot_stat_policy':'Full inventory at chain start and at binding gates; load-path, source, and compiler rows checked before and after hashing per invocation.',
+    return {'snapshot_stat_policy':'Initial full inventory; physical dependencies, source, and compiler rechecked per invocation.',
             'timing':timing,'snapshot': snapshot_reference,'producer':snapshot['producer'],
             'compiler_context':context,'physical_flags':selected_flags,'output_context':private_context,
-            'retained_identities_checked': checked,
+            'retained_identities_checked': len(snapshot['rows']),
             'accepted_dependency_objects': produced,
             'accepted_dependency_identities': authenticated_objects,
             'initial_plugins_checked':len(snapshot['initial_plugins']),
