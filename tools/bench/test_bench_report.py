@@ -277,11 +277,15 @@ class Report(unittest.TestCase):
                'cpu_ms=60\n'
                '@@T kind=step site=WPasm_[] stage=zesu_run_pass facts=-1 nodes=-1 goal_nodes=-1 ms=40 ok=0 cpu_ms=40\n'
                '@@T kind=bv_solve site=bv_solve stage=zesu_run_pass facts=3 nodes=40 goal_nodes=9 ms=10 ok=1 '
-               'cpu_ms=10\n')
+               'cpu_ms=10\n'
+               '@@T kind=backtrack site=c_head_gate stage=final_pure facts=-1 nodes=-1 goal_nodes=-1 ms=900 ok=0 '
+               'cpu_ms=900\n'
+               '@@T kind=stepbacktrack site=WPasm_[] stage=zesu_run_pass facts=-1 nodes=-1 goal_nodes=-1 ms=300 '
+               'ok=0 cpu_ms=300\n')
         run = write_run(self.root, 'steps', [dict(log=log, cpu=10.0, peak_gib=1.0, verdict='NOT-CLOSED'), None, None])
         loaded = R.load_run(run)
         steps = loaded['blocks'][0]['block']['step_summary']
-        self.assertEqual((steps['steps'], steps['cpu']), (2, 0.1))
+        self.assertEqual((steps['steps'], steps['cpu'], steps['backtrack_cpu']), (2, 0.1, 1.2))
         self.assertEqual([call['kind'] for call in loaded['blocks'][0]['block']['calls']], ['bv_solve'])
         rank = R.ranking(loaded)
         self.assertEqual([(row['name'], row['calls'], row['failed']) for row in rank['alternative']],
@@ -290,9 +294,33 @@ class Report(unittest.TestCase):
         self.assertEqual([(row['name'], row['failed']) for row in rank['step_head']],
                          [('WPasm_(__::__)', 0), ('WPasm_[]', 1)])
         self.assertEqual([row['name'] for row in rank['kind']], ['bv_solve'])
+        self.assertEqual([(row['name'], row['calls'], row['cpu']) for row in rank['backtrack']],
+                         [('c_head_gate @ final_pure', 1, 0.9), ('step WPasm_[]', 1, 0.3)])
         text = R.render(loaded)
         self.assertIn('search steps: 2, 0.1 s', text)
         self.assertIn('by step alternative @ stage', text)
+        self.assertIn('backtracks (continuation CPU after a success, nested; CPU s, backtracks): '
+                      'c_head_gate @ final_pure 0.9/1, step WPasm_[] 0.3/1', text)
+        self.assertIn('| c_head_gate @ final_pure | 0.9 | 0.00 | 1 | 1 |', text)
+
+    def test_old_backtracks(self):
+        # Before the backtrack records a backtrack into a succeeded wrapper printed altfail / step ok=0 /
+        # a second success with the start (ts_us) of its first success and all the time since.
+        line = ('@@T kind=%s site=%s stage=final_pure facts=-1 nodes=-1 goal_nodes=-1 ms=%d ok=%d cpu_ms=%d '
+                'ts_us=%d\n')
+        log = (line % ('alt', 'c_head_gate', 1, 1, 1, 5000000) + line % ('step', 'G', 2, 1, 2, 4000000) +
+               line % ('step', 'G', 902, 0, 902, 4000000) + line % ('altfail', 'c_head_gate', 901, 0, 901, 5000000) +
+               line % ('alt', 'c_multi', 1, 1, 1, 6000000) + line % ('alt', 'c_multi', 301, 1, 301, 6000000) +
+               line % ('altfail', 'c_other', 50, 0, 50, 7000000))
+        run = write_run(self.root, 'old', [dict(log=log, cpu=10.0, peak_gib=1.0, verdict='NOT-CLOSED'), None, None])
+        steps = R.load_run(run)['blocks'][0]['block']['step_summary']
+        self.assertEqual({name: (value['cpu'], value['calls'], value['failed'])
+                          for name, value in steps['alternatives'].items()},
+                         {'c_head_gate @ final_pure': (0.001, 1, 0), 'c_multi @ final_pure': (0.001, 1, 0),
+                          'c_other @ final_pure': (0.05, 1, 1)})
+        self.assertEqual({name: round(value['cpu'], 3) for name, value in steps['backtracks'].items()},
+                         {'step G': 0.9, 'c_head_gate @ final_pure': 0.9, 'c_multi @ final_pure': 0.3})
+        self.assertEqual((steps['steps'], steps['cpu']), (1, 0.0))
 
     def test_render_with_base(self):
         text = R.render(R.load_run(self.new), R.load_run(self.base))
