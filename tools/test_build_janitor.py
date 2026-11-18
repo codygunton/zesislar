@@ -125,6 +125,58 @@ class Plan(JanitorTree):
         row = next(row for row in plan['rows'] if row['path'] == str(run))
         self.assertEqual(row['deleted_files'], 2)
 
+    def bench_run(self, run):
+        write(run / 'RUN.json', json.dumps({'schema': 'bench-run/1', 'members': []}).encode())
+        write(run / 'REPORT.md', b'# BENCH-v1 run\n')
+        write(run / 'results.jsonl', b'{"key": "f/0300"}\n')
+        write(run / 'runs/0300/measure.json', b'{"returncode": 0}\n')
+        write(run / 'runs/0300/CLOSURE.json', b'{"verdict": "CLOSED"}\n')
+        write(run / 'runs/0300/Caller0300.vo', b'object')
+        write(run / 'runs/0300/measure.json.log', b'@@T kind=lia ms=1\n' * 200000)
+        write(run / 'runs/0300/REPORT-big.json', b' ' * (2 << 20))
+        return run / 'runs/0300'
+
+    def test_idle_bench_runs_keep_their_records_and_gzip_their_logs(self):
+        # 2026-11-18: BENCH runs are reference data; shrinking must keep what bench.py report reads.
+        blocks = [self.bench_run(self.agents / 'bench/v1-a'),
+                  self.bench_run(self.agents / 'a/old/nested')]
+        write(self.agents / 'bench/v1-b/runs/0300/measure.json.log', b'line\n' * 400000)
+        janitor = self.janitor()
+        budget = janitor.budget(janitor.survey_runs())
+        self.assertEqual(budget['bench']['runs'], 3)
+        self.assertGreater(budget['bench']['bytes'], 2 << 20)
+        self.assertEqual(budget['bench']['budget_bytes'], J.BENCH_BUDGET_BYTES)
+        self.assertFalse(budget['bench']['over'])
+        plan, log = self.plan_and_apply(janitor, self.live())
+        for block in blocks:
+            run = block.parent.parent
+            for name in ('RUN.json', 'REPORT.md', 'results.jsonl'):
+                self.assertTrue((run / name).exists())
+            for name in ('measure.json', 'CLOSURE.json', 'REPORT-big.json'):
+                self.assertTrue((block / name).exists())
+            self.assertFalse((block / 'Caller0300.vo').exists())
+            self.assertFalse((block / 'measure.json.log').exists())
+            with gzip.open(block / 'measure.json.log.gz') as stream:
+                self.assertEqual(stream.read(), b'@@T kind=lia ms=1\n' * 200000)
+            self.assertIn('compress\t' + str(block / 'measure.json.log'), log)
+        self.assertTrue((self.agents / 'bench/v1-b/runs/0300/measure.json.log.gz').exists())
+        again = self.janitor(now=self.now + 25 * HOUR)
+        rows = again.plan(again.survey_runs(), self.live())['rows']
+        self.assertEqual({row['path']: row['reason'] for row in rows}[str(self.agents / 'bench/v1-a')],
+                         'already small')
+
+    def test_worktree_build_removal_moves_its_bench_runs_to_the_bench_dir(self):
+        block = self.bench_run(self.root / '.worktrees/probe/_build/v1-wt')
+        janitor = self.janitor(now=time.time() + 49 * HOUR)
+        with patch('builtins.print'):
+            _, log = self.plan_and_apply(janitor, self.live())
+        self.assertFalse(block.exists())
+        kept = self.agents / 'bench/v1-wt/runs/0300'
+        self.assertTrue((kept / 'CLOSURE.json').exists())
+        self.assertTrue((kept / 'measure.json.log.gz').exists())
+        self.assertFalse((kept / 'Caller0300.vo').exists())
+        self.assertIn('bench-saved\t' + str(block.parent.parent), log)
+
     def test_protected_runs_keep_every_file(self):
         fresh = self.agents / 'a/fresh'
         write(fresh / 'Module.vo')
@@ -461,6 +513,307 @@ class Commands(JanitorTree):
         self.assertIn('the admission ledger names receipt ' + str(receipt), printed)
         self.assertIn('kept: admission ledger receipt ' + str(run_receipt), printed)
         self.assertTrue(run_receipt.exists())
+
+
+class WorktreeReaper(unittest.TestCase):
+    """Whole worktrees: merged, clean, idle, unused ones go; dirty, used, unmerged ones stay."""
+
+    def setUp(self):
+        self.temp = tempfile.TemporaryDirectory()
+        self.addCleanup(self.temp.cleanup)
+        self.root = Path(self.temp.name) / 'repo'
+        self.proc = Path(self.temp.name) / 'proc'
+        self.proc.mkdir()
+        self.git('init', '-q', '-b', 'main', str(self.root), cwd=self.temp.name)
+        write(self.root / 'README', b'base\n')
+        write(self.root / '.gitignore', b'_build/\n.worktrees/\n')
+        self.git('add', 'README', '.gitignore')
+        self.git('-c', 'user.name=t', '-c', 'user.email=t@t', 'commit', '-q', '-m', 'base')
+        self.now = time.time() + 7 * HOUR
+
+    def git(self, *arguments, cwd=None):
+        return subprocess.run(['git', *arguments], cwd=cwd or self.root, check=True,
+                              capture_output=True, text=True).stdout.strip()
+
+    def worktree(self, name, *options, commit=False):
+        path = self.root / '.worktrees' / name
+        self.git('worktree', 'add', '-q', *options, str(path), 'main')
+        if commit:
+            write(path / name, b'work\n')
+            self.git('add', name, cwd=path)
+            self.git('-c', 'user.name=t', '-c', 'user.email=t@t', 'commit', '-q', '-m', name, cwd=path)
+        return path
+
+    def reap(self, live=(), apply=True, now=None):
+        for index, path in enumerate(live):
+            entry = self.proc / str(1000 + index)
+            entry.mkdir()
+            (entry / 'cwd').symlink_to(path)
+        with patch('builtins.print'):
+            rows = J.reap_worktrees(self.root, apply=apply, main_ref='main', now=now or self.now,
+                                    proc=str(self.proc), registered=[])
+        return {row['name']: row for row in rows}
+
+    def test_merged_clean_idle_worktree_is_removed_and_its_closure_records_saved(self):
+        merged = self.worktree('merged', '-b', 'lane/merged')
+        record = write(merged / '_build/cert/0300/CLOSURE.json',
+                       b'{"case": "0300", "verdict": "CLOSED"}\n')
+        rows = self.reap()
+        self.assertEqual(rows['merged']['action'], 'remove', rows['merged'])
+        self.assertFalse(merged.exists())
+        self.assertNotIn(str(merged), self.git('worktree', 'list'))
+        self.assertFalse(record.exists())
+        self.assertTrue(list((self.root / '_build/closures').rglob('CLOSURE.json')))
+        log = (self.root / '_build/janitor/worktrees.log').read_text()
+        self.assertIn('removed\t' + str(merged), log)
+
+    def test_dry_run_removes_nothing(self):
+        merged = self.worktree('merged', '--detach')
+        rows = self.reap(apply=False)
+        self.assertEqual(rows['merged']['action'], 'remove')
+        self.assertTrue(merged.exists())
+
+    def test_dirty_worktree_stays(self):
+        dirty = self.worktree('dirty', '--detach')
+        write(dirty / 'README', b'changed\n')
+        rows = self.reap()
+        self.assertEqual((rows['dirty']['action'], rows['dirty']['reason']), ('keep', 'tracked changes'))
+        self.assertTrue(dirty.exists())
+
+    def test_worktree_in_use_stays(self):
+        used = self.worktree('used', '--detach')
+        rows = self.reap(live=[used])
+        self.assertEqual(rows['used']['action'], 'keep')
+        self.assertIn('live process', rows['used']['reason'])
+        self.assertTrue(used.exists())
+
+    def test_worktree_a_live_registered_run_names_stays(self):
+        used = self.worktree('used', '--detach')
+        with patch('builtins.print'):
+            [row] = J.reap_worktrees(self.root, apply=True, main_ref='main', now=self.now,
+                                     proc=str(self.proc), registered=[str(used / '_build/x')])
+        self.assertIn('live registered run', row['reason'])
+        self.assertTrue(used.exists())
+
+    def test_recently_changed_worktree_stays(self):
+        recent = self.worktree('recent', '--detach')
+        rows = self.reap(now=time.time() + HOUR)
+        self.assertEqual(rows['recent']['action'], 'keep')
+        self.assertTrue(recent.exists())
+
+    def test_unmerged_branch_stays_and_bench_branch_goes(self):
+        lane = self.worktree('lane', '-b', 'orch/lane', commit=True)
+        bench = self.worktree('bench-abc', '-b', 'bench/abc', commit=True)
+        rows = self.reap()
+        self.assertEqual((rows['lane']['action'], rows['lane']['reason']), ('keep', 'unmerged branch'))
+        self.assertTrue(lane.exists())
+        self.assertEqual(rows['bench-abc']['action'], 'remove')
+        self.assertFalse(bench.exists())
+        self.assertTrue(self.git('rev-parse', '--verify', 'bench/abc'))
+
+    def test_detached_head_on_no_ref_stays(self):
+        loose = self.worktree('loose', '--detach', commit=True)
+        rows = self.reap()
+        self.assertEqual(rows['loose']['reason'], 'detached head on no ref')
+        self.assertTrue(loose.exists())
+
+    def test_protected_and_main_named_worktrees_stay(self):
+        tools = self.worktree('ops-tools', '--detach')
+        named = self.worktree('heldout-gate', '--detach')
+        write(self.root / 'set.json', b'{"cache": "/r/.worktrees/heldout-gate/_build/c"}\n')
+        self.git('add', 'set.json')
+        self.git('-c', 'user.name=t', '-c', 'user.email=t@t', 'commit', '-q', '-m', 'set')
+        rows = self.reap()
+        self.assertEqual(rows['ops-tools']['reason'], 'protected')
+        self.assertEqual(rows['heldout-gate']['reason'], 'named by a tracked file on main')
+        self.assertTrue(tools.exists() and named.exists())
+
+    def test_creator_removes_its_branch_worktree_at_the_end_of_its_run(self):
+        column = self.worktree('heldout-free-x', '-b', 'orch/heldout-free-x', commit=True)
+        with patch.object(J, 'registry_paths', return_value=[]), patch('builtins.print'):
+            status = J.main(['--root', str(self.root), 'remove-worktree', str(column)])
+        self.assertEqual(status, 0)
+        self.assertFalse(column.exists())
+        self.assertTrue(self.git('rev-parse', '--verify', 'orch/heldout-free-x'))
+
+    def test_creator_keeps_a_dirty_worktree(self):
+        column = self.worktree('heldout-free-y', '--detach')
+        write(column / 'README', b'changed\n')
+        with patch.object(J, 'registry_paths', return_value=[]), patch('builtins.print'):
+            status = J.main(['--root', str(self.root), 'remove-worktree', str(column)])
+        self.assertEqual(status, 1)
+        self.assertTrue(column.exists())
+
+    def test_low_disk_hook_does_nothing_with_room(self):
+        merged = self.worktree('merged', '--detach')
+        self.assertEqual(J.reap_when_low(self.root, threshold=0), [])
+        self.assertTrue(merged.exists())
+
+
+DAY = 24 * HOUR
+
+
+class WorktreeRescue(WorktreeReaper):
+    """Worktrees idle over 7 days go losslessly: their work is pushed to origin first."""
+
+    def setUp(self):
+        super().setUp()
+        self.origin = Path(self.temp.name) / 'origin.git'
+        self.git('init', '-q', '--bare', str(self.origin), cwd=self.temp.name)
+        self.git('remote', 'add', 'origin', str(self.origin))
+        self.git('push', '-q', 'origin', 'main')
+        self.stale = time.time() + 8 * DAY
+
+    def on_origin(self, ref):
+        result = subprocess.run(['git', '--git-dir', str(self.origin), 'rev-parse', '--verify', '-q',
+                                 ref], capture_output=True, text=True)
+        return result.stdout.strip() if result.returncode == 0 else None
+
+    def show(self, ref, path):
+        return subprocess.run(['git', '--git-dir', str(self.origin), 'show', f'{ref}:{path}'],
+                              capture_output=True, text=True, check=True).stdout
+
+    def mapping(self):
+        return (self.root / '_build/janitor/rescued-worktrees.tsv').read_text()
+
+    def test_pushed_unmerged_branch_checkout_goes_and_the_branch_stays_on_origin(self):
+        lane = self.worktree('lane', '-b', 'orch/lane', commit=True)
+        head = self.git('rev-parse', 'HEAD', cwd=lane)
+        self.git('push', '-q', 'origin', 'orch/lane', cwd=lane)
+        rows = self.reap(now=self.stale)
+        self.assertEqual(rows['lane']['action'], 'remove', rows['lane'])
+        self.assertFalse(lane.exists())
+        self.assertEqual(self.on_origin('refs/heads/orch/lane'), head)
+
+    def test_unpushed_branch_is_pushed_then_removed(self):
+        lane = self.worktree('lane', '-b', 'orch/lane', commit=True)
+        head = self.git('rev-parse', 'HEAD', cwd=lane)
+        rows = self.reap(now=self.stale)
+        self.assertEqual(rows['lane']['action'], 'remove', rows['lane'])
+        self.assertEqual(self.on_origin('refs/heads/orch/lane'), head)
+        self.assertFalse(lane.exists())
+        self.assertIn(f'\torch/lane\t{head}\tpushed\n', self.mapping())
+
+    def test_reflog_rewrite_by_gc_does_not_count_as_activity(self):
+        lane = self.worktree('lane', '-b', 'orch/lane', commit=True)
+        reflog = Path(self.git('rev-parse', '--git-path', 'logs/HEAD', cwd=lane))
+        if not reflog.is_absolute():
+            reflog = lane / reflog
+        os.utime(reflog, (self.stale - HOUR, self.stale - HOUR))
+        rows = self.reap(now=self.stale)
+        self.assertEqual(rows['lane']['action'], 'remove', rows['lane'])
+
+    def test_dirty_worktree_in_an_unfinished_revert_is_rescued(self):
+        loose = self.worktree('loose', '--detach', commit=True)
+        write(loose / 'loose', b'edited\n')
+        self.git('-c', 'user.name=t', '-c', 'user.email=t@t', 'commit', '-qam', 'edit', cwd=loose)
+        subprocess.run(['git', 'revert', '--no-commit', 'HEAD'], cwd=loose, capture_output=True)
+        write(loose / 'loose', b'conflict work\n')
+        branch = 'rescue/loose-' + time.strftime('%Y%m%d', time.gmtime(self.stale))
+        rows = self.reap(now=self.stale)
+        self.assertEqual(rows['loose']['action'], 'remove', rows['loose'])
+        self.assertEqual(self.show(branch, 'loose'), 'conflict work\n')
+        self.assertFalse(loose.exists())
+
+    def test_tracked_closure_record_moved_to_the_store_does_not_block_removal(self):
+        merged = self.worktree('merged', '-b', 'lane/merged')
+        write(self.root / 'cert/0300/CLOSURE.json', b'{"case": "0300", "verdict": "CLOSED"}\n')
+        self.git('add', 'cert')
+        self.git('-c', 'user.name=t', '-c', 'user.email=t@t', 'commit', '-q', '-m', 'record')
+        self.git('merge', '-q', '--ff-only', 'main', cwd=merged)
+        rows = self.reap()
+        self.assertEqual(rows['merged']['action'], 'remove', rows['merged'])
+        self.assertFalse(merged.exists())
+        self.assertTrue(list((self.root / '_build/closures').rglob('CLOSURE.json')))
+
+    def test_branch_ahead_of_origin_is_pushed_then_removed(self):
+        lane = self.worktree('lane', '-b', 'orch/lane', commit=True)
+        self.git('push', '-q', 'origin', 'orch/lane', cwd=lane)
+        write(lane / 'more', b'more\n')
+        self.git('add', 'more', cwd=lane)
+        self.git('-c', 'user.name=t', '-c', 'user.email=t@t', 'commit', '-q', '-m', 'more', cwd=lane)
+        head = self.git('rev-parse', 'HEAD', cwd=lane)
+        rows = self.reap(now=self.stale)
+        self.assertEqual(rows['lane']['action'], 'remove', rows['lane'])
+        self.assertEqual(self.on_origin('refs/heads/orch/lane'), head)
+        self.assertFalse(lane.exists())
+
+    def test_branch_diverged_from_origin_stays(self):
+        lane = self.worktree('lane', '-b', 'orch/lane', commit=True)
+        self.git('push', '-q', 'origin', 'HEAD~1:refs/heads/orch/lane', cwd=lane)
+        other = self.worktree('other', '--detach', commit=True)
+        self.git('push', '-q', '-f', 'origin', 'HEAD:refs/heads/orch/lane', cwd=other)
+        rows = self.reap(now=self.stale)
+        self.assertEqual(rows['lane']['action'], 'keep', rows['lane'])
+        self.assertIn('push', rows['lane']['reason'])
+        self.assertTrue(lane.exists())
+
+    def test_dirty_worktree_changes_are_on_the_pushed_rescue_branch_before_removal(self):
+        dirty = self.worktree('dirty', '-b', 'orch/dirty', commit=True)
+        head = self.git('rev-parse', 'HEAD', cwd=dirty)
+        write(dirty / 'README', b'changed\n')
+        write(dirty / 'notes/new.txt', b'untracked work\n')
+        write(dirty / '_build/ignored', b'build output\n')
+        branch = 'rescue/dirty-' + time.strftime('%Y%m%d', time.gmtime(self.stale))
+        seen = []
+        drop = J.drop_checkout
+
+        def check_then_drop(root, path):
+            seen.append((self.show(branch, 'README'), self.show(branch, 'notes/new.txt'),
+                         self.on_origin(branch + '~1')))
+            return drop(root, path)
+
+        with patch.object(J, 'drop_checkout', side_effect=check_then_drop):
+            rows = self.reap(now=self.stale)
+        self.assertEqual(rows['dirty']['action'], 'remove', rows['dirty'])
+        self.assertEqual(seen, [('changed\n', 'untracked work\n', head)])
+        self.assertFalse(dirty.exists())
+        self.assertEqual(self.on_origin('refs/heads/orch/dirty'), head)
+        self.assertIn(f'{dirty}\torch/dirty\t{head}\t{branch}\t', self.mapping())
+
+    def test_dirty_worktree_idle_under_7_days_stays(self):
+        dirty = self.worktree('dirty', '--detach')
+        write(dirty / 'README', b'changed\n')
+        rows = self.reap(now=time.time() + 6 * DAY)
+        self.assertEqual((rows['dirty']['action'], rows['dirty']['reason']), ('keep', 'tracked changes'))
+        self.assertTrue(dirty.exists())
+
+    def test_untracked_files_alone_are_rescued(self):
+        loose = self.worktree('loose', '--detach')
+        write(loose / 'scratch.v', b'Lemma x : True.\n')
+        branch = 'rescue/loose-' + time.strftime('%Y%m%d', time.gmtime(self.stale))
+        rows = self.reap(now=self.stale)
+        self.assertEqual(rows['loose']['action'], 'remove', rows['loose'])
+        self.assertEqual(self.show(branch, 'scratch.v'), 'Lemma x : True.\n')
+        self.assertFalse(loose.exists())
+
+    def test_detached_head_on_no_ref_gets_a_pushed_rescue_branch(self):
+        loose = self.worktree('loose', '--detach', commit=True)
+        head = self.git('rev-parse', 'HEAD', cwd=loose)
+        branch = 'rescue/loose-' + time.strftime('%Y%m%d', time.gmtime(self.stale))
+        rows = self.reap(now=self.stale)
+        self.assertEqual(rows['loose']['action'], 'remove', rows['loose'])
+        self.assertEqual(self.on_origin('refs/heads/' + branch), head)
+        self.assertFalse(loose.exists())
+        self.assertIn(f'\t{branch}\t{head}\t', self.mapping())
+
+    def test_report_only_rescues_nothing(self):
+        lane = self.worktree('lane', '-b', 'orch/lane', commit=True)
+        write(lane / 'README', b'changed\n')
+        rows = self.reap(now=self.stale, apply=False)
+        self.assertEqual(rows['lane']['action'], 'remove')
+        self.assertEqual(rows['lane']['rescue'], 'commit')
+        self.assertTrue(lane.exists())
+        self.assertIsNone(self.on_origin('refs/heads/orch/lane'))
+
+    def test_protected_and_in_use_stale_worktrees_stay(self):
+        tools = self.worktree('ops-tools', '-b', 'orch/tools', commit=True)
+        used = self.worktree('used', '-b', 'orch/used', commit=True)
+        rows = self.reap(live=[used], now=self.stale)
+        self.assertEqual(rows['ops-tools']['reason'], 'protected')
+        self.assertIn('live process', rows['used']['reason'])
+        self.assertTrue(tools.exists() and used.exists())
+        self.assertIsNone(self.on_origin('refs/heads/orch/used'))
 
 
 if __name__ == '__main__':

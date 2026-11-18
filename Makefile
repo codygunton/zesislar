@@ -506,10 +506,12 @@ janitor:
 janitor-apply:
 	$(JANITOR) --apply
 
-# Installs the units and reloads systemd. It does not enable or start the timer.
+# Installs the units and reloads systemd. It does not enable or start the timer. The unit runs this
+# checkout's janitor: install it from a checkout that follows main (.worktrees/ops-tools).
 install-janitor:
 	mkdir -p "$(SYSTEMD_USER_DIR)"
-	sed -e 's|@ROOT@|$(JANITOR_ROOT)|g' -e "s|@PYTHON@|$$(command -v $(PYTHON))|g" \
+	sed -e 's|@ROOT@|$(JANITOR_ROOT)|g' -e 's|@TOOLS@|$(CURDIR)|g' \
+	  -e "s|@PYTHON@|$$(command -v $(PYTHON))|g" \
 	  tools/systemd/zesu-build-janitor.service > "$(SYSTEMD_USER_DIR)/zesu-build-janitor.service"
 	cp tools/systemd/zesu-build-janitor.timer "$(SYSTEMD_USER_DIR)/zesu-build-janitor.timer"
 	systemctl --user daemon-reload

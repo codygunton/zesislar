@@ -1,5 +1,6 @@
 """Check the merge cleanup script against a temporary repository and build tree."""
 
+import gzip
 import json
 import os
 from pathlib import Path
@@ -172,6 +173,79 @@ class CleanupAfterMerge(unittest.TestCase):
                          '{"case": "0300", "verdict": "CLOSED"}\n')
         self.assertTrue((store / '0514/a-sweep1/NOT-CLOSED.json').exists())
         self.assertIn('saved 2 closure record(s) from ' + str(tied), result.stdout)
+
+    def bench_run(self, path, branch):
+        """A tools/bench run dir as bench.py leaves it, with a 2 MiB+ coqc log."""
+        block = path / 'runs/0300'
+        block.mkdir(parents=True)
+        (path / 'ITEM.json').write_text(json.dumps({'branch': branch}))
+        (path / 'RUN.json').write_text(json.dumps({'schema': 'bench-run/1', 'set': 'BENCH-v1',
+                                                   'members': []}))
+        (path / 'REPORT.md').write_text('# BENCH-v1 run\n')
+        (path / 'results.jsonl').write_text('{"key": "decodeParentHeader/0300"}\n')
+        (block / 'measure.json').write_text('{"returncode": 1}\n')
+        (block / 'NOT-CLOSED.json').write_text('{"case": "0300", "verdict": "NOT-CLOSED"}\n')
+        (block / 'Goal01.v').write_text('Lemma g : True.\n')
+        (block / 'measure.json.log').write_text('@@T kind=lia site=premise ms=1 ok=0\n' * 60000)
+        (block / 'Caller0300.glob').write_text('glob\n')
+        (block / 'Caller0300.vo').write_bytes(b'object')
+        return block
+
+    def test_cleanup_of_a_merged_branch_keeps_a_bench_runs_report_files(self):
+        # 2026-11-18: cleanup of orch/finish-gate deleted the BENCH-v1 base run v1-b5f1564a8-fg4
+        # (its ITEM.json named the branch) and the lane's gate cycle dirs.
+        self.merge()
+        bench = self.root / '_build/agents/bench/v1-fg4'
+        block = self.bench_run(bench, 'w/feature')
+        nested = self.bench_run(self.root / '_build/agents/lane/bench/rf-1', 'w/feature')
+        (self.root / '_build/agents/lane/bench/ITEM.json').write_text(
+            json.dumps({'branch': 'w/feature'}))
+        gates = self.item('lane/gates-g1', 'w/feature')
+        (gates / 'gates.out').write_text('check-iris rc=0\n')
+        (gates / 'sweep-table.md').write_text('| block | delta |\n')
+        (gates / 'closedcol.log').write_text('closed 39 of 39\n')
+        (gates / 'check-iris.log').write_text('x' * (2 << 20))
+        tied = self.item('a/run1', 'w/feature')
+        dry = self.cleanup('--dry-run', 'w/feature')
+        self.assertIn(f'would keep BENCH run {bench} (reference data)', dry.stdout)
+        self.assertIn(f'would keep gate cycle dir {gates} (reference data)', dry.stdout)
+        result = self.cleanup('w/feature')
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertFalse(tied.exists())
+        for run, runs in ((bench, block), (nested.parent.parent, nested)):
+            for name in ('RUN.json', 'REPORT.md', 'results.jsonl', 'ITEM.json'):
+                self.assertTrue((run / name).is_file(), run / name)
+            for name in ('measure.json', 'NOT-CLOSED.json', 'Goal01.v'):
+                self.assertTrue((runs / name).is_file(), runs / name)
+            self.assertFalse((runs / 'Caller0300.vo').exists())
+            self.assertFalse((runs / 'Caller0300.glob').exists())
+            self.assertFalse((runs / 'measure.json.log').exists())
+            with gzip.open(runs / 'measure.json.log.gz', 'rt') as stream:
+                self.assertEqual(stream.read(), '@@T kind=lia site=premise ms=1 ok=0\n' * 60000)
+        self.assertIn(f'kept BENCH run {bench}: reference data', result.stdout)
+        for name in ('gates.out', 'sweep-table.md', 'closedcol.log', 'ITEM.json'):
+            self.assertTrue((gates / name).is_file(), name)
+        self.assertFalse((gates / 'check-iris.log').exists())
+        self.assertFalse((gates / 'Module.vo').exists())
+        self.assertFalse((self.root / '_build/closures').exists())
+        log = (self.root / '_build/janitor/janitor.log').read_text()
+        self.assertIn(f'kept {bench} (BENCH run; shrank', log)
+        self.assertIn(f'kept {gates} (gate cycle dir; shrank', log)
+
+    def test_bench_run_in_the_removed_worktree_moves_to_the_bench_dir(self):
+        self.merge()
+        run = self.worktree / '_build/agents/bench/v1-wt'
+        block = self.bench_run(run, 'w/feature')
+        result = self.cleanup('w/feature')
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertFalse(self.worktree.exists())
+        kept = self.root / '_build/agents/bench/v1-wt'
+        self.assertIn(f'kept BENCH run {run}: moved to {kept}', result.stdout)
+        self.assertTrue((kept / 'REPORT.md').is_file())
+        self.assertTrue((kept / 'runs/0300/NOT-CLOSED.json').is_file())
+        self.assertTrue((kept / 'runs/0300/measure.json.log.gz').is_file())
+        self.assertFalse((kept / 'runs/0300/Caller0300.vo').exists())
+        self.assertFalse(block.exists())
 
     def test_cleanup_never_deletes_the_store(self):
         self.merge()

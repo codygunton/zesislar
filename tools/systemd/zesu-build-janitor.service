@@ -1,4 +1,7 @@
-# Installed by `make install-janitor`, which fills in @ROOT@ and @PYTHON@.
+# Installed by `make install-janitor`, which fills in @ROOT@, @TOOLS@ and @PYTHON@.
+# It runs @TOOLS@'s janitor: install it from a checkout that follows main (.worktrees/ops-tools; the
+# run watchdog moves it to origin/main). Until 2026-11-18 it ran the base checkout's tools, which
+# never move: the daily janitor was 763 lines behind main's.
 # The scope caps the janitor's scan at 12 GiB.
 [Unit]
 Description=Zesislar build directory janitor (tools/build_janitor.py --apply)
@@ -8,4 +11,4 @@ Type=oneshot
 WorkingDirectory=@ROOT@
 Nice=19
 IOSchedulingClass=idle
-ExecStart=/usr/bin/systemd-run --user --scope --quiet --expand-environment=no -p MemoryMax=12G -p MemorySwapMax=0 @PYTHON@ @ROOT@/tools/build_janitor.py --apply
+ExecStart=/usr/bin/systemd-run --user --scope --quiet --expand-environment=no -p MemoryMax=12G -p MemorySwapMax=0 @PYTHON@ -B @TOOLS@/tools/build_janitor.py --apply

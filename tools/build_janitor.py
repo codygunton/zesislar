@@ -7,8 +7,24 @@ and deletes nothing. `--apply` also deletes:
   * run dirs (`_build/agents/<agent>/<item>`) that are sealed (`SEALED.json`)
     or have no change for 24 h shrink to their non-compiled files under 1 MiB,
     plus the files that a `KEEP.json` names;
+  * BENCH runs (a dir with a tools/bench RUN.json and a REPORT*.md, or any run dir under
+    `_build/agents/bench/`) are reference data: shrinking drops their build products and
+    gzips their large files in place (measure.json.log.gz, run.log.gz; bench.py report reads
+    both forms), and nothing ever deletes them. BUDGET.json reports them against
+    BENCH_BUDGET_BYTES. Before a worktree build or checkout goes, its BENCH runs move to
+    `_build/agents/bench/`;
   * worktree `_build` dirs with no change for 48 h (the checkout stays);
-  * banks of older main commits with no change for 24 h.
+  * banks of older main commits with no change for 24 h;
+  * whole worktrees under `.worktrees/` (`git worktree remove`, never --force) that are
+    clean (no tracked change), not in use (live process, admission receipt, or live
+    registered run naming a path in them), unchanged for 6 h, and whose head is in
+    origin/main, on a measurement branch (bench/*, orch/heldout-*; the branch stays) or
+    a detached head that a branch or remote ref holds. A checkout idle over 7 days goes
+    losslessly whatever its head: its unmerged branch is pushed to origin (no force), a
+    detached head on no ref and any uncommitted work (tracked changes, untracked non-ignored
+    files) go to a pushed `rescue/<name>-<date>` branch (`_build/janitor/rescued-worktrees.tsv`).
+    Each removal goes to `_build/janitor/worktrees.log`. The run watchdog does the same when
+    free disk is under 50 GB (reap_when_low).
 
 The janitor never touches `_build/agents/orch/`, a path that a live process
 uses (cwd, executable, command line, environment, open or mapped files), a
@@ -30,10 +46,16 @@ Subcommands for other tools:
   admit                   exit 3 when this agent is over its budget (no scan)
   in-use PATH...          exit 0 when a live process uses one of the paths, or the
                           admission ledger names a release receipt under one
-  branch-items BRANCH     list (or --delete) the run dirs tied to a branch
+  branch-items BRANCH     list (or --delete) the run dirs tied to a branch; BENCH runs
+                          and gate cycle dirs (`gates-*`) shrink instead of going
   rescue-goals PATH...    move the saved goals under each PATH into the store
+  worktrees [--json F]    report every worktree's verdict (global --apply removes)
+  remove-worktree [--wait] PATH...
+                          a creator's end-of-run removal (bench.py, gate and
+                          closed-set scripts): rescue goals, then git worktree remove
 """
 
+from concurrent.futures import ThreadPoolExecutor
 import argparse
 import array
 import bisect
@@ -41,6 +63,7 @@ import contextlib
 import errno
 import fcntl
 import gzip
+import io
 import json
 import os
 from pathlib import Path
@@ -59,6 +82,9 @@ GB = 10 ** 9
 AGENT_BUDGET_BYTES = 80 * GB
 TOTAL_BUDGET_BYTES = 200 * GB
 CACHE_BUDGET_BYTES = 5 * GB
+# BENCH runs are kept, shrunk, never deleted (2026-11-18: merge cleanup of orch/finish-gate
+# deleted the BENCH-v1 base run v1-b5f1564a8-fg4). BUDGET.json reports their size against this.
+BENCH_BUDGET_BYTES = 10 * GB
 CACHE_ROOT = Path.home() / '.cache/zesislar'
 RUN_IDLE_SECONDS = 24 * 3600
 WORKTREE_IDLE_SECONDS = 48 * 3600
@@ -66,6 +92,9 @@ BANK_IDLE_SECONDS = 24 * 3600
 SMALL_BYTES = 1 << 20
 MANIFEST_MAX_BYTES = 256 << 20
 PROTECTED_AGENTS = ('orch',)
+BENCH_AGENT = 'bench'  # every run dir under _build/agents/bench/ is a BENCH run
+BENCH_SCHEMA = 'bench-run/'  # RUN.json schema that tools/bench/bench.py writes
+GATE_PREFIX = 'gates-'  # a lane's gate cycle dir _build/agents/<lane>/gates-<tag>/
 COMPILED = ('.vo', '.vok', '.vos', '.glob', '.aux', '.cmi', '.cmo', '.cmx', '.cmxs', '.cma',
             '.cmxa', '.cmt', '.cmti', '.o', '.a', '.so', '.exe', '.bc', '.lia.cache',
             '.nia.cache', '.d', '.csexp', '.db', '-db')
@@ -107,8 +136,50 @@ def extents(descriptor):
         start = logical + length
 
 
-def compiled_or_large(name, size):
-    return size >= SMALL_BYTES or name.endswith(COMPILED)
+def shrink_action(name, size, bench=False):
+    """What shrinking does to one file: None (keep), 'delete', or 'compress' (gzip in place). A
+    BENCH run loses only its build products; its records (*.json, *.md) stay as they are and its
+    other large files (the logs) are compressed."""
+    if name.endswith(COMPILED):
+        return 'delete'
+    if size < SMALL_BYTES or (bench and name.endswith(('.gz', '.json', '.md'))):
+        return None
+    return 'compress' if bench else 'delete'
+
+
+def is_bench_run(directory, names):
+    """True when DIRECTORY (holding NAMES) is a tools/bench run: RUN.json of schema bench-run/*
+    and a REPORT*.md."""
+    if 'RUN.json' not in names or not any(name.startswith('REPORT') and name.endswith('.md')
+                                          for name in names):
+        return False
+    try:
+        with open(os.path.join(directory, 'RUN.json'), 'rb') as stream:
+            if os.fstat(stream.fileno()).st_size > MANIFEST_MAX_BYTES:
+                return False
+            value = json.load(stream)
+    except (OSError, ValueError):
+        return False
+    return isinstance(value, dict) and str(value.get('schema', '')).startswith(BENCH_SCHEMA)
+
+
+def bench_unit(unit):
+    """A run dir directly under _build/agents/bench/ is a BENCH run whatever it holds."""
+    return unit.get('agent') == BENCH_AGENT and unit.get('item') is not None
+
+
+def bench_runs(path, whole=False):
+    """The outermost BENCH run dirs at or under PATH (PATH itself when WHOLE)."""
+    if whole:
+        return [str(path)]
+    found = []
+    for directory, subdirectories, files in os.walk(path):
+        if is_bench_run(directory, files):
+            found.append(directory)
+            subdirectories[:] = []
+        else:
+            subdirectories[:] = sorted(d for d in subdirectories if d not in goal_store.SKIP_DIRS)
+    return found
 
 
 def cache_usage(root):
@@ -138,14 +209,15 @@ def survey(unit):
     """Walk one run dir (or a list of loose files) without following links.
 
     Return its newest change time, its shrinkable files, its symbolic link
-    targets, its seal, KEEP.json and bank markers, and its extent usage:
-    bytes in unshared extents plus the shared (or hard-linked) extents.
+    targets, its seal, KEEP.json and bank markers, its BENCH runs, and its extent
+    usage: bytes in unshared extents plus the shared (or hard-linked) extents.
     """
     path, measure = unit['path'], unit.get('measure', True)
+    whole = bench_unit(unit)
     result = {key: unit[key] for key in ('agent', 'item', 'worktree', 'head') if key in unit}
     result.update(path=path, newest=0.0, files=0, bytes=0, shrink_files=0, shrink_bytes=0,
                   unique=0, json_unshared=0, links=[], sealed=False, keep_files=[], banks=[],
-                  errors=0)
+                  errors=0, bench=whole, bench_runs=[path] if whole else [], bench_bytes=0)
     shared = {}
     pending = []
     for entry in unit.get('files') or [path]:
@@ -154,14 +226,14 @@ def survey(unit):
         except OSError:
             result['errors'] += 1
             continue
-        pending.append((entry, info, 0))
+        pending.append((entry, info, 0, whole))
     if not unit.get('files') and pending and stat.S_ISDIR(pending[0][1].st_mode):
         names = set()
         with contextlib.suppress(OSError):
             names = set(os.listdir(path))
         result['sealed'] = any(name in names for name in SEALED)
     while pending:
-        entry, info, depth = pending.pop()
+        entry, info, depth, bench = pending.pop()
         result['newest'] = max(result['newest'], info.st_mtime, info.st_ctime)
         mode = info.st_mode
         if stat.S_ISDIR(mode):
@@ -171,6 +243,9 @@ def survey(unit):
                 result['errors'] += 1
                 continue
             names = {child.name for child in children}
+            if not bench and is_bench_run(entry, names):
+                bench = True
+                result['bench_runs'].append(entry)
             if 'KEEP.json' in names:
                 result['keep_files'].append(os.path.join(entry, 'KEEP.json'))
             if 'bank' in names and depth <= 2:
@@ -179,7 +254,8 @@ def survey(unit):
                     result['banks'].append([entry, head])
             for child in children:
                 try:
-                    pending.append((child.path, child.stat(follow_symlinks=False), depth + 1))
+                    pending.append((child.path, child.stat(follow_symlinks=False), depth + 1,
+                                    bench))
                 except OSError:
                     result['errors'] += 1
             continue
@@ -193,9 +269,11 @@ def survey(unit):
         result['files'] += 1
         result['bytes'] += info.st_size
         name = os.path.basename(entry)
-        if compiled_or_large(name, info.st_size):
+        if shrink_action(name, info.st_size, bench):
             result['shrink_files'] += 1
             result['shrink_bytes'] += info.st_size
+        if bench:
+            result['bench_bytes'] += info.st_blocks * 512
         if measure and info.st_blocks:
             measure_file(entry, info, result, shared)
     if shared:
@@ -545,6 +623,7 @@ class Janitor:
                              'protected': agent in self.protected_agents,
                              'unshared_large_json_bytes': sum(r['json_unshared'] for r in results)}
         total = total_unique + union_bytes(total_shared)
+        bench_bytes = sum(result['bench_bytes'] for result in runs)
         goals = goal_store.store_bytes(self.root)
         caches = cache_usage(self.cache_root)
         return {'schema': 'zesu.build-budget.v1',
@@ -562,6 +641,12 @@ class Janitor:
                            'budget_bytes': CACHE_BUDGET_BYTES,
                            'over': caches['bytes'] > CACHE_BUDGET_BYTES,
                            'prune': 'tools/prune_caches.py', 'dirs': caches['dirs']},
+                'bench': {'path': str(self.agents / BENCH_AGENT),
+                          'runs': sum(len(result['bench_runs']) for result in runs),
+                          'bytes': bench_bytes, 'budget_bytes': BENCH_BUDGET_BYTES,
+                          'over': bench_bytes > BENCH_BUDGET_BYTES,
+                          'policy': 'reference data: shrunk (logs gzip\'d), never deleted; '
+                                    'prune old runs by hand'},
                 'agents': report}
 
     # Plan -------------------------------------------------------------------
@@ -627,7 +712,8 @@ class Janitor:
         rows = []
         for key, result in sorted(items.items()):
             row = {'kind': 'run', 'path': result['path'], 'check': result['path'],
-                   'agent': key[0], 'bytes': result['bytes'], 'files': result['files']}
+                   'agent': key[0], 'bytes': result['bytes'], 'files': result['files'],
+                   'bench': result['bench'], 'bench_runs': len(result['bench_runs'])}
             if key in reasons:
                 row.update(action='keep', reason=reasons[key])
             elif result['keep_files'] and keep_paths(result) is None:
@@ -747,7 +833,7 @@ class Janitor:
         for row in targets:
             try:
                 if row['kind'] == 'run':
-                    files, size, failed = shrink(row['path'], log)
+                    files, size, failed = shrink(row['path'], log, row.get('bench', False))
                     touched.add(row['agent'])
                 else:
                     rescue_goals(self.root, row['path'], 'build janitor: ' + row['reason'], log)
@@ -804,24 +890,32 @@ def is_kept(path, kept):
 
 
 def shrink_candidates(result):
+    """Yield (path, size, action) for each file that shrinking deletes or (in a BENCH run)
+    compresses; RESULT['bench'] marks the whole dir as one BENCH run."""
     kept = keep_paths(result) if result['keep_files'] else []
     if kept is None:
         return
-    for directory, subdirectories, files in os.walk(result['path']):
+    root = result['path']
+    inside = {}
+    for directory, subdirectories, files in os.walk(root):
+        bench = result.get('bench', False) if directory == root else inside[os.path.dirname(directory)]
+        bench = inside[directory] = bench or is_bench_run(directory, files)
         for name in files:
             path = os.path.join(directory, name)
             try:
                 info = os.lstat(path)
             except OSError:
                 continue
-            if stat.S_ISREG(info.st_mode) and compiled_or_large(name, info.st_size) \
-                    and not is_kept(path, kept):
-                yield path, info.st_size
+            if not stat.S_ISREG(info.st_mode) or is_kept(path, kept):
+                continue
+            action = shrink_action(name, info.st_size, bench)
+            if action:
+                yield path, info.st_size, action
 
 
 def shrink_totals(result):
     files = size = 0
-    for _, length in shrink_candidates(result):
+    for _, length, _ in shrink_candidates(result):
         files += 1
         size += length
     return files, size
@@ -840,22 +934,49 @@ def unlink(path):
             os.chmod(parent, stat.S_IMODE(mode))
 
 
-def shrink(path, log):
+def compress(path):
+    """gzip PATH into PATH.gz (same times) and remove PATH. Return the bytes freed."""
+    info = os.lstat(path)
+    target = path + '.gz'
+    temporary = os.path.join(os.path.dirname(path), '.' + os.path.basename(target) + '.tmp')
+    try:
+        with open(path, 'rb') as source, gzip.open(temporary, 'wb') as sink:
+            shutil.copyfileobj(source, sink, 1 << 20)
+        os.utime(temporary, ns=(info.st_atime_ns, info.st_mtime_ns))
+        os.replace(temporary, target)
+    except BaseException:
+        with contextlib.suppress(OSError):
+            os.unlink(temporary)
+        raise
+    unlink(path)
+    return info.st_size - os.lstat(target).st_size
+
+
+def shrink(path, log, bench=False):
+    """Delete the build products and large files under PATH, except what a KEEP.json names; in a
+    BENCH run (all of PATH when BENCH) gzip large non-compiled files instead. Return
+    (files deleted or compressed, bytes freed, failures)."""
     keep = []
     for directory, subdirectories, files in os.walk(path):
         if 'KEEP.json' in files:
             keep.append(os.path.join(directory, 'KEEP.json'))
     files = size = failed = 0
-    for file, length in shrink_candidates({'path': path, 'keep_files': keep}):
+    for file, length, action in list(shrink_candidates({'path': path, 'keep_files': keep,
+                                                        'bench': bench})):
         try:
-            unlink(file)
+            if action == 'compress':
+                freed = compress(file)
+            else:
+                unlink(file)
+                freed = length
         except OSError as error:
             log.write(f'{time.time():.0f}\tfailed\t{file}\t{length}\t{error}\n')
             failed += 1
             continue
-        log.write(f'{time.time():.0f}\tshrink\t{file}\t{length}\n')
+        log.write(f'{time.time():.0f}\t{action if action == "compress" else "shrink"}\t{file}'
+                  f'\t{length}\n')
         files += 1
-        size += length
+        size += freed
     return files, size, failed
 
 
@@ -901,12 +1022,34 @@ def remove_tree(path, log):
     return files, size, len(failed)
 
 
+def rescue_bench_runs(root, path, reason, log=None):
+    """Shrink each BENCH run under PATH (a worktree build or checkout about to go) and move it to
+    _build/agents/bench/<name> (<name>-<stamp> when taken). Return the new paths."""
+    target_root = Path(root) / '_build/agents' / BENCH_AGENT
+    moved = []
+    for run in bench_runs(path):
+        if os.path.realpath(run).startswith(os.path.realpath(target_root) + os.sep):
+            continue
+        shrink(run, log if log is not None else io.StringIO(), bench=True)
+        target_root.mkdir(parents=True, exist_ok=True)
+        target = target_root / os.path.basename(run)
+        if os.path.lexists(target):
+            target = target_root / f'{os.path.basename(run)}-{time.strftime("%Y%m%dT%H%M%SZ", time.gmtime())}'
+        shutil.move(run, target)
+        if log is not None:
+            log.write(f'{time.time():.0f}\tbench-saved\t{run}\t{target}\t{reason}\n')
+        print(f'kept BENCH run {run}: moved to {target}')
+        moved.append(str(target))
+    return moved
+
+
 def rescue_goals(root, path, reason, log=None):
-    """Move the saved goals and closure records under PATH into their stores; log each one.
-    Return the goal store dir."""
+    """Move the BENCH runs (rescue_bench_runs), saved goals and closure records under PATH into
+    their stores; log each one. Return the goal store dir."""
     def note(line):
         if log is not None:
             log.write(line + '\n')
+    rescue_bench_runs(root, path, reason, log)
     destination, count = goal_store.rescue(root, path, reason=reason, log=note)
     if count:
         print(f'saved {count} goal file(s) from {path} to {destination}')
@@ -917,6 +1060,441 @@ def rescue_goals(root, path, reason, log=None):
     return destination
 
 
+# --- worktree reaping ----------------------------------------------------------
+
+# A checkout under .worktrees/ goes (`git worktree remove`, never --force) when it is clean
+# (no tracked change), no live process or live registered run uses it, nothing in it changed
+# for 6 h, nothing tracked on main names it, and its head is safe to drop: contained in
+# origin/main, on a bench/* branch (the branch stays), or a detached head that a branch or
+# remote ref still holds.
+WORKTREE_REAP_IDLE_SECONDS = 6 * 3600
+# Over 7 days idle, a checkout also goes when its work is put on origin first (no force):
+# an unmerged branch is pushed; a detached head on no ref gets a pushed rescue/<name>-<date>
+# branch; tracked changes and untracked non-ignored files are committed (git add -A) on a
+# new rescue/<name>-<date> branch from HEAD and pushed. Every pushed branch is recorded in
+# _build/janitor/rescued-worktrees.tsv (time, worktree, branch, head, pushed branch, commit, what).
+RESCUE_IDLE_SECONDS = 7 * 24 * 3600
+RESCUE_MAX_FILE_BYTES = 95 * 2**20  # GitHub refuses files over 100 MB: keep such checkouts
+PENDING_HEADS = ('MERGE_HEAD', 'REVERT_HEAD', 'CHERRY_PICK_HEAD', 'REBASE_HEAD')
+REAP_FREE_BYTES = 50 * GB  # the run watchdog reaps when free disk falls below this
+SCRATCH_BRANCHES = ('bench/',)
+# tools/bg and the run watchdog run from ops-tools (run_registry.md); the closed-set column
+# takes early_verdict.py from ev-tools for worktrees older than it.
+PROTECTED_WORKTREES = ('ops-tools', 'ev-tools')
+WORKTREE_NAME = re.compile(r'\.worktrees/([A-Za-z0-9_.+-]+)')
+
+
+def named_worktrees(root, main):
+    """Worktree names that a tracked file at MAIN names (bench sets, harness pins, records)."""
+    if not main:
+        return frozenset()
+    result = git(root, 'grep', '-hoIE', WORKTREE_NAME.pattern, main, '--')
+    return frozenset(WORKTREE_NAME.search(line).group(1) for line in result.stdout.splitlines()
+                     if WORKTREE_NAME.search(line))
+
+
+def list_worktrees(root):
+    """Rows of `git worktree list --porcelain` for checkouts under ROOT/.worktrees."""
+    result = git(root, 'worktree', 'list', '--porcelain')
+    if result.returncode:
+        return []
+    top = os.path.realpath(Path(root) / '.worktrees') + os.sep
+    rows, row = [], None
+    for line in result.stdout.splitlines():
+        if line.startswith('worktree '):
+            row = {'path': line[len('worktree '):], 'head': None, 'branch': None,
+                   'locked': False, 'prunable': False}
+            if os.path.realpath(row['path']).startswith(top):
+                rows.append(row)
+        elif row is None:
+            continue
+        elif line.startswith('HEAD '):
+            row['head'] = line[len('HEAD '):]
+        elif line.startswith('branch '):
+            row['branch'] = line[len('branch '):].removeprefix('refs/heads/')
+        elif line.startswith('locked'):
+            row['locked'] = True
+        elif line.startswith('prunable'):
+            row['prunable'] = True
+    return rows
+
+
+def reflog_time(path):
+    """Time of the last entry in the reflog file PATH, or 0. (The file's mtime is no
+    activity signal: `git gc` reflog expiry rewrites every worktree's reflog.)"""
+    with contextlib.suppress(OSError, ValueError, IndexError):
+        with open(path, 'rb') as stream:
+            stream.seek(max(os.fstat(stream.fileno()).st_size - 4096, 0))
+            line = stream.read().rstrip(b'\n').rsplit(b'\n', 1)[-1]
+        return float(line.split(b'\t', 1)[0].rsplit(b' ', 2)[1])
+    return 0.0
+
+
+def worktree_newest(path):
+    """Newest mtime of the checkout top, its Git admin HEAD, and `_build` two levels deep,
+    and the time of its last reflog entry."""
+    candidates, logged = [path], 0.0
+    with contextlib.suppress(OSError):
+        text = (Path(path) / '.git').read_text()
+        if text.startswith('gitdir: '):
+            admin = Path(path) / text[len('gitdir: '):].strip()
+            # Not the index: `git status` (this survey too) rewrites it.
+            candidates.append(admin / 'HEAD')
+            logged = reflog_time(admin / 'logs/HEAD')
+    build = os.path.join(path, '_build')
+    candidates.append(build)
+    with contextlib.suppress(OSError):
+        for name in os.listdir(build):
+            entry = os.path.join(build, name)
+            candidates.append(entry)
+            if os.path.isdir(entry) and not os.path.islink(entry):
+                with contextlib.suppress(OSError):
+                    candidates += [os.path.join(entry, child) for child in os.listdir(entry)]
+    newest = logged
+    for candidate in candidates:
+        with contextlib.suppress(OSError):
+            newest = max(newest, os.lstat(candidate).st_mtime)
+    return newest
+
+
+def registry_paths(exclude=frozenset()):
+    """Paths that live registered runs name (worktree, run dir, log, command), or None
+    when the registry cannot be read (then nothing is reaped). Runs whose scheduler PID is
+    in EXCLUDE (this process's own run) do not count."""
+    try:
+        import run_registry
+        rows = run_registry.Registry(run_registry.default_store()).read()['runs'].values()
+        paths = []
+        for row in rows:
+            if row['scheduler'].get('pid') in exclude:
+                continue
+            actors = [row['scheduler']] + row.get('jobs', [])
+            if not (any(run_registry.live(a) for a in actors)
+                    or any(not c.get('released') for c in row.get('claims', {}).values())):
+                continue
+            paths += [row[key] for key in ('worktree', 'run_dir', 'log', 'cwd')
+                      if isinstance(row.get(key), str)]
+            paths += [word for word in row.get('command', []) if isinstance(word, str)
+                      and word.startswith('/')]
+        return [os.path.realpath(path) for path in paths]
+    except Exception as error:  # noqa: BLE001 - an unreadable registry keeps every worktree
+        print(f'notice: build janitor: run registry unreadable ({error}); no worktree is reaped',
+              file=sys.stderr)
+        return None
+
+
+def worktree_user(path, live, receipts, registered):
+    """Why PATH is in use, else None."""
+    user = live.user(path)
+    if user:
+        return f'live process {live.owners.get(user, "?")} uses {user}'
+    under = receipts_under(receipts, path)
+    if under:
+        return 'the admission ledger names ' + under[0]
+    prefix = os.path.realpath(path)
+    for named in registered:
+        if named == prefix or named.startswith(prefix + os.sep):
+            return 'a live registered run names ' + named
+    return None
+
+
+def held_by_ref(root, head):
+    """True when a branch or remote ref contains HEAD (dropping the checkout loses no commit)."""
+    result = git(root, 'for-each-ref', '--count=1', '--format=%(refname)', '--contains', head,
+                 'refs/heads', 'refs/remotes')
+    return result.returncode == 0 and bool(result.stdout.strip())
+
+
+def origin_heads(root):
+    """{branch: commit} on origin (one `git ls-remote`), or None when origin is unreachable."""
+    result = git(root, 'ls-remote', '--heads', 'origin')
+    if result.returncode:
+        return None
+    heads = {}
+    for line in result.stdout.splitlines():
+        sha, _, ref = line.partition('\t')
+        heads[ref.removeprefix('refs/heads/')] = sha
+    return heads
+
+
+def changed_paths(path):
+    """(tracked changes, untracked non-ignored files) in the checkout PATH, or None on error."""
+    status = git(path, 'status', '--porcelain=v1', '-z', '--untracked-files=all')
+    if status.returncode:
+        return None
+    tracked, untracked = [], []
+    entries = iter(status.stdout.split('\0'))
+    for entry in entries:
+        if not entry:
+            continue
+        (untracked if entry.startswith('??') else tracked).append(entry[3:])
+        if entry[0] in 'RC':
+            next(entries, None)  # the rename's source path
+    return tracked, untracked
+
+
+def classify_worktree(root, row, main, now, live, receipts, registered,
+                      idle=WORKTREE_REAP_IDLE_SECONDS, named=frozenset(), creator=False,
+                      remote=None):
+    """Fill ROW with the facts and set action 'remove' or 'keep' with a reason. CREATOR (the
+    run that made the checkout removes it at its end) also drops a checkout of a branch.
+    A checkout idle over RESCUE_IDLE_SECONDS (not for a creator) also goes when its work
+    can be pushed to origin first: ROW['rescue'] says how (see rescue_worktree). REMOTE is
+    origin_heads()."""
+    path = row['path']
+    row['name'] = os.path.basename(path)
+    row['newest'] = worktree_newest(path)
+    changes = changed_paths(path)
+    tracked, untracked = changes or ([], [])
+    row['dirty'] = changes is None or bool(tracked)
+    row['untracked'] = len(untracked)
+    sizes = {}
+    for name in tracked + untracked:
+        with contextlib.suppress(OSError):
+            info = os.lstat(os.path.join(path, name))
+            row['newest'] = max(row['newest'], info.st_mtime)
+            sizes[name] = info.st_size
+    row['idle_hours'] = round((now - row['newest']) / 3600, 1)
+    row['merged'] = bool(main and row['head'] and is_ancestor(root, row['head'], main))
+    row['in_use'] = worktree_user(path, live, receipts, registered)
+    row['rescue'] = None
+    if row['merged']:
+        row['kind'] = 'merged'
+    elif row['branch'] and row['branch'].startswith(SCRATCH_BRANCHES):
+        row['kind'] = 'scratch branch'
+    elif row['branch'] is None and row['head'] and held_by_ref(root, row['head']):
+        row['kind'] = 'detached'
+    else:
+        row['kind'] = 'unmerged branch' if row['branch'] else 'detached head on no ref'
+    stale = not creator and now - row['newest'] >= RESCUE_IDLE_SECONDS
+    unpushed = (row['kind'] == 'unmerged branch' and not creator
+                and (remote or {}).get(row['branch']) != row['head'])
+    large = sorted(name for name, size in sizes.items() if size > RESCUE_MAX_FILE_BYTES)
+    if row['name'] in named and not creator:
+        reason = 'named by a tracked file on main'
+    elif row['name'] in PROTECTED_WORKTREES or row['locked']:
+        reason = 'protected' if row['name'] in PROTECTED_WORKTREES else 'locked'
+    elif row['prunable'] or not os.path.isdir(path):
+        reason = 'missing checkout (git worktree prune)'
+    elif changes is None:
+        reason = 'git status failed'
+    elif (row['dirty'] or untracked) and not stale:
+        reason = 'tracked changes' if row['dirty'] else 'untracked files'
+    elif row['in_use']:
+        reason = row['in_use']
+    elif now - row['newest'] < idle:
+        reason = f'changed {row["idle_hours"]} h ago'
+    elif (row['dirty'] or untracked) and large:
+        reason = (f'{len(large)} changed file(s) over {RESCUE_MAX_FILE_BYTES // 2**20} MiB '
+                  f'(origin refuses them), e.g. {large[0]}')
+    elif (row['dirty'] or untracked or row['kind'] == 'detached head on no ref' or unpushed) \
+            and remote is None and stale:
+        reason = 'origin unreachable'
+    elif row['dirty'] or untracked:
+        reason, row['rescue'] = None, 'commit'
+    elif row['kind'] == 'detached head on no ref':
+        reason, row['rescue'] = (None, 'branch') if stale else (row['kind'], None)
+    elif row['kind'] == 'unmerged branch' and not creator:
+        if not stale:
+            reason = row['kind']
+        else:
+            reason, row['rescue'] = None, 'push' if unpushed else None
+    else:
+        reason = None
+    if not reason and row['kind'] == 'unmerged branch' and not row['rescue'] and not creator:
+        row['kind'] = 'unmerged branch on origin'
+    row.update(action='keep' if reason else 'remove',
+               reason=reason or (row['kind'] + (f', rescue: {row["rescue"]}' if row['rescue'] else '')))
+    return row
+
+
+def rescue_name(root, name, now):
+    """A free branch name `rescue/<name>-<YYYYMMDD>` (with -2, -3, ... when taken)."""
+    base = f'rescue/{name}-{time.strftime("%Y%m%d", time.gmtime(now))}'
+    candidate, count = base, 1
+    while commit(root, 'refs/heads/' + candidate) or git(
+            root, 'ls-remote', '--exit-code', '--heads', 'origin', candidate).returncode == 0:
+        count += 1
+        candidate = f'{base}-{count}'
+    return candidate
+
+
+def push(root, commit_id, branch):
+    """Push COMMIT_ID to origin's BRANCH (no force) and confirm origin holds it. Return an
+    error string or None."""
+    result = git(root, 'push', '--quiet', 'origin', f'{commit_id}:refs/heads/{branch}')
+    if result.returncode:
+        return f'push {branch} failed: ' + (result.stderr.strip().splitlines() or ['?'])[-1]
+    check = git(root, 'ls-remote', '--exit-code', 'origin', 'refs/heads/' + branch)
+    if check.returncode or not check.stdout.startswith(commit_id):
+        return f'push {branch}: origin does not hold {commit_id[:12]}'
+    return None
+
+
+def rescue_worktree(root, row, now, mapping):
+    """Put the checkout's work on origin before it is removed. Return an error or None.
+      push:   push the unmerged branch (no force).
+      branch: detached head on no ref: create and push rescue/<name>-<date> at it.
+      commit: tracked changes or untracked files: on a new branch rescue/<name>-<date> from
+              HEAD, `git add -A` and commit everything (nothing discarded), push it; an
+              unmerged branch under it is pushed too.
+    Each pushed branch goes to MAPPING (rescued-worktrees.tsv)."""
+    path, head, kind = row['path'], row['head'], row['rescue']
+    stamp = time.strftime('%Y-%m-%dT%H:%M:%SZ', time.gmtime())
+
+    def record(branch, commit_id, what):
+        mapping.write(f'{stamp}\t{path}\t{row["branch"] or "detached"}\t{head}\t{branch}\t'
+                      f'{commit_id}\t{what}\n')
+        mapping.flush()
+
+    if row['kind'] == 'unmerged branch' and kind in ('push', 'commit'):
+        error = push(root, head, row['branch'])
+        if error:
+            return error
+        record(row['branch'], head, 'pushed')
+    if kind == 'push':
+        return None
+    branch = rescue_name(root, row['name'], now)
+    if kind == 'branch':
+        result = git(root, 'branch', branch, head)
+        if result.returncode:
+            return 'git branch: ' + result.stderr.strip()
+        error = push(root, head, branch)
+        if not error:
+            record(branch, head, 'detached head')
+        return error
+    # Plumbing, not `git switch`: switch refuses during an unfinished revert, cherry-pick or
+    # merge. The commit records which operation was pending (a pending merge commits as one).
+    pending = [f'{name} {commit(path, name)}' for name in PENDING_HEADS if commit(path, name)]
+    identity = ['-c', 'user.name=build janitor', '-c', 'user.email=build-janitor@localhost']
+    steps = [('branch', branch, 'HEAD'), ('symbolic-ref', 'HEAD', 'refs/heads/' + branch),
+             ('add', '-A'),
+             (*identity, 'commit', '-q', '--no-verify', '--allow-empty', '-m',
+              f'rescue: uncommitted work of worktree {row["name"]}\n\n'
+              f'Worktree {path} on {row["branch"] or "detached " + head} was idle '
+              f'{row["idle_hours"]} h; build_janitor committed every change before removing it.'
+              + (f'\nPending operation: {", ".join(pending)}.' if pending else ''))]
+    for step in steps:
+        result = git(path, *step)
+        if result.returncode:
+            return f'git {step[-1] if step[0] == "-c" else step[0]}: ' + result.stderr.strip()
+    rescued = commit(path, 'HEAD')
+    error = push(root, rescued, branch)
+    if not error:
+        record(branch, rescued, 'uncommitted work')
+    return error
+
+
+def drop_checkout(root, path):
+    return git(root, 'worktree', 'remove', path)
+
+
+def remove_worktree(root, row, log, now=None, mapping=None):
+    """Push the checkout's work to origin when ROW['rescue'] says so, rescue goals and closure
+    records, then `git worktree remove` (no --force). Log it."""
+    path = row['path']
+    stamp = time.strftime('%Y-%m-%dT%H:%M:%SZ', time.gmtime())
+    if row.get('rescue'):
+        error = rescue_worktree(root, row, time.time() if now is None else now, mapping)
+        if error:
+            row.update(action='keep', reason='rescue: ' + error)
+            log.write(f'{stamp}\tfailed\t{path}\t{row["branch"] or "detached"}\t{row["head"]}\t'
+                      f'{row["reason"]}\n')
+            return False
+    clean = changed_paths(path) == ([], [])
+    rescue_goals(root, path, 'worktree reaper: ' + row['reason'])
+    if clean:
+        # The stores now hold the tracked goal files and closure records the rescue moved;
+        # put back HEAD's copies so the checkout is clean again for `git worktree remove`.
+        moved = [name for name in (changed_paths(path) or ([], []))[0]
+                 if not os.path.lexists(os.path.join(path, name))]
+        if moved:
+            git(path, 'checkout', 'HEAD', '--', *moved)
+    result = drop_checkout(root, path)
+    if result.returncode:
+        row.update(action='keep', reason='git worktree remove: ' + result.stderr.strip())
+        log.write(f'{stamp}\tfailed\t{path}\t{row["branch"] or "detached"}\t{row["head"]}\t'
+                  f'{row["reason"]}\n')
+        return False
+    log.write(f'{stamp}\tremoved\t{path}\t{row["branch"] or "detached"}\t{row["head"]}\t'
+              f'{row["kind"]}, idle {row["idle_hours"]} h\n')
+    log.flush()
+    print(f'build janitor: removed worktree {path} ({row["kind"]}, idle {row["idle_hours"]} h)')
+    return True
+
+
+def reap_worktrees(root, *, apply, log_dir=None, main_ref='origin/main', now=None, proc='/proc',
+                   idle=WORKTREE_REAP_IDLE_SECONDS, registered=None):
+    """Classify every worktree under ROOT/.worktrees; with APPLY remove the reapable ones.
+    Removals go to LOG_DIR/worktrees.log. Return the rows."""
+    root = Path(root).resolve()
+    log_dir = Path(log_dir) if log_dir else root / '_build/janitor'
+    now = time.time() if now is None else now
+    rows = list_worktrees(root)
+    if not rows:
+        return []
+    if registered is None:
+        registered = registry_paths(ancestors())
+        if registered is None:
+            return []
+    main = commit(root, main_ref)
+    named = named_worktrees(root, main)
+    receipts = ledger_receipts(root)
+    live = LivePaths.scan(root, proc, ancestors())
+    remote = origin_heads(root)
+    with ThreadPoolExecutor(max_workers=8) as pool:
+        rows = list(pool.map(lambda row: classify_worktree(
+            root, row, main, now, live, receipts, registered, idle, named, remote=remote), rows))
+    if apply and any(row['action'] == 'remove' for row in rows):
+        log_dir.mkdir(parents=True, exist_ok=True)
+        live = LivePaths.scan(root, proc, ancestors())
+        with open(log_dir / 'worktrees.log', 'a') as log, \
+                open(log_dir / 'rescued-worktrees.tsv', 'a') as mapping:
+            for row in rows:
+                if row['action'] != 'remove':
+                    continue
+                user = worktree_user(row['path'], live, receipts, registered)
+                if user:
+                    row.update(action='keep', reason=user)
+                elif worktree_newest(row['path']) > row['newest']:
+                    row.update(action='keep', reason='changed during the janitor run')
+                else:
+                    remove_worktree(root, row, log, now, mapping)
+    return rows
+
+
+def ancestors(pid=None, proc='/proc'):
+    """This process and its ancestors: a caller's own cwd never keeps its worktree."""
+    found, pid = set(), pid or os.getpid()
+    while pid and pid not in found:
+        found.add(pid)
+        try:
+            with open(f'{proc}/{pid}/stat') as stream:
+                pid = int(stream.read().rsplit(')', 1)[1].split()[1])
+        except (OSError, ValueError, IndexError):
+            break
+    return found
+
+
+def reap_when_low(root=None, threshold=REAP_FREE_BYTES):
+    """The run watchdog's hook: reap worktrees when free disk is under THRESHOLD.
+    Return message lines (empty when there is room or another reaper holds the lock)."""
+    root = Path(root) if root else base_root()
+    free = shutil.disk_usage(root).free
+    if free >= threshold:
+        return []
+    log_dir = root / '_build/janitor'
+    try:
+        with exclusive(log_dir, '.worktrees.lock'):
+            rows = reap_worktrees(root, apply=True, log_dir=log_dir)
+    except SystemExit:
+        return []
+    removed = [row for row in rows if row['action'] == 'remove']
+    after = shutil.disk_usage(root).free
+    return [f'worktree reaper: free disk {human(free)} < {human(threshold)}: removed '
+            f'{len(removed)} worktree(s), free now {human(after)} (log {log_dir / "worktrees.log"})']
+
+
 # --- commands ------------------------------------------------------------------
 
 def human(size):
@@ -924,14 +1502,14 @@ def human(size):
 
 
 @contextlib.contextmanager
-def exclusive(log_dir):
+def exclusive(log_dir, name='.lock'):
     log_dir.mkdir(parents=True, exist_ok=True)
-    with open(log_dir / '.lock', 'w') as lock:
+    with open(log_dir / name, 'w') as lock:
         try:
             fcntl.flock(lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
         except OSError as error:
             if error.errno in (errno.EAGAIN, errno.EACCES):
-                raise SystemExit('build janitor: another janitor holds ' + str(log_dir / '.lock'))
+                raise SystemExit('build janitor: another janitor holds ' + str(log_dir / name))
             raise
         yield
 
@@ -958,12 +1536,28 @@ def run(args):
                 again = janitor.survey_runs(touched)
                 runs = [r for r in runs if r['agent'] not in touched] + again
                 budget = janitor.budget(runs)
+        try:
+            with exclusive(janitor.log_dir, '.worktrees.lock'):
+                worktrees = reap_worktrees(janitor.root, apply=args.apply,
+                                           log_dir=janitor.log_dir, main_ref=janitor.main_ref,
+                                           now=janitor.now, proc=janitor.proc)
+        except SystemExit as busy:
+            print(busy, file=sys.stderr)
+            worktrees = []
         janitor.write_json(Path(args.budget) if args.budget else janitor.build / 'BUDGET.json',
                            budget)
         janitor.write_json(janitor.log_dir / f'plan-{janitor.stamp}-{mode}.json',
                            {'mode': mode, 'root': str(janitor.root), 'main': plan['main'],
-                            'freed': freed, 'rows': plan['rows']})
+                            'freed': freed, 'rows': plan['rows'], 'worktrees': worktrees})
         lines = summary(plan, budget, mode, freed)
+        removable = [row for row in worktrees if row['action'] == 'remove']
+        if worktrees:
+            lines.append(f'worktrees: {len(removable)} of {len(worktrees)} '
+                         + ('removed' if args.apply else 'removable')
+                         + f' (clean, idle {WORKTREE_REAP_IDLE_SECONDS // 3600} h, merged or '
+                         f'measurement heads; idle {RESCUE_IDLE_SECONDS // 86400} days: '
+                         f'{sum(bool(row.get("rescue")) for row in removable)} pushed to origin '
+                         f'first; log {janitor.log_dir / "worktrees.log"})')
         if failures:
             lines.append(f'failed: {failures} target(s) could not be fully deleted; '
                          f'see {janitor.log_dir / f"deleted-{janitor.stamp}.tsv.gz"}')
@@ -980,6 +1574,11 @@ def summary(plan, budget, mode, freed):
              f'{human(budget["total_budget_bytes"])}'
              + (' (OVER BUDGET)' if budget['total_over'] else '')]
     store = budget.get('goal_store')
+    bench = budget.get('bench')
+    if bench and bench['over']:
+        lines.append(f'over budget: BENCH runs {bench["path"]} {human(bench["bytes"])} of '
+                     f'{human(bench["budget_bytes"])} (reference data, never deleted by the '
+                     f'janitor; prune old runs by hand)')
     if store and store['over']:
         lines.append(f'over budget: goal store {store["path"]} {human(store["bytes"])} of '
                      f'{human(store["budget_bytes"])}')
@@ -1061,7 +1660,10 @@ def in_use(args):
 
 
 def branch_items(args):
-    """List or delete the `_build/agents/*/<item>` dirs that belong to BRANCH."""
+    """List or delete the `_build/agents/*/<item>` dirs that belong to BRANCH. A BENCH run (or an
+    item holding one) and a gate cycle dir (`gates-*`) are reference data: they shrink instead
+    (BENCH logs gzip'd; a gate dir keeps its small files: gates.out, sweep tables, closed-set
+    results)."""
     root = Path(args.root) if args.root else base_root()
     janitor = Janitor(root, log_dir=args.log_dir)
     names = {args.branch, args.branch.replace('/', '-'), args.branch.rsplit('/', 1)[-1]}
@@ -1076,15 +1678,20 @@ def branch_items(args):
             owner = json.loads((Path(unit['path']) / 'ITEM.json').read_text()).get('branch')
         if owner != args.branch and not (owner is None and unit['item'] in names):
             continue
+        path, whole, reference = unit['path'], bench_unit(unit), None
         if unit['agent'] in janitor.protected_agents:
-            rows.append((unit['path'], 'kept: protected agent'))
-        elif live.user(unit['path']):
-            rows.append((unit['path'], 'kept: live process uses ' + live.user(unit['path'])))
-        elif receipts_under(receipts, unit['path']):
-            rows.append((unit['path'], 'kept: admission ledger receipt '
-                         + receipts_under(receipts, unit['path'])[0]))
+            kept = 'kept: protected agent'
+        elif live.user(path):
+            kept = 'kept: live process uses ' + live.user(path)
+        elif receipts_under(receipts, path):
+            kept = 'kept: admission ledger receipt ' + receipts_under(receipts, path)[0]
         else:
-            rows.append((unit['path'], None))
+            kept = None
+            if whole or bench_runs(path):
+                reference = 'BENCH run'
+            elif unit['item'].startswith(GATE_PREFIX):
+                reference = 'gate cycle dir'
+        rows.append((path, kept, reference, whole))
     if not rows:
         print(f'no run dirs under {janitor.agents} belong to {args.branch}')
         return 0
@@ -1094,9 +1701,18 @@ def branch_items(args):
             stack.enter_context(exclusive(janitor.log_dir))
             log = stack.enter_context(gzip.open(
                 janitor.log_dir / f'deleted-{janitor.stamp}-merge.tsv.gz', 'at'))
-        for path, kept in rows:
+        for path, kept, reference, whole in rows:
             if kept:
                 print(f'{kept}: {path}')
+            elif reference and args.delete:
+                files, size, _ = shrink(path, log, whole)
+                with open(janitor.log_dir / 'janitor.log', 'a') as summary_log:
+                    summary_log.write(f'{janitor.stamp}\tmerge\tkept {path} ({reference}; shrank '
+                                      f'{files} files, {human(size)}) for {args.branch}\n')
+                print(f'kept {reference} {path}: reference data; shrank {files} files '
+                      f'({human(size)} freed)')
+            elif reference:
+                print(f'would keep {reference} {path} (reference data) and shrink it')
             elif args.delete:
                 saved = rescue_goals(root, path, 'cleanup_after_merge: ' + args.branch, log)
                 files, size, _ = remove_tree(path, log)
@@ -1120,6 +1736,8 @@ def rescue_goals_command(args):
     root = Path(args.root) if args.root else base_root()
     if args.dry_run:
         for path in args.paths:
+            for run in bench_runs(path):
+                print(f'would keep BENCH run {run} (moved to {root / "_build/agents" / BENCH_AGENT})')
             for file, _, _ in goal_store.goal_files(path):
                 print(f'would save goal {file}')
             for file, _, _ in goal_store.closure_files(path):
@@ -1136,6 +1754,67 @@ def rescue_goals_command(args):
                     summary_log.write(f'{stamp}\tgoals\tsaved goals from {path} to '
                                       f'{destination}\n')
     return 0
+
+
+def worktrees_command(args):
+    """Report every worktree's facts and verdict; with --apply remove the reapable ones."""
+    root = Path(args.root) if args.root else base_root()
+    log_dir = Path(args.log_dir) if args.log_dir else root / '_build/janitor'
+    with exclusive(log_dir, '.worktrees.lock'):
+        rows = reap_worktrees(root, apply=args.apply, log_dir=log_dir, main_ref=args.main_ref,
+                              idle=args.idle_hours * 3600)
+    if args.json:
+        Path(args.json).write_text(json.dumps(rows, indent=1, sort_keys=True) + '\n')
+    for row in sorted(rows, key=lambda row: (row['action'], row['name'])):
+        print(f'{row["action"]}\t{row["name"]}\t{row["branch"] or "detached " + (row["head"] or "?")[:12]}'
+              f'\t{row["kind"]}\t{"dirty" if row["dirty"] else "clean"}\tidle {row["idle_hours"]} h'
+              f'\t{row["reason"]}')
+    removed = sum(row['action'] == 'remove' for row in rows)
+    print(f'worktrees: {removed} of {len(rows)} ' + ('removed' if args.apply else 'removable'))
+    return 0
+
+
+def remove_worktree_command(args, sleep=time.sleep):
+    """A creator's end-of-run removal: rescue goals and closure records, then `git worktree
+    remove`. Refuses a dirty checkout or a head that no ref holds. With --wait, waits until no
+    live process (other than this one's ancestors) or live registered run uses the checkout and
+    nothing in it changed for --idle-minutes."""
+    root = Path(args.root) if args.root else base_root()
+    log_dir = Path(args.log_dir) if args.log_dir else root / '_build/janitor'
+    status = 0
+    for path in args.paths:
+        path = os.path.realpath(path)
+        [row] = [row for row in list_worktrees(root) if os.path.realpath(row['path']) == path] or [None]
+        if row is None:
+            print(f'remove-worktree: {path} is not a worktree under {root / ".worktrees"}', file=sys.stderr)
+            status = 1
+            continue
+        while True:
+            registered = registry_paths(ancestors())
+            if registered is None:
+                reason = 'run registry unreadable'
+            else:
+                row = classify_worktree(root, row, commit(root, args.main_ref), time.time(),
+                                        LivePaths.scan(root, exclude=ancestors()),
+                                        ledger_receipts(root), registered, args.idle_minutes * 60,
+                                        creator=True)
+                reason = None if row['action'] == 'remove' else row['reason']
+            waiting = reason and (reason.startswith(('live process', 'a live registered run', 'changed '))
+                                  or registered is None)
+            if not (args.wait and waiting):
+                break
+            sleep(60)
+        if reason:
+            print(f'remove-worktree: kept {path}: {reason}', file=sys.stderr)
+            status = 1
+            continue
+        log_dir.mkdir(parents=True, exist_ok=True)
+        with open(log_dir / 'worktrees.log', 'a') as log:
+            row['reason'] = 'end of run (' + row['kind'] + ')'
+            if not remove_worktree(root, row, log):
+                print(f'remove-worktree: kept {path}: {row["reason"]}', file=sys.stderr)
+                status = 1
+    return status
 
 
 def main(argv=None):
@@ -1162,6 +1841,15 @@ def main(argv=None):
     goals = sub.add_parser('rescue-goals', help='move saved goals under paths into the store')
     goals.add_argument('paths', nargs='+')
     goals.add_argument('--reason', default='rescue-goals')
+    trees = sub.add_parser('worktrees', help='report (with --apply remove) reapable worktrees')
+    trees.add_argument('--idle-hours', type=float, default=WORKTREE_REAP_IDLE_SECONDS / 3600)
+    trees.add_argument('--json', help='write every row to this file')
+    remove = sub.add_parser('remove-worktree', help='remove worktrees a run created, at its end')
+    remove.add_argument('paths', nargs='+')
+    remove.add_argument('--wait', action='store_true',
+                        help='wait until no live process or run uses the checkout')
+    remove.add_argument('--idle-minutes', type=float, default=0,
+                        help='also wait until nothing in it changed for this long')
     args = parser.parse_args(argv)
     if args.apply and args.dry_run:
         parser.error('--apply and --dry-run exclude each other')
@@ -1173,6 +1861,10 @@ def main(argv=None):
         return branch_items(args)
     if args.command == 'rescue-goals':
         return rescue_goals_command(args)
+    if args.command == 'worktrees':
+        return worktrees_command(args)
+    if args.command == 'remove-worktree':
+        return remove_worktree_command(args)
     return run(args)
 
 
