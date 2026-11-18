@@ -22,15 +22,16 @@ Proof.
   ZesuSsz.Automation2.UnionRuleComponents.zesu_region_fault_arithmetic_full.
 Qed.
 
-(* A negated equality is a branch disequality and is not retried. *)
-Lemma region_fault_negated_equality_not_retried (w x y z : Z)
+(* A negated equality is a branch disequality and is not retried with bv_solve;
+   the library lia fallback sees the whole context, refutes it, and closes the
+   goal. *)
+Lemma region_fault_negated_equality_library_fallback (w x y z : Z)
     (Hz : z = 3) (Hne : ~ z = 3) :
-  True.
+  x <= y.
 Proof.
   let n := eval vm_compute in (Z.to_nat 20000) in
   let big := eval cbv [fold_right repeat] in (fold_right Z.add 0 (repeat w n)) in
   pose proof (eq_refl : big = big) as Hbig.
-  Fail (assert (x <= y) by
-    ZesuSsz.Automation2.UnionRuleComponents.zesu_region_fault_arithmetic_full).
-  exact I.
+  Fail bv_solve.
+  ZesuSsz.Automation2.UnionRuleComponents.zesu_region_fault_arithmetic_full.
 Qed.
