@@ -4,7 +4,7 @@ import sys
 import unittest
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from join_generalize import (_list_items, _register_definition, _span_bytes, align_history_groups,
+from join_generalize import (_list_items, _mentions_free, _register_definition, _span_bytes, align_history_groups,
                              check_fact_accounting, common_root_ancestor, drop_unheld_binders, history_members)
 from forward_resources import OwnedBytes
 from symbolic_state import Expr, MemoryRegion, SymbolicState, bits, input_expr, operation
@@ -318,6 +318,13 @@ class HistoryAlignment(unittest.TestCase):
         self.assertEqual(align_history_groups(records, self.KINDS), [])
         self.assertEqual(records[1]['eq18']['source'],
                          '⌜zesu_named_eq call11_kept_x18 (bv_add call10_kept_x19 c)⌝')
+
+    def test_a_name_bound_by_a_nested_group_member_is_not_free(self):
+        nested = {'source': '⌜∃ (b : bv 64), (∃ (c : bv 64), (c = b)) /\\ (P d)⌝'}
+        self.assertFalse(_mentions_free(nested, 'c'))
+        self.assertFalse(_mentions_free(nested, 'b'))
+        self.assertTrue(_mentions_free(nested, 'd'))
+        self.assertTrue(_mentions_free({'source': '⌜∃ (b : bv 64), c = b /\\ (∃ (c : bv 64), c = b)⌝'}, 'c'))
 
     def test_a_silent_drop_is_refused_and_a_logged_drop_reported(self):
         kept = [{'id': 'eq18', 'source': self.GROUP}, {'id': 'eq19', 'source': '⌜True⌝'},

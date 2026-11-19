@@ -793,10 +793,32 @@ def _bound_names(source):
         index = end + 1
 
 
+def _free_in_fact(text, name):
+    """`text` (a pure fact without brackets) names `name` outside every existential that binds it:
+    the fact's own telescope and those of history group members (`∃ b…, (F1) /\\ (∃ c…, G) …`)."""
+    text = text.strip()
+    if text.startswith(JOIN_HISTORY + ' (') and text.endswith(')'):
+        text = text[len(JOIN_HISTORY) + 2:-1].strip()
+    if not text.startswith('∃'):
+        return _mentions(text, name)
+    names = _bound_names('⌜' + text)
+    if not names:
+        return _mentions(text, name)
+    if name in names:
+        return False
+    members = history_members('⌜' + text + '⌝')
+    if members is None:
+        return _mentions(text, name)
+    return any(_free_in_fact(member, name) for member in members)
+
+
 def _mentions_free(component, name):
-    """A non-register component names `name` outside a pure fact's own existential binders."""
+    """A non-register component names `name` outside a pure fact's existential binders (its own
+    and, in a history group, those of the group's members)."""
     source = component.get('source', '')
-    return name not in _bound_names(source) and _mentions(source, name)
+    if source.startswith('⌜') and source.endswith('⌝'):
+        return _free_in_fact(source[1:-1], name)
+    return _mentions(source, name)
 
 # The head of a join's hidden history fact (`ZesuSsz.Automation2.Hist`): the renderer keeps it hidden.
 JOIN_HISTORY = 'zesu_join_history'
