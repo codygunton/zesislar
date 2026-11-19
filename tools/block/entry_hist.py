@@ -362,13 +362,19 @@ SLOT_TABLE = SLOT_REGIONS = None
 CONSTANTS = {}
 
 
+# A design placeholder stands for one term: it never spans a conjunction or disjunction, so a design
+# fact never matches a conjunct of a larger fact (a call's slice window `base <= start /\ …` against
+# the payload-start fact `base <= {x11}`).
+TERM = r"(?:(?!/\\|\\/).)+?"
+
+
 def design_patterns(design):
-    """Regular expressions of the loop design facts: `{name}` stands for any term."""
+    """Regular expressions of the loop design facts: `{name}` stands for any term (no connective)."""
     patterns = []
     for fact in design.get('facts', []):
         text = re.sub(r'\s+', ' ', fact['coq'].strip())
         pieces = re.split(r'(\{[^}]*\})', text)
-        patterns.append(''.join('.+?' if piece.startswith('{') else re.escape(piece).replace('\\ ', r'\s*')
+        patterns.append(''.join(TERM if piece.startswith('{') else re.escape(piece).replace('\\ ', r'\s*')
                                 for piece in pieces))
     return patterns
 

@@ -142,5 +142,16 @@ class NewGhostScope(unittest.TestCase):
                              '  clear - HF2; zesu_hist_view HF2.\nQed.\n')
 
 
+class LoopDesignPatterns(unittest.TestCase):
+    def test_a_design_placeholder_never_matches_a_conjunct_of_a_window(self):
+        import re
+        design = {'facts': [{'coq': '(bv_unsigned (P args) <= bv_unsigned {x11})%Z'}]}
+        pattern, = entry_hist.design_patterns(design)
+        self.assertTrue(re.search(pattern, '(bv_unsigned (P args) <= bv_unsigned ((bv_add a b)))%Z', re.S))
+        window = ('(bv_unsigned (P args) <= bv_unsigned (call2_kept_x19) /\\ bv_unsigned (call2_kept_x19) + '
+                  'bv_unsigned (n) <= bv_unsigned (P args) + Z.of_nat (List.length (B args)))%Z')
+        self.assertIsNone(re.search(pattern, window, re.S))
+
+
 if __name__ == '__main__':
     unittest.main()
