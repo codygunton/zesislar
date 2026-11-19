@@ -825,6 +825,119 @@ def ghost_group(components, binders, wrapper=JOIN_HISTORY):
     return members[0]['id']
 
 
+def history_members(source):
+    """The member facts of a history group `⌜∃ b…, (F1) /\\ … /\\ (Fk)⌝` or
+    `⌜zesu_join_history (∃ b…, (F1) /\\ …)⌝` (ghost_group's two shapes), or None."""
+    if not (source.startswith('⌜') and source.endswith('⌝')):
+        return None
+    text = source[1:-1].strip()
+    if text.startswith(JOIN_HISTORY + ' (') and text.endswith(')'):
+        text = text[len(JOIN_HISTORY) + 2:-1].strip()
+    if not text.startswith('∃ '):
+        return None
+    depth, comma = 0, None
+    for position, char in enumerate(text):
+        depth += {'(': 1, ')': -1}.get(char, 0)
+        if char == ',' and depth == 0:
+            comma = position
+            break
+    if comma is None:
+        return None
+    body, members, depth, start = text[comma + 1:].strip(), [], 0, 0
+    for position, char in enumerate(body):
+        depth += {'(': 1, ')': -1, '[': 1, ']': -1}.get(char, 0)
+        if depth == 0 and body.startswith('/\\', position):
+            members.append(body[start:position].strip())
+            start = position + 2
+    members.append(body[start:].strip())
+    facts = []
+    for member in members:
+        if not (member.startswith('(') and member.endswith(')')):
+            return None
+        depth = 0
+        for char in member[:-1]:
+            depth += {'(': 1, ')': -1}.get(char, 0)
+            if depth == 0:
+                return None
+        facts.append(member[1:-1])
+    return facts
+
+
+def _bind_group(record, kinds, key, group, members):
+    """On one edge, the components that hold the group's members (the group's own component among
+    them when it states a member), or None when a member is missing or the group's component holds
+    another fact."""
+    own = record[key].get('source', '')
+    if own != '⌜True⌝' and own[1:-1] not in members:
+        return None
+    pure = {}
+    for other, row in record.items():
+        if kinds.get(other) != 'register' and row.get('source', '').startswith('⌜'):
+            pure.setdefault(row['source'], []).append(other)
+    chosen = []
+    for member in members:
+        candidates = [other for other in pure.get('⌜' + member + '⌝', []) if other not in chosen]
+        if key in candidates:
+            candidates = [key]
+        if not candidates:
+            return None
+        chosen.append(candidates[0])
+    return chosen
+
+
+def align_history_groups(records, kinds):
+    """Bind, on an edge that states them one per component, the facts that another edge holds in
+    one history group at the same component (the group text of an earlier join or loop head seed;
+    a member may itself be an older group, which the edge then holds at that component).
+
+    records: one {component id: component} per edge (changed in place). A component is aligned only
+    when every edge that does not state the group holds every member as one of its pure components,
+    textually, and the group's component holds one of the members or True there (no other fact is
+    replaced); otherwise no edge changes. Each edge proves the group with its own values of the
+    group's binders, so the alignment is a weakening that loses no member.
+    Returns [{'component', 'edge', 'members'}]."""
+    aligned = []
+    for key in [key for key in records[0] if kinds.get(key) != 'register']:
+        sources = [record[key].get('source', '') for record in records]
+        if len(set(sources)) == 1:
+            continue
+        for group in dict.fromkeys(source for source in sources if history_members(source)):
+            members = history_members(group)
+            bound = {index: _bind_group(record, kinds, key, group, members)
+                     for index, record in enumerate(records) if record[key].get('source') != group}
+            if any(chosen is None for chosen in bound.values()):
+                continue
+            for index, chosen in bound.items():
+                for other in chosen:
+                    records[index][other]['source'] = '⌜True⌝'
+                records[index][key]['source'] = group
+                aligned.append({'component': key, 'edge': index, 'members': chosen})
+            break
+    return aligned
+
+
+def check_fact_accounting(edge_facts, components, plan):
+    """Every component that states a pure fact on some edge is a pure fact of the join, a member of
+    one of its history groups, or a drop that the plan logs under a named rule. Returns the record;
+    raises on a fact that the join loses silently."""
+    result = {component['id']: component.get('source', '') for component in components}
+    grouped = {key for name in ('visible_history', 'ghost_history') for key in plan.get(name, {}).get('facts', [])}
+    dropped = {row['component']: row['rule'] for row in plan.get('dropped_facts', [])}
+    for row in plan.get('dropped_binders', []):
+        for key in row.get('facts', []):
+            dropped.setdefault(key, 'unheld_binder:' + row['binder'])
+    kept, lost = [], []
+    for key in edge_facts:
+        if result.get(key, '⌜True⌝') != '⌜True⌝' or key in grouped:
+            kept.append(key)
+        elif key not in dropped:
+            lost.append(key)
+    if lost:
+        raise ValueError('A join loses pure facts without a named rule: ' + ', '.join(lost))
+    return {'kept': len(kept), 'dropped': [{'component': key, 'rule': dropped[key]}
+                                           for key in edge_facts if key in dropped and key not in kept]}
+
+
 def _fact_names(sources):
     """The identifiers that pure facts (`⌜...⌝` sources) use."""
     return {word for source in sources if source.startswith('⌜')
@@ -1314,6 +1427,14 @@ def generalize_owned_join(alternatives, *, original_seed, entry_pc, vocabulary,
     # A path condition does not hold a binder: the join keeps only the conditions common to every edge.
     dumped = [' '.join(json.dumps(value.to_dict(), sort_keys=True) for value in state.registers.values())
               for state in states]
+    # (`entry_hist` mode) An edge through an earlier join or loop head states some facts inside
+    # that seed's history group (`⌜∃ b…, (F1) /\ …⌝`, visible or `zesu_join_history`), while an edge
+    # that bypasses the seed states the same facts one per component. The bypassing edge binds them
+    # the same way (each b is its own value of b), so the edges agree on the group.
+    if entry_hist.HIST_MODE:
+        records[:] = [{key: dict(row) for key, row in record.items()} for record in records]
+        for aligned in align_history_groups(records, kinds):
+            plan.setdefault('aligned_history', []).append(aligned)
     def held_outside(index, binder_name):
         return (_mentions(dumped[index], binder_name)
                 or any(_mentions_free(row, binder_name) for row in records[index].values()
@@ -1331,6 +1452,11 @@ def generalize_owned_join(alternatives, *, original_seed, entry_pc, vocabulary,
             group = ghost_group([record[row['id']] for row in ownership['components']], ghosts)
             if group is not None:
                 plan.setdefault('join_ghost_groups', []).append({'edge': index, 'component': group})
+    # Every pure fact an edge states: the join keeps it, binds it in a history group, or logs
+    # its drop under a named rule (check_fact_accounting).
+    edge_facts = sorted({key for record in records for key, row in record.items()
+                         if kinds.get(key) != 'register' and row.get('source', '').startswith('⌜')
+                         and row['source'] != '⌜True⌝'})
     first = states[0]
     if any(state.registers.get('PC') != bits(entry_pc, 64) for state in states):
         raise ValueError('A join edge reaches another program counter')
@@ -1386,6 +1512,10 @@ def generalize_owned_join(alternatives, *, original_seed, entry_pc, vocabulary,
                     if general is not None:
                         plan.setdefault('generalized_facts', []).append(key)
                     else:
+                        plan.setdefault('dropped_facts', []).append(
+                            {'component': key, 'rule': 'edges_disagree',
+                             'edges': [index for index, record in enumerate(records)
+                                       if record[key]['source'] != '⌜True⌝']})
                         # An edge may already state it as True (an earlier join dropped it).
                         defined = {_defined_name(record[key]['source']) for record in records
                                    if record[key]['source'] != '⌜True⌝'}
@@ -1534,6 +1664,7 @@ def generalize_owned_join(alternatives, *, original_seed, entry_pc, vocabulary,
                         live_registers, lambda key, writes: _render_span(
                             key, writes, original_seed, ownership, first, apply_owned_writes,
                             render_resource_boundary, vocabulary), shared=shared_binders)
+    plan['fact_accounting'] = check_fact_accounting(edge_facts, components, plan)
     forgotten = {key for row in plan.get('dropped_binders', []) for key in row.get('arrays', [])}
     resources = [replace(resource, byte_array=None, component=next(row for row in components if row['id'] == resource.id))
                  if resource.id in forgotten else resource for resource in resources]

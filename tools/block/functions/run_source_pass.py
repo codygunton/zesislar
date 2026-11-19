@@ -201,7 +201,10 @@ def main():
                               'common_guards': len(joined['plan']['common_guards']),
                               'join_refusals': joined['plan']['join_refusals'],
                               **({'dropped_binders': joined['plan']['dropped_binders']}
-                                 if joined['plan'].get('dropped_binders') else {})}
+                                 if joined['plan'].get('dropped_binders') else {}),
+                              **{key: joined['plan'][key] for key in ('fact_accounting', 'aligned_history',
+                                                                       'visible_history', 'ghost_history')
+                                 if joined['plan'].get(key)}}
             added = hex(pc)
             break
         rounds.append({'seeds': sorted(seeds), 'added': added})

@@ -695,6 +695,13 @@ for (suffix, slot), case in zip(units, cases):
             if key in case:
                 case[key] = bind(case[key]["path"])
 emitted = list({row["path"]: bind(row["path"]) for row in emitted}.values())
+# Every join keeps each pure fact of its edges, binds it in a history group, or drops it under a
+# named rule (join_generalize.check_fact_accounting refuses a silent drop); the report lists the
+# logged drops of each join.
+join_accounting = {pc: plan.get("fact_accounting") for pc, plan in joins_record.get("plans", {}).items()}
+if entry_hist.HIST_MODE:
+    unaccounted = sorted(pc for pc, row in join_accounting.items() if row is None)
+    assert not unaccounted, "joins without a fact accounting: " + ", ".join(unaccounted)
 
 (O / "RESULT.json").write_text(
     json.dumps(
@@ -734,6 +741,7 @@ emitted = list({row["path"]: bind(row["path"]) for row in emitted}.values())
             "new_native_calls": 0,
             "native_release": False,
             "join_seeds_added": True,
+            **({"join_fact_accounting": join_accounting} if entry_hist.HIST_MODE else {}),
             "contradiction_checks": check.runs,
         },
         indent=2,

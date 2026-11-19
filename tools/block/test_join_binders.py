@@ -4,7 +4,8 @@ import sys
 import unittest
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from join_generalize import _list_items, _register_definition, _span_bytes, common_root_ancestor, drop_unheld_binders
+from join_generalize import (_list_items, _register_definition, _span_bytes, align_history_groups,
+                             check_fact_accounting, common_root_ancestor, drop_unheld_binders, history_members)
 from forward_resources import OwnedBytes
 from symbolic_state import Expr, MemoryRegion, SymbolicState, bits, input_expr, operation
 from render_function_callers import return_site
@@ -280,6 +281,55 @@ class HistoryJoin(unittest.TestCase):
         state, components, plan = self.run_rules(shared={'machine_x10'})
         self.assertEqual([row['source'] for row in components], ['⌜True⌝', '⌜True⌝'])
         self.assertNotIn('ghost_history', plan)
+
+
+class HistoryAlignment(unittest.TestCase):
+    """A join whose edges hold the same facts once in a history group, once one per component."""
+    GROUP = ('⌜∃ (call10_kept_x19 : bv 64), (zesu_named_eq call11_kept_x18 (bv_add call10_kept_x19 c))'
+             ' /\\ (zesu_named_eq call10_kept_x19 d)⌝')
+    KINDS = {'eq18': 'opaque', 'eq19': 'opaque', 'other': 'opaque', 'x1': 'register'}
+
+    def edges(self, raw_other='⌜P⌝'):
+        through_loop_head = {'eq18': {'id': 'eq18', 'source': self.GROUP}, 'eq19': {'id': 'eq19', 'source': '⌜True⌝'},
+                             'other': {'id': 'other', 'source': '⌜P⌝'}, 'x1': {'id': 'x1', 'source': 'x1'}}
+        bypass = {'eq18': {'id': 'eq18', 'source': '⌜zesu_named_eq call11_kept_x18 (bv_add call10_kept_x19 c)⌝'},
+                  'eq19': {'id': 'eq19', 'source': '⌜zesu_named_eq call10_kept_x19 d⌝'},
+                  'other': {'id': 'other', 'source': raw_other}, 'x1': {'id': 'x1', 'source': 'x1'}}
+        return [through_loop_head, bypass]
+
+    def test_members_of_both_group_shapes(self):
+        self.assertEqual(history_members(self.GROUP),
+                         ['zesu_named_eq call11_kept_x18 (bv_add call10_kept_x19 c)', 'zesu_named_eq call10_kept_x19 d'])
+        hidden = '⌜zesu_join_history (∃ (b : bv 64), (b = c))⌝'
+        self.assertEqual(history_members(hidden), ['b = c'])
+        self.assertIsNone(history_members('⌜∃ (b : bv 64), b = c /\\ c = d⌝'))
+        self.assertIsNone(history_members('⌜zesu_named_eq b c⌝'))
+
+    def test_the_bypassing_edge_binds_the_same_group(self):
+        records = self.edges()
+        aligned = align_history_groups(records, self.KINDS)
+        self.assertEqual(aligned, [{'component': 'eq18', 'edge': 1, 'members': ['eq18', 'eq19']}])
+        self.assertEqual([{key: row['source'] for key, row in record.items()} for record in records][0],
+                         {key: row['source'] for key, row in records[1].items()})
+
+    def test_an_edge_missing_a_member_is_not_aligned(self):
+        records = self.edges()
+        records[1]['eq19']['source'] = '⌜zesu_named_eq call10_kept_x19 e⌝'
+        self.assertEqual(align_history_groups(records, self.KINDS), [])
+        self.assertEqual(records[1]['eq18']['source'],
+                         '⌜zesu_named_eq call11_kept_x18 (bv_add call10_kept_x19 c)⌝')
+
+    def test_a_silent_drop_is_refused_and_a_logged_drop_reported(self):
+        kept = [{'id': 'eq18', 'source': self.GROUP}, {'id': 'eq19', 'source': '⌜True⌝'},
+                {'id': 'other', 'source': '⌜True⌝'}]
+        with self.assertRaisesRegex(ValueError, 'without a named rule: other'):
+            check_fact_accounting(['eq18', 'other'], kept, {})
+        plan = {'dropped_facts': [{'component': 'other', 'rule': 'edges_disagree', 'edges': [0]}]}
+        report = check_fact_accounting(['eq18', 'eq19', 'other'], kept,
+                                       {**plan, 'visible_history': {'facts': ['eq19']}})
+        self.assertEqual(report, {'kept': 2, 'dropped': [{'component': 'other', 'rule': 'edges_disagree'}]})
+        report = check_fact_accounting(['other'], kept, {'dropped_binders': [{'binder': 'b', 'facts': ['other']}]})
+        self.assertEqual(report['dropped'], [{'component': 'other', 'rule': 'unheld_binder:b'}])
 
 
 class ReturnSites(unittest.TestCase):
