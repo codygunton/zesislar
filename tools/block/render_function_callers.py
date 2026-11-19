@@ -206,6 +206,11 @@ def main():
                         preconditions.append(premise)
         source = render_block_caller(profile, suffix, preconditions, imports, slot,
                                      continuation if through else None)
+        if profile.get('entry_hist') == 'wrap':
+            # The history edge instances of this block (render_edges.py), before the last rule import.
+            last = source.rindex('Require Import ZesuSsz.Automation2.All.\n')
+            source = (source[:last] + 'Require Import ' + profile.qualified('Edges' + suffix) + '.\n'
+                      + source[last:])
         if source.count('Proof.\n  zesu_block2.\nQed.\n') != 1 or re.search(r'\b(?:Ltac|Admitted|Axiom)\b|::=', source):
             raise ValueError('A caller has more than its block proof: ' + suffix)
         path = output / ('Caller' + suffix + slot_suffix(slot) + '.v')

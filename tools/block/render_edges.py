@@ -1,15 +1,17 @@
-"""Lane prototype (researcher/generator): the per-edge data of a function's rendered entries.
+"""The per-edge data of a function's rendered `entry_hist: wrap` entries and their history instances.
 
 For each successor edge (block entry variant -> successor entry variant) the record holds
   - the binder map: every successor binder with the block-entry binder or term it stands for,
   - the successor facts that are unchanged block-entry facts (text identity over identity binders),
   - the new facts, each with the block-entry history facts that share a ghost binder with it,
   - for a call site, the call plan of JOINS.json `calls[]`.
-`--rocq FILE` also writes one `ZesuHistEdge` instance per edge whose both ends have a history
-(ZESU_ENTRY_HIST=wrap entries); each proof is the same data-only script.
+`--rocq-dir DIR` also writes, per source block, `Edges<case>.v`: one `ZesuHistEdge` instance per edge
+(none when the successor states the same history: `zesu_hist_edge_refl`), and one `ZesuHistReveal`
+instance per block history fact that a successor states visibly (a loop exit). `Edges.v` exports them
+all. Each proof uses only the sentence forms of `EDGE_SENTENCES` (AGENTS.md exception).
 
 Usage: render_edges.py --function NAME --entries RESULT.json --forward DIR --cfg FUNCTION.json
-       --output EDGES.json [--rocq Edges.v]
+       --output EDGES.json [--rocq-dir DIR]
 """
 from pathlib import Path
 import argparse, json, re, sys
@@ -143,22 +145,29 @@ def classify_facts(pre, succ, rows):
             if where == 'hidden' and named and all(name in free for name in named):
                 closed.append({'succ': [where, index], 'witness': {name: free[name] for name in named}})
                 continue
-            # loop-seal lane: a new history fact whose first conjunct is a block-entry history fact
-            # (forward entries state a guard with its unsigned views; a loop class the guard only)
-            # is proved inside the edge from that fact (`zesu_hist_view`).
-            # The reverse (a loop class keeps the guard of a forward fact) is its first projection.
+            # A new history fact whose first conjunct is a block-entry fact (forward entries state a
+            # guard with its unsigned views; a loop class the guard only) is proved inside the edge from
+            # that fact (`zesu_hist_view`); the reverse (a loop class keeps the guard of a forward fact)
+            # is its first projection. The block-entry fact may be hidden or visible (then a premise).
             renamed = substitute(fact, renames)
             head = key(conjuncts(renamed)[0])
-            view = next((position for position, other in enumerate(pre['hidden']) if key(other) == head), None)
-            if (where == 'hidden' and view is not None and len(conjuncts(renamed)) > 1
-                    and all(name in identity for name in named)):
-                unchanged.append({'succ': [where, index], 'pre': ['hidden', view], 'view': True})
-                continue
-            projection = next((position for position, other in enumerate(pre['hidden'])
-                               if len(conjuncts(other)) > 1 and key(conjuncts(other)[0]) == key(renamed)), None)
-            if where == 'hidden' and projection is not None and all(name in identity for name in named):
-                unchanged.append({'succ': [where, index], 'pre': ['hidden', projection], 'projection': True})
-                continue
+            if where == 'hidden' and all(name in identity for name in named):
+                found = None
+                for origin_where in ('hidden', 'visible'):
+                    view = next((position for position, other in enumerate(pre[origin_where])
+                                 if key(other) == head), None)
+                    if view is not None and len(conjuncts(renamed)) > 1:
+                        found = {'succ': [where, index], 'pre': [origin_where, view], 'view': True}
+                        break
+                    projection = next((position for position, other in enumerate(pre[origin_where])
+                                       if len(conjuncts(other)) > 1 and key(conjuncts(other)[0]) == key(renamed)),
+                                      None)
+                    if projection is not None:
+                        found = {'succ': [where, index], 'pre': [origin_where, projection], 'projection': True}
+                        break
+                if found is not None:
+                    unchanged.append(found)
+                    continue
             ghosts = [name for name in pre_ghost if name in identity and mentions(name, fact)]
             support = [position for position, other in enumerate(pre['hidden'])
                        if any(mentions(name, other) for name in ghosts)]
@@ -253,11 +262,12 @@ def rocq_edge(edge, pre, succ, index):
     new_texts = [substitute(row['text'], {**renames, **ghost_renames}) for row in new_hidden]
     used = [binder for binder in pre['ghost']
             if any(mentions(binder['name'], text) for text in new_texts + [pre['hidden'][p] for p in support])]
-    # Second agent: a block-entry fact that is visible at the entry and hidden at the successor is carried
-    # as a premise of the edge (the automation proves it from its own context).
-    carried = [pre['visible'][row['pre'][1]] for row in sorted(edge['unchanged'], key=lambda row: row['succ'][1])
-               if row['succ'][0] == 'hidden' and row['pre'][0] == 'visible'
-               and not row.get('view') and not row.get('projection')]
+    # A block-entry fact that is visible at the entry and that a successor history fact needs is a
+    # premise of the edge (the automation proves it from its own context).
+    carried_rows = sorted((row for row in edge['unchanged'] if row['succ'][0] == 'hidden' and row['pre'][0] == 'visible'),
+                          key=lambda row: row['succ'][1])
+    carried = [pre['visible'][row['pre'][1]] for row in carried_rows]
+    carried_index = {tuple(row['succ']): position for position, row in enumerate(carried_rows)}
     body = ' ∗ '.join(['⌜' + text + '⌝' for text in new_texts + carried] + ['True'])
     bound = [{'name': ghost_renames.get(binder['name'], binder['name']), 'type': binder['type']}
              for binder in succ['ghost'] if binder['name'] in new_ghost]
@@ -304,31 +314,108 @@ def rocq_edge(edge, pre, succ, index):
     if not succ['hidden']:
         lines.append('  exact I.')
     else:
-        proofs, fresh, kept = [], 0, 0
+        proofs, fresh = [], 0
         origin = {tuple(row['succ']): row['pre'] for row in edge['unchanged']}
         views = {tuple(row['succ']) for row in edge['unchanged'] if row.get('view')}
         projections = {tuple(row['succ']) for row in edge['unchanged'] if row.get('projection')}
         for position in range(len(succ['hidden'])):
-            source = origin.get(('hidden', position))
-            if ('hidden', position) in closed:
+            target = ('hidden', position)
+            source = origin.get(target)
+            if target in closed:
                 proofs.append('by vm_compute')
-            elif source is None:
+                continue
+            if source is None:
                 proofs.append('exact HN' + str(fresh))
                 fresh += 1
-            elif source[0] == 'hidden' and ('hidden', position) in projections:
-                proofs.append('exact (proj1 HF' + str(source[1]) + ')')
-            elif source[0] == 'hidden' and ('hidden', position) in views:
-                proofs.append('zesu_hist_view HF' + str(source[1]))
-            elif source[0] == 'hidden':
-                proofs.append('exact HF' + str(source[1]))
-            else:
-                proofs.append('exact HC' + str(kept))
-                kept += 1
+                continue
+            name = 'HF' + str(source[1]) if source[0] == 'hidden' else 'HC' + str(carried_index[target])
+            proofs.append('exact (proj1 ' + name + ')' if target in projections else
+                          'zesu_hist_view ' + name if target in views else 'exact ' + name)
         for proof in proofs[:-1]:
             lines.append('  split; [' + proof + '|].')
         lines.append('  ' + proofs[-1] + '.')
     lines.append('Qed.')
     return '\n'.join(lines) + '\n'
+
+
+def application(meta, table):
+    """The history term of an entry variant (binders renamed by `table`)."""
+    return meta['hist'] + ''.join(' (' + table.get(binder['name'], binder['name']) + ')'
+                                  for binder in meta['parameters'] + meta.get('hist_live', meta['live']))
+
+
+def revealed(edge, pre):
+    """Facts visible at the successor that the block entry holds in its history: a loop exit reads
+    them from the class history (`ZesuHistReveal`). A fact on a block ghost binder cannot be stated."""
+    ghosts = binder_names(pre, 'ghost')
+    return [pre['hidden'][row['pre'][1]] for row in edge['unchanged']
+            if row['succ'][0] == 'visible' and row['pre'][0] == 'hidden'
+            and not any(mentions(name, pre['hidden'][row['pre'][1]]) for name in ghosts)]
+
+
+def history_destruct(pre):
+    """The sentences that open a block history hypothesis `Hh` into `HF<k>`."""
+    pattern = binder_names(pre, 'ghost') + ['HF' + str(position) for position in range(len(pre['hidden']))]
+    if not pre['hidden']:
+        return '  clear Hh.'
+    if len(pattern) == 1:
+        return '  pose proof Hh as HF0.'
+    return '  destruct Hh as (' + ' & '.join(pattern) + ').'
+
+
+def rocq_reveal(pre, fact, index):
+    """One ZesuHistReveal instance: a block history fact the successor states visibly."""
+    statement = application(pre, {}) + ' ' + fact
+    variables = [binder for binder in [*pre['parameters'], *pre['live']]
+                 if binder in pre['parameters'] or mentions(binder['name'], statement)]
+    lines = ['Global Instance zesu_hist_reveal_' + str(index) + ' ' + telescope(variables) + ' :',
+             '  ZesuHistReveal (' + application(pre, {}) + ') (' + fact + ').',
+             'Proof.',
+             '  rewrite /ZesuHistReveal => Hh. apply zesu_hist_elim in Hh. unfold ' + pre['hist'] + ' in Hh.',
+             history_destruct(pre),
+             '  exact HF' + str(pre['hidden'].index(fact)) + '.',
+             'Qed.']
+    return '\n'.join(lines) + '\n'
+
+
+# Every sentence an edge proof may contain (AGENTS.md: generated proofs are limited to these forms;
+# ZesuSsz/Evidence/check_proof_hygiene.py rule EDGE-PROOF enforces the list on the committed files).
+_NAME = r"[A-Za-z_][\w']*"
+_SOLVE = r"(?:exact " + _NAME + r"|exact \(proj1 " + _NAME + r"\)|zesu_hist_view " + _NAME + r"|by vm_compute|exact I)"
+EDGE_SENTENCES = [
+    r"Proof", r"Qed",
+    r"rewrite /ZesuHist(?:Edge|Reveal) => Hh",
+    r"apply zesu_hist_elim in Hh",
+    r"unfold " + _NAME + r" in Hh",
+    r"clear Hh",
+    r"pose proof Hh as HF0",
+    r"destruct Hh as \((?:" + _NAME + r")(?: & " + _NAME + r")*\)",
+    r'iIntros "HN"',
+    r'iDestruct (?:"HN"|\("HN" \$!(?: ' + _NAME + r')+\)) as (?:\((?:' + _NAME + r' ?)+\) )?"\((?:%' + _NAME
+    + r' & )*_\)"',
+    r"iPureIntro",
+    r"apply zesu_hist_intro",
+    r"unfold " + _NAME,
+    r"exists .+",
+    r"split; \[" + _SOLVE + r"\|\]",
+    _SOLVE,
+]
+
+
+def edge_sentences(text):
+    """The sentences of the proofs of an edge module (each `Proof. … Qed.`)."""
+    sentences = []
+    for proof in re.findall(r"^Proof\.(.*?)^Qed\.", text, re.S | re.M):
+        sentences += ['Proof', 'Qed'] + [part.strip() for part in re.split(r"\.(?:\s+|$)", proof) if part.strip()]
+    return sentences
+
+
+def check_edge_sentences(text):
+    for sentence in edge_sentences(text):
+        if not any(re.fullmatch(pattern, sentence, re.S) for pattern in EDGE_SENTENCES):
+            raise ValueError('An edge proof sentence is outside EDGE_SENTENCES: ' + sentence[:200])
+    if re.search(r"\b(?:Admitted|Axiom|Ltac|Ltac2)\b", text):
+        raise ValueError('An edge module contains Admitted, Axiom or Ltac')
 
 
 def main():
@@ -338,8 +425,7 @@ def main():
     parser.add_argument('--forward', type=Path, required=True)
     parser.add_argument('--cfg', type=Path, required=True)
     parser.add_argument('--output', type=Path, required=True)
-    parser.add_argument('--rocq', type=Path)
-    parser.add_argument('--rocq-blocks', default=None, help='comma list of block keys: instances of these blocks only')
+    parser.add_argument('--rocq-dir', type=Path, help='generated directory: Edges<case>.v per source block, Edges.v')
     options = parser.parse_args()
     profile = load_profile(options.function)
     result = json.loads(options.entries.read_text())
@@ -349,8 +435,7 @@ def main():
     function = json.loads(options.cfg.read_text())['functions'][0]
     entries = variants(result['cases'])
     calls = joins.get('calls', {})
-    edges, rocq, used_entries = [], [], set()
-    selected = ({profile.pc(key) for key in options.rocq_blocks.split(',')} if options.rocq_blocks else None)
+    edges, instances, reveals, used_entries = [], {}, {}, {}
     for block in function['blocks']:
         pre_pc = hex(block['start'])
         targets = [hex(target) for target in sorted(block['successors'])] or ['function_return']
@@ -401,23 +486,45 @@ def main():
                     if kind == 'call_return':
                         edge['call'] = calls.get(succ_pc)
                     edges.append(edge)
-                    if (options.rocq and pre.get('mode') == 'wrap' and succ.get('mode') == 'wrap'
-                            and (selected is None or pre_pc in selected)):
-                        rocq.append(rocq_edge(edge, pre, succ, len(edges) - 1))
-                        used_entries.update([pre['entry'], succ['entry']])
-    options.output.write_text(json.dumps({'schema': 'lane.generator.edges.v1', 'function': profile.name,
+                    if pre.get('mode') == 'wrap' and succ.get('mode') == 'wrap':
+                        block_instances = instances.setdefault(pre_pc, [])
+                        if application(pre, {}) == application(succ, {}) and not new:
+                            # The successor states the same history (a loop back edge on the class
+                            # history): the identity instance `zesu_hist_edge_refl` of Hist applies.
+                            edge['identity'] = True
+                        else:
+                            block_instances.append(rocq_edge(edge, pre, succ, len(edges) - 1))
+                        for fact in revealed(edge, pre):
+                            statement = (application(pre, {}), fact)
+                            if statement not in reveals:
+                                reveals[statement] = len(reveals)
+                                block_instances.append(rocq_reveal(pre, fact, reveals[statement]))
+                        used_entries.setdefault(pre_pc, set()).update([pre['entry'], succ['entry']])
+    options.output.write_text(json.dumps({'schema': 'zesu.fp301.edges.v1', 'function': profile.name,
                                           'edges': edges}, indent=1, ensure_ascii=False) + '\n')
-    if options.rocq:
-        stems = sorted({('Function' if meta['entry'].startswith('fp_machineReturn') else 'Pilot')
-                        + re.match(r'fp_machine(?:At)?([0-9a-zA-Z]+?)(?:_|$)', meta['entry'])[1]
-                        for metas in entries.values() for meta in metas if meta['entry'] in used_entries})
-        header = pilot_header(profile) + 'Require Import lithium.lvar.\n'
-        header += ''.join('Require Import ' + profile.qualified(stem + kind) + '.\n'
-                          for stem in stems for kind in ('Entries', 'Structural'))
-        header += (entry_hist.HIST_LIBRARY + 'From iris.proofmode Require Import proofmode.\n\n'
-                   'Section edges.\nContext `{!islaG Sigma} `{!threadG}.\n\n')
-        options.rocq.write_text(header + '\n'.join(rocq) + '\nEnd edges.\n')
-    print(json.dumps({'edges': len(edges), 'instances': len(rocq),
+    if options.rocq_dir:
+        stem_of = lambda entry: (('Function' if entry.startswith('fp_machineReturn') else 'Pilot')
+                                 + re.match(r'fp_machine(?:At)?([0-9a-zA-Z]+?)(?:_|$)', entry)[1])
+        modules = []
+        for block in function['blocks']:
+            pre_pc = hex(block['start'])
+            if pre_pc not in entries:
+                continue
+            case = profile.key(pre_pc)
+            stems = sorted({stem_of(entry) for entry in used_entries.get(pre_pc, ())})
+            header = pilot_header(profile) + 'Require Import lithium.lvar.\n'
+            header += ''.join('Require Import ' + profile.qualified(stem + kind) + '.\n'
+                              for stem in stems for kind in ('Entries', 'Structural'))
+            header += (entry_hist.HIST_LIBRARY + 'From iris.proofmode Require Import proofmode.\n\n'
+                       'Section edges.\nContext `{!islaG Sigma} `{!threadG}.\n\n')
+            text = header + '\n'.join(instances.get(pre_pc, [])) + '\nEnd edges.\n'
+            check_edge_sentences(text)
+            (options.rocq_dir / ('Edges' + case + '.v')).write_text(text)
+            modules.append('Edges' + case)
+        (options.rocq_dir / 'Edges.v').write_text(''.join('Require Export ' + profile.qualified(module) + '.\n'
+                                                          for module in modules))
+    print(json.dumps({'edges': len(edges), 'instances': sum(map(len, instances.values())),
+                      'reveals': len(reveals), 'identity': sum(bool(edge.get('identity')) for edge in edges),
                       'kinds': {kind: sum(edge['kind'] == kind for edge in edges)
                                 for kind in sorted({edge['kind'] for edge in edges})}}))
 
