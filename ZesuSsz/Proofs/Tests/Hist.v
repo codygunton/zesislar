@@ -122,6 +122,26 @@ Lemma exit_view_skipped (v : bv 64) :
   (bv_unsigned v < 8)%Z -> bool_decide (bv_unsigned v < 4)%Z = true /\ True.
 Proof. intros Hv. assert_fails (idtac; zesu_hist_exit_view). Abort.
 
+(* A negated bitvector guard is viewed as an unsigned disequation, and an
+   edge proof's `zesu_hist_view` closes the guard with its unsigned view. *)
+Lemma view_negated_guard (v : bv 64) :
+  negb (bool_decide (bv_and v (BV 64 1) = BV 64 0)) = true ->
+  negb (bool_decide (bv_and v (BV 64 1) = BV 64 0)) = true /\
+  bv_unsigned (bv_and v (BV 64 1)) <> 0%Z.
+Proof.
+  intros Hg.
+  assert (Hv := Hg). zesu_hist_view_fact Hv.
+  lazymatch type of Hv with not (@eq Z _ 0%Z) => idtac end.
+  zesu_hist_view Hg.
+Qed.
+
+(* A disequation on another type is left as it is. *)
+Lemma view_other_disequation (n : Z) : (n <> 0)%Z -> (n <> 0)%Z.
+Proof.
+  intros Hn. zesu_hist_view_fact Hn.
+  lazymatch type of Hn with (n <> 0)%Z => exact Hn end.
+Qed.
+
 (* First pass of a sealed loop class. *)
 Lemma loop_first_pass_sealed `{!islaG Sigma} (n : Z) :
   (True : iProp Sigma) ∗ ⌜n = 0%Z⌝ ⊢

@@ -118,6 +118,10 @@ Ltac zesu_hist_view_fact H :=
   try (lazymatch type of H with
        | @eq (bv _) _ _ => apply (f_equal bv_unsigned) in H;
                           repeat (rewrite bv_zero_extend_unsigned in H; [|zesu_lia]); rewrite ?bv_unsigned_BV in H
+       | not (@eq (bv _) ?x ?y) =>
+           let E := fresh in
+           assert (E : bv_unsigned x <> bv_unsigned y) by (let U := fresh in intros U; apply H, bv_eq, U);
+           clear H; rename E into H; rewrite ?bv_unsigned_BV in H
        end).
 
 Ltac zesu_hist_view H :=
