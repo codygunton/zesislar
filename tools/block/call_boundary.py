@@ -58,6 +58,12 @@ GPR = re.compile(r'x(?:[0-9]|[12][0-9]|3[01])\Z')
 PREFIX = 'call_'
 # The names call_return_seed binds: its prefix call_, call2_, call3_, ... and a suffix.
 CALL_NAME = re.compile(r'call\d*_\w+')
+# A kept slice of a caller array, as a call design states it:
+# `take (Z.to_nat (bv_unsigned COUNT)) (drop (Z.to_nat (bv_unsigned START - bv_unsigned BASE)) WHOLE)`.
+SLICE_WINDOW = re.compile(
+    r"take \(Z\.to_nat \(bv_unsigned (?P<count>[^()\s]+)\)\) "
+    r"\(drop \(Z\.to_nat \(bv_unsigned (?P<start>[^()\s]+) - bv_unsigned (?P<base>\([^()]*\)|[^()\s]+)\)\) "
+    r"(?P<whole>\([^()]*\)|[^()\s]+)\)")
 
 
 class CallRefused(ValueError):
@@ -431,6 +437,7 @@ def call_return_seed(edges, *, call, function_root, root_seed, shapes, vocabular
             return ('constant', row['constant'])
         return ('pointer', row['pointer']) if 'pointer' in row else ('argument', row['argument'], row.get('offset', 0))
     design = {row['binder']: row for row in call.get('arrays', [])}
+    windows = []
     pre_arrays = {row['binder']: row for row in spec['pre']['arrays']}
     returned_at = {spot(row): row for row in spec['post']['arrays']}
     if set(design) != set(pre_arrays):
@@ -465,16 +472,29 @@ def call_return_seed(edges, *, call, function_root, root_seed, shapes, vocabular
             # that is a slice of a caller array names that array as `slice_of`; `{argv:N}`
             # in it stands for the call-site value of argument N, and a spec word binder
             # for the word the caller stored.
+            def caller_text(template):
+                for number, argument in enumerate(values['argv']):
+                    template = template.replace('{argv:%d}' % number, argument)
+                return substitute(template, words) if words else template
             value = design[binder]['caller_value']
-            for number, argument in enumerate(values['argv']):
-                value = value.replace('{argv:%d}' % number, argument)
-            instantiation[binder] = substitute(value, words) if words else value
+            instantiation[binder] = caller_text(value)
             whole = design[binder].get('slice_of', design[binder]['caller_value'])
             owner = [resource for resource in resources.values()
                      if resource.byte_array is not None and resource.byte_array.value == whole]
             if len(owner) != 1 or image.updates[owner[0].id]:
                 raise CallRefused('The kept array has no unchanged caller resource: ' + binder)
             kept.add(owner[0].id)
+            if entry_hist.HIST_MODE and 'slice_of' in design[binder]:
+                # (`entry_hist` shapes.) The window of the slice in its array, which the caller
+                # proves when it lends the slice: the successor states it over the call-site
+                # values (the kept cursor registers), so a later call's slice bounds follow in one step.
+                window = SLICE_WINDOW.fullmatch(value)
+                if window is None or window['whole'] not in (whole, '(' + whole + ')'):
+                    raise CallRefused('The slice of the kept array is not take/drop of its array: ' + binder)
+                start, count = caller_text(window['start']), caller_text(window['count'])
+                windows.append((binder, '(bv_unsigned %s <= bv_unsigned %s /\\ bv_unsigned %s + bv_unsigned %s'
+                                ' <= bv_unsigned %s + Z.of_nat (List.length (%s)))%%Z'
+                                % (window['base'], start, start, count, window['base'], whole)))
             continue
         post, post_value = returned_value(returned)
         if 'constant' in row:
@@ -593,6 +613,11 @@ def call_return_seed(edges, *, call, function_root, root_seed, shapes, vocabular
                                     + [_coq(value) for value in named])))
     candidates = {name: binder['type'] for name, binder in inherited.items()}
     candidates.update({prefix + 'site_' + key: 'bv 64' for key in widened})
+    # A slice window over a call argument that the seed does not name is closed with
+    # that argument inside the facts.
+    hidden = set(candidates) - elsewhere
+    facts += [text for _, text in windows if _atoms(text) & hidden]
+    windows = [(binder, text) for binder, text in windows if not _atoms(text) & hidden]
     inner = [(name, kind) for name, kind in candidates.items()
              if name in _atoms(' '.join(facts)) and name not in elsewhere]
     # Each closed argument takes this call's own name (prefix + arg_ + register), so it never shares
@@ -754,6 +779,8 @@ def call_return_seed(edges, *, call, function_root, root_seed, shapes, vocabular
         for row in extra_facts] + [
         {'kind': 'opaque', 'id': name.value + '_value', 'coq': '⌜(zesu_named_eq %s %s)⌝' % (name.value, _coq(value))}
         for value, name in named.items()] + [{'kind': 'opaque', 'id': prefix + 'facts', 'coq': '⌜' + carried + '⌝'}] + [
+        {'kind': 'opaque', 'id': prefix + 'window_' + binder, 'coq': '⌜' + text + '⌝'}
+        for binder, text in windows] + [
         {'kind': 'opaque', 'id': prefix + 'return_fact_%d' % index, 'coq': '⌜' + _return_fact(row['coq'], fresh) + '⌝'}
         for index, row in enumerate(call.get('return_facts', []))]
     # Every post binder, and the word binders that stand for a returned word expression.

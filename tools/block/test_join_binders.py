@@ -239,25 +239,25 @@ class CallReturnLift(unittest.TestCase):
 
 
 class HistoryJoin(unittest.TestCase):
-    """`entry_hist: wrap` joins: dropped facts become one hidden history fact; a visible fact on a
-    binder every edge holds stays visible under its own existential."""
+    """`entry_hist: wrap` joins: dropped facts become one hidden history fact, also those a
+    visible pattern (`zesu_named_eq` here) selects."""
     b = input_expr('machine_x10', 64)
 
     def setUp(self):
         entry_hist.configure({'entry_hist': 'wrap', 'hist_visible': ['zesu_named_eq']})
         self.addCleanup(entry_hist.configure, None)
 
-    def run_rules(self, shared):
+    def run_rules(self):
         state = state_with({'x13': operation('bvadd', self.b, bits(1, 64))}, [])
         components = [{'id': 'eq', 'kind': 'opaque', 'source': '⌜zesu_named_eq machine_x10 (word8 call_after)⌝'},
                       {'id': 'range', 'kind': 'opaque', 'source': '⌜bv_unsigned machine_x10 < 8⌝'}]
         plan = {'binders': []}
         drop_unheld_binders(state, components, {}, [{'name': 'machine_x10', 'type': 'bv 64'}], plan, ['x13'],
-                            lambda key, writes: '', shared=shared)
+                            lambda key, writes: '')
         return state, components, plan
 
     def test_dropped_facts_form_one_hidden_join_history(self):
-        state, components, plan = self.run_rules(shared=set())
+        state, components, plan = self.run_rules()
         self.assertEqual(state.registers['x13'], input_expr('machine_x13_1', 64))
         self.assertEqual(components[0]['source'],
                          '⌜zesu_join_history (∃ (machine_x10 : bv 64), (zesu_named_eq machine_x10 (word8 call_after))'
@@ -266,19 +266,9 @@ class HistoryJoin(unittest.TestCase):
         self.assertEqual(plan['ghost_history'], {'component': 'eq', 'facts': ['eq', 'range']})
         self.assertTrue(entry_hist.is_join_history(components[0]['source'][1:-1]))
 
-    def test_a_visible_fact_on_a_binder_every_edge_holds_stays_visible(self):
-        state, components, plan = self.run_rules(shared={'machine_x10'})
-        self.assertEqual(state.registers['x13'], input_expr('machine_x13_1', 64))
-        self.assertEqual([row['source'] for row in components],
-                         ['⌜∃ (machine_x10 : bv 64), (zesu_named_eq machine_x10 (word8 call_after))⌝',
-                          '⌜zesu_join_history (∃ (machine_x10 : bv 64), (bv_unsigned machine_x10 < 8))⌝'])
-        self.assertEqual(plan['visible_history'], {'component': 'eq', 'facts': ['eq']})
-        self.assertEqual(plan['ghost_history'], {'component': 'range', 'facts': ['range']})
-        self.assertFalse(entry_hist.is_join_history(components[0]['source'][1:-1]))
-
     def test_the_legacy_shape_drops_the_binder(self):
         entry_hist.configure(None)
-        state, components, plan = self.run_rules(shared={'machine_x10'})
+        state, components, plan = self.run_rules()
         self.assertEqual([row['source'] for row in components], ['⌜True⌝', '⌜True⌝'])
         self.assertNotIn('ghost_history', plan)
 
@@ -333,7 +323,7 @@ class HistoryAlignment(unittest.TestCase):
             check_fact_accounting(['eq18', 'other'], kept, {})
         plan = {'dropped_facts': [{'component': 'other', 'rule': 'edges_disagree', 'edges': [0]}]}
         report = check_fact_accounting(['eq18', 'eq19', 'other'], kept,
-                                       {**plan, 'visible_history': {'facts': ['eq19']}})
+                                       {**plan, 'ghost_history': {'facts': ['eq19']}})
         self.assertEqual(report, {'kept': 2, 'dropped': [{'component': 'other', 'rule': 'edges_disagree'}]})
         report = check_fact_accounting(['other'], kept, {'dropped_binders': [{'binder': 'b', 'facts': ['other']}]})
         self.assertEqual(report['dropped'], [{'component': 'other', 'rule': 'unheld_binder:b'}])

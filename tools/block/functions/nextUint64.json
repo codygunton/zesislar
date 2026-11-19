@@ -145,11 +145,9 @@
   "hist_visible": [
     "decodeItemCallDomain",
     "decodeItemCallMeaning",
-    "zesu_named_eq",
     "<> \\(0%Z\\)",
     "zesu_byte_window_fold",
     "orb \\(negb \\(bool_decide",
-    "8%Z < bv_unsigned",
     "bv_signed \\(BV 128%N 8%Z\\) >= bv_signed \\(bv_zero_extend 128%N"
   ]
 }

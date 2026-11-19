@@ -84,8 +84,10 @@ def call_visible_patterns(pc, calls, block_starts, binders):
     """Visible facts of a block that ends in a call or is the return site of one (JOINS.json `calls`).
 
     The record of the last call (`…CallDomain`/`…CallMeaning` facts on the newest call layer's
-    binders) and the named equations of the registers the calls pass on (`named_registers`).
-    Function-domain facts and the lengths of live outcome arrays are visible in every block."""
+    binders), its nonzero guards on that outcome (`… <> (0%Z)`), its slice window over the newest
+    kept cursors (`call_boundary` `<call>window_<binder>`) and the named equations of the registers
+    the calls pass on (`named_registers`). Function-domain facts and the lengths of live outcome
+    arrays are visible in every block. Records, guards and windows of older calls stay hidden."""
     start = int(pc, 0)
     later = [other for other in block_starts if other > start]
     end = min(later) if later else None
@@ -100,7 +102,10 @@ def call_visible_patterns(pc, calls, block_starts, binders):
     named = sorted({name for plan in calls.values() for name in plan.get('named_registers', {}).values()})
     # A call record names the call's outcome bytes `<prefix>after`.
     outcome = r"(?<![\w'.])" + newest + r"after(?![\w'])"
-    patterns = [r"\w+Call(?:Domain|Meaning)\b(?=[\s\S]*" + outcome + ")", outcome + r"[\s\S]*\w+Call(?:Domain|Meaning)\b"]
+    kept = r"\(?" + newest + r"kept_\w+\)?"
+    patterns = [r"\w+Call(?:Domain|Meaning)\b(?=[\s\S]*" + outcome + ")", outcome + r"[\s\S]*\w+Call(?:Domain|Meaning)\b",
+                r"^(?=[\s\S]*" + outcome + r")(?=[\s\S]*<> \(0%Z\))",
+                r"<= bv_unsigned " + kept + r" /\\ bv_unsigned " + kept + r" \+ bv_unsigned "]
     if named:
         patterns.append(r"\bzesu_named_eq \(?(?:" + '|'.join(map(re.escape, named)) + r")(?![\w'])")
     return patterns
@@ -145,16 +150,6 @@ def conjunction(facts):
     return ' /\\ '.join('(' + unwrap(fact) + ')' for fact in facts) if facts else 'True'
 
 
-def history_copies(binders, visible, visible_patterns, varying=()):
-    """The visible facts an entry also states in its history: groups (`∃ b…, …`) and facts that a
-    visible pattern selects and that name an entry binder; none on a loop-varying binder."""
-    names = [binder['name'] for binder in binders]
-    return [fact for fact in visible
-            if not any(mentions(name, fact) for name in varying)
-            and (unwrap(fact).startswith('∃') or (any(mentions(name, fact) for name in names) and any(
-                re.search(pattern, fact, re.S) for pattern in visible_patterns)))]
-
-
 def seal_alternative(name, plain_telescope, plain_binders, binders, resources, facts, visible_patterns=(), pinned=(),
                      grouped=False, varying=()):
     """Return (declarations, body, meta) of one sealed entry variant.
@@ -163,11 +158,6 @@ def seal_alternative(name, plain_telescope, plain_binders, binders, resources, f
     body: the iProp body of the entry variant; meta: the data that the edge record reads."""
     live, ghost, visible, hidden = classify(binders, resources, facts, visible_patterns, pinned,
                                             definitional=grouped)
-    # The history also holds a copy of each visible group and each visible fact a visible pattern
-    # selects on an entry binder (call records, named equations): an edge or a `ZesuHistReveal`
-    # instance proves a successor fact that regroups them from the history alone (the block's
-    # automation neither keeps those facts nor chooses the witnesses of a new existential).
-    hidden = hidden + history_copies(binders, visible, visible_patterns, varying)
     hist = name + '_Hist'
     # The history takes only the live binders its facts mention. A loop class keeps
     # every fact on a loop-varying binder visible, so its history is the same on both sides of the

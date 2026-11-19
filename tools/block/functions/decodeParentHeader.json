@@ -1,10 +1,6 @@
 {
   "function": "decodeParentHeader",
   "hist_visible": [
-    "decodeItemCallDomain",
-    "decodeItemCallMeaning",
-    "zesu_named_eq",
-    "<> \\(0%Z\\)",
     "bv_signed \\(BV 128%N 8%Z\\)"
   ],
   "args_type": "ParentHeaderArgs",

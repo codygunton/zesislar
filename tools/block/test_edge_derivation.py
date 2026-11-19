@@ -122,14 +122,5 @@ class FreeMaskWitness(unittest.TestCase):
         self.assertEqual((rows[0]['expression'], rows[0]['identity']), ('m', True))
 
 
-class HistoryCopies(unittest.TestCase):
-    def test_visible_groups_and_pattern_facts_on_binders_are_copied_into_the_history(self):
-        binders = [{'name': 'k', 'type': T}, {'name': 'i', 'type': T}]
-        visible = ['(zesu_named_eq k (g args))', '(∃ (v : bv 64), (Q v k))', '(List.length l = 4)%nat',
-                   '(zesu_named_eq i (g args))', '(domain args)']
-        self.assertEqual(entry_hist.history_copies(binders, visible, [r'zesu_named_eq'], varying=['i']),
-                         ['(zesu_named_eq k (g args))', '(∃ (v : bv 64), (Q v k))'])
-
-
 if __name__ == '__main__':
     unittest.main()
