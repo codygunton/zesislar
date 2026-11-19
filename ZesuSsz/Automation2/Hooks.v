@@ -2471,17 +2471,6 @@ Ltac ZesuSsz.Automation2.CodecArrayRead.zesu_codec_array_direct_value ::=
     subst loaded;
     try zesu_return_integer_even_mask).
 
-(* A jump to a symbolic target (a return through a reloaded address) needs
-   the target's range, alignment and identity, which a function's folded
-   precondition (a domain predicate of conjunctions) states. Open each folded
-   precondition once when the requested instruction address is symbolic. *)
-Ltac zesu_open_folded_jump_facts :=
-  lazymatch goal with
-  | |- envs_entails _ (find_in_context (FindInstrKind ?requested _) _) =>
-      tryif ZesuSsz.Automation2.VmClosed.zesu_closed_term requested then fail else idtac
-  end;
-  zesu_open_folded_facts.
-
 Ltac zesu_prefer_owned_instr_pre :=
   lazymatch goal with
   | |- envs_entails _ (find_in_context (FindInstrKind _ _) _) =>
@@ -2507,6 +2496,21 @@ Ltac zesu_prefer_owned_instr_pre :=
             end)
       end
   end.
+
+(* A jump to a symbolic target (a return through a reloaded address) needs
+   the target's range, alignment and identity, which a function's folded
+   precondition (a domain predicate of conjunctions) states. Open each folded
+   precondition once when the requested instruction address is symbolic and
+   no owned `instr_pre` at that address answers the lookup (then the next
+   alternative takes it, and the folded facts stay folded for the finisher). *)
+Ltac zesu_open_folded_jump_facts :=
+  lazymatch goal with
+  | |- envs_entails _ (find_in_context (FindInstrKind ?requested _) _) =>
+      tryif ZesuSsz.Automation2.VmClosed.zesu_closed_term requested then fail else idtac
+  end;
+  (* `gfail`: the lookup can close the goal, and `fail` on no goal succeeds. *)
+  tryif (idtac; zesu_prefer_owned_instr_pre) then gfail 0 else idtac;
+  zesu_open_folded_facts.
 
 (* Each alternative carries a telemetry name (Telemetry.v, `zesu_talt`). *)
 Ltac zesu_liAStep :=
