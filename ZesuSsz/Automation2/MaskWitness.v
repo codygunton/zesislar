@@ -10,6 +10,7 @@
 Require Import isla.riscv64.riscv64.
 Require Import ZesuSsz.Automation2.BitvectorFacts.
 Require ZesuSsz.Automation2.VmClosed.
+Require Import ZesuSsz.Automation2.LiaHook.
 From iris.proofmode Require Import environments tactics.
 From stdpp Require Import bitvector.definitions bitvector.tactics.
 From Coq Require Import ZArith.ZArith.
@@ -86,14 +87,41 @@ Ltac zesu_mask_zero_tuple T :=
       constr:(li_pair (BV width 0) tail)
   end.
 
+(* Guard on the conjuncts that do not mention the witnesses: each linear
+   comparison among them must follow from the context by linear arithmetic.
+   A telescope whose independent part carries a path fact the context states
+   only in another form (one that a source route proves after the choice)
+   is left to that route: committed here, the steps after the choice fail on
+   that fact only after rebuilding the requested resources. *)
+Ltac zesu_mask_independent_linear fact :=
+  assert_succeeds (idtac; let Hindependent := fresh "HmaskIndependent" in
+    assert (Hindependent : fact) by zesu_lia).
+
+Ltac zesu_mask_independent_fact fact :=
+  lazymatch fact with
+  | ?left /\ ?right => zesu_mask_independent_fact left; zesu_mask_independent_fact right
+  | (_ <= _)%Z => zesu_mask_independent_linear fact
+  | (_ < _)%Z => zesu_mask_independent_linear fact
+  | (_ >= _)%Z => zesu_mask_independent_linear fact
+  | (_ > _)%Z => zesu_mask_independent_linear fact
+  | _ => idtac
+  end.
+
+Ltac zesu_mask_independent independent :=
+  lazymatch independent with
+  | @bi_sep _ ?left ?right => zesu_mask_independent left; zesu_mask_independent right
+  | @bi_pure _ ?fact => zesu_mask_independent_fact fact
+  | _ => idtac
+  end.
+
 (* Walk the telescope's body under its binder. A conjunct that does not
-   mention the witnesses is left to the steps after the choice; a pure
-   conjunct that mentions them must close for the candidate; a resource that
-   mentions them refuses the telescope, so the step never preempts a
-   resource-driven witness route. *)
+   mention the witnesses is left to the steps after the choice (its linear
+   comparisons guarded above); a pure conjunct that mentions them must close
+   for the candidate; a resource that mentions them refuses the telescope,
+   so the step never preempts a resource-driven witness route. *)
 Ltac zesu_mask_pure_closable body witness :=
   lazymatch body with
-  | (fun _ => ?independent) => idtac
+  | (fun _ => ?independent) => zesu_mask_independent independent
   | (fun x => @bi_sep _ (@?left x) (@?right x)) =>
       zesu_mask_pure_closable left witness; zesu_mask_pure_closable right witness
   | (fun x => @bi_pure _ (@?fact x)) =>
