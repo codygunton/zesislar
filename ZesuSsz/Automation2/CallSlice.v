@@ -7,6 +7,7 @@ Require Import ZesuSsz.Contracts.IslarisMemory.
 Require Import ZesuSsz.Automation2.CallSliceInterface.
 Require Import ZesuSsz.Automation2.DomainRanges.
 Require Import ZesuSsz.Automation2.InteriorByteSlice.
+Require ZesuSsz.Automation2.ResourceGroups.
 Require ZesuSsz.Automation2.BytePositionEquations.
 Local Open Scope Z_scope.
 
@@ -457,11 +458,15 @@ Ltac zesu_call_restore :=
   end.
 
 (* The step at the existential a call spec asks for; it runs where the
-   interior-slice lend runs and before it (`Finish.zesu_run_pass_v1`). *)
+   interior-slice lend runs and before it (`Finish.zesu_run_pass_v1`).
+   Lithium may have let-bound the proof-mode environment (`IPM_JANNO`): the
+   step reads the held arrays, so it first substitutes that binding back, as
+   the interior-slice lend does. *)
 Ltac zesu_call_slice_step :=
   lazymatch goal with
   | |- environments.envs_entails _ (@bi_exist _ _ _) =>
       let _ := constr:(_ : ZesuStepInteriorByteSlice) in
+      ZesuSsz.Automation2.ResourceGroups.zesu_expose_environment_alias;
       first [zesu_call_slice | zesu_call_restore]
   end.
 

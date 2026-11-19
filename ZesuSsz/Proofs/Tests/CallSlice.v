@@ -66,6 +66,41 @@ Proof.
   zesu_call_slice_step.
   iFrame.
 Qed.
+
+(* The same call after Lithium let-bound the proof-mode environment
+   (`let_bind_envs`, `IPM_JANNO`): the step substitutes the binding back and
+   fires; without that it sees no held array and the interior-slice lend takes
+   the existential instead. *)
+Lemma call_slice_aliased_environment (args : ParentHeaderArgs) (x19 x18 : bv 64) (call2_after : DecodeItemOutcome) (before0 : list byte)
+    (a13 a14 a15 a16 a17 b13 b14 b15 b16 b17 : bv 64) (R : iProp Sigma) :
+  parentHeaderArgsWellFormed args ->
+  (bv_unsigned (parentHeaderInputPointer args) <= bv_unsigned x19)%Z ->
+  (bv_unsigned x19 + bv_unsigned x18 <= bv_unsigned (parentHeaderInputPointer args) + Z.of_nat (@length (bv 8) (parentHeaderInputBytes args)))%Z ->
+  length call2_after = 40%nat ->
+  decodeItemCallDomain (decodeItemCallDataArgs [OUT args; x19; x18; b13; b14; b15; b16; b17]
+     (bv_add (parentHeaderStackPointer args) (BV 64%N 18446744073709551216%Z)) (bv_unsigned (parentHeaderInputEnd args))
+     (take (Z.to_nat (bv_unsigned x18)) (drop (Z.to_nat (bv_unsigned x19 - bv_unsigned (parentHeaderInputPointer args))) (parentHeaderInputBytes args))) before0) ->
+  decodeItemCallMeaning (decodeItemCallDataArgs [OUT args; x19; x18; b13; b14; b15; b16; b17]
+     (bv_add (parentHeaderStackPointer args) (BV 64%N 18446744073709551216%Z)) (bv_unsigned (parentHeaderInputEnd args))
+     (take (Z.to_nat (bv_unsigned x18)) (drop (Z.to_nat (bv_unsigned x19 - bv_unsigned (parentHeaderInputPointer args))) (parentHeaderInputBytes args))) before0) call2_after ->
+  bv_unsigned (parentHeaderInputPointer args) ↦ₘ∗ parentHeaderInputBytes args -∗
+  (bv_unsigned (parentHeaderStackPointer args) - 400 + 8) ↦ₘ∗ before0 -∗
+  (bv_unsigned (parentHeaderStackPointer args) - 400 + 48 + 16) ↦ₘ∗ call2_after -∗
+  (bv_unsigned (parentHeaderStackPointer args) - 400 + 48 + 56) ↦ₘ? 216 -∗
+  R -∗
+  ∃ x : list byte *ₗ list byte *ₗ (),
+    bv_unsigned (bv_add x19 (W24 call2_after)) ↦ₘ∗ x.2ₗ ∗
+    bv_unsigned (OUT2 args) ↦ₘ∗ x.1ₗ ∗
+    ⌜decodeItemCallDomain (decodeItemCallDataArgs [OUT2 args; bv_add x19 (W24 call2_after); bv_sub x18 (W24 call2_after); a13; a14; a15; a16; a17]
+       (bv_add (parentHeaderStackPointer args) (BV 64%N 18446744073709551216%Z)) (bv_unsigned (parentHeaderInputEnd args)) x.2ₗ x.1ₗ)⌝ ∗
+    R.
+Proof.
+  iIntros (Hwf Hlo Hhi Hlen Hdom Hmean) "? ? ? ? ?".
+  let_bind_envs.
+  lazymatch goal with |- environments.envs_entails ?e _ => is_var e end.
+  zesu_call_slice_step.
+  iFrame.
+Qed.
 End window_advanced.
 
 (* Window of the previous call's payload, its pointer in the load form, with
