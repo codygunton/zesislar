@@ -46,6 +46,22 @@ class Derivation(unittest.TestCase):
         # d is bound by the group HF3, c by the same group: taking (S c d) from HF3 and c from elsewhere fails.
         self.assertIsNone(source.derive('∃ (c : bv 64) (d : bv 64), (zesu_named_eq c (f k)) /\\ (S c d)'))
 
+    def test_a_flat_group_is_taken_from_a_group_nested_in_a_history_group(self):
+        # The 0368 -> 026c shape: a later join bound the earlier record group as one member of its own
+        # group, and the successor states the records as one flat group over a live block binder too.
+        pre = {**PRE, 'hidden': ['∃ (a : bv 64), (∃ (b : bv 64), (R b) /\\ (S b a)) /\\ (Q a k) /\\ (P b)']}
+        source = Source(pre, visible=False)
+        term, opened, used = source.derive('∃ (a : bv 64) (b : bv 64), (R b) /\\ (S b a) /\\ (Q a k)')
+        self.assertEqual(term, '(ex_intro _ a_HF0 (ex_intro _ b_HF0_0 (conj HF0_0_0 (conj HF0_0_1 HF0_1))))')
+        self.assertEqual(opened, {'HF0', 'HF0_0'})
+        self.assertEqual(source.open_sentence('HF0_0'), '  destruct HF0_0 as (b_HF0_0 & HF0_0_0 & HF0_0_1).')
+        # (P b) names a b that neither a source group nor the block binds: no single witness for b.
+        self.assertIsNone(source.derive('∃ (b : bv 64), (R b) /\\ (P b)'))
+        # A member over a name its own group binds (k) does not state the block binder k.
+        shadow = Source({**PRE, 'hidden': ['∃ (k : bv 64) (v : bv 64), (Q v k)']}, visible=False)
+        self.assertIsNone(shadow.derive('∃ (v : bv 64), (Q v k)'))
+        check_edge_sentences('Proof.\n  destruct HF0_0 as (b_HF0_0 & HF0_0_0 & HF0_0_1).\nQed.\n')
+
     def test_the_proof_sentences_are_in_the_edge_sentence_list(self):
         text = ('Proof.\n  destruct HF3 as (c_HF3 & d_HF3 & HF3_0 & HF3_1).\n'
                 '  destruct HV1 as (v_HV1 & HV1_0).\n'

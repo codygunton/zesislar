@@ -154,24 +154,48 @@ def group_parts(text):
 class Source:
     """The facts a proof at a block entry can name: its history facts `HF<i>` (`destruct Hh`), the
     members `HF<i>_<j>` of a history group fact (`destruct HF<i>` binds the group's names as
-    `<name>_HF<i>`) and, with `visible`, its visible facts `HV<k>` (premises of an edge, which the
-    block proves from its context) and their group members `HV<k>_<j>`."""
+    `<name>_HF<i>`), the members `HF<i>_<j>_<k>` of a group nested as a member (a join that bound an
+    earlier history group as one of its own members) and, with `visible`, its visible facts `HV<k>`
+    (premises of an edge, which the block proves from its context) and their group members."""
 
     def __init__(self, pre, visible=True):
         self.binders = set(binder_names(pre, 'parameters') + binder_names(pre, 'live')
                            + binder_names(pre, 'ghost')
                            + [binder['name'] for binder in pre.get('hist_live', [])])
-        self.candidates, self.groups = {}, {}
+        self.candidates, self.groups, self.parent = {}, {}, {}
         for where, prefix in (('hidden', 'HF'), ('visible', 'HV')) if visible else (('hidden', 'HF'),):
             for index, fact in enumerate(pre[where]):
                 hypothesis = prefix + str(index)
                 self.candidates.setdefault(key(fact), []).append((hypothesis, None))
-                parts = group_parts(fact)
-                if parts:
-                    self.groups[hypothesis] = parts
-                    for position, member in enumerate(parts[1]):
-                        self.candidates.setdefault(key(member), []).append(
-                            (hypothesis + '_' + str(position), hypothesis))
+                self._index_group(hypothesis, fact)
+
+    def _index_group(self, hypothesis, fact):
+        parts = group_parts(fact)
+        if not parts:
+            return
+        self.groups[hypothesis] = parts
+        for position, member in enumerate(parts[1]):
+            name = hypothesis + '_' + str(position)
+            self.candidates.setdefault(key(member), []).append((name, hypothesis))
+            if group_parts(member):
+                self.parent[name] = hypothesis
+                self._index_group(name, member)
+
+    def ancestors(self, group):
+        """`group` and the groups it is nested in, innermost first."""
+        chain = []
+        while group is not None:
+            chain.append(group)
+            group = self.parent.get(group)
+        return chain
+
+    def binding(self, name, group):
+        """The group whose telescope binds `name` in a member of `group` (the innermost one), None
+        for a block binder, or False when neither binds it."""
+        for scope in self.ancestors(group):
+            if name in self.groups[scope][0]:
+                return scope
+        return None if name in self.binders else False
 
     def hidden_names(self):
         """Names a block cannot state: bound in a history group (and no block binder)."""
@@ -180,8 +204,9 @@ class Source:
 
     def derive(self, text):
         """(proof term, opened groups, used top-level hypotheses) of `text`, or None: the fact itself,
-        or a group `∃ b…, (F1) /\\ …` each of whose members is a source fact or group member, each
-        b witnessed by the block binder b or by one opened source group's b."""
+        or a group `∃ b…, (F1) /\\ …` each of whose members is a source fact or a member of a (nested)
+        source group, each b witnessed by the block binder b or by the b of the source group whose
+        telescope binds it in that member. Opened groups include the groups they are nested in."""
         flat = [hypothesis for hypothesis, owner in self.candidates.get(key(text), []) if owner is None]
         if flat:
             return flat[0], set(), {flat[0]}
@@ -199,10 +224,7 @@ class Source:
             options = None
             for member, candidates in zip(members, choices):
                 if free(name, member):
-                    # From group g a name g binds is g's; any other name is the block binder.
-                    fits = {group if group is not None and name in self.groups[group][0] else None
-                            for _, group in candidates
-                            if (group is not None and name in self.groups[group][0]) or name in self.binders}
+                    fits = {self.binding(name, group) for _, group in candidates} - {False}
                     options = fits if options is None else options & fits
             if not options:
                 return None
@@ -211,17 +233,18 @@ class Source:
         for member, candidates in zip(members, choices):
             pick = None
             for term, group in candidates:
-                bound = self.groups[group][0] if group is not None else []
-                if (all(name in owner for name in bound if free(name, member))
-                        and all(owner[name] == (group if name in bound else None)
-                                for name in names if free(name, member))):
+                # A name the candidate's (enclosing) groups bind that the fact does not bind would
+                # stand for a different value than the fact's free name.
+                captured = {name for scope in self.ancestors(group) for name in self.groups[scope][0]
+                            if name not in names and free(name, member)}
+                if not captured and all(self.binding(name, group) == owner[name]
+                                        for name in names if free(name, member)):
                     pick = (term, group)
                     break
             if pick is None:
                 return None
             terms.append(pick[0])
-            if pick[1] is not None:
-                opened.add(pick[1])
+            opened.update(self.ancestors(pick[1]))
         proof = terms[-1]
         for term in reversed(terms[:-1]):
             proof = '(conj ' + term + ' ' + proof + ')'
@@ -590,7 +613,7 @@ EDGE_SENTENCES = [
     r"unfold " + _NAME + r" in Hh",
     r"clear Hh",
     r"pose proof Hh as HF0",
-    r"destruct (?:Hh|H[FV]\d+) as \((?:" + _NAME + r")(?: & " + _NAME + r")*\)",
+    r"destruct (?:Hh|H[FV]\d+(?:_\d+)*) as \((?:" + _NAME + r")(?: & " + _NAME + r")*\)",
     r'iIntros "HN"',
     r'iDestruct (?:"HN"|\("HN" \$!(?: ' + _NAME + r')+\)) as (?:\((?:' + _NAME + r' ?)+\) )?"\((?:%' + _NAME
     + r' & )*_\)"',

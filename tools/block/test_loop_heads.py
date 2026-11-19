@@ -66,3 +66,27 @@ class WrapLoopHeads(unittest.TestCase):
                 self.assertEqual(render_loop_head(row['block'], pilot_header(load_profile()), structural),
                                  (ROOT / ('ZesuSsz/Generated/DecodeItem/FP301/Pilot' + row['block']
                                           + ('Structural' if structural else 'Entries') + '.v')).read_text())
+
+
+class LoopClassAccounting(unittest.TestCase):
+    """A loop class keeps every pure fact and path condition of its entry edge, or drops it under a
+    named rule (join_generalize.check_fact_accounting): no fact vanishes in the class construction."""
+
+    def test_each_entry_fact_is_kept_or_dropped_under_a_named_rule(self):
+        from loop_design import class_components
+        from symbolic_state import Expr, input_expr, operation
+        order = ['x18', 'domain', 'record', 'placeholder', 'array']
+        sources = {'x18': '"x18" ↦ᵣ RVal_Bits (k : bv 64%N)', 'domain': '⌜domain args⌝',
+                   'record': '⌜zesu_named_eq k (f args)⌝', 'placeholder': '⌜True⌝', 'array': 'a ↦ₘ∗ bytes'}
+        kept = operation('=', input_expr('k'), input_expr('args_len'))
+        outside = operation('=', input_expr('k'), input_expr('forward_witness_1'))
+        unrenderable = Expr('unrendered', (input_expr('k'),), 1)
+        owned, pure, conditions, accounting = class_components(
+            order, sources, {'x18': 'cursor'}, [kept, outside, unrenderable], {'k', 'cursor', 'i'})
+        self.assertEqual(owned, ['"x18" ↦ᵣ RVal_Bits (cursor : bv 64%N)', 'a ↦ₘ∗ bytes'])
+        self.assertEqual(pure, ['⌜domain args⌝', '⌜zesu_named_eq k (f args)⌝', '⌜True⌝'])
+        self.assertEqual(len(conditions), 1)
+        self.assertEqual(accounting['dropped'],
+                         [{'component': 'path_condition:1', 'rule': 'outside_class_scope:forward_witness_1'},
+                          {'component': 'path_condition:2', 'rule': 'trace_local_witness'}])
+        self.assertEqual(accounting['kept'], 3)
