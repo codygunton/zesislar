@@ -21,6 +21,7 @@ ROOT = Path(__file__).resolve().parents[3]
 sys.path.insert(0, str(ROOT / 'tools/block'))
 from boundary_guards import can_reach, cfg_successors
 from call_boundary import CallRefused, call_return_seed
+import entry_hist
 from function_profiles import add_return_alignment, load_profile
 from loop_design import loop_head_seed
 from forward_resource_design import _state_from_result, evaluate_owned_function
@@ -58,6 +59,7 @@ def main():
     parser.add_argument('--function', default=None, help='function profile with call design rows')
     options = parser.parse_args()
     profile = load_profile(options.function) if options.function else None
+    entry_hist.configure(profile)
     calls = profile.get('calls', []) if profile else []
     loop_designs = profile.get('loop_designs', []) if profile else []
     inputs, output = options.inputs.resolve(), options.output.resolve()

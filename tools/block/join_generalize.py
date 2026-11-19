@@ -11,9 +11,11 @@ from pathlib import Path
 import re
 
 try:
+    from . import entry_hist
     from .guard_normal_form import GuardNormalForm
     from .symbolic_state import Expr, bits, input_expr, operation
 except ImportError:
+    import entry_hist
     from guard_normal_form import GuardNormalForm
     from symbolic_state import Expr, bits, input_expr, operation
 
@@ -1060,7 +1062,8 @@ def drop_unheld_binders(state, components, carried, binders, plan, live_register
                     component['source'] = kept
                     record.setdefault('kept_facts', []).append(component['id'])
                     continue
-                stash[component['id']] = component['source']
+                if entry_hist.HIST_MODE:
+                    stash[component['id']] = component['source']
                 component['source'] = '⌜True⌝'
                 record.setdefault('facts', []).append(component['id'])
         if any(_mentions_free(component, name) for component in components
@@ -1285,7 +1288,7 @@ def generalize_owned_join(alternatives, *, original_seed, entry_pc, vocabulary,
               if not any(held_outside(index, binder_name) for index in range(len(records)))
               and any(in_facts(index, binder_name) for index in range(len(records)))
               and not all(in_facts(index, binder_name) for index in range(len(records)))]
-    if ghosts:
+    if ghosts and entry_hist.HIST_MODE:
         for index, record in enumerate(records):
             records[index] = record = {key: dict(row) for key, row in record.items()}
             group = ghost_group([record[row['id']] for row in ownership['components']], ghosts)
@@ -1447,7 +1450,7 @@ def generalize_owned_join(alternatives, *, original_seed, entry_pc, vocabulary,
             else:
                 raise ValueError('A common guard has no source condition on every edge')
         plan['common_guard_certificates'].append({'guard': guard.to_dict(), 'edges': matches})
-    disjunction = edge_guard_disjunction(alternatives, state.conditions)
+    disjunction = edge_guard_disjunction(alternatives, state.conditions) if entry_hist.HIST_MODE else None
     if disjunction is not None:
         plan['edge_guard_disjunction'] = disjunction.to_dict()
         state.conditions.append(disjunction)

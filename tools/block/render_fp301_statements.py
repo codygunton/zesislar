@@ -11,6 +11,7 @@ from render_support import definition_introduction_source, unfold_declaration
 from return_exit import (add_entry_facts, add_return_facts, add_return_precondition,
                          return_blocks, return_package)
 from function_profiles import load_profile, return_alignment_fact, return_header
+import entry_hist
 
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -20,6 +21,7 @@ LOOP_HIST_META = {}
 def render_loop_head(block, header, structural=False, profile=None):
     """Keep the source classes and frame the existing caller continuation."""
     profile = profile or load_profile()
+    entry_hist.configure(profile)
     domain_binder = ' (domain : ' + profile.args_type + ' -> Prop)'
     rows = json.loads((ROOT / profile['loop_head_fixture']).read_text())['rows']
     row = next((item for item in rows if item['block'] == block), None)
@@ -48,8 +50,7 @@ def render_loop_head(block, header, structural=False, profile=None):
             'ByteWindowFold.zesu_byte_window_fold',
             'ZesuSsz.Automation2.ByteWindowFold.zesu_byte_window_fold')
         authenticated_classes[name] = source
-        # Lane prototype: hidden history and per-slot frame cells for the loop class.
-        import entry_hist
+        # Hidden history and per-slot frame cells for the loop class (profile keys).
         design = next((item for item in profile.get('loop_designs', [])
                        if profile.pc(item['head']) == profile.pc(block)), {})
         binders_text, class_resources, class_facts = class_parts(source)
@@ -70,7 +71,6 @@ def render_loop_head(block, header, structural=False, profile=None):
         'Definition ' + name + profile.telescope() + ' (K : iProp Sigma)'
         ' : iProp Sigma := ((' + alternatives + ') ∗ K)%I.\n'))
     extra = 'Require Import lithium.lvar.\nRequire Import ZesuSsz.Automation2.ByteWindowFold.\nRequire Import ZesuSsz.Contracts.LoopFoldStart.\n'
-    import entry_hist
     output = header + extra + (entry_hist.HIST_LIBRARY if entry_hist.HIST_MODE == 'wrap' else '')
     if structural:
         output += 'Require Import ' + profile.qualified('Pilot' + block + 'Entries') + '.\n'
@@ -206,9 +206,8 @@ def first_pass_registration(name, source, profile=None):
     meta = LOOP_HIST_META.get(name)
     invariant = conj_term(fields)
     if meta is not None and 'hidden' in meta:
-        # loop-seal lane: a sealed class is `resources ∗ ⌜visible⌝ ∗ ⌜zesu_hist (Hist …)⌝`; the same
+        # A sealed class is `resources ∗ ⌜visible⌝ ∗ ⌜zesu_hist (Hist …)⌝`; the same
         # fields, split by the seal's classification, prove both parts.
-        import entry_hist
         if meta['ghost']:
             raise ValueError('A sealed loop class with ghost binders has no first-pass registration: ' + name)
         hidden = {entry_hist.normal(fact) for fact in meta['hidden']}

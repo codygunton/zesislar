@@ -245,12 +245,14 @@ if __name__ == '__main__':
     import argparse, sys
     sys.path.insert(0, str(Path(__file__).resolve().parent))
     from function_profiles import load_profile
+    import entry_hist
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--function', required=True)
     parser.add_argument('--forward', type=Path, required=True)
     parser.add_argument('--output', type=Path, required=True)
     options = parser.parse_args()
     profile = load_profile(options.function)
+    entry_hist.configure(profile)
     rows = loop_head_rows(json.loads(options.forward.read_text()), options.forward, profile)
     options.output.write_text(json.dumps(rows, indent=1, ensure_ascii=False) + '\n')
     print(json.dumps({'rows': len(rows['rows']), 'output': str(options.output)}))

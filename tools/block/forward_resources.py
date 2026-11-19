@@ -11,9 +11,11 @@ from pathlib import Path
 import re
 
 try:
+    from . import entry_hist
     from .entry_seed import _code_mask
     from .symbolic_state import Expr, MemoryWrite, _addends, _offset, bits, operation, uninitialized_binder
 except ImportError:
+    import entry_hist
     from entry_seed import _code_mask
     from symbolic_state import Expr, MemoryWrite, _addends, _offset, bits, operation, uninitialized_binder
 
@@ -624,7 +626,7 @@ def _memory_source(resource, image, transitions, aliases, vocabulary):
     if not fraction:
         raise ValueError('The resource has no inherited memory fraction')
     if resource.byte_array is not None:
-        if (isinstance(resource.length, int) and resource.length > 0
+        if (entry_hist.HIST_MODE and isinstance(resource.length, int) and resource.length > 0
                 and all(isinstance(position, int) for position in image)
                 and set(range(resource.length)) <= set(image)):
             # Every byte is stored: the array is the stored bytes, spelled as a call return spells a

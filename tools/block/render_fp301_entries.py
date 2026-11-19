@@ -78,8 +78,9 @@ def bind(p):
 
 forward = Path(receipt["source_pass"]["path"])
 data = json.loads(forward.read_text())
-# Lane prototype: hidden history (ZESU_ENTRY_HIST) and per-slot frame cells (ZESU_FRAME_SLOTS).
+# Hidden history (`entry_hist`) and per-slot frame cells (`frame_slots`): profile keys.
 import entry_hist
+entry_hist.configure(load_profile(options.function))
 slot_table = slot_regions = None
 if entry_hist.FRAME_SLOTS:
     slot_table = entry_hist.frame_slot_table(data, lambda value: Expr.from_dict(value).coq())
@@ -486,7 +487,7 @@ for suffix, slot in units:
                 text = render(component)
                 split = None
                 if entry_hist.FRAME_SLOTS and component["kind"] in ("byte_array", "unknown_byte_array"):
-                    # Lane prototype (b): one cell per saved-register slot, at the store's address form.
+                    # One cell per saved-register slot, at the store's address form.
                     split = entry_hist.slot_components(
                         component["kind"], component["address"],
                         component["value" if component["kind"] == "byte_array" else "length"],
@@ -510,7 +511,7 @@ for suffix, slot in units:
                              re.sub(r'"[^"]*"', "", result))
             ]
             if seal_as is not None and entry_hist.HIST_MODE:
-                # Lane prototype (a): ghost binders and hidden facts move into one history proposition.
+                # Ghost binders and hidden facts move into one history proposition.
                 sealed[seal_as] = entry_hist.seal_alternative(
                     seal_as, plain_telescope, plain_binders,
                     [{"name": binder["name"], "type": expression(binder["type"], "source type")}

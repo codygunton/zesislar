@@ -44,6 +44,7 @@ import hashlib
 import json
 import re
 
+import entry_hist
 from entry_seed import definition_body
 from forward_resources import _strip_enclosure, _top_positions, apply_owned_writes, render_resource_boundary
 from forward_resource_design import _state_from_result
@@ -375,7 +376,9 @@ def call_return_seed(edges, *, call, function_root, root_seed, shapes, vocabular
     # binders take the first free prefix call_, call2_, call3_, ...
     taken = set(inherited)
     # A layer whose binders a join bound inside its history still owns its component ids.
-    taken.update(component['id'] for seed in (root_seed, *origin_seeds) for component in seed.ownership['components'])
+    if entry_hist.HIST_MODE:
+        taken.update(component['id'] for seed in (root_seed, *origin_seeds)
+                     for component in seed.ownership['components'])
     for edge in edges:
         for value in _state_from_result(edge['state']).registers.values():
             taken.update(_inputs(value))
@@ -628,7 +631,7 @@ def call_return_seed(edges, *, call, function_root, root_seed, shapes, vocabular
     for component in ownership['components']:
         key, kind = component['id'], component['kind']
         node = dict(component['seed_component'])
-        if kind == 'opaque' and str(node.get('coq', '')).startswith('⌜'):
+        if entry_hist.HIST_MODE and kind == 'opaque' and str(node.get('coq', '')).startswith('⌜'):
             # A pure fact keeps the text its origin seeds hold: a join or loop head before the call
             # may have weakened it (bound its ghost binders, or dropped it), and the return site
             # must not restate more history than the call block's entry has.
@@ -767,6 +770,8 @@ def call_return_seed(edges, *, call, function_root, root_seed, shapes, vocabular
     except ImportError:
         from join_generalize import _bound_names
     def free_text(source):
+        if not entry_hist.HIST_MODE:
+            return source
         bound = _bound_names(source)
         return ' '.join(atom for atom in _atoms(source) if atom not in bound)
     text = ' '.join([free_text(node.get('original_component', node.get('coq', ''))) for node in nodes

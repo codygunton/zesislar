@@ -1,26 +1,34 @@
-"""Lane prototype (researcher/generator): hidden history and per-slot frame cells for FP301 entries.
+"""Hidden history and per-slot frame cells for FP301 entries.
 
-ZESU_ENTRY_HIST selects the emit of the pure facts of one entry variant:
-  unset/empty  unchanged render
-  wrap         `⌜zesu_hist (<entry>_Hist args returnAddress <live binders>)⌝`, zesu_hist sealed once in a library
-  opaque       `⌜<entry>_Hist args returnAddress <live binders>⌝`, the definition `Typeclasses Opaque` and `Opaque`
-  modtype      `⌜<entry>_Hist …⌝`, the definition behind an opaque module signature (no Proof/Qed)
-ZESU_FRAME_SLOTS=1 states each saved-register slot of the frame as one 8-byte cell at the address
-the store computes.
+The function profile selects the shape (`configure`):
+  `"entry_hist": "wrap"`  the pure facts of one entry variant become visible facts and one hidden
+                          `⌜zesu_hist (<entry>_Hist args returnAddress <live binders>)⌝`; without the
+                          key the legacy shape is rendered.
+  `"frame_slots": true`   each saved-register slot of the frame is one 8-byte cell at the address the
+                          store computes.
 
 Visible facts: facts that mention no entry binder (function domain, return alignment), `List.length`
 facts of live binders, and facts that match a profile `hist_visible` regular expression. Every other
-fact is hidden. A live binder is one that an owned resource mentions; the others are ghost binders
-and are bound inside the history.
+fact is hidden; a join history (`zesu_join_history`) is always hidden. A live binder is one that an
+owned resource mentions; the others are ghost binders and are bound inside the history.
 """
-import os
 import re
 
-HIST_MODE = os.environ.get('ZESU_ENTRY_HIST', '')
-FRAME_SLOTS = os.environ.get('ZESU_FRAME_SLOTS', '') == '1'
-if HIST_MODE not in ('', 'wrap', 'opaque', 'modtype'):
-    raise ValueError('ZESU_ENTRY_HIST: unknown mode ' + HIST_MODE)
-HIST_LIBRARY = 'Require Import ZesuSsz.Hist.Hist.\n'
+HIST_MODE = ''
+FRAME_SLOTS = False
+HIST_LIBRARY = 'Require Import ZesuSsz.Automation2.Hist.\n'
+
+
+def configure(profile):
+    """Read the shape keys of a function profile (None: legacy shape)."""
+    global HIST_MODE, FRAME_SLOTS
+    mode = profile.get('entry_hist', '') if profile else ''
+    if mode not in ('', 'wrap'):
+        raise ValueError('entry_hist: unknown mode ' + str(mode))
+    slots = profile.get('frame_slots', False) if profile else False
+    if not isinstance(slots, bool):
+        raise ValueError('frame_slots: a boolean is required')
+    HIST_MODE, FRAME_SLOTS = mode, slots
 
 
 def mentions(name, text):
@@ -79,7 +87,7 @@ def classify(binders, resources, facts, visible_patterns=(), pinned=(), definiti
         on_ghost = any(name not in live_names for name in named)
         keep = not on_ghost and '(* join history *)' not in fact and (
             not named or is_length_fact(fact) or any(re.search(pattern, fact, re.S) for pattern in visible_patterns))
-        # Loop classes (loop-seal lane): `b = <closed term>` fixes the value of a live binder; it is
+        # Loop classes: `b = <closed term>` fixes the value of a live binder; it is
         # state, not history, and stays visible (decodeItem's loop end register).
         if (definitional and not keep and len(named) == 1 and named[0] in live_names
                 and re.fullmatch(re.escape(named[0]) + r'\s*=\s*.*', unwrap(fact), re.S)):
@@ -106,7 +114,7 @@ def seal_alternative(name, plain_telescope, plain_binders, binders, resources, f
     live, ghost, visible, hidden = classify(binders, resources, facts, visible_patterns, pinned,
                                             definitional=grouped)
     hist = name + '_Hist'
-    # loop-seal lane: the history takes only the live binders its facts mention. A loop class keeps
+    # The history takes only the live binders its facts mention. A loop class keeps
     # every fact on a loop-varying binder visible, so its history is the same on both sides of the
     # back edge and on the exit edge (identity, no binder renames).
     hist_live = [binder for binder in live if any(mentions(binder['name'], fact) for fact in hidden)]
@@ -118,22 +126,8 @@ def seal_alternative(name, plain_telescope, plain_binders, binders, resources, f
     if ghost:
         proposition = '∃ ' + telescope(ghost) + ', ' + proposition
     arguments = ''.join(' (' + binder['name'] + ')' for binder in plain_binders + hist_live)
-    declarations = []
-    if HIST_MODE == 'modtype':
-        signature = ' -> '.join([binder['type'] if ' ' not in binder['type'] else '(' + binder['type'] + ')'
-                                 for binder in plain_binders + hist_live] + ['Prop'])
-        declarations.append((hist + 'Def', 'Definition ' + hist + 'Def' + parameters + ' : Prop := ('
-                             + proposition + ').\n', 'aux'))
-        declarations.append((hist, 'Module Type ' + hist + 'Sig.\n  Parameter ' + hist + ' : ' + signature + '.\n'
-                             '  Parameter ' + hist + '_eq : ' + hist + ' = ' + hist + 'Def.\nEnd ' + hist + 'Sig.\n'
-                             'Module ' + hist + 'Seal : ' + hist + 'Sig.\n  Definition ' + hist + ' := ' + hist
-                             + 'Def.\n  Definition ' + hist + '_eq : ' + hist + ' = ' + hist + 'Def := eq_refl.\nEnd '
-                             + hist + 'Seal.\nExport ' + hist + 'Seal.\n', 'modtype'))
-    else:
-        declarations.append((hist, 'Definition ' + hist + parameters + ' : Prop := (' + proposition + ').\n', 'hist'))
-    application = hist + arguments
-    if HIST_MODE == 'wrap':
-        application = 'zesu_hist (' + application + ')'
+    declarations = [(hist, 'Definition ' + hist + parameters + ' : Prop := (' + proposition + ').\n', 'hist')]
+    application = 'zesu_hist (' + hist + arguments + ')'
     if grouped:
         # A loop class keeps its shape: the resources in one group, then one conjunction of visible facts.
         body = ('(' + ' ∗ '.join(resources) + ') ∗ ⌜' + conjunction(visible) + '⌝ ∗ ⌜' + application + '⌝')
@@ -153,10 +147,7 @@ def seal_alternative(name, plain_telescope, plain_binders, binders, resources, f
 
 def structural_opacity(symbol, kind):
     """The Structural lines of a history declaration: opacity only, no unfold instance, no introduction."""
-    if kind == 'hist':
-        return ('#[export] Typeclasses Opaque ' + symbol + '.\n'
-                + ('#[global] Opaque ' + symbol + '.\n' if HIST_MODE == 'opaque' else ''))
-    return ''
+    return '#[export] Typeclasses Opaque ' + symbol + '.\n' if kind == 'hist' else ''
 
 
 # ---- per-slot frame cells ----
@@ -359,7 +350,7 @@ def seal_class(name, prefix, binders_text, resources, facts, plain_binders, desi
         text = (prefix + ':= (∃ ' + telescope(binders) + ', (' + ' ∗ '.join(resources) + ') ∗ ⌜'
                 + conjunction(facts) + '⌝)%I.\n')
         return [], text, {'entry': name, 'frame_slots': slot_reports}
-    # loop-seal lane: the loop-varying binders are the design's registers (by binder name, or by the
+    # The loop-varying binders are the design's registers (by binder name, or by the
     # class's register resource when the design names its seed binders) and the index.
     names = {binder['name'] for binder in binders}
     register_binders = {}
