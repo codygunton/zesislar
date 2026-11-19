@@ -6,7 +6,7 @@ import unittest
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import entry_hist
-from render_edges import (Source, check_edge_sentences, edge_sentences, free_witnesses, rocq_edge,
+from render_edges import (Source, check_edge_sentences, edge_sentences, free_witnesses, is_identity, rocq_edge,
                           stated_at_source, visible_accounting)
 
 T = 'bv 64'
@@ -136,6 +136,22 @@ class NewGhostScope(unittest.TestCase):
         self.assertIn('  iDestruct "HN" as (n) "_".\n', text)
         self.assertLess(text.index('iDestruct "HN"'), text.index('exists n.'))
         check_edge_sentences(text)
+
+
+class IdentityEdge(unittest.TestCase):
+    META = {'hist': 'C_Hist', 'parameters': [{'name': 'args', 'type': 'A'}], 'live': [{'name': 'k', 'type': T}]}
+
+    def test_a_loop_back_edge_with_new_visible_facts_only_is_the_identity_instance(self):
+        unchanged = [{'succ': ['hidden', 0], 'pre': ['hidden', 0]}, {'succ': ['visible', 0], 'pre': ['visible', 1]}]
+        new = [{'succ': ['visible', 1], 'text': '0 <= i'}]
+        self.assertTrue(is_identity(self.META, self.META, new, unchanged, []))
+
+    def test_a_new_moved_or_closed_history_fact_needs_an_instance(self):
+        same = [{'succ': ['hidden', 0], 'pre': ['hidden', 0]}]
+        self.assertFalse(is_identity(self.META, self.META, [{'succ': ['hidden', 1], 'text': 'P'}], same, []))
+        self.assertFalse(is_identity(self.META, self.META, [], [{'succ': ['hidden', 0], 'pre': ['visible', 0]}], []))
+        self.assertFalse(is_identity(self.META, self.META, [], same, [{'succ': ['hidden', 1]}]))
+        self.assertFalse(is_identity(self.META, {**self.META, 'hist': 'D_Hist'}, [], same, []))
 
 
 class LoopDesignPatterns(unittest.TestCase):

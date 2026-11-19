@@ -537,6 +537,16 @@ def application(meta, table):
                                   for binder in meta['parameters'] + meta.get('hist_live', meta['live']))
 
 
+def is_identity(pre, succ, new, unchanged, closed):
+    """The successor states the block's own history term (a loop back edge on the class history) and
+    every successor history fact is the block's fact at the same position: the identity instance
+    `zesu_hist_edge_refl` of Hist applies and no instance is rendered. New successor-visible facts are
+    the block's to prove; they never enter an instance."""
+    return (application(pre, {}) == application(succ, {}) and not closed
+            and not any(row['succ'][0] == 'hidden' for row in new)
+            and all(tuple(row['succ']) == tuple(row['pre']) for row in unchanged if row['succ'][0] == 'hidden'))
+
+
 def visible_accounting(edge, pre, succ):
     """How each fact the successor states visibly is proved on this edge.
 
@@ -729,9 +739,7 @@ def main():
                     edges.append(edge)
                     if pre.get('mode') == 'wrap' and succ.get('mode') == 'wrap':
                         block_instances = instances.setdefault(pre_pc, [])
-                        if application(pre, {}) == application(succ, {}) and not new:
-                            # The successor states the same history (a loop back edge on the class
-                            # history): the identity instance `zesu_hist_edge_refl` of Hist applies.
+                        if is_identity(pre, succ, new, unchanged, closed):
                             edge['identity'] = True
                         else:
                             block_instances.append(rocq_edge(edge, pre, succ, len(edges) - 1))
