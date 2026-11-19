@@ -41,4 +41,19 @@ Section seal_guard_tests.
     Fail zesu_seal_requested_array.
     iExact "Hrequested".
   Qed.
+
+  (* Skipped: the sealed array at the requested base is stated with other
+     bytes (here equal only up to a lemma; in a block, a store updated part
+     of it). The request stays opened, so its cells are looked up in the held
+     array instead of leaving an equation between the two byte lists. *)
+  Lemma seal_guard_skips_other_bytes (a : Z) (l : list (bv 8)) (P : iProp Sigma) :
+    a ↦ₘ∗ (l ++ []) -∗ P -∗
+    ∃ _ : unit, isla.ghost_state.mem_mapsto_array_def a (DfracOwn 1) l ∗ P.
+  Proof.
+    iIntros "Harray HP".
+    Fail zesu_seal_requested_array.
+    iEval (rewrite app_nil_r) in "Harray".
+    zesu_seal_requested_array.
+    iExists tt. iFrame "Harray HP".
+  Qed.
 End seal_guard_tests.

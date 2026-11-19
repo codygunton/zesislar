@@ -680,26 +680,31 @@ Ltac zesu_split_memory_cell_chain :=
 
 (* A successor entry can request an opened array (`mem_mapsto_array_def`)
    as its first resource where the context holds the sealed `↦ₘ∗` at the
-   same base; seal the requested side only. Runs after the opened-array
-   rebuild rule. When the context holds no sealed array at that base (the
-   array was opened into cells, or saved as words), the request stays opened
-   for the rebuild rule, which needs the opened form. *)
-Ltac zesu_sealed_array_at base :=
+   same base with the same bytes; seal the requested side only, and the
+   held array frames it. Runs after the opened-array rebuild rule. When the
+   context holds no sealed array at that base (the array was opened into
+   cells, or saved as words), the request stays opened for the rebuild rule,
+   which needs the opened form. When the held array has other bytes (a store
+   updated part of it), the request stays opened too: its cells are found
+   one by one in the held array, while the sealed request would leave an
+   equation between the two byte lists. *)
+Ltac zesu_sealed_array_at base bytes :=
   assert_succeeds (idtac; zesu_expose_environment_alias;
     iMatchHyp ltac:(fun _ held =>
       match held with
-      | context [@isla.ghost_state.mem_mapsto_array _ _ _ ?heldBase _ _] =>
-          constr_eq heldBase base
+      | context [@isla.ghost_state.mem_mapsto_array _ _ _ ?heldBase _ ?heldBytes] =>
+          constr_eq heldBase base; constr_eq heldBytes bytes
       end)).
 
 Ltac zesu_seal_requested_array :=
   lazymatch goal with
   | |- environments.envs_entails _ ?requested =>
-      let base := lazymatch requested with
-        | @bi_sep _ (isla.ghost_state.mem_mapsto_array_def ?a _ _) _ => a
-        | @bi_exist _ _ (fun _ => @bi_sep _ (isla.ghost_state.mem_mapsto_array_def ?a _ _) _) => a
-        end in
-      zesu_sealed_array_at base;
+      lazymatch requested with
+      | @bi_sep _ (isla.ghost_state.mem_mapsto_array_def ?a _ ?l) _ =>
+          zesu_sealed_array_at a l
+      | @bi_exist _ _ (fun _ => @bi_sep _ (isla.ghost_state.mem_mapsto_array_def ?a _ ?l) _) =>
+          zesu_sealed_array_at a l
+      end;
       iEval (rewrite <- isla.ghost_state.mem_mapsto_array_eq)
   end.
 
