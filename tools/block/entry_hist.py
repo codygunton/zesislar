@@ -98,17 +98,27 @@ def call_visible_patterns(pc, calls, block_starts, binders):
     prefixes = call_prefixes(binders)
     if not involved or not prefixes:
         return []
-    newest = re.escape(prefixes[-1])
+    patterns = newest_call_patterns(binders)
     named = sorted({name for plan in calls.values() for name in plan.get('named_registers', {}).values()})
-    # A call record names the call's outcome bytes `<prefix>after`.
-    outcome = r"(?<![\w'.])" + newest + r"after(?![\w'])"
-    kept = r"\(?" + newest + r"kept_\w+\)?"
-    patterns = [r"\w+Call(?:Domain|Meaning)\b(?=[\s\S]*" + outcome + ")", outcome + r"[\s\S]*\w+Call(?:Domain|Meaning)\b",
-                r"^(?=[\s\S]*" + outcome + r")(?=[\s\S]*<> \(0%Z\))",
-                r"<= bv_unsigned " + kept + r" /\\ bv_unsigned " + kept + r" \+ bv_unsigned "]
     if named:
         patterns.append(r"\bzesu_named_eq \(?(?:" + '|'.join(map(re.escape, named)) + r")(?![\w'])")
     return patterns
+
+
+def newest_call_patterns(binders):
+    """The record of the newest call layer an entry has (`…CallDomain`/`…CallMeaning` on its outcome
+    `<prefix>after`), its nonzero guards on that outcome and its slice window over its kept cursors.
+    Visible at call and return sites and in loop classes; older records stay hidden."""
+    prefixes = call_prefixes(binders)
+    if not prefixes:
+        return []
+    newest = re.escape(prefixes[-1])
+    # A call record names the call's outcome bytes `<prefix>after`.
+    outcome = r"(?<![\w'.])" + newest + r"after(?![\w'])"
+    kept = r"\(?" + newest + r"kept_\w+\)?"
+    return [r"\w+Call(?:Domain|Meaning)\b(?=[\s\S]*" + outcome + ")", outcome + r"[\s\S]*\w+Call(?:Domain|Meaning)\b",
+            r"^(?=[\s\S]*" + outcome + r")(?=[\s\S]*<> \(0%Z\))",
+            r"<= bv_unsigned " + kept + r" /\\ bv_unsigned " + kept + r" \+ bv_unsigned "]
 
 
 def classify(binders, resources, facts, visible_patterns=(), pinned=(), definitional=False):
@@ -405,8 +415,10 @@ def seal_class(name, prefix, binders_text, resources, facts, plain_binders, desi
             register_binders[match[1]] = match[2]
     registers = [register_binders.get(register, binder) for register, binder in design.get('registers', {}).items()]
     registers = [binder for binder in registers + [design.get('index')] if binder in names]
-    patterns = list(visible) + design_patterns(design) + [r"(?<![\w'.])" + re.escape(binder) + r"(?![\w'])"
-                                                          for binder in registers]
+    # Call facts: the newest call layer's record, guards and window (its payload is what the loop reads);
+    # older records and the named equations of older cursors stay in the class history.
+    patterns = (list(visible) + newest_call_patterns(binders) + design_patterns(design)
+                + [r"(?<![\w'.])" + re.escape(binder) + r"(?![\w'])" for binder in registers])
     declarations, body, meta = seal_alternative(
         name, ' ' + telescope(plain_binders), plain_binders, binders, resources, facts,
         visible_patterns=patterns, pinned=registers, grouped=True, varying=registers)

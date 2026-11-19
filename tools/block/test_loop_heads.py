@@ -67,6 +67,26 @@ class WrapLoopHeads(unittest.TestCase):
                                  (ROOT / ('ZesuSsz/Generated/DecodeItem/FP301/Pilot' + row['block']
                                           + ('Structural' if structural else 'Entries') + '.v')).read_text())
 
+    def test_a_class_shows_the_newest_call_record_and_hides_older_ones(self):
+        # The 039c shape: call 13's payload is the loop's input; call 12's record and the named
+        # equation of call 13's cursor over call 12's kept length stay in the class history, so the
+        # class pins no binder its entry predecessor hides.
+        entry_hist.configure({'entry_hist': 'wrap', 'frame_slots': False})
+        binders = ('(call12_kept_x20 : bv 64) (call12_after : list byte) (call13_after : list byte) '
+                   '(call13_kept_x18 : bv 64) (machine_x11 : bv 64)')
+        old = 'decodeItemCallMeaning (f call12_kept_x20) call12_after'
+        new = 'decodeItemCallMeaning (f call13_kept_x18) call13_after'
+        named = 'zesu_named_eq call13_kept_x18 (bv_sub call12_kept_x20 (g call12_after))'
+        guard = 'bv_unsigned (h call13_after) <> (0%Z)'
+        link = 'bv_unsigned machine_x11 = (bv_unsigned (w call13_after) + 0)%Z'
+        _, _, meta = entry_hist.seal_class(
+            'C', 'Definition C ', binders, ['"x11" ↦ᵣ RVal_Bits (machine_x11 : bv 64%N)'],
+            [old, new, named, guard, link], [{'name': 'args', 'type': 'A'}],
+            {'registers': {'x11': 'machine_x11'}, 'facts': []})
+        self.assertEqual(meta['visible'], [new, guard, link])
+        self.assertEqual(meta['hidden'], [old, named])
+        self.assertIn('call12_kept_x20', [binder['name'] for binder in meta['ghost']])
+
 
 class LoopClassAccounting(unittest.TestCase):
     """A loop class keeps every pure fact and path condition of its entry edge, or drops it under a

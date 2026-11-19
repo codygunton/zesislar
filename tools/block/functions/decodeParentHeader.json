@@ -703,10 +703,6 @@
         "extent_reason": "1 <= length (parentHeaderInputBytes args): the payload lies inside the input array and is not empty (beq before the loop)"
       },
       "visible": [
-        "decodeItemCallDomain",
-        "decodeItemCallMeaning",
-        "zesu_named_eq",
-        "<> \\(0%Z\\)",
         "bv_signed \\(BV 128%N 8%Z\\)"
       ]
     },
@@ -749,10 +745,6 @@
         "extent_reason": "1 <= length (parentHeaderInputBytes args): the payload lies inside the input array and is not empty (beq before the loop)"
       },
       "visible": [
-        "decodeItemCallDomain",
-        "decodeItemCallMeaning",
-        "zesu_named_eq",
-        "<> \\(0%Z\\)",
         "bv_signed \\(BV 128%N 8%Z\\)"
       ]
     },
@@ -795,10 +787,6 @@
         "extent_reason": "1 <= length (parentHeaderInputBytes args): the payload lies inside the input array and is not empty (beq before the loop)"
       },
       "visible": [
-        "decodeItemCallDomain",
-        "decodeItemCallMeaning",
-        "zesu_named_eq",
-        "<> \\(0%Z\\)",
         "bv_signed \\(BV 128%N 8%Z\\)"
       ]
     }
