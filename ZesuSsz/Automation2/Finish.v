@@ -1,6 +1,7 @@
 Require ZesuSsz.Automation2.NamedEquations.
 Require Import ZesuSsz.Automation2.Telemetry.
 Require Import ZesuSsz.Automation2.GoalShape.
+Require Import ZesuSsz.Automation2.Hist.
 Require Import ZesuSsz.Automation2.MemoryAddress.
 Require Import ZesuSsz.Automation2.MemoryTupleConsumer.
 Require Import ZesuSsz.Automation2.SourceFactMatching.
@@ -1234,7 +1235,11 @@ Ltac zesu_run_pass_v1 :=
   try zesu_prepare_uninit_goal;
   try zesu_normalize_find_mem_address;
   unshelve (time "zesu_run" repeat (zesu_tstep (idtac; let goal_class := zesu_goal_class in first
-    [(* A slice a callee returned goes back into its array at the next
+    [(lazymatch goal_class with ZGsep_pure => idtac end; zesu_hist_goal;
+      zesu_talt h_hist_edge (idtac; zesu_hist_step)) |
+     (lazymatch goal_class with ZGsep_pure => idtac end; zesu_hist_in_context;
+      zesu_talt h_hist_reveal (idtac; zesu_hist_reveal_step)) |
+     (* A slice a callee returned goes back into its array at the next
         existential, before any other step (CallSlice.v). *)
      (lazymatch goal_class with ZGex => idtac | ZGex_prod => idtac end; zesu_env_literal;
       zesu_talt c_early_restore (idtac; ZesuSsz.Automation2.CallSlice.zesu_call_early_restore)) |
