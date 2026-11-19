@@ -1,0 +1,49 @@
+Require Import isla.riscv64.riscv64.
+From Coq Require Import Lists.List ZArith.ZArith NArith.NArith.
+Require Import ZesuSsz.Automation2.All.
+Local Open Scope Z_scope.
+
+(* The successor asks for one byte array where the block holds a word cell,
+   an uninitialised piece and a byte array, adjacent: they are presented as
+   one array with its length. *)
+Lemma frame_join_array `{!islaG Sigma} (a : Z) (v : bv 64) (bytes : list (bv 8)) :
+  length bytes = 4%nat ->
+  a ↦ₘ v -∗ (a + 8) ↦ₘ? 8 -∗ (a + 16) ↦ₘ∗ bytes -∗
+  ∃ l : list (bv 8), a ↦ₘ∗ l ∗ ⌜length l = 20%nat⌝.
+Proof.
+  intros Hbytes. iIntros "Hv Hu Hb".
+  ZesuSsz.Automation2.StoreMemoryLookup.zesu_join_frame_byte_array.
+  iExists _. iFrame. iPureIntro. lia.
+Qed.
+
+(* A piece that is not adjacent stays out of the run. *)
+Lemma frame_join_array_gap `{!islaG Sigma} (a : Z) (v : bv 64) :
+  a ↦ₘ v -∗ (a + 16) ↦ₘ? 8 -∗
+  ∃ l : list (bv 8), a ↦ₘ∗ l ∗ ⌜length l = 8%nat⌝ ∗ (a + 16) ↦ₘ? 8.
+Proof.
+  iIntros "Hv Hu".
+  ZesuSsz.Automation2.StoreMemoryLookup.zesu_join_frame_byte_array.
+  iExists _. iFrame. iPureIntro. lia.
+Qed.
+
+(* An array is already owned at the address: the step refuses. *)
+Lemma frame_join_array_refuses_owned `{!islaG Sigma} (a : Z) (v : bv 64) (bytes : list (bv 8)) :
+  a ↦ₘ∗ bytes -∗ a ↦ₘ v -∗
+  ∃ l : list (bv 8), a ↦ₘ∗ l ∗ True.
+Proof.
+  iIntros "Hb Hv".
+  assert_fails ZesuSsz.Automation2.StoreMemoryLookup.zesu_join_frame_byte_array.
+  iExists _. iFrame.
+Qed.
+
+(* No cell at the address: the step refuses. *)
+Lemma frame_join_array_refuses_no_cell `{!islaG Sigma} (a : Z) (v : bv 64) :
+  (a + 8) ↦ₘ v -∗
+  ∃ l : list (bv 8), a ↦ₘ∗ l ∗ True.
+Proof.
+  iIntros "Hv".
+  assert_fails ZesuSsz.Automation2.StoreMemoryLookup.zesu_join_frame_byte_array.
+Abort.
+
+Print Assumptions frame_join_array.
+Print Assumptions frame_join_array_gap.

@@ -11,6 +11,7 @@ Require Import ZesuSsz.Automation2.ResourceGroups.
 Require Import ZesuSsz.Automation2.RangeFacts.
 Require ZesuSsz.Automation2.ByteArrayAssembly.
 Require Import ZesuSsz.Contracts.IslarisMemory.
+Require ZesuSsz.Automation2.WrappedWord.
 Require Import iris.proofmode.environments.
 Local Open Scope Z_scope.
 
@@ -483,7 +484,132 @@ Ltac2 zesu_join_frame_byte_array () :=
         (Ltac1.of_constr base) (Ltac1.of_constr constr:(S $last)) (Ltac1.of_constr fraction)
   end.
 
-Ltac zesu_join_frame_byte_array := ltac2:(zesu_join_frame_byte_array ()).
+(* Frame join: the successor asks for one byte array at an address where the
+   block holds a run of cells, uninitialised pieces and byte arrays. *)
+Lemma zesu_cell_bytes `{!islaG Sigma} (len : N) (a : Z) q (value : bv (8 * len)) :
+  a ↦ₘ{q} value -∗
+  a ↦ₘ{q}∗ bv_to_little_endian (N.to_nat len) 8 (bv_unsigned value) ∗
+  ⌜Z.of_nat (length (bv_to_little_endian (N.to_nat len) 8 (bv_unsigned value))) = Z.of_N len⌝.
+Proof.
+  iIntros "H".
+  iDestruct (ZesuSsz.Contracts.IslarisMemory.mem_mapsto_mapsto_to_byte_array_N with "H") as "$".
+  iPureIntro. rewrite length_bv_to_little_endian; ZesuSsz.Automation2.WrappedWord.zesu_plain_lia.
+Qed.
+Lemma zesu_uninit_bytes `{!islaG Sigma} (a n m : Z) q :
+  n = m -> a ↦ₘ{q}? n -∗ ∃ values : list (bv 8), ⌜Z.of_nat (length values) = m⌝ ∗ a ↦ₘ{q}∗ values.
+Proof. intros ->. iApply ZesuSsz.Contracts.IslarisMemory.mem_mapsto_uninit_to_byte_array. Qed.
+Lemma zesu_byte_array_join_sized `{!islaG Sigma} (a a2 : Z) q (left right : list (bv 8)) (n m s : Z) :
+  Z.of_nat (length left) = n -> Z.of_nat (length right) = m -> a2 = a + n -> s = n + m ->
+  a ↦ₘ{q}∗ left -∗ a2 ↦ₘ{q}∗ right -∗
+  a ↦ₘ{q}∗ (left ++ right) ∗ ⌜Z.of_nat (length (left ++ right)) = s⌝.
+Proof.
+  iIntros (Hn Hm -> ->) "Hl Hr".
+  iSplitL; [|iPureIntro; rewrite length_app; ZesuSsz.Automation2.WrappedWord.zesu_plain_lia].
+  iApply (ZesuSsz.Contracts.IslarisMemory.mem_mapsto_array_app_combine 8 with "Hl").
+  replace (a + Z.of_N (8 `div` 8) * Z.of_nat (length left)) with (a + n); [done|].
+  subst n. change (Z.of_N (8 `div` 8)) with 1. ZesuSsz.Automation2.WrappedWord.zesu_plain_lia.
+Qed.
+
+(* One piece at an address accepted by [a2pred] as a byte array "HzesuPiece"
+   with its length fact; [k] receives the address, the length and the fact. *)
+Ltac zesu_piece_bytes ra a2pred k :=
+  iMatchHyp ltac:(fun H res =>
+    lazymatch res with
+    | (?a2 ↦ₘ ?v)%I =>
+        a2pred a2;
+        lazymatch type of v with
+        | bv ?w =>
+          let len := eval vm_compute in (w / 8)%N in
+          let m := eval vm_compute in (Z.of_N len) in
+          iRename H into "HzesuPiece";
+          let Hl := fresh "HpieceLength" in
+          iDestruct (zesu_cell_bytes len a2 with "HzesuPiece") as "[HzesuPiece HzesuPure]";
+          iDestruct "HzesuPure" as %Hl;
+          change (Z.of_N len) with m in Hl;
+          k a2 m Hl
+        end
+    | (?a2 ↦ₘ? ?m0)%I =>
+        a2pred a2;
+        let m := ZesuSsz.Automation2.WrappedWord.zesu_eval_at_root ra m0 in
+        lazymatch m with Zpos _ => idtac end;
+        let Hm := fresh "HregionSize" in
+        assert (Hm : m0 = m) by (clear; ZesuSsz.Automation2.WrappedWord.zesu_plain_lia);
+        iRename H into "HzesuPiece";
+        let values := fresh "pieceBytes" in
+        let Hl := fresh "HpieceLength" in
+        iDestruct (zesu_uninit_bytes a2 m0 m _ Hm with "HzesuPiece") as (values) "[HzesuPure HzesuPiece]";
+        iDestruct "HzesuPure" as %Hl;
+        clear Hm;
+        (* the length of the new byte list, in the form the length steps read *)
+        let c := eval vm_compute in (Z.to_nat m) in
+        let Hn := fresh "HpieceBytesLength" in
+        assert (Hn : length values = c) by (apply Nat2Z.inj; rewrite Hl; reflexivity);
+        k a2 m Hl
+    | (?a2 ↦ₘ∗ ?l2)%I =>
+        a2pred a2;
+        match goal with
+        | Hlen : length l2 = ?c |- _ =>
+            let m := eval vm_compute in (Z.of_nat c) in
+            let Hl := fresh "HpieceLength" in
+            assert (Hl : Z.of_nat (length l2) = m) by (rewrite Hlen; reflexivity);
+            iRename H into "HzesuPiece";
+            k a2 m Hl
+        end
+    end).
+
+(* Join every adjacent piece on root [ra] after the run "HzesuRun" of [n]
+   bytes at [a]. *)
+Ltac zesu_join_frame_loop ra a n Hlen :=
+  first
+  [ zesu_piece_bytes ra
+      ltac:(fun a2 => let r2 := ZesuSsz.Automation2.WrappedWord.zesu_term_root a2 in constr_eq ra r2;
+                      let d := ZesuSsz.Automation2.WrappedWord.zesu_eval_at_root ra constr:((a2 - a)%Z) in
+                      constr_eq d n)
+      ltac:(fun a2 m Hl =>
+        let s := eval vm_compute in (n + m)%Z in
+        let Ha := fresh "HpieceAdjacent" in
+        assert (Ha : a2 = (a + n)%Z) by (clear; ZesuSsz.Automation2.WrappedWord.zesu_plain_lia);
+        let Hlen2 := fresh "HrunLength" in
+        iDestruct (zesu_byte_array_join_sized a a2 _ _ _ n m s Hlen Hl Ha eq_refl with "HzesuRun HzesuPiece")
+          as "[HzesuRun HzesuPure]";
+        iDestruct "HzesuPure" as %Hlen2;
+        clear Hlen Hl Ha;
+        zesu_join_frame_loop ra a s Hlen2)
+  | idtac ].
+
+(* The requested array's address, under a `∗` head or a Lithium existential head. *)
+Ltac zesu_requested_byte_array k :=
+  lazymatch goal with
+  | |- environments.envs_entails _ (bi_sep (@mem_mapsto_array _ _ 8%N ?a (DfracOwn 1) ?l) _) =>
+      lazymatch l with _ :: _ => fail | _ ++ _ => fail | _ => idtac end; k a
+  | |- environments.envs_entails _ (@bi_exist _ _ ?body) =>
+      lazymatch body with
+      | (fun x => bi_sep (@mem_mapsto_array _ _ 8%N ?a (DfracOwn 1) (@?l x)) _) =>
+          lazymatch l with
+          | (fun _ => _ :: _) => fail | (fun _ => _ ++ _) => fail | _ => idtac end; k a
+      end
+  end.
+
+(* A cell at the requested address and no array there: the cell and every
+   adjacent cell, uninitialised piece and byte array as one array. *)
+Ltac zesu_join_frame_run :=
+  zesu_requested_byte_array ltac:(fun a =>
+      assert_fails (has_evar a);
+      try ZesuSsz.Automation2.ResourceGroups.zesu_expose_environment_alias;
+      assert_fails (iMatchHyp ltac:(fun H res =>
+        lazymatch res with (?a2 ↦ₘ∗ _)%I => constr_eq a a2 end));
+      iMatchHyp ltac:(fun H res =>
+        lazymatch res with (?a2 ↦ₘ _)%I => constr_eq a a2 end);
+      let ra := ZesuSsz.Automation2.WrappedWord.zesu_term_root a in
+      zesu_piece_bytes ra ltac:(fun a2 => constr_eq a a2)
+        ltac:(fun a2 m Hl =>
+          iRename "HzesuPiece" into "HzesuRun";
+          zesu_join_frame_loop ra a m Hl);
+      iDestruct "HzesuRun" as "?").
+
+(* Byte cells from index zero first, then the general run. *)
+Ltac zesu_join_frame_byte_array :=
+  first [ ltac2:(zesu_join_frame_byte_array ()) | zesu_join_frame_run ].
 
 Ltac zesu_store_fold_byte_cells :=
   try ZesuSsz.Automation2.ResourceGroups.zesu_expose_environment_alias;
@@ -514,6 +640,76 @@ Ltac zesu_store_lookup_goal :=
   | |- environments.envs_entails _ (find_in_context (FindMemMapsTo _) _) => idtac
   end.
 
+(* Region sizes of uninitialised pieces as numerals. *)
+Ltac zesu_uninit_sizes :=
+  repeat iMatchHyp ltac:(fun H res =>
+    lazymatch res with
+    | (?a ↦ₘ? ?n0)%I =>
+        lazymatch n0 with Z0 => fail | Zpos _ => fail | _ => idtac end;
+        let ra := ZesuSsz.Automation2.WrappedWord.zesu_term_root a in
+        let n := ZesuSsz.Automation2.WrappedWord.zesu_eval_at_root ra n0 in
+        let Hn := fresh "HregionSize" in
+        assert (Hn : n0 = n) by (clear; ZesuSsz.Automation2.WrappedWord.zesu_plain_lia);
+        iRename H into "HzesuRegion";
+        iEval (rewrite Hn) in "HzesuRegion"; clear Hn;
+        iDestruct "HzesuRegion" as "?"
+    end).
+
+(* The owner of the address is an uninitialised region or a single cell on
+   the same root (decided at a sample root value); arrays are left to the
+   other alternatives. *)
+Ltac zesu_owner_uninit_or_cell z addr :=
+  let d := ZesuSsz.Automation2.WrappedWord.zesu_eval_at_root z addr in
+  lazymatch d with Z0 => idtac | Zpos _ => idtac end;
+  iMatchHyp ltac:(fun H res =>
+    lazymatch res with
+    | (?a ↦ₘ? ?n0)%I =>
+        let ra := ZesuSsz.Automation2.WrappedWord.zesu_term_root a in
+        constr_eq ra z;
+        let lo := ZesuSsz.Automation2.WrappedWord.zesu_eval_at_root z a in
+        let n := ZesuSsz.Automation2.WrappedWord.zesu_eval_at_root z n0 in
+        let inside := eval vm_compute in ((lo <=? d)%Z && (d <? lo + n)%Z)%bool in
+        lazymatch inside with true => idtac end
+    | (?a ↦ₘ _)%I =>
+        let ra := ZesuSsz.Automation2.WrappedWord.zesu_term_root a in
+        constr_eq ra z;
+        let lo := ZesuSsz.Automation2.WrappedWord.zesu_eval_at_root z a in
+        let same := eval vm_compute in (lo =? d)%Z in
+        lazymatch same with true => idtac end
+    end).
+
+(* Fails when [root] is the root of the stack pointer register: frame stores
+   and loads are the business of the stack-address steps. *)
+Ltac zesu_refuse_stack_root root :=
+  assert_fails (iMatchHyp ltac:(fun H res =>
+    lazymatch res with
+    | (?reg ↦ᵣ RVal_Bits ?value)%I =>
+        constr_eq reg "x2"%string;
+        let word := lazymatch value with bv_to_bvn ?w => w | _ => value end in
+        let stack := ZesuSsz.Automation2.WrappedWord.zesu_term_root word in
+        constr_eq stack root
+    end)).
+
+(* A store or load whose pointer is an integer root under `Z_to_bv`, owned by
+   an uninitialised region or a cell on that root: the address as the integer
+   `z + c`, region sizes as numerals, then Lithium's own lookup step. *)
+Ltac zesu_store_lookup_integer_root :=
+  lazymatch goal with
+  | |- environments.envs_entails _ (find_in_context (FindMemMapsTo (bv_unsigned ?ptr)) _) =>
+      try ZesuSsz.Automation2.ResourceGroups.zesu_expose_environment_alias;
+      let zr := ZesuSsz.Automation2.WrappedWord.zesu_term_root ptr in
+      zesu_refuse_stack_root zr;
+      zesu_owner_uninit_or_cell zr constr:(bv_unsigned ptr);
+      ZesuSsz.Automation2.WrappedWord.zesu_zroot_address ptr ltac:(fun Haddress z =>
+        rewrite Haddress; clear Haddress;
+        try (lazymatch goal with |- context [bv_unsigned (Z_to_bv 64 z)] => idtac end;
+             ZesuSsz.Automation2.WrappedWord.zesu_zroot_address constr:(Z_to_bv 64 z)
+               ltac:(fun Hroot _ => rewrite !Hroot; clear Hroot)));
+      zesu_uninit_sizes;
+      liEnsureInvariant;
+      liStep
+  end.
+
 Ltac zesu_store_memory_lookup :=
   zesu_store_lookup_goal;
   ZesuSsz.Automation2.SwitchDispatch.zesu_switch_enabled
@@ -521,4 +717,5 @@ Ltac zesu_store_memory_lookup :=
   first [ zesu_store_memory_lookup_core
   | progress (zesu_store_fold_indexed_byte_tail;
       ZesuSsz.Automation2.ResourceGroups.zesu_open_resource_groups)
-  | zesu_store_fold_byte_cells ].
+  | zesu_store_fold_byte_cells
+  | zesu_store_lookup_integer_root ].
