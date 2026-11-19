@@ -86,6 +86,12 @@ if entry_hist.FRAME_SLOTS:
     slot_table = entry_hist.frame_slot_table(data, lambda value: Expr.from_dict(value).coq())
     slot_regions = entry_hist.region_offsets(data)
     entry_hist.SLOT_TABLE, entry_hist.SLOT_REGIONS = slot_table, slot_regions
+# The call plans of the forward pass (JOINS.json `calls`) and the block starts: at a call block and
+# at a return site the last call's record and its named registers stay visible.
+call_plans = (json.loads((forward.parent / "JOINS.json").read_text()).get("calls", {})
+              if entry_hist.HIST_MODE and (forward.parent / "JOINS.json").exists() else {})
+block_starts = sorted(int(load_profile(options.function).pc(block), 0)
+                      for block in load_profile(options.function)["blocks"])
 vpath = Path(receipt["vocabulary"]["path"])
 vocabulary = load_resource_vocabulary(vpath, bind(vpath)["sha256"])
 array = array_declaration(vocabulary)
@@ -189,8 +195,10 @@ for suffix in blocks:
             if not options.record_refusals:
                 raise
             guard_refusals[suffix] = str(error)
+# A join history (`zesu_join_history`) is a Hist definition: the unsealed text needs the library too.
 check = RocqContradictionCheck(
-    json.loads(options.coqc_args.read_text()), header, O / "contradiction-checks",
+    json.loads(options.coqc_args.read_text()), header + (entry_hist.HIST_LIBRARY if entry_hist.HIST_MODE else ""),
+    O / "contradiction-checks",
     profile.args_type,
 )
 
@@ -512,13 +520,14 @@ for suffix, slot in units:
             ]
             if seal_as is not None and entry_hist.HIST_MODE:
                 # Ghost binders and hidden facts move into one history proposition.
+                binders = [{"name": binder["name"], "type": expression(binder["type"], "source type")}
+                           for binder in existentials]
                 sealed[seal_as] = entry_hist.seal_alternative(
-                    seal_as, plain_telescope, plain_binders,
-                    [{"name": binder["name"], "type": expression(binder["type"], "source type")}
-                     for binder in existentials],
+                    seal_as, plain_telescope, plain_binders, binders,
                     [text for component, text in rendered_components if component["kind"] not in ("pure", "true")],
                     [text[1:-1] for component, text in rendered_components if component["kind"] == "pure"],
-                    profile.get("hist_visible", []))
+                    profile.get("hist_visible", [])
+                    + entry_hist.call_visible_patterns(profile.pc(suffix), call_plans, block_starts, binders))
             if existentials:
                 telescope = " ".join(
                     "("

@@ -71,6 +71,38 @@ def is_join_history(inner):
     return re.match(r'zesu_join_history\b', unwrap(inner)) is not None
 
 
+def call_prefixes(binders):
+    """The call layers whose binders an entry has, oldest first: `call_`, `call2_`, `call3_`, ..."""
+    numbers = {int(match[1] or 1) for binder in binders
+               for match in [re.match(r'call(\d*)_', binder['name'])] if match}
+    return ['call' + ('' if number == 1 else str(number)) + '_' for number in sorted(numbers)]
+
+
+def call_visible_patterns(pc, calls, block_starts, binders):
+    """Visible facts of a block that ends in a call or is the return site of one (JOINS.json `calls`).
+
+    The record of the last call (`…CallDomain`/`…CallMeaning` facts on the newest call layer's
+    binders) and the named equations of the registers the calls pass on (`named_registers`).
+    Function-domain facts and the lengths of live outcome arrays are visible in every block."""
+    start = int(pc, 0)
+    later = [other for other in block_starts if other > start]
+    end = min(later) if later else None
+    involved = any(int(plan['return_site_pc'], 0) == start
+                   or start <= int(plan['call_site_pc'], 0) and (end is None or int(plan['call_site_pc'], 0) < end)
+                   for plan in calls.values())
+    prefixes = call_prefixes(binders)
+    if not involved or not prefixes:
+        return []
+    newest = re.escape(prefixes[-1])
+    named = sorted({name for plan in calls.values() for name in plan.get('named_registers', {}).values()})
+    # A call record names the call's outcome bytes `<prefix>after`.
+    outcome = r"(?<![\w'.])" + newest + r"after(?![\w'])"
+    patterns = [r"\w+Call(?:Domain|Meaning)\b(?=[\s\S]*" + outcome + ")", outcome + r"[\s\S]*\w+Call(?:Domain|Meaning)\b"]
+    if named:
+        patterns.append(r"\bzesu_named_eq \(?(?:" + '|'.join(map(re.escape, named)) + r")(?![\w'])")
+    return patterns
+
+
 def classify(binders, resources, facts, visible_patterns=(), pinned=(), definitional=False):
     """Split binders into live and ghost and facts into visible and hidden.
 
