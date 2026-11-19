@@ -1,5 +1,6 @@
 From Coq Require Import List ZArith.ZArith Lia.
 From stdpp Require Import base list list_numbers bitvector.definitions.
+Require Import EvmSailRlp.evm_rlp_types.
 Require Import ZesuSsz.Automation2.CallSliceInterface.
 Require Import ZesuSsz.Contracts.RlpDecodeItem.
 Require Import ZesuSsz.Contracts.RlpDecodeItemContract.
@@ -34,7 +35,7 @@ Proof.
   rewrite !ZesuSsz.Contracts.DecodeItemPayloadBounds.littleEndianBv.
   split.
   - cbn [drop].
-    rewrite firstn_app Hl1 Nat.sub_diag firstn_O app_nil_r firstn_all2; [|rewrite Hl1; constructor].
+    rewrite firstn_app, Hl1, Nat.sub_diag, firstn_O, app_nil_r, firstn_all2; [|rewrite Hl1; constructor].
     rewrite (ZesuSsz.Contracts.DecodeItemFrameImage.littleEndian_machine_bytes 8); [|exact Hpointer].
     rewrite Z_to_bv_unsigned. apply bv_wrap_small. exact Hpointer.
   - rewrite drop_app_length'; [|exact Hl1].
@@ -92,7 +93,7 @@ Proof.
   cbn.
   unfold nextUint64BoundaryDomain, nextUint64EntryLayout, decodeItemEntryLayout, separateRanges in Hd.
   cbv zeta in Hd. cbn in Hd.
-  rewrite length_take length_drop Hsp Hout Hie.
+  rewrite length_take, length_drop, Hsp, Hout, Hie.
   pose proof (bv_unsigned_in_range _ l) as Hl.
   pose proof (bv_unsigned_in_range _ p) as Hp.
   change (bv_modulus 64) with 18446744073709551616 in *.

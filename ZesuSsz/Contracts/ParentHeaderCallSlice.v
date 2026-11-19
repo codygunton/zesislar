@@ -1,5 +1,6 @@
 From Coq Require Import List ZArith.ZArith Lia.
 From stdpp Require Import base list bitvector.definitions.
+Require Import EvmSailRlp.evm_rlp_types.
 Require Import ZesuSsz.Automation2.CallSliceInterface.
 Require Import ZesuSsz.Contracts.RlpDecodeItem.
 Require Import ZesuSsz.Contracts.RlpDecodeItemContract.
@@ -35,14 +36,14 @@ Proof.
     decodeItemCallDataArgs.
   cbn.
   unfold parentHeaderArgsWellFormed, separateRanges in Hwf.
-  rewrite length_take length_drop Hsp Hout.
+  rewrite length_take, length_drop, Hsp, Hout.
   pose proof (bv_unsigned_in_range _ l) as Hl.
   pose proof (bv_unsigned_in_range _ p) as Hp.
   pose proof (bv_unsigned_in_range _ (parentHeaderInputEnd args)) as He.
   change (bv_modulus 64) with 18446744073709551616 in *.
   change (2 ^ 64) with 18446744073709551616.
   destruct Hwf as (Hlen & _ & _ & _ & _ & Hwf).
-  repeat split; lia.
+  repeat split; first [exact Hbefore | lia].
 Qed.
 
 #[export] Instance parentHeaderDecodeItemCallSlice :
