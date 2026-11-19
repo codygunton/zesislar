@@ -20,9 +20,20 @@ the same chain. The October block, slot and composition proofs are retired. Some
 fact modules remain because the block design binds them as sources, the generated support
 files import them, or nextUint64's frozen-core exit meanings use them; no production theorem
 uses them. The user selected C1-B: the public result records exact
-machine bytes and permits only the named `RlpLongLengthWrap` divergence from Sail.
-The `KnownBugs` list has one constructor. A wrap case requires the exact binary
-result and Sail rejection. The decodeParentHeader domain (`parentHeaderArgsWellFormed`)
+machine bytes. For decodeItem it permits only the named `RlpLongLengthWrap`
+divergence from Sail; a wrap case requires the exact binary result and Sail
+rejection. `KnownBugs` lists eight classes: `RlpLongLengthWrap` and seven
+decodeParentHeader classes (`ParentHeaderMissingRequiredField`,
+`ParentHeaderTrailingBytes`, `ParentHeaderSkippedFieldShape`,
+`ParentHeaderBlobGasUnaligned`, `RlpUintNonCanonical`, `ParentHeaderUintOver8`,
+`ParentHeaderUndecodedFieldRejected`). The decodeParentHeader meaning
+(`ParentHeaderRung2.v`) requires the exact result of the candidate function
+`candidateParentHeader` (`Contracts/Candidates/ParentHeaderCandidate.v`), which
+follows the machine code, and then either Sail's agreement with that candidate or
+a boolean trigger of a listed class on the input bytes
+(`Contracts/ParentHeaderBugTriggers.v`). The candidate is pinned to the ELF by
+emulation vectors (`Evidence/ParentHeaderCandidateVectors.v`), which are test
+evidence. The decodeParentHeader domain (`parentHeaderArgsWellFormed`)
 requires the outer header to fit (`headerFits` of the whole input). The code checks the
 first item only for an error, the list flag and a nonzero payload length; it never checks
 that payload against the input. An outer long-list length that wraps 2^64 therefore passes,

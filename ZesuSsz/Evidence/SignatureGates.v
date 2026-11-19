@@ -32,6 +32,10 @@ Require Import InstrSpecs.Machine.
 Require Import ZesuSsz.Contracts.Level1.
 Require Import ZesuSsz.Contracts.ParentHeaderRootFacts.
 Require Import ZesuSsz.Stock.Closure.index_decodeParentHeader.
+Require Import ZesuSsz.Contracts.Candidates.ParentHeaderDomain.
+Require Import ZesuSsz.Contracts.Candidates.ParentHeaderCandidate.
+Require Import ZesuSsz.Contracts.ParentHeaderBugTriggers.
+Require Import ZesuSsz.Compliance.ProjectionParentHeader.
 Require Import ZesuSsz.Evidence.SignatureAxiomAllowlist.
 
 Open Scope Z_scope.
@@ -140,7 +144,11 @@ Ltac2 Eval exact_axioms 'intendedValidRlpClassHeaderFits
 
 Check (@decodeItemAllowsC1B : DecodeItemArgs -> DecodeItemOutcome -> Prop).
 Check (eq_refl : decodeItemAllowsC1B = decodeItemAllows C1BResult).
-Check (eq_refl : knownBugs = [RlpLongLengthWrap]).
+Check (eq_refl : knownBugs =
+  [RlpLongLengthWrap; ParentHeaderMissingRequiredField;
+   ParentHeaderTrailingBytes; ParentHeaderSkippedFieldShape;
+   ParentHeaderBlobGasUnaligned; RlpUintNonCanonical;
+   ParentHeaderUintOver8; ParentHeaderUndecodedFieldRejected]).
 
 Definition ReviewedDecodeMeaningModuloKnownBugs
     (args : DecodeItemArgs) (after : DecodeItemOutcome) : Prop :=
@@ -160,11 +168,53 @@ Check (@decodeItemWrapWitness :
 Print Assumptions decodeItemWrapWitness.
 Ltac2 Eval exact_axioms 'decodeItemWrapWitness (approved_library_axioms ()).
 
+Check (@candidateParentHeader : list byte -> ParentHeaderCandidate).
+
+Definition ReviewedParentHeaderCandidateResult (bytes result : list byte) : Prop :=
+  match candidateParentHeader bytes with
+  | candidateHeaderSuccess header => parentHeaderResult80 result header
+  | candidateHeaderError => parentHeaderError80 result
+  end.
+
+Check (eq_refl : parentHeaderCandidateResult =
+                 ReviewedParentHeaderCandidateResult).
+
+Definition ReviewedParentHeaderBugTrigger (bug : KnownBug)
+    (bytes : list byte) : bool :=
+  match bug with
+  | RlpLongLengthWrap => nestedWrapOccursb bytes
+  | ParentHeaderMissingRequiredField => missingRequiredFieldb bytes
+  | ParentHeaderTrailingBytes => trailingBytesb bytes
+  | ParentHeaderSkippedFieldShape => skippedFieldShapeb bytes
+  | ParentHeaderBlobGasUnaligned => blobGasUnalignedb bytes
+  | RlpUintNonCanonical => uintNonCanonicalb bytes
+  | ParentHeaderUintOver8 => uintOver8b bytes
+  | ParentHeaderUndecodedFieldRejected => undecodedFieldRejectedb bytes
+  end.
+
+Check (eq_refl : parentHeaderBugTrigger = ReviewedParentHeaderBugTrigger).
+Check (@nestedWrapOccursb_spec :
+  forall bytes, nestedWrapOccursb bytes = true <-> nestedWrapOccurs bytes).
+Print Assumptions nestedWrapOccursb_spec.
+Ltac2 Eval exact_axioms 'nestedWrapOccursb_spec (approved_library_axioms ()).
+
+Definition ReviewedParentHeaderSailAgrees (bytes : list byte) : Prop :=
+  match candidateParentHeader bytes with
+  | candidateHeaderSuccess header =>
+      ParentHeaderSuccess bytes (parentHeaderSailNode bytes) header
+  | candidateHeaderError =>
+      ParentHeaderRejects bytes (parentHeaderSailNode bytes)
+  end.
+
+Check (eq_refl : parentHeaderSailAgrees = ReviewedParentHeaderSailAgrees).
+
 Definition ReviewedParentHeaderMeaningModuloKnownBugs
     (args : ParentHeaderCall) (result : list byte) : Prop :=
   parentHeaderDomain args /\
-  (parentHeaderSuccessAgreement args.(headerInputBytes) result \/
-   parentHeaderRejectionAgreement args.(headerInputBytes) result).
+  ReviewedParentHeaderCandidateResult args.(headerInputBytes) result /\
+  (ReviewedParentHeaderSailAgrees args.(headerInputBytes) \/
+   exists bug, List.In bug knownBugs /\
+     ReviewedParentHeaderBugTrigger bug args.(headerInputBytes) = true).
 
 Check (@ParentHeaderMeaningModuloKnownBugs :
   ParentHeaderCall -> list byte -> Prop).

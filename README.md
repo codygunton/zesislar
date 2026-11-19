@@ -95,9 +95,15 @@ These named premises remain outside the proofs:
   Isla has no trace for that instruction.
 - Rung 3 assumes seven Sail host externs, stated in `ZesuSsz/Compliance/SailHostPremises.v`.
   No public theorem uses them yet.
-- `ZesuSsz/Compliance/KnownBugs.v` lists one known bug, `RlpLongLengthWrap`.
-  The binary adds long payload and header lengths modulo 2^64.
-  The compliance statements permit this divergence from Sail and no other.
+- `ZesuSsz/Compliance/KnownBugs.v` lists eight known bug classes:
+  `RlpLongLengthWrap` (the binary adds long payload and header lengths modulo 2^64),
+  `ParentHeaderMissingRequiredField`, `ParentHeaderTrailingBytes`,
+  `ParentHeaderSkippedFieldShape`, `ParentHeaderBlobGasUnaligned`,
+  `RlpUintNonCanonical`, `ParentHeaderUintOver8` and
+  `ParentHeaderUndecodedFieldRejected`. decodeItem's statement permits only the first.
+  decodeParentHeader's statement requires the exact candidate result and permits a
+  disagreement with Sail only on inputs that trigger a listed class
+  (`ZesuSsz/Contracts/ParentHeaderBugTriggers.v`).
 
 QEMU traces and vector audits are review evidence.
 No theorem uses them as a premise.
