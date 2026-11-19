@@ -325,6 +325,33 @@ class TrustedDeclarationTests(unittest.TestCase):
         with self.assertRaisesRegex(SystemExit, "Lithium hook redefinition"):
             self.scan("ZesuSsz/Automation2/Other.v", "Ltac liAStep ::= idtac.")
 
+    def test_qualified_hook_redefinition_is_refused_outside_hooks(self):
+        with self.assertRaisesRegex(SystemExit, "Lithium hook redefinition"):
+            self.scan("ZesuSsz/Automation2/Other.v",
+                      "Ltac ZesuSsz.Automation2.Finish.zesu_block_tail_one ::= idtac.")
+        with self.assertRaisesRegex(SystemExit, "Lithium hook redefinition"):
+            self.scan("ZesuSsz/Automation2/Other.v", "Ltac isla.base.unLET ::= idtac.")
+
+    def test_project_hook_allowlist_permits_one_owner_redefinition(self):
+        self.scan("ZesuSsz/Automation2/BlockTail.v",
+                  "Ltac ZesuSsz.Automation2.Finish.zesu_block_tail_one ::= idtac.")
+        with self.assertRaisesRegex(SystemExit, "Lithium hook redefinition"):
+            self.scan("ZesuSsz/Automation2/BlockTail.v",
+                      "Ltac ZesuSsz.Automation2.Finish.zesu_block_tail_one ::= idtac.\n"
+                      "Ltac ZesuSsz.Automation2.Finish.zesu_block_tail_one ::= fail.")
+        with self.assertRaisesRegex(SystemExit, "Lithium hook redefinition"):
+            self.scan("ZesuSsz/Automation2/BlockTail.v", "Ltac liAStep ::= idtac.")
+
+    def test_tests_may_redefine_project_tactics_locally_only(self):
+        umbrella = "Require Import ZesuSsz.Automation2.All.\n"
+        self.scan("ZesuSsz/Proofs/Tests/Local.v",
+                  umbrella + "#[local] Ltac ZesuSsz.Automation2.Hooks.zesu_open_folded_facts ::= idtac.")
+        with self.assertRaisesRegex(SystemExit, "Lithium hook redefinition"):
+            self.scan("ZesuSsz/Proofs/Tests/Local.v",
+                      umbrella + "Ltac ZesuSsz.Automation2.Hooks.zesu_open_folded_facts ::= idtac.")
+        with self.assertRaisesRegex(SystemExit, "Lithium hook redefinition"):
+            self.scan("ZesuSsz/Proofs/Tests/Local.v", umbrella + "#[local] Ltac liAStep ::= idtac.")
+
     def test_automation2_has_the_same_forbidden_name_scope(self):
         self.scan("ZesuSsz/Automation2/Rule.v", "Definition zesu_lbu_byte_array_at_spec (value : nat) := value.")
         with self.assertRaisesRegex(SystemExit, "forbidden-name increase"):
