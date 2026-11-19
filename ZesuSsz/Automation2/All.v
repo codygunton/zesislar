@@ -3,6 +3,7 @@ Require Export InstrSpecs.Machine.
 Require Export InstrSpecs.Specs.
 Require Export ZesuSsz.Automation2.Calls.
 Require Export ZesuSsz.Automation2.InstrPre.
+Require Export ZesuSsz.Automation2.GoalShape.
 Require Export ZesuSsz.Automation2.Finish.
 Require Export ZesuSsz.Automation2.SignedMaskBranch.
 Require Export ZesuSsz.Automation2.ArrayContinuation.

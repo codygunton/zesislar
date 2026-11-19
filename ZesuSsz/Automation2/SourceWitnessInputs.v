@@ -137,9 +137,6 @@ Ltac zesu_capture_source_owner_wand :=
       ResourceGroups.zesu_open_resource_groups
   end.
 
-Ltac zesu_capture_source_owner :=
-  first [zesu_capture_source_owner_wand | zesu_capture_source_owner_hyp].
-
 Ltac zesu_source_mapping_capture key :=
   EntryWitnessInputs.zesu_witness_resolved key;
   tryif (match goal with _ : ZesuEntryWitnessPending key _ |- _ => idtac end)
