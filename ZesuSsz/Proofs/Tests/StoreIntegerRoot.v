@@ -42,7 +42,9 @@ Proof.
   intros Hz. iIntros "Hsp Hregion".
   assert_fails ZesuSsz.Automation2.StoreMemoryLookup.zesu_store_memory_lookup.
   idtac "STACK_ROOT_REFUSAL_EXECUTED".
-Abort.
+  rewrite /find_in_context /FindMemMapsTo.
+  iExists (MKUninit (z - 16) 16). cbn [fic_Prop mem_mapsto_kind_prop]. iFrame.
+Qed.
 
 (* No region or cell on the root owns the address: the step refuses. *)
 Lemma store_integer_root_refuses_outside `{!islaG Sigma} `{!threadG} (z : Z) :
@@ -54,7 +56,11 @@ Proof.
   intros Hz. iIntros "Hregion".
   assert_fails ZesuSsz.Automation2.StoreMemoryLookup.zesu_store_memory_lookup.
   idtac "OUTSIDE_REFUSAL_EXECUTED".
-Abort.
+  rewrite /find_in_context /FindMemMapsTo.
+  iExists (MKUninit (z - 32) 16). cbn [fic_Prop mem_mapsto_kind_prop]. iFrame.
+Qed.
 
 Print Assumptions store_integer_root.
 Print Assumptions store_integer_root_other_stack.
+Print Assumptions store_integer_root_refuses_stack.
+Print Assumptions store_integer_root_refuses_outside.
