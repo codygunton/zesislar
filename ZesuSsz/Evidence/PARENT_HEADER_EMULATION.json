@@ -1,0 +1,505 @@
+{
+ "label": "Unicorn 2.1.4 (RV64) runs of decodeParentHeader 0x800d5cb8; test evidence, not proof",
+ "elf": "build/stock-zisk/zesu-zisk.elf",
+ "elf_sha256": "e44c18d54ae3d77832df92aceb6eb7119de8eb2e8f1f1b4e585a6e33ea04ff95",
+ "runs_sha256": "fab9209efb0aa71e8197c91fd12aa52d9800a865c69648ef008cb7bd7d7facbd",
+ "harness": "_build/agents/researcher/exec-check/harness.py driven by drive.py: input at 0x40000008, result at 0xa0700000 poisoned with 0xaa, memcpy emulated at 0x800e06c0",
+ "controls": [
+  {
+   "label": "cancun_real_header",
+   "result": {
+    "kind": "Success",
+    "gasLimit": 3141592,
+    "gasUsed": 21000,
+    "timestamp": 1422495849,
+    "baseFee": 14,
+    "blobGasUsed": 0,
+    "excessBlobGas": 0
+   },
+   "result_hex": "d8ef2f000000000008520000000000006990c954000000000e00000000000000010000000000000000000000000000000100000000000000000000000000000001000000000000000000aaaaaaaaaaaa",
+   "exit": "success with optionals (0x800d61cc)",
+   "oob_reads": 0,
+   "sail": "Success"
+  },
+  {
+   "label": "prague_real_header",
+   "result": {
+    "kind": "Success",
+    "gasLimit": 3141592,
+    "gasUsed": 21000,
+    "timestamp": 1422495849,
+    "baseFee": 14,
+    "blobGasUsed": 0,
+    "excessBlobGas": 0
+   },
+   "result_hex": "d8ef2f000000000008520000000000006990c954000000000e00000000000000010000000000000000000000000000000100000000000000000000000000000001000000000000000000aaaaaaaaaaaa",
+   "exit": "success with optionals (0x800d61cc)",
+   "oob_reads": 0,
+   "sail": "Success"
+  },
+  {
+   "label": "cancun_after_field_01",
+   "result": {
+    "kind": "Error"
+   },
+   "result_hex": "0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000300000000000000",
+   "exit": "memcpy tail 0x800d5da0",
+   "oob_reads": 0,
+   "sail": "Success"
+  },
+  {
+   "label": "cancun_after_field_02",
+   "result": {
+    "kind": "Error"
+   },
+   "result_hex": "0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000300000000000000",
+   "exit": "memcpy tail 0x800d5da0",
+   "oob_reads": 0,
+   "sail": "Success"
+  },
+  {
+   "label": "cancun_after_field_03",
+   "result": {
+    "kind": "Error"
+   },
+   "result_hex": "0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000300000000000000",
+   "exit": "memcpy tail 0x800d5da0",
+   "oob_reads": 0,
+   "sail": "Success"
+  },
+  {
+   "label": "cancun_after_field_04",
+   "result": {
+    "kind": "Error"
+   },
+   "result_hex": "0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000300000000000000",
+   "exit": "memcpy tail 0x800d5da0",
+   "oob_reads": 0,
+   "sail": "Success"
+  },
+  {
+   "label": "cancun_after_field_05",
+   "result": {
+    "kind": "Error"
+   },
+   "result_hex": "0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000300000000000000",
+   "exit": "memcpy tail 0x800d5da0",
+   "oob_reads": 0,
+   "sail": "Success"
+  },
+  {
+   "label": "cancun_after_field_06",
+   "result": {
+    "kind": "Error"
+   },
+   "result_hex": "0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000300000000000000",
+   "exit": "memcpy tail 0x800d5da0",
+   "oob_reads": 0,
+   "sail": "Success"
+  },
+  {
+   "label": "cancun_after_field_07",
+   "result": {
+    "kind": "Error"
+   },
+   "result_hex": "0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000300000000000000",
+   "exit": "memcpy tail 0x800d5da0",
+   "oob_reads": 0,
+   "sail": "Success"
+  },
+  {
+   "label": "cancun_after_field_08",
+   "result": {
+    "kind": "Error"
+   },
+   "result_hex": "0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000300000000000000",
+   "exit": "memcpy tail 0x800d5da0",
+   "oob_reads": 0,
+   "sail": "Success"
+  },
+  {
+   "label": "cancun_after_field_09",
+   "result": {
+    "kind": "Error"
+   },
+   "result_hex": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa0300aaaaaaaaaaaa",
+   "exit": "direct error (tag 3 at 0x800d5f28)",
+   "oob_reads": 0,
+   "sail": "Success"
+  },
+  {
+   "label": "cancun_after_field_10",
+   "result": {
+    "kind": "Error"
+   },
+   "result_hex": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa0300aaaaaaaaaaaa",
+   "exit": "direct error (tag 3 at 0x800d5f28)",
+   "oob_reads": 0,
+   "sail": "Success"
+  },
+  {
+   "label": "cancun_after_field_11",
+   "result": {
+    "kind": "Error"
+   },
+   "result_hex": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa0300aaaaaaaaaaaa",
+   "exit": "direct error (tag 3 at 0x800d5f28)",
+   "oob_reads": 0,
+   "sail": "Success"
+  },
+  {
+   "label": "cancun_after_field_12",
+   "result": {
+    "kind": "Success",
+    "gasLimit": 3141592,
+    "gasUsed": 21000,
+    "timestamp": 1422495849,
+    "baseFee": null,
+    "blobGasUsed": null,
+    "excessBlobGas": null
+   },
+   "result_hex": "d8ef2f000000000008520000000000006990c954000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000aaaaaaaaaaaa",
+   "exit": "success, no optionals (0x800d6074)",
+   "oob_reads": 0,
+   "sail": "Success"
+  },
+  {
+   "label": "cancun_after_field_13",
+   "result": {
+    "kind": "Success",
+    "gasLimit": 3141592,
+    "gasUsed": 21000,
+    "timestamp": 1422495849,
+    "baseFee": null,
+    "blobGasUsed": null,
+    "excessBlobGas": null
+   },
+   "result_hex": "d8ef2f000000000008520000000000006990c954000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000aaaaaaaaaaaa",
+   "exit": "success, no optionals (0x800d6074)",
+   "oob_reads": 0,
+   "sail": "Success"
+  },
+  {
+   "label": "cancun_after_field_14",
+   "result": {
+    "kind": "Success",
+    "gasLimit": 3141592,
+    "gasUsed": 21000,
+    "timestamp": 1422495849,
+    "baseFee": null,
+    "blobGasUsed": null,
+    "excessBlobGas": null
+   },
+   "result_hex": "d8ef2f000000000008520000000000006990c954000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000aaaaaaaaaaaa",
+   "exit": "success, no optionals (0x800d6074)",
+   "oob_reads": 0,
+   "sail": "Success"
+  },
+  {
+   "label": "cancun_after_field_15",
+   "result": {
+    "kind": "Success",
+    "gasLimit": 3141592,
+    "gasUsed": 21000,
+    "timestamp": 1422495849,
+    "baseFee": null,
+    "blobGasUsed": null,
+    "excessBlobGas": null
+   },
+   "result_hex": "d8ef2f000000000008520000000000006990c954000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000aaaaaaaaaaaa",
+   "exit": "success with optionals (0x800d61cc)",
+   "oob_reads": 6,
+   "sail": "Success"
+  },
+  {
+   "label": "cancun_after_field_16",
+   "result": {
+    "kind": "Success",
+    "gasLimit": 3141592,
+    "gasUsed": 21000,
+    "timestamp": 1422495849,
+    "baseFee": 14,
+    "blobGasUsed": null,
+    "excessBlobGas": null
+   },
+   "result_hex": "d8ef2f000000000008520000000000006990c954000000000e00000000000000010000000000000000000000000000000000000000000000000000000000000000000000000000000000aaaaaaaaaaaa",
+   "exit": "success with optionals (0x800d61cc)",
+   "oob_reads": 4,
+   "sail": "Success"
+  },
+  {
+   "label": "cancun_after_field_17",
+   "result": {
+    "kind": "Success",
+    "gasLimit": 3141592,
+    "gasUsed": 21000,
+    "timestamp": 1422495849,
+    "baseFee": 14,
+    "blobGasUsed": null,
+    "excessBlobGas": null
+   },
+   "result_hex": "d8ef2f000000000008520000000000006990c954000000000e00000000000000010000000000000000000000000000000000000000000000000000000000000000000000000000000000aaaaaaaaaaaa",
+   "exit": "success with optionals (0x800d61cc)",
+   "oob_reads": 4,
+   "sail": "Success"
+  },
+  {
+   "label": "cancun_after_field_18",
+   "result": {
+    "kind": "Success",
+    "gasLimit": 3141592,
+    "gasUsed": 21000,
+    "timestamp": 1422495849,
+    "baseFee": 14,
+    "blobGasUsed": 0,
+    "excessBlobGas": null
+   },
+   "result_hex": "d8ef2f000000000008520000000000006990c954000000000e00000000000000010000000000000000000000000000000100000000000000000000000000000000000000000000000000aaaaaaaaaaaa",
+   "exit": "success with optionals (0x800d61cc)",
+   "oob_reads": 2,
+   "sail": "Success"
+  },
+  {
+   "label": "cancun_after_field_19",
+   "result": {
+    "kind": "Success",
+    "gasLimit": 3141592,
+    "gasUsed": 21000,
+    "timestamp": 1422495849,
+    "baseFee": 14,
+    "blobGasUsed": 0,
+    "excessBlobGas": 0
+   },
+   "result_hex": "d8ef2f000000000008520000000000006990c954000000000e00000000000000010000000000000000000000000000000100000000000000000000000000000001000000000000000000aaaaaaaaaaaa",
+   "exit": "success with optionals (0x800d61cc)",
+   "oob_reads": 0,
+   "sail": "Success"
+  },
+  {
+   "label": "cancun_after_field_20",
+   "result": {
+    "kind": "Success",
+    "gasLimit": 3141592,
+    "gasUsed": 21000,
+    "timestamp": 1422495849,
+    "baseFee": 14,
+    "blobGasUsed": 0,
+    "excessBlobGas": 0
+   },
+   "result_hex": "d8ef2f000000000008520000000000006990c954000000000e00000000000000010000000000000000000000000000000100000000000000000000000000000001000000000000000000aaaaaaaaaaaa",
+   "exit": "success with optionals (0x800d61cc)",
+   "oob_reads": 0,
+   "sail": "Success"
+  },
+  {
+   "label": "required_nested_wrap",
+   "result": {
+    "kind": "Error"
+   },
+   "result_hex": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa0300aaaaaaaaaaaa",
+   "exit": "direct error (tag 3 at 0x800d5f28)",
+   "oob_reads": 0,
+   "sail": "Reject"
+  },
+  {
+   "label": "optional_nested_wrap",
+   "result": {
+    "kind": "Error"
+   },
+   "result_hex": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa0300aaaaaaaaaaaa",
+   "exit": "direct error (tag 3 at 0x800d5f28)",
+   "oob_reads": 0,
+   "sail": "Reject"
+  }
+ ],
+ "witnesses": [
+  {
+   "label": "W1",
+   "result": {
+    "kind": "Success",
+    "gasLimit": 0,
+    "gasUsed": 0,
+    "timestamp": 0,
+    "baseFee": null,
+    "blobGasUsed": null,
+    "excessBlobGas": null
+   },
+   "result_hex": "0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000aaaaaaaaaaaa",
+   "exit": "success with optionals (0x800d61cc)",
+   "oob_reads": 6,
+   "input_hex": "cfc08080808080808080808080808080"
+  },
+  {
+   "label": "W2",
+   "result": {
+    "kind": "Success",
+    "gasLimit": 0,
+    "gasUsed": 0,
+    "timestamp": 0,
+    "baseFee": 7,
+    "blobGasUsed": 5,
+    "excessBlobGas": null
+   },
+   "result_hex": "0000000000000000000000000000000000000000000000000700000000000000010000000000000005000000000000000100000000000000000000000000000000000000000000000000aaaaaaaaaaaa",
+   "exit": "success with optionals (0x800d61cc)",
+   "oob_reads": 2,
+   "input_hex": "d2808080808080808080808080808080078005"
+  },
+  {
+   "label": "W3",
+   "result": {
+    "kind": "Success",
+    "gasLimit": 0,
+    "gasUsed": 0,
+    "timestamp": 0,
+    "baseFee": null,
+    "blobGasUsed": null,
+    "excessBlobGas": null
+   },
+   "result_hex": "0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000aaaaaaaaaaaa",
+   "exit": "success with optionals (0x800d61cc)",
+   "oob_reads": 6,
+   "input_hex": "cf80808080808080808080808080808000"
+  },
+  {
+   "label": "W4",
+   "result": {
+    "kind": "Error"
+   },
+   "result_hex": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa0300aaaaaaaaaaaa",
+   "exit": "direct error (tag 3 at 0x800d5f28)",
+   "oob_reads": 0,
+   "input_hex": "d980808080808080808080808080808089010203040506070809"
+  },
+  {
+   "label": "W5",
+   "result": {
+    "kind": "Error"
+   },
+   "result_hex": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa0300aaaaaaaaaaaa",
+   "exit": "direct error (tag 3 at 0x800d5f28)",
+   "oob_reads": 0,
+   "input_hex": "cf808080808080808080c08080808080"
+  },
+  {
+   "label": "W6",
+   "result": {
+    "kind": "Success",
+    "gasLimit": 0,
+    "gasUsed": 0,
+    "timestamp": 0,
+    "baseFee": 7,
+    "blobGasUsed": null,
+    "excessBlobGas": null
+   },
+   "result_hex": "0000000000000000000000000000000000000000000000000700000000000000010000000000000000000000000000000000000000000000000000000000000000000000000000000000aaaaaaaaaaaa",
+   "exit": "success with optionals (0x800d61cc)",
+   "oob_reads": 4,
+   "input_hex": "d2808080808080808080808080808080820007"
+  }
+ ],
+ "outer_wraps": [
+  {
+   "label": "A1_ff9_alone",
+   "result": {
+    "kind": "Success",
+    "gasLimit": 0,
+    "gasUsed": 0,
+    "timestamp": 0,
+    "baseFee": 0,
+    "blobGasUsed": 0,
+    "excessBlobGas": 0
+   },
+   "result_hex": "0000000000000000000000000000000000000000000000000000000000000000010000000000000000000000000000000100000000000000000000000000000001000000000000000000aaaaaaaaaaaa",
+   "exit": "success with optionals (0x800d61cc)",
+   "oob_reads": 25,
+   "input_head": "ffffffffffffffffff",
+   "input_len": 9
+  },
+  {
+   "label": "A2_ff9_plus_19_fields",
+   "result": {
+    "kind": "Success",
+    "gasLimit": 3141592,
+    "gasUsed": 21000,
+    "timestamp": 1422495849,
+    "baseFee": 14,
+    "blobGasUsed": 0,
+    "excessBlobGas": 0
+   },
+   "result_hex": "d8ef2f000000000008520000000000006990c954000000000e00000000000000010000000000000000000000000000000100000000000000000000000000000001000000000000000000aaaaaaaaaaaa",
+   "exit": "success with optionals (0x800d61cc)",
+   "oob_reads": 0,
+   "input_head": "ffffffffffffffffffa08cbc69e33bd85b1f8d7bc6cae8f1",
+   "input_len": 547
+  },
+  {
+   "label": "A2b_ff9_plus_all_20_fields",
+   "result": {
+    "kind": "Success",
+    "gasLimit": 3141592,
+    "gasUsed": 21000,
+    "timestamp": 1422495849,
+    "baseFee": 14,
+    "blobGasUsed": 0,
+    "excessBlobGas": 0
+   },
+   "result_hex": "d8ef2f000000000008520000000000006990c954000000000e00000000000000010000000000000000000000000000000100000000000000000000000000000001000000000000000000aaaaaaaaaaaa",
+   "exit": "success with optionals (0x800d61cc)",
+   "oob_reads": 0,
+   "input_head": "ffffffffffffffffffa08cbc69e33bd85b1f8d7bc6cae8f1",
+   "input_len": 580
+  },
+  {
+   "label": "A3a_skip_len_to_gap_0x90000000",
+   "result": {
+    "kind": "Success",
+    "gasLimit": 0,
+    "gasUsed": 0,
+    "timestamp": 0,
+    "baseFee": 0,
+    "blobGasUsed": 0,
+    "excessBlobGas": 0
+   },
+   "result_hex": "0000000000000000000000000000000000000000000000000000000000000000010000000000000000000000000000000100000000000000000000000000000001000000000000000000aaaaaaaaaaaa",
+   "exit": "success with optionals (0x800d61cc)",
+   "oob_reads": 23,
+   "input_head": "ffffffffffffffffffa08cbc69e33bd85b1f8d7bc6cae8f1",
+   "input_len": 51
+  },
+  {
+   "label": "A3b_skip_len_to_ram_0xa0100000",
+   "result": {
+    "kind": "Success",
+    "gasLimit": 0,
+    "gasUsed": 0,
+    "timestamp": 0,
+    "baseFee": 0,
+    "blobGasUsed": 0,
+    "excessBlobGas": 0
+   },
+   "result_hex": "0000000000000000000000000000000000000000000000000000000000000000010000000000000000000000000000000100000000000000000000000000000001000000000000000000aaaaaaaaaaaa",
+   "exit": "success with optionals (0x800d61cc)",
+   "oob_reads": 23,
+   "input_head": "ffffffffffffffffffa08cbc69e33bd85b1f8d7bc6cae8f1",
+   "input_len": 51
+  },
+  {
+   "label": "A3c_skip_len_to_rodata_memcpysrc",
+   "result": {
+    "kind": "Success",
+    "gasLimit": 0,
+    "gasUsed": 0,
+    "timestamp": 0,
+    "baseFee": 0,
+    "blobGasUsed": 0,
+    "excessBlobGas": 0
+   },
+   "result_hex": "0000000000000000000000000000000000000000000000000000000000000000010000000000000000000000000000000100000000000000000000000000000001000000000000000000aaaaaaaaaaaa",
+   "exit": "success with optionals (0x800d61cc)",
+   "oob_reads": 23,
+   "input_head": "ffffffffffffffffffa08cbc69e33bd85b1f8d7bc6cae8f1",
+   "input_len": 51
+  }
+ ]
+}
