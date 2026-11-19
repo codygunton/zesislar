@@ -679,15 +679,27 @@ Ltac zesu_split_memory_cell_chain :=
   progress repeat iDestruct select ((_ ↦ₘ _) ∗ _)%I as "[? ?]".
 
 (* A successor entry can request an opened array (`mem_mapsto_array_def`)
-   as its first resource where the context holds the sealed `↦ₘ∗`; seal the
-   requested side only. Runs after the opened-array rebuild rule. *)
+   as its first resource where the context holds the sealed `↦ₘ∗` at the
+   same base; seal the requested side only. Runs after the opened-array
+   rebuild rule. When the context holds no sealed array at that base (the
+   array was opened into cells, or saved as words), the request stays opened
+   for the rebuild rule, which needs the opened form. *)
+Ltac zesu_sealed_array_at base :=
+  assert_succeeds (idtac; zesu_expose_environment_alias;
+    iMatchHyp ltac:(fun _ held =>
+      match held with
+      | context [@isla.ghost_state.mem_mapsto_array _ _ _ ?heldBase _ _] =>
+          constr_eq heldBase base
+      end)).
+
 Ltac zesu_seal_requested_array :=
   lazymatch goal with
   | |- environments.envs_entails _ ?requested =>
-      lazymatch requested with
-      | @bi_sep _ (isla.ghost_state.mem_mapsto_array_def _ _ _) _ => idtac
-      | @bi_exist _ _ (fun _ => @bi_sep _ (isla.ghost_state.mem_mapsto_array_def _ _ _) _) => idtac
-      end;
+      let base := lazymatch requested with
+        | @bi_sep _ (isla.ghost_state.mem_mapsto_array_def ?a _ _) _ => a
+        | @bi_exist _ _ (fun _ => @bi_sep _ (isla.ghost_state.mem_mapsto_array_def ?a _ _) _) => a
+        end in
+      zesu_sealed_array_at base;
       iEval (rewrite <- isla.ghost_state.mem_mapsto_array_eq)
   end.
 
