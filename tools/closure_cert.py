@@ -347,6 +347,25 @@ def compile_caller(case, caller, build, out, limit_gib=16, cpu=None, coqc=None, 
         return subprocess.run(wrapped, cwd=working, env=environment, stdout=log, stderr=subprocess.STDOUT).returncode
 
 
+GENERATED_MODULE = re.compile(rb'^\s*(?:From\s+\S+\s+)?Require\s+(?:Import\s+|Export\s+)?((?:ZesuSsz\.Generated\.[\w.]+\s*)+)\.',
+                              re.M)
+
+
+def generated_closure(workspace, rev, caller):
+    """{path: blob id at rev} of the caller and every ZesuSsz.Generated module it loads, transitively
+    (its entry modules and, in `entry_hist` shape, its edge module). A missing file has id None."""
+    blobs, pending = {}, [caller]
+    while pending:
+        name = pending.pop()
+        if name in blobs:
+            continue
+        result = git(workspace, 'cat-file', 'blob', rev + ':' + name, check=False)
+        blobs[name] = git_blob_id(result.stdout) if result.returncode == 0 else None
+        for group in GENERATED_MODULE.findall(result.stdout if result.returncode == 0 else b''):
+            pending += [module.replace('.', '/') + '.v' for module in group.decode().split()]
+    return blobs
+
+
 def record_problems(workspace, callers_dir, cases, head='HEAD'):
     """Why the closed cases of a compliance record lack valid certificates (empty: all valid).
 
@@ -376,6 +395,12 @@ def record_problems(workspace, callers_dir, cases, head='HEAD'):
             blob = git(workspace, 'cat-file', 'blob', cert_head + ':' + caller, check=False)
             if blob.returncode or hashlib.sha256(blob.stdout).hexdigest() != record.get('caller_sha256'):
                 raise NotClosed('caller hash differs from %s at %s' % (caller, cert_head[:12]))
+            # A re-render of the caller, its entry modules or its edge module voids the certificate.
+            certified, current = (generated_closure(workspace, rev, caller) for rev in (cert_head, head))
+            changed = sorted(name for name in certified.keys() | current.keys()
+                             if certified.get(name) != current.get(name))
+            if changed:
+                raise NotClosed('%s changed since %s' % (', '.join(changed), cert_head[:12]))
         except (NotClosed, ValueError) as error:
             problems.append('%s: %s' % (path, error))
     return problems
