@@ -76,4 +76,13 @@ Lemma next_uint64_result_end (params : NextUint64Args) :
   nextResultPointer (nextUint64Base params) + 16 <= 3221225472.
 Proof. liImpl. zesu_lia. Qed.
 
+(* nextUint64: a payload window inside the input ends below 2^64. *)
+Lemma next_uint64_input_end (params : NextUint64Args) (p l : Z) :
+  nextUint64BoundaryDomain params ->
+  nextInputPointer (nextUint64Base params) <= p ->
+  p + l <= nextInputPointer (nextUint64Base params) +
+    Z.of_nat (length (nextInputBytes (nextUint64Base params))) ->
+  p + l < 18446744073709551616.
+Proof. liImpl. intros. zesu_lia. Qed.
+
 Print Assumptions parent_header_frame_address.
