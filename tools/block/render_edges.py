@@ -487,11 +487,13 @@ def rocq_edge(edge, pre, succ, index):
     else:
         lines.append('  destruct Hh as (' + ' & '.join(pattern) + ').')
     lines.append('  iIntros "HN".')
-    if new_texts or carried:
+    # The premise binds the successor's new ghosts even when it states no fact on them: destruct it
+    # whenever it binds or states anything, so the `exists` below names variables in scope.
+    if new_texts or carried or bound:
         arguments = [binder['name'] for binder in used] + ['HF' + str(position) for position in support]
         term = '("HN" $! ' + ' '.join(arguments) + ')' if arguments else '"HN"'
         intro = ' & '.join(['%HN' + str(position) for position in range(len(new_texts))]
-                           + ['%' + name for name in carried_index]) + ' & _'
+                           + ['%' + name for name in carried_index] + ['_'])
         lines.append('  iDestruct ' + term + ' as ' + ('(' + ' '.join(b['name'] for b in bound) + ') ' if bound else '')
                      + '"(' + intro + ')".')
     lines += [source.open_sentence(hypothesis) for hypothesis in sorted(opened)]

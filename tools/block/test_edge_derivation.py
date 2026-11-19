@@ -6,8 +6,8 @@ import unittest
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import entry_hist
-from render_edges import (Source, check_edge_sentences, edge_sentences, free_witnesses, stated_at_source,
-                          visible_accounting)
+from render_edges import (Source, check_edge_sentences, edge_sentences, free_witnesses, rocq_edge,
+                          stated_at_source, visible_accounting)
 
 T = 'bv 64'
 PRE = {'parameters': [{'name': 'args', 'type': 'A'}], 'live': [{'name': 'k', 'type': T}],
@@ -120,6 +120,22 @@ class FreeMaskWitness(unittest.TestCase):
         rows = self.rows()
         free_witnesses(succ, rows, pre)
         self.assertEqual((rows[0]['expression'], rows[0]['identity']), ('m', True))
+
+
+class NewGhostScope(unittest.TestCase):
+    def test_a_new_ghost_without_facts_is_destructed_before_it_is_a_witness(self):
+        # The 0274 -> return shape: the successor history binds ghosts no successor fact mentions, so the
+        # premise is `∃ …, True`; its binders must be introduced before `exists` names them.
+        pre = {'parameters': [{'name': 'args', 'type': 'A'}], 'live': [{'name': 'k', 'type': T}],
+               'hist': 'HP', 'ghost': [], 'visible': [], 'hidden': ['P k']}
+        succ = {**pre, 'hist': 'HS', 'ghost': [{'name': 'n', 'type': T}]}
+        row = {'succ': 'k', 'role': 'live', 'identity': True, 'expression': 'k', 'type': T}
+        text = rocq_edge({'binder_map': [row], 'new': [], 'pre_entry': 'a', 'succ_entry': 'b', 'kind': 'k',
+                          'unchanged': [{'succ': ('hidden', 0), 'pre': ('hidden', 0)}]}, pre, succ, 0)
+        self.assertIn('    (∃ (n : bv 64), True)%I.', text)
+        self.assertIn('  iDestruct "HN" as (n) "(_)".\n', text)
+        self.assertLess(text.index('iDestruct "HN"'), text.index('exists n.'))
+        check_edge_sentences(text)
 
 
 if __name__ == '__main__':
