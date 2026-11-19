@@ -522,10 +522,7 @@ def rocq_edge(edge, pre, succ, index):
                 continue
             name = 'HF' + str(at[1]) if at[0] == 'hidden' else 'HV' + str(at[1])
             proofs.append('exact (proj1 ' + name + ')' if target in projections else
-                          # A view's arithmetic needs only its own fact: in the full history context
-                          # zify/lia (and the kernel at Qed) process every history fact (Edges039c:
-                          # one view 28 s, Qed 84 s).
-                          'clear - ' + name + '; zesu_hist_view ' + name if target in views else 'exact ' + name)
+                          'zesu_hist_view ' + name if target in views else 'exact ' + name)
         for proof in proofs[:-1]:
             lines.append('  split; [' + proof + '|].')
         lines.append('  ' + proofs[-1] + '.')
@@ -609,7 +606,7 @@ def rocq_reveal(pre, fact, derivation, index):
 # Every sentence an edge proof may contain (AGENTS.md: generated proofs are limited to these forms;
 # ZesuSsz/Evidence/check_proof_hygiene.py rule EDGE-PROOF enforces the list on the committed files).
 _NAME = r"[A-Za-z_][\w']*"
-_SOLVE = (r"(?:exact " + _NAME + r"|exact \(proj1 " + _NAME + r"\)|(?:clear - " + _NAME + r"; )?zesu_hist_view " + _NAME
+_SOLVE = (r"(?:exact " + _NAME + r"|exact \(proj1 " + _NAME + r"\)|zesu_hist_view " + _NAME
           + r"|by vm_compute|exact I|exact \((?:" + _NAME + r"|[ ()])+\))")
 EDGE_SENTENCES = [
     r"Proof", r"Qed",
