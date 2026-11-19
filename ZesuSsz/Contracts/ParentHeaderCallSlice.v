@@ -76,6 +76,11 @@ Proof.
   destruct Hwf as (Hlength & _ & _ & _ & _ & Hlow & Hhigh & Hwf).
   pose proof Hwf as Hfits. repeat apply proj2 in Hfits.
   pose proof (decodeItemCallPayloadFits _ _ _ _ _ _ Hmeaning Hfits) as Hp.
-  pose proof (bv_unsigned_in_range _ (parentHeaderInputPointer args)) as Hip.
+  assert (Hn : Z.of_nat (length (parentHeaderInputBytes args)) <= 2147483648) by lia.
+  (* The interface states the length at its own element type; the two
+     spellings are convertible, not syntactically equal, so `lia` alone
+     sees two atoms. *)
+  eapply Z.le_lt_trans; [exact Hp|].
+  eapply Z.le_lt_trans; [exact Hn|].
   lia.
 Qed.
