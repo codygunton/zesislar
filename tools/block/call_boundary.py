@@ -630,10 +630,17 @@ def call_return_seed(edges, *, call, function_root, root_seed, shapes, vocabular
             index += 1
             fresh_name = '%s_%d' % (base, index)
         renamed[name] = fresh_name
+    if entry_hist.HIST_MODE:
+        # (`entry_hist` shapes.) The callee's own binders (`before`) take this call's prefix too: a
+        # destructured record must not lend its name to the next call spec's binder of that name
+        # (the named-binder witness step picks a context variable by the binder's name).
+        for name, _ in existential:
+            renamed[name] = prefix + name
     if renamed:
         pattern = re.compile(r"(?<![\w'.])(" + '|'.join(map(re.escape, renamed)) + r")(?![\w'])")
         facts = [pattern.sub(lambda match: renamed[match[1]], fact) for fact in facts]
-    existential = [(renamed[name], kind) for name, kind in inner] + existential
+    existential = [(renamed[name], kind) for name, kind in inner] + [(renamed.get(name, name), kind)
+                                                                     for name, kind in existential]
     telescope = ' '.join('(%s : %s)' % (name, kind) for name, kind in existential)
     carried = '∃ ' + telescope + ', ' + ' /\\ '.join('(' + fact + ')' for fact in facts) if existential \
         else ' /\\ '.join('(' + fact + ')' for fact in facts)
