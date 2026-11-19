@@ -1,7 +1,7 @@
 Require Import isla.riscv64.riscv64.
 From Coq Require Import Lists.List ZArith.ZArith NArith.NArith.
-Require Import ZesuSsz.Automation2.All.
 Require ZesuSsz.Contracts.IslarisMemory.
+Require Import ZesuSsz.Automation2.All.
 Local Open Scope Z_scope.
 
 (* The successor asks for one byte array where the block holds a word cell,
