@@ -46,3 +46,14 @@ Ltac zesu_pose_domain_ranges :=
       pose proof ranges_proof as R;
       zesu_domain_ranges_split R
   end.
+
+(* Succeeds when the goal's premise is a domain with registered ranges. One
+   instance lookup: the gate that keeps `zesu_pose_domain_ranges` (a scan of
+   the whole context) off the many implications that bring no domain. *)
+Ltac zesu_domain_ranges_premise :=
+  lazymatch goal with
+  | |- ?premise -> _ =>
+      lazymatch type of premise with Prop => idtac end;
+      let _ := constr:(fun H : premise => zesu_domain_ranges (domain:=premise) H) in
+      idtac
+  end.

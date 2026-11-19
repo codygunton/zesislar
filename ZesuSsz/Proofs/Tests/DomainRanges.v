@@ -27,6 +27,17 @@ Proof.
   zesu_lia.
 Qed.
 
+(* The gate: a premise with registered ranges runs the scan, a premise
+   without them is introduced as before. *)
+Lemma domain_ranges_premise_guard (pointer : bv 64) :
+  toyDomain pointer -> toyOtherDomain pointer -> bv_unsigned pointer < 8192.
+Proof.
+  zesu_domain_ranges_premise. liImpl.
+  tryif zesu_domain_ranges_premise then fail else idtac. liImpl.
+  lazymatch goal with _ : bv_unsigned pointer + 64 <= 8192 |- _ => idtac end.
+  zesu_lia.
+Qed.
+
 (* Posing twice adds nothing: every conjunct is already a hypothesis. *)
 Lemma domain_ranges_idempotent (pointer : bv 64) :
   toyDomain pointer -> bv_unsigned pointer < 8192.

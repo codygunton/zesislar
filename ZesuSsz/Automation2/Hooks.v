@@ -1333,12 +1333,15 @@ Ltac zesu_defer_unresolved_implication_if_enabled :=
   end.
 
 (* A function domain entering the context brings its registered ranges as
-   plain facts (`DomainRanges.v`). *)
+   plain facts (`DomainRanges.v`). Only a premise with registered ranges
+   pays for the context scan. *)
 Ltac liImpl ::=
   tryif zesu_defer_unresolved_implication_if_enabled
   then fail 0 "unresolved implication premise"
-  else (normalize_and_simpl_impl false;
-        ZesuSsz.Automation2.DomainRanges.zesu_pose_domain_ranges).
+  else (tryif ZesuSsz.Automation2.DomainRanges.zesu_domain_ranges_premise
+        then (normalize_and_simpl_impl false;
+              ZesuSsz.Automation2.DomainRanges.zesu_pose_domain_ranges)
+        else normalize_and_simpl_impl false).
 
 (* stdpp's saturation, plus the type range of every non-variable root of a
    `bv_unsigned` in the goal (a record projection has no hypothesis `b : bv _`). *)
