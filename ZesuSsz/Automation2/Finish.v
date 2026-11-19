@@ -8,6 +8,7 @@ Require Import ZesuSsz.Automation2.SourceFactByteViews.
 Require Import ZesuSsz.Automation2.EntryWitnessFinish.
 Require Import ZesuSsz.Automation2.WrappedWord.
 Require ZesuSsz.Automation2.BytePositionEquations.
+Require ZesuSsz.Automation2.CallSlice.
 Require Import isla.riscv64.riscv64.
 Require Import ZesuSsz.Automation2.EntryIntro.
 Require Import ZesuMachineMap.Machine.
@@ -1233,7 +1234,11 @@ Ltac zesu_run_pass_v1 :=
   try zesu_prepare_uninit_goal;
   try zesu_normalize_find_mem_address;
   unshelve (time "zesu_run" repeat (zesu_tstep (idtac; let goal_class := zesu_goal_class in first
-    [zesu_diag_step |
+    [(* A slice a callee returned goes back into its array at the next
+        existential, before any other step (CallSlice.v). *)
+     (lazymatch goal_class with ZGex => idtac | ZGex_prod => idtac end; zesu_env_literal;
+      zesu_talt c_early_restore (idtac; ZesuSsz.Automation2.CallSlice.zesu_call_early_restore)) |
+     zesu_diag_step |
      (zesu_env_literal; zesu_talt v1_source_destruct (idtac; SourceFactMatching.zesu_source_destruct_registered_disjunction)) |
      (lazymatch goal_class with ZGall => idtac end;
       zesu_talt v1_codec_read_consumer (idtac; ZesuSsz.Automation2.CodecArrayRead.zesu_codec_array_read_consumer)) |
@@ -1261,6 +1266,9 @@ Ltac zesu_run_pass_v1 :=
      zesu_talt v1_finish_init_array_read (idtac; zesu_finish_initialized_array_read) |
      zesu_talt v1_store_memory_lookup (idtac; ZesuSsz.Automation2.StoreMemoryLookup.zesu_store_memory_lookup) |
      zesu_talt v1_liAStep (idtac; zesu_liAStep) |
+     (* A call spec's input slice and output slot: lent and proved by the
+        call-site step before the interior-slice lend (CallSlice.v). *)
+     zesu_talt v1_call_slice (idtac; ZesuSsz.Automation2.CallSlice.zesu_call_slice_step) |
      (* A switched-on interior slice: lend it where the search stopped at
         an existential byte array inside a held array, restore it after. *)
      zesu_talt v1_interior_byte_slice (idtac; ZesuSsz.Automation2.InteriorByteSlice.zesu_interior_byte_slice_step) |
