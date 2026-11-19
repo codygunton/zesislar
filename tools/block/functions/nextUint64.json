@@ -126,7 +126,10 @@
         "register": "x12",
         "array": "nextInputBytes (nextUint64Base args)",
         "extent_reason": "1 <= length (nextInputBytes (nextUint64Base args)): the payload lies inside the input array and its length is not 0 (loop facts and the beq at 0x800d630c)"
-      }
+      },
+      "visible": [
+        "bv_signed \\(BV 128%N 8%Z\\) >= bv_signed \\(bv_zero_extend 128%N"
+      ]
     }
   ],
   "function_return": {
@@ -138,5 +141,15 @@
     "+0x70": [
       "∃ result : NextUint64Return, nextResultBytes result = {bytes@nextResultPointer (nextUint64Base args)} /\\ {bytes@nextSlicePointer (nextUint64Base args)} = nextUint64SliceImage (nextRestPointer result) (nextRestLength result) /\\ nextUint64RootResult (nextUint64Base args) result"
     ]
-  }
+  },
+  "hist_visible": [
+    "decodeItemCallDomain",
+    "decodeItemCallMeaning",
+    "zesu_named_eq",
+    "<> \\(0%Z\\)",
+    "zesu_byte_window_fold",
+    "orb \\(negb \\(bool_decide",
+    "8%Z < bv_unsigned",
+    "bv_signed \\(BV 128%N 8%Z\\) >= bv_signed \\(bv_zero_extend 128%N"
+  ]
 }

@@ -374,6 +374,8 @@ def call_return_seed(edges, *, call, function_root, root_seed, shapes, vocabular
     # A call after an earlier call keeps the earlier call's binders: its own
     # binders take the first free prefix call_, call2_, call3_, ...
     taken = set(inherited)
+    # A layer whose binders a join bound inside its history still owns its component ids.
+    taken.update(component['id'] for seed in (root_seed, *origin_seeds) for component in seed.ownership['components'])
     for edge in edges:
         for value in _state_from_result(edge['state']).registers.values():
             taken.update(_inputs(value))
@@ -626,6 +628,17 @@ def call_return_seed(edges, *, call, function_root, root_seed, shapes, vocabular
     for component in ownership['components']:
         key, kind = component['id'], component['kind']
         node = dict(component['seed_component'])
+        if kind == 'opaque' and str(node.get('coq', '')).startswith('⌜'):
+            # A pure fact keeps the text its origin seeds hold: a join or loop head before the call
+            # may have weakened it (bound its ghost binders, or dropped it), and the return site
+            # must not restate more history than the call block's entry has.
+            texts = {next((row.get('source') for row in seed.ownership['components'] if row['id'] == key), None)
+                     for seed in origin_seeds}
+            text = texts.pop() if len(texts) == 1 else None
+            if text is not None and text.startswith('⌜') and text != node['coq']:
+                node['coq'] = text
+                if 'original_component' in node:
+                    node['original_component'] = text
         if key == shapes['collection_ownership_id'] and renewed_exact:
             node.update(original_component=call['collection_after'], coq=call['collection_after'])
         if kind == 'register':
@@ -749,7 +762,14 @@ def call_return_seed(edges, *, call, function_root, root_seed, shapes, vocabular
         binders.append({'name': name.value, 'type': 'bv %d' % name.width, 'expression': name.to_dict()})
     # Inherited binders that the seed still mentions (entry witnesses passed as arguments,
     # join and loop-head binders of the origin seeds).
-    text = ' '.join([node.get('original_component', node.get('coq', '')) for node in nodes
+    try:
+        from .join_generalize import _bound_names
+    except ImportError:
+        from join_generalize import _bound_names
+    def free_text(source):
+        bound = _bound_names(source)
+        return ' '.join(atom for atom in _atoms(source) if atom not in bound)
+    text = ' '.join([free_text(node.get('original_component', node.get('coq', ''))) for node in nodes
                      if node.get('id') != prefix + 'facts']
                     + [name for value in registers.values() for name in _inputs(value)]
                     + [name for condition in state.conditions for name in _inputs(condition)])
@@ -790,8 +810,12 @@ def call_return_seed(edges, *, call, function_root, root_seed, shapes, vocabular
                        'terms': {'resource_id': row['resource_id'], 'index': 0, 'count': row['count'],
                                  'coq_statement': row['coq']},
                        'origin': {'call_design': call['call_site_pc'], 'source': call['output_length_source']}})
-    seed = seed_owned_resources(public, entry_pc=return_pc, vocabulary=vocabulary, constants=constants or {},
-                                facts=copied)
+    try:
+        seed = seed_owned_resources(public, entry_pc=return_pc, vocabulary=vocabulary, constants=constants or {},
+                                    facts=copied)
+    except ValueError as error:
+        raise ValueError('%s (site %s, prefix %s, inherited %s)' % (error, call.get('call_site_pc'), prefix,
+                                                                    sorted(inherited)[:60])) from error
     seed.state.registers.update(registers)
     for name, value in state.registers.items():
         if not GPR.fullmatch(name) and name not in registers and name != 'PC':
