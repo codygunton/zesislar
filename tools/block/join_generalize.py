@@ -766,8 +766,11 @@ def _defined_name(source):
 
 
 def _bound_names(source):
-    """The names a pure fact `⌜∃ (n : T) ..., P⌝` binds in its leading telescope."""
+    """The names a pure fact `⌜∃ (n : T) ..., P⌝` (or a join history `⌜zesu_join_history (∃ ..., P)⌝`)
+    binds in its leading telescope."""
     text = source[1:].lstrip() if source.startswith('⌜') else ''
+    if text.startswith(JOIN_HISTORY + ' ('):
+        text = text[len(JOIN_HISTORY) + 2:]
     if not text.startswith('∃'):
         return set()
     names, index = set(), 1
@@ -795,13 +798,14 @@ def _mentions_free(component, name):
     source = component.get('source', '')
     return name not in _bound_names(source) and _mentions(source, name)
 
-GHOST_HISTORY_MARK = '(* join history *) '
+# The head of a join's hidden history fact (`ZesuSsz.Automation2.Hist`): the renderer keeps it hidden.
+JOIN_HISTORY = 'zesu_join_history'
 
 
 def ghost_group(components, binders):
     """Bind `binders` ([(name, type)], in seed order) around the pure facts that name them.
 
-    The facts become one fact `⌜∃ binders, (* join history *) F1 /\\ ... /\\ Fk⌝` at the first
+    The facts become one fact `⌜zesu_join_history (∃ binders, F1 /\\ ... /\\ Fk)⌝` at the first
     such component (component order); the others become `⌜True⌝`. Each edge proves it with its
     own values of the binders, so it replaces dropping those facts (a weaker, sound history).
     The same facts and binders give the same text on every edge. Returns the group's id or None."""
@@ -812,8 +816,8 @@ def ghost_group(components, binders):
     if not members:
         return None
     used = [(name, kind) for name, kind in binders if any(_mentions_free(row, name) for row in members)]
-    members[0]['source'] = ('⌜∃ ' + ' '.join('(%s : %s)' % row for row in used) + ', ' + GHOST_HISTORY_MARK
-                            + ' /\\ '.join('(' + row['source'][1:-1] + ')' for row in members) + '⌝')
+    members[0]['source'] = ('⌜' + JOIN_HISTORY + ' (∃ ' + ' '.join('(%s : %s)' % row for row in used) + ', '
+                            + ' /\\ '.join('(' + row['source'][1:-1] + ')' for row in members) + ')⌝')
     for row in members[1:]:
         row['source'] = '⌜True⌝'
     return members[0]['id']

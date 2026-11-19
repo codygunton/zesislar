@@ -15,6 +15,7 @@ from pathlib import Path
 import argparse, json, re, sys
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
+import entry_hist
 from entry_hist import mentions, normal, telescope, unwrap
 from function_profiles import load_profile, pilot_header
 from symbolic_state import Expr
@@ -413,7 +414,7 @@ def main():
         header = pilot_header(profile) + 'Require Import lithium.lvar.\n'
         header += ''.join('Require Import ' + profile.qualified(stem + kind) + '.\n'
                           for stem in stems for kind in ('Entries', 'Structural'))
-        header += ('Require Import ZesuSsz.Hist.Hist.\nFrom iris.proofmode Require Import proofmode.\n\n'
+        header += (entry_hist.HIST_LIBRARY + 'From iris.proofmode Require Import proofmode.\n\n'
                    'Section edges.\nContext `{!islaG Sigma} `{!threadG}.\n\n')
         options.rocq.write_text(header + '\n'.join(rocq) + '\nEnd edges.\n')
     print(json.dumps({'edges': len(edges), 'instances': len(rocq),

@@ -66,13 +66,18 @@ def is_length_fact(inner):
     return re.match(r'(?:List\.)?length\b', unwrap(inner, scopes=True)) is not None
 
 
+def is_join_history(inner):
+    """A join's history (`join_generalize.ghost_group`): hidden whatever the profile shows."""
+    return re.match(r'zesu_join_history\b', unwrap(inner)) is not None
+
+
 def classify(binders, resources, facts, visible_patterns=(), pinned=(), definitional=False):
     """Split binders into live and ghost and facts into visible and hidden.
 
     binders: [{'name', 'type'}]; resources, facts: texts (facts without the pure brackets)."""
     # A fact that matches a visible pattern (access or call facts) pins its binders live.
     pinned = set(pinned) | {binder['name'] for binder in binders for fact in facts
-                            if '(* join history *)' not in fact
+                            if not is_join_history(fact)
                             and any(re.search(pattern, fact, re.S) for pattern in visible_patterns)
                             and mentions(binder['name'], fact)}
     live = [binder for binder in binders
@@ -85,7 +90,7 @@ def classify(binders, resources, facts, visible_patterns=(), pinned=(), definiti
             continue
         named = [binder['name'] for binder in binders if mentions(binder['name'], fact)]
         on_ghost = any(name not in live_names for name in named)
-        keep = not on_ghost and '(* join history *)' not in fact and (
+        keep = not on_ghost and not is_join_history(fact) and (
             not named or is_length_fact(fact) or any(re.search(pattern, fact, re.S) for pattern in visible_patterns))
         # Loop classes: `b = <closed term>` fixes the value of a live binder; it is
         # state, not history, and stays visible (decodeItem's loop end register).
