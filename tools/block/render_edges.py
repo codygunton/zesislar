@@ -236,6 +236,44 @@ def substitute(text, renames):
     return re.sub(pattern, lambda match: renames[match[1]], text)
 
 
+def derived_term(text, pre, succ, identity):
+    """A proof term of a successor history fact `[zesu_join_history] (∃ b…, (F1) /\\ … /\\ (Fk))` whose
+    members are source history facts (the hypotheses HF<i> of the opened source history) and whose
+    binders are source binders, or None. The witnesses are the source binders of the same names."""
+    from join_generalize import JOIN_HISTORY, history_members
+    fact = unwrap(text).strip()
+    if fact.startswith(JOIN_HISTORY + ' (') and fact.endswith(')'):
+        fact = fact[len(JOIN_HISTORY) + 2:-1].strip()
+    members = history_members('⌜' + fact + '⌝')
+    if not members or not fact.startswith('∃'):
+        return None
+    depth = 0
+    for position, char in enumerate(fact):
+        depth += {'(': 1, ')': -1}.get(char, 0)
+        if char == ',' and depth == 0:
+            break
+    names = [name for group in re.findall(r"\(([^():]+?) :", fact[1:position]) for name in group.split()]
+    source = set(binder_names(pre, 'ghost') + [binder['name'] for binder in pre.get('hist_live', pre['live'])]
+                 + [binder['name'] for binder in pre['parameters']])
+    if not names or any(name not in source for name in names):
+        return None
+    if any(mentions(name, fact) and name not in names and name not in identity
+           for name in binder_names(succ, 'live') + binder_names(succ, 'ghost')):
+        return None
+    hypotheses = {}
+    for index, other in enumerate(pre['hidden']):
+        hypotheses.setdefault(key(other), 'HF' + str(index))
+    terms = [hypotheses.get(key(member)) for member in members]
+    if None in terms:
+        return None
+    proof = terms[-1]
+    for term in reversed(terms[:-1]):
+        proof = '(conj ' + term + ' ' + proof + ')'
+    for name in reversed(names):
+        proof = '(ex_intro _ ' + name + ' ' + proof + ')'
+    return proof if proof.startswith('(') else '(' + proof + ')'
+
+
 def rocq_edge(edge, pre, succ, index):
     """One ZesuHistEdge instance with its data-only proof."""
     rows = edge['binder_map']
@@ -254,6 +292,15 @@ def rocq_edge(edge, pre, succ, index):
             variables.append({'name': name, 'type': binder['type']})
             names.add(name)
     new_hidden = [row for row in edge['new'] if row['succ'][0] == 'hidden']
+    # A successor history fact that binds source-history facts (a join's `zesu_join_history` group)
+    # is proved inside the edge from the opened source history, not left to the block as a premise.
+    derived = {}
+    for row in new_hidden:
+        term = derived_term(row['text'], pre, succ, identity)
+        if term is not None:
+            derived[tuple(row['succ'])] = term
+    new_hidden = [row for row in new_hidden if tuple(row['succ']) not in derived]
+    edge['hidden_premises'] = sum(any(mentions(name, row['text']) for name in pre_ghost) for row in new_hidden)
     free = {row['succ']: row['expression'] for row in rows if row.get('free')}
     closed = {tuple(row['succ']) for row in edge.get('closed', [])}
     new_ghost = [name for name in succ_ghost if name not in identity and name not in free]
@@ -324,6 +371,9 @@ def rocq_edge(edge, pre, succ, index):
             if target in closed:
                 proofs.append('by vm_compute')
                 continue
+            if target in derived:
+                proofs.append('exact ' + derived[target])
+                continue
             if source is None:
                 proofs.append('exact HN' + str(fresh))
                 fresh += 1
@@ -381,7 +431,8 @@ def rocq_reveal(pre, fact, index):
 # Every sentence an edge proof may contain (AGENTS.md: generated proofs are limited to these forms;
 # ZesuSsz/Evidence/check_proof_hygiene.py rule EDGE-PROOF enforces the list on the committed files).
 _NAME = r"[A-Za-z_][\w']*"
-_SOLVE = r"(?:exact " + _NAME + r"|exact \(proj1 " + _NAME + r"\)|zesu_hist_view " + _NAME + r"|by vm_compute|exact I)"
+_SOLVE = (r"(?:exact " + _NAME + r"|exact \(proj1 " + _NAME + r"\)|zesu_hist_view " + _NAME
+          + r"|by vm_compute|exact I|exact \((?:" + _NAME + r"|[ ()])+\))")
 EDGE_SENTENCES = [
     r"Proof", r"Qed",
     r"rewrite /ZesuHist(?:Edge|Reveal) => Hh",
@@ -541,6 +592,7 @@ def main():
                                                           for module in modules))
     print(json.dumps({'edges': len(edges), 'instances': sum(map(len, instances.values())),
                       'reveals': len(reveals), 'identity': sum(bool(edge.get('identity')) for edge in edges),
+                      'hidden_premises': sum(edge.get('hidden_premises', 0) for edge in edges),
                       'kinds': {kind: sum(edge['kind'] == kind for edge in edges)
                                 for kind in sorted({edge['kind'] for edge in edges})}}))
 
