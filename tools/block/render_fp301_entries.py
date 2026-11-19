@@ -15,6 +15,8 @@ parser.add_argument("--function", default=None,
                     help="function profile name or path (default: decodeItem)")
 parser.add_argument("--record-refusals", action="store_true",
                     help="record a guard-refused boundary and render the others")
+parser.add_argument("--loop-heads", type=Path, default=None,
+                    help="loop-head file of this render (default: the profile's committed fixture)")
 options = parser.parse_args()
 
 
@@ -297,7 +299,8 @@ for suffix, slot in units:
         directory.mkdir(parents=True, exist_ok=True)
         outputs = []
         try:
-            texts = [render_loop_head(suffix, header, structural, profile) for structural in [False, True]]
+            texts = [render_loop_head(suffix, header, structural, profile, options.loop_heads)
+                     for structural in [False, True]]
         except (FileNotFoundError, ValueError) as error:
             # The pass produced no loop-head row (its entry edge is incomplete or refused).
             cases.append({"pc": pc, "status": "refused_no_loop_head_row", "proof_ran": False,
@@ -527,7 +530,9 @@ for suffix, slot in units:
                     [text for component, text in rendered_components if component["kind"] not in ("pure", "true")],
                     [text[1:-1] for component, text in rendered_components if component["kind"] == "pure"],
                     profile.get("hist_visible", [])
-                    + entry_hist.call_visible_patterns(profile.pc(suffix), call_plans, block_starts, binders))
+                    # The function return entry (`Return`) is no block: no call record of its own.
+                    + (entry_hist.call_visible_patterns(profile.pc(block[0]), call_plans, block_starts, binders)
+                       if (block := re.match(r"[0-9a-f]+(?=_|$)", suffix)) else []))
             if existentials:
                 telescope = " ".join(
                     "("

@@ -7,6 +7,7 @@ import unittest
 
 from function_profiles import load_profile, pilot_header, return_header
 from render_fp301_statements import render_caller, render_declaration
+import entry_hist
 
 ROOT = Path(__file__).resolve().parents[2]
 
@@ -36,6 +37,27 @@ class GeneratedFP301(unittest.TestCase):
                 text = path.read_text()
                 theorem = re.findall(r"^(?:Lemma|Theorem) ([A-Za-z_][A-Za-z0-9_']*)", text, re.M)[-1]
                 self.assertTrue(text.endswith("\nPrint Assumptions " + theorem + ".\n"))
+
+
+class WrapEntryShape(unittest.TestCase):
+    """`entry_hist: wrap` on a small entry variant: live binders and visible facts stay in the
+    entry, the rest is one sealed history proposition; the legacy shape is the pinned test above."""
+
+    def setUp(self):
+        entry_hist.configure({'entry_hist': 'wrap'})
+        self.addCleanup(entry_hist.configure, None)
+
+    def test_ghost_binders_and_hidden_facts_move_into_the_history(self):
+        plain = [{"name": "args", "type": "A"}, {"name": "returnAddress", "type": "Z"}]
+        binders = [{"name": "x", "type": "bv 64"}, {"name": "g", "type": "bv 64"}]
+        declarations, body, meta = entry_hist.seal_alternative(
+            "e", " (args : A) (returnAddress : Z)", plain, binders, ['reg "x10" x'],
+            ["bv_unsigned x < 8", "g = x", "decodeItemCallDomain args"], ["CallDomain"])
+        self.assertEqual(declarations, [("e_Hist", "Definition e_Hist (args : A) (returnAddress : Z) (x : bv 64)"
+                                         " : Prop := (∃ (g : bv 64), (bv_unsigned x < 8) /\\ (g = x)).\n", "hist")])
+        self.assertEqual(body, '(∃ (x : bv 64), (reg "x10" x ∗ ⌜decodeItemCallDomain args⌝'
+                               ' ∗ ⌜zesu_hist (e_Hist (args) (returnAddress) (x))⌝))')
+        self.assertEqual([binder["name"] for binder in meta["ghost"]], ["g"])
 
 
 if __name__ == "__main__":

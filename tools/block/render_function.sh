@@ -10,11 +10,12 @@
 #   BANK      a kept bench bank (coqc_recipe.json, coqc-ocamlpath.json): the contradiction checks of
 #             the entry render compile against it
 #   EXTRA_COQC_FLAG  appended to the bank's coqc flags (development probes: `-Q DIR LOGICAL`)
-# Each heavy step runs under tools/guarded_tool.sh. The loop-head fixture of the profile is
-# rewritten in this worktree (it is the loop design of the new forward pass). A step whose output
-# exists is skipped, so a failed run resumes.
+# Each heavy step runs under tools/guarded_tool.sh. The loop heads of the new forward pass go to
+# RUNDIR/loop-heads.json and the entry render reads them from there; the committed fixture is never
+# written (the driver reports whether its rows differ: a committed re-render copies the file over).
+# A step whose output exists is skipped, so a failed run resumes.
 set -euo pipefail
-[ $# -ge 4 ] || { sed -n '2,15p' "$0" >&2; exit 2; }
+[ $# -ge 4 ] || { sed -n '2,16p' "$0" >&2; exit 2; }
 function_name=$1; inputs=$(realpath "$2"); run=$(realpath -m "$3"); bank=$(realpath "$4"); shift 4
 worktree=$(realpath "$(dirname "$0")/../..")
 cd "$worktree"
@@ -30,10 +31,15 @@ profile_value() {
 echo "forward: $(tail -c 200 "$run/forward.log" | tr '\n' ' ')"
 
 fixture=$(profile_value loop_head_fixture)
+loop_heads=()
 if [ -n "$fixture" ]; then
-  (cd tools/block && ../guarded_tool.sh python3 loop_design.py --function "$function_name" \
-    --forward "$run/forward/FORWARD.json" --output "$worktree/$fixture") > "$run/loop-heads.log" 2>&1
-  echo "loop heads: $(tail -c 200 "$run/loop-heads.log")"
+  [ -f "$run/loop-heads.json" ] || (cd tools/block && ../guarded_tool.sh python3 loop_design.py \
+    --function "$function_name" --forward "$run/forward/FORWARD.json" --output "$run/loop-heads.json") \
+    > "$run/loop-heads.log" 2>&1
+  loop_heads=(--loop-heads "$run/loop-heads.json")
+  same=$(python3 -c "import json,sys; r=lambda p: [{k: v for k, v in row.items() if k not in ('source', 'verification')} for row in json.load(open(p))['rows']]; print('same rows as' if r(sys.argv[1])==r(sys.argv[2]) else 'ROWS DIFFER from')" \
+    "$run/loop-heads.json" "$fixture" 2>/dev/null || echo "no committed")
+  echo "loop heads: $run/loop-heads.json ($same $fixture, provenance aside)"
 fi
 
 # The bank's coqc recipe with absolute load paths: its paths are relative to the bank's default/.
@@ -56,7 +62,7 @@ manifest=$inputs/SEED-MANIFEST.json
   --output "$run/render" --input-receipt "$run/forward/INPUT-RECEIPT.json" \
   --input-receipt-sha256 "$(sha "$run/forward/INPUT-RECEIPT.json")" --seed-manifest "$manifest" \
   --seed-manifest-sha256 "$(sha "$manifest")" --coqc-args "$run/coqc-args.json" --function "$function_name" \
-  --record-refusals > "$run/render.log" 2>&1
+  "${loop_heads[@]}" --record-refusals > "$run/render.log" 2>&1
 echo "render: $(head -c 300 "$run/render.log" | tr '\n' ' ')"
 
 [ -d "$run/callers" ] || $guard python3 tools/block/render_function_callers.py --function "$function_name" \

@@ -18,12 +18,15 @@ ROOT = Path(__file__).resolve().parents[2]
 LOOP_HIST_META = {}
 
 
-def render_loop_head(block, header, structural=False, profile=None):
-    """Keep the source classes and frame the existing caller continuation."""
+def render_loop_head(block, header, structural=False, profile=None, loop_heads=None):
+    """Keep the source classes and frame the existing caller continuation.
+
+    `loop_heads` is the loop-head file to read (default: the profile's committed fixture); a
+    scratch render passes its own so the committed fixture is never rewritten."""
     profile = profile or load_profile()
     entry_hist.configure(profile)
     domain_binder = ' (domain : ' + profile.args_type + ' -> Prop)'
-    rows = json.loads((ROOT / profile['loop_head_fixture']).read_text())['rows']
+    rows = json.loads(Path(loop_heads or ROOT / profile['loop_head_fixture']).read_text())['rows']
     row = next((item for item in rows if item['block'] == block), None)
     if row is None:
         raise ValueError('No authenticated loop head exists: ' + block)
@@ -59,6 +62,7 @@ def render_loop_head(block, header, structural=False, profile=None):
             [{'name': 'args', 'type': profile.args_type}, {'name': 'returnAddress', 'type': 'Z'}], design,
             visible=design.get('visible', []))
         if changed is None:
+            LOOP_HIST_META.pop(name, None)  # an earlier render of this class in another shape
             definitions.append((name, grouped_class(source)))
         else:
             for symbol, text, kind in changed[0]:
