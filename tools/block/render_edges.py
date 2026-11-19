@@ -192,14 +192,17 @@ class Source:
         choices = [self.candidates.get(key(member), []) for member in members]
         if not all(choices):
             return None
+        from join_generalize import _free_in_fact
+        free = lambda name, member: mentions(name, member) and _free_in_fact(unwrap(member), name)
         owner = {}
         for name in names:
             options = None
             for member, candidates in zip(members, choices):
-                if mentions(name, member):
-                    fits = {group for _, group in candidates
-                            if (group is None and name in self.binders)
-                            or (group is not None and name in self.groups[group][0])}
+                if free(name, member):
+                    # From group g a name g binds is g's; any other name is the block binder.
+                    fits = {group if group is not None and name in self.groups[group][0] else None
+                            for _, group in candidates
+                            if (group is not None and name in self.groups[group][0]) or name in self.binders}
                     options = fits if options is None else options & fits
             if not options:
                 return None
@@ -209,9 +212,9 @@ class Source:
             pick = None
             for term, group in candidates:
                 bound = self.groups[group][0] if group is not None else []
-                if (all(name in owner for name in bound if mentions(name, member))
+                if (all(name in owner for name in bound if free(name, member))
                         and all(owner[name] == (group if name in bound else None)
-                                for name in names if mentions(name, member))):
+                                for name in names if free(name, member))):
                     pick = (term, group)
                     break
             if pick is None:
@@ -258,10 +261,10 @@ def stated_at_source(text, rows, succ):
 
 
 def mentions_hidden(text, pre, source):
-    """A fact names a block ghost binder or a name bound in a block history group, outside its own
-    telescope."""
-    bound = set((group_parts(text) or ([], []))[0])
-    return any(mentions(name, text) and name not in bound
+    """A fact names a block ghost binder or a name bound in a block history group outside every
+    telescope that binds it (its own and those of its members)."""
+    from join_generalize import _free_in_fact
+    return any(mentions(name, text) and _free_in_fact(unwrap(text), name)
                for name in set(binder_names(pre, 'ghost')) | source.hidden_names())
 
 
@@ -528,6 +531,11 @@ def visible_accounting(edge, pre, succ):
             result.append({**row, 'status': 'visible'})
             continue
         text = stated_at_source(fact, rows, succ)
+        if text is not None and any(owner is None and hypothesis.startswith('HV')
+                                    for hypothesis, owner in everything.candidates.get(key(text), [])):
+            # The block-entry visible fact under the binder map: the block holds it in its context.
+            result.append({**row, 'status': 'visible'})
+            continue
         derivation = history.derive(text) if text is not None else None
         if derivation is not None and not mentions_hidden(text, pre, history):
             result.append({**row, 'status': 'reveal', 'fact': text, 'derivation': derivation})
