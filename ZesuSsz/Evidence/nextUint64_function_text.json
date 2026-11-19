@@ -121,15 +121,15 @@
       "path": "ZesuSsz/Contracts/NextUint64Contract.v",
       "category": "contracts",
       "scope": "whole_file",
-      "sha256": "5bbb9c35376d8fd933deb5c295a8d10703c71de6da2f408835c94f2a2f15121f",
-      "file_lines": 69,
+      "sha256": "25b009aee3441304e0b0f3fae2a103425a5f442481360ddd814b1cb31dae410f",
+      "file_lines": 76,
       "line_ranges": [
         [
           1,
-          69
+          76
         ]
       ],
-      "counted_lines": 69,
+      "counted_lines": 76,
       "text_kind": "hand_written"
     },
     {
@@ -151,15 +151,15 @@
       "path": "ZesuSsz/Compliance/NextUint64UnfoldRegistrations.v",
       "category": "registrations",
       "scope": "whole_file",
-      "sha256": "742b54d2b742e7fd1593729d2542841a3faf585a476a92f87a6d76f0fba310bf",
-      "file_lines": 43,
+      "sha256": "c9b7b4b0842a324834874ac7893fd9c48643c28315e2dc350e18b50b0dfdce44",
+      "file_lines": 45,
       "line_ranges": [
         [
           1,
-          43
+          45
         ]
       ],
-      "counted_lines": 43,
+      "counted_lines": 45,
       "text_kind": "hand_written"
     },
     {
@@ -483,17 +483,17 @@
     }
   ],
   "category_totals": {
-    "contracts": 643,
+    "contracts": 650,
     "loop_steps": 229,
-    "registrations": 112,
+    "registrations": 114,
     "tests_and_exports": 1164,
     "exit_meanings": 80,
     "generator_json": 4128,
     "composition": 44
   },
-  "interface_total": 5192,
-  "overall_total": 6400,
-  "conservative_full_file_lines": 6970,
+  "interface_total": 5201,
+  "overall_total": 6409,
+  "conservative_full_file_lines": 6979,
   "historical_interface_total": 867,
   "selected_marker_repair": {
     "root": "ccd89437978d14ed07a8dcb49e4bd27dc89f74f6",

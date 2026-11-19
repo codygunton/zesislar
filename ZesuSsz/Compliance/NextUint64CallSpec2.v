@@ -85,7 +85,7 @@ Qed.
    NextUint64Correct.v carries it over to the sealed public spec. *)
 Lemma nextUint64CallSpecDefinition_correct `{!islaG Sigma} `{!threadG} :
   NextUint64ContractCorrect ->
-  nextUint64SelectedCode -∗ instr_body nextUint64Entry nextUint64CallSpecDefinition.
+  nextUint64ContractCode -∗ instr_body nextUint64Entry nextUint64CallSpecDefinition.
 Proof.
   intros Hcontract.
   iStartProof. iIntros "Hcode".

@@ -162,7 +162,7 @@
                        "Require ZesuSsz.Compliance.NextUint64CallSpec2."],
           "exports": ["ZesuSsz.Contracts.NextUint64Selected", "ZesuSsz.Contracts.NextUint64Contract"],
           "premises": [["Hcontract", "NextUint64ContractCorrect"]],
-          "code": "nextUint64SelectedCode",
+          "code": "nextUint64ContractCode",
           "entry": "nextUint64Entry",
           "template_correct": "ZesuSsz.Compliance.NextUint64CallSpec2.nextUint64CallSpecDefinition_correct"
         }

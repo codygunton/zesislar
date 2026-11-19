@@ -6,6 +6,7 @@ Require Import ZesuSsz.Contracts.ParentHeaderRootFacts.
 Require Import ZesuSsz.Contracts.RlpDecodeItem.
 Require Import ZesuSsz.Contracts.NextUint64BlockEntries.
 Require Import ZesuSsz.Contracts.NextUint64Selected.
+Require Import ZesuSsz.Contracts.DecodeItemSelected.
 Open Scope Z_scope.
 
 (* The public entry owns the caller's 96 bytes and the callee's separate 16 bytes. *)
@@ -46,10 +47,16 @@ Definition nextUint64ContractAllows (returnAddress : Z)
   nextUint64BoundaryDomain params /\
   nextUint64RootResult (nextUint64Base params) result.
 
+(* The selected code is the own map only. The callee decodeItem's code enters
+   beside it; the table-level bridge turns it into decodeItem's call spec
+   (the shape of parentHeaderContractCode). *)
+Definition nextUint64ContractCode `{!islaG Sigma} `{!threadG} : iProp Sigma :=
+  (nextUint64SelectedCode ∗ decodeItemSelectedCode)%I.
+
 Definition nextUint64ContractResources `{!islaG Sigma} `{!threadG}
     (returnAddress : Z) :
     IslarisContractResources NextUint64Args NextUint64Return :=
-  {| islarisCode := nextUint64SelectedCode;
+  {| islarisCode := nextUint64ContractCode;
      islarisEntry := nextUint64ContractEntry returnAddress;
      islarisExit := nextUint64ContractExit |}.
 
