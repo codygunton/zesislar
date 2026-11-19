@@ -133,7 +133,7 @@ class NewGhostScope(unittest.TestCase):
         text = rocq_edge({'binder_map': [row], 'new': [], 'pre_entry': 'a', 'succ_entry': 'b', 'kind': 'k',
                           'unchanged': [{'succ': ('hidden', 0), 'pre': ('hidden', 0)}]}, pre, succ, 0)
         self.assertIn('    (∃ (n : bv 64), True)%I.', text)
-        self.assertIn('  iDestruct "HN" as (n) "(_)".\n', text)
+        self.assertIn('  iDestruct "HN" as (n) "_".\n', text)
         self.assertLess(text.index('iDestruct "HN"'), text.index('exists n.'))
         check_edge_sentences(text)
 

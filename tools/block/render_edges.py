@@ -492,10 +492,11 @@ def rocq_edge(edge, pre, succ, index):
     if new_texts or carried or bound:
         arguments = [binder['name'] for binder in used] + ['HF' + str(position) for position in support]
         term = '("HN" $! ' + ' '.join(arguments) + ')' if arguments else '"HN"'
-        intro = ' & '.join(['%HN' + str(position) for position in range(len(new_texts))]
-                           + ['%' + name for name in carried_index] + ['_'])
+        facts = ['%HN' + str(position) for position in range(len(new_texts))] + ['%' + name for name in carried_index]
+        # A premise that only binds ghosts (`∃ b…, True`) has one conjunct: Iris refuses `"(_)"` for it.
+        intro = '"(' + ' & '.join(facts + ['_']) + ')"' if facts else '"_"'
         lines.append('  iDestruct ' + term + ' as ' + ('(' + ' '.join(b['name'] for b in bound) + ') ' if bound else '')
-                     + '"(' + intro + ')".')
+                     + intro + '.')
     lines += [source.open_sentence(hypothesis) for hypothesis in sorted(opened)]
     lines.append('  iPureIntro. apply zesu_hist_intro. unfold ' + succ['hist'] + '.')
     if succ['ghost']:
@@ -617,8 +618,8 @@ EDGE_SENTENCES = [
     r"pose proof Hh as HF0",
     r"destruct (?:Hh|H[FV]\d+(?:_\d+)*) as \((?:" + _NAME + r")(?: & " + _NAME + r")*\)",
     r'iIntros "HN"',
-    r'iDestruct (?:"HN"|\("HN" \$!(?: ' + _NAME + r')+\)) as (?:\((?:' + _NAME + r' ?)+\) )?"\((?:%' + _NAME
-    + r' & )*_\)"',
+    r'iDestruct (?:"HN"|\("HN" \$!(?: ' + _NAME + r')+\)) as (?:\((?:' + _NAME + r' ?)+\) )?(?:"\((?:%' + _NAME
+    + r' & )+_\)"|"_")',
     r"iPureIntro",
     r"apply zesu_hist_intro",
     r"unfold " + _NAME,
