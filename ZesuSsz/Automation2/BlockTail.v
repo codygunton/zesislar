@@ -4,6 +4,7 @@ Require Import ZesuSsz.Automation2.LiaHook.
 Require ZesuSsz.Automation2.PureFacts.
 Require ZesuSsz.Automation2.VmClosed.
 Require ZesuSsz.Automation2.WrappedWord.
+Require ZesuSsz.Automation2.CallSlice.
 Require ZesuSsz.Automation2.BytePositionEquations.
 Require ZesuSsz.Automation2.ByteWindowFold.
 Require ZesuSsz.Automation2.Finish.
@@ -15,46 +16,6 @@ Local Open Scope Z_scope.
 
 (* The tail that every block runs once on each goal `zesu_block_base` and the
    residual tiers leave: goals in a normal form no earlier step reaches. *)
-
-(* Coq's own linear arithmetic (zify, then xlia), whatever `lia` means at the
-   call site. Callers select the facts first. *)
-Ltac zesu_tail_library_lia := Coq.micromega.Zify.zify; xlia Coq.micromega.Lia.zchecker.
-
-Lemma zesu_tail_add_exact (a b : bv 64) :
-  bv_unsigned a + bv_unsigned b < 18446744073709551616 ->
-  bv_unsigned (bv_add a b) = bv_unsigned a + bv_unsigned b.
-Proof.
-  intros Hlt. rewrite bv_add_unsigned. apply bv_wrap_small.
-  pose proof (bv_unsigned_in_range _ a) as Ha. pose proof (bv_unsigned_in_range _ b) as Hb.
-  change (bv_modulus 64) with 18446744073709551616 in *. zesu_tail_library_lia.
-Qed.
-
-Lemma zesu_tail_unsigned_pos n (w : bv n) : bv_unsigned w <> 0 -> 0 < bv_unsigned w.
-Proof. pose proof (bv_unsigned_in_range n w). zesu_tail_library_lia. Qed.
-
-(* `clear` without arguments keeps everything: drop every hypothesis. *)
-Ltac zesu_tail_clear_all := repeat match goal with H : _ |- _ => clear H end.
-
-(* `0 <= z + s < 2^64` from the order facts that mention z (no div, mod or
-   length fact reaches lia). *)
-Ltac zesu_tail_zroot_range_select z :=
-  repeat match goal with
-  | H : ?T |- _ =>
-      lazymatch T with
-      | (_ <= _ < _)%Z => idtac | (_ <= _)%Z => idtac | (_ < _)%Z => idtac
-      end;
-      lazymatch T with context [z] => idtac end;
-      lazymatch T with
-      | context [Z.modulo] => fail | context [Z.div] => fail | context [@length] => fail
-      | _ => idtac end;
-      revert H
-  end;
-  zesu_tail_clear_all; intros;
-  change (bv_modulus 64) with 18446744073709551616 in *;
-  zesu_tail_library_lia.
-Ltac zesu_tail_zroot_range z :=
-  first [ solve [zesu_tail_zroot_range_select z]
-        | ZesuSsz.Automation2.PureFacts.zesu_saturate_derived_facts; solve [zesu_tail_zroot_range_select z] ].
 
 (* The list index of a load: literal list index, then the window as byte
    positions. *)
@@ -88,7 +49,7 @@ Ltac zesu_tail_lia_select :=
       end
   end;
   repeat match goal with H : ?T |- _ => zesu_tail_keep_fact T; revert H end;
-  zesu_tail_clear_all; intros;
+  ZesuSsz.Automation2.WrappedWord.zesu_clear_all_hyps; intros;
   change (bv_modulus 64) with 18446744073709551616 in *;
   repeat match goal with
   | H : context [@length ?T ?x] |- _ =>
@@ -100,13 +61,13 @@ Ltac zesu_tail_lia_select :=
       lazymatch T with bv 8 => fail | _ => idtac end;
       change (@length T x) with (@length (bv 8) x)
   end;
-  zesu_tail_library_lia.
+  ZesuSsz.Automation2.CallSlice.zesu_call_slice_lia.
 
 (* A generated window fact `0 < a -> a <= k -> window` whose premises are
    branch facts. *)
 Ltac zesu_tail_order_goal :=
   first [ assumption
-        | match goal with H : bv_unsigned ?w <> 0%Z |- (0 < bv_unsigned ?w)%Z => exact (zesu_tail_unsigned_pos _ w H) end
+        | match goal with H : bv_unsigned ?w <> 0%Z |- (0 < bv_unsigned ?w)%Z => exact (ZesuSsz.Automation2.CallSlice.zesu_call_slice_unsigned_pos _ w H) end
         | solve [zesu_tail_lia_select] ].
 Ltac zesu_tail_forward_window_facts :=
   repeat match goal with
@@ -121,7 +82,7 @@ Ltac zesu_tail_add_exact_rewrite :=
   | |- context [bv_unsigned (@bv_add 64 ?a ?b)] =>
       let H := fresh "HtailAdd" in
       assert (H : bv_unsigned (bv_add a b) = (bv_unsigned a + bv_unsigned b)%Z)
-        by (apply zesu_tail_add_exact; zesu_tail_lia_select);
+        by (apply ZesuSsz.Automation2.CallSlice.zesu_call_slice_add_exact; zesu_tail_lia_select);
       rewrite H; clear H
   end.
 (* Every conjunct that closes; a conjunct that does not stays open. *)
@@ -167,7 +128,7 @@ Ltac zesu_tail_roundtrip_exact :=
       | context [bv_unsigned (Z_to_bv 64 ?z)] =>
           let E := fresh "HtailRound" in
           assert (E : bv_unsigned (Z_to_bv 64 z) = z)
-            by (rewrite Z_to_bv_unsigned; apply bv_wrap_small; zesu_tail_zroot_range z);
+            by (rewrite Z_to_bv_unsigned; apply bv_wrap_small; ZesuSsz.Automation2.WrappedWord.zesu_zroot_range z);
           let H2 := fresh "HtailView" in
           pose proof H as H2;
           rewrite E in H2;
