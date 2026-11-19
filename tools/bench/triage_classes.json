@@ -1,0 +1,23 @@
+{
+ "about": "Leftover classes of tools/bench/triage.py, first match wins in this order. A class matches a block by its end (\"ends\": the bench report's run end) or a leftover by \"regex\" (Python re.search, DOTALL) on the leftover head: `pure <conclusion>` for an exported pure goal (its conclusion as ResidualExport prints it, every application in `@f args` form), `spatial <goal skeleton>` or `spatial-call <goal skeleton>` for a spatial goal (skeleton of the last step before it, spaces printed as `_`; -call when the caller's premises include a callee spec), `error <first error line>` for a failed block with no export. \"max_bytes\" bounds the exported statement's size. Plan step 1.4, issue #316.",
+ "classes": [
+  {"id": "OVER", "ends": ["cpu-cap", "memory-fence"], "owner": "coordinator",
+   "next_action": "stepping-only probe (tools/block/probe_mirror.py); shrink the statement before any tactic work"},
+  {"id": "WITNESS", "regex": "^pure (@Coq\\.Init\\.Logic\\.eq .* [A-Za-z_][\\w']* [A-Za-z_][\\w']*|[A-Za-z_][\\w']* = [A-Za-z_][\\w']*|(@Coq\\.Init\\.Logic\\.ex|∃|exists)\\b.*)$",
+   "owner": "generator", "next_action": "binder map of the edge; never a prover"},
+  {"id": "CALL", "regex": "^spatial-call .*∃", "owner": "rule 1.1c",
+   "next_action": "check the visible call facts of 1.2-4"},
+  {"id": "LOOKUP", "regex": "^spatial(-call)? .*find_in_context[ _]\\(FindMemMapsTo", "owner": "rule 1.1d-2, 1.1d-3",
+   "next_action": "print the address and the resources"},
+  {"id": "FAULT", "regex": "FindRegMapsTo[ _]\"mcause\"", "owner": "generator",
+   "next_action": "a needed fact is hidden: add it to the visible list"},
+  {"id": "HIST", "regex": "zesu_hist", "owner": "generator",
+   "next_action": "missing edge or reveal instance"},
+  {"id": "WORD", "regex": "^pure @Coq\\.Init\\.Logic\\.eq (?=.*\\b(take|drop)\\b)(?=.*\\b(nth|bv_concat)\\b)", "owner": "rule 1.1d-1",
+   "next_action": "one spelling of the little-endian word (rule 1.1d-1)"},
+  {"id": "PURE", "regex": "^pure (?!.*Meaning)", "max_bytes": 4096, "owner": "model tier",
+   "next_action": "falsity check on concrete values first; then a sonic agent with the goal and exact lemma names; then a task agent"},
+  {"id": "MEANING", "regex": "Meaning", "owner": "contract lemma",
+   "next_action": "step 2.2 or 2.4"}
+ ]
+}
