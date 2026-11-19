@@ -107,3 +107,5 @@ Require Export ZesuSsz.Automation2.CodecFrame.
 
 (* Reopen the canonical hook owner after all library imports. *)
 Require Export ZesuSsz.Automation2.Hooks.
+Require Export ZesuSsz.Automation2.LoopExit.
+Require Export ZesuSsz.Automation2.BlockTail.

@@ -1467,6 +1467,10 @@ Ltac zesu_finish_split_conjunct :=
           first [assumption | zesu_finish_lia | zesu_bv_solver_goal; bv_solve]] ]
   end.
 
+(* The block tail. `BlockTail` redefines it once; without that module no goal
+   is touched. *)
+Ltac zesu_block_tail_one := fail.
+
 (* Residual lemmas close the pure goals that every other tier leaves open. *)
 Ltac zesu_block2 :=
   zesu_block_base; try zesu_finish_residual_cascade;
@@ -1474,6 +1478,7 @@ Ltac zesu_block2 :=
     (zesu_finish_package_deferring; try zesu_finish_split_conjunct; zesu_clear_split_baseline)
   | solve [zesu_finish_source_tail]];
   try (zesu_diag_stage "residual_lemma"; ResidualLemmas.zesu_residual_lemma);
+  try zesu_block_tail_one;
   zesu_diag_refusal "final".
 
 Ltac zesu_block_simpl :=
