@@ -22,8 +22,13 @@ files import them, or nextUint64's frozen-core exit meanings use them; no produc
 uses them. The user selected C1-B: the public result records exact
 machine bytes and permits only the named `RlpLongLengthWrap` divergence from Sail.
 The `KnownBugs` list has one constructor. A wrap case requires the exact binary
-result and Sail rejection. `headerFits` remains a caller lemma, not a public domain.
-Rung 2 does not narrow its domain. A nested wrap uses the same known bug on the
+result and Sail rejection. The decodeParentHeader domain (`parentHeaderArgsWellFormed`)
+requires the outer header to fit (`headerFits` of the whole input). The code checks the
+first item only for an error, the list flag and a nonzero payload length; it never checks
+that payload against the input. An outer long-list length that wraps 2^64 therefore passes,
+and the later decodeItem calls read outside the input (`0xff` followed by eight `0xff`
+bytes is one such input). That input class is outside the decodeParentHeader theorem.
+A nested wrap uses the same known bug on the
 reached slice. The candidate reached-slice walk needs machine-call correspondence
 before a proof can use it. Machine proofs establish partial correctness only. Phase 5 of the
 active plan must prove termination with the verified executor in `ZesuSsz/Export/Executor.v`.

@@ -288,6 +288,17 @@ Definition ReviewedParentHeaderCall (args : ParentHeaderArgs) : ParentHeaderCall
      headerMemcpySourceBefore := parentHeaderMemcpySourceBefore args;
      headerMemcpyScratchBefore := parentHeaderMemcpyScratchBefore args |}.
 
+(* The outer header of a decodeParentHeader input fits: a long-length header
+   that is complete states a total length below 2^64. *)
+Definition ReviewedHeaderFits (bytes : list byte) : Prop :=
+  match bytes with
+  | [] => True
+  | prefix :: rest =>
+      let width := longLengthWidth (bv_unsigned prefix) in
+      width = 0 \/ Z.of_nat (List.length rest) < width \/
+      1 + width + bigEndian (firstn (Z.to_nat width) rest) < 2 ^ 64
+  end.
+
 Definition ReviewedParentHeaderArgsWellFormed (args : ParentHeaderArgs) : Prop :=
   Z.of_nat (length (parentHeaderInputBytes args)) =
     bv_unsigned (parentHeaderInputLength args) /\
@@ -316,7 +327,8 @@ Definition ReviewedParentHeaderArgsWellFormed (args : ParentHeaderArgs) : Prop :
   separateRanges 0xa0400f00 8
     (bv_unsigned (parentHeaderStackPointer args) - 400) 400 /\
   separateRanges 0xa0400f00 8
-    (bv_unsigned (parentHeaderStackPointer args) - 400 - 112) 112.
+    (bv_unsigned (parentHeaderStackPointer args) - 400 - 112) 112 /\
+  ReviewedHeaderFits (parentHeaderInputBytes args).
 
 Definition ReviewedParentHeaderSysRegs (args : ParentHeaderArgs) :
     list (reg_kind * valu_shape) :=
@@ -441,5 +453,6 @@ Definition ReviewedParentHeaderContractCorrect : Prop :=
 
 Check (eq_refl : parentHeaderCall = ReviewedParentHeaderCall).
 Check (eq_refl : parentHeaderArgsWellFormed = ReviewedParentHeaderArgsWellFormed).
+Check (eq_refl : headerFits = ReviewedHeaderFits).
 Check (eq_refl : parentHeaderExitSysRegs = ReviewedParentHeaderExitSysRegs).
 Check (eq_refl : ParentHeaderContractCorrect = ReviewedParentHeaderContractCorrect).
