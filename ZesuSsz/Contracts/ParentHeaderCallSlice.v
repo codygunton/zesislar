@@ -5,6 +5,7 @@ Require Import ZesuSsz.Automation2.CallSliceInterface.
 Require Import ZesuSsz.Contracts.RlpDecodeItem.
 Require Import ZesuSsz.Contracts.RlpDecodeItemContract.
 Require Import ZesuSsz.Contracts.DecodeItemCallData.
+Require Import ZesuSsz.Contracts.DecodeItemPayloadBounds.
 Require Import ZesuSsz.Contracts.ParentHeaderContract.
 Require Import ZesuSsz.Interfaces.DecodeItem.
 Require Export ZesuSsz.Contracts.DecodeItemCallSlice.
@@ -57,4 +58,24 @@ Proof.
   intros args p l out sp k ie rest before Hwf Hwin Hsp Hout Hk -> Hbefore.
   exact (parentHeaderDecodeItemCallDomain args p l out sp k rest before
     Hwf Hwin Hsp Hout Hk Hbefore).
+Qed.
+
+
+(* The fact block 0068 lacks: the first call reads the whole input, whose outer
+   header fits by the domain, so its payload length is at most the input
+   length, far below 2^64 - 9. *)
+Lemma parentHeaderOuterPayloadBound (args : ParentHeaderArgs) (argv : list (bv 64))
+    (sp : bv 64) (inputEnd : Z) (before after : list byte) :
+  parentHeaderArgsWellFormed args ->
+  decodeItemCallMeaning
+    (decodeItemCallDataArgs argv sp inputEnd (parentHeaderInputBytes args) before) after ->
+  bv_unsigned (listWord64At8 after) < 18446744073709551607.
+Proof.
+  intros Hwf Hmeaning.
+  unfold parentHeaderArgsWellFormed in Hwf.
+  destruct Hwf as (Hlength & _ & _ & _ & _ & Hlow & Hhigh & Hwf).
+  pose proof Hwf as Hfits. repeat apply proj2 in Hfits.
+  pose proof (decodeItemCallPayloadFits _ _ _ _ _ _ Hmeaning Hfits) as Hp.
+  pose proof (bv_unsigned_in_range _ (parentHeaderInputPointer args)) as Hip.
+  lia.
 Qed.
