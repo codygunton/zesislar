@@ -1,7 +1,7 @@
 Require Import isla.riscv64.riscv64.
-Require Import ZesuSsz.Automation2.All.
 From Coq Require Import ZArith Lia List.
 Import ListNotations.
+Require Import ZesuSsz.Automation2.All.
 Local Open Scope Z_scope.
 
 (* berlinGasCalc 3f00: the range fact of a saved-flag array whose bytes divide
