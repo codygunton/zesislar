@@ -645,3 +645,49 @@ class SealedCalleeTests(unittest.TestCase):
         text = ("Module Type SealedSignature.\n  Parameter p : Prop.\n  Axiom a : p.\nEnd SealedSignature.\n"
                 "Module Sealed : SealedSignature.\nEnd Sealed.\nAxiom outside : False.\n")
         self.assertEqual(interface_signature_lines(text), {2, 3})
+
+
+class EdgeProofTests(unittest.TestCase):
+    """EDGE-PROOF: generated history edge modules may hold proofs from EDGE_SENTENCES only."""
+    name = "ZesuSsz/Generated/NextUint64/FP301/Edges0070.v"
+    edge = ("Global Instance zesu_hist_edge_8 (args : A) (x : bv 64) :\n"
+            "  ZesuHistEdge (PROP := iProp Sigma) (e_Hist args x) (f_Hist args x) (True)%I.\n"
+            "Proof.\n"
+            "  rewrite /ZesuHistEdge => Hh. apply zesu_hist_elim in Hh. unfold e_Hist in Hh.\n"
+            "  destruct Hh as (g & HF0 & HF1).\n"
+            "  iIntros \"HN\".\n"
+            "  iPureIntro. apply zesu_hist_intro. unfold f_Hist.\n"
+            "  exists g.\n"
+            "  split; [exact HF0|].\n"
+            "  by vm_compute.\n"
+            "Qed.\n")
+
+    def failures(self, name, text):
+        from check_proof_hygiene import edge_proof_failures
+        return edge_proof_failures(name, text)
+
+    def test_a_conforming_edge_module_passes(self):
+        self.assertEqual(self.failures(self.name, self.edge), [])
+
+    def test_admitted_is_refused(self):
+        text = self.edge.replace("  by vm_compute.\nQed.\n", "Admitted.\n")
+        self.assertTrue(any("Admitted" in failure for failure in self.failures(self.name, text)))
+
+    def test_a_sentence_outside_the_list_is_refused(self):
+        text = self.edge.replace("  by vm_compute.\n", "  lia.\n")
+        self.assertEqual(self.failures(self.name, text),
+                         ["EDGE-PROOF: " + self.name + ": sentence outside EDGE_SENTENCES: lia"])
+
+    def test_ltac_and_axiom_are_refused(self):
+        for line in ("Ltac t := idtac.\n", "Axiom bad : False.\n"):
+            with self.subTest(line=line):
+                self.assertTrue(self.failures(self.name, line + self.edge))
+
+    def test_the_rule_applies_to_edge_modules_only(self):
+        self.assertEqual(self.failures("ZesuSsz/Generated/NextUint64/FP301/Pilot0070Entries.v",
+                                       self.edge.replace("by vm_compute", "lia")), [])
+
+    def test_the_list_is_the_renderers(self):
+        import check_proof_hygiene
+        import render_edges
+        self.assertIs(check_proof_hygiene.edge_proof_problems, render_edges.edge_proof_problems)

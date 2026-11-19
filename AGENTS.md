@@ -46,7 +46,7 @@ theorem with `IslarisContractCorrect`. State observable output through
 
 Do not write an operational lemma per instruction. Do not write a template
 generator.
-Generators may render declarations (entry statements, registrations, hint umbrellas) from design tables; they never render proof scripts. 'Do not write a template generator' refers to proof templates.
+Generators may render declarations (entry statements, registrations, hint umbrellas) from design tables; they never render proof scripts. Exception: `tools/block/render_edges.py` renders the proofs of `ZesuHistEdge` and `ZesuHistReveal` instances in `ZesuSsz/Generated/<Function>/FP301/Edges*.v`. Those proofs use only the sentence forms listed in `EDGE_SENTENCES` of that script; the hygiene check enforces the list. 'Do not write a template generator' refers to proof templates.
 Do not transliterate an Iris invariant into an operational one.
 Do not write a `//@spec:` for a load or store from an array. Do not split an
 array in a proof script. Do not redefine a Lithium hook outside

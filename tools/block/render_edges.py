@@ -402,6 +402,9 @@ EDGE_SENTENCES = [
 ]
 
 
+EDGE_PROOF_FILE = 'ZesuSsz/Generated/*/FP301/Edges*.v'
+
+
 def edge_sentences(text):
     """The sentences of the proofs of an edge module (each `Proof. … Qed.`)."""
     sentences = []
@@ -410,12 +413,23 @@ def edge_sentences(text):
     return sentences
 
 
+def edge_proof_problems(text):
+    """Why an edge module breaks the AGENTS.md exception (empty: it conforms). Shared with
+    ZesuSsz/Evidence/check_proof_hygiene.py rule EDGE-PROOF."""
+    problems = []
+    if re.search(r"\b(?:Admitted|Axiom|Ltac2?|Defined|Abort|admit)\b", text):
+        problems.append('contains Admitted, Axiom, Ltac, Defined, Abort or admit')
+    if len(re.findall(r"^Proof\.", text, re.M)) != len(re.findall(r"^Qed\.", text, re.M)):
+        problems.append('a proof does not start with `Proof.` and end with `Qed.` on their own lines')
+    problems += ['sentence outside EDGE_SENTENCES: ' + sentence[:200] for sentence in edge_sentences(text)
+                 if not any(re.fullmatch(pattern, sentence, re.S) for pattern in EDGE_SENTENCES)]
+    return problems
+
+
 def check_edge_sentences(text):
-    for sentence in edge_sentences(text):
-        if not any(re.fullmatch(pattern, sentence, re.S) for pattern in EDGE_SENTENCES):
-            raise ValueError('An edge proof sentence is outside EDGE_SENTENCES: ' + sentence[:200])
-    if re.search(r"\b(?:Admitted|Axiom|Ltac|Ltac2)\b", text):
-        raise ValueError('An edge module contains Admitted, Axiom or Ltac')
+    problems = edge_proof_problems(text)
+    if problems:
+        raise ValueError('An edge module breaks EDGE_SENTENCES: ' + '; '.join(problems))
 
 
 def main():
@@ -512,7 +526,9 @@ def main():
                 continue
             case = profile.key(pre_pc)
             stems = sorted({stem_of(entry) for entry in used_entries.get(pre_pc, ())})
-            header = pilot_header(profile) + 'Require Import lithium.lvar.\n'
+            header = pilot_header(profile).replace(
+                'No proof script.', 'Proofs use only EDGE_SENTENCES (tools/block/render_edges.py).', 1
+            ) + 'Require Import lithium.lvar.\n'
             header += ''.join('Require Import ' + profile.qualified(stem + kind) + '.\n'
                               for stem in stems for kind in ('Entries', 'Structural'))
             header += (entry_hist.HIST_LIBRARY + 'From iris.proofmode Require Import proofmode.\n\n'
