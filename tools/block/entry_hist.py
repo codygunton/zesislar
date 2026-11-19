@@ -145,6 +145,16 @@ def conjunction(facts):
     return ' /\\ '.join('(' + unwrap(fact) + ')' for fact in facts) if facts else 'True'
 
 
+def history_copies(binders, visible, visible_patterns, varying=()):
+    """The visible facts an entry also states in its history: groups (`∃ b…, …`) and facts that a
+    visible pattern selects and that name an entry binder; none on a loop-varying binder."""
+    names = [binder['name'] for binder in binders]
+    return [fact for fact in visible
+            if not any(mentions(name, fact) for name in varying)
+            and (unwrap(fact).startswith('∃') or (any(mentions(name, fact) for name in names) and any(
+                re.search(pattern, fact, re.S) for pattern in visible_patterns)))]
+
+
 def seal_alternative(name, plain_telescope, plain_binders, binders, resources, facts, visible_patterns=(), pinned=(),
                      grouped=False, varying=()):
     """Return (declarations, body, meta) of one sealed entry variant.
@@ -153,6 +163,11 @@ def seal_alternative(name, plain_telescope, plain_binders, binders, resources, f
     body: the iProp body of the entry variant; meta: the data that the edge record reads."""
     live, ghost, visible, hidden = classify(binders, resources, facts, visible_patterns, pinned,
                                             definitional=grouped)
+    # The history also holds a copy of each visible group and each visible fact a visible pattern
+    # selects on an entry binder (call records, named equations): an edge or a `ZesuHistReveal`
+    # instance proves a successor fact that regroups them from the history alone (the block's
+    # automation neither keeps those facts nor chooses the witnesses of a new existential).
+    hidden = hidden + history_copies(binders, visible, visible_patterns, varying)
     hist = name + '_Hist'
     # The history takes only the live binders its facts mention. A loop class keeps
     # every fact on a loop-varying binder visible, so its history is the same on both sides of the

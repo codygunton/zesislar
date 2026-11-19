@@ -107,21 +107,162 @@ def binder_map(kind, pre, succ, witnesses, loop_values, loop_binders=()):
 MASK_FACT = re.compile(r'bool_decide|bv_and|bv_extract|bv_unsigned')
 
 
-def free_witnesses(succ, rows):
-    """A new ghost binder of type bv that only closed facts mention gets the witness 0.
+def free_witnesses(succ, rows, pre=None):
+    """A ghost binder of type bv that only closed facts mention gets the witness 0.
 
     Such a binder (a system-register or trace witness) is tied to no resource and to no other
-    binder, so any value that satisfies its own facts will do; with 0 the facts compute."""
+    binder, so any value that satisfies its own facts will do; with 0 the facts compute. A new
+    binder always qualifies; a binder the block entry holds (identity) only when the successor
+    states a fact on it that the block entry does not (a guard of the block's own path, such as
+    the mstatus bit test): with 0 that fact computes instead of being a premise of the edge."""
     others = [binder['name'] for binder in succ['live'] + succ['ghost']]
+    pre_facts = {normal(fact) for fact in pre['hidden']} if pre else set()
     for row in rows:
-        if row['role'] != 'ghost' or row['identity'] or row['expression'] is not None:
+        if row['role'] != 'ghost' or row.get('rename') or (row['expression'] is not None and not row['identity']):
             continue
         match = re.fullmatch(r'bv (\d+)', row['type'])
         facts = [fact for fact in succ['hidden'] if mentions(row['succ'], fact)]
+        if row['identity'] and (pre is None or any(mentions(row['succ'], fact) for fact in succ['visible'])
+                                or all(normal(fact) in pre_facts for fact in facts)):
+            continue
         if match and facts and all(MASK_FACT.search(fact) and not any(
                 mentions(name, fact) for name in others if name != row['succ']) for fact in facts):
-            row['expression'] = '(BV ' + match[1] + '%N 0%Z)'
-            row['free'] = True
+            row.update({'expression': '(BV ' + match[1] + '%N 0%Z)', 'free': True, 'identity': False, 'pre': None})
+
+
+def group_parts(text):
+    """(bound names, members) of a group fact `[zesu_join_history] (∃ (b : T)…, (F1) /\\ … /\\ (Fk))`,
+    or None."""
+    from join_generalize import JOIN_HISTORY, history_members
+    fact = unwrap(text)
+    if fact.startswith(JOIN_HISTORY + ' (') and fact.endswith(')'):
+        fact = fact[len(JOIN_HISTORY) + 2:-1].strip()
+    if not fact.startswith('∃'):
+        return None
+    members = history_members('⌜' + fact + '⌝')
+    if not members:
+        return None
+    depth = 0
+    for position, char in enumerate(fact):
+        depth += {'(': 1, ')': -1}.get(char, 0)
+        if char == ',' and depth == 0:
+            break
+    names = [name for group in re.findall(r"\(([^():]+?) :", fact[1:position]) for name in group.split()]
+    return (names, members) if names else None
+
+
+class Source:
+    """The facts a proof at a block entry can name: its history facts `HF<i>` (`destruct Hh`), the
+    members `HF<i>_<j>` of a history group fact (`destruct HF<i>` binds the group's names as
+    `<name>_HF<i>`) and, with `visible`, its visible facts `HV<k>` (premises of an edge, which the
+    block proves from its context) and their group members `HV<k>_<j>`."""
+
+    def __init__(self, pre, visible=True):
+        self.binders = set(binder_names(pre, 'parameters') + binder_names(pre, 'live')
+                           + binder_names(pre, 'ghost')
+                           + [binder['name'] for binder in pre.get('hist_live', [])])
+        self.candidates, self.groups = {}, {}
+        for where, prefix in (('hidden', 'HF'), ('visible', 'HV')) if visible else (('hidden', 'HF'),):
+            for index, fact in enumerate(pre[where]):
+                hypothesis = prefix + str(index)
+                self.candidates.setdefault(key(fact), []).append((hypothesis, None))
+                parts = group_parts(fact)
+                if parts:
+                    self.groups[hypothesis] = parts
+                    for position, member in enumerate(parts[1]):
+                        self.candidates.setdefault(key(member), []).append(
+                            (hypothesis + '_' + str(position), hypothesis))
+
+    def hidden_names(self):
+        """Names a block cannot state: bound in a history group (and no block binder)."""
+        return {name for hypothesis, (names, _) in self.groups.items() if hypothesis.startswith('HF')
+                for name in names if name not in self.binders}
+
+    def derive(self, text):
+        """(proof term, opened groups, used top-level hypotheses) of `text`, or None: the fact itself,
+        or a group `∃ b…, (F1) /\\ …` each of whose members is a source fact or group member, each
+        b witnessed by the block binder b or by one opened source group's b."""
+        flat = [hypothesis for hypothesis, owner in self.candidates.get(key(text), []) if owner is None]
+        if flat:
+            return flat[0], set(), {flat[0]}
+        parts = group_parts(text)
+        if parts is None:
+            return None
+        names, members = parts
+        choices = [self.candidates.get(key(member), []) for member in members]
+        if not all(choices):
+            return None
+        owner = {}
+        for name in names:
+            options = None
+            for member, candidates in zip(members, choices):
+                if mentions(name, member):
+                    fits = {group for _, group in candidates
+                            if (group is None and name in self.binders)
+                            or (group is not None and name in self.groups[group][0])}
+                    options = fits if options is None else options & fits
+            if not options:
+                return None
+            owner[name] = None if None in options else sorted(options)[0]
+        terms, opened = [], set()
+        for member, candidates in zip(members, choices):
+            pick = None
+            for term, group in candidates:
+                bound = self.groups[group][0] if group is not None else []
+                if (all(name in owner for name in bound if mentions(name, member))
+                        and all(owner[name] == (group if name in bound else None)
+                                for name in names if mentions(name, member))):
+                    pick = (term, group)
+                    break
+            if pick is None:
+                return None
+            terms.append(pick[0])
+            if pick[1] is not None:
+                opened.add(pick[1])
+        proof = terms[-1]
+        for term in reversed(terms[:-1]):
+            proof = '(conj ' + term + ' ' + proof + ')'
+        for name in reversed(names):
+            proof = '(ex_intro _ ' + (name if owner[name] is None else name + '_' + owner[name]) + ' ' + proof + ')'
+        used = {re.match(r'H[FV]\d+', term)[0] for term in terms}
+        return (proof if proof.startswith('(') else '(' + proof + ')'), opened, used
+
+    def open_sentence(self, hypothesis):
+        names, members = self.groups[hypothesis]
+        pattern = [name + '_' + hypothesis for name in names] + [hypothesis + '_' + str(position)
+                                                                 for position in range(len(members))]
+        return '  destruct ' + hypothesis + ' as (' + ' & '.join(pattern) + ').'
+
+
+def succ_terms(rows):
+    """Successor binder -> the block-entry term it stands for on this edge (binders with a term)."""
+    return {row['succ']: row['expression'] for row in rows
+            if row['expression'] is not None and not row['identity'] and row['expression'] != row['succ']}
+
+
+def stated_at_source(text, rows, succ):
+    """`text` (a successor fact) over block-entry terms, or None when it names a successor ghost
+    binder that has no term on this edge. A successor live binder without a term is a value the block
+    chooses from its resources (`<name>_succ`, no block-entry name)."""
+    terms = succ_terms(rows)
+    identity = {row['succ'] for row in rows if row['identity']}
+    bound = set((group_parts(text) or ([], []))[0])
+    table = {name: term if re.fullmatch(r"[\w']+", term) else '(' + unwrap(term) + ')' for name, term in terms.items()}
+    for role in ('live', 'ghost'):
+        for name in binder_names(succ, role):
+            if name not in identity and name not in terms and name not in bound and mentions(name, text):
+                if role == 'ghost':
+                    return None
+                table[name] = name + '_succ'
+    return substitute(text, table)
+
+
+def mentions_hidden(text, pre, source):
+    """A fact names a block ghost binder or a name bound in a block history group, outside its own
+    telescope."""
+    bound = set((group_parts(text) or ([], []))[0])
+    return any(mentions(name, text) and name not in bound
+               for name in set(binder_names(pre, 'ghost')) | source.hidden_names())
 
 
 def classify_facts(pre, succ, rows):
@@ -236,44 +377,6 @@ def substitute(text, renames):
     return re.sub(pattern, lambda match: renames[match[1]], text)
 
 
-def derived_term(text, pre, succ, identity):
-    """A proof term of a successor history fact `[zesu_join_history] (∃ b…, (F1) /\\ … /\\ (Fk))` whose
-    members are source history facts (the hypotheses HF<i> of the opened source history) and whose
-    binders are source binders, or None. The witnesses are the source binders of the same names."""
-    from join_generalize import JOIN_HISTORY, history_members
-    fact = unwrap(text).strip()
-    if fact.startswith(JOIN_HISTORY + ' (') and fact.endswith(')'):
-        fact = fact[len(JOIN_HISTORY) + 2:-1].strip()
-    members = history_members('⌜' + fact + '⌝')
-    if not members or not fact.startswith('∃'):
-        return None
-    depth = 0
-    for position, char in enumerate(fact):
-        depth += {'(': 1, ')': -1}.get(char, 0)
-        if char == ',' and depth == 0:
-            break
-    names = [name for group in re.findall(r"\(([^():]+?) :", fact[1:position]) for name in group.split()]
-    source = set(binder_names(pre, 'ghost') + [binder['name'] for binder in pre.get('hist_live', pre['live'])]
-                 + [binder['name'] for binder in pre['parameters']])
-    if not names or any(name not in source for name in names):
-        return None
-    if any(mentions(name, fact) and name not in names and name not in identity
-           for name in binder_names(succ, 'live') + binder_names(succ, 'ghost')):
-        return None
-    hypotheses = {}
-    for index, other in enumerate(pre['hidden']):
-        hypotheses.setdefault(key(other), 'HF' + str(index))
-    terms = [hypotheses.get(key(member)) for member in members]
-    if None in terms:
-        return None
-    proof = terms[-1]
-    for term in reversed(terms[:-1]):
-        proof = '(conj ' + term + ' ' + proof + ')'
-    for name in reversed(names):
-        proof = '(ex_intro _ ' + name + ' ' + proof + ')'
-    return proof if proof.startswith('(') else '(' + proof + ')'
-
-
 def rocq_edge(edge, pre, succ, index):
     """One ZesuHistEdge instance with its data-only proof."""
     rows = edge['binder_map']
@@ -292,15 +395,27 @@ def rocq_edge(edge, pre, succ, index):
             variables.append({'name': name, 'type': binder['type']})
             names.add(name)
     new_hidden = [row for row in edge['new'] if row['succ'][0] == 'hidden']
-    # A successor history fact that binds source-history facts (a join's `zesu_join_history` group)
-    # is proved inside the edge from the opened source history, not left to the block as a premise.
-    derived = {}
+    # A successor history fact that the opened block entry proves (a source fact, or a group of source
+    # facts and members of source history groups, such as a join's `zesu_join_history`) is proved
+    # inside the edge, not left to the block as a premise. A visible block-entry fact it needs is a
+    # premise `HV<k>` (the automation proves it from its own context).
+    source = Source(pre)
+    succ_names = set(binder_names(succ, 'live') + binder_names(succ, 'ghost'))
+    derived, opened, carried_index = {}, set(), set()
     for row in new_hidden:
-        term = derived_term(row['text'], pre, succ, identity)
-        if term is not None:
-            derived[tuple(row['succ'])] = term
+        text = substitute(row['text'], renames)
+        bound = set((group_parts(text) or ([], []))[0])
+        if any(mentions(name, text) and name not in bound and name not in identity and name not in pre_live
+               for name in succ_names):
+            continue
+        result = source.derive(text)
+        if result is not None:
+            derived[tuple(row['succ'])] = result[0]
+            opened |= result[1]
+            carried_index |= {name for name in result[2] if name.startswith('HV')}
     new_hidden = [row for row in new_hidden if tuple(row['succ']) not in derived]
-    edge['hidden_premises'] = sum(any(mentions(name, row['text']) for name in pre_ghost) for row in new_hidden)
+    edge['hidden_premises'] = sum(mentions_hidden(substitute(row['text'], renames), pre, source)
+                                  for row in new_hidden)
     free = {row['succ']: row['expression'] for row in rows if row.get('free')}
     closed = {tuple(row['succ']) for row in edge.get('closed', [])}
     new_ghost = [name for name in succ_ghost if name not in identity and name not in free]
@@ -309,12 +424,10 @@ def rocq_edge(edge, pre, succ, index):
     new_texts = [substitute(row['text'], {**renames, **ghost_renames}) for row in new_hidden]
     used = [binder for binder in pre['ghost']
             if any(mentions(binder['name'], text) for text in new_texts + [pre['hidden'][p] for p in support])]
-    # A block-entry fact that is visible at the entry and that a successor history fact needs is a
-    # premise of the edge (the automation proves it from its own context).
-    carried_rows = sorted((row for row in edge['unchanged'] if row['succ'][0] == 'hidden' and row['pre'][0] == 'visible'),
-                          key=lambda row: row['succ'][1])
-    carried = [pre['visible'][row['pre'][1]] for row in carried_rows]
-    carried_index = {tuple(row['succ']): position for position, row in enumerate(carried_rows)}
+    carried_index |= {'HV' + str(row['pre'][1]) for row in edge['unchanged']
+                      if row['succ'][0] == 'hidden' and row['pre'][0] == 'visible'}
+    carried_index = sorted(carried_index, key=lambda name: int(name[2:]))
+    carried = [pre['visible'][int(name[2:])] for name in carried_index]
     body = ' ∗ '.join(['⌜' + text + '⌝' for text in new_texts + carried] + ['True'])
     bound = [{'name': ghost_renames.get(binder['name'], binder['name']), 'type': binder['type']}
              for binder in succ['ghost'] if binder['name'] in new_ghost]
@@ -352,9 +465,10 @@ def rocq_edge(edge, pre, succ, index):
         arguments = [binder['name'] for binder in used] + ['HF' + str(position) for position in support]
         term = '("HN" $! ' + ' '.join(arguments) + ')' if arguments else '"HN"'
         intro = ' & '.join(['%HN' + str(position) for position in range(len(new_texts))]
-                           + ['%HC' + str(position) for position in range(len(carried))]) + ' & _'
+                           + ['%' + name for name in carried_index]) + ' & _'
         lines.append('  iDestruct ' + term + ' as ' + ('(' + ' '.join(b['name'] for b in bound) + ') ' if bound else '')
                      + '"(' + intro + ')".')
+    lines += [source.open_sentence(hypothesis) for hypothesis in sorted(opened)]
     lines.append('  iPureIntro. apply zesu_hist_intro. unfold ' + succ['hist'] + '.')
     if succ['ghost']:
         lines.append('  exists ' + ', '.join(free.get(name, ghost_renames.get(name, name)) for name in succ_ghost) + '.')
@@ -367,18 +481,18 @@ def rocq_edge(edge, pre, succ, index):
         projections = {tuple(row['succ']) for row in edge['unchanged'] if row.get('projection')}
         for position in range(len(succ['hidden'])):
             target = ('hidden', position)
-            source = origin.get(target)
+            at = origin.get(target)
             if target in closed:
                 proofs.append('by vm_compute')
                 continue
             if target in derived:
                 proofs.append('exact ' + derived[target])
                 continue
-            if source is None:
+            if at is None:
                 proofs.append('exact HN' + str(fresh))
                 fresh += 1
                 continue
-            name = 'HF' + str(source[1]) if source[0] == 'hidden' else 'HC' + str(carried_index[target])
+            name = 'HF' + str(at[1]) if at[0] == 'hidden' else 'HV' + str(at[1])
             proofs.append('exact (proj1 ' + name + ')' if target in projections else
                           'zesu_hist_view ' + name if target in views else 'exact ' + name)
         for proof in proofs[:-1]:
@@ -394,13 +508,39 @@ def application(meta, table):
                                   for binder in meta['parameters'] + meta.get('hist_live', meta['live']))
 
 
-def revealed(edge, pre):
-    """Facts visible at the successor that the block entry holds in its history: a loop exit reads
-    them from the class history (`ZesuHistReveal`). A fact on a block ghost binder cannot be stated."""
-    ghosts = binder_names(pre, 'ghost')
-    return [pre['hidden'][row['pre'][1]] for row in edge['unchanged']
-            if row['succ'][0] == 'visible' and row['pre'][0] == 'hidden'
-            and not any(mentions(name, pre['hidden'][row['pre'][1]]) for name in ghosts)]
+def visible_accounting(edge, pre, succ):
+    """How each fact the successor states visibly is proved on this edge.
+
+    `visible`: the block-entry visible fact (modulo the binder map); `reveal`: derived from the
+    opened block history alone (a `ZesuHistReveal` instance, `derivation` its proof); `path`: new
+    on the block's own path over terms the block states (the block proves it); `violation`: the
+    block would have to prove it from facts on names its history hides, or regroup block-entry
+    facts under a new existential (the automation chooses no witnesses)."""
+    rows = edge['binder_map']
+    from_visible = {row['succ'][1] for row in edge['unchanged']
+                    if row['succ'][0] == 'visible' and row['pre'][0] == 'visible'}
+    history = Source(pre, visible=False)
+    everything = Source(pre)
+    result = []
+    for position, fact in enumerate(succ['visible']):
+        row = {'succ': ['visible', position]}
+        if position in from_visible:
+            result.append({**row, 'status': 'visible'})
+            continue
+        text = stated_at_source(fact, rows, succ)
+        derivation = history.derive(text) if text is not None else None
+        if derivation is not None and not mentions_hidden(text, pre, history):
+            result.append({**row, 'status': 'reveal', 'fact': text, 'derivation': derivation})
+            continue
+        parts = group_parts(text or fact)
+        regroup = parts is not None and any(key(member) in everything.candidates for member in parts[1])
+        if text is None or mentions_hidden(text, pre, history) or regroup:
+            result.append({**row, 'status': 'violation', 'fact': (text or fact)[:400],
+                           'reason': 'no term for a successor binder' if text is None else
+                           'regroups block-entry facts' if regroup else 'names a hidden block binder'})
+            continue
+        result.append({**row, 'status': 'path'})
+    return result
 
 
 def history_destruct(pre):
@@ -413,18 +553,20 @@ def history_destruct(pre):
     return '  destruct Hh as (' + ' & '.join(pattern) + ').'
 
 
-def rocq_reveal(pre, fact, index):
-    """One ZesuHistReveal instance: a block history fact the successor states visibly."""
+def rocq_reveal(pre, fact, derivation, index):
+    """One ZesuHistReveal instance: a fact a successor states visibly, proved from the block history."""
+    term, opened, _ = derivation
     statement = application(pre, {}) + ' ' + fact
     variables = [binder for binder in [*pre['parameters'], *pre['live']]
                  if binder in pre['parameters'] or mentions(binder['name'], statement)]
+    source = Source(pre, visible=False)
     lines = ['Global Instance zesu_hist_reveal_' + str(index) + ' ' + telescope(variables) + ' :',
              '  ZesuHistReveal (' + application(pre, {}) + ') (' + fact + ').',
              'Proof.',
              '  rewrite /ZesuHistReveal => Hh. apply zesu_hist_elim in Hh. unfold ' + pre['hist'] + ' in Hh.',
-             history_destruct(pre),
-             '  exact HF' + str(pre['hidden'].index(fact)) + '.',
-             'Qed.']
+             history_destruct(pre)]
+    lines += [source.open_sentence(hypothesis) for hypothesis in sorted(opened)]
+    lines += ['  exact ' + term + '.', 'Qed.']
     return '\n'.join(lines) + '\n'
 
 
@@ -440,7 +582,7 @@ EDGE_SENTENCES = [
     r"unfold " + _NAME + r" in Hh",
     r"clear Hh",
     r"pose proof Hh as HF0",
-    r"destruct Hh as \((?:" + _NAME + r")(?: & " + _NAME + r")*\)",
+    r"destruct (?:Hh|H[FV]\d+) as \((?:" + _NAME + r")(?: & " + _NAME + r")*\)",
     r'iIntros "HN"',
     r'iDestruct (?:"HN"|\("HN" \$!(?: ' + _NAME + r')+\)) as (?:\((?:' + _NAME + r' ?)+\) )?"\((?:%' + _NAME
     + r' & )*_\)"',
@@ -531,7 +673,7 @@ def main():
                     rows = binder_map(kind, pre, succ, witnesses, loop_values,
                                       list(design.get('registers', {}).values()) + [design.get('index')]
                                       + succ.get('varying', []) + pre.get('varying', []))
-                    free_witnesses(succ, rows)
+                    free_witnesses(succ, rows, pre)
                     for row in rows:
                         if row['expression'] is None and row['succ'] in candidates:
                             row['candidates'] = candidates[row['succ']]
@@ -559,14 +701,23 @@ def main():
                             edge['identity'] = True
                         else:
                             block_instances.append(rocq_edge(edge, pre, succ, len(edges) - 1))
-                        for fact in revealed(edge, pre):
-                            statement = (application(pre, {}), fact)
+                        accounting = visible_accounting(edge, pre, succ)
+                        edge['visible_accounting'] = [{k: v for k, v in row.items() if k != 'derivation'}
+                                                      for row in accounting]
+                        for row in accounting:
+                            if row['status'] != 'reveal':
+                                continue
+                            statement = (application(pre, {}), row['fact'])
                             if statement not in reveals:
                                 reveals[statement] = len(reveals)
-                                block_instances.append(rocq_reveal(pre, fact, reveals[statement]))
+                                block_instances.append(rocq_reveal(pre, row['fact'], row['derivation'],
+                                                                   reveals[statement]))
                         used_entries.setdefault(pre_pc, set()).update([pre['entry'], succ['entry']])
+    violations = [{'pre_entry': edge['pre_entry'], 'succ_entry': edge['succ_entry'], 'kind': edge['kind'], **row}
+                  for edge in edges for row in edge.get('visible_accounting', []) if row['status'] == 'violation']
     options.output.write_text(json.dumps({'schema': 'zesu.fp301.edges.v1', 'function': profile.name,
-                                          'edges': edges}, indent=1, ensure_ascii=False) + '\n')
+                                          'edges': edges, 'visible_violations': violations},
+                                         indent=1, ensure_ascii=False) + '\n')
     if options.rocq_dir:
         stem_of = lambda entry: (('Function' if entry.startswith('fp_machineReturn') else 'Pilot')
                                  + re.match(r'fp_machine(?:At)?([0-9a-zA-Z]+?)(?:_|$)', entry)[1])
@@ -590,11 +741,17 @@ def main():
             modules.append('Edges' + case)
         (options.rocq_dir / 'Edges.v').write_text(''.join('Require Export ' + profile.qualified(module) + '.\n'
                                                           for module in modules))
+    kinds = sorted({edge['kind'] for edge in edges})
     print(json.dumps({'edges': len(edges), 'instances': sum(map(len, instances.values())),
                       'reveals': len(reveals), 'identity': sum(bool(edge.get('identity')) for edge in edges),
                       'hidden_premises': sum(edge.get('hidden_premises', 0) for edge in edges),
-                      'kinds': {kind: sum(edge['kind'] == kind for edge in edges)
-                                for kind in sorted({edge['kind'] for edge in edges})}}))
+                      'hidden_premises_by_kind': {kind: sum(edge.get('hidden_premises', 0) for edge in edges
+                                                            if edge['kind'] == kind) for kind in kinds},
+                      'visible_violations': len(violations),
+                      'kinds': {kind: sum(edge['kind'] == kind for edge in edges) for kind in kinds}}))
+    if violations:
+        sys.exit('render_edges: %d successor-visible facts the block cannot prove (EDGES.json '
+                 '`visible_violations`)' % len(violations))
 
 
 if __name__ == '__main__':

@@ -1,35 +1,118 @@
-"""A successor history group of source history facts is proved inside the edge, not left as a premise."""
+"""Edge proofs open the block history (and its nested groups); a successor fact the block cannot
+prove from its own context is delivered by the edge or by a reveal instance, or reported."""
 from pathlib import Path
 import sys
 import unittest
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from render_edges import check_edge_sentences, derived_term, edge_sentences
+import entry_hist
+from render_edges import (Source, check_edge_sentences, edge_sentences, free_witnesses, stated_at_source,
+                          visible_accounting)
 
 T = 'bv 64'
 PRE = {'parameters': [{'name': 'args', 'type': 'A'}], 'live': [{'name': 'k', 'type': T}],
        'hist_live': [{'name': 'k', 'type': T}],
        'ghost': [{'name': 'x', 'type': T}, {'name': 'y', 'type': T}],
-       'hidden': ['zesu_named_eq x (f k)', 'P y', 'Q x y']}
-SUCC = {'live': [{'name': 'k', 'type': T}], 'ghost': []}
+       'visible': ['(zesu_named_eq k (g args))', '(∃ (v : bv 64), (Q v k))'],
+       'hidden': ['zesu_named_eq x (f k)', 'P y', 'Q x y',
+                  'zesu_join_history (∃ (c : bv 64) (d : bv 64), (R c) /\\ (S c d))',
+                  '∃ (v : bv 64), (Q v k)']}
+SUCC = {'live': [{'name': 'k', 'type': T}], 'ghost': [], 'visible': [], 'hidden': []}
 
 
-class DerivedGroup(unittest.TestCase):
-    def test_a_join_history_of_source_facts_is_a_term_over_the_source_hypotheses(self):
+class Derivation(unittest.TestCase):
+    def test_a_group_of_source_history_facts_is_a_term_over_the_opened_history(self):
+        source = Source(PRE)
         text = 'zesu_join_history (∃ (x : bv 64) (y : bv 64), (zesu_named_eq x (f k)) /\\ (Q x y))'
-        self.assertEqual(derived_term(text, PRE, SUCC, {'k'}), '(ex_intro _ x (ex_intro _ y (conj HF0 HF2)))')
-        self.assertEqual(derived_term('∃ (y : bv 64), (P y)', PRE, SUCC, {'k'}), '(ex_intro _ y HF1)')
+        self.assertEqual(source.derive(text), ('(ex_intro _ x (ex_intro _ y (conj HF0 HF2)))', set(), {'HF0', 'HF2'}))
+        self.assertEqual(source.derive('∃ (y : bv 64), (P y)')[0], '(ex_intro _ y HF1)')
 
-    def test_a_fact_the_source_history_lacks_or_a_renamed_binder_stays_a_premise(self):
-        self.assertIsNone(derived_term('zesu_join_history (∃ (x : bv 64), (R x))', PRE, SUCC, {'k'}))
-        self.assertIsNone(derived_term('zesu_join_history (∃ (z : bv 64), (P z))', PRE, SUCC, {'k'}))
-        self.assertIsNone(derived_term('zesu_join_history (∃ (x : bv 64), (zesu_named_eq x (f k)))', PRE, SUCC, set()))
+    def test_members_of_a_nested_source_group_are_taken_from_the_opened_group(self):
+        source = Source(PRE)
+        term, opened, used = source.derive('zesu_join_history (∃ (c : bv 64) (y : bv 64), (R c) /\\ (P y))')
+        self.assertEqual(term, '(ex_intro _ c_HF3 (ex_intro _ y (conj HF3_0 HF1)))')
+        self.assertEqual(opened, {'HF3'})
+        self.assertEqual(source.open_sentence('HF3'), '  destruct HF3 as (c_HF3 & d_HF3 & HF3_0 & HF3_1).')
+        self.assertEqual(source.hidden_names(), {'c', 'd', 'v'})
 
-    def test_the_proof_sentence_is_in_the_edge_sentence_list(self):
-        text = ('Proof.\n  split; [exact (ex_intro _ x (ex_intro _ y (conj HF0 HF2)))|].\n'
+    def test_a_visible_source_fact_is_a_premise_and_never_a_reveal(self):
+        self.assertEqual(Source(PRE).derive('∃ (z : bv 64), (zesu_named_eq k (g args)) /\\ (P z)'), None)
+        self.assertEqual(Source(PRE).derive('(zesu_named_eq k (g args))')[0], 'HV0')
+        self.assertIsNone(Source(PRE, visible=False).derive('(zesu_named_eq k (g args))'))
+
+    def test_a_missing_member_or_a_split_group_binder_stays_underived(self):
+        source = Source(PRE)
+        self.assertIsNone(source.derive('zesu_join_history (∃ (x : bv 64), (R x))'))
+        # d is bound by the group HF3, c by the same group: taking (S c d) from HF3 and c from elsewhere fails.
+        self.assertIsNone(source.derive('∃ (c : bv 64) (d : bv 64), (zesu_named_eq c (f k)) /\\ (S c d)'))
+
+    def test_the_proof_sentences_are_in_the_edge_sentence_list(self):
+        text = ('Proof.\n  destruct HF3 as (c_HF3 & d_HF3 & HF3_0 & HF3_1).\n'
+                '  destruct HV1 as (v_HV1 & HV1_0).\n'
+                '  split; [exact (ex_intro _ c_HF3 (ex_intro _ y (conj HF3_0 HF1)))|].\n'
                 '  exact (ex_intro _ y HF1).\nQed.\n')
         check_edge_sentences(text)
-        self.assertEqual(len(edge_sentences(text)), 4)
+        self.assertEqual(len(edge_sentences(text)), 6)
+
+
+def edge(rows, unchanged=()):
+    return {'binder_map': rows, 'unchanged': list(unchanged)}
+
+
+class VisibleAccounting(unittest.TestCase):
+    ROWS = [{'succ': 'k', 'role': 'live', 'identity': True, 'expression': 'k', 'type': T},
+            {'succ': 'w', 'role': 'live', 'identity': False, 'expression': None, 'type': T}]
+
+    def test_each_successor_visible_fact_is_visible_revealed_path_or_a_violation(self):
+        succ = {'live': [{'name': 'k', 'type': T}, {'name': 'w', 'type': T}], 'ghost': [],
+                'visible': ['(zesu_named_eq k (g args))',
+                            '(∃ (c : bv 64), (R c))',
+                            '((w < 4)%Z)',
+                            '(∃ (v : bv 64) (z : bv 64), (Q v k) /\\ (T z))',
+                            '(P x)'],
+                'hidden': []}
+        rows = visible_accounting(edge(self.ROWS, [{'succ': ['visible', 0], 'pre': ['visible', 0]}]), PRE, succ)
+        self.assertEqual([row['status'] for row in rows], ['visible', 'reveal', 'path', 'violation', 'violation'])
+        self.assertEqual(rows[1]['derivation'][0], '(ex_intro _ c_HF3 HF3_0)')
+        self.assertEqual(rows[3]['reason'], 'regroups block-entry facts')
+        self.assertEqual(rows[4]['reason'], 'names a hidden block binder')
+
+    def test_a_successor_live_binder_without_a_term_is_the_blocks_own_value(self):
+        succ = {'live': [{'name': 'w', 'type': T}], 'ghost': [{'name': 'u', 'type': T}]}
+        self.assertEqual(stated_at_source('(w = k)', self.ROWS, succ), '(w_succ = k)')
+        self.assertIsNone(stated_at_source('(u = k)', self.ROWS, succ))
+
+
+class FreeMaskWitness(unittest.TestCase):
+    MASK = '((bool_decide ((bv_and m (BV 64%N 131072%Z)) = (BV 64%N 0%Z))) = true)'
+    GUARD = '((negb (bool_decide ((bv_extract 17%N 1%N m) = (BV 1%N 1%Z)))) = true)'
+
+    def rows(self):
+        return [{'succ': 'm', 'role': 'ghost', 'identity': True, 'expression': 'm', 'type': T,
+                 'pre': {'name': 'm', 'role': 'ghost'}}]
+
+    def test_a_held_mask_binder_with_a_new_guard_gets_the_witness_zero(self):
+        pre = {'hidden': [self.MASK]}
+        succ = {'live': [], 'ghost': [{'name': 'm', 'type': T}], 'visible': [], 'hidden': [self.MASK, self.GUARD]}
+        rows = self.rows()
+        free_witnesses(succ, rows, pre)
+        self.assertEqual((rows[0]['expression'], rows[0]['identity'], rows[0].get('free')), ('(BV 64%N 0%Z)', False, True))
+
+    def test_a_held_mask_binder_whose_facts_are_unchanged_keeps_its_value(self):
+        pre = {'hidden': [self.MASK]}
+        succ = {'live': [], 'ghost': [{'name': 'm', 'type': T}], 'visible': [], 'hidden': [self.MASK]}
+        rows = self.rows()
+        free_witnesses(succ, rows, pre)
+        self.assertEqual((rows[0]['expression'], rows[0]['identity']), ('m', True))
+
+
+class HistoryCopies(unittest.TestCase):
+    def test_visible_groups_and_pattern_facts_on_binders_are_copied_into_the_history(self):
+        binders = [{'name': 'k', 'type': T}, {'name': 'i', 'type': T}]
+        visible = ['(zesu_named_eq k (g args))', '(∃ (v : bv 64), (Q v k))', '(List.length l = 4)%nat',
+                   '(zesu_named_eq i (g args))', '(domain args)']
+        self.assertEqual(entry_hist.history_copies(binders, visible, [r'zesu_named_eq'], varying=['i']),
+                         ['(zesu_named_eq k (g args))', '(∃ (v : bv 64), (Q v k))'])
 
 
 if __name__ == '__main__':
