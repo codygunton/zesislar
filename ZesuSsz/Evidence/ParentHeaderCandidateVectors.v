@@ -13,6 +13,9 @@ Require Import ZesuSsz.Contracts.ParentHeader.
 Require Import ZesuSsz.Contracts.ParentHeaderRootFacts.
 Require Import ZesuSsz.Contracts.Candidates.ParentHeaderCandidate.
 Require Import ZesuSsz.Contracts.ParentHeaderBugTriggers.
+Require Import ZesuSsz.Compliance.SailRun.
+Require Import ZesuSsz.Compliance.ProjectionParentHeader.
+Require Import ZesuSsz.Contracts.ParentHeaderRung2.
 
 Import ListNotations.
 Open Scope Z_scope.
@@ -1406,6 +1409,48 @@ Proof. vm_compute. repeat split. Qed.
 Example candidateTriggers_W6 :
   parentHeaderTriggeredBugs candidateInput_W6 = [RlpUintNonCanonical].
 Proof. vm_compute. reflexivity. Qed.
+
+(* Sail's verdict on the trigger witnesses (proved, not emulated). *)
+Example sailVerdict_wrapWitness :
+  sailParentHeaderRun wrapWitness (parentHeaderSailNode wrapWitness) =
+    Reject RlpDecode.
+Proof. vm_compute. reflexivity. Qed.
+Example sailVerdict_missingFieldWitness :
+  exists fields, sailParentHeaderRun missingFieldWitness
+    (parentHeaderSailNode missingFieldWitness) = Success fields.
+Proof. eexists. vm_compute. reflexivity. Qed.
+Example sailVerdict_trailingBytesWitness :
+  sailParentHeaderRun trailingBytesWitness (parentHeaderSailNode trailingBytesWitness) =
+    Reject RlpDecode.
+Proof. vm_compute. reflexivity. Qed.
+Example sailVerdict_skippedFieldShapeWitness :
+  sailParentHeaderRun skippedFieldShapeWitness (parentHeaderSailNode skippedFieldShapeWitness) =
+    Reject RlpDecode.
+Proof. vm_compute. reflexivity. Qed.
+Example sailVerdict_blobGasUnalignedWitness :
+  sailParentHeaderRun blobGasUnalignedWitness (parentHeaderSailNode blobGasUnalignedWitness) =
+    Reject RlpDecode.
+Proof. vm_compute. reflexivity. Qed.
+Example sailVerdict_uintNonCanonicalWitness :
+  sailParentHeaderRun uintNonCanonicalWitness (parentHeaderSailNode uintNonCanonicalWitness) =
+    Reject RlpDecode.
+Proof. vm_compute. reflexivity. Qed.
+Example sailVerdict_uintNonCanonicalWitness2 :
+  sailParentHeaderRun uintNonCanonicalWitness2 (parentHeaderSailNode uintNonCanonicalWitness2) =
+    Reject RlpDecode.
+Proof. vm_compute. reflexivity. Qed.
+Example sailVerdict_uintNonCanonicalWitness3 :
+  sailParentHeaderRun uintNonCanonicalWitness3 (parentHeaderSailNode uintNonCanonicalWitness3) =
+    Reject RlpDecode.
+Proof. vm_compute. reflexivity. Qed.
+Example sailVerdict_uintOver8Witness :
+  exists fields, sailParentHeaderRun uintOver8Witness
+    (parentHeaderSailNode uintOver8Witness) = Success fields.
+Proof. eexists. vm_compute. reflexivity. Qed.
+Example sailVerdict_undecodedFieldWitness :
+  exists fields, sailParentHeaderRun undecodedFieldWitness
+    (parentHeaderSailNode undecodedFieldWitness) = Success fields.
+Proof. eexists. vm_compute. reflexivity. Qed.
 
 (* Outer length wraps. Every run below starts with ff followed by eight
    ff length bytes: the outer header claims 2^64 - 1 payload bytes and

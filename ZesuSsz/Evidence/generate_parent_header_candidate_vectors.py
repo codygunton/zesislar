@@ -55,6 +55,21 @@ EXPECTED_TRIGGERS = {
     "W6": ["RlpUintNonCanonical"],
 }
 
+# Sail's verdict on each trigger witness of ParentHeaderBugTriggers.v, proved
+# below by vm_compute of sailParentHeaderRun.
+WITNESS_SAIL = {
+    "wrapWitness": "Reject",
+    "missingFieldWitness": "Success",
+    "trailingBytesWitness": "Reject",
+    "skippedFieldShapeWitness": "Reject",
+    "blobGasUnalignedWitness": "Reject",
+    "uintNonCanonicalWitness": "Reject",
+    "uintNonCanonicalWitness2": "Reject",
+    "uintNonCanonicalWitness3": "Reject",
+    "uintOver8Witness": "Success",
+    "undecodedFieldWitness": "Success",
+}
+
 
 def sha256_file(path: Path) -> str:
     return hashlib.sha256(path.read_bytes()).hexdigest()
@@ -157,6 +172,9 @@ def render(emulation: dict, vectors: dict) -> str:
     emit("Require Import ZesuSsz.Contracts.ParentHeaderRootFacts.")
     emit("Require Import ZesuSsz.Contracts.Candidates.ParentHeaderCandidate.")
     emit("Require Import ZesuSsz.Contracts.ParentHeaderBugTriggers.")
+    emit("Require Import ZesuSsz.Compliance.SailRun.")
+    emit("Require Import ZesuSsz.Compliance.ProjectionParentHeader.")
+    emit("Require Import ZesuSsz.Contracts.ParentHeaderRung2.")
     emit("")
     emit("Import ListNotations.")
     emit("Open Scope Z_scope.")
@@ -188,6 +206,18 @@ def render(emulation: dict, vectors: dict) -> str:
         emit(f"  parentHeaderTriggeredBugs candidateInput_{name} = [{triggers}].")
         emit("Proof. vm_compute. reflexivity. Qed.")
 
+    emit("")
+    emit("(* Sail's verdict on the trigger witnesses (proved, not emulated). *)")
+    for witness, verdict in WITNESS_SAIL.items():
+        emit(f"Example sailVerdict_{witness} :")
+        if verdict == "Reject":
+            emit(f"  sailParentHeaderRun {witness} (parentHeaderSailNode {witness}) =")
+            emit("    Reject RlpDecode.")
+            emit("Proof. vm_compute. reflexivity. Qed.")
+        else:
+            emit(f"  exists fields, sailParentHeaderRun {witness}")
+            emit(f"    (parentHeaderSailNode {witness}) = Success fields.")
+            emit("Proof. eexists. vm_compute. reflexivity. Qed.")
     emit("")
     emit("(* Outer length wraps. Every run below starts with ff followed by eight")
     emit("   ff length bytes: the outer header claims 2^64 - 1 payload bytes and")
