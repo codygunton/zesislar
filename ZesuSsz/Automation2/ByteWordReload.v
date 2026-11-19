@@ -2,6 +2,7 @@ From Coq Require Import Lists.List ZArith.ZArith NArith.NArith Lia.
 From stdpp Require Import list bitvector.definitions.
 Require Import isla.riscv64.riscv64.
 Require ZesuSsz.Automation2.ContextCollection.
+Require ZesuSsz.Automation2.ByteExtractCodec281.
 Require Import ZesuSsz.Automation2.LiaHook.
 Local Open Scope Z_scope.
 
@@ -29,6 +30,18 @@ Proof.
   rewrite drop_app_length'; [| rewrite length_take_le; [reflexivity | exact Hstored]].
   rewrite take_app_length'; [| rewrite length_bv_to_little_endian; lia].
   apply Z_to_bv_little_endian_to_bv_to_little_endian; [lia | reflexivity].
+Qed.
+
+(* A word read back from the extracted bytes of a word saved byte-wise
+   (a frame slot) is that word. *)
+Lemma zesu_reload_extract_word (width : N) (count : nat) (word : bv width) :
+  width = (N.of_nat count * 8)%N ->
+  Z_to_bv width (little_endian_to_bv 8
+    (ZesuSsz.Automation2.ByteExtractCodec281.byte_extracts281 count word)) = word.
+Proof.
+  intros Hwidth.
+  rewrite ZesuSsz.Automation2.ByteExtractCodec281.byte_extracts_codec281.
+  apply Z_to_bv_little_endian_to_bv_to_little_endian; [lia | subst width; lia].
 Qed.
 
 (* Zero every atom of a linear integer expression. *)
@@ -97,6 +110,16 @@ Ltac zesu_reload_encoded_word_step :=
             change window with (bv_to_little_endian size 8 word);
             apply zesu_reload_byte_word;
             [first [apply (proj1 (bv_unsigned_in_range _ _)) | zesu_lia] | vm_compute; reflexivity]);
+          rewrite Hreload; clear Hreload
+      | bv_extract 0 8 ?word :: _ =>
+          lazymatch type of word with bv width => idtac end;
+          let Hreload := fresh "HreloadExtractWord" in
+          assert (Hreload : Z_to_bv width
+              (little_endian_to_bv 8 (take count (drop (Z.to_nat offset) bytes))) = word) by (
+            replace offset with value by (clear; zesu_lia);
+            change (take count (drop (Z.to_nat value) bytes)) with window;
+            change window with (ZesuSsz.Automation2.ByteExtractCodec281.byte_extracts281 size word);
+            apply zesu_reload_extract_word; vm_compute; reflexivity);
           rewrite Hreload; clear Hreload
       end
   end.
