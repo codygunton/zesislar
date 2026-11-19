@@ -282,12 +282,18 @@ Definition parentHeaderNoDivergence (bytes : list byte) : bool :=
   | _ => true
   end.
 
-(* Open: false for the drafted triggers (see DIVERGENCES.md of the lane). *)
+(* Open: false for the drafted triggers (see DIVERGENCES.md of the lane).
+   Outside the triggers, either no reached field diverges, or the two
+   divergences cancel: the candidate and the Sail model both reject (for
+   example a blob gas used Sail rejects followed by an excess blob gas item
+   the code rejects). *)
 Definition KnownBugTriggersCoverDivergences : Prop :=
   forall bytes : list byte,
     headerFits bytes -> Z.of_nat (List.length bytes) < 2 ^ 31 ->
     (forall bug, List.In bug knownBugs -> parentHeaderBugTrigger bug bytes = false) ->
-    parentHeaderNoDivergence bytes = true.
+    parentHeaderNoDivergence bytes = true \/
+    (candidateParentHeader bytes = candidateHeaderError /\
+     sailPureParentHeader bytes = None).
 
 (* Step 3: per-field agreement. *)
 Definition intFieldsBefore (index : nat) : nat :=
@@ -797,7 +803,6 @@ Theorem candidateParentHeader_sail_from_steps
   parentHeaderSailAgrees bytes.
 Proof.
   intros Hfits Hlen Hbugs.
-  pose proof (Hcover bytes Hfits Hlen Hbugs) as Hnd.
   pose proof (Hmodel bytes Hfits Hlen) as Hm.
   assert (Hvalid : validInputSlice bytes 0 (Z.of_nat (List.length bytes)) = true).
   { unfold validInputSlice, stateless_input_region_bound.
@@ -805,6 +810,9 @@ Proof.
   assert (Hreject : sailParentHeaderRun bytes (parentHeaderSailNode bytes) = Reject RlpDecode ->
             ParentHeaderRejects bytes (parentHeaderSailNode bytes)).
   { intros Hrun. split; [exact Hvalid|exact Hrun]. }
+  destruct (Hcover bytes Hfits Hlen Hbugs) as [Hnd|[Hcerr Hsnone]].
+  2:{ unfold parentHeaderSailAgrees. rewrite Hcerr. apply Hreject.
+      rewrite Hsnone in Hm. exact Hm. }
   unfold parentHeaderSailAgrees, candidateParentHeader, parentHeaderWalkEnd,
     parentHeaderWalk.
   unfold parentHeaderNoDivergence in Hnd. unfold sailPureParentHeader in Hm.
