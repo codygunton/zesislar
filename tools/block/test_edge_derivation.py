@@ -137,6 +137,10 @@ class NewGhostScope(unittest.TestCase):
         self.assertLess(text.index('iDestruct "HN"'), text.index('exists n.'))
         check_edge_sentences(text)
 
+    def test_a_view_runs_in_a_context_cleared_to_its_fact(self):
+        check_edge_sentences('Proof.\n  split; [clear - HF1; zesu_hist_view HF1|].\n'
+                             '  clear - HF2; zesu_hist_view HF2.\nQed.\n')
+
 
 if __name__ == '__main__':
     unittest.main()
