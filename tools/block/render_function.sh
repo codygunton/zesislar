@@ -32,7 +32,12 @@ echo "forward: $(tail -c 200 "$run/forward.log" | tr '\n' ' ')"
 
 fixture=$(profile_value loop_head_fixture)
 loop_heads=()
-if [ -n "$fixture" ]; then
+# A committed fixture whose rows carry no loop `design` (decodeItem's four-class heads) is an
+# authenticated table that loop_design.py does not produce: the render reads it as committed.
+designed=$( [ -f "$fixture" ] && python3 -c "import json,sys; print(int(all('design' in row for row in json.load(open(sys.argv[1]))['rows'])))" "$fixture" || echo 1)
+if [ -n "$fixture" ] && [ "$designed" = 0 ]; then
+  echo "loop heads: $fixture (committed authenticated table, not a loop_design output)"
+elif [ -n "$fixture" ]; then
   [ -f "$run/loop-heads.json" ] || (cd tools/block && ../guarded_tool.sh python3 loop_design.py \
     --function "$function_name" --forward "$run/forward/FORWARD.json" --output "$run/loop-heads.json") \
     > "$run/loop-heads.log" 2>&1

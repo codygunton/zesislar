@@ -16,12 +16,13 @@ import re
 
 HIST_MODE = ''
 FRAME_SLOTS = False
+HIST_VISIBLE = ()
 HIST_LIBRARY = 'Require Import ZesuSsz.Automation2.Hist.\n'
 
 
 def configure(profile):
     """Read the shape keys of a function profile (None: legacy shape)."""
-    global HIST_MODE, FRAME_SLOTS
+    global HIST_MODE, FRAME_SLOTS, HIST_VISIBLE
     mode = profile.get('entry_hist', '') if profile else ''
     if mode not in ('', 'wrap'):
         raise ValueError('entry_hist: unknown mode ' + str(mode))
@@ -29,6 +30,7 @@ def configure(profile):
     if not isinstance(slots, bool):
         raise ValueError('frame_slots: a boolean is required')
     HIST_MODE, FRAME_SLOTS = mode, slots
+    HIST_VISIBLE = tuple(profile.get('hist_visible', [])) if profile and mode else ()
 
 
 def mentions(name, text):
@@ -87,7 +89,8 @@ def call_visible_patterns(pc, calls, block_starts, binders):
     start = int(pc, 0)
     later = [other for other in block_starts if other > start]
     end = min(later) if later else None
-    involved = any(int(plan['return_site_pc'], 0) == start
+    # A tail call (`return_site_pc` null) has no return site.
+    involved = any(plan['return_site_pc'] is not None and int(plan['return_site_pc'], 0) == start
                    or start <= int(plan['call_site_pc'], 0) and (end is None or int(plan['call_site_pc'], 0) < end)
                    for plan in calls.values())
     prefixes = call_prefixes(binders)

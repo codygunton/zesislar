@@ -9,6 +9,7 @@ from forward_resources import OwnedBytes
 from symbolic_state import Expr, MemoryRegion, SymbolicState, bits, input_expr, operation
 from render_function_callers import return_site
 from loop_design import reseat_orphaned
+import entry_hist
 
 
 def state_with(registers, conditions):
@@ -234,6 +235,51 @@ class CallReturnLift(unittest.TestCase):
                          ['BV 8%N 7%Z', None, None])
         with self.assertRaisesRegex(ValueError, 'disagrees with its owned length'):
             _span_bytes(span(input_expr('[a]', None), 2), None)
+
+
+class HistoryJoin(unittest.TestCase):
+    """`entry_hist: wrap` joins: dropped facts become one hidden history fact; a visible fact on a
+    binder every edge holds stays visible under its own existential."""
+    b = input_expr('machine_x10', 64)
+
+    def setUp(self):
+        entry_hist.configure({'entry_hist': 'wrap', 'hist_visible': ['zesu_named_eq']})
+        self.addCleanup(entry_hist.configure, None)
+
+    def run_rules(self, shared):
+        state = state_with({'x13': operation('bvadd', self.b, bits(1, 64))}, [])
+        components = [{'id': 'eq', 'kind': 'opaque', 'source': '⌜zesu_named_eq machine_x10 (word8 call_after)⌝'},
+                      {'id': 'range', 'kind': 'opaque', 'source': '⌜bv_unsigned machine_x10 < 8⌝'}]
+        plan = {'binders': []}
+        drop_unheld_binders(state, components, {}, [{'name': 'machine_x10', 'type': 'bv 64'}], plan, ['x13'],
+                            lambda key, writes: '', shared=shared)
+        return state, components, plan
+
+    def test_dropped_facts_form_one_hidden_join_history(self):
+        state, components, plan = self.run_rules(shared=set())
+        self.assertEqual(state.registers['x13'], input_expr('machine_x13_1', 64))
+        self.assertEqual(components[0]['source'],
+                         '⌜zesu_join_history (∃ (machine_x10 : bv 64), (zesu_named_eq machine_x10 (word8 call_after))'
+                         ' /\\ (bv_unsigned machine_x10 < 8))⌝')
+        self.assertEqual(components[1]['source'], '⌜True⌝')
+        self.assertEqual(plan['ghost_history'], {'component': 'eq', 'facts': ['eq', 'range']})
+        self.assertTrue(entry_hist.is_join_history(components[0]['source'][1:-1]))
+
+    def test_a_visible_fact_on_a_binder_every_edge_holds_stays_visible(self):
+        state, components, plan = self.run_rules(shared={'machine_x10'})
+        self.assertEqual(state.registers['x13'], input_expr('machine_x13_1', 64))
+        self.assertEqual([row['source'] for row in components],
+                         ['⌜∃ (machine_x10 : bv 64), (zesu_named_eq machine_x10 (word8 call_after))⌝',
+                          '⌜zesu_join_history (∃ (machine_x10 : bv 64), (bv_unsigned machine_x10 < 8))⌝'])
+        self.assertEqual(plan['visible_history'], {'component': 'eq', 'facts': ['eq']})
+        self.assertEqual(plan['ghost_history'], {'component': 'range', 'facts': ['range']})
+        self.assertFalse(entry_hist.is_join_history(components[0]['source'][1:-1]))
+
+    def test_the_legacy_shape_drops_the_binder(self):
+        entry_hist.configure(None)
+        state, components, plan = self.run_rules(shared={'machine_x10'})
+        self.assertEqual([row['source'] for row in components], ['⌜True⌝', '⌜True⌝'])
+        self.assertNotIn('ghost_history', plan)
 
 
 class ReturnSites(unittest.TestCase):

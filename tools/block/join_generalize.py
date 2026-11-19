@@ -802,12 +802,13 @@ def _mentions_free(component, name):
 JOIN_HISTORY = 'zesu_join_history'
 
 
-def ghost_group(components, binders):
+def ghost_group(components, binders, wrapper=JOIN_HISTORY):
     """Bind `binders` ([(name, type)], in seed order) around the pure facts that name them.
 
     The facts become one fact `⌜zesu_join_history (∃ binders, F1 /\\ ... /\\ Fk)⌝` at the first
     such component (component order); the others become `⌜True⌝`. Each edge proves it with its
     own values of the binders, so it replaces dropping those facts (a weaker, sound history).
+    With `wrapper=None` the fact is the visible `⌜∃ binders, F1 /\\ ... /\\ Fk⌝`.
     The same facts and binders give the same text on every edge. Returns the group's id or None."""
     members = [component for component in components
                if component.get('kind') != 'register' and component.get('source', '').startswith('⌜')
@@ -816,8 +817,9 @@ def ghost_group(components, binders):
     if not members:
         return None
     used = [(name, kind) for name, kind in binders if any(_mentions_free(row, name) for row in members)]
-    members[0]['source'] = ('⌜' + JOIN_HISTORY + ' (∃ ' + ' '.join('(%s : %s)' % row for row in used) + ', '
-                            + ' /\\ '.join('(' + row['source'][1:-1] + ')' for row in members) + ')⌝')
+    group = '∃ ' + ' '.join('(%s : %s)' % row for row in used) + ', ' + ' /\\ '.join(
+        '(' + row['source'][1:-1] + ')' for row in members)
+    members[0]['source'] = '⌜' + (wrapper + ' (' + group + ')' if wrapper else group) + '⌝'
     for row in members[1:]:
         row['source'] = '⌜True⌝'
     return members[0]['id']
@@ -896,8 +898,25 @@ def forget_array_bytes(state, component):
                     for row in state.memory]
 
 
-def drop_unheld_binders(state, components, carried, binders, plan, live_registers, render_span):
+def _tree_binder_names(tree):
+    """Every binder name a resource tree binds."""
+    if isinstance(tree, list):
+        return {name for child in tree for name in _tree_binder_names(child)}
+    if not isinstance(tree, dict):
+        return set()
+    return ({binder['name'] for binder in tree.get('binders', []) if isinstance(binder, dict)}
+            | {name for key, child in tree.items() if key != 'binders' for name in _tree_binder_names(child)})
+
+
+def drop_unheld_binders(state, components, carried, binders, plan, live_registers, render_span, shared=()):
     """Remove inherited binders that no register or whole array holds.
+
+    0. (`entry_hist` mode) The pure facts that would be dropped with b are kept instead, bound
+       under existentials over the dropped binders they name (each edge proves them with its own
+       values). A fact that matches the profile's `hist_visible` and names only dropped binders
+       that every incoming edge holds (`shared`) is kept visible, `⌜∃ b…, F…⌝`; the rest form
+       one hidden `zesu_join_history` fact. (A join binder needs a register or array holder for
+       its witness, so b itself is not kept.)
 
     1. A pure equation `b = e` defines b: substitute e and drop the equation.
     2. Otherwise drop b: a register that mentions it gets a fresh binder c it holds, an agreed
@@ -1085,8 +1104,18 @@ def drop_unheld_binders(state, components, carried, binders, plan, live_register
                                   or any(_mentions_free(component, name) for component in components
                                          if component['kind'] != 'register' and component['id'] not in stash))
         ghosts = [(binder['name'], binder['type']) for binder in binders if not elsewhere(binder['name'])]
-        group = ghost_group([component for component in components if component['id'] in stash], ghosts)
-        plan['ghost_history'] = {'component': group, 'facts': sorted(stash)}
+        ghost_names = {name for name, _ in ghosts}
+        visible = {key for key, source in stash.items()
+                   if any(re.search(pattern, source, re.S) for pattern in entry_hist.HIST_VISIBLE)
+                   and all(name in shared for name in ghost_names if _mentions_free({'source': source}, name))}
+        hidden = set(stash) - visible
+        if visible:
+            group = ghost_group([component for component in components if component['id'] in visible], ghosts,
+                                wrapper=None)
+            plan['visible_history'] = {'component': group, 'facts': sorted(visible)}
+        if hidden:
+            group = ghost_group([component for component in components if component['id'] in hidden], ghosts)
+            plan['ghost_history'] = {'component': group, 'facts': sorted(hidden)}
 
 
 def _addends(value):
@@ -1241,6 +1270,10 @@ def generalize_owned_join(alternatives, *, original_seed, entry_pc, vocabulary,
     if any(binder['name'] == name for binder in original_binders):
         raise ValueError('The continuation captures a source binder')
     register_order = [component['name'] for component in ownership['components'] if component['kind'] == 'register']
+    # The binders every incoming edge holds (its own resource tree binds them).
+    shared_binders = set.intersection(*(
+        _tree_binder_names(alternative.get('resource_boundary', {}).get('tree') or ownership['tree'])
+        for alternative in alternatives)) if alternatives else set()
     alternatives, inherited_binders = align_join_edges(alternatives, ownership, terminal_id, name)
     inherited_binders += [binder for binder in lifted_binders
                           if binder['name'] not in [row['name'] for row in inherited_binders]]
@@ -1500,7 +1533,7 @@ def generalize_owned_join(alternatives, *, original_seed, entry_pc, vocabulary,
     drop_unheld_binders(state, components, carried, [*original_binders, *inherited_binders], plan,
                         live_registers, lambda key, writes: _render_span(
                             key, writes, original_seed, ownership, first, apply_owned_writes,
-                            render_resource_boundary, vocabulary))
+                            render_resource_boundary, vocabulary), shared=shared_binders)
     forgotten = {key for row in plan.get('dropped_binders', []) for key in row.get('arrays', [])}
     resources = [replace(resource, byte_array=None, component=next(row for row in components if row['id'] == resource.id))
                  if resource.id in forgotten else resource for resource in resources]
