@@ -73,6 +73,7 @@ class Parsing(unittest.TestCase):
         self.assertEqual(final['class'], 'final <= bv_unsigned')
         self.assertEqual(final['counts'], {'props': '3', 'small': '2', 'kept': '1'})
         self.assertEqual(skip['class'], 'final skip: spatial')
+        self.assertIsNone(skip['site'])  # no step record before it
         self.assertEqual(parsed['errors'][0]['line'], 33)
         self.assertIn('Attempt to save an incomplete proof', parsed['errors'][0]['text'])
 
@@ -82,6 +83,13 @@ class Parsing(unittest.TestCase):
         self.assertEqual(R.leftovers(R.parse_log(split), closed=True), [])
         both = split + '@@X begin final\n@@X stmt 2 = 2\n@@X end\n'
         self.assertEqual([g['kind'] for g in R.leftovers(R.parse_log(both), closed=False)], ['final'])
+
+    def test_skip_keeps_last_step_site(self):
+        text = ('@@T kind=step site=(find_in_context_(FindMemMapsTo___)___) stage=zesu_run_pass ms=1 ok=0 cpu_ms=1\n'
+                '@@T kind=alt site=b_finish_v1 stage=zesu_finish_base ms=1 ok=1 cpu_ms=1\n'
+                '@@X skip final spatial\n')
+        skip, = R.parse_log(text)['exports']
+        self.assertEqual(skip['site'], '(find_in_context_(FindMemMapsTo___)___)')
 
     def test_goal_class(self):
         self.assertEqual(R.goal_class('final', 'forall (a : Z) (b : Z), (a < b -> a = 0) -> f a = b'), 'final = f')
@@ -199,12 +207,12 @@ def write_block(directory, log, cpu, peak_gib, verdict, returncode=1, samples=No
         (directory / 'perf.csv').write_text('%d,,instructions:u,1,100.00,,\n' % instructions)
 
 
-def write_run(root, name, blocks):
+def write_run(root, name, blocks, members=None):
     run = root / name
     run.mkdir()
-    members = [{'function': 'decodeParentHeader', 'callers': 'c', 'case': '0300'},
-               {'function': 'decodeItem', 'callers': 'c', 'case': '0164', 'label': '6ac4'},
-               {'function': 'nextUint64', 'callers': 'c', 'case': '0064'}]
+    members = members or [{'function': 'decodeParentHeader', 'callers': 'c', 'case': '0300'},
+                          {'function': 'decodeItem', 'callers': 'c', 'case': '0164', 'label': '6ac4'},
+                          {'function': 'nextUint64', 'callers': 'c', 'case': '0064'}]
     (run / 'RUN.json').write_text(json.dumps({
         'set': 'BENCH-T', 'head': 'a' * 40, 'rules': None, 'bench_head': 'b' * 40, 'bank': '/bank',
         'telemetry': True, 'caps': {'cpu_seconds': 3600, 'limit_gib': 24}, 'members': members}))
@@ -246,6 +254,17 @@ class Report(unittest.TestCase):
         self.assertEqual(block['leftovers'][0]['statement'][:6], 'forall')
         self.assertIsNone(run['blocks'][2]['block'])
         self.assertEqual(R.load_run(self.new)['blocks'][0]['block']['end'], 'cpu-cap')
+
+    def test_member_cpu_cap_decides_cpu_cap(self):
+        killed = dict(log=LOG, cpu=500.0, peak_gib=2.0, verdict='NOT-CLOSED', returncode=-9)
+        own = write_run(self.root, 'own', [killed], members=[
+            {'function': 'decodeParentHeader', 'callers': 'c', 'case': '0300', 'cpu_seconds': 500}])
+        self.assertEqual(R.load_run(own)['blocks'][0]['block']['end'], 'cpu-cap')
+        shared = write_run(self.root, 'shared', [killed], members=[
+            {'function': 'decodeParentHeader', 'callers': 'c', 'case': '0300'}])
+        self.assertEqual(R.load_run(shared)['blocks'][0]['block']['end'], 'killed (signal 9)')
+        self.assertEqual(R.member_caps({'cpu_seconds': 3600, 'limit_gib': 24}, {'case': 'x'}),
+                         {'cpu_seconds': 3600, 'limit_gib': 24})
 
     def test_gzipped_logs_of_a_kept_run_read_the_same(self):
         # The janitor keeps BENCH runs and gzips their large logs in place (#17, 2026-11-18).

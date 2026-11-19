@@ -99,5 +99,34 @@ class CacheOnlyBank(unittest.TestCase):
         self.assertFalse((self.bank / 'coqc_recipe.json').exists())
 
 
+class MemberCpuCap(unittest.TestCase):
+    """A member's own "cpu_seconds" replaces the set's CPU cap; a member without it keeps the set's."""
+
+    def compile_cap(self, member):
+        temporary = tempfile.TemporaryDirectory(prefix='bench-cap-')
+        self.addCleanup(temporary.cleanup)
+        options = mock.Mock(run_dir=Path(temporary.name))
+        context = {'workspace': Path(temporary.name), 'bench_head': HEAD, 'bank': Path(temporary.name),
+                   'caps': {'cpu_seconds': 3600, 'limit_gib': 24}}
+        with mock.patch.object(bench.subprocess, 'run', return_value=mock.Mock(stdout=b'')), \
+                mock.patch.object(bench, 'Sampler'), \
+                mock.patch.object(bench.C, 'compile_caller', return_value=0) as compile_caller, \
+                mock.patch.object(bench.C, 'verdict', return_value={'verdict': 'CLOSED'}), \
+                mock.patch.object(bench.C, 'done_line', return_value='done'), \
+                mock.patch.object(bench, 'save_leftovers', return_value=None), \
+                contextlib.redirect_stdout(io.StringIO()):
+            bench.run_member(member, options, context)
+        arguments = compile_caller.call_args.args
+        return arguments[4], arguments[5]  # limit_gib, cpu
+
+    def test_member_cap_wins(self):
+        member = {'function': 'nextUint64', 'callers': 'c', 'case': '0044', 'cpu_seconds': 300}
+        self.assertEqual(self.compile_cap(member), (24, 300))
+
+    def test_set_cap_without_member_cap(self):
+        member = {'function': 'nextUint64', 'callers': 'c', 'case': '0044'}
+        self.assertEqual(self.compile_cap(member), (24, 3600))
+
+
 if __name__ == '__main__':
     unittest.main()
