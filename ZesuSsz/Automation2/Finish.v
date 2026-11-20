@@ -266,6 +266,14 @@ Ltac zesu_finish_known_list_shape :=
   first [solve [zesu_normalize_known_list_lengths; reflexivity] |
     (* A word stored as its byte extracts and read back as a word. *)
     solve [WrappedWord.zesu_word_extracts_rewrite; reflexivity] |
+    (* A list of bytes in mixed spellings: one word normal form (frame
+       counts as literals, windows as byte positions, value bytes as
+       extracts), then the explicit spines compute. *)
+    solve [lazymatch goal with |- @eq (list _) _ _ => idtac end;
+      WrappedWord.zesu_word_list_counts;
+      repeat BytePositionEquations.zesu_le_window_rewrite_one;
+      try WrappedWord.zesu_word_byte_extract_rewrite;
+      cbn [take drop app]; reflexivity] |
     solve [repeat match goal with
       | |- context[take ?n ?xs] =>
         let Htake := fresh "Htake" in

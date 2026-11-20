@@ -275,12 +275,36 @@ Ltac zesu_le_window_goal :=
   progress repeat zesu_le_window_rewrite_one;
   reflexivity.
 
+(* A list position whose element type is another name of `bv 8` (a
+   contract's byte type) is restated at `bv 8`, in the goal and in the
+   hypotheses: the window rewrite builds its positions at the list's own
+   element type, and the rules above match positions syntactically. *)
+Ltac zesu_nth_byte_type_normal :=
+  progress repeat first [
+    match goal with
+    | |- context [@nth ?T ?i ?l ?d] =>
+        lazymatch T with bv 8%N => fail | _ => idtac end;
+        unify T (bv 8%N);
+        change (@nth T i l d) with (@nth (bv 8%N) i l d)
+    end
+  | match goal with
+    | H : context [@nth ?T ?i ?l ?d] |- _ =>
+        lazymatch T with bv 8%N => fail | _ => idtac end;
+        unify T (bv 8%N);
+        change (@nth T i l d) with (@nth (bv 8%N) i l d) in H
+    end ].
+
 (* A pure (dis)equation on a word's bv_unsigned that a branch fact on the
-   word against a closed word states: the fact's bv_unsigned view. *)
+   word against a closed word states: the fact's bv_unsigned view. The fact
+   may be held as a load window: it first takes the goal's byte-position
+   form (the window rewrite in hypotheses). *)
 Ltac zesu_word_fact_goal :=
   lazymatch goal with
   | |- @eq Z (bv_unsigned _) _ => idtac
   | |- not (@eq Z (bv_unsigned _) _) => idtac
   end;
+  try zesu_nth_byte_type_normal;
+  repeat zesu_le_window_rewrite_hypothesis;
+  try zesu_nth_byte_type_normal;
   progress repeat zesu_word_fact_unsigned;
   assumption.
