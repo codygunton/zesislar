@@ -1,10 +1,12 @@
 (* Step 2.4 M1 (machine implies candidate), the reusable core: the walk
    invariant of candidateParentHeader and one lemma per thing the binary
-   decides. Owner: compliance proof. Pure lemmas over contract predicates
-   only: decodeItem's C1-B result (C1BResult, what decodeItemCallMeaningLink
-   yields) and nextUint64's root result (nextUint64RootResult, what
-   nextUint64CallResultLink yields). No sealed callee name, no Iris, no
-   automation.
+   decides. Owner: contract fact (pure lemmas over contract predicates, in
+   Contracts/ like ParentHeaderCallSlice.v because they read decodeItem's
+   C1-B result through the byte-reading lemmas of DecodeItemPayloadBounds.v
+   and DecodeItemCallFacts.v): decodeItem's C1-B result (C1BResult, what
+   decodeItemCallMeaningLink yields) and nextUint64's root result
+   (nextUint64RootResult, what nextUint64CallResultLink yields). No sealed
+   callee name, no Iris, no automation.
 
    The invariant [candidateWalkState bytes k cursor remaining acc]: before
    field k of parentHeaderFieldSchedule the machine's cursor is [cursor]
@@ -36,6 +38,30 @@ Require Import ZesuSsz.Contracts.Candidates.ParentHeaderCandidate.
 
 Import ListNotations.
 Open Scope Z_scope.
+
+(* The words a caller's loads read at byte offsets 0, 8 and 24 of a
+   decodeItem result, in the spelling of the generated histories (the same
+   text as the notations of DecodeItemPayloadBounds.v and
+   DecodeItemCallFacts.v, restated here because callers import this module,
+   not decodeItem's). *)
+Notation listWord64At0 bytes :=
+  (bv_concat 64%N (bv_concat 56%N (bv_concat 48%N (bv_concat 40%N (bv_concat 32%N (bv_concat 24%N
+    (bv_concat 16%N (List.nth 7%nat bytes (BV 8%N 0%Z)) (List.nth 6%nat bytes (BV 8%N 0%Z)))
+    (List.nth 5%nat bytes (BV 8%N 0%Z))) (List.nth 4%nat bytes (BV 8%N 0%Z)))
+    (List.nth 3%nat bytes (BV 8%N 0%Z))) (List.nth 2%nat bytes (BV 8%N 0%Z)))
+    (List.nth 1%nat bytes (BV 8%N 0%Z))) (List.nth 0%nat bytes (BV 8%N 0%Z))) (only parsing).
+Notation listWord64At8 bytes :=
+  (bv_concat 64%N (bv_concat 56%N (bv_concat 48%N (bv_concat 40%N (bv_concat 32%N (bv_concat 24%N
+    (bv_concat 16%N (List.nth 15%nat bytes (BV 8%N 0%Z)) (List.nth 14%nat bytes (BV 8%N 0%Z)))
+    (List.nth 13%nat bytes (BV 8%N 0%Z))) (List.nth 12%nat bytes (BV 8%N 0%Z)))
+    (List.nth 11%nat bytes (BV 8%N 0%Z))) (List.nth 10%nat bytes (BV 8%N 0%Z)))
+    (List.nth 9%nat bytes (BV 8%N 0%Z))) (List.nth 8%nat bytes (BV 8%N 0%Z))) (only parsing).
+Notation listWord64At24 bytes :=
+  (bv_concat 64%N (bv_concat 56%N (bv_concat 48%N (bv_concat 40%N (bv_concat 32%N (bv_concat 24%N
+    (bv_concat 16%N (List.nth 31%nat bytes (BV 8%N 0%Z)) (List.nth 30%nat bytes (BV 8%N 0%Z)))
+    (List.nth 29%nat bytes (BV 8%N 0%Z))) (List.nth 28%nat bytes (BV 8%N 0%Z)))
+    (List.nth 27%nat bytes (BV 8%N 0%Z))) (List.nth 26%nat bytes (BV 8%N 0%Z)))
+    (List.nth 25%nat bytes (BV 8%N 0%Z))) (List.nth 24%nat bytes (BV 8%N 0%Z))) (only parsing).
 
 Definition candidateWalkState (bytes : list byte) (k : nat)
     (cursor remaining : Z) (acc : list Z) : Prop :=
