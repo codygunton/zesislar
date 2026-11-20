@@ -98,7 +98,7 @@
     "fixture": "tools/block/fixtures/fp301-loop-successors.json",
     "head_bound": "(bv_unsigned machine_x15 < bv_unsigned machine_x11)",
     "exit_link": "(bv_unsigned machine_x15 = bv_unsigned machine_x11)",
-    "forward_base": "3505afab5",
+    "forward_fixture": "tools/block/fixtures/decodeitem-loop-exit-forward.json",
     "witness_exclusion": "machine_x\\d+|decodeItem|\\bi\\b",
     "contradiction_directory": "_build/agents/loop-exit-contradiction-checks",
     "design": [

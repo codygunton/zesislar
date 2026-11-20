@@ -33,7 +33,7 @@ FP301 = FIXTURE = HEAD_BOUND = EXIT_LINK = DESIGN = CALLERS = HEADER = SIGNATURE
 def configure(name=None):
     """Bind the module values to one function profile."""
     global PROFILE, FP301, FIXTURE, HEAD_BOUND, EXIT_LINK, DESIGN, CALLERS, HEADER, SIGNATURE
-    global FORWARD_BASE, WITNESS_EXCLUSION
+    global FORWARD_DECLARATIONS, WITNESS_EXCLUSION
     PROFILE = load_profile(name)
     exits = PROFILE['loop_exits']
     FP301 = ROOT / PROFILE.generated_directory
@@ -46,7 +46,7 @@ def configure(name=None):
     CALLERS = PROFILE['callers_directory']
     HEADER = loop_header(PROFILE)
     SIGNATURE = PROFILE.telescope()
-    FORWARD_BASE = exits['forward_base']
+    FORWARD_DECLARATIONS = json.loads((ROOT / exits['forward_fixture']).read_text())['declarations']
     WITNESS_EXCLUSION = re.compile(exits['witness_exclusion'])
 
 
@@ -70,23 +70,20 @@ def strip_parens(term):
     return term[1:-1] if term.startswith('(') and term.endswith(')') else term
 
 
-# The forward-pass declaration at this commit owns the system-register
-# witnesses (mstatus seeds and per-instruction forward witnesses) that the
-# successor entries consume. They do not depend on the loop path, so the exit
-# entry keeps their binders and their facts.
-FORWARD_BASE = WITNESS_EXCLUSION = None
+# The forward-pass declaration recorded in the profile's `forward_fixture` owns
+# the system-register witnesses (mstatus seeds and per-instruction forward
+# witnesses) that the successor entries consume. They do not depend on the loop
+# path, so the exit entry keeps their binders and their facts.
+FORWARD_DECLARATIONS = WITNESS_EXCLUSION = None
 WITNESS = re.compile(r'\b(fp_seed_\w+|forward_witness_\w+)\b')
 
 
 def forward_declaration(pc):
-    import subprocess
-    # At FORWARD_BASE the generated names carried the block's last four address digits.
+    # The recorded names carry the block's last four address digits.
     digits = PROFILE.pc(pc)[-4:]
-    path = f'{PROFILE.generated_directory}/Pilot{digits}Entries.v'
-    source = subprocess.run(['git', '-C', str(ROOT), 'show', FORWARD_BASE + ':' + path],
-                            capture_output=True, text=True, check=True).stdout
-    match = re.search(r'^Definition fp_machineAt' + digits + r'_ForwardA0N0' + re.escape(SIGNATURE) +
-                      r' : iProp Sigma := \(∃ (.*?), \((.*)\)\)%I\.$', source, re.M)
+    source = FORWARD_DECLARATIONS[pc]
+    match = re.fullmatch(r'Definition fp_machineAt' + digits + r'_ForwardA0N0' + re.escape(SIGNATURE) +
+                         r' : iProp Sigma := \(∃ (.*?), \((.*)\)\)%I\.', source)
     if match is None:
         raise ValueError('The forward declaration shape changed: ' + pc)
     return match.group(1), match.group(2)
