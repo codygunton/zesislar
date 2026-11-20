@@ -451,6 +451,52 @@ Proof.
   iFrame.
 Qed.
 
+(* The step leaves the window in the shape a successor restates the call
+   record in (`zesu_call_slice_record_facts`): the slice length and the two
+   bounds, each a hypothesis, so the record's existential over the slice words
+   closes from hypotheses. Without them the length conjunct has none. *)
+Lemma call_slice_record_facts (args : ParentHeaderArgs) (x19 x18 : bv 64)
+    (after : DecodeItemOutcome) (before0 : list byte)
+    (a13 a14 a15 a16 a17 b13 b14 b15 b16 b17 : bv 64) (R : iProp Sigma) :
+  parentHeaderArgsWellFormed args ->
+  (bv_unsigned (parentHeaderInputPointer args) <= bv_unsigned x19)%Z ->
+  (bv_unsigned x19 + bv_unsigned x18 <= bv_unsigned (parentHeaderInputPointer args) + Z.of_nat (@length (bv 8) (parentHeaderInputBytes args)))%Z ->
+  length after = 40%nat ->
+  decodeItemCallDomain (decodeItemCallDataArgs [OUT args; x19; x18; b13; b14; b15; b16; b17]
+     (SP args) (bv_unsigned (parentHeaderInputEnd args))
+     (take (Z.to_nat (bv_unsigned x18)) (drop (Z.to_nat (bv_unsigned x19 - bv_unsigned (parentHeaderInputPointer args))) (parentHeaderInputBytes args))) before0) ->
+  decodeItemCallMeaning (decodeItemCallDataArgs [OUT args; x19; x18; b13; b14; b15; b16; b17]
+     (SP args) (bv_unsigned (parentHeaderInputEnd args))
+     (take (Z.to_nat (bv_unsigned x18)) (drop (Z.to_nat (bv_unsigned x19 - bv_unsigned (parentHeaderInputPointer args))) (parentHeaderInputBytes args))) before0) after ->
+  bv_unsigned (parentHeaderInputPointer args) ↦ₘ∗ parentHeaderInputBytes args -∗
+  CELLS (bv_unsigned (parentHeaderStackPointer args) - 400 + 48) (bv_add x19 (W24 after)) -∗
+  CELLS (bv_unsigned (parentHeaderStackPointer args) - 400 + 48 + 8) (bv_sub x18 (W24 after)) -∗
+  (bv_unsigned (parentHeaderStackPointer args) - 400 + 48 + 56) ↦ₘ∗ after -∗
+  (bv_unsigned (parentHeaderStackPointer args) - 400 + 48 + 56 + 40) ↦ₘ? 136 -∗
+  R -∗
+  ∃ x : list byte *ₗ bv 64 *ₗ bv 64 *ₗ (),
+    bv_unsigned (REF args) ↦ₘ x.3ₗ ∗
+    (bv_unsigned (REF args) + 8) ↦ₘ x.2ₗ ∗
+    bv_unsigned x.3ₗ ↦ₘ∗ x.1ₗ ∗
+    bv_unsigned (NOUT args) ↦ₘ? 16 ∗
+    ⌜Z.of_nat (length x.1ₗ) = bv_unsigned x.2ₗ⌝ ∗
+    ⌜nextUint64CallDomain (nextUint64CallDataArgs [NOUT args; REF args; bv_sub x18 (W24 after); a13; a14; a15; a16; a17]
+       (SP args) x.3ₗ (parentHeaderInputEnd args) x.1ₗ)⌝ ∗
+    R.
+Proof.
+  iIntros (Hwf Hlo Hhi Hlen Hdom Hmean) "? ? ? ? ? ?".
+  zesu_call_slice_step.
+  assert (exists p l : bv 64,
+    Z.of_nat (length (take (Z.to_nat (bv_unsigned l))
+      (drop (Z.to_nat (bv_unsigned p - bv_unsigned (parentHeaderInputPointer args))) (parentHeaderInputBytes args)))) =
+      bv_unsigned l /\
+    (bv_unsigned (parentHeaderInputPointer args) <= bv_unsigned p)%Z /\
+    (bv_unsigned p + bv_unsigned l <= bv_unsigned (parentHeaderInputPointer args) +
+       Z.of_nat (@length (bv 8) (parentHeaderInputBytes args)))%Z)
+    by zesu_finish_exists_from_hypotheses.
+  iFrame.
+Qed.
+
 Lemma call_slice_by_reference_words (args : ParentHeaderArgs) (x19 x18 : bv 64)
     (after : DecodeItemOutcome) (before0 : list byte)
     (a13 a14 a15 a16 a17 b13 b14 b15 b16 b17 : bv 64) (R : iProp Sigma) :

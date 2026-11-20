@@ -515,6 +515,19 @@ Ltac zesu_call_slice_domain I Hwin Houta oa :=
     end
   end.
 
+(* The window facts in the shape a successor restates the call record in:
+   the slice length `Z.of_nat (length (take l (drop (p - base) bytes))) = l`
+   and the two window bounds. `NamedEquations.zesu_finish_exists_from_hypotheses`
+   closes the record's conjuncts by hypotheses of the same head; the window
+   itself is a conjunction, which that step does not open. *)
+Ltac zesu_call_slice_record_facts Hwin Hrange :=
+  let Hlen := fresh "HcsLength" in
+  let Hlow := fresh "HcsWindowLow" in
+  let Hhigh := fresh "HcsWindowHigh" in
+  try pose proof (zesu_call_slice_window_length _ _ _ _ Hwin (proj1 Hrange)) as Hlen;
+  pose proof (proj1 Hwin) as Hlow;
+  pose proof (proj2 Hwin) as Hhigh.
+
 Ltac zesu_call_slice :=
   lazymatch goal with
   | |- environments.envs_entails _ (@bi_exist _ ?T ?body) =>
@@ -548,6 +561,7 @@ Ltac zesu_call_slice :=
             let Hbounds := fresh "HcsBounds" in
             assert (Hbounds : (start + cnt <= len)%nat)
               by (clear -Hwin Hrange; zesu_call_slice_lia);
+            zesu_call_slice_record_facts Hwin Hrange;
             iRename Harray into "HcsArray";
             iDestruct (zesu_byte_array_lend_slice _ bytes start cnt Hbounds with "HcsArray")
               as "[HcsSlice HcsRestore]";
@@ -809,6 +823,7 @@ Ltac zesu_call_slice_ref :=
         let Hbounds := fresh "HcsBounds" in
         assert (Hbounds : (start + cnt <= length bytes)%nat)
           by (clear -Hwin Hrange; zesu_call_slice_lia);
+        zesu_call_slice_record_facts Hwin Hrange;
         iMatchHyp ltac:(fun Harray resource =>
           lazymatch resource with
           | (?b ↦ₘ∗ ?bs)%I => constr_eq b base; constr_eq bs bytes;
