@@ -1,0 +1,13 @@
+; The closed nextUint64 block proofs, compiled in place. The caller renderer writes each caller under
+; tools/block/generated/nextuint64_fp301_callers; this directory only copies the closed ones into the ZesuSsz
+; theory, so the compliance theorem can consume them. Edit the callers through their renderers.
+(rule (targets Caller0000.v) (deps ../../../../tools/block/generated/nextuint64_fp301_callers/Caller0000.v) (action (copy ../../../../tools/block/generated/nextuint64_fp301_callers/Caller0000.v Caller0000.v)))
+(rule (targets Caller0044.v) (deps ../../../../tools/block/generated/nextuint64_fp301_callers/Caller0044.v) (action (copy ../../../../tools/block/generated/nextuint64_fp301_callers/Caller0044.v Caller0044.v)))
+(rule (targets Caller004c.v) (deps ../../../../tools/block/generated/nextuint64_fp301_callers/Caller004c.v) (action (copy ../../../../tools/block/generated/nextuint64_fp301_callers/Caller004c.v Caller004c.v)))
+(rule (targets Caller0058.v) (deps ../../../../tools/block/generated/nextuint64_fp301_callers/Caller0058.v) (action (copy ../../../../tools/block/generated/nextuint64_fp301_callers/Caller0058.v Caller0058.v)))
+(rule (targets Caller0064.v) (deps ../../../../tools/block/generated/nextuint64_fp301_callers/Caller0064.v) (action (copy ../../../../tools/block/generated/nextuint64_fp301_callers/Caller0064.v Caller0064.v)))
+(rule (targets Caller0070.v) (deps ../../../../tools/block/generated/nextuint64_fp301_callers/Caller0070.v) (action (copy ../../../../tools/block/generated/nextuint64_fp301_callers/Caller0070.v Caller0070.v)))
+(rule (targets Caller0090.v) (deps ../../../../tools/block/generated/nextuint64_fp301_callers/Caller0090.v) (action (copy ../../../../tools/block/generated/nextuint64_fp301_callers/Caller0090.v Caller0090.v)))
+(rule (targets Caller009c.v) (deps ../../../../tools/block/generated/nextuint64_fp301_callers/Caller009c.v) (action (copy ../../../../tools/block/generated/nextuint64_fp301_callers/Caller009c.v Caller009c.v)))
+(rule (targets Caller00b8.v) (deps ../../../../tools/block/generated/nextuint64_fp301_callers/Caller00b8.v) (action (copy ../../../../tools/block/generated/nextuint64_fp301_callers/Caller00b8.v Caller00b8.v)))
+(rule (targets Caller00a4.v) (deps ../../../../tools/block/generated/nextuint64_fp301_callers/Caller00a4.v) (action (copy ../../../../tools/block/generated/nextuint64_fp301_callers/Caller00a4.v Caller00a4.v)))
