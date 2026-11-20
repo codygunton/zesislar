@@ -19,11 +19,15 @@
    [window]   the payload lies inside the input (loop start).
    The generated entries lacked [branch] (entry 0x0064), [invariant]
    (entry 0x00a4) and [fold] (entry 0x00b8) when measured; each lemma that
-   needs one takes it as a named premise.
+   needs one takes it as a named premise. The loop steps over [invariant]
+   are in NextUint64MeaningLoop (they need NextUint64FoldFacts, which loads
+   the legacy automation; block callers import this module through
+   ZesuSsz.Contracts.NextUint64MeaningFacts and must not load it).
 
    The conversion from the entries' machine spellings (bv_concat chains of
-   List.nth, bv_signed of a zero extension) to the views used here is the
-   word-form normal form of the automation; it is not done here.
+   List.nth, bv_signed of a zero extension) to the views used here is done
+   in ZesuSsz.Contracts.NextUint64MeaningFacts, which also registers the
+   exits for the residual tier.
 
    Sail: rlp_decode_uint64 agrees with this meaning in one direction only
    (Sail success implies the same contract value). The code also accepts a
@@ -41,8 +45,6 @@ Require Import ZesuSsz.Contracts.NextUint64BlockEntries.
 Require Import ZesuSsz.Contracts.NextUint64DomainRanges.
 Require Import ZesuSsz.Contracts.DecodeItemFrameImage.
 Require Import ZesuSsz.Contracts.DecodeItemPayloadBounds.
-Require Import ZesuSsz.Compliance.NextUint64FoldFacts.
-Require ZesuSsz.Automation2.ResidualLemmas.
 Import ListNotations.
 Open Scope Z_scope.
 
@@ -326,36 +328,3 @@ Proof.
   rewrite Z.mod_small by library_lia. library_lia.
 Qed.
 
-(* Loop steps of entry 0x00a4 in the machine's spelling. Premise [invariant]
-   must be supplied by the generated entry 0x00a4. *)
-Lemma nextUint64MachineFoldStep (args : NextUint64Call) (decoded : list byte)
-    (current limit accumulator : bv 64) (nextByte : byte) :
-  forall (Hinvariant : nextUint64FoldInvariant args decoded current limit accumulator),
-  nth_error (nextUint64Payload args decoded)
-    (Z.to_nat (bv_unsigned current - nextUint64DecodedPointer decoded)) = Some nextByte ->
-  bv_unsigned current + 1 < bv_unsigned limit ->
-  nextUint64FoldInvariant args decoded
-    (Z_to_bv 64 (bv_unsigned current + 1)) limit
-    (bv_or (bv_shiftl accumulator (BV 64 8)) (bv_zero_extend 64 nextByte)).
-Proof.
-  intros Hinvariant Hbyte Hguard. rewrite nextUint64ShiftOrStep.
-  exact (nextUint64FoldStep _ _ _ _ _ _ Hinvariant Hbyte Hguard).
-Qed.
-
-Lemma nextUint64MachineFoldLast (args : NextUint64Call) (decoded : list byte)
-    (current limit accumulator : bv 64) (nextByte : byte) :
-  forall (Hinvariant : nextUint64FoldInvariant args decoded current limit accumulator),
-  nth_error (nextUint64Payload args decoded)
-    (Z.to_nat (bv_unsigned current - nextUint64DecodedPointer decoded)) = Some nextByte ->
-  bv_unsigned current + 1 = bv_unsigned limit ->
-  nextUint64FoldComplete args decoded
-    (bv_or (bv_shiftl accumulator (BV 64 8)) (bv_zero_extend 64 nextByte)).
-Proof.
-  intros Hinvariant Hbyte Hguard. rewrite nextUint64ShiftOrStep.
-  exact (nextUint64FoldLast _ _ _ _ _ _ Hinvariant Hbyte Hguard).
-Qed.
-
-(* Registration for the residual tier of the return join 0x0070 (the form of
-   ZesuSsz/Residuals/Block800d6960.v). A block caller sees these only if it
-   imports this module. *)
-#[export] Hint Resolve nextUint64ErrorExitMeaning nextUint64SuccessExitMeaning : zesu_residual.
