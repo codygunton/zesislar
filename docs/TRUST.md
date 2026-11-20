@@ -65,6 +65,17 @@ reached slice. The candidate reached-slice walk needs machine-call correspondenc
 before a proof can use it. Machine proofs establish partial correctness only. Phase 5 of the
 active plan must prove termination with the verified executor in `ZesuSsz/Export/Executor.v`.
 
+The Sail side of that meaning is proved. `candidateParentHeader_sail`
+(`ZesuSsz/Compliance/ParentHeaderTriggerCoverage.v`) states that for every input with
+`headerFits` and a length below 2^31 on which no trigger of a listed class fires, Sail's
+parent-header decoder agrees with `candidateParentHeader`: it accepts with the same header
+when the candidate succeeds and rejects when the candidate rejects. It rests on
+`sailParentHeaderModel_holds` (`ParentHeaderSailEvaluation.v`: the Sail run equals a pure
+model) and `knownBugTriggersCoverDivergences` (every input where the model and the
+candidate differ fires a trigger). Not yet proved: that the binary's result is the
+candidate's result (step M1 of the plan); until then the meaning is not a theorem about
+the binary.
+
 `parentHeaderGeneratedCompliance` in `ZesuSsz/Compliance/ParentHeaderGeneratedComposition.v`
 derives `ParentHeaderContractCorrect` from two premises: `NextUint64ContractCorrect` and
 `ParentHeaderOpenBlocks`, a record with one field per decodeParentHeader block whose proof is
@@ -190,8 +201,9 @@ change. `BLOB_HANDOFF_EXPERIMENT.json` records the generation method and measure
 The committed rung-1/2 snapshot still excludes the blob decoder. The full transaction
 decoder, keccak operations, scratch operations, and their host assumptions remain outside
 the current executable reference boundary. The later transaction-domain decisions
-remain open. Rung-2 rejection agreement also needs a decision for truncated headers:
-Sail can accept a truncated header that the selected binary rejects.
+remain open.
+The parent-header decision for truncated headers is the known bug
+`ParentHeaderMissingRequiredField`: Sail accepts a header the binary rejects there.
 No present result claims unconditional binary equality with Sail.
 
 QEMU traces and vector audits are evidence for review. They are not premises in a machine
