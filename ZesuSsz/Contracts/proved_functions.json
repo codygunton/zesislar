@@ -202,19 +202,7 @@
       "condition": "parentHeaderGeneratedCompliance assumes NextUint64ContractCorrect (proved: nextUint64Compliance) and ParentHeaderOpenBlocks; no interface until ParentHeaderOpenBlocks is discharged and the premise is applied",
       "exit_meaning_modules": [
         {"path": "ZesuSsz/Compliance/ParentHeaderCandidateFacts.v", "callees": ["decodeItem", "nextUint64"],
-         "reason": "step 2.4 M1: the exit lemmas prove parentHeaderCandidateResult from the call records in the generated histories (decodeItemCallMeaning, nextUint64CallResult) through the walk lemmas of ParentHeaderCandidateWalk.v"},
-        {"path": "ZesuSsz/Compliance/ParentHeaderEdgeErrors00a8.v", "callees": ["decodeItem", "nextUint64"],
-         "reason": "step 2.4 M1: per-edge reason fact candidateParentHeader = candidateHeaderError of the edges into the error join 0x00a8, from the source histories"},
-        {"path": "ZesuSsz/Compliance/ParentHeaderEdgeErrors0088.v", "callees": ["decodeItem", "nextUint64"],
-         "reason": "step 2.4 M1: per-edge reason fact of the edges into the error join 0x0088"},
-        {"path": "ZesuSsz/Compliance/ParentHeaderEdgeErrors0408.v", "callees": ["decodeItem", "nextUint64"],
-         "reason": "step 2.4 M1: per-edge reason fact of the edges into the error join 0x0408"},
-        {"path": "ZesuSsz/Compliance/ParentHeaderEdgeErrors026c.v", "callees": ["decodeItem", "nextUint64"],
-         "reason": "step 2.4 M1: per-edge reason fact of the edges into the error join 0x026c"},
-        {"path": "ZesuSsz/Compliance/ParentHeaderEdgeErrors0270.v", "callees": ["decodeItem", "nextUint64"],
-         "reason": "step 2.4 M1: per-edge reason fact of the nextUint64 edges into the error join 0x0270"},
-        {"path": "ZesuSsz/Compliance/ParentHeaderEdgeErrors00b0.v", "callees": ["decodeItem", "nextUint64"],
-         "reason": "step 2.4 M1: per-edge reason fact of the direct error edges into the tail join 0x00b0"}
+         "reason": "step 2.4 M1: the exit lemmas prove parentHeaderCandidateResult from the call records in the generated histories (decodeItemCallMeaning, nextUint64CallResult) through the walk lemmas of ParentHeaderCandidateWalk.v"}
       ],
       "compliance_theorems": ["parentHeaderGeneratedCompliance"],
       "owned_prefixes": ["ZesuSsz/Contracts/ParentHeader", "ZesuSsz/Compliance/ParentHeader",
