@@ -69,9 +69,11 @@ active plan must prove termination with the verified executor in `ZesuSsz/Export
 derives `ParentHeaderContractCorrect` from two premises: `NextUint64ContractCorrect` and
 `ParentHeaderOpenBlocks`, a record with one field per decodeParentHeader block whose proof is
 not closed (generated in `ParentHeaderBlockObligations.v` by
-`tools/block/render_open_blocks.py`). It is not an unconditional result: its premises are the
-remaining work. The memcpy runtime premise enters through the contract code
-(`memcpyCallPremise`), as `ParentHeaderContractCorrect` states it.
+`tools/block/render_open_blocks.py`). It is not an unconditional result: `ParentHeaderOpenBlocks`
+is the remaining work. `NextUint64ContractCorrect` is proved without premises by
+`nextUint64Compliance` in `ZesuSsz/Compliance/NextUint64GeneratedComposition.v`; its contract
+code is nextUint64's own map and decodeItem's map. The memcpy runtime premise enters through the
+contract code (`memcpyCallPremise`), as `ParentHeaderContractCorrect` states it.
 
 A block leaves that record only with a closure certificate,
 `tools/block/closures/<callers directory>/<block>/CLOSURE.json`, written by

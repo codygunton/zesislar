@@ -26,15 +26,6 @@ Import ListNotations.
 Local Open Scope Z_scope.
 #[local] Typeclasses Transparent nextUint64SelectedCode decodeItemSelectedCode.
 
-(* The contract's code is nextUint64's own map (NextUint64Contract.v), but block
-   0x0000 calls decodeItem, whose proved call spec needs decodeItem's code. This
-   premise supplies it. The contract change of plan step 2.1-2 (code becomes
-   nextUint64SelectedCode ∗ decodeItemSelectedCode; drafted on branch rb/2.1,
-   commit e3fc4ff73, under user review) removes the premise at the rebase. *)
-Definition nextUint64NeedsDecodeItemCode : Prop :=
-  forall (Sigma : gFunctors) (HG : islaG Sigma) (HT : threadG),
-    nextUint64SelectedCode (Sigma:=Sigma) ⊢ decodeItemSelectedCode.
-
 (* ---- Infrastructure (no step names a block). ---- *)
 
 Lemma nextUint64_body_weaken `{!islaG Sigma} `{!threadG} (a : Z) (P : iProp Sigma) :
@@ -317,20 +308,19 @@ Proof.
   iFrame.
 Qed.
 
-(* ---- The theorem: nextUint64 compliance, given decodeItem's code; every block is closed. ---- *)
+(* ---- The theorem: nextUint64 compliance; every block is closed. The contract's
+   code holds decodeItem's map, which block 0x0000's call needs. ---- *)
 Theorem nextUint64GeneratedCompliance :
-  nextUint64NeedsDecodeItemCode ->
   NextUint64ContractCorrect.
 Proof.
-  intros Hcode returnAddress Sigma HG HT.
-  change (⊢ nextUint64SelectedCode -∗ ∀ params : NextUint64Args,
+  intros returnAddress Sigma HG HT.
+  change (⊢ (nextUint64SelectedCode ∗ decodeItemSelectedCode) -∗ ∀ params : NextUint64Args,
     instr_body nextUint64Entry
       (nextUint64ContractEntry returnAddress params ∗
        instr_pre returnAddress (∃ result : NextUint64Return,
          ⌜nextUint64ContractAllows returnAddress params result⌝ ∗
          nextUint64ContractExit params result)))%I.
-  iIntros "#Hsel" (params).
-  iDestruct (Hcode Sigma HG HT with "Hsel") as "#Hdi".
+  iIntros "[#Hsel #Hdi]" (params).
   iPoseProof (nextUint64_decodeItem_boxed with "Hdi") as "#Hdi2".
   iPoseProof (nextUint64_entry_body nextUint64OpenBlocks params returnAddress with "[]") as "Hbody".
   { iModIntro. unfold nextUint64TableCode.
@@ -342,3 +332,7 @@ Proof.
   iApply (instr_pre_wand with "Hexit"); [done|done|].
   iIntros "Hreturn". by iApply (nextUint64_end_bridge with "Hreturn").
 Qed.
+
+(* Plan step 2.2: the final nextUint64 statement. *)
+Theorem nextUint64Compliance : NextUint64ContractCorrect.
+Proof. exact nextUint64GeneratedCompliance. Qed.
