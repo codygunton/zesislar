@@ -29,6 +29,9 @@
   "blocks": ["+0x0", "+0x14", "+0x1c", "+0x44", "+0x50", "+0x78", "+0x80", "+0x88", "+0xa0", "+0xa8",
              "+0xb4", "+0x104", "+0x10c", "+0x118", "+0x148", "+0x154", "+0x2c", "+0xc4", "+0x164", "+0x180"],
   "loop_heads": ["+0xc4", "+0x164"],
+  "entry_hist": "wrap",
+  "frame_slots": false,
+  "hist_visible": [".*"],
   "keep_source_implied_ram_guards": true,
   "loop_head_fixture": "tools/block/fixtures/fp301-loop-heads.json",
   "loop_designs": [
