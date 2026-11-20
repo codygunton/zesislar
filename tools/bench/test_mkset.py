@@ -80,7 +80,9 @@ class MakeSet(unittest.TestCase):
         self.assertTrue(mkset.is_heavy('decodeParentHeader', '0514_slot3'))
         self.assertTrue(mkset.is_heavy('decodeParentHeader', '04ec'))
         self.assertFalse(mkset.is_heavy('decodeParentHeader', '0514'))
-        self.assertFalse(mkset.is_heavy('nextUint64', '0000'))
+        self.assertTrue(mkset.is_heavy('nextUint64', '0000'))
+        self.assertFalse(mkset.is_heavy('nextUint64', '0044'))
+        self.assertFalse(mkset.is_heavy('decodeItem', '0000'))
 
     def test_overlay_copied_from_set(self):
         source = self.root / 'SRC.json'
