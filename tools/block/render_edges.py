@@ -614,6 +614,44 @@ def rocq_reveal(pre, fact, derivation, index):
     return '\n'.join(lines) + '\n'
 
 
+def conjunct_reveals(fact, derivation):
+    """(conjunct, derivation) for each top-level conjunct of a revealed conjunction. Lithium proves the
+    pure conjuncts of an open existential (a loop class) as separate side goals, so the block tail asks
+    for each conjunct (Hist.zesu_hist_reveal_pure), never for the conjunction. Empty when the fact is no
+    plain conjunction (a binder, a disjunction or an implication at the top) or a projection of its
+    term is not an EDGE_SENTENCES form."""
+    term, opened, rest = derivation
+    scoped = re.fullmatch(r'\s*(\(.*\))%(nat|Z|N)\s*', fact, re.S)
+    body, scope = (scoped[1], '%' + scoped[2]) if scoped else (fact, '')
+    parts = conjuncts(body)
+    if len(parts) < 2 or re.match(r'\s*(?:∃|∀|exists\b|forall\b|fun\b)', unwrap(body)):
+        return []
+    if any(len(conjuncts_by(part, separator)) > 1 for part in parts for separator in ('\\/', '->', '↔', '→')):
+        return []
+    result = []
+    for position, part in enumerate(parts):
+        projection = term
+        for _ in range(position):
+            projection = '(proj2 ' + projection + ')'
+        if position < len(parts) - 1:
+            projection = '(proj1 ' + projection + ')'
+        if not re.fullmatch(_SOLVE, 'exact ' + projection):
+            return []
+        result.append(('(' + part + ')' + scope if scope else part, (projection, opened, rest)))
+    return result
+
+
+def conjuncts_by(text, separator):
+    """The parts of a fact split at a top-level separator."""
+    parts, depth, start = [], 0, 0
+    for position, character in enumerate(text):
+        depth += (character in '([') - (character in ')]')
+        if depth == 0 and text.startswith(separator, position):
+            parts.append(text[start:position])
+            start = position + len(separator)
+    return parts + [text[start:]]
+
+
 # Every sentence an edge proof may contain (AGENTS.md: generated proofs are limited to these forms;
 # ZesuSsz/Evidence/check_proof_hygiene.py rule EDGE-PROOF enforces the list on the committed files).
 _NAME = r"[A-Za-z_][\w']*"
@@ -749,11 +787,13 @@ def main():
                         for row in accounting:
                             if row['status'] != 'reveal':
                                 continue
-                            statement = (application(pre, {}), row['fact'])
-                            if statement not in reveals:
-                                reveals[statement] = len(reveals)
-                                block_instances.append(rocq_reveal(pre, row['fact'], row['derivation'],
-                                                                   reveals[statement]))
+                            facts = [(row['fact'], row['derivation']),
+                                     *conjunct_reveals(row['fact'], row['derivation'])]
+                            for fact, derivation in facts:
+                                statement = (application(pre, {}), fact)
+                                if statement not in reveals:
+                                    reveals[statement] = len(reveals)
+                                    block_instances.append(rocq_reveal(pre, fact, derivation, reveals[statement]))
                         used_entries.setdefault(pre_pc, set()).update([pre['entry'], succ['entry']])
     violations = [{'pre_entry': edge['pre_entry'], 'succ_entry': edge['succ_entry'], 'kind': edge['kind'], **row}
                   for edge in edges for row in edge.get('visible_accounting', []) if row['status'] == 'violation']

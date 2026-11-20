@@ -6,7 +6,7 @@ import unittest
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import entry_hist
-from render_edges import (Source, check_edge_sentences, edge_sentences, free_witnesses, is_identity, rocq_edge,
+from render_edges import (Source, check_edge_sentences, conjunct_reveals, edge_sentences, free_witnesses, is_identity, rocq_edge,
                           stated_at_source, visible_accounting)
 
 T = 'bv 64'
@@ -163,6 +163,24 @@ class LoopDesignPatterns(unittest.TestCase):
         window = ('(bv_unsigned (P args) <= bv_unsigned (call2_kept_x19) /\\ bv_unsigned (call2_kept_x19) + '
                   'bv_unsigned (n) <= bv_unsigned (P args) + Z.of_nat (List.length (B args)))%Z')
         self.assertIsNone(re.search(pattern, window, re.S))
+
+
+class ConjunctReveals(unittest.TestCase):
+    WINDOW = ('(bv_unsigned (P args) <= bv_unsigned (k) /\\ bv_unsigned (k) + bv_unsigned (n) <= '
+              'bv_unsigned (P args) + Z.of_nat (List.length (B args)))%Z')
+
+    def test_each_conjunct_of_a_revealed_window_is_its_own_reveal_with_a_projection(self):
+        rows = conjunct_reveals(self.WINDOW, ('HF8', ['HF8'], None))
+        self.assertEqual([fact for fact, _ in rows],
+                         ['(bv_unsigned (P args) <= bv_unsigned (k))%Z',
+                          '(bv_unsigned (k) + bv_unsigned (n) <= bv_unsigned (P args) + Z.of_nat (List.length (B args)))%Z'])
+        self.assertEqual([derivation[0] for _, derivation in rows], ['(proj1 HF8)', '(proj2 HF8)'])
+        self.assertEqual(conjunct_reveals('A /\\ B /\\ C', ('H', [], None))[1][1][0], '(proj1 (proj2 H))')
+        check_edge_sentences('Proof.\n  exact (proj1 (proj2 H)).\nQed.\n')
+
+    def test_a_fact_that_is_no_plain_conjunction_gets_no_conjunct_reveals(self):
+        for fact in ['P k', '∃ (v : bv 64), Q v /\\ R v', 'A \\/ B /\\ C', 'A -> B /\\ C']:
+            self.assertEqual(conjunct_reveals(fact, ('H', [], None)), [], fact)
 
 
 if __name__ == '__main__':
