@@ -62,14 +62,18 @@ Proof.
   - cbn [drop nth]. apply IH.
 Qed.
 
-(* The concatenation of the c bytes at k, most significant byte innermost. *)
+(* The concatenation of the c bytes at k, most significant byte innermost.
+   Positions are built at `bv 8` whatever the list's element type: at a
+   contract byte type (`bits 8`, i.e. `bv (Z_idx 8)`) the concatenation's
+   widths were inferred as `Z_idx 8`, and the result no longer matched the
+   goal's `bv_concat 16 8 8` syntactically (decodeParentHeader 0568). *)
 Ltac zesu_le_window_bytes width count start bytes :=
   lazymatch count with
-  | 1%nat => constr:(nth start bytes (BV 8 0))
+  | 1%nat => constr:(@nth (bv 8) start bytes (BV 8 0))
   | S ?rest =>
       let inner_width := eval vm_compute in (width - 8)%N in
       let inner := zesu_le_window_bytes inner_width rest (S start) bytes in
-      constr:(bv_concat width inner (nth start bytes (BV 8 0)))
+      constr:(bv_concat width inner (@nth (bv 8) start bytes (BV 8 0)))
   end.
 
 Ltac zesu_le_window_prove :=
