@@ -25,16 +25,15 @@ Section edges.
 Context `{!islaG Sigma} `{!threadG}.
 
 (* fp_machineAt0044_ForwardA0N0 -> fp_machineAt004c_ForwardA0N0 (forward) *)
-Global Instance zesu_hist_edge_1 (args : NextUint64Args) (returnAddress : Z) (call_after : DecodeItemOutcome) :
+Global Instance zesu_hist_edge_1 (args : NextUint64Args) (returnAddress : Z) :
   ZesuHistEdge (PROP := iProp Sigma)
     (fp_machineAt0044_ForwardA0N0_Hist (args) (returnAddress))
-    (fp_machineAt004c_ForwardA0N0_Hist (args) (returnAddress) (call_after))
-    (⌜((bool_decide ((bv_zero_extend 64%N (bv_concat 16%N (List.nth 33%nat call_after (BV 8%N 0%Z)) (List.nth 32%nat call_after (BV 8%N 0%Z)))) = (BV 64%N 0%Z))) = true) /\ ((((bv_unsigned (bv_concat 16%N (List.nth 33%nat call_after (BV 8%N 0%Z)) (List.nth 32%nat call_after (BV 8%N 0%Z)))) = (0%Z))%Z))⌝ ∗ True)%I.
+    (fp_machineAt004c_ForwardA0N0_Hist (args) (returnAddress))
+    (True)%I.
 Proof.
   rewrite /ZesuHistEdge => Hh. apply zesu_hist_elim in Hh. unfold fp_machineAt0044_ForwardA0N0_Hist in Hh.
   destruct Hh as (fp_seed_mstatus_bits & forward_witness_72b7e22ed74cb83b & forward_witness_9644ccf41f39915a & forward_witness_407fca3a6f90b8db & forward_witness_cbcac9df79b9221c & forward_witness_1be931110d776902 & forward_witness_905cf96e605c1117 & forward_witness_55ab0ce59750150a & forward_witness_11fde2df72db9d06 & forward_witness_791c5acc1109e8e6 & HF0 & HF1 & HF2 & HF3 & HF4 & HF5 & HF6 & HF7 & HF8 & HF9).
   iIntros "HN".
-  iDestruct "HN" as "(%HN0 & _)".
   iPureIntro. apply zesu_hist_intro. unfold fp_machineAt004c_ForwardA0N0_Hist.
   exists (BV 64%N 0%Z), forward_witness_9644ccf41f39915a, forward_witness_407fca3a6f90b8db, forward_witness_cbcac9df79b9221c, forward_witness_1be931110d776902, forward_witness_905cf96e605c1117, forward_witness_55ab0ce59750150a, forward_witness_11fde2df72db9d06, forward_witness_791c5acc1109e8e6, (BV 64%N 0%Z).
   split; [by vm_compute|].
@@ -47,8 +46,7 @@ Proof.
   split; [exact HF7|].
   split; [exact HF8|].
   split; [by vm_compute|].
-  split; [by vm_compute|].
-  exact HN0.
+  by vm_compute.
 Qed.
 
 (* fp_machineAt0044_ForwardA0N0 -> fp_machineAt0064_ForwardA0N0 (join) *)

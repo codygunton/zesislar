@@ -11,6 +11,7 @@ Require ZesuSsz.Automation2.ResourceGroups.
 Require ZesuSsz.Automation2.BytePositionEquations.
 Require ZesuSsz.Automation2.WrappedWord.
 Require ZesuSsz.Automation2.PureFacts.
+Require ZesuSsz.Automation2.ByteExtractCodec281.
 Local Open Scope Z_scope.
 
 (* The call-site step for a callee that takes an input slice and an output
@@ -80,6 +81,31 @@ Ltac zesu_call_slice_word_address_solve :=
 Lemma zesu_call_slice_take_length_le {A} (n : Z) (k : nat) (l : list A) (c : Z) :
   c <= Z.of_nat (length (take (Z.to_nat n) (drop k l))) -> 0 <= n -> c <= n.
 Proof. rewrite length_take. intros. zesu_call_slice_lia. Qed.
+
+(* The length of a window [p, p + l) taken out of an array at `base`. *)
+Lemma zesu_call_slice_window_length {A} (base p l : Z) (bytes : list A) :
+  base <= p /\ p + l <= base + Z.of_nat (length bytes) -> 0 <= l ->
+  Z.of_nat (length (take (Z.to_nat l) (drop (Z.to_nat (p - base)) bytes))) = l.
+Proof. intros [? ?] ?. rewrite length_take length_drop. zesu_call_slice_lia. Qed.
+
+(* The rest a by-reference call returned (`ZesuCallSliceRefResult`) lies in
+   the window its slice was taken from. *)
+Lemma zesu_call_slice_rest_window {A} (base : Z) (bytes : list A) (p0 l0 pw lw : bv 64)
+    (rp rl : Z) :
+  base <= bv_unsigned p0 /\ bv_unsigned p0 + bv_unsigned l0 <= base + Z.of_nat (length bytes) ->
+  bv_unsigned p0 <= rp /\
+  rp + rl = bv_unsigned p0 + Z.of_nat (length (take (Z.to_nat (bv_unsigned l0))
+                                                (drop (Z.to_nat (bv_unsigned p0 - base)) bytes))) /\
+  0 <= rl /\ rp + rl < bv_modulus 64 ->
+  pw = Z_to_bv 64 rp -> lw = Z_to_bv 64 rl ->
+  base <= bv_unsigned pw /\ bv_unsigned pw + bv_unsigned lw <= base + Z.of_nat (length bytes).
+Proof.
+  intros [Hlo Hhi] (Hp & Hsum & Hl & Hmax) -> ->.
+  pose proof (bv_unsigned_in_range _ p0) as Hp0.
+  pose proof (bv_unsigned_in_range _ l0) as Hl0.
+  rewrite length_take length_drop in Hsum.
+  rewrite !Z_to_bv_small; zesu_call_slice_lia.
+Qed.
 
 Lemma zesu_call_slice_unsigned_pos n (w : bv n) : bv_unsigned w <> 0 -> 0 < bv_unsigned w.
 Proof. pose proof (bv_unsigned_in_range n w). zesu_call_slice_lia. Qed.
@@ -224,6 +250,28 @@ Ltac zesu_call_slice_wrap_small :=
       rewrite E; clear E
   end.
 
+(* (p, l) is the rest a by-reference call returned (its record
+   `result (record (mk _ _ p0 _ input)) r` with a `ZesuCallSliceRefResult`
+   instance, `p = Z_to_bv 64 (restPointer r)`, `l = Z_to_bv 64 (restLength r)`)
+   on a slice (p0, l0) of the array at [base] with [bytes]: [win p0 l0 k0]
+   finds the window of the slice, [k] receives the window of (p, l). *)
+Ltac zesu_call_slice_rest_window_step p l base bytes win k :=
+  match goal with
+  | Hres : ?res (?rec (?mk _ _ ?p0 _ (take (Z.to_nat (bv_unsigned ?l0))
+                                       (drop (Z.to_nat (bv_unsigned ?p0 - base)) bytes)))) ?r |- _ =>
+      let C := constr:(_ : ZesuCallSliceRefResult mk rec res _ _) in
+      let rp := lazymatch type of C with @ZesuCallSliceRefResult _ _ _ _ _ _ ?rp _ => rp end in
+      let rl := lazymatch type of C with @ZesuCallSliceRefResult _ _ _ _ _ _ _ ?rl => rl end in
+      let Hpw := fresh "HcsRestP" in
+      assert (Hpw : p = Z_to_bv 64 (rp r)) by first [assumption | reflexivity];
+      let Hlw := fresh "HcsRestL" in
+      assert (Hlw : l = Z_to_bv 64 (rl r)) by first [assumption | reflexivity];
+      win p0 l0 ltac:(fun Hw0 =>
+        k constr:(zesu_call_slice_rest_window base bytes p0 l0 p l (rp r) (rl r) Hw0
+                    (@zesu_call_slice_ref_result_window _ _ _ _ _ _ _ _ C _ _ _ _ _ _ Hres)
+                    Hpw Hlw))
+  end.
+
 (* The window [p, p+l) of the array at [base] with [bytes]: passes to [k] a
    proof of base <= bv_unsigned p /\ bv_unsigned p + bv_unsigned l <=
    base + length bytes. *)
@@ -295,6 +343,10 @@ Ltac zesu_call_slice_window I dom meaning mk p l base bytes k :=
         end
       end
     end
+  | (* (p, l) is the rest a by-reference call returned on a slice
+       (p0, l0) of the same array *)
+    zesu_call_slice_rest_window_step p l base bytes
+      ltac:(fun p0 l0 k0 => zesu_call_slice_window I dom meaning mk p0 l0 base bytes k0) k
   | (* the caller's contract places (p, l) *)
     let Hw := fresh "HcsContractWindow" in
     assert (Hw : (base <= bv_unsigned p /\
@@ -319,6 +371,29 @@ Ltac zesu_call_slice_window I dom meaning mk p l base bytes k :=
                   bv_unsigned p + bv_unsigned l <= base + Z.of_nat (length bytes))%Z)
       by (rewrite !Z_to_bv_unsigned; zesu_call_slice_wrap_small; zesu_call_slice_lia);
     k constr:(Hw) ].
+
+(* The window of (p, l) for a callee with no by-value interface in reach: the
+   window steps of a by-value callee whose call record the context holds, or
+   a stated window, or the rest a by-reference call returned. *)
+Ltac zesu_call_slice_window_any p l base bytes k :=
+  first
+  [ once (match goal with
+      | Hd : ?ddom (?dmk (_ :: _ :: _ :: _) _ _ _ _) |- _ =>
+          let I := constr:(_ : ZesuCallSliceInterface ddom _) in
+          let dmeaning := lazymatch type of I with
+            | @ZesuCallSliceInterface _ _ _ ?m => m end in
+          zesu_call_slice_window I ddom dmeaning dmk p l base bytes k
+      end)
+  | zesu_call_slice_window_bare p l base bytes k ]
+with zesu_call_slice_window_bare p l base bytes k :=
+  first
+  [ match goal with
+    | Hlo : (base <= bv_unsigned p)%Z,
+      Hhi : (bv_unsigned p + bv_unsigned l <= base + Z.of_nat (length bytes))%Z |- _ =>
+        k constr:(conj Hlo Hhi)
+    end
+  | zesu_call_slice_rest_window_step p l base bytes
+      ltac:(fun p0 l0 k0 => zesu_call_slice_window_any p0 l0 base bytes k0) k ].
 
 (* The callee's output slot: an array the caller holds at that address, or
    `size` bytes carved out of an uninitialised region that contains it.
@@ -503,6 +578,218 @@ Ltac zesu_call_restore :=
   | H : zesu_call_slice_addr_fact (?a = ?b) |- _ => rewrite (H : a = b); clear H
   end.
 
+(* A callee that takes its input slice by reference
+   (`ZesuCallSliceRefCaller`). At the existential its call spec asks for,
+     ∃ x, bv_unsigned r ↦ₘ x.3 ∗ (bv_unsigned r + 8) ↦ₘ x.2 ∗
+          bv_unsigned x.3 ↦ₘ∗ x.1 ∗ bv_unsigned out ↦ₘ? n ∗
+          ⌜length x.1 = bv_unsigned x.2⌝ ∗ ⌜domain (mk argv sp x.3 _ x.1)⌝ ∗ …,
+   the step reads the two words the caller stored at r (as cells or as the
+   byte cells of a store), finds the window of the slice in the caller's input
+   by the window steps above, lends it, cuts the output slot out of an
+   uninitialised region, and proves the length and the callee's domain. *)
+
+(* The little-endian bytes of a word as one byte array, as the word's cell. *)
+Lemma zesu_call_slice_word_array `{!islaG Sigma} (a : Z) (w : bv 64) :
+  a ↦ₘ∗ ZesuSsz.Automation2.ByteExtractCodec281.byte_extracts281 8 w -∗ a ↦ₘ w.
+Proof.
+  iIntros "Harray".
+  iDestruct (ZesuSsz.Contracts.IslarisMemory.mem_mapsto_byte_array_to_mapsto with "Harray")
+    as "Hw".
+  rewrite ZesuSsz.Automation2.ByteExtractCodec281.byte_extracts_codec281.
+  rewrite length_bv_to_little_endian; [|zesu_call_slice_lia].
+  rewrite little_endian_to_bv_to_little_endian; [|zesu_call_slice_lia].
+  change (Z.to_N (Z.to_nat 8) * 8)%N with 64%N.
+  rewrite Z.mod_small; [|pose proof (bv_unsigned_in_range _ w) as Hw;
+    unfold bv_modulus in Hw; cbn in *; zesu_call_slice_lia].
+  rewrite Z_to_bv_bv_unsigned. iExact "Hw".
+Qed.
+
+(* Eight byte cells holding the little-endian bytes of a word, as the word's
+   cell. *)
+Lemma zesu_call_slice_word_cells `{!islaG Sigma} (a : Z) (w : bv 64) :
+  ((a + Z.of_nat 0 * 1) ↦ₘ bv_extract 0 8 w ∗ (a + Z.of_nat 1 * 1) ↦ₘ bv_extract 8 8 w ∗
+   (a + Z.of_nat 2 * 1) ↦ₘ bv_extract 16 8 w ∗ (a + Z.of_nat 3 * 1) ↦ₘ bv_extract 24 8 w ∗
+   (a + Z.of_nat 4 * 1) ↦ₘ bv_extract 32 8 w ∗ (a + Z.of_nat 5 * 1) ↦ₘ bv_extract 40 8 w ∗
+   (a + Z.of_nat 6 * 1) ↦ₘ bv_extract 48 8 w ∗ (a + Z.of_nat 7 * 1) ↦ₘ bv_extract 56 8 w ∗
+   emp) -∗
+  a ↦ₘ w.
+Proof.
+  iIntros "Hcells". iApply zesu_call_slice_word_array.
+  rewrite mem_mapsto_array_eq /mem_mapsto_array_def.
+  iExists 1%N. iSplit; [done|].
+  iDestruct "Hcells" as "(H0 & H1 & H2 & H3 & H4 & H5 & H6 & H7 & _)".
+  iDestruct (mem_mapsto_in_range with "H0") as %Hr0.
+  iDestruct (mem_mapsto_in_range with "H7") as %Hr7.
+  iSplit; [iPureIntro; cbn in *; zesu_call_slice_lia|].
+  cbn. iFrame.
+Qed.
+
+(* `size` bytes at distance `d` of an uninitialised region, as their own
+   region. *)
+Lemma zesu_call_slice_uninit_cut `{!islaG Sigma} (a d n size : Z) :
+  0 <= d -> 0 <= size -> d + size <= n ->
+  a ↦ₘ? n -∗ a ↦ₘ? d ∗ (a + d) ↦ₘ? size ∗ (a + d + size) ↦ₘ? (n - d - size).
+Proof.
+  iIntros (Hd Hsize Hn) "H".
+  iDestruct (mem_mapsto_uninit_split d with "H") as "[$ H]"; [zesu_call_slice_lia|].
+  iDestruct (mem_mapsto_uninit_split size with "H") as "[$ H]"; [zesu_call_slice_lia|].
+  iExact "H".
+Qed.
+
+(* The word the caller stored at `addr`: a cell, the eight byte cells a
+   store left, or the byte array of its little-endian bytes. Renames it to
+   `name` (`addr ↦ₘ w`) and passes `w` to `k`. *)
+Ltac zesu_call_slice_ref_word addr name k :=
+  let raddr := zesu_call_slice_root addr in
+  iMatchHyp ltac:(fun H res =>
+    let w := lazymatch res with
+      | (((?a + Z.of_nat 0 * 1) ↦ₘ bv_extract 0 8 ?w) ∗ _)%I => w
+      | (?a ↦ₘ∗ (bv_extract 0 8 ?w :: _))%I => w
+      | (?a ↦ₘ ?w)%I => lazymatch type of w with bv 64 => w end
+      end in
+    let a := lazymatch res with
+      | (((?a + Z.of_nat 0 * 1) ↦ₘ _) ∗ _)%I => a
+      | (?a ↦ₘ∗ _)%I => a
+      | (?a ↦ₘ _)%I => a
+      end in
+    let ra := zesu_call_slice_root a in
+    constr_eq raddr ra;
+    let d := zesu_call_slice_eval_at raddr constr:((addr - a)%Z) in
+    lazymatch d with 0%Z => idtac end;
+    let Ha := fresh "HcsRefAddr" in
+    assert (Ha : addr = a) by zesu_call_slice_address;
+    iRename H into "HcsRefCells";
+    lazymatch res with
+    | (_ ∗ _)%I => iDestruct (zesu_call_slice_word_cells a w with "HcsRefCells") as name
+    | (_ ↦ₘ∗ _)%I => iDestruct (zesu_call_slice_word_array a w with "HcsRefCells") as name
+    | _ => iRename "HcsRefCells" into name
+    end;
+    iEval (rewrite -Ha) in name; clear Ha;
+    k w).
+
+Ltac zesu_call_slice_ref :=
+  lazymatch goal with
+  | |- environments.envs_entails _ (@bi_exist _ ?T ?body) =>
+    let dummy := lazymatch T with
+      | li_prod (list ?A) (li_prod (bv 64) (li_prod (bv 64) unit)) =>
+          constr:(li_pair (@nil A) (li_pair (bv_0 64) (li_pair (bv_0 64) tt)))
+      end in
+    let opened := eval cbv beta iota delta [li_fst li_snd] in (body dummy) in
+    lazymatch opened with
+    | ((bv_unsigned ?r ↦ₘ _) ∗ ((bv_unsigned ?r + 8) ↦ₘ _) ∗ (bv_unsigned _ ↦ₘ∗ _) ∗
+        (bv_unsigned ?out ↦ₘ? ?size0) ∗ ⌜_⌝ ∗ ⌜?dom (?mk ?argv ?sp _ _ _)⌝ ∗ _)%I =>
+      let rest := lazymatch argv with _ :: _ :: ?rest => rest end in
+      match goal with
+      | Hwf : ?cd ?args |- _ =>
+        let C := constr:(_ : ZesuCallSliceRefCaller cd dom mk _ _ _ _ _ _) in
+        lazymatch type of C with
+        | @ZesuCallSliceRefCaller _ _ _ _ _ ?inputBase ?inputBytes ?frame _ _ _ =>
+        let base := eval cbv beta in (inputBase args) in
+        let bytes := eval cbv beta in (inputBytes args) in
+        let fr := eval cbv beta in (frame args) in
+        zesu_call_slice_ref_word constr:(bv_unsigned r) "HcsRefP" ltac:(fun p =>
+        zesu_call_slice_ref_word constr:((bv_unsigned r + 8)%Z) "HcsRefL" ltac:(fun l =>
+        (* the window of (p, l): the window steps of a by-value callee whose
+           call record the context holds, a stated window, or the rest the
+           previous by-reference call returned *)
+        let Hwin := fresh "HcsWindow" in
+        once (zesu_call_slice_window_any p l base bytes
+                ltac:(fun Hw => pose proof Hw as Hwin));
+        let start := constr:(Z.to_nat (bv_unsigned p - base)) in
+        let cnt := constr:(Z.to_nat (bv_unsigned l)) in
+        let Hrange := fresh "HcsRange" in
+        pose proof (bv_unsigned_in_range _ l) as Hrange;
+        let Haddr := fresh "HcsAddress" in
+        assert (Haddr : (base + Z.of_nat start = bv_unsigned p)%Z)
+          by (clear -Hwin; zesu_call_slice_lia);
+        let Hbounds := fresh "HcsBounds" in
+        assert (Hbounds : (start + cnt <= length bytes)%nat)
+          by (clear -Hwin Hrange; zesu_call_slice_lia);
+        iMatchHyp ltac:(fun Harray resource =>
+          lazymatch resource with
+          | (?b ↦ₘ∗ ?bs)%I => constr_eq b base; constr_eq bs bytes;
+              iRename Harray into "HcsArray"
+          end);
+        iDestruct (zesu_byte_array_lend_slice _ bytes start cnt Hbounds with "HcsArray")
+          as "[HcsSlice HcsRestore]";
+        iEval (rewrite Haddr) in "HcsSlice HcsRestore";
+        (* the output slot, cut out of an uninitialised region *)
+        let rout := zesu_call_slice_root out in
+        let size := eval vm_compute in size0 in
+        iMatchHyp ltac:(fun Hu resource2 =>
+          lazymatch resource2 with
+          | (?ua ↦ₘ? ?n0)%I =>
+              let rua := zesu_call_slice_root ua in
+              constr_eq rout rua;
+              let d := zesu_call_slice_eval_at rout constr:((bv_unsigned out - ua)%Z) in
+              let n := zesu_call_slice_eval_at rout n0 in
+              let fits := eval vm_compute in ((0 <=? d)%Z && (d + size <=? n)%Z) in
+              lazymatch fits with true => idtac end;
+              iRename Hu into "HcsU";
+              tryif constr_eq n0 n then idtac
+              else (let Hn := fresh "HcsSize" in
+                    assert (Hn : n0 = n) by zesu_call_slice_address;
+                    iEval (rewrite Hn) in "HcsU"; clear Hn);
+              let Houta := fresh "HcsOut" in
+              assert (Houta : bv_unsigned out = (ua + d)%Z) by zesu_call_slice_address;
+              iDestruct (zesu_call_slice_uninit_cut ua d n size with "HcsU")
+                as "(HcsU0 & HcsOutRegion & HcsU1)";
+              [clear; zesu_call_slice_lia|clear; zesu_call_slice_lia|
+               clear; zesu_call_slice_lia|];
+              let r1 := eval vm_compute in (n - d - size)%Z in
+              change (n - d - size)%Z with r1;
+              lazymatch d with 0%Z => iClear "HcsU0"; iEval (rewrite Z.add_0_r) in "HcsU1"
+                         | _ => idtac end;
+              lazymatch r1 with 0%Z => iClear "HcsU1" | _ => idtac end;
+              iEval (rewrite -Houta) in "HcsOutRegion";
+              let k := zesu_call_slice_eval_at rout constr:((bv_unsigned out - fr)%Z) in
+              let j := zesu_call_slice_eval_at rout constr:((bv_unsigned r - fr)%Z) in
+              iExists (li_pair (take cnt (drop start bytes)) (li_pair l (li_pair p tt)));
+              cbv [li_fst li_snd];
+              iSplitL "HcsRefP"; [iExact "HcsRefP"|];
+              iSplitL "HcsRefL"; [iExact "HcsRefL"|];
+              iSplitL "HcsSlice"; [iExact "HcsSlice"|];
+              iSplitL "HcsOutRegion"; [iExact "HcsOutRegion"|];
+              iSplitR; [iPureIntro;
+                        exact (zesu_call_slice_window_length _ _ _ _ Hwin (proj1 Hrange))|];
+              lazymatch goal with
+              | |- environments.envs_entails _ (⌜?D⌝ ∗ _)%I =>
+                  let Hd := fresh "HcsDomain" in
+                  assert (Hd : D)
+                    by (eapply (@zesu_call_slice_ref_caller_domain _ _ _ _ _ _ _ _ _ _ _ C
+                                  args out r p l sp k j rest);
+                        [ exact Hwf
+                        | exact Hwin
+                        | cbv beta; zesu_call_slice_address
+                        | cbv beta; zesu_call_slice_address
+                        | clear; zesu_call_slice_lia
+                        | cbv beta; zesu_call_slice_address
+                        | clear; zesu_call_slice_lia
+                        | clear; zesu_call_slice_lia ]);
+                  iSplitR; [iPureIntro; exact Hd|]
+              end;
+              (* the callee's stack pointer as an integer over the caller's
+                 root word, as in `zesu_call_slice` *)
+              let rsp := zesu_call_slice_root sp in
+              let rz := zesu_call_slice_root_z rsp in
+              let dsp := zesu_call_slice_eval_at rsp constr:((bv_unsigned sp - rz)%Z) in
+              lazymatch dsp with
+              | Z0 => idtac
+              | _ =>
+                  let spz := lazymatch dsp with
+                    | Zneg ?q => constr:((rz - Zpos q)%Z)
+                    | _ => constr:((rz + dsp)%Z)
+                    end in
+                  let Hspeq := fresh "HcsSpEq" in
+                  assert (Hspeq : bv_unsigned sp = spz) by zesu_call_slice_address;
+                  pose proof (Hspeq : zesu_call_slice_addr_fact (bv_unsigned sp = spz))
+              end
+          end)))
+        end
+      end
+    end
+  end.
+
 (* The step at the existential a call spec asks for; it runs where the
    interior-slice lend runs and before it (`Finish.zesu_run_pass_v1`).
    Lithium may have let-bound the proof-mode environment (`IPM_JANNO`): the
@@ -515,7 +802,7 @@ Ltac zesu_call_slice_step :=
       let _ := constr:(_ : ZesuStepInteriorByteSlice) in
       ZesuSsz.Automation2.ResourceGroups.zesu_expose_environment_alias;
       try ZesuSsz.Automation2.WrappedWord.zesu_word_explicit_list_rewrite;
-      first [zesu_call_slice | zesu_call_restore]
+      first [zesu_call_slice | zesu_call_slice_ref | zesu_call_restore]
   end.
 (* Early restore: at any existential goal with a restore wand and its
    returned slice in the context, before Lithium's own step. *)

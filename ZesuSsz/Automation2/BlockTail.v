@@ -52,6 +52,12 @@ Ltac zesu_tail_lia_select :=
       | _ => pose proof (bv_unsigned_in_range _ w)
       end
   end;
+  (* A conjunction of two kept facts (a callee interface's derived length
+     fact `n = length l /\ p + n < m`) is kept as its two parts. *)
+  repeat match goal with
+  | H : ?A /\ ?B |- _ =>
+      zesu_tail_keep_fact A; zesu_tail_keep_fact B; destruct H as [? ?]
+  end;
   repeat match goal with H : ?T |- _ => zesu_tail_keep_fact T; revert H end;
   ZesuSsz.Automation2.WrappedWord.zesu_clear_all_hyps; intros;
   change (bv_modulus 64) with 18446744073709551616 in *;
@@ -67,8 +73,9 @@ Ltac zesu_tail_lia_select :=
   end;
   ZesuSsz.Automation2.CallSlice.zesu_call_slice_lia.
 
-(* A generated window fact `0 < a -> a <= k -> window` whose premises are
-   branch facts. *)
+(* A generated window fact `0 < a -> a <= k -> window`, or a derived fact of a
+   callee interface `0 < a -> a < k -> window`, whose premises are branch
+   facts. *)
 Ltac zesu_tail_order_goal :=
   first [ assumption
         | match goal with H : bv_unsigned ?w <> 0%Z |- (0 < bv_unsigned ?w)%Z => exact (ZesuSsz.Automation2.CallSlice.zesu_call_slice_unsigned_pos _ w H) end
@@ -76,6 +83,11 @@ Ltac zesu_tail_order_goal :=
 Ltac zesu_tail_forward_window_facts :=
   repeat match goal with
   | Himp : ((0 < ?a)%Z -> (?a <= ?k)%Z -> ?r) |- _ =>
+      let H := fresh "HtailWindow" in
+      assert (H : r) by (apply Himp; zesu_tail_order_goal);
+      clear Himp;
+      destruct H as [? ?]
+  | Himp : ((0 < ?a)%Z -> (?a < ?k)%Z -> ?r) |- _ =>
       let H := fresh "HtailWindow" in
       assert (H : r) by (apply Himp; zesu_tail_order_goal);
       clear Himp;

@@ -8,6 +8,9 @@ Require Import ZesuSsz.Contracts.ParentHeaderCallSlice.
 Require Import ZesuSsz.Contracts.NextUint64BlockEntries.
 Require Import ZesuSsz.Contracts.NextUint64DomainRanges.
 Require Import ZesuSsz.Contracts.NextUint64CallSlice.
+Require Import ZesuSsz.Interfaces.NextUint64.
+Require Import ZesuSsz.Contracts.ParentHeaderNextUint64Slice.
+Require Import ZesuSsz.Contracts.ParentHeaderRootFacts.
 Import ListNotations.
 Require Import ZesuSsz.Automation2.All.
 Local Open Scope Z_scope.
@@ -387,6 +390,142 @@ Proof.
   iExists 0. iFrame. done.
 Qed.
 End early_restore_converted.
+
+(* A callee that takes its slice by reference (nextUint64 from
+   decodeParentHeader, `ZesuCallSliceRefCaller`): the slice words are read
+   from the eight byte cells a store left (first lemma), or from a word cell
+   and the byte array of a word's little-endian bytes (second lemma); the
+   window is the previous decodeItem call's window advanced by its consumed
+   count; the 16-byte output slot is cut out of an uninitialised region at
+   distance 0 (first lemma) and 8 (second lemma). *)
+Section by_reference.
+Context `{!islaG Sigma} `{!threadG}.
+Notation W24 bytes :=
+  (bv_concat 64%N (bv_concat 56%N (bv_concat 48%N (bv_concat 40%N (bv_concat 32%N (bv_concat 24%N
+    (bv_concat 16%N (List.nth 31%nat bytes (BV 8%N 0%Z)) (List.nth 30%nat bytes (BV 8%N 0%Z)))
+    (List.nth 29%nat bytes (BV 8%N 0%Z))) (List.nth 28%nat bytes (BV 8%N 0%Z)))
+    (List.nth 27%nat bytes (BV 8%N 0%Z))) (List.nth 26%nat bytes (BV 8%N 0%Z)))
+    (List.nth 25%nat bytes (BV 8%N 0%Z))) (List.nth 24%nat bytes (BV 8%N 0%Z))) (only parsing).
+Notation OUT args := (bv_add (bv_add (bv_add (parentHeaderStackPointer args) (BV 64%N 18446744073709551216%Z)) (BV 64%N 400%Z)) (BV 64%N 18446744073709551320%Z)) (only parsing).
+Notation NOUT args := (bv_add (bv_add (bv_add (parentHeaderStackPointer args) (BV 64%N 18446744073709551216%Z)) (BV 64%N 400%Z)) (BV 64%N 18446744073709551360%Z)) (only parsing).
+Notation REF args := (bv_add (bv_add (bv_add (parentHeaderStackPointer args) (BV 64%N 18446744073709551216%Z)) (BV 64%N 400%Z)) (BV 64%N 18446744073709551264%Z)) (only parsing).
+Notation SP args := (bv_add (parentHeaderStackPointer args) (BV 64%N 18446744073709551216%Z)) (only parsing).
+Notation CELLS a w :=
+  (((a + Z.of_nat 0 * 1) ↦ₘ bv_extract 0 8 w ∗ (a + Z.of_nat 1 * 1) ↦ₘ bv_extract 8 8 w ∗
+    (a + Z.of_nat 2 * 1) ↦ₘ bv_extract 16 8 w ∗ (a + Z.of_nat 3 * 1) ↦ₘ bv_extract 24 8 w ∗
+    (a + Z.of_nat 4 * 1) ↦ₘ bv_extract 32 8 w ∗ (a + Z.of_nat 5 * 1) ↦ₘ bv_extract 40 8 w ∗
+    (a + Z.of_nat 6 * 1) ↦ₘ bv_extract 48 8 w ∗ (a + Z.of_nat 7 * 1) ↦ₘ bv_extract 56 8 w ∗
+    emp)%I) (only parsing).
+
+Lemma call_slice_by_reference_cells (args : ParentHeaderArgs) (x19 x18 : bv 64)
+    (after : DecodeItemOutcome) (before0 : list byte)
+    (a13 a14 a15 a16 a17 b13 b14 b15 b16 b17 : bv 64) (R : iProp Sigma) :
+  parentHeaderArgsWellFormed args ->
+  (bv_unsigned (parentHeaderInputPointer args) <= bv_unsigned x19)%Z ->
+  (bv_unsigned x19 + bv_unsigned x18 <= bv_unsigned (parentHeaderInputPointer args) + Z.of_nat (@length (bv 8) (parentHeaderInputBytes args)))%Z ->
+  length after = 40%nat ->
+  decodeItemCallDomain (decodeItemCallDataArgs [OUT args; x19; x18; b13; b14; b15; b16; b17]
+     (SP args) (bv_unsigned (parentHeaderInputEnd args))
+     (take (Z.to_nat (bv_unsigned x18)) (drop (Z.to_nat (bv_unsigned x19 - bv_unsigned (parentHeaderInputPointer args))) (parentHeaderInputBytes args))) before0) ->
+  decodeItemCallMeaning (decodeItemCallDataArgs [OUT args; x19; x18; b13; b14; b15; b16; b17]
+     (SP args) (bv_unsigned (parentHeaderInputEnd args))
+     (take (Z.to_nat (bv_unsigned x18)) (drop (Z.to_nat (bv_unsigned x19 - bv_unsigned (parentHeaderInputPointer args))) (parentHeaderInputBytes args))) before0) after ->
+  bv_unsigned (parentHeaderInputPointer args) ↦ₘ∗ parentHeaderInputBytes args -∗
+  CELLS (bv_unsigned (parentHeaderStackPointer args) - 400 + 48) (bv_add x19 (W24 after)) -∗
+  CELLS (bv_unsigned (parentHeaderStackPointer args) - 400 + 48 + 8) (bv_sub x18 (W24 after)) -∗
+  (bv_unsigned (parentHeaderStackPointer args) - 400 + 48 + 56) ↦ₘ∗ after -∗
+  (bv_unsigned (parentHeaderStackPointer args) - 400 + 48 + 56 + 40) ↦ₘ? 136 -∗
+  R -∗
+  ∃ x : list byte *ₗ bv 64 *ₗ bv 64 *ₗ (),
+    bv_unsigned (REF args) ↦ₘ x.3ₗ ∗
+    (bv_unsigned (REF args) + 8) ↦ₘ x.2ₗ ∗
+    bv_unsigned x.3ₗ ↦ₘ∗ x.1ₗ ∗
+    bv_unsigned (NOUT args) ↦ₘ? 16 ∗
+    ⌜Z.of_nat (length x.1ₗ) = bv_unsigned x.2ₗ⌝ ∗
+    ⌜nextUint64CallDomain (nextUint64CallDataArgs [NOUT args; REF args; bv_sub x18 (W24 after); a13; a14; a15; a16; a17]
+       (SP args) x.3ₗ (parentHeaderInputEnd args) x.1ₗ)⌝ ∗
+    R.
+Proof.
+  iIntros (Hwf Hlo Hhi Hlen Hdom Hmean) "? ? ? ? ? ?".
+  zesu_call_slice_step.
+  iFrame.
+Qed.
+
+Lemma call_slice_by_reference_words (args : ParentHeaderArgs) (x19 x18 : bv 64)
+    (after : DecodeItemOutcome) (before0 : list byte)
+    (a13 a14 a15 a16 a17 b13 b14 b15 b16 b17 : bv 64) (R : iProp Sigma) :
+  parentHeaderArgsWellFormed args ->
+  (bv_unsigned (parentHeaderInputPointer args) <= bv_unsigned x19)%Z ->
+  (bv_unsigned x19 + bv_unsigned x18 <= bv_unsigned (parentHeaderInputPointer args) + Z.of_nat (@length (bv 8) (parentHeaderInputBytes args)))%Z ->
+  length after = 40%nat ->
+  decodeItemCallDomain (decodeItemCallDataArgs [OUT args; x19; x18; b13; b14; b15; b16; b17]
+     (SP args) (bv_unsigned (parentHeaderInputEnd args))
+     (take (Z.to_nat (bv_unsigned x18)) (drop (Z.to_nat (bv_unsigned x19 - bv_unsigned (parentHeaderInputPointer args))) (parentHeaderInputBytes args))) before0) ->
+  decodeItemCallMeaning (decodeItemCallDataArgs [OUT args; x19; x18; b13; b14; b15; b16; b17]
+     (SP args) (bv_unsigned (parentHeaderInputEnd args))
+     (take (Z.to_nat (bv_unsigned x18)) (drop (Z.to_nat (bv_unsigned x19 - bv_unsigned (parentHeaderInputPointer args))) (parentHeaderInputBytes args))) before0) after ->
+  bv_unsigned (parentHeaderInputPointer args) ↦ₘ∗ parentHeaderInputBytes args -∗
+  (bv_unsigned (parentHeaderStackPointer args) - 400 + 48) ↦ₘ bv_add x19 (W24 after) -∗
+  (bv_unsigned (parentHeaderStackPointer args) - 400 + 56) ↦ₘ∗
+    [bv_extract 0 8 (bv_sub x18 (W24 after)); bv_extract 8 8 (bv_sub x18 (W24 after));
+     bv_extract 16 8 (bv_sub x18 (W24 after)); bv_extract 24 8 (bv_sub x18 (W24 after));
+     bv_extract 32 8 (bv_sub x18 (W24 after)); bv_extract 40 8 (bv_sub x18 (W24 after));
+     bv_extract 48 8 (bv_sub x18 (W24 after)); bv_extract 56 8 (bv_sub x18 (W24 after))] -∗
+  (bv_unsigned (parentHeaderStackPointer args) - 400 + 48 + 56 + 120) ↦ₘ∗ after -∗
+  (bv_unsigned (parentHeaderStackPointer args) - 400 + 48 + 56 + 32) ↦ₘ? 88 -∗
+  R -∗
+  ∃ x : list byte *ₗ bv 64 *ₗ bv 64 *ₗ (),
+    bv_unsigned (REF args) ↦ₘ x.3ₗ ∗
+    (bv_unsigned (REF args) + 8) ↦ₘ x.2ₗ ∗
+    bv_unsigned x.3ₗ ↦ₘ∗ x.1ₗ ∗
+    bv_unsigned (NOUT args) ↦ₘ? 16 ∗
+    ⌜Z.of_nat (length x.1ₗ) = bv_unsigned x.2ₗ⌝ ∗
+    ⌜nextUint64CallDomain (nextUint64CallDataArgs [NOUT args; REF args; bv_sub x18 (W24 after); a13; a14; a15; a16; a17]
+       (SP args) x.3ₗ (parentHeaderInputEnd args) x.1ₗ)⌝ ∗
+    R.
+Proof.
+  iIntros (Hwf Hlo Hhi Hlen Hdom Hmean) "? ? ? ? ? ?".
+  zesu_call_slice_step.
+  iFrame.
+Qed.
+
+(* The slice is the rest the previous nextUint64 call returned
+   (`ZesuCallSliceRefResult`): its words are that call's rest words, its
+   window follows from the previous call's record and the stated window of
+   that call's slice. With the record sealed away the step finds no window
+   and does not apply. *)
+Lemma call_slice_by_reference_rest (args : ParentHeaderArgs) (p0 l0 w0 w8 : bv 64)
+    (res : NextUint64Return) (argv0 : list (bv 64)) (a13 a14 a15 a16 a17 : bv 64) (R : iProp Sigma) :
+  parentHeaderArgsWellFormed args ->
+  (bv_unsigned (parentHeaderInputPointer args) <= bv_unsigned p0 /\
+   bv_unsigned p0 + bv_unsigned l0 <= bv_unsigned (parentHeaderInputPointer args) + Z.of_nat (@length (bv 8) (parentHeaderInputBytes args)))%Z ->
+  nextUint64CallResult (nextUint64Base (nextUint64CallDataArgs argv0 (SP args) p0 (parentHeaderInputEnd args)
+    (take (Z.to_nat (bv_unsigned l0)) (drop (Z.to_nat (bv_unsigned p0 - bv_unsigned (parentHeaderInputPointer args))) (parentHeaderInputBytes args))))) res ->
+  w0 = Z_to_bv 64 (nextRestPointer res) ->
+  w8 = Z_to_bv 64 (nextRestLength res) ->
+  bv_unsigned (parentHeaderInputPointer args) ↦ₘ∗ parentHeaderInputBytes args -∗
+  CELLS (bv_unsigned (parentHeaderStackPointer args) - 400 + 48) w0 -∗
+  CELLS (bv_unsigned (parentHeaderStackPointer args) - 400 + 48 + 8) w8 -∗
+  (bv_unsigned (parentHeaderStackPointer args) - 400 + 48 + 56 + 40) ↦ₘ? 136 -∗
+  R -∗
+  ∃ x : list byte *ₗ bv 64 *ₗ bv 64 *ₗ (),
+    bv_unsigned (REF args) ↦ₘ x.3ₗ ∗
+    (bv_unsigned (REF args) + 8) ↦ₘ x.2ₗ ∗
+    bv_unsigned x.3ₗ ↦ₘ∗ x.1ₗ ∗
+    bv_unsigned (NOUT args) ↦ₘ? 16 ∗
+    ⌜Z.of_nat (length x.1ₗ) = bv_unsigned x.2ₗ⌝ ∗
+    ⌜nextUint64CallDomain (nextUint64CallDataArgs [NOUT args; REF args; w8; a13; a14; a15; a16; a17]
+       (SP args) x.3ₗ (parentHeaderInputEnd args) x.1ₗ)⌝ ∗
+    R.
+Proof.
+  iIntros (Hwf [Hlo Hhi] Hres Hw0 Hw8) "? ? ? ? ?".
+  apply zesu_hist_intro in Hres.
+  Fail zesu_call_slice_step.
+  apply zesu_hist_elim in Hres.
+  zesu_call_slice_step.
+  iFrame.
+Qed.
+End by_reference.
 
 Print Assumptions call_slice_window_advanced.
 Print Assumptions call_slice_first_call_integer_root.

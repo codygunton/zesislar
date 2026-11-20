@@ -214,6 +214,8 @@ class CallerPlan(unittest.TestCase):
         cases = [{'pc': '0x800d1000', 'status': rendered}]   # No return package, no return block entry.
         self.assertEqual(inlined_returns(FunctionProfile(data), function), {'1010', '1020'})
         self.assertEqual(inlined_returns(profile, function), set())   # No compliance record: unchanged.
+        kept = dict(data, compliance=dict(data['compliance'], inline_returns=False))
+        self.assertEqual(inlined_returns(FunctionProfile(kept), function), set())   # Return slots kept.
         with tempfile.TemporaryDirectory() as directory:
             directory = Path(directory)
             (directory / 'other.json').write_text(json.dumps(data))

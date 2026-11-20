@@ -63,8 +63,9 @@ def exit_package(profile, sites, start, end):
 def inlined_returns(profile, function):
     """The return blocks that a compliance record inlines into their predecessors' callers:
     blocks whose successors all lie outside the function as tail callees (or that have none).
-    Empty without a profile `compliance`."""
-    if not profile.get('compliance'):
+    Empty without a profile `compliance`, and when the record sets `inline_returns` to false
+    (the return block keeps its slot and caller; its K is the record's continuation)."""
+    if not profile.get('compliance') or not profile['compliance'].get('inline_returns', True):
         return set()
     tails = [(int(call['call_site_pc'], 16), int(call['callee_pc'], 16)) for call in profile.get('tail_calls', [])]
     inlined = set()

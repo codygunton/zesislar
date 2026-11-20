@@ -10,6 +10,7 @@ From Coq Require Import Lists.List ZArith.ZArith NArith.NArith.
 Require Import stdpp.bitvector.definitions.
 Require Import ZesuSsz.Contracts.NextUint64BlockEntries.
 Require Import ZesuSsz.Contracts.NextUint64CallSlice.
+Require Import ZesuSsz.Contracts.NextUint64MeaningFacts.
 Require Import ZesuSsz.Contracts.NextUint64Selected.
 Require Import ZesuSsz.Generated.NextUint64.FP301.Edges0090.
 Require Import ZesuSsz.Automation2.All.

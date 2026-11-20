@@ -295,28 +295,70 @@ def sealed_callees(path=PROVED_FUNCTIONS_PATH) -> list[dict]:
             continue
         paths = interface_paths(entry)
         callees.append({
+            "function": entry["function"],
             "interfaces": paths,
             "sealed": [row["name"] for row in entry["sealed"]],
             # The template bridge and the meaning links reveal the sealed definitions:
             # only the interface modules use them.
             "restricted": [entry["call_spec"]["name"] + "CorrectFrom"] +
                           [lemma["name"] for lemma in entry["interface_lemmas"]
-                           if lemma.get("exit_composition_only")],
+                          if lemma.get("exit_composition_only")],
+            # The meaning links alone: a caller's listed exit-meaning module may use them.
+            "links": [lemma["name"] for lemma in entry["interface_lemmas"]
+                      if lemma.get("exit_composition_only")],
             "unsealed": [row["definition"] for row in entry["sealed"]],
             "owned_prefixes": entry["owned_prefixes"],
         })
     return callees
 
 
-def sealed_callee_failures(name: str, text: str, callees: list[dict]) -> list[str]:
+def exit_meaning_modules(path=PROVED_FUNCTIONS_PATH) -> dict[str, set[str]]:
+    """Registry field `exit_meaning_modules` of a caller: module path -> the callees whose
+    `exit_composition_only` meaning links that module may use."""
+    allowed = {}
+    for entry in json.loads(Path(path).read_text())["functions"]:
+        for row in entry.get("exit_meaning_modules", []):
+            allowed.setdefault(row["path"], set()).update(row["callees"])
+    return allowed
+
+
+EXIT_MEANING_REFUSED = (
+    ("defines a tactic", re.compile(r"(?<![\w.'])(?:Ltac2?|Tactic\s+Notation|Hint)\b")),
+    ("imports an automation umbrella",
+     re.compile(r"\bZesuSsz\.Automation2?\.All\b")),
+    ("contains proof-mode sentences", re.compile(r"(?<![\w.'])i[A-Z]\w*\b")),
+)
+
+
+def exit_meaning_module_failures(name: str, code: str) -> list[str]:
+    """A listed exit-meaning module holds pure contract lemmas only."""
+    field = "exit_meaning_modules (ZesuSsz/Contracts/proved_functions.json)"
+    failures = []
+    if not name.startswith(("ZesuSsz/Contracts/", "ZesuSsz/Compliance/")):
+        failures.append(f"{field}: listed module outside Contracts/ and Compliance/: {name}")
+    for reason, pattern in EXIT_MEANING_REFUSED:
+        for match in pattern.finditer(code):
+            failures.append(f"{field}: listed module {reason}: "
+                            f"{name}:{code.count(chr(10), 0, match.start()) + 1}")
+    return failures
+
+
+def sealed_callee_failures(name: str, text: str, callees: list[dict],
+                           exit_meaning: dict[str, set[str]] | None = None) -> list[str]:
     """A caller treats a proved callee as a black box.
 
     The template bridge and meaning links of a sealed callee occur only in its
     interface modules; no file but the interface unfolds a sealed name; and no
     other function's generated module states an unsealed callee predicate.
+    One exception: a module a caller lists in `exit_meaning_modules` may use the
+    `exit_composition_only` meaning links of the callees listed with it, and
+    nothing else of them; such a module holds pure contract lemmas only.
     """
     code = executable_text(text)
     failures = []
+    permitted = (exit_meaning or {}).get(name, set())
+    if permitted:
+        failures.extend(exit_meaning_module_failures(name, code))
 
     def line(match):
         return code.count("\n", 0, match.start()) + 1
@@ -325,6 +367,8 @@ def sealed_callee_failures(name: str, text: str, callees: list[dict]) -> list[st
         if name in callee["interfaces"]:
             continue
         for word in callee["restricted"]:
+            if callee.get("function") in permitted and word in callee.get("links", []):
+                continue
             for match in re.finditer(rf"(?<![\w.']){re.escape(word)}(?![\w'])", code):
                 failures.append(f"sealed callee interface used outside it: {name}:{line(match)}: {word}")
         for word in callee["sealed"]:
@@ -730,6 +774,7 @@ def main() -> None:
     size_baseline = size_baseline_data["files"]
     trusted = trusted_declarations()
     callees = sealed_callees()
+    exit_meaning = exit_meaning_modules()
     fresh_interfaces = fresh_interface_modules()
     literal_exceptions = {(row["file"], row["name"]): row for row in
                           json.loads(CLOSED_LITERAL_EXCEPTIONS_PATH.read_text())["exceptions"]}
@@ -767,7 +812,7 @@ def main() -> None:
         failures.extend(retired_module_failures(name, text))
         failures.extend(residual_module_failures(name, text))
         failures.extend(short_core_name_failures(name, text, shared))
-        failures.extend(sealed_callee_failures(name, text, callees))
+        failures.extend(sealed_callee_failures(name, text, callees, exit_meaning))
 
         # Generated Sail interfaces contain upstream Axiom declarations.
         # A fresh generated black-box interface declares its sealed predicates

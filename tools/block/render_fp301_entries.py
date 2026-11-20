@@ -2,7 +2,7 @@
 
 from copy import deepcopy
 from pathlib import Path
-import argparse, hashlib, json, re, sys
+import argparse, hashlib, json, os, re, sys
 
 parser = argparse.ArgumentParser()
 parser.add_argument("--output", type=Path, required=True)
@@ -17,6 +17,8 @@ parser.add_argument("--record-refusals", action="store_true",
                     help="record a guard-refused boundary and render the others")
 parser.add_argument("--loop-heads", type=Path, default=None,
                     help="loop-head file of this render (default: the profile's committed fixture)")
+parser.add_argument("--backward-pins", type=Path, default=None,
+                    help="(second pass, set by this script) BACKWARD-PINS.json of the first pass")
 options = parser.parse_args()
 
 
@@ -42,6 +44,9 @@ GENERATOR_ROOT = Path(__file__).resolve().parents[2]
 W = Path(receipt["level1_K_source"]["path"]).parents[2]
 O = options.output
 O.mkdir(exist_ok=False)
+# Second and later passes: the pins `entry_hist.backward_pins` computed on the previous pass's entries.
+previous_pass = json.loads(options.backward_pins.read_text()) if options.backward_pins else {"pass": 0, "pins": {}}
+backward_pins = previous_pass["pins"]
 sys.path.insert(0, str(GENERATOR_ROOT / "tools/block"))
 from entry_formatter import (
     SourceComponents,
@@ -203,6 +208,10 @@ check = RocqContradictionCheck(
     O / "contradiction-checks",
     profile.args_type,
 )
+if options.backward_pins is not None:
+    # The unsealed definitions do not depend on the pins: the previous pass's checks stand.
+    check.checked.extend((frozenset(map(tuple, key)), path) for key, path
+                         in json.loads((options.backward_pins.parent / "CHECKED.json").read_text()))
 
 def return_boundary(designs):
     """The function_return exits as alternatives, each with its design's return fact.
@@ -527,14 +536,23 @@ for suffix, slot in units:
                 # Ghost binders and hidden facts move into one history proposition.
                 binders = [{"name": binder["name"], "type": expression(binder["type"], "source type")}
                            for binder in existentials]
+                facts = [text[1:-1] for component, text in rendered_components if component["kind"] == "pure"]
                 seal = entry_hist.seal_alternative(
                     seal_as, plain_telescope, plain_binders, binders,
                     [text for component, text in rendered_components if component["kind"] not in ("pure", "true")],
-                    [text[1:-1] for component, text in rendered_components if component["kind"] == "pure"],
-                    profile.get("hist_visible", [])
+                    facts,
                     # The function return entry (`Return`) is no block: no call record of its own.
-                    + (entry_hist.call_visible_patterns(profile.pc(block[0]), call_plans, block_starts, binders)
-                       if (block := re.match(r"[0-9a-f]+(?=_|$)", suffix)) else []))
+                    (entry_hist.call_visible_patterns(profile.pc(block[0]), call_plans, block_starts, binders,
+                                                     facts)
+                     + entry_hist.loop_entry_patterns(
+                         profile.pc(block[0]), {profile.pc(design['entry_predecessor'])
+                                                for design in profile.get('loop_designs', [])
+                                                if design.get('entry_predecessor')}, binders, facts))
+                    if (block := re.match(r"[0-9a-f]+(?=_|$)", suffix)) else [],
+                    weak_patterns=profile.get("hist_visible", []),
+                    # A successor's live binder without a resource takes its value from this entry.
+                    pinned=backward_pins.get(pc, {}).get("pinned", []),
+                    visible_texts=backward_pins.get(pc, {}).get("facts", []))
                 if seal is not None:   # An empty history keeps the plain shape.
                     sealed[seal_as] = seal
             if existentials:
@@ -734,6 +752,50 @@ join_accounting = {pc: plan.get("fact_accounting") for pc, plan in joins_record.
 unaccounted = sorted(pc for pc, row in join_accounting.items() if row is None)
 assert not unaccounted, "joins without a fact accounting: " + ", ".join(unaccounted)
 
+# A successor's live binder without a resource takes its value from the entry before it
+# (`entry_hist.backward_pins`). When this pass's entries call for pins it did not render with,
+# the next pass renders with them (this pass's output stays in `<output>-pass<n>`).
+pin_variants = {}
+for case in cases:
+    for meta in case.get("hist", {}).values():
+        if "hidden" in meta:
+            pin_variants.setdefault(case["pc"], []).append(meta)
+pin_edges = {(alternative["predecessor_pc"], boundary["pc"]) for boundary in data["boundaries"]
+             for alternative in boundary["alternatives"] if alternative.get("predecessor_pc")}
+for plan in call_plans.values():
+    if plan["return_site_pc"] is not None:
+        site = int(plan["call_site_pc"], 0)
+        pin_edges.add((hex(max(start for start in block_starts if start <= site)), plan["return_site_pc"]))
+witnessed = set()
+if receipt.get("join_seeds"):
+    for succ_pc, row in json.loads(seeds_path.read_text())["seeds"].items():
+        for edge in row.get("join_edges", []):
+            for witness in edge["ordered_witnesses"]:
+                term = witness["expression"]
+                if not (term.get("op") == "input" and term.get("value") == witness["binder"]):
+                    witnessed.add((edge["predecessor_pc"], succ_pc, witness["binder"]))
+pins = entry_hist.backward_pins(pin_variants, sorted(pin_edges), witnessed)
+for pc, row in backward_pins.items():
+    merged = pins.setdefault(pc, {"pinned": [], "facts": []})
+    for key in ("pinned", "facts"):
+        merged[key] = sorted(set(merged[key]) | set(row[key]))
+pins = dict(sorted(pins.items()))
+if pins != backward_pins:
+    number = previous_pass["pass"] + 1
+    assert number < 4, "the backward pins do not settle after three passes"
+    (O / "BACKWARD-PINS.json").write_text(json.dumps({"pass": number, "pins": pins}, indent=1) + "\n")
+    done = O.with_name(O.name + "-pass" + str(number))
+    (O / "CHECKED.json").write_text(json.dumps([[sorted(map(list, key)), path.replace(str(O), str(done), 1)]
+                                                for key, path in check.checked]))
+    O.rename(done)
+    arguments = sys.argv[1:]
+    if "--backward-pins" in arguments:
+        position = arguments.index("--backward-pins")
+        del arguments[position:position + 2]
+    sys.stdout.flush()
+    os.execv(sys.executable, [sys.executable, sys.argv[0]] + arguments
+             + ["--backward-pins", str(done / "BACKWARD-PINS.json")])
+
 (O / "RESULT.json").write_text(
     json.dumps(
         {
@@ -773,6 +835,7 @@ assert not unaccounted, "joins without a fact accounting: " + ", ".join(unaccoun
             "native_release": False,
             "join_seeds_added": True,
             "join_fact_accounting": join_accounting,
+            "backward_pins": previous_pass,
             "contradiction_checks": check.runs,
         },
         indent=2,

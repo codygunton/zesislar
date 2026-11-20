@@ -207,3 +207,43 @@ Proof.
 Qed.
 
 Print Assumptions block_tail_loop_entry.
+
+(* A callee interface's derived payload window has a strict upper premise
+   `a < k`: the forward step proves both premises from the branch facts and
+   keeps the window; without it the window stays an implication. *)
+Lemma block_tail_forward_strict_window (w : bv 64) (p q : Z) :
+  bv_unsigned w <> 0 -> 8 >= bv_unsigned w ->
+  (0 < bv_unsigned w -> bv_unsigned w < 18446744073709551607 -> p <= q /\ q <= p + 5) ->
+  p <= q.
+Proof.
+  intros Hnonzero Hsmall Hwindow.
+  zesu_tail_forward_window_facts.
+  assumption.
+Qed.
+
+Print Assumptions block_tail_forward_strict_window.
+
+(* A loop-entry window conjunct `W0 < W0 + W8` (bit-vector sum): the sum is
+   exact only through a callee's derived length fact, a conjunction
+   `n = len /\ p + n < m`, which the order-fact selection keeps as its two
+   parts. *)
+Lemma block_tail_lia_conj_fact (w0 w8 : bv 64) (k n len : Z) :
+  bv_unsigned w8 <> 0 ->
+  bv_unsigned w0 + bv_unsigned w8 <= k + len ->
+  (n = len /\ k + n < 18446744073709551616) ->
+  bv_unsigned w0 < bv_unsigned (bv_add w0 w8).
+Proof.
+  intros Hnonzero Hwindow Hlen.
+  solve [zesu_tail_add_exact_rewrite; zesu_tail_lia_select].
+Qed.
+
+(* Guard: a conjunction with a part outside linear order facts (`mod`) is not
+   kept, neither whole nor in parts. *)
+Goal forall (n len : Z), (n = len /\ n mod 2 = 0) -> n <= len.
+Proof.
+  intros n len Hlen.
+  Fail solve [zesu_tail_lia_select].
+  destruct Hlen as [-> _]. lia.
+Qed.
+
+Print Assumptions block_tail_lia_conj_fact.
