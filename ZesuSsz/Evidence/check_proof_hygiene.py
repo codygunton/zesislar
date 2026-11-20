@@ -41,8 +41,19 @@ PLACEHOLDER = re.compile(
     r"(?:Axiom|Parameter|Hypothesis|Variable)\b)"
 )
 HOOK_REDEFINITION = re.compile(
-    r"\b(?:Ltac\s+\w+\s*::=|(?:liAStep|liAAsm|liStep)\s*::=)"
+    r"\b(?:Ltac\s+(?P<name>[\w.']+)\s*::=|(?:liAStep|liAAsm|liStep)\s*::=)"
 )
+# Project tactics declared with a default (`Ltac X := fail.`) in an early
+# Automation2 module and redefined once by the one later module that owns the
+# rule (the two-step pattern of `LiaHook.v`). Key: the redefining file; value:
+# the unqualified tactic names it may redefine. Lithium and isla hooks are
+# never listed here: they belong to `Automation2/Hooks.v`.
+PROJECT_HOOK_REDEFINITIONS = {
+    "ZesuSsz/Automation2/BlockTail.v": {"zesu_block_tail_one"},
+}
+# A test may redefine a project tactic for its own file only.
+TEST_LOCAL_HOOK = re.compile(r"^\s*#\[\s*local\s*\]\s*Ltac\b")
+TESTS_PREFIX = "ZesuSsz/Proofs/Tests/"
 FORBIDDEN_EXECUTABLE_FORMS = (
     ("timeout identifier", re.compile(r"(?<![\w'])timeoutf?(?![\w'])")),
     ("Timeout command", re.compile(r"\b(?P<default>Set\s+Default\s+)?Timeout\s+\d+\b")),
@@ -760,11 +771,24 @@ def main() -> None:
                     )
 
         if name not in (HOOKS_PATH, "ZesuSsz/Automation2/Hooks.v"):
+            allowed = PROJECT_HOOK_REDEFINITIONS.get(name, set())
+            used = set()
             for number, line in enumerate(lines, 1):
-                if HOOK_REDEFINITION.search(line):
-                    if (name not in (LEGACY_HOOKS_PATH, "ZesuSsz/Automation2/Legacy/Hooks.v") or
-                            line.strip() not in LEGACY_HOOK_LINES):
-                        failures.append(f"Lithium hook redefinition: {name}:{number}")
+                match = HOOK_REDEFINITION.search(line)
+                if not match:
+                    continue
+                if (name in (LEGACY_HOOKS_PATH, "ZesuSsz/Automation2/Legacy/Hooks.v") and
+                        line.strip() in LEGACY_HOOK_LINES):
+                    continue
+                tactic = match.group("name") or ""
+                if (name.startswith(TESTS_PREFIX) and tactic.startswith("ZesuSsz.") and
+                        TEST_LOCAL_HOOK.match(line)):
+                    continue
+                short = tactic.rsplit(".", 1)[-1]
+                if short in allowed and short not in used:
+                    used.add(short)
+                    continue
+                failures.append(f"Lithium hook redefinition: {name}:{number}")
 
         if name.startswith(PROOFS_PREFIX):
             failures.extend(automation_entry_failures(name, text, legacy_entries))
