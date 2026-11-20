@@ -507,9 +507,17 @@ Ltac2 zesu_bvlin_lookup (terms : constr list) (term : constr) : int * constr lis
   | None => (List.length terms, List.append terms [term])
   end.
 
+(* One answer, no backtracking point: with `Control.plus` a later failure of
+   the close check came back here, turned `true` into `false` and reified the
+   term again as an atom, so a false goal with k closed subterms was refused
+   only after 2^k reifications (110 to 160 s for each refuted memory-region
+   candidate of a return block). *)
 Ltac2 zesu_bvlin_closed (term : constr) : bool :=
-  Control.plus (fun () => ltac1:(term |- ZesuSsz.Automation2.VmClosed.zesu_vm_closed term) (Ltac1.of_constr term); true)
-    (fun _ => false).
+  match Control.case (fun () =>
+    ltac1:(term |- ZesuSsz.Automation2.VmClosed.zesu_vm_closed term) (Ltac1.of_constr term)) with
+  | Val _ => true
+  | Err _ => false
+  end.
 
 Ltac2 zesu_bvlin_bv_atom (state : zesu_bvlin_state) (term : constr) : constr :=
   let (position, atoms) := zesu_bvlin_lookup (state.(bv_atoms)) term in
