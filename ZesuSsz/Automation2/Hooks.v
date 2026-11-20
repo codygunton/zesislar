@@ -442,6 +442,42 @@ Ltac zesu_bv_context_filter closer :=
               (zesu_bv_closer_context_within_budget; closer)]
   else closer.
 
+(* An array side condition can count elements at `bv (Z_idx 8)` while the
+   context's range fact counts them at `bv 8`; linear arithmetic sees two
+   `length` atoms. When the goal mentions `Z_idx`, compute each `Z_idx`
+   literal in the goal and context first. *)
+Ltac zesu_finish_element_alias :=
+  lazymatch goal with
+  | |- context [SailStdpp.MachineWord.MachineWord.Z_idx _] => idtac
+  end;
+  repeat match goal with
+  | H : context [SailStdpp.MachineWord.MachineWord.Z_idx ?z] |- _ =>
+      let v := eval vm_compute in (SailStdpp.MachineWord.MachineWord.Z_idx z) in
+      assert_fails (constr_eq v (SailStdpp.MachineWord.MachineWord.Z_idx z));
+      change (SailStdpp.MachineWord.MachineWord.Z_idx z) with v in H
+  | |- context [SailStdpp.MachineWord.MachineWord.Z_idx ?z] =>
+      let v := eval vm_compute in (SailStdpp.MachineWord.MachineWord.Z_idx z) in
+      assert_fails (constr_eq v (SailStdpp.MachineWord.MachineWord.Z_idx z));
+      change (SailStdpp.MachineWord.MachineWord.Z_idx z) with v
+  end.
+
+(* A `length` atom names the element type as spelled where its term was
+   built. Lithium's array lookup states its side condition after `simpl`,
+   which computes the width of an array of Sail bytes: the goal counts the
+   list at `bv 8` while the context's length fact counts it at
+   `bv (Z_idx 8)`, and linear arithmetic compares the two atoms by syntax.
+   Restate each fact's `length` of a list the goal counts at the goal's
+   element type (convertible, so `change`). *)
+Ltac zesu_length_element_alias :=
+  repeat match goal with
+  | |- context [@length ?T ?l] =>
+      match goal with
+      | H : context [@length ?U l] |- _ =>
+          assert_fails (constr_eq T U);
+          change (@length U l) with (@length T l) in H
+      end
+  end.
+
 (* Library solvers also call these primitives without the project finisher.
    A closed comparison decides by computation first. A word assembled from the
    bytes of one integer equals that integer's word (WrappedWord). A linear
@@ -449,8 +485,14 @@ Ltac zesu_bv_context_filter closer :=
    other goals fail there at once. An equality that the normal form refutes
    goes to the solver on its linked facts only. A residual lemma is the last
    attempt after the solver fails. A goal and context that failed before in
-   the proof fail at once (FailureMemo). *)
+   the proof fail at once (FailureMemo). A goal on Sail bytes (`bv (Z_idx 8)`,
+   as in Lithium's lookup inside a callee's result array, whose stride is
+   `Z.of_N (Z_idx 8 / 8)`) has its `Z_idx` widths computed in the goal and
+   the context first: `simpl` in the closer computes them in the goal only,
+   and the `length` facts would no longer match the goal's atoms. *)
 Ltac bv_solve ::=
+  try zesu_finish_element_alias;
+  try zesu_length_element_alias;
   let run := ltac2:(tac |- zesu_telemetry_ltac1 "bv_solve" "bv_solve" tac) in
   let run_linear := ltac2:(tac |- zesu_telemetry_ltac1 "bv_linear" "bv_solve" tac) in
   let memo := ltac2:(tac |- zesu_failure_memo_ltac1 "bv_solve" tac) in
@@ -522,25 +564,6 @@ Ltac zesu_linear_goal_shape :=
   lazymatch goal with
   | |- ex _ => fail 0 "lia: an existential goal"
   | |- ?target => lazymatch type of target with Prop => idtac end
-  end.
-
-(* An array side condition can count elements at `bv (Z_idx 8)` while the
-   context's range fact counts them at `bv 8`; linear arithmetic sees two
-   `length` atoms. When the goal mentions `Z_idx`, compute each `Z_idx`
-   literal in the goal and context first. *)
-Ltac zesu_finish_element_alias :=
-  lazymatch goal with
-  | |- context [SailStdpp.MachineWord.MachineWord.Z_idx _] => idtac
-  end;
-  repeat match goal with
-  | H : context [SailStdpp.MachineWord.MachineWord.Z_idx ?z] |- _ =>
-      let v := eval vm_compute in (SailStdpp.MachineWord.MachineWord.Z_idx z) in
-      assert_fails (constr_eq v (SailStdpp.MachineWord.MachineWord.Z_idx z));
-      change (SailStdpp.MachineWord.MachineWord.Z_idx z) with v in H
-  | |- context [SailStdpp.MachineWord.MachineWord.Z_idx ?z] =>
-      let v := eval vm_compute in (SailStdpp.MachineWord.MachineWord.Z_idx z) in
-      assert_fails (constr_eq v (SailStdpp.MachineWord.MachineWord.Z_idx z));
-      change (SailStdpp.MachineWord.MachineWord.Z_idx z) with v
   end.
 
 (* Preserve the machine normalization used by the existing finisher. *)
