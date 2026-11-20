@@ -318,6 +318,48 @@ class WeakVisiblePatterns(unittest.TestCase):
         self.assertEqual(hidden, facts[1:])
 
 
+class BackwardPins(unittest.TestCase):
+    """A successor binder that is live without a resource takes its value from the entry before it:
+    the pin goes back along edges, with the successor's visible facts on it, to the entry that holds
+    the value in a resource; the predecessor's classification then shows binder and fact."""
+    FACT = '(zesu_named_eq new (bv_sub old w))'
+
+    def meta(self, live=(), ghost=(), resources=(), visible=()):
+        return {'live': [{'name': name, 'type': 'bv 64'} for name in live],
+                'ghost': [{'name': name, 'type': 'bv 64'} for name in ghost],
+                'resources': list(resources), 'visible': list(visible)}
+
+    def variants(self, middle_resources=()):
+        return {
+            'succ': [self.meta(live=['new', 'old'], resources=['"x18" ↦ᵣ new'], visible=['(' + self.FACT + ')'])],
+            'pre': [self.meta(live=['new'], ghost=['old'], resources=['"x18" ↦ᵣ new', *middle_resources])],
+            'root': [self.meta(live=['old'], resources=['"x9" ↦ᵣ old'])],
+        }
+
+    def test_the_pin_reaches_the_entry_with_the_resource(self):
+        pins = entry_hist.backward_pins(self.variants(), [('root', 'pre'), ('pre', 'succ')])
+        self.assertEqual(pins['pre'], {'pinned': ['old'], 'facts': [entry_hist.normal(self.FACT)]})
+        self.assertEqual(pins['root'], {'pinned': ['old'], 'facts': [entry_hist.normal(self.FACT)]})
+        binders = [{'name': 'new', 'type': 'bv 64'}, {'name': 'old', 'type': 'bv 64'}]
+        live, ghost, visible, hidden = entry_hist.classify(
+            binders, ['"x18" ↦ᵣ new'], [self.FACT, 'other old'], pinned=pins['pre']['pinned'],
+            visible_texts=pins['pre']['facts'])
+        self.assertEqual([binder['name'] for binder in live], ['new', 'old'])
+        self.assertEqual((ghost, visible, hidden), ([], [self.FACT], ['other old']))
+        # Without the pins the binder and its fact stay in the history.
+        live, ghost, visible, _ = entry_hist.classify(binders, ['"x18" ↦ᵣ new'], [self.FACT])
+        self.assertEqual(([binder['name'] for binder in ghost], visible), (['old'], []))
+
+    def test_a_resource_stops_the_pin(self):
+        pins = entry_hist.backward_pins(self.variants(['p ↦ₘ∗ old']), [('root', 'pre'), ('pre', 'succ')])
+        self.assertEqual(list(pins), ['pre'])
+
+    def test_a_witnessed_binder_needs_no_pin(self):
+        pins = entry_hist.backward_pins(self.variants(), [('root', 'pre'), ('pre', 'succ')],
+                                        witnessed={('pre', 'succ', 'old')})
+        self.assertEqual(pins, {})
+
+
 class HistoryAlignment(unittest.TestCase):
     """A join whose edges hold the same facts once in a history group, once one per component."""
     GROUP = ('⌜∃ (call10_kept_x19 : bv 64), (zesu_named_eq call11_kept_x18 (bv_add call10_kept_x19 c))'

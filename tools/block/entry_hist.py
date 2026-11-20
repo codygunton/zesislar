@@ -128,13 +128,16 @@ def newest_call_patterns(binders):
             r"<= bv_unsigned " + kept + r" /\\ bv_unsigned " + kept + r" \+ bv_unsigned "]
 
 
-def classify(binders, resources, facts, visible_patterns=(), pinned=(), definitional=False, weak_patterns=()):
+def classify(binders, resources, facts, visible_patterns=(), pinned=(), definitional=False, weak_patterns=(),
+             visible_texts=()):
     """Split binders into live and ghost and facts into visible and hidden.
 
     binders: [{'name', 'type'}]; resources, facts: texts (facts without the pure brackets).
     weak_patterns: facts that stay visible when every binder they mention is live for another
     reason, but pin no binder: a binder that only such a fact mentions has no resource and no
-    record to take its value from at the successor, so it stays in the history (its facts too)."""
+    record to take its value from at the successor, so it stays in the history (its facts too).
+    visible_texts: facts (`normal` texts) that stay visible as the weak patterns do (`backward_pins`)."""
+    visible_texts = set(visible_texts)
     # A fact that matches a visible pattern (access or call facts) pins its binders live.
     pinned = set(pinned) | {binder['name'] for binder in binders for fact in facts
                             if not is_join_history(fact)
@@ -152,7 +155,8 @@ def classify(binders, resources, facts, visible_patterns=(), pinned=(), definiti
         named = [binder['name'] for binder in binders if mentions(binder['name'], fact)]
         on_ghost = any(name not in live_names for name in named)
         keep = not on_ghost and not is_join_history(fact) and (
-            not named or is_length_fact(fact) or any(re.search(pattern, fact, re.S) for pattern in visible_patterns))
+            not named or is_length_fact(fact) or any(re.search(pattern, fact, re.S) for pattern in visible_patterns)
+            or normal(fact) in visible_texts)
         # Loop classes: `b = <closed term>` fixes the value of a live binder; it is
         # state, not history, and stays visible (decodeItem's loop end register).
         if (definitional and not keep and len(named) == 1 and named[0] in live_names
@@ -172,14 +176,16 @@ def conjunction(facts):
 
 
 def seal_alternative(name, plain_telescope, plain_binders, binders, resources, facts, visible_patterns=(), pinned=(),
-                     grouped=False, varying=(), weak_patterns=()):
+                     grouped=False, varying=(), weak_patterns=(), visible_texts=()):
     """Return (declarations, body, meta) of one sealed entry variant.
 
     declarations: [(symbol, text, kind)] with kind 'hist' (needs opacity in Structural) or 'aux';
     body: the iProp body of the entry variant; meta: the data that the edge record reads.
-    weak_patterns: the profile's `hist_visible` (and a loop design's `visible`): see `classify`."""
+    weak_patterns: the profile's `hist_visible` (and a loop design's `visible`): see `classify`.
+    pinned, visible_texts: also the binders and facts that `backward_pins` carries to this entry."""
     live, ghost, visible, hidden = classify(binders, resources, facts, visible_patterns, pinned,
-                                            definitional=grouped, weak_patterns=weak_patterns)
+                                            definitional=grouped, weak_patterns=weak_patterns,
+                                            visible_texts=visible_texts)
     hist = name + '_Hist'
     # The history takes only the live binders its facts mention. A loop class keeps
     # every fact on a loop-varying binder visible, so its history is the same on both sides of the
@@ -210,6 +216,53 @@ def seal_alternative(name, plain_telescope, plain_binders, binders, resources, f
             'dropped_binders': [binder['name'] for binder in binders
                                 if binder not in live and binder not in ghost]}
     return declarations, body, meta
+
+
+def backward_pins(variants, edges, witnessed=()):
+    """The binders and facts that each entry must show so that its successors' live binders have a value.
+
+    A successor binder that is live without a resource takes its value from the block before the
+    successor: nothing at the successor fixes it. The block entry before it must hold that value
+    live, with the successor's visible facts on it visible, or the block cannot choose the witness.
+    So each predecessor entry variant that has the binder (live, or a ghost of its history) gets it
+    pinned live and those facts visible; a predecessor that holds no resource for it passes the need
+    on to its own predecessors, back to the block that binds the value from a resource.
+
+    variants: {pc: [meta]} (meta keys 'live', 'ghost', 'resources', 'visible' of `seal_alternative`);
+    edges: [(pre_pc, succ_pc)]; witnessed: (pre_pc, succ_pc, name) of a successor binder that the edge
+    gives a term (a join witness): its value comes from that term, not from the same name.
+    Returns {pc: {'pinned': [names], 'facts': [normal texts]}}, sorted."""
+    witnessed = set(witnessed)
+    predecessors = {}
+    for pre, succ in edges:
+        predecessors.setdefault(succ, set()).add(pre)
+
+    def names(meta, key):
+        return {binder['name'] for binder in meta.get(key, [])}
+
+    def unbound(meta, name):
+        return not any(mentions(name, text) for text in meta.get('resources', []))
+
+    work = [(pc, name, frozenset(normal(fact) for fact in meta.get('visible', []) if mentions(name, fact)))
+            for pc, metas in variants.items() for meta in metas
+            for name in sorted(names(meta, 'live')) if unbound(meta, name)]
+    pins = {}
+    while work:
+        succ, name, facts = work.pop()
+        for pre in sorted(predecessors.get(succ, ())):
+            if (pre, succ, name) in witnessed:
+                continue
+            for meta in variants.get(pre, []):
+                if name not in names(meta, 'live') | names(meta, 'ghost'):
+                    continue
+                row = pins.setdefault(pre, {'pinned': set(), 'facts': set()})
+                grows = name not in row['pinned'] or not facts <= row['facts']
+                row['pinned'].add(name)
+                row['facts'] |= facts
+                if grows and unbound(meta, name):
+                    work.append((pre, name, facts | {normal(fact) for fact in meta.get('visible', [])
+                                                     if mentions(name, fact)}))
+    return {pc: {'pinned': sorted(row['pinned']), 'facts': sorted(row['facts'])} for pc, row in sorted(pins.items())}
 
 
 def structural_opacity(symbol, kind):
