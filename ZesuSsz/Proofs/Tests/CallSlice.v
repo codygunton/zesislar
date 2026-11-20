@@ -9,7 +9,7 @@ Require Import ZesuSsz.Contracts.NextUint64BlockEntries.
 Require Import ZesuSsz.Contracts.NextUint64DomainRanges.
 Require Import ZesuSsz.Contracts.NextUint64CallSlice.
 Require Import ZesuSsz.Interfaces.NextUint64.
-Require Import ZesuSsz.Contracts.NextUint64CalleeSlice.
+Require Import ZesuSsz.Contracts.ParentHeaderNextUint64Slice.
 Import ListNotations.
 Require Import ZesuSsz.Automation2.All.
 Local Open Scope Z_scope.

@@ -4,7 +4,6 @@ Require Import ZesuSsz.Automation2.CallSliceInterface.
 Require Import ZesuSsz.Contracts.RlpDecodeItem.
 Require Import ZesuSsz.Contracts.ParentHeaderContract.
 Require Import ZesuSsz.Contracts.ParentHeaderRootFacts.
-Require Import ZesuSsz.Contracts.NextUint64BlockEntries.
 Require Import ZesuSsz.Interfaces.NextUint64.
 Import ListNotations.
 Local Open Scope Z_scope.
