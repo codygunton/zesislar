@@ -11,8 +11,8 @@ From stdpp Require Import bitvector.definitions.
 Require Import lithium.interpreter lithium.pure_definitions.
 From iris.proofmode Require Import tactics environments.
 Require Import ZesuSsz.Automation2.MemoryTupleConsumer.
-Require Import ZesuSsz.Automation2.All.
 From Ltac2 Require Import Ltac2.
+Require Import ZesuSsz.Automation2.All.
 Set Default Proof Mode "Classic".
 
 Local Open Scope Z_scope.

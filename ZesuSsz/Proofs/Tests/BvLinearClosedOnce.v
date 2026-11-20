@@ -8,8 +8,8 @@ Require Import isla.riscv64.riscv64.
 From Coq Require Import ZArith.
 From stdpp Require Import bitvector.definitions.
 Require Import ZesuSsz.Automation2.BvLinear.
-Require Import ZesuSsz.Automation2.All.
 From Ltac2 Require Import Ltac2.
+Require Import ZesuSsz.Automation2.All.
 Set Default Proof Mode "Classic".
 
 Local Open Scope Z_scope.
