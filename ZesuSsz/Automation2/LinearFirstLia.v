@@ -288,11 +288,35 @@ Ltac2 zesu_linear_clear_unrelated () :=
     | Err _ => ()
     end) unrelated.
 
-(* The library solver on the facts linked to the goal. *)
+(* A numeral, or a power of two numerals (the bitvector modulus `2 ^ 64`).
+   Narrower than `zesu_zlit`, which accepts `2 ^ Z.of_N 128` and
+   `2 ^ (8 * Z.of_nat 7)`: exactly the divisors this closer must refuse. *)
+Ltac zesu_probe_numeral t :=
+  lazymatch t with
+  | Z0 => idtac | Zpos _ => idtac | Zneg _ => idtac
+  | Z.pow ?b ?e => zesu_probe_numeral b; zesu_probe_numeral e
+  end.
+
+(* Neither the goal nor a fact divides by a term that is not a numeral.
+   `Zify.zify` pulls every `div`/`mod` out of the context, also those inside
+   list terms linear arithmetic treats as atoms; with a divisor such as
+   `2 ^ Z.of_N 128` each becomes case-split implications and `xlia` grew to
+   8 GiB without returning (berlinGasCalc 3f00, 3edc, nextUint64 00b8). *)
+Ltac zesu_no_symbolic_divisor :=
+  assert_fails (idtac; match goal with
+  | |- context [Z.div _ ?y] => assert_fails (idtac; zesu_probe_numeral y)
+  | |- context [Z.modulo _ ?y] => assert_fails (idtac; zesu_probe_numeral y)
+  | _ : context [Z.div _ ?y] |- _ => assert_fails (idtac; zesu_probe_numeral y)
+  | _ : context [Z.modulo _ ?y] |- _ => assert_fails (idtac; zesu_probe_numeral y)
+  end).
+
+(* The library solver on the facts linked to the goal, refused when a linked
+   fact or the goal divides by a term that is not a numeral. *)
 Ltac zesu_lia_linked_facts :=
   let run_zify := ltac2:(tac |- zesu_telemetry_ltac1 "zify" "zesu_lia_linked_facts" tac) in
   let run_xlia := ltac2:(tac |- zesu_telemetry_ltac1 "xlia" "zesu_lia_linked_facts" tac) in
-  once ltac2:(zesu_linear_clear_unrelated ()); run_zify ltac:(Zify.zify);
+  once ltac2:(zesu_linear_clear_unrelated ()); zesu_no_symbolic_divisor;
+  run_zify ltac:(Zify.zify);
   run_xlia ltac:(xlia Lia.zchecker).
 
 (* The goal and every Prop fact fit a node budget. Guards a solver call on the

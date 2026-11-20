@@ -13,12 +13,24 @@ Ltac zesu_witness_metadata_type kind :=
   | @EntryWitnessSelector.ZesuEntryWitnessPending _ _ _ _ => idtac
   end.
 
+(* Local definitions that nothing mentions are cleared before the others are
+   unfolded: unfolding one runs `unfold … in *` over the whole context, and
+   the proof state of the decodeParentHeader epilogues grew with each. *)
 Ltac zesu_unlet_preserving_witness_metadata :=
+  repeat match goal with
+  | alias := _ : ?kind |- _ =>
+      tryif zesu_witness_metadata_type kind then fail 0
+      else clear alias
+  end;
   repeat match goal with
   | alias := _ : ?kind |- _ =>
       tryif zesu_witness_metadata_type kind then fail 0
       else (unfold alias in *; clear alias)
   end.
+
+Ltac isla.base.unLET ::=
+  repeat match goal with H := _ |- _ => clear H end;
+  repeat match goal with H := _ |- _ => unfold H in *; clear H end.
 
 Require Import ZesuSsz.Automation2.FractionalRead.
 Require ZesuSsz.Evidence.EntryWitnessInputs.
@@ -47,6 +59,7 @@ Require Import ZesuSsz.Automation2.UninitRegions.
 Require Import ZesuSsz.Automation2.BoundedArithmetic.
 Require Import ZesuSsz.Automation2.TraceTailLemmas.
 Require Import ZesuSsz.Automation2.InstrPre.
+Require Import ZesuSsz.Automation2.GoalShape.
 Require Import ZesuSsz.Automation2.NamedEquations.
 Require Import ZesuMachineMap.Machine.
 Require Import ZesuSsz.Automation2.BitvectorFacts.
@@ -976,9 +989,11 @@ Ltac zesu_pure_fact_hints_if_enabled :=
             let evidence := zesu_registered_pure_fact P in
             iPureIntro; exact evidence
         end
-      | zesu_canonical_anchor_if_enabled
-      | zesu_pure_fact_existential_if_enabled
-      | tryif zesu_pure_fact_intro_registered target then
+      | zesu_env_literal; zesu_canonical_anchor_if_enabled
+      | lazymatch target with @bi_exist _ _ _ => idtac end;
+        zesu_pure_fact_existential_if_enabled
+      | zesu_pure_fact_key_ok target;
+        tryif zesu_pure_fact_intro_registered target then
           first [
             let evidence := constr:(_ : ZesuSsz.Automation.Hooks.ZesuPureFactIntro target _) in
             lazymatch type of evidence with
@@ -991,6 +1006,7 @@ Ltac zesu_pure_fact_hints_if_enabled :=
           | zesu_pure_fact_anchor_scan target ]
         else (zesu_pure_fact_anchor_registered target; zesu_pure_fact_anchor_scan target) ]
   | |- ?P =>
+      lazymatch P with forall _ : _, _ => fail | _ => idtac end;
       let evidence := zesu_registered_pure_fact P in exact evidence
   end.
 
@@ -2280,8 +2296,10 @@ Ltac zesu_canonical_fact_views_if_enabled :=
    The guard selects the requested resource exactly as the capture does. *)
 Ltac zesu_mapping_registered_goal registered :=
   lazymatch goal with
-  | |- environments.envs_entails _ (@bi_sep _ ?requested _) => registered requested
-  | |- environments.envs_entails _ ?requested => registered requested
+  | |- environments.envs_entails _ (@bi_sep _ ?requested _) =>
+      zesu_mapping_key_ok requested; registered requested
+  | |- environments.envs_entails _ ?requested =>
+      zesu_mapping_key_ok requested; registered requested
   end.
 
 Ltac zesu_entry_mapping_registered requested :=
@@ -2299,7 +2317,8 @@ Ltac zesu_union_witness_step :=
 
 Ltac zesu_source_witnesses_if_enabled :=
   zesu_switch_enabled constr:(ZesuStepSourceWitnesses);
-  first [SourceWitnessInputs.zesu_capture_source_owner |
+  first [first [SourceWitnessInputs.zesu_capture_source_owner_wand |
+                zesu_env_literal; SourceWitnessInputs.zesu_capture_source_owner_hyp] |
          zesu_mapping_registered_goal zesu_source_mapping_registered;
            SourceWitnessInputs.zesu_source_mapping_capture_goal |
          EntryWitnessInputs.zesu_entry_mapping_consume_ready].
@@ -2517,38 +2536,46 @@ Ltac zesu_open_folded_jump_facts :=
   tryif (idtac; zesu_prefer_owned_instr_pre) then gfail 0 else idtac;
   zesu_open_folded_facts.
 
-(* Each alternative carries a telemetry name (Telemetry.v, `zesu_talt`). *)
+(* Each alternative carries a telemetry name (Telemetry.v, `zesu_talt`). A
+   guard in front of an alternative tests the goal shape it can act on
+   (GoalShape.v); the order of the alternatives is unchanged. *)
 Ltac zesu_liAStep :=
   first [zesu_talt l_refute_aligned_return_fault (idtac; solve [zesu_refute_aligned_return_fault]) |
     zesu_talt l_wrapped_memory_lookup (idtac; WrappedWord.zesu_wrapped_memory_lookup) | (
  zesu_talt l_ensure_invariant (idtac; liEnsureInvariant);
  try progress (unfold TRACE_LET);
  try (zesu_talt l_intro_let (idtac; liAIntroduceLetInGoal));
+ let goal_class := zesu_goal_class in
  first [
     zesu_talt l_reload_byte_word (idtac; progress ZesuSsz.Automation2.ByteWordReload.zesu_reload_byte_word_step)
   | zesu_talt l_join_frame_byte_array (idtac; ltac2:(Ltac1.run (Ltac1.ref
       [@ZesuSsz; @Automation2; @StoreMemoryLookup; @zesu_join_frame_byte_array])))
-  | zesu_talt l_open_nested_existential (idtac; progress ResourceGroups.zesu_open_nested_existential_packages)
+  | (zesu_env_literal; zesu_talt l_open_nested_existential (idtac; progress ResourceGroups.zesu_open_nested_existential_packages))
   | zesu_talt l_byte_array_rebuild (idtac; ByteArrayAssemblyCodec.zesu_byte_array_rebuild_requested)
   | zesu_talt l_seal_requested_array (idtac; zesu_seal_requested_array)
   | zesu_talt l_codec_array_read (idtac; CodecArrayRead.zesu_codec_array_read)
   | zesu_talt l_open_folded_jump_facts (idtac; zesu_open_folded_jump_facts)
   | zesu_talt l_prefer_owned_instr_pre (idtac; zesu_prefer_owned_instr_pre)
   | zesu_talt l_source_witnesses (idtac; zesu_source_witnesses_if_enabled)
-  | zesu_talt l_register_cursor (idtac; RegisterArrayCursor.zesu_register_cursor_step)
+  | (lazymatch goal_class with ZGfind_mem => idtac | ZGwp_assert => idtac | ZGand => idtac end;
+     zesu_talt l_register_cursor (idtac; RegisterArrayCursor.zesu_register_cursor_step))
   | zesu_talt l_loop_backedge (idtac; LoopBackedgeJoin.zesu_loop_backedge_choice)
-  | zesu_talt l_region_fault (idtac; ZesuSsz.Automation2.UnionRuleComponents.zesu_region_fault_if_enabled)
+  | (lazymatch goal_class with ZGwp_assert => idtac | ZGand => idtac | ZGprop => idtac | ZGfind_reg => idtac end;
+     zesu_talt l_region_fault (idtac; ZesuSsz.Automation2.UnionRuleComponents.zesu_region_fault_if_enabled))
   | zesu_talt l_expose_instruction_lookup (idtac; zesu_expose_instruction_lookup)
   | zesu_talt l_ram_fault (idtac; zesu_ram_fault_if_enabled)
   | zesu_talt l_signed_address (idtac; zesu_signed_address_if_enabled)
-  | zesu_talt l_stack_write (idtac; zesu_stack_write_if_enabled)
+  | (lazymatch goal_class with ZGfind_mem => idtac end;
+     zesu_talt l_stack_write (idtac; zesu_stack_write_if_enabled))
   | zesu_talt l_handoff_goal_address (idtac; zesu_handoff_goal_address_if_enabled)
   | zesu_talt l_handoff_memory (idtac; zesu_handoff_memory_if_enabled)
   | zesu_talt l_handoff_adjacent_words (idtac; zesu_handoff_adjacent_words_if_enabled)
   | zesu_talt l_handoff_facts (idtac; zesu_handoff_facts_if_enabled)
   | zesu_talt l_handoff_integer_equality (idtac; zesu_handoff_integer_equality_if_enabled)
-  | zesu_talt l_integer_array_address (idtac; zesu_integer_array_address_if_enabled)
-  | zesu_talt l_split_memory_cell_chain (idtac; zesu_split_memory_cell_chain)
+  | (lazymatch goal_class with ZGfind_mem => idtac end;
+     zesu_talt l_integer_array_address (idtac; zesu_integer_array_address_if_enabled))
+  | (lazymatch goal_class with ZGfind_mem => idtac end;
+     zesu_talt l_split_memory_cell_chain (idtac; zesu_split_memory_cell_chain))
   | zesu_talt l_normalize_find_mem_address (idtac; zesu_normalize_find_mem_address)
   | zesu_talt l_select_generic_write (idtac; ZesuSsz.Automation2.UnionRuleComponents.block2_f6_select_generic_write)
   | zesu_talt l_liAWriteMem (idtac; zesu_liAWriteMem)
@@ -2564,7 +2591,7 @@ Ltac zesu_liAStep :=
   | zesu_talt l_pure_witness_constraints (idtac; zesu_pure_witness_constraints_if_enabled)
   | zesu_talt l_record_witness (idtac; zesu_record_witness_if_enabled)
   | zesu_talt l_primitive_tuple (idtac; zesu_primitive_tuple_if_enabled)
-  | zesu_talt l_liInstrPreMatch (idtac; zesu_liInstrPreMatch)
+  | (zesu_instr_pre_match_goal; zesu_talt l_liInstrPreMatch (idtac; zesu_liInstrPreMatch))
   | zesu_talt l_preserve_current_unsigned (idtac; zesu_preserve_current_unsigned)
   | zesu_talt l_register_collection_selection (idtac; zesu_register_collection_selection_if_enabled)
   | zesu_talt l_named_equation_goal (idtac; zesu_named_equation_goal)

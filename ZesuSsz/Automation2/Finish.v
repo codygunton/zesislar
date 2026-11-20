@@ -1,5 +1,6 @@
 Require ZesuSsz.Automation2.NamedEquations.
 Require Import ZesuSsz.Automation2.Telemetry.
+Require Import ZesuSsz.Automation2.GoalShape.
 Require Import ZesuSsz.Automation2.MemoryAddress.
 Require Import ZesuSsz.Automation2.MemoryTupleConsumer.
 Require Import ZesuSsz.Automation2.SourceFactMatching.
@@ -430,7 +431,7 @@ Ltac zesu_finish_v1 :=
   try (zesu_talt f_extract_alias (idtac; zesu_finish_extract_alias));
   try (zesu_talt f_list_slice_length (idtac; zesu_finish_list_slice_length));
   zesu_talt f_normalize_nat_powers (idtac; zesu_normalize_nat_powers);
-  try (zesu_talt f_tag_bound (idtac; zesu_finish_tag_bound));
+  try (zesu_tag_bound_goal; zesu_talt f_tag_bound (idtac; zesu_finish_tag_bound));
   try (zesu_talt f_mask (idtac; zesu_finish_mask));
   try (zesu_talt f_array_byte_lookup (idtac; zesu_finish_array_byte_lookup_if_closed));
   try (zesu_talt f_constant (idtac; zesu_finish_constant));
@@ -1231,22 +1232,30 @@ Ltac zesu_run_pass_v1 :=
   zesu_expose_environment_alias;
   try zesu_prepare_uninit_goal;
   try zesu_normalize_find_mem_address;
-  unshelve (time "zesu_run" repeat (zesu_tstep (first
+  unshelve (time "zesu_run" repeat (zesu_tstep (idtac; let goal_class := zesu_goal_class in first
     [zesu_diag_step |
-     zesu_talt v1_source_destruct (idtac; SourceFactMatching.zesu_source_destruct_registered_disjunction) |
-     zesu_talt v1_codec_read_consumer (idtac; ZesuSsz.Automation2.CodecArrayRead.zesu_codec_array_read_consumer) |
-     zesu_talt v1_v34_array_continuation (idtac; zesu_v34_array_continuation) |
-     zesu_talt v1_union_witness_step (idtac; zesu_union_witness_step) |
+     (zesu_env_literal; zesu_talt v1_source_destruct (idtac; SourceFactMatching.zesu_source_destruct_registered_disjunction)) |
+     (lazymatch goal_class with ZGall => idtac end;
+      zesu_talt v1_codec_read_consumer (idtac; ZesuSsz.Automation2.CodecArrayRead.zesu_codec_array_read_consumer)) |
+     (zesu_envs_record; zesu_talt v1_v34_array_continuation (idtac; zesu_v34_array_continuation)) |
+     (lazymatch goal_class with ZGname => idtac | ZGex => idtac | ZGex_prod => idtac | ZGsep_pure => idtac
+        | ZGsep_ex => idtac | ZGsep => idtac | ZGpure => idtac end;
+      zesu_talt v1_union_witness_step (idtac; zesu_union_witness_step)) |
      zesu_talt v1_target_registered_intro (idtac; zesu_target_registered_intro_if_enabled) |
-     zesu_talt v1_open_instr_bundle (idtac; zesu_open_requested_instr_bundle) |
-     zesu_talt v1_open_struct_sys (idtac; zesu_open_requested_struct_sys_package) |
-     zesu_talt v1_open_saved_x9 (idtac; zesu_open_requested_saved_x9_package) |
-     zesu_talt v1_open_matching_resource (idtac; zesu_open_matching_resource_package) |
+     (lazymatch goal_class with ZGfind_instr => idtac end;
+      zesu_talt v1_open_instr_bundle (idtac; zesu_open_requested_instr_bundle)) |
+     (lazymatch goal_class with ZGfind_sreg => idtac end;
+      zesu_talt v1_open_struct_sys (idtac; zesu_open_requested_struct_sys_package)) |
+     (lazymatch goal_class with ZGfind_reg => idtac end;
+      zesu_talt v1_open_saved_x9 (idtac; zesu_open_requested_saved_x9_package)) |
+     (lazymatch goal_class with ZGsep_pure => idtac | ZGsep_ex => idtac | ZGsep => idtac end;
+      zesu_talt v1_open_matching_resource (idtac; zesu_open_matching_resource_package)) |
      zesu_talt v1_finish_pure_resources_step (idtac; zesu_finish_pure_resources_step) |
      zesu_talt v1_pack_owned_register (idtac; zesu_pack_owned_register_goal) |
      zesu_talt v1_pack_shaped_register (idtac; zesu_pack_shaped_register_goal) |
      zesu_talt v1_pack_owned_word (idtac; zesu_pack_owned_word_goal) |
-     zesu_talt v1_normalize_packed_word (idtac; zesu_normalize_packed_word_subsume) |
+     (lazymatch goal_class with ZGsubsume => idtac end;
+      zesu_talt v1_normalize_packed_word (idtac; zesu_normalize_packed_word_subsume)) |
      zesu_talt v1_codec_find (idtac; ZesuSsz.Automation2.CodecArrayRead.zesu_codec_array_find) |
      zesu_talt v1_prepare_init_array_read (idtac; zesu_prepare_initialized_array_read) |
      zesu_talt v1_finish_init_array_read (idtac; zesu_finish_initialized_array_read) |
@@ -1256,8 +1265,10 @@ Ltac zesu_run_pass_v1 :=
         an existential byte array inside a held array, restore it after. *)
      zesu_talt v1_interior_byte_slice (idtac; ZesuSsz.Automation2.InteriorByteSlice.zesu_interior_byte_slice_step) |
      zesu_talt v1_codec_read_sidecond (idtac; ZesuSsz.Automation2.CodecArrayRead.zesu_codec_array_read_sidecond) |
-     zesu_talt v1_open_two_level_frame (idtac; zesu_open_matching_two_level_frame) |
-     zesu_talt v1_extract_descriptor_pure (idtac; zesu_extract_matching_descriptor_pure) |
+     (lazymatch goal_class with ZGsep_pure => idtac | ZGsep_ex => idtac | ZGsep => idtac end;
+      zesu_talt v1_open_two_level_frame (idtac; zesu_open_matching_two_level_frame)) |
+     (lazymatch goal_class with ZGpure => idtac | ZGsep_pure => idtac end;
+      zesu_talt v1_extract_descriptor_pure (idtac; zesu_extract_matching_descriptor_pure)) |
      (* Last: a list index on a closed-offset chain of a word becomes a
         literal; it fires only when every other step refused. *)
      zesu_talt v1_wrapped_index (idtac; WrappedWord.zesu_wrapped_index_step) |
