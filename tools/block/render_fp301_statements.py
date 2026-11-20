@@ -250,6 +250,26 @@ def first_pass_registration(name, source, profile=None):
             + ' (fun first_x16 => ' + step + ').\n')
 
 
+def render_return_package(profile):
+    """Render the function-return package of a profile `return_package` design.
+
+    The design names the package's existential binders, its owned resources and its pure
+    facts; the profile's `return_facts` follow the facts. Returns the texts of
+    `FunctionReturnEntries.v` and `FunctionReturnStructural.v` (declarations only)."""
+    design = profile["return_package"]
+    symbol = "fp_machineReturn"
+    telescope = " ".join("(" + name + " : " + kind + ")" for name, kind in design["binders"])
+    body = " ∗ ".join(list(design["resources"]) + ["⌜" + fact + "⌝" for fact in design["facts"]] + ["True"])
+    definition = ("Definition " + symbol + profile.telescope() + " (K : iProp Sigma) : iProp Sigma :=\n"
+                  + "  ((∃ " + telescope + ", (" + body + ")) ∗ K)%I.\n")
+    definition = add_return_facts(definition, profile.get("return_facts", []))
+    header = return_header(profile)
+    structural = (header + "Require Import " + profile.qualified("FunctionReturnEntries") + ".\n"
+                  + unfold_declaration(symbol, instance_name=symbol + "_unfold", locality="export")
+                  + definition_introduction_source(definition, symbol))
+    return header + "\n" + definition, structural
+
+
 def binding(path):
     path = Path(path)
     return {"path": str(path), "sha256": hashlib.sha256(path.read_bytes()).hexdigest()}
@@ -389,7 +409,7 @@ def render_block_caller(profile, block, preconditions, imports, slot=None, conti
 RESIDUALS = Path(__file__).resolve().parents[2] / "ZesuSsz/Residuals"
 
 
-def residual_import(source, residuals=RESIDUALS):
+def residual_import(source, residuals=RESIDUALS, profile=None):
     """Import the block's residual lemmas after the core import, when they exist.
 
     Import is not transitive, so the caller keeps its solver bindings; the
@@ -405,8 +425,9 @@ def residual_import(source, residuals=RESIDUALS):
         raise ValueError("A caller must end its imports with the core import.")
     # A return block's residual lemmas may use the pure lemmas behind its exit facts.
     if "FunctionReturnEntries.fp_machineReturn" in source:
-        lines[last + 1:last + 1] = load_profile().get("return_requires", [])
-        last += len(load_profile().get("return_requires", []))
+        requires = (profile or load_profile()).get("return_requires", [])
+        lines[last + 1:last + 1] = requires
+        last += len(requires)
     lines.insert(last + 1, line)
     return "\n".join(lines)
 

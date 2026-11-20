@@ -711,6 +711,21 @@ for (suffix, slot), case in zip(units, cases):
         for key in ("entry", "structural"):
             if key in case:
                 case[key] = bind(case[key]["path"])
+if profile.get("return_package"):
+    # A return-package design: one package every return block exits to (no forward-pass exit).
+    from render_fp301_statements import render_return_package
+    directory = O / "sources" / profile.generated_directory
+    directory.mkdir(parents=True, exist_ok=True)
+    files = []
+    for kind, text in zip(("Entries", "Structural"), render_return_package(profile)):
+        file = directory / ("FunctionReturn" + kind + ".v")
+        file.write_text(text)
+        files.append(bind(file))
+    emitted.extend(files)
+    cases.append({"pc": "function_return", "status": "source_declarations_rendered",
+                  "entry": files[0], "structural": files[1],
+                  "qualified_entry": profile.qualified("FunctionReturnEntries", "fp_machineReturn"),
+                  "source_boundary": profile.path.name + "#return_package", "proof_ran": False})
 emitted = list({row["path"]: bind(row["path"]) for row in emitted}.values())
 # Every join keeps each pure fact of its edges, binds it in a history group, or drops it under a
 # named rule (join_generalize.check_fact_accounting refuses a silent drop); the report lists the

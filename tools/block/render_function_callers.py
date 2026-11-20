@@ -18,15 +18,22 @@ Such a block gets no caller (status `inlined`); each predecessor's caller runs o
 through its code, takes its call sites' callee specs, and ends with the contract
 continuation instead of K, as the record field of that predecessor states.
 
+A successor block whose entry another driver step renders (a profile `loop_exits` design
+row: render_loop_exits.py) is a block of the function; its entry case comes from
+--extra-entries. A block of the profile's `design_callers` gets no caller here (status
+`design`): render_design_callers.py --output writes it into the same directory. With
+profile `caller_residual_imports`, a caller imports its block's residual-lemma module
+(render_fp301_statements.residual_import) when one exists.
+
 Usage: render_function_callers.py --function NAME --entries RESULT.json
-       --cfg FUNCTION.json --output DIR
+       [--extra-entries RESULT.json ...] --cfg FUNCTION.json --output DIR
 """
 from pathlib import Path
 import argparse, hashlib, json, re, sys
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from function_profiles import load_profile, return_sites
-from render_fp301_statements import (render_block_caller, return_precondition, slot_suffix,
+from render_fp301_statements import (render_block_caller, residual_import, return_precondition, slot_suffix,
                                      successor_precondition)
 
 
@@ -101,12 +108,14 @@ def plan_callers(profile, cases, function):
 
 
 def _block_key(profile, target):
-    """The design-table key of a successor address; None outside the function's blocks."""
+    """The design-table key of a successor address; None outside the function's blocks. A loop
+    exit (profile `loop_exits` design row) is a block whose entry render_loop_exits.py renders."""
     try:
         key = profile.key(target)
     except ValueError:
         return None
-    return key if key in profile['blocks'] else None
+    exits = [row['pc'] for row in (profile.get('loop_exits') or {}).get('design', [])]
+    return key if key in profile['blocks'] or key in exits else None
 
 
 def _plan_caller(profile, suffix, pc, slot, own, rendered, slot_cases, blocks, ends, sites, inlined):
@@ -154,10 +163,15 @@ def main():
     parser.add_argument('--entries', type=Path, required=True)
     parser.add_argument('--cfg', type=Path, required=True)
     parser.add_argument('--output', type=Path, required=True)
+    parser.add_argument('--extra-entries', type=Path, action='append', default=[],
+                        help='RESULT.json of another entry step (render_loop_exits.py --output)')
     options = parser.parse_args()
     profile = load_profile(options.function)
     result = json.loads(options.entries.read_text())
     function = json.loads(options.cfg.read_text())['functions'][0]
+    for extra in options.extra_entries:
+        result['cases'] = result['cases'] + json.loads(extra.read_text())['cases']
+    design_blocks = set((profile.get('design_callers') or {}).get('blocks', []))
     inlined = inlined_returns(profile, function)
     compliance = profile.get('compliance') or {}
     continuation = compliance.get('continuation', '') + ' args returnAddress'
@@ -173,6 +187,9 @@ def main():
                'successors': [name + slot_suffix(index) for name, index in successors],
                # A slot row names its block (entry module Pilot<block>Entries) and slot index.
                **({'block': suffix, 'slot': slot} if slot is not None else {})}
+        if suffix in design_blocks:
+            table.append({**row, 'status': 'design', 'reason': 'rendered by render_design_callers.py'})
+            continue
         if refusal:
             table.append({**row, 'status': 'refused', 'reason': refusal})
             continue
@@ -183,7 +200,7 @@ def main():
         through = [name for name, _ in successors if name in inlined]
         exits = [(name, index) for name, index in successors if name not in inlined]
         k = continuation if through else 'K'
-        modules = [suffix, *dict.fromkeys(name for name, _ in exits)]
+        modules = list(dict.fromkeys([suffix, *(name for name, _ in exits)]))   # a loop head is its own successor
         imports = [profile.qualified('Pilot' + name + kind) for name in modules
                    for kind in ('Entries', 'Structural')]
         if through:
@@ -214,6 +231,8 @@ def main():
             last = source.rindex('Require Import ZesuSsz.Automation2.All.\n')
             source = (source[:last] + 'Require Import ' + profile.qualified('Edges' + suffix) + '.\n'
                       + source[last:])
+        if profile.get('caller_residual_imports'):
+            source = residual_import(source, profile=profile)
         if source.count('Proof.\n  zesu_block2.\nQed.\n') != 1 or re.search(r'\b(?:Ltac|Admitted|Axiom)\b|::=', source):
             raise ValueError('A caller has more than its block proof: ' + suffix)
         path = output / ('Caller' + suffix + slot_suffix(slot) + '.v')
@@ -225,10 +244,11 @@ def main():
                'cfg': bind(options.cfg), 'rows': table,
                'rendered': sum(row['status'] == 'rendered' for row in table),
                'inlined': sum(row['status'] == 'inlined' for row in table),
-               'refused': sum(row['status'] == 'refused' for row in table), 'proof_ran': False}
+               'refused': sum(row['status'] == 'refused' for row in table),
+               **({'design': sum(row['status'] == 'design' for row in table)} if design_blocks else {}),
+               'proof_ran': False}
     (output / 'CALLERS.json').write_text(json.dumps(summary, indent=2) + '\n')
-    print(json.dumps({'rendered': summary['rendered'], 'inlined': summary['inlined'],
-                      'refused': summary['refused']}))
+    print(json.dumps({key: summary[key] for key in ('rendered', 'inlined', 'refused', 'design') if key in summary}))
 
 
 if __name__ == '__main__':

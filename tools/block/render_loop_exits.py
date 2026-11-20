@@ -209,8 +209,17 @@ def main():
     group.add_argument('--check', action='store_true')
     group.add_argument('--coqc-args', type=Path)
     parser.add_argument('--function', default=None, help='function profile (default: decodeItem)')
+    parser.add_argument('--output', type=Path, default=None,
+                        help='with --coqc-args: write the exit entries under OUTPUT/sources and OUTPUT/RESULT.json '
+                             '(a driver run); the committed tree, its callers and the fixture stay untouched')
+    parser.add_argument('--loop-heads-dir', type=Path, default=None,
+                        help='directory holding the Pilot<head>Entries.v loop-head classes (default: the committed '
+                             'generated directory)')
     options = parser.parse_args()
     configure(options.function)
+    global FP301
+    if options.loop_heads_dir is not None:
+        FP301 = options.loop_heads_dir
     fixture = json.loads(FIXTURE.read_text())
     rows = {row['output']: row for row in fixture['declarations']}
     outputs, checks = {}, []
@@ -241,12 +250,34 @@ def main():
             assert (ROOT / row['output']).read_text() == row['source'], row['output']
         print('Loop-exit declarations match the design table.')
         return
+    output_dir = options.output
     checker = RocqContradictionCheck(json.loads(options.coqc_args.read_text()), HEADER,
+                                     (output_dir / 'contradiction-checks') if output_dir else
                                      ROOT / PROFILE['loop_exits']['contradiction_directory'])
     for check in checks:
         if checker(check['definition'], check['binders'], check['facts']):
             raise BoundaryRefused('The exit entry proves False and is refused: ' + check['definition'])
         check['contradictory'] = False
+    if output_dir is not None:
+        # A driver run: the exit entries as rendered entry cases (render_function_callers --extra-entries).
+        cases = []
+        for row in DESIGN:
+            files = []
+            for kind in ('Entries', 'Structural'):
+                output = f'{PROFILE.generated_directory}/Pilot{row["pc"]}{kind}.v'
+                path = output_dir / 'sources' / output
+                path.parent.mkdir(parents=True, exist_ok=True)
+                path.write_text(outputs[output][1])
+                files.append({'path': str(path), 'sha256': hashlib.sha256(path.read_bytes()).hexdigest()})
+            cases.append({'pc': PROFILE.pc(row['pc']), 'status': 'source_declarations_rendered',
+                          'entry': files[0], 'structural': files[1], 'qualified_entry': qualified_entry(row['pc']),
+                          'source_boundary': 'loop_exits#' + row['pc'], 'proof_ran': False})
+        (output_dir / 'RESULT.json').write_text(json.dumps(
+            {'status': 'SOURCE_DECLARATIONS_ONLY', 'function': PROFILE.name, 'cases': cases,
+             'contradiction_checks': [{key: value for key, value in check.items() if key not in ('binders', 'facts')}
+                                      for check in checks]}, indent=2) + '\n')
+        print('Rendered', len(outputs), 'loop-exit declarations into', output_dir)
+        return
     for output, (source, committed) in outputs.items():
         rows[output]['canonical_source'] = source
         rows[output]['sha256'] = hashlib.sha256(source.encode()).hexdigest()
