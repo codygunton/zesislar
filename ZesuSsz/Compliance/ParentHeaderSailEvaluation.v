@@ -138,6 +138,7 @@ Require Import ZesuSsz.Compliance.KnownBugs ZesuSsz.Contracts.ParentHeader.
 Require Import ZesuSsz.Contracts.Candidates.ParentHeaderDomain.
 Require Import ZesuSsz.Contracts.Candidates.ParentHeaderCandidate.
 Require Import ZesuSsz.Contracts.ParentHeaderBugTriggers.
+Require Import ZesuSsz.Contracts.ParentHeaderSailItems.
 Require Import ZesuSsz.Compliance.ProjectionParentHeader.
 Require Import ZesuSsz.Contracts.ParentHeaderRung2.
 Require Import ZesuSsz.Compliance.ParentHeaderSailAgreement.

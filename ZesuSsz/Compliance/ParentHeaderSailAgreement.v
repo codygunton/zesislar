@@ -7,6 +7,7 @@ Require Import ZesuSsz.Contracts.RlpDecodeItem.
 Require Import ZesuSsz.Contracts.ParentHeader.
 Require Import ZesuSsz.Contracts.Candidates.ParentHeaderDomain.
 Require Import ZesuSsz.Contracts.Candidates.ParentHeaderCandidate.
+Require Import ZesuSsz.Contracts.ParentHeaderSailItems.
 Require Import ZesuSsz.Contracts.ParentHeaderBugTriggers.
 Require Import ZesuSsz.Compliance.RlpInputBounds.
 Require Import ZesuSsz.Compliance.SailRun.
@@ -40,14 +41,6 @@ Open Scope Z_scope.
       parentHeaderFieldSchedule.
    Owner: contract fact (statement of the M2 obligation and its pieces). *)
 
-(* Sail's default execution profile (schema 0x15 falls through to
-   Amsterdam in schema_protocol_profile): blob schedule maximum 21, excess
-   blob gas limit 256 * 11684671 + (21 - 14) * 2^17
-   (compute_profile_excess_blob_gas_limit). The run installs it in
-   sail_model_init (initializedInput). *)
-Notation sailBlobMax := 21 (only parsing).
-Notation sailExcessBlobGasLimit := (256 * 11684671 + (21 - 14) * 2 ^ 17) (only parsing).
-
 Record SailParentValues := {
   sailBaseFee : option Z;
   sailBlobGasUsed : option Z;
@@ -56,38 +49,6 @@ Record SailParentValues := {
 
 Definition sailNoValues : SailParentValues :=
   {| sailBaseFee := None; sailBlobGasUsed := None; sailExcessBlobGas := None |}.
-
-(* rlp_decode_item on a cursor holding exactly [r]: the same header as
-   candidateDecodeItem, without the 2^64 wrap of the binary. *)
-Definition sailDecodeItem (r : list byte) : candidateItem :=
-  match candidateDecodeItem r with
-  | candidateSuccess isList headerLength payloadLength =>
-      if headerLength + payloadLength <=? Z.of_nat (List.length r)
-      then candidateSuccess isList headerLength payloadLength
-      else candidateError
-  | candidateError => candidateError
-  end.
-
-Definition itemPayload (r : list byte) (headerLength payloadLength : Z)
-    : list byte :=
-  firstn (Z.to_nat payloadLength) (skipn (Z.to_nat headerLength) r).
-
-(* rlp_item_uint_canonical (rlp_ref_bytes_canonical, rlp_ref_framing_canonical
-   and the leading-zero check) for an item of at most 55 payload bytes.
-   Above 55 Sail's integer decoders reject anyway (32 and 8 byte limits). *)
-Definition sailShortUintCanonical (r : list byte) (isList : bool)
-    (headerLength payloadLength : Z) : bool :=
-  negb isList && (payloadLength <=? 55) &&
-  match r, itemPayload r headerLength payloadLength with
-  | [], _ => false
-  | first :: _, [] =>
-      (payloadLength =? 0) && (headerLength =? 1) && (bv_unsigned first =? 128)
-  | first :: _, lead :: _ =>
-      negb (payloadLength =? 0) && negb (bv_unsigned lead =? 0) &&
-      (if (payloadLength =? 1) && (bv_unsigned lead <? 128)
-       then headerLength =? 0
-       else (headerLength =? 1) && (bv_unsigned first =? 128 + payloadLength))
-  end.
 
 (* The body of _rec_decode_parent_header_fields after rlp_decode_item. *)
 Definition sailFieldStep (index : nat) (r : list byte) (isList : bool)
@@ -126,23 +87,6 @@ Definition sailStep (index : nat) (r : list byte) (acc : SailParentValues)
       match sailFieldStep index r isList headerLength payloadLength acc with
       | Some acc' => Some (skipn (Z.to_nat (headerLength + payloadLength)) r, acc')
       | None => None
-      end
-  end.
-
-(* Field index 19 (the cursor saturates there): every further item is
-   decoded by rlp_decode_item and discarded. *)
-Fixpoint sailSkipItems (fuel : nat) (r : list byte) : bool :=
-  match r with
-  | [] => true
-  | _ :: _ =>
-      match fuel with
-      | O => false
-      | S fuel' =>
-          match sailDecodeItem r with
-          | candidateError => false
-          | candidateSuccess _ headerLength payloadLength =>
-              sailSkipItems fuel' (skipn (Z.to_nat (headerLength + payloadLength)) r)
-          end
       end
   end.
 
@@ -198,35 +142,9 @@ Definition SailParentHeaderModel : Prop :=
           sailValuesOfFields fields = values
     end.
 
-(* The candidate's step on one reached field (the body of
-   parentHeaderFieldWalk). *)
-Inductive CandidateStep :=
-| candidateStepReject
-| candidateStepContinue (rest : list byte) (values : list Z).
-
-Definition candidateFieldStep (kind : ParentHeaderFieldKind) (r : list byte)
-    (values : list Z) : CandidateStep :=
-  match candidateDecodeItem r with
-  | candidateError => candidateStepReject
-  | candidateSuccess isList headerLength payloadLength =>
-      let rest := skipn
-        (Z.to_nat ((headerLength + payloadLength) mod word64Modulus)) r in
-      if parentHeaderFieldIsInteger kind then
-        if isList || (8 <? payloadLength) then candidateStepReject
-        else candidateStepContinue rest
-          (values ++ [bigEndian (firstn (Z.to_nat payloadLength)
-                       (skipn (Z.to_nat headerLength) r))])
-      else candidateStepContinue rest values
-  end.
-
-(* Step 2: item shapes on which the two steps may disagree. *)
-Definition candidateWrapb (r : list byte) : bool :=
-  match candidateDecodeItem r with
-  | candidateSuccess _ headerLength payloadLength =>
-      Z.of_nat (List.length r) <? headerLength + payloadLength
-  | candidateError => false
-  end.
-
+(* Step 2: item shapes on which the two steps may disagree
+   (sailDecodeItem, sailShortUintCanonical, sailSkipItems, candidateFieldStep
+   and candidateWrapb are ParentHeaderSailItems.v). *)
 Definition fieldDivergentb (index : nat) (r : list byte) : bool :=
   candidateWrapb r ||
   match candidateDecodeItem r with
