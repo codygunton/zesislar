@@ -96,4 +96,47 @@ Proof.
   apply bool_decide_eq_true_2. exact Hw.
 Qed.
 
+(* An edge premise: a branch disjunction in `Prop` form. The context decides
+   no disjunct directly; a case split on the goal's equations does, and the
+   last case closes by a branch fact stated on the window. *)
+Lemma block_tail_prop_disj (x y : bv 64) (bytes : list (bv 8)) :
+  ~ (8 >= bv_unsigned (Z_to_bv 16 (little_endian_to_bv 8 (take (N.to_nat 2) (drop 32 bytes)))))%Z ->
+  bv_unsigned x <> 0 \/
+  (bv_unsigned x = 0 /\ bv_unsigned y <> 0) \/
+  (bv_unsigned x = 0 /\ bv_unsigned y = 0 /\
+   8 < bv_unsigned (bv_concat 16 (nth 33 bytes (BV 8 0)) (nth 32 bytes (BV 8 0)))).
+Proof. intros Hwin. zesu_block_tail_one. Qed.
+
+(* Guard: a disjunct the context decides closes without a case split; a
+   disjunction no case decides is left untouched. *)
+Goal forall (x y : bv 64), bv_unsigned y <> 0 -> bv_unsigned x = 0 \/ bv_unsigned y <> 0.
+Proof. intros x y Hy. zesu_tail_prop_disj. Qed.
+Goal forall (x y : bv 64), bv_unsigned x = 0 \/ bv_unsigned y = 0 \/ True.
+Proof.
+  intros x y.
+  Fail zesu_tail_prop_disj.
+  right; right; exact I.
+Qed.
+
+(* Entering a loop head whose invariant states the loop guard as a boolean:
+   the context holds the guard in `Prop` form. *)
+Lemma block_tail_loop_entry_guard `{!islaG Σ} `{!threadG} (K : iProp Σ) (w : bv 64) :
+  w <> BV 64 0 ->
+  K ⊢ ∃ i : lvar "zesuLoopIndex" Z *ₗ (),
+    ⌜(0 <= li_fst i)%Z⌝ ∗ ⌜negb (bool_decide (w = BV 64 0)) = true⌝ ∗ K.
+Proof. intros Hw. iIntros "HK". zesu_block_tail_one. Qed.
+
+(* Guard: without the guard fact the conjunct stays open after the loop
+   entry. *)
+Lemma block_tail_loop_entry_guard_open `{!islaG Σ} `{!threadG} (K : iProp Σ) (P : bv 64 -> Prop) (w : bv 64) :
+  (forall v, P v -> v <> BV 64 0) -> P w ->
+  K ⊢ ∃ i : lvar "zesuLoopIndex" Z *ₗ (),
+    ⌜negb (bool_decide (w = BV 64 0)) = true⌝ ∗ K.
+Proof.
+  intros Himp HP. iIntros "HK".
+  zesu_tail_loop_entry.
+  lazymatch goal with |- negb (bool_decide _) = true => idtac end.
+  rewrite negb_true_iff; apply bool_decide_eq_false; exact (Himp w HP).
+Qed.
+
 Print Assumptions block_tail_loop_entry.

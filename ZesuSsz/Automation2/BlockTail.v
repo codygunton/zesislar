@@ -36,6 +36,8 @@ Ltac zesu_tail_keep_fact T :=
   | (_ >= _)%Z => idtac | (_ > _)%Z => idtac
   | (_ <= _)%Z /\ (_ <= _)%Z => idtac
   | @eq Z _ _ => idtac | not (@eq Z _ _) => idtac
+  | not (_ <= _)%Z => idtac | not (_ < _)%Z => idtac
+  | not (_ >= _)%Z => idtac | not (_ > _)%Z => idtac
   end;
   lazymatch T with
   | context [Z.modulo] => fail | context [Z.div] => fail | context [Z.land] => fail
@@ -87,31 +89,6 @@ Ltac zesu_tail_add_exact_rewrite :=
         by (apply ZesuSsz.Automation2.CallSlice.zesu_call_slice_add_exact; zesu_tail_lia_select);
       rewrite H; clear H
   end.
-(* Every conjunct that closes; a conjunct that does not stays open. *)
-Ltac zesu_tail_pure_closer :=
-  repeat match goal with |- _ /\ _ => split end;
-  first [ reflexivity
-        | exact (eq_sym (Z.add_0_r _))
-        | assumption
-        | solve [zesu_tail_add_exact_rewrite; zesu_tail_lia_select]
-        | idtac ].
-
-(* Entering a loop head: the index starts at 0; the invariant follows from the
-   window fact of the call before the loop. *)
-Ltac zesu_tail_loop_entry :=
-  lazymatch goal with
-  | |- environments.envs_entails _ (@bi_exist _ (li_prod (lithium.lvar.lvar "zesuLoopIndex" Z) unit) _) =>
-      zesu_tail_window_normal;
-      try ZesuSsz.Automation2.PureFacts.zesu_saturate_derived_facts;
-      zesu_tail_forward_window_facts;
-      iExists (li_pair 0%Z tt);
-      cbv [li_fst li_snd];
-      repeat (first [ ZesuSsz.Automation2.Hist.zesu_hist_step
-                    | iSplit; [iPureIntro; zesu_tail_pure_closer|]
-                    | iSplit; [iPureIntro|] ]);
-      try iFrame
-  end.
-
 (* A pure equation between two spellings of loaded words. *)
 Ltac zesu_tail_window_goal :=
   lazymatch goal with
@@ -221,6 +198,62 @@ Ltac zesu_tail_bool_disj :=
   cbn [negb orb andb];
   first [ reflexivity | zesu_tail_contra ].
 
+(* An edge premise that is a branch disjunction in `Prop` form (a join keeps
+   the disjunction of its incoming edges' guards): case on at most three
+   integer equations of the goal, then prove one disjunct whose conjuncts are
+   case facts or branch facts of the context. *)
+Ltac zesu_tail_prop_conj :=
+  repeat match goal with |- _ /\ _ => split end;
+  solve [ assumption | zesu_tail_branch_fact_goal ].
+Ltac zesu_tail_prop_disj_pick :=
+  first [ left; zesu_tail_prop_conj
+        | right; zesu_tail_prop_disj_pick
+        | zesu_tail_prop_conj ].
+Ltac zesu_tail_prop_disj_case :=
+  match goal with
+  | |- context [@eq Z ?a ?b] =>
+      lazymatch goal with
+      | _ : a = b |- _ => fail
+      | _ : a <> b |- _ => fail
+      | _ => destruct (Z.eq_dec a b)
+      end
+  end.
+Ltac zesu_tail_prop_disj :=
+  lazymatch goal with
+  | |- environments.envs_entails _ _ => fail
+  | |- _ \/ _ => idtac
+  end;
+  first [ solve [zesu_tail_prop_disj_pick]
+        | solve [do 3 (try zesu_tail_prop_disj_case); zesu_tail_prop_disj_pick] ].
+
+(* Every conjunct that closes; a conjunct that does not stays open. A guard
+   conjunct of the loop invariant (`negb (bool_decide _) = true` or a boolean
+   disjunction) is the branch fact the context already holds in `Prop` form. *)
+Ltac zesu_tail_pure_closer :=
+  repeat match goal with |- _ /\ _ => split end;
+  first [ reflexivity
+        | exact (eq_sym (Z.add_0_r _))
+        | assumption
+        | solve [zesu_tail_add_exact_rewrite; zesu_tail_lia_select]
+        | solve [zesu_tail_bool_disj]
+        | idtac ].
+
+(* Entering a loop head: the index starts at 0; the invariant follows from the
+   window fact of the call before the loop. *)
+Ltac zesu_tail_loop_entry :=
+  lazymatch goal with
+  | |- environments.envs_entails _ (@bi_exist _ (li_prod (lithium.lvar.lvar "zesuLoopIndex" Z) unit) _) =>
+      zesu_tail_window_normal;
+      try ZesuSsz.Automation2.PureFacts.zesu_saturate_derived_facts;
+      zesu_tail_forward_window_facts;
+      iExists (li_pair 0%Z tt);
+      cbv [li_fst li_snd];
+      repeat (first [ ZesuSsz.Automation2.Hist.zesu_hist_step
+                    | iSplit; [iPureIntro; zesu_tail_pure_closer|]
+                    | iSplit; [iPureIntro|] ]);
+      try iFrame
+  end.
+
 (* An edge premise that is the fold over a zero-length window. *)
 Lemma zesu_tail_fold_zero (l : list (bv 8)) (s : nat) (n : Z) :
   n = 0 -> 0 = ZesuSsz.Automation2.ByteWindowFold.zesu_byte_window_fold l s (Z.to_nat n).
@@ -237,6 +270,7 @@ Ltac ZesuSsz.Automation2.Finish.zesu_block_tail_one ::=
   first
   [ solve [ZesuSsz.Automation2.Hist.zesu_hist_reveal_pure]
   | zesu_tail_bool_disj
+  | solve [zesu_tail_prop_disj]
   | zesu_tail_fold_zero_goal
   | zesu_cursor_index_close
   | zesu_tail_window_goal
