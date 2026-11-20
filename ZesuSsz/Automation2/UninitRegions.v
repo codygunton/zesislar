@@ -8,6 +8,7 @@ Require ZesuSsz.Automation2.ContextCollection.
 Require ZesuSsz.Automation2.BvLinear.
 Require Import ZesuSsz.Automation2.Telemetry.
 Require Import ZesuSsz.Automation2.FailureMemo.
+Require ZesuSsz.Automation2.ByteArrays.
 From Ltac2 Require Import Ltac2.
 Require Import ZesuSsz.Automation2.LiaHook.
 Set Default Proof Mode "Classic".
@@ -383,3 +384,31 @@ Definition subsume_mem_word_address_inst := [instance @subsume_mem_word_address]
 
 Global Existing Instance subsume_mem_word_address_inst | 1.
 Print Assumptions subsume_mem_word_address.
+
+(* An uninitialized request of size zero (the rest the frame rules leave
+   once the pieces before it covered the request exactly) takes nothing.
+   Lithium looks the request up before it simplifies it, and the lookup
+   found the next piece at that address (an array), which the array rule
+   then weakened into the empty request: `40 <= 0`. A size spelled from
+   literals that computes to zero gives the piece back and asks nothing. *)
+(* An inductive class: a definitional one reaches instance search as its
+   body and the hint below would never see it. *)
+Inductive ZesuClosedZeroSize (n : Z) : Prop :=
+  zesu_closed_zero_size (Hzero : n = 0).
+Existing Class ZesuClosedZeroSize.
+Global Hint Extern 0 (ZesuClosedZeroSize ?n) =>
+  (ZesuSsz.Automation2.ByteArrays.zesu_closed_size n;
+   let v := eval vm_compute in (Z.eqb n 0) in constr_eq v true;
+   exact (zesu_closed_zero_size n (proj1 (Z.eqb_eq n 0) eq_refl))) : typeclass_instances.
+
+Lemma subsume_uninit_empty_request `{!islaG Sigma} A (P : iProp Sigma) a n G
+    `{!ZesuClosedZeroSize n} :
+  (⌜0 <= a <= 2 ^ 64⌝ ∗ (P -∗ ∃ x, G x)) ⊢ subsume P (fun _ : A => a ↦ₘ? n) G.
+Proof.
+  match goal with H : ZesuClosedZeroSize _ |- _ => destruct H as [Hzero]; subst n end.
+  iIntros "[% HG] HP". iDestruct ("HG" with "HP") as (x) "HG". iExists x. iFrame.
+  by rewrite mem_mapsto_uninit_0.
+Qed.
+Print Assumptions subsume_uninit_empty_request.
+Definition subsume_uninit_empty_request_inst := [instance @subsume_uninit_empty_request].
+Global Existing Instance subsume_uninit_empty_request_inst | 0.
