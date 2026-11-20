@@ -318,6 +318,42 @@ class JoinEdgeAlignment(unittest.TestCase):
         self.assertEqual(aligned[0]['resource_boundary']['tree'], self.ORIGINAL)
         self.assertEqual([c['source'] for c in aligned[0]['resource_boundary']['components']], ['A', 'True'])
 
+    def packaged(self, binder):
+        seeded = {'kind': 'sep', 'right': {'kind': 'component', 'id': 'r1'},
+                  'left': {'kind': 'exists', 'binders': [{'name': binder, 'type': 'list byte'}], 'scope': [0],
+                           'body': {'kind': 'sep_list', 'children': [
+                               {'kind': 'component', 'id': 'r0'}, {'kind': 'component', 'id': 'join_relation_0'},
+                               {'kind': 'component', 'id': 'join_relation_1'}]}}}
+        length = {'id': 'join_relation_0', 'source': '⌜(List.length %s = 40)%%nat⌝' % binder,
+                  'provenance': {'relation': {'kind': 'array_packaging', 'binder': binder,
+                                              'coq': '(List.length %s = 40)%%nat' % binder}}}
+        placement = {'id': 'join_relation_1', 'source': '⌜P⌝',
+                     'provenance': {'relation': {'kind': 'array_placement', 'binder': 'x12'}}}
+        return self.edge(seeded, 'K', [length, placement])
+
+    def test_a_single_edge_keeps_the_length_fact_of_a_packaged_array(self):
+        ownership = {'tree': self.ORIGINAL, 'components': [{'id': 'r0', 'source': 'A'}, {'id': 'r1', 'source': 'True'}]}
+        kept, extra = align_join_edges([self.packaged('join_a_bytes')], ownership, 'r1', 'K', keep_binders=True)
+        boundary = kept[0]['resource_boundary']
+        self.assertEqual([c['source'] for c in boundary['components']],
+                         ['A', 'True', '⌜(List.length join_a_bytes = 40)%nat⌝'])
+        self.assertEqual(boundary['tree']['body']['children'][-1], {'kind': 'component', 'id': 'join_relation_0'})
+        self.assertEqual([b['name'] for b in boundary['tree']['binders']], ['x10', 'join_a_bytes'])
+        self.assertEqual(extra[0]['length_fact'], '(List.length join_a_bytes = 40)%nat')
+
+    def test_a_join_restates_an_inherited_length_only_when_every_holder_states_it(self):
+        ownership = {'tree': self.ORIGINAL, 'components': [{'id': 'r0', 'source': 'A'}, {'id': 'r1', 'source': 'True'}]}
+        plain = self.edge(self.ORIGINAL, 'True')
+        aligned, extra = align_join_edges([plain, self.packaged('join_a_bytes'), self.packaged('join_a_bytes')],
+                                          ownership, 'r1', 'K')
+        self.assertEqual([c['source'] for c in aligned[1]['resource_boundary']['components']], ['A', 'True'])
+        self.assertEqual(extra, [{'name': 'join_a_bytes', 'type': 'list byte',
+                                  'length_fact': '(List.length join_a_bytes = 40)%nat'}])
+        unpackaged = self.packaged('join_a_bytes')
+        unpackaged['resource_boundary']['components'][2]['provenance'] = {}
+        _, extra = align_join_edges([self.packaged('join_a_bytes'), unpackaged], ownership, 'r1', 'K')
+        self.assertEqual(extra, [{'name': 'join_a_bytes', 'type': 'list byte'}])
+
     def test_other_differences_stay_for_the_refusal(self):
         ownership = {'tree': self.ORIGINAL, 'components': [{'id': 'r0', 'source': 'A'}, {'id': 'r1', 'source': 'True'}]}
         other = {'kind': 'sep', 'right': {'kind': 'component', 'id': 'r1'},

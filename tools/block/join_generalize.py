@@ -475,13 +475,17 @@ def align_join_edges(alternatives, ownership, terminal_id, continuation_name, ke
     own binders. Such an edge is rewritten onto the original tree with the
     original terminal. Its binders are returned so the new join keeps them as
     existential binders; with keep_binders the rewritten tree binds them too.
+    The length fact of an array that the earlier join packaged into one of those
+    binders (`array_packaging`) stays: with keep_binders as a component of the
+    rewritten tree, otherwise as the binder row's `length_fact` when every such
+    edge states the same fact (the new join states it again for a binder it keeps).
     Any other difference is left for the caller to refuse.
     """
     original = ownership['tree']
     terminal_source = next(component['source'] for component in ownership['components']
                            if component['id'] == terminal_id)
     expected = _remove_terminal(original, terminal_id)
-    aligned, extra = [], []
+    aligned, extra, lengths, holders = [], [], {}, {}
     for alternative in alternatives:
         boundary = alternative.get('resource_boundary', {})
         tree = boundary.get('tree')
@@ -491,13 +495,16 @@ def align_join_edges(alternatives, ownership, terminal_id, continuation_name, ke
         left, right = tree.get('left', {}), tree.get('right')
         terminal = [component for component in boundary.get('components', [])
                     if component['id'] == terminal_id]
-        relations = set()
+        relations, kept = set(), []
         body = left.get('body') or {}
         if body.get('kind') == 'sep_list':
             relations = {child.get('id') for child in body['children']
                          if str(child.get('id', '')).startswith(('join_relation_', 'join_design_'))}
             body = {**body, 'children': [child for child in body['children']
                                          if child.get('id') not in relations]}
+            kept = [component for component in boundary.get('components', [])
+                    if component['id'] in relations
+                    and (component.get('provenance') or {}).get('relation', {}).get('kind') == 'array_packaging']
         shape = {key: value for key, value in left.items() if key not in ('binders', 'scope', 'body')}
         expected_shape = {key: value for key, value in expected.items() if key not in ('binders', 'scope', 'body')}
         if (right != {'kind': 'component', 'id': terminal_id} or left.get('kind') != 'exists'
@@ -509,17 +516,33 @@ def align_join_edges(alternatives, ownership, terminal_id, continuation_name, ke
         own = [{key: value for key, value in binder.items() if key != 'value_key'}
                for binder in left['binders'] if binder['name'] not in names]
         for binder in own:
+            holders[binder['name']] = holders.get(binder['name'], 0) + 1
             if binder['name'] not in [row['name'] for row in extra]:
                 extra.append(binder)
+        for component in kept:
+            binder = component['provenance']['relation']['binder']
+            if binder in {row['name'] for row in own}:
+                lengths.setdefault(binder, []).append(component['provenance']['relation']['coq'])
         edge = deepcopy(alternative)
         rewritten = deepcopy(original)
         if keep_binders:
             rewritten['binders'] = [*rewritten.get('binders', []), *deepcopy(own)]
+            kept = [component for component in kept
+                    if component['provenance']['relation']['binder'] in {row['name'] for row in own}]
+            rewritten['body']['children'].extend({'kind': 'component', 'id': component['id']} for component in kept)
+        else:
+            kept = []
+        kept_ids = {component['id'] for component in kept}
         edge['resource_boundary']['tree'] = rewritten
         edge['resource_boundary']['components'] = [
             {**component, 'source': terminal_source} if component['id'] == terminal_id else component
-            for component in edge['resource_boundary']['components'] if component['id'] not in relations]
+            for component in edge['resource_boundary']['components']
+            if component['id'] not in relations or component['id'] in kept_ids]
         aligned.append(edge)
+    for row in extra:
+        facts = lengths.get(row['name'], [])
+        if facts and len(set(facts)) == 1 and len(facts) == holders[row['name']]:
+            row['length_fact'] = facts[0]
     return aligned, extra
 
 
@@ -1384,6 +1407,8 @@ def generalize_owned_join(alternatives, *, original_seed, entry_pc, vocabulary,
         raise ValueError('The continuation captures a source binder')
     register_order = [component['name'] for component in ownership['components'] if component['kind'] == 'register']
     alternatives, inherited_binders = align_join_edges(alternatives, ownership, terminal_id, name)
+    # An inherited array binder keeps the length fact its earlier join stated (every edge holding it states it).
+    inherited_lengths = {row['name']: row.pop('length_fact') for row in inherited_binders if 'length_fact' in row}
     inherited_binders += [binder for binder in lifted_binders
                           if binder['name'] not in [row['name'] for row in inherited_binders]]
     dead = set()
@@ -1722,6 +1747,10 @@ def generalize_owned_join(alternatives, *, original_seed, entry_pc, vocabulary,
                            'provenance': {'join_design': fact}})
         tree['body']['children'].append({'kind': 'component', 'id': key})
     packaged = [row for row in plan['memory_relations'] if row.get('kind') == 'array_packaging']
+    packaged += [{'status': 'generated', 'kind': 'array_packaging', 'binder': binder['name'],
+                  'coq': inherited_lengths[binder['name']], 'inherited': True}
+                 for binder in ordered if binder['name'] in inherited_lengths
+                 and binder['name'] not in {row['binder'] for row in packaged}]
     for index, row in enumerate(packaged, start=len(plan['relations'])):
         key = f'join_relation_{index}'
         components.append({'id': key, 'kind': 'opaque', 'source': '⌜' + row['coq'] + '⌝', 'scope': [[0]],
