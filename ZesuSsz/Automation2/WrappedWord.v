@@ -417,4 +417,4 @@ Ltac zesu_word_concat_bytes_eq :=
   | |- @eq (bv _) (Z_to_bv ?n ?z) (bv_concat ?n ?high ?low) =>
       zesu_word_concat_bytes_of (bv_concat n high low) z; symmetry
   end;
-  solve [bv_simplify; bitblast; f_equal; lia].
+  solve [bv_simplify; bitblast; f_equal; zesu_lia].
