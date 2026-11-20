@@ -842,6 +842,12 @@ Ltac zesu_call_slice_ref_first :=
       end;
       let _ := constr:(_ : ZesuStepInteriorByteSlice) in
       ZesuSsz.Automation2.ResourceGroups.zesu_expose_environment_alias;
+      (* Lithium let-binds the record's address: the step compares it with
+         the addresses of the held cells. *)
+      repeat match goal with
+      | L := _ |- environments.envs_entails _ ?G =>
+          lazymatch G with context [L] => unfold L end
+      end;
       zesu_call_slice_ref
   end.
 (* Early restore: at any existential goal with a restore wand and its
