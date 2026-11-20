@@ -2403,9 +2403,34 @@ Ltac zesu_refute_aligned_return_fault_core :=
     end
   end.
 
+(* The same branch when the target is a word that is no `Z_to_bv` image (a
+   saved return-address field of type `bv 64`): its alignment
+   `bv_unsigned ret mod 4 = 0` is a context fact. *)
+Ltac zesu_refute_aligned_return_word_fault_core :=
+  lazymatch goal with
+  | Hfault : bv_extract 0 1 (bv_shiftr
+      (bv_or (bv_and (bv_add ?ret (BV 64 0))
+        (BV 64 18446744073709551614)) (BV 64 0)) (BV 64 1)) = BV 1 1 |- _ =>
+    assert_fails (has_evar ret);
+    lazymatch ret with Z_to_bv _ _ => fail | _ => idtac end;
+    match goal with
+    | Haligned : (bv_unsigned ret mod 4 = 0)%Z |- _ =>
+      let Hlow := fresh "HreturnLowBit" in
+      let Hhigh := fresh "HreturnHighBit" in
+      destruct (ZesuSsz.Automation2.IntegerReturn.zesu_return_extracts_from_aligned
+        ret Haligned) as [Hlow Hhigh];
+      let HnoFault := fresh "HreturnNoFault" in
+      pose proof (ZesuSsz.Automation2.IntegerReturn.zesu_return_fault_bit_from_extracts
+        ret Hlow Hhigh) as HnoFault;
+      rewrite HnoFault in Hfault;
+      discriminate
+    end
+  end.
+
 (* The alignment-fault branch of a return jump is refuted from the target's
    range and alignment; when only a folded precondition states them, the
-   precondition is opened first (only on a fault branch). *)
+   precondition is opened first (only on a fault branch). The `Z_to_bv`
+   target is tried first; a `bv 64` word target second. *)
 Ltac zesu_refute_aligned_return_fault :=
   lazymatch goal with
   | Hfault : bv_extract 0 1 (bv_shiftr
@@ -2413,6 +2438,11 @@ Ltac zesu_refute_aligned_return_fault :=
         (BV 64 18446744073709551614)) (BV 64 0)) (BV 64 1)) = BV 1 1 |- _ =>
       first [zesu_refute_aligned_return_fault_core |
         zesu_open_folded_facts; zesu_refute_aligned_return_fault_core]
+  | Hfault : bv_extract 0 1 (bv_shiftr
+      (bv_or (bv_and (bv_add _ (BV 64 0))
+        (BV 64 18446744073709551614)) (BV 64 0)) (BV 64 1)) = BV 1 1 |- _ =>
+      first [zesu_refute_aligned_return_word_fault_core |
+        zesu_open_folded_facts; zesu_refute_aligned_return_word_fault_core]
   end.
 
 Lemma zesu_bv64_clear_low_bit_even (value : bv 64) :

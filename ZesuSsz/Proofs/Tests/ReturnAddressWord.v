@@ -58,3 +58,35 @@ Lemma return_integer_fault_refuted (R : Z) :
 Proof.
   intros Hlower Hupper Haligned. eexists. split; [zesu_return_integer_fault | reflexivity].
 Qed.
+
+(* Hypothesis form (block 0270 of decodeParentHeader): the case split of the
+   `ret` puts the fault bit into the context as an equation; the step entry
+   refutes the arm from the word's alignment. *)
+Lemma return_word_fault_hypothesis (frame : SavedFrame) :
+  bv_unsigned (savedReturnAddress frame) mod 4 = 0 ->
+  bv_extract 0 1 (bv_shiftr
+    (bv_or (bv_and (bv_add (savedReturnAddress frame) (BV 64 0))
+      (BV 64 18446744073709551614)) (BV 64 0)) (BV 64 1)) = BV 1 1 ->
+  False.
+Proof.
+  intros Haligned Hfault.
+  Fail solve [zesu_refute_aligned_return_fault_core].
+  assert False as Hrefuted by solve [zesu_refute_aligned_return_fault].
+  clear Hrefuted.
+  solve [unshelve zesu_liAStep].
+Qed.
+
+(* No alignment fact: the arm stays. *)
+Lemma return_word_fault_hypothesis_unaligned (frame : SavedFrame) :
+  0 < bv_unsigned (savedReturnAddress frame) ->
+  bv_extract 0 1 (bv_shiftr
+    (bv_or (bv_and (bv_add (savedReturnAddress frame) (BV 64 0))
+      (BV 64 18446744073709551614)) (BV 64 0)) (BV 64 1)) = BV 1 1 ->
+  True.
+Proof.
+  intros Hpositive Hfault.
+  Fail assert False by solve [zesu_refute_aligned_return_fault].
+  exact I.
+Qed.
+
+Print Assumptions return_word_fault_hypothesis.
