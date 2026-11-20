@@ -27,7 +27,7 @@ Section edges.
 Context `{!islaG Sigma} `{!threadG}.
 
 (* fp_machineAt05a4_ForwardA0N0 -> fp_machineAt0514_slot1_ForwardA0N0 (forward) *)
-Global Instance zesu_hist_edge_145 (args : ParentHeaderArgs) (returnAddress : Z) (call20_result : NextUint64Return) (call20_word_1_0 : bv 64) (call20_word_1_8 : bv 64) (call19_result : NextUint64Return) (call19_kept_x19 : bv 64) (call18_after : DecodeItemOutcome) (call17_result : NextUint64Return) (call16_after : DecodeItemOutcome) (call13_after : DecodeItemOutcome) (call10_after : DecodeItemOutcome) (call_after : DecodeItemOutcome) :
+Global Instance zesu_hist_edge_146 (args : ParentHeaderArgs) (returnAddress : Z) (call20_result : NextUint64Return) (call20_word_1_0 : bv 64) (call20_word_1_8 : bv 64) (call19_result : NextUint64Return) (call19_kept_x19 : bv 64) (call18_after : DecodeItemOutcome) (call17_result : NextUint64Return) (call16_after : DecodeItemOutcome) (call13_after : DecodeItemOutcome) (call10_after : DecodeItemOutcome) (call_after : DecodeItemOutcome) :
   ZesuHistEdge (PROP := iProp Sigma)
     (fp_machineAt05a4_ForwardA0N0_Hist (args) (returnAddress) (call20_result) (call20_word_1_0) (call20_word_1_8) (call19_result) (call19_kept_x19) (call18_after) (call17_result) (call16_after) (call13_after) (call10_after) (call_after))
     (fp_machineAt0514_slot1_ForwardA0N0_Hist (args) (returnAddress) (call20_result) (call20_word_1_0) (call20_word_1_8) (call19_result) (call19_kept_x19) (call18_after) (call17_result) (call16_after) (call13_after) (call10_after) (call_after))

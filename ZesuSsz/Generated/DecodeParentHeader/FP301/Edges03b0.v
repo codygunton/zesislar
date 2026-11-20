@@ -29,7 +29,7 @@ Section edges.
 Context `{!islaG Sigma} `{!threadG}.
 
 (* fp_machineAt03b0_ForwardA0N0 -> fp_machineAt03bc_ForwardA0N0 (join) *)
-Global Instance zesu_hist_edge_99 (args : ParentHeaderArgs) (returnAddress : Z) (call13_after : DecodeItemOutcome) (call13_kept_x18 : bv 64) (call13_kept_x19 : bv 64) (call10_after : DecodeItemOutcome) (call_after : DecodeItemOutcome) (machine_x10 : bv 64) :
+Global Instance zesu_hist_edge_100 (args : ParentHeaderArgs) (returnAddress : Z) (call13_after : DecodeItemOutcome) (call13_kept_x18 : bv 64) (call13_kept_x19 : bv 64) (call10_after : DecodeItemOutcome) (call_after : DecodeItemOutcome) (machine_x10 : bv 64) :
   ZesuHistEdge (PROP := iProp Sigma)
     (fp_machineAt03b0_ForwardA0N0_Hist (args) (returnAddress) (call13_after) (call13_kept_x18) (call13_kept_x19) (call10_after) (call_after))
     (fp_machineAt03bc_ForwardA0N0_Hist (args) (returnAddress) (machine_x10) (call13_kept_x18) (call13_after) (call10_after) (call_after))
@@ -65,7 +65,7 @@ Proof.
 Qed.
 
 (* fp_machineAt03b0_ForwardA0N0 -> fp_machineAt03e8_ForwardA0N0 (forward) *)
-Global Instance zesu_hist_edge_100 (args : ParentHeaderArgs) (returnAddress : Z) (call13_after : DecodeItemOutcome) (call13_kept_x18 : bv 64) (call13_kept_x19 : bv 64) (call10_after : DecodeItemOutcome) (call_after : DecodeItemOutcome) (join_resource_32_call_after_bytes : list byte) :
+Global Instance zesu_hist_edge_101 (args : ParentHeaderArgs) (returnAddress : Z) (call13_after : DecodeItemOutcome) (call13_kept_x18 : bv 64) (call13_kept_x19 : bv 64) (call10_after : DecodeItemOutcome) (call_after : DecodeItemOutcome) (join_resource_32_call_after_bytes : list byte) :
   ZesuHistEdge (PROP := iProp Sigma)
     (fp_machineAt03b0_ForwardA0N0_Hist (args) (returnAddress) (call13_after) (call13_kept_x18) (call13_kept_x19) (call10_after) (call_after))
     (fp_machineAt03e8_ForwardA0N0_Hist (args) (returnAddress) (call13_after) (call13_kept_x18) (call13_kept_x19) (call10_after) (call_after))

@@ -27,7 +27,7 @@ Section edges.
 Context `{!islaG Sigma} `{!threadG}.
 
 (* fp_machineAt0274_slot0_ForwardA0N0 -> fp_machineReturn_slot0_ForwardA0N0 (return) *)
-Global Instance zesu_hist_edge_59 (args : ParentHeaderArgs) (returnAddress : Z) (call10_after : DecodeItemOutcome) (call_after : DecodeItemOutcome) (machine_x10 : bv 64) :
+Global Instance zesu_hist_edge_60 (args : ParentHeaderArgs) (returnAddress : Z) (call10_after : DecodeItemOutcome) (call_after : DecodeItemOutcome) (machine_x10 : bv 64) :
   ZesuHistEdge (PROP := iProp Sigma)
     (fp_machineAt0274_slot0_ForwardA0N0_Hist (args) (returnAddress) (call10_after) (call_after) (machine_x10))
     (fp_machineReturn_slot0_ForwardA0N0_Hist (args) (returnAddress) (call10_after) (call_after) (machine_x10))
@@ -56,7 +56,7 @@ Proof.
 Qed.
 
 (* fp_machineAt0274_slot1_ForwardA0N0 -> fp_machineReturn_slot1_ForwardA0N0 (return) *)
-Global Instance zesu_hist_edge_60 (args : ParentHeaderArgs) (returnAddress : Z) (call13_after : DecodeItemOutcome) (call10_after : DecodeItemOutcome) (call_after : DecodeItemOutcome) (machine_x10 : bv 64) (machine_x18 : bv 64) :
+Global Instance zesu_hist_edge_61 (args : ParentHeaderArgs) (returnAddress : Z) (call13_after : DecodeItemOutcome) (call10_after : DecodeItemOutcome) (call_after : DecodeItemOutcome) (machine_x10 : bv 64) (machine_x18 : bv 64) :
   ZesuHistEdge (PROP := iProp Sigma)
     (fp_machineAt0274_slot1_ForwardA0N0_Hist (args) (returnAddress) (call13_after) (call10_after) (call_after) (machine_x10) (machine_x18))
     (fp_machineReturn_slot1_ForwardA0N0_Hist (args) (returnAddress) (call13_after) (call10_after) (call_after) (machine_x10))
@@ -84,7 +84,7 @@ Proof.
 Qed.
 
 (* fp_machineAt0274_slot2_ForwardA0N0 -> fp_machineReturn_slot2_ForwardA0N0 (return) *)
-Global Instance zesu_hist_edge_61 (args : ParentHeaderArgs) (returnAddress : Z) (call19_result : NextUint64Return) (call19_word_1_0 : bv 64) (call19_word_1_8 : bv 64) (call19_kept_x19 : bv 64) (call18_after : DecodeItemOutcome) (call17_result : NextUint64Return) (call16_after : DecodeItemOutcome) (call13_after : DecodeItemOutcome) (call10_after : DecodeItemOutcome) (call_after : DecodeItemOutcome) :
+Global Instance zesu_hist_edge_62 (args : ParentHeaderArgs) (returnAddress : Z) (call19_result : NextUint64Return) (call19_word_1_0 : bv 64) (call19_word_1_8 : bv 64) (call19_kept_x19 : bv 64) (call18_after : DecodeItemOutcome) (call17_result : NextUint64Return) (call16_after : DecodeItemOutcome) (call13_after : DecodeItemOutcome) (call10_after : DecodeItemOutcome) (call_after : DecodeItemOutcome) :
   ZesuHistEdge (PROP := iProp Sigma)
     (fp_machineAt0274_slot2_ForwardA0N0_Hist (args) (returnAddress) (call19_result) (call19_word_1_0) (call19_word_1_8) (call19_kept_x19) (call18_after) (call17_result) (call16_after) (call13_after) (call10_after) (call_after))
     (fp_machineReturn_slot2_ForwardA0N0_Hist (args) (returnAddress) (call19_result) (call19_word_1_0) (call19_word_1_8) (call18_after) (call17_result) (call16_after) (call13_after) (call10_after) (call_after))
@@ -152,7 +152,7 @@ Proof.
 Qed.
 
 (* fp_machineAt0274_slot3_ForwardA0N0 -> fp_machineReturn_slot3_ForwardA0N0 (return) *)
-Global Instance zesu_hist_edge_62 (args : ParentHeaderArgs) (returnAddress : Z) (call20_result : NextUint64Return) (call20_word_1_0 : bv 64) (call20_word_1_8 : bv 64) (call19_result : NextUint64Return) (call19_kept_x19 : bv 64) (call18_after : DecodeItemOutcome) (call17_result : NextUint64Return) (call16_after : DecodeItemOutcome) (call13_after : DecodeItemOutcome) (call10_after : DecodeItemOutcome) (call_after : DecodeItemOutcome) :
+Global Instance zesu_hist_edge_63 (args : ParentHeaderArgs) (returnAddress : Z) (call20_result : NextUint64Return) (call20_word_1_0 : bv 64) (call20_word_1_8 : bv 64) (call19_result : NextUint64Return) (call19_kept_x19 : bv 64) (call18_after : DecodeItemOutcome) (call17_result : NextUint64Return) (call16_after : DecodeItemOutcome) (call13_after : DecodeItemOutcome) (call10_after : DecodeItemOutcome) (call_after : DecodeItemOutcome) :
   ZesuHistEdge (PROP := iProp Sigma)
     (fp_machineAt0274_slot3_ForwardA0N0_Hist (args) (returnAddress) (call20_result) (call20_word_1_0) (call20_word_1_8) (call19_result) (call19_kept_x19) (call18_after) (call17_result) (call16_after) (call13_after) (call10_after) (call_after))
     (fp_machineReturn_slot3_ForwardA0N0_Hist (args) (returnAddress) (call20_result) (call20_word_1_0) (call20_word_1_8) (call19_result) (call18_after) (call17_result) (call16_after) (call13_after) (call10_after) (call_after))
@@ -222,7 +222,7 @@ Proof.
 Qed.
 
 (* fp_machineAt0274_slot4_ForwardA0N0 -> fp_machineReturn_slot4_ForwardA0N0 (return) *)
-Global Instance zesu_hist_edge_63 (args : ParentHeaderArgs) (returnAddress : Z) (call16_after : DecodeItemOutcome) (call16_kept_x18 : bv 64) (call16_kept_x19 : bv 64) (call13_after : DecodeItemOutcome) (call10_after : DecodeItemOutcome) (call_after : DecodeItemOutcome) :
+Global Instance zesu_hist_edge_64 (args : ParentHeaderArgs) (returnAddress : Z) (call16_after : DecodeItemOutcome) (call16_kept_x18 : bv 64) (call16_kept_x19 : bv 64) (call13_after : DecodeItemOutcome) (call10_after : DecodeItemOutcome) (call_after : DecodeItemOutcome) :
   ZesuHistEdge (PROP := iProp Sigma)
     (fp_machineAt0274_slot4_ForwardA0N0_Hist (args) (returnAddress) (call16_after) (call16_kept_x18) (call16_kept_x19) (call13_after) (call10_after) (call_after))
     (fp_machineReturn_slot4_ForwardA0N0_Hist (args) (returnAddress) (call16_after) (call16_kept_x18) (call16_kept_x19) (call13_after) (call10_after) (call_after))
@@ -281,7 +281,7 @@ Proof.
 Qed.
 
 (* fp_machineAt0274_slot5_ForwardA0N0 -> fp_machineReturn_slot5_ForwardA0N0 (return) *)
-Global Instance zesu_hist_edge_64 (args : ParentHeaderArgs) (returnAddress : Z) (call17_result : NextUint64Return) (call17_word_1_0 : bv 64) (call17_word_1_8 : bv 64) (call17_kept_x19 : bv 64) (call16_after : DecodeItemOutcome) (call13_after : DecodeItemOutcome) (call10_after : DecodeItemOutcome) (call_after : DecodeItemOutcome) :
+Global Instance zesu_hist_edge_65 (args : ParentHeaderArgs) (returnAddress : Z) (call17_result : NextUint64Return) (call17_word_1_0 : bv 64) (call17_word_1_8 : bv 64) (call17_kept_x19 : bv 64) (call16_after : DecodeItemOutcome) (call13_after : DecodeItemOutcome) (call10_after : DecodeItemOutcome) (call_after : DecodeItemOutcome) :
   ZesuHistEdge (PROP := iProp Sigma)
     (fp_machineAt0274_slot5_ForwardA0N0_Hist (args) (returnAddress) (call17_result) (call17_word_1_0) (call17_word_1_8) (call17_kept_x19) (call16_after) (call13_after) (call10_after) (call_after))
     (fp_machineReturn_slot5_ForwardA0N0_Hist (args) (returnAddress) (call17_result) (call17_word_1_0) (call17_word_1_8) (call16_after) (call13_after) (call10_after) (call_after))
@@ -341,7 +341,7 @@ Proof.
 Qed.
 
 (* fp_machineAt0274_slot6_ForwardA0N0 -> fp_machineReturn_slot6_ForwardA0N0 (return) *)
-Global Instance zesu_hist_edge_65 (args : ParentHeaderArgs) (returnAddress : Z) (call18_after : DecodeItemOutcome) (call17_result : NextUint64Return) (call17_word_1_0 : bv 64) (call17_word_1_8 : bv 64) (call16_after : DecodeItemOutcome) (call13_after : DecodeItemOutcome) (call10_after : DecodeItemOutcome) (call_after : DecodeItemOutcome) :
+Global Instance zesu_hist_edge_66 (args : ParentHeaderArgs) (returnAddress : Z) (call18_after : DecodeItemOutcome) (call17_result : NextUint64Return) (call17_word_1_0 : bv 64) (call17_word_1_8 : bv 64) (call16_after : DecodeItemOutcome) (call13_after : DecodeItemOutcome) (call10_after : DecodeItemOutcome) (call_after : DecodeItemOutcome) :
   ZesuHistEdge (PROP := iProp Sigma)
     (fp_machineAt0274_slot6_ForwardA0N0_Hist (args) (returnAddress) (call18_after) (call17_result) (call17_word_1_0) (call17_word_1_8) (call16_after) (call13_after) (call10_after) (call_after))
     (fp_machineReturn_slot6_ForwardA0N0_Hist (args) (returnAddress) (call18_after) (call17_result) (call17_word_1_0) (call17_word_1_8) (call16_after) (call13_after) (call10_after) (call_after))
