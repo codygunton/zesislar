@@ -542,13 +542,15 @@ for suffix, slot in units:
                     [text for component, text in rendered_components if component["kind"] not in ("pure", "true")],
                     facts,
                     # The function return entry (`Return`) is no block: no call record of its own.
-                    (entry_hist.call_visible_patterns(profile.pc(block[0]), call_plans, block_starts, binders,
-                                                     facts)
-                     + entry_hist.loop_entry_patterns(
-                         profile.pc(block[0]), {profile.pc(design['entry_predecessor'])
-                                                for design in profile.get('loop_designs', [])
-                                                if design.get('entry_predecessor')}, binders, facts))
-                    if (block := re.match(r"[0-9a-f]+(?=_|$)", suffix)) else [],
+                    ((entry_hist.call_visible_patterns(profile.pc(block[0]), call_plans, block_starts, binders,
+                                                      facts)
+                      + entry_hist.loop_entry_patterns(
+                          profile.pc(block[0]), {profile.pc(design['entry_predecessor'])
+                                                 for design in profile.get('loop_designs', [])
+                                                 if design.get('entry_predecessor')}, binders, facts))
+                     if (block := re.match(r"[0-9a-f]+(?=_|$)", suffix)) else [])
+                    # Profile `hist_pinned`: facts that stay visible and keep their binders live.
+                    + profile.get("hist_pinned", []),
                     weak_patterns=profile.get("hist_visible", []),
                     # A successor's live binder without a resource takes its value from this entry.
                     pinned=backward_pins.get(pc, {}).get("pinned", []),

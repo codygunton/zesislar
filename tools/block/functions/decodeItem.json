@@ -31,7 +31,7 @@
   "loop_heads": ["+0xc4", "+0x164"],
   "entry_hist": "wrap",
   "frame_slots": false,
-  "hist_visible": [".*"],
+  "hist_pinned": [".*"],
   "store_splice": "per_store",
   "keep_source_implied_ram_guards": true,
   "caller_residual_imports": true,

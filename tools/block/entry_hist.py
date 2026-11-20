@@ -8,9 +8,12 @@ The function profile selects the shape (`configure`):
                           store computes.
 
 Visible facts: facts that mention no entry binder (function domain, return alignment), `List.length`
-facts of live binders, and facts that match a profile `hist_visible` regular expression. Every other
-fact is hidden; a join history (`zesu_join_history`) is always hidden. A live binder is one that an
-owned resource mentions; the others are ghost binders and are bound inside the history.
+facts of live binders, facts that match a profile `hist_pinned` regular expression (their binders stay
+live), and facts on live binders that match a profile `hist_visible` regular expression (weak: see
+`classify`). Every other fact is hidden; a join history (`zesu_join_history`) is always hidden. A live
+binder is one that an owned resource, a pinning pattern or a backward pin mentions; the others are
+ghost binders and are bound inside the history. decodeItem pins `.*`: nothing is hidden, so its
+entries keep the plain shape (`seal_alternative` returns None).
 """
 import re
 

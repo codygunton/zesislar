@@ -46,7 +46,7 @@ class WrapEntryShape(unittest.TestCase):
         plain = [{"name": "args", "type": "A"}, {"name": "returnAddress", "type": "Z"}]
         binders = [{"name": "x", "type": "bv 64"}, {"name": "u", "type": "bv 64"}]
         facts = ["bv_unsigned x < 8", "decodeItemCallDomain args"]
-        # Every fact visible and no ghost binder: nothing to seal (decodeItem, hist_visible [".*"]).
+        # Every fact visible and no ghost binder: nothing to seal (decodeItem, hist_pinned [".*"]).
         self.assertIsNone(entry_hist.seal_alternative(
             "e", " (args : A) (returnAddress : Z)", plain, binders, ['reg "x10" x'], facts, [".*"]))
         # One hidden fact: the history is rendered.
