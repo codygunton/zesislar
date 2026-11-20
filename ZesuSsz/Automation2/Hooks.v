@@ -467,14 +467,18 @@ Ltac zesu_finish_element_alias :=
    list at `bv 8` while the context's length fact counts it at
    `bv (Z_idx 8)`, and linear arithmetic compares the two atoms by syntax.
    Restate each fact's `length` of a list the goal counts at the goal's
-   element type (convertible, so `change`). *)
+   element type (convertible, so `change`). A goal that counts the list at
+   the fact's type as well keeps the fact as it is: the next turn would
+   restate it back, and the two changes alternate without end (nextUint64
+   0000 grew to 24 GiB). A change that rewrites nothing ends the step. *)
 Ltac zesu_length_element_alias :=
   repeat match goal with
   | |- context [@length ?T ?l] =>
       match goal with
       | H : context [@length ?U l] |- _ =>
           assert_fails (constr_eq T U);
-          change (@length U l) with (@length T l) in H
+          lazymatch goal with |- context [@length U l] => fail | _ => idtac end;
+          progress change (@length U l) with (@length T l) in H
       end
   end.
 

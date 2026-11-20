@@ -58,3 +58,25 @@ Proof.
   idtac "PLAIN_WIDTH_REFUSED".
   reflexivity.
 Qed.
+
+(* The length step restates a fact at the goal's element type; a goal that
+   counts the list at both types keeps the fact (without that guard the step
+   restates the fact back and forth without end). *)
+Lemma element_width_length_alias_fires (bytes : list (bv 8)) :
+  @length (bv (MachineWord.Z_idx 8)) bytes = 16%nat -> @length (bv 8) bytes = 16%nat.
+Proof.
+  intros Hlength.
+  ZesuSsz.Automation2.Hooks.zesu_length_element_alias.
+  lazymatch type of Hlength with @length (bv 8) _ = _ => idtac end.
+  exact Hlength.
+Qed.
+
+Lemma element_width_length_alias_both_spellings (bytes : list (bv 8)) :
+  @length (bv (MachineWord.Z_idx 8)) bytes = 16%nat ->
+  @length (bv 8) bytes = @length (bv (MachineWord.Z_idx 8)) bytes.
+Proof.
+  intros Hlength.
+  ZesuSsz.Automation2.Hooks.zesu_length_element_alias.
+  lazymatch type of Hlength with @length (bv (MachineWord.Z_idx 8)) _ = _ => idtac end.
+  reflexivity.
+Qed.
