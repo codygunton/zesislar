@@ -36,7 +36,6 @@ Require Import ZesuSsz.Compliance.ParentHeaderDirectExitBridgeSlot3.
 Require Import ZesuSsz.Compliance.ParentHeaderDirectExitBridgeSlot4.
 Require Import ZesuSsz.Compliance.ParentHeaderDirectExitBridgeSlot5.
 Require Import ZesuSsz.Compliance.ParentHeaderDirectExitBridgeSlot6.
-Require ZesuSsz.Compliance.NextUint64GeneratedComposition.
 Local Open Scope Z_scope.
 #[local] Typeclasses Transparent parentHeaderSelectedCode nextUint64SelectedCode
   decodeItemSelectedCode.
@@ -286,16 +285,16 @@ Proof.
   all: parentHeader_slot Hexits.
 Qed.
 
-(* ---- The theorem: decodeParentHeader compliance, given the open blocks
-   and the exit meanings; nextUint64's contract is proved
-   (`nextUint64Compliance`). ---- *)
+(* ---- The theorem: decodeParentHeader compliance, given the open blocks,
+   the exit meanings (and the direct-return bridges not yet proved) and
+   nextUint64's contract. ---- *)
 Theorem parentHeaderGeneratedCompliance :
+  NextUint64ContractCorrect ->
   ParentHeaderOpenBlocks ->
   ParentHeaderExitMeanings ->
   ParentHeaderContractCorrect.
 Proof.
-  pose proof ZesuSsz.Compliance.NextUint64GeneratedComposition.nextUint64Compliance as Hnext.
-  intros Hopen Hexits returnAddress Sigma HG HT.
+  intros Hnext Hopen Hexits returnAddress Sigma HG HT.
   change (⊢ (parentHeaderSelectedCode ∗ nextUint64SelectedCode ∗ decodeItemSelectedCode ∗
              □ instr_pre memcpyCsrPc memcpyCallSpec2) -∗ ∀ args : ParentHeaderArgs,
     instr_body decodeParentHeaderEntry
