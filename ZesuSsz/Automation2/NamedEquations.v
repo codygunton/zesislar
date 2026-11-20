@@ -262,17 +262,29 @@ Ltac zesu_named_equation_witness :=
    (a successor restating a call's facts over fresh names): each conjunct is
    closed by a hypothesis with the same head, which sets the witnesses. Only
    syntactic existentials and conjunctions are opened: `eexists` and `split`
-   would also open definitions that unfold to an equation or a record. *)
+   would also open definitions that unfold to an equation or a record.
+   A goal that is not a proposition is the witness of a binder no conjunct
+   mentions (`eexists` shelves the others): any value of its type does, so it
+   takes `inhabitant`, or else the first hypothesis of its type, once. Trying
+   every hypothesis of the type there multiplies the search by their number
+   per such binder before a conjunct fails: five unused `bv 64` call-argument
+   binders over a context with 33 words did not return. *)
 Ltac zesu_finish_exists_from_hypotheses :=
   lazymatch goal with |- ex _ => idtac end;
   solve [repeat lazymatch goal with |- ex _ => eexists end;
     repeat lazymatch goal with |- _ /\ _ => split end;
     multimatch goal with |- ?conjunct =>
-      let head := get_head conjunct in
-      multimatch goal with
-      | Hfact : ?fact |- _ =>
-          let fact_head := get_head fact in
-          constr_eq head fact_head;
-          exact Hfact
+      lazymatch type of conjunct with
+      | Prop =>
+          let head := get_head conjunct in
+          multimatch goal with
+          | Hfact : ?fact |- _ =>
+              let fact_head := get_head fact in
+              constr_eq head fact_head;
+              exact Hfact
+          end
+      | _ =>
+          first [exact inhabitant |
+                 match goal with Hvalue : conjunct |- _ => exact Hvalue end]
       end
     end].
