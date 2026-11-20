@@ -640,6 +640,7 @@
       "spec": "memcpyCallSpec2",
       "spec_module": "ZesuSsz.Contracts.ParentHeaderMemcpyService",
       "spec_source": "ZesuSsz/Contracts/ParentHeaderMemcpyService.v",
+      "folded_definitions": ["parentHeaderMemcpyDomain"],
       "arrays": [
         {
           "binder": "source",
