@@ -79,6 +79,8 @@ Require Export ZesuSsz.Automation2.Switches.PureFactHints.
 Require Export ZesuSsz.Automation2.MemoryAddress.
 Require Export ZesuSsz.Automation2.WrappedWord.
 Require Export ZesuSsz.Automation2.BytePositionEquations.
+Require Export ZesuSsz.Automation2.CallSliceInterface.
+Require Export ZesuSsz.Automation2.CallSlice.
 Require Export ZesuSsz.Automation2.EntryWitnessFinish.
 Require Export ZesuSsz.Automation2.MemoryTupleConsumer.
 Require Export ZesuSsz.Automation2.SourceFactMatching.
