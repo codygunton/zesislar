@@ -200,7 +200,7 @@ def main():
         through = [name for name, _ in successors if name in inlined]
         exits = [(name, index) for name, index in successors if name not in inlined]
         k = continuation if through else 'K'
-        modules = list(dict.fromkeys([suffix, *(name for name, _ in exits)]))   # a loop head is its own successor
+        modules = [suffix, *dict.fromkeys(name for name, _ in exits)]
         imports = [profile.qualified('Pilot' + name + kind) for name in modules
                    for kind in ('Entries', 'Structural')]
         if through:

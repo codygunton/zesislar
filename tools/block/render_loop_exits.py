@@ -22,7 +22,7 @@ import argparse, hashlib, json, re, sys
 
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / 'tools/block'))
-from render_fp301_statements import render_block_caller, render_unfold_opacity
+from render_fp301_statements import render_unfold_opacity
 from boundary_guards import BoundaryRefused, RocqContradictionCheck, alternative_facts, contradiction_source
 from function_profiles import load_profile, loop_header
 
@@ -174,24 +174,20 @@ def exit_precondition(pc):
     return f'instr_pre {PROFILE.pc(pc)} ({qualified_entry(pc)} (args) (returnAddress) (K))%I'
 
 
-def head_caller_source(head, exit_pc):
-    """Render the loop-head caller whose exit precondition is the exit entry."""
-    imports = [PROFILE.qualified(f'Pilot{pc}{kind}') for pc in (head, exit_pc)
-               for kind in ('Entries', 'Structural')]
-    return render_block_caller(PROFILE, head, [exit_precondition(head), exit_precondition(exit_pc)],
-                               imports)
-
-
 def exit_obligations():
+    """The loop-head callers (render_function_callers.py) that check each exit entry: the committed
+    caller states the exit precondition; its sha256 binds the fixture row."""
     rows = []
     for row in DESIGN:
         if 'block' not in row:
             output = f'{CALLERS}/Caller{row["head"]}.v'
-            source = head_caller_source(row['head'], row['pc'])
+            caller = (ROOT / output).read_bytes()
             rows.append({'loop_head': PROFILE.pc(row['head']), 'exit_pc': PROFILE.pc(row['pc']),
                          'entry': qualified_entry(row['pc']), 'precondition': exit_precondition(row['pc']),
                          'checked_by': 'DesignedBoundary_' + PROFILE.pc(row['head'])[2:], 'output': output,
-                         'sha256': hashlib.sha256(source.encode()).hexdigest(), 'source': source})
+                         'sha256': hashlib.sha256(caller).hexdigest()})
+            if ('\n  ' + rows[-1]['precondition'] + ' -∗\n').encode() not in caller:
+                raise ValueError('The loop-head caller lacks its exit precondition: ' + output)
     return rows
 
 
@@ -245,9 +241,7 @@ def main():
         for check in checks:
             row = recorded[check['definition']]
             assert row['check_sha256'] == check['check_sha256'] and row['contradictory'] is False, check['definition']
-        assert [{key: value for key, value in row.items() if key != 'source'} for row in obligations] == fixture['exit_obligations']
-        for row in obligations:
-            assert (ROOT / row['output']).read_text() == row['source'], row['output']
+        assert obligations == fixture['exit_obligations']
         print('Loop-exit declarations match the design table.')
         return
     output_dir = options.output
@@ -283,11 +277,9 @@ def main():
         rows[output]['sha256'] = hashlib.sha256(source.encode()).hexdigest()
         rows[output]['renderer'] = 'tools/block/render_loop_exits.py'
         (ROOT / output).write_text(committed)
-    for row in obligations:
-        (ROOT / row['output']).write_text(row['source'])
     fixture['contradiction_checks'] = [{key: value for key, value in check.items() if key not in ('binders', 'facts')}
                                        for check in checks]
-    fixture['exit_obligations'] = [{key: value for key, value in row.items() if key != 'source'} for row in obligations]
+    fixture['exit_obligations'] = obligations
     FIXTURE.write_text(json.dumps(fixture, indent=2, ensure_ascii=False) + '\n')
     print('Rendered', len(outputs), 'loop-exit declarations.')
 
