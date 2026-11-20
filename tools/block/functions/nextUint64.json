@@ -131,7 +131,9 @@
         "extent_reason": "1 <= length (nextInputBytes (nextUint64Base args)): the payload lies inside the input array and its length is not 0 (loop facts and the beq at 0x800d630c)"
       },
       "visible": [
-        "bv_signed \\(BV 128%N 8%Z\\) >= bv_signed \\(bv_zero_extend 128%N"
+        "bv_signed \\(BV 128%N 8%Z\\) >= bv_signed \\(bv_zero_extend 128%N",
+        "bool_decide \\(\\(bv_zero_extend 64%N \\(bv_concat 16%N \\(List\\.nth 33%nat call_after",
+        "bool_decide \\(\\(bv_and \\(bv_zero_extend 64%N \\(List\\.nth 16%nat call_after"
       ]
     }
   ],
@@ -160,5 +162,11 @@
     "bv_unsigned \\(bv_and \\(bv_zero_extend 64%N \\(List\\.nth 16%nat call_after"
   ],
   "entry_hist": "wrap",
-  "frame_slots": true
+  "frame_slots": true,
+  "compliance": {
+    "boundary": "ZesuSsz.Compliance.NextUint64CompositionBoundary",
+    "continuation": "nextUint64Continuation",
+    "inline_returns": false,
+    "source": "Every table entry carries the generated return entry at returnAddress as K (NextUint64CompositionBoundary.v); the return block 0x0070 has a slot and its caller consumes it; the composition's end bridge turns it into the contract exit."
+  }
 }
