@@ -9,7 +9,7 @@ row of CALLERS.json with status "rendered" becomes a member; inlined return bloc
 A member's "cpu_seconds" is min(1200, 120 + 45 x instructions), the instructions being the CFG rows
 (build/stock-zisk/cfg.json) the caller steps through: from its pc to the start of a successor
 caller, through inlined blocks, ending at a call, a jump out of the function or a `ret`/`jr`
-(a caller with no successor premise counts to its return). The blocks of HEAVY (plan step 1.4,
+(a caller with no successor premise counts to its return). The blocks of HEAVY (plan steps 1.4, 2.2,
 issue #316) get 2400 CPU-s and claim 24 GiB instead. The other members claim --claim-gib (default 8).
 A function that is not on main needs its overlay: --overlays-from copies the overlay of that name
 from an existing set (and --cfg points at a CFG that has the function).
@@ -26,8 +26,11 @@ BENCH = Path(__file__).resolve().parent
 ROOT = BENCH.parent.parent
 CPU_FLOOR, CPU_PER_INSTRUCTION, CPU_CEILING = 120, 45, 1200
 HEAVY_CPU, HEAVY_CLAIM_GIB = 2400, 24
-# Blocks whose measured runs need more than the formula (plan step 1.4): case patterns per function.
-HEAVY = {'decodeParentHeader': ['0000', '0088', '0094', '00a8', '0270', '0408', '04ec', '0514_slot*']}
+# Blocks whose measured runs need more than the formula (plan steps 1.4 and 2.2, issue #316): case
+# patterns per function. nextUint64 0070 and 00a4 close above their formula caps (480, 345): 454 and
+# 370 CPU-s on an idle host, 626 and 528 on a loaded one (lane 1.3).
+HEAVY = {'decodeParentHeader': ['0000', '0088', '0094', '00a8', '0270', '0408', '04ec', '0514_slot*'],
+         'nextUint64': ['0000', '0070', '00a4']}
 
 
 def cfg_function(cfg, function):
@@ -86,7 +89,7 @@ def members(function, callers_dir, cfg, claim_gib):
         member = {'function': function, 'callers': callers_dir.name, 'case': row['case'], 'instructions': count}
         if is_heavy(function, row['case']):
             member.update(cpu_seconds=HEAVY_CPU, claim_gib=HEAVY_CLAIM_GIB,
-                          why='%d instructions; heavy block of plan step 1.4: %d CPU-s, claim %d GiB'
+                          why='%d instructions; heavy block of plan steps 1.4 and 2.2: %d CPU-s, claim %d GiB'
                           % (count, HEAVY_CPU, HEAVY_CLAIM_GIB))
         else:
             cap = min(CPU_CEILING, CPU_FLOOR + CPU_PER_INSTRUCTION * count)

@@ -1,0 +1,113 @@
+{
+ "name": "NU-ALL",
+ "created": "2026-11-19",
+ "purpose": "Every rendered caller of nextUint64 (nextuint64_fp301_callers), each with its own CPU cap (tools/bench/mkset.py).",
+ "caps": {
+  "cpu_seconds": 2400,
+  "limit_gib": 24
+ },
+ "jobs": 6,
+ "overlays": [],
+ "members": [
+  {
+   "function": "nextUint64",
+   "callers": "nextuint64_fp301_callers",
+   "case": "0000",
+   "instructions": 17,
+   "cpu_seconds": 2400,
+   "claim_gib": 24,
+   "why": "17 instructions; heavy block of plan steps 1.4 and 2.2: 2400 CPU-s, claim 24 GiB",
+   "expected_cpu": 2400
+  },
+  {
+   "function": "nextUint64",
+   "callers": "nextuint64_fp301_callers",
+   "case": "0044",
+   "instructions": 2,
+   "cpu_seconds": 210,
+   "claim_gib": 8,
+   "why": "2 instructions: cap min(1200, 120 + 45 x 2) = 210 CPU-s",
+   "expected_cpu": 210
+  },
+  {
+   "function": "nextUint64",
+   "callers": "nextuint64_fp301_callers",
+   "case": "004c",
+   "instructions": 3,
+   "cpu_seconds": 255,
+   "claim_gib": 8,
+   "why": "3 instructions: cap min(1200, 120 + 45 x 3) = 255 CPU-s",
+   "expected_cpu": 255
+  },
+  {
+   "function": "nextUint64",
+   "callers": "nextuint64_fp301_callers",
+   "case": "0058",
+   "instructions": 3,
+   "cpu_seconds": 255,
+   "claim_gib": 8,
+   "why": "3 instructions: cap min(1200, 120 + 45 x 3) = 255 CPU-s",
+   "expected_cpu": 255
+  },
+  {
+   "function": "nextUint64",
+   "callers": "nextuint64_fp301_callers",
+   "case": "0064",
+   "instructions": 3,
+   "cpu_seconds": 255,
+   "claim_gib": 8,
+   "why": "3 instructions: cap min(1200, 120 + 45 x 3) = 255 CPU-s",
+   "expected_cpu": 255
+  },
+  {
+   "function": "nextUint64",
+   "callers": "nextuint64_fp301_callers",
+   "case": "0070",
+   "instructions": 8,
+   "cpu_seconds": 2400,
+   "claim_gib": 24,
+   "why": "8 instructions; heavy block of plan steps 1.4 and 2.2: 2400 CPU-s, claim 24 GiB",
+   "expected_cpu": 2400
+  },
+  {
+   "function": "nextUint64",
+   "callers": "nextuint64_fp301_callers",
+   "case": "0090",
+   "instructions": 3,
+   "cpu_seconds": 255,
+   "claim_gib": 8,
+   "why": "3 instructions: cap min(1200, 120 + 45 x 3) = 255 CPU-s",
+   "expected_cpu": 255
+  },
+  {
+   "function": "nextUint64",
+   "callers": "nextuint64_fp301_callers",
+   "case": "009c",
+   "instructions": 2,
+   "cpu_seconds": 210,
+   "claim_gib": 8,
+   "why": "2 instructions: cap min(1200, 120 + 45 x 2) = 210 CPU-s",
+   "expected_cpu": 210
+  },
+  {
+   "function": "nextUint64",
+   "callers": "nextuint64_fp301_callers",
+   "case": "00a4",
+   "instructions": 5,
+   "cpu_seconds": 2400,
+   "claim_gib": 24,
+   "why": "5 instructions; heavy block of plan steps 1.4 and 2.2: 2400 CPU-s, claim 24 GiB",
+   "expected_cpu": 2400
+  },
+  {
+   "function": "nextUint64",
+   "callers": "nextuint64_fp301_callers",
+   "case": "00b8",
+   "instructions": 7,
+   "cpu_seconds": 435,
+   "claim_gib": 8,
+   "why": "7 instructions: cap min(1200, 120 + 45 x 7) = 435 CPU-s",
+   "expected_cpu": 435
+  }
+ ]
+}
