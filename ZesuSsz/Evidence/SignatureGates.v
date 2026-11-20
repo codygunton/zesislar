@@ -148,7 +148,8 @@ Check (eq_refl : knownBugs =
   [RlpLongLengthWrap; ParentHeaderMissingRequiredField;
    ParentHeaderTrailingBytes; ParentHeaderSkippedFieldShape;
    ParentHeaderBlobGasUnaligned; RlpUintNonCanonical;
-   ParentHeaderUintOver8; ParentHeaderUndecodedFieldRejected]).
+   ParentHeaderUintOver8; ParentHeaderUndecodedFieldRejected;
+   ParentHeaderExcessBlobGasAboveLimit; ParentHeaderTrailingItemMalformed]).
 
 Definition ReviewedDecodeMeaningModuloKnownBugs
     (args : DecodeItemArgs) (after : DecodeItemOutcome) : Prop :=
@@ -190,6 +191,8 @@ Definition ReviewedParentHeaderBugTrigger (bug : KnownBug)
   | RlpUintNonCanonical => uintNonCanonicalb bytes
   | ParentHeaderUintOver8 => uintOver8b bytes
   | ParentHeaderUndecodedFieldRejected => undecodedFieldRejectedb bytes
+  | ParentHeaderExcessBlobGasAboveLimit => excessBlobGasAboveLimitb bytes
+  | ParentHeaderTrailingItemMalformed => trailingItemMalformedb bytes
   end.
 
 Check (eq_refl : parentHeaderBugTrigger = ReviewedParentHeaderBugTrigger).

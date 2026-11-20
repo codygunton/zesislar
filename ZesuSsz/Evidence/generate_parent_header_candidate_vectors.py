@@ -41,11 +41,10 @@ EXPECTED_TRIGGERS = {
     "prague_real_header": [],
     **{f"cancun_after_field_{k:02d}": [MISSING] for k in range(1, 12)},
     **{f"cancun_after_field_{k:02d}": [] for k in range(12, 21)},
-    # The wrapped item is the gas limit (field 9): the code rejects it, so the
-    # draft trigger of ParentHeaderUndecodedFieldRejected fires as well,
-    # although Sail rejects this input too.
-    "required_nested_wrap": ["RlpLongLengthWrap",
-                             "ParentHeaderUndecodedFieldRejected"],
+    # The wrapped item is the gas limit (field 9): the code and Sail both
+    # reject it, and ParentHeaderUndecodedFieldRejected does not fire on a
+    # wrapped item (row O2 of the approved trigger set).
+    "required_nested_wrap": ["RlpLongLengthWrap"],
     "optional_nested_wrap": ["RlpLongLengthWrap"],
     "W1": ["ParentHeaderSkippedFieldShape"],
     "W2": ["ParentHeaderBlobGasUnaligned"],
@@ -68,6 +67,8 @@ WITNESS_SAIL = {
     "uintNonCanonicalWitness3": "Reject",
     "uintOver8Witness": "Success",
     "undecodedFieldWitness": "Success",
+    "excessBlobGasAboveLimitWitness": "Reject",
+    "trailingItemMalformedWitness": "Reject",
 }
 
 

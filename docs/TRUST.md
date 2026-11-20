@@ -22,11 +22,32 @@ files import them, or nextUint64's frozen-core exit meanings use them; no produc
 uses them. The user selected C1-B: the public result records exact
 machine bytes. For decodeItem it permits only the named `RlpLongLengthWrap`
 divergence from Sail; a wrap case requires the exact binary result and Sail
-rejection. `KnownBugs` lists eight classes: `RlpLongLengthWrap` and seven
-decodeParentHeader classes (`ParentHeaderMissingRequiredField`,
-`ParentHeaderTrailingBytes`, `ParentHeaderSkippedFieldShape`,
-`ParentHeaderBlobGasUnaligned`, `RlpUintNonCanonical`, `ParentHeaderUintOver8`,
-`ParentHeaderUndecodedFieldRejected`). The decodeParentHeader meaning
+rejection. `KnownBugs` lists ten classes. Each names an input class, what the binary
+does on it, and what Sail does:
+
+- `RlpLongLengthWrap`: an item whose long header and payload lengths add to 2^64 or
+  more; the binary adds them modulo 2^64 and goes on; Sail rejects the item.
+- `ParentHeaderMissingRequiredField`: a header list with fewer than twelve fields; the
+  binary rejects it; Sail accepts any field count.
+- `ParentHeaderTrailingBytes`: bytes after the outer header list; the binary ignores
+  them; Sail rejects the input.
+- `ParentHeaderSkippedFieldShape`: a parent hash or state root (fields 0 and 3) that is
+  a list or a string longer than 32 bytes; the binary skips it; Sail rejects it.
+- `ParentHeaderBlobGasUnaligned`: a blob gas used (field 17) that is not a multiple of
+  2^17 or counts more than 21 blobs; the binary returns it; Sail rejects it.
+- `RlpUintNonCanonical`: a base fee, blob gas used or excess blob gas (fields 15, 17,
+  18) of at most 8 bytes with a leading zero or a non-canonical header; the binary
+  reads its value; Sail rejects it.
+- `ParentHeaderUintOver8`: a canonical base fee of 9 to 32 bytes; the binary rejects
+  it; Sail accepts it as a 256-bit value.
+- `ParentHeaderUndecodedFieldRejected`: a gas limit, gas used or timestamp (fields 9 to
+  11) that is a list or longer than 8 bytes; the binary rejects it; Sail skips it.
+- `ParentHeaderExcessBlobGasAboveLimit`: an excess blob gas (field 18) above
+  2,992,193,280; the binary returns it; Sail rejects it.
+- `ParentHeaderTrailingItemMalformed`: an item after field 18 inside the header list
+  that does not decode; the binary never reads it; Sail rejects the input.
+
+The decodeParentHeader meaning
 (`ParentHeaderRung2.v`) requires the exact result of the candidate function
 `candidateParentHeader` (`Contracts/Candidates/ParentHeaderCandidate.v`), which
 follows the machine code, and then either Sail's agreement with that candidate or

@@ -24,26 +24,36 @@ Inductive KnownBug : Type :=
 | ParentHeaderTrailingBytes
 (* decodeParentHeader skips fields 0..8, 12..14 and 16 whatever their item
    shape. Sail decodes parent hash (field 0) and state root (field 3) as
-   words and rejects a list there. *)
+   words and rejects a list or a string longer than 32 bytes there. *)
 | ParentHeaderSkippedFieldShape
 (* decodeParentHeader returns blob gas used (field 17) as read. Sail rejects
-   a value that is not a multiple of the 2^17 gas per blob. *)
+   a value that is not a multiple of the 2^17 gas per blob or whose blob
+   count is above the schedule maximum (21). *)
 | ParentHeaderBlobGasUnaligned
-(* nextUint64 and the inlined integer reads fold a payload with leading
-   zero bytes. Sail rejects a non-canonical integer. *)
+(* nextUint64 folds a payload of at most 8 bytes at fields 15, 17 and 18
+   whatever its framing. Sail rejects a non-canonical integer there: a
+   leading zero byte, or a header that is not the short canonical form. *)
 | RlpUintNonCanonical
 (* nextUint64 rejects a payload longer than 8 bytes. Sail decodes base fee
-   (field 15) as a 256-bit integer and accepts it. *)
+   (field 15) as a 256-bit integer and accepts a canonical one of up to 32
+   bytes. *)
 | ParentHeaderUintOver8
 (* decodeParentHeader rejects a gas limit, gas used or timestamp item
-   (fields 9..11) that is present but is a list, is longer than 8 bytes or
-   does not decode. Sail does not decode those fields as integers and
-   accepts a list or a long string there. *)
-| ParentHeaderUndecodedFieldRejected.
+   (fields 9..11) that decodes but is a list or longer than 8 bytes. Sail
+   does not decode those fields as integers and accepts it. *)
+| ParentHeaderUndecodedFieldRejected
+(* decodeParentHeader returns excess blob gas (field 18) as read. Sail
+   rejects a value above the profile's excess blob gas limit
+   (2992193280). *)
+| ParentHeaderExcessBlobGasAboveLimit
+(* decodeParentHeader never reads the outer payload after field 18. Sail
+   decodes every further item and rejects one that does not decode. *)
+| ParentHeaderTrailingItemMalformed.
 
 (** This fixed list prevents later proofs from adding exceptions. *)
 Definition knownBugs : list KnownBug :=
   [RlpLongLengthWrap; ParentHeaderMissingRequiredField;
    ParentHeaderTrailingBytes; ParentHeaderSkippedFieldShape;
    ParentHeaderBlobGasUnaligned; RlpUintNonCanonical;
-   ParentHeaderUintOver8; ParentHeaderUndecodedFieldRejected].
+   ParentHeaderUintOver8; ParentHeaderUndecodedFieldRejected;
+   ParentHeaderExcessBlobGasAboveLimit; ParentHeaderTrailingItemMalformed].

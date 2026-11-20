@@ -1182,7 +1182,7 @@ Example candidateResultMatchesEmulation_required_nested_wrap :
     candidateEmulatedResult_required_nested_wrap.
 Proof. vm_compute. repeat split. Qed.
 Example candidateTriggers_required_nested_wrap :
-  parentHeaderTriggeredBugs candidateInput_required_nested_wrap = [RlpLongLengthWrap; ParentHeaderUndecodedFieldRejected].
+  parentHeaderTriggeredBugs candidateInput_required_nested_wrap = [RlpLongLengthWrap].
 Proof. vm_compute. reflexivity. Qed.
 
 (* vector optional_nested_wrap of PARENT_HEADER_VECTORS.json; Sail: Reject. Emulated exit: direct error (tag 3 at 0x800d5f28). *)
@@ -1451,6 +1451,14 @@ Example sailVerdict_undecodedFieldWitness :
   exists fields, sailParentHeaderRun undecodedFieldWitness
     (parentHeaderSailNode undecodedFieldWitness) = Success fields.
 Proof. eexists. vm_compute. reflexivity. Qed.
+Example sailVerdict_excessBlobGasAboveLimitWitness :
+  sailParentHeaderRun excessBlobGasAboveLimitWitness (parentHeaderSailNode excessBlobGasAboveLimitWitness) =
+    Reject RlpDecode.
+Proof. vm_compute. reflexivity. Qed.
+Example sailVerdict_trailingItemMalformedWitness :
+  sailParentHeaderRun trailingItemMalformedWitness (parentHeaderSailNode trailingItemMalformedWitness) =
+    Reject RlpDecode.
+Proof. vm_compute. reflexivity. Qed.
 
 (* Outer length wraps. Every run below starts with ff followed by eight
    ff length bytes: the outer header claims 2^64 - 1 payload bytes and
