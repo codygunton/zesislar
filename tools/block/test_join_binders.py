@@ -378,6 +378,46 @@ class BackwardPins(unittest.TestCase):
                          (['cursor'], [], [], ['guard cursor']))
 
 
+class NewestCallVisible(unittest.TestCase):
+    """The newest call's record, guards and slice window are visible at the call block and at the
+    call's return site, also for a callee that takes its slice by reference (record `…CallResult`,
+    outcome `<prefix>result`, stored words `<prefix>word_*`); an older call's stay hidden."""
+    binders = [{'name': name, 'type': 'bv 64'} for name in
+               ('call_kept_x19', 'call_kept_x18', 'call2_kept_x19', 'call2_kept_x18', 'call2_after',
+                'call3_result', 'call3_word_1_0', 'call3_word_1_8')]
+    pointer = '(bv_add call2_kept_x19 (word24 call2_after))'
+    record = ('∃ (call3_arg_x12 : bv 64), (nextUint64CallDomain (nextUint64CallDataArgs ([o; r; (call3_arg_x12)]) sp '
+              '(' + pointer + ') ie (take (Z.to_nat (bv_unsigned ((call2_kept_x18)))) bytes)) /\\ '
+              'nextUint64CallResult (nextUint64Base (nextUint64CallDataArgs ([o; r; (call3_arg_x12)]) sp '
+              '(' + pointer + ') ie bytes)) (call3_result) /\\ '
+              'call3_word_1_0 = Z_to_bv 64 (nextRestPointer (call3_result)))')
+    window = ('(bv_unsigned (base args) <= bv_unsigned ((' + pointer + ')) /\\ bv_unsigned ((' + pointer + '))'
+              ' + bv_unsigned ((call2_kept_x18)) <= bv_unsigned (base args) + Z.of_nat (List.length bytes))%Z')
+    guard = '(((bv_unsigned call3_word_1_8) <> (0%Z))%Z)'
+    older_record = ('decodeItemCallMeaning (decodeItemCallDataArgs ([o; (call_kept_x19); (call_kept_x18)]) sp ie '
+                    'bytes before) (call2_after)')
+    older_window = ('(bv_unsigned (base args) <= bv_unsigned (call_kept_x19) /\\ bv_unsigned (call_kept_x19)'
+                    ' + bv_unsigned (call_kept_x18) <= bv_unsigned (base args) + Z.of_nat (List.length bytes))%Z')
+    facts = [record, window, guard, older_record, older_window]
+    calls = {'0x80000020': {'call_site_pc': '0x8000001c', 'return_site_pc': '0x80000020'}}
+    starts = [0x80000000, 0x80000010, 0x80000020, 0x80000030]
+
+    def visible(self, pc):
+        patterns = entry_hist.call_visible_patterns(pc, self.calls, self.starts, self.binders, self.facts)
+        return entry_hist.classify(self.binders, [], self.facts, patterns)[2]
+
+    def test_call_block_and_return_site_show_the_by_reference_record_guard_and_window(self):
+        for pc in ('0x80000010', '0x80000020'):
+            self.assertEqual(self.visible(pc), [self.record, self.window, self.guard])
+
+    def test_a_block_with_no_call_shows_none(self):
+        self.assertEqual(self.visible('0x80000030'), [])
+
+    def test_without_the_record_the_window_stays_hidden(self):
+        patterns = entry_hist.newest_call_patterns(self.binders, [self.window, self.older_window])
+        self.assertEqual(entry_hist.classify(self.binders, [], [self.window, self.older_window], patterns)[2], [])
+
+
 class HistoryAlignment(unittest.TestCase):
     """A join whose edges hold the same facts once in a history group, once one per component."""
     GROUP = ('⌜∃ (call10_kept_x19 : bv 64), (zesu_named_eq call11_kept_x18 (bv_add call10_kept_x19 c))'
