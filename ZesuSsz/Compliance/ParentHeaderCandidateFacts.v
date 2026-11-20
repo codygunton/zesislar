@@ -131,10 +131,10 @@ Lemma phRegsNext args k pc kind (p l w0 w8 : bv 64) argv sp inputEnd ret :
   phRegs args k p l ->
   phRegs args (S k) w0 w8.
 Proof.
-  intros H0 H8 Hr Hok Hk Hint Hl Hs.
+  intros H0 H8 Hr Hok Hk Hkind Hl Hs.
   unfold phRegs in *.
   eapply (candidateReachNextUint64 _ _ _ _ (parentHeaderInputPointer args) p l w0 w8 _ ret
-    Hk Hint Hl Hs _ _ (parentHeaderNextUint64Root _ _ Hr) Hok H0 H8).
+    Hk Hkind Hl Hs _ _ (parentHeaderNextUint64Root _ _ Hr) Hok H0 H8).
   Unshelve. all: reflexivity.
 Qed.
 
@@ -183,8 +183,8 @@ Lemma phIntegerReject args k pc kind (p l : bv 64) a0 rest sp inputEnd before af
   phRegs args k p l ->
   candidateParentHeader (parentHeaderInputBytes args) = candidateHeaderError.
 Proof.
-  intros Hbad Hok Hm Hk Hint Hreq Hs.
-  exact (candidateReachIntegerReject _ _ _ _ _ _ _ _ _ Hk Hint Hreq Hs
+  intros Hbad Hok Hm Hk Hkind Hreq Hs.
+  exact (candidateReachIntegerReject _ _ _ _ _ _ _ _ _ Hk Hkind Hreq Hs
     (parentHeaderCallC1B _ _ _ _ _ _ _ _ Hm) Hok Hbad).
 Qed.
 
@@ -201,9 +201,9 @@ Lemma phNextReject args k pc kind (p l : bv 64) argv sp inputEnd ret :
   phRegs args k p l ->
   candidateParentHeader (parentHeaderInputBytes args) = candidateHeaderError.
 Proof.
-  intros Hbad Hr Hk Hint Hl Hs.
+  intros Hbad Hr Hk Hkind Hl Hs.
   unfold phRegs in *.
-  eapply (candidateReachNextUint64Reject _ _ _ _ _ _ _ ret Hk Hint Hl Hs _
+  eapply (candidateReachNextUint64Reject _ _ _ _ _ _ _ ret Hk Hkind Hl Hs _
     (parentHeaderNextUint64Root _ _ Hr) Hbad).
   Unshelve. reflexivity.
 Qed.
