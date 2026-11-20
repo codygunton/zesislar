@@ -96,4 +96,114 @@ Proof.
   apply bool_decide_eq_true_2. exact Hw.
 Qed.
 
+(* An edge premise: a branch disjunction in `Prop` form. The context decides
+   no disjunct directly; a case split on the goal's equations does, and the
+   last case closes by a branch fact stated on the window. *)
+Lemma block_tail_prop_disj (x y : bv 64) (bytes : list (bv 8)) :
+  ~ (8 >= bv_unsigned (Z_to_bv 16 (little_endian_to_bv 8 (take (N.to_nat 2) (drop 32 bytes)))))%Z ->
+  bv_unsigned x <> 0 \/
+  (bv_unsigned x = 0 /\ bv_unsigned y <> 0) \/
+  (bv_unsigned x = 0 /\ bv_unsigned y = 0 /\
+   8 < bv_unsigned (bv_concat 16 (nth 33 bytes (BV 8 0)) (nth 32 bytes (BV 8 0)))).
+Proof. intros Hwin. zesu_block_tail_one. Qed.
+
+(* Guard: a disjunct the context decides closes without a case split; a
+   disjunction no case decides is left untouched. *)
+Goal forall (x y : bv 64), bv_unsigned y <> 0 -> bv_unsigned x = 0 \/ bv_unsigned y <> 0.
+Proof. intros x y Hy. zesu_tail_prop_disj. Qed.
+Goal forall (x y : bv 64), bv_unsigned x = 0 \/ bv_unsigned y = 0 \/ True.
+Proof.
+  intros x y.
+  Fail zesu_tail_prop_disj.
+  right; right; exact I.
+Qed.
+
+(* Entering a loop head whose invariant states the loop guard as a boolean:
+   the context holds the guard in `Prop` form. *)
+Lemma block_tail_loop_entry_guard `{!islaG Σ} `{!threadG} (K : iProp Σ) (w : bv 64) :
+  w <> BV 64 0 ->
+  K ⊢ ∃ i : lvar "zesuLoopIndex" Z *ₗ (),
+    ⌜(0 <= li_fst i)%Z⌝ ∗ ⌜negb (bool_decide (w = BV 64 0)) = true⌝ ∗ K.
+Proof. intros Hw. iIntros "HK". zesu_block_tail_one. Qed.
+
+(* Guard: without the guard fact the conjunct stays open after the loop
+   entry. *)
+Lemma block_tail_loop_entry_guard_open `{!islaG Σ} `{!threadG} (K : iProp Σ) (P : bv 64 -> Prop) (w : bv 64) :
+  (forall v, P v -> v <> BV 64 0) -> P w ->
+  K ⊢ ∃ i : lvar "zesuLoopIndex" Z *ₗ (),
+    ⌜negb (bool_decide (w = BV 64 0)) = true⌝ ∗ K.
+Proof.
+  intros Himp HP. iIntros "HK".
+  zesu_tail_loop_entry.
+  lazymatch goal with |- negb (bool_decide _) = true => idtac end.
+  rewrite negb_true_iff; apply bool_decide_eq_false; exact (Himp w HP).
+Qed.
+
+(* A call record the call step wrote with integer words and the lent window,
+   against the successor's record with the words as loaded and the whole
+   array (nextUint64 0000 at the return to 0044). *)
+Local Notation loaded_word z :=
+  (bv_concat 64 (bv_concat 56 (bv_concat 48 (bv_concat 40 (bv_concat 32 (bv_concat 24 (bv_concat 16
+     (Z_to_bv 8 (z ≫ (8 * 7%nat))) (Z_to_bv 8 (z ≫ (8 * 6%nat))))
+     (Z_to_bv 8 (z ≫ (8 * 5%nat)))) (Z_to_bv 8 (z ≫ (8 * 4%nat))))
+     (Z_to_bv 8 (z ≫ (8 * 3%nat)))) (Z_to_bv 8 (z ≫ (8 * 2%nat))))
+     (Z_to_bv 8 (z ≫ (8 * 1%nat)))) (Z_to_bv 8 (z ≫ (8 * 0%nat)))).
+
+Lemma block_tail_call_record (D : list (bv 64) -> list (bv 8) -> Prop)
+    (M : list (bv 64) -> list (bv 8) -> Z -> Prop) (p : Z) (bytes : list (bv 8)) (x : bv 64) (r : Z) :
+  0 <= p -> p + Z.of_nat (length bytes) < 18446744073709551616 ->
+  D [Z_to_bv 64 p; Z_to_bv 64 (Z.of_nat (length bytes)); x]
+    (take (Z.to_nat (bv_unsigned (Z_to_bv 64 (Z.of_nat (length bytes)))))
+       (drop (Z.to_nat (bv_unsigned (Z_to_bv 64 p) - p)) bytes)) ->
+  M [Z_to_bv 64 p; Z_to_bv 64 (Z.of_nat (length bytes)); x]
+    (take (Z.to_nat (bv_unsigned (Z_to_bv 64 (Z.of_nat (length bytes)))))
+       (drop (Z.to_nat (bv_unsigned (Z_to_bv 64 p) - p)) bytes)) r ->
+  exists y : bv 64,
+    D [loaded_word p; loaded_word (Z.of_nat (length bytes)); y] bytes /\
+    M [loaded_word p; loaded_word (Z.of_nat (length bytes)); y] bytes r.
+Proof.
+  intros Hp Hfit HD HM.
+  Fail solve [ZesuSsz.Automation2.BlockTail.zesu_tail_exists_conj_core].
+  zesu_block_tail_one.
+Qed.
+
+(* Guards: a word whose bytes come from two integers is not rewritten; a
+   window that does not start at the array's base is not the array; a window
+   over an array the goal does not name is not touched. *)
+Goal forall (Q : bv 16 -> Prop) (a b : Z),
+  Q (bv_concat 16 (Z_to_bv 8 (b ≫ 8)) (Z_to_bv 8 (a ≫ 0))) ->
+  Q (bv_concat 16 (Z_to_bv 8 (b ≫ 8)) (Z_to_bv 8 (a ≫ 0))).
+Proof.
+  intros Q a b HQ.
+  Fail ZesuSsz.Automation2.BlockTail.zesu_tail_word_views.
+  exact HQ.
+Qed.
+Goal forall (Q : bv 16 -> Prop) (a : Z),
+  Q (Z_to_bv 16 a) -> Q (bv_concat 16 (Z_to_bv 8 (a ≫ 8)) (Z_to_bv 8 (a ≫ 0))).
+Proof.
+  intros Q a HQ.
+  ZesuSsz.Automation2.BlockTail.zesu_tail_word_views.
+  exact HQ.
+Qed.
+Goal forall (P : list (bv 8) -> Prop) (p : Z) (bytes : list (bv 8)),
+  1 <= p -> p + Z.of_nat (length bytes) < 18446744073709551616 ->
+  P (take (Z.to_nat (bv_unsigned (Z_to_bv 64 (Z.of_nat (length bytes)))))
+       (drop (Z.to_nat (bv_unsigned (Z_to_bv 64 p) - (p - 1))) bytes)) ->
+  P bytes -> P bytes.
+Proof.
+  intros P p bytes Hp Hfit HP HQ.
+  Fail ZesuSsz.Automation2.BlockTail.zesu_tail_whole_slice_views.
+  exact HQ.
+Qed.
+Goal forall (P : list (bv 8) -> Prop) (p : Z) (bytes other : list (bv 8)),
+  0 <= p -> p + Z.of_nat (length bytes) < 18446744073709551616 ->
+  P (take (Z.to_nat (bv_unsigned (Z_to_bv 64 (Z.of_nat (length bytes)))))
+       (drop (Z.to_nat (bv_unsigned (Z_to_bv 64 p) - p)) bytes)) ->
+  P other -> P other.
+Proof.
+  intros P p bytes other Hp Hfit HP HQ.
+  Fail ZesuSsz.Automation2.BlockTail.zesu_tail_whole_slice_views.
+  exact HQ.
+Qed.
+
 Print Assumptions block_tail_loop_entry.

@@ -32,6 +32,17 @@ def fake_cfg():
 
 CASES = [('0000', ['0008', '0010']), ('0008', ['000c']), ('000c', ['0010']), ('0010', None),
          ('0018', ['0018', '0020']), ('0020', []), ('0100', [])]
+MODULE = 'ZesuSsz.Generated.Fake.FP301.Pilot%sEntries'
+# 0018's premises: its own entry and 0020's (two successor entries), plus a callee spec, which is no entry.
+PRECONDITIONS = {'0018': ['instr_pre 0x1018 (%s.fp_machineAt0018 (args) (K))%%I' % (MODULE % '0018'),
+                          'instr_pre 0x1020 (%s.fp_machineAt0020 (args) (K))%%I' % (MODULE % '0020'),
+                          'instr_pre 0x9000 (ZesuSsz.Interfaces.Fake.calleeSpec)%I']}
+# Binders counted: fp_machineAt0018_Hist 2 + fp_machineAt0018 1 (fp_machineAt00180 is another entry),
+# fp_machineAt0020 2: five in all.
+ENTRIES = {'0018': 'Definition fp_machineAt0018_Hist (a : Z) : Prop := (∃ (x : bv 64) (y : list byte), x = x).\n'
+                   'Definition fp_machineAt0018 (a : Z) : iProp Σ := (∃ (z : bv 64), ⌜z = z⌝)%I.\n'
+                   'Definition fp_machineAt00180 (a : Z) : Prop := (∃ (u : Z) (v : Z), u = v).\n',
+           '0020': 'Definition fp_machineAt0020 (a : Z) : Prop := (∃ (p : Z), ∃ (q : bv 8), p = p).\n'}
 
 
 class MakeSet(unittest.TestCase):
@@ -47,8 +58,13 @@ class MakeSet(unittest.TestCase):
             if successors is None:
                 rows.append({'case': case, 'pc': pc, 'successors': [], 'status': 'inlined'})
                 continue
-            rows.append({'case': case, 'pc': pc, 'successors': successors, 'status': 'rendered'})
+            rows.append({'case': case, 'pc': pc, 'successors': successors, 'status': 'rendered',
+                         'preconditions': PRECONDITIONS.get(case, [])})
             (self.callers / ('Caller%s.v' % case)).write_text('')
+        entries = self.root / 'ZesuSsz' / 'Generated' / 'Fake' / 'FP301'
+        entries.mkdir(parents=True)
+        for case, text in ENTRIES.items():
+            (entries / ('Pilot%sEntries.v' % case)).write_text(text)
         (self.callers / 'CALLERS.json').write_text(json.dumps({'function': 'decodeParentHeader', 'rows': rows}))
         self.cfg = self.root / 'cfg.json'
         self.cfg.write_text(json.dumps(fake_cfg()))
@@ -65,12 +81,12 @@ class MakeSet(unittest.TestCase):
         got = {member['case']: (member['instructions'], member['cpu_seconds'], member['claim_gib'])
                for member in data['members']}
         self.assertEqual(got, {
-            '0000': (4, 2400, 24),     # heavy block; walks through the inlined 0010 to its ret
-            '0008': (1, 165, 8),       # ends at the call
-            '000c': (3, 255, 8),       # jump into the inlined return block
-            '0018': (2, 210, 8),       # loop back to its own start ends the walk
-            '0020': (1, 165, 8),
-            '0100': (30, 1200, 8)})    # 120 + 45 x 30 = 1470, capped at 1200
+            '0000': (4, 2400, 9),      # heavy block; walks through the inlined 0010 to its ret; claim from 7.01 GiB
+            '0008': (1, 165, 3),       # ends at the call
+            '000c': (3, 255, 3),       # jump into the inlined return block
+            '0018': (2, 425, 3),       # loop back to its own start; 120 + 45 x 2 + 100 x 2 + 3 x 5
+            '0020': (1, 165, 3),
+            '0100': (30, 1200, 3)})    # 120 + 45 x 30 = 1470, capped at 1200
         self.assertEqual(data['caps'], {'cpu_seconds': 2400, 'limit_gib': 24})
         self.assertEqual(data['overlays'], [])
         self.assertTrue(all(member['callers'] == 'fake_callers' and member['why'] for member in data['members']))
@@ -95,6 +111,11 @@ class MakeSet(unittest.TestCase):
         with self.assertRaises(SystemExit):
             mkset.main(['decodeParentHeader', str(self.root), '--name', 'FAKE', '--cfg', str(self.cfg),
                         '--output', str(self.output)])
+
+    def test_missing_entry_module_refused(self):
+        (self.root / 'ZesuSsz' / 'Generated' / 'Fake' / 'FP301' / 'Pilot0020Entries.v').unlink()
+        with self.assertRaises(SystemExit):
+            self.make()
 
 
 if __name__ == '__main__':

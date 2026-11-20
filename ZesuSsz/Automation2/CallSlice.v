@@ -9,6 +9,8 @@ Require Import ZesuSsz.Automation2.DomainRanges.
 Require Import ZesuSsz.Automation2.InteriorByteSlice.
 Require ZesuSsz.Automation2.ResourceGroups.
 Require ZesuSsz.Automation2.BytePositionEquations.
+Require ZesuSsz.Automation2.WrappedWord.
+Require ZesuSsz.Automation2.PureFacts.
 Local Open Scope Z_scope.
 
 (* The call-site step for a callee that takes an input slice and an output
@@ -168,9 +170,15 @@ Ltac zesu_call_slice_eval_at root e :=
   end.
 
 (* Close `tac`'s goal in a context cleared to the range facts of a domain
-   hypothesis (`DomainRanges.v`). *)
+   hypothesis (`DomainRanges.v`), bare or kept under
+   `PureFacts.zesu_kept_domain`. *)
 Ltac zesu_call_slice_with_ranges tac :=
   match goal with
+  | Hd : ZesuSsz.Automation2.PureFacts.zesu_kept_domain ?D |- _ =>
+      let Hr := fresh "HcsRanges" in
+      pose proof (zesu_domain_ranges (domain:=D)
+        (ZesuSsz.Automation2.PureFacts.zesu_kept_domain_elim Hd)) as Hr;
+      clear - Hr; tac
   | Hd : ?D |- _ =>
       let Hr := fresh "HcsRanges" in
       pose proof (zesu_domain_ranges (domain:=D) Hd) as Hr;
@@ -201,6 +209,19 @@ Ltac zesu_call_slice_payload_windows I dom meaning mk :=
         Hmean Hp Hl Hnz Hdom Hsmall) as Hw;
       clear Hsmall;
       destruct Hw as [? ?]
+  end.
+
+(* `bv_wrap n z = z` for every wrapped integer of the goal whose range the
+   context decides. *)
+Ltac zesu_call_slice_wrap_small :=
+  repeat match goal with
+  | |- context [bv_wrap ?n ?z] =>
+      let m := eval vm_compute in (2 ^ Z.of_N n)%Z in
+      let E := fresh "HcsWrap" in
+      assert (E : bv_wrap n z = z)
+        by (apply bv_wrap_small; unfold bv_modulus;
+            change (2 ^ Z.of_N n)%Z with m; zesu_call_slice_lia);
+      rewrite E; clear E
   end.
 
 (* The window [p, p+l) of the array at [base] with [bytes]: passes to [k] a
@@ -286,6 +307,17 @@ Ltac zesu_call_slice_window I dom meaning mk p l base bytes k :=
               first [ exact Hcw
                     | cbn [Z.to_nat N.to_nat drop take app List.map List.seq] in Hcw; exact Hcw ]
           end);
+    k constr:(Hw)
+  | (* (p, l) are integer words `Z_to_bv _ zp`, `Z_to_bv _ zl` (a pointer and
+       a length the caller stored and reloaded, read back as words by
+       `WrappedWord.zesu_word_explicit_list_rewrite`): the window is linear
+       arithmetic over the range facts of the context *)
+    lazymatch p with Z_to_bv _ _ => idtac end;
+    lazymatch l with Z_to_bv _ _ => idtac end;
+    let Hw := fresh "HcsIntegerWindow" in
+    assert (Hw : (base <= bv_unsigned p /\
+                  bv_unsigned p + bv_unsigned l <= base + Z.of_nat (length bytes))%Z)
+      by (rewrite !Z_to_bv_unsigned; zesu_call_slice_wrap_small; zesu_call_slice_lia);
     k constr:(Hw) ].
 
 (* The callee's output slot: an array the caller holds at that address, or
@@ -352,7 +384,16 @@ Ltac zesu_call_slice_domain I Hwin Houta oa :=
   lazymatch goal with
   | |- ?dom (?mk (?out :: ?p :: ?l :: _) ?sp _ _ _) =>
     match goal with
-    | Hwf : ?cd ?args |- _ =>
+    | Hwf0 : ?cd0 ?args0 |- _ =>
+      let Hwf_fact := lazymatch cd0 with
+        | ZesuSsz.Automation2.PureFacts.zesu_kept_domain => args0
+        | _ => constr:(cd0 args0) end in
+      let Hwf := lazymatch cd0 with
+        | ZesuSsz.Automation2.PureFacts.zesu_kept_domain =>
+            constr:(ZesuSsz.Automation2.PureFacts.zesu_kept_domain_elim Hwf0)
+        | _ => constr:(Hwf0) end in
+      let cd := lazymatch Hwf_fact with ?c _ => c end in
+      let args := lazymatch Hwf_fact with _ ?a => a end in
       let C := constr:(_ : ZesuCallSliceCaller cd I _ _ _ _ _) in
       let frame := lazymatch type of C with
                    | @ZesuCallSliceCaller _ _ _ _ _ _ _ _ _ ?frame _ _ => frame end in
@@ -443,15 +484,20 @@ Ltac zesu_call_slice :=
 
 (* The slice the callee returned goes back into the array it was lent from;
    the addresses the callee states over its own stack pointer are restated
-   over the caller's root word. *)
+   over the caller's root word. The returned slice may carry the callee's
+   element type (`byte`) where the lend wrote `bv 8`: it is matched up to
+   conversion once the address agrees syntactically. *)
 Ltac zesu_call_restore :=
   iMatchHyp ltac:(fun Hr res =>
     lazymatch res with
     | (?borrowed -∗ (_ ↦ₘ∗ _))%I =>
+        lazymatch borrowed with (?ba ↦ₘ∗ _)%I =>
         iMatchHyp ltac:(fun Hs returned =>
-          constr_eq returned borrowed;
+          lazymatch returned with (?ra ↦ₘ∗ _)%I =>
+          constr_eq ra ba;
+          first [constr_eq returned borrowed | unify returned borrowed];
           iRename Hr into "HcsR"; iRename Hs into "HcsS";
-          iDestruct ("HcsR" with "HcsS") as "?")
+          iDestruct ("HcsR" with "HcsS") as "?" end) end
     end);
   repeat match goal with
   | H : zesu_call_slice_addr_fact (?a = ?b) |- _ => rewrite (H : a = b); clear H
@@ -461,15 +507,16 @@ Ltac zesu_call_restore :=
    interior-slice lend runs and before it (`Finish.zesu_run_pass_v1`).
    Lithium may have let-bound the proof-mode environment (`IPM_JANNO`): the
    step reads the held arrays, so it first substitutes that binding back, as
-   the interior-slice lend does. *)
+   the interior-slice lend does. A pointer or length argument the caller
+   stored byte by byte and reloaded is read as the word it came from. *)
 Ltac zesu_call_slice_step :=
   lazymatch goal with
   | |- environments.envs_entails _ (@bi_exist _ _ _) =>
       let _ := constr:(_ : ZesuStepInteriorByteSlice) in
       ZesuSsz.Automation2.ResourceGroups.zesu_expose_environment_alias;
+      try ZesuSsz.Automation2.WrappedWord.zesu_word_explicit_list_rewrite;
       first [zesu_call_slice | zesu_call_restore]
   end.
-
 (* Early restore: at any existential goal with a restore wand and its
    returned slice in the context, before Lithium's own step. *)
 Ltac zesu_call_early_restore :=

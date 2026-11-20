@@ -115,17 +115,23 @@ Proof.
   repeat split; lia.
 Qed.
 
+(* The input end reaches decodeItem as the register word nextUint64 holds
+   (`Z_to_bv 64 (nextUint64InputEnd params)`), so the instance states it in
+   that spelling: the call step closes the equation by reflexivity. *)
 #[export] Instance nextUint64DecodeItemCallSlice :
   ZesuCallSliceCaller nextUint64BoundaryDomain decodeItemCallSliceInterface
     (fun params => nextInputPointer (nextUint64Base params))
     (fun params => nextInputBytes (nextUint64Base params))
     (fun params => nextStackPointer (nextUint64Base params) - 96)
-    (fun params => nextUint64InputEnd params)
+    (fun params => bv_unsigned (Z_to_bv 64 (nextUint64InputEnd params)))
     56.
 Proof.
   intros params p l out sp k ie rest before Hd Hwin Hsp Hout Hk Hie Hbefore.
-  exact (nextUint64DecodeItemCallDomain params p l out sp k ie rest before
-    Hd Hwin Hsp Hout Hk Hie Hbefore).
+  apply (nextUint64DecodeItemCallDomain params p l out sp k ie rest before
+    Hd Hwin Hsp Hout Hk); [|exact Hbefore].
+  rewrite Hie, Z_to_bv_unsigned. apply bv_wrap_small.
+  pose proof (nextUint64BoundaryDomainRanges params Hd) as Hr.
+  unfold bv_modulus in *. lia.
 Qed.
 
 (* nextUint64's input is the whole slice its slice argument names. *)

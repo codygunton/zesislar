@@ -164,6 +164,31 @@ Ltac zesu_return_integer_normalize :=
       exact (normalize_instr_addr_hint _ R (zesu_ret_target R Heven))
   end.
 
+(* The two low bits of a word aligned to four. *)
+Lemma zesu_return_extracts_from_aligned (ret : bv 64) :
+  (bv_unsigned ret mod 4 = 0)%Z ->
+  bv_extract 0 1 ret = BV 1 0 /\ bv_extract 1 1 ret = BV 1 0.
+Proof.
+  intro Haligned. split; bv_solve.
+Qed.
+
+(* The target is a word that is no `Z_to_bv` image (a saved return-address
+   field): its alignment is a context fact about that word, or sits inside a
+   folded precondition. *)
+Ltac zesu_return_word_fault ret Q :=
+  assert_fails (has_evar ret);
+  let Haligned := fresh "HreturnAligned" in
+  assert (Haligned : (bv_unsigned ret mod 4 = 0)%Z) by
+    first [assumption | zesu_return_folded_fact];
+  let Hlow := fresh "HreturnLowBit" in
+  let Hhigh := fresh "HreturnHighBit" in
+  destruct (zesu_return_extracts_from_aligned ret Haligned) as [Hlow Hhigh];
+  clear Haligned;
+  unify Q False; unfold SimplImpl; split; [intros [] |];
+  let Hfault := fresh "Hfault" in intro Hfault;
+  rewrite (zesu_return_fault_bit_from_extracts ret Hlow Hhigh) in Hfault;
+  discriminate.
+
 Ltac zesu_return_integer_fault :=
   lazymatch goal with
   | |- SimplImpl (@eq _ ?bit _) _ =>
@@ -186,6 +211,10 @@ Ltac zesu_return_integer_fault :=
       let Hfault := fresh "Hfault" in intro Hfault;
       rewrite (zesu_return_fault_bit_from_extracts (Z_to_bv 64 R) Hlow Hhigh) in Hfault;
       discriminate)
+  | |- SimplImpl (bv_extract 0 1 (bv_shiftr
+      (bv_or (bv_and (bv_add ?ret (BV 64 0))
+        (BV 64 18446744073709551614)) (BV 64 0)) (BV 64 1)) = BV 1 1) ?Q =>
+    zesu_return_word_fault ret Q
   end.
 
 #[export] Hint Extern 5 (LiTactic (normalize_instr_addr _)) =>

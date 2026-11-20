@@ -30,6 +30,7 @@ Require ZesuSsz.Automation2.ContextCollection.
 Require Import ZesuSsz.Automation2.Telemetry.
 From Ltac2 Require Import Ltac2.
 Require Import ZesuSsz.Automation2.LiaHook.
+Require ZesuSsz.Automation2.DomainRanges.
 Set Default Proof Mode "Classic".
 
 (* A nonempty owned list supplies its head and tail without guessing data. *)
@@ -43,6 +44,22 @@ Proof.
 Qed.
 
 
+(* A registered domain kept beside its split conjuncts. An inductive wrapper:
+   no step that unfolds or looks up hypotheses sees through it. *)
+Inductive zesu_kept_domain (domain : Prop) : Prop :=
+| zesu_keep_domain : domain -> zesu_kept_domain domain.
+Definition zesu_kept_domain_elim {domain : Prop} (H : zesu_kept_domain domain) : domain :=
+  match H with zesu_keep_domain _ d => d end.
+
+(* A function domain with registered ranges
+   (`DomainRanges.ZesuDomainRanges`) is split as any folded conjunction, and
+   kept once under `zesu_kept_domain`: the call-site step (`CallSlice.v`)
+   proves a callee's domain from the caller's domain. *)
+Ltac zesu_registered_domain T :=
+  let _ := constr:(fun H : T =>
+    ZesuSsz.Automation2.DomainRanges.zesu_domain_ranges (domain:=T) H) in
+  idtac.
+
 Ltac zesu_split_folded_pure :=
   repeat match goal with
   | H : ?T |- _ =>
@@ -52,7 +69,14 @@ Ltac zesu_split_folded_pure :=
       | _ =>
           let unfolded := eval hnf in T in
           lazymatch unfolded with
-          | _ /\ _ => change unfolded in H; destruct H
+          | _ /\ _ =>
+              tryif zesu_registered_domain T
+              then (tryif (match goal with _ : zesu_kept_domain T |- _ => idtac end)
+                    then idtac
+                    else (let Hkeep := fresh "Hdomain" in
+                          pose proof (zesu_keep_domain T H) as Hkeep);
+                    change unfolded in H; destruct H)
+              else (change unfolded in H; destruct H)
           end
       end
   end.
