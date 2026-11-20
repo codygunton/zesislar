@@ -3,7 +3,9 @@
 ; theory, so the compliance theorem can consume them. Edit the callers through their renderers.
 (rule (targets Caller0040.v) (deps ../../../../tools/block/generated/decodeparentheader_fp301_callers/Caller0040.v) (action (copy ../../../../tools/block/generated/decodeparentheader_fp301_callers/Caller0040.v Caller0040.v)))
 (rule (targets Caller0054.v) (deps ../../../../tools/block/generated/decodeparentheader_fp301_callers/Caller0054.v) (action (copy ../../../../tools/block/generated/decodeparentheader_fp301_callers/Caller0054.v Caller0054.v)))
+(rule (targets Caller0060.v) (deps ../../../../tools/block/generated/decodeparentheader_fp301_callers/Caller0060.v) (action (copy ../../../../tools/block/generated/decodeparentheader_fp301_callers/Caller0060.v Caller0060.v)))
 (rule (targets Caller0080.v) (deps ../../../../tools/block/generated/decodeparentheader_fp301_callers/Caller0080.v) (action (copy ../../../../tools/block/generated/decodeparentheader_fp301_callers/Caller0080.v Caller0080.v)))
+(rule (targets Caller00a0.v) (deps ../../../../tools/block/generated/decodeparentheader_fp301_callers/Caller00a0.v) (action (copy ../../../../tools/block/generated/decodeparentheader_fp301_callers/Caller00a0.v Caller00a0.v)))
 (rule (targets Caller00ec.v) (deps ../../../../tools/block/generated/decodeparentheader_fp301_callers/Caller00ec.v) (action (copy ../../../../tools/block/generated/decodeparentheader_fp301_callers/Caller00ec.v Caller00ec.v)))
 (rule (targets Caller0108.v) (deps ../../../../tools/block/generated/decodeparentheader_fp301_callers/Caller0108.v) (action (copy ../../../../tools/block/generated/decodeparentheader_fp301_callers/Caller0108.v Caller0108.v)))
 (rule (targets Caller0118.v) (deps ../../../../tools/block/generated/decodeparentheader_fp301_callers/Caller0118.v) (action (copy ../../../../tools/block/generated/decodeparentheader_fp301_callers/Caller0118.v Caller0118.v)))
