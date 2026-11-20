@@ -899,6 +899,38 @@ Ltac zesu_store_whole_array_splice :=
       try zesu_store_word_bytes_as_extracts a l
   end.
 
+(* A successor that states a byte array in its unsealed spelling
+   `mem_mapsto_array_def` (a stored whole array, as the forward pass printed
+   it) asks for it in the spelling the context and the steps above use: the
+   sealed array. Under an existential package the witnesses are opened as
+   evars first (the package's resources fix them). *)
+Lemma zesu_seal_array_def_sep `{!islaG Sigma} (a : Z) (q : dfrac) (l : list (bv 8))
+    (R : iProp Sigma) :
+  (mem_mapsto_array a q l ∗ R) ⊢ (isla.ghost_state.mem_mapsto_array_def a q l ∗ R).
+Proof. by rewrite isla.ghost_state.mem_mapsto_array_eq. Qed.
+
+Lemma zesu_seal_array_def_exist `{!islaG Sigma} {A : Type} (a : Z) (q : dfrac)
+    (l : A → list (bv 8)) (R : A → iProp Sigma) :
+  (∃ x, mem_mapsto_array a q (l x) ∗ R x) ⊢
+  (∃ x, isla.ghost_state.mem_mapsto_array_def a q (l x) ∗ R x).
+Proof. by rewrite isla.ghost_state.mem_mapsto_array_eq. Qed.
+
+Ltac zesu_seal_requested_array_def :=
+  lazymatch goal with
+  | |- environments.envs_entails _
+      (bi_sep (@isla.ghost_state.mem_mapsto_array_def _ _ 8%N ?a ?q ?l) ?R) =>
+      try ZesuSsz.Automation2.ResourceGroups.zesu_expose_environment_alias;
+      iApply (zesu_seal_array_def_sep a q l R)
+  | |- environments.envs_entails _ (@bi_exist _ ?T ?body) =>
+      lazymatch body with
+      | (fun x => bi_sep (@isla.ghost_state.mem_mapsto_array_def _ _ 8%N ?a ?q (@?l x)) (@?R x)) =>
+          try ZesuSsz.Automation2.ResourceGroups.zesu_expose_environment_alias;
+          iApply (zesu_seal_array_def_exist a q l R);
+          let witness := ZesuSsz.Automation2.Hooks.zesu_constraint_witness T in
+          notypeclasses refine (tac_ex_evar _ witness _ _); red_li_prod
+      end
+  end.
+
 (* Byte cells from index zero first, then the general run, then byte cells
    from index zero held as one group, then a word cell asked for as its byte
    extracts, then a held array a store covered whole. *)
