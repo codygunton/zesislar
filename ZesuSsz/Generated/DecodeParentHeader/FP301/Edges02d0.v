@@ -61,7 +61,7 @@ Proof.
   zesu_hist_view HF68.
 Qed.
 
-Global Instance zesu_hist_reveal_35 (args : ParentHeaderArgs) (returnAddress : Z) (call11_after : DecodeItemOutcome) (call11_kept_x18 : bv 64) (call11_kept_x19 : bv 64) (call10_after : DecodeItemOutcome) (call10_kept_x20 : bv 64) (call_after : DecodeItemOutcome) :
+Global Instance zesu_hist_reveal_31 (args : ParentHeaderArgs) (returnAddress : Z) (call11_after : DecodeItemOutcome) (call11_kept_x18 : bv 64) (call11_kept_x19 : bv 64) (call10_after : DecodeItemOutcome) (call10_kept_x20 : bv 64) (call_after : DecodeItemOutcome) :
   ZesuHistReveal (fp_machineAt02d0_LoopClass0_Hist (args) (returnAddress) (call11_after) (call11_kept_x18) (call11_kept_x19) (call10_after) (call10_kept_x20) (call_after)) (((zesu_named_eq call11_kept_x19 (bv_sub call10_kept_x20 (bv_concat 64%N (bv_concat 56%N (bv_concat 48%N (bv_concat 40%N (bv_concat 32%N (bv_concat 24%N (bv_concat 16%N (List.nth 31%nat call10_after (BV 8%N 0%Z)) (List.nth 30%nat call10_after (BV 8%N 0%Z))) (List.nth 29%nat call10_after (BV 8%N 0%Z))) (List.nth 28%nat call10_after (BV 8%N 0%Z))) (List.nth 27%nat call10_after (BV 8%N 0%Z))) (List.nth 26%nat call10_after (BV 8%N 0%Z))) (List.nth 25%nat call10_after (BV 8%N 0%Z))) (List.nth 24%nat call10_after (BV 8%N 0%Z))))))).
 Proof.
   rewrite /ZesuHistReveal => Hh. apply zesu_hist_elim in Hh. unfold fp_machineAt02d0_LoopClass0_Hist in Hh.

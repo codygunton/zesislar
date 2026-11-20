@@ -80,14 +80,13 @@ def call_prefixes(binders):
     return ['call' + ('' if number == 1 else str(number)) + '_' for number in sorted(numbers)]
 
 
-def call_visible_patterns(pc, calls, block_starts, binders):
+def call_visible_patterns(pc, calls, block_starts, binders, facts=()):
     """Visible facts of a block that ends in a call or is the return site of one (JOINS.json `calls`).
 
-    The record of the last call (`…CallDomain`/`…CallMeaning` facts on the newest call layer's
-    binders), its nonzero guards on that outcome (`… <> (0%Z)`), its slice window over the newest
-    kept cursors (`call_boundary` `<call>window_<binder>`) and the named equations of the registers
-    the calls pass on (`named_registers`). Function-domain facts and the lengths of live outcome
-    arrays are visible in every block. Records, guards and windows of older calls stay hidden."""
+    The record of the last call (`newest_call_patterns`), the windows of the slice passed to it and
+    the named equations of the registers the calls pass on (`named_registers`). Function-domain facts
+    and the lengths of live outcome arrays are visible in every block. Records, guards and windows of
+    older calls stay hidden."""
     start = int(pc, 0)
     later = [other for other in block_starts if other > start]
     end = min(later) if later else None
@@ -98,38 +97,83 @@ def call_visible_patterns(pc, calls, block_starts, binders):
     prefixes = call_prefixes(binders)
     if not involved or not prefixes:
         return []
-    patterns = newest_call_patterns(binders)
+    patterns = newest_call_patterns(binders, facts)
     named = sorted({name for plan in calls.values() for name in plan.get('named_registers', {}).values()})
     if named:
         patterns.append(r"\bzesu_named_eq \(?(?:" + '|'.join(map(re.escape, named)) + r")(?![\w'])")
     return patterns
 
 
-def newest_call_patterns(binders):
-    """The record of the newest call layer an entry has (`…CallDomain`/`…CallMeaning` on its outcome
-    `<prefix>after`), its nonzero guards on that outcome and its slice window over its kept cursors.
-    Visible at call and return sites and in loop classes; older records stay hidden."""
+def loop_entry_patterns(pc, entry_pcs, binders, facts=()):
+    """Visible facts of a loop's entry predecessor (a loop design's `entry_predecessor`): the loop
+    head's invariant bounds the cursor by the newest call's payload, so that call's record, its
+    nonzero guards and its slice window stay visible there as they do in the loop class."""
+    return newest_call_patterns(binders, facts) if pc in entry_pcs else []
+
+
+# A call layer's outcome binders (`call_boundary`): a by-value callee's outcome bytes `<prefix>after`
+# and kept cursors `<prefix>kept_*`; a by-reference callee's outcome record `<prefix>result` and the
+# words it stored back `<prefix>word_*`.
+CALL_OUTCOME = r"(?:after|result|word_\w+)"
+# A call record: the callee interface's predicates on the call (`…CallDomain`, `…CallMeaning`,
+# `…CallResult`).
+CALL_RECORD = r"\w+Call(?:Domain|Meaning|Result)\b"
+# A window fact `base <= bv_unsigned p /\ bv_unsigned p + bv_unsigned l <= …` (`call_boundary`).
+WINDOW_FACT = re.compile(r"[\s\S]*?<= bv_unsigned (?P<p>[\s\S]+?) /\\ bv_unsigned (?P=p) \+ bv_unsigned "
+                         r"(?P<l>[\s\S]+?) <= ")
+
+
+def _terms(text):
+    """The parenthesised subterms of a fact, each without parentheses and whitespace."""
+    terms, stack = set(), []
+    for position, character in enumerate(text):
+        if character == '(':
+            stack.append(position)
+        elif character == ')' and stack:
+            terms.add(re.sub(r'[\s()]', '', text[stack.pop() + 1:position]))
+    return terms
+
+
+def newest_call_patterns(binders, facts=()):
+    """The record of the newest call layer an entry has (`…CallDomain`/`…CallMeaning`/`…CallResult`
+    on its outcome binders), its nonzero guards on those binders and the windows of the slice it was
+    passed: over its kept cursors, and every window fact (`facts`) whose pointer and length are
+    argument terms of the record. Visible at call and return sites and in loop classes; older records
+    stay hidden."""
     prefixes = call_prefixes(binders)
     if not prefixes:
         return []
     newest = re.escape(prefixes[-1])
-    # A call record names the call's outcome bytes `<prefix>after`.
-    outcome = r"(?<![\w'.])" + newest + r"after(?![\w'])"
+    outcome = r"(?<![\w'.])" + newest + CALL_OUTCOME + r"(?![\w'])"
     kept = r"\(?" + newest + r"kept_\w+\)?"
-    return [r"\w+Call(?:Domain|Meaning)\b(?=[\s\S]*" + outcome + ")", outcome + r"[\s\S]*\w+Call(?:Domain|Meaning)\b",
-            r"^(?=[\s\S]*" + outcome + r")(?=[\s\S]*<> \(0%Z\))",
-            r"<= bv_unsigned " + kept + r" /\\ bv_unsigned " + kept + r" \+ bv_unsigned "]
+    record = [CALL_RECORD + r"(?=[\s\S]*" + outcome + ")", outcome + r"[\s\S]*" + CALL_RECORD]
+    patterns = record + [r"^(?=[\s\S]*" + outcome + r")(?=[\s\S]*<> \(0%Z\))",
+                         r"<= bv_unsigned " + kept + r" /\\ bv_unsigned " + kept + r" \+ bv_unsigned "]
+    arguments = set().union(*[_terms(fact) for fact in facts
+                              if any(re.search(pattern, fact) for pattern in record)])
+    for fact in facts:
+        window = WINDOW_FACT.match(unwrap(fact))
+        if window and all(re.sub(r'[\s()]', '', window[part]) in arguments for part in ('p', 'l')):
+            patterns.append('^' + re.escape(fact) + '$')
+    return patterns
 
 
-def classify(binders, resources, facts, visible_patterns=(), pinned=(), definitional=False):
+def classify(binders, resources, facts, visible_patterns=(), pinned=(), definitional=False, weak_patterns=(),
+             visible_texts=()):
     """Split binders into live and ghost and facts into visible and hidden.
 
-    binders: [{'name', 'type'}]; resources, facts: texts (facts without the pure brackets)."""
+    binders: [{'name', 'type'}]; resources, facts: texts (facts without the pure brackets).
+    weak_patterns: facts that stay visible when every binder they mention is live for another
+    reason, but pin no binder: a binder that only such a fact mentions has no resource and no
+    record to take its value from at the successor, so it stays in the history (its facts too).
+    visible_texts: facts (`normal` texts) that stay visible as the weak patterns do (`backward_pins`)."""
+    visible_texts = set(visible_texts)
     # A fact that matches a visible pattern (access or call facts) pins its binders live.
     pinned = set(pinned) | {binder['name'] for binder in binders for fact in facts
                             if not is_join_history(fact)
                             and any(re.search(pattern, fact, re.S) for pattern in visible_patterns)
                             and mentions(binder['name'], fact)}
+    visible_patterns = tuple(visible_patterns) + tuple(weak_patterns)
     live = [binder for binder in binders
             if binder['name'] in pinned or any(mentions(binder['name'], text) for text in resources)]
     live_names = {binder['name'] for binder in live}
@@ -141,7 +185,8 @@ def classify(binders, resources, facts, visible_patterns=(), pinned=(), definiti
         named = [binder['name'] for binder in binders if mentions(binder['name'], fact)]
         on_ghost = any(name not in live_names for name in named)
         keep = not on_ghost and not is_join_history(fact) and (
-            not named or is_length_fact(fact) or any(re.search(pattern, fact, re.S) for pattern in visible_patterns))
+            not named or is_length_fact(fact) or any(re.search(pattern, fact, re.S) for pattern in visible_patterns)
+            or normal(fact) in visible_texts)
         # Loop classes: `b = <closed term>` fixes the value of a live binder; it is
         # state, not history, and stays visible (decodeItem's loop end register).
         if (definitional and not keep and len(named) == 1 and named[0] in live_names
@@ -161,13 +206,16 @@ def conjunction(facts):
 
 
 def seal_alternative(name, plain_telescope, plain_binders, binders, resources, facts, visible_patterns=(), pinned=(),
-                     grouped=False, varying=()):
+                     grouped=False, varying=(), weak_patterns=(), visible_texts=()):
     """Return (declarations, body, meta) of one sealed entry variant.
 
     declarations: [(symbol, text, kind)] with kind 'hist' (needs opacity in Structural) or 'aux';
-    body: the iProp body of the entry variant; meta: the data that the edge record reads."""
+    body: the iProp body of the entry variant; meta: the data that the edge record reads.
+    weak_patterns: the profile's `hist_visible` (and a loop design's `visible`): see `classify`.
+    pinned, visible_texts: also the binders and facts that `backward_pins` carries to this entry."""
     live, ghost, visible, hidden = classify(binders, resources, facts, visible_patterns, pinned,
-                                            definitional=grouped)
+                                            definitional=grouped, weak_patterns=weak_patterns,
+                                            visible_texts=visible_texts)
     hist = name + '_Hist'
     # The history takes only the live binders its facts mention. A loop class keeps
     # every fact on a loop-varying binder visible, so its history is the same on both sides of the
@@ -198,6 +246,53 @@ def seal_alternative(name, plain_telescope, plain_binders, binders, resources, f
             'dropped_binders': [binder['name'] for binder in binders
                                 if binder not in live and binder not in ghost]}
     return declarations, body, meta
+
+
+def backward_pins(variants, edges, witnessed=()):
+    """The binders and facts that each entry must show so that its successors' live binders have a value.
+
+    A successor binder that is live without a resource takes its value from the block before the
+    successor: nothing at the successor fixes it. The block entry before it must hold that value
+    live, with the successor's visible facts on it visible, or the block cannot choose the witness.
+    So each predecessor entry variant that has the binder (live, or a ghost of its history) gets it
+    pinned live and those facts visible; a predecessor that holds no resource for it passes the need
+    on to its own predecessors, back to the block that binds the value from a resource.
+
+    variants: {pc: [meta]} (meta keys 'live', 'ghost', 'resources', 'visible' of `seal_alternative`);
+    edges: [(pre_pc, succ_pc)]; witnessed: (pre_pc, succ_pc, name) of a successor binder that the edge
+    gives a term (a join witness): its value comes from that term, not from the same name.
+    Returns {pc: {'pinned': [names], 'facts': [normal texts]}}, sorted."""
+    witnessed = set(witnessed)
+    predecessors = {}
+    for pre, succ in edges:
+        predecessors.setdefault(succ, set()).add(pre)
+
+    def names(meta, key):
+        return {binder['name'] for binder in meta.get(key, [])}
+
+    def unbound(meta, name):
+        return not any(mentions(name, text) for text in meta.get('resources', []))
+
+    work = [(pc, name, frozenset(normal(fact) for fact in meta.get('visible', []) if mentions(name, fact)))
+            for pc, metas in variants.items() for meta in metas
+            for name in sorted(names(meta, 'live')) if unbound(meta, name)]
+    pins = {}
+    while work:
+        succ, name, facts = work.pop()
+        for pre in sorted(predecessors.get(succ, ())):
+            if (pre, succ, name) in witnessed:
+                continue
+            for meta in variants.get(pre, []):
+                if name not in names(meta, 'live') | names(meta, 'ghost'):
+                    continue
+                row = pins.setdefault(pre, {'pinned': set(), 'facts': set()})
+                grows = name not in row['pinned'] or not facts <= row['facts']
+                row['pinned'].add(name)
+                row['facts'] |= facts
+                if grows and unbound(meta, name):
+                    work.append((pre, name, facts | {normal(fact) for fact in meta.get('visible', [])
+                                                     if mentions(name, fact)}))
+    return {pc: {'pinned': sorted(row['pinned']), 'facts': sorted(row['facts'])} for pc, row in sorted(pins.items())}
 
 
 def structural_opacity(symbol, kind):
@@ -423,11 +518,11 @@ def seal_class(name, prefix, binders_text, resources, facts, plain_binders, desi
     registers = [binder for binder in registers + [design.get('index')] if binder in names]
     # Call facts: the newest call layer's record, guards and window (its payload is what the loop reads);
     # older records and the named equations of older cursors stay in the class history.
-    patterns = (list(visible) + newest_call_patterns(binders) + design_patterns(design)
+    patterns = (newest_call_patterns(binders, facts) + design_patterns(design)
                 + [r"(?<![\w'.])" + re.escape(binder) + r"(?![\w'])" for binder in registers])
     declarations, body, meta = seal_alternative(
         name, ' ' + telescope(plain_binders), plain_binders, binders, resources, facts,
-        visible_patterns=patterns, pinned=registers, grouped=True, varying=registers)
+        visible_patterns=patterns, pinned=registers, grouped=True, varying=registers, weak_patterns=list(visible))
     meta['frame_slots'] = slot_reports
     meta['loop_class'] = True
     return declarations, prefix + ':= ' + body + '%I.\n', meta

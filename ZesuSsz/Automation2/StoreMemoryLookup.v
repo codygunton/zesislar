@@ -607,9 +607,81 @@ Ltac zesu_join_frame_run :=
           zesu_join_frame_loop ra a m Hl);
       iDestruct "HzesuRun" as "?").
 
-(* Byte cells from index zero first, then the general run. *)
+(* The goal's head requests a byte array at `a` (any list): tested before the
+   environment is read, so the step below costs one match on other goals. *)
+Ltac zesu_requested_byte_array_base k :=
+  lazymatch goal with
+  | |- environments.envs_entails _ (bi_sep (@mem_mapsto_array _ _ 8%N ?a _ _) _) => k a
+  | |- environments.envs_entails _ (@bi_exist _ _ ?body) =>
+      lazymatch body with
+      | (fun x => bi_sep (@mem_mapsto_array _ _ 8%N ?a _ (@?l x)) (@?rest x)) => k a
+      end
+  end.
+
+(* Byte cells from index zero kept as one group `c0 ∗ c1 ∗ …` (as a store
+   into a byte array leaves them), at the base of the array the goal requests:
+   the group's cells as separate hypotheses. *)
+Ltac zesu_open_requested_byte_cell_group :=
+  zesu_requested_byte_array_base ltac:(fun requested =>
+    try ZesuSsz.Automation2.ResourceGroups.zesu_expose_environment_alias;
+    iMatchHyp ltac:(fun H res =>
+      lazymatch res with
+      | (@mem_mapsto _ _ 8%N (?base + Z.of_nat O * 1)%Z _ _ ∗ _)%I =>
+          constr_eq base requested;
+          iDestruct H as "[? HzesuCellGroup]";
+          repeat (
+            let rest := iTypeOf (INamed "HzesuCellGroup") in
+            lazymatch rest with
+            | Some (_, (@mem_mapsto _ _ 8%N (?other + Z.of_nat _ * 1)%Z _ _ ∗ _)%I) =>
+                constr_eq other base; iDestruct "HzesuCellGroup" as "[? HzesuCellGroup]"
+            end);
+          iDestruct "HzesuCellGroup" as "?"
+      end)).
+
+(* A word cell asked for as the explicit list of its byte extracts (the shape
+   a successor states for a stored word): the cell as that byte array. *)
+Lemma zesu_word_little_endian_extracts (w : bv 64) :
+  bv_to_little_endian 8 8 (bv_unsigned w) =
+    [bv_extract 0 8 w; bv_extract 8 8 w; bv_extract 16 8 w; bv_extract 24 8 w;
+     bv_extract 32 8 w; bv_extract 40 8 w; bv_extract 48 8 w; bv_extract 56 8 w].
+Proof.
+  unfold bv_to_little_endian. cbn [Z_to_little_endian fmap list_fmap Z.of_nat Pos.of_succ_nat].
+  simpl. repeat f_equal; apply bv_eq; rewrite bv_extract_unsigned Z_to_bv_unsigned;
+    unfold bv_wrap; rewrite ?Z.shiftr_shiftr ?Z.land_ones; try lia; rewrite ?Zmod_mod; reflexivity.
+Qed.
+
+Lemma zesu_subsume_word_cell_bytes `{!islaG Sigma} {B : Type} (a : Z) (w : bv 64)
+    (P T : B → iProp Sigma) :
+  (a ↦ₘ∗ [bv_extract 0 8 w; bv_extract 8 8 w; bv_extract 16 8 w; bv_extract 24 8 w;
+          bv_extract 32 8 w; bv_extract 40 8 w; bv_extract 48 8 w; bv_extract 56 8 w] -∗
+   ∃ x, P x ∗ T x) ⊢ subsume (a ↦ₘ w) P T.
+Proof.
+  iIntros "HG Hw". iApply "HG".
+  iDestruct (zesu_cell_bytes 8 a (DfracOwn 1) w with "Hw") as "[Hb _]".
+  change (N.to_nat 8) with 8%nat.
+  rewrite (zesu_word_little_endian_extracts w). iExact "Hb".
+Qed.
+
+Ltac zesu_subsume_word_cell_extracts :=
+  lazymatch goal with
+  | |- environments.envs_entails _ (subsume (@mem_mapsto _ _ 64%N ?a (DfracOwn 1) _) ?P _) =>
+      lazymatch P with
+      | (fun _ => @mem_mapsto_array _ _ 8%N ?a2 (DfracOwn 1) (bv_extract 0 8 _ :: _)) =>
+          constr_eq a a2
+      end;
+      (* The run names the environment by a local definition; `iApply` needs
+         the environment itself. *)
+      try ZesuSsz.Automation2.ResourceGroups.zesu_expose_environment_alias;
+      iApply zesu_subsume_word_cell_bytes; iIntros "?"
+  end.
+
+(* Byte cells from index zero first, then the general run, then byte cells
+   from index zero held as one group, then a word cell asked for as its byte
+   extracts. *)
 Ltac zesu_join_frame_byte_array :=
-  first [ ltac2:(zesu_join_frame_byte_array ()) | zesu_join_frame_run ].
+  first [ ltac2:(zesu_join_frame_byte_array ()) | zesu_join_frame_run
+        | zesu_open_requested_byte_cell_group; ltac2:(zesu_join_frame_byte_array ())
+        | zesu_subsume_word_cell_extracts ].
 
 Ltac zesu_store_fold_byte_cells :=
   try ZesuSsz.Automation2.ResourceGroups.zesu_expose_environment_alias;
@@ -710,6 +782,105 @@ Ltac zesu_store_lookup_integer_root :=
       liStep
   end.
 
+(* [k] receives `bv_unsigned word = bv_unsigned r + s` (s a signed literal)
+   for a chain of closed offsets on a word root r (not `Z_to_bv`), the range
+   proved from the facts selected for r. *)
+Ltac zesu_word_root_address word k :=
+  let chain := ZesuSsz.Automation2.WrappedWord.zesu_wrapped_offset_chain word in
+  lazymatch type of chain with
+  | bv_unsigned _ = bv_wrap ?width (bv_unsigned ?root + ?sum) =>
+      lazymatch root with Z_to_bv _ _ => fail | _ => idtac end;
+      assert_fails (ZesuSsz.Automation2.VmClosed.zesu_vm_closed root);
+      let offset := ZesuSsz.Automation2.VmClosed.zesu_vm_eval_closed (bv_swrap width sum) in
+      let address := constr:((bv_unsigned root + offset)%Z) in
+      let Haddress := fresh "HwordRootAddress" in
+      assert (Haddress : bv_unsigned word = address) by
+        (refine (ZesuSsz.Automation2.WrappedWord.zesu_wrapped_offset_small
+                   width (bv_unsigned root) sum offset address word chain _ _ _);
+         [vm_compute; reflexivity | reflexivity
+         | ZesuSsz.Automation2.WrappedWord.zesu_wrapped_index_range root]);
+      k Haddress
+  end.
+
+(* Addresses and sizes of the memory resources on the word root [r] that read
+   `bv_unsigned (r + c…)`, as `bv_unsigned r + s`. *)
+Ltac zesu_word_root_owner_addresses r :=
+  repeat iMatchHyp ltac:(fun H res =>
+    let a := lazymatch res with
+      | (?a ↦ₘ _)%I => a | (?a ↦ₘ∗ _)%I => a | (?a ↦ₘ? _)%I => a end in
+    let ra := ZesuSsz.Automation2.WrappedWord.zesu_term_root a in
+    constr_eq ra r;
+    match res with
+    | context [bv_unsigned (bv_add ?inner ?step)] =>
+        let r2 := ZesuSsz.Automation2.WrappedWord.zesu_term_root inner in
+        constr_eq r r2;
+        zesu_word_root_address constr:(bv_add inner step) ltac:(fun Heq =>
+          iEval (rewrite !Heq) in H; clear Heq)
+    end).
+
+(* A memory resource owned at exactly [address]: Lithium's lookup matches it. *)
+Ltac zesu_address_owned_exactly address :=
+  iMatchHyp ltac:(fun H res =>
+    lazymatch res with
+    | (?a ↦ₘ _)%I => constr_eq a address
+    | (?a ↦ₘ∗ _)%I => constr_eq a address
+    | (?a ↦ₘ? _)%I => constr_eq a address
+    end).
+
+(* The owner of the address [d] (a value at the sample root) on root [r]: a
+   cell or an uninitialised region whose address is integer arithmetic over
+   `bv_unsigned r`. [k] receives the owner's address and the offset of [d] in
+   it. A byte array is never the owner here: Lithium's array lookup reads an
+   access inside it as the array's elements (`nth`), the spelling successors
+   state, so rewriting the address would leave the value in another spelling. *)
+Ltac zesu_owner_offset r d k :=
+  iMatchHyp ltac:(fun H res =>
+    let a := lazymatch res with
+      | (?a ↦ₘ _)%I => a | (?a ↦ₘ? _)%I => a end in
+    let ra := ZesuSsz.Automation2.WrappedWord.zesu_term_root a in
+    constr_eq ra r;
+    lazymatch a with context [@bv_add] => fail | context [@bv_sub] => fail | _ => idtac end;
+    let lo := ZesuSsz.Automation2.WrappedWord.zesu_eval_at_root r a in
+    let size := lazymatch res with
+      | (_ ↦ₘ ?v)%I =>
+          lazymatch type of v with bv ?w => eval vm_compute in (Z.of_N (w / 8)) end
+      | (_ ↦ₘ? ?n)%I => ZesuSsz.Automation2.WrappedWord.zesu_eval_at_root r n
+      end in
+    let off := eval vm_compute in (d - lo)%Z in
+    let inside := eval vm_compute in ((0 <=? off) && (off <? size))%bool in
+    lazymatch inside with true => idtac end;
+    k a off).
+
+(* A store or load whose pointer is a chain of closed offsets on a word root
+   (a record field, not `Z_to_bv`), owned by a resource on that root: off the
+   stack pointer's root the resources on the root first read
+   `bv_unsigned r + s`; then the address is written in the owner's own
+   spelling (plus a literal offset), region sizes as numerals, and Lithium's
+   own lookup step runs. *)
+Ltac zesu_store_lookup_word_root :=
+  lazymatch goal with
+  | |- environments.envs_entails _ (find_in_context (FindMemMapsTo (bv_unsigned ?ptr)) _) =>
+      lazymatch ptr with bv_add _ _ => idtac end;
+      try ZesuSsz.Automation2.ResourceGroups.zesu_expose_environment_alias;
+      let r := ZesuSsz.Automation2.WrappedWord.zesu_term_root ptr in
+      lazymatch r with Z_to_bv _ _ => fail | _ => idtac end;
+      lazymatch type of r with bv _ => idtac end;
+      assert_fails (zesu_address_owned_exactly constr:(bv_unsigned ptr));
+      let d := ZesuSsz.Automation2.WrappedWord.zesu_eval_at_root r constr:(bv_unsigned ptr) in
+      lazymatch d with Zpos _ => idtac end;
+      try (zesu_refuse_stack_root r; zesu_word_root_owner_addresses r);
+      zesu_owner_offset r d ltac:(fun a off =>
+        let target := lazymatch off with Z0 => a | _ => constr:((a + off)%Z) end in
+        zesu_word_root_address ptr ltac:(fun Hword =>
+          let Htarget := fresh "HownerAddress" in
+          assert (Htarget : bv_unsigned ptr = target) by
+            (rewrite Hword; clear; ZesuSsz.Automation2.WrappedWord.zesu_plain_lia);
+          clear Hword; rewrite !Htarget; clear Htarget));
+      zesu_uninit_sizes;
+      liEnsureInvariant;
+      liStep
+  end.
+
 Ltac zesu_store_memory_lookup :=
   zesu_store_lookup_goal;
   ZesuSsz.Automation2.SwitchDispatch.zesu_switch_enabled
@@ -718,4 +889,5 @@ Ltac zesu_store_memory_lookup :=
   | progress (zesu_store_fold_indexed_byte_tail;
       ZesuSsz.Automation2.ResourceGroups.zesu_open_resource_groups)
   | zesu_store_fold_byte_cells
-  | zesu_store_lookup_integer_root ].
+  | zesu_store_lookup_integer_root
+  | zesu_store_lookup_word_root ].

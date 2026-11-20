@@ -442,6 +442,46 @@ Ltac zesu_bv_context_filter closer :=
               (zesu_bv_closer_context_within_budget; closer)]
   else closer.
 
+(* An array side condition can count elements at `bv (Z_idx 8)` while the
+   context's range fact counts them at `bv 8`; linear arithmetic sees two
+   `length` atoms. When the goal mentions `Z_idx`, compute each `Z_idx`
+   literal in the goal and context first. *)
+Ltac zesu_finish_element_alias :=
+  lazymatch goal with
+  | |- context [SailStdpp.MachineWord.MachineWord.Z_idx _] => idtac
+  end;
+  repeat match goal with
+  | H : context [SailStdpp.MachineWord.MachineWord.Z_idx ?z] |- _ =>
+      let v := eval vm_compute in (SailStdpp.MachineWord.MachineWord.Z_idx z) in
+      assert_fails (constr_eq v (SailStdpp.MachineWord.MachineWord.Z_idx z));
+      change (SailStdpp.MachineWord.MachineWord.Z_idx z) with v in H
+  | |- context [SailStdpp.MachineWord.MachineWord.Z_idx ?z] =>
+      let v := eval vm_compute in (SailStdpp.MachineWord.MachineWord.Z_idx z) in
+      assert_fails (constr_eq v (SailStdpp.MachineWord.MachineWord.Z_idx z));
+      change (SailStdpp.MachineWord.MachineWord.Z_idx z) with v
+  end.
+
+(* A `length` atom names the element type as spelled where its term was
+   built. Lithium's array lookup states its side condition after `simpl`,
+   which computes the width of an array of Sail bytes: the goal counts the
+   list at `bv 8` while the context's length fact counts it at
+   `bv (Z_idx 8)`, and linear arithmetic compares the two atoms by syntax.
+   Restate each fact's `length` of a list the goal counts at the goal's
+   element type (convertible, so `change`). A goal that counts the list at
+   the fact's type as well keeps the fact as it is: the next turn would
+   restate it back, and the two changes alternate without end (nextUint64
+   0000 grew to 24 GiB). A change that rewrites nothing ends the step. *)
+Ltac zesu_length_element_alias :=
+  repeat match goal with
+  | |- context [@length ?T ?l] =>
+      match goal with
+      | H : context [@length ?U l] |- _ =>
+          assert_fails (constr_eq T U);
+          lazymatch goal with |- context [@length U l] => fail | _ => idtac end;
+          progress change (@length U l) with (@length T l) in H
+      end
+  end.
+
 (* Library solvers also call these primitives without the project finisher.
    A closed comparison decides by computation first. A word assembled from the
    bytes of one integer equals that integer's word (WrappedWord). A linear
@@ -449,8 +489,14 @@ Ltac zesu_bv_context_filter closer :=
    other goals fail there at once. An equality that the normal form refutes
    goes to the solver on its linked facts only. A residual lemma is the last
    attempt after the solver fails. A goal and context that failed before in
-   the proof fail at once (FailureMemo). *)
+   the proof fail at once (FailureMemo). A goal on Sail bytes (`bv (Z_idx 8)`,
+   as in Lithium's lookup inside a callee's result array, whose stride is
+   `Z.of_N (Z_idx 8 / 8)`) has its `Z_idx` widths computed in the goal and
+   the context first: `simpl` in the closer computes them in the goal only,
+   and the `length` facts would no longer match the goal's atoms. *)
 Ltac bv_solve ::=
+  try zesu_finish_element_alias;
+  try zesu_length_element_alias;
   let run := ltac2:(tac |- zesu_telemetry_ltac1 "bv_solve" "bv_solve" tac) in
   let run_linear := ltac2:(tac |- zesu_telemetry_ltac1 "bv_linear" "bv_solve" tac) in
   let memo := ltac2:(tac |- zesu_failure_memo_ltac1 "bv_solve" tac) in
@@ -522,25 +568,6 @@ Ltac zesu_linear_goal_shape :=
   lazymatch goal with
   | |- ex _ => fail 0 "lia: an existential goal"
   | |- ?target => lazymatch type of target with Prop => idtac end
-  end.
-
-(* An array side condition can count elements at `bv (Z_idx 8)` while the
-   context's range fact counts them at `bv 8`; linear arithmetic sees two
-   `length` atoms. When the goal mentions `Z_idx`, compute each `Z_idx`
-   literal in the goal and context first. *)
-Ltac zesu_finish_element_alias :=
-  lazymatch goal with
-  | |- context [SailStdpp.MachineWord.MachineWord.Z_idx _] => idtac
-  end;
-  repeat match goal with
-  | H : context [SailStdpp.MachineWord.MachineWord.Z_idx ?z] |- _ =>
-      let v := eval vm_compute in (SailStdpp.MachineWord.MachineWord.Z_idx z) in
-      assert_fails (constr_eq v (SailStdpp.MachineWord.MachineWord.Z_idx z));
-      change (SailStdpp.MachineWord.MachineWord.Z_idx z) with v in H
-  | |- context [SailStdpp.MachineWord.MachineWord.Z_idx ?z] =>
-      let v := eval vm_compute in (SailStdpp.MachineWord.MachineWord.Z_idx z) in
-      assert_fails (constr_eq v (SailStdpp.MachineWord.MachineWord.Z_idx z));
-      change (SailStdpp.MachineWord.MachineWord.Z_idx z) with v
   end.
 
 (* Preserve the machine normalization used by the existing finisher. *)
@@ -2584,6 +2611,89 @@ Ltac zesu_open_folded_jump_facts :=
   tryif (idtac; zesu_prefer_owned_instr_pre) then gfail 0 else idtac;
   zesu_open_folded_facts.
 
+(* An existential whose first conjunct is a pure fact over a witness that only
+   a later resource fixes (`∃ x, ⌜L = f x⌝ ∗ ℓ ↦ₘ∗ g x ∗ …`, left by a register
+   subsumption under the binder): Lithium's side-condition step instantiates
+   only an equation `x = e` and stops on the others. The fact moves behind the
+   next conjunct, which is spatial; it is a side condition again once the
+   resources have fixed the witness. *)
+Lemma zesu_tac_exist_pure_behind {PROP : bi} {T : Type} Δ
+    (P : T -> Prop) (R Q : T -> PROP) :
+  envs_entails Δ (∃ x : T, R x ∗ ⌜P x⌝ ∗ Q x) ->
+  envs_entails Δ (∃ x : T, ⌜P x⌝ ∗ R x ∗ Q x).
+Proof.
+  rewrite envs_entails_unseal => ->.
+  iIntros "H". iDestruct "H" as (x) "(HR & HP & HQ)". iExists x. iFrame.
+Qed.
+
+Ltac2 zesu_sep_parts (term : constr) : (constr * constr) option :=
+  match Constr.Unsafe.kind term with
+  | Constr.Unsafe.App head arguments =>
+      let count := Array.length arguments in
+      if Bool.and (Int.le 2 count)
+           (ZesuSsz.Automation2.NamedEquations.zesu_constant_head head '(@bi_sep))
+      then Some (Array.get arguments (Int.sub count 2), Array.get arguments (Int.sub count 1))
+      else None
+  | _ => None
+  end.
+
+Ltac2 zesu_pure_fact (term : constr) : constr option :=
+  match Constr.Unsafe.kind term with
+  | Constr.Unsafe.App head arguments =>
+      let count := Array.length arguments in
+      if Bool.and (Int.le 1 count)
+           (ZesuSsz.Automation2.NamedEquations.zesu_constant_head head '(@bi_pure))
+      then Some (Array.get arguments (Int.sub count 1)) else None
+  | _ => None
+  end.
+
+(* Whether `Rel 1` occurs in `term`: its instances by two distinct closed terms
+   differ. (`Constr.Unsafe.occurn` of Coq 8.19 answers the negation.) *)
+Ltac2 zesu_binder_occurs (term : constr) : bool :=
+  Bool.neg (Constr.equal (Constr.Unsafe.substnl ['true] 0 term)
+                         (Constr.Unsafe.substnl ['false] 0 term)).
+
+Ltac2 zesu_is_pure (term : constr) : bool :=
+  match zesu_pure_fact term with
+  | Some _ => true
+  | None => false
+  end.
+
+Ltac2 zesu_spatial_head (term : constr) : bool :=
+  match zesu_sep_parts term with
+  | Some parts => let (resource, _) := parts in Bool.neg (zesu_is_pure resource)
+  | None => false
+  end.
+
+Ltac2 zesu_dependent_pure (head : constr) (rest : constr) : bool :=
+  match zesu_pure_fact head with
+  | Some fact => Bool.and (zesu_binder_occurs fact) (zesu_spatial_head rest)
+  | None => false
+  end.
+
+(* The body `λ x, ⌜P x⌝ ∗ R x ∗ Q x` with `P` mentioning `x` and `R` not pure.
+   After the move the first conjunct is `R`, so the step never fires twice on
+   one goal, and no step moves a pure fact back in front of a resource. *)
+Ltac2 zesu_defer_witness_pure_guard (body : constr) : bool :=
+  match Constr.Unsafe.kind body with
+  | Constr.Unsafe.Lambda _ inner =>
+      match zesu_sep_parts inner with
+      | Some parts => let (head, rest) := parts in zesu_dependent_pure head rest
+      | None => false
+      end
+  | _ => false
+  end.
+
+Ltac zesu_defer_witness_pure :=
+  lazymatch goal with
+  | |- envs_entails _ (@bi_exist _ (li_prod _ _) ?body) =>
+      let check := ltac2:(body |-
+        if zesu_defer_witness_pure_guard (Option.get (Ltac1.to_constr body)) then ()
+        else Control.zero (Tactic_failure None)) in
+      check body;
+      notypeclasses refine (zesu_tac_exist_pure_behind _ _ _ _ _)
+  end.
+
 (* Each alternative carries a telemetry name (Telemetry.v, `zesu_talt`). A
    guard in front of an alternative tests the goal shape it can act on
    (GoalShape.v); the order of the alternatives is unchanged. *)
@@ -2652,6 +2762,8 @@ Ltac zesu_liAStep :=
   | zesu_talt l_liLetBindHint (idtac; liLetBindHint)
   | zesu_talt l_liUnfoldLate (idtac; liUnfoldLate)
   | zesu_talt l_canonical_fact_views (idtac; zesu_canonical_fact_views_if_enabled)
+  (* Last: only where Lithium and every step above stop on the goal. *)
+  | zesu_talt l_defer_witness_pure (idtac; zesu_defer_witness_pure)
  ]; zesu_talt l_liSimpl (idtac; liSimpl))].
 
 (* Lithium simplifies the whole goal after every step. While an entry is

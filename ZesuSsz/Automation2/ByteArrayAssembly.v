@@ -51,6 +51,42 @@ Ltac zesu_byte_array_whole spatial address fraction bytes :=
       | zesu_byte_array_whole rest address fraction bytes]
   end.
 
+(* A list's length as a nat numeral, evaluated only when no variable decides
+   the spine: explicit cells, appends, `take`/`drop`/`insert` at closed
+   indices, `replicate` and little-endian words with closed counts, closed
+   lists. Otherwise fail without evaluating: the length of a list whose spine
+   is stuck on a variable (a count `Z.to_nat (bv_unsigned …)`, a list binder)
+   is no numeral, and the VM reads that stuck result back with every element
+   normalised, which for open byte terms is a very large term. *)
+Ltac zesu_byte_array_ground t :=
+  assert_fails (has_evar t);
+  assert_fails (idtac; match t with context [?x] => is_var x end).
+
+Ltac zesu_byte_array_spine_closed l :=
+  lazymatch l with
+  | nil => idtac
+  | cons _ ?t => zesu_byte_array_spine_closed t
+  | app ?a ?b => zesu_byte_array_spine_closed a; zesu_byte_array_spine_closed b
+  | firstn ?n ?t => zesu_byte_array_ground n; zesu_byte_array_spine_closed t
+  | skipn ?n ?t => zesu_byte_array_ground n; zesu_byte_array_spine_closed t
+  | @insert _ _ _ _ ?i _ ?t => zesu_byte_array_ground i; zesu_byte_array_spine_closed t
+  | replicate ?n _ => zesu_byte_array_ground n
+  | bv_to_little_endian ?n _ _ => zesu_byte_array_ground n
+  | _ => zesu_byte_array_ground l
+  end.
+
+Ltac zesu_byte_array_nat_numeral n :=
+  lazymatch n with
+  | O => idtac
+  | S ?m => zesu_byte_array_nat_numeral m
+  end.
+
+Ltac zesu_byte_array_length_literal l :=
+  let _ := constr:(ltac:(zesu_byte_array_spine_closed l; exact tt) : unit) in
+  let count := eval vm_compute in (length l) in
+  let _ := constr:(ltac:(zesu_byte_array_nat_numeral count; exact tt) : unit) in
+  count.
+
 (* An owned byte array at the requested address whose values equal the
    requested list up to conversion, for example a word's little-endian bytes. *)
 Ltac zesu_byte_array_whole_converted spatial address fraction bytes :=
@@ -61,8 +97,8 @@ Ltac zesu_byte_array_whole_converted spatial address fraction bytes :=
         | @mem_mapsto_array ?sigma ?heap 8 ?available ?q ?values =>
             constr_eq fraction q;
             zesu_byte_array_same_address available address;
-            let count := eval vm_compute in (length values) in
-            let total := eval vm_compute in (length bytes) in
+            let count := zesu_byte_array_length_literal values in
+            let total := zesu_byte_array_length_literal bytes in
             lazymatch eval vm_compute in (Nat.eqb count total) with true => idtac end;
             let _ := constr:(@eq_refl (list (bv 8)) values : values = bytes) in
             lazymatch goal with
@@ -85,8 +121,8 @@ Ltac zesu_byte_array_prefix spatial address fraction bytes continuation :=
         | @mem_mapsto_array ?sigma ?heap 8 ?available ?q ?values =>
             constr_eq fraction q;
             zesu_byte_array_same_address available address;
-            let count := eval vm_compute in (length values) in
-            let total := eval vm_compute in (length bytes) in
+            let count := zesu_byte_array_length_literal values in
+            let total := zesu_byte_array_length_literal bytes in
             lazymatch eval vm_compute in (Nat.ltb count total) with true => idtac end;
             let tail := eval cbn [drop app] in (drop count bytes) in
             let _ := constr:(@eq_refl (list (bv 8)) bytes : bytes = values ++ tail) in

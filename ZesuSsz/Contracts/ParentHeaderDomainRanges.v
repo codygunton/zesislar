@@ -85,12 +85,14 @@ Qed.
       bv_unsigned (parentHeaderInputPointer args) +
         Z.of_nat (length (parentHeaderInputBytes args)) <= 2147483648) /\
      Z.of_nat (length (parentHeaderInputBytes args)) < 18446744073709551607 /\
-     parentHeaderMemcpyDomain (bv_unsigned (parentHeaderResultPointer args))).
+     parentHeaderMemcpyDomain (bv_unsigned (parentHeaderResultPointer args)) /\
+     Z.of_nat (length (parentHeaderInputBytes args)) = bv_unsigned (parentHeaderInputLength args)).
 Proof.
-  intros Hwf. split; [|split; [|split; [|split]]].
+  intros Hwf. split; [|split; [|split; [|split; [|split]]]].
   - pose proof (parentHeaderStackRange args Hwf). lia.
   - exact (parentHeaderResultRange args Hwf).
   - exact (parentHeaderInputRange args Hwf).
   - exact (parentHeaderInputSmall args Hwf).
   - exact (parentHeaderResultMemcpyDomain args Hwf).
+  - exact (proj1 Hwf).
 Qed.

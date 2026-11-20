@@ -85,3 +85,46 @@ Class ZesuCallSliceCallerWindow {Args : Type} (callerDomain : Args -> Prop)
     (window : Args -> Prop) :=
   zesu_call_slice_caller_window : forall args, callerDomain args -> window args.
 Global Hint Mode ZesuCallSliceCallerWindow - ! - : typeclass_instances.
+
+(* A callee that takes its input slice by reference: its first argument is
+   the output slot, its second the address of two words the caller stored,
+   the slice's pointer and its length. `mk` builds the callee's argument
+   record from the argument words, the stack pointer, the slice pointer, the
+   input end and the slice bytes. A call on any window [p, p + l) of the
+   caller's input, with the callee's stack pointer at `frame args`, the output
+   slot at `frame args + k` and the two words at `frame args + j`, both within
+   `slotLimit` and `slotSize` apart, satisfies the callee's domain. *)
+Class ZesuCallSliceRefCaller {Args A : Type} (callerDomain : Args -> Prop)
+    (domain : A -> Prop)
+    (mk : list (bv 64) -> bv 64 -> bv 64 -> bv 64 -> list (bv 8) -> A)
+    (inputBase : Args -> Z) (inputBytes : Args -> list (bv 8))
+    (frame : Args -> Z) (inputEnd : Args -> bv 64) (slotLimit slotSize : Z) :=
+  zesu_call_slice_ref_caller_domain :
+    forall args (out ref p l sp : bv 64) (k j : Z) (rest : list (bv 64)),
+      callerDomain args ->
+      inputBase args <= bv_unsigned p /\
+      bv_unsigned p + bv_unsigned l <= inputBase args + Z.of_nat (length (inputBytes args)) ->
+      bv_unsigned sp = frame args ->
+      bv_unsigned out = frame args + k -> 0 <= k <= slotLimit ->
+      bv_unsigned ref = frame args + j -> 0 <= j <= slotLimit ->
+      (k + slotSize <= j \/ j + slotSize <= k) ->
+      domain (mk (out :: ref :: rest) sp p (inputEnd args)
+        (take (Z.to_nat (bv_unsigned l))
+          (drop (Z.to_nat (bv_unsigned p - inputBase args)) (inputBytes args)))).
+Global Hint Mode ZesuCallSliceRefCaller - - ! ! - - - - - - - : typeclass_instances.
+
+(* What a by-reference callee hands back about the slice it consumed: its
+   result record `result (record (mk argv sp p inputEnd input)) r` places the
+   rest it returns (`restPointer r`, `restLength r`) at the end of the slice
+   [p, p + length input). The call step reads the window of a later call's
+   slice from it when that slice is the rest the callee returned. *)
+Class ZesuCallSliceRefResult {A C R : Type}
+    (mk : list (bv 64) -> bv 64 -> bv 64 -> bv 64 -> list (bv 8) -> A)
+    (record : A -> C) (result : C -> R -> Prop) (restPointer restLength : R -> Z) :=
+  zesu_call_slice_ref_result_window :
+    forall argv sp p inputEnd input r,
+      result (record (mk argv sp p inputEnd input)) r ->
+      bv_unsigned p <= restPointer r /\
+      restPointer r + restLength r = bv_unsigned p + Z.of_nat (length input) /\
+      0 <= restLength r /\ restPointer r + restLength r < bv_modulus 64.
+Global Hint Mode ZesuCallSliceRefResult - - - - - ! - - : typeclass_instances.
