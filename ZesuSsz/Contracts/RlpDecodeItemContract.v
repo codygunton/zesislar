@@ -91,6 +91,13 @@ Definition decodeItemBugApplies (bug : KnownBug)
           (decodeItemInputBytes args) (decodeItemBeforeStorage args) after /\
         runRlpDecodeItem (decodeItemInputBytes args)
           (decodeItemSailCursor args) = Reject RlpDecode
+  (* The other classes belong to decodeParentHeader; none excuses a
+     decodeItem result. *)
+  | ParentHeaderMissingRequiredField | ParentHeaderTrailingBytes
+  | ParentHeaderSkippedFieldShape | ParentHeaderBlobGasUnaligned
+  | RlpUintNonCanonical | ParentHeaderUintOver8
+  | ParentHeaderUndecodedFieldRejected | ParentHeaderExcessBlobGasAboveLimit
+  | ParentHeaderTrailingItemMalformed => False
   end.
 
 Definition DecodeMeaningModuloKnownBugs

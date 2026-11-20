@@ -7,7 +7,8 @@
 2. `ZesuSsz/Contracts/RlpDecodeItemContract.v`: the rung-1 arguments, outcomes, and resources.
    It defines `DecodeMeaningModuloKnownBugs`.
 3. `ZesuSsz/Contracts/DecodeItemSelected.v`: the exact rung-1 target on the selected code.
-4. `ZesuSsz/Compliance/KnownBugs.v`: the one permitted divergence, `RlpLongLengthWrap`.
+4. `ZesuSsz/Compliance/KnownBugs.v`: the permitted divergences; decodeItem permits only
+   `RlpLongLengthWrap`.
 5. `ZesuSsz/Compliance/SailRun.v`: the evaluator for the concrete Sail decoder.
 6. `Scaffolding/DecodeItemComplianceStatement.v`: the theorem to prove.
    This file is outside the production imports.

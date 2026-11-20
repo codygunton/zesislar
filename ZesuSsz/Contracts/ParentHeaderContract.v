@@ -100,7 +100,11 @@ Definition parentHeaderCall (args : ParentHeaderArgs) : ParentHeaderCall :=
      headerMemcpyScratchBefore := parentHeaderMemcpyScratchBefore args |}.
 
 (* Each machine bound is a separate conjunct on bv_unsigned of a register
-   value, with a constant on the other side (F44). *)
+   value, with a constant on the other side (F44). The last conjunct narrows
+   the domain to inputs whose outer header fits: the code never checks the
+   first item's payload against the input, so an outer long-list length that
+   wraps 2^64 sends the later decodeItem calls outside the input. Such inputs
+   are outside the theorem (docs/TRUST.md). *)
 Definition parentHeaderArgsWellFormed (args : ParentHeaderArgs) : Prop :=
   Z.of_nat (length (parentHeaderInputBytes args)) =
     bv_unsigned (parentHeaderInputLength args) /\
@@ -135,7 +139,8 @@ Definition parentHeaderArgsWellFormed (args : ParentHeaderArgs) : Prop :=
     parentHeaderStackBytes /\
   separateRanges ziskExtraParamsAddress parentHeaderScratchSize
     (bv_unsigned (parentHeaderStackPointer args) - parentHeaderStackBytes -
-       parentHeaderCalleeBytes) parentHeaderCalleeBytes.
+       parentHeaderCalleeBytes) parentHeaderCalleeBytes /\
+  headerFits (parentHeaderInputBytes args).
 
 (* zisk_input_end holds the input end that the decodeItem calls need. *)
 Definition parentHeaderSysRegs (args : ParentHeaderArgs) :

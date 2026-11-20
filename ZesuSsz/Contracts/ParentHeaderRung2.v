@@ -3,9 +3,8 @@ Require Import EvmSailRlp.evm_rlp_types.
 Require Import ZesuSsz.Compliance.KnownBugs.
 Require Import ZesuSsz.Compliance.ProjectionParentHeader.
 Require Import ZesuSsz.Contracts.ParentHeaderLevel1.
-Require Import ZesuSsz.Contracts.ParentHeaderRootFacts.
-Require Import ZesuSsz.Contracts.ParentHeaderRequiredFields.
-Require Import ZesuSsz.Contracts.Candidates.ParentHeaderDomain.
+Require Import ZesuSsz.Contracts.Candidates.ParentHeaderCandidate.
+Require Import ZesuSsz.Contracts.ParentHeaderBugTriggers.
 
 Open Scope Z_scope.
 
@@ -14,28 +13,26 @@ Definition parentHeaderSailNode (bytes : list byte) :
   @Build_StatelessInputSliceFields 0 (Z.of_nat (List.length bytes))
     0 (Z.of_nat (List.length bytes)).
 
-Definition parentHeaderNestedBugApplies (bug : KnownBug)
-    (bytes : list byte) : Prop :=
-  match bug with
-  | RlpLongLengthWrap => nestedWrapOccurs bytes
+(* Sail agrees with the candidate: where the candidate succeeds, Sail
+   succeeds on the same bytes and its base fee, blob gas used and excess
+   blob gas equal the candidate's (Sail does not return gas limit, gas used
+   or timestamp); where the candidate rejects, Sail rejects. *)
+Definition parentHeaderSailAgrees (bytes : list byte) : Prop :=
+  match candidateParentHeader bytes with
+  | candidateHeaderSuccess header =>
+      ParentHeaderSuccess bytes (parentHeaderSailNode bytes) header
+  | candidateHeaderError =>
+      ParentHeaderRejects bytes (parentHeaderSailNode bytes)
   end.
 
-Definition parentHeaderSuccessAgreement (bytes result : list byte) : Prop :=
-  exists header,
-    parentHeaderResult80 result header /\
-    (ParentHeaderSuccess bytes (parentHeaderSailNode bytes) header \/
-     exists bug, List.In bug knownBugs /\
-       parentHeaderNestedBugApplies bug bytes).
-
-Definition parentHeaderRejectionAgreement (bytes result : list byte) : Prop :=
-  parentHeaderError80 result /\
-  (ParentHeaderRejects bytes (parentHeaderSailNode bytes) \/
-   parentHeaderMissingRequiredField bytes).
-
-(* R2-1 is a named rejection-side class. The user has not yet decided
-   whether the final claim keeps this class or narrows its input domain. *)
+(* The meaning of one decodeParentHeader call: the call is in the domain,
+   the result bytes are exactly the candidate's (success record or error
+   union), and Sail agrees with the candidate or the input triggers a
+   registered KnownBug class. *)
 Definition ParentHeaderMeaningModuloKnownBugs
     (args : ParentHeaderCall) (result : list byte) : Prop :=
   parentHeaderDomain args /\
-  (parentHeaderSuccessAgreement args.(headerInputBytes) result \/
-   parentHeaderRejectionAgreement args.(headerInputBytes) result).
+  parentHeaderCandidateResult args.(headerInputBytes) result /\
+  (parentHeaderSailAgrees args.(headerInputBytes) \/
+   exists bug, List.In bug knownBugs /\
+     parentHeaderBugTrigger bug args.(headerInputBytes) = true).

@@ -52,6 +52,7 @@ Module Type DecodeItemSealedSignature.
   Axiom decodeItemCallPayloadInInputLe : forall argv0 argv1 rest sp inputEnd input before after, decodeItemCallMeaning (decodeItemCallDataArgs (argv0 :: argv1 :: rest) sp inputEnd input before) after -> 0 < bv_unsigned (listWord64At8 after) -> bv_unsigned (listWord64At8 after) < 18446744073709551607 -> bv_unsigned argv1 <= bv_unsigned (leWord64 after 0) /\ bv_unsigned (leWord64 after 0) + bv_unsigned (listWord64At8 after) <= bv_unsigned argv1 + Z.of_nat (length input).
   Axiom decodeItemCallConsumed : forall argv sp inputEnd input before after, decodeItemCallMeaning (decodeItemCallDataArgs argv sp inputEnd input before) after -> bv_unsigned (listWord64At24 after) <= Z.of_nat (length input).
   Axiom decodeItemCandidateSuccessBounds : forall input isList headerLength payloadLength, candidateDecodeItem input = candidateSuccess isList headerLength payloadLength -> 0 <= headerLength <= 9 /\ (headerLength + payloadLength) mod word64Modulus <= Z.of_nat (length input) /\ (forall prefix rest, input = prefix :: rest -> bv_unsigned prefix = 128 -> payloadLength = 0).
+  Axiom decodeItemCallPayloadFits : forall argv sp inputEnd input before after, decodeItemCallMeaning (decodeItemCallDataArgs argv sp inputEnd input before) after -> headerFits input -> bv_unsigned (listWord64At8 after) <= Z.of_nat (length input).
   Axiom decodeItemCallDomainInput : forall argv0 argv1 argv2 rest sp inputEnd input before, decodeItemCallDomain (decodeItemCallDataArgs (argv0 :: argv1 :: argv2 :: rest) sp inputEnd input before) -> bv_unsigned argv2 = Z.of_nat (length input) /\ bv_unsigned argv1 + bv_unsigned argv2 < bv_modulus 64.
   Axiom decodeItemCallDomainOutput : forall argv sp inputEnd input before, decodeItemCallDomain (decodeItemCallDataArgs argv sp inputEnd input before) -> length before = 40%nat.
   Axiom decodeItemCallDomainIntro : forall args, decodeItemC1BDomain args -> decodeItemCallDomain args.
@@ -89,6 +90,7 @@ Module DecodeItemSealed : DecodeItemSealedSignature.
   Definition decodeItemCallPayloadInInputLe := decodeItemMeaningPayloadInInputLe.
   Definition decodeItemCallConsumed := decodeItemMeaningConsumed.
   Definition decodeItemCandidateSuccessBounds := candidateDecodeItemSuccessBounds.
+  Definition decodeItemCallPayloadFits := decodeItemMeaningPayloadFits.
   Definition decodeItemCallDomainInput := decodeItemDomainInput.
   Definition decodeItemCallDomainOutput := decodeItemDomainOutput.
   Definition decodeItemCallDomainIntro := decodeItemDomainIntro.
