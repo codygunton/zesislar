@@ -17,6 +17,11 @@ SCOPED_HINT_IMPORTS: dict[str, tuple[str, ...]] = {
         "ZesuSsz.Compliance.ParentHeaderBlockObligations",
         "ZesuSsz.Compliance.ParentHeaderGeneratedComposition",
     ),
+    # Only the nextUint64 block obligations and composition use the boundary's unfolds.
+    "ZesuSsz.Compliance.NextUint64CompositionBoundary": (
+        "ZesuSsz.Compliance.NextUint64BlockObligations",
+        "ZesuSsz.Compliance.NextUint64GeneratedComposition",
+    ),
 }
 
 
