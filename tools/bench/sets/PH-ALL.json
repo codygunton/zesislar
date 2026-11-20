@@ -1,0 +1,913 @@
+{
+ "name": "PH-ALL",
+ "created": "2026-11-19",
+ "purpose": "Every rendered caller of decodeParentHeader (decodeparentheader_fp301_callers), each with its own CPU cap (tools/bench/mkset.py).",
+ "caps": {
+  "cpu_seconds": 2400,
+  "limit_gib": 24
+ },
+ "jobs": 6,
+ "overlays": [],
+ "members": [
+  {
+   "function": "decodeParentHeader",
+   "callers": "decodeparentheader_fp301_callers",
+   "case": "0000",
+   "instructions": 16,
+   "cpu_seconds": 2400,
+   "claim_gib": 24,
+   "why": "16 instructions; heavy block of plan step 1.4: 2400 CPU-s, claim 24 GiB",
+   "expected_cpu": 2400
+  },
+  {
+   "function": "decodeParentHeader",
+   "callers": "decodeparentheader_fp301_callers",
+   "case": "0040",
+   "instructions": 2,
+   "cpu_seconds": 210,
+   "claim_gib": 8,
+   "why": "2 instructions: cap min(1200, 120 + 45 x 2) = 210 CPU-s",
+   "expected_cpu": 210
+  },
+  {
+   "function": "decodeParentHeader",
+   "callers": "decodeparentheader_fp301_callers",
+   "case": "0048",
+   "instructions": 18,
+   "cpu_seconds": 930,
+   "claim_gib": 8,
+   "why": "18 instructions: cap min(1200, 120 + 45 x 18) = 930 CPU-s",
+   "expected_cpu": 930
+  },
+  {
+   "function": "decodeParentHeader",
+   "callers": "decodeparentheader_fp301_callers",
+   "case": "0054",
+   "instructions": 3,
+   "cpu_seconds": 255,
+   "claim_gib": 8,
+   "why": "3 instructions: cap min(1200, 120 + 45 x 3) = 255 CPU-s",
+   "expected_cpu": 255
+  },
+  {
+   "function": "decodeParentHeader",
+   "callers": "decodeparentheader_fp301_callers",
+   "case": "0060",
+   "instructions": 2,
+   "cpu_seconds": 210,
+   "claim_gib": 8,
+   "why": "2 instructions: cap min(1200, 120 + 45 x 2) = 210 CPU-s",
+   "expected_cpu": 210
+  },
+  {
+   "function": "decodeParentHeader",
+   "callers": "decodeparentheader_fp301_callers",
+   "case": "0068",
+   "instructions": 6,
+   "cpu_seconds": 390,
+   "claim_gib": 8,
+   "why": "6 instructions: cap min(1200, 120 + 45 x 6) = 390 CPU-s",
+   "expected_cpu": 390
+  },
+  {
+   "function": "decodeParentHeader",
+   "callers": "decodeparentheader_fp301_callers",
+   "case": "0080",
+   "instructions": 2,
+   "cpu_seconds": 210,
+   "claim_gib": 8,
+   "why": "2 instructions: cap min(1200, 120 + 45 x 2) = 210 CPU-s",
+   "expected_cpu": 210
+  },
+  {
+   "function": "decodeParentHeader",
+   "callers": "decodeparentheader_fp301_callers",
+   "case": "0088",
+   "instructions": 18,
+   "cpu_seconds": 2400,
+   "claim_gib": 24,
+   "why": "18 instructions; heavy block of plan step 1.4: 2400 CPU-s, claim 24 GiB",
+   "expected_cpu": 2400
+  },
+  {
+   "function": "decodeParentHeader",
+   "callers": "decodeparentheader_fp301_callers",
+   "case": "0094",
+   "instructions": 18,
+   "cpu_seconds": 2400,
+   "claim_gib": 24,
+   "why": "18 instructions; heavy block of plan step 1.4: 2400 CPU-s, claim 24 GiB",
+   "expected_cpu": 2400
+  },
+  {
+   "function": "decodeParentHeader",
+   "callers": "decodeparentheader_fp301_callers",
+   "case": "00a0",
+   "instructions": 2,
+   "cpu_seconds": 210,
+   "claim_gib": 8,
+   "why": "2 instructions: cap min(1200, 120 + 45 x 2) = 210 CPU-s",
+   "expected_cpu": 210
+  },
+  {
+   "function": "decodeParentHeader",
+   "callers": "decodeparentheader_fp301_callers",
+   "case": "00a8",
+   "instructions": 17,
+   "cpu_seconds": 2400,
+   "claim_gib": 24,
+   "why": "17 instructions; heavy block of plan step 1.4: 2400 CPU-s, claim 24 GiB",
+   "expected_cpu": 2400
+  },
+  {
+   "function": "decodeParentHeader",
+   "callers": "decodeparentheader_fp301_callers",
+   "case": "00ec",
+   "instructions": 7,
+   "cpu_seconds": 435,
+   "claim_gib": 8,
+   "why": "7 instructions: cap min(1200, 120 + 45 x 7) = 435 CPU-s",
+   "expected_cpu": 435
+  },
+  {
+   "function": "decodeParentHeader",
+   "callers": "decodeparentheader_fp301_callers",
+   "case": "0108",
+   "instructions": 2,
+   "cpu_seconds": 210,
+   "claim_gib": 8,
+   "why": "2 instructions: cap min(1200, 120 + 45 x 2) = 210 CPU-s",
+   "expected_cpu": 210
+  },
+  {
+   "function": "decodeParentHeader",
+   "callers": "decodeparentheader_fp301_callers",
+   "case": "0110",
+   "instructions": 2,
+   "cpu_seconds": 210,
+   "claim_gib": 8,
+   "why": "2 instructions: cap min(1200, 120 + 45 x 2) = 210 CPU-s",
+   "expected_cpu": 210
+  },
+  {
+   "function": "decodeParentHeader",
+   "callers": "decodeparentheader_fp301_callers",
+   "case": "0118",
+   "instructions": 7,
+   "cpu_seconds": 435,
+   "claim_gib": 8,
+   "why": "7 instructions: cap min(1200, 120 + 45 x 7) = 435 CPU-s",
+   "expected_cpu": 435
+  },
+  {
+   "function": "decodeParentHeader",
+   "callers": "decodeparentheader_fp301_callers",
+   "case": "0134",
+   "instructions": 2,
+   "cpu_seconds": 210,
+   "claim_gib": 8,
+   "why": "2 instructions: cap min(1200, 120 + 45 x 2) = 210 CPU-s",
+   "expected_cpu": 210
+  },
+  {
+   "function": "decodeParentHeader",
+   "callers": "decodeparentheader_fp301_callers",
+   "case": "013c",
+   "instructions": 2,
+   "cpu_seconds": 210,
+   "claim_gib": 8,
+   "why": "2 instructions: cap min(1200, 120 + 45 x 2) = 210 CPU-s",
+   "expected_cpu": 210
+  },
+  {
+   "function": "decodeParentHeader",
+   "callers": "decodeparentheader_fp301_callers",
+   "case": "0144",
+   "instructions": 7,
+   "cpu_seconds": 435,
+   "claim_gib": 8,
+   "why": "7 instructions: cap min(1200, 120 + 45 x 7) = 435 CPU-s",
+   "expected_cpu": 435
+  },
+  {
+   "function": "decodeParentHeader",
+   "callers": "decodeparentheader_fp301_callers",
+   "case": "0160",
+   "instructions": 2,
+   "cpu_seconds": 210,
+   "claim_gib": 8,
+   "why": "2 instructions: cap min(1200, 120 + 45 x 2) = 210 CPU-s",
+   "expected_cpu": 210
+  },
+  {
+   "function": "decodeParentHeader",
+   "callers": "decodeparentheader_fp301_callers",
+   "case": "0168",
+   "instructions": 2,
+   "cpu_seconds": 210,
+   "claim_gib": 8,
+   "why": "2 instructions: cap min(1200, 120 + 45 x 2) = 210 CPU-s",
+   "expected_cpu": 210
+  },
+  {
+   "function": "decodeParentHeader",
+   "callers": "decodeparentheader_fp301_callers",
+   "case": "0170",
+   "instructions": 7,
+   "cpu_seconds": 435,
+   "claim_gib": 8,
+   "why": "7 instructions: cap min(1200, 120 + 45 x 7) = 435 CPU-s",
+   "expected_cpu": 435
+  },
+  {
+   "function": "decodeParentHeader",
+   "callers": "decodeparentheader_fp301_callers",
+   "case": "018c",
+   "instructions": 2,
+   "cpu_seconds": 210,
+   "claim_gib": 8,
+   "why": "2 instructions: cap min(1200, 120 + 45 x 2) = 210 CPU-s",
+   "expected_cpu": 210
+  },
+  {
+   "function": "decodeParentHeader",
+   "callers": "decodeparentheader_fp301_callers",
+   "case": "0194",
+   "instructions": 2,
+   "cpu_seconds": 210,
+   "claim_gib": 8,
+   "why": "2 instructions: cap min(1200, 120 + 45 x 2) = 210 CPU-s",
+   "expected_cpu": 210
+  },
+  {
+   "function": "decodeParentHeader",
+   "callers": "decodeparentheader_fp301_callers",
+   "case": "019c",
+   "instructions": 7,
+   "cpu_seconds": 435,
+   "claim_gib": 8,
+   "why": "7 instructions: cap min(1200, 120 + 45 x 7) = 435 CPU-s",
+   "expected_cpu": 435
+  },
+  {
+   "function": "decodeParentHeader",
+   "callers": "decodeparentheader_fp301_callers",
+   "case": "01b8",
+   "instructions": 2,
+   "cpu_seconds": 210,
+   "claim_gib": 8,
+   "why": "2 instructions: cap min(1200, 120 + 45 x 2) = 210 CPU-s",
+   "expected_cpu": 210
+  },
+  {
+   "function": "decodeParentHeader",
+   "callers": "decodeparentheader_fp301_callers",
+   "case": "01c0",
+   "instructions": 2,
+   "cpu_seconds": 210,
+   "claim_gib": 8,
+   "why": "2 instructions: cap min(1200, 120 + 45 x 2) = 210 CPU-s",
+   "expected_cpu": 210
+  },
+  {
+   "function": "decodeParentHeader",
+   "callers": "decodeparentheader_fp301_callers",
+   "case": "01c8",
+   "instructions": 7,
+   "cpu_seconds": 435,
+   "claim_gib": 8,
+   "why": "7 instructions: cap min(1200, 120 + 45 x 7) = 435 CPU-s",
+   "expected_cpu": 435
+  },
+  {
+   "function": "decodeParentHeader",
+   "callers": "decodeparentheader_fp301_callers",
+   "case": "01e4",
+   "instructions": 2,
+   "cpu_seconds": 210,
+   "claim_gib": 8,
+   "why": "2 instructions: cap min(1200, 120 + 45 x 2) = 210 CPU-s",
+   "expected_cpu": 210
+  },
+  {
+   "function": "decodeParentHeader",
+   "callers": "decodeparentheader_fp301_callers",
+   "case": "01ec",
+   "instructions": 2,
+   "cpu_seconds": 210,
+   "claim_gib": 8,
+   "why": "2 instructions: cap min(1200, 120 + 45 x 2) = 210 CPU-s",
+   "expected_cpu": 210
+  },
+  {
+   "function": "decodeParentHeader",
+   "callers": "decodeparentheader_fp301_callers",
+   "case": "01f4",
+   "instructions": 7,
+   "cpu_seconds": 435,
+   "claim_gib": 8,
+   "why": "7 instructions: cap min(1200, 120 + 45 x 7) = 435 CPU-s",
+   "expected_cpu": 435
+  },
+  {
+   "function": "decodeParentHeader",
+   "callers": "decodeparentheader_fp301_callers",
+   "case": "0210",
+   "instructions": 2,
+   "cpu_seconds": 210,
+   "claim_gib": 8,
+   "why": "2 instructions: cap min(1200, 120 + 45 x 2) = 210 CPU-s",
+   "expected_cpu": 210
+  },
+  {
+   "function": "decodeParentHeader",
+   "callers": "decodeparentheader_fp301_callers",
+   "case": "0218",
+   "instructions": 2,
+   "cpu_seconds": 210,
+   "claim_gib": 8,
+   "why": "2 instructions: cap min(1200, 120 + 45 x 2) = 210 CPU-s",
+   "expected_cpu": 210
+  },
+  {
+   "function": "decodeParentHeader",
+   "callers": "decodeparentheader_fp301_callers",
+   "case": "0220",
+   "instructions": 7,
+   "cpu_seconds": 435,
+   "claim_gib": 8,
+   "why": "7 instructions: cap min(1200, 120 + 45 x 7) = 435 CPU-s",
+   "expected_cpu": 435
+  },
+  {
+   "function": "decodeParentHeader",
+   "callers": "decodeparentheader_fp301_callers",
+   "case": "023c",
+   "instructions": 2,
+   "cpu_seconds": 210,
+   "claim_gib": 8,
+   "why": "2 instructions: cap min(1200, 120 + 45 x 2) = 210 CPU-s",
+   "expected_cpu": 210
+  },
+  {
+   "function": "decodeParentHeader",
+   "callers": "decodeparentheader_fp301_callers",
+   "case": "0244",
+   "instructions": 8,
+   "cpu_seconds": 480,
+   "claim_gib": 8,
+   "why": "8 instructions: cap min(1200, 120 + 45 x 8) = 480 CPU-s",
+   "expected_cpu": 480
+  },
+  {
+   "function": "decodeParentHeader",
+   "callers": "decodeparentheader_fp301_callers",
+   "case": "0264",
+   "instructions": 2,
+   "cpu_seconds": 210,
+   "claim_gib": 8,
+   "why": "2 instructions: cap min(1200, 120 + 45 x 2) = 210 CPU-s",
+   "expected_cpu": 210
+  },
+  {
+   "function": "decodeParentHeader",
+   "callers": "decodeparentheader_fp301_callers",
+   "case": "026c",
+   "instructions": 1,
+   "cpu_seconds": 165,
+   "claim_gib": 8,
+   "why": "1 instructions: cap min(1200, 120 + 45 x 1) = 165 CPU-s",
+   "expected_cpu": 165
+  },
+  {
+   "function": "decodeParentHeader",
+   "callers": "decodeparentheader_fp301_callers",
+   "case": "0270",
+   "instructions": 13,
+   "cpu_seconds": 2400,
+   "claim_gib": 24,
+   "why": "13 instructions; heavy block of plan step 1.4: 2400 CPU-s, claim 24 GiB",
+   "expected_cpu": 2400
+  },
+  {
+   "function": "decodeParentHeader",
+   "callers": "decodeparentheader_fp301_callers",
+   "case": "02a4",
+   "instructions": 3,
+   "cpu_seconds": 255,
+   "claim_gib": 8,
+   "why": "3 instructions: cap min(1200, 120 + 45 x 3) = 255 CPU-s",
+   "expected_cpu": 255
+  },
+  {
+   "function": "decodeParentHeader",
+   "callers": "decodeparentheader_fp301_callers",
+   "case": "02b0",
+   "instructions": 3,
+   "cpu_seconds": 255,
+   "claim_gib": 8,
+   "why": "3 instructions: cap min(1200, 120 + 45 x 3) = 255 CPU-s",
+   "expected_cpu": 255
+  },
+  {
+   "function": "decodeParentHeader",
+   "callers": "decodeparentheader_fp301_callers",
+   "case": "02bc",
+   "instructions": 3,
+   "cpu_seconds": 255,
+   "claim_gib": 8,
+   "why": "3 instructions: cap min(1200, 120 + 45 x 3) = 255 CPU-s",
+   "expected_cpu": 255
+  },
+  {
+   "function": "decodeParentHeader",
+   "callers": "decodeparentheader_fp301_callers",
+   "case": "02c8",
+   "instructions": 2,
+   "cpu_seconds": 210,
+   "claim_gib": 8,
+   "why": "2 instructions: cap min(1200, 120 + 45 x 2) = 210 CPU-s",
+   "expected_cpu": 210
+  },
+  {
+   "function": "decodeParentHeader",
+   "callers": "decodeparentheader_fp301_callers",
+   "case": "02d0",
+   "instructions": 5,
+   "cpu_seconds": 345,
+   "claim_gib": 8,
+   "why": "5 instructions: cap min(1200, 120 + 45 x 5) = 345 CPU-s",
+   "expected_cpu": 345
+  },
+  {
+   "function": "decodeParentHeader",
+   "callers": "decodeparentheader_fp301_callers",
+   "case": "02e4",
+   "instructions": 7,
+   "cpu_seconds": 435,
+   "claim_gib": 8,
+   "why": "7 instructions: cap min(1200, 120 + 45 x 7) = 435 CPU-s",
+   "expected_cpu": 435
+  },
+  {
+   "function": "decodeParentHeader",
+   "callers": "decodeparentheader_fp301_callers",
+   "case": "0300",
+   "instructions": 2,
+   "cpu_seconds": 210,
+   "claim_gib": 8,
+   "why": "2 instructions: cap min(1200, 120 + 45 x 2) = 210 CPU-s",
+   "expected_cpu": 210
+  },
+  {
+   "function": "decodeParentHeader",
+   "callers": "decodeparentheader_fp301_callers",
+   "case": "0308",
+   "instructions": 3,
+   "cpu_seconds": 255,
+   "claim_gib": 8,
+   "why": "3 instructions: cap min(1200, 120 + 45 x 3) = 255 CPU-s",
+   "expected_cpu": 255
+  },
+  {
+   "function": "decodeParentHeader",
+   "callers": "decodeparentheader_fp301_callers",
+   "case": "0314",
+   "instructions": 3,
+   "cpu_seconds": 255,
+   "claim_gib": 8,
+   "why": "3 instructions: cap min(1200, 120 + 45 x 3) = 255 CPU-s",
+   "expected_cpu": 255
+  },
+  {
+   "function": "decodeParentHeader",
+   "callers": "decodeparentheader_fp301_callers",
+   "case": "0320",
+   "instructions": 3,
+   "cpu_seconds": 255,
+   "claim_gib": 8,
+   "why": "3 instructions: cap min(1200, 120 + 45 x 3) = 255 CPU-s",
+   "expected_cpu": 255
+  },
+  {
+   "function": "decodeParentHeader",
+   "callers": "decodeparentheader_fp301_callers",
+   "case": "032c",
+   "instructions": 2,
+   "cpu_seconds": 210,
+   "claim_gib": 8,
+   "why": "2 instructions: cap min(1200, 120 + 45 x 2) = 210 CPU-s",
+   "expected_cpu": 210
+  },
+  {
+   "function": "decodeParentHeader",
+   "callers": "decodeparentheader_fp301_callers",
+   "case": "0334",
+   "instructions": 5,
+   "cpu_seconds": 345,
+   "claim_gib": 8,
+   "why": "5 instructions: cap min(1200, 120 + 45 x 5) = 345 CPU-s",
+   "expected_cpu": 345
+  },
+  {
+   "function": "decodeParentHeader",
+   "callers": "decodeparentheader_fp301_callers",
+   "case": "0348",
+   "instructions": 8,
+   "cpu_seconds": 480,
+   "claim_gib": 8,
+   "why": "8 instructions: cap min(1200, 120 + 45 x 8) = 480 CPU-s",
+   "expected_cpu": 480
+  },
+  {
+   "function": "decodeParentHeader",
+   "callers": "decodeparentheader_fp301_callers",
+   "case": "0368",
+   "instructions": 2,
+   "cpu_seconds": 210,
+   "claim_gib": 8,
+   "why": "2 instructions: cap min(1200, 120 + 45 x 2) = 210 CPU-s",
+   "expected_cpu": 210
+  },
+  {
+   "function": "decodeParentHeader",
+   "callers": "decodeparentheader_fp301_callers",
+   "case": "0370",
+   "instructions": 3,
+   "cpu_seconds": 255,
+   "claim_gib": 8,
+   "why": "3 instructions: cap min(1200, 120 + 45 x 3) = 255 CPU-s",
+   "expected_cpu": 255
+  },
+  {
+   "function": "decodeParentHeader",
+   "callers": "decodeparentheader_fp301_callers",
+   "case": "037c",
+   "instructions": 3,
+   "cpu_seconds": 255,
+   "claim_gib": 8,
+   "why": "3 instructions: cap min(1200, 120 + 45 x 3) = 255 CPU-s",
+   "expected_cpu": 255
+  },
+  {
+   "function": "decodeParentHeader",
+   "callers": "decodeparentheader_fp301_callers",
+   "case": "0388",
+   "instructions": 3,
+   "cpu_seconds": 255,
+   "claim_gib": 8,
+   "why": "3 instructions: cap min(1200, 120 + 45 x 3) = 255 CPU-s",
+   "expected_cpu": 255
+  },
+  {
+   "function": "decodeParentHeader",
+   "callers": "decodeparentheader_fp301_callers",
+   "case": "0394",
+   "instructions": 2,
+   "cpu_seconds": 210,
+   "claim_gib": 8,
+   "why": "2 instructions: cap min(1200, 120 + 45 x 2) = 210 CPU-s",
+   "expected_cpu": 210
+  },
+  {
+   "function": "decodeParentHeader",
+   "callers": "decodeparentheader_fp301_callers",
+   "case": "039c",
+   "instructions": 5,
+   "cpu_seconds": 345,
+   "claim_gib": 8,
+   "why": "5 instructions: cap min(1200, 120 + 45 x 5) = 345 CPU-s",
+   "expected_cpu": 345
+  },
+  {
+   "function": "decodeParentHeader",
+   "callers": "decodeparentheader_fp301_callers",
+   "case": "03b0",
+   "instructions": 3,
+   "cpu_seconds": 255,
+   "claim_gib": 8,
+   "why": "3 instructions: cap min(1200, 120 + 45 x 3) = 255 CPU-s",
+   "expected_cpu": 255
+  },
+  {
+   "function": "decodeParentHeader",
+   "callers": "decodeparentheader_fp301_callers",
+   "case": "03bc",
+   "instructions": 23,
+   "cpu_seconds": 1155,
+   "claim_gib": 8,
+   "why": "23 instructions: cap min(1200, 120 + 45 x 23) = 1155 CPU-s",
+   "expected_cpu": 1155
+  },
+  {
+   "function": "decodeParentHeader",
+   "callers": "decodeparentheader_fp301_callers",
+   "case": "03e8",
+   "instructions": 6,
+   "cpu_seconds": 390,
+   "claim_gib": 8,
+   "why": "6 instructions: cap min(1200, 120 + 45 x 6) = 390 CPU-s",
+   "expected_cpu": 390
+  },
+  {
+   "function": "decodeParentHeader",
+   "callers": "decodeparentheader_fp301_callers",
+   "case": "0400",
+   "instructions": 2,
+   "cpu_seconds": 210,
+   "claim_gib": 8,
+   "why": "2 instructions: cap min(1200, 120 + 45 x 2) = 210 CPU-s",
+   "expected_cpu": 210
+  },
+  {
+   "function": "decodeParentHeader",
+   "callers": "decodeparentheader_fp301_callers",
+   "case": "0408",
+   "instructions": 18,
+   "cpu_seconds": 2400,
+   "claim_gib": 24,
+   "why": "18 instructions; heavy block of plan step 1.4: 2400 CPU-s, claim 24 GiB",
+   "expected_cpu": 2400
+  },
+  {
+   "function": "decodeParentHeader",
+   "callers": "decodeparentheader_fp301_callers",
+   "case": "0414",
+   "instructions": 2,
+   "cpu_seconds": 210,
+   "claim_gib": 8,
+   "why": "2 instructions: cap min(1200, 120 + 45 x 2) = 210 CPU-s",
+   "expected_cpu": 210
+  },
+  {
+   "function": "decodeParentHeader",
+   "callers": "decodeparentheader_fp301_callers",
+   "case": "041c",
+   "instructions": 7,
+   "cpu_seconds": 435,
+   "claim_gib": 8,
+   "why": "7 instructions: cap min(1200, 120 + 45 x 7) = 435 CPU-s",
+   "expected_cpu": 435
+  },
+  {
+   "function": "decodeParentHeader",
+   "callers": "decodeparentheader_fp301_callers",
+   "case": "0438",
+   "instructions": 2,
+   "cpu_seconds": 210,
+   "claim_gib": 8,
+   "why": "2 instructions: cap min(1200, 120 + 45 x 2) = 210 CPU-s",
+   "expected_cpu": 210
+  },
+  {
+   "function": "decodeParentHeader",
+   "callers": "decodeparentheader_fp301_callers",
+   "case": "0440",
+   "instructions": 2,
+   "cpu_seconds": 210,
+   "claim_gib": 8,
+   "why": "2 instructions: cap min(1200, 120 + 45 x 2) = 210 CPU-s",
+   "expected_cpu": 210
+  },
+  {
+   "function": "decodeParentHeader",
+   "callers": "decodeparentheader_fp301_callers",
+   "case": "0448",
+   "instructions": 7,
+   "cpu_seconds": 435,
+   "claim_gib": 8,
+   "why": "7 instructions: cap min(1200, 120 + 45 x 7) = 435 CPU-s",
+   "expected_cpu": 435
+  },
+  {
+   "function": "decodeParentHeader",
+   "callers": "decodeparentheader_fp301_callers",
+   "case": "0464",
+   "instructions": 2,
+   "cpu_seconds": 210,
+   "claim_gib": 8,
+   "why": "2 instructions: cap min(1200, 120 + 45 x 2) = 210 CPU-s",
+   "expected_cpu": 210
+  },
+  {
+   "function": "decodeParentHeader",
+   "callers": "decodeparentheader_fp301_callers",
+   "case": "046c",
+   "instructions": 8,
+   "cpu_seconds": 480,
+   "claim_gib": 8,
+   "why": "8 instructions: cap min(1200, 120 + 45 x 8) = 480 CPU-s",
+   "expected_cpu": 480
+  },
+  {
+   "function": "decodeParentHeader",
+   "callers": "decodeparentheader_fp301_callers",
+   "case": "048c",
+   "instructions": 3,
+   "cpu_seconds": 255,
+   "claim_gib": 8,
+   "why": "3 instructions: cap min(1200, 120 + 45 x 3) = 255 CPU-s",
+   "expected_cpu": 255
+  },
+  {
+   "function": "decodeParentHeader",
+   "callers": "decodeparentheader_fp301_callers",
+   "case": "0498",
+   "instructions": 4,
+   "cpu_seconds": 300,
+   "claim_gib": 8,
+   "why": "4 instructions: cap min(1200, 120 + 45 x 4) = 300 CPU-s",
+   "expected_cpu": 300
+  },
+  {
+   "function": "decodeParentHeader",
+   "callers": "decodeparentheader_fp301_callers",
+   "case": "04a8",
+   "instructions": 2,
+   "cpu_seconds": 210,
+   "claim_gib": 8,
+   "why": "2 instructions: cap min(1200, 120 + 45 x 2) = 210 CPU-s",
+   "expected_cpu": 210
+  },
+  {
+   "function": "decodeParentHeader",
+   "callers": "decodeparentheader_fp301_callers",
+   "case": "04b0",
+   "instructions": 7,
+   "cpu_seconds": 435,
+   "claim_gib": 8,
+   "why": "7 instructions: cap min(1200, 120 + 45 x 7) = 435 CPU-s",
+   "expected_cpu": 435
+  },
+  {
+   "function": "decodeParentHeader",
+   "callers": "decodeparentheader_fp301_callers",
+   "case": "04cc",
+   "instructions": 6,
+   "cpu_seconds": 390,
+   "claim_gib": 8,
+   "why": "6 instructions: cap min(1200, 120 + 45 x 6) = 390 CPU-s",
+   "expected_cpu": 390
+  },
+  {
+   "function": "decodeParentHeader",
+   "callers": "decodeparentheader_fp301_callers",
+   "case": "04e4",
+   "instructions": 2,
+   "cpu_seconds": 210,
+   "claim_gib": 8,
+   "why": "2 instructions: cap min(1200, 120 + 45 x 2) = 210 CPU-s",
+   "expected_cpu": 210
+  },
+  {
+   "function": "decodeParentHeader",
+   "callers": "decodeparentheader_fp301_callers",
+   "case": "04ec",
+   "instructions": 18,
+   "cpu_seconds": 2400,
+   "claim_gib": 24,
+   "why": "18 instructions; heavy block of plan step 1.4: 2400 CPU-s, claim 24 GiB",
+   "expected_cpu": 2400
+  },
+  {
+   "function": "decodeParentHeader",
+   "callers": "decodeparentheader_fp301_callers",
+   "case": "04f8",
+   "instructions": 6,
+   "cpu_seconds": 390,
+   "claim_gib": 8,
+   "why": "6 instructions: cap min(1200, 120 + 45 x 6) = 390 CPU-s",
+   "expected_cpu": 390
+  },
+  {
+   "function": "decodeParentHeader",
+   "callers": "decodeparentheader_fp301_callers",
+   "case": "0510_slot0",
+   "instructions": 1,
+   "cpu_seconds": 165,
+   "claim_gib": 8,
+   "why": "1 instructions: cap min(1200, 120 + 45 x 1) = 165 CPU-s",
+   "expected_cpu": 165
+  },
+  {
+   "function": "decodeParentHeader",
+   "callers": "decodeparentheader_fp301_callers",
+   "case": "0510_slot1",
+   "instructions": 1,
+   "cpu_seconds": 165,
+   "claim_gib": 8,
+   "why": "1 instructions: cap min(1200, 120 + 45 x 1) = 165 CPU-s",
+   "expected_cpu": 165
+  },
+  {
+   "function": "decodeParentHeader",
+   "callers": "decodeparentheader_fp301_callers",
+   "case": "0514_slot0",
+   "instructions": 29,
+   "cpu_seconds": 2400,
+   "claim_gib": 24,
+   "why": "29 instructions; heavy block of plan step 1.4: 2400 CPU-s, claim 24 GiB",
+   "expected_cpu": 2400
+  },
+  {
+   "function": "decodeParentHeader",
+   "callers": "decodeparentheader_fp301_callers",
+   "case": "0514_slot1",
+   "instructions": 29,
+   "cpu_seconds": 2400,
+   "claim_gib": 24,
+   "why": "29 instructions; heavy block of plan step 1.4: 2400 CPU-s, claim 24 GiB",
+   "expected_cpu": 2400
+  },
+  {
+   "function": "decodeParentHeader",
+   "callers": "decodeparentheader_fp301_callers",
+   "case": "0514_slot2",
+   "instructions": 29,
+   "cpu_seconds": 2400,
+   "claim_gib": 24,
+   "why": "29 instructions; heavy block of plan step 1.4: 2400 CPU-s, claim 24 GiB",
+   "expected_cpu": 2400
+  },
+  {
+   "function": "decodeParentHeader",
+   "callers": "decodeparentheader_fp301_callers",
+   "case": "0514_slot3",
+   "instructions": 29,
+   "cpu_seconds": 2400,
+   "claim_gib": 24,
+   "why": "29 instructions; heavy block of plan step 1.4: 2400 CPU-s, claim 24 GiB",
+   "expected_cpu": 2400
+  },
+  {
+   "function": "decodeParentHeader",
+   "callers": "decodeparentheader_fp301_callers",
+   "case": "0514_slot4",
+   "instructions": 29,
+   "cpu_seconds": 2400,
+   "claim_gib": 24,
+   "why": "29 instructions; heavy block of plan step 1.4: 2400 CPU-s, claim 24 GiB",
+   "expected_cpu": 2400
+  },
+  {
+   "function": "decodeParentHeader",
+   "callers": "decodeparentheader_fp301_callers",
+   "case": "0558",
+   "instructions": 4,
+   "cpu_seconds": 300,
+   "claim_gib": 8,
+   "why": "4 instructions: cap min(1200, 120 + 45 x 4) = 300 CPU-s",
+   "expected_cpu": 300
+  },
+  {
+   "function": "decodeParentHeader",
+   "callers": "decodeparentheader_fp301_callers",
+   "case": "0568",
+   "instructions": 2,
+   "cpu_seconds": 210,
+   "claim_gib": 8,
+   "why": "2 instructions: cap min(1200, 120 + 45 x 2) = 210 CPU-s",
+   "expected_cpu": 210
+  },
+  {
+   "function": "decodeParentHeader",
+   "callers": "decodeparentheader_fp301_callers",
+   "case": "0570",
+   "instructions": 7,
+   "cpu_seconds": 435,
+   "claim_gib": 8,
+   "why": "7 instructions: cap min(1200, 120 + 45 x 7) = 435 CPU-s",
+   "expected_cpu": 435
+  },
+  {
+   "function": "decodeParentHeader",
+   "callers": "decodeparentheader_fp301_callers",
+   "case": "058c",
+   "instructions": 4,
+   "cpu_seconds": 300,
+   "claim_gib": 8,
+   "why": "4 instructions: cap min(1200, 120 + 45 x 4) = 300 CPU-s",
+   "expected_cpu": 300
+  },
+  {
+   "function": "decodeParentHeader",
+   "callers": "decodeparentheader_fp301_callers",
+   "case": "059c",
+   "instructions": 2,
+   "cpu_seconds": 210,
+   "claim_gib": 8,
+   "why": "2 instructions: cap min(1200, 120 + 45 x 2) = 210 CPU-s",
+   "expected_cpu": 210
+  },
+  {
+   "function": "decodeParentHeader",
+   "callers": "decodeparentheader_fp301_callers",
+   "case": "05a4",
+   "instructions": 6,
+   "cpu_seconds": 390,
+   "claim_gib": 8,
+   "why": "6 instructions: cap min(1200, 120 + 45 x 6) = 390 CPU-s",
+   "expected_cpu": 390
+  }
+ ]
+}

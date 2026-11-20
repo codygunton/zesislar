@@ -3,7 +3,9 @@
  "classes": [
   {"id": "OVER", "ends": ["cpu-cap", "memory-fence"], "owner": "coordinator",
    "next_action": "stepping-only probe (tools/block/probe_mirror.py); shrink the statement before any tactic work"},
-  {"id": "WITNESS", "regex": "^pure (@Coq\\.Init\\.Logic\\.eq .* [A-Za-z_][\\w']* [A-Za-z_][\\w']*|[A-Za-z_][\\w']* = [A-Za-z_][\\w']*|(@Coq\\.Init\\.Logic\\.ex|∃|exists)\\b.*)$",
+  {"id": "GUARD", "regex": "^pure @Coq\\.Init\\.Logic\\.eq \\(@Coq\\.Init\\.Datatypes\\.bool\\) .*@stdpp\\.decidable\\.bool_decide", "owner": "rule (guard view)",
+   "next_action": "guard view: derive the boolean guard from its Prop branch fact (check that fact is visible at the block)"},
+  {"id": "WITNESS", "regex": "^pure (?!@Coq\\.Init\\.Logic\\.ex \\(@[\\w.]+Return\\) \\(fun \\(result : .*ResultBytes result\\b)(@Coq\\.Init\\.Logic\\.eq .* [A-Za-z_][\\w']* [A-Za-z_][\\w']*|[A-Za-z_][\\w']* = [A-Za-z_][\\w']*|(@Coq\\.Init\\.Logic\\.ex|∃|exists)\\b.*)$",
    "owner": "generator", "next_action": "binder map of the edge; never a prover"},
   {"id": "CALL", "regex": "^spatial-call .*∃", "owner": "rule 1.1c",
    "next_action": "check the visible call facts of 1.2-4"},
@@ -15,9 +17,17 @@
    "next_action": "missing edge or reveal instance"},
   {"id": "WORD", "regex": "^pure @Coq\\.Init\\.Logic\\.eq (?=.*\\b(take|drop)\\b)(?=.*\\b(nth|bv_concat)\\b)", "owner": "rule 1.1d-1",
    "next_action": "one spelling of the little-endian word (rule 1.1d-1)"},
-  {"id": "PURE", "regex": "^pure (?!.*Meaning)", "max_bytes": 4096, "owner": "model tier",
+  {"id": "WORD-ORDER", "regex": "^pure @Coq\\.(ZArith\\.BinInt\\.Z|Init\\.Peano)\\.(lt|le) (?=.*bv_concat)", "owner": "rule 1.1d-1, 1.1e-2",
+   "next_action": "one spelling of the word read from the call result (1.1d-1), then the order facts of the payload window (1.1e-2)"},
+  {"id": "FRAME-ORDER", "regex": "^pure @Coq\\.(ZArith\\.BinInt\\.Z|Init\\.Peano)\\.(lt|le) (?=.*StackPointer)", "owner": "rule 1.1d-2, 1.1d-3",
+   "next_action": "frame window order goal: print the window facts; the ranges of 1.1b-1 in a cleared context"},
+  {"id": "MEMCPY", "regex": "^pure @[\\w.]*MemcpyDomain\\b", "owner": "contract fact",
+   "next_action": "memcpy domain from the function's well-formed arguments (step 2.3: parentHeaderMemcpyDomain, Contracts/ParentHeaderMemcpyService.v)"},
+  {"id": "EXIST", "regex": "^spatial \\(∃", "owner": "generator / step 2.3",
+   "next_action": "print the goal at the leftover; join or loop-class successor: binder map of the edge; loop entry: index witness 0 (step 2.3); return join: meaning conjunct (step 2.4)"},
+  {"id": "PURE", "regex": "^pure (?!@Coq\\.Init\\.Logic\\.ex \\(@[\\w.]+Return\\) \\(fun \\(result : .*ResultBytes result\\b)(?!.*Meaning)", "max_bytes": 4096, "owner": "model tier",
    "next_action": "falsity check on concrete values first; then a sonic agent with the goal and exact lemma names; then a task agent"},
-  {"id": "MEANING", "regex": "Meaning", "owner": "contract lemma",
-   "next_action": "step 2.2 or 2.4"}
+  {"id": "MEANING", "regex": "Meaning|^pure @Coq\\.Init\\.Logic\\.ex \\(@[\\w.]+Return\\) \\(fun \\(result : .*ResultBytes result\\b", "owner": "contract lemma",
+   "next_action": "step 2.2 or 2.4 (a return join's `∃ result, …ResultBytes result = …` is the function's meaning, not a witness)"}
  ]
 }

@@ -15,6 +15,13 @@ EQ = '@Coq.Init.Logic.eq'
 CALLER_WITH_CALL = ('Lemma L : instr_pre 0x10 (ZesuSsz.Generated.F.FP301.Pilot0044Entries.e args K)%I -∗\n'
                     '  instr_pre 0x800d6960 (ZesuSsz.Interfaces.DecodeItem.decodeItemCallSpec2)%I -∗ True.\n')
 CALLER_WITHOUT_CALL = 'Lemma L : instr_pre 0x10 (ZesuSsz.Generated.F.FP301.Pilot0044Entries.e args K)%I -∗ True.\n'
+BOOL_GUARD = ('%s (@Coq.Init.Datatypes.bool) (@Coq.Init.Datatypes.negb (@stdpp.decidable.bool_decide (%s '
+              '(@stdpp.bitvector.definitions.bv (64)%%N) x (@stdpp.bitvector.definitions.BV (64)%%N (0)%%Z '
+              '(@Coq.Init.Logic.I))))) (@Coq.Init.Datatypes.true)' % (EQ, EQ))
+RESULT_EXISTS = ('@Coq.Init.Logic.ex (@ZesuSsz.Contracts.R.NextUint64Return) '
+                 '(fun (result : (@ZesuSsz.Contracts.R.NextUint64Return)) => (@Coq.Init.Logic.and (%s '
+                 '(@Coq.Init.Datatypes.list (@EvmSailRlp.evm_rlp_types.byte)) '
+                 '(@ZesuSsz.Contracts.R.nextResultBytes result) x) (%s Z y y)))' % (EQ, EQ))
 
 
 def pure(conclusion, premises=''):
@@ -54,13 +61,30 @@ class Classes(unittest.TestCase):
                          'WORD')
         self.assertEqual(self.label(pure('@Coq.ZArith.BinInt.Z.le x (@Coq.ZArith.BinInt.Z.add y 1)')), 'PURE')
         self.assertEqual(self.label(pure('@ZesuSsz.Contracts.N.nextUint64Meaning x y')), 'MEANING')
+        self.assertEqual(self.label(pure(BOOL_GUARD)), 'GUARD')
+        self.assertEqual(self.label(pure('@Coq.ZArith.BinInt.Z.lt (@stdpp.bitvector.definitions.bv_unsigned (64)%N '
+                                         '(@stdpp.bitvector.definitions.bv_concat (64)%N (56)%N (8)%N x y)) z')),
+                         'WORD-ORDER')
+        self.assertEqual(self.label(pure('@Coq.Init.Peano.le (@Coq.ZArith.BinInt.Z.to_nat (@stdpp.bitvector.definitions'
+                                         '.bv_unsigned (64)%N (@ZesuSsz.Contracts.P.parentHeaderStackPointer args))) x')),
+                         'FRAME-ORDER')
+        self.assertEqual(self.label(pure('@ZesuSsz.Contracts.M.parentHeaderMemcpyDomain (@stdpp.bitvector.definitions'
+                                         '.bv_unsigned (64)%N x)')), 'MEMCPY')
+        self.assertEqual(self.label(spatial('(∃_y,____y)%I')), 'EXIST')  # no callee spec: not CALL
+
+    def test_result_existential_is_meaning_not_witness(self):
+        self.assertEqual(self.label(pure(RESULT_EXISTS)), 'MEANING')
+        self.assertEqual(self.label(pure(RESULT_EXISTS, premises='x <= y -> ' * 500)), 'MEANING')  # over 4 KB
+        self.assertEqual(self.label(pure('@Coq.Init.Logic.ex (@ZesuSsz.Contracts.R.NextUint64Return) '
+                                         '(fun (result : (@ZesuSsz.Contracts.R.NextUint64Return)) => result = x)')),
+                         'WITNESS')  # an existential over a return value that states no result bytes
 
     def test_unclassified_keeps_its_head(self):
         big = pure('@Coq.ZArith.BinInt.Z.le x y', premises='x <= y -> ' * 500)  # over 4 KB: not PURE
         result = T.triage_block(self.block([big]), CLASSES)
         self.assertEqual(result['class'], T.UNCLASSIFIED)
         self.assertEqual(result['head'], 'pure @Coq.ZArith.BinInt.Z.le x y')
-        self.assertEqual(self.label(spatial('(∃_y,____y)%I')), T.UNCLASSIFIED)  # no call: not CALL
+        self.assertEqual(self.label(pure('@Coq.ZArith.BinInt.Z.lt x y', premises='x <= y -> ' * 500)), T.UNCLASSIFIED)
         errors = [{'text': '\n (in proof X): Attempt to save an incomplete proof\n'}]
         result = T.triage_block(self.block([], errors=errors), CLASSES)
         self.assertEqual((result['class'], result['head']), (T.UNCLASSIFIED, 'error Attempt to save an incomplete proof'))
