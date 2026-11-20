@@ -1270,6 +1270,10 @@ Ltac zesu_run_pass_v1 :=
      zesu_talt v1_prepare_init_array_read (idtac; zesu_prepare_initialized_array_read) |
      zesu_talt v1_finish_init_array_read (idtac; zesu_finish_initialized_array_read) |
      zesu_talt v1_store_memory_lookup (idtac; ZesuSsz.Automation2.StoreMemoryLookup.zesu_store_memory_lookup) |
+     (* A by-reference call's slice record: before Lithium reads its pointer
+        word out of a held array (CallSlice.v). *)
+     (lazymatch goal_class with ZGex => idtac | ZGex_prod => idtac end;
+      zesu_talt v1_call_slice_ref_first (idtac; ZesuSsz.Automation2.CallSlice.zesu_call_slice_ref_first)) |
      zesu_talt v1_liAStep (idtac; zesu_liAStep) |
      (* A call spec's input slice and output slot: lent and proved by the
         call-site step before the interior-slice lend (CallSlice.v). *)

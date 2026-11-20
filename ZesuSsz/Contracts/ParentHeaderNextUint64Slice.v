@@ -74,14 +74,14 @@ Proof.
 Qed.
 
 (* nextUint64's result record places the rest it returns at the end of the
-   slice it consumed (`nextUint64CallResultRest`). *)
+   slice the call record names (`nextUint64CallResultRest`). *)
 #[export] Instance parentHeaderNextUint64Rest :
-  ZesuCallSliceRefResult nextUint64CallDataArgs nextUint64Base nextUint64CallResult
+  ZesuCallSliceRefResult nextUint64CallResult nextInputPointer nextInputBytes
     nextRestPointer nextRestLength.
 Proof.
-  intros argv sp p inputEnd input r Hres.
+  intros [ip input slice out stack ra s0 s1 s2 s3 s4] r Hres.
   pose proof (nextUint64CallResultRest _ _ _ _ _ _ _ _ _ _ _ _ Hres) as (_ & Hmax & Hrest).
-  cbn in Hmax, Hrest.
+  cbn [nextInputPointer nextInputBytes].
   change (bv_modulus 64) with 18446744073709551616.
   (* the rest facts count the input as `list byte`, the class as `list (bv 8)` *)
   destruct Hrest as (Hp & Hsum & Hl & _).

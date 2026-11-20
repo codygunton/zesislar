@@ -107,6 +107,19 @@ Proof.
   rewrite !Z_to_bv_small; zesu_call_slice_lia.
 Qed.
 
+(* The rest record of `ZesuCallSliceRefResult` read for a slice (p0, input)
+   the record names through its projections. *)
+Lemma zesu_call_slice_ref_result_at {C R : Type} {result : C -> R -> Prop}
+    {ip : C -> Z} {inp : C -> list (bv 8)} {rp rl : R -> Z}
+    (I : ZesuCallSliceRefResult result ip inp rp rl) (c : C) (r : R) (p0 : bv 64)
+    (input : list (bv 8)) :
+  result c r -> ip c = bv_unsigned p0 -> inp c = input ->
+  bv_unsigned p0 <= rp r /\ rp r + rl r = bv_unsigned p0 + Z.of_nat (length input) /\
+  0 <= rl r /\ rp r + rl r < bv_modulus 64.
+Proof.
+  intros Hres Hp Hi. rewrite <- Hp, <- Hi. exact (zesu_call_slice_ref_result_window c r Hres).
+Qed.
+
 Lemma zesu_call_slice_unsigned_pos n (w : bv n) : bv_unsigned w <> 0 -> 0 < bv_unsigned w.
 Proof. pose proof (bv_unsigned_in_range n w). zesu_call_slice_lia. Qed.
 
@@ -250,26 +263,39 @@ Ltac zesu_call_slice_wrap_small :=
       rewrite E; clear E
   end.
 
-(* (p, l) is the rest a by-reference call returned (its record
-   `result (record (mk _ _ p0 _ input)) r` with a `ZesuCallSliceRefResult`
-   instance, `p = Z_to_bv 64 (restPointer r)`, `l = Z_to_bv 64 (restLength r)`)
-   on a slice (p0, l0) of the array at [base] with [bytes]: [win p0 l0 k0]
-   finds the window of the slice, [k] receives the window of (p, l). *)
+(* (p, l) is the rest a by-reference call returned (its record `result c r`
+   with a `ZesuCallSliceRefResult` instance, `p = Z_to_bv 64 (restPointer r)`,
+   `l = Z_to_bv 64 (restLength r)`) on a slice (p0, l0) of the array at [base]
+   with [bytes] (`inputPointer c = bv_unsigned p0`, `input c` the window of
+   (p0, l0), both by conversion, so `c` may be the constructor application or
+   the record value): [win p0 l0 k0] finds the window of the slice, [k]
+   receives the window of (p, l). *)
 Ltac zesu_call_slice_rest_window_step p l base bytes win k :=
   match goal with
-  | Hres : ?res (?rec (?mk _ _ ?p0 _ (take (Z.to_nat (bv_unsigned ?l0))
-                                       (drop (Z.to_nat (bv_unsigned ?p0 - base)) bytes)))) ?r |- _ =>
-      let C := constr:(_ : ZesuCallSliceRefResult mk rec res _ _) in
-      let rp := lazymatch type of C with @ZesuCallSliceRefResult _ _ _ _ _ _ ?rp _ => rp end in
-      let rl := lazymatch type of C with @ZesuCallSliceRefResult _ _ _ _ _ _ _ ?rl => rl end in
+  | Hres : context [take (Z.to_nat (bv_unsigned ?l0))
+                      (drop (Z.to_nat (bv_unsigned ?p0 - base)) bytes)] |- _ =>
+      lazymatch type of Hres with
+      | ?res ?c ?r =>
+      let C := constr:(_ : ZesuCallSliceRefResult res _ _ _ _) in
+      let ip := lazymatch type of C with @ZesuCallSliceRefResult _ _ _ ?ip _ _ _ => ip end in
+      let inp := lazymatch type of C with @ZesuCallSliceRefResult _ _ _ _ ?inp _ _ => inp end in
+      let rp := lazymatch type of C with @ZesuCallSliceRefResult _ _ _ _ _ ?rp _ => rp end in
+      let rl := lazymatch type of C with @ZesuCallSliceRefResult _ _ _ _ _ _ ?rl => rl end in
+      let input := constr:(take (Z.to_nat (bv_unsigned l0))
+                             (drop (Z.to_nat (bv_unsigned p0 - base)) bytes)) in
+      let Hip := fresh "HcsRestFrom" in
+      assert (Hip : ip c = bv_unsigned p0) by reflexivity;
+      let Hin := fresh "HcsRestInput" in
+      assert (Hin : inp c = input) by reflexivity;
       let Hpw := fresh "HcsRestP" in
       assert (Hpw : p = Z_to_bv 64 (rp r)) by first [assumption | reflexivity];
       let Hlw := fresh "HcsRestL" in
       assert (Hlw : l = Z_to_bv 64 (rl r)) by first [assumption | reflexivity];
       win p0 l0 ltac:(fun Hw0 =>
         k constr:(zesu_call_slice_rest_window base bytes p0 l0 p l (rp r) (rl r) Hw0
-                    (@zesu_call_slice_ref_result_window _ _ _ _ _ _ _ _ C _ _ _ _ _ _ Hres)
+                    (zesu_call_slice_ref_result_at C c r p0 input Hres Hip Hin)
                     Hpw Hlw))
+      end
   end.
 
 (* The window [p, p+l) of the array at [base] with [bytes]: passes to [k] a
@@ -803,6 +829,20 @@ Ltac zesu_call_slice_step :=
       ZesuSsz.Automation2.ResourceGroups.zesu_expose_environment_alias;
       try ZesuSsz.Automation2.WrappedWord.zesu_word_explicit_list_rewrite;
       first [zesu_call_slice | zesu_call_slice_ref | zesu_call_restore]
+  end.
+(* The by-reference step before Lithium's own step: when the slice record's
+   pointer word sits in a held byte array, Lithium reads the first cell of
+   the call spec out of it as the little-endian value of the bytes and leaves
+   no shape for the by-reference step to match. *)
+Ltac zesu_call_slice_ref_first :=
+  lazymatch goal with
+  | |- environments.envs_entails _ (@bi_exist _ _ ?body) =>
+      lazymatch body with
+      | (fun _ => ((bv_unsigned _ ↦ₘ _) ∗ ((bv_unsigned _ + 8) ↦ₘ _) ∗ _)%I) => idtac
+      end;
+      let _ := constr:(_ : ZesuStepInteriorByteSlice) in
+      ZesuSsz.Automation2.ResourceGroups.zesu_expose_environment_alias;
+      zesu_call_slice_ref
   end.
 (* Early restore: at any existential goal with a restore wand and its
    returned slice in the context, before Lithium's own step. *)

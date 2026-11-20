@@ -388,14 +388,35 @@ Proof.
   rewrite Z.mul_0_r. rewrite Z.shiftr_0_r.
   apply Z.mod_mod. apply Z.pow_nonzero; lia.
 Qed.
+(* A 64-bit word stored as its eight byte extracts and read back by an 8-byte
+   load: `[bv_extract 0 8 v; …; bv_extract 56 8 v]` read as a little-endian
+   word is `v`. *)
+Lemma zesu_word_extract_list (v : bv 64) :
+  Z_to_bv 64 (little_endian_to_bv 8
+    [bv_extract 0 8 v; bv_extract 8 8 v; bv_extract 16 8 v; bv_extract 24 8 v;
+     bv_extract 32 8 v; bv_extract 40 8 v; bv_extract 48 8 v; bv_extract 56 8 v]) = v.
+Proof.
+  apply bv_eq. rewrite Z_to_bv_unsigned.
+  unfold little_endian_to_bv. cbn [fmap list_fmap list_numbers.little_endian_to_Z].
+  rewrite !bv_extract_unsigned.
+  pose proof (bv_unsigned_in_range _ v).
+  unfold bv_wrap, bv_modulus. cbn [Z.of_N].
+  bitblast; f_equal; lia.
+Qed.
 Ltac zesu_word_explicit_list_rewrite :=
   progress repeat match goal with
   | |- context [Z_to_bv ?w (little_endian_to_bv 8 ?l)] =>
-      lazymatch l with cons (Z_to_bv 8 (Z.shiftr ?z _)) _ =>
+      lazymatch l with
+      | cons (Z_to_bv 8 (Z.shiftr ?z _)) _ =>
         let n := eval lazy [length] in (length l) in
         let E := fresh "HwordList" in
         assert (E : Z_to_bv w (little_endian_to_bv 8 l) = Z_to_bv w z)
           by exact (zesu_word_explicit_list w n z eq_refl);
+        rewrite E; clear E
+      | cons (bv_extract 0 8 ?v) _ =>
+        let E := fresh "HwordList" in
+        assert (E : Z_to_bv w (little_endian_to_bv 8 l) = v)
+          by exact (zesu_word_extract_list v);
         rewrite E; clear E
       end
   end.

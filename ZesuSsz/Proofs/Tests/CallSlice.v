@@ -525,6 +525,96 @@ Proof.
   zesu_call_slice_step.
   iFrame.
 Qed.
+
+(* The same with the previous call's record as the record value a
+   simplification of the entry fact leaves (`{| nextInputPointer := …;
+   nextInputBytes := … |}`, no `nextUint64Base` application left): the step
+   reads the slice through the record's projections. Sealed away, the step
+   does not apply. *)
+Lemma call_slice_by_reference_rest_record (args : ParentHeaderArgs) (p0 l0 w0 w8 : bv 64)
+    (res : NextUint64Return) (sl ro st ra : Z) (s0 s1 s2 s3 s4 : bv 64)
+    (a13 a14 a15 a16 a17 : bv 64) (R : iProp Sigma) :
+  parentHeaderArgsWellFormed args ->
+  (bv_unsigned (parentHeaderInputPointer args) <= bv_unsigned p0 /\
+   bv_unsigned p0 + bv_unsigned l0 <= bv_unsigned (parentHeaderInputPointer args) + Z.of_nat (@length (bv 8) (parentHeaderInputBytes args)))%Z ->
+  nextUint64CallResult
+    {| nextInputPointer := bv_unsigned p0;
+       nextInputBytes := take (Z.to_nat (bv_unsigned l0))
+         (drop (Z.to_nat (bv_unsigned p0 - bv_unsigned (parentHeaderInputPointer args))) (parentHeaderInputBytes args));
+       nextSlicePointer := sl; nextResultPointer := ro; nextStackPointer := st; nextReturnAddress := ra;
+       nextSavedS0 := s0; nextSavedS1 := s1; nextSavedS2 := s2; nextSavedS3 := s3; nextSavedS4 := s4 |} res ->
+  w0 = Z_to_bv 64 (nextRestPointer res) ->
+  w8 = Z_to_bv 64 (nextRestLength res) ->
+  bv_unsigned (parentHeaderInputPointer args) ↦ₘ∗ parentHeaderInputBytes args -∗
+  CELLS (bv_unsigned (parentHeaderStackPointer args) - 400 + 48) w0 -∗
+  CELLS (bv_unsigned (parentHeaderStackPointer args) - 400 + 48 + 8) w8 -∗
+  (bv_unsigned (parentHeaderStackPointer args) - 400 + 48 + 56 + 40) ↦ₘ? 136 -∗
+  R -∗
+  ∃ x : list byte *ₗ bv 64 *ₗ bv 64 *ₗ (),
+    bv_unsigned (REF args) ↦ₘ x.3ₗ ∗
+    (bv_unsigned (REF args) + 8) ↦ₘ x.2ₗ ∗
+    bv_unsigned x.3ₗ ↦ₘ∗ x.1ₗ ∗
+    bv_unsigned (NOUT args) ↦ₘ? 16 ∗
+    ⌜Z.of_nat (length x.1ₗ) = bv_unsigned x.2ₗ⌝ ∗
+    ⌜nextUint64CallDomain (nextUint64CallDataArgs [NOUT args; REF args; w8; a13; a14; a15; a16; a17]
+       (SP args) x.3ₗ (parentHeaderInputEnd args) x.1ₗ)⌝ ∗
+    R.
+Proof.
+  iIntros (Hwf [Hlo Hhi] Hres Hw0 Hw8) "? ? ? ? ?".
+  apply zesu_hist_intro in Hres.
+  Fail zesu_call_slice_step.
+  apply zesu_hist_elim in Hres.
+  zesu_call_slice_step.
+  iFrame.
+Qed.
+
+(* The step that runs before Lithium's own (`zesu_call_slice_ref_first`):
+   the rest pointer word sits in a held byte array of its extracts, the rest
+   length in byte cells. *)
+Lemma call_slice_ref_first_array (args : ParentHeaderArgs) (p0 l0 w0 w8 : bv 64)
+    (res : NextUint64Return) (sl ro st ra : Z) (s0 s1 s2 s3 s4 : bv 64)
+    (a13 a14 a15 a16 a17 : bv 64) (R : iProp Sigma) :
+  parentHeaderArgsWellFormed args ->
+  (bv_unsigned (parentHeaderInputPointer args) <= bv_unsigned p0 /\
+   bv_unsigned p0 + bv_unsigned l0 <= bv_unsigned (parentHeaderInputPointer args) + Z.of_nat (@length (bv 8) (parentHeaderInputBytes args)))%Z ->
+  nextUint64CallResult
+    {| nextInputPointer := bv_unsigned p0;
+       nextInputBytes := take (Z.to_nat (bv_unsigned l0))
+         (drop (Z.to_nat (bv_unsigned p0 - bv_unsigned (parentHeaderInputPointer args))) (parentHeaderInputBytes args));
+       nextSlicePointer := sl; nextResultPointer := ro; nextStackPointer := st; nextReturnAddress := ra;
+       nextSavedS0 := s0; nextSavedS1 := s1; nextSavedS2 := s2; nextSavedS3 := s3; nextSavedS4 := s4 |} res ->
+  w0 = Z_to_bv 64 (nextRestPointer res) ->
+  w8 = Z_to_bv 64 (nextRestLength res) ->
+  bv_unsigned (parentHeaderInputPointer args) ↦ₘ∗ parentHeaderInputBytes args -∗
+  (bv_unsigned (parentHeaderStackPointer args) - 400 + 48) ↦ₘ∗
+    [bv_extract 0 8 w0; bv_extract 8 8 w0; bv_extract 16 8 w0; bv_extract 24 8 w0;
+     bv_extract 32 8 w0; bv_extract 40 8 w0; bv_extract 48 8 w0; bv_extract 56 8 w0] -∗
+  CELLS (bv_unsigned (parentHeaderStackPointer args) - 400 + 48 + 8) w8 -∗
+  (bv_unsigned (parentHeaderStackPointer args) - 400 + 48 + 56 + 40) ↦ₘ? 136 -∗
+  R -∗
+  ∃ x : list byte *ₗ bv 64 *ₗ bv 64 *ₗ (),
+    bv_unsigned (REF args) ↦ₘ x.3ₗ ∗
+    (bv_unsigned (REF args) + 8) ↦ₘ x.2ₗ ∗
+    bv_unsigned x.3ₗ ↦ₘ∗ x.1ₗ ∗
+    bv_unsigned (NOUT args) ↦ₘ? 16 ∗
+    ⌜Z.of_nat (length x.1ₗ) = bv_unsigned x.2ₗ⌝ ∗
+    ⌜nextUint64CallDomain (nextUint64CallDataArgs [NOUT args; REF args; w8; a13; a14; a15; a16; a17]
+       (SP args) x.3ₗ (parentHeaderInputEnd args) x.1ₗ)⌝ ∗
+    R.
+Proof.
+  iIntros (Hwf [Hlo Hhi] Hres Hw0 Hw8) "? ? ? ? ?".
+  zesu_call_slice_ref_first.
+  iFrame.
+Qed.
+
+(* Guard: an existential of another shape (one cell, no slice record). *)
+Lemma call_slice_ref_first_other (a : Z) (c : bv 64) :
+  a ↦ₘ c -∗ ∃ x : bv 64 *ₗ (), a ↦ₘ x.1ₗ.
+Proof.
+  iIntros "Ha".
+  Fail zesu_call_slice_ref_first.
+  iExists (li_pair c tt). iExact "Ha".
+Qed.
 End by_reference.
 
 Print Assumptions call_slice_window_advanced.
