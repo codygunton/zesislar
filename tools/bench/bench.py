@@ -22,8 +22,9 @@ run (launch it with `tools/bg --heavy bench-<tag> python3 tools/bench/bench.py r
     no recipe either way the run stops with one `refused:` line (exit 3) before any block.
  3. Blocks: every member, longest expected first, JOBS at a time (default: the set's "jobs"). Each
     compiles the unmodified generated caller at the bench head through tools/closure_cert.py
-    (resource guard batch + scope, CPU cap and memory limit from the set's "caps", claim from the
-    member's claim_gib) with ZESU_TELEMETRY=1 (with --callers also ZESU_TELEMETRY_CALLERS=1: each
+    (resource guard batch + scope, CPU cap and memory limit from the set's "caps", where a member's
+    own "cpu_seconds" replaces the CPU cap, claim from the member's claim_gib) with ZESU_TELEMETRY=1
+    (with --callers also ZESU_TELEMETRY_CALLERS=1: each
     Ltac1 solver record names its Ltac caller; a diagnostic, it slows the run), and gets
     CLOSURE.json or NOT-CLOSED.json. A sampler
     thread finds the compile's coqc and writes samples.jsonl every second (time, RSS, peak RSS, CPU,
@@ -370,7 +371,7 @@ def run_member(member, options, context):
     caller.write_bytes(subprocess.run(['git', '-C', str(context['workspace']), 'cat-file', 'blob',
                                        '%s:%s' % (context['bench_head'], caller_path(member))],
                                       capture_output=True, check=True).stdout)
-    caps = context['caps']
+    caps = R.member_caps(context['caps'], member)
     sampler = Sampler(directory, caller)
     sampler.start()
     start = time.monotonic()

@@ -29,7 +29,9 @@ Log lines the parser reads:
                                               nested wrappers each record the same continuation
   @@X begin <kind> / binders / counts / stmt <source> / end, @@X skip <kind> <why>
                                               goal export records (ResidualExport.v); `final` records
-                                              are the goals open at the end of zesu_block2
+                                              are the goals open at the end of zesu_block2; a skip
+                                              record keeps the goal skeleton of the last step before
+                                              it ('site'), the only text a spatial leftover has
   @@S stage "<stage>"                         diagnostics stage marker (stage entry)
 Coq wraps long messages; lines that continue an @@ record are joined to it.
 
@@ -227,7 +229,7 @@ def parse_log(text):
     """Events of one coqc log, each with the byte offset just past its record ('end')."""
     out = {'commands': [], 'zesu_runs': [], 'markers': [], 'stage_records': [], 'calls': [], 'steps': [],
            'exports': [], 'errors': [], 'events': 0}
-    export, error = None, None
+    export, error, last_step = None, None, None
     for line, offset in records(text):
         if error is not None:
             if line.startswith(NOT_CONTINUATION[:3]):
@@ -250,6 +252,8 @@ def parse_log(text):
             call = dict(solver_call(fields), end=offset, fields=fields)
             if call['kind'] in STEP_KINDS:
                 out['steps'].append(call)
+                if call['kind'] == 'step':
+                    last_step = call['site']
             else:
                 out['stage_records' if call['kind'] == 'stage' else 'calls'].append(call)
         elif line.startswith('@@X '):
@@ -258,7 +262,7 @@ def parse_log(text):
                 parts = body.split(' ', 2)
                 out['exports'].append({'kind': parts[1], 'status': 'skip', 'reason': parts[2] if len(parts) > 2 else '',
                                        'class': '%s skip: %s' % (parts[1], parts[2] if len(parts) > 2 else '?'),
-                                       'end': offset})
+                                       'site': last_step, 'end': offset})
             elif body.startswith('begin '):
                 export = {'kind': body[6:].strip(), 'status': 'pure', 'counts': {}, 'statement': None, 'end': offset}
             elif export is not None and body.startswith('counts '):
@@ -576,7 +580,7 @@ def load_run(run_dir):
         directory = run_dir / 'runs' / member['case']
         if row and Path(row['dir']).is_dir():
             directory = row['dir']  # else the run moved (the janitor keeps a worktree's BENCH runs)
-        block = load_block(directory, meta.get('caps'), running=row is None) \
+        block = load_block(directory, member_caps(meta.get('caps'), member), running=row is None) \
             if row or Path(directory).is_dir() else None
         blocks.append({'key': key, 'member': member, 'row': row, 'block': block})
     return {'dir': str(run_dir), 'meta': meta, 'blocks': blocks}
@@ -584,6 +588,14 @@ def load_run(run_dir):
 
 def member_key(member):
     return '%s/%s' % (member['function'], member['case'])
+
+
+def member_caps(caps, member):
+    """The set's caps, with the member's own CPU cap (member "cpu_seconds") when it has one."""
+    caps = dict(caps or {})
+    if member.get('cpu_seconds'):
+        caps['cpu_seconds'] = member['cpu_seconds']
+    return caps
 
 
 def member_name(member):
