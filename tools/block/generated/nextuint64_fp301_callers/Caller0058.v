@@ -9,7 +9,9 @@ Require Import isla.riscv64.riscv64.
 From Coq Require Import Lists.List ZArith.ZArith NArith.NArith.
 Require Import stdpp.bitvector.definitions.
 Require Import ZesuSsz.Contracts.NextUint64BlockEntries.
+Require Import ZesuSsz.Contracts.NextUint64CallSlice.
 Require Import ZesuSsz.Contracts.NextUint64Selected.
+Require Import ZesuSsz.Generated.NextUint64.FP301.Edges0058.
 Require Import ZesuSsz.Automation2.All.
 Local Open Scope Z_scope.
 #[local] Typeclasses Transparent nextUint64SelectedCode.
