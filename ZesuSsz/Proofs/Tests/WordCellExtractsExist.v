@@ -55,6 +55,17 @@ Proof.
   iFrame "HK". by iExists tt.
 Qed.
 
+(* 04b0/0570: no existential, the cells are the first resource of the request. *)
+Lemma test_word_cell_extracts_sep `{!islaG Sigma} (a : Z) (bytes : list (bv 8)) (K : iProp Sigma) :
+  length bytes = 16%nat ->
+  a ↦ₘ Z_to_bv 64 (little_endian_to_bv 8 (take (N.to_nat 8) (drop 0 bytes))) -∗ K -∗
+  isla.ghost_state.mem_mapsto_array_def a (DfracOwn 1) (extracts (test_concat_word bytes)) ∗ K.
+Proof.
+  intros Hlen. iStartProof. iIntros "H HK". unfold test_concat_word.
+  ZesuSsz.Automation2.StoreMemoryLookup.zesu_subsume_word_cell_extracts.
+  iFrame "HK".
+Qed.
+
 (* Refused in that shape: a cell at another address. *)
 Lemma test_word_cell_extracts_exist_sep_refused `{!islaG Sigma} (a : Z) (bytes : list (bv 8)) (K : iProp Sigma) :
   True.
