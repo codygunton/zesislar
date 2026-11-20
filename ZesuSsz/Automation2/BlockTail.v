@@ -52,6 +52,12 @@ Ltac zesu_tail_lia_select :=
       | _ => pose proof (bv_unsigned_in_range _ w)
       end
   end;
+  (* A conjunction of two kept facts (a callee interface's derived length
+     fact `n = length l /\ p + n < m`) is kept as its two parts. *)
+  repeat match goal with
+  | H : ?A /\ ?B |- _ =>
+      zesu_tail_keep_fact A; zesu_tail_keep_fact B; destruct H as [? ?]
+  end;
   repeat match goal with H : ?T |- _ => zesu_tail_keep_fact T; revert H end;
   ZesuSsz.Automation2.WrappedWord.zesu_clear_all_hyps; intros;
   change (bv_modulus 64) with 18446744073709551616 in *;
