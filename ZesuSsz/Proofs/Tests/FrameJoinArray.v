@@ -72,9 +72,29 @@ Proof.
   iExists b1. iFrame.
 Qed.
 
+(* A word cell asked for as the explicit list of its byte extracts: the cell
+   is that byte array and the witness is the stored word. *)
+Lemma frame_join_word_cell_extracts `{!islaG Sigma} (a : Z) (w : bv 64) :
+  ⊢ subsume (a ↦ₘ w) (λ x : bv 64, a ↦ₘ∗ [bv_extract 0 8 x; bv_extract 8 8 x; bv_extract 16 8 x; bv_extract 24 8 x; bv_extract 32 8 x; bv_extract 40 8 x; bv_extract 48 8 x; bv_extract 56 8 x]) (λ x, ⌜x = w⌝).
+Proof.
+  iStartProof.
+  ZesuSsz.Automation2.StoreMemoryLookup.zesu_join_frame_byte_array.
+  iExists w. iFrame. done.
+Qed.
+
+(* The array asked for is not the word's byte extracts: the step refuses. *)
+Lemma frame_join_word_cell_refuses_other `{!islaG Sigma} (a : Z) (w : bv 64) (l : list (bv 8)) :
+  ⊢ subsume (a ↦ₘ w) (λ _ : unit, a ↦ₘ∗ l) (λ _, True).
+Proof.
+  iStartProof.
+  assert_fails ZesuSsz.Automation2.StoreMemoryLookup.zesu_join_frame_byte_array.
+  idtac "WORD_CELL_OTHER_REFUSAL_EXECUTED".
+Abort.
+
 Print Assumptions frame_join_array.
 Print Assumptions frame_join_array_gap.
 Print Assumptions frame_join_array_refuses_owned.
 Print Assumptions frame_join_array_refuses_no_cell.
 Print Assumptions frame_join_array_grouped.
 Print Assumptions frame_join_array_grouped_refuses_other.
+Print Assumptions frame_join_word_cell_extracts.

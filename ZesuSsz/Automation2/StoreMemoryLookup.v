@@ -631,11 +631,47 @@ Ltac zesu_open_requested_byte_cell_group :=
         end)
   end.
 
+(* A word cell asked for as the explicit list of its byte extracts (the shape
+   a successor states for a stored word): the cell as that byte array. *)
+Lemma zesu_word_little_endian_extracts (w : bv 64) :
+  bv_to_little_endian 8 8 (bv_unsigned w) =
+    [bv_extract 0 8 w; bv_extract 8 8 w; bv_extract 16 8 w; bv_extract 24 8 w;
+     bv_extract 32 8 w; bv_extract 40 8 w; bv_extract 48 8 w; bv_extract 56 8 w].
+Proof.
+  unfold bv_to_little_endian. cbn [Z_to_little_endian fmap list_fmap Z.of_nat Pos.of_succ_nat].
+  simpl. repeat f_equal; apply bv_eq; rewrite bv_extract_unsigned Z_to_bv_unsigned;
+    unfold bv_wrap; rewrite ?Z.shiftr_shiftr ?Z.land_ones; try lia; rewrite ?Zmod_mod; reflexivity.
+Qed.
+
+Lemma zesu_subsume_word_cell_bytes `{!islaG Sigma} {B : Type} (a : Z) (w : bv 64)
+    (P T : B → iProp Sigma) :
+  (a ↦ₘ∗ [bv_extract 0 8 w; bv_extract 8 8 w; bv_extract 16 8 w; bv_extract 24 8 w;
+          bv_extract 32 8 w; bv_extract 40 8 w; bv_extract 48 8 w; bv_extract 56 8 w] -∗
+   ∃ x, P x ∗ T x) ⊢ subsume (a ↦ₘ w) P T.
+Proof.
+  iIntros "HG Hw". iApply "HG".
+  iDestruct (zesu_cell_bytes 8 a (DfracOwn 1) w with "Hw") as "[Hb _]".
+  change (N.to_nat 8) with 8%nat.
+  rewrite (zesu_word_little_endian_extracts w). iExact "Hb".
+Qed.
+
+Ltac zesu_subsume_word_cell_extracts :=
+  lazymatch goal with
+  | |- environments.envs_entails _ (subsume (@mem_mapsto _ _ 64%N ?a (DfracOwn 1) _) ?P _) =>
+      lazymatch P with
+      | (fun _ => @mem_mapsto_array _ _ 8%N ?a2 (DfracOwn 1) (bv_extract 0 8 _ :: _)) =>
+          constr_eq a a2
+      end;
+      iApply zesu_subsume_word_cell_bytes; iIntros "?"
+  end.
+
 (* Byte cells from index zero first, then the general run, then byte cells
-   from index zero held as one group. *)
+   from index zero held as one group, then a word cell asked for as its byte
+   extracts. *)
 Ltac zesu_join_frame_byte_array :=
   first [ ltac2:(zesu_join_frame_byte_array ()) | zesu_join_frame_run
-        | zesu_open_requested_byte_cell_group; ltac2:(zesu_join_frame_byte_array ()) ].
+        | zesu_open_requested_byte_cell_group; ltac2:(zesu_join_frame_byte_array ())
+        | zesu_subsume_word_cell_extracts ].
 
 Ltac zesu_store_fold_byte_cells :=
   try ZesuSsz.Automation2.ResourceGroups.zesu_expose_environment_alias;
