@@ -607,29 +607,36 @@ Ltac zesu_join_frame_run :=
           zesu_join_frame_loop ra a m Hl);
       iDestruct "HzesuRun" as "?").
 
+(* The goal's head requests a byte array at `a` (any list): tested before the
+   environment is read, so the step below costs one match on other goals. *)
+Ltac zesu_requested_byte_array_base k :=
+  lazymatch goal with
+  | |- environments.envs_entails _ (bi_sep (@mem_mapsto_array _ _ 8%N ?a _ _) _) => k a
+  | |- environments.envs_entails _ (@bi_exist _ _ ?body) =>
+      lazymatch body with
+      | (fun x => bi_sep (@mem_mapsto_array _ _ 8%N ?a _ (@?l x)) (@?rest x)) => k a
+      end
+  end.
+
 (* Byte cells from index zero kept as one group `c0 ∗ c1 ∗ …` (as a store
-   into a byte array leaves them), at the base of an array the goal requests:
+   into a byte array leaves them), at the base of the array the goal requests:
    the group's cells as separate hypotheses. *)
 Ltac zesu_open_requested_byte_cell_group :=
-  try ZesuSsz.Automation2.ResourceGroups.zesu_expose_environment_alias;
-  lazymatch goal with
-  | |- environments.envs_entails _ ?conclusion =>
-      iMatchHyp ltac:(fun H res =>
-        lazymatch res with
-        | (@mem_mapsto _ _ 8%N (?base + Z.of_nat O * 1)%Z _ _ ∗ _)%I =>
-            lazymatch conclusion with
-            | context [@mem_mapsto_array _ _ 8%N base _ _] => idtac
-            end;
-            iDestruct H as "[? HzesuCellGroup]";
-            repeat (
-              let rest := iTypeOf (INamed "HzesuCellGroup") in
-              lazymatch rest with
-              | Some (_, (@mem_mapsto _ _ 8%N (?other + Z.of_nat _ * 1)%Z _ _ ∗ _)%I) =>
-                  constr_eq other base; iDestruct "HzesuCellGroup" as "[? HzesuCellGroup]"
-              end);
-            iDestruct "HzesuCellGroup" as "?"
-        end)
-  end.
+  zesu_requested_byte_array_base ltac:(fun requested =>
+    try ZesuSsz.Automation2.ResourceGroups.zesu_expose_environment_alias;
+    iMatchHyp ltac:(fun H res =>
+      lazymatch res with
+      | (@mem_mapsto _ _ 8%N (?base + Z.of_nat O * 1)%Z _ _ ∗ _)%I =>
+          constr_eq base requested;
+          iDestruct H as "[? HzesuCellGroup]";
+          repeat (
+            let rest := iTypeOf (INamed "HzesuCellGroup") in
+            lazymatch rest with
+            | Some (_, (@mem_mapsto _ _ 8%N (?other + Z.of_nat _ * 1)%Z _ _ ∗ _)%I) =>
+                constr_eq other base; iDestruct "HzesuCellGroup" as "[? HzesuCellGroup]"
+            end);
+          iDestruct "HzesuCellGroup" as "?"
+      end)).
 
 (* A word cell asked for as the explicit list of its byte extracts (the shape
    a successor states for a stored word): the cell as that byte array. *)

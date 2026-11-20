@@ -72,6 +72,21 @@ Proof.
   iExists b1. iFrame.
 Qed.
 
+(* The group's base is requested, but not at the goal's head: the head test
+   refuses before the context is read (the step ran on every goal before). *)
+Lemma frame_join_array_grouped_refuses_not_head `{!islaG Sigma} (a : Z) (b0 b1 : bv 8) :
+  ((a + Z.of_nat 0 * 1) ↦ₘ b0 ∗ (a + Z.of_nat 1 * 1) ↦ₘ b1 ∗ emp) -∗
+  (a + 8) ↦ₘ∗ [b1] -∗
+  (a + 8) ↦ₘ∗ [b1] ∗ a ↦ₘ∗ [b0; b1] ∗ True.
+Proof.
+  iIntros "Hcells Hb".
+  Fail ZesuSsz.Automation2.StoreMemoryLookup.zesu_open_requested_byte_cell_group.
+  iFrame "Hb".
+  ZesuSsz.Automation2.StoreMemoryLookup.zesu_open_requested_byte_cell_group.
+  ZesuSsz.Automation2.StoreMemoryLookup.zesu_join_frame_byte_array.
+  iFrame.
+Qed.
+
 (* A word cell asked for as the explicit list of its byte extracts: the cell
    is that byte array and the witness is the stored word. *)
 Lemma frame_join_word_cell_extracts `{!islaG Sigma} (a : Z) (w : bv 64) :
