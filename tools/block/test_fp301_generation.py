@@ -1,33 +1,17 @@
-"""Reject stale committed FP301 declarations and generated block callers."""
-import hashlib
-import json
+"""Generated block callers end with their theorem's assumptions; the wrap entry shape.
+
+The committed decodeItem outputs are pinned against the driver's steps in
+test_render_function_steps.py."""
 import re
 from pathlib import Path
 import unittest
 
-from function_profiles import load_profile, pilot_header, return_header
-from render_fp301_statements import render_caller, render_declaration
 import entry_hist
 
 ROOT = Path(__file__).resolve().parents[2]
 
 
 class GeneratedFP301(unittest.TestCase):
-    def test_committed_outputs_match_renderer(self):
-        inputs = json.loads((ROOT / "tools/block/fixtures/fp301-generation.json").read_text())
-        self.assertEqual(len(inputs["callers"]), 16)
-        profile = load_profile()
-        headers = {"pilot": pilot_header(profile), "return": return_header(profile)}
-        for group in ["callers", "declarations"]:
-            for row in inputs[group]:
-                with self.subTest(output=row["output"]):
-                    source = row["canonical_source"]
-                    self.assertEqual(hashlib.sha256(source.encode()).hexdigest(),
-                                     row["canonical_sha256"])
-                    expected = (render_caller(source) if group == "callers" else
-                                render_declaration(source, headers[row["header_kind"]]))
-                    self.assertEqual((ROOT / row["output"]).read_text(), expected)
-
     def test_every_generated_caller_prints_its_theorem_assumptions(self):
         # closure_cert needs `Print Assumptions <theorem>.` last; 16 decodeItem callers lacked it.
         callers = sorted((ROOT / "tools/block/generated").glob("*/Caller*.v"))
@@ -41,11 +25,10 @@ class GeneratedFP301(unittest.TestCase):
 
 class WrapEntryShape(unittest.TestCase):
     """`entry_hist: wrap` on a small entry variant: live binders and visible facts stay in the
-    entry, the rest is one sealed history proposition; the legacy shape is the pinned test above."""
+    entry, the rest is one sealed history proposition."""
 
     def setUp(self):
         entry_hist.configure({'entry_hist': 'wrap'})
-        self.addCleanup(entry_hist.configure, None)
 
     def test_ghost_binders_and_hidden_facts_move_into_the_history(self):
         plain = [{"name": "args", "type": "A"}, {"name": "returnAddress", "type": "Z"}]
@@ -71,16 +54,17 @@ class WrapEntryShape(unittest.TestCase):
             "e", " (args : A) (returnAddress : Z)", plain, binders, ['reg "x10" x'], facts, ["CallDomain"]))
 
     def test_a_loop_class_with_every_fact_visible_keeps_the_plain_shape(self):
-        saved = entry_hist.HIST_MODE, entry_hist.FRAME_SLOTS
-        entry_hist.HIST_MODE, entry_hist.FRAME_SLOTS = "wrap", False
-        try:
-            plain = [{"name": "args", "type": "A"}, {"name": "returnAddress", "type": "Z"}]
-            arguments = ("c", "Definition c (args : A) (returnAddress : Z) ", "(x : bv 64)",
-                         ['reg "x10" x'], ["bv_unsigned x < 8"], plain, {})
-            self.assertIsNone(entry_hist.seal_class(*arguments, visible=[".*"]))
-            self.assertIsNotNone(entry_hist.seal_class(*arguments, visible=[]))
-        finally:
-            entry_hist.HIST_MODE, entry_hist.FRAME_SLOTS = saved
+        plain = [{"name": "args", "type": "A"}, {"name": "returnAddress", "type": "Z"}]
+        arguments = ("c", "Definition c (args : A) (returnAddress : Z) ", "(x : bv 64)",
+                     ['reg "x10" x'], ["bv_unsigned x < 8"], plain, {})
+        self.assertIsNone(entry_hist.seal_class(*arguments, visible=[".*"]))
+        self.assertIsNotNone(entry_hist.seal_class(*arguments, visible=[]))
+
+    def test_a_profile_without_entry_hist_is_refused(self):
+        with self.assertRaisesRegex(ValueError, "required key"):
+            entry_hist.configure({"frame_slots": False})
+        with self.assertRaisesRegex(ValueError, "unknown mode"):
+            entry_hist.configure({"entry_hist": "opaque"})
 
 
 if __name__ == "__main__":

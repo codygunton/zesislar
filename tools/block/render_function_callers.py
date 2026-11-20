@@ -226,7 +226,7 @@ def main():
                         preconditions.append(premise)
         source = render_block_caller(profile, suffix, preconditions, imports, slot,
                                      continuation if through else None)
-        if profile.get('entry_hist') == 'wrap' and row['pc'] in hist_blocks:
+        if row['pc'] in hist_blocks:
             # The history edge instances of this block (render_edges.py), before the last rule import.
             last = source.rindex('Require Import ZesuSsz.Automation2.All.\n')
             source = (source[:last] + 'Require Import ' + profile.qualified('Edges' + suffix) + '.\n'

@@ -5,7 +5,7 @@ exit, and the selected code. A block with successors gets the entry of each
 successor, in design-table order; a block with a return clause gets the
 function-return package. The statement comes from render_block_caller and the
 proof is always `zesu_block2.`; this renderer writes declarations only. A block
-that has a residual module imports it, as render_caller does.
+that has a residual module imports it (render_fp301_statements.residual_import).
 
 The fixture binds the design table by sha256 and stores one sha256 for each
 rendered caller. --check renders again and compares the design hash, the

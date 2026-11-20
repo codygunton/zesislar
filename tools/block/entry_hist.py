@@ -1,9 +1,9 @@
 """Hidden history and per-slot frame cells for FP301 entries.
 
 The function profile selects the shape (`configure`):
-  `"entry_hist": "wrap"`  the pure facts of one entry variant become visible facts and one hidden
-                          `⌜zesu_hist (<entry>_Hist args returnAddress <live binders>)⌝`; without the
-                          key the legacy shape is rendered.
+  `"entry_hist": "wrap"`  (required; the only shape) the pure facts of one entry variant become
+                          visible facts and one hidden
+                          `⌜zesu_hist (<entry>_Hist args returnAddress <live binders>)⌝`.
   `"frame_slots": true`   each saved-register slot of the frame is one 8-byte cell at the address the
                           store computes.
 
@@ -14,23 +14,25 @@ owned resource mentions; the others are ghost binders and are bound inside the h
 """
 import re
 
-HIST_MODE = ''
 FRAME_SLOTS = False
 HIST_VISIBLE = ()
 HIST_LIBRARY = 'Require Import ZesuSsz.Automation2.Hist.\n'
 
 
 def configure(profile):
-    """Read the shape keys of a function profile (None: legacy shape)."""
-    global HIST_MODE, FRAME_SLOTS, HIST_VISIBLE
-    mode = profile.get('entry_hist', '') if profile else ''
-    if mode not in ('', 'wrap'):
+    """Read the shape keys of a function profile: `entry_hist` (required, `wrap`), `frame_slots`,
+    `hist_visible`."""
+    global FRAME_SLOTS, HIST_VISIBLE
+    mode = profile.get('entry_hist')
+    if mode is None:
+        raise ValueError('entry_hist: the function profile lacks the required key (only "wrap" exists)')
+    if mode != 'wrap':
         raise ValueError('entry_hist: unknown mode ' + str(mode))
-    slots = profile.get('frame_slots', False) if profile else False
+    slots = profile.get('frame_slots', False)
     if not isinstance(slots, bool):
         raise ValueError('frame_slots: a boolean is required')
-    HIST_MODE, FRAME_SLOTS = mode, slots
-    HIST_VISIBLE = tuple(profile.get('hist_visible', [])) if profile and mode else ()
+    FRAME_SLOTS = slots
+    HIST_VISIBLE = tuple(profile.get('hist_visible', []))
 
 
 def mentions(name, text):
@@ -197,7 +199,7 @@ def seal_alternative(name, plain_telescope, plain_binders, binders, resources, f
         body = '(∃ ' + telescope(live) + ', ' + body + ')'
     elif grouped:
         body = '(' + body + ')'
-    meta = {'entry': name, 'hist': hist, 'mode': HIST_MODE, 'parameters': plain_binders,
+    meta = {'entry': name, 'hist': hist, 'mode': 'wrap', 'parameters': plain_binders,
             'live': live, 'hist_live': hist_live, 'varying': list(varying), 'ghost': ghost, 'resources': list(resources), 'visible': visible, 'hidden': hidden,
             'dropped_binders': [binder['name'] for binder in binders
                                 if binder not in live and binder not in ghost]}
@@ -415,8 +417,6 @@ def seal_class(name, prefix, binders_text, resources, facts, plain_binders, desi
         text = (prefix + ':= (∃ ' + telescope(binders) + ', (' + ' ∗ '.join(resources) + ') ∗ ⌜'
                 + conjunction(facts) + '⌝)%I.\n')
         return [], text, {'entry': name, 'frame_slots': slot_reports}
-    if not HIST_MODE:
-        return plain()
     # The loop-varying binders are the design's registers (by binder name, or by the
     # class's register resource when the design names its seed binders) and the index.
     names = {binder['name'] for binder in binders}

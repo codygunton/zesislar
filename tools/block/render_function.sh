@@ -92,9 +92,7 @@ fi
   fi; }
 echo "callers: $(tail -c 200 "$run/callers.log" | tr '\n' ' ')"
 
-if [ "$(profile_value entry_hist)" = wrap ]; then
-  [ -f "$run/EDGES.json" ] || $guard python3 tools/block/render_edges.py --function "$function_name" \
-    --entries "$run/render/RESULT.json" --forward "$run/forward" --cfg "$inputs/FUNCTION.json" \
-    --output "$run/EDGES.json" --rocq-dir "$run/render/sources/$generated" > "$run/edges.log" 2>&1
-  echo "edges: $(tail -c 300 "$run/edges.log")"
-fi
+[ -f "$run/EDGES.json" ] || $guard python3 tools/block/render_edges.py --function "$function_name" \
+  --entries "$run/render/RESULT.json" --forward "$run/forward" --cfg "$inputs/FUNCTION.json" \
+  --output "$run/EDGES.json" --rocq-dir "$run/render/sources/$generated" > "$run/edges.log" 2>&1
+echo "edges: $(tail -c 300 "$run/edges.log")"

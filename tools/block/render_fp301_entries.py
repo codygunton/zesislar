@@ -91,7 +91,7 @@ if entry_hist.FRAME_SLOTS:
 # The call plans of the forward pass (JOINS.json `calls`) and the block starts: at a call block and
 # at a return site the last call's record and its named registers stay visible.
 call_plans = (json.loads((forward.parent / "JOINS.json").read_text()).get("calls", {})
-              if entry_hist.HIST_MODE and (forward.parent / "JOINS.json").exists() else {})
+              if (forward.parent / "JOINS.json").exists() else {})
 block_starts = sorted(int(load_profile(options.function).pc(block), 0)
                       for block in load_profile(options.function)["blocks"])
 vpath = Path(receipt["vocabulary"]["path"])
@@ -199,7 +199,7 @@ for suffix in blocks:
             guard_refusals[suffix] = str(error)
 # A join history (`zesu_join_history`) is a Hist definition: the unsealed text needs the library too.
 check = RocqContradictionCheck(
-    json.loads(options.coqc_args.read_text()), header + (entry_hist.HIST_LIBRARY if entry_hist.HIST_MODE else ""),
+    json.loads(options.coqc_args.read_text()), header + entry_hist.HIST_LIBRARY,
     O / "contradiction-checks",
     profile.args_type,
 )
@@ -523,7 +523,7 @@ for suffix, slot in units:
                 or re.search(r"(?<![\w'])" + re.escape(binder["name"]) + r"(?![\w'])",
                              re.sub(r'"[^"]*"', "", result))
             ]
-            if seal_as is not None and entry_hist.HIST_MODE:
+            if seal_as is not None:
                 # Ghost binders and hidden facts move into one history proposition.
                 binders = [{"name": binder["name"], "type": expression(binder["type"], "source type")}
                            for binder in existentials]
@@ -731,9 +731,8 @@ emitted = list({row["path"]: bind(row["path"]) for row in emitted}.values())
 # named rule (join_generalize.check_fact_accounting refuses a silent drop); the report lists the
 # logged drops of each join.
 join_accounting = {pc: plan.get("fact_accounting") for pc, plan in joins_record.get("plans", {}).items()}
-if entry_hist.HIST_MODE:
-    unaccounted = sorted(pc for pc, row in join_accounting.items() if row is None)
-    assert not unaccounted, "joins without a fact accounting: " + ", ".join(unaccounted)
+unaccounted = sorted(pc for pc, row in join_accounting.items() if row is None)
+assert not unaccounted, "joins without a fact accounting: " + ", ".join(unaccounted)
 
 (O / "RESULT.json").write_text(
     json.dumps(
@@ -773,7 +772,7 @@ if entry_hist.HIST_MODE:
             "new_native_calls": 0,
             "native_release": False,
             "join_seeds_added": True,
-            **({"join_fact_accounting": join_accounting} if entry_hist.HIST_MODE else {}),
+            "join_fact_accounting": join_accounting,
             "contradiction_checks": check.runs,
         },
         indent=2,

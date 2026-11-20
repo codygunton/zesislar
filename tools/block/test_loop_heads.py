@@ -29,10 +29,8 @@ class LoopHeads(unittest.TestCase):
                 self.assertEqual(path.read_text(), render_loop_head(row['block'], header, structural))
 
     def test_predecessor_and_backedge_owner_names(self):
-        fixture = json.loads((ROOT / 'tools/block/fixtures/fp301-generation.json').read_text())
         for block, predecessor in [('00c4', '00b4'), ('0164', '0154')]:
-            source = next(r['canonical_source'] for r in fixture['callers']
-                          if r['output'].endswith('Caller' + predecessor + '.v'))
+            source = (ROOT / 'tools/block/generated/fp301_callers' / ('Caller' + predecessor + '.v')).read_text()
             self.assertIn('Pilot' + block + 'Entries.fp_machineAt' + block, source)
 
 
@@ -41,7 +39,7 @@ class WrapLoopHeads(unittest.TestCase):
     visible (no ghost binder, no hidden fact), so the class has no history and keeps the plain shape."""
 
     def setUp(self):
-        self.addCleanup(entry_hist.configure, None)
+        self.addCleanup(entry_hist.configure, {'entry_hist': 'wrap'})
 
     def test_a_class_without_history_keeps_the_plain_shape(self):
         profile = copy.deepcopy(load_profile())

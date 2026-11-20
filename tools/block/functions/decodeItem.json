@@ -112,10 +112,5 @@
     "fixture": "tools/block/fixtures/fp301-design-callers.json",
     "design": "ZesuSsz/Evidence/decode_item_block_design.json",
     "blocks": ["+0x2c", "+0xd8", "+0xe0", "+0x178", "+0x180", "+0x1a8"]
-  },
-  "loop_successors": {
-    "pairs": [["+0xd8", "+0xc4"], ["+0xe0", "+0xc4"], ["+0x178", "+0x164"], ["+0x1a8", "+0x164"]],
-    "classes_per_head": 4,
-    "continuation_id": "resource_15"
   }
 }
