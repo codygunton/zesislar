@@ -51,6 +51,7 @@ Module Type DecodeItemSealedSignature.
   Axiom decodeItemCallKind : forall args after, decodeItemCallMeaning args after -> (bv_unsigned (List.nth 32 after (BV 8%N 0%Z)) = 0 \/ bv_unsigned (List.nth 32 after (BV 8%N 0%Z)) = 4) /\ (bv_unsigned (List.nth 32 after (BV 8%N 0%Z)) = 4 -> bv_unsigned (listWord64At0 after) = 0 /\ bv_unsigned (listWord64At8 after) = 0) /\ (bv_unsigned (List.nth 32 after (BV 8%N 0%Z)) = 0 -> bv_unsigned (List.nth 16 after (BV 8%N 0%Z)) <= 1 /\ bv_unsigned (listWord64At24 after) <= Z.of_nat (length (decodeItemInputBytes args))).
   Axiom decodeItemCallPayloadInInputLe : forall argv0 argv1 rest sp inputEnd input before after, decodeItemCallMeaning (decodeItemCallDataArgs (argv0 :: argv1 :: rest) sp inputEnd input before) after -> 0 < bv_unsigned (listWord64At8 after) -> bv_unsigned (listWord64At8 after) < 18446744073709551607 -> bv_unsigned argv1 <= bv_unsigned (leWord64 after 0) /\ bv_unsigned (leWord64 after 0) + bv_unsigned (listWord64At8 after) <= bv_unsigned argv1 + Z.of_nat (length input).
   Axiom decodeItemCallConsumed : forall argv sp inputEnd input before after, decodeItemCallMeaning (decodeItemCallDataArgs argv sp inputEnd input before) after -> bv_unsigned (listWord64At24 after) <= Z.of_nat (length input).
+  Axiom decodeItemCandidateSuccessBounds : forall input isList headerLength payloadLength, candidateDecodeItem input = candidateSuccess isList headerLength payloadLength -> 0 <= headerLength <= 9 /\ (headerLength + payloadLength) mod word64Modulus <= Z.of_nat (length input) /\ (forall prefix rest, input = prefix :: rest -> bv_unsigned prefix = 128 -> payloadLength = 0).
   Axiom decodeItemCallDomainInput : forall argv0 argv1 argv2 rest sp inputEnd input before, decodeItemCallDomain (decodeItemCallDataArgs (argv0 :: argv1 :: argv2 :: rest) sp inputEnd input before) -> bv_unsigned argv2 = Z.of_nat (length input) /\ bv_unsigned argv1 + bv_unsigned argv2 < bv_modulus 64.
   Axiom decodeItemCallDomainOutput : forall argv sp inputEnd input before, decodeItemCallDomain (decodeItemCallDataArgs argv sp inputEnd input before) -> length before = 40%nat.
   Axiom decodeItemCallDomainIntro : forall args, decodeItemC1BDomain args -> decodeItemCallDomain args.
@@ -87,6 +88,7 @@ Module DecodeItemSealed : DecodeItemSealedSignature.
   Definition decodeItemCallKind := decodeItemMeaningKind.
   Definition decodeItemCallPayloadInInputLe := decodeItemMeaningPayloadInInputLe.
   Definition decodeItemCallConsumed := decodeItemMeaningConsumed.
+  Definition decodeItemCandidateSuccessBounds := candidateDecodeItemSuccessBounds.
   Definition decodeItemCallDomainInput := decodeItemDomainInput.
   Definition decodeItemCallDomainOutput := decodeItemDomainOutput.
   Definition decodeItemCallDomainIntro := decodeItemDomainIntro.

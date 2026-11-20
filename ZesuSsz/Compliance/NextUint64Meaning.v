@@ -34,7 +34,7 @@
    leading zero (82 00 01) and zero written as 00, which Sail rejects; that
    is a registered known bug, not part of this module. *)
 From Coq Require Import List ZArith Lia.
-From stdpp Require Import base list bitvector.definitions bitvector.tactics.
+From stdpp Require Import base list list_numbers bitvector.definitions bitvector.tactics.
 Require Import EvmSailRlp.evm_rlp_types.
 Require Import ZesuSsz.Contracts.RlpDecodeItem.
 Require Import ZesuSsz.Contracts.RlpDecodeItemContract.
@@ -43,8 +43,7 @@ Require Import ZesuSsz.Contracts.ParentHeader.
 Require Import ZesuSsz.Contracts.ParentHeaderRootFacts.
 Require Import ZesuSsz.Contracts.NextUint64BlockEntries.
 Require Import ZesuSsz.Contracts.NextUint64DomainRanges.
-Require Import ZesuSsz.Contracts.DecodeItemFrameImage.
-Require Import ZesuSsz.Contracts.DecodeItemPayloadBounds.
+Require Import ZesuSsz.Interfaces.DecodeItem.
 Import ListNotations.
 Open Scope Z_scope.
 
@@ -79,20 +78,64 @@ Proof.
   cbn. rewrite firstn_O. cbn. ring.
 Qed.
 
+(* Generic facts about the contract's [littleEndian]. *)
+Lemma nextUint64LittleEndianRange (bytes : list byte) :
+  0 <= littleEndian bytes < 2 ^ (8 * Z.of_nat (length bytes)).
+Proof.
+  induction bytes as [|b bytes IH]; cbn [littleEndian length]; [lia|].
+  pose proof (bv_unsigned_in_range _ b) as Hb. unfold bv_modulus in Hb.
+  change (2 ^ Z.of_N (MachineWord.MachineWord.Z_idx 8)) with 256 in Hb.
+  change (MachineWord.MachineWord.Z_idx 8) with 8%N in *.
+  rewrite Nat2Z.inj_succ, Z.mul_succ_r, Z.pow_add_r by lia. change (2 ^ 8) with 256. nia.
+Qed.
+
+Lemma nextUint64LittleEndianMachineBytes count z :
+  0 <= z < 2 ^ (8 * Z.of_nat count) ->
+  littleEndian (bv_to_little_endian (Z.of_nat count) 8 z) = z.
+Proof.
+  revert z. induction count as [|count IH]; intros z Hz.
+  - replace z with 0 by (simpl in Hz; lia).
+    reflexivity.
+  - rewrite Nat2Z.inj_succ.
+    unfold bv_to_little_endian at 1.
+    rewrite Z_to_little_endian_succ by lia.
+    simpl.
+    rewrite Z.land_ones by lia.
+    change (2 ^ 8) with 256.
+    rewrite Z_to_bv_small by
+      (unfold bv_modulus; cbn; apply Z.mod_pos_bound; lia).
+    rewrite Z.shiftr_div_pow2 by lia.
+    change (2 ^ 8) with 256.
+    change (list_fmap Z (bv 8) (fun b => Z_to_bv 8 b)
+      (Z_to_little_endian (Z.of_nat count) 8 (z / 256))) with
+      (bv_to_little_endian (Z.of_nat count) 8 (z / 256)).
+    rewrite IH.
+    + rewrite Z.mod_eq by lia. lia.
+    + split.
+      * apply Z.div_pos; lia.
+      * rewrite Nat2Z.inj_succ in Hz.
+        replace (8 * (Z.of_nat count + 1)) with
+            (8 * Z.of_nat count + 8) in Hz by lia.
+        rewrite Z.pow_add_r in Hz by lia.
+        change (2 ^ 8) with 256 in Hz.
+        apply Z.div_lt_upper_bound; lia.
+Qed.
+
 Lemma nextUint64LittleEndianWord64 (v : Z) :
   0 <= v < 2 ^ 64 -> littleEndian (word64Bytes v) = v.
 Proof.
   intros Hv. rewrite <- nextUint64Word64BytesEncoding.
-  apply (littleEndian_machine_bytes 8). exact Hv.
+  apply (nextUint64LittleEndianMachineBytes 8). exact Hv.
 Qed.
 
 (* ---- the candidate's header and payload bounds ---- *)
-(* The case analysis on the header class is candidateDecodeItemSuccessBounds. *)
+(* The case analysis on the header class is decodeItem's interface lemma
+   decodeItemCandidateSuccessBounds. *)
 Lemma nextUint64CandidateBounds input isList hl pl :
   candidateDecodeItem input = candidateSuccess isList hl pl ->
   0 <= hl <= 9 /\ (hl + pl) mod word64Modulus <= Z.of_nat (length input).
 Proof.
-  intros Hc. destruct (candidateDecodeItemSuccessBounds _ _ _ _ Hc) as (Hhl & Hfit & _).
+  intros Hc. destruct (decodeItemCandidateSuccessBounds _ _ _ _ Hc) as (Hhl & Hfit & _).
   split; assumption.
 Qed.
 
@@ -125,7 +168,7 @@ Proof.
     rewrite Hl in Hlen.
     destruct (nextUint64CandidateBounds _ _ _ _ Hc) as [Hhl Hmod].
     assert (Hpl0 : 0 <= pl).
-    { rewrite <- Hl. apply littleEndianRange. }
+    { rewrite <- Hl. apply nextUint64LittleEndianRange. }
     unfold word64Modulus in Hmod, Hc24.
     rewrite Z.mod_small in Hmod, Hc24 by library_lia.
     exists hl, pl. unfold nextUint64DecodedPointer, nextUint64DecodedConsumed.
