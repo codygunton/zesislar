@@ -1,8 +1,9 @@
-Require Import ZesuSsz.Automation2.IntegerReturn.
-Require Import ZesuSsz.Automation2.Switches.IntegerReturn.
 Require Import isla.riscv64.riscv64.
 From Coq Require Import ZArith.
+Require Import ZesuSsz.Automation2.All.
 Open Scope Z_scope.
+
+#[local] Instance integer_return_enabled : ZesuStepIntegerReturn := I.
 
 (* The return-fault arm of a `ret` whose target is a saved return-address
    word (a record field of type `bv 64`, no `Z_to_bv` image) is refuted from
