@@ -438,9 +438,10 @@ def rocq_edge(edge, pre, succ, index, obligation=None):
     obligation: `{'rows', 'guards', 'name', 'declarations'}` when the successor is a join with design
     obligations (`entry_hist.design_obligations`): a successor history fact that is such a row and that
     the block history does not hold is proved by the registered lemma `<name>_<obligation>_holds` from
-    the copied block history `HS`, every block-entry visible fact (`HV<k>`) and the edge's own guards
-    (`HG<j>`), which become premises the block proves; its data-only statement is appended to
-    `declarations` (`EdgeObligations.v`)."""
+    the copied block history `HS`, the block-entry visible facts (`HV<k>`) of the classes the row's
+    `premises` name and, when it names `guard` (the default), the edge's own guards (`HG<j>`); those
+    become premises the block proves. Its data-only statement is appended to `declarations`
+    (`EdgeObligations.v`)."""
     rows = edge['binder_map']
     identity = {row['succ'] for row in rows if row['identity']}
     pre_live, pre_ghost = binder_names(pre, 'live'), binder_names(pre, 'ghost')
@@ -497,17 +498,21 @@ def rocq_edge(edge, pre, succ, index, obligation=None):
     carried = [pre['visible'][int(name[2:])] for name in carried_index]
     guards = []
     if obligated:
-        # The obligation lemma reads the whole block entry: every visible fact is a premise.
-        carried_index = ['HV' + str(position) for position in range(len(pre['visible']))]
-        carried = list(pre['visible'])
-        guards = obligation['guards']
-        hypotheses = ['HS'] + carried_index + ['HG' + str(position) for position in range(len(guards))]
+        # The obligation lemma reads the block entry's facts of the classes its rows declare.
+        needs = set().union(*(set(design.get('premises', ['guard'])) for design in obligated.values()))
+        selected = entry_hist.obligation_premise_positions(pre['live'] + pre['ghost'], pre['visible'], needs)
+        premise_index = ['HV' + str(position) for position in selected]
+        carried_index = sorted(set(carried_index) | set(premise_index), key=lambda name: int(name[2:]))
+        carried = [pre['visible'][int(name[2:])] for name in carried_index]
+        guards = obligation['guards'] if 'guard' in needs else []
+        premise_facts = [pre['visible'][position] for position in selected]
+        hypotheses = ['HS'] + premise_index + ['HG' + str(position) for position in range(len(guards))]
         statement_vars = [binder for binder in [*pre['parameters'], *pre['live']]
                           if binder in pre['parameters'] or any(mentions(binder['name'], text) for text in
-                                                                [application(pre, {})] + carried + guards)]
+                                                                [application(pre, {})] + premise_facts + guards)]
         for target, design in sorted(obligated.items()):
             declaration = obligation['name'] + '_' + design['obligation']
-            premises = [application(pre, {})] + carried + guards
+            premises = [application(pre, {})] + premise_facts + guards
             obligation['declarations'].append({
                 'name': declaration, 'module': design['lemma_module'], 'entry': pre['entry'],
                 'text': ('Definition ' + declaration + ' : Prop :=\n  forall ' + telescope(statement_vars) + ',\n'
@@ -842,8 +847,10 @@ def main():
                             edge['identity'] = True
                         else:
                             obligation = None
-                            if obligation_rows and kind == 'join':
-                                obligation = {'rows': obligation_rows, 'declarations': declarations,
+                            join_rows = entry_hist.design_obligations(profile, [
+                                key for key in profile.get('join_designs') or {} if profile.pc(key) == succ_pc])
+                            if obligation_rows and kind == 'join' and join_rows:
+                                obligation = {'rows': join_rows, 'declarations': declarations,
                                               'guards': own_guards(forward, pre_pc, succ_pc),
                                               'name': 'fp_edge' + profile.key(pre_pc) + '_' + profile.key(succ_pc)}
                             before = len(declarations)

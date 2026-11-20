@@ -45,14 +45,15 @@ class DesignRows(unittest.TestCase):
 
 class Obligations(unittest.TestCase):
     def test_an_edge_into_the_join_applies_the_registered_lemma_of_its_declaration(self):
+        # A row without `premises` takes the edge's own guards only, no block-entry fact.
         declarations = []
         obligation = {'rows': entry_hist.design_obligations(PROFILE), 'declarations': declarations,
                       'guards': ['(negb (bool_decide (m = BV 64 0))) = true'], 'name': 'fp_edge0010_0020'}
         text = rocq_edge(join_edge(), PRE, SUCC, 3, obligation)
         self.assertIn('pose proof Hh as HS.', text)
-        self.assertIn('⌜(zesu_named_eq k (g args))⌝ ∗ ⌜(negb (bool_decide (m = BV 64 0))) = true⌝ ∗ True', text)
-        self.assertIn('iDestruct "HN" as "(%HV0 & %HG0 & _)".', text)
-        self.assertIn('  exact (fp_edge0010_0020_CandidateError_holds args k m HS HV0 HG0).', text)
+        self.assertIn('(⌜(negb (bool_decide (m = BV 64 0))) = true⌝ ∗ True)%I', text)
+        self.assertIn('iDestruct "HN" as "(%HG0 & _)".', text)
+        self.assertIn('  exact (fp_edge0010_0020_CandidateError_holds args k m HS HG0).', text)
         check_edge_sentences(text)
         self.assertEqual([row['name'] for row in declarations], ['fp_edge0010_0020_CandidateError'])
         self.assertEqual(declarations[0]['module'], 'M.Lemmas')
@@ -60,9 +61,37 @@ class Obligations(unittest.TestCase):
                          'Definition fp_edge0010_0020_CandidateError : Prop :=\n'
                          '  forall (args : A) (k : bv 64) (m : bv 64),\n'
                          '  (fp_machineAt0010_ForwardA0N0_Hist (args) (k)) ->\n'
-                         '  ((zesu_named_eq k (g args))) ->\n'
                          '  ((negb (bool_decide (m = BV 64 0))) = true) ->\n'
                          '  cand args = err.\n')
+
+    def test_the_declaration_has_exactly_the_declared_premise_classes(self):
+        visible = ['(zesu_named_eq k (g args))', '(D args)', '((List.length k = 3)%nat)',
+                   '(call2_after <> (0%Z))', '(decodeItemCallMeaning (h call2_after))', '(E k m)']
+        pre = {**PRE, 'visible': visible, 'live': PRE['live'] + [{'name': 'call2_after', 'type': T}]}
+        guard = '(negb (bool_decide (m = BV 64 0))) = true'
+        cases = [(['named_eq'], [0], False), (['domain', 'length'], [1, 2], False),
+                 (['newest_call_record', 'guard'], [4], True), (['newest_call_guard'], [3], False),
+                 (['guard'], [], True)]
+        for classes, positions, guarded in cases:
+            declarations = []
+            profile = {'join_designs': {'+0x20': [{**ROW, 'premises': classes}]}}
+            obligation = {'rows': entry_hist.design_obligations(profile), 'declarations': declarations,
+                          'guards': [guard], 'name': 'fp_edge0010_0020'}
+            text = rocq_edge(join_edge(), pre, SUCC, 3, obligation)
+            premises = [line[3:-4] for line in declarations[0]['text'].splitlines()[3:-1]]
+            self.assertEqual(premises, [visible[p] for p in positions] + ([guard] if guarded else []), classes)
+            hypotheses = ['HV' + str(p) for p in positions] + (['HG0'] if guarded else [])
+            self.assertIn('_holds ' + ' '.join(b for b in ['args', 'k', 'm', 'call2_after'] if b in {'args', 'k'}
+                                               or any(entry_hist.mentions(b, f) for f in premises))
+                          + ' HS ' + ' '.join(hypotheses) + ')', text)
+            check_edge_sentences(text)
+
+    def test_premise_classes_are_checked_and_rows_are_read_per_join(self):
+        with self.assertRaises(ValueError):
+            entry_hist.design_obligations({'join_designs': {'+0x20': [{**ROW, 'premises': ['everything']}]}})
+        profile = {'join_designs': {'+0x20': [ROW], '+0x30': [{**ROW, 'coq': 'other'}]}}
+        self.assertEqual(list(entry_hist.design_obligations(profile, ['+0x30']).values()),
+                         [{**ROW, 'coq': 'other'}])
 
     def test_an_edge_whose_block_history_holds_the_fact_passes_it_on(self):
         declarations = []
