@@ -662,6 +662,9 @@ Ltac zesu_subsume_word_cell_extracts :=
       | (fun _ => @mem_mapsto_array _ _ 8%N ?a2 (DfracOwn 1) (bv_extract 0 8 _ :: _)) =>
           constr_eq a a2
       end;
+      (* The run names the environment by a local definition; `iApply` needs
+         the environment itself. *)
+      try ZesuSsz.Automation2.ResourceGroups.zesu_expose_environment_alias;
       iApply zesu_subsume_word_cell_bytes; iIntros "?"
   end.
 
@@ -818,13 +821,15 @@ Ltac zesu_address_owned_exactly address :=
     end).
 
 (* The owner of the address [d] (a value at the sample root) on root [r]: a
-   cell, an uninitialised region or a byte array whose address is integer
-   arithmetic over `bv_unsigned r`. [k] receives the owner's address and the
-   offset of [d] in it. *)
+   cell or an uninitialised region whose address is integer arithmetic over
+   `bv_unsigned r`. [k] receives the owner's address and the offset of [d] in
+   it. A byte array is never the owner here: Lithium's array lookup reads an
+   access inside it as the array's elements (`nth`), the spelling successors
+   state, so rewriting the address would leave the value in another spelling. *)
 Ltac zesu_owner_offset r d k :=
   iMatchHyp ltac:(fun H res =>
     let a := lazymatch res with
-      | (?a ↦ₘ _)%I => a | (?a ↦ₘ∗ _)%I => a | (?a ↦ₘ? _)%I => a end in
+      | (?a ↦ₘ _)%I => a | (?a ↦ₘ? _)%I => a end in
     let ra := ZesuSsz.Automation2.WrappedWord.zesu_term_root a in
     constr_eq ra r;
     lazymatch a with context [@bv_add] => fail | context [@bv_sub] => fail | _ => idtac end;
@@ -833,8 +838,6 @@ Ltac zesu_owner_offset r d k :=
       | (_ ↦ₘ ?v)%I =>
           lazymatch type of v with bv ?w => eval vm_compute in (Z.of_N (w / 8)) end
       | (_ ↦ₘ? ?n)%I => ZesuSsz.Automation2.WrappedWord.zesu_eval_at_root r n
-      | (_ ↦ₘ∗ ?l)%I =>
-          match goal with Hl : length l = ?c |- _ => eval vm_compute in (Z.of_nat c) end
       end in
     let off := eval vm_compute in (d - lo)%Z in
     let inside := eval vm_compute in ((0 <=? off) && (off <? size))%bool in

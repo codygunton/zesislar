@@ -82,6 +82,24 @@ Proof.
   iExists w. iFrame. done.
 Qed.
 
+(* The shape of a stored word at a successor (decodeParentHeader 0348): the
+   extracts are of a sum over the existential's component, and the run names
+   the environment by a local definition. *)
+Lemma frame_join_word_cell_extracts_alias `{!islaG Sigma} (a : Z) (w c : bv 64) :
+  ⊢ subsume (a ↦ₘ (w + c)%bv)
+      (λ x : bv 64 *ₗ (), a ↦ₘ∗ [bv_extract 0 8 (x.1ₗ + c); bv_extract 8 8 (x.1ₗ + c);
+        bv_extract 16 8 (x.1ₗ + c); bv_extract 24 8 (x.1ₗ + c); bv_extract 32 8 (x.1ₗ + c);
+        bv_extract 40 8 (x.1ₗ + c); bv_extract 48 8 (x.1ₗ + c); bv_extract 56 8 (x.1ₗ + c)])
+      (λ x, ⌜x.1ₗ = w⌝).
+Proof.
+  iStartProof.
+  lazymatch goal with |- environments.envs_entails ?context ?goal =>
+    pose (frameContext := context); change (environments.envs_entails frameContext goal)
+  end.
+  ZesuSsz.Automation2.StoreMemoryLookup.zesu_join_frame_byte_array.
+  iExists (w, tt)ₗ. iFrame. done.
+Qed.
+
 (* The array asked for is not the word's byte extracts: the step refuses. *)
 Lemma frame_join_word_cell_refuses_other `{!islaG Sigma} (a : Z) (w : bv 64) (l : list (bv 8)) :
   ⊢ subsume (a ↦ₘ w) (λ _ : unit, a ↦ₘ∗ l) (λ _, True).
@@ -98,3 +116,4 @@ Print Assumptions frame_join_array_refuses_no_cell.
 Print Assumptions frame_join_array_grouped.
 Print Assumptions frame_join_array_grouped_refuses_other.
 Print Assumptions frame_join_word_cell_extracts.
+Print Assumptions frame_join_word_cell_extracts_alias.

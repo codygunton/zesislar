@@ -125,6 +125,36 @@ Proof.
   iExists (MKUninit (bv_unsigned rp + 8) 8). cbn [fic_Prop mem_mapsto_kind_prop]. iFrame.
 Qed.
 
+(* Guard: an access inside a byte array on the root is Lithium's array lookup
+   (it reads the array's elements); the step refuses that owner. *)
+Lemma store_word_root_refuses_array `{!islaG Sigma} `{!threadG} (rp : bv 64) (l : list (bv 8)) :
+  2684354560 <= bv_unsigned rp -> bv_unsigned rp + 80 <= 3221225472 ->
+  length l = 16%nat ->
+  (bv_unsigned rp + 8) ↦ₘ∗ l -∗
+  find_in_context (FindMemMapsTo (bv_unsigned (bv_add rp (BV 64 16)))) (fun _ => True)%I.
+Proof.
+  intros H1 H2 Hl. iIntros "Harray".
+  assert_fails (idtac; ZesuSsz.Automation2.StoreMemoryLookup.zesu_store_lookup_word_root).
+  idtac "WORD_ARRAY_REFUSAL_EXECUTED".
+  rewrite /find_in_context /FindMemMapsTo.
+  iExists (MKArray 8 (bv_unsigned rp + 8) l). cbn [fic_Prop mem_mapsto_kind_prop]. iFrame.
+Qed.
+
+(* Same root with a byte array beside the owner: the access inside the
+   region is still taken (the array is skipped, not the step). *)
+Lemma store_word_root_beside_array `{!islaG Sigma} `{!threadG} (rp : bv 64) (l : list (bv 8)) :
+  2684354560 <= bv_unsigned rp -> bv_unsigned rp + 80 <= 3221225472 ->
+  length l = 16%nat ->
+  (bv_unsigned rp + 8) ↦ₘ∗ l -∗
+  (bv_unsigned rp + 64) ↦ₘ? 16 -∗
+  find_in_context (FindMemMapsTo (bv_unsigned (bv_add rp (BV 64 72))))
+    (fun _ => (bv_unsigned rp + 8) ↦ₘ∗ l)%I.
+Proof.
+  intros H1 H2 Hl. iIntros "Harray Hregion".
+  progress ZesuSsz.Automation2.StoreMemoryLookup.zesu_store_lookup_word_root.
+  iFrame.
+Qed.
+
 Print Assumptions store_integer_root.
 Print Assumptions store_integer_root_other_stack.
 Print Assumptions store_integer_root_refuses_stack.
@@ -133,3 +163,5 @@ Print Assumptions store_word_root.
 Print Assumptions store_word_root_stack.
 Print Assumptions store_word_root_refuses_owned.
 Print Assumptions store_word_root_refuses_outside.
+Print Assumptions store_word_root_refuses_array.
+Print Assumptions store_word_root_beside_array.
