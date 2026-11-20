@@ -476,6 +476,8 @@ for suffix, slot in units:
             for row in formatted.response["body"]["additional_definitions"]
         }
         facts = []
+        # With per-slot frame cells a word loaded from a slot is the cell's word (entry_hist).
+        word_fold = entry_hist.fold_literal_words if entry_hist.FRAME_SLOTS else (lambda text: text)
 
         def render(node):
             kind = node["kind"]
@@ -503,7 +505,7 @@ for suffix, slot in units:
             if kind == "pure":
                 terms = []
                 for term in node["terms"]:
-                    value = expression(term["term"]["value"], "source-derived pure term")
+                    value = word_fold(expression(term["term"]["value"], "source-derived pure term"))
                     terms.append("(" + value + ")")
                     facts.append(
                         {"term": value, "provenance": deepcopy(term["provenance"])}
@@ -532,9 +534,9 @@ for suffix, slot in units:
                         component["value" if component["kind"] == "byte_array" else "length"],
                         slot_table, slot_regions, taken)
                 if split is None:
-                    rendered_components.append((component, text))
+                    rendered_components.append((component, word_fold(text)))
                 else:
-                    rendered_components.extend((component, piece) for piece in split[0])
+                    rendered_components.extend((component, word_fold(piece)) for piece in split[0])
                     slot_binders.extend(split[1])
                     slot_reports.append({"address": component["address"], "pieces": len(split[0]),
                                          "binders": [binder["name"] for binder in split[1]]})

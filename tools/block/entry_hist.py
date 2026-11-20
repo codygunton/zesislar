@@ -508,6 +508,84 @@ def _word_of_bytes(items):
     return words.pop() if len(words) == 1 else None
 
 
+def _group_end(text, start):
+    """The end (exclusive) of the balanced group that opens at text[start]."""
+    depth = 0
+    for position in range(start, len(text)):
+        if text[position] in '([':
+            depth += 1
+        elif text[position] in ')]':
+            depth -= 1
+            if depth == 0:
+                return position + 1
+    raise ValueError('An entry term has unbalanced delimiters: ' + text[start:start + 80])
+
+
+def _application(text):
+    """The head and top-level arguments of an application text without outer parentheses."""
+    parts, position = [], 0
+    while position < len(text):
+        if text[position].isspace():
+            position += 1
+            continue
+        end = _group_end(text, position) if text[position] in '([' else position
+        while end < len(text) and not text[end].isspace() and text[end] not in '([':
+            end += 1
+        parts.append(text[position:end])
+        position = end
+    return parts
+
+
+def _literal_nth(text):
+    """The element text of `List.nth K%nat [literal list] d` with K inside the list; None otherwise."""
+    parts = _application(unwrap(text))
+    if len(parts) != 4 or parts[0] != 'List.nth':
+        return None
+    index = re.fullmatch(r'(\d+)%nat', parts[1])
+    items = _list_items(parts[2])
+    if index is None or items is None or items == [''] or int(index[1]) >= len(items):
+        return None
+    return unwrap(items[int(index[1])])
+
+
+def _concat_leaves(text):
+    """The operands of a `bv_concat` tree, most significant first."""
+    parts = _application(unwrap(text))
+    if len(parts) == 4 and parts[0] == 'bv_concat':
+        return _concat_leaves(parts[2]) + _concat_leaves(parts[3])
+    return [unwrap(text)]
+
+
+def fold_literal_words(text):
+    """Read a word loaded from a literal byte list as the term the frame cell holds.
+
+    The forward pass reads a saved-register slot of the packed frame array as
+    `bv_concat 64 … (List.nth K [b0; …; bn] d) …`; the entry states that slot as the cell
+    `a ↦ₘ W` (`slot_components`). Two rewrites make a register or fact state the same `W`:
+    `List.nth K [literal list] d` with K inside the list is its K-th element (by computation),
+    and a 64-bit `bv_concat` tree whose eight bytes are `bv_extract 56 8 W`, …, `bv_extract 0 8 W`
+    is `W`."""
+    position = 0
+    while (position := text.find('(List.nth ', position)) >= 0:
+        end = _group_end(text, position)
+        element = _literal_nth(text[position:end])
+        if element is None:
+            position += 1
+            continue
+        text = text[:position] + '(' + element + ')' + text[end:]
+    position = 0
+    while (position := text.find('(bv_concat 64%N ', position)) >= 0:
+        end = _group_end(text, position)
+        leaves = _concat_leaves(text[position:end])
+        word = (_word_of_bytes(list(reversed(leaves))) if len(leaves) == 8
+                and all(re.fullmatch(r'bv_extract \d+%N 8%N .*', leaf, re.S) for leaf in leaves) else None)
+        if word is None:
+            position += 1
+            continue
+        text = text[:position] + '(' + word + ')' + text[end:]
+    return text
+
+
 def slot_components(kind, address, value, table, regions, taken):
     """Split one memory component at the frame's saved-register slots.
 

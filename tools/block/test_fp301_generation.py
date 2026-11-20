@@ -107,5 +107,41 @@ class WrapEntryShape(unittest.TestCase):
         self.assertIn("list byte := ((" + spine + ") ++ unwritten_2)", declarations[0][1])
 
 
+class LiteralWordFold(unittest.TestCase):
+    """A word loaded from a frame slot that the forward pass packs as a literal byte list is the
+    slot cell's word (`entry_hist.fold_literal_words`)."""
+
+    @staticmethod
+    def load(items, start):
+        text = '(List.nth ' + str(start + 7) + '%nat ([' + '; '.join(items) + ']) (BV 8%N 0%Z))'
+        for index in range(6, -1, -1):
+            byte = '(List.nth ' + str(start + index) + '%nat ([' + '; '.join(items) + ']) (BV 8%N 0%Z))'
+            text = '(bv_concat ' + str(64 - 8 * index) + '%N ' + text + ' ' + byte + ')'
+        return text
+
+    def test_slot_word_folds_to_the_cell_word(self):
+        items = ['(bv_extract ' + str(8 * i) + '%N 8%N (saved' + str(w) + ' args))'
+                 for w in range(2) for i in range(8)]
+        text = '"x8" ↦ᵣ (RVal_Bits (' + self.load(items, 8) + ' : bv 64%N))'
+        self.assertEqual(entry_hist.fold_literal_words(text), '"x8" ↦ᵣ (RVal_Bits ((saved1 args) : bv 64%N))')
+
+    def test_unaligned_or_mixed_words_keep_their_bytes(self):
+        items = ['(bv_extract ' + str(8 * i) + '%N 8%N (saved' + str(w) + ' args))'
+                 for w in range(2) for i in range(8)]
+        folded = entry_hist.fold_literal_words(self.load(items, 4))
+        # The elements are read (by computation); the bytes of two words stay a concatenation.
+        self.assertNotIn('List.nth', folded)
+        self.assertTrue(folded.startswith('(bv_concat 64%N'))
+        self.assertIn('(bv_extract 24%N 8%N (saved1 args))', folded)
+        self.assertIn('(bv_extract 32%N 8%N (saved0 args))', folded)
+
+    def test_symbolic_lists_and_out_of_range_indices_stay(self):
+        for text in ['(List.nth 3%nat (nextResultBytes r) (BV 8%N 0%Z))',
+                     '(List.nth 2%nat ([a; b]) (BV 8%N 0%Z))',
+                     '(List.nth 0%nat ([]) (BV 8%N 0%Z))']:
+            self.assertEqual(entry_hist.fold_literal_words(text), text)
+        self.assertEqual(entry_hist.fold_literal_words('(List.nth 1%nat ([a; (f [b; c])]) d)'), '(f [b; c])')
+
+
 if __name__ == "__main__":
     unittest.main()
