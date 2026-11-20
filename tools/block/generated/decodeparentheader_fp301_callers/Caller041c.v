@@ -9,6 +9,7 @@ From Coq Require Import Lists.List ZArith.ZArith NArith.NArith.
 Require Import stdpp.bitvector.definitions.
 Require Import ZesuSsz.Contracts.ParentHeaderContract.
 Require Import ZesuSsz.Contracts.ParentHeaderContract.
+Require Import ZesuSsz.Generated.DecodeParentHeader.FP301.Edges041c.
 Require Import ZesuSsz.Automation2.All.
 Local Open Scope Z_scope.
 #[local] Typeclasses Transparent parentHeaderSelectedCode.
