@@ -6,10 +6,11 @@ import tempfile
 import unittest
 import unittest.mock
 
-from function_profiles import FunctionProfile, load_profile, loop_header, pilot_header, return_header
+from function_profiles import (FunctionProfile, exit_package, load_profile, loop_header, pilot_header, return_case,
+                               return_header)
 from join_generalize import align_join_edges, binder_names
 import render_function_callers
-from render_function_callers import exit_package, inlined_returns, plan_callers
+from render_function_callers import inlined_returns, plan_callers
 from symbolic_state import input_expr
 from render_fp301_statements import (
     render_block_caller,
@@ -170,6 +171,26 @@ class CallerPlan(unittest.TestCase):
         cases.append({'pc': 'function_return_Tail100c', 'status': 'source_declarations_rendered'})
         self.assertEqual(plan_callers(profile, cases, function)[0], ('1000', None, [], None))
         self.assertEqual(exit_package(profile, [], 0x800d1000, 0x800d1010), 'Tail100c')
+
+    def test_a_tail_jump_edge_goes_to_the_case_of_its_tail_return_package(self):
+        # render_edges names the successor case of a tail block as the entry renderer names the
+        # package (return_case): without it the edge to the package is never rendered.
+        from render_edges import edge_kind, edge_targets
+        profile = other_profile()
+        tail = {'start': 0x800d1000, 'end': 0x800d1010, 'successors': [0x800e06c0]}
+        ret = {'start': 0x800d1010, 'end': 0x800d1020, 'successors': []}
+        inner = {'start': 0x800d1020, 'end': 0x800d1030, 'successors': [0x800d1010, 0x800e06c0]}
+        self.assertEqual(edge_targets(profile, ret), ['function_return'])
+        self.assertEqual(edge_targets(profile, tail), ['0x800e06c0'])   # no tail_calls row: a plain successor
+        profile.data['tail_calls'] = [{'call_site_pc': '0x800d100c', 'callee_pc': '0x800e06c0',
+                                       'spec': 'calleeSpec', 'spec_module': 'Callee'}]
+        self.assertEqual(edge_targets(profile, tail), [return_case('Tail100c')])
+        self.assertEqual(edge_targets(profile, tail), ['function_return_Tail100c'])
+        self.assertEqual(edge_targets(profile, ret), ['function_return'])
+        # A tail callee outside this block's call site stays a plain successor.
+        self.assertEqual(edge_targets(profile, inner), ['0x800d1010', '0x800e06c0'])
+        self.assertEqual(edge_kind(profile, {}, {}, '0x800d1000', 'function_return_Tail100c'), 'return')
+        self.assertEqual(edge_kind(profile, {}, {}, '0x800d1010', 'function_return'), 'return')
 
     def test_entry_slots_get_one_caller_each_and_exit_to_their_own_successor_slot(self):
         # 1020 is a duplicated join with one slot per incoming edge; 1030 continues each slot.

@@ -66,7 +66,8 @@ from forward_resources import load_resource_vocabulary
 from symbolic_state import Expr
 from resource_seed import load_public_seed, seed_owned_resources
 from system_shape_seed import seed_system_shapes
-from function_profiles import add_return_alignment, function_returns, load_profile, pilot_header, return_sites
+from function_profiles import (add_return_alignment, function_returns, load_profile, pilot_header, return_case,
+                               return_sites)
 from boundary_guards import (
     BoundaryRefused,
     RocqContradictionCheck,
@@ -271,7 +272,7 @@ def return_boundary(designs, slot=None):
 
 def return_pc(suffix):
     """The case name of a return package pilot."""
-    return "function_return" + ("_" + suffix[len("Return"):] if suffix != "Return" else "")
+    return return_case(suffix[len("Return"):])
 
 def slot_block(suffix):
     """The boundary whose entry slots `suffix` renders one entry each for, or None: a slot
