@@ -127,7 +127,7 @@
         {"path": "ZesuSsz/Contracts/NextUint64ExitMeaning.v", "callees": ["decodeItem"],
          "reason": "the meaning conjunct of the return join 0x0070 is proved at the exit blocks 0x0064 and 0x00b8 from decodeItem's call record"}
       ],
-      "compliance_theorems": [],
+      "compliance_theorems": ["nextUint64GeneratedCompliance"],
       "owned_prefixes": [
         "ZesuSsz/Contracts/NextUint64", "ZesuSsz/Compliance/NextUint64", "ZesuSsz/Generated/NextUint64/"
       ],

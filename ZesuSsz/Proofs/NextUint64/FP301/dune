@@ -7,3 +7,4 @@
 (rule (targets Caller0070.v) (deps ../../../../tools/block/generated/nextuint64_fp301_callers/Caller0070.v) (action (copy ../../../../tools/block/generated/nextuint64_fp301_callers/Caller0070.v Caller0070.v)))
 (rule (targets Caller0090.v) (deps ../../../../tools/block/generated/nextuint64_fp301_callers/Caller0090.v) (action (copy ../../../../tools/block/generated/nextuint64_fp301_callers/Caller0090.v Caller0090.v)))
 (rule (targets Caller00b8.v) (deps ../../../../tools/block/generated/nextuint64_fp301_callers/Caller00b8.v) (action (copy ../../../../tools/block/generated/nextuint64_fp301_callers/Caller00b8.v Caller00b8.v)))
+(rule (targets Caller00a4.v) (deps ../../../../tools/block/generated/nextuint64_fp301_callers/Caller00a4.v) (action (copy ../../../../tools/block/generated/nextuint64_fp301_callers/Caller00a4.v Caller00a4.v)))
