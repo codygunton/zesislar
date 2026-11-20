@@ -2,7 +2,7 @@
   "version": "FP-20261122",
   "kind": "source engine pin",
   "supersedes": "FP-20261121",
-  "provenance": "Step 1.6 of the block-automation rebuild (issue #316): symbolic_state gains the module flag KEEP_SOURCE_IMPLIED_RAM_GUARDS, set by functions/run_source_pass.py from the profile key keep_source_implied_ram_guards (decodeItem only); with the flag the RAM guards that the source intervals imply stay path conditions, as in decodeItem's committed entries. Without the key the forward pass is unchanged.",
+  "provenance": "Step 1.6 of the block-automation rebuild (issue #316): symbolic_state gains the module flag KEEP_SOURCE_IMPLIED_RAM_GUARDS, set by functions/run_source_pass.py from the profile key keep_source_implied_ram_guards (decodeItem only); with the flag the RAM guards that the source intervals imply stay path conditions, as in decodeItem's committed entries. forward_resources renders constant-offset array stores with the linear splice unless the profile key store_splice is per_store (decodeItem only: one splice per store, the spelling of its committed entries and proofs). Without the keys the forward pass is unchanged.",
   "files": [
     {
       "path": "tools/block/entry_helper_resources.py",
@@ -22,7 +22,7 @@
     },
     {
       "path": "tools/block/forward_resources.py",
-      "sha256": "d242d5d9c5f6662c4328f5584fc2a94c6644e04853707b636051f6ec2b2af2af"
+      "sha256": "115ed8b764dcfa614a5b6a3a14d7f98b8978adfafbbe1a43b702da9d6085f988"
     },
     {
       "path": "tools/block/resource_seed.py",
