@@ -83,8 +83,14 @@ Ltac ph_edge_open :=
   | H : negb (bool_decide _) = true |- _ => apply negb_true_iff, bool_decide_eq_false_1 in H; ph_edge_guard H
   end.
 
+(* A register passed on unchanged (a named equation to an earlier word). *)
+Lemma phNamedNonzeroRename (l l' : bv 64) :
+  zesu_named_eq l l' -> bv_unsigned l' <> 0 -> bv_unsigned l <> 0.
+Proof. intros [->] Hl. exact Hl. Qed.
+
 Ltac ph_edge_nonzero :=
-  first [ assumption | eapply phNamedNonzero; eassumption | apply walkRemainingNonzero; assumption ].
+  first [ assumption | eapply phNamedNonzero; eassumption | apply walkRemainingNonzero; assumption
+        | eapply phNamedNonzeroRename; [eassumption|assumption] ].
 
 Ltac ph_edge_side :=
   first [ eassumption | left; eassumption | right; eassumption | reflexivity

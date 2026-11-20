@@ -67,21 +67,21 @@ Proof. ph_edge_error (phFieldError _ 8 _ _ call10_kept_x19 call10_kept_x20). Qed
 Lemma fp_edge0264_026c_CandidateError_holds : fp_edge0264_026c_CandidateError.
 Proof. ph_edge_error (phFieldError _ 9 _ _ call11_kept_x18 call11_kept_x19). Qed.
 Lemma fp_edge02a4_026c_CandidateError_holds : fp_edge02a4_026c_CandidateError.
-Proof. ph_edge_error (phIntegerReject _ 9 _ _ call11_kept_x18 call11_kept_x19). Qed.
+Proof. ph_edge_error (phIntegerReject _ 9 _ _ call11_kept_x18 call11_kept_x19 _ _ _ _ _ call11_after). Qed.
 Lemma fp_edge02b0_026c_CandidateError_holds : fp_edge02b0_026c_CandidateError.
-Proof. ph_edge_error (phIntegerReject _ 9 _ _ call11_kept_x18 call11_kept_x19). Qed.
+Proof. ph_edge_error (phIntegerReject _ 9 _ _ call11_kept_x18 call11_kept_x19 _ _ _ _ _ call11_after). Qed.
 Lemma fp_edge0300_026c_CandidateError_holds : fp_edge0300_026c_CandidateError.
 Proof. ph_edge_error (phFieldError _ 10 _ _ call12_kept_x18 call12_kept_x20). Qed.
 Lemma fp_edge0308_026c_CandidateError_holds : fp_edge0308_026c_CandidateError.
-Proof. ph_edge_error (phIntegerReject _ 10 _ _ call12_kept_x18 call12_kept_x20). Qed.
+Proof. ph_edge_error (phIntegerReject _ 10 _ _ call12_kept_x18 call12_kept_x20 _ _ _ _ _ call12_after). Qed.
 Lemma fp_edge0314_026c_CandidateError_holds : fp_edge0314_026c_CandidateError.
-Proof. ph_edge_error (phIntegerReject _ 10 _ _ call12_kept_x18 call12_kept_x20). Qed.
+Proof. ph_edge_error (phIntegerReject _ 10 _ _ call12_kept_x18 call12_kept_x20 _ _ _ _ _ call12_after). Qed.
 Lemma fp_edge0368_026c_CandidateError_holds : fp_edge0368_026c_CandidateError.
 Proof. ph_edge_error (phFieldError _ 11 _ _ call13_kept_x19 call13_kept_x18). Qed.
 Lemma fp_edge0370_026c_CandidateError_holds : fp_edge0370_026c_CandidateError.
-Proof. ph_edge_error (phIntegerReject _ 11 _ _ call13_kept_x19 call13_kept_x18). Qed.
+Proof. ph_edge_error (phIntegerReject _ 11 _ _ call13_kept_x19 call13_kept_x18 _ _ _ _ _ call13_after). Qed.
 Lemma fp_edge037c_026c_CandidateError_holds : fp_edge037c_026c_CandidateError.
-Proof. ph_edge_error (phIntegerReject _ 11 _ _ call13_kept_x19 call13_kept_x18). Qed.
+Proof. ph_edge_error (phIntegerReject _ 11 _ _ call13_kept_x19 call13_kept_x18 _ _ _ _ _ call13_after). Qed.
 
 (* 0x0408: a skipped field 12 to 14 does not decode *)
 Lemma fp_edge0400_0408_CandidateError_holds : fp_edge0400_0408_CandidateError.
