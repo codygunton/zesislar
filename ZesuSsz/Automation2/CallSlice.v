@@ -88,6 +88,25 @@ Lemma zesu_call_slice_window_length {A} (base p l : Z) (bytes : list A) :
   Z.of_nat (length (take (Z.to_nat l) (drop (Z.to_nat (p - base)) bytes))) = l.
 Proof. intros [? ?] ?. rewrite length_take length_drop. zesu_call_slice_lia. Qed.
 
+(* The rest a by-reference call returned (`ZesuCallSliceRefResult`) lies in
+   the window its slice was taken from. *)
+Lemma zesu_call_slice_rest_window {A} (base : Z) (bytes : list A) (p0 l0 pw lw : bv 64)
+    (rp rl : Z) :
+  base <= bv_unsigned p0 /\ bv_unsigned p0 + bv_unsigned l0 <= base + Z.of_nat (length bytes) ->
+  bv_unsigned p0 <= rp /\
+  rp + rl = bv_unsigned p0 + Z.of_nat (length (take (Z.to_nat (bv_unsigned l0))
+                                                (drop (Z.to_nat (bv_unsigned p0 - base)) bytes))) /\
+  0 <= rl /\ rp + rl < bv_modulus 64 ->
+  pw = Z_to_bv 64 rp -> lw = Z_to_bv 64 rl ->
+  base <= bv_unsigned pw /\ bv_unsigned pw + bv_unsigned lw <= base + Z.of_nat (length bytes).
+Proof.
+  intros [Hlo Hhi] (Hp & Hsum & Hl & Hmax) -> ->.
+  pose proof (bv_unsigned_in_range _ p0) as Hp0.
+  pose proof (bv_unsigned_in_range _ l0) as Hl0.
+  rewrite length_take length_drop in Hsum.
+  rewrite !Z_to_bv_small; zesu_call_slice_lia.
+Qed.
+
 Lemma zesu_call_slice_unsigned_pos n (w : bv n) : bv_unsigned w <> 0 -> 0 < bv_unsigned w.
 Proof. pose proof (bv_unsigned_in_range n w). zesu_call_slice_lia. Qed.
 
@@ -231,6 +250,28 @@ Ltac zesu_call_slice_wrap_small :=
       rewrite E; clear E
   end.
 
+(* (p, l) is the rest a by-reference call returned (its record
+   `result (record (mk _ _ p0 _ input)) r` with a `ZesuCallSliceRefResult`
+   instance, `p = Z_to_bv 64 (restPointer r)`, `l = Z_to_bv 64 (restLength r)`)
+   on a slice (p0, l0) of the array at [base] with [bytes]: [win p0 l0 k0]
+   finds the window of the slice, [k] receives the window of (p, l). *)
+Ltac zesu_call_slice_rest_window_step p l base bytes win k :=
+  match goal with
+  | Hres : ?res (?rec (?mk _ _ ?p0 _ (take (Z.to_nat (bv_unsigned ?l0))
+                                       (drop (Z.to_nat (bv_unsigned ?p0 - base)) bytes)))) ?r |- _ =>
+      let C := constr:(_ : ZesuCallSliceRefResult mk rec res _ _) in
+      let rp := lazymatch type of C with @ZesuCallSliceRefResult _ _ _ _ _ _ ?rp _ => rp end in
+      let rl := lazymatch type of C with @ZesuCallSliceRefResult _ _ _ _ _ _ _ ?rl => rl end in
+      let Hpw := fresh "HcsRestP" in
+      assert (Hpw : p = Z_to_bv 64 (rp r)) by first [assumption | reflexivity];
+      let Hlw := fresh "HcsRestL" in
+      assert (Hlw : l = Z_to_bv 64 (rl r)) by first [assumption | reflexivity];
+      win p0 l0 ltac:(fun Hw0 =>
+        k constr:(zesu_call_slice_rest_window base bytes p0 l0 p l (rp r) (rl r) Hw0
+                    (@zesu_call_slice_ref_result_window _ _ _ _ _ _ _ _ C _ _ _ _ _ _ Hres)
+                    Hpw Hlw))
+  end.
+
 (* The window [p, p+l) of the array at [base] with [bytes]: passes to [k] a
    proof of base <= bv_unsigned p /\ bv_unsigned p + bv_unsigned l <=
    base + length bytes. *)
@@ -302,6 +343,10 @@ Ltac zesu_call_slice_window I dom meaning mk p l base bytes k :=
         end
       end
     end
+  | (* (p, l) is the rest a by-reference call returned on a slice
+       (p0, l0) of the same array *)
+    zesu_call_slice_rest_window_step p l base bytes
+      ltac:(fun p0 l0 k0 => zesu_call_slice_window I dom meaning mk p0 l0 base bytes k0) k
   | (* the caller's contract places (p, l) *)
     let Hw := fresh "HcsContractWindow" in
     assert (Hw : (base <= bv_unsigned p /\
@@ -326,6 +371,29 @@ Ltac zesu_call_slice_window I dom meaning mk p l base bytes k :=
                   bv_unsigned p + bv_unsigned l <= base + Z.of_nat (length bytes))%Z)
       by (rewrite !Z_to_bv_unsigned; zesu_call_slice_wrap_small; zesu_call_slice_lia);
     k constr:(Hw) ].
+
+(* The window of (p, l) for a callee with no by-value interface in reach: the
+   window steps of a by-value callee whose call record the context holds, or
+   a stated window, or the rest a by-reference call returned. *)
+Ltac zesu_call_slice_window_any p l base bytes k :=
+  first
+  [ once (match goal with
+      | Hd : ?ddom (?dmk (_ :: _ :: _ :: _) _ _ _ _) |- _ =>
+          let I := constr:(_ : ZesuCallSliceInterface ddom _) in
+          let dmeaning := lazymatch type of I with
+            | @ZesuCallSliceInterface _ _ _ ?m => m end in
+          zesu_call_slice_window I ddom dmeaning dmk p l base bytes k
+      end)
+  | zesu_call_slice_window_bare p l base bytes k ]
+with zesu_call_slice_window_bare p l base bytes k :=
+  first
+  [ match goal with
+    | Hlo : (base <= bv_unsigned p)%Z,
+      Hhi : (bv_unsigned p + bv_unsigned l <= base + Z.of_nat (length bytes))%Z |- _ =>
+        k constr:(conj Hlo Hhi)
+    end
+  | zesu_call_slice_rest_window_step p l base bytes
+      ltac:(fun p0 l0 k0 => zesu_call_slice_window_any p0 l0 base bytes k0) k ].
 
 (* The callee's output slot: an array the caller holds at that address, or
    `size` bytes carved out of an uninitialised region that contains it.
@@ -621,17 +689,12 @@ Ltac zesu_call_slice_ref :=
         let fr := eval cbv beta in (frame args) in
         zesu_call_slice_ref_word constr:(bv_unsigned r) "HcsRefP" ltac:(fun p =>
         zesu_call_slice_ref_word constr:((bv_unsigned r + 8)%Z) "HcsRefL" ltac:(fun l =>
-        (* the window of (p, l): the window steps of the callee whose call
-           record the context holds *)
+        (* the window of (p, l): the window steps of a by-value callee whose
+           call record the context holds, a stated window, or the rest the
+           previous by-reference call returned *)
         let Hwin := fresh "HcsWindow" in
-        once (match goal with
-          | Hd : ?ddom (?dmk (_ :: _ :: _ :: _) _ _ _ _) |- _ =>
-              let I := constr:(_ : ZesuCallSliceInterface ddom _) in
-              let dmeaning := lazymatch type of I with
-                | @ZesuCallSliceInterface _ _ _ ?m => m end in
-              zesu_call_slice_window I ddom dmeaning dmk p l base bytes
-                ltac:(fun Hw => pose proof Hw as Hwin)
-          end);
+        once (zesu_call_slice_window_any p l base bytes
+                ltac:(fun Hw => pose proof Hw as Hwin));
         let start := constr:(Z.to_nat (bv_unsigned p - base)) in
         let cnt := constr:(Z.to_nat (bv_unsigned l)) in
         let Hrange := fresh "HcsRange" in
