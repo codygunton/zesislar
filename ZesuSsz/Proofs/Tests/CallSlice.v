@@ -5,6 +5,9 @@ Require Import ZesuSsz.Interfaces.DecodeItem.
 Require Import ZesuSsz.Contracts.ParentHeaderContract.
 Require Import ZesuSsz.Contracts.ParentHeaderDomainRanges.
 Require Import ZesuSsz.Contracts.ParentHeaderCallSlice.
+Require Import ZesuSsz.Contracts.NextUint64BlockEntries.
+Require Import ZesuSsz.Contracts.NextUint64DomainRanges.
+Require Import ZesuSsz.Contracts.NextUint64CallSlice.
 Import ListNotations.
 Require Import ZesuSsz.Automation2.All.
 Local Open Scope Z_scope.
@@ -299,4 +302,64 @@ Proof.
   exact I.
 Qed.
 
+(* nextUint64's first call: the input pointer and length are integer words,
+   the output slot is 40 bytes at offset 8 of the uninitialised 48 bytes at
+   `sp - 96`, the input end is the register word `Z_to_bv 64 ie`. The domain
+   was split by an earlier step (`zesu_split_folded_pure`); it stays in the
+   context folded, so the callee domain is proved from it. *)
+Section first_call_integer_root.
+Context `{!islaG Sigma} `{!threadG}.
+Notation SPW args := (Z_to_bv 64 (ParentHeaderRootFacts.nextStackPointer (nextUint64Base args))) (only parsing).
+Notation OUTW args := (bv_add (bv_add (bv_add (SPW args) (BV 64%N 18446744073709551520%Z)) (BV 64%N 96%Z)) (BV 64%N 18446744073709551528%Z)) (only parsing).
+Notation IPW args := (Z_to_bv 64 (ParentHeaderRootFacts.nextInputPointer (nextUint64Base args))) (only parsing).
+Notation ILW args := (Z_to_bv 64 (Z.of_nat (length (ParentHeaderRootFacts.nextInputBytes (nextUint64Base args))))) (only parsing).
+Lemma call_slice_first_call_integer_root (args : NextUint64Args) (a13 a14 a15 a16 a17 : bv 64) (R : iProp Sigma) :
+  nextUint64BoundaryDomain args ->
+  ParentHeaderRootFacts.nextInputPointer (nextUint64Base args) ↦ₘ∗ ParentHeaderRootFacts.nextInputBytes (nextUint64Base args) -∗
+  (ParentHeaderRootFacts.nextStackPointer (nextUint64Base args) - 96) ↦ₘ? 48 -∗
+  R -∗
+  ∃ x : list byte *ₗ list byte *ₗ (),
+    bv_unsigned (IPW args) ↦ₘ∗ x.2ₗ ∗
+    bv_unsigned (OUTW args) ↦ₘ∗ x.1ₗ ∗
+    ⌜decodeItemCallDomain (decodeItemCallDataArgs [OUTW args; IPW args; ILW args; a13; a14; a15; a16; a17]
+       (bv_add (SPW args) (BV 64%N 18446744073709551520%Z)) (bv_unsigned (Z_to_bv 64 (nextUint64InputEnd args))) x.2ₗ x.1ₗ)⌝ ∗
+    R.
+Proof.
+  iIntros (Hd) "? ? ?".
+  ZesuSsz.Automation2.DomainRanges.zesu_pose_domain_ranges.
+  ZesuSsz.Automation2.PureFacts.zesu_split_folded_pure.
+  zesu_call_slice_step.
+  iFrame.
+Qed.
+End first_call_integer_root.
+
+(* `zesu_split_folded_pure`: a domain with registered ranges is kept folded
+   beside its conjuncts, and opened once; any other folded conjunction is
+   replaced by its conjuncts. *)
+Lemma split_folded_keeps_registered_domain (args : NextUint64Args) :
+  nextUint64BoundaryDomain args ->
+  nextUint64BoundaryDomain args /\ 112 <= ParentHeaderRootFacts.nextStackPointer (nextUint64Base args).
+Proof.
+  intros Hd.
+  do 2 (repeat first [progress ZesuSsz.Automation2.PureFacts.zesu_split_folded_pure |
+    match goal with Hpair : _ /\ _ |- _ => destruct Hpair end]).
+  lazymatch goal with
+  | _ : ZesuSsz.Automation2.PureFacts.zesu_domain_opened _,
+    _ : ZesuSsz.Automation2.PureFacts.zesu_domain_opened _ |- _ => fail
+  | _ => idtac
+  end.
+  split; assumption.
+Qed.
+
+Definition call_slice_toy_folded (a b : Z) : Prop := a <= b /\ b <= a.
+Lemma split_folded_opens_unregistered (a b : Z) :
+  call_slice_toy_folded a b -> a = b.
+Proof.
+  intros Hf.
+  ZesuSsz.Automation2.PureFacts.zesu_split_folded_pure.
+  Fail match goal with _ : call_slice_toy_folded _ _ |- _ => idtac end.
+  lia.
+Qed.
+
 Print Assumptions call_slice_window_advanced.
+Print Assumptions call_slice_first_call_integer_root.
