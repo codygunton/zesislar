@@ -8,6 +8,7 @@ Require ZesuSsz.Automation2.CallSlice.
 Require ZesuSsz.Automation2.BytePositionEquations.
 Require ZesuSsz.Automation2.ByteWindowFold.
 Require ZesuSsz.Automation2.Finish.
+Require ZesuSsz.Automation2.Hooks.
 Require Import ZesuSsz.Automation2.LoopExit.
 From iris.proofmode Require Import environments tactics.
 From stdpp Require Import base list decidable bitvector.definitions bitvector.tactics.
@@ -135,14 +136,24 @@ Ltac zesu_tail_roundtrip_exact :=
           eexact H2
       end
   end.
+Ltac zesu_tail_exists_conj_core :=
+  repeat eexists;
+  repeat match goal with |- _ /\ _ => split end;
+  first [ eassumption | zesu_tail_roundtrip_exact ].
+(* A conjunct can follow only from a folded precondition (a domain predicate
+   of conjunctions) once it is opened; `repeat eexists` unfolds a defined
+   conjunct into its parts, which then stand as separate goals. The opening
+   runs only after the plain attempt fails, so a goal that closes without it
+   keeps its existing route, and a context with nothing folded fails at once
+   (`zesu_open_folded_facts` fails when it opens nothing). *)
 Ltac zesu_tail_exists_conj :=
   lazymatch goal with
   | |- environments.envs_entails _ _ => fail
   | |- @ex _ _ => idtac
   end;
-  repeat eexists;
-  repeat match goal with |- _ /\ _ => split end;
-  first [ eassumption | zesu_tail_roundtrip_exact ].
+  first [ solve [zesu_tail_exists_conj_core]
+        | ZesuSsz.Automation2.Hooks.zesu_open_folded_facts;
+          solve [zesu_tail_exists_conj_core] ].
 
 (* The length of a list built from pieces of known length. *)
 Ltac zesu_tail_length_goal :=

@@ -34,6 +34,28 @@ Proof.
   zesu_block_tail_one.
 Qed.
 
+(* A pure existential whose last conjunct follows only from a folded
+   precondition: the plain attempt fails, the folded fact is opened, and the
+   conjunct is one of its parts. *)
+Definition block_tail_folded_domain (z : Z) : Prop := 0 <= z /\ z < 4096.
+
+Goal forall (P : Z -> Prop) (z : Z),
+  block_tail_folded_domain z -> P z -> exists w, P w /\ 0 <= w.
+Proof.
+  intros P z Hdomain HP.
+  zesu_block_tail_one.
+Qed.
+
+(* Nothing folded: the plain attempt closes the goal and the opening is not
+   tried; with no folded fact the opening alone fails at once. *)
+Goal forall (P : Z -> Prop) (z : Z),
+  0 <= z -> P z -> exists w, P w /\ 0 <= w.
+Proof.
+  intros P z Hz HP.
+  Fail ZesuSsz.Automation2.Hooks.zesu_open_folded_facts.
+  zesu_block_tail_one.
+Qed.
+
 (* An edge premise: a boolean disjunction of branch guards. *)
 Goal forall (w : bv 64),
   bv_unsigned w <> 0 ->
