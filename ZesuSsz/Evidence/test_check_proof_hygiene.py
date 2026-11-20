@@ -601,12 +601,55 @@ class SealedCalleeTests(unittest.TestCase):
     """A caller treats a proved callee as a black box."""
 
     CALLEES = [{
+        "function": "callee",
         "interfaces": ["ZesuSsz/Interfaces/Callee.v", "ZesuSsz/Interfaces/CalleeCorrect.v"],
         "sealed": ["calleeCallMeaning"],
         "restricted": ["calleeCallSpec2CorrectFrom", "calleeCallMeaningLink"],
+        "links": ["calleeCallMeaningLink"],
         "unsealed": ["CalleeMeaning"],
         "owned_prefixes": ["ZesuSsz/Generated/Callee/"],
+    }, {
+        "function": "other",
+        "interfaces": ["ZesuSsz/Interfaces/Other.v", "ZesuSsz/Interfaces/OtherCorrect.v"],
+        "sealed": ["otherCallMeaning"],
+        "restricted": ["otherCallSpec2CorrectFrom", "otherCallMeaningLink"],
+        "links": ["otherCallMeaningLink"],
+        "unsealed": ["OtherMeaning"],
+        "owned_prefixes": ["ZesuSsz/Generated/Other/"],
     }]
+    EXIT_MEANING = {"ZesuSsz/Contracts/CallerExitMeaning.v": {"callee"}}
+
+    def exit_failures(self, name, text):
+        from check_proof_hygiene import sealed_callee_failures
+        return sealed_callee_failures(name, text, self.CALLEES, self.EXIT_MEANING)
+
+    def test_listed_exit_meaning_module_may_use_the_link(self):
+        text = "Lemma m : True. Proof. pose proof calleeCallMeaningLink. exact I. Qed.\n"
+        self.assertEqual(self.exit_failures("ZesuSsz/Contracts/CallerExitMeaning.v", text), [])
+
+    def test_unlisted_module_using_the_link_fails(self):
+        text = "Lemma m : True. Proof. pose proof calleeCallMeaningLink. exact I. Qed.\n"
+        self.assertEqual(self.exit_failures("ZesuSsz/Contracts/Unlisted.v", text),
+                         ["sealed callee interface used outside it: ZesuSsz/Contracts/Unlisted.v:1: "
+                          "calleeCallMeaningLink"])
+
+    def test_listed_module_using_another_sealed_name_fails(self):
+        text = "Definition c := calleeCallSpec2CorrectFrom.\n"
+        self.assertEqual(self.exit_failures("ZesuSsz/Contracts/CallerExitMeaning.v", text),
+                         ["sealed callee interface used outside it: ZesuSsz/Contracts/CallerExitMeaning.v:1: "
+                          "calleeCallSpec2CorrectFrom"])
+
+    def test_listed_module_using_a_link_of_a_function_it_does_not_call_fails(self):
+        text = "Lemma m : True. Proof. pose proof otherCallMeaningLink. exact I. Qed.\n"
+        self.assertEqual(self.exit_failures("ZesuSsz/Contracts/CallerExitMeaning.v", text),
+                         ["sealed callee interface used outside it: ZesuSsz/Contracts/CallerExitMeaning.v:1: "
+                          "otherCallMeaningLink"])
+
+    def test_listed_module_with_a_tactic_fails(self):
+        text = "Ltac t := idtac.\nLemma m : True. Proof. pose proof calleeCallMeaningLink. exact I. Qed.\n"
+        self.assertEqual(self.exit_failures("ZesuSsz/Contracts/CallerExitMeaning.v", text),
+                         ["exit_meaning_modules (ZesuSsz/Contracts/proved_functions.json): listed module "
+                          "defines a tactic: ZesuSsz/Contracts/CallerExitMeaning.v:1"])
 
     def failures(self, name, text):
         from check_proof_hygiene import sealed_callee_failures
