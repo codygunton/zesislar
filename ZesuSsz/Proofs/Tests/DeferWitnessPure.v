@@ -1,7 +1,7 @@
 Require Import isla.riscv64.riscv64.
 From Coq Require Import Lists.List ZArith.ZArith NArith.NArith.
-Require Import ZesuSsz.Automation2.All.
 From iris.proofmode Require Import environments.
+Require Import ZesuSsz.Automation2.All.
 Local Open Scope Z_scope.
 
 (* The first conjunct of the existential is an equation over the witness
