@@ -17,6 +17,7 @@ Require Import ZesuSsz.Interfaces.DecodeItemCorrect.
 Require Import ZesuSsz.Interfaces.NextUint64Correct.
 Require Import ZesuSsz.Contracts.ParentHeader.
 Require Import ZesuSsz.Contracts.ParentHeaderContract.
+Require Import ZesuSsz.Contracts.ParentHeaderDomainRanges.
 Require Import ZesuSsz.Contracts.ParentHeaderMemcpyService.
 Require Import ZesuSsz.Compliance.ParentHeaderCompositionBoundary.
 Require Import ZesuSsz.Compliance.ParentHeaderBlockObligations.
@@ -125,6 +126,33 @@ Proof.
 Qed.
 
 (* ---- Start bridge: the contract entry gives the generated entry state. ---- *)
+(* The entry states the saved-register slots at the top of the frame as cells
+   (offsets 320 to 392 from the frame base) and the rest of the frame as an
+   uninitialized region; the contract gives one uninitialized region. *)
+Lemma parentHeader_frame_cell `{!islaG Sigma} (sp kb : bv 64) (a n : Z) :
+  400 <= bv_unsigned sp -> bv_unsigned kb < 400 ->
+  a = bv_unsigned sp - 400 + bv_unsigned kb -> 8 <= n ->
+  a ↦ₘ? n ⊢
+  (∃ w : bv 64, bv_unsigned (bv_add (bv_add sp (BV 64 18446744073709551216)) kb) ↦ₘ w) ∗
+  (a + 8) ↦ₘ? (n - 8).
+Proof.
+  intros Hsp Hk -> Hn. iIntros "H".
+  iDestruct (mem_mapsto_uninit_split 8 with "H") as "[H $]"; [lia|].
+  iDestruct (mem_mapsto_uninit_to_mapsto with "H") as (n' b) "[%Hn' H]".
+  subst n'. iExists b.
+  assert (Haddr : bv_unsigned (bv_add (bv_add sp (BV 64 18446744073709551216)) kb) =
+                  bv_unsigned sp - 400 + bv_unsigned kb).
+  { rewrite !bv_add_unsigned. unfold bv_wrap. rewrite Zplus_mod_idemp_l.
+    change (bv_unsigned (BV 64 18446744073709551216)) with 18446744073709551216.
+    change (bv_modulus 64) with (2 ^ 64).
+    pose proof (bv_unsigned_in_range _ sp). pose proof (bv_unsigned_in_range _ kb).
+    unfold bv_modulus in *. simpl in *.
+    replace (bv_unsigned sp + 18446744073709551216 + bv_unsigned kb)
+      with ((bv_unsigned sp - 400 + bv_unsigned kb) + 1 * 2 ^ 64) by lia.
+    rewrite Z_mod_plus_full. apply Z.mod_small. lia. }
+  by rewrite Haddr.
+Qed.
+
 Lemma parentHeader_start_bridge `{!islaG Sigma} `{!threadG}
     (args : ParentHeaderArgs) (returnAddress : Z) :
   (⌜bv_unsigned (parentHeaderReturnAddress args) = returnAddress⌝ ∗
@@ -135,12 +163,36 @@ Proof.
   rewrite /parentHeaderEntryResources
     /ZesuSsz.Generated.DecodeParentHeader.FP301.Pilot0000Entries.fp_machineAt0000_ForwardA0N0.
   iIntros "[%Hreturn (%x5 & %x6 & %x7 & %x13 & %x14 & %x15 & %x16 & %x17 & %x28 & %x29 & %x30 & %x31 & Hsys & H1 & H2 & H5 & H6 & H7 & H8 & H9 & H10 & H11 & H12 & H13 & H14 & H15 & H16 & H17 & H18 & H19 & H20 & H21 & H22 & H23 & H24 & H25 & H26 & H27 & H28 & H29 & H30 & H31 & Hinput & Hresult & Hframe & Hcallee & Hsource & Hnone & Hscratch & %Hwf & _)]".
+  pose proof (parentHeaderStackRange args Hwf) as Hsp.
+  set (sp := parentHeaderStackPointer args) in *.
+  iDestruct (mem_mapsto_uninit_split 320 with "Hframe") as "[Hlow Hcells]"; [lia|].
+  iDestruct (parentHeader_frame_cell sp (BV 64 320) with "Hcells") as "[[%w320 Hc320] Hcells]";
+    [lia|cbn [bv_unsigned]; lia|cbn [bv_unsigned]; lia|lia|].
+  iDestruct (parentHeader_frame_cell sp (BV 64 328) with "Hcells") as "[[%w328 Hc328] Hcells]";
+    [lia|cbn [bv_unsigned]; lia|cbn [bv_unsigned]; lia|lia|].
+  iDestruct (parentHeader_frame_cell sp (BV 64 336) with "Hcells") as "[[%w336 Hc336] Hcells]";
+    [lia|cbn [bv_unsigned]; lia|cbn [bv_unsigned]; lia|lia|].
+  iDestruct (parentHeader_frame_cell sp (BV 64 344) with "Hcells") as "[[%w344 Hc344] Hcells]";
+    [lia|cbn [bv_unsigned]; lia|cbn [bv_unsigned]; lia|lia|].
+  iDestruct (parentHeader_frame_cell sp (BV 64 352) with "Hcells") as "[[%w352 Hc352] Hcells]";
+    [lia|cbn [bv_unsigned]; lia|cbn [bv_unsigned]; lia|lia|].
+  iDestruct (parentHeader_frame_cell sp (BV 64 360) with "Hcells") as "[[%w360 Hc360] Hcells]";
+    [lia|cbn [bv_unsigned]; lia|cbn [bv_unsigned]; lia|lia|].
+  iDestruct (parentHeader_frame_cell sp (BV 64 368) with "Hcells") as "[[%w368 Hc368] Hcells]";
+    [lia|cbn [bv_unsigned]; lia|cbn [bv_unsigned]; lia|lia|].
+  iDestruct (parentHeader_frame_cell sp (BV 64 376) with "Hcells") as "[[%w376 Hc376] Hcells]";
+    [lia|cbn [bv_unsigned]; lia|cbn [bv_unsigned]; lia|lia|].
+  iDestruct (parentHeader_frame_cell sp (BV 64 384) with "Hcells") as "[[%w384 Hc384] Hcells]";
+    [lia|cbn [bv_unsigned]; lia|cbn [bv_unsigned]; lia|lia|].
+  iDestruct (parentHeader_frame_cell sp (BV 64 392) with "Hcells") as "[[%w392 Hc392] _]";
+    [lia|cbn [bv_unsigned]; lia|cbn [bv_unsigned]; lia|lia|].
   iExists x5, x6, x7, x13, x14, x15, x16, x17, x28, x29, x30, x31.
-  iExists (BV 64 0), (BV 64 0), (BV 64 0).
+  iExists w320, w328, w336, w344, w352, w360, w368, w376, w384, w392.
   assert (Hmod : bv_unsigned (parentHeaderReturnAddress args) mod 4 = 0)
     by (unfold parentHeaderArgsWellFormed in Hwf; tauto).
   iFrame. iPureIntro. split_and!;
-    first [ assumption | exact I | vm_compute; reflexivity ].
+    first [ assumption
+          | apply zesu_hist_intro; exists (BV 64 0); split; vm_compute; reflexivity ].
 Qed.
 
 (* ---- The theorem: decodeParentHeader compliance, given the open blocks
