@@ -273,6 +273,51 @@ class HistoryJoin(unittest.TestCase):
         self.assertNotIn('ghost_history', plan)
 
 
+class WeakVisiblePatterns(unittest.TestCase):
+    """A profile `hist_visible` fact keeps a live binder's fact visible but pins no binder: an
+    outcome that no resource holds (a dead call result) stays in the history with its guards."""
+    BINDERS = [{'name': 'held', 'type': 'list byte'}, {'name': 'dead', 'type': 'list byte'}]
+    RESOURCES = ['p ↦ₘ∗ held']
+    FACTS = ['guard8 held', 'guard8 dead', '(List.length dead = 40)%nat']
+
+    def test_a_weak_pattern_pins_no_binder(self):
+        live, ghost, visible, hidden = entry_hist.classify(self.BINDERS, self.RESOURCES, self.FACTS,
+                                                           weak_patterns=['guard8'])
+        self.assertEqual([binder['name'] for binder in live], ['held'])
+        self.assertEqual([binder['name'] for binder in ghost], ['dead'])
+        self.assertEqual(visible, ['guard8 held'])
+        self.assertEqual(hidden, ['guard8 dead', '(List.length dead = 40)%nat'])
+
+    def test_a_visible_pattern_still_pins(self):
+        live, ghost, visible, _ = entry_hist.classify(self.BINDERS, self.RESOURCES, self.FACTS,
+                                                      visible_patterns=['guard8'])
+        self.assertEqual([binder['name'] for binder in live], ['held', 'dead'])
+        self.assertEqual(ghost, [])
+        self.assertEqual(visible, self.FACTS)
+
+    def test_a_loop_design_visible_list_is_weak(self):
+        entry_hist.configure({'entry_hist': 'wrap'})
+        self.addCleanup(entry_hist.configure, None)
+        _, _, meta = entry_hist.seal_class(
+            'C', 'Definition C ', '(machine_x11 : bv 64) (held : list byte) (dead : list byte)',
+            ['"x11" ↦ᵣ RVal_Bits (machine_x11 : bv 64%N)', 'p ↦ₘ∗ held'], self.FACTS,
+            [{'name': 'args', 'type': 'A'}], {'registers': {'x11': 'machine_x11'}, 'facts': []},
+            visible=['guard8'])
+        self.assertEqual([binder['name'] for binder in meta['live']], ['machine_x11', 'held'])
+        self.assertEqual(meta['visible'], ['guard8 held'])
+        self.assertEqual([binder['name'] for binder in meta['ghost']], ['dead'])
+
+    def test_a_loop_entry_predecessor_shows_the_newest_call_record(self):
+        binders = [{'name': 'call2_after', 'type': 'list byte'}, {'name': 'call_after', 'type': 'list byte'}]
+        facts = ['decodeItemCallMeaning a call2_after', 'decodeItemCallMeaning a call_after']
+        self.assertEqual(entry_hist.loop_entry_patterns('0x10', {'0x20'}, binders), [])
+        patterns = entry_hist.loop_entry_patterns('0x20', {'0x20'}, binders)
+        live, ghost, visible, hidden = entry_hist.classify(binders, [], facts, patterns)
+        self.assertEqual([binder['name'] for binder in live], ['call2_after'])
+        self.assertEqual(visible, facts[:1])
+        self.assertEqual(hidden, facts[1:])
+
+
 class HistoryAlignment(unittest.TestCase):
     """A join whose edges hold the same facts once in a history group, once one per component."""
     GROUP = ('⌜∃ (call10_kept_x19 : bv 64), (zesu_named_eq call11_kept_x18 (bv_add call10_kept_x19 c))'

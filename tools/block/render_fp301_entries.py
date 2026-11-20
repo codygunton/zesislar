@@ -529,10 +529,14 @@ for suffix, slot in units:
                     seal_as, plain_telescope, plain_binders, binders,
                     [text for component, text in rendered_components if component["kind"] not in ("pure", "true")],
                     [text[1:-1] for component, text in rendered_components if component["kind"] == "pure"],
-                    profile.get("hist_visible", [])
                     # The function return entry (`Return`) is no block: no call record of its own.
-                    + (entry_hist.call_visible_patterns(profile.pc(block[0]), call_plans, block_starts, binders)
-                       if (block := re.match(r"[0-9a-f]+(?=_|$)", suffix)) else []))
+                    (entry_hist.call_visible_patterns(profile.pc(block[0]), call_plans, block_starts, binders)
+                     + entry_hist.loop_entry_patterns(
+                         profile.pc(block[0]), {profile.pc(design['entry_predecessor'])
+                                                for design in profile.get('loop_designs', [])
+                                                if design.get('entry_predecessor')}, binders))
+                    if (block := re.match(r"[0-9a-f]+(?=_|$)", suffix)) else [],
+                    weak_patterns=profile.get("hist_visible", []))
             if existentials:
                 telescope = " ".join(
                     "("

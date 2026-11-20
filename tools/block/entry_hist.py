@@ -105,6 +105,13 @@ def call_visible_patterns(pc, calls, block_starts, binders):
     return patterns
 
 
+def loop_entry_patterns(pc, entry_pcs, binders):
+    """Visible facts of a loop's entry predecessor (a loop design's `entry_predecessor`): the loop
+    head's invariant bounds the cursor by the newest call's payload, so that call's record, its
+    nonzero guards and its slice window stay visible there as they do in the loop class."""
+    return newest_call_patterns(binders) if pc in entry_pcs else []
+
+
 def newest_call_patterns(binders):
     """The record of the newest call layer an entry has (`…CallDomain`/`…CallMeaning` on its outcome
     `<prefix>after`), its nonzero guards on that outcome and its slice window over its kept cursors.
@@ -121,15 +128,19 @@ def newest_call_patterns(binders):
             r"<= bv_unsigned " + kept + r" /\\ bv_unsigned " + kept + r" \+ bv_unsigned "]
 
 
-def classify(binders, resources, facts, visible_patterns=(), pinned=(), definitional=False):
+def classify(binders, resources, facts, visible_patterns=(), pinned=(), definitional=False, weak_patterns=()):
     """Split binders into live and ghost and facts into visible and hidden.
 
-    binders: [{'name', 'type'}]; resources, facts: texts (facts without the pure brackets)."""
+    binders: [{'name', 'type'}]; resources, facts: texts (facts without the pure brackets).
+    weak_patterns: facts that stay visible when every binder they mention is live for another
+    reason, but pin no binder: a binder that only such a fact mentions has no resource and no
+    record to take its value from at the successor, so it stays in the history (its facts too)."""
     # A fact that matches a visible pattern (access or call facts) pins its binders live.
     pinned = set(pinned) | {binder['name'] for binder in binders for fact in facts
                             if not is_join_history(fact)
                             and any(re.search(pattern, fact, re.S) for pattern in visible_patterns)
                             and mentions(binder['name'], fact)}
+    visible_patterns = tuple(visible_patterns) + tuple(weak_patterns)
     live = [binder for binder in binders
             if binder['name'] in pinned or any(mentions(binder['name'], text) for text in resources)]
     live_names = {binder['name'] for binder in live}
@@ -161,13 +172,14 @@ def conjunction(facts):
 
 
 def seal_alternative(name, plain_telescope, plain_binders, binders, resources, facts, visible_patterns=(), pinned=(),
-                     grouped=False, varying=()):
+                     grouped=False, varying=(), weak_patterns=()):
     """Return (declarations, body, meta) of one sealed entry variant.
 
     declarations: [(symbol, text, kind)] with kind 'hist' (needs opacity in Structural) or 'aux';
-    body: the iProp body of the entry variant; meta: the data that the edge record reads."""
+    body: the iProp body of the entry variant; meta: the data that the edge record reads.
+    weak_patterns: the profile's `hist_visible` (and a loop design's `visible`): see `classify`."""
     live, ghost, visible, hidden = classify(binders, resources, facts, visible_patterns, pinned,
-                                            definitional=grouped)
+                                            definitional=grouped, weak_patterns=weak_patterns)
     hist = name + '_Hist'
     # The history takes only the live binders its facts mention. A loop class keeps
     # every fact on a loop-varying binder visible, so its history is the same on both sides of the
@@ -423,11 +435,11 @@ def seal_class(name, prefix, binders_text, resources, facts, plain_binders, desi
     registers = [binder for binder in registers + [design.get('index')] if binder in names]
     # Call facts: the newest call layer's record, guards and window (its payload is what the loop reads);
     # older records and the named equations of older cursors stay in the class history.
-    patterns = (list(visible) + newest_call_patterns(binders) + design_patterns(design)
+    patterns = (newest_call_patterns(binders) + design_patterns(design)
                 + [r"(?<![\w'.])" + re.escape(binder) + r"(?![\w'])" for binder in registers])
     declarations, body, meta = seal_alternative(
         name, ' ' + telescope(plain_binders), plain_binders, binders, resources, facts,
-        visible_patterns=patterns, pinned=registers, grouped=True, varying=registers)
+        visible_patterns=patterns, pinned=registers, grouped=True, varying=registers, weak_patterns=list(visible))
     meta['frame_slots'] = slot_reports
     meta['loop_class'] = True
     return declarations, prefix + ':= ' + body + '%I.\n', meta
