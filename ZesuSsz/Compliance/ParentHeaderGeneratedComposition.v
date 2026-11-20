@@ -167,25 +167,25 @@ Proof.
   set (sp := parentHeaderStackPointer args) in *.
   iDestruct (mem_mapsto_uninit_split 320 with "Hframe") as "[Hlow Hcells]"; [lia|].
   iDestruct (parentHeader_frame_cell sp (BV 64 320) with "Hcells") as "[[%w320 Hc320] Hcells]";
-    [lia|cbn [bv_unsigned]; lia|cbn [bv_unsigned]; lia|lia|].
+    [lia|rewrite bv_unsigned_BV; lia|rewrite bv_unsigned_BV; lia|lia|].
   iDestruct (parentHeader_frame_cell sp (BV 64 328) with "Hcells") as "[[%w328 Hc328] Hcells]";
-    [lia|cbn [bv_unsigned]; lia|cbn [bv_unsigned]; lia|lia|].
+    [lia|rewrite bv_unsigned_BV; lia|rewrite bv_unsigned_BV; lia|lia|].
   iDestruct (parentHeader_frame_cell sp (BV 64 336) with "Hcells") as "[[%w336 Hc336] Hcells]";
-    [lia|cbn [bv_unsigned]; lia|cbn [bv_unsigned]; lia|lia|].
+    [lia|rewrite bv_unsigned_BV; lia|rewrite bv_unsigned_BV; lia|lia|].
   iDestruct (parentHeader_frame_cell sp (BV 64 344) with "Hcells") as "[[%w344 Hc344] Hcells]";
-    [lia|cbn [bv_unsigned]; lia|cbn [bv_unsigned]; lia|lia|].
+    [lia|rewrite bv_unsigned_BV; lia|rewrite bv_unsigned_BV; lia|lia|].
   iDestruct (parentHeader_frame_cell sp (BV 64 352) with "Hcells") as "[[%w352 Hc352] Hcells]";
-    [lia|cbn [bv_unsigned]; lia|cbn [bv_unsigned]; lia|lia|].
+    [lia|rewrite bv_unsigned_BV; lia|rewrite bv_unsigned_BV; lia|lia|].
   iDestruct (parentHeader_frame_cell sp (BV 64 360) with "Hcells") as "[[%w360 Hc360] Hcells]";
-    [lia|cbn [bv_unsigned]; lia|cbn [bv_unsigned]; lia|lia|].
+    [lia|rewrite bv_unsigned_BV; lia|rewrite bv_unsigned_BV; lia|lia|].
   iDestruct (parentHeader_frame_cell sp (BV 64 368) with "Hcells") as "[[%w368 Hc368] Hcells]";
-    [lia|cbn [bv_unsigned]; lia|cbn [bv_unsigned]; lia|lia|].
+    [lia|rewrite bv_unsigned_BV; lia|rewrite bv_unsigned_BV; lia|lia|].
   iDestruct (parentHeader_frame_cell sp (BV 64 376) with "Hcells") as "[[%w376 Hc376] Hcells]";
-    [lia|cbn [bv_unsigned]; lia|cbn [bv_unsigned]; lia|lia|].
+    [lia|rewrite bv_unsigned_BV; lia|rewrite bv_unsigned_BV; lia|lia|].
   iDestruct (parentHeader_frame_cell sp (BV 64 384) with "Hcells") as "[[%w384 Hc384] Hcells]";
-    [lia|cbn [bv_unsigned]; lia|cbn [bv_unsigned]; lia|lia|].
+    [lia|rewrite bv_unsigned_BV; lia|rewrite bv_unsigned_BV; lia|lia|].
   iDestruct (parentHeader_frame_cell sp (BV 64 392) with "Hcells") as "[[%w392 Hc392] _]";
-    [lia|cbn [bv_unsigned]; lia|cbn [bv_unsigned]; lia|lia|].
+    [lia|rewrite bv_unsigned_BV; lia|rewrite bv_unsigned_BV; lia|lia|].
   iExists x5, x6, x7, x13, x14, x15, x16, x17, x28, x29, x30, x31.
   iExists w320, w328, w336, w344, w352, w360, w368, w376, w384, w392.
   assert (Hmod : bv_unsigned (parentHeaderReturnAddress args) mod 4 = 0)
