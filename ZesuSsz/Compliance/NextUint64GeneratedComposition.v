@@ -2,8 +2,8 @@
    The composition runs over the generated block table
    (NextUint64BlockObligations.v, from tools/block/render_open_blocks.py).
    A slot is closed by the block statement tagged with its address and entry
-   constant: a compiled caller lemma (NextUint64ClosedBlocks) or a premise field
-   (NextUint64OpenBlocks). Every entry carries the generated return entry as K
+   constant: a compiled caller lemma (NextUint64ClosedBlocks) or a field of
+   NextUint64OpenBlocks (now empty). Every entry carries the generated return entry as K
    (nextUint64Continuation); the return block 0x0070 consumes it, and the end
    bridge turns the return entry into the contract exit. *)
 Require Import ZesuSsz.Automation2.All.
@@ -317,13 +317,12 @@ Proof.
   iFrame.
 Qed.
 
-(* ---- The theorem: nextUint64 compliance, given decodeItem's code and the open blocks. ---- *)
+(* ---- The theorem: nextUint64 compliance, given decodeItem's code; every block is closed. ---- *)
 Theorem nextUint64GeneratedCompliance :
   nextUint64NeedsDecodeItemCode ->
-  NextUint64OpenBlocks ->
   NextUint64ContractCorrect.
 Proof.
-  intros Hcode Hopen returnAddress Sigma HG HT.
+  intros Hcode returnAddress Sigma HG HT.
   change (⊢ nextUint64SelectedCode -∗ ∀ params : NextUint64Args,
     instr_body nextUint64Entry
       (nextUint64ContractEntry returnAddress params ∗
@@ -333,7 +332,7 @@ Proof.
   iIntros "#Hsel" (params).
   iDestruct (Hcode Sigma HG HT with "Hsel") as "#Hdi".
   iPoseProof (nextUint64_decodeItem_boxed with "Hdi") as "#Hdi2".
-  iPoseProof (nextUint64_entry_body Hopen params returnAddress with "[]") as "Hbody".
+  iPoseProof (nextUint64_entry_body nextUint64OpenBlocks params returnAddress with "[]") as "Hbody".
   { iModIntro. unfold nextUint64TableCode.
     iSplitR; [iExact "Hsel"|]. iModIntro. iExact "Hdi2". }
   iApply (instr_pre_wand with "Hbody"); [done|done|].
