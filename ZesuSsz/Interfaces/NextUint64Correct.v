@@ -10,5 +10,5 @@ Local Open Scope Z_scope.
 
 (* nextUint64CallSpec2 is correct: the sealed spec is the template inside the sealed module. *)
 Definition nextUint64CallSpec2_correct `{!islaG Sigma} `{!threadG} (Hcontract : NextUint64ContractCorrect) :
-  ⊢ nextUint64SelectedCode -∗ instr_body nextUint64Entry nextUint64CallSpec2 :=
-  nextUint64CallSpec2CorrectFrom nextUint64SelectedCode nextUint64Entry (ZesuSsz.Compliance.NextUint64CallSpec2.nextUint64CallSpecDefinition_correct Hcontract).
+  ⊢ nextUint64ContractCode -∗ instr_body nextUint64Entry nextUint64CallSpec2 :=
+  nextUint64CallSpec2CorrectFrom nextUint64ContractCode nextUint64Entry (ZesuSsz.Compliance.NextUint64CallSpec2.nextUint64CallSpecDefinition_correct Hcontract).

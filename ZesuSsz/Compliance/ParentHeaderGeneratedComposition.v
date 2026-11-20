@@ -63,13 +63,16 @@ Proof.
   iApply decodeItemCallSpec2_correct. iExact "Hcode".
 Qed.
 
+(* nextUint64's contract code is its own map and decodeItem's map. *)
 Lemma parentHeader_nextUint64_boxed `{!islaG Sigma} `{!threadG} :
   NextUint64ContractCorrect ->
-  nextUint64SelectedCode -∗ □ instr_pre nextUint64Entry nextUint64CallSpec2.
+  nextUint64SelectedCode ∗ decodeItemSelectedCode -∗
+  □ instr_pre nextUint64Entry nextUint64CallSpec2.
 Proof.
-  intros Hcontract. iIntros "#Hcode". iModIntro.
+  intros Hcontract. iIntros "#[Hnu Hdi]". iModIntro.
   iApply instr_pre_to_body. iNext.
-  iApply (nextUint64CallSpec2_correct Hcontract). iExact "Hcode".
+  iApply (nextUint64CallSpec2_correct Hcontract).
+  rewrite /nextUint64ContractCode. iFrame "Hnu Hdi".
 Qed.
 
 (* The membership of a slot: address and state both match, so several
@@ -300,7 +303,7 @@ Proof.
        parentHeaderContinuation args returnAddress))%I.
   iIntros "(#Hsel & #Hnu & #Hdi & #Hmc)" (args).
   iPoseProof (parentHeader_decodeItem_boxed with "Hdi") as "#Hdi2".
-  iPoseProof (parentHeader_nextUint64_boxed Hnext with "Hnu") as "#Hnu2".
+  iPoseProof (parentHeader_nextUint64_boxed Hnext with "[$Hnu $Hdi]") as "#Hnu2".
   iPoseProof (parentHeader_entry_body Hopen Hexits args returnAddress with "[]") as "Hbody".
   { iModIntro. unfold parentHeaderTableCode, memcpyCallPremise.
     iSplitR; [iExact "Hsel"|]. iSplitR; [iModIntro; iExact "Hdi2"|].

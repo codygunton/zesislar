@@ -100,6 +100,11 @@
          "premise": "candidateDecodeItem input = candidateSuccess isList headerLength payloadLength",
          "conclusion": "0 <= headerLength <= 9 /\\ (headerLength + payloadLength) mod word64Modulus <= Z.of_nat (length input) /\\ (forall prefix rest, input = prefix :: rest -> bv_unsigned prefix = 128 -> payloadLength = 0)",
          "proof": "candidateDecodeItemSuccessBounds", "derived_facts": false},
+        {"name": "decodeItemCallPayloadFits",
+         "binders": "argv sp inputEnd input before after",
+         "premise": "decodeItemCallMeaning (decodeItemCallDataArgs argv sp inputEnd input before) after",
+         "conclusion": "headerFits input -> bv_unsigned (listWord64At8 after) <= Z.of_nat (length input)",
+         "proof": "decodeItemMeaningPayloadFits", "derived_facts": false},
         {"name": "decodeItemCallDomainInput",
          "binders": "argv0 argv1 argv2 rest sp inputEnd input before",
          "premise": "decodeItemCallDomain (decodeItemCallDataArgs (argv0 :: argv1 :: argv2 :: rest) sp inputEnd input before)",
@@ -121,13 +126,12 @@
     {
       "function": "nextUint64",
       "symbol": "rlp_decode.nextUint64",
-      "status": "assumed",
-      "assumption": "NextUint64ContractCorrect",
+      "status": "proved",
       "exit_meaning_modules": [
         {"path": "ZesuSsz/Contracts/NextUint64ExitMeaning.v", "callees": ["decodeItem"],
          "reason": "the meaning conjunct of the return join 0x0070 is proved at the exit blocks 0x0064 and 0x00b8 from decodeItem's call record"}
       ],
-      "compliance_theorems": ["nextUint64GeneratedCompliance"],
+      "compliance_theorems": ["nextUint64GeneratedCompliance", "nextUint64Compliance"],
       "owned_prefixes": [
         "ZesuSsz/Contracts/NextUint64", "ZesuSsz/Compliance/NextUint64", "ZesuSsz/Generated/NextUint64/"
       ],
@@ -157,7 +161,7 @@
                        "Require ZesuSsz.Compliance.NextUint64CallSpec2."],
           "exports": ["ZesuSsz.Contracts.NextUint64Selected", "ZesuSsz.Contracts.NextUint64Contract"],
           "premises": [["Hcontract", "NextUint64ContractCorrect"]],
-          "code": "nextUint64SelectedCode",
+          "code": "nextUint64ContractCode",
           "entry": "nextUint64Entry",
           "template_correct": "ZesuSsz.Compliance.NextUint64CallSpec2.nextUint64CallSpecDefinition_correct"
         }
@@ -195,7 +199,7 @@
       "function": "decodeParentHeader",
       "symbol": "rlp_decode.decodeParentHeader",
       "status": "conditional",
-      "condition": "parentHeaderGeneratedCompliance assumes NextUint64ContractCorrect and ParentHeaderOpenBlocks; no interface until both are discharged",
+      "condition": "parentHeaderGeneratedCompliance assumes NextUint64ContractCorrect (proved: nextUint64Compliance) and ParentHeaderOpenBlocks; no interface until ParentHeaderOpenBlocks is discharged and the premise is applied",
       "compliance_theorems": ["parentHeaderGeneratedCompliance"],
       "owned_prefixes": ["ZesuSsz/Contracts/ParentHeader", "ZesuSsz/Compliance/ParentHeader",
                          "ZesuSsz/Generated/DecodeParentHeader/"],
