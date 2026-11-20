@@ -47,6 +47,7 @@ Require Import ZesuSsz.Automation2.LinearFirstLia.
 Require Import ZesuSsz.Automation2.Telemetry.
 Require Import ZesuSsz.Automation2.FailureMemo.
 Require ZesuSsz.Automation2.RewriteBoundGuards.
+Require ZesuSsz.Automation2.DomainRanges.
 (** Project-wide Lithium hook redefinitions belong in this module. *)
 
 From iris.proofmode Require Import environments.
@@ -1331,10 +1332,25 @@ Ltac zesu_defer_unresolved_implication_if_enabled :=
       zesu_condition_has_unresolved_evar premise
   end.
 
+(* A function domain entering the context brings its registered ranges as
+   plain facts (`DomainRanges.v`). Only a premise with registered ranges
+   pays for the context scan. *)
 Ltac liImpl ::=
   tryif zesu_defer_unresolved_implication_if_enabled
   then fail 0 "unresolved implication premise"
-  else normalize_and_simpl_impl false.
+  else (tryif ZesuSsz.Automation2.DomainRanges.zesu_domain_ranges_premise
+        then (normalize_and_simpl_impl false;
+              ZesuSsz.Automation2.DomainRanges.zesu_pose_domain_ranges)
+        else normalize_and_simpl_impl false).
+
+(* stdpp's saturation, plus the type range of every non-variable root of a
+   `bv_unsigned` in the goal (a record projection has no hypothesis `b : bv _`). *)
+Ltac stdpp.bitvector.definitions.bv_saturate_unsigned ::=
+  ZesuSsz.Automation2.BvLinear.zesu_bv_ranges_goal_with false;
+  repeat match goal with b : bv _ |- _ => first [
+     clear b |
+     learn_hyp (bv_unsigned_in_range_alt _ b)
+  ] end.
 
 Class ZesuStepPureWitnessConstraints : Prop :=
   zesu_step_pure_witness_constraints : True.

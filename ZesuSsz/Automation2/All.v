@@ -11,6 +11,7 @@ Require Export ZesuSsz.Automation2.WordIdentity.
 Require Export ZesuSsz.Automation2.CodecArrayRead.
 Require Export ZesuSsz.Automation2.Rewrites.
 Require Export ZesuSsz.Automation2.Hooks.
+Require Export ZesuSsz.Automation2.DomainRanges.
 Require Export ZesuSsz.Automation2.NamedEquations.
 Require Export ZesuSsz.Automation2.ResidualLemmas.
 Require Export ZesuSsz.Automation2.UninitRegions.

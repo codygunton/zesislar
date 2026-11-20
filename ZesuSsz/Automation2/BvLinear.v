@@ -646,10 +646,36 @@ Ltac zesu_bv_modulus_value :=
       end
   end.
 
+(* The type range of a bit-vector root under `bv_unsigned` that is not a
+   variable (a record projection, an application). stdpp's saturation adds
+   the range of hypotheses `b : bv _` only, so such a root has no upper bound
+   for the integer solvers. `vars` says whether variables get their range
+   here too. A sum, difference, product or negation is searched for its
+   roots; a cast `Z_to_bv` and a literal have none. *)
+Ltac zesu_bv_learn_root vars n t :=
+  lazymatch t with
+  | bv_add ?a ?b => first [zesu_bv_learn_root vars n a | zesu_bv_learn_root vars n b]
+  | bv_sub ?a ?b => first [zesu_bv_learn_root vars n a | zesu_bv_learn_root vars n b]
+  | bv_mul ?a ?b => first [zesu_bv_learn_root vars n a | zesu_bv_learn_root vars n b]
+  | bv_opp ?a => zesu_bv_learn_root vars n a
+  | Z_to_bv _ _ => fail
+  | @BV _ _ _ => fail
+  | _ =>
+      tryif is_var t then lazymatch vars with true => idtac end else idtac;
+      tryif has_evar t then fail else idtac;
+      learn_hyp (bv_unsigned_in_range_alt n t)
+  end.
+
+Ltac zesu_bv_ranges_goal_with vars :=
+  repeat match goal with
+  | |- context [@bv_unsigned ?n ?t] => zesu_bv_learn_root vars n t
+  end.
+
 (* The range of a cast: by bounds of unsigned values first, else by the
-   given solver. *)
+   given solver with the type ranges of the goal's roots. *)
 Ltac zesu_bv_linear_cast_range range :=
-  first [zesu_bv_linear_range | zesu_bv_modulus_value; range].
+  first [zesu_bv_linear_range |
+    zesu_bv_modulus_value; zesu_bv_ranges_goal_with true; range].
 
 (* The fast path: bit-vector (in)equalities, and integer (in)equalities of
    unsigned values that map back soundly. The integer cast form leaves only

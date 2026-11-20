@@ -1,4 +1,5 @@
 Require Import ZesuSsz.Automation.PureFacts.
+Require Import ZesuSsz.Automation2.DomainRanges.
 Require Import ZesuSsz.Contracts.RlpDecodeItem.
 Require Import ZesuSsz.Contracts.ParentHeaderRootFacts.
 Require Import ZesuSsz.Contracts.NextUint64BlockEntries.
@@ -122,3 +123,35 @@ Proof.
   pose proof (nextUint64BoundaryDomainRanges params domain) as ranges.
   unfold bv_modulus in ranges. change (2 ^ Z.of_N 64) with (2 ^ 64) in ranges. tauto.
 Qed.
+
+(* The pointer ranges inside RAM, and the input window below 2^64, as plain
+   facts beside the folded domain (`zesu_pose_domain_ranges`): the derived
+   facts above bound the pointers by 2^64 only, the frame arithmetic needs the
+   RAM bounds, and a payload window inside the input needs its end in range. *)
+Lemma nextUint64BoundaryDomainRamRanges (params : NextUint64Args) :
+  nextUint64BoundaryDomain params ->
+  (112 <= nextStackPointer (nextUint64Base params) < 3221225472) /\
+  (2684354560 <= nextResultPointer (nextUint64Base params) /\
+   nextResultPointer (nextUint64Base params) + 16 <= 3221225472) /\
+  (2684354560 <= nextSlicePointer (nextUint64Base params) /\
+   nextSlicePointer (nextUint64Base params) + 16 <= 3221225472) /\
+  nextInputPointer (nextUint64Base params) +
+    Z.of_nat (length (nextInputBytes (nextUint64Base params))) < 18446744073709551616.
+Proof.
+  unfold nextUint64BoundaryDomain; cbv zeta. intros domain.
+  repeat match goal with H : _ /\ _ |- _ => destruct H end.
+  cbv [ZesuMachineMap.Machine.mapRamBase ZesuMachineMap.Machine.mapRamSize
+    ZesuMachineMap.Machine.machineRamEnd ZesuMachineMap.Machine.defaultMap] in *.
+  repeat split; lia.
+Qed.
+
+#[export] Instance nextUint64BoundaryDomainRamRangesInstance (params : NextUint64Args) :
+  ZesuDomainRanges (nextUint64BoundaryDomain params)
+    ((112 <= nextStackPointer (nextUint64Base params) < 3221225472) /\
+     (2684354560 <= nextResultPointer (nextUint64Base params) /\
+      nextResultPointer (nextUint64Base params) + 16 <= 3221225472) /\
+     (2684354560 <= nextSlicePointer (nextUint64Base params) /\
+      nextSlicePointer (nextUint64Base params) + 16 <= 3221225472) /\
+     nextInputPointer (nextUint64Base params) +
+       Z.of_nat (length (nextInputBytes (nextUint64Base params))) < 18446744073709551616) :=
+  nextUint64BoundaryDomainRamRanges params.
