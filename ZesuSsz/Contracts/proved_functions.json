@@ -199,7 +199,7 @@
       "function": "decodeParentHeader",
       "symbol": "rlp_decode.decodeParentHeader",
       "status": "conditional",
-      "condition": "parentHeaderGeneratedCompliance assumes NextUint64ContractCorrect (proved: nextUint64Compliance) and ParentHeaderOpenBlocks; no interface until ParentHeaderOpenBlocks is discharged and the premise is applied",
+      "condition": "parentHeaderGeneratedCompliance assumes ParentHeaderOpenBlocks and ParentHeaderExitMeanings (the meaning of each exit kind, step M1); nextUint64's contract is discharged by nextUint64Compliance; no interface until both premises are discharged",
       "compliance_theorems": ["parentHeaderGeneratedCompliance"],
       "owned_prefixes": ["ZesuSsz/Contracts/ParentHeader", "ZesuSsz/Compliance/ParentHeader",
                          "ZesuSsz/Generated/DecodeParentHeader/"],
