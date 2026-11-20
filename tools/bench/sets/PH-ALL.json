@@ -33,11 +33,11 @@
    "function": "decodeParentHeader",
    "callers": "decodeparentheader_fp301_callers",
    "case": "0048",
-   "instructions": 18,
-   "cpu_seconds": 930,
+   "instructions": 3,
+   "cpu_seconds": 466,
    "claim_gib": 5,
-   "why": "18 instructions, 0 successor entries, 0 successor binders: cap min(1200, 120 + 45 x 18 + 100 x 0 + 3 x 0) = 930 CPU-s, claim 5 GiB",
-   "expected_cpu": 930
+   "why": "3 instructions, 1 successor entries, 37 successor binders: cap min(1200, 120 + 45 x 3 + 100 x 1 + 3 x 37) = 466 CPU-s, claim 5 GiB",
+   "expected_cpu": 466
   },
   {
    "function": "decodeParentHeader",
@@ -83,20 +83,20 @@
    "function": "decodeParentHeader",
    "callers": "decodeparentheader_fp301_callers",
    "case": "0088",
-   "instructions": 18,
+   "instructions": 3,
    "cpu_seconds": 2400,
    "claim_gib": 5,
-   "why": "18 instructions; heavy block of plan steps 1.4 and 2.2: 2400 CPU-s, claim 5 GiB",
+   "why": "3 instructions; heavy block of plan steps 1.4 and 2.2: 2400 CPU-s, claim 5 GiB",
    "expected_cpu": 2400
   },
   {
    "function": "decodeParentHeader",
    "callers": "decodeparentheader_fp301_callers",
    "case": "0094",
-   "instructions": 18,
+   "instructions": 3,
    "cpu_seconds": 2400,
    "claim_gib": 5,
-   "why": "18 instructions; heavy block of plan steps 1.4 and 2.2: 2400 CPU-s, claim 5 GiB",
+   "why": "3 instructions; heavy block of plan steps 1.4 and 2.2: 2400 CPU-s, claim 5 GiB",
    "expected_cpu": 2400
   },
   {
@@ -113,11 +113,21 @@
    "function": "decodeParentHeader",
    "callers": "decodeparentheader_fp301_callers",
    "case": "00a8",
-   "instructions": 17,
+   "instructions": 2,
    "cpu_seconds": 2400,
    "claim_gib": 5,
-   "why": "17 instructions; heavy block of plan steps 1.4 and 2.2: 2400 CPU-s, claim 5 GiB",
+   "why": "2 instructions; heavy block of plan steps 1.4 and 2.2: 2400 CPU-s, claim 5 GiB",
    "expected_cpu": 2400
+  },
+  {
+   "function": "decodeParentHeader",
+   "callers": "decodeparentheader_fp301_callers",
+   "case": "00b0",
+   "instructions": 15,
+   "cpu_seconds": 795,
+   "claim_gib": 3,
+   "why": "15 instructions, 0 successor entries, 0 successor binders: cap min(1200, 120 + 45 x 15 + 100 x 0 + 3 x 0) = 795 CPU-s, claim 3 GiB",
+   "expected_cpu": 795
   },
   {
    "function": "decodeParentHeader",
@@ -383,11 +393,81 @@
    "function": "decodeParentHeader",
    "callers": "decodeparentheader_fp301_callers",
    "case": "0270",
-   "instructions": 13,
+   "instructions": 1,
    "cpu_seconds": 2400,
    "claim_gib": 5,
-   "why": "13 instructions; heavy block of plan steps 1.4 and 2.2: 2400 CPU-s, claim 5 GiB",
+   "why": "1 instructions; heavy block of plan steps 1.4 and 2.2: 2400 CPU-s, claim 5 GiB",
    "expected_cpu": 2400
+  },
+  {
+   "function": "decodeParentHeader",
+   "callers": "decodeparentheader_fp301_callers",
+   "case": "0274_slot0",
+   "instructions": 12,
+   "cpu_seconds": 660,
+   "claim_gib": 3,
+   "why": "12 instructions, 0 successor entries, 0 successor binders: cap min(1200, 120 + 45 x 12 + 100 x 0 + 3 x 0) = 660 CPU-s, claim 3 GiB",
+   "expected_cpu": 660
+  },
+  {
+   "function": "decodeParentHeader",
+   "callers": "decodeparentheader_fp301_callers",
+   "case": "0274_slot1",
+   "instructions": 12,
+   "cpu_seconds": 660,
+   "claim_gib": 3,
+   "why": "12 instructions, 0 successor entries, 0 successor binders: cap min(1200, 120 + 45 x 12 + 100 x 0 + 3 x 0) = 660 CPU-s, claim 3 GiB",
+   "expected_cpu": 660
+  },
+  {
+   "function": "decodeParentHeader",
+   "callers": "decodeparentheader_fp301_callers",
+   "case": "0274_slot2",
+   "instructions": 12,
+   "cpu_seconds": 660,
+   "claim_gib": 3,
+   "why": "12 instructions, 0 successor entries, 0 successor binders: cap min(1200, 120 + 45 x 12 + 100 x 0 + 3 x 0) = 660 CPU-s, claim 3 GiB",
+   "expected_cpu": 660
+  },
+  {
+   "function": "decodeParentHeader",
+   "callers": "decodeparentheader_fp301_callers",
+   "case": "0274_slot3",
+   "instructions": 12,
+   "cpu_seconds": 660,
+   "claim_gib": 3,
+   "why": "12 instructions, 0 successor entries, 0 successor binders: cap min(1200, 120 + 45 x 12 + 100 x 0 + 3 x 0) = 660 CPU-s, claim 3 GiB",
+   "expected_cpu": 660
+  },
+  {
+   "function": "decodeParentHeader",
+   "callers": "decodeparentheader_fp301_callers",
+   "case": "0274_slot4",
+   "instructions": 12,
+   "cpu_seconds": 660,
+   "claim_gib": 3,
+   "why": "12 instructions, 0 successor entries, 0 successor binders: cap min(1200, 120 + 45 x 12 + 100 x 0 + 3 x 0) = 660 CPU-s, claim 3 GiB",
+   "expected_cpu": 660
+  },
+  {
+   "function": "decodeParentHeader",
+   "callers": "decodeparentheader_fp301_callers",
+   "case": "0274_slot5",
+   "instructions": 12,
+   "cpu_seconds": 660,
+   "claim_gib": 3,
+   "why": "12 instructions, 0 successor entries, 0 successor binders: cap min(1200, 120 + 45 x 12 + 100 x 0 + 3 x 0) = 660 CPU-s, claim 3 GiB",
+   "expected_cpu": 660
+  },
+  {
+   "function": "decodeParentHeader",
+   "callers": "decodeparentheader_fp301_callers",
+   "case": "0274_slot6",
+   "instructions": 12,
+   "cpu_seconds": 660,
+   "claim_gib": 3,
+   "why": "12 instructions, 0 successor entries, 0 successor binders: cap min(1200, 120 + 45 x 12 + 100 x 0 + 3 x 0) = 660 CPU-s, claim 3 GiB",
+   "expected_cpu": 660
   },
   {
    "function": "decodeParentHeader",
@@ -586,18 +666,18 @@
    "instructions": 3,
    "cpu_seconds": 1200,
    "claim_gib": 3,
-   "why": "3 instructions, 2 successor entries, 298 successor binders: cap min(1200, 120 + 45 x 3 + 100 x 2 + 3 x 298) = 1200 CPU-s, claim 3 GiB",
+   "why": "3 instructions, 2 successor entries, 299 successor binders: cap min(1200, 120 + 45 x 3 + 100 x 2 + 3 x 299) = 1200 CPU-s, claim 3 GiB",
    "expected_cpu": 1200
   },
   {
    "function": "decodeParentHeader",
    "callers": "decodeparentheader_fp301_callers",
    "case": "03bc",
-   "instructions": 23,
-   "cpu_seconds": 1155,
+   "instructions": 11,
+   "cpu_seconds": 1162,
    "claim_gib": 9,
-   "why": "23 instructions, 0 successor entries, 0 successor binders: cap min(1200, 120 + 45 x 23 + 100 x 0 + 3 x 0) = 1155 CPU-s, claim 9 GiB",
-   "expected_cpu": 1155
+   "why": "11 instructions, 1 successor entries, 149 successor binders: cap min(1200, 120 + 45 x 11 + 100 x 1 + 3 x 149) = 1162 CPU-s, claim 9 GiB",
+   "expected_cpu": 1162
   },
   {
    "function": "decodeParentHeader",
@@ -623,10 +703,10 @@
    "function": "decodeParentHeader",
    "callers": "decodeparentheader_fp301_callers",
    "case": "0408",
-   "instructions": 18,
+   "instructions": 3,
    "cpu_seconds": 2400,
    "claim_gib": 5,
-   "why": "18 instructions; heavy block of plan steps 1.4 and 2.2: 2400 CPU-s, claim 5 GiB",
+   "why": "3 instructions; heavy block of plan steps 1.4 and 2.2: 2400 CPU-s, claim 5 GiB",
    "expected_cpu": 2400
   },
   {
@@ -763,10 +843,10 @@
    "function": "decodeParentHeader",
    "callers": "decodeparentheader_fp301_callers",
    "case": "04ec",
-   "instructions": 18,
+   "instructions": 3,
    "cpu_seconds": 2400,
    "claim_gib": 6,
-   "why": "18 instructions; heavy block of plan steps 1.4 and 2.2: 2400 CPU-s, claim 6 GiB",
+   "why": "3 instructions; heavy block of plan steps 1.4 and 2.2: 2400 CPU-s, claim 6 GiB",
    "expected_cpu": 2400
   },
   {
@@ -803,50 +883,50 @@
    "function": "decodeParentHeader",
    "callers": "decodeparentheader_fp301_callers",
    "case": "0514_slot0",
-   "instructions": 29,
+   "instructions": 17,
    "cpu_seconds": 2400,
    "claim_gib": 4,
-   "why": "29 instructions; heavy block of plan steps 1.4 and 2.2: 2400 CPU-s, claim 4 GiB",
+   "why": "17 instructions; heavy block of plan steps 1.4 and 2.2: 2400 CPU-s, claim 4 GiB",
    "expected_cpu": 2400
   },
   {
    "function": "decodeParentHeader",
    "callers": "decodeparentheader_fp301_callers",
    "case": "0514_slot1",
-   "instructions": 29,
+   "instructions": 17,
    "cpu_seconds": 2400,
    "claim_gib": 3,
-   "why": "29 instructions; heavy block of plan steps 1.4 and 2.2: 2400 CPU-s, claim 3 GiB",
+   "why": "17 instructions; heavy block of plan steps 1.4 and 2.2: 2400 CPU-s, claim 3 GiB",
    "expected_cpu": 2400
   },
   {
    "function": "decodeParentHeader",
    "callers": "decodeparentheader_fp301_callers",
    "case": "0514_slot2",
-   "instructions": 29,
+   "instructions": 17,
    "cpu_seconds": 2400,
    "claim_gib": 5,
-   "why": "29 instructions; heavy block of plan steps 1.4 and 2.2: 2400 CPU-s, claim 5 GiB",
+   "why": "17 instructions; heavy block of plan steps 1.4 and 2.2: 2400 CPU-s, claim 5 GiB",
    "expected_cpu": 2400
   },
   {
    "function": "decodeParentHeader",
    "callers": "decodeparentheader_fp301_callers",
    "case": "0514_slot3",
-   "instructions": 29,
+   "instructions": 17,
    "cpu_seconds": 2400,
    "claim_gib": 3,
-   "why": "29 instructions; heavy block of plan steps 1.4 and 2.2: 2400 CPU-s, claim 3 GiB",
+   "why": "17 instructions; heavy block of plan steps 1.4 and 2.2: 2400 CPU-s, claim 3 GiB",
    "expected_cpu": 2400
   },
   {
    "function": "decodeParentHeader",
    "callers": "decodeparentheader_fp301_callers",
    "case": "0514_slot4",
-   "instructions": 29,
+   "instructions": 17,
    "cpu_seconds": 2400,
    "claim_gib": 6,
-   "why": "29 instructions; heavy block of plan steps 1.4 and 2.2: 2400 CPU-s, claim 6 GiB",
+   "why": "17 instructions; heavy block of plan steps 1.4 and 2.2: 2400 CPU-s, claim 6 GiB",
    "expected_cpu": 2400
   },
   {
