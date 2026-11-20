@@ -263,6 +263,9 @@ Ltac zesu_named_equation_witness :=
    closed by a hypothesis with the same head, which sets the witnesses. Only
    syntactic existentials and conjunctions are opened: `eexists` and `split`
    would also open definitions that unfold to an equation or a record.
+   An equation whose two sides are the same term is closed by `reflexivity`
+   (a call record restating the words the call returned: `w = Z_to_bv 64 t`
+   once `w` is that word); only a syntactic match, never a conversion check.
    A goal that is not a proposition is the witness of a binder no conjunct
    mentions (`eexists` shelves the others): any value of its type does, so it
    takes `inhabitant`, or else the first hypothesis of its type, once. Trying
@@ -276,12 +279,16 @@ Ltac zesu_finish_exists_from_hypotheses :=
     multimatch goal with |- ?conjunct =>
       lazymatch type of conjunct with
       | Prop =>
-          let head := get_head conjunct in
-          multimatch goal with
-          | Hfact : ?fact |- _ =>
-              let fact_head := get_head fact in
-              constr_eq head fact_head;
-              exact Hfact
+          lazymatch conjunct with
+          | ?side = ?side => reflexivity
+          | _ =>
+              let head := get_head conjunct in
+              multimatch goal with
+              | Hfact : ?fact |- _ =>
+                  let fact_head := get_head fact in
+                  constr_eq head fact_head;
+                  exact Hfact
+              end
           end
       | _ =>
           first [exact inhabitant |

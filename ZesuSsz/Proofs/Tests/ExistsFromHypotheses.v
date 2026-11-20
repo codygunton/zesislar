@@ -62,3 +62,22 @@ Proof.
   Fail zesu_finish_exists_from_hypotheses.
   exists w0, w0, w0, w0, w0, before. split; [exact Hdomain | reflexivity].
 Qed.
+
+(* An equation whose two sides are the same term once the witnesses are set
+   (a call record restating a returned word) closes by `reflexivity`; before,
+   the step looked for a hypothesis stating it and failed here. *)
+Goal forall (first : bv 64) (before : list (bv 8)),
+  call_domain [first] before ->
+  exists (x : bv 64) (before0 : list (bv 8)),
+    call_domain [x] before0 /\ Z_to_bv 64 (bv_unsigned x) = Z_to_bv 64 (bv_unsigned first).
+Proof. intros first before Hdomain. zesu_finish_exists_from_hypotheses. Qed.
+
+(* Only a syntactic match: an equation that holds by computation is left. *)
+Goal forall (first : bv 64) (before : list (bv 8)),
+  call_domain [first] before ->
+  exists (x : bv 64) (before0 : list (bv 8)), call_domain [x] before0 /\ (1 + 1 = 2)%Z.
+Proof.
+  intros first before Hdomain.
+  Fail zesu_finish_exists_from_hypotheses.
+  exists first, before. split; [exact Hdomain | reflexivity].
+Qed.
