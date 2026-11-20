@@ -598,3 +598,227 @@ Proof.
   unfold candidateParentHeader, parentHeaderWalkEnd, parentHeaderWalk. rewrite Hcand.
   rewrite Hp in Hlen0. subst p. destruct isList; reflexivity.
 Qed.
+
+(* ---- Reachability: the walk stands here, or the candidate already rejects ----
+   The error exits need no value and no success fact of the fields before
+   them: a field whose call failed, whose item the code rejects, or a
+   required field with nothing left makes the candidate reject on its own.
+   [candidateWalkReach] carries exactly that disjunction, so a chain over the
+   call records of a history reaches the failing field without the status
+   and guard facts of the earlier fields (the join histories drop them). *)
+
+Definition candidateWalkReach (bytes : list byte) (k : nat) (cursor remaining : Z) : Prop :=
+  candidateParentHeader bytes = candidateHeaderError \/
+  exists acc, candidateWalkState bytes k cursor remaining acc.
+
+Lemma candidateReachStart bytes ip before after :
+  headerFits bytes ->
+  C1BResult ip bytes before after ->
+  candidateWalkReach bytes 0 (bv_unsigned (listWord64At0 after) - ip)
+    (bv_unsigned (listWord64At8 after)).
+Proof.
+  intros Hfits Hres.
+  destruct (Z.eq_dec (bv_unsigned (bv_concat 16 (List.nth 33 after (BV 8 0))
+    (List.nth 32 after (BV 8 0)))) 0) as [Hok|Hbad];
+    [|left; exact (candidateOuterDecodeError _ _ _ _ Hres Hbad)].
+  destruct (Z.eq_dec (bv_unsigned (bv_and (bv_zero_extend 64 (List.nth 16 after (BV 8 0)))
+    (BV 64 1))) 0) as [Hstr|Hlist];
+    [left; exact (candidateOuterNotList _ _ _ _ Hres Hok Hstr)|].
+  destruct (Z.eq_dec (bv_unsigned (listWord64At8 after)) 0) as [H0|H0];
+    [left; exact (candidateOuterEmpty _ _ _ _ Hres Hok H0)|].
+  right. exists []. exact (candidateWalkStart _ _ _ _ Hfits Hres Hok Hlist H0).
+Qed.
+
+(* The cursor and length advance of a field call, read in the machine's
+   registers (p + consumed, l - consumed, 64-bit). *)
+Lemma walkStateMachine bytes k k' (ip p l : bv 64) acc acc' before after :
+  candidateWalkState bytes k (bv_unsigned p - bv_unsigned ip) (bv_unsigned l) acc ->
+  C1BResult (bv_unsigned p)
+    (take (Z.to_nat (bv_unsigned l)) (drop (Z.to_nat (bv_unsigned p - bv_unsigned ip)) bytes))
+    before after ->
+  candidateWalkState bytes k' (bv_unsigned p - bv_unsigned ip + bv_unsigned (listWord64At24 after))
+    (bv_unsigned l - bv_unsigned (listWord64At24 after)) acc' ->
+  candidateWalkState bytes k' (bv_unsigned (bv_add p (listWord64At24 after)) - bv_unsigned ip)
+    (bv_unsigned (bv_sub l (listWord64At24 after))) acc'.
+Proof.
+  intros Hs Hres Hs'.
+  pose proof Hs as (Hc & Hr & Hcr & _).
+  pose proof (decodeItemConsumedInInput _ _ _ _ Hres) as Hw.
+  rewrite walkWindowLength in Hw by assumption.
+  pose proof Hres as ((_ & Hfit) & _).
+  rewrite walkWindowLength in Hfit by assumption.
+  pose proof (bv_unsigned_in_range _ (listWord64At24 after)) as Hw0.
+  rewrite walkCursorAdd, walkRemainingSub by (unfold word64Modulus in *; lia).
+  replace (bv_unsigned p + bv_unsigned (listWord64At24 after) - bv_unsigned ip)
+    with (bv_unsigned p - bv_unsigned ip + bv_unsigned (listWord64At24 after)) by lia.
+  exact Hs'.
+Qed.
+
+(* One field through decodeItem (skipped, or an inline integer): a required
+   field, or an optional one with something left. *)
+Lemma candidateReachAdvance bytes k pc kind (ip p l : bv 64) before after :
+  nth_error parentHeaderFieldSchedule k = Some (pc, kind) ->
+  (parentHeaderFieldIsRequired kind = true \/ bv_unsigned l <> 0) ->
+  candidateWalkReach bytes k (bv_unsigned p - bv_unsigned ip) (bv_unsigned l) ->
+  C1BResult (bv_unsigned p)
+    (take (Z.to_nat (bv_unsigned l)) (drop (Z.to_nat (bv_unsigned p - bv_unsigned ip)) bytes))
+    before after ->
+  candidateWalkReach bytes (S k) (bv_unsigned (bv_add p (listWord64At24 after)) - bv_unsigned ip)
+    (bv_unsigned (bv_sub l (listWord64At24 after))).
+Proof.
+  intros Hk Hreq [Herr|[acc Hs]] Hres; [left; exact Herr|].
+  destruct (Z.eq_dec (bv_unsigned l) 0) as [Hl0|Hl0].
+  { left. destruct Hreq as [Hreq|Hreq]; [|contradiction].
+    rewrite Hl0 in Hs. exact (candidateWalkMissing _ _ _ _ _ _ Hk Hreq Hs). }
+  destruct (Z.eq_dec (bv_unsigned (bv_concat 16 (List.nth 33 after (BV 8 0))
+    (List.nth 32 after (BV 8 0)))) 0) as [Hok|Hbad];
+    [|left; exact (candidateWalkFieldError _ _ _ _ _ _ _ _ _ _ Hk Hs Hl0 Hres Hbad)].
+  destruct (parentHeaderFieldIsInteger kind) eqn:Hint.
+  - destruct (Z.eq_dec (bv_unsigned (bv_and (bv_zero_extend 64 (List.nth 16 after (BV 8 0)))
+      (BV 64 1))) 0) as [Hstr|Hlist];
+      [|left; exact (candidateWalkIntegerReject _ _ _ _ _ _ _ _ _ _ Hk Hint Hs Hl0 Hres Hok
+          (or_introl Hlist))].
+    destruct (Z_le_gt_dec (bv_unsigned (listWord64At8 after)) 8) as [H8|H8];
+      [|left; exact (candidateWalkIntegerReject _ _ _ _ _ _ _ _ _ _ Hk Hint Hs Hl0 Hres Hok
+          (or_intror (Z.gt_lt _ _ H8)))].
+    right. eexists. eapply walkStateMachine; [exact Hs|exact Hres|].
+    exact (candidateWalkIntegerStep _ _ _ _ _ _ _ _ _ _ _ Hk Hint Hs Hl0 Hres Hok Hstr H8 eq_refl).
+  - right. eexists. eapply walkStateMachine; [exact Hs|exact Hres|].
+    exact (candidateWalkSkip _ _ _ _ _ _ _ _ _ _ Hk Hint Hs Hl0 Hres Hok).
+Qed.
+
+(* nextUint64's status half-word (bytes 8 and 9 of its result). *)
+Lemma statusHalfLow (b9 b8 : bv 8) :
+  bv_unsigned (bv_concat 16 b9 b8) = 0 -> bv_unsigned b8 = 0.
+Proof.
+  rewrite decodeItemStatusBytes.
+  pose proof (bv_unsigned_in_range _ b9). pose proof (bv_unsigned_in_range _ b8). lia.
+Qed.
+
+Lemma statusHalfZero (b9 b8 : bv 8) :
+  bv_unsigned b9 = 0 -> bv_unsigned b8 = 0 -> bv_unsigned (bv_concat 16 b9 b8) = 0.
+Proof. rewrite decodeItemStatusBytes. lia. Qed.
+
+Lemma nextUint64RootStatus call ret :
+  nextUint64RootResult call ret ->
+  bv_unsigned (bv_concat 16 (List.nth 9 (nextResultBytes ret) (BV 8 0))
+    (List.nth 8 (nextResultBytes ret) (BV 8 0))) = 0 ->
+  bv_unsigned (List.nth 8 (nextResultBytes ret) (BV 8 0)) = 0.
+Proof. intros _ H. exact (statusHalfLow _ _ H). Qed.
+
+Lemma nextUint64RootStatusBad call ret :
+  nextUint64RootResult call ret ->
+  bv_unsigned (bv_concat 16 (List.nth 9 (nextResultBytes ret) (BV 8 0))
+    (List.nth 8 (nextResultBytes ret) (BV 8 0))) <> 0 ->
+  bv_unsigned (List.nth 8 (nextResultBytes ret) (BV 8 0)) <> 0.
+Proof.
+  intros [_ Hroot] Hbad.
+  destruct (candidateDecodeItem (nextInputBytes call)) as [|isList h p];
+    [destruct Hroot as [Herr _]; rewrite (nextUint64Error16Byte8 _ Herr); lia|].
+  destruct (isList || (8 <? p));
+    [destruct Hroot as [Herr _]; rewrite (nextUint64Error16Byte8 _ Herr); lia|].
+  destruct Hroot as ((_ & _ & H8 & H9) & _).
+  apply byteAtNth in H8. apply byteAtNth in H9.
+  exfalso. exact (Hbad (statusHalfZero _ _ H9 H8)).
+Qed.
+
+Lemma nextUint64RootRestRange call ret :
+  nextUint64RootResult call ret ->
+  0 <= nextRestPointer ret < 2 ^ 64 /\ 0 <= nextRestLength ret < 2 ^ 64.
+Proof.
+  intros [(Hp0 & Hfit) Hroot]. unfold word64Modulus in Hfit.
+  destruct (candidateDecodeItem (nextInputBytes call)) as [|isList h p] eqn:Hcand;
+    [destruct Hroot as (_ & -> & ->); lia|].
+  destruct (isList || (8 <? p)) eqn:Hb; [destruct Hroot as (_ & -> & ->); lia|].
+  apply orb_false_iff in Hb as [_ Hb]. apply Z.ltb_ge in Hb.
+  destruct Hroot as (_ & -> & ->).
+  destruct (candidateDecodeItemSuccessBounds _ _ _ _ Hcand) as (Hh & Hc & _).
+  pose proof (candidatePayloadNonneg _ _ _ _ Hcand).
+  rewrite Z.mod_small in Hc by (unfold word64Modulus; lia). lia.
+Qed.
+
+(* An optional integer field through nextUint64 with something left; the
+   rest pointer and length come back as the two words of the slice. *)
+Lemma candidateReachNextUint64 bytes k pc kind (ip p l rp rl : bv 64) call ret :
+  nth_error parentHeaderFieldSchedule k = Some (pc, kind) ->
+  parentHeaderFieldIsInteger kind = true ->
+  bv_unsigned l <> 0 ->
+  candidateWalkReach bytes k (bv_unsigned p - bv_unsigned ip) (bv_unsigned l) ->
+  nextInputBytes call =
+    take (Z.to_nat (bv_unsigned l)) (drop (Z.to_nat (bv_unsigned p - bv_unsigned ip)) bytes) ->
+  nextInputPointer call = bv_unsigned p ->
+  nextUint64RootResult call ret ->
+  bv_unsigned (bv_concat 16 (List.nth 9 (nextResultBytes ret) (BV 8 0))
+    (List.nth 8 (nextResultBytes ret) (BV 8 0))) = 0 ->
+  rp = Z_to_bv 64 (nextRestPointer ret) ->
+  rl = Z_to_bv 64 (nextRestLength ret) ->
+  candidateWalkReach bytes (S k) (bv_unsigned rp - bv_unsigned ip) (bv_unsigned rl).
+Proof.
+  intros Hk Hint Hl0 [Herr|[acc Hs]] Hin Hip Hroot Hok -> ->; [left; exact Herr|].
+  destruct (nextUint64RootRestRange _ _ Hroot) as [Hrp Hrl].
+  rewrite !Z_to_bv_small by (unfold bv_modulus; exact Hrp || exact Hrl).
+  right. eexists. eapply (candidateWalkNextUint64 _ _ _ _ _ _ _ (bv_unsigned ip));
+    [exact Hk|exact Hint|exact Hs|exact Hl0|exact Hin| |exact Hroot|].
+  - rewrite Hip. lia.
+  - exact (nextUint64RootStatus _ _ Hroot Hok).
+Qed.
+
+(* ---- Reachability terminals ---- *)
+
+Lemma candidateReachMissing bytes k pc kind cursor :
+  nth_error parentHeaderFieldSchedule k = Some (pc, kind) ->
+  parentHeaderFieldIsRequired kind = true ->
+  candidateWalkReach bytes k cursor 0 ->
+  candidateParentHeader bytes = candidateHeaderError.
+Proof.
+  intros Hk Hreq [Herr|[acc Hs]]; [exact Herr|].
+  exact (candidateWalkMissing _ _ _ _ _ _ Hk Hreq Hs).
+Qed.
+
+Lemma candidateReachFieldError bytes k pc kind cursor remaining ip before after :
+  nth_error parentHeaderFieldSchedule k = Some (pc, kind) ->
+  (parentHeaderFieldIsRequired kind = true \/ remaining <> 0) ->
+  candidateWalkReach bytes k cursor remaining ->
+  C1BResult ip (take (Z.to_nat remaining) (drop (Z.to_nat cursor) bytes)) before after ->
+  bv_unsigned (bv_concat 16 (List.nth 33 after (BV 8 0)) (List.nth 32 after (BV 8 0))) <> 0 ->
+  candidateParentHeader bytes = candidateHeaderError.
+Proof.
+  intros Hk Hreq [Herr|[acc Hs]] Hres Hbad; [exact Herr|].
+  destruct (Z.eq_dec remaining 0) as [Hr0|Hr0].
+  - destruct Hreq as [Hreq|Hreq]; [|contradiction].
+    rewrite Hr0 in Hs. exact (candidateWalkMissing _ _ _ _ _ _ Hk Hreq Hs).
+  - exact (candidateWalkFieldError _ _ _ _ _ _ _ _ _ _ Hk Hs Hr0 Hres Hbad).
+Qed.
+
+Lemma candidateReachIntegerReject bytes k pc kind cursor remaining ip before after :
+  nth_error parentHeaderFieldSchedule k = Some (pc, kind) ->
+  parentHeaderFieldIsInteger kind = true ->
+  parentHeaderFieldIsRequired kind = true ->
+  candidateWalkReach bytes k cursor remaining ->
+  C1BResult ip (take (Z.to_nat remaining) (drop (Z.to_nat cursor) bytes)) before after ->
+  bv_unsigned (bv_concat 16 (List.nth 33 after (BV 8 0)) (List.nth 32 after (BV 8 0))) = 0 ->
+  (bv_unsigned (bv_and (bv_zero_extend 64 (List.nth 16 after (BV 8 0))) (BV 64 1)) <> 0 \/
+   8 < bv_unsigned (listWord64At8 after)) ->
+  candidateParentHeader bytes = candidateHeaderError.
+Proof.
+  intros Hk Hint Hreq [Herr|[acc Hs]] Hres Hok Hbad; [exact Herr|].
+  destruct (Z.eq_dec remaining 0) as [Hr0|Hr0].
+  - rewrite Hr0 in Hs. exact (candidateWalkMissing _ _ _ _ _ _ Hk Hreq Hs).
+  - exact (candidateWalkIntegerReject _ _ _ _ _ _ _ _ _ _ Hk Hint Hs Hr0 Hres Hok Hbad).
+Qed.
+
+Lemma candidateReachNextUint64Reject bytes k pc kind cursor remaining call ret :
+  nth_error parentHeaderFieldSchedule k = Some (pc, kind) ->
+  parentHeaderFieldIsInteger kind = true ->
+  remaining <> 0 ->
+  candidateWalkReach bytes k cursor remaining ->
+  nextInputBytes call = take (Z.to_nat remaining) (drop (Z.to_nat cursor) bytes) ->
+  nextUint64RootResult call ret ->
+  bv_unsigned (bv_concat 16 (List.nth 9 (nextResultBytes ret) (BV 8 0))
+    (List.nth 8 (nextResultBytes ret) (BV 8 0))) <> 0 ->
+  candidateParentHeader bytes = candidateHeaderError.
+Proof.
+  intros Hk Hint Hr0 [Herr|[acc Hs]] Hin Hroot Hbad; [exact Herr|].
+  exact (candidateWalkNextUint64Reject _ _ _ _ _ _ _ _ _ Hk Hint Hs Hr0 Hin Hroot
+    (nextUint64RootStatusBad _ _ Hroot Hbad)).
+Qed.
