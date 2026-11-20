@@ -17,8 +17,7 @@
     "Require Import ZesuSsz.Contracts.ParentHeaderMemcpyService.",
     "Require Import ZesuSsz.Contracts.AbiBytes.",
     "Require Import ZesuSsz.Contracts.ZiskRuntime.",
-    "Require Export ZesuSsz.Compliance.ParentHeaderHints.",
-    "Require Import ZesuSsz.Contracts.ParentHeaderRung2."
+    "Require Export ZesuSsz.Compliance.ParentHeaderHints."
   ],
   "loop_contract_requires": [
     "Require Import InstrSpecs.Machine.",
@@ -805,10 +804,5 @@
     "source": "The compliance record (render_open_blocks.py) gives a return block no slot; its predecessors' callers run through it and end with this contract continuation."
   },
   "entry_hist": "wrap",
-  "frame_slots": true,
-  "join_designs": {
-    "+0xa8": [
-      "ParentHeaderMeaningModuloKnownBugs (parentHeaderCall args) (parentHeaderMemcpySourceBefore args)"
-    ]
-  }
+  "frame_slots": true
 }
