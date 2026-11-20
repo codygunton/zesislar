@@ -209,10 +209,21 @@ end
      a failed fixed-fact check saturates the whole context and retries. *)
   ZesuSsz.Automation2.ResidualLemmas.zesu_residual_lemma].
 
+(* A fact without an open evar has one proof that matters: the closers above
+   can prove it in several ways (two retained order hypotheses, two context
+   ranges), and a failure after the proof would otherwise retry each of them,
+   so a package with k such facts and a later refusal ran 2^k rounds. A fact
+   with an evar keeps every alternative: they choose its witness. *)
+Ltac zesu_source_fact_once :=
+  lazymatch goal with
+  | |- ?fact =>
+      tryif has_evar fact then zesu_source_fact else (once zesu_source_fact)
+  end.
+
 Ltac zesu_source_finish_package :=
   lazymatch goal with
   | |- environments.envs_entails _ (@bi_pure _ _) =>
-      iPureIntro; zesu_source_fact
+      iPureIntro; zesu_source_fact_once
   | |- environments.envs_entails _ (@bi_sep _ _ _) =>
       iSplit; zesu_source_finish_package
   | |- environments.envs_entails _ (@big_opL _ (@bi_sep _) _ _ _ nil) =>
@@ -430,7 +441,7 @@ Ltac zesu_source_check_fixed_fact requested :=
       tryif has_evar requested then idtac
       else
         let checked := fresh "HsourceFixedConstraint" in
-        tryif (assert (checked : requested) by zesu_source_fact)
+        tryif (assert (checked : requested) by zesu_source_fact_once)
         then clear checked
         else fail 0 "Unsupported fixed source fact:" requested
   end.
@@ -460,7 +471,7 @@ Ltac zesu_source_defer_fixed_fact requested :=
       tryif has_evar requested then idtac
       else
         let checked := fresh "HsourceFixedConstraint" in
-        tryif (assert (checked : requested) by zesu_source_fact)
+        tryif (assert (checked : requested) by zesu_source_fact_once)
         then clear checked
         else
           let deferred := fresh "HdeferredFact" in
