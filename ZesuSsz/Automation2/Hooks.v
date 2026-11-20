@@ -2711,6 +2711,10 @@ Ltac zesu_liAStep :=
   | (zesu_env_literal; zesu_talt l_open_nested_existential (idtac; progress ResourceGroups.zesu_open_nested_existential_packages))
   | zesu_talt l_byte_array_rebuild (idtac; ByteArrayAssemblyCodec.zesu_byte_array_rebuild_requested)
   | zesu_talt l_seal_requested_array (idtac; zesu_seal_requested_array)
+  (* After the step above: a request in the unsealed spelling whose bytes the
+     context holds in another form (cells, extracts) is asked for sealed. *)
+  | zesu_talt l_seal_requested_array_def (idtac; ltac2:(Ltac1.run (Ltac1.ref
+      [@ZesuSsz; @Automation2; @StoreMemoryLookup; @zesu_seal_requested_array_def])))
   | zesu_talt l_codec_array_read (idtac; CodecArrayRead.zesu_codec_array_read)
   | zesu_talt l_open_folded_jump_facts (idtac; zesu_open_folded_jump_facts)
   | zesu_talt l_prefer_owned_instr_pre (idtac; zesu_prefer_owned_instr_pre)

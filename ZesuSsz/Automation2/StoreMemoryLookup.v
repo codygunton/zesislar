@@ -903,7 +903,10 @@ Ltac zesu_store_whole_array_splice :=
    `mem_mapsto_array_def` (a stored whole array, as the forward pass printed
    it) asks for it in the spelling the context and the steps above use: the
    sealed array. Under an existential package the witnesses are opened as
-   evars first (the package's resources fix them). *)
+   evars first (the package's resources fix them). `Hooks.zesu_liAStep` runs
+   this step only after `Hooks.zesu_seal_requested_array` refused: when the
+   context holds the same bytes as a sealed array at that base, that step
+   seals the request and the package keeps its primitive tuple witness. *)
 Lemma zesu_seal_array_def_sep `{!islaG Sigma} (a : Z) (q : dfrac) (l : list (bv 8))
     (R : iProp Sigma) :
   (mem_mapsto_array a q l ∗ R) ⊢ (isla.ghost_state.mem_mapsto_array_def a q l ∗ R).
