@@ -13,12 +13,56 @@ From Coq Require Import ZArith Lia.
 From stdpp Require Import bitvector.definitions list.
 Require ZesuSsz.Automation2.VmClosed.
 Require Import ZesuSsz.Automation2.LiaHook.
+From Ltac2 Require Import Ltac2.
+Set Default Proof Mode "Classic".
 Local Open Scope Z_scope.
 
-Ltac zesu_memory_witness_occurs candidate expression :=
-  multimatch expression with
-  | context [?part] => constr_eq_strict candidate part
+(* Whether the evar `candidate` occurs in `term`, by one walk of the term tree
+   that stops at the first occurrence; `visited` counts the nodes walked.
+   (Enumerating `context [?part]` rebuilds the context of every subterm: on the
+   requested facts of a large successor entry, tens of thousands of nodes, one
+   unused witness took minutes.) A `match`, fixpoint or primitive array is not
+   walked and answers "occurs": the witness is then never defaulted. *)
+Ltac2 rec zesu_memory_evar_occurs_walk (candidate : evar) (visited : int ref) (term : constr) : bool :=
+  Ref.incr visited;
+  let walk := zesu_memory_evar_occurs_walk candidate visited in
+  match Constr.Unsafe.kind term with
+  | Constr.Unsafe.Evar found arguments =>
+      if Evar.equal found candidate then true else Array.exist walk arguments
+  | Constr.Unsafe.Rel _ => false
+  | Constr.Unsafe.Var _ => false
+  | Constr.Unsafe.Meta _ => false
+  | Constr.Unsafe.Sort _ => false
+  | Constr.Unsafe.Constant _ _ => false
+  | Constr.Unsafe.Ind _ _ => false
+  | Constr.Unsafe.Constructor _ _ => false
+  | Constr.Unsafe.Uint63 _ => false
+  | Constr.Unsafe.Float _ => false
+  | Constr.Unsafe.App head arguments => if walk head then true else Array.exist walk arguments
+  | Constr.Unsafe.Cast body _ ty => if walk body then true else walk ty
+  | Constr.Unsafe.Prod binder body => if walk (Constr.Binder.type binder) then true else walk body
+  | Constr.Unsafe.Lambda binder body => if walk (Constr.Binder.type binder) then true else walk body
+  | Constr.Unsafe.LetIn binder value body =>
+      if walk (Constr.Binder.type binder) then true else if walk value then true else walk body
+  | Constr.Unsafe.Proj _ _ body => walk body
+  | _ => true
   end.
+
+(* (occurs, visited nodes). A candidate that is not an evar answers "occurs". *)
+Ltac2 zesu_memory_evar_occurs_count (candidate : constr) (term : constr) : bool * int :=
+  let visited := Ref.ref 0 in
+  match Constr.Unsafe.kind candidate with
+  | Constr.Unsafe.Evar found _ =>
+      let occurs := zesu_memory_evar_occurs_walk found visited term in (occurs, Ref.get visited)
+  | _ => (true, 0)
+  end.
+
+Ltac zesu_memory_witness_occurs candidate expression :=
+  let check := ltac2:(candidate expression |-
+    let (occurs, _) := zesu_memory_evar_occurs_count
+      (Option.get (Ltac1.to_constr candidate)) (Option.get (Ltac1.to_constr expression)) in
+    if occurs then () else Control.zero (Tactic_failure None)) in
+  check candidate expression.
 
 (* Every value is fresh. Only syntactically absent byte-vector fields get zero. *)
 Ltac zesu_memory_default_unused value requested :=
