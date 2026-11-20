@@ -338,6 +338,15 @@ class FaultTests(unittest.TestCase):
         # Without a source interval every guard stays a path condition.
         bare, = evaluate_trace(trace, SymbolicState(registers={'x2': self.pointer}))
         self.assertEqual(len(bare.state.conditions), 3)
+        # A profile with `keep_source_implied_ram_guards` keeps the implied guards as well.
+        import symbolic_state
+        symbolic_state.KEEP_SOURCE_IMPLIED_RAM_GUARDS = True
+        try:
+            kept, = evaluate_trace(trace, state)
+        finally:
+            symbolic_state.KEEP_SOURCE_IMPLIED_RAM_GUARDS = False
+        self.assertEqual(len(kept.state.conditions), 3)
+        self.assertFalse([row for row in kept.state.reports if row['kind'] == 'source_implied_ram_guard'])
 
     def test_copy_preserves_bounds_without_changing_original(self):
         state = SymbolicState(source_intervals=self.rows)

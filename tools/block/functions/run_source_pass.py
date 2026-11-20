@@ -29,6 +29,7 @@ from forward_resources import apply_owned_writes, load_resource_vocabulary, rend
 from join_generalize import (common_root_ancestor, generalize_owned_join, lift_call_return_edges, normalize,
                              seed_record)
 from resource_seed import load_public_seed, seed_owned_resources
+import symbolic_state
 from system_shape_seed import seed_system_shapes
 
 
@@ -60,6 +61,10 @@ def main():
     options = parser.parse_args()
     profile = load_profile(options.function) if options.function else None
     entry_hist.configure(profile)
+    keep = profile.get('keep_source_implied_ram_guards', False) if profile else False
+    if not isinstance(keep, bool):
+        raise ValueError('keep_source_implied_ram_guards: a boolean is required')
+    symbolic_state.KEEP_SOURCE_IMPLIED_RAM_GUARDS = keep
     calls = profile.get('calls', []) if profile else []
     loop_designs = profile.get('loop_designs', []) if profile else []
     inputs, output = options.inputs.resolve(), options.output.resolve()
