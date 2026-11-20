@@ -28,6 +28,25 @@ Proof.
   iFrame.
 Qed.
 
+(* A package whose component is a record (a call's outcome) fixed by a
+   resource through its projection: the component is opened as an evar too;
+   the primitive tuple witness refuses a record component. *)
+Record seal_outcome := { seal_outcome_bytes : list (bv 8) }.
+
+Lemma seal_requested_array_def_record `{!islaG Σ} `{!threadG} (a b : Z) (l : list (bv 8))
+    (o : seal_outcome) :
+  (a ↦ₘ∗ l) -∗ (b ↦ₘ∗ seal_outcome_bytes o) -∗
+  (∃ x : li_prod seal_outcome unit,
+    isla.ghost_state.mem_mapsto_array_def a (DfracOwn 1) l ∗
+    b ↦ₘ∗ seal_outcome_bytes (li_fst x)).
+Proof.
+  iIntros "Ha Hb".
+  Fail let w := ZesuSsz.Automation2.Hooks.zesu_constraint_witness
+    (li_prod seal_outcome unit) in idtac.
+  ZesuSsz.Automation2.StoreMemoryLookup.zesu_seal_requested_array_def.
+  iFrame.
+Qed.
+
 (* A goal that already asks for the sealed array is left to the other steps. *)
 Lemma seal_requested_array_def_sealed `{!islaG Σ} `{!threadG} (a : Z) (l : list (bv 8)) (K : iProp Σ) :
   (a ↦ₘ∗ l) -∗ K -∗ (a ↦ₘ∗ l ∗ K).

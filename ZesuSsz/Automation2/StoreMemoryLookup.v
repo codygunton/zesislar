@@ -915,6 +915,21 @@ Lemma zesu_seal_array_def_exist `{!islaG Sigma} {A : Type} (a : Z) (q : dfrac)
   (∃ x, isla.ghost_state.mem_mapsto_array_def a q (l x) ∗ R x).
 Proof. by rewrite isla.ghost_state.mem_mapsto_array_eq. Qed.
 
+(* One evar per component of the package tuple, whatever its type: a
+   component may be a record (a call's outcome) that the package's resources
+   fix through its projections, which the primitive tuple witness of
+   `Hooks.zesu_constraint_witness` refuses. An evar the resources leave open
+   fails at `Qed`. *)
+Ltac zesu_seal_package_witness T :=
+  lazymatch T with
+  | li_prod ?A ?B =>
+      let head := open_constr:(_ : A) in
+      let tail := zesu_seal_package_witness B in
+      constr:(li_pair head tail)
+  | unit => constr:(tt)
+  | _ => open_constr:(_ : T)
+  end.
+
 Ltac zesu_seal_requested_array_def :=
   lazymatch goal with
   | |- environments.envs_entails _
@@ -926,7 +941,7 @@ Ltac zesu_seal_requested_array_def :=
       | (fun x => bi_sep (@isla.ghost_state.mem_mapsto_array_def _ _ 8%N ?a ?q (@?l x)) (@?R x)) =>
           try ZesuSsz.Automation2.ResourceGroups.zesu_expose_environment_alias;
           iApply (zesu_seal_array_def_exist a q l R);
-          let witness := ZesuSsz.Automation2.Hooks.zesu_constraint_witness T in
+          let witness := zesu_seal_package_witness T in
           notypeclasses refine (tac_ex_evar _ witness _ _); red_li_prod
       end
   end.
