@@ -49,7 +49,32 @@ Proof.
   iExists l. iFrame.
 Qed.
 
+(* The byte cells from index zero are held as one group `c0 ∗ c1 ∗ emp`: the
+   group is opened and the cells are presented as the requested array. *)
+Lemma frame_join_array_grouped `{!islaG Sigma} (a : Z) (b0 b1 : bv 8) :
+  ((a + Z.of_nat 0 * 1) ↦ₘ b0 ∗ (a + Z.of_nat 1 * 1) ↦ₘ b1 ∗ emp) -∗
+  ∃ x : bv 8, a ↦ₘ∗ [x; b1] ∗ ⌜x = b0⌝.
+Proof.
+  iIntros "Hcells".
+  ZesuSsz.Automation2.StoreMemoryLookup.zesu_join_frame_byte_array.
+  iExists b0. iFrame. done.
+Qed.
+
+(* A group whose base is not requested stays closed: the step refuses. *)
+Lemma frame_join_array_grouped_refuses_other `{!islaG Sigma} (a : Z) (b0 b1 : bv 8) :
+  ((a + Z.of_nat 0 * 1) ↦ₘ b0 ∗ (a + Z.of_nat 1 * 1) ↦ₘ b1 ∗ emp) -∗
+  (a + 8) ↦ₘ∗ [b1] -∗
+  ∃ x : bv 8, (a + 8) ↦ₘ∗ [x] ∗ True.
+Proof.
+  iIntros "Hcells Hb".
+  assert_fails ZesuSsz.Automation2.StoreMemoryLookup.zesu_join_frame_byte_array.
+  idtac "GROUP_OTHER_REFUSAL_EXECUTED".
+  iExists b1. iFrame.
+Qed.
+
 Print Assumptions frame_join_array.
 Print Assumptions frame_join_array_gap.
 Print Assumptions frame_join_array_refuses_owned.
 Print Assumptions frame_join_array_refuses_no_cell.
+Print Assumptions frame_join_array_grouped.
+Print Assumptions frame_join_array_grouped_refuses_other.
