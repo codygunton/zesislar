@@ -1303,6 +1303,11 @@ Ltac zesu_run_pass_v1 :=
         word out of a held array (CallSlice.v). *)
      (lazymatch goal_class with ZGex => idtac | ZGex_prod => idtac end;
       zesu_talt v1_call_slice_ref_first (idtac; ZesuSsz.Automation2.CallSlice.zesu_call_slice_ref_first)) |
+     (* A call spec's input slice taken on the whole of a held array: before
+        Lithium hands the array over and drops the callee's domain
+        (CallSlice.v). *)
+     (lazymatch goal_class with ZGex => idtac | ZGex_prod => idtac end;
+      zesu_talt v1_call_slice_whole (idtac; ZesuSsz.Automation2.CallSlice.zesu_call_slice_whole_step)) |
      zesu_talt v1_liAStep (idtac; zesu_liAStep) |
      (* A call spec's input slice and output slot: lent and proved by the
         call-site step before the interior-slice lend (CallSlice.v). *)
