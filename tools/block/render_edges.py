@@ -403,8 +403,44 @@ def substitute(text, renames):
     return re.sub(pattern, lambda match: renames[match[1]], text)
 
 
-def rocq_edge(edge, pre, succ, index):
-    """One ZesuHistEdge instance with its data-only proof."""
+def own_guards(forward, pre_pc, succ_pc):
+    """The guards the block takes on its way to `succ_pc` (`<condition> = true`): the path conditions of
+    the edge's paths after the longest prefix they share with every path from the same seed that leaves
+    the block (the conditions of the block entry). Several paths of one edge give their disjunction; a
+    guard that has no rendering is left out (the edge then states less, never more)."""
+    leaving = [alternative for boundary in forward['boundaries'] for alternative in boundary['alternatives']
+               if alternative.get('predecessor_pc') == pre_pc]
+    succ_boundary = next((row for row in forward['boundaries'] if row['pc'] == succ_pc), None)
+    paths = [alternative for alternative in (succ_boundary or {}).get('alternatives', [])
+             if alternative.get('predecessor_pc') == pre_pc]
+    disjuncts = []
+    for path in paths:
+        conditions = path['resource_boundary'].get('path_conditions', [])
+        others = [row['resource_boundary'].get('path_conditions', []) for row in leaving
+                  if row.get('seed_pc') == path.get('seed_pc')]
+        shared = 0
+        while shared < len(conditions) and all(shared < len(other) and other[shared] == conditions[shared]
+                                               for other in others):
+            shared += 1
+        reads = path['resource_boundary'].get('owned_read_renderings', [])
+        texts = [coq(condition, reads) for condition in conditions[shared:]]
+        texts = [text + ' = true' for text in texts if text is not None]
+        if texts:
+            disjuncts.append(' /\\ '.join('(' + text + ')' for text in texts) if len(texts) > 1 else texts[0])
+    if len(disjuncts) > 1:
+        return [' \\/ '.join('(' + text + ')' for text in disjuncts)]
+    return disjuncts
+
+
+def rocq_edge(edge, pre, succ, index, obligation=None):
+    """One ZesuHistEdge instance with its data-only proof.
+
+    obligation: `{'rows', 'guards', 'name', 'declarations'}` when the successor is a join with design
+    obligations (`entry_hist.design_obligations`): a successor history fact that is such a row and that
+    the block history does not hold is proved by the registered lemma `<name>_<obligation>_holds` from
+    the copied block history `HS`, every block-entry visible fact (`HV<k>`) and the edge's own guards
+    (`HG<j>`), which become premises the block proves; its data-only statement is appended to
+    `declarations` (`EdgeObligations.v`)."""
     rows = edge['binder_map']
     identity = {row['succ'] for row in rows if row['identity']}
     pre_live, pre_ghost = binder_names(pre, 'live'), binder_names(pre, 'ghost')
@@ -439,7 +475,12 @@ def rocq_edge(edge, pre, succ, index):
             derived[tuple(row['succ'])] = result[0]
             opened |= result[1]
             carried_index |= {name for name in result[2] if name.startswith('HV')}
-    new_hidden = [row for row in new_hidden if tuple(row['succ']) not in derived]
+    obligated = {}
+    for row in new_hidden:
+        design = (obligation or {}).get('rows', {}).get(normal(row['text']))
+        if design is not None and tuple(row['succ']) not in derived:
+            obligated[tuple(row['succ'])] = design
+    new_hidden = [row for row in new_hidden if tuple(row['succ']) not in derived and tuple(row['succ']) not in obligated]
     edge['hidden_premises'] = sum(mentions_hidden(substitute(row['text'], renames), pre, source)
                                   for row in new_hidden)
     free = {row['succ']: row['expression'] for row in rows if row.get('free')}
@@ -454,7 +495,27 @@ def rocq_edge(edge, pre, succ, index):
                       if row['succ'][0] == 'hidden' and row['pre'][0] == 'visible'}
     carried_index = sorted(carried_index, key=lambda name: int(name[2:]))
     carried = [pre['visible'][int(name[2:])] for name in carried_index]
-    body = ' ∗ '.join(['⌜' + text + '⌝' for text in new_texts + carried] + ['True'])
+    guards = []
+    if obligated:
+        # The obligation lemma reads the whole block entry: every visible fact is a premise.
+        carried_index = ['HV' + str(position) for position in range(len(pre['visible']))]
+        carried = list(pre['visible'])
+        guards = obligation['guards']
+        hypotheses = ['HS'] + carried_index + ['HG' + str(position) for position in range(len(guards))]
+        statement_vars = [binder for binder in [*pre['parameters'], *pre['live']]
+                          if binder in pre['parameters'] or any(mentions(binder['name'], text) for text in
+                                                                [application(pre, {})] + carried + guards)]
+        for target, design in sorted(obligated.items()):
+            declaration = obligation['name'] + '_' + design['obligation']
+            premises = [application(pre, {})] + carried + guards
+            obligation['declarations'].append({
+                'name': declaration, 'module': design['lemma_module'], 'entry': pre['entry'],
+                'text': ('Definition ' + declaration + ' : Prop :=\n  forall ' + telescope(statement_vars) + ',\n'
+                         + ''.join('  (' + premise + ') ->\n' for premise in premises)
+                         + '  ' + design['coq'] + '.\n')})
+            derived[target] = ('(' + declaration + '_holds ' + ' '.join(
+                binder['name'] for binder in statement_vars) + ' ' + ' '.join(hypotheses) + ')')
+    body = ' ∗ '.join(['⌜' + text + '⌝' for text in new_texts + carried + guards] + ['True'])
     bound = [{'name': ghost_renames.get(binder['name'], binder['name']), 'type': binder['type']}
              for binder in succ['ghost'] if binder['name'] in new_ghost]
     if bound:
@@ -463,9 +524,6 @@ def rocq_edge(edge, pre, succ, index):
         body = '⌜' + pre['hidden'][position] + '⌝ -∗ ' + body
     if used:
         body = '∀ ' + telescope(used) + ', ' + body
-    application = lambda meta, table: meta['hist'] + ''.join(
-        ' (' + table.get(binder['name'], binder['name']) + ')'
-        for binder in meta['parameters'] + meta.get('hist_live', meta['live']))
     # loop-seal lane: an instance quantifies only over the variables its statement mentions.
     statement = application(pre, {}) + ' ' + application(succ, renames) + ' ' + body
     variables = [binder for binder in variables if binder in pre['parameters'] or mentions(binder['name'], statement)]
@@ -477,7 +535,8 @@ def rocq_edge(edge, pre, succ, index):
              '    (' + application(succ, renames) + ')',
              '    (' + body + ')%I.',
              'Proof.',
-             '  rewrite /ZesuHistEdge => Hh. apply zesu_hist_elim in Hh. unfold ' + pre['hist'] + ' in Hh.']
+             '  rewrite /ZesuHistEdge => Hh. apply zesu_hist_elim in Hh.'
+             + (' pose proof Hh as HS.' if obligated else '') + ' unfold ' + pre['hist'] + ' in Hh.']
     facts = ['HF' + str(position) for position in range(len(pre['hidden']))]
     pattern = binder_names(pre, 'ghost') + facts
     if not pre['hidden']:
@@ -489,10 +548,11 @@ def rocq_edge(edge, pre, succ, index):
     lines.append('  iIntros "HN".')
     # The premise binds the successor's new ghosts even when it states no fact on them: destruct it
     # whenever it binds or states anything, so the `exists` below names variables in scope.
-    if new_texts or carried or bound:
+    if new_texts or carried or guards or bound:
         arguments = [binder['name'] for binder in used] + ['HF' + str(position) for position in support]
         term = '("HN" $! ' + ' '.join(arguments) + ')' if arguments else '"HN"'
-        facts = ['%HN' + str(position) for position in range(len(new_texts))] + ['%' + name for name in carried_index]
+        facts = (['%HN' + str(position) for position in range(len(new_texts))] + ['%' + name for name in carried_index]
+                 + ['%HG' + str(position) for position in range(len(guards))])
         # A premise that only binds ghosts (`∃ b…, True`) has one conjunct: Iris refuses `"(_)"` for it.
         intro = '"(' + ' & '.join(facts + ['_']) + ')"' if facts else '"_"'
         lines.append('  iDestruct ' + term + ' as ' + ('(' + ' '.join(b['name'] for b in bound) + ') ' if bound else '')
@@ -663,7 +723,7 @@ EDGE_SENTENCES = [
     r"apply zesu_hist_elim in Hh",
     r"unfold " + _NAME + r" in Hh",
     r"clear Hh",
-    r"pose proof Hh as HF0",
+    r"pose proof Hh as (?:HF0|HS)",
     r"destruct (?:Hh|H[FV]\d+(?:_\d+)*) as \((?:" + _NAME + r")(?: & " + _NAME + r")*\)",
     r'iIntros "HN"',
     r'iDestruct (?:"HN"|\("HN" \$!(?: ' + _NAME + r')+\)) as (?:\((?:' + _NAME + r' ?)+\) )?(?:"\((?:%' + _NAME
@@ -725,6 +785,7 @@ def main():
     entries = variants(result['cases'])
     calls = joins.get('calls', {})
     edges, instances, reveals, used_entries = [], {}, {}, {}
+    obligation_rows, declarations, lemma_modules = entry_hist.design_obligations(profile), [], {}
     for block in function['blocks']:
         pre_pc = hex(block['start'])
         targets = [hex(target) for target in sorted(block['successors'])] or ['function_return']
@@ -780,7 +841,16 @@ def main():
                         if is_identity(pre, succ, new, unchanged, closed):
                             edge['identity'] = True
                         else:
-                            block_instances.append(rocq_edge(edge, pre, succ, len(edges) - 1))
+                            obligation = None
+                            if obligation_rows and kind == 'join':
+                                obligation = {'rows': obligation_rows, 'declarations': declarations,
+                                              'guards': own_guards(forward, pre_pc, succ_pc),
+                                              'name': 'fp_edge' + profile.key(pre_pc) + '_' + profile.key(succ_pc)}
+                            before = len(declarations)
+                            block_instances.append(rocq_edge(edge, pre, succ, len(edges) - 1, obligation))
+                            for row in declarations[before:]:
+                                lemma_modules.setdefault(pre_pc, set()).add(row['module'])
+                                edge['obligation'] = row['name']
                         accounting = visible_accounting(edge, pre, succ)
                         edge['visible_accounting'] = [{k: v for k, v in row.items() if k != 'derivation'}
                                                       for row in accounting]
@@ -815,6 +885,7 @@ def main():
             ) + 'Require Import lithium.lvar.\n'
             header += ''.join('Require Import ' + profile.qualified(stem + kind) + '.\n'
                               for stem in stems for kind in ('Entries', 'Structural'))
+            header += ''.join('Require Import ' + module + '.\n' for module in sorted(lemma_modules.get(pre_pc, ())))
             header += (entry_hist.HIST_LIBRARY + 'From iris.proofmode Require Import proofmode.\n\n'
                        'Section edges.\nContext `{!islaG Sigma} `{!threadG}.\n\n')
             text = header + '\n'.join(instances.get(pre_pc, [])) + '\nEnd edges.\n'
@@ -823,6 +894,15 @@ def main():
             modules.append('Edges' + case)
         (options.rocq_dir / 'Edges.v').write_text(''.join('Require Export ' + profile.qualified(module) + '.\n'
                                                           for module in modules))
+        if declarations:
+            # The edge obligations: data-only statements, proved in the profile's lemma modules.
+            stems = sorted({stem_of(row['entry']) for row in declarations})
+            text = (pilot_header(profile) + ''.join('Require Import ' + profile.qualified(stem + 'Entries') + '.\n'
+                                                    for stem in stems)
+                    + '\n' + '\n'.join(row['text'] for row in declarations))
+            if re.search(r'\b(?:Proof|Qed|Admitted|Axiom|Ltac)\b', text):
+                raise ValueError('An edge obligation module holds no proof')
+            (options.rocq_dir / 'EdgeObligations.v').write_text(text)
     kinds = sorted({edge['kind'] for edge in edges})
     print(json.dumps({'edges': len(edges), 'instances': sum(map(len, instances.values())),
                       'reveals': len(reveals), 'identity': sum(bool(edge.get('identity')) for edge in edges),

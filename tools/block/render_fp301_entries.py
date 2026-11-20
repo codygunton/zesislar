@@ -386,7 +386,7 @@ for suffix, slot in units:
     name = identifier(name, "generated entry")
     source_ref = str(forward) + ("#/tail_returns" if suffix in tails else "#/exits" if index is None
                                  else "#/boundaries/" + str(index))
-    join_design = profile.get("join_designs", {}).get(suffix, [])
+    join_design = [entry_hist.design_fact_text(row) for row in profile.get("join_designs", {}).get(suffix, [])]
 
     def provenance(*args, **kwargs):
         return {"source": source_ref}

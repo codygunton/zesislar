@@ -73,6 +73,29 @@ def is_join_history(inner):
     return re.match(r'zesu_join_history\b', unwrap(inner)) is not None
 
 
+def design_fact_text(row):
+    """The Coq text of a join-design row (profile `join_designs`): a string is the fact itself; an
+    object `{"coq", "history", "obligation", "lemma_module"}` with `history` is a fact of the join's
+    history (`zesu_join_history`, hidden), which each edge into the join proves (`design_obligations`)."""
+    if isinstance(row, str):
+        return row
+    return 'zesu_join_history (' + row['coq'] + ')' if row.get('history') else row['coq']
+
+
+def design_obligations(profile):
+    """{normal text of the stated fact: row} of the join-design rows that name an `obligation`: an
+    edge into such a join whose block history does not already hold the fact proves it by the lemma
+    `fp_edge<source>_<join>_<obligation>_holds` of the row's `lemma_module`."""
+    rows = {}
+    for designs in (profile.get('join_designs') or {}).values():
+        for row in designs:
+            if isinstance(row, dict) and row.get('obligation'):
+                if not re.fullmatch(r'[A-Za-z]\w*', row['obligation']) or not row.get('lemma_module'):
+                    raise ValueError('join_designs: an obligation needs an identifier and a lemma_module')
+                rows[normal(design_fact_text(row))] = row
+    return rows
+
+
 def call_prefixes(binders):
     """The call layers whose binders an entry has, oldest first: `call_`, `call2_`, `call3_`, ..."""
     numbers = {int(match[1] or 1) for binder in binders
@@ -98,7 +121,8 @@ def call_visible_patterns(pc, calls, block_starts, binders, facts=()):
     if not involved or not prefixes:
         return []
     patterns = newest_call_patterns(binders, facts)
-    named = sorted({name for plan in calls.values() for name in plan.get('named_registers', {}).values()})
+    named = sorted({name for plan in calls.values()
+                    for name in [*plan.get('named_registers', {}).values(), *plan.get('named_arguments', {})]})
     if named:
         patterns.append(r"\bzesu_named_eq \(?(?:" + '|'.join(map(re.escape, named)) + r")(?![\w'])")
     return patterns

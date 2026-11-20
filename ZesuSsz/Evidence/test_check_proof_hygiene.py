@@ -721,6 +721,14 @@ class EdgeProofTests(unittest.TestCase):
         self.assertEqual(self.failures(self.name, text),
                          ["EDGE-PROOF: " + self.name + ": sentence outside EDGE_SENTENCES: lia"])
 
+    def test_a_history_copy_and_a_registered_obligation_lemma_pass(self):
+        text = self.edge.replace(
+            "apply zesu_hist_elim in Hh. unfold", "apply zesu_hist_elim in Hh. pose proof Hh as HS. unfold"
+        ).replace("  by vm_compute.\n", "  exact (fp_edge0010_0020_CandidateError_holds args x HS HV0 HG0).\n")
+        self.assertEqual(self.failures(self.name, text), [])
+        other = self.edge.replace("apply zesu_hist_elim in Hh.", "apply zesu_hist_elim in Hh. pose proof Hh as H2.")
+        self.assertTrue(self.failures(self.name, other))
+
     def test_ltac_and_axiom_are_refused(self):
         for line in ("Ltac t := idtac.\n", "Axiom bad : False.\n"):
             with self.subTest(line=line):

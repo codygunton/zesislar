@@ -416,6 +416,9 @@ def call_return_seed(edges, *, call, function_root, root_seed, shapes, vocabular
     # the call-site paths stored there; after the call the bytes hold the spec's new value,
     # named by a fresh word binder (equal to that value when it is an expression).
     instantiation, splits, kept, word_names, word_facts = {}, {}, set(), {}, []
+    # A word the code passes on unchanged (the stored word is an inherited binder, such as the rest
+    # words an earlier by-reference call stored): its argument keeps an equation to that binder.
+    passed_words = set()
     post_words = {(row['argument'], row['offset']): row['value'] for row in spec['post']['words']}
     for row in spec['pre']['words']:
         spot = (row['argument'], row['offset'])
@@ -424,6 +427,8 @@ def call_return_seed(edges, *, call, function_root, root_seed, shapes, vocabular
         address = operation('bvadd', state.registers[ARGUMENTS[spot[0]]], bits(spot[1], 64))
         key, offset, value = stored_word(resources, image.updates, address, state.memory)
         instantiation[row['value']] = '(' + _coq(value) + ')'
+        if value.op == 'input' and value.value in inherited:
+            passed_words.add(value.value)
         returned = post_words[spot]
         name = fresh[returned] if returned in fresh else prefix + 'word_%d_%d' % spot
         word_names[(key, offset)] = name
@@ -639,8 +644,12 @@ def call_return_seed(edges, *, call, function_root, root_seed, shapes, vocabular
     if renamed:
         pattern = re.compile(r"(?<![\w'.])(" + '|'.join(map(re.escape, renamed)) + r")(?![\w'])")
         facts = [pattern.sub(lambda match: renamed[match[1]], fact) for fact in facts]
-    existential = [(renamed[name], kind) for name, kind in inner] + [(renamed.get(name, name), kind)
-                                                                     for name, kind in existential]
+    # A passed-on word is no closed argument: its argument name is a binder of the seed with the named
+    # equation to the inherited word (stated before the record, so the record's argument is that word).
+    named_arguments = {renamed[name]: name for name, _ in inner
+                       if name in passed_words and entry_hist.HIST_MODE}
+    existential = [(renamed[name], kind) for name, kind in inner if renamed[name] not in named_arguments] + [
+        (renamed.get(name, name), kind) for name, kind in existential]
     telescope = ' '.join('(%s : %s)' % (name, kind) for name, kind in existential)
     carried = '∃ ' + telescope + ', ' + ' /\\ '.join('(' + fact + ')' for fact in facts) if existential \
         else ' /\\ '.join('(' + fact + ')' for fact in facts)
@@ -785,7 +794,9 @@ def call_return_seed(edges, *, call, function_root, root_seed, shapes, vocabular
         {'kind': 'opaque', 'id': row['resource_id'] + '_length', 'coq': '⌜' + row['coq'] + '⌝'}
         for row in extra_facts] + [
         {'kind': 'opaque', 'id': name.value + '_value', 'coq': '⌜(zesu_named_eq %s %s)⌝' % (name.value, _coq(value))}
-        for value, name in named.items()] + [{'kind': 'opaque', 'id': prefix + 'facts', 'coq': '⌜' + carried + '⌝'}] + [
+        for value, name in named.items()] + [
+        {'kind': 'opaque', 'id': argument + '_value', 'coq': '⌜(zesu_named_eq %s %s)⌝' % (argument, word)}
+        for argument, word in named_arguments.items()] + [{'kind': 'opaque', 'id': prefix + 'facts', 'coq': '⌜' + carried + '⌝'}] + [
         {'kind': 'opaque', 'id': prefix + 'window_' + binder, 'coq': '⌜' + text + '⌝'}
         for binder, text in windows] + [
         {'kind': 'opaque', 'id': prefix + 'return_fact_%d' % index, 'coq': '⌜' + _return_fact(row['coq'], fresh) + '⌝'}
@@ -797,6 +808,8 @@ def call_return_seed(edges, *, call, function_root, root_seed, shapes, vocabular
         binders.append({'name': name, 'type': 'bv 64', 'expression': input_expr(name, 64).to_dict()})
     for name in named.values():
         binders.append({'name': name.value, 'type': 'bv %d' % name.width, 'expression': name.to_dict()})
+    for name in named_arguments:
+        binders.append({'name': name, 'type': 'bv 64', 'expression': input_expr(name, 64).to_dict()})
     # Inherited binders that the seed still mentions (entry witnesses passed as arguments,
     # join and loop-head binders of the origin seeds).
     try:
@@ -871,6 +884,7 @@ def call_return_seed(edges, *, call, function_root, root_seed, shapes, vocabular
               'widened_call_site_registers': widened, 'replaced': splits, 'kept': sorted(kept),
               'callee_frame': callee_frame, 'carried_fact': carried,
               'named_registers': {key: value.value for key, value in registers.items() if value in named.values()},
+              **({'named_arguments': named_arguments} if named_arguments else {}),
               'havoc_registers': [binder['name'] for binder in binders if binder['name'].startswith(prefix + 'x')],
               **({'renewed_system_registers': renewed_exact} if renewed_exact else {})}
     return seed, public, report
