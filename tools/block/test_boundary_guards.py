@@ -262,7 +262,8 @@ class CallBoundary(unittest.TestCase):
         self.assertEqual(nodes['scratch_length']['coq'], '⌜(List.length (two) = 2)%nat⌝')
         self.assertIsNone(report['callee_frame'])
         self.assertEqual(report['renewed_system_registers'], ['input_end'])
-        self.assertIn('∃ (scratch : list byte)', report['carried_fact'])
+        # The callee's own binders take the call's prefix (call_boundary, entry_hist shapes).
+        self.assertIn('∃ (call_scratch : list byte)', report['carried_fact'])
 
     def test_a_kept_register_that_an_earlier_call_computes_is_named_once(self):
         from call_boundary import call_return_seed
@@ -306,7 +307,7 @@ class CallBoundary(unittest.TestCase):
         from call_boundary import CallRefused, call_return_seed
         from symbolic_state import input_expr, operation
         entry_hist.configure({'entry_hist': 'wrap'})
-        self.addCleanup(entry_hist.configure, None)
+        self.addCleanup(entry_hist.configure, {'entry_hist': 'wrap'})
         with tempfile.TemporaryDirectory() as directory:
             fixture, state, call = self.tail_call_fixture(directory)
             Path(directory, 'Spec.v').write_text(self.SLICE_SPEC)

@@ -626,7 +626,7 @@ def _memory_source(resource, image, transitions, aliases, vocabulary):
     if not fraction:
         raise ValueError('The resource has no inherited memory fraction')
     if resource.byte_array is not None:
-        if (entry_hist.HIST_MODE and isinstance(resource.length, int) and resource.length > 0
+        if (isinstance(resource.length, int) and resource.length > 0
                 and all(isinstance(position, int) for position in image)
                 and set(range(resource.length)) <= set(image)):
             # Every byte is stored: the array is the stored bytes, spelled as a call return spells a
@@ -638,7 +638,7 @@ def _memory_source(resource, image, transitions, aliases, vocabulary):
         chunks = [f'(bv_to_little_endian (Z.of_nat {write.size}%nat) 8%N '
                   f'(bv_unsigned ({_scoped_coq(write.value, aliases)} : bv {write.value.width}%N)))'
                   for write, _ in transitions]
-        if all(isinstance(offset, int) for _, offset in transitions):
+        if entry_hist.STORE_SPLICE == 'linear' and all(isinstance(offset, int) for _, offset in transitions):
             value = _linear_splice(value, transitions, chunks)
         else:
             for (write, offset), chunk in zip(transitions, chunks):

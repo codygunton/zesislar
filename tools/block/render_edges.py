@@ -833,8 +833,9 @@ def main():
             check_edge_sentences(text)
             (options.rocq_dir / ('Edges' + case + '.v')).write_text(text)
             modules.append('Edges' + case)
-        (options.rocq_dir / 'Edges.v').write_text(''.join('Require Export ' + profile.qualified(module) + '.\n'
-                                                          for module in modules))
+        if modules:   # A function whose entries carry no history (all facts visible) has no edges.
+            (options.rocq_dir / 'Edges.v').write_text(''.join('Require Export ' + profile.qualified(module)
+                                                              + '.\n' for module in modules))
     kinds = sorted({edge['kind'] for edge in edges})
     print(json.dumps({'edges': len(edges), 'instances': sum(map(len, instances.values())),
                       'reveals': len(reveals), 'identity': sum(bool(edge.get('identity')) for edge in edges),

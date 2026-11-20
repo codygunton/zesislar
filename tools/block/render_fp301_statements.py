@@ -1,15 +1,11 @@
-"""Render FP301 return packages and caller statements from authenticated inputs."""
+"""Render FP301 loop-head classes, return packages and caller statements from profile data."""
 
-import argparse
-import hashlib
 import json
 import re
 from pathlib import Path
 
-from production_modules import statement as caller_statement
 from render_support import definition_introduction_source, unfold_declaration
-from return_exit import (add_entry_facts, add_return_facts, add_return_precondition,
-                         return_blocks, return_package)
+from return_exit import add_return_facts
 from function_profiles import load_profile, return_alignment_fact, return_header
 import entry_hist
 
@@ -75,7 +71,8 @@ def render_loop_head(block, header, structural=False, profile=None, loop_heads=N
         'Definition ' + name + profile.telescope() + ' (K : iProp Sigma)'
         ' : iProp Sigma := ((' + alternatives + ') ∗ K)%I.\n'))
     extra = 'Require Import lithium.lvar.\nRequire Import ZesuSsz.Automation2.ByteWindowFold.\nRequire Import ZesuSsz.Contracts.LoopFoldStart.\n'
-    output = header + extra + (entry_hist.HIST_LIBRARY if entry_hist.HIST_MODE == 'wrap' else '')
+    hist = any(kind == 'hist' for _, _, kind in declarations)   # an empty class history keeps the plain shape
+    output = header + extra + (entry_hist.HIST_LIBRARY if hist else '')
     if structural:
         output += 'Require Import ' + profile.qualified('Pilot' + block + 'Entries') + '.\n'
         output += ''.join(entry_hist.structural_opacity(symbol, kind) for symbol, _, kind in declarations)
@@ -90,21 +87,6 @@ def render_loop_head(block, header, structural=False, profile=None, loop_heads=N
         output += '\n'.join([text for _, text, _ in declarations] + [source for _, source in definitions])
     assert not re.search(r'\b(?:Proof|Qed|Admitted|Axiom|Ltac)\b', output)
     return output
-
-
-def selected_loop_declaration(source, header, profile=None):
-    """Return a loop rendering only for its exact generated entry owner."""
-    profile = profile or load_profile()
-    if not profile['loop_heads']:
-        return None
-    heads = '|'.join(re.escape(head) for head in profile['loop_heads'])
-    match = re.search(r'\bDefinition fp_machineAt(' + heads + r')(?:_|\s)', source)
-    if match is None:
-        match = re.search(r'\bInstance fp_machineAt(' + heads + r')(?:_|\s)', source)
-    if match is None:
-        return None
-    return render_loop_head(match[1], header, structural='\nDefinition ' not in source,
-                            profile=profile)
 
 
 def render_unfold_opacity(source):
@@ -249,16 +231,24 @@ def first_pass_registration(name, source, profile=None):
             + ' (fun first_x16 => ' + step + ').\n')
 
 
-def binding(path):
-    path = Path(path)
-    return {"path": str(path), "sha256": hashlib.sha256(path.read_bytes()).hexdigest()}
+def render_return_package(profile):
+    """Render the function-return package of a profile `return_package` design.
 
-
-def read_bound(row):
-    path = Path(row["path"])
-    if binding(path) != row:
-        raise ValueError("A return-renderer input changed: " + str(path))
-    return path.read_text()
+    The design names the package's existential binders, its owned resources and its pure
+    facts; the profile's `return_facts` follow the facts. Returns the texts of
+    `FunctionReturnEntries.v` and `FunctionReturnStructural.v` (declarations only)."""
+    design = profile["return_package"]
+    symbol = "fp_machineReturn"
+    telescope = " ".join("(" + name + " : " + kind + ")" for name, kind in design["binders"])
+    body = " ∗ ".join(list(design["resources"]) + ["⌜" + fact + "⌝" for fact in design["facts"]] + ["True"])
+    definition = ("Definition " + symbol + profile.telescope() + " (K : iProp Sigma) : iProp Sigma :=\n"
+                  + "  ((∃ " + telescope + ", (" + body + ")) ∗ K)%I.\n")
+    definition = add_return_facts(definition, profile.get("return_facts", []))
+    header = return_header(profile)
+    structural = (header + "Require Import " + profile.qualified("FunctionReturnEntries") + ".\n"
+                  + unfold_declaration(symbol, instance_name=symbol + "_unfold", locality="export")
+                  + definition_introduction_source(definition, symbol))
+    return header + "\n" + definition, structural
 
 
 def render_entry_registers(source):
@@ -281,45 +271,7 @@ def render_entry_registers(source):
     return source
 
 
-def render_declaration(source, header, profile=None):
-    """Keep the bound declaration body and render its core-free header."""
-    selected = selected_loop_declaration(source, header, profile)
-    if selected is not None:
-        return selected
-    boundary = "Local Open Scope Z_scope.\n"
-    if source.count(boundary) != 1 or not header.endswith(boundary):
-        raise ValueError("A generated declaration lacks its exact header boundary.")
-    if "Automation.All." in header or "Automation2.All." in header:
-        raise ValueError("A generated declaration cannot import a core.")
-    if re.search(r"\b(?:Definition fp_machineReturn|Instance fp_machineReturn_intro)\b", source):
-        source = add_return_facts(source, (profile or load_profile()).get("return_facts", []))
-    for symbol, spec in (profile or load_profile()).get("entry_facts", {}).items():
-        if re.search(r"\b(?:Definition " + symbol + r"|Instance " + symbol + r"_intro)\b", source):
-            source = add_entry_facts(source, spec["facts"])
-            source = source.replace(boundary, boundary + "".join(line + "\n" for line in spec.get("requires", [])), 1)
-    return render_entry_registers(header + source.split(boundary, 1)[1])
-
-
 CORE_IMPORT = "Require Import ZesuSsz.Automation2.All."
-
-
-def core_import_last(source):
-    """End the import block with the core import.
-
-    `Require Import isla.riscv64.riscv64.` restores the library bodies of
-    `lia`, `bv_solve`, and the Lithium step tactics. Only a later import of
-    the core restores the Hooks.v redefinitions, so every caller ends its
-    imports with it.
-    """
-    lines = source.split("\n")
-    imports = [index for index, line in enumerate(lines)
-               if line.startswith(("Require ", "From "))]
-    if not imports:
-        raise ValueError("A caller has no import block.")
-    last = imports[-1]
-    if lines[last] != CORE_IMPORT:
-        lines.insert(last + 1, CORE_IMPORT)
-    return "\n".join(lines)
 
 
 def slot_suffix(slot):
@@ -390,7 +342,7 @@ def render_block_caller(profile, block, preconditions, imports, slot=None, conti
 RESIDUALS = Path(__file__).resolve().parents[2] / "ZesuSsz/Residuals"
 
 
-def residual_import(source, residuals=RESIDUALS):
+def residual_import(source, residuals=RESIDUALS, profile=None):
     """Import the block's residual lemmas after the core import, when they exist.
 
     Import is not transitive, so the caller keeps its solver bindings; the
@@ -406,162 +358,8 @@ def residual_import(source, residuals=RESIDUALS):
         raise ValueError("A caller must end its imports with the core import.")
     # A return block's residual lemmas may use the pure lemmas behind its exit facts.
     if "FunctionReturnEntries.fp_machineReturn" in source:
-        lines[last + 1:last + 1] = load_profile().get("return_requires", [])
-        last += len(load_profile().get("return_requires", []))
+        requires = (profile or load_profile()).get("return_requires", [])
+        lines[last + 1:last + 1] = requires
+        last += len(requires)
     lines.insert(last + 1, line)
     return "\n".join(lines)
-
-
-def render_caller(source, residuals=RESIDUALS):
-    """Keep the canonical caller, select the second automation entry point, and end with
-    `Print Assumptions <theorem>.` so tools/closure_cert.py can certify it."""
-    if "::=" in source or "Ltac " in source:
-        raise ValueError("A canonical caller cannot contain tactic overrides.")
-    if source.count("Require Import ZesuSsz.Automation.All.") < 1:
-        raise ValueError("A canonical caller lacks its automation import.")
-    if source.count("  zesu_block.\nQed.") != 1:
-        raise ValueError("A canonical caller lacks its plain block proof.")
-    proved = source[:source.index("  zesu_block.\nQed.")]
-    theorems = re.findall(r"^(?:Lemma|Theorem) ([A-Za-z_][A-Za-z0-9_']*)", proved, re.M)
-    if not theorems:
-        raise ValueError("A canonical caller lacks its block theorem.")
-    rendered = residual_import(core_import_last(source.replace("Require Import ZesuSsz.Automation.All.",
-                          CORE_IMPORT).replace(
-                              "  zesu_block.\nQed.", "  zesu_block2.\nQed.")), residuals)
-    query = "Print Assumptions " + theorems[-1] + "."
-    if query not in rendered:
-        rendered = rendered.rstrip("\n") + "\n\n" + query + "\n"
-    return rendered
-
-
-def render(inputs, output):
-    design = json.loads(read_bound(inputs["design"]))
-    callers = json.loads(read_bound(inputs["callers"]))
-    declarations = json.loads(read_bound(inputs["declarations"]))
-    source = read_bound(inputs["return_source"])
-    profile = load_profile(inputs.get("function"))
-    closed_cases = inputs["closed_cases"]
-    count = profile.get("closed_cases_count", 0)
-    if len(closed_cases) != count or len(set(closed_cases)) != count:
-        raise ValueError("The preservation gate needs the distinct closed cases of the profile.")
-    if not set(closed_cases) <= {row["case"] for row in callers["rows"]}:
-        raise ValueError("A closed case has no authenticated caller statement.")
-    returns = return_blocks(design)
-    parameters = [
-        {"name": "args", "type": profile.args_type},
-        {"name": "returnAddress", "type": "Z"},
-        {"name": "K", "type": "iProp Sigma"},
-    ]
-    symbol = "fp_machineReturn"
-    definition, provenance = return_package(
-        source, inputs["return_symbol"], symbol, parameters
-    )
-    definition = add_return_facts(definition, profile.get("return_facts", []))
-    entries = {row["pc"]: row for row in declarations["cases"]}
-    prepared = []
-    for row in callers["rows"]:
-        text = read_bound(row["caller"])
-        pc = int(profile.pc(row["case"]), 16)
-        name = "DesignedBoundary_" + format(pc, "x")
-        original = caller_statement(text, name)
-        application = (
-            profile.qualified("FunctionReturnEntries", symbol) + " args returnAddress K"
-        )
-        changed = pc in returns
-        rendered = (
-            add_return_precondition(original, "returnAddress", application)
-            if changed else original
-        )
-        if row["case"] in inputs["closed_cases"] and rendered != original:
-            raise ValueError("A closed generated statement would change: " + row["case"])
-        if hex(pc) not in entries:
-            raise ValueError("A caller lacks its rendered FP301 entry: " + hex(pc))
-        prepared.append((row, original, rendered, changed))
-
-    # Validate every declaration binding before creating an output directory.
-    for row in declarations["sources"]:
-        read_bound(row)
-    output = Path(output)
-    output.mkdir(exist_ok=False)
-    directory = output / "sources" / profile.generated_directory
-    directory.mkdir(parents=True)
-    header = return_header(profile)
-    entry = directory / "FunctionReturnEntries.v"
-    entry.write_text(header + "\n" + definition)
-    structural = directory / "FunctionReturnStructural.v"
-    structural.write_text(
-        header
-        + "Require Import " + profile.qualified("FunctionReturnEntries") + ".\n"
-        + unfold_declaration(symbol, instance_name=symbol + "_unfold", locality="export")
-        + definition_introduction_source(definition, symbol)
-    )
-    statements = output / "statements"
-    statements.mkdir()
-    rows = []
-    caller_directory = output / "callers"
-    caller_directory.mkdir()
-    for row, original, rendered, changed in prepared:
-        path = statements / (row["case"] + ".vpart")
-        path.write_text(rendered)
-        caller_source = read_bound(row["caller"]).replace(original, rendered, 1)
-        if changed:
-            caller_source = ("Require Import " + profile.qualified("FunctionReturnStructural")
-                             + ".\n" + caller_source)
-        caller = caller_directory / ("Caller" + row["case"] + ".v")
-        caller.write_text(render_caller(caller_source))
-        rows.append({
-            "caller": binding(caller),
-            "case": row["case"],
-            "original_caller": row["caller"],
-            "original_statement_sha256": hashlib.sha256(original.encode()).hexdigest(),
-            "statement": binding(path),
-            "changed": changed,
-            "exit_kind": "function_return" if changed else "successor",
-            "additional_imports": [
-                profile.qualified("FunctionReturnStructural")
-            ] if changed else [],
-        })
-    result = {
-        "status": "SOURCE_DECLARATIONS_ONLY",
-        "function": profile.name,
-        "inputs": inputs,
-        "function_return_blocks": [hex(pc) for pc in sorted(returns)],
-        "return_preconditions": [
-            {
-                "entry_pc": hex(pc),
-                "return_instruction_pc": returns[pc]["return_clause"]["return_instruction_pc"],
-                "address": "returnAddress",
-                "package": profile.qualified("FunctionReturnEntries", symbol)
-                           + " args returnAddress K",
-            }
-            for pc in sorted(returns)
-        ],
-        "changed_blocks": [row["case"] for row in rows if row["changed"]],
-        "closed_cases_unchanged": inputs["closed_cases"],
-        "return_source_projection": provenance,
-        "sources": [binding(entry), binding(structural)],
-        "statements": rows,
-        "existing_FP301_declarations_unchanged": declarations["sources"],
-        "function_level_contract_changed": False,
-        "proof_scripts_emitted": False,
-    }
-    (output / "RESULT.json").write_text(json.dumps(result, indent=2) + "\n")
-    return result
-
-
-def main():
-    parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--inputs", type=Path, required=True)
-    parser.add_argument("--inputs-sha256", required=True)
-    parser.add_argument("--output", type=Path, required=True)
-    options = parser.parse_args()
-    inputs = json.loads(read_bound({
-        "path": str(options.inputs), "sha256": options.inputs_sha256
-    }))
-    result = render(inputs, options.output)
-    print(json.dumps({"changed_blocks": result["changed_blocks"],
-                      "closed_cases_unchanged": result["closed_cases_unchanged"]}))
-
-
-if __name__ == "__main__":
-    main()

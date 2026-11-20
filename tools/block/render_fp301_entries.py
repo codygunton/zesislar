@@ -97,7 +97,7 @@ if entry_hist.FRAME_SLOTS:
 # The call plans of the forward pass (JOINS.json `calls`) and the block starts: at a call block and
 # at a return site the last call's record and its named registers stay visible.
 call_plans = (json.loads((forward.parent / "JOINS.json").read_text()).get("calls", {})
-              if entry_hist.HIST_MODE and (forward.parent / "JOINS.json").exists() else {})
+              if (forward.parent / "JOINS.json").exists() else {})
 block_starts = sorted(int(load_profile(options.function).pc(block), 0)
                       for block in load_profile(options.function)["blocks"])
 vpath = Path(receipt["vocabulary"]["path"])
@@ -205,7 +205,7 @@ for suffix in blocks:
             guard_refusals[suffix] = str(error)
 # A join history (`zesu_join_history`) is a Hist definition: the unsealed text needs the library too.
 check = RocqContradictionCheck(
-    json.loads(options.coqc_args.read_text()), header + (entry_hist.HIST_LIBRARY if entry_hist.HIST_MODE else ""),
+    json.loads(options.coqc_args.read_text()), header + entry_hist.HIST_LIBRARY,
     O / "contradiction-checks",
     profile.args_type,
 )
@@ -299,6 +299,8 @@ def entry_units(suffix):
 
 units = [unit for suffix in pilots for unit in entry_units(suffix)]
 module_definitions = {}
+module_requires_of = {}   # stem -> the `entry_facts` imports of its module
+from return_exit import add_entry_facts
 for suffix, slot in units:
     if suffix in tails:
         pc = return_pc(suffix)
@@ -551,29 +553,33 @@ for suffix, slot in units:
                 or re.search(r"(?<![\w'])" + re.escape(binder["name"]) + r"(?![\w'])",
                              re.sub(r'"[^"]*"', "", result))
             ]
-            if seal_as is not None and entry_hist.HIST_MODE:
+            if seal_as is not None:
                 # Ghost binders and hidden facts move into one history proposition.
                 binders = [{"name": binder["name"], "type": expression(binder["type"], "source type")}
                            for binder in existentials]
                 facts = [text[1:-1] for component, text in rendered_components if component["kind"] == "pure"]
-                sealed[seal_as] = entry_hist.seal_alternative(
+                seal = entry_hist.seal_alternative(
                     seal_as, plain_telescope, plain_binders, binders,
                     [text for component, text in rendered_components if component["kind"] not in ("pure", "true")],
                     facts,
                     # The function return entry (`Return`) is no block: no call record of its own.
-                    (entry_hist.call_visible_patterns(profile.pc(block[0]), call_plans, block_starts, binders,
-                                                     facts)
-                     + entry_hist.loop_entry_patterns(
-                         profile.pc(block[0]), {profile.pc(design['entry_predecessor'])
-                                                for design in profile.get('loop_designs', [])
-                                                if design.get('entry_predecessor')}, binders, facts))
-                    if (block := re.match(r"[0-9a-f]+(?=_|$)", suffix)) else [],
+                    ((entry_hist.call_visible_patterns(profile.pc(block[0]), call_plans, block_starts, binders,
+                                                      facts)
+                      + entry_hist.loop_entry_patterns(
+                          profile.pc(block[0]), {profile.pc(design['entry_predecessor'])
+                                                 for design in profile.get('loop_designs', [])
+                                                 if design.get('entry_predecessor')}, binders, facts))
+                     if (block := re.match(r"[0-9a-f]+(?=_|$)", suffix)) else [])
+                    # Profile `hist_pinned`: facts that stay visible and keep their binders live.
+                    + profile.get("hist_pinned", []),
                     weak_patterns=profile.get("hist_visible", []),
                     # A successor's live binder without a resource takes its value from this entry.
                     pinned=backward_pins.get(pc, {}).get("pinned", []),
                     visible_texts=backward_pins.get(pc, {}).get("facts", []))
+                if seal is not None:   # An empty history keeps the plain shape.
+                    sealed[seal_as] = seal
                 region = profile.get("compliance", {}).get("exit_result")
-                if region and suffix in sites:
+                if region and suffix in sites and seal is not None:
                     # A return package: its result bytes and exit meaning premise, as data.
                     declarations, sealed_body, meta = sealed[seal_as]
                     declarations.extend(entry_hist.result_declarations(
@@ -697,11 +703,24 @@ for suffix, slot in units:
     entry = directory / (module + ".v")
     # The slots of one block share its module.
     written = module_definitions.setdefault(stem, [])
-    written.extend(last_emit)
-    entry.write_text((header + (entry_hist.HIST_LIBRARY if entry_hist.HIST_MODE == "wrap" else ""))
-                     + "\n".join(definition for _, definition, _ in written))
+    # Profile `entry_facts`: design facts a named entry variant states after its own pure facts,
+    # with the modules they need (decodeItem's accepted/rejected exits).
+    entry_facts = profile.get("entry_facts", {})
+    requires = []
+    for symbol, definition, kind in last_emit:
+        spec = entry_facts.get(symbol) if kind == "entry" else None
+        if spec:
+            definition = add_entry_facts(definition, spec["facts"])
+            requires.extend(line + "\n" for line in spec.get("requires", []) if line + "\n" not in requires)
+        written.append((symbol, definition, kind))
+    module_requires = module_requires_of.setdefault(stem, [])
+    module_requires.extend(line for line in requires if line not in module_requires)
+    # Only a module that declares a history needs the history library.
+    library = entry_hist.HIST_LIBRARY if any(kind == "hist" for _, _, kind in written) else ""
+    library += "".join(module_requires)
+    entry.write_text(header + library + "\n".join(definition for _, definition, _ in written))
     structural = directory / (stem + "Structural.v")
-    source = (header + (entry_hist.HIST_LIBRARY if entry_hist.HIST_MODE == "wrap" else "")
+    source = (header + library
               + "Require Import " + ".".join((relative / module).parts) + ".\n")
     for symbol, definition, kind in written:
         if kind != "entry":
@@ -749,59 +768,72 @@ for (suffix, slot), case in zip(units, cases):
         for key in ("entry", "structural"):
             if key in case:
                 case[key] = bind(case[key]["path"])
+if profile.get("return_package"):
+    # A return-package design: one package every return block exits to (no forward-pass exit).
+    from render_fp301_statements import render_return_package
+    directory = O / "sources" / profile.generated_directory
+    directory.mkdir(parents=True, exist_ok=True)
+    files = []
+    for kind, text in zip(("Entries", "Structural"), render_return_package(profile)):
+        file = directory / ("FunctionReturn" + kind + ".v")
+        file.write_text(text)
+        files.append(bind(file))
+    emitted.extend(files)
+    cases.append({"pc": "function_return", "status": "source_declarations_rendered",
+                  "entry": files[0], "structural": files[1],
+                  "qualified_entry": profile.qualified("FunctionReturnEntries", "fp_machineReturn"),
+                  "source_boundary": profile.path.name + "#return_package", "proof_ran": False})
 emitted = list({row["path"]: bind(row["path"]) for row in emitted}.values())
 # Every join keeps each pure fact of its edges, binds it in a history group, or drops it under a
 # named rule (join_generalize.check_fact_accounting refuses a silent drop); the report lists the
 # logged drops of each join.
 join_accounting = {pc: plan.get("fact_accounting") for pc, plan in joins_record.get("plans", {}).items()}
-if entry_hist.HIST_MODE:
-    unaccounted = sorted(pc for pc, row in join_accounting.items() if row is None)
-    assert not unaccounted, "joins without a fact accounting: " + ", ".join(unaccounted)
+unaccounted = sorted(pc for pc, row in join_accounting.items() if row is None)
+assert not unaccounted, "joins without a fact accounting: " + ", ".join(unaccounted)
 
 # A successor's live binder without a resource takes its value from the entry before it
 # (`entry_hist.backward_pins`). When this pass's entries call for pins it did not render with,
 # the next pass renders with them (this pass's output stays in `<output>-pass<n>`).
-if entry_hist.HIST_MODE:
-    pin_variants = {}
-    for case in cases:
-        for meta in case.get("hist", {}).values():
-            if "hidden" in meta:
-                pin_variants.setdefault(case["pc"], []).append(meta)
-    pin_edges = {(alternative["predecessor_pc"], boundary["pc"]) for boundary in data["boundaries"]
-                 for alternative in boundary["alternatives"] if alternative.get("predecessor_pc")}
-    for plan in call_plans.values():
-        if plan["return_site_pc"] is not None:
-            site = int(plan["call_site_pc"], 0)
-            pin_edges.add((hex(max(start for start in block_starts if start <= site)), plan["return_site_pc"]))
-    witnessed = set()
-    if receipt.get("join_seeds"):
-        for succ_pc, row in json.loads(seeds_path.read_text())["seeds"].items():
-            for edge in row.get("join_edges", []):
-                for witness in edge["ordered_witnesses"]:
-                    term = witness["expression"]
-                    if not (term.get("op") == "input" and term.get("value") == witness["binder"]):
-                        witnessed.add((edge["predecessor_pc"], succ_pc, witness["binder"]))
-    pins = entry_hist.backward_pins(pin_variants, sorted(pin_edges), witnessed)
-    for pc, row in backward_pins.items():
-        merged = pins.setdefault(pc, {"pinned": [], "facts": []})
-        for key in ("pinned", "facts"):
-            merged[key] = sorted(set(merged[key]) | set(row[key]))
-    pins = dict(sorted(pins.items()))
-    if pins != backward_pins:
-        number = previous_pass["pass"] + 1
-        assert number < 4, "the backward pins do not settle after three passes"
-        (O / "BACKWARD-PINS.json").write_text(json.dumps({"pass": number, "pins": pins}, indent=1) + "\n")
-        done = O.with_name(O.name + "-pass" + str(number))
-        (O / "CHECKED.json").write_text(json.dumps([[sorted(map(list, key)), path.replace(str(O), str(done), 1)]
-                                                    for key, path in check.checked]))
-        O.rename(done)
-        arguments = sys.argv[1:]
-        if "--backward-pins" in arguments:
-            position = arguments.index("--backward-pins")
-            del arguments[position:position + 2]
-        sys.stdout.flush()
-        os.execv(sys.executable, [sys.executable, sys.argv[0]] + arguments
-                 + ["--backward-pins", str(done / "BACKWARD-PINS.json")])
+pin_variants = {}
+for case in cases:
+    for meta in case.get("hist", {}).values():
+        if "hidden" in meta:
+            pin_variants.setdefault(case["pc"], []).append(meta)
+pin_edges = {(alternative["predecessor_pc"], boundary["pc"]) for boundary in data["boundaries"]
+             for alternative in boundary["alternatives"] if alternative.get("predecessor_pc")}
+for plan in call_plans.values():
+    if plan["return_site_pc"] is not None:
+        site = int(plan["call_site_pc"], 0)
+        pin_edges.add((hex(max(start for start in block_starts if start <= site)), plan["return_site_pc"]))
+witnessed = set()
+if receipt.get("join_seeds"):
+    for succ_pc, row in json.loads(seeds_path.read_text())["seeds"].items():
+        for edge in row.get("join_edges", []):
+            for witness in edge["ordered_witnesses"]:
+                term = witness["expression"]
+                if not (term.get("op") == "input" and term.get("value") == witness["binder"]):
+                    witnessed.add((edge["predecessor_pc"], succ_pc, witness["binder"]))
+pins = entry_hist.backward_pins(pin_variants, sorted(pin_edges), witnessed)
+for pc, row in backward_pins.items():
+    merged = pins.setdefault(pc, {"pinned": [], "facts": []})
+    for key in ("pinned", "facts"):
+        merged[key] = sorted(set(merged[key]) | set(row[key]))
+pins = dict(sorted(pins.items()))
+if pins != backward_pins:
+    number = previous_pass["pass"] + 1
+    assert number < 4, "the backward pins do not settle after three passes"
+    (O / "BACKWARD-PINS.json").write_text(json.dumps({"pass": number, "pins": pins}, indent=1) + "\n")
+    done = O.with_name(O.name + "-pass" + str(number))
+    (O / "CHECKED.json").write_text(json.dumps([[sorted(map(list, key)), path.replace(str(O), str(done), 1)]
+                                                for key, path in check.checked]))
+    O.rename(done)
+    arguments = sys.argv[1:]
+    if "--backward-pins" in arguments:
+        position = arguments.index("--backward-pins")
+        del arguments[position:position + 2]
+    sys.stdout.flush()
+    os.execv(sys.executable, [sys.executable, sys.argv[0]] + arguments
+             + ["--backward-pins", str(done / "BACKWARD-PINS.json")])
 
 (O / "RESULT.json").write_text(
     json.dumps(
@@ -841,7 +873,8 @@ if entry_hist.HIST_MODE:
             "new_native_calls": 0,
             "native_release": False,
             "join_seeds_added": True,
-            **({"join_fact_accounting": join_accounting, "backward_pins": previous_pass} if entry_hist.HIST_MODE else {}),
+            "join_fact_accounting": join_accounting,
+            "backward_pins": previous_pass,
             "contradiction_checks": check.runs,
         },
         indent=2,

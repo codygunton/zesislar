@@ -15,7 +15,6 @@ from symbolic_state import input_expr
 from render_fp301_statements import (
     render_block_caller,
     return_precondition,
-    selected_loop_declaration,
     successor_precondition,
 )
 
@@ -40,7 +39,7 @@ def other_profile():
         'blocks': ['1000', '1010'],
         'loop_heads': [],
     })
-    for key in ['loop_head_fixture', 'loop_first_pass', 'loop_exits', 'loop_successors']:
+    for key in ['loop_head_fixture', 'loop_first_pass', 'loop_exits']:
         data.pop(key)
     return FunctionProfile(data)
 
@@ -58,7 +57,8 @@ class DecodeItemProfile(unittest.TestCase):
     def test_loop_head_callers_render_from_the_generic_caller(self):
         profile = load_profile()
         for head, exit_pc in [('00c4', '00d8'), ('0164', '0178')]:
-            imports = [profile.qualified('Pilot' + pc + kind) for pc in (head, exit_pc)
+            # render_function_callers lists the block's own module, then each successor's (the loop head is one).
+            imports = [profile.qualified('Pilot' + pc + kind) for pc in (head, head, exit_pc)
                        for kind in ('Entries', 'Structural')]
             source = render_block_caller(profile, head, [successor_precondition(profile, head),
                                                          successor_precondition(profile, exit_pc)], imports)
@@ -110,7 +110,6 @@ class OtherProfile(unittest.TestCase):
         for header in [pilot_header(profile), return_header(profile), loop_header(profile)]:
             self.assertNotRegex(header, r'(?i)decodeitem')
             self.assertIn('ZesuSsz.Contracts.OtherContract', header)
-        self.assertIsNone(selected_loop_declaration('Definition fp_machineAt00c4 x.', 'header', profile))
 
     def test_profile_requires_every_function_value(self):
         with self.assertRaises(ValueError):

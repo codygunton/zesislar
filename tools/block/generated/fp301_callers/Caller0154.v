@@ -1,15 +1,16 @@
+Require Import ZesuSsz.Generated.DecodeItem.FP301.Pilot0154Entries.
+Require Import ZesuSsz.Generated.DecodeItem.FP301.Pilot0154Structural.
+Require Import ZesuSsz.Generated.DecodeItem.FP301.Pilot0164Entries.
+Require Import ZesuSsz.Generated.DecodeItem.FP301.Pilot0164Structural.
 Require Import ZesuSsz.Automation2.All.
 Require Import isla.riscv64.riscv64.
 From Coq Require Import Lists.List ZArith.ZArith NArith.NArith.
 Require Import stdpp.bitvector.definitions.
 Require Import ZesuSsz.Contracts.RlpDecodeItemContract.
 Require Import ZesuSsz.Contracts.DecodeItemSelected.
-Require Import ZesuSsz.Generated.DecodeItem.FP301.Pilot0154Entries.
-Require Import ZesuSsz.Generated.DecodeItem.FP301.Pilot0154Structural.
-Require Import ZesuSsz.Generated.DecodeItem.FP301.Pilot0164Structural.
-Require Import ZesuSsz.Generated.DecodeItem.FP301.Pilot0164Entries.
 Require Import ZesuSsz.Automation2.All.
 Local Open Scope Z_scope.
+#[local] Typeclasses Transparent decodeItemSelectedCode.
 
 Definition DesignedEntry_800d6ab4
     `{!islaG Sigma} `{!threadG} (args : DecodeItemArgs) (returnAddress : Z) (K : iProp Sigma) : iProp Sigma :=
