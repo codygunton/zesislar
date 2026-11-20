@@ -357,3 +357,45 @@ Ltac zesu_wrapped_index_bound_goal :=
   end;
   ZesuSsz.Automation2.VmClosed.zesu_vm_closed_decide.
 
+
+(* A word stored byte by byte and read back: the explicit list
+   `[Z_to_bv 8 (z ≫ (8 * 0)); …; Z_to_bv 8 (z ≫ (8 * (n - 1)))]` read as a
+   little-endian word of 8n bits is `Z_to_bv (8n) z`. The list spine is
+   matched by conversion against `map _ (seq 0 n)`, so a list of any other
+   shape is left alone. *)
+From stdpp Require Import bitblast.
+Local Open Scope Z_scope.
+Lemma zesu_word_shift_bytes_from (n k : nat) (z : Z) :
+  little_endian_to_bv 8 (map (fun i : nat => Z_to_bv 8 (z ≫ (8 * Z.of_nat i))) (seq k n)) =
+  Z.modulo (z ≫ (8 * Z.of_nat k)) (2 ^ (Z.of_nat n * 8)).
+Proof.
+  revert k. induction n as [|n IH]; intros k.
+  - cbn. rewrite Z.mod_1_r. reflexivity.
+  - cbn [List.seq List.map]. unfold little_endian_to_bv in *. cbn [fmap list_fmap].
+    cbn [list_numbers.little_endian_to_Z]. rewrite IH. rewrite Z_to_bv_unsigned.
+    unfold bv_wrap, bv_modulus.
+    replace (Z.of_nat (S k)) with (Z.of_nat k + 1)%Z by lia.
+    replace (Z.of_nat (S n) * 8)%Z with (8 + Z.of_nat n * 8)%Z by lia.
+    cbn [Z.of_N]. bitblast. f_equal; lia.
+Qed.
+Lemma zesu_word_explicit_list (w : N) (n : nat) (z : Z) :
+  Z.of_N w = Z.of_nat n * 8 ->
+  Z_to_bv w (little_endian_to_bv 8 (map (fun i : nat => Z_to_bv 8 (z ≫ (8 * Z.of_nat i))) (seq 0 n))) =
+  Z_to_bv w z.
+Proof.
+  intros Hw. apply bv_eq. rewrite !Z_to_bv_unsigned. rewrite zesu_word_shift_bytes_from.
+  unfold bv_wrap, bv_modulus. rewrite Hw. change (Z.of_nat 0) with 0.
+  rewrite Z.mul_0_r. rewrite Z.shiftr_0_r.
+  apply Z.mod_mod. apply Z.pow_nonzero; lia.
+Qed.
+Ltac zesu_word_explicit_list_rewrite :=
+  progress repeat match goal with
+  | |- context [Z_to_bv ?w (little_endian_to_bv 8 ?l)] =>
+      lazymatch l with cons (Z_to_bv 8 (Z.shiftr ?z _)) _ =>
+        let n := eval lazy [length] in (length l) in
+        let E := fresh "HwordList" in
+        assert (E : Z_to_bv w (little_endian_to_bv 8 l) = Z_to_bv w z)
+          by exact (zesu_word_explicit_list w n z eq_refl);
+        rewrite E; clear E
+      end
+  end.

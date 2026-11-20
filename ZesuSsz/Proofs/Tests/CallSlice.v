@@ -275,4 +275,28 @@ Proof.
 Qed.
 End early_restore.
 
+(* A pointer and a length the caller stored byte by byte and reloaded, read
+   back as integer words (`WrappedWord.zesu_word_explicit_list_rewrite`): the
+   window of the slice is linear arithmetic over the range facts. Without a
+   range fact no window is derived. *)
+Lemma call_slice_integer_window (z : Z) (bytes : list (bv 8)) :
+  0 <= z -> z + Z.of_nat (length bytes) < 2 ^ 64 ->
+  z <= bv_unsigned (Z_to_bv 64 z) /\
+  bv_unsigned (Z_to_bv 64 z) + bv_unsigned (Z_to_bv 64 (Z.of_nat (length bytes))) <=
+    z + Z.of_nat (length bytes).
+Proof.
+  intros Hz Hend.
+  zesu_call_slice_window decodeItemCallSliceInterface decodeItemCallDomain decodeItemCallMeaning
+    decodeItemCallDataArgs (Z_to_bv 64 z) (Z_to_bv 64 (Z.of_nat (length bytes))) z bytes
+    ltac:(fun Hw => exact Hw).
+Qed.
+Goal forall (z : Z) (bytes : list (bv 8)), True.
+Proof.
+  intros z bytes.
+  Fail zesu_call_slice_window decodeItemCallSliceInterface decodeItemCallDomain decodeItemCallMeaning
+    decodeItemCallDataArgs (Z_to_bv 64 z) (Z_to_bv 64 (Z.of_nat (length bytes))) z bytes
+    ltac:(fun Hw => idtac).
+  exact I.
+Qed.
+
 Print Assumptions call_slice_window_advanced.
