@@ -359,6 +359,24 @@ class BackwardPins(unittest.TestCase):
                                         witnessed={('pre', 'succ', 'old')})
         self.assertEqual(pins, {})
 
+    def test_a_binder_live_only_through_a_visible_call_record(self):
+        # The successor (a call block) shows the newest call's record group, which names the
+        # predecessor's ghost `cursor`; no resource holds it there. The record is no fact of the
+        # predecessor: the pin makes `cursor` live, the predecessor's own facts stay hidden.
+        record = '(∃ (arg : bv 64), calleeDomain (mk cursor arg) /\\ calleeResult (mk cursor arg) out)'
+        variants = {'call': [self.meta(live=['cursor'], resources=['"x10" ↦ᵣ arg0'], visible=[record])],
+                    'mid': [self.meta(ghost=['cursor'], resources=['"x10" ↦ᵣ arg0'])],
+                    'root': [self.meta(live=['cursor'], resources=['"x19" ↦ᵣ cursor'])]}
+        pins = entry_hist.backward_pins(variants, [('root', 'mid'), ('mid', 'call')])
+        self.assertEqual(pins['mid'], {'pinned': ['cursor'], 'facts': [entry_hist.normal(record)]})
+        self.assertEqual(pins['root']['pinned'], ['cursor'])
+        binders = [{'name': 'cursor', 'type': 'bv 64'}]
+        live, ghost, visible, hidden = entry_hist.classify(
+            binders, ['"x10" ↦ᵣ arg0'], ['guard cursor'], pinned=pins['mid']['pinned'],
+            visible_texts=pins['mid']['facts'])
+        self.assertEqual(([binder['name'] for binder in live], ghost, visible, hidden),
+                         (['cursor'], [], [], ['guard cursor']))
+
 
 class HistoryAlignment(unittest.TestCase):
     """A join whose edges hold the same facts once in a history group, once one per component."""
