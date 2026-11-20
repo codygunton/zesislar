@@ -102,12 +102,13 @@ Qed.
 
 (* The array asked for is not the word's byte extracts: the step refuses. *)
 Lemma frame_join_word_cell_refuses_other `{!islaG Sigma} (a : Z) (w : bv 64) (l : list (bv 8)) :
-  ⊢ subsume (a ↦ₘ w) (λ _ : unit, a ↦ₘ∗ l) (λ _, True).
+  a ↦ₘ∗ l -∗ subsume (a ↦ₘ w) (λ _ : unit, a ↦ₘ∗ l) (λ _, a ↦ₘ w).
 Proof.
-  iStartProof.
+  iIntros "Hl".
   assert_fails ZesuSsz.Automation2.StoreMemoryLookup.zesu_join_frame_byte_array.
   idtac "WORD_CELL_OTHER_REFUSAL_EXECUTED".
-Abort.
+  iIntros "Hw". iExists tt. iFrame.
+Qed.
 
 Print Assumptions frame_join_array.
 Print Assumptions frame_join_array_gap.
@@ -117,3 +118,4 @@ Print Assumptions frame_join_array_grouped.
 Print Assumptions frame_join_array_grouped_refuses_other.
 Print Assumptions frame_join_word_cell_extracts.
 Print Assumptions frame_join_word_cell_extracts_alias.
+Print Assumptions frame_join_word_cell_refuses_other.
