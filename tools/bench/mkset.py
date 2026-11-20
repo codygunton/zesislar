@@ -26,10 +26,11 @@ BENCH = Path(__file__).resolve().parent
 ROOT = BENCH.parent.parent
 CPU_FLOOR, CPU_PER_INSTRUCTION, CPU_CEILING = 120, 45, 1200
 HEAVY_CPU, HEAVY_CLAIM_GIB = 2400, 24
-# Blocks whose measured runs need more than the formula (plan steps 1.4 and 2.2): case patterns per
-# function.
+# Blocks whose measured runs need more than the formula (plan steps 1.4 and 2.2, issue #316): case
+# patterns per function. nextUint64 0070 and 00a4 close above their formula caps (480, 345): 454 and
+# 370 CPU-s on an idle host, 626 and 528 on a loaded one (lane 1.3).
 HEAVY = {'decodeParentHeader': ['0000', '0088', '0094', '00a8', '0270', '0408', '04ec', '0514_slot*'],
-         'nextUint64': ['0000']}
+         'nextUint64': ['0000', '0070', '00a4']}
 
 
 def cfg_function(cfg, function):

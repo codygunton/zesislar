@@ -64,10 +64,10 @@
    "callers": "nextuint64_fp301_callers",
    "case": "0070",
    "instructions": 8,
-   "cpu_seconds": 480,
-   "claim_gib": 8,
-   "why": "8 instructions: cap min(1200, 120 + 45 x 8) = 480 CPU-s",
-   "expected_cpu": 480
+   "cpu_seconds": 2400,
+   "claim_gib": 24,
+   "why": "8 instructions; heavy block of plan steps 1.4 and 2.2: 2400 CPU-s, claim 24 GiB",
+   "expected_cpu": 2400
   },
   {
    "function": "nextUint64",
@@ -94,10 +94,10 @@
    "callers": "nextuint64_fp301_callers",
    "case": "00a4",
    "instructions": 5,
-   "cpu_seconds": 345,
-   "claim_gib": 8,
-   "why": "5 instructions: cap min(1200, 120 + 45 x 5) = 345 CPU-s",
-   "expected_cpu": 345
+   "cpu_seconds": 2400,
+   "claim_gib": 24,
+   "why": "5 instructions; heavy block of plan steps 1.4 and 2.2: 2400 CPU-s, claim 24 GiB",
+   "expected_cpu": 2400
   },
   {
    "function": "nextUint64",
