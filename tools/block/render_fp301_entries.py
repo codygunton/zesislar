@@ -525,7 +525,7 @@ for suffix, slot in units:
                 # Ghost binders and hidden facts move into one history proposition.
                 binders = [{"name": binder["name"], "type": expression(binder["type"], "source type")}
                            for binder in existentials]
-                sealed[seal_as] = entry_hist.seal_alternative(
+                seal = entry_hist.seal_alternative(
                     seal_as, plain_telescope, plain_binders, binders,
                     [text for component, text in rendered_components if component["kind"] not in ("pure", "true")],
                     [text[1:-1] for component, text in rendered_components if component["kind"] == "pure"],
@@ -533,6 +533,8 @@ for suffix, slot in units:
                     # The function return entry (`Return`) is no block: no call record of its own.
                     + (entry_hist.call_visible_patterns(profile.pc(block[0]), call_plans, block_starts, binders)
                        if (block := re.match(r"[0-9a-f]+(?=_|$)", suffix)) else []))
+                if seal is not None:   # An empty history keeps the plain shape.
+                    sealed[seal_as] = seal
             if existentials:
                 telescope = " ".join(
                     "("
@@ -646,10 +648,11 @@ for suffix, slot in units:
     # The slots of one block share its module.
     written = module_definitions.setdefault(stem, [])
     written.extend(last_emit)
-    entry.write_text((header + (entry_hist.HIST_LIBRARY if entry_hist.HIST_MODE == "wrap" else ""))
-                     + "\n".join(definition for _, definition, _ in written))
+    # Only a module that declares a history needs the history library.
+    library = entry_hist.HIST_LIBRARY if any(kind == "hist" for _, _, kind in written) else ""
+    entry.write_text(header + library + "\n".join(definition for _, definition, _ in written))
     structural = directory / (stem + "Structural.v")
-    source = (header + (entry_hist.HIST_LIBRARY if entry_hist.HIST_MODE == "wrap" else "")
+    source = (header + library
               + "Require Import " + ".".join((relative / module).parts) + ".\n")
     for symbol, definition, kind in written:
         if kind != "entry":

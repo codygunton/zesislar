@@ -162,12 +162,16 @@ def conjunction(facts):
 
 def seal_alternative(name, plain_telescope, plain_binders, binders, resources, facts, visible_patterns=(), pinned=(),
                      grouped=False, varying=()):
-    """Return (declarations, body, meta) of one sealed entry variant.
+    """Return (declarations, body, meta) of one sealed entry variant; None when its history is empty.
 
     declarations: [(symbol, text, kind)] with kind 'hist' (needs opacity in Structural) or 'aux';
-    body: the iProp body of the entry variant; meta: the data that the edge record reads."""
+    body: the iProp body of the entry variant; meta: the data that the edge record reads.
+    A variant with no hidden fact and no ghost binder (every fact visible) has nothing to seal: the
+    caller renders the plain shape, all binders kept, and no edge instance enters or leaves it."""
     live, ghost, visible, hidden = classify(binders, resources, facts, visible_patterns, pinned,
                                             definitional=grouped)
+    if not hidden and not ghost:
+        return None
     hist = name + '_Hist'
     # The history takes only the live binders its facts mention. A loop class keeps
     # every fact on a loop-varying binder visible, so its history is the same on both sides of the
@@ -405,12 +409,14 @@ def seal_class(name, prefix, binders_text, resources, facts, plain_binders, desi
             else:
                 pieces.append(resource)
         resources = pieces
-    if not HIST_MODE:
+    def plain():
         if not slot_reports:
             return None
         text = (prefix + ':= (∃ ' + telescope(binders) + ', (' + ' ∗ '.join(resources) + ') ∗ ⌜'
                 + conjunction(facts) + '⌝)%I.\n')
         return [], text, {'entry': name, 'frame_slots': slot_reports}
+    if not HIST_MODE:
+        return plain()
     # The loop-varying binders are the design's registers (by binder name, or by the
     # class's register resource when the design names its seed binders) and the index.
     names = {binder['name'] for binder in binders}
@@ -425,9 +431,12 @@ def seal_class(name, prefix, binders_text, resources, facts, plain_binders, desi
     # older records and the named equations of older cursors stay in the class history.
     patterns = (list(visible) + newest_call_patterns(binders) + design_patterns(design)
                 + [r"(?<![\w'.])" + re.escape(binder) + r"(?![\w'])" for binder in registers])
-    declarations, body, meta = seal_alternative(
+    sealed = seal_alternative(
         name, ' ' + telescope(plain_binders), plain_binders, binders, resources, facts,
         visible_patterns=patterns, pinned=registers, grouped=True, varying=registers)
+    if sealed is None:
+        return plain()
+    declarations, body, meta = sealed
     meta['frame_slots'] = slot_reports
     meta['loop_class'] = True
     return declarations, prefix + ':= ' + body + '%I.\n', meta

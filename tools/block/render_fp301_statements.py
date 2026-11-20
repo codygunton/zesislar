@@ -75,7 +75,8 @@ def render_loop_head(block, header, structural=False, profile=None, loop_heads=N
         'Definition ' + name + profile.telescope() + ' (K : iProp Sigma)'
         ' : iProp Sigma := ((' + alternatives + ') ∗ K)%I.\n'))
     extra = 'Require Import lithium.lvar.\nRequire Import ZesuSsz.Automation2.ByteWindowFold.\nRequire Import ZesuSsz.Contracts.LoopFoldStart.\n'
-    output = header + extra + (entry_hist.HIST_LIBRARY if entry_hist.HIST_MODE == 'wrap' else '')
+    hist = any(kind == 'hist' for _, _, kind in declarations)   # an empty class history keeps the plain shape
+    output = header + extra + (entry_hist.HIST_LIBRARY if hist else '')
     if structural:
         output += 'Require Import ' + profile.qualified('Pilot' + block + 'Entries') + '.\n'
         output += ''.join(entry_hist.structural_opacity(symbol, kind) for symbol, _, kind in declarations)

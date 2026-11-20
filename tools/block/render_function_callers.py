@@ -162,6 +162,9 @@ def main():
     compliance = profile.get('compliance') or {}
     continuation = compliance.get('continuation', '') + ' args returnAddress'
     block_rows = {row['start']: row for row in function['blocks']}
+    # The blocks whose entries carry a history: render_edges.py writes Edges<case> for exactly these.
+    hist_blocks = {case['pc'] for case in result['cases']
+                   if any('hidden' in meta for meta in case.get('hist', {}).values())}
     output = options.output
     output.mkdir(parents=True, exist_ok=False)
     table = []
@@ -206,7 +209,7 @@ def main():
                         preconditions.append(premise)
         source = render_block_caller(profile, suffix, preconditions, imports, slot,
                                      continuation if through else None)
-        if profile.get('entry_hist') == 'wrap':
+        if profile.get('entry_hist') == 'wrap' and row['pc'] in hist_blocks:
             # The history edge instances of this block (render_edges.py), before the last rule import.
             last = source.rindex('Require Import ZesuSsz.Automation2.All.\n')
             source = (source[:last] + 'Require Import ' + profile.qualified('Edges' + suffix) + '.\n'

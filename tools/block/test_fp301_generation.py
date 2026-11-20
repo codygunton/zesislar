@@ -59,6 +59,29 @@ class WrapEntryShape(unittest.TestCase):
                                ' ∗ ⌜zesu_hist (e_Hist (args) (returnAddress) (x))⌝))')
         self.assertEqual([binder["name"] for binder in meta["ghost"]], ["g"])
 
+    def test_an_entry_with_every_fact_visible_keeps_the_plain_shape(self):
+        plain = [{"name": "args", "type": "A"}, {"name": "returnAddress", "type": "Z"}]
+        binders = [{"name": "x", "type": "bv 64"}, {"name": "u", "type": "bv 64"}]
+        facts = ["bv_unsigned x < 8", "decodeItemCallDomain args"]
+        # Every fact visible and no ghost binder: nothing to seal (decodeItem, hist_visible [".*"]).
+        self.assertIsNone(entry_hist.seal_alternative(
+            "e", " (args : A) (returnAddress : Z)", plain, binders, ['reg "x10" x'], facts, [".*"]))
+        # One hidden fact: the history is rendered.
+        self.assertIsNotNone(entry_hist.seal_alternative(
+            "e", " (args : A) (returnAddress : Z)", plain, binders, ['reg "x10" x'], facts, ["CallDomain"]))
+
+    def test_a_loop_class_with_every_fact_visible_keeps_the_plain_shape(self):
+        saved = entry_hist.HIST_MODE, entry_hist.FRAME_SLOTS
+        entry_hist.HIST_MODE, entry_hist.FRAME_SLOTS = "wrap", False
+        try:
+            plain = [{"name": "args", "type": "A"}, {"name": "returnAddress", "type": "Z"}]
+            arguments = ("c", "Definition c (args : A) (returnAddress : Z) ", "(x : bv 64)",
+                         ['reg "x10" x'], ["bv_unsigned x < 8"], plain, {})
+            self.assertIsNone(entry_hist.seal_class(*arguments, visible=[".*"]))
+            self.assertIsNotNone(entry_hist.seal_class(*arguments, visible=[]))
+        finally:
+            entry_hist.HIST_MODE, entry_hist.FRAME_SLOTS = saved
+
 
 if __name__ == "__main__":
     unittest.main()
