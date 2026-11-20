@@ -135,6 +135,20 @@ Ltac zesu_hist_view H :=
                 | match goal with |- context [bv_unsigned ?x] =>
                     pose proof (bv_unsigned_in_range _ x); unfold bv_modulus in *; simpl in *; zesu_lia end ] ].
 
+(* Block tail: a pure side goal [F] (Lithium proves the pure conjuncts of an
+   open existential, e.g. a loop class, as separate goals, never as
+   `⌜F⌝ ∗ Q`) that a context history reveals through an instance. Runs only
+   when a history is in the context and the goal is not a proof-mode goal. *)
+Ltac zesu_hist_reveal_pure :=
+  lazymatch goal with
+  | |- envs_entails _ _ => fail
+  | |- _ => idtac
+  end;
+  match goal with
+  | Hh : zesu_hist ?P |- ?F =>
+      notypeclasses refine (@zesu_hist_reveal P F _ Hh); solve [typeclasses eauto]
+  end.
+
 (* Block tail at a loop exit: a visible fact `guard /\ views` whose guard is a
    context fact; the views follow from the decided guard. *)
 Ltac zesu_hist_exit_view :=

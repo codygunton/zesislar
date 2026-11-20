@@ -86,6 +86,31 @@ Proof.
 Qed.
 End hist.
 
+(* Pure side goal revealed by a context history (block tail): the closer runs
+   with a history and an instance, also through the tail hook; it is skipped
+   without a history, without an instance, and on a proof-mode goal. *)
+Lemma reveal_pure_fires (x : Z) : zesu_hist (test_pre x) -> x < 5.
+Proof. intros Hh. zesu_hist_reveal_pure. Qed.
+
+Lemma reveal_pure_through_tail (x : Z) : zesu_hist (test_pre x) -> x < 5.
+Proof. intros Hh. ZesuSsz.Automation2.Finish.zesu_block_tail_one. Qed.
+
+Lemma reveal_pure_skipped_no_history (x : Z) : x = 3 -> x < 5.
+Proof. intros Hx. assert_fails (idtac; zesu_hist_reveal_pure). lia. Qed.
+
+Lemma reveal_pure_skipped_no_instance (x : Z) : zesu_hist (test_pre x) -> x < 4.
+Proof.
+  intros Hh. assert_fails (idtac; zesu_hist_reveal_pure).
+  apply zesu_hist_elim in Hh. unfold test_pre in Hh. lia.
+Qed.
+
+Lemma reveal_pure_skipped_proof_mode {PROP : bi} (x : Z) :
+  zesu_hist (test_pre x) -> ⊢@{PROP} ⌜x < 5⌝.
+Proof.
+  intros Hh. iStartProof. assert_fails (idtac; zesu_hist_reveal_pure).
+  iPureIntro. exact (zesu_hist_reveal Hh).
+Qed.
+
 (* The seal: no reduction opens a history. *)
 Lemma hist_sealed (x : Z) : zesu_hist (test_pre x) = test_pre x.
 Proof.

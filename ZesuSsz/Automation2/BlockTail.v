@@ -235,7 +235,8 @@ Ltac zesu_tail_fold_zero_goal :=
 
 Ltac ZesuSsz.Automation2.Finish.zesu_block_tail_one ::=
   first
-  [ zesu_tail_bool_disj
+  [ solve [ZesuSsz.Automation2.Hist.zesu_hist_reveal_pure]
+  | zesu_tail_bool_disj
   | zesu_tail_fold_zero_goal
   | zesu_cursor_index_close
   | zesu_tail_window_goal
