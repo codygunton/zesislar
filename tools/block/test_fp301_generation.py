@@ -96,6 +96,16 @@ class WrapEntryShape(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "not pointer plus a numeral"):
             self._package([("unknown_byte_array", "(Z.add (bv_unsigned (R args)) k)", "(4%Z)")])
 
+    def test_result_piece_rendered_through_the_array_declaration(self):
+        spine = ("Coq.Init.Datatypes.cons ((bv_extract 0%N 8%N x) : bv 8%N)"
+                 " (Coq.Init.Datatypes.cons ((bv_extract 8%N 8%N x) : bv 8%N) (@Coq.Init.Datatypes.nil (bv 8%N)))")
+        piece = entry_hist.array_definition_piece(
+            "isla.ghost_state.mem_mapsto_array_def ((bv_unsigned (R args))) ((DfracOwn 1)) ((" + spine + "))")
+        self.assertEqual(piece, ("(bv_unsigned (R args))", "(" + spine + ")"))
+        declarations = self._package([("byte_array",) + piece,
+                                      ("unknown_byte_array", "(Z.add (bv_unsigned (R args)) 2%Z)", "(2%Z)")])
+        self.assertIn("list byte := ((" + spine + ") ++ unwritten_2)", declarations[0][1])
+
 
 if __name__ == "__main__":
     unittest.main()

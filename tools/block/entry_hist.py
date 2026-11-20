@@ -311,6 +311,39 @@ def _result_offset(address, base):
     return int(match[1])
 
 
+def _top_groups(text):
+    """The top-level parenthesized groups of text, without their outer parentheses."""
+    groups, depth, start = [], 0, None
+    for position, character in enumerate(text):
+        if character == '(':
+            if depth == 0:
+                start = position + 1
+            depth += 1
+        elif character == ')':
+            depth -= 1
+            if depth == 0:
+                groups.append(text[start:position])
+    return groups
+
+
+def array_definition_piece(text):
+    """(address, list) of an owned array rendered through its declaration
+    `isla.ghost_state.mem_mapsto_array_def (a) (q) (l)`, or None."""
+    text = normal(text)
+    prefix = 'isla.ghost_state.mem_mapsto_array_def'
+    if not text.startswith(prefix):
+        return None
+    groups = _top_groups(text[len(prefix):])
+    return (groups[0], groups[2]) if len(groups) == 3 else None
+
+
+def _cons_spine_length(value):
+    """Number of elements of a `Coq.Init.Datatypes.cons` spine ending in `nil` whose elements hold no list."""
+    if 'Datatypes.nil' not in value or value.count('Datatypes.nil') != 1:
+        return None
+    return value.count('Datatypes.cons')
+
+
 def result_declarations(name, plain_telescope, plain_binders, meta, pieces, region):
     """Data-only declarations of the result a return package leaves (profile `compliance.exit_result`).
 
@@ -334,16 +367,19 @@ def result_declarations(name, plain_telescope, plain_binders, meta, pieces, regi
             rows.append((offset, int(length), None))
         elif kind == 'byte_array':
             items = _list_items(value)
-            if items is None:
+            count = len(items) if items is not None else _cons_spine_length(value)
+            if count is None:
                 raise ValueError('exit_result: a stored piece is not an explicit byte list: ' + value)
-            rows.append((offset, len(items), unwrap(value)))
+            rows.append((offset, count, unwrap(value)))
         else:
             raise ValueError('exit_result: a result piece of kind ' + kind)
     rows.sort()
     cursor = 0
     for offset, length, _ in rows:
         if offset != cursor:
-            raise ValueError(name + ': the result region is not covered without gap or overlap at ' + str(offset))
+            raise ValueError(name + ': the result region is not covered without gap or overlap at ' + str(offset)
+                             + ' (pieces at offset, length: '
+                             + ', '.join(str(row[0]) + ', ' + str(row[1]) for row in rows) + ')')
         cursor += length
     if cursor != region['size']:
         raise ValueError(name + ': the result pieces cover ' + str(cursor) + ' of ' + str(region['size']) + ' bytes')

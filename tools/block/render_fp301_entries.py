@@ -578,7 +578,9 @@ for suffix, slot in units:
                         [(component["kind"], component["address"],
                           component["value" if component["kind"] == "byte_array" else "length"])
                          for component, _ in rendered_components
-                         if component["kind"] in ("byte_array", "unknown_byte_array")],
+                         if component["kind"] in ("byte_array", "unknown_byte_array")]
+                        + [("byte_array",) + piece for _, text in rendered_components
+                           if (piece := entry_hist.array_definition_piece(text))],
                         region))
             if existentials:
                 telescope = " ".join(
