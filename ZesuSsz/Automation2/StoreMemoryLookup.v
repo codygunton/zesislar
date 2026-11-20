@@ -510,6 +510,13 @@ Proof.
   subst n. change (Z.of_N (8 `div` 8)) with 1. ZesuSsz.Automation2.WrappedWord.zesu_plain_lia.
 Qed.
 
+(* The number of elements of an explicit list spine; fails on any other list. *)
+Ltac zesu_spine_length l :=
+  lazymatch l with
+  | nil => constr:(O)
+  | cons _ ?t => let n := zesu_spine_length t in constr:(S n)
+  end.
+
 (* One piece at an address accepted by [a2pred] as a byte array "HzesuPiece"
    with its length fact; [k] receives the address, the length and the fact. *)
 Ltac zesu_piece_bytes ra a2pred k :=
@@ -547,24 +554,45 @@ Ltac zesu_piece_bytes ra a2pred k :=
         k a2 m Hl
     | (?a2 ↦ₘ∗ ?l2)%I =>
         a2pred a2;
-        match goal with
-        | Hlen : length l2 = ?c |- _ =>
-            let m := eval vm_compute in (Z.of_nat c) in
-            let Hl := fresh "HpieceLength" in
-            assert (Hl : Z.of_nat (length l2) = m) by (rewrite Hlen; reflexivity);
-            iRename H into "HzesuPiece";
-            k a2 m Hl
+        let Hl := fresh "HpieceLength" in
+        (* the length as a numeral: a [length] fact at any element type, its
+           [Z.of_nat] form, or the spine of an explicit list *)
+        first
+        [ match goal with
+          | Hlen : length l2 = ?c |- _ =>
+              let m := eval vm_compute in (Z.of_nat c) in
+              assert (Hl : Z.of_nat (length l2) = m) by exact (f_equal Z.of_nat Hlen)
+          end
+        | match goal with
+          | Hlen : Z.of_nat (length l2) = ?m |- _ =>
+              lazymatch m with Z0 => idtac | Zpos _ => idtac end;
+              assert (Hl : Z.of_nat (length l2) = m) by exact Hlen
+          end
+        | let c := zesu_spine_length l2 in
+          let m := eval vm_compute in (Z.of_nat c) in
+          assert (Hl : Z.of_nat (length l2) = m) by reflexivity ];
+        lazymatch type of Hl with
+        | _ = ?m => iRename H into "HzesuPiece"; k a2 m Hl
         end
     end).
 
+(* [a2] lies at offset [n] (a numeral) from [a], both built on root [ra]:
+   the difference is computed only when, the root abstracted, it is closed. *)
+Ltac zesu_root_offset_is ra a a2 n :=
+  let r2 := ZesuSsz.Automation2.WrappedWord.zesu_term_root a2 in constr_eq ra r2;
+  lazymatch eval pattern ra in ((a2 - a)%Z) with
+  | ?g _ => assert_fails (idtac; match g with context [?v] => is_var v end)
+  end;
+  let d := ZesuSsz.Automation2.WrappedWord.zesu_eval_at_root ra constr:((a2 - a)%Z) in
+  constr_eq d n.
+
 (* Join every adjacent piece on root [ra] after the run "HzesuRun" of [n]
-   bytes at [a]. *)
+   bytes at [a]. A piece starting inside the run (an overlap) or after its
+   end (a gap) is not adjacent: the run ends. *)
 Ltac zesu_join_frame_loop ra a n Hlen :=
   first
   [ zesu_piece_bytes ra
-      ltac:(fun a2 => let r2 := ZesuSsz.Automation2.WrappedWord.zesu_term_root a2 in constr_eq ra r2;
-                      let d := ZesuSsz.Automation2.WrappedWord.zesu_eval_at_root ra constr:((a2 - a)%Z) in
-                      constr_eq d n)
+      ltac:(fun a2 => zesu_root_offset_is ra a a2 n)
       ltac:(fun a2 m Hl =>
         let s := eval vm_compute in (n + m)%Z in
         let Ha := fresh "HpieceAdjacent" in
@@ -576,6 +604,19 @@ Ltac zesu_join_frame_loop ra a n Hlen :=
         clear Hlen Hl Ha;
         zesu_join_frame_loop ra a s Hlen2)
   | idtac ].
+
+(* Fold the pieces owned from address [a] on (byte cells, uninitialised
+   regions of closed size, byte arrays of numeral length, at element type
+   [bv 8] or a definition of it) into the one byte array "HzesuRun", with
+   the fact "Z.of_nat (length run) = size" in the context. The first piece
+   is the one at offset 0 from [a]; fails when there is none. *)
+Ltac zesu_fold_byte_run a :=
+  let ra := ZesuSsz.Automation2.WrappedWord.zesu_term_root a in
+  zesu_piece_bytes ra
+    ltac:(fun a2 => zesu_root_offset_is ra a a2 0%Z)
+    ltac:(fun a2 m Hl =>
+      iRename "HzesuPiece" into "HzesuRun";
+      zesu_join_frame_loop ra a2 m Hl).
 
 (* The requested array's address, under a `∗` head or a Lithium existential head. *)
 Ltac zesu_requested_byte_array k :=
