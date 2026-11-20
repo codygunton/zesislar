@@ -802,6 +802,11 @@
   "compliance": {
     "boundary": "ZesuSsz.Compliance.ParentHeaderCompositionBoundary",
     "continuation": "parentHeaderContinuation",
+    "exit_result": {
+      "pointer": "parentHeaderResultPointer args",
+      "size": 80,
+      "source": "parentHeaderExitResources (ParentHeaderContract.v): the result region is the 80 bytes at parentHeaderResultPointer args; each return package renders its stored result bytes (_ResultBytes) and its exit meaning premise (_ExitMeaning)"
+    },
     "inline_returns": false,
     "source": "Exit design A (ParentHeaderGeneratedComposition.v): every table entry carries the contract continuation at returnAddress as K; the return block 0x0274 (duplicated per incoming edge, so each return alternative keeps its edge's stored result bytes and history) and the tail block 0x00b0 keep their slots, and their callers take the generated return package at returnAddress; the composition proves each package's return premise from K through that package's end bridge."
   },
