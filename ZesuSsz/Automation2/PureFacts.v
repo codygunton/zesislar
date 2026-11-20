@@ -30,6 +30,7 @@ Require ZesuSsz.Automation2.ContextCollection.
 Require Import ZesuSsz.Automation2.Telemetry.
 From Ltac2 Require Import Ltac2.
 Require Import ZesuSsz.Automation2.LiaHook.
+Require ZesuSsz.Automation2.DomainRanges.
 Set Default Proof Mode "Classic".
 
 (* A nonempty owned list supplies its head and tail without guessing data. *)
@@ -43,16 +44,39 @@ Proof.
 Qed.
 
 
+(* Marks a registered domain whose conjuncts are already in the context. *)
+Definition zesu_domain_opened (domain : Prop) : Prop := True.
+
+(* A function domain with registered ranges
+   (`DomainRanges.ZesuDomainRanges`) stays in the context folded: the
+   call-site step (`CallSlice.v`) proves a callee's domain from the
+   caller's folded domain. Its conjuncts are split from a copy, once. *)
+Ltac zesu_registered_domain T :=
+  let _ := constr:(fun H : T =>
+    ZesuSsz.Automation2.DomainRanges.zesu_domain_ranges (domain:=T) H) in
+  idtac.
+
 Ltac zesu_split_folded_pure :=
   repeat match goal with
   | H : ?T |- _ =>
       lazymatch type of T with Prop => idtac end;
       lazymatch T with
       | _ /\ _ => fail
+      | zesu_domain_opened _ => fail
       | _ =>
           let unfolded := eval hnf in T in
           lazymatch unfolded with
-          | _ /\ _ => change unfolded in H; destruct H
+          | _ /\ _ =>
+              tryif zesu_registered_domain T
+              then (lazymatch goal with
+                    | _ : zesu_domain_opened T |- _ => fail
+                    | _ => idtac
+                    end;
+                    let Hcopy := fresh "Hdomain" in
+                    pose proof H as Hcopy;
+                    pose proof (I : zesu_domain_opened T);
+                    change unfolded in Hcopy; destruct Hcopy)
+              else (change unfolded in H; destruct H)
           end
       end
   end.
