@@ -443,17 +443,19 @@ Ltac zesu_bv_context_filter closer :=
   else closer.
 
 (* Library solvers also call these primitives without the project finisher.
-   A closed comparison decides by computation first. A linear address
-   (in)equality closes next by the reflective normal form (BvLinear); other
-   goals fail there at once. An equality that the normal form refutes goes to
-   the solver on its linked facts only. A residual lemma is the last attempt
-   after the solver fails. A goal and context that failed before in the
-   proof fail at once (FailureMemo). *)
+   A closed comparison decides by computation first. A word assembled from the
+   bytes of one integer equals that integer's word (WrappedWord). A linear
+   address (in)equality closes next by the reflective normal form (BvLinear);
+   other goals fail there at once. An equality that the normal form refutes
+   goes to the solver on its linked facts only. A residual lemma is the last
+   attempt after the solver fails. A goal and context that failed before in
+   the proof fail at once (FailureMemo). *)
 Ltac bv_solve ::=
   let run := ltac2:(tac |- zesu_telemetry_ltac1 "bv_solve" "bv_solve" tac) in
   let run_linear := ltac2:(tac |- zesu_telemetry_ltac1 "bv_linear" "bv_solve" tac) in
   let memo := ltac2:(tac |- zesu_failure_memo_ltac1 "bv_solve" tac) in
   run ltac:(memo ltac:(first [solve [zesu_closed_goal_decide] |
+  solve [WrappedWord.zesu_word_concat_bytes_eq] |
   solve [run_linear ltac:(ZesuSsz.Automation2.BvLinear.zesu_bv_linear_with ltac:(zesu_lia))] |
   (tryif ZesuSsz.Automation2.BvLinear.zesu_bv_linear_refutes
    then first [zesu_refuted_solve ltac:(zesu_bv_solve_closer) | ResidualLemmas.zesu_residual_lemma]

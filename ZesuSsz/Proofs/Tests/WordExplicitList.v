@@ -37,3 +37,25 @@ Proof.
 Qed.
 
 Print Assumptions word_explicit_list_pointer.
+
+(* The word read back by an 8-byte load: `bv_concat` of the bytes of one
+   integer. `bv_solve` closes it (WrappedWord.zesu_word_concat_bytes_eq). *)
+Lemma word_concat_bytes (z : Z) :
+  bv_concat 64 (bv_concat 56 (bv_concat 48 (bv_concat 40 (bv_concat 32 (bv_concat 24
+    (bv_concat 16 (Z_to_bv 8 (z ≫ (8 * 7%nat))) (Z_to_bv 8 (z ≫ (8 * 6%nat))))
+    (Z_to_bv 8 (z ≫ (8 * 5%nat)))) (Z_to_bv 8 (z ≫ (8 * 4%nat))))
+    (Z_to_bv 8 (z ≫ (8 * 3%nat)))) (Z_to_bv 8 (z ≫ (8 * 2%nat))))
+    (Z_to_bv 8 (z ≫ (8 * 1%nat)))) (Z_to_bv 8 (z ≫ (8 * 0%nat))) = Z_to_bv 64 z.
+Proof. bv_solve. Qed.
+
+(* Guard: a byte of another integer is refused. *)
+Goal forall (z y : Z),
+  bv_concat 16 (Z_to_bv 8 (y ≫ (8 * 1%nat))) (Z_to_bv 8 (z ≫ (8 * 0%nat))) = Z_to_bv 16 z ->
+  bv_concat 16 (Z_to_bv 8 (y ≫ (8 * 1%nat))) (Z_to_bv 8 (z ≫ (8 * 0%nat))) = Z_to_bv 16 z.
+Proof.
+  intros z y H.
+  Fail ZesuSsz.Automation2.WrappedWord.zesu_word_concat_bytes_eq.
+  exact H.
+Qed.
+
+Print Assumptions word_concat_bytes.

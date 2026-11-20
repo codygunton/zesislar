@@ -399,3 +399,22 @@ Ltac zesu_word_explicit_list_rewrite :=
         rewrite E; clear E
       end
   end.
+
+(* The same word read back by a load: `bv_concat` of the bytes
+   `Z_to_bv 8 (z ≫ _)` of one integer `z`, against `Z_to_bv w z`. Every leaf
+   must be a byte of that `z` (`zesu_word_concat_bytes_of`); then the
+   equation is bit-blasted, each bit an index equation. *)
+Ltac zesu_word_concat_bytes_of t z :=
+  lazymatch t with
+  | bv_concat _ ?high ?low =>
+      zesu_word_concat_bytes_of high z; zesu_word_concat_bytes_of low z
+  | Z_to_bv 8 (Z.shiftr ?z' _) => constr_eq z z'
+  end.
+Ltac zesu_word_concat_bytes_eq :=
+  lazymatch goal with
+  | |- @eq (bv _) (bv_concat ?n ?high ?low) (Z_to_bv ?n ?z) =>
+      zesu_word_concat_bytes_of (bv_concat n high low) z
+  | |- @eq (bv _) (Z_to_bv ?n ?z) (bv_concat ?n ?high ?low) =>
+      zesu_word_concat_bytes_of (bv_concat n high low) z; symmetry
+  end;
+  solve [bv_simplify; bitblast; f_equal; lia].
