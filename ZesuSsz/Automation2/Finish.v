@@ -1243,6 +1243,10 @@ Ltac zesu_run_pass_v1 :=
         existential, before any other step (CallSlice.v). *)
      (lazymatch goal_class with ZGex => idtac | ZGex_prod => idtac end; zesu_env_literal;
       zesu_talt c_early_restore (idtac; ZesuSsz.Automation2.CallSlice.zesu_call_early_restore)) |
+     (* A binder fixed only by a named equation takes the equation's term
+        (NamedEquations.v). *)
+     (lazymatch goal_class with ZGex => idtac | ZGex_prod => idtac end;
+      zesu_talt h_named_witness (idtac; ZesuSsz.Automation2.NamedEquations.zesu_named_equation_witness)) |
      zesu_diag_step |
      (zesu_env_literal; zesu_talt v1_source_destruct (idtac; SourceFactMatching.zesu_source_destruct_registered_disjunction)) |
      (lazymatch goal_class with ZGall => idtac end;
