@@ -59,6 +59,43 @@ class WrapEntryShape(unittest.TestCase):
                                ' ∗ ⌜zesu_hist (e_Hist (args) (returnAddress) (x))⌝))')
         self.assertEqual([binder["name"] for binder in meta["ghost"]], ["g"])
 
+    def _package(self, pieces):
+        plain = [{"name": "args", "type": "A"}, {"name": "returnAddress", "type": "Z"}]
+        binders = [{"name": "x", "type": "bv 64"}]
+        resources = ['r x'] + [address + ' ↦ₘ? ' + value for _, address, value in pieces]
+        _, _, meta = entry_hist.seal_alternative(
+            "e", " (args : A) (returnAddress : Z)", plain, binders, resources,
+            ["bv_unsigned x < 8", "decodeItemCallDomain args"], ["CallDomain"])
+        return entry_hist.result_declarations("e", " (args : A) (returnAddress : Z)", plain, meta, pieces,
+                                              {"pointer": "R args", "size": 4})
+
+    def test_return_package_renders_its_result_bytes_and_exit_meaning(self):
+        declarations = self._package([
+            ("unknown_byte_array", "(Z.add (bv_unsigned (R args)) 2%Z)", "(2%Z)"),
+            ("byte_array", "(bv_unsigned (R args))", "[bv_extract 0 8 x; bv_extract 8 8 x]"),
+            ("unknown_byte_array", "(bv_unsigned (S args))", "(8%Z)")])
+        self.assertEqual(declarations, [
+            ("e_ResultBytes", "Definition e_ResultBytes (args : A) (returnAddress : Z) (x : bv 64)"
+             " (unwritten_2 : list byte) : list byte := (([bv_extract 0 8 x; bv_extract 8 8 x]) ++ unwritten_2).\n",
+             "aux"),
+            ("e_ExitMeaning", "Definition e_ExitMeaning (M : A -> list byte -> Prop) : Prop := forall"
+             " (args : A) (returnAddress : Z) (x : bv 64) (unwritten_2 : list byte),"
+             " (zesu_hist (e_Hist (args) (returnAddress) (x))) -> (decodeItemCallDomain args)"
+             " -> (length unwritten_2 = 2%nat) -> M args (e_ResultBytes (args) (returnAddress) (x) (unwritten_2)).\n",
+             "aux")])
+
+    def test_result_region_with_a_gap_or_an_overlap_is_refused(self):
+        with self.assertRaisesRegex(ValueError, "without gap or overlap at 3"):
+            self._package([("unknown_byte_array", "(bv_unsigned (R args))", "(2%Z)"),
+                           ("unknown_byte_array", "(Z.add (bv_unsigned (R args)) 3%Z)", "(1%Z)")])
+        with self.assertRaisesRegex(ValueError, "without gap or overlap at 1"):
+            self._package([("unknown_byte_array", "(bv_unsigned (R args))", "(2%Z)"),
+                           ("unknown_byte_array", "(Z.add (bv_unsigned (R args)) 1%Z)", "(3%Z)")])
+        with self.assertRaisesRegex(ValueError, "cover 2 of 4"):
+            self._package([("unknown_byte_array", "(bv_unsigned (R args))", "(2%Z)")])
+        with self.assertRaisesRegex(ValueError, "not pointer plus a numeral"):
+            self._package([("unknown_byte_array", "(Z.add (bv_unsigned (R args)) k)", "(4%Z)")])
+
 
 if __name__ == "__main__":
     unittest.main()

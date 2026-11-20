@@ -295,6 +295,83 @@ def backward_pins(variants, edges, witnessed=()):
     return {pc: {'pinned': sorted(row['pinned']), 'facts': sorted(row['facts'])} for pc, row in sorted(pins.items())}
 
 
+def _result_offset(address, base):
+    """Offset of a Z address text from `bv_unsigned (<pointer>)` (compact text `base`), or None
+    when the address is not on that pointer."""
+    compact = re.sub(r'[\s()]', '', address.replace('%Z', ''))
+    if base not in compact:
+        return None
+    if compact == base:
+        return 0
+    match = (re.fullmatch(r'Z\.add' + re.escape(base) + r'(\d+)', compact)
+             or re.fullmatch(re.escape(base) + r'\+(\d+)', compact))
+    if match is None:
+        raise ValueError('exit_result: an address on the result pointer is not pointer plus a numeral: '
+                         + address)
+    return int(match[1])
+
+
+def result_declarations(name, plain_telescope, plain_binders, meta, pieces, region):
+    """Data-only declarations of the result a return package leaves (profile `compliance.exit_result`).
+
+    `<name>_ResultBytes`: the bytes of the result region in address order; a piece the package stores
+    is its byte list, a piece it does not write is a list parameter `unwritten_<offset>`.
+    `<name>_ExitMeaning M`: for all binders, the package's history, its visible facts and the lengths of
+    the unwritten pieces imply `M args (<name>_ResultBytes ...)`.
+    pieces: [(kind, address text, value text)] of the package's memory components, kind 'byte_array'
+    (value: the stored list) or 'unknown_byte_array' (value: the length). region: {'pointer': term,
+    'size': bytes}. Returns [(symbol, text, 'aux')]."""
+    base = 'bv_unsigned' + re.sub(r'[\s()]', '', region['pointer'])
+    rows = []
+    for kind, address, value in pieces:
+        offset = _result_offset(address, base)
+        if offset is None:
+            continue
+        if kind == 'unknown_byte_array':
+            length = str(CONSTANTS.get(unwrap(value), {}).get('value', unwrap(value).replace('%Z', '')))
+            if not re.fullmatch(r'\d+', length):
+                raise ValueError('exit_result: an unwritten piece has no numeral length: ' + value)
+            rows.append((offset, int(length), None))
+        elif kind == 'byte_array':
+            items = _list_items(value)
+            if items is None:
+                raise ValueError('exit_result: a stored piece is not an explicit byte list: ' + value)
+            rows.append((offset, len(items), unwrap(value)))
+        else:
+            raise ValueError('exit_result: a result piece of kind ' + kind)
+    rows.sort()
+    cursor = 0
+    for offset, length, _ in rows:
+        if offset != cursor:
+            raise ValueError(name + ': the result region is not covered without gap or overlap at ' + str(offset))
+        cursor += length
+    if cursor != region['size']:
+        raise ValueError(name + ': the result pieces cover ' + str(cursor) + ' of ' + str(region['size']) + ' bytes')
+    stored = ' '.join(text for _, _, text in rows if text is not None)
+    unwritten = [{'name': 'unwritten_' + str(offset), 'type': 'list byte', 'length': length}
+                 for offset, length, text in rows if text is None]
+    used = [binder for binder in meta['live'] if mentions(binder['name'], stored)]
+    result = name + '_ResultBytes'
+    parameters = plain_telescope + ''.join(' ' + telescope([binder]) for binder in used + unwritten)
+    body = ' ++ '.join('(' + text + ')' if text is not None else 'unwritten_' + str(offset)
+                       for offset, _, text in rows)
+    declarations = [(result, 'Definition ' + result + parameters + ' : list byte := (' + body + ').\n', 'aux')]
+    facts = ['zesu_hist (' + meta['hist'] + ''.join(' (' + binder['name'] + ')'
+                                                     for binder in plain_binders + meta['hist_live']) + ')']
+    facts += [unwrap(fact) for fact in meta['visible']]
+    facts += ['length ' + binder['name'] + ' = ' + str(binder['length']) + '%nat' for binder in unwritten]
+    quantified = [binder for binder in meta['live'] if binder in used or binder in meta['hist_live']
+                  or any(mentions(binder['name'], fact) for fact in meta['visible'])]
+    application = ('M ' + plain_binders[0]['name'] + ' (' + result
+                   + ''.join(' (' + binder['name'] + ')' for binder in plain_binders + used + unwritten) + ')')
+    meaning = name + '_ExitMeaning'
+    declarations.append((meaning, 'Definition ' + meaning + ' (M : ' + plain_binders[0]['type']
+                         + ' -> list byte -> Prop) : Prop := forall' + plain_telescope
+                         + ''.join(' ' + telescope([binder]) for binder in quantified + unwritten) + ', '
+                         + ' -> '.join('(' + fact + ')' for fact in facts) + ' -> ' + application + '.\n', 'aux'))
+    return declarations
+
+
 def structural_opacity(symbol, kind):
     """The Structural lines of a history declaration: opacity only, no unfold instance, no introduction."""
     return '#[export] Typeclasses Opaque ' + symbol + '.\n' if kind == 'hist' else ''

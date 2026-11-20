@@ -569,6 +569,17 @@ for suffix, slot in units:
                     # A successor's live binder without a resource takes its value from this entry.
                     pinned=backward_pins.get(pc, {}).get("pinned", []),
                     visible_texts=backward_pins.get(pc, {}).get("facts", []))
+                region = profile.get("compliance", {}).get("exit_result")
+                if region and suffix in sites:
+                    # A return package: its result bytes and exit meaning premise, as data.
+                    declarations, sealed_body, meta = sealed[seal_as]
+                    declarations.extend(entry_hist.result_declarations(
+                        seal_as, plain_telescope, plain_binders, meta,
+                        [(component["kind"], component["address"],
+                          component["value" if component["kind"] == "byte_array" else "length"])
+                         for component, _ in rendered_components
+                         if component["kind"] in ("byte_array", "unknown_byte_array")],
+                        region))
             if existentials:
                 telescope = " ".join(
                     "("
