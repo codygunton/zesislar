@@ -660,6 +660,7 @@
     }
   ],
   "duplicated_joins": [
+    "+0x274",
     "+0x510",
     "+0x514"
   ],
@@ -800,8 +801,9 @@
   ],
   "compliance": {
     "boundary": "ZesuSsz.Compliance.ParentHeaderCompositionBoundary",
-    "continuation": "parentHeaderContinuation",
-    "source": "The compliance record (render_open_blocks.py) gives a return block no slot; its predecessors' callers run through it and end with this contract continuation."
+    "continuation": "parentHeaderMachineContinuation",
+    "inline_returns": false,
+    "source": "Exit design A (ParentHeaderCompositionBoundary.v): every table entry carries the generated machine exit at returnAddress as K (the direct return package or the memcpy tail package); the return block 0x0274 (duplicated per incoming edge, so each return alternative keeps its edge's stored result bytes and history) and the tail block 0x00b0 keep their slots and their callers consume K; the composition's end bridge turns it into the contract exit."
   },
   "entry_hist": "wrap",
   "frame_slots": true
