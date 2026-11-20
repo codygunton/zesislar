@@ -22,7 +22,7 @@ import argparse, hashlib, json, re, sys
 
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / 'tools/block'))
-from render_fp301_statements import render_block_caller, render_unfold_opacity
+from render_fp301_statements import render_unfold_opacity
 from boundary_guards import BoundaryRefused, RocqContradictionCheck, alternative_facts, contradiction_source
 from function_profiles import load_profile, loop_header
 
@@ -33,7 +33,7 @@ FP301 = FIXTURE = HEAD_BOUND = EXIT_LINK = DESIGN = CALLERS = HEADER = SIGNATURE
 def configure(name=None):
     """Bind the module values to one function profile."""
     global PROFILE, FP301, FIXTURE, HEAD_BOUND, EXIT_LINK, DESIGN, CALLERS, HEADER, SIGNATURE
-    global FORWARD_BASE, WITNESS_EXCLUSION
+    global FORWARD_DECLARATIONS, WITNESS_EXCLUSION
     PROFILE = load_profile(name)
     exits = PROFILE['loop_exits']
     FP301 = ROOT / PROFILE.generated_directory
@@ -46,7 +46,7 @@ def configure(name=None):
     CALLERS = PROFILE['callers_directory']
     HEADER = loop_header(PROFILE)
     SIGNATURE = PROFILE.telescope()
-    FORWARD_BASE = exits['forward_base']
+    FORWARD_DECLARATIONS = json.loads((ROOT / exits['forward_fixture']).read_text())['declarations']
     WITNESS_EXCLUSION = re.compile(exits['witness_exclusion'])
 
 
@@ -70,23 +70,20 @@ def strip_parens(term):
     return term[1:-1] if term.startswith('(') and term.endswith(')') else term
 
 
-# The forward-pass declaration at this commit owns the system-register
-# witnesses (mstatus seeds and per-instruction forward witnesses) that the
-# successor entries consume. They do not depend on the loop path, so the exit
-# entry keeps their binders and their facts.
-FORWARD_BASE = WITNESS_EXCLUSION = None
+# The forward-pass declaration recorded in the profile's `forward_fixture` owns
+# the system-register witnesses (mstatus seeds and per-instruction forward
+# witnesses) that the successor entries consume. They do not depend on the loop
+# path, so the exit entry keeps their binders and their facts.
+FORWARD_DECLARATIONS = WITNESS_EXCLUSION = None
 WITNESS = re.compile(r'\b(fp_seed_\w+|forward_witness_\w+)\b')
 
 
 def forward_declaration(pc):
-    import subprocess
-    # At FORWARD_BASE the generated names carried the block's last four address digits.
+    # The recorded names carry the block's last four address digits.
     digits = PROFILE.pc(pc)[-4:]
-    path = f'{PROFILE.generated_directory}/Pilot{digits}Entries.v'
-    source = subprocess.run(['git', '-C', str(ROOT), 'show', FORWARD_BASE + ':' + path],
-                            capture_output=True, text=True, check=True).stdout
-    match = re.search(r'^Definition fp_machineAt' + digits + r'_ForwardA0N0' + re.escape(SIGNATURE) +
-                      r' : iProp Sigma := \(∃ (.*?), \((.*)\)\)%I\.$', source, re.M)
+    source = FORWARD_DECLARATIONS[pc]
+    match = re.fullmatch(r'Definition fp_machineAt' + digits + r'_ForwardA0N0' + re.escape(SIGNATURE) +
+                         r' : iProp Sigma := \(∃ (.*?), \((.*)\)\)%I\.', source)
     if match is None:
         raise ValueError('The forward declaration shape changed: ' + pc)
     return match.group(1), match.group(2)
@@ -174,24 +171,20 @@ def exit_precondition(pc):
     return f'instr_pre {PROFILE.pc(pc)} ({qualified_entry(pc)} (args) (returnAddress) (K))%I'
 
 
-def head_caller_source(head, exit_pc):
-    """Render the loop-head caller whose exit precondition is the exit entry."""
-    imports = [PROFILE.qualified(f'Pilot{pc}{kind}') for pc in (head, exit_pc)
-               for kind in ('Entries', 'Structural')]
-    return render_block_caller(PROFILE, head, [exit_precondition(head), exit_precondition(exit_pc)],
-                               imports)
-
-
 def exit_obligations():
+    """The loop-head callers (render_function_callers.py) that check each exit entry: the committed
+    caller states the exit precondition; its sha256 binds the fixture row."""
     rows = []
     for row in DESIGN:
         if 'block' not in row:
             output = f'{CALLERS}/Caller{row["head"]}.v'
-            source = head_caller_source(row['head'], row['pc'])
+            caller = (ROOT / output).read_bytes()
             rows.append({'loop_head': PROFILE.pc(row['head']), 'exit_pc': PROFILE.pc(row['pc']),
                          'entry': qualified_entry(row['pc']), 'precondition': exit_precondition(row['pc']),
                          'checked_by': 'DesignedBoundary_' + PROFILE.pc(row['head'])[2:], 'output': output,
-                         'sha256': hashlib.sha256(source.encode()).hexdigest(), 'source': source})
+                         'sha256': hashlib.sha256(caller).hexdigest()})
+            if ('\n  ' + rows[-1]['precondition'] + ' -∗\n').encode() not in caller:
+                raise ValueError('The loop-head caller lacks its exit precondition: ' + output)
     return rows
 
 
@@ -209,8 +202,17 @@ def main():
     group.add_argument('--check', action='store_true')
     group.add_argument('--coqc-args', type=Path)
     parser.add_argument('--function', default=None, help='function profile (default: decodeItem)')
+    parser.add_argument('--output', type=Path, default=None,
+                        help='with --coqc-args: write the exit entries under OUTPUT/sources and OUTPUT/RESULT.json '
+                             '(a driver run); the committed tree, its callers and the fixture stay untouched')
+    parser.add_argument('--loop-heads-dir', type=Path, default=None,
+                        help='directory holding the Pilot<head>Entries.v loop-head classes (default: the committed '
+                             'generated directory)')
     options = parser.parse_args()
     configure(options.function)
+    global FP301
+    if options.loop_heads_dir is not None:
+        FP301 = options.loop_heads_dir
     fixture = json.loads(FIXTURE.read_text())
     rows = {row['output']: row for row in fixture['declarations']}
     outputs, checks = {}, []
@@ -236,27 +238,45 @@ def main():
         for check in checks:
             row = recorded[check['definition']]
             assert row['check_sha256'] == check['check_sha256'] and row['contradictory'] is False, check['definition']
-        assert [{key: value for key, value in row.items() if key != 'source'} for row in obligations] == fixture['exit_obligations']
-        for row in obligations:
-            assert (ROOT / row['output']).read_text() == row['source'], row['output']
+        assert obligations == fixture['exit_obligations']
         print('Loop-exit declarations match the design table.')
         return
+    output_dir = options.output
     checker = RocqContradictionCheck(json.loads(options.coqc_args.read_text()), HEADER,
+                                     (output_dir / 'contradiction-checks') if output_dir else
                                      ROOT / PROFILE['loop_exits']['contradiction_directory'])
     for check in checks:
         if checker(check['definition'], check['binders'], check['facts']):
             raise BoundaryRefused('The exit entry proves False and is refused: ' + check['definition'])
         check['contradictory'] = False
+    if output_dir is not None:
+        # A driver run: the exit entries as rendered entry cases (render_function_callers --extra-entries).
+        cases = []
+        for row in DESIGN:
+            files = []
+            for kind in ('Entries', 'Structural'):
+                output = f'{PROFILE.generated_directory}/Pilot{row["pc"]}{kind}.v'
+                path = output_dir / 'sources' / output
+                path.parent.mkdir(parents=True, exist_ok=True)
+                path.write_text(outputs[output][1])
+                files.append({'path': str(path), 'sha256': hashlib.sha256(path.read_bytes()).hexdigest()})
+            cases.append({'pc': PROFILE.pc(row['pc']), 'status': 'source_declarations_rendered',
+                          'entry': files[0], 'structural': files[1], 'qualified_entry': qualified_entry(row['pc']),
+                          'source_boundary': 'loop_exits#' + row['pc'], 'proof_ran': False})
+        (output_dir / 'RESULT.json').write_text(json.dumps(
+            {'status': 'SOURCE_DECLARATIONS_ONLY', 'function': PROFILE.name, 'cases': cases,
+             'contradiction_checks': [{key: value for key, value in check.items() if key not in ('binders', 'facts')}
+                                      for check in checks]}, indent=2) + '\n')
+        print('Rendered', len(outputs), 'loop-exit declarations into', output_dir)
+        return
     for output, (source, committed) in outputs.items():
         rows[output]['canonical_source'] = source
         rows[output]['sha256'] = hashlib.sha256(source.encode()).hexdigest()
         rows[output]['renderer'] = 'tools/block/render_loop_exits.py'
         (ROOT / output).write_text(committed)
-    for row in obligations:
-        (ROOT / row['output']).write_text(row['source'])
     fixture['contradiction_checks'] = [{key: value for key, value in check.items() if key not in ('binders', 'facts')}
                                        for check in checks]
-    fixture['exit_obligations'] = [{key: value for key, value in row.items() if key != 'source'} for row in obligations]
+    fixture['exit_obligations'] = obligations
     FIXTURE.write_text(json.dumps(fixture, indent=2, ensure_ascii=False) + '\n')
     print('Rendered', len(outputs), 'loop-exit declarations.')
 

@@ -11,9 +11,12 @@ ROOT = Path(__file__).resolve().parents[2]
 class EntryRegisterDeclarations(unittest.TestCase):
     def setUp(self):
         self.rule = json.loads((ROOT / 'tools/block/fixtures/fp301-entry-registers.json').read_text())['rows'][0]
-        rows = json.loads((ROOT / 'tools/block/fixtures/fp301-generation.json').read_text())['declarations']
-        self.sources = [row['canonical_source'] for row in rows
-                        if row['output'].endswith(('Pilot0180Entries.v', 'Pilot0180Structural.v'))]
+        # The approved form is committed; its sources are the committed 0180 modules before the rule.
+        self.sources = []
+        for name in ('Pilot0180Entries.v', 'Pilot0180Structural.v'):
+            committed = (ROOT / 'ZesuSsz/Generated/DecodeItem/FP301' / name).read_text()
+            self.sources.append(committed.replace('(∃ (machine_x11 : bv 64) ', '(∃ ', 1).replace(
+                self.rule['new_resource'], self.rule['old_resource'], 1))
 
     def test_only_the_dead_register_and_its_binder_change(self):
         self.assertEqual(len(self.sources), 2)

@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
-# Render one function's FP301 blocks: forward pass, loop heads, entries, callers and, for a profile
-# with `"entry_hist": "wrap"`, the history edge instances.
+# Render one function's FP301 blocks: forward pass, loop heads, entries (with the profile's
+# return-package design), loop-exit entries (profile `loop_exits`), callers (with the profile's
+# `design_callers`) and, for a profile with `"entry_hist": "wrap"`, the history edge instances.
 #
 # Usage: tools/block/render_function.sh FUNCTION INPUTS RUNDIR BANK [EXTRA_COQC_FLAG...]
 #   FUNCTION  profile name (tools/block/functions/FUNCTION.json)
@@ -70,14 +71,28 @@ manifest=$inputs/SEED-MANIFEST.json
   "${loop_heads[@]}" --record-refusals > "$run/render.log" 2>&1
 echo "render: $(head -c 300 "$run/render.log" | tr '\n' ' ')"
 
-[ -d "$run/callers" ] || $guard python3 tools/block/render_function_callers.py --function "$function_name" \
-  --entries "$run/render/RESULT.json" --cfg "$inputs/FUNCTION.json" --output "$run/callers" > "$run/callers.log" 2>&1
+generated=$(profile_value generated_directory)
+extra=()
+if [ -n "$(profile_value loop_exits)" ]; then
+  # The loop-exit entries derive from the run's own loop-head classes; they join the entry modules.
+  [ -f "$run/loop-exits/RESULT.json" ] || $guard env OCAMLPATH="$ocamlpath" python3 tools/block/render_loop_exits.py \
+    --function "$function_name" --coqc-args "$run/coqc-args.json" --output "$run/loop-exits" \
+    --loop-heads-dir "$run/render/sources/$generated" > "$run/loop-exits.log" 2>&1
+  cp "$run/loop-exits/sources/$generated"/*.v "$run/render/sources/$generated/"
+  extra=(--extra-entries "$run/loop-exits/RESULT.json")
+  echo "loop exits: $(tail -c 200 "$run/loop-exits.log" | tr '\n' ' ')"
+fi
+
+[ -d "$run/callers" ] || { $guard python3 tools/block/render_function_callers.py --function "$function_name" \
+  --entries "$run/render/RESULT.json" "${extra[@]}" --cfg "$inputs/FUNCTION.json" --output "$run/callers" \
+  > "$run/callers.log" 2>&1
+  if [ -n "$(profile_value design_callers)" ]; then
+    $guard python3 tools/block/render_design_callers.py --function "$function_name" --write \
+      --output "$run/callers" >> "$run/callers.log" 2>&1
+  fi; }
 echo "callers: $(tail -c 200 "$run/callers.log" | tr '\n' ' ')"
 
-if [ "$(profile_value entry_hist)" = wrap ]; then
-  generated=$(profile_value generated_directory)
-  [ -f "$run/EDGES.json" ] || $guard python3 tools/block/render_edges.py --function "$function_name" \
-    --entries "$run/render/RESULT.json" --forward "$run/forward" --cfg "$inputs/FUNCTION.json" \
-    --output "$run/EDGES.json" --rocq-dir "$run/render/sources/$generated" > "$run/edges.log" 2>&1
-  echo "edges: $(tail -c 300 "$run/edges.log")"
-fi
+[ -f "$run/EDGES.json" ] || $guard python3 tools/block/render_edges.py --function "$function_name" \
+  --entries "$run/render/RESULT.json" --forward "$run/forward" --cfg "$inputs/FUNCTION.json" \
+  --output "$run/EDGES.json" --rocq-dir "$run/render/sources/$generated" > "$run/edges.log" 2>&1
+echo "edges: $(tail -c 300 "$run/edges.log")"

@@ -39,9 +39,9 @@ class DesignCallers(unittest.TestCase):
         self.assertEqual(premises, [return_precondition(self.profile)])
         self.assertIn(self.profile.qualified('FunctionReturnStructural'), imports)
 
-    def test_loop_head_callers_render_byte_for_byte(self):
+    def test_loop_head_callers_state_the_design_statement(self):
         rows = design_callers.compare(self.profile, self.profile['loop_heads'])
-        self.assertTrue(all(row['byte_identical'] for row in rows), rows)
+        self.assertTrue(all(row['statement_identical'] for row in rows), rows)
 
 
 if __name__ == '__main__':

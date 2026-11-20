@@ -5,7 +5,7 @@ exit, and the selected code. A block with successors gets the entry of each
 successor, in design-table order; a block with a return clause gets the
 function-return package. The statement comes from render_block_caller and the
 proof is always `zesu_block2.`; this renderer writes declarations only. A block
-that has a residual module imports it, as render_caller does.
+that has a residual module imports it (render_fp301_statements.residual_import).
 
 The fixture binds the design table by sha256 and stores one sha256 for each
 rendered caller. --check renders again and compares the design hash, the
@@ -135,6 +135,9 @@ def main():
     group.add_argument('--check', action='store_true')
     group.add_argument('--compare', nargs='+', metavar='CASE')
     parser.add_argument('--function', default=None, help='function profile (default: decodeItem)')
+    parser.add_argument('--output', type=Path, default=None,
+                        help='with --write: write the callers into this directory (a driver run) and leave '
+                             'the committed callers and the fixture untouched')
     options = parser.parse_args()
     profile = load_profile(options.function)
     if options.compare:
@@ -150,6 +153,12 @@ def main():
         print('Design callers match the design table.')
         return 0
     rows = render_rows(profile)
+    if options.output is not None:
+        options.output.mkdir(parents=True, exist_ok=True)
+        for row in rows:
+            (options.output / Path(row['output']).name).write_text(row['source'])
+        print(json.dumps({'design_callers': len(rows), 'output': str(options.output)}))
+        return 0
     for row in rows:
         (ROOT / row['output']).write_text(row['source'])
     (ROOT / profile['design_callers']['fixture']).write_text(

@@ -5,7 +5,7 @@ from pathlib import Path
 import unittest
 
 ROOT = Path(__file__).resolve().parents[1]
-PIN = ROOT / 'tools/block/FP-20261121.json'
+PIN = ROOT / 'tools/block/FP-20261122.json'
 
 
 class EnginePin(unittest.TestCase):

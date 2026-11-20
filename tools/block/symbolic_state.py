@@ -903,14 +903,21 @@ def _implied_ram_guard(condition, rows):
     return decision[1] if decision is not None and decision[0] else None
 
 
+# Profile key `keep_source_implied_ram_guards` (functions/run_source_pass.py sets it): a function
+# whose committed entries and residual lemmas state the RAM guards of its stack stores keeps them.
+KEEP_SOURCE_IMPLIED_RAM_GUARDS = False
+
+
 def _drop_source_implied_ram_guards(initial, evaluator):
     """Carry no new RAM guard that the source intervals already imply.
 
     Every successor entry states the domain those intervals come from, so the
     guard adds no fact; carried, it adds two widened bounds per access to every
     later entry. The block proof still discharges the trace guard itself.
+    With KEEP_SOURCE_IMPLIED_RAM_GUARDS every guard stays a path condition.
     """
-    if evaluator.status != 'complete' or not initial.source_intervals:
+    if (KEEP_SOURCE_IMPLIED_RAM_GUARDS or evaluator.status != 'complete'
+            or not initial.source_intervals):
         return
     kept = []
     for condition in evaluator.state.conditions:
