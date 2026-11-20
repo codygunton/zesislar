@@ -316,7 +316,12 @@ Definition ReviewedParentHeaderArgsWellFormed (args : ParentHeaderArgs) : Prop :
   separateRanges 0xa0400f00 8
     (bv_unsigned (parentHeaderStackPointer args) - 400) 400 /\
   separateRanges 0xa0400f00 8
-    (bv_unsigned (parentHeaderStackPointer args) - 400 - 112) 112.
+    (bv_unsigned (parentHeaderStackPointer args) - 400 - 112) 112 /\
+  ~ (exists headerLength payloadLength,
+       candidateDecodeItem (parentHeaderInputBytes args) =
+         candidateSuccess true headerLength payloadLength /\
+       binaryWrapCase headerLength payloadLength
+         ((headerLength + payloadLength) mod 2 ^ 64)).
 
 Definition ReviewedParentHeaderSysRegs (args : ParentHeaderArgs) :
     list (reg_kind * valu_shape) :=

@@ -10,6 +10,7 @@
     "ZesuSsz/Contracts/ParentHeaderContract.v",
     "ZesuSsz/Contracts/ParentHeaderLevel1.v",
     "ZesuSsz/Contracts/ParentHeaderMemcpyService.v",
+    "ZesuSsz/Contracts/ParentHeaderOuterWrapFacts.v",
     "ZesuSsz/Contracts/ParentHeaderRequiredFields.v",
     "ZesuSsz/Contracts/ParentHeaderRootFacts.v",
     "ZesuSsz/Contracts/ParentHeaderRung2.v"
@@ -45,6 +46,12 @@
     },
     {
       "path": "ZesuSsz/Contracts/ParentHeaderMemcpyService.v",
+      "category": "contracts",
+      "scope": "whole_file",
+      "text_kind": "hand_written"
+    },
+    {
+      "path": "ZesuSsz/Contracts/ParentHeaderOuterWrapFacts.v",
       "category": "contracts",
       "scope": "whole_file",
       "text_kind": "hand_written"

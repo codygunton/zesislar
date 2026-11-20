@@ -99,8 +99,26 @@ Definition parentHeaderCall (args : ParentHeaderArgs) : ParentHeaderCall :=
      headerMemcpySourceBefore := parentHeaderMemcpySourceBefore args;
      headerMemcpyScratchBefore := parentHeaderMemcpyScratchBefore args |}.
 
+(* RlpLongLengthWrap (KnownBugs.v) on the first decodeItem call (0x800d5cf4),
+   which decodes the whole input. On a list that wraps, the call reports
+   success with payload length at least 2^64 - 9. The list check at
+   0x800d5d14 and the zero check at 0x800d5d1c pass, and the call at
+   0x800d5d34 receives that length. The parent does not own that range, so
+   that call would read beyond the input. A wrapped string fails the list
+   check and returns an error with no further call, so it stays in the
+   domain. Wraps at later calls stay in the domain as well: each advances
+   by the consumed count, which fits the remaining slice, and the meaning
+   names them (nestedWrapOccurs). *)
+Definition parentHeaderOuterListWrap (input : list byte) : Prop :=
+  exists headerLength payloadLength,
+    candidateDecodeItem input =
+      candidateSuccess true headerLength payloadLength /\
+    binaryWrapCase headerLength payloadLength
+      ((headerLength + payloadLength) mod word64Modulus).
+
 (* Each machine bound is a separate conjunct on bv_unsigned of a register
-   value, with a constant on the other side (F44). *)
+   value, with a constant on the other side (F44). The last conjunct
+   excludes the outer list wrap above. *)
 Definition parentHeaderArgsWellFormed (args : ParentHeaderArgs) : Prop :=
   Z.of_nat (length (parentHeaderInputBytes args)) =
     bv_unsigned (parentHeaderInputLength args) /\
@@ -135,7 +153,8 @@ Definition parentHeaderArgsWellFormed (args : ParentHeaderArgs) : Prop :=
     parentHeaderStackBytes /\
   separateRanges ziskExtraParamsAddress parentHeaderScratchSize
     (bv_unsigned (parentHeaderStackPointer args) - parentHeaderStackBytes -
-       parentHeaderCalleeBytes) parentHeaderCalleeBytes.
+       parentHeaderCalleeBytes) parentHeaderCalleeBytes /\
+  ~ parentHeaderOuterListWrap (parentHeaderInputBytes args).
 
 (* zisk_input_end holds the input end that the decodeItem calls need. *)
 Definition parentHeaderSysRegs (args : ParentHeaderArgs) :
