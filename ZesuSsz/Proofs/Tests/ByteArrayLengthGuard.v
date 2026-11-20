@@ -1,7 +1,7 @@
 From Coq Require Import ZArith.ZArith Lists.List.
 From stdpp Require Import list bitvector.definitions.
-Require Import ZesuSsz.Automation2.All.
 Import ListNotations.
+Require Import ZesuSsz.Automation2.All.
 Local Open Scope Z_scope.
 
 (* The assembler's conversion steps compare list lengths only through
