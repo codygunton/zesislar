@@ -21,42 +21,32 @@ Require ZesuSsz.Generated.NextUint64.FP301.Pilot009cEntries.
 Require ZesuSsz.Generated.NextUint64.FP301.Pilot00a4Entries.
 Require ZesuSsz.Generated.NextUint64.FP301.Pilot00b8Entries.
 Require ZesuSsz.Interfaces.DecodeItem.
+Require ZesuSsz.Proofs.NextUint64.FP301.Caller0000.
 Require ZesuSsz.Proofs.NextUint64.FP301.Caller0044.
 Require ZesuSsz.Proofs.NextUint64.FP301.Caller004c.
+Require ZesuSsz.Proofs.NextUint64.FP301.Caller0058.
 Require ZesuSsz.Proofs.NextUint64.FP301.Caller0064.
 Require ZesuSsz.Proofs.NextUint64.FP301.Caller0070.
 Require ZesuSsz.Proofs.NextUint64.FP301.Caller0090.
+Require ZesuSsz.Proofs.NextUint64.FP301.Caller009c.
 Require ZesuSsz.Proofs.NextUint64.FP301.Caller00a4.
 Require ZesuSsz.Proofs.NextUint64.FP301.Caller00b8.
 Import ListNotations.
 Local Open Scope Z_scope.
 
-(* The 3 open blocks: each field is the statement its block proof must close. *)
-Record NextUint64OpenBlocks : Prop := {
-  nextUint64Open_800d6274 :
+(* The 0 open blocks: each field is the statement its block proof must close. *)
+Record NextUint64OpenBlocks : Prop := Build_NextUint64OpenBlocks {}.
+Definition nextUint64OpenBlocks : NextUint64OpenBlocks := Build_NextUint64OpenBlocks.
+
+(* The 10 closed blocks, from their compiled callers. *)
+Record NextUint64ClosedBlocks : Prop := {
+  nextUint64Closed_800d6274 :
     forall (Sigma : gFunctors) `{!islaG Sigma} `{!threadG},
     nextUint64BlockAt 0x800d6274 (@ZesuSsz.Generated.NextUint64.FP301.Pilot0000Entries.fp_machineAt0000 Sigma _ _) (forall (args : NextUint64Args) (returnAddress : Z) (K : iProp Sigma),
     ⊢ instr_pre 0x800d62b8 (ZesuSsz.Generated.NextUint64.FP301.Pilot0044Entries.fp_machineAt0044 (args) (returnAddress) (K))%I -∗
       instr_pre 0x800d6960 (ZesuSsz.Interfaces.DecodeItem.decodeItemCallSpec2)%I -∗
       nextUint64SelectedCode -∗
       instr_body 0x800d6274 ((ZesuSsz.Generated.NextUint64.FP301.Pilot0000Entries.fp_machineAt0000 (args) (returnAddress) K) ∗ True));
-  nextUint64Open_800d62cc :
-    forall (Sigma : gFunctors) `{!islaG Sigma} `{!threadG},
-    nextUint64BlockAt 0x800d62cc (@ZesuSsz.Generated.NextUint64.FP301.Pilot0058Entries.fp_machineAt0058 Sigma _ _) (forall (args : NextUint64Args) (returnAddress : Z) (K : iProp Sigma),
-    ⊢ instr_pre 0x800d62d8 (ZesuSsz.Generated.NextUint64.FP301.Pilot0064Entries.fp_machineAt0064 (args) (returnAddress) (K))%I -∗
-      instr_pre 0x800d6304 (ZesuSsz.Generated.NextUint64.FP301.Pilot0090Entries.fp_machineAt0090 (args) (returnAddress) (K))%I -∗
-      nextUint64SelectedCode -∗
-      instr_body 0x800d62cc ((ZesuSsz.Generated.NextUint64.FP301.Pilot0058Entries.fp_machineAt0058 (args) (returnAddress) K) ∗ True));
-  nextUint64Open_800d6310 :
-    forall (Sigma : gFunctors) `{!islaG Sigma} `{!threadG},
-    nextUint64BlockAt 0x800d6310 (@ZesuSsz.Generated.NextUint64.FP301.Pilot009cEntries.fp_machineAt009c Sigma _ _) (forall (args : NextUint64Args) (returnAddress : Z) (K : iProp Sigma),
-    ⊢ instr_pre 0x800d6318 (ZesuSsz.Generated.NextUint64.FP301.Pilot00a4Entries.fp_machineAt00a4 (args) (returnAddress) (K))%I -∗
-      nextUint64SelectedCode -∗
-      instr_body 0x800d6310 ((ZesuSsz.Generated.NextUint64.FP301.Pilot009cEntries.fp_machineAt009c (args) (returnAddress) K) ∗ True))
-}.
-
-(* The 7 closed blocks, from their compiled callers. *)
-Record NextUint64ClosedBlocks : Prop := {
   nextUint64Closed_800d62b8 :
     forall (Sigma : gFunctors) `{!islaG Sigma} `{!threadG},
     nextUint64BlockAt 0x800d62b8 (@ZesuSsz.Generated.NextUint64.FP301.Pilot0044Entries.fp_machineAt0044 Sigma _ _) (forall (args : NextUint64Args) (returnAddress : Z) (K : iProp Sigma),
@@ -71,6 +61,13 @@ Record NextUint64ClosedBlocks : Prop := {
       instr_pre 0x800d62d8 (ZesuSsz.Generated.NextUint64.FP301.Pilot0064Entries.fp_machineAt0064 (args) (returnAddress) (K))%I -∗
       nextUint64SelectedCode -∗
       instr_body 0x800d62c0 ((ZesuSsz.Generated.NextUint64.FP301.Pilot004cEntries.fp_machineAt004c (args) (returnAddress) K) ∗ True));
+  nextUint64Closed_800d62cc :
+    forall (Sigma : gFunctors) `{!islaG Sigma} `{!threadG},
+    nextUint64BlockAt 0x800d62cc (@ZesuSsz.Generated.NextUint64.FP301.Pilot0058Entries.fp_machineAt0058 Sigma _ _) (forall (args : NextUint64Args) (returnAddress : Z) (K : iProp Sigma),
+    ⊢ instr_pre 0x800d62d8 (ZesuSsz.Generated.NextUint64.FP301.Pilot0064Entries.fp_machineAt0064 (args) (returnAddress) (K))%I -∗
+      instr_pre 0x800d6304 (ZesuSsz.Generated.NextUint64.FP301.Pilot0090Entries.fp_machineAt0090 (args) (returnAddress) (K))%I -∗
+      nextUint64SelectedCode -∗
+      instr_body 0x800d62cc ((ZesuSsz.Generated.NextUint64.FP301.Pilot0058Entries.fp_machineAt0058 (args) (returnAddress) K) ∗ True));
   nextUint64Closed_800d62d8 :
     forall (Sigma : gFunctors) `{!islaG Sigma} `{!threadG},
     nextUint64BlockAt 0x800d62d8 (@ZesuSsz.Generated.NextUint64.FP301.Pilot0064Entries.fp_machineAt0064 Sigma _ _) (forall (args : NextUint64Args) (returnAddress : Z) (K : iProp Sigma),
@@ -90,6 +87,12 @@ Record NextUint64ClosedBlocks : Prop := {
       instr_pre 0x800d632c (ZesuSsz.Generated.NextUint64.FP301.Pilot00b8Entries.fp_machineAt00b8 (args) (returnAddress) (K))%I -∗
       nextUint64SelectedCode -∗
       instr_body 0x800d6304 ((ZesuSsz.Generated.NextUint64.FP301.Pilot0090Entries.fp_machineAt0090 (args) (returnAddress) K) ∗ True));
+  nextUint64Closed_800d6310 :
+    forall (Sigma : gFunctors) `{!islaG Sigma} `{!threadG},
+    nextUint64BlockAt 0x800d6310 (@ZesuSsz.Generated.NextUint64.FP301.Pilot009cEntries.fp_machineAt009c Sigma _ _) (forall (args : NextUint64Args) (returnAddress : Z) (K : iProp Sigma),
+    ⊢ instr_pre 0x800d6318 (ZesuSsz.Generated.NextUint64.FP301.Pilot00a4Entries.fp_machineAt00a4 (args) (returnAddress) (K))%I -∗
+      nextUint64SelectedCode -∗
+      instr_body 0x800d6310 ((ZesuSsz.Generated.NextUint64.FP301.Pilot009cEntries.fp_machineAt009c (args) (returnAddress) K) ∗ True));
   nextUint64Closed_800d6318 :
     forall (Sigma : gFunctors) `{!islaG Sigma} `{!threadG},
     nextUint64BlockAt 0x800d6318 (@ZesuSsz.Generated.NextUint64.FP301.Pilot00a4Entries.fp_machineAt00a4 Sigma _ _) (forall (args : NextUint64Args) (returnAddress : Z) (K : iProp Sigma),
@@ -106,11 +109,14 @@ Record NextUint64ClosedBlocks : Prop := {
 }.
 
 Definition nextUint64ClosedBlocks : NextUint64ClosedBlocks := {|
+  nextUint64Closed_800d6274 := @ZesuSsz.Proofs.NextUint64.FP301.Caller0000.DesignedBoundary_800d6274;
   nextUint64Closed_800d62b8 := @ZesuSsz.Proofs.NextUint64.FP301.Caller0044.DesignedBoundary_800d62b8;
   nextUint64Closed_800d62c0 := @ZesuSsz.Proofs.NextUint64.FP301.Caller004c.DesignedBoundary_800d62c0;
+  nextUint64Closed_800d62cc := @ZesuSsz.Proofs.NextUint64.FP301.Caller0058.DesignedBoundary_800d62cc;
   nextUint64Closed_800d62d8 := @ZesuSsz.Proofs.NextUint64.FP301.Caller0064.DesignedBoundary_800d62d8;
   nextUint64Closed_800d62e4 := @ZesuSsz.Proofs.NextUint64.FP301.Caller0070.DesignedBoundary_800d62e4;
   nextUint64Closed_800d6304 := @ZesuSsz.Proofs.NextUint64.FP301.Caller0090.DesignedBoundary_800d6304;
+  nextUint64Closed_800d6310 := @ZesuSsz.Proofs.NextUint64.FP301.Caller009c.DesignedBoundary_800d6310;
   nextUint64Closed_800d6318 := @ZesuSsz.Proofs.NextUint64.FP301.Caller00a4.DesignedBoundary_800d6318;
   nextUint64Closed_800d632c := @ZesuSsz.Proofs.NextUint64.FP301.Caller00b8.DesignedBoundary_800d632c
 |}.
