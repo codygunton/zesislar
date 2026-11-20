@@ -1,8 +1,8 @@
 Require Import isla.riscv64.riscv64.
 From Coq Require Import Lists.List ZArith.ZArith NArith.NArith.
 Require Import EvmSailRlp.evm_rlp_types.
-Require Import ZesuSsz.Automation2.All.
 Import ListNotations.
+Require Import ZesuSsz.Automation2.All.
 Local Open Scope Z_scope.
 
 (* Adjacent pieces of every kind from the base on: a word cell, an
