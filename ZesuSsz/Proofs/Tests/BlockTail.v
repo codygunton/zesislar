@@ -207,3 +207,18 @@ Proof.
 Qed.
 
 Print Assumptions block_tail_loop_entry.
+
+(* A callee interface's derived payload window has a strict upper premise
+   `a < k`: the forward step proves both premises from the branch facts and
+   keeps the window; without it the window stays an implication. *)
+Lemma block_tail_forward_strict_window (w : bv 64) (p q : Z) :
+  bv_unsigned w <> 0 -> 8 >= bv_unsigned w ->
+  (0 < bv_unsigned w -> bv_unsigned w < 18446744073709551607 -> p <= q /\ q <= p + 5) ->
+  p <= q.
+Proof.
+  intros Hnonzero Hsmall Hwindow.
+  zesu_tail_forward_window_facts.
+  assumption.
+Qed.
+
+Print Assumptions block_tail_forward_strict_window.

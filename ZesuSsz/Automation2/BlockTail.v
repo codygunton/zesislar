@@ -67,8 +67,9 @@ Ltac zesu_tail_lia_select :=
   end;
   ZesuSsz.Automation2.CallSlice.zesu_call_slice_lia.
 
-(* A generated window fact `0 < a -> a <= k -> window` whose premises are
-   branch facts. *)
+(* A generated window fact `0 < a -> a <= k -> window`, or a derived fact of a
+   callee interface `0 < a -> a < k -> window`, whose premises are branch
+   facts. *)
 Ltac zesu_tail_order_goal :=
   first [ assumption
         | match goal with H : bv_unsigned ?w <> 0%Z |- (0 < bv_unsigned ?w)%Z => exact (ZesuSsz.Automation2.CallSlice.zesu_call_slice_unsigned_pos _ w H) end
@@ -76,6 +77,11 @@ Ltac zesu_tail_order_goal :=
 Ltac zesu_tail_forward_window_facts :=
   repeat match goal with
   | Himp : ((0 < ?a)%Z -> (?a <= ?k)%Z -> ?r) |- _ =>
+      let H := fresh "HtailWindow" in
+      assert (H : r) by (apply Himp; zesu_tail_order_goal);
+      clear Himp;
+      destruct H as [? ?]
+  | Himp : ((0 < ?a)%Z -> (?a < ?k)%Z -> ?r) |- _ =>
       let H := fresh "HtailWindow" in
       assert (H : r) by (apply Himp; zesu_tail_order_goal);
       clear Himp;
