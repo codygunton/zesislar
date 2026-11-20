@@ -25,15 +25,16 @@ Open Scope Z_scope.
    1. sailPureParentHeader is a pure model of sailParentHeaderRun on the
       whole input (rlp_node_cursor, then the field loop). That the monadic
       run computes this model is SailParentHeaderModel (the Sail evaluation
-      step; not proved here).
+      step; proved in ParentHeaderSailEvaluation.v,
+      sailParentHeaderModel_holds).
    2. fieldDivergentb lists, per reached field, every item shape on which
       the candidate's step and Sail's step can disagree; walkNoDivergence
       adds a missing required field and a malformed item after field 18,
       parentHeaderNoDivergence the outer item. KnownBugTriggersCoverDivergences
-      says the KnownBug triggers exclude all of them. With the drafted
-      triggers it is false: the scratch module
-      _build/agents/rebuild/2.4m2/DivergenceWitnesses.v computes inputs on
-      which no trigger fires and parentHeaderNoDivergence is false.
+      says the KnownBug triggers exclude all of them; it is proved for the
+      approved triggers in ParentHeaderTriggerCoverage.v
+      (knownBugTriggersCoverDivergences), which also states the plan's
+      theorem candidateParentHeader_sail with no premise.
    3. One step lemma per field kind (FieldStepAgrees): outside
       fieldDivergentb the candidate's step and Sail's step agree. All 19
       are proved below.
@@ -130,7 +131,7 @@ Definition sailValuesOfFields (fields : ParentHeaderFields) : SailParentValues :
     else None;
 |}.
 
-(* Step 1 (Sail evaluation, open): the monadic run computes the model. *)
+(* Step 1 (Sail evaluation): the monadic run computes the model. *)
 Definition SailParentHeaderModel : Prop :=
   forall bytes : list byte,
     headerFits bytes -> Z.of_nat (List.length bytes) < 2 ^ 31 ->
@@ -200,7 +201,7 @@ Definition parentHeaderNoDivergence (bytes : list byte) : bool :=
   | _ => true
   end.
 
-(* Open: false for the drafted triggers (see DIVERGENCES.md of the lane).
+(* Proved in ParentHeaderTriggerCoverage.v.
    Outside the triggers, either no reached field diverges, or the two
    divergences cancel: the candidate and the Sail model both reject (for
    example a blob gas used Sail rejects followed by an excess blob gas item
