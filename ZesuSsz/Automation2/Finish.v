@@ -282,6 +282,21 @@ Ltac zesu_finish_known_list_shape :=
         rewrite (take_ge xs n Htake); clear Htake
       end; reflexivity] |
     solve [zesu_normalize_known_list_lengths; zesu_lia] |
+    (* Two closed lists of bit vectors (05a4: a stored byte `[1]` against
+       the byte cell's `[bv_extract 0 8 1]`): decided by computation.
+       `reflexivity` refuses them, the word's well-formedness proofs differ
+       as terms. *)
+    solve [lazymatch goal with
+      | |- @eq (list (bv _)) ?lhs ?rhs =>
+          ZesuSsz.Automation2.VmClosed.zesu_vm_closed lhs;
+          ZesuSsz.Automation2.VmClosed.zesu_vm_closed rhs;
+          let proposition := constr:(lhs = rhs) in
+          let decision := constr:(_ : Decision proposition) in
+          let result := eval vm_compute in (@bool_decide proposition decision) in
+          constr_eq result true;
+          refine (@bool_decide_eq_true_1 proposition decision _);
+          vm_cast_no_check (eq_refl true)
+      end] |
     (* The bit-vector solver reads the facts the goal reaches, never the
        whole context: on a 199-fact context it ran for hours. *)
     solve [ZesuSsz.Automation2.ContextCollection.zesu_solve_goal_selected
