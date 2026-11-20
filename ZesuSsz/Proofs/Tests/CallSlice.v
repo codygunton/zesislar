@@ -492,8 +492,8 @@ Qed.
 (* The slice is the rest the previous nextUint64 call returned
    (`ZesuCallSliceRefResult`): its words are that call's rest words, its
    window follows from the previous call's record and the stated window of
-   that call's slice. Without the record no window is found and the step does
-   not apply. *)
+   that call's slice. With the record sealed away the step finds no window
+   and does not apply. *)
 Lemma call_slice_by_reference_rest (args : ParentHeaderArgs) (p0 l0 w0 w8 : bv 64)
     (res : NextUint64Return) (argv0 : list (bv 64)) (a13 a14 a15 a16 a17 : bv 64) (R : iProp Sigma) :
   parentHeaderArgsWellFormed args ->
@@ -519,33 +519,12 @@ Lemma call_slice_by_reference_rest (args : ParentHeaderArgs) (p0 l0 w0 w8 : bv 6
     R.
 Proof.
   iIntros (Hwf [Hlo Hhi] Hres Hw0 Hw8) "? ? ? ? ?".
+  apply zesu_hist_intro in Hres.
+  Fail zesu_call_slice_step.
+  apply zesu_hist_elim in Hres.
   zesu_call_slice_step.
   iFrame.
 Qed.
-
-Goal forall (args : ParentHeaderArgs) (p0 l0 w0 w8 : bv 64)
-    (a13 a14 a15 a16 a17 : bv 64) (R : iProp Sigma),
-  parentHeaderArgsWellFormed args ->
-  (bv_unsigned (parentHeaderInputPointer args) <= bv_unsigned p0 /\
-   bv_unsigned p0 + bv_unsigned l0 <= bv_unsigned (parentHeaderInputPointer args) + Z.of_nat (@length (bv 8) (parentHeaderInputBytes args)))%Z ->
-  bv_unsigned (parentHeaderInputPointer args) ↦ₘ∗ parentHeaderInputBytes args -∗
-  CELLS (bv_unsigned (parentHeaderStackPointer args) - 400 + 48) w0 -∗
-  CELLS (bv_unsigned (parentHeaderStackPointer args) - 400 + 48 + 8) w8 -∗
-  (bv_unsigned (parentHeaderStackPointer args) - 400 + 48 + 56 + 40) ↦ₘ? 136 -∗
-  R -∗
-  ∃ x : list byte *ₗ bv 64 *ₗ bv 64 *ₗ (),
-    bv_unsigned (REF args) ↦ₘ x.3ₗ ∗
-    (bv_unsigned (REF args) + 8) ↦ₘ x.2ₗ ∗
-    bv_unsigned x.3ₗ ↦ₘ∗ x.1ₗ ∗
-    bv_unsigned (NOUT args) ↦ₘ? 16 ∗
-    ⌜Z.of_nat (length x.1ₗ) = bv_unsigned x.2ₗ⌝ ∗
-    ⌜nextUint64CallDomain (nextUint64CallDataArgs [NOUT args; REF args; w8; a13; a14; a15; a16; a17]
-       (SP args) x.3ₗ (parentHeaderInputEnd args) x.1ₗ)⌝ ∗
-    R.
-Proof.
-  iIntros (args p0 l0 w0 w8 a13 a14 a15 a16 a17 R Hwf [Hlo Hhi]) "? ? ? ? ?".
-  Fail zesu_call_slice_step.
-Abort.
 End by_reference.
 
 Print Assumptions call_slice_window_advanced.
