@@ -6,8 +6,8 @@ import sys
 import unittest
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from call_boundary import (CallRefused, _argv_lookups, _atoms, _unfold, _unfolded_definitions,
-                           parse_machine_call_spec)
+from call_boundary import (CallRefused, _argv_lookups, _atoms, _replaced_caller_value, _unfold,
+                           _unfolded_definitions, parse_machine_call_spec)
 
 ROOT = Path(__file__).resolve().parents[2]
 SOURCE = 'ZesuSsz/Contracts/ParentHeaderMemcpyService.v'
@@ -52,6 +52,17 @@ class ArgumentLookups(unittest.TestCase):
         self.assertNotIn('!!!', facts)
         for register in ('machine_x13', 'machine_x14', 'machine_x15', 'machine_x16', 'machine_x17'):
             self.assertNotIn(register, facts)
+
+
+class ReplacedCallerArray(unittest.TestCase):
+    def test_a_replaced_whole_array_binds_the_design_caller_value_or_an_existential(self):
+        row = {'binder': 'scratch', 'constant': 'ziskExtraParamsAddress', 'length': 8}
+        self.assertIsNone(_replaced_caller_value(row, 'parentHeaderMemcpyScratchBefore args'))
+        row['caller_value'] = 'parentHeaderMemcpyScratchBefore args'
+        self.assertEqual(_replaced_caller_value(row, 'parentHeaderMemcpyScratchBefore args'),
+                         'parentHeaderMemcpyScratchBefore args')
+        with self.assertRaises(CallRefused):
+            _replaced_caller_value(row, 'join_resource_7_bytes')
 
 
 if __name__ == '__main__':

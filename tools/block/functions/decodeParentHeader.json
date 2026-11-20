@@ -650,6 +650,7 @@
         {
           "binder": "scratch",
           "constant": "ziskExtraParamsAddress",
+          "caller_value": "parentHeaderMemcpyScratchBefore args",
           "length": 8,
           "length_source": "memcpyCallSpec2 (ParentHeaderMemcpyService.v): length scratch = 8%nat"
         }

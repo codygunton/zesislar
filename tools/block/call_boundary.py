@@ -273,6 +273,17 @@ def _argv_lookups(fact, argv, arguments):
     return re.sub(r'(?<![\w.])' + lookup, argument, fact)
 
 
+def _replaced_caller_value(design_row, owner_value):
+    """The instantiation of the pre binder of a whole caller array that the callee replaces: the
+    design's `caller_value` (refused unless it is the caller array's value), else None (an
+    existential of the carried facts)."""
+    value = design_row.get('caller_value')
+    if value is not None and value != owner_value:
+        raise CallRefused('The replaced array %s is not the caller value %s (the caller holds %s)'
+                          % (design_row['binder'], value, owner_value))
+    return value
+
+
 RETURN_WORD = re.compile(r'\{word:([A-Za-z_][A-Za-z0-9_]*):([0-9]+)\}')
 
 
@@ -533,7 +544,9 @@ def call_return_seed(edges, *, call, function_root, root_seed, shapes, vocabular
                 raise CallRefused('The replaced array has no unique caller array at ' + row['constant'])
             splits[owner[0].id] = {'whole': True, 'length': design[binder]['length'],
                                    'pre': binder, 'post': post, 'post_value': post_value}
-            instantiation[binder] = None
+            # Its pre binder is the caller array's whole value: a design `caller_value` names it
+            # (it must be that array's value), so the carried facts bind no existential for it.
+            instantiation[binder] = _replaced_caller_value(design[binder], owner[0].byte_array.value)
             continue
         # The callee replaces these bytes: find the caller resource by offset.
         resource, offset = caller_span(row, design[binder]['length'])
