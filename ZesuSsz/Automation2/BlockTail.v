@@ -119,12 +119,71 @@ Ltac zesu_tail_exists_conj_core :=
   repeat eexists;
   repeat match goal with |- _ /\ _ => split end;
   first [ eassumption | zesu_tail_roundtrip_exact ].
+
+(* A call record the call step wrote in its own spelling: the pointer and
+   length words as `Z_to_bv 64 z`, the input as the lent window
+   `take (Z.to_nat n) (drop (Z.to_nat s) bytes)`. The successor states the
+   same record with the words as loaded (`bv_concat` of the bytes of `z`) and
+   the input as the whole array. Each loaded word of the goal is rewritten to
+   `Z_to_bv w z` once (`WrappedWord.zesu_word_concat_bytes_eq`); each window
+   of a hypothesis over an array the goal names is rewritten to that array
+   when it starts at 0 and spans its length (order facts only). *)
+Lemma zesu_tail_take_drop_whole {A} (n s : Z) (l : list A) :
+  s = 0 -> n = Z.of_nat (length l) -> take (Z.to_nat n) (drop (Z.to_nat s) l) = l.
+Proof. intros -> ->. rewrite Nat2Z.id. apply firstn_all. Qed.
+
+Ltac zesu_tail_range_eq :=
+  rewrite ?Z_to_bv_unsigned;
+  repeat match goal with
+  | |- context [bv_wrap ?n ?z] =>
+      let E := fresh "HtailWrap" in
+      assert (E : bv_wrap n z = z) by (apply bv_wrap_small; zesu_tail_lia_select);
+      rewrite E; clear E
+  end;
+  zesu_tail_lia_select.
+
+Ltac zesu_tail_concat_low t :=
+  lazymatch t with
+  | bv_concat _ _ ?low => zesu_tail_concat_low low
+  | Z_to_bv 8 (Z.shiftr ?z _) => z
+  end.
+
+Ltac zesu_tail_word_views :=
+  progress repeat match goal with
+  | |- context [bv_concat ?n ?h ?lo] =>
+      let t := constr:(bv_concat n h lo) in
+      let z := zesu_tail_concat_low t in
+      ZesuSsz.Automation2.WrappedWord.zesu_word_concat_bytes_of t z;
+      let E := fresh "HtailWord" in
+      assert (E : t = Z_to_bv n z) by ZesuSsz.Automation2.WrappedWord.zesu_word_concat_bytes_eq;
+      rewrite E; clear E
+  end.
+
+Ltac zesu_tail_whole_slice_views :=
+  progress repeat match goal with
+  | H : context [take (Z.to_nat ?n) (drop (Z.to_nat ?s) ?l)] |- _ =>
+      lazymatch goal with |- context [l] => idtac end;
+      let T := constr:(take (Z.to_nat n) (drop (Z.to_nat s) l)) in
+      let E := fresh "HtailWhole" in
+      assert (E : T = l) by (apply zesu_tail_take_drop_whole; zesu_tail_range_eq);
+      repeat match goal with
+      | H' : context [T] |- _ => tryif constr_eq H' E then fail else rewrite E in H'
+      end;
+      clear E
+  end.
+
+Ltac zesu_tail_call_record_views :=
+  first [ zesu_tail_word_views; try zesu_tail_whole_slice_views
+        | zesu_tail_whole_slice_views ].
+
 (* A conjunct can follow only from a folded precondition (a domain predicate
    of conjunctions) once it is opened; `repeat eexists` unfolds a defined
    conjunct into its parts, which then stand as separate goals. The opening
    runs only after the plain attempt fails, so a goal that closes without it
    keeps its existing route, and a context with nothing folded fails at once
-   (`zesu_open_folded_facts` fails when it opens nothing). *)
+   (`zesu_open_folded_facts` fails when it opens nothing). The call-record
+   views run last, and fail at once when the goal has no loaded word and no
+   hypothesis a lent window. *)
 Ltac zesu_tail_exists_conj :=
   lazymatch goal with
   | |- environments.envs_entails _ _ => fail
@@ -132,6 +191,8 @@ Ltac zesu_tail_exists_conj :=
   end;
   first [ solve [zesu_tail_exists_conj_core]
         | ZesuSsz.Automation2.Hooks.zesu_open_folded_facts;
+          solve [zesu_tail_exists_conj_core]
+        | zesu_tail_call_record_views;
           solve [zesu_tail_exists_conj_core] ].
 
 (* The length of a list built from pieces of known length. *)

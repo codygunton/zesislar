@@ -139,4 +139,71 @@ Proof.
   rewrite negb_true_iff; apply bool_decide_eq_false; exact (Himp w HP).
 Qed.
 
+(* A call record the call step wrote with integer words and the lent window,
+   against the successor's record with the words as loaded and the whole
+   array (nextUint64 0000 at the return to 0044). *)
+Local Notation loaded_word z :=
+  (bv_concat 64 (bv_concat 56 (bv_concat 48 (bv_concat 40 (bv_concat 32 (bv_concat 24 (bv_concat 16
+     (Z_to_bv 8 (z ≫ (8 * 7%nat))) (Z_to_bv 8 (z ≫ (8 * 6%nat))))
+     (Z_to_bv 8 (z ≫ (8 * 5%nat)))) (Z_to_bv 8 (z ≫ (8 * 4%nat))))
+     (Z_to_bv 8 (z ≫ (8 * 3%nat)))) (Z_to_bv 8 (z ≫ (8 * 2%nat))))
+     (Z_to_bv 8 (z ≫ (8 * 1%nat)))) (Z_to_bv 8 (z ≫ (8 * 0%nat)))).
+
+Lemma block_tail_call_record (D : list (bv 64) -> list (bv 8) -> Prop)
+    (M : list (bv 64) -> list (bv 8) -> Z -> Prop) (p : Z) (bytes : list (bv 8)) (x : bv 64) (r : Z) :
+  0 <= p -> p + Z.of_nat (length bytes) < 18446744073709551616 ->
+  D [Z_to_bv 64 p; Z_to_bv 64 (Z.of_nat (length bytes)); x]
+    (take (Z.to_nat (bv_unsigned (Z_to_bv 64 (Z.of_nat (length bytes)))))
+       (drop (Z.to_nat (bv_unsigned (Z_to_bv 64 p) - p)) bytes)) ->
+  M [Z_to_bv 64 p; Z_to_bv 64 (Z.of_nat (length bytes)); x]
+    (take (Z.to_nat (bv_unsigned (Z_to_bv 64 (Z.of_nat (length bytes)))))
+       (drop (Z.to_nat (bv_unsigned (Z_to_bv 64 p) - p)) bytes)) r ->
+  exists y : bv 64,
+    D [loaded_word p; loaded_word (Z.of_nat (length bytes)); y] bytes /\
+    M [loaded_word p; loaded_word (Z.of_nat (length bytes)); y] bytes r.
+Proof.
+  intros Hp Hfit HD HM.
+  Fail solve [ZesuSsz.Automation2.BlockTail.zesu_tail_exists_conj_core].
+  zesu_block_tail_one.
+Qed.
+
+(* Guards: a word whose bytes come from two integers is not rewritten; a
+   window that does not start at the array's base is not the array; a window
+   over an array the goal does not name is not touched. *)
+Goal forall (Q : bv 16 -> Prop) (a b : Z),
+  Q (bv_concat 16 (Z_to_bv 8 (b ≫ 8)) (Z_to_bv 8 (a ≫ 0))) ->
+  Q (bv_concat 16 (Z_to_bv 8 (b ≫ 8)) (Z_to_bv 8 (a ≫ 0))).
+Proof.
+  intros Q a b HQ.
+  Fail ZesuSsz.Automation2.BlockTail.zesu_tail_word_views.
+  exact HQ.
+Qed.
+Goal forall (Q : bv 16 -> Prop) (a : Z),
+  Q (Z_to_bv 16 a) -> Q (bv_concat 16 (Z_to_bv 8 (a ≫ 8)) (Z_to_bv 8 (a ≫ 0))).
+Proof.
+  intros Q a HQ.
+  ZesuSsz.Automation2.BlockTail.zesu_tail_word_views.
+  exact HQ.
+Qed.
+Goal forall (P : list (bv 8) -> Prop) (p : Z) (bytes : list (bv 8)),
+  1 <= p -> p + Z.of_nat (length bytes) < 18446744073709551616 ->
+  P (take (Z.to_nat (bv_unsigned (Z_to_bv 64 (Z.of_nat (length bytes)))))
+       (drop (Z.to_nat (bv_unsigned (Z_to_bv 64 p) - (p - 1))) bytes)) ->
+  P bytes -> P bytes.
+Proof.
+  intros P p bytes Hp Hfit HP HQ.
+  Fail ZesuSsz.Automation2.BlockTail.zesu_tail_whole_slice_views.
+  exact HQ.
+Qed.
+Goal forall (P : list (bv 8) -> Prop) (p : Z) (bytes other : list (bv 8)),
+  0 <= p -> p + Z.of_nat (length bytes) < 18446744073709551616 ->
+  P (take (Z.to_nat (bv_unsigned (Z_to_bv 64 (Z.of_nat (length bytes)))))
+       (drop (Z.to_nat (bv_unsigned (Z_to_bv 64 p) - p)) bytes)) ->
+  P other -> P other.
+Proof.
+  intros P p bytes other Hp Hfit HP HQ.
+  Fail ZesuSsz.Automation2.BlockTail.zesu_tail_whole_slice_views.
+  exact HQ.
+Qed.
+
 Print Assumptions block_tail_loop_entry.
