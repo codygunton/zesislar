@@ -26,7 +26,7 @@ Context `{!islaG Sigma} `{!threadG}.
 Global Instance zesu_hist_edge_13 (args : NextUint64Args) (returnAddress : Z) (call_after : DecodeItemOutcome) :
   ZesuHistEdge (PROP := iProp Sigma)
     (fp_machineAt00a4_LoopClass0_Hist (args) (returnAddress) (call_after))
-    (fp_machineAt00b8_ForwardA0N0_Hist (args) (returnAddress) (call_after))
+    (fp_machineAt00b8_ForwardA0N0_Hist (args) (returnAddress))
     (True)%I.
 Proof.
   rewrite /ZesuHistEdge => Hh. apply zesu_hist_elim in Hh. unfold fp_machineAt00a4_LoopClass0_Hist in Hh.
@@ -43,10 +43,8 @@ Proof.
   split; [by vm_compute|].
   split; [by vm_compute|].
   split; [by vm_compute|].
-  split; [zesu_hist_view HF1|].
   split; [by vm_compute|].
   split; [by vm_compute|].
-  split; [zesu_hist_view HF2|].
   split; [by vm_compute|].
   split; [by vm_compute|].
   by vm_compute.
