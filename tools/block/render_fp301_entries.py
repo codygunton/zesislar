@@ -270,6 +270,8 @@ def entry_units(suffix):
 
 units = [unit for suffix in pilots for unit in entry_units(suffix)]
 module_definitions = {}
+module_requires_of = {}   # stem -> the `entry_facts` imports of its module
+from return_exit import add_entry_facts
 for suffix, slot in units:
     if suffix in tails:
         pc = return_pc(suffix)
@@ -647,9 +649,21 @@ for suffix, slot in units:
     entry = directory / (module + ".v")
     # The slots of one block share its module.
     written = module_definitions.setdefault(stem, [])
-    written.extend(last_emit)
+    # Profile `entry_facts`: design facts a named entry variant states after its own pure facts,
+    # with the modules they need (decodeItem's accepted/rejected exits).
+    entry_facts = profile.get("entry_facts", {})
+    requires = []
+    for symbol, definition, kind in last_emit:
+        spec = entry_facts.get(symbol) if kind == "entry" else None
+        if spec:
+            definition = add_entry_facts(definition, spec["facts"])
+            requires.extend(line + "\n" for line in spec.get("requires", []) if line + "\n" not in requires)
+        written.append((symbol, definition, kind))
+    module_requires = module_requires_of.setdefault(stem, [])
+    module_requires.extend(line for line in requires if line not in module_requires)
     # Only a module that declares a history needs the history library.
     library = entry_hist.HIST_LIBRARY if any(kind == "hist" for _, _, kind in written) else ""
+    library += "".join(module_requires)
     entry.write_text(header + library + "\n".join(definition for _, definition, _ in written))
     structural = directory / (stem + "Structural.v")
     source = (header + library
