@@ -1,5 +1,8 @@
 {
   "function": "decodeParentHeader",
+  "hist_visible": [
+    "bv_signed \\(BV 128%N 8%Z\\)"
+  ],
   "args_type": "ParentHeaderArgs",
   "symbol": "rlp_decode.decodeParentHeader",
   "generated_directory": "ZesuSsz/Generated/DecodeParentHeader/FP301",
@@ -698,7 +701,10 @@
         "register": "x11",
         "array": "parentHeaderInputBytes args",
         "extent_reason": "1 <= length (parentHeaderInputBytes args): the payload lies inside the input array and is not empty (beq before the loop)"
-      }
+      },
+      "visible": [
+        "bv_signed \\(BV 128%N 8%Z\\)"
+      ]
     },
     {
       "head": "+0x334",
@@ -737,7 +743,10 @@
         "register": "x11",
         "array": "parentHeaderInputBytes args",
         "extent_reason": "1 <= length (parentHeaderInputBytes args): the payload lies inside the input array and is not empty (beq before the loop)"
-      }
+      },
+      "visible": [
+        "bv_signed \\(BV 128%N 8%Z\\)"
+      ]
     },
     {
       "head": "+0x39c",
@@ -776,7 +785,10 @@
         "register": "x11",
         "array": "parentHeaderInputBytes args",
         "extent_reason": "1 <= length (parentHeaderInputBytes args): the payload lies inside the input array and is not empty (beq before the loop)"
-      }
+      },
+      "visible": [
+        "bv_signed \\(BV 128%N 8%Z\\)"
+      ]
     }
   ],
   "function_returns": [

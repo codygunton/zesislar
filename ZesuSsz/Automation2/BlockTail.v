@@ -9,6 +9,7 @@ Require ZesuSsz.Automation2.BytePositionEquations.
 Require ZesuSsz.Automation2.ByteWindowFold.
 Require ZesuSsz.Automation2.Finish.
 Require ZesuSsz.Automation2.Hooks.
+Require ZesuSsz.Automation2.Hist.
 Require Import ZesuSsz.Automation2.LoopExit.
 From iris.proofmode Require Import environments tactics.
 From stdpp Require Import base list decidable bitvector.definitions bitvector.tactics.
@@ -105,7 +106,8 @@ Ltac zesu_tail_loop_entry :=
       zesu_tail_forward_window_facts;
       iExists (li_pair 0%Z tt);
       cbv [li_fst li_snd];
-      repeat (first [ iSplit; [iPureIntro; zesu_tail_pure_closer|]
+      repeat (first [ ZesuSsz.Automation2.Hist.zesu_hist_step
+                    | iSplit; [iPureIntro; zesu_tail_pure_closer|]
                     | iSplit; [iPureIntro|] ]);
       try iFrame
   end.
@@ -233,7 +235,8 @@ Ltac zesu_tail_fold_zero_goal :=
 
 Ltac ZesuSsz.Automation2.Finish.zesu_block_tail_one ::=
   first
-  [ zesu_tail_bool_disj
+  [ solve [ZesuSsz.Automation2.Hist.zesu_hist_reveal_pure]
+  | zesu_tail_bool_disj
   | zesu_tail_fold_zero_goal
   | zesu_cursor_index_close
   | zesu_tail_window_goal
@@ -241,4 +244,5 @@ Ltac ZesuSsz.Automation2.Finish.zesu_block_tail_one ::=
   | solve [zesu_tail_length_goal]
   | solve [zesu_tail_branch_fact_goal]
   | zesu_tail_loop_entry
+  | solve [ZesuSsz.Automation2.Hist.zesu_hist_exit_view]
   | zesu_loop_exit_witnesses ].

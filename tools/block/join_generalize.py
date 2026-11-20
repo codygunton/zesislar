@@ -11,9 +11,11 @@ from pathlib import Path
 import re
 
 try:
+    from . import entry_hist
     from .guard_normal_form import GuardNormalForm
     from .symbolic_state import Expr, bits, input_expr, operation
 except ImportError:
+    import entry_hist
     from guard_normal_form import GuardNormalForm
     from symbolic_state import Expr, bits, input_expr, operation
 
@@ -369,24 +371,61 @@ def _symbolic(value):
     return value.op not in {'bits', 'enum'} and (not value.args or any(_symbolic(arg) for arg in value.args))
 
 
-def common_conditions(alternatives, plan):
-    """Preserve exact common guards before deriving binder-correlated guards."""
-    paths = [[normalize(Expr.from_dict(value)) for value in alternative['state']['conditions']]
-             for alternative in alternatives]
-    exact = [value for index, value in enumerate(paths[0])
-             if value not in paths[0][:index] and all(value in path for path in paths[1:])]
+def _renamed_paths(alternatives, plan):
+    """Each edge's guards with its widened symbolic values replaced by the join binders."""
     renamed = []
-    for path, edge in zip(paths, plan['edges']):
+    for alternative, edge in zip(alternatives, plan['edges']):
         mapping = {}
         for binder in plan['binders']:
             value = normalize(Expr.from_dict(edge['widened_substitution'][binder['name']]))
             # Replacing a constant would also replace unrelated guard literals.
             if _symbolic(value):
                 mapping.setdefault(value, input_expr(binder['name'], value.width))
-        renamed.append([substitute(value, mapping) for value in path])
+        renamed.append([substitute(normalize(Expr.from_dict(value)), mapping)
+                        for value in alternative['state']['conditions']])
+    return renamed
+
+
+def common_conditions(alternatives, plan):
+    """Preserve exact common guards before deriving binder-correlated guards."""
+    paths = [[normalize(Expr.from_dict(value)) for value in alternative['state']['conditions']]
+             for alternative in alternatives]
+    exact = [value for index, value in enumerate(paths[0])
+             if value not in paths[0][:index] and all(value in path for path in paths[1:])]
+    renamed = _renamed_paths(alternatives, plan)
     correlated = [value for index, value in enumerate(renamed[0])
                   if value not in renamed[0][:index] and all(value in path for path in renamed[1:])]
     return exact + [value for value in correlated if value not in exact]
+
+
+def _path_local(value):
+    return value.op == 'local' or any(_path_local(arg) for arg in value.args)
+
+
+def edge_guard_disjunction(alternatives, common):
+    """Which edge reached the join: the disjunction, in edge order, of each edge's own guards.
+
+    Applies when every edge leaves the same seed's tree from its own predecessor (one
+    disjunct per predecessor block); an edge's own guards are its exact source guards that are
+    not common, without path-local trace values (a guard renamed onto a join binder would lose
+    its source meaning: the binder holds a different value on each edge). None when the rule
+    does not apply or an edge has no own guard. Sound: each edge satisfies its disjunct.
+    """
+    predecessors = [alternative.get('predecessor_pc') for alternative in alternatives]
+    if (len(alternatives) < 2 or None in predecessors or len(set(predecessors)) != len(predecessors)
+            or len({alternative.get('seed_pc') for alternative in alternatives}) != 1):
+        return None
+    disjuncts = []
+    for alternative in alternatives:
+        path = [normalize(Expr.from_dict(value)) for value in alternative['state']['conditions']]
+        own = []
+        for value in path:
+            if value not in common and value not in own and not _path_local(value):
+                own.append(value)
+        if not own:
+            return None
+        disjuncts.append(own[0] if len(own) == 1 else Expr('and', args=tuple(own)))
+    return Expr('or', args=tuple(disjuncts))
 
 
 def _remove_terminal(tree, terminal_id):
@@ -727,8 +766,11 @@ def _defined_name(source):
 
 
 def _bound_names(source):
-    """The names a pure fact `⌜∃ (n : T) ..., P⌝` binds in its leading telescope."""
+    """The names a pure fact `⌜∃ (n : T) ..., P⌝` (or a join history `⌜zesu_join_history (∃ ..., P)⌝`)
+    binds in its leading telescope."""
     text = source[1:].lstrip() if source.startswith('⌜') else ''
+    if text.startswith(JOIN_HISTORY + ' ('):
+        text = text[len(JOIN_HISTORY) + 2:]
     if not text.startswith('∃'):
         return set()
     names, index = set(), 1
@@ -751,12 +793,170 @@ def _bound_names(source):
         index = end + 1
 
 
+def _free_in_fact(text, name):
+    """`text` (a pure fact without brackets) names `name` outside every existential that binds it:
+    the fact's own telescope and those of history group members (`∃ b…, (F1) /\\ (∃ c…, G) …`)."""
+    text = text.strip()
+    if text.startswith(JOIN_HISTORY + ' (') and text.endswith(')'):
+        text = text[len(JOIN_HISTORY) + 2:-1].strip()
+    if not text.startswith('∃'):
+        return _mentions(text, name)
+    names = _bound_names('⌜' + text)
+    if not names:
+        return _mentions(text, name)
+    if name in names:
+        return False
+    members = history_members('⌜' + text + '⌝')
+    if members is None:
+        return _mentions(text, name)
+    return any(_free_in_fact(member, name) for member in members)
+
+
 def _mentions_free(component, name):
-    """A non-register component names `name` outside a pure fact's own existential binders."""
+    """A non-register component names `name` outside a pure fact's existential binders (its own
+    and, in a history group, those of the group's members)."""
     source = component.get('source', '')
-    return name not in _bound_names(source) and _mentions(source, name)
+    if source.startswith('⌜') and source.endswith('⌝'):
+        return _free_in_fact(source[1:-1], name)
+    return _mentions(source, name)
+
+# The head of a join's hidden history fact (`ZesuSsz.Automation2.Hist`): the renderer keeps it hidden.
+JOIN_HISTORY = 'zesu_join_history'
 
 
+def ghost_group(components, binders):
+    """Bind `binders` ([(name, type)], in seed order) around the pure facts that name them.
+
+    The facts become one fact `⌜zesu_join_history (∃ binders, F1 /\\ ... /\\ Fk)⌝` at the first
+    such component (component order); the others become `⌜True⌝`. Each edge proves it with its
+    own values of the binders, so it replaces dropping those facts (a weaker, sound history).
+    The same facts and binders give the same text on every edge. Returns the group's id or None."""
+    members = [component for component in components
+               if component.get('kind') != 'register' and component.get('source', '').startswith('⌜')
+               and component['source'].endswith('⌝')
+               and any(_mentions_free(component, name) for name, _ in binders)]
+    if not members:
+        return None
+    used = [(name, kind) for name, kind in binders if any(_mentions_free(row, name) for row in members)]
+    group = '∃ ' + ' '.join('(%s : %s)' % row for row in used) + ', ' + ' /\\ '.join(
+        '(' + row['source'][1:-1] + ')' for row in members)
+    members[0]['source'] = '⌜' + JOIN_HISTORY + ' (' + group + ')⌝'
+    for row in members[1:]:
+        row['source'] = '⌜True⌝'
+    return members[0]['id']
+
+
+def history_members(source):
+    """The member facts of a history group `⌜∃ b…, (F1) /\\ … /\\ (Fk)⌝` or
+    `⌜zesu_join_history (∃ b…, (F1) /\\ …)⌝` (ghost_group's two shapes), or None."""
+    if not (source.startswith('⌜') and source.endswith('⌝')):
+        return None
+    text = source[1:-1].strip()
+    if text.startswith(JOIN_HISTORY + ' (') and text.endswith(')'):
+        text = text[len(JOIN_HISTORY) + 2:-1].strip()
+    if not text.startswith('∃ '):
+        return None
+    depth, comma = 0, None
+    for position, char in enumerate(text):
+        depth += {'(': 1, ')': -1}.get(char, 0)
+        if char == ',' and depth == 0:
+            comma = position
+            break
+    if comma is None:
+        return None
+    body, members, depth, start = text[comma + 1:].strip(), [], 0, 0
+    for position, char in enumerate(body):
+        depth += {'(': 1, ')': -1, '[': 1, ']': -1}.get(char, 0)
+        if depth == 0 and body.startswith('/\\', position):
+            members.append(body[start:position].strip())
+            start = position + 2
+    members.append(body[start:].strip())
+    facts = []
+    for member in members:
+        if not (member.startswith('(') and member.endswith(')')):
+            return None
+        depth = 0
+        for char in member[:-1]:
+            depth += {'(': 1, ')': -1}.get(char, 0)
+            if depth == 0:
+                return None
+        facts.append(member[1:-1])
+    return facts
+
+
+def _bind_group(record, kinds, key, group, members):
+    """On one edge, the components that hold the group's members (the group's own component among
+    them when it states a member), or None when a member is missing or the group's component holds
+    another fact."""
+    own = record[key].get('source', '')
+    if own != '⌜True⌝' and own[1:-1] not in members:
+        return None
+    pure = {}
+    for other, row in record.items():
+        if kinds.get(other) != 'register' and row.get('source', '').startswith('⌜'):
+            pure.setdefault(row['source'], []).append(other)
+    chosen = []
+    for member in members:
+        candidates = [other for other in pure.get('⌜' + member + '⌝', []) if other not in chosen]
+        if key in candidates:
+            candidates = [key]
+        if not candidates:
+            return None
+        chosen.append(candidates[0])
+    return chosen
+
+
+def align_history_groups(records, kinds):
+    """Bind, on an edge that states them one per component, the facts that another edge holds in
+    one history group at the same component (the group text of an earlier join or loop head seed;
+    a member may itself be an older group, which the edge then holds at that component).
+
+    records: one {component id: component} per edge (changed in place). A component is aligned only
+    when every edge that does not state the group holds every member as one of its pure components,
+    textually, and the group's component holds one of the members or True there (no other fact is
+    replaced); otherwise no edge changes. Each edge proves the group with its own values of the
+    group's binders, so the alignment is a weakening that loses no member.
+    Returns [{'component', 'edge', 'members'}]."""
+    aligned = []
+    for key in [key for key in records[0] if kinds.get(key) != 'register']:
+        sources = [record[key].get('source', '') for record in records]
+        if len(set(sources)) == 1:
+            continue
+        for group in dict.fromkeys(source for source in sources if history_members(source)):
+            members = history_members(group)
+            bound = {index: _bind_group(record, kinds, key, group, members)
+                     for index, record in enumerate(records) if record[key].get('source') != group}
+            if any(chosen is None for chosen in bound.values()):
+                continue
+            for index, chosen in bound.items():
+                for other in chosen:
+                    records[index][other]['source'] = '⌜True⌝'
+                records[index][key]['source'] = group
+                aligned.append({'component': key, 'edge': index, 'members': chosen})
+            break
+    return aligned
+
+
+def check_fact_accounting(edge_facts, components, plan):
+    """Every component that states a pure fact on some edge is a pure fact of the join, a member of
+    one of its history groups, or a drop that the plan logs under a named rule. Returns the record;
+    raises on a fact that the join loses silently."""
+    result = {component['id']: component.get('source', '') for component in components}
+    grouped = set(plan.get('ghost_history', {}).get('facts', []))
+    dropped = {row['component']: row['rule'] for row in plan.get('dropped_facts', [])}
+    for row in plan.get('dropped_binders', []):
+        for key in row.get('facts', []):
+            dropped.setdefault(key, 'unheld_binder:' + row['binder'])
+    kept, lost = [], []
+    for key in edge_facts:
+        if result.get(key, '⌜True⌝') != '⌜True⌝' or key in grouped:
+            kept.append(key)
+        elif key not in dropped:
+            lost.append(key)
+    if lost:
+        raise ValueError('A join loses pure facts without a named rule: ' + ', '.join(lost))
+    return {'kept': len(kept), 'dropped': [{'component': key, 'rule': dropped[key]}
+                                           for key in edge_facts if key in dropped and key not in kept]}
 
 
 def _fact_names(sources):
@@ -835,6 +1035,12 @@ def forget_array_bytes(state, component):
 def drop_unheld_binders(state, components, carried, binders, plan, live_registers, render_span):
     """Remove inherited binders that no register or whole array holds.
 
+    0. (`entry_hist` mode) The pure facts that would be dropped with b are kept instead, bound
+       under existentials over the dropped binders they name, as one hidden `zesu_join_history`
+       fact (each edge proves it with its own values). Nothing of the group is visible: a block
+       after the join reads a fact of it only through a `ZesuHistReveal` or edge instance. (A
+       join binder needs a register or array holder for its witness, so b itself is not kept.)
+
     1. A pure equation `b = e` defines b: substitute e and drop the equation.
     2. Otherwise drop b: a register that mentions it gets a fresh binder c it holds, an agreed
        span byte that mentions it becomes uninitialized again. A path condition or pure fact
@@ -853,6 +1059,8 @@ def drop_unheld_binders(state, components, carried, binders, plan, live_register
     held |= {component.get('value') for component in components if component['kind'] == 'byte_array'}
     taken = ({binder['name'] for binder in binders} | {binder['name'] for binder in plan['binders']}
              | _fact_names(component.get('source', '') for component in components))
+    # Facts that would be dropped wait here and are bound under one existential at the end.
+    stash = {}
     for name in [binder['name'] for binder in binders]:
         if name in held:
             continue
@@ -882,6 +1090,9 @@ def drop_unheld_binders(state, components, carried, binders, plan, live_register
                 if component['kind'] != 'register' and _mentions_free(component, name):
                     component['source'] = re.sub(r"(?<![\w'])" + re.escape(name) + r"(?![\w'])",
                                                  lambda _: '(' + other.coq() + ')', component['source'])
+            for key in stash:
+                stash[key] = re.sub(r"(?<![\w'])" + re.escape(name) + r"(?![\w'])",
+                                    lambda _: '(' + other.coq() + ')', stash[key])
             plan.setdefault('dropped_binders', []).append({'binder': name, 'rule': 'definition',
                                                            'definition': other.to_dict()})
             continue
@@ -909,6 +1120,9 @@ def drop_unheld_binders(state, components, carried, binders, plan, live_register
                 if component['kind'] != 'register' and _mentions_free(component, name):
                     component['source'] = re.sub(r"(?<![\w'])" + re.escape(name) + r"(?![\w'])",
                                                  lambda _: '(' + definition.coq() + ')', component['source'])
+            for key in stash:
+                stash[key] = re.sub(r"(?<![\w'])" + re.escape(name) + r"(?![\w'])",
+                                    lambda _: '(' + definition.coq() + ')', stash[key])
             plan['binders'].append({'name': fresh.value, 'type': 'bv %d' % fresh_width, 'value_key': register})
             held.add(fresh.value)
             plan.setdefault('dropped_binders', []).append({'binder': name, 'rule': 'register_definition',
@@ -994,6 +1208,8 @@ def drop_unheld_binders(state, components, carried, binders, plan, live_register
                     component['source'] = kept
                     record.setdefault('kept_facts', []).append(component['id'])
                     continue
+                if entry_hist.HIST_MODE:
+                    stash[component['id']] = component['source']
                 component['source'] = '⌜True⌝'
                 record.setdefault('facts', []).append(component['id'])
         if any(_mentions_free(component, name) for component in components
@@ -1001,6 +1217,18 @@ def drop_unheld_binders(state, components, carried, binders, plan, live_register
             raise ValueError('An inherited join binder stays in an owned resource: ' + name)
         plan.setdefault('dropped_binders', []).append(record)
     state.writes = [w for rows in carried.values() for w in rows]
+    if stash:
+        text = lambda value: json.dumps(value.to_dict(), sort_keys=True)
+        for component in components:
+            if component['id'] in stash:
+                component['source'] = stash[component['id']]
+        elsewhere = lambda name: (name in held or any(_mentions(text(value), name) for value in state.registers.values())
+                                  or any(_mentions(text(condition), name) for condition in state.conditions)
+                                  or any(_mentions_free(component, name) for component in components
+                                         if component['kind'] != 'register' and component['id'] not in stash))
+        ghosts = [(binder['name'], binder['type']) for binder in binders if not elsewhere(binder['name'])]
+        group = ghost_group([component for component in components if component['id'] in stash], ghosts)
+        plan['ghost_history'] = {'component': group, 'facts': sorted(stash)}
 
 
 def _addends(value):
@@ -1188,6 +1416,43 @@ def generalize_owned_join(alternatives, *, original_seed, entry_pc, vocabulary,
             raise ValueError('A join edge changes the owned resource set')
         records.append(components)
     states = [_state_from_result(alternative['state']) for alternative in alternatives]
+    # History that an edge already holds under one existential (a loop head or an earlier join
+    # dropped its binders) is bound the same way on the other edges, so the edges agree on it.
+    known = {binder['name']: binder['type'] for binder in [*original_binders, *inherited_binders]}
+    kinds = {component['id']: component['kind'] for component in ownership['components']}
+    # A path condition does not hold a binder: the join keeps only the conditions common to every edge.
+    dumped = [' '.join(json.dumps(value.to_dict(), sort_keys=True) for value in state.registers.values())
+              for state in states]
+    # (`entry_hist` mode) An edge through an earlier join or loop head states some facts inside
+    # that seed's history group (`⌜∃ b…, (F1) /\ …⌝`, visible or `zesu_join_history`), while an edge
+    # that bypasses the seed states the same facts one per component. The bypassing edge binds them
+    # the same way (each b is its own value of b), so the edges agree on the group.
+    if entry_hist.HIST_MODE:
+        records[:] = [{key: dict(row) for key, row in record.items()} for record in records]
+        for aligned in align_history_groups(records, kinds):
+            plan.setdefault('aligned_history', []).append(aligned)
+    def held_outside(index, binder_name):
+        return (_mentions(dumped[index], binder_name)
+                or any(_mentions_free(row, binder_name) for row in records[index].values()
+                       if kinds[row['id']] != 'register' and not row.get('source', '').startswith('⌜')))
+    def in_facts(index, binder_name):
+        return any(_mentions_free(row, binder_name) for row in records[index].values()
+                   if kinds[row['id']] != 'register' and row.get('source', '').startswith('⌜'))
+    ghosts = [(binder_name, kind) for binder_name, kind in known.items()
+              if not any(held_outside(index, binder_name) for index in range(len(records)))
+              and any(in_facts(index, binder_name) for index in range(len(records)))
+              and not all(in_facts(index, binder_name) for index in range(len(records)))]
+    if ghosts and entry_hist.HIST_MODE:
+        for index, record in enumerate(records):
+            records[index] = record = {key: dict(row) for key, row in record.items()}
+            group = ghost_group([record[row['id']] for row in ownership['components']], ghosts)
+            if group is not None:
+                plan.setdefault('join_ghost_groups', []).append({'edge': index, 'component': group})
+    # Every pure fact an edge states: the join keeps it, binds it in a history group, or logs
+    # its drop under a named rule (check_fact_accounting).
+    edge_facts = sorted({key for record in records for key, row in record.items()
+                         if kinds.get(key) != 'register' and row.get('source', '').startswith('⌜')
+                         and row['source'] != '⌜True⌝'})
     first = states[0]
     if any(state.registers.get('PC') != bits(entry_pc, 64) for state in states):
         raise ValueError('A join edge reaches another program counter')
@@ -1243,6 +1508,10 @@ def generalize_owned_join(alternatives, *, original_seed, entry_pc, vocabulary,
                     if general is not None:
                         plan.setdefault('generalized_facts', []).append(key)
                     else:
+                        plan.setdefault('dropped_facts', []).append(
+                            {'component': key, 'rule': 'edges_disagree',
+                             'edges': [index for index, record in enumerate(records)
+                                       if record[key]['source'] != '⌜True⌝']})
                         # An edge may already state it as True (an earlier join dropped it).
                         defined = {_defined_name(record[key]['source']) for record in records
                                    if record[key]['source'] != '⌜True⌝'}
@@ -1344,6 +1613,10 @@ def generalize_owned_join(alternatives, *, original_seed, entry_pc, vocabulary,
             else:
                 raise ValueError('A common guard has no source condition on every edge')
         plan['common_guard_certificates'].append({'guard': guard.to_dict(), 'edges': matches})
+    disjunction = edge_guard_disjunction(alternatives, state.conditions) if entry_hist.HIST_MODE else None
+    if disjunction is not None:
+        plan['edge_guard_disjunction'] = disjunction.to_dict()
+        state.conditions.append(disjunction)
     for relation in plan['relations']:
         word = input_expr(relation['binder'], relation['width'])
         if relation['kind'] == 'source_equality':
@@ -1387,6 +1660,7 @@ def generalize_owned_join(alternatives, *, original_seed, entry_pc, vocabulary,
                         live_registers, lambda key, writes: _render_span(
                             key, writes, original_seed, ownership, first, apply_owned_writes,
                             render_resource_boundary, vocabulary))
+    plan['fact_accounting'] = check_fact_accounting(edge_facts, components, plan)
     forgotten = {key for row in plan.get('dropped_binders', []) for key in row.get('arrays', [])}
     resources = [replace(resource, byte_array=None, component=next(row for row in components if row['id'] == resource.id))
                  if resource.id in forgotten else resource for resource in resources]

@@ -11,20 +11,27 @@ from render_support import definition_introduction_source, unfold_declaration
 from return_exit import (add_entry_facts, add_return_facts, add_return_precondition,
                          return_blocks, return_package)
 from function_profiles import load_profile, return_alignment_fact, return_header
+import entry_hist
 
 
 ROOT = Path(__file__).resolve().parents[2]
+LOOP_HIST_META = {}
 
 
-def render_loop_head(block, header, structural=False, profile=None):
-    """Keep the source classes and frame the existing caller continuation."""
+def render_loop_head(block, header, structural=False, profile=None, loop_heads=None):
+    """Keep the source classes and frame the existing caller continuation.
+
+    `loop_heads` is the loop-head file to read (default: the profile's committed fixture); a
+    scratch render passes its own so the committed fixture is never rewritten."""
     profile = profile or load_profile()
+    entry_hist.configure(profile)
     domain_binder = ' (domain : ' + profile.args_type + ' -> Prop)'
-    rows = json.loads((ROOT / profile['loop_head_fixture']).read_text())['rows']
+    rows = json.loads(Path(loop_heads or ROOT / profile['loop_head_fixture']).read_text())['rows']
     row = next((item for item in rows if item['block'] == block), None)
     if row is None:
         raise ValueError('No authenticated loop head exists: ' + block)
     definitions = []
+    declarations = []
     authenticated_classes = {}
     for index, source in enumerate(row['classes']):
         # The authenticated class sources keep the names of their generation run.
@@ -46,16 +53,32 @@ def render_loop_head(block, header, structural=False, profile=None):
             'ByteWindowFold.zesu_byte_window_fold',
             'ZesuSsz.Automation2.ByteWindowFold.zesu_byte_window_fold')
         authenticated_classes[name] = source
-        definitions.append((name, grouped_class(source)))
+        # Hidden history and per-slot frame cells for the loop class (profile keys).
+        design = next((item for item in profile.get('loop_designs', [])
+                       if profile.pc(item['head']) == profile.pc(block)), {})
+        binders_text, class_resources, class_facts = class_parts(source)
+        changed = entry_hist.seal_class(
+            name, source[:source.index(':=')], binders_text, class_resources, class_facts,
+            [{'name': 'args', 'type': profile.args_type}, {'name': 'returnAddress', 'type': 'Z'}], design,
+            visible=design.get('visible', []))
+        if changed is None:
+            LOOP_HIST_META.pop(name, None)  # an earlier render of this class in another shape
+            definitions.append((name, grouped_class(source)))
+        else:
+            for symbol, text, kind in changed[0]:
+                declarations.append((symbol, text, kind))
+            definitions.append((name, changed[1]))
+            LOOP_HIST_META[name] = changed[2]
     name = 'fp_machineAt' + block
     alternatives = ' ∨ '.join(symbol + ' args returnAddress' for symbol, _ in definitions)
     definitions.append((name,
         'Definition ' + name + profile.telescope() + ' (K : iProp Sigma)'
         ' : iProp Sigma := ((' + alternatives + ') ∗ K)%I.\n'))
     extra = 'Require Import lithium.lvar.\nRequire Import ZesuSsz.Automation2.ByteWindowFold.\nRequire Import ZesuSsz.Contracts.LoopFoldStart.\n'
-    output = header + extra
+    output = header + extra + (entry_hist.HIST_LIBRARY if entry_hist.HIST_MODE == 'wrap' else '')
     if structural:
         output += 'Require Import ' + profile.qualified('Pilot' + block + 'Entries') + '.\n'
+        output += ''.join(entry_hist.structural_opacity(symbol, kind) for symbol, _, kind in declarations)
         for symbol, definition in definitions:
             output += unfold_declaration(symbol, instance_name=symbol + '_unfold', locality='export')
             # A first-pass registration needs the profile's start lemma; without
@@ -64,7 +87,7 @@ def render_loop_head(block, header, structural=False, profile=None):
                        if symbol in authenticated_classes and profile.get('loop_first_pass') else
                        definition_introduction_source(definition, symbol)) + '\n'
     else:
-        output += '\n'.join(source for _, source in definitions)
+        output += '\n'.join([text for _, text, _ in declarations] + [source for _, source in definitions])
     assert not re.search(r'\b(?:Proof|Qed|Admitted|Axiom|Ltac)\b', output)
     return output
 
@@ -184,15 +207,38 @@ def first_pass_registration(name, source, profile=None):
     for i in range(len(facts[6:])):
         fields.append(projection('Hinitial', 3 + i) if i + 1 < len(facts[6:])
                       else '(proj2 ' + '(proj2 ' * (2 + i) + 'Hinitial' + ')' * (2 + i) + ')')
+    meta = LOOP_HIST_META.get(name)
+    invariant = conj_term(fields)
+    if meta is not None and 'hidden' in meta:
+        # A sealed class is `resources ∗ ⌜visible⌝ ∗ ⌜zesu_hist (Hist …)⌝`; the same
+        # fields, split by the seal's classification, prove both parts.
+        if meta['ghost']:
+            raise ValueError('A sealed loop class with ghost binders has no first-pass registration: ' + name)
+        hidden = {entry_hist.normal(fact) for fact in meta['hidden']}
+        split = [entry_hist.normal(fact) in hidden for fact in facts]
+        assert sum(split) == len(meta['hidden'])
+        visible_fields = [field for field, sealed in zip(fields, split) if not sealed]
+        hidden_fields = [field for field, sealed in zip(fields, split) if sealed]
+        history = ('(' + meta['hist'] + ' args returnAddress'
+                   + ''.join(' ' + binder['name'] for binder in meta['hist_live']) + ')')
+        invariant = ('(conj ' + conj_term(visible_fields) + ' (zesu_hist_intro ' + history + ' '
+                     + (conj_term(hidden_fields) if hidden_fields else 'I') + '))')
+        visible_fun = ('(fun (machine_x13 machine_x15 machine_x16 machine_x11 : bv 64) (i : lvar "zesuLoopIndex" Z) => ('
+                       + entry_hist.conjunction(meta['visible']) + '))')
+        history_fun = ('(fun (machine_x13 machine_x15 machine_x16 machine_x11 : bv 64) (i : lvar "zesuLoopIndex" Z) => '
+                       'zesu_hist ' + history + ')')
     derive = ('(fun Hinitial => let Hstart := @' + first_pass['start_lemma'] + ' args returnAddress '
               + cursor + ' ' + endpoint + ' ' + count + ' (BV 64 0) '
               + domain + ' eq_refl eq_refl ' + count_guard + ' ' + positive + ' eq_refl in '
               + 'match Hstart with conj Hzero (conj Hnonnegative (conj Hcursor (conj Hendpoint Hfold))) => '
-              + conj_term(fields) + ' end)')
+              + invariant + ' end)')
     specialized_resource = substitute(resource_text, values)
     source_pred = '(fun first_x16 : bv 64 => (' + specialized_resource + ' ∗ ⌜' + initial_text + '⌝)%I)'
     target = '(' + name + ' args returnAddress)'
-    step = ('(@zesu_loop_first_pass_intro Sigma (bv 64) (bv 64) (bv 64) (bv 64) '
+    if meta is not None and 'hidden' in meta:
+        invariant_fun = visible_fun + ' ' + history_fun
+    step = ('(@' + ('zesu_loop_first_pass_intro_sealed' if meta is not None and 'hidden' in meta
+                    else 'zesu_loop_first_pass_intro') + ' Sigma (bv 64) (bv 64) (bv 64) (bv 64) '
             + '(lvar "zesuLoopIndex" Z) ' + resource_fun + ' ' + invariant_fun + ' '
             + initial_text + ' (BV 64 0) ' + cursor + ' first_x16 ' + endpoint
             + ' (0%Z : lvar "zesuLoopIndex" Z) ' + derive + ')')

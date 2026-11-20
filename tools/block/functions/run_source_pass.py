@@ -1,4 +1,4 @@
-"""Run the pinned source engine (FP-20261120) from the entry seed, adding generated seeds.
+"""Run the pinned source engine (FP-20261121) from the entry seed, adding generated seeds.
 
 A join is seeded only after every join that can reach it has its seed, so its
 incoming edges are complete. A call's return site is seeded from the callee
@@ -21,6 +21,7 @@ ROOT = Path(__file__).resolve().parents[3]
 sys.path.insert(0, str(ROOT / 'tools/block'))
 from boundary_guards import can_reach, cfg_successors
 from call_boundary import CallRefused, call_return_seed
+import entry_hist
 from function_profiles import add_return_alignment, load_profile
 from loop_design import loop_head_seed
 from forward_resource_design import _state_from_result, evaluate_owned_function
@@ -58,6 +59,7 @@ def main():
     parser.add_argument('--function', default=None, help='function profile with call design rows')
     options = parser.parse_args()
     profile = load_profile(options.function) if options.function else None
+    entry_hist.configure(profile)
     calls = profile.get('calls', []) if profile else []
     loop_designs = profile.get('loop_designs', []) if profile else []
     inputs, output = options.inputs.resolve(), options.output.resolve()
@@ -199,7 +201,10 @@ def main():
                               'common_guards': len(joined['plan']['common_guards']),
                               'join_refusals': joined['plan']['join_refusals'],
                               **({'dropped_binders': joined['plan']['dropped_binders']}
-                                 if joined['plan'].get('dropped_binders') else {})}
+                                 if joined['plan'].get('dropped_binders') else {}),
+                              **{key: joined['plan'][key] for key in ('fact_accounting', 'aligned_history',
+                                                                       'visible_history', 'ghost_history')
+                                 if joined['plan'].get(key)}}
             added = hex(pc)
             break
         rounds.append({'seeds': sorted(seeds), 'added': added})
@@ -258,7 +263,7 @@ def main():
                                                     if roots.get(pc) != pc}}, ensure_ascii=False) + '\n')
     receipt = {'source_pass': bind(output / 'FORWARD.json'), 'level1_K_source': bind(level1),
                'vocabulary': bind(vocabulary_path), 'system_shapes': bind(shapes_path),
-               'engine': bind(ROOT / 'tools/block/FP-20261120.json'), 'joins': bind(output / 'JOINS.json'),
+               'engine': bind(ROOT / 'tools/block/FP-20261121.json'), 'joins': bind(output / 'JOINS.json'),
                'call_seeds': bind(output / 'CALL-SEEDS.json'), 'join_seeds': bind(output / 'JOIN-SEEDS.json')}
     (output / 'INPUT-RECEIPT.json').write_text(json.dumps(receipt, indent=2) + '\n')
     stops = {}

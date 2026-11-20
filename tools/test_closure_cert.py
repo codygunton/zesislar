@@ -174,5 +174,55 @@ class LogCheck(unittest.TestCase):
         C.check_log(log.replace('Axioms:\nbar : 1 = 1', C.CLOSED_TEXT), 'foo', (46, 50), (52, 74))
 
 
+class RecordProblems(unittest.TestCase):
+    """A certificate stays valid while its caller, the entry modules and the edge module the caller
+    loads are unchanged since the certified head; a re-render of any of them voids it."""
+
+    def setUp(self):
+        self.workspace = Path(tempfile.mkdtemp())
+        self.addCleanup(shutil.rmtree, self.workspace)
+        generated = self.workspace / 'ZesuSsz/Generated/X/FP301'
+        generated.mkdir(parents=True)
+        (generated / 'Pilot0001Entries.v').write_text('Require Import ZesuSsz.Generated.X.FP301.Pilot0002Entries.\n')
+        (generated / 'Pilot0002Entries.v').write_text('Definition e := True.\n')
+        (generated / 'Edges0001.v').write_text('Definition f := True.\n')
+        (self.workspace / CALLERS).mkdir(parents=True)
+        caller = (b'Require Import ZesuSsz.Generated.X.FP301.Pilot0001Entries.\n'
+                  b'Require Import ZesuSsz.Generated.X.FP301.Edges0001.\n' + CLOSED)
+        (self.workspace / CALLERS / 'Caller0001.v').write_bytes(caller)
+        git(self.workspace, 'init', '-q')
+        self.commit('render')
+        record = {'schema': C.SCHEMA, 'verdict': 'CLOSED', 'case': '0001',
+                  'generated_caller': CALLERS + '/Caller0001.v', 'head': git(self.workspace, 'rev-parse', 'HEAD'),
+                  'caller_sha256': __import__('hashlib').sha256(caller).hexdigest()}
+        certificate = self.workspace / C.RECORDS / 'x_callers' / '0001' / 'CLOSURE.json'
+        certificate.parent.mkdir(parents=True)
+        certificate.write_text(json.dumps(record))
+        self.commit('certificate')
+
+    def commit(self, message):
+        git(self.workspace, 'add', '.')
+        git(self.workspace, '-c', 'user.name=t', '-c', 'user.email=t@t', 'commit', '-qm', message)
+
+    def problems(self):
+        return C.record_problems(self.workspace, CALLERS, ['0001'])
+
+    def test_an_unchanged_render_keeps_the_certificate(self):
+        self.assertEqual(self.problems(), [])
+
+    def test_a_rerendered_module_voids_the_certificate(self):
+        for module in ('Pilot0002Entries.v', 'Edges0001.v'):
+            with self.subTest(module=module):
+                path = self.workspace / 'ZesuSsz/Generated/X/FP301' / module
+                original = path.read_text()
+                path.write_text(original + '(* re-rendered *)\n')
+                self.commit('re-render ' + module)
+                [problem] = self.problems()
+                self.assertIn('ZesuSsz/Generated/X/FP301/' + module + ' changed since', problem)
+                path.write_text(original)
+                self.commit('restore ' + module)
+                self.assertEqual(self.problems(), [])
+
+
 if __name__ == '__main__':
     unittest.main()

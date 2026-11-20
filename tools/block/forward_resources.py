@@ -11,9 +11,11 @@ from pathlib import Path
 import re
 
 try:
+    from . import entry_hist
     from .entry_seed import _code_mask
     from .symbolic_state import Expr, MemoryWrite, _addends, _offset, bits, operation, uninitialized_binder
 except ImportError:
+    import entry_hist
     from entry_seed import _code_mask
     from symbolic_state import Expr, MemoryWrite, _addends, _offset, bits, operation, uninitialized_binder
 
@@ -129,7 +131,9 @@ def ownership_from_assertion_tree(tree, *, provenance):
         return {'kind': 'component', 'id': resource_id}
     preserved = visit(tree)
     if len({component['id'] for component in components}) != len(components):
-        raise ValueError('The public seed repeats an ownership ID')
+        from collections import Counter
+        raise ValueError('The public seed repeats an ownership ID: '
+                         + ', '.join(key for key, count in Counter(c['id'] for c in components).items() if count > 1))
     return {'schema': 'source-ownership.v1', 'existential_prefixes': [], 'tree': preserved,
             'binders': binders, 'components': components, 'provenance': dict(provenance)}
 
@@ -622,6 +626,14 @@ def _memory_source(resource, image, transitions, aliases, vocabulary):
     if not fraction:
         raise ValueError('The resource has no inherited memory fraction')
     if resource.byte_array is not None:
+        if (entry_hist.HIST_MODE and isinstance(resource.length, int) and resource.length > 0
+                and all(isinstance(position, int) for position in image)
+                and set(range(resource.length)) <= set(image)):
+            # Every byte is stored: the array is the stored bytes, spelled as a call return spells a
+            # stored word (`[bv_extract 0 8 w; ...]`), not as a splice into the old value.
+            values = '; '.join('(' + _scoped_coq(Expr.from_dict(image[position]['value']), aliases) + ')'
+                               for position in range(resource.length))
+            return f'({resource.address_z}) ↦ₘ{{{fraction}}}∗ ([{values}])'
         value = _scoped_coq(resource.byte_array, aliases)
         chunks = [f'(bv_to_little_endian (Z.of_nat {write.size}%nat) 8%N '
                   f'(bv_unsigned ({_scoped_coq(write.value, aliases)} : bv {write.value.width}%N)))'

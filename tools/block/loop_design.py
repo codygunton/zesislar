@@ -16,6 +16,7 @@ import json
 import re
 
 from forward_resource_design import _state_from_result
+from join_generalize import check_fact_accounting
 from symbolic_state import Expr
 
 GPR = re.compile(r'x(?:[0-9]|[12][0-9]|3[01])\Z')
@@ -83,6 +84,49 @@ def _define_unheld(state, binders, design, changed, sources):
     return rewritten
 
 
+def class_components(order, sources, changed, path_conditions, names):
+    """(owned, pure, conditions, accounting) of a loop class from its entry edge: the owned
+    resources (a changed register holds its binder), the pure resource facts, and the path
+    conditions over class names (`names`, and the arguments).
+
+    Every pure fact of the entry edge (a join's ⌜True⌝ placeholder is accounted by that join) and
+    every path condition is a class fact or a drop under a named rule (`trace_local_witness`: no
+    Coq text; `outside_class_scope:<names>`: it names values the class does not bind);
+    join_generalize.check_fact_accounting raises on a silent loss."""
+    owned, pure, components, dropped = [], [], [], []
+    for key in order:
+        text = sources[key]
+        register = re.match(r'"(x\d+)" ↦ᵣ', text)
+        if register and register[1] in changed:
+            owned.append('"%s" ↦ᵣ RVal_Bits (%s : bv 64%%N)' % (register[1], changed[register[1]]))
+        elif text == 'True':
+            continue
+        elif text.startswith('⌜'):
+            pure.append(text)
+            components.append({'id': key, 'source': text})
+        else:
+            owned.append(text)
+    conditions = []
+    for position, condition in enumerate(path_conditions):
+        key = 'path_condition:%d' % position
+        try:
+            text = condition.coq()
+        except ValueError:
+            dropped.append({'component': key, 'rule': 'trace_local_witness'})
+            continue
+        outside = sorted(name for name in _inputs(condition) if name not in names and 'args' not in name)
+        if outside:
+            dropped.append({'component': key, 'rule': 'outside_class_scope:' + ','.join(outside)})
+            continue
+        conditions.append('⌜(%s) = true⌝' % text)
+        components.append({'id': key, 'source': conditions[-1]})
+    accounting = check_fact_accounting(
+        [key for key in order if sources[key].startswith('⌜') and sources[key] != '⌜True⌝']
+        + ['path_condition:%d' % position for position in range(len(path_conditions))],
+        components, {'dropped_facts': dropped})
+    return owned, pure, conditions, accounting
+
+
 def loop_class(report, design, profile):
     """Return the class definition text and its provenance record."""
     head = profile.pc(design['head'])
@@ -107,30 +151,11 @@ def loop_class(report, design, profile):
     values = state.registers
     entry_values = {name: values[name].coq() for name in values if GPR.fullmatch(name)}
     entry_values.update(rewritten)
-    owned, pure = [], []
-    for key in order:
-        text = sources[key]
-        register = re.match(r'"(x\d+)" ↦ᵣ', text)
-        if register and register[1] in changed:
-            owned.append('"%s" ↦ᵣ RVal_Bits (%s : bv 64%%N)' % (register[1], changed[register[1]]))
-        elif text == 'True':
-            continue
-        elif text.startswith('⌜'):
-            pure.append(text)
-        else:
-            owned.append(text)
-    if pure.count('⌜domain args⌝') != 1:
-        raise ValueError('The loop-entry state has no single domain component.')
     inherited = [(binder['name'], binder['type']) for binder in scope['binders']]
     names = {name for name, _ in inherited} | set(changed.values()) | {design['index']}
-    conditions = []
-    for condition in state.conditions:
-        try:
-            text = condition.coq()
-        except ValueError:
-            continue  # A trace-local witness fact is not a loop fact.
-        if all(name in names or 'args' in name for name in _inputs(condition)):
-            conditions.append('⌜(%s) = true⌝' % text)
+    owned, pure, conditions, _ = class_components(order, sources, changed, state.conditions, names)
+    if pure.count('⌜domain args⌝') != 1:
+        raise ValueError('The loop-entry state has no single domain component.')
     facts = []
     for row in design['facts']:
         text = re.sub(r'\{(x\d+)\}', lambda match: '(' + entry_values[match[1]] + ')', row['coq'])
@@ -245,12 +270,14 @@ if __name__ == '__main__':
     import argparse, sys
     sys.path.insert(0, str(Path(__file__).resolve().parent))
     from function_profiles import load_profile
+    import entry_hist
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--function', required=True)
     parser.add_argument('--forward', type=Path, required=True)
     parser.add_argument('--output', type=Path, required=True)
     options = parser.parse_args()
     profile = load_profile(options.function)
+    entry_hist.configure(profile)
     rows = loop_head_rows(json.loads(options.forward.read_text()), options.forward, profile)
     options.output.write_text(json.dumps(rows, indent=1, ensure_ascii=False) + '\n')
     print(json.dumps({'rows': len(rows['rows']), 'output': str(options.output)}))

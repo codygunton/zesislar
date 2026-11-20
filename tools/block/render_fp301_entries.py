@@ -15,6 +15,8 @@ parser.add_argument("--function", default=None,
                     help="function profile name or path (default: decodeItem)")
 parser.add_argument("--record-refusals", action="store_true",
                     help="record a guard-refused boundary and render the others")
+parser.add_argument("--loop-heads", type=Path, default=None,
+                    help="loop-head file of this render (default: the profile's committed fixture)")
 options = parser.parse_args()
 
 
@@ -78,6 +80,20 @@ def bind(p):
 
 forward = Path(receipt["source_pass"]["path"])
 data = json.loads(forward.read_text())
+# Hidden history (`entry_hist`) and per-slot frame cells (`frame_slots`): profile keys.
+import entry_hist
+entry_hist.configure(load_profile(options.function))
+slot_table = slot_regions = None
+if entry_hist.FRAME_SLOTS:
+    slot_table = entry_hist.frame_slot_table(data, lambda value: Expr.from_dict(value).coq())
+    slot_regions = entry_hist.region_offsets(data)
+    entry_hist.SLOT_TABLE, entry_hist.SLOT_REGIONS = slot_table, slot_regions
+# The call plans of the forward pass (JOINS.json `calls`) and the block starts: at a call block and
+# at a return site the last call's record and its named registers stay visible.
+call_plans = (json.loads((forward.parent / "JOINS.json").read_text()).get("calls", {})
+              if entry_hist.HIST_MODE and (forward.parent / "JOINS.json").exists() else {})
+block_starts = sorted(int(load_profile(options.function).pc(block), 0)
+                      for block in load_profile(options.function)["blocks"])
 vpath = Path(receipt["vocabulary"]["path"])
 vocabulary = load_resource_vocabulary(vpath, bind(vpath)["sha256"])
 array = array_declaration(vocabulary)
@@ -91,6 +107,7 @@ seedpath = Path(seed_manifest["seed"]["path"])
 public_seed = add_return_alignment(load_public_seed(seedpath, bind(seedpath)["sha256"]),
                                    load_profile(options.function))
 domain = json.loads(Path(seed_manifest["domain"]["path"]).read_text())
+entry_hist.CONSTANTS = domain["constants"]
 owned = seed_owned_resources(
     public_seed,
     entry_pc=int(public_seed["entry_pc"], 0),
@@ -180,8 +197,10 @@ for suffix in blocks:
             if not options.record_refusals:
                 raise
             guard_refusals[suffix] = str(error)
+# A join history (`zesu_join_history`) is a Hist definition: the unsealed text needs the library too.
 check = RocqContradictionCheck(
-    json.loads(options.coqc_args.read_text()), header, O / "contradiction-checks",
+    json.loads(options.coqc_args.read_text()), header + (entry_hist.HIST_LIBRARY if entry_hist.HIST_MODE else ""),
+    O / "contradiction-checks",
     profile.args_type,
 )
 
@@ -280,7 +299,8 @@ for suffix, slot in units:
         directory.mkdir(parents=True, exist_ok=True)
         outputs = []
         try:
-            texts = [render_loop_head(suffix, header, structural, profile) for structural in [False, True]]
+            texts = [render_loop_head(suffix, header, structural, profile, options.loop_heads)
+                     for structural in [False, True]]
         except (FileNotFoundError, ValueError) as error:
             # The pass produced no loop-head row (its entry edge is incomplete or refused).
             cases.append({"pc": pc, "status": "refused_no_loop_head_row", "proof_ran": False,
@@ -296,6 +316,9 @@ for suffix, slot in units:
                       "qualified_entry": profile.qualified("Pilot" + suffix + "Entries", "fp_machineAt" + suffix),
                       "source_boundary": profile["loop_head_fixture"] + "#" + suffix,
                       "definition_count": (directory / ("Pilot" + suffix + "Entries.v")).read_text().count("\nDefinition "),
+                      **({"hist": {key: value for key, value in __import__("render_fp301_statements").LOOP_HIST_META.items()
+                                   if key.startswith("fp_machineAt" + suffix + "_")}}
+                         if __import__("render_fp301_statements").LOOP_HIST_META else {}),
                       "proof_ran": False})
         continue
     if suffix in guard_refusals:
@@ -466,10 +489,28 @@ for suffix, slot in units:
                 )
             return component_source(node, {}, {"source_hashes": {}}, W, None)
 
-        def body_source(body):
+        def body_source(body, seal_as=None):
             if body.get("lets") or body.get("loop"):
                 raise ValueError("This source adapter has no let/loop declaration binding.")
-            rendered_components = [(component, render(component)) for component in body["components"]]
+            rendered_components, slot_binders = [], []
+            taken = {binder["name"] for binder in body["existentials"]}
+            for component in body["components"]:
+                text = render(component)
+                split = None
+                if entry_hist.FRAME_SLOTS and component["kind"] in ("byte_array", "unknown_byte_array"):
+                    # One cell per saved-register slot, at the store's address form.
+                    split = entry_hist.slot_components(
+                        component["kind"], component["address"],
+                        component["value" if component["kind"] == "byte_array" else "length"],
+                        slot_table, slot_regions, taken)
+                if split is None:
+                    rendered_components.append((component, text))
+                else:
+                    rendered_components.extend((component, piece) for piece in split[0])
+                    slot_binders.extend(split[1])
+                    slot_reports.append({"address": component["address"], "pieces": len(split[0]),
+                                         "binders": [binder["name"] for binder in split[1]]})
+            body = {**body, "existentials": body["existentials"] + slot_binders}
             result = "(" + " ∗ ".join(text for _, text in rendered_components) + ")"
             # A Level 1 entry witness whose register a path overwrote occurs
             # nowhere in the body; nothing could instantiate it, so it is dropped.
@@ -480,6 +521,18 @@ for suffix, slot in units:
                 or re.search(r"(?<![\w'])" + re.escape(binder["name"]) + r"(?![\w'])",
                              re.sub(r'"[^"]*"', "", result))
             ]
+            if seal_as is not None and entry_hist.HIST_MODE:
+                # Ghost binders and hidden facts move into one history proposition.
+                binders = [{"name": binder["name"], "type": expression(binder["type"], "source type")}
+                           for binder in existentials]
+                sealed[seal_as] = entry_hist.seal_alternative(
+                    seal_as, plain_telescope, plain_binders, binders,
+                    [text for component, text in rendered_components if component["kind"] not in ("pure", "true")],
+                    [text[1:-1] for component, text in rendered_components if component["kind"] == "pure"],
+                    profile.get("hist_visible", [])
+                    # The function return entry (`Return`) is no block: no call record of its own.
+                    + (entry_hist.call_visible_patterns(profile.pc(block[0]), call_plans, block_starts, binders)
+                       if (block := re.match(r"[0-9a-f]+(?=_|$)", suffix)) else []))
             if existentials:
                 telescope = " ".join(
                     "("
@@ -510,6 +563,9 @@ for suffix, slot in units:
             return result
 
         definitions = []
+        sealed, emit = {}, []
+        plain_binders = [{"name": "args", "type": profile.args_type}, {"name": "returnAddress", "type": "Z"}]
+        plain_telescope = " " + entry_hist.telescope(plain_binders)
         for helper in formatted.response["body"]["additional_definitions"]:
             assert not next(
                 row
@@ -521,12 +577,22 @@ for suffix, slot in units:
                 + helpers[helper["suffix"]]
                 + base_telescope
                 + " : iProp Sigma := "
-                + body_source(helper["body"])
+                + body_source(helper["body"], seal_as=helpers[helper["suffix"]])
                 + "%I.\n"
             )
             definition = render_entry_registers(definition)
             definition_introduction_source(definition, helpers[helper["suffix"]])
             definitions.append((helpers[helper["suffix"]], definition))
+            if helpers[helper["suffix"]] in sealed:
+                declarations, sealed_body, meta = sealed[helpers[helper["suffix"]]]
+                sealed_definition = ("Definition " + helpers[helper["suffix"]] + base_telescope
+                                     + " : iProp Sigma := " + sealed_body + "%I.\n")
+                definition_introduction_source(sealed_definition, helpers[helper["suffix"]])
+                emit.extend(declarations)
+                emit.append((helpers[helper["suffix"]], sealed_definition, "entry"))
+                hist_meta[helpers[helper["suffix"]]] = meta
+            else:
+                emit.append((helpers[helper["suffix"]], definition, "entry"))
         definition = (
             "Definition "
             + name
@@ -537,10 +603,13 @@ for suffix, slot in units:
         )
         definition_introduction_source(definition, name)
         definitions.append((name, definition))
+        emit.append((name, definition, "entry"))
+        last_emit[:] = emit
         return record, definitions, facts
 
     # A generated cut whose generalization binds a register value: refute
     # each source alternative first, so an infeasible arm cannot widen it.
+    last_emit, hist_meta, slot_reports = [], {}, []
     record, definitions, facts = rendered(boundary)
     cut = record["manifest"].get("cut_generalization", {})
     refused_sources = []
@@ -553,6 +622,8 @@ for suffix, slot in units:
             boundary = without_alternatives(boundary, refused_sources)
     refused_names = []
     while True:
+        hist_meta.clear()
+        del slot_reports[:]
         record, definitions, facts = rendered(boundary)
         if definitions is None:
             break
@@ -574,11 +645,17 @@ for suffix, slot in units:
     entry = directory / (module + ".v")
     # The slots of one block share its module.
     written = module_definitions.setdefault(stem, [])
-    written.extend(definitions)
-    entry.write_text(header + "\n".join(definition for _, definition in written))
+    written.extend(last_emit)
+    entry.write_text((header + (entry_hist.HIST_LIBRARY if entry_hist.HIST_MODE == "wrap" else ""))
+                     + "\n".join(definition for _, definition, _ in written))
     structural = directory / (stem + "Structural.v")
-    source = header + "Require Import " + ".".join((relative / module).parts) + ".\n"
-    for symbol, definition in written:
+    source = (header + (entry_hist.HIST_LIBRARY if entry_hist.HIST_MODE == "wrap" else "")
+              + "Require Import " + ".".join((relative / module).parts) + ".\n")
+    for symbol, definition, kind in written:
+        if kind != "entry":
+            # A history declaration gets opacity only: no unfold instance and no introduction.
+            source += entry_hist.structural_opacity(symbol, kind)
+            continue
         source += (
             unfold_declaration(
                 symbol, instance_name=symbol + "_unfold", locality="export"
@@ -590,6 +667,10 @@ for suffix, slot in units:
     for file in [entry, structural]:
         text = file.read_text()
         assert not re.search(r"\b(?:Proof|Qed|Admitted|Axiom|Ltac|Ltac2)\b", text)
+    if hist_meta:
+        record["hist"] = deepcopy(hist_meta)
+    if slot_reports:
+        record["frame_slots"] = list(slot_reports)
     record.update(
         status="source_declarations_rendered",
         entry=bind(entry),
@@ -614,6 +695,13 @@ for (suffix, slot), case in zip(units, cases):
             if key in case:
                 case[key] = bind(case[key]["path"])
 emitted = list({row["path"]: bind(row["path"]) for row in emitted}.values())
+# Every join keeps each pure fact of its edges, binds it in a history group, or drops it under a
+# named rule (join_generalize.check_fact_accounting refuses a silent drop); the report lists the
+# logged drops of each join.
+join_accounting = {pc: plan.get("fact_accounting") for pc, plan in joins_record.get("plans", {}).items()}
+if entry_hist.HIST_MODE:
+    unaccounted = sorted(pc for pc, row in join_accounting.items() if row is None)
+    assert not unaccounted, "joins without a fact accounting: " + ", ".join(unaccounted)
 
 (O / "RESULT.json").write_text(
     json.dumps(
@@ -653,6 +741,7 @@ emitted = list({row["path"]: bind(row["path"]) for row in emitted}.values())
             "new_native_calls": 0,
             "native_release": False,
             "join_seeds_added": True,
+            **({"join_fact_accounting": join_accounting} if entry_hist.HIST_MODE else {}),
             "contradiction_checks": check.runs,
         },
         indent=2,

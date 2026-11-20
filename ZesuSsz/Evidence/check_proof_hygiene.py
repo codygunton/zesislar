@@ -393,6 +393,19 @@ def generated_hand_line_failures(name: str, text: str) -> list[str]:
     return failures
 
 
+# EDGE-PROOF (AGENTS.md exception): the generator renders the proofs of the history edge
+# instances. The sentence list and the check are the renderer's own (tools/block/render_edges.py).
+sys.path.insert(0, str(ROOT / "tools/block"))
+from render_edges import EDGE_PROOF_FILE, edge_proof_problems  # noqa: E402
+
+
+def edge_proof_failures(name: str, text: str) -> list[str]:
+    """A generated edge module may hold proofs, each sentence one of `EDGE_SENTENCES`."""
+    if not fnmatch.fnmatchcase(name, EDGE_PROOF_FILE):
+        return []
+    return [f"EDGE-PROOF: {name}: {problem}" for problem in edge_proof_problems(text)]
+
+
 def shared_core_modules(root=ROOT) -> set[str]:
     """Module names that exist in both the frozen core and Automation2."""
     frozen = {path.stem for path in (Path(root) / AUTOMATION_PREFIX).rglob("*.v")}
@@ -750,6 +763,7 @@ def main() -> None:
         failures.extend(closed_literal_failures(name, text, literal_exceptions))
         failures.extend(trusted_declaration_failures(name, text, trusted))
         failures.extend(generated_hand_line_failures(name, text))
+        failures.extend(edge_proof_failures(name, text))
         failures.extend(retired_module_failures(name, text))
         failures.extend(residual_module_failures(name, text))
         failures.extend(short_core_name_failures(name, text, shared))

@@ -290,6 +290,47 @@ class CallBoundary(unittest.TestCase):
         # A kept value that no call computes stays as it is.
         self.assertEqual(seed.state.registers['x2'], fixture['root_seed'].state.registers['x2'])
 
+    SLICE_SPEC = '''Definition sliceSpec `{!islaG Sigma} `{!threadG} : iProp Sigma :=
+  (machine_call someMap 0
+    (fun argv sp RET =>
+      ∃ (input : list byte),
+      bv_unsigned (argv !!! 1%nat) ↦ₘ∗ input ∗
+      RET (fun _ =>
+        bv_unsigned (argv !!! 1%nat) ↦ₘ∗ input ∗
+        True)))%I.
+'''
+
+    def test_a_kept_slice_carries_its_window_over_the_kept_cursor(self):
+        """`entry_hist` shapes only: the legacy shape states no window."""
+        import entry_hist
+        from call_boundary import CallRefused, call_return_seed
+        from symbolic_state import input_expr, operation
+        entry_hist.configure({'entry_hist': 'wrap'})
+        self.addCleanup(entry_hist.configure, None)
+        with tempfile.TemporaryDirectory() as directory:
+            fixture, state, call = self.tail_call_fixture(directory)
+            Path(directory, 'Spec.v').write_text(self.SLICE_SPEC)
+            # The call lends the slice of src_bytes at the cursor x8 (moved by an earlier call) to its end.
+            cursor = operation('bvadd', input_expr('call_consumed', 64), bits(8, 64))
+            state.registers.update({'x8': cursor, 'x11': cursor, 'x12': bits(4, 64)})
+            slice_of = ('take (Z.to_nat (bv_unsigned {argv:2})) '
+                        '(drop (Z.to_nat (bv_unsigned {argv:1} - bv_unsigned (Z_to_bv 64 src))) src_bytes)')
+            call = dict(call, spec='sliceSpec', arrays=[
+                {'binder': 'input', 'argument': 1, 'slice_of': 'src_bytes', 'caller_value': slice_of}])
+            edge = {'seed_pc': '0x10', 'state': state.to_dict()}
+            seed, public_after, report = call_return_seed([edge], call=call, function_root=directory, **fixture)
+            nodes = public_after['assertion_tree']['components']
+            ids = [node['id'] for node in nodes]
+            self.assertEqual(nodes[ids.index('call2_window_input')]['coq'],
+                             '⌜(bv_unsigned (Z_to_bv 64 src) <= bv_unsigned (call2_kept_x8) /\\ bv_unsigned '
+                             '(call2_kept_x8) + bv_unsigned ((BV 64%N 4%Z)) <= bv_unsigned (Z_to_bv 64 src) + '
+                             'Z.of_nat (List.length (src_bytes)))%Z⌝')
+            self.assertLess(ids.index('call2_facts'), ids.index('call2_window_input'))
+            # A kept slice of another shape is refused, never carried without its window.
+            call['arrays'] = [dict(call['arrays'][0], caller_value='drop 1 src_bytes')]
+            with self.assertRaisesRegex(CallRefused, 'not take/drop'):
+                call_return_seed([edge], call=call, function_root=directory, **fixture)
+
     def test_machine_call_spec_summary(self):
         from call_boundary import parse_machine_call_spec
         source = (Path(__file__).resolve().parents[2] / 'ZesuSsz/Contracts/DecodeItemCallSpec.v').read_text()
