@@ -32,6 +32,7 @@
   "entry_hist": "wrap",
   "frame_slots": false,
   "hist_visible": [".*"],
+  "store_splice": "per_store",
   "keep_source_implied_ram_guards": true,
   "caller_residual_imports": true,
   "return_package": {

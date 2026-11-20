@@ -16,13 +16,15 @@ import re
 
 FRAME_SLOTS = False
 HIST_VISIBLE = ()
+STORE_SPLICE = 'linear'
 HIST_LIBRARY = 'Require Import ZesuSsz.Automation2.Hist.\n'
 
 
 def configure(profile):
     """Read the shape keys of a function profile: `entry_hist` (required, `wrap`), `frame_slots`,
-    `hist_visible`."""
-    global FRAME_SLOTS, HIST_VISIBLE
+    `hist_visible`, `store_splice` (`linear`, default, or `per_store`: constant-offset stores into a byte
+    array are spliced one by one, the spelling the function's proofs consume)."""
+    global FRAME_SLOTS, HIST_VISIBLE, STORE_SPLICE
     mode = profile.get('entry_hist')
     if mode is None:
         raise ValueError('entry_hist: the function profile lacks the required key (only "wrap" exists)')
@@ -33,6 +35,10 @@ def configure(profile):
         raise ValueError('frame_slots: a boolean is required')
     FRAME_SLOTS = slots
     HIST_VISIBLE = tuple(profile.get('hist_visible', []))
+    splice = profile.get('store_splice', 'linear')
+    if splice not in ('linear', 'per_store'):
+        raise ValueError('store_splice: unknown value ' + str(splice))
+    STORE_SPLICE = splice
 
 
 def mentions(name, text):

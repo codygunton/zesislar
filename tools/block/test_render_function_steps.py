@@ -38,6 +38,23 @@ class RenderFunctionSteps(unittest.TestCase):
         self.assertEqual(structural, (self.generated / 'FunctionReturnStructural.v').read_text())
         self.assertEqual(entries.count('⌜DecodeMeaningModuloKnownBugs args currentStorage⌝'), 1)
 
+    def test_store_splice_is_per_store_for_decode_item(self):
+        import entry_hist
+        self.assertEqual(self.profile['store_splice'], 'per_store')
+        try:
+            entry_hist.configure(self.profile)
+            self.assertEqual(entry_hist.STORE_SPLICE, 'per_store')
+            with self.assertRaises(ValueError):
+                entry_hist.configure({'entry_hist': 'wrap', 'store_splice': 'nested'})
+        finally:
+            entry_hist.configure({'entry_hist': 'wrap'})
+        self.assertEqual(entry_hist.STORE_SPLICE, 'linear')
+        # The output-array stores of block 001c into the join 002c, one splice per store: the spelling
+        # the 001c, 0088 and 002c proofs and the 698c residual lemma consume.
+        entry = (self.generated / 'Pilot002cEntries.v').read_text()
+        self.assertIn('(take 8%nat (Coq.Init.Datatypes.app (take 0%nat (Coq.Init.Datatypes.app '
+                      '(take 32%nat (decodeItemBeforeStorage args))', entry)
+
     def test_loop_exit_blocks_are_blocks_of_the_function(self):
         self.assertEqual(render_function_callers._block_key(self.profile, 0x800d6a38), '00d8')
         self.assertEqual(render_function_callers._block_key(self.profile, 0x800d6a24), '00c4')

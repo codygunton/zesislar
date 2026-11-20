@@ -638,7 +638,7 @@ def _memory_source(resource, image, transitions, aliases, vocabulary):
         chunks = [f'(bv_to_little_endian (Z.of_nat {write.size}%nat) 8%N '
                   f'(bv_unsigned ({_scoped_coq(write.value, aliases)} : bv {write.value.width}%N)))'
                   for write, _ in transitions]
-        if all(isinstance(offset, int) for _, offset in transitions):
+        if entry_hist.STORE_SPLICE == 'linear' and all(isinstance(offset, int) for _, offset in transitions):
             value = _linear_splice(value, transitions, chunks)
         else:
             for (write, offset), chunk in zip(transitions, chunks):
