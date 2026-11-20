@@ -577,7 +577,70 @@
       "predicates_without_unfold": 0,
       "disjunctive_specs": 0
     },
+    "ZesuSsz/Compliance/ParentHeaderDirectExitBridgeSlot0.v": {
+      "frame_parameters_in_closed_specs": 0,
+      "unfold_without_typeclasses_opaque": 0,
+      "uninferable_existentials": 0,
+      "predicates_without_unfold": 0,
+      "disjunctive_specs": 0
+    },
+    "ZesuSsz/Compliance/ParentHeaderDirectExitBridgeSlot1.v": {
+      "frame_parameters_in_closed_specs": 0,
+      "unfold_without_typeclasses_opaque": 0,
+      "uninferable_existentials": 0,
+      "predicates_without_unfold": 0,
+      "disjunctive_specs": 0
+    },
+    "ZesuSsz/Compliance/ParentHeaderDirectExitBridgeSlot2.v": {
+      "frame_parameters_in_closed_specs": 0,
+      "unfold_without_typeclasses_opaque": 0,
+      "uninferable_existentials": 0,
+      "predicates_without_unfold": 0,
+      "disjunctive_specs": 0
+    },
+    "ZesuSsz/Compliance/ParentHeaderDirectExitBridgeSlot3.v": {
+      "frame_parameters_in_closed_specs": 0,
+      "unfold_without_typeclasses_opaque": 0,
+      "uninferable_existentials": 0,
+      "predicates_without_unfold": 0,
+      "disjunctive_specs": 0
+    },
+    "ZesuSsz/Compliance/ParentHeaderDirectExitBridgeSlot4.v": {
+      "frame_parameters_in_closed_specs": 0,
+      "unfold_without_typeclasses_opaque": 0,
+      "uninferable_existentials": 0,
+      "predicates_without_unfold": 0,
+      "disjunctive_specs": 0
+    },
+    "ZesuSsz/Compliance/ParentHeaderDirectExitBridgeSlot5.v": {
+      "frame_parameters_in_closed_specs": 0,
+      "unfold_without_typeclasses_opaque": 0,
+      "uninferable_existentials": 0,
+      "predicates_without_unfold": 0,
+      "disjunctive_specs": 0
+    },
+    "ZesuSsz/Compliance/ParentHeaderDirectExitBridgeSlot6.v": {
+      "frame_parameters_in_closed_specs": 0,
+      "unfold_without_typeclasses_opaque": 0,
+      "uninferable_existentials": 0,
+      "predicates_without_unfold": 0,
+      "disjunctive_specs": 0
+    },
+    "ZesuSsz/Compliance/ParentHeaderExitBridgeTactics.v": {
+      "frame_parameters_in_closed_specs": 0,
+      "unfold_without_typeclasses_opaque": 0,
+      "uninferable_existentials": 0,
+      "predicates_without_unfold": 0,
+      "disjunctive_specs": 0
+    },
     "ZesuSsz/Compliance/ParentHeaderGeneratedComposition.v": {
+      "frame_parameters_in_closed_specs": 0,
+      "unfold_without_typeclasses_opaque": 0,
+      "uninferable_existentials": 0,
+      "predicates_without_unfold": 0,
+      "disjunctive_specs": 0
+    },
+    "ZesuSsz/Compliance/ParentHeaderTailExitBridge.v": {
       "frame_parameters_in_closed_specs": 0,
       "unfold_without_typeclasses_opaque": 0,
       "uninferable_existentials": 0,
