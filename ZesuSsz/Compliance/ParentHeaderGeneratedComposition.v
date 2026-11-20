@@ -22,6 +22,9 @@ Require Import ZesuSsz.Contracts.ParentHeaderMemcpyService.
 Require Import ZesuSsz.Compliance.ParentHeaderCompositionBoundary.
 Require Import ZesuSsz.Compliance.ParentHeaderBlockObligations.
 Require ZesuSsz.Generated.DecodeParentHeader.FP301.Pilot0000Entries.
+Require Import ZesuSsz.Contracts.ParentHeaderRung2.
+Require Import ZesuSsz.Contracts.AbiBytes.
+Require ZesuSsz.Generated.DecodeParentHeader.FP301.FunctionReturnTail00e8Entries.
 Local Open Scope Z_scope.
 #[local] Typeclasses Transparent parentHeaderSelectedCode nextUint64SelectedCode
   decodeItemSelectedCode.
@@ -193,6 +196,105 @@ Proof.
   iFrame. iPureIntro. split_and!;
     first [ assumption
           | apply zesu_hist_intro; exists (BV 64 0); split; vm_compute; reflexivity ].
+Qed.
+
+(* ---- End bridge (exit design A, DRAFT): the generated machine exit gives the
+   contract exit. The bridge chooses the outcome, reshapes the registers and
+   folds the frame; the meaning is an explicit premise in the form of plan
+   step 2.4 (M1): the exit's history implies the meaning of its result. ---- *)
+
+(* The meaning premise of the memcpy tail exit. *)
+Definition parentHeaderTailExitMeaning : Prop :=
+  forall (args : ParentHeaderArgs) (returnAddress : Z) (call_after : DecodeItemOutcome),
+    bv_unsigned (parentHeaderReturnAddress args) = returnAddress ->
+    parentHeaderArgsWellFormed args ->
+    zesu_hist (ZesuSsz.Generated.DecodeParentHeader.FP301.FunctionReturnTail00e8Entries.fp_machineReturnTail00e8_ForwardA0N0_Hist
+      args returnAddress call_after) ->
+    ParentHeaderMeaningModuloKnownBugs (parentHeaderCall args) (parentHeaderMemcpySourceBefore args).
+
+Lemma parentHeader_frame_address (sp kb : bv 64) :
+  400 <= bv_unsigned sp -> bv_unsigned kb < 400 ->
+  bv_unsigned (bv_add (bv_add sp (BV 64 18446744073709551216)) kb) = bv_unsigned sp - 400 + bv_unsigned kb.
+Proof.
+  intros Hsp Hk. rewrite !bv_add_unsigned. unfold bv_wrap. rewrite Zplus_mod_idemp_l.
+  change (bv_unsigned (BV 64 18446744073709551216)) with 18446744073709551216.
+  change (bv_modulus 64) with (2 ^ 64).
+  pose proof (bv_unsigned_in_range _ sp). pose proof (bv_unsigned_in_range _ kb).
+  unfold bv_modulus in *. simpl in *.
+  replace (bv_unsigned sp + 18446744073709551216 + bv_unsigned kb)
+    with ((bv_unsigned sp - 400 + bv_unsigned kb) + 1 * 2 ^ 64) by lia.
+  rewrite Z_mod_plus_full. apply Z.mod_small. lia.
+Qed.
+
+(* A saved-register cell of the frame as its eight bytes at the frame offset. *)
+Lemma parentHeader_cell_bytes `{!islaG Sigma} (sp kb w : bv 64) :
+  400 <= bv_unsigned sp -> bv_unsigned kb < 400 ->
+  bv_unsigned (bv_add (bv_add sp (BV 64 18446744073709551216)) kb) ↦ₘ w ⊢
+  (bv_unsigned sp - 400 + bv_unsigned kb) ↦ₘ∗ bv_to_little_endian 8 8 (bv_unsigned w) ∗
+  ⌜Z.of_nat (length (bv_to_little_endian 8 8 (bv_unsigned w))) = 8⌝.
+Proof.
+  intros Hsp Hk. rewrite parentHeader_frame_address //. iIntros "H".
+  iApply (zesu_cell_bytes 8 with "H").
+Qed.
+
+(* Joins the next frame piece onto the run "R" of n bytes. *)
+Ltac parentHeader_join spec n m :=
+  iDestruct (zesu_byte_array_join_sized _ _ _ _ _ n m (n + m) with spec) as "R";
+  [lia|lia|rewrite ?bv_unsigned_BV; lia|reflexivity|].
+
+Lemma parentHeader_tail_end_bridge `{!islaG Sigma} `{!threadG} (args : ParentHeaderArgs) (returnAddress : Z) :
+  parentHeaderTailExitMeaning ->
+  ZesuSsz.Generated.DecodeParentHeader.FP301.FunctionReturnTail00e8Entries.fp_machineReturnTail00e8_ForwardA0N0
+    args returnAddress ⊢
+  ∃ outcome : ParentHeaderOutcome,
+    ⌜bv_unsigned (parentHeaderReturnAddress args) = returnAddress /\
+     parentHeaderAllows (parentHeaderCall args) outcome⌝ ∗
+    parentHeaderExitResources args outcome.
+Proof.
+  intros Hmeaning.
+  rewrite /ZesuSsz.Generated.DecodeParentHeader.FP301.FunctionReturnTail00e8Entries.fp_machineReturnTail00e8_ForwardA0N0.
+  iIntros "(%x1 & %x5 & %x6 & %x7 & %x10 & %x11 & %x12 & %x13 & %x14 & %x15 & %x16 & %x17 & %x28 & %x29 & %x30 & %x31 & %after & Hsys & H1 & H2 & H5 & H6 & H7 & H8 & H9 & H10 & H11 & H12 & H13 & H14 & H15 & H16 & H17 & H18 & H19 & H20 & H21 & H22 & H23 & H24 & H25 & H26 & H27 & H28 & H29 & H30 & H31 & Hin & Hres & F0 & F8 & F48 & C320 & C328 & C336 & C344 & C352 & C360 & C368 & C376 & C384 & C392 & Hcallee & Hsrc & Hnone & Hscr & %Hra & %Hmod & %Hlen & %Hlen80 & %Hlen8 & %Hcall & %Hhist)".
+  destruct Hra as [Hret Hwf].
+  pose proof (parentHeaderStackRange args Hwf) as Hsp.
+  (* The frame: every piece as bytes, joined into the contract's 400-byte array. *)
+  iDestruct (zesu_uninit_bytes _ 8 8 with "F0") as (l0) "[%H0 R]"; [done|].
+  iDestruct (zesu_uninit_bytes _ 272 272 with "F48") as (l48) "[%H48 F48]"; [done|].
+  assert (H8b : Z.of_nat (length after) = 40) by lia.
+  iDestruct (parentHeader_cell_bytes _ (BV 64 320) with "C320") as "[C320 %K320]"; [lia|rewrite bv_unsigned_BV; lia|].
+  iDestruct (parentHeader_cell_bytes _ (BV 64 328) with "C328") as "[C328 %K328]"; [lia|rewrite bv_unsigned_BV; lia|].
+  iDestruct (parentHeader_cell_bytes _ (BV 64 336) with "C336") as "[C336 %K336]"; [lia|rewrite bv_unsigned_BV; lia|].
+  iDestruct (parentHeader_cell_bytes _ (BV 64 344) with "C344") as "[C344 %K344]"; [lia|rewrite bv_unsigned_BV; lia|].
+  iDestruct (parentHeader_cell_bytes _ (BV 64 352) with "C352") as "[C352 %K352]"; [lia|rewrite bv_unsigned_BV; lia|].
+  iDestruct (parentHeader_cell_bytes _ (BV 64 360) with "C360") as "[C360 %K360]"; [lia|rewrite bv_unsigned_BV; lia|].
+  iDestruct (parentHeader_cell_bytes _ (BV 64 368) with "C368") as "[C368 %K368]"; [lia|rewrite bv_unsigned_BV; lia|].
+  iDestruct (parentHeader_cell_bytes _ (BV 64 376) with "C376") as "[C376 %K376]"; [lia|rewrite bv_unsigned_BV; lia|].
+  iDestruct (parentHeader_cell_bytes _ (BV 64 384) with "C384") as "[C384 %K384]"; [lia|rewrite bv_unsigned_BV; lia|].
+  iDestruct (parentHeader_cell_bytes _ (BV 64 392) with "C392") as "[C392 %K392]"; [lia|rewrite bv_unsigned_BV; lia|].
+  parentHeader_join "R F8" 8 40. iDestruct "R" as "[R %J1]".
+  parentHeader_join "R F48" 48 272. iDestruct "R" as "[R %J2]".
+  parentHeader_join "R C320" 320 8. iDestruct "R" as "[R %J3]".
+  parentHeader_join "R C328" 328 8. iDestruct "R" as "[R %J4]".
+  parentHeader_join "R C336" 336 8. iDestruct "R" as "[R %J5]".
+  parentHeader_join "R C344" 344 8. iDestruct "R" as "[R %J6]".
+  parentHeader_join "R C352" 352 8. iDestruct "R" as "[R %J7]".
+  parentHeader_join "R C360" 360 8. iDestruct "R" as "[R %J8]".
+  parentHeader_join "R C368" 368 8. iDestruct "R" as "[R %J9]".
+  parentHeader_join "R C376" 376 8. iDestruct "R" as "[R %J10]".
+  parentHeader_join "R C384" 384 8. iDestruct "R" as "[R %J11]".
+  parentHeader_join "R C392" 392 8. iDestruct "R" as "[R %J12]".
+  lazymatch type of J12 with Z.of_nat (length ?frame) = _ =>
+    iExists {| headerExitPath := ParentHeaderMemcpyTail;
+               headerResultBytes := parentHeaderMemcpySourceBefore args;
+               headerAfterFrame := frame |} end.
+  iSplit.
+  { iPureIntro. split; [exact Hret|]. split; [exact (Hmeaning args returnAddress after Hret Hwf Hhist)|].
+    cbn. split; [lia|reflexivity]. }
+  rewrite /parentHeaderExitResources /=.
+  assert (Hx2 : bv_add (bv_add (parentHeaderStackPointer args) (BV 64 18446744073709551216)) (BV 64 400) =
+                parentHeaderStackPointer args) by bv_solve.
+  iEval (rewrite Hx2) in "H2".
+  iExists x1, x5, x6, x7, x10, x11, x12, x13, x14, x15, x16, x17, x28, x29, x30, x31.
+  iFrame.
 Qed.
 
 (* ---- The theorem: decodeParentHeader compliance, given the open blocks
