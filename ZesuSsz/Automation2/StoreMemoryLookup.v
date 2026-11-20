@@ -663,6 +663,42 @@ Proof.
   rewrite (zesu_word_little_endian_extracts w). iExact "Hb".
 Qed.
 
+(* The same request under a successor existential (its first resource,
+   independent of the witness), with the extracts taken of another spelling
+   `v` of the word: the cell's value `w` as loaded (`Z_to_bv 64 (… (take 8
+   (drop 0 bytes)))`) against `bv_concat` of the bytes `nth k bytes`. The
+   equation `v = w` is closed first, by the block tail's word-window closer
+   (BlockTail.v, a later module: called by name); without it the step does
+   not act. *)
+Lemma zesu_exist_word_cell_bytes `{!islaG Sigma} {B : Type} (a : Z) (w v : bv 64)
+    (T : B → iProp Sigma) :
+  v = w →
+  a ↦ₘ w -∗ (∃ x, T x) -∗
+  ∃ x, a ↦ₘ∗ [bv_extract 0 8 v; bv_extract 8 8 v; bv_extract 16 8 v; bv_extract 24 8 v;
+              bv_extract 32 8 v; bv_extract 40 8 v; bv_extract 48 8 v; bv_extract 56 8 v] ∗ T x.
+Proof.
+  intros ->. iIntros "Hw [%x HT]". iExists x. iFrame "HT".
+  iDestruct (zesu_cell_bytes 8 a (DfracOwn 1) w with "Hw") as "[Hb _]".
+  change (N.to_nat 8) with 8%nat.
+  rewrite (zesu_word_little_endian_extracts w). iExact "Hb".
+Qed.
+
+Ltac zesu_exist_word_cell_with a v :=
+  assert_fails (has_evar v);
+  iMatchHyp ltac:(fun H res =>
+    lazymatch res with
+    | (@mem_mapsto _ _ 64%N ?a2 (DfracOwn 1) ?w)%I =>
+        constr_eq a a2;
+        let E := fresh "HwordCellValue" in
+        assert (E : v = w) by
+          (first [ reflexivity
+                 | ltac2:(Ltac1.run (Ltac1.ref
+                     [@ZesuSsz; @Automation2; @BlockTail; @zesu_tail_window_goal])) ]);
+        try iEval (rewrite <- isla.ghost_state.mem_mapsto_array_eq);
+        iApply (zesu_exist_word_cell_bytes a w v _ E with H);
+        clear E
+    end).
+
 Ltac zesu_subsume_word_cell_extracts :=
   lazymatch goal with
   | |- environments.envs_entails _ (subsume (@mem_mapsto _ _ 64%N ?a (DfracOwn 1) _) ?P _) =>
@@ -674,6 +710,15 @@ Ltac zesu_subsume_word_cell_extracts :=
          the environment itself. *)
       try ZesuSsz.Automation2.ResourceGroups.zesu_expose_environment_alias;
       iApply zesu_subsume_word_cell_bytes; iIntros "?"
+  | |- environments.envs_entails _ (@bi_exist _ _ (fun x =>
+        bi_sep (@mem_mapsto_array _ _ 8%N ?a (DfracOwn 1) (bv_extract 0 8 ?v :: _)) _)) =>
+      try ZesuSsz.Automation2.ResourceGroups.zesu_expose_environment_alias;
+      zesu_exist_word_cell_with a v
+  | |- environments.envs_entails _ (@bi_exist _ _ (fun x =>
+        bi_sep (@isla.ghost_state.mem_mapsto_array_def _ _ 8%N ?a (DfracOwn 1)
+          (bv_extract 0 8 ?v :: _)) _)) =>
+      try ZesuSsz.Automation2.ResourceGroups.zesu_expose_environment_alias;
+      zesu_exist_word_cell_with a v
   end.
 
 (* A store that covers a whole held array leaves it as the splice

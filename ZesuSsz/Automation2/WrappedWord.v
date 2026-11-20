@@ -421,6 +421,26 @@ Ltac zesu_word_explicit_list_rewrite :=
       end
   end.
 
+(* The other direction: a word rebuilt from its own byte extracts, in order,
+   is the word (a cell stored as its extracts and read back as a word). *)
+Lemma zesu_word_extracts_explicit_list (w : bv 64) :
+  Z_to_bv 64 (little_endian_to_bv 8
+    [bv_extract 0 8 w; bv_extract 8 8 w; bv_extract 16 8 w; bv_extract 24 8 w;
+     bv_extract 32 8 w; bv_extract 40 8 w; bv_extract 48 8 w; bv_extract 56 8 w]) = w.
+Proof.
+  apply bv_eq. rewrite Z_to_bv_unsigned. unfold little_endian_to_bv.
+  cbn [fmap list_fmap little_endian_to_Z]. rewrite !bv_extract_unsigned.
+  pose proof (bv_unsigned_in_range _ w) as Hr. unfold bv_wrap, bv_modulus in *.
+  cbn [Z.of_N]. bitblast; f_equal; lia.
+Qed.
+Ltac zesu_word_extracts_rewrite :=
+  progress repeat match goal with
+  | |- context [Z_to_bv 64 (little_endian_to_bv 8
+      [bv_extract 0 8 ?w; bv_extract 8 8 ?w; bv_extract 16 8 ?w; bv_extract 24 8 ?w;
+       bv_extract 32 8 ?w; bv_extract 40 8 ?w; bv_extract 48 8 ?w; bv_extract 56 8 ?w])] =>
+      rewrite (zesu_word_extracts_explicit_list w)
+  end.
+
 (* The same word read back by a load: `bv_concat` of the bytes
    `Z_to_bv 8 (z ≫ _)` of one integer `z`, against `Z_to_bv w z`. Every leaf
    must be a byte of that `z` (`zesu_word_concat_bytes_of`); then the

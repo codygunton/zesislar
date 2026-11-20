@@ -264,6 +264,8 @@ Ltac zesu_finish_known_list_shape :=
   zesu_normalize_equal_array_regions;
   cbn [drop];
   first [solve [zesu_normalize_known_list_lengths; reflexivity] |
+    (* A word stored as its byte extracts and read back as a word. *)
+    solve [WrappedWord.zesu_word_extracts_rewrite; reflexivity] |
     solve [repeat match goal with
       | |- context[take ?n ?xs] =>
         let Htake := fresh "Htake" in
