@@ -372,7 +372,25 @@ Ltac zesu_call_slice_window I dom meaning mk p l base bytes k :=
             [ match goal with
               | H : (bv_unsigned l < limit)%Z |- _ => pose proof H as Hlt
               end
-            | assert (Hlt : (bv_unsigned l < limit)%Z) by (eauto 3) ];
+            | assert (Hlt : (bv_unsigned l < limit)%Z) by (eauto 3)
+            | (* the caller's contract bounds the payload of a call on its
+                 whole input (`ZesuCallSliceCallerPayloadBound`) *)
+              match goal with
+              | Hcd : ?cd0 ?args0 |- _ =>
+                  let fact := lazymatch cd0 with
+                    | ZesuSsz.Automation2.PureFacts.zesu_kept_domain => args0
+                    | _ => constr:(cd0 args0) end in
+                  let Hwf := lazymatch cd0 with
+                    | ZesuSsz.Automation2.PureFacts.zesu_kept_domain =>
+                        constr:(ZesuSsz.Automation2.PureFacts.zesu_kept_domain_elim Hcd)
+                    | _ => constr:(Hcd) end in
+                  lazymatch fact with
+                  | ?cd ?args =>
+                      let C := constr:(_ : ZesuCallSliceCallerPayloadBound cd I _) in
+                      pose proof (@zesu_call_slice_caller_payload_bound _ _ _ cd _ _ I _ C
+                        args _ _ _ _ _ Hwf Hmean : (bv_unsigned l < limit)%Z) as Hlt
+                  end
+              end ];
             k constr:((@zesu_call_slice_payload_in_input_load _ _ _ _ I _ _ _ _ _ _ _ _ Hmean
                          (zesu_call_slice_unsigned_pos _ l Hnz) Hlt) :
                        (base <= bv_unsigned p /\
