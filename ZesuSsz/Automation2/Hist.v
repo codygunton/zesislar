@@ -102,6 +102,17 @@ Ltac zesu_hist_reveal_step :=
       end
   end.
 
+(* [bv_unsigned] of a literal [BV n z] in [H], replaced by [z]. Only literal
+   occurrences: `rewrite bv_unsigned_BV` also matches a [Z_to_bv]-built word
+   ([bv_concat], [bv_add], ...) and turns it into its [bv_wrap] form, which the
+   successor's view no longer states syntactically (closing it is then a
+   conversion check the kernel repeats at `Qed`). *)
+Ltac zesu_hist_unsigned_literals H :=
+  repeat match type of H with
+  | context [bv_unsigned (@BV ?n ?z ?w)] => change (bv_unsigned (@BV n z w)) with z in H
+  | context [bv_unsigned (bv_0 ?n)] => change (bv_unsigned (bv_0 n)) with 0%Z in H
+  end.
+
 (* A successor fact that elaborates a block-entry fact [H] (the guard, then its
    unsigned views): prove the guard by [H], the views from the decided guard.
    Used by generated edge proofs. *)
@@ -117,13 +128,16 @@ Ltac zesu_hist_view_fact H :=
   end;
   try (lazymatch type of H with
        | @eq (bv _) _ _ => apply (f_equal bv_unsigned) in H;
-                          repeat (rewrite bv_zero_extend_unsigned in H; [|zesu_lia]); rewrite ?bv_unsigned_BV in H
+                          repeat (rewrite bv_zero_extend_unsigned in H; [|zesu_lia]);
+                          zesu_hist_unsigned_literals H
        | not (@eq (bv _) ?x ?y) =>
            let E := fresh in
            assert (E : bv_unsigned x <> bv_unsigned y) by (let U := fresh in intros U; apply H, bv_eq, U);
-           clear H; rename E into H; rewrite ?bv_unsigned_BV in H
+           clear H; rename E into H; zesu_hist_unsigned_literals H
        end).
 
+(* The fallback works on the view and one range fact: no `simpl` of the
+   (destructed) history in the context. *)
 Ltac zesu_hist_view H :=
   let Hv := fresh "Hv" in
   pose proof H as Hv;
@@ -133,7 +147,9 @@ Ltac zesu_hist_view H :=
           repeat split;
           first [ assumption | zesu_lia
                 | match goal with |- context [bv_unsigned ?x] =>
-                    pose proof (bv_unsigned_in_range _ x); unfold bv_modulus in *; simpl in *; zesu_lia end ] ].
+                    let R := fresh "R" in
+                    pose proof (bv_unsigned_in_range _ x) as R; unfold bv_modulus in R; simpl in R;
+                    zesu_lia end ] ].
 
 (* Block tail: a pure side goal [F] (Lithium proves the pure conjuncts of an
    open existential, e.g. a loop class, as separate goals, never as

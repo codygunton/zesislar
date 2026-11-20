@@ -167,6 +167,31 @@ Proof.
   lazymatch type of Hn with (n <> 0)%Z => exact Hn end.
 Qed.
 
+(* A guard on a word built by [Z_to_bv] ([bv_concat]) keeps the word in its
+   view: only the literal side is rewritten (the view the successor states is
+   closed by `assumption`, never by a conversion of the [bv_wrap] form). *)
+Lemma view_built_word_disequation (a b : bv 8) :
+  negb (bool_decide (bv_concat 16 a b = BV 16 0)) = true ->
+  negb (bool_decide (bv_concat 16 a b = BV 16 0)) = true /\
+  bv_unsigned (bv_concat 16 a b) <> 0%Z.
+Proof.
+  intros Hg.
+  assert (Hv := Hg). zesu_hist_view_fact Hv.
+  lazymatch type of Hv with not (@eq Z (bv_unsigned (bv_concat 16 a b)) 0%Z) => idtac end.
+  zesu_hist_view Hg.
+Qed.
+
+Lemma view_built_word_equation (a b : bv 8) :
+  bool_decide (bv_concat 16 a b = BV 16 5) = true ->
+  bool_decide (bv_concat 16 a b = BV 16 5) = true /\
+  bv_unsigned (bv_concat 16 a b) = 5%Z.
+Proof.
+  intros Hg.
+  assert (Hv := Hg). zesu_hist_view_fact Hv.
+  lazymatch type of Hv with @eq Z (bv_unsigned (bv_concat 16 a b)) 5%Z => idtac end.
+  zesu_hist_view Hg.
+Qed.
+
 (* First pass of a sealed loop class. *)
 Lemma loop_first_pass_sealed `{!islaG Sigma} (n : Z) :
   (True : iProp Sigma) ∗ ⌜n = 0%Z⌝ ⊢
