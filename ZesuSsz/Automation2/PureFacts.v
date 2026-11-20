@@ -44,13 +44,17 @@ Proof.
 Qed.
 
 
-(* Marks a registered domain whose conjuncts are already in the context. *)
-Definition zesu_domain_opened (domain : Prop) : Prop := True.
+(* A registered domain kept beside its split conjuncts. An inductive wrapper:
+   no step that unfolds or looks up hypotheses sees through it. *)
+Inductive zesu_kept_domain (domain : Prop) : Prop :=
+| zesu_keep_domain : domain -> zesu_kept_domain domain.
+Definition zesu_kept_domain_elim {domain : Prop} (H : zesu_kept_domain domain) : domain :=
+  match H with zesu_keep_domain _ d => d end.
 
 (* A function domain with registered ranges
-   (`DomainRanges.ZesuDomainRanges`) stays in the context folded: the
-   call-site step (`CallSlice.v`) proves a callee's domain from the
-   caller's folded domain. Its conjuncts are split from a copy, once. *)
+   (`DomainRanges.ZesuDomainRanges`) is split as any folded conjunction, and
+   kept once under `zesu_kept_domain`: the call-site step (`CallSlice.v`)
+   proves a callee's domain from the caller's domain. *)
 Ltac zesu_registered_domain T :=
   let _ := constr:(fun H : T =>
     ZesuSsz.Automation2.DomainRanges.zesu_domain_ranges (domain:=T) H) in
@@ -62,20 +66,16 @@ Ltac zesu_split_folded_pure :=
       lazymatch type of T with Prop => idtac end;
       lazymatch T with
       | _ /\ _ => fail
-      | zesu_domain_opened _ => fail
       | _ =>
           let unfolded := eval hnf in T in
           lazymatch unfolded with
           | _ /\ _ =>
               tryif zesu_registered_domain T
-              then (lazymatch goal with
-                    | _ : zesu_domain_opened T |- _ => fail
-                    | _ => idtac
-                    end;
-                    let Hcopy := fresh "Hdomain" in
-                    pose proof H as Hcopy;
-                    pose proof (I : zesu_domain_opened T);
-                    change unfolded in Hcopy; destruct Hcopy)
+              then (tryif (match goal with _ : zesu_kept_domain T |- _ => idtac end)
+                    then idtac
+                    else (let Hkeep := fresh "Hdomain" in
+                          pose proof (zesu_keep_domain T H) as Hkeep);
+                    change unfolded in H; destruct H)
               else (change unfolded in H; destruct H)
           end
       end

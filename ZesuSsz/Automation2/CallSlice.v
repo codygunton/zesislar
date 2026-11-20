@@ -10,6 +10,7 @@ Require Import ZesuSsz.Automation2.InteriorByteSlice.
 Require ZesuSsz.Automation2.ResourceGroups.
 Require ZesuSsz.Automation2.BytePositionEquations.
 Require ZesuSsz.Automation2.WrappedWord.
+Require ZesuSsz.Automation2.PureFacts.
 Local Open Scope Z_scope.
 
 (* The call-site step for a callee that takes an input slice and an output
@@ -169,9 +170,15 @@ Ltac zesu_call_slice_eval_at root e :=
   end.
 
 (* Close `tac`'s goal in a context cleared to the range facts of a domain
-   hypothesis (`DomainRanges.v`). *)
+   hypothesis (`DomainRanges.v`), bare or kept under
+   `PureFacts.zesu_kept_domain`. *)
 Ltac zesu_call_slice_with_ranges tac :=
   match goal with
+  | Hd : ZesuSsz.Automation2.PureFacts.zesu_kept_domain ?D |- _ =>
+      let Hr := fresh "HcsRanges" in
+      pose proof (zesu_domain_ranges (domain:=D)
+        (ZesuSsz.Automation2.PureFacts.zesu_kept_domain_elim Hd)) as Hr;
+      clear - Hr; tac
   | Hd : ?D |- _ =>
       let Hr := fresh "HcsRanges" in
       pose proof (zesu_domain_ranges (domain:=D) Hd) as Hr;
@@ -377,7 +384,16 @@ Ltac zesu_call_slice_domain I Hwin Houta oa :=
   lazymatch goal with
   | |- ?dom (?mk (?out :: ?p :: ?l :: _) ?sp _ _ _) =>
     match goal with
-    | Hwf : ?cd ?args |- _ =>
+    | Hwf0 : ?cd0 ?args0 |- _ =>
+      let Hwf_fact := lazymatch cd0 with
+        | ZesuSsz.Automation2.PureFacts.zesu_kept_domain => args0
+        | _ => constr:(cd0 args0) end in
+      let Hwf := lazymatch cd0 with
+        | ZesuSsz.Automation2.PureFacts.zesu_kept_domain =>
+            constr:(ZesuSsz.Automation2.PureFacts.zesu_kept_domain_elim Hwf0)
+        | _ => constr:(Hwf0) end in
+      let cd := lazymatch Hwf_fact with ?c _ => c end in
+      let args := lazymatch Hwf_fact with _ ?a => a end in
       let C := constr:(_ : ZesuCallSliceCaller cd I _ _ _ _ _) in
       let frame := lazymatch type of C with
                    | @ZesuCallSliceCaller _ _ _ _ _ _ _ _ _ ?frame _ _ => frame end in
@@ -468,15 +484,20 @@ Ltac zesu_call_slice :=
 
 (* The slice the callee returned goes back into the array it was lent from;
    the addresses the callee states over its own stack pointer are restated
-   over the caller's root word. *)
+   over the caller's root word. The returned slice may carry the callee's
+   element type (`byte`) where the lend wrote `bv 8`: it is matched up to
+   conversion once the address agrees syntactically. *)
 Ltac zesu_call_restore :=
   iMatchHyp ltac:(fun Hr res =>
     lazymatch res with
     | (?borrowed -∗ (_ ↦ₘ∗ _))%I =>
+        lazymatch borrowed with (?ba ↦ₘ∗ _)%I =>
         iMatchHyp ltac:(fun Hs returned =>
-          constr_eq returned borrowed;
+          lazymatch returned with (?ra ↦ₘ∗ _)%I =>
+          constr_eq ra ba;
+          first [constr_eq returned borrowed | unify returned borrowed];
           iRename Hr into "HcsR"; iRename Hs into "HcsS";
-          iDestruct ("HcsR" with "HcsS") as "?")
+          iDestruct ("HcsR" with "HcsS") as "?" end) end
     end);
   repeat match goal with
   | H : zesu_call_slice_addr_fact (?a = ?b) |- _ => rewrite (H : a = b); clear H

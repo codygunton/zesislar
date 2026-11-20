@@ -344,11 +344,12 @@ Proof.
   do 2 (repeat first [progress ZesuSsz.Automation2.PureFacts.zesu_split_folded_pure |
     match goal with Hpair : _ /\ _ |- _ => destruct Hpair end]).
   lazymatch goal with
-  | _ : ZesuSsz.Automation2.PureFacts.zesu_domain_opened _,
-    _ : ZesuSsz.Automation2.PureFacts.zesu_domain_opened _ |- _ => fail
-  | _ => idtac
+  | _ : nextUint64BoundaryDomain _ |- _ => fail
+  | _ : ZesuSsz.Automation2.PureFacts.zesu_kept_domain (nextUint64BoundaryDomain _),
+    _ : ZesuSsz.Automation2.PureFacts.zesu_kept_domain (nextUint64BoundaryDomain _) |- _ => fail
+  | Hk : ZesuSsz.Automation2.PureFacts.zesu_kept_domain (nextUint64BoundaryDomain _) |- _ =>
+      split; [exact (ZesuSsz.Automation2.PureFacts.zesu_kept_domain_elim Hk) | assumption]
   end.
-  split; assumption.
 Qed.
 
 Definition call_slice_toy_folded (a b : Z) : Prop := a <= b /\ b <= a.
@@ -360,6 +361,32 @@ Proof.
   Fail match goal with _ : call_slice_toy_folded _ _ |- _ => idtac end.
   lia.
 Qed.
+
+(* Early restore when the returned slice carries the callee's element type
+   (`evm_rlp_types.byte`) and the lend wrote `bv 8`: matched up to
+   conversion. A slice at another address is not taken. *)
+Section early_restore_converted.
+Context `{!islaG Sigma} `{!threadG}.
+Lemma call_early_restore_converted (a b : Z) (whole : list (bv 8)) (n : nat) :
+  ((b ↦ₘ∗ @take (bv 8) n whole) -∗ (a ↦ₘ∗ whole)) -∗
+  (b ↦ₘ∗ @take evm_rlp_types.byte n whole) -∗
+  ∃ k : Z, (a ↦ₘ∗ whole) ∗ ⌜k = 0⌝.
+Proof.
+  iIntros "Hr Hs".
+  zesu_call_early_restore.
+  iExists 0. iFrame. done.
+Qed.
+Lemma call_early_restore_other_address (a b c : Z) (whole : list (bv 8)) (n : nat) :
+  ((b ↦ₘ∗ @take (bv 8) n whole) -∗ (a ↦ₘ∗ whole)) -∗
+  (c ↦ₘ∗ @take evm_rlp_types.byte n whole) -∗
+  ∃ k : Z, ((b ↦ₘ∗ @take (bv 8) n whole) -∗ (a ↦ₘ∗ whole)) ∗
+    (c ↦ₘ∗ @take evm_rlp_types.byte n whole) ∗ ⌜k = 0⌝.
+Proof.
+  iIntros "Hr Hs".
+  Fail zesu_call_early_restore.
+  iExists 0. iFrame. done.
+Qed.
+End early_restore_converted.
 
 Print Assumptions call_slice_window_advanced.
 Print Assumptions call_slice_first_call_integer_root.
