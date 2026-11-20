@@ -25,14 +25,14 @@ Section edges.
 Context `{!islaG Sigma} `{!threadG}.
 
 (* fp_machineAt0058_ForwardA0N0 -> fp_machineAt0064_ForwardA0N0 (join) *)
-Global Instance zesu_hist_edge_5 (args : NextUint64Args) (returnAddress : Z) (call_after : DecodeItemOutcome) :
+Global Instance zesu_hist_edge_5 (args : NextUint64Args) (returnAddress : Z) :
   ZesuHistEdge (PROP := iProp Sigma)
-    (fp_machineAt0058_ForwardA0N0_Hist (args) (returnAddress) (call_after))
+    (fp_machineAt0058_ForwardA0N0_Hist (args) (returnAddress))
     (fp_machineAt0064_ForwardA0N0_Hist (args) (returnAddress))
     (True)%I.
 Proof.
   rewrite /ZesuHistEdge => Hh. apply zesu_hist_elim in Hh. unfold fp_machineAt0058_ForwardA0N0_Hist in Hh.
-  destruct Hh as (fp_seed_mstatus_bits & forward_witness_9644ccf41f39915a & forward_witness_407fca3a6f90b8db & forward_witness_cbcac9df79b9221c & forward_witness_1be931110d776902 & forward_witness_905cf96e605c1117 & forward_witness_55ab0ce59750150a & forward_witness_11fde2df72db9d06 & forward_witness_791c5acc1109e8e6 & forward_witness_88383840afa7af74 & forward_witness_1492ef7bd46b3b7a & forward_witness_d77b5950a2aea933 & HF0 & HF1 & HF2 & HF3 & HF4 & HF5 & HF6 & HF7 & HF8 & HF9 & HF10 & HF11 & HF12 & HF13 & HF14).
+  destruct Hh as (fp_seed_mstatus_bits & forward_witness_9644ccf41f39915a & forward_witness_407fca3a6f90b8db & forward_witness_cbcac9df79b9221c & forward_witness_1be931110d776902 & forward_witness_905cf96e605c1117 & forward_witness_55ab0ce59750150a & forward_witness_11fde2df72db9d06 & forward_witness_791c5acc1109e8e6 & forward_witness_88383840afa7af74 & forward_witness_1492ef7bd46b3b7a & forward_witness_d77b5950a2aea933 & HF0 & HF1 & HF2 & HF3 & HF4 & HF5 & HF6 & HF7 & HF8 & HF9 & HF10 & HF11 & HF12).
   iIntros "HN".
   iPureIntro. apply zesu_hist_intro. unfold fp_machineAt0064_ForwardA0N0_Hist.
   exists fp_seed_mstatus_bits, forward_witness_9644ccf41f39915a, forward_witness_407fca3a6f90b8db, forward_witness_cbcac9df79b9221c, forward_witness_1be931110d776902, forward_witness_905cf96e605c1117, forward_witness_55ab0ce59750150a, forward_witness_11fde2df72db9d06, forward_witness_791c5acc1109e8e6, forward_witness_88383840afa7af74.
@@ -50,14 +50,14 @@ Proof.
 Qed.
 
 (* fp_machineAt0058_ForwardA0N0 -> fp_machineAt0090_ForwardA0N0 (forward) *)
-Global Instance zesu_hist_edge_6 (args : NextUint64Args) (returnAddress : Z) (call_after : DecodeItemOutcome) :
+Global Instance zesu_hist_edge_6 (args : NextUint64Args) (returnAddress : Z) :
   ZesuHistEdge (PROP := iProp Sigma)
-    (fp_machineAt0058_ForwardA0N0_Hist (args) (returnAddress) (call_after))
-    (fp_machineAt0090_ForwardA0N0_Hist (args) (returnAddress) (call_after))
+    (fp_machineAt0058_ForwardA0N0_Hist (args) (returnAddress))
+    (fp_machineAt0090_ForwardA0N0_Hist (args) (returnAddress))
     (True)%I.
 Proof.
   rewrite /ZesuHistEdge => Hh. apply zesu_hist_elim in Hh. unfold fp_machineAt0058_ForwardA0N0_Hist in Hh.
-  destruct Hh as (fp_seed_mstatus_bits & forward_witness_9644ccf41f39915a & forward_witness_407fca3a6f90b8db & forward_witness_cbcac9df79b9221c & forward_witness_1be931110d776902 & forward_witness_905cf96e605c1117 & forward_witness_55ab0ce59750150a & forward_witness_11fde2df72db9d06 & forward_witness_791c5acc1109e8e6 & forward_witness_88383840afa7af74 & forward_witness_1492ef7bd46b3b7a & forward_witness_d77b5950a2aea933 & HF0 & HF1 & HF2 & HF3 & HF4 & HF5 & HF6 & HF7 & HF8 & HF9 & HF10 & HF11 & HF12 & HF13 & HF14).
+  destruct Hh as (fp_seed_mstatus_bits & forward_witness_9644ccf41f39915a & forward_witness_407fca3a6f90b8db & forward_witness_cbcac9df79b9221c & forward_witness_1be931110d776902 & forward_witness_905cf96e605c1117 & forward_witness_55ab0ce59750150a & forward_witness_11fde2df72db9d06 & forward_witness_791c5acc1109e8e6 & forward_witness_88383840afa7af74 & forward_witness_1492ef7bd46b3b7a & forward_witness_d77b5950a2aea933 & HF0 & HF1 & HF2 & HF3 & HF4 & HF5 & HF6 & HF7 & HF8 & HF9 & HF10 & HF11 & HF12).
   iIntros "HN".
   iPureIntro. apply zesu_hist_intro. unfold fp_machineAt0090_ForwardA0N0_Hist.
   exists fp_seed_mstatus_bits, forward_witness_9644ccf41f39915a, forward_witness_407fca3a6f90b8db, forward_witness_cbcac9df79b9221c, forward_witness_1be931110d776902, forward_witness_905cf96e605c1117, forward_witness_55ab0ce59750150a, forward_witness_11fde2df72db9d06, forward_witness_791c5acc1109e8e6, forward_witness_88383840afa7af74, forward_witness_1492ef7bd46b3b7a, forward_witness_d77b5950a2aea933, (BV 64%N 0%Z).
@@ -74,8 +74,6 @@ Proof.
   split; [exact HF10|].
   split; [exact HF11|].
   split; [exact HF12|].
-  split; [exact HF13|].
-  split; [exact HF14|].
   by vm_compute.
 Qed.
 

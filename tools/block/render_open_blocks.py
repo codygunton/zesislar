@@ -206,7 +206,6 @@ def main():
     lines += ['Import ListNotations.', 'Local Open Scope Z_scope.', '']
 
     lines.append('(* The ' + str(len(open_fields)) + ' open blocks: each field is the statement its block proof must close. *)')
-    lines.append('Record ' + stem + 'OpenBlocks : Prop := {')
     fields = []
     for (case, row, region), text in zip(open_fields, open_statements):
         note = ''
@@ -215,8 +214,14 @@ def main():
             note = ('  (* ' + region['reason']
                     + ('; covers ' + ', '.join(folded) + ' (no slot)' if folded else '') + '. *)\n')
         fields.append(note + '  ' + low + 'Open_' + field_suffix(case) + ' :\n    ' + text)
-    lines.append(';\n'.join(fields))
-    lines += ['}.', '']
+    if fields:
+        lines.append('Record ' + stem + 'OpenBlocks : Prop := {')
+        lines.append(';\n'.join(fields))
+        lines += ['}.', '']
+    else:
+        # Every block is closed: the record is trivially inhabited and the composition passes this term.
+        lines += ['Record ' + stem + 'OpenBlocks : Prop := Build_' + stem + 'OpenBlocks {}.',
+                  'Definition ' + low + 'OpenBlocks : ' + stem + 'OpenBlocks := Build_' + stem + 'OpenBlocks.', '']
 
     lines.append('(* The ' + str(len(closed_fields)) + ' closed blocks, from their compiled callers. *)')
     if closed_fields:

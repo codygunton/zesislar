@@ -121,6 +121,11 @@ check-support-freshness: stock-native-indexes
 	  --stem ParentHeader \
 	  --closed-dir ZesuSsz/Proofs/DecodeParentHeader/FP301 \
 	  --output ZesuSsz/Compliance/ParentHeaderBlockObligations.v --check
+	$(PYTHON) tools/block/render_open_blocks.py --function nextUint64 \
+	  --callers tools/block/generated/nextuint64_fp301_callers/CALLERS.json \
+	  --stem NextUint64 \
+	  --closed-dir ZesuSsz/Proofs/NextUint64/FP301 \
+	  --output ZesuSsz/Compliance/NextUint64BlockObligations.v --check
 
 check-evidence-tools: check-support-freshness check-tool-tests
 
