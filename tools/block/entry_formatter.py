@@ -450,6 +450,13 @@ def format_owned_entry_boundary(boundary, *, original_seed, vocabulary, continua
                 'kind': 'exact_deduplication' if first.manifest['exact_duplicate_alternatives']
                         else 'single_alternative', 'proof_established': False}
             return first
+        if not str(boundary['pc']).startswith('0x'):
+            # A join generalizes paths at one program location. Exits of a return package
+            # stand at the caller's return address, no location of the function: several
+            # of them stay apart, one package per entry slot of a duplicated return block.
+            raise ValueError('The exits of ' + str(boundary['pc']) + ' have no join location: '
+                             + str(first.manifest['emitted_alternative_count'])
+                             + ' alternatives need one return package per entry slot of their return block')
         joined = generalize_owned_join(raw_alternatives, original_seed=original_seed,
             entry_pc=int(boundary['pc'], 0), vocabulary=vocabulary, continuation=continuation,
             **(join_options or {}))

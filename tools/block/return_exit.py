@@ -152,6 +152,33 @@ def match_return_exits(designs, exits):
     return pairs, unreached
 
 
+def return_block_slots(boundaries, exits):
+    """The boundary of the block the exits leave from, when that block carries entry slots
+    (a duplicated return join); None otherwise. Every exit of one return design leaves from
+    one return block; several return blocks of one design carry no slots."""
+    blocks = {row["block_pc"] for row in exits}
+    if len(blocks) != 1:
+        return None
+    block = next((row for row in boundaries if row["pc"] == next(iter(blocks))), None)
+    return block if block is not None and block.get("slots") else None
+
+
+def exit_slot(block, exit):
+    """The entry slot of the slot block `block` that the function_return exit continues from.
+
+    The exit's path extends the path of the block alternative it continued from (the source
+    pass appends the block's own decisions), from the same seed; exactly one alternative
+    may match."""
+    matches = [number for number, alternative in enumerate(block["alternatives"])
+               if alternative["seed_pc"] == exit["seed_pc"]
+               and exit["path"][:len(alternative["path"])] == alternative["path"]]
+    if len(matches) != 1:
+        raise ValueError("A function_return exit continues from %d alternatives of %s."
+                         % (len(matches), block["pc"]))
+    slot, = [index for index, row in enumerate(block["slots"]) if matches[0] in row["alternatives"]]
+    return slot
+
+
 def allows_exit_resources_only(design):
     """A return fact `True` (or JSON true) states no meaning: the exit resources only."""
     fact = design["return_fact"]

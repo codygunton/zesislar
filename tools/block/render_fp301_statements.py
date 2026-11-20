@@ -333,10 +333,12 @@ def successor_precondition(profile, suffix, slot=None, k='K'):
     return 'instr_pre ' + profile.pc(suffix) + ' (' + entry + ' (args) (returnAddress) (' + k + '))%I'
 
 
-def return_precondition(profile, suffix=''):
-    """Return the `instr_pre` premise of a function-return package (one per return site)."""
+def return_precondition(profile, suffix='', slot=None):
+    """Return the `instr_pre` premise of a function-return package (one per return site;
+    one per entry slot of a return block with slots)."""
     return ('instr_pre returnAddress ('
-            + profile.qualified('FunctionReturn' + suffix + 'Entries', 'fp_machineReturn' + suffix)
+            + profile.qualified('FunctionReturn' + suffix + 'Entries',
+                                'fp_machineReturn' + suffix + slot_suffix(slot))
             + ' args returnAddress K)')
 
 

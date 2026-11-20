@@ -143,7 +143,13 @@ def _plan_caller(profile, suffix, pc, slot, own, rendered, slot_cases, blocks, e
     elif not successors:
         site = exit_package(profile, sites, pc, ends[pc])
         package = 'function_return' + ('_' + site if site else '')
-        refusal = None if site is not None and package in rendered else 'function-return package not rendered'
+        if package in slot_cases:
+            # A return block with entry slots: each slot exits to its own package slot.
+            done = [case for case in slot_cases[package] if case['slot']['index'] == slot
+                    and case['status'] == 'source_declarations_rendered']
+        else:
+            done = [package] if package in rendered else []
+        refusal = None if site is not None and done else 'function-return package not rendered'
     else:
         refusal = ('successor entry not rendered: ' + ', '.join(missing)) if missing else None
     return (suffix, slot, exits, refusal)
@@ -194,7 +200,9 @@ def main():
             end = block_rows[start].get('end')
             site = exit_package(profile, return_sites(profile), start, end)
             imports += [profile.qualified('FunctionReturn' + site + kind) for kind in ('Entries', 'Structural')]
-            preconditions.append(return_precondition(profile, site))
+            slotted = any(case['pc'] == 'function_return' + ('_' + site if site else '') and 'slot' in case
+                          for case in result['cases'])
+            preconditions.append(return_precondition(profile, site, slot if slotted else None))
         # The call sites of this block and of the return blocks it runs through, in address order.
         for start in [int(profile.pc(name), 16) for name in [suffix, *dict.fromkeys(through)]]:
             block = block_rows[start]

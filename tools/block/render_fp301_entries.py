@@ -213,21 +213,26 @@ if options.backward_pins is not None:
     check.checked.extend((frozenset(map(tuple, key)), path) for key, path
                          in json.loads((options.backward_pins.parent / "CHECKED.json").read_text()))
 
-def return_boundary(designs):
+def return_boundary(designs, slot=None):
     """The function_return exits as alternatives, each with its design's return fact.
 
     Each design row names its return instruction; every exit at that instruction
     is one alternative. An exit renders on its seed's root tree (as a single join
     edge does), and a return fact is a pure component of that scope.
     `{bytes@ADDR}` names the exit value of the owned array at ADDR. A return fact
-    `True` allows the exit resources only: no component is added."""
+    `True` allows the exit resources only: no component is added. A return block with
+    entry slots (a duplicated return join) gives one package per slot: `slot` keeps the
+    exits that continue from that slot."""
     from join_generalize import align_join_edges
     from forward_resources import _strip_enclosure
-    from return_exit import allows_exit_resources_only, match_return_exits
+    from return_exit import allows_exit_resources_only, exit_slot, match_return_exits, return_block_slots
     # A design that no path reaches renders no alternative; its blocks do not render either.
     at = {int(design["return_instruction_pc"], 0) for design in designs}
     pairs, unreached = match_return_exits(designs, [row for row in data["exits"] if row["kind"] == "function_return"
                                                     and int(row["instruction_pc"], 0) in at])
+    if slot is not None:
+        block = return_block_slots(data["boundaries"], [exit for _, exit in pairs])
+        pairs = [(design, exit) for design, exit in pairs if exit_slot(block, exit) == slot]
     if not pairs:
         raise ValueError("The return package has no function_return exit.")
     alternatives = []
@@ -268,12 +273,26 @@ def return_pc(suffix):
     """The case name of a return package pilot."""
     return "function_return" + ("_" + suffix[len("Return"):] if suffix != "Return" else "")
 
+def slot_block(suffix):
+    """The boundary whose entry slots `suffix` renders one entry each for, or None: a slot
+    block's own boundary; for a return site, its return block when that block carries slots
+    (one return package per slot, each with its incoming edge's exit state)."""
+    if suffix in tails:
+        return None
+    if suffix in sites:
+        from return_exit import return_block_slots
+        at = int(sites[suffix]["return_instruction_pc"], 0)
+        return return_block_slots(data["boundaries"], [row for row in data["exits"] if row["kind"] == "function_return"
+                                                       and int(row["instruction_pc"], 0) == at])
+    block = next(b for b in data["boundaries"] if b["pc"] == profile.pc(suffix))
+    return block if block.get("slots") else None
+
+
 def entry_units(suffix):
     """(suffix, slot) per rendered entry: one per entry slot of a slot block, else one."""
-    if suffix not in sites and suffix not in tails:
-        slots = next(b for b in data["boundaries"] if b["pc"] == profile.pc(suffix)).get("slots")
-        if slots:
-            return [(suffix, slot) for slot in range(len(slots))]
+    block = slot_block(suffix)
+    if block is not None:
+        return [(suffix, slot) for slot in range(len(block["slots"]))]
     return [(suffix, None)]
 
 
@@ -340,7 +359,7 @@ for suffix, slot in units:
         boundary = {"pc": pc, "status": "generated", "alternatives": deepcopy(tail_return["alternatives"]),
                     "reaching_stops": []}
     else:
-        boundary = (return_boundary([sites[suffix]]) if suffix in sites
+        boundary = (return_boundary([sites[suffix]], slot) if suffix in sites
                     else deepcopy(data["boundaries"][index]))
     if boundary["status"] == "generated_call_return":
         # A return site renders from its call-return seed alternative.
@@ -353,7 +372,8 @@ for suffix, slot in units:
             if alternative["predecessor_pc"] is not None
         ]
         boundary["status"] = "handwritten_cut"
-    if slot is not None:
+    package = suffix in sites or suffix in tails
+    if slot is not None and not package:
         # An entry slot renders the alternatives of its own incoming edge only.
         boundary["alternatives"] = [boundary["alternatives"][number]
                                     for number in boundary["slots"][slot]["alternatives"]]
@@ -380,9 +400,7 @@ for suffix, slot in units:
             continue
         origin_roots = {ancestor}
     original_seed = root_seeds[origin_roots.pop()]
-    package = suffix in sites or suffix in tails
-    name = ("fp_machine" + suffix if package else "fp_machineAt" + suffix
-            + ("" if slot is None else "_slot" + str(slot)))
+    name = ("fp_machine" + suffix if package else "fp_machineAt" + suffix) + ("" if slot is None else "_slot" + str(slot))
     name = identifier(name, "generated entry")
     source_ref = str(forward) + ("#/tail_returns" if suffix in tails else "#/exits" if index is None
                                  else "#/boundaries/" + str(index))
@@ -706,9 +724,12 @@ for suffix, slot in units:
 assert len(cases) == len(units)
 for (suffix, slot), case in zip(units, cases):
     if slot is not None:
-        boundary = next(b for b in data["boundaries"] if b["pc"] == profile.pc(suffix))
-        case["slot"] = {"index": slot, "predecessor_pc": boundary["slots"][slot]["predecessor_pc"],
-                        "predecessor_slot": boundary["slots"][slot]["predecessor_slot"]}
+        boundary = slot_block(suffix)
+        # A return package slot follows the same slot of its return block.
+        case["slot"] = ({"index": slot, "predecessor_pc": boundary["pc"], "predecessor_slot": slot}
+                        if suffix in sites else
+                        {"index": slot, "predecessor_pc": boundary["slots"][slot]["predecessor_pc"],
+                         "predecessor_slot": boundary["slots"][slot]["predecessor_slot"]})
         for key in ("entry", "structural"):
             if key in case:
                 case[key] = bind(case[key]["path"])

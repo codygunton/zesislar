@@ -200,6 +200,45 @@ class CallerPlan(unittest.TestCase):
         self.assertIn('  instr_body 0x800d1020\n    (DesignedEntry_800d1020_slot1 args returnAddress K).', source)
         self.assertIn('fp_machineAt1020_slot1 (args)', source)
 
+    def test_a_return_block_with_entry_slots_exits_to_one_return_package_per_slot(self):
+        # 1020 is a duplicated return join (one slot per edge from 1000 and 1010); each slot
+        # exits to its own slot of the return package, which keeps that edge's exit state.
+        profile = other_profile()
+        profile.data['blocks'] = ['1000', '1010', '1020']
+        function = {'blocks': [{'start': 0x800d1000, 'end': 0x800d1010, 'successors': [0x800d1020]},
+                               {'start': 0x800d1010, 'end': 0x800d1020, 'successors': [0x800d1020]},
+                               {'start': 0x800d1020, 'end': 0x800d1030, 'successors': []}]}
+        rendered = 'source_declarations_rendered'
+
+        def slot(pc, index, predecessor, predecessor_slot, status=rendered):
+            return {'pc': pc, 'status': status, 'slot': {'index': index, 'predecessor_pc': predecessor,
+                                                         'predecessor_slot': predecessor_slot}}
+        cases = [{'pc': '0x800d1000', 'status': rendered}, {'pc': '0x800d1010', 'status': rendered},
+                 slot('0x800d1020', 0, '0x800d1000', None), slot('0x800d1020', 1, '0x800d1010', None),
+                 slot('function_return', 0, '0x800d1020', 0),
+                 slot('function_return', 1, '0x800d1020', 1, 'refused_mixed_roots')]
+        self.assertEqual(plan_callers(profile, cases, function)[2:], [
+            ('1020', 0, [], None), ('1020', 1, [], 'function-return package not rendered')])
+        self.assertEqual(return_precondition(profile, '', 0),
+                         'instr_pre returnAddress (ZesuSsz.Generated.Other.FP301.FunctionReturnEntries'
+                         '.fp_machineReturn_slot0 args returnAddress K)')
+
+    def test_a_return_exit_belongs_to_the_slot_of_the_alternative_its_path_extends(self):
+        from return_exit import exit_slot, return_block_slots
+        block = {'pc': '0x800d1020', 'alternatives': [
+                     {'seed_pc': '0x800d1000', 'path': [0, 1]}, {'seed_pc': '0x800d1010', 'path': [0]},
+                     {'seed_pc': '0x800d1000', 'path': [1]}],
+                 'slots': [{'alternatives': [0, 2]}, {'alternatives': [1]}]}
+        exits = [{'block_pc': '0x800d1020', 'seed_pc': '0x800d1010', 'path': [0, 0, 1]},
+                 {'block_pc': '0x800d1020', 'seed_pc': '0x800d1000', 'path': [1, 0]},
+                 {'block_pc': '0x800d1020', 'seed_pc': '0x800d1000', 'path': [0, 1, 1]}]
+        self.assertIs(return_block_slots([block], exits), block)
+        self.assertEqual([exit_slot(block, exit) for exit in exits], [1, 0, 0])
+        self.assertIsNone(return_block_slots([dict(block, slots=None)], exits))
+        self.assertIsNone(return_block_slots([block], exits + [dict(exits[0], block_pc='0x800d1030')]))
+        with self.assertRaises(ValueError):   # No alternative of the block leads to this exit.
+            exit_slot(block, {'seed_pc': '0x800d1000', 'path': [0, 0]})
+
     def test_a_compliance_record_inlines_return_blocks_into_their_predecessors_callers(self):
         # 1000 -> 1010 (tail jump to 0x800e06c0) and 1020 (return). Neither return block
         # has a slot: 1000's caller runs through both and ends with the contract continuation.
