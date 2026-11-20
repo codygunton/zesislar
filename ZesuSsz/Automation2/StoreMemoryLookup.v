@@ -682,6 +682,19 @@ Proof.
   change (N.to_nat 8) with 8%nat.
   rewrite (zesu_word_little_endian_extracts w). iExact "Hb".
 Qed.
+(* The same request when the successor existential is itself the left part
+   of a separating conjunction (`(∃ x, cells ∗ T x) ∗ R`: the successor's
+   pure tail and its continuation follow the existential). *)
+Lemma zesu_exist_word_cell_bytes_sep `{!islaG Sigma} {B : Type} (a : Z) (w v : bv 64)
+    (T : B → iProp Sigma) (R : iProp Sigma) :
+  v = w →
+  a ↦ₘ w -∗ ((∃ x, T x) ∗ R) -∗
+  (∃ x, a ↦ₘ∗ [bv_extract 0 8 v; bv_extract 8 8 v; bv_extract 16 8 v; bv_extract 24 8 v;
+               bv_extract 32 8 v; bv_extract 40 8 v; bv_extract 48 8 v; bv_extract 56 8 v] ∗ T x) ∗ R.
+Proof.
+  intros E. iIntros "Hw [HT HR]". iFrame "HR".
+  iApply (zesu_exist_word_cell_bytes a w v T E with "Hw HT").
+Qed.
 
 Ltac zesu_exist_word_cell_with a v :=
   assert_fails (has_evar v);
@@ -695,7 +708,8 @@ Ltac zesu_exist_word_cell_with a v :=
                  | ltac2:(Ltac1.run (Ltac1.ref
                      [@ZesuSsz; @Automation2; @BlockTail; @zesu_tail_window_goal])) ]);
         try iEval (rewrite <- isla.ghost_state.mem_mapsto_array_eq);
-        iApply (zesu_exist_word_cell_bytes a w v _ E with H);
+        first [ iApply (zesu_exist_word_cell_bytes a w v _ E with H)
+              | iApply (zesu_exist_word_cell_bytes_sep a w v _ _ E with H) ];
         clear E
     end).
 
@@ -717,6 +731,15 @@ Ltac zesu_subsume_word_cell_extracts :=
   | |- environments.envs_entails _ (@bi_exist _ _ (fun x =>
         bi_sep (@isla.ghost_state.mem_mapsto_array_def _ _ 8%N ?a (DfracOwn 1)
           (bv_extract 0 8 ?v :: _)) _)) =>
+      try ZesuSsz.Automation2.ResourceGroups.zesu_expose_environment_alias;
+      zesu_exist_word_cell_with a v
+  | |- environments.envs_entails _ (bi_sep (@bi_exist _ _ (fun x =>
+        bi_sep (@mem_mapsto_array _ _ 8%N ?a (DfracOwn 1) (bv_extract 0 8 ?v :: _)) _)) _) =>
+      try ZesuSsz.Automation2.ResourceGroups.zesu_expose_environment_alias;
+      zesu_exist_word_cell_with a v
+  | |- environments.envs_entails _ (bi_sep (@bi_exist _ _ (fun x =>
+        bi_sep (@isla.ghost_state.mem_mapsto_array_def _ _ 8%N ?a (DfracOwn 1)
+          (bv_extract 0 8 ?v :: _)) _)) _) =>
       try ZesuSsz.Automation2.ResourceGroups.zesu_expose_environment_alias;
       zesu_exist_word_cell_with a v
   end.

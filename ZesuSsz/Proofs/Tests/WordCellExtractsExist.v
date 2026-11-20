@@ -42,6 +42,30 @@ Proof.
   by iExists tt.
 Qed.
 
+(* 05a4: the existential is the left part of a separating conjunction (the
+   successor's pure tail and continuation follow it). *)
+Lemma test_word_cell_extracts_exist_sep `{!islaG Sigma} (a : Z) (bytes : list (bv 8)) (K : iProp Sigma) :
+  length bytes = 16%nat ->
+  a ↦ₘ Z_to_bv 64 (little_endian_to_bv 8 (take (N.to_nat 8) (drop 0 bytes))) -∗ K -∗
+  (∃ x : unit, isla.ghost_state.mem_mapsto_array_def a (DfracOwn 1)
+    (extracts (test_concat_word bytes)) ∗ ⌜x = tt⌝) ∗ K.
+Proof.
+  intros Hlen. iStartProof. iIntros "H HK". unfold test_concat_word.
+  ZesuSsz.Automation2.StoreMemoryLookup.zesu_subsume_word_cell_extracts.
+  iFrame "HK". by iExists tt.
+Qed.
+
+(* Refused in that shape: a cell at another address. *)
+Lemma test_word_cell_extracts_exist_sep_refused `{!islaG Sigma} (a : Z) (bytes : list (bv 8)) (K : iProp Sigma) :
+  True.
+Proof.
+  Fail assert (⊢ (a + 8) ↦ₘ Z_to_bv 64 (little_endian_to_bv 8 (take (N.to_nat 8) (drop 0 bytes))) -∗ K -∗
+    (∃ x : unit, a ↦ₘ∗ extracts (test_concat_word bytes) ∗ ⌜x = tt⌝) ∗ K) by
+    (iStartProof; iIntros "H HK"; unfold test_concat_word;
+     ZesuSsz.Automation2.StoreMemoryLookup.zesu_subsume_word_cell_extracts).
+  exact I.
+Qed.
+
 Print Assumptions test_word_cell_extracts_exist.
 Print Assumptions test_word_cell_extracts_exist_opened.
 
