@@ -66,6 +66,40 @@ Proof.
   iFrame "HK".
 Qed.
 
+(* 05a4 at cc62c0252: the request goes on past the word, `a ↦ₘ∗ (extracts
+   ++ [b])` (the word and the byte stored after it as one 9-byte array). The
+   cell gives the eight extracts; `(a + 8) ↦ₘ∗ [b]` stays asked in their
+   place. Under the existential on the left of a separating conjunction, and
+   with no existential. *)
+Notation extracts_then v b :=
+  [bv_extract 0 8 v; bv_extract 8 8 v; bv_extract 16 8 v; bv_extract 24 8 v;
+   bv_extract 32 8 v; bv_extract 40 8 v; bv_extract 48 8 v; bv_extract 56 8 v; b].
+
+Lemma test_word_cell_extracts_rest_exist_sep `{!islaG Sigma} (a : Z) (bytes : list (bv 8))
+    (b : bv 8) (K : iProp Sigma) :
+  length bytes = 16%nat ->
+  a ↦ₘ Z_to_bv 64 (little_endian_to_bv 8 (take (N.to_nat 8) (drop 0 bytes))) -∗
+  (a + 8) ↦ₘ∗ [b] -∗ K -∗
+  (∃ x : unit, isla.ghost_state.mem_mapsto_array_def a (DfracOwn 1)
+    (extracts_then (test_concat_word bytes) b) ∗ ⌜x = tt⌝) ∗ K.
+Proof.
+  intros Hlen. iStartProof. iIntros "H Hb HK". unfold test_concat_word.
+  ZesuSsz.Automation2.StoreMemoryLookup.zesu_subsume_word_cell_extracts.
+  iFrame "HK". iExists tt. by iFrame "Hb".
+Qed.
+
+Lemma test_word_cell_extracts_rest_sep `{!islaG Sigma} (a : Z) (bytes : list (bv 8))
+    (b : bv 8) (K : iProp Sigma) :
+  length bytes = 16%nat ->
+  a ↦ₘ Z_to_bv 64 (little_endian_to_bv 8 (take (N.to_nat 8) (drop 0 bytes))) -∗
+  (a + 8) ↦ₘ∗ [b] -∗ K -∗
+  isla.ghost_state.mem_mapsto_array_def a (DfracOwn 1) (extracts_then (test_concat_word bytes) b) ∗ K.
+Proof.
+  intros Hlen. iStartProof. iIntros "H Hb HK". unfold test_concat_word.
+  ZesuSsz.Automation2.StoreMemoryLookup.zesu_subsume_word_cell_extracts.
+  iFrame "HK Hb".
+Qed.
+
 (* Refused in that shape: a cell at another address. *)
 Lemma test_word_cell_extracts_exist_sep_refused `{!islaG Sigma} (a : Z) (bytes : list (bv 8)) (K : iProp Sigma) :
   True.

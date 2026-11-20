@@ -709,6 +709,66 @@ Proof.
   rewrite (zesu_word_little_endian_extracts w). iExact "Hb".
 Qed.
 
+(* The request may go on past the word: `a ↦ₘ∗ (extracts ++ rest)` (05a4:
+   the word and the byte stored after it, asked as one 9-byte array). The
+   cell gives the first eight bytes; the request keeps `(a + 8) ↦ₘ∗ rest` in
+   the place of the array. Tried only after the exact eight-byte shapes. *)
+Lemma zesu_word_cell_bytes_rest `{!islaG Sigma} (a : Z) (w v : bv 64) (rest : list (bv 8)) :
+  v = w →
+  a ↦ₘ w -∗ (a + 8) ↦ₘ∗ rest -∗
+  a ↦ₘ∗ (bv_extract 0 8 v :: bv_extract 8 8 v :: bv_extract 16 8 v :: bv_extract 24 8 v ::
+         bv_extract 32 8 v :: bv_extract 40 8 v :: bv_extract 48 8 v :: bv_extract 56 8 v :: rest).
+Proof.
+  intros ->. iIntros "Hw Hr".
+  iDestruct (zesu_cell_bytes 8 a (DfracOwn 1) w with "Hw") as "[Hb _]".
+  change (N.to_nat 8) with 8%nat.
+  rewrite (zesu_word_little_endian_extracts w).
+  iApply (mem_mapsto_array_app_combine_at 8 a (DfracOwn 1)
+    [bv_extract 0 8 w; bv_extract 8 8 w; bv_extract 16 8 w; bv_extract 24 8 w;
+     bv_extract 32 8 w; bv_extract 40 8 w; bv_extract 48 8 w; bv_extract 56 8 w]
+    rest 8 eq_refl with "Hb [Hr]").
+  have -> : a + Z.of_N (8 `div` 8) * 8%nat = a + 8 by vm_compute; lia.
+  iExact "Hr".
+Qed.
+
+(* The three request shapes of the exact rule, with at least one byte after
+   the word (an empty rest is the exact shape). *)
+Lemma zesu_exist_word_cell_bytes_rest `{!islaG Sigma} {B : Type} (a : Z) (w v : bv 64)
+    (b : bv 8) (rest : list (bv 8)) (T : B → iProp Sigma) :
+  v = w →
+  a ↦ₘ w -∗ (∃ x, (a + 8) ↦ₘ∗ (b :: rest) ∗ T x) -∗
+  ∃ x, a ↦ₘ∗ (bv_extract 0 8 v :: bv_extract 8 8 v :: bv_extract 16 8 v :: bv_extract 24 8 v ::
+              bv_extract 32 8 v :: bv_extract 40 8 v :: bv_extract 48 8 v :: bv_extract 56 8 v ::
+              b :: rest) ∗ T x.
+Proof.
+  intros E. iIntros "Hw [%x [Hr HT]]". iExists x. iFrame "HT".
+  iApply (zesu_word_cell_bytes_rest a w v (b :: rest) E with "Hw Hr").
+Qed.
+
+Lemma zesu_exist_word_cell_bytes_rest_sep `{!islaG Sigma} {B : Type} (a : Z) (w v : bv 64)
+    (b : bv 8) (rest : list (bv 8)) (T : B → iProp Sigma) (R : iProp Sigma) :
+  v = w →
+  a ↦ₘ w -∗ ((∃ x, (a + 8) ↦ₘ∗ (b :: rest) ∗ T x) ∗ R) -∗
+  (∃ x, a ↦ₘ∗ (bv_extract 0 8 v :: bv_extract 8 8 v :: bv_extract 16 8 v :: bv_extract 24 8 v ::
+               bv_extract 32 8 v :: bv_extract 40 8 v :: bv_extract 48 8 v :: bv_extract 56 8 v ::
+               b :: rest) ∗ T x) ∗ R.
+Proof.
+  intros E. iIntros "Hw [HT HR]". iFrame "HR".
+  iApply (zesu_exist_word_cell_bytes_rest a w v b rest T E with "Hw HT").
+Qed.
+
+Lemma zesu_word_cell_bytes_rest_sep `{!islaG Sigma} (a : Z) (w v : bv 64) (b : bv 8)
+    (rest : list (bv 8)) (R : iProp Sigma) :
+  v = w →
+  a ↦ₘ w -∗ ((a + 8) ↦ₘ∗ (b :: rest) ∗ R) -∗
+  a ↦ₘ∗ (bv_extract 0 8 v :: bv_extract 8 8 v :: bv_extract 16 8 v :: bv_extract 24 8 v ::
+         bv_extract 32 8 v :: bv_extract 40 8 v :: bv_extract 48 8 v :: bv_extract 56 8 v ::
+         b :: rest) ∗ R.
+Proof.
+  intros E. iIntros "Hw [Hr HR]". iFrame "HR".
+  iApply (zesu_word_cell_bytes_rest a w v (b :: rest) E with "Hw Hr").
+Qed.
+
 Ltac zesu_exist_word_cell_with a v :=
   assert_fails (has_evar v);
   iMatchHyp ltac:(fun H res =>
@@ -723,7 +783,10 @@ Ltac zesu_exist_word_cell_with a v :=
         try iEval (rewrite <- isla.ghost_state.mem_mapsto_array_eq);
         first [ iApply (zesu_exist_word_cell_bytes a w v _ E with H)
               | iApply (zesu_exist_word_cell_bytes_sep a w v _ _ E with H)
-              | iApply (zesu_word_cell_bytes_sep a w v _ E with H) ];
+              | iApply (zesu_word_cell_bytes_sep a w v _ E with H)
+              | iApply (zesu_exist_word_cell_bytes_rest a w v _ _ _ E with H)
+              | iApply (zesu_exist_word_cell_bytes_rest_sep a w v _ _ _ _ E with H)
+              | iApply (zesu_word_cell_bytes_rest_sep a w v _ _ _ E with H) ];
         clear E
     end).
 
