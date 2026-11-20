@@ -152,10 +152,100 @@ Ltac zesu_wrapped_index_range root :=
   end;
   zesu_lia.
 
+(* Library linear arithmetic: `lia` itself is the project hook (LiaHook.v). *)
+Ltac zesu_plain_lia := Coq.micromega.Zify.zify; xlia Coq.micromega.Lia.zchecker.
+
+(* The variable an address or index expression is built on. *)
+Ltac zesu_term_root t :=
+  lazymatch t with
+  | @bv_unsigned _ ?w => zesu_term_root w
+  | Z_to_bv _ ?z => zesu_term_root z
+  | Z.add ?l _ => zesu_term_root l
+  | Z.sub ?l _ => zesu_term_root l
+  | @bv_add _ ?l _ => zesu_term_root l
+  | @bv_sub _ ?l _ => zesu_term_root l
+  | _ => constr:(t)
+  end.
+
+(* The value of an expression over [root] at a sample root value. Used only
+   to decide which resource or literal to aim at; every use is proved. *)
+Ltac zesu_eval_at_root root e :=
+  let f := eval pattern root in e in
+  lazymatch f with
+  | ?g _ =>
+      lazymatch type of root with
+      | Z => let d := eval vm_compute in (g 2952790016%Z) in d
+      | _ => let d := eval vm_compute in (g (Z_to_bv 64 2952790016)) in d
+      end
+  end.
+
+(* The integer root [z] cancels in [e]: the same value at two sample root
+   values. An index that keeps its root is not a literal (and its value at a
+   sample root must not reach unary arithmetic). *)
+Ltac zesu_root_cancels z e :=
+  lazymatch eval pattern z in e with
+  | ?g _ =>
+      let low := eval vm_compute in (g 0%Z) in
+      let high := eval vm_compute in (g 2952790016%Z) in
+      constr_eq low high
+  end.
+
+Ltac zesu_clear_all_hyps := repeat match goal with H : _ |- _ => clear H end.
+
+(* The frame of a load may sit on an integer root z, `Z_to_bv 64 z + c1 + c2`:
+   the offset chain of [zesu_wrapped_offset_chain] with root `Z_to_bv width z`. *)
+Lemma zesu_zroot_offset_word (width : N) (z : Z) :
+  bv_unsigned (Z_to_bv width z) = bv_wrap width (z + 0).
+Proof. rewrite Z_to_bv_unsigned Z.add_0_r. reflexivity. Qed.
+
+Ltac zesu_zroot_chain word :=
+  lazymatch word with
+  | bv_add ?inner ?step =>
+      let _ := match goal with _ => ZesuSsz.Automation2.VmClosed.zesu_vm_closed step end in
+      let proof := zesu_zroot_chain inner in
+      constr:(zesu_wrapped_offset_step _ _ _ inner step proof)
+  | Z_to_bv ?width ?z => constr:(zesu_zroot_offset_word width z)
+  end.
+
+(* 0 <= z + s < 2^64 from the order facts on z (no div, mod or length fact). *)
+Ltac zesu_zroot_range_select z :=
+  repeat match goal with
+  | H : ?T |- _ =>
+      lazymatch T with
+      | (_ <= _ < _)%Z => idtac | (_ <= _)%Z => idtac | (_ < _)%Z => idtac
+      end;
+      lazymatch T with context [z] => idtac end;
+      lazymatch T with
+      | context [Z.modulo] => fail | context [Z.div] => fail | context [@length] => fail
+      | _ => idtac end;
+      revert H
+  end;
+  zesu_clear_all_hyps; intros;
+  change (bv_modulus 64) with 18446744073709551616 in *;
+  zesu_plain_lia.
+Ltac zesu_zroot_range z :=
+  first [ solve [zesu_zroot_range_select z]
+        | ZesuSsz.Automation2.PureFacts.zesu_saturate_derived_facts; solve [zesu_zroot_range_select z] ].
+
+(* [k] receives `Haddress : bv_unsigned word = z + s` (s a signed literal) and z. *)
+Ltac zesu_zroot_address word k :=
+  let chain := zesu_zroot_chain word in
+  lazymatch type of chain with
+  | bv_unsigned _ = bv_wrap ?width (?z + ?sum) =>
+      assert_fails (ZesuSsz.Automation2.VmClosed.zesu_vm_closed z);
+      let offset := ZesuSsz.Automation2.VmClosed.zesu_vm_eval_closed (bv_swrap width sum) in
+      let address := lazymatch offset with Z0 => constr:(z) | _ => constr:((z + offset)%Z) end in
+      let Haddress := fresh "HzrootAddress" in
+      assert (Haddress : bv_unsigned word = address) by
+        (refine (zesu_wrapped_offset_small width z sum offset address word chain _ _ _);
+         [vm_compute; reflexivity | first [reflexivity | symmetry; apply Z.add_0_r] | zesu_zroot_range z]);
+      k Haddress z
+  end.
+
 (* Prove `Z.to_nat expression = n` for a nat literal n and pass the equation
    to [location]. The address range, the offset and the index are proved,
    never assumed. An index on two different words is not constant: refused. *)
-Ltac zesu_wrapped_index_literal expression location :=
+Ltac zesu_wrapped_index_literal_word expression location :=
   assert_fails (has_evar expression);
   match expression with
   | context[bv_unsigned (bv_add ?inner ?step)] =>
@@ -192,11 +282,60 @@ Ltac zesu_wrapped_index_literal expression location :=
       end
   end.
 
+(* The index of a load from a frame on an integer root under `Z_to_bv`. *)
+Ltac zesu_wrapped_index_literal_zroot expression location :=
+  assert_fails (has_evar expression);
+  match expression with
+  | context[bv_unsigned (bv_add ?inner ?step)] =>
+      ZesuSsz.Automation2.VmClosed.zesu_vm_closed step;
+      let word := constr:(bv_add inner step) in
+      zesu_zroot_address word ltac:(fun Haddress z =>
+        lazymatch type of Haddress with
+        | _ = ?address =>
+          let reduced := lazymatch eval pattern (bv_unsigned word) in expression with
+            | ?shape _ => eval cbv beta in (shape address) end in
+          zesu_root_cancels z reduced;
+          let literal := lazymatch eval pattern z in reduced with
+            | ?shape _ => eval vm_compute in (shape 0%Z) end in
+          lazymatch literal with Z0 => idtac | Zpos _ => idtac end;
+          let index := eval vm_compute in (Z.to_nat literal) in
+          let Hindex := fresh "HindexLiteral" in
+          assert (Hindex : Z.to_nat expression = index) by
+            (rewrite Haddress; rewrite ?Z.div_1_r; clear; zesu_plain_lia);
+          clear Haddress;
+          location Hindex;
+          clear Hindex
+        end)
+  end.
+
+(* An index that is integer arithmetic over one root: `Z.to_nat (z + c - (z - k))`. *)
+Ltac zesu_wrapped_index_literal_integer expression location :=
+  assert_fails (has_evar expression);
+  lazymatch expression with context [@bv_unsigned] => fail | _ => idtac end;
+  let z := zesu_term_root expression in
+  assert_fails (ZesuSsz.Automation2.VmClosed.zesu_vm_closed z);
+  zesu_root_cancels z expression;
+  let literal := zesu_eval_at_root z expression in
+  lazymatch literal with Z0 => idtac | Zpos _ => idtac end;
+  let index := eval vm_compute in (Z.to_nat literal) in
+  let Hindex := fresh "HindexLiteral" in
+  assert (Hindex : Z.to_nat expression = index) by (zesu_clear_all_hyps; zesu_plain_lia);
+  location Hindex;
+  clear Hindex.
+
+(* The index over a word root, over an integer root under `Z_to_bv`, or as
+   integer arithmetic over one root. *)
+Ltac zesu_wrapped_index_literal expression location :=
+  first [ zesu_wrapped_index_literal_word expression location
+        | zesu_wrapped_index_literal_zroot expression location
+        | zesu_wrapped_index_literal_integer expression location ].
+
 (* Last alternative of the run loops: fires only on such an index under
-   `drop` in the goal or in a list lookup hypothesis. *)
+   `drop` in the goal (every occurrence is tried) or in a list lookup
+   hypothesis. *)
 Ltac zesu_wrapped_index_step :=
   first [
-    lazymatch goal with |- context[drop (Z.to_nat ?expression) _] =>
+    match goal with |- context[drop (Z.to_nat ?expression) _] =>
       zesu_wrapped_index_literal expression ltac:(fun Hindex => rewrite Hindex) end
   | match goal with
     | Hlookup : _ !! Z.to_nat ?expression = Some _ |- _ =>
