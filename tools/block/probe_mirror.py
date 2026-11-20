@@ -26,7 +26,8 @@ ROOT = Path(__file__).resolve().parents[2]
 BINDERS = re.compile(r'∃ ((?:\((?:[^()]|\([^()]*\))*\) ?)+),')
 BINDER = re.compile(r'\((\w+) : ((?:[^()]|\([^()]*\))*)\)')
 ENTRY_USE = re.compile(r'\((ZesuSsz\.Generated\.[\w.]+)\.(\w+) (\(?args\)?) (\(?returnAddress\)?) (\(?K\)?)\)')
-DROPPED_IMPORT = re.compile(r'Require Import (ZesuSsz\.Generated\.\w+\.FP301\.\w+(Entries|Structural)\.'
+# A sealed caller's Edges<case> module holds history instances: the probe deletes the history facts.
+DROPPED_IMPORT = re.compile(r'Require Import (ZesuSsz\.Generated\.\w+\.FP301\.(\w+(Entries|Structural)|Edges\w*)\.'
                             r'|ZesuSsz\.Residuals\.|ZesuSsz\.Compliance\.DecodeItemMeaningPorted\.)')
 LENGTH_FACT = re.compile(r'^\(*List\.length (\w+|\(\w+ \(?\w+\)?\)) = \d+\)?(%nat)?\)*$')
 
