@@ -1,6 +1,6 @@
 # Rung-2 nested-header audit
 
-The proved example `fittingOuterHeader` has a fitting outer list and a child header that wraps a 64-bit length sum. The user selected C1-B. The public rung-2 domain does not narrow to `headerFits`.
+The proved example `fittingOuterHeader` has a fitting outer list and a child header that wraps a 64-bit length sum. The user selected C1-B. The public rung-2 domain does not narrow to `allContiguousHeadersFit` below: a nested wrap stays in the domain and is the known bug. It does narrow to the outer condition `headerFits(bytes)` (user decision 2026-11-19, `parentHeaderArgsWellFormed`): the code never checks the first item's payload against the input, so an outer wrap sends the later calls outside the input (`docs/TRUST.md`).
 
 `allContiguousHeadersFit` is a candidate narrower domain. Let `fieldSlices(bytes)` be a pure cursor walk over the outer list payload. The walk follows the selected parent-header field schedule. It records the remaining slice before each of the 17 direct `decodeItem` sites and three `nextUint64` child calls. On a successful item, it advances by that item's full length. It requires a positive consumed length within the remaining slice. It stops at the first rejected item. The proposed condition is:
 

@@ -20,10 +20,47 @@ the same chain. The October block, slot and composition proofs are retired. Some
 fact modules remain because the block design binds them as sources, the generated support
 files import them, or nextUint64's frozen-core exit meanings use them; no production theorem
 uses them. The user selected C1-B: the public result records exact
-machine bytes and permits only the named `RlpLongLengthWrap` divergence from Sail.
-The `KnownBugs` list has one constructor. A wrap case requires the exact binary
-result and Sail rejection. `headerFits` remains a caller lemma, not a public domain.
-Rung 2 does not narrow its domain. A nested wrap uses the same known bug on the
+machine bytes. For decodeItem it permits only the named `RlpLongLengthWrap`
+divergence from Sail; a wrap case requires the exact binary result and Sail
+rejection. `KnownBugs` lists ten classes. Each names an input class, what the binary
+does on it, and what Sail does:
+
+- `RlpLongLengthWrap`: an item whose long header and payload lengths add to 2^64 or
+  more; the binary adds them modulo 2^64 and goes on; Sail rejects the item.
+- `ParentHeaderMissingRequiredField`: a header list with fewer than twelve fields; the
+  binary rejects it; Sail accepts any field count.
+- `ParentHeaderTrailingBytes`: bytes after the outer header list; the binary ignores
+  them; Sail rejects the input.
+- `ParentHeaderSkippedFieldShape`: a parent hash or state root (fields 0 and 3) that is
+  a list or a string longer than 32 bytes; the binary skips it; Sail rejects it.
+- `ParentHeaderBlobGasUnaligned`: a blob gas used (field 17) that is not a multiple of
+  2^17 or counts more than 21 blobs; the binary returns it; Sail rejects it.
+- `RlpUintNonCanonical`: a base fee, blob gas used or excess blob gas (fields 15, 17,
+  18) of at most 8 bytes with a leading zero or a non-canonical header; the binary
+  reads its value; Sail rejects it.
+- `ParentHeaderUintOver8`: a canonical base fee of 9 to 32 bytes; the binary rejects
+  it; Sail accepts it as a 256-bit value.
+- `ParentHeaderUndecodedFieldRejected`: a gas limit, gas used or timestamp (fields 9 to
+  11) that is a list or longer than 8 bytes; the binary rejects it; Sail skips it.
+- `ParentHeaderExcessBlobGasAboveLimit`: an excess blob gas (field 18) above
+  2,992,193,280; the binary returns it; Sail rejects it.
+- `ParentHeaderTrailingItemMalformed`: an item after field 18 inside the header list
+  that does not decode; the binary never reads it; Sail rejects the input.
+
+The decodeParentHeader meaning
+(`ParentHeaderRung2.v`) requires the exact result of the candidate function
+`candidateParentHeader` (`Contracts/Candidates/ParentHeaderCandidate.v`), which
+follows the machine code, and then either Sail's agreement with that candidate or
+a boolean trigger of a listed class on the input bytes
+(`Contracts/ParentHeaderBugTriggers.v`). The candidate is pinned to the ELF by
+emulation vectors (`Evidence/ParentHeaderCandidateVectors.v`), which are test
+evidence. The decodeParentHeader domain (`parentHeaderArgsWellFormed`)
+requires the outer header to fit (`headerFits` of the whole input). The code checks the
+first item only for an error, the list flag and a nonzero payload length; it never checks
+that payload against the input. An outer long-list length that wraps 2^64 therefore passes,
+and the later decodeItem calls read outside the input (`0xff` followed by eight `0xff`
+bytes is one such input). That input class is outside the decodeParentHeader theorem.
+A nested wrap uses the same known bug on the
 reached slice. The candidate reached-slice walk needs machine-call correspondence
 before a proof can use it. Machine proofs establish partial correctness only. Phase 5 of the
 active plan must prove termination with the verified executor in `ZesuSsz/Export/Executor.v`.
@@ -32,9 +69,11 @@ active plan must prove termination with the verified executor in `ZesuSsz/Export
 derives `ParentHeaderContractCorrect` from two premises: `NextUint64ContractCorrect` and
 `ParentHeaderOpenBlocks`, a record with one field per decodeParentHeader block whose proof is
 not closed (generated in `ParentHeaderBlockObligations.v` by
-`tools/block/render_open_blocks.py`). It is not an unconditional result: its premises are the
-remaining work. The memcpy runtime premise enters through the contract code
-(`memcpyCallPremise`), as `ParentHeaderContractCorrect` states it.
+`tools/block/render_open_blocks.py`). It is not an unconditional result: `ParentHeaderOpenBlocks`
+is the remaining work. `NextUint64ContractCorrect` is proved without premises by
+`nextUint64Compliance` in `ZesuSsz/Compliance/NextUint64GeneratedComposition.v`; its contract
+code is nextUint64's own map and decodeItem's map. The memcpy runtime premise enters through the
+contract code (`memcpyCallPremise`), as `ParentHeaderContractCorrect` states it.
 
 A block leaves that record only with a closure certificate,
 `tools/block/closures/<callers directory>/<block>/CLOSURE.json`, written by

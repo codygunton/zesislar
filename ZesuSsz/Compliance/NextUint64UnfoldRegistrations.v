@@ -4,6 +4,8 @@ Require Import ZesuSsz.Contracts.NextUint64Contract.
 Require Import ZesuSsz.Contracts.NextUint64Selected.
 
 (* Function-specific unfolding markers. These declarations add no generic rule. *)
+Global Typeclasses Opaque nextUint64ContractCode.
+Global Instance : LithiumUnfold (@nextUint64ContractCode) := I.
 Global Typeclasses Opaque nextUint64Registers.
 Global Instance : LithiumUnfold (@nextUint64Registers) := I.
 Global Typeclasses Opaque nextUint64PostMemory.

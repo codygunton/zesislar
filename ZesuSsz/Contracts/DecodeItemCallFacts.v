@@ -182,6 +182,52 @@ Lemma decodeItemMeaningConsumed argv sp inputEnd input before after :
   bv_unsigned (listWord64At24 after) <= Z.of_nat (length input).
 Proof. intros H. exact (decodeItemConsumedInInput _ _ _ _ (decodeItemMeaningC1B _ _ H)). Qed.
 
+(* A success on an input whose header fits does not wrap 2^64: the header
+   and payload lengths sum below 2^64. *)
+Lemma candidateDecodeItemFitsNoWrap (input : list byte) isList headerLength payloadLength :
+  headerFits input ->
+  candidateDecodeItem input = candidateSuccess isList headerLength payloadLength ->
+  headerLength + payloadLength < word64Modulus.
+Proof.
+  destruct input as [|prefix rest]; [discriminate|].
+  pose proof (bv_unsigned_in_range _ prefix) as Hp. unfold bv_modulus in Hp.
+  change (2 ^ Z.of_N (MachineWord.MachineWord.Z_idx 8)) with 256 in Hp.
+  unfold headerFits, longLengthWidth, candidateDecodeItem, checkedPayload.
+  cbn zeta. cbn [length]. intros Hfits H.
+  change (2 ^ 64) with 18446744073709551616 in *.
+  repeat (case_match; simplify_eq);
+    rewrite ?andb_true_iff, ?andb_false_iff, ?Z.leb_le, ?Z.leb_gt, ?Z.eqb_eq,
+      ?Z.eqb_neq in *.
+  all: rewrite ?Nat2Z.inj_succ in *.
+  all: change (MachineWord.MachineWord.Z_idx 8) with 8%N in *.
+  all: lia.
+Qed.
+
+(* On an input whose header fits, the payload length (bytes 8..15) never
+   exceeds the input, on success and on error. *)
+Lemma decodeItemMeaningPayloadFits argv sp inputEnd input before after :
+  DecodeMeaningModuloKnownBugs (decodeItemCallDataArgs argv sp inputEnd input before) after ->
+  headerFits input ->
+  bv_unsigned (listWord64At8 after) <= Z.of_nat (length input).
+Proof.
+  intros H Hfits. apply decodeItemMeaningC1B in H.
+  cbn [decodeItemCallDataArgs decodeItemInputPointer decodeItemInputBytes
+    decodeItemBeforeStorage] in H.
+  unfold C1BResult, candidateResult40 in H.
+  destruct H as (_ & Hresult & Hcase).
+  destruct (candidateDecodeItem input) as [|isList h p] eqn:Hc.
+  - rewrite (errorResult40Word8 after Hresult). lia.
+  - pose proof (candidateDecodeItemFitsNoWrap _ _ _ _ Hfits Hc) as Hsum.
+    destruct (candidateDecodeItemSuccessBounds _ _ _ _ Hc) as (Hh & Hin & _).
+    destruct Hresult as (_ & _ & _ & H8 & _).
+    rewrite (listWord64At8Value _ _ H8).
+    assert (Hs : h + p < 18446744073709551616) by exact Hsum.
+    destruct Hcase as [(_ & Hp & _ & _) | (_ & _ & Hwrap & _)];
+      [|assert (Hw : 18446744073709551616 <= h + p) by exact Hwrap; lia].
+    assert (Hin' : (h + p) mod 18446744073709551616 <= Z.of_nat (length input)) by exact Hin.
+    rewrite Z.mod_small in Hin' by lia. lia.
+Qed.
+
 (* A call-site domain: the length argument is the input's length and the
    input range does not wrap. *)
 Lemma decodeItemDomainInput argv0 argv1 argv2 rest sp inputEnd input before :
