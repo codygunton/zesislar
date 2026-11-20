@@ -12,6 +12,7 @@ Require ZesuSsz.Automation2.BytePositionEquations.
 Require ZesuSsz.Automation2.WrappedWord.
 Require ZesuSsz.Automation2.PureFacts.
 Require ZesuSsz.Automation2.ByteExtractCodec281.
+Require ZesuSsz.Automation2.VmClosed.
 Local Open Scope Z_scope.
 
 (* The call-site step for a callee that takes an input slice and an output
@@ -583,11 +584,68 @@ Ltac zesu_call_slice :=
     end
   end.
 
+(* The address of a held memory resource. *)
+Ltac zesu_call_slice_resource_address res :=
+  lazymatch res with
+  | (?a ↦ₘ∗ _)%I => a
+  | (?a ↦ₘ? _)%I => a
+  | (?a ↦ₘ _)%I => a
+  end.
+
+(* Restate the address `a` of the held resource `H` as the address `b` the
+   goal requests, when both are closed-offset chains of the same root word
+   and their difference is the numeral 0 (proved over the range facts). A
+   difference that mentions anything but the root is refused before any
+   evaluation (`vm_compute` of an open term can grow without bound). *)
+Ltac zesu_call_restate_at H a b ra :=
+  let rb := zesu_call_slice_root b in
+  constr_eq ra rb;
+  let f := eval pattern ra in ((a - b)%Z) in
+  lazymatch f with ?g _ => ZesuSsz.Automation2.VmClosed.zesu_closed_term g end;
+  let d := zesu_call_slice_eval_at ra constr:((a - b)%Z) in
+  lazymatch d with 0%Z => idtac end;
+  let Hab := fresh "HcsRestate" in
+  assert (Hab : a = b) by zesu_call_slice_address;
+  iRename H into "HcsMoved";
+  iEval (rewrite Hab) in "HcsMoved"; clear Hab;
+  iDestruct "HcsMoved" as "?".
+
+(* The resources a callee hands back are addressed over its own stack
+   pointer word `w` (`bv_unsigned (w + 400 + c)`), the caller's successor
+   asks for them over the caller's root (`bv_unsigned root - 400 + …`): each
+   held resource whose address mentions `w` and that the goal does not
+   request at that address is restated at the address the goal requests at
+   the same place. Fails when nothing is restated. *)
+Ltac zesu_call_restate_returned w :=
+  progress repeat (lazymatch goal with
+  | |- environments.envs_entails _ ?G =>
+      iMatchHyp ltac:(fun H res =>
+        let a := zesu_call_slice_resource_address res in
+        lazymatch a with context [w] => idtac end;
+        lazymatch G with
+        | context [(a ↦ₘ∗ _)%I] => fail
+        | context [(a ↦ₘ? _)%I] => fail
+        | context [(a ↦ₘ _)%I] => fail
+        | _ => idtac
+        end;
+        let ra := zesu_call_slice_root a in
+        match G with
+        | context [(?b ↦ₘ∗ _)%I] => zesu_call_restate_at H a b ra
+        | context [(?b ↦ₘ? _)%I] => zesu_call_restate_at H a b ra
+        | context [(?b ↦ₘ _)%I] => zesu_call_restate_at H a b ra
+        end)
+  end).
+
+(* The stack pointer word of a callee that has returned, until the
+   resources it handed back are restated (`zesu_call_restate_step`). *)
+Definition zesu_call_returned_frame (w : bv 64) : Prop := True.
+
 (* The slice the callee returned goes back into the array it was lent from;
    the addresses the callee states over its own stack pointer are restated
-   over the caller's root word. The returned slice may carry the callee's
-   element type (`byte`) where the lend wrote `bv 8`: it is matched up to
-   conversion once the address agrees syntactically. *)
+   over the caller's root word, and the callee's stack pointer word is kept
+   as a `zesu_call_returned_frame` marker. The returned slice may carry the
+   callee's element type (`byte`) where the lend wrote `bv 8`: it is matched
+   up to conversion once the address agrees syntactically. *)
 Ltac zesu_call_restore :=
   iMatchHyp ltac:(fun Hr res =>
     lazymatch res with
@@ -600,8 +658,28 @@ Ltac zesu_call_restore :=
           iRename Hr into "HcsR"; iRename Hs into "HcsS";
           iDestruct ("HcsR" with "HcsS") as "?" end) end
     end);
+  try (lazymatch goal with
+       | H : zesu_call_slice_addr_fact (@bv_unsigned _ ?w = _) |- _ =>
+           pose proof (I : zesu_call_returned_frame w)
+       end);
   repeat match goal with
   | H : zesu_call_slice_addr_fact (?a = ?b) |- _ => rewrite (H : a = b); clear H
+  end.
+
+(* At an existential whose first resource is requested at an address no
+   held resource has in that spelling, while a returned-frame marker is in
+   the context: restate what the callee handed back
+   (`zesu_call_restate_returned`) and drop the marker. *)
+Ltac zesu_call_restate_step :=
+  match goal with
+  | Hm : zesu_call_returned_frame ?w |- environments.envs_entails _ (@bi_exist _ _ ?body) =>
+      let b := lazymatch body with
+        | (fun _ => ((?b ↦ₘ∗ _) ∗ _)%I) => b
+        | (fun _ => ((?b ↦ₘ _) ∗ _)%I) => b
+        end in
+      assert_fails (iMatchHyp ltac:(fun _ res =>
+        let a := zesu_call_slice_resource_address res in constr_eq a b));
+      zesu_call_restate_returned w; clear Hm
   end.
 
 (* A callee that takes its input slice by reference
@@ -851,8 +929,11 @@ Ltac zesu_call_slice_ref_first :=
       zesu_call_slice_ref
   end.
 (* Early restore: at any existential goal with a restore wand and its
-   returned slice in the context, before Lithium's own step. *)
+   returned slice in the context, before Lithium's own step; then, at an
+   existential that asks for a resource in another spelling, the callee's
+   returned resources are restated (`zesu_call_restate_step`). *)
 Ltac zesu_call_early_restore :=
   lazymatch goal with
-  | |- environments.envs_entails _ (@bi_exist _ _ _) => zesu_call_restore
+  | |- environments.envs_entails _ (@bi_exist _ _ _) =>
+      first [zesu_call_restore | zesu_call_restate_step]
   end.
