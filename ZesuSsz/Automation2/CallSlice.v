@@ -454,18 +454,19 @@ with zesu_call_slice_window_bare p l base bytes k :=
    `size` bytes carved out of an uninitialised region that contains it.
    Leaves "HcsOutArray" : oa ↦ₘ∗ before, a fact bv_unsigned out = oa, and
    (for a carved slot) length before = count. *)
-Ltac zesu_call_slice_out_slot out size count k :=
-  let rout := zesu_call_slice_root out in
+Ltac zesu_call_slice_out_slot_at out outv size count k :=
+  let rout := zesu_call_slice_root outv in
   first
   [ iMatchHyp ltac:(fun Hout resource2 =>
       lazymatch resource2 with
       | (?oa ↦ₘ∗ ?before)%I =>
           let roa := zesu_call_slice_root oa in
           constr_eq rout roa;
-          let d := zesu_call_slice_eval_at rout constr:((bv_unsigned out - oa)%Z) in
+          let d := zesu_call_slice_eval_at rout constr:((bv_unsigned outv - oa)%Z) in
           lazymatch d with 0%Z => idtac end;
           let Houta := fresh "HcsOut" in
-          assert (Houta : bv_unsigned out = oa) by zesu_call_slice_address;
+          assert (Houta : bv_unsigned out = oa)
+            by (change (bv_unsigned outv = oa); zesu_call_slice_address);
           iRename Hout into "HcsOutArray";
           k oa before Houta
       end)
@@ -474,7 +475,7 @@ Ltac zesu_call_slice_out_slot out size count k :=
       | (?ua ↦ₘ? ?n0)%I =>
           let rua := zesu_call_slice_root ua in
           constr_eq rout rua;
-          let d := zesu_call_slice_eval_at rout constr:((bv_unsigned out - ua)%Z) in
+          let d := zesu_call_slice_eval_at rout constr:((bv_unsigned outv - ua)%Z) in
           let n := zesu_call_slice_eval_at rout n0 in
           let fits := eval vm_compute in ((0 <=? d)%Z && (d + size <=? n)%Z) in
           lazymatch fits with true => idtac end;
@@ -486,7 +487,8 @@ Ltac zesu_call_slice_out_slot out size count k :=
                 iEval (rewrite Hn) in "HcsU"; clear Hn);
           let oa := lazymatch d with 0%Z => constr:(ua) | _ => constr:((ua + d)%Z) end in
           let Houta := fresh "HcsOut" in
-          assert (Houta : bv_unsigned out = oa) by zesu_call_slice_address;
+          assert (Houta : bv_unsigned out = oa)
+            by (change (bv_unsigned outv = oa); zesu_call_slice_address);
           let before := fresh "csBefore" in
           let Hlen := fresh "HcsBeforeLen" in
           lazymatch d with
@@ -506,6 +508,24 @@ Ltac zesu_call_slice_out_slot out size count k :=
           end;
           k oa before Houta
       end) ].
+
+(* The output pointer may be a local definition of the block (a `LET`
+   binder of the trace, possibly over other `LET` binders): its address is
+   read off its body with every local definition it mentions unfolded. *)
+Ltac zesu_call_slice_unfold_locals t :=
+  match goal with
+  | [ x := _ |- _ ] =>
+      match t with
+      | context [x] =>
+          let t' := eval cbv delta [x] in t in
+          zesu_call_slice_unfold_locals t'
+      end
+  | _ => t
+  end.
+
+Ltac zesu_call_slice_out_slot out size count k :=
+  let outv := zesu_call_slice_unfold_locals out in
+  zesu_call_slice_out_slot_at out outv size count k.
 
 (* The callee's domain, from the caller's lemma (`ZesuCallSliceCaller`). The
    address side goals are closed in a context cleared to the caller's range

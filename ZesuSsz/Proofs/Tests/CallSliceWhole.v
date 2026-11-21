@@ -101,4 +101,67 @@ Proof.
   iFrame "Hin Hout HR". by iPureIntro.
 Qed.
 
+(* The block names the output pointer by a local definition (a `LET` binder
+   of the generated block) and the output slot is carved from the frame's
+   uninitialised region: the step reads the slot's address off the
+   definition's body, keeps the domain and states the callee's stack pointer
+   over the caller's root word. *)
+Lemma call_slice_whole_let_out (args : ParentHeaderArgs)
+    (a13 a14 a15 a16 a17 : bv 64) (R : iProp Sigma) :
+  let o := OUT args in
+  parentHeaderArgsWellFormed args ->
+  Z.of_nat (length (parentHeaderInputBytes args)) = bv_unsigned (parentHeaderInputLength args) ->
+  bv_unsigned (parentHeaderInputPointer args) ↦ₘ∗ parentHeaderInputBytes args -∗
+  (bv_unsigned (parentHeaderStackPointer args) - 400) ↦ₘ? 320 -∗
+  R -∗
+  ∃ x : list byte *ₗ list byte *ₗ (),
+    bv_unsigned (parentHeaderInputPointer args) ↦ₘ∗ x.2ₗ ∗
+    bv_unsigned o ↦ₘ∗ x.1ₗ ∗
+    ⌜decodeItemCallDomain (decodeItemCallDataArgs
+       [o; parentHeaderInputPointer args; parentHeaderInputLength args; a13; a14; a15; a16; a17]
+       (SP args) (bv_unsigned (parentHeaderInputEnd args)) x.2ₗ x.1ₗ)⌝ ∗
+    (bv_unsigned (parentHeaderStackPointer args) - 400) ↦ₘ? 8 ∗
+    (bv_unsigned (parentHeaderStackPointer args) - 400 + 8 + 40) ↦ₘ? 272 ∗
+    R.
+Proof.
+  intros o. iIntros (Hwf Hlen) "? ? ?".
+  zesu_call_slice_whole_step.
+  match goal with
+  | _ : decodeItemCallDomain (decodeItemCallDataArgs _ _ _ (parentHeaderInputBytes args) _) |- _ => idtac
+  end.
+  match goal with
+  | _ : zesu_call_slice_addr_fact (bv_unsigned (SP args) = bv_unsigned (parentHeaderStackPointer args) - 400) |- _ => idtac
+  end.
+  iFrame.
+Qed.
+
+(* The array at the input pointer holds other bytes than the caller's
+   registered input: the caller's domain lemma does not apply and the step
+   refuses. *)
+Lemma call_slice_whole_refused_foreign (args : ParentHeaderArgs) (other before0 : list byte)
+    (a13 a14 a15 a16 a17 : bv 64) (R : iProp Sigma) :
+  parentHeaderArgsWellFormed args ->
+  Z.of_nat (length other) = bv_unsigned (parentHeaderInputLength args) ->
+  length before0 = 40%nat ->
+  decodeItemCallDomain (decodeItemCallDataArgs
+     [OUT args; parentHeaderInputPointer args; parentHeaderInputLength args; a13; a14; a15; a16; a17]
+     (SP args) (bv_unsigned (parentHeaderInputEnd args)) other before0) ->
+  bv_unsigned (parentHeaderInputPointer args) ↦ₘ∗ other -∗
+  bv_unsigned (OUT args) ↦ₘ∗ before0 -∗
+  R -∗
+  ∃ x : list byte *ₗ list byte *ₗ (),
+    bv_unsigned (parentHeaderInputPointer args) ↦ₘ∗ x.2ₗ ∗
+    bv_unsigned (OUT args) ↦ₘ∗ x.1ₗ ∗
+    ⌜decodeItemCallDomain (decodeItemCallDataArgs
+       [OUT args; parentHeaderInputPointer args; parentHeaderInputLength args; a13; a14; a15; a16; a17]
+       (SP args) (bv_unsigned (parentHeaderInputEnd args)) x.2ₗ x.1ₗ)⌝ ∗
+    R.
+Proof.
+  iIntros (Hwf Hlen Hbefore Hdom) "Hin Hout HR".
+  Fail zesu_call_slice_whole_step.
+  iExists (li_pair before0 (li_pair other tt)).
+  cbv [li_fst li_snd].
+  iFrame "Hin Hout HR". by iPureIntro.
+Qed.
+
 End whole_array.
