@@ -1,8 +1,8 @@
 From Coq Require Import ZArith.ZArith Lists.List.
 From stdpp.bitvector Require Import definitions.
 Require Import isla.riscv64.riscv64.
-Require Import ZesuSsz.Automation2.All.
 Import ListNotations.
+Require Import ZesuSsz.Automation2.All.
 Local Open Scope Z_scope.
 
 (* UninitRegions.subsume_uninit_empty_region_array / _uninit
