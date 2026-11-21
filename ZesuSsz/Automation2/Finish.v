@@ -335,6 +335,28 @@ Ltac zesu_finish_pure_resources_step :=
          iSplit | solve [iPureIntro; zesu_small_pure_lia]]]
   end.
 
+(* A pure premise that is literally a hypothesis: take it before any other
+   step. Without it, a run of premises `⌜P1⌝ ∗ ⌜P2⌝ ∗ …` reaches each one
+   only after `zesu_finish_pure_resources_step` has tried, and failed, to
+   close the whole remaining run at once, once per premise. The test is a
+   syntactic hypothesis match on an evar-free statement: it never
+   instantiates an evar and never unfolds. *)
+Lemma tac_zesu_pure_premise_context {PROP : bi} Δ (P : Prop) (Q : PROP) :
+  P → envs_entails Δ Q → envs_entails Δ (⌜P⌝ ∗ Q).
+Proof.
+  rewrite envs_entails_unseal => HP ->. iIntros "H".
+  iSplit; [by iPureIntro|done].
+Qed.
+
+Ltac zesu_pure_premise_from_context :=
+  lazymatch goal with
+  | |- envs_entails _ (⌜?P⌝ ∗ _)%I =>
+      assert_fails (has_evar P);
+      lazymatch goal with
+      | H : P |- _ => simple apply (tac_zesu_pure_premise_context _ P _ H)
+      end
+  end.
+
 
 (* A proved zero displacement exposes the existing complete-word codec. *)
 Ltac zesu_finish_zero_offset_u64_roundtrip :=
@@ -1235,7 +1257,9 @@ Ltac zesu_run_pass_v1 :=
   try zesu_prepare_uninit_goal;
   try zesu_normalize_find_mem_address;
   unshelve (time "zesu_run" repeat (zesu_tstep (idtac; let goal_class := zesu_goal_class in first
-    [(lazymatch goal_class with ZGsep_pure => idtac end; zesu_hist_goal;
+    [(lazymatch goal_class with ZGsep_pure => idtac end;
+      zesu_talt v1_pure_premise_context (idtac; zesu_pure_premise_from_context)) |
+     (lazymatch goal_class with ZGsep_pure => idtac end; zesu_hist_goal;
       zesu_talt h_hist_edge (idtac; zesu_hist_step)) |
      (lazymatch goal_class with ZGsep_pure => idtac end; zesu_hist_in_context;
       zesu_talt h_hist_reveal (idtac; zesu_hist_reveal_step)) |
