@@ -418,14 +418,16 @@ def substitute(text, renames):
 def premise_definitions(body, candidates, scope):
     """{binder: term} for each candidate binder that the instance's histories do not name (`scope`)
     and that a conjunct `(binder = T)` of the premise `body` defines (a conjunct: after `/\\`, `,` or
-    `⌜`, never inside a term such as `bool_decide (binder = 0)`), T naming no candidate outside the
-    histories and no name the premise binds. Such a binder (a block-entry value the successor
-    history keeps under an existential, say a word the call overwrote) is fixed by no history:
-    applying the instance leaves it an evar the automation cannot choose, while the term is what
-    the block holds."""
+    `⌜`, never inside a term such as `bool_decide (binder = 0)`), T naming no name the premise binds
+    and no other such defined binder. Such a binder (a block-entry value the successor history keeps
+    under an existential, say a word the call overwrote) is fixed by no history: applying the
+    instance leaves it an evar the automation cannot choose, while the term is what the block holds.
+    T may name an unfixed binder that no conjunct defines (the call's result record, fixed by
+    another premise): the word is then that record's field, never a second free evar (04a8 -> 0270:
+    two such words were left free and the automation gave both one witness)."""
     bound = set(re.findall(r"\(([\w']+) :", body))
     unfixed = [name for name in candidates if not mentions(name, scope)]
-    result = {}
+    found = {}
     for name in unfixed:
         terms = set()
         for match in re.finditer(r"\(" + re.escape(name) + r" = ", body):
@@ -437,7 +439,12 @@ def premise_definitions(body, candidates, scope):
                 if depth == 0:
                     terms.add(body[start:position].strip())
                     break
-        terms = {term for term in terms if not any(mentions(other, term) for other in [*unfixed, *bound])}
+        terms = {term for term in terms if not any(mentions(other, term) for other in bound)}
+        if terms:
+            found[name] = terms
+    result = {}
+    for name, terms in found.items():
+        terms = {term for term in terms if not any(mentions(other, term) for other in found)}
         if len(terms) == 1:
             result[name] = '(' + terms.pop() + ')'
     return result
