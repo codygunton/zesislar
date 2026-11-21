@@ -76,11 +76,20 @@ Proof.
 Qed.
 
 (* The membership of a slot: address and state both match, so several
-   per-path slots may share one address. *)
+   per-path slots may share one address. The slot's index is found by
+   syntactic comparison along the table and checked by one lookup: a search
+   by [elem_of_list_further] unifies against every earlier entry and puts the
+   whole table tail into the proof term once per step. *)
+Ltac parentHeader_index entry entries :=
+  lazymatch entries with
+  | entry :: _ => constr:(0%nat)
+  | _ :: ?rest => let n := parentHeader_index entry rest in constr:(S n)
+  end.
 Ltac parentHeader_member :=
-  repeat lazymatch goal with
-  | |- ?entry ∈ ?entry :: _ => apply elem_of_list_here
-  | |- _ ∈ _ :: _ => apply elem_of_list_further
+  lazymatch goal with
+  | |- ?entry ∈ ?entries =>
+      let n := parentHeader_index entry entries in
+      exact (elem_of_list_lookup_2 entries n entry eq_refl)
   end.
 
 (* A premise is chosen by its address, never by trial unification: the callee
@@ -130,6 +139,12 @@ Proof.
     rewrite Z_mod_plus_full. apply Z.mod_small. lia. }
   by rewrite Haddr.
 Qed.
+
+(* Framing tries every hypothesis against every conjunct of the entry; a
+   transparent reg_col is unfolded into its big separating conjunction at
+   each failed attempt (the iFrame of the start bridge took 32 s, 5 s with
+   reg_col opaque). A reg_col hypothesis still frames its reg_col conjunct. *)
+#[local] Typeclasses Opaque reg_col.
 
 Lemma parentHeader_start_bridge `{!islaG Sigma} `{!threadG}
     (args : ParentHeaderArgs) (returnAddress : Z) :
