@@ -22,8 +22,8 @@ class Profile(dict):
 
 
 PROFILE = Profile(calls=[
-    {'call_site_pc': '+0x1c', 'return_site_pc': '+0x20', 'return_facts': [ROW, {'kind': 'meaning', 'coq': 'q k'}]},
-    {'call_site_pc': '+0x3c', 'return_site_pc': None, 'return_facts': [{**ROW, 'coq': 'tail'}]}],
+    {'call_site_pc': '0x101c', 'return_site_pc': '0x1020', 'return_facts': [ROW, {'kind': 'meaning', 'coq': 'q k'}]},
+    {'call_site_pc': '0x103c', 'return_site_pc': None, 'return_facts': [{**ROW, 'coq': 'tail'}]}],
     join_designs={'+0x30': [{**ROW, 'obligation': 'CandidateError', 'coq': 'err'}]})
 PRE = {'hist': 'fp_machineAt0010_ForwardA0N0_Hist', 'entry': 'fp_machineAt0010_ForwardA0N0',
        'parameters': [{'name': 'args', 'type': 'A'}], 'live': [{'name': 'k', 'type': T}],
@@ -42,14 +42,14 @@ def call_edge():
 
 class ReturnRows(unittest.TestCase):
     def test_rows_are_read_per_return_site_and_by_edge_kind(self):
-        self.assertEqual(entry_hist.return_obligations(PROFILE, ['+0x20']), {entry_hist.normal(FACT): ROW})
+        self.assertEqual(entry_hist.return_obligations(PROFILE, ['0x1020']), {entry_hist.normal(FACT): ROW})
         self.assertEqual(len(entry_hist.return_obligations(PROFILE)), 2)
         self.assertEqual(edge_obligation_rows(PROFILE, 'call_return', '0x1020'), {entry_hist.normal(FACT): ROW})
         self.assertEqual(edge_obligation_rows(PROFILE, 'forward', '0x1020'), {})
         self.assertEqual(list(edge_obligation_rows(PROFILE, 'join', '0x1030')), ['zesu_join_history (err)'])
         self.assertEqual(edge_obligation_rows(PROFILE, 'call_return', '0x1030'), {})
         with self.assertRaises(ValueError):
-            entry_hist.return_obligations(Profile(calls=[{'return_site_pc': '+0x20',
+            entry_hist.return_obligations(Profile(calls=[{'return_site_pc': '0x1020',
                                                          'return_facts': [{**ROW, 'premises': ['all']}]}]))
 
     def test_a_plain_return_fact_keeps_its_text(self):

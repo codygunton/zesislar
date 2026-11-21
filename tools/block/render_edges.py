@@ -451,9 +451,8 @@ def edge_obligation_rows(profile, kind, succ_pc):
         return entry_hist.design_obligations(profile, [
             key for key in profile.get('join_designs') or {} if profile.pc(key) == succ_pc])
     if kind == 'call_return':
-        return entry_hist.return_obligations(profile, [
-            call['return_site_pc'] for call in profile.get('calls') or []
-            if call.get('return_site_pc') and profile.pc(call['return_site_pc']) == succ_pc])
+        # A loaded profile's call rows hold absolute return-site addresses (`load_profile`).
+        return entry_hist.return_obligations(profile, [succ_pc])
     return {}
 
 
