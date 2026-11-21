@@ -644,8 +644,7 @@ def call_return_seed(edges, *, call, function_root, root_seed, shapes, vocabular
         facts = [pattern.sub(lambda match: renamed[match[1]], fact) for fact in facts]
     # A passed-on word is no closed argument: its argument name is a binder of the seed with the named
     # equation to the inherited word (stated before the record, so the record's argument is that word).
-    named_arguments = {renamed[name]: name for name, _ in inner
-                       if name in passed_words and entry_hist.HIST_MODE}
+    named_arguments = {renamed[name]: name for name, _ in inner if name in passed_words}
     existential = [(renamed[name], kind) for name, kind in inner if renamed[name] not in named_arguments] + [
         (renamed.get(name, name), kind) for name, kind in existential]
     telescope = ' '.join('(%s : %s)' % (name, kind) for name, kind in existential)
