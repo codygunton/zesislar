@@ -2758,7 +2758,10 @@ Ltac zesu_liAStep :=
   (* Before liStep: with a local alias in the address, liStep's lookup
      failed for 7-20 s on decodeParentHeader before this step fixed it. *)
   | zesu_talt l_unfold_let_mem_address (idtac; zesu_unfold_let_mem_address)
-  | zesu_talt l_liStep (idtac; liStep)
+  (* Not on a call spec's existential whose input slice is interior
+     (GoalShape.zesu_call_slice_goal_unheld): the call-site step lends it. *)
+  | (tryif zesu_call_slice_goal_unheld then fail else idtac;
+     zesu_talt l_liStep (idtac; liStep))
   | zesu_talt l_liLetBindHint (idtac; liLetBindHint)
   | zesu_talt l_liUnfoldLate (idtac; liUnfoldLate)
   | zesu_talt l_canonical_fact_views (idtac; zesu_canonical_fact_views_if_enabled)
@@ -2775,6 +2778,50 @@ Ltac zesu_liAStep :=
    is the same (simpl never folds a modulus into a numeral) at no cost. *)
 Ltac liSimpl ::= try progress (with_strategy opaque
   [stdpp.bitvector.definitions.bv_modulus stdpp.bitvector.definitions.bv_half_modulus] simpl).
+
+(* Lithium proves the side condition `P` of `⌜P⌝ ∗ Q` with stdpp's `done`
+   before it shelves `P` for the finishers. Its `contradiction` decides every
+   hypothesis `¬ (a = b)` by conversion of `a` and `b`, and every pair
+   `¬ A`, `A'` by conversion of `A` and `A'`: on a block context of branch
+   facts `bv_unsigned w ≠ 0` over loaded words, that computes the words. On
+   nextUint64 0000 it was 21% of the block (one side condition: 73 s). The
+   step below is Lithium's with `done`'s contradiction syntactic; a side
+   condition it leaves is shelved as before, and the finishers' `done` is
+   unchanged. *)
+Ltac zesu_contradiction_syntactic :=
+  match goal with
+  | H : False |- _ => destruct H
+  | H : ?a ≠ ?b |- _ => constr_eq a b; exact (False_ind _ (H eq_refl))
+  | H : ¬ ?A, H' : ?B |- _ => constr_eq A B; exact (False_ind _ (H H'))
+  end.
+Ltac zesu_sidecond_done :=
+  solve
+  [ repeat first
+    [ fast_done
+    | solve [trivial]
+    | progress intros
+    | solve [symmetry; trivial]
+    | solve [apply not_symmetry; trivial]
+    | discriminate
+    | zesu_contradiction_syntactic
+    | split
+    | match goal with H : ¬_ |- _ => case H; clear H; fast_done end ]
+  ].
+Ltac liSideCond ::=
+  try liEnsureSepHead;
+  lazymatch goal with
+  | |- envs_entails ?Δ (bi_sep ⌜?P⌝ ?Q) =>
+      notypeclasses refine (tac_sep_pure _ _ _ _ _); [ first [ zesu_sidecond_done | lithium.proof_state.shelve_sidecond ] | ]
+  | |- envs_entails ?Δ (∃ₗ x, bi_sep ⌜@?P x⌝ _) =>
+      match P with
+      | _ => progress (notypeclasses refine (tac_normalize_goal_and_liex _ _ _ _ _ _);
+                       [intros ?; lithium.hooks.normalize_hook|cbv beta])
+      | _ => liExInst
+      | (λ _, _ ∧ _) => notypeclasses refine (tac_sep_pure_and _ _ _ _ _)
+      | (λ _, ∃ _, _) => notypeclasses refine (tac_sep_pure_exist _ _ _ _)
+      | _ => notypeclasses refine (tac_simpl_and_unsafe_envs _ _ _ _ _); [solve [refine _] |]
+      end
+  end.
 
 Ltac liAStep ::= first [progress zesu_union_witness_step | zesu_liAStep].
 

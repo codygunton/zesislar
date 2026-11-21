@@ -388,22 +388,125 @@ Proof.
   rewrite Z.mul_0_r. rewrite Z.shiftr_0_r.
   apply Z.mod_mod. apply Z.pow_nonzero; lia.
 Qed.
+(* A 64-bit word stored as its eight byte extracts and read back by an 8-byte
+   load: `[bv_extract 0 8 v; …; bv_extract 56 8 v]` read as a little-endian
+   word is `v`. *)
+Lemma zesu_word_extract_list (v : bv 64) :
+  Z_to_bv 64 (little_endian_to_bv 8
+    [bv_extract 0 8 v; bv_extract 8 8 v; bv_extract 16 8 v; bv_extract 24 8 v;
+     bv_extract 32 8 v; bv_extract 40 8 v; bv_extract 48 8 v; bv_extract 56 8 v]) = v.
+Proof.
+  apply bv_eq. rewrite Z_to_bv_unsigned.
+  unfold little_endian_to_bv. cbn [fmap list_fmap list_numbers.little_endian_to_Z].
+  rewrite !bv_extract_unsigned.
+  pose proof (bv_unsigned_in_range _ v).
+  unfold bv_wrap, bv_modulus. cbn [Z.of_N].
+  bitblast; f_equal; lia.
+Qed.
 Ltac zesu_word_explicit_list_rewrite :=
   progress repeat match goal with
   | |- context [Z_to_bv ?w (little_endian_to_bv 8 ?l)] =>
-      lazymatch l with cons (Z_to_bv 8 (Z.shiftr ?z _)) _ =>
+      lazymatch l with
+      | cons (Z_to_bv 8 (Z.shiftr ?z _)) _ =>
         let n := eval lazy [length] in (length l) in
         let E := fresh "HwordList" in
         assert (E : Z_to_bv w (little_endian_to_bv 8 l) = Z_to_bv w z)
           by exact (zesu_word_explicit_list w n z eq_refl);
         rewrite E; clear E
+      | cons (bv_extract 0 8 ?v) _ =>
+        let E := fresh "HwordList" in
+        assert (E : Z_to_bv w (little_endian_to_bv 8 l) = v)
+          by exact (zesu_word_extract_list v);
+        rewrite E; clear E
       end
+  end.
+
+(* The other direction: a word rebuilt from its own byte extracts, in order,
+   is the word (a cell stored as its extracts and read back as a word). *)
+Lemma zesu_word_extracts_explicit_list (w : bv 64) :
+  Z_to_bv 64 (little_endian_to_bv 8
+    [bv_extract 0 8 w; bv_extract 8 8 w; bv_extract 16 8 w; bv_extract 24 8 w;
+     bv_extract 32 8 w; bv_extract 40 8 w; bv_extract 48 8 w; bv_extract 56 8 w]) = w.
+Proof.
+  apply bv_eq. rewrite Z_to_bv_unsigned. unfold little_endian_to_bv.
+  cbn [fmap list_fmap little_endian_to_Z]. rewrite !bv_extract_unsigned.
+  pose proof (bv_unsigned_in_range _ w) as Hr. unfold bv_wrap, bv_modulus in *.
+  cbn [Z.of_N]. bitblast; f_equal; lia.
+Qed.
+Ltac zesu_word_extracts_rewrite :=
+  progress repeat match goal with
+  | |- context [Z_to_bv 64 (little_endian_to_bv 8
+      [bv_extract 0 8 ?w; bv_extract 8 8 ?w; bv_extract 16 8 ?w; bv_extract 24 8 ?w;
+       bv_extract 32 8 ?w; bv_extract 40 8 ?w; bv_extract 48 8 ?w; bv_extract 56 8 ?w])] =>
+      rewrite (zesu_word_extracts_explicit_list w)
+  end.
+
+(* The byte spelling of the word normal form: byte k of a word read from its
+   value, `Z_to_bv 8 (Z.land (… (bv_unsigned x ≫ 8) … ≫ 8) (Z.ones 8))`
+   (a store writes a word this way), is `bv_extract (8 k) 8 x`. The mask is
+   dropped (`Z_to_bv 8` wraps), nested closed shifts become one shift, and a
+   shift of the value of a word wider than a byte is that word's extract. *)
+Lemma zesu_byte_land_ones (z : Z) : Z_to_bv 8 (Z.land z (Z.ones 8)) = Z_to_bv 8 z.
+Proof.
+  apply bv_eq. rewrite !Z_to_bv_unsigned. rewrite Z.land_ones; [|lia].
+  unfold bv_wrap. apply Z.mod_mod. unfold bv_modulus. lia.
+Qed.
+Lemma zesu_shiftr_shiftr_closed (z a b c : Z) :
+  0 <= b -> a + b = c -> Z.shiftr (Z.shiftr z a) b = Z.shiftr z c.
+Proof. intros Hb <-. apply Z.shiftr_shiftr. exact Hb. Qed.
+Lemma zesu_byte_of_word_shift (n k : N) (x : bv n) (s : Z) :
+  Z.of_N k = s -> Z_to_bv 8 (Z.shiftr (bv_unsigned x) s) = bv_extract k 8 x.
+Proof. intros <-. reflexivity. Qed.
+Lemma zesu_byte_of_word_low (n : N) (x : bv n) :
+  Z_to_bv 8 (bv_unsigned x) = bv_extract 0 8 x.
+Proof. apply (zesu_byte_of_word_shift n 0 x 0). reflexivity. Qed.
+Ltac zesu_word_byte_extract_rewrite :=
+  progress repeat match goal with
+  | |- context [Z_to_bv 8 (Z.land ?t (Z.ones 8))] => rewrite (zesu_byte_land_ones t)
+  | |- context [Z_to_bv 8 (Z.shiftr (Z.shiftr ?z ?a) ?b)] =>
+      ZesuSsz.Automation2.VmClosed.zesu_vm_closed a;
+      ZesuSsz.Automation2.VmClosed.zesu_vm_closed b;
+      let c := eval vm_compute in (a + b) in
+      rewrite (zesu_shiftr_shiftr_closed z a b c (proj1 (Z.leb_le 0 b) eq_refl) eq_refl)
+  | |- context [Z_to_bv 8 (Z.shiftr (@bv_unsigned ?n ?x) ?s)] =>
+      lazymatch n with 8%N => fail | _ => idtac end;
+      ZesuSsz.Automation2.VmClosed.zesu_vm_closed s;
+      lazymatch eval vm_compute in (Z.leb 0 s) with true => idtac end;
+      let k := eval vm_compute in (Z.to_N s) in
+      rewrite (zesu_byte_of_word_shift n k x s eq_refl)
+  | |- context [Z_to_bv 8 (@bv_unsigned ?n ?x)] =>
+      lazymatch n with 8%N => fail | _ => idtac end;
+      rewrite (zesu_byte_of_word_low n x)
+  end.
+
+(* The index spelling of the word normal form: a `take` or `drop` count
+   `Z.to_nat e` of a frame offset is the literal it computes to (proved by
+   [zesu_wrapped_index_literal]), and a closed count is a numeral. *)
+Ltac zesu_word_list_counts :=
+  repeat match goal with
+  | |- context [take (Z.to_nat ?e) _] =>
+      zesu_wrapped_index_literal e ltac:(fun Hindex => rewrite !Hindex)
+  | |- context [drop (Z.to_nat ?e) _] =>
+      zesu_wrapped_index_literal e ltac:(fun Hindex => rewrite !Hindex)
+  end;
+  repeat match goal with
+  | |- context [take ?n _] =>
+      lazymatch n with O => fail | S _ => fail | _ => idtac end;
+      ZesuSsz.Automation2.VmClosed.zesu_vm_closed n;
+      let m := eval vm_compute in n in change n with m
+  | |- context [drop ?n _] =>
+      lazymatch n with O => fail | S _ => fail | _ => idtac end;
+      ZesuSsz.Automation2.VmClosed.zesu_vm_closed n;
+      let m := eval vm_compute in n in change n with m
   end.
 
 (* The same word read back by a load: `bv_concat` of the bytes
    `Z_to_bv 8 (z ≫ _)` of one integer `z`, against `Z_to_bv w z`. Every leaf
    must be a byte of that `z` (`zesu_word_concat_bytes_of`); then the
-   equation is bit-blasted, each bit an index equation. *)
+   equation is bit-blasted, each bit an index equation. The equation holds
+   for every `z`, so it is proved in a context cleared of hypotheses: bitblast
+   asks lia several hundred times per word, and on a block's context (about
+   240 facts on nextUint64 0000) those calls cost 350 of its 1,800 s. *)
 Ltac zesu_word_concat_bytes_of t z :=
   lazymatch t with
   | bv_concat _ ?high ?low =>
@@ -417,4 +520,4 @@ Ltac zesu_word_concat_bytes_eq :=
   | |- @eq (bv _) (Z_to_bv ?n ?z) (bv_concat ?n ?high ?low) =>
       zesu_word_concat_bytes_of (bv_concat n high low) z; symmetry
   end;
-  solve [bv_simplify; bitblast; f_equal; zesu_lia].
+  solve [zesu_clear_all_hyps; bv_simplify; bitblast; f_equal; zesu_lia].

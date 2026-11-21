@@ -114,17 +114,20 @@ Class ZesuCallSliceRefCaller {Args A : Type} (callerDomain : Args -> Prop)
 Global Hint Mode ZesuCallSliceRefCaller - - ! ! - - - - - - - : typeclass_instances.
 
 (* What a by-reference callee hands back about the slice it consumed: its
-   result record `result (record (mk argv sp p inputEnd input)) r` places the
-   rest it returns (`restPointer r`, `restLength r`) at the end of the slice
-   [p, p + length input). The call step reads the window of a later call's
-   slice from it when that slice is the rest the callee returned. *)
-Class ZesuCallSliceRefResult {A C R : Type}
-    (mk : list (bv 64) -> bv 64 -> bv 64 -> bv 64 -> list (bv 8) -> A)
-    (record : A -> C) (result : C -> R -> Prop) (restPointer restLength : R -> Z) :=
+   result record `result c r` places the rest it returns (`restPointer r`,
+   `restLength r`) at the end of the slice the call record `c` names
+   ([inputPointer c, inputPointer c + length (input c))). The class reads
+   the slice through the record's projections, so the step finds it whether
+   the context holds the record as the constructor application the entry
+   states or as the record value a simplification left. The call step reads
+   the window of a later call's slice from it when that slice is the rest
+   the callee returned. *)
+Class ZesuCallSliceRefResult {C R : Type} (result : C -> R -> Prop)
+    (inputPointer : C -> Z) (input : C -> list (bv 8)) (restPointer restLength : R -> Z) :=
   zesu_call_slice_ref_result_window :
-    forall argv sp p inputEnd input r,
-      result (record (mk argv sp p inputEnd input)) r ->
-      bv_unsigned p <= restPointer r /\
-      restPointer r + restLength r = bv_unsigned p + Z.of_nat (length input) /\
+    forall c r,
+      result c r ->
+      inputPointer c <= restPointer r /\
+      restPointer r + restLength r = inputPointer c + Z.of_nat (length (input c)) /\
       0 <= restLength r /\ restPointer r + restLength r < bv_modulus 64.
-Global Hint Mode ZesuCallSliceRefResult - - - - - ! - - : typeclass_instances.
+Global Hint Mode ZesuCallSliceRefResult - - ! - - - - : typeclass_instances.

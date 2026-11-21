@@ -12,6 +12,7 @@ Require ZesuSsz.Automation2.BytePositionEquations.
 Require ZesuSsz.Automation2.WrappedWord.
 Require ZesuSsz.Automation2.PureFacts.
 Require ZesuSsz.Automation2.ByteExtractCodec281.
+Require ZesuSsz.Automation2.VmClosed.
 Local Open Scope Z_scope.
 
 (* The call-site step for a callee that takes an input slice and an output
@@ -105,6 +106,19 @@ Proof.
   pose proof (bv_unsigned_in_range _ l0) as Hl0.
   rewrite length_take length_drop in Hsum.
   rewrite !Z_to_bv_small; zesu_call_slice_lia.
+Qed.
+
+(* The rest record of `ZesuCallSliceRefResult` read for a slice (p0, input)
+   the record names through its projections. *)
+Lemma zesu_call_slice_ref_result_at {C R : Type} {result : C -> R -> Prop}
+    {ip : C -> Z} {inp : C -> list (bv 8)} {rp rl : R -> Z}
+    (I : ZesuCallSliceRefResult result ip inp rp rl) (c : C) (r : R) (p0 : bv 64)
+    (input : list (bv 8)) :
+  result c r -> ip c = bv_unsigned p0 -> inp c = input ->
+  bv_unsigned p0 <= rp r /\ rp r + rl r = bv_unsigned p0 + Z.of_nat (length input) /\
+  0 <= rl r /\ rp r + rl r < bv_modulus 64.
+Proof.
+  intros Hres Hp Hi. rewrite <- Hp, <- Hi. exact (zesu_call_slice_ref_result_window c r Hres).
 Qed.
 
 Lemma zesu_call_slice_unsigned_pos n (w : bv n) : bv_unsigned w <> 0 -> 0 < bv_unsigned w.
@@ -250,26 +264,39 @@ Ltac zesu_call_slice_wrap_small :=
       rewrite E; clear E
   end.
 
-(* (p, l) is the rest a by-reference call returned (its record
-   `result (record (mk _ _ p0 _ input)) r` with a `ZesuCallSliceRefResult`
-   instance, `p = Z_to_bv 64 (restPointer r)`, `l = Z_to_bv 64 (restLength r)`)
-   on a slice (p0, l0) of the array at [base] with [bytes]: [win p0 l0 k0]
-   finds the window of the slice, [k] receives the window of (p, l). *)
+(* (p, l) is the rest a by-reference call returned (its record `result c r`
+   with a `ZesuCallSliceRefResult` instance, `p = Z_to_bv 64 (restPointer r)`,
+   `l = Z_to_bv 64 (restLength r)`) on a slice (p0, l0) of the array at [base]
+   with [bytes] (`inputPointer c = bv_unsigned p0`, `input c` the window of
+   (p0, l0), both by conversion, so `c` may be the constructor application or
+   the record value): [win p0 l0 k0] finds the window of the slice, [k]
+   receives the window of (p, l). *)
 Ltac zesu_call_slice_rest_window_step p l base bytes win k :=
   match goal with
-  | Hres : ?res (?rec (?mk _ _ ?p0 _ (take (Z.to_nat (bv_unsigned ?l0))
-                                       (drop (Z.to_nat (bv_unsigned ?p0 - base)) bytes)))) ?r |- _ =>
-      let C := constr:(_ : ZesuCallSliceRefResult mk rec res _ _) in
-      let rp := lazymatch type of C with @ZesuCallSliceRefResult _ _ _ _ _ _ ?rp _ => rp end in
-      let rl := lazymatch type of C with @ZesuCallSliceRefResult _ _ _ _ _ _ _ ?rl => rl end in
+  | Hres : context [take (Z.to_nat (bv_unsigned ?l0))
+                      (drop (Z.to_nat (bv_unsigned ?p0 - base)) bytes)] |- _ =>
+      lazymatch type of Hres with
+      | ?res ?c ?r =>
+      let C := constr:(_ : ZesuCallSliceRefResult res _ _ _ _) in
+      let ip := lazymatch type of C with @ZesuCallSliceRefResult _ _ _ ?ip _ _ _ => ip end in
+      let inp := lazymatch type of C with @ZesuCallSliceRefResult _ _ _ _ ?inp _ _ => inp end in
+      let rp := lazymatch type of C with @ZesuCallSliceRefResult _ _ _ _ _ ?rp _ => rp end in
+      let rl := lazymatch type of C with @ZesuCallSliceRefResult _ _ _ _ _ _ ?rl => rl end in
+      let input := constr:(take (Z.to_nat (bv_unsigned l0))
+                             (drop (Z.to_nat (bv_unsigned p0 - base)) bytes)) in
+      let Hip := fresh "HcsRestFrom" in
+      assert (Hip : ip c = bv_unsigned p0) by reflexivity;
+      let Hin := fresh "HcsRestInput" in
+      assert (Hin : inp c = input) by reflexivity;
       let Hpw := fresh "HcsRestP" in
       assert (Hpw : p = Z_to_bv 64 (rp r)) by first [assumption | reflexivity];
       let Hlw := fresh "HcsRestL" in
       assert (Hlw : l = Z_to_bv 64 (rl r)) by first [assumption | reflexivity];
       win p0 l0 ltac:(fun Hw0 =>
         k constr:(zesu_call_slice_rest_window base bytes p0 l0 p l (rp r) (rl r) Hw0
-                    (@zesu_call_slice_ref_result_window _ _ _ _ _ _ _ _ C _ _ _ _ _ _ Hres)
+                    (zesu_call_slice_ref_result_at C c r p0 input Hres Hip Hin)
                     Hpw Hlw))
+      end
   end.
 
 (* The window [p, p+l) of the array at [base] with [bytes]: passes to [k] a
@@ -488,6 +515,19 @@ Ltac zesu_call_slice_domain I Hwin Houta oa :=
     end
   end.
 
+(* The window facts in the shape a successor restates the call record in:
+   the slice length `Z.of_nat (length (take l (drop (p - base) bytes))) = l`
+   and the two window bounds. `NamedEquations.zesu_finish_exists_from_hypotheses`
+   closes the record's conjuncts by hypotheses of the same head; the window
+   itself is a conjunction, which that step does not open. *)
+Ltac zesu_call_slice_record_facts Hwin Hrange :=
+  let Hlen := fresh "HcsLength" in
+  let Hlow := fresh "HcsWindowLow" in
+  let Hhigh := fresh "HcsWindowHigh" in
+  try pose proof (zesu_call_slice_window_length _ _ _ _ Hwin (proj1 Hrange)) as Hlen;
+  pose proof (proj1 Hwin) as Hlow;
+  pose proof (proj2 Hwin) as Hhigh.
+
 Ltac zesu_call_slice :=
   lazymatch goal with
   | |- environments.envs_entails _ (@bi_exist _ ?T ?body) =>
@@ -521,6 +561,7 @@ Ltac zesu_call_slice :=
             let Hbounds := fresh "HcsBounds" in
             assert (Hbounds : (start + cnt <= len)%nat)
               by (clear -Hwin Hrange; zesu_call_slice_lia);
+            zesu_call_slice_record_facts Hwin Hrange;
             iRename Harray into "HcsArray";
             iDestruct (zesu_byte_array_lend_slice _ bytes start cnt Hbounds with "HcsArray")
               as "[HcsSlice HcsRestore]";
@@ -557,11 +598,68 @@ Ltac zesu_call_slice :=
     end
   end.
 
+(* The address of a held memory resource. *)
+Ltac zesu_call_slice_resource_address res :=
+  lazymatch res with
+  | (?a ↦ₘ∗ _)%I => a
+  | (?a ↦ₘ? _)%I => a
+  | (?a ↦ₘ _)%I => a
+  end.
+
+(* Restate the address `a` of the held resource `H` as the address `b` the
+   goal requests, when both are closed-offset chains of the same root word
+   and their difference is the numeral 0 (proved over the range facts). A
+   difference that mentions anything but the root is refused before any
+   evaluation (`vm_compute` of an open term can grow without bound). *)
+Ltac zesu_call_restate_at H a b ra :=
+  let rb := zesu_call_slice_root b in
+  constr_eq ra rb;
+  let f := eval pattern ra in ((a - b)%Z) in
+  lazymatch f with ?g _ => ZesuSsz.Automation2.VmClosed.zesu_closed_term g end;
+  let d := zesu_call_slice_eval_at ra constr:((a - b)%Z) in
+  lazymatch d with 0%Z => idtac end;
+  let Hab := fresh "HcsRestate" in
+  assert (Hab : a = b) by zesu_call_slice_address;
+  iRename H into "HcsMoved";
+  iEval (rewrite Hab) in "HcsMoved"; clear Hab;
+  iDestruct "HcsMoved" as "?".
+
+(* The resources a callee hands back are addressed over its own stack
+   pointer word `w` (`bv_unsigned (w + 400 + c)`), the caller's successor
+   asks for them over the caller's root (`bv_unsigned root - 400 + …`): each
+   held resource whose address mentions `w` and that the goal does not
+   request at that address is restated at the address the goal requests at
+   the same place. Fails when nothing is restated. *)
+Ltac zesu_call_restate_returned w :=
+  progress repeat (lazymatch goal with
+  | |- environments.envs_entails _ ?G =>
+      iMatchHyp ltac:(fun H res =>
+        let a := zesu_call_slice_resource_address res in
+        lazymatch a with context [w] => idtac end;
+        lazymatch G with
+        | context [(a ↦ₘ∗ _)%I] => fail
+        | context [(a ↦ₘ? _)%I] => fail
+        | context [(a ↦ₘ _)%I] => fail
+        | _ => idtac
+        end;
+        let ra := zesu_call_slice_root a in
+        match G with
+        | context [(?b ↦ₘ∗ _)%I] => zesu_call_restate_at H a b ra
+        | context [(?b ↦ₘ? _)%I] => zesu_call_restate_at H a b ra
+        | context [(?b ↦ₘ _)%I] => zesu_call_restate_at H a b ra
+        end)
+  end).
+
+(* The stack pointer word of a callee that has returned, until the
+   resources it handed back are restated (`zesu_call_restate_step`). *)
+Definition zesu_call_returned_frame (w : bv 64) : Prop := True.
+
 (* The slice the callee returned goes back into the array it was lent from;
    the addresses the callee states over its own stack pointer are restated
-   over the caller's root word. The returned slice may carry the callee's
-   element type (`byte`) where the lend wrote `bv 8`: it is matched up to
-   conversion once the address agrees syntactically. *)
+   over the caller's root word, and the callee's stack pointer word is kept
+   as a `zesu_call_returned_frame` marker. The returned slice may carry the
+   callee's element type (`byte`) where the lend wrote `bv 8`: it is matched
+   up to conversion once the address agrees syntactically. *)
 Ltac zesu_call_restore :=
   iMatchHyp ltac:(fun Hr res =>
     lazymatch res with
@@ -574,8 +672,28 @@ Ltac zesu_call_restore :=
           iRename Hr into "HcsR"; iRename Hs into "HcsS";
           iDestruct ("HcsR" with "HcsS") as "?" end) end
     end);
+  try (lazymatch goal with
+       | H : zesu_call_slice_addr_fact (@bv_unsigned _ ?w = _) |- _ =>
+           pose proof (I : zesu_call_returned_frame w)
+       end);
   repeat match goal with
   | H : zesu_call_slice_addr_fact (?a = ?b) |- _ => rewrite (H : a = b); clear H
+  end.
+
+(* At an existential whose first resource is requested at an address no
+   held resource has in that spelling, while a returned-frame marker is in
+   the context: restate what the callee handed back
+   (`zesu_call_restate_returned`) and drop the marker. *)
+Ltac zesu_call_restate_step :=
+  match goal with
+  | Hm : zesu_call_returned_frame ?w |- environments.envs_entails _ (@bi_exist _ _ ?body) =>
+      let b := lazymatch body with
+        | (fun _ => ((?b ↦ₘ∗ _) ∗ _)%I) => b
+        | (fun _ => ((?b ↦ₘ _) ∗ _)%I) => b
+        end in
+      assert_fails (iMatchHyp ltac:(fun _ res =>
+        let a := zesu_call_slice_resource_address res in constr_eq a b));
+      zesu_call_restate_returned w; clear Hm
   end.
 
 (* A callee that takes its input slice by reference
@@ -705,6 +823,7 @@ Ltac zesu_call_slice_ref :=
         let Hbounds := fresh "HcsBounds" in
         assert (Hbounds : (start + cnt <= length bytes)%nat)
           by (clear -Hwin Hrange; zesu_call_slice_lia);
+        zesu_call_slice_record_facts Hwin Hrange;
         iMatchHyp ltac:(fun Harray resource =>
           lazymatch resource with
           | (?b ↦ₘ∗ ?bs)%I => constr_eq b base; constr_eq bs bytes;
@@ -804,9 +923,32 @@ Ltac zesu_call_slice_step :=
       try ZesuSsz.Automation2.WrappedWord.zesu_word_explicit_list_rewrite;
       first [zesu_call_slice | zesu_call_slice_ref | zesu_call_restore]
   end.
+(* The by-reference step before Lithium's own step: when the slice record's
+   pointer word sits in a held byte array, Lithium reads the first cell of
+   the call spec out of it as the little-endian value of the bytes and leaves
+   no shape for the by-reference step to match. *)
+Ltac zesu_call_slice_ref_first :=
+  lazymatch goal with
+  | |- environments.envs_entails _ (@bi_exist _ _ ?body) =>
+      lazymatch body with
+      | (fun _ => ((bv_unsigned _ ↦ₘ _) ∗ ((bv_unsigned _ + 8) ↦ₘ _) ∗ _)%I) => idtac
+      end;
+      let _ := constr:(_ : ZesuStepInteriorByteSlice) in
+      ZesuSsz.Automation2.ResourceGroups.zesu_expose_environment_alias;
+      (* Lithium let-binds the record's address: the step compares it with
+         the addresses of the held cells. *)
+      repeat match goal with
+      | L := _ |- environments.envs_entails _ ?G =>
+          lazymatch G with context [L] => unfold L end
+      end;
+      zesu_call_slice_ref
+  end.
 (* Early restore: at any existential goal with a restore wand and its
-   returned slice in the context, before Lithium's own step. *)
+   returned slice in the context, before Lithium's own step; then, at an
+   existential that asks for a resource in another spelling, the callee's
+   returned resources are restated (`zesu_call_restate_step`). *)
 Ltac zesu_call_early_restore :=
   lazymatch goal with
-  | |- environments.envs_entails _ (@bi_exist _ _ _) => zesu_call_restore
+  | |- environments.envs_entails _ (@bi_exist _ _ _) =>
+      first [zesu_call_restore | zesu_call_restate_step]
   end.

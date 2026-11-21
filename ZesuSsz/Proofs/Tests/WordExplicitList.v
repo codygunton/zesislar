@@ -38,6 +38,36 @@ Qed.
 
 Print Assumptions word_explicit_list_pointer.
 
+(* A word stored as its eight byte extracts (the cells a store leaves) and
+   read back by an 8-byte load, under the binder of a call spec's
+   existential: the word itself. *)
+Lemma word_extract_list_under_binder (P : bv 64 -> Z -> Prop) (v : bv 64) :
+  (forall x, P v x) ->
+  forall x, P (Z_to_bv 64 (little_endian_to_bv 8
+    [bv_extract 0 8 v; bv_extract 8 8 v; bv_extract 16 8 v; bv_extract 24 8 v;
+     bv_extract 32 8 v; bv_extract 40 8 v; bv_extract 48 8 v; bv_extract 56 8 v])) x.
+Proof.
+  intros HP x.
+  ZesuSsz.Automation2.WrappedWord.zesu_word_explicit_list_rewrite.
+  apply HP.
+Qed.
+
+(* Guard: extracts not in order from one word are left alone. *)
+Goal forall (v : bv 64) (P : bv 64 -> Prop),
+  P (Z_to_bv 64 (little_endian_to_bv 8
+    [bv_extract 0 8 v; bv_extract 16 8 v; bv_extract 8 8 v; bv_extract 24 8 v;
+     bv_extract 32 8 v; bv_extract 40 8 v; bv_extract 48 8 v; bv_extract 56 8 v])) ->
+  P (Z_to_bv 64 (little_endian_to_bv 8
+    [bv_extract 0 8 v; bv_extract 16 8 v; bv_extract 8 8 v; bv_extract 24 8 v;
+     bv_extract 32 8 v; bv_extract 40 8 v; bv_extract 48 8 v; bv_extract 56 8 v])).
+Proof.
+  intros v P H.
+  Fail ZesuSsz.Automation2.WrappedWord.zesu_word_explicit_list_rewrite.
+  exact H.
+Qed.
+
+Print Assumptions word_extract_list_under_binder.
+
 (* The word read back by an 8-byte load: `bv_concat` of the bytes of one
    integer. `bv_solve` closes it (WrappedWord.zesu_word_concat_bytes_eq). *)
 Lemma word_concat_bytes (z : Z) :
@@ -56,6 +86,24 @@ Proof.
   intros z y H.
   Fail ZesuSsz.Automation2.WrappedWord.zesu_word_concat_bytes_eq.
   exact H.
+Qed.
+
+(* The rule proves the equation from its statement alone, in a context
+   cleared of hypotheses: with a contradictory fact in the context, a word whose
+   bytes are shifted wrongly is still refused (before the clear, bitblast's lia
+   calls used the fact and proved it), and a right word still closes. *)
+Goal forall (z : Z), (0 < 0)%Z ->
+  bv_concat 16 (Z_to_bv 8 (z ≫ (8 * 0%nat))) (Z_to_bv 8 (z ≫ (8 * 1%nat))) = Z_to_bv 16 z.
+Proof.
+  intros z Hfalse.
+  Fail ZesuSsz.Automation2.WrappedWord.zesu_word_concat_bytes_eq.
+  lia.
+Qed.
+Goal forall (z : Z), (0 < 0)%Z ->
+  bv_concat 16 (Z_to_bv 8 (z ≫ (8 * 1%nat))) (Z_to_bv 8 (z ≫ (8 * 0%nat))) = Z_to_bv 16 z.
+Proof.
+  intros z Hfalse.
+  ZesuSsz.Automation2.WrappedWord.zesu_word_concat_bytes_eq.
 Qed.
 
 Print Assumptions word_concat_bytes.

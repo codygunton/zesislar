@@ -471,11 +471,57 @@ Ltac zesu_byte_array_known_length_solve :=
 Global Hint Extern 0 (ZesuByteArrayKnownLength _ _) =>
   zesu_byte_array_known_length_solve : typeclass_instances.
 
+(* A region size spelled from literals only (`16 - 8 - Z.of_N (64 / 8)`, as
+   the frame rules leave the rest of a request). *)
+Ltac zesu_closed_size_N n :=
+  lazymatch n with
+  | N0 => idtac
+  | Npos _ => idtac
+  | N.div ?a ?b => zesu_closed_size_N a; zesu_closed_size_N b
+  | N.mul ?a ?b => zesu_closed_size_N a; zesu_closed_size_N b
+  | N.add ?a ?b => zesu_closed_size_N a; zesu_closed_size_N b
+  end.
+Ltac zesu_closed_size_nat n :=
+  lazymatch n with
+  | O => idtac
+  | S ?m => zesu_closed_size_nat m
+  end.
+Ltac zesu_closed_size n :=
+  lazymatch n with
+  | Z0 => idtac
+  | Zpos _ => idtac
+  | Zneg _ => idtac
+  | Z.add ?a ?b => zesu_closed_size a; zesu_closed_size b
+  | Z.sub ?a ?b => zesu_closed_size a; zesu_closed_size b
+  | Z.mul ?a ?b => zesu_closed_size a; zesu_closed_size b
+  | Z.of_N ?m => zesu_closed_size_N m
+  | Z.of_nat ?m => zesu_closed_size_nat m
+  end.
+
+(* An array weakens into an uninitialized request only when the request has
+   room for it. The rules below raise the room as a side condition; when the
+   sizes are literals and the room is missing (the request's rest is empty or
+   shorter than the array: the array lies after the request), the rule is
+   refused here, so the search does not commit to a false goal (`40 <= 0`).
+   The class carries no proof; it is an inductive, as a definitional class
+   reaches instance search as `True` and the hint below would never run. *)
+Inductive ZesuUninitRoom (n n2 : Z) : Prop := zesu_uninit_room.
+Existing Class ZesuUninitRoom.
+Ltac zesu_uninit_room_check n n2 :=
+  tryif zesu_closed_size n2 then
+    (let v := eval vm_compute in (Z.ltb 0 n2) in constr_eq v true;
+     tryif zesu_closed_size n then
+       (let w := eval vm_compute in (Z.leb n n2) in constr_eq w true)
+     else idtac)
+  else idtac.
+Global Hint Extern 0 (ZesuUninitRoom ?n ?n2) =>
+  (zesu_uninit_room_check n n2; exact (zesu_uninit_room n n2)) : typeclass_instances.
+
 Section byte_array_uninit_subsumption.
   Context `{!islaG Sigma}.
 
   Lemma subsume_mem_byte_array_8_uninit A a1 a2
-      (bytes : list (bv 8)) n2 G :
+      (bytes : list (bv 8)) n2 G `{!ZesuUninitRoom 8 n2} :
     (⌜a1 = a2⌝ ∗ ⌜length bytes = 8%nat⌝ ∗ ⌜8 <= n2⌝ ∗
       (a2 + 8) ↦ₘ? (n2 - 8) ∗ ∃ x : A, G x)%I ⊢
     subsume (a1 ↦ₘ∗ bytes) (fun _ : A => a2 ↦ₘ? n2) G.
@@ -517,7 +563,7 @@ Section byte_array_uninit_subsumption.
      The tail request reads the literal, as the 8-byte rule's does. *)
   Lemma subsume_mem_byte_array_known_uninit A a1 a2
       (bytes : list (bv 8)) (n n2 : Z) G
-      `{!ZesuByteArrayKnownLength bytes n} :
+      `{!ZesuByteArrayKnownLength bytes n} `{!ZesuUninitRoom n n2} :
     (⌜a1 = a2⌝ ∗ ⌜n <= n2⌝ ∗
       (a2 + n) ↦ₘ? (n2 - n) ∗ ∃ x : A, G x)%I ⊢
     subsume (a1 ↦ₘ∗ bytes) (fun _ : A => a2 ↦ₘ? n2) G.
@@ -534,7 +580,8 @@ Section byte_array_uninit_subsumption.
   Lemma subsume_mem_scratch_byte_array_uninit A a1 a2
       (bytes : list (bv 8)) n2 G
       `{!TCOr (TCFastDone (length bytes = 16%nat))
-              (TCFastDone (length bytes = 32%nat))} :
+              (TCFastDone (length bytes = 32%nat))}
+      `{!ZesuUninitRoom (Z.of_nat (length bytes)) n2} :
     (⌜a1 = a2⌝ ∗ ⌜Z.of_nat (length bytes) <= n2⌝ ∗
       (a2 + Z.of_nat (length bytes)) ↦ₘ? (n2 - Z.of_nat (length bytes)) ∗
       ∃ x : A, G x)%I ⊢
@@ -547,7 +594,8 @@ Section byte_array_uninit_subsumption.
 
   Definition subsume_mem_scratch_byte_array_1_uninit
       (A : Type) (a1 a2 : Z) (bytes : list (bv 8)) (n2 : Z)
-      (G : A -> iProp Sigma) `{!TCFastDone (length bytes = 1%nat)} :=
+      (G : A -> iProp Sigma) `{!TCFastDone (length bytes = 1%nat)}
+      `{!ZesuUninitRoom 1 n2} :=
     @subsume_mem_byte_array_uninit A a1 a2 bytes n2 G.
 
   Definition subsume_mem_scratch_byte_array_1_uninit_inst :=

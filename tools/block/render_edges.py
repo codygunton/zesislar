@@ -415,6 +415,34 @@ def substitute(text, renames):
     return re.sub(pattern, lambda match: renames[match[1]], text)
 
 
+def premise_definitions(body, candidates, scope):
+    """{binder: term} for each candidate binder that the instance's histories do not name (`scope`)
+    and that a conjunct `(binder = T)` of the premise `body` defines (a conjunct: after `/\\`, `,` or
+    `⌜`, never inside a term such as `bool_decide (binder = 0)`), T naming no candidate outside the
+    histories and no name the premise binds. Such a binder (a block-entry value the successor
+    history keeps under an existential, say a word the call overwrote) is fixed by no history:
+    applying the instance leaves it an evar the automation cannot choose, while the term is what
+    the block holds."""
+    bound = set(re.findall(r"\(([\w']+) :", body))
+    unfixed = [name for name in candidates if not mentions(name, scope)]
+    result = {}
+    for name in unfixed:
+        terms = set()
+        for match in re.finditer(r"\(" + re.escape(name) + r" = ", body):
+            if not re.search(r"(?:/\\|,|⌜)\s*\(*$", body[:match.start()]):
+                continue
+            depth, start = 1, match.end()
+            for position in range(start, len(body)):
+                depth += {'(': 1, ')': -1}.get(body[position], 0)
+                if depth == 0:
+                    terms.add(body[start:position].strip())
+                    break
+        terms = {term for term in terms if not any(mentions(other, term) for other in [*unfixed, *bound])}
+        if len(terms) == 1:
+            result[name] = '(' + terms.pop() + ')'
+    return result
+
+
 def rocq_edge(edge, pre, succ, index):
     """One ZesuHistEdge instance with its data-only proof."""
     rows = edge['binder_map']
@@ -478,8 +506,11 @@ def rocq_edge(edge, pre, succ, index):
     application = lambda meta, table: meta['hist'] + ''.join(
         ' (' + table.get(binder['name'], binder['name']) + ')'
         for binder in meta['parameters'] + meta.get('hist_live', meta['live']))
+    histories = application(pre, {}) + ' ' + application(succ, renames)
+    defined = premise_definitions(body, binder_names(pre, 'live'), histories)
+    body = substitute(body, defined)
     # loop-seal lane: an instance quantifies only over the variables its statement mentions.
-    statement = application(pre, {}) + ' ' + application(succ, renames) + ' ' + body
+    statement = histories + ' ' + body
     variables = [binder for binder in variables if binder in pre['parameters'] or mentions(binder['name'], statement)]
     name = 'zesu_hist_edge_' + str(index)
     lines = ['(* ' + edge['pre_entry'] + ' -> ' + edge['succ_entry'] + ' (' + edge['kind'] + ') *)',
@@ -540,7 +571,7 @@ def rocq_edge(edge, pre, succ, index):
             lines.append('  split; [' + proof + '|].')
         lines.append('  ' + proofs[-1] + '.')
     lines.append('Qed.')
-    return '\n'.join(lines) + '\n'
+    return substitute('\n'.join(lines), defined) + '\n'
 
 
 def application(meta, table):
