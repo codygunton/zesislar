@@ -25,6 +25,8 @@ Require Import ZesuSsz.Contracts.ParentHeaderCandidateWalk.
 Require Import ZesuSsz.Automation2.ByteWindowFold.
 Require Import ZesuSsz.Automation2.BitvectorFacts.
 Require Import ZesuSsz.Contracts.ParentHeaderSuccessWalk.
+Require Import ZesuSsz.Contracts.ParentHeader.
+Require Import ZesuSsz.Contracts.ParentHeaderRootFacts.
 
 Definition parentHeaderWalkAt (args : ParentHeaderArgs) (k : nat) (p l : bv 64) (acc : list Z) : Prop :=
   candidateWalkState (parentHeaderInputBytes args) k
@@ -211,3 +213,60 @@ Proof.
   rewrite (parentHeaderRemainingNone _ _ Hnone) in Hs'.
   exact (candidateWalkAbsent _ _ _ _ _ _ Hk' Hopt Hs').
 Qed.
+
+(* ---- Optional integer fields through nextUint64 (15, 17, 18) ---- *)
+
+Lemma nextUint64RootLength call ret :
+  nextUint64RootResult call ret -> length (nextResultBytes ret) = 16%nat.
+Proof.
+  intros [_ Hroot].
+  destruct (candidateDecodeItem (nextInputBytes call)) as [|isList h p];
+    [destruct Hroot as ((H & _) & _); exact H|].
+  destruct (isList || (8 <? p)); destruct Hroot as ((H & _) & _); exact H.
+Qed.
+
+(* Something was left before the field, nextUint64 succeeded on the window
+   [p, p + l): the walk stands before the next field at the rest words the
+   callee returned, with the result word appended. *)
+Lemma parentHeaderWalkNextOf args k pc kind (p l rp rl : bv 64) acc call ret :
+  nth_error parentHeaderFieldSchedule k = Some (pc, kind) ->
+  parentHeaderFieldIsInteger kind = true ->
+  parentHeaderWalkAt args k p l acc ->
+  nextInputBytes call =
+    take (Z.to_nat (bv_unsigned l))
+      (drop (Z.to_nat (bv_unsigned p - bv_unsigned (parentHeaderInputPointer args))) (parentHeaderInputBytes args)) ->
+  nextInputPointer call = bv_unsigned p ->
+  nextUint64RootResult call ret ->
+  bv_unsigned (bv_concat 16 (List.nth 9 (nextResultBytes ret) (BV 8 0))
+    (List.nth 8 (nextResultBytes ret) (BV 8 0))) = 0 ->
+  rp = Z_to_bv 64 (nextRestPointer ret) ->
+  rl = Z_to_bv 64 (nextRestLength ret) ->
+  parentHeaderWalkState args (S k) rp rl (acc ++ [bv_unsigned (listWord64At0 (nextResultBytes ret))]).
+Proof.
+  intros Hk Hint [Hs Hl0] Hin Hip Hroot Hok -> ->.
+  destruct (nextUint64RootRestRange _ _ Hroot) as [Hrp Hrl].
+  unfold parentHeaderWalkState.
+  rewrite !Z_to_bv_small by (unfold bv_modulus; exact Hrp || exact Hrl).
+  rewrite <- nextUint64ValueWord by (rewrite (nextUint64RootLength _ _ Hroot); lia).
+  eapply (candidateWalkNextUint64 _ _ _ _ _ _ _ (bv_unsigned (parentHeaderInputPointer args)));
+    [exact Hk|exact Hint|exact Hs|exact Hl0|exact Hin| |exact Hroot|].
+  - rewrite Hip. lia.
+  - exact (nextUint64RootStatus _ _ Hroot Hok).
+Qed.
+
+(* Nothing left after an optional field: the candidate accepts. *)
+Lemma parentHeaderSuccessOfState args k pc kind (p l : bv 64) acc :
+  nth_error parentHeaderFieldSchedule k = Some (pc, kind) ->
+  parentHeaderFieldIsRequired kind = false ->
+  parentHeaderWalkState args k p l acc ->
+  bv_unsigned l = 0 ->
+  candidateParentHeader (parentHeaderInputBytes args) = candidateHeaderSuccess (candidateHeaderOfValues acc).
+Proof.
+  intros Hk Hopt Hs Hl. unfold parentHeaderWalkState in Hs. rewrite Hl in Hs.
+  exact (candidateWalkAbsent _ _ _ _ _ _ Hk Hopt Hs).
+Qed.
+
+(* The tag word of a present record as the binary builds it: byte 8 is 1. *)
+Lemma parentHeaderTagWordOne (hi : bv 56) :
+  bv_unsigned (bv_extract 0 8 (bv_concat 64 hi (BV 8 1))) = 1.
+Proof. rewrite stdpp.bitvector.tactics.bv_extract_concat_here by lia. reflexivity. Qed.
