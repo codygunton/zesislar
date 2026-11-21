@@ -86,13 +86,16 @@ Ltac parentHeader_member :=
 (* A premise is chosen by its address, never by trial unification: the callee
    specs share their machine_call shape, and unifying two of them unfolds both.
    The addresses are decodeItemEntry, nextUint64Entry and memcpyCsrPc (the
-   notations carry a cast, which a pattern ignores with a warning). *)
+   notations carry a cast, which a pattern ignores with a warning). A return
+   premise (its address is the variable returnAddress) is no table slot: the
+   step fails at once instead of trying it against every table entry. *)
 Ltac parentHeader_premise :=
   lazymatch goal with
   | |- environments.envs_entails _ (instr_pre 0x800d6960 _) => iExact "Hdi"
   | |- environments.envs_entails _ (instr_pre 0x800d6274 _) => iExact "Hnu"
   | |- environments.envs_entails _ (instr_pre 0x800e06c0 _) => iExact "Hmc"
-  | |- environments.envs_entails _ (instr_pre _ _) =>
+  | |- environments.envs_entails _ (instr_pre ?a _) =>
+      tryif is_var a then fail else
       solve [ iApply (block_table_pre_lookup with "Htab");
               unfold parentHeaderBlockTable; cbn [block_table_entries];
               parentHeader_member ]
@@ -218,15 +221,26 @@ Ltac parentHeader_exit_premise Hexits H :=
     ZesuSsz.Generated.DecodeParentHeader.FP301.FunctionReturnEntries.fp_machineReturn_slot5,
     ZesuSsz.Generated.DecodeParentHeader.FP301.FunctionReturnEntries.fp_machineReturn_slot6;
   iIntros "[Hexit _]";
-  first
-  [ iApply (parentHeader_tail_end_bridge with "Hexit"); exact (parentHeaderExitMeaning_tail Hexits)
-  | iApply (parentHeader_direct_end_bridge_slot0 with "Hexit"); exact (parentHeaderExitMeaning_slot0 Hexits)
-  | iApply (parentHeader_direct_end_bridge_slot1 with "Hexit"); exact (parentHeaderExitMeaning_slot1 Hexits)
-  | iApply (parentHeader_direct_end_bridge_slot2 with "Hexit"); exact (parentHeaderExitMeaning_slot2 Hexits)
-  | iApply (parentHeader_direct_end_bridge_slot3 with "Hexit"); exact (parentHeaderExitMeaning_slot3 Hexits)
-  | iApply (parentHeader_direct_end_bridge_slot4 with "Hexit"); exact (parentHeaderExitMeaning_slot4 Hexits)
-  | iApply (parentHeader_direct_end_bridge_slot5 with "Hexit"); exact (parentHeaderExitMeaning_slot5 Hexits)
-  | iApply (parentHeader_direct_end_bridge_slot6 with "Hexit"); exact (parentHeaderExitMeaning_slot6 Hexits) ].
+  (* the bridge is chosen by the package's name: trying a wrong bridge
+     unifies two packages, which unfolds both *)
+  lazymatch iTypeOf (INamed "Hexit") with
+  | Some (_, @ZesuSsz.Generated.DecodeParentHeader.FP301.FunctionReturnTail00e8Entries.fp_machineReturnTail00e8_ForwardA0N0 _ _ _ _ _) =>
+      iApply (parentHeader_tail_end_bridge with "Hexit"); exact (parentHeaderExitMeaning_tail Hexits)
+  | Some (_, @ZesuSsz.Generated.DecodeParentHeader.FP301.FunctionReturnEntries.fp_machineReturn_slot0_ForwardA0N0 _ _ _ _ _) =>
+      iApply (parentHeader_direct_end_bridge_slot0 with "Hexit"); exact (parentHeaderExitMeaning_slot0 Hexits)
+  | Some (_, @ZesuSsz.Generated.DecodeParentHeader.FP301.FunctionReturnEntries.fp_machineReturn_slot1_ForwardA0N0 _ _ _ _ _) =>
+      iApply (parentHeader_direct_end_bridge_slot1 with "Hexit"); exact (parentHeaderExitMeaning_slot1 Hexits)
+  | Some (_, @ZesuSsz.Generated.DecodeParentHeader.FP301.FunctionReturnEntries.fp_machineReturn_slot2_ForwardA0N0 _ _ _ _ _) =>
+      iApply (parentHeader_direct_end_bridge_slot2 with "Hexit"); exact (parentHeaderExitMeaning_slot2 Hexits)
+  | Some (_, @ZesuSsz.Generated.DecodeParentHeader.FP301.FunctionReturnEntries.fp_machineReturn_slot3_ForwardA0N0 _ _ _ _ _) =>
+      iApply (parentHeader_direct_end_bridge_slot3 with "Hexit"); exact (parentHeaderExitMeaning_slot3 Hexits)
+  | Some (_, @ZesuSsz.Generated.DecodeParentHeader.FP301.FunctionReturnEntries.fp_machineReturn_slot4_ForwardA0N0 _ _ _ _ _) =>
+      iApply (parentHeader_direct_end_bridge_slot4 with "Hexit"); exact (parentHeaderExitMeaning_slot4 Hexits)
+  | Some (_, @ZesuSsz.Generated.DecodeParentHeader.FP301.FunctionReturnEntries.fp_machineReturn_slot5_ForwardA0N0 _ _ _ _ _) =>
+      iApply (parentHeader_direct_end_bridge_slot5 with "Hexit"); exact (parentHeaderExitMeaning_slot5 Hexits)
+  | Some (_, @ZesuSsz.Generated.DecodeParentHeader.FP301.FunctionReturnEntries.fp_machineReturn_slot6_ForwardA0N0 _ _ _ _ _) =>
+      iApply (parentHeader_direct_end_bridge_slot6 with "Hexit"); exact (parentHeaderExitMeaning_slot6 Hexits)
+  end.
 
 (* The generic slot step: the block statement tagged with the slot's address
    and entry constant (slots of one block share the address; the entry tag
