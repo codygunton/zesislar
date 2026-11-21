@@ -837,7 +837,8 @@ def call_return_seed(edges, *, call, function_root, root_seed, shapes, vocabular
         for argument, word in named_arguments.items()] + [{'kind': 'opaque', 'id': prefix + 'facts', 'coq': '⌜' + carried + '⌝'}] + [
         {'kind': 'opaque', 'id': prefix + 'window_' + binder, 'coq': '⌜' + text + '⌝'}
         for binder, text in windows] + [
-        {'kind': 'opaque', 'id': prefix + 'return_fact_%d' % index, 'coq': '⌜' + _return_fact(row['coq'], fresh) + '⌝'}
+        {'kind': 'opaque', 'id': prefix + 'return_fact_%d' % index,
+         'coq': '⌜' + _return_fact(entry_hist.design_fact_text(row), fresh) + '⌝'}
         for index, row in enumerate(call.get('return_facts', []))]
     # Every post binder, and the word binders that stand for a returned word expression.
     for name, kind in spec['post_binders']:

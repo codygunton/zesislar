@@ -112,6 +112,19 @@ OBLIGATION_PREMISES = ('guard', 'domain', 'length', 'named_eq', 'newest_call_rec
                        'newest_call_window')
 
 
+def _obligation_rows(designs, key, rows):
+    """Add to `rows` the rows of `designs` (profile list `key`) that name an `obligation`."""
+    for row in designs:
+        if isinstance(row, dict) and row.get('obligation'):
+            if not re.fullmatch(r'[A-Za-z]\w*', row['obligation']) or not row.get('lemma_module'):
+                raise ValueError(key + ': an obligation needs an identifier and a lemma_module')
+            unknown = set(row.get('premises', [])) - set(OBLIGATION_PREMISES)
+            if unknown:
+                raise ValueError(key + ': unknown obligation premise classes ' + ', '.join(sorted(unknown)))
+            rows[normal(design_fact_text(row))] = row
+    return rows
+
+
 def design_obligations(profile, keys=None):
     """{normal text of the stated fact: row} of the join-design rows that name an `obligation` (of the
     joins `keys` of `join_designs`, every join when None): an edge into such a join whose block history
@@ -119,16 +132,20 @@ def design_obligations(profile, keys=None):
     the row's `lemma_module`, from the classes of block facts the row's `premises` name."""
     rows = {}
     for key, designs in (profile.get('join_designs') or {}).items():
-        if keys is not None and key not in keys:
-            continue
-        for row in designs:
-            if isinstance(row, dict) and row.get('obligation'):
-                if not re.fullmatch(r'[A-Za-z]\w*', row['obligation']) or not row.get('lemma_module'):
-                    raise ValueError('join_designs: an obligation needs an identifier and a lemma_module')
-                unknown = set(row.get('premises', [])) - set(OBLIGATION_PREMISES)
-                if unknown:
-                    raise ValueError('join_designs: unknown obligation premise classes ' + ', '.join(sorted(unknown)))
-                rows[normal(design_fact_text(row))] = row
+        if keys is None or key in keys:
+            _obligation_rows(designs, 'join_designs', rows)
+    return rows
+
+
+def return_obligations(profile, sites=None):
+    """{normal text of the stated fact: row} of the `return_facts` rows (profile `calls`) that name an
+    `obligation` (of the calls whose `return_site_pc` is in `sites`, every call when None). Such a row
+    is a fact of the return site's entry (`zesu_join_history` when `history`): the call block's edge into
+    the return site proves it as an edge into a join proves a join design (`design_obligations`)."""
+    rows = {}
+    for call in profile.get('calls') or []:
+        if sites is None or call.get('return_site_pc') in sites:
+            _obligation_rows(call.get('return_facts', []), 'return_facts', rows)
     return rows
 
 
