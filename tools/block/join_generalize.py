@@ -428,6 +428,17 @@ def edge_guard_disjunction(alternatives, common):
     return Expr('or', args=tuple(disjuncts))
 
 
+def join_guard_fact(alternatives, common):
+    """The join's `edge_guard_disjunction` in the profile's `join_guard_form` (`entry_hist.configure`):
+    `both` as built, `prop` marked so the entry renders its proposition only, `none` no fact."""
+    if entry_hist.JOIN_GUARD_FORM == 'none':
+        return None
+    disjunction = edge_guard_disjunction(alternatives, common)
+    if disjunction is not None and entry_hist.JOIN_GUARD_FORM == 'prop':
+        disjunction = replace(disjunction, value=entry_hist.PROP_ONLY_GUARD)
+    return disjunction
+
+
 def _remove_terminal(tree, terminal_id):
     kind = tree['kind']
     if kind == 'component':
@@ -1611,7 +1622,7 @@ def generalize_owned_join(alternatives, *, original_seed, entry_pc, vocabulary,
             else:
                 raise ValueError('A common guard has no source condition on every edge')
         plan['common_guard_certificates'].append({'guard': guard.to_dict(), 'edges': matches})
-    disjunction = edge_guard_disjunction(alternatives, state.conditions)
+    disjunction = join_guard_fact(alternatives, state.conditions)
     if disjunction is not None:
         plan['edge_guard_disjunction'] = disjunction.to_dict()
         state.conditions.append(disjunction)

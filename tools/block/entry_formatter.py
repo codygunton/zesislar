@@ -9,12 +9,14 @@ import hashlib
 import json
 
 try:
+    from . import entry_hist
     from .entry_seed import _code_mask
     from .forward_resources import _strip_enclosure, parse_source_ownership
     from .symbolic_state import Expr, input_expr
     from .guard_normal_form import GuardNormalForm
     from .coq_scopes import z_address_scope
 except ImportError:
+    import entry_hist
     from entry_seed import _code_mask
     from forward_resources import _strip_enclosure, parse_source_ownership
     from symbolic_state import Expr, input_expr
@@ -109,6 +111,8 @@ class SymbolicConditions:
             normalizer = GuardNormalForm(path_conditions, scalar_ranges=self.scalar_ranges)
             normalized = normalizer.render(lowered)
         terms = list(dict.fromkeys([term, normalized['proposition'], *normalized['endpoints']]))
+        if original.op == 'or' and original.value == entry_hist.PROP_ONLY_GUARD and normalized['proposition'] != term:
+            terms.remove(term)   # `join_guard_form: prop`: the join's edge guard as its proposition only
         provenance = self.provenance(deepcopy(context))
         if not isinstance(provenance, dict) or set(provenance) not in ({'source'}, {'from_block', 'from_instruction'}):
             raise ValueError('A condition needs source-bound author provenance')
