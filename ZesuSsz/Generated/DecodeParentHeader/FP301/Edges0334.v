@@ -14,6 +14,7 @@ Require Import ZesuSsz.Contracts.AbiBytes.
 Require Import ZesuSsz.Contracts.ZiskRuntime.
 Require Import ZesuSsz.Contracts.Candidates.ParentHeaderCandidate.
 Require Import ZesuSsz.Automation2.ByteWindowFold.
+Require Import ZesuSsz.Contracts.ParentHeaderWalkFact.
 Require Export ZesuSsz.Compliance.ParentHeaderHints.
 Require Import ZesuSsz.Contracts.Level1.
 Local Open Scope Z_scope.
@@ -36,31 +37,32 @@ Global Instance zesu_hist_edge_87 (args : ParentHeaderArgs) (returnAddress : Z) 
     (True)%I.
 Proof.
   rewrite /ZesuHistEdge => Hh. apply zesu_hist_elim in Hh. unfold fp_machineAt0334_LoopClass0_Hist in Hh.
-  destruct Hh as (call11_after & call11_kept_x18 & call10_kept_x20 & HF0 & HF1 & HF2 & HF3 & HF4 & HF5 & HF6 & HF7 & HF8 & HF9 & HF10 & HF11 & HF12 & HF13 & HF14 & HF15 & HF16 & HF17 & HF18).
+  destruct Hh as (call11_after & call11_kept_x18 & call10_kept_x20 & HF0 & HF1 & HF2 & HF3 & HF4 & HF5 & HF6 & HF7 & HF8 & HF9 & HF10 & HF11 & HF12 & HF13 & HF14 & HF15 & HF16 & HF17 & HF18 & HF19).
   iIntros "HN".
   iPureIntro. apply zesu_hist_intro. unfold fp_machineAt0348_ForwardA0N0_Hist.
   exists (BV 64%N 0%Z), (BV 64%N 0%Z), (BV 64%N 0%Z), (BV 64%N 0%Z), (BV 64%N 0%Z), (BV 64%N 0%Z), (BV 64%N 0%Z), (BV 64%N 0%Z), (BV 64%N 0%Z), (BV 64%N 0%Z), (BV 64%N 0%Z), (BV 64%N 0%Z).
   split; [exact HF0|].
-  split; [exact (ex_intro _ call11_after (ex_intro _ call11_kept_x18 (ex_intro _ call10_kept_x20 (conj HF1 (conj HF2 (conj HF3 (conj HF4 (conj HF5 (conj HF6 (conj HF7 HF8))))))))))|].
+  split; [exact (ex_intro _ call11_after (ex_intro _ call11_kept_x18 (ex_intro _ call10_kept_x20 (conj HF1 (conj HF3 (conj HF4 (conj HF5 (conj HF6 (conj HF7 (conj HF8 HF9))))))))))|].
+  split; [exact HF2|].
   split; [by vm_compute|].
   split; [by vm_compute|].
   split; [by vm_compute|].
-  split; [by vm_compute|].
-  split; [by vm_compute|].
-  split; [zesu_hist_view HF9|].
   split; [by vm_compute|].
   split; [by vm_compute|].
   split; [zesu_hist_view HF10|].
   split; [by vm_compute|].
+  split; [by vm_compute|].
   split; [zesu_hist_view HF11|].
-  split; [by vm_compute|].
-  split; [by vm_compute|].
   split; [by vm_compute|].
   split; [zesu_hist_view HF12|].
   split; [by vm_compute|].
   split; [by vm_compute|].
-  split; [zesu_hist_view HF16|].
-  zesu_hist_view HF17.
+  split; [by vm_compute|].
+  split; [zesu_hist_view HF13|].
+  split; [by vm_compute|].
+  split; [by vm_compute|].
+  split; [zesu_hist_view HF17|].
+  zesu_hist_view HF18.
 Qed.
 
 End edges.

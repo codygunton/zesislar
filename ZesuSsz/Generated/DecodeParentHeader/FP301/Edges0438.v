@@ -14,6 +14,7 @@ Require Import ZesuSsz.Contracts.AbiBytes.
 Require Import ZesuSsz.Contracts.ZiskRuntime.
 Require Import ZesuSsz.Contracts.Candidates.ParentHeaderCandidate.
 Require Import ZesuSsz.Automation2.ByteWindowFold.
+Require Import ZesuSsz.Contracts.ParentHeaderWalkFact.
 Require Export ZesuSsz.Compliance.ParentHeaderHints.
 Require Import ZesuSsz.Contracts.Level1.
 Local Open Scope Z_scope.
@@ -41,16 +42,16 @@ Global Instance zesu_hist_edge_110 (args : ParentHeaderArgs) (returnAddress : Z)
             (decodeItemCallDataArgs ([((bv_add (bv_add (bv_add (parentHeaderStackPointer args) (BV 64%N 18446744073709551216%Z)) (BV 64%N 400%Z)) (BV 64%N 18446744073709551320%Z))); (call15_kept_x19); (call15_kept_x18); (call15_arg_x13); (call15_arg_x14); (call15_arg_x15); (call15_arg_x16); (call15_arg_x17)]) (((bv_add (parentHeaderStackPointer args) (BV 64%N 18446744073709551216%Z)))) (bv_unsigned (((parentHeaderInputEnd args)))) (take (Z.to_nat (bv_unsigned (call15_kept_x18))) (drop (Z.to_nat (bv_unsigned (call15_kept_x19) - bv_unsigned (parentHeaderInputPointer args))) (parentHeaderInputBytes args))) call15_before) (call15_after)))⌝ ∗ ⌜(negb (bool_decide ((bv_zero_extend 64%N (bv_concat 16%N (List.nth 33%nat call15_after (BV 8%N 0%Z)) (List.nth 32%nat call15_after (BV 8%N 0%Z)))) = (BV 64%N 0%Z)))) = true⌝ ∗ True)%I.
 Proof.
   rewrite /ZesuHistEdge => Hh. apply zesu_hist_elim in Hh. pose proof Hh as HS. unfold fp_machineAt0438_ForwardA0N0_Hist in Hh.
-  destruct Hh as (fp_seed_mstatus_bits & forward_witness_1be931110d776902 & forward_witness_905cf96e605c1117 & forward_witness_55ab0ce59750150a & forward_witness_11fde2df72db9d06 & forward_witness_1492ef7bd46b3b7a & forward_witness_d77b5950a2aea933 & forward_witness_21649d1cf161453f & forward_witness_1eea82d2945b4618 & forward_witness_751588b52f8a71ff & forward_witness_9644ccf41f39915a & forward_witness_a84be01a9be85bdb & forward_witness_407fca3a6f90b8db & forward_witness_88383840afa7af74 & HF0 & HF1 & HF2 & HF3 & HF4 & HF5 & HF6 & HF7 & HF8 & HF9 & HF10 & HF11 & HF12 & HF13 & HF14 & HF15 & HF16 & HF17 & HF18 & HF19 & HF20 & HF21 & HF22 & HF23 & HF24 & HF25 & HF26 & HF27 & HF28).
+  destruct Hh as (fp_seed_mstatus_bits & forward_witness_1be931110d776902 & forward_witness_905cf96e605c1117 & forward_witness_55ab0ce59750150a & forward_witness_11fde2df72db9d06 & forward_witness_1492ef7bd46b3b7a & forward_witness_d77b5950a2aea933 & forward_witness_21649d1cf161453f & forward_witness_1eea82d2945b4618 & forward_witness_751588b52f8a71ff & forward_witness_9644ccf41f39915a & forward_witness_a84be01a9be85bdb & forward_witness_407fca3a6f90b8db & forward_witness_88383840afa7af74 & HF0 & HF1 & HF2 & HF3 & HF4 & HF5 & HF6 & HF7 & HF8 & HF9 & HF10 & HF11 & HF12 & HF13 & HF14 & HF15 & HF16 & HF17 & HF18 & HF19 & HF20 & HF21 & HF22 & HF23 & HF24 & HF25 & HF26 & HF27 & HF28 & HF29).
   iIntros "HN".
   iDestruct "HN" as "(%HN0 & %HN1 & %HN2 & %HN3 & %HV0 & %HV1 & %HV2 & %HV3 & %HV4 & %HV5 & %HV6 & %HV7 & %HV9 & %HV10 & %HV11 & %HV12 & %HG0 & _)".
   iPureIntro. apply zesu_hist_intro. unfold fp_machineAt0408_ForwardA0N0_Hist.
   exists (BV 64%N 0%Z), forward_witness_1be931110d776902, forward_witness_905cf96e605c1117, forward_witness_55ab0ce59750150a, forward_witness_11fde2df72db9d06, forward_witness_1492ef7bd46b3b7a, forward_witness_d77b5950a2aea933, forward_witness_21649d1cf161453f, forward_witness_1eea82d2945b4618, forward_witness_751588b52f8a71ff, forward_witness_9644ccf41f39915a, forward_witness_a84be01a9be85bdb, forward_witness_407fca3a6f90b8db, forward_witness_88383840afa7af74.
   split; [exact HF0|].
-  split; [exact (ex_intro _ call14_after (ex_intro _ call14_kept_x18 (ex_intro _ call14_kept_x19 (ex_intro _ call13_kept_x18 (ex_intro _ call13_kept_x19 (conj HF1 (conj HF2 (conj HF3 (conj HV5 (conj HV6 (conj HV7 (conj HF4 HF5))))))))))))|].
+  split; [exact (ex_intro _ call14_after (ex_intro _ call14_kept_x18 (ex_intro _ call14_kept_x19 (ex_intro _ call13_kept_x18 (ex_intro _ call13_kept_x19 (conj HF1 (conj HF3 (conj HF4 (conj HV5 (conj HV6 (conj HV7 (conj HF5 HF6))))))))))))|].
+  split; [exact HF2|].
   split; [exact HN0|].
   split; [exact (fp_edge0438_0408_CandidateError_holds args returnAddress call15_after call15_kept_x18 call15_kept_x19 call14_after call14_kept_x18 call14_kept_x19 call13_after call13_kept_x18 call13_kept_x19 call10_after call_after machine_x21_1 machine_x22_1 HS HV0 HV1 HV2 HV3 HV4 HV5 HV6 HV7 HV9 HV10 HV11 HV12 HG0)|].
-  split; [exact HF6|].
   split; [exact HF7|].
   split; [exact HF8|].
   split; [exact HF9|].
@@ -66,11 +67,12 @@ Proof.
   split; [exact HF19|].
   split; [exact HF20|].
   split; [exact HF21|].
+  split; [exact HF22|].
   split; [by vm_compute|].
-  split; [exact HF23|].
   split; [exact HF24|].
-  split; [by vm_compute|].
   split; [exact HF25|].
+  split; [by vm_compute|].
+  split; [exact HF26|].
   split; [exact HN1|].
   split; [exact HN2|].
   exact HN3.
@@ -86,7 +88,7 @@ Global Instance zesu_hist_edge_111 (args : ParentHeaderArgs) (returnAddress : Z)
             (decodeItemCallDataArgs ([((bv_add (bv_add (bv_add (parentHeaderStackPointer args) (BV 64%N 18446744073709551216%Z)) (BV 64%N 400%Z)) (BV 64%N 18446744073709551320%Z))); (call15_kept_x19); (call15_kept_x18); (call15_arg_x13); (call15_arg_x14); (call15_arg_x15); (call15_arg_x16); (call15_arg_x17)]) (((bv_add (parentHeaderStackPointer args) (BV 64%N 18446744073709551216%Z)))) (bv_unsigned (((parentHeaderInputEnd args)))) (take (Z.to_nat (bv_unsigned (call15_kept_x18))) (drop (Z.to_nat (bv_unsigned (call15_kept_x19) - bv_unsigned (parentHeaderInputPointer args))) (parentHeaderInputBytes args))) call15_before) (call15_after)))⌝ ∗ ⌜((bv_unsigned (parentHeaderInputPointer args) <= bv_unsigned (call15_kept_x19) /\ bv_unsigned (call15_kept_x19) + bv_unsigned (call15_kept_x18) <= bv_unsigned (parentHeaderInputPointer args) + Z.of_nat (List.length (parentHeaderInputBytes args)))%Z)⌝ ∗ True)%I.
 Proof.
   rewrite /ZesuHistEdge => Hh. apply zesu_hist_elim in Hh. unfold fp_machineAt0438_ForwardA0N0_Hist in Hh.
-  destruct Hh as (fp_seed_mstatus_bits & forward_witness_1be931110d776902 & forward_witness_905cf96e605c1117 & forward_witness_55ab0ce59750150a & forward_witness_11fde2df72db9d06 & forward_witness_1492ef7bd46b3b7a & forward_witness_d77b5950a2aea933 & forward_witness_21649d1cf161453f & forward_witness_1eea82d2945b4618 & forward_witness_751588b52f8a71ff & forward_witness_9644ccf41f39915a & forward_witness_a84be01a9be85bdb & forward_witness_407fca3a6f90b8db & forward_witness_88383840afa7af74 & HF0 & HF1 & HF2 & HF3 & HF4 & HF5 & HF6 & HF7 & HF8 & HF9 & HF10 & HF11 & HF12 & HF13 & HF14 & HF15 & HF16 & HF17 & HF18 & HF19 & HF20 & HF21 & HF22 & HF23 & HF24 & HF25 & HF26 & HF27 & HF28).
+  destruct Hh as (fp_seed_mstatus_bits & forward_witness_1be931110d776902 & forward_witness_905cf96e605c1117 & forward_witness_55ab0ce59750150a & forward_witness_11fde2df72db9d06 & forward_witness_1492ef7bd46b3b7a & forward_witness_d77b5950a2aea933 & forward_witness_21649d1cf161453f & forward_witness_1eea82d2945b4618 & forward_witness_751588b52f8a71ff & forward_witness_9644ccf41f39915a & forward_witness_a84be01a9be85bdb & forward_witness_407fca3a6f90b8db & forward_witness_88383840afa7af74 & HF0 & HF1 & HF2 & HF3 & HF4 & HF5 & HF6 & HF7 & HF8 & HF9 & HF10 & HF11 & HF12 & HF13 & HF14 & HF15 & HF16 & HF17 & HF18 & HF19 & HF20 & HF21 & HF22 & HF23 & HF24 & HF25 & HF26 & HF27 & HF28 & HF29).
   iIntros "HN".
   iDestruct "HN" as "(%HN0 & %HV12 & %HV13 & _)".
   iPureIntro. apply zesu_hist_intro. unfold fp_machineAt0440_ForwardA0N0_Hist.
@@ -97,9 +99,9 @@ Proof.
   split; [exact HF3|].
   split; [exact HF4|].
   split; [exact HF5|].
+  split; [exact HF6|].
   split; [exact HV12|].
   split; [exact HV13|].
-  split; [exact HF6|].
   split; [exact HF7|].
   split; [exact HF8|].
   split; [exact HF9|].
@@ -121,6 +123,7 @@ Proof.
   split; [exact HF25|].
   split; [exact HF26|].
   split; [exact HF27|].
+  split; [exact HF28|].
   split; [by vm_compute|].
   split; [by vm_compute|].
   exact HN0.
