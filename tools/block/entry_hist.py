@@ -21,6 +21,7 @@ FRAME_SLOTS = False
 HIST_VISIBLE = ()
 STORE_SPLICE = 'linear'
 JOIN_GUARD_FORM = 'both'
+ARRAY_SPELLING = 'definition'
 # `value` of a join's edge-guard disjunction under `join_guard_form: prop`; `entry_formatter` renders such a
 # condition as its normal-form proposition only. Kept through substitution, so successors inherit the form.
 PROP_ONLY_GUARD = 'join_guard_prop'
@@ -32,8 +33,10 @@ def configure(profile):
     `hist_visible`, `store_splice` (`linear`, default, or `per_store`: constant-offset stores into a byte
     array are spliced one by one, the spelling the function's proofs consume), `join_guard_form` (how a
     join states which edge reached it, `join_generalize.edge_guard_disjunction`: `both`, default, the
-    boolean fact and its normal-form proposition; `prop`, the proposition only; `none`, no fact)."""
-    global FRAME_SLOTS, HIST_VISIBLE, STORE_SPLICE, JOIN_GUARD_FORM
+    boolean fact and its normal-form proposition; `prop`, the proposition only; `none`, no fact),
+    `array_spelling` (how an owned stored array `a ↦ₘ{DfracOwn 1}∗ l` of the forward state is written:
+    `definition`, default, through `isla.ghost_state.mem_mapsto_array_def`; `sealed`, isla's `a ↦ₘ∗ l`)."""
+    global FRAME_SLOTS, HIST_VISIBLE, STORE_SPLICE, JOIN_GUARD_FORM, ARRAY_SPELLING
     mode = profile.get('entry_hist')
     if mode is None:
         raise ValueError('entry_hist: the function profile lacks the required key (only "wrap" exists)')
@@ -52,6 +55,10 @@ def configure(profile):
     if guard_form not in ('both', 'prop', 'none'):
         raise ValueError('join_guard_form: unknown value ' + str(guard_form))
     JOIN_GUARD_FORM = guard_form
+    spelling = profile.get('array_spelling', 'definition')
+    if spelling not in ('definition', 'sealed'):
+        raise ValueError('array_spelling: unknown value ' + str(spelling))
+    ARRAY_SPELLING = spelling
 
 
 def mentions(name, text):

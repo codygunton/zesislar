@@ -440,7 +440,8 @@ for suffix, slot in units:
             continuation_id="level1_K",
             provenance=provenance,
         )
-        components = FractionalSourceArrays(plain, declaration=array)
+        components = FractionalSourceArrays(plain, declaration=array,
+                                            seal_owned=entry_hist.ARRAY_SPELLING == 'sealed')
         conditions = SymbolicConditions(provenance)
         formatted = format_owned_entry_boundary(
             boundary,
