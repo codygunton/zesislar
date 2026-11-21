@@ -556,6 +556,27 @@
       "predicates_without_unfold": 0,
       "disjunctive_specs": 0
     },
+    "ZesuSsz/Compliance/ParentHeaderErrorExitMeaning.v": {
+      "frame_parameters_in_closed_specs": 0,
+      "unfold_without_typeclasses_opaque": 0,
+      "uninferable_existentials": 0,
+      "predicates_without_unfold": 0,
+      "disjunctive_specs": 0
+    },
+    "ZesuSsz/Compliance/ParentHeaderMeaningOfCandidate.v": {
+      "frame_parameters_in_closed_specs": 0,
+      "unfold_without_typeclasses_opaque": 0,
+      "uninferable_existentials": 0,
+      "predicates_without_unfold": 0,
+      "disjunctive_specs": 0
+    },
+    "ZesuSsz/Compliance/ParentHeaderSuccessExitMeaning.v": {
+      "frame_parameters_in_closed_specs": 0,
+      "unfold_without_typeclasses_opaque": 0,
+      "uninferable_existentials": 0,
+      "predicates_without_unfold": 0,
+      "disjunctive_specs": 0
+    },
     "ZesuSsz/Compliance/ParentHeaderCompositionBoundary.v": {
       "frame_parameters_in_closed_specs": 0,
       "unfold_without_typeclasses_opaque": 0,
