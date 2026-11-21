@@ -339,9 +339,12 @@ Ltac zesu_tail_fold_zero_goal :=
             | (zesu_tail_hyp_window; solve [zesu_tail_lia_select]) ]
   end.
 
+(* A word against its own bytes (the frame fold's flag-word leftover) runs
+   here only, behind its constant-time head test, never inside `bv_solve`. *)
 Ltac ZesuSsz.Automation2.Finish.zesu_block_tail_one ::=
   first
-  [ solve [ZesuSsz.Automation2.Hist.zesu_hist_reveal_pure]
+  [ solve [ZesuSsz.Automation2.WrappedWord.zesu_word_own_bytes_goal]
+  | solve [ZesuSsz.Automation2.Hist.zesu_hist_reveal_pure]
   | zesu_tail_bool_disj
   | solve [zesu_tail_prop_disj]
   | zesu_tail_fold_zero_goal

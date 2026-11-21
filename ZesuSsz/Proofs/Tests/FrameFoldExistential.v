@@ -141,8 +141,10 @@ Print Assumptions test_frame_fold_existential_unfixed_components.
 (* After the fold the successor's flag-word fact reads (0514_slot3 leftover):
    the held word against the concatenation of its own bytes 7 .. 1 over the
    flag, the flag being the first element of the word's little-endian list.
-   `WrappedWord.zesu_word_concat_own_bytes_eq` closes it (not wired into `bv_solve`);
-   with another low byte it is refused. *)
+   `bv_solve` does not close it; the block tail does, through
+   `WrappedWord.zesu_word_own_bytes_goal`; with another low byte, another
+   word's bytes, or a side that is neither a variable nor a little-endian
+   word it is refused. *)
 Local Notation W values := (Z_to_bv 64 (little_endian_to_bv 8 (BV 8 1 :: take 7 values))) (only parsing).
 Local Notation OWN values lo := (bv_concat 64 (bv_concat 56 (bv_concat 48 (bv_concat 40
     (bv_concat 32 (bv_concat 24 (bv_concat 16 (bv_extract 56 8 (W values)) (bv_extract 48 8 (W values)))
@@ -150,7 +152,58 @@ Local Notation OWN values lo := (bv_concat 64 (bv_concat 56 (bv_concat 48 (bv_co
     (bv_extract 16 8 (W values))) (bv_extract 8 8 (W values))) lo) (only parsing).
 Lemma test_word_concat_own_bytes (values : list (bv 8)) (H : length values = 15%nat) :
   W values = OWN values (BV 8 1).
-Proof. ZesuSsz.Automation2.WrappedWord.zesu_word_concat_own_bytes_eq. Qed.
+Proof.
+  assert_fails (idtac; solve [bv_solve]).
+  ZesuSsz.Automation2.Finish.zesu_block_tail_one.
+Qed.
+
+(* The fold with the flag-word fact in the successor's package: the fold
+   instantiates the seven padding bytes with the held word's bytes, the fact
+   at that witness is left to the block tail. *)
+Notation P7 := (bv 8 *ₗ bv 8 *ₗ bv 8 *ₗ bv 8 *ₗ bv 8 *ₗ bv 8 *ₗ bv 8 *ₗ unit) (only parsing).
+Lemma test_frame_fold_flag_word_fact `{!islaG Sigma} (a : Z) (values : list (bv 8)) (K : iProp Sigma) :
+  a ↦ₘ W values -∗ (a + 8) ↦ₘ (BV 16 0) -∗ K -∗
+  ∃ x : P7,
+    a ↦ₘ∗ [BV 8 1; x.1ₗ; x.2ₗ; x.3ₗ; x.4ₗ; x.5ₗ; x.6ₗ; x.7ₗ; z8; z8] ∗
+    ⌜W values = bv_concat 64 (bv_concat 56 (bv_concat 48 (bv_concat 40 (bv_concat 32
+      (bv_concat 24 (bv_concat 16 x.7ₗ x.6ₗ) x.5ₗ) x.4ₗ) x.3ₗ) x.2ₗ) x.1ₗ) (BV 8 1)⌝ ∗ K.
+Proof.
+  iIntros "H0 H1 HK".
+  ZesuSsz.Automation2.StoreMemoryLookup.zesu_join_frame_explicit_exist.
+  cbv [li_fst li_snd]. iFrame. iPureIntro.
+  assert_fails (idtac; solve [bv_solve]).
+  ZesuSsz.Automation2.Finish.zesu_block_tail_one.
+Qed.
+Print Assumptions test_frame_fold_flag_word_fact.
+
+Lemma test_word_own_bytes_other_word (w v : bv 64) :
+  let G := w = bv_concat 64 (bv_concat 56 (bv_concat 48 (bv_concat 40 (bv_concat 32 (bv_concat 24
+    (bv_concat 16 (bv_extract 56 8 v) (bv_extract 48 8 v)) (bv_extract 40 8 v)) (bv_extract 32 8 v))
+    (bv_extract 24 8 v)) (bv_extract 16 8 v)) (bv_extract 8 8 v)) (bv_extract 0 8 v) in
+  G -> G.
+Proof.
+  intros G Heq. unfold G in *.
+  assert_fails (idtac; ZesuSsz.Automation2.WrappedWord.zesu_word_own_bytes_goal).
+  exact Heq.
+Qed.
+Lemma test_word_own_bytes_other_list (values others : list (bv 8)) :
+  W values = OWN others (BV 8 1) -> W values = OWN others (BV 8 1).
+Proof.
+  intros Heq.
+  assert_fails (idtac; ZesuSsz.Automation2.WrappedWord.zesu_word_own_bytes_goal).
+  exact Heq.
+Qed.
+(* Head test: the identity holds for every word, but a side that is neither a
+   variable nor a little-endian word is refused before any check. *)
+Lemma test_word_own_bytes_head_refused (w v : bv 64) :
+  bv_add w v = bv_concat 64 (bv_concat 56 (bv_concat 48 (bv_concat 40 (bv_concat 32 (bv_concat 24
+    (bv_concat 16 (bv_extract 56 8 (bv_add w v)) (bv_extract 48 8 (bv_add w v))) (bv_extract 40 8 (bv_add w v)))
+    (bv_extract 32 8 (bv_add w v))) (bv_extract 24 8 (bv_add w v))) (bv_extract 16 8 (bv_add w v)))
+    (bv_extract 8 8 (bv_add w v))) (bv_extract 0 8 (bv_add w v)).
+Proof.
+  assert_fails (idtac; ZesuSsz.Automation2.WrappedWord.zesu_word_own_bytes_goal).
+  ZesuSsz.Automation2.WrappedWord.zesu_word_concat_own_bytes_eq.
+Qed.
 Lemma test_word_concat_own_bytes_extract (w : bv 64) :
   w = bv_concat 64 (bv_concat 56 (bv_concat 48 (bv_concat 40 (bv_concat 32 (bv_concat 24
     (bv_concat 16 (bv_extract 56 8 w) (bv_extract 48 8 w)) (bv_extract 40 8 w)) (bv_extract 32 8 w))
