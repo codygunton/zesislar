@@ -48,6 +48,7 @@ Require Import ZesuSsz.Automation2.Telemetry.
 Require Import ZesuSsz.Automation2.FailureMemo.
 Require ZesuSsz.Automation2.RewriteBoundGuards.
 Require ZesuSsz.Automation2.DomainRanges.
+Require ZesuSsz.Automation2.BytePositionEquations.
 (** Project-wide Lithium hook redefinitions belong in this module. *)
 
 From iris.proofmode Require Import environments.
@@ -1363,11 +1364,14 @@ Ltac zesu_defer_unresolved_implication_if_enabled :=
 
 (* A function domain entering the context brings its registered ranges as
    plain facts (`DomainRanges.v`). Only a premise with registered ranges
-   pays for the context scan. *)
+   pays for the context scan. A premise equating a variable with a load
+   window first states the window by byte positions
+   (`BytePositionEquations.zesu_le_window_var_premise`). *)
 Ltac liImpl ::=
   tryif zesu_defer_unresolved_implication_if_enabled
   then fail 0 "unresolved implication premise"
-  else (tryif ZesuSsz.Automation2.DomainRanges.zesu_domain_ranges_premise
+  else (try ZesuSsz.Automation2.BytePositionEquations.zesu_le_window_var_premise;
+        tryif ZesuSsz.Automation2.DomainRanges.zesu_domain_ranges_premise
         then (normalize_and_simpl_impl false;
               ZesuSsz.Automation2.DomainRanges.zesu_pose_domain_ranges)
         else normalize_and_simpl_impl false).
