@@ -477,7 +477,8 @@ def _memory_basis(states, plan, original_seed):
     return basis, expressions
 
 
-def align_join_edges(alternatives, ownership, terminal_id, continuation_name, keep_binders=False):
+def align_join_edges(alternatives, ownership, terminal_id, continuation_name, keep_binders=False,
+                     keep_designs=False):
     """Express edges that come through an earlier join seed on the original tree.
 
     A join seed keeps the original components, adds its relation facts as
@@ -490,7 +491,11 @@ def align_join_edges(alternatives, ownership, terminal_id, continuation_name, ke
     binders (`array_packaging`) stays: with keep_binders as a component of the
     rewritten tree, otherwise as the binder row's `length_fact` when every such
     edge states the same fact (the new join states it again for a binder it keeps).
-    Any other difference is left for the caller to refuse.
+    With keep_designs (a single edge into a block entry: the entry is this
+    edge) the seed's `join_design_*` facts are kept as well: a design fact is
+    free Coq text that the seed state does not hold as a condition, so it
+    would otherwise end at the join. Any other difference is left for the
+    caller to refuse.
     """
     original = ownership['tree']
     terminal_source = next(component['source'] for component in ownership['components']
@@ -536,6 +541,8 @@ def align_join_edges(alternatives, ownership, terminal_id, continuation_name, ke
                 lengths.setdefault(binder, []).append(component['provenance']['relation']['coq'])
         edge = deepcopy(alternative)
         rewritten = deepcopy(original)
+        designs = [identifier for identifier in sorted(relations)
+                   if keep_designs and identifier.startswith('join_design_')]
         if keep_binders:
             rewritten['binders'] = [*rewritten.get('binders', []), *deepcopy(own)]
             kept = [component for component in kept
@@ -544,11 +551,17 @@ def align_join_edges(alternatives, ownership, terminal_id, continuation_name, ke
         else:
             kept = []
         kept_ids = {component['id'] for component in kept}
+        if designs:
+            children = rewritten['body']['children']
+            at = next((index for index, child in enumerate(children) if child.get('id') == terminal_id),
+                      len(children))
+            children[at:at] = [{'kind': 'component', 'id': identifier} for identifier in designs]
+        dropped = relations - set(designs)
         edge['resource_boundary']['tree'] = rewritten
         edge['resource_boundary']['components'] = [
             {**component, 'source': terminal_source} if component['id'] == terminal_id else component
             for component in edge['resource_boundary']['components']
-            if component['id'] not in relations or component['id'] in kept_ids]
+            if component['id'] not in dropped or component['id'] in kept_ids]
         aligned.append(edge)
     for row in extra:
         facts = lengths.get(row['name'], [])
