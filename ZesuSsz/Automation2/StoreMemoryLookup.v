@@ -775,6 +775,38 @@ Proof.
   intros ->. apply bv_eq. rewrite bv_extract_unsigned. rewrite Z.shiftr_0_r.
   apply bv_wrap_small. apply bv_unsigned_in_range.
 Qed.
+(* A requested byte of a word the request spells as a concatenation of
+   bytes (`bv_concat n hi lo`, `lo : bv 8`): byte 0 is `lo`, byte k >= 8 is
+   byte k - 8 of `hi`. The widths and indices are closed numerals, so the
+   premises are closed equations; nothing is computed on the bytes. *)
+Lemma zesu_byte_concat_low (l : bv 8) (n m : N) (hi : bv m) (lo : bv 8) :
+  n = (m + 8)%N -> l = lo -> l = bv_extract 0 8 (bv_concat n hi lo).
+Proof.
+  intros Hn ->. apply bv_eq. rewrite bv_extract_unsigned. rewrite bv_concat_unsigned; [|exact Hn].
+  pose proof (bv_unsigned_in_range _ lo) as Hlo. pose proof (bv_unsigned_in_range _ hi) as Hhi.
+  unfold bv_wrap, bv_modulus in *. rewrite Z.shiftr_0_r. bitblast.
+Qed.
+Lemma zesu_byte_concat_high (l : bv 8) (n m k k' : N) (hi : bv m) (lo : bv 8) :
+  n = (m + 8)%N -> (k' + 8 = k)%N -> l = bv_extract k' 8 hi ->
+  l = bv_extract k 8 (bv_concat n hi lo).
+Proof.
+  intros Hn <- ->. apply bv_eq. rewrite !bv_extract_unsigned. rewrite bv_concat_unsigned; [|exact Hn].
+  pose proof (bv_unsigned_in_range _ lo) as Hlo. pose proof (bv_unsigned_in_range _ hi) as Hhi.
+  unfold bv_wrap, bv_modulus in *. bitblast. f_equal. lia.
+Qed.
+Ltac zesu_run_byte_concat k n hi lo :=
+  lazymatch type of lo with bv 8 => idtac end;
+  lazymatch type of hi with
+  | bv ?m =>
+      lazymatch eval vm_compute in (N.eqb n (m + 8)%N) with true => idtac end;
+      lazymatch eval vm_compute in (N.eqb k 0) with
+      | true => change k with 0%N; apply (zesu_byte_concat_low _ n m hi lo eq_refl)
+      | false =>
+          lazymatch eval vm_compute in (N.leb 8 k) with true => idtac end;
+          let k' := eval vm_compute in (k - 8)%N in
+          apply (zesu_byte_concat_high _ n m k k' hi lo eq_refl eq_refl)
+      end
+  end.
 Ltac zesu_li_evars A :=
   lazymatch A with
   | li_prod ?B ?C => let e := open_constr:(_ : B) in let r := zesu_li_evars C in constr:(li_pair e r)
@@ -799,6 +831,8 @@ Ltac zesu_run_byte :=
   | |- _ = ?r => is_evar r; reflexivity
   | |- ?l = bv_extract ?k 8 ?e =>
       is_evar e; unify e l; symmetry; apply zesu_extract_byte_self; vm_compute; reflexivity
+  | |- _ = bv_extract ?k 8 (bv_concat ?n ?hi ?lo) =>
+      assert_fails (has_evar k); zesu_run_byte_concat k n hi lo; zesu_run_byte
   | |- ?g =>
       assert_fails (has_evar g);
       first [ lazymatch g with ?l = ?r => constr_eq l r end; reflexivity
