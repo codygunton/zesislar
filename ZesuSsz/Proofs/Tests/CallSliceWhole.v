@@ -125,6 +125,8 @@ Lemma call_slice_whole_let_out (args : ParentHeaderArgs)
     R.
 Proof.
   intros o. iIntros (Hwf Hlen) "? ? ?".
+  (* the same pointer as an opaque variable: no slot address, refused *)
+  Fail (clearbody o; zesu_call_slice_whole_step).
   zesu_call_slice_whole_step.
   match goal with
   | _ : decodeItemCallDomain (decodeItemCallDataArgs _ _ _ (parentHeaderInputBytes args) _) |- _ => idtac
