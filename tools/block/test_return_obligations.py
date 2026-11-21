@@ -71,6 +71,14 @@ class ReturnRows(unittest.TestCase):
                          '  ((zesu_named_eq k (g args))) ->\n'
                          '  walk args 1 k.\n')
 
+    def test_newest_call_named_eq_takes_only_the_newest_layers_names(self):
+        binders = [{'name': name, 'type': T} for name in ('call_after', 'call2_kept_x18', 'call3_kept_x18', 'call3_after')]
+        facts = ['(zesu_named_eq call2_kept_x18 (f call_after))', '(zesu_named_eq call3_kept_x18 (f call2_after))',
+                 'zesu_named_eq (call3_kept_x19) (g call2_after)', 'r call3_kept_x18']
+        self.assertEqual(entry_hist.obligation_premise_positions(binders, facts, ['newest_call_named_eq']), [1, 2])
+        self.assertEqual(entry_hist.obligation_premise_positions(binders, facts, ['named_eq']), [0, 1, 2])
+        self.assertEqual(entry_hist.obligation_premise_positions(binders[:1], facts, ['newest_call_named_eq']), [])
+
 
 if __name__ == '__main__':
     unittest.main()
