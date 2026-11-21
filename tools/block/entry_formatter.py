@@ -439,9 +439,10 @@ def format_owned_entry_boundary(boundary, *, original_seed, vocabulary, continua
         # The join generalization aligns the raw edges itself, so it keeps the
         # binders that edges through an earlier join seed inherit.
         raw_alternatives = boundary.get('alternatives', [])
+        single = len(boundary.get('alternatives', [])) == 1
         boundary = {**boundary, 'alternatives': align_join_edges(
             boundary['alternatives'], original_seed.ownership, continuation['terminal_id'],
-            continuation['name'], keep_binders=len(boundary.get('alternatives', [])) == 1)[0]}
+            continuation['name'], keep_binders=single, keep_designs=single)[0]}
         first = format_entry_boundary(framed(boundary), continuation_id=continuation_id, **options)
         if first.response is None:
             return first

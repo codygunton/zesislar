@@ -466,7 +466,8 @@ def _memory_basis(states, plan, original_seed):
     return basis, expressions
 
 
-def align_join_edges(alternatives, ownership, terminal_id, continuation_name, keep_binders=False):
+def align_join_edges(alternatives, ownership, terminal_id, continuation_name, keep_binders=False,
+                     keep_designs=False):
     """Express edges that come through an earlier join seed on the original tree.
 
     A join seed keeps the original components, adds its relation facts as
@@ -475,7 +476,11 @@ def align_join_edges(alternatives, ownership, terminal_id, continuation_name, ke
     own binders. Such an edge is rewritten onto the original tree with the
     original terminal. Its binders are returned so the new join keeps them as
     existential binders; with keep_binders the rewritten tree binds them too.
-    Any other difference is left for the caller to refuse.
+    With keep_designs (a single edge into a block entry: the entry is this
+    edge) the seed's `join_design_*` facts are kept as well: a design fact is
+    free Coq text that the seed state does not hold as a condition, so it
+    would otherwise end at the join. Any other difference is left for the
+    caller to refuse.
     """
     original = ownership['tree']
     terminal_source = next(component['source'] for component in ownership['components']
@@ -513,12 +518,20 @@ def align_join_edges(alternatives, ownership, terminal_id, continuation_name, ke
                 extra.append(binder)
         edge = deepcopy(alternative)
         rewritten = deepcopy(original)
+        designs = [identifier for identifier in sorted(relations)
+                   if keep_designs and identifier.startswith('join_design_')]
         if keep_binders:
             rewritten['binders'] = [*rewritten.get('binders', []), *deepcopy(own)]
+        if designs:
+            children = rewritten['body']['children']
+            at = next((index for index, child in enumerate(children) if child.get('id') == terminal_id),
+                      len(children))
+            children[at:at] = [{'kind': 'component', 'id': identifier} for identifier in designs]
+        dropped = relations - set(designs)
         edge['resource_boundary']['tree'] = rewritten
         edge['resource_boundary']['components'] = [
             {**component, 'source': terminal_source} if component['id'] == terminal_id else component
-            for component in edge['resource_boundary']['components'] if component['id'] not in relations]
+            for component in edge['resource_boundary']['components'] if component['id'] not in dropped]
         aligned.append(edge)
     return aligned, extra
 

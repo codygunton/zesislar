@@ -6,10 +6,20 @@ from pathlib import Path
 import unittest
 
 from function_profiles import load_profile, pilot_header
-from render_fp301_statements import render_loop_head
+from render_fp301_statements import qualified_fold, render_loop_head
 import entry_hist
 
 ROOT = Path(__file__).resolve().parents[2]
+
+
+class FoldSpelling(unittest.TestCase):
+    def test_one_spelling_of_the_fold_in_loop_classes(self):
+        short = 'x = ByteWindowFold.zesu_byte_window_fold b n i'
+        full = 'x = ZesuSsz.Automation2.ByteWindowFold.zesu_byte_window_fold b n i'
+        self.assertEqual(qualified_fold(short), full)
+        # A fact already in the full spelling (a profile fact a source block states) is kept.
+        self.assertEqual(qualified_fold(full), full)
+        self.assertEqual(qualified_fold(short + ' /\\ ' + full), full + ' /\\ ' + full)
 
 
 class LoopHeads(unittest.TestCase):

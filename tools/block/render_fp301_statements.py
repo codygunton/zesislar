@@ -16,6 +16,15 @@ import entry_hist
 
 ROOT = Path(__file__).resolve().parents[2]
 LOOP_HIST_META = {}
+# A loop class names the fold by its full path: `ByteWindowFold` alone is ambiguous between
+# ZesuSsz.Automation and ZesuSsz.Automation2. A source already in the full spelling keeps it, so a
+# profile fact written in that spelling reads the same in the loop class and at its source blocks.
+SHORT_FOLD = re.compile(r'(?<![\w.])ByteWindowFold\.zesu_byte_window_fold')
+
+
+def qualified_fold(text):
+    """`text` with every short spelling of the fold qualified; the full spelling is kept."""
+    return SHORT_FOLD.sub('ZesuSsz.Automation2.ByteWindowFold.zesu_byte_window_fold', text)
 
 
 def render_loop_head(block, header, structural=False, profile=None, loop_heads=None):
@@ -47,11 +56,9 @@ def render_loop_head(block, header, structural=False, profile=None, loop_heads=N
                 raise ValueError('A loop class does not end with its assertion: ' + original)
             source = source[:-len(')%I.')].rstrip(')') + ' ∗ ' + alignment + ')' * (
                 len(source[:-len(')%I.')]) - len(source[:-len(')%I.')].rstrip(')'))) + ')%I.'
-        source = source.replace(original, name).replace(
+        source = qualified_fold(source.replace(original, name).replace(
             domain_binder, '').replace(
-            '⌜domain args⌝', domain).replace(
-            'ByteWindowFold.zesu_byte_window_fold',
-            'ZesuSsz.Automation2.ByteWindowFold.zesu_byte_window_fold')
+            '⌜domain args⌝', domain))
         authenticated_classes[name] = source
         # Hidden history and per-slot frame cells for the loop class (profile keys).
         design = next((item for item in profile.get('loop_designs', [])
