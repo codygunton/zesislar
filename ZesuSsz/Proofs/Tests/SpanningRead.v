@@ -26,6 +26,25 @@ Qed.
 
 Print Assumptions test_read_span.
 
+(* The read address is a local definition over another one (the `LET`
+   binders of a trace): the root under them is found. *)
+Lemma test_read_span_let_address `{!islaG Sigma} `{!threadG} (B : Z) (b0 b1 b2 b3 b4 b5 b6 b7 b8 : bv 8)
+    kind tag ann es (v : bv 64) :
+  2684354560 <= B -> B + 32 <= 3221225472 ->
+  B ↦ₘ∗ nine b0 b1 b2 b3 b4 b5 b6 b7 b8 -∗ (B + 9) ↦ₘ? 7 -∗
+  (∀ values : list (bv 8), ⌜Z.of_nat (length values) = 7⌝ -∗
+     ⌜v = Z_to_bv 64 (little_endian_to_bv 8 (take (N.to_nat 8)
+            (drop (Z.to_nat 8) (nine b0 b1 b2 b3 b4 b5 b6 b7 b8 ++ values))))⌝ -∗
+     B ↦ₘ∗ nine b0 b1 b2 b3 b4 b5 b6 b7 b8 -∗ (B + 9) ↦ₘ? 7 -∗ WPasm es) -∗
+  WPasm (ReadMem (RVal_Bits (@bv_to_bvn 64 v)) kind
+    (RVal_Bits (@bv_to_bvn 64 (bv_add (Z_to_bv 64 B) (BV 64 8)))) 8 tag ann :t: es).
+Proof.
+  intros HB HB'. iIntros "Hl Hu HK".
+  set (LET0 := Z_to_bv 64 B). set (LET1 := bv_add LET0 (BV 64 8)).
+  ZesuSsz.Automation2.SpanningRead.zesu_read_span.
+  iExact "HK".
+Qed.
+
 (* Refused: a gap between the array and the region; no region after the
    array (the next piece is an array); a read that fits in the array; a
    one-byte read. *)

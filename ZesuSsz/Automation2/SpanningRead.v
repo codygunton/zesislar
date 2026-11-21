@@ -63,6 +63,21 @@ Section spanning_read.
   Qed.
 End spanning_read.
 
+(* The address of a read is often a local definition of the block (a `LET`
+   binder of the trace, possibly over other `LET` binders, under which the
+   stack root lies): its root is unfolded until it is no local definition. *)
+Ltac zesu_span_unfold_root A :=
+  let r := ZesuSsz.Automation2.WrappedWord.zesu_term_root A in
+  match goal with
+  | [ x := _ |- _ ] =>
+      match r with
+      | context [x] =>
+          let A' := eval cbv delta [x] in A in
+          zesu_span_unfold_root A'
+      end
+  | _ => A
+  end.
+
 (* The numeral length [N] of a held byte list [l] (its spine, or a length
    fact), passed to [k] with the fact `Z.of_nat (length l) = N`. *)
 Ltac zesu_span_array_length l k :=
@@ -90,7 +105,7 @@ Ltac zesu_read_span :=
       lazymatch eval vm_compute in (zesu_byte_access_size len && negb (len =? 1)%N) with
       | true => idtac end;
       let lz := eval vm_compute in (Z.of_N len) in
-      let A := constr:(bv_unsigned a) in
+      let A := zesu_span_unfold_root constr:(bv_unsigned a) in
       let ra := ZesuSsz.Automation2.WrappedWord.zesu_term_root A in
       try ZesuSsz.Automation2.ResourceGroups.zesu_expose_environment_alias;
       iMatchHyp ltac:(fun H res =>
