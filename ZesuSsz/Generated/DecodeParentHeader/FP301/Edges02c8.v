@@ -37,7 +37,7 @@ Global Instance zesu_hist_edge_73 (args : ParentHeaderArgs) (returnAddress : Z) 
     (⌜((negb (bool_decide ((bv_concat 64%N (bv_concat 56%N (bv_concat 48%N (bv_concat 40%N (bv_concat 32%N (bv_concat 24%N (bv_concat 16%N (List.nth 15%nat call11_after (BV 8%N 0%Z)) (List.nth 14%nat call11_after (BV 8%N 0%Z))) (List.nth 13%nat call11_after (BV 8%N 0%Z))) (List.nth 12%nat call11_after (BV 8%N 0%Z))) (List.nth 11%nat call11_after (BV 8%N 0%Z))) (List.nth 10%nat call11_after (BV 8%N 0%Z))) (List.nth 9%nat call11_after (BV 8%N 0%Z))) (List.nth 8%nat call11_after (BV 8%N 0%Z))) = (BV 64%N 0%Z)))) = true) /\ ((((bv_unsigned (bv_concat 64%N (bv_concat 56%N (bv_concat 48%N (bv_concat 40%N (bv_concat 32%N (bv_concat 24%N (bv_concat 16%N (List.nth 15%nat call11_after (BV 8%N 0%Z)) (List.nth 14%nat call11_after (BV 8%N 0%Z))) (List.nth 13%nat call11_after (BV 8%N 0%Z))) (List.nth 12%nat call11_after (BV 8%N 0%Z))) (List.nth 11%nat call11_after (BV 8%N 0%Z))) (List.nth 10%nat call11_after (BV 8%N 0%Z))) (List.nth 9%nat call11_after (BV 8%N 0%Z))) (List.nth 8%nat call11_after (BV 8%N 0%Z)))) <> (0%Z))%Z))⌝ ∗ True)%I.
 Proof.
   rewrite /ZesuHistEdge => Hh. apply zesu_hist_elim in Hh. unfold fp_machineAt02c8_ForwardA0N0_Hist in Hh.
-  destruct Hh as (call10_kept_x19 & call9_after & call9_kept_x18 & call9_kept_x19 & call8_after & call8_kept_x18 & call8_kept_x19 & call7_after & call7_kept_x18 & call7_kept_x19 & call6_after & call6_kept_x18 & call6_kept_x19 & call5_after & call5_kept_x18 & call5_kept_x19 & call4_after & call4_kept_x18 & call4_kept_x19 & call3_after & call3_kept_x18 & call3_kept_x19 & call2_after & call2_kept_x18 & call2_kept_x19 & fp_seed_mstatus_bits & forward_witness_cbcac9df79b9221c & forward_witness_1be931110d776902 & forward_witness_905cf96e605c1117 & forward_witness_55ab0ce59750150a & forward_witness_11fde2df72db9d06 & forward_witness_88383840afa7af74 & forward_witness_1492ef7bd46b3b7a & forward_witness_d77b5950a2aea933 & forward_witness_21649d1cf161453f & forward_witness_1eea82d2945b4618 & forward_witness_751588b52f8a71ff & forward_witness_9644ccf41f39915a & HF0 & HF1 & HF2 & HF3 & HF4 & HF5 & HF6 & HF7 & HF8 & HF9 & HF10 & HF11 & HF12 & HF13 & HF14 & HF15 & HF16 & HF17 & HF18 & HF19 & HF20 & HF21 & HF22 & HF23 & HF24 & HF25 & HF26 & HF27 & HF28 & HF29 & HF30 & HF31 & HF32 & HF33 & HF34 & HF35 & HF36 & HF37 & HF38 & HF39 & HF40 & HF41 & HF42 & HF43 & HF44 & HF45 & HF46 & HF47 & HF48 & HF49 & HF50 & HF51 & HF52 & HF53 & HF54 & HF55 & HF56 & HF57 & HF58 & HF59 & HF60 & HF61 & HF62 & HF63 & HF64 & HF65 & HF66 & HF67 & HF68 & HF69 & HF70 & HF71 & HF72 & HF73 & HF74 & HF75 & HF76 & HF77 & HF78 & HF79 & HF80 & HF81 & HF82 & HF83 & HF84 & HF85 & HF86 & HF87 & HF88 & HF89 & HF90 & HF91).
+  destruct Hh as (call10_kept_x19 & call9_after & call9_kept_x18 & call9_kept_x19 & call8_after & call8_kept_x18 & call8_kept_x19 & call7_after & call7_kept_x18 & call7_kept_x19 & call6_after & call6_kept_x18 & call6_kept_x19 & call5_after & call5_kept_x18 & call5_kept_x19 & call4_after & call4_kept_x18 & call4_kept_x19 & call3_after & call3_kept_x18 & call3_kept_x19 & call2_after & call2_kept_x18 & call2_kept_x19 & fp_seed_mstatus_bits & forward_witness_cbcac9df79b9221c & forward_witness_1be931110d776902 & forward_witness_905cf96e605c1117 & forward_witness_55ab0ce59750150a & forward_witness_11fde2df72db9d06 & forward_witness_88383840afa7af74 & forward_witness_1492ef7bd46b3b7a & forward_witness_d77b5950a2aea933 & forward_witness_21649d1cf161453f & forward_witness_1eea82d2945b4618 & forward_witness_751588b52f8a71ff & forward_witness_9644ccf41f39915a & HF0 & HF1 & HF2 & HF3 & HF4 & HF5 & HF6 & HF7 & HF8 & HF9 & HF10 & HF11 & HF12 & HF13 & HF14 & HF15 & HF16 & HF17 & HF18 & HF19 & HF20 & HF21 & HF22 & HF23 & HF24 & HF25 & HF26 & HF27 & HF28 & HF29 & HF30 & HF31 & HF32 & HF33 & HF34 & HF35 & HF36 & HF37 & HF38 & HF39 & HF40 & HF41 & HF42 & HF43 & HF44 & HF45 & HF46 & HF47 & HF48 & HF49 & HF50 & HF51 & HF52 & HF53 & HF54 & HF55 & HF56 & HF57 & HF58 & HF59 & HF60 & HF61 & HF62 & HF63 & HF64 & HF65 & HF66 & HF67 & HF68 & HF69 & HF70 & HF71 & HF72 & HF73 & HF74 & HF75 & HF76 & HF77 & HF78 & HF79 & HF80 & HF81 & HF82 & HF83 & HF84 & HF85 & HF86 & HF87 & HF88 & HF89 & HF90 & HF91 & HF92).
   iIntros "HN".
   iDestruct "HN" as "(%HV8 & _)".
   iPureIntro. apply zesu_hist_intro. unfold fp_machineAt02d0_LoopClass0_Hist.
@@ -98,12 +98,12 @@ Proof.
   split; [exact HF53|].
   split; [exact HF54|].
   split; [exact HF55|].
-  split; [exact (proj1 HF62)|].
-  split; [exact (proj1 HF65)|].
-  split; [exact (proj1 HF67)|].
-  split; [exact (proj1 HF71)|].
+  split; [exact HF56|].
+  split; [exact (proj1 HF63)|].
+  split; [exact (proj1 HF66)|].
+  split; [exact (proj1 HF68)|].
   split; [exact (proj1 HF72)|].
-  split; [exact (proj1 HF74)|].
+  split; [exact (proj1 HF73)|].
   split; [exact (proj1 HF75)|].
   split; [exact (proj1 HF76)|].
   split; [exact (proj1 HF77)|].
@@ -118,8 +118,9 @@ Proof.
   split; [exact (proj1 HF86)|].
   split; [exact (proj1 HF87)|].
   split; [exact (proj1 HF88)|].
-  split; [exact (proj1 HF90)|].
+  split; [exact (proj1 HF89)|].
   split; [exact (proj1 HF91)|].
+  split; [exact (proj1 HF92)|].
   exact (proj1 HV8).
 Qed.
 

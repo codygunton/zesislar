@@ -30,9 +30,9 @@ Section edges.
 Context `{!islaG Sigma} `{!threadG}.
 
 (* fp_machineAt0408_ForwardA0N0 -> fp_machineAt00b0_ForwardA0N0 (join) *)
-Global Instance zesu_hist_edge_106 (args : ParentHeaderArgs) (returnAddress : Z) (machine_x10 : bv 64) (machine_x21_1 : bv 64) (machine_x22_1 : bv 64) (call13_after : DecodeItemOutcome) (call10_after : DecodeItemOutcome) (call_after : DecodeItemOutcome) (machine_x10_succ : bv 64) :
+Global Instance zesu_hist_edge_106 (args : ParentHeaderArgs) (returnAddress : Z) (machine_x10 : bv 64) (machine_x20_1 : bv 64) (machine_x21_1 : bv 64) (machine_x22_1 : bv 64) (call13_after : DecodeItemOutcome) (call10_after : DecodeItemOutcome) (call_after : DecodeItemOutcome) (machine_x10_succ : bv 64) :
   ZesuHistEdge (PROP := iProp Sigma)
-    (fp_machineAt0408_ForwardA0N0_Hist (args) (returnAddress) (machine_x10) (machine_x21_1) (machine_x22_1) (call13_after) (call10_after) (call_after))
+    (fp_machineAt0408_ForwardA0N0_Hist (args) (returnAddress) (machine_x10) (machine_x20_1) (machine_x21_1) (machine_x22_1) (call13_after) (call10_after) (call_after))
     (fp_machineAt00b0_ForwardA0N0_Hist (args) (returnAddress) (machine_x10_succ))
     (⌜((2148617472%Z <= bv_unsigned machine_x10_succ <= 2148618660%Z)%Z)⌝ ∗ ⌜((bool_decide ((bv_unsigned machine_x10_succ >= bv_unsigned (BV 64%N 2148617472%Z))%Z)) = true) /\ ((((bv_unsigned machine_x10_succ) >= (2148617472%Z))%Z))⌝ ∗ ⌜((bool_decide ((bv_unsigned machine_x10_succ <= bv_unsigned (BV 64%N 2148618660%Z))%Z)) = true) /\ ((((bv_unsigned machine_x10_succ) <= (2148618660%Z))%Z))⌝ ∗ True)%I.
 Proof.
@@ -57,8 +57,8 @@ Proof.
   exact HN2.
 Qed.
 
-Global Instance zesu_hist_reveal_38 (args : ParentHeaderArgs) (returnAddress : Z) (machine_x10 : bv 64) (machine_x21_1 : bv 64) (machine_x22_1 : bv 64) (call13_after : DecodeItemOutcome) (call10_after : DecodeItemOutcome) (call_after : DecodeItemOutcome) :
-  ZesuHistReveal (fp_machineAt0408_ForwardA0N0_Hist (args) (returnAddress) (machine_x10) (machine_x21_1) (machine_x22_1) (call13_after) (call10_after) (call_after)) ((∃ (call_arg_x13 : bv 64) (call_arg_x14 : bv 64) (call_arg_x15 : bv 64) (call_arg_x16 : bv 64) (call_arg_x17 : bv 64) (call_before : list byte), (decodeItemCallDomain
+Global Instance zesu_hist_reveal_38 (args : ParentHeaderArgs) (returnAddress : Z) (machine_x10 : bv 64) (machine_x20_1 : bv 64) (machine_x21_1 : bv 64) (machine_x22_1 : bv 64) (call13_after : DecodeItemOutcome) (call10_after : DecodeItemOutcome) (call_after : DecodeItemOutcome) :
+  ZesuHistReveal (fp_machineAt0408_ForwardA0N0_Hist (args) (returnAddress) (machine_x10) (machine_x20_1) (machine_x21_1) (machine_x22_1) (call13_after) (call10_after) (call_after)) ((∃ (call_arg_x13 : bv 64) (call_arg_x14 : bv 64) (call_arg_x15 : bv 64) (call_arg_x16 : bv 64) (call_arg_x17 : bv 64) (call_before : list byte), (decodeItemCallDomain
           (decodeItemCallDataArgs ([((bv_add (bv_add (bv_add (parentHeaderStackPointer args) (BV 64%N 18446744073709551216%Z)) (BV 64%N 400%Z)) (BV 64%N 18446744073709551224%Z))); ((parentHeaderInputPointer args)); ((parentHeaderInputLength args)); (call_arg_x13); (call_arg_x14); (call_arg_x15); (call_arg_x16); (call_arg_x17)]) (((bv_add (parentHeaderStackPointer args) (BV 64%N 18446744073709551216%Z)))) (bv_unsigned (((parentHeaderInputEnd args)))) (parentHeaderInputBytes args) call_before)) /\ (decodeItemCallMeaning
             (decodeItemCallDataArgs ([((bv_add (bv_add (bv_add (parentHeaderStackPointer args) (BV 64%N 18446744073709551216%Z)) (BV 64%N 400%Z)) (BV 64%N 18446744073709551224%Z))); ((parentHeaderInputPointer args)); ((parentHeaderInputLength args)); (call_arg_x13); (call_arg_x14); (call_arg_x15); (call_arg_x16); (call_arg_x17)]) (((bv_add (parentHeaderStackPointer args) (BV 64%N 18446744073709551216%Z)))) (bv_unsigned (((parentHeaderInputEnd args)))) (parentHeaderInputBytes args) call_before) (call_after)))).
 Proof.
