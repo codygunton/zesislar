@@ -15,6 +15,8 @@ Require Import ZesuSsz.Contracts.AbiBytes.
 Require Import ZesuSsz.Compliance.ParentHeaderExitBridgeTactics.
 Require ZesuSsz.Generated.DecodeParentHeader.FP301.FunctionReturnEntries.
 Local Open Scope Z_scope.
+(* reg_col stays folded while the exit resources are framed. *)
+#[local] Typeclasses Opaque reg_col.
 
 Lemma parentHeader_direct_end_bridge_slot5 `{!islaG Sigma} `{!threadG} (args : ParentHeaderArgs) (returnAddress : Z) :
   ZesuSsz.Generated.DecodeParentHeader.FP301.FunctionReturnEntries.fp_machineReturn_slot5_ForwardA0N0_ExitMeaning
