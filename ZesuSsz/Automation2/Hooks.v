@@ -2862,6 +2862,34 @@ Ltac zesu_sidecond_done :=
     | split
     | match goal with H : ¬_ |- _ => case H; clear H; fast_done end ]
   ].
+
+(* stdpp's `done`, as every finisher and `by` uses it: its `contradiction`
+   looks only at the context, by conversion of every pair `¬ A`, `A'`, and
+   on a block context that pairwise conversion is most of the cost (perf of
+   nextUint64 0000: Contradiction.seek 15% of the block), paid again for
+   every side goal over the same context. Below, the syntactic contradiction
+   first; then Coq's `contradiction` unchanged, on the goal `False`
+   (`exfalso`: it closes any goal exactly when the context is contradictory),
+   under the failure memo, whose key is then the context alone: a context
+   it failed on fails at once; a changed context runs it again. *)
+Ltac zesu_contradiction_context :=
+  first
+  [ zesu_contradiction_syntactic
+  | let memo := ltac2:(tac |- zesu_failure_memo_ltac1 "contradiction" tac) in
+    exfalso; memo ltac:(contradiction) ].
+Ltac stdpp.tactics.done ::=
+  solve
+  [ repeat first
+    [ fast_done
+    | solve [trivial]
+    | progress intros
+    | solve [symmetry; trivial]
+    | solve [apply not_symmetry; trivial]
+    | discriminate
+    | zesu_contradiction_context
+    | split
+    | match goal with H : ¬_ |- _ => case H; clear H; fast_done end ]
+  ].
 Ltac liSideCond ::=
   try liEnsureSepHead;
   lazymatch goal with
