@@ -14,6 +14,8 @@ Require Import ZesuSsz.Contracts.AbiBytes.
 Require Import ZesuSsz.Compliance.ParentHeaderExitBridgeTactics.
 Require ZesuSsz.Generated.DecodeParentHeader.FP301.FunctionReturnTail00e8Entries.
 Local Open Scope Z_scope.
+(* reg_col stays folded while the exit resources are framed. *)
+#[local] Typeclasses Opaque reg_col.
 
 (* The meaning premise of the memcpy tail exit. *)
 Definition parentHeaderTailExitMeaning : Prop :=
