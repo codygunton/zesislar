@@ -153,15 +153,18 @@ Ltac zesu_le_window_opaque_bytes bytes :=
    window takes the byte-position form before the substitution, so the block
    and its successors hold one spelling. A start that is a word offset chain
    becomes a literal first. Only the head of the premise's sides is tested
-   (it runs on every introduced premise). Fails, leaving the goal unchanged,
-   on any other premise or when no window is rewritten. *)
+   (it runs on every introduced premise), and only a 64-bit word window: a
+   narrower load (a 16-bit field of a call's outcome) keeps its variable, whose
+   type range later goals use (decodeParentHeader 01e4 and the other
+   field-skip return sites). Fails, leaving the goal unchanged, on any other
+   premise or when no window is rewritten. *)
 Ltac zesu_le_window_var_premise :=
   lazymatch goal with
   | |- (?a = ?b) -> _ =>
       lazymatch constr:((a, b)) with
-      | (_, Z_to_bv _ (little_endian_to_bv 8 (take _ (drop _ ?bytes)))) =>
+      | (_, Z_to_bv 64%N (little_endian_to_bv 8 (take _ (drop _ ?bytes)))) =>
           is_var a; zesu_le_window_opaque_bytes bytes
-      | (Z_to_bv _ (little_endian_to_bv 8 (take _ (drop _ ?bytes))), _) =>
+      | (Z_to_bv 64%N (little_endian_to_bv 8 (take _ (drop _ ?bytes))), _) =>
           is_var b; zesu_le_window_opaque_bytes bytes
       end;
       let H := fresh "Hpremise" in

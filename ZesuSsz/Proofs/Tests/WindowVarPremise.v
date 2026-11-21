@@ -85,3 +85,18 @@ Proof.
   end.
   exact HP.
 Qed.
+
+(* The step is skipped: a 16-bit window (a field of a call's outcome) keeps
+   its variable, so a later range goal on its zero extension (decodeParentHeader
+   01e4 and the other field-skip return sites) still reads a variable. *)
+Lemma test_window_var_premise_skip_narrow (x : bv 16) (l : list (bv 8)) (P : bv 16 -> Prop) :
+  P (Z_to_bv 16 (little_endian_to_bv 8 (take 2 (drop 32 l)))) ->
+  x = Z_to_bv 16 (little_endian_to_bv 8 (take 2 (drop 32 l))) -> P x.
+Proof.
+  intros HP. liImpl.
+  lazymatch goal with
+  | |- context [nth _ _ _] => fail "the window was restated"
+  | |- _ => idtac
+  end.
+  exact HP.
+Qed.
