@@ -132,21 +132,37 @@ Ltac zesu_le_window_rewrite_hypothesis :=
         end ]
   end.
 
-(* A branch premise `x = w` (or `w = x`) with `x` a variable and `w` holding
-   a load window: Lithium substitutes `x` by `w` everywhere, the block
-   history included, while the generated successors and edge instances state
-   the same word by byte positions (decodeParentHeader 046c, 04f8: a kept
-   register compared with the word loaded from a call's outcome). The
-   windows of the premise take the byte-position form before the
-   substitution, so the block and its successors hold one spelling. A start
-   that is a word offset chain becomes a literal first. Fails, leaving the
-   goal unchanged, on any other premise or when no window is rewritten. *)
+(* The bytes of a window are opaque when their head normal form is no list
+   constructor (a projection of a call's outcome): their positions `nth k`
+   do not compute, so the byte-position spelling is the only one a successor
+   can state. Bytes that compute to a list (an image of words) are left to
+   the window lemmas of their image. *)
+Ltac zesu_le_window_opaque_bytes bytes :=
+  let head := eval hnf in bytes in
+  lazymatch head with
+  | cons _ _ => fail
+  | nil => fail
+  | _ => idtac
+  end.
+
+(* A branch premise `x = w` (or `w = x`) with `x` a variable and `w` a load
+   window of opaque bytes: Lithium substitutes `x` by `w` everywhere, the
+   block history included, while the generated successors and edge instances
+   state the same word by byte positions (decodeParentHeader 046c, 04f8: a
+   kept register compared with the word loaded from a call's outcome). The
+   window takes the byte-position form before the substitution, so the block
+   and its successors hold one spelling. A start that is a word offset chain
+   becomes a literal first. Only the head of the premise's sides is tested
+   (it runs on every introduced premise). Fails, leaving the goal unchanged,
+   on any other premise or when no window is rewritten. *)
 Ltac zesu_le_window_var_premise :=
   lazymatch goal with
   | |- (?a = ?b) -> _ =>
-      first [is_var a | is_var b];
-      lazymatch constr:(a = b) with
-      | context [little_endian_to_bv 8 (take _ (drop _ _))] => idtac
+      lazymatch constr:((a, b)) with
+      | (_, Z_to_bv _ (little_endian_to_bv 8 (take _ (drop _ ?bytes)))) =>
+          is_var a; zesu_le_window_opaque_bytes bytes
+      | (Z_to_bv _ (little_endian_to_bv 8 (take _ (drop _ ?bytes))), _) =>
+          is_var b; zesu_le_window_opaque_bytes bytes
       end;
       let H := fresh "Hpremise" in
       intros H;

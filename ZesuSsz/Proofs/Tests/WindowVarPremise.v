@@ -59,3 +59,29 @@ Qed.
 Lemma test_window_var_premise_skip_plain (x y : bv 64) (P : bv 64 -> Prop) :
   P (bv_add y y) -> x = bv_add y y -> P x.
 Proof. intros HP. liImpl. exact HP. Qed.
+
+(* The step is skipped: the window's bytes compute to a list (an image of
+   words, as nextUint64's slice image), whose own window lemmas apply. *)
+Lemma test_window_var_premise_skip_computed (x : bv 64) (b : bv 8) (l : list (bv 8)) (P : bv 64 -> Prop) :
+  P (Z_to_bv 64 (little_endian_to_bv 8 (take 8 (drop 0 (b :: l))))) ->
+  x = Z_to_bv 64 (little_endian_to_bv 8 (take 8 (drop 0 (b :: l)))) -> P x.
+Proof.
+  intros HP. liImpl.
+  lazymatch goal with
+  | |- context [nth _ _ _] => fail "the window was restated"
+  | |- _ => idtac
+  end.
+  exact HP.
+Qed.
+
+(* The step is skipped: the window is not the head of the premise's side. *)
+Lemma test_window_var_premise_skip_nested (x y : bv 64) (l : list (bv 8)) (P : bv 64 -> Prop) :
+  P (bv_add y (Z_to_bv 64 (little_endian_to_bv 8 (take 8 (drop 24 l))))) ->
+  x = bv_add y (Z_to_bv 64 (little_endian_to_bv 8 (take 8 (drop 24 l)))) -> P x.
+Proof.
+  intros HP. liImpl.
+  lazymatch goal with
+  | |- P (bv_add y (Z_to_bv 64 (little_endian_to_bv 8 (take 8 (drop 24 l))))) => idtac
+  end.
+  exact HP.
+Qed.
