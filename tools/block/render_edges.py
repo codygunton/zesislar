@@ -785,8 +785,12 @@ def conjuncts_by(text, separator):
 # Every sentence an edge proof may contain (AGENTS.md: generated proofs are limited to these forms;
 # ZesuSsz/Evidence/check_proof_hygiene.py rule EDGE-PROOF enforces the list on the committed files).
 _NAME = r"[A-Za-z_][\w']*"
+# An `exact` of one application: names, numerals (a record field such as `Z_to_bv 64 (f r)` that
+# `premise_definitions` puts for a word), spaces and parentheses. Each token is maximal (no split
+# of a name into shorter names), so a refused sentence fails in linear time.
+_TERM_TOKEN = r"(?:[A-Za-z_][\w']*(?![\w'])|\d+(?![\w'])|[ ()])"
 _SOLVE = (r"(?:exact " + _NAME + r"|exact \(proj1 " + _NAME + r"\)|zesu_hist_view " + _NAME
-          + r"|by vm_compute|exact I|exact \((?:" + _NAME + r"|[ ()])+\))")
+          + r"|by vm_compute|exact I|exact \(" + _TERM_TOKEN + r"+\))")
 EDGE_SENTENCES = [
     r"Proof", r"Qed",
     r"rewrite /ZesuHist(?:Edge|Reveal) => Hh",

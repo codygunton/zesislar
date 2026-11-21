@@ -141,6 +141,14 @@ class Obligations(unittest.TestCase):
         self.assertEqual(edge_proof_problems('Proof.\n  pose proof Hh as HS.\nQed.\n'), [])
         self.assertTrue(edge_proof_problems('Proof.\n  pose proof Hh as HX.\nQed.\n'))
 
+    def test_an_obligation_argument_may_be_a_record_field_and_a_refused_sentence_fails_fast(self):
+        field = 'Proof.\n  split; [exact (f_holds args (Z_to_bv 64 (nextRestPointer (r))) HS HV0)|].\nQed.\n'
+        self.assertEqual(edge_proof_problems(field), [])
+        self.assertTrue(edge_proof_problems('Proof.\n  exact (f (x + 1)).\nQed.\n'))
+        # 2026-11-21: the earlier `(?:NAME|[ ()])+` backtracked exponentially on such a sentence.
+        slow = 'Proof.\n  exact (' + ' '.join(['abcdefghij'] * 60) + ' 64%N).\nQed.\n'
+        self.assertTrue(edge_proof_problems(slow))
+
 
 def path(predecessor, seed, conditions):
     return {'predecessor_pc': predecessor, 'seed_pc': seed,
