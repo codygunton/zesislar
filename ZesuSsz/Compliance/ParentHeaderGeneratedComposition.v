@@ -4,8 +4,8 @@
    A slot is closed by the block statement whose conclusion matches it: a
    compiled caller lemma (ParentHeaderClosedBlocks) or a premise field
    (ParentHeaderOpenBlocks). The theorem's premises are the open blocks and the
-   exit premises (ParentHeaderExitMeanings: the meaning of each exit package,
-   step 2.4); nextUint64's correctness comes unconditionally from its generated
+   exit premises (ParentHeaderExitMeanings, now empty: every exit package's
+   meaning is proved, step 2.4); nextUint64's correctness comes unconditionally from its generated
    interface (nextUint64CallSpec2_correct); the memcpy runtime premise is part of
    the contract code (memcpyCallPremise in parentHeaderContractCode). *)
 Require Import ZesuSsz.Automation2.All.
@@ -38,6 +38,7 @@ Require Import ZesuSsz.Compliance.ParentHeaderDirectExitBridgeSlot4.
 Require Import ZesuSsz.Compliance.ParentHeaderDirectExitBridgeSlot5.
 Require Import ZesuSsz.Compliance.ParentHeaderDirectExitBridgeSlot6.
 Require Import ZesuSsz.Compliance.ParentHeaderErrorExitMeaning.
+Require Import ZesuSsz.Compliance.ParentHeaderSuccessExitMeaning.
 Local Open Scope Z_scope.
 #[local] Typeclasses Transparent parentHeaderSelectedCode nextUint64SelectedCode
   decodeItemSelectedCode.
@@ -178,34 +179,16 @@ Qed.
    tail package of 0x00b0, one return package per slot of 0x0274) gives the
    contract exit by its bridge (ParentHeaderTailExitBridge.v,
    ParentHeaderDirectExitBridgeSlot<k>.v). The meanings of the two error exits
-   (the memcpy tail and the direct error return, slot 0) are proved
-   (ParentHeaderErrorExitMeaning.v); the meaning of each success exit is an
-   explicit premise (record ParentHeaderExitMeanings). ---- *)
+   (the memcpy tail and the direct error return, slot 0) are proved in
+   ParentHeaderErrorExitMeaning.v, those of the six success exits (slots 1 to
+   6) in ParentHeaderSuccessExitMeaning.v. ---- *)
 
-(* The exit premises of the composition: the meaning of every success return
-   package (slots 1 to 6), step 2.4 (M1) discharges them. They are the
-   generated exit-meaning declarations of the return packages at the contract
-   meaning. *)
-Record ParentHeaderExitMeanings : Prop := {
-  parentHeaderExitMeaning_slot1 :
-    ZesuSsz.Generated.DecodeParentHeader.FP301.FunctionReturnEntries.fp_machineReturn_slot1_ForwardA0N0_ExitMeaning
-      parentHeaderResultMeaning;
-  parentHeaderExitMeaning_slot2 :
-    ZesuSsz.Generated.DecodeParentHeader.FP301.FunctionReturnEntries.fp_machineReturn_slot2_ForwardA0N0_ExitMeaning
-      parentHeaderResultMeaning;
-  parentHeaderExitMeaning_slot3 :
-    ZesuSsz.Generated.DecodeParentHeader.FP301.FunctionReturnEntries.fp_machineReturn_slot3_ForwardA0N0_ExitMeaning
-      parentHeaderResultMeaning;
-  parentHeaderExitMeaning_slot4 :
-    ZesuSsz.Generated.DecodeParentHeader.FP301.FunctionReturnEntries.fp_machineReturn_slot4_ForwardA0N0_ExitMeaning
-      parentHeaderResultMeaning;
-  parentHeaderExitMeaning_slot5 :
-    ZesuSsz.Generated.DecodeParentHeader.FP301.FunctionReturnEntries.fp_machineReturn_slot5_ForwardA0N0_ExitMeaning
-      parentHeaderResultMeaning;
-  parentHeaderExitMeaning_slot6 :
-    ZesuSsz.Generated.DecodeParentHeader.FP301.FunctionReturnEntries.fp_machineReturn_slot6_ForwardA0N0_ExitMeaning
-      parentHeaderResultMeaning
-}.
+(* The exit premises of the composition: step 2.4 (M1) discharged every one
+   of them, so the record has no field. *)
+Record ParentHeaderExitMeanings : Prop := {}.
+
+Lemma parentHeaderExitMeanings_holds : ParentHeaderExitMeanings.
+Proof. constructor. Qed.
 
 (* The return premise of an exit package from the contract continuation K:
    the package's bridge gives the contract exit that K expects. *)
@@ -229,17 +212,17 @@ Ltac parentHeader_exit_premise Hexits H :=
   | Some (_, @ZesuSsz.Generated.DecodeParentHeader.FP301.FunctionReturnEntries.fp_machineReturn_slot0_ForwardA0N0 _ _ _ _ _) =>
       iApply (parentHeader_direct_end_bridge_slot0 with "Hexit"); exact parentHeaderSlot0ExitMeaning_holds
   | Some (_, @ZesuSsz.Generated.DecodeParentHeader.FP301.FunctionReturnEntries.fp_machineReturn_slot1_ForwardA0N0 _ _ _ _ _) =>
-      iApply (parentHeader_direct_end_bridge_slot1 with "Hexit"); exact (parentHeaderExitMeaning_slot1 Hexits)
+      iApply (parentHeader_direct_end_bridge_slot1 with "Hexit"); exact parentHeaderSlot1ExitMeaning_holds
   | Some (_, @ZesuSsz.Generated.DecodeParentHeader.FP301.FunctionReturnEntries.fp_machineReturn_slot2_ForwardA0N0 _ _ _ _ _) =>
-      iApply (parentHeader_direct_end_bridge_slot2 with "Hexit"); exact (parentHeaderExitMeaning_slot2 Hexits)
+      iApply (parentHeader_direct_end_bridge_slot2 with "Hexit"); exact parentHeaderSlot2ExitMeaning_holds
   | Some (_, @ZesuSsz.Generated.DecodeParentHeader.FP301.FunctionReturnEntries.fp_machineReturn_slot3_ForwardA0N0 _ _ _ _ _) =>
-      iApply (parentHeader_direct_end_bridge_slot3 with "Hexit"); exact (parentHeaderExitMeaning_slot3 Hexits)
+      iApply (parentHeader_direct_end_bridge_slot3 with "Hexit"); exact parentHeaderSlot3ExitMeaning_holds
   | Some (_, @ZesuSsz.Generated.DecodeParentHeader.FP301.FunctionReturnEntries.fp_machineReturn_slot4_ForwardA0N0 _ _ _ _ _) =>
-      iApply (parentHeader_direct_end_bridge_slot4 with "Hexit"); exact (parentHeaderExitMeaning_slot4 Hexits)
+      iApply (parentHeader_direct_end_bridge_slot4 with "Hexit"); exact parentHeaderSlot4ExitMeaning_holds
   | Some (_, @ZesuSsz.Generated.DecodeParentHeader.FP301.FunctionReturnEntries.fp_machineReturn_slot5_ForwardA0N0 _ _ _ _ _) =>
-      iApply (parentHeader_direct_end_bridge_slot5 with "Hexit"); exact (parentHeaderExitMeaning_slot5 Hexits)
+      iApply (parentHeader_direct_end_bridge_slot5 with "Hexit"); exact parentHeaderSlot5ExitMeaning_holds
   | Some (_, @ZesuSsz.Generated.DecodeParentHeader.FP301.FunctionReturnEntries.fp_machineReturn_slot6_ForwardA0N0 _ _ _ _ _) =>
-      iApply (parentHeader_direct_end_bridge_slot6 with "Hexit"); exact (parentHeaderExitMeaning_slot6 Hexits)
+      iApply (parentHeader_direct_end_bridge_slot6 with "Hexit"); exact parentHeaderSlot6ExitMeaning_holds
   end.
 
 (* The generic slot step: the block statement tagged with the slot's address

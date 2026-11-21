@@ -80,12 +80,14 @@ the binary.
 derives `ParentHeaderContractCorrect` from two premises. `ParentHeaderOpenBlocks` is a record with
 one field per decodeParentHeader block whose proof is not closed (generated in
 `ParentHeaderBlockObligations.v` by `tools/block/render_open_blocks.py`).
-`ParentHeaderExitMeanings` states, for each exit kind (the memcpy tail exit and each slot of the
-return block), that the exit's generated return package implies the contract's result meaning;
-end bridges in their own modules (`ParentHeaderTailExitBridge.v`,
-`ParentHeaderDirectExitBridgeSlot*.v`) prove the contract continuation from the return packages
-given that premise, which step M1 discharges. It is not an unconditional result: both records are
-the remaining work. nextUint64's contract is not a premise: its generated interface
+`ParentHeaderExitMeanings` was the record of the exits' meanings (for each exit kind, the memcpy
+tail exit and each slot of the return block, the exit's generated return package implies the
+contract's result meaning); step M1 proved every one of them (`ParentHeaderErrorExitMeaning.v`,
+`ParentHeaderSuccessExitMeaning.v`), so the record has no field and
+`parentHeaderExitMeanings_holds` proves it. End bridges in their own modules
+(`ParentHeaderTailExitBridge.v`, `ParentHeaderDirectExitBridgeSlot*.v`) prove the contract
+continuation from the return packages. It is not an unconditional result: `ParentHeaderOpenBlocks`
+is the remaining work. nextUint64's contract is not a premise: its generated interface
 `ZesuSsz/Interfaces/NextUint64Correct.v` exports `nextUint64CallSpec2_correct` without premises,
 from `nextUint64Compliance` (`ZesuSsz/Compliance/NextUint64GeneratedComposition.v`, proved without
 premises); its contract code is nextUint64's own map and decodeItem's map. The memcpy runtime
