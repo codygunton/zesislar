@@ -437,9 +437,25 @@ Global Hint Extern 0 (ZesuClosedPositiveSize ?n) =>
    let v := eval vm_compute in (Z.ltb 0 n) in constr_eq v true;
    exact (zesu_closed_positive_size n)) : typeclass_instances.
 
+(* The size of an empty region as the frame rules leave it: the closed
+   numeral 0 (as `ZesuClosedZeroSize`), or the difference `e - e` of one term
+   with itself (the rest of a split at the region's own end, decodeParentHeader
+   0514_slot2: `R + 8 * 8 - (R + 8 * 8)`). The second case is syntactic
+   (`constr_eq`), proved by `Z.sub_diag`: no evaluation, no solver. *)
+Inductive ZesuEmptyRegionSize (n : Z) : Prop :=
+  zesu_empty_region_size (Hzero : n = 0).
+Existing Class ZesuEmptyRegionSize.
+Global Hint Extern 0 (ZesuEmptyRegionSize ?n) =>
+  (first
+   [ lazymatch n with Z.sub ?e ?e2 =>
+       constr_eq e e2; exact (zesu_empty_region_size n (Z.sub_diag e)) end
+   | ZesuSsz.Automation2.ByteArrays.zesu_closed_size n;
+     let v := eval vm_compute in (Z.eqb n 0) in constr_eq v true;
+     exact (zesu_empty_region_size n (proj1 (Z.eqb_eq n 0) eq_refl)) ]) : typeclass_instances.
+
 Lemma subsume_uninit_empty_region_array `{!islaG Sigma} A a1 n1 a2
     (requested : A -> list (bv 8)) G
-    `{!ZesuClosedZeroSize n1} `{!ZesuClosedPositiveRequest requested} :
+    `{!ZesuEmptyRegionSize n1} `{!ZesuClosedPositiveRequest requested} :
   (∃ x, a2 ↦ₘ∗ requested x ∗ G x) ⊢ subsume (a1 ↦ₘ? n1) (fun x : A => a2 ↦ₘ∗ requested x) G.
 Proof. iIntros "H _". iExact "H". Qed.
 Print Assumptions subsume_uninit_empty_region_array.
@@ -447,7 +463,7 @@ Definition subsume_uninit_empty_region_array_inst := [instance @subsume_uninit_e
 Global Existing Instance subsume_uninit_empty_region_array_inst | 1.
 
 Lemma subsume_uninit_empty_region_uninit `{!islaG Sigma} A a1 n1 a2 n2 G
-    `{!ZesuClosedZeroSize n1} `{!ZesuClosedPositiveSize n2} :
+    `{!ZesuEmptyRegionSize n1} `{!ZesuClosedPositiveSize n2} :
   (∃ x, a2 ↦ₘ? n2 ∗ G x) ⊢ subsume (a1 ↦ₘ? n1) (fun _ : A => a2 ↦ₘ? n2) G.
 Proof. iIntros "H _". iExact "H". Qed.
 Print Assumptions subsume_uninit_empty_region_uninit.

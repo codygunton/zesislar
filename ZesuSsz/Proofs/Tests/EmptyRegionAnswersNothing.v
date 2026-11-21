@@ -38,6 +38,21 @@ Proof.
   end.
   simpl. iExists (). iFrame.
 Qed.
+
+(* The empty region as a split at its own end leaves it: size `e - e` of one
+   term (decodeParentHeader 0514_slot2, `R + 8 * 8 - (R + 8 * 8)`). The rule
+   takes the step and what is left is the request itself. *)
+Lemma test_empty_region_self_difference (a c : Z) (x y : bv 8) :
+  ⊢ (a + c) ↦ₘ∗ [x; y] -∗
+    subsume ((a + c) ↦ₘ? (a + c - (a + c))) (λ _ : unit, (a + c) ↦ₘ∗ [x; y]) (λ _, True)%I.
+Proof.
+  iIntros "H".
+  liStep.
+  lazymatch goal with
+  | |- context [ZesuSsz.Automation2.UninitRegions.subsume_uninit_empty_region_array_inst] => idtac
+  end.
+  simpl. iExists (). iFrame.
+Qed.
 End empty_region.
 
 (* Guards. The region must be closed and empty; the request closed and
@@ -57,5 +72,13 @@ Proof.
   let _ := constr:(_ : ZesuSsz.Automation2.UninitRegions.ZesuClosedZeroSize 0) in idtac.
   Fail let _ := constr:(_ : ZesuSsz.Automation2.UninitRegions.ZesuClosedZeroSize 2) in idtac.
   Fail let _ := constr:(_ : ZesuSsz.Automation2.UninitRegions.ZesuClosedZeroSize n) in idtac.
+  (* Empty-region size: `e - e` and closed 0 accepted; a non-zero difference,
+     a difference of two terms, a symbolic size and a closed non-zero refused. *)
+  let _ := constr:(_ : ZesuSsz.Automation2.UninitRegions.ZesuEmptyRegionSize (n + 8 - (n + 8))) in idtac.
+  let _ := constr:(_ : ZesuSsz.Automation2.UninitRegions.ZesuEmptyRegionSize 0) in idtac.
+  Fail let _ := constr:(_ : ZesuSsz.Automation2.UninitRegions.ZesuEmptyRegionSize (n + 9 - (n + 8))) in idtac.
+  Fail let _ := constr:(_ : ZesuSsz.Automation2.UninitRegions.ZesuEmptyRegionSize (n - Z.of_nat (length l))) in idtac.
+  Fail let _ := constr:(_ : ZesuSsz.Automation2.UninitRegions.ZesuEmptyRegionSize n) in idtac.
+  Fail let _ := constr:(_ : ZesuSsz.Automation2.UninitRegions.ZesuEmptyRegionSize 2) in idtac.
   exact I.
 Qed.
