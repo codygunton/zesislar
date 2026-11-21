@@ -43,3 +43,9 @@ Lemma fp_edge041c_0438_Walk_holds : fp_edge041c_0438_Walk.
 Proof. ph_edge_walk. Qed.
 Lemma fp_edge0448_0464_Walk_holds : fp_edge0448_0464_Walk.
 Proof. ph_edge_walk. Qed.
+Lemma fp_edge03b0_03bc_CandidateSuccess_holds : fp_edge03b0_03bc_CandidateSuccess.
+Proof. ph_edge_walk. Qed.
+Lemma fp_edge0414_03bc_CandidateSuccess_holds : fp_edge0414_03bc_CandidateSuccess.
+Proof. ph_edge_walk. Qed.
+Lemma fp_edge0440_03bc_CandidateSuccess_holds : fp_edge0440_03bc_CandidateSuccess.
+Proof. ph_edge_walk. Qed.
