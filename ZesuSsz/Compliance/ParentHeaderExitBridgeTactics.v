@@ -132,7 +132,12 @@ Ltac parentHeader_exit_close path :=
         | (bv_unsigned (parentHeaderResultPointer args) ↦ₘ∗ ?result)%I =>
             iExists {| headerExitPath := path; headerResultBytes := result;
                        headerAfterFrame := frame |};
-            rewrite /parentHeaderExitResources /=;
+            (* the conclusion only, and only the outcome's projections:
+               [simpl] over the proof-mode goal walks every hypothesis of the
+               package, and over the conclusion the result-byte terms
+               (minutes either way) *)
+            iEval (rewrite /parentHeaderExitResources;
+                   cbn [headerExitPath headerResultBytes headerAfterFrame]);
             iSplit; [iPureIntro; split; [exact Hret|]; split;
                      [|split; [apply Nat2Z.inj; exact Hframe|first [exact I|reflexivity]]]|];
             [|iExists _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _; iFrame]
