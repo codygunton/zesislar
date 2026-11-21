@@ -254,3 +254,81 @@ Proof.
   exact (parentHeaderSuccessResult _ _ _ _ _ _ _ _ _ Hc eq_refl eq_refl eq_refl
     parentHeaderNoOptionRecord parentHeaderNoOptionRecord parentHeaderNoOptionRecord Htail).
 Qed.
+
+(* ---- Kinds with options (slots 2, 3, 5, 6) ---- *)
+
+(* An optional integer field through nextUint64 (15, 17, 18) with something
+   left: the callee's rejection makes the candidate reject, its success
+   appends the result word. *)
+Lemma reachValuesNextUint64 bytes k pc kind cursor remaining acc base call ret :
+  nth_error parentHeaderFieldSchedule k = Some (pc, kind) ->
+  parentHeaderFieldIsInteger kind = true ->
+  remaining <> 0 ->
+  candidateWalkReachValues bytes k cursor remaining acc ->
+  nextInputBytes call = take (Z.to_nat remaining) (drop (Z.to_nat cursor) bytes) ->
+  nextInputPointer call = base + cursor ->
+  nextUint64RootResult call ret ->
+  candidateWalkReachValues bytes (S k) (nextRestPointer ret - base) (nextRestLength ret)
+    (acc ++ [littleEndian (firstn 8 (nextResultBytes ret))]).
+Proof.
+  intros Hk Hint Hr0 [Herr|Hs] Hin Hip Hroot; [left; exact Herr|].
+  destruct (Z.eq_dec (bv_unsigned (List.nth 8 (nextResultBytes ret) (BV 8 0))) 0) as [Hok|Hbad].
+  - right. exact (candidateWalkNextUint64 _ _ _ _ _ _ _ _ _ _ Hk Hint Hs Hr0 Hin Hip Hroot Hok).
+  - left. exact (candidateWalkNextUint64Reject _ _ _ _ _ _ _ _ _ Hk Hint Hs Hr0 Hin Hroot Hbad).
+Qed.
+
+(* The value word the return block loads from a nextUint64 result. *)
+Lemma nextUint64ValueWord (result : list byte) :
+  (8 <= length result)%nat ->
+  littleEndian (firstn 8 result) = bv_unsigned (listWord64At0 result).
+Proof.
+  intros Hlen. symmetry. apply listWord64At0Value. split; [|reflexivity].
+  rewrite length_take, skipn_O. lia.
+Qed.
+
+Definition parentHeaderOptionHeader (gasLimit gasUsed timestamp : Z)
+    (baseFee blobGas excessBlobGas : option Z) : ParentHeaderValue := {|
+  parentGasLimit := gasLimit; parentGasUsed := gasUsed; parentTimestamp := timestamp;
+  parentBaseFee := baseFee; parentBlobGas := blobGas; parentExcessBlobGas := excessBlobGas |}.
+
+(* Base fee only: nothing left before field 16 (slot 5) or 17 (slot 6). *)
+Lemma candidateBaseFeeBeforeSkip bytes cursor gl gu ts bf :
+  candidateWalkState bytes 16 cursor 0 [gl; gu; ts; bf] ->
+  candidateParentHeader bytes = candidateHeaderSuccess
+    (parentHeaderOptionHeader gl gu ts (Some bf) None None).
+Proof. exact (candidateWalkAbsent _ 16 _ _ _ _ eq_refl eq_refl). Qed.
+
+Lemma candidateBaseFeeBeforeBlobGas bytes cursor gl gu ts bf :
+  candidateWalkState bytes 17 cursor 0 [gl; gu; ts; bf] ->
+  candidateParentHeader bytes = candidateHeaderSuccess
+    (parentHeaderOptionHeader gl gu ts (Some bf) None None).
+Proof. exact (candidateWalkAbsent _ 17 _ _ _ _ eq_refl eq_refl). Qed.
+
+(* Base fee and blob gas: nothing left before field 18 (slot 2). *)
+Lemma candidateBlobGasBeforeExcess bytes cursor gl gu ts bf bg :
+  candidateWalkState bytes 18 cursor 0 [gl; gu; ts; bf; bg] ->
+  candidateParentHeader bytes = candidateHeaderSuccess
+    (parentHeaderOptionHeader gl gu ts (Some bf) (Some bg) None).
+Proof. exact (candidateWalkAbsent _ 18 _ _ _ _ eq_refl eq_refl). Qed.
+
+(* All three options: the schedule is done (slot 3). *)
+Lemma candidateAllOptions bytes cursor remaining gl gu ts bf bg eb :
+  candidateWalkState bytes 19 cursor remaining [gl; gu; ts; bf; bg; eb] ->
+  candidateParentHeader bytes = candidateHeaderSuccess
+    (parentHeaderOptionHeader gl gu ts (Some bf) (Some bg) (Some eb)).
+Proof. exact (candidateWalkDone _ _ _ _). Qed.
+
+(* A present record as the binary builds it on the stack (value word, tag
+   byte 1, seven free bytes) and the return block copies it as two words. *)
+Definition parentHeaderPresentRecord (value tagWord : bv 64) : list byte :=
+  parentHeaderWordBytes value ++ parentHeaderWordBytes tagWord.
+
+Lemma parentHeaderPresentRecordOption (value tagWord : bv 64) :
+  bv_unsigned (bv_extract 0 8 tagWord) = 1 ->
+  parentHeaderOptionRecord (parentHeaderPresentRecord value tagWord) (Some (bv_unsigned value)).
+Proof.
+  intros Htag. split; [reflexivity|]. split.
+  - unfold byteAt, parentHeaderPresentRecord, parentHeaderWordBytes.
+    cbn [app nth_error option_map]. by rewrite Htag.
+  - exact (wordAt [] (parentHeaderWordBytes tagWord) value).
+Qed.
