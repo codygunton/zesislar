@@ -436,7 +436,7 @@
    "instructions": 12,
    "cpu_seconds": 1200,
    "claim_gib": 9,
-   "why": "12 instructions, 1 successor entries, 219 successor binders: cap min(1200, 120 + 45 x 12 + 100 x 1 + 3 x 219) = 1200 CPU-s, claim 9 GiB",
+   "why": "12 instructions, 1 successor entries, 217 successor binders: cap min(1200, 120 + 45 x 12 + 100 x 1 + 3 x 217) = 1200 CPU-s, claim 9 GiB",
    "expected_cpu": 1200
   },
   {
@@ -964,10 +964,10 @@
    "callers": "decodeparentheader_fp301_callers",
    "case": "058c",
    "instructions": 4,
-   "cpu_seconds": 1027,
+   "cpu_seconds": 1021,
    "claim_gib": 3,
-   "why": "4 instructions, 1 successor entries, 209 successor binders: cap min(1200, 120 + 45 x 4 + 100 x 1 + 3 x 209) = 1027 CPU-s, claim 3 GiB",
-   "expected_cpu": 1027
+   "why": "4 instructions, 1 successor entries, 207 successor binders: cap min(1200, 120 + 45 x 4 + 100 x 1 + 3 x 207) = 1021 CPU-s, claim 3 GiB",
+   "expected_cpu": 1021
   },
   {
    "function": "decodeParentHeader",
@@ -976,7 +976,7 @@
    "instructions": 2,
    "cpu_seconds": 1200,
    "claim_gib": 3,
-   "why": "2 instructions, 2 successor entries, 338 successor binders: cap min(1200, 120 + 45 x 2 + 100 x 2 + 3 x 338) = 1200 CPU-s, claim 3 GiB",
+   "why": "2 instructions, 2 successor entries, 336 successor binders: cap min(1200, 120 + 45 x 2 + 100 x 2 + 3 x 336) = 1200 CPU-s, claim 3 GiB",
    "expected_cpu": 1200
   },
   {
@@ -984,10 +984,10 @@
    "callers": "decodeparentheader_fp301_callers",
    "case": "05a4",
    "instructions": 6,
-   "cpu_seconds": 1114,
+   "cpu_seconds": 1108,
    "claim_gib": 3,
-   "why": "6 instructions, 1 successor entries, 208 successor binders: cap min(1200, 120 + 45 x 6 + 100 x 1 + 3 x 208) = 1114 CPU-s, claim 3 GiB",
-   "expected_cpu": 1114
+   "why": "6 instructions, 1 successor entries, 206 successor binders: cap min(1200, 120 + 45 x 6 + 100 x 1 + 3 x 206) = 1108 CPU-s, claim 3 GiB",
+   "expected_cpu": 1108
   }
  ]
 }
