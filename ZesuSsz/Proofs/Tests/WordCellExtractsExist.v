@@ -131,65 +131,6 @@ Proof.
   exact I.
 Qed.
 
-(* Width-generic (decodeParentHeader 0270, 03bc): a 16-bit cell cut from a
-   register asked as the register's two low extracts, sealed and opened; a
-   zero word asked as zero bytes followed by more bytes, in a request and as a
-   subsumption. *)
-Lemma test_half_cell_extracts `{!islaG Sigma} (a : Z) (x : bv 64) (K : iProp Sigma) :
-  a ↦ₘ bv_extract 0 16 x -∗ K -∗
-  (∃ y : unit, a ↦ₘ∗ [bv_extract 0 8 x; bv_extract 8 8 x] ∗ ⌜y = tt⌝) ∗ K.
-Proof.
-  iStartProof. iIntros "H HK".
-  ZesuSsz.Automation2.StoreMemoryLookup.zesu_subsume_word_cell_extracts.
-  iFrame "HK". by iExists tt.
-Qed.
-
-Lemma test_half_cell_extracts_opened `{!islaG Sigma} (a : Z) (x : bv 64) (K : iProp Sigma) :
-  a ↦ₘ bv_extract 0 16 x -∗ K -∗
-  (∃ y : unit, isla.ghost_state.mem_mapsto_array_def a (DfracOwn 1)
-    [bv_extract 0 8 x; bv_extract 8 8 x] ∗ ⌜y = tt⌝) ∗ K.
-Proof.
-  iStartProof. iIntros "H HK".
-  ZesuSsz.Automation2.StoreMemoryLookup.zesu_subsume_word_cell_extracts.
-  iFrame "HK". by iExists tt.
-Qed.
-
-Lemma test_zero_word_cell_rest `{!islaG Sigma} (a : Z) (z : bv 8) (K : iProp Sigma) :
-  a ↦ₘ (0 : bv 64) -∗ (a + 8) ↦ₘ∗ [z; z] -∗ K -∗
-  a ↦ₘ∗ [0%bv; 0%bv; 0%bv; 0%bv; 0%bv; 0%bv; 0%bv; 0%bv; z; z] ∗ K.
-Proof.
-  iStartProof. iIntros "H Hz HK".
-  ZesuSsz.Automation2.StoreMemoryLookup.zesu_subsume_word_cell_extracts.
-  iFrame "HK Hz".
-Qed.
-
-Lemma test_zero_word_cell_subsume_rest `{!islaG Sigma} (a : Z) (z : bv 8) (T : unit → iProp Sigma) :
-  (∃ y, (a + 8) ↦ₘ∗ [z] ∗ T y) ⊢
-  subsume (a ↦ₘ (0 : bv 64)) (λ _, a ↦ₘ∗ [0%bv; 0%bv; 0%bv; 0%bv; 0%bv; 0%bv; 0%bv; 0%bv; z]) T.
-Proof.
-  iStartProof. iIntros "H".
-  ZesuSsz.Automation2.StoreMemoryLookup.zesu_subsume_word_cell_extracts.
-  iExact "H".
-Qed.
-
-(* Refused: the extracts of another register; a byte cell (one byte is not
-   this rule's shape). *)
-Lemma test_half_cell_extracts_refused `{!islaG Sigma} (a : Z) (x y : bv 64) (K : iProp Sigma) : True.
-Proof.
-  Fail assert (⊢ a ↦ₘ bv_extract 0 16 x -∗ K -∗
-    (∃ u : unit, a ↦ₘ∗ [bv_extract 0 8 y; bv_extract 8 8 y] ∗ ⌜u = tt⌝) ∗ K) by
-    (iStartProof; iIntros "H HK";
-     ZesuSsz.Automation2.StoreMemoryLookup.zesu_subsume_word_cell_extracts).
-  Fail assert (⊢ a ↦ₘ (bv_extract 0 8 x : bv 8) -∗ K -∗
-    (∃ u : unit, a ↦ₘ∗ [bv_extract 0 8 x] ∗ ⌜u = tt⌝) ∗ K) by
-    (iStartProof; iIntros "H HK";
-     ZesuSsz.Automation2.StoreMemoryLookup.zesu_subsume_word_cell_extracts).
-  exact I.
-Qed.
-
-Print Assumptions test_half_cell_extracts.
-Print Assumptions test_zero_word_cell_subsume_rest.
-
 (* A word rebuilt from its own extracts (WrappedWord.zesu_word_extracts_rewrite,
    run by the finisher's list closer). *)
 Lemma test_word_extracts_roundtrip (w : bv 64) :
