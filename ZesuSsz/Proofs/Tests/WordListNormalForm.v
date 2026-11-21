@@ -34,8 +34,8 @@ Lemma test_word_list_count_large_context (sp : bv 64) (l : list (bv 8)) (x : Z) 
 Proof.
   intros Hsp.
   let t := test_doubled x 16%nat in
-  assert (Hbig : bv_unsigned sp + t = bv_unsigned sp + t) by reflexivity.
-  assert_fails (assert (x + 0 = x) by zesu_lia).
+  assert (Hbig : bv_unsigned (sp + BV 64 8) + t = bv_unsigned (sp + BV 64 8) + t) by reflexivity.
+  assert_fails (assert (bv_unsigned (sp + BV 64 8) + 0 = bv_unsigned (sp + BV 64 8)) by zesu_lia).
   ZesuSsz.Automation2.WrappedWord.zesu_word_list_counts. reflexivity.
 Qed.
 
