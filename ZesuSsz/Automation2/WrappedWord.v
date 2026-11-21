@@ -521,3 +521,44 @@ Ltac zesu_word_concat_bytes_eq :=
       zesu_word_concat_bytes_of (bv_concat n high low) z; symmetry
   end;
   solve [zesu_clear_all_hyps; bv_simplify; bitblast; f_equal; zesu_lia].
+
+(* A word against the concatenation of its own bytes `bv_extract k 8 w`
+   (decodeParentHeader 0514 return slots: the successor states a stored flag
+   word as the concatenation of its padding bytes over the flag, and the frame
+   fold instantiated each padding byte with the held word's byte). The lowest
+   byte may instead be the first element `b` of the held word
+   `Z_to_bv n (little_endian_to_bv 8 (b :: l))` (the stored flag), which is
+   its byte 0 by [zesu_le_word_low_byte]. The rest holds for every word, so it
+   is bit-blasted with the word generalised, in a context cleared of
+   hypotheses. *)
+Lemma zesu_le_word_low_byte (n : N) (b : bv 8) (l : list (bv 8)) :
+  (8 <= n)%N -> bv_extract 0 8 (Z_to_bv n (little_endian_to_bv 8 (b :: l))) = b.
+Proof.
+  intros Hn. apply bv_eq. rewrite bv_extract_unsigned. rewrite Z_to_bv_unsigned.
+  unfold little_endian_to_bv. cbn [fmap list_fmap little_endian_to_Z].
+  pose proof (bv_unsigned_in_range _ b) as Hb. unfold bv_wrap, bv_modulus in *.
+  rewrite Z.shiftr_0_r. bitblast.
+Qed.
+Lemma zesu_word_concat_low_byte (n m : N) (w : bv n) (hi : bv m) (lo : bv 8) :
+  bv_extract 0 8 w = lo -> w = bv_concat n hi (bv_extract 0 8 w) -> w = bv_concat n hi lo.
+Proof. intros <-. exact id. Qed.
+Ltac zesu_word_extracts_of t w :=
+  lazymatch t with
+  | bv_concat _ ?high ?low => zesu_word_extracts_of high w; zesu_word_extracts_of low w
+  | bv_extract _ 8 ?w' => constr_eq w w'
+  end.
+Ltac zesu_word_concat_own_bytes_eq :=
+  lazymatch goal with
+  | |- @eq (bv ?n) ?w (bv_concat ?n ?high ?low) =>
+      zesu_word_extracts_of high w;
+      first
+        [ zesu_word_extracts_of low w
+        | apply (zesu_word_concat_low_byte n _ w high low);
+          [ lazymatch goal with
+            | |- bv_extract 0 8 (Z_to_bv ?m (little_endian_to_bv 8 (?b :: ?l))) = _ =>
+                rewrite (zesu_le_word_low_byte m b l (proj1 (N.leb_le 8 m) eq_refl))
+            end;
+            lazymatch goal with |- ?x = ?y => constr_eq x y end; reflexivity
+          | ] ];
+      solve [zesu_clear_all_hyps; generalize w; intros; bv_simplify; bitblast; f_equal; zesu_lia]
+  end.

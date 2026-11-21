@@ -45,6 +45,7 @@ Require Export ZesuSsz.Automation2.SymbolicByteCodec.
 Require Export ZesuSsz.Automation2.MaskPresentation.
 Require Export ZesuSsz.Automation2.MaskWrapPresentation.
 Require Export ZesuSsz.Automation2.StoreMemoryLookup.
+Require Export ZesuSsz.Automation2.SpanningRead.
 
 #[export] Instance zesu_union_mask_presentation_enabled :
   ZesuSsz.Automation2.BitvectorFacts.ZesuStepMaskNormalizer := I.
