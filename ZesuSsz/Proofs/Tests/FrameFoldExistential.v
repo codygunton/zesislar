@@ -81,8 +81,7 @@ Proof.
 Qed.
 
 (* Refused: a gap; a piece that goes past the requested length; a closed
-   requested byte that is not the held one; an existential component the list
-   does not fix (not forced); an array held at the address. *)
+   requested byte that is not the held one; an array held at the address. *)
 Notation P1 := (bv 8 *ₗ unit) (only parsing).
 
 Lemma test_frame_fold_existential_gap `{!islaG Sigma} (a : Z) (K : iProp Sigma) :
@@ -115,14 +114,54 @@ Proof.
   iExact "HG".
 Qed.
 
-Lemma test_frame_fold_existential_unforced `{!islaG Sigma} (a : Z) (K : iProp Sigma) :
-  (∃ x : bv 8 *ₗ bv 8 *ₗ unit, a ↦ₘ∗ [z8; z8; z8; z8; z8; z8; z8; z8; z8; x.1ₗ] ∗ K) -∗
-  a ↦ₘ (BV 64 0) -∗ (a + 8) ↦ₘ (BV 16 0) -∗
-  ∃ x : bv 8 *ₗ bv 8 *ₗ unit, a ↦ₘ∗ [z8; z8; z8; z8; z8; z8; z8; z8; z8; x.1ₗ] ∗ K.
+(* The successor's existential also binds components the list does not fix
+   (decodeParentHeader 0514_slot3: seven padding bytes, then four 40-byte
+   frame arrays and two words that later resources and facts mention). Only
+   the padding byte the list exposes is instantiated; the other components
+   stay existential in the residual goal (without this the fold refused the
+   step: its witness kept evars). *)
+Lemma test_frame_fold_existential_unfixed_components `{!islaG Sigma} (a : Z) (l : list (bv 8))
+    (K : iProp Sigma) :
+  a ↦ₘ (BV 64 0) -∗ (a + 8) ↦ₘ (BV 16 0) -∗ (a + 16) ↦ₘ∗ l -∗ K -∗
+  ∃ x : bv 8 *ₗ list (bv 8) *ₗ bv 64 *ₗ unit,
+    a ↦ₘ∗ [z8; z8; z8; z8; z8; z8; z8; z8; z8; x.1ₗ] ∗
+    ((a + 16) ↦ₘ∗ x.2ₗ ∗ ⌜length x.2ₗ = length l⌝ ∗ ⌜x.1ₗ = bv_extract 8 8 (BV 16 0)⌝ ∗
+     ⌜x.3ₗ = BV 64 0⌝ ∗ K).
 Proof.
-  iIntros "HG H0 H1".
-  assert_fails (idtac; ZesuSsz.Automation2.StoreMemoryLookup.zesu_join_frame_explicit_exist).
-  iExact "HG".
+  iIntros "H0 H1 Hl HK".
+  ZesuSsz.Automation2.StoreMemoryLookup.zesu_join_frame_explicit_exist.
+  lazymatch goal with
+  | |- environments.envs_entails _ (@bi_exist _ (list (bv 8) *ₗ bv 64 *ₗ unit) _) => idtac
+  end.
+  iExists (li_pair l (li_pair (BV 64 0) tt)). cbv [li_fst li_snd]. iFrame.
+  repeat iSplit; iPureIntro; reflexivity.
+Qed.
+Print Assumptions test_frame_fold_existential_unfixed_components.
+
+(* After the fold the successor's flag-word fact reads (0514_slot3 leftover):
+   the held word against the concatenation of its own bytes 7 .. 1 over the
+   flag, the flag being the first element of the word's little-endian list.
+   `bv_solve` closes it through `WrappedWord.zesu_word_concat_own_bytes_eq`;
+   with another low byte it is refused. *)
+Local Notation W values := (Z_to_bv 64 (little_endian_to_bv 8 (BV 8 1 :: take 7 values))) (only parsing).
+Local Notation OWN values lo := (bv_concat 64 (bv_concat 56 (bv_concat 48 (bv_concat 40
+    (bv_concat 32 (bv_concat 24 (bv_concat 16 (bv_extract 56 8 (W values)) (bv_extract 48 8 (W values)))
+    (bv_extract 40 8 (W values))) (bv_extract 32 8 (W values))) (bv_extract 24 8 (W values)))
+    (bv_extract 16 8 (W values))) (bv_extract 8 8 (W values))) lo) (only parsing).
+Lemma test_word_concat_own_bytes (values : list (bv 8)) (H : length values = 15%nat) :
+  W values = OWN values (BV 8 1).
+Proof. bv_solve. Qed.
+Lemma test_word_concat_own_bytes_extract (w : bv 64) :
+  w = bv_concat 64 (bv_concat 56 (bv_concat 48 (bv_concat 40 (bv_concat 32 (bv_concat 24
+    (bv_concat 16 (bv_extract 56 8 w) (bv_extract 48 8 w)) (bv_extract 40 8 w)) (bv_extract 32 8 w))
+    (bv_extract 24 8 w)) (bv_extract 16 8 w)) (bv_extract 8 8 w)) (bv_extract 0 8 w).
+Proof. ZesuSsz.Automation2.WrappedWord.zesu_word_concat_own_bytes_eq. Qed.
+Lemma test_word_concat_own_bytes_other_flag (values : list (bv 8)) :
+  W values = OWN values (BV 8 2) -> W values = OWN values (BV 8 2).
+Proof.
+  intros Heq.
+  assert_fails (idtac; ZesuSsz.Automation2.WrappedWord.zesu_word_concat_own_bytes_eq).
+  exact Heq.
 Qed.
 
 Lemma test_frame_fold_existential_array_held `{!islaG Sigma} (a : Z) (l : list (bv 8)) (K : iProp Sigma) :
