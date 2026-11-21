@@ -1920,8 +1920,37 @@ Ltac zesu_region_fault_arithmetic_full :=
       exfalso; apply Hnegative; zesu_region_fault_library_solve
     end].
 
+(* The arithmetic first reads only the facts its bound reaches: the local
+   definitions the bound mentions are unfolded in the bound, the facts that
+   share no atom with it (ContextCollection's selection) are cleared, and
+   so is every local definition nothing mentions any more. With the whole
+   context, prepare and bv_solve rewrite every hypothesis (`unfold … in *`,
+   `change … in *`): on the decodeParentHeader return slots each of the 58
+   deferred fault branches did so over about 410 hypotheses and 120 local
+   definitions (8 to 16 s and about 130 MB each). The whole context stays
+   the second attempt. *)
+Ltac zesu_region_unfold_bound_definitions :=
+  repeat match goal with
+  | alias := _ |- _ => lazymatch goal with |- context[alias] => unfold alias end
+  end.
+
+Ltac2 zesu_region_clear_unused_definitions () :=
+  List.iter (fun (name, body, _) =>
+    match body with
+    | Some _ => let _ := Control.case (fun () => Std.clear [name]) in ()
+    | None => ()
+    end) (List.rev (Control.hyps ())).
+
+Ltac zesu_region_fault_arithmetic_selected :=
+  zesu_region_unfold_bound_definitions;
+  ZesuSsz.Automation2.ContextCollection.zesu_select_goal_facts;
+  ltac2:(zesu_region_clear_unused_definitions ());
+  zesu_region_fault_arithmetic_full.
+
 Ltac zesu_region_fault_arithmetic :=
-  first [solve [assumption] | zesu_region_fault_arithmetic_full].
+  first [solve [assumption] |
+    solve [zesu_region_fault_arithmetic_selected] |
+    zesu_region_fault_arithmetic_full].
 
 Ltac zesu_region_fault_bound_if_enabled :=
   zesu_switch_enabled constr:(ZesuStepRegionFault);

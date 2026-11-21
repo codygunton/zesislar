@@ -6,8 +6,8 @@ import unittest
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import entry_hist
-from render_edges import (Source, check_edge_sentences, conjunct_reveals, edge_sentences, free_witnesses, is_identity, rocq_edge,
-                          stated_at_source, visible_accounting)
+from render_edges import (Source, check_edge_sentences, conjunct_reveals, edge_sentences, free_witnesses, is_identity,
+                          premise_definitions, rocq_edge, stated_at_source, visible_accounting)
 
 T = 'bv 64'
 PRE = {'parameters': [{'name': 'args', 'type': 'A'}], 'live': [{'name': 'k', 'type': T}],
@@ -136,6 +136,23 @@ class NewGhostScope(unittest.TestCase):
         self.assertIn('  iDestruct "HN" as (n) "_".\n', text)
         self.assertLess(text.index('iDestruct "HN"'), text.index('exists n.'))
         check_edge_sentences(text)
+
+
+class PremiseDefinitions(unittest.TestCase):
+    # The 058c -> 059c shape: the call overwrote the words it read, the successor history keeps
+    # them under an existential, and only the call record's equations fix them.
+    BODY = ('⌜(∃ (a : bv 64), (P a r) /\\ (w = Z_to_bv 64 (f r)) /\\ (u = a))⌝ ∗ '
+            '⌜((negb (bool_decide (w = (BV 64%N 0%Z)))) = true)⌝ ∗ True')
+
+    def test_a_binder_only_the_premise_names_is_the_term_its_conjunct_equation_gives(self):
+        self.assertEqual(premise_definitions(self.BODY, ['w', 'r'], 'HP (args) (r) HS (args) (r)'),
+                         {'w': '(Z_to_bv 64 (f r))'})
+
+    def test_an_equation_inside_a_term_a_bound_name_or_a_history_binder_defines_nothing(self):
+        guard = '⌜((negb (bool_decide (w = (BV 64%N 0%Z)))) = true)⌝ ∗ True'
+        self.assertEqual(premise_definitions(guard, ['w'], 'HP (args)'), {})
+        self.assertEqual(premise_definitions(self.BODY, ['u'], 'HP (args)'), {})
+        self.assertEqual(premise_definitions(self.BODY, ['w', 'r'], 'HP (args) (w) (r)'), {})
 
 
 class IdentityEdge(unittest.TestCase):

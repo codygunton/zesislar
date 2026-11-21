@@ -211,21 +211,87 @@ Ltac2 zesu_named_binder_witness () :=
 
 Ltac zesu_named_binder_witness := ltac2:(zesu_named_binder_witness ()).
 
+(* A successor binder the generator keeps live with no resource (a binder an
+   edge passes on unchanged): once Lithium has packed it into its tuple its
+   name is gone, and the only conjunct that fixes it is a named equation
+   `zesu_named_eq a b`, `b` over the binder. The witness is read off that
+   equation by unification. Only for an existential whose binders occur in
+   pure conjuncts alone (a binder in a resource is fixed by the resource)
+   and whose every binder some named equation sets. *)
+Ltac zesu_named_witness_evars T :=
+  lazymatch T with
+  | li_prod ?A ?B =>
+      let a := open_constr:(_ : A) in
+      let b := zesu_named_witness_evars B in
+      constr:(li_pair a b)
+  | unit => constr:(tt)
+  | _ => open_constr:(_ : T)
+  end.
+
+Ltac zesu_named_witness_spatial_free P :=
+  lazymatch P with
+  | bi_sep (bi_pure _) ?Q => zesu_named_witness_spatial_free Q
+  | bi_sep ?L ?Q => tryif has_evar L then fail else zesu_named_witness_spatial_free Q
+  | bi_pure _ => idtac
+  | ?L => tryif has_evar L then fail else idtac
+  end.
+
+Ltac zesu_named_witness_unify P :=
+  lazymatch P with
+  | bi_sep (bi_pure (zesu_named_eq ?a ?b)) ?Q =>
+      (tryif has_evar a then idtac else (tryif has_evar b then try unify a b else idtac));
+      zesu_named_witness_unify Q
+  | bi_sep _ ?Q => zesu_named_witness_unify Q
+  | _ => idtac
+  end.
+
+Ltac zesu_named_equation_witness :=
+  lazymatch goal with
+  | |- envs_entails _ (@bi_exist _ ?T ?body) =>
+      lazymatch body with (fun _ => bi_sep (bi_pure _) _) => idtac end;
+      let w := zesu_named_witness_evars T in
+      let opened := eval cbv beta iota delta [li_fst li_snd] in (body w) in
+      zesu_named_witness_spatial_free opened;
+      zesu_named_witness_unify opened;
+      let value := eval cbv beta in w in
+      tryif has_evar value then fail else
+        (notypeclasses refine (tac_ex_evar _ value _ _); red_li_prod)
+  end.
+
 (* An existential whose conjuncts are hypotheses once its witnesses are set
    (a successor restating a call's facts over fresh names): each conjunct is
    closed by a hypothesis with the same head, which sets the witnesses. Only
    syntactic existentials and conjunctions are opened: `eexists` and `split`
-   would also open definitions that unfold to an equation or a record. *)
+   would also open definitions that unfold to an equation or a record.
+   An equation whose two sides are the same term is closed by `reflexivity`
+   (a call record restating the words the call returned: `w = Z_to_bv 64 t`
+   once `w` is that word); only a syntactic match, never a conversion check.
+   A goal that is not a proposition is the witness of a binder no conjunct
+   mentions (`eexists` shelves the others): any value of its type does, so it
+   takes `inhabitant`, or else the first hypothesis of its type, once. Trying
+   every hypothesis of the type there multiplies the search by their number
+   per such binder before a conjunct fails: five unused `bv 64` call-argument
+   binders over a context with 33 words did not return. *)
 Ltac zesu_finish_exists_from_hypotheses :=
   lazymatch goal with |- ex _ => idtac end;
   solve [repeat lazymatch goal with |- ex _ => eexists end;
     repeat lazymatch goal with |- _ /\ _ => split end;
     multimatch goal with |- ?conjunct =>
-      let head := get_head conjunct in
-      multimatch goal with
-      | Hfact : ?fact |- _ =>
-          let fact_head := get_head fact in
-          constr_eq head fact_head;
-          exact Hfact
+      lazymatch type of conjunct with
+      | Prop =>
+          lazymatch conjunct with
+          | ?side = ?side => reflexivity
+          | _ =>
+              let head := get_head conjunct in
+              multimatch goal with
+              | Hfact : ?fact |- _ =>
+                  let fact_head := get_head fact in
+                  constr_eq head fact_head;
+                  exact Hfact
+              end
+          end
+      | _ =>
+          first [exact inhabitant |
+                 match goal with Hvalue : conjunct |- _ => exact Hvalue end]
       end
     end].

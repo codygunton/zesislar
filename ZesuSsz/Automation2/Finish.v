@@ -264,6 +264,16 @@ Ltac zesu_finish_known_list_shape :=
   zesu_normalize_equal_array_regions;
   cbn [drop];
   first [solve [zesu_normalize_known_list_lengths; reflexivity] |
+    (* A word stored as its byte extracts and read back as a word. *)
+    solve [WrappedWord.zesu_word_extracts_rewrite; reflexivity] |
+    (* A list of bytes in mixed spellings: one word normal form (frame
+       counts as literals, windows as byte positions, value bytes as
+       extracts), then the explicit spines compute. *)
+    solve [lazymatch goal with |- @eq (list _) _ _ => idtac end;
+      WrappedWord.zesu_word_list_counts;
+      repeat BytePositionEquations.zesu_le_window_rewrite_one;
+      try WrappedWord.zesu_word_byte_extract_rewrite;
+      cbn [take drop app]; reflexivity] |
     solve [repeat match goal with
       | |- context[take ?n ?xs] =>
         let Htake := fresh "Htake" in
@@ -272,6 +282,21 @@ Ltac zesu_finish_known_list_shape :=
         rewrite (take_ge xs n Htake); clear Htake
       end; reflexivity] |
     solve [zesu_normalize_known_list_lengths; zesu_lia] |
+    (* Two closed lists of bit vectors (05a4: a stored byte `[1]` against
+       the byte cell's `[bv_extract 0 8 1]`): decided by computation.
+       `reflexivity` refuses them, the word's well-formedness proofs differ
+       as terms. *)
+    solve [lazymatch goal with
+      | |- @eq (list (bv _)) ?lhs ?rhs =>
+          ZesuSsz.Automation2.VmClosed.zesu_vm_closed lhs;
+          ZesuSsz.Automation2.VmClosed.zesu_vm_closed rhs;
+          let proposition := constr:(lhs = rhs) in
+          let decision := constr:(_ : Decision proposition) in
+          let result := eval vm_compute in (@bool_decide proposition decision) in
+          constr_eq result true;
+          refine (@bool_decide_eq_true_1 proposition decision _);
+          vm_cast_no_check (eq_refl true)
+      end] |
     (* The bit-vector solver reads the facts the goal reaches, never the
        whole context: on a 199-fact context it ran for hours. *)
     solve [ZesuSsz.Automation2.ContextCollection.zesu_solve_goal_selected
@@ -1243,6 +1268,10 @@ Ltac zesu_run_pass_v1 :=
         existential, before any other step (CallSlice.v). *)
      (lazymatch goal_class with ZGex => idtac | ZGex_prod => idtac end; zesu_env_literal;
       zesu_talt c_early_restore (idtac; ZesuSsz.Automation2.CallSlice.zesu_call_early_restore)) |
+     (* A binder fixed only by a named equation takes the equation's term
+        (NamedEquations.v). *)
+     (lazymatch goal_class with ZGex => idtac | ZGex_prod => idtac end;
+      zesu_talt h_named_witness (idtac; ZesuSsz.Automation2.NamedEquations.zesu_named_equation_witness)) |
      zesu_diag_step |
      (zesu_env_literal; zesu_talt v1_source_destruct (idtac; SourceFactMatching.zesu_source_destruct_registered_disjunction)) |
      (lazymatch goal_class with ZGall => idtac end;
@@ -1270,6 +1299,10 @@ Ltac zesu_run_pass_v1 :=
      zesu_talt v1_prepare_init_array_read (idtac; zesu_prepare_initialized_array_read) |
      zesu_talt v1_finish_init_array_read (idtac; zesu_finish_initialized_array_read) |
      zesu_talt v1_store_memory_lookup (idtac; ZesuSsz.Automation2.StoreMemoryLookup.zesu_store_memory_lookup) |
+     (* A by-reference call's slice record: before Lithium reads its pointer
+        word out of a held array (CallSlice.v). *)
+     (lazymatch goal_class with ZGex => idtac | ZGex_prod => idtac end;
+      zesu_talt v1_call_slice_ref_first (idtac; ZesuSsz.Automation2.CallSlice.zesu_call_slice_ref_first)) |
      zesu_talt v1_liAStep (idtac; zesu_liAStep) |
      (* A call spec's input slice and output slot: lent and proved by the
         call-site step before the interior-slice lend (CallSlice.v). *)
