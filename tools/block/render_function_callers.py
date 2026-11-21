@@ -32,7 +32,7 @@ from pathlib import Path
 import argparse, hashlib, json, re, sys
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from function_profiles import load_profile, return_sites
+from function_profiles import exit_package, load_profile, return_case, return_sites, tail_callees
 from render_fp301_statements import (render_block_caller, residual_import, return_precondition, slot_suffix,
                                      successor_precondition)
 
@@ -40,24 +40,6 @@ from render_fp301_statements import (render_block_caller, residual_import, retur
 def bind(path):
     path = Path(path)
     return {'path': str(path), 'sha256': hashlib.sha256(path.read_bytes()).hexdigest()}
-
-
-def return_site(sites, start, end):
-    """The suffix of the return site inside [start, end); None if none lies there."""
-    if len(sites) <= 1:
-        return sites[0][0] if sites else ''   # One package serves every return block.
-    inside = [suffix for suffix, design in sites
-              if end is not None and start <= int(design['return_instruction_pc'], 0) < end]
-    return inside[0] if len(inside) == 1 else None
-
-
-def exit_package(profile, sites, start, end):
-    """The return package suffix of a block without successors: its tail call's
-    `Tail<key>` package, else its function-return site (return_site)."""
-    tails = [call for call in profile.get('tail_calls', []) if start <= int(call['call_site_pc'], 16) < end]
-    if tails:
-        return 'Tail' + profile.key(tails[0]['call_site_pc'])
-    return return_site(sites, start, end)
 
 
 def inlined_returns(profile, function):
@@ -124,8 +106,7 @@ def _plan_caller(profile, suffix, pc, slot, own, rendered, slot_cases, blocks, e
     names = [_block_key(profile, target) for target in successors]
     outside = [target for name, target in zip(names, successors) if name is None]
     if outside:
-        tails = {int(call['callee_pc'], 16) for call in profile.get('tail_calls', [])
-                 if pc <= int(call['call_site_pc'], 16) < ends[pc]}
+        tails = tail_callees(profile, pc, ends[pc])
         if len(outside) != len(successors) or set(outside) - tails:
             return (suffix, slot, [(name or hex(target), None) for name, target in zip(names, successors)],
                     'successor outside the function (tail jump without a tail_calls row)')
@@ -151,8 +132,14 @@ def _plan_caller(profile, suffix, pc, slot, own, rendered, slot_cases, blocks, e
         refusal = 'own entry not rendered'
     elif not successors:
         site = exit_package(profile, sites, pc, ends[pc])
-        package = 'function_return' + ('_' + site if site else '')
-        refusal = None if site is not None and package in rendered else 'function-return package not rendered'
+        package = return_case(site)
+        if package in slot_cases:
+            # A return block with entry slots: each slot exits to its own package slot.
+            done = [case for case in slot_cases[package] if case['slot']['index'] == slot
+                    and case['status'] == 'source_declarations_rendered']
+        else:
+            done = [package] if package in rendered else []
+        refusal = None if site is not None and done else 'function-return package not rendered'
     else:
         refusal = ('successor entry not rendered: ' + ', '.join(missing)) if missing else None
     return (suffix, slot, exits, refusal)
@@ -214,7 +201,9 @@ def main():
             end = block_rows[start].get('end')
             site = exit_package(profile, return_sites(profile), start, end)
             imports += [profile.qualified('FunctionReturn' + site + kind) for kind in ('Entries', 'Structural')]
-            preconditions.append(return_precondition(profile, site))
+            slotted = any(case['pc'] == return_case(site) and 'slot' in case
+                          for case in result['cases'])
+            preconditions.append(return_precondition(profile, site, slot if slotted else None))
         # The call sites of this block and of the return blocks it runs through, in address order.
         for start in [int(profile.pc(name), 16) for name in [suffix, *dict.fromkeys(through)]]:
             block = block_rows[start]

@@ -110,6 +110,13 @@ def plan(profile, rows, closed, entry_exists):
     return entries, open_fields, closed_fields, by_case
 
 
+def generated_modules(profile, text):
+    """The function's generated modules that the statements name (a caller's return package
+    premise names a return package module, which is no block's entry module)."""
+    prefix = re.escape(profile.qualified('')[:-1])
+    return list(dict.fromkeys(re.findall(r'\b(' + prefix + r'\.\w+)\.\w', text)))
+
+
 def return_blocks(rows):
     """The return blocks the caller table inlines into their predecessors' callers."""
     return {row['case'] for row in rows if row['status'] == 'inlined'}
@@ -186,6 +193,7 @@ def main():
     closed_statements = [statement(case, row, None) for case, row, _ in closed_fields]
     text = '\n'.join(open_statements + closed_statements)
     modules = [profile.qualified(entry_module(case)) for case in entries]
+    modules += generated_modules(profile, text)
     modules += [call['spec_module'] for call in profile.get('calls', []) + profile.get('tail_calls', [])
                 if call['spec_module'] + '.' in text]
     closed_module = '.'.join(Path(options.closed_dir).parts) if options.closed_dir else None

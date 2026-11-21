@@ -6,10 +6,11 @@ import tempfile
 import unittest
 import unittest.mock
 
-from function_profiles import FunctionProfile, load_profile, loop_header, pilot_header, return_header
+from function_profiles import (FunctionProfile, exit_package, load_profile, loop_header, pilot_header, return_case,
+                               return_header)
 from join_generalize import align_join_edges, binder_names
 import render_function_callers
-from render_function_callers import exit_package, inlined_returns, plan_callers
+from render_function_callers import inlined_returns, plan_callers
 from symbolic_state import input_expr
 from render_fp301_statements import (
     render_block_caller,
@@ -170,6 +171,26 @@ class CallerPlan(unittest.TestCase):
         self.assertEqual(plan_callers(profile, cases, function)[0], ('1000', None, [], None))
         self.assertEqual(exit_package(profile, [], 0x800d1000, 0x800d1010), 'Tail100c')
 
+    def test_a_tail_jump_edge_goes_to_the_case_of_its_tail_return_package(self):
+        # render_edges names the successor case of a tail block as the entry renderer names the
+        # package (return_case): without it the edge to the package is never rendered.
+        from render_edges import edge_kind, edge_targets
+        profile = other_profile()
+        tail = {'start': 0x800d1000, 'end': 0x800d1010, 'successors': [0x800e06c0]}
+        ret = {'start': 0x800d1010, 'end': 0x800d1020, 'successors': []}
+        inner = {'start': 0x800d1020, 'end': 0x800d1030, 'successors': [0x800d1010, 0x800e06c0]}
+        self.assertEqual(edge_targets(profile, ret), ['function_return'])
+        self.assertEqual(edge_targets(profile, tail), ['0x800e06c0'])   # no tail_calls row: a plain successor
+        profile.data['tail_calls'] = [{'call_site_pc': '0x800d100c', 'callee_pc': '0x800e06c0',
+                                       'spec': 'calleeSpec', 'spec_module': 'Callee'}]
+        self.assertEqual(edge_targets(profile, tail), [return_case('Tail100c')])
+        self.assertEqual(edge_targets(profile, tail), ['function_return_Tail100c'])
+        self.assertEqual(edge_targets(profile, ret), ['function_return'])
+        # A tail callee outside this block's call site stays a plain successor.
+        self.assertEqual(edge_targets(profile, inner), ['0x800d1010', '0x800e06c0'])
+        self.assertEqual(edge_kind(profile, {}, {}, '0x800d1000', 'function_return_Tail100c'), 'return')
+        self.assertEqual(edge_kind(profile, {}, {}, '0x800d1010', 'function_return'), 'return')
+
     def test_entry_slots_get_one_caller_each_and_exit_to_their_own_successor_slot(self):
         # 1020 is a duplicated join with one slot per incoming edge; 1030 continues each slot.
         profile = other_profile()
@@ -198,6 +219,45 @@ class CallerPlan(unittest.TestCase):
         self.assertIn('Lemma DesignedBoundary_800d1020_slot1 ', source)
         self.assertIn('  instr_body 0x800d1020\n    (DesignedEntry_800d1020_slot1 args returnAddress K).', source)
         self.assertIn('fp_machineAt1020_slot1 (args)', source)
+
+    def test_a_return_block_with_entry_slots_exits_to_one_return_package_per_slot(self):
+        # 1020 is a duplicated return join (one slot per edge from 1000 and 1010); each slot
+        # exits to its own slot of the return package, which keeps that edge's exit state.
+        profile = other_profile()
+        profile.data['blocks'] = ['1000', '1010', '1020']
+        function = {'blocks': [{'start': 0x800d1000, 'end': 0x800d1010, 'successors': [0x800d1020]},
+                               {'start': 0x800d1010, 'end': 0x800d1020, 'successors': [0x800d1020]},
+                               {'start': 0x800d1020, 'end': 0x800d1030, 'successors': []}]}
+        rendered = 'source_declarations_rendered'
+
+        def slot(pc, index, predecessor, predecessor_slot, status=rendered):
+            return {'pc': pc, 'status': status, 'slot': {'index': index, 'predecessor_pc': predecessor,
+                                                         'predecessor_slot': predecessor_slot}}
+        cases = [{'pc': '0x800d1000', 'status': rendered}, {'pc': '0x800d1010', 'status': rendered},
+                 slot('0x800d1020', 0, '0x800d1000', None), slot('0x800d1020', 1, '0x800d1010', None),
+                 slot('function_return', 0, '0x800d1020', 0),
+                 slot('function_return', 1, '0x800d1020', 1, 'refused_mixed_roots')]
+        self.assertEqual(plan_callers(profile, cases, function)[2:], [
+            ('1020', 0, [], None), ('1020', 1, [], 'function-return package not rendered')])
+        self.assertEqual(return_precondition(profile, '', 0),
+                         'instr_pre returnAddress (ZesuSsz.Generated.Other.FP301.FunctionReturnEntries'
+                         '.fp_machineReturn_slot0 args returnAddress K)')
+
+    def test_a_return_exit_belongs_to_the_slot_of_the_alternative_its_path_extends(self):
+        from return_exit import exit_slot, return_block_slots
+        block = {'pc': '0x800d1020', 'alternatives': [
+                     {'seed_pc': '0x800d1000', 'path': [0, 1]}, {'seed_pc': '0x800d1010', 'path': [0]},
+                     {'seed_pc': '0x800d1000', 'path': [1]}],
+                 'slots': [{'alternatives': [0, 2]}, {'alternatives': [1]}]}
+        exits = [{'block_pc': '0x800d1020', 'seed_pc': '0x800d1010', 'path': [0, 0, 1]},
+                 {'block_pc': '0x800d1020', 'seed_pc': '0x800d1000', 'path': [1, 0]},
+                 {'block_pc': '0x800d1020', 'seed_pc': '0x800d1000', 'path': [0, 1, 1]}]
+        self.assertIs(return_block_slots([block], exits), block)
+        self.assertEqual([exit_slot(block, exit) for exit in exits], [1, 0, 0])
+        self.assertIsNone(return_block_slots([dict(block, slots=None)], exits))
+        self.assertIsNone(return_block_slots([block], exits + [dict(exits[0], block_pc='0x800d1030')]))
+        with self.assertRaises(ValueError):   # No alternative of the block leads to this exit.
+            exit_slot(block, {'seed_pc': '0x800d1000', 'path': [0, 0]})
 
     def test_a_compliance_record_inlines_return_blocks_into_their_predecessors_callers(self):
         # 1000 -> 1010 (tail jump to 0x800e06c0) and 1020 (return). Neither return block
@@ -277,6 +337,42 @@ class JoinEdgeAlignment(unittest.TestCase):
         aligned, _ = align_join_edges([joined], ownership, 'r1', 'K')
         self.assertEqual(aligned[0]['resource_boundary']['tree'], self.ORIGINAL)
         self.assertEqual([c['source'] for c in aligned[0]['resource_boundary']['components']], ['A', 'True'])
+
+    def packaged(self, binder):
+        seeded = {'kind': 'sep', 'right': {'kind': 'component', 'id': 'r1'},
+                  'left': {'kind': 'exists', 'binders': [{'name': binder, 'type': 'list byte'}], 'scope': [0],
+                           'body': {'kind': 'sep_list', 'children': [
+                               {'kind': 'component', 'id': 'r0'}, {'kind': 'component', 'id': 'join_relation_0'},
+                               {'kind': 'component', 'id': 'join_relation_1'}]}}}
+        length = {'id': 'join_relation_0', 'source': '⌜(List.length %s = 40)%%nat⌝' % binder,
+                  'provenance': {'relation': {'kind': 'array_packaging', 'binder': binder,
+                                              'coq': '(List.length %s = 40)%%nat' % binder}}}
+        placement = {'id': 'join_relation_1', 'source': '⌜P⌝',
+                     'provenance': {'relation': {'kind': 'array_placement', 'binder': 'x12'}}}
+        return self.edge(seeded, 'K', [length, placement])
+
+    def test_a_single_edge_keeps_the_length_fact_of_a_packaged_array(self):
+        ownership = {'tree': self.ORIGINAL, 'components': [{'id': 'r0', 'source': 'A'}, {'id': 'r1', 'source': 'True'}]}
+        kept, extra = align_join_edges([self.packaged('join_a_bytes')], ownership, 'r1', 'K', keep_binders=True)
+        boundary = kept[0]['resource_boundary']
+        self.assertEqual([c['source'] for c in boundary['components']],
+                         ['A', 'True', '⌜(List.length join_a_bytes = 40)%nat⌝'])
+        self.assertEqual(boundary['tree']['body']['children'][-1], {'kind': 'component', 'id': 'join_relation_0'})
+        self.assertEqual([b['name'] for b in boundary['tree']['binders']], ['x10', 'join_a_bytes'])
+        self.assertEqual(extra[0]['length_fact'], '(List.length join_a_bytes = 40)%nat')
+
+    def test_a_join_restates_an_inherited_length_only_when_every_holder_states_it(self):
+        ownership = {'tree': self.ORIGINAL, 'components': [{'id': 'r0', 'source': 'A'}, {'id': 'r1', 'source': 'True'}]}
+        plain = self.edge(self.ORIGINAL, 'True')
+        aligned, extra = align_join_edges([plain, self.packaged('join_a_bytes'), self.packaged('join_a_bytes')],
+                                          ownership, 'r1', 'K')
+        self.assertEqual([c['source'] for c in aligned[1]['resource_boundary']['components']], ['A', 'True'])
+        self.assertEqual(extra, [{'name': 'join_a_bytes', 'type': 'list byte',
+                                  'length_fact': '(List.length join_a_bytes = 40)%nat'}])
+        unpackaged = self.packaged('join_a_bytes')
+        unpackaged['resource_boundary']['components'][2]['provenance'] = {}
+        _, extra = align_join_edges([self.packaged('join_a_bytes'), unpackaged], ownership, 'r1', 'K')
+        self.assertEqual(extra, [{'name': 'join_a_bytes', 'type': 'list byte'}])
 
     def test_other_differences_stay_for_the_refusal(self):
         ownership = {'tree': self.ORIGINAL, 'components': [{'id': 'r0', 'source': 'A'}, {'id': 'r1', 'source': 'True'}]}

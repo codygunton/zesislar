@@ -70,6 +70,15 @@ class OpenBlocks(unittest.TestCase):
         self.assertEqual(region['ends']['61cc_slot0'], 0x800d6210)
         self.assertEqual(region['ends']['61cc_slot1'], 0x800d6210)
 
+    def test_return_package_modules_that_premises_name_are_required(self):
+        base = self.profile.qualified('')[:-1]
+        text = ('instr_pre returnAddress (' + base + '.FunctionReturnEntries.fp_machineReturn_slot0 args K) -∗\n'
+                'instr_body 0x1 ((' + base + '.Pilot0274Entries.fp_machineAt0274_slot0 args K) ∗ True)\n'
+                'instr_pre returnAddress (' + base + '.FunctionReturnEntries.fp_machineReturn_slot1 args K)')
+        self.assertEqual(open_blocks.generated_modules(self.profile, text),
+                         [base + '.FunctionReturnEntries', base + '.Pilot0274Entries'])
+        self.assertEqual(open_blocks.generated_modules(self.profile, 'ZesuSsz.Contracts.X.y'), [])
+
 
 def git(workspace, *args):
     return subprocess.run(['git', '-C', str(workspace), *args], check=True, capture_output=True,

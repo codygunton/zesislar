@@ -193,6 +193,42 @@ def return_sites(profile):
     return [(profile.key(design['return_instruction_pc']), design) for design in designs]
 
 
+RETURN_CASE = 'function_return'
+
+
+def return_case(package):
+    """The case name (RESULT.json `pc`) of a return package: `function_return` for the one
+    return site, `function_return_<package>` for a return site's block key or a tail call's
+    `Tail<key>` (render_function_callers.exit_package)."""
+    return RETURN_CASE + ('_' + package if package else '')
+
+
+def return_site(sites, start, end):
+    """The suffix of the return site inside [start, end); None if none lies there."""
+    if len(sites) <= 1:
+        return sites[0][0] if sites else ''   # One package serves every return block.
+    inside = [suffix for suffix, design in sites
+              if end is not None and start <= int(design['return_instruction_pc'], 0) < end]
+    return inside[0] if len(inside) == 1 else None
+
+
+def tail_callees(profile, start, end):
+    """The callee addresses of the `tail_calls` rows whose call site lies in [start, end). A
+    block whose successors are all among them exits as a return block does (exit_package)."""
+    return {int(call['callee_pc'], 16) for call in profile.get('tail_calls', [])
+            if start <= int(call['call_site_pc'], 16) < end}
+
+
+def exit_package(profile, sites, start, end):
+    """The return package suffix of a block without successors: its tail call's
+    `Tail<key>` package, else its function-return site (return_site). Its case is
+    return_case of that suffix."""
+    tails = [call for call in profile.get('tail_calls', []) if start <= int(call['call_site_pc'], 16) < end]
+    if tails:
+        return 'Tail' + profile.key(tails[0]['call_site_pc'])
+    return return_site(sites, start, end)
+
+
 def return_alignment_fact(profile):
     """The pure conjunct of a `return_address` design row: the register's value at the function
     entry is aligned, stated on bv_unsigned of that value (F44). None without a row."""

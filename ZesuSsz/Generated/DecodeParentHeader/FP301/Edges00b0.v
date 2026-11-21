@@ -16,11 +16,41 @@ Require Export ZesuSsz.Compliance.ParentHeaderHints.
 Require Import ZesuSsz.Contracts.Level1.
 Local Open Scope Z_scope.
 Require Import lithium.lvar.
+Require Import ZesuSsz.Generated.DecodeParentHeader.FP301.FunctionReturnTail00e8Entries.
+Require Import ZesuSsz.Generated.DecodeParentHeader.FP301.FunctionReturnTail00e8Structural.
+Require Import ZesuSsz.Generated.DecodeParentHeader.FP301.Pilot00b0Entries.
+Require Import ZesuSsz.Generated.DecodeParentHeader.FP301.Pilot00b0Structural.
 Require Import ZesuSsz.Automation2.Hist.
 From iris.proofmode Require Import proofmode.
 
 Section edges.
 Context `{!islaG Sigma} `{!threadG}.
 
+(* fp_machineAt00b0_ForwardA0N0 -> fp_machineReturnTail00e8_ForwardA0N0 (return) *)
+Global Instance zesu_hist_edge_16 (args : ParentHeaderArgs) (returnAddress : Z) (machine_x10 : bv 64) (call_after : DecodeItemOutcome) :
+  ZesuHistEdge (PROP := iProp Sigma)
+    (fp_machineAt00b0_ForwardA0N0_Hist (args) (returnAddress) (machine_x10))
+    (fp_machineReturnTail00e8_ForwardA0N0_Hist (args) (returnAddress) (call_after))
+    (⌜(∃ (call_arg_x13 : bv 64) (call_arg_x14 : bv 64) (call_arg_x15 : bv 64) (call_arg_x16 : bv 64) (call_arg_x17 : bv 64) (call_before : list byte), (decodeItemCallDomain
+          (decodeItemCallDataArgs ([((bv_add (bv_add (bv_add (parentHeaderStackPointer args) (BV 64%N 18446744073709551216%Z)) (BV 64%N 400%Z)) (BV 64%N 18446744073709551224%Z))); ((parentHeaderInputPointer args)); ((parentHeaderInputLength args)); (call_arg_x13); (call_arg_x14); (call_arg_x15); (call_arg_x16); (call_arg_x17)]) (((bv_add (parentHeaderStackPointer args) (BV 64%N 18446744073709551216%Z)))) (bv_unsigned (((parentHeaderInputEnd args)))) (parentHeaderInputBytes args) call_before)) /\ (decodeItemCallMeaning
+            (decodeItemCallDataArgs ([((bv_add (bv_add (bv_add (parentHeaderStackPointer args) (BV 64%N 18446744073709551216%Z)) (BV 64%N 400%Z)) (BV 64%N 18446744073709551224%Z))); ((parentHeaderInputPointer args)); ((parentHeaderInputLength args)); (call_arg_x13); (call_arg_x14); (call_arg_x15); (call_arg_x16); (call_arg_x17)]) (((bv_add (parentHeaderStackPointer args) (BV 64%N 18446744073709551216%Z)))) (bv_unsigned (((parentHeaderInputEnd args)))) (parentHeaderInputBytes args) call_before) (call_after)))⌝ ∗ True)%I.
+Proof.
+  rewrite /ZesuHistEdge => Hh. apply zesu_hist_elim in Hh. unfold fp_machineAt00b0_ForwardA0N0_Hist in Hh.
+  destruct Hh as (fp_seed_mstatus_bits & forward_witness_1be931110d776902 & forward_witness_905cf96e605c1117 & forward_witness_55ab0ce59750150a & forward_witness_11fde2df72db9d06 & forward_witness_88383840afa7af74 & forward_witness_1492ef7bd46b3b7a & forward_witness_d77b5950a2aea933 & HF0 & HF1 & HF2 & HF3 & HF4 & HF5 & HF6 & HF7 & HF8 & HF9 & HF10 & HF11).
+  iIntros "HN".
+  iDestruct "HN" as "(%HV3 & _)".
+  iPureIntro. apply zesu_hist_intro. unfold fp_machineReturnTail00e8_ForwardA0N0_Hist.
+  exists machine_x10, fp_seed_mstatus_bits, forward_witness_1be931110d776902, forward_witness_905cf96e605c1117, forward_witness_55ab0ce59750150a, forward_witness_11fde2df72db9d06, forward_witness_88383840afa7af74, (BV 64%N 0%Z).
+  split; [exact HV3|].
+  split; [exact HF1|].
+  split; [exact HF2|].
+  split; [exact HF3|].
+  split; [exact HF4|].
+  split; [exact HF5|].
+  split; [exact HF10|].
+  split; [exact HF11|].
+  split; [by vm_compute|].
+  exact HF8.
+Qed.
 
 End edges.

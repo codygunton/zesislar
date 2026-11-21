@@ -29,7 +29,7 @@ Section edges.
 Context `{!islaG Sigma} `{!threadG}.
 
 (* fp_machineAt0134_ForwardA0N0 -> fp_machineAt0088_ForwardA0N0 (join) *)
-Global Instance zesu_hist_edge_22 (args : ParentHeaderArgs) (returnAddress : Z) (call3_after : DecodeItemOutcome) (call3_kept_x18 : bv 64) (call3_kept_x19 : bv 64) (call2_after : DecodeItemOutcome) (call2_kept_x18 : bv 64) (call2_kept_x19 : bv 64) (call_after : DecodeItemOutcome) (machine_x10 : bv 64) :
+Global Instance zesu_hist_edge_23 (args : ParentHeaderArgs) (returnAddress : Z) (call3_after : DecodeItemOutcome) (call3_kept_x18 : bv 64) (call3_kept_x19 : bv 64) (call2_after : DecodeItemOutcome) (call2_kept_x18 : bv 64) (call2_kept_x19 : bv 64) (call_after : DecodeItemOutcome) (machine_x10 : bv 64) :
   ZesuHistEdge (PROP := iProp Sigma)
     (fp_machineAt0134_ForwardA0N0_Hist (args) (returnAddress) (call3_after) (call3_kept_x18) (call3_kept_x19) (call2_after) (call2_kept_x18) (call2_kept_x19) (call_after))
     (fp_machineAt0088_ForwardA0N0_Hist (args) (returnAddress) (machine_x10) (call_after))
@@ -67,7 +67,7 @@ Proof.
 Qed.
 
 (* fp_machineAt0134_ForwardA0N0 -> fp_machineAt013c_ForwardA0N0 (forward) *)
-Global Instance zesu_hist_edge_23 (args : ParentHeaderArgs) (returnAddress : Z) (call4_after : DecodeItemOutcome) (call4_kept_x18 : bv 64) (call4_kept_x19 : bv 64) (call3_after : DecodeItemOutcome) (call3_kept_x18 : bv 64) (call3_kept_x19 : bv 64) (call2_after : DecodeItemOutcome) (call2_kept_x18 : bv 64) (call2_kept_x19 : bv 64) (call_after : DecodeItemOutcome) :
+Global Instance zesu_hist_edge_24 (args : ParentHeaderArgs) (returnAddress : Z) (call4_after : DecodeItemOutcome) (call4_kept_x18 : bv 64) (call4_kept_x19 : bv 64) (call3_after : DecodeItemOutcome) (call3_kept_x18 : bv 64) (call3_kept_x19 : bv 64) (call2_after : DecodeItemOutcome) (call2_kept_x18 : bv 64) (call2_kept_x19 : bv 64) (call_after : DecodeItemOutcome) :
   ZesuHistEdge (PROP := iProp Sigma)
     (fp_machineAt0134_ForwardA0N0_Hist (args) (returnAddress) (call3_after) (call3_kept_x18) (call3_kept_x19) (call2_after) (call2_kept_x18) (call2_kept_x19) (call_after))
     (fp_machineAt013c_ForwardA0N0_Hist (args) (returnAddress) (call4_after) (call4_kept_x18) (call4_kept_x19) (call3_after) (call3_kept_x18) (call3_kept_x19) (call2_after) (call2_kept_x18) (call2_kept_x19) (call_after))

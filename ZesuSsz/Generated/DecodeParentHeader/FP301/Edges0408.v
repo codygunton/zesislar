@@ -27,7 +27,7 @@ Section edges.
 Context `{!islaG Sigma} `{!threadG}.
 
 (* fp_machineAt0408_ForwardA0N0 -> fp_machineAt00b0_ForwardA0N0 (join) *)
-Global Instance zesu_hist_edge_99 (args : ParentHeaderArgs) (returnAddress : Z) (machine_x10 : bv 64) (call13_after : DecodeItemOutcome) (call10_after : DecodeItemOutcome) (call_after : DecodeItemOutcome) (machine_x10_succ : bv 64) :
+Global Instance zesu_hist_edge_106 (args : ParentHeaderArgs) (returnAddress : Z) (machine_x10 : bv 64) (call13_after : DecodeItemOutcome) (call10_after : DecodeItemOutcome) (call_after : DecodeItemOutcome) (machine_x10_succ : bv 64) :
   ZesuHistEdge (PROP := iProp Sigma)
     (fp_machineAt0408_ForwardA0N0_Hist (args) (returnAddress) (machine_x10) (call13_after) (call10_after) (call_after))
     (fp_machineAt00b0_ForwardA0N0_Hist (args) (returnAddress) (machine_x10_succ))

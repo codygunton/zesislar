@@ -8,7 +8,7 @@ from join_generalize import (_list_items, _mentions_free, _register_definition, 
                              check_fact_accounting, common_root_ancestor, drop_unheld_binders, history_members)
 from forward_resources import OwnedBytes
 from symbolic_state import Expr, MemoryRegion, SymbolicState, bits, input_expr, operation
-from render_function_callers import return_site
+from function_profiles import return_site
 from loop_design import reseat_orphaned
 import entry_hist
 

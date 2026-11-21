@@ -320,6 +320,119 @@ def backward_pins(variants, edges, witnessed=()):
     return {pc: {'pinned': sorted(row['pinned']), 'facts': sorted(row['facts'])} for pc, row in sorted(pins.items())}
 
 
+def _result_offset(address, base):
+    """Offset of a Z address text from `bv_unsigned (<pointer>)` (compact text `base`), or None
+    when the address is not on that pointer."""
+    compact = re.sub(r'[\s()]', '', address.replace('%Z', ''))
+    if base not in compact:
+        return None
+    if compact == base:
+        return 0
+    match = (re.fullmatch(r'Z\.add' + re.escape(base) + r'(\d+)', compact)
+             or re.fullmatch(re.escape(base) + r'\+(\d+)', compact))
+    if match is None:
+        raise ValueError('exit_result: an address on the result pointer is not pointer plus a numeral: '
+                         + address)
+    return int(match[1])
+
+
+def _top_groups(text):
+    """The top-level parenthesized groups of text, without their outer parentheses."""
+    groups, depth, start = [], 0, None
+    for position, character in enumerate(text):
+        if character == '(':
+            if depth == 0:
+                start = position + 1
+            depth += 1
+        elif character == ')':
+            depth -= 1
+            if depth == 0:
+                groups.append(text[start:position])
+    return groups
+
+
+def array_definition_piece(text):
+    """(address, list) of an owned array rendered through its declaration
+    `isla.ghost_state.mem_mapsto_array_def (a) (q) (l)`, or None."""
+    text = normal(text)
+    prefix = 'isla.ghost_state.mem_mapsto_array_def'
+    if not text.startswith(prefix):
+        return None
+    groups = _top_groups(text[len(prefix):])
+    return (groups[0], groups[2]) if len(groups) == 3 else None
+
+
+def _cons_spine_length(value):
+    """Number of elements of a `Coq.Init.Datatypes.cons` spine ending in `nil` whose elements hold no list."""
+    if 'Datatypes.nil' not in value or value.count('Datatypes.nil') != 1:
+        return None
+    return value.count('Datatypes.cons')
+
+
+def result_declarations(name, plain_telescope, plain_binders, meta, pieces, region):
+    """Data-only declarations of the result a return package leaves (profile `compliance.exit_result`).
+
+    `<name>_ResultBytes`: the bytes of the result region in address order; a piece the package stores
+    is its byte list, a piece it does not write is a list parameter `unwritten_<offset>`.
+    `<name>_ExitMeaning M`: for all binders, the package's history, its visible facts and the lengths of
+    the unwritten pieces imply `M args (<name>_ResultBytes ...)`.
+    pieces: [(kind, address text, value text)] of the package's memory components, kind 'byte_array'
+    (value: the stored list) or 'unknown_byte_array' (value: the length). region: {'pointer': term,
+    'size': bytes}. Returns [(symbol, text, 'aux')]."""
+    base = 'bv_unsigned' + re.sub(r'[\s()]', '', region['pointer'])
+    rows = []
+    for kind, address, value in pieces:
+        offset = _result_offset(address, base)
+        if offset is None:
+            continue
+        if kind == 'unknown_byte_array':
+            length = str(CONSTANTS.get(unwrap(value), {}).get('value', unwrap(value).replace('%Z', '')))
+            if not re.fullmatch(r'\d+', length):
+                raise ValueError('exit_result: an unwritten piece has no numeral length: ' + value)
+            rows.append((offset, int(length), None))
+        elif kind == 'byte_array':
+            items = _list_items(value)
+            count = len(items) if items is not None else _cons_spine_length(value)
+            if count is None:
+                raise ValueError('exit_result: a stored piece is not an explicit byte list: ' + value)
+            rows.append((offset, count, unwrap(value)))
+        else:
+            raise ValueError('exit_result: a result piece of kind ' + kind)
+    rows.sort()
+    cursor = 0
+    for offset, length, _ in rows:
+        if offset != cursor:
+            raise ValueError(name + ': the result region is not covered without gap or overlap at ' + str(offset)
+                             + ' (pieces at offset, length: '
+                             + ', '.join(str(row[0]) + ', ' + str(row[1]) for row in rows) + ')')
+        cursor += length
+    if cursor != region['size']:
+        raise ValueError(name + ': the result pieces cover ' + str(cursor) + ' of ' + str(region['size']) + ' bytes')
+    stored = ' '.join(text for _, _, text in rows if text is not None)
+    unwritten = [{'name': 'unwritten_' + str(offset), 'type': 'list byte', 'length': length}
+                 for offset, length, text in rows if text is None]
+    used = [binder for binder in meta['live'] if mentions(binder['name'], stored)]
+    result = name + '_ResultBytes'
+    parameters = plain_telescope + ''.join(' ' + telescope([binder]) for binder in used + unwritten)
+    body = ' ++ '.join('(' + text + ')' if text is not None else 'unwritten_' + str(offset)
+                       for offset, _, text in rows)
+    declarations = [(result, 'Definition ' + result + parameters + ' : list byte := (' + body + ').\n', 'aux')]
+    facts = ['zesu_hist (' + meta['hist'] + ''.join(' (' + binder['name'] + ')'
+                                                     for binder in plain_binders + meta['hist_live']) + ')']
+    facts += [unwrap(fact) for fact in meta['visible']]
+    facts += ['length ' + binder['name'] + ' = ' + str(binder['length']) + '%nat' for binder in unwritten]
+    quantified = [binder for binder in meta['live'] if binder in used or binder in meta['hist_live']
+                  or any(mentions(binder['name'], fact) for fact in meta['visible'])]
+    application = ('M ' + plain_binders[0]['name'] + ' (' + result
+                   + ''.join(' (' + binder['name'] + ')' for binder in plain_binders + used + unwritten) + ')')
+    meaning = name + '_ExitMeaning'
+    declarations.append((meaning, 'Definition ' + meaning + ' (M : ' + plain_binders[0]['type']
+                         + ' -> list byte -> Prop) : Prop := forall' + plain_telescope
+                         + ''.join(' ' + telescope([binder]) for binder in quantified + unwritten) + ', '
+                         + ' -> '.join('(' + fact + ')' for fact in facts) + ' -> ' + application + '.\n', 'aux'))
+    return declarations
+
+
 def structural_opacity(symbol, kind):
     """The Structural lines of a history declaration: opacity only, no unfold instance, no introduction."""
     return '#[export] Typeclasses Opaque ' + symbol + '.\n' if kind == 'hist' else ''
@@ -418,6 +531,84 @@ def _word_of_bytes(items):
             return None
         words.add(unwrap(match[2]))
     return words.pop() if len(words) == 1 else None
+
+
+def _group_end(text, start):
+    """The end (exclusive) of the balanced group that opens at text[start]."""
+    depth = 0
+    for position in range(start, len(text)):
+        if text[position] in '([':
+            depth += 1
+        elif text[position] in ')]':
+            depth -= 1
+            if depth == 0:
+                return position + 1
+    raise ValueError('An entry term has unbalanced delimiters: ' + text[start:start + 80])
+
+
+def _application(text):
+    """The head and top-level arguments of an application text without outer parentheses."""
+    parts, position = [], 0
+    while position < len(text):
+        if text[position].isspace():
+            position += 1
+            continue
+        end = _group_end(text, position) if text[position] in '([' else position
+        while end < len(text) and not text[end].isspace() and text[end] not in '([':
+            end += 1
+        parts.append(text[position:end])
+        position = end
+    return parts
+
+
+def _literal_nth(text):
+    """The element text of `List.nth K%nat [literal list] d` with K inside the list; None otherwise."""
+    parts = _application(unwrap(text))
+    if len(parts) != 4 or parts[0] != 'List.nth':
+        return None
+    index = re.fullmatch(r'(\d+)%nat', parts[1])
+    items = _list_items(parts[2])
+    if index is None or items is None or items == [''] or int(index[1]) >= len(items):
+        return None
+    return unwrap(items[int(index[1])])
+
+
+def _concat_leaves(text):
+    """The operands of a `bv_concat` tree, most significant first."""
+    parts = _application(unwrap(text))
+    if len(parts) == 4 and parts[0] == 'bv_concat':
+        return _concat_leaves(parts[2]) + _concat_leaves(parts[3])
+    return [unwrap(text)]
+
+
+def fold_literal_words(text):
+    """Read a word loaded from a literal byte list as the term the frame cell holds.
+
+    The forward pass reads a saved-register slot of the packed frame array as
+    `bv_concat 64 … (List.nth K [b0; …; bn] d) …`; the entry states that slot as the cell
+    `a ↦ₘ W` (`slot_components`). Two rewrites make a register or fact state the same `W`:
+    `List.nth K [literal list] d` with K inside the list is its K-th element (by computation),
+    and a 64-bit `bv_concat` tree whose eight bytes are `bv_extract 56 8 W`, …, `bv_extract 0 8 W`
+    is `W`."""
+    position = 0
+    while (position := text.find('(List.nth ', position)) >= 0:
+        end = _group_end(text, position)
+        element = _literal_nth(text[position:end])
+        if element is None:
+            position += 1
+            continue
+        text = text[:position] + '(' + element + ')' + text[end:]
+    position = 0
+    while (position := text.find('(bv_concat 64%N ', position)) >= 0:
+        end = _group_end(text, position)
+        leaves = _concat_leaves(text[position:end])
+        word = (_word_of_bytes(list(reversed(leaves))) if len(leaves) == 8
+                and all(re.fullmatch(r'bv_extract \d+%N 8%N .*', leaf, re.S) for leaf in leaves) else None)
+        if word is None:
+            position += 1
+            continue
+        text = text[:position] + '(' + word + ')' + text[end:]
+    return text
 
 
 def slot_components(kind, address, value, table, regions, taken):

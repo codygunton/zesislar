@@ -19,7 +19,8 @@ import argparse, json, re, sys
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import entry_hist
 from entry_hist import mentions, normal, telescope, unwrap
-from function_profiles import load_profile, pilot_header
+from function_profiles import (RETURN_CASE, exit_package, load_profile, pilot_header, return_case, return_sites,
+                               tail_callees)
 from symbolic_state import Expr
 
 
@@ -56,8 +57,19 @@ def binder_names(meta, key):
     return [binder['name'] for binder in meta[key]]
 
 
+def edge_targets(profile, block):
+    """The successor cases of a CFG block: its successors; a block without one, or whose successors
+    are all its tail calls' callees, exits to the return package its caller takes (exit_package: its
+    tail call's, else its return site's), none when no single return site lies in it."""
+    successors = sorted(block['successors'])
+    if successors and not set(successors) <= tail_callees(profile, block['start'], block.get('end')):
+        return [hex(target) for target in successors]
+    package = exit_package(profile, return_sites(profile), block['start'], block.get('end'))
+    return [] if package is None else [return_case(package)]
+
+
 def edge_kind(profile, forward, calls, pre_pc, succ_pc):
-    if succ_pc == 'function_return':
+    if succ_pc == RETURN_CASE or succ_pc.startswith(RETURN_CASE + '_'):
         return 'return'
     if any(row['return_site_pc'] == succ_pc and row['call_site_pc'] and
            int(pre_pc, 16) <= int(row['call_site_pc'], 16) < int(succ_pc, 16) for row in calls.values()):
@@ -758,7 +770,7 @@ def main():
     edges, instances, reveals, used_entries = [], {}, {}, {}
     for block in function['blocks']:
         pre_pc = hex(block['start'])
-        targets = [hex(target) for target in sorted(block['successors'])] or ['function_return']
+        targets = edge_targets(profile, block)
         for succ_pc in targets:
             if pre_pc not in entries or succ_pc not in entries:
                 continue

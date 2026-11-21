@@ -247,6 +247,43 @@ def _unfold(fact, definitions):
     return fact
 
 
+def _unfolded_definitions(call, spec_text, atoms):
+    """The spec-file definitions that a call's carried facts unfold: those the facts use, except
+    the spec itself and the design's `folded_definitions` (definitions of the spec file that the
+    entries import with the profile's contract modules: they stay folded, as the caller's own
+    domain states them)."""
+    folded = set(call.get('folded_definitions', []))
+    unknown = sorted(name for name in folded
+                     if not re.search(r'\bDefinition\s+' + re.escape(name) + r'\b', spec_text))
+    if unknown:
+        raise CallRefused('folded_definitions names no definition of %s: %s'
+                          % (call['spec_source'], ', '.join(unknown)))
+    return _local_definitions(spec_text, sorted(set(atoms) - {call['spec']} - folded))
+
+
+def _argv_lookups(fact, argv, arguments):
+    """Replace each `(argv !!! N%nat)` of a spec fact by call argument N (`arguments`, the call-site
+    values): the lookup in the literal argument list computes to it, so the fact mentions only the
+    arguments it reads and the other argument registers bind nothing."""
+    def argument(match):
+        index = int(match[1])
+        return arguments[index] if index < len(arguments) else match[0]
+    lookup = re.escape(argv) + r'\s+!!!\s+(\d+)%nat'
+    fact = re.sub(r'\(\s*' + lookup + r'\s*\)', argument, fact)
+    return re.sub(r'(?<![\w.])' + lookup, argument, fact)
+
+
+def _replaced_caller_value(design_row, owner_value):
+    """The instantiation of the pre binder of a whole caller array that the callee replaces: the
+    design's `caller_value` (refused unless it is the caller array's value), else None (an
+    existential of the carried facts)."""
+    value = design_row.get('caller_value')
+    if value is not None and value != owner_value:
+        raise CallRefused('The replaced array %s is not the caller value %s (the caller holds %s)'
+                          % (design_row['binder'], value, owner_value))
+    return value
+
+
 RETURN_WORD = re.compile(r'\{word:([A-Za-z_][A-Za-z0-9_]*):([0-9]+)\}')
 
 
@@ -506,7 +543,9 @@ def call_return_seed(edges, *, call, function_root, root_seed, shapes, vocabular
                 raise CallRefused('The replaced array has no unique caller array at ' + row['constant'])
             splits[owner[0].id] = {'whole': True, 'length': design[binder]['length'],
                                    'pre': binder, 'post': post, 'post_value': post_value}
-            instantiation[binder] = None
+            # Its pre binder is the caller array's whole value: a design `caller_value` names it
+            # (it must be that array's value), so the carried facts bind no existential for it.
+            instantiation[binder] = _replaced_caller_value(design[binder], owner[0].byte_array.value)
             continue
         # The callee replaces these bytes: find the caller resource by offset.
         resource, offset = caller_span(row, design[binder]['length'])
@@ -601,10 +640,12 @@ def call_return_seed(edges, *, call, function_root, root_seed, shapes, vocabular
     # A definition of a spec file is unfolded: the entry cannot import an internal spec module.
     # A black box's interface is imported, and its sealed names are never unfolded.
     raw = spec['pre']['facts'] + spec['post']['facts']
-    local = {} if black_box else _local_definitions(
-        spec_text, sorted(_atoms(' '.join(raw + [value for _, value in word_facts])) - {call['spec']}))
-    facts = [instantiate(_unfold(fact, local), {}) for fact in raw]
-    facts += ['%s = %s' % (name, instantiate(_unfold(value, local), {})) for name, value in word_facts]
+    local = {} if black_box else _unfolded_definitions(
+        call, spec_text, _atoms(' '.join(raw + [value for _, value in word_facts])))
+    argv_name = spec['names']['argv']
+    facts = [instantiate(_argv_lookups(_unfold(fact, local), argv_name, values['argv']), {}) for fact in raw]
+    facts += ['%s = %s' % (name, instantiate(_argv_lookups(_unfold(value, local), argv_name, values['argv']), {}))
+              for name, value in word_facts]
     # A call argument that nothing else in the seed mentions (an entry witness, or
     # a call-site register that the paths disagree on) is closed inside the facts.
     # A named value's equation mentions its names outside the facts.

@@ -20,6 +20,7 @@ Require ZesuSsz.Generated.NextUint64.FP301.Pilot0090Entries.
 Require ZesuSsz.Generated.NextUint64.FP301.Pilot009cEntries.
 Require ZesuSsz.Generated.NextUint64.FP301.Pilot00a4Entries.
 Require ZesuSsz.Generated.NextUint64.FP301.Pilot00b8Entries.
+Require ZesuSsz.Generated.NextUint64.FP301.FunctionReturnEntries.
 Require ZesuSsz.Interfaces.DecodeItem.
 Require ZesuSsz.Proofs.NextUint64.FP301.Caller0000.
 Require ZesuSsz.Proofs.NextUint64.FP301.Caller0044.
