@@ -96,7 +96,32 @@ Proof.
   exact (reachValuesInteger _ _ _ _ _ _ _ _ _ _ _ Hk Hint Hreq Hs (parentHeaderCallC1B _ _ _ _ _ _ _ _ Hm) Hx).
 Qed.
 
-(* ---- Slot 1: nothing left after field 11 (0x03b0 -> 0x03bc -> 0x0274) ---- *)
+(* From an opened success history (records of the outer call and of calls 2
+   to 13 with the equations of their window registers, the x21 and x22 fold
+   facts) and the x20 fold fact [Hx20], to the walk with its three values
+   before field 12, then with [Hcount] to the no-option header. *)
+Ltac ph_no_option_header Hh Hwf x21 x22 x20 Hx20 Hcount :=
+  decompose [ex and] Hh; clear Hh;
+  repeat match goal with H : zesu_named_eq ?x _ |- _ => apply zesu_named_eq_iff in H; subst x end;
+  let HS := fresh "HS" in
+  pose proof (phValsStart _ _ _ _ _ _ _ Hwf ltac:(eassumption)) as HS;
+  do 9 (let HS' := fresh "HS" in
+        pose proof (phValsSkip _ _ _ _ _ _ _ _ _ _ _ _ _ HS ltac:(eassumption)
+          eq_refl eq_refl (or_introl eq_refl)) as HS';
+        clear HS; rename HS' into HS);
+  let H10 := fresh "HS" in
+  pose proof (phValsInteger _ _ _ _ _ _ x21 _ _ _ _ _ _ _ HS ltac:(eassumption)
+    eq_refl eq_refl eq_refl ltac:(eassumption)) as H10;
+  let H11 := fresh "HS" in
+  pose proof (phValsInteger _ _ _ _ _ _ x22 _ _ _ _ _ _ _ H10 ltac:(eassumption)
+    eq_refl eq_refl eq_refl ltac:(eassumption)) as H11;
+  let H12 := fresh "HS" in
+  pose proof (phValsInteger _ _ _ _ _ _ x20 _ _ _ _ _ _ _ H11 ltac:(eassumption)
+    eq_refl eq_refl eq_refl Hx20) as H12;
+  exact (candidateNoOptionOfReach _ _ _ _ _ _ _ H12 Hcount).
+
+(* ---- Slot 1: the join 0x03bc (nothing left before field 12, 13 or 14:
+   edges from 0x03b0, 0x0414, 0x0440) -> 0x0274; three zero records ---- *)
 
 Lemma parentHeaderSlot1ExitMeaning_given (args : ParentHeaderArgs) (returnAddress : Z)
     (call13_after call10_after call_after : DecodeItemOutcome)
@@ -123,20 +148,50 @@ Proof.
   apply parentHeaderNoOptionResult; [|exact Htail].
   apply zesu_hist_elim in Hh.
   unfold FunctionReturnEntries.fp_machineReturn_slot1_ForwardA0N0_Hist, zesu_join_history in Hh.
-  decompose [ex and] Hh. clear Hh.
-  repeat match goal with H : zesu_named_eq ?x _ |- _ => apply zesu_named_eq_iff in H; subst x end.
-  pose proof (phValsStart _ _ _ _ _ _ _ Hwf ltac:(eassumption)) as S0.
-  pose proof (phValsSkip _ _ _ _ _ _ _ _ _ _ _ _ _ S0 ltac:(eassumption) eq_refl eq_refl (or_introl eq_refl)) as S1.
-  pose proof (phValsSkip _ _ _ _ _ _ _ _ _ _ _ _ _ S1 ltac:(eassumption) eq_refl eq_refl (or_introl eq_refl)) as S2.
-  pose proof (phValsSkip _ _ _ _ _ _ _ _ _ _ _ _ _ S2 ltac:(eassumption) eq_refl eq_refl (or_introl eq_refl)) as S3.
-  pose proof (phValsSkip _ _ _ _ _ _ _ _ _ _ _ _ _ S3 ltac:(eassumption) eq_refl eq_refl (or_introl eq_refl)) as S4.
-  pose proof (phValsSkip _ _ _ _ _ _ _ _ _ _ _ _ _ S4 ltac:(eassumption) eq_refl eq_refl (or_introl eq_refl)) as S5.
-  pose proof (phValsSkip _ _ _ _ _ _ _ _ _ _ _ _ _ S5 ltac:(eassumption) eq_refl eq_refl (or_introl eq_refl)) as S6.
-  pose proof (phValsSkip _ _ _ _ _ _ _ _ _ _ _ _ _ S6 ltac:(eassumption) eq_refl eq_refl (or_introl eq_refl)) as S7.
-  pose proof (phValsSkip _ _ _ _ _ _ _ _ _ _ _ _ _ S7 ltac:(eassumption) eq_refl eq_refl (or_introl eq_refl)) as S8.
-  pose proof (phValsSkip _ _ _ _ _ _ _ _ _ _ _ _ _ S8 ltac:(eassumption) eq_refl eq_refl (or_introl eq_refl)) as S9.
-  pose proof (phValsInteger _ _ _ _ _ _ machine_x21_1 _ _ _ _ _ _ _ S9 ltac:(eassumption) eq_refl eq_refl eq_refl ltac:(eassumption)) as S10.
-  pose proof (phValsInteger _ _ _ _ _ _ machine_x22_1 _ _ _ _ _ _ _ S10 ltac:(eassumption) eq_refl eq_refl eq_refl ltac:(eassumption)) as S11.
-  pose proof (phValsInteger _ _ _ _ _ _ machine_x20_1 _ _ _ _ _ _ _ S11 ltac:(eassumption) eq_refl eq_refl eq_refl Hx20) as S12.
-  exact (candidateNoOptionOfReach _ _ _ _ _ _ _ S12 Hcount).
+  ph_no_option_header Hh Hwf machine_x21_1 machine_x22_1 machine_x20_1 Hx20 Hcount.
+Qed.
+
+(* ---- Slot 4: fields 12 to 14 consumed, nothing left before field 15
+   (0x0488 -> 0x048c -> 0x0514 -> 0x0274); the three records are copied
+   from the None constant (sixteen zero bytes) ---- *)
+
+Lemma parentHeaderSlot4Bytes args returnAddress (machine_x21_1 machine_x22_1 machine_x20_1 : bv 64)
+    unwritten_74 :
+  FunctionReturnEntries.fp_machineReturn_slot4_ForwardA0N0_ResultBytes args returnAddress
+    machine_x21_1 machine_x22_1 machine_x20_1 unwritten_74 =
+  parentHeaderSuccessBytes machine_x21_1 machine_x22_1 machine_x20_1
+    parentHeaderZeroRecord parentHeaderZeroRecord parentHeaderZeroRecord unwritten_74.
+Proof.
+  unfold FunctionReturnEntries.fp_machineReturn_slot4_ForwardA0N0_ResultBytes,
+    parentHeaderSuccessBytes, parentHeaderWordBytes, parentHeaderZeroRecord.
+  cbn [app].
+  repeat (apply (f_equal2 cons); [first [reflexivity | apply bv_eq; vm_compute; reflexivity] |]).
+  reflexivity.
+Qed.
+
+Lemma parentHeaderSlot4ExitMeaning_given (args : ParentHeaderArgs) (returnAddress : Z)
+    (call16_after : DecodeItemOutcome) (call16_kept_x18 call16_kept_x19 : bv 64)
+    (call13_after call10_after call_after : DecodeItemOutcome)
+    (machine_x21_1 machine_x22_1 machine_x20_1 : bv 64) (unwritten_74 : list byte) :
+  zesu_hist (FunctionReturnEntries.fp_machineReturn_slot4_ForwardA0N0_Hist args returnAddress
+    call16_after call16_kept_x18 call16_kept_x19 call13_after call10_after call_after
+    machine_x21_1 machine_x22_1) ->
+  (bv_unsigned (parentHeaderReturnAddress args) = returnAddress /\ parentHeaderArgsWellFormed args) ->
+  length unwritten_74 = 6%nat ->
+  bv_unsigned machine_x20_1 = ZesuSsz.Automation2.ByteWindowFold.zesu_byte_window_fold
+    (parentHeaderInputBytes args)
+    (Z.to_nat (bv_unsigned (listWord64At0 call13_after) - bv_unsigned (parentHeaderInputPointer args)))
+    (Z.to_nat (bv_unsigned (listWord64At8 call13_after))) ->
+  parentHeaderAcceptsCount (parentHeaderInputBytes args) 3 ->
+  parentHeaderResultMeaning args
+    (FunctionReturnEntries.fp_machineReturn_slot4_ForwardA0N0_ResultBytes args returnAddress
+      machine_x21_1 machine_x22_1 machine_x20_1 unwritten_74).
+Proof.
+  intros Hh [_ Hwf] Htail Hx20 Hcount.
+  rewrite parentHeaderSlot4Bytes.
+  apply parentHeaderMeaningOfCandidateWellFormed; [exact Hwf|].
+  apply parentHeaderNoOptionResult; [|exact Htail].
+  apply zesu_hist_elim in Hh.
+  unfold FunctionReturnEntries.fp_machineReturn_slot4_ForwardA0N0_Hist, zesu_join_history in Hh.
+  ph_no_option_header Hh Hwf machine_x21_1 machine_x22_1 machine_x20_1 Hx20 Hcount.
 Qed.
