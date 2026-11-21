@@ -79,6 +79,20 @@ Class ZesuCallSliceCaller {Args A O : Type} (callerDomain : Args -> Prop)
         before).
 Global Hint Mode ZesuCallSliceCaller - - - ! - - - - - - - - : typeclass_instances.
 
+(* A caller whose contract bounds the payload length a call on its whole
+   input returns: below the interface's limit, so the payload lies inside
+   that input (`zesu_call_slice_payload_in_input_load`). *)
+Class ZesuCallSliceCallerPayloadBound {Args A O : Type} (callerDomain : Args -> Prop)
+    {domain : A -> Prop} {meaning : A -> O -> Prop}
+    (I : ZesuCallSliceInterface domain meaning) (inputBytes : Args -> list (bv 8)) :=
+  zesu_call_slice_caller_payload_bound :
+    forall args argv sp ie before after,
+      callerDomain args ->
+      meaning (@zesu_call_slice_args _ _ _ _ I argv sp ie (inputBytes args) before) after ->
+      bv_unsigned (@zesu_call_slice_payload_length _ _ _ _ I after) <
+        @zesu_call_slice_payload_limit _ _ _ _ I.
+Global Hint Mode ZesuCallSliceCallerPayloadBound - - - ! - - ! - : typeclass_instances.
+
 (* A caller whose contract places the window of a call itself (the slice is
    the caller's own input): `window args` states it. *)
 Class ZesuCallSliceCallerWindow {Args : Type} (callerDomain : Args -> Prop)

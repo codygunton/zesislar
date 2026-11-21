@@ -84,3 +84,13 @@ Proof.
   eapply Z.le_lt_trans; [exact Hn|].
   lia.
 Qed.
+
+(* The bound above, registered for the call-site step: the window of the
+   second call's slice (the outer item's payload). *)
+#[export] Instance parentHeaderDecodeItemPayloadBound :
+  ZesuCallSliceCallerPayloadBound parentHeaderArgsWellFormed decodeItemCallSliceInterface
+    (fun args => parentHeaderInputBytes args).
+Proof.
+  intros args argv sp ie before after Hwf Hmeaning.
+  exact (parentHeaderOuterPayloadBound args argv sp ie before after Hwf Hmeaning).
+Qed.
