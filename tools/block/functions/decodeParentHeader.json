@@ -813,5 +813,6 @@
     "source": "Exit design A (ParentHeaderGeneratedComposition.v): every table entry carries the contract continuation at returnAddress as K; the return block 0x0274 (duplicated per incoming edge, so each return alternative keeps its edge's stored result bytes and history) and the tail block 0x00b0 keep their slots, and their callers take the generated return package at returnAddress; the composition proves each package's return premise from K through that package's end bridge."
   },
   "entry_hist": "wrap",
-  "frame_slots": true
+  "frame_slots": true,
+  "array_spelling": "sealed"
 }
