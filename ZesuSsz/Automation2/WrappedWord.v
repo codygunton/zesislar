@@ -273,9 +273,16 @@ Ltac zesu_wrapped_index_literal_word expression location :=
             | ?shape _ => eval vm_compute in (shape 0) end in
           lazymatch literal with Z0 => idtac | Zpos _ => idtac end;
           let index := eval vm_compute in (Z.to_nat literal) in
+          (* Once the address is rewritten the index is arithmetic over the
+             root's value alone, so it is proved in a cleared context first:
+             the project lia refuses a block's context above its node budget
+             (decodeParentHeader 046c/04f8: about 210,000 nodes), and the
+             count stayed unrewritten. A count that needs a fact of the
+             context (a root that does not cancel) keeps the old proof. *)
           let Hindex := fresh "HindexLiteral" in
           assert (Hindex : Z.to_nat expression = index) by
-            (rewrite Haddress; rewrite ?Z.div_1_r; zesu_lia);
+            (rewrite Haddress; rewrite ?Z.div_1_r;
+             first [solve [clear; zesu_plain_lia] | zesu_lia]);
           clear Haddress;
           location Hindex;
           clear Hindex

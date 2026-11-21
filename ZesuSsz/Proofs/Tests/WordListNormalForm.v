@@ -21,6 +21,24 @@ Lemma test_word_list_count (sp : bv 64) (l : list (bv 8)) :
   = l.
 Proof. intros Hsp. ZesuSsz.Automation2.WrappedWord.zesu_word_list_counts. reflexivity. Qed.
 
+(* The same count in a context above the project lia's node budget (a
+   block's context, decodeParentHeader 046c/04f8): `zesu_lia` refuses there,
+   and the index is proved over the root's value alone. *)
+Ltac test_doubled t n :=
+  lazymatch n with O => t | S ?m => test_doubled constr:((t + t)%Z) m end.
+Lemma test_word_list_count_large_context (sp : bv 64) (l : list (bv 8)) (x : Z) :
+  2684354560 <= bv_unsigned sp < 3221225472 ->
+  take (Z.to_nat (bv_unsigned (sp + BV 64 18446744073709551216 + BV 64 400) - (bv_unsigned sp - 400 + 400))) l
+  ++ drop (Z.to_nat (bv_unsigned (sp + BV 64 18446744073709551216 + BV 64 400) - (bv_unsigned sp - 400 + 400)) + N.to_nat 0) l
+  = l.
+Proof.
+  intros Hsp.
+  let t := test_doubled x 16%nat in
+  assert (Hbig : bv_unsigned sp + t = bv_unsigned sp + t) by reflexivity.
+  assert_fails (assert (x + 0 = x) by zesu_lia).
+  ZesuSsz.Automation2.WrappedWord.zesu_word_list_counts. reflexivity.
+Qed.
+
 (* An index that keeps a variable is not a literal: left alone. *)
 Lemma test_word_list_count_variable (z : Z) (l : list (bv 8)) :
   take (Z.to_nat z) l = take (Z.to_nat z) l.
