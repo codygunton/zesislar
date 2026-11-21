@@ -60,30 +60,51 @@ Print Assumptions test_narrow_cell_subsume.
 (* Refused: the extracts of another register; a cell at another address; a
    byte cell; a request one byte short; a 64-bit cell (the word rule's), even
    when its eight extracts are asked. *)
-Lemma test_narrow_cell_refused `{!islaG Sigma} (a : Z) (x y : bv 64) (K : iProp Sigma) : True.
+Lemma test_narrow_cell_refused_other `{!islaG Sigma} (a : Z) (x y : bv 64) (K : iProp Sigma) :
+  ((∃ u : unit, a ↦ₘ∗ [bv_extract 0 8 y; bv_extract 8 8 y] ∗ ⌜u = tt⌝) ∗ K) -∗ a ↦ₘ bv_extract 0 16 x -∗
+  (∃ u : unit, a ↦ₘ∗ [bv_extract 0 8 y; bv_extract 8 8 y] ∗ ⌜u = tt⌝) ∗ K.
 Proof.
-  Fail assert (⊢ a ↦ₘ bv_extract 0 16 x -∗ K -∗
-    (∃ u : unit, a ↦ₘ∗ [bv_extract 0 8 y; bv_extract 8 8 y] ∗ ⌜u = tt⌝) ∗ K) by
-    (iStartProof; iIntros "H HK";
-     ZesuSsz.Automation2.StoreMemoryLookup.zesu_subsume_narrow_cell_extracts).
-  Fail assert (⊢ (a + 2) ↦ₘ bv_extract 0 16 x -∗ K -∗
-    (∃ u : unit, a ↦ₘ∗ [bv_extract 0 8 x; bv_extract 8 8 x] ∗ ⌜u = tt⌝) ∗ K) by
-    (iStartProof; iIntros "H HK";
-     ZesuSsz.Automation2.StoreMemoryLookup.zesu_subsume_narrow_cell_extracts).
-  Fail assert (⊢ a ↦ₘ (bv_extract 0 8 x : bv 8) -∗ K -∗
-    (∃ u : unit, a ↦ₘ∗ [bv_extract 0 8 x] ∗ ⌜u = tt⌝) ∗ K) by
-    (iStartProof; iIntros "H HK";
-     ZesuSsz.Automation2.StoreMemoryLookup.zesu_subsume_narrow_cell_extracts).
-  Fail assert (⊢ a ↦ₘ bv_extract 0 24 x -∗ K -∗
-    a ↦ₘ∗ [bv_extract 0 8 x; bv_extract 8 8 x] ∗ K) by
-    (iStartProof; iIntros "H HK";
-     ZesuSsz.Automation2.StoreMemoryLookup.zesu_subsume_narrow_cell_extracts).
-  Fail assert (⊢ a ↦ₘ x -∗ K -∗
-    a ↦ₘ∗ [bv_extract 0 8 x; bv_extract 8 8 x; bv_extract 16 8 x; bv_extract 24 8 x;
-           bv_extract 32 8 x; bv_extract 40 8 x; bv_extract 48 8 x; bv_extract 56 8 x] ∗ K) by
-    (iStartProof; iIntros "H HK";
-     ZesuSsz.Automation2.StoreMemoryLookup.zesu_subsume_narrow_cell_extracts).
-  exact I.
+  iIntros "HG H".
+  assert_fails (idtac; ZesuSsz.Automation2.StoreMemoryLookup.zesu_subsume_narrow_cell_extracts).
+  iExact "HG".
+Qed.
+
+Lemma test_narrow_cell_refused_address `{!islaG Sigma} (a : Z) (x : bv 64) (K : iProp Sigma) :
+  ((∃ u : unit, a ↦ₘ∗ [bv_extract 0 8 x; bv_extract 8 8 x] ∗ ⌜u = tt⌝) ∗ K) -∗ (a + 2) ↦ₘ bv_extract 0 16 x -∗
+  (∃ u : unit, a ↦ₘ∗ [bv_extract 0 8 x; bv_extract 8 8 x] ∗ ⌜u = tt⌝) ∗ K.
+Proof.
+  iIntros "HG H".
+  assert_fails (idtac; ZesuSsz.Automation2.StoreMemoryLookup.zesu_subsume_narrow_cell_extracts).
+  iExact "HG".
+Qed.
+
+Lemma test_narrow_cell_refused_byte `{!islaG Sigma} (a : Z) (x : bv 64) (K : iProp Sigma) :
+  (a ↦ₘ∗ [bv_extract 0 8 x] ∗ K) -∗ a ↦ₘ (bv_extract 0 8 x : bv 8) -∗ a ↦ₘ∗ [bv_extract 0 8 x] ∗ K.
+Proof.
+  iIntros "HG H".
+  assert_fails (idtac; ZesuSsz.Automation2.StoreMemoryLookup.zesu_subsume_narrow_cell_extracts).
+  iExact "HG".
+Qed.
+
+Lemma test_narrow_cell_refused_short `{!islaG Sigma} (a : Z) (x : bv 64) (K : iProp Sigma) :
+  (a ↦ₘ∗ [bv_extract 0 8 x; bv_extract 8 8 x] ∗ K) -∗ a ↦ₘ bv_extract 0 24 x -∗
+  a ↦ₘ∗ [bv_extract 0 8 x; bv_extract 8 8 x] ∗ K.
+Proof.
+  iIntros "HG H".
+  assert_fails (idtac; ZesuSsz.Automation2.StoreMemoryLookup.zesu_subsume_narrow_cell_extracts).
+  iExact "HG".
+Qed.
+
+Lemma test_narrow_cell_refused_word `{!islaG Sigma} (a : Z) (x : bv 64) (K : iProp Sigma) :
+  (a ↦ₘ∗ [bv_extract 0 8 x; bv_extract 8 8 x; bv_extract 16 8 x; bv_extract 24 8 x;
+          bv_extract 32 8 x; bv_extract 40 8 x; bv_extract 48 8 x; bv_extract 56 8 x] ∗ K) -∗
+  a ↦ₘ x -∗
+  a ↦ₘ∗ [bv_extract 0 8 x; bv_extract 8 8 x; bv_extract 16 8 x; bv_extract 24 8 x;
+         bv_extract 32 8 x; bv_extract 40 8 x; bv_extract 48 8 x; bv_extract 56 8 x] ∗ K.
+Proof.
+  iIntros "HG H".
+  assert_fails (idtac; ZesuSsz.Automation2.StoreMemoryLookup.zesu_subsume_narrow_cell_extracts).
+  iExact "HG".
 Qed.
 
 (* The word rule keeps main's subsumption form: a 64-bit cell against the
@@ -105,15 +126,19 @@ Qed.
 
 (* ... and the narrow rule does not take that shape. *)
 Lemma test_word_cell_subsume_witness_not_narrow `{!islaG Sigma} (a : Z) (w : bv 64)
-    (T : bv 64 → iProp Sigma) : True.
+    (T : bv 64 → iProp Sigma) :
+  (T w ⊢
+  subsume (a ↦ₘ w) (λ v, a ↦ₘ∗ [bv_extract 0 8 v; bv_extract 8 8 v; bv_extract 16 8 v;
+    bv_extract 24 8 v; bv_extract 32 8 v; bv_extract 40 8 v; bv_extract 48 8 v;
+    bv_extract 56 8 v]) T) →
+  T w ⊢
+  subsume (a ↦ₘ w) (λ v, a ↦ₘ∗ [bv_extract 0 8 v; bv_extract 8 8 v; bv_extract 16 8 v;
+    bv_extract 24 8 v; bv_extract 32 8 v; bv_extract 40 8 v; bv_extract 48 8 v;
+    bv_extract 56 8 v]) T.
 Proof.
-  Fail assert (T w ⊢
-    subsume (a ↦ₘ w) (λ v, a ↦ₘ∗ [bv_extract 0 8 v; bv_extract 8 8 v; bv_extract 16 8 v;
-      bv_extract 24 8 v; bv_extract 32 8 v; bv_extract 40 8 v; bv_extract 48 8 v;
-      bv_extract 56 8 v]) T) by
-    (iStartProof; iIntros "HT";
-     ZesuSsz.Automation2.StoreMemoryLookup.zesu_subsume_narrow_cell_extracts).
-  exact I.
+  intros HG. iStartProof. iIntros "HT".
+  assert_fails (idtac; ZesuSsz.Automation2.StoreMemoryLookup.zesu_subsume_narrow_cell_extracts).
+  iApply (HG with "HT").
 Qed.
 
 Print Assumptions test_word_cell_subsume_witness_extracts.
