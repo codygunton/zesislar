@@ -62,21 +62,21 @@ Proof.
 Qed.
 
 (* fp_machineAt0274_slot1_ForwardA0N0 -> fp_machineReturn_slot1_ForwardA0N0 (return) *)
-Global Instance zesu_hist_edge_61 (args : ParentHeaderArgs) (returnAddress : Z) (call13_after : DecodeItemOutcome) (call10_after : DecodeItemOutcome) (call_after : DecodeItemOutcome) (machine_x21_1 : bv 64) (machine_x22_1 : bv 64) (machine_x10 : bv 64) (machine_x18 : bv 64) :
+Global Instance zesu_hist_edge_61 (args : ParentHeaderArgs) (returnAddress : Z) (call13_after : DecodeItemOutcome) (call10_after : DecodeItemOutcome) (call_after : DecodeItemOutcome) (machine_x21_1 : bv 64) (machine_x22_1 : bv 64) (machine_x10 : bv 64) (machine_x18 : bv 64) (machine_x20_1 : bv 64) :
   ZesuHistEdge (PROP := iProp Sigma)
-    (fp_machineAt0274_slot1_ForwardA0N0_Hist (args) (returnAddress) (call13_after) (call10_after) (call_after) (machine_x21_1) (machine_x22_1) (machine_x10) (machine_x18))
-    (fp_machineReturn_slot1_ForwardA0N0_Hist (args) (returnAddress) (call13_after) (call10_after) (call_after) (machine_x21_1) (machine_x22_1) (machine_x10))
+    (fp_machineAt0274_slot1_ForwardA0N0_Hist (args) (returnAddress) (call13_after) (call10_after) (call_after) (machine_x21_1) (machine_x22_1) (machine_x10) (machine_x18) (machine_x20_1))
+    (fp_machineReturn_slot1_ForwardA0N0_Hist (args) (returnAddress) (call13_after) (call10_after) (call_after) (machine_x21_1) (machine_x22_1) (machine_x10) (machine_x20_1))
     (True)%I.
 Proof.
   rewrite /ZesuHistEdge => Hh. apply zesu_hist_elim in Hh. unfold fp_machineAt0274_slot1_ForwardA0N0_Hist in Hh.
-  destruct Hh as (call13_kept_x18 & call13_kept_x19 & call12_after & call12_kept_x18 & call12_kept_x20 & call11_kept_x19 & fp_seed_mstatus_bits & forward_witness_1be931110d776902 & forward_witness_905cf96e605c1117 & forward_witness_55ab0ce59750150a & forward_witness_11fde2df72db9d06 & forward_witness_751588b52f8a71ff & HF0 & HF1 & HF2 & HF3 & HF4 & HF5 & HF6 & HF7 & HF8 & HF9 & HF10 & HF11 & HF12 & HF13 & HF14 & HF15 & HF16).
+  destruct Hh as (call13_kept_x18 & call13_kept_x19 & call12_after & call12_kept_x18 & call12_kept_x20 & call11_kept_x19 & fp_seed_mstatus_bits & forward_witness_1be931110d776902 & forward_witness_905cf96e605c1117 & forward_witness_55ab0ce59750150a & forward_witness_11fde2df72db9d06 & forward_witness_751588b52f8a71ff & HF0 & HF1 & HF2 & HF3 & HF4 & HF5 & HF6 & HF7 & HF8 & HF9 & HF10 & HF11 & HF12 & HF13 & HF14 & HF15 & HF16 & HF17).
   iIntros "HN".
   iPureIntro. apply zesu_hist_intro. unfold fp_machineReturn_slot1_ForwardA0N0_Hist.
   exists call13_kept_x18, call13_kept_x19, call12_after, call12_kept_x18, call12_kept_x20, call11_kept_x19, machine_x18, fp_seed_mstatus_bits, forward_witness_751588b52f8a71ff, (BV 64%N 0%Z), (BV 64%N 0%Z).
   split; [exact HF0|].
   split; [exact HF1|].
   split; [exact HF2|].
-  split; [exact HF7|].
+  split; [exact HF3|].
   split; [exact HF8|].
   split; [exact HF9|].
   split; [exact HF10|].
@@ -86,6 +86,7 @@ Proof.
   split; [exact HF14|].
   split; [exact HF15|].
   split; [exact HF16|].
+  split; [exact HF17|].
   split; [by vm_compute|].
   by vm_compute.
 Qed.
