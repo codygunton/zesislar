@@ -374,6 +374,33 @@ class JoinEdgeAlignment(unittest.TestCase):
         _, extra = align_join_edges([self.packaged('join_a_bytes'), unpackaged], ownership, 'r1', 'K')
         self.assertEqual(extra, [{'name': 'join_a_bytes', 'type': 'list byte'}])
 
+    def test_a_single_edge_keeps_the_join_design_facts(self):
+        ownership = {'tree': self.ORIGINAL, 'components': [{'id': 'r0', 'source': 'A'}, {'id': 'r1', 'source': 'True'}]}
+        seeded = {'kind': 'sep', 'right': {'kind': 'component', 'id': 'r1'},
+                  'left': {'kind': 'exists', 'binders': [], 'scope': [0], 'body': {'kind': 'sep_list', 'children': [
+                      {'kind': 'component', 'id': 'r0'}, {'kind': 'component', 'id': 'join_relation_0'},
+                      {'kind': 'component', 'id': 'join_design_0'}]}}}
+        joined = self.edge(seeded, 'K', [{'id': 'join_relation_0', 'source': '⌜P⌝'},
+                                         {'id': 'join_design_0', 'source': '⌜Q⌝'}])
+        kept, _ = align_join_edges([joined], ownership, 'r1', 'K', keep_binders=True, keep_designs=True)
+        boundary = kept[0]['resource_boundary']
+        self.assertEqual([child['id'] for child in boundary['tree']['body']['children']],
+                         ['r0', 'join_design_0', 'r1'])
+        self.assertEqual([c['source'] for c in boundary['components']], ['A', 'True', '⌜Q⌝'])
+        # The original tree is not changed in place.
+        self.assertEqual(self.ORIGINAL['body']['children'], [{'kind': 'component', 'id': 'r0'},
+                                                             {'kind': 'component', 'id': 'r1'}])
+        # A return boundary (keep_binders only) still drops them.
+        returned, _ = align_join_edges([joined], ownership, 'r1', 'K', keep_binders=True)
+        self.assertEqual([c['source'] for c in returned[0]['resource_boundary']['components']], ['A', 'True'])
+        # A design test keeps only the designs it accepts, on either side of its answer.
+        tested, _ = align_join_edges([joined], ownership, 'r1', 'K', keep_binders=True,
+                                     keep_designs=lambda source: source == '⌜Q⌝')
+        self.assertEqual([c['source'] for c in tested[0]['resource_boundary']['components']], ['A', 'True', '⌜Q⌝'])
+        refused, _ = align_join_edges([joined], ownership, 'r1', 'K', keep_binders=True,
+                                      keep_designs=lambda source: False)
+        self.assertEqual([c['source'] for c in refused[0]['resource_boundary']['components']], ['A', 'True'])
+
     def test_other_differences_stay_for_the_refusal(self):
         ownership = {'tree': self.ORIGINAL, 'components': [{'id': 'r0', 'source': 'A'}, {'id': 'r1', 'source': 'True'}]}
         other = {'kind': 'sep', 'right': {'kind': 'component', 'id': 'r1'},

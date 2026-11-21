@@ -101,6 +101,58 @@ def is_join_history(inner):
     return re.match(r'zesu_join_history\b', unwrap(inner)) is not None
 
 
+def design_fact_text(row):
+    """The Coq text of a join-design row (profile `join_designs`): a string is the fact itself; an
+    object `{"coq", "history", "obligation", "lemma_module"}` with `history` is a fact of the join's
+    history (`zesu_join_history`, hidden), which each edge into the join proves (`design_obligations`)."""
+    if isinstance(row, str):
+        return row
+    return 'zesu_join_history (' + row['coq'] + ')' if row.get('history') else row['coq']
+
+
+# The classes of block-entry visible facts an edge obligation may take as premises (profile
+# `join_designs` row `premises`; default: the edge's own guards only): `guard` (the conditions the
+# block takes on its way to the join), `domain` (facts on no entry binder), `length` (`List.length`
+# facts), `named_eq` (`zesu_named_eq` equations), and the newest call's `newest_call_record`,
+# `newest_call_guard` and `newest_call_window` (`newest_call_groups`).
+OBLIGATION_PREMISES = ('guard', 'domain', 'length', 'named_eq', 'newest_call_record', 'newest_call_guard',
+                       'newest_call_window')
+
+
+def design_obligations(profile, keys=None):
+    """{normal text of the stated fact: row} of the join-design rows that name an `obligation` (of the
+    joins `keys` of `join_designs`, every join when None): an edge into such a join whose block history
+    does not already hold the fact proves it by the lemma `fp_edge<source>_<join>_<obligation>_holds` of
+    the row's `lemma_module`, from the classes of block facts the row's `premises` name."""
+    rows = {}
+    for key, designs in (profile.get('join_designs') or {}).items():
+        if keys is not None and key not in keys:
+            continue
+        for row in designs:
+            if isinstance(row, dict) and row.get('obligation'):
+                if not re.fullmatch(r'[A-Za-z]\w*', row['obligation']) or not row.get('lemma_module'):
+                    raise ValueError('join_designs: an obligation needs an identifier and a lemma_module')
+                unknown = set(row.get('premises', [])) - set(OBLIGATION_PREMISES)
+                if unknown:
+                    raise ValueError('join_designs: unknown obligation premise classes ' + ', '.join(sorted(unknown)))
+                rows[normal(design_fact_text(row))] = row
+    return rows
+
+
+def obligation_premise_positions(binders, facts, classes):
+    """The positions of the facts (an entry's visible facts, over its `binders`) in the premise
+    `classes` (`OBLIGATION_PREMISES`; `guard` names no entry fact)."""
+    groups = newest_call_groups(binders, facts)
+    tests = {'domain': lambda fact: not any(mentions(binder['name'], fact) for binder in binders),
+             'length': is_length_fact,
+             'named_eq': lambda fact: re.match(r'zesu_named_eq\b', unwrap(fact)) is not None}
+    for name, patterns in groups.items():
+        tests['newest_call_' + name] = lambda fact, patterns=patterns: any(re.search(pattern, fact)
+                                                                          for pattern in patterns)
+    return [position for position, fact in enumerate(facts)
+            if any(tests[name](fact) for name in classes if name in tests)]
+
+
 def call_prefixes(binders):
     """The call layers whose binders an entry has, oldest first: `call_`, `call2_`, `call3_`, ..."""
     numbers = {int(match[1] or 1) for binder in binders
@@ -126,7 +178,8 @@ def call_visible_patterns(pc, calls, block_starts, binders, facts=()):
     if not involved or not prefixes:
         return []
     patterns = newest_call_patterns(binders, facts)
-    named = sorted({name for plan in calls.values() for name in plan.get('named_registers', {}).values()})
+    named = sorted({name for plan in calls.values()
+                    for name in [*plan.get('named_registers', {}).values(), *plan.get('named_arguments', {})]})
     if named:
         patterns.append(r"\bzesu_named_eq \(?(?:" + '|'.join(map(re.escape, named)) + r")(?![\w'])")
     return patterns
@@ -162,28 +215,33 @@ def _terms(text):
     return terms
 
 
+def newest_call_groups(binders, facts=()):
+    """The patterns of `newest_call_patterns` by group: `record`, `guard`, `window`."""
+    prefixes = call_prefixes(binders)
+    if not prefixes:
+        return {'record': [], 'guard': [], 'window': []}
+    newest = re.escape(prefixes[-1])
+    outcome = r"(?<![\w'.])" + newest + CALL_OUTCOME + r"(?![\w'])"
+    kept = r"\(?" + newest + r"kept_\w+\)?"
+    record = [CALL_RECORD + r"(?=[\s\S]*" + outcome + ")", outcome + r"[\s\S]*" + CALL_RECORD]
+    window = [r"<= bv_unsigned " + kept + r" /\\ bv_unsigned " + kept + r" \+ bv_unsigned "]
+    arguments = set().union(*[_terms(fact) for fact in facts
+                              if any(re.search(pattern, fact) for pattern in record)])
+    for fact in facts:
+        match = WINDOW_FACT.match(unwrap(fact))
+        if match and all(re.sub(r'[\s()]', '', match[part]) in arguments for part in ('p', 'l')):
+            window.append('^' + re.escape(fact) + '$')
+    return {'record': record, 'guard': [r"^(?=[\s\S]*" + outcome + r")(?=[\s\S]*<> \(0%Z\))"], 'window': window}
+
+
 def newest_call_patterns(binders, facts=()):
     """The record of the newest call layer an entry has (`…CallDomain`/`…CallMeaning`/`…CallResult`
     on its outcome binders), its nonzero guards on those binders and the windows of the slice it was
     passed: over its kept cursors, and every window fact (`facts`) whose pointer and length are
     argument terms of the record. Visible at call and return sites and in loop classes; older records
     stay hidden."""
-    prefixes = call_prefixes(binders)
-    if not prefixes:
-        return []
-    newest = re.escape(prefixes[-1])
-    outcome = r"(?<![\w'.])" + newest + CALL_OUTCOME + r"(?![\w'])"
-    kept = r"\(?" + newest + r"kept_\w+\)?"
-    record = [CALL_RECORD + r"(?=[\s\S]*" + outcome + ")", outcome + r"[\s\S]*" + CALL_RECORD]
-    patterns = record + [r"^(?=[\s\S]*" + outcome + r")(?=[\s\S]*<> \(0%Z\))",
-                         r"<= bv_unsigned " + kept + r" /\\ bv_unsigned " + kept + r" \+ bv_unsigned "]
-    arguments = set().union(*[_terms(fact) for fact in facts
-                              if any(re.search(pattern, fact) for pattern in record)])
-    for fact in facts:
-        window = WINDOW_FACT.match(unwrap(fact))
-        if window and all(re.sub(r'[\s()]', '', window[part]) in arguments for part in ('p', 'l')):
-            patterns.append('^' + re.escape(fact) + '$')
-    return patterns
+    groups = newest_call_groups(binders, facts)
+    return groups['record'] + groups['guard'] + groups['window']
 
 
 def classify(binders, resources, facts, visible_patterns=(), pinned=(), definitional=False, weak_patterns=(),

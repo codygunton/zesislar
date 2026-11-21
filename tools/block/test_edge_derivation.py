@@ -173,6 +173,15 @@ class PremiseDefinitions(unittest.TestCase):
         self.assertEqual(premise_definitions(self.BODY, ['u'], 'HP (args)'), {})
         self.assertEqual(premise_definitions(self.BODY, ['w', 'r'], 'HP (args) (w) (r)'), {})
 
+    def test_a_term_may_name_an_unfixed_binder_no_conjunct_defines(self):
+        # 04a8 -> 0270: the result record `r` is fixed by another premise, not by a history.
+        self.assertEqual(premise_definitions(self.BODY, ['w', 'r'], 'HP (args)'), {'w': '(Z_to_bv 64 (f r))'})
+        both = '⌜(∃ (a : bv 64), (P a r) /\\ (w = Z_to_bv 64 (f r)) /\\ (v = Z_to_bv 64 (g r)))⌝ ∗ True'
+        self.assertEqual(premise_definitions(both, ['w', 'v', 'r'], 'HP (args)'),
+                         {'w': '(Z_to_bv 64 (f r))', 'v': '(Z_to_bv 64 (g r))'})
+        cycle = '⌜(w = g v) /\\ (v = h w)⌝ ∗ True'
+        self.assertEqual(premise_definitions(cycle, ['w', 'v'], 'HP (args)'), {})
+
 
 class IdentityEdge(unittest.TestCase):
     META = {'hist': 'C_Hist', 'parameters': [{'name': 'args', 'type': 'A'}], 'live': [{'name': 'k', 'type': T}]}

@@ -190,7 +190,8 @@ def main():
                 designs = profile.get('join_designs', {}) if profile else {}
                 joined = generalize_owned_join(incoming, original_seed=seeds[root], entry_pc=pc, vocabulary=vocabulary,
                                                continuation=continuation, outer_names=['args', 'returnAddress'],
-                                               design_facts=next((facts for suffix, facts in designs.items()
+                                               design_facts=next(([entry_hist.design_fact_text(row) for row in facts]
+                                                                  for suffix, facts in designs.items()
                                                                   if profile.pc(suffix) == hex(pc)), []),
                                                live_registers=liveness.get(hex(pc)), lifted_binders=lifted_binders)
             except ValueError as error:
