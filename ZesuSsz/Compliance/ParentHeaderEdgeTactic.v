@@ -88,9 +88,25 @@ Lemma phNamedNonzeroRename (l l' : bv 64) :
   zesu_named_eq l l' -> bv_unsigned l' <> 0 -> bv_unsigned l <> 0.
 Proof. intros [->] Hl. exact Hl. Qed.
 
+(* A register passed on as an earlier call's record field (the named
+   equation states the field term, the history names the word by an equation
+   `word = field`: 059c -> 0270). *)
+Lemma phRegsFieldP args k (w t l : bv 64) :
+  w = t -> phRegs args k w l -> phRegs args k t l.
+Proof. intros -> H. exact H. Qed.
+
+Lemma phRegsFieldL args k (p w t : bv 64) :
+  w = t -> phRegs args k p w -> phRegs args k p t.
+Proof. intros -> H. exact H. Qed.
+
+Lemma phNamedNonzeroField (l w t : bv 64) :
+  zesu_named_eq l t -> w = t -> bv_unsigned w <> 0 -> bv_unsigned l <> 0.
+Proof. intros [->] -> Hl. exact Hl. Qed.
+
 Ltac ph_edge_nonzero :=
   first [ assumption | eapply phNamedNonzero; eassumption | apply walkRemainingNonzero; assumption
-        | eapply phNamedNonzeroRename; [eassumption|assumption] ].
+        | eapply phNamedNonzeroRename; [eassumption|assumption]
+        | eapply phNamedNonzeroField; [eassumption|eassumption|assumption] ].
 
 Ltac ph_edge_side :=
   first [ eassumption | left; eassumption | right; eassumption | reflexivity
@@ -101,7 +117,8 @@ Ltac ph_edge_chain :=
   repeat first [eapply phRegsRenameP; [eassumption|] | eapply phRegsRenameL; [eassumption|]
     | eapply phRegsStart; eassumption
     | eapply phRegsAdvance; [eassumption|reflexivity|first [left; reflexivity | right; ph_edge_nonzero]|]
-    | eapply phRegsNext; [eassumption..|reflexivity|reflexivity|ph_edge_nonzero|]].
+    | eapply phRegsNext; [eassumption..|reflexivity|reflexivity|ph_edge_nonzero|]
+    | eapply phRegsFieldP; [eassumption|] | eapply phRegsFieldL; [eassumption|]].
 
 (* The terminal is typed after the binders are introduced (it names them). *)
 Tactic Notation "ph_edge_error" uconstr(T) :=
