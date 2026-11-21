@@ -502,7 +502,6 @@ Ltac bv_solve ::=
   let memo := ltac2:(tac |- zesu_failure_memo_ltac1 "bv_solve" tac) in
   run ltac:(memo ltac:(first [solve [zesu_closed_goal_decide] |
   solve [WrappedWord.zesu_word_concat_bytes_eq] |
-  solve [WrappedWord.zesu_word_concat_own_bytes_eq] |
   solve [run_linear ltac:(ZesuSsz.Automation2.BvLinear.zesu_bv_linear_with ltac:(zesu_lia))] |
   (tryif ZesuSsz.Automation2.BvLinear.zesu_bv_linear_refutes
    then first [zesu_refuted_solve ltac:(zesu_bv_solve_closer) | ResidualLemmas.zesu_residual_lemma]
