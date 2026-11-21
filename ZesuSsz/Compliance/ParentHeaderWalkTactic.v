@@ -15,6 +15,7 @@ From Coq Require Import List ZArith Lia.
 From stdpp Require Import base list numbers bitvector.definitions bitvector.tactics.
 Require Import ZesuSsz.Contracts.NamedEquation.
 Require Import ZesuSsz.Contracts.ParentHeaderWalkFact.
+Require Import ZesuSsz.Contracts.Candidates.ParentHeaderCandidate.
 Require Import ZesuSsz.Compliance.ParentHeaderCandidateFacts.
 Require Import ZesuSsz.Compliance.ParentHeaderEdgeTactic.
 
@@ -29,6 +30,7 @@ Ltac ph_walk_unfold :=
   repeat match goal with
   | H : parentHeaderWalkStart _ _ |- _ => unfold parentHeaderWalkStart in H
   | H : parentHeaderWalkSkipped _ _ _ _ _ _ |- _ => unfold parentHeaderWalkSkipped in H
+  | H : parentHeaderWalkSkippedState _ _ _ _ _ _ |- _ => unfold parentHeaderWalkSkippedState in H
   end.
 
 Ltac ph_edge_walk :=
@@ -40,4 +42,25 @@ Ltac ph_edge_walk :=
         | eassumption | eassumption | eassumption ]
     | eapply parentHeaderWalkSkipOf;
         [ reflexivity | reflexivity | eassumption
-        | eapply parentHeaderCallC1B; eassumption | eassumption | eassumption ] ].
+        | eapply parentHeaderCallC1B; eassumption | eassumption | eassumption ]
+    | eapply parentHeaderWalkSkipStateOf;
+        [ reflexivity | reflexivity | eassumption
+        | eapply parentHeaderCallC1B; eassumption | eassumption ]
+    | eapply parentHeaderWalkIntegerOf;
+        [ reflexivity | reflexivity | eassumption
+        | eapply parentHeaderCallC1B; eassumption
+        | eassumption | eassumption | eassumption | eassumption | reflexivity ]
+    | eapply parentHeaderWalkIntegerLeftOf;
+        [ reflexivity | reflexivity | eassumption
+        | eapply parentHeaderCallC1B; eassumption
+        | eassumption | eassumption | eassumption | eassumption | eassumption | reflexivity ]
+    (* A success join (0x03bc): nothing left before an optional field. The
+       walk fact the step starts from is chosen by backtracking. *)
+    | match goal with
+      | H : parentHeaderWalkState _ _ _ _ _ |- candidateParentHeader _ = candidateHeaderSuccess _ =>
+          refine (parentHeaderSuccessAfterInteger _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ H _ _ _ _ _ _ _);
+          first [ reflexivity | eapply parentHeaderCallC1B; eassumption | eassumption ]
+      | H : parentHeaderWalkAt _ _ _ _ _ |- candidateParentHeader _ = candidateHeaderSuccess _ =>
+          refine (parentHeaderSuccessAfterSkip _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ H _ _ _);
+          first [ reflexivity | eapply parentHeaderCallC1B; eassumption | eassumption ]
+      end ].

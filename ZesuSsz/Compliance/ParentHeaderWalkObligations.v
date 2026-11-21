@@ -31,3 +31,15 @@ Lemma fp_edge01f4_0210_Walk_holds : fp_edge01f4_0210_Walk.
 Proof. ph_edge_walk. Qed.
 Lemma fp_edge0220_023c_Walk_holds : fp_edge0220_023c_Walk.
 Proof. ph_edge_walk. Qed.
+Lemma fp_edge0244_0264_Walk_holds : fp_edge0244_0264_Walk.
+Proof. ph_edge_walk. Qed.
+Lemma fp_edge02e4_0300_Walk_holds : fp_edge02e4_0300_Walk.
+Proof. ph_edge_walk. Qed.
+Lemma fp_edge0348_0368_Walk_holds : fp_edge0348_0368_Walk.
+Proof. ph_edge_walk. Qed.
+Lemma fp_edge03e8_0400_Walk_holds : fp_edge03e8_0400_Walk.
+Proof. ph_edge_walk. Qed.
+Lemma fp_edge041c_0438_Walk_holds : fp_edge041c_0438_Walk.
+Proof. ph_edge_walk. Qed.
+Lemma fp_edge0448_0464_Walk_holds : fp_edge0448_0464_Walk.
+Proof. ph_edge_walk. Qed.
