@@ -132,6 +132,37 @@ Ltac zesu_le_window_rewrite_hypothesis :=
         end ]
   end.
 
+(* A branch premise `x = w` (or `w = x`) with `x` a variable and `w` holding
+   a load window: Lithium substitutes `x` by `w` everywhere, the block
+   history included, while the generated successors and edge instances state
+   the same word by byte positions (decodeParentHeader 046c, 04f8: a kept
+   register compared with the word loaded from a call's outcome). The
+   windows of the premise take the byte-position form before the
+   substitution, so the block and its successors hold one spelling. A start
+   that is a word offset chain becomes a literal first. Fails, leaving the
+   goal unchanged, on any other premise or when no window is rewritten. *)
+Ltac zesu_le_window_var_premise :=
+  lazymatch goal with
+  | |- (?a = ?b) -> _ =>
+      first [is_var a | is_var b];
+      lazymatch constr:(a = b) with
+      | context [little_endian_to_bv 8 (take _ (drop _ _))] => idtac
+      end;
+      let H := fresh "Hpremise" in
+      intros H;
+      progress repeat match type of H with
+        | context [Z_to_bv ?width (little_endian_to_bv 8 (take ?count (drop ?start ?bytes)))] =>
+            first [
+              zesu_le_window_equation width count start bytes ltac:(fun Hwindow => rewrite Hwindow in H)
+            | lazymatch start with
+              | Z.to_nat ?expression =>
+                  ZesuSsz.Automation2.WrappedWord.zesu_wrapped_index_literal expression
+                    ltac:(fun Hindex => rewrite Hindex in H)
+              end ]
+        end;
+      revert H
+  end.
+
 (* A branch fact on a word against a closed word, as an equation (or
    disequation) of the word's bv_unsigned, when the goal states that
    bv_unsigned. A zero-extended word states the bv_unsigned of the value it
