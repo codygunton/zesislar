@@ -14,6 +14,7 @@ Require Import ZesuSsz.Contracts.IslarisMemory.
 Require ZesuSsz.Automation2.WrappedWord.
 Require ZesuSsz.Automation2.CallSlice.
 Require ZesuSsz.Automation2.VmClosed.
+Require ZesuSsz.Automation2.BytePositionEquations.
 Require Import ZesuSsz.Automation2.ByteExtractCodec281.
 Require Import iris.proofmode.environments.
 Local Open Scope Z_scope.
@@ -672,13 +673,109 @@ Ltac zesu_join_frame_loop_upto ra a n K Hlen :=
         clear Hlen Hl Ha;
         zesu_join_frame_loop_upto ra a s K Hlen2) ].
 
-(* The run's bytes are the requested explicit list: by computation on closed
-   bytes, else byte by byte with `bv_solve` in a context cleared of every
-   proposition. *)
+(* A word cell asked for as the explicit list of its byte extracts (the shape
+   a successor states for a stored word): the cell as that byte array. *)
+Lemma zesu_word_little_endian_extracts (w : bv 64) :
+  bv_to_little_endian 8 8 (bv_unsigned w) =
+    [bv_extract 0 8 w; bv_extract 8 8 w; bv_extract 16 8 w; bv_extract 24 8 w;
+     bv_extract 32 8 w; bv_extract 40 8 w; bv_extract 48 8 w; bv_extract 56 8 w].
+Proof.
+  unfold bv_to_little_endian. cbn [Z_to_little_endian fmap list_fmap Z.of_nat Pos.of_succ_nat].
+  simpl. repeat f_equal; apply bv_eq; rewrite bv_extract_unsigned Z_to_bv_unsigned;
+    unfold bv_wrap; rewrite ?Z.shiftr_shiftr ?Z.land_ones; try lia; rewrite ?Zmod_mod; reflexivity.
+Qed.
+
+(* A byte cell as the explicit list of its one extract. *)
+Lemma zesu_byte_little_endian_extract (b : bv 8) :
+  bv_to_little_endian 1 8 (bv_unsigned b) = [bv_extract 0 8 b].
+Proof.
+  unfold bv_to_little_endian. cbn [Z_to_little_endian fmap list_fmap Z.of_nat Pos.of_succ_nat].
+  simpl. repeat f_equal; apply bv_eq; rewrite bv_extract_unsigned Z_to_bv_unsigned;
+    unfold bv_wrap; rewrite ?Z.land_ones; try lia; rewrite ?Zmod_mod; reflexivity.
+Qed.
+
+(* The run's word and byte cells as their byte extracts, and the run as one
+   list spine (only `app` of explicit lists is rewritten; no byte is
+   evaluated). The byte count of a cell is a closed term
+   (`Z.of_nat (N.to_nat 8)`), evaluated alone. *)
+Ltac zesu_run_cells_as_extracts :=
+  repeat match goal with
+  | |- context [bv_to_little_endian ?m 8%N (bv_unsigned ?w)] =>
+      ZesuSsz.Automation2.VmClosed.zesu_vm_closed m;
+      let mz := eval vm_compute in m in
+      lazymatch type of w with
+      | bv 64 =>
+          lazymatch mz with 8%Z => idtac end;
+          change (bv_to_little_endian m 8 (bv_unsigned w)) with
+            (bv_to_little_endian 8 8 (bv_unsigned w));
+          rewrite (zesu_word_little_endian_extracts w)
+      | bv 8 =>
+          lazymatch mz with 1%Z => idtac end;
+          change (bv_to_little_endian m 8 (bv_unsigned w)) with
+            (bv_to_little_endian 1 8 (bv_unsigned w));
+          rewrite (zesu_byte_little_endian_extract w)
+      end
+  end;
+  rewrite <- ?app_comm_cons, ?app_nil_l.
+
+(* A load window `Z_to_bv w (little_endian_to_bv 8 (take c (drop s l)))` as
+   the concatenation of its byte positions `nth k l` (the spelling successors
+   state); a start that is a word offset chain becomes a literal first. *)
+Ltac zesu_run_window_rewrite :=
+  match goal with
+  | |- context [Z_to_bv ?width (little_endian_to_bv 8 (take ?count (drop ?start ?bytes)))] =>
+      first
+      [ ZesuSsz.Automation2.BytePositionEquations.zesu_le_window_equation width count start bytes
+          ltac:(fun Hwindow => rewrite Hwindow)
+      | lazymatch start with
+        | Z.to_nat ?expression =>
+            ZesuSsz.Automation2.WrappedWord.zesu_wrapped_index_literal expression
+              ltac:(fun Hindex => rewrite Hindex)
+        end ]
+  end.
+
+(* One byte of the run against the requested byte: the same term; closed
+   bytes by computation; the same term once load windows are spelled by
+   byte positions (up to the element type of the list: a contract byte type
+   `bits 8` against `bv 8`, so by `reflexivity`, not `constr_eq`); else
+   `bv_solve` in a context cleared of propositions. *)
+Ltac zesu_run_byte_eq :=
+  lazymatch goal with
+  | |- ?x = ?y =>
+      first
+      [ constr_eq x y; reflexivity
+      | ZesuSsz.Automation2.VmClosed.zesu_vm_closed constr:(x = y); vm_compute; reflexivity
+      | repeat zesu_run_window_rewrite; reflexivity
+      | repeat match goal with H : ?T |- _ => lazymatch type of T with Prop => clear H end end;
+        bv_solve ]
+  end.
+
+(* The run's bytes are the requested explicit list. A closed equation (local
+   definitions included: `VmClosed`) by computation, else byte by byte with
+   `bv_solve` in a context cleared of every proposition. An open equation is
+   never evaluated (decodeParentHeader 0570, 04b0: an 8-byte word loaded
+   from a call's result array at a stack-offset start, and a flag byte,
+   against the 9-byte request spelled by byte positions; `vm_compute` on it
+   grew past 24 GiB): the local definitions that are the run's cells are
+   unfolded, the cells become byte extracts, each load window (one index
+   proof per window, not per byte) becomes byte positions, and the lists
+   are compared byte by byte. *)
 Ltac zesu_run_list_eq :=
-  first [ vm_compute; reflexivity
+  lazymatch goal with
+  | |- ?run = ?L =>
+      tryif ZesuSsz.Automation2.VmClosed.zesu_vm_closed constr:(run = L)
+      then first
+        [ vm_compute; reflexivity
         | repeat match goal with H : ?T |- _ => lazymatch type of T with Prop => clear H end end;
-          unfold bv_to_little_endian; simpl; repeat f_equal; bv_solve ].
+          unfold bv_to_little_endian; simpl; repeat f_equal; bv_solve ]
+      else (repeat match goal with
+              | |- context [bv_to_little_endian _ 8%N (bv_unsigned ?w)] => is_var w; unfold w
+              end;
+            zesu_run_cells_as_extracts;
+            repeat zesu_run_window_rewrite;
+            repeat (apply (f_equal2 (@cons _)); [zesu_run_byte_eq|]);
+            reflexivity)
+  end.
 
 (* The held cell at the requested address `a`: the same term, or a term on
    the same root at offset 0 (decodeParentHeader 0514_slot2: the request at
@@ -964,18 +1061,6 @@ Ltac zesu_open_requested_byte_cell_group :=
             end);
           iDestruct "HzesuCellGroup" as "?"
       end)).
-
-(* A word cell asked for as the explicit list of its byte extracts (the shape
-   a successor states for a stored word): the cell as that byte array. *)
-Lemma zesu_word_little_endian_extracts (w : bv 64) :
-  bv_to_little_endian 8 8 (bv_unsigned w) =
-    [bv_extract 0 8 w; bv_extract 8 8 w; bv_extract 16 8 w; bv_extract 24 8 w;
-     bv_extract 32 8 w; bv_extract 40 8 w; bv_extract 48 8 w; bv_extract 56 8 w].
-Proof.
-  unfold bv_to_little_endian. cbn [Z_to_little_endian fmap list_fmap Z.of_nat Pos.of_succ_nat].
-  simpl. repeat f_equal; apply bv_eq; rewrite bv_extract_unsigned Z_to_bv_unsigned;
-    unfold bv_wrap; rewrite ?Z.shiftr_shiftr ?Z.land_ones; try lia; rewrite ?Zmod_mod; reflexivity.
-Qed.
 
 Lemma zesu_subsume_word_cell_bytes `{!islaG Sigma} {B : Type} (a : Z) (w : bv 64)
     (P T : B → iProp Sigma) :

@@ -141,7 +141,7 @@ Print Assumptions test_frame_fold_existential_unfixed_components.
 (* After the fold the successor's flag-word fact reads (0514_slot3 leftover):
    the held word against the concatenation of its own bytes 7 .. 1 over the
    flag, the flag being the first element of the word's little-endian list.
-   `bv_solve` closes it through `WrappedWord.zesu_word_concat_own_bytes_eq`;
+   `WrappedWord.zesu_word_concat_own_bytes_eq` closes it (not wired into `bv_solve`);
    with another low byte it is refused. *)
 Local Notation W values := (Z_to_bv 64 (little_endian_to_bv 8 (BV 8 1 :: take 7 values))) (only parsing).
 Local Notation OWN values lo := (bv_concat 64 (bv_concat 56 (bv_concat 48 (bv_concat 40
@@ -150,7 +150,7 @@ Local Notation OWN values lo := (bv_concat 64 (bv_concat 56 (bv_concat 48 (bv_co
     (bv_extract 16 8 (W values))) (bv_extract 8 8 (W values))) lo) (only parsing).
 Lemma test_word_concat_own_bytes (values : list (bv 8)) (H : length values = 15%nat) :
   W values = OWN values (BV 8 1).
-Proof. bv_solve. Qed.
+Proof. ZesuSsz.Automation2.WrappedWord.zesu_word_concat_own_bytes_eq. Qed.
 Lemma test_word_concat_own_bytes_extract (w : bv 64) :
   w = bv_concat 64 (bv_concat 56 (bv_concat 48 (bv_concat 40 (bv_concat 32 (bv_concat 24
     (bv_concat 16 (bv_extract 56 8 w) (bv_extract 48 8 w)) (bv_extract 40 8 w)) (bv_extract 32 8 w))
