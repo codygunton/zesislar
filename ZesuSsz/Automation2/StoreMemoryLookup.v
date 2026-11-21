@@ -906,7 +906,12 @@ Ltac zesu_store_whole_array_splice :=
    evars first (the package's resources fix them). `Hooks.zesu_liAStep` runs
    this step only after `Hooks.zesu_seal_requested_array` refused: when the
    context holds the same bytes as a sealed array at that base, that step
-   seals the request and the package keeps its primitive tuple witness. *)
+   seals the request and the package keeps its primitive tuple witness.
+   Only a request whose bytes start with a word's byte extract
+   (`bv_extract 0 8 w :: …`, the spelling the sealed frame rules above
+   consume) is sealed; a request spelled as a stored word's opened bytes
+   (`Z_to_bv 8 (Z.land …) :: …`) stays unsealed for the opened-array
+   consumers (`MemoryTupleConsumer`), which assemble it from held cells. *)
 Lemma zesu_seal_array_def_sep `{!islaG Sigma} (a : Z) (q : dfrac) (l : list (bv 8))
     (R : iProp Sigma) :
   (mem_mapsto_array a q l ∗ R) ⊢ (isla.ghost_state.mem_mapsto_array_def a q l ∗ R).
@@ -937,13 +942,15 @@ Ltac zesu_seal_requested_array_def :=
   lazymatch goal with
   | |- environments.envs_entails _
       (bi_sep (@isla.ghost_state.mem_mapsto_array_def _ _ 8%N ?a ?q ?l) ?R) =>
+      lazymatch l with bv_extract 0 8 _ :: _ => idtac end;
       try ZesuSsz.Automation2.ResourceGroups.zesu_expose_environment_alias;
       iApply (zesu_seal_array_def_sep a q l R)
   | |- environments.envs_entails _ (@bi_exist _ ?T ?body) =>
       lazymatch body with
-      | (fun x => bi_sep (@isla.ghost_state.mem_mapsto_array_def _ _ 8%N ?a ?q (@?l x)) (@?R x)) =>
+      | (fun x => bi_sep (@isla.ghost_state.mem_mapsto_array_def _ _ 8%N ?a ?q
+            (bv_extract 0 8 (@?w x) :: @?rest x)) (@?R x)) =>
           try ZesuSsz.Automation2.ResourceGroups.zesu_expose_environment_alias;
-          iApply (zesu_seal_array_def_exist a q l R);
+          iApply (zesu_seal_array_def_exist a q (fun x => bv_extract 0 8 (w x) :: rest x) R);
           let witness := zesu_seal_package_witness T in
           notypeclasses refine (tac_ex_evar _ witness _ _); red_li_prod
       end
