@@ -158,12 +158,13 @@
         "correct": {
           "module": "ZesuSsz.Interfaces.NextUint64Correct",
           "requires": ["Require Import ZesuSsz.Contracts.ParentHeader.",
-                       "Require ZesuSsz.Compliance.NextUint64CallSpec2."],
+                       "Require ZesuSsz.Compliance.NextUint64CallSpec2.",
+                       "Require ZesuSsz.Compliance.NextUint64GeneratedComposition."],
           "exports": ["ZesuSsz.Contracts.NextUint64Selected", "ZesuSsz.Contracts.NextUint64Contract"],
-          "premises": [["Hcontract", "NextUint64ContractCorrect"]],
+          "premises": [],
           "code": "nextUint64ContractCode",
           "entry": "nextUint64Entry",
-          "template_correct": "ZesuSsz.Compliance.NextUint64CallSpec2.nextUint64CallSpecDefinition_correct"
+          "template_correct": "ZesuSsz.Compliance.NextUint64CallSpec2.nextUint64CallSpecDefinition_correct ZesuSsz.Compliance.NextUint64GeneratedComposition.nextUint64Compliance"
         }
       },
       "call_spec": {
@@ -199,7 +200,7 @@
       "function": "decodeParentHeader",
       "symbol": "rlp_decode.decodeParentHeader",
       "status": "conditional",
-      "condition": "parentHeaderGeneratedCompliance assumes NextUint64ContractCorrect (proved: nextUint64Compliance) and ParentHeaderOpenBlocks; no interface until ParentHeaderOpenBlocks is discharged and the premise is applied",
+      "condition": "parentHeaderGeneratedCompliance assumes ParentHeaderOpenBlocks and ParentHeaderExitMeanings (the meaning of each exit kind, step M1); nextUint64's correctness comes unconditionally from its generated interface (nextUint64CallSpec2_correct, from nextUint64Compliance); no interface until both premises are discharged",
       "compliance_theorems": ["parentHeaderGeneratedCompliance"],
       "owned_prefixes": ["ZesuSsz/Contracts/ParentHeader", "ZesuSsz/Compliance/ParentHeader",
                          "ZesuSsz/Generated/DecodeParentHeader/"],

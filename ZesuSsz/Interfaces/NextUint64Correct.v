@@ -4,11 +4,12 @@ Require Import isla.riscv64.riscv64.
 Require Import ZesuSsz.Interfaces.NextUint64.
 Require Import ZesuSsz.Contracts.ParentHeader.
 Require ZesuSsz.Compliance.NextUint64CallSpec2.
+Require ZesuSsz.Compliance.NextUint64GeneratedComposition.
 Require Export ZesuSsz.Contracts.NextUint64Selected.
 Require Export ZesuSsz.Contracts.NextUint64Contract.
 Local Open Scope Z_scope.
 
 (* nextUint64CallSpec2 is correct: the sealed spec is the template inside the sealed module. *)
-Definition nextUint64CallSpec2_correct `{!islaG Sigma} `{!threadG} (Hcontract : NextUint64ContractCorrect) :
+Definition nextUint64CallSpec2_correct `{!islaG Sigma} `{!threadG} :
   ⊢ nextUint64ContractCode -∗ instr_body nextUint64Entry nextUint64CallSpec2 :=
-  nextUint64CallSpec2CorrectFrom nextUint64ContractCode nextUint64Entry (ZesuSsz.Compliance.NextUint64CallSpec2.nextUint64CallSpecDefinition_correct Hcontract).
+  nextUint64CallSpec2CorrectFrom nextUint64ContractCode nextUint64Entry (ZesuSsz.Compliance.NextUint64CallSpec2.nextUint64CallSpecDefinition_correct ZesuSsz.Compliance.NextUint64GeneratedComposition.nextUint64Compliance).

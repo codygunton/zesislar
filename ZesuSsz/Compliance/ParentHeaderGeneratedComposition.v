@@ -3,9 +3,10 @@
    (ParentHeaderBlockObligations.v, from tools/block/render_open_blocks.py).
    A slot is closed by the block statement whose conclusion matches it: a
    compiled caller lemma (ParentHeaderClosedBlocks) or a premise field
-   (ParentHeaderOpenBlocks). The theorem's premises are the open blocks, the
+   (ParentHeaderOpenBlocks). The theorem's premises are the open blocks and the
    exit premises (ParentHeaderExitMeanings: the meaning of each exit package,
-   step 2.4) and nextUint64's contract; the memcpy runtime premise is part of
+   step 2.4); nextUint64's correctness comes unconditionally from its generated
+   interface (nextUint64CallSpec2_correct); the memcpy runtime premise is part of
    the contract code (memcpyCallPremise in parentHeaderContractCode). *)
 Require Import ZesuSsz.Automation2.All.
 Require Import isla.riscv64.riscv64.
@@ -65,13 +66,12 @@ Qed.
 
 (* nextUint64's contract code is its own map and decodeItem's map. *)
 Lemma parentHeader_nextUint64_boxed `{!islaG Sigma} `{!threadG} :
-  NextUint64ContractCorrect ->
   nextUint64SelectedCode ∗ decodeItemSelectedCode -∗
   □ instr_pre nextUint64Entry nextUint64CallSpec2.
 Proof.
-  intros Hcontract. iIntros "#[Hnu Hdi]". iModIntro.
+  iIntros "#[Hnu Hdi]". iModIntro.
   iApply instr_pre_to_body. iNext.
-  iApply (nextUint64CallSpec2_correct Hcontract).
+  iApply nextUint64CallSpec2_correct.
   rewrite /nextUint64ContractCode. iFrame "Hnu Hdi".
 Qed.
 
@@ -285,16 +285,14 @@ Proof.
   all: parentHeader_slot Hexits.
 Qed.
 
-(* ---- The theorem: decodeParentHeader compliance, given the open blocks,
-   the exit meanings (and the direct-return bridges not yet proved) and
-   nextUint64's contract. ---- *)
+(* ---- The theorem: decodeParentHeader compliance, given the open blocks
+   and the exit meanings. ---- *)
 Theorem parentHeaderGeneratedCompliance :
-  NextUint64ContractCorrect ->
   ParentHeaderOpenBlocks ->
   ParentHeaderExitMeanings ->
   ParentHeaderContractCorrect.
 Proof.
-  intros Hnext Hopen Hexits returnAddress Sigma HG HT.
+  intros Hopen Hexits returnAddress Sigma HG HT.
   change (⊢ (parentHeaderSelectedCode ∗ nextUint64SelectedCode ∗ decodeItemSelectedCode ∗
              □ instr_pre memcpyCsrPc memcpyCallSpec2) -∗ ∀ args : ParentHeaderArgs,
     instr_body decodeParentHeaderEntry
@@ -303,7 +301,7 @@ Proof.
        parentHeaderContinuation args returnAddress))%I.
   iIntros "(#Hsel & #Hnu & #Hdi & #Hmc)" (args).
   iPoseProof (parentHeader_decodeItem_boxed with "Hdi") as "#Hdi2".
-  iPoseProof (parentHeader_nextUint64_boxed Hnext with "[$Hnu $Hdi]") as "#Hnu2".
+  iPoseProof (parentHeader_nextUint64_boxed with "[$Hnu $Hdi]") as "#Hnu2".
   iPoseProof (parentHeader_entry_body Hopen Hexits args returnAddress with "[]") as "Hbody".
   { iModIntro. unfold parentHeaderTableCode, memcpyCallPremise.
     iSplitR; [iExact "Hsel"|]. iSplitR; [iModIntro; iExact "Hdi2"|].
