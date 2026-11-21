@@ -49,7 +49,7 @@ Proof.
   split; [exact HF0|].
   split; [exact (ex_intro _ call2_after (ex_intro _ call2_kept_x18 (ex_intro _ call2_kept_x19 (conj HV3 (conj HV4 (conj HV5 (conj HV6 HV7)))))))|].
   split; [exact HN0|].
-  split; [exact (fp_edge0080_0088_CandidateError_holds args returnAddress call2_after call2_kept_x18 call2_kept_x19 call_after HS HV0 HV1 HV2 HV3 HV4 HV5 HV6 HV7 HG0)|].
+  split; [exact (fp_edge0080_0088_CandidateError_holds args returnAddress call2_after call2_kept_x18 call2_kept_x19 call_after HS HV0 HV1 HV2 HV3 HV4 HV5 HV6 HG0)|].
   split; [exact HF1|].
   split; [exact HF2|].
   split; [exact HF3|].

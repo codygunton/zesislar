@@ -34,16 +34,16 @@ Global Instance zesu_hist_edge_3 (args : ParentHeaderArgs) (returnAddress : Z) (
   ZesuHistEdge (PROP := iProp Sigma)
     (fp_machineAt0048_ForwardA0N0_Hist (args) (returnAddress) (call_after))
     (fp_machineAt00b0_ForwardA0N0_Hist (args) (returnAddress) (machine_x10))
-    (⌜((2148617472%Z <= bv_unsigned machine_x10 <= 2148618660%Z)%Z)⌝ ∗ ⌜((bool_decide ((bv_unsigned machine_x10 >= bv_unsigned (BV 64%N 2148617472%Z))%Z)) = true) /\ ((((bv_unsigned machine_x10) >= (2148617472%Z))%Z))⌝ ∗ ⌜((bool_decide ((bv_unsigned machine_x10 <= bv_unsigned (BV 64%N 2148618660%Z))%Z)) = true) /\ ((((bv_unsigned machine_x10) <= (2148618660%Z))%Z))⌝ ∗ ⌜(bv_unsigned (parentHeaderReturnAddress args) = returnAddress /\ parentHeaderArgsWellFormed args)⌝ ∗ ⌜((bv_unsigned (parentHeaderReturnAddress args) mod 4 = 0)%Z)⌝ ∗ ⌜((List.length call_after = 40)%nat)⌝ ∗ True)%I.
+    (⌜((2148617472%Z <= bv_unsigned machine_x10 <= 2148618660%Z)%Z)⌝ ∗ ⌜((bool_decide ((bv_unsigned machine_x10 >= bv_unsigned (BV 64%N 2148617472%Z))%Z)) = true) /\ ((((bv_unsigned machine_x10) >= (2148617472%Z))%Z))⌝ ∗ ⌜((bool_decide ((bv_unsigned machine_x10 <= bv_unsigned (BV 64%N 2148618660%Z))%Z)) = true) /\ ((((bv_unsigned machine_x10) <= (2148618660%Z))%Z))⌝ ∗ ⌜(bv_unsigned (parentHeaderReturnAddress args) = returnAddress /\ parentHeaderArgsWellFormed args)⌝ ∗ ⌜((bv_unsigned (parentHeaderReturnAddress args) mod 4 = 0)%Z)⌝ ∗ True)%I.
 Proof.
   rewrite /ZesuHistEdge => Hh. apply zesu_hist_elim in Hh. pose proof Hh as HS. unfold fp_machineAt0048_ForwardA0N0_Hist in Hh.
   destruct Hh as (fp_seed_mstatus_bits & forward_witness_cbcac9df79b9221c & forward_witness_1be931110d776902 & forward_witness_905cf96e605c1117 & forward_witness_55ab0ce59750150a & forward_witness_11fde2df72db9d06 & forward_witness_88383840afa7af74 & HF0 & HF1 & HF2 & HF3 & HF4 & HF5 & HF6 & HF7 & HF8 & HF9).
   iIntros "HN".
-  iDestruct "HN" as "(%HN0 & %HN1 & %HN2 & %HV0 & %HV1 & %HV2 & _)".
+  iDestruct "HN" as "(%HN0 & %HN1 & %HN2 & %HV0 & %HV1 & _)".
   iPureIntro. apply zesu_hist_intro. unfold fp_machineAt00b0_ForwardA0N0_Hist.
   exists fp_seed_mstatus_bits, forward_witness_1be931110d776902, forward_witness_905cf96e605c1117, forward_witness_55ab0ce59750150a, forward_witness_11fde2df72db9d06, forward_witness_88383840afa7af74, (BV 64%N 0%Z), (BV 64%N 0%Z).
   split; [exact HN0|].
-  split; [exact (fp_edge0048_00b0_CandidateError_holds args returnAddress call_after HS HV0 HV1 HV2)|].
+  split; [exact (fp_edge0048_00b0_CandidateError_holds args returnAddress call_after HS HV0 HV1)|].
   split; [exact HF3|].
   split; [exact HF4|].
   split; [exact HF5|].
