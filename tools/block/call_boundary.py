@@ -398,9 +398,8 @@ def stored_word(resources, updates, address, memory=()):
 def record_word_term(word, components):
     """The term `T` that an earlier call's record defines `word` by: the one text of a conjunct
     `(word = T)` of a pure component (`⌜…⌝`) whose `T` names nothing the component binds; None
-    otherwise. A passed-on word is stated by this term at the next call's return site: the call
-    block's entry holds the earlier record visibly, the block replaces the word by `T`, and a
-    successor binder that only names the word would have no witness at the block (058c -> 059c)."""
+    otherwise. The call block's entry holds the earlier record visibly and the block replaces the
+    word by `T` (`passed_arguments`)."""
     terms = set()
     for component in components:
         text = str(component.get('source') or component.get('coq') or '')
@@ -420,6 +419,23 @@ def record_word_term(word, components):
                         terms.add(term)
                     break
     return '(' + terms.pop() + ')' if len(terms) == 1 else None
+
+
+def passed_arguments(facts, passed, components):
+    """The record facts and the named arguments of a call's return site, for the arguments `passed`
+    (argument name -> the inherited word the code passes on unchanged).
+
+    An argument whose word an earlier record defines by a term `T` (`record_word_term`) is `T` in
+    the facts and no binder: the call block holds `T` (it replaced the word by it), and a successor
+    binder fixed only by an equation to `T` leaves the block an existential its finisher does not
+    instantiate (058c -> 059c: `zesu_named_eq x T` once the call record set `x := T`). Any other
+    argument stays a binder with the named equation to its word (`named_arguments`)."""
+    defined = {argument: term for argument, word in passed.items()
+               for term in [record_word_term(word, components)] if term is not None}
+    if defined:
+        pattern = re.compile(r"(?<![\w'.])(" + '|'.join(map(re.escape, defined)) + r")(?![\w'])")
+        facts = [pattern.sub(lambda match: defined[match[1]], fact) for fact in facts]
+    return facts, {argument: word for argument, word in passed.items() if argument not in defined}
 
 
 def call_return_seed(edges, *, call, function_root, root_seed, shapes, vocabulary, constants=None, origin_seeds=()):
@@ -710,13 +726,11 @@ def call_return_seed(edges, *, call, function_root, root_seed, shapes, vocabular
     if renamed:
         pattern = re.compile(r"(?<![\w'.])(" + '|'.join(map(re.escape, renamed)) + r")(?![\w'])")
         facts = [pattern.sub(lambda match: renamed[match[1]], fact) for fact in facts]
-    # A passed-on word is no closed argument: its argument name is a binder of the seed with the named
-    # equation to the inherited word (stated before the record, so the record's argument is that word).
-    named_arguments = {renamed[name]: name for name, _ in inner if name in passed_words}
+    # A passed-on word is no closed argument (`passed_arguments`).
+    passed = {renamed[name]: name for name, _ in inner if name in passed_words}
     components = [component for seed in (root_seed, *origin_seeds) for component in seed.ownership['components']]
-    argument_values = {argument: record_word_term(word, components) or word
-                       for argument, word in named_arguments.items()}
-    existential = [(renamed[name], kind) for name, kind in inner if renamed[name] not in named_arguments] + [
+    facts, named_arguments = passed_arguments(facts, passed, components)
+    existential = [(renamed[name], kind) for name, kind in inner if renamed[name] not in passed] + [
         (renamed.get(name, name), kind) for name, kind in existential]
     telescope = ' '.join('(%s : %s)' % (name, kind) for name, kind in existential)
     carried = '∃ ' + telescope + ', ' + ' /\\ '.join('(' + fact + ')' for fact in facts) if existential \
@@ -863,8 +877,8 @@ def call_return_seed(edges, *, call, function_root, root_seed, shapes, vocabular
         for row in extra_facts] + [
         {'kind': 'opaque', 'id': name.value + '_value', 'coq': '⌜(zesu_named_eq %s %s)⌝' % (name.value, _coq(value))}
         for value, name in named.items()] + [
-        {'kind': 'opaque', 'id': argument + '_value', 'coq': '⌜(zesu_named_eq %s %s)⌝' % (argument, value)}
-        for argument, value in argument_values.items()] + [{'kind': 'opaque', 'id': prefix + 'facts', 'coq': '⌜' + carried + '⌝'}] + [
+        {'kind': 'opaque', 'id': argument + '_value', 'coq': '⌜(zesu_named_eq %s %s)⌝' % (argument, word)}
+        for argument, word in named_arguments.items()] + [{'kind': 'opaque', 'id': prefix + 'facts', 'coq': '⌜' + carried + '⌝'}] + [
         {'kind': 'opaque', 'id': prefix + 'window_' + binder, 'coq': '⌜' + text + '⌝'}
         for binder, text in windows] + [
         {'kind': 'opaque', 'id': prefix + 'return_fact_%d' % index, 'coq': '⌜' + _return_fact(row['coq'], fresh) + '⌝'}
