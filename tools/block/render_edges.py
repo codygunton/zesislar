@@ -899,8 +899,9 @@ def main():
             check_edge_sentences(text)
             (options.rocq_dir / ('Edges' + case + '.v')).write_text(text)
             modules.append('Edges' + case)
-        (options.rocq_dir / 'Edges.v').write_text(''.join('Require Export ' + profile.qualified(module) + '.\n'
-                                                          for module in modules))
+        if modules:   # A function whose entries carry no history (all facts visible) has no edges.
+            (options.rocq_dir / 'Edges.v').write_text(''.join('Require Export ' + profile.qualified(module)
+                                                              + '.\n' for module in modules))
         if declarations:
             # The edge obligations: data-only statements, proved in the profile's lemma modules.
             stems = sorted({stem_of(row['entry']) for row in declarations})

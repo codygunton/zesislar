@@ -1,4 +1,4 @@
-"""Run the pinned source engine (FP-20261121) from the entry seed, adding generated seeds.
+"""Run the pinned source engine (FP-20261122) from the entry seed, adding generated seeds.
 
 A join is seeded only after every join that can reach it has its seed, so its
 incoming edges are complete. A call's return site is seeded from the callee
@@ -29,6 +29,7 @@ from forward_resources import apply_owned_writes, load_resource_vocabulary, rend
 from join_generalize import (common_root_ancestor, generalize_owned_join, lift_call_return_edges, normalize,
                              seed_record)
 from resource_seed import load_public_seed, seed_owned_resources
+import symbolic_state
 from system_shape_seed import seed_system_shapes
 
 
@@ -60,6 +61,10 @@ def main():
     options = parser.parse_args()
     profile = load_profile(options.function) if options.function else None
     entry_hist.configure(profile)
+    keep = profile.get('keep_source_implied_ram_guards', False) if profile else False
+    if not isinstance(keep, bool):
+        raise ValueError('keep_source_implied_ram_guards: a boolean is required')
+    symbolic_state.KEEP_SOURCE_IMPLIED_RAM_GUARDS = keep
     calls = profile.get('calls', []) if profile else []
     loop_designs = profile.get('loop_designs', []) if profile else []
     inputs, output = options.inputs.resolve(), options.output.resolve()
@@ -264,7 +269,7 @@ def main():
                                                     if roots.get(pc) != pc}}, ensure_ascii=False) + '\n')
     receipt = {'source_pass': bind(output / 'FORWARD.json'), 'level1_K_source': bind(level1),
                'vocabulary': bind(vocabulary_path), 'system_shapes': bind(shapes_path),
-               'engine': bind(ROOT / 'tools/block/FP-20261121.json'), 'joins': bind(output / 'JOINS.json'),
+               'engine': bind(ROOT / 'tools/block/FP-20261122.json'), 'joins': bind(output / 'JOINS.json'),
                'call_seeds': bind(output / 'CALL-SEEDS.json'), 'join_seeds': bind(output / 'JOIN-SEEDS.json')}
     (output / 'INPUT-RECEIPT.json').write_text(json.dumps(receipt, indent=2) + '\n')
     stops = {}

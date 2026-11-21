@@ -1,36 +1,47 @@
 """Hidden history and per-slot frame cells for FP301 entries.
 
 The function profile selects the shape (`configure`):
-  `"entry_hist": "wrap"`  the pure facts of one entry variant become visible facts and one hidden
-                          `⌜zesu_hist (<entry>_Hist args returnAddress <live binders>)⌝`; without the
-                          key the legacy shape is rendered.
+  `"entry_hist": "wrap"`  (required; the only shape) the pure facts of one entry variant become
+                          visible facts and one hidden
+                          `⌜zesu_hist (<entry>_Hist args returnAddress <live binders>)⌝`.
   `"frame_slots": true`   each saved-register slot of the frame is one 8-byte cell at the address the
                           store computes.
 
 Visible facts: facts that mention no entry binder (function domain, return alignment), `List.length`
-facts of live binders, and facts that match a profile `hist_visible` regular expression. Every other
-fact is hidden; a join history (`zesu_join_history`) is always hidden. A live binder is one that an
-owned resource mentions; the others are ghost binders and are bound inside the history.
+facts of live binders, facts that match a profile `hist_pinned` regular expression (their binders stay
+live), and facts on live binders that match a profile `hist_visible` regular expression (weak: see
+`classify`). Every other fact is hidden; a join history (`zesu_join_history`) is always hidden. A live
+binder is one that an owned resource, a pinning pattern or a backward pin mentions; the others are
+ghost binders and are bound inside the history. decodeItem pins `.*`: nothing is hidden, so its
+entries keep the plain shape (`seal_alternative` returns None).
 """
 import re
 
-HIST_MODE = ''
 FRAME_SLOTS = False
 HIST_VISIBLE = ()
+STORE_SPLICE = 'linear'
 HIST_LIBRARY = 'Require Import ZesuSsz.Automation2.Hist.\n'
 
 
 def configure(profile):
-    """Read the shape keys of a function profile (None: legacy shape)."""
-    global HIST_MODE, FRAME_SLOTS, HIST_VISIBLE
-    mode = profile.get('entry_hist', '') if profile else ''
-    if mode not in ('', 'wrap'):
+    """Read the shape keys of a function profile: `entry_hist` (required, `wrap`), `frame_slots`,
+    `hist_visible`, `store_splice` (`linear`, default, or `per_store`: constant-offset stores into a byte
+    array are spliced one by one, the spelling the function's proofs consume)."""
+    global FRAME_SLOTS, HIST_VISIBLE, STORE_SPLICE
+    mode = profile.get('entry_hist')
+    if mode is None:
+        raise ValueError('entry_hist: the function profile lacks the required key (only "wrap" exists)')
+    if mode != 'wrap':
         raise ValueError('entry_hist: unknown mode ' + str(mode))
-    slots = profile.get('frame_slots', False) if profile else False
+    slots = profile.get('frame_slots', False)
     if not isinstance(slots, bool):
         raise ValueError('frame_slots: a boolean is required')
-    HIST_MODE, FRAME_SLOTS = mode, slots
-    HIST_VISIBLE = tuple(profile.get('hist_visible', [])) if profile and mode else ()
+    FRAME_SLOTS = slots
+    HIST_VISIBLE = tuple(profile.get('hist_visible', []))
+    splice = profile.get('store_splice', 'linear')
+    if splice not in ('linear', 'per_store'):
+        raise ValueError('store_splice: unknown value ' + str(splice))
+    STORE_SPLICE = splice
 
 
 def mentions(name, text):
@@ -265,15 +276,19 @@ def conjunction(facts):
 
 def seal_alternative(name, plain_telescope, plain_binders, binders, resources, facts, visible_patterns=(), pinned=(),
                      grouped=False, varying=(), weak_patterns=(), visible_texts=()):
-    """Return (declarations, body, meta) of one sealed entry variant.
+    """Return (declarations, body, meta) of one sealed entry variant; None when its history is empty.
 
     declarations: [(symbol, text, kind)] with kind 'hist' (needs opacity in Structural) or 'aux';
     body: the iProp body of the entry variant; meta: the data that the edge record reads.
     weak_patterns: the profile's `hist_visible` (and a loop design's `visible`): see `classify`.
-    pinned, visible_texts: also the binders and facts that `backward_pins` carries to this entry."""
+    pinned, visible_texts: also the binders and facts that `backward_pins` carries to this entry.
+    A variant with no hidden fact and no ghost binder (every fact visible) has nothing to seal: the
+    caller renders the plain shape, all binders kept, and no edge instance enters or leaves it."""
     live, ghost, visible, hidden = classify(binders, resources, facts, visible_patterns, pinned,
                                             definitional=grouped, weak_patterns=weak_patterns,
                                             visible_texts=visible_texts)
+    if not hidden and not ghost:
+        return None
     hist = name + '_Hist'
     # The history takes only the live binders its facts mention. A loop class keeps
     # every fact on a loop-varying binder visible, so its history is the same on both sides of the
@@ -299,7 +314,7 @@ def seal_alternative(name, plain_telescope, plain_binders, binders, resources, f
         body = '(∃ ' + telescope(live) + ', ' + body + ')'
     elif grouped:
         body = '(' + body + ')'
-    meta = {'entry': name, 'hist': hist, 'mode': HIST_MODE, 'parameters': plain_binders,
+    meta = {'entry': name, 'hist': hist, 'mode': 'wrap', 'parameters': plain_binders,
             'live': live, 'hist_live': hist_live, 'varying': list(varying), 'ghost': ghost, 'resources': list(resources), 'visible': visible, 'hidden': hidden,
             'dropped_binders': [binder['name'] for binder in binders
                                 if binder not in live and binder not in ghost]}
@@ -558,7 +573,7 @@ def seal_class(name, prefix, binders_text, resources, facts, plain_binders, desi
             else:
                 pieces.append(resource)
         resources = pieces
-    if not HIST_MODE:
+    def plain():
         if not slot_reports:
             return None
         text = (prefix + ':= (∃ ' + telescope(binders) + ', (' + ' ∗ '.join(resources) + ') ∗ ⌜'
@@ -578,9 +593,12 @@ def seal_class(name, prefix, binders_text, resources, facts, plain_binders, desi
     # older records and the named equations of older cursors stay in the class history.
     patterns = (newest_call_patterns(binders, facts) + design_patterns(design)
                 + [r"(?<![\w'.])" + re.escape(binder) + r"(?![\w'])" for binder in registers])
-    declarations, body, meta = seal_alternative(
+    sealed = seal_alternative(
         name, ' ' + telescope(plain_binders), plain_binders, binders, resources, facts,
         visible_patterns=patterns, pinned=registers, grouped=True, varying=registers, weak_patterns=list(visible))
+    if sealed is None:
+        return plain()
+    declarations, body, meta = sealed
     meta['frame_slots'] = slot_reports
     meta['loop_class'] = True
     return declarations, prefix + ':= ' + body + '%I.\n', meta

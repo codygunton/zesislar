@@ -1221,8 +1221,7 @@ def drop_unheld_binders(state, components, carried, binders, plan, live_register
                     component['source'] = kept
                     record.setdefault('kept_facts', []).append(component['id'])
                     continue
-                if entry_hist.HIST_MODE:
-                    stash[component['id']] = component['source']
+                stash[component['id']] = component['source']
                 component['source'] = '⌜True⌝'
                 record.setdefault('facts', []).append(component['id'])
         if any(_mentions_free(component, name) for component in components
@@ -1440,10 +1439,9 @@ def generalize_owned_join(alternatives, *, original_seed, entry_pc, vocabulary,
     # that seed's history group (`⌜∃ b…, (F1) /\ …⌝`, visible or `zesu_join_history`), while an edge
     # that bypasses the seed states the same facts one per component. The bypassing edge binds them
     # the same way (each b is its own value of b), so the edges agree on the group.
-    if entry_hist.HIST_MODE:
-        records[:] = [{key: dict(row) for key, row in record.items()} for record in records]
-        for aligned in align_history_groups(records, kinds):
-            plan.setdefault('aligned_history', []).append(aligned)
+    records[:] = [{key: dict(row) for key, row in record.items()} for record in records]
+    for aligned in align_history_groups(records, kinds):
+        plan.setdefault('aligned_history', []).append(aligned)
     def held_outside(index, binder_name):
         return (_mentions(dumped[index], binder_name)
                 or any(_mentions_free(row, binder_name) for row in records[index].values()
@@ -1455,7 +1453,7 @@ def generalize_owned_join(alternatives, *, original_seed, entry_pc, vocabulary,
               if not any(held_outside(index, binder_name) for index in range(len(records)))
               and any(in_facts(index, binder_name) for index in range(len(records)))
               and not all(in_facts(index, binder_name) for index in range(len(records)))]
-    if ghosts and entry_hist.HIST_MODE:
+    if ghosts:
         for index, record in enumerate(records):
             records[index] = record = {key: dict(row) for key, row in record.items()}
             group = ghost_group([record[row['id']] for row in ownership['components']], ghosts)
@@ -1626,7 +1624,7 @@ def generalize_owned_join(alternatives, *, original_seed, entry_pc, vocabulary,
             else:
                 raise ValueError('A common guard has no source condition on every edge')
         plan['common_guard_certificates'].append({'guard': guard.to_dict(), 'edges': matches})
-    disjunction = edge_guard_disjunction(alternatives, state.conditions) if entry_hist.HIST_MODE else None
+    disjunction = edge_guard_disjunction(alternatives, state.conditions)
     if disjunction is not None:
         plan['edge_guard_disjunction'] = disjunction.to_dict()
         state.conditions.append(disjunction)

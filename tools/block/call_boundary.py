@@ -382,9 +382,8 @@ def call_return_seed(edges, *, call, function_root, root_seed, shapes, vocabular
     # binders take the first free prefix call_, call2_, call3_, ...
     taken = set(inherited)
     # A layer whose binders a join bound inside its history still owns its component ids.
-    if entry_hist.HIST_MODE:
-        taken.update(component['id'] for seed in (root_seed, *origin_seeds)
-                     for component in seed.ownership['components'])
+    taken.update(component['id'] for seed in (root_seed, *origin_seeds)
+                 for component in seed.ownership['components'])
     for edge in edges:
         for value in _state_from_result(edge['state']).registers.values():
             taken.update(_inputs(value))
@@ -489,7 +488,7 @@ def call_return_seed(edges, *, call, function_root, root_seed, shapes, vocabular
             if len(owner) != 1 or image.updates[owner[0].id]:
                 raise CallRefused('The kept array has no unchanged caller resource: ' + binder)
             kept.add(owner[0].id)
-            if entry_hist.HIST_MODE and 'slice_of' in design[binder]:
+            if 'slice_of' in design[binder]:
                 # (`entry_hist` shapes.) The window of the slice in its array, which the caller
                 # proves when it lends the slice: the successor states it over the call-site
                 # values (the kept cursor registers), so a later call's slice bounds follow in one step.
@@ -635,12 +634,11 @@ def call_return_seed(edges, *, call, function_root, root_seed, shapes, vocabular
             index += 1
             fresh_name = '%s_%d' % (base, index)
         renamed[name] = fresh_name
-    if entry_hist.HIST_MODE:
-        # (`entry_hist` shapes.) The callee's own binders (`before`) take this call's prefix too: a
-        # destructured record must not lend its name to the next call spec's binder of that name
-        # (the named-binder witness step picks a context variable by the binder's name).
-        for name, _ in existential:
-            renamed[name] = prefix + name
+    # (`entry_hist` shapes.) The callee's own binders (`before`) take this call's prefix too: a
+    # destructured record must not lend its name to the next call spec's binder of that name
+    # (the named-binder witness step picks a context variable by the binder's name).
+    for name, _ in existential:
+        renamed[name] = prefix + name
     if renamed:
         pattern = re.compile(r"(?<![\w'.])(" + '|'.join(map(re.escape, renamed)) + r")(?![\w'])")
         facts = [pattern.sub(lambda match: renamed[match[1]], fact) for fact in facts]
@@ -672,7 +670,7 @@ def call_return_seed(edges, *, call, function_root, root_seed, shapes, vocabular
     for component in ownership['components']:
         key, kind = component['id'], component['kind']
         node = dict(component['seed_component'])
-        if entry_hist.HIST_MODE and kind == 'opaque' and str(node.get('coq', '')).startswith('⌜'):
+        if kind == 'opaque' and str(node.get('coq', '')).startswith('⌜'):
             # A pure fact keeps the text its origin seeds hold: a join or loop head before the call
             # may have weakened it (bound its ghost binders, or dropped it), and the return site
             # must not restate more history than the call block's entry has.
@@ -817,8 +815,6 @@ def call_return_seed(edges, *, call, function_root, root_seed, shapes, vocabular
     except ImportError:
         from join_generalize import _bound_names
     def free_text(source):
-        if not entry_hist.HIST_MODE:
-            return source
         bound = _bound_names(source)
         return ' '.join(atom for atom in _atoms(source) if atom not in bound)
     text = ' '.join([free_text(node.get('original_component', node.get('coq', ''))) for node in nodes

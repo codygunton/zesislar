@@ -39,43 +39,31 @@ class LoopHeads(unittest.TestCase):
                 self.assertEqual(path.read_text(), render_loop_head(row['block'], header, structural))
 
     def test_predecessor_and_backedge_owner_names(self):
-        fixture = json.loads((ROOT / 'tools/block/fixtures/fp301-generation.json').read_text())
         for block, predecessor in [('00c4', '00b4'), ('0164', '0154')]:
-            source = next(r['canonical_source'] for r in fixture['callers']
-                          if r['output'].endswith('Caller' + predecessor + '.v'))
+            source = (ROOT / 'tools/block/generated/fp301_callers' / ('Caller' + predecessor + '.v')).read_text()
             self.assertIn('Pilot' + block + 'Entries.fp_machineAt' + block, source)
 
 
 class WrapLoopHeads(unittest.TestCase):
-    """The `entry_hist: wrap` shape of the same loop heads: each class keeps its loop binders and
-    resources, its hidden facts move into one sealed `_Hist` proposition, and no proof appears."""
+    """The `entry_hist: wrap` shape of the same loop heads: every fact of a decodeItem loop class is
+    visible (no ghost binder, no hidden fact), so the class has no history and keeps the plain shape."""
 
     def setUp(self):
-        self.addCleanup(entry_hist.configure, None)
+        self.addCleanup(entry_hist.configure, {'entry_hist': 'wrap'})
 
-    def test_each_class_applies_its_sealed_history(self):
+    def test_a_class_without_history_keeps_the_plain_shape(self):
         profile = copy.deepcopy(load_profile())
-        profile.data.update({'entry_hist': 'wrap', 'frame_slots': False})
+        profile.data.update({'entry_hist': 'wrap', 'frame_slots': False, 'hist_visible': []})
         fixture = json.loads((ROOT / 'tools/block/fixtures/fp301-loop-heads.json').read_text())
         for row in fixture['rows']:
             for structural in [False, True]:
                 text = render_loop_head(row['block'], pilot_header(profile), structural, profile)
-                self.assertIn('Require Import ZesuSsz.Automation2.Hist.', text)
+                self.assertNotIn('Require Import ZesuSsz.Automation2.Hist.', text)
+                self.assertNotIn('zesu_hist', text)
                 self.assertNotRegex(text, r'\b(?:Proof|Qed|Admitted|Axiom|Ltac)\b')
-                for index in range(len(row['classes'])):
-                    name = 'fp_machineAt%s_LoopClass%d' % (row['block'], index)
-                    if structural:
-                        self.assertIn('Typeclasses Opaque ' + name + '_Hist.', text)
-                        continue
-                    self.assertEqual(text.count('Definition ' + name + '_Hist '), 1)
-                    body = text[text.index('Definition ' + name + ' '):]
-                    body = body[:body.index('%I.')]
-                    self.assertIn('⌜zesu_hist (' + name + '_Hist', body)
-                    self.assertIn('(i : lvar "zesuLoopIndex" Z)', body)
-                # The legacy render of the same row is unchanged by the wrap render before it.
-                self.assertEqual(render_loop_head(row['block'], pilot_header(load_profile()), structural),
-                                 (ROOT / ('ZesuSsz/Generated/DecodeItem/FP301/Pilot' + row['block']
-                                          + ('Structural' if structural else 'Entries') + '.v')).read_text())
+                committed = (ROOT / ('ZesuSsz/Generated/DecodeItem/FP301/Pilot' + row['block']
+                                     + ('Structural' if structural else 'Entries') + '.v')).read_text()
+                self.assertEqual(text, committed)
 
     def test_a_class_shows_the_newest_call_record_and_hides_older_ones(self):
         # The 039c shape: call 13's payload is the loop's input; call 12's record and the named

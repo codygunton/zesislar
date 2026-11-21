@@ -29,6 +29,33 @@
   "blocks": ["+0x0", "+0x14", "+0x1c", "+0x44", "+0x50", "+0x78", "+0x80", "+0x88", "+0xa0", "+0xa8",
              "+0xb4", "+0x104", "+0x10c", "+0x118", "+0x148", "+0x154", "+0x2c", "+0xc4", "+0x164", "+0x180"],
   "loop_heads": ["+0xc4", "+0x164"],
+  "entry_hist": "wrap",
+  "frame_slots": false,
+  "hist_pinned": [".*"],
+  "store_splice": "per_store",
+  "keep_source_implied_ram_guards": true,
+  "caller_residual_imports": true,
+  "return_package": {
+    "source": "The function-return state every return block exits to: the Level-1 exit resources (caller registers restored, x10 the output pointer, the output array, the saved frame record) with the clobbered registers existential. One package serves all six return instructions; the composition's end bridge (DecodeItemGeneratedComposition.v, fp301_end_bridge) opens it. return_facts are added after its facts.",
+    "binders": [["a3", "bv 64%N"], ["a4", "bv 64%N"], ["a5", "bv 64%N"], ["a6", "bv 64%N"], ["machine_x12", "bv 64%N"], ["machine_x2", "bv 64%N"], ["machine_x8", "bv 64%N"], ["machine_x11", "bv 64%N"], ["currentStorage", "list (bv 8%N)"]],
+    "resources": [
+      "reg_col ((decodeItemSysRegs args))",
+      "\"x10\" ↦ᵣ (RVal_Bits (((Z_to_bv 64%N (decodeItemOutputPointer args))) : bv 64%N))",
+      "\"x11\" ↦ᵣ RVal_Bits machine_x11",
+      "\"x12\" ↦ᵣ (RVal_Bits (machine_x12 : bv 64))",
+      "\"x13\" ↦ᵣ (RVal_Bits (a3 : bv 64%N))",
+      "\"x14\" ↦ᵣ (RVal_Bits (a4 : bv 64%N))",
+      "\"x15\" ↦ᵣ (RVal_Bits (a5 : bv 64%N))",
+      "\"x16\" ↦ᵣ (RVal_Bits (a6 : bv 64%N))",
+      "\"x2\" ↦ᵣ (RVal_Bits (machine_x2 : bv 64))",
+      "\"x1\" ↦ᵣ (RVal_Bits (((Z_to_bv 64%N (decodeItemReturnAddress args))) : bv 64%N))",
+      "\"x8\" ↦ᵣ (RVal_Bits (machine_x8 : bv 64))",
+      "(decodeItemInputPointer args) ↦ₘ{DfracOwn 1}∗ (decodeItemInputBytes args)",
+      "(decodeItemOutputPointer args) ↦ₘ{DfracOwn 1}∗ (currentStorage)",
+      "(decodeItemStackPointer args - ( 16 )) ↦ₘ{DfracOwn 1}∗ (((Coq.Init.Datatypes.cons ((bv_extract 0%N 8%N (decodeItemSavedFramePointer args)) : bv 8%N) (Coq.Init.Datatypes.cons ((bv_extract 8%N 8%N (decodeItemSavedFramePointer args)) : bv 8%N) (Coq.Init.Datatypes.cons ((bv_extract 16%N 8%N (decodeItemSavedFramePointer args)) : bv 8%N) (Coq.Init.Datatypes.cons ((bv_extract 24%N 8%N (decodeItemSavedFramePointer args)) : bv 8%N) (Coq.Init.Datatypes.cons ((bv_extract 32%N 8%N (decodeItemSavedFramePointer args)) : bv 8%N) (Coq.Init.Datatypes.cons ((bv_extract 40%N 8%N (decodeItemSavedFramePointer args)) : bv 8%N) (Coq.Init.Datatypes.cons ((bv_extract 48%N 8%N (decodeItemSavedFramePointer args)) : bv 8%N) (Coq.Init.Datatypes.cons ((bv_extract 56%N 8%N (decodeItemSavedFramePointer args)) : bv 8%N) (Coq.Init.Datatypes.cons ((bv_extract 0%N 8%N ((Z_to_bv 64%N (decodeItemReturnAddress args)))) : bv 8%N) (Coq.Init.Datatypes.cons ((bv_extract 8%N 8%N ((Z_to_bv 64%N (decodeItemReturnAddress args)))) : bv 8%N) (Coq.Init.Datatypes.cons ((bv_extract 16%N 8%N ((Z_to_bv 64%N (decodeItemReturnAddress args)))) : bv 8%N) (Coq.Init.Datatypes.cons ((bv_extract 24%N 8%N ((Z_to_bv 64%N (decodeItemReturnAddress args)))) : bv 8%N) (Coq.Init.Datatypes.cons ((bv_extract 32%N 8%N ((Z_to_bv 64%N (decodeItemReturnAddress args)))) : bv 8%N) (Coq.Init.Datatypes.cons ((bv_extract 40%N 8%N ((Z_to_bv 64%N (decodeItemReturnAddress args)))) : bv 8%N) (Coq.Init.Datatypes.cons ((bv_extract 48%N 8%N ((Z_to_bv 64%N (decodeItemReturnAddress args)))) : bv 8%N) (Coq.Init.Datatypes.cons ((bv_extract 56%N 8%N ((Z_to_bv 64%N (decodeItemReturnAddress args)))) : bv 8%N) (@Coq.Init.Datatypes.nil (bv 8%N))))))))))))))))))))"
+    ],
+    "facts": ["(bv_unsigned machine_x2 = (decodeItemStackPointer args))%Z", "machine_x8 = decodeItemSavedFramePointer args", "(List.length currentStorage = 40)%nat"]
+  },
   "loop_head_fixture": "tools/block/fixtures/fp301-loop-heads.json",
   "loop_designs": [
     {
@@ -72,7 +99,7 @@
     "fixture": "tools/block/fixtures/fp301-loop-successors.json",
     "head_bound": "(bv_unsigned machine_x15 < bv_unsigned machine_x11)",
     "exit_link": "(bv_unsigned machine_x15 = bv_unsigned machine_x11)",
-    "forward_base": "3505afab5",
+    "forward_fixture": "tools/block/fixtures/decodeitem-loop-exit-forward.json",
     "witness_exclusion": "machine_x\\d+|decodeItem|\\bi\\b",
     "contradiction_directory": "_build/agents/loop-exit-contradiction-checks",
     "design": [
@@ -86,10 +113,5 @@
     "fixture": "tools/block/fixtures/fp301-design-callers.json",
     "design": "ZesuSsz/Evidence/decode_item_block_design.json",
     "blocks": ["+0x2c", "+0xd8", "+0xe0", "+0x178", "+0x180", "+0x1a8"]
-  },
-  "loop_successors": {
-    "pairs": [["+0xd8", "+0xc4"], ["+0xe0", "+0xc4"], ["+0x178", "+0x164"], ["+0x1a8", "+0x164"]],
-    "classes_per_head": 4,
-    "continuation_id": "resource_15"
   }
 }

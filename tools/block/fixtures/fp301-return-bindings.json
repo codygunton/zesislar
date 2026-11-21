@@ -5,7 +5,6 @@
     "path": "ZesuSsz/Evidence/decode_item_block_design.json",
     "sha256": "f7b97c85aa007b0c04fd2608e5015368f65b6d28a727d0195309d04ed41a7e37"
   },
-  "canonical_fixture": "tools/block/fixtures/fp301-generation.json",
   "measurement_scope": [
     "698c",
     "6ae0"
@@ -38,44 +37,6 @@
       "return_instruction_pc": "0x800d6b2c",
       "package": "ZesuSsz.Generated.DecodeItem.FP301.FunctionReturnEntries.fp_machineReturn args returnAddress K",
       "address": "returnAddress"
-    }
-  ],
-  "declarations": [
-    {
-      "output": "ZesuSsz/Generated/DecodeItem/FP301/FunctionReturnEntries.v",
-      "sha256": "cbde7fc110268e3986501358e37dd79a09c25a2e5522cc6fc0ef3dc18e1f8627",
-      "header_kind": "return",
-      "canonical_sha256": "c09568d1ba94231a91f77ac220d17985bf5792d888ef58812cb0c139c0b27bec"
-    },
-    {
-      "output": "ZesuSsz/Generated/DecodeItem/FP301/FunctionReturnStructural.v",
-      "sha256": "0287d77923668bddbda407095c6cb83e6aa96d228f19cd39ed80768128d9aa30",
-      "header_kind": "return",
-      "canonical_sha256": "e5182677dce8cbcc22a903f2e9c4409a6419c59602d818b140a7841495c2b707"
-    },
-    {
-      "output": "ZesuSsz/Generated/DecodeItem/FP301/Pilot002cEntries.v",
-      "sha256": "e58bcf923b236554a3d19b34eca69292a382abf1e25110b9dcfb362f200804c0",
-      "header_kind": "pilot",
-      "canonical_sha256": "11bf05be0916af91431860b399544d8da932f55e4454a99789f9b8fc44047e48"
-    },
-    {
-      "output": "ZesuSsz/Generated/DecodeItem/FP301/Pilot002cStructural.v",
-      "sha256": "a11554ab104d2eaac1d636aae23f8f152a1e8ba78f32c3886324502a2973ae5a",
-      "header_kind": "pilot",
-      "canonical_sha256": "3db1322a8b7e622ae4e838574b74f84be8798ed9a03869c4fe40e77ce59ae923"
-    },
-    {
-      "output": "ZesuSsz/Generated/DecodeItem/FP301/Pilot0180Entries.v",
-      "sha256": "198695ded83dd2b37f03aa0b63c1eca9433cfea47238d4bb29eb916c0381c651",
-      "header_kind": "pilot",
-      "canonical_sha256": "8ae6e58b43ab355213146ea5c733ec4a6dcae0aad773841b706806d900b08dde"
-    },
-    {
-      "output": "ZesuSsz/Generated/DecodeItem/FP301/Pilot0180Structural.v",
-      "sha256": "dae7a69ab46b3fa47ea4d3500f0980830d297620bd2ac8d4c27106fbeb328a09",
-      "header_kind": "pilot",
-      "canonical_sha256": "3b4c9e3cddaf1ebe3b64a7a9c73c1fbe104cde8ed0302a561e6b9e3854b6470f"
     }
   ],
   "compilation": {

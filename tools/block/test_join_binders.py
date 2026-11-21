@@ -24,7 +24,7 @@ class UnheldBinders(unittest.TestCase):
 
     def run_rules(self, state, live, components=()):
         plan = {'binders': []}
-        drop_unheld_binders(state, list(components), {}, [{'name': 'machine_x10'}], plan, live,
+        drop_unheld_binders(state, list(components), {}, [{'name': 'machine_x10', 'type': 'bv 64'}], plan, live,
                             lambda key, writes: '')
         return plan
 
@@ -55,7 +55,9 @@ class UnheldBinders(unittest.TestCase):
             plan = self.run_rules(state, live=live, components=components)
             self.assertEqual(state.registers['x13'], input_expr('machine_x13_1', 64))
             self.assertEqual(state.conditions, [])
-            self.assertEqual(components[0]['source'], '⌜True⌝')
+            # The dropped fact moves into the join's history group (entry_hist wrap).
+            self.assertEqual(components[0]['source'],
+                             '⌜zesu_join_history (∃ (machine_x10 : bv 64), (bv_unsigned machine_x10 < 8))⌝')
             self.assertEqual(plan['dropped_binders'][0]['rule'], 'forgotten')
             self.assertEqual(plan['dropped_binders'][0]['facts'], ['fact'])
 
@@ -70,7 +72,8 @@ class UnheldBinders(unittest.TestCase):
         self.assertEqual(state.registers['x13'], fresh)
         self.assertEqual(state.conditions, [operation('bvult', fresh, bits(8, 64))])
         self.assertEqual(components[0]['source'], '⌜P (machine_x13_1) (machine_x13_1)⌝')
-        self.assertEqual(components[1]['source'], '⌜True⌝')
+        self.assertEqual(components[1]['source'],
+                         '⌜zesu_join_history (∃ (machine_x10 : bv 64), (bv_unsigned machine_x10 < 8))⌝')
         self.assertEqual(plan['dropped_binders'][0]['kept_facts'], ['slice'])
         self.assertEqual(plan['dropped_binders'][0]['facts'], ['inner'])
 
@@ -245,7 +248,7 @@ class HistoryJoin(unittest.TestCase):
 
     def setUp(self):
         entry_hist.configure({'entry_hist': 'wrap', 'hist_visible': ['zesu_named_eq']})
-        self.addCleanup(entry_hist.configure, None)
+        self.addCleanup(entry_hist.configure, {'entry_hist': 'wrap'})
 
     def run_rules(self):
         state = state_with({'x13': operation('bvadd', self.b, bits(1, 64))}, [])
@@ -265,12 +268,6 @@ class HistoryJoin(unittest.TestCase):
         self.assertEqual(components[1]['source'], '⌜True⌝')
         self.assertEqual(plan['ghost_history'], {'component': 'eq', 'facts': ['eq', 'range']})
         self.assertTrue(entry_hist.is_join_history(components[0]['source'][1:-1]))
-
-    def test_the_legacy_shape_drops_the_binder(self):
-        entry_hist.configure(None)
-        state, components, plan = self.run_rules()
-        self.assertEqual([row['source'] for row in components], ['⌜True⌝', '⌜True⌝'])
-        self.assertNotIn('ghost_history', plan)
 
 
 class WeakVisiblePatterns(unittest.TestCase):
@@ -297,7 +294,7 @@ class WeakVisiblePatterns(unittest.TestCase):
 
     def test_a_loop_design_visible_list_is_weak(self):
         entry_hist.configure({'entry_hist': 'wrap'})
-        self.addCleanup(entry_hist.configure, None)
+        self.addCleanup(entry_hist.configure, {'entry_hist': 'wrap'})
         _, _, meta = entry_hist.seal_class(
             'C', 'Definition C ', '(machine_x11 : bv 64) (held : list byte) (dead : list byte)',
             ['"x11" ↦ᵣ RVal_Bits (machine_x11 : bv 64%N)', 'p ↦ₘ∗ held'], self.FACTS,

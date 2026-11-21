@@ -403,7 +403,10 @@ Ltac zesu_word_explicit_list_rewrite :=
 (* The same word read back by a load: `bv_concat` of the bytes
    `Z_to_bv 8 (z ≫ _)` of one integer `z`, against `Z_to_bv w z`. Every leaf
    must be a byte of that `z` (`zesu_word_concat_bytes_of`); then the
-   equation is bit-blasted, each bit an index equation. *)
+   equation is bit-blasted, each bit an index equation. The equation holds
+   for every `z`, so it is proved in a context cleared of hypotheses: bitblast
+   asks lia several hundred times per word, and on a block's context (about
+   240 facts on nextUint64 0000) those calls cost 350 of its 1,800 s. *)
 Ltac zesu_word_concat_bytes_of t z :=
   lazymatch t with
   | bv_concat _ ?high ?low =>
@@ -417,4 +420,4 @@ Ltac zesu_word_concat_bytes_eq :=
   | |- @eq (bv _) (Z_to_bv ?n ?z) (bv_concat ?n ?high ?low) =>
       zesu_word_concat_bytes_of (bv_concat n high low) z; symmetry
   end;
-  solve [bv_simplify; bitblast; f_equal; zesu_lia].
+  solve [zesu_clear_all_hyps; bv_simplify; bitblast; f_equal; zesu_lia].
