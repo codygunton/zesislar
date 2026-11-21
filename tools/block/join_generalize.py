@@ -494,8 +494,9 @@ def align_join_edges(alternatives, ownership, terminal_id, continuation_name, ke
     With keep_designs (a single edge into a block entry: the entry is this
     edge) the seed's `join_design_*` facts are kept as well: a design fact is
     free Coq text that the seed state does not hold as a condition, so it
-    would otherwise end at the join. Any other difference is left for the
-    caller to refuse.
+    would otherwise end at the join. keep_designs may also be a test on a design
+    component's source text: only the designs it accepts stay. Any other
+    difference is left for the caller to refuse.
     """
     original = ownership['tree']
     terminal_source = next(component['source'] for component in ownership['components']
@@ -541,8 +542,10 @@ def align_join_edges(alternatives, ownership, terminal_id, continuation_name, ke
                 lengths.setdefault(binder, []).append(component['provenance']['relation']['coq'])
         edge = deepcopy(alternative)
         rewritten = deepcopy(original)
+        sources = {component['id']: component['source'] for component in boundary.get('components', [])}
         designs = [identifier for identifier in sorted(relations)
-                   if keep_designs and identifier.startswith('join_design_')]
+                   if keep_designs and identifier.startswith('join_design_')
+                   and (keep_designs is True or keep_designs(sources.get(identifier, '')))]
         if keep_binders:
             rewritten['binders'] = [*rewritten.get('binders', []), *deepcopy(own)]
             kept = [component for component in kept

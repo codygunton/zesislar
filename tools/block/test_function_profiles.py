@@ -393,6 +393,13 @@ class JoinEdgeAlignment(unittest.TestCase):
         # A return boundary (keep_binders only) still drops them.
         returned, _ = align_join_edges([joined], ownership, 'r1', 'K', keep_binders=True)
         self.assertEqual([c['source'] for c in returned[0]['resource_boundary']['components']], ['A', 'True'])
+        # A design test keeps only the designs it accepts, on either side of its answer.
+        tested, _ = align_join_edges([joined], ownership, 'r1', 'K', keep_binders=True,
+                                     keep_designs=lambda source: source == '⌜Q⌝')
+        self.assertEqual([c['source'] for c in tested[0]['resource_boundary']['components']], ['A', 'True', '⌜Q⌝'])
+        refused, _ = align_join_edges([joined], ownership, 'r1', 'K', keep_binders=True,
+                                      keep_designs=lambda source: False)
+        self.assertEqual([c['source'] for c in refused[0]['resource_boundary']['components']], ['A', 'True'])
 
     def test_other_differences_stay_for_the_refusal(self):
         ownership = {'tree': self.ORIGINAL, 'components': [{'id': 'r0', 'source': 'A'}, {'id': 'r1', 'source': 'True'}]}
