@@ -14,6 +14,7 @@ Require Import ZesuSsz.Contracts.AbiBytes.
 Require Import ZesuSsz.Contracts.ZiskRuntime.
 Require Import ZesuSsz.Contracts.Candidates.ParentHeaderCandidate.
 Require Import ZesuSsz.Automation2.ByteWindowFold.
+Require Import ZesuSsz.Contracts.ParentHeaderWalkFact.
 Require Export ZesuSsz.Compliance.ParentHeaderHints.
 Require Import ZesuSsz.Contracts.Level1.
 Local Open Scope Z_scope.
@@ -22,6 +23,7 @@ Require Import ZesuSsz.Generated.DecodeParentHeader.FP301.Pilot01f4Entries.
 Require Import ZesuSsz.Generated.DecodeParentHeader.FP301.Pilot01f4Structural.
 Require Import ZesuSsz.Generated.DecodeParentHeader.FP301.Pilot0210Entries.
 Require Import ZesuSsz.Generated.DecodeParentHeader.FP301.Pilot0210Structural.
+Require Import ZesuSsz.Compliance.ParentHeaderWalkObligations.
 Require Import ZesuSsz.Automation2.Hist.
 From iris.proofmode Require Import proofmode.
 
@@ -33,14 +35,14 @@ Global Instance zesu_hist_edge_47 (args : ParentHeaderArgs) (returnAddress : Z) 
   ZesuHistEdge (PROP := iProp Sigma)
     (fp_machineAt01f4_ForwardA0N0_Hist (args) (returnAddress) (call8_after) (call8_kept_x18) (call7_after) (call7_kept_x18) (call7_kept_x19) (call6_after) (call6_kept_x18) (call6_kept_x19) (call5_after) (call5_kept_x18) (call5_kept_x19) (call4_after) (call4_kept_x18) (call4_kept_x19) (call3_after) (call3_kept_x18) (call3_kept_x19) (call2_after) (call2_kept_x18) (call2_kept_x19) (call_after))
     (fp_machineAt0210_ForwardA0N0_Hist (args) (returnAddress) (call8_after) (call8_kept_x18) (call8_kept_x19) (call7_after) (call7_kept_x18) (call7_kept_x19) (call6_after) (call6_kept_x18) (call6_kept_x19) (call5_after) (call5_kept_x18) (call5_kept_x19) (call4_after) (call4_kept_x18) (call4_kept_x19) (call3_after) (call3_kept_x18) (call3_kept_x19) (call2_after) (call2_kept_x18) (call2_kept_x19) (call_after))
-    (⌜(∃ (call8_arg_x13 : bv 64) (call8_arg_x14 : bv 64) (call8_arg_x15 : bv 64) (call8_arg_x16 : bv 64) (call8_arg_x17 : bv 64) (call8_before : list byte), (decodeItemCallDomain
+    (⌜(bv_unsigned (parentHeaderReturnAddress args) = returnAddress /\ parentHeaderArgsWellFormed args)⌝ ∗ ⌜((bv_unsigned (parentHeaderReturnAddress args) mod 4 = 0)%Z)⌝ ∗ ⌜((zesu_named_eq call8_kept_x18 (bv_sub call7_kept_x18 (bv_concat 64%N (bv_concat 56%N (bv_concat 48%N (bv_concat 40%N (bv_concat 32%N (bv_concat 24%N (bv_concat 16%N (List.nth 31%nat call7_after (BV 8%N 0%Z)) (List.nth 30%nat call7_after (BV 8%N 0%Z))) (List.nth 29%nat call7_after (BV 8%N 0%Z))) (List.nth 28%nat call7_after (BV 8%N 0%Z))) (List.nth 27%nat call7_after (BV 8%N 0%Z))) (List.nth 26%nat call7_after (BV 8%N 0%Z))) (List.nth 25%nat call7_after (BV 8%N 0%Z))) (List.nth 24%nat call7_after (BV 8%N 0%Z))))))⌝ ∗ ⌜((zesu_named_eq call8_kept_x19 (bv_add call7_kept_x19 (bv_concat 64%N (bv_concat 56%N (bv_concat 48%N (bv_concat 40%N (bv_concat 32%N (bv_concat 24%N (bv_concat 16%N (List.nth 31%nat call7_after (BV 8%N 0%Z)) (List.nth 30%nat call7_after (BV 8%N 0%Z))) (List.nth 29%nat call7_after (BV 8%N 0%Z))) (List.nth 28%nat call7_after (BV 8%N 0%Z))) (List.nth 27%nat call7_after (BV 8%N 0%Z))) (List.nth 26%nat call7_after (BV 8%N 0%Z))) (List.nth 25%nat call7_after (BV 8%N 0%Z))) (List.nth 24%nat call7_after (BV 8%N 0%Z))))))⌝ ∗ ⌜(∃ (call8_arg_x13 : bv 64) (call8_arg_x14 : bv 64) (call8_arg_x15 : bv 64) (call8_arg_x16 : bv 64) (call8_arg_x17 : bv 64) (call8_before : list byte), (decodeItemCallDomain
           (decodeItemCallDataArgs ([((bv_add (bv_add (bv_add (parentHeaderStackPointer args) (BV 64%N 18446744073709551216%Z)) (BV 64%N 400%Z)) (BV 64%N 18446744073709551280%Z))); (call8_kept_x19); (call8_kept_x18); (call8_arg_x13); (call8_arg_x14); (call8_arg_x15); (call8_arg_x16); (call8_arg_x17)]) (((bv_add (parentHeaderStackPointer args) (BV 64%N 18446744073709551216%Z)))) (bv_unsigned (((parentHeaderInputEnd args)))) (take (Z.to_nat (bv_unsigned (call8_kept_x18))) (drop (Z.to_nat (bv_unsigned (call8_kept_x19) - bv_unsigned (parentHeaderInputPointer args))) (parentHeaderInputBytes args))) call8_before)) /\ (decodeItemCallMeaning
             (decodeItemCallDataArgs ([((bv_add (bv_add (bv_add (parentHeaderStackPointer args) (BV 64%N 18446744073709551216%Z)) (BV 64%N 400%Z)) (BV 64%N 18446744073709551280%Z))); (call8_kept_x19); (call8_kept_x18); (call8_arg_x13); (call8_arg_x14); (call8_arg_x15); (call8_arg_x16); (call8_arg_x17)]) (((bv_add (parentHeaderStackPointer args) (BV 64%N 18446744073709551216%Z)))) (bv_unsigned (((parentHeaderInputEnd args)))) (take (Z.to_nat (bv_unsigned (call8_kept_x18))) (drop (Z.to_nat (bv_unsigned (call8_kept_x19) - bv_unsigned (parentHeaderInputPointer args))) (parentHeaderInputBytes args))) call8_before) (call8_after)))⌝ ∗ ⌜((bv_unsigned (parentHeaderInputPointer args) <= bv_unsigned (call8_kept_x19) /\ bv_unsigned (call8_kept_x19) + bv_unsigned (call8_kept_x18) <= bv_unsigned (parentHeaderInputPointer args) + Z.of_nat (List.length (parentHeaderInputBytes args)))%Z)⌝ ∗ True)%I.
 Proof.
-  rewrite /ZesuHistEdge => Hh. apply zesu_hist_elim in Hh. unfold fp_machineAt01f4_ForwardA0N0_Hist in Hh.
-  destruct Hh as (fp_seed_mstatus_bits & forward_witness_cbcac9df79b9221c & forward_witness_1be931110d776902 & forward_witness_905cf96e605c1117 & forward_witness_55ab0ce59750150a & forward_witness_11fde2df72db9d06 & forward_witness_88383840afa7af74 & forward_witness_1492ef7bd46b3b7a & forward_witness_d77b5950a2aea933 & forward_witness_21649d1cf161453f & forward_witness_407fca3a6f90b8db & forward_witness_1eea82d2945b4618 & forward_witness_751588b52f8a71ff & forward_witness_a84be01a9be85bdb & forward_witness_9644ccf41f39915a & HF0 & HF1 & HF2 & HF3 & HF4 & HF5 & HF6 & HF7 & HF8 & HF9 & HF10 & HF11 & HF12 & HF13 & HF14 & HF15 & HF16 & HF17 & HF18 & HF19 & HF20 & HF21 & HF22 & HF23 & HF24 & HF25 & HF26 & HF27 & HF28 & HF29 & HF30 & HF31 & HF32 & HF33 & HF34 & HF35 & HF36 & HF37 & HF38 & HF39 & HF40 & HF41 & HF42 & HF43 & HF44 & HF45).
+  rewrite /ZesuHistEdge => Hh. apply zesu_hist_elim in Hh. pose proof Hh as HS. unfold fp_machineAt01f4_ForwardA0N0_Hist in Hh.
+  destruct Hh as (fp_seed_mstatus_bits & forward_witness_cbcac9df79b9221c & forward_witness_1be931110d776902 & forward_witness_905cf96e605c1117 & forward_witness_55ab0ce59750150a & forward_witness_11fde2df72db9d06 & forward_witness_88383840afa7af74 & forward_witness_1492ef7bd46b3b7a & forward_witness_d77b5950a2aea933 & forward_witness_21649d1cf161453f & forward_witness_407fca3a6f90b8db & forward_witness_1eea82d2945b4618 & forward_witness_751588b52f8a71ff & forward_witness_a84be01a9be85bdb & forward_witness_9644ccf41f39915a & HF0 & HF1 & HF2 & HF3 & HF4 & HF5 & HF6 & HF7 & HF8 & HF9 & HF10 & HF11 & HF12 & HF13 & HF14 & HF15 & HF16 & HF17 & HF18 & HF19 & HF20 & HF21 & HF22 & HF23 & HF24 & HF25 & HF26 & HF27 & HF28 & HF29 & HF30 & HF31 & HF32 & HF33 & HF34 & HF35 & HF36 & HF37 & HF38 & HF39 & HF40 & HF41 & HF42 & HF43 & HF44 & HF45 & HF46 & HF47 & HF48 & HF49 & HF50 & HF51 & HF52).
   iIntros "HN".
-  iDestruct "HN" as "(%HV24 & %HV25 & _)".
+  iDestruct "HN" as "(%HV0 & %HV1 & %HV22 & %HV23 & %HV24 & %HV25 & _)".
   iPureIntro. apply zesu_hist_intro. unfold fp_machineAt0210_ForwardA0N0_Hist.
   exists fp_seed_mstatus_bits, forward_witness_cbcac9df79b9221c, forward_witness_1be931110d776902, forward_witness_905cf96e605c1117, forward_witness_55ab0ce59750150a, forward_witness_11fde2df72db9d06, forward_witness_88383840afa7af74, forward_witness_1492ef7bd46b3b7a, forward_witness_d77b5950a2aea933, forward_witness_21649d1cf161453f, forward_witness_407fca3a6f90b8db, forward_witness_1eea82d2945b4618, forward_witness_751588b52f8a71ff, forward_witness_a84be01a9be85bdb, forward_witness_9644ccf41f39915a.
   split; [exact HF0|].
@@ -56,15 +58,16 @@ Proof.
   split; [exact HF10|].
   split; [exact HF11|].
   split; [exact HF12|].
-  split; [exact HV24|].
-  split; [exact HV25|].
   split; [exact HF13|].
   split; [exact HF14|].
   split; [exact HF15|].
   split; [exact HF16|].
   split; [exact HF17|].
   split; [exact HF18|].
+  split; [exact HV24|].
+  split; [exact HV25|].
   split; [exact HF19|].
+  split; [exact (fp_edge01f4_0210_Walk_holds args returnAddress call8_after call8_kept_x18 call8_kept_x19 call7_after call7_kept_x18 call7_kept_x19 call6_after call6_kept_x18 call6_kept_x19 call5_after call5_kept_x18 call5_kept_x19 call4_after call4_kept_x18 call4_kept_x19 call3_after call3_kept_x18 call3_kept_x19 call2_after call2_kept_x18 call2_kept_x19 call_after HS HV0 HV1 HV22 HV23 HV24)|].
   split; [exact HF20|].
   split; [exact HF21|].
   split; [exact HF22|].
@@ -87,9 +90,16 @@ Proof.
   split; [exact HF39|].
   split; [exact HF40|].
   split; [exact HF41|].
+  split; [exact HF42|].
+  split; [exact HF43|].
   split; [exact HF44|].
   split; [exact HF45|].
-  exact HF42.
+  split; [exact HF46|].
+  split; [exact HF47|].
+  split; [exact HF48|].
+  split; [exact HF51|].
+  split; [exact HF52|].
+  exact HF49.
 Qed.
 
 End edges.
