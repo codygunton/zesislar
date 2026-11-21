@@ -107,11 +107,12 @@ def design_fact_text(row):
 # `join_designs` row `premises`; default: the edge's own guards only): `guard` (the conditions the
 # block takes on its way to the join), `domain` (facts on no entry binder), `length` (`List.length`
 # facts), `named_eq` (`zesu_named_eq` equations), and the newest call's `newest_call_record`,
-# `newest_call_guard`, `newest_call_window` (`newest_call_groups`) and `newest_call_named_eq` (the
+# `newest_call_guard`, `newest_call_window` (`newest_call_groups`), `newest_call_named_eq` (the
 # named equations of that call layer's binders only: a step over the newest call needs no older
-# layer's names, and `named_eq` grows with the call number).
+# layer's names, and `named_eq` grows with the call number) and `newest_call_outcome` (every fact on
+# that call's outcome binders: its record, guards and the values the code computed from it).
 OBLIGATION_PREMISES = ('guard', 'domain', 'length', 'named_eq', 'newest_call_record', 'newest_call_guard',
-                       'newest_call_window', 'newest_call_named_eq')
+                       'newest_call_window', 'newest_call_named_eq', 'newest_call_outcome')
 
 
 def _obligation_rows(designs, key, rows):
@@ -157,11 +158,13 @@ def obligation_premise_positions(binders, facts, classes):
     groups = newest_call_groups(binders, facts)
     prefixes = call_prefixes(binders)
     newest_named = (r"zesu_named_eq \(?" + re.escape(prefixes[-1]) + r"\w+\)?\s") if prefixes else None
+    outcome = (r"(?<![\w'.])" + re.escape(prefixes[-1]) + CALL_OUTCOME + r"(?![\w'])") if prefixes else None
     tests = {'domain': lambda fact: not any(mentions(binder['name'], fact) for binder in binders),
              'length': is_length_fact,
              'named_eq': lambda fact: re.match(r'zesu_named_eq\b', unwrap(fact)) is not None,
              'newest_call_named_eq': lambda fact: newest_named is not None
-             and re.match(newest_named, unwrap(fact)) is not None}
+             and re.match(newest_named, unwrap(fact)) is not None,
+             'newest_call_outcome': lambda fact: outcome is not None and re.search(outcome, fact) is not None}
     for name, patterns in groups.items():
         tests['newest_call_' + name] = lambda fact, patterns=patterns: any(re.search(pattern, fact)
                                                                           for pattern in patterns)

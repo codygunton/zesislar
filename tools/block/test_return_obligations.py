@@ -79,6 +79,12 @@ class ReturnRows(unittest.TestCase):
         self.assertEqual(entry_hist.obligation_premise_positions(binders, facts, ['named_eq']), [0, 1, 2])
         self.assertEqual(entry_hist.obligation_premise_positions(binders[:1], facts, ['newest_call_named_eq']), [])
 
+    def test_newest_call_outcome_takes_every_fact_on_the_newest_outcome(self):
+        binders = [{'name': name, 'type': T} for name in ('call2_after', 'call3_after', 'machine_x21_1')]
+        facts = ['bv_unsigned machine_x21_1 = fold (w0 call3_after)', 'r call2_after', 'q call3_after_x',
+                 '(negb (bool_decide (8 < w8 call3_after))) = true']
+        self.assertEqual(entry_hist.obligation_premise_positions(binders, facts, ['newest_call_outcome']), [0, 3])
+
 
 if __name__ == '__main__':
     unittest.main()
