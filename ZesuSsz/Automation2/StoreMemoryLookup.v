@@ -13,6 +13,8 @@ Require ZesuSsz.Automation2.ByteArrayAssembly.
 Require Import ZesuSsz.Contracts.IslarisMemory.
 Require ZesuSsz.Automation2.WrappedWord.
 Require ZesuSsz.Automation2.CallSlice.
+Require ZesuSsz.Automation2.VmClosed.
+Require Import ZesuSsz.Automation2.ByteExtractCodec281.
 Require Import iris.proofmode.environments.
 Local Open Scope Z_scope.
 
@@ -740,6 +742,134 @@ Ltac zesu_join_frame_explicit :=
       zesu_join_frame_explicit_at a L
   end.
 
+(* decodeParentHeader 0514 return slots: the successor asks for one byte
+   array at `a` as an explicit list some of whose bytes are its own
+   existential (`∃ x : _ *ₗ … *ₗ unit, a ↦ₘ∗ L x ∗ G x`, padding bytes of a
+   result struct), where the block holds a cell at `a` and no array there.
+   The cell and the adjacent cells, uninitialised pieces and byte arrays that
+   make up exactly the requested length are folded into one array (as in
+   `zesu_join_frame_explicit_at`), the unknown bytes of the uninitialised
+   pieces become variables, and the request's existential is instantiated
+   byte by byte with the held bytes. The instantiation is forced: the request
+   is the held array itself, so `run = L x` fixes every byte `L x` exposes;
+   an existential byte appears as an element (or its `bv_extract 0 8`) and
+   gets the held byte at its position; every closed element must be the held
+   byte (syntactically, by the low byte of a little-endian word, by closed
+   computation, or by `bv_solve` in a context cleared of propositions); a
+   component the list does not fix refuses the step. The lemma gives back
+   exactly the request at that witness and `G` of it. *)
+Lemma zesu_byte_array_exist_inst `{!islaG Sigma} {A : Type} (a : Z) (run : list (bv 8))
+    (L : A → list (bv 8)) (G : A → iProp Sigma) (x0 : A) :
+  run = L x0 → a ↦ₘ∗ run -∗ G x0 -∗ ∃ x, a ↦ₘ∗ L x ∗ G x.
+Proof. intros ->. iIntros "Ha HG". iExists x0. iFrame. Qed.
+Lemma zesu_le_word_low_byte (n : N) (b : bv 8) (l : list (bv 8)) :
+  (8 <= n)%N -> bv_extract 0 8 (Z_to_bv n (little_endian_to_bv 8 (b :: l))) = b.
+Proof.
+  intros Hn. apply bv_eq. rewrite bv_extract_unsigned. rewrite Z_to_bv_unsigned.
+  unfold little_endian_to_bv. cbn [fmap list_fmap little_endian_to_Z].
+  pose proof (bv_unsigned_in_range _ b) as Hb. unfold bv_wrap, bv_modulus in *.
+  rewrite Z.shiftr_0_r. bitblast.
+Qed.
+Lemma zesu_extract_byte_self (k : N) (b : bv 8) : k = 0%N -> bv_extract k 8 b = b.
+Proof.
+  intros ->. apply bv_eq. rewrite bv_extract_unsigned. rewrite Z.shiftr_0_r.
+  apply bv_wrap_small. apply bv_unsigned_in_range.
+Qed.
+Ltac zesu_li_evars A :=
+  lazymatch A with
+  | li_prod ?B ?C => let e := open_constr:(_ : B) in let r := zesu_li_evars C in constr:(li_pair e r)
+  | unit => constr:(tt)
+  end.
+Ltac zesu_run_spine_vars :=
+  lazymatch iTypeOf (INamed "HzesuRun") with
+  | Some (_, (_ ↦ₘ∗ ?run)%I) =>
+    first [ match goal with
+            | H : length ?v = ?c |- _ =>
+                is_var v; lazymatch run with context [v] => idtac end;
+                lazymatch c with
+                | S _ => let b := fresh "pieceByte" in
+                         destruct v as [|b v]; [discriminate H|]; simpl in H; apply eq_add_S in H
+                | O => destruct v; [clear H|discriminate H]
+                end
+            end; zesu_run_spine_vars
+          | idtac ]
+  end.
+Ltac zesu_run_byte :=
+  match goal with
+  | |- _ = ?r => is_evar r; reflexivity
+  | |- ?l = bv_extract ?k 8 ?e =>
+      is_evar e; unify e l; symmetry; apply zesu_extract_byte_self; vm_compute; reflexivity
+  | |- ?g =>
+      assert_fails (has_evar g);
+      first [ lazymatch g with ?l = ?r => constr_eq l r end; reflexivity
+            | lazymatch g with
+              | bv_extract 0 8 (Z_to_bv ?n (little_endian_to_bv 8 (?b :: ?l))) = _ =>
+                  rewrite (zesu_le_word_low_byte n b l (proj1 (N.leb_le 8 n) eq_refl))
+              end;
+              lazymatch goal with |- ?l = ?r => constr_eq l r end; reflexivity
+            | ZesuSsz.Automation2.VmClosed.zesu_vm_closed g; vm_compute; reflexivity
+            | repeat match goal with H : ?T |- _ => lazymatch type of T with Prop => clear H end end;
+              bv_solve ]
+  end.
+Ltac zesu_run_list_inst :=
+  rewrite <- ?byte_extracts_codec281; unfold byte_extracts281;
+  repeat match goal with
+  | |- context [N.to_nat ?k] =>
+      let c := eval vm_compute in (N.to_nat k) in change (N.to_nat k) with c
+  end;
+  cbn [seq fmap list_fmap app];
+  repeat match goal with
+  | |- context [(8 * N.of_nat ?i)%N] =>
+      let k := eval vm_compute in (8 * N.of_nat i)%N in change (8 * N.of_nat i)%N with k
+  end;
+  repeat (apply (f_equal2 (@cons _)); [zesu_run_byte|]); reflexivity.
+Ltac zesu_join_frame_explicit_exist :=
+  lazymatch goal with
+  | |- environments.envs_entails _ (@bi_exist _ ?A (fun x =>
+        bi_sep (@mem_mapsto_array _ _ 8%N ?a (DfracOwn 1) (@?L x)) (@?G x))) =>
+      lazymatch A with li_prod _ _ => idtac end;
+      assert_fails (has_evar a);
+      let n := eval lazy [length] in (fun x => length (L x)) in
+      let K := lazymatch n with (fun _ => ?c) => eval vm_compute in (Z.of_nat c) end in
+      try ZesuSsz.Automation2.ResourceGroups.zesu_expose_environment_alias;
+      try iEval (rewrite <- isla.ghost_state.mem_mapsto_array_eq);
+      assert_fails (iMatchHyp ltac:(fun H res =>
+        lazymatch res with (?a2 ↦ₘ∗ _)%I => constr_eq a a2 end));
+      let ra := ZesuSsz.Automation2.WrappedWord.zesu_term_root a in
+      iMatchHyp ltac:(fun H res =>
+        lazymatch res with
+        | (?a2 ↦ₘ ?v)%I =>
+            constr_eq a a2;
+            lazymatch type of v with
+            | bv ?w =>
+                let len := eval vm_compute in (w / 8)%N in
+                let m := eval vm_compute in (Z.of_N len) in
+                lazymatch eval vm_compute in (Z.ltb m K) with true => idtac end;
+                iRename H into "HzesuRun";
+                let Hl := fresh "HpieceLength" in
+                iDestruct (zesu_cell_bytes len a with "HzesuRun") as "[HzesuRun HzesuPure]";
+                iDestruct "HzesuPure" as %Hl;
+                change (Z.of_N len) with m in Hl;
+                zesu_join_frame_loop_upto ra a m K Hl
+            end
+        end);
+      zesu_run_spine_vars;
+      lazymatch goal with
+      | |- environments.envs_entails _ (@bi_exist _ ?A (fun x =>
+            bi_sep (@mem_mapsto_array _ _ 8%N ?a (DfracOwn 1) (@?L x)) (@?G x))) =>
+      lazymatch iTypeOf (INamed "HzesuRun") with
+      | Some (_, (_ ↦ₘ∗ ?run)%I) =>
+          let w0 := zesu_li_evars A in
+          let Lw := eval cbv beta in (L w0) in
+          let Lw := eval cbv [li_fst li_snd] in Lw in
+          let E := fresh "HrunBytes" in
+          assert (E : run = Lw) by zesu_run_list_inst;
+          assert_fails (has_evar w0);
+          iApply (zesu_byte_array_exist_inst a run L G w0 E with "HzesuRun");
+          clear E
+      end end
+  end.
+
 (* The goal's head requests a byte array at `a` (any list): tested before the
    environment is read, so the step below costs one match on other goals. *)
 Ltac zesu_requested_byte_array_base k :=
@@ -1167,7 +1297,8 @@ Ltac zesu_join_frame_byte_array :=
         | zesu_subsume_word_cell_extracts
         | zesu_store_whole_array_splice
         | zesu_subsume_narrow_cell_extracts
-        | zesu_join_frame_explicit ].
+        | zesu_join_frame_explicit
+        | zesu_join_frame_explicit_exist ].
 
 Ltac zesu_store_fold_byte_cells :=
   try ZesuSsz.Automation2.ResourceGroups.zesu_expose_environment_alias;
