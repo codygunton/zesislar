@@ -15,6 +15,7 @@
 From iris.proofmode Require Import environments.
 Require Import isla.riscv64.riscv64.
 Require Import ZesuSsz.Automation2.InstrPre.
+Require Import ZesuSsz.Automation2.CallSliceInterface.
 
 Inductive ZesuGoalClass : Set :=
 | ZGwp_read | ZGwp_write | ZGwp_assert | ZGwp
@@ -132,4 +133,37 @@ Ltac zesu_tag_bound_goal :=
   lazymatch goal with
   | |- Z.lt _ _ => idtac
   | |- @eq comparison _ _ => idtac
+  end.
+
+(* No hypothesis of the environment `env` is an array at `bv_unsigned p`. *)
+Ltac zesu_array_unheld env p :=
+  lazymatch env with
+  | context [(bv_unsigned p ↦ₘ∗ _)%I] => fail
+  | _ => idtac
+  end.
+
+(* A callee call spec's existential (`CallSlice.zesu_call_slice`: input slice,
+   output slot, callee domain with a `ZesuCallSliceInterface` instance) whose
+   input slice is not held as an array at that address spelled the same way.
+   Lithium's own step cannot lend an interior slice: it searches every owned
+   region for the slice and every word cell for the slot, then fails (30 to
+   57 s per attempt on nextUint64 0000, retried at each iteration of the search
+   loop until the call-site step fires). `zesu_liAStep` skips `liStep` on such a
+   goal; the call-site step and the other alternatives run as before. *)
+Ltac zesu_call_slice_goal_unheld :=
+  lazymatch goal with
+  | |- environments.envs_entails ?env (@bi_exist _ ?T ?body) =>
+    let dummy := lazymatch T with
+      | li_prod (list ?A) (li_prod (list ?B) unit) =>
+          constr:(li_pair (@nil A) (li_pair (@nil B) tt))
+      end in
+    let opened := eval cbv beta iota delta [li_fst li_snd] in (body dummy) in
+    lazymatch opened with
+    | ((bv_unsigned ?p ↦ₘ∗ _) ∗ (bv_unsigned _ ↦ₘ∗ _) ∗
+        ⌜?dom (_ (_ :: _ :: _ :: _) _ _ _ _)⌝ ∗ _)%I =>
+      let _ := constr:(_ : ZesuCallSliceInterface dom _) in
+      tryif is_var env
+      then (let held := eval cbv delta [env] in env in zesu_array_unheld held p)
+      else zesu_array_unheld env p
+    end
   end.
