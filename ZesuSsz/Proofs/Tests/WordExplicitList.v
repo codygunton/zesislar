@@ -88,4 +88,22 @@ Proof.
   exact H.
 Qed.
 
+(* The rule proves the equation from its statement alone, in a context
+   cleared of hypotheses: with a contradictory fact in the context, a word whose
+   bytes are shifted wrongly is still refused (before the clear, bitblast's lia
+   calls used the fact and proved it), and a right word still closes. *)
+Goal forall (z : Z), (0 < 0)%Z ->
+  bv_concat 16 (Z_to_bv 8 (z ≫ (8 * 0%nat))) (Z_to_bv 8 (z ≫ (8 * 1%nat))) = Z_to_bv 16 z.
+Proof.
+  intros z Hfalse.
+  Fail ZesuSsz.Automation2.WrappedWord.zesu_word_concat_bytes_eq.
+  lia.
+Qed.
+Goal forall (z : Z), (0 < 0)%Z ->
+  bv_concat 16 (Z_to_bv 8 (z ≫ (8 * 1%nat))) (Z_to_bv 8 (z ≫ (8 * 0%nat))) = Z_to_bv 16 z.
+Proof.
+  intros z Hfalse.
+  ZesuSsz.Automation2.WrappedWord.zesu_word_concat_bytes_eq.
+Qed.
+
 Print Assumptions word_concat_bytes.
