@@ -284,7 +284,9 @@ def stated_at_source(text, rows, succ):
     chooses from its resources (`<name>_succ`, no block-entry name)."""
     terms = succ_terms(rows)
     identity = {row['succ'] for row in rows if row['identity']}
-    bound = set((group_parts(text) or ([], []))[0])
+    from join_generalize import _free_in_fact
+    bound = {name for name in binder_names(succ, 'live') + binder_names(succ, 'ghost')
+             if mentions(name, text) and not _free_in_fact(unwrap(text), name)}
     table = {name: term if re.fullmatch(r"[\w']+", term) else '(' + unwrap(term) + ')' for name, term in terms.items()}
     for role in ('live', 'ghost'):
         for name in binder_names(succ, role):
@@ -470,9 +472,10 @@ def rocq_edge(edge, pre, succ, index):
     derived, opened, carried_index = {}, set(), set()
     for row in new_hidden:
         text = substitute(row['text'], renames)
-        bound = set((group_parts(text) or ([], []))[0])
-        if any(mentions(name, text) and name not in bound and name not in identity and name not in pre_live
-               for name in succ_names):
+        # A name a (nested) history group of the fact binds is no successor binder there.
+        from join_generalize import _free_in_fact
+        if any(mentions(name, text) and _free_in_fact(unwrap(text), name) and name not in identity
+               and name not in pre_live for name in succ_names):
             continue
         result = source.derive(text)
         if result is not None:
