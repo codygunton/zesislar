@@ -76,5 +76,49 @@ Proof.
   exact I.
 Qed.
 
+(* A frame slot read back through a pointer the code moved down from the
+   stack pointer (`sp - 400 + 400 - 344`), against the slot address spelled
+   from the stack pointer itself (`sp - 400 + 56`): the offset is 0, which
+   needs the range of the stack pointer (no wrap). Counting the bitvector sum
+   as an atom guessed 344 and the step failed (decodeParentHeader 0570). *)
+Lemma reload_extract_word_stack_sum (sp word : bv 64) (rest : list (bv 8)) :
+  2684355072 <= bv_unsigned sp < 3221225472 ->
+  Z_to_bv 64 (little_endian_to_bv 8 (take 8 (drop (Z.to_nat
+    (bv_unsigned (bv_add (bv_add (bv_add sp (BV 64 18446744073709551216)) (BV 64 400))
+       (BV 64 18446744073709551272)) - (bv_unsigned sp - 400 + 48 + 8)))
+    (bv_extract 0 8 word :: bv_extract 8 8 word :: bv_extract 16 8 word ::
+     bv_extract 24 8 word :: bv_extract 32 8 word :: bv_extract 40 8 word ::
+     bv_extract 48 8 word :: bv_extract 56 8 word :: rest)))) = word.
+Proof.
+  intros Hsp.
+  ByteWordReload.zesu_reload_byte_word_step.
+  reflexivity.
+Qed.
+
+(* The guess of that offset: the literals count signed, the bases cancel. *)
+Lemma reload_constant_stack_sum (sp : bv 64) : True.
+Proof.
+  let value := ByteWordReload.zesu_reload_constant
+    (bv_unsigned (bv_add (bv_add (bv_add sp (BV 64 18446744073709551216)) (BV 64 400))
+       (BV 64 18446744073709551272)) - (bv_unsigned sp - 400 + 48 + 8)) in
+  assert (Hvalue : value = 0) by reflexivity.
+  exact I.
+Qed.
+
+(* Without the stack pointer's range the sum may wrap: the guess is not
+   proved and the step refuses. *)
+Lemma reload_extract_word_stack_sum_unranged (sp word : bv 64) (rest : list (bv 8)) : True.
+Proof.
+  Fail assert (Hbad : Z_to_bv 64 (little_endian_to_bv 8 (take 8 (drop (Z.to_nat
+    (bv_unsigned (bv_add (bv_add (bv_add sp (BV 64 18446744073709551216)) (BV 64 400))
+       (BV 64 18446744073709551272)) - (bv_unsigned sp - 400 + 48 + 8)))
+    (bv_extract 0 8 word :: bv_extract 8 8 word :: bv_extract 16 8 word ::
+     bv_extract 24 8 word :: bv_extract 32 8 word :: bv_extract 40 8 word ::
+     bv_extract 48 8 word :: bv_extract 56 8 word :: rest)))) = word)
+    by (ByteWordReload.zesu_reload_byte_word_step; reflexivity).
+  exact I.
+Qed.
+
 Print Assumptions reload_extract_word.
 Print Assumptions reload_extract_word32.
+Print Assumptions reload_extract_word_stack_sum.
