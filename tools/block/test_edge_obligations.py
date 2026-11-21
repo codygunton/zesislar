@@ -103,6 +103,40 @@ class Obligations(unittest.TestCase):
         self.assertNotIn('HS', text)
         self.assertIn('  exact HF1.', text)
 
+    def test_a_fact_on_a_binder_the_edge_sets_is_proved_under_its_equation(self):
+        # A second row of the join states a fact on its live binder `t`, which the edge sets to `w m`:
+        # its declaration takes `t` and `t = w m` (the block proves the equation); the binder-free row
+        # keeps its statement.
+        tag = {**ROW, 'coq': 'bv_unsigned t = 3', 'obligation': 'ErrorTag'}
+        profile = {'join_designs': {'+0x20': [ROW, tag]}}
+        succ = {**SUCC, 'live': [{'name': 't', 'type': T}],
+                'hidden': [FACT, 'zesu_join_history (bv_unsigned t = 3)']}
+        edge = join_edge()
+        edge['binder_map'] = [{'succ': 't', 'type': T, 'role': 'live', 'pre': None, 'identity': False,
+                               'expression': '(w m)'}]
+        edge['new'].append({'succ': ['hidden', 1], 'text': 'zesu_join_history (bv_unsigned t = 3)',
+                            'binders': [], 'support': []})
+        declarations = []
+        obligation = {'rows': entry_hist.design_obligations(profile), 'declarations': declarations,
+                      'guards': [], 'name': 'fp_edge0010_0020'}
+        text = rocq_edge(edge, PRE, succ, 3, obligation)
+        check_edge_sentences(text)
+        self.assertIn('(⌜t = (w m)⌝ ∗ True)%I', text)
+        self.assertIn('iDestruct "HN" as "(%HE0 & _)".', text)
+        self.assertIn('exact (fp_edge0010_0020_ErrorTag_holds args k m t HS HE0)', text)
+        self.assertIn('exact (fp_edge0010_0020_CandidateError_holds args k HS)', text)
+        texts = {row['name']: row['text'] for row in declarations}
+        self.assertEqual(texts['fp_edge0010_0020_ErrorTag'],
+                         'Definition fp_edge0010_0020_ErrorTag : Prop :=\n'
+                         '  forall (args : A) (k : bv 64) (m : bv 64) (t : bv 64),\n'
+                         '  (fp_machineAt0010_ForwardA0N0_Hist (args) (k)) ->\n'
+                         '  (t = (w m)) ->\n'
+                         '  bv_unsigned t = 3.\n')
+        self.assertNotIn('(t = (w m))', texts['fp_edge0010_0020_CandidateError'])
+        edge['binder_map'][0]['expression'] = None
+        with self.assertRaises(ValueError):
+            rocq_edge(edge, PRE, succ, 3, {**obligation, 'declarations': []})
+
     def test_the_history_copy_is_the_only_new_sentence_form(self):
         self.assertEqual(edge_proof_problems('Proof.\n  pose proof Hh as HS.\nQed.\n'), [])
         self.assertTrue(edge_proof_problems('Proof.\n  pose proof Hh as HX.\nQed.\n'))

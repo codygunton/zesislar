@@ -536,7 +536,7 @@ def rocq_edge(edge, pre, succ, index, obligation=None):
                       if row['succ'][0] == 'hidden' and row['pre'][0] == 'visible'}
     carried_index = sorted(carried_index, key=lambda name: int(name[2:]))
     carried = [pre['visible'][int(name[2:])] for name in carried_index]
-    guards = []
+    guards, equations = [], []
     if obligated:
         # The obligation lemma reads the block entry's facts of the classes its rows declare.
         needs = set().union(*(set(design.get('premises', ['guard'])) for design in obligated.values()))
@@ -547,20 +547,34 @@ def rocq_edge(edge, pre, succ, index, obligation=None):
         guards = obligation['guards'] if 'guard' in needs else []
         premise_facts = [pre['visible'][position] for position in selected]
         hypotheses = ['HS'] + premise_index + ['HG' + str(position) for position in range(len(guards))]
-        statement_vars = [binder for binder in [*pre['parameters'], *pre['live']]
-                          if binder in pre['parameters'] or any(mentions(binder['name'], text) for text in
-                                                                [application(pre, {})] + premise_facts + guards)]
+        statement_vars = lambda texts: [binder for binder in [*pre['parameters'], *pre['live']]
+                                        if binder in pre['parameters'] or any(mentions(binder['name'], text)
+                                                                              for text in texts)]
+        # A design fact on a successor binder the edge sets (no identity: the binder-map expression) is
+        # proved of the binder under the equation `binder = expression`, a premise the block proves (`HE<j>`).
+        expression = {row['succ']: row['expression'] for row in rows if not row['identity']}
+        set_binders = [binder for binder in succ['live'] if binder['name'] not in identity
+                       and any(mentions(binder['name'], design['coq']) for design in obligated.values())]
+        for binder in set_binders:
+            if expression.get(binder['name']) is None:
+                raise ValueError('join_designs: the edge from ' + edge['pre_entry'] + ' sets no value of '
+                                 + binder['name'])
+        set_names = [renames.get(binder['name'], binder['name']) for binder in set_binders]
+        equations = [name + ' = ' + expression[binder['name']] for name, binder in zip(set_names, set_binders)]
         for target, design in sorted(obligated.items()):
             declaration = obligation['name'] + '_' + design['obligation']
-            premises = [application(pre, {})] + premise_facts + guards
+            own = [position for position, binder in enumerate(set_binders) if mentions(binder['name'], design['coq'])]
+            premises = [application(pre, {})] + premise_facts + guards + [equations[p] for p in own]
+            design_vars = (statement_vars(premises)
+                           + [{'name': set_names[p], 'type': set_binders[p]['type']} for p in own])
             obligation['declarations'].append({
                 'name': declaration, 'module': design['lemma_module'], 'entry': pre['entry'],
-                'text': ('Definition ' + declaration + ' : Prop :=\n  forall ' + telescope(statement_vars) + ',\n'
+                'text': ('Definition ' + declaration + ' : Prop :=\n  forall ' + telescope(design_vars) + ',\n'
                          + ''.join('  (' + premise + ') ->\n' for premise in premises)
-                         + '  ' + design['coq'] + '.\n')})
-            derived[target] = ('(' + declaration + '_holds ' + ' '.join(
-                binder['name'] for binder in statement_vars) + ' ' + ' '.join(hypotheses) + ')')
-    body = ' ∗ '.join(['⌜' + text + '⌝' for text in new_texts + carried + guards] + ['True'])
+                         + '  ' + substitute(design['coq'], renames) + '.\n')})
+            derived[target] = ('(' + declaration + '_holds ' + ' '.join(binder['name'] for binder in design_vars)
+                               + ' ' + ' '.join(hypotheses + ['HE' + str(p) for p in own]) + ')')
+    body = ' ∗ '.join(['⌜' + text + '⌝' for text in new_texts + carried + guards + equations] + ['True'])
     bound = [{'name': ghost_renames.get(binder['name'], binder['name']), 'type': binder['type']}
              for binder in succ['ghost'] if binder['name'] in new_ghost]
     if bound:
@@ -596,11 +610,12 @@ def rocq_edge(edge, pre, succ, index, obligation=None):
     lines.append('  iIntros "HN".')
     # The premise binds the successor's new ghosts even when it states no fact on them: destruct it
     # whenever it binds or states anything, so the `exists` below names variables in scope.
-    if new_texts or carried or guards or bound:
+    if new_texts or carried or guards or equations or bound:
         arguments = [binder['name'] for binder in used] + ['HF' + str(position) for position in support]
         term = '("HN" $! ' + ' '.join(arguments) + ')' if arguments else '"HN"'
         facts = (['%HN' + str(position) for position in range(len(new_texts))] + ['%' + name for name in carried_index]
-                 + ['%HG' + str(position) for position in range(len(guards))])
+                 + ['%HG' + str(position) for position in range(len(guards))]
+                 + ['%HE' + str(position) for position in range(len(equations))])
         # A premise that only binds ghosts (`∃ b…, True`) has one conjunct: Iris refuses `"(_)"` for it.
         intro = '"(' + ' & '.join(facts + ['_']) + ')"' if facts else '"_"'
         lines.append('  iDestruct ' + term + ' as ' + ('(' + ' '.join(b['name'] for b in bound) + ') ' if bound else '')
