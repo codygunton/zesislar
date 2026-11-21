@@ -156,3 +156,58 @@ Proof.
   - exact (parentHeaderWalkIntegerOf _ _ _ _ _ _ _ _ _ _ _ Hk Hint Hs Hres Hok Hstr H8 Hx Hacc).
   - apply walkRemainingNonzero. intros E. apply Hleft, bv_eq. exact E.
 Qed.
+
+(* The success join 0x03bc: nothing is left before an optional field (12, 13
+   or 14). The candidate accepts with the values the join stores. *)
+Lemma parentHeaderRemainingNone (l w : bv 64) : l = w -> bv_unsigned (bv_sub l w) = 0.
+Proof. intros ->. rewrite bv_sub_unsigned, Z.sub_diag. reflexivity. Qed.
+
+(* After the last inline integer field (11). *)
+Lemma parentHeaderSuccessAfterInteger args k pc kind pc' kind' (p l x : bv 64) acc acc' before after :
+  nth_error parentHeaderFieldSchedule k = Some (pc, kind) ->
+  parentHeaderFieldIsInteger kind = true ->
+  nth_error parentHeaderFieldSchedule (S k) = Some (pc', kind') ->
+  parentHeaderFieldIsRequired kind' = false ->
+  parentHeaderWalkState args k p l acc ->
+  C1BResult (bv_unsigned p)
+    (take (Z.to_nat (bv_unsigned l))
+      (drop (Z.to_nat (bv_unsigned p - bv_unsigned (parentHeaderInputPointer args))) (parentHeaderInputBytes args)))
+    before after ->
+  bv_unsigned (bv_concat 16 (List.nth 33 after (BV 8 0)) (List.nth 32 after (BV 8 0))) = 0 ->
+  bv_unsigned (bv_and (bv_zero_extend 64 (List.nth 16 after (BV 8 0))) (BV 64 1)) = 0 ->
+  ~ (bv_signed (BV 128 8) < bv_signed (bv_zero_extend 128 (listWord64At8 after))) ->
+  bv_unsigned x = zesu_byte_window_fold (parentHeaderInputBytes args)
+    (Z.to_nat (bv_unsigned (listWord64At0 after) - bv_unsigned (parentHeaderInputPointer args)))
+    (Z.to_nat (bv_unsigned (listWord64At8 after))) ->
+  l = listWord64At24 after ->
+  acc' = acc ++ [bv_unsigned x] ->
+  candidateParentHeader (parentHeaderInputBytes args) = candidateHeaderSuccess (candidateHeaderOfValues acc').
+Proof.
+  intros Hk Hint Hk' Hopt Hs Hres Hok Hstr H8 Hx Hnone Hacc.
+  pose proof (parentHeaderWalkIntegerOf _ _ _ _ _ _ _ _ _ _ _ Hk Hint Hs Hres Hok Hstr H8 Hx Hacc) as Hs'.
+  unfold parentHeaderWalkSkippedState, parentHeaderWalkState in Hs'.
+  rewrite (parentHeaderRemainingNone _ _ Hnone) in Hs'.
+  exact (candidateWalkAbsent _ _ _ _ _ _ Hk' Hopt Hs').
+Qed.
+
+(* After an optional skipped field (12 or 13). *)
+Lemma parentHeaderSuccessAfterSkip args k pc kind pc' kind' (p l : bv 64) acc before after :
+  nth_error parentHeaderFieldSchedule k = Some (pc, kind) ->
+  parentHeaderFieldIsInteger kind = false ->
+  nth_error parentHeaderFieldSchedule (S k) = Some (pc', kind') ->
+  parentHeaderFieldIsRequired kind' = false ->
+  parentHeaderWalkAt args k p l acc ->
+  C1BResult (bv_unsigned p)
+    (take (Z.to_nat (bv_unsigned l))
+      (drop (Z.to_nat (bv_unsigned p - bv_unsigned (parentHeaderInputPointer args))) (parentHeaderInputBytes args)))
+    before after ->
+  bv_unsigned (bv_concat 16 (List.nth 33 after (BV 8 0)) (List.nth 32 after (BV 8 0))) = 0 ->
+  l = listWord64At24 after ->
+  candidateParentHeader (parentHeaderInputBytes args) = candidateHeaderSuccess (candidateHeaderOfValues acc).
+Proof.
+  intros Hk Hint Hk' Hopt Hs Hres Hok Hnone.
+  pose proof (parentHeaderWalkSkipStateOf _ _ _ _ _ _ _ _ _ Hk Hint Hs Hres Hok) as Hs'.
+  unfold parentHeaderWalkSkippedState, parentHeaderWalkState in Hs'.
+  rewrite (parentHeaderRemainingNone _ _ Hnone) in Hs'.
+  exact (candidateWalkAbsent _ _ _ _ _ _ Hk' Hopt Hs').
+Qed.
