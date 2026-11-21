@@ -2,10 +2,15 @@
 ; tools/block/generated/decodeparentheader_fp301_callers; this directory only copies the closed ones into the ZesuSsz
 ; theory, so the compliance theorem can consume them. Edit the callers through their renderers.
 (rule (targets Caller0040.v) (deps ../../../../tools/block/generated/decodeparentheader_fp301_callers/Caller0040.v) (action (copy ../../../../tools/block/generated/decodeparentheader_fp301_callers/Caller0040.v Caller0040.v)))
+(rule (targets Caller0048.v) (deps ../../../../tools/block/generated/decodeparentheader_fp301_callers/Caller0048.v) (action (copy ../../../../tools/block/generated/decodeparentheader_fp301_callers/Caller0048.v Caller0048.v)))
 (rule (targets Caller0054.v) (deps ../../../../tools/block/generated/decodeparentheader_fp301_callers/Caller0054.v) (action (copy ../../../../tools/block/generated/decodeparentheader_fp301_callers/Caller0054.v Caller0054.v)))
 (rule (targets Caller0060.v) (deps ../../../../tools/block/generated/decodeparentheader_fp301_callers/Caller0060.v) (action (copy ../../../../tools/block/generated/decodeparentheader_fp301_callers/Caller0060.v Caller0060.v)))
+(rule (targets Caller0088.v) (deps ../../../../tools/block/generated/decodeparentheader_fp301_callers/Caller0088.v) (action (copy ../../../../tools/block/generated/decodeparentheader_fp301_callers/Caller0088.v Caller0088.v)))
+(rule (targets Caller0094.v) (deps ../../../../tools/block/generated/decodeparentheader_fp301_callers/Caller0094.v) (action (copy ../../../../tools/block/generated/decodeparentheader_fp301_callers/Caller0094.v Caller0094.v)))
 (rule (targets Caller0080.v) (deps ../../../../tools/block/generated/decodeparentheader_fp301_callers/Caller0080.v) (action (copy ../../../../tools/block/generated/decodeparentheader_fp301_callers/Caller0080.v Caller0080.v)))
 (rule (targets Caller00a0.v) (deps ../../../../tools/block/generated/decodeparentheader_fp301_callers/Caller00a0.v) (action (copy ../../../../tools/block/generated/decodeparentheader_fp301_callers/Caller00a0.v Caller00a0.v)))
+(rule (targets Caller00a8.v) (deps ../../../../tools/block/generated/decodeparentheader_fp301_callers/Caller00a8.v) (action (copy ../../../../tools/block/generated/decodeparentheader_fp301_callers/Caller00a8.v Caller00a8.v)))
+(rule (targets Caller00b0.v) (deps ../../../../tools/block/generated/decodeparentheader_fp301_callers/Caller00b0.v) (action (copy ../../../../tools/block/generated/decodeparentheader_fp301_callers/Caller00b0.v Caller00b0.v)))
 (rule (targets Caller00ec.v) (deps ../../../../tools/block/generated/decodeparentheader_fp301_callers/Caller00ec.v) (action (copy ../../../../tools/block/generated/decodeparentheader_fp301_callers/Caller00ec.v Caller00ec.v)))
 (rule (targets Caller0108.v) (deps ../../../../tools/block/generated/decodeparentheader_fp301_callers/Caller0108.v) (action (copy ../../../../tools/block/generated/decodeparentheader_fp301_callers/Caller0108.v Caller0108.v)))
 (rule (targets Caller0110.v) (deps ../../../../tools/block/generated/decodeparentheader_fp301_callers/Caller0110.v) (action (copy ../../../../tools/block/generated/decodeparentheader_fp301_callers/Caller0110.v Caller0110.v)))
