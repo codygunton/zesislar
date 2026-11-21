@@ -121,8 +121,8 @@ Ltac zesu_read_span :=
                     iRename H into "HspanArray"; iRename H2 into "HspanRegion";
                     iApply (zesu_read_mem_span len n kind a vread tag ann es B B2 off N m0 l
                       eq_refl ltac:(discriminate) ltac:(discriminate) eq_refl
-                      Ha ltac:(clear; lia) Hl Hb ltac:(clear - Hm; lia)
-                      ltac:(clear - Hm; lia) with "HspanArray HspanRegion");
+                      Ha ltac:(clear; zesu_lia) Hl Hb ltac:(clear - Hm; zesu_lia)
+                      ltac:(clear - Hm; zesu_lia) with "HspanArray HspanRegion");
                     clear Hm Hb Ha Hl
                 end))
         end)
