@@ -536,8 +536,8 @@ Definition fp_edge0300_026c_CandidateError : Prop :=
   candidateParentHeader (parentHeaderInputBytes args) = candidateHeaderError.
 
 Definition fp_edge0308_026c_CandidateError : Prop :=
-  forall (args : ParentHeaderArgs) (returnAddress : Z) (call12_after : DecodeItemOutcome) (call12_kept_x18 : bv 64) (call12_kept_x20 : bv 64) (call11_kept_x19 : bv 64) (call10_after : DecodeItemOutcome) (call_after : DecodeItemOutcome),
-  (fp_machineAt0308_ForwardA0N0_Hist (args) (returnAddress) (call12_after) (call12_kept_x18) (call12_kept_x20) (call11_kept_x19) (call10_after) (call_after)) ->
+  forall (args : ParentHeaderArgs) (returnAddress : Z) (call12_after : DecodeItemOutcome) (call12_kept_x18 : bv 64) (call12_kept_x20 : bv 64) (call11_kept_x19 : bv 64) (call10_after : DecodeItemOutcome) (call_after : DecodeItemOutcome) (machine_x21_1 : bv 64),
+  (fp_machineAt0308_ForwardA0N0_Hist (args) (returnAddress) (call12_after) (call12_kept_x18) (call12_kept_x20) (call11_kept_x19) (call10_after) (call_after) (machine_x21_1)) ->
   ((bv_unsigned (parentHeaderReturnAddress args) = returnAddress /\ parentHeaderArgsWellFormed args)) ->
   (((bv_unsigned (parentHeaderReturnAddress args) mod 4 = 0)%Z)) ->
   (((List.length call_after = 40)%nat)) ->
@@ -547,8 +547,8 @@ Definition fp_edge0308_026c_CandidateError : Prop :=
   candidateParentHeader (parentHeaderInputBytes args) = candidateHeaderError.
 
 Definition fp_edge0314_026c_CandidateError : Prop :=
-  forall (args : ParentHeaderArgs) (returnAddress : Z) (call12_after : DecodeItemOutcome) (call12_kept_x18 : bv 64) (call12_kept_x20 : bv 64) (call11_kept_x19 : bv 64) (call10_after : DecodeItemOutcome) (call_after : DecodeItemOutcome),
-  (fp_machineAt0314_ForwardA0N0_Hist (args) (returnAddress) (call12_after) (call12_kept_x18) (call12_kept_x20) (call11_kept_x19) (call10_after) (call_after)) ->
+  forall (args : ParentHeaderArgs) (returnAddress : Z) (call12_after : DecodeItemOutcome) (call12_kept_x18 : bv 64) (call12_kept_x20 : bv 64) (call11_kept_x19 : bv 64) (call10_after : DecodeItemOutcome) (call_after : DecodeItemOutcome) (machine_x21_1 : bv 64),
+  (fp_machineAt0314_ForwardA0N0_Hist (args) (returnAddress) (call12_after) (call12_kept_x18) (call12_kept_x20) (call11_kept_x19) (call10_after) (call_after) (machine_x21_1)) ->
   ((bv_unsigned (parentHeaderReturnAddress args) = returnAddress /\ parentHeaderArgsWellFormed args)) ->
   (((bv_unsigned (parentHeaderReturnAddress args) mod 4 = 0)%Z)) ->
   (((List.length call_after = 40)%nat)) ->
@@ -558,8 +558,8 @@ Definition fp_edge0314_026c_CandidateError : Prop :=
   candidateParentHeader (parentHeaderInputBytes args) = candidateHeaderError.
 
 Definition fp_edge0368_026c_CandidateError : Prop :=
-  forall (args : ParentHeaderArgs) (returnAddress : Z) (call13_after : DecodeItemOutcome) (call13_kept_x18 : bv 64) (call13_kept_x19 : bv 64) (call12_after : DecodeItemOutcome) (call12_kept_x18 : bv 64) (call12_kept_x20 : bv 64) (call10_after : DecodeItemOutcome) (call_after : DecodeItemOutcome),
-  (fp_machineAt0368_ForwardA0N0_Hist (args) (returnAddress) (call12_after) (call12_kept_x18) (call12_kept_x20) (call10_after) (call_after)) ->
+  forall (args : ParentHeaderArgs) (returnAddress : Z) (call13_after : DecodeItemOutcome) (call13_kept_x18 : bv 64) (call13_kept_x19 : bv 64) (call12_after : DecodeItemOutcome) (call12_kept_x18 : bv 64) (call12_kept_x20 : bv 64) (call10_after : DecodeItemOutcome) (call_after : DecodeItemOutcome) (machine_x21_1 : bv 64),
+  (fp_machineAt0368_ForwardA0N0_Hist (args) (returnAddress) (call12_after) (call12_kept_x18) (call12_kept_x20) (call10_after) (call_after) (machine_x21_1)) ->
   ((bv_unsigned (parentHeaderReturnAddress args) = returnAddress /\ parentHeaderArgsWellFormed args)) ->
   (((bv_unsigned (parentHeaderReturnAddress args) mod 4 = 0)%Z)) ->
   (((List.length call_after = 40)%nat)) ->
@@ -575,8 +575,8 @@ Definition fp_edge0368_026c_CandidateError : Prop :=
   candidateParentHeader (parentHeaderInputBytes args) = candidateHeaderError.
 
 Definition fp_edge0370_026c_CandidateError : Prop :=
-  forall (args : ParentHeaderArgs) (returnAddress : Z) (call13_after : DecodeItemOutcome) (call13_kept_x18 : bv 64) (call13_kept_x19 : bv 64) (call12_after : DecodeItemOutcome) (call12_kept_x18 : bv 64) (call12_kept_x20 : bv 64) (call10_after : DecodeItemOutcome) (call_after : DecodeItemOutcome),
-  (fp_machineAt0370_ForwardA0N0_Hist (args) (returnAddress) (call13_after) (call13_kept_x18) (call13_kept_x19) (call12_after) (call12_kept_x18) (call12_kept_x20) (call10_after) (call_after)) ->
+  forall (args : ParentHeaderArgs) (returnAddress : Z) (call13_after : DecodeItemOutcome) (call13_kept_x18 : bv 64) (call13_kept_x19 : bv 64) (call12_after : DecodeItemOutcome) (call12_kept_x18 : bv 64) (call12_kept_x20 : bv 64) (call10_after : DecodeItemOutcome) (call_after : DecodeItemOutcome) (machine_x21_1 : bv 64),
+  (fp_machineAt0370_ForwardA0N0_Hist (args) (returnAddress) (call13_after) (call13_kept_x18) (call13_kept_x19) (call12_after) (call12_kept_x18) (call12_kept_x20) (call10_after) (call_after) (machine_x21_1)) ->
   ((bv_unsigned (parentHeaderReturnAddress args) = returnAddress /\ parentHeaderArgsWellFormed args)) ->
   (((bv_unsigned (parentHeaderReturnAddress args) mod 4 = 0)%Z)) ->
   (((List.length call_after = 40)%nat)) ->
@@ -587,8 +587,8 @@ Definition fp_edge0370_026c_CandidateError : Prop :=
   candidateParentHeader (parentHeaderInputBytes args) = candidateHeaderError.
 
 Definition fp_edge037c_026c_CandidateError : Prop :=
-  forall (args : ParentHeaderArgs) (returnAddress : Z) (call13_after : DecodeItemOutcome) (call13_kept_x18 : bv 64) (call13_kept_x19 : bv 64) (call12_after : DecodeItemOutcome) (call12_kept_x18 : bv 64) (call12_kept_x20 : bv 64) (call10_after : DecodeItemOutcome) (call_after : DecodeItemOutcome),
-  (fp_machineAt037c_ForwardA0N0_Hist (args) (returnAddress) (call13_after) (call13_kept_x18) (call13_kept_x19) (call12_after) (call12_kept_x18) (call12_kept_x20) (call10_after) (call_after)) ->
+  forall (args : ParentHeaderArgs) (returnAddress : Z) (call13_after : DecodeItemOutcome) (call13_kept_x18 : bv 64) (call13_kept_x19 : bv 64) (call12_after : DecodeItemOutcome) (call12_kept_x18 : bv 64) (call12_kept_x20 : bv 64) (call10_after : DecodeItemOutcome) (call_after : DecodeItemOutcome) (machine_x21_1 : bv 64),
+  (fp_machineAt037c_ForwardA0N0_Hist (args) (returnAddress) (call13_after) (call13_kept_x18) (call13_kept_x19) (call12_after) (call12_kept_x18) (call12_kept_x20) (call10_after) (call_after) (machine_x21_1)) ->
   ((bv_unsigned (parentHeaderReturnAddress args) = returnAddress /\ parentHeaderArgsWellFormed args)) ->
   (((bv_unsigned (parentHeaderReturnAddress args) mod 4 = 0)%Z)) ->
   (((List.length call_after = 40)%nat)) ->
@@ -599,8 +599,8 @@ Definition fp_edge037c_026c_CandidateError : Prop :=
   candidateParentHeader (parentHeaderInputBytes args) = candidateHeaderError.
 
 Definition fp_edge0400_0408_CandidateError : Prop :=
-  forall (args : ParentHeaderArgs) (returnAddress : Z) (call14_after : DecodeItemOutcome) (call14_kept_x18 : bv 64) (call14_kept_x19 : bv 64) (call13_after : DecodeItemOutcome) (call13_kept_x18 : bv 64) (call13_kept_x19 : bv 64) (call10_after : DecodeItemOutcome) (call_after : DecodeItemOutcome),
-  (fp_machineAt0400_ForwardA0N0_Hist (args) (returnAddress) (call13_after) (call13_kept_x18) (call13_kept_x19) (call10_after) (call_after)) ->
+  forall (args : ParentHeaderArgs) (returnAddress : Z) (call14_after : DecodeItemOutcome) (call14_kept_x18 : bv 64) (call14_kept_x19 : bv 64) (call13_after : DecodeItemOutcome) (call13_kept_x18 : bv 64) (call13_kept_x19 : bv 64) (call10_after : DecodeItemOutcome) (call_after : DecodeItemOutcome) (machine_x21_1 : bv 64) (machine_x22_1 : bv 64),
+  (fp_machineAt0400_ForwardA0N0_Hist (args) (returnAddress) (call13_after) (call13_kept_x18) (call13_kept_x19) (call10_after) (call_after) (machine_x21_1) (machine_x22_1)) ->
   ((bv_unsigned (parentHeaderReturnAddress args) = returnAddress /\ parentHeaderArgsWellFormed args)) ->
   (((bv_unsigned (parentHeaderReturnAddress args) mod 4 = 0)%Z)) ->
   (((List.length call_after = 40)%nat)) ->
@@ -616,8 +616,8 @@ Definition fp_edge0400_0408_CandidateError : Prop :=
   candidateParentHeader (parentHeaderInputBytes args) = candidateHeaderError.
 
 Definition fp_edge0438_0408_CandidateError : Prop :=
-  forall (args : ParentHeaderArgs) (returnAddress : Z) (call15_after : DecodeItemOutcome) (call15_kept_x18 : bv 64) (call15_kept_x19 : bv 64) (call14_after : DecodeItemOutcome) (call14_kept_x18 : bv 64) (call14_kept_x19 : bv 64) (call13_after : DecodeItemOutcome) (call13_kept_x18 : bv 64) (call13_kept_x19 : bv 64) (call10_after : DecodeItemOutcome) (call_after : DecodeItemOutcome),
-  (fp_machineAt0438_ForwardA0N0_Hist (args) (returnAddress) (call14_after) (call14_kept_x18) (call14_kept_x19) (call13_after) (call13_kept_x18) (call13_kept_x19) (call10_after) (call_after)) ->
+  forall (args : ParentHeaderArgs) (returnAddress : Z) (call15_after : DecodeItemOutcome) (call15_kept_x18 : bv 64) (call15_kept_x19 : bv 64) (call14_after : DecodeItemOutcome) (call14_kept_x18 : bv 64) (call14_kept_x19 : bv 64) (call13_after : DecodeItemOutcome) (call13_kept_x18 : bv 64) (call13_kept_x19 : bv 64) (call10_after : DecodeItemOutcome) (call_after : DecodeItemOutcome) (machine_x21_1 : bv 64) (machine_x22_1 : bv 64),
+  (fp_machineAt0438_ForwardA0N0_Hist (args) (returnAddress) (call14_after) (call14_kept_x18) (call14_kept_x19) (call13_after) (call13_kept_x18) (call13_kept_x19) (call10_after) (call_after) (machine_x21_1) (machine_x22_1)) ->
   ((bv_unsigned (parentHeaderReturnAddress args) = returnAddress /\ parentHeaderArgsWellFormed args)) ->
   (((bv_unsigned (parentHeaderReturnAddress args) mod 4 = 0)%Z)) ->
   (((List.length call_after = 40)%nat)) ->
@@ -636,8 +636,8 @@ Definition fp_edge0438_0408_CandidateError : Prop :=
   candidateParentHeader (parentHeaderInputBytes args) = candidateHeaderError.
 
 Definition fp_edge0464_0408_CandidateError : Prop :=
-  forall (args : ParentHeaderArgs) (returnAddress : Z) (call16_after : DecodeItemOutcome) (call16_kept_x18 : bv 64) (call16_kept_x19 : bv 64) (call15_after : DecodeItemOutcome) (call15_kept_x18 : bv 64) (call15_kept_x19 : bv 64) (call14_after : DecodeItemOutcome) (call14_kept_x18 : bv 64) (call14_kept_x19 : bv 64) (call13_after : DecodeItemOutcome) (call13_kept_x18 : bv 64) (call13_kept_x19 : bv 64) (call10_after : DecodeItemOutcome) (call_after : DecodeItemOutcome),
-  (fp_machineAt0464_ForwardA0N0_Hist (args) (returnAddress) (call15_after) (call15_kept_x18) (call15_kept_x19) (call14_after) (call14_kept_x18) (call14_kept_x19) (call13_after) (call13_kept_x18) (call13_kept_x19) (call10_after) (call_after)) ->
+  forall (args : ParentHeaderArgs) (returnAddress : Z) (call16_after : DecodeItemOutcome) (call16_kept_x18 : bv 64) (call16_kept_x19 : bv 64) (call15_after : DecodeItemOutcome) (call15_kept_x18 : bv 64) (call15_kept_x19 : bv 64) (call14_after : DecodeItemOutcome) (call14_kept_x18 : bv 64) (call14_kept_x19 : bv 64) (call13_after : DecodeItemOutcome) (call13_kept_x18 : bv 64) (call13_kept_x19 : bv 64) (call10_after : DecodeItemOutcome) (call_after : DecodeItemOutcome) (machine_x21_1 : bv 64) (machine_x22_1 : bv 64),
+  (fp_machineAt0464_ForwardA0N0_Hist (args) (returnAddress) (call15_after) (call15_kept_x18) (call15_kept_x19) (call14_after) (call14_kept_x18) (call14_kept_x19) (call13_after) (call13_kept_x18) (call13_kept_x19) (call10_after) (call_after) (machine_x21_1) (machine_x22_1)) ->
   ((bv_unsigned (parentHeaderReturnAddress args) = returnAddress /\ parentHeaderArgsWellFormed args)) ->
   (((bv_unsigned (parentHeaderReturnAddress args) mod 4 = 0)%Z)) ->
   (((List.length call_after = 40)%nat)) ->
@@ -659,8 +659,8 @@ Definition fp_edge0464_0408_CandidateError : Prop :=
   candidateParentHeader (parentHeaderInputBytes args) = candidateHeaderError.
 
 Definition fp_edge04a8_0270_CandidateError : Prop :=
-  forall (args : ParentHeaderArgs) (returnAddress : Z) (call17_result : NextUint64Return) (call17_word_1_0 : bv 64) (call17_word_1_8 : bv 64) (call17_kept_x19 : bv 64) (call16_after : DecodeItemOutcome) (call16_kept_x18 : bv 64) (call16_kept_x19 : bv 64) (call15_after : DecodeItemOutcome) (call15_kept_x18 : bv 64) (call15_kept_x19 : bv 64) (call14_after : DecodeItemOutcome) (call14_kept_x18 : bv 64) (call14_kept_x19 : bv 64) (call13_after : DecodeItemOutcome) (call13_kept_x18 : bv 64) (call13_kept_x19 : bv 64) (call10_after : DecodeItemOutcome) (call_after : DecodeItemOutcome),
-  (fp_machineAt04a8_ForwardA0N0_Hist (args) (returnAddress) (call16_after) (call16_kept_x18) (call16_kept_x19) (call15_after) (call15_kept_x18) (call15_kept_x19) (call14_after) (call14_kept_x18) (call14_kept_x19) (call13_after) (call13_kept_x18) (call13_kept_x19) (call10_after) (call_after)) ->
+  forall (args : ParentHeaderArgs) (returnAddress : Z) (call17_result : NextUint64Return) (call17_word_1_0 : bv 64) (call17_word_1_8 : bv 64) (call17_kept_x19 : bv 64) (call16_after : DecodeItemOutcome) (call16_kept_x18 : bv 64) (call16_kept_x19 : bv 64) (call15_after : DecodeItemOutcome) (call15_kept_x18 : bv 64) (call15_kept_x19 : bv 64) (call14_after : DecodeItemOutcome) (call14_kept_x18 : bv 64) (call14_kept_x19 : bv 64) (call13_after : DecodeItemOutcome) (call13_kept_x18 : bv 64) (call13_kept_x19 : bv 64) (call10_after : DecodeItemOutcome) (call_after : DecodeItemOutcome) (machine_x21_1 : bv 64) (machine_x22_1 : bv 64),
+  (fp_machineAt04a8_ForwardA0N0_Hist (args) (returnAddress) (call16_after) (call16_kept_x18) (call16_kept_x19) (call15_after) (call15_kept_x18) (call15_kept_x19) (call14_after) (call14_kept_x18) (call14_kept_x19) (call13_after) (call13_kept_x18) (call13_kept_x19) (call10_after) (call_after) (machine_x21_1) (machine_x22_1)) ->
   ((bv_unsigned (parentHeaderReturnAddress args) = returnAddress /\ parentHeaderArgsWellFormed args)) ->
   (((bv_unsigned (parentHeaderReturnAddress args) mod 4 = 0)%Z)) ->
   (((List.length call_after = 40)%nat)) ->
@@ -686,15 +686,15 @@ Definition fp_edge04a8_0270_CandidateError : Prop :=
   candidateParentHeader (parentHeaderInputBytes args) = candidateHeaderError.
 
 Definition fp_edge04ec_00b0_CandidateError : Prop :=
-  forall (args : ParentHeaderArgs) (returnAddress : Z) (call18_after : DecodeItemOutcome) (call17_result : NextUint64Return) (call17_word_1_0 : bv 64) (call17_word_1_8 : bv 64) (call16_after : DecodeItemOutcome) (call13_after : DecodeItemOutcome) (call10_after : DecodeItemOutcome) (call_after : DecodeItemOutcome),
-  (fp_machineAt04ec_ForwardA0N0_Hist (args) (returnAddress) (call18_after) (call17_result) (call17_word_1_0) (call17_word_1_8) (call16_after) (call13_after) (call10_after) (call_after)) ->
+  forall (args : ParentHeaderArgs) (returnAddress : Z) (call18_after : DecodeItemOutcome) (call17_result : NextUint64Return) (call17_word_1_0 : bv 64) (call17_word_1_8 : bv 64) (call16_after : DecodeItemOutcome) (call13_after : DecodeItemOutcome) (call10_after : DecodeItemOutcome) (call_after : DecodeItemOutcome) (machine_x21_1 : bv 64) (machine_x22_1 : bv 64),
+  (fp_machineAt04ec_ForwardA0N0_Hist (args) (returnAddress) (call18_after) (call17_result) (call17_word_1_0) (call17_word_1_8) (call16_after) (call13_after) (call10_after) (call_after) (machine_x21_1) (machine_x22_1)) ->
   ((bv_unsigned (parentHeaderReturnAddress args) = returnAddress /\ parentHeaderArgsWellFormed args)) ->
   (((bv_unsigned (parentHeaderReturnAddress args) mod 4 = 0)%Z)) ->
   candidateParentHeader (parentHeaderInputBytes args) = candidateHeaderError.
 
 Definition fp_edge0568_0270_CandidateError : Prop :=
-  forall (args : ParentHeaderArgs) (returnAddress : Z) (call19_result : NextUint64Return) (call19_word_1_0 : bv 64) (call19_word_1_8 : bv 64) (call19_kept_x19 : bv 64) (call18_after : DecodeItemOutcome) (call17_result : NextUint64Return) (call17_word_1_0 : bv 64) (call17_word_1_8 : bv 64) (call17_kept_x19 : bv 64) (call16_after : DecodeItemOutcome) (call16_kept_x18 : bv 64) (call16_kept_x19 : bv 64) (call15_after : DecodeItemOutcome) (call15_kept_x18 : bv 64) (call15_kept_x19 : bv 64) (call14_after : DecodeItemOutcome) (call14_kept_x18 : bv 64) (call14_kept_x19 : bv 64) (call13_after : DecodeItemOutcome) (call13_kept_x18 : bv 64) (call13_kept_x19 : bv 64) (call10_after : DecodeItemOutcome) (call_after : DecodeItemOutcome),
-  (fp_machineAt0568_ForwardA0N0_Hist (args) (returnAddress) (call18_after) (call17_result) (call17_word_1_0) (call17_word_1_8) (call16_after) (call16_kept_x18) (call16_kept_x19) (call15_after) (call15_kept_x18) (call15_kept_x19) (call14_after) (call14_kept_x18) (call14_kept_x19) (call13_after) (call13_kept_x18) (call13_kept_x19) (call10_after) (call_after)) ->
+  forall (args : ParentHeaderArgs) (returnAddress : Z) (call19_result : NextUint64Return) (call19_word_1_0 : bv 64) (call19_word_1_8 : bv 64) (call19_kept_x19 : bv 64) (call18_after : DecodeItemOutcome) (call17_result : NextUint64Return) (call17_word_1_0 : bv 64) (call17_word_1_8 : bv 64) (call17_kept_x19 : bv 64) (call16_after : DecodeItemOutcome) (call16_kept_x18 : bv 64) (call16_kept_x19 : bv 64) (call15_after : DecodeItemOutcome) (call15_kept_x18 : bv 64) (call15_kept_x19 : bv 64) (call14_after : DecodeItemOutcome) (call14_kept_x18 : bv 64) (call14_kept_x19 : bv 64) (call13_after : DecodeItemOutcome) (call13_kept_x18 : bv 64) (call13_kept_x19 : bv 64) (call10_after : DecodeItemOutcome) (call_after : DecodeItemOutcome) (machine_x21_1 : bv 64) (machine_x22_1 : bv 64),
+  (fp_machineAt0568_ForwardA0N0_Hist (args) (returnAddress) (call18_after) (call17_result) (call17_word_1_0) (call17_word_1_8) (call16_after) (call16_kept_x18) (call16_kept_x19) (call15_after) (call15_kept_x18) (call15_kept_x19) (call14_after) (call14_kept_x18) (call14_kept_x19) (call13_after) (call13_kept_x18) (call13_kept_x19) (call10_after) (call_after) (machine_x21_1) (machine_x22_1)) ->
   ((bv_unsigned (parentHeaderReturnAddress args) = returnAddress /\ parentHeaderArgsWellFormed args)) ->
   (((bv_unsigned (parentHeaderReturnAddress args) mod 4 = 0)%Z)) ->
   (((List.length call_after = 40)%nat)) ->
@@ -723,8 +723,8 @@ Definition fp_edge0568_0270_CandidateError : Prop :=
   candidateParentHeader (parentHeaderInputBytes args) = candidateHeaderError.
 
 Definition fp_edge059c_0270_CandidateError : Prop :=
-  forall (args : ParentHeaderArgs) (returnAddress : Z) (call20_result : NextUint64Return) (call20_word_1_0 : bv 64) (call20_word_1_8 : bv 64) (call20_arg_word_1_0 : bv 64) (call20_arg_word_1_8 : bv 64) (call19_result : NextUint64Return) (call19_word_1_0 : bv 64) (call19_word_1_8 : bv 64) (call19_kept_x19 : bv 64) (call18_after : DecodeItemOutcome) (call17_result : NextUint64Return) (call17_word_1_0 : bv 64) (call17_kept_x19 : bv 64) (call16_after : DecodeItemOutcome) (call16_kept_x18 : bv 64) (call16_kept_x19 : bv 64) (call15_after : DecodeItemOutcome) (call15_kept_x18 : bv 64) (call15_kept_x19 : bv 64) (call14_after : DecodeItemOutcome) (call14_kept_x18 : bv 64) (call14_kept_x19 : bv 64) (call13_after : DecodeItemOutcome) (call13_kept_x18 : bv 64) (call13_kept_x19 : bv 64) (call10_after : DecodeItemOutcome) (call_after : DecodeItemOutcome),
-  (fp_machineAt059c_ForwardA0N0_Hist (args) (returnAddress) (call19_result) (call19_word_1_0) (call19_word_1_8) (call18_after) (call17_result) (call17_word_1_0) (call16_after) (call16_kept_x18) (call16_kept_x19) (call15_after) (call15_kept_x18) (call15_kept_x19) (call14_after) (call14_kept_x18) (call14_kept_x19) (call13_after) (call13_kept_x18) (call13_kept_x19) (call10_after) (call_after)) ->
+  forall (args : ParentHeaderArgs) (returnAddress : Z) (call20_result : NextUint64Return) (call20_word_1_0 : bv 64) (call20_word_1_8 : bv 64) (call20_arg_word_1_0 : bv 64) (call20_arg_word_1_8 : bv 64) (call19_result : NextUint64Return) (call19_word_1_0 : bv 64) (call19_word_1_8 : bv 64) (call19_kept_x19 : bv 64) (call18_after : DecodeItemOutcome) (call17_result : NextUint64Return) (call17_word_1_0 : bv 64) (call17_kept_x19 : bv 64) (call16_after : DecodeItemOutcome) (call16_kept_x18 : bv 64) (call16_kept_x19 : bv 64) (call15_after : DecodeItemOutcome) (call15_kept_x18 : bv 64) (call15_kept_x19 : bv 64) (call14_after : DecodeItemOutcome) (call14_kept_x18 : bv 64) (call14_kept_x19 : bv 64) (call13_after : DecodeItemOutcome) (call13_kept_x18 : bv 64) (call13_kept_x19 : bv 64) (call10_after : DecodeItemOutcome) (call_after : DecodeItemOutcome) (machine_x21_1 : bv 64) (machine_x22_1 : bv 64),
+  (fp_machineAt059c_ForwardA0N0_Hist (args) (returnAddress) (call19_result) (call19_word_1_0) (call19_word_1_8) (call18_after) (call17_result) (call17_word_1_0) (call16_after) (call16_kept_x18) (call16_kept_x19) (call15_after) (call15_kept_x18) (call15_kept_x19) (call14_after) (call14_kept_x18) (call14_kept_x19) (call13_after) (call13_kept_x18) (call13_kept_x19) (call10_after) (call_after) (machine_x21_1) (machine_x22_1)) ->
   ((bv_unsigned (parentHeaderReturnAddress args) = returnAddress /\ parentHeaderArgsWellFormed args)) ->
   (((bv_unsigned (parentHeaderReturnAddress args) mod 4 = 0)%Z)) ->
   (((List.length call_after = 40)%nat)) ->

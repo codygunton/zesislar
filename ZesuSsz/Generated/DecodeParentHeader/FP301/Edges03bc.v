@@ -29,9 +29,9 @@ Section edges.
 Context `{!islaG Sigma} `{!threadG}.
 
 (* fp_machineAt03bc_ForwardA0N0 -> fp_machineAt0274_ForwardA0N0 (join) *)
-Global Instance zesu_hist_edge_95 (args : ParentHeaderArgs) (returnAddress : Z) (machine_x10 : bv 64) (machine_x18 : bv 64) (call13_after : DecodeItemOutcome) (call10_after : DecodeItemOutcome) (call_after : DecodeItemOutcome) :
+Global Instance zesu_hist_edge_95 (args : ParentHeaderArgs) (returnAddress : Z) (machine_x10 : bv 64) (machine_x18 : bv 64) (machine_x21_1 : bv 64) (machine_x22_1 : bv 64) (call13_after : DecodeItemOutcome) (call10_after : DecodeItemOutcome) (call_after : DecodeItemOutcome) :
   ZesuHistEdge (PROP := iProp Sigma)
-    (fp_machineAt03bc_ForwardA0N0_Hist (args) (returnAddress) (machine_x10) (machine_x18) (call13_after) (call10_after) (call_after))
+    (fp_machineAt03bc_ForwardA0N0_Hist (args) (returnAddress) (machine_x10) (machine_x18) (machine_x21_1) (machine_x22_1) (call13_after) (call10_after) (call_after))
     (fp_machineAt0274_ForwardA0N0_Hist (args) (returnAddress) (call10_after) (call_after))
     (True)%I.
 Proof.
@@ -39,8 +39,8 @@ Proof.
   destruct Hh as (fp_seed_mstatus_bits & forward_witness_1be931110d776902 & forward_witness_905cf96e605c1117 & forward_witness_55ab0ce59750150a & forward_witness_11fde2df72db9d06 & forward_witness_1492ef7bd46b3b7a & forward_witness_d77b5950a2aea933 & forward_witness_21649d1cf161453f & forward_witness_1eea82d2945b4618 & forward_witness_751588b52f8a71ff & forward_witness_9644ccf41f39915a & HF0 & HF1 & HF2 & HF3 & HF4 & HF5 & HF6 & HF7 & HF8 & HF9 & HF10 & HF11 & HF12 & HF13 & HF14 & HF15 & HF16 & HF17 & HF18 & HF19 & HF20).
   iIntros "HN".
   destruct HF1 as (call13_kept_x18_HF1 & call13_kept_x19_HF1 & HF1_0 & HF1_1 & HF1_2).
-  destruct HF1_0 as (call12_after_HF1_0 & call12_kept_x18_HF1_0 & call12_kept_x20_HF1_0 & call11_kept_x19_HF1_0 & HF1_0_0 & HF1_0_1 & HF1_0_2 & HF1_0_3 & HF1_0_4 & HF1_0_5).
-  destruct HF1_0_0 as (call11_after_HF1_0_0 & call11_kept_x18_HF1_0_0 & call10_kept_x20_HF1_0_0 & HF1_0_0_0 & HF1_0_0_1 & HF1_0_0_2 & HF1_0_0_3 & HF1_0_0_4 & HF1_0_0_5 & HF1_0_0_6).
+  destruct HF1_0 as (call12_after_HF1_0 & call12_kept_x18_HF1_0 & call12_kept_x20_HF1_0 & call11_kept_x19_HF1_0 & HF1_0_0 & HF1_0_1 & HF1_0_2 & HF1_0_3 & HF1_0_4 & HF1_0_5 & HF1_0_6).
+  destruct HF1_0_0 as (call11_after_HF1_0_0 & call11_kept_x18_HF1_0_0 & call10_kept_x20_HF1_0_0 & HF1_0_0_0 & HF1_0_0_1 & HF1_0_0_2 & HF1_0_0_3 & HF1_0_0_4 & HF1_0_0_5 & HF1_0_0_6 & HF1_0_0_7).
   destruct HF1_0_0_0 as (call10_kept_x19_HF1_0_0_0 & call9_after_HF1_0_0_0 & call9_kept_x18_HF1_0_0_0 & call9_kept_x19_HF1_0_0_0 & call8_after_HF1_0_0_0 & call8_kept_x18_HF1_0_0_0 & call8_kept_x19_HF1_0_0_0 & call7_after_HF1_0_0_0 & call7_kept_x18_HF1_0_0_0 & call7_kept_x19_HF1_0_0_0 & call6_after_HF1_0_0_0 & call6_kept_x18_HF1_0_0_0 & call6_kept_x19_HF1_0_0_0 & call5_after_HF1_0_0_0 & call5_kept_x18_HF1_0_0_0 & call5_kept_x19_HF1_0_0_0 & call4_after_HF1_0_0_0 & call4_kept_x18_HF1_0_0_0 & call4_kept_x19_HF1_0_0_0 & call3_after_HF1_0_0_0 & call3_kept_x18_HF1_0_0_0 & call3_kept_x19_HF1_0_0_0 & call2_after_HF1_0_0_0 & call2_kept_x18_HF1_0_0_0 & call2_kept_x19_HF1_0_0_0 & HF1_0_0_0_0 & HF1_0_0_0_1 & HF1_0_0_0_2 & HF1_0_0_0_3 & HF1_0_0_0_4 & HF1_0_0_0_5 & HF1_0_0_0_6 & HF1_0_0_0_7 & HF1_0_0_0_8 & HF1_0_0_0_9 & HF1_0_0_0_10 & HF1_0_0_0_11 & HF1_0_0_0_12 & HF1_0_0_0_13 & HF1_0_0_0_14 & HF1_0_0_0_15 & HF1_0_0_0_16 & HF1_0_0_0_17 & HF1_0_0_0_18 & HF1_0_0_0_19 & HF1_0_0_0_20 & HF1_0_0_0_21 & HF1_0_0_0_22 & HF1_0_0_0_23 & HF1_0_0_0_24 & HF1_0_0_0_25 & HF1_0_0_0_26 & HF1_0_0_0_27 & HF1_0_0_0_28 & HF1_0_0_0_29 & HF1_0_0_0_30 & HF1_0_0_0_31 & HF1_0_0_0_32 & HF1_0_0_0_33 & HF1_0_0_0_34 & HF1_0_0_0_35 & HF1_0_0_0_36 & HF1_0_0_0_37 & HF1_0_0_0_38 & HF1_0_0_0_39 & HF1_0_0_0_40 & HF1_0_0_0_41 & HF1_0_0_0_42 & HF1_0_0_0_43 & HF1_0_0_0_44).
   iPureIntro. apply zesu_hist_intro. unfold fp_machineAt0274_ForwardA0N0_Hist.
   exists fp_seed_mstatus_bits.

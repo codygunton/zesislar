@@ -30,9 +30,9 @@ Section edges.
 Context `{!islaG Sigma} `{!threadG}.
 
 (* fp_machineAt04ec_ForwardA0N0 -> fp_machineAt00b0_ForwardA0N0 (join) *)
-Global Instance zesu_hist_edge_121 (args : ParentHeaderArgs) (returnAddress : Z) (call18_after : DecodeItemOutcome) (call17_result : NextUint64Return) (call17_word_1_0 : bv 64) (call17_word_1_8 : bv 64) (call16_after : DecodeItemOutcome) (call13_after : DecodeItemOutcome) (call10_after : DecodeItemOutcome) (call_after : DecodeItemOutcome) (machine_x10 : bv 64) :
+Global Instance zesu_hist_edge_121 (args : ParentHeaderArgs) (returnAddress : Z) (call18_after : DecodeItemOutcome) (call17_result : NextUint64Return) (call17_word_1_0 : bv 64) (call17_word_1_8 : bv 64) (call16_after : DecodeItemOutcome) (call13_after : DecodeItemOutcome) (call10_after : DecodeItemOutcome) (call_after : DecodeItemOutcome) (machine_x21_1 : bv 64) (machine_x22_1 : bv 64) (machine_x10 : bv 64) :
   ZesuHistEdge (PROP := iProp Sigma)
-    (fp_machineAt04ec_ForwardA0N0_Hist (args) (returnAddress) (call18_after) (call17_result) (call17_word_1_0) (call17_word_1_8) (call16_after) (call13_after) (call10_after) (call_after))
+    (fp_machineAt04ec_ForwardA0N0_Hist (args) (returnAddress) (call18_after) (call17_result) (call17_word_1_0) (call17_word_1_8) (call16_after) (call13_after) (call10_after) (call_after) (machine_x21_1) (machine_x22_1))
     (fp_machineAt00b0_ForwardA0N0_Hist (args) (returnAddress) (machine_x10))
     (⌜((2148617472%Z <= bv_unsigned machine_x10 <= 2148618660%Z)%Z)⌝ ∗ ⌜((bool_decide ((bv_unsigned machine_x10 >= bv_unsigned (BV 64%N 2148617472%Z))%Z)) = true) /\ ((((bv_unsigned machine_x10) >= (2148617472%Z))%Z))⌝ ∗ ⌜((bool_decide ((bv_unsigned machine_x10 <= bv_unsigned (BV 64%N 2148618660%Z))%Z)) = true) /\ ((((bv_unsigned machine_x10) <= (2148618660%Z))%Z))⌝ ∗ ⌜(bv_unsigned (parentHeaderReturnAddress args) = returnAddress /\ parentHeaderArgsWellFormed args)⌝ ∗ ⌜((bv_unsigned (parentHeaderReturnAddress args) mod 4 = 0)%Z)⌝ ∗ True)%I.
 Proof.
@@ -43,7 +43,7 @@ Proof.
   iPureIntro. apply zesu_hist_intro. unfold fp_machineAt00b0_ForwardA0N0_Hist.
   exists fp_seed_mstatus_bits, forward_witness_1be931110d776902, forward_witness_905cf96e605c1117, forward_witness_55ab0ce59750150a, forward_witness_11fde2df72db9d06, forward_witness_88383840afa7af74, (BV 64%N 0%Z), forward_witness_d77b5950a2aea933.
   split; [exact HN0|].
-  split; [exact (fp_edge04ec_00b0_CandidateError_holds args returnAddress call18_after call17_result call17_word_1_0 call17_word_1_8 call16_after call13_after call10_after call_after HS HV0 HV1)|].
+  split; [exact (fp_edge04ec_00b0_CandidateError_holds args returnAddress call18_after call17_result call17_word_1_0 call17_word_1_8 call16_after call13_after call10_after call_after machine_x21_1 machine_x22_1 HS HV0 HV1)|].
   split; [exact HF23|].
   split; [exact HF24|].
   split; [exact HF25|].
@@ -57,8 +57,8 @@ Proof.
   exact HN2.
 Qed.
 
-Global Instance zesu_hist_reveal_46 (args : ParentHeaderArgs) (returnAddress : Z) (call18_after : DecodeItemOutcome) (call17_result : NextUint64Return) (call17_word_1_0 : bv 64) (call17_word_1_8 : bv 64) (call16_after : DecodeItemOutcome) (call13_after : DecodeItemOutcome) (call10_after : DecodeItemOutcome) (call_after : DecodeItemOutcome) :
-  ZesuHistReveal (fp_machineAt04ec_ForwardA0N0_Hist (args) (returnAddress) (call18_after) (call17_result) (call17_word_1_0) (call17_word_1_8) (call16_after) (call13_after) (call10_after) (call_after)) ((∃ (call_arg_x13 : bv 64) (call_arg_x14 : bv 64) (call_arg_x15 : bv 64) (call_arg_x16 : bv 64) (call_arg_x17 : bv 64) (call_before : list byte), (decodeItemCallDomain
+Global Instance zesu_hist_reveal_46 (args : ParentHeaderArgs) (returnAddress : Z) (call18_after : DecodeItemOutcome) (call17_result : NextUint64Return) (call17_word_1_0 : bv 64) (call17_word_1_8 : bv 64) (call16_after : DecodeItemOutcome) (call13_after : DecodeItemOutcome) (call10_after : DecodeItemOutcome) (call_after : DecodeItemOutcome) (machine_x21_1 : bv 64) (machine_x22_1 : bv 64) :
+  ZesuHistReveal (fp_machineAt04ec_ForwardA0N0_Hist (args) (returnAddress) (call18_after) (call17_result) (call17_word_1_0) (call17_word_1_8) (call16_after) (call13_after) (call10_after) (call_after) (machine_x21_1) (machine_x22_1)) ((∃ (call_arg_x13 : bv 64) (call_arg_x14 : bv 64) (call_arg_x15 : bv 64) (call_arg_x16 : bv 64) (call_arg_x17 : bv 64) (call_before : list byte), (decodeItemCallDomain
           (decodeItemCallDataArgs ([((bv_add (bv_add (bv_add (parentHeaderStackPointer args) (BV 64%N 18446744073709551216%Z)) (BV 64%N 400%Z)) (BV 64%N 18446744073709551224%Z))); ((parentHeaderInputPointer args)); ((parentHeaderInputLength args)); (call_arg_x13); (call_arg_x14); (call_arg_x15); (call_arg_x16); (call_arg_x17)]) (((bv_add (parentHeaderStackPointer args) (BV 64%N 18446744073709551216%Z)))) (bv_unsigned (((parentHeaderInputEnd args)))) (parentHeaderInputBytes args) call_before)) /\ (decodeItemCallMeaning
             (decodeItemCallDataArgs ([((bv_add (bv_add (bv_add (parentHeaderStackPointer args) (BV 64%N 18446744073709551216%Z)) (BV 64%N 400%Z)) (BV 64%N 18446744073709551224%Z))); ((parentHeaderInputPointer args)); ((parentHeaderInputLength args)); (call_arg_x13); (call_arg_x14); (call_arg_x15); (call_arg_x16); (call_arg_x17)]) (((bv_add (parentHeaderStackPointer args) (BV 64%N 18446744073709551216%Z)))) (bv_unsigned (((parentHeaderInputEnd args)))) (parentHeaderInputBytes args) call_before) (call_after)))).
 Proof.

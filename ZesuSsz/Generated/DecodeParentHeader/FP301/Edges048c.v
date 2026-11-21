@@ -29,10 +29,10 @@ Section edges.
 Context `{!islaG Sigma} `{!threadG}.
 
 (* fp_machineAt048c_ForwardA0N0 -> fp_machineAt0514_slot2_ForwardA0N0 (forward) *)
-Global Instance zesu_hist_edge_112 (args : ParentHeaderArgs) (returnAddress : Z) (call16_after : DecodeItemOutcome) (call16_kept_x18 : bv 64) (call16_kept_x19 : bv 64) (call13_after : DecodeItemOutcome) (call10_after : DecodeItemOutcome) (call_after : DecodeItemOutcome) :
+Global Instance zesu_hist_edge_112 (args : ParentHeaderArgs) (returnAddress : Z) (call16_after : DecodeItemOutcome) (call16_kept_x18 : bv 64) (call16_kept_x19 : bv 64) (call13_after : DecodeItemOutcome) (call10_after : DecodeItemOutcome) (call_after : DecodeItemOutcome) (machine_x21_1 : bv 64) (machine_x22_1 : bv 64) :
   ZesuHistEdge (PROP := iProp Sigma)
-    (fp_machineAt048c_ForwardA0N0_Hist (args) (returnAddress) (call16_after) (call16_kept_x18) (call16_kept_x19) (call13_after) (call10_after) (call_after))
-    (fp_machineAt0514_slot2_ForwardA0N0_Hist (args) (returnAddress) (call16_after) (call16_kept_x18) (call16_kept_x19) (call13_after) (call10_after) (call_after))
+    (fp_machineAt048c_ForwardA0N0_Hist (args) (returnAddress) (call16_after) (call16_kept_x18) (call16_kept_x19) (call13_after) (call10_after) (call_after) (machine_x21_1) (machine_x22_1))
+    (fp_machineAt0514_slot2_ForwardA0N0_Hist (args) (returnAddress) (call16_after) (call16_kept_x18) (call16_kept_x19) (call13_after) (call10_after) (call_after) (machine_x21_1) (machine_x22_1))
     (True)%I.
 Proof.
   rewrite /ZesuHistEdge => Hh. apply zesu_hist_elim in Hh. unfold fp_machineAt048c_ForwardA0N0_Hist in Hh.

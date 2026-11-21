@@ -29,14 +29,14 @@ Section edges.
 Context `{!islaG Sigma} `{!threadG}.
 
 (* fp_machineAt032c_ForwardA0N0 -> fp_machineAt0334_LoopClass0 (loop_entry) *)
-Global Instance zesu_hist_edge_78 (args : ParentHeaderArgs) (returnAddress : Z) (call12_after : DecodeItemOutcome) (call12_kept_x18 : bv 64) (call12_kept_x20 : bv 64) (call11_kept_x19 : bv 64) (call10_after : DecodeItemOutcome) (call_after : DecodeItemOutcome) :
+Global Instance zesu_hist_edge_78 (args : ParentHeaderArgs) (returnAddress : Z) (call12_after : DecodeItemOutcome) (call12_kept_x18 : bv 64) (call12_kept_x20 : bv 64) (call11_kept_x19 : bv 64) (call10_after : DecodeItemOutcome) (call_after : DecodeItemOutcome) (machine_x21_1 : bv 64) :
   ZesuHistEdge (PROP := iProp Sigma)
-    (fp_machineAt032c_ForwardA0N0_Hist (args) (returnAddress) (call12_after) (call12_kept_x18) (call12_kept_x20) (call11_kept_x19) (call10_after) (call_after))
-    (fp_machineAt0334_LoopClass0_Hist (args) (returnAddress) (call12_after) (call12_kept_x18) (call12_kept_x20) (call11_kept_x19) (call10_after) (call_after))
+    (fp_machineAt032c_ForwardA0N0_Hist (args) (returnAddress) (call12_after) (call12_kept_x18) (call12_kept_x20) (call11_kept_x19) (call10_after) (call_after) (machine_x21_1))
+    (fp_machineAt0334_LoopClass0_Hist (args) (returnAddress) (call12_after) (call12_kept_x18) (call12_kept_x20) (call11_kept_x19) (call10_after) (call_after) (machine_x21_1))
     (⌜((negb (bool_decide ((bv_concat 64%N (bv_concat 56%N (bv_concat 48%N (bv_concat 40%N (bv_concat 32%N (bv_concat 24%N (bv_concat 16%N (List.nth 15%nat call12_after (BV 8%N 0%Z)) (List.nth 14%nat call12_after (BV 8%N 0%Z))) (List.nth 13%nat call12_after (BV 8%N 0%Z))) (List.nth 12%nat call12_after (BV 8%N 0%Z))) (List.nth 11%nat call12_after (BV 8%N 0%Z))) (List.nth 10%nat call12_after (BV 8%N 0%Z))) (List.nth 9%nat call12_after (BV 8%N 0%Z))) (List.nth 8%nat call12_after (BV 8%N 0%Z))) = (BV 64%N 0%Z)))) = true) /\ ((((bv_unsigned (bv_concat 64%N (bv_concat 56%N (bv_concat 48%N (bv_concat 40%N (bv_concat 32%N (bv_concat 24%N (bv_concat 16%N (List.nth 15%nat call12_after (BV 8%N 0%Z)) (List.nth 14%nat call12_after (BV 8%N 0%Z))) (List.nth 13%nat call12_after (BV 8%N 0%Z))) (List.nth 12%nat call12_after (BV 8%N 0%Z))) (List.nth 11%nat call12_after (BV 8%N 0%Z))) (List.nth 10%nat call12_after (BV 8%N 0%Z))) (List.nth 9%nat call12_after (BV 8%N 0%Z))) (List.nth 8%nat call12_after (BV 8%N 0%Z)))) <> (0%Z))%Z))⌝ ∗ True)%I.
 Proof.
   rewrite /ZesuHistEdge => Hh. apply zesu_hist_elim in Hh. unfold fp_machineAt032c_ForwardA0N0_Hist in Hh.
-  destruct Hh as (call11_after & call11_kept_x18 & call10_kept_x20 & fp_seed_mstatus_bits & forward_witness_1be931110d776902 & forward_witness_905cf96e605c1117 & forward_witness_55ab0ce59750150a & forward_witness_11fde2df72db9d06 & forward_witness_88383840afa7af74 & forward_witness_1492ef7bd46b3b7a & forward_witness_d77b5950a2aea933 & forward_witness_21649d1cf161453f & forward_witness_1eea82d2945b4618 & forward_witness_751588b52f8a71ff & forward_witness_9644ccf41f39915a & HF0 & HF1 & HF2 & HF3 & HF4 & HF5 & HF6 & HF7 & HF8 & HF9 & HF10 & HF11 & HF12 & HF13 & HF14 & HF15 & HF16 & HF17 & HF18 & HF19 & HF20 & HF21 & HF22 & HF23 & HF24 & HF25 & HF26 & HF27 & HF28 & HF29).
+  destruct Hh as (call11_after & call11_kept_x18 & call10_kept_x20 & fp_seed_mstatus_bits & forward_witness_1be931110d776902 & forward_witness_905cf96e605c1117 & forward_witness_55ab0ce59750150a & forward_witness_11fde2df72db9d06 & forward_witness_88383840afa7af74 & forward_witness_1492ef7bd46b3b7a & forward_witness_d77b5950a2aea933 & forward_witness_21649d1cf161453f & forward_witness_1eea82d2945b4618 & forward_witness_751588b52f8a71ff & forward_witness_9644ccf41f39915a & HF0 & HF1 & HF2 & HF3 & HF4 & HF5 & HF6 & HF7 & HF8 & HF9 & HF10 & HF11 & HF12 & HF13 & HF14 & HF15 & HF16 & HF17 & HF18 & HF19 & HF20 & HF21 & HF22 & HF23 & HF24 & HF25 & HF26 & HF27 & HF28 & HF29 & HF30).
   iIntros "HN".
   iDestruct "HN" as "(%HV8 & _)".
   iPureIntro. apply zesu_hist_intro. unfold fp_machineAt0334_LoopClass0_Hist.
@@ -49,15 +49,16 @@ Proof.
   split; [exact HF5|].
   split; [exact HF6|].
   split; [exact HF7|].
-  split; [exact (proj1 HF13)|].
-  split; [exact (proj1 HF16)|].
-  split; [exact (proj1 HF18)|].
-  split; [exact (proj1 HF22)|].
+  split; [exact HF8|].
+  split; [exact (proj1 HF14)|].
+  split; [exact (proj1 HF17)|].
+  split; [exact (proj1 HF19)|].
   split; [exact (proj1 HF23)|].
   split; [exact (proj1 HF24)|].
   split; [exact (proj1 HF25)|].
-  split; [exact (proj1 HF28)|].
+  split; [exact (proj1 HF26)|].
   split; [exact (proj1 HF29)|].
+  split; [exact (proj1 HF30)|].
   exact (proj1 HV8).
 Qed.
 
