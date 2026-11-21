@@ -2780,8 +2780,63 @@ Ltac zesu_liAStep :=
    finds the comparison stuck on `x`, and leaves the fact as it was: about a
    second per fact per step. With the moduli folded during simpl the result
    is the same (simpl never folds a modulus into a numeral) at no cost. *)
-Ltac liSimpl ::= try progress (with_strategy opaque
-  [stdpp.bitvector.definitions.bv_modulus stdpp.bitvector.definitions.bv_half_modulus] simpl).
+Ltac zesu_simpl_folded_moduli := with_strategy opaque
+  [stdpp.bitvector.definitions.bv_modulus stdpp.bitvector.definitions.bv_half_modulus] simpl.
+Ltac liSimpl ::= try progress zesu_simpl_folded_moduli.
+
+(* Lithium's `liSep` (a separating conjunct found through `RelatedTo`) and
+   `liFindInContext` also run a whole-goal `simpl` before the context lookup.
+   At a successor's register collection that is once per register on a goal
+   holding every branch fact of the entry: 4 to 6 s per register on
+   decodeParentHeader 039c (perf: simpl's reduction was 40% of the block).
+   Both are Lithium's text with that `simpl` folding the moduli, as above. *)
+Ltac liSep ::=
+  try liEnsureSepHead;
+  lazymatch goal with
+  | |- envs_entails ?Δ (bi_sep ?P ?Q) =>
+    lazymatch P with
+    | bi_sep _ _ => notypeclasses refine (tac_sep_sep_assoc _ _ _ _ _)
+    | bi_exist _ => notypeclasses refine (tac_sep_exist_assoc _ _ _ _)
+    | bi_emp => notypeclasses refine (tac_sep_emp _ _ _)
+    | (⌜_⌝)%I => fail "handled by liSideCond"
+    | (□ ?P)%I => notypeclasses refine (tac_do_intro_intuit_sep _ _ _ _)
+    | match ?x with _ => _ end => fail "should not have match in sep"
+    | ?P => first [
+        progress liFindHyp FICSyntactic
+      | simple notypeclasses refine (tac_do_simplify_goal _ 0%N _ _ _); [solve [refine _] |]
+      | simple notypeclasses refine (tac_intro_subsume_related _ _ _ _); [solve [refine _] |];
+        zesu_simpl_folded_moduli; liFindInContext
+      | simple notypeclasses refine (tac_do_simplify_goal _ _ _ _ _); [| solve [refine _] |]
+      | fail "liSep: unknown sidecondition" P
+    ]
+    end
+  | |- envs_entails ?Δ (∃ₗ x, bi_sep (@?P x) _) =>
+    lazymatch P with
+    | (λ _, bi_sep _ _) => notypeclasses refine (tac_sep_sep_assoc_ex _ _ _ _ _)
+    | (λ _, bi_exist _) => notypeclasses refine (tac_sep_exist_assoc_ex _ _ _ _)
+    | (λ _, (⌜_⌝)%I) => fail "handled by liSideCond"
+    | (λ _, (□ _)%I) => notypeclasses refine (tac_do_intro_intuit_sep_ex _ _ _ _ _ _)
+    | ?P => first [
+        simple notypeclasses refine (tac_do_simplify_goal_ex _ 0%N _ _ _); [intro; cbv beta; solve [refine _] |]
+      | simple notypeclasses refine (tac_intro_subsume_related_ex _ _ _ _); [solve [refine _] |];
+        zesu_simpl_folded_moduli; liFindInContext
+      | simple notypeclasses refine (tac_do_simplify_goal_ex _ _ _ _ _); [|intro; cbv beta; solve [refine _] |]
+      | fail "liSep: unknown sidecondition" P
+    ]
+    end
+  end.
+Ltac liFindInContext ::=
+  lazymatch goal with
+  | |- envs_entails _ (∃ₗ _, find_in_context ?fic _) =>
+      notypeclasses refine (tac_ex_find_in_context _ _ _)
+  | |- _ => idtac
+  end;
+  lazymatch goal with
+  | |- envs_entails _ (find_in_context ?fic ?T) =>
+    let key := open_constr:(_) in
+    once (simple notypeclasses refine (tac_find_in_context key _ _);
+      [ shelve | typeclasses eauto | zesu_simpl_folded_moduli; repeat liExist false; liFindHypOrTrue key ])
+  end.
 
 (* Lithium proves the side condition `P` of `⌜P⌝ ∗ Q` with stdpp's `done`
    before it shelves `P` for the finishers. Its `contradiction` decides every
@@ -2808,6 +2863,34 @@ Ltac zesu_sidecond_done :=
     | solve [apply not_symmetry; trivial]
     | discriminate
     | zesu_contradiction_syntactic
+    | split
+    | match goal with H : ¬_ |- _ => case H; clear H; fast_done end ]
+  ].
+
+(* stdpp's `done`, as every finisher and `by` uses it: its `contradiction`
+   looks only at the context, by conversion of every pair `¬ A`, `A'`, and
+   on a block context that pairwise conversion is most of the cost (perf of
+   nextUint64 0000: Contradiction.seek 15% of the block), paid again for
+   every side goal over the same context. Below, the syntactic contradiction
+   first; then Coq's `contradiction` unchanged, on the goal `False`
+   (`exfalso`: it closes any goal exactly when the context is contradictory),
+   under the failure memo, whose key is then the context alone: a context
+   it failed on fails at once; a changed context runs it again. *)
+Ltac zesu_contradiction_context :=
+  first
+  [ zesu_contradiction_syntactic
+  | let memo := ltac2:(tac |- zesu_failure_memo_ltac1 "contradiction" tac) in
+    exfalso; memo ltac:(contradiction) ].
+Ltac stdpp.tactics.done ::=
+  solve
+  [ repeat first
+    [ fast_done
+    | solve [trivial]
+    | progress intros
+    | solve [symmetry; trivial]
+    | solve [apply not_symmetry; trivial]
+    | discriminate
+    | zesu_contradiction_context
     | split
     | match goal with H : ¬_ |- _ => case H; clear H; fast_done end ]
   ].
