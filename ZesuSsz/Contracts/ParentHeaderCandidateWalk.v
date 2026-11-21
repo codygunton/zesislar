@@ -722,6 +722,41 @@ Proof.
   exfalso. exact (Hbad (statusHalfZero _ _ H9 H8)).
 Qed.
 
+(* A nextUint64 error result (word 3 at byte 8) has the half-word tag 3. *)
+Lemma nextUint64Error16Tag (result : list byte) :
+  nextUint64Error16 result ->
+  bv_unsigned (bv_concat 16 (List.nth 9 result (BV 8 0)) (List.nth 8 result (BV 8 0))) = 3.
+Proof.
+  intros (Hlen & _ & _ & Hw).
+  do 8 (destruct result as [|? result]; [cbn in Hlen; discriminate|]).
+  destruct result as [|b8 [|b9 rest]]; [cbn in Hlen; discriminate|cbn in Hlen; discriminate|].
+  cbn [List.nth skipn firstn littleEndian] in Hw |- *.
+  rewrite decodeItemStatusBytes.
+  pose proof (littleEndianNonneg (firstn 6 rest)).
+  pose proof (bv_unsigned_in_range _ b8). pose proof (bv_unsigned_in_range _ b9).
+  unfold bv_modulus in *. change (MachineWord.MachineWord.Z_idx 8) with 8%N in *.
+  change (2 ^ Z.of_N 8) with 256 in *. lia.
+Qed.
+
+(* nextUint64's root result with a nonzero tag is an error: its tag is 3, the value decodeParentHeader
+   stores at byte 72 of its result on the direct error return (block 0x0270). *)
+Lemma nextUint64RootStatusTag call ret :
+  nextUint64RootResult call ret ->
+  bv_unsigned (bv_concat 16 (List.nth 9 (nextResultBytes ret) (BV 8 0))
+    (List.nth 8 (nextResultBytes ret) (BV 8 0))) <> 0 ->
+  bv_unsigned (bv_concat 16 (List.nth 9 (nextResultBytes ret) (BV 8 0))
+    (List.nth 8 (nextResultBytes ret) (BV 8 0))) = 3.
+Proof.
+  intros [_ Hroot] Hbad.
+  destruct (candidateDecodeItem (nextInputBytes call)) as [|isList h p];
+    [destruct Hroot as [Herr _]; exact (nextUint64Error16Tag _ Herr)|].
+  destruct (isList || (8 <? p));
+    [destruct Hroot as [Herr _]; exact (nextUint64Error16Tag _ Herr)|].
+  destruct Hroot as ((_ & _ & H8 & H9) & _).
+  apply byteAtNth in H8. apply byteAtNth in H9.
+  exfalso. exact (Hbad (statusHalfZero _ _ H9 H8)).
+Qed.
+
 Lemma nextUint64RootRestRange call ret :
   nextUint64RootResult call ret ->
   0 <= nextRestPointer ret < 2 ^ 64 /\ 0 <= nextRestLength ret < 2 ^ 64.

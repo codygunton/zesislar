@@ -16,6 +16,9 @@ Require Import ZesuSsz.Contracts.Candidates.ParentHeaderCandidate.
 Require Import ZesuSsz.Contracts.ParentHeaderCandidateWalk.
 Require Import ZesuSsz.Compliance.ParentHeaderMeaningOfCandidate.
 Require Import ZesuSsz.Compliance.ParentHeaderTailExitBridge.
+Require Import ZesuSsz.Compliance.ParentHeaderExitBridgeTactics.
+Require Import ZesuSsz.Compliance.ParentHeaderCandidateFacts.
+Require ZesuSsz.Generated.DecodeParentHeader.FP301.FunctionReturnEntries.
 
 (* The join's error fact, read from an opened package history. *)
 Ltac ph_history_error :=
@@ -32,4 +35,24 @@ Proof.
   apply parentHeaderMeaningOfCandidateWellFormed; [exact Hwf|].
   apply parentHeaderCandidateResultError; [ph_history_error|].
   destruct Hwf as (_ & _ & _ & _ & Herror & _). exact Herror.
+Qed.
+
+(* The direct error return (slot 0 of 0x0274): every edge into 0x0270 proves
+   the error fact and that the tag x10 it stores at bytes 72 and 73 is 3
+   (`ErrorTag`); the package keeps both in its history. *)
+Lemma parentHeaderSlot0ExitMeaning_holds :
+  ZesuSsz.Generated.DecodeParentHeader.FP301.FunctionReturnEntries.fp_machineReturn_slot0_ForwardA0N0_ExitMeaning
+    parentHeaderResultMeaning.
+Proof.
+  intros args returnAddress call10_after call_after x10 out u0 u74 Hh [_ Hwf] _ _ _ _ _ _ H0 H74.
+  apply parentHeaderMeaningOfCandidateWellFormed; [exact Hwf|].
+  apply zesu_hist_elim in Hh; hnf in Hh.
+  repeat match goal with
+  | H : ex _ |- _ => destruct H
+  | H : _ /\ _ |- _ => destruct H
+  end.
+  apply parentHeaderCandidateResultError.
+  - match goal with H : zesu_join_history (candidateParentHeader _ = candidateHeaderError) |- _ => exact H end.
+  - apply phError80Store; [exact H0 | exact H74|].
+    match goal with H : zesu_join_history (bv_unsigned x10 = 3) |- _ => exact H end.
 Qed.

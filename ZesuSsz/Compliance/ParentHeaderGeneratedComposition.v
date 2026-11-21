@@ -177,17 +177,16 @@ Qed.
 (* ---- End bridges (exit design A): each generated exit package (the memcpy
    tail package of 0x00b0, one return package per slot of 0x0274) gives the
    contract exit by its bridge (ParentHeaderTailExitBridge.v,
-   ParentHeaderDirectExitBridgeSlot<k>.v). The memcpy error exit's meaning is
-   proved (ParentHeaderErrorExitMeaning.v); the meaning of each direct exit is
-   an explicit premise (record ParentHeaderExitMeanings). ---- *)
+   ParentHeaderDirectExitBridgeSlot<k>.v). The meanings of the two error exits
+   (the memcpy tail and the direct error return, slot 0) are proved
+   (ParentHeaderErrorExitMeaning.v); the meaning of each success exit is an
+   explicit premise (record ParentHeaderExitMeanings). ---- *)
 
-(* The exit premises of the composition: the meaning of every return package,
-   step 2.4 (M1) discharges them. They are the generated exit-meaning
-   declarations of the return packages at the contract meaning. *)
+(* The exit premises of the composition: the meaning of every success return
+   package (slots 1 to 6), step 2.4 (M1) discharges them. They are the
+   generated exit-meaning declarations of the return packages at the contract
+   meaning. *)
 Record ParentHeaderExitMeanings : Prop := {
-  parentHeaderExitMeaning_slot0 :
-    ZesuSsz.Generated.DecodeParentHeader.FP301.FunctionReturnEntries.fp_machineReturn_slot0_ForwardA0N0_ExitMeaning
-      parentHeaderResultMeaning;
   parentHeaderExitMeaning_slot1 :
     ZesuSsz.Generated.DecodeParentHeader.FP301.FunctionReturnEntries.fp_machineReturn_slot1_ForwardA0N0_ExitMeaning
       parentHeaderResultMeaning;
@@ -228,7 +227,7 @@ Ltac parentHeader_exit_premise Hexits H :=
   | Some (_, @ZesuSsz.Generated.DecodeParentHeader.FP301.FunctionReturnTail00e8Entries.fp_machineReturnTail00e8_ForwardA0N0 _ _ _ _ _) =>
       iApply (parentHeader_tail_end_bridge with "Hexit"); exact parentHeaderTailExitMeaning_holds
   | Some (_, @ZesuSsz.Generated.DecodeParentHeader.FP301.FunctionReturnEntries.fp_machineReturn_slot0_ForwardA0N0 _ _ _ _ _) =>
-      iApply (parentHeader_direct_end_bridge_slot0 with "Hexit"); exact (parentHeaderExitMeaning_slot0 Hexits)
+      iApply (parentHeader_direct_end_bridge_slot0 with "Hexit"); exact parentHeaderSlot0ExitMeaning_holds
   | Some (_, @ZesuSsz.Generated.DecodeParentHeader.FP301.FunctionReturnEntries.fp_machineReturn_slot1_ForwardA0N0 _ _ _ _ _) =>
       iApply (parentHeader_direct_end_bridge_slot1 with "Hexit"); exact (parentHeaderExitMeaning_slot1 Hexits)
   | Some (_, @ZesuSsz.Generated.DecodeParentHeader.FP301.FunctionReturnEntries.fp_machineReturn_slot2_ForwardA0N0 _ _ _ _ _) =>

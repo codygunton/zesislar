@@ -106,3 +106,13 @@ Proof.
 Qed.
 Lemma fp_edge059c_0270_CandidateError_holds : fp_edge059c_0270_CandidateError.
 Proof. ph_edge_error (phNextReject _ 18 _ _ call20_arg_word_1_0 call20_arg_word_1_8). Qed.
+
+(* 0x0270: the stored error tag is 3 *)
+Lemma fp_edge026c_0270_ErrorTag_holds : fp_edge026c_0270_ErrorTag.
+Proof. ph_edge_tag. Qed.
+Lemma fp_edge04a8_0270_ErrorTag_holds : fp_edge04a8_0270_ErrorTag.
+Proof. ph_edge_tag. Qed.
+Lemma fp_edge0568_0270_ErrorTag_holds : fp_edge0568_0270_ErrorTag.
+Proof. ph_edge_tag. Qed.
+Lemma fp_edge059c_0270_ErrorTag_holds : fp_edge059c_0270_ErrorTag.
+Proof. ph_edge_tag. Qed.

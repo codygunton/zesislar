@@ -315,3 +315,18 @@ Proof.
   eapply candidateWalkSkipMachine; [reflexivity | reflexivity | exact Hs1 | exact Hl3
     | eapply parentHeaderCallC1B; eassumption | eassumption].
 Qed.
+
+(* ---- Direct error return (slot 0 of 0x0274): block 0x0270 stores the
+   tag half-word x10 at bytes 72 and 73 of the result; with x10 = 3 the
+   result is parentHeaderError80 whatever the other 78 bytes are. ---- *)
+Lemma phError80Store (u0 u74 : list byte) (x : bv 64) :
+  length u0 = 72%nat -> length u74 = 6%nat -> bv_unsigned x = 3 ->
+  parentHeaderError80 (u0 ++ [bv_extract 0 8 x; bv_extract 8 8 x] ++ u74).
+Proof.
+  intros H0 H74 Hx. split; [|split].
+  - rewrite !app_length, H0, H74. reflexivity.
+  - unfold byteAt. rewrite nth_error_app2, H0 by lia. cbn.
+    rewrite bv_extract_unsigned, Hx. reflexivity.
+  - unfold byteAt. rewrite nth_error_app2, H0 by lia. cbn.
+    rewrite bv_extract_unsigned, Hx. reflexivity.
+Qed.

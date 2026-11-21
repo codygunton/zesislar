@@ -107,3 +107,14 @@ Ltac ph_edge_chain :=
 Tactic Notation "ph_edge_error" uconstr(T) :=
   ph_edge_intro; ph_edge_open;
   eapply T; [ph_edge_side ..|first [ph_edge_side | ph_edge_chain]].
+
+(* `ph_edge_tag` proves an `ErrorTag` declaration (edges into 0x0270): the
+   join's x10 is the edge's value, the constant 3 (block 0x026c) or
+   nextUint64's result tag, which the edge's guard says is nonzero: then the
+   tag is 3 (nextUint64RootStatusTag). *)
+Ltac ph_edge_tag :=
+  ph_edge_intro; ph_edge_open;
+  match goal with H : ?x = _ |- bv_unsigned ?x = _ => rewrite H end;
+  first [ reflexivity
+        | rewrite bv_zero_extend_unsigned by lia; eapply nextUint64RootStatusTag;
+          [eapply parentHeaderNextUint64Root; eassumption | assumption] ].
