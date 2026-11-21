@@ -163,10 +163,10 @@ Global Instance zesu_hist_edge_63 (args : ParentHeaderArgs) (returnAddress : Z) 
     (True)%I.
 Proof.
   rewrite /ZesuHistEdge => Hh. apply zesu_hist_elim in Hh. unfold fp_machineAt0274_slot3_ForwardA0N0_Hist in Hh.
-  destruct Hh as (call20_arg_word_1_0 & call20_arg_word_1_8 & call19_word_1_0 & call19_word_1_8 & call17_word_1_0 & call17_word_1_8 & call17_kept_x19 & call16_kept_x18 & call16_kept_x19 & call15_after & call15_kept_x18 & call15_kept_x19 & call14_after & call14_kept_x18 & call14_kept_x19 & call13_kept_x18 & call13_kept_x19 & fp_seed_mstatus_bits & forward_witness_88383840afa7af74 & forward_witness_9644ccf41f39915a & forward_witness_1492ef7bd46b3b7a & forward_witness_21649d1cf161453f & forward_witness_dc636cab9ffb40ae & HF0 & HF1 & HF2 & HF3 & HF4 & HF5 & HF6 & HF7 & HF8 & HF9 & HF10 & HF11 & HF12 & HF13 & HF14 & HF15 & HF16 & HF17 & HF18 & HF19 & HF20 & HF21 & HF22 & HF23 & HF24 & HF25 & HF26 & HF27 & HF28 & HF29 & HF30 & HF31 & HF32 & HF33 & HF34 & HF35 & HF36 & HF37 & HF38 & HF39 & HF40 & HF41 & HF42 & HF43 & HF44 & HF45 & HF46 & HF47 & HF48 & HF49 & HF50 & HF51 & HF52 & HF53 & HF54 & HF55).
+  destruct Hh as (call19_word_1_0 & call19_word_1_8 & call17_word_1_0 & call17_word_1_8 & call17_kept_x19 & call16_kept_x18 & call16_kept_x19 & call15_after & call15_kept_x18 & call15_kept_x19 & call14_after & call14_kept_x18 & call14_kept_x19 & call13_kept_x18 & call13_kept_x19 & fp_seed_mstatus_bits & forward_witness_88383840afa7af74 & forward_witness_9644ccf41f39915a & forward_witness_1492ef7bd46b3b7a & forward_witness_21649d1cf161453f & forward_witness_dc636cab9ffb40ae & HF0 & HF1 & HF2 & HF3 & HF4 & HF5 & HF6 & HF7 & HF8 & HF9 & HF10 & HF11 & HF12 & HF13 & HF14 & HF15 & HF16 & HF17 & HF18 & HF19 & HF20 & HF21 & HF22 & HF23 & HF24 & HF25 & HF26 & HF27 & HF28 & HF29 & HF30 & HF31 & HF32 & HF33 & HF34 & HF35 & HF36 & HF37 & HF38 & HF39 & HF40 & HF41 & HF42 & HF43 & HF44 & HF45 & HF46 & HF47 & HF48 & HF49 & HF50 & HF51 & HF52 & HF53).
   iIntros "HN".
   iPureIntro. apply zesu_hist_intro. unfold fp_machineReturn_slot3_ForwardA0N0_Hist.
-  exists call20_arg_word_1_0, call20_arg_word_1_8, call19_word_1_0, call19_word_1_8, call19_kept_x19, call17_word_1_0, call17_word_1_8, call17_kept_x19, call16_kept_x18, call16_kept_x19, call15_after, call15_kept_x18, call15_kept_x19, call14_after, call14_kept_x18, call14_kept_x19, call13_kept_x18, call13_kept_x19, fp_seed_mstatus_bits, forward_witness_88383840afa7af74, forward_witness_9644ccf41f39915a, forward_witness_1492ef7bd46b3b7a, forward_witness_21649d1cf161453f, forward_witness_dc636cab9ffb40ae, (BV 64%N 0%Z), (BV 64%N 0%Z).
+  exists call19_word_1_0, call19_word_1_8, call19_kept_x19, call17_word_1_0, call17_word_1_8, call17_kept_x19, call16_kept_x18, call16_kept_x19, call15_after, call15_kept_x18, call15_kept_x19, call14_after, call14_kept_x18, call14_kept_x19, call13_kept_x18, call13_kept_x19, fp_seed_mstatus_bits, forward_witness_88383840afa7af74, forward_witness_9644ccf41f39915a, forward_witness_1492ef7bd46b3b7a, forward_witness_21649d1cf161453f, forward_witness_dc636cab9ffb40ae, (BV 64%N 0%Z), (BV 64%N 0%Z).
   split; [exact HF0|].
   split; [exact HF1|].
   split; [exact HF2|].
@@ -221,8 +221,6 @@ Proof.
   split; [exact HF51|].
   split; [exact HF52|].
   split; [exact HF53|].
-  split; [exact HF54|].
-  split; [exact HF55|].
   split; [by vm_compute|].
   by vm_compute.
 Qed.
