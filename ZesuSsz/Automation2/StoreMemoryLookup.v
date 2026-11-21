@@ -680,6 +680,17 @@ Ltac zesu_run_list_eq :=
         | repeat match goal with H : ?T |- _ => lazymatch type of T with Prop => clear H end end;
           unfold bv_to_little_endian; simpl; repeat f_equal; bv_solve ].
 
+(* The held cell at the requested address `a`: the same term, or a term on
+   the same root at offset 0 (decodeParentHeader 0514_slot2: the request at
+   `bv_unsigned R + 8 + … + 8`, the stored cell at `bv_unsigned R + 64`); the
+   cell is then restated at `a` (the equation by `lia` in a cleared context). *)
+Ltac zesu_cell_address_is ra a a2 :=
+  first [ constr_eq a a2 | zesu_root_offset_is ra a a2 0%Z ].
+Ltac zesu_cell_restate_at a a2 :=
+  first [ constr_eq a a2
+        | let Ha := fresh "HcellAddress" in
+          assert (Ha : a2 = a) by (clear; ZesuSsz.Automation2.WrappedWord.zesu_plain_lia);
+          iEval (rewrite Ha) in "HzesuRun"; clear Ha ].
 (* decodeParentHeader 03bc: the successor asks for one byte array at `a`
    spelled as an explicit list of [K] bytes (stored words and zero bytes),
    where the block holds a cell at `a` and no array there. The cell and the
@@ -699,13 +710,13 @@ Ltac zesu_join_frame_explicit_at a L :=
   iMatchHyp ltac:(fun H res =>
     lazymatch res with
     | (?a2 ↦ₘ ?v)%I =>
-        constr_eq a a2;
+        zesu_cell_address_is ra a a2;
         lazymatch type of v with
         | bv ?w =>
             let len := eval vm_compute in (w / 8)%N in
             let m := eval vm_compute in (Z.of_N len) in
             lazymatch eval vm_compute in (Z.ltb m K) with true => idtac end;
-            iRename H into "HzesuRun";
+            iRename H into "HzesuRun"; zesu_cell_restate_at a a2;
             let Hl := fresh "HpieceLength" in
             iDestruct (zesu_cell_bytes len a with "HzesuRun") as "[HzesuRun HzesuPure]";
             iDestruct "HzesuPure" as %Hl;
@@ -873,13 +884,13 @@ Ltac zesu_join_frame_explicit_exist :=
       iMatchHyp ltac:(fun H res =>
         lazymatch res with
         | (?a2 ↦ₘ ?v)%I =>
-            constr_eq a a2;
+            zesu_cell_address_is ra a a2;
             lazymatch type of v with
             | bv ?w =>
                 let len := eval vm_compute in (w / 8)%N in
                 let m := eval vm_compute in (Z.of_N len) in
                 lazymatch eval vm_compute in (Z.ltb m K) with true => idtac end;
-                iRename H into "HzesuRun";
+                iRename H into "HzesuRun"; zesu_cell_restate_at a a2;
                 let Hl := fresh "HpieceLength" in
                 iDestruct (zesu_cell_bytes len a with "HzesuRun") as "[HzesuRun HzesuPure]";
                 iDestruct "HzesuPure" as %Hl;

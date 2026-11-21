@@ -55,3 +55,26 @@ Proof.
   assert_fails (idtac; ZesuSsz.Automation2.StoreMemoryLookup.zesu_join_frame_explicit).
   iExact "HG".
 Qed.
+
+(* The cell at the requested address spelled on the same root at offset 0
+   (decodeParentHeader 0514_slot2: request at `R + 8 + … + 8`, stored cell at
+   `R + 64`): the cell is restated at the requested address and the fold
+   proceeds. Refused: a cell on the same root at another offset. *)
+Lemma test_frame_fold_explicit_offset_spelling `{!islaG Sigma} (a : Z) (K : iProp Sigma) :
+  (a + 8) ↦ₘ (BV 64 0) -∗ (a + 16) ↦ₘ (BV 16 0) -∗ K -∗
+  ((a + 4 + 4) ↦ₘ∗ zeros10 ∗ K).
+Proof.
+  iIntros "H0 H1 HK".
+  ZesuSsz.Automation2.StoreMemoryLookup.zesu_join_frame_explicit.
+  iFrame.
+Qed.
+
+Lemma test_frame_fold_explicit_offset_other `{!islaG Sigma} (a : Z) (K : iProp Sigma) :
+  ((a + 4 + 4) ↦ₘ∗ zeros10 ∗ K) -∗
+  (a + 9) ↦ₘ (BV 64 0) -∗ (a + 17) ↦ₘ (BV 16 0) -∗
+  ((a + 4 + 4) ↦ₘ∗ zeros10 ∗ K).
+Proof.
+  iIntros "HG H0 H1".
+  assert_fails (idtac; ZesuSsz.Automation2.StoreMemoryLookup.zesu_join_frame_explicit).
+  iExact "HG".
+Qed.
