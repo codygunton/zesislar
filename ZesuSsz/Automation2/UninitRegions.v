@@ -412,3 +412,44 @@ Qed.
 Print Assumptions subsume_uninit_empty_request.
 Definition subsume_uninit_empty_request_inst := [instance @subsume_uninit_empty_request].
 Global Existing Instance subsume_uninit_empty_request_inst | 0.
+
+(* The mirror: an EMPTY uninitialized region answers no request of positive
+   size. The lookup by address takes a region that starts at the requested
+   address even when it is empty (the zero-size rests the frame rules leave
+   between pieces), and the uninitialized-region rules then raise the false
+   containment `a + n <= a + 0` and leave a negative rest. With the region's
+   size and the request's size closed numerals (plan contingency C2), the
+   empty region is dropped and the request is asked again, so the lookup
+   reaches the piece that holds it. *)
+Inductive ZesuClosedPositiveRequest {A : Type} (requested : A -> list (bv 8)) : Prop :=
+  zesu_closed_positive_request.
+Existing Class ZesuClosedPositiveRequest.
+Global Hint Extern 0 (ZesuClosedPositiveRequest ?requested) =>
+  (let f := eval vm_compute in (fun x => length (requested x)) in
+   lazymatch f with (fun _ => S _) => idtac end;
+   exact (zesu_closed_positive_request requested)) : typeclass_instances.
+
+Inductive ZesuClosedPositiveSize (n : Z) : Prop :=
+  zesu_closed_positive_size.
+Existing Class ZesuClosedPositiveSize.
+Global Hint Extern 0 (ZesuClosedPositiveSize ?n) =>
+  (ZesuSsz.Automation2.ByteArrays.zesu_closed_size n;
+   let v := eval vm_compute in (Z.ltb 0 n) in constr_eq v true;
+   exact (zesu_closed_positive_size n)) : typeclass_instances.
+
+Lemma subsume_uninit_empty_region_array `{!islaG Sigma} A a1 n1 a2
+    (requested : A -> list (bv 8)) G
+    `{!ZesuClosedZeroSize n1} `{!ZesuClosedPositiveRequest requested} :
+  (∃ x, a2 ↦ₘ∗ requested x ∗ G x) ⊢ subsume (a1 ↦ₘ? n1) (fun x : A => a2 ↦ₘ∗ requested x) G.
+Proof. iIntros "H _". iExact "H". Qed.
+Print Assumptions subsume_uninit_empty_region_array.
+Definition subsume_uninit_empty_region_array_inst := [instance @subsume_uninit_empty_region_array].
+Global Existing Instance subsume_uninit_empty_region_array_inst | 1.
+
+Lemma subsume_uninit_empty_region_uninit `{!islaG Sigma} A a1 n1 a2 n2 G
+    `{!ZesuClosedZeroSize n1} `{!ZesuClosedPositiveSize n2} :
+  (∃ x, a2 ↦ₘ? n2 ∗ G x) ⊢ subsume (a1 ↦ₘ? n1) (fun _ : A => a2 ↦ₘ? n2) G.
+Proof. iIntros "H _". iExact "H". Qed.
+Print Assumptions subsume_uninit_empty_region_uninit.
+Definition subsume_uninit_empty_region_uninit_inst := [instance @subsume_uninit_empty_region_uninit].
+Global Existing Instance subsume_uninit_empty_region_uninit_inst | 1.
