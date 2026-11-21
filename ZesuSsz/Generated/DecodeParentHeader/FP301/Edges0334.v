@@ -12,6 +12,8 @@ Require Import ZesuSsz.Contracts.ParentHeaderRootFacts.
 Require Import ZesuSsz.Contracts.ParentHeaderMemcpyService.
 Require Import ZesuSsz.Contracts.AbiBytes.
 Require Import ZesuSsz.Contracts.ZiskRuntime.
+Require Import ZesuSsz.Contracts.Candidates.ParentHeaderCandidate.
+Require Import ZesuSsz.Automation2.ByteWindowFold.
 Require Export ZesuSsz.Compliance.ParentHeaderHints.
 Require Import ZesuSsz.Contracts.Level1.
 Local Open Scope Z_scope.
@@ -27,38 +29,38 @@ Section edges.
 Context `{!islaG Sigma} `{!threadG}.
 
 (* fp_machineAt0334_LoopClass0 -> fp_machineAt0348_ForwardA0N0 (join) *)
-Global Instance zesu_hist_edge_87 (args : ParentHeaderArgs) (returnAddress : Z) (call12_after : DecodeItemOutcome) (call12_kept_x18 : bv 64) (call12_kept_x20 : bv 64) (call11_kept_x19 : bv 64) (call10_after : DecodeItemOutcome) (call_after : DecodeItemOutcome) :
+Global Instance zesu_hist_edge_87 (args : ParentHeaderArgs) (returnAddress : Z) (call12_after : DecodeItemOutcome) (call12_kept_x18 : bv 64) (call12_kept_x20 : bv 64) (call11_kept_x19 : bv 64) (call10_after : DecodeItemOutcome) (call_after : DecodeItemOutcome) (machine_x21_1 : bv 64) :
   ZesuHistEdge (PROP := iProp Sigma)
-    (fp_machineAt0334_LoopClass0_Hist (args) (returnAddress) (call12_after) (call12_kept_x18) (call12_kept_x20) (call11_kept_x19) (call10_after) (call_after))
-    (fp_machineAt0348_ForwardA0N0_Hist (args) (returnAddress) (call12_after) (call12_kept_x18) (call11_kept_x19) (call12_kept_x20) (call10_after) (call_after))
+    (fp_machineAt0334_LoopClass0_Hist (args) (returnAddress) (call12_after) (call12_kept_x18) (call12_kept_x20) (call11_kept_x19) (call10_after) (call_after) (machine_x21_1))
+    (fp_machineAt0348_ForwardA0N0_Hist (args) (returnAddress) (call12_after) (call12_kept_x18) (call11_kept_x19) (call12_kept_x20) (machine_x21_1) (call10_after) (call_after))
     (True)%I.
 Proof.
   rewrite /ZesuHistEdge => Hh. apply zesu_hist_elim in Hh. unfold fp_machineAt0334_LoopClass0_Hist in Hh.
-  destruct Hh as (call11_after & call11_kept_x18 & call10_kept_x20 & HF0 & HF1 & HF2 & HF3 & HF4 & HF5 & HF6 & HF7 & HF8 & HF9 & HF10 & HF11 & HF12 & HF13 & HF14 & HF15 & HF16 & HF17).
+  destruct Hh as (call11_after & call11_kept_x18 & call10_kept_x20 & HF0 & HF1 & HF2 & HF3 & HF4 & HF5 & HF6 & HF7 & HF8 & HF9 & HF10 & HF11 & HF12 & HF13 & HF14 & HF15 & HF16 & HF17 & HF18).
   iIntros "HN".
   iPureIntro. apply zesu_hist_intro. unfold fp_machineAt0348_ForwardA0N0_Hist.
   exists (BV 64%N 0%Z), (BV 64%N 0%Z), (BV 64%N 0%Z), (BV 64%N 0%Z), (BV 64%N 0%Z), (BV 64%N 0%Z), (BV 64%N 0%Z), (BV 64%N 0%Z), (BV 64%N 0%Z), (BV 64%N 0%Z), (BV 64%N 0%Z), (BV 64%N 0%Z).
   split; [exact HF0|].
-  split; [exact (ex_intro _ call11_after (ex_intro _ call11_kept_x18 (ex_intro _ call10_kept_x20 (conj HF1 (conj HF2 (conj HF3 (conj HF4 (conj HF5 (conj HF6 HF7)))))))))|].
+  split; [exact (ex_intro _ call11_after (ex_intro _ call11_kept_x18 (ex_intro _ call10_kept_x20 (conj HF1 (conj HF2 (conj HF3 (conj HF4 (conj HF5 (conj HF6 (conj HF7 HF8))))))))))|].
   split; [by vm_compute|].
   split; [by vm_compute|].
   split; [by vm_compute|].
-  split; [by vm_compute|].
-  split; [by vm_compute|].
-  split; [zesu_hist_view HF8|].
   split; [by vm_compute|].
   split; [by vm_compute|].
   split; [zesu_hist_view HF9|].
   split; [by vm_compute|].
+  split; [by vm_compute|].
   split; [zesu_hist_view HF10|].
-  split; [by vm_compute|].
-  split; [by vm_compute|].
   split; [by vm_compute|].
   split; [zesu_hist_view HF11|].
   split; [by vm_compute|].
   split; [by vm_compute|].
-  split; [zesu_hist_view HF15|].
-  zesu_hist_view HF16.
+  split; [by vm_compute|].
+  split; [zesu_hist_view HF12|].
+  split; [by vm_compute|].
+  split; [by vm_compute|].
+  split; [zesu_hist_view HF16|].
+  zesu_hist_view HF17.
 Qed.
 
 End edges.

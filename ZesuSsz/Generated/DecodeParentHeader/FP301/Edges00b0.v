@@ -38,7 +38,7 @@ Global Instance zesu_hist_edge_16 (args : ParentHeaderArgs) (returnAddress : Z) 
             (decodeItemCallDataArgs ([((bv_add (bv_add (bv_add (parentHeaderStackPointer args) (BV 64%N 18446744073709551216%Z)) (BV 64%N 400%Z)) (BV 64%N 18446744073709551224%Z))); ((parentHeaderInputPointer args)); ((parentHeaderInputLength args)); (call_arg_x13); (call_arg_x14); (call_arg_x15); (call_arg_x16); (call_arg_x17)]) (((bv_add (parentHeaderStackPointer args) (BV 64%N 18446744073709551216%Z)))) (bv_unsigned (((parentHeaderInputEnd args)))) (parentHeaderInputBytes args) call_before) (call_after)))⌝ ∗ True)%I.
 Proof.
   rewrite /ZesuHistEdge => Hh. apply zesu_hist_elim in Hh. unfold fp_machineAt00b0_ForwardA0N0_Hist in Hh.
-  destruct Hh as (fp_seed_mstatus_bits & forward_witness_1be931110d776902 & forward_witness_905cf96e605c1117 & forward_witness_55ab0ce59750150a & forward_witness_11fde2df72db9d06 & forward_witness_88383840afa7af74 & forward_witness_1492ef7bd46b3b7a & forward_witness_d77b5950a2aea933 & HF0 & HF1 & HF2 & HF3 & HF4 & HF5 & HF6 & HF7 & HF8 & HF9 & HF10 & HF11).
+  destruct Hh as (fp_seed_mstatus_bits & forward_witness_1be931110d776902 & forward_witness_905cf96e605c1117 & forward_witness_55ab0ce59750150a & forward_witness_11fde2df72db9d06 & forward_witness_88383840afa7af74 & forward_witness_1492ef7bd46b3b7a & forward_witness_d77b5950a2aea933 & HF0 & HF1 & HF2 & HF3 & HF4 & HF5 & HF6 & HF7 & HF8 & HF9 & HF10 & HF11 & HF12).
   iIntros "HN".
   iDestruct "HN" as "(%HV3 & _)".
   iPureIntro. apply zesu_hist_intro. unfold fp_machineReturnTail00e8_ForwardA0N0_Hist.
@@ -49,10 +49,11 @@ Proof.
   split; [exact HF3|].
   split; [exact HF4|].
   split; [exact HF5|].
-  split; [exact HF10|].
+  split; [exact HF6|].
   split; [exact HF11|].
+  split; [exact HF12|].
   split; [by vm_compute|].
-  exact HF8.
+  exact HF9.
 Qed.
 
 End edges.
