@@ -395,6 +395,33 @@ def stored_word(resources, updates, address, memory=()):
     raise CallRefused('No caller resource holds the word at a call argument.')
 
 
+def record_word_term(word, components):
+    """The term `T` that an earlier call's record defines `word` by: the one text of a conjunct
+    `(word = T)` of a pure component (`⌜…⌝`) whose `T` names nothing the component binds; None
+    otherwise. A passed-on word is stated by this term at the next call's return site: the call
+    block's entry holds the earlier record visibly, the block replaces the word by `T`, and a
+    successor binder that only names the word would have no witness at the block (058c -> 059c)."""
+    terms = set()
+    for component in components:
+        text = str(component.get('source') or component.get('coq') or '')
+        if not text.startswith('⌜'):
+            continue
+        bound = set(re.findall(r"\(([\w']+) :", text))
+        for match in re.finditer(r"\(" + re.escape(word) + r" = ", text):
+            # A conjunct (after `/\`, `,` or `⌜`), never an argument such as `bool_decide (word = 0)`.
+            if not text[:match.start()].rstrip(' (').endswith(('/\\', ',', '⌜')):
+                continue
+            depth, start = 1, match.end()
+            for position in range(start, len(text)):
+                depth += {'(': 1, ')': -1}.get(text[position], 0)
+                if depth == 0:
+                    term = text[start:position].strip()
+                    if not _atoms(term) & bound and word not in _atoms(term):
+                        terms.add(term)
+                    break
+    return '(' + terms.pop() + ')' if len(terms) == 1 else None
+
+
 def call_return_seed(edges, *, call, function_root, root_seed, shapes, vocabulary, constants=None, origin_seeds=()):
     """Return the OwnedSeed of a call's return site and a report of what it carries.
 
@@ -686,6 +713,9 @@ def call_return_seed(edges, *, call, function_root, root_seed, shapes, vocabular
     # A passed-on word is no closed argument: its argument name is a binder of the seed with the named
     # equation to the inherited word (stated before the record, so the record's argument is that word).
     named_arguments = {renamed[name]: name for name, _ in inner if name in passed_words}
+    components = [component for seed in (root_seed, *origin_seeds) for component in seed.ownership['components']]
+    argument_values = {argument: record_word_term(word, components) or word
+                       for argument, word in named_arguments.items()}
     existential = [(renamed[name], kind) for name, kind in inner if renamed[name] not in named_arguments] + [
         (renamed.get(name, name), kind) for name, kind in existential]
     telescope = ' '.join('(%s : %s)' % (name, kind) for name, kind in existential)
@@ -833,8 +863,8 @@ def call_return_seed(edges, *, call, function_root, root_seed, shapes, vocabular
         for row in extra_facts] + [
         {'kind': 'opaque', 'id': name.value + '_value', 'coq': '⌜(zesu_named_eq %s %s)⌝' % (name.value, _coq(value))}
         for value, name in named.items()] + [
-        {'kind': 'opaque', 'id': argument + '_value', 'coq': '⌜(zesu_named_eq %s %s)⌝' % (argument, word)}
-        for argument, word in named_arguments.items()] + [{'kind': 'opaque', 'id': prefix + 'facts', 'coq': '⌜' + carried + '⌝'}] + [
+        {'kind': 'opaque', 'id': argument + '_value', 'coq': '⌜(zesu_named_eq %s %s)⌝' % (argument, value)}
+        for argument, value in argument_values.items()] + [{'kind': 'opaque', 'id': prefix + 'facts', 'coq': '⌜' + carried + '⌝'}] + [
         {'kind': 'opaque', 'id': prefix + 'window_' + binder, 'coq': '⌜' + text + '⌝'}
         for binder, text in windows] + [
         {'kind': 'opaque', 'id': prefix + 'return_fact_%d' % index, 'coq': '⌜' + _return_fact(row['coq'], fresh) + '⌝'}
