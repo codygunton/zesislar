@@ -315,3 +315,8 @@ Proof.
   iFrame "Hcontinuation".
   by iApply (parentHeader_start_bridge with "Hentry").
 Qed.
+
+(* Plan step 2.4: the final decodeParentHeader statement. Every block is
+   closed (the open-block record is empty) and every exit's meaning is proved. *)
+Theorem parentHeaderCompliance : ParentHeaderContractCorrect.
+Proof. exact (parentHeaderGeneratedCompliance parentHeaderOpenBlocks). Qed.

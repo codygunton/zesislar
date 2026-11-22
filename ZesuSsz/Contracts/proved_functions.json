@@ -199,13 +199,12 @@
     {
       "function": "decodeParentHeader",
       "symbol": "rlp_decode.decodeParentHeader",
-      "status": "conditional",
-      "condition": "parentHeaderGeneratedCompliance assumes ParentHeaderOpenBlocks, whose two fields are the open blocks parentHeaderOpen_800d6124 (046c) and parentHeaderOpen_800d61b0 (04f8); every exit's meaning is proved (ParentHeaderErrorExitMeaning.v, ParentHeaderSuccessExitMeaning.v), so the theorem has no exit-meaning premise; nextUint64's correctness comes unconditionally from its generated interface (nextUint64CallSpec2_correct, from nextUint64Compliance); no interface until the open blocks are closed",
+      "status": "proved",
       "exit_meaning_modules": [
         {"path": "ZesuSsz/Compliance/ParentHeaderCandidateFacts.v", "callees": ["decodeItem", "nextUint64"],
          "reason": "step 2.4 M1: the exit lemmas prove parentHeaderCandidateResult from the call records in the generated histories (decodeItemCallMeaning, nextUint64CallResult) through the walk lemmas of ParentHeaderCandidateWalk.v"}
       ],
-      "compliance_theorems": ["parentHeaderGeneratedCompliance"],
+      "compliance_theorems": ["parentHeaderGeneratedCompliance", "parentHeaderCompliance"],
       "owned_prefixes": ["ZesuSsz/Contracts/ParentHeader", "ZesuSsz/Compliance/ParentHeader",
                          "ZesuSsz/Generated/DecodeParentHeader/"],
       "interface": null
