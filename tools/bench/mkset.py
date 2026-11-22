@@ -57,7 +57,7 @@ MEASURED_PEAK_GIB = {
                            '0274_slot2': 6.12, '0274_slot3': 6.94, '0274_slot4': 6.00, '0274_slot5': 5.24,
                            '0274_slot6': 6.53},
     'nextUint64': {'0000': 3.35, '0070': 3.16, '00a4': 4.37, '00b8': 2.84}}
-ENTRY_PREMISE = re.compile(r'instr_pre \S+ \(((?:[A-Za-z0-9_]+\.)+)(fp_machine(?:At|Return)[A-Za-z0-9_]+) ')
+ENTRY_PREMISE = re.compile(r'instr_pre \S+ \(((?:[A-Za-z0-9_]+\.)+)(fp_machine(?:At[A-Za-z0-9_]+|Return[A-Za-z0-9_]*)) ')
 BINDER_GROUP = re.compile(r'∃((?:\s*\([^():]+:[^()]+\))+)\s*,')
 BINDER = re.compile(r'\(([^():]+):')
 

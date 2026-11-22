@@ -199,14 +199,62 @@ def reseat_orphaned(registers, entry_registers, design_registers, taken):
     return added
 
 
-def loop_head_seed(report, design, profile, *, root_seed, vocabulary, continuation, live_registers=None):
+def cursor_stride(design, register):
+    """The constant a cursor register advances by per iteration, from its index link (1 without
+    a coefficient)."""
+    for row in design.get('facts', []):
+        if row['kind'] != 'index_link' or '{' + register + '}' not in row['coq']:
+            continue
+        match = re.search(r'\{' + register + r'\} [+-] (?:(\d+) \* )?' + re.escape(design['index']) + r'\)', row['coq'])
+        if match:
+            return int(match[1] or 1)
+    return 1
+
+
+def cursor_extent(design, cursor, function):
+    """The bytes the cursor covers: the design's `width`, else the widest access at the cursor in
+    the loop body (loop_structure.cursor_width), 1 without the function's rows."""
+    if 'width' in cursor:
+        return int(cursor['width'])
+    if function is None:
+        return 1
+    from loop_structure import cursor_width
+    stride = int(cursor['stride']) if 'stride' in cursor else cursor_stride(design, cursor['register'])
+    return cursor_width(function, design['_head'], cursor['register'], stride)
+
+
+def cursor_owner(seed, cursor, entry_value):
+    """The owned resource a cursor indexes: the one named by the design's `array`, or for an
+    inferred cursor (`array` null) the one owned byte array whose base is an addend of the
+    register's entry value."""
+    if cursor['array'] is not None:
+        # The array keeps its contract name in the seed component when a join packaged it.
+        return next(resource for resource in seed.resources if resource.id in
+                    {row['id'] for row in seed.ownership['components']
+                     if cursor['array'] in (row.get('value'), (row.get('seed_component') or {})
+                                            .get('byte_array_expr', {}).get('value'))})
+    from symbolic_state import _addends
+    terms, _ = _addends(entry_value)
+    owners = [resource for resource in seed.resources if getattr(resource, 'byte_array', None) is not None
+              and _addends(resource.base)[0] and all(term in terms for term in _addends(resource.base)[0])]
+    if len(owners) != 1:
+        raise ValueError('The cursor %s (entry value %s) names %d owned arrays; its design must name the array'
+                         % (cursor['register'], entry_value.coq() if hasattr(entry_value, 'coq') else entry_value,
+                            len(owners)))
+    return owners[0]
+
+
+def loop_head_seed(report, design, profile, *, root_seed, vocabulary, continuation, live_registers=None,
+                   function=None):
     """Return a forward-pass seed at the loop head from its entry edge and design.
 
     The seed keeps the entry edge's resources and path conditions. Each changed
     register becomes its binder. A changed register that the design links to
     an owned array by an index fact (`array_cursor`, one row or a list) keeps
     that array's base as an addend, so the body reads or stores the array at a
-    symbolic index; its index range stays an open obligation. The class row, not this seed, states the
+    symbolic index; its index range stays an open obligation. The cursor covers the bytes one
+    iteration accesses at it (cursor_extent: an 8-byte load at a byte-array cursor with stride 8
+    covers 8 bytes). The class row, not this seed, states the
     loop facts; this seed only lets the pass reach the loop exits.
     """
     from join_generalize import generalize_owned_join
@@ -225,22 +273,20 @@ def loop_head_seed(report, design, profile, *, root_seed, vocabulary, continuati
     entry_registers = dict(seed.state.registers)
     cursors = design.get('array_cursor') or []
     cursors = cursors if isinstance(cursors, list) else [cursors]
+    design = {**design, '_head': int(head, 0)}
     added = []
     for register, binder in design['registers'].items():
         value = input_expr(binder, 64)
         cursor = next((row for row in cursors if row['register'] == register), None)
         if cursor:
-            # The array keeps its contract name in the seed component when a join packaged it.
-            owner = next(resource for resource in seed.resources if resource.id in
-                         {row['id'] for row in seed.ownership['components']
-                          if cursor['array'] in (row.get('value'), (row.get('seed_component') or {})
-                                                 .get('byte_array_expr', {}).get('value'))})
+            owner = cursor_owner(seed, cursor, entry_registers.get(register))
             offset = input_expr(binder + '_offset', 64)
             value = operation('bvadd', owner.base, offset)
             added.append({'name': binder + '_offset', 'type': 'bv 64', 'expression': offset.to_dict()})
             seed.facts.append({'fact_id': owner.id + ':loop-cursor-extent', 'kind': 'bounds',
                                'status': 'derived-by-pass',
-                               'terms': {'resource_id': owner.id, 'index': 0, 'count': 1,
+                               'terms': {'resource_id': owner.id, 'index': 0,
+                                         'count': cursor_extent(design, cursor, function),
                                          'coq_statement': cursor['extent_reason']},
                                'origin': {'loop_design': design['head'], 'facts': cursor['extent_reason']}})
         else:
@@ -256,14 +302,29 @@ def loop_head_seed(report, design, profile, *, root_seed, vocabulary, continuati
     return seed
 
 
+def inferred_designs(report_path):
+    """The inferred designs run_source_pass.py wrote beside FORWARD.json (loop_infer.py)."""
+    path = Path(report_path).parent / 'LOOP-DESIGNS.json'
+    return json.loads(path.read_text())['designs'] if path.exists() else []
+
+
 def loop_head_rows(report, report_path, profile):
-    rows = []
-    for design in profile.get('loop_designs', []):
-        source, record = loop_class(report, design, profile)
+    rows, refusals = [], {}
+    for design in [*profile.get('loop_designs', []), *inferred_designs(report_path)]:
+        try:
+            source, record = loop_class(report, design, profile)
+        except (ValueError, StopIteration) as error:
+            if not design.get('inferred'):
+                raise
+            # An inferred design whose head the pass did not seed has no class; its head stays a
+            # refused cut (the forward pass's reaching stops say why).
+            refusals[design['head']] = str(error) or 'the loop head has no boundary'
+            continue
         rows.append({'block': design['head'], 'source': _bind(profile.path), 'verification': _bind(report_path),
                      'classes': [source], 'domain': 'domain', 'domain_component': profile['domain_component'],
                      'continuation': 'K', 'design': record})
-    return {'schema': 'fp301-authenticated-loop-heads-v1', 'rows': rows}
+    return {'schema': 'fp301-authenticated-loop-heads-v1', 'rows': rows,
+            **({'inferred_refusals': refusals} if refusals else {})}
 
 
 if __name__ == '__main__':

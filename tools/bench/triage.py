@@ -208,8 +208,9 @@ def main(argv=None):
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument('run', type=Path)
     parser.add_argument('--classes', type=Path, default=BENCH / 'triage_classes.json')
-    parser.add_argument('--render', type=Path, action='append', default=[],
-                        help='a render_function.sh run directory whose refused callers get rows (repeatable)')
+    parser.add_argument('--render', type=Path, action='extend', nargs='+', default=[],
+                        help='render_function.sh run directories whose refused callers get rows (several after one '
+                             'flag, or the flag repeated)')
     parser.add_argument('--json', action='store_true')
     options = parser.parse_args(argv)
     classes = load_classes(options.classes)

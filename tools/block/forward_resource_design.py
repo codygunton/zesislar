@@ -27,7 +27,9 @@ def _state_from_result(record):
                          list(record.get('memory_disjoint', [])),
                          list(record['register_writes']) if 'register_writes' in record else None,
                          list(record.get('source_intervals', [])), list(record.get('source_alignments', [])),
-                         list(record.get('symbolic_read_ranges', [])), list(record.get('read_obligations', [])))
+                         list(record.get('symbolic_read_ranges', [])), list(record.get('read_obligations', [])),
+                         [{**row, 'array': Expr.from_dict(row['array']), 'value': Expr.from_dict(row['value'])}
+                          for row in record.get('word_links', [])])
 
 
 def _prepare_state(state, seed):
@@ -40,7 +42,7 @@ def _prepare_state(state, seed):
 
 
 def evaluate_owned_function(function, traces, initial_seeds, *, vocabulary, max_paths=4096, capture_witness_origins=False,
-                            duplicated_joins=()):
+                            duplicated_joins=(), merge_condition_alternatives=False):
     """Stop a block before another instruction when ownership checks fail.
 
     Each seed carries public source ownership or an explicit handwritten cut.
@@ -73,7 +75,7 @@ def evaluate_owned_function(function, traces, initial_seeds, *, vocabulary, max_
 
     report = evaluate_function(function, traces, initial, max_paths=max_paths, check_state=check,
                                generated_seeds={pc: seed.join_kind for pc, seed in seeds.items() if seed.join_kind},
-                               duplicated_joins=duplicated_joins)
+                               duplicated_joins=duplicated_joins, merge_condition_alternatives=merge_condition_alternatives)
     report['resource_layer_schema'] = 'owned-resources.v1'
     for row in report.get('exits', []):
         seed = seeds[int(row['seed_pc'], 0)]

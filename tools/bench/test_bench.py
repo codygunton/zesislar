@@ -149,6 +149,13 @@ class DumpLeftover(unittest.TestCase):
         self.assertIn('True', goals)
         self.assertNotIn('Chars ', goals)
 
+    def test_dump_replaces_the_last_qed_and_drops_what_follows(self):
+        text = ('Lemma a : True.\nProof.\n  exact I.\nQed.\n'
+                'Lemma b : True.\nProof.\n  zesu_block2.\nQed.\n\nPrint Assumptions b.\n')
+        self.assertEqual(bench.dump_caller_text(text),
+                         'Lemma a : True.\nProof.\n  exact I.\nQed.\n'
+                         'Lemma b : True.\nProof.\n  zesu_block2.\nShow.\nAbort.\n')
+
     def test_dump_only_for_skipped_goals_and_saved_beside_the_leftovers(self):
         self.assertIsNone(bench.dump_caller_text('Lemma x : True.\nProof.\n  exact I.\nDefined.\n'))
         with tempfile.TemporaryDirectory(prefix='bench-dump-') as directory:

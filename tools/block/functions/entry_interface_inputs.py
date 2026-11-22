@@ -16,7 +16,14 @@ in a shape the forward pass consumes:
   RAM ends come from the machine map);
 - the separation of two ranges, through a definition whose body is
   `p + n <= q \\/ q + m <= p`: of the two owned ranges it names, or of every
-  owned range that lies inside each named range.
+  owned range that lies inside each named range;
+- a word link `W A K = Q` (or `Q = W A K`): W is a definition whose body is the
+  little-endian 64-bit word `little_endian_to_bv 8 (take 8 (drop (Z.to_nat
+  offset) bytes))` (or that body written inline), A an owned array, K a closed
+  offset and Q any integer term: the eight bytes of A at K, while unwritten, are
+  the register value `Z_to_bv 64 Q` (the forward pass reads them as Q; when Q is
+  the address of another owned array, accesses through the loaded word resolve
+  to that array).
 Every other conjunct stays recorded and unused, and the tool prints each one
 with the reason it gives no fact. Nothing is added beyond a
 conjunct, and no proof runs. Traces and the CFG come from `--trace-root`.
@@ -41,6 +48,7 @@ from function_inputs import BASE, bind, system_shapes, trace_index
 WORD = 2 ** 64
 NOTATION = re.compile(r'Notation\s+(\w+)\s*:=\s*\(\(\s*([0-9]+|0x[0-9a-fA-F]+)\s*\)\s*:\s*Z\)\s*\(only parsing\)\.')
 SEPARATE_BODY = 'p+n<=q\\/q+m<=p'
+WORD_BODY = 'little_endian_to_bv 8 (take 8 (drop (Z.to_nat {offset}) {bytes}))'
 
 
 def normal(term):
@@ -297,6 +305,9 @@ def public_seed(profile, contract, text):
             node.update(coq='⌜domain args⌝', original_component=row['source'])
         else:
             node.update(coq=row['source'])
+            cell = word_cell(row['source'], record_widths(text), names)
+            if cell is not None:
+                node['word_cell'] = cell
         components.append(node)
     if not any(node.get('coq') == '⌜domain args⌝' for node in components):
         raise ValueError('The entry resources do not state ' + wellformed)
@@ -314,6 +325,31 @@ def public_seed(profile, contract, text):
             'assertion_tree': tree, 'BODY': body,
             'original_components': [row['source'] for row in parsed['components']],
             'source_facts_added': 0}
+
+
+def record_widths(text):
+    """Field name -> N for every record field of type `bv N` in the source."""
+    widths = {}
+    for body in re.findall(r'Record\s+\w+\s*:\s*Type\s*:=\s*\w*\s*\{(.*?)\}', text, re.S):
+        for fields, width in re.findall(r'([\w\s]+?)\s*:\s*bv\s+([0-9]+)\s*(?:;|$)', body):
+            widths.update({name: int(width) for name in fields.split()})
+    return widths
+
+
+def word_cell(source, widths, binders):
+    """A word cell `A ↦ₘ V` (full permission, one value): its address, its value and the value's
+    width, when V is a `bv N` record field applied to `args` (N a multiple of 8) or a 64-bit
+    entry witness; None otherwise."""
+    match = re.fullmatch(r'(.+?)\s*↦ₘ\s+(.+)', normal(source))
+    if not match or re.search(r'↦ₘ', match[2]):
+        return None
+    value = normal(match[2])
+    field = re.fullmatch(r'(\w+) args', value)
+    width = widths.get(field[1]) if field else (64 if value in binders else None)
+    if width is None or width % 8:
+        return None
+    return {'address_z': normal(match[1]), 'value_coq': value, 'width': width,
+            **({'symbolic_witness': value} if value in binders else {})}
 
 
 def domain(profile, contract, text, seed, constants, ram, notes=None):
@@ -412,7 +448,7 @@ def domain(profile, contract, text, seed, constants, ram, notes=None):
                           'origin': {**clause(index), 'range': clause(low_from[quantity]),
                                      'derivation': 'the quantity lies in [0, 2^64), so its register value is it'}})
             used.add(index)
-    # Alignments and intervals of fixed register quantities.
+    # Alignments and intervals of fixed register quantities (and, below, of word-link quantities).
     for index, item in enumerate(clauses):
         match = re.fullmatch(r'(.+) mod ([0-9]+) = 0', normal(item))
         if match and normal(match[1]) in fixed:
@@ -491,6 +527,82 @@ def domain(profile, contract, text, seed, constants, ram, notes=None):
                               'origin': {**clause(index), 'derivation': 'each owned range lies inside one side '
                                          'of the separated ranges'}})
         used.add(index)
+    # Word links: the word of an owned array at a closed offset equals a quantity.
+    readers = word_readers(contract, text)
+    addresses = {normal(node['address_z']): node['id'] for node in components if node['kind'] == 'byte_array'}
+    linked = set()
+
+    def loaded_bounds(quantity, suffix, link):
+        """Q's alignment and interval conjuncts as facts on the loaded register value `Z_to_bv 64 Q`
+        (or V for Q = `bv_unsigned V`), as a fixed register's quantity gets them."""
+        if quantity in fixed or quantity in linked:
+            return
+        linked.add(quantity)
+        view = input_expr(register_view(quantity), 64).to_dict()
+        for other, conjunct in enumerate(clauses):
+            match = re.fullmatch(r'(.+) mod ([0-9]+) = 0', normal(conjunct))
+            if match and normal(match[1]) == quantity and other not in used:
+                facts.append({'fact_id': 'wellformed:alignment-%d' % other, 'kind': 'alignment',
+                              'status': 'supplied', 'terms': {'alignment': {
+                                  'expression': view, 'modulus': int(match[2]), 'residue': 0}},
+                              'origin': {**clause(other), 'link': link}})
+                used.add(other)
+        minimum, maximum = low.get(quantity), high.get(quantity)
+        if minimum is None or maximum is None or not 0 <= minimum <= maximum < WORD or (minimum, maximum) == (0, WORD - 1):
+            return
+        interval = {'expression': view, 'minimum': minimum, 'maximum': maximum}
+        if ram[0] <= minimum and maximum <= ram[1]:
+            interval.update(ram_base=ram[0], ram_end=ram[1])
+        facts.append({'fact_id': 'wellformed:interval-' + suffix, 'kind': 'bounds', 'status': 'supplied',
+                      'terms': {'unsigned_interval': interval},
+                      'origin': {**clause(low_from[quantity]), 'upper_bound': clause(high_from[quantity]),
+                                 'link': link, 'derivation': 'linear bounds of the conjuncts; the loaded '
+                                                             'register value has this quantity'}})
+        used.update(i for i in (low_from[quantity], high_from[quantity]) if i != BV_RANGE)
+
+    for index, item in enumerate(clauses):
+        if index in used:
+            continue
+        text_ = normal(item)
+        sides = equation_sides(text_)
+        parsed = None
+        for word, quantity in ((sides, sides[::-1]) if sides else ()):
+            parsed = word_term(word, readers)
+            if parsed:
+                break
+        if parsed is None:
+            mentions = any(re.search(r'(?<![\w.\'])%s(?![\w.\'])' % re.escape(name), text_) for name in readers)
+            if mentions or 'little_endian_to_bv' in text_:
+                reasons[index] = ('word link: the conjunct reads a word but is not `W A K = Q` with W the '
+                                  'little-endian 64-bit word reader (only an unconditional equation is followed)')
+            elif '->' in text_ and any(address in text_.split('->')[-1] for address in addresses):
+                reasons[index] = ('word link: a conditional equation with an owned array address (a pointer that '
+                                  'is null or that address) is not followed; only `W A K = Q` is')
+            continue
+        array, offset_term = parsed
+        offset = closed_value(offset_term, constants)
+        if array not in arrays:
+            reasons[index] = 'word link: `%s` is not an owned array of the entry resources' % array
+            continue
+        if offset is None or offset < 0:
+            reasons[index] = 'word link: the offset `%s` is not a closed non-negative integer' % offset_term
+            continue
+        terms = {'resource_id': arrays[array]['id'], 'offset': offset, 'size': 8,
+                 'quantity': normal(quantity), 'coq_statement': item}
+        if normal(quantity) in addresses:
+            terms['target_resource_id'] = addresses[normal(quantity)]
+        facts.append({'fact_id': 'wellformed:word-link-%d' % index, 'kind': 'word_link', 'status': 'supplied',
+                      'terms': terms, 'origin': {**clause(index), 'derivation': (
+                          'the eight bytes of the array at the offset, unwritten, are the little-endian word, '
+                          'equal to the quantity, which lies in [0, 2^64): the loaded register value is '
+                          'Z_to_bv 64 of the quantity')}})
+        used.add(index)
+        loaded_bounds(normal(quantity), 'link-%d' % index, clause(index))
+    # A word cell's value is loaded as is: its `bv_unsigned` interval and alignment bound it too.
+    for node in components:
+        if 'word_cell' in node and 'symbolic_witness' not in node['word_cell']:
+            loaded_bounds(normal('bv_unsigned (' + node['word_cell']['value_coq'] + ')'), 'cell-' + node['id'],
+                          {'word_cell': node['id'], 'source_component': node['original_component']})
     unused = [i for i in range(len(clauses)) if i not in used]
     if notes is not None:
         for index in unused:
@@ -499,6 +611,45 @@ def domain(profile, contract, text, seed, constants, ram, notes=None):
                            'unused_clauses': unused,
                            'entry_assertion_changed': False, 'premises_added': []},
             'constants': constants}
+
+
+def equation_sides(term):
+    """The two sides of a conjunct `L = R` with one top-level `=` (not `<=`, `>=`, `<>`, `=>`), or None."""
+    positions = [position for position in _top_positions(term, '=')
+                 if term[position - 1:position] not in ('<', '>', '!', '=') and term[position + 1:position + 2] != '>']
+    if len(positions) != 1 or any(term.find(token) >= 0 for token in ('->', '/\\', '\\/', '<->')):
+        return None
+    return normal(term[:positions[0]]), normal(term[positions[0] + 1:])
+
+
+def word_term(term, readers):
+    """(array, offset term) of the little-endian 64-bit word of an array at an offset, or None:
+    `W A K` for a reader W (`word_readers`), or the reader's body written inline."""
+    head, *arguments = split_application(normal(term))
+    if head in readers and len(arguments) == 2:
+        return normal(arguments[0]), normal(arguments[1])
+    match = re.fullmatch(r'little_endian_to_bv 8 \(take 8 \((drop .+)\)\)', normal(term))
+    pieces = split_application(match[1]) if match else []
+    if len(pieces) != 3:
+        return None
+    cast = re.fullmatch(r'Z\.to_nat (.+)', normal(pieces[1]))
+    return (normal(pieces[2]), normal(cast[1])) if cast else None
+
+
+def word_readers(source, text):
+    """Definitions of the source and its required modules `W (bytes : list byte) (offset : Z) : Z`
+    whose body is the little-endian 64-bit word of `bytes` at `offset` (`WORD_BODY`)."""
+    names = set()
+    for _, body_text in required_sources(source, text):
+        for name, parameters in re.findall(r'Definition\s+(\w+)\s*((?:\([^()]*\)\s*)+):\s*Z\s*:=', body_text):
+            binders = [(binder, kind.strip()) for group, kind in re.findall(r'\(([^:()]+):([^()]+)\)', parameters)
+                       for binder in group.split()]
+            if [kind for _, kind in binders] != ['list byte', 'Z']:
+                continue
+            (array, _), (offset, _) = binders
+            if normal(definition_body(body_text, name)) == WORD_BODY.format(offset=offset, bytes=array):
+                names.add(name)
+    return names
 
 
 def unused_reason(item, constants):

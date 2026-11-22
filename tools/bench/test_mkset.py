@@ -108,6 +108,19 @@ class MakeSet(unittest.TestCase):
         self.assertFalse(mkset.is_heavy('nextUint64', '0044'))
         self.assertFalse(mkset.is_heavy('decodeItem', '0000'))
 
+    def test_return_package_counts_for_any_function_and_slot_naming(self):
+        # A function with one return package names it fp_machineReturn (nextUint64), with several
+        # fp_machineReturn_slot<k>; either is a successor entry, whatever the function.
+        module = self.root / 'ZesuSsz' / 'Generated' / 'Other' / 'FP301' / 'FunctionReturnEntries.v'
+        module.parent.mkdir(parents=True)
+        module.write_text('Definition fp_machineReturn_Hist (a : Z) : Prop := (∃ (x : Z) (y : Z), x = y).\n'
+                          'Definition fp_machineReturn (a : Z) : iProp Σ := (∃ (z : bv 64), ⌜z = z⌝)%I.\n')
+        for name in ('fp_machineReturn', 'fp_machineReturn_slot0', 'fp_machineReturnTail00e8'):
+            premise = ('instr_pre returnAddress (ZesuSsz.Generated.Other.FP301.FunctionReturnEntries.%s args '
+                       'returnAddress K)' % name)
+            self.assertEqual(mkset.successor_entries(self.root, [premise]), [(module, name)])
+        self.assertEqual(mkset.entry_binders(module, 'fp_machineReturn'), 3)
+
     def test_overlay_copied_from_set(self):
         source = self.root / 'SRC.json'
         overlay = {'name': 'decodeParentHeader', 'commit': 'c' * 40, 'branch': 'b', 'why': 'w'}

@@ -1,4 +1,4 @@
-"""Run the pinned source engine (FP-20261122) from the entry seed, adding generated seeds.
+"""Run the pinned source engine (FP-20261122b) from the entry seed, adding generated seeds.
 
 A join is seeded only after every join that can reach it has its seed, so its
 incoming edges are complete. A call's return site is seeded from the callee
@@ -19,7 +19,9 @@ import argparse, hashlib, json, sys, time
 
 ROOT = Path(__file__).resolve().parents[3]
 sys.path.insert(0, str(ROOT / 'tools/block'))
-from boundary_guards import can_reach, cfg_successors
+from boundary_guards import can_reach
+from loop_infer import infer_designs
+from loop_structure import forward_successors, loop_heads
 from call_boundary import CallRefused, call_return_seed
 import entry_hist
 from function_profiles import add_return_alignment, load_profile
@@ -45,7 +47,7 @@ def checked(row):
 
 
 def joins_of(function):
-    loops = {int(loop['minimum_pc'], 0) for loop in function.get('loops', [])}
+    loops = loop_heads(function)
     predecessors = {}
     for block in function['blocks']:
         for target in block['successors']:
@@ -65,6 +67,11 @@ def main():
     if not isinstance(keep, bool):
         raise ValueError('keep_source_implied_ram_guards: a boolean is required')
     symbolic_state.KEEP_SOURCE_IMPLIED_RAM_GUARDS = keep
+    # Profile key `merge_condition_alternatives` (default true): alternatives that reach a block over
+    # one edge with the same state up to their path conditions continue as one (forward_design).
+    merge = profile.get('merge_condition_alternatives', True) if profile else True
+    if not isinstance(merge, bool):
+        raise ValueError('merge_condition_alternatives: a boolean is required')
     calls = profile.get('calls', []) if profile else []
     loop_designs = profile.get('loop_designs', []) if profile else []
     inputs, output = options.inputs.resolve(), options.output.resolve()
@@ -94,10 +101,19 @@ def main():
     # A design-table duplicated join is no cut: each incoming edge keeps its own entry slot.
     duplicated = [int(profile.pc(key), 0) for key in profile.get('duplicated_joins', [])] if profile else []
     joins = [pc for pc in joins_of(function) if pc not in duplicated]
-    successors = cfg_successors(function)
+    # A join's incoming edges never cross a back edge (its target is a loop head, a cut seeded
+    # from its entry edges): a join waits only for the joins that reach it on the forward CFG.
+    successors = forward_successors(function)
     seeds = {public['entry_pc']: owned}
     liveness = {hex(pc): registers for pc, registers in source_liveness(
         function, traces, {int(public['entry_pc'], 0): owned.state}).items()}
+    # Every natural loop head without a hand design gets an inferred structural design
+    # (loop_infer.py), unless the profile pins `"infer_loop_designs": false`.
+    inferred, inference_refusals = [], {}
+    if profile is None or profile.get('infer_loop_designs', True):
+        inferred, inference_refusals = infer_designs(function, loop_designs, profile.pc if profile else (lambda key: key),
+                                                     profile.key if profile else hex, liveness)
+        loop_designs = [*loop_designs, *inferred]
     # The seed whose ownership tree a seed's edges share: an entry or call-return seed is its own root.
     roots = {public['entry_pc']: public['entry_pc']}
     # A call-return root's parent: the root its call-site paths start from.
@@ -106,7 +122,8 @@ def main():
     call_seeds, call_reports = {}, {}
     started = time.monotonic_ns()
     while True:
-        report = evaluate_owned_function(function, traces, seeds, vocabulary=vocabulary, duplicated_joins=duplicated)
+        report = evaluate_owned_function(function, traces, seeds, vocabulary=vocabulary, duplicated_joins=duplicated,
+                                         merge_condition_alternatives=merge)
         added = None
         for call in calls:
             site = call['return_site_pc']
@@ -149,7 +166,7 @@ def main():
             try:
                 seeds[head] = loop_head_seed(report, design, profile, root_seed=seeds[root],
                                              vocabulary=vocabulary, continuation=continuation,
-                                             live_registers=liveness.get(head))
+                                             live_registers=liveness.get(head), function=function)
             except ValueError as error:
                 refusals[head] = 'loop head seed refused: ' + str(error)
                 continue
@@ -264,12 +281,17 @@ def main():
         {'schema': 'fp301.call-return-seeds.v1', 'seeds': call_seeds,
          'calls': calls, **({'tail_calls': profile['tail_calls']} if profile and profile.get('tail_calls') else {})},
         indent=1, ensure_ascii=False) + '\n')
+    if inferred or inference_refusals:
+        # loop_design.py reads the inferred rows beside FORWARD.json, after the profile's own.
+        (output / 'LOOP-DESIGNS.json').write_text(json.dumps(
+            {'schema': 'fp301.inferred-loop-designs.v1', 'designs': inferred, 'refusals': inference_refusals},
+            indent=1, ensure_ascii=False) + '\n')
     (output / 'JOIN-SEEDS.json').write_text(json.dumps(
         {'schema': 'fp301.join-seeds.v1', 'seeds': {pc: seed_record(seed) for pc, seed in seeds.items()
                                                     if roots.get(pc) != pc}}, ensure_ascii=False) + '\n')
     receipt = {'source_pass': bind(output / 'FORWARD.json'), 'level1_K_source': bind(level1),
                'vocabulary': bind(vocabulary_path), 'system_shapes': bind(shapes_path),
-               'engine': bind(ROOT / 'tools/block/FP-20261122.json'), 'joins': bind(output / 'JOINS.json'),
+               'engine': bind(ROOT / 'tools/block/FP-20261122b.json'), 'joins': bind(output / 'JOINS.json'),
                'call_seeds': bind(output / 'CALL-SEEDS.json'), 'join_seeds': bind(output / 'JOIN-SEEDS.json')}
     (output / 'INPUT-RECEIPT.json').write_text(json.dumps(receipt, indent=2) + '\n')
     stops = {}

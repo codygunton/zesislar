@@ -1,5 +1,6 @@
 {
   "function": "decodeItem",
+  "merge_condition_alternatives": false,
   "args_type": "DecodeItemArgs",
   "symbol": "rlp.decodeItem",
   "generated_directory": "ZesuSsz/Generated/DecodeItem/FP301",
@@ -30,6 +31,7 @@
              "+0xb4", "+0x104", "+0x10c", "+0x118", "+0x148", "+0x154", "+0x2c", "+0xc4", "+0x164", "+0x180"],
   "loop_heads": ["+0xc4", "+0x164"],
   "entry_hist": "wrap",
+  "join_guard_form": "both",
   "frame_slots": false,
   "hist_pinned": [".*"],
   "store_splice": "per_store",
