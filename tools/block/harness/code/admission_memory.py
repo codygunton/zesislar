@@ -3,6 +3,7 @@
 Only an exact owner token, batch identity, and live kernel membership can earn
 memory.current credit. Missing evidence retains the complete reservation.
 """
+import errno
 import json
 import fcntl
 import hashlib
@@ -610,6 +611,9 @@ class ScopeReader:
                 pass
             return row
         except (OSError, ValueError, KeyError, TypeError) as error:
+            if cgroup_vanished(error) and not Path(bound['scope']).is_symlink():
+                # Removed between the existence check and the reads, like an absent aggregate: closed.
+                return {'verified': True, 'closed': True, 'live_bytes': 0}
             return {'verified': False, 'live_bytes': 0, 'reason': str(error)}
 
     def shell(self, marker, *, owner=None, guard_attestation=None):
@@ -1786,6 +1790,11 @@ def mark_shell(marker, *, ledger=None, reader=None):
         return True
 
 
+def cgroup_vanished(error):
+    """A control group removed while it is read: its files report `ENODEV` (the group is dying) or `ENOENT`."""
+    return isinstance(error, OSError) and error.errno in (errno.ENODEV, errno.ENOENT)
+
+
 def leaf_closed(reader, bound):
     path = Path(bound['scope'])
     if path.resolve() != path:
@@ -1794,12 +1803,18 @@ def leaf_closed(reader, bound):
         if path.is_symlink():
             raise ValueError('The released leaf is an alias.')
         return True
-    before = reader.directory(path)
-    if before != (bound['device'], bound['inode']):
-        raise ValueError('The released leaf identity changed.')
-    events = (path / 'cgroup.events').read_text().splitlines()
-    if reader.directory(path) != before:
-        raise ValueError('The released leaf changed during sampling.')
+    try:
+        before = reader.directory(path)
+        if before != (bound['device'], bound['inode']):
+            raise ValueError('The released leaf identity changed.')
+        events = (path / 'cgroup.events').read_text().splitlines()
+        if reader.directory(path) != before:
+            raise ValueError('The released leaf changed during sampling.')
+    except OSError as error:
+        # Removed between the existence check and the reads: a leaf without a control group is closed.
+        if cgroup_vanished(error) and not path.is_symlink():
+            return True
+        raise
     return 'populated 0' in events
 
 
