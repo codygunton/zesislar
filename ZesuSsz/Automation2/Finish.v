@@ -2,6 +2,7 @@ Require ZesuSsz.Automation2.NamedEquations.
 Require Import ZesuSsz.Automation2.Telemetry.
 Require Import ZesuSsz.Automation2.GoalShape.
 Require Import ZesuSsz.Automation2.Hist.
+Require ZesuSsz.Automation2.HistWindow.
 Require Import ZesuSsz.Automation2.MemoryAddress.
 Require Import ZesuSsz.Automation2.MemoryTupleConsumer.
 Require Import ZesuSsz.Automation2.SourceFactMatching.
@@ -1285,7 +1286,7 @@ Ltac zesu_run_pass_v1 :=
     [(lazymatch goal_class with ZGsep_pure => idtac end;
       zesu_talt v1_pure_premise_context (idtac; zesu_pure_premise_from_context)) |
      (lazymatch goal_class with ZGsep_pure => idtac end; zesu_hist_goal;
-      zesu_talt h_hist_edge (idtac; zesu_hist_step)) |
+      zesu_talt h_hist_edge (idtac; first [zesu_hist_step | HistWindow.zesu_hist_step_respelled])) |
      (lazymatch goal_class with ZGsep_pure => idtac end; zesu_hist_in_context;
       zesu_talt h_hist_reveal (idtac; zesu_hist_reveal_step)) |
      (* A slice a callee returned goes back into its array at the next
