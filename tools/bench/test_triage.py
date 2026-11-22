@@ -118,6 +118,20 @@ class Command(unittest.TestCase):
                 T.main([str(run), '--json'])
             self.assertEqual([row['class'] for row in json.loads(out.getvalue())['open']], ['LOOKUP'])
 
+    def test_render_takes_several_directories_after_one_flag_or_repeated_flags(self):
+        seen = []
+        original = T.triage
+        T.triage = lambda run, classes, renders: (seen.append(list(renders)), ([], [], 0))[1]
+        try:
+            with tempfile.TemporaryDirectory() as name:
+                run = write_run(Path(name), 'run', [None])
+                with contextlib.redirect_stdout(io.StringIO()):
+                    T.main([str(run), '--render', 'a', 'b', '--json'])
+                    T.main([str(run), '--render', 'a', '--render', 'b', 'c'])
+        finally:
+            T.triage = original
+        self.assertEqual(seen, [[Path('a'), Path('b')], [Path('a'), Path('b'), Path('c')]])
+
     def write_render(self, root, name, cases, rows, function='f'):
         directory = root / name
         (directory / 'render').mkdir(parents=True)
