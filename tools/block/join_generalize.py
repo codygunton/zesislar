@@ -1481,6 +1481,9 @@ def generalize_owned_join(alternatives, *, original_seed, entry_pc, vocabulary,
                           relational_registers=(), design_facts=(), live_registers=None, lifted_binders=()):
     """Build a seed when every incoming non-register resource is identical.
 
+    entry_pc None generalizes the exits of a return package (G-ret): every edge's PC must be the
+    same return-address expression, which the package keeps as its PC; liveness is not taken.
+
     lifted_binders are the binders of edges lifted from deeper call-return roots
     (lift_call_return_edges); the join keeps them as it keeps a join seed's binders.
 
@@ -1527,7 +1530,7 @@ def generalize_owned_join(alternatives, *, original_seed, entry_pc, vocabulary,
                           if binder['name'] not in [row['name'] for row in inherited_binders]]
     dead = set()
     if liveness is not None or observables is not None:
-        if (not isinstance(liveness, dict) or liveness.get('pc') != hex(entry_pc)
+        if (entry_pc is None or not isinstance(liveness, dict) or liveness.get('pc') != hex(entry_pc)
                 or not liveness.get('source_bindings') or not isinstance(observables, dict)
                 or not observables.get('source_bindings') or not observables.get('root_expression')):
             raise ValueError('Dead register generalization needs bound liveness and continuation observables')
@@ -1592,7 +1595,12 @@ def generalize_owned_join(alternatives, *, original_seed, entry_pc, vocabulary,
                          if kinds.get(key) != 'register' and row.get('source', '').startswith('⌜')
                          and row['source'] != '⌜True⌝'})
     first = states[0]
-    if any(state.registers.get('PC') != bits(entry_pc, 64) for state in states):
+    if entry_pc is None:
+        # A return site: the exits stand at one return-address expression, whatever its value.
+        if states[0].registers.get('PC') is None or any(
+                state.registers.get('PC') != states[0].registers['PC'] for state in states):
+            raise ValueError('The exits of a return package return to different addresses')
+    elif any(state.registers.get('PC') != bits(entry_pc, 64) for state in states):
         raise ValueError('A join edge reaches another program counter')
     images = [apply_owned_writes(original_seed.resources, state.writes, conditions=state.conditions,
                                 facts=original_seed.facts, endianness=state.endianness) for state in states]
@@ -1905,8 +1913,9 @@ def generalize_owned_join(alternatives, *, original_seed, entry_pc, vocabulary,
                                         state, vocabulary=vocabulary)
     if rendered['block_status'] != 'completed':
         raise ValueError('The generalized join ownership cannot render')
-    boundary = {'pc': hex(entry_pc), 'status': 'generated_join', 'alternatives': [
-        {'predecessor_pc': None, 'seed_pc': hex(entry_pc), 'path': [], 'state': state.to_dict(),
+    site = hex(entry_pc) if entry_pc is not None else 'function_return'
+    boundary = {'pc': site, 'status': 'generated_join', 'alternatives': [
+        {'predecessor_pc': None, 'seed_pc': site, 'path': [], 'state': state.to_dict(),
          'resource_boundary': rendered}]}
     return {'seed': seed, 'plan': plan, 'boundary': boundary, 'continuation': deepcopy(continuation)}
 
