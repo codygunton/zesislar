@@ -134,6 +134,56 @@ class EntryInterface(unittest.TestCase):
         length, = [fact['terms'] for fact in facts if fact['terms'].get('resource_id') == none]
         self.assertEqual((length['count'], length['coq_statement']), (16, 'length tNoneBytes = 16%nat'))
 
+    def variant(self, text):
+        from entry_interface_inputs import domain, notations, public_seed
+        self.contract.write_text(text)
+        profile = FunctionProfile(dict(PROFILE), self.contract.parent / 'tFunction.json')
+        seed = public_seed(profile, self.contract, text)
+        notes = {}
+        result = domain(profile, self.contract, text, seed, notations(self.contract, text),
+                        (0xa0000000, 0xc0000000), notes)
+        ids = {node['original_component'].split(' ↦ₘ')[0]: node['id']
+               for node in seed['assertion_tree']['components'] if '↦ₘ' in node['original_component']}
+        return {fact['fact_id']: fact for fact in result['projection']['facts']}, result, notes, ids
+
+    def test_closed_arithmetic_bounds_are_evaluated(self):
+        from entry_interface_inputs import Linear, closed_value
+        self.assertEqual(closed_value('2 ^ 31 + 2 ^ 29', {}), 0xa0000000)
+        self.assertEqual(closed_value('(2 ^ 3) * (tResultBytes - 8) - 1', self.constants), 127)
+        self.assertEqual(closed_value('2 ^ 2 ^ 3', {}), 256)
+        self.assertIsNone(closed_value('2 ^ n', {}))
+        self.assertEqual(Linear.parse('64 * n args', {}), ({'n args': 64}, 0))
+        self.assertEqual(Linear.parse('n args * 2 ^ 6', {}), ({'n args': 64}, 0))
+        self.assertIsNone(Linear.parse('n args * m args', {}))
+        facts, _, _, _ = self.variant(CONTRACT.replace('  tLow <= tResultPointer args /\\',
+                                                       '  2 ^ 31 + 2 ^ 29 <= tResultPointer args /\\'))
+        self.assertEqual(facts['wellformed:interval-x10']['terms']['unsigned_interval']['minimum'], 0xa0000000)
+        # A scaled quantity is bounded by integer division: 64 * n < 2 ^ 64 gives n <= 2 ^ 58 - 1.
+        facts, _, _, _ = self.variant(CONTRACT.replace('  0 <= tOutputLength args < 2 ^ 64 /\\',
+                                                       '  0 <= tOutputLength args /\\ 64 * tOutputLength args < 2 ^ 64 /\\'))
+        interval = facts['wellformed:interval-x14']['terms']['unsigned_interval']
+        self.assertEqual((interval['minimum'], interval['maximum']), (0, 2 ** 58 - 1))
+
+    def test_a_separation_over_a_wider_range_covers_the_owned_ranges_inside_it(self):
+        text = CONTRACT.replace(
+            '  2 * tInputLength args <= tOutputLength args.',
+            '  2 * tInputLength args <= tOutputLength args /\\\n'
+            '  tSeparate (tInputPointer args) (tInputLength args) (tResultPointer args - 8) (2 ^ 5 + 8) /\\\n'
+            '  tSeparate (tInputPointer args) (tInputLength args) (tResultPointer args) 16.')
+        facts, result, notes, ids = self.variant(text)
+        wide = 'wellformed:separate-17-%s-%s' % (ids['tInputPointer args'], ids['tResultPointer args'])
+        self.assertEqual((facts[wide]['kind'], facts[wide]['terms']['left'], facts[wide]['terms']['right']),
+                         ('disjoint_ranges', ids['tInputPointer args'], ids['tResultPointer args']))
+        # A range shorter than the owned array covers nothing: reported, with the clause, not dropped silently.
+        self.assertIn(18, result['projection']['unused_clauses'])
+        self.assertTrue(notes[18].startswith('separation: no owned range'))
+        self.assertIn('[tResultPointer args, +16)', notes[18])
+
+    def test_every_unused_conjunct_has_a_reason(self):
+        _, result, notes, _ = self.variant(CONTRACT)
+        self.assertEqual(sorted(notes), result['projection']['unused_clauses'])
+        self.assertTrue(notes[11].startswith('bound: linear'))
+
 
 class LengthRelation(unittest.TestCase):
     def test_a_path_condition_on_the_related_value_bounds_the_array(self):

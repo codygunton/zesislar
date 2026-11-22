@@ -50,7 +50,9 @@ class Classes(unittest.TestCase):
 
     def test_one_leftover_per_class(self):
         self.assertEqual(self.label(end='cpu-cap'), 'OVER')
-        self.assertEqual(self.label(spatial('(∃_y,____y)%I'), end='memory-fence'), 'OVER')
+        self.assertEqual(self.label(spatial('(∃_y,____y)%I'), end='memory-fence'), 'KILLED')
+        self.assertEqual(self.label(end='killed (no exit status)'), 'KILLED')
+        self.assertEqual(self.label(end='killed (signal 9)'), 'KILLED')
         self.assertEqual(self.label(pure('%s Z x y' % EQ)), 'WITNESS')
         self.assertEqual(self.label(pure('@Coq.Init.Logic.ex Z (fun z => z = x)')), 'WITNESS')
         self.assertEqual(self.label(spatial('(∃_y,____y)%I'), caller=CALLER_WITH_CALL), 'CALL')
@@ -115,6 +117,58 @@ class Command(unittest.TestCase):
             with contextlib.redirect_stdout(io.StringIO()) as out:
                 T.main([str(run), '--json'])
             self.assertEqual([row['class'] for row in json.loads(out.getvalue())['open']], ['LOOKUP'])
+
+    def write_render(self, root, name, cases, rows, function='f'):
+        directory = root / name
+        (directory / 'render').mkdir(parents=True)
+        (directory / 'callers').mkdir()
+        (directory / 'render' / 'RESULT.json').write_text(json.dumps({'cases': cases}))
+        (directory / 'callers' / 'CALLERS.json').write_text(json.dumps({'function': function, 'rows': rows}))
+        return directory
+
+    def test_render_refusals_and_blocked_callers(self):
+        # Cut down from held-out set A's zisklibLt render: one entry refused by the reaching-stop guard,
+        # a caller of it, a return package stopped, and its caller.
+        guard = {'kind': 'reaching_stop_guard', 'detail': '5087 retained stops can reach the boundary 0x22c'}
+        stop = {'kind': 'entry_cut_generalization_stop', 'detail': 'The exits of function_return have no join location'}
+        cases = [{'pc': '0x218', 'status': 'source_declarations_rendered'},
+                 {'pc': '0x22c', 'status': 'refused_incomplete_boundary', 'reports': [guard]},
+                 {'pc': 'function_return_238', 'status': 'stopped', 'reports': [stop]}]
+        rows = [{'case': '0218', 'pc': '0x218', 'status': 'refused', 'reason': 'successor entry not rendered: 022c'},
+                {'case': '022c', 'pc': '0x22c', 'status': 'refused', 'reason': 'own entry not rendered'},
+                {'case': '0234', 'pc': '0x234', 'status': 'refused', 'reason': 'function-return package not rendered'},
+                {'case': '0230', 'pc': '0x230', 'status': 'rendered'}]
+        with tempfile.TemporaryDirectory() as name:
+            root = Path(name)
+            render = self.write_render(root, 'render-f', cases, rows)
+            got = {row['key']: (row['class'], row['head']) for row in T.render_rows(render)}
+            self.assertEqual(got['f/022c'], ('REFUSED/reaching_stop_guard', guard['detail']))
+            self.assertEqual(got['f/0218'][0], 'BLOCKED')
+            self.assertIn('022c (reaching_stop_guard: 5087', got['f/0218'][1])
+            self.assertEqual(got['f/0234'][0], 'BLOCKED')
+            self.assertIn('entry_cut_generalization_stop', got['f/0234'][1])
+            self.assertNotIn('f/0230', got)
+            run = write_run(root, 'run', [dict(log='Chars 0 - 5 [zesu_block2.] 1. secs (1.u,0.s)\n', cpu=1.0,
+                                               peak_gib=1.0, verdict='CLOSED', returncode=0)],
+                            members=[{'function': 'f', 'callers': 'c', 'case': '0230'}])
+            with contextlib.redirect_stdout(io.StringIO()) as out:
+                T.main([str(run), '--render', str(render)])
+            text = out.getvalue()
+            self.assertIn('| f/022c | render | - | REFUSED/reaching_stop_guard | generator |', text)
+            self.assertTrue(text.endswith('4 blocks: CLOSED 1; BLOCKED 2, REFUSED 1\n'), text)
+
+    def test_a_render_stopped_before_its_entries_refuses_every_block(self):
+        with tempfile.TemporaryDirectory() as name:
+            directory = Path(name) / 'render-g'
+            (directory / 'forward').mkdir(parents=True)
+            (directory / 'forward' / 'RESULT.json').write_text(json.dumps(
+                {'function': 'mem.g', 'boundaries': [{'pc': '0x100'}, {'pc': '0x11c'}]}))
+            (directory / 'loop-heads.log').write_text(
+                'Traceback\nValueError: The loop head needs exactly one entry edge from 8fac\n')
+            got = [(row['key'], row['class'], row['head']) for row in T.render_rows(directory)]
+            self.assertEqual(got, [
+                ('mem.g/0000', 'REFUSED/loop-heads-stopped', 'ValueError: The loop head needs exactly one entry edge from 8fac'),
+                ('mem.g/001c', 'REFUSED/loop-heads-stopped', 'ValueError: The loop head needs exactly one entry edge from 8fac')])
 
 
 if __name__ == '__main__':
