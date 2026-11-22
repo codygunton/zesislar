@@ -477,12 +477,14 @@ def _contract_level(value, outer_names):
                                           for text in _input_names(value))
 
 
-def linked_guard_disjunction(alternatives, common, plan, outer_names):
+def linked_guard_disjunction(alternatives, common, plan, outer_names, live_registers=None):
     """Which edge reached the join and what each register binder held on it: the disjunction over
     the edges of (own guards ∧ binder = edge value), prefix-factored (`_prefix_factored`).
 
-    A binder is linked when its edge values are all contract-level terms (`_contract_level`) and
-    not all equal (an equal value is kept by `anti_unify` as the register's value). Each edge
+    A binder is linked when its register is live at the join (`live_registers`, when known: a dead
+    register's value is never read, and its link would only enlarge the fact every predecessor
+    proves), its edge values are all contract-level terms (`_contract_level`) and not all equal
+    (an equal value is kept by `anti_unify` as the register's value). Each edge
     keeps its own guards (`_edge_own_guards`): all of them when the edges leave one seed's tree
     from one predecessor each (the `edge_guard_disjunction` rule), else the contract-level ones.
     Sound: each edge satisfies its disjunct, the binder being bound to that edge's value
@@ -495,7 +497,8 @@ def linked_guard_disjunction(alternatives, common, plan, outer_names):
     dead = {row['register'] for row in plan.get('generalized_values', [])}
     exact = {relation['binder'] for relation in plan['relations'] if relation['kind'] == 'source_equality'}
     for binder in plan['binders']:
-        if binder.get('value_key') in dead or binder['name'] in exact:
+        if (binder.get('value_key') in dead or binder['name'] in exact
+                or (live_registers is not None and binder.get('value_key') not in live_registers)):
             continue
         values = [normalize(Expr.from_dict(edge['widened_substitution'][binder['name']])) for edge in plan['edges']]
         if all(value == values[0] for value in values) or not all(_contract_level(v, outer_names) for v in values):
@@ -508,7 +511,7 @@ def linked_guard_disjunction(alternatives, common, plan, outer_names):
     return _prefix_factored(paths)
 
 
-def join_guard_fact(alternatives, common, plan=None, outer_names=()):
+def join_guard_fact(alternatives, common, plan=None, outer_names=(), live_registers=None):
     """The join's edge-guard fact in the profile's `join_guard_form` (`entry_hist.configure`):
     `factored` (default) `linked_guard_disjunction`, as its proposition only; `both` the flat
     `edge_guard_disjunction` as built, boolean and proposition; `prop` the flat one marked so the
@@ -516,7 +519,7 @@ def join_guard_fact(alternatives, common, plan=None, outer_names=()):
     if entry_hist.JOIN_GUARD_FORM == 'none':
         return None
     if entry_hist.JOIN_GUARD_FORM == 'factored':
-        disjunction = linked_guard_disjunction(alternatives, common, plan, outer_names)
+        disjunction = linked_guard_disjunction(alternatives, common, plan, outer_names, live_registers)
     else:
         disjunction = edge_guard_disjunction(alternatives, common)
     if disjunction is not None and entry_hist.JOIN_GUARD_FORM in ('prop', 'factored'):
@@ -1748,7 +1751,7 @@ def generalize_owned_join(alternatives, *, original_seed, entry_pc, vocabulary,
             else:
                 raise ValueError('A common guard has no source condition on every edge')
         plan['common_guard_certificates'].append({'guard': guard.to_dict(), 'edges': matches})
-    disjunction = join_guard_fact(alternatives, state.conditions, plan, outer_names)
+    disjunction = join_guard_fact(alternatives, state.conditions, plan, outer_names, live_registers)
     if disjunction is not None:
         plan['edge_guard_disjunction'] = disjunction.to_dict()
         state.conditions.append(disjunction)

@@ -89,6 +89,16 @@ class JoinValueLinks(unittest.TestCase):
         self.assertEqual(fact.value, entry_hist.PROP_ONLY_GUARD)
         self.assertIsInstance(fact, Expr)
 
+    def test_a_dead_register_is_not_linked(self):
+        # A compare chain's last loaded bytes differ per edge but the join's successor never reads them.
+        edges = [alternative(0x58, 0xc8, {'x14': bits(1, 64)}, [MSTATUS, EMPTY]),
+                 alternative(0xd0, 0xc8, {'x14': POINTER}, [MSTATUS, operation('not', EMPTY)])]
+        plan = generalize_registers(edges, register_order=['x14'])
+        self.assertEqual(linked_guard_disjunction(edges, [MSTATUS], plan, OUTER, live_registers=['x10']),
+                         operation('or', EMPTY, operation('not', EMPTY)))
+        self.assertIn('machine_x14', linked_guard_disjunction(edges, [MSTATUS], plan, OUTER,
+                                                              live_registers=['x14']).coq())
+
 
 if __name__ == '__main__':
     unittest.main()
