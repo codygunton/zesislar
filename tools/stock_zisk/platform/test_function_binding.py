@@ -16,27 +16,27 @@ from indexes import validate_indexes
 
 
 class FunctionBindingTests(unittest.TestCase):
-    def fixture(self, root):
-        source = root / "generated/isla-traces/stock-zisk/closure"
+    def fixture(self, root, symbol="alt_fl_alloc.free", closure="closure"):
+        source = root / "generated/isla-traces/stock-zisk" / closure
         source.mkdir(parents=True)
         elf = root / "build/stock-zisk/zesu-zisk.elf"
-        elf.parent.mkdir(parents=True)
+        elf.parent.mkdir(parents=True, exist_ok=True)
         elf.write_bytes(b"synthetic ELF")
         platform = root / "build/stock-zisk/platform/riscv64-zisk.ir"
-        platform.parent.mkdir()
+        platform.parent.mkdir(exist_ok=True)
         platform.write_text("synthetic platform")
         config = root / "ZesuSsz/riscv64_zesu.toml"
-        config.parent.mkdir()
+        config.parent.mkdir(exist_ok=True)
         config.write_text("synthetic configuration")
         rows = [{"pc": 0x1000, "word": 0x13, "size": 4},
                 {"pc": 0x1004, "word": 0x8067, "size": 4}]
         digest = lambda path: hashlib.sha256(path.read_bytes()).hexdigest()
         inventory = {"elf_sha256": digest(elf), "functions": [
-            {"name": "alt_fl_alloc.free", "rows": rows}]}
+            {"name": symbol, "rows": rows}]}
         (elf.parent / "inventory.json").write_text(json.dumps(inventory))
         commitment = make_commitment(rows, [(0x1000, 0x1004)],
                                      [{"pc": "0x1004", "kind": "return", "target": None}])
-        commitment.update(function="alt_fl_alloc.free", unmodeled_instruction_pcs=[])
+        commitment.update(function=symbol, unmodeled_instruction_pcs=[])
         prefix = ("Require Export Trace.a1000.\nRequire Export Trace.a1004.\n"
                   "Definition instr_map := [(0x1000%Z, a1000); (0x1004%Z, a1004)].\n")
         index = source / "index_allocatorFree.v"
@@ -185,6 +185,44 @@ class FunctionBindingTests(unittest.TestCase):
                 prepare(root, source, "alt_fl_alloc.free", "closure")
             with self.assertRaisesRegex(ValueError, "not an identifier"):
                 prepare(root, source, "alt_fl_alloc.free", "../outside")
+
+
+    KZG = "_RNvNtNtNtNtCs1r1jF4enR2T_6ziskos7zisklib3lib9bls12_3813kzg35scalar_bytes_be_to_u64_le_canonical"
+    FR = "_RNvNtNtNtNtCs1r1jF4enR2T_6ziskos7zisklib3lib9bls12_3812fr35scalar_bytes_be_to_u64_le_canonical"
+
+    def test_rust_v0_symbol_is_demangled_to_its_path(self):
+        self.assertEqual(function_binding.symbol_path(self.KZG),
+                         ["ziskos", "zisklib", "lib", "bls12_381", "kzg", "scalar_bytes_be_to_u64_le_canonical"])
+        self.assertEqual(function_binding.symbol_path("hash_map.getAutoEqlFn__struct_13041.eql"),
+                         ["hash_map", "getAutoEqlFn__struct_13041", "eql"])
+
+    def test_derived_trace_names_are_identifiers_and_tell_same_last_segments_apart(self):
+        names = {self.KZG: "a", self.FR: "b", "alt_fl_alloc.free": "c",
+                 "hash_map.getAutoEqlFn__struct_13041.eql": "d", "hash_map.AutoContext(u8).eql": "e",
+                 "mem.rotate__anon_12629": "f"}
+        derived = {symbol: function_binding.derived_trace_name(symbol, names) for symbol in names}
+        self.assertEqual(derived["alt_fl_alloc.free"], "free")   # unchanged for a unique last segment
+        self.assertEqual(derived[self.KZG], "kzg_scalar_bytes_be_to_u64_le_canonical")
+        self.assertEqual(derived[self.FR], "fr_scalar_bytes_be_to_u64_le_canonical")
+        self.assertEqual(derived["hash_map.getAutoEqlFn__struct_13041.eql"], "getAutoEqlFn_struct_13041_eql")
+        self.assertEqual(derived["hash_map.AutoContext(u8).eql"], "AutoContext_u8_eql")
+        self.assertEqual(derived["mem.rotate__anon_12629"], "rotate_anon_12629")
+        self.assertEqual(len(set(derived.values())), len(derived))
+
+    def test_rust_symbols_with_the_same_last_segment_bind_side_by_side(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            names = {self.KZG: "allocatorFree", self.FR: "allocatorFree"}
+            with patch.dict(function_binding.FUNCTION_NAMES, names, clear=True):
+                kzg, _ = self.fixture(root, self.KZG, "closure-kzg")
+                bind(root, kzg, self.KZG, "kzgScalarCanonical")   # the trace name decides the file name
+                fr, _ = self.fixture(root, self.FR, "closure-fr")
+                bind(root, fr, self.FR)                           # derived, with the parent segment
+            first = (root / "ZesuSsz/Contracts/KzgScalarCanonicalSelected.v").read_text()
+            self.assertIn("Definition kzgScalarCanonicalSelectedCode", first)
+            self.assertIn("ZesuSsz.Stock.KzgScalarCanonical.index_kzgScalarCanonical.instr_map", first)
+            second = (root / "ZesuSsz/Contracts/Fr_scalar_bytes_be_to_u64_le_canonicalSelected.v").read_text()
+            self.assertIn("Definition fr_scalar_bytes_be_to_u64_le_canonicalSelectedCode", second)
 
 
 if __name__ == "__main__":
