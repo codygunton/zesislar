@@ -12,10 +12,13 @@ in a shape the forward pass consumes:
 - an exact or a minimum constant length of an owned array;
 - the alignment `Q mod M = 0` of a fixed register's quantity;
 - a closed interval of a fixed register's quantity, from linear bounds with
-  constant ends (the RAM ends come from the machine map);
-- the separation of two owned ranges, through a definition whose body is
-  `p + n <= q \\/ q + m <= p`.
-Every other conjunct stays recorded and unused. Nothing is added beyond a
+  constant ends (closed arithmetic of numerals and notations is evaluated; the
+  RAM ends come from the machine map);
+- the separation of two ranges, through a definition whose body is
+  `p + n <= q \\/ q + m <= p`: of the two owned ranges it names, or of every
+  owned range that lies inside each named range.
+Every other conjunct stays recorded and unused, and the tool prints each one
+with the reason it gives no fact. Nothing is added beyond a
 conjunct, and no proof runs. Traces and the CFG come from `--trace-root`.
 
 Usage: entry_interface_inputs.py --function NAME --output DIR --vocabulary VOCABULARY.json

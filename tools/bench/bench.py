@@ -30,7 +30,11 @@ run (launch it with `tools/bg --heavy bench-<tag> python3 tools/bench/bench.py r
     thread finds the compile's coqc and writes samples.jsonl every second (time, RSS, peak RSS, CPU,
     bytes of coqc output so far) and runs `perf stat -e instructions:u -p <coqc>` into perf.csv.
     Leftover goals the telemetry prints are saved with tools/save_goal.py
-    (tag bench-<run dir name>). One row per block goes to RUN_DIR/results.jsonl.
+    (tag bench-<run dir name>). The telemetry prints only pure goals (a spatial one is
+    `@@X skip final spatial`); with --dump-leftover an open block that has such a skip is compiled
+    once more from a scratch copy whose closing `Qed.` is `Show. Abort.` (same caps), and the
+    printed goals go to <block>/leftover/FINAL-GOAL.txt (row field leftover_dump). One row per
+    block goes to RUN_DIR/results.jsonl.
 
 report: one table per block (verdict, how it ended, CPU, instructions, peak, stage reached, stage
 times and steps, top 5 solver calls by time and by RSS growth, leftover goal classes), then a
@@ -390,6 +394,51 @@ def save_leftovers(member, directory, run_name, bench_head, bank):
     return result.stdout.strip() if result.returncode == 0 else 'save_goal failed: ' + result.stderr.strip()
 
 
+def dump_caller_text(text):
+    """The caller with its closing `Qed.` replaced by `Show.` and `Abort.`: the proof script up to
+    the end is unchanged, so compiling it prints the goals zesu_block2 leaves. None without a `Qed.`."""
+    match = re.search(r'\nQed\.\s*\Z', text)
+    return None if match is None else text[:match.start()] + '\nShow.\nAbort.\n'
+
+
+GOAL_COUNT = re.compile(r'^(\d+) goals?\b.*$', re.M)
+
+
+def final_goals(log):
+    """The goal text `Show.` printed: from the last `N goal(s)` line to the end, without the `-time`
+    lines of the closing sentences. None if no goal was printed."""
+    starts = list(GOAL_COUNT.finditer(log))
+    if not starts:
+        return None
+    lines = log[starts[-1].start():].splitlines()
+    return '\n'.join(line for line in lines if not line.startswith('Chars ')).rstrip() + '\n'
+
+
+def dump_leftover(member, directory, caller, context, caps, run_name):
+    """--dump-leftover: when the block ended on a goal the export skips (a spatial goal prints only
+    `@@X skip final spatial`), compile a scratch copy of the caller whose `Qed.` is `Show. Abort.`
+    under the same caps and save the printed goals as leftover/FINAL-GOAL.txt. Rules and the
+    generated caller are untouched; the copy is never committed. Returns the file, or why none."""
+    if not any(leftover.get('status') == 'skip' for leftover in R.load_block(directory)['leftovers']):
+        return None
+    text = dump_caller_text(caller.read_text())
+    if text is None:
+        return 'no dump: the caller has no closing Qed.'
+    dump = directory / 'leftover' / 'dump'
+    dump.mkdir(parents=True, exist_ok=True)
+    source = dump / caller.name   # same file name, so the same logical module name
+    source.write_text(text)
+    C.compile_caller(member['case'], source, context['bank'], dump, caps['limit_gib'], caps['cpu_seconds'],
+                     name='bench-%s-%s-dump' % (run_name, member['case']), claim_gib=member.get('claim_gib'))
+    log = dump / 'measure.json.log'
+    goals = final_goals(log.read_text(errors='replace')) if log.is_file() else None
+    if goals is None:
+        return 'no dump: the diagnostic compile printed no goal (%s)' % log
+    output = directory / 'leftover' / 'FINAL-GOAL.txt'
+    output.write_text(goals)
+    return str(output)
+
+
 def run_member(member, options, context):
     directory = fresh_directory(options.run_dir, member['case'])
     caller = directory / ('Caller%s.v' % member['case'])
@@ -408,12 +457,14 @@ def run_member(member, options, context):
         sampler.stop()
     record = C.verdict(member['case'], caller, context['bank'], directory / 'measure.json', out=directory)
     saved = save_leftovers(member, directory, options.run_dir.name, context['bench_head'], context['bank'])
+    dumped = (dump_leftover(member, directory, caller, context, caps, options.run_dir.name)
+              if options.dump_leftover is True and record['verdict'] != 'CLOSED' else None)
     row = {'key': R.member_key(member), 'function': member['function'], 'case': member['case'],
            'label': member.get('label'), 'dir': str(directory), 'verdict': record['verdict'],
            'reason': record.get('reason'), 'coqc_rc': record.get('coqc_returncode'), 'guard_exit': guard_exit,
            'cpu_seconds': record.get('cpu_seconds'), 'peak_gib': record.get('peak_gib'),
            'instructions_u': R.instructions(directory / 'perf.csv'), 'wall_seconds': round(time.monotonic() - start),
-           'leftovers_saved': saved, 'ended_utc': now()}
+           'leftovers_saved': saved, 'leftover_dump': dumped, 'ended_utc': now()}
     with ROWS_LOCK:
         with (options.run_dir / 'results.jsonl').open('a') as rows:
             rows.write(json.dumps(row) + '\n')
@@ -516,6 +567,9 @@ def main(argv=None):
     run.add_argument('--no-telemetry', action='store_true')
     run.add_argument('--callers', action='store_true',
                      help='also record each solver call\'s Ltac caller (diagnostic; Ltac Backtrace slows it)')
+    run.add_argument('--dump-leftover', action='store_true',
+                     help='for a block that ends on a goal the export skips (spatial), compile a scratch copy '
+                          'of the caller ending in `Show. Abort.` and save the goals (leftover/FINAL-GOAL.txt)')
     run.add_argument('--only', nargs='+', help='run only these cases (case or label)')
     run.add_argument('--keep-bank', action='store_true',
                      help='keep the worktree and its bank for a rerun on the same inputs (default: '

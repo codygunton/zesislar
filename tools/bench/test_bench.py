@@ -5,6 +5,8 @@ import io
 import json
 import os
 from pathlib import Path
+import shutil
+import subprocess
 import tempfile
 import unittest
 from unittest import mock
@@ -121,6 +123,59 @@ class CacheOnlyBank(unittest.TestCase):
             self.build()
         self.assertEqual(stop.exception.code, 3)
         self.assertFalse((self.bank / 'coqc-ocamlpath.json').exists())
+
+
+COQC = shutil.which('coqc') or next((str(path) for path in [Path('/home/cody/islaris/_opam/bin/coqc')]
+                                     if path.is_file()), None)
+
+
+class DumpLeftover(unittest.TestCase):
+    """--dump-leftover prints the goals a block leaves when the export skipped them (spatial goals)."""
+
+    TINY = 'Lemma tiny : 1 = 2 /\\ True.\nProof.\n  split.\nQed.\n'
+
+    @unittest.skipIf(COQC is None, 'no coqc')
+    def test_a_tiny_failing_lemma_prints_its_goals(self):
+        with tempfile.TemporaryDirectory(prefix='bench-dump-') as directory:
+            source = Path(directory) / 'Tiny.v'
+            source.write_text(self.TINY)
+            self.assertNotEqual(subprocess.run([COQC, '-q', str(source)], capture_output=True).returncode, 0)
+            source.write_text(bench.dump_caller_text(self.TINY))
+            done = subprocess.run([COQC, '-q', '-time', str(source)], capture_output=True, text=True)
+            self.assertEqual(done.returncode, 0, done.stdout + done.stderr)
+        goals = bench.final_goals(done.stdout)
+        self.assertTrue(goals.startswith('2 goals'), goals)
+        self.assertIn('1 = 2', goals)
+        self.assertIn('True', goals)
+        self.assertNotIn('Chars ', goals)
+
+    def test_dump_only_for_skipped_goals_and_saved_beside_the_leftovers(self):
+        self.assertIsNone(bench.dump_caller_text('Lemma x : True.\nProof.\n  exact I.\nDefined.\n'))
+        with tempfile.TemporaryDirectory(prefix='bench-dump-') as directory:
+            directory = Path(directory)
+            caller = directory / 'Caller0230.v'
+            caller.write_text(self.TINY)
+            member, context = {'case': '0230', 'claim_gib': 3}, {'bank': directory}
+            caps = {'limit_gib': 16, 'cpu_seconds': 100}
+
+            def compile_caller(case, source, bank, out, limit, cpu, name, claim_gib):
+                self.assertEqual((source.name, source.read_text().splitlines()[-2:], limit, cpu, claim_gib),
+                                 ('Caller0230.v', ['Show.', 'Abort.'], 16, 100, 3))
+                (out / 'measure.json.log').write_text('@@X skip final spatial\n1 goal\n  x : Z\n  ====\n  P x\n'
+                                                      'Chars 0 - 5 [Show.] 0. secs\n')
+                return 0
+
+            with mock.patch.object(bench.R, 'load_block', return_value={'leftovers': [{'status': 'pure',
+                                                                                        'statement': 'P'}]}), \
+                    mock.patch.object(bench.C, 'compile_caller', side_effect=compile_caller) as compiled:
+                self.assertIsNone(bench.dump_leftover(member, directory, caller, context, caps, 'run'))
+                self.assertFalse(compiled.called)
+            with mock.patch.object(bench.R, 'load_block', return_value={'leftovers': [{'status': 'skip'}]}), \
+                    mock.patch.object(bench.C, 'compile_caller', side_effect=compile_caller):
+                saved = bench.dump_leftover(member, directory, caller, context, caps, 'run')
+            self.assertEqual(saved, str(directory / 'leftover' / 'FINAL-GOAL.txt'))
+            self.assertEqual(Path(saved).read_text(), '1 goal\n  x : Z\n  ====\n  P x\n')
+            self.assertEqual(caller.read_text(), self.TINY)
 
 
 class MemberCpuCap(unittest.TestCase):
