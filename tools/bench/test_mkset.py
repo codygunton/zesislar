@@ -36,13 +36,20 @@ MODULE = 'ZesuSsz.Generated.Fake.FP301.Pilot%sEntries'
 # 0018's premises: its own entry and 0020's (two successor entries), plus a callee spec, which is no entry.
 PRECONDITIONS = {'0018': ['instr_pre 0x1018 (%s.fp_machineAt0018 (args) (K))%%I' % (MODULE % '0018'),
                           'instr_pre 0x1020 (%s.fp_machineAt0020 (args) (K))%%I' % (MODULE % '0020'),
-                          'instr_pre 0x9000 (ZesuSsz.Interfaces.Fake.calleeSpec)%I']}
+                          'instr_pre 0x9000 (ZesuSsz.Interfaces.Fake.calleeSpec)%I'],
+                 # 0020 ends at the function's return: its return package is a successor entry.
+                 '0020': ['instr_pre returnAddress (ZesuSsz.Generated.Fake.FP301.FunctionReturnEntries.'
+                          'fp_machineReturn_slot0 args returnAddress K)']}
 # Binders counted: fp_machineAt0018_Hist 2 + fp_machineAt0018 1 (fp_machineAt00180 is another entry),
 # fp_machineAt0020 2: five in all.
 ENTRIES = {'0018': 'Definition fp_machineAt0018_Hist (a : Z) : Prop := (∃ (x : bv 64) (y : list byte), x = x).\n'
                    'Definition fp_machineAt0018 (a : Z) : iProp Σ := (∃ (z : bv 64), ⌜z = z⌝)%I.\n'
                    'Definition fp_machineAt00180 (a : Z) : Prop := (∃ (u : Z) (v : Z), u = v).\n',
            '0020': 'Definition fp_machineAt0020 (a : Z) : Prop := (∃ (p : Z), ∃ (q : bv 8), p = p).\n'}
+# 0020's return package: fp_machineReturn_slot0_Hist 2 + fp_machineReturn_slot0 1 (slot1 is another package).
+RETURN_ENTRIES = ('Definition fp_machineReturn_slot0_Hist (a : Z) : Prop := (∃ (x : Z) (y : Z), x = y).\n'
+                  'Definition fp_machineReturn_slot0 (a : Z) : iProp Σ := (∃ (z : bv 64), ⌜z = z⌝)%I.\n'
+                  'Definition fp_machineReturn_slot1 (a : Z) : Prop := (∃ (u : Z), u = u).\n')
 
 
 class MakeSet(unittest.TestCase):
@@ -65,6 +72,7 @@ class MakeSet(unittest.TestCase):
         entries.mkdir(parents=True)
         for case, text in ENTRIES.items():
             (entries / ('Pilot%sEntries.v' % case)).write_text(text)
+        (entries / 'FunctionReturnEntries.v').write_text(RETURN_ENTRIES)
         (self.callers / 'CALLERS.json').write_text(json.dumps({'function': 'decodeParentHeader', 'rows': rows}))
         self.cfg = self.root / 'cfg.json'
         self.cfg.write_text(json.dumps(fake_cfg()))
@@ -85,7 +93,7 @@ class MakeSet(unittest.TestCase):
             '0008': (1, 165, 3),       # ends at the call
             '000c': (3, 255, 3),       # jump into the inlined return block
             '0018': (2, 425, 3),       # loop back to its own start; 120 + 45 x 2 + 100 x 2 + 3 x 5
-            '0020': (1, 165, 3),
+            '0020': (1, 274, 3),       # ends at the return: 120 + 45 x 1 + 100 x 1 + 3 x 3
             '0100': (30, 1200, 3)})    # 120 + 45 x 30 = 1470, capped at 1200
         self.assertEqual(data['caps'], {'cpu_seconds': 2400, 'limit_gib': 24})
         self.assertEqual(data['overlays'], [])

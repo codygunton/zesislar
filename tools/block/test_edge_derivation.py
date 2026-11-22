@@ -137,6 +137,25 @@ class NewGhostScope(unittest.TestCase):
         self.assertLess(text.index('iDestruct "HN"'), text.index('exists n.'))
         check_edge_sentences(text)
 
+    def test_a_source_fact_whose_names_a_nested_group_binds_is_matched_not_a_premise(self):
+        # The 03bc -> 0274_slot1 shape (edge 102): the successor's join history is the block's history
+        # fact verbatim; its names are bound by a group NESTED in the outer group, and the successor
+        # also has a ghost binder of one of those names. It is not free in the fact: the edge proves it.
+        fact = ('zesu_join_history (∃ (a : bv 64), (P a k) /\\ '
+                '(zesu_join_history (∃ (c : bv 64), (R c) /\\ (Q c a))))')
+        pre = {'parameters': [{'name': 'args', 'type': 'A'}], 'live': [{'name': 'k', 'type': T}],
+               'hist': 'HP', 'ghost': [], 'visible': [], 'hidden': [fact]}
+        succ = {**pre, 'hist': 'HS', 'ghost': [{'name': 'c', 'type': T}], 'hidden': [fact]}
+        row = {'succ': 'k', 'role': 'live', 'identity': True, 'expression': 'k', 'type': T}
+        data = {'binder_map': [row], 'new': [{'succ': ['hidden', 0], 'text': fact, 'support': []}],
+                'pre_entry': 'a', 'succ_entry': 'b', 'kind': 'k', 'unchanged': []}
+        text = rocq_edge(data, pre, succ, 0)
+        self.assertEqual(data['hidden_premises'], 0)
+        self.assertNotIn('(P a k)', text)
+        self.assertIn('HF0', text.split('Proof.')[1])
+        check_edge_sentences(text)
+        self.assertEqual(stated_at_source(fact, [row], succ), fact)
+
 
 class PremiseDefinitions(unittest.TestCase):
     # The 058c -> 059c shape: the call overwrote the words it read, the successor history keeps

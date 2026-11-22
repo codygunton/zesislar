@@ -14,6 +14,7 @@ Require Import ZesuSsz.Contracts.AbiBytes.
 Require Import ZesuSsz.Contracts.ZiskRuntime.
 Require Import ZesuSsz.Contracts.Candidates.ParentHeaderCandidate.
 Require Import ZesuSsz.Automation2.ByteWindowFold.
+Require Import ZesuSsz.Contracts.ParentHeaderWalkFact.
 Require Export ZesuSsz.Compliance.ParentHeaderHints.
 Require Import ZesuSsz.Contracts.Level1.
 Local Open Scope Z_scope.
@@ -29,14 +30,14 @@ Section edges.
 Context `{!islaG Sigma} `{!threadG}.
 
 (* fp_machineAt0510_slot0_ForwardA0N0 -> fp_machineAt0514_slot3_ForwardA0N0 (forward) *)
-Global Instance zesu_hist_edge_131 (args : ParentHeaderArgs) (returnAddress : Z) (call17_result : NextUint64Return) (call17_word_1_0 : bv 64) (call17_word_1_8 : bv 64) (call17_kept_x19 : bv 64) (call16_after : DecodeItemOutcome) (call13_after : DecodeItemOutcome) (call10_after : DecodeItemOutcome) (call_after : DecodeItemOutcome) (machine_x21_1 : bv 64) (machine_x22_1 : bv 64) :
+Global Instance zesu_hist_edge_131 (args : ParentHeaderArgs) (returnAddress : Z) (call17_result : NextUint64Return) (call17_word_1_0 : bv 64) (call17_word_1_8 : bv 64) (call17_kept_x19 : bv 64) (call16_after : DecodeItemOutcome) (call13_after : DecodeItemOutcome) (call10_after : DecodeItemOutcome) (call_after : DecodeItemOutcome) (machine_x21_1 : bv 64) (machine_x22_1 : bv 64) (machine_x20_1 : bv 64) :
   ZesuHistEdge (PROP := iProp Sigma)
-    (fp_machineAt0510_slot0_ForwardA0N0_Hist (args) (returnAddress) (call17_result) (call17_word_1_0) (call17_word_1_8) (call17_kept_x19) (call16_after) (call13_after) (call10_after) (call_after) (machine_x21_1) (machine_x22_1))
-    (fp_machineAt0514_slot3_ForwardA0N0_Hist (args) (returnAddress) (call17_result) (call17_word_1_0) (call17_word_1_8) (call17_kept_x19) (call16_after) (call13_after) (call10_after) (call_after) (machine_x21_1) (machine_x22_1))
+    (fp_machineAt0510_slot0_ForwardA0N0_Hist (args) (returnAddress) (call17_result) (call17_word_1_0) (call17_word_1_8) (call17_kept_x19) (call16_after) (call13_after) (call10_after) (call_after) (machine_x21_1) (machine_x22_1) (machine_x20_1))
+    (fp_machineAt0514_slot3_ForwardA0N0_Hist (args) (returnAddress) (call17_result) (call17_word_1_0) (call17_word_1_8) (call17_kept_x19) (call16_after) (call13_after) (call10_after) (call_after) (machine_x21_1) (machine_x22_1) (machine_x20_1))
     (True)%I.
 Proof.
   rewrite /ZesuHistEdge => Hh. apply zesu_hist_elim in Hh. unfold fp_machineAt0510_slot0_ForwardA0N0_Hist in Hh.
-  destruct Hh as (call16_kept_x18 & call16_kept_x19 & call15_after & call15_kept_x18 & call15_kept_x19 & call14_after & call14_kept_x18 & call14_kept_x19 & call13_kept_x18 & call13_kept_x19 & fp_seed_mstatus_bits & forward_witness_1be931110d776902 & forward_witness_905cf96e605c1117 & forward_witness_55ab0ce59750150a & forward_witness_11fde2df72db9d06 & forward_witness_d77b5950a2aea933 & forward_witness_1eea82d2945b4618 & forward_witness_751588b52f8a71ff & forward_witness_407fca3a6f90b8db & forward_witness_88383840afa7af74 & forward_witness_cbcac9df79b9221c & forward_witness_9644ccf41f39915a & HF0 & HF1 & HF2 & HF3 & HF4 & HF5 & HF6 & HF7 & HF8 & HF9 & HF10 & HF11 & HF12 & HF13 & HF14 & HF15 & HF16 & HF17 & HF18 & HF19 & HF20 & HF21 & HF22 & HF23 & HF24 & HF25 & HF26 & HF27 & HF28 & HF29 & HF30 & HF31 & HF32 & HF33 & HF34 & HF35 & HF36 & HF37 & HF38 & HF39 & HF40 & HF41 & HF42 & HF43 & HF44 & HF45 & HF46 & HF47 & HF48).
+  destruct Hh as (call16_kept_x18 & call16_kept_x19 & call15_after & call15_kept_x18 & call15_kept_x19 & call14_after & call14_kept_x18 & call14_kept_x19 & call13_kept_x18 & call13_kept_x19 & fp_seed_mstatus_bits & forward_witness_1be931110d776902 & forward_witness_905cf96e605c1117 & forward_witness_55ab0ce59750150a & forward_witness_11fde2df72db9d06 & forward_witness_d77b5950a2aea933 & forward_witness_1eea82d2945b4618 & forward_witness_751588b52f8a71ff & forward_witness_407fca3a6f90b8db & forward_witness_88383840afa7af74 & forward_witness_cbcac9df79b9221c & forward_witness_9644ccf41f39915a & HF0 & HF1 & HF2 & HF3 & HF4 & HF5 & HF6 & HF7 & HF8 & HF9 & HF10 & HF11 & HF12 & HF13 & HF14 & HF15 & HF16 & HF17 & HF18 & HF19 & HF20 & HF21 & HF22 & HF23 & HF24 & HF25 & HF26 & HF27 & HF28 & HF29 & HF30 & HF31 & HF32 & HF33 & HF34 & HF35 & HF36 & HF37 & HF38 & HF39 & HF40 & HF41 & HF42 & HF43 & HF44 & HF45 & HF46 & HF47 & HF48 & HF49 & HF50 & HF51 & HF52).
   iIntros "HN".
   iPureIntro. apply zesu_hist_intro. unfold fp_machineAt0514_slot3_ForwardA0N0_Hist.
   exists call16_kept_x18, call16_kept_x19, call15_after, call15_kept_x18, call15_kept_x19, call14_after, call14_kept_x18, call14_kept_x19, call13_kept_x18, call13_kept_x19, fp_seed_mstatus_bits, forward_witness_1be931110d776902, forward_witness_905cf96e605c1117, forward_witness_55ab0ce59750150a, forward_witness_11fde2df72db9d06, forward_witness_d77b5950a2aea933, forward_witness_1eea82d2945b4618, forward_witness_751588b52f8a71ff, forward_witness_407fca3a6f90b8db, forward_witness_88383840afa7af74, forward_witness_cbcac9df79b9221c, forward_witness_9644ccf41f39915a.
@@ -88,18 +89,22 @@ Proof.
   split; [exact HF45|].
   split; [exact HF46|].
   split; [exact HF47|].
-  exact HF48.
+  split; [exact HF48|].
+  split; [exact HF49|].
+  split; [exact HF50|].
+  split; [exact HF51|].
+  exact HF52.
 Qed.
 
 (* fp_machineAt0510_slot1_ForwardA0N0 -> fp_machineAt0514_slot4_ForwardA0N0 (forward) *)
-Global Instance zesu_hist_edge_132 (args : ParentHeaderArgs) (returnAddress : Z) (call18_after : DecodeItemOutcome) (call17_result : NextUint64Return) (call17_word_1_0 : bv 64) (call17_word_1_8 : bv 64) (call16_after : DecodeItemOutcome) (call13_after : DecodeItemOutcome) (call10_after : DecodeItemOutcome) (call_after : DecodeItemOutcome) (machine_x21_1 : bv 64) (machine_x22_1 : bv 64) :
+Global Instance zesu_hist_edge_132 (args : ParentHeaderArgs) (returnAddress : Z) (call18_after : DecodeItemOutcome) (call17_result : NextUint64Return) (call17_word_1_0 : bv 64) (call17_word_1_8 : bv 64) (call16_after : DecodeItemOutcome) (call13_after : DecodeItemOutcome) (call10_after : DecodeItemOutcome) (call_after : DecodeItemOutcome) (machine_x21_1 : bv 64) (machine_x22_1 : bv 64) (machine_x20_1 : bv 64) :
   ZesuHistEdge (PROP := iProp Sigma)
-    (fp_machineAt0510_slot1_ForwardA0N0_Hist (args) (returnAddress) (call18_after) (call17_result) (call17_word_1_0) (call17_word_1_8) (call16_after) (call13_after) (call10_after) (call_after) (machine_x21_1) (machine_x22_1))
-    (fp_machineAt0514_slot4_ForwardA0N0_Hist (args) (returnAddress) (call18_after) (call17_result) (call17_word_1_0) (call17_word_1_8) (call16_after) (call13_after) (call10_after) (call_after) (machine_x21_1) (machine_x22_1))
+    (fp_machineAt0510_slot1_ForwardA0N0_Hist (args) (returnAddress) (call18_after) (call17_result) (call17_word_1_0) (call17_word_1_8) (call16_after) (call13_after) (call10_after) (call_after) (machine_x21_1) (machine_x22_1) (machine_x20_1))
+    (fp_machineAt0514_slot4_ForwardA0N0_Hist (args) (returnAddress) (call18_after) (call17_result) (call17_word_1_0) (call17_word_1_8) (call16_after) (call13_after) (call10_after) (call_after) (machine_x21_1) (machine_x22_1) (machine_x20_1))
     (True)%I.
 Proof.
   rewrite /ZesuHistEdge => Hh. apply zesu_hist_elim in Hh. unfold fp_machineAt0510_slot1_ForwardA0N0_Hist in Hh.
-  destruct Hh as (call17_kept_x19 & call16_kept_x18 & call16_kept_x19 & call15_after & call15_kept_x18 & call15_kept_x19 & call14_after & call14_kept_x18 & call14_kept_x19 & call13_kept_x18 & call13_kept_x19 & fp_seed_mstatus_bits & forward_witness_1be931110d776902 & forward_witness_905cf96e605c1117 & forward_witness_55ab0ce59750150a & forward_witness_11fde2df72db9d06 & forward_witness_d77b5950a2aea933 & forward_witness_751588b52f8a71ff & forward_witness_407fca3a6f90b8db & forward_witness_88383840afa7af74 & forward_witness_cbcac9df79b9221c & forward_witness_9644ccf41f39915a & forward_witness_1492ef7bd46b3b7a & HF0 & HF1 & HF2 & HF3 & HF4 & HF5 & HF6 & HF7 & HF8 & HF9 & HF10 & HF11 & HF12 & HF13 & HF14 & HF15 & HF16 & HF17 & HF18 & HF19 & HF20 & HF21 & HF22 & HF23 & HF24 & HF25 & HF26 & HF27 & HF28 & HF29 & HF30 & HF31 & HF32 & HF33 & HF34 & HF35 & HF36 & HF37 & HF38 & HF39 & HF40 & HF41 & HF42 & HF43 & HF44 & HF45 & HF46 & HF47 & HF48 & HF49 & HF50 & HF51 & HF52).
+  destruct Hh as (call17_kept_x19 & call16_kept_x18 & call16_kept_x19 & call15_after & call15_kept_x18 & call15_kept_x19 & call14_after & call14_kept_x18 & call14_kept_x19 & call13_kept_x18 & call13_kept_x19 & fp_seed_mstatus_bits & forward_witness_1be931110d776902 & forward_witness_905cf96e605c1117 & forward_witness_55ab0ce59750150a & forward_witness_11fde2df72db9d06 & forward_witness_d77b5950a2aea933 & forward_witness_751588b52f8a71ff & forward_witness_407fca3a6f90b8db & forward_witness_88383840afa7af74 & forward_witness_cbcac9df79b9221c & forward_witness_9644ccf41f39915a & forward_witness_1492ef7bd46b3b7a & HF0 & HF1 & HF2 & HF3 & HF4 & HF5 & HF6 & HF7 & HF8 & HF9 & HF10 & HF11 & HF12 & HF13 & HF14 & HF15 & HF16 & HF17 & HF18 & HF19 & HF20 & HF21 & HF22 & HF23 & HF24 & HF25 & HF26 & HF27 & HF28 & HF29 & HF30 & HF31 & HF32 & HF33 & HF34 & HF35 & HF36 & HF37 & HF38 & HF39 & HF40 & HF41 & HF42 & HF43 & HF44 & HF45 & HF46 & HF47 & HF48 & HF49 & HF50 & HF51 & HF52 & HF53 & HF54 & HF55 & HF56).
   iIntros "HN".
   iPureIntro. apply zesu_hist_intro. unfold fp_machineAt0514_slot4_ForwardA0N0_Hist.
   exists call17_kept_x19, call16_kept_x18, call16_kept_x19, call15_after, call15_kept_x18, call15_kept_x19, call14_after, call14_kept_x18, call14_kept_x19, call13_kept_x18, call13_kept_x19, fp_seed_mstatus_bits, forward_witness_1be931110d776902, forward_witness_905cf96e605c1117, forward_witness_55ab0ce59750150a, forward_witness_11fde2df72db9d06, forward_witness_d77b5950a2aea933, forward_witness_751588b52f8a71ff, forward_witness_407fca3a6f90b8db, forward_witness_88383840afa7af74, forward_witness_cbcac9df79b9221c, forward_witness_9644ccf41f39915a, forward_witness_1492ef7bd46b3b7a.
@@ -155,7 +160,11 @@ Proof.
   split; [exact HF49|].
   split; [exact HF50|].
   split; [exact HF51|].
-  exact HF52.
+  split; [exact HF52|].
+  split; [exact HF53|].
+  split; [exact HF54|].
+  split; [exact HF55|].
+  exact HF56.
 Qed.
 
 End edges.

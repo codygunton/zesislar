@@ -36,11 +36,14 @@ class FractionalSourceArrays:
     checker obligation. This adapter renders declarations and runs no proof.
     """
 
-    def __init__(self, plain_adapter, *, declaration):
+    def __init__(self, plain_adapter, *, declaration, seal_owned=False):
+        """seal_owned (profile `array_spelling: sealed`): an owned array `a ↦ₘ{DfracOwn 1}∗ l` is
+        rendered in isla's sealed notation `a ↦ₘ∗ l`, not through the declaration."""
         self.plain_adapter = plain_adapter
         self.declaration = deepcopy(declaration)
         if declaration['arguments'] != ['implicit n : N', 'a : Z', 'q : dfrac', 'l : list (bv n)']:
             raise ValueError('The array helper has an unsupported argument order')
+        self.seal_owned = seal_owned
         self.applications = []
 
     def __call__(self, record, context):
@@ -58,6 +61,12 @@ class FractionalSourceArrays:
                 # isla's `a ↦ₘ? n` is notation for `a ↦ₘ{DfracOwn 1}? n`.
                 result.extend(self.plain_adapter({**record, 'source': '(' + leaf['address_z'] + ') ↦ₘ? '
                                                   + leaf['length']}, context))
+                continue
+            if (self.seal_owned and leaf['kind'] == 'byte_array'
+                    and re.fullmatch(r'\{\s*DfracOwn\s+1\s*\}', fraction)):
+                # isla's `a ↦ₘ∗ l` is notation for `a ↦ₘ{DfracOwn 1}∗ l`.
+                result.extend(self.plain_adapter({**record, 'source': '(' + leaf['address_z'] + ') ↦ₘ∗ ('
+                                                  + leaf['value'] + ')'}, context))
                 continue
             if leaf['kind'] != 'byte_array':
                 raise ValueError('The source-bound array adapter cannot preserve this fractional resource')

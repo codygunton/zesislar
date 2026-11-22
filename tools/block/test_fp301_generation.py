@@ -149,6 +149,17 @@ class LiteralWordFold(unittest.TestCase):
             self.assertEqual(entry_hist.fold_literal_words(text), text)
         self.assertEqual(entry_hist.fold_literal_words('(List.nth 1%nat ([a; (f [b; c])]) d)'), '(f [b; c])')
 
+    def test_return_package_result_bytes_are_folded_like_its_resources(self):
+        # A stored piece of `<package>_ResultBytes` passes through the same word fold as the
+        # package's resources; unfolded, slots 2 and 3 held 72 literal-list reads (414K chars each).
+        text = (ROOT / "ZesuSsz/Generated/DecodeParentHeader/FP301/FunctionReturnEntries.v").read_text()
+        definitions = re.findall(r"^Definition \S+_ResultBytes .*?\.\n", text, re.M | re.S)
+        self.assertEqual(len(definitions), 7)
+        for definition in definitions:
+            with self.subTest(definition=definition.split()[1]):
+                self.assertNotRegex(definition, r"List\.nth \d+%nat \(\[")
+                self.assertEqual(entry_hist.fold_literal_words(definition), definition)
+
 
 if __name__ == "__main__":
     unittest.main()
