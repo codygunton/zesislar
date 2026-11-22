@@ -395,10 +395,11 @@ def save_leftovers(member, directory, run_name, bench_head, bank):
 
 
 def dump_caller_text(text):
-    """The caller with its closing `Qed.` replaced by `Show.` and `Abort.`: the proof script up to
-    the end is unchanged, so compiling it prints the goals zesu_block2 leaves. None without a `Qed.`."""
-    match = re.search(r'\nQed\.\s*\Z', text)
-    return None if match is None else text[:match.start()] + '\nShow.\nAbort.\n'
+    """The caller with its last `Qed.` replaced by `Show.` and `Abort.` and what follows it (bench callers
+    end with `Print Assumptions`) dropped: the proof script up to the end is unchanged, so compiling it
+    prints the goals zesu_block2 leaves. None without a `Qed.`."""
+    end = text.rfind('\nQed.')
+    return None if end < 0 else text[:end] + '\nShow.\nAbort.\n'
 
 
 GOAL_COUNT = re.compile(r'^(\d+) goals?\b.*$', re.M)
