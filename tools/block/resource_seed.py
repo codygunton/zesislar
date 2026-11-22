@@ -79,6 +79,8 @@ def _constant(term, constants):
     term = _strip_enclosure(re.sub(r'%(?:Z|nat|N)\s*$', '', term.strip()))
     if re.fullmatch(r'-?[0-9]+', term):
         return int(term)
+    if re.fullmatch(r'0x[0-9a-fA-F]+', term):
+        return int(term, 16)
     if term in constants:
         binding = constants[term]
         if not isinstance(binding, dict) or type(binding.get('value')) is not int or not binding.get('origin'):

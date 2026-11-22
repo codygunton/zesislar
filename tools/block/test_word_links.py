@@ -105,6 +105,10 @@ class WordLinks(unittest.TestCase):
         self.assertEqual(original.copy().word_links, original.word_links)
         self.assertEqual(_state_from_result(original.to_dict()).word_links, original.word_links)
 
+    def test_a_hexadecimal_offset_in_an_address_is_a_constant(self):
+        self.assertEqual(base('bv_unsigned (tHost args) + 0x98'),
+                         operation('bvadd', input_expr('tHost args', 64), bits(0x98, 64)))
+
 
 if __name__ == '__main__':
     unittest.main()
