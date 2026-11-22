@@ -415,9 +415,14 @@ Proof.
     by (eapply (phNext _ 17); [reflexivity|reflexivity|exact Wa17|eassumption|eassumption|eassumption
                               |eassumption]).
   assert (Wa18 := phStateLeft _ _ _ _ _ Ws18 ltac:(eassumption)).
+  (* call 20's record states its window by call 19's field terms: replace call 19's words by them. *)
+  repeat match goal with
+  | H : ?w = Z_to_bv 64 (nextRestPointer call19_result) |- _ => subst w
+  | H : ?w = Z_to_bv 64 (nextRestLength call19_result) |- _ => subst w
+  end.
   eassert (Ws19 : parentHeaderWalkState args 19 call20_word_1_0 call20_word_1_8 _)
-    by (eapply (phNextNamed _ 18); [reflexivity|reflexivity|exact Wa18|eassumption|eassumption
-                                   |eassumption|eassumption|eassumption|eassumption]).
+    by (eapply (phNext _ 18); [reflexivity|reflexivity|exact Wa18|eassumption|eassumption
+                              |eassumption|eassumption]).
   assert (Hc := candidateWalkDone _ _ _ _ Ws19).
   ph_option_result Hc.
 Qed.
