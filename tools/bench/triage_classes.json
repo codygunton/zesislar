@@ -1,8 +1,14 @@
 {
- "about": "Leftover classes of tools/bench/triage.py, first match wins in this order. A class matches a block by its end (\"ends\": the bench report's run end) or a leftover by \"regex\" (Python re.search, DOTALL) on the leftover head: `pure <conclusion>` for an exported pure goal (its conclusion as ResidualExport prints it, every application in `@f args` form), `spatial <goal skeleton>` or `spatial-call <goal skeleton>` for a spatial goal (skeleton of the last step before it, spaces printed as `_`; -call when the caller's premises include a callee spec), `error <first error line>` for a failed block with no export. \"max_bytes\" bounds the exported statement's size. Plan step 1.4, issue #316.",
+ "about": "Leftover classes of tools/bench/triage.py, first match wins in this order. A class matches a block by its end (\"ends\": the bench report's run end, or its first word, so `killed` matches `killed (no exit status)`) or a leftover by \"regex\" (Python re.search, DOTALL) on the leftover head: `pure <conclusion>` for an exported pure goal (its conclusion as ResidualExport prints it, every application in `@f args` form), `spatial <goal skeleton>` or `spatial-call <goal skeleton>` for a spatial goal (skeleton of the last step before it, spaces printed as `_`; -call when the caller's premises include a callee spec), `error <first error line>` for a failed block with no export. \"max_bytes\" bounds the exported statement's size. REFUSED and BLOCKED have neither: triage.py --render gives them to the callers a render refused. Plan step 1.4, issue #316.",
  "classes": [
-  {"id": "OVER", "ends": ["cpu-cap", "memory-fence"], "owner": "coordinator",
+  {"id": "OVER", "ends": ["cpu-cap"], "owner": "coordinator",
    "next_action": "stepping-only probe (tools/block/probe_mirror.py); shrink the statement before any tactic work"},
+  {"id": "KILLED", "ends": ["memory-fence", "killed"], "owner": "coordinator",
+   "next_action": "killed at the memory limit, no goal printed: measure the statement (successor binders, join guard size), then a stepping-only probe (tools/block/probe_mirror.py) under the same limit"},
+  {"id": "REFUSED", "owner": "generator",
+   "next_action": "the render refused the block's own entry; the sub-class is the refusal kind of render/RESULT.json, the head its detail"},
+  {"id": "BLOCKED", "owner": "generator",
+   "next_action": "caller not rendered: a successor entry or the function-return package was refused (head: which, and its refusal); fix that refusal first"},
   {"id": "GUARD", "regex": "^pure @Coq\\.Init\\.Logic\\.eq \\(@Coq\\.Init\\.Datatypes\\.bool\\) .*@stdpp\\.decidable\\.bool_decide", "owner": "rule (guard view)",
    "next_action": "guard view: derive the boolean guard from its Prop branch fact (check that fact is visible at the block)"},
   {"id": "WITNESS", "regex": "^pure (?!@Coq\\.Init\\.Logic\\.ex \\(@[\\w.]+Return\\) \\(fun \\(result : .*ResultBytes result\\b)(@Coq\\.Init\\.Logic\\.eq .* [A-Za-z_][\\w']* [A-Za-z_][\\w']*|[A-Za-z_][\\w']* = [A-Za-z_][\\w']*|(@Coq\\.Init\\.Logic\\.ex|∃|exists)\\b.*)$",

@@ -2,13 +2,19 @@
 """Triage the open blocks of a BENCH run: one markdown row per open block with its class, owner and
 next action.
 
-usage: triage.py RUN_DIR [--classes PATH] [--json]
+usage: triage.py RUN_DIR [--render RENDER_DIR ...] [--classes PATH] [--json]
 
 Reads the run through bench_report.load_run. Each leftover of a block gets a head (see "about" in
 triage_classes.json) and the first class of triage_classes.json that matches it; a block whose run
-ended at a cap is OVER. A block's class is the first one in table order among its leftovers;
-UNCLASSIFIED (no class matched) prints the head instead. Blocks of the set that have no result yet
-are listed after the table.
+ended at a cap or was killed gets the class whose "ends" names that end (OVER, KILLED). A block's
+class is the first one in table order among its leftovers; UNCLASSIFIED (no class matched) prints
+the head instead. Blocks of the set that have no result yet are listed after the table.
+
+--render names render_function.sh run directories (render/RESULT.json, callers/CALLERS.json): every
+caller the render refused gets a row too, REFUSED/<refusal kind> when its own entry was refused
+(the kinds and details of the render's refusal reports) and BLOCKED when only a successor entry or
+the function-return package was not rendered. The last line counts the blocks per class, closed
+ones included, so one command gives a held-out report.
 """
 import argparse
 from collections import Counter
@@ -71,7 +77,9 @@ def classify(head, size, classes):
 def triage_block(block, classes):
     """{class, leftovers: Counter of classes, head} of one open block."""
     by_id = {entry['id']: index for index, entry in enumerate(classes)}
-    over = next((entry['id'] for entry in classes if block['end'] in entry.get('ends', ())), None)
+    end = block['end']
+    over = next((entry['id'] for entry in classes
+                 if end in entry.get('ends', ()) or end.split(' ', 1)[0] in entry.get('ends', ())), None)
     labelled = [(classify(head, size, classes), head) for head, size in leftover_heads(block)]
     counts = Counter(label for label, _ in labelled)
     if over:
@@ -82,17 +90,94 @@ def triage_block(block, classes):
     return {'class': label, 'leftovers': counts, 'head': head}
 
 
-def triage(run, classes):
-    rows, pending = [], []
+STEP_OUTPUTS = (('loop-heads', 'loop-heads.json'), ('render', 'render/RESULT.json'), ('callers', 'callers/CALLERS.json'))
+
+
+def pc_key(pc):
+    """A render case's pc as an integer, or its name (`function_return_022c`)."""
+    return int(pc, 16) if re.fullmatch(r'0x[0-9a-fA-F]+', pc) else pc
+
+
+def stopped_render_rows(directory):
+    """Rows for a render that stopped before its entries (no render/RESULT.json): every forward
+    boundary is REFUSED/<step>-stopped, the head being the last line of that step's log."""
+    forward = json.loads((directory / 'forward' / 'RESULT.json').read_text())
+    step = next((name for name, output in STEP_OUTPUTS if not (directory / output).exists()), 'forward')
+    log = directory / (step + '.log')
+    lines = [line.strip() for line in log.read_text(errors='replace').splitlines() if line.strip()] \
+        if log.is_file() else []
+    head = lines[-1] if lines else 'no %s output' % step
+    boundaries = [int(row['pc'], 16) for row in forward.get('boundaries', [])]
+    entry = boundaries[0] if boundaries else 0
+    return [{'class': 'REFUSED/%s-stopped' % step, 'key': '%s/%04x' % (forward.get('function', directory.name),
+                                                                      pc - entry),
+             'end': 'render', 'cpu': None, 'leftovers': Counter(), 'head': head} for pc in boundaries]
+
+
+def render_rows(directory):
+    """Rows of the callers a render refused: REFUSED/<kind> (own entry) or BLOCKED (a successor
+    entry or the return package not rendered), each with the render's refusal detail as head."""
+    directory = Path(directory)
+    if not (directory / 'render' / 'RESULT.json').is_file():
+        return stopped_render_rows(directory)
+    result = json.loads((directory / 'render' / 'RESULT.json').read_text())
+    callers = json.loads((directory / 'callers' / 'CALLERS.json').read_text())
+    reports = {pc_key(case['pc']): case.get('reports') or [] for case in result.get('cases', [])
+               if case.get('status') != 'source_declarations_rendered'}
+    stops = [report for case_reports in reports.values() for report in case_reports
+             if report.get('kind', '').endswith('_stop')]
+
+    def kinds(pc):
+        found = reports.get(pc, [])
+        return ('/'.join(sorted({report.get('kind', '?') for report in found})) or 'unknown',
+                found[0].get('detail', '') if found else '')
+
+    pcs = {row['case']: pc_key(row['pc']) for row in callers['rows']}
+    rows = []
+    for row in callers['rows']:
+        if row['status'] != 'refused':
+            continue
+        key = '%s/%s' % (callers.get('function', directory.name), row['case'])
+        reason = row.get('reason', '')
+        if reason == 'own entry not rendered':
+            kind, detail = kinds(pcs[row['case']])
+            rows.append({'class': 'REFUSED/' + kind, 'key': key, 'end': 'render', 'cpu': None,
+                         'leftovers': Counter(), 'head': detail})
+            continue
+        match = re.match(r'successor entry not rendered: (\S+)', reason)
+        package = reason.startswith('function-return package')
+        if match and match[1] in pcs:
+            kind, detail = kinds(pcs[match[1]])
+            head = '%s (%s: %s)' % (reason, kind, detail)
+        elif package and stops:
+            head = '%s (%s: %s)' % (reason, stops[0].get('kind'), stops[0].get('detail', ''))
+        else:
+            head = reason
+        rows.append({'class': 'BLOCKED' if match or package else 'REFUSED/' + (reason or 'unknown'),
+                     'key': key, 'end': 'render', 'cpu': None, 'leftovers': Counter(), 'head': head})
+    return rows
+
+
+def triage(run, classes, renders=()):
+    rows, pending, closed = [], [], 0
     for entry in run['blocks']:
         block = entry['block']
         if entry['row'] is None or block is None:
             pending.append(entry['key'])
             continue
         if block['verdict'] == 'CLOSED':
+            closed += 1
             continue
         rows.append(dict(triage_block(block, classes), key=entry['key'], end=block['end'], cpu=block['cpu']))
-    return rows, pending
+    for directory in renders:
+        rows.extend(render_rows(directory))
+    return rows, pending, closed
+
+
+def summary(rows, closed):
+    counts = Counter(row['class'].split('/', 1)[0] for row in rows)
+    total = closed + sum(counts.values())
+    return '%d blocks: CLOSED %d; %s' % (total, closed, ', '.join('%s %d' % item for item in sorted(counts.items())))
 
 
 def cell(text, limit=120):
@@ -100,12 +185,12 @@ def cell(text, limit=120):
     return text.replace('|', '\\|')
 
 
-def render(rows, pending, classes):
+def render(rows, pending, classes, closed=0):
     info = {entry['id']: entry for entry in classes}
     lines = ['| block | end | CPU-s | class | owner | next action | leftovers | head |',
              '|---|---|---|---|---|---|---|---|']
     for row in rows:
-        entry = info.get(row['class'], {})
+        entry = info.get(row['class'], info.get(row['class'].split('/', 1)[0], {}))
         leftovers = ', '.join('%s x%d' % item for item in sorted(row['leftovers'].items()))
         lines.append('| %s | %s | %s | %s | %s | %s | %s | `%s` |' % (
             row['key'], row['end'], R.number(row['cpu']), row['class'], entry.get('owner', '-'),
@@ -114,6 +199,8 @@ def render(rows, pending, classes):
     if pending:
         lines.append('')
         lines.append('no result yet: ' + ', '.join(pending))
+    lines.append('')
+    lines.append(summary(rows, closed))
     return '\n'.join(lines) + '\n'
 
 
@@ -121,14 +208,17 @@ def main(argv=None):
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument('run', type=Path)
     parser.add_argument('--classes', type=Path, default=BENCH / 'triage_classes.json')
+    parser.add_argument('--render', type=Path, action='append', default=[],
+                        help='a render_function.sh run directory whose refused callers get rows (repeatable)')
     parser.add_argument('--json', action='store_true')
     options = parser.parse_args(argv)
     classes = load_classes(options.classes)
-    rows, pending = triage(R.load_run(options.run), classes)
+    rows, pending, closed = triage(R.load_run(options.run), classes, options.render)
     if options.json:
-        print(json.dumps({'open': rows, 'no_result': pending}, indent=1))
+        print(json.dumps({'open': rows, 'no_result': pending, 'closed': closed,
+                          'summary': summary(rows, closed)}, indent=1))
     else:
-        print(render(rows, pending, classes), end='')
+        print(render(rows, pending, classes, closed), end='')
     return 0
 
 
