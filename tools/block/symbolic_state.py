@@ -284,6 +284,9 @@ class SymbolicState:
     source_alignments: list = field(default_factory=list)
     symbolic_read_ranges: list = field(default_factory=list)
     read_obligations: list = field(default_factory=list)
+    # Word links of the contract: {'array': Expr, 'offset', 'size', 'value': Expr, 'fact_id', 'resource_id'};
+    # the `size` bytes of the array at the offset, read back unwritten, are the register value `value`.
+    word_links: list = field(default_factory=list)
 
     def copy(self):
         return SymbolicState(dict(self.registers), list(self.memory), list(self.conditions),
@@ -292,7 +295,7 @@ class SymbolicState:
                              list(self.register_writes) if self.register_writes is not None else None,
                              list(self.source_intervals), list(self.source_alignments),
                              [dict(row) for row in self.symbolic_read_ranges],
-                             [dict(row) for row in self.read_obligations])
+                             [dict(row) for row in self.read_obligations], list(self.word_links))
 
     def to_dict(self):
         result = {'schema': 1, 'registers': {k: v.to_dict() for k, v in sorted(self.registers.items())},
@@ -313,6 +316,9 @@ class SymbolicState:
             result['symbolic_read_ranges'] = [dict(row) for row in self.symbolic_read_ranges]
         if self.read_obligations:
             result['read_obligations'] = [dict(row) for row in self.read_obligations]
+        if self.word_links:
+            result['word_links'] = [{**row, 'array': row['array'].to_dict(), 'value': row['value'].to_dict()}
+                                    for row in self.word_links]
         return result
 
 
@@ -718,12 +724,32 @@ class _Evaluator:
 
     def memory_read(self, address, size):
         chunks = [self.memory_byte(operation('bvadd', address, bits(index, address.width))) for index in range(size)]
+        linked = self.linked_word(address, chunks)
+        if linked is not None:
+            return linked
         if self.state.endianness == 'little':
             chunks.reverse()
         result = chunks[0]
         for chunk in chunks[1:]:
             result = operation('concat', result, chunk)
         return result
+
+    def linked_word(self, address, chunks):
+        """The value a word link gives the bytes CHUNKS, or None.
+
+        Each chunk must be the contract array's own byte at the link's offset plus its index:
+        `memory_byte` returns that only while no write on the path can cover the byte (a write
+        at an unrelated address makes the read unknown), so the cell is unwritten and its word
+        is the linked quantity (little-endian, as the contract's reader states)."""
+        for link in self.state.word_links:
+            if self.state.endianness != 'little' or len(chunks) != link['size'] or any(
+                    chunk != Expr('array_byte', (link['array'],), 8, link['offset'] + index)
+                    for index, chunk in enumerate(chunks)):
+                continue
+            self.report('word_link_read', fact_id=link['fact_id'], owner=link['resource_id'],
+                        address=address.to_dict(), value=link['value'].to_dict())
+            return link['value']
+        return None
 
     def run(self, events, budget=None):
         current = [self]

@@ -27,7 +27,9 @@ def _state_from_result(record):
                          list(record.get('memory_disjoint', [])),
                          list(record['register_writes']) if 'register_writes' in record else None,
                          list(record.get('source_intervals', [])), list(record.get('source_alignments', [])),
-                         list(record.get('symbolic_read_ranges', [])), list(record.get('read_obligations', [])))
+                         list(record.get('symbolic_read_ranges', [])), list(record.get('read_obligations', [])),
+                         [{**row, 'array': Expr.from_dict(row['array']), 'value': Expr.from_dict(row['value'])}
+                          for row in record.get('word_links', [])])
 
 
 def _prepare_state(state, seed):
