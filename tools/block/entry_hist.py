@@ -20,9 +20,9 @@ import re
 FRAME_SLOTS = False
 HIST_VISIBLE = ()
 STORE_SPLICE = 'linear'
-JOIN_GUARD_FORM = 'both'
-# `value` of a join's edge-guard disjunction under `join_guard_form: prop`; `entry_formatter` renders such a
-# condition as its normal-form proposition only. Kept through substitution, so successors inherit the form.
+JOIN_GUARD_FORM = 'factored'
+# `value` of a join's edge-guard disjunction under `join_guard_form: prop` or `factored`; `entry_formatter` renders
+# such a condition as its normal-form proposition only. Kept through substitution, so successors inherit the form.
 PROP_ONLY_GUARD = 'join_guard_prop'
 HIST_LIBRARY = 'Require Import ZesuSsz.Automation2.Hist.\n'
 
@@ -31,8 +31,9 @@ def configure(profile):
     """Read the shape keys of a function profile: `entry_hist` (required, `wrap`), `frame_slots`,
     `hist_visible`, `store_splice` (`linear`, default, or `per_store`: constant-offset stores into a byte
     array are spliced one by one, the spelling the function's proofs consume), `join_guard_form` (how a
-    join states which edge reached it, `join_generalize.edge_guard_disjunction`: `both`, default, the
-    boolean fact and its normal-form proposition; `prop`, the proposition only; `none`, no fact)."""
+    join states which edge reached it, `join_generalize.join_guard_fact`: `factored`, default, the disjunction
+    with shared guard prefixes stated once, proposition only (linear in a chain of tests); `both`, the flat
+    disjunction as boolean fact and normal-form proposition; `prop`, the flat proposition only; `none`, no fact)."""
     global FRAME_SLOTS, HIST_VISIBLE, STORE_SPLICE, JOIN_GUARD_FORM
     mode = profile.get('entry_hist')
     if mode is None:
@@ -48,8 +49,8 @@ def configure(profile):
     if splice not in ('linear', 'per_store'):
         raise ValueError('store_splice: unknown value ' + str(splice))
     STORE_SPLICE = splice
-    guard_form = profile.get('join_guard_form', 'both')
-    if guard_form not in ('both', 'prop', 'none'):
+    guard_form = profile.get('join_guard_form', 'factored')
+    if guard_form not in ('factored', 'both', 'prop', 'none'):
         raise ValueError('join_guard_form: unknown value ' + str(guard_form))
     JOIN_GUARD_FORM = guard_form
 

@@ -162,6 +162,7 @@
     "bv_unsigned \\(bv_and \\(bv_zero_extend 64%N \\(List\\.nth 16%nat call_after"
   ],
   "entry_hist": "wrap",
+  "join_guard_form": "both",
   "frame_slots": true,
   "compliance": {
     "boundary": "ZesuSsz.Compliance.NextUint64CompositionBoundary",

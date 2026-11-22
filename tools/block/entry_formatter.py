@@ -111,8 +111,9 @@ class SymbolicConditions:
             normalizer = GuardNormalForm(path_conditions, scalar_ranges=self.scalar_ranges)
             normalized = normalizer.render(lowered)
         terms = list(dict.fromkeys([term, normalized['proposition'], *normalized['endpoints']]))
-        if original.op == 'or' and original.value == entry_hist.PROP_ONLY_GUARD and normalized['proposition'] != term:
-            terms.remove(term)   # `join_guard_form: prop`: the join's edge guard as its proposition only
+        if (original.op in {'or', 'and'} and original.value == entry_hist.PROP_ONLY_GUARD
+                and normalized['proposition'] != term):
+            terms.remove(term)   # `join_guard_form: prop|factored`: the join's edge guard as its proposition only
         provenance = self.provenance(deepcopy(context))
         if not isinstance(provenance, dict) or set(provenance) not in ({'source'}, {'from_block', 'from_instruction'}):
             raise ValueError('A condition needs source-bound author provenance')
