@@ -37,6 +37,7 @@ class CacheOnlyBank(unittest.TestCase):
         (self.bank / 'BANK.json').write_text(json.dumps({'head': HEAD, 'targets': TARGETS, 'prep_rc': 0, 'rc': 0,
                                                          'missing': []}))
         (self.bank / 'trace.csexp').write_bytes(b'')
+        (self.bank / 'install' / 'default' / 'lib').mkdir(parents=True)
         fake = self.root / 'fakebin'
         fake.mkdir()
         (fake / 'opam').write_text(FAKE_OPAM)
@@ -97,6 +98,29 @@ class CacheOnlyBank(unittest.TestCase):
         self.assertTrue(lines[0].startswith('refused: '))
         self.assertIn('--cache=disabled', lines[0])
         self.assertFalse((self.bank / 'coqc_recipe.json').exists())
+
+    def test_cache_only_bank_gets_the_findlib_record(self):
+        recipe = {'command': ['.bin/coqc', '-q', 'ZesuSsz/A.v'], 'working_dir': str(self.bank / 'default')}
+        (self.bank / 'coqc_recipe.json').write_text(json.dumps(recipe))
+        self.build()
+        record = json.loads((self.bank / 'coqc-ocamlpath.json').read_text())
+        self.assertEqual(record, {'schema_version': 1, 'workspace': str(self.workspace),
+                                  'private_build': str(self.bank),
+                                  'OCAMLPATH': str(self.bank / 'install' / 'default' / 'lib')})
+        self.assertEqual(bench.check_record(record, self.workspace, self.bank), record['OCAMLPATH'])
+        # A record Dune's coqc route wrote is kept as it is.
+        (self.bank / 'coqc-ocamlpath.json').write_text('{"kept": 1}')
+        self.build()
+        self.assertEqual((self.bank / 'coqc-ocamlpath.json').read_text(), '{"kept": 1}')
+
+    def test_no_findlib_directory_refuses(self):
+        recipe = {'command': ['.bin/coqc', '-q', 'ZesuSsz/A.v'], 'working_dir': str(self.bank / 'default')}
+        (self.bank / 'coqc_recipe.json').write_text(json.dumps(recipe))
+        (self.bank / 'install' / 'default' / 'lib').rmdir()
+        with contextlib.redirect_stderr(io.StringIO()), self.assertRaises(SystemExit) as stop:
+            self.build()
+        self.assertEqual(stop.exception.code, 3)
+        self.assertFalse((self.bank / 'coqc-ocamlpath.json').exists())
 
 
 class MemberCpuCap(unittest.TestCase):

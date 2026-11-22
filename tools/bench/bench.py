@@ -57,6 +57,7 @@ sys.path.insert(0, str(BENCH))
 import bench_report as R  # noqa: E402
 import build_janitor as J  # noqa: E402
 import closure_cert as C  # noqa: E402
+from coqc_findlib import RECORD_NAME as OCAMLPATH_RECORD, check_record  # noqa: E402
 from coqc_recipe import project_recipe, remember_recipe  # noqa: E402
 from dune_build_dir import physical_working_dir  # noqa: E402
 
@@ -225,6 +226,28 @@ def ensure_recipe(workspace, key, bank, targets, log):
     log('bank %s: coqc recipe from `dune rules %s` (the build ran no coqc)' % (bank, target))
 
 
+def ensure_ocamlpath(workspace, bank, log):
+    """Give the bank its compiler findlib record (coqc-ocamlpath.json, read by closure_cert.py and
+    render_function.sh). Dune's coqc route (tools/dune_coqc_route.sh -> coqc_findlib.py record)
+    writes it when the build runs a coqc; a build wholly from the Dune cache runs none. Dune gives
+    its actions OCAMLPATH = <build>/install/default/lib in front of the ambient value, and
+    bank_environment removes the ambient one, so the record is exactly that path."""
+    record = bank / OCAMLPATH_RECORD
+    if record.is_file():
+        return
+    library = bank.resolve() / 'install' / 'default' / 'lib'
+    if not library.is_dir():
+        refuse('bank %s has no %s and no %s to record (the @install build left no findlib directory)'
+               % (bank, OCAMLPATH_RECORD, library))
+    data = {'schema_version': 1, 'workspace': str(Path(workspace).resolve()), 'private_build': str(bank.resolve()),
+            'OCAMLPATH': str(library)}
+    check_record(data, workspace, bank)
+    pending = bank / ('.%s.pending' % OCAMLPATH_RECORD)
+    pending.write_text(json.dumps(data, sort_keys=True) + '\n')
+    pending.replace(record)
+    log('bank %s: %s written (the build ran no coqc)' % (bank, OCAMLPATH_RECORD))
+
+
 def build_bank(workspace, key, bench_head, targets, make_vars, log):
     bank = workspace / '_build' / 'agents' / ('bench-' + key)
     record = bank / 'BANK.json'
@@ -233,6 +256,7 @@ def build_bank(workspace, key, bench_head, targets, make_vars, log):
         if old.get('rc') == 0 and old.get('head') == bench_head and set(targets) <= set(old.get('targets', [])):
             log('bank %s reused (%d targets)' % (bank, len(targets)))
             ensure_recipe(workspace, key, bank, targets, log)
+            ensure_ocamlpath(workspace, bank, log)
             return bank
     environment = bank_environment(workspace)
     Path(environment['TMPDIR']).mkdir(parents=True, exist_ok=True)
@@ -258,6 +282,7 @@ def build_bank(workspace, key, bench_head, targets, make_vars, log):
                          % (prep, rc, len(missing), workspace / ('bench-%s-bank.log' % key)))
     log('bank %s built (%d targets)' % (bank, len(targets)))
     ensure_recipe(workspace, key, bank, targets, log)
+    ensure_ocamlpath(workspace, bank, log)
     return bank
 
 
