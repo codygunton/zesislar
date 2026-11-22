@@ -7,6 +7,7 @@ generalize them and supply an explicit generated seed on a later round.
 """
 from collections import deque
 from dataclasses import dataclass
+import json
 import re
 
 try:
@@ -143,6 +144,37 @@ class _Work:
     path: tuple = ()
     visited: tuple = ()
     entry: int = 0
+    started: bool = False
+
+
+def _merge_signature(state):
+    """A projected state without its path record (conditions, reports, write provenance)."""
+    record = state.to_dict()
+    for key in ('conditions', 'reports', 'register_writes'):
+        record.pop(key, None)
+    return json.dumps(record, sort_keys=True)
+
+
+_COMPARISONS = {'=', 'bvult', 'bvule', 'bvugt', 'bvuge', 'bvslt', 'bvsle', 'bvsgt', 'bvsge'}
+
+
+def _memory_map_guard(condition):
+    """A comparison of 128-bit operands, possibly negated: the platform's memory-map test of
+    an access (the address, widened so that address + size cannot wrap, against a region
+    end or the input end register)."""
+    if condition.op == 'not' and len(condition.args) == 1:
+        condition = condition.args[0]
+    return (condition.op in _COMPARISONS and len(condition.args) == 2
+            and all(arg.width == 128 for arg in condition.args))
+
+
+def _merged_conditions(kept, other):
+    """The conditions two states share, when every condition only one of them holds is a
+    memory-map guard; None otherwise."""
+    common = [condition for condition in kept if condition in other]
+    if all(_memory_map_guard(condition) for condition in kept + other if condition not in common):
+        return common
+    return None
 
 
 def _entry_slots(blocks, boundaries, cuts, duplicated):
@@ -180,11 +212,13 @@ def _entry_slots(blocks, boundaries, cuts, duplicated):
 
 
 def evaluate_function(function, traces, initial_states, *, max_paths=4096, check_state=None,
-                      generated_seeds=None, duplicated_joins=()):
+                      generated_seeds=None, duplicated_joins=(), merge_condition_alternatives=False):
     """Return a complete boundary inventory and explicit propagation stops.
 
-    max_paths bounds the total leaf alternatives created during this traversal.
-    Infeasible and stopped alternatives count toward the same explicit budget.
+    max_paths bounds the leaf alternatives that one block creates from one of its entry
+    alternatives, so growth cannot accumulate along a chain of blocks; max_paths times
+    the number of blocks bounds the whole traversal. Infeasible and stopped alternatives
+    count toward both explicit budgets; a path the budget drops is a `path_limit` stop.
     Each boundary lists, as reaching_stops, the stops that dropped a path whose
     block can reach it; a renderer refuses a boundary with any such stop.
 
@@ -192,6 +226,20 @@ def evaluate_function(function, traces, initial_states, *, max_paths=4096, check
     continues through it, and its block, with the non-cut blocks after it, records
     one entry slot per incoming edge (`slots`). Their alternatives name the
     alternative they continue from (`predecessor_alternative`).
+
+    With merge_condition_alternatives, an alternative that reaches a boundary over the
+    same edge as an earlier one (same predecessor block and seed, and the same
+    predecessor alternative when the function has duplicated joins) with the same
+    projected state, where every condition only one of the two holds is a memory-map
+    guard (`_memory_map_guard`), is merged into the earlier one, which keeps the
+    conditions both share; its path continues once. Exits merge the same way. The
+    merged state is implied by each of the two, so the entry rendered from it is
+    implied by every path it covers; the dropped guards say only which memory region
+    an access fell in, which no later state depends on (the access's value is the
+    same, or the states would differ). The region arms of a load from owned memory
+    then stop multiplying along a chain of blocks; an arm whose value differs (input
+    past its end reads zero) stays an alternative. `merged_alternatives` counts the
+    merges per boundary (`function_return`, `tail_call` for exits).
     """
     if isinstance(max_paths, bool) or not isinstance(max_paths, int) or max_paths < 1:
         raise ValueError('The path limit must be a positive integer')
@@ -289,29 +337,74 @@ def evaluate_function(function, traces, initial_states, *, max_paths=4096, check
             item['state'] = state.to_dict()
         result['stops'].append(item)
 
+    # Edge and state signature -> the earlier alternative it merges into: its index, the
+    # states whose conditions it shares (the pending work's and the cut stop's) and the work.
+    held = {}
+    merged = {}
+
     def boundary(pc, state, work, predecessor):
         projected = _project(state, live[pc])
+        back_edge = pc in loop_heads and predecessor is not None and (pc == work.seed_pc or pc in work.visited)
+        key = None
+        if merge_condition_alternatives and predecessor is not None:
+            key = (pc, predecessor, work.seed_pc, work.entry if duplicated else None, back_edge,
+                   _merge_signature(projected))
+            for earlier in held.get(key, []):
+                if earlier['work'] is not None and earlier['work'].started:
+                    continue
+                common = _merged_conditions(earlier['states'][0].conditions, projected.conditions)
+                if common is None:
+                    continue
+                for kept in earlier['states']:
+                    kept.conditions = list(common)
+                boundaries[pc]['alternatives'][earlier['index']]['state'] = earlier['states'][0].to_dict()
+                if earlier['stop'] is not None:
+                    earlier['stop']['state'] = earlier['states'][1].to_dict()
+                merged[hex(pc)] = merged.get(hex(pc), 0) + 1
+                return None, earlier['index'], None
         boundaries[pc]['alternatives'].append({'predecessor_pc': hex(predecessor) if predecessor is not None else None,
                                               'seed_pc': hex(work.seed_pc), 'state': projected.to_dict(),
                                               'path': list(work.path),
-                                              'back_edge': pc in loop_heads and predecessor is not None
-                                              and (pc == work.seed_pc or pc in work.visited),
+                                              'back_edge': back_edge,
                                               **({'predecessor_alternative': work.entry}
                                                  if duplicated and predecessor is not None else {})})
         if pc not in cuts:
             boundaries[pc]['status'] = 'generated'
-        return projected, len(boundaries[pc]['alternatives']) - 1
+        index = len(boundaries[pc]['alternatives']) - 1
+        if key is not None:
+            held.setdefault(key, []).append({'index': index, 'states': [projected, state], 'work': None, 'stop': None})
+        return projected, index, key
 
+    def exit_row(state, work, row):
+        """Record an exit; with merging, one that differs from an earlier exit of the same block
+        run only in memory-map guards merges into it (as boundary alternatives do)."""
+        if merge_condition_alternatives:
+            key = ('exit', row['kind'], row['block_pc'], row['seed_pc'], work.entry if duplicated else None,
+                   _merge_signature(state))
+            for earlier in held.get(key, []):
+                common = _merged_conditions(earlier['state'].conditions, state.conditions)
+                if common is not None:
+                    earlier['state'].conditions = common
+                    earlier['row']['state'] = earlier['state'].to_dict()
+                    merged[row['kind']] = merged.get(row['kind'], 0) + 1
+                    return
+            held.setdefault(key, []).append({'state': state, 'row': row})
+        row['state'] = state.to_dict()
+        result['exits'].append(row)
+
+    total_paths = max_paths * len(blocks)
     for pc, state in sorted(seeds.items()):
         work = _Work(pc, pc, state.copy())
-        if paths_created == max_paths:
+        if paths_created == total_paths:
             stop('path_limit', work, state=state, max_paths=max_paths, discarded_alternatives=1)
             continue
         paths_created += 1
-        work.state, work.entry = boundary(pc, state, work, None)
+        work.state, work.entry, _ = boundary(pc, state, work, None)
         pending.append(work)
     while pending:
         work = pending.popleft()
+        work.started = True
+        block_paths = 1
         if work.block_pc in work.visited:
             stop('cycle_without_cut', work, state=work.state)
             continue
@@ -332,12 +425,14 @@ def evaluate_function(function, traces, initial_states, *, max_paths=4096, check
                     stop('missing_trace', work, at, state, prefix)
                     continue
                 try:
-                    available = max_paths - paths_created + 1
+                    available = min(max_paths - block_paths, total_paths - paths_created) + 1
                     alternatives = evaluate_trace(traces[at], state, instruction_index=at, max_paths=available)
                 except ValueError as error:
                     stop('invalid_trace', work, at, state, prefix, detail=str(error))
                     continue
-                paths_created += max(0, sum(alt.status != 'path_limit' for alt in alternatives)-1)
+                created = max(0, sum(alt.status != 'path_limit' for alt in alternatives)-1)
+                block_paths += created
+                paths_created += created
                 for alternative in alternatives:
                     path = prefix + alternative.path
                     for report in alternative.state.reports[len(state.reports):]:
@@ -371,17 +466,17 @@ def evaluate_function(function, traces, initial_states, *, max_paths=4096, check
             if actual is not None and actual.op == 'bits' and tails.get(last) == actual.value:
                 # A CFG tail jump leaves the function to its callee, which returns to the
                 # function's own return address; its exit is not a dropped path.
-                result['exits'].append({'kind': 'tail_call', 'block_pc': hex(work.block_pc),
-                                        'instruction_pc': hex(last), 'seed_pc': hex(work.seed_pc),
-                                        'target': actual.to_dict(), 'path': list(path), 'state': state.to_dict()})
+                exit_row(state, work, {'kind': 'tail_call', 'block_pc': hex(work.block_pc),
+                                       'instruction_pc': hex(last), 'seed_pc': hex(work.seed_pc),
+                                       'target': actual.to_dict(), 'path': list(path)})
                 continue
             if (actual is not None and actual.op != 'bits' and not blocks[work.block_pc]['successors']
                     and instructions[work.block_pc][-1] in returns):
                 # A CFG return site leaves the function; its exit is not a dropped path.
-                result['exits'].append({'kind': 'function_return', 'block_pc': hex(work.block_pc),
-                                        'instruction_pc': hex(instructions[work.block_pc][-1]),
-                                        'seed_pc': hex(work.seed_pc), 'target': actual.to_dict(),
-                                        'path': list(path), 'state': state.to_dict()})
+                exit_row(state, work, {'kind': 'function_return', 'block_pc': hex(work.block_pc),
+                                       'instruction_pc': hex(instructions[work.block_pc][-1]),
+                                       'seed_pc': hex(work.seed_pc), 'target': actual.to_dict(),
+                                       'path': list(path)})
                 continue
             if actual is None or actual.op != 'bits':
                 stop('unknown_pc', routed, instructions[work.block_pc][-1], state,
@@ -398,12 +493,21 @@ def evaluate_function(function, traces, initial_states, *, max_paths=4096, check
                 stop('outside_pc', routed, instructions[work.block_pc][-1], state,
                      actual_pc=hex(target), allowed_successors=[hex(pc) for pc in blocks[work.block_pc]['successors']])
                 continue
-            projected, index = boundary(target, state, routed, work.block_pc)
+            projected, index, key = boundary(target, state, routed, work.block_pc)
+            if projected is None:
+                continue
             if target in cuts:
                 stop('handwritten_cut', routed, instructions[work.block_pc][-1], state,
                      target_pc=hex(target), cut_reasons=sorted(cuts[target]))
+                if key is not None:
+                    held[key][-1]['stop'] = result['stops'][-1]
                 continue
-            pending.append(_Work(target, work.seed_pc, projected, path, routed.visited, index))
+            successor = _Work(target, work.seed_pc, projected, path, routed.visited, index)
+            if key is not None:
+                held[key][-1]['work'] = successor
+            pending.append(successor)
+    if merged:
+        result['merged_alternatives'] = merged
     if duplicated:
         result['duplicated_joins'] = [hex(pc) for pc in sorted(duplicated)]
         _entry_slots(blocks, boundaries, cuts, duplicated)
