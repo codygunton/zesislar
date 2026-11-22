@@ -198,7 +198,9 @@ def seed_owned_resources(seed, *, entry_pc, vocabulary, constants=None, facts=()
             if fact.get('kind') != 'alignment' or not fact.get('origin'):
                 raise ValueError('A source alignment needs a bound fact and provenance')
             state.source_alignments.append({**alignment, 'origin': fact['origin'], 'fact_id': fact['fact_id']})
-    resources, derived, reports = [], list(facts), []
+    # A word link is no ownership fact: it becomes state data that the memory reads consult.
+    links = [fact for fact in facts if fact.get('kind') == 'word_link']
+    resources, derived, reports = [], [fact for fact in facts if fact.get('kind') != 'word_link'], []
     witnesses = {binder['name']: Expr.from_dict(binder['expression']) for binder in ownership['binders']
                  if 'expression' in binder}
     for component in ownership['components']:
@@ -246,6 +248,16 @@ def seed_owned_resources(seed, *, entry_pc, vocabulary, constants=None, facts=()
                                   f'Z.add ({component["address_z"]}) '
                                   f'({"Z.of_nat ("+original_length+")" if array is not None else original_length}) <= 2^64)%Z'},
                         'origin': origin, 'status': 'derived-by-pass'})
+    arrays = {resource.id: resource.byte_array for resource in resources if resource.byte_array is not None}
+    for fact in links:
+        terms = fact['terms']
+        if fact.get('status') != 'supplied' or not fact.get('origin') or terms.get('size') != 8:
+            raise ValueError('A word link needs a supplied 8-byte fact with provenance: ' + str(fact.get('fact_id')))
+        if terms['resource_id'] not in arrays:
+            raise ValueError('A word link names no owned initialized array: ' + terms['resource_id'])
+        state.word_links.append({'array': arrays[terms['resource_id']], 'offset': terms['offset'], 'size': 8,
+                                 'value': source_z_expression(terms['quantity'], constants, address_width),
+                                 'fact_id': fact['fact_id'], 'resource_id': terms['resource_id']})
     # Two separately owned resources with full permission own disjoint bytes:
     # an address inside one cannot be a byte of the other. Explicit range
     # facts keep precedence; this adds only the pairs that they omit.

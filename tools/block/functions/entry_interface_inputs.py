@@ -16,7 +16,14 @@ in a shape the forward pass consumes:
   RAM ends come from the machine map);
 - the separation of two ranges, through a definition whose body is
   `p + n <= q \\/ q + m <= p`: of the two owned ranges it names, or of every
-  owned range that lies inside each named range.
+  owned range that lies inside each named range;
+- a word link `W A K = Q` (or `Q = W A K`): W is a definition whose body is the
+  little-endian 64-bit word `little_endian_to_bv 8 (take 8 (drop (Z.to_nat
+  offset) bytes))` (or that body written inline), A an owned array, K a closed
+  offset and Q any integer term: the eight bytes of A at K, while unwritten, are
+  the register value `Z_to_bv 64 Q` (the forward pass reads them as Q; when Q is
+  the address of another owned array, accesses through the loaded word resolve
+  to that array).
 Every other conjunct stays recorded and unused, and the tool prints each one
 with the reason it gives no fact. Nothing is added beyond a
 conjunct, and no proof runs. Traces and the CFG come from `--trace-root`.
@@ -41,6 +48,7 @@ from function_inputs import BASE, bind, system_shapes, trace_index
 WORD = 2 ** 64
 NOTATION = re.compile(r'Notation\s+(\w+)\s*:=\s*\(\(\s*([0-9]+|0x[0-9a-fA-F]+)\s*\)\s*:\s*Z\)\s*\(only parsing\)\.')
 SEPARATE_BODY = 'p+n<=q\\/q+m<=p'
+WORD_BODY = 'little_endian_to_bv 8 (take 8 (drop (Z.to_nat {offset}) {bytes}))'
 
 
 def normal(term):
@@ -491,6 +499,46 @@ def domain(profile, contract, text, seed, constants, ram, notes=None):
                               'origin': {**clause(index), 'derivation': 'each owned range lies inside one side '
                                          'of the separated ranges'}})
         used.add(index)
+    # Word links: the word of an owned array at a closed offset equals a quantity.
+    readers = word_readers(contract, text)
+    addresses = {normal(node['address_z']): node['id'] for node in components if node['kind'] == 'byte_array'}
+    for index, item in enumerate(clauses):
+        if index in used:
+            continue
+        text_ = normal(item)
+        sides = equation_sides(text_)
+        parsed = None
+        for word, quantity in ((sides, sides[::-1]) if sides else ()):
+            parsed = word_term(word, readers)
+            if parsed:
+                break
+        if parsed is None:
+            mentions = any(re.search(r'(?<![\w.\'])%s(?![\w.\'])' % re.escape(name), text_) for name in readers)
+            if mentions or 'little_endian_to_bv' in text_:
+                reasons[index] = ('word link: the conjunct reads a word but is not `W A K = Q` with W the '
+                                  'little-endian 64-bit word reader (only an unconditional equation is followed)')
+            elif '->' in text_ and any(address in text_.split('->')[-1] for address in addresses):
+                reasons[index] = ('word link: a conditional equation with an owned array address (a pointer that '
+                                  'is null or that address) is not followed; only `W A K = Q` is')
+            continue
+        array, offset_term = parsed
+        offset = closed_value(offset_term, constants)
+        if array not in arrays:
+            reasons[index] = 'word link: `%s` is not an owned array of the entry resources' % array
+            continue
+        if offset is None or offset < 0:
+            reasons[index] = 'word link: the offset `%s` is not a closed non-negative integer' % offset_term
+            continue
+        terms = {'resource_id': arrays[array]['id'], 'offset': offset, 'size': 8,
+                 'quantity': normal(quantity), 'coq_statement': item}
+        if normal(quantity) in addresses:
+            terms['target_resource_id'] = addresses[normal(quantity)]
+        facts.append({'fact_id': 'wellformed:word-link-%d' % index, 'kind': 'word_link', 'status': 'supplied',
+                      'terms': terms, 'origin': {**clause(index), 'derivation': (
+                          'the eight bytes of the array at the offset, unwritten, are the little-endian word, '
+                          'equal to the quantity, which lies in [0, 2^64): the loaded register value is '
+                          'Z_to_bv 64 of the quantity')}})
+        used.add(index)
     unused = [i for i in range(len(clauses)) if i not in used]
     if notes is not None:
         for index in unused:
@@ -499,6 +547,45 @@ def domain(profile, contract, text, seed, constants, ram, notes=None):
                            'unused_clauses': unused,
                            'entry_assertion_changed': False, 'premises_added': []},
             'constants': constants}
+
+
+def equation_sides(term):
+    """The two sides of a conjunct `L = R` with one top-level `=` (not `<=`, `>=`, `<>`, `=>`), or None."""
+    positions = [position for position in _top_positions(term, '=')
+                 if term[position - 1:position] not in ('<', '>', '!', '=') and term[position + 1:position + 2] != '>']
+    if len(positions) != 1 or any(term.find(token) >= 0 for token in ('->', '/\\', '\\/', '<->')):
+        return None
+    return normal(term[:positions[0]]), normal(term[positions[0] + 1:])
+
+
+def word_term(term, readers):
+    """(array, offset term) of the little-endian 64-bit word of an array at an offset, or None:
+    `W A K` for a reader W (`word_readers`), or the reader's body written inline."""
+    head, *arguments = split_application(normal(term))
+    if head in readers and len(arguments) == 2:
+        return normal(arguments[0]), normal(arguments[1])
+    match = re.fullmatch(r'little_endian_to_bv 8 \(take 8 \((drop .+)\)\)', normal(term))
+    pieces = split_application(match[1]) if match else []
+    if len(pieces) != 3:
+        return None
+    cast = re.fullmatch(r'Z\.to_nat (.+)', normal(pieces[1]))
+    return (normal(pieces[2]), normal(cast[1])) if cast else None
+
+
+def word_readers(source, text):
+    """Definitions of the source and its required modules `W (bytes : list byte) (offset : Z) : Z`
+    whose body is the little-endian 64-bit word of `bytes` at `offset` (`WORD_BODY`)."""
+    names = set()
+    for _, body_text in required_sources(source, text):
+        for name, parameters in re.findall(r'Definition\s+(\w+)\s*((?:\([^()]*\)\s*)+):\s*Z\s*:=', body_text):
+            binders = [(binder, kind.strip()) for group, kind in re.findall(r'\(([^:()]+):([^()]+)\)', parameters)
+                       for binder in group.split()]
+            if [kind for _, kind in binders] != ['list byte', 'Z']:
+                continue
+            (array, _), (offset, _) = binders
+            if normal(definition_body(body_text, name)) == WORD_BODY.format(offset=offset, bytes=array):
+                names.add(name)
+    return names
 
 
 def unused_reason(item, constants):
