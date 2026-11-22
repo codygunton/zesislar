@@ -1,10 +1,10 @@
 {
- "bank": "/home/cody/zesislar/.worktrees/bench-9c888f81ea/_build/agents/bench-9c888f81ea",
- "bank_sources_sha256": "2970a02f818598f70f4383892e0d72369ca8fa848d7f2444a33141cb93f52007",
- "caller": "/home/cody/zesislar/_build/agents/rebuild/int/ph-i1/runs/0348/Caller0348.v",
+ "bank": "/home/cody/zesislar/.worktrees/bench-4b52cc2c39/_build/agents/bench-4b52cc2c39",
+ "bank_sources_sha256": "f56ab24dd701ca71400d4cfd834059324e0e9814e2b9c4f88d862a1f3635dc73",
+ "caller": "/home/cody/zesislar/_build/agents/rebuild/int/ph-i2/runs/0348/Caller0348.v",
  "caller_sha256": "004a1d66a6226825868b6df278900671416959355971f9408ee285741ee817bf",
  "case": "0348",
- "certified_utc": "2026-11-22T00:48:22.032958+00:00",
+ "certified_utc": "2026-11-22T04:36:50.250561+00:00",
  "coqc": {
   "command": [
    "/home/cody/islaris/_opam/bin/coqc",
@@ -171,31 +171,31 @@
    "ZesuSsz",
    "ZesuSsz",
    "-o",
-   "/home/cody/zesislar/_build/agents/rebuild/int/ph-i1/runs/0348/Caller0348.vo",
-   "/home/cody/zesislar/_build/agents/rebuild/int/ph-i1/runs/0348/Caller0348.v"
+   "/home/cody/zesislar/_build/agents/rebuild/int/ph-i2/runs/0348/Caller0348.vo",
+   "/home/cody/zesislar/_build/agents/rebuild/int/ph-i2/runs/0348/Caller0348.v"
   ],
-  "cwd": "/home/cody/zesislar/.worktrees/bench-9c888f81ea/_build/agents/bench-9c888f81ea/default",
+  "cwd": "/home/cody/zesislar/.worktrees/bench-4b52cc2c39/_build/agents/bench-4b52cc2c39/default",
   "path": "/home/cody/islaris/_opam/bin/coqc",
   "sha256": "cdea055626239eac587cf71c154535acbceccff12016e47f0538f55c764fbd5f"
  },
  "coqc_returncode": 0,
- "cpu_seconds": 206.5,
+ "cpu_seconds": 200.1,
  "generated_caller": "tools/block/generated/decodeparentheader_fp301_callers/Caller0348.v",
- "head": "909e7d0fd7c9205144d2cbef2c8d2bc71e63ad94",
- "log": "/home/cody/zesislar/_build/agents/rebuild/int/ph-i1/runs/0348/measure.json.log",
- "log_sha256": "6a79dfa2f634278738ac8fcbe68da689f7fcfbb927a3e1d192190e039b9348fb",
- "max_rss_kib": 2392380,
- "measure": "/home/cody/zesislar/_build/agents/rebuild/int/ph-i1/runs/0348/measure.json",
- "measure_sha256": "54efc241c3a39be6851454a50945334d00e25d65f761bf95a52f09185bb98a0c",
+ "head": "199761c6897c26e637f0ae1088fd5a4054804320",
+ "log": "/home/cody/zesislar/_build/agents/rebuild/int/ph-i2/runs/0348/measure.json.log",
+ "log_sha256": "74075198fc2880ee55b2a9438bafd42f0f7db23762e02fbfc3783653a726cc91",
+ "max_rss_kib": 2390864,
+ "measure": "/home/cody/zesislar/_build/agents/rebuild/int/ph-i2/runs/0348/measure.json",
+ "measure_sha256": "471082f8ab5d58d1ee1cca3cfdd9179113ca855d7f8e53549714d7cbd44a9a37",
  "peak_gib": 2.28,
  "schema": "closure/1",
  "theorem": "DesignedBoundary_800d6000",
  "tool_sha256": "b6dc5f22239e381627c695e0d1dee6cff91b876cae7b3d1fce4d419a4bec0c04",
  "verdict": "CLOSED",
  "vo": {
-  "path": "/home/cody/zesislar/_build/agents/rebuild/int/ph-i1/runs/0348/Caller0348.vo",
-  "sha256": "ee2819ef6a87b76127759972c4e070c5adda83b8918babe5e24613a9278a91c5"
+  "path": "/home/cody/zesislar/_build/agents/rebuild/int/ph-i2/runs/0348/Caller0348.vo",
+  "sha256": "0ca0094353232735d3a341651062da7f0b2d3ae0834253d2e601ff632a668c00"
  },
- "wall_seconds": 207.5,
- "workspace": "/home/cody/zesislar/.worktrees/bench-9c888f81ea"
+ "wall_seconds": 201.0,
+ "workspace": "/home/cody/zesislar/.worktrees/bench-4b52cc2c39"
 }
