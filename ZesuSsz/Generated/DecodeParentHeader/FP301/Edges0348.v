@@ -12,6 +12,8 @@ Require Import ZesuSsz.Contracts.ParentHeaderRootFacts.
 Require Import ZesuSsz.Contracts.ParentHeaderMemcpyService.
 Require Import ZesuSsz.Contracts.AbiBytes.
 Require Import ZesuSsz.Contracts.ZiskRuntime.
+Require Import ZesuSsz.Contracts.Candidates.ParentHeaderCandidate.
+Require Import ZesuSsz.Automation2.ByteWindowFold.
 Require Export ZesuSsz.Compliance.ParentHeaderHints.
 Require Import ZesuSsz.Contracts.Level1.
 Local Open Scope Z_scope.
@@ -27,10 +29,10 @@ Section edges.
 Context `{!islaG Sigma} `{!threadG}.
 
 (* fp_machineAt0348_ForwardA0N0 -> fp_machineAt0368_ForwardA0N0 (call_return) *)
-Global Instance zesu_hist_edge_88 (args : ParentHeaderArgs) (returnAddress : Z) (call12_after : DecodeItemOutcome) (call12_kept_x18 : bv 64) (call11_kept_x19 : bv 64) (call12_kept_x20 : bv 64) (call10_after : DecodeItemOutcome) (call_after : DecodeItemOutcome) :
+Global Instance zesu_hist_edge_88 (args : ParentHeaderArgs) (returnAddress : Z) (call12_after : DecodeItemOutcome) (call12_kept_x18 : bv 64) (call11_kept_x19 : bv 64) (call12_kept_x20 : bv 64) (machine_x21_1 : bv 64) (call10_after : DecodeItemOutcome) (call_after : DecodeItemOutcome) :
   ZesuHistEdge (PROP := iProp Sigma)
-    (fp_machineAt0348_ForwardA0N0_Hist (args) (returnAddress) (call12_after) (call12_kept_x18) (call11_kept_x19) (call12_kept_x20) (call10_after) (call_after))
-    (fp_machineAt0368_ForwardA0N0_Hist (args) (returnAddress) (call12_after) (call12_kept_x18) (call12_kept_x20) (call10_after) (call_after))
+    (fp_machineAt0348_ForwardA0N0_Hist (args) (returnAddress) (call12_after) (call12_kept_x18) (call11_kept_x19) (call12_kept_x20) (machine_x21_1) (call10_after) (call_after))
+    (fp_machineAt0368_ForwardA0N0_Hist (args) (returnAddress) (call12_after) (call12_kept_x18) (call12_kept_x20) (call10_after) (call_after) (machine_x21_1))
     (⌜(∃ (call12_arg_x14 : bv 64) (call12_arg_x15 : bv 64) (call12_arg_x16 : bv 64) (call12_arg_x17 : bv 64) (call12_arg_x13 : bv 64) (call12_before : list byte), (decodeItemCallDomain
           (decodeItemCallDataArgs ([((bv_add (bv_add (bv_add (parentHeaderStackPointer args) (BV 64%N 18446744073709551216%Z)) (BV 64%N 400%Z)) (BV 64%N 18446744073709551496%Z))); (call12_kept_x18); (call12_kept_x20); (call12_arg_x13); (call12_arg_x14); (call12_arg_x15); (call12_arg_x16); (call12_arg_x17)]) (((bv_add (parentHeaderStackPointer args) (BV 64%N 18446744073709551216%Z)))) (bv_unsigned (((parentHeaderInputEnd args)))) (take (Z.to_nat (bv_unsigned (call12_kept_x20))) (drop (Z.to_nat (bv_unsigned (call12_kept_x18) - bv_unsigned (parentHeaderInputPointer args))) (parentHeaderInputBytes args))) call12_before)) /\ (decodeItemCallMeaning
             (decodeItemCallDataArgs ([((bv_add (bv_add (bv_add (parentHeaderStackPointer args) (BV 64%N 18446744073709551216%Z)) (BV 64%N 400%Z)) (BV 64%N 18446744073709551496%Z))); (call12_kept_x18); (call12_kept_x20); (call12_arg_x13); (call12_arg_x14); (call12_arg_x15); (call12_arg_x16); (call12_arg_x17)]) (((bv_add (parentHeaderStackPointer args) (BV 64%N 18446744073709551216%Z)))) (bv_unsigned (((parentHeaderInputEnd args)))) (take (Z.to_nat (bv_unsigned (call12_kept_x20))) (drop (Z.to_nat (bv_unsigned (call12_kept_x18) - bv_unsigned (parentHeaderInputPointer args))) (parentHeaderInputBytes args))) call12_before) (call12_after)))⌝ ∗ ⌜((bv_unsigned (parentHeaderInputPointer args) <= bv_unsigned (call12_kept_x18) /\ bv_unsigned (call12_kept_x18) + bv_unsigned (call12_kept_x20) <= bv_unsigned (parentHeaderInputPointer args) + Z.of_nat (List.length (parentHeaderInputBytes args)))%Z)⌝ ∗ True)%I.

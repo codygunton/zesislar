@@ -219,7 +219,9 @@ def return_boundary(designs, slot=None):
 
     Each design row names its return instruction; every exit at that instruction
     is one alternative. An exit renders on its seed's root tree (as a single join
-    edge does), and a return fact is a pure component of that scope.
+    edge does: the seed join's history design facts (`zesu_join_history`, the reason
+    an error join holds) stay, so a package states why the join it continues from
+    was reached), and a return fact is a pure component of that scope.
     `{bytes@ADDR}` names the exit value of the owned array at ADDR. A return fact
     `True` allows the exit resources only: no component is added. A return block with
     entry slots (a duplicated return join) gives one package per slot: `slot` keeps the
@@ -243,7 +245,9 @@ def return_boundary(designs, slot=None):
                        "resource_boundary": deepcopy(exit["resource_boundary"])}
         root = root_seeds[roots.get(exit["seed_pc"], public_seed["entry_pc"])]
         terminal = next(row["id"] for row in root.ownership["components"] if row["source"] == "True")
-        alternative, = align_join_edges([alternative], root.ownership, terminal, "K", keep_binders=True)[0]
+        alternative, = align_join_edges([alternative], root.ownership, terminal, "K", keep_binders=True,
+                                        keep_designs=lambda source: entry_hist.is_join_history(
+                                            source.strip().removeprefix("⌜").removesuffix("⌝")))[0]
         if allows_exit_resources_only(design):
             alternatives.append(alternative)
             continue
@@ -407,7 +411,7 @@ for suffix, slot in units:
     name = identifier(name, "generated entry")
     source_ref = str(forward) + ("#/tail_returns" if suffix in tails else "#/exits" if index is None
                                  else "#/boundaries/" + str(index))
-    join_design = profile.get("join_designs", {}).get(suffix, [])
+    join_design = [entry_hist.design_fact_text(row) for row in profile.get("join_designs", {}).get(suffix, [])]
 
     def provenance(*args, **kwargs):
         return {"source": source_ref}
