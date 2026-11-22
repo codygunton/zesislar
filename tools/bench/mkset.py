@@ -12,9 +12,11 @@ the instructions being the CFG rows (build/stock-zisk/cfg.json) the caller steps
 to the start of a successor caller, through inlined blocks, ending at a call, a jump out of the
 function or a `ret`/`jr` (a caller with no successor premise counts to its return). The successor
 entries are the generated entry premises of the caller (`instr_pre ... <module>.fp_machineAt<case>`
-in CALLERS.json "preconditions"): on sealed entries a short block still proves each successor's
-whole entry, so the binders of the successor entry definitions (every `∃` binder of the
-definitions `fp_machineAt<case>*` in that module) count. The blocks of HEAVY (plan steps 1.4, 2.2,
+in CALLERS.json "preconditions", and the generated machine-return package
+`instr_pre ... <module>.fp_machineReturn<slot>` of a block that ends at the function's return): on
+sealed entries a short block still proves each successor's whole entry, so the binders of the
+successor entry definitions (every `∃` binder of the definitions `fp_machineAt<case>*` or
+`fp_machineReturn<slot>*` in that module) count. The blocks of HEAVY (plan steps 1.4, 2.2,
 issue #316) get 2400 CPU-s instead. A member claims ceil(1.25 x its measured peak) GiB when
 MEASURED_PEAK_GIB lists it, else --claim-gib (default 3).
 A function that is not on main needs its overlay: --overlays-from copies the overlay of that name
@@ -51,9 +53,11 @@ MEASURED_PEAK_GIB = {
                            '01e4': 4.28, '0218': 2.61, '0244': 4.09, '0270': 3.22, '02d0': 3.19, '0300': 3.96,
                            '0334': 4.25, '039c': 4.06, '03bc': 7.12, '0408': 3.94, '046c': 2.94, '04b0': 2.48,
                            '04ec': 4.46, '04f8': 3.11, '0514_slot0': 2.44, '0514_slot2': 3.77,
-                           '0514_slot4': 4.24, '0570': 3.02},
+                           '0514_slot4': 4.24, '0570': 3.02, '0274_slot0': 3.00, '0274_slot1': 3.35,
+                           '0274_slot2': 6.12, '0274_slot3': 6.94, '0274_slot4': 6.00, '0274_slot5': 5.24,
+                           '0274_slot6': 6.53},
     'nextUint64': {'0000': 3.35, '0070': 3.16, '00a4': 4.37, '00b8': 2.84}}
-ENTRY_PREMISE = re.compile(r'instr_pre \S+ \(((?:[A-Za-z0-9_]+\.)+)(fp_machineAt[A-Za-z0-9_]+) ')
+ENTRY_PREMISE = re.compile(r'instr_pre \S+ \(((?:[A-Za-z0-9_]+\.)+)(fp_machine(?:At|Return)[A-Za-z0-9_]+) ')
 BINDER_GROUP = re.compile(r'∃((?:\s*\([^():]+:[^()]+\))+)\s*,')
 BINDER = re.compile(r'\(([^():]+):')
 

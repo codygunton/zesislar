@@ -2737,6 +2737,8 @@ Ltac zesu_liAStep :=
   | zesu_talt l_normalize_find_mem_address (idtac; zesu_normalize_find_mem_address)
   | zesu_talt l_select_generic_write (idtac; ZesuSsz.Automation2.UnionRuleComponents.block2_f6_select_generic_write)
   | zesu_talt l_liAWriteMem (idtac; zesu_liAWriteMem)
+  | zesu_talt l_read_span (idtac; ltac2:(Ltac1.run (Ltac1.ref
+      [@ZesuSsz; @Automation2; @SpanningRead; @zesu_read_span])))
   | zesu_talt l_liAReadMem (idtac; zesu_liAReadMem)
   | zesu_talt l_liAAsm (idtac; liAAsm)
   | zesu_talt l_liAExp (idtac; liAExp)

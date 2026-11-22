@@ -21,6 +21,7 @@ FRAME_SLOTS = False
 HIST_VISIBLE = ()
 STORE_SPLICE = 'linear'
 JOIN_GUARD_FORM = 'factored'
+ARRAY_SPELLING = 'definition'
 # `value` of a join's edge-guard disjunction under `join_guard_form: prop` or `factored`; `entry_formatter` renders
 # such a condition as its normal-form proposition only. Kept through substitution, so successors inherit the form.
 PROP_ONLY_GUARD = 'join_guard_prop'
@@ -33,8 +34,10 @@ def configure(profile):
     array are spliced one by one, the spelling the function's proofs consume), `join_guard_form` (how a
     join states which edge reached it, `join_generalize.join_guard_fact`: `factored`, default, the disjunction
     with shared guard prefixes stated once, proposition only (linear in a chain of tests); `both`, the flat
-    disjunction as boolean fact and normal-form proposition; `prop`, the flat proposition only; `none`, no fact)."""
-    global FRAME_SLOTS, HIST_VISIBLE, STORE_SPLICE, JOIN_GUARD_FORM
+    disjunction as boolean fact and normal-form proposition; `prop`, the flat proposition only; `none`, no fact),
+    `array_spelling` (how an owned stored array `a ↦ₘ{DfracOwn 1}∗ l` of the forward state is written:
+    `definition`, default, through `isla.ghost_state.mem_mapsto_array_def`; `sealed`, isla's `a ↦ₘ∗ l`)."""
+    global FRAME_SLOTS, HIST_VISIBLE, STORE_SPLICE, JOIN_GUARD_FORM, ARRAY_SPELLING
     mode = profile.get('entry_hist')
     if mode is None:
         raise ValueError('entry_hist: the function profile lacks the required key (only "wrap" exists)')
@@ -53,6 +56,10 @@ def configure(profile):
     if guard_form not in ('factored', 'both', 'prop', 'none'):
         raise ValueError('join_guard_form: unknown value ' + str(guard_form))
     JOIN_GUARD_FORM = guard_form
+    spelling = profile.get('array_spelling', 'definition')
+    if spelling not in ('definition', 'sealed'):
+        raise ValueError('array_spelling: unknown value ' + str(spelling))
+    ARRAY_SPELLING = spelling
 
 
 def mentions(name, text):
@@ -108,9 +115,25 @@ def design_fact_text(row):
 # `join_designs` row `premises`; default: the edge's own guards only): `guard` (the conditions the
 # block takes on its way to the join), `domain` (facts on no entry binder), `length` (`List.length`
 # facts), `named_eq` (`zesu_named_eq` equations), and the newest call's `newest_call_record`,
-# `newest_call_guard` and `newest_call_window` (`newest_call_groups`).
+# `newest_call_guard`, `newest_call_window` (`newest_call_groups`), `newest_call_named_eq` (the
+# named equations of that call layer's binders only: a step over the newest call needs no older
+# layer's names, and `named_eq` grows with the call number) and `newest_call_outcome` (every fact on
+# that call's outcome binders: its record, guards and the values the code computed from it).
 OBLIGATION_PREMISES = ('guard', 'domain', 'length', 'named_eq', 'newest_call_record', 'newest_call_guard',
-                       'newest_call_window')
+                       'newest_call_window', 'newest_call_named_eq', 'newest_call_outcome')
+
+
+def _obligation_rows(designs, key, rows):
+    """Add to `rows` the rows of `designs` (profile list `key`) that name an `obligation`."""
+    for row in designs:
+        if isinstance(row, dict) and row.get('obligation'):
+            if not re.fullmatch(r'[A-Za-z]\w*', row['obligation']) or not row.get('lemma_module'):
+                raise ValueError(key + ': an obligation needs an identifier and a lemma_module')
+            unknown = set(row.get('premises', [])) - set(OBLIGATION_PREMISES)
+            if unknown:
+                raise ValueError(key + ': unknown obligation premise classes ' + ', '.join(sorted(unknown)))
+            rows[normal(design_fact_text(row))] = row
+    return rows
 
 
 def design_obligations(profile, keys=None):
@@ -120,16 +143,20 @@ def design_obligations(profile, keys=None):
     the row's `lemma_module`, from the classes of block facts the row's `premises` name."""
     rows = {}
     for key, designs in (profile.get('join_designs') or {}).items():
-        if keys is not None and key not in keys:
-            continue
-        for row in designs:
-            if isinstance(row, dict) and row.get('obligation'):
-                if not re.fullmatch(r'[A-Za-z]\w*', row['obligation']) or not row.get('lemma_module'):
-                    raise ValueError('join_designs: an obligation needs an identifier and a lemma_module')
-                unknown = set(row.get('premises', [])) - set(OBLIGATION_PREMISES)
-                if unknown:
-                    raise ValueError('join_designs: unknown obligation premise classes ' + ', '.join(sorted(unknown)))
-                rows[normal(design_fact_text(row))] = row
+        if keys is None or key in keys:
+            _obligation_rows(designs, 'join_designs', rows)
+    return rows
+
+
+def return_obligations(profile, sites=None):
+    """{normal text of the stated fact: row} of the `return_facts` rows (profile `calls`) that name an
+    `obligation` (of the calls whose `return_site_pc` is in `sites`, every call when None). Such a row
+    is a fact of the return site's entry (`zesu_join_history` when `history`): the call block's edge into
+    the return site proves it as an edge into a join proves a join design (`design_obligations`)."""
+    rows = {}
+    for call in profile.get('calls') or []:
+        if sites is None or call.get('return_site_pc') in sites:
+            _obligation_rows(call.get('return_facts', []), 'return_facts', rows)
     return rows
 
 
@@ -137,9 +164,15 @@ def obligation_premise_positions(binders, facts, classes):
     """The positions of the facts (an entry's visible facts, over its `binders`) in the premise
     `classes` (`OBLIGATION_PREMISES`; `guard` names no entry fact)."""
     groups = newest_call_groups(binders, facts)
+    prefixes = call_prefixes(binders)
+    newest_named = (r"zesu_named_eq \(?" + re.escape(prefixes[-1]) + r"\w+\)?\s") if prefixes else None
+    outcome = (r"(?<![\w'.])" + re.escape(prefixes[-1]) + CALL_OUTCOME + r"(?![\w'])") if prefixes else None
     tests = {'domain': lambda fact: not any(mentions(binder['name'], fact) for binder in binders),
              'length': is_length_fact,
-             'named_eq': lambda fact: re.match(r'zesu_named_eq\b', unwrap(fact)) is not None}
+             'named_eq': lambda fact: re.match(r'zesu_named_eq\b', unwrap(fact)) is not None,
+             'newest_call_named_eq': lambda fact: newest_named is not None
+             and re.match(newest_named, unwrap(fact)) is not None,
+             'newest_call_outcome': lambda fact: outcome is not None and re.search(outcome, fact) is not None}
     for name, patterns in groups.items():
         tests['newest_call_' + name] = lambda fact, patterns=patterns: any(re.search(pattern, fact)
                                                                           for pattern in patterns)

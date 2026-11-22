@@ -284,7 +284,9 @@ def stated_at_source(text, rows, succ):
     chooses from its resources (`<name>_succ`, no block-entry name)."""
     terms = succ_terms(rows)
     identity = {row['succ'] for row in rows if row['identity']}
-    bound = set((group_parts(text) or ([], []))[0])
+    from join_generalize import _free_in_fact
+    bound = {name for name in binder_names(succ, 'live') + binder_names(succ, 'ghost')
+             if mentions(name, text) and not _free_in_fact(unwrap(text), name)}
     table = {name: term if re.fullmatch(r"[\w']+", term) else '(' + unwrap(term) + ')' for name, term in terms.items()}
     for role in ('live', 'ghost'):
         for name in binder_names(succ, role):
@@ -450,6 +452,19 @@ def premise_definitions(body, candidates, scope):
     return result
 
 
+def edge_obligation_rows(profile, kind, succ_pc):
+    """The obligation rows (`entry_hist.design_obligations` / `return_obligations`) an edge of `kind`
+    into `succ_pc` proves: the join designs of a join, the return facts of the call whose return site
+    it is (a call block's edge into its return site: no own guard, the call decides nothing)."""
+    if kind == 'join':
+        return entry_hist.design_obligations(profile, [
+            key for key in profile.get('join_designs') or {} if profile.pc(key) == succ_pc])
+    if kind == 'call_return':
+        # A loaded profile's call rows hold absolute return-site addresses (`load_profile`).
+        return entry_hist.return_obligations(profile, [succ_pc])
+    return {}
+
+
 def own_guards(forward, pre_pc, succ_pc):
     """The guards the block takes on its way to `succ_pc` (`<condition> = true`): the path conditions of
     the edge's paths after the longest prefix they share with every path from the same seed that leaves
@@ -514,9 +529,10 @@ def rocq_edge(edge, pre, succ, index, obligation=None):
     derived, opened, carried_index = {}, set(), set()
     for row in new_hidden:
         text = substitute(row['text'], renames)
-        bound = set((group_parts(text) or ([], []))[0])
-        if any(mentions(name, text) and name not in bound and name not in identity and name not in pre_live
-               for name in succ_names):
+        # A name a (nested) history group of the fact binds is no successor binder there.
+        from join_generalize import _free_in_fact
+        if any(mentions(name, text) and _free_in_fact(unwrap(text), name) and name not in identity
+               and name not in pre_live for name in succ_names):
             continue
         result = source.derive(text)
         if result is not None:
@@ -859,7 +875,7 @@ def main():
     entries = variants(result['cases'])
     calls = joins.get('calls', {})
     edges, instances, reveals, used_entries = [], {}, {}, {}
-    obligation_rows, declarations, lemma_modules = entry_hist.design_obligations(profile), [], {}
+    declarations, lemma_modules = [], {}
     for block in function['blocks']:
         pre_pc = hex(block['start'])
         targets = edge_targets(profile, block)
@@ -916,11 +932,10 @@ def main():
                             edge['identity'] = True
                         else:
                             obligation = None
-                            join_rows = entry_hist.design_obligations(profile, [
-                                key for key in profile.get('join_designs') or {} if profile.pc(key) == succ_pc])
-                            if obligation_rows and kind == 'join' and join_rows:
+                            join_rows = edge_obligation_rows(profile, kind, succ_pc)
+                            if join_rows:
                                 obligation = {'rows': join_rows, 'declarations': declarations,
-                                              'guards': own_guards(forward, pre_pc, succ_pc),
+                                              'guards': own_guards(forward, pre_pc, succ_pc) if kind == 'join' else [],
                                               'name': 'fp_edge' + profile.key(pre_pc) + '_' + profile.key(succ_pc)}
                             before = len(declarations)
                             block_instances.append(rocq_edge(edge, pre, succ, len(edges) - 1, obligation))

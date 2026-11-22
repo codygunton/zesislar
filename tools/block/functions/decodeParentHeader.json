@@ -21,6 +21,7 @@
     "Require Import ZesuSsz.Contracts.ZiskRuntime.",
     "Require Import ZesuSsz.Contracts.Candidates.ParentHeaderCandidate.",
     "Require Import ZesuSsz.Automation2.ByteWindowFold.",
+    "Require Import ZesuSsz.Contracts.ParentHeaderWalkFact.",
     "Require Export ZesuSsz.Compliance.ParentHeaderHints."
   ],
   "loop_contract_requires": [
@@ -33,6 +34,7 @@
     "Require Import ZesuSsz.Contracts.ParentHeaderMemcpyService.",
     "Require Import ZesuSsz.Contracts.ZiskRuntime.",
     "Require Import ZesuSsz.Automation2.ByteWindowFold.",
+    "Require Import ZesuSsz.Contracts.ParentHeaderWalkFact.",
     "Require Export ZesuSsz.Compliance.ParentHeaderHints."
   ],
   "caller_contract_requires": [
@@ -202,7 +204,10 @@
           "length_source": "decodeItemArgsWellFormed (RlpDecodeItemContract.v): (List.length (decodeItemBeforeStorage args) = 40)%nat"
         }
       ],
-      "output_length_source": "C1BResult (RlpDecodeItem.v): candidateResult40 is errorResult40 or successResult40, each of 40 bytes"
+      "output_length_source": "C1BResult (RlpDecodeItem.v): candidateResult40 is errorResult40 or successResult40, each of 40 bytes",
+      "return_facts": [
+        {"kind": "meaning", "need": "the success walk before field 0 (M1, amendment 14): the outer item is a non-empty list; its payload is this call's window", "coq": "parentHeaderWalkStart args call_after", "history": true, "obligation": "Walk", "lemma_module": "ZesuSsz.Compliance.ParentHeaderWalkObligations", "premises": ["domain", "newest_call_named_eq", "newest_call_record", "newest_call_guard"]}
+      ]
     },
     {
       "function": "rlp_decode.decodeParentHeader",
@@ -227,7 +232,10 @@
           "length_source": "decodeItemArgsWellFormed (RlpDecodeItemContract.v): (List.length (decodeItemBeforeStorage args) = 40)%nat"
         }
       ],
-      "output_length_source": "C1BResult (RlpDecodeItem.v): candidateResult40 is errorResult40 or successResult40, each of 40 bytes"
+      "output_length_source": "C1BResult (RlpDecodeItem.v): candidateResult40 is errorResult40 or successResult40, each of 40 bytes",
+      "return_facts": [
+        {"kind": "meaning", "need": "the success walk before field 1 (M1, amendment 14): field 0 skipped by call2, something left", "coq": "parentHeaderWalkSkipped args 1 call2_kept_x19 call2_kept_x18 call2_after []", "history": true, "obligation": "Walk", "lemma_module": "ZesuSsz.Compliance.ParentHeaderWalkObligations", "premises": ["domain", "newest_call_named_eq", "newest_call_record", "newest_call_guard"]}
+      ]
     },
     {
       "function": "rlp_decode.decodeParentHeader",
@@ -252,7 +260,10 @@
           "length_source": "decodeItemArgsWellFormed (RlpDecodeItemContract.v): (List.length (decodeItemBeforeStorage args) = 40)%nat"
         }
       ],
-      "output_length_source": "C1BResult (RlpDecodeItem.v): candidateResult40 is errorResult40 or successResult40, each of 40 bytes"
+      "output_length_source": "C1BResult (RlpDecodeItem.v): candidateResult40 is errorResult40 or successResult40, each of 40 bytes",
+      "return_facts": [
+        {"kind": "meaning", "need": "the success walk before field 2 (M1, amendment 14): field 1 skipped by call3, something left", "coq": "parentHeaderWalkSkipped args 2 call3_kept_x19 call3_kept_x18 call3_after []", "history": true, "obligation": "Walk", "lemma_module": "ZesuSsz.Compliance.ParentHeaderWalkObligations", "premises": ["domain", "newest_call_named_eq", "newest_call_record", "newest_call_guard"]}
+      ]
     },
     {
       "function": "rlp_decode.decodeParentHeader",
@@ -277,7 +288,10 @@
           "length_source": "decodeItemArgsWellFormed (RlpDecodeItemContract.v): (List.length (decodeItemBeforeStorage args) = 40)%nat"
         }
       ],
-      "output_length_source": "C1BResult (RlpDecodeItem.v): candidateResult40 is errorResult40 or successResult40, each of 40 bytes"
+      "output_length_source": "C1BResult (RlpDecodeItem.v): candidateResult40 is errorResult40 or successResult40, each of 40 bytes",
+      "return_facts": [
+        {"kind": "meaning", "need": "the success walk before field 3 (M1, amendment 14): field 2 skipped by call4, something left", "coq": "parentHeaderWalkSkipped args 3 call4_kept_x19 call4_kept_x18 call4_after []", "history": true, "obligation": "Walk", "lemma_module": "ZesuSsz.Compliance.ParentHeaderWalkObligations", "premises": ["domain", "newest_call_named_eq", "newest_call_record", "newest_call_guard"]}
+      ]
     },
     {
       "function": "rlp_decode.decodeParentHeader",
@@ -302,7 +316,10 @@
           "length_source": "decodeItemArgsWellFormed (RlpDecodeItemContract.v): (List.length (decodeItemBeforeStorage args) = 40)%nat"
         }
       ],
-      "output_length_source": "C1BResult (RlpDecodeItem.v): candidateResult40 is errorResult40 or successResult40, each of 40 bytes"
+      "output_length_source": "C1BResult (RlpDecodeItem.v): candidateResult40 is errorResult40 or successResult40, each of 40 bytes",
+      "return_facts": [
+        {"kind": "meaning", "need": "the success walk before field 4 (M1, amendment 14): field 3 skipped by call5, something left", "coq": "parentHeaderWalkSkipped args 4 call5_kept_x19 call5_kept_x18 call5_after []", "history": true, "obligation": "Walk", "lemma_module": "ZesuSsz.Compliance.ParentHeaderWalkObligations", "premises": ["domain", "newest_call_named_eq", "newest_call_record", "newest_call_guard"]}
+      ]
     },
     {
       "function": "rlp_decode.decodeParentHeader",
@@ -327,7 +344,10 @@
           "length_source": "decodeItemArgsWellFormed (RlpDecodeItemContract.v): (List.length (decodeItemBeforeStorage args) = 40)%nat"
         }
       ],
-      "output_length_source": "C1BResult (RlpDecodeItem.v): candidateResult40 is errorResult40 or successResult40, each of 40 bytes"
+      "output_length_source": "C1BResult (RlpDecodeItem.v): candidateResult40 is errorResult40 or successResult40, each of 40 bytes",
+      "return_facts": [
+        {"kind": "meaning", "need": "the success walk before field 5 (M1, amendment 14): field 4 skipped by call6, something left", "coq": "parentHeaderWalkSkipped args 5 call6_kept_x19 call6_kept_x18 call6_after []", "history": true, "obligation": "Walk", "lemma_module": "ZesuSsz.Compliance.ParentHeaderWalkObligations", "premises": ["domain", "newest_call_named_eq", "newest_call_record", "newest_call_guard"]}
+      ]
     },
     {
       "function": "rlp_decode.decodeParentHeader",
@@ -352,7 +372,10 @@
           "length_source": "decodeItemArgsWellFormed (RlpDecodeItemContract.v): (List.length (decodeItemBeforeStorage args) = 40)%nat"
         }
       ],
-      "output_length_source": "C1BResult (RlpDecodeItem.v): candidateResult40 is errorResult40 or successResult40, each of 40 bytes"
+      "output_length_source": "C1BResult (RlpDecodeItem.v): candidateResult40 is errorResult40 or successResult40, each of 40 bytes",
+      "return_facts": [
+        {"kind": "meaning", "need": "the success walk before field 6 (M1, amendment 14): field 5 skipped by call7, something left", "coq": "parentHeaderWalkSkipped args 6 call7_kept_x19 call7_kept_x18 call7_after []", "history": true, "obligation": "Walk", "lemma_module": "ZesuSsz.Compliance.ParentHeaderWalkObligations", "premises": ["domain", "newest_call_named_eq", "newest_call_record", "newest_call_guard"]}
+      ]
     },
     {
       "function": "rlp_decode.decodeParentHeader",
@@ -377,7 +400,10 @@
           "length_source": "decodeItemArgsWellFormed (RlpDecodeItemContract.v): (List.length (decodeItemBeforeStorage args) = 40)%nat"
         }
       ],
-      "output_length_source": "C1BResult (RlpDecodeItem.v): candidateResult40 is errorResult40 or successResult40, each of 40 bytes"
+      "output_length_source": "C1BResult (RlpDecodeItem.v): candidateResult40 is errorResult40 or successResult40, each of 40 bytes",
+      "return_facts": [
+        {"kind": "meaning", "need": "the success walk before field 7 (M1, amendment 14): field 6 skipped by call8, something left", "coq": "parentHeaderWalkSkipped args 7 call8_kept_x19 call8_kept_x18 call8_after []", "history": true, "obligation": "Walk", "lemma_module": "ZesuSsz.Compliance.ParentHeaderWalkObligations", "premises": ["domain", "newest_call_named_eq", "newest_call_record", "newest_call_guard"]}
+      ]
     },
     {
       "function": "rlp_decode.decodeParentHeader",
@@ -402,7 +428,10 @@
           "length_source": "decodeItemArgsWellFormed (RlpDecodeItemContract.v): (List.length (decodeItemBeforeStorage args) = 40)%nat"
         }
       ],
-      "output_length_source": "C1BResult (RlpDecodeItem.v): candidateResult40 is errorResult40 or successResult40, each of 40 bytes"
+      "output_length_source": "C1BResult (RlpDecodeItem.v): candidateResult40 is errorResult40 or successResult40, each of 40 bytes",
+      "return_facts": [
+        {"kind": "meaning", "need": "the success walk before field 8 (M1, amendment 14): field 7 skipped by call9, something left", "coq": "parentHeaderWalkSkipped args 8 call9_kept_x19 call9_kept_x18 call9_after []", "history": true, "obligation": "Walk", "lemma_module": "ZesuSsz.Compliance.ParentHeaderWalkObligations", "premises": ["domain", "newest_call_named_eq", "newest_call_record", "newest_call_guard"]}
+      ]
     },
     {
       "function": "rlp_decode.decodeParentHeader",
@@ -427,7 +456,10 @@
           "length_source": "decodeItemArgsWellFormed (RlpDecodeItemContract.v): (List.length (decodeItemBeforeStorage args) = 40)%nat"
         }
       ],
-      "output_length_source": "C1BResult (RlpDecodeItem.v): candidateResult40 is errorResult40 or successResult40, each of 40 bytes"
+      "output_length_source": "C1BResult (RlpDecodeItem.v): candidateResult40 is errorResult40 or successResult40, each of 40 bytes",
+      "return_facts": [
+        {"kind": "meaning", "need": "the success walk before field 9 (M1, amendment 14): field 8 skipped by call10; the code does not test something left before call11", "coq": "parentHeaderWalkSkippedState args 9 call10_kept_x19 call10_kept_x20 call10_after []", "history": true, "obligation": "Walk", "lemma_module": "ZesuSsz.Compliance.ParentHeaderWalkObligations", "premises": ["domain", "newest_call_named_eq", "newest_call_record", "newest_call_guard"]}
+      ]
     },
     {
       "function": "rlp_decode.decodeParentHeader",
@@ -455,6 +487,7 @@
       "output_length_source": "C1BResult (RlpDecodeItem.v): candidateResult40 is errorResult40 or successResult40, each of 40 bytes",
       "return_facts": [
         {"kind": "meaning", "need": "the field-9 fold (join design +0x2e4) reaches the stores after the call: x21 is callee-saved", "source": "join_designs +0x2e4, held by the call block", "coq": "bv_unsigned machine_x21_1 = ZesuSsz.Automation2.ByteWindowFold.zesu_byte_window_fold (parentHeaderInputBytes args) (Z.to_nat (bv_unsigned (bv_concat 64%N (bv_concat 56%N (bv_concat 48%N (bv_concat 40%N (bv_concat 32%N (bv_concat 24%N (bv_concat 16%N (List.nth 7%nat call11_after (BV 8%N 0%Z)) (List.nth 6%nat call11_after (BV 8%N 0%Z))) (List.nth 5%nat call11_after (BV 8%N 0%Z))) (List.nth 4%nat call11_after (BV 8%N 0%Z))) (List.nth 3%nat call11_after (BV 8%N 0%Z))) (List.nth 2%nat call11_after (BV 8%N 0%Z))) (List.nth 1%nat call11_after (BV 8%N 0%Z))) (List.nth 0%nat call11_after (BV 8%N 0%Z))) - bv_unsigned (parentHeaderInputPointer args))) (Z.to_nat (bv_unsigned (bv_concat 64%N (bv_concat 56%N (bv_concat 48%N (bv_concat 40%N (bv_concat 32%N (bv_concat 24%N (bv_concat 16%N (List.nth 15%nat call11_after (BV 8%N 0%Z)) (List.nth 14%nat call11_after (BV 8%N 0%Z))) (List.nth 13%nat call11_after (BV 8%N 0%Z))) (List.nth 12%nat call11_after (BV 8%N 0%Z))) (List.nth 11%nat call11_after (BV 8%N 0%Z))) (List.nth 10%nat call11_after (BV 8%N 0%Z))) (List.nth 9%nat call11_after (BV 8%N 0%Z))) (List.nth 8%nat call11_after (BV 8%N 0%Z)))))"}
+        ,{"kind": "meaning", "need": "the success walk before field 10 (M1, amendment 14): field 9 decoded inline by call11 into x21 (its fold fact)", "coq": "parentHeaderWalkSkippedState args 10 call11_kept_x18 call11_kept_x19 call11_after [bv_unsigned machine_x21_1]", "history": true, "obligation": "Walk", "lemma_module": "ZesuSsz.Compliance.ParentHeaderWalkObligations", "premises": ["domain", "newest_call_named_eq", "newest_call_outcome"]}
       ]
     },
     {
@@ -483,6 +516,7 @@
       "output_length_source": "C1BResult (RlpDecodeItem.v): candidateResult40 is errorResult40 or successResult40, each of 40 bytes",
       "return_facts": [
         {"kind": "meaning", "need": "the field-10 fold (join design +0x348) reaches the stores after the call: x22 is callee-saved", "source": "join_designs +0x348, held by the call block", "coq": "bv_unsigned machine_x22_1 = ZesuSsz.Automation2.ByteWindowFold.zesu_byte_window_fold (parentHeaderInputBytes args) (Z.to_nat (bv_unsigned (bv_concat 64%N (bv_concat 56%N (bv_concat 48%N (bv_concat 40%N (bv_concat 32%N (bv_concat 24%N (bv_concat 16%N (List.nth 7%nat call12_after (BV 8%N 0%Z)) (List.nth 6%nat call12_after (BV 8%N 0%Z))) (List.nth 5%nat call12_after (BV 8%N 0%Z))) (List.nth 4%nat call12_after (BV 8%N 0%Z))) (List.nth 3%nat call12_after (BV 8%N 0%Z))) (List.nth 2%nat call12_after (BV 8%N 0%Z))) (List.nth 1%nat call12_after (BV 8%N 0%Z))) (List.nth 0%nat call12_after (BV 8%N 0%Z))) - bv_unsigned (parentHeaderInputPointer args))) (Z.to_nat (bv_unsigned (bv_concat 64%N (bv_concat 56%N (bv_concat 48%N (bv_concat 40%N (bv_concat 32%N (bv_concat 24%N (bv_concat 16%N (List.nth 15%nat call12_after (BV 8%N 0%Z)) (List.nth 14%nat call12_after (BV 8%N 0%Z))) (List.nth 13%nat call12_after (BV 8%N 0%Z))) (List.nth 12%nat call12_after (BV 8%N 0%Z))) (List.nth 11%nat call12_after (BV 8%N 0%Z))) (List.nth 10%nat call12_after (BV 8%N 0%Z))) (List.nth 9%nat call12_after (BV 8%N 0%Z))) (List.nth 8%nat call12_after (BV 8%N 0%Z)))))"}
+        ,{"kind": "meaning", "need": "the success walk before field 11 (M1, amendment 14): field 10 decoded inline by call12 into x22 (its fold fact)", "coq": "parentHeaderWalkSkippedState args 11 call12_kept_x18 call12_kept_x20 call12_after [bv_unsigned machine_x21_1; bv_unsigned machine_x22_1]", "history": true, "obligation": "Walk", "lemma_module": "ZesuSsz.Compliance.ParentHeaderWalkObligations", "premises": ["domain", "newest_call_named_eq", "newest_call_outcome"]}
       ]
     },
     {
@@ -511,6 +545,7 @@
       "output_length_source": "C1BResult (RlpDecodeItem.v): candidateResult40 is errorResult40 or successResult40, each of 40 bytes",
       "return_facts": [
         {"kind": "meaning", "need": "the field-11 fold (join design +0x3b0, carried to 03e8) reaches the stores after the call: x20 is callee-saved", "source": "join_designs +0x3b0, held by the call block", "coq": "bv_unsigned machine_x20_1 = ZesuSsz.Automation2.ByteWindowFold.zesu_byte_window_fold (parentHeaderInputBytes args) (Z.to_nat (bv_unsigned (bv_concat 64%N (bv_concat 56%N (bv_concat 48%N (bv_concat 40%N (bv_concat 32%N (bv_concat 24%N (bv_concat 16%N (List.nth 7%nat call13_after (BV 8%N 0%Z)) (List.nth 6%nat call13_after (BV 8%N 0%Z))) (List.nth 5%nat call13_after (BV 8%N 0%Z))) (List.nth 4%nat call13_after (BV 8%N 0%Z))) (List.nth 3%nat call13_after (BV 8%N 0%Z))) (List.nth 2%nat call13_after (BV 8%N 0%Z))) (List.nth 1%nat call13_after (BV 8%N 0%Z))) (List.nth 0%nat call13_after (BV 8%N 0%Z))) - bv_unsigned (parentHeaderInputPointer args))) (Z.to_nat (bv_unsigned (bv_concat 64%N (bv_concat 56%N (bv_concat 48%N (bv_concat 40%N (bv_concat 32%N (bv_concat 24%N (bv_concat 16%N (List.nth 15%nat call13_after (BV 8%N 0%Z)) (List.nth 14%nat call13_after (BV 8%N 0%Z))) (List.nth 13%nat call13_after (BV 8%N 0%Z))) (List.nth 12%nat call13_after (BV 8%N 0%Z))) (List.nth 11%nat call13_after (BV 8%N 0%Z))) (List.nth 10%nat call13_after (BV 8%N 0%Z))) (List.nth 9%nat call13_after (BV 8%N 0%Z))) (List.nth 8%nat call13_after (BV 8%N 0%Z)))))"}
+        ,{"kind": "meaning", "need": "the success walk before field 12 (M1, amendment 14): field 11 decoded inline by call13 into x20 (its fold fact), something left (0x03b0)", "coq": "parentHeaderWalkSkipped args 12 call13_kept_x19 call13_kept_x18 call13_after [bv_unsigned machine_x21_1; bv_unsigned machine_x22_1; bv_unsigned machine_x20_1]", "history": true, "obligation": "Walk", "lemma_module": "ZesuSsz.Compliance.ParentHeaderWalkObligations", "premises": ["domain", "newest_call_named_eq", "newest_call_outcome"]}
       ]
     },
     {
@@ -536,7 +571,10 @@
           "length_source": "decodeItemArgsWellFormed (RlpDecodeItemContract.v): (List.length (decodeItemBeforeStorage args) = 40)%nat"
         }
       ],
-      "output_length_source": "C1BResult (RlpDecodeItem.v): candidateResult40 is errorResult40 or successResult40, each of 40 bytes"
+      "output_length_source": "C1BResult (RlpDecodeItem.v): candidateResult40 is errorResult40 or successResult40, each of 40 bytes",
+      "return_facts": [
+        {"kind": "meaning", "need": "the success walk before field 13 (M1, amendment 14): field 12 skipped by call14, something left", "coq": "parentHeaderWalkSkipped args 13 call14_kept_x19 call14_kept_x18 call14_after [bv_unsigned machine_x21_1; bv_unsigned machine_x22_1; bv_unsigned machine_x20_1]", "history": true, "obligation": "Walk", "lemma_module": "ZesuSsz.Compliance.ParentHeaderWalkObligations", "premises": ["domain", "newest_call_named_eq", "newest_call_record", "newest_call_guard"]}
+      ]
     },
     {
       "function": "rlp_decode.decodeParentHeader",
@@ -561,7 +599,10 @@
           "length_source": "decodeItemArgsWellFormed (RlpDecodeItemContract.v): (List.length (decodeItemBeforeStorage args) = 40)%nat"
         }
       ],
-      "output_length_source": "C1BResult (RlpDecodeItem.v): candidateResult40 is errorResult40 or successResult40, each of 40 bytes"
+      "output_length_source": "C1BResult (RlpDecodeItem.v): candidateResult40 is errorResult40 or successResult40, each of 40 bytes",
+      "return_facts": [
+        {"kind": "meaning", "need": "the success walk before field 14 (M1, amendment 14): field 13 skipped by call15, something left", "coq": "parentHeaderWalkSkipped args 14 call15_kept_x19 call15_kept_x18 call15_after [bv_unsigned machine_x21_1; bv_unsigned machine_x22_1; bv_unsigned machine_x20_1]", "history": true, "obligation": "Walk", "lemma_module": "ZesuSsz.Compliance.ParentHeaderWalkObligations", "premises": ["domain", "newest_call_named_eq", "newest_call_record", "newest_call_guard"]}
+      ]
     },
     {
       "function": "rlp_decode.decodeParentHeader",
@@ -841,6 +882,7 @@
     ],
     "+0x3bc": [
       "bv_unsigned machine_x20_1 = ZesuSsz.Automation2.ByteWindowFold.zesu_byte_window_fold (parentHeaderInputBytes args) (Z.to_nat (bv_unsigned (bv_concat 64%N (bv_concat 56%N (bv_concat 48%N (bv_concat 40%N (bv_concat 32%N (bv_concat 24%N (bv_concat 16%N (List.nth 7%nat call13_after (BV 8%N 0%Z)) (List.nth 6%nat call13_after (BV 8%N 0%Z))) (List.nth 5%nat call13_after (BV 8%N 0%Z))) (List.nth 4%nat call13_after (BV 8%N 0%Z))) (List.nth 3%nat call13_after (BV 8%N 0%Z))) (List.nth 2%nat call13_after (BV 8%N 0%Z))) (List.nth 1%nat call13_after (BV 8%N 0%Z))) (List.nth 0%nat call13_after (BV 8%N 0%Z))) - bv_unsigned (parentHeaderInputPointer args))) (Z.to_nat (bv_unsigned (bv_concat 64%N (bv_concat 56%N (bv_concat 48%N (bv_concat 40%N (bv_concat 32%N (bv_concat 24%N (bv_concat 16%N (List.nth 15%nat call13_after (BV 8%N 0%Z)) (List.nth 14%nat call13_after (BV 8%N 0%Z))) (List.nth 13%nat call13_after (BV 8%N 0%Z))) (List.nth 12%nat call13_after (BV 8%N 0%Z))) (List.nth 11%nat call13_after (BV 8%N 0%Z))) (List.nth 10%nat call13_after (BV 8%N 0%Z))) (List.nth 9%nat call13_after (BV 8%N 0%Z))) (List.nth 8%nat call13_after (BV 8%N 0%Z)))))"
+      ,{"coq": "candidateParentHeader (parentHeaderInputBytes args) = candidateHeaderSuccess (candidateHeaderOfValues [bv_unsigned machine_x21_1; bv_unsigned machine_x22_1; bv_unsigned machine_x20_1])", "history": true, "obligation": "CandidateSuccess", "lemma_module": "ZesuSsz.Compliance.ParentHeaderWalkObligations", "premises": ["guard", "domain", "newest_call_named_eq", "newest_call_outcome"]}
     ],
     "+0x88": [{"coq": "candidateParentHeader (parentHeaderInputBytes args) = candidateHeaderError", "history": true, "obligation": "CandidateError", "lemma_module": "ZesuSsz.Compliance.ParentHeaderEdgeObligations", "premises": ["guard", "domain", "named_eq", "length", "newest_call_record"]}],
     "+0xa8": [{"coq": "candidateParentHeader (parentHeaderInputBytes args) = candidateHeaderError", "history": true, "obligation": "CandidateError", "lemma_module": "ZesuSsz.Compliance.ParentHeaderEdgeObligations", "premises": ["guard", "domain", "named_eq"]}],
@@ -869,5 +911,6 @@
   },
   "entry_hist": "wrap",
   "join_guard_form": "both",
-  "frame_slots": true
+  "frame_slots": true,
+  "array_spelling": "sealed"
 }

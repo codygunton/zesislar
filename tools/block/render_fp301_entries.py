@@ -444,7 +444,8 @@ for suffix, slot in units:
             continuation_id="level1_K",
             provenance=provenance,
         )
-        components = FractionalSourceArrays(plain, declaration=array)
+        components = FractionalSourceArrays(plain, declaration=array,
+                                            seal_owned=entry_hist.ARRAY_SPELLING == 'sealed')
         conditions = SymbolicConditions(provenance)
         formatted = format_owned_entry_boundary(
             boundary,
@@ -586,10 +587,12 @@ for suffix, slot in units:
                 if region and suffix in sites and seal is not None:
                     # A return package: its result bytes and exit meaning premise, as data.
                     declarations, sealed_body, meta = sealed[seal_as]
+                    # A stored piece reads as the package's own resource states it (word_fold).
                     declarations.extend(entry_hist.result_declarations(
                         seal_as, plain_telescope, plain_binders, meta,
                         [(component["kind"], component["address"],
-                          component["value" if component["kind"] == "byte_array" else "length"])
+                          word_fold(component["value"]) if component["kind"] == "byte_array"
+                          else component["length"])
                          for component, _ in rendered_components
                          if component["kind"] in ("byte_array", "unknown_byte_array")]
                         + [("byte_array",) + piece for _, text in rendered_components
