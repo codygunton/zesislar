@@ -7,15 +7,16 @@ generalize them and supply an explicit generated seed on a later round.
 """
 from collections import deque
 from dataclasses import dataclass
+from functools import reduce
 import json
 import re
 
 try:
-    from .symbolic_state import SymbolicState, evaluate_trace, parse_trace
+    from .symbolic_state import SymbolicState, evaluate_trace, operation, parse_trace
     from .boundary_guards import annotate_reaching_stops
     from .loop_structure import back_edges as loop_back_edges, loop_heads as cfg_loop_heads
 except ImportError:
-    from symbolic_state import SymbolicState, evaluate_trace, parse_trace
+    from symbolic_state import SymbolicState, evaluate_trace, operation, parse_trace
     from boundary_guards import annotate_reaching_stops
     from loop_structure import back_edges as loop_back_edges, loop_heads as cfg_loop_heads
 
@@ -181,11 +182,29 @@ def _merged_conditions(kept, other):
     return None
 
 
-def _merge_class(conditions):
-    """The conditions that are not memory-map guards, as a set. Two alternatives can merge
-    (`_merged_conditions`) exactly when these sets are equal, so they key the candidates: a new
-    alternative meets only the earlier ones it can merge with, not every one with its state."""
-    return frozenset(condition for condition in conditions if not _memory_map_guard(condition))
+def _disjoined_conditions(kept, other):
+    """The conditions of one alternative that stands for two with the same state: the shared
+    conditions, then the disjunction of what each holds alone. Memory-map guards held alone are
+    dropped first (`_merged_conditions`); when nothing else differs this is that merge. Each of the
+    two implies the result, so an entry rendered from it is implied by both paths; the disjunction
+    is a proposition over path guards, no boolean selector."""
+    common = _merged_conditions(kept, other)
+    if common is not None:
+        return common
+    present, held = set(other), set(kept)
+    common = [condition for condition in kept if condition in present]
+    alone = [[c for c in side if c not in rest and not _memory_map_guard(c)]
+             for side, rest in ((kept, present), (other, held))]
+    if not all(alone):
+        return common
+    disjuncts = []
+    for side in alone:
+        # A disjunction merged earlier stays flat: (A ∨ B) ∨ C, not nested conjunctions of it.
+        if len(side) == 1 and side[0].op == 'or':
+            disjuncts.extend(side[0].args)
+        else:
+            disjuncts.append(reduce(lambda left, right: operation('and', left, right), side))
+    return common + [reduce(lambda left, right: operation('or', left, right), disjuncts)]
 
 
 def _entry_slots(blocks, boundaries, cuts, duplicated):
@@ -363,13 +382,12 @@ def evaluate_function(function, traces, initial_states, *, max_paths=4096, check
         key = None
         if merge_condition_alternatives and predecessor is not None:
             key = (pc, predecessor, work.seed_pc, work.entry if duplicated else None, back_edge,
-                   _merge_signature(projected), _merge_class(projected.conditions))
-            for earlier in held.get(key, []):
-                if earlier['work'] is not None and earlier['work'].started:
-                    continue
-                common = _merged_conditions(earlier['states'][0].conditions, projected.conditions)
-                if common is None:
-                    continue
+                   _merge_signature(projected))
+            # The first earlier alternative of this edge and state whose path has not started
+            # takes this one in (`_disjoined_conditions`): one alternative per edge and state.
+            earlier = next((row for row in held.get(key, []) if row['work'] is None or not row['work'].started), None)
+            if earlier is not None:
+                common = _disjoined_conditions(earlier['states'][0].conditions, projected.conditions)
                 for kept in earlier['states']:
                     kept.conditions = list(common)
                 boundaries[pc]['alternatives'][earlier['index']]['state'] = earlier['states'][0].to_dict()
@@ -391,19 +409,18 @@ def evaluate_function(function, traces, initial_states, *, max_paths=4096, check
         return projected, index, key
 
     def exit_row(state, work, row):
-        """Record an exit; with merging, one that differs from an earlier exit of the same block
-        run only in memory-map guards merges into it (as boundary alternatives do)."""
+        """Record an exit; with merging, one with the same state as an earlier exit of the same
+        block run merges into it (`_disjoined_conditions`, as boundary alternatives do)."""
         if merge_condition_alternatives:
             key = ('exit', row['kind'], row['block_pc'], row['seed_pc'], work.entry if duplicated else None,
-                   _merge_signature(state), _merge_class(state.conditions))
-            for earlier in held.get(key, []):
-                common = _merged_conditions(earlier['state'].conditions, state.conditions)
-                if common is not None:
-                    earlier['state'].conditions = common
-                    earlier['row']['state'] = earlier['state'].to_dict()
-                    merged[row['kind']] = merged.get(row['kind'], 0) + 1
-                    return
-            held.setdefault(key, []).append({'state': state, 'row': row})
+                   _merge_signature(state))
+            earlier = held.get(key)
+            if earlier is not None:
+                earlier['state'].conditions = _disjoined_conditions(earlier['state'].conditions, state.conditions)
+                earlier['row']['state'] = earlier['state'].to_dict()
+                merged[row['kind']] = merged.get(row['kind'], 0) + 1
+                return
+            held[key] = {'state': state, 'row': row}
         row['state'] = state.to_dict()
         result['exits'].append(row)
 

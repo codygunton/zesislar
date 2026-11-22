@@ -114,11 +114,17 @@ class ChainMerge(unittest.TestCase):
         values = {str(row['state']['registers']['x11']) for row in boundary(result, 36)['alternatives']}
         self.assertEqual(len(values), 2)
 
-    def test_arms_that_differ_in_an_ordinary_guard_stay_apart(self):
+    def test_arms_that_differ_in_an_ordinary_guard_merge_into_a_disjunction(self):
+        # One alternative per edge and state: the two arms with the same value hold an ordinary
+        # guard and its negation alone; they become one alternative with their disjunction
+        # (`_disjoined_conditions`). The zero arm has another state and stays apart.
         traces = {**{pc: region_load(pc + 4, width=64) for pc in range(16, 36, 4)}, 36: RETURN}
         result = evaluate_function(self.CHAIN, traces, {16: state()}, merge_condition_alternatives=True)
-        self.assertEqual(len(boundary(result, 20)['alternatives']), 3)
-        self.assertNotIn(hex(20), result.get('merged_alternatives', {}))
+        alternatives = boundary(result, 20)['alternatives']
+        self.assertEqual(len(alternatives), 2)
+        self.assertIn(hex(20), result.get('merged_alternatives', {}))
+        self.assertEqual(sum('or' in [c['op'] for c in alternative['state']['conditions']]
+                             for alternative in alternatives), 1)
 
 
 class ExitMerge(unittest.TestCase):
