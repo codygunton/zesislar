@@ -263,6 +263,19 @@ class EntryInterface(unittest.TestCase):
         self.assertEqual(evaluator.memory_read(operation('bvadd', pointer, bits(8, 64)), 8),
                          input_expr('tOther args', 64))
         self.assertEqual(evaluator.memory_read(input_expr('tCellPointer args', 64), 4).op, 'concat')
+        # The loaded value's interval and alignment conjuncts become facts on it.
+        bounded = text.replace('  2 * tInputLength args <= tOutputLength args.',
+                               '  2 * tInputLength args <= tOutputLength args /\\\n'
+                               '  tLow <= bv_unsigned (tCellValue args) /\\\n'
+                               '  bv_unsigned (tCellValue args) + 16 <= tHigh /\\\n'
+                               '  bv_unsigned (tCellValue args) mod 8 = 0.')
+        facts, result, _, _ = self.variant(bounded)
+        interval, = [fact['terms']['unsigned_interval'] for key, fact in facts.items()
+                     if key.startswith('wellformed:interval-cell-')]
+        self.assertEqual((interval['expression']['value'], interval['minimum'], interval['maximum']),
+                         ('tCellValue args', 0xa0000000, 0xa0400000 - 16))
+        self.assertEqual(facts['wellformed:alignment-19']['terms']['alignment']['modulus'], 8)
+        self.assertFalse({17, 18, 19} & set(result['projection']['unused_clauses']))
 
 
 class LengthRelation(unittest.TestCase):

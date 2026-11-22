@@ -448,7 +448,7 @@ def domain(profile, contract, text, seed, constants, ram, notes=None):
                           'origin': {**clause(index), 'range': clause(low_from[quantity]),
                                      'derivation': 'the quantity lies in [0, 2^64), so its register value is it'}})
             used.add(index)
-    # Alignments and intervals of fixed register quantities.
+    # Alignments and intervals of fixed register quantities (and, below, of word-link quantities).
     for index, item in enumerate(clauses):
         match = re.fullmatch(r'(.+) mod ([0-9]+) = 0', normal(item))
         if match and normal(match[1]) in fixed:
@@ -530,6 +530,36 @@ def domain(profile, contract, text, seed, constants, ram, notes=None):
     # Word links: the word of an owned array at a closed offset equals a quantity.
     readers = word_readers(contract, text)
     addresses = {normal(node['address_z']): node['id'] for node in components if node['kind'] == 'byte_array'}
+    linked = set()
+
+    def loaded_bounds(quantity, suffix, link):
+        """Q's alignment and interval conjuncts as facts on the loaded register value `Z_to_bv 64 Q`
+        (or V for Q = `bv_unsigned V`), as a fixed register's quantity gets them."""
+        if quantity in fixed or quantity in linked:
+            return
+        linked.add(quantity)
+        view = input_expr(register_view(quantity), 64).to_dict()
+        for other, conjunct in enumerate(clauses):
+            match = re.fullmatch(r'(.+) mod ([0-9]+) = 0', normal(conjunct))
+            if match and normal(match[1]) == quantity and other not in used:
+                facts.append({'fact_id': 'wellformed:alignment-%d' % other, 'kind': 'alignment',
+                              'status': 'supplied', 'terms': {'alignment': {
+                                  'expression': view, 'modulus': int(match[2]), 'residue': 0}},
+                              'origin': {**clause(other), 'link': link}})
+                used.add(other)
+        minimum, maximum = low.get(quantity), high.get(quantity)
+        if minimum is None or maximum is None or not 0 <= minimum <= maximum < WORD or (minimum, maximum) == (0, WORD - 1):
+            return
+        interval = {'expression': view, 'minimum': minimum, 'maximum': maximum}
+        if ram[0] <= minimum and maximum <= ram[1]:
+            interval.update(ram_base=ram[0], ram_end=ram[1])
+        facts.append({'fact_id': 'wellformed:interval-' + suffix, 'kind': 'bounds', 'status': 'supplied',
+                      'terms': {'unsigned_interval': interval},
+                      'origin': {**clause(low_from[quantity]), 'upper_bound': clause(high_from[quantity]),
+                                 'link': link, 'derivation': 'linear bounds of the conjuncts; the loaded '
+                                                             'register value has this quantity'}})
+        used.update(i for i in (low_from[quantity], high_from[quantity]) if i != BV_RANGE)
+
     for index, item in enumerate(clauses):
         if index in used:
             continue
@@ -567,6 +597,12 @@ def domain(profile, contract, text, seed, constants, ram, notes=None):
                           'equal to the quantity, which lies in [0, 2^64): the loaded register value is '
                           'Z_to_bv 64 of the quantity')}})
         used.add(index)
+        loaded_bounds(normal(quantity), 'link-%d' % index, clause(index))
+    # A word cell's value is loaded as is: its `bv_unsigned` interval and alignment bound it too.
+    for node in components:
+        if 'word_cell' in node and 'symbolic_witness' not in node['word_cell']:
+            loaded_bounds(normal('bv_unsigned (' + node['word_cell']['value_coq'] + ')'), 'cell-' + node['id'],
+                          {'word_cell': node['id'], 'source_component': node['original_component']})
     unused = [i for i in range(len(clauses)) if i not in used]
     if notes is not None:
         for index in unused:
