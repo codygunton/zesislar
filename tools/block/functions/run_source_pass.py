@@ -67,6 +67,11 @@ def main():
     if not isinstance(keep, bool):
         raise ValueError('keep_source_implied_ram_guards: a boolean is required')
     symbolic_state.KEEP_SOURCE_IMPLIED_RAM_GUARDS = keep
+    # Profile key `merge_condition_alternatives` (default true): alternatives that reach a block over
+    # one edge with the same state up to their path conditions continue as one (forward_design).
+    merge = profile.get('merge_condition_alternatives', True) if profile else True
+    if not isinstance(merge, bool):
+        raise ValueError('merge_condition_alternatives: a boolean is required')
     calls = profile.get('calls', []) if profile else []
     loop_designs = profile.get('loop_designs', []) if profile else []
     inputs, output = options.inputs.resolve(), options.output.resolve()
@@ -117,7 +122,8 @@ def main():
     call_seeds, call_reports = {}, {}
     started = time.monotonic_ns()
     while True:
-        report = evaluate_owned_function(function, traces, seeds, vocabulary=vocabulary, duplicated_joins=duplicated)
+        report = evaluate_owned_function(function, traces, seeds, vocabulary=vocabulary, duplicated_joins=duplicated,
+                                         merge_condition_alternatives=merge)
         added = None
         for call in calls:
             site = call['return_site_pc']

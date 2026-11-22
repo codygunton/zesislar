@@ -1,5 +1,6 @@
 {
   "function": "decodeParentHeader",
+  "merge_condition_alternatives": false,
   "hist_visible": [
     "bv_signed \\(BV 128%N 8%Z\\)",
     "zesu_byte_window_fold"

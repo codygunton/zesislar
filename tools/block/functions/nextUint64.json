@@ -1,5 +1,6 @@
 {
   "function": "nextUint64",
+  "merge_condition_alternatives": false,
   "args_type": "NextUint64Args",
   "symbol": "rlp_decode.nextUint64",
   "generated_directory": "ZesuSsz/Generated/NextUint64/FP301",
