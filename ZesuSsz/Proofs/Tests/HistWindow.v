@@ -113,21 +113,21 @@ Qed.
 End hist_window.
 
 (* The frame-offset index literal with a context over the `zesu_lia` node
-   budget (a fact of about 2^16 nodes over another integer): proved in a
-   cleared context. *)
-Goal forall (sp : bv 64) (x : Z) (bytes : list (bv 8)) (P : list (bv 8) -> Prop),
+   budget (a fact of about 2^16 nodes on the frame word, not an order
+   fact): proved in a cleared context. *)
+Goal forall (sp : bv 64) (Pz : Z -> Prop) (bytes : list (bv 8)) (P : list (bv 8) -> Prop),
   4096 <= bv_unsigned sp < 4294967296 -> P (take 8 (drop 24 bytes)) ->
   P (take 8 (drop (Z.to_nat (bv_unsigned (sp + BV 64 18446744073709551216 + BV 64 400 +
     BV 64 18446744073709551344) - (bv_unsigned sp - 400 + 48 + 56))) bytes)).
 Proof.
-  intros sp x bytes P Hsp HP.
-  let t0 := constr:(x) in
+  intros sp Pz bytes P Hsp HP.
+  let t0 := constr:(bv_unsigned sp) in
   let t1 := constr:(t0 + t0) in let t2 := constr:(t1 + t1) in let t3 := constr:(t2 + t2) in
   let t4 := constr:(t3 + t3) in let t5 := constr:(t4 + t4) in let t6 := constr:(t5 + t5) in
   let t7 := constr:(t6 + t6) in let t8 := constr:(t7 + t7) in let t9 := constr:(t8 + t8) in
   let t10 := constr:(t9 + t9) in let t11 := constr:(t10 + t10) in let t12 := constr:(t11 + t11) in
   let t13 := constr:(t12 + t12) in let t14 := constr:(t13 + t13) in let t15 := constr:(t14 + t14) in
-  assert (Hbig : t15 <= t15) by apply Z.le_refl.
+  assert (Hbig : Pz t15 -> Pz t15) by exact (fun H => H).
   ZesuSsz.Automation2.WrappedWord.zesu_wrapped_index_step.
   exact HP.
 Qed.
