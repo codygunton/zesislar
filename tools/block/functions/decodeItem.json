@@ -1,5 +1,6 @@
 {
   "function": "decodeItem",
+  "merge_condition_alternatives": false,
   "args_type": "DecodeItemArgs",
   "symbol": "rlp.decodeItem",
   "generated_directory": "ZesuSsz/Generated/DecodeItem/FP301",
