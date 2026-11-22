@@ -273,9 +273,14 @@ Ltac zesu_wrapped_index_literal_word expression location :=
             | ?shape _ => eval vm_compute in (shape 0) end in
           lazymatch literal with Z0 => idtac | Zpos _ => idtac end;
           let index := eval vm_compute in (Z.to_nat literal) in
+          (* Once the address is rewritten the root cancels: linear arithmetic
+             in a cleared context first (the project `zesu_lia` refuses a
+             context over its node budget, e.g. a block's end with every
+             history fact), then over the context. *)
           let Hindex := fresh "HindexLiteral" in
           assert (Hindex : Z.to_nat expression = index) by
-            (rewrite Haddress; rewrite ?Z.div_1_r; zesu_lia);
+            (rewrite Haddress; rewrite ?Z.div_1_r;
+             first [ clear; zesu_plain_lia | zesu_lia ]);
           clear Haddress;
           location Hindex;
           clear Hindex
