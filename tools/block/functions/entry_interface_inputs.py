@@ -81,6 +81,75 @@ def notations(source, text):
     return values
 
 
+TOKEN = re.compile(r'\s*(0x[0-9a-fA-F]+|[0-9]+|[A-Za-z_][\w.\']*|\*\*|[-+*^()])')
+
+
+def closed_value(term, constants):
+    """The value of a closed integer term: numerals, closed notations, `+`, `-`, `*`, `^`
+    (right-associative, exponent at least 0) and parentheses; None for anything else."""
+    term = normal(term)
+    tokens, position = [], 0
+    while position < len(term):
+        match = TOKEN.match(term, position)
+        if match is None:
+            return None
+        tokens.append(match[1])
+        position = match.end()
+    index = 0
+
+    def peek():
+        return tokens[index] if index < len(tokens) else None
+
+    def take():
+        nonlocal index
+        index += 1
+        return tokens[index - 1]
+
+    def atom():
+        token = take() if peek() is not None else None
+        if token == '(':
+            value = total()
+            if take() != ')':
+                raise ValueError
+            return value
+        if token == '-':
+            return -power()
+        if token is not None and re.fullmatch(r'[0-9]+|0x[0-9a-fA-F]+', token):
+            return int(token, 0)
+        if token in constants:
+            return constants[token]['value']
+        raise ValueError
+
+    def power():
+        base = atom()
+        if peek() == '^':
+            take()
+            exponent = power()
+            if exponent < 0:
+                raise ValueError
+            return base ** exponent
+        return base
+
+    def product():
+        value = power()
+        while peek() == '*':
+            take()
+            value *= power()
+        return value
+
+    def total():
+        value = product()
+        while peek() in ('+', '-'):
+            value = value + product() if take() == '+' else value - product()
+        return value
+
+    try:
+        value = total()
+    except (ValueError, IndexError):
+        return None
+    return value if index == len(tokens) else None
+
+
 class Linear:
     """A linear integer term: atom -> coefficient, plus a constant. None if not linear."""
 
@@ -105,14 +174,24 @@ class Linear:
             return total
         if re.fullmatch(r'[0-9]+|0x[0-9a-fA-F]+', term):
             return ({}, int(term, 0))
-        if re.fullmatch(r'2\s*\^\s*64', term):
-            return ({}, WORD)
         if term in constants:
             return ({}, constants[term]['value'])
-        match = re.fullmatch(r'([0-9]+)\s*\*\s*(.+)', term)
-        if match:
-            part = Linear.parse(match[2], constants)
-            return None if part is None else Linear.add(({}, 0), part, int(match[1]))
+        value = closed_value(term, constants)
+        if value is not None:
+            return ({}, value)
+        # A product with one non-closed factor: the closed factors scale it.
+        stars = list(_top_positions(term, '*'))
+        if stars:
+            factors = [term[start + 1 if start >= 0 else 0:end] for start, end in zip([-1] + stars, stars + [len(term)])]
+            values = [closed_value(factor, constants) for factor in factors]
+            open_ = [factor for factor, value in zip(factors, values) if value is None]
+            if len(open_) != 1:
+                return None
+            scale = 1
+            for value in values:
+                scale *= 1 if value is None else value
+            part = Linear.parse(open_[0], constants)
+            return None if part is None else Linear.add(({}, 0), part, scale)
         if re.search(r'[*/^]|\bmod\b', term) or re.search(r'(?<![<>=])[<>=]', term):
             return None
         return ({term: 1}, 0)
@@ -156,8 +235,6 @@ def bounds(clauses, constants):
     for _ in range(3):
         for (atoms, constant), index in rows:
             for atom, coefficient in atoms.items():
-                if abs(coefficient) != 1:
-                    continue
                 # coefficient * atom <= -constant - sum(others)
                 rest, known = -constant, True
                 for other, c in atoms.items():
@@ -171,12 +248,16 @@ def bounds(clauses, constants):
                     rest -= c * entry[0]
                 if not known:
                     continue
-                if coefficient == 1:
-                    if atom not in high or rest < high[atom][0]:
-                        high[atom] = (rest, index)
+                # coefficient * atom <= rest: an integer atom is at most floor(rest / coefficient)
+                # (coefficient > 0) or at least ceil(rest / coefficient) (coefficient < 0).
+                if coefficient > 0:
+                    bound = rest // coefficient
+                    if atom not in high or bound < high[atom][0]:
+                        high[atom] = (bound, index)
                 else:
-                    if atom not in low or -rest > low[atom][0]:
-                        low[atom] = (-rest, index)
+                    bound = -(rest // -coefficient)
+                    if atom not in low or bound > low[atom][0]:
+                        low[atom] = (bound, index)
     return ({atom: value[0] for atom, value in low.items()}, {atom: value[0] for atom, value in high.items()},
             {atom: value[1] for atom, value in low.items()}, {atom: value[1] for atom, value in high.items()})
 
@@ -232,7 +313,8 @@ def public_seed(profile, contract, text):
             'source_facts_added': 0}
 
 
-def domain(profile, contract, text, seed, constants, ram):
+def domain(profile, contract, text, seed, constants, ram, notes=None):
+    """The domain facts; NOTES (a dict), when given, receives conjunct index -> why it is unused."""
     wellformed = profile['entry_interface']['well_formed']
     clauses = conjunctions(definition_body(text, wellformed))
     origin = {'source': bind(contract, declaration=wellformed)}
@@ -352,8 +434,30 @@ def domain(profile, contract, text, seed, constants, ram):
                       'origin': {**clause(low_from[quantity]), 'upper_bound': clause(high_from[quantity]),
                                  'derivation': 'linear bounds of the conjuncts; closed notations resolved'}})
         used.update(index for index in (low_from[quantity], high_from[quantity]) if index != BV_RANGE)
-    # Separations of two owned ranges.
+    # Separations of two ranges: an owned range on each side, or every owned range that lies
+    # inside each side's range (a range at a constant offset from the side's address with a
+    # closed length that ends within the side's closed length): both are separate when the
+    # sides are.
     separators = separating(contract, text)
+    reasons = {}
+
+    def contained(address, length):
+        extent = Linear.parse(length, constants)
+        start = Linear.parse(address, constants)
+        if extent is None or extent[0] or start is None:
+            return []
+        inside = []
+        for key, (owned, spellings) in ranges.items():
+            offset = Linear.parse(owned, constants)
+            sizes = [Linear.parse(spelling, constants) for spelling in spellings]
+            sizes = [size[1] for size in sizes if size is not None and not size[0]]
+            if offset is None or not sizes:
+                continue
+            delta = Linear.add(offset, start, -1)
+            if not delta[0] and 0 <= delta[1] and delta[1] + max(sizes) <= extent[1]:
+                inside.append(key)
+        return inside
+
     for index, item in enumerate(clauses):
         head, *arguments = split_application(normal(item))
         if len(arguments) != 4 or head not in separators:
@@ -363,16 +467,49 @@ def domain(profile, contract, text, seed, constants, ram):
         for address, length in pairs:
             matches = [key for key, (start, spellings) in ranges.items() if start == address and length in spellings]
             ids.append(matches[0] if len(matches) == 1 else None)
-        if None in ids:
+        if None not in ids:
+            facts.append({'fact_id': 'wellformed:separate-%d' % index, 'kind': 'disjoint_ranges',
+                          'status': 'supplied', 'terms': {'left': ids[0], 'right': ids[1], 'coq_statement': item},
+                          'origin': clause(index)})
+            used.add(index)
             continue
-        facts.append({'fact_id': 'wellformed:separate-%d' % index, 'kind': 'disjoint_ranges',
-                      'status': 'supplied', 'terms': {'left': ids[0], 'right': ids[1], 'coq_statement': item},
-                      'origin': clause(index)})
+        sides = [[key] if key is not None else contained(*pair) for key, pair in zip(ids, pairs)]
+        if not all(sides):
+            empty = [pair for pair, side in zip(pairs, sides) if not side]
+            reasons[index] = ('separation: no owned range is the range or lies inside the range %s (an owned '
+                              'range must start at a constant offset from its address and have a closed length '
+                              'within its closed length)' % ' nor '.join('[%s, +%s)' % pair for pair in empty))
+            continue
+        for left in sides[0]:
+            for right in sides[1]:
+                facts.append({'fact_id': 'wellformed:separate-%d-%s-%s' % (index, left, right),
+                              'kind': 'disjoint_ranges', 'status': 'supplied',
+                              'terms': {'left': left, 'right': right, 'coq_statement': item},
+                              'origin': {**clause(index), 'derivation': 'each owned range lies inside one side '
+                                         'of the separated ranges'}})
         used.add(index)
+    unused = [i for i in range(len(clauses)) if i not in used]
+    if notes is not None:
+        for index in unused:
+            notes[index] = reasons.get(index) or unused_reason(clauses[index], constants)
     return {'projection': {'facts': facts, 'original_wellformed_clauses': clauses,
-                           'unused_clauses': [i for i in range(len(clauses)) if i not in used],
+                           'unused_clauses': unused,
                            'entry_assertion_changed': False, 'premises_added': []},
             'constants': constants}
+
+
+def unused_reason(item, constants):
+    """Why a well-formedness conjunct gives no domain fact, for the tool's report."""
+    pairs = comparisons(item)
+    if pairs:
+        for left, _, right in pairs:
+            for term in (left, right):
+                if Linear.parse(term, constants) is None:
+                    return 'bound: the linear reader does not read the term `%s`' % normal(term)
+        return ('bound: linear, but it bounds no fixed register quantity by constants and relates no owned '
+                'array length to one fixed register quantity')
+    return ('no consumed shape (length of an owned array, alignment or interval of a fixed register quantity, '
+            'length relation, separation of owned ranges)')
 
 
 def Expr_value(node):
@@ -439,7 +576,8 @@ def main():
     index, function = trace_index(output, profile['cfg_function'], namespace, root=options.trace_root)
     constants = notations(contract, text)
     seed = public_seed(profile, contract, text)
-    facts = domain(profile, contract, text, seed, constants, ram_ends(mapfile))
+    notes = {}
+    facts = domain(profile, contract, text, seed, constants, ram_ends(mapfile), notes)
     (output / 'DOMAIN.json').write_text(json.dumps(facts, indent=2) + '\n')
     shapes = system_shapes(machine, mapfile)
     # A system register that the entry fixes to a quantity (as decodeItemSysRegs fixes
@@ -456,10 +594,17 @@ def main():
                 'domain': bind(output / 'DOMAIN.json'), 'seed': bind(output / 'SEED.json'),
                 'trace_index': bind(index), 'generator': bind(Path(__file__))}
     (output / 'SEED-MANIFEST.json').write_text(json.dumps(manifest, indent=2) + '\n')
+    clauses = facts['projection']['original_wellformed_clauses']
+    unused = [{'index': index, 'clause': normal(clauses[index]), 'reason': notes[index]}
+              for index in facts['projection']['unused_clauses']]
+    for row in unused:
+        print('entry_interface_inputs: %s conjunct %d unused (%s): %s'
+              % (profile['entry_interface']['well_formed'], row['index'], row['reason'], row['clause']),
+              file=sys.stderr)
     print(json.dumps({'seed_manifest': bind(output / 'SEED-MANIFEST.json'),
                       'instructions': len(function['rows']), 'blocks': len(function['blocks']),
                       'facts': [fact['fact_id'] for fact in facts['projection']['facts']],
-                      'unused_clauses': facts['projection']['unused_clauses']}))
+                      'unused_clauses': facts['projection']['unused_clauses'], 'unused': unused}))
 
 
 if __name__ == '__main__':
