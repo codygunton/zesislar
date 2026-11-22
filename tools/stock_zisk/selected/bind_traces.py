@@ -21,7 +21,8 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--out", type=Path, required=True)
     parser.add_argument("--function", required=True)
-    parser.add_argument("--trace-name", default="closure")
+    parser.add_argument("--trace-name", help="identifier of the derived theory and the selected-code module; "
+                        "default: derived from the symbol (function_binding.derived_trace_name)")
     parser.add_argument("--check", action="store_true")
     parser.add_argument("--report", type=Path)
     args = parser.parse_args()
@@ -31,7 +32,7 @@ def main():
         (Path(__file__).resolve(), PLATFORM / "function_binding.py",
          PLATFORM / "indexes.py", PLATFORM / "exports.py")}
     report = args.report or (ROOT / "generated/isla-traces/stock-zisk" /
-                             args.trace_name / "function-binding.json")
+                             result["trace_name"] / "function-binding.json")
     rendered = json.dumps(result, indent=2) + "\n"
     if args.check:
         if not report.is_file() or report.read_text() != rendered:

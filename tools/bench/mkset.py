@@ -88,12 +88,26 @@ def member_claim(function, case, claim_gib):
     return claim_gib if peak is None else max(claim_gib, math.ceil(CLAIM_MARGIN * peak))
 
 
-def cfg_function(cfg, function):
-    """The CFG record whose name is FUNCTION or ends in .FUNCTION."""
-    matches = [record for record in cfg['functions']
-               if record['name'] == function or record['name'].rsplit('.', 1)[-1] == function]
+def cfg_function(cfg, function, root=ROOT):
+    """The CFG record whose name is FUNCTION or ends in .FUNCTION; else the record of the symbol
+    the function profile `root/tools/block/functions/FUNCTION.json` names (`cfg_function`, then
+    `symbol`), so a profile name finds its function whatever the symbol (a Rust mangled name, a
+    Zig name with an `__anon` suffix)."""
+    def named(name):
+        return [record for record in cfg['functions']
+                if record['name'] == name or record['name'].rsplit('.', 1)[-1] == name]
+    matches = named(function)
+    if not matches:
+        profile = Path(root) / 'tools' / 'block' / 'functions' / (function + '.json')
+        if profile.is_file():
+            data = json.loads(profile.read_text())
+            for key in ('cfg_function', 'symbol'):
+                if data.get(key):
+                    matches = [record for record in cfg['functions'] if record['name'] == data[key]]
+                    break
     if len(matches) != 1:
-        raise SystemExit('mkset: %d CFG functions named %s' % (len(matches), function))
+        raise SystemExit('mkset: %d CFG functions named %s (by name, last dotted part, or the profile\'s '
+                         'cfg_function/symbol)' % (len(matches), function))
     return matches[0]
 
 
@@ -130,7 +144,7 @@ def is_heavy(function, case):
 
 def members(function, callers_dir, cfg, claim_gib):
     root = callers_dir.parents[3]
-    record = cfg_function(cfg, function)
+    record = cfg_function(cfg, function, root)
     table = json.loads((callers_dir / 'CALLERS.json').read_text())
     pcs = {row['case']: int(row['pc'], 16) for row in table['rows']}
     inlined = {row['case'] for row in table['rows'] if row['status'] == 'inlined'}

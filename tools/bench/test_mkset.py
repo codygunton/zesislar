@@ -125,6 +125,23 @@ class MakeSet(unittest.TestCase):
         with self.assertRaises(SystemExit):
             self.make()
 
+    def test_profile_name_finds_a_rust_symbol(self):
+        symbol = '_RNvNtNtCs1r1jF4enR2T_6ziskos7zisklib2lt'
+        cfg = fake_cfg()
+        cfg['functions'][0]['name'] = symbol
+        self.cfg.write_text(json.dumps(cfg))
+        profiles = self.root / 'tools' / 'block' / 'functions'
+        profiles.mkdir(parents=True)
+        (profiles / 'decodeParentHeader.json').write_text(json.dumps({'cfg_function': symbol}))
+        data, _ = self.make()
+        self.assertEqual(len(data['members']), 6)
+        self.assertTrue(all(member['function'] == 'decodeParentHeader' for member in data['members']))
+        (profiles / 'decodeParentHeader.json').write_text(json.dumps({'symbol': symbol}))
+        self.assertEqual(len(self.make()[0]['members']), 6)
+        (profiles / 'decodeParentHeader.json').unlink()
+        with self.assertRaises(SystemExit):
+            self.make()
+
 
 if __name__ == '__main__':
     unittest.main()
