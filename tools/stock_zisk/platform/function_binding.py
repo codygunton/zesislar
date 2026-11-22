@@ -26,10 +26,97 @@ def selected_code(prefix, logical_module):
             f"Global Typeclasses Opaque {prefix}SelectedCode.\n")
 
 
-def prepare(root, source, function_name, trace_name):
-    """Return derived sources only after validating exact selected coverage."""
+IDENTIFIER = re.compile(r"[A-Za-z][A-Za-z0-9_]*")
+
+
+def _v0_identifiers(symbol):
+    """The path identifiers of a Rust v0 symbol (`_R...`), outermost last; None if it is not one.
+
+    Reads the path forms a function symbol uses: crate root `C`, nested path `N<ns>`, with an
+    optional disambiguator `s<base62>_` and the decimal-length identifier (an `_` separates a
+    leading digit or underscore of the bytes)."""
+    if not symbol.startswith("_R"):
+        return None
+    text, position, names = symbol, 2, []
+
+    def identifier():
+        nonlocal position
+        if text.startswith("s", position):
+            end = text.index("_", position)
+            position = end + 1
+        if text.startswith("u", position):
+            raise ValueError("punycode identifier")
+        match = re.match(r"[0-9]+", text[position:])
+        if match is None:
+            raise ValueError("identifier length")
+        position += len(match[0])
+        length = int(match[0])
+        if text.startswith("_", position):
+            position += 1
+        name = text[position:position + length]
+        position += length
+        return name
+
+    def path():
+        nonlocal position
+        tag = text[position:position + 1]
+        position += 1
+        if tag == "C":
+            names.append(identifier())
+        elif tag == "N":
+            position += 1  # namespace letter
+            path()
+            names.append(identifier())
+        else:
+            raise ValueError("path form " + tag)
+
+    try:
+        if text[position:position + 1].isdigit():
+            position += 1  # encoding version
+        path()
+    except (ValueError, IndexError):
+        return None
+    return names
+
+
+def symbol_path(symbol):
+    """The path segments of a function symbol: a demangled Rust v0 path, else the dotted name."""
+    return _v0_identifiers(symbol) or symbol.split(".")
+
+
+def sanitise(segment):
+    """A Rocq identifier from one path segment: other characters become `_`, and a leading
+    non-letter gets the letter `f`."""
+    name = re.sub(r"_+", "_", re.sub(r"[^A-Za-z0-9_]", "_", segment)).strip("_")
+    return name if IDENTIFIER.fullmatch(name) else "f" + name
+
+
+def derived_trace_name(function_name, names):
+    """A trace name for FUNCTION_NAME when none is given: the sanitised last path segment, with
+    as many parent segments in front as make it differ from every other symbol of NAMES."""
+    def candidate(symbol, depth):
+        segments = symbol_path(symbol)
+        return sanitise("_".join(segments[-depth:]))
+    others = [name for name in names if name != function_name]
+    segments = symbol_path(function_name)
+    for depth in range(1, len(segments) + 1):
+        name = candidate(function_name, depth)
+        if all(candidate(other, depth) != name for other in others):
+            return name
+    raise ValueError("No trace name tells the function apart from another symbol: " + function_name)
+
+
+def prepare(root, source, function_name, trace_name=None):
+    """Return derived sources only after validating exact selected coverage.
+
+    The trace name names the derived theory, its directory and the selected-code definitions
+    (`<traceName>SelectedCode` in `<TraceName>Selected.v`); without one it is derived from the
+    symbol (`derived_trace_name`), so a Rust mangled symbol or two symbols with the same last
+    segment still get distinct identifiers."""
     root, source = Path(root).resolve(), Path(source).resolve()
-    if not re.fullmatch(r"[A-Za-z][A-Za-z0-9_]*", trace_name):
+    if trace_name is None:
+        trace_name = derived_trace_name(function_name, FUNCTION_NAMES)
+    if not IDENTIFIER.fullmatch(trace_name):
         raise ValueError("The selected trace name is not an identifier.")
     inventory_path = root / "build/stock-zisk/inventory.json"
     inventory = json.loads(inventory_path.read_text())
@@ -78,9 +165,7 @@ def prepare(root, source, function_name, trace_name):
     destination = root / "generated/isla-traces/stock-zisk" / trace_name
     if destination.resolve() == source:
         raise ValueError("The derived index must not replace the closure index directory.")
-    prefix = function_name.rsplit(".", 1)[-1]
-    if not re.fullmatch(r"[A-Za-z][A-Za-z0-9_]*", prefix):
-        raise ValueError("The selected function prefix is not an identifier.")
+    prefix = trace_name
     namespace = trace_name[0].upper() + trace_name[1:]
     theory = f"ZesuSsz.Stock.{namespace}"
     logical_module = f"{theory}.index_{prefix}"
@@ -99,7 +184,7 @@ def prepare(root, source, function_name, trace_name):
                     "scope": "Instruction resources and byte/CFG commitments; no semantic contract proof"}
 
 
-def bind(root, source, function_name, trace_name, *, check=False):
+def bind(root, source, function_name, trace_name=None, *, check=False):
     outputs, report = prepare(root, source, function_name, trace_name)
     for path, text in outputs.items():
         if check:
