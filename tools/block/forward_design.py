@@ -173,10 +173,19 @@ def _memory_map_guard(condition):
 def _merged_conditions(kept, other):
     """The conditions two states share, when every condition only one of them holds is a
     memory-map guard; None otherwise."""
-    common = [condition for condition in kept if condition in other]
-    if all(_memory_map_guard(condition) for condition in kept + other if condition not in common):
+    present = set(other)
+    common = [condition for condition in kept if condition in present]
+    shared = set(common)
+    if all(_memory_map_guard(condition) for condition in kept + other if condition not in shared):
         return common
     return None
+
+
+def _merge_class(conditions):
+    """The conditions that are not memory-map guards, as a set. Two alternatives can merge
+    (`_merged_conditions`) exactly when these sets are equal, so they key the candidates: a new
+    alternative meets only the earlier ones it can merge with, not every one with its state."""
+    return frozenset(condition for condition in conditions if not _memory_map_guard(condition))
 
 
 def _entry_slots(blocks, boundaries, cuts, duplicated):
@@ -354,7 +363,7 @@ def evaluate_function(function, traces, initial_states, *, max_paths=4096, check
         key = None
         if merge_condition_alternatives and predecessor is not None:
             key = (pc, predecessor, work.seed_pc, work.entry if duplicated else None, back_edge,
-                   _merge_signature(projected))
+                   _merge_signature(projected), _merge_class(projected.conditions))
             for earlier in held.get(key, []):
                 if earlier['work'] is not None and earlier['work'].started:
                     continue
@@ -386,7 +395,7 @@ def evaluate_function(function, traces, initial_states, *, max_paths=4096, check
         run only in memory-map guards merges into it (as boundary alternatives do)."""
         if merge_condition_alternatives:
             key = ('exit', row['kind'], row['block_pc'], row['seed_pc'], work.entry if duplicated else None,
-                   _merge_signature(state))
+                   _merge_signature(state), _merge_class(state.conditions))
             for earlier in held.get(key, []):
                 common = _merged_conditions(earlier['state'].conditions, state.conditions)
                 if common is not None:
