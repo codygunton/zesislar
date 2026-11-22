@@ -3,9 +3,9 @@
    (ParentHeaderBlockObligations.v, from tools/block/render_open_blocks.py).
    A slot is closed by the block statement whose conclusion matches it: a
    compiled caller lemma (ParentHeaderClosedBlocks) or a premise field
-   (ParentHeaderOpenBlocks). The theorem's premises are the open blocks and the
-   exit premises (ParentHeaderExitMeanings, now empty: every exit package's
-   meaning is proved, step 2.4); nextUint64's correctness comes unconditionally from its generated
+   (ParentHeaderOpenBlocks). The theorem's only premise is the open blocks:
+   every exit package's meaning is proved (step 2.4, ParentHeaderErrorExitMeaning.v,
+   ParentHeaderSuccessExitMeaning.v); nextUint64's correctness comes unconditionally from its generated
    interface (nextUint64CallSpec2_correct); the memcpy runtime premise is part of
    the contract code (memcpyCallPremise in parentHeaderContractCode). *)
 Require Import ZesuSsz.Automation2.All.
@@ -198,16 +198,9 @@ Qed.
    ParentHeaderErrorExitMeaning.v, those of the six success exits (slots 1 to
    6) in ParentHeaderSuccessExitMeaning.v. ---- *)
 
-(* The exit premises of the composition: step 2.4 (M1) discharged every one
-   of them, so the record has no field. *)
-Record ParentHeaderExitMeanings : Prop := {}.
-
-Lemma parentHeaderExitMeanings_holds : ParentHeaderExitMeanings.
-Proof. constructor. Qed.
-
 (* The return premise of an exit package from the contract continuation K:
    the package's bridge gives the contract exit that K expects. *)
-Ltac parentHeader_exit_premise Hexits H :=
+Ltac parentHeader_exit_premise H :=
   iEval (rewrite /parentHeaderContinuation) in H;
   iApply (instr_pre_wand with H); [done|done|];
   unfold ZesuSsz.Generated.DecodeParentHeader.FP301.FunctionReturnTail00e8Entries.fp_machineReturnTail00e8,
@@ -246,7 +239,7 @@ Ltac parentHeader_exit_premise Hexits H :=
    successor premises come from the table, its callee and code premises from
    the table code. An exit block's return premise comes from K (its entry's
    continuation) through the exit package's bridge. *)
-Ltac parentHeader_slot Hexits :=
+Ltac parentHeader_slot :=
   iIntros "#Htab";
   iPoseProof (block_table_pre_code with "Htab") as "#Hcode";
   iEval (unfold parentHeaderBlockTable; cbn [block_table_code];
@@ -262,7 +255,7 @@ Ltac parentHeader_slot Hexits :=
           [ iApply parentHeader_body_weaken; iApply statement; parentHeader_premise
           | iApply parentHeader_exit_slot; iIntros "Hret";
             iApply (statement with "[Hret]");
-            [ parentHeader_exit_premise Hexits "Hret" | parentHeader_premise .. ] ]
+            [ parentHeader_exit_premise "Hret" | parentHeader_premise .. ] ]
       end
   end.
 
@@ -276,14 +269,14 @@ Ltac parentHeader_block_statements Sigma Hopen :=
 
 (* ---- Composition over the block table. ---- *)
 Lemma parentHeader_entry_body `{!islaG Sigma} `{!threadG} :
-  ParentHeaderOpenBlocks -> ParentHeaderExitMeanings ->
+  ParentHeaderOpenBlocks ->
   forall (args : ParentHeaderArgs) (returnAddress : Z),
   ⊢ □ parentHeaderTableCode -∗
     instr_body decodeParentHeaderEntry
       (ZesuSsz.Generated.DecodeParentHeader.FP301.Pilot0000Entries.fp_machineAt0000 args returnAddress
         (parentHeaderContinuation args returnAddress)).
 Proof.
-  intros Hopen Hexits args returnAddress.
+  intros Hopen args returnAddress.
   parentHeader_block_statements Sigma Hopen.
   iIntros "#Htop".
   iApply (block_table_body (parentHeaderBlockTable args returnAddress)).
@@ -294,17 +287,15 @@ Proof.
   repeat (apply elem_of_cons in Hin as [Hin|Hin]).
   all: try (apply elem_of_nil in Hin as []).
   all: injection Hin as Haddress Hstate; subst address state.
-  all: parentHeader_slot Hexits.
+  all: parentHeader_slot.
 Qed.
 
-(* ---- The theorem: decodeParentHeader compliance, given the open blocks
-   and the exit meanings. ---- *)
+(* ---- The theorem: decodeParentHeader compliance, given the open blocks. ---- *)
 Theorem parentHeaderGeneratedCompliance :
   ParentHeaderOpenBlocks ->
-  ParentHeaderExitMeanings ->
   ParentHeaderContractCorrect.
 Proof.
-  intros Hopen Hexits returnAddress Sigma HG HT.
+  intros Hopen returnAddress Sigma HG HT.
   change (⊢ (parentHeaderSelectedCode ∗ nextUint64SelectedCode ∗ decodeItemSelectedCode ∗
              □ instr_pre memcpyCsrPc memcpyCallSpec2) -∗ ∀ args : ParentHeaderArgs,
     instr_body decodeParentHeaderEntry
@@ -314,7 +305,7 @@ Proof.
   iIntros "(#Hsel & #Hnu & #Hdi & #Hmc)" (args).
   iPoseProof (parentHeader_decodeItem_boxed with "Hdi") as "#Hdi2".
   iPoseProof (parentHeader_nextUint64_boxed with "[$Hnu $Hdi]") as "#Hnu2".
-  iPoseProof (parentHeader_entry_body Hopen Hexits args returnAddress with "[]") as "Hbody".
+  iPoseProof (parentHeader_entry_body Hopen args returnAddress with "[]") as "Hbody".
   { iModIntro. unfold parentHeaderTableCode, memcpyCallPremise.
     iSplitR; [iExact "Hsel"|]. iSplitR; [iModIntro; iExact "Hdi2"|].
     iSplitR; [iModIntro; iExact "Hnu2"|]. iModIntro. iExact "Hmc". }
