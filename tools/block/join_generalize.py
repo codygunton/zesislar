@@ -402,13 +402,17 @@ def _path_local(value):
     return value.op == 'local' or any(_path_local(arg) for arg in value.args)
 
 
-def _edge_own_guards(alternatives, common):
+def _edge_own_guards(alternatives, common, *, admissible=None):
     """Each edge's own guards, in path order: its exact source guards that are not common, without
     path-local trace values (a guard renamed onto a join binder would lose its source meaning: the
     binder holds a different value on each edge). None when the edges do not leave the same seed's
-    tree from one predecessor each, or an edge has no own guard."""
+    tree from one predecessor each, or an edge has no own guard.
+
+    With `admissible` (a predicate on guards) the seed rule is not applied: every edge keeps the
+    own guards the predicate accepts, possibly none."""
     predecessors = [alternative.get('predecessor_pc') for alternative in alternatives]
-    if (len(alternatives) < 2 or None in predecessors or len(set(predecessors)) != len(predecessors)
+    if admissible is None and (
+            len(alternatives) < 2 or None in predecessors or len(set(predecessors)) != len(predecessors)
             or len({alternative.get('seed_pc') for alternative in alternatives}) != 1):
         return None
     paths = []
@@ -416,9 +420,10 @@ def _edge_own_guards(alternatives, common):
         path = [normalize(Expr.from_dict(value)) for value in alternative['state']['conditions']]
         own = []
         for value in path:
-            if value not in common and value not in own and not _path_local(value):
+            if (value not in common and value not in own and not _path_local(value)
+                    and (admissible is None or admissible(value))):
                 own.append(value)
-        if not own:
+        if not own and admissible is None:
             return None
         paths.append(own)
     return paths
@@ -458,15 +463,60 @@ def factored_guard_disjunction(alternatives, common):
     return None if paths is None else _prefix_factored(paths)
 
 
-def join_guard_fact(alternatives, common):
+def _input_names(value):
+    names = {str(value.value)} if value.op == 'input' else set()
+    for arg in value.args:
+        names |= _input_names(arg)
+    return names
+
+
+def _contract_level(value, outer_names):
+    """A term over the contract's inputs only: every input it reads names an outer input (`args`,
+    `returnAddress`), so it means the same on every edge and at the join."""
+    return not _path_local(value) and all(any(_mentions(text, outer) for outer in outer_names)
+                                          for text in _input_names(value))
+
+
+def linked_guard_disjunction(alternatives, common, plan, outer_names):
+    """Which edge reached the join and what each register binder held on it: the disjunction over
+    the edges of (own guards ∧ binder = edge value), prefix-factored (`_prefix_factored`).
+
+    A binder is linked when its edge values are all contract-level terms (`_contract_level`) and
+    not all equal (an equal value is kept by `anti_unify` as the register's value). Each edge
+    keeps its own guards (`_edge_own_guards`): all of them when the edges leave one seed's tree
+    from one predecessor each (the `edge_guard_disjunction` rule), else the contract-level ones.
+    Sound: each edge satisfies its disjunct, the binder being bound to that edge's value
+    (`widened_substitution`). None when there is nothing to state or some edge's disjunct is empty
+    (the disjunction would be True)."""
+    seeds = _edge_own_guards(alternatives, common) is not None
+    paths = _edge_own_guards(alternatives, common,
+                             admissible=lambda value: seeds or _contract_level(value, outer_names))
+    plan = plan or {'binders': [], 'relations': []}
+    dead = {row['register'] for row in plan.get('generalized_values', [])}
+    exact = {relation['binder'] for relation in plan['relations'] if relation['kind'] == 'source_equality'}
+    for binder in plan['binders']:
+        if binder.get('value_key') in dead or binder['name'] in exact:
+            continue
+        values = [normalize(Expr.from_dict(edge['widened_substitution'][binder['name']])) for edge in plan['edges']]
+        if all(value == values[0] for value in values) or not all(_contract_level(v, outer_names) for v in values):
+            continue
+        word = input_expr(binder['name'], values[0].width)
+        for path, value in zip(paths, values):
+            path.append(operation('=', word, value))
+    if not paths or any(not path for path in paths):
+        return None
+    return _prefix_factored(paths)
+
+
+def join_guard_fact(alternatives, common, plan=None, outer_names=()):
     """The join's edge-guard fact in the profile's `join_guard_form` (`entry_hist.configure`):
-    `factored` (default) the prefix-factored disjunction as its proposition only; `both` the flat
-    disjunction as built, boolean and proposition; `prop` the flat one marked so the entry renders its
-    proposition only; `none` no fact."""
+    `factored` (default) `linked_guard_disjunction`, as its proposition only; `both` the flat
+    `edge_guard_disjunction` as built, boolean and proposition; `prop` the flat one marked so the
+    entry renders its proposition only; `none` no fact."""
     if entry_hist.JOIN_GUARD_FORM == 'none':
         return None
     if entry_hist.JOIN_GUARD_FORM == 'factored':
-        disjunction = factored_guard_disjunction(alternatives, common)
+        disjunction = linked_guard_disjunction(alternatives, common, plan, outer_names)
     else:
         disjunction = edge_guard_disjunction(alternatives, common)
     if disjunction is not None and entry_hist.JOIN_GUARD_FORM in ('prop', 'factored'):
@@ -1698,7 +1748,7 @@ def generalize_owned_join(alternatives, *, original_seed, entry_pc, vocabulary,
             else:
                 raise ValueError('A common guard has no source condition on every edge')
         plan['common_guard_certificates'].append({'guard': guard.to_dict(), 'edges': matches})
-    disjunction = join_guard_fact(alternatives, state.conditions)
+    disjunction = join_guard_fact(alternatives, state.conditions, plan, outer_names)
     if disjunction is not None:
         plan['edge_guard_disjunction'] = disjunction.to_dict()
         state.conditions.append(disjunction)
