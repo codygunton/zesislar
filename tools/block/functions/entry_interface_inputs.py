@@ -305,6 +305,9 @@ def public_seed(profile, contract, text):
             node.update(coq='⌜domain args⌝', original_component=row['source'])
         else:
             node.update(coq=row['source'])
+            cell = word_cell(row['source'], record_widths(text), names)
+            if cell is not None:
+                node['word_cell'] = cell
         components.append(node)
     if not any(node.get('coq') == '⌜domain args⌝' for node in components):
         raise ValueError('The entry resources do not state ' + wellformed)
@@ -322,6 +325,31 @@ def public_seed(profile, contract, text):
             'assertion_tree': tree, 'BODY': body,
             'original_components': [row['source'] for row in parsed['components']],
             'source_facts_added': 0}
+
+
+def record_widths(text):
+    """Field name -> N for every record field of type `bv N` in the source."""
+    widths = {}
+    for body in re.findall(r'Record\s+\w+\s*:\s*Type\s*:=\s*\w*\s*\{(.*?)\}', text, re.S):
+        for fields, width in re.findall(r'([\w\s]+?)\s*:\s*bv\s+([0-9]+)\s*(?:;|$)', body):
+            widths.update({name: int(width) for name in fields.split()})
+    return widths
+
+
+def word_cell(source, widths, binders):
+    """A word cell `A ↦ₘ V` (full permission, one value): its address, its value and the value's
+    width, when V is a `bv N` record field applied to `args` (N a multiple of 8) or a 64-bit
+    entry witness; None otherwise."""
+    match = re.fullmatch(r'(.+?)\s*↦ₘ\s+(.+)', normal(source))
+    if not match or re.search(r'↦ₘ', match[2]):
+        return None
+    value = normal(match[2])
+    field = re.fullmatch(r'(\w+) args', value)
+    width = widths.get(field[1]) if field else (64 if value in binders else None)
+    if width is None or width % 8:
+        return None
+    return {'address_z': normal(match[1]), 'value_coq': value, 'width': width,
+            **({'symbolic_witness': value} if value in binders else {})}
 
 
 def domain(profile, contract, text, seed, constants, ram, notes=None):

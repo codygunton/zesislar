@@ -184,6 +184,86 @@ class EntryInterface(unittest.TestCase):
         self.assertEqual(sorted(notes), result['projection']['unused_clauses'])
         self.assertTrue(notes[11].startswith('bound: linear'))
 
+    LINKS = CONTRACT.replace(
+        'Definition tArgsWellFormed',
+        'Definition tWordAt (bytes : list byte) (offset : Z) : Z :=\n'
+        '  little_endian_to_bv 8 (take 8 (drop (Z.to_nat offset) bytes)).\n\n'
+        'Definition tArgsWellFormed').replace(
+        '  2 * tInputLength args <= tOutputLength args.',
+        '  2 * tInputLength args <= tOutputLength args /\\\n'
+        '  tWordAt (tBeforeResult args) (tResultBytes - 16) = tInputPointer args /\\\n'
+        '  tOutputLength args =\n'
+        '    little_endian_to_bv 8 (take 8 (drop (Z.to_nat 16) (tBeforeResult args))) /\\\n'
+        '  tWordAt (tBeforeResult args) (tInputLength args) = tOutputPointer args /\\\n'
+        '  (tOutputLength args <> 0 -> tOutputLength args = tResultPointer args) /\\\n'
+        '  tWordAt (tMissing args) 0 = tInputPointer args.')
+
+    def test_word_links_are_recognised_and_unusable_ones_reported(self):
+        facts, result, notes, ids = self.variant(self.LINKS)
+        pointer = facts['wellformed:word-link-17']
+        self.assertEqual(pointer['kind'], 'word_link')
+        self.assertEqual({key: value for key, value in pointer['terms'].items() if key != 'coq_statement'},
+                         {'resource_id': ids['tResultPointer args'], 'offset': 8, 'size': 8,
+                          'quantity': 'tInputPointer args', 'target_resource_id': ids['tInputPointer args']})
+        scalar = facts['wellformed:word-link-18']['terms']
+        self.assertEqual((scalar['offset'], scalar['quantity'], 'target_resource_id' in scalar),
+                         (16, 'tOutputLength args', False))
+        self.assertEqual(sorted(notes), result['projection']['unused_clauses'])
+        self.assertTrue(notes[19].startswith('word link: the offset `tInputLength args`'))
+        self.assertTrue(notes[20].startswith('word link: a conditional equation'))
+        self.assertTrue(notes[21].startswith('word link: `tMissing args` is not an owned array'))
+        # Without links nothing changes: no word_link fact, the same unused conjuncts.
+        plain, plain_result, _, _ = self.variant(CONTRACT)
+        self.assertFalse([fact for fact in plain.values() if fact['kind'] == 'word_link'])
+        self.assertEqual(plain_result['projection']['unused_clauses'], self.domain['projection']['unused_clauses'])
+
+    def test_a_seeded_pointer_link_reads_as_the_target_array_base(self):
+        from entry_interface_inputs import notations
+        from resource_seed import seed_owned_resources
+        facts, result, _, ids = self.variant(self.LINKS)
+        profile = FunctionProfile(dict(PROFILE), self.contract.parent / 'tFunction.json')
+        from entry_interface_inputs import public_seed
+        seed = public_seed(profile, self.contract, self.LINKS)
+        seed['_input_sha256'] = '0' * 64
+        owned = seed_owned_resources(seed, entry_pc=0x80000000, vocabulary={'rows': []},
+                                     constants=notations(self.contract, self.LINKS),
+                                     facts=result['projection']['facts'])
+        bases = {region.ownership_id: region.base for region in owned.state.memory}
+        link, scalar = owned.state.word_links
+        self.assertEqual((link['offset'], link['value']), (8, bases[ids['tInputPointer args']]))
+        self.assertEqual(scalar['value'].value, '(Z_to_bv 64%N (tOutputLength args))')
+        self.assertNotIn('word_link', [fact['kind'] for fact in owned.facts])
+
+    def test_a_word_cell_is_seeded_and_a_load_of_it_reads_its_value(self):
+        from entry_interface_inputs import notations, public_seed
+        from resource_seed import seed_owned_resources
+        from symbolic_state import _Evaluator, bits, input_expr, operation
+        text = ('Record TArgs : Type := {\n  tCellPointer : bv 64;\n  tCellValue tOther : bv 64;\n  tSmall : Z\n}.\n'
+                + CONTRACT.replace('   ⌜tArgsWellFormed args⌝',
+                                   '   bv_unsigned (tCellPointer args) ↦ₘ tCellValue args ∗\n'
+                                   '   (bv_unsigned (tCellValue args) + 8) ↦ₘ\n     tOther args ∗\n'
+                                   '   tResultPointer args ↦ₘ tSmall args ∗\n   ⌜tArgsWellFormed args⌝'))
+        self.contract.write_text(text)
+        profile = FunctionProfile(dict(PROFILE), self.contract.parent / 'tFunction.json')
+        seed = public_seed(profile, self.contract, text)
+        cells = [node['word_cell'] for node in seed['assertion_tree']['components'] if 'word_cell' in node]
+        # A `Z` value has no width: that cell stays opaque.
+        self.assertEqual(cells, [
+            {'address_z': 'bv_unsigned (tCellPointer args)', 'value_coq': 'tCellValue args', 'width': 64},
+            {'address_z': 'bv_unsigned (tCellValue args) + 8', 'value_coq': 'tOther args', 'width': 64}])
+        seed['_input_sha256'] = '0' * 64
+        owned = seed_owned_resources(seed, entry_pc=0x80000000, vocabulary={'rows': []},
+                                     constants=notations(self.contract, text), facts=[])
+        # The forward pass reads separations from the seed's facts (forward_resource_design._prepare_state).
+        owned.state.memory_disjoint = [(fact['terms']['left'], fact['terms']['right'])
+                                       for fact in owned.facts if fact['kind'] == 'disjoint_ranges']
+        evaluator = _Evaluator(owned.state)
+        pointer = evaluator.memory_read(input_expr('tCellPointer args', 64), 8)
+        self.assertEqual(pointer, input_expr('tCellValue args', 64))
+        self.assertEqual(evaluator.memory_read(operation('bvadd', pointer, bits(8, 64)), 8),
+                         input_expr('tOther args', 64))
+        self.assertEqual(evaluator.memory_read(input_expr('tCellPointer args', 64), 4).op, 'concat')
+
 
 class LengthRelation(unittest.TestCase):
     def test_a_path_condition_on_the_related_value_bounds_the_array(self):

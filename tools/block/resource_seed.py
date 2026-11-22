@@ -201,6 +201,7 @@ def seed_owned_resources(seed, *, entry_pc, vocabulary, constants=None, facts=()
     # A word link is no ownership fact: it becomes state data that the memory reads consult.
     links = [fact for fact in facts if fact.get('kind') == 'word_link']
     resources, derived, reports = [], [fact for fact in facts if fact.get('kind') != 'word_link'], []
+    cells = []   # word cells `A ↦ₘ V`: (component id, address)
     witnesses = {binder['name']: Expr.from_dict(binder['expression']) for binder in ownership['binders']
                  if 'expression' in binder}
     for component in ownership['components']:
@@ -209,6 +210,20 @@ def seed_owned_resources(seed, *, entry_pc, vocabulary, constants=None, facts=()
             witness = node.get('symbolic_witness')
             value = witnesses[witness] if witness else source_bv_expression(node['value_coq'], constants, node['width'])
             state.registers[component['name']] = value
+            continue
+        cell = node.get('word_cell')
+        if cell is not None:
+            # A word cell `A ↦ₘ V`: its bytes are V's bytes, so a load of the whole cell reads V.
+            # It is no byte-array resource: a store into it finds no owner and stops the path.
+            witness = cell.get('symbolic_witness')
+            value = witnesses[witness] if witness else source_bv_expression(cell['value_coq'], constants, cell['width'])
+            state.memory.append(MemoryRegion(
+                source_z_expression(cell['address_z'], constants, address_width),
+                tuple(operation('extract', value, width=8, value=8 * index) for index in range(cell['width'] // 8)),
+                ownership_id=component['id']))
+            state.reports.append({'kind': 'word_cell_seed', 'resource_id': component['id'],
+                                  'value': value.to_dict()})
+            cells.append((component['id'], cell['address_z']))
             continue
         if component['kind'] not in ('byte_array', 'unknown_byte_array'):
             continue
@@ -263,15 +278,16 @@ def seed_owned_resources(seed, *, entry_pc, vocabulary, constants=None, facts=()
     # facts keep precedence; this adds only the pairs that they omit.
     explicit = {frozenset((fact['terms']['left'], fact['terms']['right']))
                 for fact in derived if fact.get('kind') == 'disjoint_ranges'}
-    full = [resource for resource in resources if resource.writable is True]
-    for index, first in enumerate(full):
-        for second in full[index + 1:]:
-            if frozenset((first.id, second.id)) in explicit:
+    # A word cell `A ↦ₘ V` is a full-permission points-to too.
+    full = [(resource.id, resource.address_z) for resource in resources if resource.writable is True] + cells
+    for index, (first, first_address) in enumerate(full):
+        for second, second_address in full[index + 1:]:
+            if frozenset((first, second)) in explicit:
                 continue
-            derived.append({'fact_id': first.id + ':' + second.id + ':separation', 'kind': 'disjoint_ranges',
-                            'terms': {'left': first.id, 'right': second.id,
+            derived.append({'fact_id': first + ':' + second + ':separation', 'kind': 'disjoint_ranges',
+                            'terms': {'left': first, 'right': second,
                                       'coq_statement': 'separately owned DfracOwn 1 points-to: '
-                                                       + first.address_z + ' and ' + second.address_z},
+                                                       + first_address + ' and ' + second_address},
                             'origin': {'rule': 'separating conjunction of two full-permission resources',
                                        **provenance},
                             'status': 'derived-by-pass'})
