@@ -83,38 +83,52 @@ def leaves_function(stop, function):
     return not _pc(function['entry']) <= _pc(actual) < _pc(function['end'])
 
 
-def reaching_stops(stops, successors, target, seeded=None, function=None):
+def reaching_stops(stops, successors, target, seeded=None, function=None, back_sources=()):
     """Return the stops that dropped a path whose block can reach target.
 
     A cut stop records its own boundary, but it drops the path beyond the cut.
     When `seeded` names the cuts that have a seed, a stop at an unseeded cut
-    reaches every boundary after that cut.
+    reaches every boundary after that cut. `successors` is the forward CFG (no back
+    edges): a loop head's seed comes from its entry edges, and its back edges are
+    the obligations of their source blocks, so no stop reaches anything through a
+    back edge. `back_sources` (the sources of the back edges into target) only marks
+    target as a loop head: a stop at that head while it is unseeded drops its back-edge
+    paths, so it reaches the head itself.
     """
+    def reach(start):
+        return can_reach(successors, start, target)
+
     def dropped(stop):
         if stop['reason'] not in PASSING_STOPS:
             if function is not None and leaves_function(stop, function):
                 return False
-            return can_reach(successors, _pc(stop['block_pc']), target)
+            return reach(_pc(stop['block_pc']))
         if stop['reason'] == 'call_boundary':
             # The path resumes at the return site only from a call-return seed.
             site = _pc(stop['target_pc'])
-            return (seeded is None or site not in seeded) and can_reach(successors, site, target)
+            return (seeded is None or site not in seeded) and reach(site)
         if stop['reason'] != 'handwritten_cut' or seeded is None or stop.get('target_pc') is None:
             return False
         cut = _pc(stop['target_pc'])
-        return cut not in seeded and any(can_reach(successors, after, target)
-                                         for after in successors.get(cut, []))
+        return cut not in seeded and (any(reach(after) for after in successors.get(cut, []))
+                                      or (cut == target and bool(back_sources)))
     return [stop for stop in stops if dropped(stop)]
 
 
 def annotate_reaching_stops(report, function):
-    successors = cfg_successors(function)
+    try:
+        from .loop_structure import back_edges, forward_successors
+    except ImportError:
+        from loop_structure import back_edges, forward_successors
+    successors = forward_successors(function)
+    back = back_edges(function)
     seeded = {_pc(boundary['pc']) for boundary in report['boundaries']
               if any(alternative.get('predecessor_pc') is None for alternative in boundary['alternatives'])}
     for boundary in report['boundaries']:
+        target = _pc(boundary['pc'])
         boundary['reaching_stops'] = [{key: stop.get(key) for key in STOP_FIELDS}
-                                      for stop in reaching_stops(report['stops'], successors,
-                                                                 _pc(boundary['pc']), seeded, function)]
+                                      for stop in reaching_stops(report['stops'], successors, target, seeded,
+                                                                 function, [s for s, h in back if h == target])]
     return report
 
 

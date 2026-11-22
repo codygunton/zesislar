@@ -12,9 +12,11 @@ import re
 try:
     from .symbolic_state import SymbolicState, evaluate_trace, parse_trace
     from .boundary_guards import annotate_reaching_stops
+    from .loop_structure import back_edges as loop_back_edges, loop_heads as cfg_loop_heads
 except ImportError:
     from symbolic_state import SymbolicState, evaluate_trace, parse_trace
     from boundary_guards import annotate_reaching_stops
+    from loop_structure import back_edges as loop_back_edges, loop_heads as cfg_loop_heads
 
 
 GPR = re.compile(r'x(?:[0-9]|[12][0-9]|3[01])\Z')
@@ -221,7 +223,9 @@ def evaluate_function(function, traces, initial_states, *, max_paths=4096, check
         for target in block['successors']:
             if target in predecessors:
                 predecessors[target].add(pc)
-    loop_heads = {_pc(loop['minimum_pc']) for loop in function.get('loops', [])}
+    # Natural loop heads (inner heads of a nest included) and the SCC rows of FUNCTION.json.
+    loop_heads = cfg_loop_heads(function)
+    back_edges = loop_back_edges(function)
     if not loop_heads.issubset(blocks):
         raise ValueError('A loop head is not a block start')
     # A call ends its block; its callee runs outside the function. The return
@@ -294,8 +298,9 @@ def evaluate_function(function, traces, initial_states, *, max_paths=4096, check
         boundaries[pc]['alternatives'].append({'predecessor_pc': hex(predecessor) if predecessor is not None else None,
                                               'seed_pc': hex(work.seed_pc), 'state': projected.to_dict(),
                                               'path': list(work.path),
-                                              'back_edge': pc in loop_heads and predecessor is not None
-                                              and (pc == work.seed_pc or pc in work.visited),
+                                              # A back edge by the CFG's dominators, whichever seed
+                                              # the path started from (an inner loop's exit path).
+                                              'back_edge': predecessor is not None and (predecessor, pc) in back_edges,
                                               **({'predecessor_alternative': work.entry}
                                                  if duplicated and predecessor is not None else {})})
         if pc not in cuts:
