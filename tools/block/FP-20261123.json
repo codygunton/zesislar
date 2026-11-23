@@ -1,0 +1,67 @@
+{
+  "version": "FP-20261123",
+  "kind": "source engine pin",
+  "supersedes": "FP-20261122b",
+  "provenance": "Agent-assisted proofs, plan A6 item 5 (issue #347), branch aa/derive: FP-20261122b plus one annotation hook. A read whose address carries an owned array base and a symbolic addend, which no array places by itself (an array whose extent is only its list length), reads the array a profile `access_placements` row names for that instruction (symbolic_state.placed_owner); its read obligation states 0 <= index < length of that array. Without such a row the engine behaves as FP-20261122b: the profiles decodeItem, nextUint64 and decodeParentHeader have none, so their passes are unchanged.",
+  "files": [
+    {
+      "path": "tools/block/entry_helper_resources.py",
+      "sha256": "56ae1ee71de43b0141712e7635264bccdfeb90943724ea50a91ec1b7c7ee09c4"
+    },
+    {
+      "path": "tools/block/entry_seed.py",
+      "sha256": "746bc86c4c47ebd22a94a88704caa971fe70a47c5b5406355312485da77e4b02"
+    },
+    {
+      "path": "tools/block/forward_design.py",
+      "sha256": "86b4010b34ba60fdae47825380d15a50062092e6256c25c6c228118d3862b02b"
+    },
+    {
+      "path": "tools/block/forward_resource_design.py",
+      "sha256": "642f294efbfe5cebbae37f7198260b2126c7f4ea3656992a8ebdb68dc15d3274"
+    },
+    {
+      "path": "tools/block/forward_resources.py",
+      "sha256": "115ed8b764dcfa614a5b6a3a14d7f98b8978adfafbbe1a43b702da9d6085f988"
+    },
+    {
+      "path": "tools/block/resource_seed.py",
+      "sha256": "ee107a07fee9bdf84d168a1259ee76c1509ceea5015ba4a6a2fdb25fe863ec43"
+    },
+    {
+      "path": "tools/block/symbolic_state.py",
+      "sha256": "1d6815499361c825911ee463f78bca44b080809f85fdae3584b6728662c3def2"
+    },
+    {
+      "path": "tools/block/system_shape_seed.py",
+      "sha256": "99e0c444987ce264a676479c4986772ec355ae8a1546daf81ad83838f784e73b"
+    },
+    {
+      "path": "tools/test_forward_resource_design.py",
+      "sha256": "f55c12db1333426ead2dbf5662bc9f7b717817f476cce56008dcc41628297344"
+    },
+    {
+      "path": "tools/test_forward_resources.py",
+      "sha256": "27e5fe56c08e0e22f2319839d91af38354a98db6b24493ee1beffe552d3b2d71"
+    },
+    {
+      "path": "tools/test_resource_seed.py",
+      "sha256": "9fd099b5d09b568370a0881e09cc8aac418d13b092c10b5d04887108130a510b"
+    },
+    {
+      "path": "tools/test_system_shape_seed.py",
+      "sha256": "c3b68a03eb9f444c25b1f0b2e12b19097cc42ff6392ceb6ea5cd77a5e7d3745a"
+    }
+  ],
+  "entrypoint": "forward_resource_design.evaluate_owned_function",
+  "statement": "Source evaluation does not establish any generated contract or predecessor entailment.",
+  "limitations": [
+    "A load inside an owned uninitialized span (`\u21a6\u2098?`, Islaris' per-byte \u2203 v : bv 8) reads fresh existential bytes with no facts; an unowned or out-of-extent uninitialized byte stays unknown.",
+    "Unknown ownership stops propagation.",
+    "Unsupported source expressions remain explicit.",
+    "A jump at a CFG return site leaves the function as a function_return exit; a jump from a CFG tail-call instruction to its callee leaves it as a tail_call exit; any other unknown target stops the path.",
+    "An address that carries an owned array base and a symbolic addend reads that array as a list lookup; its index range (below the actual array length) is a path condition and an open read obligation; an array without a length term stops the read. A store at a symbolic index has an owner only when one initialized owned array base is its addend and every other memory resource is disjoint from that array; its index range is an open obligation.",
+    "A call ends its block; its return site is a cut that continues only from a call-return seed (call_boundary.call_return_seed). Loop cuts require source-bound inputs.",
+    "A profile `access_placements` row is untrusted: it only selects the owned array of a read; the index range stays an open read obligation of the block proof. Stores are not placed."
+  ]
+}
