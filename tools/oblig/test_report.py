@@ -41,10 +41,13 @@ class Report(unittest.TestCase):
     def test_measures(self):
         with tempfile.TemporaryDirectory() as tmp:
             run = Path(tmp)
-            (run / 'round-1').mkdir()
-            (run / 'round-1' / 'REQUESTS.json').write_text(json.dumps([
-                {'kind': 'contract', 'derivable': False}, {'kind': 'loop_assertion', 'derivable': False},
-                {'kind': 'call_row', 'derivable': True}, {'kind': None}]))
+            (run / 'round-1' / 'derived').mkdir(parents=True)
+            (run / 'round-1' / 'derived' / 'REQUESTS.json').write_text(json.dumps({
+                'schema': 'oblig-requests/1', 'function': F, 'round': 1,
+                'answered': ['fn/decision/callee_premise-033c'],
+                'requests': [{'kind': 'contract', 'derivable': False}, {'kind': 'loop_assertion', 'derivable': False},
+                             {'kind': 'call_row', 'derivable': True}, {'kind': 'call_row', 'derivable': False}],
+                'refusals_without_request': [{'source': 'render/RESULT.json', 'reason': 'r'}]}))
             proof = run / 'proof.v'
             proof.write_text('Lemma a : True.\nProof.\nexact I.\nQed.\n')
             g1, g2 = store.goal_id(F, '0040', 'a'), store.goal_id(F, '0040', 'b')
@@ -69,9 +72,9 @@ class Report(unittest.TestCase):
             self.assertEqual(got['blocks closed with no model'], '1 of 1 closed (2 blocks)')
             self.assertEqual(got['rounds'], '1')
             self.assertEqual(got['requests per round'], '1:4')
-            self.assertEqual(got['decisions made / floor'], '1 / 2 (0.5 x floor)')
+            self.assertEqual(got['decisions made / floor'], '1 / 3 (0.3 x floor)')
             self.assertEqual(got['requests derivable'], '25.0%')
-            self.assertEqual(got['unhandled refusals'], '1')
+            self.assertEqual(got['unhandled refusals'], '1:1')
             self.assertEqual(got['proposals rejected by machine runs'], '1 of 1 tested')
             self.assertEqual(got['missing-context failures per attempt'], '1 / 3 (33.3%)')
             self.assertEqual(got['supplied context absent from accepted proof'], '75.0%')

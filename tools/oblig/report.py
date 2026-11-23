@@ -4,9 +4,10 @@
     report.py --function F [--run RUN]
 
 Prints one line per measure, `n/a` where its input is absent: blocks closed with no model; rounds
-and requests per round (RUN/round-<n>/[derived/]REQUESTS.json); decisions made against the floor
-(round 1's contract, loop_assertion and callee_premise requests); share of requests with
-`derivable` true; unhandled refusals (request rows of no known kind); proposals rejected by
+and requests per round (RUN/round-<n>/derived/REQUESTS.json, schema oblig-requests/1 of derive.py);
+decisions made against the floor (round 1's contract, loop_assertion and callee_premise requests,
+answered ones included); share of requests with `derivable` true; unhandled refusals per round
+(`refusals_without_request`); proposals rejected by
 machine runs; missing-context failures per attempt; share of supplied context items absent from the
 accepted proof (context_items/context_used of the closing attempts) and of premises dropped by the
 premise minimiser of residual_loop.py; goals found false after a model attempt; prompt bytes and
@@ -37,20 +38,26 @@ def ratio(numerator, denominator, percent=True):
 
 
 def rounds(run):
-    """{round number: [request rows]}."""
+    """{round number: REQUESTS.json of that round (schema oblig-requests/1) or an empty one}."""
     found = {}
     for directory in Path(run).glob('round-*'):
         match = re.fullmatch(r'round-(\d+)', directory.name)
         if not match:
             continue
-        for path in (directory / 'REQUESTS.json', directory / 'derived' / 'REQUESTS.json'):
+        data = {}
+        for path in (directory / 'derived' / 'REQUESTS.json', directory / 'REQUESTS.json'):
             data = store.read_json(path)
             if data is not None:
-                found[int(match.group(1))] = data.get('requests', []) if isinstance(data, dict) else data
                 break
-        else:
-            found.setdefault(int(match.group(1)), [])
+        data = data if isinstance(data, dict) else {'requests': data or []}
+        found[int(match.group(1))] = dict(requests=data.get('requests') or [], answered=data.get('answered') or [],
+                                          refusals=data.get('refusals_without_request') or [])
     return dict(sorted(found.items()))
+
+
+def request_kind(identifier):
+    parsed = store.parse_id(identifier)
+    return parsed[1].get('decision') if parsed else None
 
 
 def attempt_rows(item):
@@ -91,15 +98,18 @@ def measures(run, function=None):
 
     by_round = rounds(run)
     put('rounds', str(len(by_round)) if by_round else 'n/a')
-    put('requests per round', ' '.join('%d:%d' % (n, len(rows)) for n, rows in by_round.items()) or 'n/a')
-    requests = [row for rows in by_round.values() for row in rows]
-    floor = sum(row.get('kind') in FLOOR_KINDS for row in by_round.get(1, [])) if 1 in by_round else None
+    put('requests per round', ' '.join('%d:%d' % (n, len(r['requests'])) for n, r in by_round.items()) or 'n/a')
+    requests = [row for r in by_round.values() for row in r['requests']]
+    first = by_round.get(1)
+    # Round 1 issues every floor request; one already answered by an annotation is listed in `answered`.
+    floor = (sum(row.get('kind') in FLOOR_KINDS for row in first['requests'])
+             + sum(request_kind(i) in FLOOR_KINDS for i in first['answered'])) if first else None
     made = sum(d['state'] == 'closed' for d in decisions)
     put('decisions made / floor', 'n/a' if floor is None and not decisions else '%d / %s%s' % (
         made, floor if floor is not None else 'n/a', ' (%s x floor)' % ratio(made, floor, percent=False) if floor else ''))
     put('requests derivable', ratio(sum(bool(row.get('derivable')) for row in requests), len(requests)))
-    put('unhandled refusals', str(sum(row.get('kind') not in store.DECISION_KINDS for row in requests))
-        if requests else 'n/a')
+    put('unhandled refusals', ' '.join('%d:%d' % (n, len(r['refusals'])) for n, r in by_round.items())
+        if by_round else 'n/a')
     tests = [row for i in items for row in i['events'] if row.get('tier') == 'machine-run']
     rejected = [row for row in tests if row['state'] == 'failed']
     put('proposals rejected by machine runs', '%d of %d tested' % (len(rejected), len(tests)) if tests else 'n/a')
