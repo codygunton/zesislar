@@ -37,6 +37,8 @@ from loop_structure import block_successors, dominators, loop_heads as natural_l
 
 CFG = ROOT / 'build/stock-zisk/cfg.json'
 REGISTRY = ROOT / 'ZesuSsz/Contracts/proved_functions.json'
+# Jump-table records of tools/stock_zisk/closure.py (`functions[].dispatch`).
+INVENTORY = ROOT / 'build/stock-zisk/inventory.json'
 FUNCTIONS = ROOT / 'tools/block/functions'
 KINDS = ('contract', 'callee_premise', 'loop_assertion', 'join_assertion', 'access_placement', 'call_row',
          'predicate')
@@ -124,11 +126,10 @@ def cut_heads(function):
             if target in heads:
                 continue
             block = max(start for start in starts if start <= source)
-            heads[target] = ('the backward edge from %s does not make it a natural loop head (it %s its source '
-                             'block); tools/block/loop_structure.loop_heads omits it, so the cut needs a hand '
-                             '`loop_heads` row' % (offset(source, int(function['entry'])),
-                                                   'dominates' if target in dom.get(block, ()) else
-                                                   'does not dominate'))
+            heads[target] = ('hand loop_heads row: the backward edge from %s does not make it a natural loop head '
+                             '(it %s its source block), so tools/block/loop_structure.loop_heads omits the cut'
+                             % (offset(source, int(function['entry'])),
+                                'dominates' if target in dom.get(block, ()) else 'does not dominate'))
     return dict(sorted(heads.items()))
 
 
@@ -361,7 +362,162 @@ def add(requests, row):
         existing['proposal'], existing['derivable'] = row['proposal'], True
 
 
-def cfg_requests(function, function_name, registry, names):
+# Call-row fields fixed by the callee alone; `caller_value` and `slice_of` of an array name caller terms.
+CALLEE_FIELDS = ('spec', 'spec_module', 'spec_source', 'stack_bytes', 'output_length_source')
+CALLER_ARRAY_FIELDS = ('caller_value', 'slice_of')
+
+
+def profile_call_rows(callee, directory=FUNCTIONS):
+    """Every hand or compiled profile `calls` row whose callee is `callee` (`SYMBOL+0x0`)."""
+    rows = []
+    for path in sorted(Path(directory).glob('*.json')):
+        if path.name.endswith('.annotations.json'):
+            continue
+        rows += [row for row in load_json(path).get('calls', []) if row.get('callee_pc') == callee + '+0x0']
+    return rows
+
+
+def common_call_fields(rows):
+    """(callee fields, arrays, open fields) that every row agrees on: the callee side of a call row."""
+    fields = {key: rows[0][key] for key in CALLEE_FIELDS
+              if key in rows[0] and all(row.get(key) == rows[0][key] for row in rows)}
+    arrays, open_fields = [], []
+    binders = [array['binder'] for array in rows[0].get('arrays', [])]
+    for binder in binders:
+        versions = [next((array for array in row.get('arrays', []) if array['binder'] == binder), None)
+                    for row in rows]
+        if any(version is None for version in versions):
+            return None
+        array = {key: value for key, value in versions[0].items()
+                 if key not in CALLER_ARRAY_FIELDS and all(version.get(key) == value for version in versions)}
+        arrays.append(array)
+        if 'length' not in array:
+            # The callee reads a caller array: its value is the caller's term (the contract decision).
+            open_fields.append('arrays[%s].caller_value' % binder)
+    return fields, arrays, open_fields
+
+
+def spec_call_fields(entry, root=ROOT):
+    """(callee fields, arrays, open fields) from the registry row's call spec in its interface module."""
+    from call_boundary import parse_machine_call_spec
+    module, name = entry['interface']['module'], entry['call_spec']['name']
+    source = module.replace('.', '/') + '.v'
+    spec = parse_machine_call_spec((Path(root) / source).read_text(), name)
+    fields = {'spec': name, 'spec_module': module, 'spec_source': source}
+    open_fields = ['output_length_source']
+    if str(spec['stack']).isdigit():
+        fields['stack_bytes'] = int(spec['stack'])
+    else:
+        open_fields.append('stack_bytes (the spec names %s)' % spec['stack'])
+    arrays = []
+    for row in spec['pre']['arrays']:
+        if 'argument' not in row:
+            return None
+        arrays.append({'binder': row['binder'], 'argument': row['argument']})
+        open_fields.append('arrays[%s].caller_value or length' % row['binder'])
+    return fields, arrays, open_fields
+
+
+def call_row_proposal(function, call, callee, entry, directory=FUNCTIONS):
+    """The `call_site` annotation row of a call to a callee with a `proved` or `assumed` registry row and
+    an interface call spec: its callee side from the profile rows of other callers of that callee, else
+    from the spec. `open` lists the fields the caller's contract decision still fills; None when neither
+    source fixes the callee side."""
+    if not entry or entry.get('status') not in ('proved', 'assumed') or not entry.get('interface') \
+            or not entry.get('call_spec'):
+        return None
+    rows = profile_call_rows(callee, directory)
+    fixed = common_call_fields(rows) if rows else None
+    if fixed is None:
+        try:
+            fixed = spec_call_fields(entry)
+        except (OSError, ValueError, KeyError):
+            return None
+    if fixed is None:
+        return None
+    fields, arrays, open_fields = fixed
+    base, pc = int(function['entry']), int(call['pc'])
+    return {'at': {'pc': offset(pc, base), 'boundary': 'call_site'}, 'binders': [], 'resources': [], 'facts': [],
+            'call': {'function': function['name'], 'callee_pc': callee + '+0x0',
+                     'return_site_pc': offset(pc + 4, base), **fields, 'arrays': arrays},
+            'open': open_fields}
+
+
+def dispatch_rows(function, inventory=INVENTORY):
+    """The jump-table records (`dispatch`) of `tools/stock_zisk/closure.py` for this function, from the
+    committed inventory, keyed by the indirect jump's pc."""
+    path = Path(inventory)
+    if not path.exists():
+        return {}
+    rows = {}
+    for row in load_json(path).get('functions', []):
+        if row.get('name') == function['name'] and row.get('dispatch'):
+            rows[int(row['dispatch']['pc'])] = row['dispatch']
+    return rows
+
+
+def entry_value(function, register, pc):
+    """True when no path from the entry to `pc` writes `register` (calls clobber caller-saved ones)."""
+    rows = {int(row['pc']): row for row in function['rows']}
+    blocks = {int(block['start']): block for block in function['blocks']}
+    pending, seen = [int(function['entry'])], set()
+    while pending:
+        start = pending.pop()
+        if start in seen or start not in blocks:
+            continue
+        seen.add(start)
+        end = int(blocks[start]['end'])
+        stop = pc if start <= pc < end else end
+        for at in sorted(at for at in rows if start <= at < stop):
+            if register in row_uses_defs(rows[at])[1]:
+                return False
+        if stop == end:
+            pending.extend(int(target) for target in blocks[start]['successors'])
+    return pc in {at for start in seen for at in rows if start <= at < int(blocks[start]['end'])}
+
+
+def dispatch_requests(function, function_name, names, inventory=INVENTORY):
+    """One `predicate` request per indirect jump through a table: the plan has no dispatch kind.
+
+    The CFG resolves the jump's successors only under an index bound (`resolution`); the closure scan
+    records the table, its entries and the bound as a required entry condition. With the index register
+    unchanged from the entry to the mask, the bound is an entry fact on that register: the proposal."""
+    base = int(function['entry'])
+    records = dispatch_rows(function, inventory)
+    requests = {}
+    for row in function['rows']:
+        if row['kind'] != 'indirect':
+            continue
+        pc = int(row['pc'])
+        record = records.get(pc)
+        entries = len(row.get('successors', []))
+        needs = ['jump table at %s: %d entries (CFG: %s)' % (
+            names.get(record['table_address'], hex(record['table_address'])) if record else 'an unknown address',
+            entries, row.get('resolution', 'no resolution'))]
+        proposal = None
+        if record is not None:
+            low, high = record['index_bounds']
+            register = 'x%d' % record['index_register']
+            needs.append('index %s & %d in [%d, %d] (%s)' % (register, record['index_mask'], low, high,
+                                                             record['bound_status']))
+            if high - low + 1 != entries:
+                needs.append('the closure bound and the CFG successors disagree')
+            elif entry_value(function, register, int(record['evidence_instructions'][0])):
+                name = 'entry_' + register
+                proposal = {'at': {'pc': offset(base, base), 'boundary': 'entry'},
+                            'binders': [{'name': name, 'register': register}], 'resources': [],
+                            'facts': [{'coq': '(%d <= Z.land (bv_unsigned %s) %d <= %d)%%Z'
+                                       % (low, name, record['index_mask'], high), 'role': 'dispatch_bound'}],
+                            'open': ['restate the bound over the contract arguments (a contract conjunct)']}
+            else:
+                needs.append('the index register is written before the jump: the bound is not an entry fact')
+        add(requests, new_request(function_name, 'predicate', pc, base,
+                                  'indirect jump through a table: its successors hold only under the index bound',
+                                  needs=needs, source='cfg:indirect', proposal=proposal))
+    return requests
+
+
+def cfg_requests(function, function_name, registry, names, directory=FUNCTIONS, inventory=INVENTORY):
     """Every request the control-flow graph alone fixes (round 1)."""
     base = int(function['entry'])
     requests = {}
@@ -380,15 +536,20 @@ def cfg_requests(function, function_name, registry, names):
         needs = ['callee %s: %s' % (symbol, 'registry row %s (%s)' % (entry['function'], entry['status'])
                                     if entry else 'no registry row')]
         if entry and entry.get('interface'):
-            needs.append('interface %s' % entry['interface'])
+            needs.append('interface %s' % entry['interface']['module'])
+        proposal = call_row_proposal(function, call, symbol, entry, directory) if symbol else None
+        if proposal is not None and proposal['open']:
+            needs.append('the contract decision fills: ' + ', '.join(proposal['open']))
         add(requests, new_request(function_name, 'call_row', pc, base,
                                   'call design row: spec, arrays and return facts of the call at %s'
-                                  % offset(pc, base), needs=needs, source='cfg:call'))
+                                  % offset(pc, base), needs=needs, source='cfg:call', proposal=proposal))
         if entry is None and target not in premised:
             premised.add(target)
             add(requests, new_request(function_name, 'callee_premise', pc, base,
                                       'callee %s has no row in proved_functions.json' % symbol,
                                       needs=['call spec in the form of memcpyCallPremise'], source='cfg:call'))
+    for key, row in dispatch_requests(function, function_name, names, inventory).items():
+        add(requests, row)
     return requests
 
 
@@ -689,7 +850,7 @@ def run_render(function_name, inputs, bank, render, log):
 
 
 def derive(function_name, run, *, symbol=None, round_number=None, cfg=CFG, inputs=None, bank=None, render=None,
-           registry_path=REGISTRY, names=None):
+           registry_path=REGISTRY, names=None, profiles=FUNCTIONS, inventory=INVENTORY):
     run = Path(run)
     profile = load_profile_data(function_name)
     annotations = load_json(annotation_path(function_name)) if annotation_path(function_name).exists() else None
@@ -717,7 +878,7 @@ def derive(function_name, run, *, symbol=None, round_number=None, cfg=CFG, input
     else:
         live, live_source = cfg_liveness(function), 'cfg'
     statements = join_statements(forward, function, cuts, live)
-    requests = cfg_requests(function, function_name, registry, names)
+    requests = cfg_requests(function, function_name, registry, names, profiles, inventory)
     unhandled = []
     if render is not None:
         found, unhandled = render_requests(Path(render), function, function_name, cuts, statements)
