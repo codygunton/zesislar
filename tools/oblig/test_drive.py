@@ -79,6 +79,17 @@ class FakeKernel:
         self.falsified.append(where.gid)
         return dict(verdict="passed")
 
+    repack_size = 20000
+
+    def repackage(self, run, function, where, tier, bound, reason):
+        out = where.d / "package" / where.gid
+        out.mkdir(parents=True, exist_ok=True)
+        (out / ("TASK-%s.md" % tier)).write_text("r" * self.repack_size)
+        record = dict(next="prover", prompt_bound=bound, bound_reason=reason, **{"class": None})
+        (out / "PACKAGE.json").write_text(json.dumps(record))
+        self.repackaged = getattr(self, "repackaged", []) + [(where.gid, tier, bound)]
+        return record
+
     def refute(self, where, text, out):
         return False
 
@@ -348,22 +359,32 @@ class PackagedGoalTests(unittest.TestCase):
         self.assertEqual(drive.max_prompt_bytes("haiku-low", "BIG"), 32000)
         self.assertEqual(drive.max_prompt_bytes("haiku-low", None), 12000)
 
-    def test_too_large_escalates_then_waits_for_a_decision(self):
+    def test_large_goal_is_repackaged_once_at_the_tier_cap(self):
         (self.package / "TASK-haiku-low.md").write_text("y" * 20000)
-        (self.package / "TASK.md").write_text("# Tier-less, small\n")
         counts = drive.step(F, self.run, kernel=self.kernel)[0]
-        self.assertEqual(counts.get("too_large"), 1)
-        self.assertEqual([t for _, t, _ in drive.model_items(self.run, F)], ["haiku-high"])
-        # Without a package every tier falls back to the 30 KB residual task plus goal.v: too large everywhere.
-        for path in self.package.iterdir():
-            path.unlink()
-        self.package.rmdir()
+        self.assertEqual(counts.get("repackaged_large"), 1)
+        self.assertEqual(self.kernel.repackaged, [("0058-1", "haiku-low", 32000)])
+        self.assertEqual([t for _, t, _ in drive.model_items(self.run, F)], ["haiku-low"])
+        prompt, items = drive.prompt_for(self.run, F, self.identifier, "haiku-low")
+        self.assertGreater(len(prompt.encode()), 12000)
+        self.assertIn("prompt_bound:32000", items)
+        record = json.loads((self.package / "PACKAGE.json").read_text())
+        self.assertTrue(record["bound_reason"].startswith("smallest task over the default bound"))
+        # The attempt carries the bound for report.py.
+        drive.register_attempt(self.run, F, self.identifier, "haiku-low", prompt, items)
+        running = store.fold(store.read_events(self.run))[self.identifier]["events"][-1]
+        self.assertIn("prompt_bound:32000", running["context_items"])
+
+    def test_goal_too_large_at_the_cap_waits_for_a_decision(self):
+        (self.package / "TASK-haiku-low.md").write_text("y" * 20000)
+        self.kernel.repack_size = 40000
         counts = drive.step(F, self.run, kernel=self.kernel)[0]
+        self.assertEqual((counts.get("repackaged_large"), counts.get("waiting_decision_too_large")), (1, 1))
         item = store.fold(store.read_events(self.run))[self.identifier]
         self.assertEqual(item["state"], "waiting-decision")
         reasons = json.loads(Path(item["artifact"]["path"]).read_text())
         self.assertEqual(set(reasons), {"haiku-low", "haiku-high", "opus-medium"})
-        self.assertTrue(all(r.startswith("too-large: ") for r in reasons.values()))
+        self.assertTrue(all(r.startswith("too-large: ") and r.endswith("> 32000 bytes") for r in reasons.values()))
         self.assertEqual(drive.model_items(self.run, F), [])
 
     def test_package_class_address_goes_to_the_owner(self):

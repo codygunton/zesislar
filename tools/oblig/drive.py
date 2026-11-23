@@ -89,6 +89,19 @@ def max_prompt_bytes(tier, cls=None):
         return package.MAX_PROMPT_BYTES
 
 
+def tier_cap(tier):
+    """The largest prompt a tier takes (tiers.json `max_class_prompt_bytes`)."""
+    row = tier_rows().get(tier, {})
+    return int(row.get("max_class_prompt_bytes", row.get("max_prompt_bytes", package.MAX_PROMPT_BYTES)))
+
+
+def large_bound(where, tier):
+    """The bound of a goal re-packaged at the tier cap (PACKAGE.json `prompt_bound`, capped by TIER's), or
+    None: such a goal is sent at that size, its attempts carrying `prompt_bound:<bytes>`."""
+    bound = store.read_json(where.d / "package" / where.gid / "PACKAGE.json", {}).get("prompt_bound")
+    return min(int(bound), tier_cap(tier)) if bound else None
+
+
 # ---- obligation files ----
 
 class Located:
@@ -284,6 +297,9 @@ def prompt_for(run, function, identifier, tier, located=None, state=None):
     if where is None or item is None:
         return None, "unlocated"
     limit = max_prompt_bytes(tier, item["goal_class"])
+    large = large_bound(where, tier)
+    if large and large > limit:
+        limit = large
     base = base_prompt(where, tier)
     if base is None:
         return None, "no task file"
@@ -304,6 +320,8 @@ def prompt_for(run, function, identifier, tier, located=None, state=None):
         text, items = MALFORMED_LINE + base, ["task", "malformed"]
     if len(text.encode()) > limit:
         return None, "%s: %d > %d bytes" % (TOO_LARGE, len(text.encode()), limit)
+    if large and large == limit:
+        items = items + ["prompt_bound:%d" % limit]
     return text, items
 
 
@@ -434,6 +452,21 @@ class Kernel:
         goal = goal if goal.is_file() else where.goal_dir / "goal.v"
         return falsify.check(goal, self.route_of(where.d), out, exec_dir=exec_dir if exec_dir.is_dir() else None,
                              offset=offset)
+
+    def repackage(self, run, function, where, tier, bound, reason):
+        """package.py's task of a goal again at BOUND (the tier cap), with the definitions context and the
+        hint pack of RUN when present; the record keeps `prompt_bound` and `bound_reason`."""
+        import falsify
+        import similar
+        manifest = where.manifest()
+        bank = manifest.get("bank")
+        route_ = falsify.Route(bank) if bank and (Path(bank) / "ARGS.json").is_file() else None
+        hints = Path(run) / "hints"
+        record = package.package_goal(where.d, manifest, where.goal, function, tier, bound,
+                                      similar.build_index(runs=[where.d]), hints if hints.is_dir() else None,
+                                      defs_route=route_, symbol_route=route_)
+        record.update(prompt_bound=bound, bound_reason=reason)
+        return package.write_record(where.d / "package" / where.gid, record)
 
     def refute(self, where, text, out):
         """True when the kernel accepts `~ statement` on the binder values the counterexample names."""
@@ -626,10 +659,14 @@ def sync_package_class(function, run, located, counts):
     return filed
 
 
-def escalate_unpromptable(function, run, located, free, counts):
+def escalate_unpromptable(function, run, located, free, counts, kernel):
     """For each model attempt route.py assigns, before any model sees it (no model):
     - a need_context retry whose named items no source can supply files `missing_context`;
-    - a prompt over the tier's bound files `too_large` (file_too_large)."""
+    - a goal whose smallest task is over the default bound is re-packaged once at the tier cap
+      (tiers.json `max_class_prompt_bytes`; PACKAGE.json `prompt_bound`, `bound_reason`) and then sent
+      at that size, its attempts carrying `prompt_bound:<bytes>` in context_items;
+    - a prompt over the bound it may use files `too_large` (file_too_large): waiting-decision with
+      TOO-LARGE.json once every model tier is too small."""
     state, filed = fold(run), 0
     for identifier, action, tier, _ in route.next_items(run, function):
         if action != "prove" or tier in (None, MECHANICAL) or identifier not in free:
@@ -641,6 +678,15 @@ def escalate_unpromptable(function, run, located, free, counts):
             file_missing_context(run, identifier, tier)
             counts.bump("missing_context")
         elif reason.startswith(TOO_LARGE):
+            where = located[identifier]
+            if (state[identifier]["kind"] == "goal" and large_bound(where, tier) is None
+                    and tier_cap(tier) > max_prompt_bytes(tier, state[identifier]["goal_class"])):
+                # Once per goal: package.py again at the tier cap; the goal is then sent at that size.
+                kernel.repackage(run, function, where, tier, tier_cap(tier), "smallest task over the "
+                                 "default bound (%s)" % reason)
+                counts.bump("repackaged_large")
+                filed += 1
+                continue
             counts.bump("waiting_decision_too_large" if file_too_large(run, identifier, tier, reason, located)
                         else "too_large")
         else:
@@ -668,7 +714,7 @@ def step(function, run, limit=None, jobs=8, kernel=None):
                       if action == "prove" and tier == MECHANICAL and i in free]
         progress += run_mechanical(function, run, located, mechanical, counts)
         progress += sync_package_class(function, run, located, counts)
-        progress += escalate_unpromptable(function, run, located, free, counts)
+        progress += escalate_unpromptable(function, run, located, free, counts, kernel)
         if not progress:
             break
     located = locate(run, function)
