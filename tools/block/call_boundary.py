@@ -906,10 +906,14 @@ def call_return_seed(edges, *, call, function_root, root_seed, shapes, vocabular
                     'address_z': resource.address_z, 'byte_array_expr': input_expr(value, None).to_dict(),
                     'element_bits': 8, 'length_original_coq': str(length)}
             # A literal length stays a nat numeral; a named length (`returned_lengths`) is the Z of the
-            # caller's `a ↦ₘ? n` (isla ghost_state), so that fact compares in Z.
-            fact = ('(List.length %s = %s)%%nat' if isinstance(length, int)
-                    else '(Z.of_nat (List.length %s) = %s)%%Z') % (value, length)
-            extra_facts.append({'resource_id': key, 'count': length, 'coq': fact})
+            # caller's `a ↦ₘ? n` (isla ghost_state), so that fact compares in Z. A prefix that holds a
+            # caller value (the spec returns its pre binder) gets no new length fact: the spec's own
+            # fact, carried with the call's facts, states it, and the caller's facts already give
+            # that value's length in their own spelling.
+            if not (remainder and split['post'] is None):
+                fact = ('(List.length %s = %s)%%nat' if isinstance(length, int)
+                        else '(Z.of_nat (List.length %s) = %s)%%Z') % (value, length)
+                extra_facts.append({'resource_id': key, 'count': length, 'coq': fact})
             split['pieces'] = [key]
             if remainder:
                 # The root's facts on the region (its length among them) do not hold of the rest: it
