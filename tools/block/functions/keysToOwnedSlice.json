@@ -97,6 +97,12 @@
     "+0x118"
   ],
   "cfg_function": "array_list.Aligned([32]u8,null).toOwnedSlice",
+  "compliance": {
+    "boundary": "ZesuSsz.Compliance.KeysToOwnedSliceCompositionBoundary",
+    "continuation": "keysToOwnedSliceContinuation",
+    "inline_returns": false,
+    "source": "Exit design A (KeysToOwnedSliceGeneratedComposition.v): every table entry carries the contract continuation at returnAddress as K; the callers of the return slots take the generated return package at returnAddress; the composition proves each package's return premise from K through that package's end bridge."
+  },
   "domain_component": "\u231ckeysBlockDomainAt returnAddress args\u231d",
   "opaque_predicates": {
     "altFlHeap": {
@@ -409,6 +415,6 @@
   },
   "generated_from": {
     "path": "tools/block/functions/keysToOwnedSlice.annotations.json",
-    "sha256": "7e608df8d949062a287901e8c70560bff92d52d71566970f8289efe4463ef7b4"
+    "sha256": "eeed38240c03f4c9befd63fd63c4969eaf7ef102533d4959699b3bfcb4529aad"
   }
 }
