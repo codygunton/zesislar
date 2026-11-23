@@ -329,11 +329,28 @@ Definition alWindowSub_statement : Prop :=
     alWindow bytes (base + offset) size =
       firstn (Z.to_nat size) (skipn (Z.to_nat offset) (alWindow bytes base len)).
 
+(* alBigEndianNonneg [L]: bigEndian is non-negative. Uses: none (leaf). *)
+Definition alBigEndianNonneg_statement : Prop :=
+  forall bytes : list byte, 0 <= bigEndian bytes.
+
 (* alDomainReflect [P]: the Prop domain gives the boolean domain. Uses: none (leaf). *)
 Definition alDomainReflect_statement : Prop :=
   forall input : list byte, txAccessListDomain input -> alTopDomainb input = true.
 
-(* alSailItemCandidate [P]: Sail's item header equals candidateDecodeItem when the long length does not wrap. Uses: none (leaf). *)
+(* alSailItemShort [P]: Sail's item header equals candidateDecodeItem for a short prefix (below 184, or 192 to 247). Uses: none (leaf). *)
+Definition alSailItemShort_statement : Prop :=
+  forall (prefix : byte) (rest : list byte),
+    bv_unsigned prefix < 184 \/ 192 <= bv_unsigned prefix < 248 ->
+    alSailItem (prefix :: rest) = alCandidateItem (prefix :: rest).
+
+(* alSailItemLong [P]: Sail's item header equals candidateDecodeItem for a long prefix (184 to 191, or 248 up) when the length does not wrap. Uses: alBigEndianNonneg. *)
+Definition alSailItemLong_statement : Prop :=
+  forall (prefix : byte) (rest : list byte),
+    184 <= bv_unsigned prefix < 192 \/ 248 <= bv_unsigned prefix ->
+    alHeaderFitsb (prefix :: rest) = true ->
+    alSailItem (prefix :: rest) = alCandidateItem (prefix :: rest).
+
+(* alSailItemCandidate [P]: Sail's item header equals candidateDecodeItem when the long length does not wrap. Uses: alSailItemShort, alSailItemLong. *)
 Definition alSailItemCandidate_statement : Prop :=
   forall r : list byte, alHeaderFitsb r = true -> alSailItem r = alCandidateItem r.
 
@@ -352,6 +369,31 @@ Definition alSailKeysFuelEnough_statement : Prop :=
 Definition alSailEntriesFuelEnough_statement : Prop :=
   forall (fuel : nat) (entries : list byte),
     (List.length entries <= fuel)%nat -> alSailEntriesFuel fuel entries = alSailEntries entries.
+
+(* alSailKeysCons [P]: alSailKeys of a non-empty list: one key item, then alSailKeys of the rest. Uses: alSailItemBounds, alSailKeysFuelEnough. *)
+Definition alSailKeysCons_statement : Prop :=
+  forall keys : list byte,
+    keys <> nil ->
+    alSailKeys keys =
+      match alSailItem keys with
+      | Some (false, h, p) =>
+          if p <=? 32 then option_map (Z.add 1) (alSailKeys (alSkip keys h p)) else None
+      | _ => None
+      end.
+
+(* alSailEntriesCons [P]: alSailEntries of a non-empty list: one entry item, then alSailEntries of the rest. Uses: alSailItemBounds, alSailEntriesFuelEnough. *)
+Definition alSailEntriesCons_statement : Prop :=
+  forall entries : list byte,
+    entries <> nil ->
+    alSailEntries entries =
+      match alSailItem entries with
+      | Some (true, h, p) =>
+          match alSailEntry (alWindow entries h p), alSailEntries (alSkip entries h p) with
+          | Some keys, Some (addresses, slots) => Some (addresses + 1, slots + keys)
+          | _, _ => None
+          end
+      | _ => None
+      end.
 
 (* alKeysAgree [P]: keys walk: Sail count = candidate count, or a D2 key-length hit. Uses: alSailItemCandidate, alSailItemBounds, alSailKeysFuelEnough. *)
 Definition alKeysAgree_statement : Prop :=
@@ -462,7 +504,7 @@ Definition alDecodeWord_statement : Prop :=
     then runAccessListPrompt (ALS.rlp_decode_word f) rs true = (Reject RlpDecode, rs)
     else exists w : ALT.word, runAccessListPrompt (ALS.rlp_decode_word f) rs true = (Success w, rs).
 
-(* alKeysStep [W]: one unfolding of _rec_decode_access_list_keys, the recursive call given. Uses: alRunBind, alRunBindAssoc, alRunAssertTrue, alDecodeItem, alDecodeWord, alWindowSuffix, alSailItemBounds, alSailKeysFuelEnough. *)
+(* alKeysStep [W]: one unfolding of _rec_decode_access_list_keys, the recursive call given. Uses: alRunBind, alRunAssertTrue, alDecodeItem, alDecodeWord, alWindowSuffix, alSailItemBounds, alSailKeysCons. *)
 Definition alKeysStep_statement : Prop :=
   forall (bytes : list byte) (rs : ALT.regstate) (base len : Z) (s : ALT.StatelessInputSliceFields base len) (addr : ALT.address)
       (addressBound slotBound : Z) (tail : ALT.AccessListDecode addressBound slotBound)
@@ -488,7 +530,35 @@ Definition alKeysRec_statement : Prop :=
     alDecodeIs (runAccessListPrompt (ALS._rec_decode_access_list_keys s addr tail fuel acc) rs true)
       rs (alKeysModel tail (alWindow bytes base len)).
 
-(* alEntriesStep [W]: one unfolding of _rec_decode_access_list_entries, the recursive call given. Uses: alRunBind, alRunBindAssoc, alRunAssertTrue, alDecodeItem, alDecodeList, alExpectEnd, alDecodeWord, alKeysRec, alWindowSuffix, alWindowSub, alSailItemBounds, alSailEntriesFuelEnough. *)
+(* alEntriesStepNotList [W]: one unfolding of _rec_decode_access_list_entries when the first item is not a list: Reject. Uses: alRunBind, alRunAssertTrue, alDecodeItem, alDecodeList. *)
+Definition alEntriesStepNotList_statement : Prop :=
+  forall (bytes : list byte) (rs : ALT.regstate) (base len : Z) (s : ALT.StatelessInputSliceFields base len)
+      (fuel : Z) (acc : Acc (Zwf 0) fuel),
+    alRegs rs bytes -> alSliceIn bytes base len -> ALT.StatelessInputSliceFields_len s = len ->
+    0 < len -> len <= fuel ->
+    (forall h p : Z, alSailItem (alWindow bytes base len) <> Some (true, h, p)) ->
+    alDecodeIs (runAccessListPrompt (ALS._rec_decode_access_list_entries s fuel acc) rs true) rs None.
+
+(* alEntriesStepList [W]: one unfolding of _rec_decode_access_list_entries on a list item, the recursive call given. Uses: alRunBind, alRunAssertTrue, alDecodeItem, alDecodeList, alExpectEnd, alDecodeWord, alKeysRec, alWindowSuffix, alWindowSub, alSailItemBounds. *)
+Definition alEntriesStepList_statement : Prop :=
+  forall (bytes : list byte) (rs : ALT.regstate) (base len : Z) (s : ALT.StatelessInputSliceFields base len)
+      (fuel : Z) (acc : Acc (Zwf 0) fuel) (h p : Z),
+    alRegs rs bytes -> alSliceIn bytes base len -> ALT.StatelessInputSliceFields_len s = len ->
+    0 < len -> len <= fuel ->
+    alSailItem (alWindow bytes base len) = Some (true, h, p) ->
+    (forall (base' len' : Z) (s' : ALT.StatelessInputSliceFields base' len')
+        (acc' : Acc (Zwf 0) (fuel - 1)),
+       alSliceIn bytes base' len' -> ALT.StatelessInputSliceFields_len s' = len' -> len' < len ->
+       alDecodeIs (runAccessListPrompt (ALS._rec_decode_access_list_entries s' (fuel - 1) acc') rs true)
+         rs (alSailEntries (alWindow bytes base' len'))) ->
+    alDecodeIs (runAccessListPrompt (ALS._rec_decode_access_list_entries s fuel acc) rs true) rs
+      (match alSailEntry (alWindow bytes (base + h) p),
+             alSailEntries (alWindow bytes (base + (h + p)) (len - (h + p))) with
+       | Some keys, Some (addresses, slots) => Some (addresses + 1, slots + keys)
+       | _, _ => None
+       end).
+
+(* alEntriesStep [W]: one unfolding of _rec_decode_access_list_entries, the recursive call given. Uses: alEntriesStepNotList, alEntriesStepList, alSailEntriesCons, alSailItemBounds, alWindowSub, alWindowSuffix. *)
 Definition alEntriesStep_statement : Prop :=
   forall (bytes : list byte) (rs : ALT.regstate) (base len : Z) (s : ALT.StatelessInputSliceFields base len)
       (fuel : Z) (acc : Acc (Zwf 0) fuel),
