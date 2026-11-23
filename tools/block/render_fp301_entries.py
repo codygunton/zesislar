@@ -389,6 +389,12 @@ for suffix, slot in units:
         boundary["alternatives"] = [boundary["alternatives"][number]
                                     for number in boundary["slots"][slot]["alternatives"]]
     unreachable = suffix in profile.get("unreachable_entries", [])
+    if unreachable and suffix in profile.get("unreachable_reached", []) and boundary["alternatives"] \
+            and all(row["predecessor_pc"] is None for row in boundary["alternatives"]):
+        # A `reached: contradictory_guards` row cut every edge from a predecessor block; what remains is
+        # the block's own seed (a call return site), rendered as usual. Each cut edge's predecessor still
+        # steps into this entry and must close by contradiction in the kernel.
+        unreachable = False
     if unreachable and boundary["alternatives"]:
         # An `unreachable` annotation row at a block the forward pass reaches is wrong.
         cases.append({"pc": pc, "status": "refused_unreachable_row", "proof_ran": False,

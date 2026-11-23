@@ -27,8 +27,10 @@ The compiled profile keys, by `boundary`:
                    A row whose single effective fact is `False` (role `unreachable`) lists `pc` in
                    `unreachable_entries` (entry ⌜False⌝; refused where the forward pass reaches it); with
                    `reached: contradictory_guards` also in `unreachable_reached`: the forward pass stops
-                   paths into `pc` and each predecessor proves ⌜False⌝ in the kernel. Its facts of role
-                   `relies_on` record the guards it relies on, as documentation only (never emitted).
+                   every path into `pc` from a predecessor block, and each such predecessor proves its
+                   step in the kernel from contradictory guards; a `pc` with its own seed (a call return
+                   site) keeps that seed's entry, any other gets ⌜False⌝. Its facts of role `relies_on`
+                   record the guards it relies on, as documentation only (never emitted).
   call_site        a `calls` row: the row's `call` object with `call_site_pc`. Its `opaque` rows
                    [{`spec`, `use`: framed | consumed | produced, `caller`: [...]}] name spec resources in
                    the spec's text and, for a consumed one, the caller components it takes; its `returns`
