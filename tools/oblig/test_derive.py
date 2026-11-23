@@ -49,11 +49,103 @@ class Derive(unittest.TestCase):
         self.root = Path(self.directory.name)
         (self.root / 'registry.json').write_text(json.dumps({'functions': []}))
 
-    def run_derive(self, function, render=None):
+    def run_derive(self, function, render=None, **options):
         (self.root / 'cfg.json').write_text(json.dumps({'functions': [function]}))
+        options.setdefault('inventory', self.root / 'no-inventory.json')
         return derive.derive('demo', self.root / 'run', symbol='demo.fn', cfg=self.root / 'cfg.json',
                              render=render, registry_path=self.root / 'registry.json',
-                             names={CALLEE: 'callee.fn'})
+                             names={CALLEE: 'callee.fn'}, **options)
+
+    def registry(self, status):
+        (self.root / 'registry.json').write_text(json.dumps({'functions': [{
+            'function': 'callee', 'symbol': 'callee.fn', 'status': status,
+            'interface': {'module': 'Demo.Interface'}, 'call_spec': {'name': 'calleeSpec'}}]}))
+
+    def test_a_call_to_a_proved_callee_gets_the_callee_side_of_its_row(self):
+        """The callee side is what every other caller's profile row agrees on; caller terms stay open."""
+        self.registry('proved')
+        profiles = self.root / 'functions'
+        profiles.mkdir()
+        def call(site, caller_value):
+            return {'function': 'other.fn', 'call_site_pc': site, 'callee_pc': 'callee.fn+0x0',
+                    'spec': 'calleeSpec', 'spec_module': 'Demo.Interface', 'spec_source': 'Demo/Interface.v',
+                    'stack_bytes': 16, 'output_length_source': 'fixture',
+                    'arrays': [{'binder': 'input', 'argument': 1, 'caller_value': caller_value},
+                               {'binder': 'out', 'argument': 0, 'length': 40, 'length_source': 'fixture'}]}
+        (profiles / 'other.json').write_text(json.dumps({'calls': [call('+0x10', 'a'), call('+0x20', 'b')]}))
+        (profiles / 'other.annotations.json').write_text(json.dumps({'calls': [call('+0x30', 'c')]}))
+        result = self.run_derive(FUNCTION, profiles=profiles)
+        row, = [row for row in result['requests'] if row['kind'] == 'call_row']
+        self.assertTrue(row['derivable'])
+        self.assertEqual(row['proposal']['at'], {'pc': '+0x14', 'boundary': 'call_site'})
+        self.assertEqual(row['proposal']['call'], {
+            'function': 'demo.fn', 'callee_pc': 'callee.fn+0x0', 'return_site_pc': '+0x18', 'spec': 'calleeSpec',
+            'spec_module': 'Demo.Interface', 'spec_source': 'Demo/Interface.v', 'stack_bytes': 16,
+            'output_length_source': 'fixture',
+            'arrays': [{'binder': 'input', 'argument': 1},
+                       {'binder': 'out', 'argument': 0, 'length': 40, 'length_source': 'fixture'}]})
+        self.assertEqual(row['proposal']['open'], ['arrays[input].caller_value'])
+        self.assertNotIn('callee_premise', {row['kind'] for row in result['requests']})
+        # A callee without a registry row, or one with another status, gets no proposal.
+        for status in ('candidate', None):
+            if status is None:
+                (self.root / 'registry.json').write_text(json.dumps({'functions': []}))
+            else:
+                self.registry(status)
+            row, = [row for row in self.run_derive(FUNCTION, profiles=profiles)['requests']
+                    if row['kind'] == 'call_row']
+            self.assertEqual((row['derivable'], row['proposal']), (False, None))
+
+    def test_without_other_callers_the_spec_gives_the_callee_side(self):
+        """The committed decodeItem interface spec: binders, arguments and stack; lengths stay open."""
+        entry = next(row for row in json.loads(derive.REGISTRY.read_text())['functions']
+                     if row['function'] == 'decodeItem')
+        fields, arrays, open_fields = derive.spec_call_fields(entry)
+        self.assertEqual(fields['spec'], entry['call_spec']['name'])
+        self.assertEqual(fields['spec_source'], 'ZesuSsz/Interfaces/DecodeItem.v')
+        self.assertEqual([(row['binder'], row['argument']) for row in arrays], [('input', 1), ('before', 0)])
+        self.assertIn('output_length_source', open_fields)
+
+    def dispatch_function(self, write_index=False):
+        """1000 masks a2 and jumps through a 3-entry table at 1004 to 1008, 100c or 1010."""
+        rows = [row(0x1000, 'plain', 'andi', rd=10, rs1=12),
+                row(0x1004, 'indirect', 'jalr', rs1=10, resolution='three checked table entries',
+                    successors=[0x1008, 0x100c, 0x1010]),
+                *[row(pc, 'return', 'jalr', rs1=1) for pc in (0x1008, 0x100c, 0x1010)]]
+        if write_index:
+            rows[0] = row(0x1000, 'plain', 'addi', rd=12, rs1=12)
+            rows.insert(1, row(0x1002, 'plain', 'andi', rd=10, rs1=12))
+        blocks = [{'start': 0x1000, 'end': 0x1008, 'successors': [0x1008, 0x100c, 0x1010]},
+                  *[{'start': pc, 'end': pc + 4, 'successors': []} for pc in (0x1008, 0x100c, 0x1010)]]
+        function = {'name': 'demo.fn', 'entry': BASE, 'end': BASE + 0x14, 'rows': rows, 'blocks': blocks,
+                    'calls': [], 'returns': [0x1008, 0x100c, 0x1010], 'loops': []}
+        # The table address is data: built here, named by the symbol table.
+        table = BASE + 0x400
+        (self.root / 'inventory.json').write_text(json.dumps({'functions': [{'name': 'demo.fn', 'dispatch': {
+            'pc': 0x1004, 'table_address': table, 'index_register': 12, 'index_mask': 255,
+            'index_bounds': [0, 2], 'bound_status': 'Required entry condition.',
+            'targets': [0x1008, 0x100c, 0x1010],
+            'evidence_instructions': [0x1002 if write_index else 0x1000, 0x1004]}}]}))
+        return function
+
+    def test_a_jump_table_is_a_predicate_request_with_its_index_bound(self):
+        result = self.run_derive(self.dispatch_function(), inventory=self.root / 'inventory.json')
+        row, = [row for row in result['requests'] if row['kind'] == 'predicate']
+        self.assertEqual((row['id'], row['pc'], row['derivable']), ('demo/decision/predicate-0004', '+0x4', True))
+        self.assertIn('3 entries', row['needs'][0])
+        self.assertIn('index x12 & 255 in [0, 2]', row['needs'][1])
+        self.assertEqual(row['proposal']['facts'], [{'coq': '(0 <= Z.land (bv_unsigned entry_x12) 255 <= 2)%Z',
+                                                     'role': 'dispatch_bound'}])
+        self.assertEqual(row['proposal']['binders'], [{'name': 'entry_x12', 'register': 'x12'}])
+        # An index written before the jump is no entry value: the request stays, without a proposal.
+        function = self.dispatch_function(write_index=True)
+        result = self.run_derive(function, inventory=self.root / 'inventory.json')
+        row, = [row for row in result['requests'] if row['kind'] == 'predicate']
+        self.assertFalse(row['derivable'])
+        self.assertIn('not an entry fact', row['needs'][-1])
+        # Without the closure record the jump still surfaces, with its entry count only.
+        row, = [row for row in self.run_derive(function)['requests'] if row['kind'] == 'predicate']
+        self.assertEqual((row['derivable'], len(row['needs'])), (False, 1))
 
     def render_dir(self, cases, forward=None):
         render = self.root / 'render'
@@ -121,13 +213,29 @@ class Derive(unittest.TestCase):
         self.assertEqual([row['reason'] for row in result['refusals_without_request']], ['refused_no_alternatives'])
 
     def test_tx_access_list_round_one_floor(self):
-        """The committed CFG: 1 contract, 3 loop cuts, 12 call rows, 7 callees without a registry row."""
+        """The committed CFG: 1 contract, 3 loop cuts, 12 call rows, 7 callees without a registry row; the
+        5 decodeItem call rows take their callee side from the decodeParentHeader and nextUint64 profiles."""
         with tempfile.TemporaryDirectory() as run:
             result = derive.derive('txAccessList', Path(run), symbol='rlp_decode.txAccessList')
         counts = {key: value for key, value in result['counts'].items() if value}
         self.assertEqual(counts, {'contract': 1, 'loop_assertion': 3, 'call_row': 12, 'callee_premise': 7})
-        loops = sorted(row['pc'] for row in result['requests'] if row['kind'] == 'loop_assertion')
-        self.assertEqual(loops, ['+0x18c', '+0x2ec', '+0xc4'])
+        loops = {row['pc']: row['needs'] for row in result['requests'] if row['kind'] == 'loop_assertion'}
+        self.assertEqual(sorted(loops), ['+0x18c', '+0x2ec', '+0xc4'])
+        self.assertTrue(loops['+0x2ec'][0].startswith('hand loop_heads row'))
+        self.assertEqual(loops['+0xc4'], [])
+        derivable = sorted(row['pc'] for row in result['requests'] if row['derivable'])
+        self.assertEqual(derivable, ['+0x108', '+0x158', '+0x19c', '+0x64', '+0xd4'])
+
+    def test_decode_tx_fields_jump_table_and_non_natural_heads(self):
+        with tempfile.TemporaryDirectory() as run:
+            result = derive.derive('decodeTxFields', Path(run), symbol='rlp_decode.decodeTxFields')
+        predicate, = [row for row in result['requests'] if row['kind'] == 'predicate']
+        self.assertEqual((predicate['pc'], predicate['derivable']), ('+0x78', True))
+        self.assertIn('5 entries', predicate['needs'][0])
+        hand = sorted(row['pc'] for row in result['requests'] if row['kind'] == 'loop_assertion'
+                      and row['needs'] and row['needs'][0].startswith('hand loop_heads row'))
+        self.assertEqual(hand, ['+0x1f10', '+0x1f14'])
+        self.assertEqual(sum(row['derivable'] for row in result['requests'] if row['kind'] == 'call_row'), 63)
 
 
 if __name__ == '__main__':
