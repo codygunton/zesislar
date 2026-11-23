@@ -160,7 +160,7 @@ def callees(function, registry, names):
         rows.append({'call_site': offset(int(call['pc']), base), 'kind': call['kind'],
                      'callee': symbol, 'callee_pc': (symbol + '+0x0') if symbol else None,
                      'status': entry['status'] if entry else None,
-                     'registry': {key: entry[key] for key in ('function', 'status', 'interface', 'call_spec')
+                     'registry': {key: entry[key] for key in ('function', 'status', 'interface', 'call_spec', 'premise')
                                   if key in entry} if entry else None})
     return rows
 

@@ -28,28 +28,30 @@ Definition ziskMemcpyCallDomain (destination source length : Z) : Prop :=
     ziskWritableSection stockZiskPermissions destination length).
 
 (* The ZisK memcpy service (ZiskRuntime.v) in the machine_call shape, for
-   any reached copy: memcpy returns to ra with sp and the callee-saved
-   registers preserved, stores the count at the extra-params word, and copies
+   any reached copy: memcpy returns to ra with sp, the callee-saved
+   registers and zisk_input_end preserved (the stub csrs/add/ret does not
+   write it; decodeItem callers need its exact value), stores the count at the extra-params word, and copies
    the source bytes to the destination. The two separately owned ranges
    exclude overlap, so this covers only the non-overlapping case of
-   ziskMemcpyMemory. It uses no stack. memcpyCallSpec2
-   (ParentHeaderMemcpyService.v) is its instance at one source and length. *)
+   ziskMemcpyMemory. It uses no stack. It does not cover memcpyCallSpec2
+   (ParentHeaderMemcpyService.v): that copy reads .rodata, outside RAM, so
+   the trust base keeps both memcpy premises. *)
 Definition ziskMemcpyCallSpec `{!islaG Sigma} `{!threadG} : iProp Sigma :=
   (machine_call decodeItemCallMap 0
     (fun argv sp RET =>
-      ∃ (source scratch : list byte),
+      ∃ (inputEndBits : bv 64) (source scratch : list byte),
+      "zisk_input_end" ↦ᵣ RVal_Bits inputEndBits ∗
       ⌜ziskMemcpyCallDomain (bv_unsigned (argv !!! 0%nat))
         (bv_unsigned (argv !!! 1%nat)) (bv_unsigned (argv !!! 2%nat))⌝ ∗
-      reg_col [(KindReg "zisk_input_end", BitsShape 64);
-               (KindReg "zisk_free_input", BitsShape 64)] ∗
+      reg_col [(KindReg "zisk_free_input", BitsShape 64)] ∗
       bv_unsigned (argv !!! 1%nat) ↦ₘ∗ source ∗
       bv_unsigned (argv !!! 0%nat) ↦ₘ? bv_unsigned (argv !!! 2%nat) ∗
       ziskExtraParamsAddress ↦ₘ∗ scratch ∗
       ⌜Z.of_nat (length source) = bv_unsigned (argv !!! 2%nat)⌝ ∗
       ⌜length scratch = 8%nat⌝ ∗
       RET (fun _ =>
-        reg_col [(KindReg "zisk_input_end", BitsShape 64);
-                 (KindReg "zisk_free_input", BitsShape 64)] ∗
+        "zisk_input_end" ↦ᵣ RVal_Bits inputEndBits ∗
+        reg_col [(KindReg "zisk_free_input", BitsShape 64)] ∗
         bv_unsigned (argv !!! 1%nat) ↦ₘ∗ source ∗
         bv_unsigned (argv !!! 0%nat) ↦ₘ∗ source ∗
         ziskExtraParamsAddress ↦ₘ∗ word64Bytes (bv_unsigned (argv !!! 2%nat)) ∗

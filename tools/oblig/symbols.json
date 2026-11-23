@@ -15,6 +15,7 @@
     "alt_fl_alloc.resize",
     "alt_fl_alloc.remap",
     "alt_fl_alloc.free",
-    "alt_fl_alloc.vtable"
+    "alt_fl_alloc.vtable",
+    "alt_fl_alloc.state"
   ]
 }
