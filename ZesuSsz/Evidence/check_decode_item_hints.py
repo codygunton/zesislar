@@ -194,7 +194,7 @@ def manifest_errors(root: Path) -> tuple[list[str], int]:
 
 RESIDUAL_DIRECTORY = "ZesuSsz/Residuals"
 RESIDUAL_PREFIX = "ZesuSsz.Residuals."
-RESIDUAL_CALLERS = "tools/block/generated/fp301_callers"
+RESIDUAL_CALLERS = "tools/block/generated"
 RESIDUAL_SHARED = {"DecodeItemBridges"}
 RESIDUAL_HINT = re.compile(r"\s*#\[export\]\s*Hint\s+Resolve\s+(residual_\w+)\s*:\s*zesu_residual\s*")
 
@@ -246,15 +246,22 @@ def residual_errors(root: Path) -> list[str]:
             if module.startswith(RESIDUAL_PREFIX):
                 errors.append(f"{importer} imports residual module {module}; only its block caller may.")
     callers = root / RESIDUAL_CALLERS
-    for path in sorted(callers.glob("*.v")) if callers.is_dir() else []:
+    for path in sorted(callers.glob("*/*.v")) if callers.is_dir() else []:
         text = path.read_text()
+        # The original form names its block by the absolute boundary address; the
+        # relocatable form by the function of the caller dir (its CALLERS.json)
+        # and the caller's case offset (Caller<offset>.v).
         boundary = re.search(r"^Lemma DesignedBoundary_(800d[0-9a-f]{4})\b", text, re.M)
+        rows = path.parent / "CALLERS.json"
+        function = json.loads(rows.read_text()).get("function") if rows.is_file() else None
+        case = re.fullmatch(r"Caller([0-9a-f]{4})", path.stem)
+        owners = {boundary[1] if boundary else None, "%s+%s" % (function, case[1]) if function and case else None}
         for module in sorted(imported_modules(text) | exported_modules(text)):
             if not module.startswith(RESIDUAL_PREFIX):
                 continue
             if module not in modules:
                 errors.append(f"{path.name} imports a missing residual module {module}.")
-            elif not boundary or modules[module] != boundary[1]:
+            elif modules[module] not in owners - {None}:
                 errors.append(f"{path.name} imports another block's residual module {module}.")
     return errors
 

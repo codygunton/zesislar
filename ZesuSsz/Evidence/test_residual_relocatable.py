@@ -120,6 +120,45 @@ class RelocatablePolicyTests(unittest.TestCase):
         self.assertIn("not Block<address> or <function>/Block<offset>: ZesuSsz.Residuals.Block00c4.", errors)
         self.assertIn("ZesuSsz.Proofs.P imports residual module ZesuSsz.Residuals.txAccessList.Block00c4", errors)
 
+    CALLER = ("Require Import ZesuSsz.Residuals.{module}.\n"
+              "Lemma DesignedBoundary_{boundary} (x : Z) : True.\nProof.\n  zesu_block2.\nQed.\n")
+
+    def test_new_form_caller_is_matched_by_function_and_offset(self):
+        module = "txAccessList.Block00c4"
+        callers = "tools/block/generated/txaccesslist_fp301_callers/"
+        listing = '{"function": "txAccessList", "rows": []}\n'
+        # The boundary lemma name of a new function's caller plays no part.
+        boundary = "%x" % ((8 << 28) + 0xc4)
+        own = self.tree({"ZesuSsz/Residuals/txAccessList/Block00c4.v": self.MODULE,
+                         callers + "CALLERS.json": listing,
+                         callers + "Caller00c4.v": self.CALLER.format(module=module, boundary=boundary)})
+        self.assertEqual(residual_errors(own), [])
+        other = self.tree({"ZesuSsz/Residuals/txAccessList/Block00c4.v": self.MODULE,
+                           callers + "CALLERS.json": listing.replace("txAccessList", "keysToOwnedSlice"),
+                           callers + "Caller00c4.v": self.CALLER.format(module=module, boundary=boundary),
+                           callers.replace("txaccess", "tx2") + "CALLERS.json": listing,
+                           callers.replace("txaccess", "tx2") + "Caller0010.v":
+                               self.CALLER.format(module=module, boundary=boundary),
+                           "tools/block/generated/fp301_callers/Caller00c4.v":
+                               self.CALLER.format(module=module, boundary=boundary)})
+        errors = residual_errors(other)
+        self.assertEqual(errors, ["Caller00c4.v imports another block's residual module ZesuSsz.Residuals.%s." % module,
+                                  "Caller0010.v imports another block's residual module ZesuSsz.Residuals.%s." % module,
+                                  "Caller00c4.v imports another block's residual module ZesuSsz.Residuals.%s." % module])
+
+    def test_original_form_caller_is_still_matched_by_address(self):
+        old = ("Require Import ZesuSsz.Automation2.All.\n"
+               "#[export] Hint Resolve residual_6960_0123456789abcdef : zesu_residual.\n")
+        callers = "tools/block/generated/fp301_callers/"
+        root = self.tree({"ZesuSsz/Residuals/Block800d6960.v": old,
+                          callers + "Caller0000.v": self.CALLER.format(module="Block800d6960", boundary="800d6960"),
+                          callers + "Caller0014.v": self.CALLER.format(module="Block800d6960", boundary="800d6974")})
+        self.assertEqual(residual_errors(root), [
+            "Caller0014.v imports another block's residual module ZesuSsz.Residuals.Block800d6960."])
+
+    def test_repository_residual_imports_pass(self):
+        self.assertEqual(residual_errors(ROOT), [])
+
 
 if __name__ == "__main__":
     unittest.main()
