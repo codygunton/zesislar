@@ -545,6 +545,31 @@
    "why": "OutOfMemory path: alloc returned null, so the block owns altFlAllocatedBytes 0 n = 0 bytes; toOwnedSliceExit on OutOfMemory owns arrayListEmpty emptyPointer for the slice (nothing), so the exit does not need it"
   },
   {
+   "id": "join-98",
+   "request": "keysToOwnedSlice/decision/join_assertion-0098",
+   "at": {
+    "pc": "+0x98",
+    "boundary": "join"
+   },
+   "binders": [],
+   "resources": [],
+   "facts": [],
+   "drop": [
+    {
+     "root": "+0x0",
+     "resources": [
+      "arrayListPointer (keysBlockList args) ↦ₘ∗ arrayListItems (keysBlockList args)",
+      "(arrayListPointer (keysBlockList args) + arrayListLength (keysBlockList args) * keysElementBytes) ↦ₘ? ((arrayListCapacity (keysBlockList args) - arrayListLength (keysBlockList args)) * keysElementBytes)",
+      "altFlBlock (arrayListPointer (keysBlockList args)) (arrayListCapacity (keysBlockList args) * keysElementBytes) keysLog2Alignment"
+     ]
+    }
+   ],
+   "author": {
+    "tier": "opus-medium"
+   },
+   "why": "+0x98 joins the +0x78 edge (capacity 0: beqz skips the free) and the return of free(old_memory) at +0x94; the free consumed the old buffer, so the join does not own it; on the capacity-0 edge the edge leaves it behind (a weakening). The successors continue from the free call's return seed, which owns no old buffer."
+  },
+  {
    "id": "frame",
    "request": "keysToOwnedSlice/decision/join_assertion-00fc",
    "at": {
