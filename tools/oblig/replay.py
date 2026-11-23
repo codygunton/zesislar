@@ -159,8 +159,9 @@ def goal_class(statement):
 RULES = rl.TASK[rl.TASK.index("Rules:\n"):rl.TASK.index("\n\nLemma name:")]
 PROMPT = """# Pure goal {gid}
 
-Prove the Rocq lemma below. Work from this task alone: the only file you may read is the exact
-source named below. Do not search other files for the lemma or its proof.
+Prove the Rocq lemma below. Work from this task alone. Use no tools, with one exception: you may
+read the exact source named below when a literal width matters. Do not list, search or open any
+other file, and do not run commands; nothing else is needed to answer.
 
 {rules}
 
@@ -189,7 +190,8 @@ def base_prompt(corpus, row, header):
 
 
 def answer_form(gid):
-    return "\n" + package.ANSWER_FORM.format(answer="answers/%s.v" % gid)
+    return ("\n" + package.ANSWER_FORM.format(answer="answers/%s.v" % gid)
+            + "\nYour whole reply is that JSON object: no other fields, no wrapper object, no text around it.\n")
 
 
 def norm(text):
@@ -294,7 +296,7 @@ def prepare_goal(corpus, row, header, args, ocamlpath):
                      readable=rl.readable(text) if again is not None else "")
     else:
         found = rl.reparse(d, "rt-replay-" + row["id"], row["statement"], args, ocamlpath)
-    row.update(reparse=found["reparse"], readable=found.get("readable", ""))
+    row.update(reparse=found["reparse"], readable=found.get("readable", ""), reused=reuse)
     return row
 
 
@@ -347,7 +349,14 @@ def cmd_corpus(a):
     head = subprocess.run(["git", "-C", str(ROOT), "rev-parse", "HEAD"], capture_output=True, text=True).stdout.strip()
     data = dict(schema="oblig-replay-corpus/1", head=head, bank=str(Path(a.bank).resolve()), ocamlpath=ocamlpath,
                 max_prompt_bytes=max_bytes, recipes=list(RECIPES),
-                rows=[{k: v for k, v in r.items() if k not in ("statement", "readable")} for r in rows])
+                rows=[{k: v for k, v in r.items() if k not in ("statement", "readable", "reused")} for r in rows])
+    old = {r["id"]: r for r in (rl.read_json(corpus / "CORPUS.json") or {}).get("rows", [])} if a.resume else {}
+    for row in data["rows"]:
+        # A falsity verdict stays valid while the goal file (statement and imports) is unchanged.
+        before = old.get(row["id"])
+        reused = next(r for r in rows if r["id"] == row["id"]).get("reused")
+        if reused and before and before.get("falsify") and before["statement_sha256"] == row["statement_sha256"]:
+            row["falsify"] = before["falsify"]
     rl.write_json(corpus / "CORPUS.json", data)
     print_corpus(data)
 
@@ -445,14 +454,19 @@ def prepare_attempt(corpus, recipe, tier, attempt):
 MECHANICAL_PROOF = rl.pkg.CONTROL_TACTIC[len("Proof.\n"):]
 
 
+def task_text(row, recipe):
+    return Path(row["prompts"][recipe]["path"]).read_text()
+
+
 def prompt_of(corpus, row, recipe, tier, attempt):
-    """The prompt text of an attempt: the recipe's task (attempt 1) or the retry text (attempt 2+)."""
+    """The prompt text an attempt sent: the copy in the attempt's prompts/ (written by the wave; the
+    retry text for attempt 2+), else the recipe's task (attempt 1)."""
     if tier == "mechanical":
         return MECHANICAL_PROOF
-    if attempt > 1:
-        path = attempt_dir(corpus, recipe, tier, attempt) / "prompts" / ("%s.md" % row["id"])
+    path = attempt_dir(corpus, recipe, tier, attempt) / "prompts" / ("%s.md" % row["id"])
+    if path.exists() or attempt > 1:
         return path.read_text()
-    return Path(row["prompts"][recipe]["path"]).read_text()
+    return task_text(row, recipe)
 
 
 def start_event(row, recipe, tier, attempt, prompt):
@@ -464,8 +478,9 @@ def start_event(row, recipe, tier, attempt, prompt):
 
 
 def register_start(corpus, row, recipe, tier, attempt, prompt):
-    """Append the attempt's `running` event; store.Rejected when the (prompt, tier) pair was sent before.
-    The store lets a still-running attempt continue under its pair; a wave never re-sends it."""
+    """Append the attempt's `running` event; store.Rejected when the (prompt, tier) pair was sent before,
+    or when this attempt number of the tier was already sent. The store lets a still-running attempt
+    continue under its pair; a wave never re-sends it."""
     run = store_dir(corpus, recipe, tier)
     events = [e for e in store.read_events(run) if e["id"] == row["store_id"]]
     if not events:
@@ -474,23 +489,55 @@ def register_start(corpus, row, recipe, tier, attempt, prompt):
     if any(e.get("attempt") is not None and e.get("prompt_sha256") == sha(prompt) and e.get("tier") == tier
            for e in events):
         raise store.Rejected("prompt %s already sent to tier %s for %s" % (sha(prompt)[:16], tier, row["store_id"]))
+    if any(e.get("attempt") == attempt and e.get("tier") == tier for e in events):
+        raise store.Rejected("attempt %d of tier %s already sent for %s" % (attempt, tier, row["store_id"]))
     store.append(run, start_event(row, recipe, tier, attempt, prompt))
 
 
-def parse_reply(reply):
-    """(data dict or None, raw text) of an agent's final reply."""
-    if isinstance(reply, dict):
-        return reply, json.dumps(reply, sort_keys=True)
-    raw = reply if isinstance(reply, str) else str(reply)
-    for candidate in [raw] + re.findall(r"```(?:json)?\s*(\{.*?\})\s*```", raw, re.S) + \
-            ([raw[raw.index("{"):raw.rindex("}") + 1]] if "{" in raw and "}" in raw else []):
+def json_values(text, limit=200):
+    """JSON objects found in TEXT: the whole text, then each object starting at a `{` (at most LIMIT)."""
+    decoder = json.JSONDecoder()
+    try:
+        yield json.loads(text)
+    except (json.JSONDecodeError, ValueError):
+        pass
+    for n, match in enumerate(re.finditer(r"\{", text)):
+        if n >= limit:
+            break
         try:
-            data = json.loads(candidate)
+            value, _ = decoder.raw_decode(text, match.start())
         except (json.JSONDecodeError, ValueError):
             continue
-        if isinstance(data, dict):
-            return data, raw
-    return None, raw
+        yield value
+
+
+def find_verdict(value, depth=0):
+    """The prover answer object (a dict with a `verdict` key) at top level, inside any nested field, or
+    inside a string field that holds JSON (an agent's own envelope, a fenced block, surrounding text)."""
+    if depth > 8:
+        return None
+    if isinstance(value, dict):
+        if "verdict" in value:
+            return value
+        values = list(value.values())
+    elif isinstance(value, list):
+        values = value
+    elif isinstance(value, str):
+        values = [v for v in json_values(value) if v != value]
+    else:
+        return None
+    for item in values:
+        found = find_verdict(item, depth + 1)
+        if found is not None:
+            return found
+    return None
+
+
+def parse_reply(reply):
+    """(answer dict or None, raw text) of an agent's final reply."""
+    raw = json.dumps(reply, sort_keys=True) if isinstance(reply, (dict, list)) else (
+        reply if isinstance(reply, str) else str(reply))
+    return find_verdict(reply if isinstance(reply, (dict, list)) else raw), raw
 
 
 def record_answer(corpus, row, recipe, tier, attempt, reply, extra=None):
@@ -536,7 +583,8 @@ def run_wave(corpus, tier, spawn, recipe="similar", ids=None, sets=("known",), a
         rows = [r for r in rows if (attempt_dir(corpus, recipe, tier, attempt) / "prompts" / ("%s.md" % r["id"])).exists()]
     started, rejected = [], []
     for row in rows:
-        prompt = prompt_of(corpus, row, recipe, tier, attempt)
+        prompt = task_text(row, recipe) if attempt == 1 and tier != "mechanical" else \
+            prompt_of(corpus, row, recipe, tier, attempt)
         try:
             register_start(corpus, row, recipe, tier, attempt, prompt)
         except store.Rejected as error:
@@ -558,48 +606,146 @@ def run_wave(corpus, tier, spawn, recipe="similar", ids=None, sets=("known",), a
                 verdicts=verdicts, dir=str(attempt_dir(corpus, recipe, tier, attempt)))
 
 
-def prepare_retry(corpus, tier, recipe="similar", ids=None, attempt=2):
-    """Write the prompts of attempt ATTEMPT: the previous prompt plus the compiler error text (a FAIL of
-    `check`) or the named context items found in the similar-lemma index (need_context). A goal whose
-    previous attempt closed, gave up, or named context the index lacks gets no retry. Returns the ids."""
+SIMILAR_HEAD = "\n## Similar closed lemmas\n\n"
+CONTEXT_HEAD = "\n## Context you asked for\n\n"
+TRUNCATED = "\n[... truncated]"
+
+
+def split_prompt(text, gid):
+    """(base, similar-lemma blocks, tail) of an attempt-1 prompt: the goal part, the `Similarity` blocks
+    of the similar-lemma section, and the answer form."""
+    tail = answer_form(gid)
+    cut = text.rfind(tail)
+    if cut < 0:
+        # A task written before the answer form changed: cut at the answer-form heading.
+        cut = text.rfind("\n\n## Answer form")
+        tail = text[cut:] if cut >= 0 else ""
+    body = text[:cut] if cut >= 0 else text
+    start = body.find(SIMILAR_HEAD)
+    if start < 0:
+        return body, [], tail
+    section = body[start + len(SIMILAR_HEAD):]
+    blocks = [b for b in re.split(r"\n(?=Similarity \d)", section) if b.strip()]
+    return body[:start], blocks, tail
+
+
+def clip(text, limit):
+    """TEXT cut to at most LIMIT bytes, marked when cut."""
+    data = text.encode()
+    if len(data) <= limit:
+        return text
+    keep = max(0, limit - len(TRUNCATED.encode()))
+    return data[:keep].decode(errors="ignore") + TRUNCATED if keep else ""
+
+
+def fit_retry(previous, gid, extra, max_bytes, trim=()):
+    """The retry prompt: the goal part and answer form of PREVIOUS (never cut), as many of its similar
+    lemmas as fit, then EXTRA(cuts) where cuts maps each name of TRIM to a byte budget. Similar lemmas
+    go first, then the TRIM fields in order (errors, then the proof). None when even that cannot fit."""
+    base, blocks, tail = split_prompt(previous, gid)
+
+    def build(k, cuts):
+        section = SIMILAR_HEAD + "\n".join(blocks[:k]) if k else ""
+        return base + section + tail + extra(cuts)
+    for k in range(len(blocks), -1, -1):
+        text = build(k, {})
+        if len(text.encode()) <= max_bytes:
+            return text
+    cuts = {}
+    for name in trim:
+        cuts[name] = 0
+        room = max_bytes - len(build(0, cuts).encode())
+        if room >= 0:
+            cuts[name] = room
+            text = build(0, cuts)
+            return text if len(text.encode()) <= max_bytes else None
+    return None
+
+
+def needed_entries(index, needs, previous):
+    """Index entries a need_context answer names (by exact lemma name), minus those already in the prompt."""
+    text = " ".join(needs)
+    return [e for e in index["entries"] if re.search(r"(?<![\w'.])%s(?![\w'])" % re.escape(e["name"]), text)
+            and e["name"] not in previous]
+
+
+def retry_plan(corpus, tier, recipe="similar", ids=None, attempt=2, write=False):
+    """{id: reason} for every answer of attempt ATTEMPT-1, and the prompts of the ids whose reason is
+    `compile_error` or `need_context` (written to the attempt's prompts/ when WRITE). Reasons:
+    compile_error / need_context (retried: previous prompt with the similar lemmas trimmed first, then
+    the error text, then the proof; the goal part is never cut); missing_context (need_context naming
+    nothing the similar-lemma index or a hint pack holds beyond the prompt: no retry, the goal escalates
+    to the next tier, plan A7); no_room (the goal part alone leaves no room); already_sent (the store
+    holds this attempt for the id); closed, unchecked, verdict_<v> (no retry)."""
     corpus = Path(corpus)
     data = load_corpus(corpus)
     limit = tier_row(tier)["max_attempts"]
     if attempt > limit:
         raise ReplayError("Tier %s allows %d attempts." % (tier, limit))
+    max_bytes = tier_row(tier)["max_prompt_bytes"]
     before = attempt_dir(corpus, recipe, tier, attempt - 1)
-    d = prepare_attempt(corpus, recipe, tier, attempt)
     checks = rl.read_json(before / "CHECK.json", {})
+    sent = {e["id"] for e in store.read_events(store_dir(corpus, recipe, tier))
+            if e.get("attempt") == attempt and e.get("tier") == tier}
     index = None
-    out = []
+    plan, prompts = {}, {}
     for row in data["rows"]:
         if ids is not None and row["id"] not in ids:
             continue
         meta = rl.read_json(before / "answers" / ("%s.json" % row["id"]))
         old = before / "prompts" / ("%s.md" % row["id"])
-        if meta is None or not old.exists():
+        if not old.exists():
+            continue
+        if meta is None:
+            plan[row["id"]] = "verdict_malformed"
             continue
         previous = old.read_text()
-        if meta["verdict"] == "proved" and checks.get(row["id"], {}).get("result") == "FAIL":
-            proof = (before / "answers" / ("%s.v" % row["id"])).read_text()
-            errors = (before / "feedback" / ("%s.txt" % row["id"])).read_text()
-            text = previous + RETRY_ERROR.format(proof=proof.strip(), errors=errors.strip())
+        result = checks.get(row["id"], {}).get("result")
+        if meta["verdict"] == "proved" and result == "FAIL":
+            reason = "compile_error"
+            proof = (before / "answers" / ("%s.v" % row["id"])).read_text().strip()
+            errors = (before / "feedback" / ("%s.txt" % row["id"])).read_text().strip()
+            text = fit_retry(previous, row["id"], lambda cuts: RETRY_ERROR.format(
+                errors=clip(errors, cuts.get("errors", 1 << 30)), proof=clip(proof, cuts.get("proof", 1 << 30))),
+                max_bytes, trim=("errors", "proof"))
         elif meta["verdict"] == "need_context":
             index = index or similar.build_index()
-            found = [e for e in index["entries"] if any(n.split(".")[-1] == e["name"] for n in meta["needs"])]
+            found = needed_entries(index, meta.get("needs", []), previous)
+            text = None
+            for k in range(len(found), 0, -1):
+                text = fit_retry(previous, row["id"], lambda cuts, k=k: CONTEXT_HEAD + "\n".join(
+                    similar.render(e) for e in found[:k]), max_bytes)
+                if text:
+                    break
+            reason = "need_context" if text else "missing_context"
             if not found:
+                plan[row["id"]] = "missing_context"
                 continue
-            text = previous + "\n## Context you asked for\n\n" + "\n".join(similar.render(e) for e in found)
-        else:
+        elif meta["verdict"] == "proved":
+            plan[row["id"]] = "closed" if result == "PASS" else "unchecked"
             continue
-        if len(text.encode()) > tier_row(tier)["max_prompt_bytes"]:
-            text = previous + RETRY_ERROR.format(proof=proof.strip(), errors=errors.strip()[:1500]) \
-                if meta["verdict"] == "proved" else None
-            if text is None or len(text.encode()) > tier_row(tier)["max_prompt_bytes"]:
-                continue
-        (d / "prompts" / ("%s.md" % row["id"])).write_text(text)
-        out.append(row["id"])
-    return out
+        else:
+            plan[row["id"]] = "verdict_" + meta["verdict"]
+            continue
+        if row["store_id"] in sent:
+            plan[row["id"]] = "already_sent"
+        elif text is None:
+            plan[row["id"]] = "no_room" if reason == "compile_error" else reason
+        else:
+            plan[row["id"]] = reason
+            prompts[row["id"]] = text
+    if write:
+        d = prepare_attempt(corpus, recipe, tier, attempt)
+        for gid, text in prompts.items():
+            (d / "prompts" / ("%s.md" % gid)).write_text(text)
+        rl.write_json(d / "RETRY.json", plan)
+    return plan, prompts
+
+
+def prepare_retry(corpus, tier, recipe="similar", ids=None, attempt=2):
+    """Write the retry prompts of attempt ATTEMPT (retry_plan); returns the ids to send."""
+    _, prompts = retry_plan(corpus, tier, recipe, ids, attempt, write=True)
+    return sorted(prompts)
 
 
 RETRY_ERROR = """
@@ -622,6 +768,57 @@ Answer again with a corrected proof in the same JSON form.
 
 
 # ---- checks ----
+
+def append_result(run, event):
+    """Append the final event of an attempt. When the attempt already ended (a reply first scored
+    `malformed` and rescored later), the result goes in as a correction: the same id, tier and
+    prompt_sha256 with `attempt` null. The log stays append-only, the store's (prompt, tier) rule is not
+    touched (a correction is no attempt, so nothing is re-sent), and attempt_results applies a correction
+    to the attempt whose prompt it names."""
+    mine = [e for e in store.read_events(run) if e["id"] == event["id"] and e.get("tier") == event["tier"]
+            and e.get("prompt_sha256") == event["prompt_sha256"]]
+    if mine and mine[-1]["state"] != "running":
+        event = dict(event, attempt=None)
+    store.append(run, event)
+
+
+def rescore(corpus, tier, recipe="similar", attempt=1):
+    """Score again, with no model, the replies of an attempt that were stored as `malformed`
+    (answers/<id>.raw): an answer object found now is written with package.write_answer, WAVE.json is
+    updated, and a give_up / need_context verdict gets its correction event; `check` then scores the
+    proofs. Returns {verdict: count}."""
+    corpus = Path(corpus)
+    data = load_corpus(corpus)
+    d = attempt_dir(corpus, recipe, tier, attempt)
+    wave = rl.read_json(d / "WAVE.json", {})
+    counts = {}
+    for row in data["rows"]:
+        raw_path = d / "answers" / ("%s.raw" % row["id"])
+        if not raw_path.exists() or (d / "answers" / ("%s.json" % row["id"])).exists():
+            continue
+        raw = raw_path.read_text()
+        found, _ = parse_reply(raw)
+        extra = wave.get(row["id"], {})
+        verdict = "malformed"
+        if found is not None:
+            try:
+                verdict, _ = package.write_answer(d, row["id"], found, raw, tier, extra.get("tokens_in"),
+                                                  extra.get("tokens_out"))
+            except package.PackageError:
+                verdict = "malformed"
+        counts[verdict] = counts.get(verdict, 0) + 1
+        if verdict == "malformed":
+            continue
+        prompt = prompt_of(corpus, row, recipe, tier, attempt)
+        if verdict in ("give_up", "need_context"):
+            append_result(store_dir(corpus, recipe, tier), store.event(
+                id=row["store_id"], function=FUNCTION, kind="goal", state="failed", tier=tier, attempt=attempt,
+                prompt_sha256=sha(prompt), prompt_bytes=len(prompt.encode()), answer_bytes=len(raw.encode()),
+                tokens_in=extra.get("tokens_in"), tokens_out=extra.get("tokens_out"), **{"class": verdict}))
+        wave[row["id"]] = dict(extra, verdict=verdict, rescored=True)
+    rl.write_json(d / "WAVE.json", wave)
+    return counts
+
 
 def check_one(corpus, data, row, recipe, tier, attempt):
     """(result, class) of one answer, after appending its final store event."""
@@ -653,7 +850,7 @@ def check_one(corpus, data, row, recipe, tier, attempt):
                      store.event(state="failed", **{"class": "bad_counterexample"}, **base))
     else:
         return None
-    store.append(store_dir(corpus, recipe, tier), event)
+    append_result(store_dir(corpus, recipe, tier), event)
     return result
 
 
@@ -789,10 +986,15 @@ def attempt_results(corpus, data, tiers):
         for tier_dir in sorted(p for p in recipe_dir.iterdir() if p.is_dir()):
             if tier_dir.name not in names:
                 continue
-            state = {}
+            state, by_prompt = {}, {}
             for event in store.read_events(tier_dir):
                 if event.get("attempt") is None:
-                    continue
+                    # A correction (append_result) names its attempt by prompt.
+                    number = by_prompt.get((event["id"], event.get("prompt_sha256")))
+                    if number is None or event["state"] in ("running", "derived"):
+                        continue
+                    event = dict(event, attempt=number)
+                by_prompt[(event["id"], event.get("prompt_sha256"))] = event["attempt"]
                 slot = state.setdefault(event["id"], {}).setdefault(event["attempt"], dict(result="running"))
                 slot["prompt_bytes"] = event.get("prompt_bytes")
                 if event["state"] != "running":
@@ -922,6 +1124,24 @@ def cmd_status(a):
         print("ATTEMPTS %s %s %s" % (recipe, tier, " ".join("%s=%d" % kv for kv in sorted(counts.items()))))
 
 
+def cmd_rescore(a):
+    counts = rescore(a.corpus, a.tier, a.recipe, a.attempt)
+    print("RESCORE %s %s a%d %s" % (a.recipe, a.tier, a.attempt, " ".join("%s=%d" % kv for kv in sorted(counts.items()))))
+
+
+def cmd_retry_plan(a):
+    """Print the retry reasons of an attempt and the ids a retry would send (writes nothing)."""
+    plan, prompts = retry_plan(a.corpus, a.tier, a.recipe, None, a.attempt)
+    counts = {}
+    for reason in plan.values():
+        counts[reason] = counts.get(reason, 0) + 1
+    print("RETRY-PLAN %s %s a%d %s" % (a.recipe, a.tier, a.attempt, " ".join("%s=%d" % kv for kv in sorted(counts.items()))))
+    for reason in sorted(counts):
+        print("  %s: %s" % (reason, " ".join(sorted(g for g, r in plan.items() if r == reason))))
+    print("  start: %s (max prompt bytes %d)" % (" ".join(sorted(prompts)), max((len(t.encode()) for t in prompts.values()),
+                                                                               default=0)))
+
+
 def main(argv=None):
     ap = argparse.ArgumentParser(description=__doc__.split("\n\n")[0])
     sub = ap.add_subparsers(dest="command", required=True)
@@ -956,10 +1176,17 @@ def main(argv=None):
     r.add_argument("--corpus", required=True)
     r.add_argument("--out", default=str(ROUTING_FILE))
     r.add_argument("--min-share", type=float, default=MIN_SHARE)
+    for name in ("rescore", "retry-plan"):
+        p = sub.add_parser(name)
+        p.add_argument("--corpus", required=True)
+        p.add_argument("--tier", required=True)
+        p.add_argument("--recipe", default="similar")
+        p.add_argument("--attempt", type=int, default=1 if name == "rescore" else 2)
     a = ap.parse_args(argv)
     try:
-        dict(corpus=cmd_corpus, falsify=cmd_falsify, wave=cmd_wave, check=cmd_check, original=cmd_original,
-             status=cmd_status, routing=cmd_routing)[a.command](a)
+        {"corpus": cmd_corpus, "falsify": cmd_falsify, "wave": cmd_wave, "check": cmd_check,
+         "original": cmd_original, "status": cmd_status, "routing": cmd_routing, "rescore": cmd_rescore,
+         "retry-plan": cmd_retry_plan}[a.command](a)
     except (ReplayError, package.PackageError) as error:
         sys.exit("replay: %s" % error)
 

@@ -58,14 +58,23 @@ def base_overrides(root=None):
     return out
 
 
+def _finished(handle):
+    """True when the handle is done, or the kernel no longer knows it (its result expired)."""
+    try:
+        return bool(handle.done())
+    except Exception:  # RuntimeError('unknown agent handle ...; result expired') and the like
+        return True
+
+
+def _prune():
+    """Drop finished (or expired) handles from the live list; returns the rest."""
+    _STATE["live"] = [(tier, handle) for tier, handle in _STATE["live"] if not _finished(handle)]
+    return _STATE["live"]
+
+
 def _unfinished(agent_name, tier_name):
     """Live handles that run AGENT_NAME under another tier."""
-    keep = []
-    for tier, handle in _STATE["live"]:
-        if not handle.done():
-            keep.append((tier, handle))
-    _STATE["live"] = keep
-    return [(t, h) for t, h in keep if t["agent"] == agent_name and t["name"] != tier_name]
+    return [(t, h) for t, h in _prune() if t["agent"] == agent_name and t["name"] != tier_name]
 
 
 async def set_tier_override(tier_name, tiers=None):
@@ -175,8 +184,11 @@ def run_wave(corpus, tier_name, recipe="similar", ids=None, sets=("known",), con
     if tier_name != "mechanical":
         _check_override(tier)
     spawn, collect = _batched_spawn(tier, concurrency)
-    return replay.run_wave(corpus, tier_name, spawn, recipe=recipe, ids=ids, sets=sets, attempt=attempt,
-                           collect=collect)
+    try:
+        return replay.run_wave(corpus, tier_name, spawn, recipe=recipe, ids=ids, sets=sets, attempt=attempt,
+                               collect=collect)
+    finally:
+        _prune()
 
 
 def retry_wave(corpus, tier_name, recipe="similar", ids=None, concurrency=16, attempt=2):
