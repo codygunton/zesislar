@@ -1,3 +1,5 @@
+From Coq Require Import ZArith.
+
 (* Domain ranges as plain facts.
 
    A function domain is one folded predicate in a block's context. The
@@ -23,6 +25,11 @@ Ltac zesu_domain_ranges_present ranges :=
   | _ => match goal with _ : ranges |- _ => idtac end
   end.
 
+(* A conjunct `Z.of_nat (length l) = N` with a numeral N up to 4096 also
+   gives `length l = N` in `nat`: the list-length rewrites and the array
+   lookup's bounds read lengths in that form only (an owned 24-byte result
+   record whose contract states its length in `Z`). A `nat` numeral is unary,
+   hence the bound. *)
 Ltac zesu_domain_ranges_split H :=
   lazymatch type of H with
   | _ /\ _ =>
@@ -30,6 +37,15 @@ Ltac zesu_domain_ranges_split H :=
       let right := fresh "Hrange" in
       destruct H as [left right];
       zesu_domain_ranges_split left; zesu_domain_ranges_split right
+  | Z.of_nat (@length ?T ?l) = ?n =>
+      tryif (lazymatch n with Zpos _ => idtac | Z0 => idtac end;
+             let small := eval vm_compute in (Z.leb n 4096) in
+             constr_eq small true)
+      then (let m := eval vm_compute in (Z.to_nat n) in
+            let Hlength := fresh "Hlength" in
+            assert (Hlength : @length T l = m) by
+              exact (Nat2Z.inj _ _ (H : Z.of_nat (@length T l) = Z.of_nat m)))
+      else idtac
   | _ => idtac
   end.
 
