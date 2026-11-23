@@ -57,6 +57,32 @@ class Compile(unittest.TestCase):
         with self.assertRaisesRegex(annotations.AnnotationError, 'compiled keys'):
             annotations.compile_profile(data)
 
+    def test_entry_predicates_become_opaque_predicates(self):
+        data = fixture()
+        data['rows'][0]['predicates'] = [{'name': 'heap', 'owner': 'Some.Module'}]
+        compiled = annotations.compile_profile(data)
+        self.assertEqual(compiled['opaque_predicates'], {'heap': {'name': 'heap', 'owner': 'Some.Module'}})
+        data['rows'][0]['predicates'] = [{'name': 'heap'}]
+        with self.assertRaisesRegex(annotations.AnnotationError, 'predicate row'):
+            annotations.compile_profile(data)
+
+    def test_call_rows_carry_checked_opaque_and_returns_rows(self):
+        data = fixture()
+        call = {'function': 'f', 'callee_pc': 'g+0x0', 'return_site_pc': '+0x104', 'spec': 'gSpec',
+                'opaque': [{'spec': 'heap', 'use': 'framed'},
+                           {'spec': 'token (bv_unsigned (argv !!! 1%nat))', 'use': 'consumed', 'caller': ['token p']},
+                           {'spec': 'bv_unsigned (rets !!! 0%nat) ↦ₘ? 8', 'use': 'produced'}],
+                'returns': [{'index': 0, 'register': 'x10'}]}
+        data['rows'].append({'id': 'call-test', 'at': {'pc': '+0x100', 'boundary': 'call_site'}, 'call': call})
+        row, = [row for row in annotations.compile_profile(data)['calls'] if row['call_site_pc'] == '+0x100']
+        self.assertEqual((row['opaque'], row['returns']), (call['opaque'], call['returns']))
+        for broken in ({'opaque': [{'spec': 'token x', 'use': 'consumed'}]},
+                       {'opaque': [{'spec': 'heap', 'use': 'borrowed'}]},
+                       {'returns': [{'index': 0, 'register': 'x1'}]}):
+            data['rows'][-1]['call'] = dict(call, **broken)
+            with self.assertRaises(annotations.AnnotationError):
+                annotations.compile_profile(data)
+
     def test_check_fails_when_the_profile_drifts(self):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
