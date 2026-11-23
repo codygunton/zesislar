@@ -549,7 +549,7 @@ def sync(function, run, callers=None):
             write = current in (None, 'derived', 'running', 'closed') and not (
                 current == 'failed' and item['failure'] == cls)
         elif st == 'blocked-on':
-            write = current not in ('running', 'closed', 'false') and not (
+            write = current not in ('running', 'closed', 'false', 'superseded') and not (
                 current == 'blocked-on' and item['blocked_by'] == cls)
         else:
             write = current in (None, 'closed')
