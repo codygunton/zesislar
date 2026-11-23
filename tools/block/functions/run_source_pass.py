@@ -107,6 +107,8 @@ def main():
                     'terminal_id': terminal}
     # A design-table duplicated join is no cut: each incoming edge keeps its own entry slot.
     duplicated = [int(profile.pc(key), 0) for key in profile.get('duplicated_joins', [])] if profile else []
+    # Blocks an `unreachable` row with `reached: contradictory_guards` declares unreachable: paths stop there.
+    unreachable = [int(profile.pc(key), 0) for key in profile.get('unreachable_reached', [])] if profile else []
     joins = [pc for pc in joins_of(function) if pc not in duplicated]
     # A join's incoming edges never cross a back edge (its target is a loop head, a cut seeded
     # from its entry edges): a join waits only for the joins that reach it on the forward CFG.
@@ -130,7 +132,7 @@ def main():
     started = time.monotonic_ns()
     while True:
         report = evaluate_owned_function(function, traces, seeds, vocabulary=vocabulary, duplicated_joins=duplicated,
-                                         merge_condition_alternatives=merge)
+                                         merge_condition_alternatives=merge, unreachable_targets=unreachable)
         added = None
         for call in calls:
             site = call['return_site_pc']
