@@ -42,6 +42,17 @@ class OpenBlocks(unittest.TestCase):
         self.assertEqual(premises, ['instr_pre 0x800e06c0 '
                                     '(ZesuSsz.Contracts.ParentHeaderMemcpyService.memcpyCallSpec2)%I'])
 
+    def test_entry_slots_of_one_block_share_its_end(self):
+        # 61cc has two entry slots (rows 0514_slot0, 0514_slot1); each is its own entry and field.
+        rows = [row('0510', '0x800d61c8', ['0514_slot0']),
+                dict(row('0514_slot0', '0x800d61cc', [], 'refused'), block='0514', slot=0),
+                dict(row('0514_slot1', '0x800d61cc', []), block='0514', slot=1),
+                row('0558', '0x800d6210', [])]
+        entries, open_fields, _, _ = open_blocks.plan(self.profile, rows, set(), lambda case: True)
+        self.assertEqual(entries, ['0510', '0514_slot0', '0514_slot1', '0558'])
+        region = next(region for case, _, region in open_fields if case == '0514_slot0')
+        self.assertEqual(region['ends']['0514_slot0'], 0x800d6210)
+
 
 if __name__ == '__main__':
     unittest.main()

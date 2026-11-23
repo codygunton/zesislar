@@ -62,8 +62,9 @@ def plan(profile, rows, closed, entry_exists):
     """Return the open fields, the closed fields and the table slots, in address order."""
     by_case = {row['case']: row for row in rows}
     order = sorted(by_case, key=lambda case: int(by_case[case]['pc'], 16))
-    ends = {case: (int(by_case[after]['pc'], 16) if after else 1 << 64)
-            for case, after in zip(order, order[1:] + [None])}
+    # A block ends at the next block address; the entry slots of one block share it.
+    starts = sorted({int(row['pc'], 16) for row in rows}) + [1 << 64]
+    ends = {case: starts[starts.index(int(by_case[case]['pc'], 16)) + 1] for case in order}
     entries = [case for case in order if entry_exists(case)]
     open_fields, closed_fields = [], []
     for case in entries:
@@ -106,14 +107,20 @@ def main():
     profile = load_profile(options.function)
     rows = json.loads(options.callers.read_text())['rows']
     generated = ROOT / profile.generated_directory
-    entry_exists = lambda case: (generated / ('Pilot' + case + 'Entries.v')).exists()
+    # An entry slot's row names its block: the slots of a block share the block's entry module.
+    block_of = {row['case']: row.get('block', row['case']) for row in rows}
+    entry_exists = lambda case: (generated / ('Pilot' + block_of[case] + 'Entries.v')).exists()
     closed = closed_cases(options.closed_dir)
     entries, open_fields, closed_fields, by_case = plan(profile, rows, closed, entry_exists)
     stem, low = options.stem, lower_first(options.stem)
     continuation = low + 'Continuation args returnAddress'
 
     def entry(case):
-        return profile.qualified('Pilot' + case + 'Entries', 'fp_machineAt' + case)
+        return profile.qualified('Pilot' + block_of[case] + 'Entries', 'fp_machineAt' + case)
+
+    def tag(case):
+        # A field name per entry: the block address, and the slot suffix of an entry slot.
+        return by_case[case]['pc'][2:] + case[len(block_of[case]):]
 
     def binders(pc, with_k):
         # The address tag lets the composition pick a slot's statement by its address.
@@ -141,7 +148,7 @@ def main():
     open_statements = [statement(case, row, region) for case, row, region in open_fields]
     closed_statements = [statement(case, row, None) for case, row, _ in closed_fields]
     text = '\n'.join(open_statements + closed_statements)
-    modules = [profile.qualified('Pilot' + case + 'Entries') for case in entries]
+    modules = [profile.qualified('Pilot' + block_of[case] + 'Entries') for case in entries]
     modules += [call['spec_module'] for call in profile.get('calls', []) + profile.get('tail_calls', [])
                 if call['spec_module'] + '.' in text]
     closed_module = '.'.join(Path(options.closed_dir).parts) if options.closed_dir else None
@@ -170,18 +177,18 @@ def main():
             folded = [block for block in region['region'] if block != case]
             note = ('  (* No caller (' + row.get('reason', 'refused') + ')'
                     + ('; covers ' + ', '.join(folded) + ' (no entry)' if folded else '') + '. *)\n')
-        fields.append(note + '  ' + low + 'Open_' + by_case[case]['pc'][2:] + ' :\n    ' + text)
+        fields.append(note + '  ' + low + 'Open_' + tag(case) + ' :\n    ' + text)
     lines.append(';\n'.join(fields))
     lines += ['}.', '']
 
     lines.append('(* The ' + str(len(closed_fields)) + ' closed blocks, from their compiled callers. *)')
     if closed_fields:
         lines.append('Record ' + stem + 'ClosedBlocks : Prop := {')
-        lines.append(';\n'.join('  ' + low + 'Closed_' + by_case[case]['pc'][2:] + ' :\n    ' + text
+        lines.append(';\n'.join('  ' + low + 'Closed_' + tag(case) + ' :\n    ' + text
                                 for (case, _, _), text in zip(closed_fields, closed_statements)))
         lines += ['}.', '']
         lines.append('Definition ' + low + 'ClosedBlocks : ' + stem + 'ClosedBlocks := {|')
-        lines.append(';\n'.join('  ' + low + 'Closed_' + by_case[case]['pc'][2:] + ' := @'
+        lines.append(';\n'.join('  ' + low + 'Closed_' + tag(case) + ' := @'
                                 + closed_module + '.Caller' + case + '.' + row['lemma']
                                 for case, row, _ in closed_fields))
         lines += ['|}.', '']
