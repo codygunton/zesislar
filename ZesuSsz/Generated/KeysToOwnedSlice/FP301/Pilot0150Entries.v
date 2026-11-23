@@ -7,6 +7,9 @@ Require Import InstrSpecs.Machine.
 Require Import EvmSailRlp.evm_rlp_types.
 Require Import ZesuSsz.Contracts.AltFlAllocPremises.
 Require Import ZesuSsz.Contracts.ZiskMemcpyPremise.
+Require Import ZesuSsz.Contracts.AbiBytes.
+Require Import ZesuSsz.Contracts.ZiskRuntime.
+Require Import ZesuSsz.Contracts.ParentHeaderMemcpyService.
 Require Import ZesuSsz.Contracts.ArrayListContract.
 Require Import ZesuSsz.Contracts.KeysToOwnedSliceBlockEntries.
 Require Export ZesuSsz.Compliance.KeysToOwnedSliceHints.

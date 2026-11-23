@@ -7,6 +7,9 @@ Require Import InstrSpecs.Machine.
 Require Import EvmSailRlp.evm_rlp_types.
 Require Import ZesuSsz.Contracts.AltFlAllocPremises.
 Require Import ZesuSsz.Contracts.ZiskMemcpyPremise.
+Require Import ZesuSsz.Contracts.AbiBytes.
+Require Import ZesuSsz.Contracts.ZiskRuntime.
+Require Import ZesuSsz.Contracts.ParentHeaderMemcpyService.
 Require Import ZesuSsz.Contracts.ArrayListContract.
 Require Import ZesuSsz.Contracts.KeysToOwnedSliceBlockEntries.
 Require Export ZesuSsz.Compliance.KeysToOwnedSliceHints.
@@ -26,7 +29,7 @@ Section edges.
 Context `{!islaG Sigma} `{!threadG}.
 
 (* fp_machineAt00fc_ForwardA0N0 -> fp_machineAt0110_ForwardA0N0 (join) *)
-Global Instance zesu_hist_edge_14 (args : KeysToOwnedSliceBlockArgs) (returnAddress : Z) (machine_x10 : bv 64) (machine_x23 : bv 64) (machine_x10_succ : bv 64) :
+Global Instance zesu_hist_edge_17 (args : KeysToOwnedSliceBlockArgs) (returnAddress : Z) (machine_x10 : bv 64) (machine_x23 : bv 64) (machine_x10_succ : bv 64) :
   ZesuHistEdge (PROP := iProp Sigma)
     (fp_machineAt00fc_ForwardA0N0_Hist (args) (returnAddress) (machine_x10) (machine_x23))
     (fp_machineAt0110_ForwardA0N0_Hist (args) (returnAddress) (machine_x10_succ))
@@ -54,7 +57,7 @@ Proof.
 Qed.
 
 (* fp_machineAt00fc_ForwardA0N0 -> fp_machineAt0148_ForwardA0N0 (forward) *)
-Global Instance zesu_hist_edge_15 (args : KeysToOwnedSliceBlockArgs) (returnAddress : Z) (machine_x10 : bv 64) (machine_x23 : bv 64) :
+Global Instance zesu_hist_edge_18 (args : KeysToOwnedSliceBlockArgs) (returnAddress : Z) (machine_x10 : bv 64) (machine_x23 : bv 64) :
   ZesuHistEdge (PROP := iProp Sigma)
     (fp_machineAt00fc_ForwardA0N0_Hist (args) (returnAddress) (machine_x10) (machine_x23))
     (fp_machineAt0148_ForwardA0N0_Hist (args) (returnAddress))

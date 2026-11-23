@@ -7,6 +7,9 @@ Require Import InstrSpecs.Machine.
 Require Import EvmSailRlp.evm_rlp_types.
 Require Import ZesuSsz.Contracts.AltFlAllocPremises.
 Require Import ZesuSsz.Contracts.ZiskMemcpyPremise.
+Require Import ZesuSsz.Contracts.AbiBytes.
+Require Import ZesuSsz.Contracts.ZiskRuntime.
+Require Import ZesuSsz.Contracts.ParentHeaderMemcpyService.
 Require Import ZesuSsz.Contracts.ArrayListContract.
 Require Import ZesuSsz.Contracts.KeysToOwnedSliceBlockEntries.
 Require Export ZesuSsz.Compliance.KeysToOwnedSliceHints.
@@ -24,7 +27,7 @@ Section edges.
 Context `{!islaG Sigma} `{!threadG}.
 
 (* fp_machineAt0150_ForwardA0N0 -> fp_machineAt0168_ForwardA0N0 (call_return) *)
-Global Instance zesu_hist_edge_18 (args : KeysToOwnedSliceBlockArgs) (returnAddress : Z) :
+Global Instance zesu_hist_edge_24 (args : KeysToOwnedSliceBlockArgs) (returnAddress : Z) :
   ZesuHistEdge (PROP := iProp Sigma)
     (fp_machineAt0150_ForwardA0N0_Hist (args) (returnAddress))
     (fp_machineAt0168_ForwardA0N0_Hist (args) (returnAddress))
