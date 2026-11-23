@@ -45,6 +45,19 @@ import drive as _drive  # noqa: E402
 import store as _store  # noqa: E402
 
 DEFERRED = ("decide", "diagnose", "reconsider")
+# The prover answer form (package.py) as the agent's output schema: an agent whose own schema wraps its
+# reply (scout: architecture, files, report) answers in this form instead.
+ANSWER_SCHEMA = {
+    "type": "object",
+    "properties": {
+        "verdict": {"type": "string", "enum": list(_drive.package.VERDICTS)},
+        "proof": {"type": "string"},
+        "needs": {"type": "array", "items": {"type": "string"}},
+        "counterexample": {"type": "string"},
+    },
+    "required": ["verdict"],
+}
+resolve_needs = _drive.resolve_needs
 
 
 class DriveError(RuntimeError):
@@ -83,7 +96,7 @@ def _label(tier, identifier, attempt):
 
 
 def _spawn(tier, prompt, label):
-    handle = _helper("agent")(prompt, agent=tier["agent"], label=label)
+    handle = _helper("agent")(prompt, agent=tier["agent"], label=label, schema=ANSWER_SCHEMA)
     _dk._STATE["live"].append((tier, handle))
     return handle
 
@@ -120,6 +133,8 @@ def run_round(function, run, tier=None, limit=16, concurrency=16, jobs=8, kernel
     for identifier, name, _ in chosen:
         prompt, context = _drive.prompt_for(run, function, identifier, name, located=located)
         if prompt is None:
+            if context == "missing_context":
+                _drive.file_missing_context(run, identifier, name)
             refused.append((identifier, name, context))
             continue
         try:
