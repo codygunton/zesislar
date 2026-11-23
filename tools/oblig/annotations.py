@@ -23,7 +23,12 @@ The compiled profile keys, by `boundary`:
   loop_cut         `loop_heads` and a `loop_designs` row: `registers` (binders with a register), `index`
                    (the binder of role `index`), `facts` (role -> `kind`), `array_cursor` from
                    `placement` {`array`, `register`, `extent_reason`}, `visible`
-  join             `join_designs[pc]`: a fact of role `fact` with no other key is its text, else its object
+  join             `join_designs[pc]`: a fact of role `fact` with no other key is its text, else its object.
+                   A row whose single effective fact is `False` (role `unreachable`) lists `pc` in
+                   `unreachable_entries` (entry ⌜False⌝; refused where the forward pass reaches it); with
+                   `reached: contradictory_guards` also in `unreachable_reached`: the forward pass stops
+                   paths into `pc` and each predecessor proves ⌜False⌝ in the kernel. Its facts of role
+                   `relies_on` record the guards it relies on, as documentation only (never emitted).
   call_site        a `calls` row: the row's `call` object with `call_site_pc`. Its `opaque` rows
                    [{`spec`, `use`: framed | consumed | produced, `caller`: [...]}] name spec resources in
                    the spec's text and, for a consumed one, the caller components it takes; its `returns`
@@ -60,7 +65,8 @@ FUNCTIONS = ROOT / 'tools/block/functions'
 SCHEMA = 'zesu.annotations.v1'
 BOUNDARIES = ('entry', 'loop_cut', 'join', 'call_site', 'call_return', 'function_return', 'access')
 GENERATED_KEYS = ('loop_designs', 'join_designs', 'calls', 'function_returns', 'access_placements',
-                  'domain_component', 'opaque_predicates', 'unreachable_entries', 'join_drops', 'generated_from')
+                  'domain_component', 'opaque_predicates', 'unreachable_entries', 'unreachable_reached',
+                  'join_drops', 'generated_from')
 OPAQUE_USES = ('framed', 'consumed', 'produced')
 PC = re.compile(r'(?:[^+\s]+)?\+0x[0-9a-f]+')
 ABI = ['zero', 'ra', 'sp', 'gp', 'tp', 't0', 't1', 't2', 's0', 's1', 'a0', 'a1', 'a2', 'a3', 'a4', 'a5', 'a6',
@@ -146,7 +152,7 @@ def compile_profile(data, source=None):
     profile.setdefault('symbol', data['symbol'])
     heads = list(profile.get('loop_heads', []))
     loop_designs, join_designs, calls, returns, placements = [], {}, [], [], []
-    unreachable, drops = [], {}
+    unreachable, reached_pcs, drops = [], [], {}
     rows = data['rows']
     for row in rows:
         at, boundary = row['at'], row['at']['boundary']
@@ -181,10 +187,17 @@ def compile_profile(data, source=None):
             roles = {fact['role'] for fact in facts}
             if 'unreachable' in roles:
                 # No path reaches the block: the renderer emits ⌜False⌝ as its entry (and refuses the row
-                # where the forward pass finds a path).
-                if roles != {'unreachable'} or [fact['coq'] for fact in facts] != ['False'] or row.get('drop'):
+                # where the forward pass finds a path, unless the row says the path's guards contradict).
+                reached = row.get('reached')
+                if reached not in (None, 'contradictory_guards'):
+                    raise AnnotationError('%s: `reached` is contradictory_guards' % row['id'])
+                effective = [fact for fact in facts if fact['role'] != 'relies_on' or reached is None]
+                if {fact['role'] for fact in effective} != {'unreachable'} \
+                        or [fact['coq'] for fact in effective] != ['False'] or row.get('drop'):
                     raise AnnotationError('%s: an unreachable row has the single fact False' % row['id'])
                 unreachable.append(at['pc'])
+                if reached:
+                    reached_pcs.append(at['pc'])
                 continue
             for item in row.get('drop', []):
                 if set(item) != {'root', 'resources'} or not item['resources'] \
@@ -217,7 +230,8 @@ def compile_profile(data, source=None):
         profile['loop_heads'] = heads
     for key, value in (('loop_designs', loop_designs), ('join_designs', join_designs), ('calls', calls),
                        ('function_returns', returns), ('access_placements', placements),
-                       ('unreachable_entries', unreachable), ('join_drops', drops)):
+                       ('unreachable_entries', unreachable), ('unreachable_reached', reached_pcs),
+                       ('join_drops', drops)):
         if value:
             profile[key] = value
     if source is not None:

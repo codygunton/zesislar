@@ -101,6 +101,28 @@ class Compile(unittest.TestCase):
         with self.assertRaisesRegex(annotations.AnnotationError, 'drop row'):
             annotations.compile_profile(data)
 
+    def test_an_unreachable_row_reached_by_contradictory_guards(self):
+        data = fixture()
+        data['rows'].append({'id': 'dead-1c0', 'at': {'pc': '+0x1c0', 'boundary': 'join'},
+                             'reached': 'contradictory_guards',
+                             'facts': [{'coq': 'False', 'role': 'unreachable'},
+                                       {'coq': 'len <> 0 /\\ len <= 2^24 /\\ bv_shiftl len 5 = 0', 'role': 'relies_on'}]})
+        compiled = annotations.compile_profile(data)
+        self.assertEqual(compiled['unreachable_entries'], ['+0x1c0'])
+        self.assertEqual(compiled['unreachable_reached'], ['+0x1c0'])
+        self.assertNotIn('+0x1c0', compiled.get('join_designs', {}))
+        # Without `reached` the old rule stands: the single fact False, no documentation facts.
+        del data['rows'][-1]['reached']
+        with self.assertRaisesRegex(annotations.AnnotationError, 'single fact False'):
+            annotations.compile_profile(data)
+        data['rows'][-1]['facts'] = data['rows'][-1]['facts'][:1]
+        compiled = annotations.compile_profile(data)
+        self.assertEqual(compiled['unreachable_entries'], ['+0x1c0'])
+        self.assertNotIn('unreachable_reached', compiled)
+        data['rows'][-1]['reached'] = 'by_luck'
+        with self.assertRaisesRegex(annotations.AnnotationError, 'contradictory_guards'):
+            annotations.compile_profile(data)
+
     def test_check_fails_when_the_profile_drifts(self):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
