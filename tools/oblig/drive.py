@@ -34,14 +34,26 @@ block run is `<F>/goal/<block>-<16 hex of sha256(statement)>`; a goal of a run w
 `meaning` is `<F>/meaning/<goal name>`. Its task file is RUN.../package/<goal>/TASK-<tier>.md
 (package.py) when present, else RUN.../tasks/<goal>.md; prompts sent are kept in
 RUN.../prompts/<goal>/<tier>-<attempt>.md.
+
+Prover check tool (tiers.json `check_tool`, `check_calls`): a tier with the tool gets the WITH_CHECK
+preamble instead of NO_TOOLS, and drive_kernel.py hands each of its provers one ProofProbe of this
+module as the kernel tool `check_proof`: it compiles a proposed proof of that one goal with the
+goal's stand-alone check route (residual_loop.py check.sh, resource guard scope) in a scratch dir
+RUN.../probes/<goal>/<tier>-<attempt>/<call>/, never in goals/, answers/ or the store, and answers
+{ok, error, remaining}: the compiler errors and the goal state before the failing sentence, clipped to
+CHECK_ERROR_BYTES, and the calls left of the attempt's budget. The answer is still checked by `step`;
+the attempt's result event carries `check_calls:<n>` in context_items.
 """
 import argparse
 from concurrent.futures import ThreadPoolExecutor
+import os
 from pathlib import Path
 import re
+import shutil
 import subprocess
 import sys
 import threading
+import uuid
 
 HERE = Path(__file__).resolve().parent
 ROOT = HERE.parents[1]
@@ -64,11 +76,28 @@ text in the `proof` field of your answer instead. Your whole reply is one JSON o
 form at the end, with no other text and no code fence.
 
 """
+WITH_CHECK = """You are a Rocq prover. Everything you need is in this message, and the only tool you may call is
+check_proof (in your tool list under a name that starts with check_proof): give it a proof script of the
+lemma below (the text of your `proof` field, ending with `Qed.`) and it compiles the lemma with that proof
+and returns `ok`, the compiler error with the goal state before the failing sentence, and the number of
+calls left. Check your proof before you answer. Do not read or write any file. Where the task below says
+to write the proof script to a file, put that text in the `proof` field of your answer instead. Your whole
+reply is one JSON object in the answer form at the end, with no other text and no code fence.
+
+"""
 ERROR_HEAD = "\n## Your previous answer failed\n\n"
 CONTEXT_HEAD = "\n## Context you asked for\n\n"
 TRUNCATED = "\n[... truncated]"
 MALFORMED_LINE = "Reply with the bare JSON object only.\n\n"
 TOO_LARGE = "too-large"
+CHECK_TOOL = "check_proof"
+CHECK_CALLS = 6  # check_proof calls per attempt
+CHECK_ERROR_BYTES = 1500  # error text of one check_proof answer
+# Peak resident memory of one check_proof call (its check.sh compile, then the goal-state compile), rounded
+# up from the measured peaks (2026-11-23: 0.78 GiB keysToOwnedSlice block goal 0098, 0.58 GiB Sail meaning
+# lemma alDecodeWord); parallel calls are bounded by 70% of the available memory over it (AGENTS.md).
+CHECK_PEAK_BYTES = 1 << 30
+CHECK_MEMORY_SHARE = 0.7
 
 
 def sha(text):
@@ -100,6 +129,22 @@ def large_bound(where, tier):
     None: such a goal is sent at that size, its attempts carrying `prompt_bound:<bytes>`."""
     bound = store.read_json(where.d / "package" / where.gid / "PACKAGE.json", {}).get("prompt_bound")
     return min(int(bound), tier_cap(tier)) if bound else None
+
+
+def check_tool(tier):
+    """(enabled, calls per attempt) of TIER's check_proof tool (tiers.json `check_tool`, `check_calls`;
+    a tier without a model never has it)."""
+    row = tier_rows().get(tier, {})
+    enabled = bool(row.get("agent")) and bool(row.get("check_tool", False))
+    return enabled, int(row.get("check_calls", CHECK_CALLS)) if enabled else 0
+
+
+def preamble(tier):
+    """The first lines of every prompt of TIER: WITH_CHECK when the tier has the check tool, else NO_TOOLS."""
+    return WITH_CHECK if check_tool(tier)[0] else NO_TOOLS
+
+
+RETRY_ROOM = 2000  # bytes a retry prompt keeps for the compiler errors or the asked-for context
 
 
 # ---- obligation files ----
@@ -185,8 +230,8 @@ def clip(text, limit):
 
 
 def base_prompt(where, tier):
-    """The no-tools prompt of an attempt without feedback: the task file, the exact source of
-    goal.v when a residual_loop task only names its path (a package task is already bounded and
+    """The prompt of an attempt without feedback: the tier's preamble, the task file, the exact source
+    of goal.v when a residual_loop task only names its path (a package task is already bounded and
     is sent as written), and the answer form."""
     text, packaged = task_text(where, tier)
     if text is None:
@@ -197,7 +242,7 @@ def base_prompt(where, tier):
                                                  if "Proof." in goal_v else goal_v.rstrip())
     if "## Answer form" not in text:
         text += "\n" + package.ANSWER_FORM.format(answer=where.answer_v)
-    return NO_TOOLS + text
+    return preamble(tier) + text
 
 
 def error_section(where, budget):
@@ -305,6 +350,13 @@ def prompt_for(run, function, identifier, tier, located=None, state=None):
         return None, "no task file"
     last = item["last_attempt"]
     text, items = base, ["task"]
+    # A retry needs room for the compiler errors or the asked-for context, and a meaning lemma has no
+    # package to re-package smaller: both may use the tier cap, recorded as `prompt_bound:<bytes>` on
+    # the attempt like a goal re-packaged at the cap.
+    retry = bool(last and last["tier"] == tier and last["failure"] in ("compile_error", "need_context", "malformed"))
+    unpackaged = "/meaning/" in identifier
+    if (retry or unpackaged) and tier_cap(tier) > limit and len(base.encode()) + (RETRY_ROOM if retry else 0) > limit:
+        limit = large = tier_cap(tier)
     if last and last["tier"] == tier and last["failure"] == "compile_error":
         extra = error_section(where, limit - len(base.encode()))
         if extra is None:
@@ -405,7 +457,8 @@ def answer(run, function, identifier, tier, attempt, prompt, reply, extra=None, 
                                               tokens_in=extra.get("tokens_in"), tokens_out=extra.get("tokens_out")))
     meta = store.read_json(where.answer_json, {})
     meta.update(attempt=attempt, prompt_sha256=sha(prompt), prompt_bytes=len(prompt.encode()),
-                **{k: extra[k] for k in ("agent_id", "resolved_model", "model_mismatch", "error", "malformed")
+                **{k: extra[k] for k in ("agent_id", "resolved_model", "model_mismatch", "error", "malformed",
+                                         "check_calls")
                    if k in extra})
     rl.write_json(where.answer_json, meta)
     if verdict in FAILED_VERDICTS:
@@ -415,6 +468,13 @@ def answer(run, function, identifier, tier, attempt, prompt, reply, extra=None, 
 
 
 def attempt_event(item, meta, state, cls, **fields):
+    """The result event of the attempt META names; an attempt with the check tool (meta `check_calls`)
+    carries its running event's context_items plus `check_calls:<n>`."""
+    if meta.get("check_calls") is not None and "context_items" not in fields:
+        running = [row for row in item["events"] if row["state"] == "running"
+                   and (row.get("tier"), row.get("attempt")) == (meta["tier"], meta["attempt"])]
+        fields["context_items"] = list((running[-1].get("context_items") or []) if running else []) + [
+            "check_calls:%d" % meta["check_calls"]]
     return base_event(item, state=state, **{"class": cls}, tier=meta["tier"], attempt=meta["attempt"],
                       prompt_sha256=meta["prompt_sha256"], prompt_bytes=meta.get("prompt_bytes"),
                       answer_bytes=meta.get("answer_bytes"), tokens_in=meta.get("tokens_in"),
@@ -463,7 +523,8 @@ class Kernel:
         bank = manifest.get("bank")
         route_ = falsify.Route(bank) if bank and (Path(bank) / "ARGS.json").is_file() else None
         hints = Path(run) / "hints"
-        record = package.package_goal(where.d, manifest, where.goal, function, tier, bound - len(NO_TOOLS.encode()),
+        record = package.package_goal(where.d, manifest, where.goal, function, tier,
+                                      bound - len(preamble(tier).encode()),
                                       similar.build_index(runs=[where.d]), hints if hints.is_dir() else None,
                                       defs_route=route_, symbol_route=route_)
         record.update(prompt_bound=bound, bound_reason=reason)
@@ -490,6 +551,161 @@ class Kernel:
         (out / "refute.v").write_text(falsify.refute_text(pre, statement, binders, values))
         result, _ = route_.compile(out / "refute.v", "drive-refute-" + where.gid)
         return result["returncode"] == 0
+
+
+# ---- the prover check tool (check_proof) ----
+
+LOCATION = re.compile(r'File "[^"]*proof\.v", line (\d+), characters (\d+)-\d+:')
+GOALS_LINE = re.compile(r"^(?:\d+ (?:focused )?goals?\b|No more goals|This subproof is complete|There are unfocused goals)")
+SENTENCE_END = re.compile(r"\.(?=\s)")
+SENTENCE_LEAD = re.compile(r"\s*(?:(?:[-+*]+|[{}])\s*)*")
+STATE_HEAD = "\n\nGoal state before the failing sentence:\n"
+STATE_CUT = "[... cut]\n"
+_SLOTS = []
+_SLOTS_LOCK = threading.Lock()
+
+
+def memory_available():
+    """Bytes this account may still use: MemAvailable, less when the user slice's memory.max leaves less."""
+    found = []
+    try:
+        found += [int(line.split()[1]) * 1024 for line in Path("/proc/meminfo").read_text().splitlines()
+                  if line.startswith("MemAvailable:")]
+    except OSError:
+        pass
+    user = Path("/sys/fs/cgroup/user.slice/user-%d.slice" % os.getuid())
+    try:
+        limit = (user / "memory.max").read_text().strip()
+        if limit != "max":
+            found.append(int(limit) - int((user / "memory.current").read_text()))
+    except (OSError, ValueError):
+        pass
+    return min(found) if found else CHECK_PEAK_BYTES
+
+
+def check_parallel(available=None):
+    """Parallel check_proof compiles: 70% of the available memory over the measured peak of one call."""
+    available = memory_available() if available is None else available
+    return max(1, int(available * CHECK_MEMORY_SHARE) // CHECK_PEAK_BYTES)
+
+
+def check_slots(renew=False):
+    """The semaphore every check_proof compile of this process holds, sized by check_parallel at its first
+    use; RENEW sizes it again from the memory available now (drive_kernel.run_round, before its waves)."""
+    with _SLOTS_LOCK:
+        if renew or not _SLOTS:
+            _SLOTS[:] = [threading.BoundedSemaphore(check_parallel())]
+        return _SLOTS[0]
+
+
+def show_text(proof_v, log, head):
+    """proof.v cut before the sentence the first error of LOG names (its leading bullets and braces kept),
+    then `Show.` and `Abort.`; None when the error lies outside the proof script."""
+    match = LOCATION.search(log)
+    if not match:
+        return None
+    lines = proof_v.encode().split(b"\n")
+    line, column = int(match.group(1)), int(match.group(2))
+    if line > len(lines):
+        return None
+    before = b"\n".join(lines[:line - 1] + [lines[line - 1][:column]]).decode(errors="ignore")
+    if len(before) < len(head):
+        return None
+    start = max([len(head)] + [m.end() for m in SENTENCE_END.finditer(before) if m.end() >= len(head)])
+    start += SENTENCE_LEAD.match(proof_v, start).end() - start
+    return proof_v[:start].rstrip() + "\nShow.\nAbort.\n"
+
+
+def shown_goals(log):
+    """The goals `Show.` printed at the end of a compile log (time stamps and @@ records removed)."""
+    lines = [rl.STAMP.sub(r"\2", line) for line in log.split("\n")]
+    lines = [line for line in lines if not line.startswith("@@")]
+    found = [i for i, line in enumerate(lines) if GOALS_LINE.match(line)]
+    return "\n".join(lines[found[-1]:]).strip() if found else ""
+
+
+def error_text(errors, state, limit):
+    """The compiler errors, then the goal state (its end kept: the conclusion), within LIMIT bytes."""
+    if not state:
+        return clip(errors, limit)
+    errors = clip(errors, max(limit * 2 // 3, limit - len(STATE_HEAD.encode()) - len(state.encode())))
+    room = limit - len(errors.encode()) - len(STATE_HEAD.encode())
+    if room < 2 * len(STATE_CUT):
+        return errors
+    data = state.encode()
+    if len(data) > room:
+        tail = data[len(data) - room + len(STATE_CUT):].decode(errors="ignore")
+        state = STATE_CUT + (tail[tail.index("\n") + 1:] if "\n" in tail else tail)
+    return errors + STATE_HEAD + state
+
+
+def probe_compile(where, out, proof):
+    """(ok, error) of PROOF for the goal of WHERE, compiled in the scratch dir OUT: goal.v copied, proof.v
+    filled as `residual_loop.py collect` fills it, and a check.sh of the goal's bank under a scope of its
+    own; on a failure ERROR is (compiler errors, goal state before the failing sentence from a second
+    compile)."""
+    out.mkdir(parents=True, exist_ok=True)
+    goal_v = (where.goal_dir / "goal.v").read_text()
+    head = rl.goal_head(goal_v)
+    proof_v = head + proof.strip() + "\n"
+    (out / "goal.v").write_text(goal_v)
+    (out / "proof.v").write_text(proof_v)
+    args, ocamlpath = rl.bank_args(where.manifest()["bank"])
+    tag = "probe-" + uuid.uuid4().hex[:12]
+    (out / "check.sh").write_text(rl.check_script(tag, args, ocamlpath))
+    (out / "check.sh").chmod(0o755)
+    verdict, _ = rl.run_check(out)
+    if verdict == "PASS":
+        return True, ""
+    log = (out / "check.log").read_text(errors="replace") if (out / "check.log").is_file() else ""
+    errors = rl.errors_of(log).strip() or "the check failed with no compiler output"
+    show = show_text(proof_v, log, head)
+    state = ""
+    if show is not None:
+        (out / "show.v").write_text(show)
+        result = rl.scoped(out / "show.v", tag + "-show", args, ocamlpath)
+        state = shown_goals(Path(result["log"]).read_text(errors="replace")) if result["returncode"] == 0 else ""
+    return False, (errors, state)
+
+
+class ProofProbe:
+    """check_proof of one goal for one attempt: at most CALLS compiles of a proposed proof in the scratch
+    dir RUN.../probes/<goal>/<tier>-<attempt>/<call>/ (never goals/, answers/ or the store), each under
+    check_slots(). Thread-safe: an agent may call it in parallel. COMPILE(where, out, proof) -> (ok,
+    error text or (errors, goal state)) replaces probe_compile in the tests."""
+
+    def __init__(self, where, tier, attempt, calls=CHECK_CALLS, error_bytes=CHECK_ERROR_BYTES, compile=None,
+                 slots=None):
+        self.where, self.error_bytes = where, error_bytes
+        self.scratch = where.d / "probes" / where.gid / ("%s-%d" % (tier, attempt))
+        self.left, self.calls = calls, 0
+        self.compile = compile or probe_compile
+        self.slots = slots
+        self.lock = threading.Lock()
+
+    def __call__(self, proof):
+        with self.lock:
+            if self.left <= 0:
+                return dict(ok=False, error="No check_proof calls left: send your answer.", remaining=0)
+            self.left -= 1
+            self.calls += 1
+            call, remaining = self.calls, self.left
+        if not isinstance(proof, str):
+            return dict(ok=False, error="proof must be a string", remaining=remaining)
+        problem = rl.answer_problems(proof.strip() + "\n")
+        if problem:
+            return dict(ok=False, error=problem, remaining=remaining)
+        out = self.scratch / str(call)
+        if out.exists():
+            shutil.rmtree(out)
+        with (self.slots or check_slots()):
+            try:
+                ok, error = self.compile(self.where, out, proof)
+            except (OSError, subprocess.SubprocessError, KeyError, ValueError) as failure:
+                ok, error = False, "check_proof could not run the check: %r" % failure
+        if not ok and isinstance(error, tuple):
+            error = error_text(error[0], error[1], self.error_bytes)
+        return dict(ok=bool(ok), error="" if ok else clip(error, self.error_bytes), remaining=remaining)
 
 
 # ---- step ----
@@ -529,6 +745,25 @@ def carried_falsity(item, where):
         return None
     path = Path(checked[-1]["path"])
     return store.artifact_of(path) if path.is_file() else None
+
+
+def reopen(function, run, identifiers):
+    """Reset each goal of IDENTIFIERS that is `failed` or `waiting-decision` with a `derived` event (its
+    falsity verdict carried as `unblock` carries it): route.py runs its ladder again from the first tier,
+    as after a changed task (here: the prompts a tier with the check tool sends). Returns the ids reset."""
+    state, located = fold(run), locate(run, function)
+    rows = []
+    for identifier in identifiers:
+        item = state.get(identifier)
+        if item is None or item["kind"] not in ("goal", "meaning") or item["state"] not in ("failed",
+                                                                                         "waiting-decision"):
+            continue
+        carried = carried_falsity(item, located.get(identifier))
+        rows.append(base_event(item, state="derived", **{"class": item["goal_class"]},
+                               tier="falsify" if carried else None, artifact=carried or item["artifact"]))
+    if rows:
+        store.append(run, rows)
+    return [row["id"] for row in rows]
 
 
 def check_answers(function, run, state, located, kernel, counts, jobs):
