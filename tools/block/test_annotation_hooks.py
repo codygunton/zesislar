@@ -293,5 +293,27 @@ class WordLinkAcrossCall(unittest.TestCase):
         self.assertEqual(seed.state.registers['nextPC'], bits(0x18, 64))
 
 
+class JoinWordLinks(unittest.TestCase):
+    """A join seed keeps a word link only when every incoming edge holds it identically."""
+
+    def link(self, value):
+        return {'array': input_expr('hdr', None).to_dict(), 'offset': 0, 'size': 8,
+                'value': input_expr(value, 64).to_dict(), 'fact_id': 'link', 'resource_id': 'hdr'}
+
+    def carry(self, *edges):
+        from join_generalize import carry_common_word_links
+        seed = type('Seed', (), {})()
+        seed.state = SymbolicState(registers={})
+        return carry_common_word_links([{'state': {'word_links': links}} for links in edges], seed).state.word_links
+
+    def test_a_link_every_edge_holds_is_kept(self):
+        kept, = self.carry([self.link('q')], [self.link('q')])
+        self.assertEqual(kept['value'], input_expr('q', 64))
+
+    def test_a_link_an_edge_lacks_or_changes_is_dropped(self):
+        self.assertEqual(self.carry([self.link('q')], []), [])
+        self.assertEqual(self.carry([self.link('q')], [self.link('r')]), [])
+
+
 if __name__ == '__main__':
     unittest.main()

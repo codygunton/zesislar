@@ -60,7 +60,7 @@ FUNCTIONS = ROOT / 'tools/block/functions'
 SCHEMA = 'zesu.annotations.v1'
 BOUNDARIES = ('entry', 'loop_cut', 'join', 'call_site', 'call_return', 'function_return', 'access')
 GENERATED_KEYS = ('loop_designs', 'join_designs', 'calls', 'function_returns', 'access_placements',
-                  'domain_component', 'opaque_predicates', 'generated_from')
+                  'domain_component', 'opaque_predicates', 'unreachable_entries', 'join_drops', 'generated_from')
 OPAQUE_USES = ('framed', 'consumed', 'produced')
 PC = re.compile(r'(?:[^+\s]+)?\+0x[0-9a-f]+')
 ABI = ['zero', 'ra', 'sp', 'gp', 'tp', 't0', 't1', 't2', 's0', 's1', 'a0', 'a1', 'a2', 'a3', 'a4', 'a5', 'a6',
@@ -146,6 +146,7 @@ def compile_profile(data, source=None):
     profile.setdefault('symbol', data['symbol'])
     heads = list(profile.get('loop_heads', []))
     loop_designs, join_designs, calls, returns, placements = [], {}, [], [], []
+    unreachable, drops = [], {}
     rows = data['rows']
     for row in rows:
         at, boundary = row['at'], row['at']['boundary']
@@ -177,6 +178,19 @@ def compile_profile(data, source=None):
                 design['visible'] = list(row['visible'])
             loop_designs.append(design)
         elif boundary == 'join':
+            roles = {fact['role'] for fact in facts}
+            if 'unreachable' in roles:
+                # No path reaches the block: the renderer emits ⌜False⌝ as its entry (and refuses the row
+                # where the forward pass finds a path).
+                if roles != {'unreachable'} or [fact['coq'] for fact in facts] != ['False'] or row.get('drop'):
+                    raise AnnotationError('%s: an unreachable row has the single fact False' % row['id'])
+                unreachable.append(at['pc'])
+                continue
+            for item in row.get('drop', []):
+                if set(item) != {'root', 'resources'} or not item['resources'] \
+                        or not all(isinstance(text, str) for text in item['resources']):
+                    raise AnnotationError('%s: a drop row has `root` and its resource texts' % row['id'])
+                drops.setdefault(at['pc'], []).append(dict(item))
             join_designs.setdefault(at['pc'], []).extend(_join_fact(fact) for fact in facts)
         elif boundary == 'call_site':
             if 'call' not in row:
@@ -202,7 +216,8 @@ def compile_profile(data, source=None):
     if heads:
         profile['loop_heads'] = heads
     for key, value in (('loop_designs', loop_designs), ('join_designs', join_designs), ('calls', calls),
-                       ('function_returns', returns), ('access_placements', placements)):
+                       ('function_returns', returns), ('access_placements', placements),
+                       ('unreachable_entries', unreachable), ('join_drops', drops)):
         if value:
             profile[key] = value
     if source is not None:

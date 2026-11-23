@@ -724,7 +724,20 @@ def _span_bytes(resource, region):
     return result
 
 
-def lift_call_return_edges(alternatives, *, seeds, roots, ancestor, vocabulary):
+def carry_common_word_links(incoming, seed):
+    """Keep on a join seed the word links that every incoming edge holds identically (same array,
+    offset and value). A link is a fact about an unwritten array word; an edge that wrote the word
+    reads it from its write, never through the link, so the carried link adds nothing it lacks."""
+    common = None
+    for alternative in incoming:
+        keyed = {json.dumps(link, sort_keys=True) for link in alternative['state'].get('word_links', [])}
+        common = keyed if common is None else common & keyed
+    seed.state.word_links = [dict(row, array=Expr.from_dict(row['array']), value=Expr.from_dict(row['value']))
+                             for row in map(json.loads, sorted(common or ()))]
+    return seed
+
+
+def lift_call_return_edges(alternatives, *, seeds, roots, ancestor, vocabulary, drops=()):
     """Express join edges that start at seeds below `ancestor` on its tree.
 
     A call-return seed refines its parent's tree: it splits frame spans around the call
@@ -768,7 +781,20 @@ def lift_call_return_edges(alternatives, *, seeds, roots, ancestor, vocabulary):
             raise ValueError('A lifted join edge has no complete write image')
         regions = {region.ownership_id: region for region in state.memory}
         writes = []
+        # A join annotation row (`drop`) names resources an edge from this root forgets, by their exact
+        # component text: a weakening; a listed text that names no resource of the edge is refused.
+        listed = {' '.join(text.split()) for item in drops if item['root'] == roots.get(seed_pc)
+                  for text in item['resources']}
+        texts = {component['id']: ' '.join(str(component['seed_component'].get(
+            'original_component', component['seed_component'].get('coq', ''))).split())
+            for component in seed.ownership['components']}
+        unmatched = set(listed) - {texts.get(resource.id) for resource in seed.resources}
+        if unmatched:
+            raise ValueError('A join drop row names no resource of the edge from %s: %s'
+                             % (roots.get(seed_pc), sorted(unmatched)[0]))
         for resource in seed.resources:
+            if texts.get(resource.id) in listed:
+                continue
             updates = image.updates[resource.id]
             if any(isinstance(offset, str) for offset in updates):
                 raise ValueError('A lifted join edge stores at a symbolic offset: ' + resource.id)

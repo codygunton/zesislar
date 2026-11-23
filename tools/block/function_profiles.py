@@ -16,7 +16,7 @@ SYMBOL_TABLE = Path(__file__).resolve().parents[2] / 'build/stock-zisk/symbols.t
 
 # Fields that hold a block of the function itself: a 4-digit suffix in the legacy form,
 # an offset `+0x..` from the function symbol in the symbol form.
-BLOCK_LISTS = ['blocks', 'loop_heads']
+BLOCK_LISTS = ['blocks', 'loop_heads', 'unreachable_entries']
 ADDRESS_FIELDS = ['call_site_pc', 'callee_pc', 'return_site_pc', 'return_instruction_pc']
 
 REQUIRED = [

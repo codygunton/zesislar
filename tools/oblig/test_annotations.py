@@ -83,6 +83,24 @@ class Compile(unittest.TestCase):
             with self.assertRaises(annotations.AnnotationError):
                 annotations.compile_profile(data)
 
+    def test_unreachable_and_drop_join_rows(self):
+        data = fixture()
+        data['rows'].append({'id': 'dead-a0', 'at': {'pc': '+0xa0', 'boundary': 'join'},
+                             'facts': [{'coq': 'False', 'role': 'unreachable'}]})
+        data['rows'].append({'id': 'join-110', 'at': {'pc': '+0x110', 'boundary': 'join'}, 'facts': [],
+                             'drop': [{'root': '+0x168', 'resources': ['p ↦ₘ? n']}]})
+        compiled = annotations.compile_profile(data)
+        self.assertEqual(compiled['unreachable_entries'], ['+0xa0'])
+        self.assertEqual(compiled['join_drops'], {'+0x110': [{'root': '+0x168', 'resources': ['p ↦ₘ? n']}]})
+        self.assertNotIn('+0xa0', compiled.get('join_designs', {}))
+        data['rows'][-2]['facts'] = [{'coq': 'True', 'role': 'unreachable'}]
+        with self.assertRaisesRegex(annotations.AnnotationError, 'single fact False'):
+            annotations.compile_profile(data)
+        data['rows'][-2]['facts'] = [{'coq': 'False', 'role': 'unreachable'}]
+        data['rows'][-1]['drop'] = [{'root': '+0x168'}]
+        with self.assertRaisesRegex(annotations.AnnotationError, 'drop row'):
+            annotations.compile_profile(data)
+
     def test_check_fails_when_the_profile_drifts(self):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
