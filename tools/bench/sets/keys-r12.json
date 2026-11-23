@@ -1,0 +1,313 @@
+{
+ "name": "keys-r12",
+ "created": "2026-11-23",
+ "purpose": "Every rendered caller of keysToOwnedSlice (keystoownedslice_fp301_callers), each with its own CPU cap (tools/bench/mkset.py).",
+ "caps": {
+  "cpu_seconds": 1200,
+  "limit_gib": 24
+ },
+ "jobs": 6,
+ "overlays": [],
+ "members": [
+  {
+   "function": "keysToOwnedSlice",
+   "callers": "keystoownedslice_fp301_callers",
+   "case": "0000",
+   "instructions": 22,
+   "cpu_seconds": 1200,
+   "claim_gib": 3,
+   "why": "22 instructions, 2 successor entries, 40 successor binders: cap min(1200, 120 + 45 x 22 + 100 x 2 + 3 x 40) = 1200 CPU-s, claim 3 GiB",
+   "expected_cpu": 1200
+  },
+  {
+   "function": "keysToOwnedSlice",
+   "callers": "keystoownedslice_fp301_callers",
+   "case": "0058",
+   "instructions": 1,
+   "cpu_seconds": 497,
+   "claim_gib": 3,
+   "why": "1 instructions, 2 successor entries, 44 successor binders: cap min(1200, 120 + 45 x 1 + 100 x 2 + 3 x 44) = 497 CPU-s, claim 3 GiB",
+   "expected_cpu": 497
+  },
+  {
+   "function": "keysToOwnedSlice",
+   "callers": "keystoownedslice_fp301_callers",
+   "case": "005c",
+   "instructions": 4,
+   "cpu_seconds": 641,
+   "claim_gib": 3,
+   "why": "4 instructions, 2 successor entries, 47 successor binders: cap min(1200, 120 + 45 x 4 + 100 x 2 + 3 x 47) = 641 CPU-s, claim 3 GiB",
+   "expected_cpu": 641
+  },
+  {
+   "function": "keysToOwnedSlice",
+   "callers": "keystoownedslice_fp301_callers",
+   "case": "006c",
+   "instructions": 3,
+   "cpu_seconds": 466,
+   "claim_gib": 3,
+   "why": "3 instructions, 1 successor entries, 37 successor binders: cap min(1200, 120 + 45 x 3 + 100 x 1 + 3 x 37) = 466 CPU-s, claim 3 GiB",
+   "expected_cpu": 466
+  },
+  {
+   "function": "keysToOwnedSlice",
+   "callers": "keystoownedslice_fp301_callers",
+   "case": "0078",
+   "instructions": 1,
+   "cpu_seconds": 533,
+   "claim_gib": 3,
+   "why": "1 instructions, 2 successor entries, 56 successor binders: cap min(1200, 120 + 45 x 1 + 100 x 2 + 3 x 56) = 533 CPU-s, claim 3 GiB",
+   "expected_cpu": 533
+  },
+  {
+   "function": "keysToOwnedSlice",
+   "callers": "keystoownedslice_fp301_callers",
+   "case": "007c",
+   "instructions": 7,
+   "cpu_seconds": 640,
+   "claim_gib": 3,
+   "why": "7 instructions, 1 successor entries, 35 successor binders: cap min(1200, 120 + 45 x 7 + 100 x 1 + 3 x 35) = 640 CPU-s, claim 3 GiB",
+   "expected_cpu": 640
+  },
+  {
+   "function": "keysToOwnedSlice",
+   "callers": "keystoownedslice_fp301_callers",
+   "case": "0098",
+   "instructions": 2,
+   "cpu_seconds": 503,
+   "claim_gib": 3,
+   "why": "2 instructions, 2 successor entries, 31 successor binders: cap min(1200, 120 + 45 x 2 + 100 x 2 + 3 x 31) = 503 CPU-s, claim 3 GiB",
+   "expected_cpu": 503
+  },
+  {
+   "function": "keysToOwnedSlice",
+   "callers": "keystoownedslice_fp301_callers",
+   "case": "00a0",
+   "instructions": 1,
+   "cpu_seconds": 376,
+   "claim_gib": 3,
+   "why": "1 instructions, 1 successor entries, 37 successor binders: cap min(1200, 120 + 45 x 1 + 100 x 1 + 3 x 37) = 376 CPU-s, claim 3 GiB",
+   "expected_cpu": 376
+  },
+  {
+   "function": "keysToOwnedSlice",
+   "callers": "keystoownedslice_fp301_callers",
+   "case": "00a4",
+   "instructions": 9,
+   "cpu_seconds": 733,
+   "claim_gib": 3,
+   "why": "9 instructions, 1 successor entries, 36 successor binders: cap min(1200, 120 + 45 x 9 + 100 x 1 + 3 x 36) = 733 CPU-s, claim 3 GiB",
+   "expected_cpu": 733
+  },
+  {
+   "function": "keysToOwnedSlice",
+   "callers": "keystoownedslice_fp301_callers",
+   "case": "00c8",
+   "instructions": 1,
+   "cpu_seconds": 473,
+   "claim_gib": 3,
+   "why": "1 instructions, 2 successor entries, 36 successor binders: cap min(1200, 120 + 45 x 1 + 100 x 2 + 3 x 36) = 473 CPU-s, claim 3 GiB",
+   "expected_cpu": 473
+  },
+  {
+   "function": "keysToOwnedSlice",
+   "callers": "keystoownedslice_fp301_callers",
+   "case": "00cc",
+   "instructions": 3,
+   "cpu_seconds": 659,
+   "claim_gib": 3,
+   "why": "3 instructions, 2 successor entries, 68 successor binders: cap min(1200, 120 + 45 x 3 + 100 x 2 + 3 x 68) = 659 CPU-s, claim 3 GiB",
+   "expected_cpu": 659
+  },
+  {
+   "function": "keysToOwnedSlice",
+   "callers": "keystoownedslice_fp301_callers",
+   "case": "00d8",
+   "instructions": 6,
+   "cpu_seconds": 577,
+   "claim_gib": 3,
+   "why": "6 instructions, 1 successor entries, 29 successor binders: cap min(1200, 120 + 45 x 6 + 100 x 1 + 3 x 29) = 577 CPU-s, claim 3 GiB",
+   "expected_cpu": 577
+  },
+  {
+   "function": "keysToOwnedSlice",
+   "callers": "keystoownedslice_fp301_callers",
+   "case": "00f0_slot0",
+   "instructions": 2,
+   "cpu_seconds": 400,
+   "claim_gib": 3,
+   "why": "2 instructions, 1 successor entries, 30 successor binders: cap min(1200, 120 + 45 x 2 + 100 x 1 + 3 x 30) = 400 CPU-s, claim 3 GiB",
+   "expected_cpu": 400
+  },
+  {
+   "function": "keysToOwnedSlice",
+   "callers": "keystoownedslice_fp301_callers",
+   "case": "00f0_slot1",
+   "instructions": 2,
+   "cpu_seconds": 463,
+   "claim_gib": 3,
+   "why": "2 instructions, 1 successor entries, 51 successor binders: cap min(1200, 120 + 45 x 2 + 100 x 1 + 3 x 51) = 463 CPU-s, claim 3 GiB",
+   "expected_cpu": 463
+  },
+  {
+   "function": "keysToOwnedSlice",
+   "callers": "keystoownedslice_fp301_callers",
+   "case": "00f8",
+   "instructions": 1,
+   "cpu_seconds": 376,
+   "claim_gib": 3,
+   "why": "1 instructions, 1 successor entries, 37 successor binders: cap min(1200, 120 + 45 x 1 + 100 x 1 + 3 x 37) = 376 CPU-s, claim 3 GiB",
+   "expected_cpu": 376
+  },
+  {
+   "function": "keysToOwnedSlice",
+   "callers": "keystoownedslice_fp301_callers",
+   "case": "00fc",
+   "instructions": 5,
+   "cpu_seconds": 743,
+   "claim_gib": 3,
+   "why": "5 instructions, 2 successor entries, 66 successor binders: cap min(1200, 120 + 45 x 5 + 100 x 2 + 3 x 66) = 743 CPU-s, claim 3 GiB",
+   "expected_cpu": 743
+  },
+  {
+   "function": "keysToOwnedSlice",
+   "callers": "keystoownedslice_fp301_callers",
+   "case": "0110",
+   "instructions": 2,
+   "cpu_seconds": 427,
+   "claim_gib": 3,
+   "why": "2 instructions, 1 successor entries, 39 successor binders: cap min(1200, 120 + 45 x 2 + 100 x 1 + 3 x 39) = 427 CPU-s, claim 3 GiB",
+   "expected_cpu": 427
+  },
+  {
+   "function": "keysToOwnedSlice",
+   "callers": "keystoownedslice_fp301_callers",
+   "case": "0118_slot0",
+   "instructions": 12,
+   "cpu_seconds": 1099,
+   "claim_gib": 3,
+   "why": "12 instructions, 1 successor entries, 113 successor binders: cap min(1200, 120 + 45 x 12 + 100 x 1 + 3 x 113) = 1099 CPU-s, claim 3 GiB",
+   "expected_cpu": 1099
+  },
+  {
+   "function": "keysToOwnedSlice",
+   "callers": "keystoownedslice_fp301_callers",
+   "case": "0118_slot1",
+   "instructions": 12,
+   "cpu_seconds": 841,
+   "claim_gib": 3,
+   "why": "12 instructions, 1 successor entries, 27 successor binders: cap min(1200, 120 + 45 x 12 + 100 x 1 + 3 x 27) = 841 CPU-s, claim 3 GiB",
+   "expected_cpu": 841
+  },
+  {
+   "function": "keysToOwnedSlice",
+   "callers": "keystoownedslice_fp301_callers",
+   "case": "0118_slot2",
+   "instructions": 12,
+   "cpu_seconds": 1132,
+   "claim_gib": 3,
+   "why": "12 instructions, 1 successor entries, 124 successor binders: cap min(1200, 120 + 45 x 12 + 100 x 1 + 3 x 124) = 1132 CPU-s, claim 3 GiB",
+   "expected_cpu": 1132
+  },
+  {
+   "function": "keysToOwnedSlice",
+   "callers": "keystoownedslice_fp301_callers",
+   "case": "0148",
+   "instructions": 2,
+   "cpu_seconds": 497,
+   "claim_gib": 3,
+   "why": "2 instructions, 2 successor entries, 29 successor binders: cap min(1200, 120 + 45 x 2 + 100 x 2 + 3 x 29) = 497 CPU-s, claim 3 GiB",
+   "expected_cpu": 497
+  },
+  {
+   "function": "keysToOwnedSlice",
+   "callers": "keystoownedslice_fp301_callers",
+   "case": "0150",
+   "instructions": 6,
+   "cpu_seconds": 622,
+   "claim_gib": 3,
+   "why": "6 instructions, 1 successor entries, 44 successor binders: cap min(1200, 120 + 45 x 6 + 100 x 1 + 3 x 44) = 622 CPU-s, claim 3 GiB",
+   "expected_cpu": 622
+  },
+  {
+   "function": "keysToOwnedSlice",
+   "callers": "keystoownedslice_fp301_callers",
+   "case": "0168",
+   "instructions": 2,
+   "cpu_seconds": 662,
+   "claim_gib": 3,
+   "why": "2 instructions, 2 successor entries, 84 successor binders: cap min(1200, 120 + 45 x 2 + 100 x 2 + 3 x 84) = 662 CPU-s, claim 3 GiB",
+   "expected_cpu": 662
+  },
+  {
+   "function": "keysToOwnedSlice",
+   "callers": "keystoownedslice_fp301_callers",
+   "case": "0170",
+   "instructions": 5,
+   "cpu_seconds": 598,
+   "claim_gib": 3,
+   "why": "5 instructions, 1 successor entries, 51 successor binders: cap min(1200, 120 + 45 x 5 + 100 x 1 + 3 x 51) = 598 CPU-s, claim 3 GiB",
+   "expected_cpu": 598
+  },
+  {
+   "function": "keysToOwnedSlice",
+   "callers": "keystoownedslice_fp301_callers",
+   "case": "0184",
+   "instructions": 2,
+   "cpu_seconds": 713,
+   "claim_gib": 3,
+   "why": "2 instructions, 2 successor entries, 101 successor binders: cap min(1200, 120 + 45 x 2 + 100 x 2 + 3 x 101) = 713 CPU-s, claim 3 GiB",
+   "expected_cpu": 713
+  },
+  {
+   "function": "keysToOwnedSlice",
+   "callers": "keystoownedslice_fp301_callers",
+   "case": "018c",
+   "instructions": 8,
+   "cpu_seconds": 736,
+   "claim_gib": 3,
+   "why": "8 instructions, 1 successor entries, 52 successor binders: cap min(1200, 120 + 45 x 8 + 100 x 1 + 3 x 52) = 736 CPU-s, claim 3 GiB",
+   "expected_cpu": 736
+  },
+  {
+   "function": "keysToOwnedSlice",
+   "callers": "keystoownedslice_fp301_callers",
+   "case": "01ac",
+   "instructions": 5,
+   "cpu_seconds": 601,
+   "claim_gib": 3,
+   "why": "5 instructions, 1 successor entries, 52 successor binders: cap min(1200, 120 + 45 x 5 + 100 x 1 + 3 x 52) = 601 CPU-s, claim 3 GiB",
+   "expected_cpu": 601
+  },
+  {
+   "function": "keysToOwnedSlice",
+   "callers": "keystoownedslice_fp301_callers",
+   "case": "01c0",
+   "instructions": 6,
+   "cpu_seconds": 490,
+   "claim_gib": 3,
+   "why": "6 instructions, 1 successor entries, 0 successor binders: cap min(1200, 120 + 45 x 6 + 100 x 1 + 3 x 0) = 490 CPU-s, claim 3 GiB",
+   "expected_cpu": 490
+  },
+  {
+   "function": "keysToOwnedSlice",
+   "callers": "keystoownedslice_fp301_callers",
+   "case": "01d8",
+   "instructions": 2,
+   "cpu_seconds": 557,
+   "claim_gib": 3,
+   "why": "2 instructions, 2 successor entries, 49 successor binders: cap min(1200, 120 + 45 x 2 + 100 x 2 + 3 x 49) = 557 CPU-s, claim 3 GiB",
+   "expected_cpu": 557
+  },
+  {
+   "function": "keysToOwnedSlice",
+   "callers": "keystoownedslice_fp301_callers",
+   "case": "01e0",
+   "instructions": 1,
+   "cpu_seconds": 421,
+   "claim_gib": 3,
+   "why": "1 instructions, 1 successor entries, 52 successor binders: cap min(1200, 120 + 45 x 1 + 100 x 1 + 3 x 52) = 421 CPU-s, claim 3 GiB",
+   "expected_cpu": 421
+  }
+ ]
+}
