@@ -12,6 +12,7 @@ Require Import ZesuSsz.Contracts.BerlinGasCalcContract.
 Require Import ZesuSsz.Contracts.BerlinGasCalcSelected.
 Require Import ZesuSsz.Automation2.All.
 Local Open Scope Z_scope.
+#[local] Typeclasses Transparent berlinGasCalcSelectedCode.
 
 Definition DesignedEntry_800d3cac
     `{!islaG Sigma} `{!threadG} (args : BerlinGasCalcArgs) (returnAddress : Z) (K : iProp Sigma) : iProp Sigma :=
