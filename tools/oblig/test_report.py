@@ -91,6 +91,18 @@ class Report(unittest.TestCase):
                                                        'within its attempts 100.0%, tokens per closed 35.0')
             self.assertEqual(got['tier mechanical'], 'n/a')
 
+    def test_superseded_obligations_are_counted_and_left_out(self):
+        with tempfile.TemporaryDirectory() as run:
+            goal = store.goal_id(F, '0040', 'a')
+            store.append(run, [ev(goal, 'derived'),
+                               attempt(goal, 'failed', 'haiku-low', 1, prompt_bytes=100, tokens_in=10, tokens_out=5,
+                                       **{'class': 'give_up'}),
+                               ev(goal, 'superseded', **{'class': 'artifact-gone'})])
+            got = dict(report.measures(run, F))
+            self.assertEqual(got['superseded obligations (left out of every measure below)'], '1')
+            self.assertEqual(got['tokens per attempt'], 'n/a')
+            self.assertEqual(got['tier haiku-low'], 'n/a')
+
 
 if __name__ == '__main__':
     unittest.main()

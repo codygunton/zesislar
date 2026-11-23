@@ -93,6 +93,22 @@ class GoalTaskTests(unittest.TestCase):
                                              INDEX, None)
             self.assertEqual(too_small["next"], "too-large")
 
+    def test_a_history_premise_brings_the_history_hint(self):
+        hist = ("(forall (x : Z), (forall (H11 : (@ZesuSsz.Automation2.Hist.zesu_hist "
+                "(@ZesuSsz.Generated.K.FP301.Pilot0170Entries.fp_machineAt0170_ForwardA0N0_Hist x))), "
+                "(@Coq.ZArith.BinInt.Z.lt x (@Coq.ZArith.BinInt.Z.add x (1)%Z))))")
+        with tempfile.TemporaryDirectory() as root:
+            run, manifest = make_run(root, [hist, "forall (x : Z), Z.lt x (Z.add x 1)"])
+            records = [package.package_goal(run, manifest, g, "keys", "haiku-low", 12000, None, None)
+                       for g in manifest["goals"]]
+            text = Path(records[0]["task"]).read_text()
+        self.assertEqual(records[0]["context_supplied"], ["hist"])
+        self.assertIn("## History hint", text)
+        self.assertIn("unfold fp_machineAt0170_ForwardA0N0_Hist in H11; rewrite zesu_hist_eq in H11;", text)
+        self.assertIn("destruct H11 as [_ H11]", text)
+        self.assertEqual(records[1]["context_supplied"], [])
+        self.assertNotIn("range", records[0]["context_supplied"])
+
 
 class AnswerTests(unittest.TestCase):
     def test_answers_become_collect_files(self):

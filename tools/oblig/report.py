@@ -3,7 +3,8 @@
 
     report.py --function F [--run RUN]
 
-Prints one line per measure, `n/a` where its input is absent: blocks closed with no model; rounds
+Prints one line per measure, `n/a` where its input is absent: first the count of superseded
+obligations (store.py), which every other measure leaves out; blocks closed with no model; rounds
 and requests per round (RUN/round-<n>/derived/REQUESTS.json, schema oblig-requests/1 of derive.py);
 decisions made against the floor (round 1's contract, loop_assertion and callee_premise requests,
 answered ones included); share of requests with `derivable` true; unhandled refusals per round
@@ -137,7 +138,8 @@ def tokens(row):
 def measures(run, function=None):
     state = {k: v for k, v in store.fold(store.read_events(run)).items()
              if function is None or v['function'] == function}
-    items = list(state.values())
+    superseded = [i for i in state.values() if i['state'] == 'superseded']
+    items = [i for i in state.values() if i['state'] != 'superseded']
     blocks = [i for i in items if i['kind'] == 'block']
     goals = [i for i in items if i['kind'] in ('goal', 'meaning')]
     decisions = [i for i in items if i['kind'] == 'decision']
@@ -146,6 +148,8 @@ def measures(run, function=None):
 
     def put(name, value):
         out.append((name, value))
+
+    put('superseded obligations (left out of every measure below)', str(len(superseded)))
 
     def descendants(identifier):
         found = [i for i in items if i['parent'] == identifier]
