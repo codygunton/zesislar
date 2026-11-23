@@ -8,7 +8,8 @@
   "frame_slots": true,
   "array_spelling": "sealed",
   "hist_visible": [
-   "^\\(?frame_old_m\\d+'* = "
+   "^\\(?frame_old_m\\d+'* = ",
+   "^\\W*bv_unsigned call_x10 = 0\\W*$"
   ],
   "args_type": "KeysToOwnedSliceBlockArgs",
   "symbol": "array_list.Aligned([32]u8,null).toOwnedSlice",

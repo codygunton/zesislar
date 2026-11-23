@@ -28,19 +28,17 @@ Section edges.
 Context `{!islaG Sigma} `{!threadG}.
 
 (* fp_machineAt00a4_ForwardA0N0 -> fp_machineAt00c8_ForwardA0N0 (call_return) *)
-Global Instance zesu_hist_edge_11 (args : KeysToOwnedSliceBlockArgs) (returnAddress : Z) (call_x10 : bv 64) :
+Global Instance zesu_hist_edge_11 (args : KeysToOwnedSliceBlockArgs) (returnAddress : Z) :
   ZesuHistEdge (PROP := iProp Sigma)
     (fp_machineAt00a4_ForwardA0N0_Hist (args) (returnAddress))
-    (fp_machineAt00c8_ForwardA0N0_Hist (args) (returnAddress) (call_x10))
-    (⌜((bv_unsigned call_x10 = 0))⌝ ∗ True)%I.
+    (fp_machineAt00c8_ForwardA0N0_Hist (args) (returnAddress))
+    (True)%I.
 Proof.
   rewrite /ZesuHistEdge => Hh. apply zesu_hist_elim in Hh. unfold fp_machineAt00a4_ForwardA0N0_Hist in Hh.
   destruct Hh as (fp_seed_mstatus_bits & forward_witness_72b7e22ed74cb83b & forward_witness_cbcac9df79b9221c & forward_witness_1be931110d776902 & forward_witness_905cf96e605c1117 & forward_witness_55ab0ce59750150a & forward_witness_d7543602bfbbe148 & forward_witness_00470b017f14ddbf & forward_witness_83d3e6d46c3de70e & forward_witness_1d218312837c2f84 & forward_witness_dc636cab9ffb40ae & forward_witness_8da77898f656116a & HF0 & HF1 & HF2 & HF3 & HF4 & HF5 & HF6 & HF7 & HF8 & HF9 & HF10 & HF11 & HF12).
   iIntros "HN".
-  iDestruct "HN" as "(%HN0 & _)".
   iPureIntro. apply zesu_hist_intro. unfold fp_machineAt00c8_ForwardA0N0_Hist.
   exists fp_seed_mstatus_bits, forward_witness_72b7e22ed74cb83b, forward_witness_cbcac9df79b9221c, forward_witness_1be931110d776902, forward_witness_905cf96e605c1117, forward_witness_55ab0ce59750150a, forward_witness_d7543602bfbbe148, forward_witness_00470b017f14ddbf, forward_witness_83d3e6d46c3de70e, forward_witness_1d218312837c2f84, forward_witness_dc636cab9ffb40ae, forward_witness_8da77898f656116a, (BV 64%N 0%Z), (BV 64%N 0%Z), (BV 64%N 0%Z), (BV 64%N 0%Z), (BV 64%N 0%Z), (BV 64%N 0%Z), (BV 64%N 0%Z), (BV 64%N 0%Z).
-  split; [exact HN0|].
   split; [exact HF1|].
   split; [exact HF3|].
   split; [exact HF4|].
