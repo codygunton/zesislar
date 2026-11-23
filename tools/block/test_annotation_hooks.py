@@ -219,5 +219,79 @@ class OpaqueAndReturnedCall(unittest.TestCase):
             self.run_call(opaque=self.ROWS, returns=[{'index': 0, 'register': 'x1'}])
 
 
+class WordLinkAcrossCall(unittest.TestCase):
+    """A root word link survives a call that leaves its array alone and is dropped when the spec
+    replaces the array (wrong-output fix: the return seed used to drop every link)."""
+    KEEP = '''Definition keepSpec `{!islaG Sigma} `{!threadG} : iProp Sigma :=
+  (machine_call someMap 0
+    (fun argv sp RET =>
+      RET (fun _ => True)))%I.
+'''
+    WRITE = '''Definition writeSpec `{!islaG Sigma} `{!threadG} : iProp Sigma :=
+  (machine_call someMap 0
+    (fun argv sp RET =>
+      ∃ (old : list byte),
+      hdr ↦ₘ∗ old ∗
+      RET (fun _ =>
+        ∃ (new : list byte),
+        hdr ↦ₘ∗ new ∗
+        True)))%I.
+'''
+
+    def run_call(self, spec, arrays, next_pc=None):
+        from call_boundary import call_return_seed
+        from resource_seed import seed_owned_resources
+        origin = {'path': 'fixture.v', 'sha256': 'fixture'}
+        constants = {'dst': {'value': 0x200, 'origin': origin}, 'hdr': {'value': 0x300, 'origin': origin}}
+        registers = [{'id': name, 'kind': 'register', 'register': name, 'width': 64, 'value_coq': value,
+                      'symbolic_witness': None}
+                     for name, value in [('x1', 'ra'), ('x2', 'Z_to_bv 64 dst'), ('x10', 'Z_to_bv 64 dst')]]
+        public = {'_input_sha256': 'fixture', 'source_bindings': [origin], 'assertion_tree': {
+            'kind': 'exists', 'binders': [], 'components': [
+                {'id': 'collection', 'kind': 'opaque', 'coq': 'reg_col (exact_regs args)'}, *registers,
+                {'id': 'hdr', 'kind': 'byte_array', 'original_component': 'hdr ↦ₘ∗ bytes', 'address_z': 'hdr',
+                 'byte_array_expr': input_expr('bytes', None).to_dict(), 'element_bits': 8,
+                 'length_original_coq': '8'},
+                {'id': 'terminal', 'kind': 'opaque', 'coq': 'True'}]}}
+        vocabulary = {'rows': [{'kind': kind, 'source_bindings': []} for kind in
+                               ('owned_byte_array', 'uninitialized_stack_span', 'permission_fraction')],
+                      'input_sha256': 'fixture', 'source_vocabulary': {'imports': []}}
+        link = {'fact_id': 'wellformed:word-link-0', 'kind': 'word_link', 'status': 'supplied',
+                'terms': {'resource_id': 'hdr', 'offset': 0, 'size': 8, 'quantity': 'q'}, 'origin': origin}
+        length = {'fact_id': 'hdr:length', 'kind': 'bounds', 'status': 'supplied',
+                  'terms': {'resource_id': 'hdr', 'index': 0, 'count': 8, 'coq_statement': 'length bytes = 8'},
+                  'origin': origin}
+        root = seed_owned_resources(public, entry_pc=16, vocabulary=vocabulary, constants=constants,
+                                    facts=[link, length])
+        self.assertEqual(len(root.state.word_links), 1)
+        state = root.state.copy()
+        state.registers.update({'PC': bits(64, 64), **{'x%d' % number: bits(0, 64) for number in range(11, 18)}})
+        if next_pc is not None:
+            state.registers['nextPC'] = bits(next_pc, 64)
+        name = spec.split()[1]
+        call = {'call_site_pc': '0x14', 'return_site_pc': '0x18', 'spec': name, 'spec_module': 'Spec',
+                'spec_source': 'Spec.v', 'arrays': arrays, 'stack_bytes': 0, 'output_length_source': 'fixture'}
+        with tempfile.TemporaryDirectory() as directory:
+            Path(directory, 'Spec.v').write_text(spec)
+            seed, _, _ = call_return_seed([{'seed_pc': '0x10', 'state': state.to_dict()}], call=call,
+                                          function_root=directory, root_seed=root, vocabulary=vocabulary,
+                                          shapes={'collection_ownership_id': 'collection', 'rows': []},
+                                          constants=constants)
+        return seed
+
+    def test_the_link_survives_a_call_that_leaves_its_array_alone(self):
+        seed = self.run_call(self.KEEP, [])
+        self.assertEqual([link['fact_id'] for link in seed.state.word_links], ['wellformed:word-link-0'])
+
+    def test_the_link_is_dropped_when_the_spec_replaces_its_array(self):
+        seed = self.run_call(self.WRITE, [{'binder': 'old', 'constant': 'hdr', 'caller_value': 'bytes',
+                                           'length': 8, 'length_source': 'fixture'}])
+        self.assertEqual(seed.state.word_links, [])
+
+    def test_the_next_pc_of_a_return_seed_is_the_return_site(self):
+        seed = self.run_call(self.KEEP, [], next_pc=0x1000)
+        self.assertEqual(seed.state.registers['nextPC'], bits(0x18, 64))
+
+
 if __name__ == '__main__':
     unittest.main()
