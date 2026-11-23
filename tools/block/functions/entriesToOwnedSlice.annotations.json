@@ -99,7 +99,13 @@
    "+0x120",
    "+0x14c"
   ],
-  "cfg_function": "array_list.Aligned(input.AccessListEntry,null).toOwnedSlice"
+  "cfg_function": "array_list.Aligned(input.AccessListEntry,null).toOwnedSlice",
+  "compliance": {
+   "boundary": "ZesuSsz.Compliance.EntriesToOwnedSliceCompositionBoundary",
+   "continuation": "entriesToOwnedSliceContinuation",
+   "inline_returns": false,
+   "source": "Exit design A (EntriesToOwnedSliceGeneratedComposition.v, as keysToOwnedSlice): every table entry carries the contract continuation at returnAddress as K; the callers of the return slots take the generated return package at returnAddress; the composition proves each package's return premise from K through that package's end bridge."
+  }
  },
  "rows": [
   {

@@ -96,6 +96,12 @@
     "+0x14c"
   ],
   "cfg_function": "array_list.Aligned(input.AccessListEntry,null).toOwnedSlice",
+  "compliance": {
+    "boundary": "ZesuSsz.Compliance.EntriesToOwnedSliceCompositionBoundary",
+    "continuation": "entriesToOwnedSliceContinuation",
+    "inline_returns": false,
+    "source": "Exit design A (EntriesToOwnedSliceGeneratedComposition.v, as keysToOwnedSlice): every table entry carries the contract continuation at returnAddress as K; the callers of the return slots take the generated return package at returnAddress; the composition proves each package's return premise from K through that package's end bridge."
+  },
   "domain_component": "\u231centriesBlockDomainAt returnAddress args\u231d",
   "opaque_predicates": {
     "altFlHeap": {
@@ -408,6 +414,6 @@
   },
   "generated_from": {
     "path": "tools/block/functions/entriesToOwnedSlice.annotations.json",
-    "sha256": "4d3d2337f4724c13d1d5b10bbe3eb96bf3fd6996c7f6924957ba27aca608477c"
+    "sha256": "893b0b660e49b656af099a20b5104d7a52936f3658baa5089f2c4a4b4f50f0bc"
   }
 }
