@@ -86,6 +86,9 @@
       "owner": "ZesuSsz.Contracts.AltFlAllocPremises"
     }
   },
+  "join_designs": {
+    "+0x110": []
+  },
   "calls": [
     {
       "function": "array_list.Aligned([32]u8,null).toOwnedSlice",
@@ -267,8 +270,22 @@
       "return_fact": true
     }
   ],
+  "unreachable_entries": [
+    "+0xa0",
+    "+0xcc"
+  ],
+  "join_drops": {
+    "+0x110": [
+      {
+        "root": "+0x168",
+        "resources": [
+          "bv_unsigned call_x10 \u21a6\u2098? altFlAllocatedBytes (bv_unsigned call_x10) (bv_unsigned ((bv_shiftl ((Z_to_bv 64%N (arrayListLength (keysBlockList args)))) (BV 64%N 5%Z))))"
+        ]
+      }
+    ]
+  },
   "generated_from": {
     "path": "tools/block/functions/keysToOwnedSlice.annotations.json",
-    "sha256": "a8ef9d88f7add4ee2df7d49c45c925ae78b20cdfffe9dcd5195c802d47d20131"
+    "sha256": "bd23227ec45f8ed46abc19f14394f733e3229872f788a206b2527c6ae37d029b"
   }
 }

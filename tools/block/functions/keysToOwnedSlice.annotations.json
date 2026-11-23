@@ -98,8 +98,14 @@
     }
    ],
    "predicates": [
-    {"name": "altFlHeap", "owner": "ZesuSsz.Contracts.AltFlAllocPremises"},
-    {"name": "altFlBlock", "owner": "ZesuSsz.Contracts.AltFlAllocPremises"}
+    {
+     "name": "altFlHeap",
+     "owner": "ZesuSsz.Contracts.AltFlAllocPremises"
+    },
+    {
+     "name": "altFlBlock",
+     "owner": "ZesuSsz.Contracts.AltFlAllocPremises"
+    }
    ],
    "author": {
     "tier": "hand"
@@ -140,12 +146,25 @@
     "arrays": [],
     "output_length_source": "altFlFreeCallSpec (AltFlAllocPremises.v): returns altFlHeap only; no array",
     "opaque": [
-     {"spec": "altFlHeap", "use": "framed"},
-     {"spec": "bv_unsigned (argv !!! 1%nat) ↦ₘ? bv_unsigned (argv !!! 2%nat)", "use": "consumed",
-      "caller": ["arrayListPointer (keysBlockList args) ↦ₘ∗ arrayListItems (keysBlockList args)",
-                 "(arrayListPointer (keysBlockList args) + arrayListLength (keysBlockList args) * keysElementBytes) ↦ₘ? ((arrayListCapacity (keysBlockList args) - arrayListLength (keysBlockList args)) * keysElementBytes)"]},
-     {"spec": "altFlBlock (bv_unsigned (argv !!! 1%nat)) (bv_unsigned (argv !!! 2%nat)) (bv_unsigned (argv !!! 3%nat))", "use": "consumed",
-      "caller": ["altFlBlock (arrayListPointer (keysBlockList args)) (arrayListCapacity (keysBlockList args) * keysElementBytes) keysLog2Alignment"]}
+     {
+      "spec": "altFlHeap",
+      "use": "framed"
+     },
+     {
+      "spec": "bv_unsigned (argv !!! 1%nat) ↦ₘ? bv_unsigned (argv !!! 2%nat)",
+      "use": "consumed",
+      "caller": [
+       "arrayListPointer (keysBlockList args) ↦ₘ∗ arrayListItems (keysBlockList args)",
+       "(arrayListPointer (keysBlockList args) + arrayListLength (keysBlockList args) * keysElementBytes) ↦ₘ? ((arrayListCapacity (keysBlockList args) - arrayListLength (keysBlockList args)) * keysElementBytes)"
+      ]
+     },
+     {
+      "spec": "altFlBlock (bv_unsigned (argv !!! 1%nat)) (bv_unsigned (argv !!! 2%nat)) (bv_unsigned (argv !!! 3%nat))",
+      "use": "consumed",
+      "caller": [
+       "altFlBlock (arrayListPointer (keysBlockList args)) (arrayListCapacity (keysBlockList args) * keysElementBytes) keysLog2Alignment"
+      ]
+     }
     ]
    },
    "author": {
@@ -172,7 +191,12 @@
     "stack_bytes": 16,
     "arrays": [],
     "output_length_source": "altFlRemapCallSpec (AltFlAllocPremises.v): returns 0 in x10 and no array",
-    "returns": [{"index": 0, "register": "x10"}]
+    "returns": [
+     {
+      "index": 0,
+      "register": "x10"
+     }
+    ]
    },
    "author": {
     "tier": "opus-medium"
@@ -198,11 +222,25 @@
     "stack_bytes": 16,
     "arrays": [],
     "output_length_source": "altFlAllocCallSpec (AltFlAllocPremises.v): the returned block owns altFlAllocatedBytes x10 (argument 1) bytes, uninitialized",
-    "returns": [{"index": 0, "register": "x10"}],
+    "returns": [
+     {
+      "index": 0,
+      "register": "x10"
+     }
+    ],
     "opaque": [
-     {"spec": "altFlHeap", "use": "framed"},
-     {"spec": "bv_unsigned (rets !!! 0%nat) ↦ₘ? altFlAllocatedBytes (bv_unsigned (rets !!! 0%nat)) (bv_unsigned (argv !!! 1%nat))", "use": "produced"},
-     {"spec": "altFlBlock (bv_unsigned (rets !!! 0%nat)) (altFlAllocatedBytes (bv_unsigned (rets !!! 0%nat)) (bv_unsigned (argv !!! 1%nat))) (bv_unsigned (argv !!! 2%nat))", "use": "produced"}
+     {
+      "spec": "altFlHeap",
+      "use": "framed"
+     },
+     {
+      "spec": "bv_unsigned (rets !!! 0%nat) ↦ₘ? altFlAllocatedBytes (bv_unsigned (rets !!! 0%nat)) (bv_unsigned (argv !!! 1%nat))",
+      "use": "produced"
+     },
+     {
+      "spec": "altFlBlock (bv_unsigned (rets !!! 0%nat)) (altFlAllocatedBytes (bv_unsigned (rets !!! 0%nat)) (bv_unsigned (argv !!! 1%nat))) (bv_unsigned (argv !!! 2%nat))",
+      "use": "produced"
+     }
     ]
    },
    "author": {
@@ -242,7 +280,9 @@
      }
     ],
     "output_length_source": "ziskMemcpyCallSpec (ZiskMemcpyPremise.v): the destination receives source, Z.of_nat (length source) = argument 2; the extra-params word receives word64Bytes (argument 2), 8 bytes",
-    "returned_lengths": {"0": "altFlAllocatedBytes (bv_unsigned call_x10) (bv_unsigned ((bv_shiftl ((Z_to_bv 64%N (arrayListLength (keysBlockList args)))) (BV 64%N 5%Z))))"},
+    "returned_lengths": {
+     "0": "altFlAllocatedBytes (bv_unsigned call_x10) (bv_unsigned ((bv_shiftl ((Z_to_bv 64%N (arrayListLength (keysBlockList args)))) (BV 64%N 5%Z))))"
+    },
     "collection_after": "reg_col zesu_sys_regs",
     "collection_source": "machine_call_ret returns reg_col (machine_sys_regs decodeItemCallMap); the RET of ziskMemcpyCallSpec returns zisk_input_end and zisk_free_input with BitsShape 64; zesu_sys_regs (InstrSpecs/Machine.v) is their union"
    },
@@ -271,12 +311,25 @@
     "arrays": [],
     "output_length_source": "altFlFreeCallSpec (AltFlAllocPremises.v): returns altFlHeap only; no array",
     "opaque": [
-     {"spec": "altFlHeap", "use": "framed"},
-     {"spec": "bv_unsigned (argv !!! 1%nat) ↦ₘ? bv_unsigned (argv !!! 2%nat)", "use": "consumed",
-      "caller": ["arrayListPointer (keysBlockList args) ↦ₘ∗ arrayListItems (keysBlockList args)",
-                 "(arrayListPointer (keysBlockList args) + arrayListLength (keysBlockList args) * keysElementBytes) ↦ₘ? ((arrayListCapacity (keysBlockList args) - arrayListLength (keysBlockList args)) * keysElementBytes)"]},
-     {"spec": "altFlBlock (bv_unsigned (argv !!! 1%nat)) (bv_unsigned (argv !!! 2%nat)) (bv_unsigned (argv !!! 3%nat))", "use": "consumed",
-      "caller": ["altFlBlock (arrayListPointer (keysBlockList args)) (arrayListCapacity (keysBlockList args) * keysElementBytes) keysLog2Alignment"]}
+     {
+      "spec": "altFlHeap",
+      "use": "framed"
+     },
+     {
+      "spec": "bv_unsigned (argv !!! 1%nat) ↦ₘ? bv_unsigned (argv !!! 2%nat)",
+      "use": "consumed",
+      "caller": [
+       "arrayListPointer (keysBlockList args) ↦ₘ∗ arrayListItems (keysBlockList args)",
+       "(arrayListPointer (keysBlockList args) + arrayListLength (keysBlockList args) * keysElementBytes) ↦ₘ? ((arrayListCapacity (keysBlockList args) - arrayListLength (keysBlockList args)) * keysElementBytes)"
+      ]
+     },
+     {
+      "spec": "altFlBlock (bv_unsigned (argv !!! 1%nat)) (bv_unsigned (argv !!! 2%nat)) (bv_unsigned (argv !!! 3%nat))",
+      "use": "consumed",
+      "caller": [
+       "altFlBlock (arrayListPointer (keysBlockList args)) (arrayListCapacity (keysBlockList args) * keysElementBytes) keysLog2Alignment"
+      ]
+     }
     ]
    },
    "author": {
@@ -322,6 +375,69 @@
    "author": {
     "tier": "opus-medium"
    }
+  },
+  {
+   "id": "dead-a0",
+   "request": "keysToOwnedSlice/decision/predicate-0074",
+   "at": {
+    "pc": "+0xa0",
+    "boundary": "join"
+   },
+   "binders": [],
+   "resources": [],
+   "facts": [
+    {
+     "coq": "False",
+     "role": "unreachable",
+     "need": "bne s6 at +0x9c: s6 = items.ptr >= 1 (keysBlockArgsWellFormed), so +0xa0 is never reached"
+    }
+   ],
+   "author": {
+    "tier": "opus-medium"
+   }
+  },
+  {
+   "id": "dead-cc",
+   "request": "keysToOwnedSlice/decision/predicate-00c4",
+   "at": {
+    "pc": "+0xcc",
+    "boundary": "join"
+   },
+   "binders": [],
+   "resources": [],
+   "facts": [
+    {
+     "coq": "False",
+     "role": "unreachable",
+     "need": "remap returns 0 (altFlRemapCallSpec), so beq a0 at +0xc8 always branches"
+    }
+   ],
+   "author": {
+    "tier": "opus-medium"
+   }
+  },
+  {
+   "id": "join-110",
+   "request": "keysToOwnedSlice/decision/join_assertion-0110",
+   "at": {
+    "pc": "+0x110",
+    "boundary": "join"
+   },
+   "binders": [],
+   "resources": [],
+   "facts": [],
+   "drop": [
+    {
+     "root": "+0x168",
+     "resources": [
+      "bv_unsigned call_x10 ↦ₘ? altFlAllocatedBytes (bv_unsigned call_x10) (bv_unsigned ((bv_shiftl ((Z_to_bv 64%N (arrayListLength (keysBlockList args)))) (BV 64%N 5%Z))))"
+     ]
+    }
+   ],
+   "author": {
+    "tier": "opus-medium"
+   },
+   "why": "OutOfMemory path: alloc returned null, so the block owns altFlAllocatedBytes 0 n = 0 bytes; toOwnedSliceExit on OutOfMemory owns arrayListEmpty emptyPointer for the slice (nothing), so the exit does not need it"
   }
  ]
 }
