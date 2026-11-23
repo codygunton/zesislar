@@ -9,7 +9,8 @@
   "array_spelling": "sealed",
   "hist_visible": [
    "^\\(?frame_old_m\\d+'* = ",
-   "^\\W*bv_unsigned call_x10 = 0\\W*$"
+   "^\\W*bv_unsigned call_x10 = 0\\W*$",
+   "^\\W*negb \\(bool_decide \\(call_x10 = \\(BV 64%N 0%Z\\)\\)\\)\\W*= true\\W*(/\\\\\\W*bv_unsigned call_x10\\W*<>\\W*0%Z\\W*%Z\\W*)?$"
   ],
   "args_type": "EntriesToOwnedSliceBlockArgs",
   "symbol": "array_list.Aligned(input.AccessListEntry,null).toOwnedSlice",

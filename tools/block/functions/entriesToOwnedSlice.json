@@ -5,7 +5,8 @@
   "array_spelling": "sealed",
   "hist_visible": [
     "^\\(?frame_old_m\\d+'* = ",
-    "^\\W*bv_unsigned call_x10 = 0\\W*$"
+    "^\\W*bv_unsigned call_x10 = 0\\W*$",
+    "^\\W*negb \\(bool_decide \\(call_x10 = \\(BV 64%N 0%Z\\)\\)\\)\\W*= true\\W*(/\\\\\\W*bv_unsigned call_x10\\W*<>\\W*0%Z\\W*%Z\\W*)?$"
   ],
   "args_type": "EntriesToOwnedSliceBlockArgs",
   "symbol": "array_list.Aligned(input.AccessListEntry,null).toOwnedSlice",
@@ -407,6 +408,6 @@
   },
   "generated_from": {
     "path": "tools/block/functions/entriesToOwnedSlice.annotations.json",
-    "sha256": "8edf6444c0cfe1d4b0ec58a2269006c5f143135d7228fa0a7c3a99dcc58a9f83"
+    "sha256": "4d3d2337f4724c13d1d5b10bbe3eb96bf3fd6996c7f6924957ba27aca608477c"
   }
 }

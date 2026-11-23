@@ -30,7 +30,7 @@ Context `{!islaG Sigma} `{!threadG}.
 (* fp_machineAt01ac_ForwardA0N0 -> fp_machineAt01c0_ForwardA0N0 (call_return) *)
 Global Instance zesu_hist_edge_27 (args : EntriesToOwnedSliceBlockArgs) (returnAddress : Z) (call_x10 : bv 64) :
   ZesuHistEdge (PROP := iProp Sigma)
-    (fp_machineAt01ac_ForwardA0N0_Hist (args) (returnAddress) (call_x10))
+    (fp_machineAt01ac_ForwardA0N0_Hist (args) (returnAddress))
     (fp_machineAt01c0_ForwardA0N0_Hist (args) (returnAddress) (call_x10))
     (⌜((Z.of_nat (List.length (arrayListItems (entriesBlockList args))) = altFlAllocatedBytes (bv_unsigned call_x10) (bv_unsigned ((bv_add (bv_shiftl ((Z_to_bv 64%N (arrayListLength (entriesBlockList args)))) (BV 64%N 5%Z)) (bv_shiftl ((Z_to_bv 64%N (arrayListLength (entriesBlockList args)))) (BV 64%N 3%Z))))))%Z)⌝ ∗ ⌜(((ziskWord ((bv_unsigned (call_x10))) /\ ziskWord ((bv_unsigned (((Z_to_bv 64%N (arrayListPointer (entriesBlockList args))))))) /\ ziskWord ((bv_unsigned ((bv_add (bv_shiftl ((Z_to_bv 64%N (arrayListLength (entriesBlockList args)))) (BV 64%N 5%Z)) (bv_shiftl ((Z_to_bv 64%N (arrayListLength (entriesBlockList args)))) (BV 64%N 3%Z)))))) /\
   ziskWritableSection stockZiskPermissions ziskExtraParamsAddress 8 /\
@@ -41,7 +41,7 @@ Global Instance zesu_hist_edge_27 (args : EntriesToOwnedSliceBlockArgs) (returnA
     ziskWritableSection stockZiskPermissions ((bv_unsigned (call_x10))) ((bv_unsigned ((bv_add (bv_shiftl ((Z_to_bv 64%N (arrayListLength (entriesBlockList args)))) (BV 64%N 5%Z)) (bv_shiftl ((Z_to_bv 64%N (arrayListLength (entriesBlockList args)))) (BV 64%N 3%Z))))))))) /\ (Z.of_nat (length (arrayListItems (entriesBlockList args))) = bv_unsigned ((bv_add (bv_shiftl ((Z_to_bv 64%N (arrayListLength (entriesBlockList args)))) (BV 64%N 5%Z)) (bv_shiftl ((Z_to_bv 64%N (arrayListLength (entriesBlockList args)))) (BV 64%N 3%Z))))) /\ (length (toOwnedScratchBefore (entriesBase args)) = 8%nat))⌝ ∗ True)%I.
 Proof.
   rewrite /ZesuHistEdge => Hh. apply zesu_hist_elim in Hh. unfold fp_machineAt01ac_ForwardA0N0_Hist in Hh.
-  destruct Hh as (machine_x10 & machine_x23 & fp_seed_mstatus_bits & forward_witness_cbcac9df79b9221c & forward_witness_1be931110d776902 & forward_witness_905cf96e605c1117 & forward_witness_55ab0ce59750150a & forward_witness_d7543602bfbbe148 & forward_witness_00470b017f14ddbf & forward_witness_83d3e6d46c3de70e & forward_witness_88383840afa7af74 & forward_witness_87e5cadc5c04d5d4 & forward_witness_1492ef7bd46b3b7a & forward_witness_a84be01a9be85bdb & forward_witness_21649d1cf161453f & forward_witness_9644ccf41f39915a & forward_witness_407fca3a6f90b8db & forward_witness_1eea82d2945b4618 & forward_witness_11fde2df72db9d06 & forward_witness_72b7e22ed74cb83b & HF0 & HF1 & HF2 & HF3 & HF4 & HF5 & HF6 & HF7 & HF8 & HF9 & HF10 & HF11 & HF12 & HF13 & HF14 & HF15 & HF16 & HF17 & HF18 & HF19 & HF20 & HF21).
+  destruct Hh as (machine_x10 & machine_x23 & fp_seed_mstatus_bits & forward_witness_cbcac9df79b9221c & forward_witness_1be931110d776902 & forward_witness_905cf96e605c1117 & forward_witness_55ab0ce59750150a & forward_witness_d7543602bfbbe148 & forward_witness_00470b017f14ddbf & forward_witness_83d3e6d46c3de70e & forward_witness_88383840afa7af74 & forward_witness_87e5cadc5c04d5d4 & forward_witness_1492ef7bd46b3b7a & forward_witness_a84be01a9be85bdb & forward_witness_21649d1cf161453f & forward_witness_9644ccf41f39915a & forward_witness_407fca3a6f90b8db & forward_witness_1eea82d2945b4618 & forward_witness_11fde2df72db9d06 & forward_witness_72b7e22ed74cb83b & HF0 & HF1 & HF2 & HF3 & HF4 & HF5 & HF6 & HF7 & HF8 & HF9 & HF10 & HF11 & HF12 & HF13 & HF14 & HF15 & HF16 & HF17 & HF18 & HF19 & HF20).
   iIntros "HN".
   iDestruct "HN" as "(%HN0 & %HN1 & _)".
   iPureIntro. apply zesu_hist_intro. unfold fp_machineAt01c0_ForwardA0N0_Hist.
@@ -67,7 +67,6 @@ Proof.
   split; [exact HF17|].
   split; [exact HF18|].
   split; [exact HF20|].
-  split; [exact HF21|].
   split; [by vm_compute|].
   exact HF19.
 Qed.
