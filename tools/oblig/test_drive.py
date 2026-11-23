@@ -258,6 +258,17 @@ class DriveTests(unittest.TestCase):
         self.assertIn("forall y : Z, y + 0 = y", prompt)
         self.assertIn("context:lemB", items)
 
+    def test_reset_marks_the_repeated_mechanical_prompt_and_reruns_the_ladder(self):
+        drive.step(F, self.run_dir, kernel=self.kernel)
+        self.install(GIVE_UP)
+        drive_kernel.run_round(F, self.run_dir, tier="haiku-low", kernel=self.kernel)
+        item = self.state()[self.sid("lemA")]
+        store.append(self.run_dir, store.event(id=item["id"], function=F, kind="meaning", state="derived",
+                                               artifact=item["artifact"]))
+        counts = drive.step(F, self.run_dir, kernel=self.kernel)[0]
+        self.assertEqual(counts.get("repeated_prompt"), 1)
+        self.assertEqual(drive.model_items(self.run_dir, F)[0][:2], (self.sid("lemA"), "haiku-low"))
+
     def test_malformed_reply_retries_with_a_changed_prompt(self):
         self.install("I could not decide.")
         drive_kernel.run_round(F, self.run_dir, tier="haiku-low", kernel=self.kernel)
@@ -292,6 +303,80 @@ class GoalLocationTests(unittest.TestCase):
             self.assertIn("0 <= a + 1", prompt)
             self.assertIn("## Answer form", prompt)
             self.assertEqual(items, ["task"])
+
+
+class PackagedGoalTests(unittest.TestCase):
+    """A block goal with a package.py task, the prompt bound and the too_large escalation."""
+
+    def setUp(self):
+        self.tmp = tempfile.TemporaryDirectory()
+        self.run = Path(self.tmp.name)
+        self.d = self.run / "resid" / "0058"
+        statement = "forall a : Z, 0 <= a -> 0 <= a + 1"
+        (self.d / "goals" / "0058-1").mkdir(parents=True)
+        # The residual goal is huge (its exact source), the package task is bounded.
+        (self.d / "goals" / "0058-1" / "goal.v").write_text(goal_v("residual_fn_0058_x", statement + " " * 40000))
+        (self.d / "tasks").mkdir()
+        (self.d / "tasks" / "0058-1.md").write_text("# Residual goal 0058-1\n" + "x" * 30000)
+        self.package = self.d / "package" / "0058-1"
+        self.package.mkdir(parents=True)
+        (self.d / "MANIFEST.json").write_text(json.dumps(dict(block="0058", bank="/nonexistent", goals=[
+            dict(id="0058-1", name="residual_fn_0058_x", statement=statement, reparse="exact")])))
+        self.identifier = store.goal_id(F, "0058", statement)
+        store.append(self.run, [store.event(id=self.identifier, function=F, kind="goal", state="derived"),
+                                store.event(id=self.identifier, function=F, kind="goal", state="derived",
+                                            tier="falsify")])
+        self.kernel = FakeKernel()
+        self.saved = drive.replay.load_routing
+
+    def tearDown(self):
+        drive.replay.load_routing = self.saved
+        self.tmp.cleanup()
+
+    def test_package_task_is_the_prompt(self):
+        (self.package / "TASK-haiku-low.md").write_text("# Packaged goal\n\n" + package_answer_form())
+        prompt, items = drive.prompt_for(self.run, F, self.identifier, "haiku-low")
+        self.assertEqual(prompt, drive.NO_TOOLS + "# Packaged goal\n\n" + package_answer_form())
+        self.assertNotIn(drive.EXACT_HEADING, prompt)
+        # Another tier falls back to the tier-less package task.
+        (self.package / "TASK.md").write_text("# Tier-less\n")
+        prompt, _ = drive.prompt_for(self.run, F, self.identifier, "haiku-high")
+        self.assertTrue(prompt.startswith(drive.NO_TOOLS + "# Tier-less\n"))
+
+    def test_class_bound_of_routing_json_capped_by_the_tier(self):
+        drive.replay.load_routing = lambda: {"classes": {"BIG": {"max_prompt_bytes": 50000}}}
+        self.assertEqual(drive.max_prompt_bytes("haiku-low", "BIG"), 32000)
+        self.assertEqual(drive.max_prompt_bytes("haiku-low", None), 12000)
+
+    def test_too_large_escalates_then_waits_for_a_decision(self):
+        (self.package / "TASK-haiku-low.md").write_text("y" * 20000)
+        (self.package / "TASK.md").write_text("# Tier-less, small\n")
+        counts = drive.step(F, self.run, kernel=self.kernel)[0]
+        self.assertEqual(counts.get("too_large"), 1)
+        self.assertEqual([t for _, t, _ in drive.model_items(self.run, F)], ["haiku-high"])
+        # Without a package every tier falls back to the 30 KB residual task plus goal.v: too large everywhere.
+        for path in self.package.iterdir():
+            path.unlink()
+        self.package.rmdir()
+        counts = drive.step(F, self.run, kernel=self.kernel)[0]
+        item = store.fold(store.read_events(self.run))[self.identifier]
+        self.assertEqual(item["state"], "waiting-decision")
+        reasons = json.loads(Path(item["artifact"]["path"]).read_text())
+        self.assertEqual(set(reasons), {"haiku-low", "haiku-high", "opus-medium"})
+        self.assertTrue(all(r.startswith("too-large: ") for r in reasons.values()))
+        self.assertEqual(drive.model_items(self.run, F), [])
+
+    def test_package_class_address_goes_to_the_owner(self):
+        (self.package / "PACKAGE.json").write_text(json.dumps(dict(id=self.identifier, **{"class": "ADDRESS"},
+                                                                 next="decision")))
+        counts = drive.step(F, self.run, kernel=self.kernel)[0]
+        self.assertEqual(counts.get("address"), 1)
+        self.assertEqual(drive.model_items(self.run, F), [])
+        self.assertEqual([a for i, a, _, _ in drive.route.next_items(self.run, F)], ["owner"])
+
+
+def package_answer_form():
+    return drive.package.ANSWER_FORM.format(answer="answers/0058-1.v")
 
 
 if __name__ == "__main__":
