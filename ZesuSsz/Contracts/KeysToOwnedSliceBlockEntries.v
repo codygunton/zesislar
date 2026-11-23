@@ -89,7 +89,7 @@ Definition keysBlockArgsWellFormed (args : KeysToOwnedSliceBlockArgs) : Prop :=
 Definition keysBlockEntryResources `{!islaG Sigma} `{!threadG}
     (args : KeysToOwnedSliceBlockArgs) : iProp Sigma :=
   (∃ (x5 x6 x7 x13 x14 x15 x16 x17 x28 x29 x30 x31 : bv 64),
-   reg_col zesu_sys_regs ∗
+   reg_col (arrayListSysRegs (toOwnedInputEnd (keysBase args))) ∗
    "x1" ↦ᵣ RVal_Bits (toOwnedReturnAddress (keysBase args)) ∗
    "x2" ↦ᵣ RVal_Bits (toOwnedStackPointer (keysBase args)) ∗
    "x5" ↦ᵣ RVal_Bits x5 ∗ "x6" ↦ᵣ RVal_Bits x6 ∗ "x7" ↦ᵣ RVal_Bits x7 ∗

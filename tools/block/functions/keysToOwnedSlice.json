@@ -53,7 +53,10 @@
     "entry_resources": "keysBlockEntryResources",
     "well_formed": "keysBlockArgsWellFormed",
     "exit_resources": "keysBlockExitResources",
-    "source": "ZesuSsz/Contracts/KeysToOwnedSliceBlockEntries.v"
+    "source": "ZesuSsz/Contracts/KeysToOwnedSliceBlockEntries.v",
+    "exact_system_registers": {
+      "zisk_input_end": "bv_unsigned (toOwnedInputEnd (keysBase args))"
+    }
   },
   "trace_namespace": "ZesuSsz.Stock.Closure",
   "blocks": [
@@ -215,8 +218,6 @@
       "returned_lengths": {
         "0": "altFlAllocatedBytes (bv_unsigned call_x10) (bv_unsigned ((bv_shiftl ((Z_to_bv 64%N (arrayListLength (keysBlockList args)))) (BV 64%N 5%Z))))"
       },
-      "collection_after": "reg_col zesu_sys_regs",
-      "collection_source": "machine_call_ret returns reg_col (machine_sys_regs decodeItemCallMap); the RET of ziskMemcpyCallSpec returns zisk_input_end and zisk_free_input with BitsShape 64; zesu_sys_regs (InstrSpecs/Machine.v) is their union",
       "call_site_pc": "+0x180"
     },
     {
@@ -275,8 +276,6 @@
         }
       ],
       "output_length_source": "ziskMemcpyCallSpec (ZiskMemcpyPremise.v): the destination receives source, Z.of_nat (length source) = argument 2; the extra-params word receives word64Bytes (argument 2), 8 bytes",
-      "collection_after": "reg_col zesu_sys_regs",
-      "collection_source": "machine_call_ret returns reg_col (machine_sys_regs decodeItemCallMap); the RET of ziskMemcpyCallSpec returns zisk_input_end and zisk_free_input with BitsShape 64; zesu_sys_regs (InstrSpecs/Machine.v) is their union",
       "call_site_pc": "+0x1d4"
     }
   ],
@@ -396,6 +395,6 @@
   },
   "generated_from": {
     "path": "tools/block/functions/keysToOwnedSlice.annotations.json",
-    "sha256": "46b5dc40caf59a6321c968427c39542d1514d470b16f99f51ce0a9b7aba76dd2"
+    "sha256": "517c2c99e6fb44f0d1488bac01596e1cfa1aa6997f81a3590fe530a9163caf11"
   }
 }
