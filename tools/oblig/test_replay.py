@@ -9,9 +9,11 @@ import unittest
 
 HERE = Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE))
+import defs  # noqa: E402
 import dispatch_kernel  # noqa: E402
 import replay  # noqa: E402
 import store  # noqa: E402
+import test_defs  # noqa: E402
 
 HEADER = ["Require Import ZesuSsz.Automation2.All.", "Local Open Scope Z_scope."]
 SLOT = "(* PROOF-SLOT: replace this line and the Admitted below with the proof script and Qed. *)\nAdmitted.\n"
@@ -269,25 +271,76 @@ class DefectTests(unittest.TestCase):
         self.assertIn("intros. lia.", text)
         self.assertIn("Your whole reply is that JSON object", text)
 
+    def fake_resolver(self):
+        rocq = test_defs.FakeRocq()
+        self.rocq = rocq
+        return lambda row: defs.Resolver(Path(self.tmp.name) / "defs" / row["id"], HEADER, rocq, test_defs.ROOTS)
+
     def test_need_context_found_in_the_index_and_already_sent(self):
         dispatch_kernel.run_wave(self.corpus, "haiku-low")
         d = self.big_prompts(3000)
         (d / "answers" / "k001.json").write_text(json.dumps(dict(
             verdict="need_context", needs=["the lemma residual_wanted_1 about bounds", "residual_1 again"])))
         index = dict(entries=[dict(name="residual_wanted_1", statement="forall x : Z, x = x", proof="reflexivity.\nQed.")])
+        resolver_for = self.fake_resolver()
         original = replay.similar.build_index
         replay.similar.build_index = lambda *a, **k: index
         try:
-            plan, prompts = replay.retry_plan(self.corpus, "haiku-low")
+            plan, prompts = replay.retry_plan(self.corpus, "haiku-low", resolver_for=resolver_for)
             self.assertEqual(plan["k001"], "need_context")
             self.assertIn(replay.CONTEXT_HEAD + "### residual_wanted_1", prompts["k001"])
             self.assertLessEqual(len(prompts["k001"].encode()), 12000)
-            self.assertEqual(dispatch_kernel.retry_wave(self.corpus, "haiku-low", ids=["k001"])["started"], 1)
-            plan, prompts = replay.retry_plan(self.corpus, "haiku-low")
+            self.assertEqual(dispatch_kernel.retry_wave(self.corpus, "haiku-low", ids=["k001"],
+                                                        resolver_for=resolver_for)["started"], 1)
+            plan, prompts = replay.retry_plan(self.corpus, "haiku-low", resolver_for=resolver_for)
             self.assertEqual(plan["k001"], "already_sent")
             self.assertNotIn("k001", prompts)
         finally:
             replay.similar.build_index = original
+
+    def test_need_context_naming_a_resolvable_identifier_gets_its_definition(self):
+        asked = json.dumps(dict(verdict="need_context", needs=[
+            "The definition of DecodeItemReturnFacts.decodeItemRejectedFacts",
+            "the statement of decodeItemEmptyInputRejected", "a lemma rejectedOfNothing"]))
+        self.kernel.reply = lambda prompt: asked if "k001" in prompt else PROVED
+        dispatch_kernel.run_wave(self.corpus, "haiku-low")
+        self.big_prompts(3000)
+        original = replay.similar.build_index
+        replay.similar.build_index = lambda *a, **k: dict(entries=[])
+        try:
+            plan, prompts = replay.retry_plan(self.corpus, "haiku-low", resolver_for=self.fake_resolver(), write=True)
+        finally:
+            replay.similar.build_index = original
+        self.assertEqual(plan["k001"], "need_context")
+        text = prompts["k001"]
+        self.assertIn(replay.CONTEXT_HEAD, text)
+        self.assertIn("RlpDecodeItem.candidateDecodeItem (decodeItemInputBytes args) = RlpDecodeItem.candidateError", text)
+        self.assertIn("decodeItemInputBytes args = [] → DecodeItemReturnFacts.decodeItemRejectedFacts args", text)
+        self.assertIn("GOAL-PART " + "g" * 2000, text)
+        self.assertLessEqual(len(text.encode()), 12000)
+        supplied = json.loads((replay.attempt_dir(self.corpus, "similar", "haiku-low", 2) / "SUPPLIED.json").read_text())
+        self.assertEqual(supplied["k001"]["unresolved"], ["rejectedOfNothing"])
+        self.assertEqual(supplied["k001"]["supplied"],
+                         ["DecodeItemReturnFacts.decodeItemRejectedFacts", "decodeItemEmptyInputRejected"])
+        # The first attempt stays a need_context (missing-context) failure in the store.
+        events = [e for e in store.read_events(replay.store_dir(self.corpus, "similar", "haiku-low"))
+                  if e["id"] == self.rows[0]["store_id"] and e["state"] == "failed"]
+        self.assertEqual([(e["class"], e["attempt"]) for e in events], [("need_context", 1)])
+
+    def test_need_context_naming_only_unresolvable_names_stays_missing_context(self):
+        dispatch_kernel.run_wave(self.corpus, "haiku-low")
+        d = self.big_prompts(3000)
+        (d / "answers" / "k001.json").write_text(json.dumps(dict(verdict="need_context", needs=[
+            "a lemma rejectedOfNothing", "the definition of no_such_predicate"])))
+        original = replay.similar.build_index
+        replay.similar.build_index = lambda *a, **k: dict(entries=[])
+        try:
+            plan, prompts = replay.retry_plan(self.corpus, "haiku-low", resolver_for=self.fake_resolver())
+        finally:
+            replay.similar.build_index = original
+        self.assertEqual(plan["k001"], "missing_context")
+        self.assertNotIn("k001", prompts)
+        self.assertEqual(len(self.rocq.calls), 1)  # one About query; nothing resolved, no Print query
 
 
 class OverrideTests(unittest.TestCase):
@@ -411,6 +464,21 @@ class HelperTests(unittest.TestCase):
                                               "\nretry:\n  x: 1\n")
         self.assertEqual(dispatch_kernel.base_overrides(root), {"scout": "a/b:medium", "sonic": "a/c:low"})
         tmp.cleanup()
+
+    def test_prompt_bound_per_class_capped_by_the_tier(self):
+        tiers = [dict(name="t", max_prompt_bytes=12000, max_class_prompt_bytes=32000)]
+        routing = dict(classes=dict(MEANING=dict(max_prompt_bytes=40000), PURE=dict(max_prompt_bytes=20000)))
+        self.assertEqual(replay.prompt_bound("t", "MEANING", tiers, routing), 32000)
+        self.assertEqual(replay.prompt_bound("t", "PURE", tiers, routing), 20000)
+        self.assertEqual(replay.prompt_bound("t", "PURE-linear", tiers, routing), 12000)
+        self.assertEqual(replay.prompt_bound("t", "MEANING", tiers, {}), 12000)
+        self.assertEqual(replay.class_bounds(routing, ["PURE=15000"]), dict(MEANING=40000, PURE=15000))
+        with self.assertRaises(replay.ReplayError):
+            replay.class_bounds({}, ["MEANING"])
+
+    def test_compact_keeps_hypothesis_lines(self):
+        text = "H : P\n      (x\n         :: y)\n============================\nQ\n   z"
+        self.assertEqual(replay.compact(text), "H : P\n (x\n :: y)\n============================\nQ\n z")
 
 
 if __name__ == "__main__":

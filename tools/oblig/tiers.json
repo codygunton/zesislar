@@ -1,11 +1,11 @@
 {
  "schema": "oblig-tiers/1",
- "about": "Prover tiers of the obligation loop (plan A5), cheapest first; route.py reads name and max_attempts, tools/oblig/dispatch_kernel.py the rest. `agent` is the bundled agent a wave spawns (null: no model); `model` is the model the agent must resolve to (checked against the session's resolvedModel after each answer); `override`, when set, is the session value of task.agentModelOverrides for that agent during the wave (set_tier_override writes it), because a per-call model conflicts with the project's agentModelOverrides. `mechanical` is CONTROL_TACTIC of tools/residuals/residual_package.py. sonnet-medium stays out until the replay's 50% rule (routing.json haiku_union) asks for it.",
+ "about": "Prover tiers of the obligation loop (plan A5), cheapest first; route.py reads name and max_attempts, tools/oblig/dispatch_kernel.py the rest. `agent` is the bundled agent a wave spawns (null: no model); `model` is the model the agent must resolve to (checked against the session's resolvedModel after each answer); `override`, when set, is the session value of task.agentModelOverrides for that agent during the wave (set_tier_override writes it), because a per-call model conflicts with the project's agentModelOverrides. `mechanical` is CONTROL_TACTIC of tools/residuals/residual_package.py. `max_prompt_bytes` is the prompt bound of every goal class without its own bound; a class's `max_prompt_bytes` in routing.json replaces it, capped by the tier's `max_class_prompt_bytes` (replay.prompt_bound). sonnet-medium stays out until the replay's 50% rule (routing.json haiku_union) asks for it.",
  "tiers": [
-  {"name": "mechanical", "agent": null, "model": null, "override": null, "max_attempts": 1, "max_prompt_bytes": 12000},
-  {"name": "haiku-low", "agent": "sonic", "model": "anthropic/claude-haiku-5-5:low", "override": null, "max_attempts": 2, "max_prompt_bytes": 12000},
-  {"name": "haiku-medium", "agent": "scout", "model": "anthropic/claude-haiku-5-5:medium", "override": "anthropic/claude-haiku-5-5:medium", "max_attempts": 2, "max_prompt_bytes": 12000},
-  {"name": "haiku-high", "agent": "scout", "model": "anthropic/claude-haiku-5-5:high", "override": "anthropic/claude-haiku-5-5:high", "max_attempts": 2, "max_prompt_bytes": 12000},
-  {"name": "opus-medium", "agent": "task", "model": "anthropic/claude-opus-5-5:medium", "override": null, "max_attempts": 2, "max_prompt_bytes": 12000}
+  {"name": "mechanical", "agent": null, "model": null, "override": null, "max_attempts": 1, "max_prompt_bytes": 12000, "max_class_prompt_bytes": 12000},
+  {"name": "haiku-low", "agent": "sonic", "model": "anthropic/claude-haiku-5-5:low", "override": null, "max_attempts": 2, "max_prompt_bytes": 12000, "max_class_prompt_bytes": 32000},
+  {"name": "haiku-medium", "agent": "scout", "model": "anthropic/claude-haiku-5-5:medium", "override": "anthropic/claude-haiku-5-5:medium", "max_attempts": 2, "max_prompt_bytes": 12000, "max_class_prompt_bytes": 32000},
+  {"name": "haiku-high", "agent": "scout", "model": "anthropic/claude-haiku-5-5:high", "override": "anthropic/claude-haiku-5-5:high", "max_attempts": 2, "max_prompt_bytes": 12000, "max_class_prompt_bytes": 32000},
+  {"name": "opus-medium", "agent": "task", "model": "anthropic/claude-opus-5-5:medium", "override": null, "max_attempts": 2, "max_prompt_bytes": 12000, "max_class_prompt_bytes": 32000}
  ]
 }

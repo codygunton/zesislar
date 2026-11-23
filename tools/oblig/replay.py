@@ -2,12 +2,15 @@
 """Tier replay of the prover tiers (plan A5). It calls no model: dispatch_kernel.py spawns the agents.
 
     replay.py corpus   --out DIR --bank BANK [--ocamlpath DIR] [--leftovers DIR ...] [--jobs N]
+                       [--resume [--same-goals]] [--defs-set known unknown]
     replay.py falsify  --corpus DIR [--set unknown] [--jobs N]
     replay.py wave     --corpus DIR --tier mechanical [--recipe R]       (the model-free tier)
     replay.py check    --corpus DIR --tier T [--recipe R] [--attempt N] [--jobs N]
     replay.py original --corpus DIR --ids ID ... [--corrupt ID]          (self-test of the check route)
+    replay.py reslice  --corpus DIR --ids ID ...                         (strict premise slice, checked)
     replay.py status   --corpus DIR
     replay.py routing  --corpus DIR [--out tools/oblig/routing.json] [--min-share 0.5]
+                       [--class-bound CLASS=BYTES ...]
 
 corpus writes DIR (outside the source tree) with two sets of pure goals, each a goal dir in the
 layout of tools/block/residual_loop.py (goals/<id>/goal.v with PROOF-SLOT, roundtrip.v, check.sh):
@@ -18,15 +21,24 @@ layout of tools/block/residual_loop.py (goals/<id>/goal.v with PROOF-SLOT, round
   --leftovers (default _build/agents/rebuild and _build/agents/bench of the main checkout), with
   `Require` lines for the modules their qualified names live in (falsify.leftover_requires).
 Each goal is reparsed (residual_loop.reparse): the readable goal after `intros.` is what the task
-shows. The task of a recipe is the rules of residual_loop.py's TASK, the readable goal, the path of
-the exact goal.v, the imports, the recipe's context and the answer form of package.py (JSON
-verdict). Recipes: `slice` (the exported premise slice only), `similar` (plus the 3 nearest closed
-lemmas of similar.py, never the lemma itself, a lemma with its statement or one with its
-conclusion), `hints` (plus the hint slice, when a hint pack exists; none for these goals). A task
-above the tier's max_prompt_bytes is not sent (`fits` false). No task names a repository path or
-the original lemma; ORIGINS.json maps ids to their sources for the self-test only.
+shows; when the goal part alone exceeds the bound, its continuation lines lose their indentation
+(`compact`), which is most of the bytes of a deep memory-image conclusion. The task of a recipe is
+the rules of residual_loop.py's TASK, the readable goal, the path of the exact goal.v, the imports,
+the recipe's context and the answer form of package.py (JSON verdict). Recipes: `slice` (the
+exported premise slice only), `similar` (plus the 3 nearest closed lemmas of similar.py, never the
+lemma itself, a lemma with its statement or one with its conclusion), `hints` (plus the hint slice,
+when a hint pack exists; none for these goals), `defs` (plus the definitions of the project names
+the statement uses, tools/oblig/defs.py: Rocq About/Print with the goal's imports, ranked, cut to
+the bound less RETRY_RESERVE; cached in goals/<id>/defs/), `similar+defs` (defs, then as many
+similar lemmas as still fit). The bound is the tier's max_prompt_bytes, or the goal class's
+max_prompt_bytes in routing.json capped by the tier's max_class_prompt_bytes (prompt_bound); a
+task above the bound of the tier is not sent (`fits` false for the corpus tier haiku-low). No task
+names a repository path or the original lemma; ORIGINS.json maps ids to their sources for the
+self-test only, and keeps a goal's own lemma out of its context. `--resume --same-goals` rebuilds
+the tasks of an existing corpus with its ids, statements and imports (no new goals, no proofs).
 CORPUS.json: one row per goal: id, set, store id, name, class, conclusion head, statement sha256
-and bytes, reparse, readable bytes, and per recipe the task path, bytes, sha256 and context items.
+and bytes, reparse, readable bytes, and per recipe the task path, bytes, sha256, context items and
+the similar lemmas and definitions shown.
 Classes: tools/bench/triage_classes.json on `pure <conclusion>` (the size limit of PURE ignored),
 with PURE split by the conclusion head into PURE-linear, PURE-bitvector, PURE-byte-window and
 PURE-meaning.
@@ -61,6 +73,7 @@ sys.path.insert(0, str(HERE))
 sys.path.insert(0, str(ROOT / "tools/block"))
 sys.path.insert(0, str(ROOT / "tools/bench"))
 import residual_loop as rl  # noqa: E402
+import defs  # noqa: E402
 import package  # noqa: E402
 import similar  # noqa: E402
 import store  # noqa: E402
@@ -71,7 +84,11 @@ FUNCTION = "replay"
 CASE = "0000"
 TIERS_FILE = HERE / "tiers.json"
 ROUTING_FILE = HERE / "routing.json"
-RECIPES = ("slice", "similar", "hints")
+RECIPES = ("slice", "similar", "hints", "defs", "similar+defs")
+# The tier whose bound sizes the corpus tasks (the cheap default); a wave checks its own tier's bound.
+CORPUS_TIER = "haiku-low"
+# Bytes an attempt-1 defs section leaves free, so that a retry with the compiler errors still fits.
+RETRY_RESERVE = 2000
 HAIKU = ("haiku-low", "haiku-medium", "haiku-high")
 MIN_SHARE = 0.5
 MIN_GOALS = 3
@@ -102,6 +119,22 @@ def tier_row(name, tiers=None):
         if row["name"] == name:
             return row
     raise ReplayError("No tier %s in tiers.json." % name)
+
+
+def load_routing(path=ROUTING_FILE):
+    path = Path(path)
+    return json.loads(path.read_text()) if path.exists() else {}
+
+
+def prompt_bound(tier_name, cls, tiers=None, routing=None):
+    """The prompt bound of a goal class at a tier: the class's `max_prompt_bytes` of routing.json, capped
+    by the tier's `max_class_prompt_bytes`; without a class bound, the tier's `max_prompt_bytes`."""
+    tier = tier_row(tier_name, tiers)
+    routing = load_routing() if routing is None else routing
+    bound = (routing.get("classes", {}).get(cls) or {}).get("max_prompt_bytes")
+    if bound is None:
+        return tier["max_prompt_bytes"]
+    return min(bound, tier.get("max_class_prompt_bytes", tier["max_prompt_bytes"]))
 
 
 def jobs_for(peak_gib, requested=None):
@@ -164,10 +197,12 @@ read the exact source named below when a literal width matters. Do not list, sea
 other file, and do not run commands; nothing else is needed to answer.
 
 {rules}
+- The imports load ssreflect: `rewrite ... by tac` is a syntax error there. Prove a side
+  condition first (`assert (E : ...) by tac.`), then rewrite with it.
 
 Lemma name: `{name}`
 
-## Goal after `intros.` (default printer; literal widths may be hidden)
+## Goal after `intros.` (default printer; literal widths may be hidden{compact})
 
 ```
 {readable}
@@ -184,8 +219,19 @@ Read it only when a literal width matters.
 """
 
 
-def base_prompt(corpus, row, header):
-    return PROMPT.format(gid=row["id"], rules=RULES, name=row["name"], readable=row["readable"],
+COMPACT_NOTE = "; indentation collapsed"
+
+
+def compact(readable):
+    """READABLE with the leading blanks of every continuation line cut to one: the printer's indentation
+    of deep terms (long `::` chains) is most of an oversized goal's bytes."""
+    return "\n".join(" " + line.lstrip() if line[:1].isspace() else line for line in readable.split("\n"))
+
+
+def base_prompt(corpus, row, header, compacted=False):
+    return PROMPT.format(gid=row["id"], rules=RULES, name=row["name"],
+                         readable=compact(row["readable"]) if compacted else row["readable"],
+                         compact=COMPACT_NOTE if compacted else "",
                          goal=Path(corpus) / "goals" / row["id"] / "goal.v", header="\n".join(header))
 
 
@@ -206,20 +252,34 @@ def similar_for(index, statement, budget):
     return similar.nearest(dict(index, entries=entries), statement, similar.K, max(0, budget))
 
 
-def recipe_prompts(corpus, row, header, index, max_bytes):
-    """{recipe: (text, context items, similar names)}; a recipe without its context item is absent."""
-    base = base_prompt(corpus, row, header)
+def recipe_prompts(corpus, row, header, index, max_bytes, found_defs=()):
+    """{recipe: (text, context items, similar names, defs names)}; a recipe without its context item is
+    absent. The goal shows the printer's text, or its compacted form when that alone exceeds MAX_BYTES.
+    FOUND_DEFS are the ranked definition items of defs.items; the defs section leaves RETRY_RESERVE free."""
     tail = answer_form(row["id"])
-    out = {"slice": (base + tail, [], [])}
+    base = base_prompt(corpus, row, header)
+    if len((base + tail).encode()) > max_bytes:
+        base = base_prompt(corpus, row, header, compacted=True)
+    out = {"slice": (base + tail, [], [], [])}
     budget = max_bytes - len((base + tail).encode()) - 2
     found = similar_for(index, row["statement"], budget)
     while found and len((base + "\n" + similar.section(found) + tail).encode()) > max_bytes:
         found = found[:-1]
     if found:
-        out["similar"] = (base + "\n" + similar.section(found) + tail, ["similar"], [e["name"] for _, e in found])
+        out["similar"] = (base + "\n" + similar.section(found) + tail, ["similar"], [e["name"] for _, e in found], [])
     hints = package.hint_slice(row.get("hints"), ["+0x" + row.get("block", CASE)], budget)
     if hints:
-        out["hints"] = (base + "\n" + hints + tail, ["hints"], [])
+        out["hints"] = (base + "\n" + hints + tail, ["hints"], [], [])
+    section, used = defs.section(list(found_defs), budget - RETRY_RESERVE)
+    if used:
+        out["defs"] = (base + section + tail, ["defs"], [], used)
+        with_defs = base + section
+        found = similar_for(index, row["statement"], max_bytes - len((with_defs + tail).encode()) - 2)
+        while found and len((with_defs + "\n" + similar.section(found) + tail).encode()) > max_bytes:
+            found = found[:-1]
+        if found:
+            out["similar+defs"] = (with_defs + "\n" + similar.section(found) + tail, ["defs", "similar"],
+                                   [e["name"] for _, e in found], used)
     return out
 
 
@@ -300,7 +360,33 @@ def prepare_goal(corpus, row, header, args, ocamlpath):
     return row
 
 
+def same_goals(corpus):
+    """(rows, headers, origins) of an existing corpus: its ids, sets, statements and goal.v imports."""
+    manifest = rl.read_json(corpus / "MANIFEST.json")
+    data = rl.read_json(corpus / "CORPUS.json")
+    if manifest is None or data is None:
+        raise ReplayError("--same-goals needs MANIFEST.json and CORPUS.json in %s." % corpus)
+    sets = {r["id"]: r["set"] for r in data["rows"]}
+    rows = [dict(id=g["id"], set=sets[g["id"]], statement=g["statement"]) for g in manifest["goals"]]
+    headers = {r["id"]: package.goal_header((corpus / "goals" / r["id"] / "goal.v").read_text()) for r in rows}
+    return rows, headers, rl.read_json(corpus / "ORIGINS.json", {})
+
+
+def own_names(origin):
+    """Names a goal's context must never resolve: its original lemma (the withheld proof's statement)."""
+    return {origin["lemma"]} if origin and origin.get("lemma") else set()
+
+
+def goal_defs(corpus, row, header, route, roots, exclude=()):
+    """The ranked definition items of a goal (defs.py), cached in goals/<id>/defs/."""
+    resolver = defs.Resolver(Path(corpus) / "goals" / row["id"] / "defs", header, defs.route_compile(route), roots,
+                             tag="defs-" + row["id"])
+    names = defs.ranked_names(row["statement"])
+    return defs.items(resolver.resolve(names), names, exclude=exclude)
+
+
 def cmd_corpus(a):
+    import falsify
     corpus = Path(a.out).resolve()
     if corpus.exists() and any(corpus.iterdir()) and not a.resume:
         raise ReplayError("The corpus dir is not empty: %s (--resume reuses its finished round trips)" % corpus)
@@ -308,18 +394,21 @@ def cmd_corpus(a):
     args, lib = rl.bank_args(a.bank)
     ocamlpath = a.ocamlpath or lib
     coqlib = coqlib_of(args)
-    rows, headers, origins = [], {}, {}
-    for n, (path, header, name, statement, proof) in enumerate(known_lemmas(), 1):
-        gid = "k%03d" % n
-        rows.append(dict(id=gid, set="known", statement=statement))
-        headers[gid] = header
-        origins[gid] = dict(module=str(path.relative_to(ROOT)), lemma=name, proof=proof)
-    roots = a.leftovers or [main_checkout() / "_build/agents/rebuild", main_checkout() / "_build/agents/bench"]
-    for n, (statement, sources) in enumerate(unknown_statements(roots), 1):
-        gid = "u%03d" % n
-        rows.append(dict(id=gid, set="unknown", statement=statement))
-        headers[gid] = leftover_header(statement, args, coqlib)
-        origins[gid] = dict(sources=sources)
+    if a.same_goals:
+        rows, headers, origins = same_goals(corpus)
+    else:
+        rows, headers, origins = [], {}, {}
+        for n, (path, header, name, statement, proof) in enumerate(known_lemmas(), 1):
+            gid = "k%03d" % n
+            rows.append(dict(id=gid, set="known", statement=statement))
+            headers[gid] = header
+            origins[gid] = dict(module=str(path.relative_to(ROOT)), lemma=name, proof=proof)
+        roots = a.leftovers or [main_checkout() / "_build/agents/rebuild", main_checkout() / "_build/agents/bench"]
+        for n, (statement, sources) in enumerate(unknown_statements(roots), 1):
+            gid = "u%03d" % n
+            rows.append(dict(id=gid, set="unknown", statement=statement))
+            headers[gid] = leftover_header(statement, args, coqlib)
+            origins[gid] = dict(sources=sources)
     for n, row in enumerate(rows, 1):
         row.update(name="replay_" + row["id"], store_id=store.goal_id(FUNCTION, "%04x" % n, row["statement"]),
                    statement_sha256=sha(row["statement"]), statement_bytes=len(row["statement"].encode()),
@@ -327,20 +416,34 @@ def cmd_corpus(a):
                    conclusion_head=similar.keys(row["statement"])[0])
     with ThreadPoolExecutor(max_workers=jobs_for(ROUNDTRIP_PEAK_GIB, a.jobs)) as pool:
         list(pool.map(lambda row: prepare_goal(corpus, row, headers[row["id"]], args, ocamlpath), rows))
+    route = falsify.Route(a.bank, ocamlpath)
+    roots = defs.project_roots(route.args)
+    wanted = [r for r in rows if r["readable"] and r["set"] in a.defs_set]
+
+    def one(row):
+        try:
+            row["found_defs"] = goal_defs(corpus, row, headers[row["id"]], route, roots, own_names(origins.get(row["id"])))
+        except defs.DefsError as error:
+            row["defs_error"] = str(error)[:500]
+    with ThreadPoolExecutor(max_workers=jobs_for(ROUNDTRIP_PEAK_GIB, a.jobs)) as pool:
+        list(pool.map(one, wanted))
     index = similar.build_index()
-    max_bytes = tier_row("haiku-low")["max_prompt_bytes"]
+    max_bytes = tier_row(CORPUS_TIER)["max_prompt_bytes"]
+    routing = load_routing()
     for row in rows:
         row["readable_bytes"] = len(row["readable"].encode())
         row["prompts"] = {}
         if not row["readable"]:
             continue
-        for recipe, (text, items, names) in recipe_prompts(corpus, row, headers[row["id"]], index, max_bytes).items():
+        bound = prompt_bound(CORPUS_TIER, row["class"], routing=routing)
+        for recipe, (text, items, names, shown) in recipe_prompts(corpus, row, headers[row["id"]], index, bound,
+                                                                  row.get("found_defs", ())).items():
             path = corpus / "tasks" / recipe / ("%s.md" % row["id"])
             path.parent.mkdir(parents=True, exist_ok=True)
             path.write_text(text)
             row["prompts"][recipe] = dict(path=str(path), bytes=len(text.encode()), sha256=sha(text),
-                                          context_items=items, similar=names,
-                                          fits=len(text.encode()) <= max_bytes)
+                                          context_items=items, similar=names, defs=shown,
+                                          fits=len(text.encode()) <= bound)
     manifest = dict(block=CASE, bank=str(Path(a.bank).resolve()), caller=None, rounds=1, skipped=[], exports=[],
                     reruns=[], goals=[dict(id=r["id"], name=r["name"], statement=r["statement"], reparse=r["reparse"],
                                            readable=r["readable"], binders=[], counts={}) for r in rows])
@@ -349,7 +452,8 @@ def cmd_corpus(a):
     head = subprocess.run(["git", "-C", str(ROOT), "rev-parse", "HEAD"], capture_output=True, text=True).stdout.strip()
     data = dict(schema="oblig-replay-corpus/1", head=head, bank=str(Path(a.bank).resolve()), ocamlpath=ocamlpath,
                 max_prompt_bytes=max_bytes, recipes=list(RECIPES),
-                rows=[{k: v for k, v in r.items() if k not in ("statement", "readable", "reused")} for r in rows])
+                rows=[{k: v for k, v in r.items() if k not in ("statement", "readable", "reused", "found_defs")}
+                      for r in rows])
     old = {r["id"]: r for r in (rl.read_json(corpus / "CORPUS.json") or {}).get("rows", [])} if a.resume else {}
     for row in data["rows"]:
         # A falsity verdict stays valid while the goal file (statement and imports) is unchanged.
@@ -385,16 +489,20 @@ def load_corpus(corpus):
     return data
 
 
-def eligible(data, recipe, ids=None, sets=("known",)):
-    """Rows whose task of RECIPE fits the prompt bound (and the falsity check did not refute); for the
-    mechanical tier (recipe `none`), rows whose statement parsed (a readable goal exists)."""
+def eligible(data, recipe, ids=None, sets=("known",), tier=None):
+    """Rows whose task of RECIPE fits the prompt bound (the bound of TIER for the row's class when TIER is
+    given, else the corpus bound) and the falsity check did not refute; for the mechanical tier (recipe
+    `none`), rows whose statement parsed (a readable goal exists)."""
     out = []
+    routing = load_routing() if tier else None
     for row in data["rows"]:
         if ids is not None and row["id"] not in ids:
             continue
         if ids is None and row["set"] not in sets:
             continue
         prompt = row["prompts"].get(recipe) if recipe != "none" else dict(fits=bool(row.get("readable_bytes")))
+        if prompt and tier and recipe != "none":
+            prompt = dict(prompt, fits=prompt["bytes"] <= prompt_bound(tier, row["class"], routing=routing))
         if not prompt or not prompt.get("fits") or row.get("falsify", {}).get("verdict") == "false":
             continue
         out.append(row)
@@ -578,7 +686,7 @@ def run_wave(corpus, tier, spawn, recipe="similar", ids=None, sets=("known",), a
     data = load_corpus(corpus)
     recipe = "none" if tier == "mechanical" else recipe
     prepare_attempt(corpus, recipe, tier, attempt)
-    rows = eligible(data, recipe if recipe != "none" else "none", ids, sets)
+    rows = eligible(data, recipe, ids, sets, tier=None if tier == "mechanical" else tier)
     if attempt > 1:
         rows = [r for r in rows if (attempt_dir(corpus, recipe, tier, attempt) / "prompts" / ("%s.md" % r["id"])).exists()]
     started, rejected = [], []
@@ -662,33 +770,79 @@ def fit_retry(previous, gid, extra, max_bytes, trim=()):
     return None
 
 
-def needed_entries(index, needs, previous):
-    """Index entries a need_context answer names (by exact lemma name), minus those already in the prompt."""
+def needed_entries(index, needs, previous, statement=None):
+    """Index entries a need_context answer names (by exact lemma name), minus those already in the prompt
+    and (given STATEMENT) any with this statement or this conclusion (the goal's own lemma)."""
     text = " ".join(needs)
+    own = norm(bench_report.conclusion_of(statement)) if statement else None
     return [e for e in index["entries"] if re.search(r"(?<![\w'.])%s(?![\w'])" % re.escape(e["name"]), text)
-            and e["name"] not in previous]
+            and e["name"] not in previous
+            and (own is None or (e.get("statement_sha256") != sha(statement.strip())
+                                 and norm(bench_report.conclusion_of(e["statement"])) != own))]
 
 
-def retry_plan(corpus, tier, recipe="similar", ids=None, attempt=2, write=False):
+def corpus_resolver(corpus, data):
+    """ROW -> defs.Resolver of the goal (goals/<id>/defs/, the goal's imports, the corpus bank). The
+    bank's route is opened on the first compile, so a retry that resolves nothing never needs it."""
+    import falsify
+    state = {}
+
+    def route():
+        if "route" not in state:
+            state["route"] = falsify.Route(data["bank"], data.get("ocamlpath") or None)
+        return state["route"]
+
+    def resolver(row):
+        goal_v = (Path(corpus) / "goals" / row["id"] / "goal.v").read_text()
+        return defs.Resolver(Path(corpus) / "goals" / row["id"] / "defs", package.goal_header(goal_v),
+                             lambda path, tag: defs.route_compile(route())(path, tag),
+                             lambda: defs.project_roots(route().args),
+                             tag="defs-" + row["id"])
+    return resolver
+
+
+def asked_context(row, needs, previous, index, resolver, exclude=()):
+    """(blocks, record) for a need_context answer: the definition or statement of each name of NEEDS that
+    Rocq resolves (defs.asked_names; names already defined in PREVIOUS skipped), then the closed lemmas of
+    the similar-lemma index it names. RECORD lists asked, resolved and unresolved names."""
+    entries = needed_entries(index, needs, previous, row["statement"])
+    skip = defs.bound_names(row["statement"]) | {e["name"] for e in entries} | set(exclude)
+    asked = [n for n in defs.asked_names(needs, skip) if "### %s (" % n not in previous]
+    records = resolver.resolve(asked) if asked else {}
+    found = defs.items(records, asked, project_only=False, exclude=exclude)
+    blocks = [(name, text) for name, text in found] + [(e["name"], similar.render(e)) for e in entries]
+    return blocks, dict(asked=asked, resolved=[n for n, _ in found],
+                        unresolved=[n for n in asked if records.get(n, {}).get("status") != "resolved"],
+                        lemmas=[e["name"] for e in entries])
+
+
+def retry_plan(corpus, tier, recipe="similar", ids=None, attempt=2, write=False, resolver_for=None):
     """{id: reason} for every answer of attempt ATTEMPT-1, and the prompts of the ids whose reason is
-    `compile_error` or `need_context` (written to the attempt's prompts/ when WRITE). Reasons:
+    `compile_error` or `need_context` (written to the attempt's prompts/ when WRITE, with SUPPLIED.json:
+    what each need_context retry asked for and got). Reasons:
     compile_error / need_context (retried: previous prompt with the similar lemmas trimmed first, then
-    the error text, then the proof; the goal part is never cut); missing_context (need_context naming
-    nothing the similar-lemma index or a hint pack holds beyond the prompt: no retry, the goal escalates
-    to the next tier, plan A7); no_room (the goal part alone leaves no room); already_sent (the store
-    holds this attempt for the id); closed, unchecked, verdict_<v> (no retry)."""
+    the error text, then the proof; the goal part is never cut). A need_context answer gets, for each
+    name it gives that Rocq resolves with the goal's imports (defs.py: About, Print), the definition
+    (transparent project names) or the statement (lemmas, never a proof), and the closed lemmas of the
+    similar-lemma index it names; items are added in that order while the prompt fits. The first
+    attempt stays a `need_context` (missing-context) failure in the store. missing_context: nothing
+    named resolves or fits beyond the prompt: no retry, the goal escalates to the next tier (plan A7);
+    no_room (the goal part alone leaves no room); already_sent (the store holds this attempt for the
+    id); closed, unchecked, verdict_<v> (no retry). RESOLVER_FOR(row) gives the defs.Resolver (default:
+    the corpus bank through the stand-alone check route)."""
     corpus = Path(corpus)
     data = load_corpus(corpus)
     limit = tier_row(tier)["max_attempts"]
     if attempt > limit:
         raise ReplayError("Tier %s allows %d attempts." % (tier, limit))
-    max_bytes = tier_row(tier)["max_prompt_bytes"]
+    routing = load_routing()
+    origins = rl.read_json(corpus / "ORIGINS.json", {})
     before = attempt_dir(corpus, recipe, tier, attempt - 1)
     checks = rl.read_json(before / "CHECK.json", {})
     sent = {e["id"] for e in store.read_events(store_dir(corpus, recipe, tier))
             if e.get("attempt") == attempt and e.get("tier") == tier}
     index = None
-    plan, prompts = {}, {}
+    plan, prompts, supplied = {}, {}, {}
     for row in data["rows"]:
         if ids is not None and row["id"] not in ids:
             continue
@@ -700,6 +854,7 @@ def retry_plan(corpus, tier, recipe="similar", ids=None, attempt=2, write=False)
             plan[row["id"]] = "verdict_malformed"
             continue
         previous = old.read_text()
+        max_bytes = prompt_bound(tier, row["class"], routing=routing)
         result = checks.get(row["id"], {}).get("result")
         if meta["verdict"] == "proved" and result == "FAIL":
             reason = "compile_error"
@@ -710,15 +865,20 @@ def retry_plan(corpus, tier, recipe="similar", ids=None, attempt=2, write=False)
                 max_bytes, trim=("errors", "proof"))
         elif meta["verdict"] == "need_context":
             index = index or similar.build_index()
-            found = needed_entries(index, meta.get("needs", []), previous)
-            text = None
-            for k in range(len(found), 0, -1):
-                text = fit_retry(previous, row["id"], lambda cuts, k=k: CONTEXT_HEAD + "\n".join(
-                    similar.render(e) for e in found[:k]), max_bytes)
-                if text:
-                    break
+            resolver_for = resolver_for or corpus_resolver(corpus, data)
+            blocks, record = asked_context(row, meta.get("needs", []), previous, index, resolver_for(row),
+                                           own_names(origins.get(row["id"])))
+            chosen, text = [], None
+            for name, block in blocks:
+                trial = fit_retry(previous, row["id"], lambda cuts, b=chosen + [block]: CONTEXT_HEAD + "\n".join(b),
+                                  max_bytes)
+                if trial:
+                    chosen.append(block)
+                    text = trial
+                    record.setdefault("supplied", []).append(name)
+            supplied[row["id"]] = record
             reason = "need_context" if text else "missing_context"
-            if not found:
+            if not blocks:
                 plan[row["id"]] = "missing_context"
                 continue
         elif meta["verdict"] == "proved":
@@ -739,12 +899,13 @@ def retry_plan(corpus, tier, recipe="similar", ids=None, attempt=2, write=False)
         for gid, text in prompts.items():
             (d / "prompts" / ("%s.md" % gid)).write_text(text)
         rl.write_json(d / "RETRY.json", plan)
+        rl.write_json(d / "SUPPLIED.json", supplied)
     return plan, prompts
 
 
-def prepare_retry(corpus, tier, recipe="similar", ids=None, attempt=2):
+def prepare_retry(corpus, tier, recipe="similar", ids=None, attempt=2, resolver_for=None):
     """Write the retry prompts of attempt ATTEMPT (retry_plan); returns the ids to send."""
-    _, prompts = retry_plan(corpus, tier, recipe, ids, attempt, write=True)
+    _, prompts = retry_plan(corpus, tier, recipe, ids, attempt, write=True, resolver_for=resolver_for)
     return sorted(prompts)
 
 
@@ -854,9 +1015,10 @@ def check_one(corpus, data, row, recipe, tier, attempt):
     return result
 
 
-def check_proof(corpus, row, d, answer, tag):
-    """PASS or FAIL of ANSWER with residual_loop.py's stand-alone route (check.sh, one guard scope)."""
-    goal_dir = Path(corpus) / "goals" / row["id"]
+def check_proof(corpus, row, d, answer, tag, goal_dir=None):
+    """PASS or FAIL of ANSWER with residual_loop.py's stand-alone route (check.sh, one guard scope), against
+    the goal.v of GOAL_DIR (default: the corpus goal)."""
+    goal_dir = Path(goal_dir) if goal_dir else Path(corpus) / "goals" / row["id"]
     c = d / "checks" / row["id"]
     c.mkdir(parents=True, exist_ok=True)
     feedback = d / "feedback" / ("%s.txt" % row["id"])
@@ -1099,8 +1261,21 @@ def routing(corpus, tiers, min_share=MIN_SHARE):
                 corpus=str(corpus), classes=classes, tiers=per_tier, haiku_union=haiku, unknown_set=verdicts)
 
 
+def class_bounds(previous, given=()):
+    """{class: max_prompt_bytes}: the bounds of the previous routing.json, then CLASS=BYTES of GIVEN."""
+    out = {cls: e["max_prompt_bytes"] for cls, e in previous.get("classes", {}).items() if "max_prompt_bytes" in e}
+    for item in given:
+        cls, _, value = item.partition("=")
+        if not value.isdigit():
+            raise ReplayError("--class-bound wants CLASS=BYTES, got %r." % item)
+        out[cls] = int(value)
+    return out
+
+
 def cmd_routing(a):
     data = routing(a.corpus, load_tiers(), a.min_share)
+    for cls, bound in class_bounds(load_routing(a.out) if a.out else {}, a.class_bound or ()).items():
+        data["classes"].setdefault(cls, dict(goals=0, first_tier="haiku-low", context="similar"))["max_prompt_bytes"] = bound
     if a.out:
         Path(a.out).write_text(json.dumps(data, indent=1, sort_keys=True) + "\n")
     for cls, entry in sorted(data["classes"].items()):
@@ -1142,6 +1317,44 @@ def cmd_retry_plan(a):
                                                                                default=0)))
 
 
+def cmd_reslice(a):
+    """The strict premise slice (package.strict_slice) of IDS: the original proof checked against each
+    sliced statement, and the slice-recipe task bytes of the sliced goal against the corpus bound."""
+    corpus = Path(a.corpus)
+    data = load_corpus(corpus)
+    manifest = rl.read_json(corpus / "MANIFEST.json")
+    origins = rl.read_json(corpus / "ORIGINS.json")
+    args, lib = rl.bank_args(manifest["bank"])
+    ocamlpath = data.get("ocamlpath") or lib
+    by_id = {r["id"]: r for r in data["rows"]}
+    d = prepare_attempt(corpus, "original", "reslice", 1)
+    report = {}
+    for gid in a.ids:
+        row = by_id[gid]
+        goal_v = (corpus / "goals" / gid / "goal.v").read_text()
+        header = package.goal_header(goal_v)
+        sliced, dropped = package.strict_slice(row["statement"])
+        bound = prompt_bound(CORPUS_TIER, row["class"])
+        out = dict(premises=package.premise_count(row["statement"]), dropped=len(dropped),
+                   statement_bytes=len(row["statement"].encode()), sliced_bytes=len(sliced.encode()),
+                   slice_task_bytes=row["prompts"].get("slice", {}).get("bytes"), bound=bound)
+        if dropped:
+            g = corpus / "reslice" / gid
+            g.mkdir(parents=True, exist_ok=True)
+            (g / "goal.v").write_text(rl.goal_text(header, row["name"], sliced))
+            (g / "roundtrip.v").write_text(rl.roundtrip_text(header, sliced))
+            found = rl.reparse(g, "rt-reslice-" + gid, sliced, args, ocamlpath)
+            text = recipe_prompts(corpus, dict(row, statement=sliced, readable=found.get("readable", "")), header,
+                                  {"entries": []}, bound)["slice"][0]
+            out.update(reparse=found["reparse"], sliced_task_bytes=len(text.encode()),
+                       original_proof=check_proof(corpus, row, d, origins[gid]["proof"], "reslice-" + gid, goal_dir=g))
+        out["fits"] = (out.get("sliced_task_bytes") or out["slice_task_bytes"] or 1 << 30) <= bound
+        report[gid] = out
+        print("RESLICE %s %s" % (gid, " ".join("%s=%s" % kv for kv in sorted(out.items()))))
+    (corpus / "reslice").mkdir(exist_ok=True)
+    rl.write_json(corpus / "reslice" / "RESLICE.json", report)
+
+
 def main(argv=None):
     ap = argparse.ArgumentParser(description=__doc__.split("\n\n")[0])
     sub = ap.add_subparsers(dest="command", required=True)
@@ -1152,6 +1365,10 @@ def main(argv=None):
     c.add_argument("--leftovers", nargs="*")
     c.add_argument("--jobs", type=int)
     c.add_argument("--resume", action="store_true", help="reuse the finished round trips of an earlier run in --out")
+    c.add_argument("--same-goals", action="store_true",
+                   help="with --resume: keep the ids, sets, statements and imports of the corpus in --out")
+    c.add_argument("--defs-set", nargs="*", default=["known", "unknown"],
+                   help="sets whose goals get the defs context (Rocq About/Print per goal)")
     f = sub.add_parser("falsify")
     f.add_argument("--corpus", required=True)
     f.add_argument("--set", nargs="*", default=["unknown"])
@@ -1170,12 +1387,17 @@ def main(argv=None):
     o.add_argument("--corpus", required=True)
     o.add_argument("--ids", nargs="+", required=True)
     o.add_argument("--corrupt")
+    rs = sub.add_parser("reslice")
+    rs.add_argument("--corpus", required=True)
+    rs.add_argument("--ids", nargs="+", required=True)
     s = sub.add_parser("status")
     s.add_argument("--corpus", required=True)
     r = sub.add_parser("routing")
     r.add_argument("--corpus", required=True)
     r.add_argument("--out", default=str(ROUTING_FILE))
     r.add_argument("--min-share", type=float, default=MIN_SHARE)
+    r.add_argument("--class-bound", action="append", metavar="CLASS=BYTES",
+                   help="per-class max_prompt_bytes (capped by tiers.json max_class_prompt_bytes); kept on rerun")
     for name in ("rescore", "retry-plan"):
         p = sub.add_parser(name)
         p.add_argument("--corpus", required=True)
@@ -1186,8 +1408,8 @@ def main(argv=None):
     try:
         {"corpus": cmd_corpus, "falsify": cmd_falsify, "wave": cmd_wave, "check": cmd_check,
          "original": cmd_original, "status": cmd_status, "routing": cmd_routing, "rescore": cmd_rescore,
-         "retry-plan": cmd_retry_plan}[a.command](a)
-    except (ReplayError, package.PackageError) as error:
+         "retry-plan": cmd_retry_plan, "reslice": cmd_reslice}[a.command](a)
+    except (ReplayError, package.PackageError, defs.DefsError) as error:
         sys.exit("replay: %s" % error)
 
 
