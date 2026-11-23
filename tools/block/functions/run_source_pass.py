@@ -32,8 +32,8 @@ from function_profiles import add_return_alignment, load_profile
 from loop_design import loop_head_seed
 from forward_resource_design import _state_from_result, evaluate_owned_function
 from forward_resources import apply_owned_writes, load_resource_vocabulary, render_resource_boundary
-from join_generalize import (common_root_ancestor, generalize_owned_join, lift_call_return_edges, normalize,
-                             seed_record)
+from join_generalize import (common_root_ancestor, drop_root_resources, generalize_owned_join, inherited_drops,
+                             lift_call_return_edges, normalize, seed_record)
 from resource_seed import load_public_seed, seed_owned_resources
 import symbolic_state
 from system_shape_seed import seed_system_shapes
@@ -59,10 +59,15 @@ def joins_of(function):
     return sorted(pc for pc, rows in predecessors.items() if len(rows) > 1 and pc not in loops)
 
 
-def join_seed(boundary, *, seeds, roots, parents, profile, vocabulary, continuation, live_registers, report):
+def join_seed(boundary, *, seeds, roots, parents, profile, vocabulary, continuation, live_registers, report,
+              seed_drops):
     """Return (seed, root, plan row) of the join at `boundary` from its incoming edges; a ValueError
     names the refusal. At a return site the path through the call is one incoming edge: the
-    site's own call-return seed alternative (in `seeds`, its own root in `roots`)."""
+    site's own call-return seed alternative (in `seeds`, its own root in `roots`).
+
+    The join does not own the resources of a profile `join_drops` row whose root is the join's
+    root, nor those an incoming edge's seed already dropped (`seed_drops`: seed -> component
+    texts of its root tree); plan row `drops` lists them for the blocks after the join."""
     pc = int(boundary['pc'], 0)
     incoming = [row for row in boundary['alternatives'] if row['predecessor_pc'] is not None
                 or row['seed_pc'] == boundary['pc'] and roots.get(boundary['pc']) == boundary['pc']]
@@ -87,6 +92,9 @@ def join_seed(boundary, *, seeds, roots, parents, profile, vocabulary, continuat
             raise ValueError('join lift to ' + root + ' refused: ' + str(error)) from error
     else:
         root = roots[next(iter(origins))]
+    own = [text for item in (profile.get('join_drops', {}).get(profile.key(hex(pc)), []) if profile else [])
+           if profile.pc(item['root']) == root for text in item['resources']]
+    dropped = list(dict.fromkeys([*own, *inherited_drops(seeds[root], origins, seed_drops)]))
     try:
         # Edges through an earlier join seed are aligned on their root seed's tree.
         designs = profile.get('join_designs', {}) if profile else {}
@@ -98,7 +106,8 @@ def join_seed(boundary, *, seeds, roots, parents, profile, vocabulary, continuat
                                                           for suffix, facts in designs.items()
                                                           if profile.pc(suffix) == hex(pc)), []),
                                        live_registers=live_registers, lifted_binders=lifted_binders,
-                                       frame_writes=entry_hist.frame_writes(frames, report) if frames else ())
+                                       frame_writes=entry_hist.frame_writes(frames, report) if frames else (),
+                                       dropped=dropped)
     except ValueError as error:
         raise ValueError('join generalization refused: ' + str(error) + ' (edge seeds: ' +
                          ', '.join(sorted(origins)) + ')') from error
@@ -111,12 +120,13 @@ def join_seed(boundary, *, seeds, roots, parents, profile, vocabulary, continuat
                if joined['plan'].get('dropped_binders') else {}),
             **{key: joined['plan'][key] for key in ('fact_accounting', 'aligned_history',
                                                      'visible_history', 'ghost_history')
-               if joined['plan'].get(key)}}
+               if joined['plan'].get(key)},
+            **({'drops': dropped} if dropped else {})}
     return carry_common_word_links(incoming, joined['seed']), root, plan
 
 
 def return_site_seed(boundary, call_seed, *, seeds, roots, parents, profile, vocabulary, continuation,
-                     live_registers, report):
+                     live_registers, report, seed_drops):
     """Return (seed, root, plan row or None) of a return site that is also a join.
 
     `boundary` is the site in a pass where `call_seed` (whose root's parent `parents` names) seeds it.
@@ -132,7 +142,8 @@ def return_site_seed(boundary, call_seed, *, seeds, roots, parents, profile, voc
     try:
         seed, root, plan = join_seed(boundary, seeds={**seeds, site: call_seed}, roots={**roots, site: site},
                                      parents=parents, profile=profile, vocabulary=vocabulary,
-                                     continuation=continuation, live_registers=live_registers, report=report)
+                                     continuation=continuation, live_registers=live_registers, report=report,
+                                     seed_drops=seed_drops)
     except ValueError as error:
         raise ValueError('return-site join refused: ' + str(error)) from error
     seed.join_kind = 'call_return'
@@ -210,6 +221,9 @@ def main():
     roots = {public['entry_pc']: public['entry_pc']}
     # A call-return root's parent: the root its call-site paths start from.
     parents = {}
+    # Resource texts of a seed's root tree that a join `drop` row removed on the way to the seed
+    # (join_generalize.inherited_drops): seeds built from that root after it leave them out too.
+    seed_drops = {}
     plans, refusals, rounds = {}, {}, []
     call_seeds, call_reports = {}, {}
     started = time.monotonic_ns()
@@ -232,15 +246,17 @@ def main():
                                   'incomplete call block: ' + str(boundary['reaching_stops'][:1])
                                   if boundary['reaching_stops'] else 'call-site paths from different roots')
                 continue
+            parent = roots[next(iter(origins))]
+            call_drops = inherited_drops(seeds[parent], origins, seed_drops)
             try:
                 call_seed, call_public, call_report = call_return_seed(
-                    edges, call=call, function_root=ROOT, root_seed=seeds[roots[next(iter(origins))]],
+                    edges, call=call, function_root=ROOT, root_seed=drop_root_resources(seeds[parent], call_drops)[0],
                     shapes=shapes, vocabulary=vocabulary, constants=domain['constants'],
                     origin_seeds=[seeds[pc] for pc in sorted(origins)])
             except CallRefused as error:
                 refusals[site] = 'call boundary refused: ' + str(error)
                 continue
-            parent = roots[next(iter(origins))]
+            plan = None
             seed, root = call_seed, site
             if int(site, 0) in joins:
                 # The site is also a join: the path through the call is one edge of it.
@@ -253,13 +269,16 @@ def main():
                         next(row for row in probe['boundaries'] if row['pc'] == site), call_seed,
                         seeds=seeds, roots=roots, parents={**parents, site: parent}, profile=profile,
                         vocabulary=vocabulary, continuation=continuation, live_registers=liveness.get(site),
-                        report=probe)
+                        report=probe, seed_drops={**seed_drops, site: call_drops})
                 except ValueError as error:
                     refusals[site] = str(error)
                     continue
                 if plan is not None:
                     plans[site] = plan
             seeds[site], roots[site] = seed, root
+            drops = plan.get('drops', []) if plan else call_drops
+            if drops:
+                seed_drops[site] = drops
             parents[site] = parent
             call_seeds[site] = {'public': call_public, 'state': call_seed.state.to_dict(), 'facts': call_seed.facts}
             call_reports[site] = call_report
@@ -275,14 +294,18 @@ def main():
             if head in seeds or entry['reaching_stops'] or not edges or len(origins) != 1:
                 continue
             root = origins.pop()
+            head_drops = inherited_drops(seeds[root], {row['seed_pc'] for row in edges}, seed_drops)
             try:
-                seeds[head] = loop_head_seed(report, design, profile, root_seed=seeds[root],
+                seeds[head] = loop_head_seed(report, design, profile,
+                                             root_seed=drop_root_resources(seeds[root], head_drops)[0],
                                              vocabulary=vocabulary, continuation=continuation,
                                              live_registers=liveness.get(head), function=function)
             except ValueError as error:
                 refusals[head] = 'loop head seed refused: ' + str(error)
                 continue
             roots[head] = root
+            if head_drops:
+                seed_drops[head] = head_drops
             refusals.pop(head, None)
             added = head
             break
@@ -298,10 +321,13 @@ def main():
             try:
                 seeds[site], roots[site], plans[site] = join_seed(
                     boundary, seeds=seeds, roots=roots, parents=parents, profile=profile, vocabulary=vocabulary,
-                    continuation=continuation, live_registers=liveness.get(site), report=report)
+                    continuation=continuation, live_registers=liveness.get(site), report=report,
+                    seed_drops=seed_drops)
             except ValueError as error:
                 refusals[site] = str(error)
                 continue
+            if plans[site].get('drops'):
+                seed_drops[site] = plans[site]['drops']
             refusals.pop(site, None)
             added = site
             break
@@ -324,7 +350,9 @@ def main():
         root = roots[next(iter(origins))]
         try:
             seed, call_public, call_report = call_return_seed(
-                edges, call=call, function_root=ROOT, root_seed=seeds[root], shapes=shapes, vocabulary=vocabulary,
+                edges, call=call, function_root=ROOT,
+                root_seed=drop_root_resources(seeds[root], inherited_drops(seeds[root], origins, seed_drops))[0],
+                shapes=shapes, vocabulary=vocabulary,
                 constants=domain['constants'], origin_seeds=[seeds[pc] for pc in sorted(origins)])
         except CallRefused as error:
             refusals[site] = 'tail call refused: ' + str(error)
@@ -351,7 +379,8 @@ def main():
                                                    'refusals': refusals, 'rounds': rounds,
                                                    'roots': roots, 'parents': parents, 'calls': call_reports,
                                                    **({'duplicated_joins': [hex(pc) for pc in sorted(duplicated)]}
-                                                      if duplicated else {})}, indent=2) + '\n')
+                                                      if duplicated else {}),
+                                                   **({'seed_drops': seed_drops} if seed_drops else {})}, indent=2) + '\n')
     (output / 'CALL-SEEDS.json').write_text(json.dumps(
         {'schema': 'fp301.call-return-seeds.v1', 'seeds': call_seeds,
          'calls': calls, **({'tail_calls': profile['tail_calls']} if profile and profile.get('tail_calls') else {})},
