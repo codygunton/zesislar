@@ -202,7 +202,8 @@ RESIDUAL_HINT = re.compile(r"\s*#\[export\]\s*Hint\s+Resolve\s+(residual_\w+)\s*
 def residual_errors(root: Path) -> list[str]:
     """Residual modules are scoped hints of one block.
 
-    A module ZesuSsz/Residuals/Block<addr>.v registers only exported
+    A module ZesuSsz/Residuals/Block<addr>.v, or ZesuSsz/Residuals/<function>/Block<offset>.v
+    in the relocatable form, registers only exported
     `Hint Resolve residual_* : zesu_residual` hints. Only the block's own
     generated caller imports it; no ZesuSsz source imports it. The shared
     bridge module registers no hint, and only block residual modules import it.
@@ -214,6 +215,7 @@ def residual_errors(root: Path) -> list[str]:
     for path in sorted(directory.rglob("*.v")) if directory.is_dir() else []:
         name = ".".join(path.relative_to(root).with_suffix("").parts)
         match = re.fullmatch(r"Block(800d[0-9a-f]{4})", path.stem)
+        relocatable = re.fullmatch(r"Block([0-9a-f]{4})", path.stem)
         if path.parent == directory and path.stem in RESIDUAL_SHARED:
             shared.add(name)
             for command in source_commands(path.read_text()):
@@ -221,10 +223,14 @@ def residual_errors(root: Path) -> list[str]:
                 if re.match(r"(?:Global\s+|Local\s+)?(?:Hint\b|(?:(?:Program|Existing|Declare)\s+)?Instances?\b)", head):
                     errors.append(f"{name} is a shared bridge module and registers a hint.")
             continue
-        if path.parent != directory or not match:
-            errors.append(f"Residual module name is not Block<address>: {name}.")
+        if path.parent == directory and match:
+            modules[name] = match[1]
+        elif (path.parent.parent == directory and relocatable
+              and re.fullmatch(r"[A-Za-z][A-Za-z0-9]*", path.parent.name)):
+            modules[name] = "%s+%s" % (path.parent.name, relocatable[1])
+        else:
+            errors.append(f"Residual module name is not Block<address> or <function>/Block<offset>: {name}.")
             continue
-        modules[name] = match[1]
         for command in source_commands(path.read_text()):
             head = re.sub(r"^\s*(?:#\[[^]]*\]\s*)*", "", command)
             if not re.match(r"(?:Global\s+|Local\s+)?(?:Hint\b|(?:(?:Program|Existing|Declare)\s+)?Instances?\b)", head):
