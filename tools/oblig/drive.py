@@ -67,6 +67,7 @@ form at the end, with no other text and no code fence.
 ERROR_HEAD = "\n## Your previous answer failed\n\n"
 CONTEXT_HEAD = "\n## Context you asked for\n\n"
 TRUNCATED = "\n[... truncated]"
+MALFORMED_LINE = "Reply with the bare JSON object only.\n\n"
 
 
 def sha(text):
@@ -191,50 +192,82 @@ def error_section(where, budget):
     return head % (proof if proof.endswith("\n") or not proof else proof + "\n", errors)
 
 
-def context_entries(run, function, needs, located):
-    """(name, text) of each named item found: closed lemmas of the similar-lemma index, then the
-    statements of the goals under RUN (with the proof of a closed one)."""
+def sibling_runs(goal_dir):
+    """The residual_loop run dirs beside the goal's own (the other goals of its function or block)."""
+    return store.residual_runs(Path(goal_dir).parents[2], depth=2)
+
+
+def named_entries(needs, goal_dir):
+    """(name, text) of each item the NEEDS name that the model-free sources hold: closed lemmas of the
+    similar-lemma index, then the statements of the goals beside GOAL_DIR."""
     import similar
     text = " ".join(needs)
 
     def named(name):
         return re.search(r"(?<![\w'.])%s(?:_statement)?(?![\w'])" % re.escape(name), text)
+    runs = sibling_runs(goal_dir)
     found, seen = [], set()
-    index = similar.build_index(runs=sorted({where.d for where in located.values()}))
-    for entry in index["entries"]:
+    for entry in similar.build_index(runs=runs)["entries"]:
         if named(entry["name"]) and entry["name"] not in seen:
             seen.add(entry["name"])
             found.append((entry["name"], similar.render(entry)))
-    for where in located.values():
-        name = where.goal.get("name")
-        if name and name not in seen and named(name) and (where.goal_dir / "goal.v").is_file():
-            seen.add(name)
-            goal_v = (where.goal_dir / "goal.v").read_text()
-            body = goal_v[goal_v.index("Lemma "):goal_v.index("Proof.")].rstrip() if "Lemma " in goal_v else goal_v
-            found.append((name, "### %s\n\n```coq\n%s\n```\n" % (name, body)))
+    for d in runs:
+        for goal in store.read_json(d / "MANIFEST.json", {}).get("goals", []):
+            goal_v = d / "goals" / goal["id"] / "goal.v"
+            name = goal.get("name")
+            if name and name not in seen and named(name) and goal_v.is_file():
+                seen.add(name)
+                source = goal_v.read_text()
+                body = source[source.index("Lemma "):source.index("Proof.")].rstrip() if "Lemma " in source else source
+                found.append((name, "### %s\n\n```coq\n%s\n```\n" % (name, body)))
     return found
 
 
-def context_section(run, function, where, located, budget):
-    meta = store.read_json(where.answer_json, {})
-    needs = meta.get("needs") or []
-    found = context_entries(run, function, needs, located)
+def definitions_text(needs, goal_dir, max_bytes):
+    """The Rocq `About`/`Print` answers of tools/oblig/defs.py (`needs_text`) for the names in NEEDS, or
+    "" when that source is absent or cannot answer (a failed query, no bank)."""
+    try:
+        import defs
+        needs_text = defs.needs_text
+    except (ImportError, AttributeError):
+        return ""
+    try:
+        return needs_text(needs, goal_dir, max_bytes) or ""
+    except (getattr(defs, "DefsError", RuntimeError), OSError, KeyError):
+        return ""
+
+
+def needs_section(needs, goal_dir, budget):
+    """(text, used item names) of the need_context retry: the named items of the model-free sources,
+    the definitions source, and a note naming what is not available; ("", []) when nothing is."""
     parts, used = [], []
-    for name, entry in found:
+    for name, entry in named_entries(needs, goal_dir):
         if len((CONTEXT_HEAD + "".join(parts) + entry).encode()) <= budget:
             parts.append(entry)
             used.append(name)
+    definitions = definitions_text(needs, goal_dir, budget - len((CONTEXT_HEAD + "".join(parts)).encode()))
+    if definitions:
+        used.append("definitions")
+    if not used:
+        return "", []
+    text = CONTEXT_HEAD + "".join(parts) + definitions
     missing = [need for need in needs if not any(re.search(re.escape(name), need) for name in used)]
-    if missing:
-        parts.append(clip("Not available here: %s. Prove it without them or answer give_up.\n"
-                          % "; ".join(missing), max(0, budget - len((CONTEXT_HEAD + "".join(parts)).encode()))))
-    return CONTEXT_HEAD + "".join(parts), used
+    if missing and not definitions:
+        text += clip("Not available here: %s. Prove it without them or answer give_up.\n" % "; ".join(missing),
+                     max(0, budget - len(text.encode())))
+    return text, used
+
+
+def resolve_needs(needs, goal_dir, max_bytes=package.MAX_PROMPT_BYTES):
+    """The context text for the items a `need_context` answer names, "" when none can be supplied."""
+    return needs_section(needs, goal_dir, max_bytes)[0]
 
 
 def prompt_for(run, function, identifier, tier, located=None, state=None):
     """(prompt text, context items) of the next attempt of IDENTIFIER at TIER, or (None, reason).
     After a compile error at this tier the prompt adds the previous proof and the compiler output;
-    after need_context it adds the named items it finds (or says which are not available)."""
+    after need_context it adds the named items (reason `missing_context` when none can be supplied);
+    after a malformed reply it starts with MALFORMED_LINE."""
     located = locate(run, function) if located is None else located
     state = fold(run) if state is None else state
     where, item = located.get(identifier), state.get(identifier)
@@ -252,11 +285,23 @@ def prompt_for(run, function, identifier, tier, located=None, state=None):
             return None, "too-large"
         text, items = base + extra, ["task", "feedback"]
     elif last and last["tier"] == tier and last["failure"] == "need_context":
-        extra, used = context_section(run, function, where, located, limit - len(base.encode()))
+        needs = store.read_json(where.answer_json, {}).get("needs") or []
+        extra, used = needs_section(needs, where.goal_dir, limit - len(base.encode()))
+        if not extra:
+            return None, "missing_context"
         text, items = base + extra, ["task"] + ["context:" + name for name in used] + ["need_context"]
+    elif last and last["tier"] == tier and last["failure"] == "malformed":
+        text, items = MALFORMED_LINE + base, ["task", "malformed"]
     if len(text.encode()) > limit:
         return None, "too-large"
     return text, items
+
+
+def file_missing_context(run, identifier, tier):
+    """Append `failed` class missing_context at TIER (no attempt): route.py then escalates the goal
+    without spending the tier's next attempt."""
+    item = fold(run)[identifier]
+    store.append(run, base_event(item, state="failed", **{"class": "missing_context"}, tier=tier))
 
 
 # ---- attempts and answers ----
@@ -513,6 +558,23 @@ class Counts(dict):
             self[key] = self.get(key, 0) + 1
 
 
+def escalate_missing_context(function, run, located, free, counts):
+    """File `missing_context` for each need_context retry whose named items no source can supply, so
+    route.py moves it to the next tier before any model sees an unchanged prompt."""
+    state, filed = fold(run), 0
+    for identifier, action, tier, _ in route.next_items(run, function):
+        last = state[identifier]["last_attempt"] if identifier in state else None
+        if (action != "prove" or identifier not in free or not last or last["tier"] != tier
+                or last["failure"] != "need_context" or route.missing_context(state[identifier], tier)):
+            continue
+        text, reason = prompt_for(run, function, identifier, tier, located=located, state=state)
+        if text is None and reason == "missing_context":
+            file_missing_context(run, identifier, tier)
+            counts.bump("missing_context")
+            filed += 1
+    return filed
+
+
 def step(function, run, limit=None, jobs=8, kernel=None):
     """Perform every model-free routed action until a pass changes nothing; return
     (counts, [(id, action, tier, why)] left, running ids, unlocated ids)."""
@@ -531,6 +593,7 @@ def step(function, run, limit=None, jobs=8, kernel=None):
         mechanical = [i for i, action, tier, _ in route.next_items(run, function)
                       if action == "prove" and tier == MECHANICAL and i in free]
         progress += run_mechanical(function, run, located, mechanical, counts)
+        progress += escalate_missing_context(function, run, located, free, counts)
         if not progress:
             break
     located = locate(run, function)

@@ -173,14 +173,72 @@ class Router(unittest.TestCase):
         self.add(ev(GOAL, 'derived', parent=BLOCK, **{'class': 'LOOKUP'}))
         self.assertEqual(self.next(GOAL), ('diagnose', 'opus-medium'))
 
-    # Spin
-    def test_six_attempts_spin(self):
+    # Ladder and spin
+    LADDER = {'PURE-linear': {'attempts': {'mechanical': 1, 'haiku-low': 2, 'haiku-medium': 0, 'haiku-high': 1,
+                                           'opus-medium': 2}}}
+
+    def test_never_spins_before_the_top_tier(self):
         self.pure_goal()
         rows = [falsified()]
         for tier in ('mechanical', 'haiku-low', 'haiku-medium'):
             rows += tried(GOAL, tier, 1, 'compile_error') + tried(GOAL, tier, 2, 'compile_error')
         self.add(*rows)
+        self.assertEqual(self.next(GOAL), ('prove', 'haiku-high'))
+
+    def test_ladder_skips_tiers_with_no_attempts(self):
+        self.routing = self.LADDER
+        self.pure_goal()
+        self.add(falsified(), tried(GOAL, 'mechanical', 1), tried(GOAL, 'haiku-low', 1), tried(GOAL, 'haiku-low', 2))
+        self.assertEqual(self.next(GOAL), ('prove', 'haiku-high'))
+        self.add(tried(GOAL, 'haiku-high', 1, 'compile_error'))
+        self.assertEqual(self.next(GOAL), ('prove', 'opus-medium'))
+
+    def test_default_row_applies_to_a_goal_without_a_class_row(self):
+        self.routing = {route.DEFAULT_CLASS: self.LADDER['PURE-linear']}
+        self.pure_goal()
+        self.add(falsified(), tried(GOAL, 'mechanical', 1), tried(GOAL, 'haiku-low', 1), tried(GOAL, 'haiku-low', 2))
+        self.assertEqual(self.next(GOAL), ('prove', 'haiku-high'))
+
+    def test_attempts_off_the_ladder_do_not_count(self):
+        self.routing = self.LADDER
+        self.pure_goal()
+        self.add(falsified(), tried(GOAL, 'mechanical', 1), tried(GOAL, 'haiku-low', 1), tried(GOAL, 'haiku-low', 2),
+                 tried(GOAL, 'haiku-medium', 1), tried(GOAL, 'haiku-medium', 2),
+                 tried(GOAL, 'haiku-high', 1, 'need_context'))
+        self.assertEqual(self.next(GOAL), ('prove', 'opus-medium'))
+
+    def test_six_attempts_spin_once_the_ladder_is_exhausted(self):
+        self.routing = self.LADDER
+        self.pure_goal()
+        rows = [falsified(), tried(GOAL, 'mechanical', 1), tried(GOAL, 'haiku-low', 1), tried(GOAL, 'haiku-low', 2),
+                tried(GOAL, 'haiku-high', 1), tried(GOAL, 'opus-medium', 1, 'compile_error')]
+        self.add(*rows)
+        self.assertEqual(self.next(GOAL), ('prove', 'opus-medium'))
+        self.add(tried(GOAL, 'opus-medium', 2))
         self.assertEqual(self.next(GOAL), ('spin', None))
+
+    def test_exhausted_ladder_below_six_reconsiders(self):
+        self.routing = {'PURE-linear': {'attempts': {'mechanical': 1, 'haiku-low': 1, 'haiku-medium': 0,
+                                                     'haiku-high': 0, 'opus-medium': 1}}}
+        self.pure_goal()
+        self.add(falsified(), tried(GOAL, 'mechanical', 1), tried(GOAL, 'haiku-low', 1), tried(GOAL, 'opus-medium', 1))
+        self.assertEqual(self.next(GOAL), ('reconsider', 'opus-medium'))
+
+    def test_missing_context_escalates_without_the_second_attempt(self):
+        self.pure_goal()
+        self.add(falsified(), tried(GOAL, 'mechanical', 1), tried(GOAL, 'haiku-low', 1, 'need_context'),
+                 ev(GOAL, 'failed', tier='haiku-low', **{'class': 'missing_context'}))
+        self.assertEqual(self.next(GOAL), ('prove', 'haiku-medium'))
+
+    def test_malformed_reply_retries_once_without_counting(self):
+        self.routing = self.LADDER
+        self.pure_goal()
+        self.add(falsified(), tried(GOAL, 'mechanical', 1), tried(GOAL, 'haiku-low', 1, 'malformed'))
+        self.assertEqual(self.next(GOAL), ('prove', 'haiku-low'))
+        self.add(tried(GOAL, 'haiku-low', 2, 'compile_error'))
+        self.assertEqual(self.next(GOAL), ('prove', 'haiku-low'))  # the malformed reply did not count
+        self.add(tried(GOAL, 'haiku-low', 3, 'malformed'))
+        self.assertEqual(self.next(GOAL), ('prove', 'haiku-high'))  # a second one does
 
     def test_three_resets_spin(self):
         decision = 'fn/decision/join_assertion-0100'

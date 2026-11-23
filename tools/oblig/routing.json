@@ -1,0 +1,683 @@
+{
+ "classes": {
+  "MEANING": {
+   "attempts": {
+    "haiku-high": 1,
+    "haiku-low": 2,
+    "haiku-medium": 0,
+    "mechanical": 1,
+    "opus-medium": 2
+   },
+   "ladder_reason": "Set by the coordinator from the tier replay (known set, recipe similar): haiku-medium closed 35 of 68 within its attempts, none that haiku-low (34) did not close, at 7.0M tokens against 2.76M (2.5x), so it is off the ladder (0); haiku-high (39 closed, 10.0M tokens) keeps 1 attempt; opus-medium is last with 2. 1 + 2 + 0 + 1 + 2 = 6, the plan's spin limit. route.py reads `attempts` as the ladder: a tier with 0 is skipped.",
+   "context": "similar",
+   "first_tier": "haiku-low",
+   "goals": 6,
+   "measured": false,
+   "shares": {
+    "haiku-high/similar": {
+     "attempted": 0,
+     "bytes": 0,
+     "first": 0,
+     "first_share": 0.0,
+     "goals": 6,
+     "tokens": null,
+     "within": 0,
+     "within_share": 0.0
+    },
+    "haiku-high/slice": {
+     "attempted": 0,
+     "bytes": 0,
+     "first": 0,
+     "first_share": 0.0,
+     "goals": 6,
+     "tokens": null,
+     "within": 0,
+     "within_share": 0.0
+    },
+    "haiku-low/similar": {
+     "attempted": 0,
+     "bytes": 0,
+     "first": 0,
+     "first_share": 0.0,
+     "goals": 6,
+     "tokens": null,
+     "within": 0,
+     "within_share": 0.0
+    },
+    "haiku-low/slice": {
+     "attempted": 0,
+     "bytes": 0,
+     "first": 0,
+     "first_share": 0.0,
+     "goals": 6,
+     "tokens": null,
+     "within": 0,
+     "within_share": 0.0
+    },
+    "haiku-medium/similar": {
+     "attempted": 0,
+     "bytes": 0,
+     "first": 0,
+     "first_share": 0.0,
+     "goals": 6,
+     "tokens": null,
+     "within": 0,
+     "within_share": 0.0
+    },
+    "haiku-medium/slice": {
+     "attempted": 0,
+     "bytes": 0,
+     "first": 0,
+     "first_share": 0.0,
+     "goals": 6,
+     "tokens": null,
+     "within": 0,
+     "within_share": 0.0
+    },
+    "mechanical": {
+     "attempted": 6,
+     "bytes": 3432,
+     "first": 0,
+     "first_share": 0.0,
+     "goals": 6,
+     "tokens": null,
+     "within": 0,
+     "within_share": 0.0
+    },
+    "opus-medium/similar": {
+     "attempted": 0,
+     "bytes": 0,
+     "first": 0,
+     "first_share": 0.0,
+     "goals": 6,
+     "tokens": null,
+     "within": 0,
+     "within_share": 0.0
+    },
+    "opus-medium/slice": {
+     "attempted": 0,
+     "bytes": 0,
+     "first": 0,
+     "first_share": 0.0,
+     "goals": 6,
+     "tokens": null,
+     "within": 0,
+     "within_share": 0.0
+    }
+   }
+  },
+  "PURE": {
+   "attempts": {
+    "haiku-high": 1,
+    "haiku-low": 2,
+    "haiku-medium": 0,
+    "mechanical": 1,
+    "opus-medium": 2
+   },
+   "ladder_reason": "Set by the coordinator from the tier replay (known set, recipe similar): haiku-medium closed 35 of 68 within its attempts, none that haiku-low (34) did not close, at 7.0M tokens against 2.76M (2.5x), so it is off the ladder (0); haiku-high (39 closed, 10.0M tokens) keeps 1 attempt; opus-medium is last with 2. 1 + 2 + 0 + 1 + 2 = 6, the plan's spin limit. route.py reads `attempts` as the ladder: a tier with 0 is skipped.",
+   "context": "similar",
+   "first_tier": "haiku-low",
+   "goals": 62,
+   "measured": true,
+   "shares": {
+    "haiku-high/similar": {
+     "attempted": 62,
+     "bytes": 779526,
+     "first": 38,
+     "first_share": 0.613,
+     "goals": 62,
+     "tokens": 10030355,
+     "within": 39,
+     "within_share": 0.629
+    },
+    "haiku-high/slice": {
+     "attempted": 10,
+     "bytes": 43838,
+     "first": 0,
+     "first_share": 0.0,
+     "goals": 62,
+     "tokens": 1116927,
+     "within": 0,
+     "within_share": 0.0
+    },
+    "haiku-low/similar": {
+     "attempted": 60,
+     "bytes": 827596,
+     "first": 28,
+     "first_share": 0.452,
+     "goals": 62,
+     "tokens": 2755877,
+     "within": 34,
+     "within_share": 0.548
+    },
+    "haiku-low/slice": {
+     "attempted": 10,
+     "bytes": 35747,
+     "first": 0,
+     "first_share": 0.0,
+     "goals": 62,
+     "tokens": 355788,
+     "within": 0,
+     "within_share": 0.0
+    },
+    "haiku-medium/similar": {
+     "attempted": 60,
+     "bytes": 863495,
+     "first": 28,
+     "first_share": 0.452,
+     "goals": 62,
+     "tokens": 7008530,
+     "within": 35,
+     "within_share": 0.565
+    },
+    "haiku-medium/slice": {
+     "attempted": 10,
+     "bytes": 43337,
+     "first": 0,
+     "first_share": 0.0,
+     "goals": 62,
+     "tokens": 883056,
+     "within": 0,
+     "within_share": 0.0
+    },
+    "mechanical": {
+     "attempted": 62,
+     "bytes": 35464,
+     "first": 52,
+     "first_share": 0.839,
+     "goals": 62,
+     "tokens": null,
+     "within": 52,
+     "within_share": 0.839
+    },
+    "opus-medium/similar": {
+     "attempted": 10,
+     "bytes": 113840,
+     "first": 0,
+     "first_share": 0.0,
+     "goals": 62,
+     "tokens": 542922,
+     "within": 0,
+     "within_share": 0.0
+    },
+    "opus-medium/slice": {
+     "attempted": 10,
+     "bytes": 46667,
+     "first": 0,
+     "first_share": 0.0,
+     "goals": 62,
+     "tokens": 669186,
+     "within": 0,
+     "within_share": 0.0
+    }
+   }
+  },
+  "PURE-bitvector": {
+   "attempts": {
+    "haiku-high": 1,
+    "haiku-low": 2,
+    "haiku-medium": 0,
+    "mechanical": 1,
+    "opus-medium": 2
+   },
+   "ladder_reason": "Set by the coordinator from the tier replay (known set, recipe similar): haiku-medium closed 35 of 68 within its attempts, none that haiku-low (34) did not close, at 7.0M tokens against 2.76M (2.5x), so it is off the ladder (0); haiku-high (39 closed, 10.0M tokens) keeps 1 attempt; opus-medium is last with 2. 1 + 2 + 0 + 1 + 2 = 6, the plan's spin limit. route.py reads `attempts` as the ladder: a tier with 0 is skipped.",
+   "context": "similar",
+   "first_tier": "haiku-low",
+   "goals": 51,
+   "measured": true,
+   "shares": {
+    "haiku-high/similar": {
+     "attempted": 51,
+     "bytes": 664332,
+     "first": 37,
+     "first_share": 0.725,
+     "goals": 51,
+     "tokens": 8522525,
+     "within": 38,
+     "within_share": 0.745
+    },
+    "haiku-high/slice": {
+     "attempted": 0,
+     "bytes": 0,
+     "first": 0,
+     "first_share": 0.0,
+     "goals": 51,
+     "tokens": null,
+     "within": 0,
+     "within_share": 0.0
+    },
+    "haiku-low/similar": {
+     "attempted": 49,
+     "bytes": 719180,
+     "first": 27,
+     "first_share": 0.529,
+     "goals": 51,
+     "tokens": 2355312,
+     "within": 33,
+     "within_share": 0.647
+    },
+    "haiku-low/slice": {
+     "attempted": 0,
+     "bytes": 0,
+     "first": 0,
+     "first_share": 0.0,
+     "goals": 51,
+     "tokens": null,
+     "within": 0,
+     "within_share": 0.0
+    },
+    "haiku-medium/similar": {
+     "attempted": 49,
+     "bytes": 747584,
+     "first": 27,
+     "first_share": 0.529,
+     "goals": 51,
+     "tokens": 6107302,
+     "within": 34,
+     "within_share": 0.667
+    },
+    "haiku-medium/slice": {
+     "attempted": 0,
+     "bytes": 0,
+     "first": 0,
+     "first_share": 0.0,
+     "goals": 51,
+     "tokens": null,
+     "within": 0,
+     "within_share": 0.0
+    },
+    "mechanical": {
+     "attempted": 51,
+     "bytes": 29172,
+     "first": 51,
+     "first_share": 1.0,
+     "goals": 51,
+     "tokens": null,
+     "within": 51,
+     "within_share": 1.0
+    },
+    "opus-medium/similar": {
+     "attempted": 0,
+     "bytes": 0,
+     "first": 0,
+     "first_share": 0.0,
+     "goals": 51,
+     "tokens": null,
+     "within": 0,
+     "within_share": 0.0
+    },
+    "opus-medium/slice": {
+     "attempted": 0,
+     "bytes": 0,
+     "first": 0,
+     "first_share": 0.0,
+     "goals": 51,
+     "tokens": null,
+     "within": 0,
+     "within_share": 0.0
+    }
+   }
+  },
+  "PURE-byte-window": {
+   "attempts": {
+    "haiku-high": 1,
+    "haiku-low": 2,
+    "haiku-medium": 0,
+    "mechanical": 1,
+    "opus-medium": 2
+   },
+   "ladder_reason": "Set by the coordinator from the tier replay (known set, recipe similar): haiku-medium closed 35 of 68 within its attempts, none that haiku-low (34) did not close, at 7.0M tokens against 2.76M (2.5x), so it is off the ladder (0); haiku-high (39 closed, 10.0M tokens) keeps 1 attempt; opus-medium is last with 2. 1 + 2 + 0 + 1 + 2 = 6, the plan's spin limit. route.py reads `attempts` as the ladder: a tier with 0 is skipped.",
+   "context": "similar",
+   "first_tier": "haiku-low",
+   "goals": 2,
+   "measured": true,
+   "shares": {
+    "haiku-high/similar": {
+     "attempted": 2,
+     "bytes": 20314,
+     "first": 1,
+     "first_share": 0.5,
+     "goals": 2,
+     "tokens": 262522,
+     "within": 1,
+     "within_share": 0.5
+    },
+    "haiku-high/slice": {
+     "attempted": 1,
+     "bytes": 3937,
+     "first": 0,
+     "first_share": 0.0,
+     "goals": 2,
+     "tokens": 100332,
+     "within": 0,
+     "within_share": 0.0
+    },
+    "haiku-low/similar": {
+     "attempted": 2,
+     "bytes": 19569,
+     "first": 1,
+     "first_share": 0.5,
+     "goals": 2,
+     "tokens": 66673,
+     "within": 1,
+     "within_share": 0.5
+    },
+    "haiku-low/slice": {
+     "attempted": 1,
+     "bytes": 3193,
+     "first": 0,
+     "first_share": 0.0,
+     "goals": 2,
+     "tokens": 59316,
+     "within": 0,
+     "within_share": 0.0
+    },
+    "haiku-medium/similar": {
+     "attempted": 2,
+     "bytes": 20363,
+     "first": 1,
+     "first_share": 0.5,
+     "goals": 2,
+     "tokens": 145183,
+     "within": 1,
+     "within_share": 0.5
+    },
+    "haiku-medium/slice": {
+     "attempted": 1,
+     "bytes": 4197,
+     "first": 0,
+     "first_share": 0.0,
+     "goals": 2,
+     "tokens": 73315,
+     "within": 0,
+     "within_share": 0.0
+    },
+    "mechanical": {
+     "attempted": 2,
+     "bytes": 1144,
+     "first": 1,
+     "first_share": 0.5,
+     "goals": 2,
+     "tokens": null,
+     "within": 1,
+     "within_share": 0.5
+    },
+    "opus-medium/similar": {
+     "attempted": 1,
+     "bytes": 9506,
+     "first": 0,
+     "first_share": 0.0,
+     "goals": 2,
+     "tokens": 33647,
+     "within": 0,
+     "within_share": 0.0
+    },
+    "opus-medium/slice": {
+     "attempted": 1,
+     "bytes": 3500,
+     "first": 0,
+     "first_share": 0.0,
+     "goals": 2,
+     "tokens": 60054,
+     "within": 0,
+     "within_share": 0.0
+    }
+   },
+   "small_class": true
+  },
+  "PURE-meaning": {
+   "attempts": {
+    "haiku-high": 1,
+    "haiku-low": 2,
+    "haiku-medium": 0,
+    "mechanical": 1,
+    "opus-medium": 2
+   },
+   "ladder_reason": "Set by the coordinator from the tier replay (known set, recipe similar): haiku-medium closed 35 of 68 within its attempts, none that haiku-low (34) did not close, at 7.0M tokens against 2.76M (2.5x), so it is off the ladder (0); haiku-high (39 closed, 10.0M tokens) keeps 1 attempt; opus-medium is last with 2. 1 + 2 + 0 + 1 + 2 = 6, the plan's spin limit. route.py reads `attempts` as the ladder: a tier with 0 is skipped.",
+   "context": "slice",
+   "first_tier": "haiku-low",
+   "goals": 9,
+   "measured": true,
+   "shares": {
+    "haiku-high/similar": {
+     "attempted": 9,
+     "bytes": 94880,
+     "first": 0,
+     "first_share": 0.0,
+     "goals": 9,
+     "tokens": 1245308,
+     "within": 0,
+     "within_share": 0.0
+    },
+    "haiku-high/slice": {
+     "attempted": 9,
+     "bytes": 39901,
+     "first": 0,
+     "first_share": 0.0,
+     "goals": 9,
+     "tokens": 1016595,
+     "within": 0,
+     "within_share": 0.0
+    },
+    "haiku-low/similar": {
+     "attempted": 9,
+     "bytes": 88847,
+     "first": 0,
+     "first_share": 0.0,
+     "goals": 9,
+     "tokens": 333892,
+     "within": 0,
+     "within_share": 0.0
+    },
+    "haiku-low/slice": {
+     "attempted": 9,
+     "bytes": 32554,
+     "first": 0,
+     "first_share": 0.0,
+     "goals": 9,
+     "tokens": 296472,
+     "within": 0,
+     "within_share": 0.0
+    },
+    "haiku-medium/similar": {
+     "attempted": 9,
+     "bytes": 95548,
+     "first": 0,
+     "first_share": 0.0,
+     "goals": 9,
+     "tokens": 756045,
+     "within": 0,
+     "within_share": 0.0
+    },
+    "haiku-medium/slice": {
+     "attempted": 9,
+     "bytes": 39140,
+     "first": 0,
+     "first_share": 0.0,
+     "goals": 9,
+     "tokens": 809741,
+     "within": 0,
+     "within_share": 0.0
+    },
+    "mechanical": {
+     "attempted": 9,
+     "bytes": 5148,
+     "first": 0,
+     "first_share": 0.0,
+     "goals": 9,
+     "tokens": null,
+     "within": 0,
+     "within_share": 0.0
+    },
+    "opus-medium/similar": {
+     "attempted": 9,
+     "bytes": 104334,
+     "first": 0,
+     "first_share": 0.0,
+     "goals": 9,
+     "tokens": 509275,
+     "within": 0,
+     "within_share": 0.0
+    },
+    "opus-medium/slice": {
+     "attempted": 9,
+     "bytes": 43167,
+     "first": 0,
+     "first_share": 0.0,
+     "goals": 9,
+     "tokens": 609132,
+     "within": 0,
+     "within_share": 0.0
+    }
+   }
+  }
+ },
+ "default": {
+  "attempts": {
+   "haiku-high": 1,
+   "haiku-low": 2,
+   "haiku-medium": 0,
+   "mechanical": 1,
+   "opus-medium": 2
+  },
+  "ladder_reason": "The ladder of a goal without a class row (meaning goals filed without a class): the same ladder as every class, set by the coordinator from the tier replay; see the class rows."
+ },
+ "corpus": "/home/cody/zesislar/_build/agents/aa/replay/corpus",
+ "haiku_union": {
+  "closed": 46,
+  "of": 68,
+  "share": 0.676,
+  "sonnet_needed": false,
+  "tiers_run": [
+   "haiku-low",
+   "haiku-medium",
+   "haiku-high"
+  ]
+ },
+ "head": "86e8c6c21d0e2efdec03598bc425608f58f432ab",
+ "min_goals": 3,
+ "min_share": 0.5,
+ "rule": "first_tier: the cheapest model tier (tiers.json order) that closes at least min_share of the class's known-true replay goals within its attempts, on the recipe that closes most at that tier (ties: the smaller prompt); none reaches it: the tier with the highest share (ties: cheaper). A class with fewer than 3 goals, or one no model tier attempted (measured false), keeps the default haiku-low. `mechanical` runs first for every class (route.py) and is reported under shares, not chosen here. Why min_share 0.5: at that share a cheap tier closes at least as many goals as it hands on, so its wasted attempts are bounded by its own cost on the goals it closes, and each wasted attempt costs less than one attempt at the next tier.",
+ "schema": "oblig-routing/1",
+ "tiers": {
+  "haiku-high/similar": {
+   "attempted": 62,
+   "bytes": 779526,
+   "bytes_per_closed": 19988,
+   "first": 38,
+   "first_share": 0.559,
+   "goals": 68,
+   "tokens": 10030355,
+   "tokens_per_closed": 257189,
+   "within": 39,
+   "within_share": 0.574
+  },
+  "haiku-high/slice": {
+   "attempted": 10,
+   "bytes": 43838,
+   "bytes_per_closed": null,
+   "first": 0,
+   "first_share": 0.0,
+   "goals": 68,
+   "tokens": 1116927,
+   "tokens_per_closed": null,
+   "within": 0,
+   "within_share": 0.0
+  },
+  "haiku-low/similar": {
+   "attempted": 60,
+   "bytes": 827596,
+   "bytes_per_closed": 24341,
+   "first": 28,
+   "first_share": 0.412,
+   "goals": 68,
+   "tokens": 2755877,
+   "tokens_per_closed": 81055,
+   "within": 34,
+   "within_share": 0.5
+  },
+  "haiku-low/slice": {
+   "attempted": 10,
+   "bytes": 35747,
+   "bytes_per_closed": null,
+   "first": 0,
+   "first_share": 0.0,
+   "goals": 68,
+   "tokens": 355788,
+   "tokens_per_closed": null,
+   "within": 0,
+   "within_share": 0.0
+  },
+  "haiku-medium/similar": {
+   "attempted": 60,
+   "bytes": 863495,
+   "bytes_per_closed": 24671,
+   "first": 28,
+   "first_share": 0.412,
+   "goals": 68,
+   "tokens": 7008530,
+   "tokens_per_closed": 200244,
+   "within": 35,
+   "within_share": 0.515
+  },
+  "haiku-medium/slice": {
+   "attempted": 10,
+   "bytes": 43337,
+   "bytes_per_closed": null,
+   "first": 0,
+   "first_share": 0.0,
+   "goals": 68,
+   "tokens": 883056,
+   "tokens_per_closed": null,
+   "within": 0,
+   "within_share": 0.0
+  },
+  "mechanical/none": {
+   "attempted": 68,
+   "bytes": 38896,
+   "bytes_per_closed": 748,
+   "first": 52,
+   "first_share": 0.765,
+   "goals": 68,
+   "tokens": null,
+   "tokens_per_closed": null,
+   "within": 52,
+   "within_share": 0.765
+  },
+  "opus-medium/similar": {
+   "attempted": 10,
+   "bytes": 113840,
+   "bytes_per_closed": null,
+   "first": 0,
+   "first_share": 0.0,
+   "goals": 68,
+   "tokens": 542922,
+   "tokens_per_closed": null,
+   "within": 0,
+   "within_share": 0.0
+  },
+  "opus-medium/slice": {
+   "attempted": 10,
+   "bytes": 46667,
+   "bytes_per_closed": null,
+   "first": 0,
+   "first_share": 0.0,
+   "goals": 68,
+   "tokens": 669186,
+   "tokens_per_closed": null,
+   "within": 0,
+   "within_share": 0.0
+  }
+ },
+ "unknown_set": {
+  "haiku-low/similar": {
+   "bad_counterexample": 2,
+   "closed": 2,
+   "compile_error": 22,
+   "need_context": 13
+  },
+  "mechanical/none": {
+   "compile_error": 175
+  }
+ }
+}

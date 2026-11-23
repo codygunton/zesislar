@@ -105,7 +105,7 @@ class FakeAgents:
                 agents.writes.append(args)
         self.tool = Tool()
 
-    def agent(self, prompt, agent=None, label=None):
+    def agent(self, prompt, agent=None, label=None, schema=None):
         handle = FakeHandle(prompt, self.reply(prompt) if callable(self.reply) else self.reply)
         self.spawned.append((agent, label, handle))
         return handle
@@ -216,20 +216,59 @@ class DriveTests(unittest.TestCase):
                                                                "first attempt at this tier")])
 
     def test_scout_tier_needs_its_override(self):
+        # routing.json's ladder: haiku-low 2, haiku-medium 0 (off), haiku-high 1, opus-medium 2.
         self.install(GIVE_UP)
         drive_kernel.run_round(F, self.run_dir, tier="haiku-low", kernel=self.kernel)
-        self.assertEqual([t for _, t, _ in drive.model_items(self.run_dir, F)], ["haiku-medium"])
+        self.assertEqual([t for _, t, _ in drive.model_items(self.run_dir, F)], ["haiku-high"])
         with self.assertRaises(drive_kernel.DriveError):
-            drive_kernel.run_round(F, self.run_dir, tier="haiku-medium", kernel=self.kernel)
+            drive_kernel.run_round(F, self.run_dir, tier="haiku-high", kernel=self.kernel)
         summary = drive_kernel.run_round(F, self.run_dir, kernel=self.kernel)
-        self.assertEqual((summary["started"], list(summary["skipped"])), (0, ["haiku-medium"]))
-        asyncio.run(drive_kernel.set_tier_override("haiku-medium"))
-        self.assertEqual(json.loads(self.agents.writes[-1]["content"])["scout"], "anthropic/claude-haiku-5-5:medium")
+        self.assertEqual((summary["started"], list(summary["skipped"])), (0, ["haiku-high"]))
+        asyncio.run(drive_kernel.set_tier_override("haiku-high"))
+        self.assertEqual(json.loads(self.agents.writes[-1]["content"])["scout"], "anthropic/claude-haiku-5-5:high")
         self.install(GOOD)
-        summary = drive_kernel.run_round(F, self.run_dir, tier="haiku-medium", kernel=self.kernel)
+        summary = drive_kernel.run_round(F, self.run_dir, tier="haiku-high", kernel=self.kernel)
         self.assertEqual(summary["started"], 1)
         self.assertEqual(self.agents.spawned[0][0], "scout")
-        self.assertEqual(self.state()[self.sid("lemA")]["closed_by"], "haiku-medium")
+        self.assertEqual(self.state()[self.sid("lemA")]["closed_by"], "haiku-high")
+
+    def test_spawn_asks_for_the_answer_schema(self):
+        captured = []
+        agents = FakeAgents(GOOD)
+        drive_kernel.agent = lambda prompt, agent=None, label=None, schema=None: (
+            captured.append(schema) or agents.agent(prompt, agent, label))
+        drive_kernel.run_round(F, self.run_dir, tier="haiku-low", kernel=self.kernel)
+        self.assertEqual(captured[0]["required"], ["verdict"])
+
+    def test_need_context_without_supply_escalates_without_spending(self):
+        self.install(json.dumps(dict(verdict="need_context", needs=["nothing_known_here"])))
+        drive_kernel.run_round(F, self.run_dir, tier="haiku-low", kernel=self.kernel)
+        item = self.state()[self.sid("lemA")]
+        self.assertEqual((item["state"], item["failure"], item["tier_attempts"]["haiku-low"]),
+                         ("failed", "missing_context", 1))
+        self.assertEqual([t for _, t, _ in drive.model_items(self.run_dir, F)], ["haiku-high"])
+        self.assertEqual(drive_kernel.resolve_needs(["nothing_known_here"], drive.locate(self.run_dir, F)[
+            self.sid("lemA")].goal_dir), "")
+
+    def test_need_context_with_a_named_goal_retries_the_tier(self):
+        self.install(json.dumps(dict(verdict="need_context", needs=["lemB_statement"])))
+        drive_kernel.run_round(F, self.run_dir, tier="haiku-low", kernel=self.kernel)
+        self.assertEqual(drive.model_items(self.run_dir, F)[0][:2], (self.sid("lemA"), "haiku-low"))
+        prompt, items = drive.prompt_for(self.run_dir, F, self.sid("lemA"), "haiku-low")
+        self.assertIn("forall y : Z, y + 0 = y", prompt)
+        self.assertIn("context:lemB", items)
+
+    def test_malformed_reply_retries_with_a_changed_prompt(self):
+        self.install("I could not decide.")
+        drive_kernel.run_round(F, self.run_dir, tier="haiku-low", kernel=self.kernel)
+        first = self.agents.spawned[0][2].prompt
+        self.assertEqual(self.state()[self.sid("lemA")]["failure"], "malformed")
+        summary = drive_kernel.run_round(F, self.run_dir, tier="haiku-low", kernel=self.kernel)
+        second = self.agents.spawned[-1][2].prompt
+        self.assertEqual(summary["started"], 1)
+        self.assertEqual(second, drive.MALFORMED_LINE + first)
+        # A second malformed reply counts: the tier has one proof attempt left by count, but the goal moves on.
+        self.assertEqual([t for _, t, _ in drive.model_items(self.run_dir, F)], ["haiku-high"])
 
 
 class GoalLocationTests(unittest.TestCase):
