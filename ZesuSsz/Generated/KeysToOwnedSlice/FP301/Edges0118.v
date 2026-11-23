@@ -28,16 +28,15 @@ Section edges.
 Context `{!islaG Sigma} `{!threadG}.
 
 (* fp_machineAt0118_slot0_ForwardA0N0 -> fp_machineReturn_slot0_ForwardA0N0 (return) *)
-Global Instance zesu_hist_edge_20 (args : KeysToOwnedSliceBlockArgs) (returnAddress : Z) (uninit_byte_aef9a260b4787cc3 : bv 8) (uninit_byte_e4140ac7cacb067e : bv 8) (uninit_byte_ea40ba50a5501285 : bv 8) (uninit_byte_b9def0cb4c1ee4e2 : bv 8) (uninit_byte_dd13458148f7795e : bv 8) (uninit_byte_75336013aaba5148 : bv 8) (uninit_byte_df6ceceead751c89 : bv 8) (uninit_byte_fc1daa8243f1561c : bv 8) :
+Global Instance zesu_hist_edge_20 (args : KeysToOwnedSliceBlockArgs) (returnAddress : Z) :
   ZesuHistEdge (PROP := iProp Sigma)
     (fp_machineAt0118_slot0_ForwardA0N0_Hist (args) (returnAddress))
-    (fp_machineReturn_slot0_ForwardA0N0_Hist (args) (returnAddress) (uninit_byte_aef9a260b4787cc3) (uninit_byte_e4140ac7cacb067e) (uninit_byte_ea40ba50a5501285) (uninit_byte_b9def0cb4c1ee4e2) (uninit_byte_dd13458148f7795e) (uninit_byte_75336013aaba5148) (uninit_byte_df6ceceead751c89) (uninit_byte_fc1daa8243f1561c))
-    (⌜((negb (bool_decide ((bv_extract 0%N 1%N (bv_shiftr (bv_and (bv_concat 64%N (bv_concat 56%N (bv_concat 48%N (bv_concat 40%N (bv_concat 32%N (bv_concat 24%N (bv_concat 16%N uninit_byte_aef9a260b4787cc3 uninit_byte_e4140ac7cacb067e) uninit_byte_ea40ba50a5501285) uninit_byte_b9def0cb4c1ee4e2) uninit_byte_dd13458148f7795e) uninit_byte_75336013aaba5148) uninit_byte_df6ceceead751c89) uninit_byte_fc1daa8243f1561c) (BV 64%N 18446744073709551614%Z)) (BV 64%N 1%Z))) = (BV 1%N 1%Z)))) = true) /\ ((((bv_unsigned (bv_extract 0%N 1%N (bv_shiftr (bv_and (bv_concat 64%N (bv_concat 56%N (bv_concat 48%N (bv_concat 40%N (bv_concat 32%N (bv_concat 24%N (bv_concat 16%N uninit_byte_aef9a260b4787cc3 uninit_byte_e4140ac7cacb067e) uninit_byte_ea40ba50a5501285) uninit_byte_b9def0cb4c1ee4e2) uninit_byte_dd13458148f7795e) uninit_byte_75336013aaba5148) uninit_byte_df6ceceead751c89) uninit_byte_fc1daa8243f1561c) (BV 64%N 18446744073709551614%Z)) (BV 64%N 1%Z)))) <> (1%Z))%Z))⌝ ∗ ⌜((bool_decide ((bv_extract 0%N 1%N (bv_shiftr (bv_and (bv_concat 64%N (bv_concat 56%N (bv_concat 48%N (bv_concat 40%N (bv_concat 32%N (bv_concat 24%N (bv_concat 16%N uninit_byte_aef9a260b4787cc3 uninit_byte_e4140ac7cacb067e) uninit_byte_ea40ba50a5501285) uninit_byte_b9def0cb4c1ee4e2) uninit_byte_dd13458148f7795e) uninit_byte_75336013aaba5148) uninit_byte_df6ceceead751c89) uninit_byte_fc1daa8243f1561c) (BV 64%N 18446744073709551614%Z)) (BV 64%N 1%Z))) = (BV 1%N 0%Z))) = true) /\ ((((bv_unsigned (bv_extract 0%N 1%N (bv_shiftr (bv_and (bv_concat 64%N (bv_concat 56%N (bv_concat 48%N (bv_concat 40%N (bv_concat 32%N (bv_concat 24%N (bv_concat 16%N uninit_byte_aef9a260b4787cc3 uninit_byte_e4140ac7cacb067e) uninit_byte_ea40ba50a5501285) uninit_byte_b9def0cb4c1ee4e2) uninit_byte_dd13458148f7795e) uninit_byte_75336013aaba5148) uninit_byte_df6ceceead751c89) uninit_byte_fc1daa8243f1561c) (BV 64%N 18446744073709551614%Z)) (BV 64%N 1%Z)))) = (0%Z))%Z))⌝ ∗ True)%I.
+    (fp_machineReturn_slot0_ForwardA0N0_Hist (args) (returnAddress))
+    (True)%I.
 Proof.
   rewrite /ZesuHistEdge => Hh. apply zesu_hist_elim in Hh. unfold fp_machineAt0118_slot0_ForwardA0N0_Hist in Hh.
   destruct Hh as (machine_x10 & fp_seed_mstatus_bits & forward_witness_cbcac9df79b9221c & forward_witness_1be931110d776902 & forward_witness_905cf96e605c1117 & forward_witness_55ab0ce59750150a & forward_witness_d7543602bfbbe148 & forward_witness_00470b017f14ddbf & forward_witness_83d3e6d46c3de70e & forward_witness_87e5cadc5c04d5d4 & forward_witness_d77b5950a2aea933 & forward_witness_72b7e22ed74cb83b & HF0 & HF1 & HF2 & HF3 & HF4 & HF5 & HF6 & HF7 & HF8 & HF9 & HF10 & HF11 & HF12 & HF13).
   iIntros "HN".
-  iDestruct "HN" as "(%HN0 & %HN1 & _)".
   iPureIntro. apply zesu_hist_intro. unfold fp_machineReturn_slot0_ForwardA0N0_Hist.
   exists machine_x10, fp_seed_mstatus_bits, forward_witness_1be931110d776902, forward_witness_905cf96e605c1117, forward_witness_55ab0ce59750150a, forward_witness_d7543602bfbbe148, forward_witness_00470b017f14ddbf, forward_witness_83d3e6d46c3de70e, forward_witness_72b7e22ed74cb83b.
   split; [exact HF0|].
@@ -50,9 +49,7 @@ Proof.
   split; [exact HF8|].
   split; [exact HF9|].
   split; [exact HF12|].
-  split; [exact HF13|].
-  split; [exact HN0|].
-  exact HN1.
+  exact HF13.
 Qed.
 
 (* fp_machineAt0118_slot1_ForwardA0N0 -> fp_machineReturn_slot1_ForwardA0N0 (return) *)
@@ -85,33 +82,29 @@ Proof.
 Qed.
 
 (* fp_machineAt0118_slot2_ForwardA0N0 -> fp_machineReturn_slot2_ForwardA0N0 (return) *)
-Global Instance zesu_hist_edge_22 (args : KeysToOwnedSliceBlockArgs) (returnAddress : Z) (call_x10 : bv 64) (call_x13 : bv 64) (call_x14 : bv 64) (call_x15 : bv 64) (call_x16 : bv 64) (call_x17 : bv 64) (uninit_byte_99b5fb29f58ee1c7 : bv 8) (uninit_byte_10dc48e4aceb4890 : bv 8) (uninit_byte_0e22d1cad409ab1f : bv 8) (uninit_byte_e0428d657b4d3e39 : bv 8) (uninit_byte_87e02b086688846c : bv 8) (uninit_byte_74e448d549bacad6 : bv 8) (uninit_byte_97fff10f06859899 : bv 8) (uninit_byte_c07ac4a136e316f5 : bv 8) :
+Global Instance zesu_hist_edge_22 (args : KeysToOwnedSliceBlockArgs) (returnAddress : Z) (call_x10 : bv 64) :
   ZesuHistEdge (PROP := iProp Sigma)
-    (fp_machineAt0118_slot2_ForwardA0N0_Hist (args) (returnAddress) (call_x10) (call_x13) (call_x14) (call_x15) (call_x16) (call_x17))
-    (fp_machineReturn_slot2_ForwardA0N0_Hist (args) (returnAddress) (call_x10) (call_x13) (call_x14) (call_x15) (call_x16) (call_x17) (uninit_byte_99b5fb29f58ee1c7) (uninit_byte_10dc48e4aceb4890) (uninit_byte_0e22d1cad409ab1f) (uninit_byte_e0428d657b4d3e39) (uninit_byte_87e02b086688846c) (uninit_byte_74e448d549bacad6) (uninit_byte_97fff10f06859899) (uninit_byte_c07ac4a136e316f5))
-    (⌜((negb (bool_decide ((bv_extract 0%N 1%N (bv_shiftr (bv_and (bv_concat 64%N (bv_concat 56%N (bv_concat 48%N (bv_concat 40%N (bv_concat 32%N (bv_concat 24%N (bv_concat 16%N uninit_byte_99b5fb29f58ee1c7 uninit_byte_10dc48e4aceb4890) uninit_byte_0e22d1cad409ab1f) uninit_byte_e0428d657b4d3e39) uninit_byte_87e02b086688846c) uninit_byte_74e448d549bacad6) uninit_byte_97fff10f06859899) uninit_byte_c07ac4a136e316f5) (BV 64%N 18446744073709551614%Z)) (BV 64%N 1%Z))) = (BV 1%N 1%Z)))) = true) /\ ((((bv_unsigned (bv_extract 0%N 1%N (bv_shiftr (bv_and (bv_concat 64%N (bv_concat 56%N (bv_concat 48%N (bv_concat 40%N (bv_concat 32%N (bv_concat 24%N (bv_concat 16%N uninit_byte_99b5fb29f58ee1c7 uninit_byte_10dc48e4aceb4890) uninit_byte_0e22d1cad409ab1f) uninit_byte_e0428d657b4d3e39) uninit_byte_87e02b086688846c) uninit_byte_74e448d549bacad6) uninit_byte_97fff10f06859899) uninit_byte_c07ac4a136e316f5) (BV 64%N 18446744073709551614%Z)) (BV 64%N 1%Z)))) <> (1%Z))%Z))⌝ ∗ ⌜((bool_decide ((bv_extract 0%N 1%N (bv_shiftr (bv_and (bv_concat 64%N (bv_concat 56%N (bv_concat 48%N (bv_concat 40%N (bv_concat 32%N (bv_concat 24%N (bv_concat 16%N uninit_byte_99b5fb29f58ee1c7 uninit_byte_10dc48e4aceb4890) uninit_byte_0e22d1cad409ab1f) uninit_byte_e0428d657b4d3e39) uninit_byte_87e02b086688846c) uninit_byte_74e448d549bacad6) uninit_byte_97fff10f06859899) uninit_byte_c07ac4a136e316f5) (BV 64%N 18446744073709551614%Z)) (BV 64%N 1%Z))) = (BV 1%N 0%Z))) = true) /\ ((((bv_unsigned (bv_extract 0%N 1%N (bv_shiftr (bv_and (bv_concat 64%N (bv_concat 56%N (bv_concat 48%N (bv_concat 40%N (bv_concat 32%N (bv_concat 24%N (bv_concat 16%N uninit_byte_99b5fb29f58ee1c7 uninit_byte_10dc48e4aceb4890) uninit_byte_0e22d1cad409ab1f) uninit_byte_e0428d657b4d3e39) uninit_byte_87e02b086688846c) uninit_byte_74e448d549bacad6) uninit_byte_97fff10f06859899) uninit_byte_c07ac4a136e316f5) (BV 64%N 18446744073709551614%Z)) (BV 64%N 1%Z)))) = (0%Z))%Z))⌝ ∗ True)%I.
+    (fp_machineAt0118_slot2_ForwardA0N0_Hist (args) (returnAddress) (call_x10))
+    (fp_machineReturn_slot2_ForwardA0N0_Hist (args) (returnAddress) (call_x10))
+    (True)%I.
 Proof.
   rewrite /ZesuHistEdge => Hh. apply zesu_hist_elim in Hh. unfold fp_machineAt0118_slot2_ForwardA0N0_Hist in Hh.
-  destruct Hh as (fp_seed_mstatus_bits & forward_witness_cbcac9df79b9221c & forward_witness_1be931110d776902 & forward_witness_905cf96e605c1117 & forward_witness_55ab0ce59750150a & forward_witness_d7543602bfbbe148 & forward_witness_00470b017f14ddbf & forward_witness_83d3e6d46c3de70e & forward_witness_d77b5950a2aea933 & forward_witness_21649d1cf161453f & forward_witness_407fca3a6f90b8db & forward_witness_1eea82d2945b4618 & forward_witness_751588b52f8a71ff & forward_witness_9644ccf41f39915a & HF0 & HF1 & HF2 & HF3 & HF4 & HF5 & HF6 & HF7 & HF8 & HF9 & HF10 & HF11 & HF12 & HF13 & HF14 & HF15 & HF16 & HF17 & HF18).
+  destruct Hh as (fp_seed_mstatus_bits & forward_witness_cbcac9df79b9221c & forward_witness_1be931110d776902 & forward_witness_905cf96e605c1117 & forward_witness_55ab0ce59750150a & forward_witness_d7543602bfbbe148 & forward_witness_00470b017f14ddbf & forward_witness_83d3e6d46c3de70e & forward_witness_d77b5950a2aea933 & forward_witness_21649d1cf161453f & forward_witness_407fca3a6f90b8db & forward_witness_1eea82d2945b4618 & forward_witness_751588b52f8a71ff & forward_witness_9644ccf41f39915a & HF0 & HF1 & HF2 & HF3 & HF4 & HF5 & HF6 & HF7 & HF8 & HF9 & HF10 & HF11 & HF12 & HF13 & HF14 & HF15 & HF16 & HF17).
   iIntros "HN".
-  iDestruct "HN" as "(%HN0 & %HN1 & _)".
   iPureIntro. apply zesu_hist_intro. unfold fp_machineReturn_slot2_ForwardA0N0_Hist.
   exists fp_seed_mstatus_bits, forward_witness_d7543602bfbbe148, forward_witness_00470b017f14ddbf, forward_witness_83d3e6d46c3de70e, forward_witness_d77b5950a2aea933, forward_witness_21649d1cf161453f, (BV 64%N 0%Z), (BV 64%N 0%Z).
   split; [exact HF0|].
   split; [exact HF1|].
-  split; [exact HF2|].
-  split; [exact HF11|].
+  split; [exact HF10|].
+  split; [exact HF6|].
   split; [exact HF7|].
   split; [exact HF8|].
   split; [exact HF9|].
-  split; [exact HF10|].
-  split; [exact HF12|].
-  split; [exact HF16|].
-  split; [exact HF18|].
+  split; [exact HF11|].
+  split; [exact HF15|].
+  split; [exact HF17|].
   split; [by vm_compute|].
-  split; [by vm_compute|].
-  split; [exact HN0|].
-  exact HN1.
+  by vm_compute.
 Qed.
 
 End edges.

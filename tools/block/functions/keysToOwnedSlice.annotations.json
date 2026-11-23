@@ -567,11 +567,11 @@
     {"offset": -16, "coq": "savedX8 (toOwnedSaved (keysBase args))"},
     {"offset": -8, "coq": "toOwnedReturnAddress (keysBase args)"}
    ],
-   "sites": ["+0xfc", "+0x110", "+0x168", "+0x184", "+0x18c", "+0x1ac"],
+   "sites": ["+0xfc", "+0x110"],
    "author": {
     "tier": "opus-medium"
    },
-   "why": "the prologue stores ra, s0, s1, s2..s8 at sp-8..sp-80 and no block before the epilogue writes them; the join at +0xfc forgets them because its +0x6c edge holds them in the seed text, not as writes (Main ruling (b))"
+   "why": "the prologue stores ra, s0, s1, s2..s8 at sp-8..sp-80 and no block before the epilogue writes them; the join at +0xfc forgets them because its +0x6c edge holds them in the seed text, not as writes (Main ruling (b)). The join seeds hold the values as stores (join_frames), so the return entries of 0118 slot0/slot2 and the call returns after the joins restore the saved registers by value"
   }
  ]
 }

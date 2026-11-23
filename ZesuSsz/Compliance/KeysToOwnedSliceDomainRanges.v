@@ -1,7 +1,7 @@
 From Coq Require Import ZArith Lia.
 From stdpp Require Import bitvector.definitions.
 Require Import ZesuSsz.Automation2.DomainRanges.
-Require Import ZesuSsz.Contracts.ArrayListContract.
+Require Export ZesuSsz.Contracts.ArrayListContract.
 Require Import ZesuSsz.Contracts.KeysToOwnedSliceBlockEntries.
 Open Scope Z_scope.
 

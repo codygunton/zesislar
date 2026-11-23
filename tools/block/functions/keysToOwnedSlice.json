@@ -103,42 +103,7 @@
     }
   },
   "join_designs": {
-    "+0x110": [
-      "frame_old_m80 = (savedX24 (toOwnedSaved (keysBase args)))",
-      "frame_old_m72 = (savedX23 (toOwnedSaved (keysBase args)))",
-      "frame_old_m64 = (savedX22 (toOwnedSaved (keysBase args)))",
-      "frame_old_m56 = (savedX21 (toOwnedSaved (keysBase args)))",
-      "frame_old_m48 = (savedX20 (toOwnedSaved (keysBase args)))",
-      "frame_old_m40 = (savedX19 (toOwnedSaved (keysBase args)))",
-      "frame_old_m32 = (savedX18 (toOwnedSaved (keysBase args)))",
-      "frame_old_m24 = (savedX9 (toOwnedSaved (keysBase args)))",
-      "frame_old_m16 = (savedX8 (toOwnedSaved (keysBase args)))",
-      "frame_old_m8 = (toOwnedReturnAddress (keysBase args))"
-    ],
-    "+0xfc": [
-      "frame_old_m80 = (savedX24 (toOwnedSaved (keysBase args)))",
-      "frame_old_m72 = (savedX23 (toOwnedSaved (keysBase args)))",
-      "frame_old_m64 = (savedX22 (toOwnedSaved (keysBase args)))",
-      "frame_old_m56 = (savedX21 (toOwnedSaved (keysBase args)))",
-      "frame_old_m48 = (savedX20 (toOwnedSaved (keysBase args)))",
-      "frame_old_m40 = (savedX19 (toOwnedSaved (keysBase args)))",
-      "frame_old_m32 = (savedX18 (toOwnedSaved (keysBase args)))",
-      "frame_old_m24 = (savedX9 (toOwnedSaved (keysBase args)))",
-      "frame_old_m16 = (savedX8 (toOwnedSaved (keysBase args)))",
-      "frame_old_m8 = (toOwnedReturnAddress (keysBase args))"
-    ],
-    "+0x18c": [
-      "frame_old_m80 = (savedX24 (toOwnedSaved (keysBase args)))",
-      "frame_old_m72 = (savedX23 (toOwnedSaved (keysBase args)))",
-      "frame_old_m64 = (savedX22 (toOwnedSaved (keysBase args)))",
-      "frame_old_m56 = (savedX21 (toOwnedSaved (keysBase args)))",
-      "frame_old_m48 = (savedX20 (toOwnedSaved (keysBase args)))",
-      "frame_old_m40 = (savedX19 (toOwnedSaved (keysBase args)))",
-      "frame_old_m32 = (savedX18 (toOwnedSaved (keysBase args)))",
-      "frame_old_m24 = (savedX9 (toOwnedSaved (keysBase args)))",
-      "frame_old_m16 = (savedX8 (toOwnedSaved (keysBase args)))",
-      "frame_old_m8 = (toOwnedReturnAddress (keysBase args))"
-    ]
+    "+0x110": []
   },
   "calls": [
     {
@@ -222,49 +187,7 @@
           "use": "produced"
         }
       ],
-      "call_site_pc": "+0x164",
-      "return_facts": [
-        {
-          "kind": "fact",
-          "coq": "frame_old_m80 = (savedX24 (toOwnedSaved (keysBase args)))"
-        },
-        {
-          "kind": "fact",
-          "coq": "frame_old_m72 = (savedX23 (toOwnedSaved (keysBase args)))"
-        },
-        {
-          "kind": "fact",
-          "coq": "frame_old_m64 = (savedX22 (toOwnedSaved (keysBase args)))"
-        },
-        {
-          "kind": "fact",
-          "coq": "frame_old_m56 = (savedX21 (toOwnedSaved (keysBase args)))"
-        },
-        {
-          "kind": "fact",
-          "coq": "frame_old_m48 = (savedX20 (toOwnedSaved (keysBase args)))"
-        },
-        {
-          "kind": "fact",
-          "coq": "frame_old_m40 = (savedX19 (toOwnedSaved (keysBase args)))"
-        },
-        {
-          "kind": "fact",
-          "coq": "frame_old_m32 = (savedX18 (toOwnedSaved (keysBase args)))"
-        },
-        {
-          "kind": "fact",
-          "coq": "frame_old_m24 = (savedX9 (toOwnedSaved (keysBase args)))"
-        },
-        {
-          "kind": "fact",
-          "coq": "frame_old_m16 = (savedX8 (toOwnedSaved (keysBase args)))"
-        },
-        {
-          "kind": "fact",
-          "coq": "frame_old_m8 = (toOwnedReturnAddress (keysBase args))"
-        }
-      ]
+      "call_site_pc": "+0x164"
     },
     {
       "function": "array_list.Aligned([32]u8,null).toOwnedSlice",
@@ -294,49 +217,7 @@
       },
       "collection_after": "reg_col zesu_sys_regs",
       "collection_source": "machine_call_ret returns reg_col (machine_sys_regs decodeItemCallMap); the RET of ziskMemcpyCallSpec returns zisk_input_end and zisk_free_input with BitsShape 64; zesu_sys_regs (InstrSpecs/Machine.v) is their union",
-      "call_site_pc": "+0x180",
-      "return_facts": [
-        {
-          "kind": "fact",
-          "coq": "frame_old_m80 = (savedX24 (toOwnedSaved (keysBase args)))"
-        },
-        {
-          "kind": "fact",
-          "coq": "frame_old_m72 = (savedX23 (toOwnedSaved (keysBase args)))"
-        },
-        {
-          "kind": "fact",
-          "coq": "frame_old_m64 = (savedX22 (toOwnedSaved (keysBase args)))"
-        },
-        {
-          "kind": "fact",
-          "coq": "frame_old_m56 = (savedX21 (toOwnedSaved (keysBase args)))"
-        },
-        {
-          "kind": "fact",
-          "coq": "frame_old_m48 = (savedX20 (toOwnedSaved (keysBase args)))"
-        },
-        {
-          "kind": "fact",
-          "coq": "frame_old_m40 = (savedX19 (toOwnedSaved (keysBase args)))"
-        },
-        {
-          "kind": "fact",
-          "coq": "frame_old_m32 = (savedX18 (toOwnedSaved (keysBase args)))"
-        },
-        {
-          "kind": "fact",
-          "coq": "frame_old_m24 = (savedX9 (toOwnedSaved (keysBase args)))"
-        },
-        {
-          "kind": "fact",
-          "coq": "frame_old_m16 = (savedX8 (toOwnedSaved (keysBase args)))"
-        },
-        {
-          "kind": "fact",
-          "coq": "frame_old_m8 = (toOwnedReturnAddress (keysBase args))"
-        }
-      ]
+      "call_site_pc": "+0x180"
     },
     {
       "function": "array_list.Aligned([32]u8,null).toOwnedSlice",
@@ -369,49 +250,7 @@
           ]
         }
       ],
-      "call_site_pc": "+0x1a8",
-      "return_facts": [
-        {
-          "kind": "fact",
-          "coq": "frame_old_m80 = (savedX24 (toOwnedSaved (keysBase args)))"
-        },
-        {
-          "kind": "fact",
-          "coq": "frame_old_m72 = (savedX23 (toOwnedSaved (keysBase args)))"
-        },
-        {
-          "kind": "fact",
-          "coq": "frame_old_m64 = (savedX22 (toOwnedSaved (keysBase args)))"
-        },
-        {
-          "kind": "fact",
-          "coq": "frame_old_m56 = (savedX21 (toOwnedSaved (keysBase args)))"
-        },
-        {
-          "kind": "fact",
-          "coq": "frame_old_m48 = (savedX20 (toOwnedSaved (keysBase args)))"
-        },
-        {
-          "kind": "fact",
-          "coq": "frame_old_m40 = (savedX19 (toOwnedSaved (keysBase args)))"
-        },
-        {
-          "kind": "fact",
-          "coq": "frame_old_m32 = (savedX18 (toOwnedSaved (keysBase args)))"
-        },
-        {
-          "kind": "fact",
-          "coq": "frame_old_m24 = (savedX9 (toOwnedSaved (keysBase args)))"
-        },
-        {
-          "kind": "fact",
-          "coq": "frame_old_m16 = (savedX8 (toOwnedSaved (keysBase args)))"
-        },
-        {
-          "kind": "fact",
-          "coq": "frame_old_m8 = (toOwnedReturnAddress (keysBase args))"
-        }
-      ]
+      "call_site_pc": "+0x1a8"
     },
     {
       "function": "array_list.Aligned([32]u8,null).toOwnedSlice",
@@ -469,8 +308,94 @@
       }
     ]
   },
+  "join_frames": {
+    "+0xfc": [
+      {
+        "offset": -80,
+        "coq": "savedX24 (toOwnedSaved (keysBase args))"
+      },
+      {
+        "offset": -72,
+        "coq": "savedX23 (toOwnedSaved (keysBase args))"
+      },
+      {
+        "offset": -64,
+        "coq": "savedX22 (toOwnedSaved (keysBase args))"
+      },
+      {
+        "offset": -56,
+        "coq": "savedX21 (toOwnedSaved (keysBase args))"
+      },
+      {
+        "offset": -48,
+        "coq": "savedX20 (toOwnedSaved (keysBase args))"
+      },
+      {
+        "offset": -40,
+        "coq": "savedX19 (toOwnedSaved (keysBase args))"
+      },
+      {
+        "offset": -32,
+        "coq": "savedX18 (toOwnedSaved (keysBase args))"
+      },
+      {
+        "offset": -24,
+        "coq": "savedX9 (toOwnedSaved (keysBase args))"
+      },
+      {
+        "offset": -16,
+        "coq": "savedX8 (toOwnedSaved (keysBase args))"
+      },
+      {
+        "offset": -8,
+        "coq": "toOwnedReturnAddress (keysBase args)"
+      }
+    ],
+    "+0x110": [
+      {
+        "offset": -80,
+        "coq": "savedX24 (toOwnedSaved (keysBase args))"
+      },
+      {
+        "offset": -72,
+        "coq": "savedX23 (toOwnedSaved (keysBase args))"
+      },
+      {
+        "offset": -64,
+        "coq": "savedX22 (toOwnedSaved (keysBase args))"
+      },
+      {
+        "offset": -56,
+        "coq": "savedX21 (toOwnedSaved (keysBase args))"
+      },
+      {
+        "offset": -48,
+        "coq": "savedX20 (toOwnedSaved (keysBase args))"
+      },
+      {
+        "offset": -40,
+        "coq": "savedX19 (toOwnedSaved (keysBase args))"
+      },
+      {
+        "offset": -32,
+        "coq": "savedX18 (toOwnedSaved (keysBase args))"
+      },
+      {
+        "offset": -24,
+        "coq": "savedX9 (toOwnedSaved (keysBase args))"
+      },
+      {
+        "offset": -16,
+        "coq": "savedX8 (toOwnedSaved (keysBase args))"
+      },
+      {
+        "offset": -8,
+        "coq": "toOwnedReturnAddress (keysBase args)"
+      }
+    ]
+  },
   "generated_from": {
     "path": "tools/block/functions/keysToOwnedSlice.annotations.json",
-    "sha256": "3c8fc7a6bd28e7db4ee2152f46c63ec0bc67c20f69a1f9973c428cf7d622058a"
+    "sha256": "46b5dc40caf59a6321c968427c39542d1514d470b16f99f51ce0a9b7aba76dd2"
   }
 }
