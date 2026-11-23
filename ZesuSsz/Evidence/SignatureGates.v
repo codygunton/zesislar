@@ -1080,19 +1080,19 @@ Definition ReviewedZiskMemcpyCallDomain (destination source length : Z) : Prop :
 Definition ReviewedZiskMemcpyCallSpec `{!islaG Sigma} `{!threadG} : iProp Sigma :=
   (machine_call decodeItemCallMap 0
     (fun argv sp RET =>
-      ∃ (source scratch : list byte),
+      ∃ (inputEndBits : bv 64) (source scratch : list byte),
+      "zisk_input_end" ↦ᵣ RVal_Bits inputEndBits ∗
       ⌜ziskMemcpyCallDomain (bv_unsigned (argv !!! 0%nat))
         (bv_unsigned (argv !!! 1%nat)) (bv_unsigned (argv !!! 2%nat))⌝ ∗
-      reg_col [(KindReg "zisk_input_end", BitsShape 64);
-               (KindReg "zisk_free_input", BitsShape 64)] ∗
+      reg_col [(KindReg "zisk_free_input", BitsShape 64)] ∗
       bv_unsigned (argv !!! 1%nat) ↦ₘ∗ source ∗
       bv_unsigned (argv !!! 0%nat) ↦ₘ? bv_unsigned (argv !!! 2%nat) ∗
       ziskExtraParamsAddress ↦ₘ∗ scratch ∗
       ⌜Z.of_nat (length source) = bv_unsigned (argv !!! 2%nat)⌝ ∗
       ⌜length scratch = 8%nat⌝ ∗
       RET (fun _ =>
-        reg_col [(KindReg "zisk_input_end", BitsShape 64);
-                 (KindReg "zisk_free_input", BitsShape 64)] ∗
+        "zisk_input_end" ↦ᵣ RVal_Bits inputEndBits ∗
+        reg_col [(KindReg "zisk_free_input", BitsShape 64)] ∗
         bv_unsigned (argv !!! 1%nat) ↦ₘ∗ source ∗
         bv_unsigned (argv !!! 0%nat) ↦ₘ∗ source ∗
         ziskExtraParamsAddress ↦ₘ∗ word64Bytes (bv_unsigned (argv !!! 2%nat)) ∗
@@ -1174,6 +1174,10 @@ Definition ReviewedArrayListSavedRegisters `{!islaG Sigma} `{!threadG}
    "x22" ↦ᵣ RVal_Bits (savedX22 saved) ∗ "x23" ↦ᵣ RVal_Bits (savedX23 saved) ∗
    "x24" ↦ᵣ RVal_Bits (savedX24 saved) ∗ "x25" ↦ᵣ RVal_Bits (savedX25 saved) ∗
    "x26" ↦ᵣ RVal_Bits (savedX26 saved) ∗ "x27" ↦ᵣ RVal_Bits (savedX27 saved))%I.
+Definition ReviewedArrayListSysRegs (inputEnd : bv 64) : list (reg_kind * valu_shape) :=
+  machine_static_sys_regs defaultMap ++
+  [(KindReg "zisk_input_end", ExactShape (RVal_Bits inputEnd));
+   (KindReg "zisk_free_input", BitsShape 64)].
 Definition ReviewedArrayListStackLayout (stackPointer stackBytes : Z) : Prop :=
   (16 | stackPointer) /\
   mapRamBase defaultMap <= stackPointer - stackBytes /\
@@ -1240,7 +1244,7 @@ Definition ReviewedToOwnedSliceScratchAfter (elementBytes : Z) (args : ToOwnedSl
 Definition ReviewedToOwnedSliceEntry `{!islaG Sigma} `{!threadG}
     (elementBytes log2Align : Z) (args : ToOwnedSliceArgs) : iProp Sigma :=
   (∃ (x5 x6 x7 x13 x14 x15 x16 x17 x28 x29 x30 x31 : bv 64),
-   reg_col zesu_sys_regs ∗
+   reg_col (arrayListSysRegs (toOwnedInputEnd args)) ∗
    "x1" ↦ᵣ RVal_Bits (toOwnedReturnAddress args) ∗
    "x2" ↦ᵣ RVal_Bits (toOwnedStackPointer args) ∗
    "x5" ↦ᵣ RVal_Bits x5 ∗ "x6" ↦ᵣ RVal_Bits x6 ∗ "x7" ↦ᵣ RVal_Bits x7 ∗
@@ -1267,7 +1271,7 @@ Definition ReviewedToOwnedSliceExit `{!islaG Sigma} `{!threadG}
     (elementBytes log2Align : Z) (args : ToOwnedSliceArgs)
     (outcome : ToOwnedSliceOutcome) : iProp Sigma :=
   (∃ (x5 x6 x7 x10 x11 x12 x13 x14 x15 x16 x17 x28 x29 x30 x31 : bv 64),
-   reg_col zesu_sys_regs ∗
+   reg_col (arrayListSysRegs (toOwnedInputEnd args)) ∗
    "x1" ↦ᵣ RVal_Bits (toOwnedReturnAddress args) ∗
    "x2" ↦ᵣ RVal_Bits (toOwnedStackPointer args) ∗
    "x5" ↦ᵣ RVal_Bits x5 ∗ "x6" ↦ᵣ RVal_Bits x6 ∗ "x7" ↦ᵣ RVal_Bits x7 ∗
@@ -1373,7 +1377,7 @@ Definition ReviewedKeysEnsureCapacityScratchAfter (args : EnsureCapacityArgs)
 Definition ReviewedKeysEnsureCapacityEntry `{!islaG Sigma} `{!threadG}
     (args : EnsureCapacityArgs) : iProp Sigma :=
   (∃ (x5 x6 x7 x13 x14 x15 x16 x17 x28 x29 x30 x31 : bv 64),
-   reg_col zesu_sys_regs ∗
+   reg_col (arrayListSysRegs (ensureInputEnd args)) ∗
    "x1" ↦ᵣ RVal_Bits (ensureReturnAddress args) ∗
    "x2" ↦ᵣ RVal_Bits (ensureStackPointer args) ∗
    "x5" ↦ᵣ RVal_Bits x5 ∗ "x6" ↦ᵣ RVal_Bits x6 ∗ "x7" ↦ᵣ RVal_Bits x7 ∗
@@ -1399,7 +1403,7 @@ Definition ReviewedKeysEnsureCapacityExit `{!islaG Sigma} `{!threadG}
     (args : EnsureCapacityArgs) (outcome : EnsureCapacityOutcome) :
     iProp Sigma :=
   (∃ (x5 x6 x7 x10 x11 x12 x13 x14 x15 x16 x17 x28 x29 x30 x31 : bv 64),
-   reg_col zesu_sys_regs ∗
+   reg_col (arrayListSysRegs (ensureInputEnd args)) ∗
    "x1" ↦ᵣ RVal_Bits (ensureReturnAddress args) ∗
    "x2" ↦ᵣ RVal_Bits (ensureStackPointer args) ∗
    "x5" ↦ᵣ RVal_Bits x5 ∗ "x6" ↦ᵣ RVal_Bits x6 ∗ "x7" ↦ᵣ RVal_Bits x7 ∗
@@ -1455,6 +1459,7 @@ Check (eq_refl : @arrayListWellFormed = @ReviewedArrayListWellFormed).
 Check (eq_refl : @arrayListBuffer = @ReviewedArrayListBuffer).
 Check (eq_refl : @arrayListOutcomeCode = @ReviewedArrayListOutcomeCode).
 Check (eq_refl : @arrayListSavedRegisters = @ReviewedArrayListSavedRegisters).
+Check (eq_refl : @arrayListSysRegs = @ReviewedArrayListSysRegs).
 Check (eq_refl : @arrayListStackLayout = @ReviewedArrayListStackLayout).
 Check (eq_refl : @arrayListResultImage = @ReviewedArrayListResultImage).
 Check (eq_refl : @arrayListErrorImage = @ReviewedArrayListErrorImage).

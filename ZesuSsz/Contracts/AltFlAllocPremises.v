@@ -23,7 +23,12 @@ Open Scope stdpp_scope.
    ZKVM_HEAP_TOP (mapHeapPosAddress, mapHeapTopAddress), the unallocated bump
    region [pos, top), and every block on a free list. A block handed out by
    alloc is the caller's memory plus a token (altFlBlock) that owns its
-   size-class slack; free takes both back. *)
+   size-class slack; free takes both back.
+
+   The specs own no ZisK system register: machine_call over decodeItemCallMap
+   (mapZiskPlatform false) leaves zisk_input_end and zisk_free_input in the
+   caller's frame, so an allocator call preserves them (it is ordinary code
+   and cannot write a register it does not own). *)
 
 Notation altFlCallStackBytes := ((16) : Z) (only parsing).
 Notation altFlMaxLog2Alignment := ((3) : Z) (only parsing).
