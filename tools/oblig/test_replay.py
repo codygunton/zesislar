@@ -1,6 +1,5 @@
 """Tier replay with a fake agent (no model, no Rocq): wave bookkeeping, the repeated-prompt rule, retry
-prompts, the tier override guard, session usage, and the routing rule on synthetic results."""
-import asyncio
+prompts, the per-call model of a tier, session usage, and the routing rule on synthetic results."""
 import json
 from pathlib import Path
 import sys
@@ -64,22 +63,17 @@ class FakeHandle:
 
 
 class Kernel:
-    """The kernel helpers dispatch_kernel uses: agent, wait, tool."""
+    """The kernel helpers dispatch_kernel uses: agent, wait."""
 
     def __init__(self, reply=PROVED):
         self.reply = reply
         self.spawned = []
-        self.writes = []
-        kernel = self
+        self.models = {}
 
-        class Tool:
-            async def write(self, args):
-                kernel.writes.append(args)
-        self.tool = Tool()
-
-    def agent(self, prompt, agent=None, label=None):
+    def agent(self, prompt, agent=None, label=None, model=None):
         handle = FakeHandle(prompt, self.reply(prompt) if callable(self.reply) else self.reply)
         self.spawned.append((agent, label, handle))
+        self.models[label] = model
         return handle
 
     def wait(self, handles, raise_errors=True):
@@ -88,8 +82,7 @@ class Kernel:
     def install(self):
         dispatch_kernel.agent = self.agent
         dispatch_kernel.wait = self.wait
-        dispatch_kernel.tool = self.tool
-        dispatch_kernel._STATE.update(overrides={}, live=[], current={})
+        dispatch_kernel._STATE.update(live=[])
 
 
 class WaveTests(unittest.TestCase):
@@ -111,7 +104,7 @@ class WaveTests(unittest.TestCase):
         summary = dispatch_kernel.run_wave(self.corpus, "haiku-low", concurrency=2)
         self.assertEqual(summary["started"], 3)
         self.assertEqual(summary["verdicts"], {"proved": 3})
-        self.assertEqual({a for a, _, _ in self.kernel.spawned}, {"sonic"})
+        self.assertEqual({a for a, _, _ in self.kernel.spawned}, {"rocq-prover"})
         d = replay.attempt_dir(self.corpus, "similar", "haiku-low", 1)
         for gid in ("k001", "k002", "k003"):
             self.assertEqual((d / "answers" / ("%s.v" % gid)).read_text(), "intros. lia.\nQed.\n")
@@ -205,7 +198,7 @@ class DefectTests(unittest.TestCase):
             def done(self):
                 raise RuntimeError("unknown agent handle x; result expired")
         dispatch_kernel._STATE["live"] = [(replay.tier_row("haiku-medium"), Expired())]
-        self.assertEqual(dispatch_kernel._unfinished("scout", "haiku-high"), [])
+        self.assertEqual(dispatch_kernel._prune(), [])
         self.assertEqual(dispatch_kernel._STATE["live"], [])
         dispatch_kernel.run_wave(self.corpus, "haiku-low")
         self.assertEqual(dispatch_kernel._STATE["live"], [])
@@ -343,7 +336,7 @@ class DefectTests(unittest.TestCase):
         self.assertEqual(len(self.rocq.calls), 1)  # one About query; nothing resolved, no Print query
 
 
-class OverrideTests(unittest.TestCase):
+class SpawnTests(unittest.TestCase):
     def setUp(self):
         self.kernel = Kernel()
         self.kernel.install()
@@ -353,21 +346,18 @@ class OverrideTests(unittest.TestCase):
     def tearDown(self):
         self.tmp.cleanup()
 
-    def test_override_written_and_guarded(self):
-        overrides = asyncio.run(dispatch_kernel.set_tier_override("haiku-high"))
-        self.assertEqual(overrides["scout"], "anthropic/claude-haiku-5-5:high")
-        self.assertEqual(self.kernel.writes[-1]["path"], "cfg://task/agentModelOverrides")
-        self.assertEqual(json.loads(self.kernel.writes[-1]["content"])["scout"], "anthropic/claude-haiku-5-5:high")
-        with self.assertRaises(replay.ReplayError):
-            dispatch_kernel.run_wave(self.corpus, "haiku-medium")
-        tier = replay.tier_row("haiku-high")
-        dispatch_kernel._STATE["live"].append((tier, FakeHandle("p", "r")))
-        with self.assertRaises(replay.ReplayError):
-            asyncio.run(dispatch_kernel.set_tier_override("haiku-medium"))
-        dispatch_kernel._STATE["live"][0][1].wait()
-        asyncio.run(dispatch_kernel.set_tier_override("haiku-medium"))
-        self.assertEqual(dispatch_kernel.run_wave(self.corpus, "haiku-medium")["started"], 1)
-        self.assertIsNone(asyncio.run(dispatch_kernel.set_tier_override("haiku-low")))
+    def test_haiku_tier_spawns_rocq_prover_at_its_model(self):
+        self.assertEqual(dispatch_kernel.run_wave(self.corpus, "haiku-high")["started"], 1)
+        agent, label, _ = self.kernel.spawned[0]
+        self.assertEqual((agent, self.kernel.models[label]), ("rocq-prover", "anthropic/claude-haiku-5-5:high"))
+
+    def test_nested_agent_session_log(self):
+        nested = Path(self.tmp.name) / "sessions" / "p" / "s" / "Coord"
+        nested.mkdir(parents=True)
+        (nested / "Coord.prover-1.jsonl").write_text(json.dumps(
+            dict(type="session_init", resolvedModel="anthropic/claude-haiku-5-5:high")) + "\n")
+        dispatch_kernel.SESSIONS = Path(self.tmp.name) / "sessions"
+        self.assertEqual(dispatch_kernel.usage("Coord.prover-1")["resolved_model"], "anthropic/claude-haiku-5-5:high")
 
     def test_usage_from_session_log(self):
         sessions = Path(self.tmp.name) / "sessions" / "s" / "parent"
@@ -455,15 +445,6 @@ class HelperTests(unittest.TestCase):
                    dict(name="n", kind="nat"), dict(name="H", kind="prop")]
         self.assertEqual(replay.counterexample_values("x = -3, w = 0x1ff, b = true", binders),
                          dict(x=-3, w=0xff, b=True, n=0))
-
-    def test_base_overrides(self):
-        tmp = tempfile.TemporaryDirectory()
-        root = Path(tmp.name)
-        (root / ".omp").mkdir()
-        (root / ".omp/config.yml").write_text("task:\n  agentModelOverrides:\n    scout: a/b:medium\n    sonic: a/c:low\n"
-                                              "\nretry:\n  x: 1\n")
-        self.assertEqual(dispatch_kernel.base_overrides(root), {"scout": "a/b:medium", "sonic": "a/c:low"})
-        tmp.cleanup()
 
     def test_prompt_bound_per_class_capped_by_the_tier(self):
         tiers = [dict(name="t", max_prompt_bytes=12000, max_class_prompt_bytes=32000)]
