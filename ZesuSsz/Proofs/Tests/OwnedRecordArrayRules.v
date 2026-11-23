@@ -114,10 +114,14 @@ Section owned_record.
   Qed.
 
   (* An opaque token with no Lithium relation, requested with its arguments
-     as the machine spells them after a call. *)
+     as the machine spells them after a call. Sealed as the allocator's
+     block token is: an unfold lemma and an opaque boundary. *)
   Definition ownedToken (pointer bytes align : Z) : iProp Sigma :=
     ((pointer + bytes) ↦ₘ? align)%I.
-  #[local] Opaque ownedToken.
+  Lemma ownedToken_unfold (pointer bytes align : Z) :
+    ownedToken pointer bytes align ⊣⊢ ((pointer + bytes) ↦ₘ? align)%I.
+  Proof. reflexivity. Qed.
+  Global Opaque ownedToken.
 
   Lemma owned_token_machine_arguments (pointer capacity : Z) :
     1 <= pointer -> pointer < 2 ^ 64 -> 0 <= capacity <= 2 ^ 24 ->
