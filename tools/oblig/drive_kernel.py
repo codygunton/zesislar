@@ -10,7 +10,7 @@ Python eval kernel:
 run_round first runs `drive.step` (every routed action that needs no model: unblock, falsify,
 mechanical, kernel checks), then takes the prover attempts `route.py next` assigns to a model tier
 (only TIER when given; without it every tier whose agent needs no override, plus the override tier
-set last), at most LIMIT. For each it builds the no-tools prompt from the obligation's task file
+set last), at most LIMIT. For each it builds the prompt from the obligation's task file
 (drive.prompt_for: the answer form of package.py, the compiler errors after a compile error at the
 same tier, the named items after need_context), registers the attempt in the store BEFORE spawning
 (store.py refuses a (prompt_sha256, tier) pair sent before), spawns `agent(prompt, agent=<tier agent>,
@@ -19,9 +19,17 @@ with its prompt and answer bytes, tokens and resolved model (the session log rea
 dispatch_kernel.usage). Then it runs `drive.step` again, which kernel-checks the answers. Decision,
 diagnosis and reconsider items (opus-medium) are not run here: the summary lists them.
 
+A tier with `check_tool` in tiers.json gets drive.WITH_CHECK as its preamble, and each of its agents
+gets one kernel tool of its own, `check_proof_<n>` (`tool(fn, name=...)`, passed in `agent(...,
+tools=[name])`, undefined when the batch ends): a drive.ProofProbe bound to that agent's goal and
+attempt, at most the tier's `check_calls` compiles in a scratch dir, run in this kernel's threads under
+drive.check_slots(). The reply is still checked by `drive.step`; the number of calls goes to the
+answer record and to the attempt's result event (`check_calls:<n>` in context_items).
+
 It is the only code of this loop that spawns models; it uses the kernel helpers `agent`, `wait` and
 `tool`, and shares the tier-override state of dispatch_kernel (one override tier per wave).
 """
+import itertools
 import os
 from pathlib import Path
 import re
@@ -45,6 +53,12 @@ import drive as _drive  # noqa: E402
 import store as _store  # noqa: E402
 
 DEFERRED = ("decide", "diagnose", "reconsider")
+CHECK_DESCRIPTION = (
+    "Compile a proof script of your lemma. Argument `proof`: the text of your answer's `proof` field (the proof "
+    "script only, ending with exactly one `Qed.`). Returns {ok, error, remaining}: ok true when Rocq accepts "
+    "the lemma with this proof; else error holds the compiler error and the goal state before the failing "
+    "sentence (clipped); remaining is the number of calls left.")
+_TOOL_COUNT = itertools.count(1)
 # The prover answer form (package.py) as the agent's output schema: an agent whose own schema wraps its
 # reply (scout: architecture, files, report) answers in this form instead.
 ANSWER_SCHEMA = {
@@ -95,8 +109,25 @@ def _label(tier, identifier, attempt):
     return ("%s-%s-a%d" % (tier, name, attempt))[:48]
 
 
-def _spawn(tier, prompt, label):
-    handle = _helper("agent")(prompt, agent=tier["agent"], label=label, schema=ANSWER_SCHEMA)
+def _check_tool(row, where, attempt):
+    """(tool name, probe) of a new check_proof tool bound to the goal of WHERE and this attempt, or (None,
+    None) when the tier has no check tool."""
+    enabled, calls = _drive.check_tool(row["name"])
+    if not enabled:
+        return None, None
+    probe = _drive.ProofProbe(where, row["name"], attempt, calls=calls)
+    name = "%s_%d" % (_drive.CHECK_TOOL, next(_TOOL_COUNT))
+
+    def check_proof(proof: str) -> dict:
+        return probe(proof)
+    check_proof.__doc__ = CHECK_DESCRIPTION
+    _helper("tool")(check_proof, name=name, description=CHECK_DESCRIPTION)
+    return name, probe
+
+
+def _spawn(tier, prompt, label, tool_name=None):
+    options = dict(tools=[tool_name]) if tool_name else {}
+    handle = _helper("agent")(prompt, agent=tier["agent"], label=label, schema=ANSWER_SCHEMA, **options)
     _dk._STATE["live"].append((tier, handle))
     return handle
 
@@ -108,13 +139,14 @@ def _usage(handle):
     return extra
 
 
-def run_round(function, run, tier=None, limit=16, concurrency=16, jobs=8, kernel=None):
-    """One prover round; returns a summary dict (also the step counts before and after). KERNEL
-    replaces drive.Kernel (the compiles of step) in the tests."""
+def run_round(function, run, tier=None, limit=16, concurrency=16, jobs=8, kernel=None, only=None):
+    """One prover round; returns a summary dict (also the step counts before and after). ONLY, when
+    given, limits the prover attempts to those obligation ids (a probe round). KERNEL replaces
+    drive.Kernel (the compiles of step) in the tests."""
     run = Path(run)
     rows = _drive.tier_rows()
     before = _drive.step(function, run, jobs=jobs, kernel=kernel)[0]
-    items = _drive.model_items(run, function, tier)
+    items = [item for item in _drive.model_items(run, function, tier) if only is None or item[0] in set(only)]
     skipped = {}
     allowed = []
     for name in dict.fromkeys(t for _, t, _ in items):
@@ -146,15 +178,24 @@ def run_round(function, run, tier=None, limit=16, concurrency=16, jobs=8, kernel
             refused.append((identifier, name, str(error)))
             continue
         started.append((identifier, rows[name], attempt, prompt))
-    verdicts, mismatched = {}, []
+    verdicts, mismatched, check_calls = {}, [], 0
     wait = _helper("wait") if started else None
+    if started:
+        _drive.check_slots(renew=True)
     try:
         for start in range(0, len(started), max(1, concurrency)):
             batch = started[start:start + concurrency]
-            handles = [_spawn(row, prompt, _label(row["name"], identifier, attempt))
-                       for identifier, row, attempt, prompt in batch]
-            replies = wait(handles, raise_errors=False)
-            for (identifier, row, attempt, prompt), handle, reply in zip(batch, handles, replies):
+            tools, handles = [], []
+            try:
+                for identifier, row, attempt, prompt in batch:
+                    tools.append(_check_tool(row, located[identifier], attempt))
+                    handles.append(_spawn(row, prompt, _label(row["name"], identifier, attempt), tools[-1][0]))
+                replies = wait(handles, raise_errors=False)
+            finally:
+                for tool_name, _ in tools:
+                    if tool_name:
+                        _helper("tool").undefine(tool_name)
+            for (identifier, row, attempt, prompt), handle, reply, (_, probe) in zip(batch, handles, replies, tools):
                 extra = _usage(handle)
                 if isinstance(reply, BaseException):
                     extra["error"] = repr(reply)
@@ -162,6 +203,9 @@ def run_round(function, run, tier=None, limit=16, concurrency=16, jobs=8, kernel
                 if row.get("model") and extra.get("resolved_model") and extra["resolved_model"] != row["model"]:
                     extra["model_mismatch"] = True
                     mismatched.append(identifier)
+                if probe is not None:
+                    extra["check_calls"] = probe.calls
+                    check_calls += probe.calls
                 verdict = _drive.answer(run, function, identifier, row["name"], attempt, prompt, reply, extra,
                                         located=located)
                 verdicts[verdict] = verdicts.get(verdict, 0) + 1
@@ -176,7 +220,7 @@ def run_round(function, run, tier=None, limit=16, concurrency=16, jobs=8, kernel
                 verdicts=verdicts, model_mismatch=mismatched, step_before=dict(before), step_after=dict(after),
                 next_model=by_tier, deferred=[(i, a, t) for i, a, t, _ in left if a in DEFERRED],
                 listed=sum(1 for _, a, _, _ in left if a not in DEFERRED and a != "prove"),
-                running=running, unlocated=unlocated)
+                running=running, unlocated=unlocated, check_calls=check_calls)
 
 
 def next_tier(function, run):
