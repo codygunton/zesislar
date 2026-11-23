@@ -350,6 +350,10 @@ class _PathBudget:
 
 
 TOKEN = re.compile(r'\s+|;[^\n]*|\(|\)|\|[^|]*\||"(?:\\.|[^"\\])*"|[^\s()]+')
+# Profile `access_placements` (annotations.py), by absolute instruction pc: the owned array an access at
+# that instruction reads or writes, for an address `_symbolic_owner` cannot place (an index masked or
+# scaled by the code, an array whose extent is only its list length). run_source_pass sets it.
+ACCESS_PLACEMENTS = {}
 
 
 def parse_trace(source):
@@ -464,6 +468,19 @@ def _offset(address, base):
     if a != b or address.width != base.width:
         return None
     return (x-y) % (1 << address.width)
+
+
+def _array_text(text):
+    """An array term without its outer parentheses and with single spaces, for comparison."""
+    text = ' '.join(str(text).split())
+    while text.startswith('(') and text.endswith(')'):
+        depth = 0
+        for position, char in enumerate(text):
+            depth += {'(': 1, ')': -1}.get(char, 0)
+            if depth == 0 and position < len(text) - 1:
+                return text
+        text = text[1:-1].strip()
+    return text
 
 
 class _Evaluator:
@@ -609,7 +626,7 @@ class _Evaluator:
                 owners.append(region.ownership_id)
         symbolic = None
         if not owners and all(_offset(address, region.base) is None for region in self.state.memory):
-            symbolic = _symbolic_owner(address, self.state.memory)
+            symbolic = _symbolic_owner(address, self.state.memory) or self.placed_owner(address)
             if symbolic is not None:
                 owners.append(symbolic[0].ownership_id)
         for write in reversed(self.state.writes):
@@ -681,12 +698,14 @@ class _Evaluator:
                     value=value.to_dict())
         return value
 
-    def symbolic_array_byte(self, address, region, extent):
+    def symbolic_array_byte(self, address, region, extent, placement=None):
         """Read an owned array at a symbolic index as a list lookup.
 
         The byte is the array's element at the address minus the base. The
         index range is a path condition and an open read obligation; the
-        block proof discharges it at the boundary that states it.
+        block proof discharges it at the boundary that states it. A read an
+        annotation placed (`placed_owner`) states its obligation over the
+        annotation's index: `0 <= index < length array`.
         """
         index = operation('bvsub', address, region.base)
         # The index is below the array's actual length, which every real read satisfies;
@@ -705,9 +724,34 @@ class _Evaluator:
                'array': region.byte_array.to_dict(), 'address': address.to_dict(), 'base': region.base.to_dict(),
                'value': value.to_dict(), 'source': {'source': 'symbolic_state.memory_byte'},
                'source_chain': [in_range.to_dict()], 'goal': 'index below the owned array extent'}
+        if placement is not None:
+            row['source'] = {'source': 'access_placements', 'pc': hex(self.instruction_index)}
+            row['placement'] = dict(placement)
+            row['goal'] = '(0 <= %s < Z.of_nat (List.length (%s)))%%Z' % (placement['index'], placement['array'])
         if row not in self.state.read_obligations:
             self.state.read_obligations.append(row)
         return value
+
+    def placed_owner(self, address):
+        """(region, None, placement) of the owned array a profile `access_placements` row names for an
+        access at this instruction, or None. The address must carry the array's base as addends and a
+        symbolic rest, as for `_symbolic_owner`; the array's extent need not be a known number."""
+        for placement in ACCESS_PLACEMENTS.get(self.instruction_index, ()):
+            wanted = _array_text(placement['array'])
+            terms, _ = _addends(address)
+            for region in self.state.memory:
+                if region.byte_array is None or region.ownership_id is None or region.uninitialized:
+                    continue
+                array = region.byte_array
+                if _array_text(array.value if array.op == 'input' else array.coq()) != wanted:
+                    continue
+                rest = list(terms)
+                if any(term not in rest or rest.remove(term) for term in _addends(region.base)[0]) or not rest:
+                    continue
+                self.report('access_placement', address=address.to_dict(), owner=region.ownership_id,
+                            placement=dict(placement))
+                return region, None, placement
+        return None
 
     def mapped_byte(self, address):
         """A store cannot allocate initial memory or establish a missing bound."""

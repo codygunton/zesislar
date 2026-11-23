@@ -1,0 +1,276 @@
+{
+ "schema": "zesu.annotations.v1",
+ "function": "nextUint64",
+ "symbol": "rlp_decode.nextUint64",
+ "profile": {
+  "function": "nextUint64",
+  "merge_condition_alternatives": false,
+  "args_type": "NextUint64Args",
+  "symbol": "rlp_decode.nextUint64",
+  "generated_directory": "ZesuSsz/Generated/NextUint64/FP301",
+  "callers_directory": "tools/block/generated/nextuint64_fp301_callers",
+  "contract_requires": [
+   "Require Import EvmSailRlp.evm_rlp_types.",
+   "Require Export ZesuSsz.Interfaces.DecodeItem.",
+   "Require Import ZesuSsz.Contracts.ParentHeaderRootFacts.",
+   "Require Import ZesuSsz.Contracts.NextUint64BlockEntries.",
+   "Require Export ZesuSsz.Contracts.NextUint64DomainRanges.",
+   "Require Import ZesuSsz.Automation2.ByteWindowFold."
+  ],
+  "loop_contract_requires": [
+   "Require Import EvmSailRlp.evm_rlp_types.",
+   "Require Export ZesuSsz.Interfaces.DecodeItem.",
+   "Require Import ZesuSsz.Contracts.ParentHeaderRootFacts.",
+   "Require Import ZesuSsz.Contracts.NextUint64BlockEntries.",
+   "Require Export ZesuSsz.Contracts.NextUint64DomainRanges."
+  ],
+  "caller_contract_requires": [
+   "Require Import ZesuSsz.Contracts.NextUint64BlockEntries.",
+   "Require Import ZesuSsz.Contracts.NextUint64CallSlice.",
+   "Require Import ZesuSsz.Contracts.NextUint64MeaningFacts."
+  ],
+  "selected_code": {
+   "module": "ZesuSsz.Contracts.NextUint64Selected",
+   "premise": "nextUint64SelectedCode"
+  },
+  "return_address": {
+   "register": "x1",
+   "value": "(Z_to_bv 64 (nextReturnAddress (nextUint64Base args)))",
+   "alignment": 4,
+   "source": "Each caller reaches the entry by jal or jalr from a 4-aligned pc (the proved code has no compressed instructions), so ra = pc + 4 is 4-aligned. The Level-1 domain states it: nextUint64EntryLayout (ParentHeaderRootFacts.v) has returnAddress mod 4 = 0, and nextUint64BoundaryDomainReturnAlignment (NextUint64DomainRanges.v) derives this conjunct."
+  },
+  "blocks": [
+   "+0x0",
+   "+0x44",
+   "+0x4c",
+   "+0x58",
+   "+0x64",
+   "+0x70",
+   "+0x90",
+   "+0x9c",
+   "+0xa4",
+   "+0xb8"
+  ],
+  "loop_heads": [
+   "+0xa4"
+  ],
+  "loop_head_fixture": "tools/block/fixtures/nextuint64-loop-heads.json",
+  "cfg_function": "rlp_decode.nextUint64",
+  "function_return": {
+   "return_instruction_pc": "+0x8c",
+   "return_fact": "∃ result : NextUint64Return, nextResultBytes result = {bytes@nextResultPointer (nextUint64Base args)} /\\ {bytes@nextSlicePointer (nextUint64Base args)} = nextUint64SliceImage (nextRestPointer result) (nextRestLength result) /\\ nextUint64RootResult (nextUint64Base args) result",
+   "source": "NextUint64Contract.v: nextUint64ContractExit owns the slice as nextUint64SliceImage (nextRestPointer result) (nextRestLength result) and the result as nextResultBytes result; nextUint64ContractAllows requires nextUint64RootResult (nextUint64Base params) result"
+  },
+  "hist_visible": [
+   "decodeItemCallDomain",
+   "decodeItemCallMeaning",
+   "<> \\(0%Z\\)",
+   "zesu_byte_window_fold",
+   "orb \\(negb \\(bool_decide",
+   "bv_signed \\(BV 128%N 8%Z\\) >= bv_signed \\(bv_zero_extend 128%N",
+   "^\\(*0 < bv_unsigned \\(bv_concat 64%N",
+   "bv_unsigned \\(bv_concat 16%N \\(List\\.nth 33%nat call_after",
+   "bv_unsigned \\(bv_and \\(bv_zero_extend 64%N \\(List\\.nth 16%nat call_after"
+  ],
+  "entry_hist": "wrap",
+  "join_guard_form": "both",
+  "frame_slots": true,
+  "compliance": {
+   "boundary": "ZesuSsz.Compliance.NextUint64CompositionBoundary",
+   "continuation": "nextUint64Continuation",
+   "inline_returns": false,
+   "source": "Every table entry carries the generated return entry at returnAddress as K (NextUint64CompositionBoundary.v); the return block 0x0070 has a slot and its caller consumes it; the composition's end bridge turns it into the contract exit."
+  }
+ },
+ "rows": [
+  {
+   "id": "entry",
+   "request": "nextUint64/decision/contract-0000",
+   "at": {
+    "pc": "+0x0",
+    "boundary": "entry"
+   },
+   "binders": [],
+   "resources": [],
+   "facts": [
+    {
+     "coq": "nextReturnAddress (nextUint64Base args) = returnAddress",
+     "role": "domain"
+    },
+    {
+     "coq": "nextUint64BoundaryDomain args",
+     "role": "domain"
+    }
+   ],
+   "author": {
+    "tier": "hand"
+   }
+  },
+  {
+   "id": "loop-a4",
+   "request": "nextUint64/decision/loop_assertion-00a4",
+   "at": {
+    "pc": "+0xa4",
+    "boundary": "loop_cut",
+    "predecessor": "+0x9c"
+   },
+   "binders": [
+    {
+     "name": "machine_x11",
+     "register": "x11"
+    },
+    {
+     "name": "machine_x12",
+     "register": "x12"
+    },
+    {
+     "name": "machine_x14",
+     "register": "x14"
+    },
+    {
+     "name": "i",
+     "role": "index"
+    }
+   ],
+   "resources": [],
+   "facts": [
+    {
+     "coq": "bv_unsigned machine_x12 = (bv_unsigned {x12} + i)%Z",
+     "role": "index_link"
+    },
+    {
+     "coq": "(0 <= i)%Z",
+     "role": "index_range"
+    },
+    {
+     "coq": "bv_unsigned machine_x12 < bv_unsigned {x13}",
+     "role": "bound"
+    },
+    {
+     "coq": "(nextInputPointer (nextUint64Base args) <= bv_unsigned {x12})%Z",
+     "role": "meaning",
+     "need": "the lbu at 0x800d6318 reads the input array: the payload starts inside it"
+    },
+    {
+     "coq": "(bv_unsigned {x13} <= nextInputPointer (nextUint64Base args) + Z.of_nat (length (nextInputBytes (nextUint64Base args))))%Z",
+     "role": "meaning",
+     "need": "the lbu at 0x800d6318 reads the input array: the payload ends inside it"
+    },
+    {
+     "coq": "bv_unsigned machine_x11 = ByteWindowFold.zesu_byte_window_fold (nextInputBytes (nextUint64Base args)) (Z.to_nat (bv_unsigned {x12} - nextInputPointer (nextUint64Base args))) (Z.to_nat i)",
+     "role": "meaning",
+     "need": "the result word stored at 0x800d633c is the big-endian payload value"
+    }
+   ],
+   "placement": {
+    "array": "nextInputBytes (nextUint64Base args)",
+    "register": "x12",
+    "extent_reason": "1 <= length (nextInputBytes (nextUint64Base args)): the payload lies inside the input array and its length is not 0 (loop facts and the beq at 0x800d630c)"
+   },
+   "visible": [
+    "bv_signed \\(BV 128%N 8%Z\\) >= bv_signed \\(bv_zero_extend 128%N",
+    "bool_decide \\(\\(bv_zero_extend 64%N \\(bv_concat 16%N \\(List\\.nth 33%nat call_after",
+    "bool_decide \\(\\(bv_and \\(bv_zero_extend 64%N \\(List\\.nth 16%nat call_after"
+   ],
+   "author": {
+    "tier": "hand"
+   }
+  },
+  {
+   "id": "join-70",
+   "request": "nextUint64/decision/join_assertion-0070",
+   "at": {
+    "pc": "+0x70",
+    "boundary": "join"
+   },
+   "binders": [],
+   "resources": [],
+   "facts": [
+    {
+     "coq": "∃ result : NextUint64Return, nextResultBytes result = {bytes@nextResultPointer (nextUint64Base args)} /\\ {bytes@nextSlicePointer (nextUint64Base args)} = nextUint64SliceImage (nextRestPointer result) (nextRestLength result) /\\ nextUint64RootResult (nextUint64Base args) result",
+     "role": "fact"
+    }
+   ],
+   "author": {
+    "tier": "hand"
+   }
+  },
+  {
+   "id": "join-b8",
+   "request": "nextUint64/decision/join_assertion-00b8",
+   "at": {
+    "pc": "+0xb8",
+    "boundary": "join"
+   },
+   "binders": [],
+   "resources": [],
+   "facts": [
+    {
+     "coq": "bv_unsigned machine_x11_1 = ByteWindowFold.zesu_byte_window_fold (nextInputBytes (nextUint64Base args)) (Z.to_nat (bv_unsigned (bv_concat 64%N (bv_concat 56%N (bv_concat 48%N (bv_concat 40%N (bv_concat 32%N (bv_concat 24%N (bv_concat 16%N (List.nth 7%nat call_after (BV 8%N 0%Z)) (List.nth 6%nat call_after (BV 8%N 0%Z))) (List.nth 5%nat call_after (BV 8%N 0%Z))) (List.nth 4%nat call_after (BV 8%N 0%Z))) (List.nth 3%nat call_after (BV 8%N 0%Z))) (List.nth 2%nat call_after (BV 8%N 0%Z))) (List.nth 1%nat call_after (BV 8%N 0%Z))) (List.nth 0%nat call_after (BV 8%N 0%Z))) - nextInputPointer (nextUint64Base args))) (Z.to_nat (bv_unsigned (bv_concat 64%N (bv_concat 56%N (bv_concat 48%N (bv_concat 40%N (bv_concat 32%N (bv_concat 24%N (bv_concat 16%N (List.nth 15%nat call_after (BV 8%N 0%Z)) (List.nth 14%nat call_after (BV 8%N 0%Z))) (List.nth 13%nat call_after (BV 8%N 0%Z))) (List.nth 12%nat call_after (BV 8%N 0%Z))) (List.nth 11%nat call_after (BV 8%N 0%Z))) (List.nth 10%nat call_after (BV 8%N 0%Z))) (List.nth 9%nat call_after (BV 8%N 0%Z))) (List.nth 8%nat call_after (BV 8%N 0%Z)))))",
+     "role": "fact"
+    }
+   ],
+   "author": {
+    "tier": "hand"
+   }
+  },
+  {
+   "id": "call-40",
+   "request": "nextUint64/decision/call_row-0040",
+   "at": {
+    "pc": "+0x40",
+    "boundary": "call_site"
+   },
+   "binders": [],
+   "resources": [],
+   "facts": [],
+   "call": {
+    "function": "rlp_decode.nextUint64",
+    "callee_pc": "rlp.decodeItem+0x0",
+    "return_site_pc": "+0x44",
+    "spec": "decodeItemCallSpec2",
+    "spec_module": "ZesuSsz.Interfaces.DecodeItem",
+    "spec_source": "ZesuSsz/Interfaces/DecodeItem.v",
+    "stack_bytes": 16,
+    "arrays": [
+     {
+      "binder": "input",
+      "argument": 1,
+      "caller_value": "nextInputBytes (nextUint64Base args)"
+     },
+     {
+      "binder": "before",
+      "argument": 0,
+      "length": 40,
+      "length_source": "decodeItemArgsWellFormed (RlpDecodeItemContract.v): (List.length (decodeItemBeforeStorage args) = 40)%nat"
+     }
+    ],
+    "output_length_source": "C1BResult (RlpDecodeItem.v): candidateResult40 is errorResult40 or successResult40, each of 40 bytes"
+   },
+   "author": {
+    "tier": "hand"
+   }
+  },
+  {
+   "id": "return-44",
+   "request": "nextUint64/decision/predicate-0044",
+   "at": {
+    "pc": "+0x44",
+    "boundary": "call_return"
+   },
+   "binders": [],
+   "resources": [],
+   "facts": [
+    {
+     "coq": "(0 < bv_unsigned {word:after:8} -> bv_unsigned {word:after:8} <= 8 -> nextInputPointer (nextUint64Base args) <= bv_unsigned {word:after:0} /\\ bv_unsigned {word:after:0} + bv_unsigned {word:after:8} <= nextInputPointer (nextUint64Base args) + Z.of_nat (length (nextInputBytes (nextUint64Base args))))%Z",
+     "role": "meaning",
+     "need": "the lbu at 0x800d6318 reads the input array: the decoded payload lies inside it",
+     "source": "decodeItemCallPayloadInInputDerivedFacts (DecodeItemCallFacts.v): the sealed call meaning bounds a nonempty payload shorter than 2^64 - 9 by argument 1 and the input length; nextUint64BoundaryDomainSliceWord0DerivedFacts (NextUint64DomainRanges.v): argument 1, the slice's first word, is nextInputPointer"
+    }
+   ],
+   "author": {
+    "tier": "hand"
+   }
+  }
+ ]
+}

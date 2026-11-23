@@ -384,6 +384,12 @@ for suffix, slot in units:
         # An entry slot renders the alternatives of its own incoming edge only.
         boundary["alternatives"] = [boundary["alternatives"][number]
                                     for number in boundary["slots"][slot]["alternatives"]]
+    if not boundary["alternatives"]:
+        # No path reaches the block and no stop does either: nothing to render or lift.
+        cases.append({"pc": pc, "status": "refused_no_alternatives", "proof_ran": False,
+                      "reports": [{"kind": "unreached_boundary",
+                                   "detail": "the boundary has no alternative and no reaching stop"}]})
+        continue
     # A seed without a recorded root (a join seed of an older pass) shares the entry tree.
     origin_roots = {roots.get(alternative["seed_pc"], public_seed["entry_pc"])
                     for alternative in boundary["alternatives"]}
@@ -675,28 +681,36 @@ for suffix, slot in units:
     # A generated cut whose generalization binds a register value: refute
     # each source alternative first, so an infeasible arm cannot widen it.
     last_emit, hist_meta, slot_reports = [], {}, []
-    record, definitions, facts = rendered(boundary)
-    cut = record["manifest"].get("cut_generalization", {})
-    refused_sources = []
-    if (cut.get("kind") == "generalized_owned_cut" and cut["plan"]["binders"]
-            and boundary["status"] == "generated"):
-        refused_sources = contradictory_sources(
-            boundary, lambda alone: rendered(alone)[1], check
-        )
-        if refused_sources:
-            boundary = without_alternatives(boundary, refused_sources)
-    refused_names = []
-    while True:
-        hist_meta.clear()
-        del slot_reports[:]
+    refused_sources, refused_names = [], []
+    try:
         record, definitions, facts = rendered(boundary)
-        if definitions is None:
-            break
-        refused = contradictory_alternatives(definitions, check)
-        if not refused:
-            break
-        refused_names.extend(refused)
-        boundary = without_alternatives(boundary, refused_alternative_indices(refused))
+        cut = record["manifest"].get("cut_generalization", {})
+        if (cut.get("kind") == "generalized_owned_cut" and cut["plan"]["binders"]
+                and boundary["status"] == "generated"):
+            refused_sources = contradictory_sources(
+                boundary, lambda alone: rendered(alone)[1], check
+            )
+            if refused_sources:
+                boundary = without_alternatives(boundary, refused_sources)
+        while True:
+            hist_meta.clear()
+            del slot_reports[:]
+            record, definitions, facts = rendered(boundary)
+            if definitions is None:
+                break
+            refused = contradictory_alternatives(definitions, check)
+            if not refused:
+                break
+            refused_names.extend(refused)
+            boundary = without_alternatives(boundary, refused_alternative_indices(refused))
+    except BoundaryRefused as error:
+        # Every alternative proves False, or the contradiction check could not run: a refusal row.
+        if not options.record_refusals:
+            raise
+        cases.append({"pc": pc, "status": "refused_boundary", "proof_ran": False,
+                      "refused_alternatives": refused_names, "refused_source_alternatives": refused_sources,
+                      "reports": [{"kind": "boundary_refused", "detail": str(error)[-2000:]}]})
+        continue
     record["refused_alternatives"] = refused_names
     record["refused_source_alternatives"] = refused_sources
     if definitions is None:
