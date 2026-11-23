@@ -180,6 +180,116 @@ class WaveTests(unittest.TestCase):
         self.assertEqual(replay.run_wave(self.corpus, "mechanical", None)["started"], 0)
 
 
+ENVELOPE = json.dumps({"architecture": "one closed fact", "files": [],
+                       "summary": json.dumps({"verdict": "proved", "proof": "intros. lia.\nQed."})})
+
+
+class DefectTests(unittest.TestCase):
+    """The three defects of the first waves: expired handles, enveloped replies, retries that did not fit."""
+
+    def setUp(self):
+        self.tmp = tempfile.TemporaryDirectory()
+        self.corpus = make_corpus(self.tmp.name, ["forall (x : Z), x < x + 1", "forall (y : Z), y <= y"])
+        self.kernel = Kernel()
+        self.kernel.install()
+        dispatch_kernel.SESSIONS = Path(self.tmp.name) / "sessions"
+        self.rows = json.loads((self.corpus / "CORPUS.json").read_text())["rows"]
+
+    def tearDown(self):
+        self.tmp.cleanup()
+
+    def test_expired_handle_counts_as_finished_and_waves_prune(self):
+        class Expired:
+            def done(self):
+                raise RuntimeError("unknown agent handle x; result expired")
+        dispatch_kernel._STATE["live"] = [(replay.tier_row("haiku-medium"), Expired())]
+        self.assertEqual(dispatch_kernel._unfinished("scout", "haiku-high"), [])
+        self.assertEqual(dispatch_kernel._STATE["live"], [])
+        dispatch_kernel.run_wave(self.corpus, "haiku-low")
+        self.assertEqual(dispatch_kernel._STATE["live"], [])
+
+    def test_answer_inside_an_envelope(self):
+        self.assertEqual(replay.parse_reply(ENVELOPE)[0]["verdict"], "proved")
+        fenced = json.dumps({"summary": "text\n```json\n{\"verdict\": \"give_up\"}\n```"})
+        self.assertEqual(replay.parse_reply(fenced)[0], {"verdict": "give_up"})
+        self.assertEqual(replay.parse_reply(json.dumps(json.dumps({"verdict": "give_up"})))[0], {"verdict": "give_up"})
+        self.assertEqual(replay.parse_reply({"files": [{"note": ENVELOPE}]})[0]["verdict"], "proved")
+        self.assertIsNone(replay.parse_reply(json.dumps({"architecture": "x", "summary": "no answer"}))[0])
+        self.kernel.reply = ENVELOPE
+        self.assertEqual(dispatch_kernel.run_wave(self.corpus, "haiku-low")["verdicts"], {"proved": 2})
+
+    def test_rescore_keeps_the_log_append_only(self):
+        self.kernel.reply = "no answer here"
+        dispatch_kernel.run_wave(self.corpus, "haiku-low")
+        run = replay.store_dir(self.corpus, "similar", "haiku-low")
+        before = (run / store.LOG).read_text()
+        d = replay.attempt_dir(self.corpus, "similar", "haiku-low", 1)
+        (d / "answers" / "k001.raw").write_text(ENVELOPE)
+        (d / "answers" / "k002.raw").write_text(json.dumps({"summary": json.dumps({"verdict": "give_up"})}))
+        self.assertEqual(replay.rescore(self.corpus, "haiku-low"), {"proved": 1, "give_up": 1})
+        after = (run / store.LOG).read_text()
+        self.assertTrue(after.startswith(before))
+        self.assertEqual((d / "answers" / "k001.v").read_text(), "intros. lia.\nQed.\n")
+        # check's final event for the rescored proof is a correction too.
+        prompt = (d / "prompts" / "k001.md").read_text()
+        replay.append_result(run, store.event(id=self.rows[0]["store_id"], function="replay", kind="goal",
+                                              state="closed", tier="haiku-low", attempt=1,
+                                              prompt_sha256=replay.sha(prompt)))
+        corrections = [json.loads(l) for l in (run / store.LOG).read_text().splitlines()[len(before.splitlines()):]]
+        self.assertEqual([(e["state"], e["attempt"]) for e in corrections], [("failed", None), ("closed", None)])
+        results = replay.attempt_results(self.corpus, None, replay.load_tiers())[("similar", "haiku-low")]
+        self.assertEqual(results[self.rows[0]["store_id"]][1]["result"], "closed")
+        self.assertEqual(results[self.rows[1]["store_id"]][1]["result"], "give_up")
+        self.assertEqual(replay.rescore(self.corpus, "haiku-low"), {})
+
+    def big_prompts(self, text_bytes):
+        """Attempt-1 prompts with a similar-lemma section that fills the bound."""
+        d = replay.attempt_dir(self.corpus, "similar", "haiku-low", 1)
+        for row in self.rows:
+            base = "# Pure goal %s\n\nGOAL-PART %s\n" % (row["id"], "g" * 2000)
+            blocks = ["Similarity 0.%d0.\n\n### residual_%d\n\n%s\n" % (n, n, "s" * text_bytes) for n in range(3)]
+            text = base + replay.SIMILAR_HEAD + "\n".join(blocks) + replay.answer_form(row["id"])
+            (d / "prompts" / ("%s.md" % row["id"])).write_text(text)
+        return d
+
+    def test_retry_always_fits_and_keeps_the_goal(self):
+        dispatch_kernel.run_wave(self.corpus, "haiku-low")
+        d = self.big_prompts(3200)
+        self.assertGreater(len((d / "prompts" / "k001.md").read_bytes()), 11000)
+        (d / "CHECK.json").write_text(json.dumps({"k001": {"result": "FAIL"}}))
+        (d / "feedback" / "k001.txt").write_text("FAIL\nError: " + "e" * 20000)
+        (d / "answers" / "k002.json").write_text(json.dumps(dict(verdict="need_context", needs=["a lemma about x"])))
+        plan, prompts = replay.retry_plan(self.corpus, "haiku-low")
+        self.assertEqual(plan, {"k001": "compile_error", "k002": "missing_context"})
+        text = prompts["k001"]
+        self.assertLessEqual(len(text.encode()), 12000)
+        self.assertIn("GOAL-PART " + "g" * 2000, text)
+        self.assertNotIn(replay.SIMILAR_HEAD, text)
+        self.assertIn("[... truncated]", text)
+        self.assertIn("intros. lia.", text)
+        self.assertIn("Your whole reply is that JSON object", text)
+
+    def test_need_context_found_in_the_index_and_already_sent(self):
+        dispatch_kernel.run_wave(self.corpus, "haiku-low")
+        d = self.big_prompts(3000)
+        (d / "answers" / "k001.json").write_text(json.dumps(dict(
+            verdict="need_context", needs=["the lemma residual_wanted_1 about bounds", "residual_1 again"])))
+        index = dict(entries=[dict(name="residual_wanted_1", statement="forall x : Z, x = x", proof="reflexivity.\nQed.")])
+        original = replay.similar.build_index
+        replay.similar.build_index = lambda *a, **k: index
+        try:
+            plan, prompts = replay.retry_plan(self.corpus, "haiku-low")
+            self.assertEqual(plan["k001"], "need_context")
+            self.assertIn(replay.CONTEXT_HEAD + "### residual_wanted_1", prompts["k001"])
+            self.assertLessEqual(len(prompts["k001"].encode()), 12000)
+            self.assertEqual(dispatch_kernel.retry_wave(self.corpus, "haiku-low", ids=["k001"])["started"], 1)
+            plan, prompts = replay.retry_plan(self.corpus, "haiku-low")
+            self.assertEqual(plan["k001"], "already_sent")
+            self.assertNotIn("k001", prompts)
+        finally:
+            replay.similar.build_index = original
+
+
 class OverrideTests(unittest.TestCase):
     def setUp(self):
         self.kernel = Kernel()
