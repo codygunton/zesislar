@@ -18,12 +18,17 @@ goals packages each open goal (reparse exact, not PASS) into RUN/package/<id>/:
 - the address check: the patterns of tools/oblig/check_relocatable.py (`0x800[0-9a-f]{5}`,
   `2148[0-9]{6}`, `21474[0-9]{5}`) over the text of goal.v and over the decimal value of
   each integer literal of its statement. Before it, each `(N)%Z` or `Zpos` literal that is the
-  address of a symbol of tools/oblig/symbols.json (or at most 4 KiB above one) is written as its
-  parsing-only notation of ZesuSsz/Generated/Stock/Symbols.v (tools/oblig/symbolize.py); the
-  kernel checks `(original) = (rewritten)` by reflexivity with the goal's imports and the bank
+  address of a symbol of tools/oblig/symbols.json (or at most 4 KiB above one), and both bounds of
+  a code-disjointness disjunction `x + n <= A \\/ B <= x` that are ELF section bounds, are written
+  as their parsing-only notations of ZesuSsz/Generated/Stock/Symbols.v (tools/oblig/symbolize.py);
+  the kernel checks `(original) = (rewritten)` by reflexivity with the goal's imports and the bank
   of MANIFEST.json, and only then goal.v is replaced (the original kept as goal-literal.v,
   the Symbols import added) and the task shows the notations. A match that remains gives class
-  ADDRESS: the goal goes to the decision queue and gets no prover task.
+  ADDRESS: the goal goes to the decision queue and gets no prover task. A goal whose section
+  bounds were rewritten is a pure range goal (`range_bounds` in PACKAGE.json): its task gets the
+  range hint (RANGE_HINT: RAM lies above every code address).
+- a goal with a `zesu_hist` premise gets the history hint (HIST_HINT): facts about call results
+  may sit inside the sealed history, with the tactic lines that expose them.
 - with --falsify, tools/oblig/falsify.py on goal.v; a `false` verdict gets no prover task.
 - the prover task TASK-<tier>.md: the TASK text of residual_loop.py (the default-printer goal
   and the path of the exact source), the answer form, then context items while the task
@@ -82,6 +87,38 @@ Reply with one JSON object and nothing else:
 
 The coordinator writes `proof` to `{answer}` and checks it with Rocq.
 """
+
+RANGE_HINT = """## Range hint
+
+The bounds of `x + n <= A \\/ B <= x` in this goal are the start and end of an ELF section of the
+code image (`sec_text_start`, `sec_text_end`, `sec_rodata_start`, `sec_rodata_end` of
+`ZesuSsz.Generated.Stock.Symbols`: parsing-only `Z` literals, so `lia` reads them as numbers).
+RAM is `[mapRamBase stockZiskMap, machineRamEnd stockZiskMap)` (`ZesuSsz.Contracts.Machine`; both
+reduce by `reflexivity` or `cbn`), above every code and read-only data address. A pointer that a
+premise places in RAM satisfies the right disjunct `B <= x`: find that premise (a domain range fact,
+often guarded by `0 < length`), state the RAM base as a number with
+`assert (mapRamBase stockZiskMap = ...) by reflexivity` when it occurs, and finish with `lia`.
+"""
+
+HIST_HINT = """## History hint
+
+Facts about call results (for example `call_xN <> 0`) may be inside the `zesu_hist` premise {hyp}.
+Unfold it with `zesu_hist_eq` and destruct:
+
+```
+unfold {definition} in {hyp}; rewrite zesu_hist_eq in {hyp};
+repeat (hnf in {hyp}; match type of {hyp} with ex _ => destruct {hyp} as [? {hyp}] | _ /\\ _ => destruct {hyp} as [_ {hyp}] end).
+```
+
+The `repeat` keeps the last conjunct; to keep another, destruct the conjunction by hand.
+"""
+HIST_PREMISE = re.compile(r"\((H[\w']*) : \(@[\w.]*\bzesu_hist \(@?([\w.']+)")
+
+
+def hist_hints(statement):
+    """The history hint for each `zesu_hist` premise binder of STATEMENT (exporter form)."""
+    return [HIST_HINT.format(hyp=hyp, definition=definition.rsplit(".", 1)[-1])
+            for hyp, definition in dict.fromkeys(HIST_PREMISE.findall(statement))]
 
 
 class PackageError(ValueError):
@@ -260,12 +297,12 @@ def compose(base, items, max_bytes):
 def symbolize_goal(d, goal_v, route, out, tag):
     """(new goal.v text, [(literal, notation)]) when the statement names a symbol's address and the
     kernel accepts `(original) = (rewritten)` by reflexivity; else (None, reason or [])."""
-    symbols = symbolize.table()
+    symbols, bounds = symbolize.table(), symbolize.sections()
     match = re.search(r"^Lemma (\S+) :\n  (.*)\.\nProof\.\n", goal_v, re.S | re.M)
-    if not symbols or not match:
+    if not (symbols or bounds) or not match:
         return None, []
     original = match[2]
-    rewritten, found = symbolize.statement(original, symbols)
+    rewritten, found = symbolize.statement(original, symbols, bounds)
     if not found:
         return None, []
     header = symbolize.with_require(goal_header(goal_v))
@@ -306,6 +343,7 @@ def package_goal(run, manifest, goal, function, tier, max_bytes, index, hints, f
     if record["class"] == "ADDRESS":
         record["next"] = "decision"
         return write_record(out, record)
+    record["range_bounds"] = sorted(set(re.findall(r"\bsec_\w+", goal_v)))
     if falsify_route is not None:
         import falsify
         report = falsify.check(d / "goal.v", falsify_route, out / "falsify", exec_dir=exec_dir, offset=block)
@@ -317,19 +355,21 @@ def package_goal(run, manifest, goal, function, tier, max_bytes, index, hints, f
     answer_path = run / "answers" / (goal["id"] + ".v")
     base = base_task(run, block, goal, goal_v, answer_path)
     if symbolize.REQUIRE in goal_v:
-        base = symbolize.display(base, symbolize.table())
+        base = symbolize.display(base, symbolize.table(), symbolize.sections())
     if len(base.encode()) > max_bytes:
         record.update(next="too-large", prompt_bytes=len(base.encode()))
         return write_record(out, record)
     remaining = max_bytes - len(base.encode())
-    items = []
+    items = [("range", RANGE_HINT)] if record["range_bounds"] else []
+    items += [("hist", text) for text in hist_hints(goal_v)]
     shown = []
     if defs_route is not None:
         import defs
         resolver = defs.Resolver(out / "defs", goal_header(goal_v), defs.route_compile(defs_route),
                                  defs.project_roots(defs_route.args), tag="defs-" + goal["id"])
         names = defs.ranked_names(goal["statement"])
-        section, shown = defs.section(defs.items(resolver.resolve(names), names), remaining - 200)
+        hinted = sum(len(item.encode()) + 1 for _, item in items)
+        section, shown = defs.section(defs.items(resolver.resolve(names), names), remaining - hinted - 200)
         items.append(("defs", section))
     taken = sum(len(item.encode()) + 1 for _, item in items if item)
     found = similar.nearest(index, goal["statement"], similar.K, max(0, remaining - taken - 200)) if index else []
@@ -365,7 +405,7 @@ def cmd_goals(a):
     manifest = rl.read_json(run / "MANIFEST.json")
     if manifest is None:
         raise PackageError("No MANIFEST.json in %s." % run)
-    index = json.loads(Path(a.index).read_text()) if a.index else similar.build_index(runs=[run])
+    index = json.loads(Path(a.index).read_text()) if a.index else similar.build_index(runs=similar.sibling_runs(run))
     route = bank_route = None
     if a.falsify or a.defs:
         import falsify
@@ -617,7 +657,8 @@ def main(argv=None):
     g.add_argument("--goal", action="append")
     g.add_argument("--tier", default="haiku-low")
     g.add_argument("--max-prompt-bytes", type=int, default=MAX_PROMPT_BYTES)
-    g.add_argument("--index", help="similar.py index; default: built from the residual modules and RUN")
+    g.add_argument("--index", help="similar.py index; default: built from the residual modules and the residual "
+                                   "runs of every region beside RUN (similar.sibling_runs)")
     g.add_argument("--hints", help="hints/ dir of tools/oblig/hints.py build")
     g.add_argument("--falsify", action="store_true")
     g.add_argument("--defs", action="store_true", help="add the definitions context (defs.py); needs --bank")

@@ -15,16 +15,26 @@ import re
 import shutil
 
 SLOT = '(* PROOF-SLOT: replace this line and the Admitted below with the proof script and Qed. *)'
+# The last two alternatives close a goal whose premises contradict each other: a bitvector disequality
+# `x <> y` refuted through `bv_eq` and the unsigned values (`bv_unsigned x = 0` beside `x <> 0%bv`), and
+# `False` by lia over the premises with bitvectors read as their unsigned ranges.
 CONTROL_TACTIC = '''Proof.
   intros.
   first [ LinearFirstLia.zesu_lia_linear_first3
         | bv_simplify_arith; bv_saturate_unsigned;
           unfold bv_signed, bv_swrap, bv_wrap, bv_half_modulus, bv_modulus, bv_unsigned in *;
+          simpl; LinearFirstLia.zesu_lia_linear_first3
+        | exfalso; match goal with
+          | H : not (@eq (bv _) _ _) |- _ =>
+              apply H; apply bv_eq; rewrite ?bv_unsigned_BV; LinearFirstLia.zesu_lia_linear_first3
+          end
+        | exfalso; bv_saturate_unsigned;
+          unfold bv_signed, bv_swrap, bv_wrap, bv_half_modulus, bv_modulus, bv_unsigned in *;
           simpl; LinearFirstLia.zesu_lia_linear_first3 ].
 Qed.
 '''
 CONTROL_TEXT = ('control: whole-context library solver (LinearFirstLia.zesu_lia_linear_first3, then the stdpp '
-                'bv_solve unfolding with it) on goal_full.v, same bank')
+                'bv_solve unfolding with it, then exfalso over contradictory premises) on goal_full.v, same bank')
 LINE = re.compile(r'^(\d+\.\d+) (.*)$')
 HYP = re.compile(r'RES-HYP (\S+) d=(\d) prop=(\d) n=(\d+) v=(.*?) ::$')
 CONCL = re.compile(r'RES-CONCL n=(\d+) v=(.*?) ::$')

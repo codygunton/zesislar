@@ -5,6 +5,8 @@
     store.py status --run RUN [--counts]        fold the log into the current state
     store.py sync   --function F --run RUN [--callers FILE]
                                                 derive states from the existing evidence
+    store.py supersede --run RUN [--function F] (--ids ID ... [--reason R] | --missing-artifacts)
+                                                file open obligations `superseded`
 
 RUN is the function's run directory (default `_build/agents/aa/<function>/` with --function).
 The log is RUN/OBLIGATIONS.jsonl; every append holds an exclusive `flock` on it.
@@ -13,9 +15,12 @@ Event row, schema `oblig-event/1`: id, function, kind (block, goal, meaning, dec
 state, class, tier, attempt, prompt_sha256, prompt_bytes, answer_bytes, tokens_in, tokens_out,
 context_items, context_used, artifact {path, sha256}, head. The fold keeps the last state of each id.
 States: derived, running, closed, failed (with class), false, waiting-decision, blocked-on (the
-blocking id is the event's class). A prover attempt is an event whose `attempt` is set; the store
-rejects an attempt whose (prompt_sha256, tier) pair already exists for that id. An event `derived`
-on an id that was in another state is a reset (a changed input).
+blocking id is the event's class), superseded (terminal like closed; its class is the reason:
+`re-rendered` the statement was exported again under another id, `artifact-gone` its last artifact
+no longer exists, `not-issued` no later round issues its request). A prover attempt is an event
+whose `attempt` is set; the store rejects an attempt whose (prompt_sha256, tier) pair already exists
+for that id. An event `derived` on an id that was in another state is a reset (a changed input; on
+a superseded id, the obligation issued again).
 
 Ids: <function>/block/<case>, <function>/goal/<case>-<16 hex of the statement sha256>,
 <function>/decision/<kind>-<offset>, <function>/meaning/<lemma name>; <case> and <offset> are 4-hex
@@ -30,10 +35,19 @@ caller_sha256 equals the caller of the current CALLERS.json row. It files each o
 RUN/round-<n>/derived/REQUESTS.json (derive.py, schema oblig-requests/1; latest round wins, `answered`
 ones left out) as a `decision` obligation under the request's id, state `derived`; a request with a
 `proposal` carries it as the artifact {path of that REQUESTS.json, sha256 of the proposal's canonical
-JSON}, filed again only when the id never carried that proposal.
+JSON}, filed again only when the id never carried that proposal. It files `superseded` an open goal
+the evidence no longer holds whose last artifact is gone (artifact-gone), and an open decision an
+earlier round issued that the latest round neither issues nor answers (not-issued; render-derived
+kinds only when the latest round rendered). Evidence never revives a superseded obligation except
+to close it.
 
-status --counts prints one line per kind and state, then the totals; the coordinator reads only this
-and `route.py next`, and both record the bytes they print to RUN/COORDINATOR.jsonl.
+supersede files the open obligations among --ids (reason --reason, default re-rendered), or every
+open goal whose last artifact is gone (--missing-artifacts), `superseded`; route.py, drive.py and
+report.py skip superseded obligations.
+
+status --counts prints one line per kind and state, then the totals (superseded obligations are not
+open); the coordinator reads only this and `route.py next`, and both record the bytes they print to
+RUN/COORDINATOR.jsonl.
 """
 import argparse
 import fcntl
@@ -53,7 +67,12 @@ FIELDS = ('id', 'function', 'kind', 'parent', 'state', 'class', 'tier', 'attempt
           'prompt_bytes', 'answer_bytes', 'tokens_in', 'tokens_out', 'context_items', 'context_used',
           'artifact', 'head')
 KINDS = ('block', 'goal', 'meaning', 'decision')
-STATES = ('derived', 'running', 'closed', 'failed', 'false', 'waiting-decision', 'blocked-on')
+STATES = ('derived', 'running', 'closed', 'failed', 'false', 'waiting-decision', 'blocked-on', 'superseded')
+# A superseded obligation is no work: its statement was re-rendered (the id is gone from the current
+# export), its artifact is gone, or no later round issues its request. Terminal like `closed`; a later
+# `derived` event (the obligation issued again) revives it.
+SUPERSEDE_REASONS = ('re-rendered', 'artifact-gone', 'not-issued')
+TERMINAL = ('closed', 'superseded')
 DECISION_KINDS = ('contract', 'callee_premise', 'loop_assertion', 'join_assertion', 'access_placement',
                   'call_row', 'predicate')
 CASE = r'[0-9a-f]{4}[0-9a-z_]*'
@@ -137,6 +156,8 @@ def validate(row):
         raise Rejected('unknown state %r' % row.get('state'))
     if row['state'] in ('failed', 'blocked-on') and not row.get('class'):
         raise Rejected('state %s needs a class (failure class or blocking id)' % row['state'])
+    if row['state'] == 'superseded' and row.get('class') not in SUPERSEDE_REASONS:
+        raise Rejected('state superseded needs a reason class (%s)' % ', '.join(SUPERSEDE_REASONS))
     if row['state'] == 'blocked-on' and parse_id(row['class']) is None:
         raise Rejected('blocked-on names no obligation id: %r' % row['class'])
     if row.get('attempt') is not None and (not row.get('prompt_sha256') or not row.get('tier')):
@@ -188,16 +209,19 @@ def append(run, rows):
 
 
 def continues(handle, row):
-    """True when the log's last attempt event of this id is the same attempt still running."""
+    """True when ROW belongs to an attempt still open in the log: the last event of this id, tier and
+    attempt number is its `running` event with the same prompt. The result event of an attempt, and the
+    running event a best-of-N round (tools/oblig/drive.py settle_round) announces again for the sample it
+    submits after its sibling samples' results, are events of an attempt already sent, not a new send."""
     handle.seek(0)
     last = None
     for line in handle.read().splitlines():
         if line.strip():
             old = json.loads(line)
-            if old['id'] == row['id'] and old.get('attempt') is not None:
+            if (old['id'] == row['id'] and old.get('attempt') == row['attempt']
+                    and old.get('tier') == row['tier']):
                 last = old
-    return (last is not None and last['state'] == 'running' and last['tier'] == row['tier']
-            and last['attempt'] == row['attempt'] and last['prompt_sha256'] == row['prompt_sha256'])
+    return last is not None and last['state'] == 'running' and last['prompt_sha256'] == row['prompt_sha256']
 
 
 def fold(events):
@@ -208,8 +232,8 @@ def fold(events):
         if item is None:
             item = state[row['id']] = dict(
                 id=row['id'], function=row['function'], kind=row['kind'], parent=None, state=None,
-                goal_class=None, failure=None, blocked_by=None, tier=None, artifact=None, closed_by=None,
-                attempts=[], tier_attempts={}, last_attempt=None, resets=0, events=[])
+                goal_class=None, failure=None, blocked_by=None, superseded=None, tier=None, artifact=None,
+                closed_by=None, attempts=[], tier_attempts={}, last_attempt=None, resets=0, events=[])
         if item['state'] not in (None, 'derived') and row['state'] == 'derived':
             item['resets'] += 1
         item['events'].append(row)
@@ -224,6 +248,8 @@ def fold(events):
             item['failure'] = row['class']
         elif row['state'] == 'blocked-on':
             item['blocked_by'] = row['class']
+        elif row['state'] == 'superseded':
+            item['superseded'] = row['class']
         elif row.get('class'):
             item['goal_class'] = row['class']
         if row['state'] == 'closed':
@@ -239,7 +265,7 @@ def fold(events):
 
 
 def is_open(item):
-    return item['state'] != 'closed'
+    return item['state'] not in TERMINAL
 
 
 def round_number(run):
@@ -273,7 +299,8 @@ def status_lines(state):
     lines = []
     for item in state.values():
         extra = item['failure'] if item['state'] == 'failed' else (
-            item['blocked_by'] if item['state'] == 'blocked-on' else item['goal_class'])
+            item['blocked_by'] if item['state'] == 'blocked-on' else
+            item['superseded'] if item['state'] == 'superseded' else item['goal_class'])
         lines.append('%s %s %s attempts=%d resets=%d tier=%s' % (
             item['id'], item['state'], extra or '-', len(item['attempts']), item['resets'], item['tier'] or '-'))
     return lines
@@ -396,25 +423,37 @@ def derived_states(function, run, callers=None):
     return out
 
 
+def request_identifier(function, row, path):
+    identifier = row.get('id') or decision_id(function, row.get('kind'),
+                                              '%04x' % int(str(row.get('pc')).lstrip('+'), 16))
+    parsed = parse_id(identifier)
+    if (parsed is None or parsed[0] != 'decision' or parsed[1]['function'] != function
+            or parsed[1]['decision'] != row.get('kind')):
+        raise Rejected('request %r of %s is no decision id of kind %r' % (identifier, path, row.get('kind')))
+    return identifier
+
+
+def request_rounds(run):
+    """[(round number, REQUESTS.json path, data)] of RUN/round-<n>/derived/REQUESTS.json, by round."""
+    rounds = sorted((int(m.group(1)), p) for p in Path(run).glob('round-*')
+                    for m in [re.fullmatch(r'round-(\d+)', p.name)] if m)
+    out = []
+    for number, directory in rounds:
+        path = directory / 'derived' / 'REQUESTS.json'
+        data = read_json(path)
+        if isinstance(data, dict):
+            out.append((number, path, data))
+    return out
+
+
 def round_requests(function, run):
     """{decision id: (request row, REQUESTS.json path)} over RUN/round-<n>/derived/REQUESTS.json
     (schema oblig-requests/1 of derive.py), the latest round winning; answered requests are left out."""
-    rounds = sorted((int(m.group(1)), p) for p in Path(run).glob('round-*')
-                    for m in [re.fullmatch(r'round-(\d+)', p.name)] if m)
     found = {}
-    for _, directory in rounds:
-        path = directory / 'derived' / 'REQUESTS.json'
-        data = read_json(path)
-        if not isinstance(data, dict):
-            continue
+    for _, path, data in request_rounds(run):
         answered = set(data.get('answered') or [])
         for row in data.get('requests') or []:
-            identifier = row.get('id') or decision_id(function, row.get('kind'),
-                                                      '%04x' % int(str(row.get('pc')).lstrip('+'), 16))
-            parsed = parse_id(identifier)
-            if (parsed is None or parsed[0] != 'decision' or parsed[1]['function'] != function
-                    or parsed[1]['decision'] != row.get('kind')):
-                raise Rejected('request %r of %s is no decision id of kind %r' % (identifier, path, row.get('kind')))
+            identifier = request_identifier(function, row, path)
             if identifier in answered:
                 found.pop(identifier, None)
             else:
@@ -422,6 +461,59 @@ def round_requests(function, run):
         for identifier in answered:
             found.pop(identifier, None)
     return found
+
+
+# Request kinds derive.py issues from the control-flow graph alone (every round lists them); the
+# others come from a render, so only a round that rendered can stop issuing them.
+CFG_REQUEST_KINDS = ('contract', 'callee_premise', 'loop_assertion', 'call_row')
+
+
+def not_issued(function, run, state):
+    """Open decision ids that an earlier round issued and the latest round neither issues nor counts
+    as answered (derive.py lists every current request in each round)."""
+    rounds = request_rounds(run)
+    if not rounds:
+        return []
+    _, path, latest = rounds[-1]
+    current = {request_identifier(function, row, path) for row in latest.get('requests') or []}
+    current |= set(latest.get('answered') or [])
+    rendered = latest.get('render') is not None
+    ever = {request_identifier(function, row, p) for _, p, data in rounds for row in data.get('requests') or []}
+    return [i for i, item in state.items()
+            if item['kind'] == 'decision' and is_open(item) and i in ever and i not in current
+            and (rendered or parse_id(i)[1]['decision'] in CFG_REQUEST_KINDS)]
+
+
+def artifact_exists(artifact, run=None):
+    """True when the artifact's path exists. A relative path is relative to a repository checkout: this
+    tool's, or the one whose `_build/` holds RUN (a worktree's tools on the main checkout's runs)."""
+    path = Path(artifact['path'])
+    if path.is_absolute():
+        return path.exists()
+    roots = [ROOT] + ([p.parent for p in Path(run).resolve().parents if p.name == '_build'] if run else [])
+    return any((root / path).exists() for root in roots)
+
+
+def gone_artifacts(state, function=None, run=None):
+    """Open goal ids whose artifact (the last one filed) no longer exists."""
+    return [i for i, item in state.items()
+            if item['kind'] == 'goal' and is_open(item) and (function is None or item['function'] == function)
+            and item['artifact'] and not artifact_exists(item['artifact'], run)]
+
+
+def superseded_events(state, identifiers, reason, head=None):
+    """`superseded` events (class REASON) for the open obligations among IDENTIFIERS."""
+    if reason not in SUPERSEDE_REASONS:
+        raise Rejected('unknown supersede reason %r' % reason)
+    rows = []
+    for identifier in dict.fromkeys(identifiers):
+        item = state.get(identifier)
+        if item is None:
+            raise Rejected('no obligation %s in the store' % identifier)
+        if is_open(item):
+            rows.append(event(id=identifier, function=item['function'], kind=item['kind'], state='superseded',
+                              **{'class': reason}, head=head))
+    return rows
 
 
 def proposal_artifact(row, path):
@@ -434,11 +526,15 @@ def proposal_artifact(row, path):
 
 
 def sync(function, run, callers=None):
-    """Append the events that bring the store to the evidence; return the number appended."""
+    """Append the events that bring the store to the evidence; return the number appended. A goal the
+    evidence no longer holds whose artifact is gone, and a request no later round issues, are filed
+    `superseded` (artifact-gone, not-issued). Evidence never revives a superseded obligation, except to
+    close it."""
     state = fold(read_events(run))
     head = git_head()
     rows = []
-    for identifier, (kind, parent, st, cls, artifact) in derived_states(function, run, callers).items():
+    evidence = derived_states(function, run, callers)
+    for identifier, (kind, parent, st, cls, artifact) in evidence.items():
         item = state.get(identifier)
         current = item['state'] if item else None
         if st == 'closed':
@@ -452,10 +548,16 @@ def sync(function, run, callers=None):
             rows.append(event(id=identifier, function=function, kind=kind, parent=parent, state=st,
                               **{'class': cls}, tier='evidence' if st == 'closed' else None,
                               artifact=artifact_of(artifact) if artifact else None, head=head))
+    rows += superseded_events(state, [i for i in gone_artifacts(state, function, run) if i not in evidence],
+                              'artifact-gone', head)
+    stopped = not_issued(function, run, state)
+    rows += superseded_events(state, stopped, 'not-issued', head)
     # Each open request is a decision obligation. A request proposal the id has never carried
     # (re)derives it with the proposal as its artifact, so the router checks it with no model; a
     # proposal filed later by an agent is never replaced by an older derived one.
     for identifier, (row, path) in round_requests(function, run).items():
+        if identifier in stopped:
+            continue
         item = state.get(identifier)
         artifact = proposal_artifact(row, path)
         carried = {(e.get('artifact') or {}).get('sha256') for e in item['events']} if item else set()
@@ -470,7 +572,7 @@ def sync(function, run, callers=None):
 def main(argv=None):
     parser = argparse.ArgumentParser(description=__doc__.split('\n')[0])
     commands = parser.add_subparsers(dest='command', required=True)
-    for name in ('add', 'status', 'sync'):
+    for name in ('add', 'status', 'sync', 'supersede'):
         command = commands.add_parser(name)
         command.add_argument('--function')
         command.add_argument('--run', type=Path)
@@ -480,6 +582,13 @@ def main(argv=None):
             command.add_argument('--counts', action='store_true')
         if name == 'sync':
             command.add_argument('--callers', type=Path, help='CALLERS.json to use instead of the search')
+        if name == 'supersede':
+            which = command.add_mutually_exclusive_group(required=True)
+            which.add_argument('--ids', nargs='+', help='obligation ids to file superseded')
+            which.add_argument('--missing-artifacts', action='store_true',
+                               help='every open goal whose last artifact no longer exists (reason artifact-gone)')
+            command.add_argument('--reason', choices=SUPERSEDE_REASONS, default='re-rendered',
+                                 help='reason class for --ids (default re-rendered)')
     options = parser.parse_args(argv)
     if options.run is None:
         if not options.function:
@@ -499,6 +608,18 @@ def main(argv=None):
             sys.stdout.write(text)
             if options.counts:
                 record_coordinator_read(options.run, 'store.status', text)
+        elif options.command == 'supersede':
+            state = fold(read_events(options.run))
+            if options.missing_artifacts:
+                rows = superseded_events(state, gone_artifacts(state, options.function, options.run), 'artifact-gone',
+                                         git_head())
+            else:
+                rows = superseded_events(state, options.ids, options.reason, git_head())
+            if rows:
+                append(options.run, rows)
+            print('superseded %d' % len(rows))
+            for line in count_lines(fold(read_events(options.run))):
+                print(line)
         else:
             if not options.function:
                 parser.error('sync needs --function')

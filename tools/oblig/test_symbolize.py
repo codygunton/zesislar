@@ -117,5 +117,83 @@ class PackageSymbolTests(unittest.TestCase):
         self.assertIn("sym_alt_fl_alloc_vtable", (d / "goal.v").read_text())
 
 
+# Section bounds of the code image, built at run time (plan A9): .text start (2^31) and end.
+TEXT_START = 1 << 31
+TEXT_END = TEXT_START + 0x10fd78
+BOUNDS = {TEXT_START: "sec_text_start", TEXT_END: "sec_text_end"}
+FALSE_TRUE = "(@Coq.Init.Logic.eq (@Coq.Init.Datatypes.bool) (@Coq.Init.Datatypes.false) (@Coq.Init.Datatypes.true))"
+
+
+def disjoint(x, upper, lower, flip=False, other=None):
+    """`false = true \\/ x + n <= UPPER \\/ LOWER <= x` in the exporter's form."""
+    below = "(@Coq.ZArith.BinInt.Z.le (@Coq.ZArith.BinInt.Z.add %s n) (%#x)%%Z)" % (x, upper)
+    above = "(@Coq.ZArith.BinInt.Z.le (%d)%%Z %s)" % (lower, other or x)
+    pair = (above, below) if flip else (below, above)
+    return "(@Coq.Init.Logic.or %s (@Coq.Init.Logic.or %s %s))" % (FALSE_TRUE, *pair)
+
+
+class RangeBoundTests(unittest.TestCase):
+    def test_bounds_of_a_disjointness_disjunction_become_section_notations(self):
+        for flip in (False, True):
+            text = "forall (x n : Z), %s" % disjoint("x", TEXT_START, TEXT_END, flip)
+            pairs = symbolize.range_bounds(text)
+            self.assertEqual([(a[2], b[2]) for a, b in pairs], [(TEXT_START, TEXT_END)])
+            rewritten, found = symbolize.statement(text, [], BOUNDS)
+            self.assertEqual(sorted(name for _, name in found), ["sec_text_end", "sec_text_start"])
+            self.assertIn("(sec_text_start)%Z", rewritten)
+            self.assertIn("(sec_text_end)%Z", rewritten)
+            self.assertEqual(package.address_matches(rewritten), [])
+
+    def test_other_shapes_keep_their_literals(self):
+        unrelated = "forall (x y n : Z), %s" % disjoint("x", TEXT_START, TEXT_END, other="y")
+        self.assertEqual(symbolize.range_bounds(unrelated), [])
+        not_bound = "forall (x n : Z), %s" % disjoint("x", TEXT_START, TEXT_END + 8)
+        self.assertEqual(symbolize.statement(not_bound, [], BOUNDS), (not_bound, []))
+
+    def test_display_names_readable_bounds(self):
+        text = "x + n ≤ %d\n  ∨ %d ≤ x and w = %d" % (TEXT_START, TEXT_END, TEXT_START)
+        self.assertEqual(symbolize.display(text, [], BOUNDS),
+                         "x + n ≤ sec_text_start\n  ∨ sec_text_end ≤ x and w = %d" % TEXT_START)
+
+    def test_sections_read_the_generated_module(self):
+        self.assertEqual(symbolize.sections()[TEXT_START], "sec_text_start")
+        self.assertEqual(symbolize.sections()[TEXT_END], "sec_text_end")
+
+
+class PackageRangeTests(unittest.TestCase):
+    run_with = PackageSymbolTests.run_with
+
+    def setUp(self):
+        self.tmp = tempfile.TemporaryDirectory()
+        self.saved = symbolize.table, symbolize.sections
+        symbolize.table = lambda path=None: SYMBOLS
+        symbolize.sections = lambda path=None: BOUNDS
+
+    def tearDown(self):
+        symbolize.table, symbolize.sections = self.saved
+        self.tmp.cleanup()
+
+    def test_range_goal_gets_a_task_with_the_range_hint(self):
+        statement = "forall (x n : Z), %s" % disjoint("x", TEXT_START, TEXT_END)
+        readable = "x, n : Z\n====\nx + n ≤ %d ∨ %d ≤ x" % (TEXT_START, TEXT_END)
+        _, d, record = self.run_with(statement, readable, Route())
+        self.assertIsNone(record["class"])
+        self.assertEqual(record["next"], "prover")
+        self.assertEqual(record["range_bounds"], ["sec_text_end", "sec_text_start"])
+        self.assertIn("range", record["context_supplied"])
+        task = Path(record["task"]).read_text()
+        self.assertIn("## Range hint", task)
+        self.assertIn("x + n ≤ sec_text_start ∨ sec_text_end ≤ x", task)
+        self.assertEqual(package.address_matches(task), [])
+        self.assertIn(symbolize.REQUIRE, (d / "goal.v").read_text())
+
+    def test_binder_equal_to_a_code_address_stays_address(self):
+        statement = "forall (x n : Z), x = (%#x)%%Z -> %s" % (TEXT_START + 0xc4, disjoint("x", TEXT_START, TEXT_END))
+        _, _, record = self.run_with(statement, "", Route())
+        self.assertEqual((record["class"], record["next"]), ("ADDRESS", "decision"))
+        self.assertEqual([row["hex"] for row in record["addresses"] if row["source"] == "literal"],
+                         ["%#x" % (TEXT_START + 0xc4)])
+
+
 if __name__ == "__main__":
     unittest.main()

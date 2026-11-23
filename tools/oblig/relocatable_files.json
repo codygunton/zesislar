@@ -8,6 +8,8 @@
     "tools/oblig/exec/inputs/*.json",
     "tools/block/functions/*.annotations.json",
     "ZesuSsz/Contracts/TxAccessListContract.v",
+    "ZesuSsz/Contracts/TxAccessListSelected.v",
+    "ZesuSsz/Contracts/TxAccessListMeaning.v",
     "ZesuSsz/Contracts/KeysToOwnedSliceContract.v",
     "ZesuSsz/Contracts/EntriesToOwnedSliceContract.v",
     "ZesuSsz/Contracts/KeysEnsureCapacityContract.v",

@@ -258,10 +258,12 @@ def render_return_package(profile):
     return header + "\n" + definition, structural
 
 
-def render_entry_registers(source):
-    """Render approved dead-register binders without changing other resources."""
+def render_entry_registers(source, function):
+    """Render approved dead-register binders of `function`'s entries without changing other resources."""
     fixture = Path(__file__).resolve().parent / 'fixtures/fp301-entry-registers.json'
     for row in json.loads(fixture.read_text())['rows']:
+        if row['function'] != function:
+            continue  # Entry names repeat across functions; a row approves one function's entry.
         owner = re.escape(row['entry'])
         if not re.search(r'\b(?:Definition|Instance) ' + owner + r'(?:_intro)?\b', source):
             continue
