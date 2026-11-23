@@ -45,9 +45,9 @@
   },
   "return_address": {
     "register": "x1",
-    "value": "(Z_to_bv 64 (toOwnedReturnAddress (keysBase args)))",
+    "value": "(keysReturnAddress args)",
     "alignment": 4,
-    "source": "keysBlockArgsWellFormed (KeysToOwnedSliceBlockEntries.v): toOwnedReturnAddress (keysBase args) mod 4 = 0 (from toOwnedSliceDomain: (4 | toOwnedReturnAddress args))"
+    "source": "keysBlockArgsWellFormed (KeysToOwnedSliceBlockEntries.v): bv_unsigned (keysReturnAddress args) mod 4 = 0 (from toOwnedSliceDomain: (4 | toOwnedReturnAddress args), linked by toOwnedReturnAddress (keysBase args) = bv_unsigned (keysReturnAddress args))"
   },
   "entry_interface": {
     "entry_resources": "keysBlockEntryResources",
@@ -113,7 +113,7 @@
       "frame_old_m32 = (keysSavedX18 args)",
       "frame_old_m24 = (keysSavedX9 args)",
       "frame_old_m16 = (keysSavedX8 args)",
-      "frame_old_m8 = (Z_to_bv 64 (toOwnedReturnAddress (keysBase args)))"
+      "frame_old_m8 = (keysReturnAddress args)"
     ],
     "+0xfc": [
       "frame_old_m80 = (keysSavedX24 args)",
@@ -125,7 +125,7 @@
       "frame_old_m32 = (keysSavedX18 args)",
       "frame_old_m24 = (keysSavedX9 args)",
       "frame_old_m16 = (keysSavedX8 args)",
-      "frame_old_m8 = (Z_to_bv 64 (toOwnedReturnAddress (keysBase args)))"
+      "frame_old_m8 = (keysReturnAddress args)"
     ],
     "+0x18c": [
       "frame_old_m80 = (keysSavedX24 args)",
@@ -137,7 +137,7 @@
       "frame_old_m32 = (keysSavedX18 args)",
       "frame_old_m24 = (keysSavedX9 args)",
       "frame_old_m16 = (keysSavedX8 args)",
-      "frame_old_m8 = (Z_to_bv 64 (toOwnedReturnAddress (keysBase args)))"
+      "frame_old_m8 = (keysReturnAddress args)"
     ]
   },
   "calls": [
@@ -262,7 +262,7 @@
         },
         {
           "kind": "fact",
-          "coq": "frame_old_m8 = (Z_to_bv 64 (toOwnedReturnAddress (keysBase args)))"
+          "coq": "frame_old_m8 = (keysReturnAddress args)"
         }
       ]
     },
@@ -334,7 +334,7 @@
         },
         {
           "kind": "fact",
-          "coq": "frame_old_m8 = (Z_to_bv 64 (toOwnedReturnAddress (keysBase args)))"
+          "coq": "frame_old_m8 = (keysReturnAddress args)"
         }
       ]
     },
@@ -409,7 +409,7 @@
         },
         {
           "kind": "fact",
-          "coq": "frame_old_m8 = (Z_to_bv 64 (toOwnedReturnAddress (keysBase args)))"
+          "coq": "frame_old_m8 = (keysReturnAddress args)"
         }
       ]
     },
@@ -471,6 +471,6 @@
   },
   "generated_from": {
     "path": "tools/block/functions/keysToOwnedSlice.annotations.json",
-    "sha256": "2dcd9b05cacbd7ce9b51a07aca92b9224260e93eb8eecfda4ce9295513f37bbb"
+    "sha256": "eef88f4234045685f15a84c2ce9fc235f5d73d434c0530f5a03559ba86f1dce3"
   }
 }

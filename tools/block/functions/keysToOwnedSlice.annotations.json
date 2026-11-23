@@ -49,9 +49,9 @@
   },
   "return_address": {
    "register": "x1",
-   "value": "(Z_to_bv 64 (toOwnedReturnAddress (keysBase args)))",
+   "value": "(keysReturnAddress args)",
    "alignment": 4,
-   "source": "keysBlockArgsWellFormed (KeysToOwnedSliceBlockEntries.v): toOwnedReturnAddress (keysBase args) mod 4 = 0 (from toOwnedSliceDomain: (4 | toOwnedReturnAddress args))"
+   "source": "keysBlockArgsWellFormed (KeysToOwnedSliceBlockEntries.v): bv_unsigned (keysReturnAddress args) mod 4 = 0 (from toOwnedSliceDomain: (4 | toOwnedReturnAddress args), linked by toOwnedReturnAddress (keysBase args) = bv_unsigned (keysReturnAddress args))"
   },
   "entry_interface": {
    "entry_resources": "keysBlockEntryResources",
@@ -565,7 +565,7 @@
     {"offset": -32, "coq": "keysSavedX18 args"},
     {"offset": -24, "coq": "keysSavedX9 args"},
     {"offset": -16, "coq": "keysSavedX8 args"},
-    {"offset": -8, "coq": "Z_to_bv 64 (toOwnedReturnAddress (keysBase args))"}
+    {"offset": -8, "coq": "keysReturnAddress args"}
    ],
    "sites": ["+0xfc", "+0x110", "+0x168", "+0x184", "+0x18c", "+0x1ac"],
    "author": {
