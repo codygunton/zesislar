@@ -1,9 +1,17 @@
 #!/usr/bin/env python3
-"""Render ZesuSsz/Residuals/Block800d<blk>.v from verified residual goal dirs.
+"""Render a residual module from verified residual goal dirs.
 
 Usage:
   render_residual_module.py --block 6960 --goals DIR [--manifest MANIFEST.json] --out FILE
+  render_residual_module.py --function txAccessList --block 00c4 --goals DIR --out FILE
   render_residual_module.py --shared DecodeItemBridges --goals DIR --out FILE
+
+Two module forms exist. The original form, ZesuSsz/Residuals/Block800d<blk>.v,
+holds lemmas named residual_<blk>_<hex>; <blk> is the low half of an absolute
+decodeItem address. The relocatable form, for every new function,
+ZesuSsz/Residuals/<function>/Block<offset>.v, holds lemmas named
+residual_<function>_<offset>_<16 hex>; <offset> is the block's 4-hex offset from
+the function's symbol and <function> is an identifier without underscores.
 
 Each goal dir <blk>-<n>/ holds goal.v (the statement with a PROOF-SLOT) and
 proof.v (goal.v with the slot filled and one Qed.). The module text of each
@@ -30,7 +38,9 @@ FORBIDDEN = re.compile(r"\b(Admitted|admit|Axiom|Abort|timeout|Timeout|give_up|P
 HEADER_LINE = re.compile(r"^(?:Require (?:Import|Export) [\w. ]+\.|From \w+ Require (?:Import|Export) [\w. ]+\."
                          r"|Local Open Scope \w+\.)$")
 OLD_CORE = re.compile(r"\bZesuSsz\.Automation\.")
-NAME = r"residual_(?P<block>[0-9a-f]{4})_[0-9a-f]+"
+FUNCTION = r"[A-Za-z][A-Za-z0-9]*"
+NAME = (r"residual_(?:(?P<function>" + FUNCTION + r")_(?P<offset>[0-9a-f]{4})_[0-9a-f]{16}"
+        r"|(?P<block>[0-9a-f]{4})_[0-9a-f]+)")
 LEMMA = re.compile(
     r"\(\* goal (?P<goal>[0-9a-f]{4}-\d+): goal\.v sha256 (?P<goal_sha>[0-9a-f]{64}), "
     r"proof\.v sha256 (?P<proof_sha>[0-9a-f]{64}) \*\)\n"
@@ -42,8 +52,23 @@ class RenderError(ValueError):
     pass
 
 
-def module_name(block):
-    return "Block800d" + block
+def module_name(block, function=None):
+    """The module path below ZesuSsz.Residuals: Block800d<block>, or
+    <function>.Block<block> in the relocatable form."""
+    if function is None:
+        return "Block800d" + block
+    if not re.fullmatch(FUNCTION, function) or not re.fullmatch(r"[0-9a-f]{4}", block):
+        raise RenderError("Invalid relocatable residual module: %s/%s." % (function, block))
+    return "%s.Block%s" % (function, block)
+
+
+def module_file(block, function=None):
+    """The source path of a residual module, relative to the repository root."""
+    return "ZesuSsz/Residuals/%s.v" % module_name(block, function).replace(".", "/")
+
+
+def lemma_prefix(block, function=None):
+    return "residual_%s_" % block if function is None else "residual_%s_%s_" % (function, block)
 
 
 def goal_ids(goals, block, manifest=None):
@@ -133,7 +158,8 @@ def parse_module(text):
         if FORBIDDEN.search(proof) or proof.count("Qed.") != 1:
             raise RenderError("Invalid proof of %s." % match["name"])
         rows.append(dict(goal=match["goal"], goal_sha=match["goal_sha"], proof_sha=match["proof_sha"],
-                         name=match["name"], block=match["block"], body=match["body"]))
+                         name=match["name"], block=match["block"] or match["offset"],
+                         function=match["function"], body=match["body"]))
         position = match.end()
         if position < len(body):
             if body[position] != "\n":
@@ -141,12 +167,12 @@ def parse_module(text):
             position += 1
     if not rows:
         raise RenderError("The module has no lemmas.")
-    blocks = {row["block"] for row in rows}
+    blocks = {(row["block"], row["function"]) for row in rows}
     if len(blocks) != 1:
         raise RenderError("A residual module serves one block.")
     if len({row["name"] for row in rows}) != len(rows):
         raise RenderError("A lemma name repeats.")
-    block = blocks.pop()
+    block = blocks.pop()[0]
     if render_module(block, header, rows) != text:
         raise RenderError("The module does not round-trip through the renderer.")
     return block, header, rows
@@ -168,16 +194,23 @@ def merged_header(header, imports, goal):
     return longer
 
 
-def render_from_goals(block, goals, manifest=None):
+def module_of_rows(rows):
+    """(block, function) of the parsed rows of one module; function is None in the original form."""
+    return rows[0]["block"], rows[0]["function"]
+
+
+def render_from_goals(block, goals, manifest=None, function=None):
     header, rows = None, []
-    own = "Require Import ZesuSsz.Residuals.%s." % module_name(block)
+    own = "Require Import ZesuSsz.Residuals.%s." % module_name(block, function)
+    prefix = lemma_prefix(block, function)
     for goal in goal_ids(goals, block, manifest):
         imports, lemma, goal_sha, proof_sha = read_goal(Path(goals) / goal)
         # A caller imports its own residual module; the module cannot import itself.
         imports = [line for line in imports if line != own]
         header = imports if header is None else merged_header(header, imports, goal)
         name = re.match(r"Lemma (\S+)", lemma)[1]
-        if not re.fullmatch(NAME, name) or not name.startswith("residual_%s_" % block):
+        match = re.fullmatch(NAME, name)
+        if not match or not name.startswith(prefix) or match["function"] != function:
             raise RenderError("%s: unexpected lemma name %s." % (goal, name))
         rows.append(dict(goal=goal, goal_sha=goal_sha, proof_sha=proof_sha, name=name, body=lemma))
     text = render_module(block, pin_shared_modules(header, rows), rows)
@@ -284,15 +317,18 @@ def main():
     group = ap.add_mutually_exclusive_group(required=True)
     group.add_argument("--block")
     group.add_argument("--shared")
+    ap.add_argument("--function", help="relocatable form: ZesuSsz/Residuals/<function>/Block<offset>.v")
     ap.add_argument("--goals", required=True)
     ap.add_argument("--manifest")
     ap.add_argument("--out", required=True)
     a = ap.parse_args()
+    if a.function and a.shared:
+        ap.error("--function goes with --block")
     try:
         if a.shared:
             text = render_shared_from_goals(a.shared, a.goals)
         else:
-            text = render_from_goals(a.block, a.goals, a.manifest)
+            text = render_from_goals(a.block, a.goals, a.manifest, a.function)
     except RenderError as error:
         sys.exit("render_residual_module: %s" % error)
     Path(a.out).parent.mkdir(parents=True, exist_ok=True)
