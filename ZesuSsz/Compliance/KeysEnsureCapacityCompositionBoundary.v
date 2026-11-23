@@ -5,6 +5,7 @@ Require Import ZesuSsz.Automation2.All.
 Require Import isla.riscv64.riscv64.
 From Coq Require Import ZArith.ZArith.
 Require Import ZesuSsz.Contracts.Level1.
+Require Import ZesuSsz.Generated.Stock.Symbols.
 Require Import ZesuSsz.Contracts.AltFlAllocPremises.
 Require Import ZesuSsz.Contracts.ZiskMemcpyPremise.
 Require Import ZesuSsz.Contracts.KeysEnsureCapacityContract.
