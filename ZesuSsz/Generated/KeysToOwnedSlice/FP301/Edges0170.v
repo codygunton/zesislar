@@ -28,11 +28,11 @@ Section edges.
 Context `{!islaG Sigma} `{!threadG}.
 
 (* fp_machineAt0170_ForwardA0N0 -> fp_machineAt0184_ForwardA0N0 (call_return) *)
-Global Instance zesu_hist_edge_27 (args : KeysToOwnedSliceBlockArgs) (returnAddress : Z) (call_x10 : bv 64) (call_x13 : bv 64) (call_x14 : bv 64) (call_x15 : bv 64) (call_x16 : bv 64) (call_x17 : bv 64) :
+Global Instance zesu_hist_edge_27 (args : KeysToOwnedSliceBlockArgs) (returnAddress : Z) (call_x10 : bv 64) :
   ZesuHistEdge (PROP := iProp Sigma)
     (fp_machineAt0170_ForwardA0N0_Hist (args) (returnAddress) (call_x10))
-    (fp_machineAt0184_ForwardA0N0_Hist (args) (returnAddress) (call_x10) (call_x13) (call_x14) (call_x15) (call_x16) (call_x17))
-    (⌜((Z.of_nat (List.length (word64Bytes (bv_unsigned (([(call_x10); (((Z_to_bv 64%N (arrayListPointer (keysBlockList args))))); ((bv_shiftl ((Z_to_bv 64%N (arrayListLength (keysBlockList args)))) (BV 64%N 5%Z))); (call_x13); (call_x14); (call_x15); (call_x16); (call_x17)]) !!! 2%nat)))) = 8)%Z)⌝ ∗ ⌜((Z.of_nat (List.length (arrayListItems (keysBlockList args))) = altFlAllocatedBytes (bv_unsigned call_x10) (bv_unsigned ((bv_shiftl ((Z_to_bv 64%N (arrayListLength (keysBlockList args)))) (BV 64%N 5%Z)))))%Z)⌝ ∗ ⌜(((ziskWord ((bv_unsigned (call_x10))) /\ ziskWord ((bv_unsigned (((Z_to_bv 64%N (arrayListPointer (keysBlockList args))))))) /\ ziskWord ((bv_unsigned ((bv_shiftl ((Z_to_bv 64%N (arrayListLength (keysBlockList args)))) (BV 64%N 5%Z))))) /\
+    (fp_machineAt0184_ForwardA0N0_Hist (args) (returnAddress) (call_x10))
+    (⌜((Z.of_nat (List.length (arrayListItems (keysBlockList args))) = altFlAllocatedBytes (bv_unsigned call_x10) (bv_unsigned ((bv_shiftl ((Z_to_bv 64%N (arrayListLength (keysBlockList args)))) (BV 64%N 5%Z)))))%Z)⌝ ∗ ⌜(((ziskWord ((bv_unsigned (call_x10))) /\ ziskWord ((bv_unsigned (((Z_to_bv 64%N (arrayListPointer (keysBlockList args))))))) /\ ziskWord ((bv_unsigned ((bv_shiftl ((Z_to_bv 64%N (arrayListLength (keysBlockList args)))) (BV 64%N 5%Z))))) /\
   ziskWritableSection stockZiskPermissions ziskExtraParamsAddress 8 /\
   (((bv_unsigned ((bv_shiftl ((Z_to_bv 64%N (arrayListLength (keysBlockList args)))) (BV 64%N 5%Z))))) <> 0 ->
     ziskMemcpyRange ((bv_unsigned (call_x10))) ((bv_unsigned ((bv_shiftl ((Z_to_bv 64%N (arrayListLength (keysBlockList args)))) (BV 64%N 5%Z))))) /\
@@ -43,12 +43,11 @@ Proof.
   rewrite /ZesuHistEdge => Hh. apply zesu_hist_elim in Hh. unfold fp_machineAt0170_ForwardA0N0_Hist in Hh.
   destruct Hh as (machine_x10 & machine_x23 & fp_seed_mstatus_bits & forward_witness_cbcac9df79b9221c & forward_witness_1be931110d776902 & forward_witness_905cf96e605c1117 & forward_witness_55ab0ce59750150a & forward_witness_d7543602bfbbe148 & forward_witness_00470b017f14ddbf & forward_witness_83d3e6d46c3de70e & forward_witness_88383840afa7af74 & forward_witness_87e5cadc5c04d5d4 & forward_witness_d77b5950a2aea933 & forward_witness_a84be01a9be85bdb & forward_witness_21649d1cf161453f & forward_witness_407fca3a6f90b8db & forward_witness_1eea82d2945b4618 & forward_witness_751588b52f8a71ff & forward_witness_72b7e22ed74cb83b & HF0 & HF1 & HF2 & HF3 & HF4 & HF5 & HF6 & HF7 & HF8 & HF9 & HF10 & HF11 & HF12 & HF13 & HF14 & HF15 & HF16 & HF17 & HF18 & HF19 & HF20).
   iIntros "HN".
-  iDestruct "HN" as "(%HN0 & %HN1 & %HN2 & _)".
+  iDestruct "HN" as "(%HN0 & %HN1 & _)".
   iPureIntro. apply zesu_hist_intro. unfold fp_machineAt0184_ForwardA0N0_Hist.
   exists machine_x10, machine_x23, fp_seed_mstatus_bits, forward_witness_cbcac9df79b9221c, forward_witness_1be931110d776902, forward_witness_905cf96e605c1117, forward_witness_55ab0ce59750150a, forward_witness_d7543602bfbbe148, forward_witness_00470b017f14ddbf, forward_witness_83d3e6d46c3de70e, forward_witness_88383840afa7af74, forward_witness_d77b5950a2aea933, forward_witness_a84be01a9be85bdb, forward_witness_21649d1cf161453f, forward_witness_407fca3a6f90b8db, forward_witness_1eea82d2945b4618, forward_witness_751588b52f8a71ff, forward_witness_72b7e22ed74cb83b, (BV 64%N 0%Z).
   split; [exact HN0|].
   split; [exact HN1|].
-  split; [exact HN2|].
   split; [exact HF0|].
   split; [exact HF1|].
   split; [exact HF2|].

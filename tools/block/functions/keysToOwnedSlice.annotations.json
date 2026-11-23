@@ -6,6 +6,7 @@
   "function": "keysToOwnedSlice",
   "entry_hist": "wrap",
   "frame_slots": true,
+  "array_spelling": "sealed",
   "args_type": "KeysToOwnedSliceBlockArgs",
   "symbol": "array_list.Aligned([32]u8,null).toOwnedSlice",
   "generated_directory": "ZesuSsz/Generated/KeysToOwnedSlice/FP301",

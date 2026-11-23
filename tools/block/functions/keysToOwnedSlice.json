@@ -2,6 +2,7 @@
   "function": "keysToOwnedSlice",
   "entry_hist": "wrap",
   "frame_slots": true,
+  "array_spelling": "sealed",
   "args_type": "KeysToOwnedSliceBlockArgs",
   "symbol": "array_list.Aligned([32]u8,null).toOwnedSlice",
   "generated_directory": "ZesuSsz/Generated/KeysToOwnedSlice/FP301",
@@ -306,6 +307,6 @@
   },
   "generated_from": {
     "path": "tools/block/functions/keysToOwnedSlice.annotations.json",
-    "sha256": "0517cedc214286f2eb4c3b350c370edb2c58f54c4ff2c0c5e86897c497574aa6"
+    "sha256": "6a074022e6fa1ec1eb18054960968ba04c40d776b241bf48a27ddc3f013c84a7"
   }
 }

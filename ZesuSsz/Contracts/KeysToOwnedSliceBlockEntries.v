@@ -21,6 +21,11 @@ Open Scope stdpp_scope.
    implies toOwnedSliceExit. *)
 
 Notation keysBlockFrameBytes := ((96) : Z) (only parsing).
+(* The prologue saves ra, s0-s8 in the top 80 bytes of the frame; the lowest
+   16 bytes are scratch. Separate regions, so the saved words fill their region
+   and the entries state one cell per saved-register slot (profile frame_slots). *)
+Notation keysBlockSavedBytes := ((80) : Z) (only parsing).
+Notation keysBlockScratchBytes := ((16) : Z) (only parsing).
 Notation keysBlockCalleeBytes := ((16) : Z) (only parsing).
 Notation keysBlockRamLow := ((0xa0000000) : Z) (only parsing).
 Notation keysBlockRamHigh := ((0xc0000000) : Z) (only parsing).
@@ -129,7 +134,8 @@ Definition keysBlockEntryResources `{!islaG Sigma} `{!threadG}
    sym_alt_fl_alloc_vtable ↦ₘ∗ altFlVtableBytes ∗
    altFlHeap ∗
    ziskExtraParamsAddress ↦ₘ∗ toOwnedScratchBefore (keysBase args) ∗
-   (toOwnedStackPointer (keysBase args) - keysBlockFrameBytes) ↦ₘ? keysBlockFrameBytes ∗
+   (toOwnedStackPointer (keysBase args) - keysBlockFrameBytes) ↦ₘ? keysBlockScratchBytes ∗
+   (toOwnedStackPointer (keysBase args) - keysBlockSavedBytes) ↦ₘ? keysBlockSavedBytes ∗
    (toOwnedStackPointer (keysBase args) - keysBlockFrameBytes - keysBlockCalleeBytes) ↦ₘ?
      keysBlockCalleeBytes ∗
    ⌜keysBlockArgsWellFormed args⌝ ∗ True)%I.
