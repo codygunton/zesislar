@@ -1,0 +1,414 @@
+{
+ "schema": "zesu.annotations.v1",
+ "function": "keysEnsureCapacity",
+ "symbol": "array_list.Aligned([32]u8,null).ensureTotalCapacity",
+ "profile": {
+  "function": "keysEnsureCapacity",
+  "entry_hist": "wrap",
+  "frame_slots": true,
+  "array_spelling": "sealed",
+  "hist_visible": [
+   "^\\(?frame_old_m\\d+'* = "
+  ],
+  "args_type": "KeysEnsureCapacityBlockArgs",
+  "symbol": "array_list.Aligned([32]u8,null).ensureTotalCapacity",
+  "generated_directory": "ZesuSsz/Generated/KeysEnsureCapacity/FP301",
+  "callers_directory": "tools/block/generated/keysensurecapacity_fp301_callers",
+  "contract_requires": [
+   "Require Import InstrSpecs.Machine.",
+   "Require Import EvmSailRlp.evm_rlp_types.",
+   "Require Import ZesuSsz.Generated.Stock.Symbols.",
+   "Require Import ZesuSsz.Contracts.AltFlAllocPremises.",
+   "Require Import ZesuSsz.Contracts.ZiskMemcpyPremise.",
+   "Require Import ZesuSsz.Contracts.AbiBytes.",
+   "Require Import ZesuSsz.Contracts.ZiskRuntime.",
+   "Require Import ZesuSsz.Contracts.ParentHeaderMemcpyService.",
+   "Require Import ZesuSsz.Contracts.ArrayListContract.",
+   "Require Import ZesuSsz.Contracts.KeysEnsureCapacityBlockEntries.",
+   "Require Export ZesuSsz.Compliance.KeysEnsureCapacityHints."
+  ],
+  "loop_contract_requires": [
+   "Require Import InstrSpecs.Machine.",
+   "Require Import EvmSailRlp.evm_rlp_types.",
+   "Require Import ZesuSsz.Generated.Stock.Symbols.",
+   "Require Import ZesuSsz.Contracts.AltFlAllocPremises.",
+   "Require Import ZesuSsz.Contracts.ZiskMemcpyPremise.",
+   "Require Import ZesuSsz.Contracts.AbiBytes.",
+   "Require Import ZesuSsz.Contracts.ZiskRuntime.",
+   "Require Import ZesuSsz.Contracts.ParentHeaderMemcpyService.",
+   "Require Import ZesuSsz.Contracts.ArrayListContract.",
+   "Require Import ZesuSsz.Contracts.KeysEnsureCapacityBlockEntries.",
+   "Require Export ZesuSsz.Compliance.KeysEnsureCapacityHints."
+  ],
+  "caller_contract_requires": [
+   "Require Import ZesuSsz.Contracts.KeysEnsureCapacityBlockEntries."
+  ],
+  "selected_code": {
+   "module": "ZesuSsz.Contracts.KeysEnsureCapacitySelected",
+   "premise": "keysEnsureCapacitySelectedCode"
+  },
+  "return_address": {
+   "register": "x1",
+   "value": "(ensureReturnAddress (ensureBase args))",
+   "alignment": 4,
+   "source": "ensureBlockArgsWellFormed (KeysEnsureCapacityBlockEntries.v): bv_unsigned (ensureReturnAddress (ensureBase args)) mod 4 = 0 (from keysEnsureCapacityDomain: (4 | bv_unsigned (ensureReturnAddress args)))"
+  },
+  "entry_interface": {
+   "entry_resources": "ensureBlockEntryResources",
+   "well_formed": "ensureBlockArgsWellFormed",
+   "exit_resources": "ensureBlockExitResources",
+   "source": "ZesuSsz/Contracts/KeysEnsureCapacityBlockEntries.v",
+   "exact_system_registers": {
+    "zisk_input_end": "bv_unsigned (ensureInputEnd (ensureBase args))"
+   }
+  },
+  "trace_namespace": "ZesuSsz.Stock.Closure",
+  "blocks": [
+   "+0x0",
+   "+0x3c",
+   "+0x68",
+   "+0x74",
+   "+0x80",
+   "+0x88",
+   "+0x8c",
+   "+0xc0",
+   "+0xec",
+   "+0xf0",
+   "+0x104",
+   "+0x108",
+   "+0x118",
+   "+0x124",
+   "+0x12c",
+   "+0x138",
+   "+0x150",
+   "+0x158",
+   "+0x15c",
+   "+0x164",
+   "+0x17c",
+   "+0x180",
+   "+0x19c"
+  ],
+  "loop_heads": [],
+  "duplicated_joins": [
+   "+0x8c"
+  ],
+  "cfg_function": "array_list.Aligned([32]u8,null).ensureTotalCapacity"
+ },
+ "rows": [
+  {
+   "id": "entry",
+   "request": "keysEnsureCapacity/decision/contract-0000",
+   "at": {
+    "pc": "+0x0",
+    "boundary": "entry"
+   },
+   "binders": [],
+   "resources": [],
+   "facts": [
+    {
+     "coq": "ensureBlockDomainAt returnAddress args",
+     "role": "domain",
+     "source": "KeysEnsureCapacityContract.v (B1, PR #363) via its block-entry form KeysEnsureCapacityBlockEntries.v"
+    }
+   ],
+   "predicates": [
+    {
+     "name": "altFlHeap",
+     "owner": "ZesuSsz.Contracts.AltFlAllocPremises"
+    },
+    {
+     "name": "altFlBlock",
+     "owner": "ZesuSsz.Contracts.AltFlAllocPremises"
+    }
+   ],
+   "author": {
+    "tier": "hand"
+   }
+  },
+  {
+   "id": "return-bc",
+   "request": null,
+   "at": {
+    "pc": "+0xbc",
+    "boundary": "function_return"
+   },
+   "binders": [],
+   "resources": [],
+   "facts": [],
+   "author": {
+    "tier": "hand"
+   }
+  },
+  {
+   "id": "call-e8",
+   "request": "keysEnsureCapacity/decision/call_row-00e8",
+   "at": {
+    "pc": "+0xe8",
+    "boundary": "call_site"
+   },
+   "binders": [],
+   "resources": [],
+   "facts": [],
+   "call": {
+    "function": "array_list.Aligned([32]u8,null).ensureTotalCapacity",
+    "callee_pc": "alt_fl_alloc.remap+0x0",
+    "return_site_pc": "+0xec",
+    "spec": "altFlRemapCallSpec",
+    "spec_module": "ZesuSsz.Contracts.AltFlAllocPremises",
+    "spec_source": "ZesuSsz/Contracts/AltFlAllocPremises.v",
+    "stack_bytes": 16,
+    "arrays": [],
+    "output_length_source": "altFlRemapCallSpec (AltFlAllocPremises.v): returns 0 in x10 and no array",
+    "returns": [
+     {
+      "index": 0,
+      "register": "x10"
+     }
+    ]
+   },
+   "author": {
+    "tier": "opus-medium"
+   }
+  },
+  {
+   "id": "call-14c",
+   "request": "keysEnsureCapacity/decision/call_row-014c",
+   "at": {
+    "pc": "+0x14c",
+    "boundary": "call_site"
+   },
+   "binders": [],
+   "resources": [],
+   "facts": [],
+   "call": {
+    "function": "array_list.Aligned([32]u8,null).ensureTotalCapacity",
+    "callee_pc": "alt_fl_alloc.alloc+0x0",
+    "return_site_pc": "+0x150",
+    "spec": "altFlAllocCallSpec",
+    "spec_module": "ZesuSsz.Contracts.AltFlAllocPremises",
+    "spec_source": "ZesuSsz/Contracts/AltFlAllocPremises.v",
+    "stack_bytes": 16,
+    "arrays": [],
+    "output_length_source": "altFlAllocCallSpec (AltFlAllocPremises.v): the returned block owns altFlAllocatedBytes x10 (argument 1) bytes, uninitialized",
+    "returns": [
+     {
+      "index": 0,
+      "register": "x10"
+     }
+    ],
+    "opaque": [
+     {
+      "spec": "altFlHeap",
+      "use": "framed"
+     },
+     {
+      "spec": "bv_unsigned (rets !!! 0%nat) ↦ₘ? altFlAllocatedBytes (bv_unsigned (rets !!! 0%nat)) (bv_unsigned (argv !!! 1%nat))",
+      "use": "produced"
+     },
+     {
+      "spec": "altFlBlock (bv_unsigned (rets !!! 0%nat)) (altFlAllocatedBytes (bv_unsigned (rets !!! 0%nat)) (bv_unsigned (argv !!! 1%nat))) (bv_unsigned (argv !!! 2%nat))",
+      "use": "produced"
+     }
+    ]
+   },
+   "author": {
+    "tier": "opus-medium"
+   }
+  },
+  {
+   "id": "call-178",
+   "request": "keysEnsureCapacity/decision/call_row-0178",
+   "at": {
+    "pc": "+0x178",
+    "boundary": "call_site"
+   },
+   "binders": [],
+   "resources": [],
+   "facts": [],
+   "call": {
+    "function": "array_list.Aligned([32]u8,null).ensureTotalCapacity",
+    "callee_pc": "memcpy+0x0",
+    "return_site_pc": "+0x17c",
+    "spec": "ziskMemcpyCallSpec",
+    "spec_module": "ZesuSsz.Contracts.ZiskMemcpyPremise",
+    "spec_source": "ZesuSsz/Contracts/ZiskMemcpyPremise.v",
+    "stack_bytes": 0,
+    "arrays": [
+     {
+      "binder": "source",
+      "argument": 1,
+      "caller_value": "arrayListItems (ensureBlockList args)"
+     },
+     {
+      "binder": "scratch",
+      "constant": "ziskExtraParamsAddress",
+      "caller_value": "ensureScratchBefore (ensureBase args)",
+      "length": 8,
+      "length_source": "ensureBlockArgsWellFormed (KeysEnsureCapacityBlockEntries.v): length (ensureScratchBefore (ensureBase args)) = 8%nat"
+     }
+    ],
+    "output_length_source": "ziskMemcpyCallSpec (ZiskMemcpyPremise.v): the destination receives source, Z.of_nat (length source) = argument 2; the extra-params word receives word64Bytes (argument 2), 8 bytes",
+    "returned_lengths": {
+     "0": "altFlAllocatedBytes (bv_unsigned call_x10) (bv_unsigned ((bv_shiftl (bv_or (bv_sub (BV 64%N 0%Z) (bv_zero_extend 64%N (if (bool_decide ((bv_signed (bv_zero_extend 128%N (bv_add (bv_add (bv_shiftr (ensureRequested (ensureBase args)) (BV 64%N 1%Z)) (ensureRequested (ensureBase args))) (BV 64%N 2%Z))) < bv_signed (bv_zero_extend 128%N (ensureRequested (ensureBase args))))%Z)) then (BV 1%N 1%Z) else (BV 1%N 0%Z)))) (bv_add (bv_add (bv_shiftr (ensureRequested (ensureBase args)) (BV 64%N 1%Z)) (ensureRequested (ensureBase args))) (BV 64%N 2%Z))) (BV 64%N 5%Z))))"
+    }
+   },
+   "author": {
+    "tier": "opus-medium"
+   }
+  },
+  {
+   "id": "call-198",
+   "request": "keysEnsureCapacity/decision/call_row-0198",
+   "at": {
+    "pc": "+0x198",
+    "boundary": "call_site"
+   },
+   "binders": [],
+   "resources": [],
+   "facts": [],
+   "call": {
+    "function": "array_list.Aligned([32]u8,null).ensureTotalCapacity",
+    "callee_pc": "alt_fl_alloc.free+0x0",
+    "return_site_pc": "+0x19c",
+    "spec": "altFlFreeCallSpec",
+    "spec_module": "ZesuSsz.Contracts.AltFlAllocPremises",
+    "spec_source": "ZesuSsz/Contracts/AltFlAllocPremises.v",
+    "stack_bytes": 16,
+    "arrays": [],
+    "output_length_source": "altFlFreeCallSpec (AltFlAllocPremises.v): returns altFlHeap only; no array",
+    "opaque": [
+     {
+      "spec": "altFlHeap",
+      "use": "framed"
+     },
+     {
+      "spec": "bv_unsigned (argv !!! 1%nat) ↦ₘ? bv_unsigned (argv !!! 2%nat)",
+      "use": "consumed",
+      "caller": [
+       "arrayListPointer (ensureBlockList args) ↦ₘ∗ arrayListItems (ensureBlockList args)",
+       "(arrayListPointer (ensureBlockList args) + arrayListLength (ensureBlockList args) * keysElementBytes) ↦ₘ? ((arrayListCapacity (ensureBlockList args) - arrayListLength (ensureBlockList args)) * keysElementBytes)"
+      ]
+     },
+     {
+      "spec": "altFlBlock (bv_unsigned (argv !!! 1%nat)) (bv_unsigned (argv !!! 2%nat)) (bv_unsigned (argv !!! 3%nat))",
+      "use": "consumed",
+      "caller": [
+       "altFlBlock (arrayListPointer (ensureBlockList args)) (arrayListCapacity (ensureBlockList args) * keysElementBytes) keysLog2Alignment"
+      ]
+     }
+    ]
+   },
+   "author": {
+    "tier": "opus-medium"
+   }
+  },
+  {
+   "id": "dead-f0",
+   "request": null,
+   "at": {
+    "pc": "+0xf0",
+    "boundary": "join"
+   },
+   "binders": [],
+   "resources": [],
+   "facts": [
+    {
+     "coq": "False",
+     "role": "unreachable",
+     "need": "remap returns 0 (altFlRemapCallSpec), so beqz a0 at +0xec always branches to +0x108"
+    }
+   ],
+   "author": {
+    "tier": "opus-medium"
+   }
+  },
+  {
+   "id": "dead-104",
+   "request": null,
+   "at": {
+    "pc": "+0x104",
+    "boundary": "join"
+   },
+   "binders": [],
+   "resources": [],
+   "facts": [
+    {
+     "coq": "False",
+     "role": "unreachable",
+     "need": "reached only from +0xf0 (dead-f0)"
+    }
+   ],
+   "author": {
+    "tier": "opus-medium"
+   }
+  },
+  {
+   "id": "dead-80",
+   "request": null,
+   "at": {
+    "pc": "+0x80",
+    "boundary": "join"
+   },
+   "binders": [],
+   "resources": [],
+   "facts": [
+    {
+     "coq": "False",
+     "role": "unreachable",
+     "need": "reached only from bnez a1 at +0x100 in +0xf0 (dead-f0): the remap-success store of the new pointer and capacity"
+    }
+   ],
+   "author": {
+    "tier": "opus-medium"
+   }
+  },
+  {
+   "id": "dead-15c",
+   "request": null,
+   "at": {
+    "pc": "+0x15c",
+    "boundary": "join"
+   },
+   "binders": [],
+   "resources": [],
+   "facts": [
+    {
+     "coq": "False",
+     "role": "unreachable",
+     "need": "the only edge is beqz a1 at +0x134 with a1 = s6 << 5; s6 = the saturating r + r/2 + 2 of the request r < 2^32 (keysEnsureCapacityMaxRequest), so s6 is in [2, 2^33] and s6 << 5 <> 0; the +0x12c block proves False in the kernel"
+    },
+    {
+     "coq": "bv_unsigned (ensureRequested (ensureBase args)) < keysEnsureCapacityMaxRequest",
+     "role": "relies_on"
+    }
+   ],
+   "reached": "contradictory_guards",
+   "author": {
+    "tier": "opus-medium"
+   }
+  },
+  {
+   "id": "join-124",
+   "request": "keysEnsureCapacity/decision/join_assertion-0124",
+   "at": {
+    "pc": "+0x124",
+    "boundary": "join"
+   },
+   "binders": [],
+   "resources": [],
+   "facts": [],
+   "drop": [
+    {
+     "root": "+0x150",
+     "resources": [
+      "bv_unsigned call_x10 ↦ₘ? altFlAllocatedBytes (bv_unsigned call_x10) (bv_unsigned ((bv_shiftl (bv_or (bv_sub (BV 64%N 0%Z) (bv_zero_extend 64%N (if (bool_decide ((bv_signed (bv_zero_extend 128%N (bv_add (bv_add (bv_shiftr (ensureRequested (ensureBase args)) (BV 64%N 1%Z)) (ensureRequested (ensureBase args))) (BV 64%N 2%Z))) < bv_signed (bv_zero_extend 128%N (ensureRequested (ensureBase args))))%Z)) then (BV 1%N 1%Z) else (BV 1%N 0%Z)))) (bv_add (bv_add (bv_shiftr (ensureRequested (ensureBase args)) (BV 64%N 1%Z)) (ensureRequested (ensureBase args))) (BV 64%N 2%Z))) (BV 64%N 5%Z))))"
+     ]
+    }
+   ],
+   "author": {
+    "tier": "opus-medium"
+   },
+   "why": "OutOfMemory path: alloc returned null (beqz at +0x154 falls to +0x158), so the block owns altFlAllocatedBytes 0 n = 0 bytes; keysEnsureCapacityExit on OutOfMemory keeps only the old list buffer, so the exit does not need it"
+  }
+ ]
+}
