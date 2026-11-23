@@ -21,9 +21,10 @@ continuation instead of K, as the record field of that predecessor states.
 A successor block whose entry another driver step renders (a profile `loop_exits` design
 row: render_loop_exits.py) is a block of the function; its entry case comes from
 --extra-entries. A block of the profile's `design_callers` gets no caller here (status
-`design`): render_design_callers.py --output writes it into the same directory. With
-profile `caller_residual_imports`, a caller imports its block's residual-lemma module
-(render_fp301_statements.residual_import) when one exists.
+`design`): render_design_callers.py --output writes it into the same directory. A caller
+imports its block's relocatable residual module ZesuSsz.Residuals.<function>.Block<offset>
+when one exists; with profile `caller_residual_imports` it imports the in-tree Block800d
+module instead when no relocatable one exists (render_fp301_statements.residual_import).
 
 Usage: render_function_callers.py --function NAME --entries RESULT.json
        [--extra-entries RESULT.json ...] --cfg FUNCTION.json --output DIR
@@ -221,8 +222,9 @@ def main():
             last = source.rindex('Require Import ZesuSsz.Automation2.All.\n')
             source = (source[:last] + 'Require Import ' + profile.qualified('Edges' + suffix) + '.\n'
                       + source[last:])
-        if profile.get('caller_residual_imports'):
-            source = residual_import(source, profile=profile)
+        # A registered relocatable residual module is imported for any function; the in-tree
+        # Block800d form only under the profile's `caller_residual_imports`.
+        source = residual_import(source, profile=profile, legacy=bool(profile.get('caller_residual_imports')))
         if source.count('Proof.\n  zesu_block2.\nQed.\n') != 1 or re.search(r'\b(?:Ltac|Admitted|Axiom)\b|::=', source):
             raise ValueError('A caller has more than its block proof: ' + suffix)
         path = output / ('Caller' + suffix + slot_suffix(slot) + '.v')
