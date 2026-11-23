@@ -6,6 +6,8 @@ Require Import InstrSpecs.Machine.
 Require Import ZesuSsz.Generated.Stock.Symbols.
 Require Import ZesuSsz.Contracts.Level1.
 Require Import ZesuSsz.Contracts.AltFlAllocPremises.
+Require Import ZesuSsz.Contracts.ZiskRuntime.
+Require Import ZesuSsz.Contracts.AbiBytes.
 Require Import ZesuSsz.Contracts.ZiskMemcpyPremise.
 Require Import ZesuSsz.Contracts.ArrayListContract.
 Require Import ZesuSsz.Contracts.KeysEnsureCapacitySelected.
@@ -36,6 +38,7 @@ Record EnsureCapacityArgs : Type := {
   ensureAllocatorContext : Z;
   ensureList : ArrayListState;
   ensureRequested : Z;
+  ensureScratchBefore : list byte;
   ensureStackPointer : Z;
   ensureReturnAddress : Z;
   ensureSaved : list (bv 64)
@@ -54,6 +57,7 @@ Definition keysEnsureCapacityDomain (args : EnsureCapacityArgs) : Prop :=
   (8 | ensureAllocatorPointer args) /\
   0 <= ensureAllocatorContext args < 2 ^ 64 /\
   0 <= ensureRequested args < keysEnsureCapacityMaxRequest /\
+  Z.of_nat (length (ensureScratchBefore args)) = arrayListScratchSize /\
   arrayListStackLayout (ensureStackPointer args) keysEnsureCapacityStackBytes /\
   0 <= ensureReturnAddress args < 2 ^ 64 /\
   (4 | ensureReturnAddress args) /\
@@ -79,6 +83,20 @@ Definition keysEnsureCapacityAllows (args : EnsureCapacityArgs)
      | arrayListOutOfMemory => ensureListAfter outcome = state
      end).
 
+(* The ZisK memcpy scratch word (ziskExtraParamsAddress) after the call:
+   the count of the one copy on the growing success path, its entry bytes
+   otherwise. *)
+Definition keysEnsureCapacityScratchAfter (args : EnsureCapacityArgs)
+    (outcome : EnsureCapacityOutcome) : list byte :=
+  if ensureRequested args <=? arrayListCapacity (ensureList args)
+  then ensureScratchBefore args
+  else
+    match ensureKind outcome with
+    | arrayListSuccess =>
+        word64Bytes (arrayListLength (ensureList args) * keysElementBytes)
+    | arrayListOutOfMemory => ensureScratchBefore args
+    end.
+
 Definition keysEnsureCapacityEntry `{!islaG Sigma} `{!threadG}
     (args : EnsureCapacityArgs) : iProp Sigma :=
   (reg_col zesu_sys_regs ∗
@@ -91,6 +109,7 @@ Definition keysEnsureCapacityEntry `{!islaG Sigma} `{!threadG}
    arrayListAnyRegisters arrayListEntryScratch ∗
    ensureListPointer args ↦ₘ∗ arrayListHeaderBytes (ensureList args) ∗
    arrayListBuffer keysElementBytes keysLog2Alignment (ensureList args) ∗
+   ziskExtraParamsAddress ↦ₘ∗ ensureScratchBefore args ∗
    altFlAllocatorObject (ensureAllocatorPointer args)
      (ensureAllocatorContext args) ∗
    altFlVtable ∗
@@ -112,6 +131,7 @@ Definition keysEnsureCapacityExit `{!islaG Sigma} `{!threadG}
    arrayListAnyRegisters arrayListExitScratch ∗
    ensureListPointer args ↦ₘ∗ arrayListHeaderBytes (ensureListAfter outcome) ∗
    arrayListBuffer keysElementBytes keysLog2Alignment (ensureListAfter outcome) ∗
+   ziskExtraParamsAddress ↦ₘ∗ keysEnsureCapacityScratchAfter args outcome ∗
    altFlAllocatorObject (ensureAllocatorPointer args)
      (ensureAllocatorContext args) ∗
    altFlVtable ∗
@@ -178,6 +198,7 @@ Lemma keysEnsureCapacityDomainRanges (args : EnsureCapacityArgs) :
   (8 | ensureAllocatorPointer args) /\
   0 <= ensureAllocatorContext args < 2 ^ 64 /\
   0 <= ensureRequested args < keysEnsureCapacityMaxRequest /\
+  Z.of_nat (length (ensureScratchBefore args)) = arrayListScratchSize /\
   (16 | ensureStackPointer args) /\
   mapRamBase defaultMap <=
     ensureStackPointer args - keysEnsureCapacityStackBytes /\

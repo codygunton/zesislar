@@ -6,6 +6,7 @@ Require Import InstrSpecs.Machine.
 Require Import ZesuSsz.Contracts.AbiBytes.
 Require Import ZesuSsz.Contracts.Level1.
 Require Import ZesuSsz.Contracts.AltFlAllocPremises.
+Require Import ZesuSsz.Contracts.ZiskRuntime.
 Require Import ZesuSsz.Automation2.DomainRanges.
 Open Scope Z_scope.
 Open Scope stdpp_scope.
@@ -28,6 +29,7 @@ Notation arrayListHeaderSize := ((24) : Z) (only parsing).
 Notation arrayListResultSize := ((24) : Z) (only parsing).
 Notation arrayListAllocatorSize := ((16) : Z) (only parsing).
 Notation arrayListOutOfMemoryCode := ((2) : Z) (only parsing).
+Notation arrayListScratchSize := ((8) : Z) (only parsing).
 (* Own frame 96 bytes, plus the 16-byte frame of an allocator callee. *)
 Notation arrayListToOwnedSliceStackBytes := ((96 + 16) : Z) (only parsing).
 
@@ -131,6 +133,7 @@ Record ToOwnedSliceArgs : Type := {
   toOwnedAllocatorContext : Z;
   toOwnedList : ArrayListState;
   toOwnedResultBefore : list byte;
+  toOwnedScratchBefore : list byte;
   toOwnedStackPointer : Z;
   toOwnedReturnAddress : Z;
   toOwnedSaved : list (bv 64)
@@ -156,6 +159,7 @@ Definition toOwnedSliceDomain (elementBytes : Z) (args : ToOwnedSliceArgs) :
   arrayListRamRange (toOwnedAllocatorPointer args) arrayListAllocatorSize /\
   (8 | toOwnedAllocatorPointer args) /\
   Z.of_nat (length (toOwnedResultBefore args)) = arrayListResultSize /\
+  Z.of_nat (length (toOwnedScratchBefore args)) = arrayListScratchSize /\
   0 <= toOwnedAllocatorContext args < 2 ^ 64 /\
   arrayListStackLayout (toOwnedStackPointer args)
     arrayListToOwnedSliceStackBytes /\
@@ -200,6 +204,19 @@ Definition toOwnedSliceAllows (elementBytes emptyPointer : Z)
            arrayListErrorImage before arrayListOutOfMemoryCode
      end).
 
+(* The ZisK memcpy scratch word (ziskExtraParamsAddress) after the call:
+   the count of the one copy on the path that copies (length > 0, success),
+   its entry bytes otherwise. *)
+Definition toOwnedSliceScratchAfter (elementBytes : Z) (args : ToOwnedSliceArgs)
+    (outcome : ToOwnedSliceOutcome) : list byte :=
+  if arrayListLength (toOwnedList args) =? 0 then toOwnedScratchBefore args
+  else
+    match toOwnedKind outcome with
+    | arrayListSuccess =>
+        word64Bytes (arrayListLength (toOwnedList args) * elementBytes)
+    | arrayListOutOfMemory => toOwnedScratchBefore args
+    end.
+
 Definition toOwnedSliceEntry `{!islaG Sigma} `{!threadG}
     (elementBytes log2Align : Z) (args : ToOwnedSliceArgs) : iProp Sigma :=
   (reg_col zesu_sys_regs ∗
@@ -213,6 +230,7 @@ Definition toOwnedSliceEntry `{!islaG Sigma} `{!threadG}
    toOwnedListPointer args ↦ₘ∗ arrayListHeaderBytes (toOwnedList args) ∗
    arrayListBuffer elementBytes log2Align (toOwnedList args) ∗
    toOwnedResultPointer args ↦ₘ∗ toOwnedResultBefore args ∗
+   ziskExtraParamsAddress ↦ₘ∗ toOwnedScratchBefore args ∗
    altFlAllocatorObject (toOwnedAllocatorPointer args)
      (toOwnedAllocatorContext args) ∗
    altFlVtable ∗
@@ -237,6 +255,8 @@ Definition toOwnedSliceExit `{!islaG Sigma} `{!threadG}
    arrayListBuffer elementBytes log2Align (toOwnedListAfter outcome) ∗
    arrayListBuffer elementBytes log2Align (toOwnedSlice outcome) ∗
    toOwnedResultPointer args ↦ₘ∗ toOwnedResultAfter outcome ∗
+   ziskExtraParamsAddress ↦ₘ∗
+     toOwnedSliceScratchAfter elementBytes args outcome ∗
    altFlAllocatorObject (toOwnedAllocatorPointer args)
      (toOwnedAllocatorContext args) ∗
    altFlVtable ∗
@@ -293,6 +313,7 @@ Lemma toOwnedSliceDomainRanges (elementBytes : Z) (args : ToOwnedSliceArgs) :
     machineRamEnd defaultMap /\
   (8 | toOwnedAllocatorPointer args) /\
   Z.of_nat (length (toOwnedResultBefore args)) = arrayListResultSize /\
+  Z.of_nat (length (toOwnedScratchBefore args)) = arrayListScratchSize /\
   0 <= toOwnedAllocatorContext args < 2 ^ 64 /\
   (16 | toOwnedStackPointer args) /\
   mapRamBase defaultMap <=
