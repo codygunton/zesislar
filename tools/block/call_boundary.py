@@ -1091,6 +1091,11 @@ def call_return_seed(edges, *, call, function_root, root_seed, shapes, vocabular
     seed.state.conditions = list(state.conditions) + system_conditions
     seed.state.memory = [replace(region, bytes=regions.get(region.ownership_id, region.bytes))
                          for region in seed.state.memory]
+    # A word link of the root holds after the call while the callee leaves its array alone: the
+    # array is neither written on the call-site paths nor replaced, consumed or split by the spec.
+    seed.state.word_links = [dict(link) for link in root_seed.state.word_links
+                             if link['resource_id'] not in splits and link['resource_id'] not in consumed
+                             and not image.updates.get(link['resource_id'])]
     seed.join_kind = 'tail_return' if tail else 'call_return'
     report = {'call_site_pc': call['call_site_pc'], 'return_site_pc': call.get('return_site_pc'),
               'spec': call['spec_module'] + '.' + call['spec'], 'edges': len(edges),
