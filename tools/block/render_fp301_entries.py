@@ -698,7 +698,7 @@ for suffix, slot in units:
                 + body_source(helper["body"], seal_as=helpers[helper["suffix"]])
                 + "%I.\n"
             )
-            definition = render_entry_registers(definition)
+            definition = render_entry_registers(definition, profile.name)
             definition_introduction_source(definition, helpers[helper["suffix"]])
             definitions.append((helpers[helper["suffix"]], definition))
             if helpers[helper["suffix"]] in sealed:
