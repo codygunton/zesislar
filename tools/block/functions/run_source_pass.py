@@ -67,6 +67,12 @@ def main():
     if not isinstance(keep, bool):
         raise ValueError('keep_source_implied_ram_guards: a boolean is required')
     symbolic_state.KEEP_SOURCE_IMPLIED_RAM_GUARDS = keep
+    # Profile `access_placements` (compiled from annotation rows): the owned array of an access the
+    # engine cannot place by itself (symbolic_state.placed_owner).
+    placements = {}
+    for row in (profile.get('access_placements', []) if profile else []):
+        placements.setdefault(int(profile.pc(row['pc']), 0), []).append(row)
+    symbolic_state.ACCESS_PLACEMENTS = placements
     # Profile key `merge_condition_alternatives` (default true): alternatives that reach a block over
     # one edge with the same state up to their path conditions continue as one (forward_design).
     merge = profile.get('merge_condition_alternatives', True) if profile else True

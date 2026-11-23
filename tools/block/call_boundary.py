@@ -604,6 +604,21 @@ def call_return_seed(edges, *, call, function_root, root_seed, shapes, vocabular
     for row in spec['pre']['uninitialized']:
         returned = returned_at.get(spot(row))
         length = int(row['length']) if row['length'].isdigit() else (constants or {}).get(row['length'], {}).get('value')
+        returned_length = (call.get('returned_lengths') or {}).get(str(row.get('argument')))
+        if returned is not None and not isinstance(length, int) and returned_length is not None:
+            # The call design names the length of the returned array (annotations.py `call_row`): the
+            # callee fills the whole uninitialized caller region at the argument whose length is that term.
+            address = operation('bvadd', state.registers[ARGUMENTS[row['argument']]], bits(row.get('offset', 0), 64))
+            owner = [resource for resource in resources.values() if resource.byte_array is None
+                     and _offset(address, resource.base) == 0 and isinstance(resource.length, Expr)
+                     and ' '.join(str(resource.length.value).split()) == ' '.join(returned_length.split())]
+            if len(owner) != 1 or image.updates[owner[0].id]:
+                raise CallRefused('The returned array of length %s has no unwritten caller region at argument %s'
+                                  % (returned_length, row['argument']))
+            post, post_value = returned_value(returned)
+            splits[owner[0].id] = {'whole': True, 'length': returned_length, 'pre': None, 'post': post,
+                                   'post_value': post_value}
+            continue
         if returned is None or not isinstance(length, int):
             raise CallRefused('The spec does not return a sized array for its uninitialized bytes at argument '
                               + str(row['argument']))
@@ -784,7 +799,7 @@ def call_return_seed(edges, *, call, function_root, root_seed, shapes, vocabular
                     'address_z': resource.address_z, 'byte_array_expr': input_expr(value, None).to_dict(),
                     'element_bits': 8, 'length_original_coq': str(split['length'])}
             extra_facts.append({'resource_id': key, 'count': split['length'],
-                                'coq': '(List.length %s = %d)%%nat' % (value, split['length'])})
+                                'coq': '(List.length %s = %s)%%nat' % (value, split['length'])})
             split['pieces'] = [key]
         elif key in splits:
             resource, split = resources[key], splits[key]
@@ -939,6 +954,8 @@ def call_return_seed(edges, *, call, function_root, root_seed, shapes, vocabular
                 clone['fact_id'] += ':' + piece
                 copied.append(clone)
     for row in extra_facts:
+        if not isinstance(row['count'], int):
+            continue   # a length the call design names (`returned_lengths`): its fact is in the entry only
         copied.append({'fact_id': row['resource_id'] + ':length', 'kind': 'bounds', 'status': 'supplied',
                        'terms': {'resource_id': row['resource_id'], 'index': 0, 'count': row['count'],
                                  'coq_statement': row['coq']},
