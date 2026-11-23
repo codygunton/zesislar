@@ -1087,6 +1087,10 @@ def call_return_seed(edges, *, call, function_root, root_seed, shapes, vocabular
             seed.state.registers[name] = value
     if tail:
         seed.state.registers['PC'] = state.registers['x1']
+    # After the callee returns, the next pc is the return site: the call site's nextPC (the callee
+    # entry) is stale there.
+    if 'nextPC' in seed.state.registers:
+        seed.state.registers['nextPC'] = seed.state.registers['PC']
     seed.state.retained_registers = dict(seed.state.registers)
     seed.state.conditions = list(state.conditions) + system_conditions
     seed.state.memory = [replace(region, bytes=regions.get(region.ownership_id, region.bytes))
