@@ -4,17 +4,18 @@ Python eval kernel:
     import os; os.environ["ZESU_OBLIG_DIR"] = "<checkout>/tools/oblig"
     %load "<checkout>/tools/oblig/drive_kernel.py"
 
-    await set_tier_override(tier)        the scout tiers (haiku-medium, haiku-high) need it before their round
     run_round(function, run, tier=None, limit=16, concurrency=16, jobs=8)
 
 run_round first runs `drive.step` (every routed action that needs no model: unblock, falsify,
 mechanical, kernel checks), then takes the prover attempts `route.py next` assigns to a model tier
-(only TIER when given; without it every tier whose agent needs no override, plus the override tier
-set last), at most LIMIT. For each it builds the prompt from the obligation's task file
+(only TIER when given, else every tier with an agent), at most LIMIT. For each it builds the prompt
+from the obligation's task file
 (drive.prompt_for: the answer form of package.py, the compiler errors after a compile error at the
 same tier, the named items after need_context), registers the attempt in the store BEFORE spawning
 (store.py refuses a (prompt_sha256, tier) pair sent before), spawns `agent(prompt, agent=<tier agent>,
-label=...)` at most CONCURRENCY at a time, and writes each reply with drive.answer (package.write_answer)
+label=..., model=<tier model when the row says per_call_model>)` (dispatch_kernel.spawn_options; the Haiku
+tiers run the agent `rocq-prover` of .omp/agents/ at a per-call model) at most CONCURRENCY at a time,
+and writes each reply with drive.answer (package.write_answer)
 with its prompt and answer bytes, tokens and resolved model (the session log reading of
 dispatch_kernel.usage). Then it runs `drive.step` again, which kernel-checks the answers. Decision,
 diagnosis and reconsider items (opus-medium) are not run here: the summary lists them.
@@ -31,7 +32,7 @@ result event (`check_calls:<n>`, `lookup_calls:<n>`, `search_calls:<n>`, `counte
 in context_items).
 
 It is the only code of this loop that spawns models; it uses the kernel helpers `agent`, `wait` and
-`tool`, and shares the tier-override state of dispatch_kernel (one override tier per wave).
+`tool`, and shares the live-handle list of dispatch_kernel.
 """
 import itertools
 import os
@@ -102,24 +103,6 @@ def _helper(name):
     return found
 
 
-async def set_tier_override(tier_name):
-    """dispatch_kernel.set_tier_override with this kernel's `tool` helper."""
-    _dk.tool = _helper("tool")
-    return await _dk.set_tier_override(tier_name)
-
-
-def _override_problem(tier):
-    """Why a wave of TIER may not start now, or None."""
-    if not tier.get("override"):
-        return None
-    if _dk._STATE.get("current", {}).get(tier["agent"]) != tier["name"]:
-        return "run `await set_tier_override(%r)` before this round" % tier["name"]
-    busy = [t for t, h in _dk._prune() if t["agent"] == tier["agent"] and t["name"] != tier["name"]]
-    if busy:
-        return "%d %s handles of tier %s are unfinished" % (len(busy), tier["agent"], busy[0]["name"])
-    return None
-
-
 def _label(tier, identifier, attempt):
     name = re.sub(r"[^A-Za-z0-9]+", "-", identifier.rsplit("/", 1)[-1]).strip("-")
     return ("%s-%s-a%d" % (tier, name, attempt))[:48]
@@ -182,7 +165,7 @@ def _tool_counts(probes):
 
 def _spawn(tier, prompt, label, tool_names=()):
     options = dict(tools=list(tool_names)) if tool_names else {}
-    handle = _helper("agent")(prompt, agent=tier["agent"], label=label, schema=ANSWER_SCHEMA, **options)
+    handle = _helper("agent")(prompt, label=label, schema=ANSWER_SCHEMA, **_dk.spawn_options(tier), **options)
     _dk._STATE["live"].append((tier, handle))
     return handle
 
@@ -243,10 +226,8 @@ def run_round(function, run, tier=None, limit=16, concurrency=16, jobs=8, kernel
     allowed = []
     for name in dict.fromkeys(t for _, t, _ in items):
         row = rows.get(name)
-        problem = ("no agent for tier %s in tiers.json" % name if row is None or not row.get("agent")
-                   else _override_problem(row))
-        if problem:
-            skipped[name] = problem
+        if row is None or not row.get("agent"):
+            skipped[name] = "no agent for tier %s in tiers.json" % name
         else:
             allowed.append(name)
     if tier is not None and tier in skipped:
