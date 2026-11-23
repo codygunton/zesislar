@@ -14,7 +14,8 @@
 RUN is a run dir of tools/block/residual_loop.py (MANIFEST.json, goals/<id>/goal.v);
 residual_loop.py stays the engine that exports, checks, minimises and registers.
 
-goals packages each open goal (reparse exact, not PASS) into RUN/package/<id>/:
+goals packages each open goal (reparse exact, not PASS, not normalised into parts by
+tools/oblig/normalise.py: those parts are open goals of their own) into RUN/package/<id>/:
 - the address check: the patterns of tools/oblig/check_relocatable.py (`0x800[0-9a-f]{5}`,
   `2148[0-9]{6}`, `21474[0-9]{5}`) over the text of goal.v and over the decimal value of
   each integer literal of its statement. Before it, each `(N)%Z` or `Zpos` literal that is the
@@ -395,6 +396,8 @@ def open_goals(run, manifest, only=()):
     for goal in manifest["goals"]:
         if only and goal["id"] not in only:
             continue
+        if goal.get("parts"):
+            continue  # normalised into parts (tools/oblig/normalise.py): its parts are packaged instead
         status = rl.read_json(Path(run) / "goals" / goal["id"] / "STATUS.json", {})
         if goal.get("reparse") == "exact" and status.get("result") != "PASS":
             yield goal
