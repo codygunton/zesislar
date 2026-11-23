@@ -287,7 +287,7 @@ Lemma keys_end_bridge_slot2 `{!islaG Sigma} `{!threadG} (args : ToOwnedSliceArgs
 Proof.
   rewrite /ZesuSsz.Generated.KeysToOwnedSlice.FP301.FunctionReturnEntries.fp_machineReturn_slot2_ForwardA0N0
     /keysBlockDomainAt /keysBlockList /keysBlockArgsOf. cbn [keysBase].
-  iIntros "(%c5 & %c6 & %c7 & %c10 & %c11 & %c12 & %c13 & %c14 & %c15 & %c16 & %c17 & %c28 & %c29 & %c30 & %c31 & %p & Hsys & H1 & H2 & H5 & H6 & H7 & H8 & H9 & H10 & H11 & H12 & H13 & H14 & H15 & H16 & H17 & H18 & H19 & H20 & H21 & H22 & H23 & H24 & H25 & H26 & H27 & H28 & H29 & H30 & H31 & Hheader & Hresult & Hobject & Hvtable & Hheap & Hscratch & Hs8 & Hbyte & Hs7 & Hc16 & Hc24 & Hc32 & Hc40 & Hc48 & Hc56 & Hc64 & Hc72 & Hc80 & Hc88 & Hcallee & Hcopy & Hblock & %Hdom & _ & _ & _ & _ & %Hlen & _ & _ & %Hp & _ & _ & _ & %Hhist)".
+  iIntros "(%c5 & %c6 & %c7 & %c10 & %c11 & %c12 & %c13 & %c14 & %c15 & %c16 & %c17 & %c28 & %c29 & %c30 & %c31 & %p & Hsys & H1 & H2 & H5 & H6 & H7 & H8 & H9 & H10 & H11 & H12 & H13 & H14 & H15 & H16 & H17 & H18 & H19 & H20 & H21 & H22 & H23 & H24 & H25 & H26 & H27 & H28 & H29 & H30 & H31 & Hheader & Hresult & Hobject & Hvtable & Hheap & Hscratch & Hs8 & Hbyte & Hs7 & Hc16 & Hc24 & Hc32 & Hc40 & Hc48 & Hc56 & Hc64 & Hc72 & Hc80 & Hc88 & Hcallee & Hcopy & Hrem & Hblock & %Hdom & _ & _ & _ & _ & %Hlen & _ & _ & %Hp & _ & _ & _ & _)".
   destruct Hdom as [Hret Hwf]. pose proof Hwf as (_ & _ & _ & _ & _ & Hd & _). cbn [keysBase] in Hd.
   pose proof (toOwnedSliceDomainRanges _ _ Hd) as
     (Hl & Hitems & Hold & _ & _ & _ & _ & _ & _ & _ & _ & _ & _ & _ & _ & _ & _ & Hsplo & Hsphi & _).
@@ -296,13 +296,12 @@ Proof.
   change (mapRamSize defaultMap) with 0x20000000 in Hcap.
   destruct Hlen as [_ Hlen]. rewrite keys_Z_to_bv_small in Hlen; [|lia].
   destruct Hp as [_ Hp].
-  apply zesu_hist_elim in Hhist.
-  unfold ZesuSsz.Generated.KeysToOwnedSlice.FP301.FunctionReturnEntries.fp_machineReturn_slot2_ForwardA0N0_Hist in Hhist.
-  unfold keysBlockList, keysBlockArgsOf in Hhist. cbn [keysBase] in Hhist.
-  destruct Hhist as (? & ? & ? & ? & ? & ? & ? & ? & Halloc & _).
-  rewrite keys_shiftl5 in Halloc; [|lia].
+  (* alloc returned a nonnull block: it holds exactly the requested bytes. *)
+  assert (Halloc : altFlAllocatedBytes (bv_unsigned p) (arrayListLength (toOwnedList args) * 32) =
+    arrayListLength (toOwnedList args) * 32).
+  { unfold altFlAllocatedBytes. apply Z.eqb_neq in Hp. by rewrite Hp. }
   rewrite keys_shiftl5; [|lia].
-  rewrite -Halloc Hitems.
+  rewrite Halloc. iClear "Hrem".
   iEval (rewrite altFlBlock_unfold) in "Hblock". iDestruct "Hblock" as "[Hslack %Hfacts]".
   destruct (Hfacts ltac:(lia)) as (Hlo & Hhi & _).
   pose proof (altFlBlockSlack_nonneg (arrayListLength (toOwnedList args) * keysElementBytes)
