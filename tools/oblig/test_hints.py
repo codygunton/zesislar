@@ -93,7 +93,7 @@ class SourceTests(unittest.TestCase):
 
 class SliceTests(unittest.TestCase):
     def test_slice_cuts_block_variables_and_types(self):
-        entry = 0x80001000
+        entry = 0x10000
         locations = {'function': 'mod.f', 'entry': entry, 'variables': [
             {'name': 'list', 'kind': 'param', 'scope': ['mod.f'], 'type': '*List', 'decl': 'src/a.zig:2',
              'ranges': [{'start': '+0x0', 'end': '+0x8', 'start_address': entry,
