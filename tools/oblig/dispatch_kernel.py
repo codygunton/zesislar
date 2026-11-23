@@ -5,21 +5,24 @@ eval kernel:
     %load "<checkout>/tools/oblig/dispatch_kernel.py"
 
 It is the only code that spawns models; tools/oblig/*.py call none. It uses the kernel helpers
-`agent(prompt, agent=..., label=...)` (a handle with `.id`, `.wait(timeout)`, `.done()`), `wait(handles,
-raise_errors=False)` and `tool.write(...)`.
+`agent(prompt, agent=..., label=..., model=...)` (a handle with `.id`, `.wait(timeout)`, `.done()`) and
+`wait(handles, raise_errors=False)`.
 
-    await set_tier_override(tier)   session task.agentModelOverrides for the tier's agent (the scout tiers);
-                                    refuses while handles of another tier of that agent are unfinished
     run_wave(corpus, tier, recipe="similar", ids=None, sets=("known",), concurrency=16)
     retry_wave(corpus, tier, recipe="similar", ids=None, concurrency=16, attempt=2, resolver_for=None)
 
-A tier maps to an agent through tools/oblig/tiers.json (`mechanical` runs no model). A wave registers each
+A tier maps to an agent through tools/oblig/tiers.json (`mechanical` runs no model). A tier with
+`per_call_model` true passes its `model` to each spawn (spawn_options): the agent `rocq-prover`
+(.omp/agents/rocq-prover.md) has no task.agentModelOverrides entry, so the per-call model is allowed; the
+operator grants the model in the user config (`modelRoles.prover: anthropic/claude-haiku-5-5`, since a
+project agent's own frontmatter grants nothing). A wave registers each
 attempt in the store before it spawns (store.py refuses a (prompt_sha256, tier) pair sent before),
 spawns at most CONCURRENCY agents at a time, and writes each reply with package.write_answer
 (replay.record_answer). Per answer it records prompt and answer bytes, and tokens and the resolved model
-from the agent's session log (`~/.omp/agent/sessions/**/<id>.jsonl`: `usage` of each assistant message,
-`resolvedModel` of session_init); a reply whose resolved model is not the tier's model is flagged
-`model_mismatch` in WAVE.json. Check the answers afterwards with `replay.py check`; retry_wave writes the
+from the agent's session log (`~/.omp/agent/sessions/<project>/<session>/[<parent id dirs>/]<id>.jsonl`:
+`usage` of each assistant message, `resolvedModel` of session_init); a reply whose resolved model is not
+the tier's model is flagged `model_mismatch` in WAVE.json. Check the answers afterwards with `replay.py
+check`; retry_wave writes the
 second-attempt prompts (previous prompt plus the compiler errors, or the asked-for context: the definitions
 or statements Rocq resolves for the names a `need_context` answer gives, and the closed lemmas it names;
 replay.retry_plan) first. The Rocq queries of that step run in the calling process (stand-alone check
@@ -28,7 +31,6 @@ route, one guard scope each), before any agent starts.
 import json
 import os
 from pathlib import Path
-import re
 import sys
 
 try:
@@ -41,23 +43,15 @@ import replay  # noqa: E402
 
 SESSIONS = Path(os.environ.get("ZESU_AGENT_SESSIONS", str(Path.home() / ".omp/agent/sessions")))
 WAIT_SECONDS = 3600
-_STATE = {"overrides": {}, "live": []}
+_STATE = {"live": []}
 
 
-def base_overrides(root=None):
-    """task.agentModelOverrides of the project config (.omp/config.yml of the main checkout)."""
-    root = Path(root) if root else replay.main_checkout()
-    text = (root / ".omp/config.yml").read_text() if (root / ".omp/config.yml").exists() else ""
-    out, inside = {}, False
-    for line in text.splitlines():
-        if re.match(r"^\s+agentModelOverrides:\s*$", line):
-            inside = True
-            continue
-        if inside:
-            match = re.match(r"^\s{4,}([\w-]+):\s*(\S+)\s*$", line)
-            if not match:
-                break
-            out[match[1]] = match[2]
+def spawn_options(tier):
+    """The keyword arguments of the kernel's agent() for one prover of TIER (a tiers.json row): its agent,
+    and its model when the row says `per_call_model`."""
+    out = dict(agent=tier["agent"])
+    if tier.get("per_call_model"):
+        out["model"] = tier["model"]
     return out
 
 
@@ -75,30 +69,15 @@ def _prune():
     return _STATE["live"]
 
 
-def _unfinished(agent_name, tier_name):
-    """Live handles that run AGENT_NAME under another tier."""
-    return [(t, h) for t, h in _prune() if t["agent"] == agent_name and t["name"] != tier_name]
-
-
-async def set_tier_override(tier_name, tiers=None):
-    """Point the tier's agent at its model for this session (cfg://task/agentModelOverrides)."""
-    tier = replay.tier_row(tier_name, tiers)
-    if not tier.get("override"):
-        return None
-    busy = _unfinished(tier["agent"], tier_name)
-    if busy:
-        raise replay.ReplayError("%d %s handles of tier %s are unfinished; wait for them first."
-                                 % (len(busy), tier["agent"], busy[0][0]["name"]))
-    overrides = dict(_STATE["overrides"] or base_overrides())
-    overrides[tier["agent"]] = tier["override"]
-    await tool.write({"path": "cfg://task/agentModelOverrides", "content": json.dumps(overrides)})  # noqa: F821
-    _STATE["overrides"] = overrides
-    _STATE["current"] = {tier["agent"]: tier_name}
-    return overrides
-
-
 def session_log(agent_id):
-    found = sorted(SESSIONS.glob("*/*/%s.jsonl" % agent_id), key=lambda p: p.stat().st_mtime)
+    """The session log of AGENT_ID: a child of a top-level agent lies beside the parent's log, a nested
+    one (`Parent.child`) in the parent's directory (`Parent/Parent.child.jsonl`)."""
+    parts = agent_id.split(".")
+    nested = "/".join(".".join(parts[:i]) for i in range(1, len(parts)))
+    found = list(SESSIONS.glob("*/*/%s.jsonl" % agent_id))
+    if nested:
+        found += SESSIONS.glob("*/*/%s/%s.jsonl" % (nested, agent_id))
+    found.sort(key=lambda p: p.stat().st_mtime)
     return found[-1] if found else None
 
 
@@ -130,7 +109,7 @@ def usage(agent_id):
 
 def _spawner(tier):
     def spawn(row, prompt):
-        handle = agent(prompt, agent=tier["agent"], label="%s-%s" % (tier["name"], row["id"]))  # noqa: F821
+        handle = agent(prompt, label="%s-%s" % (tier["name"], row["id"]), **spawn_options(tier))  # noqa: F821
         _STATE["live"].append((tier, handle))
         return handle
     return spawn
@@ -173,19 +152,9 @@ def _batched_spawn(tier, concurrency):
     return spawn, collect
 
 
-def _check_override(tier):
-    if tier.get("override") and _STATE.get("current", {}).get(tier["agent"]) != tier["name"]:
-        raise replay.ReplayError("Run `await set_tier_override(%r)` before this wave." % tier["name"])
-    busy = _unfinished(tier["agent"], tier["name"]) if tier.get("agent") else []
-    if busy and tier.get("override"):
-        raise replay.ReplayError("%d %s handles of tier %s are unfinished." % (len(busy), tier["agent"], busy[0][0]["name"]))
-
-
 def run_wave(corpus, tier_name, recipe="similar", ids=None, sets=("known",), concurrency=16, attempt=1):
     """One wave of one tier over the corpus; returns replay.run_wave's summary."""
     tier = replay.tier_row(tier_name)
-    if tier_name != "mechanical":
-        _check_override(tier)
     spawn, collect = _batched_spawn(tier, concurrency)
     try:
         return replay.run_wave(corpus, tier_name, spawn, recipe=recipe, ids=ids, sets=sets, attempt=attempt,

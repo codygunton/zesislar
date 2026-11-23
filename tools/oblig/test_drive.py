@@ -1,7 +1,6 @@
 """Production driver with a fake agent and a fake kernel (no model, no Rocq): one round closes a goal and
 records its events and tokens, a repeated prompt is refused, a compile error gives a changed retry
-prompt, closing a blocker unblocks its dependants, and the scout-tier override guard."""
-import asyncio
+prompt, closing a blocker unblocks its dependants, and the Haiku tiers' per-call model on rocq-prover."""
 import json
 from pathlib import Path
 import sys
@@ -130,7 +129,7 @@ class FakeAgents:
     `lookup`, `search`, `check_counterexample`) and its return value goes to tool_results[label]."""
 
     def __init__(self, reply, use_tool=None, script=None):
-        self.reply, self.spawned, self.writes = reply, [], []
+        self.reply, self.spawned, self.models = reply, [], {}
         self.use_tool, self.script, self.tool_results, self.tools_of = use_tool, script, {}, {}
         agents = self
 
@@ -145,12 +144,10 @@ class FakeAgents:
             def undefine(self, name):
                 self.undefined.append(name)
                 del self.defined[name]
-
-            async def write(self, args):
-                agents.writes.append(args)
         self.tool = Tool()
 
-    def agent(self, prompt, agent=None, label=None, schema=None, tools=None):
+    def agent(self, prompt, agent=None, label=None, schema=None, tools=None, model=None):
+        self.models[label] = model
         self.tools_of[label] = list(tools or [])
         if tools and self.script:
             kinds = {name.rsplit("_", 1)[0]: self.tool.defined[name] for name in tools}
@@ -211,7 +208,7 @@ class DriveBase(unittest.TestCase):
         self.saved = dispatch_kernel.usage
         dispatch_kernel.usage = lambda agent_id: dict(tokens_in=1200, tokens_out=80,
                                                       resolved_model="anthropic/claude-haiku-5-5:low")
-        dispatch_kernel._STATE.update(overrides={"scout": "base"}, live=[], current={})
+        dispatch_kernel._STATE.update(live=[])
         self.saved_compile = drive.probe_compile
         self.compiled = []
         drive.probe_compile = self.fake_compile
@@ -256,7 +253,8 @@ class DriveTests(DriveBase):
         self.assertEqual(summary["step_before"].get("mechanical"), 1)
         self.assertEqual(summary["started"], 1)
         self.assertEqual(summary["verdicts"], {"proved": 1})
-        self.assertEqual([a for a, _, _ in self.agents.spawned], ["sonic"])
+        self.assertEqual([a for a, _, _ in self.agents.spawned], ["rocq-prover"])
+        self.assertEqual(self.agents.models[self.agents.spawned[0][1]], "anthropic/claude-haiku-5-5:low")
         prompt = self.agents.spawned[0][2].prompt
         self.assertTrue(prompt.startswith(drive.preamble("haiku-low")))
         self.assertTrue(drive.preamble("haiku-low").startswith(drive.TOOLS_HEAD))
@@ -420,22 +418,20 @@ class DriveTests(DriveBase):
         self.assertEqual(drive.model_items(self.run_dir, F), [(self.sid("lemC"), "haiku-low",
                                                                "first attempt at this tier")])
 
-    def test_scout_tier_needs_its_override(self):
+    def test_haiku_high_runs_rocq_prover_at_its_per_call_model(self):
         # routing.json's ladder: haiku-low 2, haiku-medium 0 (off), haiku-high 1, opus-medium 2.
         self.install(GIVE_UP)
         drive_kernel.run_round(F, self.run_dir, tier="haiku-low", kernel=self.kernel)
         self.assertEqual([t for _, t, _ in drive.model_items(self.run_dir, F)], ["haiku-high"])
-        with self.assertRaises(drive_kernel.DriveError):
-            drive_kernel.run_round(F, self.run_dir, tier="haiku-high", kernel=self.kernel)
-        summary = drive_kernel.run_round(F, self.run_dir, kernel=self.kernel)
-        self.assertEqual((summary["started"], list(summary["skipped"])), (0, ["haiku-high"]))
-        asyncio.run(drive_kernel.set_tier_override("haiku-high"))
-        self.assertEqual(json.loads(self.agents.writes[-1]["content"])["scout"], "anthropic/claude-haiku-5-5:high")
         self.install(GOOD)
-        summary = drive_kernel.run_round(F, self.run_dir, tier="haiku-high", kernel=self.kernel)
-        self.assertEqual(summary["started"], 1)
-        self.assertEqual(self.agents.spawned[0][0], "scout")
+        summary = drive_kernel.run_round(F, self.run_dir, kernel=self.kernel)
+        self.assertEqual((summary["started"], summary["skipped"]), (1, {}))
+        agent, label, _ = self.agents.spawned[0]
+        self.assertEqual((agent, self.agents.models[label]), ("rocq-prover", "anthropic/claude-haiku-5-5:high"))
         self.assertEqual(self.state()[self.sid("lemA")]["closed_by"], "haiku-high")
+
+    def test_opus_tier_passes_no_model(self):
+        self.assertEqual(dispatch_kernel.spawn_options(drive.tier_rows()["opus-medium"]), dict(agent="task"))
 
     def test_spawn_asks_for_the_answer_schema(self):
         captured = []
