@@ -79,6 +79,17 @@ class FakeKernel:
         self.falsified.append(where.gid)
         return dict(verdict="passed")
 
+    repack_size = 20000
+
+    def repackage(self, run, function, where, tier, bound, reason):
+        out = where.d / "package" / where.gid
+        out.mkdir(parents=True, exist_ok=True)
+        (out / ("TASK-%s.md" % tier)).write_text("r" * self.repack_size)
+        record = dict(next="prover", prompt_bound=bound, bound_reason=reason, **{"class": None})
+        (out / "PACKAGE.json").write_text(json.dumps(record))
+        self.repackaged = getattr(self, "repackaged", []) + [(where.gid, tier, bound)]
+        return record
+
     def refute(self, where, text, out):
         return False
 
@@ -258,6 +269,17 @@ class DriveTests(unittest.TestCase):
         self.assertIn("forall y : Z, y + 0 = y", prompt)
         self.assertIn("context:lemB", items)
 
+    def test_reset_marks_the_repeated_mechanical_prompt_and_reruns_the_ladder(self):
+        drive.step(F, self.run_dir, kernel=self.kernel)
+        self.install(GIVE_UP)
+        drive_kernel.run_round(F, self.run_dir, tier="haiku-low", kernel=self.kernel)
+        item = self.state()[self.sid("lemA")]
+        store.append(self.run_dir, store.event(id=item["id"], function=F, kind="meaning", state="derived",
+                                               artifact=item["artifact"]))
+        counts = drive.step(F, self.run_dir, kernel=self.kernel)[0]
+        self.assertEqual(counts.get("repeated_prompt"), 1)
+        self.assertEqual(drive.model_items(self.run_dir, F)[0][:2], (self.sid("lemA"), "haiku-low"))
+
     def test_malformed_reply_retries_with_a_changed_prompt(self):
         self.install("I could not decide.")
         drive_kernel.run_round(F, self.run_dir, tier="haiku-low", kernel=self.kernel)
@@ -292,6 +314,103 @@ class GoalLocationTests(unittest.TestCase):
             self.assertIn("0 <= a + 1", prompt)
             self.assertIn("## Answer form", prompt)
             self.assertEqual(items, ["task"])
+
+
+class PackagedGoalTests(unittest.TestCase):
+    """A block goal with a package.py task, the prompt bound and the too_large escalation."""
+
+    def setUp(self):
+        self.tmp = tempfile.TemporaryDirectory()
+        self.run = Path(self.tmp.name)
+        self.d = self.run / "resid" / "0058"
+        statement = "forall a : Z, 0 <= a -> 0 <= a + 1"
+        (self.d / "goals" / "0058-1").mkdir(parents=True)
+        # The residual goal is huge (its exact source), the package task is bounded.
+        (self.d / "goals" / "0058-1" / "goal.v").write_text(goal_v("residual_fn_0058_x", statement + " " * 40000))
+        (self.d / "tasks").mkdir()
+        (self.d / "tasks" / "0058-1.md").write_text("# Residual goal 0058-1\n" + "x" * 30000)
+        self.package = self.d / "package" / "0058-1"
+        self.package.mkdir(parents=True)
+        (self.d / "MANIFEST.json").write_text(json.dumps(dict(block="0058", bank="/nonexistent", goals=[
+            dict(id="0058-1", name="residual_fn_0058_x", statement=statement, reparse="exact")])))
+        self.identifier = store.goal_id(F, "0058", statement)
+        store.append(self.run, [store.event(id=self.identifier, function=F, kind="goal", state="derived"),
+                                store.event(id=self.identifier, function=F, kind="goal", state="derived",
+                                            tier="falsify")])
+        self.kernel = FakeKernel()
+        self.saved = drive.replay.load_routing
+
+    def tearDown(self):
+        drive.replay.load_routing = self.saved
+        self.tmp.cleanup()
+
+    def test_package_task_is_the_prompt(self):
+        (self.package / "TASK-haiku-low.md").write_text("# Packaged goal\n\n" + package_answer_form())
+        prompt, items = drive.prompt_for(self.run, F, self.identifier, "haiku-low")
+        self.assertEqual(prompt, drive.NO_TOOLS + "# Packaged goal\n\n" + package_answer_form())
+        self.assertNotIn(drive.EXACT_HEADING, prompt)
+        # Another tier falls back to the tier-less package task.
+        (self.package / "TASK.md").write_text("# Tier-less\n")
+        prompt, _ = drive.prompt_for(self.run, F, self.identifier, "haiku-high")
+        self.assertTrue(prompt.startswith(drive.NO_TOOLS + "# Tier-less\n"))
+
+    def test_class_bound_of_routing_json_capped_by_the_tier(self):
+        drive.replay.load_routing = lambda: {"classes": {"BIG": {"max_prompt_bytes": 50000}}}
+        self.assertEqual(drive.max_prompt_bytes("haiku-low", "BIG"), 32000)
+        self.assertEqual(drive.max_prompt_bytes("haiku-low", None), 12000)
+
+    def test_large_goal_is_repackaged_once_at_the_tier_cap(self):
+        (self.package / "TASK-haiku-low.md").write_text("y" * 20000)
+        counts = drive.step(F, self.run, kernel=self.kernel)[0]
+        self.assertEqual(counts.get("repackaged_large"), 1)
+        self.assertEqual(self.kernel.repackaged, [("0058-1", "haiku-low", 32000)])
+        self.assertEqual([t for _, t, _ in drive.model_items(self.run, F)], ["haiku-low"])
+        prompt, items = drive.prompt_for(self.run, F, self.identifier, "haiku-low")
+        self.assertGreater(len(prompt.encode()), 12000)
+        self.assertIn("prompt_bound:32000", items)
+        record = json.loads((self.package / "PACKAGE.json").read_text())
+        self.assertTrue(record["bound_reason"].startswith("smallest task over the default bound"))
+        # The attempt carries the bound for report.py.
+        drive.register_attempt(self.run, F, self.identifier, "haiku-low", prompt, items)
+        running = store.fold(store.read_events(self.run))[self.identifier]["events"][-1]
+        self.assertIn("prompt_bound:32000", running["context_items"])
+
+    def test_goal_too_large_at_the_cap_waits_for_a_decision(self):
+        (self.package / "TASK-haiku-low.md").write_text("y" * 20000)
+        self.kernel.repack_size = 40000
+        counts = drive.step(F, self.run, kernel=self.kernel)[0]
+        self.assertEqual((counts.get("repackaged_large"), counts.get("waiting_decision_too_large")), (1, 1))
+        item = store.fold(store.read_events(self.run))[self.identifier]
+        self.assertEqual(item["state"], "waiting-decision")
+        reasons = json.loads(Path(item["artifact"]["path"]).read_text())
+        self.assertEqual(set(reasons), {"haiku-low", "haiku-high", "opus-medium"})
+        self.assertTrue(all(r.startswith("too-large: ") and r.endswith("> 32000 bytes") for r in reasons.values()))
+        self.assertEqual(drive.model_items(self.run, F), [])
+
+    def test_package_class_address_goes_to_the_owner(self):
+        (self.package / "PACKAGE.json").write_text(json.dumps(dict(id=self.identifier, **{"class": "ADDRESS"},
+                                                                 next="decision")))
+        counts = drive.step(F, self.run, kernel=self.kernel)[0]
+        self.assertEqual(counts.get("address"), 1)
+        self.assertEqual(drive.model_items(self.run, F), [])
+        self.assertEqual([a for i, a, _, _ in drive.route.next_items(self.run, F)], ["owner"])
+
+    def test_symbolized_package_returns_an_address_goal_to_the_ladder(self):
+        store.append(self.run, store.event(id=self.identifier, function=F, kind="goal", state="derived",
+                                           **{"class": "ADDRESS"}))
+        self.assertEqual([a for _, a, _, _ in drive.route.next_items(self.run, F)], ["owner"])
+        (self.package / "PACKAGE.json").write_text(json.dumps(dict(id=self.identifier, symbols=[dict(
+            literal="lit", notation="sym_x")], **{"class": None})))
+        (self.package / "TASK-haiku-low.md").write_text("# Symbolized goal\n")
+        counts = drive.step(F, self.run, kernel=self.kernel)[0]
+        self.assertEqual(counts.get("symbolized"), 1)
+        item = store.fold(store.read_events(self.run))[self.identifier]
+        self.assertEqual(item["goal_class"], drive.replay.goal_class("forall a : Z, 0 <= a -> 0 <= a + 1"))
+        self.assertEqual([t for _, t, _ in drive.model_items(self.run, F)], ["haiku-low"])
+
+
+def package_answer_form():
+    return drive.package.ANSWER_FORM.format(answer="answers/0058-1.v")
 
 
 if __name__ == "__main__":

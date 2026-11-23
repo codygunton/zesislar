@@ -135,11 +135,14 @@ def run_round(function, run, tier=None, limit=16, concurrency=16, jobs=8, kernel
         if prompt is None:
             if context == "missing_context":
                 _drive.file_missing_context(run, identifier, name)
+            elif context.startswith(_drive.TOO_LARGE):
+                _drive.file_too_large(run, identifier, name, context, located)
             refused.append((identifier, name, context))
             continue
         try:
             attempt = _drive.register_attempt(run, function, identifier, name, prompt, context, located=located)
         except _store.Rejected as error:
+            _drive.file_repeated_prompt(run, identifier, name)
             refused.append((identifier, name, str(error)))
             continue
         started.append((identifier, rows[name], attempt, prompt))
