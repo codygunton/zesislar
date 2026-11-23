@@ -287,10 +287,12 @@
     "+0xcc",
     "+0x1c0",
     "+0x1d8",
-    "+0x1e0"
+    "+0x1e0",
+    "+0x1ac"
   ],
   "unreachable_reached": [
-    "+0x1c0"
+    "+0x1c0",
+    "+0x1ac"
   ],
   "join_drops": {
     "+0x110": [
@@ -304,6 +306,6 @@
   },
   "generated_from": {
     "path": "tools/block/functions/keysToOwnedSlice.annotations.json",
-    "sha256": "a1ad7ebdebbd361f7addb1762e38f577bf137c3616b120e69105b0f1a9aab4b7"
+    "sha256": "0517cedc214286f2eb4c3b350c370edb2c58f54c4ff2c0c5e86897c497574aa6"
   }
 }

@@ -39,7 +39,7 @@ Proof.
   iIntros "HN".
   iPureIntro. apply zesu_hist_intro. unfold fp_machineAt01ac_ForwardA0N0_Hist.
   exists fp_seed_mstatus_bits, forward_witness_cbcac9df79b9221c, forward_witness_1be931110d776902, forward_witness_905cf96e605c1117, forward_witness_55ab0ce59750150a, forward_witness_d7543602bfbbe148, forward_witness_00470b017f14ddbf, forward_witness_83d3e6d46c3de70e, forward_witness_d77b5950a2aea933, forward_witness_a84be01a9be85bdb, forward_witness_21649d1cf161453f, forward_witness_407fca3a6f90b8db, forward_witness_1eea82d2945b4618, forward_witness_751588b52f8a71ff, (BV 64%N 0%Z).
-  split; [exact HF0|].
+  split; [exact (ex_intro _ call_x13 (ex_intro _ call_x14 (ex_intro _ call_x15 (ex_intro _ call_x16 (ex_intro _ call_x17 HF0)))))|].
   split; [exact HF1|].
   split; [exact HF2|].
   split; [exact HF3|].
