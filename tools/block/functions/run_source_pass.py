@@ -3,7 +3,10 @@
 A join is seeded only after every join that can reach it has its seed, so its
 incoming edges are complete. A call's return site is seeded from the callee
 summary (call_boundary.call_return_seed) once every path into the call block
-is complete; the profile's `calls` rows name each callee spec. generalize_owned_join builds the seed from the
+is complete; the profile's `calls` rows name each callee spec. A return site that
+other edges reach too is a join: its seed is the join of the call-return seed with
+those edges, so no fact of the call path alone reaches the blocks after it.
+generalize_owned_join builds the seed from the
 incoming edges; a join it refuses stays a cut, and the guards refuse what lies
 beyond it. A `tail_calls` row's callee returns to the function's own return address:
 once the traversal ends, its tail-call exits (which must hold that address in x1) make
@@ -54,6 +57,83 @@ def joins_of(function):
         for target in block['successors']:
             predecessors.setdefault(target, set()).add(block['start'])
     return sorted(pc for pc, rows in predecessors.items() if len(rows) > 1 and pc not in loops)
+
+
+def join_seed(boundary, *, seeds, roots, parents, profile, vocabulary, continuation, live_registers):
+    """Return (seed, root, plan row) of the join at `boundary` from its incoming edges; a ValueError
+    names the refusal. At a return site the path through the call is one incoming edge: the
+    site's own call-return seed alternative (in `seeds`, its own root in `roots`)."""
+    pc = int(boundary['pc'], 0)
+    incoming = [row for row in boundary['alternatives'] if row['predecessor_pc'] is not None
+                or row['seed_pc'] == boundary['pc'] and roots.get(boundary['pc']) == boundary['pc']]
+    if not incoming or boundary['reaching_stops']:
+        raise ValueError('no incoming edge' if not incoming else
+                         'incomplete incoming edges: ' + str(boundary['reaching_stops'][0]))
+    origins = {row['seed_pc'] for row in incoming}
+    lifted_binders = []
+    if len({roots.get(origin) for origin in origins}) != 1:
+        # Edges from different call-return roots join on their deepest common ancestor.
+        root = common_root_ancestor(sorted({roots.get(origin) for origin in origins}), parents)
+        if root is None:
+            raise ValueError('join edges from different roots: ' + ', '.join(sorted(origins)))
+        try:
+            drops = [{'root': profile.pc(item['root']), 'resources': item['resources']}
+                     for item in (profile.get('join_drops', {}).get(profile.key(hex(pc)), [])
+                                  if profile else [])]
+            incoming, lifted_binders = lift_call_return_edges(incoming, seeds=seeds, roots=roots,
+                                                              ancestor=root, vocabulary=vocabulary,
+                                                              drops=drops)
+        except ValueError as error:
+            raise ValueError('join lift to ' + root + ' refused: ' + str(error)) from error
+    else:
+        root = roots[next(iter(origins))]
+    try:
+        # Edges through an earlier join seed are aligned on their root seed's tree.
+        designs = profile.get('join_designs', {}) if profile else {}
+        joined = generalize_owned_join(incoming, original_seed=seeds[root], entry_pc=pc, vocabulary=vocabulary,
+                                       continuation=continuation, outer_names=['args', 'returnAddress'],
+                                       design_facts=next(([entry_hist.design_fact_text(row) for row in facts]
+                                                          for suffix, facts in designs.items()
+                                                          if profile.pc(suffix) == hex(pc)), []),
+                                       live_registers=live_registers, lifted_binders=lifted_binders)
+    except ValueError as error:
+        raise ValueError('join generalization refused: ' + str(error) + ' (edge seeds: ' +
+                         ', '.join(sorted(origins)) + ')') from error
+    plan = {'edges': len(incoming), 'edge_seeds': sorted(origins),
+            'binders': [row['name'] for row in joined['plan']['owned_binders']],
+            'relations': [row.get('coq') for row in joined['plan']['relations']],
+            'common_guards': len(joined['plan']['common_guards']),
+            'join_refusals': joined['plan']['join_refusals'],
+            **({'dropped_binders': joined['plan']['dropped_binders']}
+               if joined['plan'].get('dropped_binders') else {}),
+            **{key: joined['plan'][key] for key in ('fact_accounting', 'aligned_history',
+                                                     'visible_history', 'ghost_history')
+               if joined['plan'].get(key)}}
+    return carry_common_word_links(incoming, joined['seed']), root, plan
+
+
+def return_site_seed(boundary, call_seed, *, seeds, roots, parents, profile, vocabulary, continuation,
+                     live_registers):
+    """Return (seed, root, plan row or None) of a return site that is also a join.
+
+    `boundary` is the site in a pass where `call_seed` (whose root's parent `parents` names) seeds it.
+    When another edge reaches the site, the path through the call is one edge of the join, and the
+    blocks after the site continue from the join of every edge, the state each edge establishes; a
+    fact only the call path holds stays out. The seed keeps the call-return kind, as the engine
+    requires of a return site. A ValueError names a wait (an edge is not complete) or a refusal."""
+    site = boundary['pc']
+    if boundary['reaching_stops']:
+        raise ValueError('return-site join waits: incomplete incoming edges: ' + str(boundary['reaching_stops'][0]))
+    if not any(row['predecessor_pc'] is not None for row in boundary['alternatives']):
+        return call_seed, site, None
+    try:
+        seed, root, plan = join_seed(boundary, seeds={**seeds, site: call_seed}, roots={**roots, site: site},
+                                     parents=parents, profile=profile, vocabulary=vocabulary,
+                                     continuation=continuation, live_registers=live_registers)
+    except ValueError as error:
+        raise ValueError('return-site join refused: ' + str(error)) from error
+    seed.join_kind = 'call_return'
+    return seed, root, plan
 
 
 def main():
@@ -134,6 +214,7 @@ def main():
         report = evaluate_owned_function(function, traces, seeds, vocabulary=vocabulary, duplicated_joins=duplicated,
                                          merge_condition_alternatives=merge, unreachable_targets=unreachable)
         added = None
+        returns = {row['return_pc'] for row in report.get('calls', [])}
         for call in calls:
             site = call['return_site_pc']
             if site in seeds:
@@ -149,16 +230,34 @@ def main():
                                   if boundary['reaching_stops'] else 'call-site paths from different roots')
                 continue
             try:
-                seed, call_public, call_report = call_return_seed(
+                call_seed, call_public, call_report = call_return_seed(
                     edges, call=call, function_root=ROOT, root_seed=seeds[roots[next(iter(origins))]],
                     shapes=shapes, vocabulary=vocabulary, constants=domain['constants'],
                     origin_seeds=[seeds[pc] for pc in sorted(origins)])
             except CallRefused as error:
                 refusals[site] = 'call boundary refused: ' + str(error)
                 continue
-            seeds[site], roots[site] = seed, site
-            parents[site] = roots[next(iter(origins))]
-            call_seeds[site] = {'public': call_public, 'state': seed.state.to_dict(), 'facts': seed.facts}
+            parent = roots[next(iter(origins))]
+            seed, root = call_seed, site
+            if int(site, 0) in joins:
+                # The site is also a join: the path through the call is one edge of it.
+                trial = {**seeds, site: call_seed}
+                probe = evaluate_owned_function(function, traces, trial, vocabulary=vocabulary,
+                                                duplicated_joins=duplicated, merge_condition_alternatives=merge,
+                                                unreachable_targets=unreachable)
+                try:
+                    seed, root, plan = return_site_seed(
+                        next(row for row in probe['boundaries'] if row['pc'] == site), call_seed,
+                        seeds=seeds, roots=roots, parents={**parents, site: parent}, profile=profile,
+                        vocabulary=vocabulary, continuation=continuation, live_registers=liveness.get(site))
+                except ValueError as error:
+                    refusals[site] = str(error)
+                    continue
+                if plan is not None:
+                    plans[site] = plan
+            seeds[site], roots[site] = seed, root
+            parents[site] = parent
+            call_seeds[site] = {'public': call_public, 'state': call_seed.state.to_dict(), 'facts': call_seed.facts}
             call_reports[site] = call_report
             refusals.pop(site, None)
             added = site
@@ -184,64 +283,23 @@ def main():
             added = head
             break
         for pc in joins if added is None else []:
-            if hex(pc) in seeds:
+            site = hex(pc)
+            # A return site is seeded with its call (above), joined with its other edges there.
+            if site in seeds or site in returns:
                 continue
             if any(other != pc and hex(other) not in seeds and can_reach(successors, other, pc)
                    for other in joins):
                 continue
             boundary = next(row for row in report['boundaries'] if int(row['pc'], 0) == pc)
-            incoming = [row for row in boundary['alternatives'] if row['predecessor_pc'] is not None]
-            if not incoming or boundary['reaching_stops']:
-                refusals[hex(pc)] = ('no incoming edge' if not incoming else
-                                     'incomplete incoming edges: ' + str(boundary['reaching_stops'][0]))
-                continue
-            origins = {row['seed_pc'] for row in incoming}
-            lifted_binders = []
-            if len({roots.get(origin) for origin in origins}) != 1:
-                # Edges from different call-return roots join on their deepest common ancestor.
-                root = common_root_ancestor(sorted({roots.get(origin) for origin in origins}), parents)
-                if root is None:
-                    refusals[hex(pc)] = 'join edges from different roots: ' + ', '.join(sorted(origins))
-                    continue
-                try:
-                    drops = [{'root': profile.pc(item['root']), 'resources': item['resources']}
-                             for item in (profile.get('join_drops', {}).get(profile.key(hex(pc)), [])
-                                          if profile else [])]
-                    incoming, lifted_binders = lift_call_return_edges(incoming, seeds=seeds, roots=roots,
-                                                                      ancestor=root, vocabulary=vocabulary,
-                                                                      drops=drops)
-                except ValueError as error:
-                    refusals[hex(pc)] = 'join lift to ' + root + ' refused: ' + str(error)
-                    continue
-            else:
-                root = roots[next(iter(origins))]
             try:
-                # Edges through an earlier join seed are aligned on their root seed's tree.
-                designs = profile.get('join_designs', {}) if profile else {}
-                joined = generalize_owned_join(incoming, original_seed=seeds[root], entry_pc=pc, vocabulary=vocabulary,
-                                               continuation=continuation, outer_names=['args', 'returnAddress'],
-                                               design_facts=next(([entry_hist.design_fact_text(row) for row in facts]
-                                                                  for suffix, facts in designs.items()
-                                                                  if profile.pc(suffix) == hex(pc)), []),
-                                               live_registers=liveness.get(hex(pc)), lifted_binders=lifted_binders)
+                seeds[site], roots[site], plans[site] = join_seed(
+                    boundary, seeds=seeds, roots=roots, parents=parents, profile=profile, vocabulary=vocabulary,
+                    continuation=continuation, live_registers=liveness.get(site))
             except ValueError as error:
-                refusals[hex(pc)] = 'join generalization refused: ' + str(error) + ' (edge seeds: ' + \
-                    ', '.join(sorted(origins)) + ')'
+                refusals[site] = str(error)
                 continue
-            seeds[hex(pc)] = carry_common_word_links(incoming, joined['seed'])
-            roots[hex(pc)] = root
-            refusals.pop(hex(pc), None)
-            plans[hex(pc)] = {'edges': len(incoming), 'edge_seeds': sorted(origins),
-                              'binders': [row['name'] for row in joined['plan']['owned_binders']],
-                              'relations': [row.get('coq') for row in joined['plan']['relations']],
-                              'common_guards': len(joined['plan']['common_guards']),
-                              'join_refusals': joined['plan']['join_refusals'],
-                              **({'dropped_binders': joined['plan']['dropped_binders']}
-                                 if joined['plan'].get('dropped_binders') else {}),
-                              **{key: joined['plan'][key] for key in ('fact_accounting', 'aligned_history',
-                                                                       'visible_history', 'ghost_history')
-                                 if joined['plan'].get(key)}}
-            added = hex(pc)
+            refusals.pop(site, None)
+            added = site
             break
         rounds.append({'seeds': sorted(seeds), 'added': added})
         if added is None:
