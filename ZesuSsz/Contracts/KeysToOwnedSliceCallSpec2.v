@@ -31,7 +31,7 @@ Definition keysToOwnedSliceCallArgs (argv : list (bv 64)) (sp ret inputEnd : bv 
 
 (* The domain of toOwnedSliceDomain without its stack and return-address
    conjuncts, which machine_call states. *)
-Definition keysToOwnedSliceCallDomain (argv : list (bv 64)) (context : Z)
+Definition keysToOwnedSliceBoundaryDomain (argv : list (bv 64)) (context : Z)
     (state : ArrayListState) (resultBefore scratchBefore : list byte) : Prop :=
   arrayListWellFormed keysElementBytes state /\
   arrayListRamRange (bv_unsigned (argv !!! 0%nat)) arrayListResultSize /\
@@ -46,7 +46,7 @@ Definition keysToOwnedSliceCallDomain (argv : list (bv 64)) (context : Z)
 
 (* The outcome relation of toOwnedSliceAllows; it reads only the list state
    and the result bytes of its arguments. *)
-Definition keysToOwnedSliceCallAllows (state : ArrayListState) (resultBefore : list byte)
+Definition keysToOwnedSliceBoundaryAllows (state : ArrayListState) (resultBefore : list byte)
     (outcome : ToOwnedSliceOutcome) : Prop :=
   toOwnedSliceAllows keysElementBytes keysEmptyPointer
     (keysToOwnedSliceCallArgs [] (BV 64 0) (BV 64 0) (BV 64 0)
@@ -79,7 +79,7 @@ Definition keysToOwnedSliceCallSpecDefinition `{!islaG Sigma} `{!threadG} : iPro
       altFlAllocatorObject (bv_unsigned (argv !!! 2%nat)) context ∗
       altFlVtable ∗
       altFlHeap ∗
-      ⌜keysToOwnedSliceCallDomain argv context state resultBefore scratchBefore⌝ ∗
+      ⌜keysToOwnedSliceBoundaryDomain argv context state resultBefore scratchBefore⌝ ∗
       RET (fun _ =>
         ∃ outcome : ToOwnedSliceOutcome,
         "zisk_input_end" ↦ᵣ RVal_Bits inputEndBits ∗
@@ -97,7 +97,7 @@ Definition keysToOwnedSliceCallSpecDefinition `{!islaG Sigma} `{!threadG} : iPro
         altFlAllocatorObject (bv_unsigned (argv !!! 2%nat)) context ∗
         altFlVtable ∗
         altFlHeap ∗
-        ⌜keysToOwnedSliceCallAllows state resultBefore outcome⌝ ∗
+        ⌜keysToOwnedSliceBoundaryAllows state resultBefore outcome⌝ ∗
         True)))%I.
 
 (* Inside the sealed interface the public spec is this template, so a proof
