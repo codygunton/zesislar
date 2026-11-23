@@ -600,23 +600,39 @@ class Counts(dict):
             self[key] = self.get(key, 0) + 1
 
 
+def sync_package_class(function, run, located, counts):
+    """Bring a goal's class to its package record (package.py PACKAGE.json), no model: a package of class
+    ADDRESS files `derived` class ADDRESS (route.py sends it to the statement owner); a goal filed ADDRESS
+    whose package now has no class (its address literals became symbol notations, `symbols` in the
+    record) files `derived` with its leftover class (replay.goal_class), so the ladder runs."""
+    state, filed = fold(run), 0
+    for identifier, item in state.items():
+        where = located.get(identifier)
+        if item["kind"] != "goal" or where is None or item["state"] in ("closed", "running"):
+            continue
+        path = where.d / "package" / where.gid / "PACKAGE.json"
+        record = store.read_json(path)
+        if not record:
+            continue
+        if record.get("class") == "ADDRESS" and item["goal_class"] != "ADDRESS":
+            cls = "ADDRESS"
+        elif record.get("class") is None and record.get("symbols") and item["goal_class"] == "ADDRESS":
+            cls = replay.goal_class(where.goal["statement"])
+        else:
+            continue
+        store.append(run, base_event(item, state="derived", **{"class": cls}, artifact=store.artifact_of(path)))
+        counts.bump("address" if cls == "ADDRESS" else "symbolized")
+        filed += 1
+    return filed
+
+
 def escalate_unpromptable(function, run, located, free, counts):
     """For each model attempt route.py assigns, before any model sees it (no model):
-    - a goal whose package (package.py PACKAGE.json) has class ADDRESS gets that class (`derived`
-      class ADDRESS, the package record as artifact), so route.py sends it to the statement owner;
     - a need_context retry whose named items no source can supply files `missing_context`;
     - a prompt over the tier's bound files `too_large` (file_too_large)."""
     state, filed = fold(run), 0
     for identifier, action, tier, _ in route.next_items(run, function):
         if action != "prove" or tier in (None, MECHANICAL) or identifier not in free:
-            continue
-        where = located[identifier]
-        record = where.d / "package" / where.gid / "PACKAGE.json"
-        if store.read_json(record, {}).get("class") == "ADDRESS" and state[identifier]["goal_class"] != "ADDRESS":
-            store.append(run, base_event(state[identifier], state="derived", **{"class": "ADDRESS"},
-                                         artifact=store.artifact_of(record)))
-            counts.bump("address")
-            filed += 1
             continue
         text, reason = prompt_for(run, function, identifier, tier, located=located, state=state)
         if text is not None:
@@ -651,6 +667,7 @@ def step(function, run, limit=None, jobs=8, kernel=None):
         mechanical = [i for i, action, tier, _ in route.next_items(run, function)
                       if action == "prove" and tier == MECHANICAL and i in free]
         progress += run_mechanical(function, run, located, mechanical, counts)
+        progress += sync_package_class(function, run, located, counts)
         progress += escalate_unpromptable(function, run, located, free, counts)
         if not progress:
             break

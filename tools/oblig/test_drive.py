@@ -374,6 +374,19 @@ class PackagedGoalTests(unittest.TestCase):
         self.assertEqual(drive.model_items(self.run, F), [])
         self.assertEqual([a for i, a, _, _ in drive.route.next_items(self.run, F)], ["owner"])
 
+    def test_symbolized_package_returns_an_address_goal_to_the_ladder(self):
+        store.append(self.run, store.event(id=self.identifier, function=F, kind="goal", state="derived",
+                                           **{"class": "ADDRESS"}))
+        self.assertEqual([a for _, a, _, _ in drive.route.next_items(self.run, F)], ["owner"])
+        (self.package / "PACKAGE.json").write_text(json.dumps(dict(id=self.identifier, symbols=[dict(
+            literal="lit", notation="sym_x")], **{"class": None})))
+        (self.package / "TASK-haiku-low.md").write_text("# Symbolized goal\n")
+        counts = drive.step(F, self.run, kernel=self.kernel)[0]
+        self.assertEqual(counts.get("symbolized"), 1)
+        item = store.fold(store.read_events(self.run))[self.identifier]
+        self.assertEqual(item["goal_class"], drive.replay.goal_class("forall a : Z, 0 <= a -> 0 <= a + 1"))
+        self.assertEqual([t for _, t, _ in drive.model_items(self.run, F)], ["haiku-low"])
+
 
 def package_answer_form():
     return drive.package.ANSWER_FORM.format(answer="answers/0058-1.v")

@@ -666,7 +666,7 @@ def minimize(run, d, goal, answer, header, args, ocamlpath, function=None):
     if smaller == goal["statement"]:
         return dict(state="unchanged", binders=len(goal["binders"]))
     name = rrm.lemma_prefix(goal["id"].split("-")[0], function) + sha(smaller)[:16]
-    (m / "goal.v").write_text(goal_text(header, name, smaller))
+    (m / "goal.v").write_text(symbolized_goal_text(d, header, name, smaller))
     (m / "proof.v").write_text(goal_head((m / "goal.v").read_text()) + answer.strip() + "\n")
     (m / "roundtrip.v").write_text(roundtrip_text(header, smaller))
     (m / "check.sh").write_text(check_script(goal["id"] + "-min", args, ocamlpath))
@@ -682,6 +682,16 @@ def minimize(run, d, goal, answer, header, args, ocamlpath, function=None):
             shutil.copyfile(m / f, d / f)
         goal.update(final_name=name, final_statement=smaller)
     return state
+
+
+def symbolized_goal_text(d, header, name, statement):
+    """goal_text, with the symbol notations of tools/oblig/symbolize.py when the goal's own goal.v
+    uses them (package.py rewrote its address literals), so the minimized lemma stays relocatable."""
+    if "Require Import ZesuSsz.Generated.Stock.Symbols." not in (d / "goal.v").read_text():
+        return goal_text(header, name, statement)
+    sys.path.insert(0, str(ROOT / "tools/oblig"))
+    import symbolize
+    return goal_text(symbolize.with_require(header), name, symbolize.statement(statement, symbolize.table())[0])
 
 
 def module_path(residuals, module):
