@@ -1513,7 +1513,8 @@ def _write_steps(image, resource_id):
 
 def generalize_owned_join(alternatives, *, original_seed, entry_pc, vocabulary,
                           continuation, outer_names=(), liveness=None, observables=None,
-                          relational_registers=(), design_facts=(), live_registers=None, lifted_binders=()):
+                          relational_registers=(), design_facts=(), live_registers=None, lifted_binders=(),
+                          frame_writes=()):
     """Build a seed when every incoming non-register resource is identical.
 
     entry_pc None generalizes the exits of a return package (G-ret): every edge's PC must be the
@@ -1525,6 +1526,10 @@ def generalize_owned_join(alternatives, *, original_seed, entry_pc, vocabulary,
     design_facts are join-design conjuncts (Coq text). `{bytes@ADDR}` names the
     current value of the owned array at ADDR; each fact is a pure component of
     the join scope, which the edges into the join must establish.
+
+    frame_writes are the 8-byte stores of a `frame` annotation at this join (profile
+    `join_frames`, entry_hist.frame_writes): each lands in one uninitialized span of the
+    seed, which then holds that slot's value; the edges into the join must hold it.
 
     A pure fact that the edges state differently stays as one fact over the join binders
     when each edge's fact is its instance under that edge's binder values
@@ -1655,19 +1660,32 @@ def generalize_owned_join(alternatives, *, original_seed, entry_pc, vocabulary,
     witnesses = [_witness_texts({name: normalize(Expr.from_dict(value))
                                  for name, value in edge['widened_substitution'].items()})
                  for edge in plan['edges']]
+    # A frame annotation's slot values (`frame_writes`) land in the uninitialized span that holds
+    # each slot; the join seed carries them as stores of that span (mapped, owned by it, so a read
+    # of another owned region passes them), which each edge proves of the bytes it holds.
+    frame_spans = {}
+    for write in frame_writes:
+        landed = apply_owned_writes(original_seed.resources, [write], conditions=first.conditions,
+                                    facts=original_seed.facts, endianness=first.endianness)
+        owners = {step['resource_id'] for step in landed.transitions}
+        if landed.status != 'complete' or len(owners) != 1 or memory_by_id[next(iter(owners))].byte_array is not None:
+            raise ValueError('A frame slot value lands in no single uninitialized span of the join seed')
+        owner = owners.pop()
+        frame_spans.setdefault(owner, []).append(replace(write, mapped=True, ownership_id=owner))
     for component in ownership['components']:
         key = component['id']
         current = deepcopy(component)
         if component['kind'] != 'register':
             source = records[0][key]['source']
-            if (any(record[key]['source'] != source for record in records[1:]) and key in memory_by_id
-                    and memory_by_id[key].byte_array is None
+            if ((any(record[key]['source'] != source for record in records[1:]) or key in frame_spans)
+                    and key in memory_by_id and memory_by_id[key].byte_array is None
                     and not any('{bytes@' + memory_by_id[key].address_z + '}' in fact for fact in design_facts)):
                 # An uninitialized span the edges write differently. The bytes every edge
                 # holds stay exact; the others stay uninitialized, which each edge's bytes
                 # witness. No binder: the gaps are `↦ₘ?` spans. A join design that names the
                 # span states a meaning of its whole value, so that span keeps array packaging.
-                agreed = _agreed_writes(images, key)
+                # Slot stores come last: their bytes replace the agreed bytes they cover.
+                agreed = _agreed_writes(images, key) + frame_spans.get(key, [])
                 image = apply_owned_writes(original_seed.resources, agreed, conditions=first.conditions,
                                            facts=original_seed.facts, endianness=first.endianness)
                 span = render_resource_boundary(ownership, image, first, retained_registers=first.registers,

@@ -59,7 +59,7 @@ def joins_of(function):
     return sorted(pc for pc, rows in predecessors.items() if len(rows) > 1 and pc not in loops)
 
 
-def join_seed(boundary, *, seeds, roots, parents, profile, vocabulary, continuation, live_registers):
+def join_seed(boundary, *, seeds, roots, parents, profile, vocabulary, continuation, live_registers, report):
     """Return (seed, root, plan row) of the join at `boundary` from its incoming edges; a ValueError
     names the refusal. At a return site the path through the call is one incoming edge: the
     site's own call-return seed alternative (in `seeds`, its own root in `roots`)."""
@@ -90,12 +90,15 @@ def join_seed(boundary, *, seeds, roots, parents, profile, vocabulary, continuat
     try:
         # Edges through an earlier join seed are aligned on their root seed's tree.
         designs = profile.get('join_designs', {}) if profile else {}
+        frames = next((rows for suffix, rows in (profile.get('join_frames', {}) if profile else {}).items()
+                       if profile.pc(suffix) == hex(pc)), [])
         joined = generalize_owned_join(incoming, original_seed=seeds[root], entry_pc=pc, vocabulary=vocabulary,
                                        continuation=continuation, outer_names=['args', 'returnAddress'],
                                        design_facts=next(([entry_hist.design_fact_text(row) for row in facts]
                                                           for suffix, facts in designs.items()
                                                           if profile.pc(suffix) == hex(pc)), []),
-                                       live_registers=live_registers, lifted_binders=lifted_binders)
+                                       live_registers=live_registers, lifted_binders=lifted_binders,
+                                       frame_writes=entry_hist.frame_writes(frames, report) if frames else ())
     except ValueError as error:
         raise ValueError('join generalization refused: ' + str(error) + ' (edge seeds: ' +
                          ', '.join(sorted(origins)) + ')') from error
@@ -113,7 +116,7 @@ def join_seed(boundary, *, seeds, roots, parents, profile, vocabulary, continuat
 
 
 def return_site_seed(boundary, call_seed, *, seeds, roots, parents, profile, vocabulary, continuation,
-                     live_registers):
+                     live_registers, report):
     """Return (seed, root, plan row or None) of a return site that is also a join.
 
     `boundary` is the site in a pass where `call_seed` (whose root's parent `parents` names) seeds it.
@@ -129,7 +132,7 @@ def return_site_seed(boundary, call_seed, *, seeds, roots, parents, profile, voc
     try:
         seed, root, plan = join_seed(boundary, seeds={**seeds, site: call_seed}, roots={**roots, site: site},
                                      parents=parents, profile=profile, vocabulary=vocabulary,
-                                     continuation=continuation, live_registers=live_registers)
+                                     continuation=continuation, live_registers=live_registers, report=report)
     except ValueError as error:
         raise ValueError('return-site join refused: ' + str(error)) from error
     seed.join_kind = 'call_return'
@@ -249,7 +252,8 @@ def main():
                     seed, root, plan = return_site_seed(
                         next(row for row in probe['boundaries'] if row['pc'] == site), call_seed,
                         seeds=seeds, roots=roots, parents={**parents, site: parent}, profile=profile,
-                        vocabulary=vocabulary, continuation=continuation, live_registers=liveness.get(site))
+                        vocabulary=vocabulary, continuation=continuation, live_registers=liveness.get(site),
+                        report=probe)
                 except ValueError as error:
                     refusals[site] = str(error)
                     continue
@@ -294,7 +298,7 @@ def main():
             try:
                 seeds[site], roots[site], plans[site] = join_seed(
                     boundary, seeds=seeds, roots=roots, parents=parents, profile=profile, vocabulary=vocabulary,
-                    continuation=continuation, live_registers=liveness.get(site))
+                    continuation=continuation, live_registers=liveness.get(site), report=report)
             except ValueError as error:
                 refusals[site] = str(error)
                 continue
