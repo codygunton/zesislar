@@ -38,7 +38,7 @@ Proof.
   destruct Hh as (fp_seed_mstatus_bits & forward_witness_72b7e22ed74cb83b & forward_witness_cbcac9df79b9221c & forward_witness_1be931110d776902 & forward_witness_905cf96e605c1117 & forward_witness_55ab0ce59750150a & forward_witness_d7543602bfbbe148 & forward_witness_00470b017f14ddbf & forward_witness_83d3e6d46c3de70e & HF0 & HF1 & HF2 & HF3 & HF4 & HF5 & HF6 & HF7 & HF8).
   iIntros "HN".
   iPureIntro. apply zesu_hist_intro. unfold fp_machineAt00d8_ForwardA0N0_Hist.
-  exists fp_seed_mstatus_bits, forward_witness_72b7e22ed74cb83b, forward_witness_cbcac9df79b9221c, forward_witness_1be931110d776902, forward_witness_905cf96e605c1117, forward_witness_55ab0ce59750150a, forward_witness_d7543602bfbbe148, forward_witness_00470b017f14ddbf, forward_witness_83d3e6d46c3de70e, (BV 64%N 0%Z), (BV 64%N 0%Z), (BV 64%N 0%Z), (BV 64%N 0%Z), (BV 64%N 0%Z), (BV 64%N 0%Z), (BV 64%N 0%Z).
+  exists fp_seed_mstatus_bits, forward_witness_72b7e22ed74cb83b, forward_witness_cbcac9df79b9221c, forward_witness_1be931110d776902, forward_witness_905cf96e605c1117, forward_witness_55ab0ce59750150a, forward_witness_d7543602bfbbe148, forward_witness_00470b017f14ddbf, forward_witness_83d3e6d46c3de70e, (BV 64%N 0%Z).
   split; [exact HF0|].
   split; [exact HF1|].
   split; [exact HF2|].
@@ -47,12 +47,6 @@ Proof.
   split; [exact HF5|].
   split; [exact HF6|].
   split; [exact HF7|].
-  split; [by vm_compute|].
-  split; [by vm_compute|].
-  split; [by vm_compute|].
-  split; [by vm_compute|].
-  split; [by vm_compute|].
-  split; [by vm_compute|].
   split; [exact HF8|].
   by vm_compute.
 Qed.
