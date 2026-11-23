@@ -1,6 +1,7 @@
 Require Import isla.riscv64.riscv64.
 Require Import ZesuSsz.Automation2.ContextCollection.
 Require ZesuSsz.Automation2.ResidualExport.
+Require ZesuSsz.Automation2.SpatialExport.
 Require Import ZesuSsz.Automation2.Telemetry.
 From Ltac2 Require Import Ltac2.
 Set Default Proof Mode "Classic".
@@ -199,11 +200,14 @@ Ltac zesu_diag_export_split :=
 
 (* At the refusal point: each goal still open at the end of the block. Also
    on under ZESU_TELEMETRY=1 (Telemetry.v), so a benchmark run of an
-   unchanged caller records its leftover goals. *)
+   unchanged caller records its leftover goals. With SpatialExportOn, a
+   spatial goal also gets its `@@S` record (SpatialExport.v). *)
 Ltac zesu_diag_export_final :=
   tryif first [zesu_diag_export_on | zesu_telemetry_on] then try (
     lazymatch goal with
-    | |- environments.envs_entails _ _ => idtac "@@X skip final spatial"
+    | |- environments.envs_entails _ _ => idtac "@@X skip final spatial";
+        tryif ZesuSsz.Automation2.SpatialExport.zesu_spatial_export_on
+        then try ZesuSsz.Automation2.SpatialExport.zesu_spatial_export_final else idtac
     | _ => ltac2:(ZesuSsz.Automation2.ResidualExport.zesu_export_goal "final")
     end)
   else idtac.
