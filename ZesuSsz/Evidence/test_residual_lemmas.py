@@ -1,4 +1,5 @@
 """Residual lemma modules: renderer, caller import, and policy checks."""
+import json
 from pathlib import Path
 import sys
 import tempfile
@@ -11,7 +12,7 @@ sys.path.insert(0, str(ROOT / "tools" / "block"))
 from check_decode_item_hints import residual_errors
 from check_proof_hygiene import residual_module_failures
 from render_residual_module import (RenderError, parse_module, parse_shared_module, render_from_goals,
-                                    render_shared_from_goals)
+                                    render_meaning_from_goals, render_shared_from_goals)
 from render_fp301_statements import residual_import
 
 HEADER = """Require Import ZesuSsz.Automation2.All.
@@ -125,6 +126,53 @@ class SharedModuleTests(unittest.TestCase):
             self.bridge_dir(root, "fold")
             with self.assertRaises(RenderError):
                 render_shared_from_goals("OtherBridges", root)
+
+
+MEANING_HEADER = """From Coq Require Import ZArith.ZArith.
+Require ZesuSsz.Automation2.LinearFirstLia.
+Local Open Scope Z_scope.
+
+"""
+
+
+class MeaningModuleTests(unittest.TestCase):
+    def lemma_dir(self, root, name, deps, proof=PROOF, status="PASS"):
+        d = Path(root) / name / "goals" / name
+        d.mkdir(parents=True)
+        statement = (MEANING_HEADER + "Lemma %s :\n" % name
+                     + "".join("  %s_statement ->\n" % dep for dep in deps) + "  0 <= 1.\nProof.\n")
+        (d / "goal.v").write_text(statement + SLOT)
+        (d / "proof.v").write_text(statement + proof)
+        (d / "STATUS.json").write_text('{"result": "%s"}' % status)
+
+    def order(self, root, rows):
+        path = Path(root) / "ORDER.json"
+        path.write_text(json.dumps([dict(name=name, deps=deps) for name, deps in rows]))
+        return path
+
+    def test_copies_lemmas_and_discharges_dependencies(self):
+        rows = [("leaf", []), ("top", ["leaf"])]
+        with tempfile.TemporaryDirectory() as root:
+            for name, deps in rows:
+                self.lemma_dir(root, name, deps)
+            text = render_meaning_from_goals(root, self.order(root, rows), "top")
+        self.assertIn("Lemma top :\n  leaf_statement ->\n  0 <= 1.\nProof.\n" + PROOF.rstrip() + "\n", text)
+        self.assertIn("Require ZesuSsz.Automation2.LinearFirstLia.\n", text)
+        self.assertLess(text.index("End Checked."), text.index("Theorem leaf : leaf_statement."))
+        self.assertIn("Theorem top : top_statement.\nProof. exact (Checked.top leaf). Qed.\n", text)
+        self.assertTrue(text.endswith("Proof. exact (Checked.top leaf). Qed.\n"))
+
+    def test_refuses_bad_order_status_and_hypotheses(self):
+        cases = [([("top", ["leaf"]), ("leaf", [])], {}, "top"),
+                 ([("leaf", []), ("top", ["leaf"])], {"leaf": "FAIL"}, "top"),
+                 ([("leaf", []), ("top", [])], {}, "top"),
+                 ([("leaf", []), ("top", ["leaf"])], {}, "leaf")]
+        for rows, status, top in cases:
+            with self.subTest(rows=rows, status=status, top=top), tempfile.TemporaryDirectory() as root:
+                self.lemma_dir(root, "leaf", [], status=status.get("leaf", "PASS"))
+                self.lemma_dir(root, "top", ["leaf"])
+                with self.assertRaises(RenderError):
+                    render_meaning_from_goals(root, self.order(root, rows), top)
 
 
 class ResidualPolicyTests(unittest.TestCase):

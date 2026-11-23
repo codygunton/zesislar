@@ -669,6 +669,26 @@ Check (eq_refl : txAccessListOutcomeAllowed = ReviewedTxAccessListOutcomeAllowed
 Check (eq_refl : TxAccessListMeaningModuloKnownBugs =
                  ReviewedTxAccessListMeaningModuloKnownBugs).
 
+(* The Sail agreement of txAccessList (plan B6; statement reviewed
+   2026-11-23, PR #378): on the domain, Sail agrees with the candidate or
+   the input triggers a registered KnownBug class. *)
+Require ZesuSsz.Compliance.TxAccessListSailAgreementTheorem.
+
+Definition ReviewedTxAccessListSailAgreement : Prop :=
+  forall input : list byte,
+    ReviewedTxAccessListDomain input ->
+    ReviewedTxAccessListSailAgrees input \/
+    exists bug, List.In bug knownBugs /\
+      ReviewedTxAccessListBugTrigger bug input = true.
+
+Check (@ZesuSsz.Compliance.TxAccessListSailAgreementTheorem.txAccessListSailAgreement
+  : ReviewedTxAccessListSailAgreement).
+Print Assumptions
+  ZesuSsz.Compliance.TxAccessListSailAgreementTheorem.txAccessListSailAgreement.
+Ltac2 Eval exact_axioms
+  'ZesuSsz.Compliance.TxAccessListSailAgreementTheorem.txAccessListSailAgreement
+  (approved_library_axioms ()).
+
 (* The Level 1 contract of txAccessList (entry 0x80000000). *)
 Definition ReviewedTxRamRange (pointer length : Z) : Prop :=
   0xa0000000 <= pointer /\ 0 <= length /\ pointer + length <= 0xc0000000.
