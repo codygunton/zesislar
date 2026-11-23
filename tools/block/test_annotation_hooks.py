@@ -130,7 +130,7 @@ class ReturnedLength(unittest.TestCase):
             seed, public_after, _ = call_return_seed([edge], call=call, function_root=directory, **fixture)
         nodes = {node['id']: node for node in public_after['assertion_tree']['components']}
         self.assertEqual(nodes['dest']['original_component'], 'dst ↦ₘ∗ call_out')
-        self.assertEqual(nodes['dest_length']['coq'], '⌜(List.length call_out = want)%nat⌝')
+        self.assertEqual(nodes['dest_length']['coq'], '⌜(Z.of_nat (List.length call_out) = want)%Z⌝')
         region, = [region for region in seed.state.memory if region.ownership_id == 'dest']
         self.assertEqual(region.length, input_expr('want', None))
 
