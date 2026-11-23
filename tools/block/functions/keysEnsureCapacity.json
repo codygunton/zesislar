@@ -241,8 +241,102 @@
       }
     ]
   },
+  "join_frames": {
+    "+0x118": [
+      {
+        "offset": -88,
+        "coq": "savedX25 (ensureSaved (ensureBase args))"
+      },
+      {
+        "offset": -80,
+        "coq": "savedX24 (ensureSaved (ensureBase args))"
+      },
+      {
+        "offset": -72,
+        "coq": "savedX23 (ensureSaved (ensureBase args))"
+      },
+      {
+        "offset": -64,
+        "coq": "savedX22 (ensureSaved (ensureBase args))"
+      },
+      {
+        "offset": -56,
+        "coq": "savedX21 (ensureSaved (ensureBase args))"
+      },
+      {
+        "offset": -48,
+        "coq": "savedX20 (ensureSaved (ensureBase args))"
+      },
+      {
+        "offset": -40,
+        "coq": "savedX19 (ensureSaved (ensureBase args))"
+      },
+      {
+        "offset": -32,
+        "coq": "savedX18 (ensureSaved (ensureBase args))"
+      },
+      {
+        "offset": -24,
+        "coq": "savedX9 (ensureSaved (ensureBase args))"
+      },
+      {
+        "offset": -16,
+        "coq": "savedX8 (ensureSaved (ensureBase args))"
+      },
+      {
+        "offset": -8,
+        "coq": "ensureReturnAddress (ensureBase args)"
+      }
+    ],
+    "+0x124": [
+      {
+        "offset": -88,
+        "coq": "savedX25 (ensureSaved (ensureBase args))"
+      },
+      {
+        "offset": -80,
+        "coq": "savedX24 (ensureSaved (ensureBase args))"
+      },
+      {
+        "offset": -72,
+        "coq": "savedX23 (ensureSaved (ensureBase args))"
+      },
+      {
+        "offset": -64,
+        "coq": "savedX22 (ensureSaved (ensureBase args))"
+      },
+      {
+        "offset": -56,
+        "coq": "savedX21 (ensureSaved (ensureBase args))"
+      },
+      {
+        "offset": -48,
+        "coq": "savedX20 (ensureSaved (ensureBase args))"
+      },
+      {
+        "offset": -40,
+        "coq": "savedX19 (ensureSaved (ensureBase args))"
+      },
+      {
+        "offset": -32,
+        "coq": "savedX18 (ensureSaved (ensureBase args))"
+      },
+      {
+        "offset": -24,
+        "coq": "savedX9 (ensureSaved (ensureBase args))"
+      },
+      {
+        "offset": -16,
+        "coq": "savedX8 (ensureSaved (ensureBase args))"
+      },
+      {
+        "offset": -8,
+        "coq": "ensureReturnAddress (ensureBase args)"
+      }
+    ]
+  },
   "generated_from": {
     "path": "tools/block/functions/keysEnsureCapacity.annotations.json",
-    "sha256": "43ac3583fcf2e571b6ed3efc4f829f7fafc4e1087c698809c46f9595c884186d"
+    "sha256": "25a5bba8a63de13d9698cafe0036ea027746acd0728347267167c39c42271610"
   }
 }
