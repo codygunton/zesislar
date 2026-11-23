@@ -1,4 +1,4 @@
-"""Run the pinned source engine (FP-20261122b) from the entry seed, adding generated seeds.
+"""Run the pinned source engine (FP-20261123) from the entry seed, adding generated seeds.
 
 A join is seeded only after every join that can reach it has its seed, so its
 incoming edges are complete. A call's return site is seeded from the callee
@@ -67,6 +67,12 @@ def main():
     if not isinstance(keep, bool):
         raise ValueError('keep_source_implied_ram_guards: a boolean is required')
     symbolic_state.KEEP_SOURCE_IMPLIED_RAM_GUARDS = keep
+    # Profile `access_placements` (compiled from annotation rows): the owned array of an access the
+    # engine cannot place by itself (symbolic_state.placed_owner).
+    placements = {}
+    for row in (profile.get('access_placements', []) if profile else []):
+        placements.setdefault(int(profile.pc(row['pc']), 0), []).append(row)
+    symbolic_state.ACCESS_PLACEMENTS = placements
     # Profile key `merge_condition_alternatives` (default true): alternatives that reach a block over
     # one edge with the same state up to their path conditions continue as one (forward_design).
     merge = profile.get('merge_condition_alternatives', True) if profile else True
@@ -291,7 +297,7 @@ def main():
                                                     if roots.get(pc) != pc}}, ensure_ascii=False) + '\n')
     receipt = {'source_pass': bind(output / 'FORWARD.json'), 'level1_K_source': bind(level1),
                'vocabulary': bind(vocabulary_path), 'system_shapes': bind(shapes_path),
-               'engine': bind(ROOT / 'tools/block/FP-20261122b.json'), 'joins': bind(output / 'JOINS.json'),
+               'engine': bind(ROOT / 'tools/block/FP-20261123.json'), 'joins': bind(output / 'JOINS.json'),
                'call_seeds': bind(output / 'CALL-SEEDS.json'), 'join_seeds': bind(output / 'JOIN-SEEDS.json')}
     (output / 'INPUT-RECEIPT.json').write_text(json.dumps(receipt, indent=2) + '\n')
     stops = {}
