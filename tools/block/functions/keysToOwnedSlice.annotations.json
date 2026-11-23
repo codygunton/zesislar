@@ -7,6 +7,9 @@
   "entry_hist": "wrap",
   "frame_slots": true,
   "array_spelling": "sealed",
+  "hist_visible": [
+   "^\\(?frame_old_m\\d+'* = "
+  ],
   "args_type": "KeysToOwnedSliceBlockArgs",
   "symbol": "array_list.Aligned([32]u8,null).toOwnedSlice",
   "generated_directory": "ZesuSsz/Generated/KeysToOwnedSlice/FP301",
@@ -541,6 +544,34 @@
     "tier": "opus-medium"
    },
    "why": "OutOfMemory path: alloc returned null, so the block owns altFlAllocatedBytes 0 n = 0 bytes; toOwnedSliceExit on OutOfMemory owns arrayListEmpty emptyPointer for the slice (nothing), so the exit does not need it"
+  },
+  {
+   "id": "frame",
+   "request": "keysToOwnedSlice/decision/join_assertion-00fc",
+   "at": {
+    "pc": "+0x0",
+    "boundary": "frame"
+   },
+   "binders": [],
+   "resources": [],
+   "facts": [],
+   "slots": [
+    {"offset": -80, "coq": "keysSavedX24 args"},
+    {"offset": -72, "coq": "keysSavedX23 args"},
+    {"offset": -64, "coq": "keysSavedX22 args"},
+    {"offset": -56, "coq": "keysSavedX21 args"},
+    {"offset": -48, "coq": "keysSavedX20 args"},
+    {"offset": -40, "coq": "keysSavedX19 args"},
+    {"offset": -32, "coq": "keysSavedX18 args"},
+    {"offset": -24, "coq": "keysSavedX9 args"},
+    {"offset": -16, "coq": "keysSavedX8 args"},
+    {"offset": -8, "coq": "Z_to_bv 64 (toOwnedReturnAddress (keysBase args))"}
+   ],
+   "sites": ["+0xfc", "+0x110", "+0x168", "+0x184", "+0x18c", "+0x1ac"],
+   "author": {
+    "tier": "opus-medium"
+   },
+   "why": "the prologue stores ra, s0, s1, s2..s8 at sp-8..sp-80 and no block before the epilogue writes them; the join at +0xfc forgets them because its +0x6c edge holds them in the seed text, not as writes (Main ruling (b))"
   }
  ]
 }

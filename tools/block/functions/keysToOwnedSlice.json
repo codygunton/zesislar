@@ -3,6 +3,9 @@
   "entry_hist": "wrap",
   "frame_slots": true,
   "array_spelling": "sealed",
+  "hist_visible": [
+    "^\\(?frame_old_m\\d+'* = "
+  ],
   "args_type": "KeysToOwnedSliceBlockArgs",
   "symbol": "array_list.Aligned([32]u8,null).toOwnedSlice",
   "generated_directory": "ZesuSsz/Generated/KeysToOwnedSlice/FP301",
@@ -100,7 +103,42 @@
     }
   },
   "join_designs": {
-    "+0x110": []
+    "+0x110": [
+      "frame_old_m80 = (keysSavedX24 args)",
+      "frame_old_m72 = (keysSavedX23 args)",
+      "frame_old_m64 = (keysSavedX22 args)",
+      "frame_old_m56 = (keysSavedX21 args)",
+      "frame_old_m48 = (keysSavedX20 args)",
+      "frame_old_m40 = (keysSavedX19 args)",
+      "frame_old_m32 = (keysSavedX18 args)",
+      "frame_old_m24 = (keysSavedX9 args)",
+      "frame_old_m16 = (keysSavedX8 args)",
+      "frame_old_m8 = (Z_to_bv 64 (toOwnedReturnAddress (keysBase args)))"
+    ],
+    "+0xfc": [
+      "frame_old_m80 = (keysSavedX24 args)",
+      "frame_old_m72 = (keysSavedX23 args)",
+      "frame_old_m64 = (keysSavedX22 args)",
+      "frame_old_m56 = (keysSavedX21 args)",
+      "frame_old_m48 = (keysSavedX20 args)",
+      "frame_old_m40 = (keysSavedX19 args)",
+      "frame_old_m32 = (keysSavedX18 args)",
+      "frame_old_m24 = (keysSavedX9 args)",
+      "frame_old_m16 = (keysSavedX8 args)",
+      "frame_old_m8 = (Z_to_bv 64 (toOwnedReturnAddress (keysBase args)))"
+    ],
+    "+0x18c": [
+      "frame_old_m80 = (keysSavedX24 args)",
+      "frame_old_m72 = (keysSavedX23 args)",
+      "frame_old_m64 = (keysSavedX22 args)",
+      "frame_old_m56 = (keysSavedX21 args)",
+      "frame_old_m48 = (keysSavedX20 args)",
+      "frame_old_m40 = (keysSavedX19 args)",
+      "frame_old_m32 = (keysSavedX18 args)",
+      "frame_old_m24 = (keysSavedX9 args)",
+      "frame_old_m16 = (keysSavedX8 args)",
+      "frame_old_m8 = (Z_to_bv 64 (toOwnedReturnAddress (keysBase args)))"
+    ]
   },
   "calls": [
     {
@@ -184,7 +222,49 @@
           "use": "produced"
         }
       ],
-      "call_site_pc": "+0x164"
+      "call_site_pc": "+0x164",
+      "return_facts": [
+        {
+          "kind": "fact",
+          "coq": "frame_old_m80 = (keysSavedX24 args)"
+        },
+        {
+          "kind": "fact",
+          "coq": "frame_old_m72 = (keysSavedX23 args)"
+        },
+        {
+          "kind": "fact",
+          "coq": "frame_old_m64 = (keysSavedX22 args)"
+        },
+        {
+          "kind": "fact",
+          "coq": "frame_old_m56 = (keysSavedX21 args)"
+        },
+        {
+          "kind": "fact",
+          "coq": "frame_old_m48 = (keysSavedX20 args)"
+        },
+        {
+          "kind": "fact",
+          "coq": "frame_old_m40 = (keysSavedX19 args)"
+        },
+        {
+          "kind": "fact",
+          "coq": "frame_old_m32 = (keysSavedX18 args)"
+        },
+        {
+          "kind": "fact",
+          "coq": "frame_old_m24 = (keysSavedX9 args)"
+        },
+        {
+          "kind": "fact",
+          "coq": "frame_old_m16 = (keysSavedX8 args)"
+        },
+        {
+          "kind": "fact",
+          "coq": "frame_old_m8 = (Z_to_bv 64 (toOwnedReturnAddress (keysBase args)))"
+        }
+      ]
     },
     {
       "function": "array_list.Aligned([32]u8,null).toOwnedSlice",
@@ -214,7 +294,49 @@
       },
       "collection_after": "reg_col zesu_sys_regs",
       "collection_source": "machine_call_ret returns reg_col (machine_sys_regs decodeItemCallMap); the RET of ziskMemcpyCallSpec returns zisk_input_end and zisk_free_input with BitsShape 64; zesu_sys_regs (InstrSpecs/Machine.v) is their union",
-      "call_site_pc": "+0x180"
+      "call_site_pc": "+0x180",
+      "return_facts": [
+        {
+          "kind": "fact",
+          "coq": "frame_old_m80 = (keysSavedX24 args)"
+        },
+        {
+          "kind": "fact",
+          "coq": "frame_old_m72 = (keysSavedX23 args)"
+        },
+        {
+          "kind": "fact",
+          "coq": "frame_old_m64 = (keysSavedX22 args)"
+        },
+        {
+          "kind": "fact",
+          "coq": "frame_old_m56 = (keysSavedX21 args)"
+        },
+        {
+          "kind": "fact",
+          "coq": "frame_old_m48 = (keysSavedX20 args)"
+        },
+        {
+          "kind": "fact",
+          "coq": "frame_old_m40 = (keysSavedX19 args)"
+        },
+        {
+          "kind": "fact",
+          "coq": "frame_old_m32 = (keysSavedX18 args)"
+        },
+        {
+          "kind": "fact",
+          "coq": "frame_old_m24 = (keysSavedX9 args)"
+        },
+        {
+          "kind": "fact",
+          "coq": "frame_old_m16 = (keysSavedX8 args)"
+        },
+        {
+          "kind": "fact",
+          "coq": "frame_old_m8 = (Z_to_bv 64 (toOwnedReturnAddress (keysBase args)))"
+        }
+      ]
     },
     {
       "function": "array_list.Aligned([32]u8,null).toOwnedSlice",
@@ -247,7 +369,49 @@
           ]
         }
       ],
-      "call_site_pc": "+0x1a8"
+      "call_site_pc": "+0x1a8",
+      "return_facts": [
+        {
+          "kind": "fact",
+          "coq": "frame_old_m80 = (keysSavedX24 args)"
+        },
+        {
+          "kind": "fact",
+          "coq": "frame_old_m72 = (keysSavedX23 args)"
+        },
+        {
+          "kind": "fact",
+          "coq": "frame_old_m64 = (keysSavedX22 args)"
+        },
+        {
+          "kind": "fact",
+          "coq": "frame_old_m56 = (keysSavedX21 args)"
+        },
+        {
+          "kind": "fact",
+          "coq": "frame_old_m48 = (keysSavedX20 args)"
+        },
+        {
+          "kind": "fact",
+          "coq": "frame_old_m40 = (keysSavedX19 args)"
+        },
+        {
+          "kind": "fact",
+          "coq": "frame_old_m32 = (keysSavedX18 args)"
+        },
+        {
+          "kind": "fact",
+          "coq": "frame_old_m24 = (keysSavedX9 args)"
+        },
+        {
+          "kind": "fact",
+          "coq": "frame_old_m16 = (keysSavedX8 args)"
+        },
+        {
+          "kind": "fact",
+          "coq": "frame_old_m8 = (Z_to_bv 64 (toOwnedReturnAddress (keysBase args)))"
+        }
+      ]
     },
     {
       "function": "array_list.Aligned([32]u8,null).toOwnedSlice",
@@ -307,6 +471,6 @@
   },
   "generated_from": {
     "path": "tools/block/functions/keysToOwnedSlice.annotations.json",
-    "sha256": "6a074022e6fa1ec1eb18054960968ba04c40d776b241bf48a27ddc3f013c84a7"
+    "sha256": "2dcd9b05cacbd7ce9b51a07aca92b9224260e93eb8eecfda4ce9295513f37bbb"
   }
 }
