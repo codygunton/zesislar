@@ -260,9 +260,12 @@ def unknown_statements(roots):
 
 
 def leftover_header(statement, args, coqlib):
+    """The imports of a residual module (Automation2.All, the RISC-V Islaris instance, Lists, ZArith,
+    stdpp bitvectors) plus `Require` lines for the modules the statement's qualified names live in."""
     import falsify
     requires = falsify.leftover_requires(statement, falsify.load_roots(args, coqlib))
-    return [rl.CORE_IMPORT, "From Coq Require Import Lists.List ZArith.ZArith NArith.NArith.",
+    return [rl.CORE_IMPORT, "Require Import isla.riscv64.riscv64.",
+            "From Coq Require Import Lists.List ZArith.ZArith NArith.NArith.",
             "Require Import stdpp.bitvector.definitions."] + requires + [rl.SCOPE_LINE]
 
 
@@ -374,14 +377,15 @@ def load_corpus(corpus):
 
 
 def eligible(data, recipe, ids=None, sets=("known",)):
-    """Rows whose task of RECIPE fits the prompt bound (and the falsity check did not refute)."""
+    """Rows whose task of RECIPE fits the prompt bound (and the falsity check did not refute); for the
+    mechanical tier (recipe `none`), rows whose statement parsed (a readable goal exists)."""
     out = []
     for row in data["rows"]:
         if ids is not None and row["id"] not in ids:
             continue
         if ids is None and row["set"] not in sets:
             continue
-        prompt = row["prompts"].get(recipe) if recipe != "none" else dict(fits=True)
+        prompt = row["prompts"].get(recipe) if recipe != "none" else dict(fits=bool(row.get("readable_bytes")))
         if not prompt or not prompt.get("fits") or row.get("falsify", {}).get("verdict") == "false":
             continue
         out.append(row)
@@ -395,7 +399,8 @@ def cmd_falsify(a):
     corpus = Path(a.corpus)
     data = load_corpus(corpus)
     route = falsify.Route(data["bank"], data["ocamlpath"])
-    rows = [r for r in data["rows"] if r["set"] in a.set]
+    # Only goals with a task within the prompt bound can reach a prover.
+    rows = [r for r in data["rows"] if r["set"] in a.set and r["prompts"].get("slice", {}).get("fits")]
 
     def one(row):
         report = falsify.check(corpus / "goals" / row["id"] / "goal.v", route,
@@ -817,7 +822,9 @@ def shares(rows, state, max_attempts):
 RULE = ("first_tier: the cheapest model tier (tiers.json order) that closes at least min_share of the class's "
         "known-true replay goals within its attempts, on the recipe that closes most at that tier (ties: the "
         "smaller prompt); none reaches it: the tier with the highest share (ties: cheaper). A class with fewer "
-        "than %d goals keeps the default haiku-low. Why min_share 0.5: at that share a cheap tier closes at "
+        "than %d goals, or one no model tier attempted (measured false), keeps the default haiku-low. "
+        "`mechanical` runs first for every class (route.py) and is reported under shares, not chosen here. "
+        "Why min_share 0.5: at that share a cheap tier closes at "
         "least as many goals as it hands on, so its wasted attempts are bounded by its own cost on the goals it "
         "closes, and each wasted attempt costs less than one attempt at the next tier." % MIN_GOALS)
 
@@ -861,6 +868,7 @@ def routing(corpus, tiers, min_share=MIN_SHARE):
                     entry.update(first_tier=t["name"], context=recipe)
         if "first_tier" not in entry:
             entry.update(first_tier=best[0] if best else "haiku-low", context=best[1] if best else "similar")
+        entry["measured"] = best is not None
         if len(rows) < MIN_GOALS:
             entry.update(first_tier="haiku-low", small_class=True)
         mechanical = results.get(("none", "mechanical"))
@@ -905,8 +913,7 @@ def cmd_routing(a):
 def cmd_status(a):
     data = load_corpus(a.corpus)
     print_corpus(data)
-    for (recipe, tier), state in sorted(attempt_results(a.corpus, data, load_tiers() + [dict(
-            name="original", agent=None, max_attempts=1)]).items()):
+    for (recipe, tier), state in sorted(attempt_results(a.corpus, data, load_tiers()).items()):
         counts = {}
         for slots in state.values():
             for k, slot in slots.items():
