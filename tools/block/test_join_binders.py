@@ -500,5 +500,23 @@ class StoredFrameSlots(unittest.TestCase):
         self.assertIsNone(entry_hist._list_items('(Coq.Init.Datatypes.cons x)'))
 
 
+class AgreedJoinBytes(unittest.TestCase):
+    """A join keeps a stored byte every edge holds, however each edge spells it."""
+
+    def test_a_lifted_text_byte_agrees_with_the_extract_of_the_stored_word(self):
+        from types import SimpleNamespace
+        from join_generalize import _agreed_writes
+        word = input_expr('saved args')
+        stored = operation('extract', word, width=8, value=0)
+        lifted = input_expr('(' + stored.coq() + ')', 8)
+        write = SimpleNamespace(size=1)
+        first = SimpleNamespace(transitions=[{'resource_id': 'frame', 'write_index': 0, 'offset': 0}],
+                                writes=[write], updates={'frame': {0: {'write_index': 0, 'value': stored.to_dict()}}})
+        other = SimpleNamespace(updates={'frame': {0: {'write_index': 0, 'value': lifted.to_dict()}}})
+        self.assertEqual(_agreed_writes([first, other], 'frame'), [write])
+        differing = SimpleNamespace(updates={'frame': {0: {'write_index': 0, 'value': bits(0, 8).to_dict()}}})
+        self.assertEqual(_agreed_writes([first, differing], 'frame'), [])
+
+
 if __name__ == '__main__':
     unittest.main()
