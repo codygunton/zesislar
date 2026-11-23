@@ -140,6 +140,45 @@ class Sync(unittest.TestCase):
             state = store.fold(store.read_events(run))
             self.assertEqual((state['fn/block/0000']['state'], state['fn/block/0000']['resets']), ('derived', 1))
 
+    def test_requests_become_decisions(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            run = Path(tmp)
+            requests = [{'id': 'fn/decision/contract-0000', 'kind': 'contract', 'pc': '+0x0', 'proposal': None},
+                        {'id': 'fn/decision/call_row-0094', 'kind': 'call_row', 'pc': '+0x94', 'proposal': None},
+                        {'kind': 'access_placement', 'pc': '+0x1f0', 'derivable': True,
+                         'proposal': {'array': 'keys', 'index': 'i', 'scale': 32, 'offset': 0}}]
+            write(run / 'round-1' / 'derived' / 'REQUESTS.json',
+                  {'schema': 'oblig-requests/1', 'round': 1, 'answered': [], 'requests': requests})
+            # A decision filed by hand earlier with the same id is not filed again.
+            store.append(run, ev('fn/decision/contract-0000', 'derived'))
+            self.assertEqual(store.sync(F, run), 2)
+            self.assertEqual(store.sync(F, run), 0)
+            state = store.fold(store.read_events(run))
+            self.assertEqual({k: v['state'] for k, v in state.items()},
+                             {'fn/decision/contract-0000': 'derived', 'fn/decision/call_row-0094': 'derived',
+                              'fn/decision/access_placement-01f0': 'derived'})
+            self.assertIsNone(state['fn/decision/call_row-0094']['artifact'])
+            artifact = state['fn/decision/access_placement-01f0']['artifact']
+            self.assertEqual(artifact['path'], str(run / 'round-1' / 'derived' / 'REQUESTS.json'))
+            # A later round with a new proposal re-derives; an answered request is left out.
+            requests[1]['proposal'] = {'spec': 'freeCallSpec'}
+            write(run / 'round-2' / 'derived' / 'REQUESTS.json',
+                  {'schema': 'oblig-requests/1', 'round': 2, 'answered': ['fn/decision/access_placement-01f0'],
+                   'requests': requests[:2] + [{'id': 'fn/decision/predicate-0200', 'kind': 'predicate',
+                                                'pc': '+0x200', 'proposal': None}]})
+            self.assertEqual(store.sync(F, run), 2)
+            self.assertEqual(store.sync(F, run), 0)
+            state = store.fold(store.read_events(run))
+            self.assertIsNotNone(state['fn/decision/call_row-0094']['artifact'])
+            self.assertIn('fn/decision/predicate-0200', state)
+            # A proposal an agent files later is not replaced by the derived one.
+            store.append(run, ev('fn/decision/call_row-0094', 'derived', artifact={'path': 'p', 'sha256': '1' * 64}))
+            self.assertEqual(store.sync(F, run), 0)
+            write(run / 'round-3' / 'derived' / 'REQUESTS.json',
+                  {'requests': [{'id': 'fn/decision/loop_assertion-0010', 'kind': 'contract'}]})
+            with self.assertRaises(store.Rejected):
+                store.sync(F, run)
+
     def test_decode_parent_header_old_ground(self):
         """The committed decodeParentHeader callers and certificates: 98 blocks closed, nothing open."""
         with tempfile.TemporaryDirectory() as run:

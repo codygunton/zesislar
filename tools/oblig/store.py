@@ -26,7 +26,11 @@ CLOSURE.json / NOT-CLOSED.json (tools/closure_cert.py) in the run directory, in 
 dirs and in tools/block/closures/<callers>/<case>/, results.jsonl (tools/bench/bench.py) and
 goals/<id>/STATUS.json of residual runs under RUN (tools/block/residual_loop.py), and appends an
 event only where the derived state differs from the folded one. A CLOSURE.json counts only when its
-caller_sha256 equals the caller of the current CALLERS.json row.
+caller_sha256 equals the caller of the current CALLERS.json row. It files each open request of
+RUN/round-<n>/derived/REQUESTS.json (derive.py, schema oblig-requests/1; latest round wins, `answered`
+ones left out) as a `decision` obligation under the request's id, state `derived`; a request with a
+`proposal` carries it as the artifact {path of that REQUESTS.json, sha256 of the proposal's canonical
+JSON}, filed again only when the id never carried that proposal.
 
 status --counts prints one line per kind and state, then the totals; the coordinator reads only this
 and `route.py next`, and both record the bytes they print to RUN/COORDINATOR.jsonl.
@@ -392,6 +396,43 @@ def derived_states(function, run, callers=None):
     return out
 
 
+def round_requests(function, run):
+    """{decision id: (request row, REQUESTS.json path)} over RUN/round-<n>/derived/REQUESTS.json
+    (schema oblig-requests/1 of derive.py), the latest round winning; answered requests are left out."""
+    rounds = sorted((int(m.group(1)), p) for p in Path(run).glob('round-*')
+                    for m in [re.fullmatch(r'round-(\d+)', p.name)] if m)
+    found = {}
+    for _, directory in rounds:
+        path = directory / 'derived' / 'REQUESTS.json'
+        data = read_json(path)
+        if not isinstance(data, dict):
+            continue
+        answered = set(data.get('answered') or [])
+        for row in data.get('requests') or []:
+            identifier = row.get('id') or decision_id(function, row.get('kind'),
+                                                      '%04x' % int(str(row.get('pc')).lstrip('+'), 16))
+            parsed = parse_id(identifier)
+            if (parsed is None or parsed[0] != 'decision' or parsed[1]['function'] != function
+                    or parsed[1]['decision'] != row.get('kind')):
+                raise Rejected('request %r of %s is no decision id of kind %r' % (identifier, path, row.get('kind')))
+            if identifier in answered:
+                found.pop(identifier, None)
+            else:
+                found[identifier] = (row, path)
+        for identifier in answered:
+            found.pop(identifier, None)
+    return found
+
+
+def proposal_artifact(row, path):
+    """A request's proposal as a decision artifact: the REQUESTS.json that holds the row (find it by
+    the obligation id) and the sha256 of the proposal's canonical JSON."""
+    if row.get('proposal') is None:
+        return None
+    text = json.dumps(row['proposal'], sort_keys=True, separators=(',', ':'))
+    return {'path': str(path), 'sha256': sha256_bytes(text.encode())}
+
+
 def sync(function, run, callers=None):
     """Append the events that bring the store to the evidence; return the number appended."""
     state = fold(read_events(run))
@@ -411,6 +452,16 @@ def sync(function, run, callers=None):
             rows.append(event(id=identifier, function=function, kind=kind, parent=parent, state=st,
                               **{'class': cls}, tier='evidence' if st == 'closed' else None,
                               artifact=artifact_of(artifact) if artifact else None, head=head))
+    # Each open request is a decision obligation. A request proposal the id has never carried
+    # (re)derives it with the proposal as its artifact, so the router checks it with no model; a
+    # proposal filed later by an agent is never replaced by an older derived one.
+    for identifier, (row, path) in round_requests(function, run).items():
+        item = state.get(identifier)
+        artifact = proposal_artifact(row, path)
+        carried = {(e.get('artifact') or {}).get('sha256') for e in item['events']} if item else set()
+        if item is None or (artifact and item['state'] != 'closed' and artifact['sha256'] not in carried):
+            rows.append(event(id=identifier, function=function, kind='decision', state='derived',
+                              artifact=artifact, head=head))
     if rows:
         append(run, rows)
     return len(rows)
