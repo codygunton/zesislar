@@ -142,6 +142,83 @@ Section owned_record.
   Proof.
     intros. iStartProof. iIntros "Htoken".
     Fail ZesuSsz.Automation2.Hooks.zesu_opaque_atom_arguments. Abort.
+
+  (* The list pointer reloaded from the header bytes it was stored as
+     (`word64Bytes` computed per byte) names the buffer a `free` premise
+     asks for. *)
+  Lemma reloaded_pointer_free_request (pointer count capacity : Z)
+      (items : list (bv 8)) :
+    Z.of_nat (length items) = count * 32 ->
+    0 <= count -> count <= capacity -> capacity <= 2 ^ 24 ->
+    1 <= pointer -> pointer < 2 ^ 64 -> pointer + capacity * 32 <= 3221225472 ->
+    pointer ↦ₘ∗ items -∗
+    (pointer + count * 32) ↦ₘ? ((capacity - count) * 32) -∗
+    ownedToken pointer (capacity * 32) 0 -∗
+    bv_unsigned (Z_to_bv 64 (little_endian_to_bv 8
+      [Z_to_bv 8 (Z.shiftr pointer (8 * Z.of_nat 0));
+       Z_to_bv 8 (Z.shiftr pointer (8 * Z.of_nat 1));
+       Z_to_bv 8 (Z.shiftr pointer (8 * Z.of_nat 2));
+       Z_to_bv 8 (Z.shiftr pointer (8 * Z.of_nat 3));
+       Z_to_bv 8 (Z.shiftr pointer (8 * Z.of_nat 4));
+       Z_to_bv 8 (Z.shiftr pointer (8 * Z.of_nat 5));
+       Z_to_bv 8 (Z.shiftr pointer (8 * Z.of_nat 6));
+       Z_to_bv 8 (Z.shiftr pointer (8 * Z.of_nat 7))]))
+      ↦ₘ? bv_unsigned (bv_shiftl (Z_to_bv 64 capacity) (BV 64 5)) ∗
+    ownedToken (bv_unsigned (Z_to_bv 64 (little_endian_to_bv 8
+      [Z_to_bv 8 (Z.shiftr pointer (8 * Z.of_nat 0));
+       Z_to_bv 8 (Z.shiftr pointer (8 * Z.of_nat 1));
+       Z_to_bv 8 (Z.shiftr pointer (8 * Z.of_nat 2));
+       Z_to_bv 8 (Z.shiftr pointer (8 * Z.of_nat 3));
+       Z_to_bv 8 (Z.shiftr pointer (8 * Z.of_nat 4));
+       Z_to_bv 8 (Z.shiftr pointer (8 * Z.of_nat 5));
+       Z_to_bv 8 (Z.shiftr pointer (8 * Z.of_nat 6));
+       Z_to_bv 8 (Z.shiftr pointer (8 * Z.of_nat 7))])))
+      (bv_unsigned (bv_shiftl (Z_to_bv 64 capacity) (BV 64 5)))
+      (bv_unsigned (BV 64 0)) ∗ True.
+  Proof.
+    intros. iStartProof. iIntros "Hitems Htail Htoken".
+    ZesuSsz.Automation2.Finish.zesu_run.
+  Qed.
+
+  (* The same reload as a copy's source: the items at the reloaded pointer. *)
+  Lemma reloaded_pointer_items (pointer : Z) (items : list (bv 8)) :
+    1 <= pointer -> pointer < 2 ^ 64 ->
+    pointer ↦ₘ∗ items -∗
+    bv_unsigned (Z_to_bv 64 (little_endian_to_bv 8
+      [Z_to_bv 8 (Z.shiftr pointer (8 * Z.of_nat 0));
+       Z_to_bv 8 (Z.shiftr pointer (8 * Z.of_nat 1));
+       Z_to_bv 8 (Z.shiftr pointer (8 * Z.of_nat 2));
+       Z_to_bv 8 (Z.shiftr pointer (8 * Z.of_nat 3));
+       Z_to_bv 8 (Z.shiftr pointer (8 * Z.of_nat 4));
+       Z_to_bv 8 (Z.shiftr pointer (8 * Z.of_nat 5));
+       Z_to_bv 8 (Z.shiftr pointer (8 * Z.of_nat 6));
+       Z_to_bv 8 (Z.shiftr pointer (8 * Z.of_nat 7))]))
+      ↦ₘ∗ items ∗ True.
+  Proof.
+    intros. iStartProof. iIntros "Hitems".
+    ZesuSsz.Automation2.Finish.zesu_run.
+  Qed.
+
+  (* A list of length zero: the items are empty and the tail is the whole
+     buffer; the free request is answered as for any length. *)
+  Lemma empty_items_free_request (pointer count capacity : Z)
+      (items : list (bv 8)) :
+    Z.of_nat (length items) = count * 32 ->
+    0 <= count -> count <= capacity -> capacity <= 2 ^ 24 ->
+    1 <= pointer -> pointer < 2 ^ 64 -> pointer + capacity * 32 <= 3221225472 ->
+    count = 0 -> Z_to_bv 64 count = BV 64 0 -> capacity <> 0 ->
+    pointer ↦ₘ∗ items -∗
+    (pointer + count * 32) ↦ₘ? ((capacity - count) * 32) -∗
+    ownedToken pointer (capacity * 32) 0 -∗
+    bv_unsigned (Z_to_bv 64 pointer)
+      ↦ₘ? bv_unsigned (bv_shiftl (Z_to_bv 64 capacity) (BV 64 5)) ∗
+    ownedToken (bv_unsigned (Z_to_bv 64 pointer))
+      (bv_unsigned (bv_shiftl (Z_to_bv 64 capacity) (BV 64 5)))
+      (bv_unsigned (BV 64 0)) ∗ True.
+  Proof.
+    intros. iStartProof. iIntros "Hitems Htail Htoken".
+    ZesuSsz.Automation2.Finish.zesu_run.
+  Qed.
 End owned_record.
 
 (* The stated size is the class's answer; without it there is none. *)
@@ -161,6 +238,36 @@ Qed.
 Lemma nested_drop_image (before : list (bv 8)) (w : bv 8) :
   w :: drop (N.to_nat 8) (drop (N.to_nat 8) before) = w :: drop 16 before.
 Proof. ZesuSsz.Automation2.Finish.zesu_finish_known_list_shape. Qed.
+
+(* The reload in a pure fact: the loaded integer is the stored word's value. *)
+Lemma reloaded_word_fact (pointer : Z) :
+  0 <= pointer < 2 ^ 64 ->
+  little_endian_to_bv 8
+    [Z_to_bv 8 (Z.shiftr pointer (8 * Z.of_nat 0));
+     Z_to_bv 8 (Z.shiftr pointer (8 * Z.of_nat 1));
+     Z_to_bv 8 (Z.shiftr pointer (8 * Z.of_nat 2));
+     Z_to_bv 8 (Z.shiftr pointer (8 * Z.of_nat 3));
+     Z_to_bv 8 (Z.shiftr pointer (8 * Z.of_nat 4));
+     Z_to_bv 8 (Z.shiftr pointer (8 * Z.of_nat 5));
+     Z_to_bv 8 (Z.shiftr pointer (8 * Z.of_nat 6));
+     Z_to_bv 8 (Z.shiftr pointer (8 * Z.of_nat 7))] + 24 = pointer + 24.
+Proof.
+  intros. autorewrite with zesu_indices. bv_solve.
+Qed.
+
+(* Bytes of two different words: no rewrite. *)
+Goal forall pointer other : Z,
+  little_endian_to_bv 8
+    [Z_to_bv 8 (Z.shiftr pointer (8 * Z.of_nat 0));
+     Z_to_bv 8 (Z.shiftr pointer (8 * Z.of_nat 1));
+     Z_to_bv 8 (Z.shiftr pointer (8 * Z.of_nat 2));
+     Z_to_bv 8 (Z.shiftr pointer (8 * Z.of_nat 3));
+     Z_to_bv 8 (Z.shiftr other (8 * Z.of_nat 4));
+     Z_to_bv 8 (Z.shiftr pointer (8 * Z.of_nat 5));
+     Z_to_bv 8 (Z.shiftr pointer (8 * Z.of_nat 6));
+     Z_to_bv 8 (Z.shiftr pointer (8 * Z.of_nat 7))] = 0.
+Proof.
+  intros. Fail progress autorewrite with zesu_indices. Abort.
 
 Print Assumptions owned_record_second_word.
 Print Assumptions items_and_tail_uninit.
