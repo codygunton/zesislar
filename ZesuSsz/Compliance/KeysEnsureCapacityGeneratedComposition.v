@@ -332,30 +332,56 @@ Proof.
   iIntros "H [HF HK]". iApply ("H" with "HK"). by iFrame.
 Qed.
 
-Lemma ensure_return_premise `{!islaG Sigma} `{!threadG} (returnAddress : Z) (P R : iProp Sigma) :
-  (R ⊢ P) -> instr_pre returnAddress P -∗ instr_pre returnAddress (R ∗ emp)%I.
-Proof.
-  iIntros (HR) "H". iApply (instr_pre_wand with "H"); [done|done|].
-  iIntros "[HR _]". by iApply HR.
-Qed.
+(* reg_col stays folded while the resources are framed. *)
+#[local] Typeclasses Opaque reg_col.
 
+(* The membership of a slot: address and state both match; the index is
+   found syntactically (no unification against the other entries). *)
+Ltac ensure_index entry entries :=
+  lazymatch entries with
+  | entry :: _ => constr:(0%nat)
+  | _ :: ?rest => let n := ensure_index entry rest in constr:(S n)
+  end.
 Ltac ensure_member :=
-  repeat lazymatch goal with
-  | |- ?entry ∈ ?entry :: _ => apply elem_of_list_here
-  | |- _ ∈ _ :: _ => apply elem_of_list_further
+  lazymatch goal with
+  | |- ?entry ∈ ?entries =>
+      let n := ensure_index entry entries in
+      exact (elem_of_list_lookup_2 entries n entry eq_refl)
   end.
 
+(* A premise is chosen by its address: callee specs by their symbols, a
+   successor by table lookup; a return premise (address returnAddress, a
+   variable) is no table slot and fails at once. *)
 Ltac ensure_premise :=
   lazymatch goal with
-  | |- environments.envs_entails _ (instr_pre _ altFlAllocCallSpec) => iExact "Halloc"
-  | |- environments.envs_entails _ (instr_pre _ altFlRemapCallSpec) => iExact "Hremap"
-  | |- environments.envs_entails _ (instr_pre _ altFlFreeCallSpec) => iExact "Hfree"
-  | |- environments.envs_entails _ (instr_pre _ ziskMemcpyCallSpec) => iExact "Hmemcpy"
-  | |- environments.envs_entails _ (instr_pre _ _) =>
+  | |- environments.envs_entails _ (instr_pre ?a _) =>
+      tryif is_var a then fail else
+      tryif (let s := constr:(sym_alt_fl_alloc_alloc) in constr_eq a s) then iExact "Halloc" else
+      tryif (let s := constr:(sym_alt_fl_alloc_remap) in constr_eq a s) then iExact "Hremap" else
+      tryif (let s := constr:(sym_alt_fl_alloc_free) in constr_eq a s) then iExact "Hfree" else
+      tryif (let s := constr:(sym_memcpy) in constr_eq a s) then iExact "Hmemcpy" else
       solve [ iApply (block_table_pre_lookup with "Htab");
               unfold keysEnsureCapacityBlockTable; cbn [block_table_entries];
               ensure_member ]
   | |- _ => iExact "Hsel"
+  end.
+
+(* The return premise of a return package from the contract continuation:
+   the end bridge of the package (chosen by its name) gives the contract exit. *)
+Ltac ensure_exit_premise Hslot2 H :=
+  iEval (rewrite /keysEnsureCapacityContinuation) in H;
+  iApply (instr_pre_wand with H); [done|done|];
+  unfold ZesuSsz.Generated.KeysEnsureCapacity.FP301.FunctionReturnEntries.fp_machineReturn_slot0,
+    ZesuSsz.Generated.KeysEnsureCapacity.FP301.FunctionReturnEntries.fp_machineReturn_slot1,
+    ZesuSsz.Generated.KeysEnsureCapacity.FP301.FunctionReturnEntries.fp_machineReturn_slot2;
+  iIntros "[Hexit _]";
+  lazymatch iTypeOf (INamed "Hexit") with
+  | Some (_, @ZesuSsz.Generated.KeysEnsureCapacity.FP301.FunctionReturnEntries.fp_machineReturn_slot0_ForwardA0N0 _ _ _ _ _) =>
+      iApply (keysEnsureCapacity_end_bridge_slot0 with "Hexit")
+  | Some (_, @ZesuSsz.Generated.KeysEnsureCapacity.FP301.FunctionReturnEntries.fp_machineReturn_slot1_ForwardA0N0 _ _ _ _ _) =>
+      iApply (keysEnsureCapacity_end_bridge_slot1 with "Hexit")
+  | Some (_, @ZesuSsz.Generated.KeysEnsureCapacity.FP301.FunctionReturnEntries.fp_machineReturn_slot2_ForwardA0N0 _ _ _ _ _) =>
+      iApply (Hslot2 with "Hexit")
   end.
 
 Ltac ensure_slot Hslot2 :=
@@ -365,7 +391,7 @@ Ltac ensure_slot Hslot2 :=
          unfold keysEnsureCapacityTableCode) in "Hcode";
   iDestruct "Hcode" as "(Hsel & Halloc & Hremap & Hfree & Hmemcpy)";
   lazymatch goal with
-  | |- environments.envs_entails _ (instr_body ?address (?entry ?args ?ra _)) =>
+  | |- environments.envs_entails _ (instr_body ?address (?entry _ _ _)) =>
       lazymatch goal with
       | H : keysEnsureCapacityBlockAt address entry _ |- _ =>
           let statement := fresh "Hstatement" in
@@ -373,12 +399,8 @@ Ltac ensure_slot Hslot2 :=
           first
           [ iApply ensure_body_weaken; iApply statement; ensure_premise
           | iApply ensure_return_slot; iIntros "Hret";
-            iApply (statement with "[Hret] Hsel");
-            unfold keysEnsureCapacityContinuation;
-            iApply (ensure_return_premise with "Hret");
-            first [ apply keysEnsureCapacity_end_bridge_slot0
-                  | apply keysEnsureCapacity_end_bridge_slot1
-                  | apply Hslot2 ] ]
+            iApply (statement with "[Hret]");
+            [ ensure_exit_premise Hslot2 "Hret" | ensure_premise .. ] ]
       end
   end.
 
@@ -392,23 +414,23 @@ Ltac ensure_block_statements Sigma Hopen :=
 (* The growth exit (return slot 2), stated as a premise until its return
    package owns the new buffer's tail (memcpy return seed). *)
 Definition KeysEnsureCapacitySlot2Bridge : Prop :=
-  forall (Sigma : gFunctors) `{!islaG Sigma} `{!threadG} (base : EnsureCapacityArgs) (returnAddress : Z),
+  forall (Sigma : gFunctors) (HG : islaG Sigma) (HT : threadG) (base : EnsureCapacityArgs) (returnAddress : Z),
     ZesuSsz.Generated.KeysEnsureCapacity.FP301.FunctionReturnEntries.fp_machineReturn_slot2_ForwardA0N0 {| ensureBase := base |} returnAddress ⊢
     keysEnsureCapacityPost base returnAddress.
 
 Lemma keysEnsureCapacity_entry_body `{!islaG Sigma} `{!threadG} :
   KeysEnsureCapacityOpenBlocks -> KeysEnsureCapacitySlot2Bridge ->
-  forall (args : KeysEnsureCapacityBlockArgs) (returnAddress : Z),
+  forall (base : EnsureCapacityArgs) (returnAddress : Z),
   ⊢ □ keysEnsureCapacityTableCode -∗
     instr_body sym_array_list_Aligned_32_u8_null_ensureTotalCapacity
-      (ZesuSsz.Generated.KeysEnsureCapacity.FP301.Pilot0000Entries.fp_machineAt0000 args returnAddress
-        (keysEnsureCapacityContinuation args returnAddress)).
+      (ZesuSsz.Generated.KeysEnsureCapacity.FP301.Pilot0000Entries.fp_machineAt0000 {| ensureBase := base |} returnAddress
+        (keysEnsureCapacityContinuation {| ensureBase := base |} returnAddress)).
 Proof.
-  intros Hopen Hslot2 args returnAddress.
-  pose proof (Hslot2 Sigma _ _) as Hslot2'.
+  intros Hopen Hslot2 base returnAddress.
+  pose proof (Hslot2 Sigma _ _ base returnAddress) as Hslot2'.
   ensure_block_statements Sigma Hopen.
   iIntros "#Htop".
-  iApply (block_table_body (keysEnsureCapacityBlockTable args returnAddress)).
+  iApply (block_table_body (keysEnsureCapacityBlockTable {| ensureBase := base |} returnAddress)).
   { unfold keysEnsureCapacityBlockTable; cbn [block_table_entries]. ensure_member. }
   { iModIntro. iExact "Htop". }
   iModIntro. iIntros (address state Hin).
@@ -433,7 +455,7 @@ Proof.
   rewrite /keysEnsureCapacityContractCode /altFlAllocatorPremises /altFlAllocCallPremise
     /altFlRemapCallPremise /altFlFreeCallPremise /ziskMemcpyCallPremise.
   iDestruct "Hcode" as "(#Hsel & (#Halloc & #Hremap & #Hfree) & #Hmemcpy)".
-  iPoseProof (keysEnsureCapacity_entry_body Hopen Hslot2 {| ensureBase := base |} returnAddress with "[]") as "Hbody".
+  iPoseProof (keysEnsureCapacity_entry_body Hopen Hslot2 base returnAddress with "[]") as "Hbody".
   { iModIntro. unfold keysEnsureCapacityTableCode. iFrame "#". }
   iApply (instr_pre_wand with "Hbody"); [done|done|].
   iIntros "[Hentry Hexit]".
