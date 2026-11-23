@@ -101,6 +101,28 @@ class Compile(unittest.TestCase):
         with self.assertRaisesRegex(annotations.AnnotationError, 'drop row'):
             annotations.compile_profile(data)
 
+    def test_a_frame_row_becomes_slot_facts_at_its_sites(self):
+        data = fixture()
+        data['profile']['frame_slots'] = True
+        data['rows'].append({'id': 'frame', 'at': {'pc': '+0x0', 'boundary': 'frame'},
+                             'slots': [{'offset': -16, 'coq': 'savedX8 args'}, {'offset': -8, 'coq': 'Z_to_bv 64 ra'}],
+                             'sites': ['+0xfc', '+0x110', '+0x44']})
+        texts = ['frame_old_m16 = (savedX8 args)', 'frame_old_m8 = (Z_to_bv 64 ra)']
+        compiled = annotations.compile_profile(data)
+        for pc in ('+0xfc', '+0x110'):
+            self.assertEqual(compiled['join_designs'][pc][-2:], texts)
+        # A call return site takes them as return facts of its call, not as join designs.
+        self.assertNotIn('+0x44', compiled['join_designs'])
+        call, = [call for call in compiled['calls'] if call['return_site_pc'] == '+0x44']
+        self.assertEqual(call['return_facts'][-2:], [{'kind': 'fact', 'coq': text} for text in texts])
+        data['rows'][-1]['slots'].append({'offset': -12, 'coq': 'x'})
+        with self.assertRaisesRegex(annotations.AnnotationError, 'frame row'):
+            annotations.compile_profile(data)
+        data['rows'][-1]['slots'].pop()
+        data['profile']['frame_slots'] = False
+        with self.assertRaisesRegex(annotations.AnnotationError, 'frame_slots'):
+            annotations.compile_profile(data)
+
     def test_an_unreachable_row_reached_by_contradictory_guards(self):
         data = fixture()
         data['rows'].append({'id': 'dead-1c0', 'at': {'pc': '+0x1c0', 'boundary': 'join'},
