@@ -26,7 +26,7 @@ Section edges.
 Context `{!islaG Sigma} `{!threadG}.
 
 (* fp_machineAt0148_ForwardA0N0 -> fp_machineAt0150_ForwardA0N0 (forward) *)
-Global Instance zesu_hist_edge_15 (args : KeysToOwnedSliceBlockArgs) (returnAddress : Z) :
+Global Instance zesu_hist_edge_16 (args : KeysToOwnedSliceBlockArgs) (returnAddress : Z) :
   ZesuHistEdge (PROP := iProp Sigma)
     (fp_machineAt0148_ForwardA0N0_Hist (args) (returnAddress))
     (fp_machineAt0150_ForwardA0N0_Hist (args) (returnAddress))
@@ -57,7 +57,7 @@ Proof.
 Qed.
 
 (* fp_machineAt0148_ForwardA0N0 -> fp_machineAt01c0_ForwardA0N0 (forward) *)
-Global Instance zesu_hist_edge_16 (args : KeysToOwnedSliceBlockArgs) (returnAddress : Z) :
+Global Instance zesu_hist_edge_17 (args : KeysToOwnedSliceBlockArgs) (returnAddress : Z) :
   ZesuHistEdge (PROP := iProp Sigma)
     (fp_machineAt0148_ForwardA0N0_Hist (args) (returnAddress))
     (fp_machineAt01c0_ForwardA0N0_Hist (args) (returnAddress))

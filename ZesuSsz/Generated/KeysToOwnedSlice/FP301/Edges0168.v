@@ -13,6 +13,8 @@ Require Export ZesuSsz.Compliance.KeysToOwnedSliceHints.
 Require Import ZesuSsz.Contracts.Level1.
 Local Open Scope Z_scope.
 Require Import lithium.lvar.
+Require Import ZesuSsz.Generated.KeysToOwnedSlice.FP301.Pilot0110Entries.
+Require Import ZesuSsz.Generated.KeysToOwnedSlice.FP301.Pilot0110Structural.
 Require Import ZesuSsz.Generated.KeysToOwnedSlice.FP301.Pilot0168Entries.
 Require Import ZesuSsz.Generated.KeysToOwnedSlice.FP301.Pilot0168Structural.
 Require Import ZesuSsz.Generated.KeysToOwnedSlice.FP301.Pilot0170Entries.
@@ -23,8 +25,36 @@ From iris.proofmode Require Import proofmode.
 Section edges.
 Context `{!islaG Sigma} `{!threadG}.
 
+(* fp_machineAt0168_ForwardA0N0 -> fp_machineAt0110_ForwardA0N0 (join) *)
+Global Instance zesu_hist_edge_19 (args : KeysToOwnedSliceBlockArgs) (returnAddress : Z) (call_x10 : bv 64) :
+  ZesuHistEdge (PROP := iProp Sigma)
+    (fp_machineAt0168_ForwardA0N0_Hist (args) (returnAddress))
+    (fp_machineAt0110_ForwardA0N0_Hist (args) (returnAddress) (call_x10))
+    (∀ (machine_x10 : bv 64), ⌜((bool_decide ((bv_unsigned machine_x10 >= bv_unsigned (BV 64%N 0%Z))%Z)) = true) /\ ((((bv_unsigned machine_x10) >= (0%Z))%Z))⌝ -∗ ⌜((bool_decide ((bv_unsigned machine_x10 <= bv_unsigned (BV 64%N 0%Z))%Z)) = true) /\ ((((bv_unsigned machine_x10) <= (0%Z))%Z))⌝ -∗ ⌜((bool_decide ((bv_unsigned call_x10 >= bv_unsigned (BV 64%N 0%Z))%Z)) = true) /\ ((((bv_unsigned call_x10) >= (0%Z))%Z))⌝ ∗ ⌜((bool_decide ((bv_unsigned call_x10 <= bv_unsigned (BV 64%N 0%Z))%Z)) = true) /\ ((((bv_unsigned call_x10) <= (0%Z))%Z))⌝ ∗ True)%I.
+Proof.
+  rewrite /ZesuHistEdge => Hh. apply zesu_hist_elim in Hh. unfold fp_machineAt0168_ForwardA0N0_Hist in Hh.
+  destruct Hh as (machine_x10 & machine_x23 & fp_seed_mstatus_bits & forward_witness_cbcac9df79b9221c & forward_witness_1be931110d776902 & forward_witness_905cf96e605c1117 & forward_witness_55ab0ce59750150a & forward_witness_d7543602bfbbe148 & forward_witness_00470b017f14ddbf & forward_witness_83d3e6d46c3de70e & forward_witness_88383840afa7af74 & forward_witness_87e5cadc5c04d5d4 & forward_witness_d77b5950a2aea933 & forward_witness_a84be01a9be85bdb & forward_witness_21649d1cf161453f & forward_witness_407fca3a6f90b8db & forward_witness_1eea82d2945b4618 & forward_witness_751588b52f8a71ff & HF0 & HF1 & HF2 & HF3 & HF4 & HF5 & HF6 & HF7 & HF8 & HF9 & HF10 & HF11 & HF12 & HF13 & HF14 & HF15 & HF16 & HF17 & HF18).
+  iIntros "HN".
+  iDestruct ("HN" $! machine_x10 HF9 HF10) as "(%HN0 & %HN1 & _)".
+  iPureIntro. apply zesu_hist_intro. unfold fp_machineAt0110_ForwardA0N0_Hist.
+  exists fp_seed_mstatus_bits, forward_witness_cbcac9df79b9221c, forward_witness_1be931110d776902, forward_witness_905cf96e605c1117, forward_witness_55ab0ce59750150a, forward_witness_d7543602bfbbe148, forward_witness_00470b017f14ddbf, forward_witness_83d3e6d46c3de70e, forward_witness_88383840afa7af74, forward_witness_87e5cadc5c04d5d4, forward_witness_d77b5950a2aea933.
+  split; [exact HF18|].
+  split; [exact HF0|].
+  split; [exact HF1|].
+  split; [exact HF2|].
+  split; [exact HF3|].
+  split; [exact HF4|].
+  split; [exact HF5|].
+  split; [exact HF6|].
+  split; [exact HF7|].
+  split; [exact HN0|].
+  split; [exact HN1|].
+  split; [exact HF11|].
+  exact HF12.
+Qed.
+
 (* fp_machineAt0168_ForwardA0N0 -> fp_machineAt0170_ForwardA0N0 (forward) *)
-Global Instance zesu_hist_edge_18 (args : KeysToOwnedSliceBlockArgs) (returnAddress : Z) (call_x10 : bv 64) :
+Global Instance zesu_hist_edge_20 (args : KeysToOwnedSliceBlockArgs) (returnAddress : Z) (call_x10 : bv 64) :
   ZesuHistEdge (PROP := iProp Sigma)
     (fp_machineAt0168_ForwardA0N0_Hist (args) (returnAddress))
     (fp_machineAt0170_ForwardA0N0_Hist (args) (returnAddress) (call_x10))

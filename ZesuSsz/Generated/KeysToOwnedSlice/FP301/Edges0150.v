@@ -24,7 +24,7 @@ Section edges.
 Context `{!islaG Sigma} `{!threadG}.
 
 (* fp_machineAt0150_ForwardA0N0 -> fp_machineAt0168_ForwardA0N0 (call_return) *)
-Global Instance zesu_hist_edge_17 (args : KeysToOwnedSliceBlockArgs) (returnAddress : Z) :
+Global Instance zesu_hist_edge_18 (args : KeysToOwnedSliceBlockArgs) (returnAddress : Z) :
   ZesuHistEdge (PROP := iProp Sigma)
     (fp_machineAt0150_ForwardA0N0_Hist (args) (returnAddress))
     (fp_machineAt0168_ForwardA0N0_Hist (args) (returnAddress))
