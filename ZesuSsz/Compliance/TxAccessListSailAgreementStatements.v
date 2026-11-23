@@ -51,7 +51,7 @@ Definition alRegs (rs : ALT.regstate) (bytes : list byte) : Prop :=
 Definition alSliceIn (bytes : list byte) (base len : Z) : Prop :=
   0 <= base /\ 0 <= len /\ base + len <= Z.of_nat (List.length bytes).
 
-#[export] Instance alSliceIn_dec bytes base len : Decision (alSliceIn bytes base len).
+#[local] Instance alSliceIn_dec bytes base len : Decision (alSliceIn bytes base len).
 Proof. unfold alSliceIn. apply _. Defined.
 
 Definition alWindow (bytes : list byte) (base len : Z) : list byte :=
