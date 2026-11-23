@@ -4,6 +4,12 @@
  "symbol": "array_list.Aligned([32]u8,null).ensureTotalCapacity",
  "profile": {
   "function": "keysEnsureCapacity",
+  "compliance": {
+   "boundary": "ZesuSsz.Compliance.KeysEnsureCapacityCompositionBoundary",
+   "continuation": "keysEnsureCapacityContinuation",
+   "inline_returns": false,
+   "source": "Every table entry carries the contract postcondition at returnAddress as K (KeysEnsureCapacityCompositionBoundary.v); the three return slots of the duplicated join 0x008c take the generated return packages as premises, which the composition derives from K by its end bridges."
+  },
   "entry_hist": "wrap",
   "frame_slots": true,
   "array_spelling": "sealed",

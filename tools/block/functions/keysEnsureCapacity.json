@@ -1,5 +1,11 @@
 {
   "function": "keysEnsureCapacity",
+  "compliance": {
+    "boundary": "ZesuSsz.Compliance.KeysEnsureCapacityCompositionBoundary",
+    "continuation": "keysEnsureCapacityContinuation",
+    "inline_returns": false,
+    "source": "Every table entry carries the contract postcondition at returnAddress as K (KeysEnsureCapacityCompositionBoundary.v); the three return slots of the duplicated join 0x008c take the generated return packages as premises, which the composition derives from K by its end bridges."
+  },
   "entry_hist": "wrap",
   "frame_slots": true,
   "array_spelling": "sealed",
@@ -348,6 +354,6 @@
   },
   "generated_from": {
     "path": "tools/block/functions/keysEnsureCapacity.annotations.json",
-    "sha256": "41c8ec98322feebbf7fa3b518499c4aad65d1929eea227003b6316d3b5674a79"
+    "sha256": "d3345933fb29db8ece791f19ae1a0d07ed111c040043d6df017ad03ec4ff9166"
   }
 }
