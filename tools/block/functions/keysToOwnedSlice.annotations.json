@@ -97,6 +97,10 @@
      "source": "KeysToOwnedSliceContract.v (B1, PR #363) via its block-entry form KeysToOwnedSliceBlockEntries.v"
     }
    ],
+   "predicates": [
+    {"name": "altFlHeap", "owner": "ZesuSsz.Contracts.AltFlAllocPremises"},
+    {"name": "altFlBlock", "owner": "ZesuSsz.Contracts.AltFlAllocPremises"}
+   ],
    "author": {
     "tier": "hand"
    }
@@ -134,7 +138,15 @@
     "spec_source": "ZesuSsz/Contracts/AltFlAllocPremises.v",
     "stack_bytes": 16,
     "arrays": [],
-    "output_length_source": "altFlFreeCallSpec (AltFlAllocPremises.v): returns altFlHeap only; no array"
+    "output_length_source": "altFlFreeCallSpec (AltFlAllocPremises.v): returns altFlHeap only; no array",
+    "opaque": [
+     {"spec": "altFlHeap", "use": "framed"},
+     {"spec": "bv_unsigned (argv !!! 1%nat) ↦ₘ? bv_unsigned (argv !!! 2%nat)", "use": "consumed",
+      "caller": ["arrayListPointer (keysBlockList args) ↦ₘ∗ arrayListItems (keysBlockList args)",
+                 "(arrayListPointer (keysBlockList args) + arrayListLength (keysBlockList args) * keysElementBytes) ↦ₘ? ((arrayListCapacity (keysBlockList args) - arrayListLength (keysBlockList args)) * keysElementBytes)"]},
+     {"spec": "altFlBlock (bv_unsigned (argv !!! 1%nat)) (bv_unsigned (argv !!! 2%nat)) (bv_unsigned (argv !!! 3%nat))", "use": "consumed",
+      "caller": ["altFlBlock (arrayListPointer (keysBlockList args)) (arrayListCapacity (keysBlockList args) * keysElementBytes) keysLog2Alignment"]}
+    ]
    },
    "author": {
     "tier": "opus-medium"
@@ -159,7 +171,8 @@
     "spec_source": "ZesuSsz/Contracts/AltFlAllocPremises.v",
     "stack_bytes": 16,
     "arrays": [],
-    "output_length_source": "altFlRemapCallSpec (AltFlAllocPremises.v): returns 0 in x10 and no array"
+    "output_length_source": "altFlRemapCallSpec (AltFlAllocPremises.v): returns 0 in x10 and no array",
+    "returns": [{"index": 0, "register": "x10"}]
    },
    "author": {
     "tier": "opus-medium"
@@ -184,7 +197,13 @@
     "spec_source": "ZesuSsz/Contracts/AltFlAllocPremises.v",
     "stack_bytes": 16,
     "arrays": [],
-    "output_length_source": "altFlAllocCallSpec (AltFlAllocPremises.v): the returned block owns altFlAllocatedBytes x10 (argument 1) bytes, uninitialized"
+    "output_length_source": "altFlAllocCallSpec (AltFlAllocPremises.v): the returned block owns altFlAllocatedBytes x10 (argument 1) bytes, uninitialized",
+    "returns": [{"index": 0, "register": "x10"}],
+    "opaque": [
+     {"spec": "altFlHeap", "use": "framed"},
+     {"spec": "bv_unsigned (rets !!! 0%nat) ↦ₘ? altFlAllocatedBytes (bv_unsigned (rets !!! 0%nat)) (bv_unsigned (argv !!! 1%nat))", "use": "produced"},
+     {"spec": "altFlBlock (bv_unsigned (rets !!! 0%nat)) (altFlAllocatedBytes (bv_unsigned (rets !!! 0%nat)) (bv_unsigned (argv !!! 1%nat))) (bv_unsigned (argv !!! 2%nat))", "use": "produced"}
+    ]
    },
    "author": {
     "tier": "opus-medium"
@@ -249,7 +268,15 @@
     "spec_source": "ZesuSsz/Contracts/AltFlAllocPremises.v",
     "stack_bytes": 16,
     "arrays": [],
-    "output_length_source": "altFlFreeCallSpec (AltFlAllocPremises.v): returns altFlHeap only; no array"
+    "output_length_source": "altFlFreeCallSpec (AltFlAllocPremises.v): returns altFlHeap only; no array",
+    "opaque": [
+     {"spec": "altFlHeap", "use": "framed"},
+     {"spec": "bv_unsigned (argv !!! 1%nat) ↦ₘ? bv_unsigned (argv !!! 2%nat)", "use": "consumed",
+      "caller": ["arrayListPointer (keysBlockList args) ↦ₘ∗ arrayListItems (keysBlockList args)",
+                 "(arrayListPointer (keysBlockList args) + arrayListLength (keysBlockList args) * keysElementBytes) ↦ₘ? ((arrayListCapacity (keysBlockList args) - arrayListLength (keysBlockList args)) * keysElementBytes)"]},
+     {"spec": "altFlBlock (bv_unsigned (argv !!! 1%nat)) (bv_unsigned (argv !!! 2%nat)) (bv_unsigned (argv !!! 3%nat))", "use": "consumed",
+      "caller": ["altFlBlock (arrayListPointer (keysBlockList args)) (arrayListCapacity (keysBlockList args) * keysElementBytes) keysLog2Alignment"]}
+    ]
    },
    "author": {
     "tier": "opus-medium"
