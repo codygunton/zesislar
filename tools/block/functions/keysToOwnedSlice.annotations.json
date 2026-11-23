@@ -242,6 +242,7 @@
      }
     ],
     "output_length_source": "ziskMemcpyCallSpec (ZiskMemcpyPremise.v): the destination receives source, Z.of_nat (length source) = argument 2; the extra-params word receives word64Bytes (argument 2), 8 bytes",
+    "returned_lengths": {"0": "altFlAllocatedBytes (bv_unsigned call_x10) (bv_unsigned ((bv_shiftl ((Z_to_bv 64%N (arrayListLength (keysBlockList args)))) (BV 64%N 5%Z))))"},
     "collection_after": "reg_col zesu_sys_regs",
     "collection_source": "machine_call_ret returns reg_col (machine_sys_regs decodeItemCallMap); the RET of ziskMemcpyCallSpec returns zisk_input_end and zisk_free_input with BitsShape 64; zesu_sys_regs (InstrSpecs/Machine.v) is their union"
    },

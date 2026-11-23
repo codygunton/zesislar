@@ -1,0 +1,349 @@
+{
+  "status": "SOURCE_DECLARATIONS_ONLY",
+  "function": "keysToOwnedSlice",
+  "entries": {
+    "path": "/home/cody/zesislar/_build/agents/aa/keysToOwnedSlice/round-4/render/render/RESULT.json",
+    "sha256": "93570f8be09a3a870e971735a979b4b62f933b34806845529696529a548c907a"
+  },
+  "cfg": {
+    "path": "/home/cody/zesislar/_build/agents/aa/keysToOwnedSlice/inputs-r2/FUNCTION.json",
+    "sha256": "c70c4b6d1775103e5c1b19f1bd25b9b9ec58626a5feeff0e2ab064e4f369c2e7"
+  },
+  "rows": [
+    {
+      "case": "0000",
+      "pc": "0x800d677c",
+      "successors": [
+        "0058",
+        "0078"
+      ],
+      "status": "rendered",
+      "caller": {
+        "path": "/home/cody/zesislar/_build/agents/aa/keysToOwnedSlice/round-4/render/callers/Caller0000.v",
+        "sha256": "fbed3b1128e723c1ebc827d09d0612cf52b4e37c0f8ff6bea53cb93b8166f7fd"
+      },
+      "lemma": "DesignedBoundary_800d677c",
+      "preconditions": [
+        "instr_pre 0x800d67d4 (ZesuSsz.Generated.KeysToOwnedSlice.FP301.Pilot0058Entries.fp_machineAt0058 (args) (returnAddress) (K))%I",
+        "instr_pre 0x800d67f4 (ZesuSsz.Generated.KeysToOwnedSlice.FP301.Pilot0078Entries.fp_machineAt0078 (args) (returnAddress) (K))%I"
+      ]
+    },
+    {
+      "case": "0058",
+      "pc": "0x800d67d4",
+      "successors": [
+        "005c",
+        "006c"
+      ],
+      "status": "rendered",
+      "caller": {
+        "path": "/home/cody/zesislar/_build/agents/aa/keysToOwnedSlice/round-4/render/callers/Caller0058.v",
+        "sha256": "9d9db5653708ba0987e01e17c68030bc1a21bf27da5d1c43e85bd3f391ef4a45"
+      },
+      "lemma": "DesignedBoundary_800d67d4",
+      "preconditions": [
+        "instr_pre 0x800d67d8 (ZesuSsz.Generated.KeysToOwnedSlice.FP301.Pilot005cEntries.fp_machineAt005c (args) (returnAddress) (K))%I",
+        "instr_pre 0x800d67e8 (ZesuSsz.Generated.KeysToOwnedSlice.FP301.Pilot006cEntries.fp_machineAt006c (args) (returnAddress) (K))%I"
+      ]
+    },
+    {
+      "case": "005c",
+      "pc": "0x800d67d8",
+      "successors": [
+        "006c",
+        "00a4"
+      ],
+      "status": "rendered",
+      "caller": {
+        "path": "/home/cody/zesislar/_build/agents/aa/keysToOwnedSlice/round-4/render/callers/Caller005c.v",
+        "sha256": "2acaa14d6235defb8332899fad349f19729e3069311fcf3189e07b0ca83d1dea"
+      },
+      "lemma": "DesignedBoundary_800d67d8",
+      "preconditions": [
+        "instr_pre 0x800d67e8 (ZesuSsz.Generated.KeysToOwnedSlice.FP301.Pilot006cEntries.fp_machineAt006c (args) (returnAddress) (K))%I",
+        "instr_pre 0x800d6820 (ZesuSsz.Generated.KeysToOwnedSlice.FP301.Pilot00a4Entries.fp_machineAt00a4 (args) (returnAddress) (K))%I"
+      ]
+    },
+    {
+      "case": "006c",
+      "pc": "0x800d67e8",
+      "successors": [
+        "00fc"
+      ],
+      "status": "rendered",
+      "caller": {
+        "path": "/home/cody/zesislar/_build/agents/aa/keysToOwnedSlice/round-4/render/callers/Caller006c.v",
+        "sha256": "cce4ad68debe658989b71b2502fff1b7b476e1bacf1f148673e55ef821feb52a"
+      },
+      "lemma": "DesignedBoundary_800d67e8",
+      "preconditions": [
+        "instr_pre 0x800d6878 (ZesuSsz.Generated.KeysToOwnedSlice.FP301.Pilot00fcEntries.fp_machineAt00fc (args) (returnAddress) (K))%I"
+      ]
+    },
+    {
+      "case": "0078",
+      "pc": "0x800d67f4",
+      "successors": [
+        "007c",
+        "0098"
+      ],
+      "status": "rendered",
+      "caller": {
+        "path": "/home/cody/zesislar/_build/agents/aa/keysToOwnedSlice/round-4/render/callers/Caller0078.v",
+        "sha256": "29456898cd78aff135e1d0368168a6046cb1647620a9b89aea74b5928a507732"
+      },
+      "lemma": "DesignedBoundary_800d67f4",
+      "preconditions": [
+        "instr_pre 0x800d67f8 (ZesuSsz.Generated.KeysToOwnedSlice.FP301.Pilot007cEntries.fp_machineAt007c (args) (returnAddress) (K))%I",
+        "instr_pre 0x800d6814 (ZesuSsz.Generated.KeysToOwnedSlice.FP301.Pilot0098Entries.fp_machineAt0098 (args) (returnAddress) (K))%I"
+      ]
+    },
+    {
+      "case": "007c",
+      "pc": "0x800d67f8",
+      "successors": [
+        "0098"
+      ],
+      "status": "rendered",
+      "caller": {
+        "path": "/home/cody/zesislar/_build/agents/aa/keysToOwnedSlice/round-4/render/callers/Caller007c.v",
+        "sha256": "543d5c5b650ed796aa3b61b6c6d0a1c4d9754c6c7b2ca9b94444cc396d4a44a9"
+      },
+      "lemma": "DesignedBoundary_800d67f8",
+      "preconditions": [
+        "instr_pre 0x800d6814 (ZesuSsz.Generated.KeysToOwnedSlice.FP301.Pilot0098Entries.fp_machineAt0098 (args) (returnAddress) (K))%I",
+        "instr_pre 0x80041f38 (ZesuSsz.Contracts.AltFlAllocPremises.altFlFreeCallSpec)%I"
+      ]
+    },
+    {
+      "case": "0098",
+      "pc": "0x800d6814",
+      "successors": [
+        "00a0",
+        "00d8"
+      ],
+      "status": "refused",
+      "reason": "successor entry not rendered: 00a0"
+    },
+    {
+      "case": "00a0",
+      "pc": "0x800d681c",
+      "successors": [
+        "00fc"
+      ],
+      "status": "refused",
+      "reason": "own entry not rendered"
+    },
+    {
+      "case": "00a4",
+      "pc": "0x800d6820",
+      "successors": [
+        "00c8"
+      ],
+      "status": "rendered",
+      "caller": {
+        "path": "/home/cody/zesislar/_build/agents/aa/keysToOwnedSlice/round-4/render/callers/Caller00a4.v",
+        "sha256": "66ce185d3d9b3319cf67a00f44d6994d92ca7544d6e4d68641697e7b7270fd86"
+      },
+      "lemma": "DesignedBoundary_800d6820",
+      "preconditions": [
+        "instr_pre 0x800d6844 (ZesuSsz.Generated.KeysToOwnedSlice.FP301.Pilot00c8Entries.fp_machineAt00c8 (args) (returnAddress) (K))%I",
+        "instr_pre 0x8004218c (ZesuSsz.Contracts.AltFlAllocPremises.altFlRemapCallSpec)%I"
+      ]
+    },
+    {
+      "case": "00c8",
+      "pc": "0x800d6844",
+      "successors": [
+        "00cc",
+        "00f8"
+      ],
+      "status": "refused",
+      "reason": "successor entry not rendered: 00cc"
+    },
+    {
+      "case": "00cc",
+      "pc": "0x800d6848",
+      "successors": [
+        "00d8",
+        "00fc"
+      ],
+      "status": "refused",
+      "reason": "own entry not rendered"
+    },
+    {
+      "case": "00d8",
+      "pc": "0x800d6854",
+      "successors": [
+        "00f0"
+      ],
+      "status": "refused",
+      "reason": "successor entry not rendered: 00f0"
+    },
+    {
+      "case": "00f0",
+      "pc": "0x800d686c",
+      "successors": [
+        "0118"
+      ],
+      "status": "refused",
+      "reason": "own entry not rendered"
+    },
+    {
+      "case": "00f8",
+      "pc": "0x800d6874",
+      "successors": [
+        "00fc"
+      ],
+      "status": "rendered",
+      "caller": {
+        "path": "/home/cody/zesislar/_build/agents/aa/keysToOwnedSlice/round-4/render/callers/Caller00f8.v",
+        "sha256": "d968fe469b193e09b5d38d35f86a26e72ac967b37b93fc040209a48878d58621"
+      },
+      "lemma": "DesignedBoundary_800d6874",
+      "preconditions": [
+        "instr_pre 0x800d6878 (ZesuSsz.Generated.KeysToOwnedSlice.FP301.Pilot00fcEntries.fp_machineAt00fc (args) (returnAddress) (K))%I"
+      ]
+    },
+    {
+      "case": "00fc",
+      "pc": "0x800d6878",
+      "successors": [
+        "0110",
+        "0148"
+      ],
+      "status": "refused",
+      "reason": "successor entry not rendered: 0110"
+    },
+    {
+      "case": "0110",
+      "pc": "0x800d688c",
+      "successors": [
+        "0118"
+      ],
+      "status": "refused",
+      "reason": "own entry not rendered"
+    },
+    {
+      "case": "0118",
+      "pc": "0x800d6894",
+      "successors": [],
+      "status": "refused",
+      "reason": "own entry not rendered"
+    },
+    {
+      "case": "0148",
+      "pc": "0x800d68c4",
+      "successors": [
+        "0150",
+        "01c0"
+      ],
+      "status": "rendered",
+      "caller": {
+        "path": "/home/cody/zesislar/_build/agents/aa/keysToOwnedSlice/round-4/render/callers/Caller0148.v",
+        "sha256": "78871aeff572a66ed715b6654ac47656e5cf2635fcec41779901ea50fe204fba"
+      },
+      "lemma": "DesignedBoundary_800d68c4",
+      "preconditions": [
+        "instr_pre 0x800d68cc (ZesuSsz.Generated.KeysToOwnedSlice.FP301.Pilot0150Entries.fp_machineAt0150 (args) (returnAddress) (K))%I",
+        "instr_pre 0x800d693c (ZesuSsz.Generated.KeysToOwnedSlice.FP301.Pilot01c0Entries.fp_machineAt01c0 (args) (returnAddress) (K))%I"
+      ]
+    },
+    {
+      "case": "0150",
+      "pc": "0x800d68cc",
+      "successors": [
+        "0168"
+      ],
+      "status": "rendered",
+      "caller": {
+        "path": "/home/cody/zesislar/_build/agents/aa/keysToOwnedSlice/round-4/render/callers/Caller0150.v",
+        "sha256": "a4db470adb8ccac2afffdaff05f2d1be6a609c1b324a0f6b1e7217b3c871d67d"
+      },
+      "lemma": "DesignedBoundary_800d68cc",
+      "preconditions": [
+        "instr_pre 0x800d68e4 (ZesuSsz.Generated.KeysToOwnedSlice.FP301.Pilot0168Entries.fp_machineAt0168 (args) (returnAddress) (K))%I",
+        "instr_pre 0x80042494 (ZesuSsz.Contracts.AltFlAllocPremises.altFlAllocCallSpec)%I"
+      ]
+    },
+    {
+      "case": "0168",
+      "pc": "0x800d68e4",
+      "successors": [
+        "0110",
+        "0170"
+      ],
+      "status": "refused",
+      "reason": "successor entry not rendered: 0110"
+    },
+    {
+      "case": "0170",
+      "pc": "0x800d68ec",
+      "successors": [
+        "0184"
+      ],
+      "status": "refused",
+      "reason": "successor entry not rendered: 0184"
+    },
+    {
+      "case": "0184",
+      "pc": "0x800d6900",
+      "successors": [
+        "018c",
+        "01ac"
+      ],
+      "status": "refused",
+      "reason": "own entry not rendered"
+    },
+    {
+      "case": "018c",
+      "pc": "0x800d6908",
+      "successors": [
+        "01ac"
+      ],
+      "status": "refused",
+      "reason": "own entry not rendered"
+    },
+    {
+      "case": "01ac",
+      "pc": "0x800d6928",
+      "successors": [
+        "00f0"
+      ],
+      "status": "refused",
+      "reason": "own entry not rendered"
+    },
+    {
+      "case": "01c0",
+      "pc": "0x800d693c",
+      "successors": [
+        "01d8"
+      ],
+      "status": "refused",
+      "reason": "successor entry not rendered: 01d8"
+    },
+    {
+      "case": "01d8",
+      "pc": "0x800d6954",
+      "successors": [
+        "018c",
+        "01e0"
+      ],
+      "status": "refused",
+      "reason": "own entry not rendered"
+    },
+    {
+      "case": "01e0",
+      "pc": "0x800d695c",
+      "successors": [
+        "01ac"
+      ],
+      "status": "refused",
+      "reason": "own entry not rendered"
+    }
+  ],
+  "rendered": 10,
+  "inlined": 0,
+  "refused": 17,
+  "proof_ran": false
+}
