@@ -452,7 +452,11 @@ for suffix, slot in units:
                           "reports": [{"kind": "join_lift_refused", "detail": str(error)}], "proof_ran": False})
             continue
         origin_roots = {ancestor}
-    original_seed = root_seeds[origin_roots.pop()]
+    origin_root = origin_roots.pop()
+    original_seed = root_seeds[origin_root]
+    # A join drop row whose root is the seed the join renders on: the join does not own those resources.
+    dropped = [text for item in profile.get("join_drops", {}).get(suffix, [])
+               if profile.pc(item["root"]) == origin_root for text in item["resources"]]
     name = ("fp_machine" + suffix if package else "fp_machineAt" + suffix) + ("" if slot is None else "_slot" + str(slot))
     name = identifier(name, "generated entry")
     source_ref = str(forward) + ("#/tail_returns" if suffix in tails else "#/exits" if index is None
@@ -501,7 +505,8 @@ for suffix, slot in units:
             continuation=continuation,
             join_options={"outer_names": base_arguments, "design_facts": join_design,
                           "live_registers": data.get("liveness", {}).get(pc), "lifted_binders": lifted_binders,
-                          "frame_writes": entry_hist.frame_writes(join_frames, data) if join_frames else ()},
+                          "frame_writes": entry_hist.frame_writes(join_frames, data) if join_frames else (),
+                          "dropped": dropped},
             case_id=pc,
             source_policy="source-only",
             handwritten_owner="Level1.IslarisContractSpec",
