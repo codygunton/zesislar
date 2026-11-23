@@ -106,6 +106,7 @@ Definition parentHeaderArgsWellFormed (args : ParentHeaderArgs) : Prop :=
     bv_unsigned (parentHeaderInputLength args) /\
   length (parentHeaderMemcpySourceBefore args) = 80%nat /\
   length (parentHeaderMemcpyScratchBefore args) = 8%nat /\
+  length parentHeaderNoneBytes = 16%nat /\
   parentHeaderError80 (parentHeaderMemcpySourceBefore args) /\
   parentHeaderInputLow <= bv_unsigned (parentHeaderInputPointer args) /\
   bv_unsigned (parentHeaderInputPointer args) +
