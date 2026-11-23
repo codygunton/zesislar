@@ -40,6 +40,7 @@ Record EnsureCapacityArgs : Type := {
   ensureRequested : bv 64;
   ensureScratchBefore : list byte;
   ensureStackPointer : bv 64;
+  ensureInputEnd : bv 64;
   ensureReturnAddress : bv 64;
   ensureSaved : ArrayListCalleeSaved
 }.
@@ -98,7 +99,7 @@ Definition keysEnsureCapacityScratchAfter (args : EnsureCapacityArgs)
 Definition keysEnsureCapacityEntry `{!islaG Sigma} `{!threadG}
     (args : EnsureCapacityArgs) : iProp Sigma :=
   (∃ (x5 x6 x7 x13 x14 x15 x16 x17 x28 x29 x30 x31 : bv 64),
-   reg_col zesu_sys_regs ∗
+   reg_col (arrayListSysRegs (ensureInputEnd args)) ∗
    "x1" ↦ᵣ RVal_Bits (ensureReturnAddress args) ∗
    "x2" ↦ᵣ RVal_Bits (ensureStackPointer args) ∗
    "x5" ↦ᵣ RVal_Bits x5 ∗ "x6" ↦ᵣ RVal_Bits x6 ∗ "x7" ↦ᵣ RVal_Bits x7 ∗
@@ -127,7 +128,7 @@ Definition keysEnsureCapacityExit `{!islaG Sigma} `{!threadG}
     (args : EnsureCapacityArgs) (outcome : EnsureCapacityOutcome) :
     iProp Sigma :=
   (∃ (x5 x6 x7 x10 x11 x12 x13 x14 x15 x16 x17 x28 x29 x30 x31 : bv 64),
-   reg_col zesu_sys_regs ∗
+   reg_col (arrayListSysRegs (ensureInputEnd args)) ∗
    "x1" ↦ᵣ RVal_Bits (ensureReturnAddress args) ∗
    "x2" ↦ᵣ RVal_Bits (ensureStackPointer args) ∗
    "x5" ↦ᵣ RVal_Bits x5 ∗ "x6" ↦ᵣ RVal_Bits x6 ∗ "x7" ↦ᵣ RVal_Bits x7 ∗

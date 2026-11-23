@@ -104,6 +104,13 @@ Definition arrayListSavedRegisters `{!islaG Sigma} `{!threadG}
 Global Instance : LithiumUnfold (@arrayListSavedRegisters) := I.
 Global Typeclasses Opaque arrayListSavedRegisters.
 
+(* The system registers with zisk_input_end exact: none of the regions, the
+   allocator or memcpy writes it, and a later decodeItem call needs it. *)
+Definition arrayListSysRegs (inputEnd : bv 64) : list (reg_kind * valu_shape) :=
+  machine_static_sys_regs defaultMap ++
+  [(KindReg "zisk_input_end", ExactShape (RVal_Bits inputEnd));
+   (KindReg "zisk_free_input", BitsShape 64)].
+
 Definition arrayListStackLayout (stackPointer stackBytes : Z) : Prop :=
   (16 | stackPointer) /\
   mapRamBase defaultMap <= stackPointer - stackBytes /\
@@ -131,6 +138,7 @@ Record ToOwnedSliceArgs : Type := {
   toOwnedResultBefore : list byte;
   toOwnedScratchBefore : list byte;
   toOwnedStackPointer : bv 64;
+  toOwnedInputEnd : bv 64;
   toOwnedReturnAddress : bv 64;
   toOwnedSaved : ArrayListCalleeSaved
 }.
@@ -214,7 +222,7 @@ Definition toOwnedSliceScratchAfter (elementBytes : Z) (args : ToOwnedSliceArgs)
 Definition toOwnedSliceEntry `{!islaG Sigma} `{!threadG}
     (elementBytes log2Align : Z) (args : ToOwnedSliceArgs) : iProp Sigma :=
   (∃ (x5 x6 x7 x13 x14 x15 x16 x17 x28 x29 x30 x31 : bv 64),
-   reg_col zesu_sys_regs ∗
+   reg_col (arrayListSysRegs (toOwnedInputEnd args)) ∗
    "x1" ↦ᵣ RVal_Bits (toOwnedReturnAddress args) ∗
    "x2" ↦ᵣ RVal_Bits (toOwnedStackPointer args) ∗
    "x5" ↦ᵣ RVal_Bits x5 ∗ "x6" ↦ᵣ RVal_Bits x6 ∗ "x7" ↦ᵣ RVal_Bits x7 ∗
@@ -246,7 +254,7 @@ Definition toOwnedSliceExit `{!islaG Sigma} `{!threadG}
     (elementBytes log2Align : Z) (args : ToOwnedSliceArgs)
     (outcome : ToOwnedSliceOutcome) : iProp Sigma :=
   (∃ (x5 x6 x7 x10 x11 x12 x13 x14 x15 x16 x17 x28 x29 x30 x31 : bv 64),
-   reg_col zesu_sys_regs ∗
+   reg_col (arrayListSysRegs (toOwnedInputEnd args)) ∗
    "x1" ↦ᵣ RVal_Bits (toOwnedReturnAddress args) ∗
    "x2" ↦ᵣ RVal_Bits (toOwnedStackPointer args) ∗
    "x5" ↦ᵣ RVal_Bits x5 ∗ "x6" ↦ᵣ RVal_Bits x6 ∗ "x7" ↦ᵣ RVal_Bits x7 ∗
