@@ -388,6 +388,33 @@ for suffix, slot in units:
         # An entry slot renders the alternatives of its own incoming edge only.
         boundary["alternatives"] = [boundary["alternatives"][number]
                                     for number in boundary["slots"][slot]["alternatives"]]
+    unreachable = suffix in profile.get("unreachable_entries", [])
+    if unreachable and boundary["alternatives"]:
+        # An `unreachable` annotation row at a block the forward pass reaches is wrong.
+        cases.append({"pc": pc, "status": "refused_unreachable_row", "proof_ran": False,
+                      "reports": [{"kind": "unreachable_row_reached",
+                                   "detail": "an unreachable annotation row names a block the pass reaches"}]})
+        continue
+    if not boundary["alternatives"] and unreachable and slot is None and not package:
+        # The annotation row states that no path reaches the block: its entry is ⌜False⌝, and the
+        # step of each predecessor into it must close by contradiction in the kernel.
+        name = "fp_machineAt" + suffix
+        directory = O / "sources" / profile.generated_directory
+        directory.mkdir(parents=True, exist_ok=True)
+        entries = directory / ("Pilot" + suffix + "Entries.v")
+        structural = directory / ("Pilot" + suffix + "Structural.v")
+        entries.write_text(header + "Definition %s `{!islaG Sigma} `{!threadG} (args : %s) (returnAddress : Z) "
+                           "(K : iProp Sigma) : iProp Sigma := ⌜False⌝%%I.\n" % (name, profile.args_type))
+        structural.write_text(header + "Require Import %s.\n#[export] Instance %s_unfold : LithiumUnfold (@%s) := I.\n"
+                              "#[export] Typeclasses Opaque %s.\n"
+                              % (profile.qualified("Pilot" + suffix + "Entries"), name, name, name))
+        emitted.extend([bind(entries), bind(structural)])
+        cases.append({"pc": pc, "status": "source_declarations_rendered", "entry": bind(entries),
+                      "structural": bind(structural),
+                      "qualified_entry": profile.qualified("Pilot" + suffix + "Entries", name),
+                      "source_boundary": "annotation:unreachable#" + suffix, "definition_count": 1,
+                      "unreachable": True})
+        continue
     if not boundary["alternatives"]:
         # No path reaches the block and no stop does either: nothing to render or lift.
         cases.append({"pc": pc, "status": "refused_no_alternatives", "proof_ran": False,
@@ -409,8 +436,11 @@ for suffix, slot in units:
         try:
             if ancestor is None:
                 raise ValueError("no common ancestor")
+            drops = [{"root": profile.pc(item["root"]), "resources": item["resources"]}
+                     for item in profile.get("join_drops", {}).get(suffix, [])]
             boundary["alternatives"], lifted_binders = lift_call_return_edges(
-                boundary["alternatives"], seeds=lift_seeds, roots=roots, ancestor=ancestor, vocabulary=vocabulary)
+                boundary["alternatives"], seeds=lift_seeds, roots=roots, ancestor=ancestor, vocabulary=vocabulary,
+                drops=drops)
         except ValueError as error:
             cases.append({"pc": pc, "status": "refused_mixed_roots", "roots": sorted(map(str, origin_roots)),
                           "reports": [{"kind": "join_lift_refused", "detail": str(error)}], "proof_ran": False})
