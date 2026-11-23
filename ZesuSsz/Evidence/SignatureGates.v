@@ -516,8 +516,9 @@ Check (eq_refl : ParentHeaderContractCorrect = ReviewedParentHeaderContractCorre
 
 (* txAccessList (plan B1; statements reviewed 2026-11-23, PR #362). The
    reference decoder candidateAccessList and its call walk accessListCalls
-   are pinned through the meaning and domain below; the runtime premises of
-   alt_fl_alloc and the general ZisK memcpy are pinned body for body. *)
+   are pinned through the meaning and domain below. The alt_fl_alloc and
+   general memcpy premises, altFlVtableBytes and altFlAllocatorBytes are
+   pinned in the allocator section at the end of this file (PR #363). *)
 Require Import SailStdpp.Values.
 Require Import ZesuSsz.Compliance.SailRunAccessList.
 Require Import ZesuSsz.Contracts.Candidates.AccessListCandidate.
@@ -654,113 +655,6 @@ Check (eq_refl : txAccessListOutcomeAllowed = ReviewedTxAccessListOutcomeAllowed
 Check (eq_refl : TxAccessListMeaningModuloKnownBugs =
                  ReviewedTxAccessListMeaningModuloKnownBugs).
 
-(* The runtime premises of alt_fl_alloc (alloc 0x80042494, remap
-   0x8004218c, free 0x80041f38) and of memcpy (0x800e06c0) in general. *)
-Definition ReviewedAltFlAllocatedBytes (pointer bytes : Z) : Z :=
-  if pointer =? 0 then 0 else bytes.
-
-Definition ReviewedAltFlVtableBytes : list byte :=
-  word64Bytes 0x80042494 ++ word64Bytes 0x800421b0 ++
-  word64Bytes 0x8004218c ++ word64Bytes 0x80041f38.
-
-Definition ReviewedAltFlAllocatorBytes (context : Z) : list byte :=
-  word64Bytes context ++ word64Bytes 0x801136d8.
-
-Definition ReviewedAltFlAllocDomain (bytes log2Align : Z) : Prop :=
-  0 < bytes < 2 ^ 63 /\ 0 <= log2Align <= 3.
-
-Definition ReviewedAltFlAllocCallSpec `{!islaG Sigma} `{!threadG} : iProp Sigma :=
-  (machine_call decodeItemCallMap 16
-    (fun argv sp RET =>
-      ⌜ReviewedAltFlAllocDomain (bv_unsigned (argv !!! 1%nat))
-        (bv_unsigned (argv !!! 2%nat))⌝ ∗
-      altFlHeap ∗
-      RET (fun rets =>
-        altFlHeap ∗
-        bv_unsigned (rets !!! 0%nat) ↦ₘ?
-          ReviewedAltFlAllocatedBytes (bv_unsigned (rets !!! 0%nat))
-            (bv_unsigned (argv !!! 1%nat)) ∗
-        altFlBlock (bv_unsigned (rets !!! 0%nat))
-          (ReviewedAltFlAllocatedBytes (bv_unsigned (rets !!! 0%nat))
-            (bv_unsigned (argv !!! 1%nat)))
-          (bv_unsigned (argv !!! 2%nat)) ∗
-        True)))%I.
-
-Definition ReviewedAltFlRemapCallSpec `{!islaG Sigma} `{!threadG} : iProp Sigma :=
-  (machine_call decodeItemCallMap 16
-    (fun argv sp RET =>
-      RET (fun rets => ⌜bv_unsigned (rets !!! 0%nat) = 0⌝ ∗ True)))%I.
-
-Definition ReviewedAltFlFreeDomain (bytes log2Align : Z) : Prop :=
-  0 < bytes < 2 ^ 63 /\ 0 <= log2Align <= 3.
-
-Definition ReviewedAltFlFreeCallSpec `{!islaG Sigma} `{!threadG} : iProp Sigma :=
-  (machine_call decodeItemCallMap 16
-    (fun argv sp RET =>
-      ⌜ReviewedAltFlFreeDomain (bv_unsigned (argv !!! 2%nat))
-        (bv_unsigned (argv !!! 3%nat))⌝ ∗
-      altFlHeap ∗
-      bv_unsigned (argv !!! 1%nat) ↦ₘ? bv_unsigned (argv !!! 2%nat) ∗
-      altFlBlock (bv_unsigned (argv !!! 1%nat)) (bv_unsigned (argv !!! 2%nat))
-        (bv_unsigned (argv !!! 3%nat)) ∗
-      RET (fun _ => altFlHeap ∗ True)))%I.
-
-Definition ReviewedAltFlAllocCallPremise `{!islaG Sigma} `{!threadG} : iProp Sigma :=
-  (□ instr_pre 0x80042494 ReviewedAltFlAllocCallSpec)%I.
-Definition ReviewedAltFlRemapCallPremise `{!islaG Sigma} `{!threadG} : iProp Sigma :=
-  (□ instr_pre 0x8004218c ReviewedAltFlRemapCallSpec)%I.
-Definition ReviewedAltFlFreeCallPremise `{!islaG Sigma} `{!threadG} : iProp Sigma :=
-  (□ instr_pre 0x80041f38 ReviewedAltFlFreeCallSpec)%I.
-
-Check (eq_refl : altFlAllocatedBytes = ReviewedAltFlAllocatedBytes).
-Check (eq_refl : altFlVtableBytes = ReviewedAltFlVtableBytes).
-Check (eq_refl : altFlAllocatorBytes = ReviewedAltFlAllocatorBytes).
-Check (eq_refl : altFlAllocDomain = ReviewedAltFlAllocDomain).
-Check (eq_refl : @altFlAllocCallSpec = @ReviewedAltFlAllocCallSpec).
-Check (eq_refl : @altFlRemapCallSpec = @ReviewedAltFlRemapCallSpec).
-Check (eq_refl : altFlFreeDomain = ReviewedAltFlFreeDomain).
-Check (eq_refl : @altFlFreeCallSpec = @ReviewedAltFlFreeCallSpec).
-Check (eq_refl : @altFlAllocCallPremise = @ReviewedAltFlAllocCallPremise).
-Check (eq_refl : @altFlRemapCallPremise = @ReviewedAltFlRemapCallPremise).
-Check (eq_refl : @altFlFreeCallPremise = @ReviewedAltFlFreeCallPremise).
-
-Definition ReviewedZiskMemcpyCallDomain (destination source length : Z) : Prop :=
-  ziskWord destination /\ ziskWord source /\ ziskWord length /\
-  ziskWritableSection stockZiskPermissions 0xa0400f00 8 /\
-  (length <> 0 ->
-    ziskMemcpyRange destination length /\
-    ziskMemcpyRange source length /\
-    ziskWritableSection stockZiskPermissions source length /\
-    ziskWritableSection stockZiskPermissions destination length).
-
-Definition ReviewedZiskMemcpyCallSpec `{!islaG Sigma} `{!threadG} : iProp Sigma :=
-  (machine_call decodeItemCallMap 0
-    (fun argv sp RET =>
-      ∃ (source scratch : list byte),
-      ⌜ReviewedZiskMemcpyCallDomain (bv_unsigned (argv !!! 0%nat))
-        (bv_unsigned (argv !!! 1%nat)) (bv_unsigned (argv !!! 2%nat))⌝ ∗
-      reg_col [(KindReg "zisk_input_end", BitsShape 64);
-               (KindReg "zisk_free_input", BitsShape 64)] ∗
-      bv_unsigned (argv !!! 1%nat) ↦ₘ∗ source ∗
-      bv_unsigned (argv !!! 0%nat) ↦ₘ? bv_unsigned (argv !!! 2%nat) ∗
-      0xa0400f00 ↦ₘ∗ scratch ∗
-      ⌜Z.of_nat (length source) = bv_unsigned (argv !!! 2%nat)⌝ ∗
-      ⌜length scratch = 8%nat⌝ ∗
-      RET (fun _ =>
-        reg_col [(KindReg "zisk_input_end", BitsShape 64);
-                 (KindReg "zisk_free_input", BitsShape 64)] ∗
-        bv_unsigned (argv !!! 1%nat) ↦ₘ∗ source ∗
-        bv_unsigned (argv !!! 0%nat) ↦ₘ∗ source ∗
-        0xa0400f00 ↦ₘ∗ word64Bytes (bv_unsigned (argv !!! 2%nat)) ∗
-        True)))%I.
-
-Definition ReviewedZiskMemcpyCallPremise `{!islaG Sigma} `{!threadG} : iProp Sigma :=
-  (□ instr_pre 0x800e06c0 ReviewedZiskMemcpyCallSpec)%I.
-
-Check (eq_refl : ziskMemcpyCallDomain = ReviewedZiskMemcpyCallDomain).
-Check (eq_refl : @ziskMemcpyCallSpec = @ReviewedZiskMemcpyCallSpec).
-Check (eq_refl : @ziskMemcpyCallPremise = @ReviewedZiskMemcpyCallPremise).
-
 (* The Level 1 contract of txAccessList (entry 0x80000000). *)
 Definition ReviewedTxRamRange (pointer length : Z) : Prop :=
   0xa0000000 <= pointer /\ 0 <= length /\ pointer + length <= 0xc0000000.
@@ -890,9 +784,8 @@ Definition ReviewedTxAccessListContractCode `{!islaG Sigma} `{!threadG}
     : iProp Sigma :=
   (ReviewedTxAccessListSelectedCode ∗ keysEnsureCapacitySelectedCode ∗
    keysToOwnedSliceSelectedCode ∗ entriesToOwnedSliceSelectedCode ∗
-   decodeItemSelectedCode ∗ ReviewedZiskMemcpyCallPremise ∗
-   ReviewedAltFlAllocCallPremise ∗ ReviewedAltFlRemapCallPremise ∗
-   ReviewedAltFlFreeCallPremise)%I.
+   decodeItemSelectedCode ∗ ziskMemcpyCallPremise ∗
+   altFlAllocCallPremise ∗ altFlRemapCallPremise ∗ altFlFreeCallPremise)%I.
 
 Definition ReviewedTxOwnedSlice `{!islaG Sigma} `{!threadG}
     (pointer log2Align : Z) (bytes : list byte) : iProp Sigma :=
@@ -949,8 +842,8 @@ Definition ReviewedTxAccessListEntryResources `{!islaG Sigma} `{!threadG}
      (word64Bytes (bv_unsigned (txInputPointer args)) ++
       word64Bytes (bv_unsigned (txInputLength args))) ∗
    bv_unsigned (txAllocatorPointer args) ↦ₘ∗
-     ReviewedAltFlAllocatorBytes (bv_unsigned (txAllocatorContext args)) ∗
-   0x801136d8 ↦ₘ∗ ReviewedAltFlVtableBytes ∗
+     altFlAllocatorBytes (bv_unsigned (txAllocatorContext args)) ∗
+   0x801136d8 ↦ₘ∗ altFlVtableBytes ∗
    altFlHeap ∗
    0xa0400f00 ↦ₘ∗ txScratchBefore args ∗
    bv_unsigned (txResultPointer args) ↦ₘ? 24 ∗
@@ -987,8 +880,8 @@ Definition ReviewedTxAccessListExitResources `{!islaG Sigma} `{!threadG}
      (word64Bytes (bv_unsigned (txInputPointer args) + txConsumed outcome) ++
       word64Bytes (bv_unsigned (txInputLength args) - txConsumed outcome)) ∗
    bv_unsigned (txAllocatorPointer args) ↦ₘ∗
-     ReviewedAltFlAllocatorBytes (bv_unsigned (txAllocatorContext args)) ∗
-   0x801136d8 ↦ₘ∗ ReviewedAltFlVtableBytes ∗
+     altFlAllocatorBytes (bv_unsigned (txAllocatorContext args)) ∗
+   0x801136d8 ↦ₘ∗ altFlVtableBytes ∗
    altFlHeap ∗
    0xa0400f00 ↦ₘ∗ txScratchAfter outcome ∗
    bv_unsigned (txResultPointer args) ↦ₘ∗ txResultBytes outcome ∗
