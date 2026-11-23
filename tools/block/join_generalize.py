@@ -1514,7 +1514,7 @@ def _write_steps(image, resource_id):
 def generalize_owned_join(alternatives, *, original_seed, entry_pc, vocabulary,
                           continuation, outer_names=(), liveness=None, observables=None,
                           relational_registers=(), design_facts=(), live_registers=None, lifted_binders=(),
-                          frame_writes=()):
+                          frame_writes=(), dropped=()):
     """Build a seed when every incoming non-register resource is identical.
 
     entry_pc None generalizes the exits of a return package (G-ret): every edge's PC must be the
@@ -1530,6 +1530,10 @@ def generalize_owned_join(alternatives, *, original_seed, entry_pc, vocabulary,
     frame_writes are the 8-byte stores of a `frame` annotation at this join (profile
     `join_frames`, entry_hist.frame_writes): each lands in one uninitialized span of the
     seed, which then holds that slot's value; the edges into the join must hold it.
+
+    dropped are resource texts of a join annotation row (`drop`) whose root is the seed this
+    join renders on: the join does not own them (a weakening every edge proves by leaving
+    them behind). A listed text that names no resource of the seed is refused.
 
     A pure fact that the edges state differently stays as one fact over the join binders
     when each edge's fact is its instance under that edge's binder values
@@ -1672,8 +1676,19 @@ def generalize_owned_join(alternatives, *, original_seed, entry_pc, vocabulary,
             raise ValueError('A frame slot value lands in no single uninitialized span of the join seed')
         owner = owners.pop()
         frame_spans.setdefault(owner, []).append(replace(write, mapped=True, ownership_id=owner))
+    listed = {' '.join(text.split()) for text in dropped}
+    if listed:
+        texts = {component['id']: ' '.join(str((component.get('seed_component') or {}).get(
+                     'original_component', (component.get('seed_component') or {}).get('coq', ''))).split())
+                 for component in ownership['components']}
+        unmatched = listed - set(texts.values())
+        if unmatched:
+            raise ValueError('A join drop row names no resource of the join seed: ' + sorted(unmatched)[0])
+        plan['join_drops'] = sorted(key for key, text in texts.items() if text in listed)
     for component in ownership['components']:
         key = component['id']
+        if key in plan.get('join_drops', ()):
+            continue
         current = deepcopy(component)
         if component['kind'] != 'register':
             source = records[0][key]['source']
@@ -1873,6 +1888,8 @@ def generalize_owned_join(alternatives, *, original_seed, entry_pc, vocabulary,
     # The inherited source has one explicit witness scope. Nested scopes need
     # their own packaging design rather than moving a binder across a wand.
     tree = _remove_terminal(ownership['tree'], terminal_id)
+    for key in plan.get('join_drops', ()):
+        tree = _remove_terminal(tree, key)
     if tree['kind'] != 'exists' or any(binder['scope'] != [] for binder in original_binders):
         raise ValueError('The join needs one explicit source witness scope')
     additions = [{**binder, 'expression': input_expr(binder['name'], int(binder['type'].split()[1])).to_dict()}

@@ -295,6 +295,29 @@ class OwnedJoinTests(unittest.TestCase):
             generalize_owned_join(alternatives, original_seed=seed, entry_pc=32,
                                   vocabulary=vocabulary, continuation=continuation)
 
+    def test_dropped_resource_of_the_join_seed_is_not_owned(self):
+        tree = {'kind': 'exists', 'binders': [{'name': 'old', 'type': 'bv 64',
+                                              'expression': input_expr('old').to_dict()}],
+                'components': [{'kind': 'register', 'id': 'r', 'register': 'x13', 'value_coq': 'old'},
+                               {'kind': 'opaque', 'id': 'block', 'coq': 'altFlBlock p n a'},
+                               {'kind': 'opaque', 'id': 'terminal', 'coq': 'True'}]}
+        ownership = ownership_from_assertion_tree(tree, provenance={'source': 'fixture'})
+        seed = OwnedSeed(SymbolicState(registers={'PC': bits(32, 64), 'x13': input_expr('old')}),
+                         ownership, [], [], [])
+        _, alternatives, vocabulary, continuation = self.fixture()
+        for alternative in alternatives:
+            state = _state_from_result(alternative['state'])
+            alternative['resource_boundary'] = render_resource_boundary(
+                ownership, apply_owned_writes([], []), state, vocabulary=vocabulary)
+        joined = generalize_owned_join(alternatives, original_seed=seed, entry_pc=32, vocabulary=vocabulary,
+                                       continuation=continuation, dropped=['altFlBlock  p n a'])
+        self.assertEqual(joined['plan']['join_drops'], ['block'])
+        self.assertNotIn('block', [row['id'] for row in joined['seed'].ownership['components']])
+        self.assertNotIn('altFlBlock', json.dumps(joined['boundary']['alternatives'][0]['resource_boundary']))
+        with self.assertRaisesRegex(ValueError, 'names no resource of the join seed'):
+            generalize_owned_join(alternatives, original_seed=seed, entry_pc=32, vocabulary=vocabulary,
+                                  continuation=continuation, dropped=['altFlBlock q n a'])
+
     def test_pullback_uses_the_complete_owned_image_and_keeps_outer_k(self):
         seed, alternatives, vocabulary, continuation = self.fixture()
         component = {'id': 'output', 'kind': 'byte_array', 'source': 'base ↦ₘ∗ bytes',
