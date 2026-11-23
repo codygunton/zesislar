@@ -163,7 +163,9 @@ Check (eq_refl : knownBugs =
    ParentHeaderTrailingBytes; ParentHeaderSkippedFieldShape;
    ParentHeaderBlobGasUnaligned; RlpUintNonCanonical;
    ParentHeaderUintOver8; ParentHeaderUndecodedFieldRejected;
-   ParentHeaderExcessBlobGasAboveLimit; ParentHeaderTrailingItemMalformed]).
+   ParentHeaderExcessBlobGasAboveLimit; ParentHeaderTrailingItemMalformed;
+   AccessListAddressLength; AccessListKeyLength;
+   AccessListEntryTrailingBytes]).
 
 Definition ReviewedDecodeMeaningModuloKnownBugs
     (args : DecodeItemArgs) (after : DecodeItemOutcome) : Prop :=
@@ -207,6 +209,8 @@ Definition ReviewedParentHeaderBugTrigger (bug : KnownBug)
   | ParentHeaderUndecodedFieldRejected => undecodedFieldRejectedb bytes
   | ParentHeaderExcessBlobGasAboveLimit => excessBlobGasAboveLimitb bytes
   | ParentHeaderTrailingItemMalformed => trailingItemMalformedb bytes
+  | AccessListAddressLength | AccessListKeyLength
+  | AccessListEntryTrailingBytes => false
   end.
 
 Check (eq_refl : parentHeaderBugTrigger = ReviewedParentHeaderBugTrigger).
@@ -523,6 +527,434 @@ Check (eq_refl : parentHeaderArgsWellFormed = ReviewedParentHeaderArgsWellFormed
 Check (eq_refl : headerFits = ReviewedHeaderFits).
 Check (eq_refl : parentHeaderExitSysRegs = ReviewedParentHeaderExitSysRegs).
 Check (eq_refl : ParentHeaderContractCorrect = ReviewedParentHeaderContractCorrect).
+
+(* txAccessList (plan B1; statements reviewed 2026-11-23, PR #362). The
+   reference decoder candidateAccessList and its call walk accessListCalls
+   are pinned through the meaning and domain below. The alt_fl_alloc and
+   general memcpy premises, altFlVtableBytes and altFlAllocatorBytes are
+   pinned in the allocator section at the end of this file (PR #363). *)
+Require Import SailStdpp.Values.
+Require Import ZesuSsz.Compliance.SailRunAccessList.
+Require Import ZesuSsz.Contracts.Candidates.AccessListCandidate.
+Require Import ZesuSsz.Contracts.TxAccessListBugTriggers.
+Require Import ZesuSsz.Contracts.TxAccessListMeaning.
+Require Import ZesuSsz.Contracts.AltFlAllocPremises.
+Require Import ZesuSsz.Contracts.ZiskMemcpyPremise.
+Require Import ZesuSsz.Contracts.KeysEnsureCapacitySelected.
+Require Import ZesuSsz.Contracts.KeysToOwnedSliceSelected.
+Require Import ZesuSsz.Contracts.EntriesToOwnedSliceSelected.
+Require Import ZesuSsz.Contracts.TxAccessListSelected.
+Require Import ZesuSsz.Contracts.TxAccessListContract.
+Require ZesuSsz.Stock.Closure.index_txAccessList.
+Require ZesuSsz.Stock.Closure.index_ensureTotalCapacity.
+Require ZesuSsz.Stock.Closure.index_sliceBytes32.
+Require ZesuSsz.Stock.Closure.index_sliceAccessList.
+Require ZesuSsz.Stock.Closure.index_allocatorAlloc.
+Require ZesuSsz.Stock.Closure.index_allocatorRemap.
+Require ZesuSsz.Stock.Closure.index_allocatorFree.
+Local Open Scope list_scope.
+Local Open Scope Z_scope.
+
+Check (@candidateAccessList : list byte -> AccessListCandidate).
+Check (@accessListCalls : list byte -> list AccessListCall).
+
+Definition ReviewedTxAccessListBugTrigger (bug : KnownBug) (input : list byte) : bool :=
+  match bug with
+  | AccessListAddressLength => accessListAddressLengthb input
+  | AccessListKeyLength => accessListKeyLengthb input
+  | AccessListEntryTrailingBytes => accessListEntryTrailingb input
+  | RlpLongLengthWrap | ParentHeaderMissingRequiredField
+  | ParentHeaderTrailingBytes | ParentHeaderSkippedFieldShape
+  | ParentHeaderBlobGasUnaligned | RlpUintNonCanonical
+  | ParentHeaderUintOver8 | ParentHeaderUndecodedFieldRejected
+  | ParentHeaderExcessBlobGasAboveLimit
+  | ParentHeaderTrailingItemMalformed => false
+  end.
+
+Check (eq_refl : txAccessListBugTrigger = ReviewedTxAccessListBugTrigger).
+
+Definition ReviewedAccessListSailField (isList : bool) (headerLength payloadLength : Z)
+    : AccessListSail.RlpFieldRef 0 (headerLength + payloadLength) payloadLength :=
+  @AccessListSail.Build_RlpFieldRef 0 (headerLength + payloadLength) payloadLength
+    (@AccessListSail.Build_StatelessInputSliceFields 0
+       (headerLength + payloadLength) 0 (headerLength + payloadLength))
+    isList payloadLength.
+
+Definition ReviewedAccessListEncodedSpan (ref : AccessListSail.AccessListRef) : Z * Z :=
+  let slice := projT2 (projT2 (AccessListSail.AccessListRef_encoded ref)) in
+  (AccessListSail.StatelessInputSliceFields_bytes slice,
+   AccessListSail.StatelessInputSliceFields_len slice).
+
+Definition ReviewedTxAccessListSail (input : list byte)
+    : option (SailOutcome AccessListSail.AccessListRef) :=
+  match candidateDecodeItem input with
+  | candidateSuccess isList headerLength payloadLength =>
+      Some (runDecodeAccessList input
+              (ReviewedAccessListSailField isList headerLength payloadLength))
+  | candidateError => None
+  end.
+
+Definition ReviewedAccessListHeadersFit (input : list byte) : Prop :=
+  List.Forall (fun call => headerFits (snd call)) (accessListCalls input).
+
+Definition ReviewedTxAccessListDomain (input : list byte) : Prop :=
+  ReviewedAccessListHeadersFit input /\
+  match candidateDecodeItem input with
+  | candidateSuccess _ headerLength payloadLength =>
+      headerLength + payloadLength <= 2 ^ 30
+  | candidateError => True
+  end.
+
+Definition ReviewedAccessListKeyCount (entries : list AccessListEntryValue) : Z :=
+  fold_right (fun entry total => Z.of_nat (List.length (entryKeys entry)) + total)
+    0 entries.
+
+Definition ReviewedTxAccessListSailAgrees (input : list byte) : Prop :=
+  match candidateDecodeItem input with
+  | candidateError => True
+  | candidateSuccess _ headerLength payloadLength =>
+      match candidateAccessList input with
+      | accessListAccepted entries _ =>
+          exists ref,
+            ReviewedTxAccessListSail input = Some (Success ref) /\
+            accessListCounts (Success ref) =
+              Some (Z.of_nat (List.length entries),
+                    ReviewedAccessListKeyCount entries) /\
+            ReviewedAccessListEncodedSpan ref = (headerLength, payloadLength)
+      | accessListRejected _ =>
+          ReviewedTxAccessListSail input = Some (Reject RlpDecode)
+      end
+  end.
+
+Definition ReviewedAccessListCandidateConsumed (candidate : AccessListCandidate) : Z :=
+  match candidate with
+  | accessListAccepted _ consumed => consumed
+  | accessListRejected (Some consumed) => consumed
+  | accessListRejected None => 0
+  end.
+
+Definition ReviewedTxAccessListOutcomeAllowed (input : list byte)
+    (outcome : TxAccessListOutcomeClass) (consumed : Z) : Prop :=
+  match outcome with
+  | txAccessListOk entries =>
+      candidateAccessList input = accessListAccepted entries consumed
+  | txAccessListInvalidInput =>
+      (exists rejected, candidateAccessList input = accessListRejected rejected) /\
+      consumed = ReviewedAccessListCandidateConsumed (candidateAccessList input)
+  | txAccessListAllocationFailure =>
+      exists headerLength payloadLength,
+        candidateDecodeItem input =
+          candidateSuccess true headerLength payloadLength /\
+        0 < payloadLength /\
+        consumed = (headerLength + payloadLength) mod 2 ^ 64
+  end.
+
+Definition ReviewedTxAccessListMeaningModuloKnownBugs (input : list byte)
+    (outcome : TxAccessListOutcomeClass) (consumed : Z) : Prop :=
+  ReviewedTxAccessListDomain input /\
+  ReviewedTxAccessListOutcomeAllowed input outcome consumed /\
+  (ReviewedTxAccessListSailAgrees input \/
+   exists bug, List.In bug knownBugs /\
+     ReviewedTxAccessListBugTrigger bug input = true).
+
+Check (eq_refl : accessListSailField = ReviewedAccessListSailField).
+Check (eq_refl : accessListEncodedSpan = ReviewedAccessListEncodedSpan).
+Check (eq_refl : txAccessListSail = ReviewedTxAccessListSail).
+Check (eq_refl : accessListHeadersFit = ReviewedAccessListHeadersFit).
+Check (eq_refl : txAccessListDomain = ReviewedTxAccessListDomain).
+Check (eq_refl : accessListKeyCount = ReviewedAccessListKeyCount).
+Check (eq_refl : txAccessListSailAgrees = ReviewedTxAccessListSailAgrees).
+Check (eq_refl : accessListCandidateConsumed = ReviewedAccessListCandidateConsumed).
+Check (eq_refl : txAccessListOutcomeAllowed = ReviewedTxAccessListOutcomeAllowed).
+Check (eq_refl : TxAccessListMeaningModuloKnownBugs =
+                 ReviewedTxAccessListMeaningModuloKnownBugs).
+
+(* The Level 1 contract of txAccessList (entry 0x80000000). *)
+Definition ReviewedTxRamRange (pointer length : Z) : Prop :=
+  0xa0000000 <= pointer /\ 0 <= length /\ pointer + length <= 0xc0000000.
+
+Definition ReviewedTxAccessListArgsRanges (args : TxAccessListArgs) : Prop :=
+  0xa0000000 <= bv_unsigned (txResultPointer args) /\
+  bv_unsigned (txResultPointer args) + 24 <= 0xc0000000 /\
+  0xa0000000 <= bv_unsigned (txAllocatorPointer args) /\
+  bv_unsigned (txAllocatorPointer args) + 16 <= 0xc0000000 /\
+  (8 | bv_unsigned (txAllocatorPointer args)) /\
+  0xa0000000 <= bv_unsigned (txRestPointer args) /\
+  bv_unsigned (txRestPointer args) + 16 <= 0xc0000000 /\
+  0xa0000000 + 576 + 128 <= bv_unsigned (txStackPointer args) /\
+  bv_unsigned (txStackPointer args) <= 0xc0000000 /\
+  bv_unsigned (txInputPointer args) + bv_unsigned (txInputLength args) <=
+    bv_unsigned (txInputEnd args) /\
+  ((2 ^ 30 <= bv_unsigned (txInputPointer args) /\
+    bv_unsigned (txInputPointer args) + bv_unsigned (txInputLength args) <=
+      2 ^ 31) \/
+   (0xa0000000 <= bv_unsigned (txInputPointer args) /\
+    bv_unsigned (txInputPointer args) + bv_unsigned (txInputLength args) <=
+      0xc0000000)).
+
+Definition ReviewedTxAccessListFrameBase (args : TxAccessListArgs) : Z :=
+  bv_unsigned (txStackPointer args) - 576.
+
+Definition ReviewedTxAccessListCalleeBase (args : TxAccessListArgs) : Z :=
+  bv_unsigned (txStackPointer args) - 576 - 128.
+
+Definition ReviewedTxAccessListArgsWellFormed (args : TxAccessListArgs) : Prop :=
+  ReviewedTxAccessListArgsRanges args /\
+  Z.of_nat (List.length (txInputBytes args)) =
+    bv_unsigned (txInputLength args) /\
+  bv_unsigned (txStackPointer args) mod 16 = 0 /\
+  bv_unsigned (txReturnAddress args) mod 4 = 0 /\
+  Z.of_nat (List.length (txScratchBefore args)) = 8 /\
+  separateRanges (bv_unsigned (txResultPointer args)) 24
+    (bv_unsigned (txAllocatorPointer args)) 16 /\
+  separateRanges (bv_unsigned (txResultPointer args)) 24
+    (bv_unsigned (txRestPointer args)) 16 /\
+  separateRanges (bv_unsigned (txAllocatorPointer args)) 16
+    (bv_unsigned (txRestPointer args)) 16 /\
+  separateRanges (bv_unsigned (txInputPointer args))
+    (bv_unsigned (txInputLength args))
+    (bv_unsigned (txResultPointer args)) 24 /\
+  separateRanges (bv_unsigned (txInputPointer args))
+    (bv_unsigned (txInputLength args))
+    (bv_unsigned (txAllocatorPointer args)) 16 /\
+  separateRanges (bv_unsigned (txInputPointer args))
+    (bv_unsigned (txInputLength args))
+    (bv_unsigned (txRestPointer args)) 16 /\
+  separateRanges (ReviewedTxAccessListCalleeBase args) (576 + 128)
+    (bv_unsigned (txResultPointer args)) 24 /\
+  separateRanges (ReviewedTxAccessListCalleeBase args) (576 + 128)
+    (bv_unsigned (txAllocatorPointer args)) 16 /\
+  separateRanges (ReviewedTxAccessListCalleeBase args) (576 + 128)
+    (bv_unsigned (txRestPointer args)) 16 /\
+  separateRanges (ReviewedTxAccessListCalleeBase args) (576 + 128)
+    (bv_unsigned (txInputPointer args)) (bv_unsigned (txInputLength args)) /\
+  ReviewedTxAccessListDomain (txInputBytes args).
+
+Definition ReviewedTxAccessListEntryBytes (entry : AccessListEntryValue)
+    (image : TxAccessListEntryImage) : list byte :=
+  word64Bytes (imageKeysPointer image) ++
+  word64Bytes (Z.of_nat (List.length (entryKeys entry))) ++
+  entryAddress entry ++ imagePadding image.
+
+Definition ReviewedTxAccessListEntriesBytes (entries : list AccessListEntryValue)
+    (images : list TxAccessListEntryImage) : list byte :=
+  concat (zip_with ReviewedTxAccessListEntryBytes entries images).
+
+Definition ReviewedTxAccessListResultImage (outcome : TxAccessListOutcome) : Prop :=
+  (List.length (txResultBytes outcome) = 24)%nat /\
+  match txOutcomeClass outcome with
+  | txAccessListOk entries =>
+      word64At (txResultBytes outcome) 0 (txEntriesPointer outcome) /\
+      word64At (txResultBytes outcome) 8 (Z.of_nat (List.length entries)) /\
+      byteAt (txResultBytes outcome) 16 0 /\ byteAt (txResultBytes outcome) 17 0
+  | txAccessListInvalidInput | txAccessListAllocationFailure =>
+      txResultBytes outcome = word64Bytes 0 ++ word64Bytes 0 ++ word64Bytes 3
+  end.
+
+Definition ReviewedTxAccessListHeapImage (outcome : TxAccessListOutcome) : Prop :=
+  match txOutcomeClass outcome with
+  | txAccessListOk entries =>
+      List.length (txEntryImages outcome) = List.length entries /\
+      txLeakedBlocks outcome = [] /\
+      (entries <> [] ->
+       ReviewedTxRamRange (txEntriesPointer outcome)
+         (40 * Z.of_nat (List.length entries))) /\
+      Forall2 (fun entry image =>
+        Z.of_nat (List.length (imagePadding image)) = 4 /\
+        (entryKeys entry <> [] ->
+         ReviewedTxRamRange (imageKeysPointer image)
+           (32 * Z.of_nat (List.length (entryKeys entry)))))
+        entries (txEntryImages outcome)
+  | txAccessListInvalidInput | txAccessListAllocationFailure =>
+      txEntryImages outcome = [] /\
+      Forall (fun block =>
+        0 < leakedBytes block /\
+        ReviewedTxRamRange (leakedPointer block) (leakedBytes block) /\
+        (leakedLog2Align block = 0 \/ leakedLog2Align block = 3))
+        (txLeakedBlocks outcome)
+  end.
+
+Definition ReviewedTxAccessListAllows (args : TxAccessListArgs)
+    (outcome : TxAccessListOutcome) : Prop :=
+  ReviewedTxAccessListMeaningModuloKnownBugs (txInputBytes args)
+    (txOutcomeClass outcome) (txConsumed outcome) /\
+  ReviewedTxAccessListResultImage outcome /\
+  ReviewedTxAccessListHeapImage outcome /\
+  List.length (txAfterFrame outcome) = Z.to_nat 576 /\
+  Z.of_nat (List.length (txScratchAfter outcome)) = 8.
+
+Definition ReviewedTxAccessListSysRegs (args : TxAccessListArgs) :
+    list (reg_kind * valu_shape) :=
+  map (fun '(r, shape) =>
+    (r, if decide (r = KindReg "zisk_input_end")
+        then ExactShape (RVal_Bits (txInputEnd args))
+        else shape)) zesu_sys_regs.
+
+Definition ReviewedTxAccessListSelectedCode `{!islaG Sigma} `{!threadG} :
+    iProp Sigma :=
+  instr_lookup_resources
+    (selectedCodeLookup ZesuSsz.Stock.Closure.index_txAccessList.instr_map).
+
+Definition ReviewedTxAccessListContractCode `{!islaG Sigma} `{!threadG}
+    : iProp Sigma :=
+  (ReviewedTxAccessListSelectedCode ∗ keysEnsureCapacitySelectedCode ∗
+   keysToOwnedSliceSelectedCode ∗ entriesToOwnedSliceSelectedCode ∗
+   decodeItemSelectedCode ∗ ziskMemcpyCallPremise ∗
+   altFlAllocCallPremise ∗ altFlRemapCallPremise ∗ altFlFreeCallPremise)%I.
+
+Definition ReviewedTxOwnedSlice `{!islaG Sigma} `{!threadG}
+    (pointer log2Align : Z) (bytes : list byte) : iProp Sigma :=
+  (match bytes with
+   | [] => True
+   | _ :: _ => pointer ↦ₘ∗ bytes ∗
+               altFlBlock pointer (Z.of_nat (List.length bytes)) log2Align
+   end)%I.
+
+Definition ReviewedTxAccessListReturnedHeap `{!islaG Sigma} `{!threadG}
+    (outcome : TxAccessListOutcome) : iProp Sigma :=
+  (match txOutcomeClass outcome with
+   | txAccessListOk entries =>
+       ReviewedTxOwnedSlice (txEntriesPointer outcome) 3
+         (ReviewedTxAccessListEntriesBytes entries (txEntryImages outcome)) ∗
+       [∗ list] entry; image ∈ entries; txEntryImages outcome,
+         ReviewedTxOwnedSlice (imageKeysPointer image) 0
+           (concat (entryKeys entry))
+   | txAccessListInvalidInput | txAccessListAllocationFailure => True
+   end ∗
+   [∗ list] block ∈ txLeakedBlocks outcome,
+     leakedPointer block ↦ₘ? leakedBytes block ∗
+     altFlBlock (leakedPointer block) (leakedBytes block)
+       (leakedLog2Align block))%I.
+
+Definition ReviewedTxAccessListEntryResources `{!islaG Sigma} `{!threadG}
+    (args : TxAccessListArgs) : iProp Sigma :=
+  (∃ (x5 x6 x7 x13 x14 x15 x16 x17 x28 x29 x30 x31 : bv 64),
+   reg_col (ReviewedTxAccessListSysRegs args) ∗
+   "x1" ↦ᵣ RVal_Bits (txReturnAddress args) ∗
+   "x2" ↦ᵣ RVal_Bits (txStackPointer args) ∗
+   "x5" ↦ᵣ RVal_Bits x5 ∗ "x6" ↦ᵣ RVal_Bits x6 ∗ "x7" ↦ᵣ RVal_Bits x7 ∗
+   "x8" ↦ᵣ RVal_Bits (txSavedX8 args) ∗
+   "x9" ↦ᵣ RVal_Bits (txSavedX9 args) ∗
+   "x10" ↦ᵣ RVal_Bits (txResultPointer args) ∗
+   "x11" ↦ᵣ RVal_Bits (txAllocatorPointer args) ∗
+   "x12" ↦ᵣ RVal_Bits (txRestPointer args) ∗
+   "x13" ↦ᵣ RVal_Bits x13 ∗ "x14" ↦ᵣ RVal_Bits x14 ∗ "x15" ↦ᵣ RVal_Bits x15 ∗
+   "x16" ↦ᵣ RVal_Bits x16 ∗ "x17" ↦ᵣ RVal_Bits x17 ∗
+   "x18" ↦ᵣ RVal_Bits (txSavedX18 args) ∗
+   "x19" ↦ᵣ RVal_Bits (txSavedX19 args) ∗
+   "x20" ↦ᵣ RVal_Bits (txSavedX20 args) ∗
+   "x21" ↦ᵣ RVal_Bits (txSavedX21 args) ∗
+   "x22" ↦ᵣ RVal_Bits (txSavedX22 args) ∗
+   "x23" ↦ᵣ RVal_Bits (txSavedX23 args) ∗
+   "x24" ↦ᵣ RVal_Bits (txSavedX24 args) ∗
+   "x25" ↦ᵣ RVal_Bits (txSavedX25 args) ∗
+   "x26" ↦ᵣ RVal_Bits (txSavedX26 args) ∗
+   "x27" ↦ᵣ RVal_Bits (txSavedX27 args) ∗
+   "x28" ↦ᵣ RVal_Bits x28 ∗ "x29" ↦ᵣ RVal_Bits x29 ∗
+   "x30" ↦ᵣ RVal_Bits x30 ∗ "x31" ↦ᵣ RVal_Bits x31 ∗
+   bv_unsigned (txInputPointer args) ↦ₘ∗ txInputBytes args ∗
+   bv_unsigned (txRestPointer args) ↦ₘ∗
+     (word64Bytes (bv_unsigned (txInputPointer args)) ++
+      word64Bytes (bv_unsigned (txInputLength args))) ∗
+   bv_unsigned (txAllocatorPointer args) ↦ₘ∗
+     altFlAllocatorBytes (bv_unsigned (txAllocatorContext args)) ∗
+   0x801136d8 ↦ₘ∗ altFlVtableBytes ∗
+   altFlHeap ∗
+   0xa0400f00 ↦ₘ∗ txScratchBefore args ∗
+   bv_unsigned (txResultPointer args) ↦ₘ? 24 ∗
+   ReviewedTxAccessListFrameBase args ↦ₘ? 576 ∗
+   ReviewedTxAccessListCalleeBase args ↦ₘ? 128 ∗
+   ⌜ReviewedTxAccessListArgsWellFormed args⌝ ∗ True)%I.
+
+Definition ReviewedTxAccessListExitResources `{!islaG Sigma} `{!threadG}
+    (args : TxAccessListArgs) (outcome : TxAccessListOutcome) : iProp Sigma :=
+  (∃ (x5 x6 x7 x10 x11 x12 x13 x14 x15 x16 x17 x28 x29 x30 x31 : bv 64),
+   reg_col (ReviewedTxAccessListSysRegs args) ∗
+   "x1" ↦ᵣ RVal_Bits (txReturnAddress args) ∗
+   "x2" ↦ᵣ RVal_Bits (txStackPointer args) ∗
+   "x5" ↦ᵣ RVal_Bits x5 ∗ "x6" ↦ᵣ RVal_Bits x6 ∗ "x7" ↦ᵣ RVal_Bits x7 ∗
+   "x8" ↦ᵣ RVal_Bits (txSavedX8 args) ∗
+   "x9" ↦ᵣ RVal_Bits (txSavedX9 args) ∗
+   "x10" ↦ᵣ RVal_Bits x10 ∗ "x11" ↦ᵣ RVal_Bits x11 ∗ "x12" ↦ᵣ RVal_Bits x12 ∗
+   "x13" ↦ᵣ RVal_Bits x13 ∗ "x14" ↦ᵣ RVal_Bits x14 ∗ "x15" ↦ᵣ RVal_Bits x15 ∗
+   "x16" ↦ᵣ RVal_Bits x16 ∗ "x17" ↦ᵣ RVal_Bits x17 ∗
+   "x18" ↦ᵣ RVal_Bits (txSavedX18 args) ∗
+   "x19" ↦ᵣ RVal_Bits (txSavedX19 args) ∗
+   "x20" ↦ᵣ RVal_Bits (txSavedX20 args) ∗
+   "x21" ↦ᵣ RVal_Bits (txSavedX21 args) ∗
+   "x22" ↦ᵣ RVal_Bits (txSavedX22 args) ∗
+   "x23" ↦ᵣ RVal_Bits (txSavedX23 args) ∗
+   "x24" ↦ᵣ RVal_Bits (txSavedX24 args) ∗
+   "x25" ↦ᵣ RVal_Bits (txSavedX25 args) ∗
+   "x26" ↦ᵣ RVal_Bits (txSavedX26 args) ∗
+   "x27" ↦ᵣ RVal_Bits (txSavedX27 args) ∗
+   "x28" ↦ᵣ RVal_Bits x28 ∗ "x29" ↦ᵣ RVal_Bits x29 ∗
+   "x30" ↦ᵣ RVal_Bits x30 ∗ "x31" ↦ᵣ RVal_Bits x31 ∗
+   bv_unsigned (txInputPointer args) ↦ₘ∗ txInputBytes args ∗
+   bv_unsigned (txRestPointer args) ↦ₘ∗
+     (word64Bytes (bv_unsigned (txInputPointer args) + txConsumed outcome) ++
+      word64Bytes (bv_unsigned (txInputLength args) - txConsumed outcome)) ∗
+   bv_unsigned (txAllocatorPointer args) ↦ₘ∗
+     altFlAllocatorBytes (bv_unsigned (txAllocatorContext args)) ∗
+   0x801136d8 ↦ₘ∗ altFlVtableBytes ∗
+   altFlHeap ∗
+   0xa0400f00 ↦ₘ∗ txScratchAfter outcome ∗
+   bv_unsigned (txResultPointer args) ↦ₘ∗ txResultBytes outcome ∗
+   ReviewedTxAccessListFrameBase args ↦ₘ∗ txAfterFrame outcome ∗
+   ReviewedTxAccessListCalleeBase args ↦ₘ? 128 ∗
+   ReviewedTxAccessListReturnedHeap outcome ∗ True)%I.
+
+Definition ReviewedTxAccessListContractResources `{!islaG Sigma} `{!threadG}
+    (returnAddress : Z) :
+    IslarisContractResources TxAccessListArgs TxAccessListOutcome :=
+  {| islarisCode := ReviewedTxAccessListContractCode;
+     islarisEntry := fun args =>
+       (⌜bv_unsigned (txReturnAddress args) = returnAddress⌝ ∗
+        ReviewedTxAccessListEntryResources args)%I;
+     islarisExit := ReviewedTxAccessListExitResources |}.
+
+Definition ReviewedTxAccessListContractModel (returnAddress : Z) :
+    IslarisContractModel TxAccessListArgs TxAccessListOutcome :=
+  {| islarisContractAllows := fun args outcome =>
+       bv_unsigned (txReturnAddress args) = returnAddress /\
+       ReviewedTxAccessListAllows args outcome;
+     islarisContractStep := fun source target =>
+       ZesuSsz.Stock.Closure.index_txAccessList.txAccessList_cfg_step
+         source target \/
+       ZesuSsz.Stock.Closure.index_decodeItem.decodeItem_cfg_step
+         source target \/
+       ZesuSsz.Stock.Closure.index_ensureTotalCapacity.ensureTotalCapacity_cfg_step
+         source target \/
+       ZesuSsz.Stock.Closure.index_sliceBytes32.sliceBytes32_cfg_step
+         source target \/
+       ZesuSsz.Stock.Closure.index_sliceAccessList.sliceAccessList_cfg_step
+         source target \/
+       ZesuSsz.Stock.Closure.index_allocatorAlloc.allocatorAlloc_cfg_step
+         source target \/
+       ZesuSsz.Stock.Closure.index_allocatorRemap.allocatorRemap_cfg_step
+         source target \/
+       ZesuSsz.Stock.Closure.index_allocatorFree.allocatorFree_cfg_step
+         source target \/
+       ZesuSsz.Stock.Closure.index_memcpyStub.memcpyStub_cfg_step
+         source target;
+     islarisContractResources := fun Sigma HG HT =>
+       @ReviewedTxAccessListContractResources Sigma HG HT returnAddress |}.
+
+Definition ReviewedTxAccessListContractCorrect : Prop :=
+  forall returnAddress,
+    IslarisContractCorrect 0x80000000 returnAddress
+      (ReviewedTxAccessListContractModel returnAddress).
+
+Check (eq_refl : @txAccessListSelectedCode = @ReviewedTxAccessListSelectedCode).
+Check (eq_refl : txRamRange = ReviewedTxRamRange).
+Check (eq_refl : txAccessListArgsRanges = ReviewedTxAccessListArgsRanges).
+Check (eq_refl : txAccessListArgsWellFormed = ReviewedTxAccessListArgsWellFormed).
+Check (eq_refl : txAccessListEntriesBytes = ReviewedTxAccessListEntriesBytes).
+Check (eq_refl : txAccessListAllows = ReviewedTxAccessListAllows).
+Check (eq_refl : @txAccessListContractCode = @ReviewedTxAccessListContractCode).
+Check (eq_refl : @txAccessListEntryResources = @ReviewedTxAccessListEntryResources).
+Check (eq_refl : @txAccessListExitResources = @ReviewedTxAccessListExitResources).
+Check (eq_refl : TxAccessListContractCorrect = ReviewedTxAccessListContractCorrect).
 
 (* allocator and memcpy premises (PR #363) *)
 Definition ReviewedAltFlClassBytes (class : Z) : Z := 2 ^ (class + 3).
