@@ -1,0 +1,187 @@
+{
+ "schema": "oblig-exec-inputs/1",
+ "function": "keysEnsureCapacity",
+ "note": "List states (len, capacity) and the requested capacity new_capacity.",
+ "inputs": [
+  {
+   "id": "len0_cap0_same",
+   "len": 0,
+   "capacity": 0,
+   "new_capacity": 0,
+   "expect": {
+    "kind": "Success",
+    "len": 0,
+    "capacity_ok": true,
+    "items_ok": true
+   }
+  },
+  {
+   "id": "len0_cap0_grow1",
+   "len": 0,
+   "capacity": 0,
+   "new_capacity": 1,
+   "expect": {
+    "kind": "Success",
+    "len": 0,
+    "capacity_ok": true,
+    "items_ok": true
+   }
+  },
+  {
+   "id": "len0_cap0_grow",
+   "len": 0,
+   "capacity": 0,
+   "new_capacity": 5,
+   "expect": {
+    "kind": "Success",
+    "len": 0,
+    "capacity_ok": true,
+    "items_ok": true
+   }
+  },
+  {
+   "id": "len1_cap1_same",
+   "len": 1,
+   "capacity": 1,
+   "new_capacity": 1,
+   "expect": {
+    "kind": "Success",
+    "len": 1,
+    "capacity_ok": true,
+    "items_ok": true
+   }
+  },
+  {
+   "id": "len1_cap1_grow1",
+   "len": 1,
+   "capacity": 1,
+   "new_capacity": 2,
+   "expect": {
+    "kind": "Success",
+    "len": 1,
+    "capacity_ok": true,
+    "items_ok": true
+   }
+  },
+  {
+   "id": "len1_cap1_grow",
+   "len": 1,
+   "capacity": 1,
+   "new_capacity": 5,
+   "expect": {
+    "kind": "Success",
+    "len": 1,
+    "capacity_ok": true,
+    "items_ok": true
+   }
+  },
+  {
+   "id": "len1_cap4_same",
+   "len": 1,
+   "capacity": 4,
+   "new_capacity": 4,
+   "expect": {
+    "kind": "Success",
+    "len": 1,
+    "capacity_ok": true,
+    "items_ok": true
+   }
+  },
+  {
+   "id": "len1_cap4_grow1",
+   "len": 1,
+   "capacity": 4,
+   "new_capacity": 5,
+   "expect": {
+    "kind": "Success",
+    "len": 1,
+    "capacity_ok": true,
+    "items_ok": true
+   }
+  },
+  {
+   "id": "len1_cap4_grow",
+   "len": 1,
+   "capacity": 4,
+   "new_capacity": 14,
+   "expect": {
+    "kind": "Success",
+    "len": 1,
+    "capacity_ok": true,
+    "items_ok": true
+   }
+  },
+  {
+   "id": "len3_cap3_same",
+   "len": 3,
+   "capacity": 3,
+   "new_capacity": 3,
+   "expect": {
+    "kind": "Success",
+    "len": 3,
+    "capacity_ok": true,
+    "items_ok": true
+   }
+  },
+  {
+   "id": "len3_cap3_grow1",
+   "len": 3,
+   "capacity": 3,
+   "new_capacity": 4,
+   "expect": {
+    "kind": "Success",
+    "len": 3,
+    "capacity_ok": true,
+    "items_ok": true
+   }
+  },
+  {
+   "id": "len3_cap3_grow",
+   "len": 3,
+   "capacity": 3,
+   "new_capacity": 11,
+   "expect": {
+    "kind": "Success",
+    "len": 3,
+    "capacity_ok": true,
+    "items_ok": true
+   }
+  },
+  {
+   "id": "len2_cap5_same",
+   "len": 2,
+   "capacity": 5,
+   "new_capacity": 5,
+   "expect": {
+    "kind": "Success",
+    "len": 2,
+    "capacity_ok": true,
+    "items_ok": true
+   }
+  },
+  {
+   "id": "len2_cap5_grow1",
+   "len": 2,
+   "capacity": 5,
+   "new_capacity": 6,
+   "expect": {
+    "kind": "Success",
+    "len": 2,
+    "capacity_ok": true,
+    "items_ok": true
+   }
+  },
+  {
+   "id": "len2_cap5_grow",
+   "len": 2,
+   "capacity": 5,
+   "new_capacity": 17,
+   "expect": {
+    "kind": "Success",
+    "len": 2,
+    "capacity_ok": true,
+    "items_ok": true
+   }
+  }
+ ]
+}

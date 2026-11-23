@@ -1,0 +1,73 @@
+{
+ "schema": "oblig-exec-inputs/1",
+ "function": "keysToOwnedSlice",
+ "note": "List states: len and capacity; items hold a byte pattern per element.",
+ "inputs": [
+  {
+   "id": "len0_cap0",
+   "len": 0,
+   "capacity": 0,
+   "expect": {
+    "kind": "Success",
+    "len": 0,
+    "items_ok": true,
+    "list_reset": true
+   }
+  },
+  {
+   "id": "len0_cap2",
+   "len": 0,
+   "capacity": 2,
+   "expect": {
+    "kind": "Success",
+    "len": 0,
+    "items_ok": true,
+    "list_reset": true
+   }
+  },
+  {
+   "id": "len1_cap1",
+   "len": 1,
+   "capacity": 1,
+   "expect": {
+    "kind": "Success",
+    "len": 1,
+    "items_ok": true,
+    "list_reset": true
+   }
+  },
+  {
+   "id": "len1_cap4",
+   "len": 1,
+   "capacity": 4,
+   "expect": {
+    "kind": "Success",
+    "len": 1,
+    "items_ok": true,
+    "list_reset": true
+   }
+  },
+  {
+   "id": "len3_cap3",
+   "len": 3,
+   "capacity": 3,
+   "expect": {
+    "kind": "Success",
+    "len": 3,
+    "items_ok": true,
+    "list_reset": true
+   }
+  },
+  {
+   "id": "len2_cap5",
+   "len": 2,
+   "capacity": 5,
+   "expect": {
+    "kind": "Success",
+    "len": 2,
+    "items_ok": true,
+    "list_reset": true
+   }
+  }
+ ]
+}
