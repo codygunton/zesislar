@@ -17,3 +17,5 @@ Open Scope Z_scope.
 Definition txAccessListSelectedCode `{!islaG Sigma} `{!threadG} : iProp Sigma :=
   instr_lookup_resources
     (selectedCodeLookup ZesuSsz.Stock.Closure.index_txAccessList.instr_map).
+Global Instance : LithiumUnfold (@txAccessListSelectedCode) := I.
+Global Typeclasses Opaque txAccessListSelectedCode.
