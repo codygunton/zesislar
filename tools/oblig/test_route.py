@@ -22,7 +22,11 @@ def ev(identifier, state, **fields):
 
 
 def tried(identifier, tier, number, failure=None, prompt=None, closed=False):
-    prompt = hashlib.sha256((prompt or '%s-%d' % (tier, number)).encode()).hexdigest()
+    """A finished attempt. A first `mechanical` attempt without PROMPT tried the current tactic."""
+    if tier == 'mechanical' and prompt is None and number == 1:
+        prompt = route.MECHANICAL_SHA
+    else:
+        prompt = hashlib.sha256((prompt or '%s-%d' % (tier, number)).encode()).hexdigest()
     state = 'closed' if closed else 'failed'
     return [ev(identifier, 'running', tier=tier, attempt=number, prompt_sha256=prompt),
             ev(identifier, state, tier=tier, attempt=number, prompt_sha256=prompt,
@@ -250,6 +254,34 @@ class Router(unittest.TestCase):
         self.assertEqual(self.next(GOAL), ('prove', 'haiku-low'))
         self.add(tried(GOAL, 'haiku-low', 3, prompt='hinted'))
         self.assertEqual(self.next(GOAL), ('prove', 'haiku-high'))
+
+    def test_a_changed_mechanical_tactic_runs_again(self):
+        self.pure_goal()
+        old = 'an older CONTROL_TACTIC'
+        self.add(falsified(), tried(GOAL, 'mechanical', 1, 'compile_error', prompt=old),
+                 tried(GOAL, 'haiku-low', 1, 'give_up'), tried(GOAL, 'haiku-low', 2, 'give_up'))
+        self.assertEqual(self.next(GOAL), ('prove', 'mechanical'))
+        self.add(ev(GOAL, 'running', tier='mechanical', attempt=2, prompt_sha256=route.MECHANICAL_SHA),
+                 ev(GOAL, 'failed', tier='mechanical', attempt=2, prompt_sha256=route.MECHANICAL_SHA,
+                    **{'class': 'compile_error'}))
+        self.assertEqual(self.next(GOAL), ('prove', 'haiku-medium'))
+
+    def test_superseded_obligations_get_no_step(self):
+        self.pure_goal()
+        self.add(ev(BLOCK, 'failed', **{'class': 'not_closed'}),
+                 ev(GOAL, 'superseded', **{'class': 'artifact-gone'}))
+        self.assertIsNone(self.next(GOAL))
+        # Its only leftover superseded, the block is packaged again.
+        self.assertEqual(self.next(BLOCK), ('package', None))
+
+    def test_a_package_record_decides_the_address_class(self):
+        record = self.run / 'PACKAGE.json'
+        literal = '0x%x' % ((8 << 28) + 0xd6960)
+        record.write_text('{"class": null, "symbols": [{"literal": "%s", "notation": "sym_x"}]}' % literal)
+        self.add(ev(GOAL, 'derived', **{'class': 'PURE-linear'}, artifact={'path': str(record), 'sha256': '0' * 64}))
+        self.assertEqual(self.next(GOAL), ('falsify', None))
+        record.write_text('{"class": "ADDRESS"}')
+        self.assertEqual(self.next(GOAL), ('owner', None))
 
     def test_waiting_decision_after_every_tier_too_large_is_reconsidered(self):
         self.pure_goal()

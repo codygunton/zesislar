@@ -6,7 +6,8 @@ Import ListNotations.
     class names an input on which the binary's result differs from Sail's.
     The trigger of each decodeParentHeader class is
     ZesuSsz/Contracts/ParentHeaderBugTriggers.v; decodeItem uses only
-    RlpLongLengthWrap. *)
+    RlpLongLengthWrap; the AccessList* classes belong to txAccessList
+    (ZesuSsz/Contracts/TxAccessListBugTriggers.v). *)
 Inductive KnownBug : Type :=
 (* build/stock-zisk/static-sites/sites.json records selected-object DWARF.
    It links src/stateless/mpt/rlp.zig:52 to the
@@ -48,7 +49,20 @@ Inductive KnownBug : Type :=
 | ParentHeaderExcessBlobGasAboveLimit
 (* decodeParentHeader never reads the outer payload after field 18. Sail
    decodes every further item and rejects one that does not decode. *)
-| ParentHeaderTrailingItemMalformed.
+| ParentHeaderTrailingItemMalformed
+(* rlp_decode.txAccessList rejects an entry address whose byte string is
+   not exactly 20 bytes (rlp_decode.zig:509). Sail decodes the address with
+   rlp_decode_word, which accepts any string of at most 32 bytes and keeps
+   its low 20 bytes (word_to_address). Reviewed 2026-11-23 (plan B1). *)
+| AccessListAddressLength
+(* rlp_decode.txAccessList rejects a storage key whose byte string is not
+   exactly 32 bytes (rlp_decode.zig:526). Sail's rlp_decode_word accepts a
+   string of fewer than 32 bytes. Reviewed 2026-11-23 (plan B1). *)
+| AccessListKeyLength
+(* rlp_decode.txAccessList never reads the bytes after an entry's keys list
+   (rlp_decode.zig:513-535). Sail rejects them (rlp_cursor_expect_end in
+   _rec_decode_access_list_entries). Reviewed 2026-11-23 (plan B1). *)
+| AccessListEntryTrailingBytes.
 
 (** This fixed list prevents later proofs from adding exceptions. *)
 Definition knownBugs : list KnownBug :=
@@ -56,4 +70,6 @@ Definition knownBugs : list KnownBug :=
    ParentHeaderTrailingBytes; ParentHeaderSkippedFieldShape;
    ParentHeaderBlobGasUnaligned; RlpUintNonCanonical;
    ParentHeaderUintOver8; ParentHeaderUndecodedFieldRejected;
-   ParentHeaderExcessBlobGasAboveLimit; ParentHeaderTrailingItemMalformed].
+   ParentHeaderExcessBlobGasAboveLimit; ParentHeaderTrailingItemMalformed;
+   AccessListAddressLength; AccessListKeyLength;
+   AccessListEntryTrailingBytes].

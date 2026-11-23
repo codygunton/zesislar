@@ -1,6 +1,6 @@
 {
   "schema": "zesu.symbols.v1",
-  "description": "Symbols of the pinned ELF that hand-written and agent-written files may name. tools/oblig/render_symbols.py renders one parsing-only Notation per entry into the output module.",
+  "description": "Symbols of the pinned ELF that hand-written and agent-written files may name. tools/oblig/render_symbols.py renders one parsing-only Notation per entry into the output module. `sections` adds the start and exclusive end of each named ELF section (sec_<name>_start, sec_<name>_end).",
   "elf": "build/stock-zisk/zesu-zisk.elf",
   "output": "ZesuSsz/Generated/Stock/Symbols.v",
   "symbols": [
@@ -17,5 +17,9 @@
     "alt_fl_alloc.free",
     "alt_fl_alloc.vtable",
     "alt_fl_alloc.state"
+  ],
+  "sections": [
+    ".text",
+    ".rodata"
   ]
 }

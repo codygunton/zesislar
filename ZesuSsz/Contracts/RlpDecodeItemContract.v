@@ -97,7 +97,9 @@ Definition decodeItemBugApplies (bug : KnownBug)
   | ParentHeaderSkippedFieldShape | ParentHeaderBlobGasUnaligned
   | RlpUintNonCanonical | ParentHeaderUintOver8
   | ParentHeaderUndecodedFieldRejected | ParentHeaderExcessBlobGasAboveLimit
-  | ParentHeaderTrailingItemMalformed => False
+  | ParentHeaderTrailingItemMalformed
+  | AccessListAddressLength | AccessListKeyLength
+  | AccessListEntryTrailingBytes => False
   end.
 
 Definition DecodeMeaningModuloKnownBugs

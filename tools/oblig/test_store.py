@@ -76,6 +76,24 @@ class Attempts(unittest.TestCase):
                                attempt(goal, 'failed', 'mechanical', 1, **{'class': 'give_up'})])
             self.assertEqual(len(store.read_events(run)), 2)
 
+    def test_events_of_an_open_attempt_of_a_best_of_n_round(self):
+        goal = store.goal_id(F, '0010', 'x = x')
+        with tempfile.TemporaryDirectory() as run:
+            store.append(run, [attempt(goal, 'running', 'haiku-low', n, prompt='s%d' % n) for n in (1, 2, 3)])
+            # The siblings' results, then the submitted sample announced again: all one open attempt each.
+            store.append(run, [attempt(goal, 'failed', 'haiku-low', 1, prompt='s1', **{'class': 'compile_error'}),
+                               attempt(goal, 'failed', 'haiku-low', 3, prompt='s3', **{'class': 'superseded'}),
+                               attempt(goal, 'running', 'haiku-low', 2, prompt='s2')])
+            state = store.fold(store.read_events(run))
+            self.assertEqual((state[goal]['state'], state[goal]['last_attempt']['attempt']), ('running', 2))
+            self.assertEqual(state[goal]['tier_attempts'], {'haiku-low': 3})
+            store.append(run, attempt(goal, 'closed', 'haiku-low', 2, prompt='s2'))
+            # A settled attempt takes no further event, and its prompt is never sent again.
+            for row in (attempt(goal, 'failed', 'haiku-low', 1, prompt='s1', **{'class': 'give_up'}),
+                        attempt(goal, 'running', 'haiku-low', 4, prompt='s3')):
+                with self.assertRaises(store.Rejected):
+                    store.append(run, row)
+
 
 class Fold(unittest.TestCase):
     def test_states_resets_and_classes(self):
@@ -94,6 +112,24 @@ class Fold(unittest.TestCase):
             self.assertEqual(state[goal]['failure'], 'compile_error')
             self.assertEqual(state[goal]['parent'], block)
             self.assertEqual(store.count_lines(state), ['block derived 1', 'goal failed 1', 'total 2 open 2'])
+
+    def test_superseded_is_terminal_with_a_reason(self):
+        goal = store.goal_id(F, '0040', 'a < b')
+        with tempfile.TemporaryDirectory() as run:
+            store.append(run, ev(goal, 'derived', **{'class': 'PURE-linear'}))
+            for bad in (ev(goal, 'superseded'), ev(goal, 'superseded', **{'class': 'bored'})):
+                with self.assertRaises(store.Rejected):
+                    store.append(run, bad)
+            store.append(run, ev(goal, 'superseded', **{'class': 're-rendered'}))
+            state = store.fold(store.read_events(run))
+            self.assertEqual((state[goal]['state'], state[goal]['superseded'], state[goal]['goal_class']),
+                             ('superseded', 're-rendered', 'PURE-linear'))
+            self.assertFalse(store.is_open(state[goal]))
+            self.assertEqual(store.count_lines(state), ['goal superseded 1', 'total 1 open 0'])
+            self.assertIn('superseded re-rendered', store.status_lines(state)[0])
+            # Issued again: a `derived` event revives it.
+            store.append(run, ev(goal, 'derived', **{'class': 'PURE-linear'}))
+            self.assertEqual(store.fold(store.read_events(run))[goal]['state'], 'derived')
 
 
 def write(path, data):
@@ -139,6 +175,67 @@ class Sync(unittest.TestCase):
             self.assertEqual(store.sync(F, run), 1)
             state = store.fold(store.read_events(run))
             self.assertEqual((state['fn/block/0000']['state'], state['fn/block/0000']['resets']), ('derived', 1))
+
+    def test_sync_supersedes_gone_goals_and_requests_no_longer_issued(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            run = Path(tmp)
+            gone, live = store.goal_id(F, '0048', 'old'), store.goal_id(F, '0048', 'P')
+            res = run / 'residual' / '0048'
+            write(res / 'MANIFEST.json', {'block': '0048', 'goals': [{'id': '0048-1', 'statement': 'P'}]})
+            write(res / 'goals' / '0048-1' / 'STATUS.json', {'result': 'FAIL', 'attempts': [{}]})
+            kept = run / 'kept.json'
+            write(kept, '{}')
+            other = store.goal_id(F, '0050', 'R')
+            store.append(run, [ev(gone, 'failed', **{'class': 'compile_error'},
+                                  artifact={'path': str(run / 'resid-r1' / 'gone.json'), 'sha256': '0' * 64}),
+                               ev(other, 'derived', artifact={'path': str(kept), 'sha256': '0' * 64})])
+            requests = [{'id': 'fn/decision/contract-0000', 'kind': 'contract', 'pc': '+0x0'},
+                        {'id': 'fn/decision/call_row-0094', 'kind': 'call_row', 'pc': '+0x94'},
+                        {'id': 'fn/decision/join_assertion-0098', 'kind': 'join_assertion', 'pc': '+0x98'}]
+            write(run / 'round-1' / 'derived' / 'REQUESTS.json',
+                  {'round': 1, 'render': 'r1', 'answered': [], 'requests': requests})
+            store.sync(F, run)
+            # Round 2 renders nothing: it can stop issuing only control-flow requests.
+            write(run / 'round-2' / 'derived' / 'REQUESTS.json',
+                  {'round': 2, 'render': None, 'answered': ['fn/decision/contract-0000'], 'requests': []})
+            store.sync(F, run)
+            state = store.fold(store.read_events(run))
+            got = {k: (v['state'], v['superseded']) for k, v in state.items()}
+            self.assertEqual(got[gone], ('superseded', 'artifact-gone'))
+            self.assertEqual(got[live], ('failed', None))
+            self.assertEqual(got[other], ('derived', None))
+            self.assertEqual(got['fn/decision/contract-0000'], ('derived', None))
+            self.assertEqual(got['fn/decision/call_row-0094'], ('superseded', 'not-issued'))
+            self.assertEqual(got['fn/decision/join_assertion-0098'], ('derived', None))
+            write(run / 'round-3' / 'derived' / 'REQUESTS.json',
+                  {'round': 3, 'render': 'r3', 'answered': ['fn/decision/contract-0000'], 'requests': []})
+            self.assertEqual(store.sync(F, run), 1)
+            self.assertEqual(store.fold(store.read_events(run))['fn/decision/join_assertion-0098']['superseded'],
+                             'not-issued')
+            self.assertEqual(store.sync(F, run), 0)
+            # Evidence of a closed proof still closes a superseded goal; other evidence never revives it.
+            write(res / 'goals' / '0048-1' / 'STATUS.json', {'result': 'PASS', 'attempts': [{}]})
+            store.append(run, ev(live, 'superseded', **{'class': 're-rendered'}))
+            store.sync(F, run)
+            self.assertEqual(store.fold(store.read_events(run))[live]['state'], 'closed')
+
+    def test_supersede_command(self):
+        a, b, c = (store.goal_id(F, '0040', s) for s in ('a', 'b', 'c'))
+        with tempfile.TemporaryDirectory() as tmp:
+            run = Path(tmp)
+            write(run / 'here.json', '{}')
+            store.append(run, [ev(a, 'failed', **{'class': 'give_up'}, artifact={'path': str(run / 'gone'), 'sha256': '0' * 64}),
+                               ev(b, 'derived', artifact={'path': str(run / 'here.json'), 'sha256': '0' * 64}),
+                               ev(c, 'derived')])
+            out = io.StringIO()
+            with contextlib.redirect_stdout(out), contextlib.redirect_stderr(io.StringIO()):
+                self.assertEqual(store.main(['supersede', '--run', tmp, '--missing-artifacts']), 0)
+                self.assertEqual(store.main(['supersede', '--run', tmp, '--ids', c, a]), 0)
+                self.assertEqual(store.main(['supersede', '--run', tmp, '--ids', 'fn/goal/0040-' + '0' * 16]), 1)
+            self.assertIn('superseded 1\n', out.getvalue())
+            state = store.fold(store.read_events(run))
+            self.assertEqual({k: (v['state'], v['superseded']) for k, v in state.items()},
+                             {a: ('superseded', 'artifact-gone'), b: ('derived', None), c: ('superseded', 're-rendered')})
 
     def test_requests_become_decisions(self):
         with tempfile.TemporaryDirectory() as tmp:

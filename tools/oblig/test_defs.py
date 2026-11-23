@@ -75,8 +75,13 @@ class FakeRocq:
                     return dict(returncode=1), text
                 table = self.about if command.group(1) == "About" else self.printed
                 out.append(table.get(command.group(2), "%s not a defined object." % command.group(2)))
+            search = re.match(r"Search (.+)\.$", line)
+            if search:
+                out.append("\n".join("lemma_%d : %s = %d" % (i, search.group(1), i) for i in range(self.found)))
         text = "".join("0.100 %s\n" % l for block in out for l in block.split("\n"))
         return dict(returncode=0), text
+
+    found = 3
 
 
 class RankTests(unittest.TestCase):
@@ -165,6 +170,33 @@ class ResolverTests(unittest.TestCase):
         self.assertIn("decodeItemInputBytes args = []", found[0][1])
         self.assertEqual(defs.items(records, ["decodeItemEmptyInputRejected"], project_only=False,
                                     exclude={"decodeItemEmptyInputRejected"}), [])
+
+    def test_lookup_text_definition_statement_and_unknown(self):
+        resolver = self.resolver()
+        self.assertIn("candidateDecodeItem", defs.lookup_text(resolver, "DecodeItemReturnFacts.decodeItemRejectedFacts"))
+        self.assertIn("statement", defs.lookup_text(resolver, "decodeItemEmptyInputRejected"))
+        self.assertIn("no definition or statement", defs.lookup_text(resolver, "nosuch_name"))
+        self.assertIn("Not an identifier", defs.lookup_text(resolver, "x + y"))
+        calls = len(self.rocq.calls)
+        defs.lookup_text(self.resolver(), "nosuch_name")  # answered from DEFS.json
+        self.assertEqual(len(self.rocq.calls), calls)
+
+    def test_search_is_one_sentence_cached_and_clipped(self):
+        resolver = self.resolver()
+        self.assertEqual(defs.search(resolver, "(_ + 0)%Z").count("lemma_"), 3)
+        self.assertIn("Search (_ + 0)%Z.", self.rocq.calls[-1])
+        calls = len(self.rocq.calls)
+        defs.search(self.resolver(), " (_ +  0)%Z ")  # same pattern: SEARCH.json
+        self.assertEqual(len(self.rocq.calls), calls)
+        for bad in ("x. Print y", "x (* c *)", "Z.add.", "  "):
+            self.assertIn("Not a Search pattern", defs.search(resolver, bad))
+        self.assertEqual(len(self.rocq.calls), calls)
+        self.rocq.found = 50
+        text = defs.search(resolver, "Z.mul")
+        self.assertEqual(len(text.split("\n")), defs.SEARCH_LINES + 1)
+        self.assertIn("10 more lines", text)
+        self.rocq.found = 0
+        self.assertIn("No match", defs.search(resolver, "Z.sub"))
 
 
 if __name__ == "__main__":
