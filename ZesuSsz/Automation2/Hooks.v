@@ -583,6 +583,21 @@ Tactic Notation "lia" := zesu_solve_machine_linear.
 
 Tactic Notation "bv_solve" := zesu_solve_machine_bounds.
 
+(* The root of an address `R + c` that names one owned array: a variable, or
+   an opaque term with no evar and no bit-vector arithmetic at its head (a
+   record field of the arguments, as `ptr args`). *)
+Ltac zesu_symbolic_address_root root :=
+  first [is_var root |
+    assert_fails (has_evar root);
+    lazymatch root with
+    | bv_add _ _ => fail
+    | bv_sub _ _ => fail
+    | bv_mul _ _ => fail
+    | Z_to_bv _ _ => fail
+    | BV _ _ => fail
+    | _ => idtac
+    end].
+
 Ltac zesu_normalize_symbolic_mem_address :=
   repeat match goal with
   | Hlocal := _ |- envs_entails _ (find_in_context (FindMemMapsTo ?address) _) =>
@@ -597,7 +612,7 @@ Ltac zesu_normalize_symbolic_mem_address :=
              | bv_add ?root ?displacement => is_var root
              | bv_sub ?root ?displacement => is_var root
              end
-            | is_var base;
+            | zesu_symbolic_address_root base;
               lazymatch goal with
               | |- envs_entails ?context _ =>
                   let spatial := eval cbn [env_spatial] in (env_spatial context) in
@@ -2694,6 +2709,31 @@ Ltac zesu_defer_witness_pure :=
       notypeclasses refine (zesu_tac_exist_pure_behind _ _ _ _ _)
   end.
 
+(* A requested resource with no Lithium relation (an opaque token such as
+   an allocator block) whose held copy spells its arguments otherwise
+   (`p` held, `bv_unsigned (Z_to_bv 64 p)` requested after a call): Lithium
+   finds a hypothesis only by unification. Prove the two applications equal
+   argument by argument and rewrite the request to the held one, which
+   Lithium then frames. Only a hypothesis with the same head is tried. *)
+Ltac zesu_opaque_atom_arguments :=
+  zesu_expose_environment_alias;
+  lazymatch goal with
+  | |- envs_entails _ (?requested ∗ _)%I =>
+      assert_fails (has_evar requested);
+      let head := get_head requested in
+      is_const head;
+      assert_fails (idtac;
+        let _ := constr:(_ : RelatedTo (fun _ : unit => requested)) in idtac);
+      iMatchHyp ltac:(fun _ held =>
+        let heldHead := get_head held in
+        constr_eq heldHead head;
+        tryif constr_eq held requested then fail else idtac;
+        let Heq := fresh "HatomArguments" in
+        assert (Heq : requested = held) by
+          (f_equal; first [reflexivity | bv_solve | zesu_lia]);
+        rewrite Heq; clear Heq)
+  end.
+
 (* Each alternative carries a telemetry name (Telemetry.v, `zesu_talt`). A
    guard in front of an alternative tests the goal shape it can act on
    (GoalShape.v); the order of the alternatives is unchanged. *)
@@ -2764,6 +2804,7 @@ Ltac zesu_liAStep :=
      (GoalShape.zesu_call_slice_goal_unheld): the call-site step lends it. *)
   | (tryif zesu_call_slice_goal_unheld then fail else idtac;
      zesu_talt l_liStep (idtac; liStep))
+  | zesu_talt l_opaque_atom_arguments (idtac; zesu_opaque_atom_arguments)
   | zesu_talt l_liLetBindHint (idtac; liLetBindHint)
   | zesu_talt l_liUnfoldLate (idtac; liUnfoldLate)
   | zesu_talt l_canonical_fact_views (idtac; zesu_canonical_fact_views_if_enabled)
