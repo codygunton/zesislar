@@ -893,9 +893,11 @@ def call_return_seed(edges, *, call, function_root, root_seed, shapes, vocabular
             node = {'kind': 'byte_array', 'id': key, 'original_component': '%s ↦ₘ∗ %s' % (resource.address_z, value),
                     'address_z': resource.address_z, 'byte_array_expr': input_expr(value, None).to_dict(),
                     'element_bits': 8, 'length_original_coq': str(split['length'])}
-            # The length of `a ↦ₘ? n` is a Z (isla ghost_state): the fact compares in Z.
-            extra_facts.append({'resource_id': key, 'count': split['length'],
-                                'coq': '(Z.of_nat (List.length %s) = %s)%%Z' % (value, split['length'])})
+            # A literal length stays a nat numeral; a named length (`returned_lengths`) is the Z of the
+            # caller's `a ↦ₘ? n` (isla ghost_state), so that fact compares in Z.
+            fact = ('(List.length %s = %s)%%nat' if isinstance(split['length'], int)
+                    else '(Z.of_nat (List.length %s) = %s)%%Z') % (value, split['length'])
+            extra_facts.append({'resource_id': key, 'count': split['length'], 'coq': fact})
             split['pieces'] = [key]
         elif key in splits:
             resource, split = resources[key], splits[key]
