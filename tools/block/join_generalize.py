@@ -1480,7 +1480,14 @@ def _stored_register_value(state, name, carried, components):
 
 
 def _agreed_writes(images, resource_id):
-    """The writes of the first edge into a resource whose bytes every edge holds at the end."""
+    """The writes of the first edge into a resource whose bytes every edge holds at the end.
+
+    Bytes compare as `_byte` does, by normalized Coq text: an edge lifted from a call-return root
+    spells a stored byte as parsed source text (`bv_extract 0%N 8%N (w)`), an edge from the entry
+    root as the extract of the stored register's value; equal texts state the same byte."""
+    def text(update):
+        return _byte(Expr.from_dict(update['value']))[0] if update and 'value' in update else None
+
     first = images[0]
     agreed = []
     for step in first.transitions:
@@ -1489,8 +1496,8 @@ def _agreed_writes(images, resource_id):
         write = first.writes[step['write_index']]
         offsets = range(step['offset'], step['offset'] + write.size)
         if all(first.updates[resource_id].get(offset, {}).get('write_index') == step['write_index']
-               and all(image.updates[resource_id].get(offset, {}).get('value')
-                       == first.updates[resource_id][offset]['value'] for image in images[1:])
+               and all(text(image.updates[resource_id].get(offset))
+                       == text(first.updates[resource_id][offset]) for image in images[1:])
                for offset in offsets):
             agreed.append(write)
     return agreed
