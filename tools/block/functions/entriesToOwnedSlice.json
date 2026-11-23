@@ -4,7 +4,8 @@
   "frame_slots": true,
   "array_spelling": "sealed",
   "hist_visible": [
-    "^\\(?frame_old_m\\d+'* = "
+    "^\\(?frame_old_m\\d+'* = ",
+    "^\\W*bv_unsigned call_x10 = 0\\W*$"
   ],
   "args_type": "EntriesToOwnedSliceBlockArgs",
   "symbol": "array_list.Aligned(input.AccessListEntry,null).toOwnedSlice",
@@ -406,6 +407,6 @@
   },
   "generated_from": {
     "path": "tools/block/functions/entriesToOwnedSlice.annotations.json",
-    "sha256": "41b03401e76dcb860b64d94e9ecb4928932db06507e56ce5e0012f744eae247b"
+    "sha256": "8edf6444c0cfe1d4b0ec58a2269006c5f143135d7228fa0a7c3a99dcc58a9f83"
   }
 }

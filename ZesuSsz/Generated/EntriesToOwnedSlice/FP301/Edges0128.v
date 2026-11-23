@@ -35,13 +35,14 @@ Global Instance zesu_hist_edge_16 (args : EntriesToOwnedSliceBlockArgs) (returnA
     (⌜((0%Z <= bv_unsigned call_x10 <= 0%Z)%Z)⌝ ∗ ⌜(((((((bv_unsigned ((Z_to_bv 64%N (arrayListCapacity (entriesBlockList args))))) = (0%Z))%Z) \/ ((((bv_unsigned ((Z_to_bv 64%N (arrayListCapacity (entriesBlockList args))))) <> (0%Z))%Z) /\ (((bv_unsigned (bv_extract 64%N 64%N (bv_mul (bv_zero_extend 128%N ((Z_to_bv 64%N (arrayListLength (entriesBlockList args))))) (BV 128%N 40%Z)))) <> (0%Z))%Z))) /\ (((bv_unsigned machine_x23) = (bv_unsigned (savedX23 (toOwnedSaved (entriesBase args)))))%Z)) \/ ((((bv_unsigned ((Z_to_bv 64%N (arrayListCapacity (entriesBlockList args))))) <> (0%Z))%Z) /\ (((bv_unsigned (bv_extract 64%N 64%N (bv_mul (bv_zero_extend 128%N ((Z_to_bv 64%N (arrayListLength (entriesBlockList args))))) (BV 128%N 40%Z)))) = (0%Z))%Z) /\ (((bv_unsigned machine_x23) = (bv_unsigned (bv_add (bv_shiftl ((Z_to_bv 64%N (arrayListLength (entriesBlockList args)))) (BV 64%N 5%Z)) (bv_shiftl ((Z_to_bv 64%N (arrayListLength (entriesBlockList args)))) (BV 64%N 3%Z)))))%Z))))⌝ ∗ ⌜((bool_decide ((bv_unsigned call_x10 >= bv_unsigned (BV 64%N 0%Z))%Z)) = true) /\ ((((bv_unsigned call_x10) >= (0%Z))%Z))⌝ ∗ ⌜((bool_decide ((bv_unsigned call_x10 <= bv_unsigned (BV 64%N 0%Z))%Z)) = true) /\ ((((bv_unsigned call_x10) <= (0%Z))%Z))⌝ ∗ True)%I.
 Proof.
   rewrite /ZesuHistEdge => Hh. apply zesu_hist_elim in Hh. unfold fp_machineAt0128_ForwardA0N0_Hist in Hh.
-  destruct Hh as (fp_seed_mstatus_bits & forward_witness_72b7e22ed74cb83b & forward_witness_cbcac9df79b9221c & forward_witness_1be931110d776902 & forward_witness_905cf96e605c1117 & forward_witness_55ab0ce59750150a & forward_witness_d7543602bfbbe148 & forward_witness_00470b017f14ddbf & forward_witness_83d3e6d46c3de70e & forward_witness_1d218312837c2f84 & forward_witness_dc636cab9ffb40ae & forward_witness_184f6fc7524c683f & forward_witness_eba071f2aafca867 & forward_witness_6b5c9f21ea2547d9 & forward_witness_1b5321dec05d0d89 & forward_witness_13733e317af04159 & forward_witness_8b04c47a270882cf & forward_witness_acd02f915d5d3e8c & forward_witness_e25a2671f181dd12 & forward_witness_10de015b43615ae8 & forward_witness_b450e7ae4654c900 & forward_witness_c8c2e1211be9136f & forward_witness_602e11e9bae77054 & forward_witness_b4d6ad28eb8d2ad3 & forward_witness_315a0c85d2539504 & HF0 & HF1 & HF2 & HF3 & HF4 & HF5 & HF6 & HF7 & HF8 & HF9 & HF10 & HF11 & HF12 & HF13 & HF14 & HF15 & HF16 & HF17 & HF18 & HF19 & HF20 & HF21 & HF22 & HF23 & HF24 & HF25 & HF26).
+  destruct Hh as (fp_seed_mstatus_bits & forward_witness_72b7e22ed74cb83b & forward_witness_cbcac9df79b9221c & forward_witness_1be931110d776902 & forward_witness_905cf96e605c1117 & forward_witness_55ab0ce59750150a & forward_witness_d7543602bfbbe148 & forward_witness_00470b017f14ddbf & forward_witness_83d3e6d46c3de70e & forward_witness_1d218312837c2f84 & forward_witness_dc636cab9ffb40ae & forward_witness_184f6fc7524c683f & forward_witness_eba071f2aafca867 & forward_witness_6b5c9f21ea2547d9 & forward_witness_1b5321dec05d0d89 & forward_witness_13733e317af04159 & forward_witness_8b04c47a270882cf & forward_witness_acd02f915d5d3e8c & forward_witness_e25a2671f181dd12 & forward_witness_10de015b43615ae8 & forward_witness_b450e7ae4654c900 & forward_witness_c8c2e1211be9136f & forward_witness_602e11e9bae77054 & forward_witness_b4d6ad28eb8d2ad3 & forward_witness_315a0c85d2539504 & HF0 & HF1 & HF2 & HF3 & HF4 & HF5 & HF6 & HF7 & HF8 & HF9 & HF10 & HF11 & HF12 & HF13 & HF14 & HF15 & HF16 & HF17 & HF18 & HF19 & HF20 & HF21 & HF22 & HF23 & HF24 & HF25).
   iIntros "HN".
   iDestruct "HN" as "(%HN0 & %HN1 & %HN2 & %HN3 & _)".
   iPureIntro. apply zesu_hist_intro. unfold fp_machineAt012c_ForwardA0N0_Hist.
   exists fp_seed_mstatus_bits, forward_witness_72b7e22ed74cb83b, forward_witness_cbcac9df79b9221c, forward_witness_1be931110d776902, forward_witness_905cf96e605c1117, forward_witness_55ab0ce59750150a, forward_witness_d7543602bfbbe148, forward_witness_00470b017f14ddbf, forward_witness_83d3e6d46c3de70e, (BV 64%N 0%Z).
   split; [exact HN0|].
-  split; [exact HF25|].
+  split; [exact HF24|].
+  split; [exact HF0|].
   split; [exact HF1|].
   split; [exact HF2|].
   split; [exact HF3|].
@@ -49,7 +50,6 @@ Proof.
   split; [exact HF5|].
   split; [exact HF6|].
   split; [exact HF7|].
-  split; [exact HF8|].
   split; [by vm_compute|].
   split; [exact HN1|].
   split; [exact HN2|].
