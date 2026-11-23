@@ -482,5 +482,23 @@ class ReturnSites(unittest.TestCase):
         self.assertEqual(return_site([], 0x40, None), '')
 
 
+class StoredFrameSlots(unittest.TestCase):
+    """frame_slots splits a stored frame spelled as the forward pass writes a stored span (cons chain)."""
+
+    def test_a_cons_chain_frame_splits_into_word_cells(self):
+        word = 'saved args'
+        value = '(@Coq.Init.Datatypes.nil (bv 8%N))'
+        for index in reversed(range(8)):
+            value = '(Coq.Init.Datatypes.cons ((bv_extract %d%%N 8%%N (%s)) : bv 8%%N) %s)' % (8 * index, word, value)
+        table = {'pointer': 'sp', 'slots': {-16: '(slot16)'}}
+        regions = {'sp - 16': ('sp', -16)}
+        texts, binders = entry_hist.slot_components('byte_array', 'sp - 16', value, table, regions, set())
+        self.assertEqual(texts, ['(bv_unsigned (slot16)) ↦ₘ (saved args)'])
+        self.assertEqual(binders, [])
+
+    def test_a_list_that_is_no_byte_chain_is_not_split(self):
+        self.assertIsNone(entry_hist._list_items('(Coq.Init.Datatypes.cons x)'))
+
+
 if __name__ == '__main__':
     unittest.main()
