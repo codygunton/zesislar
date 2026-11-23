@@ -208,6 +208,42 @@
       "owned_prefixes": ["ZesuSsz/Contracts/ParentHeader", "ZesuSsz/Compliance/ParentHeader",
                          "ZesuSsz/Generated/DecodeParentHeader/"],
       "interface": null
+    },
+    {
+      "function": "altFlAlloc",
+      "symbol": "alt_fl_alloc.alloc",
+      "status": "assumed",
+      "compliance_theorems": [],
+      "owned_prefixes": [],
+      "premise": {"module": "ZesuSsz.Contracts.AltFlAllocPremises", "name": "altFlAllocCallPremise", "call_spec": "altFlAllocCallSpec"},
+      "reason": "Trusted runtime premise (plan B1, issue #347), reached by jalr through alt_fl_alloc.vtable slot 0; statement under user review."
+    },
+    {
+      "function": "altFlRemap",
+      "symbol": "alt_fl_alloc.remap",
+      "status": "assumed",
+      "compliance_theorems": [],
+      "owned_prefixes": [],
+      "premise": {"module": "ZesuSsz.Contracts.AltFlAllocPremises", "name": "altFlRemapCallPremise", "call_spec": "altFlRemapCallSpec"},
+      "reason": "Trusted runtime premise (plan B1, issue #347), reached by jalr through alt_fl_alloc.vtable slot 16; statement under user review."
+    },
+    {
+      "function": "altFlFree",
+      "symbol": "alt_fl_alloc.free",
+      "status": "assumed",
+      "compliance_theorems": [],
+      "owned_prefixes": [],
+      "premise": {"module": "ZesuSsz.Contracts.AltFlAllocPremises", "name": "altFlFreeCallPremise", "call_spec": "altFlFreeCallSpec"},
+      "reason": "Trusted runtime premise (plan B1, issue #347), reached by jalr through alt_fl_alloc.vtable slot 24; statement under user review."
+    },
+    {
+      "function": "memcpy",
+      "symbol": "memcpy",
+      "status": "assumed",
+      "compliance_theorems": [],
+      "owned_prefixes": [],
+      "premise": {"module": "ZesuSsz.Contracts.ZiskMemcpyPremise", "name": "ziskMemcpyCallPremise", "call_spec": "ziskMemcpyCallSpec"},
+      "reason": "Trusted runtime premise (plan B1, issue #347), reached by direct call; any source, destination and length; statement under user review."
     }
   ]
 }
