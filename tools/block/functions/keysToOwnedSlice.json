@@ -106,7 +106,8 @@
     }
   },
   "join_designs": {
-    "+0x110": []
+    "+0x110": [],
+    "+0x98": []
   },
   "calls": [
     {
@@ -305,6 +306,16 @@
           "bv_unsigned call_x10 \u21a6\u2098? altFlAllocatedBytes (bv_unsigned call_x10) (bv_unsigned ((bv_shiftl ((Z_to_bv 64%N (arrayListLength (keysBlockList args)))) (BV 64%N 5%Z))))"
         ]
       }
+    ],
+    "+0x98": [
+      {
+        "root": "+0x0",
+        "resources": [
+          "arrayListPointer (keysBlockList args) \u21a6\u2098\u2217 arrayListItems (keysBlockList args)",
+          "(arrayListPointer (keysBlockList args) + arrayListLength (keysBlockList args) * keysElementBytes) \u21a6\u2098? ((arrayListCapacity (keysBlockList args) - arrayListLength (keysBlockList args)) * keysElementBytes)",
+          "altFlBlock (arrayListPointer (keysBlockList args)) (arrayListCapacity (keysBlockList args) * keysElementBytes) keysLog2Alignment"
+        ]
+      }
     ]
   },
   "join_frames": {
@@ -395,6 +406,6 @@
   },
   "generated_from": {
     "path": "tools/block/functions/keysToOwnedSlice.annotations.json",
-    "sha256": "517c2c99e6fb44f0d1488bac01596e1cfa1aa6997f81a3590fe530a9163caf11"
+    "sha256": "17a6c00c7f6f6dc783fc51d7dd4d7f600f10dbb72bb8ed99b36075969e3f19ed"
   }
 }
