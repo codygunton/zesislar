@@ -45,9 +45,9 @@
   },
   "return_address": {
     "register": "x1",
-    "value": "(keysReturnAddress args)",
+    "value": "(toOwnedReturnAddress (keysBase args))",
     "alignment": 4,
-    "source": "keysBlockArgsWellFormed (KeysToOwnedSliceBlockEntries.v): bv_unsigned (keysReturnAddress args) mod 4 = 0 (from toOwnedSliceDomain: (4 | toOwnedReturnAddress args), linked by toOwnedReturnAddress (keysBase args) = bv_unsigned (keysReturnAddress args))"
+    "source": "keysBlockArgsWellFormed (KeysToOwnedSliceBlockEntries.v): bv_unsigned (toOwnedReturnAddress (keysBase args)) mod 4 = 0 (from toOwnedSliceDomain: (4 | bv_unsigned (toOwnedReturnAddress args)))"
   },
   "entry_interface": {
     "entry_resources": "keysBlockEntryResources",
@@ -104,40 +104,40 @@
   },
   "join_designs": {
     "+0x110": [
-      "frame_old_m80 = (keysSavedX24 args)",
-      "frame_old_m72 = (keysSavedX23 args)",
-      "frame_old_m64 = (keysSavedX22 args)",
-      "frame_old_m56 = (keysSavedX21 args)",
-      "frame_old_m48 = (keysSavedX20 args)",
-      "frame_old_m40 = (keysSavedX19 args)",
-      "frame_old_m32 = (keysSavedX18 args)",
-      "frame_old_m24 = (keysSavedX9 args)",
-      "frame_old_m16 = (keysSavedX8 args)",
-      "frame_old_m8 = (keysReturnAddress args)"
+      "frame_old_m80 = (savedX24 (toOwnedSaved (keysBase args)))",
+      "frame_old_m72 = (savedX23 (toOwnedSaved (keysBase args)))",
+      "frame_old_m64 = (savedX22 (toOwnedSaved (keysBase args)))",
+      "frame_old_m56 = (savedX21 (toOwnedSaved (keysBase args)))",
+      "frame_old_m48 = (savedX20 (toOwnedSaved (keysBase args)))",
+      "frame_old_m40 = (savedX19 (toOwnedSaved (keysBase args)))",
+      "frame_old_m32 = (savedX18 (toOwnedSaved (keysBase args)))",
+      "frame_old_m24 = (savedX9 (toOwnedSaved (keysBase args)))",
+      "frame_old_m16 = (savedX8 (toOwnedSaved (keysBase args)))",
+      "frame_old_m8 = (toOwnedReturnAddress (keysBase args))"
     ],
     "+0xfc": [
-      "frame_old_m80 = (keysSavedX24 args)",
-      "frame_old_m72 = (keysSavedX23 args)",
-      "frame_old_m64 = (keysSavedX22 args)",
-      "frame_old_m56 = (keysSavedX21 args)",
-      "frame_old_m48 = (keysSavedX20 args)",
-      "frame_old_m40 = (keysSavedX19 args)",
-      "frame_old_m32 = (keysSavedX18 args)",
-      "frame_old_m24 = (keysSavedX9 args)",
-      "frame_old_m16 = (keysSavedX8 args)",
-      "frame_old_m8 = (keysReturnAddress args)"
+      "frame_old_m80 = (savedX24 (toOwnedSaved (keysBase args)))",
+      "frame_old_m72 = (savedX23 (toOwnedSaved (keysBase args)))",
+      "frame_old_m64 = (savedX22 (toOwnedSaved (keysBase args)))",
+      "frame_old_m56 = (savedX21 (toOwnedSaved (keysBase args)))",
+      "frame_old_m48 = (savedX20 (toOwnedSaved (keysBase args)))",
+      "frame_old_m40 = (savedX19 (toOwnedSaved (keysBase args)))",
+      "frame_old_m32 = (savedX18 (toOwnedSaved (keysBase args)))",
+      "frame_old_m24 = (savedX9 (toOwnedSaved (keysBase args)))",
+      "frame_old_m16 = (savedX8 (toOwnedSaved (keysBase args)))",
+      "frame_old_m8 = (toOwnedReturnAddress (keysBase args))"
     ],
     "+0x18c": [
-      "frame_old_m80 = (keysSavedX24 args)",
-      "frame_old_m72 = (keysSavedX23 args)",
-      "frame_old_m64 = (keysSavedX22 args)",
-      "frame_old_m56 = (keysSavedX21 args)",
-      "frame_old_m48 = (keysSavedX20 args)",
-      "frame_old_m40 = (keysSavedX19 args)",
-      "frame_old_m32 = (keysSavedX18 args)",
-      "frame_old_m24 = (keysSavedX9 args)",
-      "frame_old_m16 = (keysSavedX8 args)",
-      "frame_old_m8 = (keysReturnAddress args)"
+      "frame_old_m80 = (savedX24 (toOwnedSaved (keysBase args)))",
+      "frame_old_m72 = (savedX23 (toOwnedSaved (keysBase args)))",
+      "frame_old_m64 = (savedX22 (toOwnedSaved (keysBase args)))",
+      "frame_old_m56 = (savedX21 (toOwnedSaved (keysBase args)))",
+      "frame_old_m48 = (savedX20 (toOwnedSaved (keysBase args)))",
+      "frame_old_m40 = (savedX19 (toOwnedSaved (keysBase args)))",
+      "frame_old_m32 = (savedX18 (toOwnedSaved (keysBase args)))",
+      "frame_old_m24 = (savedX9 (toOwnedSaved (keysBase args)))",
+      "frame_old_m16 = (savedX8 (toOwnedSaved (keysBase args)))",
+      "frame_old_m8 = (toOwnedReturnAddress (keysBase args))"
     ]
   },
   "calls": [
@@ -226,43 +226,43 @@
       "return_facts": [
         {
           "kind": "fact",
-          "coq": "frame_old_m80 = (keysSavedX24 args)"
+          "coq": "frame_old_m80 = (savedX24 (toOwnedSaved (keysBase args)))"
         },
         {
           "kind": "fact",
-          "coq": "frame_old_m72 = (keysSavedX23 args)"
+          "coq": "frame_old_m72 = (savedX23 (toOwnedSaved (keysBase args)))"
         },
         {
           "kind": "fact",
-          "coq": "frame_old_m64 = (keysSavedX22 args)"
+          "coq": "frame_old_m64 = (savedX22 (toOwnedSaved (keysBase args)))"
         },
         {
           "kind": "fact",
-          "coq": "frame_old_m56 = (keysSavedX21 args)"
+          "coq": "frame_old_m56 = (savedX21 (toOwnedSaved (keysBase args)))"
         },
         {
           "kind": "fact",
-          "coq": "frame_old_m48 = (keysSavedX20 args)"
+          "coq": "frame_old_m48 = (savedX20 (toOwnedSaved (keysBase args)))"
         },
         {
           "kind": "fact",
-          "coq": "frame_old_m40 = (keysSavedX19 args)"
+          "coq": "frame_old_m40 = (savedX19 (toOwnedSaved (keysBase args)))"
         },
         {
           "kind": "fact",
-          "coq": "frame_old_m32 = (keysSavedX18 args)"
+          "coq": "frame_old_m32 = (savedX18 (toOwnedSaved (keysBase args)))"
         },
         {
           "kind": "fact",
-          "coq": "frame_old_m24 = (keysSavedX9 args)"
+          "coq": "frame_old_m24 = (savedX9 (toOwnedSaved (keysBase args)))"
         },
         {
           "kind": "fact",
-          "coq": "frame_old_m16 = (keysSavedX8 args)"
+          "coq": "frame_old_m16 = (savedX8 (toOwnedSaved (keysBase args)))"
         },
         {
           "kind": "fact",
-          "coq": "frame_old_m8 = (keysReturnAddress args)"
+          "coq": "frame_old_m8 = (toOwnedReturnAddress (keysBase args))"
         }
       ]
     },
@@ -298,43 +298,43 @@
       "return_facts": [
         {
           "kind": "fact",
-          "coq": "frame_old_m80 = (keysSavedX24 args)"
+          "coq": "frame_old_m80 = (savedX24 (toOwnedSaved (keysBase args)))"
         },
         {
           "kind": "fact",
-          "coq": "frame_old_m72 = (keysSavedX23 args)"
+          "coq": "frame_old_m72 = (savedX23 (toOwnedSaved (keysBase args)))"
         },
         {
           "kind": "fact",
-          "coq": "frame_old_m64 = (keysSavedX22 args)"
+          "coq": "frame_old_m64 = (savedX22 (toOwnedSaved (keysBase args)))"
         },
         {
           "kind": "fact",
-          "coq": "frame_old_m56 = (keysSavedX21 args)"
+          "coq": "frame_old_m56 = (savedX21 (toOwnedSaved (keysBase args)))"
         },
         {
           "kind": "fact",
-          "coq": "frame_old_m48 = (keysSavedX20 args)"
+          "coq": "frame_old_m48 = (savedX20 (toOwnedSaved (keysBase args)))"
         },
         {
           "kind": "fact",
-          "coq": "frame_old_m40 = (keysSavedX19 args)"
+          "coq": "frame_old_m40 = (savedX19 (toOwnedSaved (keysBase args)))"
         },
         {
           "kind": "fact",
-          "coq": "frame_old_m32 = (keysSavedX18 args)"
+          "coq": "frame_old_m32 = (savedX18 (toOwnedSaved (keysBase args)))"
         },
         {
           "kind": "fact",
-          "coq": "frame_old_m24 = (keysSavedX9 args)"
+          "coq": "frame_old_m24 = (savedX9 (toOwnedSaved (keysBase args)))"
         },
         {
           "kind": "fact",
-          "coq": "frame_old_m16 = (keysSavedX8 args)"
+          "coq": "frame_old_m16 = (savedX8 (toOwnedSaved (keysBase args)))"
         },
         {
           "kind": "fact",
-          "coq": "frame_old_m8 = (keysReturnAddress args)"
+          "coq": "frame_old_m8 = (toOwnedReturnAddress (keysBase args))"
         }
       ]
     },
@@ -373,43 +373,43 @@
       "return_facts": [
         {
           "kind": "fact",
-          "coq": "frame_old_m80 = (keysSavedX24 args)"
+          "coq": "frame_old_m80 = (savedX24 (toOwnedSaved (keysBase args)))"
         },
         {
           "kind": "fact",
-          "coq": "frame_old_m72 = (keysSavedX23 args)"
+          "coq": "frame_old_m72 = (savedX23 (toOwnedSaved (keysBase args)))"
         },
         {
           "kind": "fact",
-          "coq": "frame_old_m64 = (keysSavedX22 args)"
+          "coq": "frame_old_m64 = (savedX22 (toOwnedSaved (keysBase args)))"
         },
         {
           "kind": "fact",
-          "coq": "frame_old_m56 = (keysSavedX21 args)"
+          "coq": "frame_old_m56 = (savedX21 (toOwnedSaved (keysBase args)))"
         },
         {
           "kind": "fact",
-          "coq": "frame_old_m48 = (keysSavedX20 args)"
+          "coq": "frame_old_m48 = (savedX20 (toOwnedSaved (keysBase args)))"
         },
         {
           "kind": "fact",
-          "coq": "frame_old_m40 = (keysSavedX19 args)"
+          "coq": "frame_old_m40 = (savedX19 (toOwnedSaved (keysBase args)))"
         },
         {
           "kind": "fact",
-          "coq": "frame_old_m32 = (keysSavedX18 args)"
+          "coq": "frame_old_m32 = (savedX18 (toOwnedSaved (keysBase args)))"
         },
         {
           "kind": "fact",
-          "coq": "frame_old_m24 = (keysSavedX9 args)"
+          "coq": "frame_old_m24 = (savedX9 (toOwnedSaved (keysBase args)))"
         },
         {
           "kind": "fact",
-          "coq": "frame_old_m16 = (keysSavedX8 args)"
+          "coq": "frame_old_m16 = (savedX8 (toOwnedSaved (keysBase args)))"
         },
         {
           "kind": "fact",
-          "coq": "frame_old_m8 = (keysReturnAddress args)"
+          "coq": "frame_old_m8 = (toOwnedReturnAddress (keysBase args))"
         }
       ]
     },
@@ -471,6 +471,6 @@
   },
   "generated_from": {
     "path": "tools/block/functions/keysToOwnedSlice.annotations.json",
-    "sha256": "eef88f4234045685f15a84c2ce9fc235f5d73d434c0530f5a03559ba86f1dce3"
+    "sha256": "3c8fc7a6bd28e7db4ee2152f46c63ec0bc67c20f69a1f9973c428cf7d622058a"
   }
 }

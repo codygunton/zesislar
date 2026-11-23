@@ -49,9 +49,9 @@
   },
   "return_address": {
    "register": "x1",
-   "value": "(keysReturnAddress args)",
+   "value": "(toOwnedReturnAddress (keysBase args))",
    "alignment": 4,
-   "source": "keysBlockArgsWellFormed (KeysToOwnedSliceBlockEntries.v): bv_unsigned (keysReturnAddress args) mod 4 = 0 (from toOwnedSliceDomain: (4 | toOwnedReturnAddress args), linked by toOwnedReturnAddress (keysBase args) = bv_unsigned (keysReturnAddress args))"
+   "source": "keysBlockArgsWellFormed (KeysToOwnedSliceBlockEntries.v): bv_unsigned (toOwnedReturnAddress (keysBase args)) mod 4 = 0 (from toOwnedSliceDomain: (4 | bv_unsigned (toOwnedReturnAddress args)))"
   },
   "entry_interface": {
    "entry_resources": "keysBlockEntryResources",
@@ -556,16 +556,16 @@
    "resources": [],
    "facts": [],
    "slots": [
-    {"offset": -80, "coq": "keysSavedX24 args"},
-    {"offset": -72, "coq": "keysSavedX23 args"},
-    {"offset": -64, "coq": "keysSavedX22 args"},
-    {"offset": -56, "coq": "keysSavedX21 args"},
-    {"offset": -48, "coq": "keysSavedX20 args"},
-    {"offset": -40, "coq": "keysSavedX19 args"},
-    {"offset": -32, "coq": "keysSavedX18 args"},
-    {"offset": -24, "coq": "keysSavedX9 args"},
-    {"offset": -16, "coq": "keysSavedX8 args"},
-    {"offset": -8, "coq": "keysReturnAddress args"}
+    {"offset": -80, "coq": "savedX24 (toOwnedSaved (keysBase args))"},
+    {"offset": -72, "coq": "savedX23 (toOwnedSaved (keysBase args))"},
+    {"offset": -64, "coq": "savedX22 (toOwnedSaved (keysBase args))"},
+    {"offset": -56, "coq": "savedX21 (toOwnedSaved (keysBase args))"},
+    {"offset": -48, "coq": "savedX20 (toOwnedSaved (keysBase args))"},
+    {"offset": -40, "coq": "savedX19 (toOwnedSaved (keysBase args))"},
+    {"offset": -32, "coq": "savedX18 (toOwnedSaved (keysBase args))"},
+    {"offset": -24, "coq": "savedX9 (toOwnedSaved (keysBase args))"},
+    {"offset": -16, "coq": "savedX8 (toOwnedSaved (keysBase args))"},
+    {"offset": -8, "coq": "toOwnedReturnAddress (keysBase args)"}
    ],
    "sites": ["+0xfc", "+0x110", "+0x168", "+0x184", "+0x18c", "+0x1ac"],
    "author": {

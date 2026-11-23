@@ -17,10 +17,9 @@ Open Scope stdpp_scope.
    for the block generator: every register, array and word the code reads is a
    separate conjunct in a shape tools/block/functions/entry_interface_inputs.py
    reads. Not a statement of the trust base: the region theorem proves that
-   toOwnedSliceEntry at keys' constants implies this entry, and this exit
-   implies toOwnedSliceExit.
-   Registers are bv 64 binders with their machine bounds on bv_unsigned; each
-   binder's link to the contract quantity is a separate pure conjunct (F44). *)
+   toOwnedSliceEntry at keys' constants implies this entry; the exit is
+   toOwnedSliceExit. The registers are the contract's bv 64 fields, bounded on
+   bv_unsigned (F44). *)
 
 Notation keysBlockFrameBytes := ((96) : Z) (only parsing).
 (* The prologue saves ra, s0-s8 in the top 80 bytes of the frame; the lowest
@@ -36,15 +35,7 @@ Notation keysBlockResultBytes := ((24) : Z) (only parsing).
 Notation keysBlockAllocatorBytes := ((16) : Z) (only parsing).
 
 Record KeysToOwnedSliceBlockArgs : Type := {
-  keysBase : ToOwnedSliceArgs;
-  keysReturnAddress : bv 64; keysStackPointer : bv 64;
-  keysResultPointer : bv 64; keysListPointer : bv 64;
-  keysAllocatorPointer : bv 64;
-  keysSavedX8 : bv 64; keysSavedX9 : bv 64;
-  keysSavedX18 : bv 64; keysSavedX19 : bv 64; keysSavedX20 : bv 64;
-  keysSavedX21 : bv 64; keysSavedX22 : bv 64; keysSavedX23 : bv 64;
-  keysSavedX24 : bv 64; keysSavedX25 : bv 64; keysSavedX26 : bv 64;
-  keysSavedX27 : bv 64
+  keysBase : ToOwnedSliceArgs
 }.
 
 (* The little-endian word of a byte list at an offset (the word-link reader). *)
@@ -62,33 +53,25 @@ Definition keysBlockArgsWellFormed (args : KeysToOwnedSliceBlockArgs) : Prop :=
   Z.of_nat (length (arrayListItems (keysBlockList args))) =
     arrayListLength (keysBlockList args) * keysElementBytes /\
   toOwnedSliceDomain keysElementBytes (keysBase args) /\
-  toOwnedSaved (keysBase args) =
-    [keysSavedX8 args; keysSavedX9 args; keysSavedX18 args; keysSavedX19 args;
-     keysSavedX20 args; keysSavedX21 args; keysSavedX22 args; keysSavedX23 args;
-     keysSavedX24 args; keysSavedX25 args; keysSavedX26 args; keysSavedX27 args] /\
   length (toOwnedScratchBefore (keysBase args)) = 8%nat /\
   length (toOwnedResultBefore (keysBase args)) = 24%nat /\
   length (arrayListHeaderBytes (keysBlockList args)) = 24%nat /\
   length (altFlAllocatorBytes (toOwnedAllocatorContext (keysBase args))) = 16%nat /\
   length altFlVtableBytes = 32%nat /\
-  toOwnedReturnAddress (keysBase args) = bv_unsigned (keysReturnAddress args) /\
-  toOwnedStackPointer (keysBase args) = bv_unsigned (keysStackPointer args) /\
-  toOwnedResultPointer (keysBase args) = bv_unsigned (keysResultPointer args) /\
-  toOwnedListPointer (keysBase args) = bv_unsigned (keysListPointer args) /\
-  toOwnedAllocatorPointer (keysBase args) = bv_unsigned (keysAllocatorPointer args) /\
-  keysBlockRamLow <= bv_unsigned (keysResultPointer args) /\
-  bv_unsigned (keysResultPointer args) + keysBlockResultBytes <= keysBlockRamHigh /\
-  bv_unsigned (keysResultPointer args) mod 8 = 0 /\
-  keysBlockRamLow <= bv_unsigned (keysListPointer args) /\
-  bv_unsigned (keysListPointer args) + keysBlockHeaderBytes <= keysBlockRamHigh /\
-  bv_unsigned (keysListPointer args) mod 8 = 0 /\
-  keysBlockRamLow <= bv_unsigned (keysAllocatorPointer args) /\
-  bv_unsigned (keysAllocatorPointer args) + keysBlockAllocatorBytes <= keysBlockRamHigh /\
-  bv_unsigned (keysAllocatorPointer args) mod 8 = 0 /\
+  keysBlockRamLow <= bv_unsigned (toOwnedResultPointer (keysBase args)) /\
+  bv_unsigned (toOwnedResultPointer (keysBase args)) + keysBlockResultBytes <= keysBlockRamHigh /\
+  bv_unsigned (toOwnedResultPointer (keysBase args)) mod 8 = 0 /\
+  keysBlockRamLow <= bv_unsigned (toOwnedListPointer (keysBase args)) /\
+  bv_unsigned (toOwnedListPointer (keysBase args)) + keysBlockHeaderBytes <= keysBlockRamHigh /\
+  bv_unsigned (toOwnedListPointer (keysBase args)) mod 8 = 0 /\
+  keysBlockRamLow <= bv_unsigned (toOwnedAllocatorPointer (keysBase args)) /\
+  bv_unsigned (toOwnedAllocatorPointer (keysBase args)) + keysBlockAllocatorBytes <=
+    keysBlockRamHigh /\
+  bv_unsigned (toOwnedAllocatorPointer (keysBase args)) mod 8 = 0 /\
   keysBlockRamLow + keysBlockFrameBytes + keysBlockCalleeBytes <=
-    bv_unsigned (keysStackPointer args) <= keysBlockRamHigh /\
-  bv_unsigned (keysStackPointer args) mod 16 = 0 /\
-  bv_unsigned (keysReturnAddress args) mod 4 = 0 /\
+    bv_unsigned (toOwnedStackPointer (keysBase args)) <= keysBlockRamHigh /\
+  bv_unsigned (toOwnedStackPointer (keysBase args)) mod 16 = 0 /\
+  bv_unsigned (toOwnedReturnAddress (keysBase args)) mod 4 = 0 /\
   keysBlockWord (arrayListHeaderBytes (keysBlockList args)) 0 =
     arrayListPointer (keysBlockList args) /\
   keysBlockWord (arrayListHeaderBytes (keysBlockList args)) 8 =
@@ -107,29 +90,30 @@ Definition keysBlockEntryResources `{!islaG Sigma} `{!threadG}
     (args : KeysToOwnedSliceBlockArgs) : iProp Sigma :=
   (∃ (x5 x6 x7 x13 x14 x15 x16 x17 x28 x29 x30 x31 : bv 64),
    reg_col zesu_sys_regs ∗
-   "x1" ↦ᵣ RVal_Bits (keysReturnAddress args) ∗
-   "x2" ↦ᵣ RVal_Bits (keysStackPointer args) ∗
+   "x1" ↦ᵣ RVal_Bits (toOwnedReturnAddress (keysBase args)) ∗
+   "x2" ↦ᵣ RVal_Bits (toOwnedStackPointer (keysBase args)) ∗
    "x5" ↦ᵣ RVal_Bits x5 ∗ "x6" ↦ᵣ RVal_Bits x6 ∗ "x7" ↦ᵣ RVal_Bits x7 ∗
-   "x8" ↦ᵣ RVal_Bits (keysSavedX8 args) ∗
-   "x9" ↦ᵣ RVal_Bits (keysSavedX9 args) ∗
-   "x10" ↦ᵣ RVal_Bits (keysResultPointer args) ∗
-   "x11" ↦ᵣ RVal_Bits (keysListPointer args) ∗
-   "x12" ↦ᵣ RVal_Bits (keysAllocatorPointer args) ∗
+   "x8" ↦ᵣ RVal_Bits (savedX8 (toOwnedSaved (keysBase args))) ∗
+   "x9" ↦ᵣ RVal_Bits (savedX9 (toOwnedSaved (keysBase args))) ∗
+   "x10" ↦ᵣ RVal_Bits (toOwnedResultPointer (keysBase args)) ∗
+   "x11" ↦ᵣ RVal_Bits (toOwnedListPointer (keysBase args)) ∗
+   "x12" ↦ᵣ RVal_Bits (toOwnedAllocatorPointer (keysBase args)) ∗
    "x13" ↦ᵣ RVal_Bits x13 ∗ "x14" ↦ᵣ RVal_Bits x14 ∗ "x15" ↦ᵣ RVal_Bits x15 ∗
    "x16" ↦ᵣ RVal_Bits x16 ∗ "x17" ↦ᵣ RVal_Bits x17 ∗
-   "x18" ↦ᵣ RVal_Bits (keysSavedX18 args) ∗
-   "x19" ↦ᵣ RVal_Bits (keysSavedX19 args) ∗
-   "x20" ↦ᵣ RVal_Bits (keysSavedX20 args) ∗
-   "x21" ↦ᵣ RVal_Bits (keysSavedX21 args) ∗
-   "x22" ↦ᵣ RVal_Bits (keysSavedX22 args) ∗
-   "x23" ↦ᵣ RVal_Bits (keysSavedX23 args) ∗
-   "x24" ↦ᵣ RVal_Bits (keysSavedX24 args) ∗
-   "x25" ↦ᵣ RVal_Bits (keysSavedX25 args) ∗
-   "x26" ↦ᵣ RVal_Bits (keysSavedX26 args) ∗
-   "x27" ↦ᵣ RVal_Bits (keysSavedX27 args) ∗
+   "x18" ↦ᵣ RVal_Bits (savedX18 (toOwnedSaved (keysBase args))) ∗
+   "x19" ↦ᵣ RVal_Bits (savedX19 (toOwnedSaved (keysBase args))) ∗
+   "x20" ↦ᵣ RVal_Bits (savedX20 (toOwnedSaved (keysBase args))) ∗
+   "x21" ↦ᵣ RVal_Bits (savedX21 (toOwnedSaved (keysBase args))) ∗
+   "x22" ↦ᵣ RVal_Bits (savedX22 (toOwnedSaved (keysBase args))) ∗
+   "x23" ↦ᵣ RVal_Bits (savedX23 (toOwnedSaved (keysBase args))) ∗
+   "x24" ↦ᵣ RVal_Bits (savedX24 (toOwnedSaved (keysBase args))) ∗
+   "x25" ↦ᵣ RVal_Bits (savedX25 (toOwnedSaved (keysBase args))) ∗
+   "x26" ↦ᵣ RVal_Bits (savedX26 (toOwnedSaved (keysBase args))) ∗
+   "x27" ↦ᵣ RVal_Bits (savedX27 (toOwnedSaved (keysBase args))) ∗
    "x28" ↦ᵣ RVal_Bits x28 ∗ "x29" ↦ᵣ RVal_Bits x29 ∗
    "x30" ↦ᵣ RVal_Bits x30 ∗ "x31" ↦ᵣ RVal_Bits x31 ∗
-   bv_unsigned (keysListPointer args) ↦ₘ∗ arrayListHeaderBytes (keysBlockList args) ∗
+   bv_unsigned (toOwnedListPointer (keysBase args)) ↦ₘ∗
+     arrayListHeaderBytes (keysBlockList args) ∗
    arrayListPointer (keysBlockList args) ↦ₘ∗ arrayListItems (keysBlockList args) ∗
    (arrayListPointer (keysBlockList args) +
       arrayListLength (keysBlockList args) * keysElementBytes) ↦ₘ?
@@ -137,39 +121,27 @@ Definition keysBlockEntryResources `{!islaG Sigma} `{!threadG}
         keysElementBytes) ∗
    altFlBlock (arrayListPointer (keysBlockList args))
      (arrayListCapacity (keysBlockList args) * keysElementBytes) keysLog2Alignment ∗
-   bv_unsigned (keysResultPointer args) ↦ₘ∗ toOwnedResultBefore (keysBase args) ∗
-   bv_unsigned (keysAllocatorPointer args) ↦ₘ∗
+   bv_unsigned (toOwnedResultPointer (keysBase args)) ↦ₘ∗
+     toOwnedResultBefore (keysBase args) ∗
+   bv_unsigned (toOwnedAllocatorPointer (keysBase args)) ↦ₘ∗
      altFlAllocatorBytes (toOwnedAllocatorContext (keysBase args)) ∗
    sym_alt_fl_alloc_vtable ↦ₘ∗ altFlVtableBytes ∗
    altFlHeap ∗
    ziskExtraParamsAddress ↦ₘ∗ toOwnedScratchBefore (keysBase args) ∗
-   (bv_unsigned (keysStackPointer args) - keysBlockFrameBytes) ↦ₘ? keysBlockScratchBytes ∗
-   (bv_unsigned (keysStackPointer args) - keysBlockSavedBytes) ↦ₘ? keysBlockSavedBytes ∗
-   (bv_unsigned (keysStackPointer args) - keysBlockFrameBytes - keysBlockCalleeBytes) ↦ₘ?
+   (bv_unsigned (toOwnedStackPointer (keysBase args)) - keysBlockFrameBytes) ↦ₘ?
+     keysBlockScratchBytes ∗
+   (bv_unsigned (toOwnedStackPointer (keysBase args)) - keysBlockSavedBytes) ↦ₘ?
+     keysBlockSavedBytes ∗
+   (bv_unsigned (toOwnedStackPointer (keysBase args)) - keysBlockFrameBytes -
+      keysBlockCalleeBytes) ↦ₘ?
      keysBlockCalleeBytes ∗
    ⌜keysBlockArgsWellFormed args⌝ ∗ True)%I.
 
-(* The exit: toOwnedSliceExit at the outcome with the registers and addresses
-   of the entry binders; under the entry's links it is the contract's exit. *)
+(* The exit: the contract's exit at the outcome. *)
 Definition keysBlockExitResources `{!islaG Sigma} `{!threadG}
     (args : KeysToOwnedSliceBlockArgs) (outcome : ToOwnedSliceOutcome) : iProp Sigma :=
-  (reg_col zesu_sys_regs ∗
-   "x1" ↦ᵣ RVal_Bits (keysReturnAddress args) ∗
-   "x2" ↦ᵣ RVal_Bits (keysStackPointer args) ∗
-   arrayListSavedRegisters (toOwnedSaved (keysBase args)) ∗
-   arrayListAnyRegisters ("x10" :: arrayListExitScratch) ∗
-   bv_unsigned (keysListPointer args) ↦ₘ∗ arrayListHeaderBytes (toOwnedListAfter outcome) ∗
-   arrayListBuffer keysElementBytes keysLog2Alignment (toOwnedListAfter outcome) ∗
-   arrayListBuffer keysElementBytes keysLog2Alignment (toOwnedSlice outcome) ∗
-   bv_unsigned (keysResultPointer args) ↦ₘ∗ toOwnedResultAfter outcome ∗
-   ziskExtraParamsAddress ↦ₘ∗
-     toOwnedSliceScratchAfter keysElementBytes (keysBase args) outcome ∗
-   altFlAllocatorObject (bv_unsigned (keysAllocatorPointer args))
-     (toOwnedAllocatorContext (keysBase args)) ∗
-   altFlVtable ∗
-   altFlHeap ∗
-   (bv_unsigned (keysStackPointer args) - arrayListToOwnedSliceStackBytes) ↦ₘ?
-     arrayListToOwnedSliceStackBytes ∗ True)%I.
+  toOwnedSliceExit keysElementBytes keysLog2Alignment (keysBase args) outcome.
 
 Definition keysBlockDomainAt (returnAddress : Z) (args : KeysToOwnedSliceBlockArgs) : Prop :=
-  bv_unsigned (keysReturnAddress args) = returnAddress /\ keysBlockArgsWellFormed args.
+  bv_unsigned (toOwnedReturnAddress (keysBase args)) = returnAddress /\
+  keysBlockArgsWellFormed args.
