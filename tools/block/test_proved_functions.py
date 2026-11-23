@@ -123,6 +123,18 @@ class ProvedFunctionCheckTests(unittest.TestCase):
                 'ZesuSsz.Interfaces.Callee',
                 'callee: legacy caller ZesuSsz/Compliance/NextUint64CallBridge.v lists no reason'])
 
+    def test_an_assumed_premise_row_names_its_definitions(self):
+        row = {'function': 'alloc', 'symbol': 'alloc', 'status': 'assumed', 'compliance_theorems': [],
+               'owned_prefixes': [], 'premise': {'module': 'ZesuSsz.Contracts.AllocPremise',
+                                                 'name': 'allocCallPremise', 'call_spec': 'allocCallSpec'}}
+        with tempfile.TemporaryDirectory() as root:
+            self.write(root, 'ZesuSsz/Contracts/AllocPremise.v', 'Definition allocCallSpec := True.\n')
+            self.assertEqual(C.premise_violations(row, Path(root)), [
+                'alloc: ZesuSsz.Contracts.AllocPremise does not define allocCallPremise'])
+            self.assertEqual(C.premise_violations(dict(row, premise={'module': 'ZesuSsz.Contracts.AllocPremise'}),
+                                                  Path(root)),
+                             ['alloc: an assumed row without an interface names premise {module, name, call_spec}'])
+
     def test_the_repository_passes(self):
         self.assertEqual(C.violations(), [])
 

@@ -154,6 +154,24 @@ def call_violations(registry, root=ROOT):
     return errors
 
 
+def premise_violations(entry, root=ROOT):
+    """An `assumed` row without an interface is a trusted runtime premise: `premise` names the module,
+    the premise (`□ instr_pre <entry> <call spec>`) and the call spec, and the module defines both."""
+    if entry['status'] != 'assumed' or entry.get('interface'):
+        return []
+    premise = entry.get('premise') or {}
+    if sorted(premise) != ['call_spec', 'module', 'name']:
+        return ['%s: an assumed row without an interface names premise {module, name, call_spec}'
+                % entry['function']]
+    path = Path(root) / ('ZesuSsz/' + premise['module'][len('ZesuSsz.'):].replace('.', '/') + '.v')
+    if not premise['module'].startswith('ZesuSsz.') or not path.exists():
+        return ['%s: premise module %s does not exist' % (entry['function'], premise['module'])]
+    text = code_of(path.read_text())
+    return ['%s: %s does not define %s' % (entry['function'], premise['module'], name)
+            for name in (premise['name'], premise['call_spec'])
+            if not re.search(r'\bDefinition\s+%s\b' % re.escape(name), text)]
+
+
 def coverage_violations(registry, root=ROOT):
     owned = {name for entry in registry['functions'] for name in entry['compliance_theorems']}
     errors = []
@@ -167,6 +185,7 @@ def coverage_violations(registry, root=ROOT):
             errors.append('%s: only a proved or assumed function has an interface' % entry['function'])
         if entry['status'] == 'proved' and not entry['compliance_theorems']:
             errors.append('%s: a proved function names its compliance theorems' % entry['function'])
+        errors += premise_violations(entry, root)
     return errors
 
 
