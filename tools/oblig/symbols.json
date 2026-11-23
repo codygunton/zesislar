@@ -1,0 +1,20 @@
+{
+  "schema": "zesu.symbols.v1",
+  "description": "Symbols of the pinned ELF that hand-written and agent-written files may name. tools/oblig/render_symbols.py renders one parsing-only Notation per entry into the output module.",
+  "elf": "build/stock-zisk/zesu-zisk.elf",
+  "output": "ZesuSsz/Generated/Stock/Symbols.v",
+  "symbols": [
+    "rlp_decode.txAccessList",
+    "array_list.Aligned([32]u8,null).toOwnedSlice",
+    "array_list.Aligned(input.AccessListEntry,null).toOwnedSlice",
+    "array_list.Aligned([32]u8,null).ensureTotalCapacity",
+    "rlp.decodeItem",
+    "rlp_decode.decodeTxFields",
+    "memcpy",
+    "alt_fl_alloc.alloc",
+    "alt_fl_alloc.resize",
+    "alt_fl_alloc.remap",
+    "alt_fl_alloc.free",
+    "alt_fl_alloc.vtable"
+  ]
+}
