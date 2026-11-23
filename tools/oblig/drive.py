@@ -15,14 +15,16 @@ that needs no model:
   statement without the dependency hypotheses); tier `falsify`, state `false` on a kernel-checked
   hit, class `unchecked` when the binder types are outside its range and the goal has no class.
 - mechanical: the attempt `mechanical` (CONTROL_TACTIC of tools/residuals/residual_package.py) is
-  registered and written as a `proved` answer, then checked like a model's.
+  registered and written as a `proved` answer, then checked like a model's. When CONTROL_TACTIC
+  changes, route.py offers it again to every goal whose mechanical attempts all used an older text.
 - check: every `running` attempt whose answer (RUN.../answers/<goal>.json, written by `answer` of
   this module with the attempt's prompt_sha256) is in: `proved` goes through
   `residual_loop.py collect` (the stand-alone check.sh route) and becomes `closed` or `failed`
   compile_error; `false` is checked with falsify.py's kernel refutation on the binder values the
   answer names (`false`, else failed bad_counterexample).
 The actions rerun, derive, package, test, check (decisions), decide, diagnose, reconsider, owner
-and spin are listed for the region owner or the coordinator, never executed.
+and spin are listed for the region owner or the coordinator, never executed. Superseded obligations
+(store.py) get no action.
 
 Output: one `done` line with the counts of this call, then one line per item left:
 `MODEL <id> tier=<tier> <why>` (for drive_kernel.run_round), `RUNNING <id> tier=<tier>` (an attempt
@@ -764,7 +766,8 @@ class Kernel:
         hints = Path(run) / "hints"
         reserve = package_reserve(tier)
         record = package.package_goal(where.d, manifest, where.goal, function, tier, bound - reserve,
-                                      similar.build_index(runs=[where.d]), hints if hints.is_dir() else None,
+                                      similar.build_index(runs=similar.sibling_runs(where.d)),
+                                      hints if hints.is_dir() else None,
                                       defs_route=route_, symbol_route=route_)
         record.update(prompt_bound=bound, reserve=reserve, bound_reason=reason)
         return package.write_record(where.d / "package" / where.gid, record)
@@ -1296,7 +1299,7 @@ def sync_package_class(function, run, located, counts):
     state, filed = fold(run), 0
     for identifier, item in state.items():
         where = located.get(identifier)
-        if item["kind"] != "goal" or where is None or item["state"] in ("closed", "running"):
+        if item["kind"] != "goal" or where is None or item["state"] in ("closed", "running", "superseded"):
             continue
         path = where.d / "package" / where.gid / "PACKAGE.json"
         record = store.read_json(path)
