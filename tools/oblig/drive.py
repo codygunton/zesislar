@@ -21,6 +21,9 @@ that needs no model:
   `residual_loop.py collect` (the stand-alone check.sh route) and becomes `closed` or `failed`
   compile_error; `false` is checked with falsify.py's kernel refutation on the binder values the
   answer names (`false`, else failed bad_counterexample).
+- compose: a goal normalised into parts (tools/oblig/normalise.py; its MANIFEST row lists `parts`) whose
+  parts are all closed gets its composed answer (normalise.compose) checked by `residual_loop.py collect`;
+  `closed` tier `normalise`, else `failed` compose_error. Its parts are its dependencies for `unblock`.
 The actions rerun, derive, package, test, check (decisions), decide, diagnose, reconsider, owner
 and spin are listed for the region owner or the coordinator, never executed.
 
@@ -259,8 +262,16 @@ def locate(run, function):
 
 
 def dependencies(function, item, where):
-    """The obligation ids the goal states as hypotheses (`deps` of a meaning goal's MANIFEST row)."""
-    if where is None or item["kind"] != "meaning":
+    """The obligation ids the goal waits for: the `deps` of a meaning goal's MANIFEST row (goal.v states
+    them as hypotheses), the parts of a goal normalised into parts (tools/oblig/normalise.py)."""
+    if where is None:
+        return []
+    if item["kind"] == "goal" and where.goal.get("parts"):
+        manifest = where.manifest()
+        rows = {g["id"]: g for g in manifest.get("goals", [])}
+        return [store.goal_id(function, manifest["block"], rows[p]["statement"])
+                for p in where.goal["parts"] if p in rows]
+    if item["kind"] != "meaning":
         return []
     return [store.meaning_id(function, dep) for dep in where.goal.get("deps", [])]
 
@@ -1129,6 +1140,39 @@ class CounterexampleProbe:
 
 # ---- step ----
 
+def compose_parents(function, run, state, located, kernel, counts):
+    """Close each goal normalised into parts (tools/oblig/normalise.py) once all its parts are closed:
+    normalise.compose writes its answer (each part's accepted proof in an assert, then the link script)
+    and residual_loop.py collect checks it against goal.v (Kernel.check); state `closed` tier `normalise`,
+    else `failed` class compose_error (once per composed text)."""
+    import normalise
+    rows = []
+    for identifier, where in located.items():
+        item = state.get(identifier)
+        if item is None or item["kind"] != "goal" or item["state"] == "closed" or not where.goal.get("parts"):
+            continue
+        if any((state.get(p) or {}).get("state") != "closed" for p in dependencies(function, item, where)):
+            continue
+        if where.gid not in normalise.compose(where.d, {where.gid}):
+            continue
+        artifact = store.artifact_of(where.answer_v)
+        if any(row.get("class") == "compose_error" and row.get("artifact") == artifact for row in item["events"]):
+            continue
+        result = kernel.check(where.d, [where.gid], 1).get(where.gid)
+        proof = where.goal_dir / "proof.v"
+        if result == "PASS":
+            counts.bump("composed")
+            rows.append(base_event(item, state="closed", **{"class": item["goal_class"]}, tier="normalise",
+                                   artifact=store.artifact_of(proof) if proof.is_file() else None))
+        else:
+            counts.bump("compose_error")
+            rows.append(base_event(item, state="failed", **{"class": "compose_error"}, tier="normalise",
+                                   artifact=artifact))
+    if rows:
+        store.append(run, rows)
+    return len(rows)
+
+
 def unblock(function, run, state, located, counts):
     rows = []
     for item in state.values():
@@ -1366,6 +1410,8 @@ def step(function, run, limit=None, jobs=8, kernel=None):
     for _ in range(MAX_PASSES):
         located = locate(run, function)
         progress = check_answers(function, run, fold(run), located, kernel, counts, jobs)
+        # A goal normalised into parts closes by its composed proof once its parts are closed.
+        progress += compose_parents(function, run, fold(run), located, kernel, counts)
         # Unblock before routing: route.py routes a goal blocked on a closed obligation as if it were free.
         progress += unblock(function, run, fold(run), located, counts)
         state = fold(run)
