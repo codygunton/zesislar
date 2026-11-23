@@ -32,8 +32,9 @@ Definition ziskMemcpyCallDomain (destination source length : Z) : Prop :=
    registers preserved, stores the count at the extra-params word, and copies
    the source bytes to the destination. The two separately owned ranges
    exclude overlap, so this covers only the non-overlapping case of
-   ziskMemcpyMemory. It uses no stack. memcpyCallSpec2
-   (ParentHeaderMemcpyService.v) is its instance at one source and length. *)
+   ziskMemcpyMemory. It uses no stack. It does not cover memcpyCallSpec2
+   (ParentHeaderMemcpyService.v): that copy reads .rodata, outside RAM, so
+   the trust base keeps both memcpy premises. *)
 Definition ziskMemcpyCallSpec `{!islaG Sigma} `{!threadG} : iProp Sigma :=
   (machine_call decodeItemCallMap 0
     (fun argv sp RET =>

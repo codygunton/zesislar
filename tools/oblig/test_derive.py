@@ -213,12 +213,13 @@ class Derive(unittest.TestCase):
         self.assertEqual([row['reason'] for row in result['refusals_without_request']], ['refused_no_alternatives'])
 
     def test_tx_access_list_round_one_floor(self):
-        """The committed CFG: 1 contract, 3 loop cuts, 12 call rows, 7 callees without a registry row; the
+        """The committed CFG: 1 contract, 3 loop cuts, 12 call rows, 3 callees without a registry row (the
+        array-list regions; alloc, remap, free and memcpy have `assumed` premise rows); the
         5 decodeItem call rows take their callee side from the decodeParentHeader and nextUint64 profiles."""
         with tempfile.TemporaryDirectory() as run:
             result = derive.derive('txAccessList', Path(run), symbol='rlp_decode.txAccessList')
         counts = {key: value for key, value in result['counts'].items() if value}
-        self.assertEqual(counts, {'contract': 1, 'loop_assertion': 3, 'call_row': 12, 'callee_premise': 7})
+        self.assertEqual(counts, {'contract': 1, 'loop_assertion': 3, 'call_row': 12, 'callee_premise': 3})
         loops = {row['pc']: row['needs'] for row in result['requests'] if row['kind'] == 'loop_assertion'}
         self.assertEqual(sorted(loops), ['+0x18c', '+0x2ec', '+0xc4'])
         self.assertTrue(loops['+0x2ec'][0].startswith('hand loop_heads row'))

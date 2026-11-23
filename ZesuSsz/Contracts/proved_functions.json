@@ -1,6 +1,6 @@
 {
   "schema": "zesu.proved-functions.v1",
-  "description": "Functions with a compliance theorem. A function with an interface is a black box to every caller: callers import only its generated interface (tools/block/render_interfaces.py renders ZesuSsz/Interfaces/<F>.v and <F>Correct.v from this file), whose call-spec predicates are sealed by module ascription. tools/block/check_proved_functions.py (check-fast) enforces the imports, the generator's call specs, theorem coverage and interface freshness; check_proof_hygiene.py refuses unfolding a sealed name outside its interface.",
+  "description": "Functions with a compliance theorem. A function with an interface is a black box to every caller: callers import only its generated interface (tools/block/render_interfaces.py renders ZesuSsz/Interfaces/<F>.v and <F>Correct.v from this file), whose call-spec predicates are sealed by module ascription. tools/block/check_proved_functions.py (check-fast) enforces the imports, the generator's call specs, theorem coverage and interface freshness; check_proof_hygiene.py refuses unfolding a sealed name outside its interface. A row with status `assumed` and no interface is a trusted runtime premise: its `premise` field {module, name, call_spec} names the module, the premise `□ instr_pre <symbol> <call spec>` and the machine_call spec; check_proved_functions.py checks that the module defines both, and tools/oblig/derive.py copies the field into CALLEES.json.",
   "functions": [
     {
       "function": "decodeItem",
