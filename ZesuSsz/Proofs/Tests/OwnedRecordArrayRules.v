@@ -273,3 +273,7 @@ Print Assumptions owned_record_second_word.
 Print Assumptions items_and_tail_uninit.
 Print Assumptions items_and_tail_uninit_machine.
 Print Assumptions nested_drop_image.
+Print Assumptions reloaded_pointer_free_request.
+Print Assumptions reloaded_pointer_items.
+Print Assumptions empty_items_free_request.
+Print Assumptions reloaded_word_fact.
