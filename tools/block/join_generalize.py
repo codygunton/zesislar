@@ -785,13 +785,15 @@ def lift_call_return_edges(alternatives, *, seeds, roots, ancestor, vocabulary, 
         # component text: a weakening; a listed text that names no resource of the edge is refused.
         listed = {' '.join(text.split()) for item in drops if item['root'] == roots.get(seed_pc)
                   for text in item['resources']}
-        texts = {component['id']: ' '.join(str(component['seed_component'].get(
-            'original_component', component['seed_component'].get('coq', ''))).split())
-            for component in seed.ownership['components']}
-        unmatched = set(listed) - {texts.get(resource.id) for resource in seed.resources}
-        if unmatched:
-            raise ValueError('A join drop row names no resource of the edge from %s: %s'
-                             % (roots.get(seed_pc), sorted(unmatched)[0]))
+        texts = {}
+        if listed:
+            for component in seed.ownership['components']:
+                source = component.get('seed_component') or {}
+                texts[component['id']] = ' '.join(str(source.get('original_component', source.get('coq', ''))).split())
+            unmatched = set(listed) - {texts.get(resource.id) for resource in seed.resources}
+            if unmatched:
+                raise ValueError('A join drop row names no resource of the edge from %s: %s'
+                                 % (roots.get(seed_pc), sorted(unmatched)[0]))
         for resource in seed.resources:
             if texts.get(resource.id) in listed:
                 continue
