@@ -596,8 +596,31 @@ def region_offsets(forward):
     return result
 
 
+_BYTE_ASCRIPTION = re.compile(r'^\((.*) : bv 8%N\)$', re.S)
+
+
+def _cons_items(value):
+    """The items of a byte list spelled as the forward pass writes a stored span
+    (`Coq.Init.Datatypes.cons (b : bv 8%N) (… (@Coq.Init.Datatypes.nil (bv 8%N)))`); None otherwise."""
+    items = []
+    while True:
+        value = unwrap(value)
+        if re.fullmatch(r'@?Coq\.Init\.Datatypes\.nil(?: \(bv 8%N\))?', value):
+            return items
+        if not value.startswith('Coq.Init.Datatypes.cons ('):
+            return None
+        start = len('Coq.Init.Datatypes.cons ')
+        end = _group_end(value, start)
+        item = value[start:end]
+        ascribed = _BYTE_ASCRIPTION.fullmatch(item)
+        items.append('(' + ascribed[1].strip() + ')' if ascribed else item)
+        value = value[end:].strip()
+
+
 def _list_items(value):
     value = unwrap(value)
+    if value.startswith('Coq.Init.Datatypes.cons '):
+        return _cons_items(value)
     if not (value.startswith('[') and value.endswith(']')):
         return None
     items, depth, start = [], 0, 1

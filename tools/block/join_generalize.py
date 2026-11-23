@@ -724,7 +724,20 @@ def _span_bytes(resource, region):
     return result
 
 
-def lift_call_return_edges(alternatives, *, seeds, roots, ancestor, vocabulary):
+def carry_common_word_links(incoming, seed):
+    """Keep on a join seed the word links that every incoming edge holds identically (same array,
+    offset and value). A link is a fact about an unwritten array word; an edge that wrote the word
+    reads it from its write, never through the link, so the carried link adds nothing it lacks."""
+    common = None
+    for alternative in incoming:
+        keyed = {json.dumps(link, sort_keys=True) for link in alternative['state'].get('word_links', [])}
+        common = keyed if common is None else common & keyed
+    seed.state.word_links = [dict(row, array=Expr.from_dict(row['array']), value=Expr.from_dict(row['value']))
+                             for row in map(json.loads, sorted(common or ()))]
+    return seed
+
+
+def lift_call_return_edges(alternatives, *, seeds, roots, ancestor, vocabulary, drops=()):
     """Express join edges that start at seeds below `ancestor` on its tree.
 
     A call-return seed refines its parent's tree: it splits frame spans around the call
@@ -768,7 +781,22 @@ def lift_call_return_edges(alternatives, *, seeds, roots, ancestor, vocabulary):
             raise ValueError('A lifted join edge has no complete write image')
         regions = {region.ownership_id: region for region in state.memory}
         writes = []
+        # A join annotation row (`drop`) names resources an edge from this root forgets, by their exact
+        # component text: a weakening; a listed text that names no resource of the edge is refused.
+        listed = {' '.join(text.split()) for item in drops if item['root'] == roots.get(seed_pc)
+                  for text in item['resources']}
+        texts = {}
+        if listed:
+            for component in seed.ownership['components']:
+                source = component.get('seed_component') or {}
+                texts[component['id']] = ' '.join(str(source.get('original_component', source.get('coq', ''))).split())
+            unmatched = set(listed) - {texts.get(resource.id) for resource in seed.resources}
+            if unmatched:
+                raise ValueError('A join drop row names no resource of the edge from %s: %s'
+                                 % (roots.get(seed_pc), sorted(unmatched)[0]))
         for resource in seed.resources:
+            if texts.get(resource.id) in listed:
+                continue
             updates = image.updates[resource.id]
             if any(isinstance(offset, str) for offset in updates):
                 raise ValueError('A lifted join edge stores at a symbolic offset: ' + resource.id)
@@ -1452,7 +1480,14 @@ def _stored_register_value(state, name, carried, components):
 
 
 def _agreed_writes(images, resource_id):
-    """The writes of the first edge into a resource whose bytes every edge holds at the end."""
+    """The writes of the first edge into a resource whose bytes every edge holds at the end.
+
+    Bytes compare as `_byte` does, by normalized Coq text: an edge lifted from a call-return root
+    spells a stored byte as parsed source text (`bv_extract 0%N 8%N (w)`), an edge from the entry
+    root as the extract of the stored register's value; equal texts state the same byte."""
+    def text(update):
+        return _byte(Expr.from_dict(update['value']))[0] if update and 'value' in update else None
+
     first = images[0]
     agreed = []
     for step in first.transitions:
@@ -1461,8 +1496,8 @@ def _agreed_writes(images, resource_id):
         write = first.writes[step['write_index']]
         offsets = range(step['offset'], step['offset'] + write.size)
         if all(first.updates[resource_id].get(offset, {}).get('write_index') == step['write_index']
-               and all(image.updates[resource_id].get(offset, {}).get('value')
-                       == first.updates[resource_id][offset]['value'] for image in images[1:])
+               and all(text(image.updates[resource_id].get(offset))
+                       == text(first.updates[resource_id][offset]) for image in images[1:])
                for offset in offsets):
             agreed.append(write)
     return agreed

@@ -166,5 +166,23 @@ class JoinMerge(unittest.TestCase):
         self.assertEqual(result['merged_alternatives'], {hex(28): 1})
 
 
+class UnreachableTarget(unittest.TestCase):
+    # The JoinMerge function: an `unreachable` row (reached: contradictory_guards) at 24.
+    def test_a_path_into_an_unreachable_target_stops_as_infeasible(self):
+        result = evaluate_function(JoinMerge.FUNCTION, JoinMerge.TRACES, {16: state()}, unreachable_targets=[24])
+        self.assertEqual(boundary(result, 24)['alternatives'], [])
+        stops = [row for row in result['stops'] if row['reason'] == 'infeasible']
+        self.assertEqual([(row['block_pc'], row['target_pc'], row['rule']) for row in stops],
+                         [(hex(16), hex(24), 'annotation_unreachable_row')])
+        self.assertEqual(boundary(result, 28)['reaching_stops'], [])
+        self.assertEqual({row['predecessor_pc'] for row in boundary(result, 28)['alternatives']}, {hex(20)})
+
+    def test_without_the_row_the_pass_is_unchanged(self):
+        self.assertEqual(evaluate_function(JoinMerge.FUNCTION, JoinMerge.TRACES, {16: state()}),
+                         evaluate_function(JoinMerge.FUNCTION, JoinMerge.TRACES, {16: state()}, unreachable_targets=()))
+        result = evaluate_function(JoinMerge.FUNCTION, JoinMerge.TRACES, {16: state()})
+        self.assertEqual(len(boundary(result, 24)['alternatives']), 1)
+
+
 if __name__ == '__main__':
     unittest.main()
