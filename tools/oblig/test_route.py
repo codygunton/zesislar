@@ -230,6 +230,32 @@ class Router(unittest.TestCase):
                  ev(GOAL, 'failed', tier='haiku-low', **{'class': 'missing_context'}))
         self.assertEqual(self.next(GOAL), ('prove', 'haiku-medium'))
 
+    def test_too_large_tier_is_skipped_until_a_reset(self):
+        self.routing = self.LADDER
+        self.pure_goal()
+        self.add(falsified(), tried(GOAL, 'mechanical', 1), ev(GOAL, 'failed', tier='haiku-low', **{'class': 'too_large'}))
+        self.assertEqual(self.next(GOAL), ('prove', 'haiku-high'))
+        self.add(ev(GOAL, 'derived', **{'class': 'PURE-linear'}), falsified())
+        self.assertEqual(self.next(GOAL), ('prove', 'mechanical'))
+
+    def test_reset_runs_the_ladder_again(self):
+        self.routing = self.LADDER
+        self.pure_goal()
+        self.add(falsified(), tried(GOAL, 'mechanical', 1), tried(GOAL, 'haiku-low', 1), tried(GOAL, 'haiku-low', 2),
+                 tried(GOAL, 'haiku-high', 1), tried(GOAL, 'opus-medium', 1), tried(GOAL, 'opus-medium', 2))
+        self.assertEqual(self.next(GOAL), ('spin', None))
+        # A reset with a hinted task: the ladder runs again; the unchanged mechanical prompt is marked.
+        self.add(ev(GOAL, 'derived', **{'class': 'PURE-linear'}), falsified(),
+                 ev(GOAL, 'failed', tier='mechanical', **{'class': 'repeated_prompt'}))
+        self.assertEqual(self.next(GOAL), ('prove', 'haiku-low'))
+        self.add(tried(GOAL, 'haiku-low', 3, prompt='hinted'))
+        self.assertEqual(self.next(GOAL), ('prove', 'haiku-high'))
+
+    def test_waiting_decision_after_every_tier_too_large_is_reconsidered(self):
+        self.pure_goal()
+        self.add(falsified(), ev(GOAL, 'waiting-decision', **{'class': 'PURE-linear'}))
+        self.assertEqual(self.next(GOAL), ('reconsider', 'opus-medium'))
+
     def test_malformed_reply_retries_once_without_counting(self):
         self.routing = self.LADDER
         self.pure_goal()

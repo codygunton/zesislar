@@ -29,19 +29,30 @@ then the obligations in spin. Actions:
 Ladder. A pure goal's ladder is `mechanical`, then the model tiers from the class's first tier on,
 in tiers.json order, each with the attempts of the class's `attempts` row of routing.json (a class
 row, else the row of its prefix before `-`, else routing.json's `default`; without any, the tier's
-max_attempts). A tier with 0 attempts is not on the ladder. Attempts a tier spends:
+max_attempts). A tier with 0 attempts is not on the ladder. Only the attempts since the goal's
+last reset (a `derived` event after another state: a changed statement, task or hint) count: a
+reset runs the ladder again from its first tier, bounded by the 3-reset spin rule. Attempts a
+tier spends:
 - a proof attempt (`proved` that failed to compile, `give_up`, `need_context`, `false` refused)
   counts one;
 - a `malformed` reply (no answer object) does not count as an attempt at the proof: the tier is
   retried once with a changed prompt; a second malformed reply at that tier counts;
 - `need_context` is retried at the same tier only while the tier has attempts left; when the
   driver can supply none of the named items it files `failed` class `missing_context` (tier set,
-  no attempt) and the goal goes to the next tier without spending that tier's next attempt.
+  no attempt) and the goal goes to the next tier without spending that tier's next attempt;
+- a tier whose prompt exceeds its bound (tiers.json, or the class's routing.json bound) is marked
+  by the driver with `failed` class `too_large` (tier set, no attempt) and is skipped until the
+  goal is reset; when every model tier of the ladder is marked, the driver files the goal
+  `waiting-decision`, which this router sends to `reconsider`;
+- a tier whose prompt the store refuses as sent before (an unchanged prompt after a reset, as the
+  fixed `mechanical` one) is marked `failed` class `repeated_prompt` (no attempt) and skipped
+  until the next reset.
 
 Spin. The plan says "6 attempts in total"; its 5 tiers at 2 attempts each could never fit in that.
-This router reads it as: an obligation on a ladder spins at 6 counted attempts or 3 resets only
-once its ladder is exhausted (the top ladder tier has had its attempts); attempts at a tier that
-is not on the class's ladder (made before the ladder changed) do not count toward the 6. Blocks,
+This router reads it as: an obligation on a ladder spins at 6 counted attempts (since its last
+reset) or 3 resets only once its ladder is exhausted (the top ladder tier has had its attempts);
+attempts at a tier that is not on the class's ladder (made before the ladder changed) do not
+count toward the 6. Blocks,
 decisions and spatial leftovers, which have no ladder, spin at 6 attempts or 3 resets as before.
 An exhausted ladder below both limits gives `reconsider`.
 
@@ -49,8 +60,8 @@ Event vocabulary read here (written by the tools that act): tier `falsify` marks
 (state `false` on a hit, class `unchecked` when the binder types are outside its range); tier
 `machine-run` marks `annotations.py test` (state `failed` class `rejected_by_run` on a rejection);
 a decision's proposal is its event's artifact; failure classes of prover attempts are
-`compile_error`, `need_context`, `give_up`, `rule_gap`, `malformed`, and `missing_context` (filed by
-the driver, no attempt).
+`compile_error`, `need_context`, `give_up`, `rule_gap`, `malformed`, and `missing_context`,
+`too_large` and `repeated_prompt` (filed by the driver, no attempt).
 
 The tier order and default attempts come from tools/oblig/tiers.json, the first model tier and the
 ladder attempts of a goal class from tools/oblig/routing.json; without them: mechanical,
@@ -151,9 +162,10 @@ def since_reset(item):
 
 
 def attempt_results(item):
-    """{tier: [failure class or state of each attempt, in order]} (the last event of each attempt)."""
+    """{tier: [failure class or state of each attempt, in order]} (the last event of each attempt), over
+    the attempts since the goal's last reset: a reset (a changed task or statement) runs the ladder again."""
     final = {}
-    for row in item['events']:
+    for row in since_reset(item):
         if row.get('attempt') is not None:
             final[(row['tier'], row['attempt'])] = row['class'] if row['state'] == 'failed' else row['state']
     out = {}
@@ -174,6 +186,15 @@ def missing_context(item, tier):
     return item['state'] == 'failed' and item['failure'] == 'missing_context' and last.get('tier') == tier
 
 
+SKIP_CLASSES = ('too_large', 'repeated_prompt')
+
+
+def marked_tiers(item, classes=SKIP_CLASSES):
+    """The tiers the driver marked `failed` with one of CLASSES (no attempt) since the goal's last reset."""
+    return {row['tier'] for row in since_reset(item)
+            if row['state'] == 'failed' and row.get('class') in classes and row.get('tier')}
+
+
 def ladder_step(item, tiers, routing):
     """(action, tier, why) of the prover ladder of a pure goal: the next attempt, else spin or reconsider."""
     rungs = ladder(item['goal_class'], tiers, routing)
@@ -181,7 +202,10 @@ def ladder_step(item, tiers, routing):
     results = attempt_results(item)
     last = item['last_attempt']
     begin = max((names.index(tier) for tier in results if tier in names), default=0)
+    skipped = marked_tiers(item)
     for tier, limit in rungs[begin:]:
+        if tier in skipped:
+            continue
         mine = results.get(tier, [])
         if not mine:
             return 'prove', tier, 'first attempt at this tier'

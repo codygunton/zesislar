@@ -437,9 +437,13 @@ Section byte_array_write.
   Qed.
 End byte_array_write.
 
-(* The length of a byte array as a literal: the context states
+(* The length of a byte array: a literal when the context states
    `length bytes = N` (at any element-type alias) or the list's length
-   computes to N. An inductive, so the hint below sees the class. *)
+   computes to N; otherwise the size of a stated `Z.of_nat (length bytes) = e`
+   (a list's items of `len * 32` bytes, `len` symbolic). Without the stated
+   size the 8-byte rule below committed on such an array and left the false
+   side condition `length bytes = 8`. An inductive, so the hint below sees
+   the class. *)
 Inductive ZesuByteArrayKnownLength (bytes : list (bv 8)) (n : Z) : Prop :=
   zesu_byte_array_known_length : Z.of_nat (length bytes) = n ->
     ZesuByteArrayKnownLength bytes n.
@@ -466,7 +470,12 @@ Ltac zesu_byte_array_known_length_solve :=
         zesu_byte_array_nat_literal count;
         let literal := eval vm_compute in (Z.of_nat count) in
         unify n literal;
-        exact (zesu_byte_array_known_length bytes n eq_refl) ]
+        exact (zesu_byte_array_known_length bytes n eq_refl)
+      | match goal with
+        | Hlength : Z.of_nat (@length _ bytes) = ?size |- _ =>
+            unify n size;
+            exact (zesu_byte_array_known_length bytes n Hlength)
+        end ]
   end.
 Global Hint Extern 0 (ZesuByteArrayKnownLength _ _) =>
   zesu_byte_array_known_length_solve : typeclass_instances.

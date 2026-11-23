@@ -68,6 +68,7 @@ ERROR_HEAD = "\n## Your previous answer failed\n\n"
 CONTEXT_HEAD = "\n## Context you asked for\n\n"
 TRUNCATED = "\n[... truncated]"
 MALFORMED_LINE = "Reply with the bare JSON object only.\n\n"
+TOO_LARGE = "too-large"
 
 
 def sha(text):
@@ -79,8 +80,26 @@ def tier_rows(path=route.TIERS_FILE):
     return {row["name"]: row for row in data.get("tiers", [])}
 
 
-def max_prompt_bytes(tier):
-    return int(tier_rows().get(tier, {}).get("max_prompt_bytes", package.MAX_PROMPT_BYTES))
+def max_prompt_bytes(tier, cls=None):
+    """The prompt bound of goal class CLS at TIER (replay.prompt_bound: the class's routing.json
+    `max_prompt_bytes` capped by the tier's `max_class_prompt_bytes`, else the tier's bound)."""
+    try:
+        return int(replay.prompt_bound(tier, cls))
+    except replay.ReplayError:
+        return package.MAX_PROMPT_BYTES
+
+
+def tier_cap(tier):
+    """The largest prompt a tier takes (tiers.json `max_class_prompt_bytes`)."""
+    row = tier_rows().get(tier, {})
+    return int(row.get("max_class_prompt_bytes", row.get("max_prompt_bytes", package.MAX_PROMPT_BYTES)))
+
+
+def large_bound(where, tier):
+    """The bound of a goal re-packaged at the tier cap (PACKAGE.json `prompt_bound`, capped by TIER's), or
+    None: such a goal is sent at that size, its attempts carrying `prompt_bound:<bytes>`."""
+    bound = store.read_json(where.d / "package" / where.gid / "PACKAGE.json", {}).get("prompt_bound")
+    return min(int(bound), tier_cap(tier)) if bound else None
 
 
 # ---- obligation files ----
@@ -147,12 +166,14 @@ def last_attempt_event(item):
 # ---- prompts ----
 
 def task_text(where, tier):
+    """(text, packaged) of the goal's task: package.py's bounded task (TASK-<tier>.md, the tier-less
+    TASK.md, another tier's TASK-*.md) when the goal has a package, else the residual_loop task."""
     packaged = where.d / "package" / where.gid
-    for path in [packaged / ("TASK-%s.md" % tier), *sorted(packaged.glob("TASK-*.md")),
-                 where.d / "tasks" / (where.gid + ".md")]:
+    for path in [packaged / ("TASK-%s.md" % tier), packaged / "TASK.md", *sorted(packaged.glob("TASK-*.md"))]:
         if path.is_file():
-            return path.read_text()
-    return None
+            return path.read_text(), True
+    path = where.d / "tasks" / (where.gid + ".md")
+    return (path.read_text(), False) if path.is_file() else (None, False)
 
 
 def clip(text, limit):
@@ -165,11 +186,12 @@ def clip(text, limit):
 
 def base_prompt(where, tier):
     """The no-tools prompt of an attempt without feedback: the task file, the exact source of
-    goal.v when the task only names its path, and the answer form."""
-    text = task_text(where, tier)
+    goal.v when a residual_loop task only names its path (a package task is already bounded and
+    is sent as written), and the answer form."""
+    text, packaged = task_text(where, tier)
     if text is None:
         return None
-    if EXACT_HEADING not in text and (where.goal_dir / "goal.v").is_file():
+    if not packaged and EXACT_HEADING not in text and (where.goal_dir / "goal.v").is_file():
         goal_v = (where.goal_dir / "goal.v").read_text()
         text += "\n%s\n\n```coq\n%s\n```\n" % (EXACT_HEADING, goal_v[:goal_v.index("Proof.")].rstrip()
                                                  if "Proof." in goal_v else goal_v.rstrip())
@@ -188,7 +210,8 @@ def error_section(where, budget):
     if room <= 0:
         return None
     errors = clip(errors.rstrip(), max(room // 2, room - len(proof.encode())))
-    proof = clip(proof, room - len(errors.encode()))
+    # One byte is kept for the newline that closes the proof before the fence.
+    proof = clip(proof, room - len(errors.encode()) - 1)
     return head % (proof if proof.endswith("\n") or not proof else proof + "\n", errors)
 
 
@@ -273,7 +296,10 @@ def prompt_for(run, function, identifier, tier, located=None, state=None):
     where, item = located.get(identifier), state.get(identifier)
     if where is None or item is None:
         return None, "unlocated"
-    limit = max_prompt_bytes(tier)
+    limit = max_prompt_bytes(tier, item["goal_class"])
+    large = large_bound(where, tier)
+    if large and large > limit:
+        limit = large
     base = base_prompt(where, tier)
     if base is None:
         return None, "no task file"
@@ -282,7 +308,7 @@ def prompt_for(run, function, identifier, tier, located=None, state=None):
     if last and last["tier"] == tier and last["failure"] == "compile_error":
         extra = error_section(where, limit - len(base.encode()))
         if extra is None:
-            return None, "too-large"
+            return None, "%s: %d bytes of task leave no room under %d" % (TOO_LARGE, len(base.encode()), limit)
         text, items = base + extra, ["task", "feedback"]
     elif last and last["tier"] == tier and last["failure"] == "need_context":
         needs = store.read_json(where.answer_json, {}).get("needs") or []
@@ -293,7 +319,9 @@ def prompt_for(run, function, identifier, tier, located=None, state=None):
     elif last and last["tier"] == tier and last["failure"] == "malformed":
         text, items = MALFORMED_LINE + base, ["task", "malformed"]
     if len(text.encode()) > limit:
-        return None, "too-large"
+        return None, "%s: %d > %d bytes" % (TOO_LARGE, len(text.encode()), limit)
+    if large and large == limit:
+        items = items + ["prompt_bound:%d" % limit]
     return text, items
 
 
@@ -302,6 +330,36 @@ def file_missing_context(run, identifier, tier):
     without spending the tier's next attempt."""
     item = fold(run)[identifier]
     store.append(run, base_event(item, state="failed", **{"class": "missing_context"}, tier=tier))
+
+
+def file_too_large(run, identifier, tier, reason, located=None):
+    """Append `failed` class too_large at TIER (no attempt): route.py skips the tier. When every model
+    tier of the goal's ladder is too small for its prompt, the goal becomes `waiting-decision`, its
+    artifact TOO-LARGE.json naming each tier's size and bound. Returns True for waiting-decision."""
+    item = fold(run)[identifier]
+    where = (located or locate(run, item["function"])).get(identifier)
+    path = (where.d / "prompts" / where.gid if where else Path(run) / "prompts") / "TOO-LARGE.json"
+    path.parent.mkdir(parents=True, exist_ok=True)
+    reasons = store.read_json(path, {})
+    reasons[tier] = reason
+    rl.write_json(path, reasons)
+    store.append(run, base_event(item, state="failed", **{"class": "too_large"}, tier=tier))
+    item = fold(run)[identifier]
+    rungs = [name for name, _ in route.ladder(item["goal_class"], route.load_tiers(), route.load_routing())
+             if name != MECHANICAL]
+    if not rungs or not set(rungs) <= route.marked_tiers(item, ("too_large",)):
+        return False
+    store.append(run, base_event(item, state="waiting-decision", **{"class": item["goal_class"]},
+                                 artifact=store.artifact_of(path)))
+    return True
+
+
+def file_repeated_prompt(run, identifier, tier):
+    """Append `failed` class repeated_prompt at TIER (no attempt): the store refused the prompt as sent
+    before to this tier (after a reset whose prompt did not change, as the fixed `mechanical` one);
+    route.py skips the tier until the next reset."""
+    item = fold(run)[identifier]
+    store.append(run, base_event(item, state="failed", **{"class": "repeated_prompt"}, tier=tier))
 
 
 # ---- attempts and answers ----
@@ -394,6 +452,22 @@ class Kernel:
         goal = goal if goal.is_file() else where.goal_dir / "goal.v"
         return falsify.check(goal, self.route_of(where.d), out, exec_dir=exec_dir if exec_dir.is_dir() else None,
                              offset=offset)
+
+    def repackage(self, run, function, where, tier, bound, reason):
+        """package.py's task of a goal again at BOUND (the tier cap) less the no-tools preamble the prompt
+        adds, with the definitions context and the hint pack of RUN when present; the record keeps
+        `prompt_bound` (BOUND) and `bound_reason`."""
+        import falsify
+        import similar
+        manifest = where.manifest()
+        bank = manifest.get("bank")
+        route_ = falsify.Route(bank) if bank and (Path(bank) / "ARGS.json").is_file() else None
+        hints = Path(run) / "hints"
+        record = package.package_goal(where.d, manifest, where.goal, function, tier, bound - len(NO_TOOLS.encode()),
+                                      similar.build_index(runs=[where.d]), hints if hints.is_dir() else None,
+                                      defs_route=route_, symbol_route=route_)
+        record.update(prompt_bound=bound, bound_reason=reason)
+        return package.write_record(where.d / "package" / where.gid, record)
 
     def refute(self, where, text, out):
         """True when the kernel accepts `~ statement` on the binder values the counterexample names."""
@@ -537,7 +611,9 @@ def run_mechanical(function, run, located, todo, counts):
         try:
             attempt = register_attempt(run, function, identifier, MECHANICAL, MECHANICAL_PROOF, located=located)
         except store.Rejected:
-            counts.bump("rejected")
+            file_repeated_prompt(run, identifier, MECHANICAL)
+            counts.bump("repeated_prompt")
+            done += 1
             continue
         answer(run, function, identifier, MECHANICAL, attempt, MECHANICAL_PROOF,
                dict(verdict="proved", proof=MECHANICAL_PROOF), located=located)
@@ -558,20 +634,65 @@ class Counts(dict):
             self[key] = self.get(key, 0) + 1
 
 
-def escalate_missing_context(function, run, located, free, counts):
-    """File `missing_context` for each need_context retry whose named items no source can supply, so
-    route.py moves it to the next tier before any model sees an unchanged prompt."""
+def sync_package_class(function, run, located, counts):
+    """Bring a goal's class to its package record (package.py PACKAGE.json), no model: a package of class
+    ADDRESS files `derived` class ADDRESS (route.py sends it to the statement owner); a goal filed ADDRESS
+    whose package now has no class (its address literals became symbol notations, `symbols` in the
+    record) files `derived` with its leftover class (replay.goal_class), so the ladder runs."""
+    state, filed = fold(run), 0
+    for identifier, item in state.items():
+        where = located.get(identifier)
+        if item["kind"] != "goal" or where is None or item["state"] in ("closed", "running"):
+            continue
+        path = where.d / "package" / where.gid / "PACKAGE.json"
+        record = store.read_json(path)
+        if not record:
+            continue
+        if record.get("class") == "ADDRESS" and item["goal_class"] != "ADDRESS":
+            cls = "ADDRESS"
+        elif record.get("class") is None and record.get("symbols") and item["goal_class"] == "ADDRESS":
+            cls = replay.goal_class(where.goal["statement"])
+        else:
+            continue
+        store.append(run, base_event(item, state="derived", **{"class": cls}, artifact=store.artifact_of(path)))
+        counts.bump("address" if cls == "ADDRESS" else "symbolized")
+        filed += 1
+    return filed
+
+
+def escalate_unpromptable(function, run, located, free, counts, kernel):
+    """For each model attempt route.py assigns, before any model sees it (no model):
+    - a need_context retry whose named items no source can supply files `missing_context`;
+    - a goal whose smallest task is over the default bound is re-packaged once at the tier cap
+      (tiers.json `max_class_prompt_bytes`; PACKAGE.json `prompt_bound`, `bound_reason`) and then sent
+      at that size, its attempts carrying `prompt_bound:<bytes>` in context_items;
+    - a prompt over the bound it may use files `too_large` (file_too_large): waiting-decision with
+      TOO-LARGE.json once every model tier is too small."""
     state, filed = fold(run), 0
     for identifier, action, tier, _ in route.next_items(run, function):
-        last = state[identifier]["last_attempt"] if identifier in state else None
-        if (action != "prove" or identifier not in free or not last or last["tier"] != tier
-                or last["failure"] != "need_context" or route.missing_context(state[identifier], tier)):
+        if action != "prove" or tier in (None, MECHANICAL) or identifier not in free:
             continue
         text, reason = prompt_for(run, function, identifier, tier, located=located, state=state)
-        if text is None and reason == "missing_context":
+        if text is not None:
+            continue
+        if reason == "missing_context":
             file_missing_context(run, identifier, tier)
             counts.bump("missing_context")
-            filed += 1
+        elif reason.startswith(TOO_LARGE):
+            where = located[identifier]
+            if (state[identifier]["kind"] == "goal" and large_bound(where, tier) is None
+                    and tier_cap(tier) > max_prompt_bytes(tier, state[identifier]["goal_class"])):
+                # Once per goal: package.py again at the tier cap; the goal is then sent at that size.
+                kernel.repackage(run, function, where, tier, tier_cap(tier), "smallest task over the "
+                                 "default bound (%s)" % reason)
+                counts.bump("repackaged_large")
+                filed += 1
+                continue
+            counts.bump("waiting_decision_too_large" if file_too_large(run, identifier, tier, reason, located)
+                        else "too_large")
+        else:
+            continue
+        filed += 1
     return filed
 
 
@@ -593,7 +714,8 @@ def step(function, run, limit=None, jobs=8, kernel=None):
         mechanical = [i for i, action, tier, _ in route.next_items(run, function)
                       if action == "prove" and tier == MECHANICAL and i in free]
         progress += run_mechanical(function, run, located, mechanical, counts)
-        progress += escalate_missing_context(function, run, located, free, counts)
+        progress += sync_package_class(function, run, located, counts)
+        progress += escalate_unpromptable(function, run, located, free, counts, kernel)
         if not progress:
             break
     located = locate(run, function)

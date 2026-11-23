@@ -17,8 +17,13 @@ residual_loop.py stays the engine that exports, checks, minimises and registers.
 goals packages each open goal (reparse exact, not PASS) into RUN/package/<id>/:
 - the address check: the patterns of tools/oblig/check_relocatable.py (`0x800[0-9a-f]{5}`,
   `2148[0-9]{6}`, `21474[0-9]{5}`) over the text of goal.v and over the decimal value of
-  each integer literal of its statement. A match gives class ADDRESS: the goal goes to the
-  decision queue and gets no prover task.
+  each integer literal of its statement. Before it, each `(N)%Z` or `Zpos` literal that is the
+  address of a symbol of tools/oblig/symbols.json (or at most 4 KiB above one) is written as its
+  parsing-only notation of ZesuSsz/Generated/Stock/Symbols.v (tools/oblig/symbolize.py); the
+  kernel checks `(original) = (rewritten)` by reflexivity with the goal's imports and the bank
+  of MANIFEST.json, and only then goal.v is replaced (the original kept as goal-literal.v,
+  the Symbols import added) and the task shows the notations. A match that remains gives class
+  ADDRESS: the goal goes to the decision queue and gets no prover task.
 - with --falsify, tools/oblig/falsify.py on goal.v; a `false` verdict gets no prover task.
 - the prover task TASK-<tier>.md: the TASK text of residual_loop.py (the default-printer goal
   and the path of the exact source), the answer form, then context items while the task
@@ -55,6 +60,7 @@ sys.path.insert(0, str(ROOT / "tools/block"))
 sys.path.insert(0, str(ROOT / "tools/bench"))
 import residual_loop as rl  # noqa: E402
 import similar  # noqa: E402
+import symbolize  # noqa: E402
 import bench_report  # noqa: E402
 
 MAX_PROMPT_BYTES = 12000
@@ -251,8 +257,32 @@ def compose(base, items, max_bytes):
     return text, used
 
 
+def symbolize_goal(d, goal_v, route, out, tag):
+    """(new goal.v text, [(literal, notation)]) when the statement names a symbol's address and the
+    kernel accepts `(original) = (rewritten)` by reflexivity; else (None, reason or [])."""
+    symbols = symbolize.table()
+    match = re.search(r"^Lemma (\S+) :\n  (.*)\.\nProof\.\n", goal_v, re.S | re.M)
+    if not symbols or not match:
+        return None, []
+    original = match[2]
+    rewritten, found = symbolize.statement(original, symbols)
+    if not found:
+        return None, []
+    header = symbolize.with_require(goal_header(goal_v))
+    check = Path(out) / "symbols" / "same.v"
+    check.parent.mkdir(parents=True, exist_ok=True)
+    check.write_text("%s\n\nLemma zesu_symbolized_same :\n  (%s) =\n  (%s).\nProof. reflexivity. Qed.\n"
+                     % ("\n".join(header), original, rewritten))
+    result, log = route.compile(check, tag)
+    if result["returncode"] != 0:
+        return None, "the kernel refused (original) = (rewritten): " + rl.errors_of(log, limit=6)
+    if (d / "goal.v").read_text() == goal_v and not (d / "goal-literal.v").exists():
+        (d / "goal-literal.v").write_text(goal_v)
+    return rl.goal_text(header, match[1], rewritten), found
+
+
 def package_goal(run, manifest, goal, function, tier, max_bytes, index, hints, falsify_route=None,
-                 exec_dir=None, defs_route=None):
+                 exec_dir=None, defs_route=None, symbol_route=None):
     run = Path(run)
     block = manifest["block"]
     d = run / "goals" / goal["id"]
@@ -262,6 +292,16 @@ def package_goal(run, manifest, goal, function, tier, max_bytes, index, hints, f
     record = dict(id=obligation_id(function, block, goal["statement"]), goal=goal["id"], block=block,
                   function=function, tier=tier, conclusion_head=similar.keys(goal["statement"])[0])
     record["addresses"] = address_matches(goal_v)
+    if record["addresses"] and symbol_route is not None:
+        route = symbol_route() if callable(symbol_route) else symbol_route
+        rewritten, found = symbolize_goal(d, goal_v, route, out, "symbols-" + goal["id"])
+        if rewritten is not None:
+            goal_v = rewritten
+            (d / "goal.v").write_text(goal_v)
+            record["symbols"] = [dict(literal=literal, notation=name) for literal, name in found]
+            record["addresses"] = address_matches(goal_v)
+        elif found:
+            record["symbols_refused"] = found
     record["class"] = "ADDRESS" if record["addresses"] else None
     if record["class"] == "ADDRESS":
         record["next"] = "decision"
@@ -276,6 +316,8 @@ def package_goal(run, manifest, goal, function, tier, max_bytes, index, hints, f
             return write_record(out, record)
     answer_path = run / "answers" / (goal["id"] + ".v")
     base = base_task(run, block, goal, goal_v, answer_path)
+    if symbolize.REQUIRE in goal_v:
+        base = symbolize.display(base, symbolize.table())
     if len(base.encode()) > max_bytes:
         record.update(next="too-large", prompt_bytes=len(base.encode()))
         return write_record(out, record)
@@ -324,16 +366,24 @@ def cmd_goals(a):
     if manifest is None:
         raise PackageError("No MANIFEST.json in %s." % run)
     index = json.loads(Path(a.index).read_text()) if a.index else similar.build_index(runs=[run])
-    route = None
+    route = bank_route = None
     if a.falsify or a.defs:
         import falsify
         if not a.bank:
             raise PackageError("--falsify and --defs need --bank.")
         bank_route = falsify.Route(a.bank, a.ocamlpath)
         route = bank_route if a.falsify else None
+    cache = {}
+
+    def symbol_route():
+        """The bank's compile route for the kernel check of symbolized literals (made on first use)."""
+        if "route" not in cache:
+            import falsify
+            cache["route"] = bank_route or falsify.Route(a.bank or manifest["bank"], a.ocamlpath)
+        return cache["route"]
     for goal in open_goals(run, manifest, set(a.goal or ())):
         record = package_goal(run, manifest, goal, a.function, a.tier, a.max_prompt_bytes, index, a.hints,
-                              route, a.exec_dir, bank_route if a.defs else None)
+                              route, a.exec_dir, bank_route if a.defs else None, symbol_route)
         print("PACKAGE %s %s next=%s class=%s bytes=%s context=%s" % (
             record["goal"], record["id"], record["next"], record["class"] or "-",
             record.get("prompt_bytes", "-"), ",".join(record.get("context_supplied", [])) or "-"))
