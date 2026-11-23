@@ -889,7 +889,7 @@ def call_return_seed(edges, *, call, function_root, root_seed, shapes, vocabular
             # The whole array at a fixed address now holds the callee's post value.
             resource, split = resources[key], splits[key]
             value = fresh[split['post']] if split['post'] else \
-                '(' + _strip_enclosure(instantiate(split['post_value'], {})) + ')'
+                '(' + _strip_enclosure(instantiate(_argv_lookups(split['post_value'], argv_name, values['argv']), {})) + ')'
             node = {'kind': 'byte_array', 'id': key, 'original_component': '%s ↦ₘ∗ %s' % (resource.address_z, value),
                     'address_z': resource.address_z, 'byte_array_expr': input_expr(value, None).to_dict(),
                     'element_bits': 8, 'length_original_coq': str(split['length'])}
@@ -932,7 +932,8 @@ def call_return_seed(edges, *, call, function_root, root_seed, shapes, vocabular
                 written = [offset for offset in range(start, end) if offset in updates]
                 if index == 1:
                     value = fresh[split['post']] if split['post'] else \
-                        '(' + _strip_enclosure(instantiate(split['post_value'], {})) + ')'
+                        '(' + _strip_enclosure(instantiate(_argv_lookups(split['post_value'], argv_name, values['argv']),
+                                                           {})) + ')'
                     nodes.append({'kind': 'byte_array', 'id': piece_id, 'original_component':
                                   '%s ↦ₘ∗ %s' % (address, value), 'address_z': address,
                                   'byte_array_expr': input_expr(value, None).to_dict(), 'element_bits': 8,

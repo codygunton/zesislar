@@ -41,11 +41,13 @@ The compiled profile keys, by `boundary`:
   access           an `access_placements` row: `pc` and `placement` {`array`, `index`, `scale`, `offset`},
                    which the forward pass reads (symbolic_state.ACCESS_PLACEMENTS)
   frame            the saved frame where an entry forgets it: `slots` [{`offset` (bytes from the entry
-                   stack pointer, negative), `coq` (the value the slot holds)}] and `sites` [pc]. Each site
-                   gets one fact per slot, `<binder> = (<coq>)`, on the binder of that unknown slot cell
-                   (`entry_hist.slot_binder_name`, profile `frame_slots`): as `return_facts` of the call
-                   whose `return_site_pc` it is, else as `join_designs`; each edge into the site proves it
-                   of the cell value it holds
+                   stack pointer, negative), `coq` (the value the slot holds)}] and `sites` [pc]. A call
+                   return site gets one fact per slot, `<binder> = (<coq>)`, on the binder of that unknown
+                   slot cell (`entry_hist.slot_binder_name`, profile `frame_slots`), as `return_facts` of
+                   the call whose `return_site_pc` it is. Any other site is a join: `join_frames[pc]` lists
+                   the slots, and its seed holds each slot's value as a store at the slot's prologue
+                   address (entry_hist.frame_writes), so the paths after it load the value itself; each
+                   edge into a site proves the value of the cell it holds
 The compiled profile carries `generated_from` {`path`, `sha256`}. The three hand-written profiles have
 no annotation file.
 
@@ -240,16 +242,17 @@ def compile_profile(data, source=None):
                                       'distinct offsets, `sites` [pc] and no facts' % row['id'])
             if not profile.get('frame_slots'):
                 raise AnnotationError('%s: a frame row needs the profile key frame_slots' % row['id'])
+    join_frames = {}
     for row in rows:
         if row['at']['boundary'] == 'frame':
             for pc in row['sites']:
-                texts = ['%s = (%s)' % (entry_hist.slot_binder_name(slot['offset']), slot['coq'])
-                         for slot in row['slots']]
                 owners = [call for call in calls if call.get('return_site_pc') == pc]
                 for call in owners:
-                    call.setdefault('return_facts', []).extend({'kind': 'fact', 'coq': text} for text in texts)
+                    call.setdefault('return_facts', []).extend(
+                        {'kind': 'fact', 'coq': '%s = (%s)' % (entry_hist.slot_binder_name(slot['offset']), slot['coq'])}
+                        for slot in row['slots'])
                 if not owners:
-                    join_designs.setdefault(pc, []).extend(texts)
+                    join_frames.setdefault(pc, []).extend(dict(slot) for slot in row['slots'])
         if row['at']['boundary'] != 'call_return':
             continue
         owners = [call for call in calls if call.get('return_site_pc') == row['at']['pc']]
@@ -261,7 +264,7 @@ def compile_profile(data, source=None):
     for key, value in (('loop_designs', loop_designs), ('join_designs', join_designs), ('calls', calls),
                        ('function_returns', returns), ('access_placements', placements),
                        ('unreachable_entries', unreachable), ('unreachable_reached', reached_pcs),
-                       ('join_drops', drops)):
+                       ('join_drops', drops), ('join_frames', join_frames)):
         if value:
             profile[key] = value
     if source is not None:

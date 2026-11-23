@@ -458,6 +458,7 @@ for suffix, slot in units:
     source_ref = str(forward) + ("#/tail_returns" if suffix in tails else "#/exits" if index is None
                                  else "#/boundaries/" + str(index))
     join_design = [entry_hist.design_fact_text(row) for row in profile.get("join_designs", {}).get(suffix, [])]
+    join_frames = profile.get("join_frames", {}).get(suffix, [])
 
     def provenance(*args, **kwargs):
         return {"source": source_ref}
@@ -499,7 +500,8 @@ for suffix, slot in units:
             vocabulary=vocabulary,
             continuation=continuation,
             join_options={"outer_names": base_arguments, "design_facts": join_design,
-                          "live_registers": data.get("liveness", {}).get(pc), "lifted_binders": lifted_binders},
+                          "live_registers": data.get("liveness", {}).get(pc), "lifted_binders": lifted_binders,
+                          "frame_writes": entry_hist.frame_writes(join_frames, data) if join_frames else ()},
             case_id=pc,
             source_policy="source-only",
             handwritten_owner="Level1.IslarisContractSpec",
