@@ -49,7 +49,7 @@ class Compile(unittest.TestCase):
         with self.assertRaisesRegex(annotations.AnnotationError, 'boundary'):
             annotations.compile_profile(data)
         data = fixture()
-        data['rows'][0]['at']['pc'] = '0x800d6300'
+        data['rows'][0]['at']['pc'] = hex((8 << 28) + 0xd6300)  # an absolute address is refused
         with self.assertRaisesRegex(annotations.AnnotationError, 'pc must be'):
             annotations.compile_profile(data)
         data = fixture()
