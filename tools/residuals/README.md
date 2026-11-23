@@ -49,6 +49,16 @@ tools/block/residual_loop.py results --run <run>     # one RESULT line per goal,
 
 The tool calls no model. The coordinator starts one standing agent per block on `RUN/tasks/`.
 
+Residual modules have two forms. The 15 decodeItem modules keep `ZesuSsz/Residuals/Block800d<B>.v`
+with lemmas `residual_<B>_<hex>`. Every new function uses the relocatable form
+`ZesuSsz/Residuals/<function>/Block<offset>.v` (`render_residual_module.py --function F --block OFF`)
+with lemmas `residual_<function>_<offset>_<16 hex>`, where `<offset>` is the block's 4-hex offset from
+the function's symbol. The hygiene checks accept both forms.
+
+The obligation loop packages these goals with `tools/oblig/package.py` (address class, prover task
+within a byte bound, typed answers), checks each pure goal for falsity first with
+`tools/oblig/falsify.py`, and adds the nearest closed lemmas from `tools/oblig/similar.py`.
+
 ## At scale: every block of a function
 
 `tools/block/residual_scale.py` runs the loop on each block of a function and compares closures.

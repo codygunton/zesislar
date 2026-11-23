@@ -138,6 +138,7 @@ check-evidence-tools:
 	$(PYTHON) -m tools.block.check_export_scopes
 	$(PYTHON) -m tools.block.check_data_only_lemmas
 	$(PYTHON) -m tools.block.check_proved_functions
+	$(PYTHON) tools/oblig/annotations.py check
 	$(PYTHON) tools/stock_zisk/machine_map/generate.py --build $(STOCK_DIR) --check
 	$(PYTHON) tools/stock_zisk/layout.py --check
 	$(PYTHON) tools/stock_zisk/platform/region_windows.py
@@ -147,6 +148,8 @@ check-evidence-tools:
 	$(PYTHON) ZesuSsz/Evidence/check_release_imports.py --umbrella ZesuSsz.Automation2.All
 	$(PYTHON) ZesuSsz/Evidence/check_spec_shapes.py
 	$(PYTHON) tools/check_sail_host_axioms.py
+	$(PYTHON) tools/oblig/check_relocatable.py
+	$(PYTHON) tools/oblig/render_symbols.py --check
 
 .PHONY: check-tool-tests _check-tool-tests
 check-tool-tests:
@@ -185,6 +188,7 @@ RETAINED_TARGETS := \
   @ZesuSsz/Export/all \
   @ZesuSsz/Compliance/all \
   @ZesuSsz/Proofs/Tests/all \
+  @ZesuSsz/Generated/Stock/all \
   @ZesuSsz/Tests/all
 # Compiler bookings come from measured module peaks. Every guarded Dune
 # compile (gates and agent builds) books from this shared profile and merges

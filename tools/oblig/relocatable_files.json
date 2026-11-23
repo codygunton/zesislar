@@ -1,0 +1,28 @@
+{
+  "schema": "zesu.relocatable-files.v1",
+  "description": "Hand-written and agent-written files that must name code and data by symbol and offset, never by absolute address. Globs are relative to the repository root; a glob that matches nothing is not an error. tools/oblig/check_relocatable.py checks every matched file except those matched by exclude.",
+  "files": [
+    "tools/oblig/*.py",
+    "tools/oblig/*.json",
+    "tools/oblig/exec/run.py",
+    "tools/oblig/exec/inputs/*.json",
+    "tools/block/functions/*.annotations.json",
+    "ZesuSsz/Contracts/TxAccessListContract.v",
+    "ZesuSsz/Contracts/KeysToOwnedSliceContract.v",
+    "ZesuSsz/Contracts/EntriesToOwnedSliceContract.v",
+    "ZesuSsz/Contracts/KeysEnsureCapacityContract.v",
+    "ZesuSsz/Contracts/AltFlAllocPremises.v",
+    "ZesuSsz/Contracts/Candidates/AccessListCandidate.v",
+    "ZesuSsz/Contracts/TxAccessListCallSlice.v",
+    "ZesuSsz/Contracts/TxAccessListBugTriggers.v",
+    "ZesuSsz/Compliance/TxAccessList*.v",
+    "ZesuSsz/Compliance/KeysToOwnedSliceCompliance.v",
+    "ZesuSsz/Compliance/EntriesToOwnedSliceCompliance.v",
+    "ZesuSsz/Compliance/KeysEnsureCapacityCompliance.v",
+    "ZesuSsz/Residuals/*/*.v"
+  ],
+  "exclude": [
+    "ZesuSsz/Compliance/*BlockObligations.v",
+    "ZesuSsz/Compliance/*Generated*.v"
+  ]
+}

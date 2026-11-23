@@ -59,8 +59,9 @@ or leave it unbounded, and reject symbolic terms before `vm_compute`. Do not use
 `Automation/`.
 
 A proof that needs more than five `iRename select` or more than forty lines
-per `instr_body` handoff has found a missing rule. Report the residual goal
-to the lead and fix the rule in `Automation/`.
+per `instr_body` handoff has found a missing rule. File the residual goal
+in the obligation store (`tools/oblig/store.py`). The router decides between
+a checked lemma, an annotation and a rule.
 
 Solvers run first, on selected facts only. When a selected-facts solver fails on a pure goal,
 export the goal as a standalone lemma (`tools/residuals/`); a model writes its proof, ending in `Qed.`, and Rocq checks it.
@@ -110,6 +111,10 @@ Record that dependency in `ZesuSsz/Evidence/closed_literal_exceptions.json` with
 The allowlist also preserves existing proof controls and pinned upstream Sail constants outside the conversion scope.
 New exceptions require explicit review.
 Never change frozen Automation to remove an exception.
+
+## Relocatable artifacts
+
+A hand-written or agent-written file names code and data by symbol and offset, never by absolute address. Absolute addresses appear only in generated files. `tools/oblig/check_relocatable.py` enforces this for the files it lists.
 
 ## File structure
 
@@ -272,7 +277,7 @@ by a symbolic link or by a path in a manifest. It logs each deletion in `_build/
 2. Generate Islaris traces from the pinned binary.
 3. Attempt the complete native contract with built-in Islaris automation.
 4. Inspect all residual goals before new lemmas or automation.
-5. Add only reusable invariants or tactics that the residual goals require.
+5. File every residual goal and every generator stop as an obligation. Agents propose annotations and proofs. Only the kernel accepts them.
 6. Prove the exact Level 1 state-correctness assumption.
 7. Verify the proof with `rocq-mcp` before the complete project gate.
 
@@ -282,7 +287,15 @@ Record elapsed time, peak memory, worker count, and machine utilization at each 
 
 Stop and ask the user before changing the contract, proof boundary, or proof architecture.
 Report instruction counts, branch counts, loops, residual goals, and any manual proof growth.
-Treat rapid proof-size growth as an automation defect, not as routine proof work.
+Report checked-lemma lines and tokens per block for every function. Growth per block from one function to the next is the defect signal.
+
+## Generator freeze
+
+Do not add inference to `tools/block`. Two kinds of change are allowed: a fix for a crash or a wrong output, and code that consumes an annotation and emits its check. Every stop and refusal becomes a typed request (`tools/oblig/derive.py`).
+
+## Agent provers
+
+Agents are untrusted. Their text enters the tree only through a renderer that copies checked text byte for byte. The user reviews every statement in the trust base (function contracts, callee premises, known-bug classes, Sail agreement statements), and `ZesuSsz/Evidence/SignatureGates.v` pins it. Annotations inside a function need no review. Start each goal at the cheapest tier of `tools/oblig/routing.json`. Never send an unchanged prompt to the same tier twice.
 
 ## Verification
 
@@ -309,6 +322,7 @@ Report an exact MCP failure before you switch to a shell proof tool.
 The coordinator approves and records each bounded fallback.
 Continue independent preparation while the coordinator reviews that failure.
 Shell commands can build dependencies and run project gates.
+The stand-alone lemma check of the obligation loop (`check.sh` under the resource guard) is an approved shell route.
 
 ## Coordinator duties
 
@@ -375,10 +389,8 @@ Any added failure stops integration and requires a user report.
 After the repair phase, two consecutive red full Iris gates stop integration.
 Report both failures to the user.
 
-Auto adds a generic rule only when one manual step needs more than five lines
-or at least two proof sites need the same step.
+Add a generic rule only when the store shows one goal class open in two functions, or in five goals of one function, and one stated rule closes all of them. Close every other goal with a checked lemma in `ZesuSsz/Residuals/`.
 Generic rules must not name a machine address, an offset, or a contract predicate.
-Otherwise, the region owner writes the manual step in its proof.
 For each handwritten contract and proof file, `check_spec_shapes.py` ratchets
 uninferable existentials, missing `LithiumUnfold` instances, disjunctive specs,
 and frame parameters in closed specs.

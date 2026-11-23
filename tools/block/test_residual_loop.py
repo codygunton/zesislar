@@ -2,6 +2,7 @@
 from contextlib import redirect_stdout
 from pathlib import Path
 import io
+import re
 import sys
 import tempfile
 import unittest
@@ -347,6 +348,159 @@ class ModuleNameTests(unittest.TestCase):
                 with redirect_stdout(io.StringIO()):
                     loop.main(["export", "--block", "1234", "--caller", str(caller), "--bank", root,
                                "--out", str(Path(root) / "out"), "--module", "rlp.decodeItem"])
+
+
+FUNCTION, OFFSET = "txAccessList", "00c4"
+NEW_MODULE = "txAccessList.Block00c4"
+NEW_IMPORT = "Require Import ZesuSsz.Residuals.txAccessList.Block00c4."
+
+
+def fake_scoped(record):
+    """A stand-in for the guarded compile: the log reprints RECORD as the minimized
+    and the round-trip statement, and the compile succeeds."""
+    calls = []
+
+    def scoped(path, tag, args, ocamlpath, **kw):
+        path = Path(path)
+        calls.append(dict(path=path, extra=kw.get("extra_args", ())))
+        path.with_suffix(".log").write_text("0.1 @@X minimized %s\n0.2 @@X binders x\n0.3 @@X roundtrip %s\n"
+                                            % (record, record))
+        return dict(returncode=0, seconds=0.1, stopped=False, log=str(path.with_suffix(".log")))
+    return scoped, calls
+
+
+class RelocatableLoopTests(unittest.TestCase):
+    """export --function: lemmas residual_<function>_<offset>_<16 hex> in ZesuSsz/Residuals/<function>/Block<offset>.v."""
+
+    def setUp(self):
+        self.saved = (loop.scoped, loop.run_check)
+
+    def tearDown(self):
+        loop.scoped, loop.run_check = self.saved
+
+    def new_goal_dir(self, root, gid, statement=STATEMENT):
+        source = CALLER.replace("Require Import ZesuSsz.Automation2.DiagnosticsOn.", NEW_IMPORT)
+        header = loop.caller_header(source, OFFSET, NEW_MODULE)
+        self.assertNotIn(NEW_IMPORT, header)
+        name = "residual_%s_%s_%s" % (FUNCTION, OFFSET, loop.sha(statement)[:16])
+        d = Path(root) / gid
+        d.mkdir(parents=True)
+        goal = loop.goal_text(header, name, statement)
+        (d / "goal.v").write_text(goal)
+        (d / "proof.v").write_text(loop.goal_head(goal) + ANSWER)
+        return d, name
+
+    def test_goal_names_and_module_of_the_function_form(self):
+        found = loop.parse_export(FINAL_LOG.split("\n"))
+        goals, _, _ = loop.select_goals(found, OFFSET, False, FUNCTION)
+        self.assertEqual([g["name"] for g in goals],
+                         ["residual_txAccessList_00c4_" + loop.sha(STATEMENT)[:16]])
+        old, _, _ = loop.select_goals(found, "1234", False)
+        self.assertEqual(old[0]["name"], "residual_1234_" + loop.sha(STATEMENT)[:16])
+        self.assertEqual(loop.module_of(dict(block=OFFSET, function=FUNCTION)), NEW_MODULE)
+        self.assertEqual(loop.module_path("R", NEW_MODULE), Path("R/txAccessList/Block00c4.v"))
+        self.assertEqual(loop.module_path("R", "Block800d1234"), Path("R/Block800d1234.v"))
+
+    def test_export_refuses_a_bad_function_or_both_names(self):
+        with tempfile.TemporaryDirectory() as root:
+            caller = Path(root) / "Caller00c4.v"
+            caller.write_text(CALLER)
+            for n, extra in enumerate((["--function", "tx_access"], ["--block", "c4", "--function", FUNCTION],
+                                       ["--function", FUNCTION, "--module", "M"])):
+                argv = ["export", "--block", OFFSET, "--caller", str(caller), "--bank", root,
+                        "--out", str(Path(root) / ("out%d" % n))] + extra
+                with self.subTest(extra=extra), self.assertRaises(SystemExit) as raised:
+                    loop.main(argv)
+                self.assertIsInstance(raised.exception.code, str)
+
+    def test_minimized_lemma_keeps_the_function_name(self):
+        smaller = STATEMENT.replace("(Hx : (@Coq.ZArith.BinInt.Z.le (0)%Z x)), ", "")
+        loop.scoped, _ = fake_scoped(smaller)
+        loop.run_check = lambda directory: ("PASS", 0.0)
+        with tempfile.TemporaryDirectory() as root:
+            d, name = self.new_goal_dir(root, OFFSET + "-1")
+            goal = dict(id=OFFSET + "-1", name=name, statement=STATEMENT, binders=["x", "Hx"])
+            state = loop.minimize(Path(root), d, goal, ANSWER, ["Local Open Scope Z_scope."], [], "", FUNCTION)
+        self.assertEqual(state["state"], "kept")
+        self.assertEqual(state["name"], "residual_txAccessList_00c4_" + loop.sha(smaller)[:16])
+        self.assertEqual(goal["final_name"], state["name"])
+
+    def test_register_and_rerun_round_trip_the_relocatable_module(self):
+        sys.path.insert(0, str(loop.ROOT / "ZesuSsz" / "Evidence"))
+        from check_proof_hygiene import residual_module_failures
+        with tempfile.TemporaryDirectory() as root:
+            run = Path(root) / "run"
+            d, name = self.new_goal_dir(run / "goals", OFFSET + "-1")
+            loop.write_json(d / "STATUS.json", dict(result="PASS", attempts=[]))
+            caller = Path(root) / "Caller00c4.v"
+            caller.write_text(CALLER)
+            bank = Path(root) / "bank"
+            (bank / "install/default/lib").mkdir(parents=True)
+            (bank / "ARGS.json").write_text("[]")
+            loop.write_json(run / "MANIFEST.json", dict(
+                block=OFFSET, function=FUNCTION, bank=str(bank), caller=str(caller), rounds=1, goals=[
+                    dict(id=OFFSET + "-1", name=name, statement=STATEMENT, source="final", binders=["x", "Hx"],
+                         reparse="exact")], reruns=[]))
+            residuals = Path(root) / "Residuals"
+            with redirect_stdout(io.StringIO()):
+                loop.main(["register", "--run", str(run), "--residuals", str(residuals)])
+            target = residuals / "txAccessList" / "Block00c4.v"
+            module = target.read_text()
+            self.assertEqual(sorted(p.name for p in residuals.rglob("*.v")), ["Block00c4.v"])
+            block, _, rows = rrm.parse_module(module)
+            self.assertEqual(rrm.module_of_rows(rows), (OFFSET, FUNCTION))
+            self.assertEqual([r["name"] for r in rows], [name])
+            self.assertEqual(module, rrm.render_from_goals(OFFSET, str(run / "goals"), function=FUNCTION))
+            self.assertEqual(residual_module_failures("ZesuSsz/Residuals/txAccessList/Block00c4.v", module), [])
+            self.assertEqual(caller.read_text().split("\n").count(NEW_IMPORT), 1)
+            # Registering again adds nothing and leaves the module byte for byte.
+            with redirect_stdout(io.StringIO()):
+                loop.main(["register", "--run", str(run), "--residuals", str(residuals)])
+            self.assertEqual(target.read_text(), module)
+            self.assertEqual(caller.read_text().split("\n").count(NEW_IMPORT), 1)
+
+            loop.scoped, calls = fake_scoped(STATEMENT)
+            with redirect_stdout(io.StringIO()):
+                loop.main(["rerun", "--run", str(run), "--residuals", str(residuals)])
+            lib = run / "rerun-1" / "lib"
+            self.assertEqual((lib / "txAccessList" / "Block00c4.v").read_text(), module)
+            self.assertEqual(calls[0]["path"], lib / "txAccessList" / "Block00c4.v")
+            self.assertEqual(list(calls[0]["extra"]), ["-Q", str(lib.resolve()), "ResidualLoop"])
+            rerun = (run / "rerun-1" / ("Rerun%s.v" % OFFSET)).read_text().split("\n")
+            self.assertIn("Require Import ResidualLoop.txAccessList.Block00c4.", rerun)
+            self.assertNotIn(NEW_IMPORT, rerun)
+            self.assertTrue(loop.read_json(run / "MANIFEST.json")["reruns"][0]["closed"])
+
+
+class OldFormGoldenTests(unittest.TestCase):
+    """The original form is unchanged: goal dirs rebuilt from an existing module
+    register into exactly that module."""
+    BLOCK = "6960"
+
+    def test_existing_module_registers_byte_for_byte(self):
+        target = loop.module_path(loop.RESIDUALS, loop.module_of(dict(block=self.BLOCK)))
+        self.assertEqual(target, loop.ROOT / "ZesuSsz" / "Residuals" / ("Block800d%s.v" % self.BLOCK))
+        existing = target.read_text()
+        block, header, rows = rrm.parse_module(existing)
+        self.assertEqual(block, self.BLOCK)
+        slot = "(* PROOF-SLOT: replace this line and the Admitted below with the proof script and Qed. *)\n"
+        with tempfile.TemporaryDirectory() as root:
+            dirs = []
+            for row in rows:
+                d = Path(root) / row["goal"]
+                d.mkdir()
+                statement = row["body"].split("\nProof.\n", 1)[0] + "\nProof.\n"
+                (d / "goal.v").write_text("\n".join(header) + "\n\n" + statement + slot + "Admitted.\n")
+                (d / "proof.v").write_text("\n".join(header) + "\n\n" + row["body"] + "\n")
+                dirs.append(d)
+            again, added = loop.module_text(self.BLOCK, existing, dirs)
+            self.assertEqual((again, added), (existing, []))
+            fresh, added = loop.module_text(self.BLOCK, None, dirs)
+        self.assertEqual(added, [row["name"] for row in rows])
+        self.assertTrue(all(name.startswith("residual_%s_" % self.BLOCK) for name in added))
+        # Only the recorded goal and proof file digests differ from the checked-in module.
+        digests = re.compile(r"goal\.v sha256 [0-9a-f]{64}, proof\.v sha256 [0-9a-f]{64}")
+        self.assertEqual(digests.sub("D", fresh), digests.sub("D", existing))
 
 
 class ResultTests(unittest.TestCase):

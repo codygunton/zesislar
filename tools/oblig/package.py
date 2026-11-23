@@ -1,0 +1,492 @@
+#!/usr/bin/env python3
+"""Goal packaging for the obligation loop (model-free).
+
+    package.py goals     --run RUN --function F [--goal ID ...] [--tier T] [--max-prompt-bytes N]
+                         [--index INDEX.json] [--hints DIR] [--falsify --bank BANK [--ocamlpath DIR]
+                         [--exec-dir RUN/exec]]
+    package.py answer    --run RUN --goal ID --answer ANSWER.json [--tier T]
+                         [--tokens-in N] [--tokens-out N]
+    package.py addresses FILE ...
+    package.py diagnose  --log LOG --run RUN --function F --block OFF [--disasm FILE]
+                         [--successors FILE ...] [--hints DIR] [--pcs PC ...] [--max-prompt-bytes N]
+    package.py diagnosis-answer --task DIR --answer ANSWER.json [--tier T]
+
+RUN is a run dir of tools/block/residual_loop.py (MANIFEST.json, goals/<id>/goal.v);
+residual_loop.py stays the engine that exports, checks, minimises and registers.
+
+goals packages each open goal (reparse exact, not PASS) into RUN/package/<id>/:
+- the address check: the patterns of tools/oblig/check_relocatable.py (`0x800[0-9a-f]{5}`,
+  `2148[0-9]{6}`, `21474[0-9]{5}`) over the text of goal.v and over the decimal value of
+  each integer literal of its statement. A match gives class ADDRESS: the goal goes to the
+  decision queue and gets no prover task.
+- with --falsify, tools/oblig/falsify.py on goal.v; a `false` verdict gets no prover task.
+- the prover task TASK-<tier>.md: the TASK text of residual_loop.py (the default-printer goal
+  and the path of the exact source), the answer form, then context items while the task
+  stays within --max-prompt-bytes: the 3 nearest closed lemmas (tools/oblig/similar.py) and
+  the hint slice of the block (`tools/oblig/hints.py slice`, when --hints names a hint pack).
+- PACKAGE.json: obligation id (`<F>/goal/<block>-<16 hex of sha256(statement)>`), class,
+  addresses, falsity verdict, task path, prompt bytes and sha256, context items.
+
+answer turns a prover's JSON answer
+`{"verdict": "proved"|"false"|"need_context"|"give_up", "proof": ..., "needs": [...],
+"counterexample": ...}` into RUN/answers/<id>.json, and for `proved` into RUN/answers/<id>.v
+(the proof script), the files `residual_loop.py collect` checks.
+
+diagnose turns each `@@S` record of a compile log (ZesuSsz/Automation2/SpatialExport.v) into a
+diagnosis task RUN/diagnose/<block>-<n>/TASK.md with REQUEST.json. Its answer is typed, not a
+proof: `annotation`, `pure_goal`, `false` or `rule_gap`; diagnosis-answer checks the form and
+writes ANSWER.json (and pure_goal.txt for a pure goal). The check of the content is a rerun of
+the block.
+"""
+import argparse
+import hashlib
+import json
+import re
+import subprocess
+import sys
+from pathlib import Path
+
+HERE = Path(__file__).resolve().parent
+ROOT = HERE.parents[1]
+sys.path.insert(0, str(HERE))
+sys.path.insert(0, str(ROOT / "tools/block"))
+import residual_loop as rl  # noqa: E402
+import similar  # noqa: E402
+
+MAX_PROMPT_BYTES = 12000
+ADDRESS_PATTERNS = (re.compile(r"0x800[0-9a-f]{5}"), re.compile(r"2148[0-9]{6}"), re.compile(r"21474[0-9]{5}"))
+VERDICTS = ("proved", "false", "need_context", "give_up")
+DIAGNOSIS_KINDS = ("annotation", "pure_goal", "false", "rule_gap")
+HINTS = HERE / "hints.py"
+
+ANSWER_FORM = """## Answer form
+
+Reply with one JSON object and nothing else:
+
+```json
+{{"verdict": "proved" | "false" | "need_context" | "give_up",
+ "proof": "the text after `Proof.`, ending with one `Qed.` (verdict proved)",
+ "needs": ["a lemma, definition or fact you miss (verdict need_context)"],
+ "counterexample": "values of the binders that make the premises true and the conclusion false (verdict false)"}}
+```
+
+The coordinator writes `proof` to `{answer}` and checks it with Rocq.
+"""
+
+
+class PackageError(ValueError):
+    pass
+
+
+def sha(text):
+    return hashlib.sha256(text.encode()).hexdigest()
+
+
+def obligation_id(function, block, statement):
+    """The goal id of tools/oblig/store.py: the sha256 of the exact exported statement."""
+    return "%s/goal/%s-%s" % (function, block, sha(statement)[:16])
+
+
+# ---- addresses ----
+
+def address_matches(text):
+    """Code addresses named in TEXT: pattern hits in the text and in the decimal values of its
+    integer literals (positive constructor terms included)."""
+    import falsify  # lazy: falsify imports the residual loop's compile route
+    found = []
+    for pattern in ADDRESS_PATTERNS:
+        found += [dict(match=m.group(0), source="text") for m in pattern.finditer(text)]
+    for value in sorted(falsify.literals(text)):
+        decimal = str(abs(value))
+        if any(pattern.fullmatch(decimal) for pattern in ADDRESS_PATTERNS[1:]):
+            found.append(dict(match=decimal, source="literal", hex="%#x" % abs(value)))
+    unique, seen = [], set()
+    for row in found:
+        if (row["match"], row["source"]) not in seen:
+            seen.add((row["match"], row["source"]))
+            unique.append(row)
+    return unique
+
+
+# ---- prover tasks ----
+
+def goal_header(goal_v):
+    """The import lines of a goal.v (everything before its Lemma)."""
+    head = rl.goal_head(goal_v)
+    return head[:head.index("\nLemma ")].strip("\n").split("\n")
+
+
+def base_task(run, block, goal, goal_v, answer_path):
+    counts = goal.get("counts", {})
+    text = rl.TASK.format(id=goal["id"], block=block, answer=answer_path,
+                          feedback=Path(run) / "feedback" / (goal["id"] + ".txt"), name=goal["name"],
+                          premises=counts.get("kept", "?"), props=counts.get("props", "?"),
+                          small=counts.get("small", "?"), readable=goal.get("readable") or "(not available)",
+                          goal=Path(run) / "goals" / goal["id"] / "goal.v", header="\n".join(goal_header(goal_v)))
+    return text + "\n" + ANSWER_FORM.format(answer=answer_path)
+
+
+def hint_slice(hints, pcs, max_bytes):
+    """The hint slice for PCS from tools/oblig/hints.py, or None (no pack, no tool, too large)."""
+    if not hints or not pcs or not HINTS.exists() or max_bytes <= 0:
+        return None
+    command = [sys.executable, str(HINTS), "slice", "--hints", str(hints), "--max-bytes", str(max_bytes)]
+    for pc in pcs:
+        command += ["--pcs", pc]
+    proc = subprocess.run(command, capture_output=True, text=True)
+    return proc.stdout if proc.returncode == 0 and proc.stdout.strip() else None
+
+
+def compose(base, items, max_bytes):
+    """BASE plus each (name, text) item that still fits in MAX_BYTES; returns (text, used names)."""
+    text, used = base, []
+    for name, item in items:
+        if item and len((text + "\n" + item).encode()) <= max_bytes:
+            text += "\n" + item
+            used.append(name)
+    return text, used
+
+
+def package_goal(run, manifest, goal, function, tier, max_bytes, index, hints, falsify_route=None,
+                 exec_dir=None):
+    run = Path(run)
+    block = manifest["block"]
+    d = run / "goals" / goal["id"]
+    goal_v = (d / "goal.v").read_text()
+    out = run / "package" / goal["id"]
+    out.mkdir(parents=True, exist_ok=True)
+    record = dict(id=obligation_id(function, block, goal["statement"]), goal=goal["id"], block=block,
+                  function=function, tier=tier, conclusion_head=similar.keys(goal["statement"])[0])
+    record["addresses"] = address_matches(goal_v)
+    record["class"] = "ADDRESS" if record["addresses"] else None
+    if record["class"] == "ADDRESS":
+        record["next"] = "decision"
+        return write_record(out, record)
+    if falsify_route is not None:
+        import falsify
+        report = falsify.check(d / "goal.v", falsify_route, out / "falsify", exec_dir=exec_dir, offset=block)
+        record["falsify"] = dict(verdict=report["verdict"], reason=report.get("reason"),
+                                 hit=report.get("hit"), report=str(out / "falsify" / "FALSIFY.json"))
+        if report["verdict"] == "false":
+            record["next"] = "owner"
+            return write_record(out, record)
+    answer_path = run / "answers" / (goal["id"] + ".v")
+    base = base_task(run, block, goal, goal_v, answer_path)
+    if len(base.encode()) > max_bytes:
+        record.update(next="too-large", prompt_bytes=len(base.encode()))
+        return write_record(out, record)
+    remaining = max_bytes - len(base.encode())
+    found = similar.nearest(index, goal["statement"], similar.K, max(0, remaining - 200)) if index else []
+    items = [("similar", similar.section(found))] if found else []
+    pcs = ["+0x" + block]
+    items.append(("hints", hint_slice(hints, pcs, remaining)))
+    text, used = compose(base, items, max_bytes)
+    task = out / ("TASK-%s.md" % tier)
+    task.write_text(text)
+    record.update(next="prover", task=str(task), prompt_bytes=len(text.encode()), prompt_sha256=sha(text),
+                  context_items=[name for name, item in items if item],
+                  context_supplied=used, similar=[e["name"] for _, e in found] if "similar" in used else [])
+    return write_record(out, record)
+
+
+def write_record(out, record):
+    rl.write_json(Path(out) / "PACKAGE.json", record)
+    return record
+
+
+def open_goals(run, manifest, only=()):
+    for goal in manifest["goals"]:
+        if only and goal["id"] not in only:
+            continue
+        status = rl.read_json(Path(run) / "goals" / goal["id"] / "STATUS.json", {})
+        if goal.get("reparse") == "exact" and status.get("result") != "PASS":
+            yield goal
+
+
+def cmd_goals(a):
+    run = Path(a.run)
+    manifest = rl.read_json(run / "MANIFEST.json")
+    if manifest is None:
+        raise PackageError("No MANIFEST.json in %s." % run)
+    index = json.loads(Path(a.index).read_text()) if a.index else similar.build_index(runs=[run])
+    route = None
+    if a.falsify:
+        import falsify
+        if not a.bank:
+            raise PackageError("--falsify needs --bank.")
+        route = falsify.Route(a.bank, a.ocamlpath)
+    for goal in open_goals(run, manifest, set(a.goal or ())):
+        record = package_goal(run, manifest, goal, a.function, a.tier, a.max_prompt_bytes, index, a.hints,
+                              route, a.exec_dir)
+        print("PACKAGE %s %s next=%s class=%s bytes=%s context=%s" % (
+            record["goal"], record["id"], record["next"], record["class"] or "-",
+            record.get("prompt_bytes", "-"), ",".join(record.get("context_supplied", [])) or "-"))
+
+
+# ---- prover answers ----
+
+def parse_answer(data):
+    if not isinstance(data, dict) or data.get("verdict") not in VERDICTS:
+        raise PackageError("The answer needs a verdict among %s." % ", ".join(VERDICTS))
+    verdict = data["verdict"]
+    if verdict == "proved" and not (isinstance(data.get("proof"), str) and data["proof"].strip()):
+        raise PackageError("A proved answer needs a proof.")
+    if "needs" in data and not (isinstance(data["needs"], list) and all(isinstance(x, str) for x in data["needs"])):
+        raise PackageError("needs must be a list of strings.")
+    if verdict == "need_context" and not data.get("needs"):
+        raise PackageError("A need_context answer names what it needs.")
+    if verdict == "false" and not (isinstance(data.get("counterexample"), str) and data["counterexample"].strip()):
+        raise PackageError("A false answer needs a counterexample.")
+    return verdict
+
+
+def write_answer(run, goal_id, data, raw, tier=None, tokens_in=None, tokens_out=None):
+    run = Path(run)
+    manifest = rl.read_json(run / "MANIFEST.json")
+    if manifest is None or goal_id not in {g["id"] for g in manifest["goals"]}:
+        raise PackageError("No goal %s in %s." % (goal_id, run))
+    verdict = parse_answer(data)
+    answers = run / "answers"
+    answers.mkdir(exist_ok=True)
+    tokens = None if tokens_in is None and tokens_out is None else (tokens_in or 0) + (tokens_out or 0)
+    meta = dict(verdict=verdict, tier=tier, tokens=tokens, tokens_in=tokens_in, tokens_out=tokens_out,
+                needs=data.get("needs", []), counterexample=data.get("counterexample"),
+                answer_bytes=len(raw.encode()), answer_sha256=sha(raw))
+    problem = None
+    if verdict == "proved":
+        proof = data["proof"].strip() + "\n"
+        problem = rl.answer_problems(proof)
+        meta["proof_sha256"] = sha(proof)
+        (answers / (goal_id + ".v")).write_text(proof)
+    rl.write_json(answers / (goal_id + ".json"), meta)
+    return verdict, problem
+
+
+def cmd_answer(a):
+    raw = Path(a.answer).read_text()
+    try:
+        data = json.loads(raw)
+    except json.JSONDecodeError as error:
+        raise PackageError("The answer is not JSON: %s" % error)
+    verdict, problem = write_answer(a.run, a.goal, data, raw, a.tier, a.tokens_in, a.tokens_out)
+    print("ANSWER %s %s%s" % (a.goal, verdict, " (collect will refuse it: %s)" % problem if problem else ""))
+
+
+# ---- addresses command ----
+
+def cmd_addresses(a):
+    failed = False
+    for path in a.files:
+        for row in address_matches(Path(path).read_text()):
+            failed = True
+            print("ADDRESS %s %s %s%s" % (path, row["source"], row["match"],
+                                          " (%s)" % row["hex"] if "hex" in row else ""))
+    sys.exit(1 if failed else 0)
+
+
+# ---- spatial diagnosis ----
+
+def spatial_records(log_text):
+    """The `@@S` records of a log: dicts with kind, head, seek, seek_vars, res, defs, facts, counts.
+    A `@@S skip <kind> error` line becomes a record with `skip` set."""
+    records, current = [], None
+    for line in log_text.split("\n"):
+        line = rl.STAMP.sub(r"\2", line).rstrip()
+        if not line.startswith("@@S "):
+            continue
+        body = line[4:]
+        tag, _, rest = body.partition(" ")
+        if tag == "skip":
+            records.append(dict(skip=rest))
+            current = None
+        elif tag == "begin":
+            current = dict(kind=rest, head=None, seek=None, seek_vars=[], res=[], defs=[], facts=[], counts=None)
+            records.append(current)
+        elif current is None:
+            continue
+        elif tag == "head":
+            current["head"] = rest
+        elif tag == "seek":
+            sort, _, text = rest.partition(" ")
+            current["seek"] = dict(sort=sort, text=text)
+        elif tag == "seek-vars":
+            current["seek_vars"] = rest.split()
+        elif tag == "res":
+            current["res"].append(rest)
+        elif tag == "def":
+            current["defs"].append(rest)
+        elif tag == "fact":
+            current["facts"].append(rest)
+        elif tag == "counts":
+            current["counts"] = dict(kv.split("=", 1) for kv in rest.split() if "=" in kv)
+        elif tag == "end":
+            current = None
+    return [r for r in records if "skip" in r or r.get("head")]
+
+
+DIAGNOSIS = """# Spatial leftover {id} ({function}, block +0x{block})
+
+`zesu_block2` left an Iris goal open at the end of this block. Find why the lookup is stuck and
+answer with one typed JSON object. Your answer is not a proof: the coordinator turns it into the
+next obligation and reruns the block.
+
+## Stuck judgment
+
+- head: `{head}`
+- seeks ({sort}): `{seek}`
+- local variables of the sought term: {seek_vars}
+
+## Owned resources (p: persistent, s: spatial; oldest first)
+
+{res}
+
+## Related definitions and pure facts
+
+{facts}
+
+{extra}## Answer form
+
+Reply with exactly one JSON object; `kind` is one of `annotation`, `pure_goal`, `false`, `rule_gap`:
+
+```json
+{{"kind": "annotation", "annotation": {{"at": {{"pc": "+0x...", "boundary": "entry|loop_cut|join|call_site|call_return|function_return|access"}},
+  "binders": [...], "resources": [...], "facts": [{{"coq": "...", "role": "..."}}],
+  "placement": {{"array": "...", "index": "...", "scale": 8, "offset": 0}}}},
+ "reason": "..."}}
+{{"kind": "pure_goal", "statement": "forall ..., ... (an exact Rocq proposition that unblocks the lookup)", "reason": "..."}}
+{{"kind": "false", "statement": "the entry statement that is wrong", "counterexample": "...", "reason": "..."}}
+{{"kind": "rule_gap", "entailment": "a stand-alone Iris entailment the rule library misses", "reason": "..."}}
+```
+
+Name code by symbol and offset (`+0x...`), never by absolute address.
+"""
+
+
+def diagnosis_task(record, ident, function, block, extra):
+    seek = record.get("seek") or dict(sort="none", text="")
+    res = "\n".join("- `%s`" % line for line in record["res"]) or "- (none)"
+    facts = "\n".join(["- def `%s`" % line for line in record["defs"]]
+                      + ["- fact `%s`" % line for line in record["facts"]]) or "- (none)"
+    return DIAGNOSIS.format(id=ident, function=function, block=block, head=record["head"], sort=seek["sort"],
+                            seek=seek["text"] or "-", seek_vars=", ".join(record["seek_vars"]) or "-",
+                            res=res, facts=facts, extra=extra)
+
+
+def cmd_diagnose(a):
+    run = Path(a.run)
+    records = spatial_records(Path(a.log).read_text(errors="replace"))
+    if not records:
+        raise PackageError("No @@S record in %s." % a.log)
+    sections = []
+    if a.disasm:
+        sections.append("## Disassembly\n\n```\n%s\n```\n" % Path(a.disasm).read_text().strip())
+    for path in a.successors or ():
+        sections.append("## Successor entry statement `%s`\n\n```coq\n%s\n```\n" % (Path(path).name,
+                                                                                  Path(path).read_text().strip()))
+    for n, record in enumerate(records, 1):
+        ident = "%s/diagnosis/%s-%d" % (a.function, a.block, n)
+        out = run / "diagnose" / ("%s-%d" % (a.block, n))
+        out.mkdir(parents=True, exist_ok=True)
+        if "skip" in record:
+            rl.write_json(out / "REQUEST.json", dict(id=ident, record=record, next="skip"))
+            print("DIAGNOSE %s skip %s" % (ident, record["skip"]))
+            continue
+        base = diagnosis_task(record, ident, a.function, a.block, "")
+        remaining = a.max_prompt_bytes - len(base.encode())
+        items = [("section:%d" % i, text) for i, text in enumerate(sections)]
+        items.append(("hints", hint_slice(a.hints, a.pcs or ["+0x" + a.block], remaining)))
+        extra, used = "", []
+        for name, text in items:
+            if text and len((base + extra + text + "\n").encode()) <= a.max_prompt_bytes:
+                extra += text + "\n"
+                used.append(name)
+        text = diagnosis_task(record, ident, a.function, a.block, extra)
+        (out / "TASK.md").write_text(text)
+        rl.write_json(out / "REQUEST.json", dict(id=ident, function=a.function, block=a.block, record=record,
+                                                 kinds=list(DIAGNOSIS_KINDS), task=str(out / "TASK.md"),
+                                                 prompt_bytes=len(text.encode()), prompt_sha256=sha(text),
+                                                 context_supplied=used, next="opus-medium"))
+        print("DIAGNOSE %s task bytes=%d" % (ident, len(text.encode())))
+
+
+def parse_diagnosis(data):
+    if not isinstance(data, dict) or data.get("kind") not in DIAGNOSIS_KINDS:
+        raise PackageError("The diagnosis needs a kind among %s." % ", ".join(DIAGNOSIS_KINDS))
+    kind = data["kind"]
+    need = dict(annotation=("annotation",), pure_goal=("statement",), false=("statement", "counterexample"),
+                rule_gap=("entailment",))[kind]
+    for key in need:
+        if not data.get(key):
+            raise PackageError("A %s diagnosis needs %s." % (kind, key))
+    if kind == "annotation" and not isinstance(data["annotation"], dict):
+        raise PackageError("annotation must be an object (a row of zesu.annotations.v1).")
+    text = json.dumps(data, sort_keys=True)
+    for pattern in ADDRESS_PATTERNS:
+        if pattern.search(text):
+            raise PackageError("The diagnosis names an absolute code address: %s." % pattern.search(text).group(0))
+    return kind
+
+
+def cmd_diagnosis_answer(a):
+    task = Path(a.task)
+    raw = Path(a.answer).read_text()
+    try:
+        data = json.loads(raw)
+    except json.JSONDecodeError as error:
+        raise PackageError("The answer is not JSON: %s" % error)
+    kind = parse_diagnosis(data)
+    rl.write_json(task / "ANSWER.json", dict(answer=data, kind=kind, tier=a.tier, answer_bytes=len(raw.encode()),
+                                             answer_sha256=sha(raw)))
+    if kind == "pure_goal":
+        (task / "pure_goal.txt").write_text(data["statement"].strip() + "\n")
+    print("DIAGNOSIS %s %s" % (task.name, kind))
+
+
+def main(argv=None):
+    ap = argparse.ArgumentParser(description=__doc__.split("\n\n")[0])
+    sub = ap.add_subparsers(dest="command", required=True)
+    g = sub.add_parser("goals")
+    g.add_argument("--run", required=True)
+    g.add_argument("--function", required=True)
+    g.add_argument("--goal", action="append")
+    g.add_argument("--tier", default="haiku-low")
+    g.add_argument("--max-prompt-bytes", type=int, default=MAX_PROMPT_BYTES)
+    g.add_argument("--index", help="similar.py index; default: built from the residual modules and RUN")
+    g.add_argument("--hints", help="hints/ dir of tools/oblig/hints.py build")
+    g.add_argument("--falsify", action="store_true")
+    g.add_argument("--bank")
+    g.add_argument("--ocamlpath")
+    g.add_argument("--exec-dir")
+    an = sub.add_parser("answer")
+    an.add_argument("--run", required=True)
+    an.add_argument("--goal", required=True)
+    an.add_argument("--answer", required=True)
+    an.add_argument("--tier")
+    an.add_argument("--tokens-in", type=int)
+    an.add_argument("--tokens-out", type=int)
+    ad = sub.add_parser("addresses")
+    ad.add_argument("files", nargs="+")
+    dg = sub.add_parser("diagnose")
+    dg.add_argument("--log", required=True)
+    dg.add_argument("--run", required=True)
+    dg.add_argument("--function", required=True)
+    dg.add_argument("--block", required=True, help="4-hex offset of the block from the function symbol")
+    dg.add_argument("--disasm")
+    dg.add_argument("--successors", nargs="*")
+    dg.add_argument("--hints")
+    dg.add_argument("--pcs", nargs="*")
+    dg.add_argument("--max-prompt-bytes", type=int, default=MAX_PROMPT_BYTES)
+    da = sub.add_parser("diagnosis-answer")
+    da.add_argument("--task", required=True)
+    da.add_argument("--answer", required=True)
+    da.add_argument("--tier")
+    a = ap.parse_args(argv)
+    try:
+        {"goals": cmd_goals, "answer": cmd_answer, "addresses": cmd_addresses, "diagnose": cmd_diagnose,
+         "diagnosis-answer": cmd_diagnosis_answer}[a.command](a)
+    except PackageError as error:
+        sys.exit("package: %s" % error)
+
+
+if __name__ == "__main__":
+    main()
