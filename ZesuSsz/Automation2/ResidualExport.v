@@ -18,7 +18,11 @@ Set Default Proof Mode "Classic".
      written as applications;
    - binders keep their names; a name that an outer binder already uses
      gets a fresh suffix.
-   A term with a match, a fixpoint, an evar or a primitive value is refused.
+   - a `match` on `bool` or `sumbool` (`if b then ..`, `if decide P then ..`)
+     whose branches do not use the constructor's argument is written as
+     `(if s as x return P then t else e)`, which elaborates to the same
+     match.
+   Any other match, a fixpoint, an evar or a primitive value is refused.
 
    The statement of a goal is `forall (x1 : T1) ... (xn : Tn), C` over the
    hypotheses that the conclusion reaches: the facts that share a local
@@ -59,7 +63,9 @@ Ltac2 Type zesu_export_literals := {
   positive_type : inductive;
   n_type : inductive;
   z_type : inductive;
-  nat_type : inductive
+  nat_type : inductive;
+  bool_type : inductive;
+  sumbool_type : inductive
 }.
 
 Ltac2 zesu_export_inductive (term : constr) : inductive :=
@@ -72,7 +78,9 @@ Ltac2 zesu_export_literal_types () : zesu_export_literals := {
   positive_type := zesu_export_inductive 'positive;
   n_type := zesu_export_inductive 'N;
   z_type := zesu_export_inductive 'Z;
-  nat_type := zesu_export_inductive 'nat
+  nat_type := zesu_export_inductive 'nat;
+  bool_type := zesu_export_inductive 'bool;
+  sumbool_type := zesu_export_inductive 'sumbool
 }.
 
 (* The constructor of TERM when TERM is a constructor of IND, with its index. *)
@@ -292,7 +300,44 @@ Ltac2 rec zesu_export_term (lits : zesu_export_literals) (names : string list) (
             zesu_export_path (Std.ConstRef c); zesu_export_str ")"]
       | None => zesu_export_refuse "projection"
       end
-  | Constr.Unsafe.Case _ _ _ _ _ => zesu_export_refuse "match"
+  | Constr.Unsafe.Case _ predicate _ scrutinee branches =>
+      let (returned, _) := predicate in
+      (* The return predicate `fun (x : I ..) => P` names the inductive: `bool`
+         (constructors without arguments) or `sumbool A B` (one argument). *)
+      let shape := match Constr.Unsafe.kind returned with
+        | Constr.Unsafe.Lambda binder body =>
+            let head := match Constr.Unsafe.kind (Constr.Binder.type binder) with
+              | Constr.Unsafe.App head _ => head
+              | _ => Constr.Binder.type binder
+              end in
+            match Constr.Unsafe.kind head with
+            | Constr.Unsafe.Ind ind _ =>
+                if Ind.equal ind (lits.(bool_type)) then Some (binder, body, 0)
+                else if Ind.equal ind (lits.(sumbool_type)) then Some (binder, body, 1)
+                else None
+            | _ => None
+            end
+        | _ => None
+        end in
+      match shape with
+      | None => zesu_export_refuse "match"
+      | Some (binder, body, fields) =>
+          if Int.equal (Array.length branches) 2 then () else zesu_export_refuse "match";
+          let name := zesu_export_binder_name binder names in
+          let branch (term : constr) :=
+            if Int.equal fields 0 then recur names term else
+            match Constr.Unsafe.kind term with
+            | Constr.Unsafe.Lambda _ inner =>
+                if zesu_export_occurs 1 inner then zesu_export_refuse "dependent branch"
+                else recur ("_" :: names) inner
+            | _ => zesu_export_refuse "match"
+            end in
+          zesu_export_cats [zesu_export_str "(if "; recur names scrutinee;
+            zesu_export_str " as "; zesu_export_str name; zesu_export_str " return ";
+            recur (name :: names) body; zesu_export_str " then ";
+            branch (Array.get branches 0); zesu_export_str " else ";
+            branch (Array.get branches 1); zesu_export_str ")"]
+      end
   | Constr.Unsafe.Fix _ _ _ _ => zesu_export_refuse "fixpoint"
   | Constr.Unsafe.CoFix _ _ _ => zesu_export_refuse "cofixpoint"
   | Constr.Unsafe.Evar _ _ => zesu_export_refuse "evar"
@@ -313,7 +358,7 @@ Ltac2 zesu_export_member (name : ident) (names : ident list) := List.mem Ident.e
 (* The local variables of TERM; None when TERM has syntax that the printer
    refuses. *)
 Ltac2 zesu_export_variables (term : constr) : ident list option :=
-  match Control.case (fun () => ZesuSsz.Automation2.ContextCollection.zesu_context_variables term) with
+  match Control.case (fun () => ZesuSsz.Automation2.ContextCollection.zesu_context_variables_in true term) with
   | Val (found, _) => Some found
   | Err _ => None
   end.

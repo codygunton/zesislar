@@ -65,5 +65,45 @@ class IndexTests(unittest.TestCase):
         self.assertEqual(index["entries"][0]["head"], "Z.lt")
 
 
+HIST = ("(forall (x : Z), (forall (H3 : (@ZesuSsz.Automation2.Hist.zesu_hist "
+        "(@ZesuSsz.Generated.%s.fp_machineAt%s_ForwardA0N0_Hist x))), (forall (H4 : (@Coq.ZArith.BinInt.Z.le (0)%%Z x)), "
+        "(@Coq.ZArith.BinInt.Z.lt (@ZesuSsz.Contracts.%s x) (1)%%Z))))")
+
+
+class PremiseTests(unittest.TestCase):
+    def test_premise_shapes_normalise_names_and_offsets(self):
+        statement = HIST % ("Keys", "0170", "keysRead")
+        self.assertEqual(similar.premise_shapes(statement), ["le", "zesu_hist(fp_machineAt#_ForwardA0N0_Hist)"])
+        self.assertEqual(similar.premise_shapes(statement, "intros. unfold X in H3. lia."),
+                         ["zesu_hist(fp_machineAt#_ForwardA0N0_Hist)"])
+        self.assertEqual(similar.premise_shapes("forall (x : Z) (H0 : 0 <= x) (H1 : x < 5), x < 6", "lia"), [])
+
+    def test_a_lemma_of_another_region_using_the_history_premise_ranks_first(self):
+        hist_proof = "intros. unfold fp_machineAt01ac_ForwardA0N0_Hist in H3. rewrite zesu_hist_eq in H3. lia.\nQed."
+        index = dict(entries=[
+            similar.entry("other_region", HIST % ("Entries", "01ac", "entriesRead"), hist_proof, "a"),
+            similar.entry("same_region_plain", HIST % ("Keys", "0170", "keysWrite"), "intros. lia.\nQed.", "b"),
+        ] + [similar.entry("filler_%d" % n, "forall (y : Z) (H0 : 0 <= y), y < y + %d" % n, "intros. lia.\nQed.", "c")
+             for n in range(1, 4)])
+        found = similar.nearest(index, HIST % ("Keys", "0170", "keysRead"), 2)
+        self.assertEqual([e["name"] for _, e in found], ["other_region", "same_region_plain"])
+
+    def test_sibling_runs_cover_every_region_of_the_run_root(self):
+        with tempfile.TemporaryDirectory() as root:
+            for region in ("keys", "entries"):
+                (Path(root) / region).mkdir()
+                (Path(root) / region / "OBLIGATIONS.jsonl").write_text("")
+                run = Path(root) / region / "resid-r1" / "0170"
+                (run / "goals").mkdir(parents=True)
+                (run / "MANIFEST.json").write_text("{}")
+            (Path(root) / "keys" / "bank-r1" / "x" / "goals").mkdir(parents=True)
+            (Path(root) / "keys" / "bank-r1" / "x" / "MANIFEST.json").write_text("{}")
+            found = similar.sibling_runs(Path(root) / "keys" / "resid-r1" / "0170")
+            self.assertEqual([p.relative_to(Path(root).resolve()).parts[0] for p in found], ["entries", "keys"])
+            lone = Path(root) / "lone"
+            lone.mkdir()
+            self.assertEqual(similar.sibling_runs(lone), [lone.resolve()])
+
+
 if __name__ == "__main__":
     unittest.main()

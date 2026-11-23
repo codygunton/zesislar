@@ -48,6 +48,7 @@ Require Import ZesuSsz.Automation2.Telemetry.
 Require Import ZesuSsz.Automation2.FailureMemo.
 Require ZesuSsz.Automation2.RewriteBoundGuards.
 Require ZesuSsz.Automation2.DomainRanges.
+Require ZesuSsz.Automation2.FactViews.
 (** Project-wide Lithium hook redefinitions belong in this module. *)
 
 From iris.proofmode Require Import environments.
@@ -2822,6 +2823,56 @@ Ltac zesu_liAStep :=
 Ltac zesu_simpl_folded_moduli := with_strategy opaque
   [stdpp.bitvector.definitions.bv_modulus stdpp.bitvector.definitions.bv_half_modulus] simpl.
 Ltac liSimpl ::= try progress zesu_simpl_folded_moduli.
+
+(* A resource with a registered fact view (`FactViews.v`) enters the context
+   with its fact as a hypothesis: the introduction of `P -∗ T` becomes the
+   introduction of `P`, then of `⌜fact⌝`. A resource without a view, or
+   whose fact is already a hypothesis, is introduced as before. *)
+Ltac zesu_fact_view_wand P :=
+  FactViews.zesu_fact_view_with P ltac:(fun view fact =>
+    FactViews.zesu_fact_view_new fact;
+    notypeclasses refine (FactViews.tac_zesu_fact_view_intro P fact _ _ view _);
+    let n := lazymatch goal with | [ H := Envs _ _ ?n |- _ ] => n end in
+    let H := constr:(IAnon n) in
+    let n' := eval vm_compute in (Pos.succ n) in
+    simple notypeclasses refine (tac_do_intro H n' P _ _ _ _ _ _ _); [li_pm_reflexivity..|];
+    notypeclasses refine (tac_do_intro_pure _ _ _ _); intros ?).
+
+(* Lithium's `liWand`, with the fact-view introduction tried first on an
+   atom. *)
+Ltac liWand ::=
+  let wand_intro P :=
+    first [
+      zesu_fact_view_wand P
+    | let SH := constr:(_ : SimplifyHyp P (Some 0%N)) in
+      simple notypeclasses refine (tac_do_simplify_hyp P SH _ _ _)
+    | let P' := open_constr:(_) in
+      let ip := constr:(_ : IntroPersistent P P') in
+      let n := lazymatch goal with | [ H := Envs _ _ ?n |- _ ] => n end in
+      let H := constr:(IAnon n) in
+      let n' := eval vm_compute in (Pos.succ n) in
+      simple notypeclasses refine (tac_do_intro_intuit H n' P P' _ _ _ _ ip _ _ _); [li_pm_reflexivity..|]
+    | let n := lazymatch goal with | [ H := Envs _ _ ?n |- _ ] => n end in
+      let H := constr:(IAnon n) in
+      let n' := eval vm_compute in (Pos.succ n) in
+      simple notypeclasses refine (tac_do_intro H n' P _ _ _ _ _ _ _); [li_pm_reflexivity..|]
+    ] in
+  lazymatch goal with
+  | |- envs_entails ?Δ (bi_wand ?P ?T) =>
+      lazymatch P with
+      | bi_sep _ _ =>
+          li_let_bind T (fun H => constr:(envs_entails Δ (bi_wand P H)));
+          notypeclasses refine (tac_wand_sep_assoc _ _ _ _ _)
+      | bi_exist _ => fail "handled by liForall"
+      | bi_emp => notypeclasses refine (tac_wand_emp _ _ _)
+      | bi_pure _ => notypeclasses refine (tac_do_intro_pure _ _ _ _)
+      | bi_intuitionistically (bi_sep _ _) => notypeclasses refine (tac_wand_pers_sep _ _ _ _ _)
+      | bi_intuitionistically (bi_exist _) => notypeclasses refine (tac_wand_pers_exist _ _ _ _ _)
+      | bi_intuitionistically (bi_pure _) => notypeclasses refine (tac_wand_pers_pure _ _ _ _)
+      | match ?x with _ => _ end => fail "should not have match in wand"
+      | _ => wand_intro P
+      end
+  end.
 
 (* Lithium's `liSep` (a separating conjunct found through `RelatedTo`) and
    `liFindInContext` also run a whole-goal `simpl` before the context lookup.

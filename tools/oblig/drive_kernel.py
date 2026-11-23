@@ -19,12 +19,16 @@ with its prompt and answer bytes, tokens and resolved model (the session log rea
 dispatch_kernel.usage). Then it runs `drive.step` again, which kernel-checks the answers. Decision,
 diagnosis and reconsider items (opus-medium) are not run here: the summary lists them.
 
-A tier with `check_tool` in tiers.json gets drive.WITH_CHECK as its preamble, and each of its agents
-gets one kernel tool of its own, `check_proof_<n>` (`tool(fn, name=...)`, passed in `agent(...,
-tools=[name])`, undefined when the batch ends): a drive.ProofProbe bound to that agent's goal and
-attempt, at most the tier's `check_calls` compiles in a scratch dir, run in this kernel's threads under
-drive.check_slots(). The reply is still checked by `drive.step`; the number of calls goes to the
-answer record and to the attempt's result event (`check_calls:<n>` in context_items).
+A tier with prover tools in tiers.json (drive.tool_budgets) gets drive.TOOLS_HEAD as its preamble,
+and each of its agents gets kernel tools of its own (`tool(fn, name=...)`, passed in `agent(...,
+tools=[names])`, undefined when the batch ends), bound to that agent's goal and attempt and run in this
+kernel's threads under drive.check_slots(): `check_proof_<n>` (drive.ProofProbe, `check_calls`),
+`lookup_<n>` and `search_<n>` (drive.LookupProbe, `lookup_calls` together), `check_counterexample_<n>`
+(drive.CounterexampleProbe, `counterexample_calls`). A tier with `samples` N spawns N agents per goal
+(prompts varied by drive.sample_prompt, registered as one round), settled by drive.settle_round. The
+reply is still checked by `drive.step`; the tool calls go to the answer record and to the attempt's
+result event (`check_calls:<n>`, `lookup_calls:<n>`, `search_calls:<n>`, `counterexample_calls:<n>`
+in context_items).
 
 It is the only code of this loop that spawns models; it uses the kernel helpers `agent`, `wait` and
 `tool`, and shares the tier-override state of dispatch_kernel (one override tier per wave).
@@ -58,6 +62,18 @@ CHECK_DESCRIPTION = (
     "script only, ending with exactly one `Qed.`). Returns {ok, error, remaining}: ok true when Rocq accepts "
     "the lemma with this proof; else error holds the compiler error and the goal state before the failing "
     "sentence (clipped); remaining is the number of calls left.")
+LOOKUP_DESCRIPTION = (
+    "The definition of one identifier of your lemma's world (for a lemma or an opaque constant: its statement), "
+    "with the lemma's own imports. Argument `name`: one qualified identifier, e.g. `arrayListLength` or "
+    "`Z.mul_comm`. Returns {text, remaining}; asking for a name again is free.")
+SEARCH_DESCRIPTION = (
+    "Rocq `Search <pattern>` with your lemma's own imports. Argument `pattern`: the pattern only, without a final "
+    "dot, e.g. `(_ * 32)%Z` or `bv_unsigned \"shiftl\"`. Returns {text, remaining} (at most 40 lines); shares "
+    "the budget of lookup.")
+COUNTEREXAMPLE_DESCRIPTION = (
+    "Ask the kernel whether your lemma is false at given values. Argument `assignment`: `x = 5, w = 0xff, b = "
+    "true`, one value per universally quantified variable (a variable you do not name takes a default value). "
+    "Returns {confirmed, reason, remaining}; answer `false` only with an assignment this tool confirmed.")
 _TOOL_COUNT = itertools.count(1)
 # The prover answer form (package.py) as the agent's output schema: an agent whose own schema wraps its
 # reply (scout: architecture, files, report) answers in this form instead.
@@ -109,24 +125,63 @@ def _label(tier, identifier, attempt):
     return ("%s-%s-a%d" % (tier, name, attempt))[:48]
 
 
-def _check_tool(row, where, attempt):
-    """(tool name, probe) of a new check_proof tool bound to the goal of WHERE and this attempt, or (None,
-    None) when the tier has no check tool."""
-    enabled, calls = _drive.check_tool(row["name"])
-    if not enabled:
-        return None, None
-    probe = _drive.ProofProbe(where, row["name"], attempt, calls=calls)
-    name = "%s_%d" % (_drive.CHECK_TOOL, next(_TOOL_COUNT))
+def _tools(row, where, attempt):
+    """(tool names, probes) of the prover tools of one attempt at the tier ROW (drive.tool_budgets): a
+    check_proof (drive.ProofProbe), lookup and search (one drive.LookupProbe) and check_counterexample
+    (drive.CounterexampleProbe) bound to the goal of WHERE and this attempt; check_proof first. Each is a
+    kernel tool of its own (`<tool>_<n>`), undefined when its batch ends."""
+    budgets = _drive.tool_budgets(row["name"])
+    define = _helper("tool") if budgets else None
+    names, probes = [], {}
+    number = next(_TOOL_COUNT)
+    if _drive.CHECK_TOOL in budgets:
+        probe = probes["proof"] = _drive.ProofProbe(where, row["name"], attempt, calls=budgets[_drive.CHECK_TOOL])
 
-    def check_proof(proof: str) -> dict:
-        return probe(proof)
-    check_proof.__doc__ = CHECK_DESCRIPTION
-    _helper("tool")(check_proof, name=name, description=CHECK_DESCRIPTION)
-    return name, probe
+        def check_proof(proof: str) -> dict:
+            return probe(proof)
+        names.append(_define(define, check_proof, _drive.CHECK_TOOL, number, CHECK_DESCRIPTION))
+    if _drive.LOOKUP_TOOL in budgets:
+        found = probes["lookup"] = _drive.LookupProbe(where, budgets[_drive.LOOKUP_TOOL])
+
+        def lookup(name: str) -> dict:
+            return found.lookup(name)
+
+        def search(pattern: str) -> dict:
+            return found.search(pattern)
+        names.append(_define(define, lookup, _drive.LOOKUP_TOOL, number, LOOKUP_DESCRIPTION))
+        names.append(_define(define, search, _drive.SEARCH_TOOL, number, SEARCH_DESCRIPTION))
+    if _drive.COUNTEREXAMPLE_TOOL in budgets:
+        refuter = probes["counterexample"] = _drive.CounterexampleProbe(
+            where, row["name"], attempt, budgets[_drive.COUNTEREXAMPLE_TOOL])
+
+        def check_counterexample(assignment: str) -> dict:
+            return refuter(assignment)
+        names.append(_define(define, check_counterexample, _drive.COUNTEREXAMPLE_TOOL, number,
+                             COUNTEREXAMPLE_DESCRIPTION))
+    return names, probes
 
 
-def _spawn(tier, prompt, label, tool_name=None):
-    options = dict(tools=[tool_name]) if tool_name else {}
+def _define(define, fn, tool, number, description):
+    name = "%s_%d" % (tool, number)
+    fn.__doc__ = description
+    define(fn, name=name, description=description)
+    return name
+
+
+def _tool_counts(probes):
+    """The tool-call fields of an attempt's answer record (drive.TOOL_COUNTS) for the probes it had."""
+    out = {}
+    if "proof" in probes:
+        out["check_calls"] = probes["proof"].calls
+    if "lookup" in probes:
+        out.update(lookup_calls=probes["lookup"].lookups, search_calls=probes["lookup"].searches)
+    if "counterexample" in probes:
+        out["counterexample_calls"] = probes["counterexample"].calls
+    return out
+
+
+def _spawn(tier, prompt, label, tool_names=()):
+    options = dict(tools=list(tool_names)) if tool_names else {}
     handle = _helper("agent")(prompt, agent=tier["agent"], label=label, schema=ANSWER_SCHEMA, **options)
     _dk._STATE["live"].append((tier, handle))
     return handle
@@ -139,10 +194,47 @@ def _usage(handle):
     return extra
 
 
+def _register_samples(run, function, identifier, name, located, refused):
+    """[(attempt, prompt)] of the samples of one round of IDENTIFIER at tier NAME (drive.samples), each
+    registered running with context items `sample:<i>/<n>` and `round:<first attempt>` when n > 1. A
+    refusal of the first sample is filed as before (missing_context, too_large, repeated_prompt) and
+    listed in REFUSED; a later sample the store or the prompt bound refuses is left out of the round."""
+    state = _drive.fold(run)
+    item = state[identifier]
+    count = _drive.samples(name, item["goal_class"])
+    first = item["tier_attempts"].get(name, 0) + 1
+    out = []
+    for index in range(count):
+        # Every sample's prompt follows the goal's state before the round (its last result, not a sibling).
+        prompt, context = _drive.prompt_for(run, function, identifier, name, located=located, state=state,
+                                            sample=(index, count))
+        if prompt is None:
+            if index == 0:
+                if context == "missing_context":
+                    _drive.file_missing_context(run, identifier, name)
+                elif context.startswith(_drive.TOO_LARGE):
+                    _drive.file_too_large(run, identifier, name, context, located)
+                refused.append((identifier, name, context))
+            break
+        if count > 1:
+            context = list(context) + ["sample:%d/%d" % (index + 1, count), "round:%d" % first]
+        try:
+            out.append((_drive.register_attempt(run, function, identifier, name, prompt, context, located=located),
+                        prompt))
+        except _store.Rejected as error:
+            if index == 0:
+                _drive.file_repeated_prompt(run, identifier, name)
+                refused.append((identifier, name, str(error)))
+                break
+    return out
+
+
 def run_round(function, run, tier=None, limit=16, concurrency=16, jobs=8, kernel=None, only=None):
     """One prover round; returns a summary dict (also the step counts before and after). ONLY, when
     given, limits the prover attempts to those obligation ids (a probe round). KERNEL replaces
-    drive.Kernel (the compiles of step) in the tests."""
+    drive.Kernel (the compiles of step) in the tests. LIMIT counts goals; a goal at a tier with
+    `samples` N gets N agents (drive.sample_prompt), settled by drive.settle_round; CONCURRENCY counts
+    agents."""
     run = Path(run)
     rows = _drive.tier_rows()
     before = _drive.step(function, run, jobs=jobs, kernel=kernel)[0]
@@ -161,53 +253,53 @@ def run_round(function, run, tier=None, limit=16, concurrency=16, jobs=8, kernel
         raise DriveError("tier %s: %s" % (tier, skipped[tier]))
     chosen = [item for item in items if item[1] in allowed][:limit]
     located = _drive.locate(run, function)
-    started, refused = [], []
+    started, refused, groups = [], [], []
     for identifier, name, _ in chosen:
-        prompt, context = _drive.prompt_for(run, function, identifier, name, located=located)
-        if prompt is None:
-            if context == "missing_context":
-                _drive.file_missing_context(run, identifier, name)
-            elif context.startswith(_drive.TOO_LARGE):
-                _drive.file_too_large(run, identifier, name, context, located)
-            refused.append((identifier, name, context))
-            continue
-        try:
-            attempt = _drive.register_attempt(run, function, identifier, name, prompt, context, located=located)
-        except _store.Rejected as error:
-            _drive.file_repeated_prompt(run, identifier, name)
-            refused.append((identifier, name, str(error)))
-            continue
-        started.append((identifier, rows[name], attempt, prompt))
-    verdicts, mismatched, check_calls = {}, [], 0
+        group = []
+        for attempt, prompt in _register_samples(run, function, identifier, name, located, refused):
+            entry = dict(identifier=identifier, row=rows[name], attempt=attempt, prompt=prompt)
+            group.append(entry)
+            started.append(entry)
+        if group:
+            groups.append(group)
+    verdicts, mismatched, calls = {}, [], {key: 0 for key in _drive.TOOL_COUNTS}
     wait = _helper("wait") if started else None
     if started:
         _drive.check_slots(renew=True)
     try:
         for start in range(0, len(started), max(1, concurrency)):
             batch = started[start:start + concurrency]
-            tools, handles = [], []
+            names, handles = [], []
             try:
-                for identifier, row, attempt, prompt in batch:
-                    tools.append(_check_tool(row, located[identifier], attempt))
-                    handles.append(_spawn(row, prompt, _label(row["name"], identifier, attempt), tools[-1][0]))
+                for entry in batch:
+                    tool_names, entry["probes"] = _tools(entry["row"], located[entry["identifier"]], entry["attempt"])
+                    names += tool_names
+                    handles.append(_spawn(entry["row"], entry["prompt"],
+                                          _label(entry["row"]["name"], entry["identifier"], entry["attempt"]),
+                                          tool_names))
                 replies = wait(handles, raise_errors=False)
             finally:
-                for tool_name, _ in tools:
-                    if tool_name:
-                        _helper("tool").undefine(tool_name)
-            for (identifier, row, attempt, prompt), handle, reply, (_, probe) in zip(batch, handles, replies, tools):
+                for tool_name in names:
+                    _helper("tool").undefine(tool_name)
+            for entry, handle, reply in zip(batch, handles, replies):
                 extra = _usage(handle)
                 if isinstance(reply, BaseException):
                     extra["error"] = repr(reply)
                     reply = ""
+                row = entry["row"]
                 if row.get("model") and extra.get("resolved_model") and extra["resolved_model"] != row["model"]:
                     extra["model_mismatch"] = True
-                    mismatched.append(identifier)
-                if probe is not None:
-                    extra["check_calls"] = probe.calls
-                    check_calls += probe.calls
-                verdict = _drive.answer(run, function, identifier, row["name"], attempt, prompt, reply, extra,
-                                        located=located)
+                    mismatched.append(entry["identifier"])
+                extra.update(_tool_counts(entry["probes"]))
+                for key in _drive.TOOL_COUNTS:
+                    calls[key] += extra.get(key, 0)
+                entry.update(reply=reply, extra=extra)
+        for group in groups:
+            samples = [dict(attempt=e["attempt"], prompt=e["prompt"], reply=e.get("reply", ""), extra=e.get("extra"),
+                            proof=e.get("probes", {}).get("proof"),
+                            counterexample=e.get("probes", {}).get("counterexample")) for e in group]
+            for verdict in _drive.settle_round(run, function, group[0]["identifier"], group[0]["row"]["name"],
+                                               samples, located=located):
                 verdicts[verdict] = verdicts.get(verdict, 0) + 1
     finally:
         _dk._prune()
@@ -216,11 +308,12 @@ def run_round(function, run, tier=None, limit=16, concurrency=16, jobs=8, kernel
     for identifier, action, name, _ in left:
         if action == "prove" and name != _drive.MECHANICAL and identifier not in unlocated:
             by_tier[name] = by_tier.get(name, 0) + 1
-    return dict(function=function, tiers=allowed, skipped=skipped, started=len(started), refused=refused,
-                verdicts=verdicts, model_mismatch=mismatched, step_before=dict(before), step_after=dict(after),
-                next_model=by_tier, deferred=[(i, a, t) for i, a, t, _ in left if a in DEFERRED],
+    return dict(function=function, tiers=allowed, skipped=skipped, started=len(started), goals=len(groups),
+                refused=refused, verdicts=verdicts, model_mismatch=mismatched, step_before=dict(before),
+                step_after=dict(after), next_model=by_tier,
+                deferred=[(i, a, t) for i, a, t, _ in left if a in DEFERRED],
                 listed=sum(1 for _, a, _, _ in left if a not in DEFERRED and a != "prove"),
-                running=running, unlocated=unlocated, check_calls=check_calls)
+                running=running, unlocated=unlocated, check_calls=calls["check_calls"], tool_calls=calls)
 
 
 def next_tier(function, run):

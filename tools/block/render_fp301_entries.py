@@ -64,6 +64,7 @@ from render_support import (
 )
 from forward_resources import load_resource_vocabulary
 from symbolic_state import Expr
+from join_generalize import drop_entry_resources
 from resource_seed import load_public_seed, seed_owned_resources
 from system_shape_seed import seed_system_shapes
 from function_profiles import (add_return_alignment, function_returns, load_profile, pilot_header, return_case,
@@ -143,6 +144,9 @@ if receipt.get("joins"):
     joins_record = json.loads(Path(receipt["joins"]["path"]).read_text())
     roots.update(joins_record.get("roots", {}))
     parents = joins_record.get("parents", {})
+# Resource texts of a seed's root tree that a join `drop` row removed on the way to the seed: an
+# entry rendered on that root from such a seed does not own them (join_generalize.inherited_drops).
+seed_drops = joins_record.get("seed_drops", {})
 # An edge into a mixed-root join may start at a join or loop-head seed: it lifts on the
 # seed the source pass lifted it on.
 lift_seeds = dict(root_seeds)
@@ -247,7 +251,10 @@ def return_boundary(designs, slot=None):
         alternative = {"predecessor_pc": exit["block_pc"], "seed_pc": exit["seed_pc"], "state": exit["state"],
                        "path": exit["path"], "back_edge": False,
                        "resource_boundary": deepcopy(exit["resource_boundary"])}
-        root = root_seeds[roots.get(exit["seed_pc"], public_seed["entry_pc"])]
+        # The exit renders on its seed's root tree without the resources a join drop row removed
+        # on the way to that seed.
+        root, (alternative,) = drop_entry_resources(
+            root_seeds[roots.get(exit["seed_pc"], public_seed["entry_pc"])], [alternative], [], seed_drops)
         terminal = next(row["id"] for row in root.ownership["components"] if row["source"] == "True")
         alternative, = align_join_edges([alternative], root.ownership, terminal, "K", keep_binders=True,
                                         keep_designs=lambda source: entry_hist.is_join_history(
@@ -453,10 +460,17 @@ for suffix, slot in units:
             continue
         origin_roots = {ancestor}
     origin_root = origin_roots.pop()
-    original_seed = root_seeds[origin_root]
-    # A join drop row whose root is the seed the join renders on: the join does not own those resources.
-    dropped = [text for item in profile.get("join_drops", {}).get(suffix, [])
-               if profile.pc(item["root"]) == origin_root for text in item["resources"]]
+    # A join drop row whose root is the seed the entry renders on, and the drops inherited by the
+    # edges' seeds: the entry does not own those resources, and an edge that holds them leaves them.
+    try:
+        original_seed, boundary["alternatives"] = drop_entry_resources(
+            root_seeds[origin_root], boundary["alternatives"],
+            [text for item in profile.get("join_drops", {}).get(suffix, [])
+             if profile.pc(item["root"]) == origin_root for text in item["resources"]], seed_drops)
+    except ValueError as error:
+        cases.append({"pc": pc, "status": "refused_join_drop", "proof_ran": False,
+                      "reports": [{"kind": "join_drop_refused", "detail": str(error)}]})
+        continue
     name = ("fp_machine" + suffix if package else "fp_machineAt" + suffix) + ("" if slot is None else "_slot" + str(slot))
     name = identifier(name, "generated entry")
     source_ref = str(forward) + ("#/tail_returns" if suffix in tails else "#/exits" if index is None
@@ -505,8 +519,7 @@ for suffix, slot in units:
             continuation=continuation,
             join_options={"outer_names": base_arguments, "design_facts": join_design,
                           "live_registers": data.get("liveness", {}).get(pc), "lifted_binders": lifted_binders,
-                          "frame_writes": entry_hist.frame_writes(join_frames, data) if join_frames else (),
-                          "dropped": dropped},
+                          "frame_writes": entry_hist.frame_writes(join_frames, data) if join_frames else ()},
             case_id=pc,
             source_policy="source-only",
             handwritten_owner="Level1.IslarisContractSpec",
@@ -698,7 +711,7 @@ for suffix, slot in units:
                 + body_source(helper["body"], seal_as=helpers[helper["suffix"]])
                 + "%I.\n"
             )
-            definition = render_entry_registers(definition)
+            definition = render_entry_registers(definition, profile.name)
             definition_introduction_source(definition, helpers[helper["suffix"]])
             definitions.append((helpers[helper["suffix"]], definition))
             if helpers[helper["suffix"]] in sealed:

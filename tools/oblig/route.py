@@ -22,8 +22,9 @@ then the obligations in spin. Actions:
   decide     decision request without a proposal, or one whose proposal failed: opus-medium
   reconsider every prover tier failed (or the goal is `waiting-decision`): the assertion that
              produced the goal (its parent) is reconsidered at opus-medium
-  owner      goal `false`, failure class `rule_gap`, or a goal naming a code address (ADDRESS):
-             to the owner of the statement, with the counterexample
+  owner      goal `false`, failure class `rule_gap`, or a goal naming a code address (ADDRESS; a
+             goal whose artifact is its PACKAGE.json goes by that record's class): to the owner of
+             the statement, with the counterexample
   spin       6 attempts or 3 resets (see Spin): reported, no further attempt until the statement changes
 
 Ladder. A pure goal's ladder is `mechanical`, then the model tiers from the class's first tier on,
@@ -46,7 +47,13 @@ tier spends:
   `waiting-decision`, which this router sends to `reconsider`;
 - a tier whose prompt the store refuses as sent before (an unchanged prompt after a reset, as the
   fixed `mechanical` one) is marked `failed` class `repeated_prompt` (no attempt) and skipped
-  until the next reset.
+  until the next reset;
+- a `mechanical` attempt whose prompt is not the current CONTROL_TACTIC (an older tactic) is no
+  ladder step: when every mechanical attempt of a goal used an older tactic, `mechanical` is due
+  again before any other rung (the store accepts the new prompt), whatever the goal's resets.
+
+Superseded obligations (store.py) get no item, and a block's superseded leftovers do not count as
+its children.
 
 Spin. The plan says "6 attempts in total"; its 5 tiers at 2 attempts each could never fit in that.
 This router reads it as: an obligation on a ladder spins at 6 counted attempts (since its last
@@ -56,12 +63,24 @@ count toward the 6. Blocks,
 decisions and spatial leftovers, which have no ladder, spin at 6 attempts or 3 resets as before.
 An exhausted ladder below both limits gives `reconsider`.
 
+Best-of-N. A tier may send N parallel samples per round (tools/oblig/drive.py: tiers.json or a class's
+routing.json `samples`); each sample is an attempt of its own (its own prompt, registered running, its
+own result event), and its running event names the round (`round:<first attempt of the round>` in
+context_items). The ladder and spin rules read a round as ONE attempt: a tier's `attempts` in
+routing.json count rounds, the 6-attempt spin limit counts rounds, and the round's result is the result
+of the sample the driver submitted (its last result event; the others are `superseded`,
+`compile_error`, `unconfirmed_false` or their own verdict). A retry after a compile error or
+need_context is the next round.
+
 Event vocabulary read here (written by the tools that act): tier `falsify` marks the falsity check
 (state `false` on a hit, class `unchecked` when the binder types are outside its range); tier
 `machine-run` marks `annotations.py test` (state `failed` class `rejected_by_run` on a rejection);
 a decision's proposal is its event's artifact; failure classes of prover attempts are
-`compile_error`, `need_context`, `give_up`, `rule_gap`, `malformed`, and `missing_context`,
-`too_large` and `repeated_prompt` (filed by the driver, no attempt).
+`compile_error`, `need_context`, `give_up`, `rule_gap`, `malformed`, `bad_counterexample` (a `false`
+whose counterexample the kernel did not confirm), `unconfirmed_false` (a `false` the attempt's
+check_counterexample did not confirm, refused without a kernel call), `superseded` (a best-of-N
+sample another sample of its round made unneeded), and `missing_context`, `too_large` and
+`repeated_prompt` (filed by the driver, no attempt).
 
 The tier order and default attempts come from tools/oblig/tiers.json, the first model tier and the
 ladder attempts of a goal class from tools/oblig/routing.json; without them: mechanical,
@@ -69,6 +88,7 @@ haiku-low, haiku-medium, haiku-high, opus-medium, 2 attempts each (1 for the det
 `mechanical`), first model tier haiku-low.
 """
 import argparse
+import hashlib
 import json
 from pathlib import Path
 import re
@@ -76,7 +96,14 @@ import sys
 
 HERE = Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE))
+sys.path.insert(0, str(HERE.parent / 'residuals'))
 import store  # noqa: E402
+import residual_package  # noqa: E402
+
+MECHANICAL = 'mechanical'
+# The prompt of a `mechanical` attempt is CONTROL_TACTIC after `Proof.` (drive.py, replay.py). An attempt
+# sent with another text tried an older tactic: it does not count, so a changed tactic runs again.
+MECHANICAL_SHA = hashlib.sha256(residual_package.CONTROL_TACTIC[len('Proof.\n'):].encode()).hexdigest()
 
 TIERS_FILE = HERE / 'tiers.json'
 ROUTING_FILE = HERE / 'routing.json'
@@ -141,10 +168,14 @@ def ladder(cls, tiers, routing):
 
 
 def names_address(item):
+    """True for a goal of class ADDRESS. A package record (PACKAGE.json) decides by its own `class`: its
+    `symbols` rows keep the literals a rewrite replaced, which are no address left in the goal."""
     if item['goal_class'] == 'ADDRESS':
         return True
     artifact = item['artifact']
     if artifact and Path(artifact['path']).is_file():
+        if Path(artifact['path']).name == 'PACKAGE.json':
+            return (store.read_json(artifact['path']) or {}).get('class') == 'ADDRESS'
         return bool(ADDRESS.search(Path(artifact['path']).read_text(errors='replace')))
     return False
 
@@ -161,13 +192,46 @@ def since_reset(item):
     return rows[last:]
 
 
+def round_of(row):
+    """The best-of-N round a running event names (`round:<first attempt>` in its context_items), or None."""
+    for entry in row.get('context_items') or []:
+        if str(entry).startswith('round:'):
+            return int(str(entry).split(':', 1)[1])
+    return None
+
+
+def stale_mechanical(item):
+    """{(tier, attempt)} of the `mechanical` attempts sent with an older tactic than CONTROL_TACTIC (by the
+    prompt_sha256 of their running event)."""
+    return {(row['tier'], row['attempt']) for row in item['events']
+            if row.get('tier') == MECHANICAL and row['state'] == 'running' and row.get('attempt') is not None
+            and row.get('prompt_sha256') != MECHANICAL_SHA}
+
+
+def mechanical_changed(item):
+    """True when the goal had `mechanical` attempts, all with an older tactic: the current one is due. The
+    store accepts it (its prompt was never sent), whatever the goal's resets and marks."""
+    sent = {(row['tier'], row['attempt']) for row in item['events']
+            if row.get('tier') == MECHANICAL and row['state'] == 'running' and row.get('attempt') is not None}
+    return bool(sent) and sent == stale_mechanical(item)
+
+
 def attempt_results(item):
-    """{tier: [failure class or state of each attempt, in order]} (the last event of each attempt), over
-    the attempts since the goal's last reset: a reset (a changed task or statement) runs the ladder again."""
-    final = {}
+    """{tier: [failure class or state of each ladder step, in order]} over the attempts since the goal's
+    last reset (a reset, a changed task or statement, runs the ladder again). A ladder step is one
+    attempt, or one best-of-N round (the samples whose running events name the same `round:<n>`): its
+    result is the last result event of the round, the one of the sample the driver submitted. A
+    `mechanical` attempt of an older tactic is no step."""
+    final, rounds = {}, {}
+    stale = stale_mechanical(item)
     for row in since_reset(item):
-        if row.get('attempt') is not None:
-            final[(row['tier'], row['attempt'])] = row['class'] if row['state'] == 'failed' else row['state']
+        if row.get('attempt') is None or (row['tier'], row['attempt']) in stale:
+            continue
+        key = (row['tier'], row['attempt'])
+        if round_of(row) is not None:
+            rounds[key] = round_of(row)
+        final[(row['tier'], rounds.get(key, row['attempt']))] = (
+            row['class'] if row['state'] == 'failed' else row['state'])
     out = {}
     for (tier, _), result in final.items():
         out.setdefault(tier, []).append(result)
@@ -201,6 +265,8 @@ def ladder_step(item, tiers, routing):
     names = [name for name, _ in rungs]
     results = attempt_results(item)
     last = item['last_attempt']
+    if MECHANICAL in names and mechanical_changed(item):
+        return 'prove', MECHANICAL, 'the mechanical tactic changed since its last attempt'
     begin = max((names.index(tier) for tier in results if tier in names), default=0)
     skipped = marked_tiers(item)
     for tier, limit in rungs[begin:]:
@@ -226,14 +292,14 @@ def ladder_step(item, tiers, routing):
 
 
 def step(item, state, tiers, routing):
-    """(action, tier, why) for one obligation, or None when nothing is due."""
+    """(action, tier, why) for one obligation, or None when nothing is due (closed, running, superseded)."""
     st = item['state']
-    if st in ('closed', 'running'):
+    if st in ('closed', 'running', 'superseded'):
         return None
     laddered = item['kind'] in ('goal', 'meaning') and item['goal_class'] not in SPATIAL_CLASSES
     if not laddered and (len(item['attempts']) >= SPIN_ATTEMPTS or item['resets'] >= SPIN_RESETS):
         return 'spin', None, '%d attempts, %d resets' % (len(item['attempts']), item['resets'])
-    children = [other for other in state.values() if other['parent'] == item['id']]
+    children = [other for other in state.values() if other['parent'] == item['id'] and other['state'] != 'superseded']
     if item['kind'] == 'block':
         if st == 'derived':
             return 'rerun', None, 'new or input changed'

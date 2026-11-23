@@ -15,14 +15,16 @@ that needs no model:
   statement without the dependency hypotheses); tier `falsify`, state `false` on a kernel-checked
   hit, class `unchecked` when the binder types are outside its range and the goal has no class.
 - mechanical: the attempt `mechanical` (CONTROL_TACTIC of tools/residuals/residual_package.py) is
-  registered and written as a `proved` answer, then checked like a model's.
+  registered and written as a `proved` answer, then checked like a model's. When CONTROL_TACTIC
+  changes, route.py offers it again to every goal whose mechanical attempts all used an older text.
 - check: every `running` attempt whose answer (RUN.../answers/<goal>.json, written by `answer` of
   this module with the attempt's prompt_sha256) is in: `proved` goes through
   `residual_loop.py collect` (the stand-alone check.sh route) and becomes `closed` or `failed`
   compile_error; `false` is checked with falsify.py's kernel refutation on the binder values the
   answer names (`false`, else failed bad_counterexample).
 The actions rerun, derive, package, test, check (decisions), decide, diagnose, reconsider, owner
-and spin are listed for the region owner or the coordinator, never executed.
+and spin are listed for the region owner or the coordinator, never executed. Superseded obligations
+(store.py) get no action.
 
 Output: one `done` line with the counts of this call, then one line per item left:
 `MODEL <id> tier=<tier> <why>` (for drive_kernel.run_round), `RUNNING <id> tier=<tier>` (an attempt
@@ -35,14 +37,26 @@ block run is `<F>/goal/<block>-<16 hex of sha256(statement)>`; a goal of a run w
 (package.py) when present, else RUN.../tasks/<goal>.md; prompts sent are kept in
 RUN.../prompts/<goal>/<tier>-<attempt>.md.
 
-Prover check tool (tiers.json `check_tool`, `check_calls`): a tier with the tool gets the WITH_CHECK
-preamble instead of NO_TOOLS, and drive_kernel.py hands each of its provers one ProofProbe of this
-module as the kernel tool `check_proof`: it compiles a proposed proof of that one goal with the
-goal's stand-alone check route (residual_loop.py check.sh, resource guard scope) in a scratch dir
-RUN.../probes/<goal>/<tier>-<attempt>/<call>/, never in goals/, answers/ or the store, and answers
-{ok, error, remaining}: the compiler errors and the goal state before the failing sentence, clipped to
-CHECK_ERROR_BYTES, and the calls left of the attempt's budget. The answer is still checked by `step`;
-the attempt's result event carries `check_calls:<n>` in context_items.
+Prover tools (tiers.json `check_tool` + `check_calls`, `lookup_calls`, `counterexample_calls`): a tier
+with tools gets the TOOLS_HEAD preamble listing them and their rules instead of NO_TOOLS, and
+drive_kernel.py hands each of its provers, bound to that one goal and attempt:
+- check_proof (ProofProbe): compiles a proposed proof with the goal's stand-alone check route
+  (residual_loop.py check.sh, resource guard scope) in a scratch dir
+  RUN.../probes/<goal>/<tier>-<attempt>/<call>/, never in goals/, answers/ or the store, and answers
+  {ok, error, remaining}: the compiler errors and the goal state before the failing sentence, clipped
+  to CHECK_ERROR_BYTES, and the calls left of the attempt's budget;
+- lookup(name) and search(pattern) (LookupProbe, one budget): the definition or statement of a name
+  (defs.py About/Print) and Rocq `Search`, with the goal's imports, clipped to LOOKUP_BYTES, cached per
+  goal (defs/) and per attempt (a repeat is free);
+- check_counterexample(assignment) (CounterexampleProbe): falsify.py's kernel refutation at the values
+  named; it says when the binder types are outside falsify.py's range. With this tool, a `false` answer
+  whose counterexample it did not confirm is refused (`failed` unconfirmed_false, no kernel call).
+The answer is still checked by `step`; the attempt's result event carries `check_calls:<n>`,
+`lookup_calls:<n>`, `search_calls:<n>`, `counterexample_calls:<n>` in context_items.
+
+Best-of-N (tiers.json or routing.json `samples`): drive_kernel.py sends N samples of one goal per round,
+their prompts varied by sample_prompt; settle_round submits one (the first whose proof the kernel
+accepts) and records the others; route.py counts the round as one attempt.
 """
 import argparse
 from concurrent.futures import ThreadPoolExecutor
@@ -76,23 +90,47 @@ text in the `proof` field of your answer instead. Your whole reply is one JSON o
 form at the end, with no other text and no code fence.
 
 """
-WITH_CHECK = """You are a Rocq prover. Everything you need is in this message, and the only tool you may call is
-check_proof (in your tool list under a name that starts with check_proof): give it a proof script of the
-lemma below (the text of your `proof` field, ending with `Qed.`) and it compiles the lemma with that proof
-and returns `ok`, the compiler error with the goal state before the failing sentence, and the number of
-calls left. Check your proof before you answer. Do not read or write any file. Where the task below says
-to write the proof script to a file, put that text in the `proof` field of your answer instead. Your whole
-reply is one JSON object in the answer form at the end, with no other text and no code fence.
+TOOLS_HEAD = """You are a Rocq prover. Everything you need is in this message or behind the tools listed here (each is
+in your tool list under a name that starts with the name given); call no other tool. Do not read or write any
+file. Where the task below says to write the proof script to a file, put that text in the `proof` field of your
+answer instead. Your whole reply is one JSON object in the answer form at the end, with no other text and no
+code fence.
 
+Tools:
 """
+CHECK_LINE = """- check_proof(proof): compiles the lemma below with your proof script (the text of your `proof` field,
+  ending with `Qed.`) and returns `ok`, the compiler error with the goal state before the failing sentence,
+  and the calls left (%d per attempt). Check your proof before you answer `proved`.
+"""
+LOOKUP_LINE = """- lookup(name): the definition of one identifier (for a lemma or an opaque constant: its statement) with
+  this goal's imports. search(pattern): Rocq `Search <pattern>` with this goal's imports, e.g.
+  `(_ * 32)%%Z` or `bv_unsigned "shiftl"` (no final dot). Together at most %d calls per attempt; asking
+  for a name again is free.
+"""
+COUNTEREXAMPLE_LINE = """- check_counterexample(assignment): asks the kernel whether the lemma is false at the values you give,
+  written `x = 5, w = 0xff, b = true` (the lemma's universally quantified variables; a variable you do not
+  name takes a default value). Returns `confirmed` true or false and why; at most %d calls per attempt.
+"""
+LOOKUP_RULE = ("- Never answer need_context before you have called lookup or search for what you miss; answer\n"
+               "  need_context only for an item they cannot give.\n")
+FALSE_RULE = ("- Never answer false unless check_counterexample confirmed the exact assignment you put in\n"
+              "  `counterexample`: an unconfirmed false is refused and counts as a failed attempt.\n")
+UNCHECKED_RULE = ("- The variable types of this lemma are outside the counterexample checker's range: answer false is\n"
+                  "  not allowed for it.\n")
 ERROR_HEAD = "\n## Your previous answer failed\n\n"
 CONTEXT_HEAD = "\n## Context you asked for\n\n"
 TRUNCATED = "\n[... truncated]"
 MALFORMED_LINE = "Reply with the bare JSON object only.\n\n"
 TOO_LARGE = "too-large"
 CHECK_TOOL = "check_proof"
-CHECK_CALLS = 6  # check_proof calls per attempt
+LOOKUP_TOOL = "lookup"
+SEARCH_TOOL = "search"
+COUNTEREXAMPLE_TOOL = "check_counterexample"
+CHECK_CALLS = 6  # check_proof calls per attempt (tiers.json `check_calls` replaces it)
 CHECK_ERROR_BYTES = 1500  # error text of one check_proof answer
+LOOKUP_BYTES = 3000  # text of one lookup or search answer
+UNCONFIRMED_FALSE = "unconfirmed_false"
+TOOL_COUNTS = ("check_calls", "lookup_calls", "search_calls", "counterexample_calls")
 # Peak resident memory of one check_proof call (its check.sh compile, then the goal-state compile), rounded
 # up from the measured peaks (2026-11-23: 0.78 GiB keysToOwnedSlice block goal 0098, 0.58 GiB Sail meaning
 # lemma alDecodeWord); parallel calls are bounded by 70% of the available memory over it (AGENTS.md).
@@ -139,9 +177,44 @@ def check_tool(tier):
     return enabled, int(row.get("check_calls", CHECK_CALLS)) if enabled else 0
 
 
-def preamble(tier):
-    """The first lines of every prompt of TIER: WITH_CHECK when the tier has the check tool, else NO_TOOLS."""
-    return WITH_CHECK if check_tool(tier)[0] else NO_TOOLS
+def tool_budgets(tier):
+    """{tool: calls per attempt} of TIER's prover tools (tiers.json `check_calls` with `check_tool`,
+    `lookup_calls` for lookup and search together, `counterexample_calls`); a tool with 0 calls or a
+    tier without a model has none."""
+    row = tier_rows().get(tier, {})
+    if not row.get("agent"):
+        return {}
+    out = {CHECK_TOOL: check_tool(tier)[1], LOOKUP_TOOL: int(row.get("lookup_calls", 0)),
+           COUNTEREXAMPLE_TOOL: int(row.get("counterexample_calls", 0))}
+    return {name: calls for name, calls in out.items() if calls > 0}
+
+
+def samples(tier, cls=None):
+    """Parallel samples of one best-of-N round of a goal of class CLS at TIER: the class's routing.json
+    `samples` row (as `attempts`: class, prefix, default), else tiers.json `samples`, else 1."""
+    for row in route.class_rows(route.load_routing(), cls):
+        if isinstance(row.get("samples"), dict) and tier in row["samples"]:
+            return max(1, int(row["samples"][tier]))
+    return max(1, int(tier_rows().get(tier, {}).get("samples", 1)))
+
+
+def preamble(tier, unchecked=False):
+    """The first lines of every prompt of TIER: NO_TOOLS without tools, else TOOLS_HEAD with one entry per
+    tool of tool_budgets and the rules of the tools it has (UNCHECKED_RULE when the goal's binder types are
+    outside falsify.py's range and the tier has check_counterexample)."""
+    budgets = tool_budgets(tier)
+    if not budgets:
+        return NO_TOOLS
+    text = TOOLS_HEAD
+    if CHECK_TOOL in budgets:
+        text += CHECK_LINE % budgets[CHECK_TOOL]
+    if LOOKUP_TOOL in budgets:
+        text += LOOKUP_LINE % budgets[LOOKUP_TOOL]
+    if COUNTEREXAMPLE_TOOL in budgets:
+        text += COUNTEREXAMPLE_LINE % budgets[COUNTEREXAMPLE_TOOL]
+    rules = (LOOKUP_RULE if LOOKUP_TOOL in budgets else "") + (
+        (UNCHECKED_RULE if unchecked else FALSE_RULE) if COUNTEREXAMPLE_TOOL in budgets else "")
+    return text + ("\nRules:\n" + rules if rules else "") + "\n"
 
 
 RETRY_ROOM = 2000  # bytes a retry prompt keeps for the compiler errors or the asked-for context
@@ -208,6 +281,17 @@ def last_attempt_event(item):
     return rows[-1] if rows else None
 
 
+def last_since_reset(item):
+    """The goal's last attempt since its last reset (store.fold's `last_attempt` form), or None: a reset
+    runs the ladder again, so its first prompt is no retry of an attempt made before it."""
+    rows = [row for row in route.since_reset(item) if row.get("attempt") is not None]
+    if not rows:
+        return None
+    row = rows[-1]
+    return dict(tier=row["tier"], attempt=row["attempt"], state=row["state"],
+                failure=row["class"] if row["state"] == "failed" else None)
+
+
 # ---- prompts ----
 
 def task_text(where, tier):
@@ -229,7 +313,7 @@ def clip(text, limit):
     return data[:keep].decode(errors="ignore") + TRUNCATED if keep else ""
 
 
-def base_prompt(where, tier):
+def base_prompt(where, tier, unchecked=False):
     """The prompt of an attempt without feedback: the tier's preamble, the task file, the exact source
     of goal.v when a residual_loop task only names its path (a package task is already bounded and
     is sent as written), and the answer form."""
@@ -242,7 +326,64 @@ def base_prompt(where, tier):
                                                  if "Proof." in goal_v else goal_v.rstrip())
     if "## Answer form" not in text:
         text += "\n" + package.ANSWER_FORM.format(answer=where.answer_v)
-    return preamble(tier) + text
+    return preamble(tier, unchecked) + text
+
+
+# ---- best-of-N samples ----
+
+SIMILAR_HEADING = "## Similar closed lemmas"
+ANSWER_HEADING = "## Answer form"
+SAMPLE_ROOM = 700  # bytes a sample's section may add to a prompt (package bounds leave it free)
+# The first-tactic families a sample suggests, rotated over the samples of one goal.
+FAMILIES = (
+    "arithmetic first: unfold the names the conclusion uses, then try `lia` or `nia`; for bit vectors turn "
+    "`bv_unsigned` terms into Z facts (or try `bv_simplify` / `bv_solve`) and finish with `lia`.",
+    "rewriting first: `subst`, `rewrite` with the hypotheses and `simpl in *` until the conclusion matches a "
+    "hypothesis or is plain arithmetic, then close it.",
+    "case analysis first: `destruct` (or `case_eq`, `induction`) the variable, option or disjunction the "
+    "conclusion depends on, then close each case.",
+)
+
+
+def rotate_similar(text, shift):
+    """TEXT with the entries (`### ` sections) of its similar-lemma section rotated left by SHIFT."""
+    start = text.find(SIMILAR_HEADING)
+    if start < 0:
+        return text
+    body_start = text.find("\n", start) + 1
+    end = text.find("\n## ", body_start)
+    end = len(text) if end < 0 else end + 1
+    body = text[body_start:end]
+    first = body.find("### ")
+    if first < 0:
+        return text
+    entries = body[first + len("### "):].split("\n### ")
+    entries = ["### " + entry if entry.endswith("\n") else "### " + entry + "\n" for entry in entries]
+    shift %= len(entries)
+    return text[:body_start] + body[:first] + "".join(entries[shift:] + entries[:shift]) + text[end:]
+
+
+def sample_prompt(text, identifier, index, count):
+    """The prompt of sample INDEX (0-based) of COUNT of one best-of-N round: TEXT with its similar lemmas
+    rotated by INDEX and a section naming the sample and its suggested first approach (FAMILIES, rotated
+    from a hash of IDENTIFIER), before the answer form; deterministic in (goal, sample index), and
+    different for each index of one round. COUNT 1 leaves TEXT unchanged."""
+    if count <= 1:
+        return text
+    family = FAMILIES[(int(sha(identifier)[:8], 16) + index) % len(FAMILIES)]
+    section = "\n## Sample %d of %d\n\nSuggested first approach for this sample: %s\n" % (index + 1, count, family)
+    text = rotate_similar(text, index)
+    at = text.rfind(ANSWER_HEADING)
+    if at < 0:
+        return text + section
+    return text[:at].rstrip("\n") + "\n" + section + "\n" + text[at:]
+
+
+def unchecked_goal(where):
+    """True when the goal's falsity check (RUN.../goals/<goal>/falsify/FALSIFY.json, drive's
+    run_falsify) found binder types outside falsify.py's range: no counterexample can be confirmed."""
+    report = store.read_json(where.goal_dir / "falsify" / "FALSIFY.json", {}) or {}
+    return report.get("verdict") == "unchecked"
 
 
 def error_section(where, budget):
@@ -331,11 +472,12 @@ def resolve_needs(needs, goal_dir, max_bytes=package.MAX_PROMPT_BYTES):
     return needs_section(needs, goal_dir, max_bytes)[0]
 
 
-def prompt_for(run, function, identifier, tier, located=None, state=None):
+def prompt_for(run, function, identifier, tier, located=None, state=None, sample=None):
     """(prompt text, context items) of the next attempt of IDENTIFIER at TIER, or (None, reason).
     After a compile error at this tier the prompt adds the previous proof and the compiler output;
     after need_context it adds the named items (reason `missing_context` when none can be supplied);
-    after a malformed reply it starts with MALFORMED_LINE."""
+    after a malformed reply it starts with MALFORMED_LINE. SAMPLE (index, count) of a best-of-N round
+    varies the prompt with sample_prompt (context item `sample:<index+1>/<count>`)."""
     located = locate(run, function) if located is None else located
     state = fold(run) if state is None else state
     where, item = located.get(identifier), state.get(identifier)
@@ -345,10 +487,17 @@ def prompt_for(run, function, identifier, tier, located=None, state=None):
     large = large_bound(where, tier)
     if large and large > limit:
         limit = large
-    base = base_prompt(where, tier)
+    base = base_prompt(where, tier, unchecked_goal(where))
     if base is None:
         return None, "no task file"
-    last = item["last_attempt"]
+    if sample and sample[1] > 1:
+        base = sample_prompt(base, identifier, *sample)
+    # The feedback of the last attempt since the goal's last reset; right after a reset, that of the attempt
+    # before it is carried when it can be built (the prompt then differs from the one sent before the reset),
+    # and dropped when it cannot: a reset runs the ladder again, it never escalates for want of feedback.
+    last = last_since_reset(item)
+    carried = last is None and item["last_attempt"] is not None
+    last = item["last_attempt"] if carried else last
     text, items = base, ["task"]
     # A retry needs room for the compiler errors or the asked-for context, and a meaning lemma has no
     # package to re-package smaller: both may use the tier cap, recorded as `prompt_bound:<bytes>` on
@@ -359,15 +508,17 @@ def prompt_for(run, function, identifier, tier, located=None, state=None):
         limit = large = tier_cap(tier)
     if last and last["tier"] == tier and last["failure"] == "compile_error":
         extra = error_section(where, limit - len(base.encode()))
-        if extra is None:
+        if extra is not None:
+            text, items = base + extra, ["task", "feedback"]
+        elif not carried:
             return None, "%s: %d bytes of task leave no room under %d" % (TOO_LARGE, len(base.encode()), limit)
-        text, items = base + extra, ["task", "feedback"]
     elif last and last["tier"] == tier and last["failure"] == "need_context":
         needs = store.read_json(where.answer_json, {}).get("needs") or []
         extra, used = needs_section(needs, where.goal_dir, limit - len(base.encode()))
-        if not extra:
+        if extra:
+            text, items = base + extra, ["task"] + ["context:" + name for name in used] + ["need_context"]
+        elif not carried:
             return None, "missing_context"
-        text, items = base + extra, ["task"] + ["context:" + name for name in used] + ["need_context"]
     elif last and last["tier"] == tier and last["failure"] == "malformed":
         text, items = MALFORMED_LINE + base, ["task", "malformed"]
     if len(text.encode()) > limit:
@@ -433,11 +584,14 @@ def register_attempt(run, function, identifier, tier, prompt, context_items=None
     return attempt
 
 
-def answer(run, function, identifier, tier, attempt, prompt, reply, extra=None, located=None):
+def answer(run, function, identifier, tier, attempt, prompt, reply, extra=None, located=None, confirmed=None):
     """Write the reply of one attempt with package.write_answer (answers/<goal>.json and .v); the
-    JSON also records the attempt, prompt_sha256, agent id and resolved model. A give_up,
-    need_context or malformed reply appends its `failed` event at once; `proved` and `false` wait
-    for `step`. Returns the verdict."""
+    JSON also records the attempt, prompt_sha256, agent id, resolved model and the prover tool calls. A
+    give_up, need_context or malformed reply appends its `failed` event at once; `proved` and `false`
+    wait for `step`. CONFIRMED, the assignments the attempt's check_counterexample confirmed (None when
+    the attempt had no such tool): a `false` whose counterexample is not one of them is refused at once
+    (`failed` class unconfirmed_false, no kernel call). Returns the verdict (UNCONFIRMED_FALSE for a
+    refused false)."""
     located = locate(run, function) if located is None else located
     where = located[identifier]
     extra = dict(extra or {})
@@ -457,28 +611,115 @@ def answer(run, function, identifier, tier, attempt, prompt, reply, extra=None, 
                                               tokens_in=extra.get("tokens_in"), tokens_out=extra.get("tokens_out")))
     meta = store.read_json(where.answer_json, {})
     meta.update(attempt=attempt, prompt_sha256=sha(prompt), prompt_bytes=len(prompt.encode()),
-                **{k: extra[k] for k in ("agent_id", "resolved_model", "model_mismatch", "error", "malformed",
-                                         "check_calls")
-                   if k in extra})
+                **{k: extra[k] for k in ("agent_id", "resolved_model", "model_mismatch", "error", "malformed")
+                   + TOOL_COUNTS if k in extra})
+    if verdict == "false" and confirmed is not None and normal(meta.get("counterexample")) not in confirmed:
+        meta["refused"] = UNCONFIRMED_FALSE
     rl.write_json(where.answer_json, meta)
-    if verdict in FAILED_VERDICTS:
+    if verdict in FAILED_VERDICTS or meta.get("refused"):
         item = fold(run)[identifier]
-        store.append(run, attempt_event(item, meta, "failed", verdict))
-    return verdict
+        store.append(run, attempt_event(item, meta, "failed", meta.get("refused") or verdict))
+    return meta.get("refused") or verdict
 
 
 def attempt_event(item, meta, state, cls, **fields):
-    """The result event of the attempt META names; an attempt with the check tool (meta `check_calls`)
-    carries its running event's context_items plus `check_calls:<n>`."""
-    if meta.get("check_calls") is not None and "context_items" not in fields:
+    """The result event of the attempt META names; an attempt with prover tools (meta `check_calls`,
+    `lookup_calls`, `search_calls`, `counterexample_calls`) carries its running event's context_items
+    plus `<tool count>:<n>` for each."""
+    counts = [key for key in TOOL_COUNTS if meta.get(key) is not None]
+    if counts and "context_items" not in fields:
         running = [row for row in item["events"] if row["state"] == "running"
                    and (row.get("tier"), row.get("attempt")) == (meta["tier"], meta["attempt"])]
         fields["context_items"] = list((running[-1].get("context_items") or []) if running else []) + [
-            "check_calls:%d" % meta["check_calls"]]
+            "%s:%d" % (key, meta[key]) for key in counts]
     return base_event(item, state=state, **{"class": cls}, tier=meta["tier"], attempt=meta["attempt"],
                       prompt_sha256=meta["prompt_sha256"], prompt_bytes=meta.get("prompt_bytes"),
                       answer_bytes=meta.get("answer_bytes"), tokens_in=meta.get("tokens_in"),
                       tokens_out=meta.get("tokens_out"), **fields)
+
+
+# ---- best-of-N rounds ----
+
+SUPERSEDED = "superseded"
+
+
+def settle_round(run, function, identifier, tier, samples, located=None):
+    """Record the replies of one best-of-N round of IDENTIFIER at TIER. SAMPLES, in sample order:
+    dict(attempt, prompt, reply, extra, proof=ProofProbe or None, counterexample=CounterexampleProbe or
+    None), each attempt registered `running` before its agent was spawned. One sample is the round's
+    answer, written with `answer` for `step` to check:
+    1. the first `proved` sample, in sample order, whose proof the kernel accepts (ProofProbe.final_check:
+       a check_proof call of that sample accepted the same text, else one compile);
+    2. else the first `false` sample whose counterexample its check_counterexample confirmed;
+    3. else the first `proved` sample (its compile error feeds the retry), the first need_context sample
+       (its named items feed the retry), else the first sample.
+    Every other sample gets its result event at once, before the answer: `failed` with its own verdict
+    (give_up, need_context, malformed), compile_error (a proof the kernel rejected), unconfirmed_false,
+    or superseded (a proof or a confirmed counterexample not needed: an earlier sample won). The chosen
+    sample's running event is then announced again (store.py accepts the events of an open attempt), so
+    it is the goal's last attempt. Each reply is kept in RUN.../samples/<goal>/<tier>-<attempt>.json.
+    Returns the verdict of each sample in order. One sample is plain `answer`."""
+    located = locate(run, function) if located is None else located
+    if len(samples) == 1:
+        s = samples[0]
+        return [answer(run, function, identifier, tier, s["attempt"], s["prompt"], s["reply"], s.get("extra"),
+                       located=located, confirmed=s["counterexample"].confirmed if s.get("counterexample") else None)]
+    where = located[identifier]
+    parsed = []
+    for s in samples:
+        data, raw = replay.parse_reply(s["reply"] if s["reply"] is not None else "")
+        data = data if isinstance(data, dict) else {}
+        verdict = data.get("verdict") if data.get("verdict") in package.VERDICTS else "malformed"
+        parsed.append((s, data, raw, verdict))
+        record = where.d / "samples" / where.gid / ("%s-%d.json" % (tier, s["attempt"]))
+        record.parent.mkdir(parents=True, exist_ok=True)
+        rl.write_json(record, dict(attempt=s["attempt"], tier=tier, verdict=verdict, reply=raw,
+                                   prompt_sha256=sha(s["prompt"]),
+                                   **{k: v for k, v in (s.get("extra") or {}).items() if k in TOOL_COUNTS}))
+    outcome, chosen = {}, None
+    for s, data, raw, verdict in parsed:
+        if verdict != "proved":
+            continue
+        if chosen is not None:
+            outcome[s["attempt"]] = SUPERSEDED
+            continue
+        probe = s.get("proof") or ProofProbe(where, tier, s["attempt"], calls=0)
+        if probe.final_check(data.get("proof")):
+            chosen = s
+        else:
+            outcome[s["attempt"]] = "compile_error"
+    confirmed = [s for s, data, _, verdict in parsed if verdict == "false" and s.get("counterexample")
+                 and s["counterexample"].accepts(data.get("counterexample"))]
+    if chosen is None:
+        chosen = next(iter(confirmed + [s for s, _, _, v in parsed if v == "proved"]
+                           + [s for s, _, _, v in parsed if v == "need_context"]), samples[0])
+    item = fold(run)[identifier]
+    rows = []
+    for s, data, raw, verdict in parsed:
+        if s is chosen:
+            continue
+        if verdict == "false":
+            cls = SUPERSEDED if any(s is c for c in confirmed) else UNCONFIRMED_FALSE
+        else:
+            cls = outcome.get(s["attempt"], verdict)
+        extra = s.get("extra") or {}
+        meta = dict(tier=tier, attempt=s["attempt"], prompt_sha256=sha(s["prompt"]),
+                    prompt_bytes=len(s["prompt"].encode()), answer_bytes=len(raw.encode()),
+                    tokens_in=extra.get("tokens_in"), tokens_out=extra.get("tokens_out"),
+                    **{k: extra[k] for k in TOOL_COUNTS if k in extra})
+        rows.append(attempt_event(item, meta, "failed", cls))
+    running = [row for row in item["events"] if row["state"] == "running"
+               and (row.get("tier"), row.get("attempt")) == (tier, chosen["attempt"])]
+    rows.append(dict(running[-1], head=store.git_head()))
+    store.append(run, rows)
+    verdicts = {id(s): verdict for s, _, _, verdict in parsed}
+    verdicts[id(chosen)] = answer(run, function, identifier, tier, chosen["attempt"], chosen["prompt"],
+                                  chosen["reply"], chosen.get("extra"), located=located,
+                                  confirmed=chosen["counterexample"].confirmed if chosen.get("counterexample") else None)
+    for s, _, _, verdict in parsed:
+        if s is not chosen and verdict == "false":
+            verdicts[id(s)] = SUPERSEDED if any(s is c for c in confirmed) else UNCONFIRMED_FALSE
+    return [verdicts[id(s)] for s in samples]
 
 
 # ---- the kernel side of step (compiles) ----
@@ -514,24 +755,33 @@ class Kernel:
                              offset=offset)
 
     def repackage(self, run, function, where, tier, bound, reason):
-        """package.py's task of a goal again at BOUND (the tier cap) less the no-tools preamble the prompt
-        adds, with the definitions context and the hint pack of RUN when present; the record keeps
-        `prompt_bound` (BOUND) and `bound_reason`."""
+        """package.py's task of a goal again at BOUND (the tier cap) less package_reserve(TIER) (the
+        preamble and best-of-N section the prompt adds), with the definitions context and the hint pack of
+        RUN when present; the record keeps `prompt_bound` (BOUND), `reserve` and `bound_reason`."""
         import falsify
         import similar
         manifest = where.manifest()
         bank = manifest.get("bank")
         route_ = falsify.Route(bank) if bank and (Path(bank) / "ARGS.json").is_file() else None
         hints = Path(run) / "hints"
-        record = package.package_goal(where.d, manifest, where.goal, function, tier,
-                                      bound - len(preamble(tier).encode()),
-                                      similar.build_index(runs=[where.d]), hints if hints.is_dir() else None,
+        reserve = package_reserve(tier)
+        record = package.package_goal(where.d, manifest, where.goal, function, tier, bound - reserve,
+                                      similar.build_index(runs=similar.sibling_runs(where.d)),
+                                      hints if hints.is_dir() else None,
                                       defs_route=route_, symbol_route=route_)
-        record.update(prompt_bound=bound, bound_reason=reason)
+        record.update(prompt_bound=bound, reserve=reserve, bound_reason=reason)
         return package.write_record(where.d / "package" / where.gid, record)
 
     def refute(self, where, text, out):
         """True when the kernel accepts `~ statement` on the binder values the counterexample names."""
+        return self.refutation(where, text, out)[0]
+
+    def refutation(self, where, text, out, binders=None):
+        """(confirmed, reason, binders) of the counterexample TEXT: confirmed when the kernel accepts
+        `~ statement` on the binder values it names (falsify.py's refutation, compiled in OUT); BINDERS,
+        the goal's parsed binders of an earlier call, spare the binder probe compile. Not confirmed when
+        a binder type is outside falsify.py's range (reason says so: no `false` can be confirmed), the
+        text names no binder, or the kernel rejects the refutation."""
         import falsify
         route_ = self.route_of(where.d)
         goal = where.goal_dir / "FALSIFY.v"
@@ -539,18 +789,54 @@ class Kernel:
         out.mkdir(parents=True, exist_ok=True)
         goal_preamble, statement, _ = falsify.read_goal(goal)
         pre = falsify.preamble(goal_preamble, statement, route_.args, route_.coqlib)
-        (out / "probe.v").write_text(falsify.probe_text(pre, statement))
-        result, log = route_.compile(out / "probe.v", "drive-probe-" + where.gid)
-        binders, ended = falsify.parse_binders(falsify.records(log))
-        if result["returncode"] != 0 or not ended or any(b["kind"] not in falsify.CHECKED_KINDS for b in binders):
-            return False
-        try:
-            values = replay.counterexample_values(text, binders)
-        except ValueError:
-            return False
-        (out / "refute.v").write_text(falsify.refute_text(pre, statement, binders, values))
-        result, _ = route_.compile(out / "refute.v", "drive-refute-" + where.gid)
-        return result["returncode"] == 0
+        if binders is None:
+            (out / "probe.v").write_text(falsify.probe_text(pre, statement))
+            result, log = route_.compile(out / "probe.v", "drive-probe-" + where.gid)
+            binders, ended = falsify.parse_binders(falsify.records(log))
+            if result["returncode"] != 0 or not ended:
+                return False, "the checker could not read the lemma's variables", None
+
+        def refute(values):
+            (out / "refute.v").write_text(falsify.refute_text(pre, statement, binders, values))
+            return route_.compile(out / "refute.v", "drive-refute-" + where.gid)[0]["returncode"] == 0
+        return refutation_of(binders, text, refute)
+
+
+def package_reserve(tier):
+    """Bytes a task packaged for TIER leaves free for what the prompt adds: the longer of the tier's two
+    preambles (drive.preamble with either false rule) and, with best-of-N samples, SAMPLE_ROOM."""
+    return (max(len(preamble(tier).encode()), len(preamble(tier, True).encode()))
+            + (SAMPLE_ROOM if samples(tier) > 1 else 0))
+
+
+def short_reserve(where, tier):
+    """True when the goal's package at the tier cap (PACKAGE.json `prompt_bound`) left less room than
+    package_reserve(TIER) asks now (a record without `reserve` was cut for the shorter tool-less preamble)."""
+    record = store.read_json(where.d / "package" / where.gid / "PACKAGE.json", {}) or {}
+    return bool(record.get("prompt_bound")) and int(record.get("reserve", 0)) < package_reserve(tier)
+
+
+def refutation_of(binders, text, refute):
+    """(confirmed, reason, binders) of the counterexample TEXT over the goal's BINDERS (falsify.py's
+    parse_binders); REFUTE(values) -> bool compiles `~ statement` at those values."""
+    import falsify
+    other = [b for b in binders if b["kind"] not in falsify.CHECKED_KINDS]
+    if other:
+        return False, ("unsupported: the variable types of this lemma (%s) are outside the checker's range "
+                       "(Z, nat, N, bv n, list byte, bool); answer false is not allowed for it."
+                       % ", ".join("%s : %s" % (b["name"], b.get("type", b["kind"])) for b in other[:4])), binders
+    data = [b for b in binders if b["kind"] != "prop"]
+    named = {name for name, _ in replay.VALUE.findall(text)}
+    if data and not named & {b["name"] for b in data}:
+        return False, "names none of the lemma's variables (%s): write `name = value, ...`" % ", ".join(
+            b["name"] for b in data[:8]), binders
+    try:
+        values = replay.counterexample_values(text, binders)
+    except ValueError as error:
+        return False, "a value could not be read: %s" % error, binders
+    if refute(values):
+        return True, "the kernel accepts the negated lemma at these values", binders
+    return False, "the kernel rejects the negated lemma at these values: the lemma holds there", binders
 
 
 # ---- the prover check tool (check_proof) ----
@@ -679,6 +965,7 @@ class ProofProbe:
         self.where, self.error_bytes = where, error_bytes
         self.scratch = where.d / "probes" / where.gid / ("%s-%d" % (tier, attempt))
         self.left, self.calls = calls, 0
+        self.accepted = set()
         self.compile = compile or probe_compile
         self.slots = slots
         self.lock = threading.Lock()
@@ -703,9 +990,144 @@ class ProofProbe:
                 ok, error = self.compile(self.where, out, proof)
             except (OSError, subprocess.SubprocessError, KeyError, ValueError) as failure:
                 ok, error = False, "check_proof could not run the check: %r" % failure
+        if ok:
+            with self.lock:
+                self.accepted.add(proof.strip())
         if not ok and isinstance(error, tuple):
             error = error_text(error[0], error[1], self.error_bytes)
         return dict(ok=bool(ok), error="" if ok else clip(error, self.error_bytes), remaining=remaining)
+
+    def final_check(self, proof):
+        """True when the kernel accepts PROOF for this goal: at once when a check_proof call of this attempt
+        accepted the same text, else one compile in the scratch dir `final/` (outside the call budget)."""
+        if not isinstance(proof, str) or rl.answer_problems(proof.strip() + "\n"):
+            return False
+        if proof.strip() in self.accepted:
+            return True
+        out = self.scratch / "final"
+        if out.exists():
+            shutil.rmtree(out)
+        with (self.slots or check_slots()):
+            try:
+                return bool(self.compile(self.where, out, proof)[0])
+            except (OSError, subprocess.SubprocessError, KeyError, ValueError):
+                return False
+
+
+_GOAL_LOCKS = {}
+_GOAL_LOCKS_LOCK = threading.Lock()
+
+
+def goal_lock(where):
+    """The lock of one goal's defs/ cache, shared by the samples of a round."""
+    with _GOAL_LOCKS_LOCK:
+        return _GOAL_LOCKS.setdefault(str(where.goal_dir), threading.Lock())
+
+
+class LookupProbe:
+    """lookup and search of one goal for one attempt: CALLS answers in all, each clipped to LOOKUP_BYTES; a
+    name or pattern asked again in the attempt is answered from the attempt's cache and costs no call. The
+    answers come from tools/oblig/defs.py with the goal's imports (defs.goal_resolver: About/Print or
+    Search compiles under check_slots(), cached per goal in its defs/ dir, one query of a goal at a time).
+    LOOKUP(name) and SEARCH(pattern) -> text replace defs.lookup_text and defs.search in the tests."""
+
+    def __init__(self, where, calls, lookup=None, search=None, slots=None):
+        self.where, self.left, self.slots = where, calls, slots
+        self.lookups = self.searches = 0
+        self.cache = {}
+        self.lock = threading.Lock()
+        self._lookup, self._search = lookup, search
+        self._resolver = None
+
+    def resolver(self):
+        import defs
+        if self._resolver is None:
+            self._resolver = defs.goal_resolver(self.where.goal_dir)
+        return self._resolver
+
+    def answer(self, kind, key, fn):
+        key = " ".join(str(key).split()) if isinstance(key, str) else None
+        if not key:
+            return dict(text="Give one non-empty string.", remaining=self.left)
+        with self.lock:
+            if (kind, key) in self.cache:
+                return dict(text=self.cache[(kind, key)], remaining=self.left)
+            if self.left <= 0:
+                return dict(text="No lookup or search calls left: send your answer.", remaining=0)
+            self.left -= 1
+            if kind == LOOKUP_TOOL:
+                self.lookups += 1
+            else:
+                self.searches += 1
+            remaining = self.left
+        import defs
+        try:
+            with goal_lock(self.where), (self.slots or check_slots()):
+                text = fn(key)
+        except (defs.DefsError, OSError, KeyError, ValueError, subprocess.SubprocessError) as failure:
+            text = "%s could not run: %s" % (kind, failure)
+        text = clip(text, LOOKUP_BYTES)
+        with self.lock:
+            self.cache[(kind, key)] = text
+        return dict(text=text, remaining=remaining)
+
+    def lookup(self, name):
+        import defs
+        return self.answer(LOOKUP_TOOL, name, self._lookup or (lambda n: defs.lookup_text(self.resolver(), n)))
+
+    def search(self, pattern):
+        import defs
+        return self.answer(SEARCH_TOOL, pattern, self._search or (lambda p: defs.search(self.resolver(), p)))
+
+
+def normal(text):
+    return " ".join(str(text or "").split())
+
+
+class CounterexampleProbe:
+    """check_counterexample of one goal for one attempt: at most CALLS kernel refutations (Kernel.refutation,
+    falsify.py's evaluator) in the scratch dir RUN.../probes/<goal>/<tier>-<attempt>/cex-<call>/. The goal's
+    binders are probed once; when their types are outside falsify.py's range every call answers so (and
+    costs no call after the first). `accepts(text)` is True only for an assignment a call confirmed.
+    REFUTATION(where, text, out, binders) -> (confirmed, reason, binders) replaces it in the tests."""
+
+    def __init__(self, where, tier, attempt, calls, refutation=None, slots=None):
+        self.where, self.left, self.slots = where, calls, slots
+        self.scratch = where.d / "probes" / where.gid / ("%s-%d" % (tier, attempt))
+        self.refutation = refutation or Kernel().refutation
+        self.calls, self.binders, self.unsupported = 0, None, None
+        self.confirmed = []
+        self.lock = threading.Lock()
+
+    def __call__(self, assignment):
+        if not isinstance(assignment, str) or not assignment.strip():
+            return dict(confirmed=False, reason="assignment must be a non-empty string", remaining=self.left)
+        with self.lock:
+            if self.unsupported:
+                return dict(confirmed=False, reason=self.unsupported, remaining=self.left)
+            if self.left <= 0:
+                return dict(confirmed=False, reason="No check_counterexample calls left: send your answer.",
+                            remaining=0)
+            self.left -= 1
+            self.calls += 1
+            call, remaining, binders = self.calls, self.left, self.binders
+        out = self.scratch / ("cex-%d" % call)
+        try:
+            with (self.slots or check_slots()):
+                ok, reason, binders = self.refutation(self.where, assignment, out, binders)
+        except (OSError, subprocess.SubprocessError, KeyError, ValueError) as failure:
+            ok, reason = False, "check_counterexample could not run the check: %r" % failure
+        with self.lock:
+            if binders is not None:
+                self.binders = binders
+            if reason.startswith("unsupported"):
+                self.unsupported = reason
+            if ok:
+                self.confirmed.append(normal(assignment))
+        return dict(confirmed=bool(ok), reason=reason, remaining=remaining)
+
+    def accepts(self, text):
+        return normal(text) in self.confirmed
 
 
 # ---- step ----
@@ -877,7 +1299,7 @@ def sync_package_class(function, run, located, counts):
     state, filed = fold(run), 0
     for identifier, item in state.items():
         where = located.get(identifier)
-        if item["kind"] != "goal" or where is None or item["state"] in ("closed", "running"):
+        if item["kind"] != "goal" or where is None or item["state"] in ("closed", "running", "superseded"):
             continue
         path = where.d / "package" / where.gid / "PACKAGE.json"
         record = store.read_json(path)
@@ -907,7 +1329,13 @@ def escalate_unpromptable(function, run, located, free, counts, kernel):
     for identifier, action, tier, _ in route.next_items(run, function):
         if action != "prove" or tier in (None, MECHANICAL) or identifier not in free:
             continue
-        text, reason = prompt_for(run, function, identifier, tier, located=located, state=state)
+        count = samples(tier, state[identifier]["goal_class"])
+        # Every sample of a best-of-N round must fit (their sections differ in length).
+        for index in range(count):
+            text, reason = prompt_for(run, function, identifier, tier, located=located, state=state,
+                                      sample=(index, count))
+            if text is None:
+                break
         if text is not None:
             continue
         if reason == "missing_context":
@@ -915,9 +1343,10 @@ def escalate_unpromptable(function, run, located, free, counts, kernel):
             counts.bump("missing_context")
         elif reason.startswith(TOO_LARGE):
             where = located[identifier]
-            if (state[identifier]["kind"] == "goal" and large_bound(where, tier) is None
+            if (state[identifier]["kind"] == "goal" and (large_bound(where, tier) is None or short_reserve(where, tier))
                     and tier_cap(tier) > max_prompt_bytes(tier, state[identifier]["goal_class"])):
-                # Once per goal: package.py again at the tier cap; the goal is then sent at that size.
+                # Once per goal and reserve: package.py again at the tier cap less the prompt's additions;
+                # the goal is then sent at that size.
                 kernel.repackage(run, function, where, tier, tier_cap(tier), "smallest task over the "
                                  "default bound (%s)" % reason)
                 counts.bump("repackaged_large")

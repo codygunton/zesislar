@@ -21,7 +21,7 @@ class EntryRegisterDeclarations(unittest.TestCase):
     def test_only_the_dead_register_and_its_binder_change(self):
         self.assertEqual(len(self.sources), 2)
         for source in self.sources:
-            rendered = render_entry_registers(source)
+            rendered = render_entry_registers(source, 'decodeItem')
             self.assertEqual(rendered.count('(machine_x11 : bv 64)'), 1)
             self.assertEqual(rendered.count(self.rule['new_resource']), 1)
             self.assertNotIn(self.rule['old_resource'], rendered)
@@ -32,18 +32,23 @@ class EntryRegisterDeclarations(unittest.TestCase):
     def test_other_entry_owners_remain_unchanged(self):
         for source in self.sources:
             source = source.replace(self.rule['entry'], 'another_entry')
-            self.assertEqual(render_entry_registers(source), source)
+            self.assertEqual(render_entry_registers(source, 'decodeItem'), source)
+
+    def test_an_entry_of_the_same_name_in_another_function_is_unchanged(self):
+        for source in self.sources:
+            changed = source.replace(self.rule['old_resource'], 'changed_resource', 1)
+            self.assertEqual(render_entry_registers(changed, 'keysEnsureCapacity'), changed)
 
     def test_entry_already_in_the_approved_form_is_kept(self):
         for source in self.sources:
-            rendered = render_entry_registers(source)
-            self.assertEqual(render_entry_registers(rendered), rendered)
+            rendered = render_entry_registers(source, 'decodeItem')
+            self.assertEqual(render_entry_registers(rendered, 'decodeItem'), rendered)
 
     def test_changed_resource_refuses_the_old_authorization(self):
         for source in self.sources:
             source = source.replace(self.rule['old_resource'], 'changed_resource', 1)
             with self.assertRaisesRegex(ValueError, 'approved register declaration changed'):
-                render_entry_registers(source)
+                render_entry_registers(source, 'decodeItem')
 
 
 if __name__ == '__main__':

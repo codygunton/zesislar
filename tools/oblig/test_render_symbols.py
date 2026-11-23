@@ -62,6 +62,24 @@ class RenderSymbolsTests(unittest.TestCase):
         with self.assertRaises(render_symbols.SymbolError):
             render_symbols.render(['a.b', 'a_b'], {'a.b': 1, 'a_b': 2}, 'elf', '0', 'list')
 
+    def test_sections_add_start_and_exclusive_end(self):
+        with open(ELF, 'rb') as handle:
+            text = ELFFile(handle).get_section_by_name('.text')
+            start, end = text['sh_addr'], text['sh_addr'] + text['sh_size']
+        path = self.tmp / 'symbols.json'
+        path.write_text(json.dumps({'schema': render_symbols.SCHEMA, 'elf': str(ELF), 'output': str(self.tmp / 'Symbols.v'),
+                                    'symbols': ['memcpy'], 'sections': ['.text']}))
+        self.assertEqual(run(['--list', str(path)])[0], 0)
+        out = (self.tmp / 'Symbols.v').read_text()
+        self.assertIn(f'Notation sec_text_start := (({start:#x}) : Z) (only parsing).', out)
+        self.assertIn(f'Notation sec_text_end := (({end:#x}) : Z) (only parsing).', out)
+        self.assertIn('(*   sec_text_end <- end of ".text" *)', out)
+        path.write_text(json.dumps({'schema': render_symbols.SCHEMA, 'elf': str(ELF), 'output': str(self.tmp / 'S.v'),
+                                    'symbols': [], 'sections': ['.no_such']}))
+        code, message = run(['--list', str(path)])
+        self.assertEqual(code, 2)
+        self.assertIn('no allocated section', message)
+
     def test_missing_symbol_refused(self):
         code, text = run(['--list', self.write_list(['no.such.symbol'])])
         self.assertEqual(code, 2)

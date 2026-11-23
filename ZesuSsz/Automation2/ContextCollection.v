@@ -19,8 +19,13 @@ Ltac2 zesu_context_add (names : ident list) (name : ident) :=
 Ltac2 zesu_context_union (left : ident list) (right : ident list) :=
   List.fold_left zesu_context_add left right.
 
-(* Unsupported syntax refuses the filtered branch. It never changes the term. *)
-Ltac2 rec zesu_context_variables (term : constr) :=
+(* Unsupported syntax refuses the filtered branch. It never changes the term.
+   With CASES a `match` contributes the variables of its scrutinee, return
+   predicate and branches (the residual exporter, which prints `if` on `bool`
+   and `sumbool`); without it a `match` is refused, as the production
+   filter has always done. *)
+Ltac2 rec zesu_context_variables_in (cases : bool) (term : constr) :=
+  let recur := zesu_context_variables_in cases in
   match Constr.Unsafe.kind term with
   | Constr.Unsafe.Var name => [name]
   | Constr.Unsafe.Rel _ => []
@@ -32,19 +37,27 @@ Ltac2 rec zesu_context_variables (term : constr) :=
   | Constr.Unsafe.Float _ => []
   | Constr.Unsafe.App head arguments =>
       Array.fold_left (fun found argument =>
-        zesu_context_union found (zesu_context_variables argument)) (zesu_context_variables head) arguments
+        zesu_context_union found (recur argument)) (recur head) arguments
   | Constr.Unsafe.Cast body _ ty =>
-      zesu_context_union (zesu_context_variables body) (zesu_context_variables ty)
+      zesu_context_union (recur body) (recur ty)
   | Constr.Unsafe.Prod binder body =>
-      zesu_context_union (zesu_context_variables (Constr.Binder.type binder)) (zesu_context_variables body)
+      zesu_context_union (recur (Constr.Binder.type binder)) (recur body)
   | Constr.Unsafe.Lambda binder body =>
-      zesu_context_union (zesu_context_variables (Constr.Binder.type binder)) (zesu_context_variables body)
+      zesu_context_union (recur (Constr.Binder.type binder)) (recur body)
   | Constr.Unsafe.LetIn binder value body =>
-      zesu_context_union (zesu_context_variables (Constr.Binder.type binder))
-        (zesu_context_union (zesu_context_variables value) (zesu_context_variables body))
-  | Constr.Unsafe.Proj _ _ body => zesu_context_variables body
+      zesu_context_union (recur (Constr.Binder.type binder))
+        (zesu_context_union (recur value) (recur body))
+  | Constr.Unsafe.Proj _ _ body => recur body
+  | Constr.Unsafe.Case _ predicate _ scrutinee branches =>
+      if cases then
+        let (returned, _) := predicate in
+        Array.fold_left (fun found branch => zesu_context_union found (recur branch))
+          (zesu_context_union (recur returned) (recur scrutinee)) branches
+      else Control.zero (Tactic_failure None)
   | _ => Control.zero (Tactic_failure None)
   end.
+
+Ltac2 zesu_context_variables (term : constr) := zesu_context_variables_in false term.
 
 Ltac2 zesu_context_proposition (ty : constr) :=
   Constr.equal (Constr.type ty) constr:(Prop).

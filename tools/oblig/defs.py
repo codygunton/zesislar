@@ -326,25 +326,86 @@ def section(found, max_bytes, head=HEAD):
     return (text, used) if used else ("", [])
 
 
-def needs_text(needs, goal_dir, max_bytes):
-    """The section for the names a `need_context` answer (NEEDS: list of prose items) gives, for a
-    residual_loop goal dir (goal.v; MANIFEST.json two levels up names the bank): the definition or
-    statement of each name Rocq resolves with the goal's imports, in order, within MAX_BYTES. "" when
-    nothing resolves or fits. Answers are cached in GOAL_DIR/defs/."""
+def goal_resolver(goal_dir):
+    """The Resolver of a residual_loop goal dir (goal.v; MANIFEST.json two levels up names the bank): the
+    goal's imports, its bank's check route, answers cached in GOAL_DIR/defs/."""
     import falsify
     goal_dir = Path(goal_dir)
-    goal_v = (goal_dir / "goal.v").read_text()
-    head = rl.goal_head(goal_v)
+    head = rl.goal_head((goal_dir / "goal.v").read_text())
     header = head[:head.index("\nLemma ")].strip("\n").split("\n")
+    manifest = rl.read_json(goal_dir.parents[1] / "MANIFEST.json")
+    route = falsify.Route(manifest["bank"])
+    return Resolver(goal_dir / "defs", header, route_compile(route), project_roots(route.args),
+                    tag="defs-" + goal_dir.name)
+
+
+def needs_text(needs, goal_dir, max_bytes):
+    """The section for the names a `need_context` answer (NEEDS: list of prose items) gives, for a
+    residual_loop goal dir (goal_resolver): the definition or statement of each name Rocq resolves with
+    the goal's imports, in order, within MAX_BYTES. "" when nothing resolves or fits."""
+    goal_dir = Path(goal_dir)
     names = asked_names(needs, bound_names(similar.goal_statement(goal_dir / "goal.v")))
     if not names:
         return ""
-    manifest = rl.read_json(goal_dir.parents[1] / "MANIFEST.json")
-    route = falsify.Route(manifest["bank"])
-    resolver = Resolver(goal_dir / "defs", header, route_compile(route), project_roots(route.args),
-                        tag="defs-" + goal_dir.name)
+    resolver = goal_resolver(goal_dir)
     text, _ = section(items(resolver.resolve(names), names, project_only=False), max_bytes, head=ASKED_HEAD)
     return text
+
+
+def lookup_text(resolver, name):
+    """The answer of the prover tool `lookup` for NAME: its definition (a transparent project constant,
+    an inductive) or its statement, as `item_text` renders it; a line saying why when it does not
+    resolve with the goal's imports."""
+    name = name.strip()
+    if not QUALID.match(name):
+        return "Not an identifier: %r (give one qualified name, e.g. Z.add_comm)." % name
+    record = resolver.resolve([name])[name]
+    if record.get("status") != "resolved":
+        kind = " (a %s)" % record["kind"] if record.get("kind") else ""
+        return "%s: no definition or statement with this goal's imports%s." % (name, kind)
+    return item_text(name, record)
+
+
+# A Search pattern must stay one vernacular sentence: no sentence end, comment or newline.
+SEARCH_BAD = re.compile(r"\.(?:\s|$)|\(\*|\*\)|[\n\r]")
+SEARCH_LINES = 40
+
+
+def search_text(header, pattern):
+    lines = list(header) + ["Set Printing Width 100."]
+    lines.append('Goal True. idtac "%ssearch q". Abort.' % MARK)
+    lines.append("Search %s." % pattern)
+    lines.append('Goal True. idtac "%send". Abort.' % MARK)
+    return "\n".join(lines) + "\n"
+
+
+def search(resolver, pattern, max_lines=SEARCH_LINES):
+    """The answer of the prover tool `search`: Rocq `Search PATTERN` with the goal's imports (the only
+    environment the goal has), at most MAX_LINES lines; cached in the resolver's dir (SEARCH.json)."""
+    pattern = " ".join(pattern.split())
+    if not pattern or SEARCH_BAD.search(pattern):
+        return "Not a Search pattern: give the pattern only, e.g. `(_ + 0)%Z` or `Z.add \"comm\"`, with no final dot."
+    path = resolver.dir / "SEARCH.json"
+    key = sha("\n".join(resolver.header))
+    cache = rl.read_json(path, {}) if path.exists() else {}
+    if cache.get("header_sha256") != key:
+        cache = dict(schema=SCHEMA, header_sha256=key, patterns={})
+    if pattern not in cache["patterns"]:
+        resolver.dir.mkdir(parents=True, exist_ok=True)
+        query = resolver.dir / ("search_%s.v" % sha(pattern)[:12])
+        query.write_text(search_text(resolver.header, pattern))
+        result, text = resolver.compile(query, "%s-search" % resolver.tag)
+        if result.get("returncode") == 0 and END.search(text):
+            cache["patterns"][pattern] = blocks(text, "search").get("q", "")
+        else:
+            cache["patterns"][pattern] = "Search failed: %s" % rl.errors_of(text, limit=4)
+        rl.write_json(path, cache)
+    found = [line for line in cache["patterns"][pattern].split("\n") if line.strip()]
+    if not found:
+        return "No match for %s with this goal's imports." % pattern
+    if len(found) > max_lines:
+        return "\n".join(found[:max_lines] + ["[... %d more lines: refine the pattern]" % (len(found) - max_lines)])
+    return "\n".join(found)
 
 
 def main(argv=None):
