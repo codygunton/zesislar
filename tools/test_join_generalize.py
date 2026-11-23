@@ -10,8 +10,9 @@ import unittest
 sys.path.insert(0, str(Path(__file__).resolve().parent / 'block'))
 from forward_design import _footprint, source_liveness
 from join_generalize import (anti_unify, exit_pullback, generalize_registers, hull,
-                             attach_exit_pullback, continuation_observables,
-                             generalize_owned_join, validate_edges, witness_plan, common_conditions)
+                             attach_exit_pullback, continuation_observables, drop_entry_resources,
+                             drop_root_resources, generalize_owned_join, held_texts, inherited_drops,
+                             validate_edges, witness_plan, common_conditions)
 from forward_resources import (OwnedBytes, ownership_from_assertion_tree,
                                render_resource_boundary, apply_owned_writes)
 from resource_seed import OwnedSeed
@@ -294,6 +295,116 @@ class OwnedJoinTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, 'changes system state'):
             generalize_owned_join(alternatives, original_seed=seed, entry_pc=32,
                                   vocabulary=vocabulary, continuation=continuation)
+
+    def test_dropped_resource_of_the_join_seed_is_not_owned(self):
+        tree = {'kind': 'exists', 'binders': [{'name': 'old', 'type': 'bv 64',
+                                              'expression': input_expr('old').to_dict()}],
+                'components': [{'kind': 'register', 'id': 'r', 'register': 'x13', 'value_coq': 'old'},
+                               {'kind': 'opaque', 'id': 'block', 'coq': 'altFlBlock p n a'},
+                               {'kind': 'opaque', 'id': 'terminal', 'coq': 'True'}]}
+        ownership = ownership_from_assertion_tree(tree, provenance={'source': 'fixture'})
+        seed = OwnedSeed(SymbolicState(registers={'PC': bits(32, 64), 'x13': input_expr('old')}),
+                         ownership, [], [], [])
+        _, alternatives, vocabulary, continuation = self.fixture()
+        for alternative in alternatives:
+            state = _state_from_result(alternative['state'])
+            alternative['resource_boundary'] = render_resource_boundary(
+                ownership, apply_owned_writes([], []), state, vocabulary=vocabulary)
+        joined = generalize_owned_join(alternatives, original_seed=seed, entry_pc=32, vocabulary=vocabulary,
+                                       continuation=continuation, dropped=['altFlBlock  p n a'])
+        self.assertEqual(joined['plan']['join_drops'], ['block'])
+        self.assertNotIn('block', [row['id'] for row in joined['seed'].ownership['components']])
+        self.assertNotIn('altFlBlock', json.dumps(joined['boundary']['alternatives'][0]['resource_boundary']))
+        with self.assertRaisesRegex(ValueError, 'names no resource of the join seed'):
+            generalize_owned_join(alternatives, original_seed=seed, entry_pc=32, vocabulary=vocabulary,
+                                  continuation=continuation, dropped=['altFlBlock q n a'])
+
+    def block_seed(self):
+        tree = {'kind': 'exists', 'binders': [{'name': 'old', 'type': 'bv 64',
+                                              'expression': input_expr('old').to_dict()}],
+                'components': [{'kind': 'register', 'id': 'r', 'register': 'x13', 'value_coq': 'old'},
+                               {'kind': 'opaque', 'id': 'block', 'coq': 'altFlBlock p n a'},
+                               {'kind': 'opaque', 'id': 'terminal', 'coq': 'True'}]}
+        ownership = ownership_from_assertion_tree(tree, provenance={'source': 'fixture'})
+        return OwnedSeed(SymbolicState(registers={'PC': bits(32, 64), 'x13': input_expr('old')}),
+                         ownership, [], [], [])
+
+    def test_an_edge_that_dropped_the_resource_joins_one_that_still_holds_it(self):
+        seed = self.block_seed()
+        reduced, ids = drop_root_resources(seed, ['altFlBlock p n a'])
+        self.assertEqual((ids, [row['id'] for row in reduced.ownership['components']]), (['block'], ['r', 'terminal']))
+        _, alternatives, vocabulary, continuation = self.fixture()
+        for alternative, ownership in zip(alternatives, [seed.ownership, reduced.ownership]):
+            alternative['resource_boundary'] = render_resource_boundary(
+                ownership, apply_owned_writes([], []), _state_from_result(alternative['state']), vocabulary=vocabulary)
+        self.assertEqual(held_texts(seed, ['altFlBlock  p n a', 'other']), ['altFlBlock  p n a'])
+        joined = generalize_owned_join(alternatives, original_seed=seed, entry_pc=32, vocabulary=vocabulary,
+                                       continuation=continuation, dropped=['altFlBlock p n a'])
+        self.assertEqual(joined['plan']['join_drops'], ['block'])
+        self.assertNotIn('altFlBlock', json.dumps(joined['boundary']['alternatives'][0]['resource_boundary']))
+        # Without the drop the edge that left the resource behind cannot reach the join seed.
+        with self.assertRaises(ValueError):
+            generalize_owned_join(alternatives, original_seed=seed, entry_pc=32, vocabulary=vocabulary,
+                                  continuation=continuation)
+
+    def test_inherited_drops_apply_where_the_root_holds_them(self):
+        seed = self.block_seed()
+        reduced, _ = drop_root_resources(seed, ['altFlBlock p n a'])
+        drops = {'0x40': ['altFlBlock p n a']}
+        self.assertEqual(inherited_drops(seed, {'0x40', '0x50'}, drops), ['altFlBlock p n a'])
+        # A call-return root built without the resource inherits nothing; neither does a seed
+        # reached by no drop row.
+        self.assertEqual(inherited_drops(reduced, {'0x40'}, drops), [])
+        self.assertEqual(inherited_drops(seed, {'0x50'}, drops), [])
+
+    def test_entry_drops_change_nothing_without_a_row_and_refuse_an_unheld_text(self):
+        seed = self.block_seed()
+        _, alternatives, vocabulary, _ = self.fixture()
+        for alternative in alternatives:
+            alternative['resource_boundary'] = render_resource_boundary(
+                seed.ownership, apply_owned_writes([], []), _state_from_result(alternative['state']),
+                vocabulary=vocabulary)
+        same, edges = drop_entry_resources(seed, alternatives, [], {})
+        self.assertIs(same, seed)
+        self.assertEqual(edges, alternatives)
+        reduced, edges = drop_entry_resources(seed, alternatives, [], {'0x10': ['altFlBlock p n a']})
+        self.assertNotIn('block', [row['id'] for row in reduced.ownership['components']])
+        self.assertFalse(any('altFlBlock' in json.dumps([edge['resource_boundary'][key] for key in ('tree', 'components')])
+                             or 'body' in edge['resource_boundary'] for edge in edges))
+        with self.assertRaisesRegex(ValueError, 'names no resource of the join seed'):
+            drop_entry_resources(seed, alternatives, ['altFlBlock q n a'], {})
+
+    def test_a_frame_slot_value_is_stored_in_the_join_seed(self):
+        seed, alternatives, vocabulary, continuation = self.fixture()
+        component = {'id': 'frame', 'kind': 'unknown_byte_array', 'source': 'frame ↦ₘ{DfracOwn 1}? 16%Z',
+                     'address_z': 'frame', 'length': '16', 'provenance': {'source': 'fixture'}, 'scope': [[]]}
+        seed.ownership['components'].insert(-1, component)
+        seed.ownership['tree']['body']['children'].insert(-1, {'kind': 'component', 'id': 'frame'})
+        seed.resources = [OwnedBytes('frame', bits(4096, 64), 'frame', None, 16, True, 'DfracOwn 1',
+                                     component, {'source': 'fixture'}, 8)]
+        seed.facts = [{'fact_id': kind, 'kind': kind, 'status': 'supplied', 'origin': {'source': 'fixture'},
+                       'terms': {'resource_id': 'frame', 'fraction': 'DfracOwn 1'}}
+                      for kind in ('permission', 'nonwrap')]
+        for alternative in alternatives:
+            state = _state_from_result(alternative['state'])
+            state.writes = [MemoryWrite(bits(4104, 64), input_expr('saved_ra'), 8, True)]
+            image = apply_owned_writes(seed.resources, state.writes, facts=seed.facts)
+            alternative['state'] = state.to_dict()
+            alternative['resource_boundary'] = render_resource_boundary(seed.ownership, image, state,
+                                                                        vocabulary=vocabulary)
+        slot = MemoryWrite(address=bits(4096, 64), value=input_expr('savedX8 args', 64), size=8)
+        joined = generalize_owned_join(alternatives, original_seed=seed, entry_pc=32, vocabulary=vocabulary,
+                                       continuation=continuation, frame_writes=[slot])
+        frame, = [row['source'] for row in joined['boundary']['alternatives'][0]['resource_boundary']['components']
+                  if row['id'] == 'frame']
+        self.assertIn('savedX8 args', frame)
+        self.assertIn('saved_ra', frame)
+        self.assertNotIn('? 16%Z', frame)
+        # A slot that lands outside every uninitialized span is refused.
+        with self.assertRaisesRegex(ValueError, 'lands in no single uninitialized span'):
+            generalize_owned_join(alternatives, original_seed=seed, entry_pc=32, vocabulary=vocabulary,
+                                  continuation=continuation,
+                                  frame_writes=[MemoryWrite(address=bits(8192, 64), value=input_expr('x', 64), size=8)])
 
     def test_pullback_uses_the_complete_owned_image_and_keeps_outer_k(self):
         seed, alternatives, vocabulary, continuation = self.fixture()

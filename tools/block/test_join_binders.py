@@ -518,5 +518,20 @@ class AgreedJoinBytes(unittest.TestCase):
         self.assertEqual(_agreed_writes([first, differing], 'frame'), [])
 
 
+class JoinFrameWrites(unittest.TestCase):
+    """A `join_frames` slot becomes an 8-byte store of its value at the prologue's slot address."""
+
+    def test_a_slot_value_is_stored_where_the_prologue_stored_the_register(self):
+        sp = input_expr('sp')
+        address = operation('bvadd', sp, bits((1 << 64) - 16, 64), width=64)
+        forward = {'boundaries': [{'pc': '0x0', 'alternatives': [{'seed_pc': '0x0', 'state': {
+            'registers': {'x2': sp.to_dict()},
+            'writes': [{'address': address.to_dict(), 'size': 8, 'value': input_expr('x8_entry').to_dict()}]}}]}]}
+        write, = entry_hist.frame_writes([{'offset': -16, 'coq': 'savedX8 args'}], forward)
+        self.assertEqual((write.address, write.size, write.value), (address, 8, input_expr('savedX8 args')))
+        with self.assertRaisesRegex(ValueError, 'offset -8'):
+            entry_hist.frame_writes([{'offset': -8, 'coq': 'ra'}], forward)
+
+
 if __name__ == '__main__':
     unittest.main()

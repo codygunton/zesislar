@@ -661,6 +661,84 @@ def align_join_edges(alternatives, ownership, terminal_id, continuation_name, ke
     return aligned, extra
 
 
+def _component_text(component):
+    source = component.get('seed_component') or {}
+    return ' '.join(str(source.get('original_component', source.get('coq', ''))).split())
+
+
+def held_texts(seed, texts):
+    """The texts among `texts` that name a resource of seed (normalized as drop rows are)."""
+    held = {_component_text(component) for component in seed.ownership['components']}
+    return [text for text in texts if ' '.join(text.split()) in held]
+
+
+def inherited_drops(root_seed, origins, seed_drops):
+    """The resource texts of root_seed that a seed in `origins` no longer owns.
+
+    seed_drops maps a seed to the texts a join `drop` row removed on the way to it (from the
+    join itself or inherited from its edges). A seed below a call return records the texts of
+    its parent root; only those root_seed holds apply, so a call-return root (built without
+    them) inherits none."""
+    return held_texts(root_seed, list(dict.fromkeys(text for origin in sorted(origins)
+                                                    for text in seed_drops.get(origin, []))))
+
+
+def drop_entry_resources(root_seed, alternatives, texts, seed_drops):
+    """(root_seed, alternatives) of an entry rendered on root_seed, both without the resources
+    that `texts` (drop rows whose root is root_seed) and the alternatives' seeds (`seed_drops`,
+    inherited_drops) no longer own. A row text root_seed does not hold is refused; without a
+    row on the way nothing changes."""
+    dropped = list(dict.fromkeys([*texts, *inherited_drops(root_seed, {row['seed_pc'] for row in alternatives},
+                                                           seed_drops)]))
+    seed, ids = drop_root_resources(root_seed, dropped)
+    return seed, [strip_dropped(row, ids) for row in alternatives]
+
+
+def drop_root_resources(seed, texts):
+    """Return (seed without the resources a join `drop` row lists, their component ids).
+
+    `texts` are exact component texts of the root seed a join renders on; a text that names
+    no resource of it is refused. The result keeps the root's tree shape minus those leaves, so
+    a join, and every block after it, can be stated on it: owning less is a weakening."""
+    listed = {' '.join(text.split()) for text in texts}
+    if not listed:
+        return seed, []
+    texts_by_id = {component['id']: _component_text(component) for component in seed.ownership['components']}
+    unmatched = listed - set(texts_by_id.values())
+    if unmatched:
+        raise ValueError('A join drop row names no resource of the join seed: ' + sorted(unmatched)[0])
+    ids = sorted(key for key, text in texts_by_id.items() if text in listed)
+    ownership = deepcopy(seed.ownership)
+    for key in ids:
+        ownership['tree'] = _remove_terminal(ownership['tree'], key)
+    ownership['components'] = [row for row in ownership['components'] if row['id'] not in ids]
+    state = seed.state.copy()
+    state.memory = [region for region in state.memory if region.ownership_id not in ids]
+    state.writes = [write for write in state.writes if write.ownership_id not in ids]
+    facts = [fact for fact in seed.facts if (fact.get('terms') or {}).get('resource_id') not in ids]
+    return replace(seed, state=state, ownership=ownership, facts=facts,
+                   resources=[resource for resource in seed.resources if resource.id not in ids]), ids
+
+
+def strip_dropped(alternative, ids):
+    """An edge on the root tree without the dropped resources (it leaves them behind); an edge
+    that does not hold them (it comes through a seed that dropped them) is unchanged."""
+    boundary = alternative.get('resource_boundary') or {}
+    held = [key for key in ids if any(row['id'] == key for row in boundary.get('components', []))]
+    if not held:
+        return alternative
+    edge = deepcopy(alternative)
+    for key in held:
+        edge['resource_boundary']['tree'] = _remove_terminal(edge['resource_boundary']['tree'], key)
+    edge['resource_boundary']['components'] = [row for row in edge['resource_boundary']['components']
+                                               if row['id'] not in held]
+    edge['state']['memory'] = [row for row in edge['state'].get('memory', []) if row.get('ownership_id') not in held]
+    edge['state']['writes'] = [row for row in edge['state'].get('writes', []) if row.get('ownership_id') not in held]
+    # The rendered text still names the dropped resources: no exact-duplicate key comes from it.
+    edge['resource_boundary'].pop('body', None)
+    return edge
+
+
 def common_root_ancestor(roots, parents):
     """The deepest seed on every root's parent chain, or None.
 
@@ -1513,7 +1591,8 @@ def _write_steps(image, resource_id):
 
 def generalize_owned_join(alternatives, *, original_seed, entry_pc, vocabulary,
                           continuation, outer_names=(), liveness=None, observables=None,
-                          relational_registers=(), design_facts=(), live_registers=None, lifted_binders=()):
+                          relational_registers=(), design_facts=(), live_registers=None, lifted_binders=(),
+                          frame_writes=(), dropped=()):
     """Build a seed when every incoming non-register resource is identical.
 
     entry_pc None generalizes the exits of a return package (G-ret): every edge's PC must be the
@@ -1525,6 +1604,15 @@ def generalize_owned_join(alternatives, *, original_seed, entry_pc, vocabulary,
     design_facts are join-design conjuncts (Coq text). `{bytes@ADDR}` names the
     current value of the owned array at ADDR; each fact is a pure component of
     the join scope, which the edges into the join must establish.
+
+    frame_writes are the 8-byte stores of a `frame` annotation at this join (profile
+    `join_frames`, entry_hist.frame_writes): each lands in one uninitialized span of the
+    seed, which then holds that slot's value; the edges into the join must hold it.
+
+    dropped are resource texts of a join annotation row (`drop`) whose root is the seed this
+    join renders on, or that an earlier join on the same root dropped: the join does not own
+    them (drop_root_resources; every edge proves it by leaving them behind, strip_dropped). A
+    listed text that names no resource of the seed is refused.
 
     A pure fact that the edges state differently stays as one fact over the join binders
     when each edge's fact is its instance under that edge's binder values
@@ -1553,6 +1641,8 @@ def generalize_owned_join(alternatives, *, original_seed, entry_pc, vocabulary,
     name, terminal_id = continuation['name'], continuation['terminal_id']
     if not re.fullmatch(r'[A-Za-z][A-Za-z0-9_]*', name) or name in outer_names:
         raise ValueError('The continuation captures an outer input')
+    original_seed, drop_ids = drop_root_resources(original_seed, dropped)
+    alternatives = [strip_dropped(alternative, drop_ids) for alternative in alternatives]
     ownership = deepcopy(original_seed.ownership)
     original_binders = ownership.get('binders', [])
     if any(binder['name'] == name for binder in original_binders):
@@ -1583,6 +1673,8 @@ def generalize_owned_join(alternatives, *, original_seed, entry_pc, vocabulary,
                                dead_registers=dead, relational_registers=relational_registers)
     if liveness is not None:
         plan['deadness_basis'] = {'liveness': deepcopy(liveness), 'observables': deepcopy(observables)}
+    if drop_ids:
+        plan['join_drops'] = drop_ids
     records = []
     for alternative in alternatives:
         boundary = alternative['resource_boundary']
@@ -1655,19 +1747,32 @@ def generalize_owned_join(alternatives, *, original_seed, entry_pc, vocabulary,
     witnesses = [_witness_texts({name: normalize(Expr.from_dict(value))
                                  for name, value in edge['widened_substitution'].items()})
                  for edge in plan['edges']]
+    # A frame annotation's slot values (`frame_writes`) land in the uninitialized span that holds
+    # each slot; the join seed carries them as stores of that span (mapped, owned by it, so a read
+    # of another owned region passes them), which each edge proves of the bytes it holds.
+    frame_spans = {}
+    for write in frame_writes:
+        landed = apply_owned_writes(original_seed.resources, [write], conditions=first.conditions,
+                                    facts=original_seed.facts, endianness=first.endianness)
+        owners = {step['resource_id'] for step in landed.transitions}
+        if landed.status != 'complete' or len(owners) != 1 or memory_by_id[next(iter(owners))].byte_array is not None:
+            raise ValueError('A frame slot value lands in no single uninitialized span of the join seed')
+        owner = owners.pop()
+        frame_spans.setdefault(owner, []).append(replace(write, mapped=True, ownership_id=owner))
     for component in ownership['components']:
         key = component['id']
         current = deepcopy(component)
         if component['kind'] != 'register':
             source = records[0][key]['source']
-            if (any(record[key]['source'] != source for record in records[1:]) and key in memory_by_id
-                    and memory_by_id[key].byte_array is None
+            if ((any(record[key]['source'] != source for record in records[1:]) or key in frame_spans)
+                    and key in memory_by_id and memory_by_id[key].byte_array is None
                     and not any('{bytes@' + memory_by_id[key].address_z + '}' in fact for fact in design_facts)):
                 # An uninitialized span the edges write differently. The bytes every edge
                 # holds stay exact; the others stay uninitialized, which each edge's bytes
                 # witness. No binder: the gaps are `↦ₘ?` spans. A join design that names the
                 # span states a meaning of its whole value, so that span keeps array packaging.
-                agreed = _agreed_writes(images, key)
+                # Slot stores come last: their bytes replace the agreed bytes they cover.
+                agreed = _agreed_writes(images, key) + frame_spans.get(key, [])
                 image = apply_owned_writes(original_seed.resources, agreed, conditions=first.conditions,
                                            facts=original_seed.facts, endianness=first.endianness)
                 span = render_resource_boundary(ownership, image, first, retained_registers=first.registers,

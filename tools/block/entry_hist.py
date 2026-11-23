@@ -581,6 +581,23 @@ def frame_slot_table(forward, coq):
     return table
 
 
+def frame_writes(rows, forward):
+    """The stores of a `frame` annotation at one join (profile `join_frames[pc]`: [{offset, coq}]):
+    an 8-byte store of the value `coq` at the slot's address as the prologue computes it
+    (`frame_slot_table`). An offset the prologue does not store is refused."""
+    import json
+    from symbolic_state import Expr, MemoryWrite, input_expr
+    table = frame_slot_table(forward, lambda value: json.dumps(value, sort_keys=True))
+    writes = []
+    for row in rows:
+        address = table['slots'].get(row['offset'])
+        if address is None:
+            raise ValueError('join_frames: the prologue stores no saved register at offset %d' % row['offset'])
+        writes.append(MemoryWrite(address=Expr.from_dict(json.loads(address)), value=input_expr(row['coq'], 64),
+                                  size=8, provenance={'join_frame': row}))
+    return writes
+
+
 def region_offsets(forward):
     """{normal Z address text: (pointer symbol, signed offset)} of every recorded owned region."""
     result = {}
@@ -726,6 +743,12 @@ def fold_literal_words(text):
     return text
 
 
+def slot_binder_name(offset):
+    """The binder of an unknown saved-register slot at `offset` from the entry stack pointer
+    (`slot_components`): `frame_old_m8` for -8. A join design (annotation `frame` row) names it."""
+    return 'frame_old_' + (str(offset) if offset >= 0 else 'm' + str(-offset))
+
+
 def slot_components(kind, address, value, table, regions, taken):
     """Split one memory component at the frame's saved-register slots.
 
@@ -765,7 +788,7 @@ def slot_components(kind, address, value, table, regions, taken):
         piece(cursor, offset)
         cell = '(bv_unsigned ' + table['slots'][offset] + ')'
         if items is None:
-            name = 'frame_old_' + (str(offset) if offset >= 0 else 'm' + str(-offset))
+            name = slot_binder_name(offset)
             while name in taken:
                 name += "'"
             taken.add(name)

@@ -12,6 +12,7 @@ from forward_resource_design import evaluate_owned_function  # noqa: E402
 from forward_resources import ownership_from_assertion_tree  # noqa: E402
 from resource_seed import OwnedSeed  # noqa: E402
 from run_source_pass import return_site_seed  # noqa: E402
+from join_generalize import drop_root_resources  # noqa: E402
 from symbolic_state import SymbolicState, bits, input_expr, operation  # noqa: E402
 
 VOCABULARY = {'input_sha256': 'fixture', 'source_vocabulary': {'imports': []}}
@@ -33,6 +34,7 @@ TRACES = {16: '(trace (declare-const v (_ BitVec 64)) (read-reg |x13| nil v) (ca
           28: '(trace (write-reg |PC| nil #x0000000000000000))'}
 # The guard only the path through the call holds.
 CALL_GUARD = operation('not', operation('=', input_expr('old'), bits(0, 64)))
+BLOCK = 'altFlBlock p n a'
 
 
 def root_seed():
@@ -80,7 +82,8 @@ class ReturnSiteJoin(unittest.TestCase):
         self.assertEqual(sorted(str(row['predecessor_pc']) for row in site['alternatives']), ['0x10', 'None'])
         seed, root, plan = return_site_seed(site, self.call_seed, seeds=self.seeds, roots=self.roots,
                                             parents=self.parents, profile=None, vocabulary=VOCABULARY,
-                                            continuation=CONTINUATION, live_registers=None)
+                                            continuation=CONTINUATION, live_registers=None, report=None,
+                                            seed_drops={})
         self.assertEqual((root, plan['edges'], plan['edge_seeds'], seed.join_kind),
                          ('0x10', 2, ['0x10', '0x18'], 'call_return'))
         self.assertNotIn(json.dumps(CALL_GUARD.to_dict(), sort_keys=True),
@@ -95,14 +98,43 @@ class ReturnSiteJoin(unittest.TestCase):
         site = dict(site, alternatives=[row for row in site['alternatives'] if row['predecessor_pc'] is None])
         seed, root, plan = return_site_seed(site, self.call_seed, seeds=self.seeds, roots=self.roots,
                                             parents=self.parents, profile=None, vocabulary=VOCABULARY,
-                                            continuation=CONTINUATION, live_registers=None)
+                                            continuation=CONTINUATION, live_registers=None, report=None,
+                                            seed_drops={})
         self.assertEqual((seed, root, plan), (self.call_seed, '0x18', None))
 
     def test_an_incomplete_edge_makes_the_call_wait(self):
         site = dict(boundary(self.pass_with(self.call_seed), 24), reaching_stops=[{'reason': 'unsupported'}])
         with self.assertRaisesRegex(ValueError, 'return-site join waits'):
             return_site_seed(site, self.call_seed, seeds=self.seeds, roots=self.roots, parents=self.parents,
-                             profile=None, vocabulary=VOCABULARY, continuation=CONTINUATION, live_registers=None)
+                             profile=None, vocabulary=VOCABULARY, continuation=CONTINUATION, live_registers=None,
+                             report=None, seed_drops={})
+
+    def test_a_resource_the_call_path_dropped_is_not_owned_after_the_return_site(self):
+        # The root owns `altFlBlock p n a`; a drop row on the way to the call left it behind, so the
+        # call-return seed is built without it (seed_drops of the site: run_source_pass.main).
+        tree = {'kind': 'exists', 'binders': [{'name': 'old', 'type': 'bv 64',
+                                              'expression': input_expr('old').to_dict()}],
+                'components': [{'kind': 'register', 'id': 'r', 'register': 'x13', 'value_coq': 'old'},
+                               {'kind': 'opaque', 'id': 'block', 'coq': BLOCK},
+                               {'kind': 'opaque', 'id': 'terminal', 'coq': 'True'}]}
+        root = replace(self.root, ownership=ownership_from_assertion_tree(tree, provenance={'source': 'fixture'}))
+        call_seed = replace(drop_root_resources(root, [BLOCK])[0], state=self.call_seed.state, join_kind='call_return')
+        site = boundary(evaluate_owned_function(FUNCTION, TRACES, {16: root, 24: call_seed}, vocabulary=VOCABULARY),
+                        24)
+
+        def joined(seed_drops):
+            return return_site_seed(site, call_seed, seeds={'0x10': root}, roots=self.roots, parents=self.parents,
+                                    profile=None, vocabulary=VOCABULARY, continuation=CONTINUATION,
+                                    live_registers=None, report=None, seed_drops=seed_drops)
+
+        def owned(seed):
+            return [row['id'] for row in seed.ownership['components']]
+
+        seed, _, plan = joined({'0x18': [BLOCK]})
+        self.assertEqual((plan['drops'], 'block' in owned(seed)), ([BLOCK], False))
+        # Nothing happens without a row: the edge lifted onto the root tree owns the block again.
+        seed, _, plan = joined({})
+        self.assertEqual(('drops' in plan, 'block' in owned(seed)), (False, True))
 
 
 if __name__ == '__main__':
