@@ -276,8 +276,9 @@ class CompilerFindlibTests(unittest.TestCase):
         source.write_text("Check unit.\n")
         subprocess.run([str(wrapper), "Probe.v"], cwd=source.parent, env=environment, check=True)
         rows = [json.loads(line) for line in log.read_text().splitlines()]
+        # A changed source books its directory prior (at least 2 GiB); the fence stays 16 GiB.
         self.assertEqual([int(row["ZESU_MODULE_CLAIM_BYTES"]) for row in rows],
-                         [booking(600 * 1024 ** 2, 16 * GIB), 16 * GIB])
+                         [booking(600 * 1024 ** 2, 16 * GIB), 2 * GIB])
         self.assertTrue(all(row["ZESU_MODULE_LIMIT_GIB"] == "16" for row in rows))
         # A damaged profile books the full fence; it never blocks a compile.
         profile.write_text("invalid JSON")

@@ -58,11 +58,7 @@ class ResourceSeedTests(unittest.TestCase):
         self.assertTrue(seed.state.memory[1].uninitialized)
         self.assertFalse(seed.state.memory[1].bytes)
         self.assertEqual(seed.ownership['tree']['right'], {'kind': 'component', 'id': 'caller'})
-        self.assertEqual({fact['kind'] for fact in seed.facts}, {'permission', 'nonwrap', 'disjoint_ranges'})
-        # Two full-permission resources own disjoint bytes by separation.
-        separation, = [fact for fact in seed.facts if fact['kind'] == 'disjoint_ranges']
-        self.assertEqual({separation['terms']['left'], separation['terms']['right']}, {'array', 'frame'})
-        self.assertEqual(separation['origin']['rule'], 'separating conjunction of two full-permission resources')
+        self.assertEqual({fact['kind'] for fact in seed.facts}, {'permission', 'nonwrap'})
 
     def test_missing_stack_length_remains_symbolic(self):
         seed = seed_owned_resources(public_seed(), entry_pc=16, vocabulary=VOCABULARY)

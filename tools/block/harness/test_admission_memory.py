@@ -187,6 +187,84 @@ class LiveAdmissionTests(unittest.TestCase):
         self.assertEqual(result['admission_basis'], 'booking')
 
 
+class WaiterTests(unittest.TestCase):
+    """A large request that waits past the bound is admitted before newer small ones."""
+
+    HALF = M.SLICE_MAX_BYTES // 2
+    LIVE_OWNERS = {('gate', 1), ('small', 1)}
+
+    class Reader:
+        def __init__(self, test): self.test = test
+        def claim(self, data, key): return {'verified': False}
+        def slice_max(self): return M.SLICE_MAX_BYTES
+        def slice_sample(self):
+            return {'sampled_monotonic_ns': 20_000_000_000, 'live_bytes': self.test.live,
+                    'slice_max_bytes': M.SLICE_MAX_BYTES, 'scope': '/owned/slice', 'device': 1, 'inode': 2}
+        def process(self, actor):
+            if (actor['pid'], actor['startticks']) not in WaiterTests.LIVE_OWNERS:
+                raise ValueError('dead')
+            return 1
+
+    def setUp(self):
+        self.data, self.live, self.now = {}, self.HALF - 6 * M.GIB, 1_000_000_000_000
+        env = patch.dict(os.environ, {'ZESU_ADMISSION_WAIT_BOUND_S': '300'})
+        env.start(); self.addCleanup(env.stop)
+
+    def decide(self, request, requester):
+        with patch.object(M.time, 'monotonic_ns', return_value=20_000_000_000), \
+                patch.object(M.time, 'time_ns', return_value=self.now), redirect_stderr(io.StringIO()):
+            return M.projection(self.data, {'booked': 200 * M.GIB}, request, 200 * M.GIB,
+                                reader=self.Reader(self), requester=requester)
+
+    def gate_poll(self):
+        result = self.decide(32 * M.GIB, 'gate')
+        if result['fits']:
+            M.clear_waiter(self.data, 'gate')
+        else:
+            M.record_waiter(self.data, 'gate', 32 * M.GIB, {'pid': 'gate', 'startticks': 1}, self.now)
+        return result['fits']
+
+    def test_small_request_passes_without_a_large_waiter(self):
+        result = self.decide(4 * M.GIB, 'small')
+        self.assertTrue(result['fits'])
+        self.assertEqual((result['admission_basis'], result['waiter_reserved_bytes']), ('live_memory', 0))
+
+    def test_waiting_32_gib_claim_is_admitted_while_4_gib_requests_keep_arriving(self):
+        admitted_small, gate_step = [], None
+        for step in range(30):
+            self.live -= 4 * M.GIB              # one running 4 GiB job ends each minute
+            if self.decide(4 * M.GIB, 'small')['fits']:
+                self.live += 4 * M.GIB          # one new 4 GiB request arrives each minute
+                admitted_small.append(step)
+            if self.gate_poll():
+                gate_step = step
+                break
+            self.now += 60_000_000_000
+        # Before the bound the small requests pass and the large one waits; after it the
+        # small requests leave room until the large claim is admitted.
+        self.assertEqual(admitted_small, list(range(5)))
+        self.assertIsNotNone(gate_step)
+        self.assertLessEqual(gate_step, 5 + 8)
+        self.assertNotIn('gate', self.data.get(M.WAITERS, {}))
+
+    def test_young_dead_or_smaller_waiters_reserve_nothing(self):
+        M.record_waiter(self.data, 'gate', 32 * M.GIB, {'pid': 'gate', 'startticks': 1}, self.now)
+        self.now += 60_000_000_000
+        self.assertEqual(self.decide(4 * M.GIB, 'small')['waiter_reserved_bytes'], 0)
+        self.now += 300_000_000_000
+        self.assertEqual(self.decide(4 * M.GIB, 'small')['waiter_reserved_bytes'], 32 * M.GIB)
+        self.assertEqual(self.decide(64 * M.GIB, 'larger')['waiter_reserved_bytes'], 0)
+        self.data[M.WAITERS]['gate']['owner'] = {'pid': 'gone', 'startticks': 1}
+        self.assertEqual(self.decide(4 * M.GIB, 'small')['waiter_reserved_bytes'], 0)
+        self.assertNotIn('gate', self.data[M.WAITERS])
+
+    def test_an_aged_waiter_keeps_its_first_refusal_time(self):
+        owner = {'pid': 'gate', 'startticks': 1}
+        self.assertTrue(M.record_waiter(self.data, 'gate', 32 * M.GIB, owner, 1))
+        self.assertFalse(M.record_waiter(self.data, 'gate', 32 * M.GIB, owner, 2))
+        self.assertEqual(self.data[M.WAITERS]['gate']['since_ns'], 1)
+
+
 GIB = M.GIB
 
 
