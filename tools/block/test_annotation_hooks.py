@@ -91,7 +91,7 @@ class ReturnedLength(unittest.TestCase):
         True)))%I.
 '''
 
-    def fixture(self, directory):
+    def fixture(self, directory, length='want'):
         from resource_seed import seed_owned_resources
         origin = {'path': 'fixture.v', 'sha256': 'fixture'}
         constants = {'dst': {'value': 0x200, 'origin': origin}}
@@ -101,8 +101,8 @@ class ReturnedLength(unittest.TestCase):
         public = {'_input_sha256': 'fixture', 'source_bindings': [origin], 'assertion_tree': {
             'kind': 'exists', 'binders': [], 'components': [
                 {'id': 'collection', 'kind': 'opaque', 'coq': 'reg_col (exact_regs args)'}, *registers,
-                {'id': 'dest', 'kind': 'uninitialized_memory', 'original_component': 'dst ↦ₘ? want',
-                 'original_address_z': 'dst', 'length_original_coq': 'want'},
+                {'id': 'dest', 'kind': 'uninitialized_memory', 'original_component': 'dst ↦ₘ? ' + length,
+                 'original_address_z': 'dst', 'length_original_coq': length},
                 {'id': 'terminal', 'kind': 'opaque', 'coq': 'True'}]}}
         vocabulary = {'rows': [{'kind': kind, 'source_bindings': []} for kind in
                                ('owned_byte_array', 'uninitialized_stack_span', 'permission_fraction')],
@@ -133,6 +133,44 @@ class ReturnedLength(unittest.TestCase):
         self.assertEqual(nodes['dest_length']['coq'], '⌜(Z.of_nat (List.length call_out) = want)%Z⌝')
         region, = [region for region in seed.state.memory if region.ownership_id == 'dest']
         self.assertEqual(region.length, input_expr('want', None))
+        # The spec length is its own binder: the call step gives it the whole region, no rest stays.
+        self.assertNotIn('dest_call_after', nodes)
+
+    # The callee fills a length its arguments fix (memcpy's `argv !!! 2`), a prefix of the region.
+    PREFIX_SPEC = SPEC.replace('∃ (n : Z),\n      bv_unsigned (argv !!! 0%nat) ↦ₘ? n',
+                               'bv_unsigned (argv !!! 0%nat) ↦ₘ? bv_unsigned (argv !!! 2%nat)')
+
+    def test_the_unfilled_rest_of_the_named_region_stays_the_callers(self):
+        from call_boundary import call_return_seed
+        self.assertNotEqual(self.PREFIX_SPEC, self.SPEC)
+        with tempfile.TemporaryDirectory() as directory:
+            fixture, state, call = self.fixture(directory)
+            Path(directory, 'Spec.v').write_text(self.PREFIX_SPEC)
+            call['returned_lengths'] = {'0': 'want'}
+            state.registers['x12'] = input_expr('count', 64)
+            seed, public_after, _ = call_return_seed([{'seed_pc': '0x10', 'state': state.to_dict()}], call=call,
+                                                     function_root=directory, **fixture)
+        nodes = {node['id']: node for node in public_after['assertion_tree']['components']}
+        self.assertEqual(nodes['dest']['original_component'], 'dst ↦ₘ∗ call_out')
+        self.assertEqual(nodes['dest_length']['coq'], '⌜(Z.of_nat (List.length call_out) = (bv_unsigned (count)))%Z⌝')
+        self.assertEqual(nodes['dest_call_after']['original_component'],
+                         '(dst + (bv_unsigned (count))) ↦ₘ? (want - (bv_unsigned (count)))')
+        self.assertEqual(sorted(region.ownership_id for region in seed.state.memory), ['dest', 'dest_call_after'])
+
+    def test_a_fill_of_the_whole_region_leaves_no_rest(self):
+        # The region's length is verbatim the length the arguments fix: one array, as before.
+        from call_boundary import call_return_seed
+        with tempfile.TemporaryDirectory() as directory:
+            fixture, state, call = self.fixture(directory, length='bv_unsigned (count)')
+            Path(directory, 'Spec.v').write_text(self.PREFIX_SPEC)
+            call['returned_lengths'] = {'0': 'bv_unsigned (count)'}
+            state.registers['x12'] = input_expr('count', 64)
+            _, public_after, _ = call_return_seed([{'seed_pc': '0x10', 'state': state.to_dict()}], call=call,
+                                                  function_root=directory, **fixture)
+        nodes = {node['id']: node for node in public_after['assertion_tree']['components']}
+        self.assertNotIn('dest_call_after', nodes)
+        self.assertEqual(nodes['dest_length']['coq'],
+                         '⌜(Z.of_nat (List.length call_out) = bv_unsigned (count))%Z⌝')
 
 
 class OpaqueAndReturnedCall(unittest.TestCase):
