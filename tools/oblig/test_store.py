@@ -76,6 +76,24 @@ class Attempts(unittest.TestCase):
                                attempt(goal, 'failed', 'mechanical', 1, **{'class': 'give_up'})])
             self.assertEqual(len(store.read_events(run)), 2)
 
+    def test_events_of_an_open_attempt_of_a_best_of_n_round(self):
+        goal = store.goal_id(F, '0010', 'x = x')
+        with tempfile.TemporaryDirectory() as run:
+            store.append(run, [attempt(goal, 'running', 'haiku-low', n, prompt='s%d' % n) for n in (1, 2, 3)])
+            # The siblings' results, then the submitted sample announced again: all one open attempt each.
+            store.append(run, [attempt(goal, 'failed', 'haiku-low', 1, prompt='s1', **{'class': 'compile_error'}),
+                               attempt(goal, 'failed', 'haiku-low', 3, prompt='s3', **{'class': 'superseded'}),
+                               attempt(goal, 'running', 'haiku-low', 2, prompt='s2')])
+            state = store.fold(store.read_events(run))
+            self.assertEqual((state[goal]['state'], state[goal]['last_attempt']['attempt']), ('running', 2))
+            self.assertEqual(state[goal]['tier_attempts'], {'haiku-low': 3})
+            store.append(run, attempt(goal, 'closed', 'haiku-low', 2, prompt='s2'))
+            # A settled attempt takes no further event, and its prompt is never sent again.
+            for row in (attempt(goal, 'failed', 'haiku-low', 1, prompt='s1', **{'class': 'give_up'}),
+                        attempt(goal, 'running', 'haiku-low', 4, prompt='s3')):
+                with self.assertRaises(store.Rejected):
+                    store.append(run, row)
+
 
 class Fold(unittest.TestCase):
     def test_states_resets_and_classes(self):

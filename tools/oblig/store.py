@@ -188,16 +188,19 @@ def append(run, rows):
 
 
 def continues(handle, row):
-    """True when the log's last attempt event of this id is the same attempt still running."""
+    """True when ROW belongs to an attempt still open in the log: the last event of this id, tier and
+    attempt number is its `running` event with the same prompt. The result event of an attempt, and the
+    running event a best-of-N round (tools/oblig/drive.py settle_round) announces again for the sample it
+    submits after its sibling samples' results, are events of an attempt already sent, not a new send."""
     handle.seek(0)
     last = None
     for line in handle.read().splitlines():
         if line.strip():
             old = json.loads(line)
-            if old['id'] == row['id'] and old.get('attempt') is not None:
+            if (old['id'] == row['id'] and old.get('attempt') == row['attempt']
+                    and old.get('tier') == row['tier']):
                 last = old
-    return (last is not None and last['state'] == 'running' and last['tier'] == row['tier']
-            and last['attempt'] == row['attempt'] and last['prompt_sha256'] == row['prompt_sha256'])
+    return last is not None and last['state'] == 'running' and last['prompt_sha256'] == row['prompt_sha256']
 
 
 def fold(events):
