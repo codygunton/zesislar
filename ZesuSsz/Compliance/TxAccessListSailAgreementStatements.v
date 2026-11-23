@@ -395,7 +395,13 @@ Definition alSailEntriesCons_statement : Prop :=
       | _ => None
       end.
 
-(* alKeysAgree [P]: keys walk: Sail count = candidate count, or a D2 key-length hit. Uses: alSailItemCandidate, alSailItemBounds, alSailKeysFuelEnough. *)
+(* alCandItemNoWrap [P]: a decoded candidate item whose header fits does not wrap 2^64. Uses: none (leaf). *)
+Definition alCandItemNoWrap_statement : Prop :=
+  forall (r : list byte) (isList : bool) (h p : Z),
+    alHeaderFitsb r = true -> candidateDecodeItem r = candidateSuccess isList h p ->
+    h + p < word64Modulus.
+
+(* alKeysAgree [P]: keys walk: Sail count = candidate count, or a D2 key-length hit. Uses: alSailItemCandidate, alSailItemBounds, alSailKeysFuelEnough, alCandItemNoWrap. *)
 Definition alKeysAgree_statement : Prop :=
   forall (fuel : nat) (keys : list byte),
     (List.length keys <= fuel)%nat ->
@@ -403,13 +409,13 @@ Definition alKeysAgree_statement : Prop :=
     alSailKeys keys = alCandKeys fuel keys \/
     existsb alKeyHitb (fst (accessListKeysWalk fuel keys)) = true.
 
-(* alEntryAgree [P]: one entry: Sail key count = candidate key count, or a D1/D2/D3 hit. Uses: alSailItemCandidate, alSailItemBounds, alKeysAgree. *)
+(* alEntryAgree [P]: one entry: Sail key count = candidate key count, or a D1/D2/D3 hit. Uses: alSailItemCandidate, alSailItemBounds, alKeysAgree, alCandItemNoWrap. *)
 Definition alEntryAgree_statement : Prop :=
   forall entry : list byte,
     alCallsFitb (fst (accessListEntry entry)) = true ->
     alSailEntry entry = alCandEntry entry \/ existsb alHitb (fst (accessListEntry entry)) = true.
 
-(* alEntriesAgree [P]: entries walk: Sail counts = candidate counts, or a hit. Uses: alSailItemCandidate, alSailItemBounds, alSailEntriesFuelEnough, alEntryAgree. *)
+(* alEntriesAgree [P]: entries walk: Sail counts = candidate counts, or a hit. Uses: alSailItemCandidate, alSailItemBounds, alSailEntriesFuelEnough, alEntryAgree, alCandItemNoWrap. *)
 Definition alEntriesAgree_statement : Prop :=
   forall (fuel : nat) (entries : list byte),
     (List.length entries <= fuel)%nat ->
@@ -451,7 +457,7 @@ Definition alRefHdr_statement : Prop :=
     runAccessListPrompt (ALS.rlp_ref_hdr s) rs true =
       (alHdrOutcome (alSailHdr (alWindow bytes base len)), rs).
 
-(* alDecodeItem [W]: rlp_decode_item is the pure item alSailItem of the window. Uses: alRunBind, alRunBindAssoc, alRunFatal, alRefHdr. *)
+(* alDecodeItem [W]: rlp_decode_item is the pure item alSailItem of the window. Uses: alRunBind, alRunBindAssoc, alRunFatal, alRefHdr, alBigEndianNonneg. *)
 Definition alDecodeItem_statement : Prop :=
   forall (bytes : list byte) (rs : ALT.regstate) (base len : Z) (s : ALT.StatelessInputSliceFields base len),
     alRegs rs bytes -> alSliceIn bytes base len -> ALT.StatelessInputSliceFields_len s = len ->
