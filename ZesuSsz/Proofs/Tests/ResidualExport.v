@@ -48,9 +48,33 @@ Ltac2 Eval
   if zesu_export_occurs 1 (body constr:(fun x : nat => x)) then () else Control.throw (Tactic_failure None);
   if zesu_export_occurs 1 (body constr:(fun x : nat => 0)) then Control.throw (Tactic_failure None) else ().
 
-(* A match is refused, not printed approximately. *)
+(* An `if` on `bool` or on `sumbool` (`decide`) is printed as an `if` with
+   its return predicate; the text reparses to the same match. *)
+Ltac2 Eval expect_source
+  constr:(forall b : bool, (if b then 1 else 0) = 0)
+  constr:((forall (b : (@Coq.Init.Datatypes.bool)), (@Coq.Init.Logic.eq (@Coq.Numbers.BinNums.Z) (if b as b_1 return (@Coq.Numbers.BinNums.Z) then (1)%Z else (0)%Z) (0)%Z)))
+  "(forall (b : (@Coq.Init.Datatypes.bool)), (@Coq.Init.Logic.eq (@Coq.Numbers.BinNums.Z) (if b as b_1 return (@Coq.Numbers.BinNums.Z) then (1)%Z else (0)%Z) (0)%Z))".
+Ltac2 Eval expect_source
+  constr:(forall x : Z, (if Z.eq_dec x 0 then 1 else x) = x)
+  constr:((forall (x : (@Coq.Numbers.BinNums.Z)), (@Coq.Init.Logic.eq (@Coq.Numbers.BinNums.Z) (if (@stdpp.numbers.Z.eq_dec x (0)%Z) as x_1 return (@Coq.Numbers.BinNums.Z) then (1)%Z else x) x)))
+  "(forall (x : (@Coq.Numbers.BinNums.Z)), (@Coq.Init.Logic.eq (@Coq.Numbers.BinNums.Z) (if (@stdpp.numbers.Z.eq_dec x (0)%Z) as x_1 return (@Coq.Numbers.BinNums.Z) then (1)%Z else x) x))".
+Ltac2 Eval expect_source
+  constr:(forall b : bool, match b with true => True | false => False end)
+  constr:((forall (b : (@Coq.Init.Datatypes.bool)), (if b as b_1 return Prop then (@Coq.Init.Logic.True) else (@Coq.Init.Logic.False))))
+  "(forall (b : (@Coq.Init.Datatypes.bool)), (if b as b_1 return Prop then (@Coq.Init.Logic.True) else (@Coq.Init.Logic.False)))".
+
+(* A branch that uses the constructor's argument is refused. *)
 Ltac2 Eval
-  match Control.case (fun () => export_text constr:(forall b : bool, match b with true => True | false => False end)) with
+  match Control.case (fun () => export_text constr:(forall x : Z,
+    match Z.eq_dec x 0 with left h => h = h | right _ => True end)) with
+  | Val _ => Control.throw (Tactic_failure None)
+  | Err (ZesuExportRefused reason) => if String.equal reason "dependent branch" then () else Control.throw (Tactic_failure None)
+  | Err _ => Control.throw (Tactic_failure None)
+  end.
+
+(* Any other match is refused, not printed approximately. *)
+Ltac2 Eval
+  match Control.case (fun () => export_text constr:(forall n : nat, match n with O => True | S _ => False end)) with
   | Val _ => Control.throw (Tactic_failure None)
   | Err (ZesuExportRefused reason) => if String.equal reason "match" then () else Control.throw (Tactic_failure None)
   | Err _ => Control.throw (Tactic_failure None)
