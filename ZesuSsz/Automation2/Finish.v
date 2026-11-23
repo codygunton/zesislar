@@ -15,6 +15,7 @@ Require Import ZesuSsz.Automation2.SignedMaskBranch.
 Require Import ZesuSsz.Automation2.ArrayContinuation.
 Require Import ZesuSsz.Automation2.CodecFrame.
 Require Import ZesuSsz.Automation2.HypothesisCast.
+Require Import ZesuSsz.Automation2.BitvectorHypothesisUnsigned.
 Require Import ZesuSsz.Automation2.ByteMaskCast.
 Require Import ZesuSsz.Automation2.ByteReconstruction.
 Require Import ZesuSsz.Automation2.SwitchDispatch.
@@ -866,6 +867,7 @@ Ltac zesu_finish_final_pure :=
     first [
       zesu_finish_negated_ge; zesu_finish_implication_pair; repeat split;
       first [reflexivity | assumption | eassumption |
+        zesu_bv_hypothesis_unsigned |
         zesu_final_solver_goal; lia | zesu_final_solver_goal; bv_solve |
         zesu_finish_forall_leaf | zesu_finish_contract_arithmetic |
         zesu_finish_simpl_and_leaf]
@@ -874,6 +876,7 @@ Ltac zesu_finish_final_pure :=
         zesu_finish_simpl_and_leaf]
     | let rec finish_leaf :=
         first [reflexivity | assumption | eassumption |
+          zesu_bv_hypothesis_unsigned |
           zesu_final_solver_goal; lia | zesu_final_solver_goal; bv_solve |
           zesu_finish_forall_leaf | zesu_finish_contract_arithmetic |
           zesu_finish_simpl_and_leaf |
