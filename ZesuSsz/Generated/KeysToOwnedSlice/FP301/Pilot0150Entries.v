@@ -5,6 +5,7 @@ From Coq Require Import Lists.List ZArith.ZArith NArith.NArith.
 Require Import stdpp.bitvector.definitions.
 Require Import InstrSpecs.Machine.
 Require Import EvmSailRlp.evm_rlp_types.
+Require Import ZesuSsz.Generated.Stock.Symbols.
 Require Import ZesuSsz.Contracts.AltFlAllocPremises.
 Require Import ZesuSsz.Contracts.ZiskMemcpyPremise.
 Require Import ZesuSsz.Contracts.AbiBytes.

@@ -13,6 +13,7 @@
   "contract_requires": [
    "Require Import InstrSpecs.Machine.",
    "Require Import EvmSailRlp.evm_rlp_types.",
+   "Require Import ZesuSsz.Generated.Stock.Symbols.",
    "Require Import ZesuSsz.Contracts.AltFlAllocPremises.",
    "Require Import ZesuSsz.Contracts.ZiskMemcpyPremise.",
    "Require Import ZesuSsz.Contracts.AbiBytes.",
@@ -25,6 +26,7 @@
   "loop_contract_requires": [
    "Require Import InstrSpecs.Machine.",
    "Require Import EvmSailRlp.evm_rlp_types.",
+   "Require Import ZesuSsz.Generated.Stock.Symbols.",
    "Require Import ZesuSsz.Contracts.AltFlAllocPremises.",
    "Require Import ZesuSsz.Contracts.ZiskMemcpyPremise.",
    "Require Import ZesuSsz.Contracts.AbiBytes.",
@@ -485,6 +487,31 @@
      "coq": "False",
      "role": "unreachable",
      "need": "reached only from +0x1d8 (dead-1d8)"
+    }
+   ],
+   "author": {
+    "tier": "opus-medium"
+   }
+  },
+  {
+   "id": "edge-188-1ac",
+   "request": "keysToOwnedSlice/decision/join_assertion-01ac",
+   "at": {
+    "pc": "+0x1ac",
+    "boundary": "join"
+   },
+   "reached": "contradictory_guards",
+   "binders": [],
+   "resources": [],
+   "facts": [
+    {
+     "coq": "False",
+     "role": "unreachable",
+     "need": "the only predecessor edge is +0x188 beqz a2 taken (capacity word = 0) on the alloc path, which requires len <> 0 (+0x54) while keysBlockArgsWellFormed gives len <= capacity; the +0x184 block proves it in the kernel. The free call's return seed at +0x1ac stays and renders as usual"
+    },
+    {
+     "coq": "Z_to_bv 64 (arrayListLength (keysBlockList args)) <> BV 64 0 /\\ Z_to_bv 64 (arrayListCapacity (keysBlockList args)) = BV 64 0 /\\ arrayListLength (keysBlockList args) <= arrayListCapacity (keysBlockList args)",
+     "role": "relies_on"
     }
    ],
    "author": {

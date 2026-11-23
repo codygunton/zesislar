@@ -9,6 +9,7 @@
   "contract_requires": [
     "Require Import InstrSpecs.Machine.",
     "Require Import EvmSailRlp.evm_rlp_types.",
+    "Require Import ZesuSsz.Generated.Stock.Symbols.",
     "Require Import ZesuSsz.Contracts.AltFlAllocPremises.",
     "Require Import ZesuSsz.Contracts.ZiskMemcpyPremise.",
     "Require Import ZesuSsz.Contracts.AbiBytes.",
@@ -21,6 +22,7 @@
   "loop_contract_requires": [
     "Require Import InstrSpecs.Machine.",
     "Require Import EvmSailRlp.evm_rlp_types.",
+    "Require Import ZesuSsz.Generated.Stock.Symbols.",
     "Require Import ZesuSsz.Contracts.AltFlAllocPremises.",
     "Require Import ZesuSsz.Contracts.ZiskMemcpyPremise.",
     "Require Import ZesuSsz.Contracts.AbiBytes.",
@@ -302,6 +304,6 @@
   },
   "generated_from": {
     "path": "tools/block/functions/keysToOwnedSlice.annotations.json",
-    "sha256": "2ea1d372cbc7f9efc9dd40e3a4b8d24146cfe837a68c3f08298ec889c94b39ee"
+    "sha256": "a1ad7ebdebbd361f7addb1762e38f577bf137c3616b120e69105b0f1a9aab4b7"
   }
 }
