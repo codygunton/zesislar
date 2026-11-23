@@ -2,8 +2,8 @@ Require Import isla.riscv64.riscv64.
 From Coq Require Import Lists.List ZArith.ZArith.
 Require Import stdpp.bitvector.definitions.
 Import ListNotations.
-Require Import ZesuSsz.Automation2.All.
 From iris.proofmode Require Import environments.
+Require Import ZesuSsz.Automation2.All.
 Local Open Scope Z_scope.
 
 (* Rules met by the array-list callers (keysToOwnedSlice), whose contract
