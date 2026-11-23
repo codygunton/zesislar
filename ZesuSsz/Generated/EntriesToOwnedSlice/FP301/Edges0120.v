@@ -60,7 +60,7 @@ Global Instance zesu_hist_edge_15 (args : EntriesToOwnedSliceBlockArgs) (returnA
     (True)%I.
 Proof.
   rewrite /ZesuHistEdge => Hh. apply zesu_hist_elim in Hh. unfold fp_machineAt0120_slot1_ForwardA0N0_Hist in Hh.
-  destruct Hh as (fp_seed_mstatus_bits & forward_witness_cbcac9df79b9221c & forward_witness_1be931110d776902 & forward_witness_905cf96e605c1117 & forward_witness_55ab0ce59750150a & forward_witness_d7543602bfbbe148 & forward_witness_00470b017f14ddbf & forward_witness_83d3e6d46c3de70e & forward_witness_a84be01a9be85bdb & forward_witness_21649d1cf161453f & forward_witness_9644ccf41f39915a & forward_witness_407fca3a6f90b8db & forward_witness_1eea82d2945b4618 & forward_witness_11fde2df72db9d06 & forward_witness_d77b5950a2aea933 & HF0 & HF1 & HF2 & HF3 & HF4 & HF5 & HF6 & HF7 & HF8 & HF9 & HF10 & HF11 & HF12 & HF13 & HF14 & HF15 & HF16 & HF17).
+  destruct Hh as (fp_seed_mstatus_bits & forward_witness_cbcac9df79b9221c & forward_witness_1be931110d776902 & forward_witness_905cf96e605c1117 & forward_witness_55ab0ce59750150a & forward_witness_d7543602bfbbe148 & forward_witness_00470b017f14ddbf & forward_witness_83d3e6d46c3de70e & forward_witness_a84be01a9be85bdb & forward_witness_21649d1cf161453f & forward_witness_9644ccf41f39915a & forward_witness_407fca3a6f90b8db & forward_witness_1eea82d2945b4618 & forward_witness_11fde2df72db9d06 & forward_witness_d77b5950a2aea933 & HF0 & HF1 & HF2 & HF3 & HF4 & HF5 & HF6 & HF7 & HF8 & HF9 & HF10 & HF11 & HF12 & HF13 & HF14 & HF15 & HF16).
   iIntros "HN".
   iPureIntro. apply zesu_hist_intro. unfold fp_machineAt014c_slot2_ForwardA0N0_Hist.
   exists fp_seed_mstatus_bits, forward_witness_cbcac9df79b9221c, forward_witness_1be931110d776902, forward_witness_905cf96e605c1117, forward_witness_55ab0ce59750150a, forward_witness_d7543602bfbbe148, forward_witness_00470b017f14ddbf, forward_witness_83d3e6d46c3de70e, forward_witness_21649d1cf161453f, forward_witness_9644ccf41f39915a, forward_witness_407fca3a6f90b8db, forward_witness_1eea82d2945b4618, forward_witness_11fde2df72db9d06, forward_witness_d77b5950a2aea933.
@@ -72,15 +72,14 @@ Proof.
   split; [exact HF5|].
   split; [exact HF6|].
   split; [exact HF7|].
-  split; [exact HF8|].
-  split; [exact HF16|].
+  split; [exact HF15|].
+  split; [exact HF9|].
   split; [exact HF10|].
   split; [exact HF11|].
   split; [exact HF12|].
   split; [exact HF13|].
   split; [exact HF14|].
-  split; [exact HF15|].
-  exact HF17.
+  exact HF16.
 Qed.
 
 End edges.
