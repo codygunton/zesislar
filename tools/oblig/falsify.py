@@ -63,10 +63,13 @@ CHECKED_KINDS = ("Z", "nat", "N", "bool", "bv", "bytes", "prop")
 
 # Loaded before the goal's own preamble, so that the goal's imports keep their precedence;
 # the Imports activate the %Z and %N keys of the generated values and stdpp's Decision instances.
-REQUIRES = ("From Coq Require Import ZArith.ZArith NArith.NArith.\nFrom Coq Require Lists.List.\n"
+REQUIRES = ("From Coq Require Import ZArith.ZArith NArith.NArith.\nFrom Coq Require Lists.List ZArith.Znumtheory.\n"
             "From stdpp Require Import base decidable numbers list bitvector.definitions.\n")
 
 LTAC = r"""
+(* stdpp has no Decision instance for Z.divide (`(8 | p)` facts of the contracts). *)
+#[local] Instance zf_Z_divide_dec (a b : Coq.Numbers.BinNums.Z) :
+  stdpp.base.Decision (Coq.ZArith.BinInt.Z.divide a b) := Coq.ZArith.Znumtheory.Zdivide_dec a b.
 Ltac zf_kind H T :=
   lazymatch type of T with
   | Prop => idtac "@@ZF B" H "prop"
@@ -283,6 +286,10 @@ def coq_value(binder, value):
         return "true" if value else "false"
     if kind == "bv":
         return "(stdpp.bitvector.definitions.Z_to_bv (%d)%%N (%d)%%Z)" % (width, value % 2 ** width)
+    if kind == "bytes" and "hex" in value:
+        # The bytes of a machine-run snapshot (the screen of tools/oblig/normalise.py).
+        return ("(Coq.Lists.List.map (fun z : Coq.Numbers.BinNums.Z => stdpp.bitvector.definitions.Z_to_bv (8)%%N z) %s)"
+                % zlist(bytes.fromhex(value["hex"])))
     if kind == "bytes":
         n, fill = value["bytes"], value["fill"]
         if fill == "ramp":
@@ -291,6 +298,14 @@ def coq_value(binder, value):
         byte = 255 if fill == "ff" else 0
         return "(Coq.Lists.List.repeat (stdpp.bitvector.definitions.Z_to_bv (8)%%N (%d)%%Z) (%d)%%nat)" % (byte, n)
     raise FalsifyError("No value form for kind %s." % kind)
+
+
+def zlist(values):
+    """A Rocq list of Z literals, written with cons and nil (no list notation needed)."""
+    out = "(@Coq.Init.Datatypes.nil Coq.Numbers.BinNums.Z)"
+    for v in reversed(list(values)):
+        out = "(@Coq.Init.Datatypes.cons Coq.Numbers.BinNums.Z (%d)%%Z %s)" % (v, out)
+    return out
 
 
 def default_value(binder):
@@ -501,7 +516,7 @@ class Route:
     under an address-space limit of DIRECT_GIB; the tool tests use it, because the guard
     refuses its live ledger to test processes, and their files load only stdpp."""
 
-    def __init__(self, bank, ocamlpath=None, direct=False):
+    def __init__(self, bank, ocamlpath=None, direct=False, claim=CLAIM):
         bank = Path(bank)
         raw = [a for a in json.loads((bank / "ARGS.json").read_text()) if a != "-time"]
         if "ZesuSsz" in raw:
@@ -511,6 +526,7 @@ class Route:
             self.args, lib = raw, ""
         self.ocamlpath = ocamlpath or lib
         self.direct = direct
+        self.claim = claim
         self._coqlib = None
 
     @property
@@ -523,7 +539,7 @@ class Route:
     def compile(self, path, tag):
         if self.direct:
             return self.compile_direct(Path(path))
-        result = rl.scoped(path, tag, self.args, self.ocamlpath, claim=CLAIM)
+        result = rl.scoped(path, tag, self.args, self.ocamlpath, claim=self.claim)
         text = Path(result["log"]).read_text(errors="replace")
         return result, text
 
