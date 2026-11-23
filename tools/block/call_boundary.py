@@ -658,8 +658,9 @@ def call_return_seed(edges, *, call, function_root, root_seed, shapes, vocabular
         length = int(row['length']) if row['length'].isdigit() else (constants or {}).get(row['length'], {}).get('value')
         returned_length = (call.get('returned_lengths') or {}).get(str(row.get('argument')))
         if returned is not None and not isinstance(length, int) and returned_length is not None:
-            # The call design names the length of the returned array (annotations.py `call_row`): the
-            # callee fills the whole uninitialized caller region at the argument whose length is that term.
+            # The call design names the length of the caller's unwritten region at the argument
+            # (annotations.py `call_row`). The callee fills the spec's own length `row['length']` of it;
+            # when that differs from the region's, the rest stays the caller's (`remainder` below).
             address = operation('bvadd', state.registers[ARGUMENTS[row['argument']]], bits(row.get('offset', 0), 64))
             owner = [resource for resource in resources.values() if resource.byte_array is None
                      and _offset(address, resource.base) == 0 and isinstance(resource.length, Expr)
@@ -668,8 +669,11 @@ def call_return_seed(edges, *, call, function_root, root_seed, shapes, vocabular
                 raise CallRefused('The returned array of length %s has no unwritten caller region at argument %s'
                                   % (returned_length, row['argument']))
             post, post_value = returned_value(returned)
+            # A spec length over its own pre binders takes the whole region (the call step picks it);
+            # one fixed by the arguments (memcpy's `bv_unsigned (argv !!! 2%nat)`) may take a prefix.
+            fixed = not set(_atoms(row['length'])) & {name for name, _ in spec['pre_binders']}
             splits[owner[0].id] = {'whole': True, 'length': returned_length, 'pre': None, 'post': post,
-                                   'post_value': post_value}
+                                   'post_value': post_value, **({'consumed': row['length']} if fixed else {})}
             continue
         if returned is None or not isinstance(length, int):
             raise CallRefused('The spec does not return a sized array for its uninitialized bytes at argument '
@@ -886,19 +890,41 @@ def call_return_seed(edges, *, call, function_root, root_seed, shapes, vocabular
         elif key == callee_frame:
             pass
         elif key in splits and splits[key].get('whole'):
-            # The whole array at a fixed address now holds the callee's post value.
+            # The array at a fixed address, or the caller region a `returned_lengths` row names, now holds
+            # the callee's post value.
             resource, split = resources[key], splits[key]
             value = fresh[split['post']] if split['post'] else \
                 '(' + _strip_enclosure(instantiate(_argv_lookups(split['post_value'], argv_name, values['argv']), {})) + ')'
+            # The spec fills only its own length of the named region: that prefix holds the post value
+            # and the rest stays the caller's, unwritten. The call step proves the split (the spec's
+            # `dst ↦ₘ? consumed` out of the caller's `dst ↦ₘ? length`); equal lengths keep one array.
+            filled = split.get('consumed') and _normal_text(
+                instantiate(_argv_lookups(split['consumed'], argv_name, values['argv']), {}))
+            remainder = filled and filled != _normal_text(str(split['length']))
+            length = '(' + filled + ')' if remainder else split['length']
             node = {'kind': 'byte_array', 'id': key, 'original_component': '%s ↦ₘ∗ %s' % (resource.address_z, value),
                     'address_z': resource.address_z, 'byte_array_expr': input_expr(value, None).to_dict(),
-                    'element_bits': 8, 'length_original_coq': str(split['length'])}
+                    'element_bits': 8, 'length_original_coq': str(length)}
             # A literal length stays a nat numeral; a named length (`returned_lengths`) is the Z of the
-            # caller's `a ↦ₘ? n` (isla ghost_state), so that fact compares in Z.
-            fact = ('(List.length %s = %s)%%nat' if isinstance(split['length'], int)
-                    else '(Z.of_nat (List.length %s) = %s)%%Z') % (value, split['length'])
-            extra_facts.append({'resource_id': key, 'count': split['length'], 'coq': fact})
+            # caller's `a ↦ₘ? n` (isla ghost_state), so that fact compares in Z. A prefix that holds a
+            # caller value (the spec returns its pre binder) gets no new length fact: the spec's own
+            # fact, carried with the call's facts, states it, and the caller's facts already give
+            # that value's length in their own spelling.
+            if not (remainder and split['post'] is None):
+                fact = ('(List.length %s = %s)%%nat' if isinstance(length, int)
+                        else '(Z.of_nat (List.length %s) = %s)%%Z') % (value, length)
+                extra_facts.append({'resource_id': key, 'count': length, 'coq': fact})
             split['pieces'] = [key]
+            if remainder:
+                # The root's facts on the region (its length among them) do not hold of the rest: it
+                # gets none (no piece of the split).
+                address = '(%s + %s)' % (resource.address_z, length)
+                rest = '(%s - %s)' % (_strip_enclosure(str(split['length'])), length)
+                nodes.append(node)
+                nodes.append({'kind': 'uninitialized_memory', 'id': piece_name(key + '_call_after'),
+                              'original_component': '%s ↦ₘ? %s' % (address, rest), 'address_z': address,
+                              'length_original_coq': rest})
+                continue
         elif key in splits:
             resource, split = resources[key], splits[key]
             pieces = [(0, split['offset']), (split['offset'], split['offset'] + split['length']),

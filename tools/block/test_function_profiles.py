@@ -13,7 +13,9 @@ import render_function_callers
 from render_function_callers import inlined_returns, plan_callers
 from symbolic_state import input_expr
 from render_fp301_statements import (
+    CORE_IMPORT,
     render_block_caller,
+    residual_import,
     return_precondition,
     successor_precondition,
 )
@@ -301,6 +303,50 @@ class CallerPlan(unittest.TestCase):
                       '    (DesignedEntry_800d1000 args returnAddress (otherContinuation args returnAddress)).',
                       source)
         self.assertNotIn('instr_pre returnAddress', source)
+
+
+class ResidualImports(unittest.TestCase):
+    """A caller imports its block's residual module: the relocatable <function>.Block<offset> for
+    any function, the in-tree Block800d<addr> only in the legacy mode."""
+
+    @staticmethod
+    def caller(lemma):
+        return ('Require Import ZesuSsz.Contracts.Level1.\n' + CORE_IMPORT + '\n\nLemma ' + lemma
+                + ' `{!islaG Sigma} : True.\nProof.\n  zesu_block2.\nQed.\n')
+
+    def setUp(self):
+        self.directory = tempfile.TemporaryDirectory()
+        self.residuals = Path(self.directory.name)
+        data = dict(load_profile('decodeItem').data)
+        data.update(function='keysEnsureCapacity', pc_base='0x800cb40c')
+        self.profile = FunctionProfile(data)
+
+    def tearDown(self):
+        self.directory.cleanup()
+
+    def imported(self, lemma, **options):
+        lines = residual_import(self.caller(lemma), self.residuals, profile=self.profile, **options).split('\n')
+        return [line for line in lines if 'Residuals' in line], lines
+
+    def test_a_registered_relocatable_module_is_imported_after_the_core_import(self):
+        self.assertEqual(self.imported('DesignedBoundary_800cb448', legacy=False)[0], [])
+        (self.residuals / 'keysEnsureCapacity').mkdir()
+        (self.residuals / 'keysEnsureCapacity/Block003c.v').write_text('')
+        for lemma in ('DesignedBoundary_800cb448', 'DesignedBoundary_800cb448_slot1'):
+            imports, lines = self.imported(lemma, legacy=False)
+            self.assertEqual(imports, ['Require Import ZesuSsz.Residuals.keysEnsureCapacity.Block003c.'])
+            self.assertEqual(lines[lines.index(imports[0]) - 1], CORE_IMPORT)
+        # Another block of the function has no module.
+        self.assertEqual(self.imported('DesignedBoundary_800cb474', legacy=False)[0], [])
+
+    def test_the_in_tree_form_only_in_legacy_mode(self):
+        self.profile.data.update(function='decodeItem', pc_base='0x800d6960')
+        (self.residuals / 'Block800d697c.v').write_text('')
+        self.assertEqual(self.imported('DesignedBoundary_800d697c', legacy=False)[0], [])
+        self.assertEqual(self.imported('DesignedBoundary_800d697c')[0],
+                         ['Require Import ZesuSsz.Residuals.Block800d697c.'])
+        source = self.caller('DesignedBoundary_800d697c')
+        self.assertEqual(residual_import(source, self.residuals), residual_import(source, self.residuals, self.profile))
 
 
 class JoinEdgeAlignment(unittest.TestCase):

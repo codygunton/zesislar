@@ -351,16 +351,35 @@ def render_block_caller(profile, block, preconditions, imports, slot=None, conti
 RESIDUALS = Path(__file__).resolve().parents[2] / "ZesuSsz/Residuals"
 
 
-def residual_import(source, residuals=RESIDUALS, profile=None):
-    """Import the block's residual lemmas after the core import, when they exist.
+def residual_module(source, residuals=RESIDUALS, profile=None, legacy=True):
+    """The residual module a caller imports, or None.
+
+    The relocatable module `<function>.Block<offset>` (ZesuSsz/Residuals/<function>/Block<offset>.v,
+    residual_loop.py register --function), when it exists for the caller's block: <function> is
+    the profile's name and <offset> the block's 4-hex offset from the function symbol. Else, with
+    `legacy`, the in-tree module Block800d<addr> of an address-named lemma."""
+    if profile is not None:
+        match = re.search(r"^Lemma DesignedBoundary_([0-9a-f]+)(?:_slot\d+)?\b", source, re.M)
+        if match:
+            offset = profile.key('0x' + match[1])
+            if (Path(residuals) / profile.name / ("Block" + offset + ".v")).is_file():
+                return profile.name + ".Block" + offset
+    match = re.search(r"^Lemma DesignedBoundary_(800d[0-9a-f]{4})\b", source, re.M)
+    if legacy and match and (Path(residuals) / ("Block" + match[1] + ".v")).is_file():
+        return "Block" + match[1]
+    return None
+
+
+def residual_import(source, residuals=RESIDUALS, profile=None, legacy=True):
+    """Import the block's residual lemmas (residual_module) after the core import, when they exist.
 
     Import is not transitive, so the caller keeps its solver bindings; the
     residual module only adds its exact lemmas to the `zesu_residual` hints.
     """
-    match = re.search(r"^Lemma DesignedBoundary_(800d[0-9a-f]{4})\b", source, re.M)
-    if not match or not (Path(residuals) / ("Block" + match[1] + ".v")).is_file():
+    module = residual_module(source, residuals, profile, legacy)
+    if module is None:
         return source
-    line = "Require Import ZesuSsz.Residuals.Block" + match[1] + "."
+    line = "Require Import ZesuSsz.Residuals." + module + "."
     lines = source.split("\n")
     last = max(index for index, text in enumerate(lines) if text.startswith(("Require ", "From ")))
     if lines[last] != CORE_IMPORT:
