@@ -410,6 +410,31 @@
    },
    "why": "OutOfMemory path: alloc returned null (beqz at +0x154 falls to +0x158), so the block owns altFlAllocatedBytes 0 n = 0 bytes; keysEnsureCapacityExit on OutOfMemory keeps only the old list buffer, so the exit does not need it"
   },
+ {
+  "id": "join-19c",
+  "request": null,
+  "at": {
+   "pc": "+0x19c",
+   "boundary": "join"
+  },
+  "binders": [],
+  "resources": [],
+  "facts": [],
+  "drop": [
+   {
+    "root": "+0x17c",
+    "resources": [
+     "arrayListPointer (ensureBlockList args) ↦ₘ∗ arrayListItems (ensureBlockList args)",
+     "(arrayListPointer (ensureBlockList args) + arrayListLength (ensureBlockList args) * keysElementBytes) ↦ₘ? ((arrayListCapacity (ensureBlockList args) - arrayListLength (ensureBlockList args)) * keysElementBytes)",
+     "altFlBlock (arrayListPointer (ensureBlockList args)) (arrayListCapacity (ensureBlockList args) * keysElementBytes) keysLog2Alignment"
+    ]
+   }
+  ],
+  "author": {
+   "tier": "opus-medium"
+  },
+  "why": "join +0x19c: edge +0x180 frees the old buffer at +0x198 (free premise consumes items, tail and altFlBlock), edge +0x17c (beqz s5: old capacity 0) skips free and owns a zero-size buffer; the join keeps neither (0180 r5 leftover: the join entry asked for the freed buffer). keysEnsureCapacityExit on success owns only the new buffer"
+ },
   {
    "id": "frame",
    "request": "keysEnsureCapacity/decision/join_assertion-0118",

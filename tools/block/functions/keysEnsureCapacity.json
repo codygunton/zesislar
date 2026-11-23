@@ -101,7 +101,8 @@
     }
   },
   "join_designs": {
-    "+0x124": []
+    "+0x124": [],
+    "+0x19c": []
   },
   "calls": [
     {
@@ -239,6 +240,16 @@
           "bv_unsigned call_x10 \u21a6\u2098? altFlAllocatedBytes (bv_unsigned call_x10) (bv_unsigned ((bv_shiftl (bv_or (bv_sub (BV 64%N 0%Z) (bv_zero_extend 64%N (if (bool_decide ((bv_signed (bv_zero_extend 128%N (bv_add (bv_add (bv_shiftr (ensureRequested (ensureBase args)) (BV 64%N 1%Z)) (ensureRequested (ensureBase args))) (BV 64%N 2%Z))) < bv_signed (bv_zero_extend 128%N (ensureRequested (ensureBase args))))%Z)) then (BV 1%N 1%Z) else (BV 1%N 0%Z)))) (bv_add (bv_add (bv_shiftr (ensureRequested (ensureBase args)) (BV 64%N 1%Z)) (ensureRequested (ensureBase args))) (BV 64%N 2%Z))) (BV 64%N 5%Z))))"
         ]
       }
+    ],
+    "+0x19c": [
+      {
+        "root": "+0x17c",
+        "resources": [
+          "arrayListPointer (ensureBlockList args) \u21a6\u2098\u2217 arrayListItems (ensureBlockList args)",
+          "(arrayListPointer (ensureBlockList args) + arrayListLength (ensureBlockList args) * keysElementBytes) \u21a6\u2098? ((arrayListCapacity (ensureBlockList args) - arrayListLength (ensureBlockList args)) * keysElementBytes)",
+          "altFlBlock (arrayListPointer (ensureBlockList args)) (arrayListCapacity (ensureBlockList args) * keysElementBytes) keysLog2Alignment"
+        ]
+      }
     ]
   },
   "join_frames": {
@@ -337,6 +348,6 @@
   },
   "generated_from": {
     "path": "tools/block/functions/keysEnsureCapacity.annotations.json",
-    "sha256": "25a5bba8a63de13d9698cafe0036ea027746acd0728347267167c39c42271610"
+    "sha256": "41c8ec98322feebbf7fa3b518499c4aad65d1929eea227003b6316d3b5674a79"
   }
 }

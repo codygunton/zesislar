@@ -12,6 +12,7 @@ Require Import ZesuSsz.Contracts.KeysEnsureCapacityBlockEntries.
 Require Import ZesuSsz.Contracts.KeysEnsureCapacitySelected.
 Require Import ZesuSsz.Generated.KeysEnsureCapacity.FP301.Edges003c.
 Require Import ZesuSsz.Automation2.All.
+Require Import ZesuSsz.Residuals.keysEnsureCapacity.Block003c.
 Local Open Scope Z_scope.
 #[local] Typeclasses Transparent keysEnsureCapacitySelectedCode.
 
