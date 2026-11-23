@@ -15,6 +15,9 @@
    "Require Import EvmSailRlp.evm_rlp_types.",
    "Require Import ZesuSsz.Contracts.AltFlAllocPremises.",
    "Require Import ZesuSsz.Contracts.ZiskMemcpyPremise.",
+   "Require Import ZesuSsz.Contracts.AbiBytes.",
+   "Require Import ZesuSsz.Contracts.ZiskRuntime.",
+   "Require Import ZesuSsz.Contracts.ParentHeaderMemcpyService.",
    "Require Import ZesuSsz.Contracts.ArrayListContract.",
    "Require Import ZesuSsz.Contracts.KeysToOwnedSliceBlockEntries.",
    "Require Export ZesuSsz.Compliance.KeysToOwnedSliceHints."
@@ -24,6 +27,9 @@
    "Require Import EvmSailRlp.evm_rlp_types.",
    "Require Import ZesuSsz.Contracts.AltFlAllocPremises.",
    "Require Import ZesuSsz.Contracts.ZiskMemcpyPremise.",
+   "Require Import ZesuSsz.Contracts.AbiBytes.",
+   "Require Import ZesuSsz.Contracts.ZiskRuntime.",
+   "Require Import ZesuSsz.Contracts.ParentHeaderMemcpyService.",
    "Require Import ZesuSsz.Contracts.ArrayListContract.",
    "Require Import ZesuSsz.Contracts.KeysToOwnedSliceBlockEntries.",
    "Require Export ZesuSsz.Compliance.KeysToOwnedSliceHints."
@@ -78,6 +84,10 @@
    "+0x1e0"
   ],
   "loop_heads": [],
+  "duplicated_joins": [
+   "+0xf0",
+   "+0x118"
+  ],
   "cfg_function": "array_list.Aligned([32]u8,null).toOwnedSlice"
  },
  "rows": [
@@ -410,6 +420,71 @@
      "coq": "False",
      "role": "unreachable",
      "need": "remap returns 0 (altFlRemapCallSpec), so beq a0 at +0xc8 always branches"
+    }
+   ],
+   "author": {
+    "tier": "opus-medium"
+   }
+  },
+  {
+   "id": "dead-1c0",
+   "request": "keysToOwnedSlice/decision/predicate-01d4",
+   "at": {
+    "pc": "+0x1c0",
+    "boundary": "join"
+   },
+   "reached": "contradictory_guards",
+   "binders": [],
+   "resources": [],
+   "facts": [
+    {
+     "coq": "False",
+     "role": "unreachable",
+     "need": "the only path is join +0xfc -> +0x148 -> beqz s6 taken; s7 = arrayListLength (keysBlockList args) (word link at offset 8 of the list header), guarded nonzero at +0x54 and with s7 >> 59 = 0 at +0x10c, so s7 << 5 <> 0 and the branch to +0x1c0 is never taken; the +0x148 block proves False in the kernel"
+    },
+    {
+     "coq": "Z_to_bv 64 (arrayListLength (keysBlockList args)) <> BV 64 0 /\\ bv_shiftr (Z_to_bv 64 (arrayListLength (keysBlockList args))) (BV 64 59) = BV 64 0 /\\ bv_shiftl (Z_to_bv 64 (arrayListLength (keysBlockList args))) (BV 64 5) = BV 64 0",
+     "role": "relies_on"
+    }
+   ],
+   "author": {
+    "tier": "opus-medium"
+   }
+  },
+  {
+   "id": "dead-1d8",
+   "request": "keysToOwnedSlice/decision/predicate-01d4",
+   "at": {
+    "pc": "+0x1d8",
+    "boundary": "join"
+   },
+   "binders": [],
+   "resources": [],
+   "facts": [
+    {
+     "coq": "False",
+     "role": "unreachable",
+     "need": "return site of the memcpy at +0x1d4, reached only through +0x1c0 (dead-1c0)"
+    }
+   ],
+   "author": {
+    "tier": "opus-medium"
+   }
+  },
+  {
+   "id": "dead-1e0",
+   "request": "keysToOwnedSlice/decision/predicate-01d4",
+   "at": {
+    "pc": "+0x1e0",
+    "boundary": "join"
+   },
+   "binders": [],
+   "resources": [],
+   "facts": [
+    {
+     "coq": "False",
+     "role": "unreachable",
+     "need": "reached only from +0x1d8 (dead-1d8)"
     }
    ],
    "author": {

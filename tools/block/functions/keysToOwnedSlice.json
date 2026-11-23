@@ -11,6 +11,9 @@
     "Require Import EvmSailRlp.evm_rlp_types.",
     "Require Import ZesuSsz.Contracts.AltFlAllocPremises.",
     "Require Import ZesuSsz.Contracts.ZiskMemcpyPremise.",
+    "Require Import ZesuSsz.Contracts.AbiBytes.",
+    "Require Import ZesuSsz.Contracts.ZiskRuntime.",
+    "Require Import ZesuSsz.Contracts.ParentHeaderMemcpyService.",
     "Require Import ZesuSsz.Contracts.ArrayListContract.",
     "Require Import ZesuSsz.Contracts.KeysToOwnedSliceBlockEntries.",
     "Require Export ZesuSsz.Compliance.KeysToOwnedSliceHints."
@@ -20,6 +23,9 @@
     "Require Import EvmSailRlp.evm_rlp_types.",
     "Require Import ZesuSsz.Contracts.AltFlAllocPremises.",
     "Require Import ZesuSsz.Contracts.ZiskMemcpyPremise.",
+    "Require Import ZesuSsz.Contracts.AbiBytes.",
+    "Require Import ZesuSsz.Contracts.ZiskRuntime.",
+    "Require Import ZesuSsz.Contracts.ParentHeaderMemcpyService.",
     "Require Import ZesuSsz.Contracts.ArrayListContract.",
     "Require Import ZesuSsz.Contracts.KeysToOwnedSliceBlockEntries.",
     "Require Export ZesuSsz.Compliance.KeysToOwnedSliceHints."
@@ -74,6 +80,10 @@
     "+0x1e0"
   ],
   "loop_heads": [],
+  "duplicated_joins": [
+    "+0xf0",
+    "+0x118"
+  ],
   "cfg_function": "array_list.Aligned([32]u8,null).toOwnedSlice",
   "domain_component": "\u231ckeysBlockDomainAt returnAddress args\u231d",
   "opaque_predicates": {
@@ -272,7 +282,13 @@
   ],
   "unreachable_entries": [
     "+0xa0",
-    "+0xcc"
+    "+0xcc",
+    "+0x1c0",
+    "+0x1d8",
+    "+0x1e0"
+  ],
+  "unreachable_reached": [
+    "+0x1c0"
   ],
   "join_drops": {
     "+0x110": [
@@ -286,6 +302,6 @@
   },
   "generated_from": {
     "path": "tools/block/functions/keysToOwnedSlice.annotations.json",
-    "sha256": "bd23227ec45f8ed46abc19f14394f733e3229872f788a206b2527c6ae37d029b"
+    "sha256": "2ea1d372cbc7f9efc9dd40e3a4b8d24146cfe837a68c3f08298ec889c94b39ee"
   }
 }
