@@ -1,4 +1,4 @@
-"""Keep the four decoder roots' rejection classification pinned to Sail sites."""
+"""Keep the decoder roots' rejection classification pinned to Sail sites."""
 
 import os
 from pathlib import Path
@@ -21,12 +21,29 @@ FUNCTIONS = {
     },
     "lib/ssz/stateless_input.sail": {"decode_parent_header_fields"},
 }
+# decode_access_list runs from the transaction closure (runDecodeAccessList).
+ACCESS_LIST_EXPECTED = {
+    "lib/rlp/decoding.sail": {46, 60, 70, 88, 103, 108, 111, 123, 147, 494},
+    "lib/rlp/codecs/transactions.sail": {103},
+}
+ACCESS_LIST_FUNCTIONS = {
+    "lib/rlp/decoding.sail": {
+        "rlp_ref_hdr", "rlp_decode_list", "rlp_decode_item", "rlp_decode_word",
+        "rlp_cursor_expect_end",
+    },
+    "lib/rlp/codecs/transactions.sail": {
+        "transaction_rlp_content", "decode_access_list_keys",
+        "decode_access_list_entries", "decode_access_list",
+    },
+}
 CALL = re.compile(r"fatal_error\s*\(\s*RlpDecode\s*\)")
 FUNCTION = re.compile(r"^\s*function\s+([A-Za-z_][A-Za-z_0-9]*)\b")
-PUBLIC_ROOT = re.compile(r"^Definition\s+(run(?:Rlp|ParentHeader)\w+)\b", re.MULTILINE)
+PUBLIC_ROOT = re.compile(
+    r"^Definition\s+(run(?:Rlp|ParentHeader|DecodeAccessList)\w*)\b", re.MULTILINE)
 APPROVED_ROOTS = {
     "runRlpDecodeItem", "runRlpRefHdr", "runRlpNodeCursor",
     "runParentHeaderFields", "runRlpDecodeU256", "runRlpDecodeUint64",
+    "runDecodeAccessList",
 }
 
 
@@ -44,6 +61,24 @@ def reachable_sites(source: Path, names: set[str]) -> set[int]:
     return found
 
 
+def generated_closure(source: str, root: str) -> dict[str, str]:
+    """Definitions of a generated Sail module that the root reaches."""
+    definitions = {}
+    for chunk in re.split(r"\n(?=(?:Definition|Fixpoint) )", source):
+        if match := re.match(r"(?:Definition|Fixpoint) (\w+)", chunk):
+            definitions[match.group(1)] = chunk
+    reached, pending = {}, [root]
+    while pending:
+        name = pending.pop()
+        if name in reached:
+            continue
+        reached[name] = definitions[name]
+        body = definitions[name].split(name, 1)[1]
+        pending.extend(token for token in set(re.findall(r"\w+", body))
+                       if token in definitions and token != name)
+    return reached
+
+
 class SailFatalSitesTest(unittest.TestCase):
     def test_four_decoder_roots_have_exact_rejection_sites(self) -> None:
         source = Path(os.environ.get("EVM_SAIL_SOURCE", Path.home() / "evm-sail"))
@@ -55,9 +90,29 @@ class SailFatalSitesTest(unittest.TestCase):
         generated = (Path(__file__).resolve().parents[2]
                      / "generated/evm-sail-coq/rlp/evm_rlp.v").read_text()
         self.assertEqual(len(CALL.findall(generated)), 16)
-        runner = (Path(__file__).resolve().parents[1]
-                  / "Compliance/SailRun.v").read_text()
-        self.assertEqual(set(PUBLIC_ROOT.findall(runner)), APPROVED_ROOTS)
+        runners = Path(__file__).resolve().parents[1] / "Compliance"
+        roots = set()
+        for runner in ("SailRun.v", "SailRunAccessList.v"):
+            roots.update(PUBLIC_ROOT.findall((runners / runner).read_text()))
+        self.assertEqual(roots, APPROVED_ROOTS)
+
+    def test_access_list_root_has_exact_rejection_sites(self) -> None:
+        source = Path(os.environ.get("EVM_SAIL_SOURCE", Path.home() / "evm-sail"))
+        revision = subprocess.check_output(
+            ["git", "-C", str(source), "rev-parse", "HEAD"], text=True).strip()
+        self.assertEqual(revision, REVISION)
+        for path, expected in ACCESS_LIST_EXPECTED.items():
+            self.assertEqual(
+                reachable_sites(source / "sail" / path, ACCESS_LIST_FUNCTIONS[path]), expected)
+        generated = (Path(__file__).resolve().parents[2] / "generated/evm-sail-coq"
+                     / "transactions/evm_decode_access_list_tx.v").read_text()
+        closure = generated_closure(generated, "decode_access_list")
+        rejecting = {name for name, text in closure.items() if CALL.search(text)}
+        self.assertEqual(rejecting, set().union(*ACCESS_LIST_FUNCTIONS.values())
+                         - {"transaction_rlp_content", "decode_access_list_keys",
+                            "decode_access_list_entries"})
+        self.assertEqual(sum(len(CALL.findall(closure[name])) for name in rejecting),
+                         sum(map(len, ACCESS_LIST_EXPECTED.values())))
 
 
 if __name__ == "__main__":
