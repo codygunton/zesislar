@@ -3,6 +3,7 @@
 register the lemmas, and rerun the block (diagnostic only; it calls no model).
 
     residual_loop.py export   --block B --caller FILE --bank BANK --out RUN [--stop-quiet S]
+                              [--module NAME | --function F]
     residual_loop.py collect  --run RUN
     residual_loop.py register --run RUN [--residuals DIR] [--caller FILE]
     residual_loop.py rerun    --run RUN [--residuals DIR] [--caller FILE]
@@ -34,7 +35,10 @@ when that check passes and it reparses exactly.
 register adds the passing lemmas to ZesuSsz/Residuals/Block800d<B>.v (or the module
 named by export --module) through
 tools/residuals/render_residual_module.py (existing lemmas stay) and adds the
-module import to the caller. rerun compiles that module and the caller copy with
+module import to the caller. With export --function F, B is the block's 4-hex
+offset from F's symbol: the lemmas are named residual_<F>_<B>_<16 hex> and the
+module is the relocatable form ZesuSsz/Residuals/<F>/Block<B>.v. rerun compiles
+that module and the caller copy with
 the export switch: it records whether the block closes, and the goals still open
 become the next round of goals.
 
@@ -103,8 +107,9 @@ MODULE_NAME = re.compile(r"^[A-Za-z][A-Za-z0-9_]*$")
 
 def module_of(manifest):
     """The residual module of a run: the name given at export (for example from
-    the function symbol), else the in-tree name Block800d<block>."""
-    return manifest.get("module") or rrm.module_name(manifest["block"])
+    the function symbol), the relocatable <function>.Block<offset> of export
+    --function, else the in-tree name Block800d<block>."""
+    return manifest.get("module") or rrm.module_name(manifest["block"], manifest.get("function"))
 
 
 def module_import(module):
@@ -201,7 +206,7 @@ def parse_export(lines):
     return out
 
 
-def select_goals(found, block, closed):
+def select_goals(found, block, closed, function=None):
     """The goals of one export run. Final records are the goals open at the end.
     A run without them that closed the block has no goals; a run without them that
     did not close it (stopped, killed, or failed) gives its split records.
@@ -216,7 +221,7 @@ def select_goals(found, block, closed):
         if key in seen:
             seen[key]["copies"] += 1
             continue
-        goal = dict(id=None, name="residual_%s_%s" % (block, key[:16]), statement=record["statement"],
+        goal = dict(id=None, name=rrm.lemma_prefix(block, function) + key[:16], statement=record["statement"],
                     source=source, copies=1, binders=record["binders"], counts=record["counts"],
                     conclusion_definitions=record["conclusion_definitions"])
         seen[key] = goal
@@ -531,7 +536,7 @@ def export_round(run, manifest, caller_source, log_text, closed, jobs):
     """Add the goals of one export log to the manifest; write their files."""
     block = manifest["block"]
     found = parse_export(log_text.split("\n"))
-    goals, source, split_only = select_goals(found, block, closed)
+    goals, source, split_only = select_goals(found, block, closed, manifest.get("function"))
     known = {}
     for g in manifest["goals"]:
         known[g["name"]] = g["id"]
@@ -570,10 +575,19 @@ def cmd_export(a):
     block = a.block
     if a.module and not MODULE_NAME.match(a.module):
         raise LoopError("The module name is not a Rocq identifier: %s" % a.module)
+    if a.module and a.function:
+        raise LoopError("--module and --function exclude each other.")
+    if a.function:
+        try:
+            rrm.module_name(block, a.function)
+        except rrm.RenderError as error:
+            raise LoopError(str(error))
     manifest = dict(block=block, bank=str(Path(a.bank).resolve()), caller=str(Path(a.caller).resolve()),
                     caller_sha256=sha(caller), rounds=1, goals=[], skipped=[], exports=[], reruns=[])
     if a.module:
         manifest["module"] = a.module
+    if a.function:
+        manifest["function"] = a.function
     target = run / "export" / ("Export%s.v" % block)
     target.write_text(export_caller(caller))
     args, ocamlpath = bank_args(a.bank)
@@ -627,7 +641,7 @@ def cmd_collect(a):
                                        tokens=meta.get("tokens")))
         if verdict == "PASS":
             status["result"] = "PASS"
-            status["minimized"] = minimize(run, d, goal, answer, header, args, ocamlpath)
+            status["minimized"] = minimize(run, d, goal, answer, header, args, ocamlpath, manifest.get("function"))
         elif status["result"] != "PASS":
             status["result"] = "FAIL"
         write_json(d / "STATUS.json", status)
@@ -638,7 +652,7 @@ def cmd_collect(a):
     print_results(run)
 
 
-def minimize(run, d, goal, answer, header, args, ocamlpath):
+def minimize(run, d, goal, answer, header, args, ocamlpath, function=None):
     """Drop the premises that the proof term does not use, and check again."""
     m = d / ("min-" + sha(answer)[:12])
     m.mkdir(exist_ok=True)
@@ -651,8 +665,8 @@ def minimize(run, d, goal, answer, header, args, ocamlpath):
         return dict(state="not-run", seconds=result["seconds"])
     if smaller == goal["statement"]:
         return dict(state="unchanged", binders=len(goal["binders"]))
-    name = "residual_%s_%s" % (goal["id"].split("-")[0], sha(smaller)[:16])
-    (m / "goal.v").write_text(goal_text(header, name, smaller))
+    name = rrm.lemma_prefix(goal["id"].split("-")[0], function) + sha(smaller)[:16]
+    (m / "goal.v").write_text(symbolized_goal_text(d, header, name, smaller))
     (m / "proof.v").write_text(goal_head((m / "goal.v").read_text()) + answer.strip() + "\n")
     (m / "roundtrip.v").write_text(roundtrip_text(header, smaller))
     (m / "check.sh").write_text(check_script(goal["id"] + "-min", args, ocamlpath))
@@ -670,8 +684,19 @@ def minimize(run, d, goal, answer, header, args, ocamlpath):
     return state
 
 
+def symbolized_goal_text(d, header, name, statement):
+    """goal_text, with the symbol notations of tools/oblig/symbolize.py when the goal's own goal.v
+    uses them (package.py rewrote its address literals), so the minimized lemma stays relocatable."""
+    if "Require Import ZesuSsz.Generated.Stock.Symbols." not in (d / "goal.v").read_text():
+        return goal_text(header, name, statement)
+    sys.path.insert(0, str(ROOT / "tools/oblig"))
+    import symbolize
+    return goal_text(symbolize.with_require(header), name, symbolize.statement(statement, symbolize.table())[0])
+
+
 def module_path(residuals, module):
-    return Path(residuals) / ("%s.v" % module)
+    """The source of MODULE below RESIDUALS: a dotted name is a subdirectory path."""
+    return Path(residuals) / ("%s.v" % module.replace(".", "/"))
 
 
 def module_text(block, existing, goal_dirs, module=None):
@@ -744,9 +769,11 @@ def cmd_rerun(a):
     extra = []
     residual = None
     if source_module.exists():
-        shutil.copyfile(source_module, d / "lib" / (module + ".v"))
-        extra = ["-Q", str(d / "lib"), "ResidualLoop"]
-        build = scoped(d / "lib" / (module + ".v"), "rerun-lib-" + block, args, ocamlpath,
+        lib_module = module_path(d / "lib", module)
+        lib_module.parent.mkdir(parents=True, exist_ok=True)
+        shutil.copyfile(source_module, lib_module)
+        extra = ["-Q", str((d / "lib").resolve()), "ResidualLoop"]
+        build = scoped(lib_module, "rerun-lib-" + block, args, ocamlpath,
                        extra_args=extra, keep=True)
         if build["returncode"] != 0:
             raise LoopError("The residual module does not compile: %s" % build["log"])
@@ -807,6 +834,8 @@ def main(argv=None):
     e.add_argument("--out", required=True)
     e.add_argument("--stop-quiet", type=float, default=None)
     e.add_argument("--module", help="name of the block's residual module (default Block800d<block>)")
+    e.add_argument("--function", help="function symbol name: --block is its 4-hex offset, and the module is "
+                   "ZesuSsz/Residuals/<function>/Block<offset>.v")
     e.add_argument("--from-log", help="reuse the log of an earlier export run instead of compiling")
     e.add_argument("--claim-gib", type=float, default=8.0)
     e.add_argument("--jobs", type=int, default=8)

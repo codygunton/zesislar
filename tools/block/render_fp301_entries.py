@@ -188,9 +188,13 @@ header = pilot_header(profile)
 # These are the source-bound argument and continuation types from Level 1.
 base_telescope = profile.telescope()
 base_arguments = ["args", "returnAddress"]
+# An opaque contract predicate that an annotation row binds (profile `opaque_predicates`, compiled by
+# tools/oblig/annotations.py) renders as its qualified name; no other opaque predicate has an owner.
+opaque_predicates = {name: {"owner": row["owner"], "name": row["name"]}
+                     for name, row in profile.get("opaque_predicates", {}).items()}
 allowed_helpers = {
     row["helper"]["owner"] + "." + row["helper"]["name"] for row in vocabulary["rows"]
-}
+} | {row["owner"] + "." + row["name"] for row in opaque_predicates.values()}
 # Refuse every incomplete source boundary before any declaration renders.
 guard_refusals = {}
 for suffix in blocks:
@@ -384,6 +388,45 @@ for suffix, slot in units:
         # An entry slot renders the alternatives of its own incoming edge only.
         boundary["alternatives"] = [boundary["alternatives"][number]
                                     for number in boundary["slots"][slot]["alternatives"]]
+    unreachable = suffix in profile.get("unreachable_entries", [])
+    if unreachable and suffix in profile.get("unreachable_reached", []) and boundary["alternatives"] \
+            and all(row["predecessor_pc"] is None for row in boundary["alternatives"]):
+        # A `reached: contradictory_guards` row cut every edge from a predecessor block; what remains is
+        # the block's own seed (a call return site), rendered as usual. Each cut edge's predecessor still
+        # steps into this entry and must close by contradiction in the kernel.
+        unreachable = False
+    if unreachable and boundary["alternatives"]:
+        # An `unreachable` annotation row at a block the forward pass reaches is wrong.
+        cases.append({"pc": pc, "status": "refused_unreachable_row", "proof_ran": False,
+                      "reports": [{"kind": "unreachable_row_reached",
+                                   "detail": "an unreachable annotation row names a block the pass reaches"}]})
+        continue
+    if not boundary["alternatives"] and unreachable and slot is None and not package:
+        # The annotation row states that no path reaches the block: its entry is ⌜False⌝, and the
+        # step of each predecessor into it must close by contradiction in the kernel.
+        name = "fp_machineAt" + suffix
+        directory = O / "sources" / profile.generated_directory
+        directory.mkdir(parents=True, exist_ok=True)
+        entries = directory / ("Pilot" + suffix + "Entries.v")
+        structural = directory / ("Pilot" + suffix + "Structural.v")
+        entries.write_text(header + "Definition %s `{!islaG Sigma} `{!threadG} (args : %s) (returnAddress : Z) "
+                           "(K : iProp Sigma) : iProp Sigma := ⌜False⌝%%I.\n" % (name, profile.args_type))
+        structural.write_text(header + "Require Import %s.\n#[export] Instance %s_unfold : LithiumUnfold (@%s) := I.\n"
+                              "#[export] Typeclasses Opaque %s.\n"
+                              % (profile.qualified("Pilot" + suffix + "Entries"), name, name, name))
+        emitted.extend([bind(entries), bind(structural)])
+        cases.append({"pc": pc, "status": "source_declarations_rendered", "entry": bind(entries),
+                      "structural": bind(structural),
+                      "qualified_entry": profile.qualified("Pilot" + suffix + "Entries", name),
+                      "source_boundary": "annotation:unreachable#" + suffix, "definition_count": 1,
+                      "unreachable": True})
+        continue
+    if not boundary["alternatives"]:
+        # No path reaches the block and no stop does either: nothing to render or lift.
+        cases.append({"pc": pc, "status": "refused_no_alternatives", "proof_ran": False,
+                      "reports": [{"kind": "unreached_boundary",
+                                   "detail": "the boundary has no alternative and no reaching stop"}]})
+        continue
     # A seed without a recorded root (a join seed of an older pass) shares the entry tree.
     origin_roots = {roots.get(alternative["seed_pc"], public_seed["entry_pc"])
                     for alternative in boundary["alternatives"]}
@@ -399,8 +442,11 @@ for suffix, slot in units:
         try:
             if ancestor is None:
                 raise ValueError("no common ancestor")
+            drops = [{"root": profile.pc(item["root"]), "resources": item["resources"]}
+                     for item in profile.get("join_drops", {}).get(suffix, [])]
             boundary["alternatives"], lifted_binders = lift_call_return_edges(
-                boundary["alternatives"], seeds=lift_seeds, roots=roots, ancestor=ancestor, vocabulary=vocabulary)
+                boundary["alternatives"], seeds=lift_seeds, roots=roots, ancestor=ancestor, vocabulary=vocabulary,
+                drops=drops)
         except ValueError as error:
             cases.append({"pc": pc, "status": "refused_mixed_roots", "roots": sorted(map(str, origin_roots)),
                           "reports": [{"kind": "join_lift_refused", "detail": str(error)}], "proof_ran": False})
@@ -440,7 +486,7 @@ for suffix, slot in units:
 
     def rendered(boundary):
         plain = SourceComponents(
-            {"K": {"owner": "parameter", "name": "K"}},
+            {"K": {"owner": "parameter", "name": "K"}, **opaque_predicates},
             continuation_id="level1_K",
             provenance=provenance,
         )
@@ -675,28 +721,36 @@ for suffix, slot in units:
     # A generated cut whose generalization binds a register value: refute
     # each source alternative first, so an infeasible arm cannot widen it.
     last_emit, hist_meta, slot_reports = [], {}, []
-    record, definitions, facts = rendered(boundary)
-    cut = record["manifest"].get("cut_generalization", {})
-    refused_sources = []
-    if (cut.get("kind") == "generalized_owned_cut" and cut["plan"]["binders"]
-            and boundary["status"] == "generated"):
-        refused_sources = contradictory_sources(
-            boundary, lambda alone: rendered(alone)[1], check
-        )
-        if refused_sources:
-            boundary = without_alternatives(boundary, refused_sources)
-    refused_names = []
-    while True:
-        hist_meta.clear()
-        del slot_reports[:]
+    refused_sources, refused_names = [], []
+    try:
         record, definitions, facts = rendered(boundary)
-        if definitions is None:
-            break
-        refused = contradictory_alternatives(definitions, check)
-        if not refused:
-            break
-        refused_names.extend(refused)
-        boundary = without_alternatives(boundary, refused_alternative_indices(refused))
+        cut = record["manifest"].get("cut_generalization", {})
+        if (cut.get("kind") == "generalized_owned_cut" and cut["plan"]["binders"]
+                and boundary["status"] == "generated"):
+            refused_sources = contradictory_sources(
+                boundary, lambda alone: rendered(alone)[1], check
+            )
+            if refused_sources:
+                boundary = without_alternatives(boundary, refused_sources)
+        while True:
+            hist_meta.clear()
+            del slot_reports[:]
+            record, definitions, facts = rendered(boundary)
+            if definitions is None:
+                break
+            refused = contradictory_alternatives(definitions, check)
+            if not refused:
+                break
+            refused_names.extend(refused)
+            boundary = without_alternatives(boundary, refused_alternative_indices(refused))
+    except BoundaryRefused as error:
+        # Every alternative proves False, or the contradiction check could not run: a refusal row.
+        if not options.record_refusals:
+            raise
+        cases.append({"pc": pc, "status": "refused_boundary", "proof_ran": False,
+                      "refused_alternatives": refused_names, "refused_source_alternatives": refused_sources,
+                      "reports": [{"kind": "boundary_refused", "detail": str(error)[-2000:]}]})
+        continue
     record["refused_alternatives"] = refused_names
     record["refused_source_alternatives"] = refused_sources
     if definitions is None:

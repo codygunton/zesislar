@@ -482,5 +482,41 @@ class ReturnSites(unittest.TestCase):
         self.assertEqual(return_site([], 0x40, None), '')
 
 
+class StoredFrameSlots(unittest.TestCase):
+    """frame_slots splits a stored frame spelled as the forward pass writes a stored span (cons chain)."""
+
+    def test_a_cons_chain_frame_splits_into_word_cells(self):
+        word = 'saved args'
+        value = '(@Coq.Init.Datatypes.nil (bv 8%N))'
+        for index in reversed(range(8)):
+            value = '(Coq.Init.Datatypes.cons ((bv_extract %d%%N 8%%N (%s)) : bv 8%%N) %s)' % (8 * index, word, value)
+        table = {'pointer': 'sp', 'slots': {-16: '(slot16)'}}
+        regions = {'sp - 16': ('sp', -16)}
+        texts, binders = entry_hist.slot_components('byte_array', 'sp - 16', value, table, regions, set())
+        self.assertEqual(texts, ['(bv_unsigned (slot16)) ↦ₘ (saved args)'])
+        self.assertEqual(binders, [])
+
+    def test_a_list_that_is_no_byte_chain_is_not_split(self):
+        self.assertIsNone(entry_hist._list_items('(Coq.Init.Datatypes.cons x)'))
+
+
+class AgreedJoinBytes(unittest.TestCase):
+    """A join keeps a stored byte every edge holds, however each edge spells it."""
+
+    def test_a_lifted_text_byte_agrees_with_the_extract_of_the_stored_word(self):
+        from types import SimpleNamespace
+        from join_generalize import _agreed_writes
+        word = input_expr('saved args')
+        stored = operation('extract', word, width=8, value=0)
+        lifted = input_expr('(' + stored.coq() + ')', 8)
+        write = SimpleNamespace(size=1)
+        first = SimpleNamespace(transitions=[{'resource_id': 'frame', 'write_index': 0, 'offset': 0}],
+                                writes=[write], updates={'frame': {0: {'write_index': 0, 'value': stored.to_dict()}}})
+        other = SimpleNamespace(updates={'frame': {0: {'write_index': 0, 'value': lifted.to_dict()}}})
+        self.assertEqual(_agreed_writes([first, other], 'frame'), [write])
+        differing = SimpleNamespace(updates={'frame': {0: {'write_index': 0, 'value': bits(0, 8).to_dict()}}})
+        self.assertEqual(_agreed_writes([first, differing], 'frame'), [])
+
+
 if __name__ == '__main__':
     unittest.main()

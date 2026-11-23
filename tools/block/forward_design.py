@@ -242,7 +242,8 @@ def _entry_slots(blocks, boundaries, cuts, duplicated):
 
 
 def evaluate_function(function, traces, initial_states, *, max_paths=4096, check_state=None,
-                      generated_seeds=None, duplicated_joins=(), merge_condition_alternatives=False):
+                      generated_seeds=None, duplicated_joins=(), merge_condition_alternatives=False,
+                      unreachable_targets=()):
     """Return a complete boundary inventory and explicit propagation stops.
 
     max_paths bounds the leaf alternatives that one block creates from one of its entry
@@ -270,7 +271,14 @@ def evaluate_function(function, traces, initial_states, *, max_paths=4096, check
     then stop multiplying along a chain of blocks; an arm whose value differs (input
     past its end reads zero) stays an alternative. `merged_alternatives` counts the
     merges per boundary (`function_return`, `tail_call` for exits).
+
+    Each pc in unreachable_targets is a block that an annotation row (`unreachable`,
+    `reached: contradictory_guards`) declares unreachable: a path into it stops as
+    `infeasible` (rule `annotation_unreachable_row`), so its boundary has no alternative.
+    Nothing is assumed: the renderer gives the block the entry ⌜False⌝, and each
+    predecessor block must prove ⌜False⌝ from its own entry and guards in the kernel.
     """
+    unreachable_targets = {_pc(pc) for pc in unreachable_targets}
     if isinstance(max_paths, bool) or not isinstance(max_paths, int) or max_paths < 1:
         raise ValueError('The path limit must be a positive integer')
     entry, end = _pc(function['entry']), _pc(function['end'])
@@ -524,6 +532,10 @@ def evaluate_function(function, traces, initial_states, *, max_paths=4096, check
             if target not in blocks[work.block_pc]['successors'] or target not in blocks:
                 stop('outside_pc', routed, instructions[work.block_pc][-1], state,
                      actual_pc=hex(target), allowed_successors=[hex(pc) for pc in blocks[work.block_pc]['successors']])
+                continue
+            if target in unreachable_targets:
+                stop('infeasible', routed, instructions[work.block_pc][-1], state, target_pc=hex(target),
+                     rule='annotation_unreachable_row')
                 continue
             projected, index, key = boundary(target, state, routed, work.block_pc)
             if projected is None:

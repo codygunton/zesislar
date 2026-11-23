@@ -16,8 +16,8 @@ sys.path.insert(0, str(ROOT / "tools" / "residual"))
 from modules import PROOF_OPENER, parse_module
 from closed_literal_definitions import closed_literal_failures
 sys.path.insert(0, str(ROOT / "tools" / "residuals"))
-from render_residual_module import (RenderError, SHARED, module_name, parse_module as parse_residual_module,
-                                    parse_shared_module)
+from render_residual_module import (RenderError, SHARED, module_file, module_of_rows,
+                                    parse_module as parse_residual_module, parse_shared_module)
 sys.path.append(str(ROOT / "tools"))
 from kill_scan import tree_failures as unsafe_kill_failures
 BASELINE_PATH = Path(__file__).with_name("hygiene_baseline.json")
@@ -604,7 +604,12 @@ def frozen_global_failures(root=ROOT, umbrella="ZesuSsz.Automation2.All",
 
 
 def residual_module_failures(name: str, text: str) -> list[str]:
-    """Residual modules hold only rendered declarations around copied proofs."""
+    """Residual modules hold only rendered declarations around copied proofs.
+
+    The path names the module's block: ZesuSsz/Residuals/Block800d<block>.v for
+    the original lemma names, ZesuSsz/Residuals/<function>/Block<offset>.v for
+    lemmas named residual_<function>_<offset>_<hex>.
+    """
     if not name.startswith(RESIDUALS_PREFIX):
         return []
     if name[len(RESIDUALS_PREFIX):-len(".v")] in SHARED:
@@ -614,10 +619,10 @@ def residual_module_failures(name: str, text: str) -> list[str]:
             return [f"residual module is not renderer output: {name}: {error}"]
         return []
     try:
-        block, _, _ = parse_residual_module(text)
+        _, _, rows = parse_residual_module(text)
     except RenderError as error:
         return [f"residual module is not renderer output: {name}: {error}"]
-    if name != RESIDUALS_PREFIX + module_name(block) + ".v":
+    if name != module_file(*module_of_rows(rows)):
         return [f"residual module name does not match its block: {name}"]
     return []
 

@@ -194,7 +194,7 @@ def manifest_errors(root: Path) -> tuple[list[str], int]:
 
 RESIDUAL_DIRECTORY = "ZesuSsz/Residuals"
 RESIDUAL_PREFIX = "ZesuSsz.Residuals."
-RESIDUAL_CALLERS = "tools/block/generated/fp301_callers"
+RESIDUAL_CALLERS = "tools/block/generated"
 RESIDUAL_SHARED = {"DecodeItemBridges"}
 RESIDUAL_HINT = re.compile(r"\s*#\[export\]\s*Hint\s+Resolve\s+(residual_\w+)\s*:\s*zesu_residual\s*")
 
@@ -202,7 +202,8 @@ RESIDUAL_HINT = re.compile(r"\s*#\[export\]\s*Hint\s+Resolve\s+(residual_\w+)\s*
 def residual_errors(root: Path) -> list[str]:
     """Residual modules are scoped hints of one block.
 
-    A module ZesuSsz/Residuals/Block<addr>.v registers only exported
+    A module ZesuSsz/Residuals/Block<addr>.v, or ZesuSsz/Residuals/<function>/Block<offset>.v
+    in the relocatable form, registers only exported
     `Hint Resolve residual_* : zesu_residual` hints. Only the block's own
     generated caller imports it; no ZesuSsz source imports it. The shared
     bridge module registers no hint, and only block residual modules import it.
@@ -214,6 +215,7 @@ def residual_errors(root: Path) -> list[str]:
     for path in sorted(directory.rglob("*.v")) if directory.is_dir() else []:
         name = ".".join(path.relative_to(root).with_suffix("").parts)
         match = re.fullmatch(r"Block(800d[0-9a-f]{4})", path.stem)
+        relocatable = re.fullmatch(r"Block([0-9a-f]{4})", path.stem)
         if path.parent == directory and path.stem in RESIDUAL_SHARED:
             shared.add(name)
             for command in source_commands(path.read_text()):
@@ -221,10 +223,14 @@ def residual_errors(root: Path) -> list[str]:
                 if re.match(r"(?:Global\s+|Local\s+)?(?:Hint\b|(?:(?:Program|Existing|Declare)\s+)?Instances?\b)", head):
                     errors.append(f"{name} is a shared bridge module and registers a hint.")
             continue
-        if path.parent != directory or not match:
-            errors.append(f"Residual module name is not Block<address>: {name}.")
+        if path.parent == directory and match:
+            modules[name] = match[1]
+        elif (path.parent.parent == directory and relocatable
+              and re.fullmatch(r"[A-Za-z][A-Za-z0-9]*", path.parent.name)):
+            modules[name] = "%s+%s" % (path.parent.name, relocatable[1])
+        else:
+            errors.append(f"Residual module name is not Block<address> or <function>/Block<offset>: {name}.")
             continue
-        modules[name] = match[1]
         for command in source_commands(path.read_text()):
             head = re.sub(r"^\s*(?:#\[[^]]*\]\s*)*", "", command)
             if not re.match(r"(?:Global\s+|Local\s+)?(?:Hint\b|(?:(?:Program|Existing|Declare)\s+)?Instances?\b)", head):
@@ -240,15 +246,22 @@ def residual_errors(root: Path) -> list[str]:
             if module.startswith(RESIDUAL_PREFIX):
                 errors.append(f"{importer} imports residual module {module}; only its block caller may.")
     callers = root / RESIDUAL_CALLERS
-    for path in sorted(callers.glob("*.v")) if callers.is_dir() else []:
+    for path in sorted(callers.glob("*/*.v")) if callers.is_dir() else []:
         text = path.read_text()
+        # The original form names its block by the absolute boundary address; the
+        # relocatable form by the function of the caller dir (its CALLERS.json)
+        # and the caller's case offset (Caller<offset>.v).
         boundary = re.search(r"^Lemma DesignedBoundary_(800d[0-9a-f]{4})\b", text, re.M)
+        rows = path.parent / "CALLERS.json"
+        function = json.loads(rows.read_text()).get("function") if rows.is_file() else None
+        case = re.fullmatch(r"Caller([0-9a-f]{4})", path.stem)
+        owners = {boundary[1] if boundary else None, "%s+%s" % (function, case[1]) if function and case else None}
         for module in sorted(imported_modules(text) | exported_modules(text)):
             if not module.startswith(RESIDUAL_PREFIX):
                 continue
             if module not in modules:
                 errors.append(f"{path.name} imports a missing residual module {module}.")
-            elif not boundary or modules[module] != boundary[1]:
+            elif modules[module] not in owners - {None}:
                 errors.append(f"{path.name} imports another block's residual module {module}.")
     return errors
 
