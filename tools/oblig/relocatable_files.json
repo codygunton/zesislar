@@ -6,6 +6,8 @@
     "tools/oblig/*.json",
     "tools/oblig/exec/run.py",
     "tools/oblig/exec/inputs/*.json",
+    "tools/oblig/exec/binders/*.json",
+    "tools/oblig/*.v",
     "tools/block/functions/*.annotations.json",
     "ZesuSsz/Contracts/TxAccessListContract.v",
     "ZesuSsz/Contracts/TxAccessListSelected.v",

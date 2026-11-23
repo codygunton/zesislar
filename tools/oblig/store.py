@@ -409,6 +409,7 @@ def derived_states(function, run, callers=None):
     for directory in residual_runs(run):
         manifest = read_json(directory / 'MANIFEST.json', {})
         case = manifest.get('block')
+        rows = {goal['id']: goal for goal in manifest.get('goals', [])}
         for goal in manifest.get('goals', []):
             statement = goal.get('statement')
             if not case or not statement:
@@ -416,6 +417,11 @@ def derived_states(function, run, callers=None):
             gdir = directory / 'goals' / goal['id']
             status = read_json(gdir / 'STATUS.json', {})
             st, cls = GOAL_RESULTS.get(status.get('result', 'OPEN'), ('derived', None))
+            # A goal normalised into parts (tools/oblig/normalise.py) waits for its first open part.
+            open_parts = [rows[p] for p in goal.get('parts') or []
+                          if p in rows and read_json(directory / 'goals' / p / 'STATUS.json', {}).get('result') != 'PASS']
+            if st != 'closed' and open_parts:
+                st, cls = 'blocked-on', goal_id(function, case, open_parts[0]['statement'])
             proof = gdir / 'proof.v'
             artifact = proof if st == 'closed' and proof.is_file() else (gdir / 'STATUS.json'
                                                                          if status else None)
@@ -542,6 +548,9 @@ def sync(function, run, callers=None):
         elif st == 'failed':
             write = current in (None, 'derived', 'running', 'closed') and not (
                 current == 'failed' and item['failure'] == cls)
+        elif st == 'blocked-on':
+            write = current not in ('running', 'closed', 'false') and not (
+                current == 'blocked-on' and item['blocked_by'] == cls)
         else:
             write = current in (None, 'closed')
         if write:

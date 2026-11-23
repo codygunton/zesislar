@@ -84,7 +84,8 @@ def goal_ids(goals, block, manifest=None):
         data = json.loads(Path(manifest).read_text())
         if data.get("block") not in (None, block):
             raise RenderError("The manifest is for block %s." % data.get("block"))
-        ids = [g["id"] for g in data["goals"]]
+        # Parts of a normalised goal (tools/oblig/normalise.py) live inside its composed proof.
+        ids = [g["id"] for g in data["goals"] if not g.get("part_of")]
     else:
         ids = [p.name for p in Path(goals).iterdir()
                if p.is_dir() and re.fullmatch(re.escape(block) + r"-\d+", p.name)]

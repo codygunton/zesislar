@@ -1,0 +1,224 @@
+{
+ "schema": "oblig-exec-binders/1",
+ "function": "entriesToOwnedSlice",
+ "note": "Binder map of tools/oblig/normalise.py (snapshot screen): a normalised goal's data variable, named by its projection path, matched by `pattern` (first match wins), takes its value from `source`: `reg` (ABI or xN name) or `mem` (range, little-endian `offset`/`size`) or `bytes` (the whole range) or `deref` (the bytes at a pointer, `length` times `scale`) of the entry snapshot (STATE-0000, `at` entry) or the block snapshot (`at` block) of the same input, or `const`. Snapshots of the run mode `mode` only.",
+ "mode": "remap-never",
+ "element_bytes": 40,
+ "binders": [
+  {
+   "pattern": "(^|_)toOwnedResultPointer$",
+   "source": {
+    "reg": "a0",
+    "at": "entry"
+   }
+  },
+  {
+   "pattern": "(^|_)toOwnedListPointer$",
+   "source": {
+    "reg": "a1",
+    "at": "entry"
+   }
+  },
+  {
+   "pattern": "(^|_)toOwnedAllocatorPointer$",
+   "source": {
+    "reg": "a2",
+    "at": "entry"
+   }
+  },
+  {
+   "pattern": "(^|_)toOwnedReturnAddress$",
+   "source": {
+    "reg": "ra",
+    "at": "entry"
+   }
+  },
+  {
+   "pattern": "(^|_)toOwnedStackPointer$",
+   "source": {
+    "reg": "sp",
+    "at": "entry"
+   }
+  },
+  {
+   "pattern": "(^|_)toOwnedAllocatorContext$",
+   "source": {
+    "mem": "allocator",
+    "offset": 0,
+    "size": 8,
+    "at": "entry"
+   }
+  },
+  {
+   "pattern": "(^|_)toOwnedResultBefore$",
+   "source": {
+    "bytes": "result",
+    "at": "entry"
+   }
+  },
+  {
+   "pattern": "(^|_)toOwnedScratchBefore$",
+   "source": {
+    "bytes": "zisk-scratch",
+    "at": "entry"
+   }
+  },
+  {
+   "pattern": "(^|_)toOwnedInputEnd$",
+   "source": {
+    "const": 0
+   }
+  },
+  {
+   "pattern": "(^|_)(toOwnedList|BlockList)_arrayListPointer$",
+   "source": {
+    "mem": "list",
+    "offset": 0,
+    "size": 8,
+    "at": "entry"
+   }
+  },
+  {
+   "pattern": "(^|_)(toOwnedList|BlockList)_arrayListLength$",
+   "source": {
+    "mem": "list",
+    "offset": 8,
+    "size": 8,
+    "at": "entry"
+   }
+  },
+  {
+   "pattern": "(^|_)(toOwnedList|BlockList)_arrayListCapacity$",
+   "source": {
+    "mem": "list",
+    "offset": 16,
+    "size": 8,
+    "at": "entry"
+   }
+  },
+  {
+   "pattern": "(^|_)(toOwnedList|BlockList)_arrayListItems$",
+   "source": {
+    "deref": {
+     "mem": "list",
+     "offset": 0,
+     "size": 8
+    },
+    "length": {
+     "mem": "list",
+     "offset": 8,
+     "size": 8
+    },
+    "scale": 40,
+    "at": "entry"
+   }
+  },
+  {
+   "pattern": "(^|_)toOwnedSaved_savedX8$",
+   "source": {
+    "reg": "s0",
+    "at": "entry"
+   }
+  },
+  {
+   "pattern": "(^|_)toOwnedSaved_savedX9$",
+   "source": {
+    "reg": "s1",
+    "at": "entry"
+   }
+  },
+  {
+   "pattern": "(^|_)toOwnedSaved_savedX18$",
+   "source": {
+    "reg": "s2",
+    "at": "entry"
+   }
+  },
+  {
+   "pattern": "(^|_)toOwnedSaved_savedX19$",
+   "source": {
+    "reg": "s3",
+    "at": "entry"
+   }
+  },
+  {
+   "pattern": "(^|_)toOwnedSaved_savedX20$",
+   "source": {
+    "reg": "s4",
+    "at": "entry"
+   }
+  },
+  {
+   "pattern": "(^|_)toOwnedSaved_savedX21$",
+   "source": {
+    "reg": "s5",
+    "at": "entry"
+   }
+  },
+  {
+   "pattern": "(^|_)toOwnedSaved_savedX22$",
+   "source": {
+    "reg": "s6",
+    "at": "entry"
+   }
+  },
+  {
+   "pattern": "(^|_)toOwnedSaved_savedX23$",
+   "source": {
+    "reg": "s7",
+    "at": "entry"
+   }
+  },
+  {
+   "pattern": "(^|_)toOwnedSaved_savedX24$",
+   "source": {
+    "reg": "s8",
+    "at": "entry"
+   }
+  },
+  {
+   "pattern": "(^|_)toOwnedSaved_savedX25$",
+   "source": {
+    "reg": "s9",
+    "at": "entry"
+   }
+  },
+  {
+   "pattern": "(^|_)toOwnedSaved_savedX26$",
+   "source": {
+    "reg": "s10",
+    "at": "entry"
+   }
+  },
+  {
+   "pattern": "(^|_)toOwnedSaved_savedX27$",
+   "source": {
+    "reg": "s11",
+    "at": "entry"
+   }
+  },
+  {
+   "pattern": "^machine_x(\\d+)$",
+   "source": {
+    "reg": "x\\1",
+    "at": "block"
+   },
+   "note": "register value at the block start (zesu_hist witness)"
+  },
+  {
+   "pattern": "^call_x10$",
+   "source": {
+    "reg": "a0",
+    "at": "block"
+   },
+   "note": "callee return value at the block start"
+  },
+  {
+   "pattern": "^(b\\d*|fp_seed_mstatus_bits\\w*|forward_witness\\w*)$",
+   "source": {
+    "const": 0
+   },
+   "note": "mstatus-like witnesses: only Z.land b 131072 = 0 is stated"
+  }
+ ]
+}

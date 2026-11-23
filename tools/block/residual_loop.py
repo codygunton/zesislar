@@ -736,8 +736,9 @@ def cmd_register(a):
     run = Path(a.run)
     manifest = read_json(run / "MANIFEST.json")
     block = manifest["block"]
-    passing = [g for g in manifest["goals"]
-               if read_json(run / "goals" / g["id"] / "STATUS.json", {}).get("result") == "PASS"]
+    # A part of a normalised goal (tools/oblig/normalise.py) is proved inside its goal's composed proof.
+    passing = [g for g in manifest["goals"] if not g.get("part_of")
+               and read_json(run / "goals" / g["id"] / "STATUS.json", {}).get("result") == "PASS"]
     module = module_of(manifest)
     target = module_path(a.residuals, module)
     existing = target.read_text() if target.exists() else None
