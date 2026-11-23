@@ -9,6 +9,7 @@ Require Import ZesuSsz.Contracts.RlpDecodeItem.
 Require Import ZesuSsz.Contracts.AltFlFree.
 Require Import ZesuSsz.Automation2.Calls.
 Require Import ZesuSsz.Contracts.DecodeItemCallData.
+Require Import ZesuSsz.Automation2.FactViews.
 Open Scope Z_scope.
 Open Scope stdpp_scope.
 
@@ -151,6 +152,51 @@ Lemma altFlBlock_unfold `{!islaG Sigma} `{!threadG} (pointer bytes log2Align : Z
    ⌜bytes <> 0 -> altFlBlockFacts pointer bytes log2Align⌝)%I.
 Proof. reflexivity. Qed.
 Global Opaque altFlBlock.
+
+(* A block's class slack is never negative: a request of a class below
+   freeListCount fits in the class size. *)
+Lemma altFlBlockSlack_nonneg (bytes log2Align : Z) :
+  0 <= altFlBlockSlack bytes log2Align.
+Proof.
+  unfold altFlBlockSlack, altFlClassBytes.
+  destruct (bytes =? 0); [lia|].
+  destruct (Z.ltb_spec (freeSizeClass bytes log2Align) freeListCount)
+    as [Hclass|]; [|lia].
+  assert (Hsized : freeSizeClassOfBytes bytes < freeListCount ->
+    bytes <= 2 ^ (freeSizeClassOfBytes bytes + 3)).
+  { unfold freeSizeClassOfBytes.
+    repeat match goal with
+    | |- context [Z.leb ?a ?b] => destruct (Z.leb_spec a b)
+    end; cbn; lia. }
+  unfold freeSizeClass in *.
+  assert (Hmono : 2 ^ (freeSizeClassOfBytes bytes + 3) <=
+    2 ^ (Z.max (freeSizeClassOfBytes bytes) (Z.max 0 (log2Align - 3)) + 3)).
+  { apply Z.pow_le_mono_r; [lia|].
+    assert (0 <= freeSizeClassOfBytes bytes) by
+      (unfold freeSizeClassOfBytes; repeat case_match; lia).
+    lia. }
+  assert (Hbelow : freeSizeClassOfBytes bytes < freeListCount) by lia.
+  specialize (Hsized Hbelow). lia.
+Qed.
+
+(* The block's range as a hypothesis wherever the token is held
+   (Automation2/FactViews.v): a caller that writes the block reads that it
+   lies in RAM. *)
+Global Instance altFlBlockFactView `{!islaG Sigma} `{!threadG}
+    (pointer bytes log2Align : Z) :
+  ZesuFactView (altFlBlock pointer bytes log2Align)
+    (bytes <> 0 ->
+     mapRamBase defaultMap <= pointer /\
+     pointer + bytes <= machineRamEnd defaultMap /\
+     (altFlBlockAlignment bytes log2Align | pointer)).
+Proof.
+  rewrite /ZesuFactView altFlBlock_unfold.
+  iIntros "[Hslack %Hfacts]". iFrame "Hslack".
+  iSplit; iPureIntro; [exact Hfacts|].
+  intros Hbytes. destruct (Hfacts Hbytes) as (Hlow & Hhigh & Halign).
+  pose proof (altFlBlockSlack_nonneg bytes log2Align).
+  split; [exact Hlow|]. split; [lia|exact Halign].
+Qed.
 
 (* The bytes alloc hands out: the request on success, none on null. *)
 Definition altFlAllocatedBytes (pointer bytes : Z) : Z :=
