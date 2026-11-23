@@ -417,9 +417,34 @@ Ltac zesu_bv_solver_goal :=
   | _ => idtac
   end.
 
+(* A vacuous branch: `bv_unsigned x = 0` beside `x ≠ z` with a closed `z`
+   whose value is 0 (a return value fixed at 0 by a callee premise, then the
+   not-taken `beqz` on it). Either order of either fact, any width. *)
+Lemma zesu_bv_unsigned_zero_ne {n} (x z : bv n) :
+  bv_unsigned x = 0%Z → bv_unsigned z = 0%Z → x ≠ z → False.
+Proof. intros Hx Hz Hne. apply Hne, bv_eq. rewrite Hx Hz. reflexivity. Qed.
+
+Ltac zesu_bv_zero_contradiction_at x Hx :=
+  match goal with
+  | Hne : x ≠ ?z |- _ =>
+      zesu_closed_term z;
+      exact (False_ind _ (zesu_bv_unsigned_zero_ne x z Hx eq_refl Hne))
+  | Hne : ?z ≠ x |- _ =>
+      zesu_closed_term z;
+      exact (False_ind _ (zesu_bv_unsigned_zero_ne x z Hx eq_refl
+        (fun equal => Hne (eq_sym equal))))
+  end.
+
+Ltac zesu_bv_zero_contradiction :=
+  match goal with
+  | Hx : bv_unsigned ?x = 0%Z |- _ => zesu_bv_zero_contradiction_at x Hx
+  | Hx : 0%Z = bv_unsigned ?x |- _ => zesu_bv_zero_contradiction_at x (eq_sym Hx)
+  end.
+
 (* Pure goals of a known shape, closed from the facts on the goal's own
    terms: one bit of a word, a list window against the list's byte
-   positions, a branch fact's bv_unsigned view, a frame-array index bound.
+   positions, a branch fact's bv_unsigned view, a frame-array index bound,
+   a branch the zero facts above make vacuous.
    They run before the context-wide solvers: on a block context of hundreds
    of hypotheses those spend minutes on such a goal without closing it, and
    the common pure path grew one decodeParentHeader caller's tail past
@@ -434,7 +459,8 @@ Ltac zesu_finish_shape_closers :=
   first [solve [ZesuSsz.Automation2.BitvectorFacts.zesu_single_bit_zero_goal]
     | solve [BytePositionEquations.zesu_le_window_goal]
     | solve [BytePositionEquations.zesu_word_fact_goal]
-    | solve [WrappedWord.zesu_wrapped_index_bound_goal]]).
+    | solve [WrappedWord.zesu_wrapped_index_bound_goal]
+    | zesu_bv_zero_contradiction]).
 
 (* A shelved side condition. Every closing attempt except the codec read
    starts with `unshelve_sidecond; unLET`, and so does prepare_sidecond; unLET
@@ -1495,6 +1521,7 @@ Ltac zesu_block_v1 :=
   zesu_reduce_introduced_code_lists;
   repeat iDestruct select (_ ∗ _)%I as "[? ?]";
   try zesu_entry_intro_if_enabled;
+  FactViews.zesu_pose_fact_views;
   zesu_run)
   else first [solve [zesu_finish] | idtac].
 
@@ -1506,6 +1533,7 @@ Ltac zesu_block_v2 :=
     zesu_reduce_introduced_code_lists;
     repeat iDestruct select (_ ∗ _)%I as "[? ?]";
     try zesu_entry_intro_if_enabled;
+    FactViews.zesu_pose_fact_views;
       zesu_run)
   else first [solve [zesu_finish] | idtac].
 
