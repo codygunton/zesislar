@@ -3,7 +3,7 @@
 
     package.py goals     --run RUN --function F [--goal ID ...] [--tier T] [--max-prompt-bytes N]
                          [--index INDEX.json] [--hints DIR] [--falsify --bank BANK [--ocamlpath DIR]
-                         [--exec-dir RUN/exec]]
+                         [--exec-dir RUN/exec]] [--defs --bank BANK]
     package.py answer    --run RUN --goal ID --answer ANSWER.json [--tier T]
                          [--tokens-in N] [--tokens-out N]
     package.py addresses FILE ...
@@ -22,8 +22,10 @@ goals packages each open goal (reparse exact, not PASS) into RUN/package/<id>/:
 - with --falsify, tools/oblig/falsify.py on goal.v; a `false` verdict gets no prover task.
 - the prover task TASK-<tier>.md: the TASK text of residual_loop.py (the default-printer goal
   and the path of the exact source), the answer form, then context items while the task
-  stays within --max-prompt-bytes: the 3 nearest closed lemmas (tools/oblig/similar.py) and
-  the hint slice of the block (`tools/oblig/hints.py slice`, when --hints names a hint pack).
+  stays within --max-prompt-bytes: with --defs, the definitions of the goal's project names
+  (tools/oblig/defs.py, Rocq About/Print with the goal's imports), the 3 nearest closed lemmas
+  (tools/oblig/similar.py) and the hint slice of the block (`tools/oblig/hints.py slice`, when
+  --hints names a hint pack).
 - PACKAGE.json: obligation id (`<F>/goal/<block>-<16 hex of sha256(statement)>`), class,
   addresses, falsity verdict, task path, prompt bytes and sha256, context items.
 
@@ -50,8 +52,10 @@ HERE = Path(__file__).resolve().parent
 ROOT = HERE.parents[1]
 sys.path.insert(0, str(HERE))
 sys.path.insert(0, str(ROOT / "tools/block"))
+sys.path.insert(0, str(ROOT / "tools/bench"))
 import residual_loop as rl  # noqa: E402
 import similar  # noqa: E402
+import bench_report  # noqa: E402
 
 MAX_PROMPT_BYTES = 12000
 ADDRESS_PATTERNS = (re.compile(r"0x800[0-9a-f]{5}"), re.compile(r"2148[0-9]{6}"), re.compile(r"21474[0-9]{5}"))
@@ -108,6 +112,106 @@ def address_matches(text):
     return unique
 
 
+# ---- strict premise slice ----
+
+def statement_parts(statement):
+    """(binder text, premises, conclusion) of `forall BINDERS, P1 -> .. -> C` (top-level split; no
+    binders: empty binder text). None when the statement has another shape."""
+    text = bench_report.unwrap(statement)
+    binders = ""
+    if text.startswith("forall "):
+        pieces = bench_report.top_level(text, ",")
+        if len(pieces) < 2:
+            return None
+        binders, text = pieces[0][len("forall "):].strip(), ",".join(pieces[1:]).strip()
+    pieces = [p.strip() for p in bench_report.top_level(text, "->")]
+    return binders, pieces[:-1], pieces[-1]
+
+
+def variables_of(text, names):
+    return {n for n in names if re.search(r"(?<![\w'.])%s(?![\w'])" % re.escape(n), text)}
+
+
+def binder_groups(binders):
+    """[(text, names, type)] of `(a b : T) (c : U)`; one group (names, no type) for a bare `a b`."""
+    groups, i = [], 0
+    while i < len(binders):
+        if binders[i] == "(":
+            j = similar.matching(binders, i)
+            if j is None:
+                break
+            inner = binders[i + 1:j]
+            names, _, typ = inner.partition(":")
+            groups.append((binders[i:j + 1], names.split(), typ.strip()))
+            i = j + 1
+        elif binders[i].isspace():
+            i += 1
+        else:
+            return [(binders, binders.split(":")[0].split(), "")]
+    return groups
+
+
+NAMED_PREMISE = re.compile(r"^H[\w']*$")
+
+
+def strict_slice(statement):
+    """(statement, dropped premises): the premises that share a bound data variable with the conclusion,
+    directly or through kept premises, minus a premise that repeats another or is a top-level conjunct
+    of another kept premise. Premises are the arrows `P ->` and the named binders `(H.. : P)` that
+    nothing else names (the exporter's form). The statement is returned unchanged when nothing drops."""
+    parts = statement_parts(statement)
+    if parts is None:
+        return statement, []
+    binders, arrows, conclusion = parts
+    groups = binder_groups(binders) if binders else []
+    everything = [g[0] for g in groups] + arrows + [conclusion]
+    # (kind, text, proposition): kind `binder` with its group index, or `arrow`.
+    premises, data = [], set()
+    for n, (text, names, typ) in enumerate(groups):
+        others = " ".join(t for t in everything if t is not text)
+        if typ and names and all(NAMED_PREMISE.match(x) for x in names) and not variables_of(others, names):
+            premises.append((("binder", n), text, typ))
+        else:
+            data |= set(names)
+    premises += [(("arrow", n), text, text) for n, text in enumerate(arrows)]
+    live = variables_of(conclusion, data)
+    kept = set()
+    changed = True
+    while changed:
+        changed = False
+        for i, (_, _, prop) in enumerate(premises):
+            found = variables_of(prop, data)
+            if i not in kept and found & live:
+                kept.add(i)
+                live |= found
+                changed = True
+    norm = [" ".join(bench_report.unwrap(p).split()) for _, _, p in premises]
+    for i in sorted(kept):
+        conjuncts = [{" ".join(bench_report.unwrap(c).split()) for c in
+                      bench_report.top_level(bench_report.unwrap(premises[j][2]).replace("∧", "/\\"), "/\\")}
+                     for j in kept if j != i]
+        if any(norm[j] == norm[i] and j < i for j in kept) or any(norm[i] in cs and len(cs) > 1 for cs in conjuncts):
+            kept.discard(i)
+    dropped = [text for i, (_, text, _) in enumerate(premises) if i not in kept]
+    if not dropped:
+        return statement, []
+    gone = {key for i, (key, _, _) in enumerate(premises) if i not in kept}
+    head = " ".join(text for n, (text, _, _) in enumerate(groups) if ("binder", n) not in gone)
+    body = " ->\n  ".join([text for n, text in enumerate(arrows) if ("arrow", n) not in gone] + [conclusion])
+    return ("forall %s,\n  %s" % (head, body) if head else body), dropped
+
+
+def premise_count(statement):
+    """Arrow premises plus named premise binders `(H.. : P)` of a statement (strict_slice's premises)."""
+    parts = statement_parts(statement)
+    if parts is None:
+        return 0
+    binders, arrows, _ = parts
+    named = [g for g in (binder_groups(binders) if binders else [])
+             if g[2] and g[1] and all(NAMED_PREMISE.match(x) for x in g[1])]
+    return len(arrows) + len(named)
+
+
 # ---- prover tasks ----
 
 def goal_header(goal_v):
@@ -148,7 +252,7 @@ def compose(base, items, max_bytes):
 
 
 def package_goal(run, manifest, goal, function, tier, max_bytes, index, hints, falsify_route=None,
-                 exec_dir=None):
+                 exec_dir=None, defs_route=None):
     run = Path(run)
     block = manifest["block"]
     d = run / "goals" / goal["id"]
@@ -176,8 +280,18 @@ def package_goal(run, manifest, goal, function, tier, max_bytes, index, hints, f
         record.update(next="too-large", prompt_bytes=len(base.encode()))
         return write_record(out, record)
     remaining = max_bytes - len(base.encode())
-    found = similar.nearest(index, goal["statement"], similar.K, max(0, remaining - 200)) if index else []
-    items = [("similar", similar.section(found))] if found else []
+    items = []
+    shown = []
+    if defs_route is not None:
+        import defs
+        resolver = defs.Resolver(out / "defs", goal_header(goal_v), defs.route_compile(defs_route),
+                                 defs.project_roots(defs_route.args), tag="defs-" + goal["id"])
+        names = defs.ranked_names(goal["statement"])
+        section, shown = defs.section(defs.items(resolver.resolve(names), names), remaining - 200)
+        items.append(("defs", section))
+    taken = sum(len(item.encode()) + 1 for _, item in items if item)
+    found = similar.nearest(index, goal["statement"], similar.K, max(0, remaining - taken - 200)) if index else []
+    items += [("similar", similar.section(found))] if found else []
     pcs = ["+0x" + block]
     items.append(("hints", hint_slice(hints, pcs, remaining)))
     text, used = compose(base, items, max_bytes)
@@ -185,7 +299,8 @@ def package_goal(run, manifest, goal, function, tier, max_bytes, index, hints, f
     task.write_text(text)
     record.update(next="prover", task=str(task), prompt_bytes=len(text.encode()), prompt_sha256=sha(text),
                   context_items=[name for name, item in items if item],
-                  context_supplied=used, similar=[e["name"] for _, e in found] if "similar" in used else [])
+                  context_supplied=used, similar=[e["name"] for _, e in found] if "similar" in used else [],
+                  defs=shown if "defs" in used else [])
     return write_record(out, record)
 
 
@@ -210,14 +325,15 @@ def cmd_goals(a):
         raise PackageError("No MANIFEST.json in %s." % run)
     index = json.loads(Path(a.index).read_text()) if a.index else similar.build_index(runs=[run])
     route = None
-    if a.falsify:
+    if a.falsify or a.defs:
         import falsify
         if not a.bank:
-            raise PackageError("--falsify needs --bank.")
-        route = falsify.Route(a.bank, a.ocamlpath)
+            raise PackageError("--falsify and --defs need --bank.")
+        bank_route = falsify.Route(a.bank, a.ocamlpath)
+        route = bank_route if a.falsify else None
     for goal in open_goals(run, manifest, set(a.goal or ())):
         record = package_goal(run, manifest, goal, a.function, a.tier, a.max_prompt_bytes, index, a.hints,
-                              route, a.exec_dir)
+                              route, a.exec_dir, bank_route if a.defs else None)
         print("PACKAGE %s %s next=%s class=%s bytes=%s context=%s" % (
             record["goal"], record["id"], record["next"], record["class"] or "-",
             record.get("prompt_bytes", "-"), ",".join(record.get("context_supplied", [])) or "-"))
@@ -454,6 +570,7 @@ def main(argv=None):
     g.add_argument("--index", help="similar.py index; default: built from the residual modules and RUN")
     g.add_argument("--hints", help="hints/ dir of tools/oblig/hints.py build")
     g.add_argument("--falsify", action="store_true")
+    g.add_argument("--defs", action="store_true", help="add the definitions context (defs.py); needs --bank")
     g.add_argument("--bank")
     g.add_argument("--ocamlpath")
     g.add_argument("--exec-dir")

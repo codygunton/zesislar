@@ -11,7 +11,7 @@ raise_errors=False)` and `tool.write(...)`.
     await set_tier_override(tier)   session task.agentModelOverrides for the tier's agent (the scout tiers);
                                     refuses while handles of another tier of that agent are unfinished
     run_wave(corpus, tier, recipe="similar", ids=None, sets=("known",), concurrency=16)
-    retry_wave(corpus, tier, recipe="similar", ids=None, concurrency=16, attempt=2)
+    retry_wave(corpus, tier, recipe="similar", ids=None, concurrency=16, attempt=2, resolver_for=None)
 
 A tier maps to an agent through tools/oblig/tiers.json (`mechanical` runs no model). A wave registers each
 attempt in the store before it spawns (store.py refuses a (prompt_sha256, tier) pair sent before),
@@ -20,7 +20,10 @@ spawns at most CONCURRENCY agents at a time, and writes each reply with package.
 from the agent's session log (`~/.omp/agent/sessions/**/<id>.jsonl`: `usage` of each assistant message,
 `resolvedModel` of session_init); a reply whose resolved model is not the tier's model is flagged
 `model_mismatch` in WAVE.json. Check the answers afterwards with `replay.py check`; retry_wave writes the
-second-attempt prompts (previous prompt plus the compiler errors, or the asked-for context) first.
+second-attempt prompts (previous prompt plus the compiler errors, or the asked-for context: the definitions
+or statements Rocq resolves for the names a `need_context` answer gives, and the closed lemmas it names;
+replay.retry_plan) first. The Rocq queries of that step run in the calling process (stand-alone check
+route, one guard scope each), before any agent starts.
 """
 import json
 import os
@@ -191,10 +194,10 @@ def run_wave(corpus, tier_name, recipe="similar", ids=None, sets=("known",), con
         _prune()
 
 
-def retry_wave(corpus, tier_name, recipe="similar", ids=None, concurrency=16, attempt=2):
+def retry_wave(corpus, tier_name, recipe="similar", ids=None, concurrency=16, attempt=2, resolver_for=None):
     """The next attempt of a tier: prompts with the compiler error text (or the asked-for context),
     then a wave over exactly those goals. Run `replay.py check` on the previous attempt first."""
-    chosen = replay.prepare_retry(corpus, tier_name, recipe, ids, attempt)
+    chosen = replay.prepare_retry(corpus, tier_name, recipe, ids, attempt, resolver_for=resolver_for)
     if not chosen:
         return dict(tier=tier_name, recipe=recipe, attempt=attempt, started=0, rejected=[], verdicts={})
     return run_wave(corpus, tier_name, recipe=recipe, ids=chosen, sets=("known", "unknown"),
