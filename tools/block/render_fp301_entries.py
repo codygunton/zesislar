@@ -188,9 +188,13 @@ header = pilot_header(profile)
 # These are the source-bound argument and continuation types from Level 1.
 base_telescope = profile.telescope()
 base_arguments = ["args", "returnAddress"]
+# An opaque contract predicate that an annotation row binds (profile `opaque_predicates`, compiled by
+# tools/oblig/annotations.py) renders as its qualified name; no other opaque predicate has an owner.
+opaque_predicates = {name: {"owner": row["owner"], "name": row["name"]}
+                     for name, row in profile.get("opaque_predicates", {}).items()}
 allowed_helpers = {
     row["helper"]["owner"] + "." + row["helper"]["name"] for row in vocabulary["rows"]
-}
+} | {row["owner"] + "." + row["name"] for row in opaque_predicates.values()}
 # Refuse every incomplete source boundary before any declaration renders.
 guard_refusals = {}
 for suffix in blocks:
@@ -446,7 +450,7 @@ for suffix, slot in units:
 
     def rendered(boundary):
         plain = SourceComponents(
-            {"K": {"owner": "parameter", "name": "K"}},
+            {"K": {"owner": "parameter", "name": "K"}, **opaque_predicates},
             continuation_id="level1_K",
             provenance=provenance,
         )

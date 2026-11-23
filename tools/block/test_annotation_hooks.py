@@ -135,5 +135,89 @@ class ReturnedLength(unittest.TestCase):
         self.assertEqual(region.length, input_expr('want', None))
 
 
+class OpaqueAndReturnedCall(unittest.TestCase):
+    """A call row's `opaque` rows (framed, consumed, produced spec resources) and `returns` rows."""
+    SPEC = '''Definition allocSpec `{!islaG Sigma} `{!threadG} : iProp Sigma :=
+  (machine_call someMap 0
+    (fun argv sp RET =>
+      heap ∗
+      token (bv_unsigned (argv !!! 1%nat)) ∗
+      RET (fun rets =>
+        heap ∗
+        bv_unsigned (rets !!! 0%nat) ↦ₘ? sized (bv_unsigned (rets !!! 0%nat)) ∗
+        ⌜bv_unsigned (rets !!! 0%nat) = 0⌝ ∗
+        True)))%I.
+'''
+    ROWS = [{'spec': 'heap', 'use': 'framed'},
+            {'spec': 'token (bv_unsigned (argv !!! 1%nat))', 'use': 'consumed', 'caller': ['token blk']},
+            {'spec': 'bv_unsigned (rets !!! 0%nat) ↦ₘ? sized (bv_unsigned (rets !!! 0%nat))', 'use': 'produced'}]
+
+    def fixture(self, directory):
+        from resource_seed import seed_owned_resources
+        origin = {'path': 'fixture.v', 'sha256': 'fixture'}
+        constants = {'dst': {'value': 0x200, 'origin': origin}}
+        registers = [{'id': name, 'kind': 'register', 'register': name, 'width': 64, 'value_coq': value,
+                      'symbolic_witness': None}
+                     for name, value in [('x1', 'ra'), ('x2', 'Z_to_bv 64 dst'), ('x10', 'Z_to_bv 64 dst')]]
+        public = {'_input_sha256': 'fixture', 'source_bindings': [origin], 'assertion_tree': {
+            'kind': 'exists', 'binders': [], 'components': [
+                {'id': 'collection', 'kind': 'opaque', 'coq': 'reg_col (exact_regs args)'}, *registers,
+                {'id': 'heap', 'kind': 'opaque', 'coq': 'heap'},
+                {'id': 'token', 'kind': 'opaque', 'coq': 'token blk'},
+                {'id': 'terminal', 'kind': 'opaque', 'coq': 'True'}]}}
+        vocabulary = {'rows': [{'kind': kind, 'source_bindings': []} for kind in
+                               ('owned_byte_array', 'uninitialized_stack_span', 'permission_fraction')],
+                      'input_sha256': 'fixture', 'source_vocabulary': {'imports': []}}
+        root = seed_owned_resources(public, entry_pc=16, vocabulary=vocabulary, constants=constants)
+        state = root.state.copy()
+        state.registers.update({'PC': bits(64, 64), **{'x%d' % number: bits(0, 64) for number in range(11, 18)}})
+        call = {'call_site_pc': '0x14', 'return_site_pc': '0x18', 'spec': 'allocSpec', 'spec_module': 'Spec',
+                'spec_source': 'Spec.v', 'arrays': [], 'stack_bytes': 0, 'output_length_source': 'fixture'}
+        Path(directory, 'Spec.v').write_text(self.SPEC)
+        shapes = {'collection_ownership_id': 'collection', 'rows': []}
+        return {'root_seed': root, 'shapes': shapes, 'vocabulary': vocabulary, 'constants': constants}, state, call
+
+    def run_call(self, **rows):
+        from call_boundary import call_return_seed
+        with tempfile.TemporaryDirectory() as directory:
+            fixture, state, call = self.fixture(directory)
+            call.update(rows)
+            edge = {'seed_pc': '0x10', 'state': state.to_dict()}
+            return call_return_seed([edge], call=call, function_root=directory, **fixture)
+
+    def test_without_rows_the_old_refusals_stay(self):
+        from call_boundary import CallRefused
+        with self.assertRaisesRegex(CallRefused, 'does not ignore the returned registers'):
+            self.run_call()
+        with self.assertRaisesRegex(CallRefused, 'unsupported resource: heap'):
+            self.run_call(returns=[{'index': 0, 'register': 'x10'}])
+        with self.assertRaisesRegex(CallRefused, 'does not ignore the returned registers'):
+            self.run_call(opaque=self.ROWS)
+
+    def test_rows_frame_consume_and_produce_and_name_the_returned_register(self):
+        seed, public, _ = self.run_call(opaque=self.ROWS, returns=[{'index': 0, 'register': 'x10'}])
+        nodes = {node['id']: node for node in public['assertion_tree']['components']}
+        self.assertIn('heap', nodes)
+        self.assertNotIn('token', nodes)
+        produced = nodes['call_produced_0']
+        self.assertEqual((produced['kind'], produced['address_z'], produced['length_original_coq']),
+                         ('uninitialized_memory', 'bv_unsigned call_x10', 'sized (bv_unsigned call_x10)'))
+        self.assertIn('bv_unsigned call_x10 = 0', nodes['call_facts']['coq'])
+        self.assertIn('call_x10', {binder['name'] for binder in public['assertion_tree']['binders']})
+        interval, = [row for row in seed.state.source_intervals if row['fact_id'] == 'call_x10:returned-value']
+        self.assertEqual((interval['minimum'], interval['maximum']), (0, 0))
+
+    def test_a_wrong_row_is_refused(self):
+        from call_boundary import CallRefused
+        returns = [{'index': 0, 'register': 'x10'}]
+        wrong = [dict(self.ROWS[1], caller=['token other'])] + self.ROWS[::2]
+        with self.assertRaisesRegex(CallRefused, 'not one caller component: token other'):
+            self.run_call(opaque=wrong, returns=returns)
+        with self.assertRaisesRegex(CallRefused, 'does not hold: absent'):
+            self.run_call(opaque=self.ROWS + [{'spec': 'absent', 'use': 'framed'}], returns=returns)
+        with self.assertRaisesRegex(CallRefused, 'not a fresh argument register'):
+            self.run_call(opaque=self.ROWS, returns=[{'index': 0, 'register': 'x1'}])
+
+
 if __name__ == '__main__':
     unittest.main()

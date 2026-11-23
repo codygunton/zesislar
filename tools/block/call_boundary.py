@@ -112,8 +112,24 @@ def _binders(prefix):
     return [(name, kind.strip()) for names, kind in groups for name in names.split()]
 
 
-def parse_machine_call_spec(source, name):
-    """Read the callee summary from `machine_call MAP STACK (fun argv sp RET => ...)`."""
+RETURNED = '__returned_%d'
+OPAQUE_USES = ('framed', 'consumed', 'produced')
+
+
+def _normal_text(text):
+    return ' '.join(_strip_enclosure(text.strip()).split())
+
+
+def parse_machine_call_spec(source, name, listed=None, returns=()):
+    """Read the callee summary from `machine_call MAP STACK (fun argv sp RET => ...)`.
+
+    Two inputs come only from a call design row (annotation consumption, plan A6 item 5); without
+    them a spec is read as before. `listed` {'pre': [...], 'post': [...]} holds spec resources, in
+    the spec's own text, that the row's `opaque` rows frame, consume or produce: they are returned
+    as `listed` rows ((text, text with returned registers named)) and never classified. `returns`
+    holds the indices N of the returned registers the row names: the continuation may then be
+    `fun rets => ...`, and `rets !!! N%nat` is read as the placeholder RETURNED % N."""
+    listed = {side: {_normal_text(text) for text in (listed or {}).get(side, ())} for side in ('pre', 'post')}
     body = _strip_enclosure(re.sub(r'%I\s*$', '', definition_body(source, name).strip()))
     body = _strip_enclosure(re.sub(r'%I\s*$', '', body))
     match = re.match(r'machine_call\s+(\S+)\s+(\S+)\s+', body)
@@ -139,9 +155,25 @@ def parse_machine_call_spec(source, name):
         raise CallRefused('The machine_call body does not end in its return continuation.')
     post_lam = _strip_enclosure(pre[-1][len(ret):])
     post_head = re.match(r'fun\s+_\s*=>\s*', post_lam)
+    rets = None
+    if post_head is None and returns:
+        post_head = re.match(r'fun\s+(\w+)\s*=>\s*', post_lam)
+        rets = post_head[1] if post_head else None
     if post_head is None:
         raise CallRefused('The return continuation does not ignore the returned registers.')
     post_binders, post = assertion(post_lam[post_head.end():])
+
+    def returned(text):
+        """The text with each named returned register `rets !!! N%nat` as its placeholder."""
+        if rets is None:
+            return text
+        for index in returns:
+            text = re.sub(r'\(\s*' + rets + r'\s+!!!\s+' + str(index) + r'%nat\s*\)|(?<![\w\'])' + rets
+                          + r'\s+!!!\s+' + str(index) + r'%nat', RETURNED % index, text)
+        if re.search(r"(?<![\w'])" + rets + r"(?![\w'])", text):
+            raise CallRefused('The return continuation reads a returned register that the call design '
+                              'does not name: ' + text)
+        return text
     if post[-1] != 'True':
         raise CallRefused('The return assertion does not end in True.')
     names = {'argv': argv, 'sp': sp}
@@ -159,9 +191,14 @@ def parse_machine_call_spec(source, name):
             return {'pointer': pointer[1]}
         return {'constant': text} if re.fullmatch(r"[A-Za-z_][\w'.]*", text) else None
 
-    def classify(parts):
-        rows = {'registers': [], 'collections': [], 'arrays': [], 'words': [], 'uninitialized': [], 'facts': []}
-        for part in parts:
+    def classify(parts, side):
+        rows = {'registers': [], 'collections': [], 'arrays': [], 'words': [], 'uninitialized': [], 'facts': [],
+                'listed': []}
+        for original in parts:
+            part = returned(original) if side == 'post' else original
+            if _normal_text(original) in listed[side]:
+                rows['listed'].append((_normal_text(original), part))
+                continue
             points = re.fullmatch(r'(.+?)\s+(↦ₘ∗|↦ₘ\?|↦ₘ)\s+(.+)', part)
             register = re.fullmatch(r'"(\w+)"\s+↦ᵣ\s+RVal_Bits\s+(\w+)', part)
             address = place(points[1]) if points else None
@@ -184,7 +221,7 @@ def parse_machine_call_spec(source, name):
         return rows
 
     return {'map': match[1], 'stack': match[2], 'names': names, 'pre_binders': pre_binders,
-            'post_binders': post_binders, 'pre': classify(pre), 'post': classify(post)}
+            'post_binders': post_binders, 'pre': classify(pre, 'pre'), 'post': classify(post, 'post')}
 
 
 def _groups(text, start):
@@ -453,7 +490,22 @@ def call_return_seed(edges, *, call, function_root, root_seed, shapes, vocabular
     black_box = interface_of(call) is not None
     source_path = Path(function_root) / call['spec_source']
     spec_text = source_path.read_text()
-    spec = parse_machine_call_spec(spec_text, call['spec'])
+    # A design row's `opaque` rows (spec resources framed, consumed or produced) and `returns` rows
+    # (returned registers): the generator copies them; the call step proves them against the spec.
+    opaque_rows = call.get('opaque', [])
+    returns = {row['index']: row['register'] for row in call.get('returns', [])}
+    if any(row.get('use') not in OPAQUE_USES for row in opaque_rows):
+        raise CallRefused('An opaque row of the call design has no use among ' + ', '.join(OPAQUE_USES))
+    listed = {'pre': [row['spec'] for row in opaque_rows if row['use'] in ('framed', 'consumed')],
+              'post': [row['spec'] for row in opaque_rows if row['use'] in ('framed', 'produced')]}
+    spec = parse_machine_call_spec(spec_text, call['spec'], listed=listed if opaque_rows else None,
+                                   returns=tuple(sorted(returns)))
+    for side in ('pre', 'post'):
+        found = {text for text, _ in spec[side]['listed']}
+        missing = sorted({_normal_text(text) for text in listed[side]} - found)
+        if missing:
+            raise CallRefused('The call design lists a %s resource the spec does not hold: %s'
+                              % (side, missing[0]))
     inherited = {}
     for seed in (root_seed, *origin_seeds):
         for binder in seed.ownership['binders']:
@@ -665,6 +717,14 @@ def call_return_seed(edges, *, call, function_root, root_seed, shapes, vocabular
             registers[name] = input_expr(prefix + name, 64)
             binders.append({'name': prefix + name, 'type': 'bv 64',
                             'expression': input_expr(prefix + name, 64).to_dict()})
+    # A returned register the design names (`returns`) is its fresh seed binder: an existential of the
+    # successor, never a branch literal; the spec's continuation facts over it are carried as they are.
+    returned_names = {}
+    for index, register in returns.items():
+        if register not in ARGUMENTS or not isinstance(registers.get(register), Expr) \
+                or registers[register] != input_expr(prefix + register, 64):
+            raise CallRefused('The returned register %s is not a fresh argument register of the seed' % register)
+        returned_names[RETURNED % index] = prefix + register
     # System registers: a mask or bits shape comes back as a new value. It keeps
     # the seed's scoped symbol, so every call-site fact on the old value is dropped
     # and only the shape's mask fact is stated again. An exact register that the spec
@@ -698,7 +758,10 @@ def call_return_seed(edges, *, call, function_root, root_seed, shapes, vocabular
         mapping.update({name: value for name, value in instantiation.items() if value is not None})
         mapping.update({name: value for name, value in fresh.items()})
         mapping.update(outer)
-        return substitute(fact, mapping)
+        text = substitute(fact, mapping)
+        for placeholder, name in returned_names.items():
+            text = re.sub(r'(?<![\w\'])' + placeholder + r'(?![\w\'])', name, text)
+        return text
     existential = [(name, kind) for name, kind in spec['pre_binders'] if instantiation.get(name, '') is None]
     # A definition of a spec file is unfolded: the entry cannot import an internal spec module.
     # A black box's interface is imported, and its sealed names are never unfolded.
@@ -709,11 +772,16 @@ def call_return_seed(edges, *, call, function_root, root_seed, shapes, vocabular
     facts = [instantiate(_argv_lookups(_unfold(fact, local), argv_name, values['argv']), {}) for fact in raw]
     facts += ['%s = %s' % (name, instantiate(_argv_lookups(_unfold(value, local), argv_name, values['argv']), {}))
               for name, value in word_facts]
+    # The design's opaque rows in the call's terms (argument values, returned binders); their spec
+    # definitions stay folded: the entry imports the spec module that states them.
+    def listed_text(text):
+        return _normal_text(instantiate(_argv_lookups(text, argv_name, values['argv']), {}))
+    listed_after = {text: listed_text(part) for text, part in spec['pre']['listed'] + spec['post']['listed']}
     # A call argument that nothing else in the seed mentions (an entry witness, or
     # a call-site register that the paths disagree on) is closed inside the facts.
     # A named value's equation mentions its names outside the facts.
     elsewhere = set(_atoms(' '.join([_coq(value) for key, value in registers.items() if GPR.fullmatch(key)]
-                                    + [_coq(value) for value in named])))
+                                    + [_coq(value) for value in named] + list(listed_after.values()))))
     candidates = {name: binder['type'] for name, binder in inherited.items()}
     candidates.update({prefix + 'site_' + key: 'bv 64' for key in widened})
     # A slice window over a call argument that the seed does not name is closed with
@@ -764,10 +832,37 @@ def call_return_seed(edges, *, call, function_root, root_seed, shapes, vocabular
         for index in range(8):
             image.updates[key][offset + index] = {
                 'value': operation('extract', input_expr(name, 64), width=8, value=8 * index).to_dict()}
+    # The design's opaque rows: a framed resource stays, a consumed caller resource leaves the seed, a
+    # produced spec resource joins it. Each must be the exact text of one caller component.
+    def component_text(component):
+        node = component['seed_component']
+        return _normal_text(str(node.get('original_component', node.get('coq', ''))))
+    by_text = {}
+    for component in ownership['components']:
+        by_text.setdefault(component_text(component), []).append(component['id'])
+    consumed, produced = set(), []
+    for row in opaque_rows:
+        text = listed_after[_normal_text(row['spec'])]
+        if row['use'] == 'produced':
+            produced.append(text)
+            continue
+        callers = row.get('caller', [text] if row['use'] == 'framed' else [])
+        if not callers:
+            raise CallRefused('A consumed spec resource names no caller resource: ' + text)
+        for caller in callers:
+            ids = by_text.get(_normal_text(caller), [])
+            if len(ids) != 1 or ids[0] in consumed:
+                raise CallRefused('The %s resource is not one caller component: %s' % (row['use'], caller))
+            if row['use'] == 'consumed':
+                if (image.updates.get(ids[0]) or ids[0] in splits or ids[0] in kept or ids[0] == callee_frame):
+                    raise CallRefused('The consumed caller resource is written or passed elsewhere: ' + caller)
+                consumed.add(ids[0])
     nodes, regions, extra_facts = [], {}, []
     piece_name = PieceNames(ownership['components'])
     for component in ownership['components']:
         key, kind = component['id'], component['kind']
+        if key in consumed:
+            continue
         node = dict(component['seed_component'])
         if kind == 'opaque' and str(node.get('coq', '')).startswith('⌜'):
             # A pure fact keeps the text its origin seeds hold: a join or loop head before the call
@@ -899,6 +994,16 @@ def call_return_seed(edges, *, call, function_root, root_seed, shapes, vocabular
         {'kind': 'opaque', 'id': prefix + 'return_fact_%d' % index,
          'coq': '⌜' + _return_fact(entry_hist.design_fact_text(row), fresh) + '⌝'}
         for index, row in enumerate(call.get('return_facts', []))]
+    produced_nodes = []
+    for index, text in enumerate(produced):
+        points = re.fullmatch(r'(.+?)\s+(↦ₘ∗|↦ₘ\?|↦ₘ)\s+(.+)', text)
+        if points is not None and points[2] != '↦ₘ?':
+            raise CallRefused('A produced spec resource holds bytes the design does not name: ' + text)
+        produced_nodes.append({'kind': 'uninitialized_memory', 'id': prefix + 'produced_%d' % index,
+                               'original_component': text, 'address_z': _strip_enclosure(points[1].strip()),
+                               'length_original_coq': _strip_enclosure(points[3].strip())} if points else
+                              {'kind': 'opaque', 'id': prefix + 'produced_%d' % index, 'coq': text})
+    nodes[terminal:terminal] = produced_nodes
     # Every post binder, and the word binders that stand for a returned word expression.
     for name, kind in spec['post_binders']:
         binders.append({'name': fresh[name], 'type': kind, 'expression': input_expr(fresh[name], None).to_dict()})
@@ -960,6 +1065,16 @@ def call_return_seed(edges, *, call, function_root, root_seed, shapes, vocabular
                        'terms': {'resource_id': row['resource_id'], 'index': 0, 'count': row['count'],
                                  'coq_statement': row['coq']},
                        'origin': {'call_design': call['call_site_pc'], 'source': call['output_length_source']}})
+    # A carried fact `bv_unsigned R = N` on a returned register binder R is its unsigned interval too,
+    # so the forward pass decides a branch on R; R stays an existential of the successor.
+    for fact in facts:
+        match = re.fullmatch(r'\(?\s*bv_unsigned\s+(\w+)\s*=\s*(\d+)\s*\)?(?:%Z)?', fact.strip())
+        if match and match[1] in returned_names.values():
+            copied.append({'fact_id': match[1] + ':returned-value', 'kind': 'bounds', 'status': 'supplied',
+                           'terms': {'unsigned_interval': {'expression': input_expr(match[1], 64).to_dict(),
+                                                           'minimum': int(match[2]), 'maximum': int(match[2])}},
+                           'origin': {'call_design': call['call_site_pc'], 'returns': call['returns'],
+                                      'coq_statement': fact}})
     try:
         seed = seed_owned_resources(public, entry_pc=return_pc, vocabulary=vocabulary, constants=constants or {},
                                     facts=copied)
