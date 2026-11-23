@@ -317,6 +317,151 @@ Proof.
   iFrame. iPureIntro. split; reflexivity.
 Qed.
 
+(* ---- The growth exit (return slot 2): the new buffer holds the items and
+   the tail of the grown capacity (memcpy return keeps the tail). ---- *)
+
+(* The saturating growth r + r/2 + 2 of the machine code: no saturation below
+   the request bound. *)
+Lemma ensure_growth_sum (r : bv 64) :
+  bv_unsigned r < 2 ^ 32 ->
+  bv_unsigned (bv_add (bv_add (bv_shiftr r (BV 64 1)) r) (BV 64 2)) =
+    arrayListGrownCapacity (bv_unsigned r).
+Proof.
+  intros Hr. pose proof (bv_unsigned_in_range _ r) as Hrr. unfold bv_modulus in Hrr.
+  unfold arrayListGrownCapacity. rewrite !bv_add_unsigned bv_shiftr_unsigned.
+  cbn [bv_unsigned]. rewrite Z.shiftr_div_pow2; [|lia]. change (2 ^ 1) with 2.
+  assert (0 <= bv_unsigned r / 2 <= bv_unsigned r).
+  { split; [apply Z.div_pos|apply Z.div_le_upper_bound]; lia. }
+  rewrite !bv_unsigned_BV. unfold bv_wrap, bv_modulus. change (2 ^ Z.of_N 64) with 18446744073709551616.
+  rewrite (Z.mod_small (bv_unsigned r / 2 + bv_unsigned r)); [|lia].
+  rewrite Z.mod_small; lia.
+Qed.
+
+Lemma ensure_growth_value (r : bv 64) :
+  bv_unsigned r < 2 ^ 32 ->
+  bv_or (bv_sub (BV 64 0) (bv_zero_extend 64 (if bool_decide (bv_signed (bv_zero_extend 128
+      (bv_add (bv_add (bv_shiftr r (BV 64 1)) r) (BV 64 2))) < bv_signed (bv_zero_extend 128 r))
+    then BV 1 1 else BV 1 0))) (bv_add (bv_add (bv_shiftr r (BV 64 1)) r) (BV 64 2)) =
+  Z_to_bv 64 (arrayListGrownCapacity (bv_unsigned r)).
+Proof.
+  intros Hr. pose proof (ensure_growth_sum r Hr) as Hs.
+  pose proof (bv_unsigned_in_range _ r) as Hrr. unfold bv_modulus in Hrr.
+  assert (0 <= bv_unsigned r / 2 <= bv_unsigned r).
+  { split; [apply Z.div_pos|apply Z.div_le_upper_bound]; lia. }
+  rewrite bool_decide_false.
+  2: { rewrite !bv_zero_extend_signed Hs.
+       rewrite !bv_swrap_small; unfold arrayListGrownCapacity, bv_half_modulus, bv_modulus; cbn; lia. }
+  apply bv_eq. rewrite Z_to_bv_unsigned bv_or_unsigned bv_sub_unsigned bv_zero_extend_unsigned; [|lia].
+  rewrite Hs. cbn [bv_unsigned]. rewrite bv_wrap_small; [|unfold bv_modulus; cbn; lia].
+  rewrite Z.lor_0_l. rewrite bv_wrap_small; [|unfold arrayListGrownCapacity, bv_modulus; cbn; lia].
+  reflexivity.
+Qed.
+
+Lemma ensure_shiftl5 (v : Z) :
+  0 <= v -> v * 32 < 2 ^ 64 ->
+  bv_unsigned (bv_shiftl (Z_to_bv 64 v) (BV 64 5)) = v * 32.
+Proof.
+  intros Hv Hb. rewrite bv_shiftl_unsigned Z_to_bv_unsigned bv_unsigned_BV.
+  unfold bv_wrap, bv_modulus. change (2 ^ Z.of_N 64) with 18446744073709551616 in *.
+  rewrite (Z.mod_small v); [|lia]. rewrite Z.shiftl_mul_pow2; [|lia].
+  change (2 ^ 5) with 32. apply Z.mod_small. lia.
+Qed.
+
+Lemma ensure_header_grow (state : ArrayListState) (pointer capacity : bv 64) :
+  take 0 (arrayListHeaderBytes state) ++
+    bv_to_little_endian (Z.of_nat 8) 8 (bv_unsigned pointer) ++
+    take 8 (drop (0 + 8) (arrayListHeaderBytes state)) ++
+    bv_to_little_endian (Z.of_nat 8) 8 (bv_unsigned capacity) ++
+    drop (16 + 8) (arrayListHeaderBytes state) =
+  arrayListHeaderBytes {| arrayListPointer := bv_unsigned pointer;
+                          arrayListLength := arrayListLength state;
+                          arrayListCapacity := bv_unsigned capacity;
+                          arrayListItems := arrayListItems state |}.
+Proof.
+  rewrite (drop_ge (arrayListHeaderBytes state) (16 + 8)); [|rewrite arrayListHeaderBytes_length; done].
+  rewrite app_nil_r -!arrayList_word64Bytes_le. cbn [Nat.add].
+  apply arrayListHeaderBytes_store.
+Qed.
+
+Lemma keysEnsureCapacity_end_bridge_slot2 `{!islaG Sigma} `{!threadG}
+    (base : EnsureCapacityArgs) (returnAddress : Z) :
+  ZesuSsz.Generated.KeysEnsureCapacity.FP301.FunctionReturnEntries.fp_machineReturn_slot2_ForwardA0N0 {| ensureBase := base |} returnAddress ⊢
+  keysEnsureCapacityPost base returnAddress.
+Proof.
+  rewrite /ZesuSsz.Generated.KeysEnsureCapacity.FP301.FunctionReturnEntries.fp_machineReturn_slot2_ForwardA0N0 /keysEnsureCapacityPost.
+  iIntros "(%c10 & %x5 & %x6 & %x7 & %x11 & %x12 & %x13 & %x14 & %x15 & %x16 & %x17 & %x28 & %x29 & %x30 & %x31 & Hsys & H1 & H2 & H5 & H6 & H7 & H8 & H9 & H10 & H11 & H12 & H13 & H14 & H15 & H16 & H17 & H18 & H19 & H20 & H21 & H22 & H23 & H24 & H25 & H26 & H27 & H28 & H29 & H30 & H31 & Hhdr & Halloc & Hvt & Hheap & Hscr & Hs0 & Hs1 & Hs2 & W24 & W32 & W40 & W48 & W56 & W64 & W72 & W80 & W88 & W96 & W104 & Hcallee & Hitems & Htail & Hblock & %Hdom & %Hmod & _ & _ & %Hlt & Hrest)".
+  iDestruct "Hrest" as "(_ & _ & _ & _ & _ & %Hlast)". destruct Hlast as [_ Hhist].
+  destruct Hdom as [Hret Hwf]. cbn [ensureBase] in *.
+  pose proof Hwf as Hwf'. unfold ensureBlockArgsWellFormed, ensureBlockList in Hwf'. cbn [ensureBase] in Hwf'.
+  destruct Hwf' as (Hlen & Hcapr & _ & _ & _ & _ & Hd & _).
+  pose proof (keysEnsureCapacity_stack_bound base Hd) as Hsp.
+  pose proof Hd as (Hwfl & _ & _ & _ & _ & _ & Hreq & _).
+  destruct Hwfl as (Hlc & Hitemsl & Hptr & _).
+  pose proof (arrayListWellFormed_capacity_bound 32 (ensureList base) ltac:(lia) (proj1 Hd)) as Hcapb.
+  cbn [mapRamSize defaultMap] in Hcapb.
+  destruct Hlt as [_ Hlt].
+  assert (Hc' : bv_unsigned (Z_to_bv 64 (arrayListCapacity (ensureList base))) = arrayListCapacity (ensureList base)).
+  { rewrite Z_to_bv_unsigned. apply bv_wrap_small. unfold bv_modulus. cbn. lia. }
+  rewrite Hc' in Hlt.
+  assert (Hnz : bv_unsigned c10 <> 0).
+  { apply zesu_hist_elim in Hhist.
+    unfold ZesuSsz.Generated.KeysEnsureCapacity.FP301.FunctionReturnEntries.fp_machineReturn_slot2_ForwardA0N0_Hist in Hhist.
+    repeat match goal with
+    | H : ∃ _, _ |- _ => destruct H
+    | H : _ /\ _ |- _ => destruct H
+    end; assumption. }
+  unfold ensureBlockList; cbn [ensureBase].
+  set (g := arrayListGrownCapacity (bv_unsigned (ensureRequested base))).
+  assert (Hg : 0 <= g < 2 ^ 34).
+  { unfold g, arrayListGrownCapacity.
+    assert (0 <= bv_unsigned (ensureRequested base) / 2 <= bv_unsigned (ensureRequested base)).
+    { pose proof (bv_unsigned_in_range _ (ensureRequested base)). split; [apply Z.div_pos|apply Z.div_le_upper_bound]; lia. }
+    cbn in Hreq. lia. }
+  assert (Hrg : bv_unsigned (ensureRequested base) <= g).
+  { unfold g, arrayListGrownCapacity. pose proof (bv_unsigned_in_range _ (ensureRequested base)).
+    pose proof (Z.div_pos (bv_unsigned (ensureRequested base)) 2). lia. }
+  rewrite (ensure_growth_value (ensureRequested base)); [|cbn in Hreq; lia].
+  rewrite (ensure_shiftl5 g); [|lia|lia].
+  rewrite (ensure_shiftl5 (arrayListLength (ensureList base))); [|lia|lia].
+  assert (Hab : altFlAllocatedBytes (bv_unsigned c10) (g * 32) = g * 32).
+  { unfold altFlAllocatedBytes. apply Z.eqb_neq in Hnz. by rewrite Hnz. }
+  rewrite Hab.
+  iEval (rewrite altFlBlock_unfold) in "Hblock". iDestruct "Hblock" as "[Hslack %Hfacts]".
+  destruct (Hfacts ltac:(lia)) as (Hlo & Hhi & _).
+  pose proof (altFlBlockSlack_nonneg (g * 32) (bv_unsigned (BV 64 0))) as Hslack.
+  cbn [mapRamBase machineRamEnd defaultMap] in Hlo, Hhi.
+  rewrite ensure_header_grow.
+  rewrite Z_to_bv_unsigned bv_wrap_small; [|unfold bv_modulus; cbn; lia].
+  set (after := {| arrayListPointer := bv_unsigned c10;
+                   arrayListLength := arrayListLength (ensureList base);
+                   arrayListCapacity := g;
+                   arrayListItems := arrayListItems (ensureList base) |}).
+  iExists {| ensureKind := arrayListSuccess; ensureListAfter := after |}.
+  iSplit.
+  { iPureIntro. cbn. split; [exact Hret|]. split; [exact Hd|].
+    unfold keysEnsureCapacityAllows. cbn.
+    rewrite (proj2 (Z.leb_gt _ _)); [|lia].
+    split; [|split_and!; reflexivity].
+    unfold arrayListWellFormed, arrayListRamRange, after. cbn.
+    pose proof (bv_unsigned_in_range _ c10) as Hcr. unfold bv_modulus in Hcr. cbn in Hcr.
+    split_and!; try lia; intros _; cbn; lia. }
+  rewrite /keysEnsureCapacityExit /keysEnsureCapacityScratchAfter. cbn [ensureKind ensureListAfter].
+  rewrite (proj2 (Z.leb_gt _ _)); [|lia].
+  iExists x5, x6, x7, (BV 64 0), x11, x12, x13, x14, x15, x16, x17, x28, x29, x30, x31.
+  rewrite ensure_x2_restore arrayListSavedRegisters_unfold arrayListBuffer_unfold altFlAllocatorObject_unfold altFlVtable_unfold.
+  unfold ensureBlockList; cbn [ensureBase].
+  ensure_frame_addresses Hsp.
+  iDestruct (ensure_scratch_close with "Hs0 Hs1 Hs2") as "Hscratch".
+  iDestruct (ensure_frame_close with "Hcallee Hscratch W24 W32 W40 W48 W56 W64 W72 W80 W88 W96 W104") as "Hframe".
+  unfold after; cbn [arrayListPointer arrayListLength arrayListCapacity arrayListItems].
+  replace (g * 32 - arrayListLength (ensureList base) * 32) with
+    ((g - arrayListLength (ensureList base)) * keysElementBytes) by lia.
+  iFrame.
+  iSplitL "Hslack".
+  { rewrite altFlBlock_unfold. iFrame. iPureIntro. exact Hfacts. }
+  iPureIntro. split; reflexivity.
+Qed.
+
 (* ---- Composition over the block table. ---- *)
 
 Lemma ensure_body_weaken `{!islaG Sigma} `{!threadG} (a : Z) (P : iProp Sigma) :
@@ -368,7 +513,7 @@ Ltac ensure_premise :=
 
 (* The return premise of a return package from the contract continuation:
    the end bridge of the package (chosen by its name) gives the contract exit. *)
-Ltac ensure_exit_premise Hslot2 H :=
+Ltac ensure_exit_premise H :=
   iEval (rewrite /keysEnsureCapacityContinuation) in H;
   iApply (instr_pre_wand with H); [done|done|];
   unfold ZesuSsz.Generated.KeysEnsureCapacity.FP301.FunctionReturnEntries.fp_machineReturn_slot0,
@@ -381,10 +526,10 @@ Ltac ensure_exit_premise Hslot2 H :=
   | Some (_, @ZesuSsz.Generated.KeysEnsureCapacity.FP301.FunctionReturnEntries.fp_machineReturn_slot1_ForwardA0N0 _ _ _ _ _) =>
       iApply (keysEnsureCapacity_end_bridge_slot1 with "Hexit")
   | Some (_, @ZesuSsz.Generated.KeysEnsureCapacity.FP301.FunctionReturnEntries.fp_machineReturn_slot2_ForwardA0N0 _ _ _ _ _) =>
-      iApply (Hslot2 with "Hexit")
+      iApply (keysEnsureCapacity_end_bridge_slot2 with "Hexit")
   end.
 
-Ltac ensure_slot Hslot2 :=
+Ltac ensure_slot :=
   iIntros "#Htab";
   iPoseProof (block_table_pre_code with "Htab") as "#Hcode";
   iEval (unfold keysEnsureCapacityBlockTable; cbn [block_table_code];
@@ -400,7 +545,7 @@ Ltac ensure_slot Hslot2 :=
           [ iApply ensure_body_weaken; iApply statement; ensure_premise
           | iApply ensure_return_slot; iIntros "Hret";
             iApply (statement with "[Hret]");
-            [ ensure_exit_premise Hslot2 "Hret" | ensure_premise .. ] ]
+            [ ensure_exit_premise "Hret" | ensure_premise .. ] ]
       end
   end.
 
@@ -411,23 +556,15 @@ Ltac ensure_block_statements Sigma Hopen :=
   | H : forall _ : gFunctors, _ |- _ => specialize (H Sigma _ _)
   end.
 
-(* The growth exit (return slot 2), stated as a premise until its return
-   package owns the new buffer's tail (memcpy return seed). *)
-Definition KeysEnsureCapacitySlot2Bridge : Prop :=
-  forall (Sigma : gFunctors) (HG : islaG Sigma) (HT : threadG) (base : EnsureCapacityArgs) (returnAddress : Z),
-    ZesuSsz.Generated.KeysEnsureCapacity.FP301.FunctionReturnEntries.fp_machineReturn_slot2_ForwardA0N0 {| ensureBase := base |} returnAddress ⊢
-    keysEnsureCapacityPost base returnAddress.
-
 Lemma keysEnsureCapacity_entry_body `{!islaG Sigma} `{!threadG} :
-  KeysEnsureCapacityOpenBlocks -> KeysEnsureCapacitySlot2Bridge ->
+  KeysEnsureCapacityOpenBlocks ->
   forall (base : EnsureCapacityArgs) (returnAddress : Z),
   ⊢ □ keysEnsureCapacityTableCode -∗
     instr_body sym_array_list_Aligned_32_u8_null_ensureTotalCapacity
       (ZesuSsz.Generated.KeysEnsureCapacity.FP301.Pilot0000Entries.fp_machineAt0000 {| ensureBase := base |} returnAddress
         (keysEnsureCapacityContinuation {| ensureBase := base |} returnAddress)).
 Proof.
-  intros Hopen Hslot2 base returnAddress.
-  pose proof (Hslot2 Sigma _ _ base returnAddress) as Hslot2'.
+  intros Hopen base returnAddress.
   ensure_block_statements Sigma Hopen.
   iIntros "#Htop".
   iApply (block_table_body (keysEnsureCapacityBlockTable {| ensureBase := base |} returnAddress)).
@@ -438,15 +575,15 @@ Proof.
   repeat (apply elem_of_cons in Hin as [Hin|Hin]).
   all: try (apply elem_of_nil in Hin as []).
   all: injection Hin as Haddress Hstate; subst address state.
-  all: ensure_slot Hslot2'.
+  all: ensure_slot.
 Qed.
 
-(* ---- The theorem, from the open blocks and the growth exit. ---- *)
+(* ---- The theorem, from the open blocks. ---- *)
 Theorem keysEnsureCapacityComplianceFrom :
-  KeysEnsureCapacityOpenBlocks -> KeysEnsureCapacitySlot2Bridge ->
+  KeysEnsureCapacityOpenBlocks ->
   KeysEnsureCapacityContractCorrect.
 Proof.
-  intros Hopen Hslot2 returnAddress Sigma HG HT.
+  intros Hopen returnAddress Sigma HG HT.
   change (⊢ keysEnsureCapacityContractCode -∗ ∀ base : EnsureCapacityArgs,
     instr_body sym_array_list_Aligned_32_u8_null_ensureTotalCapacity
       ((⌜bv_unsigned (ensureReturnAddress base) = returnAddress⌝ ∗ keysEnsureCapacityEntry base) ∗
@@ -455,7 +592,7 @@ Proof.
   rewrite /keysEnsureCapacityContractCode /altFlAllocatorPremises /altFlAllocCallPremise
     /altFlRemapCallPremise /altFlFreeCallPremise /ziskMemcpyCallPremise.
   iDestruct "Hcode" as "(#Hsel & (#Halloc & #Hremap & #Hfree) & #Hmemcpy)".
-  iPoseProof (keysEnsureCapacity_entry_body Hopen Hslot2 base returnAddress with "[]") as "Hbody".
+  iPoseProof (keysEnsureCapacity_entry_body Hopen base returnAddress with "[]") as "Hbody".
   { iModIntro. unfold keysEnsureCapacityTableCode. iFrame "#". }
   iApply (instr_pre_wand with "Hbody"); [done|done|].
   iIntros "[Hentry Hexit]".
