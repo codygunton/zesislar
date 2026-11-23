@@ -83,30 +83,26 @@ Definition arrayListOutcomeCode (kind : ArrayListOutcomeKind) : Z :=
   | arrayListOutOfMemory => arrayListOutOfMemoryCode
   end.
 
-(* Registers. The callee-saved registers return their entry values; the
-   other general registers are owned with any 64-bit value. *)
-Definition arrayListCalleeSaved : list string :=
-  ["x8"; "x9"; "x18"; "x19"; "x20"; "x21"; "x22"; "x23"; "x24"; "x25";
-   "x26"; "x27"].
-Definition arrayListEntryScratch : list string :=
-  ["x5"; "x6"; "x7"; "x13"; "x14"; "x15"; "x16"; "x17"; "x28"; "x29";
-   "x30"; "x31"].
-Definition arrayListExitScratch : list string :=
-  ["x5"; "x6"; "x7"; "x11"; "x12"; "x13"; "x14"; "x15"; "x16"; "x17";
-   "x28"; "x29"; "x30"; "x31"].
+(* Registers. Each register value is a bv 64 field or binder; machine bounds
+   are stated on its bv_unsigned (F44). The callee-saved registers return
+   their entry values; the other general registers are existential binders
+   with any value (F43). *)
+Record ArrayListCalleeSaved : Type := {
+  savedX8 : bv 64; savedX9 : bv 64; savedX18 : bv 64; savedX19 : bv 64;
+  savedX20 : bv 64; savedX21 : bv 64; savedX22 : bv 64; savedX23 : bv 64;
+  savedX24 : bv 64; savedX25 : bv 64; savedX26 : bv 64; savedX27 : bv 64
+}.
 
 Definition arrayListSavedRegisters `{!islaG Sigma} `{!threadG}
-    (saved : list (bv 64)) : iProp Sigma :=
-  reg_col (zip_with (fun register value => (KindReg register, ExactShape value))
-    arrayListCalleeSaved ((fun value : bv 64 => RVal_Bits value) <$> saved)).
+    (saved : ArrayListCalleeSaved) : iProp Sigma :=
+  ("x8" ↦ᵣ RVal_Bits (savedX8 saved) ∗ "x9" ↦ᵣ RVal_Bits (savedX9 saved) ∗
+   "x18" ↦ᵣ RVal_Bits (savedX18 saved) ∗ "x19" ↦ᵣ RVal_Bits (savedX19 saved) ∗
+   "x20" ↦ᵣ RVal_Bits (savedX20 saved) ∗ "x21" ↦ᵣ RVal_Bits (savedX21 saved) ∗
+   "x22" ↦ᵣ RVal_Bits (savedX22 saved) ∗ "x23" ↦ᵣ RVal_Bits (savedX23 saved) ∗
+   "x24" ↦ᵣ RVal_Bits (savedX24 saved) ∗ "x25" ↦ᵣ RVal_Bits (savedX25 saved) ∗
+   "x26" ↦ᵣ RVal_Bits (savedX26 saved) ∗ "x27" ↦ᵣ RVal_Bits (savedX27 saved))%I.
 Global Instance : LithiumUnfold (@arrayListSavedRegisters) := I.
 Global Typeclasses Opaque arrayListSavedRegisters.
-
-Definition arrayListAnyRegisters `{!islaG Sigma} `{!threadG}
-    (registers : list string) : iProp Sigma :=
-  reg_col ((fun register => (KindReg register, BitsShape 64)) <$> registers).
-Global Instance : LithiumUnfold (@arrayListAnyRegisters) := I.
-Global Typeclasses Opaque arrayListAnyRegisters.
 
 Definition arrayListStackLayout (stackPointer stackBytes : Z) : Prop :=
   (16 | stackPointer) /\
@@ -127,16 +123,16 @@ Definition arrayListErrorImage (before : list byte) (code : Z) : list byte :=
    a0 = result, a1 = list, a2 = allocator. *)
 
 Record ToOwnedSliceArgs : Type := {
-  toOwnedResultPointer : Z;
-  toOwnedListPointer : Z;
-  toOwnedAllocatorPointer : Z;
+  toOwnedResultPointer : bv 64;
+  toOwnedListPointer : bv 64;
+  toOwnedAllocatorPointer : bv 64;
   toOwnedAllocatorContext : Z;
   toOwnedList : ArrayListState;
   toOwnedResultBefore : list byte;
   toOwnedScratchBefore : list byte;
-  toOwnedStackPointer : Z;
-  toOwnedReturnAddress : Z;
-  toOwnedSaved : list (bv 64)
+  toOwnedStackPointer : bv 64;
+  toOwnedReturnAddress : bv 64;
+  toOwnedSaved : ArrayListCalleeSaved
 }.
 
 (* The returned slice is a list whose capacity is its length: an allocator
@@ -152,20 +148,18 @@ Record ToOwnedSliceOutcome : Type := {
 Definition toOwnedSliceDomain (elementBytes : Z) (args : ToOwnedSliceArgs) :
     Prop :=
   arrayListWellFormed elementBytes (toOwnedList args) /\
-  arrayListRamRange (toOwnedResultPointer args) arrayListResultSize /\
-  (8 | toOwnedResultPointer args) /\
-  arrayListRamRange (toOwnedListPointer args) arrayListHeaderSize /\
-  (8 | toOwnedListPointer args) /\
-  arrayListRamRange (toOwnedAllocatorPointer args) arrayListAllocatorSize /\
-  (8 | toOwnedAllocatorPointer args) /\
+  arrayListRamRange (bv_unsigned (toOwnedResultPointer args)) arrayListResultSize /\
+  (8 | bv_unsigned (toOwnedResultPointer args)) /\
+  arrayListRamRange (bv_unsigned (toOwnedListPointer args)) arrayListHeaderSize /\
+  (8 | bv_unsigned (toOwnedListPointer args)) /\
+  arrayListRamRange (bv_unsigned (toOwnedAllocatorPointer args)) arrayListAllocatorSize /\
+  (8 | bv_unsigned (toOwnedAllocatorPointer args)) /\
   Z.of_nat (length (toOwnedResultBefore args)) = arrayListResultSize /\
   Z.of_nat (length (toOwnedScratchBefore args)) = arrayListScratchSize /\
   0 <= toOwnedAllocatorContext args < 2 ^ 64 /\
-  arrayListStackLayout (toOwnedStackPointer args)
+  arrayListStackLayout (bv_unsigned (toOwnedStackPointer args))
     arrayListToOwnedSliceStackBytes /\
-  0 <= toOwnedReturnAddress args < 2 ^ 64 /\
-  (4 | toOwnedReturnAddress args) /\
-  length (toOwnedSaved args) = 12%nat.
+  (4 | bv_unsigned (toOwnedReturnAddress args)).
 
 (* The machine code with alt_fl_alloc, whose remap always fails:
    - length 0: free the buffer (when it has capacity), return the old
@@ -219,23 +213,28 @@ Definition toOwnedSliceScratchAfter (elementBytes : Z) (args : ToOwnedSliceArgs)
 
 Definition toOwnedSliceEntry `{!islaG Sigma} `{!threadG}
     (elementBytes log2Align : Z) (args : ToOwnedSliceArgs) : iProp Sigma :=
-  (reg_col zesu_sys_regs ∗
-   "x1" ↦ᵣ RVal_Bits (Z_to_bv 64 (toOwnedReturnAddress args)) ∗
-   "x2" ↦ᵣ RVal_Bits (Z_to_bv 64 (toOwnedStackPointer args)) ∗
-   "x10" ↦ᵣ RVal_Bits (Z_to_bv 64 (toOwnedResultPointer args)) ∗
-   "x11" ↦ᵣ RVal_Bits (Z_to_bv 64 (toOwnedListPointer args)) ∗
-   "x12" ↦ᵣ RVal_Bits (Z_to_bv 64 (toOwnedAllocatorPointer args)) ∗
+  (∃ (x5 x6 x7 x13 x14 x15 x16 x17 x28 x29 x30 x31 : bv 64),
+   reg_col zesu_sys_regs ∗
+   "x1" ↦ᵣ RVal_Bits (toOwnedReturnAddress args) ∗
+   "x2" ↦ᵣ RVal_Bits (toOwnedStackPointer args) ∗
+   "x5" ↦ᵣ RVal_Bits x5 ∗ "x6" ↦ᵣ RVal_Bits x6 ∗ "x7" ↦ᵣ RVal_Bits x7 ∗
+   "x10" ↦ᵣ RVal_Bits (toOwnedResultPointer args) ∗
+   "x11" ↦ᵣ RVal_Bits (toOwnedListPointer args) ∗
+   "x12" ↦ᵣ RVal_Bits (toOwnedAllocatorPointer args) ∗
+   "x13" ↦ᵣ RVal_Bits x13 ∗ "x14" ↦ᵣ RVal_Bits x14 ∗ "x15" ↦ᵣ RVal_Bits x15 ∗
+   "x16" ↦ᵣ RVal_Bits x16 ∗ "x17" ↦ᵣ RVal_Bits x17 ∗
+   "x28" ↦ᵣ RVal_Bits x28 ∗ "x29" ↦ᵣ RVal_Bits x29 ∗
+   "x30" ↦ᵣ RVal_Bits x30 ∗ "x31" ↦ᵣ RVal_Bits x31 ∗
    arrayListSavedRegisters (toOwnedSaved args) ∗
-   arrayListAnyRegisters arrayListEntryScratch ∗
-   toOwnedListPointer args ↦ₘ∗ arrayListHeaderBytes (toOwnedList args) ∗
+   bv_unsigned (toOwnedListPointer args) ↦ₘ∗ arrayListHeaderBytes (toOwnedList args) ∗
    arrayListBuffer elementBytes log2Align (toOwnedList args) ∗
-   toOwnedResultPointer args ↦ₘ∗ toOwnedResultBefore args ∗
+   bv_unsigned (toOwnedResultPointer args) ↦ₘ∗ toOwnedResultBefore args ∗
    ziskExtraParamsAddress ↦ₘ∗ toOwnedScratchBefore args ∗
-   altFlAllocatorObject (toOwnedAllocatorPointer args)
+   altFlAllocatorObject (bv_unsigned (toOwnedAllocatorPointer args))
      (toOwnedAllocatorContext args) ∗
    altFlVtable ∗
    altFlHeap ∗
-   (toOwnedStackPointer args - arrayListToOwnedSliceStackBytes) ↦ₘ?
+   (bv_unsigned (toOwnedStackPointer args) - arrayListToOwnedSliceStackBytes) ↦ₘ?
      arrayListToOwnedSliceStackBytes ∗
    ⌜toOwnedSliceDomain elementBytes args⌝ ∗ True)%I.
 Global Instance : LithiumUnfold (@toOwnedSliceEntry) := I.
@@ -246,22 +245,28 @@ Global Typeclasses Opaque toOwnedSliceEntry.
 Definition toOwnedSliceExit `{!islaG Sigma} `{!threadG}
     (elementBytes log2Align : Z) (args : ToOwnedSliceArgs)
     (outcome : ToOwnedSliceOutcome) : iProp Sigma :=
-  (reg_col zesu_sys_regs ∗
-   "x1" ↦ᵣ RVal_Bits (Z_to_bv 64 (toOwnedReturnAddress args)) ∗
-   "x2" ↦ᵣ RVal_Bits (Z_to_bv 64 (toOwnedStackPointer args)) ∗
+  (∃ (x5 x6 x7 x10 x11 x12 x13 x14 x15 x16 x17 x28 x29 x30 x31 : bv 64),
+   reg_col zesu_sys_regs ∗
+   "x1" ↦ᵣ RVal_Bits (toOwnedReturnAddress args) ∗
+   "x2" ↦ᵣ RVal_Bits (toOwnedStackPointer args) ∗
+   "x5" ↦ᵣ RVal_Bits x5 ∗ "x6" ↦ᵣ RVal_Bits x6 ∗ "x7" ↦ᵣ RVal_Bits x7 ∗
+   "x10" ↦ᵣ RVal_Bits x10 ∗ "x11" ↦ᵣ RVal_Bits x11 ∗ "x12" ↦ᵣ RVal_Bits x12 ∗
+   "x13" ↦ᵣ RVal_Bits x13 ∗ "x14" ↦ᵣ RVal_Bits x14 ∗ "x15" ↦ᵣ RVal_Bits x15 ∗
+   "x16" ↦ᵣ RVal_Bits x16 ∗ "x17" ↦ᵣ RVal_Bits x17 ∗
+   "x28" ↦ᵣ RVal_Bits x28 ∗ "x29" ↦ᵣ RVal_Bits x29 ∗
+   "x30" ↦ᵣ RVal_Bits x30 ∗ "x31" ↦ᵣ RVal_Bits x31 ∗
    arrayListSavedRegisters (toOwnedSaved args) ∗
-   arrayListAnyRegisters ("x10" :: arrayListExitScratch) ∗
-   toOwnedListPointer args ↦ₘ∗ arrayListHeaderBytes (toOwnedListAfter outcome) ∗
+   bv_unsigned (toOwnedListPointer args) ↦ₘ∗ arrayListHeaderBytes (toOwnedListAfter outcome) ∗
    arrayListBuffer elementBytes log2Align (toOwnedListAfter outcome) ∗
    arrayListBuffer elementBytes log2Align (toOwnedSlice outcome) ∗
-   toOwnedResultPointer args ↦ₘ∗ toOwnedResultAfter outcome ∗
+   bv_unsigned (toOwnedResultPointer args) ↦ₘ∗ toOwnedResultAfter outcome ∗
    ziskExtraParamsAddress ↦ₘ∗
      toOwnedSliceScratchAfter elementBytes args outcome ∗
-   altFlAllocatorObject (toOwnedAllocatorPointer args)
+   altFlAllocatorObject (bv_unsigned (toOwnedAllocatorPointer args))
      (toOwnedAllocatorContext args) ∗
    altFlVtable ∗
    altFlHeap ∗
-   (toOwnedStackPointer args - arrayListToOwnedSliceStackBytes) ↦ₘ?
+   (bv_unsigned (toOwnedStackPointer args) - arrayListToOwnedSliceStackBytes) ↦ₘ?
      arrayListToOwnedSliceStackBytes ∗ True)%I.
 Global Instance : LithiumUnfold (@toOwnedSliceExit) := I.
 Global Typeclasses Opaque toOwnedSliceExit.
@@ -271,7 +276,7 @@ Definition toOwnedSliceResources `{!islaG Sigma} `{!threadG}
     IslarisContractResources ToOwnedSliceArgs ToOwnedSliceOutcome :=
   {| islarisCode := code;
      islarisEntry := fun args =>
-       (⌜toOwnedReturnAddress args = returnAddress⌝ ∗
+       (⌜bv_unsigned (toOwnedReturnAddress args) = returnAddress⌝ ∗
         toOwnedSliceEntry elementBytes log2Align args)%I;
      islarisExit := toOwnedSliceExit elementBytes log2Align |}.
 
@@ -281,7 +286,7 @@ Definition toOwnedSliceModel
     (elementBytes log2Align emptyPointer returnAddress : Z) :
     IslarisContractModel ToOwnedSliceArgs ToOwnedSliceOutcome :=
   {| islarisContractAllows := fun args outcome =>
-       toOwnedReturnAddress args = returnAddress /\
+       bv_unsigned (toOwnedReturnAddress args) = returnAddress /\
        toOwnedSliceDomain elementBytes args /\
        toOwnedSliceAllows elementBytes emptyPointer args outcome;
      islarisContractStep := step;
@@ -302,26 +307,24 @@ Lemma toOwnedSliceDomainRanges (elementBytes : Z) (args : ToOwnedSliceArgs) :
     arrayListPointer (toOwnedList args) +
       arrayListCapacity (toOwnedList args) * elementBytes <=
       machineRamEnd defaultMap) /\
-  mapRamBase defaultMap <= toOwnedResultPointer args /\
-  toOwnedResultPointer args + arrayListResultSize <= machineRamEnd defaultMap /\
-  (8 | toOwnedResultPointer args) /\
-  mapRamBase defaultMap <= toOwnedListPointer args /\
-  toOwnedListPointer args + arrayListHeaderSize <= machineRamEnd defaultMap /\
-  (8 | toOwnedListPointer args) /\
-  mapRamBase defaultMap <= toOwnedAllocatorPointer args /\
-  toOwnedAllocatorPointer args + arrayListAllocatorSize <=
+  mapRamBase defaultMap <= bv_unsigned (toOwnedResultPointer args) /\
+  bv_unsigned (toOwnedResultPointer args) + arrayListResultSize <= machineRamEnd defaultMap /\
+  (8 | bv_unsigned (toOwnedResultPointer args)) /\
+  mapRamBase defaultMap <= bv_unsigned (toOwnedListPointer args) /\
+  bv_unsigned (toOwnedListPointer args) + arrayListHeaderSize <= machineRamEnd defaultMap /\
+  (8 | bv_unsigned (toOwnedListPointer args)) /\
+  mapRamBase defaultMap <= bv_unsigned (toOwnedAllocatorPointer args) /\
+  bv_unsigned (toOwnedAllocatorPointer args) + arrayListAllocatorSize <=
     machineRamEnd defaultMap /\
-  (8 | toOwnedAllocatorPointer args) /\
+  (8 | bv_unsigned (toOwnedAllocatorPointer args)) /\
   Z.of_nat (length (toOwnedResultBefore args)) = arrayListResultSize /\
   Z.of_nat (length (toOwnedScratchBefore args)) = arrayListScratchSize /\
   0 <= toOwnedAllocatorContext args < 2 ^ 64 /\
-  (16 | toOwnedStackPointer args) /\
+  (16 | bv_unsigned (toOwnedStackPointer args)) /\
   mapRamBase defaultMap <=
-    toOwnedStackPointer args - arrayListToOwnedSliceStackBytes /\
-  toOwnedStackPointer args <= machineRamEnd defaultMap /\
-  0 <= toOwnedReturnAddress args < 2 ^ 64 /\
-  (4 | toOwnedReturnAddress args) /\
-  length (toOwnedSaved args) = 12%nat.
+    bv_unsigned (toOwnedStackPointer args) - arrayListToOwnedSliceStackBytes /\
+  bv_unsigned (toOwnedStackPointer args) <= machineRamEnd defaultMap /\
+  (4 | bv_unsigned (toOwnedReturnAddress args)).
 Proof.
   unfold toOwnedSliceDomain, arrayListWellFormed, arrayListRamRange,
     arrayListStackLayout.
