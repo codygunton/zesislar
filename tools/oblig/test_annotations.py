@@ -101,18 +101,19 @@ class Compile(unittest.TestCase):
         with self.assertRaisesRegex(annotations.AnnotationError, 'drop row'):
             annotations.compile_profile(data)
 
-    def test_a_frame_row_becomes_slot_facts_at_its_sites(self):
+    def test_a_frame_row_seeds_its_joins_and_gives_slot_facts_at_call_returns(self):
         data = fixture()
         data['profile']['frame_slots'] = True
+        slots = [{'offset': -16, 'coq': 'savedX8 args'}, {'offset': -8, 'coq': 'Z_to_bv 64 ra'}]
         data['rows'].append({'id': 'frame', 'at': {'pc': '+0x0', 'boundary': 'frame'},
-                             'slots': [{'offset': -16, 'coq': 'savedX8 args'}, {'offset': -8, 'coq': 'Z_to_bv 64 ra'}],
-                             'sites': ['+0xfc', '+0x110', '+0x44']})
+                             'slots': slots, 'sites': ['+0xfc', '+0x110', '+0x44']})
         texts = ['frame_old_m16 = (savedX8 args)', 'frame_old_m8 = (Z_to_bv 64 ra)']
         compiled = annotations.compile_profile(data)
-        for pc in ('+0xfc', '+0x110'):
-            self.assertEqual(compiled['join_designs'][pc][-2:], texts)
-        # A call return site takes them as return facts of its call, not as join designs.
-        self.assertNotIn('+0x44', compiled['join_designs'])
+        # A join site lists the slot values its seed stores, and states no fact on slot binders.
+        self.assertEqual(compiled['join_frames'], {'+0xfc': slots, '+0x110': slots})
+        self.assertFalse(any(text in compiled.get('join_designs', {}).get(pc, [])
+                             for pc in ('+0xfc', '+0x110') for text in texts))
+        # A call return site takes them as return facts of its call.
         call, = [call for call in compiled['calls'] if call['return_site_pc'] == '+0x44']
         self.assertEqual(call['return_facts'][-2:], [{'kind': 'fact', 'coq': text} for text in texts])
         data['rows'][-1]['slots'].append({'offset': -12, 'coq': 'x'})

@@ -218,12 +218,15 @@ def main():
             try:
                 # Edges through an earlier join seed are aligned on their root seed's tree.
                 designs = profile.get('join_designs', {}) if profile else {}
+                frames = next((rows for suffix, rows in (profile.get('join_frames', {}) if profile else {}).items()
+                               if profile.pc(suffix) == hex(pc)), [])
                 joined = generalize_owned_join(incoming, original_seed=seeds[root], entry_pc=pc, vocabulary=vocabulary,
                                                continuation=continuation, outer_names=['args', 'returnAddress'],
                                                design_facts=next(([entry_hist.design_fact_text(row) for row in facts]
                                                                   for suffix, facts in designs.items()
                                                                   if profile.pc(suffix) == hex(pc)), []),
-                                               live_registers=liveness.get(hex(pc)), lifted_binders=lifted_binders)
+                                               live_registers=liveness.get(hex(pc)), lifted_binders=lifted_binders,
+                                               frame_writes=entry_hist.frame_writes(frames, report) if frames else ())
             except ValueError as error:
                 refusals[hex(pc)] = 'join generalization refused: ' + str(error) + ' (edge seeds: ' + \
                     ', '.join(sorted(origins)) + ')'
