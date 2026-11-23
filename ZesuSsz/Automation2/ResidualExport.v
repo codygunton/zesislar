@@ -370,9 +370,10 @@ Ltac2 zesu_export_statement (facts : ident list) : constr * ident list :=
   end.
 
 (* The facts that the conclusion reaches: a fact is kept when it shares a
-   local variable with the conclusion or with a kept fact. Facts above LIMIT
-   nodes, facts without local variables, and facts with refused syntax are
-   never kept. *)
+   local variable with the conclusion or with a kept fact. A conclusion
+   without local variables (`False` of a contradictory path) reaches every
+   candidate fact. Facts above LIMIT nodes, facts without local variables,
+   and facts with refused syntax are never kept. *)
 Ltac2 zesu_export_reach (limit : int) : ident list * int * int :=
   let candidates := List.fold_right (fun declaration found =>
     let (name, body, typ) := declaration in
@@ -394,6 +395,9 @@ Ltac2 zesu_export_reach (limit : int) : ident list * int * int :=
     let (_, body, typ) := declaration in
     match body with None => zesu_export_proposition typ | Some _ => false end) (Control.hyps ())) in
   let reached := Ref.ref (match zesu_export_variables (zesu_export_unfold_local (Control.goal ())) with
+    | Some [] => List.fold_right (fun entry found =>
+        let (_, variables) := entry in
+        ZesuSsz.Automation2.ContextCollection.zesu_context_union found variables) candidates []
     | Some found => found
     | None => zesu_export_refuse "unsupported syntax"
     end) in

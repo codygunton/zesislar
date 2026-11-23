@@ -1,4 +1,4 @@
-"""Run the pinned source engine (FP-20261122b) from the entry seed, adding generated seeds.
+"""Run the pinned source engine (FP-20261123b) from the entry seed, adding generated seeds.
 
 A join is seeded only after every join that can reach it has its seed, so its
 incoming edges are complete. A call's return site is seeded from the callee
@@ -23,6 +23,7 @@ from boundary_guards import can_reach
 from loop_infer import infer_designs
 from loop_structure import forward_successors, loop_heads
 from call_boundary import CallRefused, call_return_seed
+from join_generalize import carry_common_word_links
 import entry_hist
 from function_profiles import add_return_alignment, load_profile
 from loop_design import loop_head_seed
@@ -67,6 +68,12 @@ def main():
     if not isinstance(keep, bool):
         raise ValueError('keep_source_implied_ram_guards: a boolean is required')
     symbolic_state.KEEP_SOURCE_IMPLIED_RAM_GUARDS = keep
+    # Profile `access_placements` (compiled from annotation rows): the owned array of an access the
+    # engine cannot place by itself (symbolic_state.placed_owner).
+    placements = {}
+    for row in (profile.get('access_placements', []) if profile else []):
+        placements.setdefault(int(profile.pc(row['pc']), 0), []).append(row)
+    symbolic_state.ACCESS_PLACEMENTS = placements
     # Profile key `merge_condition_alternatives` (default true): alternatives that reach a block over
     # one edge with the same state up to their path conditions continue as one (forward_design).
     merge = profile.get('merge_condition_alternatives', True) if profile else True
@@ -100,6 +107,8 @@ def main():
                     'terminal_id': terminal}
     # A design-table duplicated join is no cut: each incoming edge keeps its own entry slot.
     duplicated = [int(profile.pc(key), 0) for key in profile.get('duplicated_joins', [])] if profile else []
+    # Blocks an `unreachable` row with `reached: contradictory_guards` declares unreachable: paths stop there.
+    unreachable = [int(profile.pc(key), 0) for key in profile.get('unreachable_reached', [])] if profile else []
     joins = [pc for pc in joins_of(function) if pc not in duplicated]
     # A join's incoming edges never cross a back edge (its target is a loop head, a cut seeded
     # from its entry edges): a join waits only for the joins that reach it on the forward CFG.
@@ -123,7 +132,7 @@ def main():
     started = time.monotonic_ns()
     while True:
         report = evaluate_owned_function(function, traces, seeds, vocabulary=vocabulary, duplicated_joins=duplicated,
-                                         merge_condition_alternatives=merge)
+                                         merge_condition_alternatives=merge, unreachable_targets=unreachable)
         added = None
         for call in calls:
             site = call['return_site_pc']
@@ -195,8 +204,12 @@ def main():
                     refusals[hex(pc)] = 'join edges from different roots: ' + ', '.join(sorted(origins))
                     continue
                 try:
+                    drops = [{'root': profile.pc(item['root']), 'resources': item['resources']}
+                             for item in (profile.get('join_drops', {}).get(profile.key(hex(pc)), [])
+                                          if profile else [])]
                     incoming, lifted_binders = lift_call_return_edges(incoming, seeds=seeds, roots=roots,
-                                                                      ancestor=root, vocabulary=vocabulary)
+                                                                      ancestor=root, vocabulary=vocabulary,
+                                                                      drops=drops)
                 except ValueError as error:
                     refusals[hex(pc)] = 'join lift to ' + root + ' refused: ' + str(error)
                     continue
@@ -215,7 +228,7 @@ def main():
                 refusals[hex(pc)] = 'join generalization refused: ' + str(error) + ' (edge seeds: ' + \
                     ', '.join(sorted(origins)) + ')'
                 continue
-            seeds[hex(pc)] = joined['seed']
+            seeds[hex(pc)] = carry_common_word_links(incoming, joined['seed'])
             roots[hex(pc)] = root
             refusals.pop(hex(pc), None)
             plans[hex(pc)] = {'edges': len(incoming), 'edge_seeds': sorted(origins),
@@ -291,7 +304,7 @@ def main():
                                                     if roots.get(pc) != pc}}, ensure_ascii=False) + '\n')
     receipt = {'source_pass': bind(output / 'FORWARD.json'), 'level1_K_source': bind(level1),
                'vocabulary': bind(vocabulary_path), 'system_shapes': bind(shapes_path),
-               'engine': bind(ROOT / 'tools/block/FP-20261122b.json'), 'joins': bind(output / 'JOINS.json'),
+               'engine': bind(ROOT / 'tools/block/FP-20261123b.json'), 'joins': bind(output / 'JOINS.json'),
                'call_seeds': bind(output / 'CALL-SEEDS.json'), 'join_seeds': bind(output / 'JOIN-SEEDS.json')}
     (output / 'INPUT-RECEIPT.json').write_text(json.dumps(receipt, indent=2) + '\n')
     stops = {}

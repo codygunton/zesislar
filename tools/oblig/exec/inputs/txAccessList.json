@@ -1,0 +1,188 @@
+{
+ "schema": "oblig-exec-inputs/1",
+ "function": "txAccessList",
+ "note": "Encoded access list followed by one byte (07) of the next field in rest; consumed = length of the access-list item.",
+ "inputs": [
+  {
+   "id": "empty",
+   "hex": "c007",
+   "expect": {
+    "kind": "Success",
+    "key_counts": [],
+    "consumed": 1,
+    "rest_len": 1
+   }
+  },
+  {
+   "id": "one_entry_0_keys",
+   "hex": "d7d6941010101010101010101010101010101010101010c007",
+   "expect": {
+    "kind": "Success",
+    "key_counts": [
+     0
+    ],
+    "consumed": 24,
+    "rest_len": 1
+   }
+  },
+  {
+   "id": "one_entry_1_key",
+   "hex": "f838f7941010101010101010101010101010101010101010e1a0404040404040404040404040404040404040404040404040404040404040404007",
+   "expect": {
+    "kind": "Success",
+    "key_counts": [
+     1
+    ],
+    "consumed": 58,
+    "rest_len": 1
+   }
+  },
+  {
+   "id": "one_entry_3_keys",
+   "hex": "f87cf87a941010101010101010101010101010101010101010f863a04040404040404040404040404040404040404040404040404040404040404040a04141414141414141414141414141414141414141414141414141414141414141a0424242424242424242424242424242424242424242424242424242424242424207",
+   "expect": {
+    "kind": "Success",
+    "key_counts": [
+     3
+    ],
+    "consumed": 126,
+    "rest_len": 1
+   }
+  },
+  {
+   "id": "two_entries_0_0_keys",
+   "hex": "eed6941010101010101010101010101010101010101010c0d6941111111111111111111111111111111111111111c007",
+   "expect": {
+    "kind": "Success",
+    "key_counts": [
+     0,
+     0
+    ],
+    "consumed": 47,
+    "rest_len": 1
+   }
+  },
+  {
+   "id": "two_entries_0_1_keys",
+   "hex": "f84fd6941010101010101010101010101010101010101010c0f7941111111111111111111111111111111111111111e1a04a4a4a4a4a4a4a4a4a4a4a4a4a4a4a4a4a4a4a4a4a4a4a4a4a4a4a4a4a4a4a4a07",
+   "expect": {
+    "kind": "Success",
+    "key_counts": [
+     0,
+     1
+    ],
+    "consumed": 81,
+    "rest_len": 1
+   }
+  },
+  {
+   "id": "two_entries_1_3_keys",
+   "hex": "f8b4f7941010101010101010101010101010101010101010e1a04040404040404040404040404040404040404040404040404040404040404040f87a941111111111111111111111111111111111111111f863a04a4a4a4a4a4a4a4a4a4a4a4a4a4a4a4a4a4a4a4a4a4a4a4a4a4a4a4a4a4a4a4aa04b4b4b4b4b4b4b4b4b4b4b4b4b4b4b4b4b4b4b4b4b4b4b4b4b4b4b4b4b4b4b4ba04c4c4c4c4c4c4c4c4c4c4c4c4c4c4c4c4c4c4c4c4c4c4c4c4c4c4c4c4c4c4c4c07",
+   "expect": {
+    "kind": "Success",
+    "key_counts": [
+     1,
+     3
+    ],
+    "consumed": 182,
+    "rest_len": 1
+   }
+  },
+  {
+   "id": "two_entries_3_3_keys",
+   "hex": "f8f8f87a941010101010101010101010101010101010101010f863a04040404040404040404040404040404040404040404040404040404040404040a04141414141414141414141414141414141414141414141414141414141414141a04242424242424242424242424242424242424242424242424242424242424242f87a941111111111111111111111111111111111111111f863a04a4a4a4a4a4a4a4a4a4a4a4a4a4a4a4a4a4a4a4a4a4a4a4a4a4a4a4a4a4a4a4aa04b4b4b4b4b4b4b4b4b4b4b4b4b4b4b4b4b4b4b4b4b4b4b4b4b4b4b4b4b4b4b4ba04c4c4c4c4c4c4c4c4c4c4c4c4c4c4c4c4c4c4c4c4c4c4c4c4c4c4c4c4c4c4c4c07",
+   "expect": {
+    "kind": "Success",
+    "key_counts": [
+     3,
+     3
+    ],
+    "consumed": 250,
+    "rest_len": 1
+   }
+  },
+  {
+   "id": "three_entries_0_keys",
+   "hex": "f845d6941010101010101010101010101010101010101010c0d6941111111111111111111111111111111111111111c0d6941212121212121212121212121212121212121212c007",
+   "expect": {
+    "kind": "Success",
+    "key_counts": [
+     0,
+     0,
+     0
+    ],
+    "consumed": 71,
+    "rest_len": 1
+   },
+   "note": "third append grows the entries list: remap of the most recent block succeeds in place"
+  },
+  {
+   "id": "three_entries_1_keys",
+   "hex": "f8a8f7941010101010101010101010101010101010101010e1a04040404040404040404040404040404040404040404040404040404040404040f7941111111111111111111111111111111111111111e1a04a4a4a4a4a4a4a4a4a4a4a4a4a4a4a4a4a4a4a4a4a4a4a4a4a4a4a4a4a4a4a4af7941212121212121212121212121212121212121212e1a0545454545454545454545454545454545454545454545454545454545454545407",
+   "expect": {
+    "kind": "Success",
+    "key_counts": [
+     1,
+     1,
+     1
+    ],
+    "consumed": 170,
+    "rest_len": 1
+   },
+   "note": "third append grows the entries list: remap fails, alloc + memcpy + free"
+  },
+  {
+   "id": "not_a_list",
+   "hex": "94101010101010101010101010101010101010101007",
+   "expect": {
+    "kind": "Error"
+   },
+   "note": "the access-list item is a byte string"
+  },
+  {
+   "id": "address_19_bytes",
+   "hex": "f7f69310101010101010101010101010101010101010e1a0404040404040404040404040404040404040404040404040404040404040404007",
+   "expect": {
+    "kind": "Error"
+   },
+   "note": "entry address has 19 bytes"
+  },
+  {
+   "id": "key_31_bytes",
+   "hex": "f7f6941010101010101010101010101010101010101010e09f4040404040404040404040404040404040404040404040404040404040404007",
+   "expect": {
+    "kind": "Error"
+   },
+   "note": "storage key has 31 bytes"
+  },
+  {
+   "id": "truncated_entry",
+   "hex": "f83af860f7941010101010101010101010101010101010101010e1a0404040404040404040404040404040404040404040404040404040404040404007",
+   "expect": {
+    "kind": "Error"
+   },
+   "note": "entry header claims more bytes than the access-list payload holds"
+  },
+  {
+   "id": "trailing_byte",
+   "hex": "f839f7941010101010101010101010101010101010101010e1a040404040404040404040404040404040404040404040404040404040404040400107",
+   "expect": {
+    "kind": "Error"
+   },
+   "note": "a single trailing byte after the last entry inside the access-list payload"
+  },
+  {
+   "id": "entry_trailing_item_ignored",
+   "hex": "f83df83b941010101010101010101010101010101010101010e1a040404040404040404040404040404040404040404040404040404040404040408301010107",
+   "expect": {
+    "kind": "Success",
+    "key_counts": [
+     1
+    ],
+    "consumed": 63,
+    "rest_len": 1
+   },
+   "note": "rlp_decode.zig does not check the rest of an entry after its keys list"
+  }
+ ]
+}
