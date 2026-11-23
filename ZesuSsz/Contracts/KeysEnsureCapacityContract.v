@@ -33,15 +33,15 @@ Definition arrayListGrownCapacity (requested : Z) : Z :=
   requested + requested / 2 + 2.
 
 Record EnsureCapacityArgs : Type := {
-  ensureListPointer : Z;
-  ensureAllocatorPointer : Z;
+  ensureListPointer : bv 64;
+  ensureAllocatorPointer : bv 64;
   ensureAllocatorContext : Z;
   ensureList : ArrayListState;
-  ensureRequested : Z;
+  ensureRequested : bv 64;
   ensureScratchBefore : list byte;
-  ensureStackPointer : Z;
-  ensureReturnAddress : Z;
-  ensureSaved : list (bv 64)
+  ensureStackPointer : bv 64;
+  ensureReturnAddress : bv 64;
+  ensureSaved : ArrayListCalleeSaved
 }.
 
 Record EnsureCapacityOutcome : Type := {
@@ -51,17 +51,15 @@ Record EnsureCapacityOutcome : Type := {
 
 Definition keysEnsureCapacityDomain (args : EnsureCapacityArgs) : Prop :=
   arrayListWellFormed keysElementBytes (ensureList args) /\
-  arrayListRamRange (ensureListPointer args) arrayListHeaderSize /\
-  (8 | ensureListPointer args) /\
-  arrayListRamRange (ensureAllocatorPointer args) arrayListAllocatorSize /\
-  (8 | ensureAllocatorPointer args) /\
+  arrayListRamRange (bv_unsigned (ensureListPointer args)) arrayListHeaderSize /\
+  (8 | bv_unsigned (ensureListPointer args)) /\
+  arrayListRamRange (bv_unsigned (ensureAllocatorPointer args)) arrayListAllocatorSize /\
+  (8 | bv_unsigned (ensureAllocatorPointer args)) /\
   0 <= ensureAllocatorContext args < 2 ^ 64 /\
-  0 <= ensureRequested args < keysEnsureCapacityMaxRequest /\
+  bv_unsigned (ensureRequested args) < keysEnsureCapacityMaxRequest /\
   Z.of_nat (length (ensureScratchBefore args)) = arrayListScratchSize /\
-  arrayListStackLayout (ensureStackPointer args) keysEnsureCapacityStackBytes /\
-  0 <= ensureReturnAddress args < 2 ^ 64 /\
-  (4 | ensureReturnAddress args) /\
-  length (ensureSaved args) = 12%nat.
+  arrayListStackLayout (bv_unsigned (ensureStackPointer args)) keysEnsureCapacityStackBytes /\
+  (4 | bv_unsigned (ensureReturnAddress args)).
 
 (* The machine code with alt_fl_alloc, whose remap always fails: a request
    within the capacity changes nothing; otherwise alloc the grown capacity:
@@ -71,14 +69,14 @@ Definition keysEnsureCapacityAllows (args : EnsureCapacityArgs)
     (outcome : EnsureCapacityOutcome) : Prop :=
   let state := ensureList args in
   arrayListWellFormed keysElementBytes (ensureListAfter outcome) /\
-  (if ensureRequested args <=? arrayListCapacity state then
+  (if bv_unsigned (ensureRequested args) <=? arrayListCapacity state then
      ensureKind outcome = arrayListSuccess /\ ensureListAfter outcome = state
    else
      match ensureKind outcome with
      | arrayListSuccess =>
          arrayListLength (ensureListAfter outcome) = arrayListLength state /\
          arrayListCapacity (ensureListAfter outcome) =
-           arrayListGrownCapacity (ensureRequested args) /\
+           arrayListGrownCapacity (bv_unsigned (ensureRequested args)) /\
          arrayListItems (ensureListAfter outcome) = arrayListItems state
      | arrayListOutOfMemory => ensureListAfter outcome = state
      end).
@@ -88,7 +86,7 @@ Definition keysEnsureCapacityAllows (args : EnsureCapacityArgs)
    otherwise. *)
 Definition keysEnsureCapacityScratchAfter (args : EnsureCapacityArgs)
     (outcome : EnsureCapacityOutcome) : list byte :=
-  if ensureRequested args <=? arrayListCapacity (ensureList args)
+  if bv_unsigned (ensureRequested args) <=? arrayListCapacity (ensureList args)
   then ensureScratchBefore args
   else
     match ensureKind outcome with
@@ -99,22 +97,27 @@ Definition keysEnsureCapacityScratchAfter (args : EnsureCapacityArgs)
 
 Definition keysEnsureCapacityEntry `{!islaG Sigma} `{!threadG}
     (args : EnsureCapacityArgs) : iProp Sigma :=
-  (reg_col zesu_sys_regs ∗
-   "x1" ↦ᵣ RVal_Bits (Z_to_bv 64 (ensureReturnAddress args)) ∗
-   "x2" ↦ᵣ RVal_Bits (Z_to_bv 64 (ensureStackPointer args)) ∗
-   "x10" ↦ᵣ RVal_Bits (Z_to_bv 64 (ensureListPointer args)) ∗
-   "x11" ↦ᵣ RVal_Bits (Z_to_bv 64 (ensureAllocatorPointer args)) ∗
-   "x12" ↦ᵣ RVal_Bits (Z_to_bv 64 (ensureRequested args)) ∗
+  (∃ (x5 x6 x7 x13 x14 x15 x16 x17 x28 x29 x30 x31 : bv 64),
+   reg_col zesu_sys_regs ∗
+   "x1" ↦ᵣ RVal_Bits (ensureReturnAddress args) ∗
+   "x2" ↦ᵣ RVal_Bits (ensureStackPointer args) ∗
+   "x5" ↦ᵣ RVal_Bits x5 ∗ "x6" ↦ᵣ RVal_Bits x6 ∗ "x7" ↦ᵣ RVal_Bits x7 ∗
+   "x10" ↦ᵣ RVal_Bits (ensureListPointer args) ∗
+   "x11" ↦ᵣ RVal_Bits (ensureAllocatorPointer args) ∗
+   "x12" ↦ᵣ RVal_Bits (ensureRequested args) ∗
+   "x13" ↦ᵣ RVal_Bits x13 ∗ "x14" ↦ᵣ RVal_Bits x14 ∗ "x15" ↦ᵣ RVal_Bits x15 ∗
+   "x16" ↦ᵣ RVal_Bits x16 ∗ "x17" ↦ᵣ RVal_Bits x17 ∗
+   "x28" ↦ᵣ RVal_Bits x28 ∗ "x29" ↦ᵣ RVal_Bits x29 ∗
+   "x30" ↦ᵣ RVal_Bits x30 ∗ "x31" ↦ᵣ RVal_Bits x31 ∗
    arrayListSavedRegisters (ensureSaved args) ∗
-   arrayListAnyRegisters arrayListEntryScratch ∗
-   ensureListPointer args ↦ₘ∗ arrayListHeaderBytes (ensureList args) ∗
+   bv_unsigned (ensureListPointer args) ↦ₘ∗ arrayListHeaderBytes (ensureList args) ∗
    arrayListBuffer keysElementBytes keysLog2Alignment (ensureList args) ∗
    ziskExtraParamsAddress ↦ₘ∗ ensureScratchBefore args ∗
-   altFlAllocatorObject (ensureAllocatorPointer args)
+   altFlAllocatorObject (bv_unsigned (ensureAllocatorPointer args))
      (ensureAllocatorContext args) ∗
    altFlVtable ∗
    altFlHeap ∗
-   (ensureStackPointer args - keysEnsureCapacityStackBytes) ↦ₘ?
+   (bv_unsigned (ensureStackPointer args) - keysEnsureCapacityStackBytes) ↦ₘ?
      keysEnsureCapacityStackBytes ∗
    ⌜keysEnsureCapacityDomain args⌝ ∗ True)%I.
 Global Instance : LithiumUnfold (@keysEnsureCapacityEntry) := I.
@@ -123,21 +126,27 @@ Global Typeclasses Opaque keysEnsureCapacityEntry.
 Definition keysEnsureCapacityExit `{!islaG Sigma} `{!threadG}
     (args : EnsureCapacityArgs) (outcome : EnsureCapacityOutcome) :
     iProp Sigma :=
-  (reg_col zesu_sys_regs ∗
-   "x1" ↦ᵣ RVal_Bits (Z_to_bv 64 (ensureReturnAddress args)) ∗
-   "x2" ↦ᵣ RVal_Bits (Z_to_bv 64 (ensureStackPointer args)) ∗
-   "x10" ↦ᵣ RVal_Bits (Z_to_bv 64 (arrayListOutcomeCode (ensureKind outcome))) ∗
+  (∃ (x5 x6 x7 x10 x11 x12 x13 x14 x15 x16 x17 x28 x29 x30 x31 : bv 64),
+   reg_col zesu_sys_regs ∗
+   "x1" ↦ᵣ RVal_Bits (ensureReturnAddress args) ∗
+   "x2" ↦ᵣ RVal_Bits (ensureStackPointer args) ∗
+   "x5" ↦ᵣ RVal_Bits x5 ∗ "x6" ↦ᵣ RVal_Bits x6 ∗ "x7" ↦ᵣ RVal_Bits x7 ∗
+   "x10" ↦ᵣ RVal_Bits x10 ∗ "x11" ↦ᵣ RVal_Bits x11 ∗ "x12" ↦ᵣ RVal_Bits x12 ∗
+   "x13" ↦ᵣ RVal_Bits x13 ∗ "x14" ↦ᵣ RVal_Bits x14 ∗ "x15" ↦ᵣ RVal_Bits x15 ∗
+   "x16" ↦ᵣ RVal_Bits x16 ∗ "x17" ↦ᵣ RVal_Bits x17 ∗
+   "x28" ↦ᵣ RVal_Bits x28 ∗ "x29" ↦ᵣ RVal_Bits x29 ∗
+   "x30" ↦ᵣ RVal_Bits x30 ∗ "x31" ↦ᵣ RVal_Bits x31 ∗
    arrayListSavedRegisters (ensureSaved args) ∗
-   arrayListAnyRegisters arrayListExitScratch ∗
-   ensureListPointer args ↦ₘ∗ arrayListHeaderBytes (ensureListAfter outcome) ∗
+   bv_unsigned (ensureListPointer args) ↦ₘ∗ arrayListHeaderBytes (ensureListAfter outcome) ∗
    arrayListBuffer keysElementBytes keysLog2Alignment (ensureListAfter outcome) ∗
    ziskExtraParamsAddress ↦ₘ∗ keysEnsureCapacityScratchAfter args outcome ∗
-   altFlAllocatorObject (ensureAllocatorPointer args)
+   altFlAllocatorObject (bv_unsigned (ensureAllocatorPointer args))
      (ensureAllocatorContext args) ∗
    altFlVtable ∗
    altFlHeap ∗
-   (ensureStackPointer args - keysEnsureCapacityStackBytes) ↦ₘ?
-     keysEnsureCapacityStackBytes ∗ True)%I.
+   (bv_unsigned (ensureStackPointer args) - keysEnsureCapacityStackBytes) ↦ₘ?
+     keysEnsureCapacityStackBytes ∗
+   ⌜bv_unsigned x10 = arrayListOutcomeCode (ensureKind outcome)⌝ ∗ True)%I.
 Global Instance : LithiumUnfold (@keysEnsureCapacityExit) := I.
 Global Typeclasses Opaque keysEnsureCapacityExit.
 
@@ -155,14 +164,14 @@ Definition keysEnsureCapacityResources `{!islaG Sigma} `{!threadG}
     IslarisContractResources EnsureCapacityArgs EnsureCapacityOutcome :=
   {| islarisCode := keysEnsureCapacityContractCode;
      islarisEntry := fun args =>
-       (⌜ensureReturnAddress args = returnAddress⌝ ∗
+       (⌜bv_unsigned (ensureReturnAddress args) = returnAddress⌝ ∗
         keysEnsureCapacityEntry args)%I;
      islarisExit := keysEnsureCapacityExit |}.
 
 Definition keysEnsureCapacityContractModel (returnAddress : Z) :
     IslarisContractModel EnsureCapacityArgs EnsureCapacityOutcome :=
   {| islarisContractAllows := fun args outcome =>
-       ensureReturnAddress args = returnAddress /\
+       bv_unsigned (ensureReturnAddress args) = returnAddress /\
        keysEnsureCapacityDomain args /\
        keysEnsureCapacityAllows args outcome;
      islarisContractStep :=
@@ -189,23 +198,21 @@ Lemma keysEnsureCapacityDomainRanges (args : EnsureCapacityArgs) :
     arrayListPointer (ensureList args) +
       arrayListCapacity (ensureList args) * keysElementBytes <=
       machineRamEnd defaultMap) /\
-  mapRamBase defaultMap <= ensureListPointer args /\
-  ensureListPointer args + arrayListHeaderSize <= machineRamEnd defaultMap /\
-  (8 | ensureListPointer args) /\
-  mapRamBase defaultMap <= ensureAllocatorPointer args /\
-  ensureAllocatorPointer args + arrayListAllocatorSize <=
+  mapRamBase defaultMap <= bv_unsigned (ensureListPointer args) /\
+  bv_unsigned (ensureListPointer args) + arrayListHeaderSize <= machineRamEnd defaultMap /\
+  (8 | bv_unsigned (ensureListPointer args)) /\
+  mapRamBase defaultMap <= bv_unsigned (ensureAllocatorPointer args) /\
+  bv_unsigned (ensureAllocatorPointer args) + arrayListAllocatorSize <=
     machineRamEnd defaultMap /\
-  (8 | ensureAllocatorPointer args) /\
+  (8 | bv_unsigned (ensureAllocatorPointer args)) /\
   0 <= ensureAllocatorContext args < 2 ^ 64 /\
-  0 <= ensureRequested args < keysEnsureCapacityMaxRequest /\
+  bv_unsigned (ensureRequested args) < keysEnsureCapacityMaxRequest /\
   Z.of_nat (length (ensureScratchBefore args)) = arrayListScratchSize /\
-  (16 | ensureStackPointer args) /\
+  (16 | bv_unsigned (ensureStackPointer args)) /\
   mapRamBase defaultMap <=
-    ensureStackPointer args - keysEnsureCapacityStackBytes /\
-  ensureStackPointer args <= machineRamEnd defaultMap /\
-  0 <= ensureReturnAddress args < 2 ^ 64 /\
-  (4 | ensureReturnAddress args) /\
-  length (ensureSaved args) = 12%nat.
+    bv_unsigned (ensureStackPointer args) - keysEnsureCapacityStackBytes /\
+  bv_unsigned (ensureStackPointer args) <= machineRamEnd defaultMap /\
+  (4 | bv_unsigned (ensureReturnAddress args)).
 Proof.
   unfold keysEnsureCapacityDomain, arrayListWellFormed, arrayListRamRange,
     arrayListStackLayout.
