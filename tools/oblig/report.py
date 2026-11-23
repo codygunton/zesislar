@@ -12,9 +12,10 @@ machine runs; missing-context failures per attempt; share of supplied context it
 accepted proof (context_items/context_used of the closing attempts) and of premises dropped by the
 premise minimiser of residual_loop.py; goals found false after a model attempt; prompt bytes and
 tokens per attempt; coordinator bytes read per round (RUN/COORDINATOR.jsonl); per tier the share
-closed at the first attempt and within its attempts; share closed by Haiku tiers; goals that reached
-opus-medium as prover; escalations; tokens per closed obligation per tier; spin count; tokens and
-checked-lemma lines per block.
+closed at the first attempt and within its attempts; per tier the check_proof calls per goal it closed
+and the tokens per attempt with and without the tool (`check_calls:<n>` in an attempt's context_items);
+share closed by Haiku tiers; goals that reached opus-medium as prover; escalations; tokens per closed
+obligation per tier; spin count; tokens and checked-lemma lines per block.
 """
 import argparse
 import json
@@ -73,6 +74,28 @@ def model_tier(tier):
     return tier not in NO_MODEL_TIERS
 
 
+def counted(value, prefix=None):
+    """A count field: an int as is; a list (drive.py's context_items) by its entries, only those starting
+    with PREFIX when given."""
+    if isinstance(value, list):
+        return sum(1 for entry in value if prefix is None or str(entry).startswith(prefix))
+    return value or 0
+
+
+def check_calls(row):
+    """The check_proof calls of an attempt result row (`check_calls:<n>` in context_items), None without
+    the tool."""
+    items = row.get('context_items')
+    for entry in items if isinstance(items, list) else []:
+        if str(entry).startswith('check_calls:'):
+            return int(str(entry).split(':', 1)[1])
+    return None
+
+
+def tokens(row):
+    return (row.get('tokens_in') or 0) + (row.get('tokens_out') or 0)
+
+
 def measures(run, function=None):
     state = {k: v for k, v in store.fold(store.read_events(run)).items()
              if function is None or v['function'] == function}
@@ -118,8 +141,8 @@ def measures(run, function=None):
         if attempts else 'n/a')
 
     accepted = [row for row in attempts if row['state'] == 'closed' and row.get('context_items') is not None]
-    supplied = sum(row['context_items'] or 0 for row in accepted)
-    used = sum(row.get('context_used') or 0 for row in accepted)
+    supplied = sum(counted(row['context_items'], 'context:') for row in accepted)
+    used = sum(counted(row.get('context_used')) for row in accepted)
     put('supplied context absent from accepted proof', ratio(supplied - used, supplied))
     before = after = 0
     for directory in store.residual_runs(run):
@@ -178,6 +201,20 @@ def measures(run, function=None):
         put('tier %s' % tier, 'reached %d, closed at first attempt %s, within its attempts %s, tokens per closed %s'
             % (len(reached), ratio(first, len(reached)), ratio(within, len(reached)),
                ratio(spent, closed_here, percent=False) if has_tokens else 'n/a'))
+        tool_rows = [r for g in reached for r in attempt_rows(g) if r['tier'] == tier and check_calls(r) is not None]
+        if tool_rows:
+            plain = [r for g in reached for r in attempt_rows(g) if r['tier'] == tier and check_calls(r) is None
+                     and r['state'] in ('closed', 'failed')]
+            closed_by_tool = [g for g in reached if g['state'] == 'closed' and g['closed_by'] == tier]
+            calls = sum(check_calls(r) for g in closed_by_tool for r in attempt_rows(g)
+                        if r['tier'] == tier and check_calls(r) is not None)
+            tokened_tool = [r for r in tool_rows if r.get('tokens_in') is not None or r.get('tokens_out') is not None]
+            tokened_plain = [r for r in plain if r.get('tokens_in') is not None or r.get('tokens_out') is not None]
+            put('check tool %s' % tier, 'attempts %d with the tool (%d without), check calls per closed goal %s, '
+                'tokens per attempt with the tool %s, without %s'
+                % (len(tool_rows), len(plain), ratio(calls, len(closed_by_tool), percent=False),
+                   ratio(sum(map(tokens, tokened_tool)), len(tokened_tool), percent=False),
+                   ratio(sum(map(tokens, tokened_plain)), len(tokened_plain), percent=False)))
 
     closed_goals = [g for g in goals if g['state'] == 'closed']
     put('pure goals closed by Haiku tiers', ratio(sum((g['closed_by'] or '').startswith('haiku') for g in closed_goals),

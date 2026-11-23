@@ -90,6 +90,51 @@ Proof. rewrite /array_region_start Z.sub_diag. reflexivity. Qed.
   : zesu_indices isla_coq_rewrite lithium_rewrite.
 #[export] Hint Rewrite Z.sub_diag zesu_u64_little_endian_roundtrip
   zesu_array_region_start_8_same zesu_bv_add_zero_64 : zesu_indices.
+
+(* A word reloaded from the eight bytes it was stored as, when the stored
+   image is spelled per byte (`Z_to_bv 8 (value ≫ 8 * i)` for i = 0..7, the
+   computed form of a little-endian word image such as `word64Bytes`): the
+   loaded integer is the word's unsigned value. Unconditional; the bound
+   that turns `bv_unsigned (Z_to_bv 64 value)` into `value` stays with the
+   range rules. *)
+Lemma zesu_word64_bytes_encoding (value : Z) :
+  bv_to_little_endian 8 8 value =
+    [Z_to_bv 8 (Z.shiftr value (8 * Z.of_nat 0));
+     Z_to_bv 8 (Z.shiftr value (8 * Z.of_nat 1));
+     Z_to_bv 8 (Z.shiftr value (8 * Z.of_nat 2));
+     Z_to_bv 8 (Z.shiftr value (8 * Z.of_nat 3));
+     Z_to_bv 8 (Z.shiftr value (8 * Z.of_nat 4));
+     Z_to_bv 8 (Z.shiftr value (8 * Z.of_nat 5));
+     Z_to_bv 8 (Z.shiftr value (8 * Z.of_nat 6));
+     Z_to_bv 8 (Z.shiftr value (8 * Z.of_nat 7))].
+Proof.
+  unfold bv_to_little_endian, Z_to_little_endian.
+  cbn [Z.iter]. cbn.
+  rewrite !Z.shiftr_shiftr; try lia.
+  cbn. rewrite Z.shiftr_0_r. rewrite !Z.land_ones; try lia.
+  repeat apply f_equal2; try reflexivity; apply bv_eq;
+    rewrite !Z_to_bv_unsigned; unfold bv_wrap, bv_modulus; cbn;
+    rewrite Z.mod_mod; try reflexivity; lia.
+Qed.
+
+Lemma zesu_word64_bytes_little_endian (value : Z) :
+  little_endian_to_bv 8
+    [Z_to_bv 8 (Z.shiftr value (8 * Z.of_nat 0));
+     Z_to_bv 8 (Z.shiftr value (8 * Z.of_nat 1));
+     Z_to_bv 8 (Z.shiftr value (8 * Z.of_nat 2));
+     Z_to_bv 8 (Z.shiftr value (8 * Z.of_nat 3));
+     Z_to_bv 8 (Z.shiftr value (8 * Z.of_nat 4));
+     Z_to_bv 8 (Z.shiftr value (8 * Z.of_nat 5));
+     Z_to_bv 8 (Z.shiftr value (8 * Z.of_nat 6));
+     Z_to_bv 8 (Z.shiftr value (8 * Z.of_nat 7))] =
+  bv_unsigned (Z_to_bv 64 value).
+Proof.
+  rewrite <- zesu_word64_bytes_encoding, little_endian_to_bv_to_little_endian by lia.
+  rewrite Z_to_bv_unsigned. reflexivity.
+Qed.
+
+#[export] Hint Rewrite zesu_word64_bytes_little_endian
+  : zesu_indices isla_coq_rewrite lithium_rewrite.
 #[export] Hint Rewrite (@Z_to_bv_bv_unsigned 64)
   : zesu_indices isla_coq_rewrite lithium_rewrite.
 #[export] Hint Rewrite zesu_bv_unsigned_add_Z_64 using (first [ZesuSsz.Automation2.RewriteBoundGuards.a3n_closed_bound_if_enabled | bv_solve])
@@ -437,9 +482,13 @@ Section byte_array_write.
   Qed.
 End byte_array_write.
 
-(* The length of a byte array as a literal: the context states
+(* The length of a byte array: a literal when the context states
    `length bytes = N` (at any element-type alias) or the list's length
-   computes to N. An inductive, so the hint below sees the class. *)
+   computes to N; otherwise the size of a stated `Z.of_nat (length bytes) = e`
+   (a list's items of `len * 32` bytes, `len` symbolic). Without the stated
+   size the 8-byte rule below committed on such an array and left the false
+   side condition `length bytes = 8`. An inductive, so the hint below sees
+   the class. *)
 Inductive ZesuByteArrayKnownLength (bytes : list (bv 8)) (n : Z) : Prop :=
   zesu_byte_array_known_length : Z.of_nat (length bytes) = n ->
     ZesuByteArrayKnownLength bytes n.
@@ -466,7 +515,12 @@ Ltac zesu_byte_array_known_length_solve :=
         zesu_byte_array_nat_literal count;
         let literal := eval vm_compute in (Z.of_nat count) in
         unify n literal;
-        exact (zesu_byte_array_known_length bytes n eq_refl) ]
+        exact (zesu_byte_array_known_length bytes n eq_refl)
+      | match goal with
+        | Hlength : Z.of_nat (@length _ bytes) = ?size |- _ =>
+            unify n size;
+            exact (zesu_byte_array_known_length bytes n Hlength)
+        end ]
   end.
 Global Hint Extern 0 (ZesuByteArrayKnownLength _ _) =>
   zesu_byte_array_known_length_solve : typeclass_instances.

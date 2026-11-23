@@ -132,6 +132,7 @@ Definition txAccessListArgsRanges (args : TxAccessListArgs) : Prop :=
   txAccessListRamLow <= bv_unsigned (txAllocatorPointer args) /\
   bv_unsigned (txAllocatorPointer args) + txAccessListCellSize <=
     txAccessListRamHigh /\
+  (8 | bv_unsigned (txAllocatorPointer args)) /\
   txAccessListRamLow <= bv_unsigned (txRestPointer args) /\
   bv_unsigned (txRestPointer args) + txAccessListCellSize <=
     txAccessListRamHigh /\
@@ -345,12 +346,13 @@ Definition txAccessListReturnedHeap `{!islaG Sigma} `{!threadG}
 
   (* Caller-saved registers return arbitrary; sp, ra (restored from the
      frame, +0x4b8) and the callee-saved registers are preserved. The ZisK
-     system registers return with shape only (the memcpy and allocator
-     premises do not fix them). *)
+     system registers return as at entry: zisk_input_end exactly (decodeItem,
+     the memcpy premise and the array-list contracts preserve it), the
+     others by shape. *)
   Definition txAccessListExitResources `{!islaG Sigma} `{!threadG}
       (args : TxAccessListArgs) (outcome : TxAccessListOutcome) : iProp Sigma :=
     (∃ (x5 x6 x7 x10 x11 x12 x13 x14 x15 x16 x17 x28 x29 x30 x31 : bv 64),
-     reg_col zesu_sys_regs ∗
+     reg_col (txAccessListSysRegs args) ∗
      "x1" ↦ᵣ RVal_Bits (txReturnAddress args) ∗
      "x2" ↦ᵣ RVal_Bits (txStackPointer args) ∗
      "x5" ↦ᵣ RVal_Bits x5 ∗ "x6" ↦ᵣ RVal_Bits x6 ∗ "x7" ↦ᵣ RVal_Bits x7 ∗

@@ -17,12 +17,25 @@ A ROW: `id`, `request` (the derive.py request id it answers), `at` {`pc` (`+0xOF
 ...}], `placement`, `author` {`tier`}, and for a loop cut `visible` (history patterns it shows).
 
 The compiled profile keys, by `boundary`:
-  entry            `domain_component` = ⌜fact /\\ ...⌝
+  entry            `domain_component` = ⌜fact /\\ ...⌝; its `predicates` [{`name`, `owner`}] become
+                   `opaque_predicates` {name: {owner, name}}: the contract's opaque predicates the
+                   entry renderer writes as `owner.name args` (render_fp301_entries.py)
   loop_cut         `loop_heads` and a `loop_designs` row: `registers` (binders with a register), `index`
                    (the binder of role `index`), `facts` (role -> `kind`), `array_cursor` from
                    `placement` {`array`, `register`, `extent_reason`}, `visible`
-  join             `join_designs[pc]`: a fact of role `fact` with no other key is its text, else its object
-  call_site        a `calls` row: the row's `call` object with `call_site_pc`
+  join             `join_designs[pc]`: a fact of role `fact` with no other key is its text, else its object.
+                   A row whose single effective fact is `False` (role `unreachable`) lists `pc` in
+                   `unreachable_entries` (entry ⌜False⌝; refused where the forward pass reaches it); with
+                   `reached: contradictory_guards` also in `unreachable_reached`: the forward pass stops
+                   every path into `pc` from a predecessor block, and each such predecessor proves its
+                   step in the kernel from contradictory guards; a `pc` with its own seed (a call return
+                   site) keeps that seed's entry, any other gets ⌜False⌝. Its facts of role `relies_on`
+                   record the guards it relies on, as documentation only (never emitted).
+  call_site        a `calls` row: the row's `call` object with `call_site_pc`. Its `opaque` rows
+                   [{`spec`, `use`: framed | consumed | produced, `caller`: [...]}] name spec resources in
+                   the spec's text and, for a consumed one, the caller components it takes; its `returns`
+                   rows [{`index`, `register`}] name the returned registers the continuation reads
+                   (call_boundary.call_return_seed)
   call_return      the `return_facts` of the call whose `return_site_pc` is `pc` (role -> `kind`)
   function_return  a `function_returns` row: `return_instruction_pc` and `return_fact` (True without facts)
   access           an `access_placements` row: `pc` and `placement` {`array`, `index`, `scale`, `offset`},
@@ -54,7 +67,9 @@ FUNCTIONS = ROOT / 'tools/block/functions'
 SCHEMA = 'zesu.annotations.v1'
 BOUNDARIES = ('entry', 'loop_cut', 'join', 'call_site', 'call_return', 'function_return', 'access')
 GENERATED_KEYS = ('loop_designs', 'join_designs', 'calls', 'function_returns', 'access_placements',
-                  'domain_component', 'generated_from')
+                  'domain_component', 'opaque_predicates', 'unreachable_entries', 'unreachable_reached',
+                  'join_drops', 'generated_from')
+OPAQUE_USES = ('framed', 'consumed', 'produced')
 PC = re.compile(r'(?:[^+\s]+)?\+0x[0-9a-f]+')
 ABI = ['zero', 'ra', 'sp', 'gp', 'tp', 't0', 't1', 't2', 's0', 's1', 'a0', 'a1', 'a2', 'a3', 'a4', 'a5', 'a6',
        'a7', 's2', 's3', 's4', 's5', 's6', 's7', 's8', 's9', 's10', 's11', 't3', 't4', 't5', 't6']
@@ -115,6 +130,22 @@ def _join_fact(fact):
     return {'coq': fact['coq'], **extras}
 
 
+def _check_call(row):
+    """The shape of a call row's `opaque` and `returns` rows (call_boundary consumes them)."""
+    for item in row['call'].get('opaque', []):
+        if not isinstance(item.get('spec'), str) or item.get('use') not in OPAQUE_USES:
+            raise AnnotationError('%s: an opaque row has `spec` and a `use` among %s'
+                                  % (row['id'], ', '.join(OPAQUE_USES)))
+        callers = item.get('caller', [])
+        if item['use'] == 'consumed' and not callers or item['use'] == 'produced' and callers \
+                or not all(isinstance(text, str) for text in callers):
+            raise AnnotationError('%s: a consumed opaque row names its caller resources, a produced one none'
+                                  % row['id'])
+    for item in row['call'].get('returns', []):
+        if not isinstance(item.get('index'), int) or not re.fullmatch(r'x(1[0-7])', str(item.get('register'))):
+            raise AnnotationError('%s: a returns row has an integer `index` and an argument register' % row['id'])
+
+
 def compile_profile(data, source=None):
     """The function profile of an annotation file (see the module text)."""
     validate(data)
@@ -123,6 +154,7 @@ def compile_profile(data, source=None):
     profile.setdefault('symbol', data['symbol'])
     heads = list(profile.get('loop_heads', []))
     loop_designs, join_designs, calls, returns, placements = [], {}, [], [], []
+    unreachable, reached_pcs, drops = [], [], {}
     rows = data['rows']
     for row in rows:
         at, boundary = row['at'], row['at']['boundary']
@@ -130,6 +162,10 @@ def compile_profile(data, source=None):
         if boundary == 'entry':
             if facts:
                 profile['domain_component'] = '⌜' + ' /\\ '.join(fact['coq'] for fact in facts) + '⌝'
+            for predicate in row.get('predicates', []):
+                if set(predicate) != {'name', 'owner'}:
+                    raise AnnotationError('%s: a predicate row has exactly `name` and `owner`' % row['id'])
+                profile.setdefault('opaque_predicates', {})[predicate['name']] = dict(predicate)
         elif boundary == 'loop_cut':
             if at['pc'] not in heads:
                 heads.append(at['pc'])
@@ -150,10 +186,31 @@ def compile_profile(data, source=None):
                 design['visible'] = list(row['visible'])
             loop_designs.append(design)
         elif boundary == 'join':
+            roles = {fact['role'] for fact in facts}
+            if 'unreachable' in roles:
+                # No path reaches the block: the renderer emits ⌜False⌝ as its entry (and refuses the row
+                # where the forward pass finds a path, unless the row says the path's guards contradict).
+                reached = row.get('reached')
+                if reached not in (None, 'contradictory_guards'):
+                    raise AnnotationError('%s: `reached` is contradictory_guards' % row['id'])
+                effective = [fact for fact in facts if fact['role'] != 'relies_on' or reached is None]
+                if {fact['role'] for fact in effective} != {'unreachable'} \
+                        or [fact['coq'] for fact in effective] != ['False'] or row.get('drop'):
+                    raise AnnotationError('%s: an unreachable row has the single fact False' % row['id'])
+                unreachable.append(at['pc'])
+                if reached:
+                    reached_pcs.append(at['pc'])
+                continue
+            for item in row.get('drop', []):
+                if set(item) != {'root', 'resources'} or not item['resources'] \
+                        or not all(isinstance(text, str) for text in item['resources']):
+                    raise AnnotationError('%s: a drop row has `root` and its resource texts' % row['id'])
+                drops.setdefault(at['pc'], []).append(dict(item))
             join_designs.setdefault(at['pc'], []).extend(_join_fact(fact) for fact in facts)
         elif boundary == 'call_site':
             if 'call' not in row:
                 raise AnnotationError('%s: a call_site row carries its `call` object' % row['id'])
+            _check_call(row)
             calls.append({**row['call'], 'call_site_pc': at['pc']})
         elif boundary == 'function_return':
             returns.append({'return_instruction_pc': at['pc'],
@@ -174,7 +231,9 @@ def compile_profile(data, source=None):
     if heads:
         profile['loop_heads'] = heads
     for key, value in (('loop_designs', loop_designs), ('join_designs', join_designs), ('calls', calls),
-                       ('function_returns', returns), ('access_placements', placements)):
+                       ('function_returns', returns), ('access_placements', placements),
+                       ('unreachable_entries', unreachable), ('unreachable_reached', reached_pcs),
+                       ('join_drops', drops)):
         if value:
             profile[key] = value
     if source is not None:

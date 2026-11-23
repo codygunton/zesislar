@@ -238,6 +238,9 @@ Definition parentHeaderBugTrigger (bug : KnownBug) (bytes : list byte) : bool :=
   | ParentHeaderUndecodedFieldRejected => undecodedFieldRejectedb bytes
   | ParentHeaderExcessBlobGasAboveLimit => excessBlobGasAboveLimitb bytes
   | ParentHeaderTrailingItemMalformed => trailingItemMalformedb bytes
+  (* The txAccessList classes never excuse a decodeParentHeader result. *)
+  | AccessListAddressLength | AccessListKeyLength
+  | AccessListEntryTrailingBytes => false
   end.
 
 (* The classes an input triggers, in knownBugs order. *)

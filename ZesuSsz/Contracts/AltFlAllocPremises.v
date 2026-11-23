@@ -18,15 +18,28 @@ Open Scope stdpp_scope.
    memcpyCallPremise: the allocator entry satisfies a machine_call spec.
 
    The allocator state (altFlHeap) is a resource that callers thread through:
-   the merged state/free-list object at freeListsPointer (AltFlFree.v), the
-   heap words ZKVM_HEAP_POS and ZKVM_HEAP_TOP (mapHeapPosAddress,
-   mapHeapTopAddress), the unallocated bump region [pos, top), and every block
-   on a free list. A block handed out by alloc is the caller's memory plus a
-   token (altFlBlock) that owns its size-class slack; free takes both back. *)
+   the merged state/free-list object at sym_alt_fl_alloc_state (the address
+   AltFlFree.v names freeListsPointer), the heap words ZKVM_HEAP_POS and
+   ZKVM_HEAP_TOP (mapHeapPosAddress, mapHeapTopAddress), the unallocated bump
+   region [pos, top), and every block on a free list. A block handed out by
+   alloc is the caller's memory plus a token (altFlBlock) that owns its
+   size-class slack; free takes both back.
+
+   The specs own no ZisK system register: machine_call over decodeItemCallMap
+   (mapZiskPlatform false) leaves zisk_input_end and zisk_free_input in the
+   caller's frame, so an allocator call preserves them (it is ordinary code
+   and cannot write a register it does not own). *)
 
 Notation altFlCallStackBytes := ((16) : Z) (only parsing).
 Notation altFlMaxLog2Alignment := ((3) : Z) (only parsing).
 Notation altFlMaxRequestBytes := ((2 ^ 63) : Z) (only parsing).
+(* The bump position stays at most 2^63: with requests below 2^63 the
+   64-bit add of alloc's capacity check (pos + size) then cannot wrap. *)
+Notation altFlMaxHeapPos := ((2 ^ 63) : Z) (only parsing).
+
+(* The state object is the one free (AltFlFree.v) owns. *)
+Lemma altFlStateIsFreeLists : sym_alt_fl_alloc_state = freeListsPointer.
+Proof. reflexivity. Qed.
 
 (* Size classes: class c < freeListCount holds blocks of 2^(c+3) bytes. The
    class of a request is freeSizeClass of AltFlFree.v, the class free uses. *)
@@ -69,7 +82,7 @@ Record AltFlHeapState : Type := {
 Definition altFlHeapWellFormed (heap : AltFlHeapState) : Prop :=
   Z.of_nat (length (altFlLists heap)) = freeListsBytes /\
   Z.of_nat (length (altFlChains heap)) = freeListCount /\
-  0 <= altFlHeapPos heap < 2 ^ 64 /\
+  0 <= altFlHeapPos heap <= altFlMaxHeapPos /\
   0 <= altFlHeapTop heap < 2 ^ 64 /\
   (altFlHeapPos heap < altFlHeapTop heap ->
     mapRamBase defaultMap <= altFlHeapPos heap /\
@@ -77,7 +90,7 @@ Definition altFlHeapWellFormed (heap : AltFlHeapState) : Prop :=
 
 Definition altFlHeapAt `{!islaG Sigma} `{!threadG}
     (heap : AltFlHeapState) : iProp Sigma :=
-  (freeListsPointer ↦ₘ∗ altFlLists heap ∗
+  (sym_alt_fl_alloc_state ↦ₘ∗ altFlLists heap ∗
    mapHeapPosAddress defaultMap ↦ₘ∗ word64Bytes (altFlHeapPos heap) ∗
    mapHeapTopAddress defaultMap ↦ₘ∗ word64Bytes (altFlHeapTop heap) ∗
    altFlHeapPos heap ↦ₘ? Z.max 0 (altFlHeapTop heap - altFlHeapPos heap) ∗
@@ -87,7 +100,7 @@ Definition altFlHeapAt `{!islaG Sigma} `{!threadG}
 
 Lemma altFlHeapAt_unfold `{!islaG Sigma} `{!threadG} (heap : AltFlHeapState) :
   altFlHeapAt heap ⊣⊢
-  (freeListsPointer ↦ₘ∗ altFlLists heap ∗
+  (sym_alt_fl_alloc_state ↦ₘ∗ altFlLists heap ∗
    mapHeapPosAddress defaultMap ↦ₘ∗ word64Bytes (altFlHeapPos heap) ∗
    mapHeapTopAddress defaultMap ↦ₘ∗ word64Bytes (altFlHeapTop heap) ∗
    altFlHeapPos heap ↦ₘ? Z.max 0 (altFlHeapTop heap - altFlHeapPos heap) ∗

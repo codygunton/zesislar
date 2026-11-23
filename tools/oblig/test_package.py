@@ -170,5 +170,26 @@ class DiagnosisTests(unittest.TestCase):
                 package.parse_diagnosis(bad)
 
 
+class StrictSliceTests(unittest.TestCase):
+    def test_unrelated_repeated_and_conjunct_premises_drop(self):
+        statement = ("forall (x y z : Z), (0 <= x) -> (z = 3) -> (0 <= x) -> (y = x /\\ 0 <= y) -> (y = x) -> "
+                     "(x + 1 > 0)")
+        sliced, dropped = package.strict_slice(statement)
+        self.assertEqual(dropped, ["(z = 3)", "(0 <= x)", "(y = x)"])
+        self.assertEqual(sliced, "forall (x y z : Z),\n  (0 <= x) ->\n  (y = x /\\ 0 <= y) ->\n  (x + 1 > 0)")
+
+    def test_nothing_dropped_keeps_the_statement(self):
+        statement = "forall (x : Z), (0 <= x) -> (x + 1 > 0)"
+        self.assertEqual(package.strict_slice(statement), (statement, []))
+
+    def test_named_premise_binders_of_the_exporter(self):
+        statement = ("forall (x : Z) (w : bv 8) (H0 : 0 <= x) (H1 : bv_unsigned w = 3) (H2 : 0 <= x), "
+                     "(x + 1 > 0)")
+        sliced, dropped = package.strict_slice(statement)
+        self.assertEqual(dropped, ["(H1 : bv_unsigned w = 3)", "(H2 : 0 <= x)"])
+        self.assertEqual(sliced, "forall (x : Z) (w : bv 8) (H0 : 0 <= x),\n  (x + 1 > 0)")
+        self.assertEqual(package.premise_count(statement), 3)
+
+
 if __name__ == "__main__":
     unittest.main()

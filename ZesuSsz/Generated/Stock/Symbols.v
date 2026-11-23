@@ -13,6 +13,7 @@
 (*   sym_alt_fl_alloc_remap <- "alt_fl_alloc.remap" *)
 (*   sym_alt_fl_alloc_free <- "alt_fl_alloc.free" *)
 (*   sym_alt_fl_alloc_vtable <- "alt_fl_alloc.vtable" *)
+(*   sym_alt_fl_alloc_state <- "alt_fl_alloc.state" *)
 
 From Coq Require Import ZArith.
 
@@ -28,3 +29,4 @@ Notation sym_alt_fl_alloc_resize := ((0x800421b0) : Z) (only parsing).
 Notation sym_alt_fl_alloc_remap := ((0x8004218c) : Z) (only parsing).
 Notation sym_alt_fl_alloc_free := ((0x80041f38) : Z) (only parsing).
 Notation sym_alt_fl_alloc_vtable := ((0x801136d8) : Z) (only parsing).
+Notation sym_alt_fl_alloc_state := ((0xa0534000) : Z) (only parsing).

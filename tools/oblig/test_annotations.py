@@ -57,6 +57,72 @@ class Compile(unittest.TestCase):
         with self.assertRaisesRegex(annotations.AnnotationError, 'compiled keys'):
             annotations.compile_profile(data)
 
+    def test_entry_predicates_become_opaque_predicates(self):
+        data = fixture()
+        data['rows'][0]['predicates'] = [{'name': 'heap', 'owner': 'Some.Module'}]
+        compiled = annotations.compile_profile(data)
+        self.assertEqual(compiled['opaque_predicates'], {'heap': {'name': 'heap', 'owner': 'Some.Module'}})
+        data['rows'][0]['predicates'] = [{'name': 'heap'}]
+        with self.assertRaisesRegex(annotations.AnnotationError, 'predicate row'):
+            annotations.compile_profile(data)
+
+    def test_call_rows_carry_checked_opaque_and_returns_rows(self):
+        data = fixture()
+        call = {'function': 'f', 'callee_pc': 'g+0x0', 'return_site_pc': '+0x104', 'spec': 'gSpec',
+                'opaque': [{'spec': 'heap', 'use': 'framed'},
+                           {'spec': 'token (bv_unsigned (argv !!! 1%nat))', 'use': 'consumed', 'caller': ['token p']},
+                           {'spec': 'bv_unsigned (rets !!! 0%nat) ↦ₘ? 8', 'use': 'produced'}],
+                'returns': [{'index': 0, 'register': 'x10'}]}
+        data['rows'].append({'id': 'call-test', 'at': {'pc': '+0x100', 'boundary': 'call_site'}, 'call': call})
+        row, = [row for row in annotations.compile_profile(data)['calls'] if row['call_site_pc'] == '+0x100']
+        self.assertEqual((row['opaque'], row['returns']), (call['opaque'], call['returns']))
+        for broken in ({'opaque': [{'spec': 'token x', 'use': 'consumed'}]},
+                       {'opaque': [{'spec': 'heap', 'use': 'borrowed'}]},
+                       {'returns': [{'index': 0, 'register': 'x1'}]}):
+            data['rows'][-1]['call'] = dict(call, **broken)
+            with self.assertRaises(annotations.AnnotationError):
+                annotations.compile_profile(data)
+
+    def test_unreachable_and_drop_join_rows(self):
+        data = fixture()
+        data['rows'].append({'id': 'dead-a0', 'at': {'pc': '+0xa0', 'boundary': 'join'},
+                             'facts': [{'coq': 'False', 'role': 'unreachable'}]})
+        data['rows'].append({'id': 'join-110', 'at': {'pc': '+0x110', 'boundary': 'join'}, 'facts': [],
+                             'drop': [{'root': '+0x168', 'resources': ['p ↦ₘ? n']}]})
+        compiled = annotations.compile_profile(data)
+        self.assertEqual(compiled['unreachable_entries'], ['+0xa0'])
+        self.assertEqual(compiled['join_drops'], {'+0x110': [{'root': '+0x168', 'resources': ['p ↦ₘ? n']}]})
+        self.assertNotIn('+0xa0', compiled.get('join_designs', {}))
+        data['rows'][-2]['facts'] = [{'coq': 'True', 'role': 'unreachable'}]
+        with self.assertRaisesRegex(annotations.AnnotationError, 'single fact False'):
+            annotations.compile_profile(data)
+        data['rows'][-2]['facts'] = [{'coq': 'False', 'role': 'unreachable'}]
+        data['rows'][-1]['drop'] = [{'root': '+0x168'}]
+        with self.assertRaisesRegex(annotations.AnnotationError, 'drop row'):
+            annotations.compile_profile(data)
+
+    def test_an_unreachable_row_reached_by_contradictory_guards(self):
+        data = fixture()
+        data['rows'].append({'id': 'dead-1c0', 'at': {'pc': '+0x1c0', 'boundary': 'join'},
+                             'reached': 'contradictory_guards',
+                             'facts': [{'coq': 'False', 'role': 'unreachable'},
+                                       {'coq': 'len <> 0 /\\ len <= 2^24 /\\ bv_shiftl len 5 = 0', 'role': 'relies_on'}]})
+        compiled = annotations.compile_profile(data)
+        self.assertEqual(compiled['unreachable_entries'], ['+0x1c0'])
+        self.assertEqual(compiled['unreachable_reached'], ['+0x1c0'])
+        self.assertNotIn('+0x1c0', compiled.get('join_designs', {}))
+        # Without `reached` the old rule stands: the single fact False, no documentation facts.
+        del data['rows'][-1]['reached']
+        with self.assertRaisesRegex(annotations.AnnotationError, 'single fact False'):
+            annotations.compile_profile(data)
+        data['rows'][-1]['facts'] = data['rows'][-1]['facts'][:1]
+        compiled = annotations.compile_profile(data)
+        self.assertEqual(compiled['unreachable_entries'], ['+0x1c0'])
+        self.assertNotIn('unreachable_reached', compiled)
+        data['rows'][-1]['reached'] = 'by_luck'
+        with self.assertRaisesRegex(annotations.AnnotationError, 'contradictory_guards'):
+            annotations.compile_profile(data)
+
     def test_check_fails_when_the_profile_drifts(self):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)

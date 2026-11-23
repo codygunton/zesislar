@@ -8,18 +8,12 @@ Require Import ZesuSsz.Contracts.Candidates.AccessListCandidate.
 Import ListNotations.
 Open Scope Z_scope.
 
-(* Owner: contract fact (review packet b1-tx). Skeleton: for each KnownBug
-   class, a decidable condition on the bytes of `rest` under which the
-   binary's decision (candidateAccessList) may differ from Sail's
-   decode_access_list. No class registered in KnownBugs.v applies to
-   txAccessList inside its domain (RlpLongLengthWrap is excluded by
-   accessListHeadersFit), so every class maps to false. The divergences the
-   review packet proposes are stated below as conditions only; registering
-   them as KnownBug constructors waits for the user's review. *)
-Definition txAccessListBugTrigger (bug : KnownBug) (input : list byte) : bool :=
-  match bug with
-  | _ => false
-  end.
+(* Owner: contract fact (review packet b1-tx, reviewed 2026-11-23). For
+   each KnownBug class, a decidable condition on the bytes of `rest` under
+   which the binary's decision (candidateAccessList) may differ from Sail's
+   decode_access_list. The three AccessList* classes are txAccessList's;
+   every other class maps to false (RlpLongLengthWrap is excluded by the
+   domain, accessListHeadersFit). txAccessListBugTrigger is at the end. *)
 
 (* A reached call at [site] whose item decodes as a byte string with a
    payload length satisfying [test]. *)
@@ -31,7 +25,7 @@ Definition accessListStringAtb (site : Z) (test : Z -> bool)
   | candidateSuccess true _ _ | candidateError => false
   end.
 
-(* Proposed D1 (AccessListAddressLength): an entry address is a byte string
+(* AccessListAddressLength: an entry address is a byte string
    of at most 32 bytes but not 20. The binary rejects it
    (rlp_decode.zig:509); Sail decodes the address with rlp_decode_word,
    which accepts any string of at most 32 bytes, and keeps its low 20
@@ -43,7 +37,7 @@ Definition accessListAddressLengthb (input : list byte) : bool :=
                       (length <=? 32)))
     (accessListCalls input).
 
-(* Proposed D2 (AccessListKeyLength): a storage key is a byte string of
+(* AccessListKeyLength: a storage key is a byte string of
    fewer than 32 bytes. The binary rejects it (rlp_decode.zig:526); Sail's
    rlp_decode_word accepts it. *)
 Definition accessListKeyLengthb (input : list byte) : bool :=
@@ -52,7 +46,7 @@ Definition accessListKeyLengthb (input : list byte) : bool :=
        (fun length => length <? accessListKeyBytes))
     (accessListCalls input).
 
-(* Proposed D3 (AccessListEntryTrailingBytes): bytes follow the keys list
+(* AccessListEntryTrailingBytes: bytes follow the keys list
    inside an entry. The binary never reads them (rlp_decode.zig:513-535);
    Sail rejects them (rlp_cursor_expect_end). *)
 Definition accessListEntryTrailingb (input : list byte) : bool :=
@@ -65,7 +59,24 @@ Definition accessListEntryTrailingb (input : list byte) : bool :=
     | candidateSuccess false _ _ | candidateError => false
     end) (accessListCalls input).
 
-(* The proposed classes an input triggers. *)
+(* The three conditions an input meets, in KnownBugs order. *)
 Definition accessListProposedTriggers (input : list byte) : list bool :=
   [accessListAddressLengthb input; accessListKeyLengthb input;
    accessListEntryTrailingb input].
+
+Definition txAccessListBugTrigger (bug : KnownBug) (input : list byte) : bool :=
+  match bug with
+  | AccessListAddressLength => accessListAddressLengthb input
+  | AccessListKeyLength => accessListKeyLengthb input
+  | AccessListEntryTrailingBytes => accessListEntryTrailingb input
+  | RlpLongLengthWrap | ParentHeaderMissingRequiredField
+  | ParentHeaderTrailingBytes | ParentHeaderSkippedFieldShape
+  | ParentHeaderBlobGasUnaligned | RlpUintNonCanonical
+  | ParentHeaderUintOver8 | ParentHeaderUndecodedFieldRejected
+  | ParentHeaderExcessBlobGasAboveLimit
+  | ParentHeaderTrailingItemMalformed => false
+  end.
+
+(* The classes an input triggers, in knownBugs order. *)
+Definition txAccessListTriggeredBugs (input : list byte) : list KnownBug :=
+  List.filter (fun bug => txAccessListBugTrigger bug input) knownBugs.

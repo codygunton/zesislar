@@ -263,6 +263,13 @@ Ltac zesu_finish_known_list_shape :=
       rewrite Hsingleton; clear Hsingleton
   end;
   zesu_normalize_equal_array_regions;
+  (* Two stores into one owned array leave the rest of the first store's
+     image cut again (`drop 8 (drop 8 before)`); an entry states the rest
+     once (`drop 16 before`). One drop of the summed count. *)
+  repeat match goal with
+  | |- context [drop ?outer (drop ?inner ?values)] =>
+      rewrite (drop_drop values outer inner)
+  end;
   cbn [drop];
   first [solve [zesu_normalize_known_list_lengths; reflexivity] |
     (* A word stored as its byte extracts and read back as a word. *)
