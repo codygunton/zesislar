@@ -454,15 +454,16 @@ class Kernel:
                              offset=offset)
 
     def repackage(self, run, function, where, tier, bound, reason):
-        """package.py's task of a goal again at BOUND (the tier cap), with the definitions context and the
-        hint pack of RUN when present; the record keeps `prompt_bound` and `bound_reason`."""
+        """package.py's task of a goal again at BOUND (the tier cap) less the no-tools preamble the prompt
+        adds, with the definitions context and the hint pack of RUN when present; the record keeps
+        `prompt_bound` (BOUND) and `bound_reason`."""
         import falsify
         import similar
         manifest = where.manifest()
         bank = manifest.get("bank")
         route_ = falsify.Route(bank) if bank and (Path(bank) / "ARGS.json").is_file() else None
         hints = Path(run) / "hints"
-        record = package.package_goal(where.d, manifest, where.goal, function, tier, bound,
+        record = package.package_goal(where.d, manifest, where.goal, function, tier, bound - len(NO_TOOLS.encode()),
                                       similar.build_index(runs=[where.d]), hints if hints.is_dir() else None,
                                       defs_route=route_, symbol_route=route_)
         record.update(prompt_bound=bound, bound_reason=reason)
