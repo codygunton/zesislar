@@ -102,6 +102,9 @@ def large_bound(where, tier):
     return min(int(bound), tier_cap(tier)) if bound else None
 
 
+RETRY_ROOM = 2000  # bytes a retry prompt keeps for the compiler errors or the asked-for context
+
+
 # ---- obligation files ----
 
 class Located:
@@ -305,6 +308,13 @@ def prompt_for(run, function, identifier, tier, located=None, state=None):
         return None, "no task file"
     last = item["last_attempt"]
     text, items = base, ["task"]
+    # A retry needs room for the compiler errors or the asked-for context, and a meaning lemma has no
+    # package to re-package smaller: both may use the tier cap, recorded as `prompt_bound:<bytes>` on
+    # the attempt like a goal re-packaged at the cap.
+    retry = bool(last and last["tier"] == tier and last["failure"] in ("compile_error", "need_context", "malformed"))
+    unpackaged = "/meaning/" in identifier
+    if (retry or unpackaged) and tier_cap(tier) > limit and len(base.encode()) + (RETRY_ROOM if retry else 0) > limit:
+        limit = large = tier_cap(tier)
     if last and last["tier"] == tier and last["failure"] == "compile_error":
         extra = error_section(where, limit - len(base.encode()))
         if extra is None:
