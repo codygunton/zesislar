@@ -1,0 +1,193 @@
+{
+  "function": "keysToOwnedSlice",
+  "entry_hist": "wrap",
+  "frame_slots": true,
+  "args_type": "KeysToOwnedSliceBlockArgs",
+  "symbol": "array_list.Aligned([32]u8,null).toOwnedSlice",
+  "generated_directory": "ZesuSsz/Generated/KeysToOwnedSlice/FP301",
+  "callers_directory": "tools/block/generated/keystoownedslice_fp301_callers",
+  "contract_requires": [
+    "Require Import InstrSpecs.Machine.",
+    "Require Import EvmSailRlp.evm_rlp_types.",
+    "Require Import ZesuSsz.Contracts.AltFlAllocPremises.",
+    "Require Import ZesuSsz.Contracts.ZiskMemcpyPremise.",
+    "Require Import ZesuSsz.Contracts.ArrayListContract.",
+    "Require Import ZesuSsz.Contracts.KeysToOwnedSliceBlockEntries.",
+    "Require Export ZesuSsz.Compliance.KeysToOwnedSliceHints."
+  ],
+  "loop_contract_requires": [
+    "Require Import InstrSpecs.Machine.",
+    "Require Import EvmSailRlp.evm_rlp_types.",
+    "Require Import ZesuSsz.Contracts.AltFlAllocPremises.",
+    "Require Import ZesuSsz.Contracts.ZiskMemcpyPremise.",
+    "Require Import ZesuSsz.Contracts.ArrayListContract.",
+    "Require Import ZesuSsz.Contracts.KeysToOwnedSliceBlockEntries.",
+    "Require Export ZesuSsz.Compliance.KeysToOwnedSliceHints."
+  ],
+  "caller_contract_requires": [
+    "Require Import ZesuSsz.Contracts.KeysToOwnedSliceBlockEntries."
+  ],
+  "selected_code": {
+    "module": "ZesuSsz.Contracts.KeysToOwnedSliceSelected",
+    "premise": "keysToOwnedSliceSelectedCode"
+  },
+  "return_address": {
+    "register": "x1",
+    "value": "(Z_to_bv 64 (toOwnedReturnAddress (keysBase args)))",
+    "alignment": 4,
+    "source": "keysBlockArgsWellFormed (KeysToOwnedSliceBlockEntries.v): toOwnedReturnAddress (keysBase args) mod 4 = 0 (from toOwnedSliceDomain: (4 | toOwnedReturnAddress args))"
+  },
+  "entry_interface": {
+    "entry_resources": "keysBlockEntryResources",
+    "well_formed": "keysBlockArgsWellFormed",
+    "exit_resources": "keysBlockExitResources",
+    "source": "ZesuSsz/Contracts/KeysToOwnedSliceBlockEntries.v"
+  },
+  "trace_namespace": "ZesuSsz.Stock.Closure",
+  "blocks": [
+    "+0x0",
+    "+0x58",
+    "+0x5c",
+    "+0x6c",
+    "+0x78",
+    "+0x7c",
+    "+0x98",
+    "+0xa0",
+    "+0xa4",
+    "+0xc8",
+    "+0xcc",
+    "+0xd8",
+    "+0xf0",
+    "+0xf8",
+    "+0xfc",
+    "+0x110",
+    "+0x118",
+    "+0x148",
+    "+0x150",
+    "+0x168",
+    "+0x170",
+    "+0x184",
+    "+0x18c",
+    "+0x1ac",
+    "+0x1c0",
+    "+0x1d8",
+    "+0x1e0"
+  ],
+  "loop_heads": [],
+  "cfg_function": "array_list.Aligned([32]u8,null).toOwnedSlice",
+  "domain_component": "\u231ckeysBlockDomainAt returnAddress args\u231d",
+  "calls": [
+    {
+      "function": "array_list.Aligned([32]u8,null).toOwnedSlice",
+      "callee_pc": "alt_fl_alloc.free+0x0",
+      "return_site_pc": "+0x98",
+      "spec": "altFlFreeCallSpec",
+      "spec_module": "ZesuSsz.Contracts.AltFlAllocPremises",
+      "spec_source": "ZesuSsz/Contracts/AltFlAllocPremises.v",
+      "stack_bytes": 16,
+      "arrays": [],
+      "output_length_source": "altFlFreeCallSpec (AltFlAllocPremises.v): returns altFlHeap only; no array",
+      "call_site_pc": "+0x94"
+    },
+    {
+      "function": "array_list.Aligned([32]u8,null).toOwnedSlice",
+      "callee_pc": "alt_fl_alloc.remap+0x0",
+      "return_site_pc": "+0xc8",
+      "spec": "altFlRemapCallSpec",
+      "spec_module": "ZesuSsz.Contracts.AltFlAllocPremises",
+      "spec_source": "ZesuSsz/Contracts/AltFlAllocPremises.v",
+      "stack_bytes": 16,
+      "arrays": [],
+      "output_length_source": "altFlRemapCallSpec (AltFlAllocPremises.v): returns 0 in x10 and no array",
+      "call_site_pc": "+0xc4"
+    },
+    {
+      "function": "array_list.Aligned([32]u8,null).toOwnedSlice",
+      "callee_pc": "alt_fl_alloc.alloc+0x0",
+      "return_site_pc": "+0x168",
+      "spec": "altFlAllocCallSpec",
+      "spec_module": "ZesuSsz.Contracts.AltFlAllocPremises",
+      "spec_source": "ZesuSsz/Contracts/AltFlAllocPremises.v",
+      "stack_bytes": 16,
+      "arrays": [],
+      "output_length_source": "altFlAllocCallSpec (AltFlAllocPremises.v): the returned block owns altFlAllocatedBytes x10 (argument 1) bytes, uninitialized",
+      "call_site_pc": "+0x164"
+    },
+    {
+      "function": "array_list.Aligned([32]u8,null).toOwnedSlice",
+      "callee_pc": "memcpy+0x0",
+      "return_site_pc": "+0x184",
+      "spec": "ziskMemcpyCallSpec",
+      "spec_module": "ZesuSsz.Contracts.ZiskMemcpyPremise",
+      "spec_source": "ZesuSsz/Contracts/ZiskMemcpyPremise.v",
+      "stack_bytes": 0,
+      "arrays": [
+        {
+          "binder": "source",
+          "argument": 1,
+          "caller_value": "arrayListItems (keysBlockList args)"
+        },
+        {
+          "binder": "scratch",
+          "constant": "ziskExtraParamsAddress",
+          "caller_value": "toOwnedScratchBefore (keysBase args)",
+          "length": 8,
+          "length_source": "keysBlockArgsWellFormed (KeysToOwnedSliceBlockEntries.v): length (toOwnedScratchBefore (keysBase args)) = 8%nat"
+        }
+      ],
+      "output_length_source": "ziskMemcpyCallSpec (ZiskMemcpyPremise.v): the destination receives source, Z.of_nat (length source) = argument 2; the extra-params word receives word64Bytes (argument 2), 8 bytes",
+      "collection_after": "reg_col zesu_sys_regs",
+      "collection_source": "machine_call_ret returns reg_col (machine_sys_regs decodeItemCallMap); the RET of ziskMemcpyCallSpec returns zisk_input_end and zisk_free_input with BitsShape 64; zesu_sys_regs (InstrSpecs/Machine.v) is their union",
+      "call_site_pc": "+0x180"
+    },
+    {
+      "function": "array_list.Aligned([32]u8,null).toOwnedSlice",
+      "callee_pc": "alt_fl_alloc.free+0x0",
+      "return_site_pc": "+0x1ac",
+      "spec": "altFlFreeCallSpec",
+      "spec_module": "ZesuSsz.Contracts.AltFlAllocPremises",
+      "spec_source": "ZesuSsz/Contracts/AltFlAllocPremises.v",
+      "stack_bytes": 16,
+      "arrays": [],
+      "output_length_source": "altFlFreeCallSpec (AltFlAllocPremises.v): returns altFlHeap only; no array",
+      "call_site_pc": "+0x1a8"
+    },
+    {
+      "function": "array_list.Aligned([32]u8,null).toOwnedSlice",
+      "callee_pc": "memcpy+0x0",
+      "return_site_pc": "+0x1d8",
+      "spec": "ziskMemcpyCallSpec",
+      "spec_module": "ZesuSsz.Contracts.ZiskMemcpyPremise",
+      "spec_source": "ZesuSsz/Contracts/ZiskMemcpyPremise.v",
+      "stack_bytes": 0,
+      "arrays": [
+        {
+          "binder": "source",
+          "argument": 1,
+          "caller_value": "arrayListItems (keysBlockList args)"
+        },
+        {
+          "binder": "scratch",
+          "constant": "ziskExtraParamsAddress",
+          "caller_value": "toOwnedScratchBefore (keysBase args)",
+          "length": 8,
+          "length_source": "keysBlockArgsWellFormed (KeysToOwnedSliceBlockEntries.v): length (toOwnedScratchBefore (keysBase args)) = 8%nat"
+        }
+      ],
+      "output_length_source": "ziskMemcpyCallSpec (ZiskMemcpyPremise.v): the destination receives source, Z.of_nat (length source) = argument 2; the extra-params word receives word64Bytes (argument 2), 8 bytes",
+      "collection_after": "reg_col zesu_sys_regs",
+      "collection_source": "machine_call_ret returns reg_col (machine_sys_regs decodeItemCallMap); the RET of ziskMemcpyCallSpec returns zisk_input_end and zisk_free_input with BitsShape 64; zesu_sys_regs (InstrSpecs/Machine.v) is their union",
+      "call_site_pc": "+0x1d4"
+    }
+  ],
+  "function_returns": [
+    {
+      "return_instruction_pc": "+0x144",
+      "return_fact": true
+    }
+  ],
+  "generated_from": {
+    "path": "tools/block/functions/keysToOwnedSlice.annotations.json",
+    "sha256": "44cce8f7cd0b7b5d6961472d441b1b8d598c7348d550160aa188eb8c2e7f3b8f"
+  }
+}
