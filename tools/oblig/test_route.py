@@ -122,7 +122,7 @@ class Router(unittest.TestCase):
 
     def test_goal_naming_a_code_address_goes_to_owner(self):
         statement = self.run / 'goal.v'
-        statement.write_text('Lemma g : pc = 0x%x.\n' % (0x80000000 + 0xd6960))
+        statement.write_text('Lemma g : pc = 0x%x.\n' % ((8 << 28) + 0xd6960))
         self.add(ev(GOAL, 'derived', artifact={'path': str(statement), 'sha256': '0' * 64}))
         self.assertEqual(self.next(GOAL), ('owner', None))
         other = store.goal_id(F, '0040', 'q')
