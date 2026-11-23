@@ -56,12 +56,24 @@ count toward the 6. Blocks,
 decisions and spatial leftovers, which have no ladder, spin at 6 attempts or 3 resets as before.
 An exhausted ladder below both limits gives `reconsider`.
 
+Best-of-N. A tier may send N parallel samples per round (tools/oblig/drive.py: tiers.json or a class's
+routing.json `samples`); each sample is an attempt of its own (its own prompt, registered running, its
+own result event), and its running event names the round (`round:<first attempt of the round>` in
+context_items). The ladder and spin rules read a round as ONE attempt: a tier's `attempts` in
+routing.json count rounds, the 6-attempt spin limit counts rounds, and the round's result is the result
+of the sample the driver submitted (its last result event; the others are `superseded`,
+`compile_error`, `unconfirmed_false` or their own verdict). A retry after a compile error or
+need_context is the next round.
+
 Event vocabulary read here (written by the tools that act): tier `falsify` marks the falsity check
 (state `false` on a hit, class `unchecked` when the binder types are outside its range); tier
 `machine-run` marks `annotations.py test` (state `failed` class `rejected_by_run` on a rejection);
 a decision's proposal is its event's artifact; failure classes of prover attempts are
-`compile_error`, `need_context`, `give_up`, `rule_gap`, `malformed`, and `missing_context`,
-`too_large` and `repeated_prompt` (filed by the driver, no attempt).
+`compile_error`, `need_context`, `give_up`, `rule_gap`, `malformed`, `bad_counterexample` (a `false`
+whose counterexample the kernel did not confirm), `unconfirmed_false` (a `false` the attempt's
+check_counterexample did not confirm, refused without a kernel call), `superseded` (a best-of-N
+sample another sample of its round made unneeded), and `missing_context`, `too_large` and
+`repeated_prompt` (filed by the driver, no attempt).
 
 The tier order and default attempts come from tools/oblig/tiers.json, the first model tier and the
 ladder attempts of a goal class from tools/oblig/routing.json; without them: mechanical,
@@ -161,13 +173,28 @@ def since_reset(item):
     return rows[last:]
 
 
+def round_of(row):
+    """The best-of-N round a running event names (`round:<first attempt>` in its context_items), or None."""
+    for entry in row.get('context_items') or []:
+        if str(entry).startswith('round:'):
+            return int(str(entry).split(':', 1)[1])
+    return None
+
+
 def attempt_results(item):
-    """{tier: [failure class or state of each attempt, in order]} (the last event of each attempt), over
-    the attempts since the goal's last reset: a reset (a changed task or statement) runs the ladder again."""
-    final = {}
+    """{tier: [failure class or state of each ladder step, in order]} over the attempts since the goal's
+    last reset (a reset, a changed task or statement, runs the ladder again). A ladder step is one
+    attempt, or one best-of-N round (the samples whose running events name the same `round:<n>`): its
+    result is the last result event of the round, the one of the sample the driver submitted."""
+    final, rounds = {}, {}
     for row in since_reset(item):
-        if row.get('attempt') is not None:
-            final[(row['tier'], row['attempt'])] = row['class'] if row['state'] == 'failed' else row['state']
+        if row.get('attempt') is None:
+            continue
+        key = (row['tier'], row['attempt'])
+        if round_of(row) is not None:
+            rounds[key] = round_of(row)
+        final[(row['tier'], rounds.get(key, row['attempt']))] = (
+            row['class'] if row['state'] == 'failed' else row['state'])
     out = {}
     for (tier, _), result in final.items():
         out.setdefault(tier, []).append(result)

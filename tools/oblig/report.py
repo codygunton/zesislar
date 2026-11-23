@@ -15,7 +15,10 @@ tokens per attempt; coordinator bytes read per round (RUN/COORDINATOR.jsonl); pe
 closed at the first attempt and within its attempts; per tier the check_proof calls per goal it closed
 and the tokens per attempt with and without the tool (`check_calls:<n>` in an attempt's context_items);
 share closed by Haiku tiers; goals that reached opus-medium as prover; escalations; tokens per closed
-obligation per tier; spin count; tokens and checked-lemma lines per block.
+obligation per tier; spin count (a best-of-N round counts once); per model tier its cost: goals closed,
+attempts, best-of-N rounds and samples, prover tool calls by kind (check, lookup, search,
+counterexample), tokens, tokens per closed goal and cost-weighted tokens per closed goal (tiers.json
+`cost_weight`, placeholder prices until real ones replace them); tokens and checked-lemma lines per block.
 """
 import argparse
 import json
@@ -85,11 +88,46 @@ def counted(value, prefix=None):
 def check_calls(row):
     """The check_proof calls of an attempt result row (`check_calls:<n>` in context_items), None without
     the tool."""
+    return tool_count(row, 'check_calls')
+
+
+def tool_count(row, key):
+    """The `<key>:<n>` count of a row's context_items (drive.py TOOL_COUNTS, `round`), None without it."""
     items = row.get('context_items')
     for entry in items if isinstance(items, list) else []:
-        if str(entry).startswith('check_calls:'):
+        if str(entry).startswith(key + ':'):
             return int(str(entry).split(':', 1)[1])
     return None
+
+
+TOOL_KINDS = (('check', 'check_calls'), ('lookup', 'lookup_calls'), ('search', 'search_calls'),
+              ('counterexample', 'counterexample_calls'))
+
+
+def cost_line(goals, tier, weight):
+    """The accounting of TIER over GOALS: goals it closed, attempts (results), best-of-N rounds and their
+    samples, tool calls by kind, tokens, tokens per closed goal, and the cost-weighted tokens per closed
+    goal (tiers.json `cost_weight`, placeholder prices), or None when the tier made no attempt."""
+    results, rounds, samples = [], set(), 0
+    for g in goals:
+        for row in g['events']:
+            if row.get('tier') == tier and row['state'] == 'running' and tool_count(row, 'round') is not None:
+                rounds.add((g['id'], tool_count(row, 'round')))
+        sampled = {row['attempt'] for row in g['events'] if row.get('tier') == tier and row['state'] == 'running'
+                   and tool_count(row, 'round') is not None}
+        mine = [r for r in attempt_rows(g) if r['tier'] == tier and r['state'] != 'running']
+        results += mine
+        samples += sum(r['attempt'] in sampled for r in mine)
+    if not results:
+        return None
+    closed = sum(g['state'] == 'closed' and g['closed_by'] == tier for g in goals)
+    spent = sum(map(tokens, results))
+    calls = ' '.join('%s %d' % (kind, sum(tool_count(r, key) or 0 for r in results)) for kind, key in TOOL_KINDS)
+    weighted = 'n/a' if weight is None else ratio(spent * weight, closed, percent=False)
+    return ('goals closed %d, attempts %d, best-of-N rounds %d with %d samples, tool calls %s, tokens %d, tokens '
+            'per closed goal %s, cost weight %s (placeholder), cost-weighted tokens per closed goal %s'
+            % (closed, len(results), len(rounds), samples, calls, spent, ratio(spent, closed, percent=False),
+               'n/a' if weight is None else weight, weighted))
 
 
 def tokens(row):
@@ -223,8 +261,20 @@ def measures(run, function=None):
                                                          len(goals)))
     escalations = sum(max(0, len({a['tier'] for a in g['attempts'] if model_tier(a['tier'])}) - 1) for g in goals)
     put('escalations', str(escalations) if goals else 'n/a')
-    put('spin', str(sum(len(i['attempts']) >= route.SPIN_ATTEMPTS or i['resets'] >= route.SPIN_RESETS
+
+    def steps(item):
+        """Attempts of ITEM, a best-of-N round counted once (route.py's reading)."""
+        rounds = {(row['tier'], row['attempt']): route.round_of(row) for row in item['events']
+                  if row['state'] == 'running' and route.round_of(row) is not None}
+        return len({(a['tier'], rounds.get((a['tier'], a['attempt']), a['attempt'])) for a in item['attempts']})
+    put('spin', str(sum(steps(i) >= route.SPIN_ATTEMPTS or i['resets'] >= route.SPIN_RESETS
                         for i in items)) if items else 'n/a')
+    weights = {row['name']: row.get('cost_weight') for row in (store.read_json(route.TIERS_FILE) or {}).get('tiers', [])}
+    for tier in tiers + sorted({a['tier'] for a in attempts if a['tier'] not in tiers}):
+        if model_tier(tier):
+            line = cost_line(goals, tier, weights.get(tier))
+            if line is not None:
+                put('cost %s' % tier, line)
 
     total_tokens = sum((r.get('tokens_in') or 0) + (r.get('tokens_out') or 0) for r in tokened)
     put('tokens per block', ratio(total_tokens, len(blocks), percent=False) if tokened else 'n/a')
