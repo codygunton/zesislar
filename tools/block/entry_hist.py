@@ -726,6 +726,12 @@ def fold_literal_words(text):
     return text
 
 
+def slot_binder_name(offset):
+    """The binder of an unknown saved-register slot at `offset` from the entry stack pointer
+    (`slot_components`): `frame_old_m8` for -8. A join design (annotation `frame` row) names it."""
+    return 'frame_old_' + (str(offset) if offset >= 0 else 'm' + str(-offset))
+
+
 def slot_components(kind, address, value, table, regions, taken):
     """Split one memory component at the frame's saved-register slots.
 
@@ -765,7 +771,7 @@ def slot_components(kind, address, value, table, regions, taken):
         piece(cursor, offset)
         cell = '(bv_unsigned ' + table['slots'][offset] + ')'
         if items is None:
-            name = 'frame_old_' + (str(offset) if offset >= 0 else 'm' + str(-offset))
+            name = slot_binder_name(offset)
             while name in taken:
                 name += "'"
             taken.add(name)

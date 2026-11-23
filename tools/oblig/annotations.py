@@ -40,6 +40,12 @@ The compiled profile keys, by `boundary`:
   function_return  a `function_returns` row: `return_instruction_pc` and `return_fact` (True without facts)
   access           an `access_placements` row: `pc` and `placement` {`array`, `index`, `scale`, `offset`},
                    which the forward pass reads (symbolic_state.ACCESS_PLACEMENTS)
+  frame            the saved frame where an entry forgets it: `slots` [{`offset` (bytes from the entry
+                   stack pointer, negative), `coq` (the value the slot holds)}] and `sites` [pc]. Each site
+                   gets one fact per slot, `<binder> = (<coq>)`, on the binder of that unknown slot cell
+                   (`entry_hist.slot_binder_name`, profile `frame_slots`): as `return_facts` of the call
+                   whose `return_site_pc` it is, else as `join_designs`; each edge into the site proves it
+                   of the cell value it holds
 The compiled profile carries `generated_from` {`path`, `sha256`}. The three hand-written profiles have
 no annotation file.
 
@@ -64,8 +70,10 @@ import tempfile
 
 ROOT = Path(__file__).resolve().parents[2]
 FUNCTIONS = ROOT / 'tools/block/functions'
+sys.path.insert(0, str(ROOT / 'tools/block'))
+import entry_hist  # noqa: E402
 SCHEMA = 'zesu.annotations.v1'
-BOUNDARIES = ('entry', 'loop_cut', 'join', 'call_site', 'call_return', 'function_return', 'access')
+BOUNDARIES = ('entry', 'loop_cut', 'join', 'call_site', 'call_return', 'function_return', 'access', 'frame')
 GENERATED_KEYS = ('loop_designs', 'join_designs', 'calls', 'function_returns', 'access_placements',
                   'domain_component', 'opaque_predicates', 'unreachable_entries', 'unreachable_reached',
                   'join_drops', 'generated_from')
@@ -221,7 +229,27 @@ def compile_profile(data, source=None):
             if missing:
                 raise AnnotationError('%s: placement lacks %s' % (row['id'], ', '.join(sorted(missing))))
             placements.append({'pc': at['pc'], **{key: placement[key] for key in ('array', 'index', 'scale', 'offset')}})
+        elif boundary == 'frame':
+            slots, sites = row.get('slots') or [], row.get('sites') or []
+            if not slots or not sites or row.get('facts') \
+                    or not all(isinstance(pc, str) and PC.fullmatch(pc) for pc in sites) \
+                    or any(set(slot) != {'offset', 'coq'} or not isinstance(slot['offset'], int)
+                           or slot['offset'] % 8 or not isinstance(slot['coq'], str) for slot in slots) \
+                    or len({slot['offset'] for slot in slots}) != len(slots):
+                raise AnnotationError('%s: a frame row has `slots` [{offset (a multiple of 8), coq}] with '
+                                      'distinct offsets, `sites` [pc] and no facts' % row['id'])
+            if not profile.get('frame_slots'):
+                raise AnnotationError('%s: a frame row needs the profile key frame_slots' % row['id'])
     for row in rows:
+        if row['at']['boundary'] == 'frame':
+            for pc in row['sites']:
+                texts = ['%s = (%s)' % (entry_hist.slot_binder_name(slot['offset']), slot['coq'])
+                         for slot in row['slots']]
+                owners = [call for call in calls if call.get('return_site_pc') == pc]
+                for call in owners:
+                    call.setdefault('return_facts', []).extend({'kind': 'fact', 'coq': text} for text in texts)
+                if not owners:
+                    join_designs.setdefault(pc, []).extend(texts)
         if row['at']['boundary'] != 'call_return':
             continue
         owners = [call for call in calls if call.get('return_site_pc') == row['at']['pc']]
