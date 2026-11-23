@@ -210,6 +210,16 @@
       "interface": null
     },
     {
+      "function": "keysToOwnedSlice",
+      "symbol": "array_list.Aligned([32]u8,null).toOwnedSlice",
+      "status": "open",
+      "reason": "Plan B2 (issue #347): keysToOwnedSliceGeneratedCompliance proves KeysToOwnedSliceContractCorrect from KeysToOwnedSliceOpenBlocks (ZesuSsz/Compliance/KeysToOwnedSliceBlockObligations.v); the row becomes proved, with keysToOwnedSliceCompliance and its interface, when no block is open.",
+      "compliance_theorems": ["keysToOwnedSliceGeneratedCompliance"],
+      "owned_prefixes": ["ZesuSsz/Contracts/KeysToOwnedSlice", "ZesuSsz/Compliance/KeysToOwnedSlice",
+                         "ZesuSsz/Generated/KeysToOwnedSlice/", "ZesuSsz/Proofs/KeysToOwnedSlice/"],
+      "interface": null
+    },
+    {
       "function": "altFlAlloc",
       "symbol": "alt_fl_alloc.alloc",
       "status": "assumed",
