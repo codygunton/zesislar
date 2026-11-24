@@ -180,15 +180,17 @@ Ltac zesu_residual_exact lemma :=
   apply_exact lemma.
 
 (* `Hint Resolve` lemmas: depth 2, one residual lemma, then each premise by
-   assumption. `Hint Extern` lemmas: depth 1, one call of
-   `zesu_residual_exact`. A goal whose conclusion mentions a local definition
-   gets one more try of both with the definitions unfolded (unfolded once).
-   Telemetry names each try: kind=alt|altfail
-   site=residual_hint|residual_exact|residual_unfolded. *)
+   assumption. `Hint Extern` lemmas: one call of `zesu_residual_exact`,
+   dispatched by `typeclasses eauto 1`, which unlike `eauto` builds no hint
+   database from the context (measured: 80 hypotheses, empty database,
+   `eauto 1` 1.2 ms a call, `typeclasses eauto 1` 5 us). A goal whose
+   conclusion mentions a local definition gets one more try of both with the
+   definitions unfolded (unfolded once). Telemetry names each try:
+   kind=alt|altfail site=residual_hint|residual_exact|residual_unfolded. *)
 Ltac zesu_residual_lemma :=
   first [zesu_talt residual_hint (idtac; solve [eauto 2 with nocore zesu_residual])
-        | zesu_talt residual_exact (idtac; solve [eauto 1 with nocore zesu_residual_exact])
+        | zesu_talt residual_exact (idtac; solve [typeclasses eauto 1 with zesu_residual_exact])
         | zesu_talt residual_unfolded (idtac;
             solve [zesu_residual_unfold_goal;
                    first [solve [eauto 2 with nocore zesu_residual]
-                         | solve [eauto 1 with nocore zesu_residual_exact]]])].
+                         | solve [typeclasses eauto 1 with zesu_residual_exact]]])].
