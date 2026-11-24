@@ -108,3 +108,11 @@ class LoopClassAccounting(unittest.TestCase):
                          [{'component': 'path_condition:1', 'rule': 'outside_class_scope:forward_witness_1'},
                           {'component': 'path_condition:2', 'rule': 'trace_local_witness'}])
         self.assertEqual(accounting['kept'], 3)
+
+    def test_the_closing_continuation_leaf_is_framed_outside_the_class(self):
+        # A seed below a loop-owned root closes with the continuation `K`, as a root seed closes with `True`.
+        from loop_design import class_components
+        sources = {'x18': '"x18" ↦ᵣ RVal_Bits (k : bv 64%N)', 'close': 'K', 'array': 'a ↦ₘ∗ bytes'}
+        owned, pure, _, _ = class_components(['x18', 'array', 'close'], sources, {'x18': 'cursor'}, [], {'k', 'cursor'})
+        self.assertEqual(owned, ['"x18" ↦ᵣ RVal_Bits (cursor : bv 64%N)', 'a ↦ₘ∗ bytes'])
+        self.assertEqual(pure, [])
