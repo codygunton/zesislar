@@ -55,6 +55,38 @@ class AccessPlacement(unittest.TestCase):
         self.assertEqual(self.read()[1].op, 'unknown_read')
 
 
+class StorePlacement(unittest.TestCase):
+    """A store row ({region, offset}) puts a store at the named uninitialized region's base plus offset."""
+
+    def setUp(self):
+        self.addCleanup(setattr, symbolic_state, 'ACCESS_PLACEMENTS', symbolic_state.ACCESS_PLACEMENTS)
+        from resource_seed import source_z_expression
+        self.base = source_z_expression('arrayListPointer s + arrayListLength s * 32', {}, 64)
+        self.state = SymbolicState(registers={'PC': bits(PC, 64)}, memory=[
+            MemoryRegion(self.base, length=input_expr('(cap - len) * 32', None), uninitialized=True,
+                         ownership_id='spare')])
+        self.address = operation('bvadd', input_expr('word_ptr', 64), operation('bvshl', input_expr('word_len', 64),
+                                                                                 bits(5, 64)))
+
+    def store(self):
+        evaluator = _Evaluator(self.state.copy(), instruction_index=PC)
+        return evaluator, evaluator.placed_store(self.address)
+
+    def test_the_row_places_the_store_and_reports_the_address_claim(self):
+        symbolic_state.ACCESS_PLACEMENTS = {PC: [{'pc': '0050', 'region': 'arrayListPointer s + arrayListLength s * 32',
+                                                  'offset': 8}]}
+        evaluator, placed = self.store()
+        self.assertEqual(placed, operation('bvadd', self.base, bits(8, 64)))
+        obligation, = evaluator.state.read_obligations
+        self.assertEqual((obligation['kind'], obligation['status'], obligation['owner']),
+                         ('placed_store_address', 'OPEN', 'spare'))
+
+    def test_without_the_row_or_with_another_region_nothing_is_placed(self):
+        symbolic_state.ACCESS_PLACEMENTS = {}
+        self.assertIsNone(self.store()[1])
+        symbolic_state.ACCESS_PLACEMENTS = {PC: [{'pc': '0050', 'region': 'other', 'offset': 0}]}
+        self.assertIsNone(self.store()[1])
+
 class PlacedLoadPastEnd(unittest.TestCase):
     """A trace case that puts a placed load past its array's end bound E stops only with both rows: the
     access row placing the load in the array and the supplied domain relation `base + length <= E`."""

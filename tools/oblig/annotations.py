@@ -307,10 +307,17 @@ def compile_profile(data, source=None):
                             'return_fact': ' /\\ '.join(fact['coq'] for fact in facts) if facts else True})
         elif boundary == 'access':
             placement = row.get('placement') or {}
-            missing = {'array', 'index', 'scale', 'offset'} - set(placement)
-            if missing:
-                raise AnnotationError('%s: placement lacks %s' % (row['id'], ', '.join(sorted(missing))))
-            placements.append({'pc': at['pc'], **{key: placement[key] for key in ('array', 'index', 'scale', 'offset')}})
+            if 'region' in placement:
+                # A store into an owned uninitialized region named by its address text, at a constant offset.
+                if set(placement) != {'region', 'offset'} or not isinstance(placement['offset'], int) \
+                        or not isinstance(placement['region'], str):
+                    raise AnnotationError('%s: a store placement is {region: address text, offset: integer}' % row['id'])
+                placements.append({'pc': at['pc'], 'region': placement['region'], 'offset': placement['offset']})
+            else:
+                missing = {'array', 'index', 'scale', 'offset'} - set(placement)
+                if missing:
+                    raise AnnotationError('%s: placement lacks %s' % (row['id'], ', '.join(sorted(missing))))
+                placements.append({'pc': at['pc'], **{key: placement[key] for key in ('array', 'index', 'scale', 'offset')}})
         elif boundary == 'frame':
             slots, sites = row.get('slots') or [], row.get('sites') or []
             if not slots or not sites or row.get('facts') \

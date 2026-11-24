@@ -737,6 +737,8 @@ class _Evaluator:
         access at this instruction, or None. The address must carry the array's base as addends and a
         symbolic rest, as for `_symbolic_owner`; the array's extent need not be a known number."""
         for placement in ACCESS_PLACEMENTS.get(self.instruction_index, ()):
+            if 'array' not in placement:
+                continue
             wanted = _array_text(placement['array'])
             terms, _ = _addends(address)
             for region in self.state.memory:
@@ -751,6 +753,30 @@ class _Evaluator:
                 self.report('access_placement', address=address.to_dict(), owner=region.ownership_id,
                             placement=dict(placement))
                 return region, None, placement
+        return None
+
+    def placed_store(self, address):
+        """The address `base + offset` of an owned uninitialized region that a profile `access_placements`
+        store row ({region: its address text, offset}) names for a store at this instruction, or None.
+        The row claims the store address equals it; the block proof establishes that (the store needs
+        the region's points-to there), and the claim is reported as an open obligation."""
+        for placement in ACCESS_PLACEMENTS.get(self.instruction_index, ()):
+            if 'region' not in placement:
+                continue
+            from resource_seed import source_z_expression
+            base = source_z_expression(placement['region'], {}, address.width)
+            for region in self.state.memory:
+                if region.uninitialized and region.ownership_id is not None and region.base == base:
+                    placed = operation('bvadd', region.base, bits(int(placement['offset']), address.width))
+                    row = {'kind': 'placed_store_address', 'status': 'OPEN', 'owner': region.ownership_id,
+                           'address': address.to_dict(), 'placed': placed.to_dict(),
+                           'source': {'source': 'access_placements', 'pc': hex(self.instruction_index)},
+                           'goal': '(%s = %s)' % (address.coq(), placed.coq())}
+                    if row not in self.state.read_obligations:
+                        self.state.read_obligations.append(row)
+                    self.report('store_placement', address=address.to_dict(), owner=region.ownership_id,
+                                placement=dict(placement))
+                    return placed
         return None
 
     def mapped_byte(self, address):
@@ -862,6 +888,8 @@ class _Evaluator:
             address, value, size = self.expression(raw_address), self.expression(raw_value), _size(raw_size)
             if value.width != size*8:
                 raise UnsupportedEvent('write-mem-width')
+            # A store row (profile `access_placements` with `region`) names the region the store lands in.
+            address = self.placed_store(address) or address
             mapped = all(self.mapped_byte(operation('bvadd', address, bits(index, address.width))) for index in range(size))
             # Islaris seq_step imposes no constraint on the result of WriteMem.
             result = Expr('write_result', (address, value), value=f'{self.state.trace_count}:{self.event_index}')
@@ -1203,7 +1231,7 @@ def _placed_end_refutation(initial, instruction_index, condition):
                     or region.base != base:
                 continue
             array = _array_text(region.byte_array.value if region.byte_array.op == 'input' else region.byte_array.coq())
-            placement = next((item for item in placements if _array_text(item['array']) == array), None)
+            placement = next((item for item in placements if 'array' in item and _array_text(item['array']) == array), None)
             rest = list(terms)
             if placement is None or any(term not in rest or rest.remove(term) for term in _addends(base)[0]) \
                     or not rest:
@@ -1257,7 +1285,7 @@ def _placed_low_refutation(initial, instruction_index, condition):
                     or region.base != base:
                 continue
             array = _array_text(region.byte_array.value if region.byte_array.op == 'input' else region.byte_array.coq())
-            placement = next((item for item in placements if _array_text(item['array']) == array), None)
+            placement = next((item for item in placements if 'array' in item and _array_text(item['array']) == array), None)
             rest = list(terms)
             if placement is None or any(term not in rest or rest.remove(term) for term in _addends(base)[0]) \
                     or len(rest) != 1:
