@@ -716,6 +716,7 @@
      {
       "binder": "scratchBefore",
       "constant": "ziskExtraParamsAddress",
+      "caller_value": "tx_final_scratch",
       "length": 8,
       "length_source": "txAccessListArgsWellFormed: length (txScratchBefore args) = 8; loop cuts carry it as tx_scratch with Z.of_nat (length tx_scratch) = 8"
      }
