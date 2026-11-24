@@ -110,6 +110,30 @@ Proof.
   exact (Hstatement args y Hdom Hy Hlink).
 Qed.
 
+(* A fact the conclusion reaches but above the node limit is reported as
+   dropped (name, node count, head); a large fact over unrelated variables is
+   not, and neither is a kept fact. *)
+Lemma residual_export_dropped (x y z w : Z) (Hsmall : 0 <= x)
+    (Hbig : x + y + z + x + y + z = z /\ y = z) (Hw : w + w + w + w + w + w = w) :
+  x <= x + 1.
+Proof.
+  ltac2:(
+    let (facts, _, _) := zesu_export_reach 10 in
+    if same_names facts [@Hsmall] then () else Control.throw (Tactic_failure None);
+    let dropped := zesu_export_dropped 10 facts in
+    if same_names (List.map (fun entry => let (name, _, _) := entry in name) dropped) [@Hbig]
+    then () else Control.throw (Tactic_failure None);
+    List.iter (fun entry =>
+      let (_, nodes, shown) := entry in
+      if Int.lt 10 nodes then () else Control.throw (Tactic_failure None);
+      if String.equal (Message.to_string shown) "(@Coq.Init.Logic.and)" then ()
+      else (Message.print shown; Control.throw (Tactic_failure None))) dropped;
+    (* Under the default limit nothing is dropped. *)
+    let (all, _, _) := zesu_export_reach 2048 in
+    if Int.equal (List.length (zesu_export_dropped 2048 all)) 0 then () else Control.throw (Tactic_failure None)).
+  lia.
+Qed.
+
 (* Minimization keeps the facts whose binders the proof uses. *)
 Definition residual_export_proof :
   forall (x y : Z) (Hx : 0 <= x) (Hy : 0 <= y), 0 <= x + 0 :=

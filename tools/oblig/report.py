@@ -11,7 +11,8 @@ answered ones included); share of requests with `derivable` true; unhandled refu
 (`refusals_without_request`); proposals rejected by
 machine runs; missing-context failures per attempt; share of supplied context items absent from the
 accepted proof (context_items/context_used of the closing attempts) and of premises dropped by the
-premise minimiser of residual_loop.py; goals found false after a model attempt; prompt bytes and
+premise minimiser of residual_loop.py; premises omitted for size (the facts above the export's node
+limit that residual goals lack, MANIFEST `dropped_facts`); goals found false after a model attempt; prompt bytes and
 tokens per attempt; coordinator bytes read per round (RUN/COORDINATOR.jsonl); per tier the share
 closed at the first attempt and within its attempts; per tier the check_proof calls per goal it closed
 and the tokens per attempt with and without the tool (`check_calls:<n>` in an attempt's context_items);
@@ -187,13 +188,21 @@ def measures(run, function=None):
     used = sum(counted(row.get('context_used')) for row in accepted)
     put('supplied context absent from accepted proof', ratio(supplied - used, supplied))
     before = after = 0
-    for directory in store.residual_runs(run):
+    omitted, runs = {}, store.residual_runs(run)
+    for directory in runs:
         for gdir in (directory / 'goals').iterdir():
             minimized = (store.read_json(gdir / 'STATUS.json', {}) or {}).get('minimized') or {}
             if minimized.get('state') == 'kept':
                 before += minimized.get('binders_before', 0)
                 after += minimized.get('binders_after', 0)
+        manifest = store.read_json(directory / 'MANIFEST.json', {}) or {}
+        for goal in manifest.get('goals', []):
+            if goal.get('dropped_facts') and not goal.get('part_of'):
+                omitted[(manifest.get('block'), goal['statement'])] = len(goal['dropped_facts'])
     put('premises dropped by the minimiser', ratio(before - after, before))
+    # Facts the export left out of a goal's statement for size (MANIFEST `dropped_facts`, ResidualExport.v).
+    put('premises omitted for size', '%d facts in %d goals' % (sum(omitted.values()), len(omitted))
+        if runs else 'n/a')
 
     def model_attempted_before_false(item):
         seen = False

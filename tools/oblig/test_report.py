@@ -15,7 +15,7 @@ F = 'fn'
 NAMES = ['blocks closed with no model', 'rounds', 'requests per round', 'decisions made / floor',
          'requests derivable', 'unhandled refusals', 'proposals rejected by machine runs',
          'missing-context failures per attempt', 'supplied context absent from accepted proof',
-         'premises dropped by the minimiser', 'goals found false after a model attempt',
+         'premises dropped by the minimiser', 'premises omitted for size', 'goals found false after a model attempt',
          'prompt bytes per attempt', 'answer bytes per attempt', 'tokens per attempt',
          'coordinator bytes read per round', 'pure goals closed by Haiku tiers',
          'goals that reached opus-medium as prover', 'escalations', 'spin', 'tokens per block',
@@ -102,6 +102,19 @@ class Report(unittest.TestCase):
             self.assertEqual(got['superseded obligations (left out of every measure below)'], '1')
             self.assertEqual(got['tokens per attempt'], 'n/a')
             self.assertEqual(got['tier haiku-low'], 'n/a')
+
+    def test_premises_omitted_for_size_are_counted_once_per_goal(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            run = Path(tmp)
+            resid = run / 'resid' / '0164'
+            for gid in ('0164-1', '0164-2', '0164-3'):
+                (resid / 'goals' / gid).mkdir(parents=True)
+            dropped = [dict(name='H7', nodes=3021, head='and'), dict(name='H9', nodes=2600, head='and')]
+            (resid / 'MANIFEST.json').write_text(json.dumps(dict(block='0164', goals=[
+                dict(id='0164-1', statement='G', dropped_facts=dropped),
+                dict(id='0164-2', statement='P', part_of='0164-1', dropped_facts=dropped),
+                dict(id='0164-3', statement='Q')])))
+            self.assertEqual(dict(report.measures(run, F))['premises omitted for size'], '2 facts in 1 goals')
 
 
 if __name__ == '__main__':

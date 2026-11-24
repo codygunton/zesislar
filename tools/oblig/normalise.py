@@ -45,11 +45,14 @@ Output per goal: OUT/<id>/NORMALISE.json (default OUT = RUN/normalise): level us
 statement, sha256, binders), link verdict, per-level falsify and screen verdicts, bytes before/after,
 mechanical results. With --apply, a goal normalised at level 1 or 2 gets its parts as MANIFEST rows
 `<block>-<n>` (goal dirs written as residual_loop.py writes them, `part_of` = the goal) and the goal the
-row field `parts` and `normalised` (level, link script, link file); with --store ROOT, store.py sync
+row field `parts` and `normalised` (level, link script, link file, `part_k`: the goal's own part numbers);
+a part whose statement a row already states is that row, referenced again (one statement is one store
+id); with --store ROOT, store.py sync
 files the parts (the goal becomes `blocked-on` its first open part) and each part gets its falsity
 event (tier `falsify`: state `false` on a kernel-refuted real state, else the screen verdict as class).
 
-`compose` closes a goal whose parts all PASS: answers/<goal>.v becomes one proof script, each part's
+`compose` closes a goal whose parts all PASS (a part passes when any row with its statement does):
+answers/<goal>.v becomes one proof script, each part's
 accepted proof copied byte for byte into `assert (zn_part_i : Ni). { .. }` (the proof of the full part
 statement, full-proof.v when residual_loop.py minimised it), then the link script; `residual_loop.py
 collect` checks it against goal.v like any answer and `register` renders that lemma (parts are never
@@ -373,6 +376,18 @@ def accepted_proof(goal_dir):
     return None
 
 
+def statement_proofs(run, manifest):
+    """{statement: accepted proof} over every closed row of the MANIFEST. Rows with one statement are one
+    obligation (store id <function>/goal/<case>-<statement sha>), so any of them proves all of them."""
+    proofs = {}
+    for goal in manifest["goals"]:
+        if goal["statement"] not in proofs:
+            proof = accepted_proof(Path(run) / "goals" / goal["id"])
+            if proof is not None:
+                proofs[goal["statement"]] = proof
+    return proofs
+
+
 def part_name(manifest, statement):
     return rl.rrm.lemma_prefix(manifest["block"], manifest.get("function")) + sha(statement)[:16]
 
@@ -500,12 +515,24 @@ def apply(run, manifest, goal, record, reparse=None):
         return goal.get("parts") or []
     args, ocamlpath = rl.bank_args(manifest["bank"])
     header = header_of((run / "goals" / goal["id"] / "goal.v").read_text())
-    ids = rl.next_ids(manifest["goals"], manifest["block"], len(record["parts"]))
+    # A part whose statement a row of the MANIFEST already states is that row (one obligation, referenced
+    # by each goal it is a part of); only new statements get rows.
+    known = {}
+    for row in manifest["goals"]:
+        known.setdefault(row["statement"], row["id"])
+    fresh = list(dict.fromkeys(p["statement"] for p in record["parts"] if p["statement"] not in known))
+    ids = dict(zip(fresh, rl.next_ids(manifest["goals"], manifest["block"], len(fresh))))
     rows = []
-    for gid, part in zip(ids, record["parts"]):
+    for part in record["parts"]:
+        gid = ids.pop(part["statement"], None)
+        if gid is None:
+            continue
+        known[part["statement"]] = gid
         row = dict(id=gid, name=part["name"], statement=part["statement"], source="normalised", copies=1,
                    binders=part["binders"], counts={}, conclusion_definitions=[], round=goal.get("round"),
                    part_of=goal["id"], part=part["k"])
+        if goal.get("dropped_facts"):
+            row["dropped_facts"] = goal["dropped_facts"]  # the goal's statement lacks them, so its parts do
         d = rl.write_goal(run, row, header, args, ocamlpath)
         row.update(reparse(d, "rt-" + gid, row["statement"], args, ocamlpath))
         if row["reparse"] == "exact":
@@ -517,8 +544,9 @@ def apply(run, manifest, goal, record, reparse=None):
                 shutil.copytree(source, d / name, dirs_exist_ok=True)
         rows.append(row)
     manifest["goals"].extend(rows)
-    goal["parts"] = [row["id"] for row in rows]
-    goal["normalised"] = dict(level=record["level"], link=record["link"], link_file=record["link_file"])
+    goal["parts"] = [known[part["statement"]] for part in record["parts"]]
+    goal["normalised"] = dict(level=record["level"], link=record["link"], link_file=record["link_file"],
+                              part_k=[part["k"] for part in record["parts"]])
     rl.write_json(run / "MANIFEST.json", manifest)
     return goal["parts"]
 
@@ -574,6 +602,7 @@ def compose(run, goal_ids=()):
     run = Path(run)
     manifest = rl.read_json(run / "MANIFEST.json")
     by_id = {g["id"]: g for g in manifest["goals"]}
+    proved = statement_proofs(run, manifest)
     symbols, bounds = symbolize.table(), symbolize.sections()
     done = []
     for goal in manifest["goals"]:
@@ -582,16 +611,18 @@ def compose(run, goal_ids=()):
         status = rl.read_json(run / "goals" / goal["id"] / "STATUS.json", {})
         if status.get("result") == "PASS":
             continue
+        # The goal's own part numbers (a shared part row carries the number of the goal that added it).
+        ks = goal["normalised"].get("part_k") or [by_id[gid]["part"] for gid in goal["parts"]]
         proofs, parts, named = [], [], False
-        for gid in goal["parts"]:
+        for gid, k in zip(goal["parts"], ks):
             part = by_id[gid]
-            proof = accepted_proof(run / "goals" / gid)
+            proof = proved.get(part["statement"])
             if proof is None:
                 break
             proofs.append(proof)
             statement, changed = symbolized(part["statement"], symbols, bounds)
             named |= changed
-            parts.append(dict(k=part["part"], statement=statement))
+            parts.append(dict(k=k, statement=statement))
         else:
             link, changed = symbolized(goal["normalised"]["link"], symbols, bounds)
             if named or changed:
