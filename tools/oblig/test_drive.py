@@ -622,6 +622,16 @@ class PackagedGoalTests(unittest.TestCase):
         self.assertEqual(item["goal_class"], drive.replay.goal_class("forall a : Z, 0 <= a -> 0 <= a + 1"))
         self.assertEqual([t for _, t, _ in drive.model_items(self.run, F)], ["haiku-low"])
 
+    def test_a_package_whose_literals_are_non_address_constants_returns_to_the_ladder(self):
+        store.append(self.run, store.event(id=self.identifier, function=F, kind="goal", state="derived",
+                                           **{"class": "ADDRESS"}))
+        (self.package / "PACKAGE.json").write_text(json.dumps(dict(id=self.identifier, non_address=["0x1"],
+                                                                   **{"class": None})))
+        (self.package / "TASK-haiku-low.md").write_text("# Goal with an input-buffer bound\n")
+        counts = drive.step(F, self.run, kernel=self.kernel)[0]
+        self.assertEqual(counts.get("symbolized"), 1)
+        self.assertEqual([t for _, t, _ in drive.model_items(self.run, F)], ["haiku-low"])
+
 
 def package_answer_form():
     return drive.package.ANSWER_FORM.format(answer="answers/0058-1.v")

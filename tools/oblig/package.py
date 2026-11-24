@@ -141,16 +141,18 @@ def obligation_id(function, block, statement):
 
 # ---- addresses ----
 
-def address_matches(text):
+def address_matches(text, exempt=frozenset()):
     """Code addresses named in TEXT: pattern hits in the text and in the decimal values of its
-    integer literals (positive constructor terms included)."""
+    integer literals (positive constructor terms included). A value in `exempt` (the function profile's
+    `non_address_constants`, check_relocatable.non_address_values) is no address."""
     import falsify  # lazy: falsify imports the residual loop's compile route
     found = []
     for pattern in ADDRESS_PATTERNS:
-        found += [dict(match=m.group(0), source="text") for m in pattern.finditer(text)]
+        found += [dict(match=m.group(0), source="text") for m in pattern.finditer(text)
+                  if check_relocatable.literal_value(m.group(0)) not in exempt]
     for value in sorted(falsify.literals(text)):
         decimal = str(abs(value))
-        if any(pattern.fullmatch(decimal) for pattern in ADDRESS_PATTERNS[1:]):
+        if abs(value) not in exempt and any(pattern.fullmatch(decimal) for pattern in ADDRESS_PATTERNS[1:]):
             found.append(dict(match=decimal, source="literal", hex="%#x" % abs(value)))
     unique, seen = [], set()
     for row in found:
@@ -334,7 +336,12 @@ def package_goal(run, manifest, goal, function, tier, max_bytes, index, hints, f
     record = dict(id=obligation_id(function, block, goal["statement"]), goal=goal["id"], block=block,
                   function=function, tier=tier, conclusion_head=similar.keys(goal["statement"])[0])
     record["dropped_facts"] = goal.get("dropped_facts") or []
-    record["addresses"] = address_matches(goal_v)
+    exempt = check_relocatable.non_address_values(function)
+    record["addresses"] = address_matches(goal_v, exempt)
+    named = {check_relocatable.literal_value(row["match"]) for row in address_matches(goal_v)} & exempt
+    if named:
+        # Literals the profile names as non-address constants (drive.sync_package_class re-classes the goal).
+        record["non_address"] = sorted("%#x" % value for value in named)
     if record["addresses"] and symbol_route is not None:
         route = symbol_route() if callable(symbol_route) else symbol_route
         rewritten, found = symbolize_goal(d, goal_v, route, out, "symbols-" + goal["id"])
@@ -342,7 +349,7 @@ def package_goal(run, manifest, goal, function, tier, max_bytes, index, hints, f
             goal_v = rewritten
             (d / "goal.v").write_text(goal_v)
             record["symbols"] = [dict(literal=literal, notation=name) for literal, name in found]
-            record["addresses"] = address_matches(goal_v)
+            record["addresses"] = address_matches(goal_v, exempt)
         elif found:
             record["symbols_refused"] = found
     record["class"] = "ADDRESS" if record["addresses"] else None
