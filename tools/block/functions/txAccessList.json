@@ -60,11 +60,11 @@
     "register": "x1",
     "value": "(txReturnAddress args)",
     "alignment": 4,
-    "source": "txAccessListArgsWellFormed (TxAccessListContract.v): bv_unsigned (txReturnAddress args) mod 4 = 0"
+    "source": "txAccessListBlockArgsWellFormed (TxAccessListBlockEntries.v): bv_unsigned (txReturnAddress args) mod 4 = 0"
   },
   "entry_interface": {
     "entry_resources": "txAccessListBlockEntryResources",
-    "well_formed": "txAccessListArgsWellFormed",
+    "well_formed": "txAccessListBlockArgsWellFormed",
     "exit_resources": "txAccessListExitResources",
     "source": "ZesuSsz/Contracts/TxAccessListBlockEntries.v",
     "exact_system_registers": {
@@ -228,7 +228,6 @@
         {
           "binder": "input",
           "argument": 1,
-          "slice_of": "txInputBytes args",
           "caller_value": "txInputBytes args"
         },
         {
@@ -754,6 +753,6 @@
   },
   "generated_from": {
     "path": "tools/block/functions/txAccessList.annotations.json",
-    "sha256": "334c16d55eb0b5a634455f3a91690961aa90a88d5decc86f8c4c673150e85631"
+    "sha256": "7e0c74226d624569f27d1abd6718bca2b9560a3ff6251552555ff4e9fd81b238"
   }
 }

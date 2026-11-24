@@ -20,8 +20,9 @@ Proof.
   intros [<- H].
   pose proof (bv_unsigned_in_range _ (txReturnAddress args)) as Hrange.
   change (bv_modulus 64) with (2 ^ 64) in Hrange.
+  apply txAccessListBlockArgsWellFormed_contract in H.
   pose proof H as (_ & Hlength & _ & _ & Hscratch & _).
-  repeat split; auto; lia.
+  split; [reflexivity|]. split; [lia|]. split; [exact H|]. split; [exact Hlength|exact Hscratch].
 Qed.
 
 #[export] Instance txAccessListBlockDomainRangesInstance
