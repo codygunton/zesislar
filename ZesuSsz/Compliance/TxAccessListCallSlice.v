@@ -12,6 +12,7 @@ Require Import ZesuSsz.Contracts.DecodeItemCallFacts.
 Require Import ZesuSsz.Contracts.Candidates.AccessListCandidate.
 Require Import ZesuSsz.Contracts.TxAccessListMeaning.
 Require Import ZesuSsz.Contracts.TxAccessListContract.
+Require Import ZesuSsz.Contracts.TxAccessListLoopFacts.
 Require Import ZesuSsz.Interfaces.DecodeItem.
 Require Export ZesuSsz.Contracts.DecodeItemCallSlice.
 Import ListNotations.
@@ -242,4 +243,49 @@ Proof.
   set (w0 := bv_unsigned (leWord64 after 0)) in *.
   set (w8 := bv_unsigned (leWord64 after 8)) in *.
   pose proof (bv_unsigned_in_range _ l). lia.
+Qed.
+
+(* The outer cut's walk fact on its entry from +0xac: the first call on the
+   whole input returned a list (byte 16 set, so a success, prefix at least
+   0xc0), its payload pointer is the input pointer plus the header length, so
+   the cursor offset is the header length, and with no entry walked the walk
+   of the payload is the walk of the whole rest. *)
+Lemma txAccessListOuterWalkedStart (args : TxAccessListArgs) (argv0 : bv 64)
+    (rest : list (bv 64)) (sp : bv 64) (inputEnd : Z) (before after : list byte) :
+  decodeItemCallMeaning
+    (decodeItemCallDataArgs (argv0 :: txInputPointer args :: rest) sp inputEnd
+      (txInputBytes args) before) after ->
+  bv_unsigned (bv_and (bv_zero_extend 64 (List.nth 16 after (BV 8 0))) (BV 64 1)) <> 0 ->
+  txAccessListOuterWalked (txInputBytes args)
+    (bv_unsigned (listWord64At0 after) - bv_unsigned (txInputPointer args)) [].
+Proof.
+  intros Hm Hlist.
+  pose proof (decodeItemMeaningC1B _ _ (decodeItemCallMeaningLink _ _ Hm)) as Hc1b.
+  cbn [decodeItemCallDataArgs decodeItemInputPointer decodeItemInputBytes
+       decodeItemBeforeStorage] in Hc1b.
+  change ((argv0 :: txInputPointer args :: rest) !!! 1%nat) with (txInputPointer args) in Hc1b.
+  unfold C1BResult, candidateResult40 in Hc1b. destruct Hc1b as (_ & Hres & _).
+  assert (Hbit : forall b : byte, bv_unsigned b = 0 ->
+            bv_unsigned (bv_and (bv_zero_extend 64 b) (BV 64 1)) = 0).
+  { intros b Hb. rewrite bv_and_unsigned, bv_zero_extend_unsigned. { rewrite Hb. reflexivity. } done. }
+  destruct (candidateDecodeItem (txInputBytes args)) as [|isList h p] eqn:Hc.
+  - exfalso. apply Hlist, Hbit. destruct Hres as [_ Hb].
+    exact (byteAtNth _ _ _ (Hb 16%nat ltac:(lia))).
+  - destruct Hres as (_ & _ & H0 & H8 & H16 & _).
+    destruct isList; cycle 1.
+    { exfalso. apply Hlist, Hbit. exact (byteAtNth _ _ _ H16). }
+    assert (Hp : 0 <= p) by (destruct H8 as [_ <-]; apply littleEndianRange).
+    destruct (candidateDecodeItemSuccessBounds _ _ _ _ Hc) as (Hh & _ & _).
+    assert (Hptr : bv_unsigned (listWord64At0 after) =
+                   bv_unsigned (txInputPointer args) + h).
+    { rewrite (listWord64At0Value _ _ H0).
+      destruct (txInputBytes args) as [|prefix tail] eqn:Hin; [discriminate|].
+      assert (Hpre : bv_unsigned prefix <> 128).
+      { intros E. unfold candidateDecodeItem in Hc. rewrite E in Hc. discriminate. }
+      rewrite (proj2 (Z.eqb_neq _ _) Hpre). reflexivity. }
+    rewrite Hptr. exists h, p. split; [exact Hc|]. split; [lia|].
+    cbn zeta. replace (bv_unsigned (txInputPointer args) + h - bv_unsigned (txInputPointer args) - h)
+      with 0 by lia.
+    cbn [Z.to_nat skipn app].
+    destruct (snd _); reflexivity.
 Qed.
