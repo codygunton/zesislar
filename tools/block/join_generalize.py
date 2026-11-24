@@ -872,6 +872,7 @@ def lift_call_return_edges(alternatives, *, seeds, roots, ancestor, vocabulary, 
                                                     if region.ownership_id == resource.id), None))
            for resource in base.resources if isinstance(resource.length, int)}
     lifted, binders = [], []
+    base_texts = {component['id']: _component_text(component) for component in base.ownership['components']}
     for alternative in alternatives:
         seed_pc = alternative['seed_pc']
         if roots.get(seed_pc) == ancestor:
@@ -920,6 +921,9 @@ def lift_call_return_edges(alternatives, *, seeds, roots, ancestor, vocabulary, 
             if len(containing) != 1:
                 raise ValueError('A lifted span has no unique ancestor span: ' + resource.id)
             owner, offset = containing[0]
+            if replaced and base_texts.get(owner.id) in forgotten:
+                # It lies in an ancestor span an owned join row replaces: the join owns none of those bytes.
+                continue
             current = _span_bytes(resource, regions.get(resource.id))
             for index in range(resource.length):
                 byte = _byte(Expr.from_dict(updates[index]['value'])) if index in updates else current[index]
