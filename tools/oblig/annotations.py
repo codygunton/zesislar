@@ -38,7 +38,9 @@ The compiled profile keys, by `boundary`:
   call_site        a `calls` row: the row's `call` object with `call_site_pc`. Its `opaque` rows
                    [{`spec`, `use`: framed | consumed | produced, `caller`: [...]}] name spec resources in
                    the spec's text and, for a consumed one, the caller components it takes; its `returns`
-                   rows [{`index`, `register`}] name the returned registers the continuation reads
+                   rows [{`index`, `register`}] name the returned registers the continuation reads; its
+                   `result_words` {byte offset: Z value} name words of the returned array the return entry
+                   states and the seed reads as the value (`{argv:N}`, `{fresh:NAME:TYPE}` in the value)
                    (call_boundary.call_return_seed)
   call_return      the `return_facts` of the call whose `return_site_pc` is `pc` (role -> `kind`)
   function_return  a `function_returns` row: `return_instruction_pc` and `return_fact` (True without facts)
@@ -145,7 +147,7 @@ def _join_fact(fact):
 
 
 def _check_call(row):
-    """The shape of a call row's `opaque` and `returns` rows (call_boundary consumes them)."""
+    """The shape of a call row's `opaque`, `returns` and `result_words` rows (call_boundary consumes them)."""
     for item in row['call'].get('opaque', []):
         if not isinstance(item.get('spec'), str) or item.get('use') not in OPAQUE_USES:
             raise AnnotationError('%s: an opaque row has `spec` and a `use` among %s'
@@ -158,6 +160,10 @@ def _check_call(row):
     for item in row['call'].get('returns', []):
         if not isinstance(item.get('index'), int) or not re.fullmatch(r'x(1[0-7])', str(item.get('register'))):
             raise AnnotationError('%s: a returns row has an integer `index` and an argument register' % row['id'])
+    words = row['call'].get('result_words', {})
+    if not isinstance(words, dict) or not all(re.fullmatch(r'[0-9]+', str(key)) and isinstance(value, str)
+                                              for key, value in words.items()):
+        raise AnnotationError('%s: result_words maps byte offsets to value texts' % row['id'])
 
 
 def compile_profile(data, source=None):
