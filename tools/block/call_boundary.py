@@ -220,7 +220,8 @@ def parse_machine_call_spec(source, name, listed=None, returns=()):
             if _normal_text(original) in listed[side]:
                 rows['listed'].append((_normal_text(original), part))
                 continue
-            points = re.fullmatch(r'(.+?)\s+(↦ₘ∗|↦ₘ\?|↦ₘ)\s+(.+)', part)
+            # A value may span lines (a callee's `if … then … else match … end` value).
+            points = re.fullmatch(r'(.+?)\s+(↦ₘ∗|↦ₘ\?|↦ₘ)\s+(.+)', part, re.S)
             register = re.fullmatch(r'"(\w+)"\s+↦ᵣ\s+RVal_Bits\s+(\w+)', part)
             address = place(points[1]) if points else None
             if address is not None and points[2] == '↦ₘ∗':

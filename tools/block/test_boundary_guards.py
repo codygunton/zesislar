@@ -198,6 +198,15 @@ class CallBoundary(unittest.TestCase):
                                                  {'constant': 'extra', 'binder': 'two'}])
         self.assertEqual(spec['post']['collections'], ['reg_col [(KindReg "input_end", BitsShape 64)]'])
 
+    def test_a_post_value_may_span_lines(self):
+        # keysToOwnedSliceCallSpec2's scratch word after the call is an `if … match … end` over two lines.
+        from call_boundary import parse_machine_call_spec
+        source = self.TAIL_SPEC.replace('extra ↦ₘ∗ two ∗', 'extra ↦ₘ∗\n          (if n =? 0 then scratch\n'
+                                        '           else two) ∗')
+        spec = parse_machine_call_spec(source, 'tailSpec')
+        self.assertEqual(spec['post']['arrays'][-1]['constant'], 'extra')
+        self.assertEqual(' '.join(spec['post']['arrays'][-1]['value'].split()), 'if n =? 0 then scratch else two')
+
     def tail_call_fixture(self, directory):
         """A root seed, a call-site edge, the shapes and the call row of a tail call to tailSpec."""
         from resource_seed import seed_owned_resources
