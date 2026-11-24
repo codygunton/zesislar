@@ -381,7 +381,10 @@
     ],
     "output_length_source": "C1BResult (RlpDecodeItem.v): candidateResult40 is errorResult40 or successResult40, each of 40 bytes",
     "result_words": {
-     "0": "bv_unsigned (txInputPointer args) + (bv_unsigned {word:after:0} - bv_unsigned (txInputPointer args))"
+     "0": "bv_unsigned (txInputPointer args) + {fresh:payload_offset:Z}"
+    },
+    "result_minimums": {
+     "payload_offset": 1
     }
    },
    "author": {
@@ -464,7 +467,10 @@
     ],
     "output_length_source": "C1BResult (RlpDecodeItem.v): candidateResult40 is errorResult40 or successResult40, each of 40 bytes",
     "result_words": {
-     "0": "bv_unsigned (txInputPointer args) + (bv_unsigned {word:after:0} - bv_unsigned (txInputPointer args))"
+     "0": "bv_unsigned (txInputPointer args) + {fresh:payload_offset:Z}"
+    },
+    "result_minimums": {
+     "payload_offset": 1
     }
    },
    "author": {
@@ -1045,14 +1051,18 @@
     {
      "name": "tx_keys",
      "type": "ArrayListState"
+    },
+    {
+     "name": "tx_done_keys",
+     "type": "list (list byte)"
     }
    ],
    "resources": [
-    "(bv_unsigned (txStackPointer args) - 448) ↦ₘ∗ arrayListHeaderBytes tx_entries",
-    "arrayListBuffer entriesElementBytes entriesLog2Alignment tx_entries",
-    "txAccessListKeysSlices tx_done tx_images",
-    "ziskExtraParamsAddress ↦ₘ∗ tx_scratch",
-    "(bv_unsigned (txStackPointer args) - 280) ↦ₘ∗ arrayListHeaderBytes tx_keys",
+    {
+     "coq": "(bv_unsigned (txStackPointer args) - 280) ↦ₘ∗ arrayListHeaderBytes tx_keys",
+     "length": "24"
+    },
+    "(bv_unsigned (txStackPointer args) - 256) ↦ₘ? 152",
     "arrayListBuffer keysElementBytes keysLog2Alignment tx_keys"
    ],
    "facts": [
@@ -1078,23 +1088,33 @@
      "coq": "(33 * bv_unsigned inner_x24 = i)%Z",
      "role": "bound",
      "need": "s8 is the keys count; every accepted key is a 32-byte string with a one-byte header (0xa0)"
+    },
+    {
+     "coq": "arrayListWellFormed keysElementBytes tx_keys",
+     "role": "owned"
+    },
+    {
+     "coq": "arrayListLength tx_keys = bv_unsigned inner_x24",
+     "role": "owned"
+    },
+    {
+     "coq": "arrayListItems tx_keys = concat tx_done_keys",
+     "role": "owned"
+    },
+    {
+     "coq": "txAccessListKeysWalked (take (Z.to_nat (bv_unsigned {x22})) (drop (Z.to_nat (bv_unsigned {x23} - bv_unsigned (txInputPointer args))) (txInputBytes args))) i tx_done_keys",
+     "role": "owned"
     }
-   ],
-   "resource_facts": [
-    "arrayListWellFormed entriesElementBytes tx_entries",
-    "arrayListLength tx_entries = Z.of_nat (length tx_done)",
-    "arrayListItems tx_entries = txAccessListEntriesBytes tx_done tx_images",
-    "Forall (fun image => Z.of_nat (length (imagePadding image)) = txAccessListPaddingSize) tx_images",
-    "Z.of_nat (length tx_scratch) = txAccessListScratchSize",
-    "txAccessListOuterWalked (txInputBytes args) i tx_done",
-    "arrayListWellFormed keysElementBytes tx_keys",
-    "arrayListLength tx_keys = bv_unsigned inner_x24",
-    "txAccessListKeysWalked (txInputBytes args) i (arrayListItems tx_keys)"
    ],
    "author": {
     "tier": "opus-medium"
    },
-   "why": "while (kp.len > 0) over one entry's keys payload: cursor s7 (x23) advances by each key's consumed length (33), s6 (x22) shrinks, s8 (x24) counts the keys and equals the keys list length. Owned state: the outer cut's, plus the keys list header at s0-0x118 and its buffer. Its resources still lack `replaces` and lengths: the head is not reached until the +0x130 address loads render (open problem)"
+   "why": "while (kp.len > 0) over one entry's keys payload: cursor s7 (x23) advances by each key's consumed length (33), s6 (x22) shrinks, s8 (x24) counts the keys and equals the keys list length. Owned state: the outer cut's (inherited from the loop-entry state with its facts), plus the keys list header at s0-0x118 (written at +0x178..+0x180), the 152 unwritten frame bytes after it (s0-0x100: the +0x19c call output and the rest) and the keys buffer; tx_done_keys = the keys accepted so far. Replaces the loop-entry frame span s0-0x118..s0-0x68 (176 bytes, loop_owned_1_call_after_call_after_call_after).",
+   "replaces": [
+    {
+     "id": "loop_owned_1_call_after_call_after_call_after"
+    }
+   ]
   },
   {
    "id": "access-130",

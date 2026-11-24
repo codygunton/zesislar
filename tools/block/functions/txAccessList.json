@@ -287,6 +287,22 @@
           "kind": "bound",
           "need": "s8 is the keys count; every accepted key is a 32-byte string with a one-byte header (0xa0)",
           "coq": "(33 * bv_unsigned inner_x24 = i)%Z"
+        },
+        {
+          "kind": "owned",
+          "coq": "arrayListWellFormed keysElementBytes tx_keys"
+        },
+        {
+          "kind": "owned",
+          "coq": "arrayListLength tx_keys = bv_unsigned inner_x24"
+        },
+        {
+          "kind": "owned",
+          "coq": "arrayListItems tx_keys = concat tx_done_keys"
+        },
+        {
+          "kind": "owned",
+          "coq": "txAccessListKeysWalked (take (Z.to_nat (bv_unsigned {x22})) (drop (Z.to_nat (bv_unsigned {x23} - bv_unsigned (txInputPointer args))) (txInputBytes args))) i tx_done_keys"
         }
       ],
       "owned": {
@@ -294,17 +310,25 @@
           {
             "name": "tx_keys",
             "type": "ArrayListState"
+          },
+          {
+            "name": "tx_done_keys",
+            "type": "list (list byte)"
           }
         ],
         "resources": [
-          "(bv_unsigned (txStackPointer args) - 448) \u21a6\u2098\u2217 arrayListHeaderBytes tx_entries",
-          "arrayListBuffer entriesElementBytes entriesLog2Alignment tx_entries",
-          "txAccessListKeysSlices tx_done tx_images",
-          "ziskExtraParamsAddress \u21a6\u2098\u2217 tx_scratch",
-          "(bv_unsigned (txStackPointer args) - 280) \u21a6\u2098\u2217 arrayListHeaderBytes tx_keys",
+          {
+            "coq": "(bv_unsigned (txStackPointer args) - 280) \u21a6\u2098\u2217 arrayListHeaderBytes tx_keys",
+            "length": "24"
+          },
+          "(bv_unsigned (txStackPointer args) - 256) \u21a6\u2098? 152",
           "arrayListBuffer keysElementBytes keysLog2Alignment tx_keys"
         ],
-        "replaces": []
+        "replaces": [
+          {
+            "id": "loop_owned_1_call_after_call_after_call_after"
+          }
+        ]
       }
     }
   ],
@@ -382,7 +406,10 @@
       ],
       "output_length_source": "C1BResult (RlpDecodeItem.v): candidateResult40 is errorResult40 or successResult40, each of 40 bytes",
       "result_words": {
-        "0": "bv_unsigned (txInputPointer args) + (bv_unsigned {word:after:0} - bv_unsigned (txInputPointer args))"
+        "0": "bv_unsigned (txInputPointer args) + {fresh:payload_offset:Z}"
+      },
+      "result_minimums": {
+        "payload_offset": 1
       },
       "call_site_pc": "+0x108"
     },
@@ -435,7 +462,10 @@
       ],
       "output_length_source": "C1BResult (RlpDecodeItem.v): candidateResult40 is errorResult40 or successResult40, each of 40 bytes",
       "result_words": {
-        "0": "bv_unsigned (txInputPointer args) + (bv_unsigned {word:after:0} - bv_unsigned (txInputPointer args))"
+        "0": "bv_unsigned (txInputPointer args) + {fresh:payload_offset:Z}"
+      },
+      "result_minimums": {
+        "payload_offset": 1
       },
       "call_site_pc": "+0x19c"
     },
@@ -875,6 +905,6 @@
   },
   "generated_from": {
     "path": "tools/block/functions/txAccessList.annotations.json",
-    "sha256": "0f9cd2433bfe849a1469fc4c1be6493533982bcff310fd59c6c86b956402b452"
+    "sha256": "669fca14e92be0f2017f976ae59e8e963e441687d0d75cc75e13fb972d230f59"
   }
 }
