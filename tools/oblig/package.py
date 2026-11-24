@@ -38,7 +38,10 @@ tools/oblig/normalise.py: those parts are open goals of their own) into RUN/pack
   (tools/oblig/similar.py) and the hint slice of the block (`tools/oblig/hints.py slice`, when
   --hints names a hint pack).
 - PACKAGE.json: obligation id (`<F>/goal/<block>-<16 hex of sha256(statement)>`), class,
-  addresses, falsity verdict, task path, prompt bytes and sha256, context items.
+  addresses, falsity verdict, task path, prompt bytes and sha256, context items, and `dropped_facts`:
+  the facts the export left out of the statement for size (MANIFEST row of residual_loop.py, from the
+  `@@X dropped-fact` records of ResidualExport.v); the task names them in one line
+  ("premises omitted for size: ...").
 
 answer turns a prover's JSON answer
 `{"verdict": "proved"|"false"|"need_context"|"give_up", "proof": ..., "needs": [...],
@@ -330,6 +333,7 @@ def package_goal(run, manifest, goal, function, tier, max_bytes, index, hints, f
     out.mkdir(parents=True, exist_ok=True)
     record = dict(id=obligation_id(function, block, goal["statement"]), goal=goal["id"], block=block,
                   function=function, tier=tier, conclusion_head=similar.keys(goal["statement"])[0])
+    record["dropped_facts"] = goal.get("dropped_facts") or []
     record["addresses"] = address_matches(goal_v)
     if record["addresses"] and symbol_route is not None:
         route = symbol_route() if callable(symbol_route) else symbol_route
@@ -355,7 +359,7 @@ def package_goal(run, manifest, goal, function, tier, max_bytes, index, hints, f
             record["next"] = "owner"
             return write_record(out, record)
     answer_path = run / "answers" / (goal["id"] + ".v")
-    base = base_task(run, block, goal, goal_v, answer_path)
+    base = base_task(run, block, goal, goal_v, answer_path) + dropped_line(record["dropped_facts"])
     if symbolize.REQUIRE in goal_v:
         base = symbolize.display(base, symbolize.table(), symbolize.sections())
     if len(base.encode()) > max_bytes:
@@ -386,6 +390,16 @@ def package_goal(run, manifest, goal, function, tier, max_bytes, index, hints, f
                   context_supplied=used, similar=[e["name"] for _, e in found] if "similar" in used else [],
                   defs=shown if "defs" in used else [])
     return write_record(out, record)
+
+
+def dropped_line(facts):
+    """The task line naming the premises the export left out for size (ResidualExport.v `dropped-fact`
+    records): the statement may be unprovable without them, and a `need_context` answer can name them."""
+    if not facts:
+        return ""
+    return "\npremises omitted for size: %s\n" % ", ".join(
+        "%s (%s nodes, head %s)" % (f["name"], f["nodes"] if f.get("nodes") is not None else "?", f["head"])
+        for f in facts)
 
 
 def write_record(out, record):

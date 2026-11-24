@@ -38,7 +38,12 @@ named by export --module) through
 tools/residuals/render_residual_module.py (existing lemmas stay) and adds the
 module import to the caller. With export --function F, B is the block's 4-hex
 offset from F's symbol: the lemmas are named residual_<F>_<B>_<16 hex> and the
-module is the relocatable form ZesuSsz/Residuals/<F>/Block<B>.v. rerun compiles
+module is the relocatable form ZesuSsz/Residuals/<F>/Block<B>.v; register then
+re-renders the installed callers of the block (F's CALLERS.json beside the caller,
+else under tools/block/generated/) with the caller renderer's own residual import
+(render_fp301_statements.residual_import) and records their new hashes in that
+CALLERS.json, so a closure certificate of the rerun caller matches the record
+(tools/oblig/store.py sync). rerun compiles
 that module and the caller copy with
 the export switch: it records whether the block closes, and the goals still open
 become the next round of goals.
@@ -85,6 +90,7 @@ IDLE_POLL_SECONDS = 5
 GUARD = ROOT / "tools/resource_guard.sh"
 REGISTRY = ROOT / "tools/run_registry.py"
 RESIDUALS = ROOT / "ZesuSsz/Residuals"
+GENERATED = ROOT / "tools/block/generated"
 
 
 class LoopError(ValueError):
@@ -181,7 +187,9 @@ def records(lines):
 
 
 def parse_export(lines):
-    """Return the export records of a log: pure goals and skip lines, in log order."""
+    """Return the export records of a log: pure goals and skip lines, in log order. A goal's
+    `dropped-fact <hypothesis> <nodes> <head>` lines (ResidualExport.v: a fact the conclusion reaches
+    but above the node limit, so absent from the statement) become its `dropped_facts`."""
     out, current = [], None
     for stamp, text in records(lines):
         if not text.startswith("@@X "):
@@ -192,7 +200,7 @@ def parse_export(lines):
             out.append(dict(kind=parts[1], status="skip", reason=parts[2] if len(parts) > 2 else "", stamp=stamp))
         elif body.startswith("begin "):
             current = dict(kind=body[6:].strip(), status="pure", stamp=stamp, binders=[],
-                           conclusion_definitions=[], counts={}, statement=None)
+                           conclusion_definitions=[], counts={}, statement=None, dropped_facts=[])
         elif current is None:
             continue
         elif body.startswith("binders"):
@@ -201,6 +209,10 @@ def parse_export(lines):
             current["conclusion_definitions"] = body.split()[1:]
         elif body.startswith("counts "):
             current["counts"] = {k: int(v) for k, v in (x.split("=") for x in body.split()[1:])}
+        elif body.startswith("dropped-fact "):
+            name, nodes, head = (body.split(" ", 3) + ["-", "-"])[1:4]
+            current["dropped_facts"].append(dict(name=name, nodes=int(nodes) if nodes.isdigit() else None,
+                                                 head=head.strip()))
         elif body.startswith("stmt "):
             current["statement"] = body[5:].strip()
         elif body == "end":
@@ -228,6 +240,8 @@ def select_goals(found, block, closed, function=None):
         goal = dict(id=None, name=rrm.lemma_prefix(block, function) + key[:16], statement=record["statement"],
                     source=source, copies=1, binders=record["binders"], counts=record["counts"],
                     conclusion_definitions=record["conclusion_definitions"])
+        if record.get("dropped_facts"):
+            goal["dropped_facts"] = record["dropped_facts"]
         seen[key] = goal
         goals.append(goal)
     split_only = [r for r in found if r["status"] == "pure" and r["kind"] == "split"
@@ -763,15 +777,64 @@ def cmd_register(a):
     target.parent.mkdir(parents=True, exist_ok=True)
     target.write_text(text)
     caller = Path(a.caller or manifest["caller"])
-    source = caller.read_text()
-    line = module_import(module)
-    if line not in source.split("\n"):
-        lines = source.split("\n")
-        lines.insert(import_index(lines) + 1, line)
-        caller.write_text("\n".join(lines))
-    manifest.setdefault("registered", []).append(dict(module=str(target), caller=str(caller), added=added))
+    changed = rerender_callers(manifest, module, caller, a.residuals) if manifest.get("function") else None
+    if changed is None:
+        source = caller.read_text()
+        line = module_import(module)
+        if line not in source.split("\n"):
+            lines = source.split("\n")
+            lines.insert(import_index(lines) + 1, line)
+            caller.write_text("\n".join(lines))
+        changed = [str(caller)]
+    manifest.setdefault("registered", []).append(dict(module=str(target), callers=changed, added=added))
     write_json(run / "MANIFEST.json", manifest)
     print("registered %d lemma(s) in %s" % (len(added), target))
+
+
+def installed_callers(function, caller):
+    """(path, data) of FUNCTION's CALLERS.json (tools/block/render_function_callers.py): the one beside
+    CALLER, else the installed one under tools/block/generated/; (None, None) without one."""
+    for path in [Path(caller).parent / "CALLERS.json", *sorted(GENERATED.glob("*/CALLERS.json"))]:
+        data = read_json(path)
+        if data and data.get("function") == function:
+            return path, data
+    return None, None
+
+
+def rerender_callers(manifest, module, caller, residuals):
+    """Give the installed callers of the block the residual import exactly as a re-render does
+    (render_function_callers.py calls render_fp301_statements.residual_import on each caller; with the
+    module now present it adds the import, the return requires included) and record each new caller
+    hash in CALLERS.json. Every slot caller of the block takes the import. Returns the changed caller
+    paths, or None when the function has no CALLERS.json (the caller is then edited in place).
+    A caller whose text is not the one CALLERS.json records is refused: re-derive first."""
+    from function_profiles import load_profile
+    from render_fp301_statements import residual_import, residual_module
+    path, data = installed_callers(manifest["function"], caller)
+    if path is None:
+        return None
+    profile = load_profile(manifest["function"])
+    legacy = bool(profile.get("caller_residual_imports"))
+    changed = []
+    for row in data.get("rows", []):
+        if row.get("status") != "rendered":
+            continue
+        installed = path.parent / Path(row["caller"]["path"]).name
+        source = installed.read_text()
+        if residual_module(source, residuals, profile, legacy) != module or module_import(module) in source.split("\n"):
+            continue
+        if sha(source) != row["caller"]["sha256"]:
+            raise LoopError("%s is not the caller %s records; re-derive the function first." % (installed, path))
+        text = residual_import(source, residuals, profile, legacy)
+        installed.write_text(text)
+        rendered = Path(row["caller"]["path"])
+        if rendered != installed and rendered.is_file() and rendered.read_text() == source:
+            rendered.write_text(text)
+        row["caller"]["sha256"] = sha(text)
+        changed.append(str(installed))
+    if changed:
+        path.write_text(json.dumps(data, indent=2) + "\n")
+    return changed
 
 
 def cmd_rerun(a):

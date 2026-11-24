@@ -109,6 +109,29 @@ class GoalTaskTests(unittest.TestCase):
         self.assertEqual(records[1]["context_supplied"], [])
         self.assertNotIn("range", records[0]["context_supplied"])
 
+    def test_premises_omitted_for_size_reach_the_record_and_the_task(self):
+        log = ("1.0 @@X begin final\n1.1 @@X binders x\n1.2 @@X dropped-fact H7 3021 and\n"
+               "1.3 @@X dropped-fact H9 2600 ZesuSsz.Contracts.AltFlAllocPremises.altFlBlock\n"
+               "1.4 @@X counts props=9 small=7 kept=1\n1.5 @@X stmt forall (x : Z), Z.lt x (Z.add x 1)\n1.6 @@X end\n")
+        rl = package.rl
+        goals, _, _ = rl.select_goals(rl.parse_export(log.split("\n")), "00c4", False, "txAccessList")
+        dropped = [dict(name="H7", nodes=3021, head="and"),
+                   dict(name="H9", nodes=2600, head="ZesuSsz.Contracts.AltFlAllocPremises.altFlBlock")]
+        self.assertEqual(goals[0]["dropped_facts"], dropped)
+        with tempfile.TemporaryDirectory() as root:
+            run, manifest = make_run(root, ["forall (x : Z), Z.lt x (Z.add x 1)", "forall (y : Z), y = y"])
+            manifest["goals"][0]["dropped_facts"] = dropped
+            records = [package.package_goal(run, manifest, g, "keys", "haiku-low", 12000, None, None)
+                       for g in manifest["goals"]]
+            text = Path(records[0]["task"]).read_text()
+            other = Path(records[1]["task"]).read_text()
+            stored = json.loads((run / "package" / "00c4-1" / "PACKAGE.json").read_text())
+        self.assertEqual(stored["dropped_facts"], dropped)
+        self.assertIn("premises omitted for size: H7 (3021 nodes, head and), H9 (2600 nodes, head "
+                      "ZesuSsz.Contracts.AltFlAllocPremises.altFlBlock)", text)
+        self.assertEqual(records[1]["dropped_facts"], [])
+        self.assertNotIn("premises omitted for size", other)
+
 
 class AnswerTests(unittest.TestCase):
     def test_answers_become_collect_files(self):

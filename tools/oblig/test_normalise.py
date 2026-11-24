@@ -257,6 +257,47 @@ class PartsTests(unittest.TestCase):
         self.assertTrue((run / "goals" / "0020-2" / "screen" / "SCREEN.json").is_file())
         self.assertIn("forall (y : Z)", (run / "goals" / "0020-3" / "goal.v").read_text())
 
+    def test_identical_parts_are_one_row_referenced_twice(self):
+        run = residual_run(self.tmp / "dup", block="0030")
+        manifest = json.loads((run / "MANIFEST.json").read_text())
+        # Goal 0030-1 keeps its parts 0030-2 (P1) and 0030-3 (P2); goal 0030-4 normalises into P2, P3, P3.
+        d = run / "goals" / "0030-4"
+        d.mkdir(parents=True)
+        (d / "goal.v").write_text((run / "goals" / "0030-1" / "goal.v").read_text().replace(" G.", " H."))
+        manifest["goals"].append(dict(id="0030-4", name="residual_demo_0030_h", statement="H", reparse="exact"))
+        record = dict(level=2, link="LINK2.", link_file="link.v", parts=[])
+        for k, statement in ((1, "P2"), (2, "P3"), (3, "P3")):
+            record["parts"].append(dict(k=k, name="residual_demo_0030_%s" % normalise.sha(statement)[:16],
+                                        statement=statement, binders=[], goal=str(self.tmp / "none" / "goal.v")))
+        ids = normalise.apply(run, manifest, manifest["goals"][3], record, reparse=lambda *args: dict(reparse="exact"))
+        self.assertEqual(ids, ["0030-3", "0030-5", "0030-5"])
+        saved = json.loads((run / "MANIFEST.json").read_text())
+        self.assertEqual([g["id"] for g in saved["goals"]], ["0030-1", "0030-2", "0030-3", "0030-4", "0030-5"])
+        self.assertEqual(saved["goals"][3]["normalised"]["part_k"], [1, 2, 3])
+        close(run, "0030-3", "auto.\nQed.\n")
+        close(run, "0030-5", "trivial.\nQed.\n")
+        self.assertEqual(normalise.compose(run, {"0030-4"}), ["0030-4"])
+        self.assertEqual((run / "answers" / "0030-4.v").read_text(),
+                         "assert (zn_part_1 :\n  P2).\n{ auto.\n}\nassert (zn_part_2 :\n  P3).\n{ trivial.\n}\n"
+                         "assert (zn_part_3 :\n  P3).\n{ trivial.\n}\nLINK2.\nQed.\n")
+
+    def test_a_part_closed_under_another_row_of_its_statement(self):
+        # The keysEnsureCapacity 0138 shape: two rows (parts of two goals) with one statement; only one is answered.
+        manifest = json.loads((self.run / "MANIFEST.json").read_text())
+        d = self.run / "goals" / "0010-4"
+        d.mkdir()
+        (d / "goal.v").write_text((self.run / "goals" / "0010-3" / "goal.v").read_text())
+        (d / "STATUS.json").write_text(json.dumps(dict(attempts=[], result="OPEN")))
+        manifest["goals"].append(dict(manifest["goals"][2], id="0010-4", part_of="0010-9", part=1))
+        (self.run / "MANIFEST.json").write_text(json.dumps(manifest))
+        close(self.run, "0010-2", "auto.\nQed.\n")
+        close(self.run, "0010-4", "lia.\nQed.\n")
+        self.assertEqual(normalise.compose(self.run), ["0010-1"])
+        self.assertIn("assert (zn_part_2 :\n  P2).\n{ lia.\n}\n", (self.run / "answers" / "0010-1.v").read_text())
+        states = store.derived_states("demo", self.tmp)
+        self.assertEqual(states[store.goal_id("demo", "0010", "P2")][2], "closed")
+        self.assertEqual(states[store.goal_id("demo", "0010", "G")][2], "derived")
+
     def test_drive_closes_the_goal_by_its_composed_proof(self):
         import drive
         close(self.run, "0010-2", "auto.\nQed.\n")
