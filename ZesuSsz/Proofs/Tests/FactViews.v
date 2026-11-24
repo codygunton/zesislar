@@ -4,11 +4,11 @@ Require Import stdpp.bitvector.definitions.
 From iris.proofmode Require Import environments.
 Require Import ZesuMachineMap.Machine.
 Require Import ZesuSsz.Contracts.AltFlAllocPremises.
-Require Import ZesuSsz.Automation2.All.
 Require ZesuSsz.Automation2.ResidualExport.
 From Ltac2 Require Import Ltac2.
-Set Default Proof Mode "Classic".
 From Coq Require Import Lia.
+Require Import ZesuSsz.Automation2.All.
+Set Default Proof Mode "Classic".
 Local Open Scope Z_scope.
 
 Section fact_views.
