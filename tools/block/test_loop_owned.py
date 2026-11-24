@@ -145,6 +145,17 @@ class SeedTest(unittest.TestCase):
         self.assertIn('list_state', [binder['name'] for binder in rebuilt.ownership['binders']])
         self.assertEqual(rebuilt.join_kind, 'loop_head')
         self.assertEqual([resource.id for resource in rebuilt.resources], ['loop_owned_0'])
+        # A loop nested below this one keeps these ids; its own carry its head.
+        inner = {'binders': [{'name': 'inner_state', 'type': 'ArrayListState'}],
+                 'resources': [{'coq': '(sp - 280) ↦ₘ∗ arrayListHeaderBytes inner_state', 'length': '24'}],
+                 'replaces': []}
+        nested = owned_seed(rebuilt, design(owned=inner, facts=[{'kind': 'fact', 'coq': 'arrayListLength inner_state = 0'}]),
+                            0x20, {'rows': []})
+        ids = [component['id'] for component in nested.ownership['components']]
+        self.assertEqual(len(ids), len(set(ids)))
+        self.assertIn('loop_owned_fact_0', ids)
+        self.assertIn('loop_owned_20_fact_0', ids)
+        self.assertEqual([resource.id for resource in nested.resources], ['loop_owned_0', 'loop_owned_20_0'])
 
 
 if __name__ == '__main__':

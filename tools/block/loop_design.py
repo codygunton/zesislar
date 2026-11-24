@@ -162,11 +162,11 @@ def _entry_edges(report, design, profile):
             if row['predecessor_pc'] == profile.pc(design['entry_predecessor'])]
 
 
-def owned_node(row, index):
+def owned_node(row, index, prefix='loop_owned_'):
     """The public seed node of one `owned.resources` row (call_boundary's node kinds)."""
     text = owned_text(row)
     points = re.fullmatch(r'(.+?)\s+(↦ₘ∗|↦ₘ\?)\s+(.+)', text, re.S)
-    key = 'loop_owned_%d' % index
+    key = prefix + str(index)
     if points is None:
         return {'kind': 'opaque', 'id': key, 'coq': text}
     from forward_resources import _strip_enclosure
@@ -197,10 +197,13 @@ def owned_seed(seed, design, head, vocabulary):
     # Before the closing component (`True`, or the continuation `K` of a seed that carries it).
     terminal = next((index for index, node in enumerate(nodes) if node.get('coq') in ('True', 'K')), len(nodes))
     names = {row['name'] for row in owned.get('binders', [])}
-    carried = [{'kind': 'opaque', 'id': 'loop_owned_fact_%d' % index, 'coq': '⌜' + row['coq'] + '⌝'}
+    # A loop nested in a loop-owned one keeps the outer loop's ids: its own carry the head.
+    prefix = ('loop_owned_%x_' % head if any(str(node['id']).startswith('loop_owned_') for node in nodes)
+              else 'loop_owned_')
+    carried = [{'kind': 'opaque', 'id': prefix + 'fact_%d' % index, 'coq': '⌜' + row['coq'] + '⌝'}
                for index, row in enumerate(design.get('facts', []))
                if _words(row['coq']) & names and '{x' not in row['coq']]
-    nodes[terminal:terminal] = [owned_node(row, index) for index, row in enumerate(owned['resources'])] + carried
+    nodes[terminal:terminal] = [owned_node(row, index, prefix) for index, row in enumerate(owned['resources'])] + carried
     binders = [{key: value for key, value in binder.items() if key != 'scope'} for binder in seed.ownership['binders']]
     # `owned`: a ghost binder of the loop's owned state; a join or loop head below keeps it (drop_unheld_binders).
     binders += [{'name': row['name'], 'type': row['type'], 'expression': input_expr(row['name'], None).to_dict(),
