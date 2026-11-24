@@ -284,6 +284,24 @@ class JoinOwnedTest(unittest.TestCase):
         bases = [resource.base.value for resource in owned_join_seed(seed, owned, 0x42c, {'rows': []}).resources]
         self.assertEqual(bases, ['(Z_to_bv 64%N (extraAddress))'])
 
+    def test_a_register_placeholder_is_the_join_registers_value(self):
+        from loop_design import owned_join_seed
+        public = {'schema': 'h1-public-entry-seed.v1', 'entry_pc': '0x448', 'source_bindings': [],
+                  'assertion_tree': {'kind': 'exists', 'binders': [], 'components': [
+                      {'kind': 'opaque', 'id': 'true', 'coq': 'True'}]}}
+        public['_input_sha256'] = '0' * 64
+        seed = seed_owned_resources(public, entry_pc=0x448, vocabulary={'rows': []})
+        seed.state.registers['x11'] = input_expr('machine_x11', 64)
+        owned = {'binders': [{'name': 'grown', 'type': 'ArrayListState'}], 'resources': ['arrayListBuffer 40 3 grown'],
+                 'replaces': [], 'facts': [{'coq': 'bv_unsigned {x11} = arrayListPointer grown'}],
+                 'predecessors': ['0264', '043c']}
+        rebuilt = owned_join_seed(seed, owned, 0x448, {'rows': []})
+        texts = [str(c['seed_component'].get('coq')) for c in rebuilt.ownership['components']]
+        self.assertIn('⌜bv_unsigned (machine_x11) = arrayListPointer grown⌝', texts)
+        with self.assertRaisesRegex(ValueError, 'register the join does not hold'):
+            owned_join_seed(seed, {**owned, 'facts': [{'coq': 'bv_unsigned {x12} = arrayListPointer grown'}]},
+                            0x448, {'rows': []})
+
 
 if __name__ == '__main__':
     unittest.main()

@@ -42,7 +42,7 @@ The compiled profile keys, by `boundary`:
                    item (a text, or {id}: that component's text in each seed that has it) is dropped from
                    each edge that holds it (lifted or on the join's root) and from the root before the
                    edges are generalized, so the edges may disagree on it; an item no edge and no root
-                   holds is refused. Its binders
+                   holds is refused. A fact's `{xN}` is register xN's join binder. Its binders
                    are existentials (typed, no register or role, no Boolean selector, never `= literal`);
                    each predecessor block proves the entry, and `test` reports the visits per predecessor.
   call_site        a `calls` row: the row's `call` object with `call_site_pc`. Its `opaque` rows
