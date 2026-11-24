@@ -6,11 +6,18 @@
       "function": "decodeItem",
       "symbol": "rlp.decodeItem",
       "status": "proved",
-      "compliance_theorems": ["decodeItemGeneratedCompliance", "decodeItemSelectedCompliance"],
+      "compliance_theorems": ["decodeItemGeneratedCompliance", "decodeItemSelectedCompliance", "decodeItemBudgetCompliance"],
       "owned_prefixes": [
         "ZesuSsz/Contracts/DecodeItem", "ZesuSsz/Contracts/RlpDecodeItem", "ZesuSsz/Compliance/DecodeItem",
-        "ZesuSsz/Generated/DecodeItem/", "ZesuSsz/Residuals/Block800d6", "ZesuSsz/Export/DecodeItem"
+        "ZesuSsz/Generated/DecodeItem/", "ZesuSsz/Generated/DecodeItemBudget/", "ZesuSsz/Residuals/Block800d6",
+        "ZesuSsz/Export/DecodeItem"
       ],
+      "budget": 75,
+      "charged": {"contract": {"module": "ZesuSsz.Contracts.DecodeItemBudgetContract", "name": "DecodeItemBudgetContractCorrect"},
+                  "compliance": {"module": "ZesuSsz.Compliance.DecodeItemBudgetCompliance", "name": "decodeItemBudgetCompliance"},
+                  "code": {"module": "ZesuSsz.Contracts.DecodeItemChargedSelected", "name": "decodeItemChargedCode"},
+                  "call_spec_correct": {"module": "ZesuSsz.Compliance.DecodeItemBudgetCallSpec", "name": "decodeItemBudgetCallSpec2_correct",
+                                        "statement": "decodeItemChargedCode -∗ instr_body decodeItemEntry (step_budget decodeItemBudget ∗ decodeItemCallSpec2)"}},
       "legacy_callers": [
         {"path": "ZesuSsz/Compliance/NextUint64ExitMeanings.v",
          "module": "ZesuSsz.Compliance.DecodeItemReturnRestorationFacts",

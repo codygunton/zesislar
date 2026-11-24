@@ -104,12 +104,13 @@ def internal_modules(entry, root=ROOT):
 
 
 def caller_scopes(entry, root=ROOT):
-    """Source files that are callers of `entry` in the sense of rule (a)."""
+    """Source files that are callers of `entry` in the sense of rule (a). A profile of the same symbol
+    (the function's charged variant, plan Stage T) proves the function itself: its tree is no caller."""
     owned = tuple(entry['owned_prefixes'])
     files = []
     for profile in sorted((Path(root) / 'tools/block/functions').glob('*.json')):
         data = json.loads(profile.read_text())
-        if data.get('function') == entry['function']:
+        if data.get('function') == entry['function'] or data.get('symbol') == entry.get('symbol'):
             continue
         for key in ('generated_directory', 'callers_directory'):
             directory = data.get(key)
@@ -172,6 +173,37 @@ def premise_violations(entry, root=ROOT):
             if not re.search(r'\bDefinition\s+%s\b' % re.escape(name), text)]
 
 
+CHARGED_KEYS = ['call_spec_correct', 'code', 'compliance', 'contract']
+
+
+def charged_violations(entry, root=ROOT):
+    """A proved row with a charged variant (plan Stage T): `budget` (an integer, the step budget a charged
+    caller hands over) and `charged` {contract, compliance, code, call_spec_correct}, each {module, name}
+    (call_spec_correct also its `statement`) of a module that declares that name; the compliance
+    theorem is one of the row's compliance_theorems."""
+    charged = entry.get('charged')
+    if entry['status'] != 'proved' or charged is None:
+        return []
+    function = entry['function']
+    if sorted(charged) != CHARGED_KEYS or not isinstance(entry.get('budget'), int):
+        return ['%s: a charged row has an integer budget and charged {%s}' % (function, ', '.join(CHARGED_KEYS))]
+    errors = []
+    for key in CHARGED_KEYS:
+        row = charged[key]
+        if not {'module', 'name'} <= set(row):
+            errors.append('%s: charged %s names {module, name}' % (function, key))
+            continue
+        path = Path(root) / ('ZesuSsz/' + row['module'][len('ZesuSsz.'):].replace('.', '/') + '.v')
+        if not row['module'].startswith('ZesuSsz.') or not path.exists():
+            errors.append('%s: charged module %s does not exist' % (function, row['module']))
+        elif not re.search(r'\b(?:Definition|Lemma|Theorem)\s+%s\b' % re.escape(row['name']),
+                           code_of(path.read_text())):
+            errors.append('%s: %s does not declare %s' % (function, row['module'], row['name']))
+    if charged['compliance'].get('name') not in entry['compliance_theorems']:
+        errors.append('%s: the charged compliance theorem is not among its compliance_theorems' % function)
+    return errors
+
+
 def coverage_violations(registry, root=ROOT):
     owned = {name for entry in registry['functions'] for name in entry['compliance_theorems']}
     errors = []
@@ -186,6 +218,7 @@ def coverage_violations(registry, root=ROOT):
         if entry['status'] == 'proved' and not entry['compliance_theorems']:
             errors.append('%s: a proved function names its compliance theorems' % entry['function'])
         errors += premise_violations(entry, root)
+        errors += charged_violations(entry, root)
     return errors
 
 
