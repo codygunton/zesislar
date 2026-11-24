@@ -211,6 +211,13 @@ Proof.
     pose proof (bv_unsigned_in_range _ q). lia.
 Qed.
 
+(* A load the block computes reads the outcome at the element type `bv 8`
+   (`take`/`drop` at `bv 8`), not at `byte`: the call step matches the window
+   facts syntactically, so they are stated in that spelling. *)
+Local Notation leWord64Bits bytes offset :=
+  (Z_to_bv 64 (little_endian_to_bv 8 (@take (bv 8) (N.to_nat 8) (@drop (bv 8) offset bytes))))
+  (only parsing).
+
 (* The same window over the caller's whole input, for a call on the window
    [p, p + l) of it (the entry call at +0xc4 on the cursor window). *)
 Lemma txAccessListListPayloadInInput (args : TxAccessListArgs) (argv0 p l : bv 64)
@@ -223,12 +230,14 @@ Lemma txAccessListListPayloadInInput (args : TxAccessListArgs) (argv0 p l : bv 6
   bv_unsigned (txInputPointer args) <= bv_unsigned p ->
   bv_unsigned p + bv_unsigned l <=
     bv_unsigned (txInputPointer args) + Z.of_nat (length (txInputBytes args)) ->
-  bv_unsigned (txInputPointer args) <= bv_unsigned (leWord64 after 0) /\
-  bv_unsigned (leWord64 after 0) + bv_unsigned (leWord64 after 8) <=
+  bv_unsigned (txInputPointer args) <= bv_unsigned (leWord64Bits after 0) /\
+  bv_unsigned (leWord64Bits after 0) + bv_unsigned (leWord64Bits after 8) <=
     bv_unsigned (txInputPointer args) + Z.of_nat (length (txInputBytes args)).
 Proof.
   intros window Hm Hlist Hfits Hlo Hhi.
   destruct (txAccessListListPayloadWindow _ _ _ _ _ _ _ _ Hm Hlist Hfits) as [H1 H2].
+  change (leWord64Bits after 0) with (leWord64 after 0).
+  change (leWord64Bits after 8) with (leWord64 after 8).
   subst window. rewrite length_take, length_drop in H2.
   set (w0 := bv_unsigned (leWord64 after 0)) in *.
   set (w8 := bv_unsigned (leWord64 after 8)) in *.
