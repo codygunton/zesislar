@@ -1,7 +1,6 @@
 From iris.proofmode Require environments.
 From Ltac2 Require Import Ltac2.
 Require Import ZesuSsz.Automation2.Telemetry.
-Require ZesuSsz.Automation2.ContextCollection.
 Set Default Proof Mode "Classic".
 
 (* Residual lemmas: the pure tier after the selected-facts solvers.
@@ -133,21 +132,46 @@ Ltac2 rec zesu_residual_matches (depth : int) (pattern : constr) (goal : constr)
   | _ => true
   end.
 
+(* A premise that is a piece of a hypothesis: a conjunct of `B ∧ C`, or
+   `A → B` of `A → B ∧ C`, to any depth. The exporter states a fact above
+   the node limit through such pieces (`ContextCollection.zesu_large_fact_pieces`),
+   so a lemma checked against the exported statement names a piece where the
+   block's context holds the whole fact. *)
+Ltac zesu_residual_conjunct fact :=
+  first [exact fact
+        | let piece1 := fresh in let piece2 := fresh in
+          destruct fact as [piece1 piece2];
+          first [zesu_residual_conjunct piece1 | zesu_residual_conjunct piece2]].
+
+Ltac zesu_residual_piece_premise :=
+  lazymatch goal with
+  | |- ?A -> _ =>
+      let a := fresh in intro a;
+      match goal with
+      | fact : A -> _ /\ _ |- _ => let whole := fresh in pose proof (fact a) as whole; zesu_residual_conjunct whole
+      end
+  | |- _ =>
+      match goal with
+      | fact : _ /\ _ |- _ => let whole := fresh in pose proof fact as whole; zesu_residual_conjunct whole
+      end
+  end.
+
 (* One premise: a hypothesis whose type is the premise syntactically, else
-   `assumption` (which also sees through local definitions). *)
+   `assumption` (which also sees through local definitions), else a piece of
+   a hypothesis. *)
 Ltac2 zesu_residual_premise () : unit :=
   let goal := Control.goal () in
   match List.find_opt (fun declaration => let (_, _, typ) := declaration in Constr.equal typ goal)
           (Control.hyps ()) with
   | Some declaration => let (name, _, _) := declaration in Control.refine (fun () => Control.hyp name)
-  | None => ltac1:(assumption)
+  | None => ltac1:(first [assumption | zesu_residual_piece_premise])
   end.
 
 (* Apply LEMMA to the goal when the goal is its conclusion up to its binders.
    A binder that the conclusion fixes is found by unification; any other
    binder that a premise mentions is the context variable of the same name
    (the export keeps the names of the context it was taken from); each
-   premise closes by a hypothesis. A missing variable or premise fails the
+   premise closes by a hypothesis or a piece of one. A missing variable or premise fails the
    lemma; nothing else is tried. Which binders the rest of the statement
    mentions is computed only once the conclusion matched. *)
 Ltac2 zesu_residual_exact_apply (lemma : constr) : unit :=
@@ -186,23 +210,16 @@ Ltac zesu_residual_exact lemma :=
    database from the context (measured: 80 hypotheses, empty database,
    `eauto 1` 1.2 ms a call, `typeclasses eauto 1` 5 us). A goal whose
    conclusion mentions a local definition gets one more try of both with the
-   definitions unfolded (unfolded once). A context with a fact above the node
-   limit gets a last try of the exact lemmas, the relocatable form every new
-   function uses, with the fact's pieces posed, as the exporter states them
-   (`ContextCollection.zesu_large_fact_pieces`, which fails at once when there
-   is no such fact). `eauto 2` is not tried there: on keysEnsureCapacity 0164,
-   whose every context holds such a fact, it cost 16% more instructions.
-   Telemetry names each try: kind=alt|altfail
-   site=residual_hint|residual_exact|residual_unfolded|residual_pieces. *)
+   definitions unfolded (unfolded once). A lemma over a piece of a fact
+   above the node limit applies through `zesu_residual_premise`; no tier
+   poses the pieces (measured on keysEnsureCapacity 0164, whose every context
+   holds such a fact: a tier that posed them before its try cost 16% more
+   instructions). Telemetry names each try: kind=alt|altfail
+   site=residual_hint|residual_exact|residual_unfolded. *)
 Ltac zesu_residual_lemma :=
   first [zesu_talt residual_hint (idtac; solve [eauto 2 with nocore zesu_residual])
         | zesu_talt residual_exact (idtac; solve [typeclasses eauto 1 with zesu_residual_exact])
         | zesu_talt residual_unfolded (idtac;
             solve [zesu_residual_unfold_goal;
                    first [solve [eauto 2 with nocore zesu_residual]
-                         | solve [typeclasses eauto 1 with zesu_residual_exact]]])
-        | zesu_talt residual_pieces (idtac;
-            solve [ZesuSsz.Automation2.ContextCollection.zesu_large_fact_pieces;
-                   first [solve [typeclasses eauto 1 with zesu_residual_exact]
-                         | solve [zesu_residual_unfold_goal;
-                                  typeclasses eauto 1 with zesu_residual_exact]]])].
+                         | solve [typeclasses eauto 1 with zesu_residual_exact]]])].

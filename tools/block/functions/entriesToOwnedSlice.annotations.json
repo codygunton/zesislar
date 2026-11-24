@@ -1,0 +1,657 @@
+{
+ "schema": "zesu.annotations.v1",
+ "function": "entriesToOwnedSlice",
+ "symbol": "array_list.Aligned(input.AccessListEntry,null).toOwnedSlice",
+ "profile": {
+  "function": "entriesToOwnedSlice",
+  "entry_hist": "wrap",
+  "frame_slots": true,
+  "array_spelling": "sealed",
+  "hist_visible": [
+   "^\\(?frame_old_m\\d+'* = ",
+   "^\\W*bv_unsigned call_x10 = 0\\W*$",
+   "^\\W*negb \\(bool_decide \\(call_x10 = \\(BV 64%N 0%Z\\)\\)\\)\\W*= true\\W*(/\\\\\\W*bv_unsigned call_x10\\W*<>\\W*0%Z\\W*%Z\\W*)?$"
+  ],
+  "args_type": "EntriesToOwnedSliceBlockArgs",
+  "symbol": "array_list.Aligned(input.AccessListEntry,null).toOwnedSlice",
+  "generated_directory": "ZesuSsz/Generated/EntriesToOwnedSlice/FP301",
+  "callers_directory": "tools/block/generated/entriestoownedslice_fp301_callers",
+  "contract_requires": [
+   "Require Import InstrSpecs.Machine.",
+   "Require Import EvmSailRlp.evm_rlp_types.",
+   "Require Import ZesuSsz.Generated.Stock.Symbols.",
+   "Require Import ZesuSsz.Contracts.AltFlAllocPremises.",
+   "Require Import ZesuSsz.Contracts.ZiskMemcpyPremise.",
+   "Require Import ZesuSsz.Contracts.AbiBytes.",
+   "Require Import ZesuSsz.Contracts.ZiskRuntime.",
+   "Require Import ZesuSsz.Contracts.ParentHeaderMemcpyService.",
+   "Require Import ZesuSsz.Contracts.ArrayListContract.",
+   "Require Import ZesuSsz.Contracts.EntriesToOwnedSliceBlockEntries.",
+   "Require Export ZesuSsz.Compliance.EntriesToOwnedSliceHints."
+  ],
+  "loop_contract_requires": [
+   "Require Import InstrSpecs.Machine.",
+   "Require Import EvmSailRlp.evm_rlp_types.",
+   "Require Import ZesuSsz.Generated.Stock.Symbols.",
+   "Require Import ZesuSsz.Contracts.AltFlAllocPremises.",
+   "Require Import ZesuSsz.Contracts.ZiskMemcpyPremise.",
+   "Require Import ZesuSsz.Contracts.AbiBytes.",
+   "Require Import ZesuSsz.Contracts.ZiskRuntime.",
+   "Require Import ZesuSsz.Contracts.ParentHeaderMemcpyService.",
+   "Require Import ZesuSsz.Contracts.ArrayListContract.",
+   "Require Import ZesuSsz.Contracts.EntriesToOwnedSliceBlockEntries.",
+   "Require Export ZesuSsz.Compliance.EntriesToOwnedSliceHints."
+  ],
+  "caller_contract_requires": [
+   "Require Import ZesuSsz.Contracts.EntriesToOwnedSliceBlockEntries."
+  ],
+  "selected_code": {
+   "module": "ZesuSsz.Contracts.EntriesToOwnedSliceSelected",
+   "premise": "entriesToOwnedSliceSelectedCode"
+  },
+  "return_address": {
+   "register": "x1",
+   "value": "(toOwnedReturnAddress (entriesBase args))",
+   "alignment": 4,
+   "source": "entriesBlockArgsWellFormed (EntriesToOwnedSliceBlockEntries.v): bv_unsigned (toOwnedReturnAddress (entriesBase args)) mod 4 = 0 (from toOwnedSliceDomain: (4 | bv_unsigned (toOwnedReturnAddress args)))"
+  },
+  "entry_interface": {
+   "entry_resources": "entriesBlockEntryResources",
+   "well_formed": "entriesBlockArgsWellFormed",
+   "exit_resources": "entriesBlockExitResources",
+   "source": "ZesuSsz/Contracts/EntriesToOwnedSliceBlockEntries.v",
+   "exact_system_registers": {
+    "zisk_input_end": "bv_unsigned (toOwnedInputEnd (entriesBase args))"
+   }
+  },
+  "trace_namespace": "ZesuSsz.Stock.Closure",
+  "blocks": [
+   "+0x0",
+   "+0x58",
+   "+0x5c",
+   "+0x70",
+   "+0x7c",
+   "+0x80",
+   "+0xa4",
+   "+0xac",
+   "+0xb0",
+   "+0xe4",
+   "+0xe8",
+   "+0x108",
+   "+0x120",
+   "+0x128",
+   "+0x12c",
+   "+0x144",
+   "+0x14c",
+   "+0x17c",
+   "+0x18c",
+   "+0x1a4",
+   "+0x1ac",
+   "+0x1c0",
+   "+0x1c8",
+   "+0x1f0",
+   "+0x204",
+   "+0x21c",
+   "+0x224"
+  ],
+  "loop_heads": [],
+  "duplicated_joins": [
+   "+0x120",
+   "+0x14c"
+  ],
+  "cfg_function": "array_list.Aligned(input.AccessListEntry,null).toOwnedSlice",
+  "compliance": {
+   "boundary": "ZesuSsz.Compliance.EntriesToOwnedSliceCompositionBoundary",
+   "continuation": "entriesToOwnedSliceContinuation",
+   "inline_returns": false,
+   "source": "Exit design A (EntriesToOwnedSliceGeneratedComposition.v, as keysToOwnedSlice): every table entry carries the contract continuation at returnAddress as K; the callers of the return slots take the generated return package at returnAddress; the composition proves each package's return premise from K through that package's end bridge."
+  }
+ },
+ "rows": [
+  {
+   "id": "entry",
+   "request": "entriesToOwnedSlice/decision/contract-0000",
+   "at": {
+    "pc": "+0x0",
+    "boundary": "entry"
+   },
+   "binders": [],
+   "resources": [],
+   "facts": [
+    {
+     "coq": "entriesBlockDomainAt returnAddress args",
+     "role": "domain",
+     "source": "EntriesToOwnedSliceContract.v (B1, PR #363) via its block-entry form EntriesToOwnedSliceBlockEntries.v"
+    }
+   ],
+   "predicates": [
+    {
+     "name": "altFlHeap",
+     "owner": "ZesuSsz.Contracts.AltFlAllocPremises"
+    },
+    {
+     "name": "altFlBlock",
+     "owner": "ZesuSsz.Contracts.AltFlAllocPremises"
+    }
+   ],
+   "author": {
+    "tier": "hand"
+   }
+  },
+  {
+   "id": "return-178",
+   "request": null,
+   "at": {
+    "pc": "+0x178",
+    "boundary": "function_return"
+   },
+   "binders": [],
+   "resources": [],
+   "facts": [],
+   "author": {
+    "tier": "hand"
+   }
+  },
+  {
+   "id": "call-a0",
+   "request": "entriesToOwnedSlice/decision/call_row-00a0",
+   "at": {
+    "pc": "+0xa0",
+    "boundary": "call_site"
+   },
+   "binders": [],
+   "resources": [],
+   "facts": [],
+   "call": {
+    "function": "array_list.Aligned(input.AccessListEntry,null).toOwnedSlice",
+    "callee_pc": "alt_fl_alloc.free+0x0",
+    "return_site_pc": "+0xa4",
+    "spec": "altFlFreeCallSpec",
+    "spec_module": "ZesuSsz.Contracts.AltFlAllocPremises",
+    "spec_source": "ZesuSsz/Contracts/AltFlAllocPremises.v",
+    "stack_bytes": 16,
+    "arrays": [],
+    "output_length_source": "altFlFreeCallSpec (AltFlAllocPremises.v): returns altFlHeap only; no array",
+    "opaque": [
+     {
+      "spec": "altFlHeap",
+      "use": "framed"
+     },
+     {
+      "spec": "bv_unsigned (argv !!! 1%nat) ↦ₘ? bv_unsigned (argv !!! 2%nat)",
+      "use": "consumed",
+      "caller": [
+       "arrayListPointer (entriesBlockList args) ↦ₘ∗ arrayListItems (entriesBlockList args)",
+       "(arrayListPointer (entriesBlockList args) + arrayListLength (entriesBlockList args) * entriesElementBytes) ↦ₘ? ((arrayListCapacity (entriesBlockList args) - arrayListLength (entriesBlockList args)) * entriesElementBytes)"
+      ]
+     },
+     {
+      "spec": "altFlBlock (bv_unsigned (argv !!! 1%nat)) (bv_unsigned (argv !!! 2%nat)) (bv_unsigned (argv !!! 3%nat))",
+      "use": "consumed",
+      "caller": [
+       "altFlBlock (arrayListPointer (entriesBlockList args)) (arrayListCapacity (entriesBlockList args) * entriesElementBytes) entriesLog2Alignment"
+      ]
+     }
+    ]
+   },
+   "author": {
+    "tier": "opus-medium",
+    "ported_from": "keysToOwnedSlice"
+   }
+  },
+  {
+   "id": "call-e0",
+   "request": "entriesToOwnedSlice/decision/call_row-00e0",
+   "at": {
+    "pc": "+0xe0",
+    "boundary": "call_site"
+   },
+   "binders": [],
+   "resources": [],
+   "facts": [],
+   "call": {
+    "function": "array_list.Aligned(input.AccessListEntry,null).toOwnedSlice",
+    "callee_pc": "alt_fl_alloc.remap+0x0",
+    "return_site_pc": "+0xe4",
+    "spec": "altFlRemapCallSpec",
+    "spec_module": "ZesuSsz.Contracts.AltFlAllocPremises",
+    "spec_source": "ZesuSsz/Contracts/AltFlAllocPremises.v",
+    "stack_bytes": 16,
+    "arrays": [],
+    "output_length_source": "altFlRemapCallSpec (AltFlAllocPremises.v): returns 0 in x10 and no array",
+    "returns": [
+     {
+      "index": 0,
+      "register": "x10"
+     }
+    ]
+   },
+   "author": {
+    "tier": "opus-medium",
+    "ported_from": "keysToOwnedSlice"
+   }
+  },
+  {
+   "id": "call-1a0",
+   "request": "entriesToOwnedSlice/decision/call_row-01a0",
+   "at": {
+    "pc": "+0x1a0",
+    "boundary": "call_site"
+   },
+   "binders": [],
+   "resources": [],
+   "facts": [],
+   "call": {
+    "function": "array_list.Aligned(input.AccessListEntry,null).toOwnedSlice",
+    "callee_pc": "alt_fl_alloc.alloc+0x0",
+    "return_site_pc": "+0x1a4",
+    "spec": "altFlAllocCallSpec",
+    "spec_module": "ZesuSsz.Contracts.AltFlAllocPremises",
+    "spec_source": "ZesuSsz/Contracts/AltFlAllocPremises.v",
+    "stack_bytes": 16,
+    "arrays": [],
+    "output_length_source": "altFlAllocCallSpec (AltFlAllocPremises.v): the returned block owns altFlAllocatedBytes x10 (argument 1) bytes, uninitialized",
+    "returns": [
+     {
+      "index": 0,
+      "register": "x10"
+     }
+    ],
+    "opaque": [
+     {
+      "spec": "altFlHeap",
+      "use": "framed"
+     },
+     {
+      "spec": "bv_unsigned (rets !!! 0%nat) ↦ₘ? altFlAllocatedBytes (bv_unsigned (rets !!! 0%nat)) (bv_unsigned (argv !!! 1%nat))",
+      "use": "produced"
+     },
+     {
+      "spec": "altFlBlock (bv_unsigned (rets !!! 0%nat)) (altFlAllocatedBytes (bv_unsigned (rets !!! 0%nat)) (bv_unsigned (argv !!! 1%nat))) (bv_unsigned (argv !!! 2%nat))",
+      "use": "produced"
+     }
+    ]
+   },
+   "author": {
+    "tier": "opus-medium",
+    "ported_from": "keysToOwnedSlice"
+   }
+  },
+  {
+   "id": "call-1bc",
+   "request": "entriesToOwnedSlice/decision/call_row-01bc",
+   "at": {
+    "pc": "+0x1bc",
+    "boundary": "call_site"
+   },
+   "binders": [],
+   "resources": [],
+   "facts": [],
+   "call": {
+    "function": "array_list.Aligned(input.AccessListEntry,null).toOwnedSlice",
+    "callee_pc": "memcpy+0x0",
+    "return_site_pc": "+0x1c0",
+    "spec": "ziskMemcpyCallSpec",
+    "spec_module": "ZesuSsz.Contracts.ZiskMemcpyPremise",
+    "spec_source": "ZesuSsz/Contracts/ZiskMemcpyPremise.v",
+    "stack_bytes": 0,
+    "arrays": [
+     {
+      "binder": "source",
+      "argument": 1,
+      "caller_value": "arrayListItems (entriesBlockList args)"
+     },
+     {
+      "binder": "scratch",
+      "constant": "ziskExtraParamsAddress",
+      "caller_value": "toOwnedScratchBefore (entriesBase args)",
+      "length": 8,
+      "length_source": "entriesBlockArgsWellFormed (EntriesToOwnedSliceBlockEntries.v): length (toOwnedScratchBefore (entriesBase args)) = 8%nat"
+     }
+    ],
+    "output_length_source": "ziskMemcpyCallSpec (ZiskMemcpyPremise.v): the destination receives source, Z.of_nat (length source) = argument 2; the extra-params word receives word64Bytes (argument 2), 8 bytes",
+    "returned_lengths": {
+     "0": "altFlAllocatedBytes (bv_unsigned call_x10) (bv_unsigned ((bv_add (bv_shiftl ((Z_to_bv 64%N (arrayListLength (entriesBlockList args)))) (BV 64%N 5%Z)) (bv_shiftl ((Z_to_bv 64%N (arrayListLength (entriesBlockList args)))) (BV 64%N 3%Z)))))"
+    }
+   },
+   "author": {
+    "tier": "opus-medium",
+    "ported_from": "keysToOwnedSlice"
+   }
+  },
+  {
+   "id": "call-1ec",
+   "request": "entriesToOwnedSlice/decision/call_row-01ec",
+   "at": {
+    "pc": "+0x1ec",
+    "boundary": "call_site"
+   },
+   "binders": [],
+   "resources": [],
+   "facts": [],
+   "call": {
+    "function": "array_list.Aligned(input.AccessListEntry,null).toOwnedSlice",
+    "callee_pc": "alt_fl_alloc.free+0x0",
+    "return_site_pc": "+0x1f0",
+    "spec": "altFlFreeCallSpec",
+    "spec_module": "ZesuSsz.Contracts.AltFlAllocPremises",
+    "spec_source": "ZesuSsz/Contracts/AltFlAllocPremises.v",
+    "stack_bytes": 16,
+    "arrays": [],
+    "output_length_source": "altFlFreeCallSpec (AltFlAllocPremises.v): returns altFlHeap only; no array",
+    "opaque": [
+     {
+      "spec": "altFlHeap",
+      "use": "framed"
+     },
+     {
+      "spec": "bv_unsigned (argv !!! 1%nat) ↦ₘ? bv_unsigned (argv !!! 2%nat)",
+      "use": "consumed",
+      "caller": [
+       "arrayListPointer (entriesBlockList args) ↦ₘ∗ arrayListItems (entriesBlockList args)",
+       "(arrayListPointer (entriesBlockList args) + arrayListLength (entriesBlockList args) * entriesElementBytes) ↦ₘ? ((arrayListCapacity (entriesBlockList args) - arrayListLength (entriesBlockList args)) * entriesElementBytes)"
+      ]
+     },
+     {
+      "spec": "altFlBlock (bv_unsigned (argv !!! 1%nat)) (bv_unsigned (argv !!! 2%nat)) (bv_unsigned (argv !!! 3%nat))",
+      "use": "consumed",
+      "caller": [
+       "altFlBlock (arrayListPointer (entriesBlockList args)) (arrayListCapacity (entriesBlockList args) * entriesElementBytes) entriesLog2Alignment"
+      ]
+     }
+    ]
+   },
+   "author": {
+    "tier": "opus-medium",
+    "ported_from": "keysToOwnedSlice"
+   }
+  },
+  {
+   "id": "call-218",
+   "request": "entriesToOwnedSlice/decision/call_row-0218",
+   "at": {
+    "pc": "+0x218",
+    "boundary": "call_site"
+   },
+   "binders": [],
+   "resources": [],
+   "facts": [],
+   "call": {
+    "function": "array_list.Aligned(input.AccessListEntry,null).toOwnedSlice",
+    "callee_pc": "memcpy+0x0",
+    "return_site_pc": "+0x21c",
+    "spec": "ziskMemcpyCallSpec",
+    "spec_module": "ZesuSsz.Contracts.ZiskMemcpyPremise",
+    "spec_source": "ZesuSsz/Contracts/ZiskMemcpyPremise.v",
+    "stack_bytes": 0,
+    "arrays": [
+     {
+      "binder": "source",
+      "argument": 1,
+      "caller_value": "arrayListItems (entriesBlockList args)"
+     },
+     {
+      "binder": "scratch",
+      "constant": "ziskExtraParamsAddress",
+      "caller_value": "toOwnedScratchBefore (entriesBase args)",
+      "length": 8,
+      "length_source": "entriesBlockArgsWellFormed (EntriesToOwnedSliceBlockEntries.v): length (toOwnedScratchBefore (entriesBase args)) = 8%nat"
+     }
+    ],
+    "output_length_source": "ziskMemcpyCallSpec (ZiskMemcpyPremise.v): the destination receives source, Z.of_nat (length source) = argument 2; the extra-params word receives word64Bytes (argument 2), 8 bytes"
+   },
+   "author": {
+    "tier": "opus-medium",
+    "ported_from": "keysToOwnedSlice"
+   }
+  },
+  {
+   "id": "dead-ac",
+   "request": "entriesToOwnedSlice/decision/predicate-0078",
+   "at": {
+    "pc": "+0xac",
+    "boundary": "join"
+   },
+   "binders": [],
+   "resources": [],
+   "facts": [
+    {
+     "coq": "False",
+     "role": "unreachable",
+     "need": "bnez s6 at +0xa8: s6 = items.ptr >= 1 (entriesBlockArgsWellFormed), so +0xac is never reached"
+    }
+   ],
+   "author": {
+    "tier": "opus-medium",
+    "ported_from": "keysToOwnedSlice"
+   }
+  },
+  {
+   "id": "dead-e8",
+   "request": "entriesToOwnedSlice/decision/predicate-00e0",
+   "at": {
+    "pc": "+0xe8",
+    "boundary": "join"
+   },
+   "binders": [],
+   "resources": [],
+   "facts": [
+    {
+     "coq": "False",
+     "role": "unreachable",
+     "need": "remap returns 0 (altFlRemapCallSpec), so beqz a0 at +0xe4 always branches"
+    }
+   ],
+   "author": {
+    "tier": "opus-medium",
+    "ported_from": "keysToOwnedSlice"
+   }
+  },
+  {
+   "id": "dead-204",
+   "request": "entriesToOwnedSlice/decision/predicate-0218",
+   "at": {
+    "pc": "+0x204",
+    "boundary": "join"
+   },
+   "reached": "contradictory_guards",
+   "binders": [],
+   "resources": [],
+   "facts": [
+    {
+     "coq": "False",
+     "role": "unreachable",
+     "need": "the only path is join +0x12c -> +0x17c -> beqz s6 at +0x188 taken; s7 = arrayListLength (entriesBlockList args) (word link at offset 8 of the list header), guarded nonzero at +0x54 and with mulhu s7 40 = 0 at +0x134, so s6 = (s7 << 5) + (s7 << 3) <> 0 and the branch to +0x204 is never taken; the +0x17c block proves False in the kernel"
+    },
+    {
+     "coq": "Z_to_bv 64 (arrayListLength (entriesBlockList args)) <> BV 64 0 /\\ bv_add (bv_shiftl (Z_to_bv 64 (arrayListLength (entriesBlockList args))) (BV 64 5)) (bv_shiftl (Z_to_bv 64 (arrayListLength (entriesBlockList args))) (BV 64 3)) = BV 64 0",
+     "role": "relies_on"
+    }
+   ],
+   "author": {
+    "tier": "opus-medium",
+    "ported_from": "keysToOwnedSlice"
+   }
+  },
+  {
+   "id": "dead-21c",
+   "request": "entriesToOwnedSlice/decision/predicate-0218",
+   "at": {
+    "pc": "+0x21c",
+    "boundary": "join"
+   },
+   "binders": [],
+   "resources": [],
+   "facts": [
+    {
+     "coq": "False",
+     "role": "unreachable",
+     "need": "return site of the memcpy at +0x218, reached only through +0x204 (dead-204)"
+    }
+   ],
+   "author": {
+    "tier": "opus-medium",
+    "ported_from": "keysToOwnedSlice"
+   }
+  },
+  {
+   "id": "dead-224",
+   "request": "entriesToOwnedSlice/decision/predicate-0218",
+   "at": {
+    "pc": "+0x224",
+    "boundary": "join"
+   },
+   "binders": [],
+   "resources": [],
+   "facts": [
+    {
+     "coq": "False",
+     "role": "unreachable",
+     "need": "reached only from +0x21c (dead-21c)"
+    }
+   ],
+   "author": {
+    "tier": "opus-medium",
+    "ported_from": "keysToOwnedSlice"
+   }
+  },
+  {
+   "id": "edge-1c4-1f0",
+   "request": "entriesToOwnedSlice/decision/join_assertion-01f0",
+   "at": {
+    "pc": "+0x1f0",
+    "boundary": "join"
+   },
+   "reached": "contradictory_guards",
+   "binders": [],
+   "resources": [],
+   "facts": [
+    {
+     "coq": "False",
+     "role": "unreachable",
+     "need": "the only predecessor edge is +0x1c4 beqz a2 taken (capacity word = 0) on the alloc path, which requires len <> 0 (+0x54) while entriesBlockArgsWellFormed gives len <= capacity; the +0x1c0 block proves it in the kernel. The free call's return seed at +0x1f0 stays and renders as usual"
+    },
+    {
+     "coq": "Z_to_bv 64 (arrayListLength (entriesBlockList args)) <> BV 64 0 /\\ Z_to_bv 64 (arrayListCapacity (entriesBlockList args)) = BV 64 0 /\\ arrayListLength (entriesBlockList args) <= arrayListCapacity (entriesBlockList args)",
+     "role": "relies_on"
+    }
+   ],
+   "author": {
+    "tier": "opus-medium",
+    "ported_from": "keysToOwnedSlice"
+   }
+  },
+  {
+   "id": "join-144",
+   "request": "entriesToOwnedSlice/decision/join_assertion-0144",
+   "at": {
+    "pc": "+0x144",
+    "boundary": "join"
+   },
+   "binders": [],
+   "resources": [],
+   "facts": [],
+   "drop": [
+    {
+     "root": "+0x1a4",
+     "resources": [
+      "bv_unsigned call_x10 ↦ₘ? altFlAllocatedBytes (bv_unsigned call_x10) (bv_unsigned ((bv_add (bv_shiftl ((Z_to_bv 64%N (arrayListLength (entriesBlockList args)))) (BV 64%N 5%Z)) (bv_shiftl ((Z_to_bv 64%N (arrayListLength (entriesBlockList args)))) (BV 64%N 3%Z)))))"
+     ]
+    }
+   ],
+   "author": {
+    "tier": "opus-medium",
+    "ported_from": "keysToOwnedSlice"
+   },
+   "why": "OutOfMemory path: alloc returned null, so the block owns altFlAllocatedBytes 0 n = 0 bytes; toOwnedSliceExit on OutOfMemory owns arrayListEmpty emptyPointer for the slice (nothing), so the exit does not need it"
+  },
+  {
+   "id": "join-a4",
+   "request": "entriesToOwnedSlice/decision/join_assertion-00a4",
+   "at": {
+    "pc": "+0xa4",
+    "boundary": "join"
+   },
+   "binders": [],
+   "resources": [],
+   "facts": [],
+   "drop": [
+    {
+     "root": "+0x0",
+     "resources": [
+      "arrayListPointer (entriesBlockList args) ↦ₘ∗ arrayListItems (entriesBlockList args)",
+      "(arrayListPointer (entriesBlockList args) + arrayListLength (entriesBlockList args) * entriesElementBytes) ↦ₘ? ((arrayListCapacity (entriesBlockList args) - arrayListLength (entriesBlockList args)) * entriesElementBytes)",
+      "altFlBlock (arrayListPointer (entriesBlockList args)) (arrayListCapacity (entriesBlockList args) * entriesElementBytes) entriesLog2Alignment"
+     ]
+    }
+   ],
+   "author": {
+    "tier": "opus-medium",
+    "ported_from": "keysToOwnedSlice"
+   },
+   "why": "+0xa4 joins the +0x7c edge (capacity 0: beqz skips the free) and the return of free(old_memory) at +0xa0; the free consumed the old buffer, so the join does not own it; on the capacity-0 edge the edge leaves it behind (a weakening). The successors continue from the free call's return seed, which owns no old buffer."
+  },
+  {
+   "id": "frame",
+   "request": "entriesToOwnedSlice/decision/join_assertion-012c",
+   "at": {
+    "pc": "+0x0",
+    "boundary": "frame"
+   },
+   "binders": [],
+   "resources": [],
+   "facts": [],
+   "slots": [
+    {
+     "offset": -80,
+     "coq": "savedX24 (toOwnedSaved (entriesBase args))"
+    },
+    {
+     "offset": -72,
+     "coq": "savedX23 (toOwnedSaved (entriesBase args))"
+    },
+    {
+     "offset": -64,
+     "coq": "savedX22 (toOwnedSaved (entriesBase args))"
+    },
+    {
+     "offset": -56,
+     "coq": "savedX21 (toOwnedSaved (entriesBase args))"
+    },
+    {
+     "offset": -48,
+     "coq": "savedX20 (toOwnedSaved (entriesBase args))"
+    },
+    {
+     "offset": -40,
+     "coq": "savedX19 (toOwnedSaved (entriesBase args))"
+    },
+    {
+     "offset": -32,
+     "coq": "savedX18 (toOwnedSaved (entriesBase args))"
+    },
+    {
+     "offset": -24,
+     "coq": "savedX9 (toOwnedSaved (entriesBase args))"
+    },
+    {
+     "offset": -16,
+     "coq": "savedX8 (toOwnedSaved (entriesBase args))"
+    },
+    {
+     "offset": -8,
+     "coq": "toOwnedReturnAddress (entriesBase args)"
+    }
+   ],
+   "sites": [
+    "+0x12c",
+    "+0x144"
+   ],
+   "author": {
+    "tier": "opus-medium",
+    "ported_from": "keysToOwnedSlice"
+   },
+   "why": "the prologue stores ra, s0, s1, s2..s8 at sp-8..sp-80 and no block before the epilogue writes them; the join at +0x12c forgets them because its +0x70 edge holds them in the seed text, not as writes (Main ruling (b)). The join seeds hold the values as stores (join_frames), so the return entries of 014c slot0/slot2 and the call returns after the joins restore the saved registers by value"
+  }
+ ]
+}

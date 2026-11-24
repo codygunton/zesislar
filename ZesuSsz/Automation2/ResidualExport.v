@@ -30,8 +30,9 @@ Set Default Proof Mode "Classic".
    without facts above the node limit and without facts that mention no
    local variable (switch and marker facts), plus the variables these terms
    mention. A fact above the limit takes part through its pieces below it
-   (`ContextCollection.zesu_large_fact_pieces`), which the residual tier poses
-   before its last try. Local definitions are unfolded into the statement.
+   (`ContextCollection.zesu_large_fact_pieces`); a residual lemma premise
+   over a piece closes from the whole fact (`ResidualLemmas.zesu_residual_premise`).
+   Local definitions are unfolded into the statement.
    Each binder keeps the name of its hypothesis, so `intros.` restores the
    names.
 

@@ -9,6 +9,14 @@
     "reason": "The decodeItem branch continuation introduces its result outcome when it returns; this witness is not inferred from an entry register.",
     "uninferable_existentials": 1
   },
+  "ZesuSsz/Contracts/EntriesToOwnedSliceCallSpec2.v": {
+    "reason": "Approved array-list call-spec template row (Main, issue #347): the 2 existentials context and state are uninferable because the call spec owns the list state and allocator context only through opaque buffer/allocator predicates; callers supply them through call-row opaque rows, not Lithium inference.",
+    "uninferable_existentials": 2
+  },
+  "ZesuSsz/Contracts/KeysToOwnedSliceCallSpec2.v": {
+    "reason": "The keysToOwnedSlice call spec owns the list state and the allocator context only through the opaque buffer and allocator predicates; callers supply both through their call-row opaque rows, not Lithium inference.",
+    "uninferable_existentials": 2
+  },
   "ZesuSsz/Contracts/Level1.v": {
     "reason": "The generic Level 1 exit continuation introduces its outcome when the machine returns; this witness is not inferred from entry resources.",
     "uninferable_existentials": 1

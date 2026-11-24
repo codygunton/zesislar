@@ -138,7 +138,8 @@ Section fact_views.
   Qed.
 
   (* A residual lemma stated over a piece, registered in the relocatable
-     (exact) form, closes the goal at the tier's last try. *)
+     (exact) form, closes the goal: the context holds only the whole fact, and
+     the lemma's premise closes as a piece of it. *)
   Lemma residual_piece_lemma (pointer y : Z)
       (Hnz : bigSize y <> 0) (Hpiece : bigSize y <> 0 -> pointer + bigSize y <= 8192) :
     pointer + bigSize y < 8193.
@@ -151,7 +152,7 @@ Section fact_views.
   Proof.
     iStartProof. iIntros "Htoken". FactViews.zesu_pose_fact_views.
     iPureIntro. intros Hnz.
-    Fail solve [typeclasses eauto 1 with zesu_residual_exact].
+    lazymatch goal with _ : bigSize y <> 0 -> pointer + bigSize y <= 8192 |- _ => fail | _ => idtac end.
     ResidualLemmas.zesu_residual_lemma.
   Qed.
 End fact_views.

@@ -384,9 +384,10 @@ Ltac zesu_small_fact term :=
    lie below the limit: an allocator token's range, say, whose size is a long
    bitvector expression stated once per conjunct. Its pieces are the two
    sides of `B ∧ C`, and `A → B` and `A → C` for `A → B ∧ C`, to any depth.
-   Only the exporter and the residual tier pose them: the exporter on a
-   context it then restores, the tier before its last try. The solvers never
-   see them, so their cost is unchanged. *)
+   Only the exporter poses them, on a context it then restores; a residual
+   lemma over a piece closes that premise from the whole fact
+   (`ResidualLemmas.zesu_residual_premise`). The solvers never see them, so
+   their cost is unchanged. *)
 Ltac zesu_large_fact_split H :=
   lazymatch type of H with
   | _ /\ _ =>
@@ -425,6 +426,3 @@ Ltac2 zesu_large_fact_pieces () : bool :=
         then (Ltac1.run (split_fact (Ltac1.of_constr (Control.hyp name))); true)
         else found
     end) false (Control.hyps ()).
-
-Ltac zesu_large_fact_pieces :=
-  ltac2:(if zesu_large_fact_pieces () then () else Control.zero (Tactic_failure None)).
