@@ -1835,7 +1835,9 @@ def generalize_owned_join(alternatives, *, original_seed, entry_pc, vocabulary,
                 plan['memory_relations'].append(reconstruction)
             current['source'] = source
         if key == terminal_id:
-            if component['kind'] != 'opaque' or current['source'] != 'True':
+            # `True`, or already the continuation: the tree of a loop head with owned state carries K
+            # (loop_design.owned_seed), so a join or loop head below it closes with the same K.
+            if component['kind'] != 'opaque' or current['source'] not in ('True', name):
                 raise ValueError('The selected inventory terminal is not True')
             continue
         if key in memory_by_id:
