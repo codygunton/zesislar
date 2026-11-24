@@ -1083,7 +1083,9 @@ def call_return_seed(edges, *, call, function_root, root_seed, shapes, vocabular
         nodes.append(node)
     result_links, result_binders, result_minimums = _result_words(call, outputs, splits, fresh, values['argv'],
                                                                   prefix)
-    terminal = next(index for index, node in enumerate(nodes) if node.get('coq') == 'True')
+    # Before the closing component: `True`, or the continuation `K` of a root that carries it (a loop
+    # head with owned state, loop_design.owned_seed).
+    terminal = next(index for index, node in enumerate(nodes) if node.get('coq') in ('True', 'K'))
     nodes[terminal:terminal] = [
         {'kind': 'opaque', 'id': row['resource_id'] + '_length', 'coq': '⌜' + row['coq'] + '⌝'}
         for row in extra_facts] + [
