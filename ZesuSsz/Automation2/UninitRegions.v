@@ -232,7 +232,14 @@ Global Hint Extern 0 (FindHypEqual (ZesuMemRegionSearch _) (mmio_range _ _)
    function returned, Tests/CalleeBoundedCursor.v) keeps the solver. A refusal
    that the arithmetic did not decide prints a `mem_lookup_refused` telemetry
    record: a block that needed the solver there shows the refusals. Other
-   callers of bv_solve are unchanged. *)
+   callers of bv_solve are unchanged.
+   The word lookup (isla's `tac_mem_mapsto_eq`, side condition `a1 = address`
+   per owned word, its hint at automation.v:1668) passes the same gate as a
+   one-byte region. On txAccessList 0128 (bench r30) each lookup of an
+   address loaded from the heap tried the 13 saved-register words of the
+   frame, 1 to 3 s of failing bv_solve each (two pruned and whole-context
+   lia runs); none of the 318 word calls of the block's first 813 s
+   succeeded, and they took 349 s. *)
 Ltac2 zesu_mem_lookup_refuse () :=
   (match Control.case (fun () => zesu_failure_memo_key "bv_solve") with
    | Val (key, _) => match key with [] => () | _ :: _ => zesu_failure_memo_record key end
@@ -242,6 +249,16 @@ Ltac2 zesu_mem_lookup_refuse () :=
 
 Ltac zesu_mem_lookup_address_has_facts :=
   lazymatch goal with
+  | |- @eq Z _ ?a =>
+      match goal with
+      | _ : a = _ |- _ => idtac
+      | _ : _ = a |- _ => idtac
+      | _ : (_ <= a < _)%Z |- _ => idtac
+      | _ : (a < _)%Z |- _ => idtac
+      | _ : (a <= _)%Z |- _ => idtac
+      | _ : (_ <= a)%Z |- _ => idtac
+      | _ : (_ < a)%Z |- _ => idtac
+      end
   | |- ((_ <= ?a < _) \/ _)%Z =>
       match goal with
       | _ : a = _ |- _ => idtac
@@ -267,6 +284,8 @@ Global Hint Extern 9 (FindHypEqual (FICMemMapstoSemantic _) (_ ↦ₘ∗ _) (mem
   (apply tac_mem_mapsto_array_eq; zesu_mem_lookup_gate) : typeclass_instances.
 Global Hint Extern 9 (FindHypEqual (FICMemMapstoSemantic _) (_ ↦ₘ? _) (mem_mapsto_kind_prop _ _) _) =>
   (apply tac_mem_mapsto_uninit_eq; zesu_mem_lookup_gate) : typeclass_instances.
+Global Hint Extern 9 (FindHypEqual (FICMemMapstoSemantic _) (_ ↦ₘ _) (mem_mapsto_kind_prop _ _) _) =>
+  (apply tac_mem_mapsto_eq; zesu_mem_lookup_gate) : typeclass_instances.
 
 (* The region split below measures offsets with [normalize_bv_wrap], which
    reads a constant as negative only within 256 of 2^64. A frame offset of

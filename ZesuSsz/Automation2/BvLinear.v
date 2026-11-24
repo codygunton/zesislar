@@ -946,19 +946,22 @@ Ltac2 zesu_mem_range_verdict (low : constr) (address : constr) (size : constr) :
   end.
 
 (* On the membership goal, run `outside`, `possible` or `unread` by the
-   verdict above. Other goals fail. *)
+   verdict above. The word lookup's goal `low = address` (isla's
+   `tac_mem_mapsto_eq`) is membership in the one-byte region at `low`: the
+   difference is outside it exactly when it is not 0. Other goals fail. *)
 Ltac zesu_mem_range_class outside possible unread :=
+  let dispatch := ltac2:(low address size outside possible unread |-
+    match zesu_mem_range_verdict
+            (Option.get (Ltac1.to_constr low)) (Option.get (Ltac1.to_constr address))
+            (Option.get (Ltac1.to_constr size)) with
+    | ZesuMemOutside => Ltac1.run outside
+    | ZesuMemPossible => Ltac1.run possible
+    | ZesuMemUnread => Ltac1.run unread
+    end) in
   lazymatch goal with
   | |- ((Z.le ?low ?address /\ Z.lt ?address' (Z.add ?low' ?size)) \/ @eq Z ?low'' ?address'') =>
       constr_eq low low'; constr_eq low low''; constr_eq address address';
       constr_eq address address'';
-      let dispatch := ltac2:(low address size outside possible unread |-
-        match zesu_mem_range_verdict
-                (Option.get (Ltac1.to_constr low)) (Option.get (Ltac1.to_constr address))
-                (Option.get (Ltac1.to_constr size)) with
-        | ZesuMemOutside => Ltac1.run outside
-        | ZesuMemPossible => Ltac1.run possible
-        | ZesuMemUnread => Ltac1.run unread
-        end) in
       dispatch low address size outside possible unread
+  | |- @eq Z ?low ?address => dispatch low address constr:(1%Z) outside possible unread
   end.
