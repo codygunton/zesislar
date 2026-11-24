@@ -157,6 +157,10 @@ if receipt.get("join_seeds"):
         raise ValueError("A frozen renderer source changed: " + str(seeds_path))
     for pc, row in json.loads(seeds_path.read_text())["seeds"].items():
         lift_seeds[pc] = seed_from_record(row)
+        if roots.get(pc) == pc:
+            # An owned join (profile `join_owned`) is its own root: its entry and the blocks after it
+            # render on its seed, which replaces a return site's call-return seed.
+            root_seeds[pc] = lift_seeds[pc]
 terminal_ids = [
     row["id"] for row in owned.ownership["components"] if row["source"] == "True"
 ]
@@ -390,7 +394,13 @@ for suffix, slot in units:
     else:
         boundary = (return_boundary([sites[suffix]], slot) if suffix in sites
                     else deepcopy(data["boundaries"][index]))
-    if boundary["status"] == "generated_call_return":
+    if suffix in profile.get("join_owned", {}):
+        # An owned join renders from its own seed alternative (loop_design.owned_join_seed); the step of
+        # each predecessor block into it proves that entry.
+        boundary["alternatives"] = [alternative for alternative in boundary["alternatives"]
+                                    if alternative["predecessor_pc"] is None]
+        boundary["status"] = "generated"
+    elif boundary["status"] == "generated_call_return":
         # A return site renders from its call-return seed alternative.
         boundary["status"] = "generated"
     elif boundary["status"] in ("generated_join", "generated_loop_head"):

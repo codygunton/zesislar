@@ -245,6 +245,17 @@ def owned_seed(seed, design, head, vocabulary):
     return rebuilt
 
 
+def owned_join_seed(seed, owned, pc, vocabulary):
+    """The seed of a join with an `owned` design (profile `join_owned`, annotations.py): the joined seed
+    without the components `replaces` names, plus the design's resources, existential binders and the
+    facts that name them (owned_seed). The join keeps its kind, edges and witness plan; each predecessor
+    block proves the entry, so nothing of the design is assumed."""
+    rebuilt = owned_seed(seed, {'owned': owned, 'facts': owned.get('facts', [])}, pc, vocabulary)
+    for field in ('join_kind', 'join_edges', 'join_witness_plan', 'join_refusals'):
+        setattr(rebuilt, field, getattr(seed, field))
+    return rebuilt
+
+
 def loop_class(report, design, profile):
     """Return the class definition text and its provenance record."""
     head = profile.pc(design['head'])

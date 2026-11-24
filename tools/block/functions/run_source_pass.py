@@ -29,7 +29,7 @@ from call_boundary import CallRefused, call_return_seed
 from join_generalize import carry_common_word_links
 import entry_hist
 from function_profiles import add_return_alignment, load_profile
-from loop_design import loop_head_seed
+from loop_design import loop_head_seed, owned_join_seed
 from forward_resource_design import _state_from_result, evaluate_owned_function
 from forward_resources import apply_owned_writes, load_resource_vocabulary, render_resource_boundary
 from join_generalize import (common_root_ancestor, drop_root_resources, generalize_owned_join, inherited_drops,
@@ -122,7 +122,19 @@ def join_seed(boundary, *, seeds, roots, parents, profile, vocabulary, continuat
                                                      'visible_history', 'ghost_history')
                if joined['plan'].get(key)},
             **({'drops': dropped} if dropped else {})}
-    return carry_common_word_links(incoming, joined['seed']), root, plan
+    seed = carry_common_word_links(incoming, joined['seed'])
+    owned = next((design for suffix, design in (profile.get('join_owned', {}) if profile else {}).items()
+                  if profile.pc(suffix) == hex(pc)), None)
+    if owned:
+        # An owned join (annotation row, loop_cut owned schema) is the root of the seeds after it, as an
+        # owned loop head is; its parent is the root the join's edges share.
+        try:
+            seed = owned_join_seed(seed, owned, pc, vocabulary)
+        except ValueError as error:
+            raise ValueError('owned join refused: ' + str(error)) from error
+        plan['owned'] = {'parent': root, 'binders': [row['name'] for row in owned['binders']]}
+        return seed, hex(pc), plan
+    return seed, root, plan
 
 
 def return_site_seed(boundary, call_seed, *, seeds, roots, parents, profile, vocabulary, continuation,
@@ -281,7 +293,7 @@ def main():
             drops = plan.get('drops', []) if plan else call_drops
             if drops:
                 seed_drops[site] = drops
-            parents[site] = parent
+            parents[site] = plan['owned']['parent'] if plan and plan.get('owned') else parent
             call_seeds[site] = {'public': call_public, 'state': call_seed.state.to_dict(), 'facts': call_seed.facts}
             call_reports[site] = call_report
             refusals.pop(site, None)
@@ -333,6 +345,8 @@ def main():
             except ValueError as error:
                 refusals[site] = str(error)
                 continue
+            if plans[site].get('owned'):
+                parents[site] = plans[site]['owned']['parent']
             if plans[site].get('drops'):
                 seed_drops[site] = plans[site]['drops']
             refusals.pop(site, None)
@@ -397,9 +411,13 @@ def main():
         (output / 'LOOP-DESIGNS.json').write_text(json.dumps(
             {'schema': 'fp301.inferred-loop-designs.v1', 'designs': inferred, 'refusals': inference_refusals},
             indent=1, ensure_ascii=False) + '\n')
+    # An owned join is its own root and still a join seed: the renderer renders its entry and the blocks
+    # after it on this seed, and the edges into it take their witnesses from its join edges.
+    owned_joins = {pc for pc, plan in plans.items() if plan.get('owned')}
     (output / 'JOIN-SEEDS.json').write_text(json.dumps(
         {'schema': 'fp301.join-seeds.v1', 'seeds': {pc: seed_record(seed) for pc, seed in seeds.items()
-                                                    if roots.get(pc) != pc}}, ensure_ascii=False) + '\n')
+                                                    if roots.get(pc) != pc or pc in owned_joins}},
+        ensure_ascii=False) + '\n')
     receipt = {'source_pass': bind(output / 'FORWARD.json'), 'level1_K_source': bind(level1),
                'vocabulary': bind(vocabulary_path), 'system_shapes': bind(shapes_path),
                'engine': bind(ROOT / 'tools/block/FP-20261124b.json'), 'joins': bind(output / 'JOINS.json'),
