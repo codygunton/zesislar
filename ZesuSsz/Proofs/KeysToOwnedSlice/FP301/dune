@@ -1,9 +1,13 @@
 ; The closed keysToOwnedSlice block proofs, compiled in place. The caller renderer writes each caller under
 ; tools/block/generated/keystoownedslice_fp301_callers; this directory only copies the closed ones into the ZesuSsz
 ; theory, so the compliance theorem can consume them. Edit the callers through their renderers.
+(rule (targets Caller0000.v) (deps ../../../../tools/block/generated/keystoownedslice_fp301_callers/Caller0000.v) (action (copy ../../../../tools/block/generated/keystoownedslice_fp301_callers/Caller0000.v Caller0000.v)))
+(rule (targets Caller0058.v) (deps ../../../../tools/block/generated/keystoownedslice_fp301_callers/Caller0058.v) (action (copy ../../../../tools/block/generated/keystoownedslice_fp301_callers/Caller0058.v Caller0058.v)))
 (rule (targets Caller005c.v) (deps ../../../../tools/block/generated/keystoownedslice_fp301_callers/Caller005c.v) (action (copy ../../../../tools/block/generated/keystoownedslice_fp301_callers/Caller005c.v Caller005c.v)))
 (rule (targets Caller006c.v) (deps ../../../../tools/block/generated/keystoownedslice_fp301_callers/Caller006c.v) (action (copy ../../../../tools/block/generated/keystoownedslice_fp301_callers/Caller006c.v Caller006c.v)))
+(rule (targets Caller0078.v) (deps ../../../../tools/block/generated/keystoownedslice_fp301_callers/Caller0078.v) (action (copy ../../../../tools/block/generated/keystoownedslice_fp301_callers/Caller0078.v Caller0078.v)))
 (rule (targets Caller007c.v) (deps ../../../../tools/block/generated/keystoownedslice_fp301_callers/Caller007c.v) (action (copy ../../../../tools/block/generated/keystoownedslice_fp301_callers/Caller007c.v Caller007c.v)))
+(rule (targets Caller0098.v) (deps ../../../../tools/block/generated/keystoownedslice_fp301_callers/Caller0098.v) (action (copy ../../../../tools/block/generated/keystoownedslice_fp301_callers/Caller0098.v Caller0098.v)))
 (rule (targets Caller00a0.v) (deps ../../../../tools/block/generated/keystoownedslice_fp301_callers/Caller00a0.v) (action (copy ../../../../tools/block/generated/keystoownedslice_fp301_callers/Caller00a0.v Caller00a0.v)))
 (rule (targets Caller00a4.v) (deps ../../../../tools/block/generated/keystoownedslice_fp301_callers/Caller00a4.v) (action (copy ../../../../tools/block/generated/keystoownedslice_fp301_callers/Caller00a4.v Caller00a4.v)))
 (rule (targets Caller00c8.v) (deps ../../../../tools/block/generated/keystoownedslice_fp301_callers/Caller00c8.v) (action (copy ../../../../tools/block/generated/keystoownedslice_fp301_callers/Caller00c8.v Caller00c8.v)))
@@ -17,7 +21,10 @@
 (rule (targets Caller0118_slot0.v) (deps ../../../../tools/block/generated/keystoownedslice_fp301_callers/Caller0118_slot0.v) (action (copy ../../../../tools/block/generated/keystoownedslice_fp301_callers/Caller0118_slot0.v Caller0118_slot0.v)))
 (rule (targets Caller0118_slot1.v) (deps ../../../../tools/block/generated/keystoownedslice_fp301_callers/Caller0118_slot1.v) (action (copy ../../../../tools/block/generated/keystoownedslice_fp301_callers/Caller0118_slot1.v Caller0118_slot1.v)))
 (rule (targets Caller0118_slot2.v) (deps ../../../../tools/block/generated/keystoownedslice_fp301_callers/Caller0118_slot2.v) (action (copy ../../../../tools/block/generated/keystoownedslice_fp301_callers/Caller0118_slot2.v Caller0118_slot2.v)))
+(rule (targets Caller0148.v) (deps ../../../../tools/block/generated/keystoownedslice_fp301_callers/Caller0148.v) (action (copy ../../../../tools/block/generated/keystoownedslice_fp301_callers/Caller0148.v Caller0148.v)))
+(rule (targets Caller0150.v) (deps ../../../../tools/block/generated/keystoownedslice_fp301_callers/Caller0150.v) (action (copy ../../../../tools/block/generated/keystoownedslice_fp301_callers/Caller0150.v Caller0150.v)))
 (rule (targets Caller0168.v) (deps ../../../../tools/block/generated/keystoownedslice_fp301_callers/Caller0168.v) (action (copy ../../../../tools/block/generated/keystoownedslice_fp301_callers/Caller0168.v Caller0168.v)))
+(rule (targets Caller0170.v) (deps ../../../../tools/block/generated/keystoownedslice_fp301_callers/Caller0170.v) (action (copy ../../../../tools/block/generated/keystoownedslice_fp301_callers/Caller0170.v Caller0170.v)))
 (rule (targets Caller0184.v) (deps ../../../../tools/block/generated/keystoownedslice_fp301_callers/Caller0184.v) (action (copy ../../../../tools/block/generated/keystoownedslice_fp301_callers/Caller0184.v Caller0184.v)))
 (rule (targets Caller018c.v) (deps ../../../../tools/block/generated/keystoownedslice_fp301_callers/Caller018c.v) (action (copy ../../../../tools/block/generated/keystoownedslice_fp301_callers/Caller018c.v Caller018c.v)))
 (rule (targets Caller01ac.v) (deps ../../../../tools/block/generated/keystoownedslice_fp301_callers/Caller01ac.v) (action (copy ../../../../tools/block/generated/keystoownedslice_fp301_callers/Caller01ac.v Caller01ac.v)))
