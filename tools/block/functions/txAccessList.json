@@ -31,7 +31,8 @@
     "^\\(?frame_old_m\\d+'* = ",
     "^\\W*bv_unsigned call_x10 = 0\\W*$",
     "^\\W*negb \\(bool_decide \\(call_x10 = \\(BV 64%N 0%Z\\)\\)\\)\\W*= true\\W*(/\\\\\\W*bv_unsigned call_x10\\W*<>\\W*0%Z\\W*%Z\\W*)?$",
-    "^\\W*arrayListWellFormed \\w+ \\w+\\W*$"
+    "^\\W*arrayListWellFormed \\w+ \\w+\\W*$",
+    "^\\W*bv_unsigned \\(bv_and \\(bv_zero_extend 64 \\(List\\.nth 16 \\w+ \\(BV 8 0\\)\\)\\) \\(BV 64 1\\)\\) <> 0 ->"
   ],
   "args_type": "TxAccessListArgs",
   "symbol": "rlp_decode.txAccessList",
@@ -1429,6 +1430,6 @@
   },
   "generated_from": {
     "path": "tools/block/functions/txAccessList.annotations.json",
-    "sha256": "9e46d7dc58fc9c4a11d2003f241131640450b039400f72b7b1b94a87b6395cd4"
+    "sha256": "6d929104a74f43556043c30cc11f192084b8d6a5b8ea3c9e35012eb82e2613fd"
   }
 }
