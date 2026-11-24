@@ -24,8 +24,6 @@ Import ListNotations.
 Open Scope Z_scope.
 Open Scope stdpp_scope.
 
-#[local] Instance : LithiumUnfold (@decodeItemCallSpecDefinition) := I.
-
 (* The charged contract with the caller's other registers framed (the
    compositional resources of DecodeItemCompositional.v). *)
 Lemma decodeItemBudgetCompositionalBody `{!islaG Sigma} `{!threadG} (returnAddress : Z) :
