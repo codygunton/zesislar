@@ -469,8 +469,9 @@ def bv(value):
 
 
 def byte_list(row):
+    # Z literals mapped to bytes: a `BV 8 n` literal elaborates a proof per byte (minutes on a 576-byte frame).
     data = bytes.fromhex(row['hex'])
-    return '[' + '; '.join('BV 8 %d' % byte for byte in data) + ']'
+    return '(List.map (Z_to_bv 8) [' + '; '.join('%d' % byte for byte in data) + '])'
 
 
 def memory_list(memory):
