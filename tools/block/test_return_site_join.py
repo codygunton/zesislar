@@ -10,7 +10,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 sys.path.insert(0, str(Path(__file__).resolve().parent / 'functions'))
 from forward_resource_design import evaluate_owned_function  # noqa: E402
 from forward_resources import ownership_from_assertion_tree  # noqa: E402
-from resource_seed import OwnedSeed  # noqa: E402
+from resource_seed import OwnedSeed, seed_owned_resources  # noqa: E402
 from run_source_pass import return_site_seed  # noqa: E402
 from join_generalize import drop_root_resources  # noqa: E402
 from symbolic_state import SymbolicState, bits, input_expr, operation  # noqa: E402
@@ -135,6 +135,76 @@ class ReturnSiteJoin(unittest.TestCase):
         # Nothing happens without a row: the edge lifted onto the root tree owns the block again.
         seed, _, plan = joined({})
         self.assertEqual(('drops' in plan, 'block' in owned(seed)), (False, True))
+
+
+OLD_BUFFER, NEW_BUFFER = '(sp - 64) ↦ₘ∗ oldbuf', '(sp - 128) ↦ₘ∗ newbuf'
+
+
+def memory_seed(pc, buffer):
+    """A seed at pc that holds x13 = old and one 8-byte buffer (`buffer`)."""
+    address, _, array = buffer.partition(' ↦ₘ∗ ')
+    public = {'schema': 'h1-public-entry-seed.v1', 'entry_pc': hex(pc), 'source_bindings': [], '_input_sha256': '0' * 64,
+              'assertion_tree': {'kind': 'exists', 'binders': [{'name': 'old', 'type': 'bv 64',
+                                                                'expression': input_expr('old').to_dict()}],
+                                 'components': [{'kind': 'register', 'id': 'r', 'register': 'x13', 'value_coq': 'old',
+                                                 'width': 64},
+                                                {'kind': 'byte_array', 'id': 'buffer', 'original_component': buffer,
+                                                 'address_z': address.strip('()'),
+                                                 'byte_array_expr': input_expr(array, None).to_dict(),
+                                                 'element_bits': 8, 'length_original_coq': '8'},
+                                                {'kind': 'opaque', 'id': 'terminal', 'coq': 'True'}]}}
+    seed = seed_owned_resources(public, entry_pc=pc, vocabulary={'rows': []})
+    seed.state.registers['x13'] = input_expr('old')
+    return seed
+
+
+class Profile(dict):
+    @staticmethod
+    def pc(key):
+        return hex(int(key[1:], 16)) if key.startswith('+') else key
+
+    @staticmethod
+    def key(pc):
+        return '+' + pc
+
+
+class OwnedJoinReplaces(unittest.TestCase):
+    """An owned join whose edges disagree on the resources its row replaces: the path through the call
+    holds a new buffer, the path that skips it the old one (a grown list against an unchanged one)."""
+
+    def setUp(self):
+        self.root = memory_seed(16, OLD_BUFFER)
+        self.call_seed = replace(memory_seed(24, NEW_BUFFER), join_kind='call_return')
+        self.call_seed.state.conditions = [CALL_GUARD]
+        self.site = boundary(evaluate_owned_function(FUNCTION, TRACES, {16: self.root, 24: self.call_seed},
+                                                     vocabulary=VOCABULARY), 24)
+
+    def joined(self, replaces):
+        owned = {'binders': [{'name': 'e', 'type': 'list byte'}], 'resources': ['ownedBuffer e'],
+                 'replaces': replaces, 'facts': [], 'predecessors': ['+0x10', '+0x14']}
+        return return_site_seed(self.site, self.call_seed, seeds={'0x10': self.root}, roots={'0x10': '0x10'},
+                                parents={'0x18': '0x10'}, profile=Profile(join_owned={'+0x18': owned}),
+                                vocabulary=VOCABULARY, continuation=CONTINUATION, live_registers=None,
+                                report=None, seed_drops={})
+
+    def test_each_edge_forgets_the_replaced_resource_it_holds(self):
+        seed, root, plan = self.joined([OLD_BUFFER, NEW_BUFFER])
+        texts = [str(row['seed_component'].get('original_component', row['seed_component'].get('coq')))
+                 for row in seed.ownership['components']]
+        self.assertEqual((root, plan['edges'], plan['owned']['replaced']), ('0x18', 2, [OLD_BUFFER, NEW_BUFFER]))
+        self.assertIn('ownedBuffer e', texts)
+        self.assertNotIn(OLD_BUFFER, texts)
+        self.assertNotIn(NEW_BUFFER, texts)
+        self.assertNotIn('drops', plan)
+
+    def test_a_new_resource_the_row_does_not_replace_is_refused(self):
+        # The call path's new buffer lies in no span of the root: without the row it cannot be lifted.
+        with self.assertRaisesRegex(ValueError, 'no unique ancestor span'):
+            self.joined([OLD_BUFFER])
+
+    def test_a_replaced_text_no_edge_holds_is_refused(self):
+        with self.assertRaisesRegex(ValueError, 'held by no edge'):
+            self.joined([OLD_BUFFER, NEW_BUFFER, '(sp - 256) ↦ₘ∗ other'])
 
 
 if __name__ == '__main__':

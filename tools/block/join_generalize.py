@@ -821,7 +821,7 @@ def carry_common_word_links(incoming, seed):
     return seed
 
 
-def lift_call_return_edges(alternatives, *, seeds, roots, ancestor, vocabulary, drops=()):
+def lift_call_return_edges(alternatives, *, seeds, roots, ancestor, vocabulary, drops=(), replaced=()):
     """Express join edges that start at seeds below `ancestor` on its tree.
 
     A call-return seed refines its parent's tree: it splits frame spans around the call
@@ -835,6 +835,10 @@ def lift_call_return_edges(alternatives, *, seeds, roots, ancestor, vocabulary, 
     components are dropped (a weakening, as for a join seed's relations); their binders
     are returned as existential binders for the join. Edges from the ancestor's own
     tree are unchanged. Return (alternatives, binders).
+
+    replaced are the resource texts an owned join row `replaces` (profile `join_owned`): an edge
+    whose seed holds one forgets it, as for a drop row; an edge that does not hold it is unchanged
+    (the edges of an owned join may disagree on the resources it replaces).
     """
     try:
         from .forward_resource_design import _state_from_result
@@ -870,7 +874,7 @@ def lift_call_return_edges(alternatives, *, seeds, roots, ancestor, vocabulary, 
         listed = {' '.join(text.split()) for item in drops if item['root'] == roots.get(seed_pc)
                   for text in item['resources']}
         texts = {}
-        if listed:
+        if listed or replaced:
             for component in seed.ownership['components']:
                 source = component.get('seed_component') or {}
                 texts[component['id']] = ' '.join(str(source.get('original_component', source.get('coq', ''))).split())
@@ -878,8 +882,9 @@ def lift_call_return_edges(alternatives, *, seeds, roots, ancestor, vocabulary, 
             if unmatched:
                 raise ValueError('A join drop row names no resource of the edge from %s: %s'
                                  % (roots.get(seed_pc), sorted(unmatched)[0]))
+        forgotten = listed | {' '.join(text.split()) for text in replaced}
         for resource in seed.resources:
-            if texts.get(resource.id) in listed:
+            if texts.get(resource.id) in forgotten:
                 continue
             updates = image.updates[resource.id]
             if any(isinstance(offset, str) for offset in updates):

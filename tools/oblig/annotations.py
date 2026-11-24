@@ -38,7 +38,10 @@ The compiled profile keys, by `boundary`:
                    A row with `resources` or `replaces` adds `join_owned[pc]` in the loop_cut owned schema
                    ({`binders`, `resources`, `replaces`}, plus the row's `facts` that name its binders and
                    `predecessors` from `at.predecessors`, at least two blocks): the join seed without the
-                   replaced components, plus the resources and facts (loop_design.owned_seed). Its binders
+                   replaced components, plus the resources and facts (loop_design.owned_seed). A replaced
+                   text is dropped from each edge that holds it (lifted or on the join's root) and from the
+                   root before the edges are generalized, so the edges may disagree on it; a text no edge
+                   and no root holds is refused. Its binders
                    are existentials (typed, no register or role, no Boolean selector, never `= literal`);
                    each predecessor block proves the entry, and `test` reports the visits per predecessor.
   call_site        a `calls` row: the row's `call` object with `call_site_pc`. Its `opaque` rows
