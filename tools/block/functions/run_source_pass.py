@@ -60,7 +60,7 @@ def joins_of(function):
 
 
 def join_seed(boundary, *, seeds, roots, parents, profile, vocabulary, continuation, live_registers, report,
-              seed_drops):
+              seed_drops, constants=None):
     """Return (seed, root, plan row) of the join at `boundary` from its incoming edges; a ValueError
     names the refusal. At a return site the path through the call is one incoming edge: the
     site's own call-return seed alternative (in `seeds`, its own root in `roots`).
@@ -140,7 +140,7 @@ def join_seed(boundary, *, seeds, roots, parents, profile, vocabulary, continuat
         # owned loop head is; its parent is the root the join's edges share.
         try:
             # Its `replaces` items were dropped from the edges and the root above.
-            seed = owned_join_seed(seed, dict(owned, replaces=[]), pc, vocabulary)
+            seed = owned_join_seed(seed, dict(owned, replaces=[]), pc, vocabulary, constants=constants)
         except ValueError as error:
             raise ValueError('owned join refused: ' + str(error)) from error
         plan['owned'] = {'parent': root, 'binders': [row['name'] for row in owned['binders']],
@@ -150,7 +150,7 @@ def join_seed(boundary, *, seeds, roots, parents, profile, vocabulary, continuat
 
 
 def return_site_seed(boundary, call_seed, *, seeds, roots, parents, profile, vocabulary, continuation,
-                     live_registers, report, seed_drops):
+                     live_registers, report, seed_drops, constants=None):
     """Return (seed, root, plan row or None) of a return site that is also a join.
 
     `boundary` is the site in a pass where `call_seed` (whose root's parent `parents` names) seeds it.
@@ -167,7 +167,7 @@ def return_site_seed(boundary, call_seed, *, seeds, roots, parents, profile, voc
         seed, root, plan = join_seed(boundary, seeds={**seeds, site: call_seed}, roots={**roots, site: site},
                                      parents=parents, profile=profile, vocabulary=vocabulary,
                                      continuation=continuation, live_registers=live_registers, report=report,
-                                     seed_drops=seed_drops)
+                                     seed_drops=seed_drops, constants=constants)
     except ValueError as error:
         raise ValueError('return-site join refused: ' + str(error)) from error
     seed.join_kind = 'call_return'
@@ -295,7 +295,7 @@ def main():
                         next(row for row in probe['boundaries'] if row['pc'] == site), call_seed,
                         seeds=seeds, roots=roots, parents={**parents, site: parent}, profile=profile,
                         vocabulary=vocabulary, continuation=continuation, live_registers=liveness.get(site),
-                        report=probe, seed_drops={**seed_drops, site: call_drops})
+                        report=probe, seed_drops={**seed_drops, site: call_drops}, constants=domain['constants'])
                 except ValueError as error:
                     refusals[site] = str(error)
                     continue
@@ -353,7 +353,7 @@ def main():
                 seeds[site], roots[site], plans[site] = join_seed(
                     boundary, seeds=seeds, roots=roots, parents=parents, profile=profile, vocabulary=vocabulary,
                     continuation=continuation, live_registers=liveness.get(site), report=report,
-                    seed_drops=seed_drops)
+                    seed_drops=seed_drops, constants=domain['constants'])
             except ValueError as error:
                 refusals[site] = str(error)
                 continue
