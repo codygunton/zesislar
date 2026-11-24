@@ -30,6 +30,10 @@ Ltac zesu_enter_call_return :=
       iSplit; [iIntros "?"; iIntros "?" | done]
   | |- envs_entails _ ((_ -∗ WPasm _) ∗ True)%I =>
       iSplit; [iIntros "?" | done]
+  (* A charged return address (StepBudget.v): the continuation first pays
+     its instruction's credit, then runs. *)
+  | |- envs_entails _ ((_ -∗ step_credits _ ∗ (_ -∗ WPasm _)) ∗ True)%I =>
+      iSplit; [iIntros "?" | done]
   end.
 
 (* The switch for this one rule. `Automation/Switch.v` provides it

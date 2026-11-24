@@ -72,6 +72,7 @@ Require Export ZesuSsz.Automation2.IntegerReturn.
 Require Import ZesuSsz.Contracts.SelectedCodeLookup.
 Require SailStdpp.MachineWord.
 Require Import InstrSpecs.Lookup.
+Require Import InstrSpecs.LookupCharged.
 Require Import ZesuSsz.Automation2.ResourceGroups.
 Require Import ZesuSsz.Automation2.ConjunctMatch.
 Require Import ZesuSsz.Automation2.RegisterArrayCursor.
@@ -122,7 +123,8 @@ Arguments selectedCodeLookup : simpl never.
 Class ZesuStepInstructionLookup : Prop :=
   zesu_step_instruction_lookup : True.
 
-(* Expose only a code wrapper whose head reduces to a lookup resource. *)
+(* Expose only a code wrapper whose head reduces to a lookup resource,
+   uncharged or charged (InstrSpecs/LookupCharged.v). *)
 Ltac zesu_expose_instruction_lookup :=
   zesu_switch_enabled constr:(ZesuStepInstructionLookup);
   lazymatch goal with
@@ -131,11 +133,15 @@ Ltac zesu_expose_instruction_lookup :=
       iMatchHyp ltac:(fun H body =>
         lazymatch body with
         | instr_lookup_resources _ => fail
+        | instr_lookup_resources_charged _ => fail
         | _ =>
             let head := get_head body in
             let expanded := eval cbv beta delta [head] in body in
             lazymatch expanded with
             | instr_lookup_resources _ =>
+                progress iEval (unfold head) in H;
+                iDestruct H as "#?"
+            | instr_lookup_resources_charged _ =>
                 progress iEval (unfold head) in H;
                 iDestruct H as "#?"
             end

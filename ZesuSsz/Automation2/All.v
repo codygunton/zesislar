@@ -1,4 +1,6 @@
 Require Export InstrSpecs.Lookup.
+Require Export InstrSpecs.LookupCharged.
+Require Export ZesuSsz.Automation2.StepBudget.
 Require Export InstrSpecs.Machine.
 Require Export InstrSpecs.Specs.
 Require Export ZesuSsz.Automation2.Calls.
