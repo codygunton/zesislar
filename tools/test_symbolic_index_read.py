@@ -83,6 +83,15 @@ class SymbolicIndexRead(unittest.TestCase):
         # Alone, the source array's unknown length may still reach the byte.
         self.assertEqual(evaluator(source).memory_byte(bits(0x1084, 64)).op, 'unknown_read')
 
+    def test_a_constant_byte_of_a_literal_list_reads_as_its_value(self):
+        # A frame slot packed as a literal list: a pointer stored there reads as the constant itself.
+        slot = MemoryRegion(bits(0x2000, 64), (), input_expr('[(BV 8%N 216%Z); (BV 8%N 54%Z); (f x)]', None), 3,
+                            ownership_id='resource_37_span_32')
+        machine = evaluator(slot)
+        self.assertEqual(machine.memory_byte(bits(0x2000, 64)), bits(216, 8))
+        self.assertEqual(machine.memory_byte(bits(0x2001, 64)), bits(54, 8))
+        self.assertEqual(machine.memory_byte(bits(0x2002, 64)).op, 'array_byte')
+
 
 if __name__ == '__main__':
     unittest.main()

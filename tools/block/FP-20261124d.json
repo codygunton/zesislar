@@ -1,0 +1,68 @@
+{
+  "version": "FP-20261124d",
+  "kind": "source engine pin",
+  "supersedes": "FP-20261124c",
+  "provenance": "Agent-assisted proofs, plan B5 (issue #347), branch aa/gen-lowbound-next5: FP-20261124c plus one read rule: a byte of an owned array whose value is a literal list reads as the item's constant when the item is `(BV 8%N k%Z)` (symbolic_state._literal_list_byte), so a pointer stored in a frame slot reads as its value (txAccessList +0x408: the alt_fl vtable pointer spilled at s0-0x220). Other items still read as array_byte.",
+  "files": [
+    {
+      "path": "tools/block/entry_helper_resources.py",
+      "sha256": "56ae1ee71de43b0141712e7635264bccdfeb90943724ea50a91ec1b7c7ee09c4"
+    },
+    {
+      "path": "tools/block/entry_seed.py",
+      "sha256": "746bc86c4c47ebd22a94a88704caa971fe70a47c5b5406355312485da77e4b02"
+    },
+    {
+      "path": "tools/block/forward_design.py",
+      "sha256": "4a48e1b3edca831755ea18a8b7f8256a16700a9030c6e47adc62c404931a487c"
+    },
+    {
+      "path": "tools/block/forward_resource_design.py",
+      "sha256": "989ec1a47689af036543f323ddf6ae22b79037d04976a3efba5c4ef9c35b5843"
+    },
+    {
+      "path": "tools/block/forward_resources.py",
+      "sha256": "ab268e14bd5665143c0bec001ad16303c712b7ba4fbb574305add3ecfdbf61f9"
+    },
+    {
+      "path": "tools/block/resource_seed.py",
+      "sha256": "be9156143881d150ce4c85927f5d83f5d69c3a7aeee8c502867609d8796224b6"
+    },
+    {
+      "path": "tools/block/symbolic_state.py",
+      "sha256": "2bd667a73e62b6d46277db3926f63fcd525a35f812cd8158b36e1458def8db09"
+    },
+    {
+      "path": "tools/block/system_shape_seed.py",
+      "sha256": "99e0c444987ce264a676479c4986772ec355ae8a1546daf81ad83838f784e73b"
+    },
+    {
+      "path": "tools/test_forward_resource_design.py",
+      "sha256": "f55c12db1333426ead2dbf5662bc9f7b717817f476cce56008dcc41628297344"
+    },
+    {
+      "path": "tools/test_forward_resources.py",
+      "sha256": "27e5fe56c08e0e22f2319839d91af38354a98db6b24493ee1beffe552d3b2d71"
+    },
+    {
+      "path": "tools/test_resource_seed.py",
+      "sha256": "9fd099b5d09b568370a0881e09cc8aac418d13b092c10b5d04887108130a510b"
+    },
+    {
+      "path": "tools/test_system_shape_seed.py",
+      "sha256": "c3b68a03eb9f444c25b1f0b2e12b19097cc42ff6392ceb6ea5cd77a5e7d3745a"
+    }
+  ],
+  "entrypoint": "forward_resource_design.evaluate_owned_function",
+  "statement": "Source evaluation does not establish any generated contract or predecessor entailment.",
+  "limitations": [
+    "A load inside an owned uninitialized span (`↦ₘ?`, Islaris' per-byte ∃ v : bv 8) reads fresh existential bytes with no facts; an unowned or out-of-extent uninitialized byte stays unknown.",
+    "Unknown ownership stops propagation.",
+    "Unsupported source expressions remain explicit.",
+    "A jump at a CFG return site leaves the function as a function_return exit; a jump from a CFG tail-call instruction to its callee leaves it as a tail_call exit; any other unknown target stops the path.",
+    "An address that carries an owned array base and a symbolic addend reads that array as a list lookup; its index range (below the actual array length) is a path condition and an open read obligation; an array without a length term stops the read. A store at a symbolic index has an owner only when one initialized owned array base is its addend and every other memory resource is disjoint from that array; its index range is an open obligation.",
+    "A call ends its block; its return site is a cut that continues only from a call-return seed (call_boundary.call_return_seed). Loop cuts require source-bound inputs.",
+    "A profile `access_placements` row is untrusted: it only selects the owned array of a read; the index range stays an open read obligation of the block proof. Stores are not placed.",
+    "A profile `unreachable_reached` row is untrusted: it only stops paths into its block; each predecessor block's step into that block's entry (⌜False⌝, or a call return site's own seed) is proved in the kernel."
+  ]
+}
