@@ -55,7 +55,8 @@ import re
 
 import entry_hist
 from entry_seed import definition_body
-from forward_resources import _strip_enclosure, _top_positions, apply_owned_writes, render_resource_boundary
+from forward_resources import (_strip_enclosure, _top_positions, apply_owned_writes, owned_byte_term,
+                               render_resource_boundary)
 from forward_resource_design import _state_from_result
 from resource_seed import seed_owned_resources, source_z_expression
 from source_domain import substitute
@@ -420,7 +421,13 @@ def _merge_call_sites(edges, prefix=PREFIX):
 
 
 def _coq(value):
-    return value.coq()
+    """The Coq text of a value; a symbolic byte read renders as its owned-array lookup, the term the
+    boundary's owned read renderings give it (forward_resources.owned_byte_term)."""
+    def owned(term):
+        if term.op == 'owned_array_byte':
+            return input_expr(owned_byte_term(term), 8)
+        return replace(term, args=tuple(owned(argument) for argument in term.args)) if term.args else term
+    return owned(value).coq()
 
 
 def _inputs(value):

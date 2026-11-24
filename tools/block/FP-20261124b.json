@@ -22,7 +22,7 @@
     },
     {
       "path": "tools/block/forward_resources.py",
-      "sha256": "115ed8b764dcfa614a5b6a3a14d7f98b8978adfafbbe1a43b702da9d6085f988"
+      "sha256": "a5e0903fb5bad564f98b0712462214ec4ef93576ba3005c9509398e228da4770"
     },
     {
       "path": "tools/block/resource_seed.py",

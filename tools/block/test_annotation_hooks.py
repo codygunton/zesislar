@@ -346,6 +346,20 @@ class ResultWords(unittest.TestCase):
             self.run_call({'8': 'bv_unsigned {argv:1} + {fresh:off:Z}'}, {'other': 1})
 
 
+class CallValueOwnedByte(unittest.TestCase):
+    def test_a_symbolic_byte_read_in_a_call_value_renders_as_its_owned_lookup(self):
+        from call_boundary import _coq
+        from forward_resources import owned_byte_term
+        from symbolic_state import Expr
+        base = input_expr('base', 64)
+        byte = Expr('owned_array_byte', (input_expr('arr', None), operation('bvadd', base, input_expr('k', 64)), base),
+                    8, '0' * 64)
+        value = operation('zero_extend', byte, width=64)
+        self.assertEqual(_coq(value), '(bv_zero_extend 64%N (' + owned_byte_term(byte) + '))')
+        self.assertEqual(owned_byte_term(byte), '(List.nth (Z.to_nat ((bv_unsigned (bv_add base k) - '
+                                                'bv_unsigned base)%Z)) arr (BV 8%N 0%Z))')
+
+
 class OpaqueAndReturnedCall(unittest.TestCase):
     """A call row's `opaque` rows (framed, consumed, produced spec resources) and `returns` rows."""
     SPEC = '''Definition allocSpec `{!islaG Sigma} `{!threadG} : iProp Sigma :=
