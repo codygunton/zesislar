@@ -1,0 +1,552 @@
+{
+  "status": "SOURCE_DECLARATIONS_ONLY",
+  "function": "txAccessList",
+  "entries": {
+    "path": "/home/cody/zesislar/_build/agents/aa/txAccessList/round-6/render/render/RESULT.json",
+    "sha256": "924c1289e6822d35748f26f06e429dc855ae14a1c77940d07535627eae86a684"
+  },
+  "cfg": {
+    "path": "/home/cody/zesislar/_build/agents/aa/txAccessList/inputs-r4/FUNCTION.json",
+    "sha256": "a20524c12269475ee1ba985db07f37b806443ebbb5e304076c4b0a0b0598e317"
+  },
+  "rows": [
+    {
+      "case": "0000",
+      "pc": "0x80000000",
+      "successors": [
+        "0068"
+      ],
+      "status": "rendered",
+      "caller": {
+        "path": "/home/cody/zesislar/_build/agents/aa/txAccessList/round-6/render/callers/Caller0000.v",
+        "sha256": "cda6ca770001923aff970185ee30bf07c6d7c4eb34cbdaa1bba58b74ca089617"
+      },
+      "lemma": "DesignedBoundary_80000000",
+      "preconditions": [
+        "instr_pre 0x80000068 (ZesuSsz.Generated.TxAccessList.FP301.Pilot0068Entries.fp_machineAt0068 (args) (returnAddress) (K))%I",
+        "instr_pre 0x800d6960 (ZesuSsz.Interfaces.DecodeItem.decodeItemCallSpec2)%I"
+      ]
+    },
+    {
+      "case": "0068",
+      "pc": "0x80000068",
+      "successors": [
+        "0070",
+        "04a8"
+      ],
+      "status": "refused",
+      "reason": "successor entry not rendered: 04a8"
+    },
+    {
+      "case": "0070",
+      "pc": "0x80000070",
+      "successors": [
+        "007c",
+        "04a8"
+      ],
+      "status": "refused",
+      "reason": "successor entry not rendered: 04a8"
+    },
+    {
+      "case": "007c",
+      "pc": "0x8000007c",
+      "successors": [
+        "00ac",
+        "048c"
+      ],
+      "status": "refused",
+      "reason": "successor entry not rendered: 048c"
+    },
+    {
+      "case": "00ac",
+      "pc": "0x800000ac",
+      "successors": [
+        "00c4"
+      ],
+      "status": "rendered",
+      "caller": {
+        "path": "/home/cody/zesislar/_build/agents/aa/txAccessList/round-6/render/callers/Caller00ac.v",
+        "sha256": "932ba052fa70a9e89a9fd95d708ea6bd559e8f984802fd87f05e2a73b0898dfe"
+      },
+      "lemma": "DesignedBoundary_800000ac",
+      "preconditions": [
+        "instr_pre 0x800000c4 (ZesuSsz.Generated.TxAccessList.FP301.Pilot00c4Entries.fp_machineAt00c4 (args) (returnAddress) (K))%I"
+      ]
+    },
+    {
+      "case": "00c4",
+      "pc": "0x800000c4",
+      "successors": [
+        "00d8"
+      ],
+      "status": "rendered",
+      "caller": {
+        "path": "/home/cody/zesislar/_build/agents/aa/txAccessList/round-6/render/callers/Caller00c4.v",
+        "sha256": "d8748d7e2177cdc6edc2dab91a83a8655f5d3d7e0163cc064fb24abcf3bb0ad1"
+      },
+      "lemma": "DesignedBoundary_800000c4",
+      "preconditions": [
+        "instr_pre 0x800000d8 (ZesuSsz.Generated.TxAccessList.FP301.Pilot00d8Entries.fp_machineAt00d8 (args) (returnAddress) (K))%I",
+        "instr_pre 0x800d6960 (ZesuSsz.Interfaces.DecodeItem.decodeItemCallSpec2)%I"
+      ]
+    },
+    {
+      "case": "00d8",
+      "pc": "0x800000d8",
+      "successors": [
+        "00e0",
+        "04a8"
+      ],
+      "status": "refused",
+      "reason": "successor entry not rendered: 04a8"
+    },
+    {
+      "case": "00e0",
+      "pc": "0x800000e0",
+      "successors": [
+        "00ec",
+        "04a8"
+      ],
+      "status": "refused",
+      "reason": "successor entry not rendered: 04a8"
+    },
+    {
+      "case": "00ec",
+      "pc": "0x800000ec",
+      "successors": [
+        "010c"
+      ],
+      "status": "rendered",
+      "caller": {
+        "path": "/home/cody/zesislar/_build/agents/aa/txAccessList/round-6/render/callers/Caller00ec.v",
+        "sha256": "29af78d437d68305b487e0d0a3fafa5fc435e4744b0f0fa26e3bc2bc5209667e"
+      },
+      "lemma": "DesignedBoundary_800000ec",
+      "preconditions": [
+        "instr_pre 0x8000010c (ZesuSsz.Generated.TxAccessList.FP301.Pilot010cEntries.fp_machineAt010c (args) (returnAddress) (K))%I",
+        "instr_pre 0x800d6960 (ZesuSsz.Interfaces.DecodeItem.decodeItemCallSpec2)%I"
+      ]
+    },
+    {
+      "case": "010c",
+      "pc": "0x8000010c",
+      "successors": [
+        "0114",
+        "04a8"
+      ],
+      "status": "refused",
+      "reason": "successor entry not rendered: 04a8"
+    },
+    {
+      "case": "0114",
+      "pc": "0x80000114",
+      "successors": [
+        "0120",
+        "04a8"
+      ],
+      "status": "refused",
+      "reason": "successor entry not rendered: 04a8"
+    },
+    {
+      "case": "0120",
+      "pc": "0x80000120",
+      "successors": [
+        "0128",
+        "04a8"
+      ],
+      "status": "refused",
+      "reason": "successor entry not rendered: 0128, 04a8"
+    },
+    {
+      "case": "0128",
+      "pc": "0x80000128",
+      "successors": [
+        "015c"
+      ],
+      "status": "refused",
+      "reason": "own entry not rendered"
+    },
+    {
+      "case": "015c",
+      "pc": "0x8000015c",
+      "successors": [
+        "0164",
+        "04a8"
+      ],
+      "status": "refused",
+      "reason": "own entry not rendered"
+    },
+    {
+      "case": "0164",
+      "pc": "0x80000164",
+      "successors": [
+        "0170",
+        "04a8"
+      ],
+      "status": "refused",
+      "reason": "own entry not rendered"
+    },
+    {
+      "case": "0170",
+      "pc": "0x80000170",
+      "successors": [
+        "0188",
+        "0248"
+      ],
+      "status": "refused",
+      "reason": "own entry not rendered"
+    },
+    {
+      "case": "0188",
+      "pc": "0x80000188",
+      "successors": [
+        "018c"
+      ],
+      "status": "refused",
+      "reason": "own entry not rendered"
+    },
+    {
+      "case": "018c",
+      "pc": "0x8000018c",
+      "successors": [
+        "01a0"
+      ],
+      "status": "refused",
+      "reason": "own entry not rendered"
+    },
+    {
+      "case": "01a0",
+      "pc": "0x800001a0",
+      "successors": [
+        "01a8",
+        "04a8"
+      ],
+      "status": "refused",
+      "reason": "own entry not rendered"
+    },
+    {
+      "case": "01a8",
+      "pc": "0x800001a8",
+      "successors": [
+        "01b4",
+        "04a8"
+      ],
+      "status": "refused",
+      "reason": "own entry not rendered"
+    },
+    {
+      "case": "01b4",
+      "pc": "0x800001b4",
+      "successors": [
+        "01bc",
+        "04a8"
+      ],
+      "status": "refused",
+      "reason": "own entry not rendered"
+    },
+    {
+      "case": "01bc",
+      "pc": "0x800001bc",
+      "successors": [
+        "01f8"
+      ],
+      "status": "refused",
+      "reason": "own entry not rendered"
+    },
+    {
+      "case": "01f8",
+      "pc": "0x800001f8",
+      "successors": [
+        "0204",
+        "04a8"
+      ],
+      "status": "refused",
+      "reason": "own entry not rendered"
+    },
+    {
+      "case": "0204",
+      "pc": "0x80000204",
+      "successors": [
+        "018c",
+        "0248"
+      ],
+      "status": "refused",
+      "reason": "own entry not rendered"
+    },
+    {
+      "case": "0248",
+      "pc": "0x80000248",
+      "successors": [
+        "025c"
+      ],
+      "status": "refused",
+      "reason": "own entry not rendered"
+    },
+    {
+      "case": "025c",
+      "pc": "0x8000025c",
+      "successors": [
+        "0264",
+        "04a8"
+      ],
+      "status": "refused",
+      "reason": "own entry not rendered"
+    },
+    {
+      "case": "0264",
+      "pc": "0x80000264",
+      "successors": [
+        "02a0",
+        "0448"
+      ],
+      "status": "refused",
+      "reason": "own entry not rendered"
+    },
+    {
+      "case": "02a0",
+      "pc": "0x800002a0",
+      "successors": [
+        "02d4",
+        "02e0"
+      ],
+      "status": "refused",
+      "reason": "own entry not rendered"
+    },
+    {
+      "case": "02d4",
+      "pc": "0x800002d4",
+      "successors": [
+        "02e0",
+        "02f4"
+      ],
+      "status": "refused",
+      "reason": "own entry not rendered"
+    },
+    {
+      "case": "02e0",
+      "pc": "0x800002e0",
+      "successors": [
+        "0390"
+      ],
+      "status": "refused",
+      "reason": "own entry not rendered"
+    },
+    {
+      "case": "02ec",
+      "pc": "0x800002ec",
+      "successors": [
+        "043c"
+      ],
+      "status": "refused",
+      "reason": "own entry not rendered"
+    },
+    {
+      "case": "02f4",
+      "pc": "0x800002f4",
+      "successors": [
+        "0340"
+      ],
+      "status": "refused",
+      "reason": "own entry not rendered"
+    },
+    {
+      "case": "0340",
+      "pc": "0x80000340",
+      "successors": [
+        "0344",
+        "0364"
+      ],
+      "status": "refused",
+      "reason": "own entry not rendered"
+    },
+    {
+      "case": "0344",
+      "pc": "0x80000344",
+      "successors": [
+        "0368"
+      ],
+      "status": "refused",
+      "reason": "own entry not rendered"
+    },
+    {
+      "case": "0364",
+      "pc": "0x80000364",
+      "successors": [
+        "0368"
+      ],
+      "status": "refused",
+      "reason": "own entry not rendered"
+    },
+    {
+      "case": "0368",
+      "pc": "0x80000368",
+      "successors": [
+        "02ec",
+        "0390"
+      ],
+      "status": "refused",
+      "reason": "own entry not rendered"
+    },
+    {
+      "case": "0390",
+      "pc": "0x80000390",
+      "successors": [
+        "039c",
+        "04a8"
+      ],
+      "status": "refused",
+      "reason": "own entry not rendered"
+    },
+    {
+      "case": "039c",
+      "pc": "0x8000039c",
+      "successors": [
+        "03c0",
+        "03e0"
+      ],
+      "status": "refused",
+      "reason": "own entry not rendered"
+    },
+    {
+      "case": "03c0",
+      "pc": "0x800003c0",
+      "successors": [
+        "03d4"
+      ],
+      "status": "refused",
+      "reason": "own entry not rendered"
+    },
+    {
+      "case": "03d4",
+      "pc": "0x800003d4",
+      "successors": [
+        "03dc",
+        "03e4"
+      ],
+      "status": "refused",
+      "reason": "own entry not rendered"
+    },
+    {
+      "case": "03dc",
+      "pc": "0x800003dc",
+      "successors": [
+        "04a8"
+      ],
+      "status": "refused",
+      "reason": "own entry not rendered"
+    },
+    {
+      "case": "03e0",
+      "pc": "0x800003e0",
+      "successors": [
+        "03e4"
+      ],
+      "status": "refused",
+      "reason": "own entry not rendered"
+    },
+    {
+      "case": "03e4",
+      "pc": "0x800003e4",
+      "successors": [
+        "0400"
+      ],
+      "status": "refused",
+      "reason": "own entry not rendered"
+    },
+    {
+      "case": "0400",
+      "pc": "0x80000400",
+      "successors": [
+        "0404",
+        "042c"
+      ],
+      "status": "refused",
+      "reason": "own entry not rendered"
+    },
+    {
+      "case": "0404",
+      "pc": "0x80000404",
+      "successors": [
+        "042c"
+      ],
+      "status": "refused",
+      "reason": "own entry not rendered"
+    },
+    {
+      "case": "042c",
+      "pc": "0x8000042c",
+      "successors": [
+        "043c"
+      ],
+      "status": "refused",
+      "reason": "own entry not rendered"
+    },
+    {
+      "case": "043c",
+      "pc": "0x8000043c",
+      "successors": [
+        "0448"
+      ],
+      "status": "refused",
+      "reason": "own entry not rendered"
+    },
+    {
+      "case": "0448",
+      "pc": "0x80000448",
+      "successors": [
+        "00c4",
+        "048c"
+      ],
+      "status": "refused",
+      "reason": "own entry not rendered"
+    },
+    {
+      "case": "048c",
+      "pc": "0x8000048c",
+      "successors": [
+        "04a0"
+      ],
+      "status": "refused",
+      "reason": "own entry not rendered"
+    },
+    {
+      "case": "04a0",
+      "pc": "0x800004a0",
+      "successors": [
+        "04a8",
+        "04f4"
+      ],
+      "status": "refused",
+      "reason": "own entry not rendered"
+    },
+    {
+      "case": "04a8",
+      "pc": "0x800004a8",
+      "successors": [
+        "04b8"
+      ],
+      "status": "refused",
+      "reason": "own entry not rendered"
+    },
+    {
+      "case": "04b8",
+      "pc": "0x800004b8",
+      "successors": [],
+      "status": "refused",
+      "reason": "own entry not rendered"
+    },
+    {
+      "case": "04f4",
+      "pc": "0x800004f4",
+      "successors": [
+        "04b8"
+      ],
+      "status": "refused",
+      "reason": "own entry not rendered"
+    }
+  ],
+  "rendered": 4,
+  "inlined": 0,
+  "refused": 49,
+  "proof_ran": false
+}
