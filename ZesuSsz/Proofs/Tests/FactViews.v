@@ -137,20 +137,21 @@ Section fact_views.
     lia.
   Qed.
 
-  (* A residual lemma stated over a piece closes the goal at the tier's
-     last try. *)
+  (* A residual lemma stated over a piece, registered in the relocatable
+     (exact) form, closes the goal at the tier's last try. *)
   Lemma residual_piece_lemma (pointer y : Z)
       (Hnz : bigSize y <> 0) (Hpiece : bigSize y <> 0 -> pointer + bigSize y <= 8192) :
     pointer + bigSize y < 8193.
   Proof. lia. Qed.
-  #[local] Hint Resolve residual_piece_lemma : zesu_residual.
+  #[local] Hint Extern 0 => ZesuSsz.Automation2.ResidualLemmas.zesu_residual_exact
+    constr:(residual_piece_lemma) : zesu_residual_exact.
 
   Lemma fact_view_large_fact_residual (pointer y : Z) :
     alignedToken pointer (bigSize y) -∗ ⌜bigSize y <> 0 -> pointer + bigSize y < 8193⌝.
   Proof.
     iStartProof. iIntros "Htoken". FactViews.zesu_pose_fact_views.
     iPureIntro. intros Hnz.
-    Fail solve [eauto 2 with nocore zesu_residual].
+    Fail solve [typeclasses eauto 1 with zesu_residual_exact].
     ResidualLemmas.zesu_residual_lemma.
   Qed.
 End fact_views.

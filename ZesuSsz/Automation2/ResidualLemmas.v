@@ -187,10 +187,12 @@ Ltac zesu_residual_exact lemma :=
    `eauto 1` 1.2 ms a call, `typeclasses eauto 1` 5 us). A goal whose
    conclusion mentions a local definition gets one more try of both with the
    definitions unfolded (unfolded once). A context with a fact above the node
-   limit gets a last try of all of these with the fact's pieces posed, as the
-   exporter states them (`ContextCollection.zesu_large_fact_pieces`, which
-   fails at once when there is no such fact). Telemetry names each try:
-   kind=alt|altfail
+   limit gets a last try of the exact lemmas, the relocatable form every new
+   function uses, with the fact's pieces posed, as the exporter states them
+   (`ContextCollection.zesu_large_fact_pieces`, which fails at once when there
+   is no such fact). `eauto 2` is not tried there: on keysEnsureCapacity 0164,
+   whose every context holds such a fact, it cost 16% more instructions.
+   Telemetry names each try: kind=alt|altfail
    site=residual_hint|residual_exact|residual_unfolded|residual_pieces. *)
 Ltac zesu_residual_lemma :=
   first [zesu_talt residual_hint (idtac; solve [eauto 2 with nocore zesu_residual])
@@ -201,8 +203,6 @@ Ltac zesu_residual_lemma :=
                          | solve [typeclasses eauto 1 with zesu_residual_exact]]])
         | zesu_talt residual_pieces (idtac;
             solve [ZesuSsz.Automation2.ContextCollection.zesu_large_fact_pieces;
-                   first [solve [eauto 2 with nocore zesu_residual]
-                         | solve [typeclasses eauto 1 with zesu_residual_exact]
+                   first [solve [typeclasses eauto 1 with zesu_residual_exact]
                          | solve [zesu_residual_unfold_goal;
-                                  first [solve [eauto 2 with nocore zesu_residual]
-                                        | solve [typeclasses eauto 1 with zesu_residual_exact]]]]])].
+                                  typeclasses eauto 1 with zesu_residual_exact]]])].
