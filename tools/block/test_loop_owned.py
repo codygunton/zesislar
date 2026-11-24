@@ -1,0 +1,130 @@
+"""Loop-cut owned state from an annotation row (`owned`): compile, class and seed."""
+from pathlib import Path
+import sys
+import unittest
+
+sys.path.insert(0, str(Path(__file__).resolve().parents[1] / 'oblig'))
+
+import annotations  # noqa: E402
+from loop_design import loop_class, owned_node, owned_seed, replaced_components  # noqa: E402
+from resource_seed import seed_owned_resources  # noqa: E402
+from symbolic_state import SymbolicState, input_expr  # noqa: E402
+
+HEAD, PRED = '+0x10', '+0x8'
+
+
+def annotation(row):
+    return {'schema': annotations.SCHEMA, 'function': 'f', 'symbol': 'f', 'profile': {}, 'rows': [row]}
+
+
+def cut_row(**extra):
+    return {'id': 'loop', 'request': None, 'at': {'pc': HEAD, 'boundary': 'loop_cut', 'predecessor': PRED},
+            'binders': [{'name': 'machine_x10', 'register': 'x10'}, {'name': 'i', 'role': 'index'}, *extra.pop('binders', [])],
+            'facts': [{'coq': '(0 <= i)%Z', 'role': 'index_range'}, *extra.pop('facts', [])], **extra}
+
+
+class Profile:
+    args_type = 'Args'
+
+    @staticmethod
+    def pc(key):
+        return hex(int(key[1:], 16))
+
+    @staticmethod
+    def telescope():
+        return ''
+
+
+OWNED = {'binders': [{'name': 'list_state', 'type': 'ArrayListState'}],
+         'resources': [{'coq': '(sp - 448) ↦ₘ∗ arrayListHeaderBytes list_state', 'length': '24'},
+                       'arrayListBuffer 40 3 list_state'],
+         'replaces': ['(sp - 448) ↦ₘ? 24']}
+
+
+def report():
+    sources = [('x10', '"x10" ↦ᵣ RVal_Bits (v : bv 64%N)'), ('frame', '(sp - 448) ↦ₘ? 24'),
+               ('input', 'p ↦ₘ∗ bytes'), ('domain', '⌜domain args⌝'), ('true', 'True')]
+    state = SymbolicState(registers={'x10': input_expr('v', 64)})
+    edge = {'predecessor_pc': Profile.pc(PRED), 'state': state.to_dict(),
+            'resource_boundary': {'block_status': 'completed', 'components': [
+                {'id': key, 'source': text} for key, text in sources],
+                'tree': {'kind': 'exists', 'binders': [], 'body': {'children': [{'id': key} for key, _ in sources]}}}}
+    return {'boundaries': [{'pc': Profile.pc(HEAD), 'alternatives': [edge]}]}
+
+
+def design(**extra):
+    return {'head': HEAD, 'entry_predecessor': PRED, 'registers': {'x10': 'machine_x10'}, 'index': 'i',
+            'facts': [{'kind': 'index_range', 'coq': '(0 <= i)%Z'}], **extra}
+
+
+class CompileTest(unittest.TestCase):
+    def test_a_row_without_owned_state_compiles_as_before(self):
+        profile = annotations.compile_profile(annotation(cut_row()))
+        self.assertNotIn('owned', profile['loop_designs'][0])
+
+    def test_typed_binders_resources_and_replaces_become_owned(self):
+        row = cut_row(binders=[{'name': 'list_state', 'type': 'ArrayListState'}],
+                      resources=OWNED['resources'], replaces=OWNED['replaces'])
+        self.assertEqual(annotations.compile_profile(annotation(row))['loop_designs'][0]['owned'], OWNED)
+
+    def test_a_loose_binder_needs_a_type(self):
+        with self.assertRaises(annotations.AnnotationError):
+            annotations.compile_profile(annotation(cut_row(binders=[{'name': 'list_state'}])))
+
+
+class ClassTest(unittest.TestCase):
+    def test_the_class_swaps_the_replaced_component_for_the_owned_state(self):
+        source, record = loop_class(report(), design(
+            owned=OWNED, facts=[{'kind': 'index_range', 'coq': '(0 <= i)%Z'},
+                                {'kind': 'fact', 'coq': 'arrayListLength list_state = i'}]), Profile)
+        self.assertNotIn('↦ₘ? 24', source)
+        self.assertIn('(sp - 448) ↦ₘ∗ arrayListHeaderBytes list_state', source)
+        self.assertIn('arrayListBuffer 40 3 list_state', source)
+        self.assertIn('(list_state : ArrayListState)', source)
+        self.assertIn('⌜arrayListLength list_state = i⌝', source)
+        self.assertEqual(record['owned'], OWNED)
+
+    def test_without_owned_state_the_class_is_unchanged(self):
+        source, record = loop_class(report(), design(), Profile)
+        self.assertIn('(sp - 448) ↦ₘ? 24', source)
+        self.assertNotIn('owned', record)
+
+    def test_a_replaced_text_must_name_one_component(self):
+        with self.assertRaises(ValueError):
+            replaced_components({'replaces': ['q ↦ₘ? 8']}, {'a': 'p ↦ₘ? 8'})
+
+
+class SeedTest(unittest.TestCase):
+    def test_node_kinds(self):
+        self.assertEqual(owned_node('arrayListBuffer 40 3 s', 0)['kind'], 'opaque')
+        self.assertEqual(owned_node('(sp - 8) ↦ₘ? 8', 1)['kind'], 'uninitialized_memory')
+        self.assertEqual(owned_node({'coq': 'sp ↦ₘ∗ bytes', 'length': '24'}, 2)['kind'], 'byte_array')
+        with self.assertRaises(ValueError):
+            owned_node('sp ↦ₘ∗ bytes', 3)
+
+    def test_the_seed_swaps_the_replaced_component_for_the_owned_state(self):
+        public = {'schema': 'h1-public-entry-seed.v1', 'entry_pc': '0x10', 'source_bindings': [],
+                  'assertion_tree': {'kind': 'exists', 'binders': [], 'components': [
+                      {'kind': 'uninitialized_memory', 'id': 'frame', 'original_component': '(sp - 448) ↦ₘ? 24',
+                       'address_z': 'sp - 448', 'length_original_coq': '24'},
+                      {'kind': 'opaque', 'id': 'true', 'coq': 'True'}]}}
+        public['_input_sha256'] = '0' * 64
+        seed = seed_owned_resources(public, entry_pc=0x10, vocabulary={'rows': []})
+        rebuilt = owned_seed(seed, design(owned=OWNED, facts=[{'kind': 'fact', 'coq': 'arrayListLength list_state = 0'},
+                                                              {'kind': 'bound', 'coq': 'bv_unsigned {x10} = 0'}]),
+                             0x10, {'rows': []})
+        texts = [str(c['seed_component'].get('original_component', c['seed_component'].get('coq')))
+                 for c in rebuilt.ownership['components']]
+        self.assertNotIn('(sp - 448) ↦ₘ? 24', texts)
+        self.assertIn('(sp - 448) ↦ₘ∗ arrayListHeaderBytes list_state', texts)
+        self.assertIn('arrayListBuffer 40 3 list_state', texts)
+        self.assertIn('⌜arrayListLength list_state = 0⌝', texts)
+        self.assertNotIn('⌜bv_unsigned {x10} = 0⌝', texts)
+        self.assertEqual(texts[-1], 'True')
+        self.assertIn('list_state', [binder['name'] for binder in rebuilt.ownership['binders']])
+        self.assertEqual(rebuilt.join_kind, 'loop_head')
+        self.assertEqual([resource.id for resource in rebuilt.resources], ['loop_owned_0'])
+
+
+if __name__ == '__main__':
+    unittest.main()

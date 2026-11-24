@@ -22,7 +22,11 @@ The compiled profile keys, by `boundary`:
                    entry renderer writes as `owner.name args` (render_fp301_entries.py)
   loop_cut         `loop_heads` and a `loop_designs` row: `registers` (binders with a register), `index`
                    (the binder of role `index`), `facts` (role -> `kind`), `array_cursor` from
-                   `placement` {`array`, `register`, `extent_reason`}, `visible`
+                   `placement` {`array`, `register`, `extent_reason`}, `visible`; with `resources`,
+                   `replaces` or typed binders without a register, `owned` {`binders` [{name, type}],
+                   `resources` [text | {coq, length}], `replaces` [text]}: the cut's owned state is the
+                   loop-entry state without the components `replaces` names (exact texts), plus
+                   `resources` over those binders (loop_design.py); facts may name them
   join             `join_designs[pc]`: a fact of role `fact` with no other key is its text, else its object.
                    A row whose single effective fact is `False` (role `unreachable`) lists `pc` in
                    `unreachable_entries` (entry ⌜False⌝; refused where the forward pass reaches it); with
@@ -194,6 +198,17 @@ def compile_profile(data, source=None):
                                           'extent_reason': placement['extent_reason']}
             if 'visible' in row:
                 design['visible'] = list(row['visible'])
+            loose = [binder for binder in row.get('binders', [])
+                     if not binder.get('register') and binder.get('role') != 'index']
+            if any(not isinstance(binder.get('type'), str) or not binder['type'] for binder in loose):
+                raise AnnotationError('%s: a loop-cut binder without a register has a `type`' % row['id'])
+            if row.get('resources') or row.get('replaces') or loose:
+                for item in row.get('resources', []):
+                    if not (isinstance(item, str) or isinstance(item, dict) and set(item) == {'coq', 'length'}):
+                        raise AnnotationError('%s: a loop-cut resource is a text or {coq, length}' % row['id'])
+                design['owned'] = {'binders': [{'name': binder['name'], 'type': binder['type']} for binder in loose],
+                                   'resources': list(row.get('resources', [])),
+                                   'replaces': list(row.get('replaces', []))}
             loop_designs.append(design)
         elif boundary == 'join':
             roles = {fact['role'] for fact in facts}

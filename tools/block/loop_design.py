@@ -127,6 +127,90 @@ def class_components(order, sources, changed, path_conditions, names):
     return owned, pure, conditions, accounting
 
 
+def _normal(text):
+    return ' '.join(str(text).split())
+
+
+def owned_text(row):
+    """The Iris text of one `owned.resources` row: a string, or {coq, length} for a `↦ₘ∗` array."""
+    return row['coq'] if isinstance(row, dict) else row
+
+
+def replaced_components(owned, sources):
+    """The component ids of the loop-entry state that the design's `owned.replaces` texts name; each
+    text names exactly one component (its exact text), else the design is refused."""
+    by_text = {}
+    for key, text in sources.items():
+        by_text.setdefault(_normal(text), []).append(key)
+    ids = []
+    for text in owned.get('replaces', []):
+        keys = by_text.get(_normal(text), [])
+        if len(keys) != 1:
+            raise ValueError('The loop design replaces a resource that is not one component of the '
+                             'loop-entry state: ' + text)
+        ids.append(keys[0])
+    return ids
+
+
+def owned_node(row, index):
+    """The public seed node of one `owned.resources` row (call_boundary's node kinds)."""
+    text = owned_text(row)
+    points = re.fullmatch(r'(.+?)\s+(↦ₘ∗|↦ₘ\?)\s+(.+)', text, re.S)
+    key = 'loop_owned_%d' % index
+    if points is None:
+        return {'kind': 'opaque', 'id': key, 'coq': text}
+    from forward_resources import _strip_enclosure
+    address = _strip_enclosure(points[1].strip())
+    if points[2] == '↦ₘ?':
+        return {'kind': 'uninitialized_memory', 'id': key, 'original_component': text, 'address_z': address,
+                'length_original_coq': _strip_enclosure(points[3].strip())}
+    if not isinstance(row, dict) or 'length' not in row:
+        raise ValueError('An owned `↦ₘ∗` resource of a loop design states its length: ' + text)
+    from symbolic_state import input_expr
+    return {'kind': 'byte_array', 'id': key, 'original_component': text, 'address_z': address,
+            'byte_array_expr': input_expr(_strip_enclosure(points[3].strip()), None).to_dict(),
+            'element_bits': 8, 'length_original_coq': str(row['length'])}
+
+
+def owned_seed(seed, design, head, vocabulary):
+    """The loop-head seed with the design's owned state (`owned`): the components it `replaces` leave,
+    its `resources` and its binders join, and each design fact that names an owned binder (and no
+    entry register `{xN}`) is carried as a pure component, so the blocks after the head keep it."""
+    from resource_seed import seed_owned_resources
+    from symbolic_state import input_expr
+    owned = design['owned']
+    sources = {component['id']: str(component['seed_component'].get(
+        'original_component', component['seed_component'].get('coq', ''))) for component in seed.ownership['components']}
+    removed = set(replaced_components(owned, sources))
+    nodes = [dict(component['seed_component']) for component in seed.ownership['components']
+             if component['id'] not in removed]
+    terminal = next(index for index, node in enumerate(nodes) if node.get('coq') == 'True')
+    names = {row['name'] for row in owned.get('binders', [])}
+    carried = [{'kind': 'opaque', 'id': 'loop_owned_fact_%d' % index, 'coq': '⌜' + row['coq'] + '⌝'}
+               for index, row in enumerate(design.get('facts', []))
+               if _words(row['coq']) & names and '{x' not in row['coq']]
+    nodes[terminal:terminal] = [owned_node(row, index) for index, row in enumerate(owned['resources'])] + carried
+    binders = [{key: value for key, value in binder.items() if key != 'scope'} for binder in seed.ownership['binders']]
+    binders += [{'name': row['name'], 'type': row['type'], 'expression': input_expr(row['name'], None).to_dict()}
+                for row in owned.get('binders', [])]
+    public = {'schema': 'h1-public-entry-seed.v1', 'function': design.get('function'), 'entry_pc': hex(head),
+              'assertion_tree': {'kind': 'exists', 'binders': binders, 'components': nodes},
+              'source_bindings': list(seed.ownership.get('provenance', {}).get('source_bindings', []))}
+    public['_input_sha256'] = hashlib.sha256(json.dumps(public, sort_keys=True).encode()).hexdigest()
+    facts = [fact for fact in seed.facts
+             if fact['kind'] not in ('permission', 'nonwrap') and not fact['fact_id'].endswith(':separation')
+             and not {fact.get('terms', {}).get(field) for field in ('left', 'right', 'resource_id')} & removed]
+    rebuilt = seed_owned_resources(public, entry_pc=head, vocabulary=vocabulary, facts=facts)
+    rebuilt.state.registers.update(seed.state.registers)
+    rebuilt.state.retained_registers = dict(rebuilt.state.registers)
+    rebuilt.state.conditions = list(seed.state.conditions)
+    known = {region.ownership_id: region for region in seed.state.memory}
+    rebuilt.state.memory = [known.get(region.ownership_id, region) for region in rebuilt.state.memory]
+    rebuilt.state.word_links = [dict(link) for link in seed.state.word_links if link['resource_id'] not in removed]
+    rebuilt.join_kind = 'loop_head'
+    return rebuilt
+
+
 def loop_class(report, design, profile):
     """Return the class definition text and its provenance record."""
     head = profile.pc(design['head'])
@@ -153,7 +237,12 @@ def loop_class(report, design, profile):
     entry_values.update(rewritten)
     inherited = [(binder['name'], binder['type']) for binder in scope['binders']]
     names = {name for name, _ in inherited} | set(changed.values()) | {design['index']}
+    owned_design = design.get('owned')
+    if owned_design:
+        order = [key for key in order if key not in replaced_components(owned_design, sources)]
     owned, pure, conditions, _ = class_components(order, sources, changed, state.conditions, names)
+    if owned_design:
+        owned += [owned_text(row) for row in owned_design['resources']]
     if pure.count('⌜domain args⌝') != 1:
         raise ValueError('The loop-entry state has no single domain component.')
     facts = []
@@ -165,12 +254,14 @@ def loop_class(report, design, profile):
     binders = ['(%s : bv 64)' % name for name in changed.values()]
     binders.append('(%s : lvar "zesuLoopIndex" Z)' % design['index'])
     binders += ['(%s : %s)' % (name, kind) for name, kind in inherited if name in used]
+    binders += ['(%s : %s)' % (row['name'], row['type']) for row in (owned_design or {}).get('binders', [])]
     name = 'generatedLoop' + design['head'] + 'Class0'
     source = ('Definition ' + name + profile.telescope() + ' (domain : ' + profile.args_type + ' -> Prop)'
               ' : iProp Sigma :=\n  ((∃ ' + ' '.join(binders) + ', (' + body + ')))%I.')
     record = {'entry_edge': entry['predecessor_pc'], 'changed_registers': changed,
               'resource_facts': len(pure), 'path_conditions': len(conditions),
-              'design_facts': [{'kind': row['kind'], 'coq': row['coq']} for row in design['facts']]}
+              'design_facts': [{'kind': row['kind'], 'coq': row['coq']} for row in design['facts']],
+              **({'owned': owned_design} if owned_design else {})}
     return source, record
 
 
@@ -299,6 +390,8 @@ def loop_head_seed(report, design, profile, *, root_seed, vocabulary, continuati
     tree['binders'] = [*tree['binders'], *({k: v for k, v in row.items()} for row in added)]
     seed.ownership['binders'] = [*seed.ownership['binders'], *({**row, 'scope': [0]} for row in added)]
     seed.join_kind = 'loop_head'
+    if design.get('owned'):
+        return owned_seed(seed, design, int(head, 0), vocabulary)
     return seed
 
 
