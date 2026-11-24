@@ -1799,15 +1799,26 @@ def generalize_owned_join(alternatives, *, original_seed, entry_pc, vocabulary,
                  for edge in plan['edges']]
     # A frame annotation's slot values (`frame_writes`) land in the uninitialized span that holds
     # each slot; the join seed carries them as stores of that span (mapped, owned by it, so a read
-    # of another owned region passes them), which each edge proves of the bytes it holds.
+    # of another owned region passes them), which each edge proves of the bytes it holds. A slot
+    # inside an owned byte array whose known bytes are already that value (a root after the prologue,
+    # whose frame resource lists the saved registers) needs no store: the root states it.
     frame_spans = {}
+    known_bytes = {region.ownership_id: region.bytes for region in original_seed.state.memory}
     for write in frame_writes:
         landed = apply_owned_writes(original_seed.resources, [write], conditions=first.conditions,
                                     facts=original_seed.facts, endianness=first.endianness)
         owners = {step['resource_id'] for step in landed.transitions}
-        if landed.status != 'complete' or len(owners) != 1 or memory_by_id[next(iter(owners))].byte_array is not None:
+        if landed.status != 'complete' or len(owners) != 1:
             raise ValueError('A frame slot value lands in no single uninitialized span of the join seed')
-        owner = owners.pop()
+        owner = next(iter(owners))
+        if memory_by_id[owner].byte_array is not None:
+            offset = landed.transitions[0].get('offset')
+            held = known_bytes.get(owner, ())
+            stated = [normalize(operation('extract', write.value, width=8, value=8 * index)) for index in range(8)]
+            if not (isinstance(offset, int) and offset + 8 <= len(held)
+                    and [normalize(byte) for byte in held[offset:offset + 8]] == stated):
+                raise ValueError('A frame slot value lands in no single uninitialized span of the join seed')
+            continue
         frame_spans.setdefault(owner, []).append(replace(write, mapped=True, ownership_id=owner))
     for component in ownership['components']:
         key = component['id']
