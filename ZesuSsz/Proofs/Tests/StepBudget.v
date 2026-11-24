@@ -154,6 +154,18 @@ Section package_tests.
     ZesuSsz.Automation2.MemoryTupleConsumer.zesu_memory_frame_budget.
   Qed.
 
+  (* A side condition the linear solver cannot close (`Z.land` is an atom to
+     it) stays as a pure fact of the goal. *)
+  Lemma step_budget_package_deferred (owned : Z) :
+    0 <= owned ->
+    ⊢ step_budget owned -∗ step_budget (Z.land owned 0).
+  Proof.
+    intros Howned. iIntros "Hbudget".
+    ZesuSsz.Automation2.MemoryTupleConsumer.zesu_memory_frame_budget.
+    lazymatch goal with |- environments.envs_entails _ (bi_pure _) => idtac end.
+    iPureIntro. rewrite Z.land_0_r. lia.
+  Qed.
+
   Lemma step_budget_package_short : True.
   Proof.
     Fail assert (⊢ step_budget (Sigma:=Sigma) 7 -∗ step_budget 10)

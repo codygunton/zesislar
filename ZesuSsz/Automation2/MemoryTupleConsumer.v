@@ -239,7 +239,15 @@ Ltac zesu_memory_assemble_leading :=
    (side condition `0 <= wanted <= owned`), and the remainder is dropped (the
    successor entry pays every later fetch). Lithium serves such a request
    during the run (StepBudget.v, `subsume_step_budget_split`); a package that
-   reaches the source route still holds it. *)
+   reaches the source route still holds it. A side condition that the linear
+   solver does not close stays in the package as the pure conjunct
+   `⌜0 <= wanted <= owned⌝` (frame instance `zesu_step_budget_frame_request`),
+   a fixed fact of the package like any other: the residual tier, else its own
+   pure goal. *)
+Lemma zesu_step_budget_frame_request `{!islaG Sigma} (owned wanted : Z) :
+  Frame false (step_budget (Sigma:=Sigma) owned) (step_budget wanted) ⌜0 <= wanted <= owned⌝.
+Proof. rewrite /Frame /=. iIntros "[H %Hz]". by iApply (step_budget_weaken with "H"). Qed.
+
 Ltac zesu_memory_frame_budget :=
   lazymatch goal with
   | |- environments.envs_entails _ ?requested =>
@@ -248,10 +256,14 @@ Ltac zesu_memory_frame_budget :=
           iMatchHyp ltac:(fun name owner =>
             lazymatch owner with
             | @step_budget _ _ ?owned =>
-                let Hz := fresh "Hbudget" in
-                assert (Hz : (0 <= wanted <= owned)%Z) by zesu_lia;
-                iDestruct (step_budget_weaken owned wanted Hz with name) as name;
-                clear Hz; iFrame name
+                first [
+                  let Hz := fresh "Hbudget" in
+                  assert (Hz : (0 <= wanted <= owned)%Z) by zesu_lia;
+                  iDestruct (step_budget_weaken owned wanted Hz with name) as name;
+                  clear Hz; iFrame name
+                | let Hframe := fresh "Hframe" in
+                  pose proof (zesu_step_budget_frame_request owned wanted) as Hframe;
+                  iFrame name; clear Hframe ]
             end)
       end
   end.
@@ -261,12 +273,14 @@ Ltac zesu_memory_tuple consume_facts finish :=
   ResourceGroups.zesu_open_resource_groups;
   ByteArrayAssemblyCodec.zesu_byte_array_normalize_stride;
   zesu_memory_open_tuple constr:(16%nat);
+  (* Before the memory assembly: `zesu_memory_assemble_leading` hands every
+     remaining spatial hypothesis to the leading array (`iSplitL`). *)
+  try zesu_memory_frame_budget;
   repeat iMatchHyp ltac:(fun name body => is_var body; progress (iFrame name));
   try zesu_memory_assemble_leading;
   repeat first [progress zesu_memory_frame_first |
     progress zesu_memory_join_arrays];
-  try zesu_memory_assemble_leading;
-  try zesu_memory_frame_budget);
+  try zesu_memory_assemble_leading);
   lazymatch goal with
   | |- environments.envs_entails _ ?requested => consume_facts requested
   end;
