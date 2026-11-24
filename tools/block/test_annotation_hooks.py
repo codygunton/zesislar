@@ -173,6 +173,55 @@ class ReturnedLength(unittest.TestCase):
                          '⌜(Z.of_nat (List.length call_out) = bv_unsigned (count))%Z⌝')
 
 
+class ResultWords(unittest.TestCase):
+    """A call row's `result_words`: a word of the returned array read as the row's value."""
+    SPEC = ReturnedLength.SPEC.replace('∃ (n : Z),\n      bv_unsigned (argv !!! 0%nat) ↦ₘ? n',
+                                       'bv_unsigned (argv !!! 0%nat) ↦ₘ? 16')
+
+    def run_call(self, words, length='16'):
+        from call_boundary import call_return_seed
+        with tempfile.TemporaryDirectory() as directory:
+            fixture, state, call = ReturnedLength().fixture(directory, length=length)
+            Path(directory, 'Spec.v').write_text(self.SPEC)
+            call['result_words'] = words
+            state.registers['x11'] = input_expr('base', 64)
+            return call_return_seed([{'seed_pc': '0x10', 'state': state.to_dict()}], call=call,
+                                    function_root=directory, **fixture)
+
+    def test_the_word_is_its_value_and_the_entry_states_the_equation(self):
+        self.assertNotEqual(self.SPEC, ReturnedLength.SPEC)
+        seed, public_after, _ = self.run_call({'8': 'bv_unsigned {argv:1} + {fresh:off:Z}'})
+        tree = public_after['assertion_tree']
+        nodes = {node['id']: node for node in tree['components']}
+        fact = nodes['call_result_word_8']['coq']
+        self.assertTrue(fact.startswith('⌜(bv_unsigned (bv_concat 64%N ')
+                        and fact.endswith(' (List.nth 8%nat call_out (BV 8%N 0%Z))) = bv_unsigned (base) + call_off)%Z⌝'),
+                        fact)
+        self.assertIn('call_out', fact)
+        self.assertIn({'name': 'call_off', 'type': 'Z', 'expression': input_expr('call_off', None).to_dict()},
+                      tree['binders'])
+        link, = seed.state.word_links
+        self.assertEqual((link['resource_id'], link['offset']), ('dest_call_output', 8))
+        value = operation('bvadd', input_expr('base', 64), input_expr('(Z_to_bv 64%N (call_off))', 64))
+        self.assertEqual(link['value'], value)
+        evaluator = _Evaluator(seed.state.copy(), instruction_index=PC)
+        self.assertEqual(evaluator.memory_read(bits(0x208, 64), 8), value)
+        # The other word of the array stays its bytes.
+        self.assertNotEqual(evaluator.memory_read(bits(0x200, 64), 8), value)
+
+    def test_a_word_outside_the_returned_array_is_refused(self):
+        from call_boundary import CallRefused
+        with self.assertRaisesRegex(CallRefused, 'not a word of the returned array'):
+            self.run_call({'16': 'bv_unsigned {argv:1}'})
+        with self.assertRaisesRegex(CallRefused, 'unknown template'):
+            self.run_call({'0': 'bv_unsigned {argv:1} + {other}'})
+
+    def test_without_the_key_the_seed_is_unchanged(self):
+        seed, public_after, _ = self.run_call({})
+        self.assertEqual(seed.state.word_links, [])
+        self.assertFalse(any('result_word' in node['id'] for node in public_after['assertion_tree']['components']))
+
+
 class OpaqueAndReturnedCall(unittest.TestCase):
     """A call row's `opaque` rows (framed, consumed, produced spec resources) and `returns` rows."""
     SPEC = '''Definition allocSpec `{!islaG Sigma} `{!threadG} : iProp Sigma :=
