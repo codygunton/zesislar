@@ -18,6 +18,10 @@
   ],
   "array_spelling": "sealed",
   "held_binders": ["call3_payload_offset", "call5_outcome"],
+  "non_address_constants": [
+   {"name": "txAccessListInputBufferHigh", "source": "ZesuSsz/Contracts/TxAccessListContract.v"},
+   {"name": "txAccessListInputBufferLow", "source": "ZesuSsz/Contracts/TxAccessListContract.v"}
+  ],
   "hist_visible": [
    "^\\(?frame_old_m\\d+'* = ",
    "^\\W*bv_unsigned call_x10 = 0\\W*$",
@@ -688,7 +692,7 @@
      {
       "binder": "state",
       "argument": 1,
-      "caller_value": "tx_entries"
+       "caller_value": "tx_final"
      },
      {
       "binder": "resultBefore",
@@ -709,7 +713,7 @@
       "spec": "arrayListBuffer entriesElementBytes entriesLog2Alignment state",
       "use": "consumed",
       "caller": [
-       "arrayListBuffer entriesElementBytes entriesLog2Alignment tx_entries"
+        "arrayListBuffer entriesElementBytes entriesLog2Alignment tx_final"
       ]
      },
      {
@@ -906,7 +910,7 @@
     ],
     "output_length_source": "ziskMemcpyCallSpec (ZiskMemcpyPremise.v): the destination receives source, Z.of_nat (length source) = argument 2; the extra-params word receives word64Bytes (argument 2), 8 bytes",
     "returned_lengths": {
-     "0": "altFlAllocatedBytes (bv_unsigned call_x10) (bv_unsigned (bv_add (bv_shiftl machine_x25 (BV 64%N 5%Z)) (bv_shiftl machine_x25 (BV 64%N 3%Z))))"
+     "0": "*"
     }
    },
    "author": {
@@ -1017,6 +1021,62 @@
   {"id": "store-484", "request": null, "at": {"pc": "+0x484", "boundary": "access"}, "binders": [], "resources": [], "facts": [],
    "placement": {"region": "arrayListPointer tx_appendable + arrayListLength tx_appendable * entriesElementBytes", "offset": 32},
    "author": {"tier": "opus-medium"}, "why": "address bytes 16..19 (sw) into the spare slot"},
+  {
+   "id": "join-48c",
+   "request": null,
+   "at": {"pc": "+0x48c", "boundary": "join", "predecessors": ["+0x0", "+0x448"]},
+   "binders": [
+    {"name": "tx_final", "type": "ArrayListState"},
+    {"name": "tx_final_done", "type": "list AccessListEntryValue"},
+    {"name": "tx_final_images", "type": "list TxAccessListEntryImage"},
+    {"name": "tx_final_scratch", "type": "list byte"}
+   ],
+   "resources": [
+    {"coq": "(bv_unsigned (txStackPointer args) - 448) ↦ₘ∗ arrayListHeaderBytes tx_final", "length": "24"},
+    "(bv_unsigned (txStackPointer args) - 424) ↦ₘ? 320",
+    "arrayListBuffer entriesElementBytes entriesLog2Alignment tx_final",
+    "txAccessListKeysSlices tx_final_done tx_final_images",
+    {"coq": "ziskExtraParamsAddress ↦ₘ∗ tx_final_scratch", "length": "8"}
+   ],
+   "replaces": [{"id": "resource_37_call_after"}, {"id": "resource_35"},
+                {"id": "loop_owned_80000448_1"}, {"id": "loop_owned_80000448_2"}],
+   "facts": [
+    {"coq": "arrayListWellFormed entriesElementBytes tx_final", "role": "owned"},
+    {"coq": "arrayListLength tx_final = Z.of_nat (List.length tx_final_done)", "role": "owned"},
+    {"coq": "arrayListItems tx_final = txAccessListEntriesBytes tx_final_done tx_final_images", "role": "owned"},
+    {"coq": "Forall (fun image => Z.of_nat (List.length (imagePadding image)) = txAccessListPaddingSize) tx_final_images", "role": "owned"},
+    {"coq": "Z.of_nat (List.length tx_final_scratch) = txAccessListScratchSize", "role": "owned"},
+    {"coq": "∃ (header_length payload_length : Z), candidateDecodeItem (txInputBytes args) = candidateSuccess true header_length payload_length /\\ txAccessListOuterWalked (txInputBytes args) (header_length + payload_length) tx_final_done", "role": "owned"}
+   ],
+   "author": {"tier": "opus-medium"},
+   "why": "all entries walked: the empty payload (+0xa8 branches here with the list {8, 0, 0} stored at +0x9c..+0xa4) or the outer loop's exit after the last append (+0x488 falls through with s5 = 0). Owned: the entries list tx_final (header at s0-0x1c0, buffer), one keys slice per entry, the 320 frame bytes after the header, the scratch word; tx_final_done = the candidate's entries of the whole payload. Replaces the frame span after the first call's output and the scratch word of the +0x68 root (what an edge stored there leaves with them) and the appended list's heap pieces."
+  },
+  {
+   "id": "join-4a8",
+   "request": null,
+   "at": {"pc": "+0x4a8", "boundary": "join", "predecessors": ["+0x0", "+0x25c", "+0x390", "+0x4a0"]},
+   "binders": [{"name": "tx_scratch_error", "type": "list byte"}],
+   "resources": [{"coq": "ziskExtraParamsAddress ↦ₘ∗ tx_scratch_error", "length": "8"}],
+   "replaces": [{"id": "resource_35"}],
+   "forget_unplaced": true,
+   "facts": [{"coq": "Z.of_nat (List.length tx_scratch_error) = txAccessListScratchSize", "role": "owned"}],
+   "author": {"tier": "opus-medium"},
+   "why": "error exit (result {0, 0, 3}, +0x4a8..+0x4b4, then the epilogue): 17 edges from every decodeItem, keysEnsureCapacity, keysToOwnedSlice, alloc and entriesToOwnedSlice failure and the overflow tests. The join keeps the frame and the saved registers (the epilogue reloads them) and the result slot; what an edge holds on the heap (lists, slices, a fresh block) has no place on the join root and is forgotten (leaked, as the code leaks it). The scratch word is owned with any value of 8 bytes."
+  },
+  {
+   "id": "dead-3e0",
+   "request": null,
+   "at": {"pc": "+0x3e0", "boundary": "join"},
+   "reached": "contradictory_guards",
+   "binders": [],
+   "resources": [],
+   "facts": [
+    {"coq": "False", "role": "unreachable"},
+    {"coq": "bv_unsigned s6 = 0 (mulhu s9 40 = 0, +0x2cc/+0x398) /\\ s9 <> 0 (+0x2bc) -> 40 * s9 <> 0 (a1, +0x3b0)", "role": "relies_on"}
+   ],
+   "author": {"tier": "opus-medium"},
+   "why": "zero-size alloc: +0x3bc branches to +0x3e0 when a1 = 32 s9 + 8 s9 = 0. s9 is (s7/2 + s7 + 1), or all ones when that sum wraps (+0x2b4..+0x2bc), so s9 <> 0; the path reached +0x39c only with s6 = mulhu(s9, 40) = 0 (+0x398), so 40 s9 < 2^64 and a1 <> 0. run.py --remap never visits +0x3e0 on none of the inputs."
+  },
   {
    "id": "dead-344",
    "request": null,

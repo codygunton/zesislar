@@ -17,6 +17,16 @@
     "call3_payload_offset",
     "call5_outcome"
   ],
+  "non_address_constants": [
+    {
+      "name": "txAccessListInputBufferHigh",
+      "source": "ZesuSsz/Contracts/TxAccessListContract.v"
+    },
+    {
+      "name": "txAccessListInputBufferLow",
+      "source": "ZesuSsz/Contracts/TxAccessListContract.v"
+    }
+  ],
   "hist_visible": [
     "^\\(?frame_old_m\\d+'* = ",
     "^\\W*bv_unsigned call_x10 = 0\\W*$",
@@ -378,7 +388,9 @@
   "join_designs": {
     "+0x248": [],
     "+0x42c": [],
-    "+0x448": []
+    "+0x448": [],
+    "+0x48c": [],
+    "+0x4a8": []
   },
   "calls": [
     {
@@ -673,7 +685,7 @@
         {
           "binder": "state",
           "argument": 1,
-          "caller_value": "tx_entries"
+          "caller_value": "tx_final"
         },
         {
           "binder": "resultBefore",
@@ -694,7 +706,7 @@
           "spec": "arrayListBuffer entriesElementBytes entriesLog2Alignment state",
           "use": "consumed",
           "caller": [
-            "arrayListBuffer entriesElementBytes entriesLog2Alignment tx_entries"
+            "arrayListBuffer entriesElementBytes entriesLog2Alignment tx_final"
           ]
         },
         {
@@ -832,7 +844,7 @@
       ],
       "output_length_source": "ziskMemcpyCallSpec (ZiskMemcpyPremise.v): the destination receives source, Z.of_nat (length source) = argument 2; the extra-params word receives word64Bytes (argument 2), 8 bytes",
       "returned_lengths": {
-        "0": "altFlAllocatedBytes (bv_unsigned call_x10) (bv_unsigned (bv_add (bv_shiftl machine_x25 (BV 64%N 5%Z)) (bv_shiftl machine_x25 (BV 64%N 3%Z))))"
+        "0": "*"
       },
       "call_site_pc": "+0x3fc"
     }
@@ -940,10 +952,12 @@
     }
   ],
   "unreachable_entries": [
+    "+0x3e0",
     "+0x344",
     "+0x2ec"
   ],
   "unreachable_reached": [
+    "+0x3e0",
     "+0x344"
   ],
   "join_frames": {
@@ -1255,10 +1269,112 @@
         "+0x264",
         "+0x43c"
       ]
+    },
+    "+0x48c": {
+      "binders": [
+        {
+          "name": "tx_final",
+          "type": "ArrayListState"
+        },
+        {
+          "name": "tx_final_done",
+          "type": "list AccessListEntryValue"
+        },
+        {
+          "name": "tx_final_images",
+          "type": "list TxAccessListEntryImage"
+        },
+        {
+          "name": "tx_final_scratch",
+          "type": "list byte"
+        }
+      ],
+      "resources": [
+        {
+          "coq": "(bv_unsigned (txStackPointer args) - 448) \u21a6\u2098\u2217 arrayListHeaderBytes tx_final",
+          "length": "24"
+        },
+        "(bv_unsigned (txStackPointer args) - 424) \u21a6\u2098? 320",
+        "arrayListBuffer entriesElementBytes entriesLog2Alignment tx_final",
+        "txAccessListKeysSlices tx_final_done tx_final_images",
+        {
+          "coq": "ziskExtraParamsAddress \u21a6\u2098\u2217 tx_final_scratch",
+          "length": "8"
+        }
+      ],
+      "replaces": [
+        {
+          "id": "resource_37_call_after"
+        },
+        {
+          "id": "resource_35"
+        },
+        {
+          "id": "loop_owned_80000448_1"
+        },
+        {
+          "id": "loop_owned_80000448_2"
+        }
+      ],
+      "facts": [
+        {
+          "coq": "arrayListWellFormed entriesElementBytes tx_final"
+        },
+        {
+          "coq": "arrayListLength tx_final = Z.of_nat (List.length tx_final_done)"
+        },
+        {
+          "coq": "arrayListItems tx_final = txAccessListEntriesBytes tx_final_done tx_final_images"
+        },
+        {
+          "coq": "Forall (fun image => Z.of_nat (List.length (imagePadding image)) = txAccessListPaddingSize) tx_final_images"
+        },
+        {
+          "coq": "Z.of_nat (List.length tx_final_scratch) = txAccessListScratchSize"
+        },
+        {
+          "coq": "\u2203 (header_length payload_length : Z), candidateDecodeItem (txInputBytes args) = candidateSuccess true header_length payload_length /\\ txAccessListOuterWalked (txInputBytes args) (header_length + payload_length) tx_final_done"
+        }
+      ],
+      "predecessors": [
+        "+0x0",
+        "+0x448"
+      ]
+    },
+    "+0x4a8": {
+      "binders": [
+        {
+          "name": "tx_scratch_error",
+          "type": "list byte"
+        }
+      ],
+      "resources": [
+        {
+          "coq": "ziskExtraParamsAddress \u21a6\u2098\u2217 tx_scratch_error",
+          "length": "8"
+        }
+      ],
+      "replaces": [
+        {
+          "id": "resource_35"
+        }
+      ],
+      "facts": [
+        {
+          "coq": "Z.of_nat (List.length tx_scratch_error) = txAccessListScratchSize"
+        }
+      ],
+      "predecessors": [
+        "+0x0",
+        "+0x25c",
+        "+0x390",
+        "+0x4a0"
+      ],
+      "forget_unplaced": true
     }
   },
   "generated_from": {
     "path": "tools/block/functions/txAccessList.annotations.json",
-    "sha256": "d5083d478f2467b5bc85142dab0403277a922c25da5c3a7e4ba8666fb15d074b"
+    "sha256": "dfb35389d4f9129fea39fb68f1a3a323475e0226f95f05f70f652cdbbcbbf860"
   }
 }

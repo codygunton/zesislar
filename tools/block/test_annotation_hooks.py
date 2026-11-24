@@ -230,7 +230,7 @@ class ReturnedLength(unittest.TestCase):
         True)))%I.
 '''
 
-    def fixture(self, directory, length='want'):
+    def fixture(self, directory, length='want', extra=()):
         from resource_seed import seed_owned_resources
         origin = {'path': 'fixture.v', 'sha256': 'fixture'}
         constants = {'dst': {'value': 0x200, 'origin': origin}}
@@ -241,7 +241,7 @@ class ReturnedLength(unittest.TestCase):
             'kind': 'exists', 'binders': [], 'components': [
                 {'id': 'collection', 'kind': 'opaque', 'coq': 'reg_col (exact_regs args)'}, *registers,
                 {'id': 'dest', 'kind': 'uninitialized_memory', 'original_component': 'dst ↦ₘ? ' + length,
-                 'original_address_z': 'dst', 'length_original_coq': length},
+                 'original_address_z': 'dst', 'length_original_coq': length}, *extra,
                 {'id': 'terminal', 'kind': 'opaque', 'coq': 'True'}]}}
         vocabulary = {'rows': [{'kind': kind, 'source_bindings': []} for kind in
                                ('owned_byte_array', 'uninitialized_stack_span', 'permission_fraction')],
@@ -295,6 +295,29 @@ class ReturnedLength(unittest.TestCase):
         self.assertEqual(nodes['dest_call_after']['original_component'],
                          '(dst + (bv_unsigned (count))) ↦ₘ? (want - (bv_unsigned (count)))')
         self.assertEqual(sorted(region.ownership_id for region in seed.state.memory), ['dest', 'dest_call_after'])
+        # `*` names the region at the argument by its own length, whatever its spelling: the same seed.
+        with tempfile.TemporaryDirectory() as directory:
+            fixture, state, call = self.fixture(directory)
+            Path(directory, 'Spec.v').write_text(self.PREFIX_SPEC)
+            call['returned_lengths'] = {'0': '*'}
+            state.registers['x12'] = input_expr('count', 64)
+            _, star_after, _ = call_return_seed([{'seed_pc': '0x10', 'state': state.to_dict()}], call=call,
+                                                function_root=directory, **fixture)
+        self.assertEqual(star_after['assertion_tree']['components'], public_after['assertion_tree']['components'])
+
+    def test_a_second_whole_replacement_names_its_length_fact_by_the_call(self):
+        # An earlier call replaced `dest` as a whole and left `dest_length`; this call's fact gets its prefix.
+        from call_boundary import call_return_seed
+        with tempfile.TemporaryDirectory() as directory:
+            fixture, state, call = self.fixture(directory, extra=[{'id': 'dest_length', 'kind': 'opaque',
+                                                                   'coq': '⌜earlier⌝'}])
+            call['returned_lengths'] = {'0': 'want'}
+            _, public_after, _ = call_return_seed([{'seed_pc': '0x10', 'state': state.to_dict()}], call=call,
+                                                  function_root=directory, **fixture)
+        ids = [node['id'] for node in public_after['assertion_tree']['components']]
+        self.assertEqual(len(ids), len(set(ids)))
+        self.assertIn('dest_length', ids)
+        self.assertTrue(any(key.endswith('dest_length') and key != 'dest_length' for key in ids))
 
     def test_a_fill_of_the_whole_region_leaves_no_rest(self):
         # The region's length is verbatim the length the arguments fix: one array, as before.

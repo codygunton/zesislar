@@ -100,7 +100,8 @@ def join_seed(boundary, *, seeds, roots, parents, profile, vocabulary, continuat
                                   if profile else [])]
             incoming, lifted_binders = lift_call_return_edges(incoming, seeds=seeds, roots=roots,
                                                               ancestor=root, vocabulary=vocabulary,
-                                                              drops=drops, replaced=replaced)
+                                                              drops=drops, replaced=replaced,
+                                                              forget_unplaced=bool((owned or {}).get('forget_unplaced')))
         except ValueError as error:
             raise ValueError('join lift to ' + root + ' refused: ' + str(error)) from error
     own = [text for item in (profile.get('join_drops', {}).get(profile.key(hex(pc)), []) if profile else [])
