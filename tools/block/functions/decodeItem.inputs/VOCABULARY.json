@@ -1,0 +1,520 @@
+{
+  "schema": "FP-20261101.source-vocabulary.successor.v1",
+  "bank": "OLD",
+  "bank_binding": {
+    "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-v33-OLD16-source-plan-v2/SOURCE.json",
+    "sha256": "cb210b747b8e7d8a9473ca42f7c40dfc282d82fc09cb81d78bd3d594ef458928"
+  },
+  "source_vocabulary": {
+    "imports": [
+      "ZesuSsz.Automation.ByteArrays",
+      "ZesuSsz.Contracts.IslarisMemory",
+      "isla.ghost_state",
+      "isla.lifting"
+    ]
+  },
+  "rows": [
+    {
+      "kind": "owned_byte_array",
+      "helper": {
+        "owner": "isla.ghost_state",
+        "name": "mem_mapsto_array_def",
+        "source": {
+          "path": "/home/cody/islaris/_opam/lib/coq/user-contrib/isla/ghost_state.v",
+          "sha256": "24bb08ee1148b8bbda770d1ffebf39a5739b1943437c1e13b7157a6aeaf293bf",
+          "declaration": "mem_mapsto_array_def",
+          "line": 200,
+          "statement": "Definition mem_mapsto_array_def {n} (a : Z) (q : dfrac) (l : list (bv n)) : iProp \u03a3 :=\n    \u2203 len, \u231cn = (len * 8)%N\u231d \u2217 \u231c0 \u2264 a \u2227 a + Z.of_N len * (length l) \u2264 2 ^ 64\u231d \u2217\n    [\u2217 list] i\u21a6v\u2208l, mem_mapsto (a + (i * Z.of_N len)) q v",
+          "statement_sha256": "651b0a62d8f6d78648fbed7a30a81cc5e3d2da7800daa4b4f13371d25ace5f49",
+          "module": "isla.ghost_state",
+          "project_binding": {
+            "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-matrix005v3-v1/input-bank/prepared/_CoqProject",
+            "sha256": "f255d026194543e63ef149156bdc9a27a880825a30e3e5dc2c680fb62fc2475e"
+          }
+        },
+        "arguments": [
+          "implicit n : N",
+          "a : Z",
+          "q : dfrac",
+          "l : list (bv n)"
+        ]
+      },
+      "source_bindings": [
+        {
+          "path": "/home/cody/islaris/_opam/lib/coq/user-contrib/isla/ghost_state.v",
+          "sha256": "24bb08ee1148b8bbda770d1ffebf39a5739b1943437c1e13b7157a6aeaf293bf",
+          "declaration": "mem_mapsto_array_def",
+          "line": 200,
+          "statement": "Definition mem_mapsto_array_def {n} (a : Z) (q : dfrac) (l : list (bv n)) : iProp \u03a3 :=\n    \u2203 len, \u231cn = (len * 8)%N\u231d \u2217 \u231c0 \u2264 a \u2227 a + Z.of_N len * (length l) \u2264 2 ^ 64\u231d \u2217\n    [\u2217 list] i\u21a6v\u2208l, mem_mapsto (a + (i * Z.of_N len)) q v",
+          "statement_sha256": "651b0a62d8f6d78648fbed7a30a81cc5e3d2da7800daa4b4f13371d25ace5f49",
+          "module": "isla.ghost_state",
+          "project_binding": {
+            "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-matrix005v3-v1/input-bank/prepared/_CoqProject",
+            "sha256": "f255d026194543e63ef149156bdc9a27a880825a30e3e5dc2c680fb62fc2475e"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "byte_array_read",
+      "helper": {
+        "owner": "ZesuSsz.Automation.ByteArrays",
+        "name": "li_wp_read_mem_zesu",
+        "source": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-matrix005v3-v1/input-bank/prepared/default/ZesuSsz/Automation/ByteArrays.v",
+          "sha256": "3849f6d0a8e95472a24bfd81862112af9442f5461b9fe8ddb989ceac499208cc",
+          "declaration": "li_wp_read_mem_zesu",
+          "line": 210,
+          "statement": "Lemma li_wp_read_mem_zesu len n kind a vread tag ann es:\n    (\u231cn = (8 * len)%N\u231d \u2217\n    \u231clen <> 0%N\u231d \u2217\n    find_in_context (FindMemMapsTo (bv_unsigned a)) (fun mk =>\n      match mk with\n      | MKMapsTo n' vmem =>\n          \u2203 Heq : n = n',\n            (\u231c(eq_rect n bv vread n' Heq) = vmem\u231d -\u2217\n             bv_unsigned a \u21a6\u2098 vmem -\u2217 WPasm es)\n      | MKArray n' a' values =>\n          if (n' =? n)%N then\n            \u231c(bv_unsigned a - a') `mod` Z.of_N len = 0\u231d \u2217\n            \u2203 i : nat,\n              \u231cZ.of_nat i = (bv_unsigned a - a') / Z.of_N len\u231d \u2217\n              \u231c(i < length values)%nat\u231d \u2217\n              \u2203 Heq : n = n',\n                (\u2200 vmem, \u231cvalues !! i = Some vmem\u231d -\u2217\n                  \u231c(eq_rect n bv vread n' Heq) = vmem\u231d -\u2217\n                  a' \u21a6\u2098\u2217 values -\u2217 WPasm es)\n          else\n            if zesu_byte_access_size len then\n              \u231cn' = 8%N\u231d \u2217\n              \u2203 i : nat,\n                \u231cZ.of_nat i = bv_unsigned a - a'\u231d \u2217\n                \u231c(i + N.to_nat len <= length values)%nat\u231d \u2217\n                (\u2200 vmem,\n                  \u231cvmem = Z_to_bv n\n                    (little_endian_to_bv n'\n                      (take (N.to_nat len) (drop i values)))\u231d -\u2217\n                  \u231cvread = vmem\u231d -\u2217 a' \u21a6\u2098\u2217 values -\u2217 WPasm es)\n            else False\n      | MKUninit _ _ => False\n      | MKMMIO a' length =>\n          \u231ca' <= bv_unsigned a\u231d \u2217\n          \u231cbv_unsigned a + Z.of_N len <= a' + length\u231d \u2217\n          \u2203 Pks Pks', spec_trace Pks \u2217\n            \u231cscons (SReadMem a vread) Pks' \u2286 Pks\u231d \u2217\n            (spec_trace Pks' -\u2217 WPasm es)\n      end))\n    \u22a2 WPasm (ReadMem (RVal_Bits (@bv_to_bvn n vread)) kind\n              (RVal_Bits (@bv_to_bvn 64 a)) len tag ann :t: es)",
+          "statement_sha256": "4e042b5d966637dc1b071204608dcc89c7b2a8ebaee082e7356c1cf24140a09c",
+          "module": "ZesuSsz.Automation.ByteArrays",
+          "project_binding": {
+            "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-matrix005v3-v1/input-bank/prepared/_CoqProject",
+            "sha256": "f255d026194543e63ef149156bdc9a27a880825a30e3e5dc2c680fb62fc2475e"
+          }
+        }
+      },
+      "source_bindings": [
+        {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-matrix005v3-v1/input-bank/prepared/default/ZesuSsz/Automation/ByteArrays.v",
+          "sha256": "3849f6d0a8e95472a24bfd81862112af9442f5461b9fe8ddb989ceac499208cc",
+          "declaration": "li_wp_read_mem_zesu",
+          "line": 210,
+          "statement": "Lemma li_wp_read_mem_zesu len n kind a vread tag ann es:\n    (\u231cn = (8 * len)%N\u231d \u2217\n    \u231clen <> 0%N\u231d \u2217\n    find_in_context (FindMemMapsTo (bv_unsigned a)) (fun mk =>\n      match mk with\n      | MKMapsTo n' vmem =>\n          \u2203 Heq : n = n',\n            (\u231c(eq_rect n bv vread n' Heq) = vmem\u231d -\u2217\n             bv_unsigned a \u21a6\u2098 vmem -\u2217 WPasm es)\n      | MKArray n' a' values =>\n          if (n' =? n)%N then\n            \u231c(bv_unsigned a - a') `mod` Z.of_N len = 0\u231d \u2217\n            \u2203 i : nat,\n              \u231cZ.of_nat i = (bv_unsigned a - a') / Z.of_N len\u231d \u2217\n              \u231c(i < length values)%nat\u231d \u2217\n              \u2203 Heq : n = n',\n                (\u2200 vmem, \u231cvalues !! i = Some vmem\u231d -\u2217\n                  \u231c(eq_rect n bv vread n' Heq) = vmem\u231d -\u2217\n                  a' \u21a6\u2098\u2217 values -\u2217 WPasm es)\n          else\n            if zesu_byte_access_size len then\n              \u231cn' = 8%N\u231d \u2217\n              \u2203 i : nat,\n                \u231cZ.of_nat i = bv_unsigned a - a'\u231d \u2217\n                \u231c(i + N.to_nat len <= length values)%nat\u231d \u2217\n                (\u2200 vmem,\n                  \u231cvmem = Z_to_bv n\n                    (little_endian_to_bv n'\n                      (take (N.to_nat len) (drop i values)))\u231d -\u2217\n                  \u231cvread = vmem\u231d -\u2217 a' \u21a6\u2098\u2217 values -\u2217 WPasm es)\n            else False\n      | MKUninit _ _ => False\n      | MKMMIO a' length =>\n          \u231ca' <= bv_unsigned a\u231d \u2217\n          \u231cbv_unsigned a + Z.of_N len <= a' + length\u231d \u2217\n          \u2203 Pks Pks', spec_trace Pks \u2217\n            \u231cscons (SReadMem a vread) Pks' \u2286 Pks\u231d \u2217\n            (spec_trace Pks' -\u2217 WPasm es)\n      end))\n    \u22a2 WPasm (ReadMem (RVal_Bits (@bv_to_bvn n vread)) kind\n              (RVal_Bits (@bv_to_bvn 64 a)) len tag ann :t: es)",
+          "statement_sha256": "4e042b5d966637dc1b071204608dcc89c7b2a8ebaee082e7356c1cf24140a09c",
+          "module": "ZesuSsz.Automation.ByteArrays",
+          "project_binding": {
+            "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-matrix005v3-v1/input-bank/prepared/_CoqProject",
+            "sha256": "f255d026194543e63ef149156bdc9a27a880825a30e3e5dc2c680fb62fc2475e"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "single_byte_array_write",
+      "helper": {
+        "owner": "isla.lifting",
+        "name": "wp_write_mem_array",
+        "source": {
+          "path": "/home/cody/islaris/_opam/lib/coq/user-contrib/isla/lifting.v",
+          "sha256": "cd8ef70af376857807193b4d93cea1cc7fc4bdaf4239daee6101ec2b455baf3c",
+          "declaration": "wp_write_mem_array",
+          "line": 746,
+          "statement": "Lemma wp_write_mem_array n len a a' vnew (i : nat) (l : list (bv n)) es ann kind res tag:\n    n = (8 * len)%N \u2192\n    0 < Z.of_N len \u2192\n    (i < length l)%nat \u2192\n    a' = bv_unsigned a - (i * Z.of_N len) \u2192\n    a' \u21a6\u2098\u2217 l -\u2217\n    (a' \u21a6\u2098\u2217 <[i := vnew]> l -\u2217 WPasm es) -\u2217\n    WPasm (WriteMem (RVal_Bool res) kind (RVal_Bits (@bv_to_bvn 64 a)) (RVal_Bits (@bv_to_bvn n vnew)) len tag ann :t: es)",
+          "statement_sha256": "33a609486ad8d030da79d41a51f0bc47fbe061f7a9e3b2d10991ed34b84e20e4",
+          "module": "isla.lifting",
+          "project_binding": {
+            "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-matrix005v3-v1/input-bank/prepared/_CoqProject",
+            "sha256": "f255d026194543e63ef149156bdc9a27a880825a30e3e5dc2c680fb62fc2475e"
+          }
+        }
+      },
+      "source_bindings": [
+        {
+          "path": "/home/cody/islaris/_opam/lib/coq/user-contrib/isla/lifting.v",
+          "sha256": "cd8ef70af376857807193b4d93cea1cc7fc4bdaf4239daee6101ec2b455baf3c",
+          "declaration": "wp_write_mem_array",
+          "line": 746,
+          "statement": "Lemma wp_write_mem_array n len a a' vnew (i : nat) (l : list (bv n)) es ann kind res tag:\n    n = (8 * len)%N \u2192\n    0 < Z.of_N len \u2192\n    (i < length l)%nat \u2192\n    a' = bv_unsigned a - (i * Z.of_N len) \u2192\n    a' \u21a6\u2098\u2217 l -\u2217\n    (a' \u21a6\u2098\u2217 <[i := vnew]> l -\u2217 WPasm es) -\u2217\n    WPasm (WriteMem (RVal_Bool res) kind (RVal_Bits (@bv_to_bvn 64 a)) (RVal_Bits (@bv_to_bvn n vnew)) len tag ann :t: es)",
+          "statement_sha256": "33a609486ad8d030da79d41a51f0bc47fbe061f7a9e3b2d10991ed34b84e20e4",
+          "module": "isla.lifting",
+          "project_binding": {
+            "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-matrix005v3-v1/input-bank/prepared/_CoqProject",
+            "sha256": "f255d026194543e63ef149156bdc9a27a880825a30e3e5dc2c680fb62fc2475e"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "multi_byte_array_write",
+      "helper": {
+        "owner": "ZesuSsz.Automation.ByteArrays",
+        "name": "li_wp_write_mem_zesu",
+        "source": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-matrix005v3-v1/input-bank/prepared/default/ZesuSsz/Automation/ByteArrays.v",
+          "sha256": "3849f6d0a8e95472a24bfd81862112af9442f5461b9fe8ddb989ceac499208cc",
+          "declaration": "li_wp_write_mem_zesu",
+          "line": 310,
+          "statement": "Lemma li_wp_write_mem_zesu len n success kind a (vnew : bv n) tag ann es:\n    (\u231cn = (8 * len)%N\u231d \u2217\n    \u231clen <> 0%N\u231d \u2217\n    find_in_context (FindMemMapsTo (bv_unsigned a)) (fun mk =>\n      match mk with\n      | MKMapsTo n' _ =>\n          \u231cn' = n\u231d \u2217 (bv_unsigned a \u21a6\u2098 vnew -\u2217 WPasm es)\n      | MKArray n' a' values =>\n          if (n' =? n)%N then\n            \u231c(bv_unsigned a - a') `mod` Z.of_N len = 0\u231d \u2217\n            \u2203 i : nat,\n              \u231cZ.of_nat i = (bv_unsigned a - a') / Z.of_N len\u231d \u2217\n              \u231c(i < length values)%nat\u231d \u2217\n              \u2203 Heq : n = n',\n                (a' \u21a6\u2098\u2217 <[i := (eq_rect n bv vnew n' Heq)]>values -\u2217\n                 WPasm es)\n          else\n            if zesu_byte_access_size len then\n              \u231cn' = 8%N\u231d \u2217\n              \u2203 i : nat,\n                \u231cZ.of_nat i = bv_unsigned a - a'\u231d \u2217\n                \u231c(i + N.to_nat len <= length values)%nat\u231d \u2217\n                (a' \u21a6\u2098\u2217\n                  (take i values ++\n                   bv_to_little_endian (N.to_nat len) n'\n                     (bv_unsigned vnew) ++\n                   drop (i + N.to_nat len) values) -\u2217 WPasm es)\n            else False\n      | MKUninit a' length =>\n          \u231ca' <= bv_unsigned a\u231d \u2217\n          \u231cbv_unsigned a + Z.of_N len <= a' + length\u231d \u2217\n          (bv_unsigned a \u21a6\u2098 vnew -\u2217\n           a' \u21a6\u2098? (bv_unsigned a - a') -\u2217\n           (bv_unsigned a + Z.of_N len) \u21a6\u2098?\n             (a' + length - (bv_unsigned a + Z.of_N len)) -\u2217\n           WPasm es)\n      | MKMMIO a' length =>\n          \u231ca' <= bv_unsigned a\u231d \u2217\n          \u231cbv_unsigned a + Z.of_N len <= a' + length\u231d \u2217\n          \u2203 Pks Pks', spec_trace Pks \u2217\n            \u231cscons (SWriteMem a vnew) Pks' \u2286 Pks\u231d \u2217\n            (spec_trace Pks' -\u2217 WPasm es)\n      end))\n    \u22a2 WPasm (WriteMem (RVal_Bool success) kind\n      (RVal_Bits (@bv_to_bvn 64 a))\n      (RVal_Bits (@bv_to_bvn n vnew)) len tag ann :t: es)",
+          "statement_sha256": "6f68685911fd477d7e170c89dbab2c42d6fe4d02b5d9112d782cfb6dbe61f596",
+          "module": "ZesuSsz.Automation.ByteArrays",
+          "project_binding": {
+            "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-matrix005v3-v1/input-bank/prepared/_CoqProject",
+            "sha256": "f255d026194543e63ef149156bdc9a27a880825a30e3e5dc2c680fb62fc2475e"
+          }
+        }
+      },
+      "source_bindings": [
+        {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-matrix005v3-v1/input-bank/prepared/default/ZesuSsz/Automation/ByteArrays.v",
+          "sha256": "3849f6d0a8e95472a24bfd81862112af9442f5461b9fe8ddb989ceac499208cc",
+          "declaration": "li_wp_write_mem_zesu",
+          "line": 310,
+          "statement": "Lemma li_wp_write_mem_zesu len n success kind a (vnew : bv n) tag ann es:\n    (\u231cn = (8 * len)%N\u231d \u2217\n    \u231clen <> 0%N\u231d \u2217\n    find_in_context (FindMemMapsTo (bv_unsigned a)) (fun mk =>\n      match mk with\n      | MKMapsTo n' _ =>\n          \u231cn' = n\u231d \u2217 (bv_unsigned a \u21a6\u2098 vnew -\u2217 WPasm es)\n      | MKArray n' a' values =>\n          if (n' =? n)%N then\n            \u231c(bv_unsigned a - a') `mod` Z.of_N len = 0\u231d \u2217\n            \u2203 i : nat,\n              \u231cZ.of_nat i = (bv_unsigned a - a') / Z.of_N len\u231d \u2217\n              \u231c(i < length values)%nat\u231d \u2217\n              \u2203 Heq : n = n',\n                (a' \u21a6\u2098\u2217 <[i := (eq_rect n bv vnew n' Heq)]>values -\u2217\n                 WPasm es)\n          else\n            if zesu_byte_access_size len then\n              \u231cn' = 8%N\u231d \u2217\n              \u2203 i : nat,\n                \u231cZ.of_nat i = bv_unsigned a - a'\u231d \u2217\n                \u231c(i + N.to_nat len <= length values)%nat\u231d \u2217\n                (a' \u21a6\u2098\u2217\n                  (take i values ++\n                   bv_to_little_endian (N.to_nat len) n'\n                     (bv_unsigned vnew) ++\n                   drop (i + N.to_nat len) values) -\u2217 WPasm es)\n            else False\n      | MKUninit a' length =>\n          \u231ca' <= bv_unsigned a\u231d \u2217\n          \u231cbv_unsigned a + Z.of_N len <= a' + length\u231d \u2217\n          (bv_unsigned a \u21a6\u2098 vnew -\u2217\n           a' \u21a6\u2098? (bv_unsigned a - a') -\u2217\n           (bv_unsigned a + Z.of_N len) \u21a6\u2098?\n             (a' + length - (bv_unsigned a + Z.of_N len)) -\u2217\n           WPasm es)\n      | MKMMIO a' length =>\n          \u231ca' <= bv_unsigned a\u231d \u2217\n          \u231cbv_unsigned a + Z.of_N len <= a' + length\u231d \u2217\n          \u2203 Pks Pks', spec_trace Pks \u2217\n            \u231cscons (SWriteMem a vnew) Pks' \u2286 Pks\u231d \u2217\n            (spec_trace Pks' -\u2217 WPasm es)\n      end))\n    \u22a2 WPasm (WriteMem (RVal_Bool success) kind\n      (RVal_Bits (@bv_to_bvn 64 a))\n      (RVal_Bits (@bv_to_bvn n vnew)) len tag ann :t: es)",
+          "statement_sha256": "6f68685911fd477d7e170c89dbab2c42d6fe4d02b5d9112d782cfb6dbe61f596",
+          "module": "ZesuSsz.Automation.ByteArrays",
+          "project_binding": {
+            "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-matrix005v3-v1/input-bank/prepared/_CoqProject",
+            "sha256": "f255d026194543e63ef149156bdc9a27a880825a30e3e5dc2c680fb62fc2475e"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "byte_array_slice_view",
+      "helper": {
+        "owner": "ZesuSsz.Contracts.IslarisMemory",
+        "name": "mem_mapsto_array_region",
+        "source": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-matrix005v3-v1/input-bank/prepared/default/ZesuSsz/Contracts/IslarisMemory.v",
+          "sha256": "27eab7c803e1b2560b4e382701421d2e10ed4d78d6ee3ef390e179fdcdfc7f57",
+          "declaration": "mem_mapsto_array_region",
+          "line": 452,
+          "statement": "Lemma mem_mapsto_array_region n (a : Z) q\n      (values : list (bv n)) (start count : nat) :\n    (start + count <= length values)%nat ->\n    a \u21a6\u2098{q}\u2217 values -\u2217\n    a \u21a6\u2098{q}\u2217 take start values \u2217\n    (a + Z.of_N (n `div` 8) * Z.of_nat start) \u21a6\u2098{q}\u2217\n      take count (drop start values) \u2217\n    (a + Z.of_N (n `div` 8) * Z.of_nat (start + count)) \u21a6\u2098{q}\u2217\n      drop (start + count) values",
+          "statement_sha256": "bdfc3ea00a097aa7d92ece4e4d31e3ce8d3be323fd300693ae9325d7a0b46ff7",
+          "module": "ZesuSsz.Contracts.IslarisMemory",
+          "project_binding": {
+            "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-matrix005v3-v1/input-bank/prepared/_CoqProject",
+            "sha256": "f255d026194543e63ef149156bdc9a27a880825a30e3e5dc2c680fb62fc2475e"
+          }
+        }
+      },
+      "source_bindings": [
+        {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-matrix005v3-v1/input-bank/prepared/default/ZesuSsz/Contracts/IslarisMemory.v",
+          "sha256": "27eab7c803e1b2560b4e382701421d2e10ed4d78d6ee3ef390e179fdcdfc7f57",
+          "declaration": "mem_mapsto_array_region",
+          "line": 452,
+          "statement": "Lemma mem_mapsto_array_region n (a : Z) q\n      (values : list (bv n)) (start count : nat) :\n    (start + count <= length values)%nat ->\n    a \u21a6\u2098{q}\u2217 values -\u2217\n    a \u21a6\u2098{q}\u2217 take start values \u2217\n    (a + Z.of_N (n `div` 8) * Z.of_nat start) \u21a6\u2098{q}\u2217\n      take count (drop start values) \u2217\n    (a + Z.of_N (n `div` 8) * Z.of_nat (start + count)) \u21a6\u2098{q}\u2217\n      drop (start + count) values",
+          "statement_sha256": "bdfc3ea00a097aa7d92ece4e4d31e3ce8d3be323fd300693ae9325d7a0b46ff7",
+          "module": "ZesuSsz.Contracts.IslarisMemory",
+          "project_binding": {
+            "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-matrix005v3-v1/input-bank/prepared/_CoqProject",
+            "sha256": "f255d026194543e63ef149156bdc9a27a880825a30e3e5dc2c680fb62fc2475e"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "preserved_byte_array",
+      "helper": {
+        "owner": "isla.ghost_state",
+        "name": "mem_mapsto_array_def",
+        "source": {
+          "path": "/home/cody/islaris/_opam/lib/coq/user-contrib/isla/ghost_state.v",
+          "sha256": "24bb08ee1148b8bbda770d1ffebf39a5739b1943437c1e13b7157a6aeaf293bf",
+          "declaration": "mem_mapsto_array_def",
+          "line": 200,
+          "statement": "Definition mem_mapsto_array_def {n} (a : Z) (q : dfrac) (l : list (bv n)) : iProp \u03a3 :=\n    \u2203 len, \u231cn = (len * 8)%N\u231d \u2217 \u231c0 \u2264 a \u2227 a + Z.of_N len * (length l) \u2264 2 ^ 64\u231d \u2217\n    [\u2217 list] i\u21a6v\u2208l, mem_mapsto (a + (i * Z.of_N len)) q v",
+          "statement_sha256": "651b0a62d8f6d78648fbed7a30a81cc5e3d2da7800daa4b4f13371d25ace5f49",
+          "module": "isla.ghost_state",
+          "project_binding": {
+            "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-matrix005v3-v1/input-bank/prepared/_CoqProject",
+            "sha256": "f255d026194543e63ef149156bdc9a27a880825a30e3e5dc2c680fb62fc2475e"
+          }
+        }
+      },
+      "source_bindings": [
+        {
+          "path": "/home/cody/islaris/_opam/lib/coq/user-contrib/isla/ghost_state.v",
+          "sha256": "24bb08ee1148b8bbda770d1ffebf39a5739b1943437c1e13b7157a6aeaf293bf",
+          "declaration": "mem_mapsto_array_def",
+          "line": 200,
+          "statement": "Definition mem_mapsto_array_def {n} (a : Z) (q : dfrac) (l : list (bv n)) : iProp \u03a3 :=\n    \u2203 len, \u231cn = (len * 8)%N\u231d \u2217 \u231c0 \u2264 a \u2227 a + Z.of_N len * (length l) \u2264 2 ^ 64\u231d \u2217\n    [\u2217 list] i\u21a6v\u2208l, mem_mapsto (a + (i * Z.of_N len)) q v",
+          "statement_sha256": "651b0a62d8f6d78648fbed7a30a81cc5e3d2da7800daa4b4f13371d25ace5f49",
+          "module": "isla.ghost_state",
+          "project_binding": {
+            "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-matrix005v3-v1/input-bank/prepared/_CoqProject",
+            "sha256": "f255d026194543e63ef149156bdc9a27a880825a30e3e5dc2c680fb62fc2475e"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "stack_scalar_cell",
+      "helper": {
+        "owner": "isla.ghost_state",
+        "name": "mem_mapsto_def",
+        "source": {
+          "path": "/home/cody/islaris/_opam/lib/coq/user-contrib/isla/ghost_state.v",
+          "sha256": "24bb08ee1148b8bbda770d1ffebf39a5739b1943437c1e13b7157a6aeaf293bf",
+          "declaration": "mem_mapsto_def",
+          "line": 191,
+          "statement": "Definition mem_mapsto_def {n} (a : Z) (q : dfrac) (w : bv n) : iProp \u03a3 :=\n    \u2203 len, \u231cn = (8 * N.of_nat len)%N\u231d \u2217 \u231c0 \u2264 a \u2227 a + len \u2264 2 ^ 64\u231d \u2217\n    let bytes := bv_to_little_endian len 8 (bv_unsigned w) in\n    [\u2217 list] offset \u21a6 b \u2208 bytes, mem_mapsto_byte heap_mem_name (a + (Z.of_nat offset)) q b",
+          "statement_sha256": "d9cd5614e54eaa9069bb5b1502f484f82373520d74960e06afc6fdfcd7f312c9",
+          "module": "isla.ghost_state",
+          "project_binding": {
+            "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-matrix005v3-v1/input-bank/prepared/_CoqProject",
+            "sha256": "f255d026194543e63ef149156bdc9a27a880825a30e3e5dc2c680fb62fc2475e"
+          }
+        }
+      },
+      "source_bindings": [
+        {
+          "path": "/home/cody/islaris/_opam/lib/coq/user-contrib/isla/ghost_state.v",
+          "sha256": "24bb08ee1148b8bbda770d1ffebf39a5739b1943437c1e13b7157a6aeaf293bf",
+          "declaration": "mem_mapsto_def",
+          "line": 191,
+          "statement": "Definition mem_mapsto_def {n} (a : Z) (q : dfrac) (w : bv n) : iProp \u03a3 :=\n    \u2203 len, \u231cn = (8 * N.of_nat len)%N\u231d \u2217 \u231c0 \u2264 a \u2227 a + len \u2264 2 ^ 64\u231d \u2217\n    let bytes := bv_to_little_endian len 8 (bv_unsigned w) in\n    [\u2217 list] offset \u21a6 b \u2208 bytes, mem_mapsto_byte heap_mem_name (a + (Z.of_nat offset)) q b",
+          "statement_sha256": "d9cd5614e54eaa9069bb5b1502f484f82373520d74960e06afc6fdfcd7f312c9",
+          "module": "isla.ghost_state",
+          "project_binding": {
+            "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-matrix005v3-v1/input-bank/prepared/_CoqProject",
+            "sha256": "f255d026194543e63ef149156bdc9a27a880825a30e3e5dc2c680fb62fc2475e"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "uninitialized_stack_span",
+      "helper": {
+        "owner": "isla.ghost_state",
+        "name": "mem_mapsto_uninit_to_mapsto",
+        "source": {
+          "path": "/home/cody/islaris/_opam/lib/coq/user-contrib/isla/ghost_state.v",
+          "sha256": "24bb08ee1148b8bbda770d1ffebf39a5739b1943437c1e13b7157a6aeaf293bf",
+          "declaration": "mem_mapsto_uninit_to_mapsto",
+          "line": 730,
+          "statement": "Lemma mem_mapsto_uninit_to_mapsto a q n:\n    a \u21a6\u2098{q}? n -\u2217 \u2203 n' (b : (bv n')), \u231cn' = (Z.to_N n * 8)%N\u231d \u2217 a \u21a6\u2098{q} b",
+          "statement_sha256": "dd2b5004174229a95d7c6efdae6575cfa9f344353696075f6444995c8fcce784",
+          "module": "isla.ghost_state",
+          "project_binding": {
+            "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-matrix005v3-v1/input-bank/prepared/_CoqProject",
+            "sha256": "f255d026194543e63ef149156bdc9a27a880825a30e3e5dc2c680fb62fc2475e"
+          }
+        }
+      },
+      "source_bindings": [
+        {
+          "path": "/home/cody/islaris/_opam/lib/coq/user-contrib/isla/ghost_state.v",
+          "sha256": "24bb08ee1148b8bbda770d1ffebf39a5739b1943437c1e13b7157a6aeaf293bf",
+          "declaration": "mem_mapsto_uninit_to_mapsto",
+          "line": 730,
+          "statement": "Lemma mem_mapsto_uninit_to_mapsto a q n:\n    a \u21a6\u2098{q}? n -\u2217 \u2203 n' (b : (bv n')), \u231cn' = (Z.to_N n * 8)%N\u231d \u2217 a \u21a6\u2098{q} b",
+          "statement_sha256": "dd2b5004174229a95d7c6efdae6575cfa9f344353696075f6444995c8fcce784",
+          "module": "isla.ghost_state",
+          "project_binding": {
+            "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-matrix005v3-v1/input-bank/prepared/_CoqProject",
+            "sha256": "f255d026194543e63ef149156bdc9a27a880825a30e3e5dc2c680fb62fc2475e"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "scalar_byte_image",
+      "helper": {
+        "owner": "ZesuSsz.Contracts.IslarisMemory",
+        "name": "mem_mapsto_mapsto_to_byte_array_len",
+        "source": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-matrix005v3-v1/input-bank/prepared/default/ZesuSsz/Contracts/IslarisMemory.v",
+          "sha256": "27eab7c803e1b2560b4e382701421d2e10ed4d78d6ee3ef390e179fdcdfc7f57",
+          "declaration": "mem_mapsto_mapsto_to_byte_array_len",
+          "line": 158,
+          "statement": "Lemma mem_mapsto_mapsto_to_byte_array_len (count : nat) (a : Z) q\n      (value : bv (8 * N.of_nat count)) :\n    a \u21a6\u2098{q} value -\u2217\n    a \u21a6\u2098{q}\u2217 bv_to_little_endian count 8 (bv_unsigned value)",
+          "statement_sha256": "e6d7f249278a4b2627a07303ea0e3b184e4bca4a9b455ffdaf4d1b98a87852b7",
+          "module": "ZesuSsz.Contracts.IslarisMemory",
+          "project_binding": {
+            "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-matrix005v3-v1/input-bank/prepared/_CoqProject",
+            "sha256": "f255d026194543e63ef149156bdc9a27a880825a30e3e5dc2c680fb62fc2475e"
+          }
+        }
+      },
+      "source_bindings": [
+        {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-matrix005v3-v1/input-bank/prepared/default/ZesuSsz/Contracts/IslarisMemory.v",
+          "sha256": "27eab7c803e1b2560b4e382701421d2e10ed4d78d6ee3ef390e179fdcdfc7f57",
+          "declaration": "mem_mapsto_mapsto_to_byte_array_len",
+          "line": 158,
+          "statement": "Lemma mem_mapsto_mapsto_to_byte_array_len (count : nat) (a : Z) q\n      (value : bv (8 * N.of_nat count)) :\n    a \u21a6\u2098{q} value -\u2217\n    a \u21a6\u2098{q}\u2217 bv_to_little_endian count 8 (bv_unsigned value)",
+          "statement_sha256": "e6d7f249278a4b2627a07303ea0e3b184e4bca4a9b455ffdaf4d1b98a87852b7",
+          "module": "ZesuSsz.Contracts.IslarisMemory",
+          "project_binding": {
+            "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-matrix005v3-v1/input-bank/prepared/_CoqProject",
+            "sha256": "f255d026194543e63ef149156bdc9a27a880825a30e3e5dc2c680fb62fc2475e"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "two_word_stack_frame",
+      "helper": {
+        "owner": "ZesuSsz.Automation.ByteArrays",
+        "name": "mem_mapsto_u64_pair_to_byte_array",
+        "source": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-matrix005v3-v1/input-bank/prepared/default/ZesuSsz/Automation/ByteArrays.v",
+          "sha256": "3849f6d0a8e95472a24bfd81862112af9442f5461b9fe8ddb989ceac499208cc",
+          "declaration": "mem_mapsto_u64_pair_to_byte_array",
+          "line": 597,
+          "statement": "Lemma mem_mapsto_u64_pair_to_byte_array (a : Z) (low high : bv 64) :\n    a \u21a6\u2098 low -\u2217 (a + 8) \u21a6\u2098 high -\u2217\n    a \u21a6\u2098\u2217 (bv_to_little_endian 8 8 (bv_unsigned low) ++\n           bv_to_little_endian 8 8 (bv_unsigned high))",
+          "statement_sha256": "967d2b65871d2961993c66a7e5105486817b87a45d8eb710788dd724171b828c",
+          "module": "ZesuSsz.Automation.ByteArrays",
+          "project_binding": {
+            "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-matrix005v3-v1/input-bank/prepared/_CoqProject",
+            "sha256": "f255d026194543e63ef149156bdc9a27a880825a30e3e5dc2c680fb62fc2475e"
+          }
+        },
+        "arguments": [
+          "a : Z",
+          "low : bv 64",
+          "high : bv 64"
+        ]
+      },
+      "source_bindings": [
+        {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-matrix005v3-v1/input-bank/prepared/default/ZesuSsz/Automation/ByteArrays.v",
+          "sha256": "3849f6d0a8e95472a24bfd81862112af9442f5461b9fe8ddb989ceac499208cc",
+          "declaration": "mem_mapsto_u64_pair_to_byte_array",
+          "line": 597,
+          "statement": "Lemma mem_mapsto_u64_pair_to_byte_array (a : Z) (low high : bv 64) :\n    a \u21a6\u2098 low -\u2217 (a + 8) \u21a6\u2098 high -\u2217\n    a \u21a6\u2098\u2217 (bv_to_little_endian 8 8 (bv_unsigned low) ++\n           bv_to_little_endian 8 8 (bv_unsigned high))",
+          "statement_sha256": "967d2b65871d2961993c66a7e5105486817b87a45d8eb710788dd724171b828c",
+          "module": "ZesuSsz.Automation.ByteArrays",
+          "project_binding": {
+            "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-matrix005v3-v1/input-bank/prepared/_CoqProject",
+            "sha256": "f255d026194543e63ef149156bdc9a27a880825a30e3e5dc2c680fb62fc2475e"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "caller_saved_register_exact",
+      "helper": {
+        "owner": "isla.ghost_state",
+        "name": "reg_mapsto_def",
+        "source": {
+          "path": "/home/cody/islaris/_opam/lib/coq/user-contrib/isla/ghost_state.v",
+          "sha256": "24bb08ee1148b8bbda770d1ffebf39a5739b1943437c1e13b7157a6aeaf293bf",
+          "declaration": "reg_mapsto_def",
+          "line": 122,
+          "statement": "Definition reg_mapsto_def (\u03b3 : gname) (r : string) (q : frac) (v: valu) : iProp \u03a3 :=\n    r \u21aa[ \u03b3 ]{# q} v",
+          "statement_sha256": "fd6fbf0a5acdeb2e2cccebc6d4851d19388604f50fd8638c5d8f5c7350022da4",
+          "module": "isla.ghost_state",
+          "project_binding": {
+            "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-matrix005v3-v1/input-bank/prepared/_CoqProject",
+            "sha256": "f255d026194543e63ef149156bdc9a27a880825a30e3e5dc2c680fb62fc2475e"
+          }
+        }
+      },
+      "source_bindings": [
+        {
+          "path": "/home/cody/islaris/_opam/lib/coq/user-contrib/isla/ghost_state.v",
+          "sha256": "24bb08ee1148b8bbda770d1ffebf39a5739b1943437c1e13b7157a6aeaf293bf",
+          "declaration": "reg_mapsto_def",
+          "line": 122,
+          "statement": "Definition reg_mapsto_def (\u03b3 : gname) (r : string) (q : frac) (v: valu) : iProp \u03a3 :=\n    r \u21aa[ \u03b3 ]{# q} v",
+          "statement_sha256": "fd6fbf0a5acdeb2e2cccebc6d4851d19388604f50fd8638c5d8f5c7350022da4",
+          "module": "isla.ghost_state",
+          "project_binding": {
+            "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-matrix005v3-v1/input-bank/prepared/_CoqProject",
+            "sha256": "f255d026194543e63ef149156bdc9a27a880825a30e3e5dc2c680fb62fc2475e"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "caller_saved_register_existential",
+      "helper": {
+        "owner": "isla.ghost_state",
+        "name": "reg_mapsto_pred_def",
+        "source": {
+          "path": "/home/cody/islaris/_opam/lib/coq/user-contrib/isla/ghost_state.v",
+          "sha256": "24bb08ee1148b8bbda770d1ffebf39a5739b1943437c1e13b7157a6aeaf293bf",
+          "declaration": "reg_mapsto_pred_def",
+          "line": 142,
+          "statement": "Definition reg_mapsto_pred_def (\u03b3 : gname) (r : string) (q : frac) (P: valu \u2192 iProp \u03a3) : iProp \u03a3 :=\n    \u2203 v, reg_mapsto \u03b3 r q v \u2217 P v",
+          "statement_sha256": "e0aa76033a3f27f5e19d8956e3265f94111732e18ec1d64f266f1fb5b5c285ef",
+          "module": "isla.ghost_state",
+          "project_binding": {
+            "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-matrix005v3-v1/input-bank/prepared/_CoqProject",
+            "sha256": "f255d026194543e63ef149156bdc9a27a880825a30e3e5dc2c680fb62fc2475e"
+          }
+        }
+      },
+      "source_bindings": [
+        {
+          "path": "/home/cody/islaris/_opam/lib/coq/user-contrib/isla/ghost_state.v",
+          "sha256": "24bb08ee1148b8bbda770d1ffebf39a5739b1943437c1e13b7157a6aeaf293bf",
+          "declaration": "reg_mapsto_pred_def",
+          "line": 142,
+          "statement": "Definition reg_mapsto_pred_def (\u03b3 : gname) (r : string) (q : frac) (P: valu \u2192 iProp \u03a3) : iProp \u03a3 :=\n    \u2203 v, reg_mapsto \u03b3 r q v \u2217 P v",
+          "statement_sha256": "e0aa76033a3f27f5e19d8956e3265f94111732e18ec1d64f266f1fb5b5c285ef",
+          "module": "isla.ghost_state",
+          "project_binding": {
+            "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-matrix005v3-v1/input-bank/prepared/_CoqProject",
+            "sha256": "f255d026194543e63ef149156bdc9a27a880825a30e3e5dc2c680fb62fc2475e"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "system_register_collection",
+      "helper": {
+        "owner": "isla.ghost_state",
+        "name": "reg_col",
+        "source": {
+          "path": "/home/cody/islaris/_opam/lib/coq/user-contrib/isla/ghost_state.v",
+          "sha256": "24bb08ee1148b8bbda770d1ffebf39a5739b1943437c1e13b7157a6aeaf293bf",
+          "declaration": "reg_col",
+          "line": 156,
+          "statement": "Definition reg_col `{!threadG} (regs : list (reg_kind * valu_shape)) : iProp \u03a3 :=\n    [\u2217 list] v \u2208 regs, \u2203 vact, \u231cvalu_has_shape vact v",
+          "statement_sha256": "86dc27ee6a5b512ff14b8d11b4c6aa9d04d8fbfbbbf6946a6b09cd8efd77ae81",
+          "module": "isla.ghost_state",
+          "project_binding": {
+            "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-matrix005v3-v1/input-bank/prepared/_CoqProject",
+            "sha256": "f255d026194543e63ef149156bdc9a27a880825a30e3e5dc2c680fb62fc2475e"
+          }
+        }
+      },
+      "source_bindings": [
+        {
+          "path": "/home/cody/islaris/_opam/lib/coq/user-contrib/isla/ghost_state.v",
+          "sha256": "24bb08ee1148b8bbda770d1ffebf39a5739b1943437c1e13b7157a6aeaf293bf",
+          "declaration": "reg_col",
+          "line": 156,
+          "statement": "Definition reg_col `{!threadG} (regs : list (reg_kind * valu_shape)) : iProp \u03a3 :=\n    [\u2217 list] v \u2208 regs, \u2203 vact, \u231cvalu_has_shape vact v",
+          "statement_sha256": "86dc27ee6a5b512ff14b8d11b4c6aa9d04d8fbfbbbf6946a6b09cd8efd77ae81",
+          "module": "isla.ghost_state",
+          "project_binding": {
+            "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-matrix005v3-v1/input-bank/prepared/_CoqProject",
+            "sha256": "f255d026194543e63ef149156bdc9a27a880825a30e3e5dc2c680fb62fc2475e"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "permission_fraction",
+      "helper": {
+        "owner": "ZesuSsz.Contracts.IslarisMemory",
+        "name": "mem_mapsto_mapsto_to_byte_array_len",
+        "source": {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-matrix005v3-v1/input-bank/prepared/default/ZesuSsz/Contracts/IslarisMemory.v",
+          "sha256": "27eab7c803e1b2560b4e382701421d2e10ed4d78d6ee3ef390e179fdcdfc7f57",
+          "declaration": "mem_mapsto_mapsto_to_byte_array_len",
+          "line": 158,
+          "statement": "Lemma mem_mapsto_mapsto_to_byte_array_len (count : nat) (a : Z) q\n      (value : bv (8 * N.of_nat count)) :\n    a \u21a6\u2098{q} value -\u2217\n    a \u21a6\u2098{q}\u2217 bv_to_little_endian count 8 (bv_unsigned value)",
+          "statement_sha256": "e6d7f249278a4b2627a07303ea0e3b184e4bca4a9b455ffdaf4d1b98a87852b7",
+          "module": "ZesuSsz.Contracts.IslarisMemory",
+          "project_binding": {
+            "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-matrix005v3-v1/input-bank/prepared/_CoqProject",
+            "sha256": "f255d026194543e63ef149156bdc9a27a880825a30e3e5dc2c680fb62fc2475e"
+          }
+        }
+      },
+      "source_bindings": [
+        {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-matrix005v3-v1/input-bank/prepared/default/ZesuSsz/Contracts/IslarisMemory.v",
+          "sha256": "27eab7c803e1b2560b4e382701421d2e10ed4d78d6ee3ef390e179fdcdfc7f57",
+          "declaration": "mem_mapsto_mapsto_to_byte_array_len",
+          "line": 158,
+          "statement": "Lemma mem_mapsto_mapsto_to_byte_array_len (count : nat) (a : Z) q\n      (value : bv (8 * N.of_nat count)) :\n    a \u21a6\u2098{q} value -\u2217\n    a \u21a6\u2098{q}\u2217 bv_to_little_endian count 8 (bv_unsigned value)",
+          "statement_sha256": "e6d7f249278a4b2627a07303ea0e3b184e4bca4a9b455ffdaf4d1b98a87852b7",
+          "module": "ZesuSsz.Contracts.IslarisMemory",
+          "project_binding": {
+            "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-matrix005v3-v1/input-bank/prepared/_CoqProject",
+            "sha256": "f255d026194543e63ef149156bdc9a27a880825a30e3e5dc2c680fb62fc2475e"
+          }
+        }
+      ]
+    }
+  ],
+  "proof_acceptance": "Source mappings only. No proof result or object compatibility is inferred."
+}

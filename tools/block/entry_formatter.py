@@ -420,9 +420,9 @@ def format_owned_entry_boundary(boundary, *, original_seed, vocabulary, continua
     join returns no declaration, rather than retaining a path disjunction.
     """
     try:
-        from .join_generalize import align_join_edges, generalize_owned_join
+        from .join_generalize import _remove_terminal, align_join_edges, generalize_owned_join
     except ImportError:
-        from join_generalize import align_join_edges, generalize_owned_join
+        from join_generalize import _remove_terminal, align_join_edges, generalize_owned_join
 
     def framed(source):
         value = deepcopy(source)
@@ -432,6 +432,15 @@ def format_owned_entry_boundary(boundary, *, original_seed, vocabulary, continua
             resource = alternative['resource_boundary']
             if any(row['id'] == continuation_id for row in resource['components']):
                 raise ValueError('The outer continuation captures an owned resource')
+            # A seed below a loop-owned root closes with the continuation itself (loop_design.owned_seed
+            # keeps its root's closing `K`): that leaf is the framed continuation, outside the witness scope.
+            terminal = continuation['terminal_id']
+            if any(row['id'] == terminal and row['source'] == continuation['name'] for row in resource['components']):
+                tree = resource['tree']
+                resource['tree'] = (tree['left'] if tree['kind'] == 'sep'
+                                    and tree['right'] == {'kind': 'component', 'id': terminal}
+                                    else _remove_terminal(tree, terminal))
+                resource['components'] = [row for row in resource['components'] if row['id'] != terminal]
             resource['tree'] = {'kind': 'sep', 'left': resource['tree'],
                                 'right': {'kind': 'component', 'id': continuation_id}}
             resource['components'].append({'id': continuation_id, 'source': continuation['name'],

@@ -232,6 +232,60 @@ class MachineRuns(unittest.TestCase):
         self.assertEqual(result['checked'], 3 * (2 + 5))
         self.assertIn('nextInputPointer', result['unchecked'][0]['error'])
 
+    def test_a_potential_bounds_the_fetches_to_the_return(self):
+        # Each run returns 3 instructions after its last head visit: from a visit with n iterations left,
+        # the fetches to the return, the visit's own one included, are 5 * n + 3.
+        with tempfile.TemporaryDirectory() as directory:
+            root = self.run_dir(Path(directory))
+            for input_id, start, end in (('short', 100, 102), ('long', 200, 205)):
+                (root / 'exec' / input_id / 'RESULT.json').write_text(json.dumps(
+                    {'schema': 'oblig-exec-result/1', 'input': input_id, 'stop': 'returned',
+                     'insns': 12 + 5 * (end - start) + 2}))
+            cut = {'id': 'loop-a4', 'at': self.ROW['at'], 'facts': [],
+                   'binders': [{'name': 'machine_x12', 'register': 'x12'}, {'name': 'machine_x13', 'register': 'x13'}]}
+            potential = {'id': 'potential-a4', 'at': {'pc': '+0xa4', 'boundary': 'loop_cut'},
+                         'potential': '5 * (bv_unsigned machine_x13 - bv_unsigned machine_x12) + 3',
+                         'entry_bound': '28'}
+            result = annotations.test_rows(self.data(cut, potential), root)
+            # 7 visits, and the entry bound at the 2 loop entries.
+            self.assertEqual((result['verdict'], result['checked'], result['unchecked']), ('passed', 9, []))
+            tight = dict(potential, potential='5 * (bv_unsigned machine_x13 - bv_unsigned machine_x12) + 2')
+            result = annotations.test_rows(self.data(cut, tight), root)
+            self.assertEqual((result['verdict'], result['input'], result['visit']), ('rejected', 'long', 0))
+            self.assertEqual(result['fact'], 'potential: 28 fetches to the return > ' + tight['potential'])
+            low = dict(potential, entry_bound='27')
+            result = annotations.test_rows(self.data(cut, low), root)
+            self.assertEqual((result['verdict'], result['input'], result['visit']), ('rejected', 'long', 0))
+            self.assertTrue(result['fact'].startswith('entry_bound: 28 fetches'))
+
+    def test_a_ghost_binder_takes_its_value_from_the_snapshot_memory(self):
+        # The loop's buffer at 4096 holds the bytes walked so far: entry a2 .. visit a2 (excluded).
+        def memory(walked):
+            return [{'name': 'buffer', 'base': 4096, 'size': 8, 'hex': bytes(range(1, 1 + walked)).ljust(8, b'\0').hex()}]
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            run = root / 'exec' / 'one'
+            run.mkdir(parents=True)
+            snapshot(run, '0000', [{'visit': 0, 'insn': 0, 'regs': regs(a2=100, a3=103), 'memory': memory(0)}], 'one')
+            snapshot(run, '009c', [{'visit': 0, 'insn': 10, 'regs': regs(a2=100, a3=103)}], 'one')
+            snapshot(run, '00a4', [{'visit': n, 'insn': 12 + 5 * n, 'regs': regs(a2=100 + n, a3=103),
+                                    'memory': memory(n)} for n in range(3)], 'one')
+            row = json.loads(json.dumps(self.ROW))
+            row['binders'].append({'name': 'walked', 'type': 'list (bv 8)',
+                                   'exec': 'snapshotRead {memory} base (Z.of_nat (length start) + i)'})
+            row['facts'] = [{'coq': 'walked = map (fun k => BV 8 (Z.of_nat k)) (seq 1 (Z.to_nat i))', 'role': 'owned'},
+                            {'coq': 'snapshotWord {memory} base = snapshotLe walked', 'role': 'owned'}]
+            data = self.data(row)
+            data['test'] = {'lets': [{'name': 'start', 'exec': 'firstn 0 {entry:bytes:buffer}'},
+                                     {'name': 'base', 'exec': '4096%Z'}]}
+            result = annotations.test_rows(data, root)
+            self.assertEqual((result['verdict'], result['checked'], result['unchecked']), ('passed', 6, []))
+            row['facts'][0]['coq'] = 'walked = map (fun k => BV 8 (Z.of_nat k)) (seq 0 (Z.to_nat i))'
+            result = annotations.test_rows(data, root)
+            self.assertEqual((result['verdict'], result['visit']), ('rejected', 1))
+        with self.assertRaises(annotations.AnnotationError):
+            annotations.validate({**data, 'test': {'lets': [{'name': 'x y', 'exec': '0'}]}})
+
 
 if __name__ == '__main__':
     unittest.main()

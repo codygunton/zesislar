@@ -237,6 +237,65 @@ def fact_conjuncts(fact):
     return [conjunct for part in parts for conjunct in fact_conjuncts(part)]
 
 
+def _argument(text, position):
+    """(argument text, end) of the application argument starting at `position`: a parenthesized
+    term or an atom."""
+    if text.startswith('(', position):
+        end = _closing(text, position) + 1
+    else:
+        end = position
+        while end < len(text) and not text[end].isspace() and text[end] not in '()':
+            end += 1
+    return text[position:end], end
+
+
+def _constant_offset(term):
+    """(core, n) of `bv_add (... (bv_add core (BV 64%N a%Z)) ...) (BV 64%N b%Z)` with n = a + b + ...;
+    (term, 0) for any other term."""
+    total, term = 0, _unwrap(term)
+    while True:
+        match = re.fullmatch(r'bv_add (.+) \(BV 64%N (\d+)%Z\)', term, re.S)
+        if match is None:
+            return term, total
+        core, end = _argument(term, len('bv_add '))
+        if end != match.end(1):
+            return term, total
+        total, term = total + int(match[2]), _unwrap(core)
+
+
+def read_range_representatives(facts):
+    """The facts the check reads, without the per-byte range facts of a multi-byte read that a fact
+    of a larger constant offset of the same address represents.
+
+    A symbolic read of k bytes at `base + c` states `bv_unsigned (bv_sub (base + c + i) start) < len`
+    for each byte i (as a Prop and as its bool_decide); this keeps, for each text that differs only in
+    the constant offset, the fact of the largest one, at its first position. Dropping facts only weakens
+    the check: an alternative it no longer refutes stays and is proved. Each kept mod term costs zesu_lia
+    a case split, so the full set made one check run past 45 minutes (txAccessList +0x15c, 40 such facts)."""
+    keyed = []
+    for fact in facts:
+        position = fact.find('bv_unsigned (bv_sub ')
+        if position < 0 or fact.find('bv_unsigned (bv_sub ', position + 1) >= 0:
+            keyed.append((None, 0, fact))
+            continue
+        start = position + len('bv_unsigned (bv_sub ')
+        address, end = _argument(fact, start)
+        core, offset = _constant_offset(address)
+        keyed.append(((fact[:start], core, fact[end:]), offset, fact))
+    largest = {}
+    for key, offset, _ in keyed:
+        if key is not None:
+            largest[key] = max(largest.get(key, offset), offset)
+    kept, seen = [], set()
+    for key, offset, fact in keyed:
+        if key is None:
+            kept.append(fact)
+        elif key not in seen and offset == largest[key]:
+            seen.add(key)
+            kept.append(fact)
+    return kept
+
+
 def binder_groups(binders):
     """The parenthesized groups of a binder telescope, with the names each declares."""
     groups, position = [], binders.find('(')
@@ -257,8 +316,8 @@ def check_groups(binders, facts):
     """
     declared = binder_groups(binders)
     local = set(OUTER_NAMES) | {name for names, _ in declared for name in names}
-    read = [conjunct for fact in facts for conjunct in fact_conjuncts(fact)
-            if not _unwrap(conjunct).startswith(('∃', 'exists '))]
+    read = read_range_representatives([conjunct for fact in facts for conjunct in fact_conjuncts(fact)
+                                       if not _unwrap(conjunct).startswith(('∃', 'exists '))])
     names = [set(LOCAL_NAME.findall(fact)) & local for fact in read]
     owner, parent = {}, list(range(len(read)))
 

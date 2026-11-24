@@ -22,7 +22,11 @@ The compiled profile keys, by `boundary`:
                    entry renderer writes as `owner.name args` (render_fp301_entries.py)
   loop_cut         `loop_heads` and a `loop_designs` row: `registers` (binders with a register), `index`
                    (the binder of role `index`), `facts` (role -> `kind`), `array_cursor` from
-                   `placement` {`array`, `register`, `extent_reason`}, `visible`
+                   `placement` {`array`, `register`, `extent_reason`}, `visible`; with `resources`,
+                   `replaces` or typed binders without a register, `owned` {`binders` [{name, type}],
+                   `resources` [text | {coq, length}], `replaces` [text]}: the cut's owned state is the
+                   loop-entry state without the components `replaces` names (exact texts), plus
+                   `resources` over those binders (loop_design.py); facts may name them
   join             `join_designs[pc]`: a fact of role `fact` with no other key is its text, else its object.
                    A row whose single effective fact is `False` (role `unreachable`) lists `pc` in
                    `unreachable_entries` (entry ⌜False⌝; refused where the forward pass reaches it); with
@@ -34,8 +38,11 @@ The compiled profile keys, by `boundary`:
   call_site        a `calls` row: the row's `call` object with `call_site_pc`. Its `opaque` rows
                    [{`spec`, `use`: framed | consumed | produced, `caller`: [...]}] name spec resources in
                    the spec's text and, for a consumed one, the caller components it takes; its `returns`
-                   rows [{`index`, `register`}] name the returned registers the continuation reads
-                   (call_boundary.call_return_seed)
+                   rows [{`index`, `register`}] name the returned registers the continuation reads; its
+                   `result_words` {byte offset: Z value} name words of the returned array the return entry
+                   states and the seed reads as the value (`{argv:N}`, `{fresh:NAME:TYPE}` in the value);
+                   its `result_minimums` {NAME: integer m} state `m <= NAME` of a fresh Z binder of those
+                   values in the return entry, which the call block proves (call_boundary.call_return_seed)
   call_return      the `return_facts` of the call whose `return_site_pc` is `pc` (role -> `kind`)
   function_return  a `function_returns` row: `return_instruction_pc` and `return_fact` (True without facts)
   access           an `access_placements` row: `pc` and `placement` {`array`, `index`, `scale`, `offset`},
@@ -48,16 +55,40 @@ The compiled profile keys, by `boundary`:
                    the slots, and its seed holds each slot's value as a store at the slot's prologue
                    address (entry_hist.frame_writes), so the paths after it load the value itself; each
                    edge into a site proves the value of the cell it holds
+  potential        (boundary `loop_cut`) a row {`at`, `potential`: Coq Z text over the cut's binders,
+                   `entry_bound`?: Coq Z text over `args`, `returnAddress`} adds `potentials[pc]`
+                   {`potential`, `binders`, `entry_bound`?} (tools/block/budgets.py). The cut must exist
+                   (a loop_cut row or a `loop_heads` entry at `pc`); every binder the text names is a
+                   binder of that cut, and it names at least one. A row with `potential` and binders or
+                   facts is also the cut's loop_cut row.
+The profile key `charged: true` (copied from the profile part) needs `charged_code` {`module`,
+`premise`}: the charged selected code (`instr_lookup_resources_charged ...`) that replaces
+`selected_code` as every block's code premise. A charged function's entries own `step_budget (B)`
+with B from budgets.py. A back edge adds no obligation of its own: the block before the back edge
+enters with its budget over the loop body's binders, and its step into the cut must establish
+`step_budget (<potential at the next iteration>)`, the cut's entry; the inequality between the two
+potentials is left to that block's proof.
 The compiled profile carries `generated_from` {`path`, `sha256`}. The three hand-written profiles have
 no annotation file.
 
 `test` instantiates each row's binders from the snapshots `RUN/exec/<input>/STATE-<oooo>.json` at its pc
 (schema `oblig-exec-snapshot/1`): a binder with a `register` takes that register at the visit; a binder
-with `exec` takes that Coq term. In facts and `exec` terms, `{xN}` (or an ABI name) is the register at
-the function entry (STATE-0000.json, first visit) and `{reg:xN}` the register at the visit; `{bytes:NAME}`
-is the snapshot memory range NAME as a byte list. Each fact is evaluated with
-`Eval vm_compute in bool_decide (...)`. One false fact rejects the row and names its input; a fact
-that does not elaborate (a contract name the snapshot cannot give) is reported unchecked.
+with `exec` (a typed ghost binder too) takes that Coq term. In facts and `exec` terms, `{xN}` (or an ABI
+name) is the register at the function entry (STATE-0000.json, first visit; for a loop cut at the loop
+entry) and `{reg:xN}` the register at the visit; `{entry:xN}` is the register at the function entry for
+every row; `{bytes:NAME}` is the snapshot memory range NAME at the visit as a byte list and
+`{entry:bytes:NAME}` the range at the function entry; `{memory}` is every range at the visit as
+`list (Z * list byte)`, read with `snapshotRead memory address size` (the bytes, `[]` outside every range)
+and `snapshotWord memory address` (the little-endian 64-bit word; `snapshotLe bytes` of a byte list).
+The file's optional `test` {`imports` [module], `lets` [{`name`, `exec`}]} adds `Require Import` lines and
+lets bound before every row's binders (a contract's `args` record from the entry registers). `--coqc-args`
+takes a JSON list `[coqc, flag, ...]` (a render's coqc-args.json) whose load paths the imports need.
+Each fact is evaluated with `Eval vm_compute in bool_decide (...)`. One false fact rejects the row and names
+its input; a fact that does not elaborate (a contract name the snapshot cannot give) is reported unchecked.
+A `potential` row (its own binders, else those of the cut's loop_cut row) is tested against the fetch
+count of each run that returned (`RUN/exec/<input>/RESULT.json`, `insns`): at every visit of the cut, the
+instructions executed from that visit to the function return, both included, are at most the potential,
+and at the first visit after a loop entry at most the `entry_bound` too.
 """
 from pathlib import Path
 import argparse
@@ -78,13 +109,26 @@ SCHEMA = 'zesu.annotations.v1'
 BOUNDARIES = ('entry', 'loop_cut', 'join', 'call_site', 'call_return', 'function_return', 'access', 'frame')
 GENERATED_KEYS = ('loop_designs', 'join_designs', 'calls', 'function_returns', 'access_placements',
                   'domain_component', 'opaque_predicates', 'unreachable_entries', 'unreachable_reached',
-                  'join_drops', 'generated_from')
+                  'join_drops', 'generated_from', 'potentials')
+POTENTIAL_KEYS = {'id', 'request', 'at', 'potential', 'entry_bound', 'author'}
+REGISTER_BINDER = re.compile(r'(?:machine|call|loop)_x\d+')
+IDENTIFIER = re.compile(r"(?<![\w'.])[A-Za-z_][\w']*(?![\w'.])")
 OPAQUE_USES = ('framed', 'consumed', 'produced')
 PC = re.compile(r'(?:[^+\s]+)?\+0x[0-9a-f]+')
 ABI = ['zero', 'ra', 'sp', 'gp', 'tp', 't0', 't1', 't2', 's0', 's1', 'a0', 'a1', 'a2', 'a3', 'a4', 'a5', 'a6',
        'a7', 's2', 's3', 's4', 's5', 's6', 's7', 's8', 's9', 's10', 's11', 't3', 't4', 't5', 't6']
 HEADER = ('From stdpp Require Import bitvector.definitions decidable.\n'
           'From Coq Require Import ZArith List.\nImport ListNotations.\nLocal Open Scope Z_scope.\n')
+# The snapshot readers of `{memory}` (see the module text).
+READERS = ('Fixpoint snapshotLe (bytes : list (bv 8)) : Z :=\n'
+           '  match bytes with [] => 0 | b :: rest => bv_unsigned b + 256 * snapshotLe rest end.\n'
+           'Definition snapshotRead (memory : list (Z * list (bv 8))) (address size : Z) : list (bv 8) :=\n'
+           '  match List.find (fun range => (fst range <=? address) &&\n'
+           '      (address + size <=? fst range + Z.of_nat (List.length (snd range)))) memory with\n'
+           '  | Some range => List.firstn (Z.to_nat size) (List.skipn (Z.to_nat (address - fst range)) (snd range))\n'
+           '  | None => [] end.\n'
+           'Definition snapshotWord (memory : list (Z * list (bv 8))) (address : Z) : Z :=\n'
+           '  snapshotLe (snapshotRead memory address 8).\n')
 
 
 class AnnotationError(ValueError):
@@ -121,6 +165,12 @@ def validate(data):
     generated = set(GENERATED_KEYS) & set(data['profile'])
     if generated:
         raise AnnotationError('the profile part holds compiled keys: ' + ', '.join(sorted(generated)))
+    setup = data.get('test', {})
+    if (not isinstance(setup, dict) or set(setup) - {'imports', 'lets'}
+            or not all(isinstance(module, str) and re.fullmatch(r'[\w.]+', module) for module in setup.get('imports', []))
+            or not all(isinstance(item, dict) and set(item) == {'name', 'exec'} and isinstance(item['exec'], str)
+                       and re.fullmatch(r"[A-Za-z_][\w']*", str(item['name'])) for item in setup.get('lets', []))):
+        raise AnnotationError('`test` is {imports: [module], lets: [{name, exec}]}')
     return data
 
 
@@ -141,7 +191,7 @@ def _join_fact(fact):
 
 
 def _check_call(row):
-    """The shape of a call row's `opaque` and `returns` rows (call_boundary consumes them)."""
+    """The shape of a call row's `opaque`, `returns` and `result_words` rows (call_boundary consumes them)."""
     for item in row['call'].get('opaque', []):
         if not isinstance(item.get('spec'), str) or item.get('use') not in OPAQUE_USES:
             raise AnnotationError('%s: an opaque row has `spec` and a `use` among %s'
@@ -154,6 +204,16 @@ def _check_call(row):
     for item in row['call'].get('returns', []):
         if not isinstance(item.get('index'), int) or not re.fullmatch(r'x(1[0-7])', str(item.get('register'))):
             raise AnnotationError('%s: a returns row has an integer `index` and an argument register' % row['id'])
+    words = row['call'].get('result_words', {})
+    if not isinstance(words, dict) or not all(re.fullmatch(r'[0-9]+', str(key)) and isinstance(value, str)
+                                              for key, value in words.items()):
+        raise AnnotationError('%s: result_words maps byte offsets to value texts' % row['id'])
+    minimums = row['call'].get('result_minimums', {})
+    fresh = {name for value in words.values() for name, kind in re.findall(r'\{fresh:(\w+):([^{}]+)\}', value)
+             if ' '.join(kind.split()) == 'Z'}
+    if not isinstance(minimums, dict) or not all(name in fresh and type(value) is int
+                                                 for name, value in minimums.items()):
+        raise AnnotationError('%s: result_minimums maps fresh Z binders of result_words to integers' % row['id'])
 
 
 def compile_profile(data, source=None):
@@ -176,6 +236,8 @@ def compile_profile(data, source=None):
                 if set(predicate) != {'name', 'owner'}:
                     raise AnnotationError('%s: a predicate row has exactly `name` and `owner`' % row['id'])
                 profile.setdefault('opaque_predicates', {})[predicate['name']] = dict(predicate)
+        elif boundary == 'loop_cut' and set(row) <= POTENTIAL_KEYS:
+            continue   # a potential row alone: compiled after every cut is known (_potentials)
         elif boundary == 'loop_cut':
             if at['pc'] not in heads:
                 heads.append(at['pc'])
@@ -194,6 +256,20 @@ def compile_profile(data, source=None):
                                           'extent_reason': placement['extent_reason']}
             if 'visible' in row:
                 design['visible'] = list(row['visible'])
+            loose = [binder for binder in row.get('binders', [])
+                     if not binder.get('register') and binder.get('role') != 'index']
+            if any(not isinstance(binder.get('type'), str) or not binder['type'] for binder in loose):
+                raise AnnotationError('%s: a loop-cut binder without a register has a `type`' % row['id'])
+            if row.get('resources') or row.get('replaces') or loose:
+                for item in row.get('resources', []):
+                    if not (isinstance(item, str) or isinstance(item, dict) and set(item) == {'coq', 'length'}):
+                        raise AnnotationError('%s: a loop-cut resource is a text or {coq, length}' % row['id'])
+                for item in row.get('replaces', []):
+                    if not (isinstance(item, str) or isinstance(item, dict) and set(item) == {'id'}):
+                        raise AnnotationError('%s: a replaced loop-entry component is a text or {id}' % row['id'])
+                design['owned'] = {'binders': [{'name': binder['name'], 'type': binder['type']} for binder in loose],
+                                   'resources': list(row.get('resources', [])),
+                                   'replaces': list(row.get('replaces', []))}
             loop_designs.append(design)
         elif boundary == 'join':
             roles = {fact['role'] for fact in facts}
@@ -264,13 +340,68 @@ def compile_profile(data, source=None):
     for key, value in (('loop_designs', loop_designs), ('join_designs', join_designs), ('calls', calls),
                        ('function_returns', returns), ('access_placements', placements),
                        ('unreachable_entries', unreachable), ('unreachable_reached', reached_pcs),
-                       ('join_drops', drops), ('join_frames', join_frames)):
+                       ('join_drops', drops), ('join_frames', join_frames),
+                       ('potentials', _potentials(rows, heads))):
         if value:
             profile[key] = value
+    _check_charged(profile)
     if source is not None:
         profile['generated_from'] = {'path': str(Path(source).resolve().relative_to(ROOT)),
                                      'sha256': hashlib.sha256(Path(source).read_bytes()).hexdigest()}
     return profile
+
+
+def _potentials(rows, heads):
+    """{pc: {potential, binders, entry_bound?}} of the rows with `potential` (see the module text)."""
+    cut_binders = {}
+    for row in rows:
+        if row['at']['boundary'] == 'loop_cut' and not set(row) <= POTENTIAL_KEYS:
+            cut_binders.setdefault(row['at']['pc'], []).extend(
+                binder['name'] for binder in row.get('binders', []) if binder['name'] not in
+                cut_binders.get(row['at']['pc'], []))
+    every = {name for names in cut_binders.values() for name in names}
+    potentials = {}
+    for row in rows:
+        if 'potential' not in row:
+            continue
+        pc, text = row['at']['pc'], row['potential']
+        if row['at']['boundary'] != 'loop_cut':
+            raise AnnotationError('%s: a potential row is at a loop_cut' % row['id'])
+        if pc not in heads:
+            raise AnnotationError('%s: no loop cut exists at %s' % (row['id'], pc))
+        if pc in potentials:
+            raise AnnotationError('%s: a second potential row at %s' % (row['id'], pc))
+        if not isinstance(text, str) or not text.strip() or 'entry_bound' in row and not (
+                isinstance(row['entry_bound'], str) and row['entry_bound'].strip()):
+            raise AnnotationError('%s: potential and entry_bound are Coq Z texts' % row['id'])
+        own = cut_binders.get(pc, [])
+        names = set(IDENTIFIER.findall(text))
+        unknown = sorted(name for name in names if name not in own
+                         and (name in every or REGISTER_BINDER.fullmatch(name)))
+        if unknown:
+            raise AnnotationError('%s: the potential names binders that the cut at %s does not bind: %s'
+                                  % (row['id'], pc, ', '.join(unknown)))
+        if not names & set(own):
+            raise AnnotationError('%s: the potential names none of the binders of the cut at %s'
+                                  % (row['id'], pc))
+        if '{' in text:
+            raise AnnotationError('%s: a potential is over the cut\'s binders, without placeholders' % row['id'])
+        bound = row.get('entry_bound')
+        if bound is not None and set(IDENTIFIER.findall(bound)) & set(own):
+            raise AnnotationError('%s: an entry_bound is over args and returnAddress, not the cut\'s binders'
+                                  % row['id'])
+        potentials[pc] = {'potential': text, 'binders': list(own),
+                          **({'entry_bound': bound} if bound is not None else {})}
+    return potentials
+
+
+def _check_charged(profile):
+    """`charged` is true or absent; a charged profile names its charged selected code."""
+    if 'charged' not in profile:
+        return
+    code = profile.get('charged_code')
+    if profile['charged'] is not True or not isinstance(code, dict) or set(code) != {'module', 'premise'}:
+        raise AnnotationError('the profile key charged is true and needs charged_code {module, premise}')
 
 
 def render_profile(profile):
@@ -342,43 +473,65 @@ def bv(value):
 
 
 def byte_list(row):
+    # Z literals mapped to bytes: a `BV 8 n` literal elaborates a proof per byte (minutes on a 576-byte frame).
     data = bytes.fromhex(row['hex'])
-    return '[' + '; '.join('BV 8 %d' % byte for byte in data) + ']'
+    return '(List.map (Z_to_bv 8) [' + '; '.join('%d' % byte for byte in data) + '])'
 
 
-def substitute(text, entry, regs, memory):
+def memory_list(memory):
+    """`{memory}`: every snapshot range as a Coq `list (Z * list byte)`."""
+    return '[' + '; '.join('(%d, %s)' % (row['base'], byte_list(row)) for row in memory) + ']'
+
+
+def substitute(text, entry, regs, memory, start=None):
+    """`start`: the function-entry visit ({regs, memory}) of `{entry:...}` (the module text)."""
     def replace(match):
         token = match[1]
+        if token == 'memory':
+            return 'snapshotMemory'
+        scope_regs, scope_memory = regs, memory
+        if token.startswith('entry:'):
+            if start is None:
+                raise KeyError('no function-entry snapshot for ' + token)
+            token, scope_regs, scope_memory = token[6:], start['regs'], start.get('memory', [])
+            if not token.startswith('bytes:'):
+                return bv(scope_regs[register_key(token)])
         if token.startswith('reg:'):
-            return bv(regs[register_key(token[4:])])
+            return bv(scope_regs[register_key(token[4:])])
         if token.startswith('bytes:'):
-            rows = [row for row in memory if row['name'] == token[6:]]
+            rows = [row for row in scope_memory if row['name'] == token[6:]]
             if len(rows) != 1:
                 raise KeyError('no memory range ' + token[6:])
             return byte_list(rows[0])
         return bv(entry[register_key(token)])
-    return re.sub(r'\{((?:reg:|bytes:)?[\w#.-]+)\}', replace, text)
+    return re.sub(r'\{((?:entry:)?(?:reg:|bytes:)?[\w#.-]+)\}', replace, text)
 
 
-def fact_term(row, fact, entry, visit):
-    """The closed Coq term `let <binders> in bool_decide (<fact>)` of one visit."""
+def fact_term(row, fact, entry, visit, start=None, lets=()):
+    """The closed Coq term `let <file lets> <binders> in bool_decide (<fact>)` of one visit."""
     regs, memory = visit['regs'], visit.get('memory', [])
-    lets = []
+    texts = [*(item['exec'] for item in lets), *(binder.get('exec', '') for binder in row.get('binders', [])),
+             fact['coq']]
+    bound = ['let snapshotMemory := %s in' % memory_list(memory)] if any('{memory}' in text for text in texts) else []
+    for item in lets:
+        bound.append('let %s := %s in' % (item['name'], substitute(item['exec'], entry, regs, memory, start)))
     for binder in row.get('binders', []):
         if binder.get('register'):
-            lets.append('let %s := %s in' % (binder['name'], bv(regs[register_key(binder['register'])])))
+            bound.append('let %s := %s in' % (binder['name'], bv(regs[register_key(binder['register'])])))
         elif binder.get('exec'):
-            lets.append('let %s := %s in' % (binder['name'], substitute(binder['exec'], entry, regs, memory)))
-    return ' '.join(lets + ['bool_decide (%s)' % substitute(fact['coq'], entry, regs, memory)])
+            bound.append('let %s := %s in' % (binder['name'], substitute(binder['exec'], entry, regs, memory, start)))
+    return ' '.join(bound + ['bool_decide (%s)' % substitute(fact['coq'], entry, regs, memory, start)])
 
 
-def evaluate(terms, coqc, directory, split=True):
+def evaluate(terms, coqc, directory, split=True, imports=()):
     """[True | False | error text] per term: one coqc run, then (with `split`) one per term after an
-    error; without `split`, None after an error."""
+    error; without `split`, None after an error. `coqc` is a command list (coqc and its flags)."""
+    prefix = HEADER + ''.join('Require Import %s.\n' % module for module in imports) + READERS
+
     def run(batch, name):
         path = Path(directory) / name
-        path.write_text(HEADER + ''.join('Eval vm_compute in (%s).\n' % term for term in batch))
-        result = subprocess.run([coqc, path.name], cwd=directory, capture_output=True, text=True)
+        path.write_text(prefix + ''.join('Eval vm_compute in (%s).\n' % term for term in batch))
+        result = subprocess.run([*coqc, path.name], cwd=directory, capture_output=True, text=True)
         values = re.findall(r'=\s*(true|false)\s*:\s*bool', result.stdout)
         return result.returncode, values, (result.stdout + result.stderr)[-800:]
     code, values, output = run(terms, 'Snapshot.v')
@@ -394,7 +547,8 @@ def evaluate(terms, coqc, directory, split=True):
 
 
 def snapshots(run, row):
-    """[(input id, entry registers, visit)] at the row's pc, over every input dir of RUN/exec.
+    """[(input id, entry registers, visit, function-entry visit | None)] at the row's pc, over every
+    input dir of RUN/exec.
 
     The entry registers (`{xN}`) are those at the function entry (STATE-0000.json), and for a loop cut
     those at the loop entry: the first visit of the head after the latest visit of its entry predecessor
@@ -409,6 +563,8 @@ def snapshots(run, row):
             continue
         data = json.loads(state.read_text())
         visits = sorted(data['visits'], key=lambda visit: visit.get('insn', 0))
+        entry = directory / 'STATE-0000.json'
+        start = json.loads(entry.read_text())['visits'][0] if entry.exists() else None
         if loop:
             predecessor = directory / ('STATE-%s.json' % offset_key(at['predecessor'])) \
                 if at.get('predecessor') else None
@@ -416,51 +572,66 @@ def snapshots(run, row):
                 if predecessor is not None and predecessor.exists() else []
             for visit in visits:
                 before = [mark for mark in marks if mark < visit.get('insn', 0)]
-                start = next(other for other in visits if other.get('insn', 0) > before[-1]) if before else visits[0]
-                found.append((data.get('input', directory.name), start['regs'], visit))
+                head = next(other for other in visits if other.get('insn', 0) > before[-1]) if before else visits[0]
+                found.append((data.get('input', directory.name), head['regs'], visit, start))
             continue
-        entry = directory / 'STATE-0000.json'
-        if not entry.exists():
+        if start is None:
             continue
-        entry_regs = json.loads(entry.read_text())['visits'][0]['regs']
         for visit in visits:
-            found.append((data.get('input', directory.name), entry_regs, visit))
+            found.append((data.get('input', directory.name), start['regs'], visit, start))
     return found
 
 
 def test_rows(data, run, row_ids=None, coqc=None):
-    """{'verdict': 'passed' | 'rejected' | 'untested', ...} over the selected rows."""
+    """{'verdict': 'passed' | 'rejected' | 'untested', ...} over the selected rows. `coqc`: a command list."""
     validate(data)
-    coqc = coqc or coqc_command()
+    coqc = coqc or ([coqc_command()] if coqc_command() else None)
     if coqc is None:
         raise SystemExit('annotations test: no coqc (set COQC or ISLARIS_REPO)')
+    setup = data.get('test', {})
+    imports, lets = setup.get('imports', []), setup.get('lets', [])
     rows = [row for row in data['rows'] if row_ids is None or row['id'] in row_ids]
     checked, unchecked, untested = 0, [], []
     with tempfile.TemporaryDirectory() as directory:
         for row in rows:
-            if not row.get('facts'):
+            if not row.get('facts') and not row.get('potential'):
                 continue
+            if row.get('potential') and not row.get('binders'):
+                # A potential row without binders is over the binders (and loop entry) of the cut's row.
+                cut = next((other for other in data['rows'] if other.get('binders') and other['at']['pc'] ==
+                            row['at']['pc'] and other['at']['boundary'] == 'loop_cut'), {})
+                row = {**row, 'at': {**cut.get('at', {}), **row['at']}, 'binders': cut.get('binders', [])}
             visits = snapshots(run, row)
             if not visits:
                 untested.append(row['id'])
                 continue
-            facts = list(row['facts'])
+            if row.get('potential'):
+                result = test_potential(row, run, visits, coqc, directory, imports, lets)
+                if result.get('verdict') == 'rejected':
+                    return result
+                checked += result['checked']
+                unchecked += result['unchecked']
+            facts = list(row.get('facts', []))
+            if not facts:
+                continue
 
             def terms_of(facts):
-                return [fact_term(row, fact, entry, visit) for _, entry, visit in visits for fact in facts]
-            values = evaluate(terms_of(facts), coqc, directory, split=False)
+                return [fact_term(row, fact, entry, visit, start, lets)
+                        for _, entry, visit, start in visits for fact in facts]
+            values = evaluate(terms_of(facts), coqc, directory, split=False, imports=imports)
             if values is None:
                 # A fact that does not elaborate on the first visit stays unchecked on every visit.
-                _, entry, visit = visits[0]
-                first = evaluate([fact_term(row, fact, entry, visit) for fact in facts], coqc, directory)
+                _, entry, visit, start = visits[0]
+                first = evaluate([fact_term(row, fact, entry, visit, start, lets) for fact in facts], coqc, directory,
+                                 imports=imports)
                 for fact, value in zip(list(facts), first):
                     if not isinstance(value, bool):
                         unchecked.append({'row': row['id'], 'fact': fact['coq'], 'error': value})
                         facts.remove(fact)
-                values = evaluate(terms_of(facts), coqc, directory) if facts else []
+                values = evaluate(terms_of(facts), coqc, directory, imports=imports) if facts else []
             # Visit order, then fact order: the first false fact names the input, its visit and the fact.
             for index, value in enumerate(values):
-                (input_id, _, visit), fact = visits[index // len(facts)], facts[index % len(facts)]
+                (input_id, _, visit, _), fact = visits[index // len(facts)], facts[index % len(facts)]
                 if value is True:
                     checked += 1
                 elif value is False:
@@ -470,6 +641,49 @@ def test_rows(data, run, row_ids=None, coqc=None):
                     unchecked.append({'row': row['id'], 'input': input_id, 'fact': fact['coq'], 'error': value})
     return {'verdict': 'passed' if checked else 'untested', 'checked': checked, 'unchecked': unchecked,
             'untested_rows': untested}
+
+
+def fetch_counts(run):
+    """{input id: instructions the run executed} of every RUN/exec/<dir>/RESULT.json that returned."""
+    counts = {}
+    for path in sorted(Path(run, 'exec').glob('*/RESULT.json')):
+        result = json.loads(path.read_text())
+        if result.get('stop') == 'returned':
+            counts[result.get('input', path.parent.name)] = result['insns']
+    return counts
+
+
+def test_potential(row, run, visits, coqc, directory, imports=(), lets=()):
+    """The potential row's bound on the machine runs: at each visit of the cut, the instruction fetches
+    from that visit to the function return (the visit's own instruction and the return included:
+    `insns - insn + 1`, `insn` counting the visit's instruction) are at most the potential; at the
+    first visit after each loop entry they are at most the `entry_bound` as well. A run that did not
+    return gives no count. A term that does not elaborate is unchecked."""
+    counts = fetch_counts(run)
+    terms, labels = [], []
+    for input_id, entry, visit, start in visits:
+        if input_id not in counts:
+            continue
+        fetches = counts[input_id] - visit['insn'] + 1
+        bounds = [('potential', row['potential'])]
+        # snapshots() gives the loop-entry visit's own register map as the entry registers.
+        if row.get('entry_bound') and entry is visit['regs']:
+            bounds.append(('entry_bound', row['entry_bound']))
+        for kind, text in bounds:
+            fact = {'coq': '(%d <= (%s))%%Z' % (fetches, text)}
+            terms.append(fact_term(row, fact, entry, visit, start, lets))
+            labels.append((input_id, visit, kind, text, fetches))
+    values = evaluate(terms, coqc, directory, imports=imports) if terms else []
+    checked, unchecked = 0, []
+    for (input_id, visit, kind, text, fetches), value in zip(labels, values):
+        if value is True:
+            checked += 1
+        elif value is False:
+            return {'verdict': 'rejected', 'row': row['id'], 'input': input_id, 'visit': visit.get('visit'),
+                    'pc': row['at']['pc'], 'fact': '%s: %d fetches to the return > %s' % (kind, fetches, text)}
+        else:
+            unchecked.append({'row': row['id'], 'input': input_id, 'fact': '%s %s' % (kind, text), 'error': value})
+    return {'checked': checked, 'unchecked': unchecked}
 
 
 def main():
@@ -484,13 +698,16 @@ def main():
     test_parser.add_argument('--run', required=True, type=Path)
     test_parser.add_argument('--row', action='append')
     test_parser.add_argument('--annotations', type=Path, help='an annotation file other than the committed one')
+    test_parser.add_argument('--coqc-args', type=Path,
+                             help='JSON list [coqc, flag, ...] (a render coqc-args.json) for the file\'s test imports')
     options = parser.parse_args()
     if options.command == 'compile':
         return cmd_compile(options.function)
     if options.command == 'check':
         return cmd_check(options.function)
     source = options.annotations or annotation_path(options.function)
-    result = test_rows(json.loads(source.read_text()), options.run, options.row)
+    coqc = json.loads(options.coqc_args.read_text()) if options.coqc_args else None
+    result = test_rows(json.loads(source.read_text()), options.run, options.row, coqc)
     print(json.dumps(result, indent=1))
     return 1 if result['verdict'] == 'rejected' else 0
 

@@ -416,7 +416,9 @@ def derived_states(function, run, callers=None):
         rows = {goal['id']: goal for goal in goals}
         for goal in goals:
             statement = goal.get('statement')
-            if not case or not statement:
+            # A meaning run (MANIFEST block `meaning`, drive.locate) holds meaning obligations, no block's goals.
+            meaning = case == 'meaning' or goal.get('source') == 'meaning'
+            if meaning and not goal.get('name') or not meaning and (not case or not statement):
                 continue
             gdir = directory / 'goals' / goal['id']
             status = status_of[goal['id']]
@@ -425,12 +427,15 @@ def derived_states(function, run, callers=None):
             st, cls = GOAL_RESULTS.get(status.get('result', 'OPEN'), ('derived', None))
             # A goal normalised into parts (tools/oblig/normalise.py) waits for its first open part.
             open_parts = [rows[p] for p in goal.get('parts') or [] if p in rows and rows[p]['statement'] not in passed]
-            if st != 'closed' and open_parts:
+            if st != 'closed' and open_parts and not meaning:
                 st, cls = 'blocked-on', goal_id(function, case, open_parts[0]['statement'])
             proof = gdir / 'proof.v'
             artifact = proof if st == 'closed' and proof.is_file() else (gdir / 'STATUS.json'
                                                                          if status else None)
-            out[goal_id(function, case, statement)] = ('goal', block_id(function, case), st, cls, artifact)
+            if meaning:
+                out[meaning_id(function, goal['name'])] = ('meaning', None, st, cls, artifact)
+            else:
+                out[goal_id(function, case, statement)] = ('goal', block_id(function, case), st, cls, artifact)
     return out
 
 

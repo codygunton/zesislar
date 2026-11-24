@@ -183,10 +183,12 @@ def hull(values, conditions, *, name, scalar_ranges=None):
 
 
 def witness_plan(binders, *, register_bindings, source_bindings=None, source_context=None,
-                 array_bindings=None):
+                 array_bindings=None, ghost_binders=()):
     """Use only the selector's existing register/pair input constructors.
 
-    array_bindings maps a binder to the owned byte array whose value it is.
+    array_bindings maps a binder to the owned byte array whose value it is. ghost_binders names
+    a loop's owned ghost binders (loop_design.owned_seed): no register or array holds one, and
+    every edge passes the binder of its own entry, the same value on every edge.
     """
     inputs, witnesses = [], []
     array_bindings = array_bindings or {}
@@ -208,6 +210,10 @@ def witness_plan(binders, *, register_bindings, source_bindings=None, source_con
         if name in array_bindings and name not in register_bindings:
             inputs.append({'kind': 'owned_array', 'resource_id': array_bindings[name]})
             witnesses.append({'binder': name, 'resource_id': array_bindings[name], 'type': binder['type']})
+            continue
+        if name in ghost_binders and name not in register_bindings:
+            inputs.append({'kind': 'owned_ghost', 'binder': name})
+            witnesses.append({'binder': name, 'owned_ghost': True, 'type': binder['type']})
             continue
         if name not in register_bindings:
             raise ValueError('A join witness needs array packaging or an approved input interface: ' + name)
@@ -1301,6 +1307,8 @@ def drop_unheld_binders(state, components, carried, binders, plan, live_register
     """
     held = {value.value for value in state.registers.values() if value.op == 'input'}
     held |= {component.get('value') for component in components if component['kind'] == 'byte_array'}
+    # A loop's owned ghost binder (loop_design.owned_seed) is the same value on every edge below its head.
+    held |= {binder['name'] for binder in binders if binder.get('owned')}
     taken = ({binder['name'] for binder in binders} | {binder['name'] for binder in plan['binders']}
              | _fact_names(component.get('source', '') for component in components))
     # Facts that would be dropped wait here and are bound under one existential at the end.
@@ -1835,7 +1843,9 @@ def generalize_owned_join(alternatives, *, original_seed, entry_pc, vocabulary,
                 plan['memory_relations'].append(reconstruction)
             current['source'] = source
         if key == terminal_id:
-            if component['kind'] != 'opaque' or current['source'] != 'True':
+            # `True`, or already the continuation: the tree of a loop head with owned state carries K
+            # (loop_design.owned_seed), so a join or loop head below it closes with the same K.
+            if component['kind'] != 'opaque' or current['source'] not in ('True', name):
                 raise ValueError('The selected inventory terminal is not True')
             continue
         if key in memory_by_id:
@@ -2032,11 +2042,12 @@ def generalize_owned_join(alternatives, *, original_seed, entry_pc, vocabulary,
                       if component['kind'] == 'byte_array' and component.get('value') in
                       {binder['name'] for binder in ordered}}
     full_witness_plan = witness_plan(ordered, register_bindings=register_bindings,
-                                     array_bindings=array_bindings)
+                                     array_bindings=array_bindings,
+                                     ghost_binders={binder['name'] for binder in ordered if binder.get('owned')})
     owned_edges = []
     for edge in plan['edges']:
         record = deepcopy(edge)
-        # An array witness is the inherited array value, the same on every edge.
+        # An array or owned ghost witness is the inherited value, the same on every edge.
         record['ordered_witnesses'] = [{'binder': binder['name'],
             'expression': deepcopy(edge['original_values'][register_bindings[binder['name']][0]])
             if binder['name'] in register_bindings else input_expr(binder['name'], None).to_dict()}

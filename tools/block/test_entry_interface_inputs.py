@@ -277,6 +277,28 @@ class EntryInterface(unittest.TestCase):
         self.assertEqual(facts['wellformed:alignment-19']['terms']['alignment']['modulus'], 8)
         self.assertFalse({17, 18, 19} & set(result['projection']['unused_clauses']))
 
+    LOW = CONTRACT.replace('   tInputPointer args ↦ₘ∗ tInputBytes args ∗',
+                           '   bv_unsigned (tIn args) ↦ₘ∗ tInputBytes args ∗')
+
+    def test_a_low_bound_of_an_owned_address_is_the_least_over_the_alternatives(self):
+        def low(alternatives):
+            text = self.LOW.replace('  2 * tInputLength args <= tOutputLength args.',
+                                    '  2 * tInputLength args <= tOutputLength args /\\\n  ' + alternatives + '.')
+            facts, result, _, ids = self.variant(text)
+            return facts.get('wellformed:low-bound-17'), result, ids
+        fact, result, ids = low('((tLow <= bv_unsigned (tIn args) /\\ bv_unsigned (tIn args) <= tHigh) \\/\n'
+                                '   (2 ^ 30 <= bv_unsigned (tIn args) /\\ bv_unsigned (tIn args) < 2 ^ 31))')
+        self.assertEqual(fact['terms']['resource_id'], ids['bv_unsigned (tIn args)'])
+        self.assertEqual(fact['terms']['low_bound'], {'base': {'op': 'input', 'width': 64, 'value': 'tIn args'},
+                                                      'minimum': 2 ** 30})
+        self.assertNotIn(17, result['projection']['unused_clauses'])
+        # A strict bound counts one more; one conjunct is one alternative.
+        fact, _, _ = low('2 ^ 30 < bv_unsigned (tIn args)')
+        self.assertEqual(fact['terms']['low_bound']['minimum'], 2 ** 30 + 1)
+        # An alternative without a bound of the address bounds nothing.
+        fact, _, _ = low('(tLow <= bv_unsigned (tIn args) \\/ bv_unsigned (tIn args) <= tHigh)')
+        self.assertIsNone(fact)
+
 
 class LengthRelation(unittest.TestCase):
     def test_a_path_condition_on_the_related_value_bounds_the_array(self):

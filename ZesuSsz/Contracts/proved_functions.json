@@ -6,11 +6,18 @@
       "function": "decodeItem",
       "symbol": "rlp.decodeItem",
       "status": "proved",
-      "compliance_theorems": ["decodeItemGeneratedCompliance", "decodeItemSelectedCompliance"],
+      "compliance_theorems": ["decodeItemGeneratedCompliance", "decodeItemSelectedCompliance", "decodeItemBudgetCompliance"],
       "owned_prefixes": [
         "ZesuSsz/Contracts/DecodeItem", "ZesuSsz/Contracts/RlpDecodeItem", "ZesuSsz/Compliance/DecodeItem",
-        "ZesuSsz/Generated/DecodeItem/", "ZesuSsz/Residuals/Block800d6", "ZesuSsz/Export/DecodeItem"
+        "ZesuSsz/Generated/DecodeItem/", "ZesuSsz/Generated/DecodeItemBudget/", "ZesuSsz/Residuals/Block800d6",
+        "ZesuSsz/Export/DecodeItem"
       ],
+      "budget": 75,
+      "charged": {"contract": {"module": "ZesuSsz.Contracts.DecodeItemBudgetContract", "name": "DecodeItemBudgetContractCorrect"},
+                  "compliance": {"module": "ZesuSsz.Compliance.DecodeItemBudgetCompliance", "name": "decodeItemBudgetCompliance"},
+                  "code": {"module": "ZesuSsz.Contracts.DecodeItemChargedSelected", "name": "decodeItemChargedCode"},
+                  "call_spec_correct": {"module": "ZesuSsz.Compliance.DecodeItemBudgetCallSpec", "name": "decodeItemBudgetCallSpec2_correct",
+                                        "statement": "decodeItemChargedCode -∗ instr_body decodeItemEntry (step_budget decodeItemBudget ∗ decodeItemCallSpec2)"}},
       "legacy_callers": [
         {"path": "ZesuSsz/Compliance/NextUint64ExitMeanings.v",
          "module": "ZesuSsz.Compliance.DecodeItemReturnRestorationFacts",
@@ -466,6 +473,110 @@
           "premise": "entriesToOwnedSliceCallAllows state resultBefore outcome",
           "conclusion": "entriesToOwnedSliceBoundaryAllows state resultBefore outcome",
           "proof": "entriesToOwnedSliceAllowsLink",
+          "derived_facts": false,
+          "exit_composition_only": true
+        }
+      ]
+    },
+    {
+      "function": "keysEnsureCapacity",
+      "symbol": "array_list.Aligned([32]u8,null).ensureTotalCapacity",
+      "status": "proved",
+      "reason": "Plan B4 (issue #347): keysEnsureCapacityCompliance proves KeysEnsureCapacityContractCorrect; every block of the region has a closure certificate (KeysEnsureCapacityBlockObligations has no open block).",
+      "compliance_theorems": [
+        "keysEnsureCapacityCompliance"
+      ],
+      "owned_prefixes": [
+        "ZesuSsz/Contracts/KeysEnsureCapacity",
+        "ZesuSsz/Compliance/KeysEnsureCapacity",
+        "ZesuSsz/Generated/KeysEnsureCapacity/",
+        "ZesuSsz/Proofs/KeysEnsureCapacity/",
+        "ZesuSsz/Residuals/keysEnsureCapacity/"
+      ],
+      "interface": {
+        "module": "ZesuSsz.Interfaces.KeysEnsureCapacity",
+        "sealed_module": "KeysEnsureCapacitySealed",
+        "requires": [
+          "From Coq Require Import List ZArith.",
+          "From stdpp Require Import base list bitvector.definitions.",
+          "Require Import isla.riscv64.riscv64.",
+          "Require Import EvmSailRlp.evm_rlp_types.",
+          "Require Import ZesuSsz.Automation.PureFacts.",
+          "Require Import ZesuSsz.Automation2.Calls.",
+          "Require Import ZesuSsz.Automation2.GoalDomain.",
+          "Require Import ZesuSsz.Contracts.AbiBytes.",
+          "Require Import ZesuSsz.Contracts.ZiskRuntime.",
+          "Require Import ZesuSsz.Contracts.AltFlAllocPremises."
+        ],
+        "exports": [
+          "ZesuSsz.Contracts.DecodeItemCallData",
+          "ZesuSsz.Contracts.ArrayListContract",
+          "ZesuSsz.Contracts.KeysEnsureCapacityContract",
+          "ZesuSsz.Contracts.KeysEnsureCapacityCallSpec2"
+        ],
+        "correct": {
+          "module": "ZesuSsz.Interfaces.KeysEnsureCapacityCorrect",
+          "requires": [
+            "Require Import ZesuSsz.Generated.Stock.Symbols.",
+            "Require ZesuSsz.Compliance.KeysEnsureCapacityCallSpec2.",
+            "Require ZesuSsz.Compliance.KeysEnsureCapacityGeneratedComposition."
+          ],
+          "exports": [
+            "ZesuSsz.Contracts.KeysEnsureCapacitySelected"
+          ],
+          "premises": [],
+          "code": "keysEnsureCapacityContractCode",
+          "entry": "sym_array_list_Aligned_32_u8_null_ensureTotalCapacity",
+          "template_correct": "ZesuSsz.Compliance.KeysEnsureCapacityCallSpec2.keysEnsureCapacityCallSpecDefinition_correct ZesuSsz.Compliance.KeysEnsureCapacityGeneratedComposition.keysEnsureCapacityCompliance"
+        },
+        "goal_domain_unfold": [
+          "keysEnsureCapacityBoundaryDomain",
+          "arrayListWellFormed",
+          "arrayListRamRange"
+        ]
+      },
+      "call_spec": {
+        "name": "keysEnsureCapacityCallSpec2",
+        "template": "keysEnsureCapacityCallSpecDefinition",
+        "template_source": "ZesuSsz/Contracts/KeysEnsureCapacityCallSpec2.v",
+        "correct_from": "keysEnsureCapacityCallSpecCorrectFrom"
+      },
+      "sealed": [
+        {
+          "name": "keysEnsureCapacityCallDomain",
+          "type": "list (bv 64) -> Z -> ArrayListState -> list byte -> Prop",
+          "definition": "keysEnsureCapacityBoundaryDomain"
+        },
+        {
+          "name": "keysEnsureCapacityCallAllows",
+          "type": "bv 64 -> ArrayListState -> EnsureCapacityOutcome -> Prop",
+          "definition": "keysEnsureCapacityBoundaryAllows"
+        }
+      ],
+      "interface_lemmas": [
+        {
+          "name": "keysEnsureCapacityCallDomainIntro",
+          "binders": "argv context state scratchBefore",
+          "premise": "keysEnsureCapacityBoundaryDomain argv context state scratchBefore",
+          "conclusion": "keysEnsureCapacityCallDomain argv context state scratchBefore",
+          "proof": "keysEnsureCapacityDomainIntro",
+          "derived_facts": false,
+          "goal_domain_intro": true
+        },
+        {
+          "name": "keysEnsureCapacityCallAllowsFacts",
+          "binders": "requested state outcome",
+          "premise": "keysEnsureCapacityCallAllows requested state outcome",
+          "conclusion": "arrayListWellFormed keysElementBytes (ensureListAfter outcome) /\\ arrayListLength (ensureListAfter outcome) = arrayListLength state /\\ arrayListItems (ensureListAfter outcome) = arrayListItems state /\\ (ensureKind outcome = arrayListSuccess -> bv_unsigned requested <= arrayListCapacity (ensureListAfter outcome)) /\\ (ensureKind outcome = arrayListOutOfMemory -> ensureListAfter outcome = state)",
+          "proof": "keysEnsureCapacityAllowsFacts",
+          "derived_facts": true
+        },
+        {
+          "name": "keysEnsureCapacityCallAllowsLink",
+          "binders": "requested state outcome",
+          "premise": "keysEnsureCapacityCallAllows requested state outcome",
+          "conclusion": "keysEnsureCapacityBoundaryAllows requested state outcome",
+          "proof": "keysEnsureCapacityAllowsLink",
           "derived_facts": false,
           "exit_composition_only": true
         }

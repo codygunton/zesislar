@@ -138,6 +138,19 @@ def exit_body(row):
     return body[:-len('⌝)%I')] + ' /\\ (' + fact + ')⌝)%I'
 
 
+def exit_budget(row, body):
+    """A charged profile: the exit entry owns its own budget (budgets.py) instead of the head's potential."""
+    if not PROFILE.charged:
+        return body
+    import budgets
+    record = budgets.entry_budgets(PROFILE)
+    potential = budgets.budget_conjunct(budgets.budget_text(record, row['head']))
+    if body.count(potential) != 1:
+        raise ValueError('The loop-head class does not own its potential once: ' + row['head'])
+    own = budgets.resolve_registers(budgets.budget_text(record, row['pc']), [body])
+    return body.replace(potential, budgets.budget_conjunct(own))
+
+
 def entries_source(row, body):
     pc = row['pc']
     return (HEADER + '\n'
@@ -217,17 +230,19 @@ def main():
     rows = {row['output']: row for row in fixture['declarations']}
     outputs, checks = {}, []
     for row in DESIGN:
-        body = exit_body(row)
+        body = exit_budget(row, exit_body(row))
         name, binders, facts, check_sha256 = check_record(row, body)
         checks.append({'definition': name, 'binders': binders, 'facts': facts,
                        'check_sha256': check_sha256, 'contradictory': None})
         for kind, source in (('Entries', entries_source(row, body)), ('Structural', structural_source(row, body))):
             output = f'{PROFILE.generated_directory}/Pilot{row["pc"]}{kind}.v'
-            if output not in rows:
+            # A driver run (--output) writes only into OUTPUT: it needs no fixture row (a profile copy,
+            # e.g. a charged variant, renders into a generated directory the fixture does not hold).
+            if output not in rows and options.output is None:
                 raise ValueError('The fixture has no row for ' + output)
             committed = render_unfold_opacity(source) if kind == 'Structural' else source
             outputs[output] = (source, committed)
-    obligations = exit_obligations()
+    obligations = exit_obligations() if options.output is None else None
     if options.check:
         for output, (source, committed) in outputs.items():
             row = rows[output]
