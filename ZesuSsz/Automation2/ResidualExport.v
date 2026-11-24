@@ -469,6 +469,74 @@ Ltac2 zesu_export_reach (limit : int) : ident list * int * int :=
     let (name, _) := entry in if zesu_export_member name kept then name :: found else found) candidates [] in
   (ordered, props, List.length candidates).
 
+Ltac2 zesu_export_node_cap := 1000000.
+
+(* The facts the statement leaves out for size: a proposition over local
+   variables above LIMIT nodes that shares a variable with the conclusion or
+   with a kept fact of FACTS (with a conclusion without local variables:
+   every such fact), so `zesu_export_reach` would keep it but for its size.
+   Each comes with its node count (at most `zesu_export_node_cap`) and the
+   head of its type: the applied constant, inductive or variable as source,
+   `forall` for a product, `-` otherwise. *)
+Ltac2 zesu_export_dropped (limit : int) (facts : ident list) : (ident * int * message) list :=
+  let variables_of (term : constr) :=
+    match zesu_export_variables term with
+    | Some found => found
+    | None => []
+    end in
+  let hyps := Control.hyps () in
+  let conclusion := variables_of (zesu_export_unfold_local (Control.goal ())) in
+  let reached := List.fold_left (fun found declaration =>
+    let (name, body, typ) := declaration in
+    match body with
+    | None =>
+        if zesu_export_member name facts then
+          ZesuSsz.Automation2.ContextCollection.zesu_context_union found
+            (variables_of (zesu_export_unfold_local typ))
+        else found
+    | Some _ => found
+    end) conclusion hyps in
+  let head (typ : constr) :=
+    let term := match Constr.Unsafe.kind typ with
+      | Constr.Unsafe.App applied _ => applied
+      | _ => typ
+      end in
+    match Constr.Unsafe.kind term with
+    | Constr.Unsafe.Constant _ _ => Some term
+    | Constr.Unsafe.Ind _ _ => Some term
+    | Constr.Unsafe.Var _ => Some term
+    | _ => None
+    end in
+  List.fold_right (fun declaration found =>
+    let (name, body, typ) := declaration in
+    match body with
+    | Some _ => found
+    | None =>
+        let typ := zesu_export_unfold_local typ in
+        let variables := variables_of typ in
+        if Bool.or (Bool.neg (zesu_export_proposition typ)) (Int.equal (List.length variables) 0) then found
+        else if ZesuSsz.Automation2.ContextCollection.zesu_select_small limit typ then found
+        else if Bool.and (Bool.neg (Int.equal (List.length conclusion) 0))
+          (Bool.neg (ZesuSsz.Automation2.ContextCollection.zesu_context_intersects variables reached))
+        then found
+        else
+          let budget := Ref.ref zesu_export_node_cap in
+          ZesuSsz.Automation2.ContextCollection.zesu_select_size budget typ;
+          let shown := match head typ with
+            | Some term =>
+                match Control.case (fun () => zesu_export_source term) with
+                | Val (text, _) => text
+                | Err _ => zesu_export_str "-"
+                end
+            | None =>
+                match Constr.Unsafe.kind typ with
+                | Constr.Unsafe.Prod _ _ => zesu_export_str "forall"
+                | _ => zesu_export_str "-"
+                end
+            end in
+          (name, Int.sub zesu_export_node_cap (Ref.get budget), shown) :: found
+    end) hyps [].
+
 (* The local definitions that the conclusion mentions. The residual tier
    unfolds them in the goal before its second try, so a lemma in the
    exported form (definitions unfolded) matches. *)
@@ -496,6 +564,7 @@ Ltac2 zesu_export_record (kind : string) (limit : int) :=
   if zesu_export_proposition goal then () else zesu_export_refuse "not a proposition";
   let (facts, props, small) := zesu_export_reach limit in
   let (statement, binders) := zesu_export_statement facts in
+  let dropped := zesu_export_dropped limit facts in
   let source := zesu_export_source statement in
   Message.print (zesu_export_str (String.concat "" ["@@X begin "; kind]));
   zesu_export_names "@@X binders" binders;
@@ -503,6 +572,10 @@ Ltac2 zesu_export_record (kind : string) (limit : int) :=
   Message.print (zesu_export_cats [zesu_export_str "@@X counts props=";
     Message.of_int props; zesu_export_str " small="; Message.of_int small;
     zesu_export_str " kept="; Message.of_int (List.length facts)]);
+  List.iter (fun entry =>
+    let (name, nodes, shown) := entry in
+    Message.print (zesu_export_cats [zesu_export_str "@@X dropped-fact "; Message.of_ident name;
+      zesu_export_str " "; Message.of_int nodes; zesu_export_str " "; shown])) dropped;
   Message.print (zesu_export_cats [zesu_export_str "@@X stmt "; source]);
   Message.print (zesu_export_str "@@X end").
 
