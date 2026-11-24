@@ -19,6 +19,8 @@ Definition keysEnsureCapacityPost `{!islaG Sigma} `{!threadG}
   (∃ outcome : EnsureCapacityOutcome,
     ⌜islarisContractAllows _ _ (keysEnsureCapacityContractModel returnAddress) base outcome⌝ ∗
     keysEnsureCapacityExit base outcome)%I.
+Global Instance : LithiumUnfold (@keysEnsureCapacityPost) := I.
+Global Typeclasses Opaque keysEnsureCapacityPost.
 
 (* Every table entry carries it as K: the contract postcondition at
    returnAddress. The three return slots of the duplicated join 0x008c jump

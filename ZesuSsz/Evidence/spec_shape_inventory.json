@@ -779,6 +779,62 @@
       "disjunctive_specs": 0,
       "frame_parameters_in_closed_specs": 0,
       "unfold_without_typeclasses_opaque": 0
+    },
+    "ZesuSsz/Compliance/ArrayListBridges.v": {
+      "uninferable_existentials": 0,
+      "predicates_without_unfold": 0,
+      "disjunctive_specs": 0,
+      "frame_parameters_in_closed_specs": 0,
+      "unfold_without_typeclasses_opaque": 0
+    },
+    "ZesuSsz/Compliance/KeysEnsureCapacityBlockObligations.v": {
+      "uninferable_existentials": 0,
+      "predicates_without_unfold": 0,
+      "disjunctive_specs": 0,
+      "frame_parameters_in_closed_specs": 0,
+      "unfold_without_typeclasses_opaque": 0
+    },
+    "ZesuSsz/Compliance/KeysEnsureCapacityCallSpec2.v": {
+      "uninferable_existentials": 0,
+      "predicates_without_unfold": 0,
+      "disjunctive_specs": 0,
+      "frame_parameters_in_closed_specs": 0,
+      "unfold_without_typeclasses_opaque": 0
+    },
+    "ZesuSsz/Compliance/KeysEnsureCapacityCompositionBoundary.v": {
+      "uninferable_existentials": 1,
+      "predicates_without_unfold": 0,
+      "disjunctive_specs": 0,
+      "frame_parameters_in_closed_specs": 0,
+      "unfold_without_typeclasses_opaque": 0
+    },
+    "ZesuSsz/Compliance/KeysEnsureCapacityDomainRanges.v": {
+      "uninferable_existentials": 0,
+      "predicates_without_unfold": 0,
+      "disjunctive_specs": 0,
+      "frame_parameters_in_closed_specs": 0,
+      "unfold_without_typeclasses_opaque": 0
+    },
+    "ZesuSsz/Compliance/KeysEnsureCapacityGeneratedComposition.v": {
+      "uninferable_existentials": 0,
+      "predicates_without_unfold": 0,
+      "disjunctive_specs": 0,
+      "frame_parameters_in_closed_specs": 0,
+      "unfold_without_typeclasses_opaque": 0
+    },
+    "ZesuSsz/Compliance/KeysEnsureCapacityHints.v": {
+      "uninferable_existentials": 0,
+      "predicates_without_unfold": 0,
+      "disjunctive_specs": 0,
+      "frame_parameters_in_closed_specs": 0,
+      "unfold_without_typeclasses_opaque": 0
+    },
+    "ZesuSsz/Compliance/KeysEnsureCapacityUnfoldRegistrations.v": {
+      "uninferable_existentials": 0,
+      "predicates_without_unfold": 0,
+      "disjunctive_specs": 0,
+      "frame_parameters_in_closed_specs": 0,
+      "unfold_without_typeclasses_opaque": 0
     }
   },
   "fixture_allowance_reasons": {

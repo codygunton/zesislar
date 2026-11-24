@@ -13,6 +13,10 @@
     "reason": "The generic Level 1 exit continuation introduces its outcome when the machine returns; this witness is not inferred from entry resources.",
     "uninferable_existentials": 1
   },
+  "ZesuSsz/Contracts/KeysEnsureCapacityCallSpec2.v": {
+    "reason": "The array-list call spec owns the list state and allocator context only through opaque buffer/allocator predicates; callers supply them through call-row opaque rows, not Lithium inference. Approved by Main (coordinator, user-delegated review) 2026-11-24.",
+    "uninferable_existentials": 2
+  },
   "ZesuSsz/Contracts/ParentHeaderMemcpyService.v": {
     "reason": "The memcpy service continuation introduces the after-state when it returns; this witness is not inferred from entry resources.",
     "uninferable_existentials": 1
