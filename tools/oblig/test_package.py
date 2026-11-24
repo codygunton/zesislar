@@ -57,6 +57,14 @@ class AddressTests(unittest.TestCase):
                          [dict(match=str(DECIMAL), source="text"),
                           dict(match=str(DECIMAL), source="literal", hex="%#x" % DECIMAL)])
 
+    def test_a_non_address_constant_is_no_address_but_a_code_address_beside_it_is(self):
+        # 2^31 as a contract bound (txAccessListInputBufferHigh) beside a real code address.
+        bound = 2 ** 31
+        text = "Z.le (p + n) (%#x)%%Z -> pc = Zpos %s" % (bound, positive(CODE))
+        self.assertIn("%#x" % bound, [row["match"] for row in package.address_matches(text)])
+        self.assertEqual(package.address_matches(text, frozenset({bound})),
+                         [dict(match=str(CODE), source="literal", hex="%#x" % CODE)])
+
 
 class GoalTaskTests(unittest.TestCase):
     def test_tasks_carry_the_loop_text_the_answer_form_and_fitting_context(self):
