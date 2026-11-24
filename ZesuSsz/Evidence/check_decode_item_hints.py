@@ -263,6 +263,12 @@ def residual_errors(root: Path) -> list[str]:
         function = json.loads(rows.read_text()).get("function") if rows.is_file() else None
         case = re.fullmatch(r"Caller([0-9a-f]{4})", path.stem)
         owners = {boundary[1] if boundary else None, "%s+%s" % (function, case[1]) if function and case else None}
+        # A charged variant also imports its uncharged function's modules of the same block
+        # (profile `residual_functions`, tools/block/render_fp301_statements.shared_residual_modules).
+        profile = root / "tools/block/functions" / ("%s.json" % function) if function else None
+        if case and profile is not None and profile.is_file():
+            owners |= {"%s+%s" % (other, case[1])
+                       for other in json.loads(profile.read_text()).get("residual_functions", [])}
         for module in sorted(imported_modules(text) | exported_modules(text)):
             if not module.startswith(RESIDUAL_PREFIX):
                 continue

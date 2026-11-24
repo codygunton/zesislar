@@ -156,6 +156,21 @@ class RelocatablePolicyTests(unittest.TestCase):
                                   "Caller0010.v imports another block's residual module ZesuSsz.Residuals.%s." % module,
                                   "Caller00c4.v imports another block's residual module ZesuSsz.Residuals.%s." % module])
 
+    def test_charged_variant_caller_imports_its_uncharged_function_module(self):
+        module = "txAccessList.Block00c4"
+        callers = "tools/block/generated/txaccesslist_budget_fp301_callers/"
+        listing = '{"function": "txAccessListBudget", "rows": []}\n'
+        boundary = "%x" % ((8 << 28) + 0xc4)
+        files = {"ZesuSsz/Residuals/txAccessList/Block00c4.v": self.MODULE,
+                 callers + "CALLERS.json": listing,
+                 callers + "Caller00c4.v": self.CALLER.format(module=module, boundary=boundary),
+                 callers + "Caller0010.v": self.CALLER.format(module=module, boundary=boundary)}
+        refused = ["Caller0010.v imports another block's residual module ZesuSsz.Residuals.%s." % module,
+                   "Caller00c4.v imports another block's residual module ZesuSsz.Residuals.%s." % module]
+        self.assertEqual(residual_errors(self.tree(files)), refused)
+        files["tools/block/functions/txAccessListBudget.json"] = '{"residual_functions": ["txAccessList"]}\n'
+        self.assertEqual(residual_errors(self.tree(files)), refused[:1])
+
     def test_original_form_caller_is_still_matched_by_address(self):
         old = ("Require Import ZesuSsz.Automation2.All.\n"
                "#[export] Hint Resolve residual_6960_0123456789abcdef : zesu_residual.\n")
