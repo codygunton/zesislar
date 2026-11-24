@@ -244,7 +244,7 @@ Proof.
     iPoseProof (decodeItemBudgetCallSpecDefinition_correct with "Hcode") as "Hbody".
     rewrite !instr_pre'_eq /instr_pre'_def /=.
     iIntros "Hspec". iApply "Hbody". iFrame. }
-  pose proof (ZesuSsz.Interfaces.DecodeItem.decodeItemCallSpec2CorrectFrom
+  pose proof (ZesuSsz.Interfaces.DecodeItem.DecodeItemSealed.decodeItemCallSpec2CorrectFrom
     (decodeItemChargedCode ∗ step_budget decodeItemBudget)%I decodeItemEntry Htemplate) as Hsealed.
   iIntros "Hcode".
   rewrite instr_pre'_eq /instr_pre'_def /=.
