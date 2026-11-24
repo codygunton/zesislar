@@ -341,6 +341,137 @@
       ]
     },
     {
+      "function": "entriesToOwnedSlice",
+      "symbol": "array_list.Aligned(input.AccessListEntry,null).toOwnedSlice",
+      "status": "proved",
+      "reason": "Plan B3 (issue #347): entriesToOwnedSliceCompliance proves EntriesToOwnedSliceContractCorrect; every block of the region has a closure certificate (EntriesToOwnedSliceBlockObligations.v has no open block).",
+      "compliance_theorems": [
+        "entriesToOwnedSliceGeneratedCompliance",
+        "entriesToOwnedSliceCompliance"
+      ],
+      "owned_prefixes": [
+        "ZesuSsz/Contracts/EntriesToOwnedSlice",
+        "ZesuSsz/Compliance/EntriesToOwnedSlice",
+        "ZesuSsz/Generated/EntriesToOwnedSlice/",
+        "ZesuSsz/Proofs/EntriesToOwnedSlice/",
+        "ZesuSsz/Residuals/entriesToOwnedSlice/"
+      ],
+      "interface": {
+        "module": "ZesuSsz.Interfaces.EntriesToOwnedSlice",
+        "sealed_module": "EntriesToOwnedSliceSealed",
+        "requires": [
+          "From Coq Require Import List ZArith.",
+          "From stdpp Require Import base list bitvector.definitions.",
+          "Require Import isla.riscv64.riscv64.",
+          "Require Import ZesuSsz.Automation.PureFacts.",
+          "Require Import ZesuSsz.Automation2.Calls.",
+          "Require Import ZesuSsz.Automation2.GoalDomain.",
+          "Require Import ZesuSsz.Contracts.AbiBytes.",
+          "Require Import ZesuSsz.Contracts.ZiskRuntime.",
+          "Require Import ZesuSsz.Contracts.AltFlAllocPremises.",
+          "Require Import ZesuSsz.Contracts.EntriesToOwnedSliceCallSpec2.",
+          "Require Import ZesuSsz.Contracts.EntriesToOwnedSliceCallFacts."
+        ],
+        "exports": [
+          "ZesuSsz.Contracts.DecodeItemCallData",
+          "ZesuSsz.Contracts.ArrayListContract",
+          "ZesuSsz.Contracts.EntriesToOwnedSliceContract",
+          "ZesuSsz.Contracts.EntriesToOwnedSliceCallSpec2"
+        ],
+        "correct": {
+          "module": "ZesuSsz.Interfaces.EntriesToOwnedSliceCorrect",
+          "requires": [
+            "Require Import ZesuSsz.Generated.Stock.Symbols.",
+            "Require ZesuSsz.Compliance.EntriesToOwnedSliceCallSpec2.",
+            "Require ZesuSsz.Compliance.EntriesToOwnedSliceCompliance."
+          ],
+          "exports": [
+            "ZesuSsz.Contracts.EntriesToOwnedSliceSelected",
+            "ZesuSsz.Contracts.EntriesToOwnedSliceContract"
+          ],
+          "premises": [],
+          "code": "entriesToOwnedSliceContractCode",
+          "entry": "sym_array_list_Aligned_input_AccessListEntry_null_toOwnedSlice",
+          "template_correct": "ZesuSsz.Compliance.EntriesToOwnedSliceCallSpec2.entriesToOwnedSliceCallSpecDefinition_correct ZesuSsz.Compliance.EntriesToOwnedSliceCompliance.entriesToOwnedSliceCompliance"
+        },
+        "goal_domain_unfold": [
+          "entriesToOwnedSliceBoundaryDomain",
+          "arrayListWellFormed",
+          "arrayListRamRange"
+        ]
+      },
+      "call_spec": {
+        "name": "entriesToOwnedSliceCallSpec2",
+        "template": "entriesToOwnedSliceCallSpecDefinition",
+        "template_source": "ZesuSsz/Contracts/EntriesToOwnedSliceCallSpec2.v",
+        "correct_from": "entriesToOwnedSliceCallSpecCorrectFrom"
+      },
+      "sealed": [
+        {
+          "name": "entriesToOwnedSliceCallDomain",
+          "type": "list (bv 64) -> Z -> ArrayListState -> list byte -> list byte -> Prop",
+          "definition": "entriesToOwnedSliceBoundaryDomain"
+        },
+        {
+          "name": "entriesToOwnedSliceCallAllows",
+          "type": "ArrayListState -> list byte -> ToOwnedSliceOutcome -> Prop",
+          "definition": "entriesToOwnedSliceBoundaryAllows"
+        }
+      ],
+      "interface_lemmas": [
+        {
+          "name": "entriesToOwnedSliceCallDomainIntro",
+          "binders": "argv context state resultBefore scratchBefore",
+          "premise": "entriesToOwnedSliceBoundaryDomain argv context state resultBefore scratchBefore",
+          "conclusion": "entriesToOwnedSliceCallDomain argv context state resultBefore scratchBefore",
+          "proof": "entriesToOwnedSliceDomainIntro",
+          "derived_facts": false,
+          "goal_domain_intro": true
+        },
+        {
+          "name": "entriesToOwnedSliceCallAllowsWellFormed",
+          "binders": "state resultBefore outcome",
+          "premise": "entriesToOwnedSliceCallAllows state resultBefore outcome",
+          "conclusion": "arrayListWellFormed entriesElementBytes (toOwnedListAfter outcome) /\\ arrayListWellFormed entriesElementBytes (toOwnedSlice outcome) /\\ arrayListCapacity (toOwnedSlice outcome) = arrayListLength (toOwnedSlice outcome)",
+          "proof": "entriesToOwnedSliceAllowsWellFormed",
+          "derived_facts": true
+        },
+        {
+          "name": "entriesToOwnedSliceCallAllowsEmpty",
+          "binders": "state resultBefore outcome",
+          "premise": "entriesToOwnedSliceCallAllows state resultBefore outcome",
+          "conclusion": "arrayListLength state = 0 -> toOwnedKind outcome = arrayListSuccess /\\ toOwnedListAfter outcome = arrayListEmpty entriesEmptyPointer /\\ toOwnedSlice outcome = arrayListEmpty (arrayListPointer state) /\\ toOwnedResultAfter outcome = arrayListResultImage resultBefore (arrayListPointer state) 0",
+          "proof": "entriesToOwnedSliceAllowsEmpty",
+          "derived_facts": true
+        },
+        {
+          "name": "entriesToOwnedSliceCallAllowsSuccess",
+          "binders": "state resultBefore outcome",
+          "premise": "entriesToOwnedSliceCallAllows state resultBefore outcome",
+          "conclusion": "arrayListLength state <> 0 -> toOwnedKind outcome = arrayListSuccess -> toOwnedListAfter outcome = arrayListEmpty (arrayListPointer state) /\\ arrayListLength (toOwnedSlice outcome) = arrayListLength state /\\ arrayListItems (toOwnedSlice outcome) = arrayListItems state /\\ toOwnedResultAfter outcome = arrayListResultImage resultBefore (arrayListPointer (toOwnedSlice outcome)) (arrayListLength state)",
+          "proof": "entriesToOwnedSliceAllowsSuccess",
+          "derived_facts": true
+        },
+        {
+          "name": "entriesToOwnedSliceCallAllowsOutOfMemory",
+          "binders": "state resultBefore outcome",
+          "premise": "entriesToOwnedSliceCallAllows state resultBefore outcome",
+          "conclusion": "arrayListLength state <> 0 -> toOwnedKind outcome = arrayListOutOfMemory -> toOwnedListAfter outcome = state /\\ toOwnedSlice outcome = arrayListEmpty entriesEmptyPointer /\\ toOwnedResultAfter outcome = arrayListErrorImage resultBefore arrayListOutOfMemoryCode",
+          "proof": "entriesToOwnedSliceAllowsOutOfMemory",
+          "derived_facts": true
+        },
+        {
+          "name": "entriesToOwnedSliceCallAllowsLink",
+          "binders": "state resultBefore outcome",
+          "premise": "entriesToOwnedSliceCallAllows state resultBefore outcome",
+          "conclusion": "entriesToOwnedSliceBoundaryAllows state resultBefore outcome",
+          "proof": "entriesToOwnedSliceAllowsLink",
+          "derived_facts": false,
+          "exit_composition_only": true
+        }
+      ]
+    },
+    {
       "function": "altFlAlloc",
       "symbol": "alt_fl_alloc.alloc",
       "status": "assumed",

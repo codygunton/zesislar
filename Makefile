@@ -131,6 +131,11 @@ check-support-freshness: stock-native-indexes
 	  --stem KeysToOwnedSlice \
 	  --closed-dir ZesuSsz/Proofs/KeysToOwnedSlice/FP301 \
 	  --output ZesuSsz/Compliance/KeysToOwnedSliceBlockObligations.v --check
+	$(PYTHON) tools/block/render_open_blocks.py --function entriesToOwnedSlice \
+	  --callers tools/block/generated/entriestoownedslice_fp301_callers/CALLERS.json \
+	  --stem EntriesToOwnedSlice \
+	  --closed-dir ZesuSsz/Proofs/EntriesToOwnedSlice/FP301 \
+	  --output ZesuSsz/Compliance/EntriesToOwnedSliceBlockObligations.v --check
 
 check-evidence-tools: check-support-freshness check-tool-tests
 
