@@ -338,6 +338,10 @@ def package_goal(run, manifest, goal, function, tier, max_bytes, index, hints, f
     record["dropped_facts"] = goal.get("dropped_facts") or []
     exempt = check_relocatable.non_address_values(function)
     record["addresses"] = address_matches(goal_v, exempt)
+    named = {check_relocatable.literal_value(row["match"]) for row in address_matches(goal_v)} & exempt
+    if named:
+        # Literals the profile names as non-address constants (drive.sync_package_class re-classes the goal).
+        record["non_address"] = sorted("%#x" % value for value in named)
     if record["addresses"] and symbol_route is not None:
         route = symbol_route() if callable(symbol_route) else symbol_route
         rewritten, found = symbolize_goal(d, goal_v, route, out, "symbols-" + goal["id"])
