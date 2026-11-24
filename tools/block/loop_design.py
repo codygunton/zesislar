@@ -253,9 +253,18 @@ def owned_seed(seed, design, head, vocabulary, constants=None):
 def owned_join_seed(seed, owned, pc, vocabulary, constants=None):
     """The seed of a join with an `owned` design (profile `join_owned`, annotations.py): the joined seed
     without the components `replaces` names, plus the design's resources, existential binders and the
-    facts that name them (owned_seed). The join keeps its kind, edges and witness plan; each predecessor
-    block proves the entry, so nothing of the design is assumed."""
-    rebuilt = owned_seed(seed, {'owned': owned, 'facts': owned.get('facts', [])}, pc, vocabulary, constants=constants)
+    facts that name them (owned_seed). A fact's `{xN}` is register xN's value in the joined seed (its join
+    binder), so a fact may relate a register to an owned binder. The join keeps its kind, edges and witness
+    plan; each predecessor block proves the entry, so nothing of the design is assumed."""
+    def registers(text):
+        def value(match):
+            if match[1] not in seed.state.registers:
+                raise ValueError('An owned join fact names a register the join does not hold: ' + match[0])
+            return '(' + seed.state.registers[match[1]].coq() + ')'
+        return re.sub(r'\{(x\d+)\}', value, text)
+    facts = [{**row, 'coq': registers(row['coq'])} for row in owned.get('facts', [])]
+    owned = {**owned, 'facts': facts}
+    rebuilt = owned_seed(seed, {'owned': owned, 'facts': facts}, pc, vocabulary, constants=constants)
     for field in ('join_kind', 'join_edges', 'join_witness_plan', 'join_refusals'):
         setattr(rebuilt, field, getattr(seed, field))
     return rebuilt
