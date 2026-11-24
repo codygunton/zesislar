@@ -49,7 +49,9 @@ Lemma budget_example_fetches (sp : bv 64) t2 sigma2 ks n :
 Proof.
   intros Hsteps.
   set Sigma : gFunctors := #[islaΣ].
-  apply (zesu_budget_adequacy Sigma _ _ _ _ _ 2 _ _ _ _ ltac:(spec_solver) _ Hsteps).
+  apply: (@zesu_budget_adequacy Sigma riscv64_arch _ _ _ _ budget_example_spec _ 2
+    _ _ _ _ _ _ Hsteps).
+  { rewrite /budget_example_spec /scons. by left. }
   iIntros (?) "#Htable #Hcharged Hbudget _ Hspec _ /= !>".
   iSplitL; [|done]. iIntros (?) "Hregs".
   rewrite /budget_example_regs.
