@@ -79,7 +79,7 @@ class CheckRelocatableTests(unittest.TestCase):
         (tmp / 'ZesuSsz/Residuals/fn/Block.v').write_text(f'Lemma r : p <= ({bound})%Z -> pc = {ADDRESS}.\n')
         profiles = tmp / 'tools/block/functions'
         profiles.mkdir(parents=True)
-        row = {'name': 'inputHigh', 'value': 2 ** 31, 'source': 'Contract.v'}
+        row = {'name': 'inputHigh', 'source': 'Contract.v'}
         (profiles / 'fn.json').write_text(json.dumps({'non_address_constants': [row]}))
         code, text = run(['--root', str(tmp), '--list', str(tmp / 'list.json')])
         self.assertEqual(code, 1)
@@ -87,11 +87,11 @@ class CheckRelocatableTests(unittest.TestCase):
         self.assertIn(f'Block.v:1: absolute address {ADDRESS}', text)
         self.assertNotIn(f'Block.v:1: absolute address {bound}', text)
         self.assertIn(f'Contract.v:2: absolute address {bound}', text)
-        # A row the source does not declare with that value is refused.
-        (profiles / 'fn.json').write_text(json.dumps({'non_address_constants': [{**row, 'value': 2 ** 31 + 8}]}))
+        # A row whose source does not declare the constant as an integer expression is refused.
+        (profiles / 'fn.json').write_text(json.dumps({'non_address_constants': [{**row, 'name': 'other'}]}))
         code, text = run(['--root', str(tmp), '--list', str(tmp / 'list.json')])
         self.assertEqual(code, 2)
-        self.assertIn('does not declare inputHigh', text)
+        self.assertIn('does not declare other', text)
 
 
 if __name__ == '__main__':

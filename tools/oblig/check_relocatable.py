@@ -17,10 +17,11 @@ With FILE arguments it checks those files instead of the list. Other tools impor
 
 Non-address constants. A function profile (tools/block/functions/<F>.json) may list contract
 constants whose values fall in the image range but are no code address, `non_address_constants`
-[{`name`, `value`, `source`}]: `source` must declare `Notation <name> := ((<expr>) : Z)` with <expr>
-(integers, `+ - * ^`, parentheses) equal to `value` (an integer). A literal of that value is then
-no address in the residual modules of F (ZesuSsz/Residuals/<F>/) and in F's packaged goals
-(package.py); any other image literal still is.
+[{`name`, `source`}]: `source` must declare `Notation <name> := ((<expr>) : Z)` with <expr> an integer
+expression (`+ - * ^`, parentheses), else the row is refused. A literal of its value is then no
+address in the residual modules of F (ZesuSsz/Residuals/<F>/) and in F's packaged goals (package.py);
+any other image literal still is. The row names the constant, never its value, so the profile itself
+holds no address literal.
 """
 import argparse
 from fnmatch import fnmatchcase
@@ -67,21 +68,22 @@ def _evaluate(expr):
 
 
 def non_address_values(function, root=ROOT):
-    """The values of the profile's `non_address_constants` (module text); refused (ValueError) unless
-    each row's source declares the constant with that value."""
+    """The values of the profile's `non_address_constants`, read from each row's source declaration;
+    refused (ValueError) when the source does not declare the constant as an integer expression."""
     path = Path(root) / 'tools/block/functions' / (function + '.json')
     if not path.is_file():
         return frozenset()
     rows = json.loads(path.read_text()).get('non_address_constants', [])
     values = set()
     for row in rows:
-        if set(row) != {'name', 'value', 'source'} or not isinstance(row['value'], int):
-            raise ValueError(f'{path}: a non_address_constants row is {{name, value (integer), source}}')
+        if set(row) != {'name', 'source'}:
+            raise ValueError(f'{path}: a non_address_constants row is {{name, source}}')
         text = (Path(root) / row['source']).read_text()
         found = re.search(NOTATION % re.escape(row['name']), text, re.M)
-        if found is None or _evaluate(found['expr']) != row['value']:
-            raise ValueError(f"{path}: {row['source']} does not declare {row['name']} as {row['value']}")
-        values.add(row['value'])
+        value = _evaluate(found['expr']) if found else None
+        if value is None:
+            raise ValueError(f"{path}: {row['source']} does not declare {row['name']} as an integer expression")
+        values.add(value)
     return frozenset(values)
 
 
