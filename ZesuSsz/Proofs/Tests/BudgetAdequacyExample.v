@@ -60,12 +60,13 @@ Proof.
   iApply wp_asm_thread_ctx. iIntros (?) "Hctx".
   iMod (zesu_ram_sys_regs_init with "Hctx Hsys") as "[$ Hsys]"; [by vm_compute|].
   iModIntro.
+  iEval (change "PC" with (@arch_pc_reg riscv64_arch)) in "HPC".
   iApply (wp_next_instr_pre with "HPC [] [-]").
   - iApply (budget_example_block with "[] []").
     + iApply (budget_table_gap budget_example_instrs _ (BV 64 0x1008)
-        with "Htable Hcharged"); [by vm_compute | by vm_compute].
+        with "Htable Hcharged"); by vm_compute.
     + iApply (budget_charged_code with "Htable Hcharged").
-  - iFrame. done.
+  - iFrame.
 Qed.
 
 Print Assumptions budget_example_block.
