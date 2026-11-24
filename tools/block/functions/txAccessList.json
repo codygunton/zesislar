@@ -1184,6 +1184,15 @@
         },
         {
           "id": "loop_owned_4"
+        },
+        {
+          "id": "call6_produced_0"
+        },
+        {
+          "id": "call6_produced_0_call_after"
+        },
+        {
+          "id": "call6_produced_1"
         }
       ],
       "facts": [
@@ -1216,6 +1225,10 @@
         {
           "name": "tx_appendable",
           "type": "ArrayListState"
+        },
+        {
+          "name": "tx_scratch_append",
+          "type": "list byte"
         }
       ],
       "resources": [
@@ -1227,8 +1240,15 @@
           "coq": "arrayListPointer tx_appendable \u21a6\u2098\u2217 arrayListItems tx_appendable",
           "length": "arrayListLength tx_appendable * entriesElementBytes"
         },
-        "(arrayListPointer tx_appendable + arrayListLength tx_appendable * entriesElementBytes) \u21a6\u2098? ((arrayListCapacity tx_appendable - arrayListLength tx_appendable) * entriesElementBytes)",
-        "altFlBlock (arrayListPointer tx_appendable) (arrayListCapacity tx_appendable * entriesElementBytes) entriesLog2Alignment"
+        {
+          "coq": "(arrayListPointer tx_appendable + arrayListLength tx_appendable * entriesElementBytes) \u21a6\u2098? ((arrayListCapacity tx_appendable - arrayListLength tx_appendable) * entriesElementBytes)",
+          "minimum": 40
+        },
+        "altFlBlock (arrayListPointer tx_appendable) (arrayListCapacity tx_appendable * entriesElementBytes) entriesLog2Alignment",
+        {
+          "coq": "ziskExtraParamsAddress \u21a6\u2098\u2217 tx_scratch_append",
+          "length": "8"
+        }
       ],
       "replaces": [
         {
@@ -1251,6 +1271,9 @@
         },
         {
           "id": "loop_owned_8000042c_2"
+        },
+        {
+          "id": "loop_owned_80000248_3"
         }
       ],
       "facts": [
@@ -1274,6 +1297,9 @@
         },
         {
           "coq": "bv_unsigned {x16} = 32 * arrayListLength tx_appendable"
+        },
+        {
+          "coq": "Z.of_nat (List.length tx_scratch_append) = txAccessListScratchSize"
         }
       ],
       "predecessors": [
@@ -1386,6 +1412,6 @@
   },
   "generated_from": {
     "path": "tools/block/functions/txAccessList.annotations.json",
-    "sha256": "dda3bde60b7e36054bcbc9b137aea78bb919316a305f6de6fd2827f678fab0d2"
+    "sha256": "061bcda0141b7d0df7e2403434a11fa6f1759775332ea61fd43776950b72fc7e"
   }
 }

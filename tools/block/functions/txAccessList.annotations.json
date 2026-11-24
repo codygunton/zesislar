@@ -1002,7 +1002,7 @@
    "resources": [
     {"coq": "(bv_unsigned (txStackPointer args) - 448) ↦ₘ∗ arrayListHeaderBytes tx_appendable", "length": "24"},
     {"coq": "arrayListPointer tx_appendable ↦ₘ∗ arrayListItems tx_appendable", "length": "arrayListLength tx_appendable * entriesElementBytes"},
-    "(arrayListPointer tx_appendable + arrayListLength tx_appendable * entriesElementBytes) ↦ₘ? ((arrayListCapacity tx_appendable - arrayListLength tx_appendable) * entriesElementBytes)",
+    {"coq": "(arrayListPointer tx_appendable + arrayListLength tx_appendable * entriesElementBytes) ↦ₘ? ((arrayListCapacity tx_appendable - arrayListLength tx_appendable) * entriesElementBytes)", "minimum": 40},
     "altFlBlock (arrayListPointer tx_appendable) (arrayListCapacity tx_appendable * entriesElementBytes) entriesLog2Alignment",
     {"coq": "ziskExtraParamsAddress ↦ₘ∗ tx_scratch_append", "length": "8"}
    ],
