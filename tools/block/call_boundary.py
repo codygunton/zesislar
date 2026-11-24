@@ -49,6 +49,7 @@ the caller's own return address: its seed is the state the function exits with.
 """
 from dataclasses import replace
 from pathlib import Path
+import functools
 import hashlib
 import json
 import re
@@ -81,6 +82,16 @@ class CallRefused(ValueError):
 
 
 PROVED_FUNCTIONS = Path(__file__).resolve().parents[2] / 'ZesuSsz/Contracts/proved_functions.json'
+
+
+@functools.lru_cache(maxsize=None)
+def registered_unfold(head, root=None):
+    """Whether a contract predicate has a `LithiumUnfold (@head)` instance (ZesuSsz/Contracts, ZesuSsz/Interfaces):
+    the unfold a produced row's `as` pieces state, which the call block's proof uses."""
+    root = Path(root) if root else Path(__file__).resolve().parents[2]
+    pattern = re.compile(r'LithiumUnfold\s+\(@' + re.escape(head) + r'\)')
+    return any(pattern.search(path.read_text(errors='replace'))
+               for folder in ('ZesuSsz/Contracts', 'ZesuSsz/Interfaces') for path in (root / folder).rglob('*.v'))
 
 
 def interface_of(call, registry=None):
@@ -864,7 +875,11 @@ def call_return_seed(edges, *, call, function_root, root_seed, shapes, vocabular
         for placeholder, name in returned_names.items():
             text = re.sub(r'(?<![\w\'])' + placeholder + r'(?![\w\'])', name, text)
         return text
-    existential = [(name, kind) for name, kind in spec['pre_binders'] if instantiation.get(name, '') is None]
+    # A pre binder that nothing instantiates (an existential of the spec such as an allocator's `context`
+    # behind a framed resource) and that the carried facts name is bound with them, as a replaced array's is.
+    named_in_facts = set(_atoms(' '.join(spec['pre']['facts'] + spec['post']['facts'])))
+    existential = [(name, kind) for name, kind in spec['pre_binders']
+                   if instantiation.get(name, '') is None or name not in instantiation and name in named_in_facts]
     # A definition of a spec file is unfolded: the entry cannot import an internal spec module.
     # A black box's interface is imported, and its sealed names are never unfolded.
     raw = spec['pre']['facts'] + spec['post']['facts']
@@ -942,10 +957,22 @@ def call_return_seed(edges, *, call, function_root, root_seed, shapes, vocabular
     by_text = {}
     for component in ownership['components']:
         by_text.setdefault(component_text(component), []).append(component['id'])
-    consumed, produced = set(), []
+    consumed, produced, unfolded = set(), [], []
     for row in opaque_rows:
         text = listed_after[_normal_text(row['spec'])]
         if row['use'] == 'produced':
+            if 'as' in row:
+                # The pieces of the spec resource's registered unfold, in the call's terms; the call
+                # block proves them from the spec resource (an obligation, never assumed).
+                head = _strip_enclosure(text).split()[0]
+                if not registered_unfold(head):
+                    raise CallRefused('A produced row unfolds %s, which has no LithiumUnfold instance' % head)
+                pieces = [{**piece, 'coq': listed_text(piece['coq']),
+                           **({'length': listed_text(str(piece['length']))} if 'length' in piece else {})}
+                          if isinstance(piece, dict) else listed_text(piece) for piece in row['as']]
+                unfolded.append({'spec': text, 'pieces': pieces})
+                produced.extend({'piece': piece} for piece in pieces)
+                continue
             produced.append(text)
             continue
         callers = row.get('caller', [text] if row['use'] == 'framed' else [])
@@ -1134,8 +1161,46 @@ def call_return_seed(edges, *, call, function_root, root_seed, shapes, vocabular
         for link in result_links] + [
         {'kind': 'opaque', 'id': prefix + 'result_minimum_' + row['name'][len(prefix):], 'coq': '⌜' + row['fact'] + '⌝'}
         for row in result_minimums]
-    produced_nodes = []
+    produced_nodes, piece_minimums = [], []
     for index, text in enumerate(produced):
+        if isinstance(text, dict):
+            # A piece of an unfolded produced resource: an owned array needs its length ({coq, length}).
+            from loop_design import owned_node
+            try:
+                node = owned_node(text['piece'], index, prefix + 'produced_')
+            except ValueError as error:
+                raise CallRefused(str(error))
+            produced_nodes.append(node)
+            # A piece's `minimum` is a fact of the return entry (`m <= length`), proved by the call block;
+            # with `when` {register, value} (a returned register) it holds on that outcome only:
+            # `bv_unsigned R = value -> m <= length`, and the forward pass uses it where R = value.
+            piece = text['piece'] if isinstance(text['piece'], dict) else {}
+            minimum, when = piece.get('minimum'), piece.get('when')
+            if minimum is not None:
+                if 'length_original_coq' not in node:
+                    raise CallRefused('A piece minimum bounds a memory piece: ' + node['coq'])
+                fact = '%d <= %s' % (minimum, node['length_original_coq'])
+                guard = None
+                if when is not None:
+                    if when.get('register') not in returns.values():
+                        raise CallRefused('A piece minimum holds when a returned register has a value: '
+                                          + str(when.get('register')))
+                    name = prefix + when['register']
+                    register = input_expr(name, 64)
+                    low = when.get('low_bits')
+                    if low is not None:
+                        # The caller tests the low `low` bits (a zero-extended narrow return value: slli/srli).
+                        shift = bits(64 - low, 64)
+                        register = operation('bvlshr', operation('bvshl', register, shift), shift)
+                        fact = '(bv_unsigned %s mod 2 ^ %d = %d -> %s)' % (name, low, when['value'], fact)
+                    else:
+                        fact = 'bv_unsigned %s = %d -> %s' % (name, when['value'], fact)
+                    guard = operation('=', register, bits(when['value'], 64)).to_dict()
+                fact = '(' + fact + ')%Z'
+                piece_minimums.append({'resource_id': node['id'], 'minimum': minimum, 'fact': fact,
+                                       **({'guard': guard} if guard else {})})
+                produced_nodes.append({'kind': 'opaque', 'id': node['id'] + '_minimum', 'coq': '⌜' + fact + '⌝'})
+            continue
         points = re.fullmatch(r'(.+?)\s+(↦ₘ∗|↦ₘ\?|↦ₘ)\s+(.+)', text)
         if points is not None and points[2] != '↦ₘ?':
             raise CallRefused('A produced spec resource holds bytes the design does not name: ' + text)
@@ -1233,6 +1298,12 @@ def call_return_seed(edges, *, call, function_root, root_seed, shapes, vocabular
                                                     'minimum': row['minimum']},
                                  'coq_statement': row['fact']},
                        'origin': {'call_design': call['call_site_pc'], 'result_minimums': row['name']}})
+    # A piece minimum is the lower bound of the piece's length that admits the stores into it.
+    for row in piece_minimums:
+        copied.append({'fact_id': row['resource_id'] + ':minimum', 'kind': 'bounds', 'status': 'supplied',
+                       'terms': {'resource_id': row['resource_id'], 'index': 0, 'count': row['minimum'],
+                                 'coq_statement': row['fact'], **({'guard': row['guard']} if 'guard' in row else {})},
+                       'origin': {'call_design': call['call_site_pc'], 'piece_minimum': row['resource_id']}})
     try:
         seed = seed_owned_resources(public, entry_pc=return_pc, vocabulary=vocabulary, constants=constants or {},
                                     facts=copied)
@@ -1268,5 +1339,6 @@ def call_return_seed(edges, *, call, function_root, root_seed, shapes, vocabular
               'named_registers': {key: value.value for key, value in registers.items() if value in named.values()},
               **({'named_arguments': named_arguments} if named_arguments else {}),
               'havoc_registers': [binder['name'] for binder in binders if binder['name'].startswith(prefix + 'x')],
-              **({'renewed_system_registers': renewed_exact} if renewed_exact else {})}
+              **({'renewed_system_registers': renewed_exact} if renewed_exact else {}),
+              **({'unfolded_produced': unfolded} if unfolded else {})}
     return seed, public, report

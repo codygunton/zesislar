@@ -99,7 +99,8 @@ def class_components(order, sources, changed, path_conditions, names):
         register = re.match(r'"(x\d+)" ↦ᵣ', text)
         if register and register[1] in changed:
             owned.append('"%s" ↦ᵣ RVal_Bits (%s : bv 64%%N)' % (register[1], changed[register[1]]))
-        elif text == 'True':
+        elif text in ('True', 'K'):
+            # The closing leaf; below a loop-owned root it is the continuation K, framed outside the class.
             continue
         elif text.startswith('⌜'):
             pure.append(text)
@@ -189,10 +190,13 @@ def owned_seed(seed, design, head, vocabulary):
     from resource_seed import seed_owned_resources
     from symbolic_state import input_expr
     owned = design['owned']
-    sources = {component['id']: str(component['seed_component'].get(
-        'original_component', component['seed_component'].get('coq', ''))) for component in seed.ownership['components']}
+    # A pure component a join added (a relation, a design fact, its edge-guard fact) has no root seed node: its
+    # node is its text.
+    seeded = {component['id']: component.get('seed_component') or {'kind': 'opaque', 'coq': component['source']}
+              for component in seed.ownership['components']}
+    sources = {key: str(node.get('original_component', node.get('coq', ''))) for key, node in seeded.items()}
     removed = set(replaced_components(owned, sources))
-    nodes = [{**component['seed_component'], 'id': component['id']} for component in seed.ownership['components']
+    nodes = [{**seeded[component['id']], 'id': component['id']} for component in seed.ownership['components']
              if component['id'] not in removed]
     # A pure fact keeps the text the join gave it (a fact of a binder the join dropped is in its hidden
     # history group or `⌜True⌝`), not its text in the root seed.
@@ -241,6 +245,17 @@ def owned_seed(seed, design, head, vocabulary):
     rebuilt.state.memory = [known.get(region.ownership_id, region) for region in rebuilt.state.memory]
     rebuilt.state.word_links = [dict(link) for link in seed.state.word_links if link['resource_id'] not in removed]
     rebuilt.join_kind = 'loop_head'
+    return rebuilt
+
+
+def owned_join_seed(seed, owned, pc, vocabulary):
+    """The seed of a join with an `owned` design (profile `join_owned`, annotations.py): the joined seed
+    without the components `replaces` names, plus the design's resources, existential binders and the
+    facts that name them (owned_seed). The join keeps its kind, edges and witness plan; each predecessor
+    block proves the entry, so nothing of the design is assumed."""
+    rebuilt = owned_seed(seed, {'owned': owned, 'facts': owned.get('facts', [])}, pc, vocabulary)
+    for field in ('join_kind', 'join_edges', 'join_witness_plan', 'join_refusals'):
+        setattr(rebuilt, field, getattr(seed, field))
     return rebuilt
 
 

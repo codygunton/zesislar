@@ -306,6 +306,15 @@ class _Facts:
                 lower, evidence = minimum, {'kind': 'path_condition', 'condition': condition.to_dict()}
         return lower, evidence
 
+    def holds(self, guard):
+        """Whether a fact's `guard` (an equation, call_boundary's guarded piece minimum) holds on this path:
+        no guard, a path condition, or its two sides equal under the path's substitutions."""
+        if guard is None:
+            return True
+        guard = Expr.from_dict(guard)
+        left, right = map(self.canonical, guard.args)
+        return left == right or guard in self.conditions or operation('=', right, left) in self.conditions
+
     def lower_bound(self, resource):
         length = resource.length
         if isinstance(length, int):
@@ -320,7 +329,7 @@ class _Facts:
                 views.add(self.canonical(Expr.from_dict(fact['terms']['length_view'])))
         for fact in self.available('bounds'):
             terms = fact['terms']
-            if not {'resource_id', 'index', 'count'}.issubset(terms):
+            if not {'resource_id', 'index', 'count'}.issubset(terms) or not self.holds(terms.get('guard')):
                 continue
             minimum = terms['index'] + terms['count']
             if terms['resource_id'] == resource.id and minimum > lower:

@@ -35,9 +35,23 @@ The compiled profile keys, by `boundary`:
                    step in the kernel from contradictory guards; a `pc` with its own seed (a call return
                    site) keeps that seed's entry, any other gets ⌜False⌝. Its facts of role `relies_on`
                    record the guards it relies on, as documentation only (never emitted).
+                   A row with `resources` or `replaces` adds `join_owned[pc]` in the loop_cut owned schema
+                   ({`binders`, `resources`, `replaces`}, plus the row's `facts` that name its binders and
+                   `predecessors` from `at.predecessors`, at least two blocks): the join seed without the
+                   replaced components, plus the resources and facts (loop_design.owned_seed). A replaced
+                   item (a text, or {id}: that component's text in each seed that has it) is dropped from
+                   each edge that holds it (lifted or on the join's root) and from the root before the
+                   edges are generalized, so the edges may disagree on it; an item no edge and no root
+                   holds is refused. Its binders
+                   are existentials (typed, no register or role, no Boolean selector, never `= literal`);
+                   each predecessor block proves the entry, and `test` reports the visits per predecessor.
   call_site        a `calls` row: the row's `call` object with `call_site_pc`. Its `opaque` rows
                    [{`spec`, `use`: framed | consumed | produced, `caller`: [...]}] name spec resources in
-                   the spec's text and, for a consumed one, the caller components it takes; its `returns`
+                   the spec's text and, for a consumed one, the caller components it takes (a framed one
+                   may name them too); a produced row's `as` [text | {coq, length?, minimum?, when?}] states the
+                   spec resource by the pieces of its LithiumUnfold, which the call block proves (a piece's integer
+                   `minimum` m adds `m <= length` of the piece to the return entry, proved there too; with `when`
+                   {register, value} of a `returns` register, `bv_unsigned R = value -> m <= length`); its `returns`
                    rows [{`index`, `register`}] name the returned registers the continuation reads; its
                    `result_words` {byte offset: Z value} name words of the returned array the return entry
                    states and the seed reads as the value (`{argv:N}`, `{fresh:NAME:TYPE}` in the value);
@@ -85,6 +99,10 @@ lets bound before every row's binders (a contract's `args` record from the entry
 takes a JSON list `[coqc, flag, ...]` (a render's coqc-args.json) whose load paths the imports need.
 Each fact is evaluated with `Eval vm_compute in bool_decide (...)`. One false fact rejects the row and names
 its input; a fact that does not elaborate (a contract name the snapshot cannot give) is reported unchecked.
+A `potential` row (its own binders, else those of the cut's loop_cut row) is tested against the fetch
+count of each run that returned (`RUN/exec/<input>/RESULT.json`, `insns`): at every visit of the cut, the
+instructions executed from that visit to the function return, both included, are at most the potential,
+and at the first visit after a loop entry at most the `entry_bound` too.
 """
 from pathlib import Path
 import argparse
@@ -105,7 +123,7 @@ SCHEMA = 'zesu.annotations.v1'
 BOUNDARIES = ('entry', 'loop_cut', 'join', 'call_site', 'call_return', 'function_return', 'access', 'frame')
 GENERATED_KEYS = ('loop_designs', 'join_designs', 'calls', 'function_returns', 'access_placements',
                   'domain_component', 'opaque_predicates', 'unreachable_entries', 'unreachable_reached',
-                  'join_drops', 'generated_from', 'potentials')
+                  'join_drops', 'generated_from', 'potentials', 'join_owned')
 POTENTIAL_KEYS = {'id', 'request', 'at', 'potential', 'entry_bound', 'author'}
 REGISTER_BINDER = re.compile(r'(?:machine|call|loop)_x\d+')
 IDENTIFIER = re.compile(r"(?<![\w'.])[A-Za-z_][\w']*(?![\w'.])")
@@ -197,6 +215,21 @@ def _check_call(row):
                 or not all(isinstance(text, str) for text in callers):
             raise AnnotationError('%s: a consumed opaque row names its caller resources, a produced one none'
                                   % row['id'])
+        pieces = item.get('as')
+        if pieces is not None and (item['use'] != 'produced' or not isinstance(pieces, list) or not pieces
+                                   or not all(isinstance(piece, str) or isinstance(piece, dict)
+                                              and 'coq' in piece and set(piece) <= {'coq', 'length', 'minimum', 'when'}
+                                              and type(piece.get('minimum', 1)) is int and piece.get('minimum', 1) > 0
+                                              and ('when' not in piece or 'minimum' in piece
+                                                   and isinstance(piece['when'], dict)
+                                                   and {'register', 'value'} <= set(piece['when'])
+                                                   <= {'register', 'value', 'low_bits'}
+                                                   and type(piece['when']['value']) is int
+                                                   and piece['when'].get('low_bits', 1) in range(1, 64))
+                                              for piece in pieces)):
+            raise AnnotationError('%s: `as` belongs to a produced opaque row: its pieces are texts or '
+                                  '{coq, length?, minimum?, when?} (minimum a positive integer, when '
+                                  '{register, value, low_bits?} with a minimum)' % row['id'])
     for item in row['call'].get('returns', []):
         if not isinstance(item.get('index'), int) or not re.fullmatch(r'x(1[0-7])', str(item.get('register'))):
             raise AnnotationError('%s: a returns row has an integer `index` and an argument register' % row['id'])
@@ -212,6 +245,52 @@ def _check_call(row):
         raise AnnotationError('%s: result_minimums maps fresh Z binders of result_words to integers' % row['id'])
 
 
+def _owned_names(row):
+    return {binder['name'] for binder in row.get('binders', []) if not binder.get('register')}
+
+
+def _words(text):
+    return set(IDENTIFIER.findall(text))
+
+
+LITERAL = r"(?:true|false|-?\d+(?:%Z)?|\(?BV\s+\d+%N\s+-?\d+%Z\)?)"
+
+
+def _join_owned(row):
+    """The `owned` design of a join row, in the loop_cut owned schema ({binders, resources, replaces}),
+    with the row's facts that name its binders and the join's predecessor blocks. The binders are
+    existentials of the join entry: typed, held by no register, no Boolean path selector, never fixed to
+    a branch literal; each predecessor block proves the entry from its own state."""
+    binders = row.get('binders', [])
+    if any(binder.get('register') or binder.get('role') for binder in binders):
+        raise AnnotationError('%s: an owned join binder is existential: no register, no role' % row['id'])
+    if any(not isinstance(binder.get('type'), str) or not binder['type'].strip() for binder in binders):
+        raise AnnotationError('%s: an owned join binder has a `type`' % row['id'])
+    if any(binder['type'].strip() in ('bool', 'Datatypes.bool', 'Prop') for binder in binders):
+        raise AnnotationError('%s: an owned join binder is no Boolean path selector' % row['id'])
+    names = _owned_names(row)
+    facts = [fact for fact in row.get('facts', []) if names & _words(fact['coq'])]
+    for fact in facts:
+        for name in names:
+            pattern = r'\s*\(?\s*(?:%s\s*=\s*%s|%s\s*=\s*%s)\s*\)?\s*' % (re.escape(name), LITERAL, LITERAL, re.escape(name))
+            if re.fullmatch(pattern, fact['coq']):
+                raise AnnotationError('%s: an owned join binder is never fixed to a branch literal: %s'
+                                      % (row['id'], fact['coq']))
+    for item in row.get('resources', []):
+        if not (isinstance(item, str) or isinstance(item, dict) and set(item) == {'coq', 'length'}):
+            raise AnnotationError('%s: an owned join resource is a text or {coq, length}' % row['id'])
+    for item in row.get('replaces', []):
+        if not (isinstance(item, str) or isinstance(item, dict) and set(item) == {'id'}):
+            raise AnnotationError('%s: a replaced join component is a text or {id}' % row['id'])
+    predecessors = row['at'].get('predecessors')
+    if not isinstance(predecessors, list) or len(predecessors) < 2 \
+            or not all(isinstance(pc, str) and PC.fullmatch(pc) for pc in predecessors):
+        raise AnnotationError('%s: an owned join row lists its predecessor blocks (`at.predecessors`)' % row['id'])
+    return {'binders': [{'name': binder['name'], 'type': binder['type']} for binder in binders],
+            'resources': list(row.get('resources', [])), 'replaces': list(row.get('replaces', [])),
+            'facts': [{'coq': fact['coq']} for fact in facts], 'predecessors': list(predecessors)}
+
+
 def compile_profile(data, source=None):
     """The function profile of an annotation file (see the module text)."""
     validate(data)
@@ -220,7 +299,7 @@ def compile_profile(data, source=None):
     profile.setdefault('symbol', data['symbol'])
     heads = list(profile.get('loop_heads', []))
     loop_designs, join_designs, calls, returns, placements = [], {}, [], [], []
-    unreachable, reached_pcs, drops = [], [], {}
+    unreachable, reached_pcs, drops, join_owned = [], [], {}, {}
     rows = data['rows']
     for row in rows:
         at, boundary = row['at'], row['at']['boundary']
@@ -288,6 +367,9 @@ def compile_profile(data, source=None):
                         or not all(isinstance(text, str) for text in item['resources']):
                     raise AnnotationError('%s: a drop row has `root` and its resource texts' % row['id'])
                 drops.setdefault(at['pc'], []).append(dict(item))
+            if row.get('resources') or row.get('replaces'):
+                owned, facts = _join_owned(row), [fact for fact in facts if not _owned_names(row) & _words(fact['coq'])]
+                join_owned[at['pc']] = owned
             join_designs.setdefault(at['pc'], []).extend(_join_fact(fact) for fact in facts)
         elif boundary == 'call_site':
             if 'call' not in row:
@@ -299,10 +381,17 @@ def compile_profile(data, source=None):
                             'return_fact': ' /\\ '.join(fact['coq'] for fact in facts) if facts else True})
         elif boundary == 'access':
             placement = row.get('placement') or {}
-            missing = {'array', 'index', 'scale', 'offset'} - set(placement)
-            if missing:
-                raise AnnotationError('%s: placement lacks %s' % (row['id'], ', '.join(sorted(missing))))
-            placements.append({'pc': at['pc'], **{key: placement[key] for key in ('array', 'index', 'scale', 'offset')}})
+            if 'region' in placement:
+                # A store into an owned uninitialized region named by its address text, at a constant offset.
+                if set(placement) != {'region', 'offset'} or not isinstance(placement['offset'], int) \
+                        or not isinstance(placement['region'], str):
+                    raise AnnotationError('%s: a store placement is {region: address text, offset: integer}' % row['id'])
+                placements.append({'pc': at['pc'], 'region': placement['region'], 'offset': placement['offset']})
+            else:
+                missing = {'array', 'index', 'scale', 'offset'} - set(placement)
+                if missing:
+                    raise AnnotationError('%s: placement lacks %s' % (row['id'], ', '.join(sorted(missing))))
+                placements.append({'pc': at['pc'], **{key: placement[key] for key in ('array', 'index', 'scale', 'offset')}})
         elif boundary == 'frame':
             slots, sites = row.get('slots') or [], row.get('sites') or []
             if not slots or not sites or row.get('facts') \
@@ -336,7 +425,7 @@ def compile_profile(data, source=None):
     for key, value in (('loop_designs', loop_designs), ('join_designs', join_designs), ('calls', calls),
                        ('function_returns', returns), ('access_placements', placements),
                        ('unreachable_entries', unreachable), ('unreachable_reached', reached_pcs),
-                       ('join_drops', drops), ('join_frames', join_frames),
+                       ('join_drops', drops), ('join_frames', join_frames), ('join_owned', join_owned),
                        ('potentials', _potentials(rows, heads))):
         if value:
             profile[key] = value
@@ -588,15 +677,31 @@ def test_rows(data, run, row_ids=None, coqc=None):
     imports, lets = setup.get('imports', []), setup.get('lets', [])
     rows = [row for row in data['rows'] if row_ids is None or row['id'] in row_ids]
     checked, unchecked, untested = 0, [], []
+    # An owned join row is checked on the visits of each predecessor path the corpus covers.
+    coverage = {row['id']: join_coverage(run, row) for row in rows
+                if row['at']['boundary'] == 'join' and row['at'].get('predecessors')}
     with tempfile.TemporaryDirectory() as directory:
         for row in rows:
-            if not row.get('facts'):
+            if not row.get('facts') and not row.get('potential'):
                 continue
+            if row.get('potential') and not row.get('binders'):
+                # A potential row without binders is over the binders (and loop entry) of the cut's row.
+                cut = next((other for other in data['rows'] if other.get('binders') and other['at']['pc'] ==
+                            row['at']['pc'] and other['at']['boundary'] == 'loop_cut'), {})
+                row = {**row, 'at': {**cut.get('at', {}), **row['at']}, 'binders': cut.get('binders', [])}
             visits = snapshots(run, row)
             if not visits:
                 untested.append(row['id'])
                 continue
-            facts = list(row['facts'])
+            if row.get('potential'):
+                result = test_potential(row, run, visits, coqc, directory, imports, lets)
+                if result.get('verdict') == 'rejected':
+                    return result
+                checked += result['checked']
+                unchecked += result['unchecked']
+            facts = list(row.get('facts', []))
+            if not facts:
+                continue
 
             def terms_of(facts):
                 return [fact_term(row, fact, entry, visit, start, lets)
@@ -623,7 +728,71 @@ def test_rows(data, run, row_ids=None, coqc=None):
                 else:
                     unchecked.append({'row': row['id'], 'input': input_id, 'fact': fact['coq'], 'error': value})
     return {'verdict': 'passed' if checked else 'untested', 'checked': checked, 'unchecked': unchecked,
-            'untested_rows': untested}
+            'untested_rows': untested, **({'join_coverage': coverage} if coverage else {})}
+
+
+def join_coverage(run, row):
+    """{predecessor: visits} of a join row over RUN/exec: a visit of the join comes from the listed
+    predecessor block with the latest visit before it (a predecessor with 0 visits is a path the corpus
+    does not cover)."""
+    counts = {pc: 0 for pc in row['at']['predecessors']}
+    for directory in sorted(Path(run, 'exec').glob('*/')):
+        state = directory / ('STATE-%s.json' % offset_key(row['at']['pc']))
+        if not state.exists():
+            continue
+        marks = []
+        for pc in row['at']['predecessors']:
+            path = directory / ('STATE-%s.json' % offset_key(pc))
+            if path.exists():
+                marks += [(visit.get('insn', 0), pc) for visit in json.loads(path.read_text())['visits']]
+        for visit in json.loads(state.read_text())['visits']:
+            before = [mark for mark in marks if mark[0] < visit.get('insn', 0)]
+            source = max(before)[1] if before else 'unattributed'
+            counts[source] = counts.get(source, 0) + 1
+    return counts
+
+
+def fetch_counts(run):
+    """{input id: instructions the run executed} of every RUN/exec/<dir>/RESULT.json that returned."""
+    counts = {}
+    for path in sorted(Path(run, 'exec').glob('*/RESULT.json')):
+        result = json.loads(path.read_text())
+        if result.get('stop') == 'returned':
+            counts[result.get('input', path.parent.name)] = result['insns']
+    return counts
+
+
+def test_potential(row, run, visits, coqc, directory, imports=(), lets=()):
+    """The potential row's bound on the machine runs: at each visit of the cut, the instruction fetches
+    from that visit to the function return (the visit's own instruction and the return included:
+    `insns - insn + 1`, `insn` counting the visit's instruction) are at most the potential; at the
+    first visit after each loop entry they are at most the `entry_bound` as well. A run that did not
+    return gives no count. A term that does not elaborate is unchecked."""
+    counts = fetch_counts(run)
+    terms, labels = [], []
+    for input_id, entry, visit, start in visits:
+        if input_id not in counts:
+            continue
+        fetches = counts[input_id] - visit['insn'] + 1
+        bounds = [('potential', row['potential'])]
+        # snapshots() gives the loop-entry visit's own register map as the entry registers.
+        if row.get('entry_bound') and entry is visit['regs']:
+            bounds.append(('entry_bound', row['entry_bound']))
+        for kind, text in bounds:
+            fact = {'coq': '(%d <= (%s))%%Z' % (fetches, text)}
+            terms.append(fact_term(row, fact, entry, visit, start, lets))
+            labels.append((input_id, visit, kind, text, fetches))
+    values = evaluate(terms, coqc, directory, imports=imports) if terms else []
+    checked, unchecked = 0, []
+    for (input_id, visit, kind, text, fetches), value in zip(labels, values):
+        if value is True:
+            checked += 1
+        elif value is False:
+            return {'verdict': 'rejected', 'row': row['id'], 'input': input_id, 'visit': visit.get('visit'),
+                    'pc': row['at']['pc'], 'fact': '%s: %d fetches to the return > %s' % (kind, fetches, text)}
+        else:
+            unchecked.append({'row': row['id'], 'input': input_id, 'fact': '%s %s' % (kind, text), 'error': value})
+    return {'checked': checked, 'unchecked': unchecked}
 
 
 def main():

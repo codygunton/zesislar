@@ -147,6 +147,31 @@ class RegisterDefinition(unittest.TestCase):
         self.assertEqual(plan['dropped_binders'][0]['rule'], 'register_definition')
 
 
+class HeldBinders(unittest.TestCase):
+    """Profile `held_binders`: a named binder is kept as an owned ghost, so a span whose bytes name it stays exact."""
+
+    def tearDown(self):
+        entry_hist.HELD_BINDERS = frozenset()
+
+    def run_drop(self):
+        byte = operation('extract', input_expr('off', 64), width=8, value=0)
+        state = state_with({}, [])
+        state.memory = [MemoryRegion(input_expr('base', 64), (byte,), None, 1, ownership_id='span')]
+        components = [{'id': 'span', 'kind': 'byte_array', 'source': 'base ↦ₘ∗ [' + byte.coq() + ']',
+                       'address_z': 'base', 'value': '[' + byte.coq() + ']', 'fraction': None}]
+        plan = {'binders': []}
+        drop_unheld_binders(state, components, {}, [{'name': 'off', 'type': 'Z'}], plan, ['x1'],
+                            lambda key, writes: '')
+        return components[0]['kind'], plan.get('dropped_binders')
+
+    def test_a_held_binder_keeps_the_bytes_that_name_it(self):
+        self.assertEqual(self.run_drop()[0], 'unknown_byte_array')
+        entry_hist.configure({'entry_hist': 'wrap', 'held_binders': ['off']})
+        self.assertEqual(self.run_drop(), ('byte_array', None))
+        with self.assertRaisesRegex(ValueError, 'held_binders'):
+            entry_hist.configure({'entry_hist': 'wrap', 'held_binders': 'off'})
+
+
 class StoredRegisterValue(unittest.TestCase):
     """An inherited array binder that an owned span holds only through a stored register value."""
     array = input_expr('call_after', None)
