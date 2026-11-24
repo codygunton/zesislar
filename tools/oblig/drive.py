@@ -1339,7 +1339,8 @@ def sync_package_class(function, run, located, counts):
     """Bring a goal's class to its package record (package.py PACKAGE.json), no model: a package of class
     ADDRESS files `derived` class ADDRESS (route.py sends it to the statement owner); a goal filed ADDRESS
     whose package now has no class (its address literals became symbol notations, `symbols` in the
-    record) files `derived` with its leftover class (replay.goal_class), so the ladder runs."""
+    record, or are the profile's non-address constants, `non_address`) files `derived` with its leftover
+    class (replay.goal_class), so the ladder runs."""
     state, filed = fold(run), 0
     for identifier, item in state.items():
         where = located.get(identifier)
@@ -1351,7 +1352,8 @@ def sync_package_class(function, run, located, counts):
             continue
         if record.get("class") == "ADDRESS" and item["goal_class"] != "ADDRESS":
             cls = "ADDRESS"
-        elif record.get("class") is None and record.get("symbols") and item["goal_class"] == "ADDRESS":
+        elif (record.get("class") is None and (record.get("symbols") or record.get("non_address"))
+              and item["goal_class"] == "ADDRESS"):
             cls = replay.goal_class(where.goal["statement"])
         else:
             continue

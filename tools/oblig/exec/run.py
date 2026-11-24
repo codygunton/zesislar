@@ -486,6 +486,33 @@ class DecodeParentHeader(Profile):
         return out
 
 
+class DecodeItem(Profile):
+    """a0 = result (40 bytes), a1 = input pointer, a2 = input length.
+
+    Result: payload pointer at 0, payload length at 8, kind byte at 16 (0 string, 1 list), bytes consumed
+    at 24, error code (u16) at 32: 0 on success; the error exit stores 4 there and zeroes the other words.
+    """
+    name, symbol = 'decodeItem', 'rlp.decodeItem'
+
+    def setup(self, m, row):
+        data = bytes.fromhex(row['hex'])
+        m.own('input', DATA_PTR, len(data), False, data)
+        m.own('result', RESULT_PTR, 40, True, b'\xaa' * 40)
+        return [RESULT_PTR, DATA_PTR, len(data)]
+
+    def outcome(self, m, row):
+        r = m.read(RESULT_PTR, 40)
+        w = lambda o: struct.unpack_from('<Q', r, o)[0]  # noqa: E731
+        error = struct.unpack_from('<H', r, 32)[0]
+        out = {'result_hex': r.hex()}
+        if error == 0:
+            out.update(kind='Success', item='list' if r[16] else 'string', payload_offset=w(0) - DATA_PTR,
+                       payload_len=w(8), consumed=w(24))
+        else:
+            out.update(kind='Error', error=error)
+        return out
+
+
 class TxAccessList(Profile):
     """a0 = result `{ptr, len, err:u16}` (24 bytes), a1 = *Allocator, a2 = rest: *[]const u8.
 
@@ -599,8 +626,8 @@ class KeysEnsureCapacity(ArrayList):
         return out
 
 
-PROFILES = {p.name: p for p in (DecodeParentHeader(), TxAccessList(), KeysToOwnedSlice(), EntriesToOwnedSlice(),
-                                KeysEnsureCapacity())}
+PROFILES = {p.name: p for p in (DecodeParentHeader(), DecodeItem(), TxAccessList(), KeysToOwnedSlice(),
+                                EntriesToOwnedSlice(), KeysEnsureCapacity())}
 
 
 # -- driver -----------------------------------------------------------------------------------
