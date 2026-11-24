@@ -10,6 +10,7 @@ Require Import stdpp.bitvector.definitions.
 Require Import ZesuSsz.Contracts.RlpDecodeItemContract.
 Require Import ZesuSsz.Contracts.DecodeItemChargedSelected.
 Require Import ZesuSsz.Automation2.All.
+Require Import ZesuSsz.Residuals.decodeItemBudget.Block0154.
 Local Open Scope Z_scope.
 #[local] Typeclasses Transparent decodeItemChargedCode.
 
