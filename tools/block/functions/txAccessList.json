@@ -776,6 +776,9 @@
       "spec": "altFlAllocCallSpec",
       "spec_module": "ZesuSsz.Contracts.AltFlAllocPremises",
       "spec_source": "ZesuSsz/Contracts/AltFlAllocPremises.v",
+      "folded_definitions": [
+        "altFlAllocDomain"
+      ],
       "stack_bytes": 16,
       "arrays": [],
       "output_length_source": "altFlAllocCallSpec (AltFlAllocPremises.v): the returned block owns altFlAllocatedBytes x10 (argument 1) bytes, uninitialized",
@@ -808,6 +811,9 @@
       "spec": "altFlFreeCallSpec",
       "spec_module": "ZesuSsz.Contracts.AltFlAllocPremises",
       "spec_source": "ZesuSsz/Contracts/AltFlAllocPremises.v",
+      "folded_definitions": [
+        "altFlFreeDomain"
+      ],
       "stack_bytes": 16,
       "arrays": [],
       "output_length_source": "altFlFreeCallSpec (AltFlAllocPremises.v): returns altFlHeap only; no array",
@@ -1211,7 +1217,7 @@
           "coq": "arrayListItems tx_grown = arrayListItems tx_entries"
         },
         {
-          "coq": "arrayListLength tx_grown < arrayListCapacity tx_grown"
+          "coq": "(arrayListLength tx_grown < arrayListCapacity tx_grown)%Z"
         },
         {
           "coq": "arrayListWellFormed entriesElementBytes tx_grown"
@@ -1289,16 +1295,16 @@
           "coq": "arrayListItems tx_appendable = arrayListItems tx_entries"
         },
         {
-          "coq": "arrayListLength tx_appendable < arrayListCapacity tx_appendable"
+          "coq": "(arrayListLength tx_appendable < arrayListCapacity tx_appendable)%Z"
         },
         {
           "coq": "arrayListWellFormed entriesElementBytes tx_appendable"
         },
         {
-          "coq": "bv_unsigned {x12} = 8 * arrayListLength tx_appendable"
+          "coq": "(bv_unsigned {x12} = 8 * arrayListLength tx_appendable)%Z"
         },
         {
-          "coq": "bv_unsigned {x16} = 32 * arrayListLength tx_appendable"
+          "coq": "(bv_unsigned {x16} = 32 * arrayListLength tx_appendable)%Z"
         },
         {
           "coq": "Z.of_nat (List.length tx_scratch_append) = txAccessListScratchSize"
@@ -1420,6 +1426,6 @@
   },
   "generated_from": {
     "path": "tools/block/functions/txAccessList.annotations.json",
-    "sha256": "932ee008dfee1deadbe076e5eae8663ac57377b68b7f4df6db50571fa2db21a4"
+    "sha256": "ca32b74ab8dbef01e38c7c0ef24a052a6113f11b7cbaf9d8e5d73ebc18f5b6c7"
   }
 }
