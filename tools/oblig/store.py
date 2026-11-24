@@ -409,17 +409,22 @@ def derived_states(function, run, callers=None):
     for directory in residual_runs(run):
         manifest = read_json(directory / 'MANIFEST.json', {})
         case = manifest.get('block')
-        rows = {goal['id']: goal for goal in manifest.get('goals', [])}
-        for goal in manifest.get('goals', []):
+        goals = manifest.get('goals', [])
+        status_of = {goal['id']: read_json(directory / 'goals' / goal['id'] / 'STATUS.json', {}) for goal in goals}
+        # Rows with one statement are one obligation: a PASS of any of them closes it.
+        passed = {goal.get('statement') for goal in goals if status_of[goal['id']].get('result') == 'PASS'}
+        rows = {goal['id']: goal for goal in goals}
+        for goal in goals:
             statement = goal.get('statement')
             if not case or not statement:
                 continue
             gdir = directory / 'goals' / goal['id']
-            status = read_json(gdir / 'STATUS.json', {})
+            status = status_of[goal['id']]
+            if statement in passed and status.get('result') != 'PASS':
+                continue
             st, cls = GOAL_RESULTS.get(status.get('result', 'OPEN'), ('derived', None))
             # A goal normalised into parts (tools/oblig/normalise.py) waits for its first open part.
-            open_parts = [rows[p] for p in goal.get('parts') or []
-                          if p in rows and read_json(directory / 'goals' / p / 'STATUS.json', {}).get('result') != 'PASS']
+            open_parts = [rows[p] for p in goal.get('parts') or [] if p in rows and rows[p]['statement'] not in passed]
             if st != 'closed' and open_parts:
                 st, cls = 'blocked-on', goal_id(function, case, open_parts[0]['statement'])
             proof = gdir / 'proof.v'

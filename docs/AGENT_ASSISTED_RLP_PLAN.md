@@ -1,235 +1,156 @@
-# Agent-assisted proofs: `txAccessList` and its array-list callees
+# Agent-assisted proofs: finish `txAccessList`, add step budgets by forking Islaris
 
 ## Context
 
-The block-automation plan (issue #316) ended with `decodeItem`, `nextUint64` and `decodeParentHeader` proved (132 blocks).
-Its held-out runs showed what stops new code: the generator's inference and missing contract facts, not the rule library (3 of 255 unseen blocks closed).
-This plan stops growing that inference. Every point where the generator stops becomes a typed request; agents propose the answer and the Rocq kernel checks it; cheap models prove the narrow goals.
-It proves `rlp_decode.txAccessList` and its three array-list callees (130 blocks, 4 functions) with that pipeline, proves agreement with Sail's `decode_access_list`, and then sizes `rlp_decode.decodeTxFields` (591 blocks), the last unproved RLP decoder.
+The agent-assisted plan (issue #347) proves `rlp_decode.txAccessList` and its three array-list callees and its agreement with Sail. Stage A (tooling) is done; two of four functions are proved. This revision keeps the remaining proof work and adds Stage T: termination, as a bound on executed instructions, built into the same block proofs. Every theorem today is partial correctness: Islaris uses Iris's partial weakest precondition and its adequacy theorem is safety of a finite run. The user wants one clean mechanism, obtained by extending the Islaris fork this project already uses.
 
-Terms used below:
+Terms:
+- **Charged address**: an instruction address whose every fetch consumes one step credit.
+- **Step credit**: a ghost resource; `step_credits n` allows `n` fetches of charged instructions.
+- **Budget**: the credits a function's entry owns; a count of instructions for loop-free code, a potential expression at a loop cut.
+- **Region owner**: an Opus agent that runs one function's proof loop (render, bench, package, register, compose).
 
-- **Obligation**: one thing the kernel must accept: a block, a leftover goal of a block, a pure lemma of the Sail agreement, or a decision.
-- **Leftover goal**: a goal that `zesu_block2` leaves open. It is *pure* (a proposition) or *spatial* (an Iris entailment).
-- **Request**: a typed question raised by a generator stop or refusal.
-- **Annotation**: the checked answer to a request: an assertion at a program point, or the placement of a memory access.
-- **Decision**: a request whose answer must be invented: a contract, a loop assertion, a callee premise. Its *floor* for a function is 1 contract + 1 assertion per loop cut + 1 premise per unproved callee.
-- **Tier**: one model setting used as a prover, ordered by cost.
-- **Run directory**: `_build/agents/aa/<function>/`, outside the source tree.
+## State at re-entry (2026-11-24, `origin/main` at `07d59f3bd` or later)
 
-All measures in this plan are counts of tasks, obligations, decisions, attempts, lines, bytes and tokens. No time or CPU measure decides anything.
+- Merged: tooling (`tools/oblig/*`, `rocq-prover` agent in `.omp/agents/rocq-prover.md`, normaliser, drivers), statements for all four regions (reviewed, pinned; #362, #363), Sail agreement `txAccessListSailAgreement` (#378), rules #376 #379 #380 #384 #394, generator #368 #385 #387 #388 #389, `keysToOwnedSliceCompliance` (#395), `entriesToOwnedSliceCompliance` (#396). Soundness-gate `BASELINE` is `5c7e18792`.
+- `keysEnsureCapacity` (B4): branch `aa/b4-ensure`, run dir `_build/agents/aa/keysEnsureCapacity/` with `HANDOFF.md`; 24 of 25 block cases certified; block `0164` waits on branch `aa/rules5` (commit `66c5bb7feb` or later: residual export keeps pieces of facts over 2,048 nodes); the composition file does not compile yet.
+- `txAccessList` (B5): contract, candidate, meaning, call premises merged; no block rendered. Run dir `_build/agents/aa/txAccessList/` holds `hints/`, `round-1/derived/` (23 requests) and the closed Sail obligations.
+- Drafts in the main checkout, untracked: `docs/AGENT_ASSISTED_RLP_STATUS.md`, `docs/AGENT_ASSISTED_RLP_TERMINATION.md`.
+- Islaris is already a fork: `/home/cody/islaris`, remote `fork` = `github.com/codygunton/islaris`, branch `zesu-snapshot-labels` (head `b519aff`), with a local edit to `islaris.opam`. Its opam switch is `/home/cody/islaris/_opam`; the theory `isla` is installed in `_opam/lib/coq/user-contrib/isla`. `Makefile` of this repo selects it with `ISLARIS_REPO ?= $(HOME)/islaris` and `OPAM_SWITCH ?= $(ISLARIS_REPO)`.
+- Facts read for Stage T (`/home/cody/islaris/theories`):
+  - `lifting.v:72-78`: `isla_irisG`, `state_interp σ _ κs _ := state_ctx σ κs`, `num_laters_per_step _ := 0`.
+  - `ghost_state.v:239-242`: `state_ctx σ κs := spec_ctx κs ∗ instr_ctx σ.(seq_instrs) ∗ mem_ctx σ.(seq_mem)`; `:105-120`: `instr_table`, `instr`, `instr_ctx`.
+  - `opsem.v:441-444`: `seq_global_state := { seq_instrs; seq_mem }`; `:487-583`: one constructor `SeqStep`; the fetch is its `LDone` branch (`:564-572`), the only place a new instruction starts.
+  - `lifting.v`: 21 uses of `wp_lift_step`, 22 of `inv_seq_step`; fetch lemmas `wp_next_instr` (`:352`), `wp_next_instr_extern` (`:378`), `wp_next_instr_pre` (`:416`); `instr_pre'_def` (`:123-133`).
+  - `automation.v:683-693`: `instr_kind` (`IKInstr`, `IKPre`), `FindInstrKind`; `:1186`: `li_wp_next_instr`; `:1228`: the lemma that builds an `instr_pre` (name: unverified — confirm first).
+  - `adequacy.v`: `isla_adequacy` builds `HeapG … κs Pκs …` and applies `wp_strong_adequacy`.
+  - This repo calls the fetch only through `li_wp_next_instr` (`ZesuSsz/Automation/Hooks.v:2415`, `ZesuSsz/Automation2/Hooks.v:3446`). No file here uses `wp_lift_step`, `instr_intro`, `state_ctx`, or matches on `instr_kind` in Gallina. `seq_global_state` fields are used in 5 files of `ZesuSsz/Export/` and 1 of `ZesuSsz/Proofs/Tests/`. Selected code is `instr_lookup_resources` (`InstrSpecs/Lookup.v:6-9`).
+- ZisK: on the proving path a run cut off at 2^36 steps yields no proof (source read of `/home/cody/zisk`, not executed). So Stage T proves liveness with a bound; partial correctness already protects soundness.
 
 ## Approach
 
-Work runs in lanes: one worktree per lane under `.worktrees/aa-<lane>` on branch `aa/<lane>`, pull requests through the existing gates, a new tracking issue referenced by every pull request. Read the current tree from `origin/main` (`084364765` or later); the main checkout is 1,253 commits behind.
+Work runs in lanes: worktree `.worktrees/aa-<lane>`, branch `aa/<lane>` from `origin/main`, pull request with "Refs #347". Gates: `mkdir -p /home/cody/.cache/zesu-tmp/<lane> && TMPDIR=/home/cody/.cache/zesu-tmp/<lane> make check-fast CHECK_AGENT=aa-<lane>`; `make check-iris` as well when a lane touches `ZesuSsz/Automation2/`, `InstrSpecs/`, `ZesuSsz/Contracts/` or `ZesuSsz/Export/`. Long runs go through `tools/bg --heavy`. Never run `tools/cleanup_after_merge.sh` for a branch whose last path component names a run dir. Region owners have about 200 requests each; every one keeps `<run dir>/HANDOFF.md` current, and work is split between a goals agent (run-dir pipeline, residual modules, callers, certificates) and a composition agent (bridges, theorem, registry row) on disjoint files.
 
-### Stage A: tooling (tasks A0–A9; A0 first, the rest independent unless stated)
+### Stage B remainder
 
-**A0. Cleanup before any run.** `_build/BUDGET.json` (measured 2026-11-22) shows 270 GB of unique build data against the 200 GB total budget and agent `rebuild` at 84 GB against its 80 GB budget; the resource guard refuses runs over budget, and `/home` is 90% full. Do these in order and record the counts before and after.
+**B4. Finish `keysEnsureCapacity`.**
+1. Land `aa/rules5`: merge `origin/main`, add its large-fact-pieces fallback as the fourth `zesu_talt residual_pieces` alternative of `zesu_residual_lemma`, run `make check-iris` and `make check-fast`, open and merge the pull request.
+2. On `aa/b4-ensure`: merge main, re-bench block `0164` with a 3,600 CPU-second cap, export, normalise (`_build/agents/aa/normalise/REPACKAGE.md`), package, run prover rounds, register, certify. All 25 cases must have a `CLOSURE.json`.
+3. Composition: make `ZesuSsz/Compliance/KeysEnsureCapacityGeneratedComposition.v` compile by following `KeysToOwnedSliceGeneratedComposition.v` (block table composed the same way); prove the growth-path exit bridge; theorem `keysEnsureCapacityCompliance : KeysEnsureCapacityContractCorrect`; registry row `proved` with a sealed interface and a call specification in the shape of `ZesuSsz/Contracts/KeysToOwnedSliceCallSpec2.v` (argv0 list header pointer, argv1 allocator pointer, argv2 requested capacity, x10 the outcome code); the approved `spec_shape_baseline.json` row for `KeysEnsureCapacityCallSpec2.v`.
 
-1. Stop stale processes of the finished plan: list with `tools/bg list --active`, stop each watcher and bank keeper with `tools/bg stop <id>`.
-2. Copy the Unicorn harness `_build/agents/researcher/exec-check/harness.py` and `drive.py` to `tools/oblig/exec/` in the first tools lane (A3 item 7 rewrites them); they exist nowhere else.
-3. In `_build/agents/rebuild/` and `_build/agents/heldout-render/` (48.7 GB and 24.4 GB of large JSON not shared between runs), write `SEALED.json` in every run dir, with `KEEP.json` in `rebuild/heldout2` listing `census-all.json`, `census.tsv`, `TRACES-READY`, `ho2-traces.log`. Small text files (notes, `STATE.md`, `leftover/Goal*.v`) survive a shrink without a keep entry.
-4. Remove worktrees that lose nothing: for each of the 415 worktrees, when `git status --porcelain` is empty, its head is reachable from a local branch or `origin/main`, and `tools/build_janitor.py in-use <path>` exits non-zero, run `tools/cleanup_after_merge.sh <branch>` if the branch is merged into `origin/main` (it moves saved goals and closure records to `_build/goals/` and `_build/closures/` first), otherwise move its saved goals with `tools/goal_store.py` (`rescue`; exact call: unverified — confirm first) and run `git worktree remove <path>` without `--force`. Branches stay. 195 worktrees are `heldout*` and 42 are `bench*`. Write every dirty worktree to `_build/janitor/worktrees-dirty-<date>.tsv` and leave it.
-5. `make janitor`, read its plan, then `make janitor-apply`. Done when `_build/BUDGET.json` shows `total_over` false.
-6. Bring the main checkout to `origin/main` with `git pull --rebase` (it holds one local commit and is 1,253 commits behind). If an untracked file blocks the checkout, move it to `_build/agents/aa/carry/` first. Delete one of the two identical untracked copies `TXACCESSLIST_PROOFS_PLAN.md` and `TX_ACCESS_LIST_PROOF_PLAN.md`, and move the other to `docs/AGENT_ASSISTED_RLP_PLAN.md` if it equals this plan.
-7. Delete each local branch that `git merge-base --is-ancestor <branch> origin/main` accepts and no worktree has checked out (944 of 2,029 today), with `git branch -d`; leave any that `-d` refuses. Remote branches are not touched.
+**B5. `txAccessList`.** One goals agent and one composition agent, lane `b5-tx`.
+1. Annotation file `tools/block/functions/txAccessList.annotations.json`: call rows for the five `decodeItem` calls from the `derivable` proposals of `derive.py` (fill `arrays[input].caller_value` from the contract's input slice), call rows for the three array-list calls from their registry interfaces, call rows with opaque resources and returned registers for `alloc`, `remap`, `free` (copy the row forms of `keysToOwnedSlice.annotations.json`), a `memcpy` row with `returned_lengths`; loop-cut rows at `+0xc4`, `+0x18c`, `+0x2ec` (`+0x2ec` is not a natural loop head: list it in `loop_heads` by hand row); one `frame` row for the 576-byte frame's saved registers; `unreachable` rows where the contract's domain excludes a path.
+2. Loop assertions are decisions of the region owner: each states the owned resources (input remainder, entries list, current keys list, allocator state, result struct) and the pure link to the candidate's partial result. Test each with `annotations.py test` on snapshots from `tools/oblig/exec/run.py --function txAccessList --remap never --at +0xc4,+0x18c,+0x2ec`.
+3. Loop as for the array-list regions: `derive.py` rounds, `render_function.sh`, bank, `tools/bench/mkset.py`, `bench.py run --dump-leftover` with `SpatialExportOn`, `store.py sync`, `normalise.py run … --apply`, `package.py goals --defs --falsify`, `drive.py step`, prover rounds from the coordinator's kernel (`tools/oblig/drive_kernel.py`, ladder in `tools/oblig/routing.json`), `residual_loop.py register --function txAccessList`, re-derive so `CALLERS.json` carries the residual imports, rerun, `tools/closure_cert.py`. A goal the screen reports `false-on-real-state` is a finding against the entry that produced it and never goes to a prover.
+4. Composition: `ZesuSsz/Compliance/TxAccessListGeneratedComposition.v`, exit bridges per return slot, `TxAccessListCallSlice.v` for the `decodeItem` calls (model `ParentHeaderCallSlice.v`), theorem `txAccessListCompliance : TxAccessListContractCorrect`, using `txAccessListMeaningOfOutcome` (`ZesuSsz/Compliance/TxAccessListSailAgreementTheorem.v`) for the meaning conjunct; registry row `proved`.
 
-**A1. Close-out and rules.** Three pull requests.
+**C1.** Append to `docs/AGENT_ASSISTED_RLP_STATUS.md` the `decodeTxFields` sizing from `_build/agents/aa/DERIVATIONS.md` and the per-block figures of the four regions (`report.py --function F`), and commit both status documents.
 
-1. Set `BASELINE` in `tools/soundness_gate.py:22` to the `origin/main` head. The description holds the full diff, from `0140e6874` to that head, of every file in `PUBLIC` and `PUBLIC_CONTEXTS` (`tools/block/check_function_closure.py:8-19`).
-2. Commit `docs/BLOCK_AUTOMATION_REBUILD_PLAN.md`, `docs/GENERATOR_FIRST_PRINCIPLES_REPORT.md` (both untracked in the main checkout) and this plan as `docs/AGENT_ASSISTED_RLP_PLAN.md`. Open the tracking issue. Open a second issue, "Relocatable proofs", with the text given in A9.
-3. Amend `AGENTS.md`:
-   - *Proof pattern*, sentence "Report the residual goal to the lead and fix the rule in `Automation/`." becomes: "File the residual goal in the obligation store (`tools/oblig/store.py`). The router decides between a checked lemma, an annotation and a rule."
-   - *Integration gates*, sentence "Auto adds a generic rule only when one manual step needs more than five lines or at least two proof sites need the same step." becomes: "Add a generic rule only when the store shows one goal class open in two functions, or in five goals of one function, and one stated rule closes all of them. Close every other goal with a checked lemma in `ZesuSsz/Residuals/`."
-   - *Proof workflow* step 5 becomes: "File every residual goal and every generator stop as an obligation. Agents propose annotations and proofs. Only the kernel accepts them."
-   - Sentence "Treat rapid proof-size growth as an automation defect, not as routine proof work." becomes: "Report checked-lemma lines and tokens per block for every function. Growth per block from one function to the next is the defect signal."
-   - New section *Generator freeze*: "Do not add inference to `tools/block`. Two kinds of change are allowed: a fix for a crash or a wrong output, and code that consumes an annotation and emits its check. Every stop and refusal becomes a typed request (`tools/oblig/derive.py`)."
-   - New section *Agent provers*: "Agents are untrusted. Their text enters the tree only through a renderer that copies checked text byte for byte. The user reviews every statement in the trust base (function contracts, callee premises, known-bug classes, Sail agreement statements), and `ZesuSsz/Evidence/SignatureGates.v` pins it. Annotations inside a function need no review. Start each goal at the cheapest tier of `tools/oblig/routing.json`. Never send an unchanged prompt to the same tier twice."
-   - *MCP discipline*, add: "The stand-alone lemma check of the obligation loop (`check.sh` under the resource guard) is an approved shell route."
-   - New section *Relocatable artifacts*: "A hand-written or agent-written file names code and data by symbol and offset, never by absolute address. Absolute addresses appear only in generated files. `tools/oblig/check_relocatable.py` enforces this for the files it lists."
+### Stage T: step budgets (fork of Islaris)
 
-**A2. Obligation store** — new `tools/oblig/store.py`, model-free.
+**Design, fixed.** Charging is per address, not per proof mode. The machine state carries a set of charged addresses and a counter of fetches of charged instructions. The state interpretation ties the counter to the credits outstanding. Fetching an uncharged instruction is the existing rule with its statement unchanged; fetching a charged one consumes `step_credits 1`. All existing statements and proofs of this repository stay valid (their code is uncharged). A function gets a bound by proving it with its code charged and a budget in its entry. The steps inside one instruction are not charged; they are bounded by the length of its Isla trace.
 
-- Data: one append-only event log per function, `<run dir>/OBLIGATIONS.jsonl`, written under `flock`. `store.py status` folds it into the current state.
-- Event row, schema `oblig-event/1`: `id`, `function`, `kind` (`block`, `goal`, `meaning`, `decision`), `parent`, `state`, `class`, `tier`, `attempt`, `prompt_sha256`, `prompt_bytes`, `answer_bytes`, `tokens_in`, `tokens_out`, `context_items`, `context_used`, `artifact` {`path`, `sha256`}, `head`.
-- States: `derived`, `running`, `closed`, `failed` (with `class`), `false`, `waiting-decision`, `blocked-on` (with the blocking `id`).
-- Ids: `<function>/block/<case>`, `<function>/goal/<case>-<first 16 hex of the statement sha256>`, `<function>/decision/<kind>-<offset>`, `<function>/meaning/<lemma name>`. `<case>` and `<offset>` are 4-hex offsets from the function's symbol.
-- `store.py sync --function F --run RUN` derives states from existing evidence and adds no second source of truth: `CALLERS.json` rows, `CLOSURE.json` and `NOT-CLOSED.json` (`tools/closure_cert.py`), `goals/<id>/STATUS.json` (`tools/block/residual_loop.py`), `results.jsonl` (`tools/bench/bench.py`).
-- The store rejects an attempt event whose (`prompt_sha256`, `tier`) pair already exists for that id.
-- No model reads the log. A prover reads one task file, at most the tier's `max_prompt_bytes`. A decision agent reads one request package. The coordinator reads only `store.py status --counts` (one line per state and kind) and `route.py next --limit N` (one line per item). `report.py` prints the coordinator's bytes read per round.
+**T1. Second Islaris checkout and switch (lane `t1`; nothing in `/home/cody/islaris` changes).**
+1. `git -C /home/cody/islaris worktree add /home/cody/islaris-budget -b zesu-step-budget zesu-snapshot-labels`; copy the uncommitted `islaris.opam` edit into it.
+2. Switch: `opam switch export --switch=/home/cody/islaris /home/cody/islaris-budget/switch.export`, then `opam switch create /home/cody/islaris-budget --empty` and `opam switch import /home/cody/islaris-budget/switch.export --switch=/home/cody/islaris-budget` (unverified — confirm first that the export carries the pins of `coq-iris`, `coq-lithium`, `coq-stdpp*`, `isla-lang`; if not, pin them by the versions `opam list --switch=/home/cody/islaris` prints).
+3. Build and install the unmodified theory there (`dune build -p islaris @install` then `dune install`, the way the original was installed: unverified — confirm from shell history or `_opam/.opam-switch/install`), then build this repository in worktree `.worktrees/aa-t1` with `make check-iris ISLARIS_REPO=/home/cody/islaris-budget`. It must pass before any change: this is the baseline.
+4. If the switch cannot be reproduced: stop Stage T and report; do not install a modified `isla` into `/home/cody/islaris/_opam` while any region lane is running.
 
-**A3. Goal packaging** — new `tools/oblig/package.py`, wrapping `tools/block/residual_loop.py` (`export`, `collect`, `register`, `rerun`), which stays the engine for pure goals.
+**T2. The fork (lane `t2`, in `/home/cody/islaris-budget`, branch `zesu-step-budget`).**
+1. `theories/opsem.v`: `seq_global_state` gains `seq_charged : gset addr` and `seq_fetches : nat` (extend the `Settable` instance). In `SeqStep`, the `LDone` branch becomes: when `σ.(seq_instrs) !! pc = Some es'`, `σ' = if decide (pc ∈ σ.(seq_charged)) then σ <| seq_fetches := S σ.(seq_fetches) |> else σ`; when `None`, `σ' = σ`. No other branch changes.
+2. `theories/ghost_state.v`:
+   - `heapG` gains `heap_charged_inG :: inG Σ (agreeR (leibnizO (gset addr)))`, `heap_charged_name : gname`, `heap_budget_inG :: inG Σ (authR natUR)`, `heap_budget_name : gname`, `heap_budget_total : nat`.
+   - `charged_set (S : gset addr) : iProp Σ := own heap_charged_name (to_agree S)` (persistent, timeless, sealed).
+   - `step_credits (n : nat) : iProp Σ := own heap_budget_name (◯ n)` (timeless, sealed), with `step_credits_split : step_credits (n + m) ⊣⊢ step_credits n ∗ step_credits m` and `step_credits_0 : ⊢ |==> step_credits 0`.
+   - `instr_table_raw i := own heap_instrs_name (to_instrtbl i)`; `instr_table i := instr_table_raw i ∗ charged_set ∅` (the existing name keeps its lemmas `instr_table_pers`, `instr_table_tl`, `instr_table_agree`, `instr_intro` with unchanged statements).
+   - `instr_def a i := ∃ instrs b S, ⌜Z_to_bv_checked 64 a = Some b⌝ ∗ ⌜instrs !! b = i⌝ ∗ ⌜b ∉ S⌝ ∗ instr_table_raw instrs ∗ charged_set S`.
+   - New `instr_charged a t := ∃ instrs b S, ⌜Z_to_bv_checked 64 a = Some b⌝ ∗ ⌜instrs !! b = Some t⌝ ∗ ⌜b ∈ S⌝ ∗ instr_table_raw instrs ∗ charged_set S` (persistent, timeless, sealed), with `instr_charged_addr_in_range`.
+   - `instr_ctx intrs := instr_table_raw intrs`; `state_ctx σ κs := spec_ctx κs ∗ instr_ctx σ.(seq_instrs) ∗ mem_ctx σ.(seq_mem) ∗ charged_set σ.(seq_charged) ∗ budget_ctx σ.(seq_fetches)` with `budget_ctx f := ∃ m, own heap_budget_name (● m) ∗ ⌜m + f = heap_budget_total⌝`.
+   - Lemmas: `instr_lookup`, `instr_lookup_unsigned` (statements unchanged), `instr_uncharged : charged_set S -∗ instr (bv_unsigned a) i -∗ ⌜a ∉ S⌝`, `instr_charged_lookup : instr_ctx instrs -∗ charged_set S -∗ instr_charged (bv_unsigned a) t -∗ ⌜instrs !! a = Some t ∧ a ∈ S⌝`, `budget_spend : budget_ctx f -∗ step_credits 1 ==∗ budget_ctx (S f)`, `budget_bound : budget_ctx f -∗ ⌜f ≤ heap_budget_total⌝`, `instr_table_split : instr_table_raw instrs -∗ charged_set S -∗ ([∗ map] a ↦ t ∈ filter (λ p, p.1 ∉ S) instrs, instr (bv_unsigned a) (Some t)) ∗ ([∗ map] a ↦ t ∈ filter (λ p, p.1 ∈ S) instrs, instr_charged (bv_unsigned a) t)`.
+3. `theories/lifting.v`:
+   - `isla_irisG`, `wp_asm_def` and every event lemma keep their statements. Each of the 21 step proofs takes the two new components of `state_ctx` in its introduction pattern and frames them back; `inv_seq_step` is extended so the `LDone` case exposes the `decide`.
+   - `wp_next_instr` (statement unchanged): its proof uses `instr_uncharged` to pick the uncharged branch.
+   - New `wp_next_instr_charged (PC : bv 64) ins : arch_pc_reg ↦ᵣ RVal_Bits PC -∗ instr_charged (bv_unsigned PC) ins -∗ step_credits 1 -∗ ▷ (arch_pc_reg ↦ᵣ RVal_Bits PC -∗ WPasm ins) -∗ WPasm tnil`.
+   - `instr_pre'_def is_later a P := ▷?is_later (P -∗ (∃ ins, instr (bv_wrap 64 a) ins ∗ <the existing match>) ∨ (∃ t, instr_charged (bv_wrap 64 a) t ∗ step_credits 1 ∗ (arch_pc_reg ↦ᵣ RVal_Bits (Z_to_bv 64 a) -∗ WPasm t)))`.
+   - `wp_next_instr_pre`, `instr_pre_wand`, `instr_pre_to_body`, `instr_pre_intro_Some`, `instr_pre_intro_None`: statements unchanged.
+   - New `instr_pre_intro_charged l P t a : instr_charged a t -∗ (P -∗ step_credits 1 ∗ (arch_pc_reg ↦ᵣ RVal_Bits (Z_to_bv 64 a) -∗ WPasm t)) -∗ instr_pre' l a P`. Convention: whoever proves a block pays for its first instruction out of the block's precondition; a jump to an `instr_pre` pays nothing.
+4. `theories/automation.v`:
+   - `instr_kind` gains `IKCharged (t : isla_trace)`; `FindInstrKind` maps it to `instr_charged a t`; one `find_in_context` instance `(∃ t, instr_charged a t ∗ T (IKCharged t)) ⊢ find_in_context (FindInstrKind a l) T`.
+   - `li_wp_next_instr` gains the case `IKCharged t => step_credits 1 ∗ (arch_pc_reg ↦ᵣ RVal_Bits newPC -∗ WPasm t)`; the lemma at `:1228` that builds an `instr_pre` gains the case that applies `instr_pre_intro_charged`, with goal `P -∗ step_credits 1 ∗ (… -∗ WPasm t)`.
+5. `theories/adequacy.v`:
+   - `islaPreG` and `islaΣ` gain the two new cameras. `isla_adequacy` keeps its statement; it allocates `charged_set ∅`, `● 0`, total `0`, and starts from `{| seq_instrs := instrs; seq_mem := mem; seq_charged := ∅; seq_fetches := 0 |}`.
+   - New `isla_budget_adequacy Σ … instrs mem regs Pκs (charged : gset addr) (budget : nat) t2 σ2 κs n : Pκs [] → (∀ {HG : islaG Σ}, ⊢ instr_table_raw instrs -∗ charged_set charged -∗ step_credits budget -∗ backed_mem (dom mem) -∗ spec_trace Pκs -∗ ([∗ map] a↦b∈mem, bv_unsigned a ↦ₘ b) ={⊤}=∗ [∗ list] rs ∈ regs, ∀ (_ : threadG), ([∗ map] r↦v∈rs, r ↦ᵣ v) -∗ WPasm tnil) → nsteps n (initial_local_state <$> regs, {| seq_instrs := instrs; seq_mem := mem; seq_charged := charged; seq_fetches := 0 |}) κs (t2, σ2) → (∀ e2, e2 ∈ t2 → not_stuck e2 σ2) ∧ Pκs κs ∧ σ2.(seq_fetches) ≤ budget` (the bound comes from the final state interpretation through `budget_bound`).
+   - New operational lemma, no Iris: `fetches_bound_steps`: for one thread, if `seq_charged = dom instrs` then `n ≤ (S σ2.(seq_fetches)) * S (max_trace_length instrs)` where `max_trace_length` is the maximum of `isla_trace_length` over the table, using that every `trace_step` strictly decreases `isla_trace_length` (`opsem.v:78`; prove `isla_trace_length (subst_trace v x t) = isla_trace_length t`). If this lemma is not closed within the lane, deliver the fetch bound alone and say so; nothing later depends on it.
+6. Build the fork's `theories/` (both architectures) and its `examples/` that built before; commit on `zesu-step-budget`; push to remote `fork`; install into `/home/cody/islaris-budget/_opam`.
+7. Stop and report, without changing course, if any existing lemma statement that this repository uses has to change, or if an event lemma statement has to change.
 
-1. *Falsity check*, new `tools/oblig/falsify.py`. For a pure `goal.v` it builds `exists <binders>, <premises> /\ ~ <conclusion>` and tries a fixed list of at most 200 concrete assignments, each evaluated inside Rocq with `vm_compute`, so a hit is a kernel-checked counterexample. It runs no machine code and no symbolic search. Values: 0, 1, each literal of the statement and its neighbours, `2^k - 1` and `2^k` for k in 8, 16, 32, 64, the RAM bounds `0xa0000000` and `0xc0000000`, byte lists of length 0, 1, 55 and 56, and, for binders named after a machine register or a contract argument, the values of the machine-run snapshots of that block (item 7). A hit sets state `false` and attaches the assignment; the goal goes to the owner of the statement, never to a prover. A goal with a binder type outside `Z`, `nat`, `N`, `bv n`, `list byte` and `bool` is marked `unchecked`.
-2. *Slicing.* Keep the reachable-premise slice of `ZesuSsz/Automation2/ResidualExport.v`. The task file shows the default-printer goal and gives the path of the exact source (the existing `TASK` text of `residual_loop.py`).
-3. *Similar lemmas*, new `tools/oblig/similar.py`. Index every closed pure lemma (the 68 in `ZesuSsz/Residuals/Block800d*.v`, the 10 in `DecodeItemBridges.v`, every goal closed later) by conclusion head and set of qualified names. A task gets the 3 nearest by Jaccard similarity, each with its proof, inside the tier's prompt limit.
-4. *Spatial leftovers.* Today `zesu_diag_export_final` (`ZesuSsz/Automation2/Diagnostics.v:200-208`) prints `@@X skip final spatial`. Add `ZesuSsz/Automation2/SpatialExport.v` and its switch `SpatialExportOn.v`. With the switch on, that branch prints one `@@S` record: the head of the stuck judgment, the address or register it seeks, one line per owned resource of the context, and the pure facts that share a variable with the sought term. `package.py` adds the block's disassembly, its hint slice (A4) and the successor entry statements, and writes a *diagnosis task*. Its answer is typed, not a proof: `annotation` (a changed or added row for A6), `pure_goal` (an exact pure statement that unblocks the lookup; it becomes a new `goal` obligation), `false` (the entry statement is wrong, with a counterexample), or `rule_gap` (stated as a stand-alone entailment for the rule lane). The check is a rerun of the block.
-5. *Answer form for provers*: JSON `{"verdict": "proved" | "false" | "need_context" | "give_up", "proof": "...", "needs": [...], "counterexample": "..."}`. `package.py` writes `answers/<id>.v` and `answers/<id>.json` for `residual_loop.py collect`.
-6. *Module naming.* `tools/residuals/render_residual_module.py` and `residual_module_failures` in `ZesuSsz/Evidence/check_proof_hygiene.py` (about lines 606–621) accept only `Block800d<block>.v`. Add the form `ZesuSsz/Residuals/<Function>/Block<4 hex offset>.v` with lemma names `residual_<function>_<offset>_<16 hex>` for new functions. The 16 existing files stay. (`module_name` in the renderer: unverified — confirm first.)
-7. *Machine runs*, new `tools/oblig/exec/run.py`, rewritten from the Unicorn harness that ran `decodeParentHeader` (Unicorn 2.1.4, RV64, pinned ELF; A0 item 2). `run.py --function F --inputs FILE --at <offset>,...` runs the function on each input and writes `<run dir>/exec/<input id>/STATE-<offset>.json` (all registers, and the memory ranges the contract owns) each time control reaches an offset. Hooks replace `memcpy` and the allocator entries `alloc`, `remap`, `resize`, `free` with a bump allocator; `--alloc-fail N` makes the N-th allocation return null. Inputs for `txAccessList`, in `tools/oblig/exec/inputs/txAccessList.json`: access lists with 0, 1 and 2 entries carrying 0, 1 and 3 keys, and five malformed ones (not a list, 19-byte address, 31-byte key, truncated entry, trailing byte). Inputs for the array-list regions: list states with length 0, 1 and capacity, at capacity and below. `annotations.py test` (A6) instantiates the binders of a proposed assertion from every snapshot at its offset and evaluates its facts with `vm_compute`; one failing snapshot rejects the proposal and returns the input id. Snapshots at a loop cut, one row per visit, also go into the decision package. Machine runs only filter proposals; no statement or proof cites them.
+**T3. Compatibility gate (lane `t3`, worktree `.worktrees/aa-t3` from `origin/main`).** With `ISLARIS_REPO=/home/cody/islaris-budget`: adapt `ZesuSsz/Export/*.v` and the one test file to the two new `seq_global_state` fields (record literals get `seq_charged := ∅; seq_fetches := 0`; `zesu_adequacy` keeps its statement). No other source file may change. `make check-iris`, `make check-fast` and `make check-signatures` must pass with zero edits under `ZesuSsz/Automation/`, `ZesuSsz/Contracts/`, `ZesuSsz/Compliance/`, `ZesuSsz/Proofs/`, `ZesuSsz/Generated/`. Record user-space instruction counts for `nextUint64` block `0064` and `decodeParentHeader` block `0000` before and after. This lane's pull request stays open until T9 switches the default Islaris.
 
-**A4. Hint pack** — new `tools/oblig/hints.py`. Hints are untrusted and never enter a statement unchecked.
+**T4. Budget layer in this repository (lane `t4`, on top of `t3`).**
+1. `InstrSpecs/LookupCharged.v`: `instr_lookup_resources_charged (lookup : Z -> option isla_trace) : iProp Σ := □ ∀ address t, ⌜lookup address = Some t⌝ -∗ instr_charged address t`, persistent, with the `find_in_context` lemma that returns `IKCharged`, mirroring `InstrSpecs/Lookup.v:40-90`.
+2. `ZesuSsz/Automation2/StepBudget.v`: `step_budget (z : Z) : iProp Σ := ⌜0 ≤ z⌝ ∗ step_credits (Z.to_nat z)` (sealed, unfold instance, timeless); lemmas `step_budget_spend : 1 ≤ z → step_budget z ⊢ step_credits 1 ∗ step_budget (z - 1)`, `step_budget_weaken : 0 ≤ z2 ≤ z1 → step_budget z1 ⊢ step_budget z2`, `step_budget_split : 0 ≤ z1 → 0 ≤ z2 → step_budget (z1 + z2) ⊣⊢ step_budget z1 ∗ step_budget z2`.
+3. Lithium rules in `ZesuSsz/Automation2/` (hooks only in `Hooks.v`): a goal `step_credits 1 ∗ G` with `step_budget z` in the context continues with `G` and `step_budget (z - 1)`, side condition `1 ≤ z` (closed by computation when `z` is a literal, else by the linear solver; the difference of two literals is computed); a goal `step_budget z2 ∗ G` uses `step_budget_weaken` or `step_budget_split` on the context's budget; the selected-code lookup hooks (`ArrayLoadPriority`-style in `Automation2`) accept `instr_lookup_resources_charged`. Tests in `ZesuSsz/Proofs/Tests/StepBudget.v`: a three-instruction charged program closes with `step_budget 3` and fails with `step_budget 2`.
+4. `ZesuSsz/Export/BudgetAdequacy.v`: `zesu_budget_adequacy`, the instance of `isla_budget_adequacy` in the shape of `zesu_adequacy`, plus one closed example (`ZesuSsz/Proofs/Tests/BudgetAdequacyExample.v`): a two-instruction charged program ending in a trap, with conclusion `σ2.(seq_fetches) ≤ 2`, and `Print Assumptions` closed.
+5. `AGENTS.md`: new section *Step budgets*: "A function is charged when its selected code is `instr_lookup_resources_charged` and its contract entry owns `step_budget`. A budget of loop-free code is the count of instructions on its longest path plus its callees' budgets, emitted by `tools/block/budgets.py`; this count is not inference. A loop cut owns a potential given by a `potential` annotation row. Uncharged and charged theorems of one function may coexist; a composition uses one kind for all its callees."
 
-- Input: the pre-link object named by `inputs.object` in `build/stock-zisk/build-recipe.json` (`tools/stock_zisk/fetch_inputs.py` fetches it), read with `get_dwarf_info(relocate_dwarf_sections=False)`. It holds 502 structure types, 1,640 members and 23,301 location entries; the linked ELF holds only a symbol table.
-- Reuse `code_dwarf` and `inline_ranges` (`tools/stock_zisk/dwarf.py`) for relocation to linked addresses, and `die_attribute`, `die_source`, `die_ranges` (`tools/stock_zisk/inventory.py`). New code reads `DW_TAG_structure_type` and `DW_TAG_member` (offsets, sizes), `DW_TAG_formal_parameter` and `DW_TAG_variable` with `DW_AT_location` (register or frame slot per pc range), and the line table.
-- Source text: `_build/p0c-zesu-source` at commit `b5483dda…` (`sources.zesu` in the recipe); `txAccessList` is `src/stateless/rlp_decode.zig:485-538`.
-- Output in `<run dir>/hints/`: `SOURCE.md` (numbered source of the function and of each function inlined into it), `TYPES.json`, `LOCATIONS.json` (pc range → variable → register or frame slot), `BLOCKS.md` (per block: disassembly, source lines, inline stack, live registers, variables in scope).
-- `hints.py slice --pcs ...` cuts the part for one request.
+**T5. Budgets in the generator (lane `t5`, on top of `t4`).**
+1. New `tools/block/budgets.py`: from `build/stock-zisk/cfg.json` and the function's profile it computes, per block boundary, `B(b) = instructions(b) + max over successor edges`, where a call edge adds the callee's budget (registry field `budget` of the callee's row in `ZesuSsz/Contracts/proved_functions.json`: an integer, or a Coq `Z` expression over the call's argument registers) and a return edge adds 0; at a loop cut `B` is the cut's `potential` expression. A cycle with no `potential` row is refused with the cut's offset. Output `<run dir>/round-<n>/derived/BUDGETS.json`.
+2. Annotation schema (`tools/oblig/annotations.py`): row kind `potential` at a `loop_cut`: `{"at": …, "potential": "<Coq Z expression over the cut's binders>"}`; profile key `charged: true`.
+3. Rendering (`tools/block/render_fp301_entries.py`, `render_function_callers.py`): when the profile has `charged: true`, every entry statement gains the conjunct `step_budget (<B>)`, placed with the owned resources, and the block's code premise is the charged selected code. With `charged` absent the output is byte-identical to today (goldens: `nextUint64`, `decodeParentHeader`).
+4. A back edge whose potential does not follow syntactically leaves a pure goal `potential_after + cost ≤ potential_before`; it goes through the normal goal pipeline.
 
-**A5. Tier replay and routing table** (needs A2, A3 items 1–3 and 5).
+**T6. Loop-free prototype: `keysEnsureCapacity`, charged (lane `t6`, after B4 is merged).**
+1. Budgets of its callees, as new assumed premises in `ZesuSsz/Contracts/AltFlAllocBudgetPremises.v`: the existing `alloc`, `remap`, `free` and general `memcpy` call specifications with `step_budget K` added to the precondition, where `K` is the longest-path instruction count of each callee from `cfg.json` (`budgets.py --function <callee>`); the existing premises are untouched. Review them (the coordinator holds the user's delegation), pin them in `ZesuSsz/Evidence/SignatureGates.v`, add them to `approved_runtime_premises`, registry rows `assumed` with `budget`.
+2. `ZesuSsz/Contracts/KeysEnsureCapacityBudgetContract.v`: the existing model with `step_budget (keysEnsureCapacityBudget)` in the entry resources (a literal from `budgets.py`) and selected code `keysEnsureCapacityChargedCode := instr_lookup_resources_charged …`; statement `KeysEnsureCapacityBudgetContractCorrect`. The uncharged contract and theorem stay.
+3. Profile copy with `charged: true` in a separate generated tree (`tools/block/generated/keysensurecapacity_budget_fp301_callers`, proofs under `ZesuSsz/Proofs/KeysEnsureCapacityBudget/`); render; bench all cases with no model; registered residual lemmas of the uncharged proof are reused through their existing modules.
+4. Composition by copying the uncharged composition with the budget conjunct threaded; theorem `keysEnsureCapacityBudgetCompliance`.
+5. Measure and report: cases that close with no change beyond the budget, cases that need a prover, added user-space instructions per case, hand-edited lines in the composition.
 
-- Corpus: the 68 proved residual lemmas, with their proofs withheld (known true); the unique statements among the 786 `leftover/Goal*.v` files under `_build/agents/rebuild` and `_build/agents/bench` (truth unknown; they test the falsity check and the `false` and `give_up` verdicts).
-- Tiers in `tools/oblig/tiers.json`, cheapest first:
+**T7. Loop prototype: `decodeItem`, charged (lane `t7`).** `decodeItem` has 24 blocks, two loop cuts (`+0xc4`, `+0x164`), no callees, a generated proof (`decodeItemGeneratedCompliance`), and is a callee of `txAccessList`. Add `potential` rows: at each cut, `c * (bound - index) + d` over the cut's existing index and bound binders, with `c` the instruction count of the loop body and `d` the longest path after the loop (both from `budgets.py`); if a cut's design has no bound binder (the profile `tools/block/functions/decodeItem.json` has cursor and extent only), the potential uses `extent - cursor`. Contract `ZesuSsz/Contracts/DecodeItemBudgetContract.v` with budget `c_total * input length + d_total`; charged tree and theorem `decodeItemBudgetCompliance`; registry interface row for the charged call specification. The uncharged theorem and its callers stay.
 
-  | Tier | Model selector | Use |
-  |---|---|---|
-  | `mechanical` | none (`CONTROL_TACTIC` of `tools/residuals/residual_package.py`) | every goal first |
-  | `haiku-low` | `anthropic/claude-haiku-5-5:low` | default first model tier for pure goals |
-  | `haiku-medium` | `anthropic/claude-haiku-5-5:medium` | second |
-  | `haiku-high` | `anthropic/claude-haiku-5-5:high` | third |
-  | `sonnet-medium` | Sonnet at medium (model id: unverified — take it from the configured model list) | only under the 50% rule below |
-  | `opus-medium` | `anthropic/claude-opus-5-5:medium` | last prover tier; all decisions and diagnoses |
+**T8. Roll-out.** Charged variants, in this order, each by T6's recipe: `keysToOwnedSlice`, `entriesToOwnedSlice` (one shared bridge edit), then `txAccessList` with `potential` rows at its three cuts (lexicographic potential written as one `Z` expression: `c1 * remaining outer bytes + c2 * remaining entry bytes + c3 * remaining key bytes + d`) and budgets for its 12 calls from the registry. Final theorem `txAccessListBudgetCompliance`, and `txAccessListStepBound` in `ZesuSsz/Export/BudgetAdequacy.v`: from `zesu_budget_adequacy` with the charged set equal to the code of `txAccessList`, its three array-list callees and `decodeItem`, the number of fetches is at most the contract's budget.
 
-  Each tier has `max_attempts` 2 and `max_prompt_bytes` 12,000 at the start.
-- Model selection per call: remove the line `perCallModel: "off"` from `.omp/config.yml`, and set `task.perCallModel: eval` and `task.perCallModelAllow` (the selectors of the table) in the user config `~/.omp/agent/config.yml`; a project config cannot turn this setting on. Then re-read `xd://eval/agents` for the parameter that carries the selector.
-- Each proved lemma goes to every tier independently, with the lemma renamed and no repository path in the prompt, so each tier's success rate is measured on the same goals.
-- Kernel-side driver `tools/oblig/dispatch_kernel.py` (loaded with `%load` in the coordinator's eval kernel) maps a tier to `agent(...)` or `completion(...)`, writes the answer files and records prompt bytes, answer bytes and tokens. The tools under `tools/oblig/` call no model.
-- Output: `tools/oblig/routing.json`: for each goal class (the ids of `tools/bench/triage_classes.json`, with `PURE` split by conclusion head into linear arithmetic, bitvector, byte window and meaning predicate) the first tier, the attempts per tier and the context recipe (premise slice only; plus similar lemmas; plus hint slice).
-- If the three Haiku tiers together close under 50% of the 68, add `sonnet-medium` to `perCallModelAllow` and replay it; otherwise the tier stays out of `routing.json`.
+**T9. Switch the default Islaris.** After T3 to T8 are merged-ready and no region lane is running: merge `zesu-step-budget` into the fork's `zesu-snapshot-labels`, install into `/home/cody/islaris/_opam`, merge the T3 to T8 pull requests in order, run `make check-iris`, `make check-fast`, `make check-signatures` on main, move `BASELINE` in `tools/soundness_gate.py` with the protected-file diff in the pull request, remove `/home/cody/islaris-budget`.
 
-**A6. Derivation, requests, annotations** — new `tools/oblig/derive.py` and `tools/oblig/annotations.py`.
+Order: B4 and B5 start at once and do not wait for Stage T. T1 starts at once. T2 follows T1; T3 follows T2; T4, T5 follow T3; T6 needs B4 merged; T7 needs T5; T8 needs T6, T7 and B5; T9 last. If B5 finishes before T5, `txAccessList` is proved uncharged first and its charged variant is a re-render and rerun.
 
-1. `derive.py --function F --run RUN` runs `tools/block/render_function.sh` and writes `<run dir>/derived/`:
-   - `LIVE.json`, from `liveness` in `forward/FORWARD.json`;
-   - `FRAME.json`: every stack slot read or written, with its size and first writer;
-   - `JOIN-STATEMENTS.json`: for each join outside a loop cut, the exact disjunction of its incoming states, from `forward/JOINS.json`;
-   - `CALLEES.json`: each call of `build/stock-zisk/cfg.json` with the callee's row in `ZesuSsz/Contracts/proved_functions.json` (`proved`, `assumed`, or none);
-   - `CONTRACT-SKELETON.v`: argument registers, pointer ranges and structure layouts from the hint pack, with the meaning left open. It is input for the contract decision, not a statement.
-   - `REQUESTS.json`: one row for each `stops` entry of `FORWARD.json`, each `refused_*` row of `render/RESULT.json`, each refusal in `forward/LOOP-DESIGNS.json`, and each `CallRefused` message.
-2. Request row: `id`, `kind`, `pc`, `reason` (the generator's own reason string), `needs`, `derivable`, `proposal`. Kinds: `contract`, `callee_premise`, `loop_assertion`, `join_assertion`, `access_placement`, `call_row`, `predicate`. `derivable` is true when the derived files fix the answer (an exact join statement; an access at base plus a constant); then `derive.py` fills `proposal`, and the proposal is checked like any agent answer.
-3. Annotation file `tools/block/functions/<F>.annotations.json`, schema `zesu.annotations.v1`. Row: `id`, `request`, `at` {`pc` (written `+0xOFFSET` from the function's symbol, or `SYMBOL+0xOFFSET`, the form `resolve_symbol_keys` in `tools/block/function_profiles.py` reads), `boundary`: `entry` | `loop_cut` | `join` | `call_site` | `call_return` | `function_return` | `access`}, `binders`, `resources`, `facts` [{`coq`, `role`}], `placement` {`array`, `index`, `scale`, `offset`}, `author` {`tier`}.
-4. `annotations.py compile` writes the function profile `tools/block/functions/<F>.json` with the existing keys (`loop_heads`, `loop_designs`, `join_designs`, `calls` with `return_facts`, `hist_visible`, `frame_slots`) and a key `generated_from`. `annotations.py check` fails when the profile differs from the compiled annotations. The three existing profiles stay hand-written.
-5. Annotation consumption in the generator, the only generator feature work: a `placement` row resolves an access that the forward pass stops on (reason `unsupported` or `state_check` in `tools/block/forward_design.py`) to the named array at the given index, and emits `0 <= index < length` as a pure check. A `call_row` may name the length expression of a returned array, the case `tools/block/call_boundary.py` refuses at about line 606. (Exact hook points in `forward_design.py` and `symbolic_state.py`: unverified — confirm first.)
-6. Bug fixes, after confirming each on `origin/main`: the `common_root_ancestor` crash and the uncaught `BoundaryRefused` in `tools/block/render_fp301_entries.py` (about lines 392–405 and 676–687) become refusal rows; a stop inside a seeded join reaches the join's boundary.
-7. *Rounds.* Generation resumes by itself: a stop ends only its path up to the next cut (loop head, join, call return), and after an answer `annotations.py compile` and `derive.py` run again with no model. `derive.py` writes each round to `<run dir>/round-<n>/`, because `render_function.sh` skips a step whose output exists. Round 1 issues, before any forward pass, every request that the control-flow graph alone fixes: the contract, one `loop_assertion` per cut, one `callee_premise` per callee without a row in `proved_functions.json`, one `call_row` per call. Only `access_placement`, `join_assertion` and `predicate` requests may appear in later rounds. A block reruns only when its caller text or an imported generated module changed (compare `caller_sha256` of its `CLOSURE.json`).
+### Targets added by Stage T
 
-**A7. Router and report** — new `tools/oblig/route.py` and `tools/oblig/report.py` (needs A2).
-
-`route.py next --function F --limit N` prints work items by these rules:
-
-| State of the obligation | Next step |
+|Measure|Target|
 |---|---|
-| block `derived`, or an input changed (annotation, lemma) | rerun the block; no model |
-| proposed assertion or contract | `annotations.py test` on the machine-run snapshots; no model |
-| pure goal, not yet checked for falsity | `falsify.py`; no model |
-| pure goal `false`, or `rule_gap` | owner of the statement (decision queue), with the counterexample |
-| pure goal that names a code address | class `ADDRESS`, to the decision queue (A9) |
-| pure goal, falsity check passed | `mechanical`, then the first model tier of its class in `routing.json` (`haiku-low` unless the replay moved it) |
-| attempt failed with a compiler error | same tier once more with the error text, then the next tier (`haiku-medium`, `haiku-high`, `opus-medium`) |
-| verdict `need_context` | add the named item when the hint pack or the similar-lemma index has it, same tier; counted as a missing-context failure |
-| top tier failed | `waiting-decision`: the assertion that produced the goal is reconsidered |
-| spatial leftover | diagnosis task at `opus-medium`; its typed answer creates the next obligation |
-| decision request with `proposal` | check the proposal; no model |
-| decision request without `proposal` | decision task at `opus-medium` with the request, the hint slice, the derived files and the annotations already checked |
-
-An obligation with 6 attempts in total, or reset 3 times by a changed annotation, is marked `spin` and reported; it gets no further attempt until its statement changes.
-
-`report.py --function F` prints: blocks closed with no model; rounds, and requests per round; decisions made against the floor; share of requests with `derivable` true; unhandled refusals; proposals rejected by machine runs; missing-context failures per attempt; share of supplied premises and similar lemmas absent from the accepted proof (from the premise minimiser of `residual_loop.py`); goals found false after a model attempt; prompt bytes and tokens per attempt; coordinator bytes read per round; per tier, the share closed at the first attempt and within its attempts; share closed by Haiku tiers; escalations; tokens per closed obligation per tier; spin count; tokens and checked-lemma lines per block.
-
-**A8. Sail transaction modules and scope note.**
-
-- Add `generated/evm-sail-coq/transactions/dune`, modelled on `generated/evm-sail-coq/rlp/dune`, with modules `evm_decode_access_list_tx_types` and `evm_decode_access_list_tx` only. Today no build stanza or Rocq file imports that folder.
-- Add `runDecodeAccessList` to `ZesuSsz/Compliance/SailRun.v` beside `runParentHeaderFields` (line 125). (`runDecoder` is declared `Local` at line 106 yet other files unfold it: confirm before reuse.)
-- Write `docs/PROOF_SCOPE.md` from `_build/agents/rebuild/heldout2/census-all.json`: counts of functions with indirect jumps (125), with loops (98), calling functions without a contract (203); `memset` and other platform instructions; termination; recompilation; the largest functions.
-
-**A9. Relocatable artifacts, the minimum.** The aim: when a function moves, repair is regeneration and a mechanical rerun. Only what follows is in this plan.
-
-- Already relative, keep using: profiles keyed by symbol and offset (`resolve_symbol_keys`), 4-hex offset case names, residual statements (no code address in `ZesuSsz/Residuals/` today).
-- New `tools/oblig/render_symbols.py` writes `ZesuSsz/Generated/Stock/Symbols.v` from the `.symtab` of `build/stock-zisk/zesu-zisk.elf`: one parsing-only `Notation` per symbol listed in `tools/oblig/symbols.json`, its body the address literal. New contracts and premises name an entry, a callee or a data address only through these notations.
-- New `tools/oblig/check_relocatable.py`, run by `make check-fast`: it fails on a match of `0x800[0-9a-f]{5}`, `2148[0-9]{6}` or `21474[0-9]{5}` in the files listed in `tools/oblig/relocatable_files.json`. The list starts with every non-generated file this plan adds (contracts, premises, candidates, compliance, residual modules, annotation files). `package.py` applies the same patterns to each exported `goal.v`.
-- Not done here, recorded in the "Relocatable proofs" issue: the roughly 1,175 absolute-address matches in 47 files of the three proved functions (some pinned by signature gates); generated lemma names `DesignedBoundary_<pc>` (`tools/block/render_function_callers.py:231`) and traces named by address; a relink drill (shifted layout, regenerate, rerun, expect zero model tokens); and the note that a symbolic base address inside Rocq would need new Islaris instruction maps and pc arithmetic.
-
-### Stage B: prove-out, leaf first (tasks B0–B6)
-
-Targets, from `build/stock-zisk/cfg.json`:
-
-| Region name | Symbol | Entry | Blocks |
-|---|---|---|---|
-| `keysToOwnedSlice` | `array_list.Aligned([32]u8,null).toOwnedSlice` | `0x800d677c` | 27 |
-| `entriesToOwnedSlice` | `array_list.Aligned(input.AccessListEntry,null).toOwnedSlice` | `0x800d6554` | 27 |
-| `keysEnsureCapacity` | `array_list.Aligned([32]u8,null).ensureTotalCapacity` | `0x800cb40c` | 23 |
-| `txAccessList` | `rlp_decode.txAccessList` | `0x80000000` | 53 |
-
-`txAccessList` has 323 instructions, a 576-byte frame, and one cyclic region with backward edges to `0x800000c4`, `0x8000018c` and `0x800002ec`. Its 12 calls: `decodeItem` at `+0x64`, `+0xd4`, `+0x108`, `+0x158`, `+0x19c`; `keysEnsureCapacity` at `+0x1f4`; `keysToOwnedSlice` at `+0x258`; `alt_fl_alloc.remap` (`0x8004218c`) at `+0x33c`, `alt_fl_alloc.alloc` (`0x80042494`) at `+0x3d0` and `alt_fl_alloc.free` (`0x80041f38`) at `+0x428`, each a `jalr` through a pointer loaded from the allocator's function table; `memcpy` (`0x800e06c0`) at `+0x3fc`; `entriesToOwnedSlice` at `+0x49c`.
-
-**B0. Inputs.** For the four regions: Isla traces in the closure group (`generated/isla-traces/stock-zisk/closure`, index modules `ZesuSsz.Stock.Closure.index_<region>`), and `ZesuSsz/Contracts/<Region>Selected.v` in the form of `NextUint64Selected.v`. (Trace command: unverified — confirm first from `_build/agents/rebuild/heldout2/TRACES-READY` and `ho2-traces.log`.) Build the hint packs (A4) and run `derive.py` (A6) on all four.
-
-**B1. Statements (decision tasks; the user reviews the result).** One review packet, `<run dir>/STATEMENTS.md`, holding:
-
-- A contract per region in `ZesuSsz/Contracts/<Region>Contract.v`, stated with `IslarisContractResources` and `IslarisContractCorrect`. Every pointer that is read through lies in RAM (`0xa0000000` up to `0xc0000000`); every pointer and length has a numeric range; each contract has an instance that exposes ranges and links as plain facts, in the style of `ZesuSsz/Automation2/DomainRanges.v`.
-- Allocator premises in `ZesuSsz/Contracts/AltFlAllocPremises.v`: `altFlAllocCallPremise`, `altFlRemapCallPremise`, `altFlFreeCallPremise`, plus one for `resize` if an array-list region calls it. Each has the form of `memcpyCallPremise` (`□ instr_pre <pc> <call spec>`, `ZesuSsz/Contracts/ParentHeaderMemcpyService.v`). The `free` premise reuses `freeEntryResources` and `freeExitRegisterResources` of `ZesuSsz/Contracts/AltFlFreeContract.v`. Each gets a row with status `assumed` in `proved_functions.json`.
-- The function table: the entry resources own the table cells that hold the allocator addresses (slots 0, 8, 16, 24: `alloc`, `resize`, `remap`, `free`, per `ZesuSsz/Evidence/generate_zesu_cfg.py:393-395`) and return them unchanged, so each `jalr` target is a loaded word with a known value.
-- The reference decoder `ZesuSsz/Contracts/Candidates/AccessListCandidate.v`, modelled on `Candidates/ParentHeaderCandidate.v`, following `rlp_decode.zig:485-538`. The outcome relation has an out-of-memory outcome beside result and `error.InvalidBlock`, since `alloc` may return null.
-- The Sail statement: `TxAccessListMeaningModuloKnownBugs` = domain ∧ candidate result ∧ (Sail agrees ∨ a registered bug trigger), the shape of `ParentHeaderMeaningModuloKnownBugs`. Sail's `decode_access_list` (`evm_decode_access_list_tx.v:982`) returns `AccessListRef` with an encoded slice, an address count and a slot count, and fails above `2^30` bytes. "Sail agrees" therefore means: Sail accepts exactly when the candidate accepts, and on acceptance the address count is the number of entries, the slot count is the total number of keys, and the encoded slice is the consumed input.
-
-While the review is open, B2–B5 proceed on the proposed statements. A statement the review changes resets the obligations under it.
-
-**B2–B4. Regions in order: `keysToOwnedSlice`, `entriesToOwnedSlice`, `keysEnsureCapacity`.** For each: answer its requests (A6, A7), render, run every block with no model (`tools/bench/mkset.py`, then `tools/bench/bench.py run --dump-leftover`), package the leftovers (A3), route them (A7), register checked lemmas, and rerun until every block has a `CLOSURE.json`. Then compose the region theorem `<region>Compliance`, add its `proved` row and interface to `proved_functions.json`, and render `ZesuSsz/Compliance/<Region>BlockObligations.v` with `tools/block/render_open_blocks.py`. `entriesToOwnedSlice` is the same source function as `keysToOwnedSlice` at another element size; its decisions, tokens and lemma lines against the first measure reuse.
-
-**B5. `txAccessList`.** Same loop. The five `decodeItem` calls use `ZesuSsz.Interfaces.DecodeItem` and call-slice instances in `ZesuSsz/Contracts/TxAccessListCallSlice.v`, modelled on `ParentHeaderCallSlice.v`. The three array-list calls use the interfaces from B2–B4. Cut assertions are needed at `+0xc4`, `+0x18c` and `+0x2ec`; the annotation compiler lists them in `loop_heads` with hand rows in `loop_designs`, which override inferred designs. Result: `Theorem txAccessListCompliance : TxAccessListContractCorrect` in `ZesuSsz/Compliance/TxAccessListCompliance.v`, with code `txAccessListSelectedCode ∗` the three array-list selected codes `∗ decodeItemSelectedCode ∗ memcpyCallPremise ∗` the allocator premises.
-
-**B6. Sail agreement** (parallel with B2–B5; needs A8 and B1). Statement first: an `opus-medium` decision task writes the lemma list from the candidate decoder down to `_rec_decode_access_list_entries` (`:936`) and `_rec_decode_access_list_keys` (`:889`), as goal directories. Each lemma is a `meaning` obligation routed like a pure goal. `render_residual_module.py --shared` renders the checked lemmas into `ZesuSsz/Compliance/TxAccessListSailAgreement.v`. Each divergence found becomes a proposed `KnownBug` constructor with its trigger in `ZesuSsz/Contracts/TxAccessListBugTriggers.v`; adding a constructor waits for the user's review. Pin the reviewed statements in `ZesuSsz/Evidence/SignatureGates.v`.
-
-### Stage C: size the next function (task C1)
-
-Run B0's derivation only (hint pack, `derive.py`) on `rlp_decode.decodeTxFields` (`0x8000050c`; 591 blocks, 2,825 instructions, 49 loops, 87 calls, one jump table). Record in the plan's status section: requests by kind, the decision floor, callees by status, the jump-table request, and the projected tokens from the per-block figures of Stage B. No proof runs.
-
-### Targets
-
-| Measure | Target |
-|---|---|
-| Blocks certified | 130 of 130; open-block records with 0 fields |
-| Decisions per region | at most 2 × floor |
-| Goals found false after a model attempt | 0; each one found adds its assignment to the falsity list |
-| Pure goals closed by Haiku tiers | at least 70% |
-| Goals that reach `opus-medium` as prover | at most 10% |
-| Obligations left in `spin` | 0 |
-| `entriesToOwnedSlice` against `keysToOwnedSlice` | at most half the tokens and half the new lemma lines |
-| Generator lines added under `tools/block` | reported; only A6 items 5 and 6 |
-| Rounds per region | at most 3 |
-| Absolute addresses in new non-generated files | 0 (`check_relocatable.py`) |
-
-A missed target is reported with its cause in the status section; it does not block the theorem.
+|Statements of this repository changed by the fork|0|
+|Edits under `ZesuSsz/Automation/`|0|
+|Decisions for a loop-free function's budget|0|
+|Decisions per loop cut|1 potential row|
+|Cases of a charged variant that need a prover again|reported; expected only back-edge potential goals|
+|Added cost per block|reported|
 
 ## Critical files and anchors
 
-- `tools/block/residual_loop.py` — `TASK` (462), `cmd_collect` (599), `minimize` (641): the pure-goal engine that A3 wraps.
-- `ZesuSsz/Automation2/Diagnostics.v:200-208` — `zesu_diag_export_final`: where spatial leftovers are skipped today.
-- `tools/block/render_function.sh` — the render steps; its outputs `forward/FORWARD.json` (`stops`, `liveness`) and `render/RESULT.json` (`refused_*` rows) feed `derive.py`.
-- `ZesuSsz/Contracts/ParentHeaderMemcpyService.v` — `memcpyCallSpec2`, `memcpyCallPremise`: the form of every callee premise.
-- `tools/stock_zisk/dwarf.py` — `code_dwarf`, `inline_ranges`: DWARF reading and relocation that A4 extends.
+- `/home/cody/islaris/theories/opsem.v` — `seq_global_state` (441), `SeqStep` `LDone` branch (564): the only operational change.
+- `/home/cody/islaris/theories/lifting.v` — `isla_irisG` (72), `instr_pre'_def` (123), `wp_next_instr` (352): where charging enters the logic.
+- `/home/cody/islaris/theories/automation.v` — `instr_kind` (683), `li_wp_next_instr` (1186): the single automation entry this repository calls.
+- `InstrSpecs/Lookup.v` — `instr_lookup_resources` (6) and its `find_in_context` lemmas: the form `LookupCharged.v` mirrors.
+- `ZesuSsz/Compliance/KeysToOwnedSliceGeneratedComposition.v` — the composition every later region copies.
 
 ## Verification
 
-- Tools: tests `tools/oblig/test_*.py` beside each new tool, run by the tool suite of `make check-fast`. They cover: a false statement is refuted by `falsify.py`; the store rejects a repeated (`prompt_sha256`, `tier`); `annotations.py compile` reproduces the `loop_designs` and `join_designs` of `tools/block/functions/nextUint64.json` from equivalent annotation rows; `derive.py` turns a recorded `refused_incomplete_boundary` row into a `join_assertion` request.
-- Tools on old ground: `store.py sync` on `decodeParentHeader` reports 98 closed blocks and 0 open obligations.
-- Machine runs: `tools/oblig/exec/run.py --function decodeParentHeader` reproduces the results recorded in `ZesuSsz/Evidence/PARENT_HEADER_EMULATION.json`; `annotations.py test` rejects a loop assertion with a deliberately wrong bound and names the input.
-- Relocation: `check_relocatable.py` passes on the new files and fails on a fixture that contains `0x800d6960`.
-- Cleanup (A0): `_build/BUDGET.json` shows `total_over` false; `git worktree list` holds no clean worktree outside the keep rule.
-- Each pull request: tools only → static checks and `make check-fast`; `ZesuSsz/Automation2/` (A3 item 4) → the full cycle with `make check-iris`; contracts and compliance → static checks, `make check-iris`, `make check-fast`, and `make check-signatures` when a reviewed statement changes.
-- Per region: `tools/closure_cert.py` certificate for every block; `tools/block/render_open_blocks.py --check` with 0 open fields; `tools/block/check_proved_functions.py`.
-- Final: `Print Assumptions txAccessListCompliance` prints "Closed under the global context"; the same for the Sail agreement theorem; `rocq_verify` through rocq-mcp on both statements; `tools/soundness_gate.py` passes against the new baseline.
-- New behaviour seen end to end: `report.py` for each region prints every measure of the targets table, and each closed goal's event log names the tier that closed it.
+- T1: `make check-iris ISLARIS_REPO=/home/cody/islaris-budget` passes on unmodified sources.
+- T2: the fork builds; `Print Assumptions isla_budget_adequacy` is closed; a test in the fork proves a one-instruction charged program cannot be verified with `step_credits 0` (the fetch goal needs a credit) and can with `step_credits 1`.
+- T3: all three gates pass with source changes only under `ZesuSsz/Export/` and the one test file; `git diff --stat origin/main -- ZesuSsz/Automation ZesuSsz/Contracts ZesuSsz/Compliance ZesuSsz/Proofs ZesuSsz/Generated` is empty.
+- T4: `ZesuSsz/Proofs/Tests/StepBudget.v` (budget 3 closes, budget 2 does not) and `BudgetAdequacyExample.v` (`σ2.(seq_fetches) ≤ 2`, assumptions closed) compile; rocq-mcp `rocq_verify` on the example (route: drive the `rocq-mcp` stdio server from Python as `tools/pin_hypotheses.py` does, with `OCAMLPATH=<worktree>/_build/agents/<lane>/install/default/lib opam exec --switch=<switch> --`).
+- T5: goldens unchanged for uncharged profiles; a fixture function with one loop and no `potential` row is refused with the cut's offset; with the row its entries carry the expression.
+- T6, T7, T8: per function, every case has a `CLOSURE.json`, `render_open_blocks.py --check` reports 0 open, `Print Assumptions <F>BudgetCompliance` is closed, `make check-iris` and `make check-fast` pass, `check_relocatable.py` passes.
+- End to end: `Print Assumptions txAccessListStepBound` is closed and its statement bounds `seq_fetches` by an expression in the input length.
+- B4, B5: as in the regions already merged: certificates for every case, 0 open block obligations, `Print Assumptions` closed, both gates, registry check.
 
 ## Assumptions and contingencies
 
-- **Allocator and `memcpy` stay premises.** The theorem lists them. If the user wants `alt_fl_alloc.free` proved (43 blocks, contract exists), it is one more region after B4.
-- **Function table ownership.** If the table lies in memory the machine map cannot state as owned cells, the allocator premises state the three loaded words as facts instead; this changes B1's packet only.
-- **Zig standard library source is not on this host** (the nix store path of the recipe is absent). The array-list regions then get hints from DWARF only. If a `zig-0.16.0` source tree is supplied, `hints.py` reads `lib/std/array_list.zig` from it and records its SHA-256.
-- **Per-call models.** If `perCallModel: eval` cannot be enabled, map the tiers to agent names instead: `sonic` for `haiku-low`, `scout` with its override raised to `:high` for the other Haiku tiers, `task` for `opus-medium`.
-- **Token counts.** If the harness exposes no per-agent token usage, the store records prompt bytes, answer bytes and the harness cost line, and the report prints bytes.
-- **Three cut points in one cyclic region.** If `tools/block/loop_design.py` refuses a cut with more than one entry edge, accepting a hand row there is an annotation-consumption change under A6 item 5.
-- **Sail agreement strength.** Sail returns counts and a slice, not decoded entries, so agreement on content beyond those is not statable against it. If the user wants a stronger statement, it needs a new Sail-side definition and is outside this plan's theorem.
-- **Review timing.** If the user's review of B1 changes a contract after blocks closed, those blocks rerun; lemmas whose statements no longer occur are dropped from the residual modules by the renderer.
-- **Cleanup scope.** A0 removes only clean worktrees and merged local branches and shrinks sealed run dirs. If the janitor still reports `total_over` after A0, list the ten largest remaining run dirs and ask the user before deleting any.
+- **Islaris fork ownership.** The fork `codygunton/islaris` takes one more branch; if the user wants the change proposed upstream instead, T2's commits are already separable from the snapshot-label commits.
+- **Relative bounds.** A charged function that calls an uncharged one gets a bound on its own instructions only. The plan avoids this by giving `decodeItem` a charged variant before `txAccessList`. `nextUint64` and `decodeParentHeader` stay uncharged in this plan.
+- **Allocator and `memcpy` budgets are assumed**, as their correctness already is. If `alt_fl_alloc.free` or `alloc` is proved later, its budget is proved with it.
+- **If T2 step 7 triggers** (a used statement must change): stop Stage T, keep Stage B, and report the statement and why; the fallback is the operational bound for loop-free functions only, which needs no fork.
+- **If T3 fails on a frozen file:** report the file and error; do not edit `ZesuSsz/Automation/`; the user decides on the hygiene check's emergency override.
+- **If T6 shows a budget conjunct breaks more than five cases of a region that closed uncharged:** stop the roll-out after T6 and report the stuck goals before T7.
+- **Duplicate trees.** Charged variants live beside uncharged ones. If the user prefers a clean cutover for the four functions of this plan (no proved caller depends on them), T6 and T8 replace the uncharged trees instead; `decodeItem` keeps both because `nextUint64` and `decodeParentHeader` call its uncharged form.
+- **ZisK.** The reliance "a run that does not end yields no proof" is added to `docs/TRUST.md` in C1's commit; it rests on a source read.
