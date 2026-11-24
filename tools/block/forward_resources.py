@@ -161,6 +161,13 @@ def _scoped_coq(expr, aliases):
     return replace(expr).coq()
 
 
+def owned_byte_term(value):
+    """The Coq term of a symbolic byte read `owned_array_byte (array, address, base)`: its list lookup."""
+    array, address, base = value.args
+    return ('(List.nth (Z.to_nat ((bv_unsigned ' + address.coq() +
+            ' - bv_unsigned ' + base.coq() + ')%Z)) ' + array.coq() + ' (BV 8%N 0%Z))')
+
+
 def _owned_byte_terms(state, resources, transitions):
     """Lower only reads tied to the same unchanged, initialized source array."""
     terms, records = {}, []
@@ -183,8 +190,7 @@ def _owned_byte_terms(state, resources, transitions):
                 or not isinstance(value.value, str) or re.fullmatch('[0-9a-f]{64}', value.value) is None
                 or not row.get('source') or not row.get('source_chain') or not row.get('goal')):
             raise ValueError('The symbolic byte expression differs from its source read relation')
-        term = ('(List.nth (Z.to_nat ((bv_unsigned ' + address.coq() +
-                ' - bv_unsigned ' + base.coq() + ')%Z)) ' + array.coq() + ' (BV 8%N 0%Z))')
+        term = owned_byte_term(value)
         if value in terms and terms[value] != term:
             raise ValueError('The symbolic byte read has conflicting source renderings')
         terms[value] = term

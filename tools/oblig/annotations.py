@@ -40,8 +40,9 @@ The compiled profile keys, by `boundary`:
                    the spec's text and, for a consumed one, the caller components it takes; its `returns`
                    rows [{`index`, `register`}] name the returned registers the continuation reads; its
                    `result_words` {byte offset: Z value} name words of the returned array the return entry
-                   states and the seed reads as the value (`{argv:N}`, `{fresh:NAME:TYPE}` in the value)
-                   (call_boundary.call_return_seed)
+                   states and the seed reads as the value (`{argv:N}`, `{fresh:NAME:TYPE}` in the value);
+                   its `result_minimums` {NAME: integer m} state `m <= NAME` of a fresh Z binder of those
+                   values in the return entry, which the call block proves (call_boundary.call_return_seed)
   call_return      the `return_facts` of the call whose `return_site_pc` is `pc` (role -> `kind`)
   function_return  a `function_returns` row: `return_instruction_pc` and `return_fact` (True without facts)
   access           an `access_placements` row: `pc` and `placement` {`array`, `index`, `scale`, `offset`},
@@ -72,11 +73,18 @@ no annotation file.
 
 `test` instantiates each row's binders from the snapshots `RUN/exec/<input>/STATE-<oooo>.json` at its pc
 (schema `oblig-exec-snapshot/1`): a binder with a `register` takes that register at the visit; a binder
-with `exec` takes that Coq term. In facts and `exec` terms, `{xN}` (or an ABI name) is the register at
-the function entry (STATE-0000.json, first visit) and `{reg:xN}` the register at the visit; `{bytes:NAME}`
-is the snapshot memory range NAME as a byte list. Each fact is evaluated with
-`Eval vm_compute in bool_decide (...)`. One false fact rejects the row and names its input; a fact
-that does not elaborate (a contract name the snapshot cannot give) is reported unchecked.
+with `exec` (a typed ghost binder too) takes that Coq term. In facts and `exec` terms, `{xN}` (or an ABI
+name) is the register at the function entry (STATE-0000.json, first visit; for a loop cut at the loop
+entry) and `{reg:xN}` the register at the visit; `{entry:xN}` is the register at the function entry for
+every row; `{bytes:NAME}` is the snapshot memory range NAME at the visit as a byte list and
+`{entry:bytes:NAME}` the range at the function entry; `{memory}` is every range at the visit as
+`list (Z * list byte)`, read with `snapshotRead memory address size` (the bytes, `[]` outside every range)
+and `snapshotWord memory address` (the little-endian 64-bit word; `snapshotLe bytes` of a byte list).
+The file's optional `test` {`imports` [module], `lets` [{`name`, `exec`}]} adds `Require Import` lines and
+lets bound before every row's binders (a contract's `args` record from the entry registers). `--coqc-args`
+takes a JSON list `[coqc, flag, ...]` (a render's coqc-args.json) whose load paths the imports need.
+Each fact is evaluated with `Eval vm_compute in bool_decide (...)`. One false fact rejects the row and names
+its input; a fact that does not elaborate (a contract name the snapshot cannot give) is reported unchecked.
 """
 from pathlib import Path
 import argparse
@@ -107,6 +115,16 @@ ABI = ['zero', 'ra', 'sp', 'gp', 'tp', 't0', 't1', 't2', 's0', 's1', 'a0', 'a1',
        'a7', 's2', 's3', 's4', 's5', 's6', 's7', 's8', 's9', 's10', 's11', 't3', 't4', 't5', 't6']
 HEADER = ('From stdpp Require Import bitvector.definitions decidable.\n'
           'From Coq Require Import ZArith List.\nImport ListNotations.\nLocal Open Scope Z_scope.\n')
+# The snapshot readers of `{memory}` (see the module text).
+READERS = ('Fixpoint snapshotLe (bytes : list (bv 8)) : Z :=\n'
+           '  match bytes with [] => 0 | b :: rest => bv_unsigned b + 256 * snapshotLe rest end.\n'
+           'Definition snapshotRead (memory : list (Z * list (bv 8))) (address size : Z) : list (bv 8) :=\n'
+           '  match List.find (fun range => (fst range <=? address) &&\n'
+           '      (address + size <=? fst range + Z.of_nat (List.length (snd range)))) memory with\n'
+           '  | Some range => List.firstn (Z.to_nat size) (List.skipn (Z.to_nat (address - fst range)) (snd range))\n'
+           '  | None => [] end.\n'
+           'Definition snapshotWord (memory : list (Z * list (bv 8))) (address : Z) : Z :=\n'
+           '  snapshotLe (snapshotRead memory address 8).\n')
 
 
 class AnnotationError(ValueError):
@@ -143,6 +161,12 @@ def validate(data):
     generated = set(GENERATED_KEYS) & set(data['profile'])
     if generated:
         raise AnnotationError('the profile part holds compiled keys: ' + ', '.join(sorted(generated)))
+    setup = data.get('test', {})
+    if (not isinstance(setup, dict) or set(setup) - {'imports', 'lets'}
+            or not all(isinstance(module, str) and re.fullmatch(r'[\w.]+', module) for module in setup.get('imports', []))
+            or not all(isinstance(item, dict) and set(item) == {'name', 'exec'} and isinstance(item['exec'], str)
+                       and re.fullmatch(r"[A-Za-z_][\w']*", str(item['name'])) for item in setup.get('lets', []))):
+        raise AnnotationError('`test` is {imports: [module], lets: [{name, exec}]}')
     return data
 
 
@@ -180,6 +204,12 @@ def _check_call(row):
     if not isinstance(words, dict) or not all(re.fullmatch(r'[0-9]+', str(key)) and isinstance(value, str)
                                               for key, value in words.items()):
         raise AnnotationError('%s: result_words maps byte offsets to value texts' % row['id'])
+    minimums = row['call'].get('result_minimums', {})
+    fresh = {name for value in words.values() for name, kind in re.findall(r'\{fresh:(\w+):([^{}]+)\}', value)
+             if ' '.join(kind.split()) == 'Z'}
+    if not isinstance(minimums, dict) or not all(name in fresh and type(value) is int
+                                                 for name, value in minimums.items()):
+        raise AnnotationError('%s: result_minimums maps fresh Z binders of result_words to integers' % row['id'])
 
 
 def compile_profile(data, source=None):
@@ -439,43 +469,65 @@ def bv(value):
 
 
 def byte_list(row):
+    # Z literals mapped to bytes: a `BV 8 n` literal elaborates a proof per byte (minutes on a 576-byte frame).
     data = bytes.fromhex(row['hex'])
-    return '[' + '; '.join('BV 8 %d' % byte for byte in data) + ']'
+    return '(List.map (Z_to_bv 8) [' + '; '.join('%d' % byte for byte in data) + '])'
 
 
-def substitute(text, entry, regs, memory):
+def memory_list(memory):
+    """`{memory}`: every snapshot range as a Coq `list (Z * list byte)`."""
+    return '[' + '; '.join('(%d, %s)' % (row['base'], byte_list(row)) for row in memory) + ']'
+
+
+def substitute(text, entry, regs, memory, start=None):
+    """`start`: the function-entry visit ({regs, memory}) of `{entry:...}` (the module text)."""
     def replace(match):
         token = match[1]
+        if token == 'memory':
+            return 'snapshotMemory'
+        scope_regs, scope_memory = regs, memory
+        if token.startswith('entry:'):
+            if start is None:
+                raise KeyError('no function-entry snapshot for ' + token)
+            token, scope_regs, scope_memory = token[6:], start['regs'], start.get('memory', [])
+            if not token.startswith('bytes:'):
+                return bv(scope_regs[register_key(token)])
         if token.startswith('reg:'):
-            return bv(regs[register_key(token[4:])])
+            return bv(scope_regs[register_key(token[4:])])
         if token.startswith('bytes:'):
-            rows = [row for row in memory if row['name'] == token[6:]]
+            rows = [row for row in scope_memory if row['name'] == token[6:]]
             if len(rows) != 1:
                 raise KeyError('no memory range ' + token[6:])
             return byte_list(rows[0])
         return bv(entry[register_key(token)])
-    return re.sub(r'\{((?:reg:|bytes:)?[\w#.-]+)\}', replace, text)
+    return re.sub(r'\{((?:entry:)?(?:reg:|bytes:)?[\w#.-]+)\}', replace, text)
 
 
-def fact_term(row, fact, entry, visit):
-    """The closed Coq term `let <binders> in bool_decide (<fact>)` of one visit."""
+def fact_term(row, fact, entry, visit, start=None, lets=()):
+    """The closed Coq term `let <file lets> <binders> in bool_decide (<fact>)` of one visit."""
     regs, memory = visit['regs'], visit.get('memory', [])
-    lets = []
+    texts = [*(item['exec'] for item in lets), *(binder.get('exec', '') for binder in row.get('binders', [])),
+             fact['coq']]
+    bound = ['let snapshotMemory := %s in' % memory_list(memory)] if any('{memory}' in text for text in texts) else []
+    for item in lets:
+        bound.append('let %s := %s in' % (item['name'], substitute(item['exec'], entry, regs, memory, start)))
     for binder in row.get('binders', []):
         if binder.get('register'):
-            lets.append('let %s := %s in' % (binder['name'], bv(regs[register_key(binder['register'])])))
+            bound.append('let %s := %s in' % (binder['name'], bv(regs[register_key(binder['register'])])))
         elif binder.get('exec'):
-            lets.append('let %s := %s in' % (binder['name'], substitute(binder['exec'], entry, regs, memory)))
-    return ' '.join(lets + ['bool_decide (%s)' % substitute(fact['coq'], entry, regs, memory)])
+            bound.append('let %s := %s in' % (binder['name'], substitute(binder['exec'], entry, regs, memory, start)))
+    return ' '.join(bound + ['bool_decide (%s)' % substitute(fact['coq'], entry, regs, memory, start)])
 
 
-def evaluate(terms, coqc, directory, split=True):
+def evaluate(terms, coqc, directory, split=True, imports=()):
     """[True | False | error text] per term: one coqc run, then (with `split`) one per term after an
-    error; without `split`, None after an error."""
+    error; without `split`, None after an error. `coqc` is a command list (coqc and its flags)."""
+    prefix = HEADER + ''.join('Require Import %s.\n' % module for module in imports) + READERS
+
     def run(batch, name):
         path = Path(directory) / name
-        path.write_text(HEADER + ''.join('Eval vm_compute in (%s).\n' % term for term in batch))
-        result = subprocess.run([coqc, path.name], cwd=directory, capture_output=True, text=True)
+        path.write_text(prefix + ''.join('Eval vm_compute in (%s).\n' % term for term in batch))
+        result = subprocess.run([*coqc, path.name], cwd=directory, capture_output=True, text=True)
         values = re.findall(r'=\s*(true|false)\s*:\s*bool', result.stdout)
         return result.returncode, values, (result.stdout + result.stderr)[-800:]
     code, values, output = run(terms, 'Snapshot.v')
@@ -491,7 +543,8 @@ def evaluate(terms, coqc, directory, split=True):
 
 
 def snapshots(run, row):
-    """[(input id, entry registers, visit)] at the row's pc, over every input dir of RUN/exec.
+    """[(input id, entry registers, visit, function-entry visit | None)] at the row's pc, over every
+    input dir of RUN/exec.
 
     The entry registers (`{xN}`) are those at the function entry (STATE-0000.json), and for a loop cut
     those at the loop entry: the first visit of the head after the latest visit of its entry predecessor
@@ -506,6 +559,8 @@ def snapshots(run, row):
             continue
         data = json.loads(state.read_text())
         visits = sorted(data['visits'], key=lambda visit: visit.get('insn', 0))
+        entry = directory / 'STATE-0000.json'
+        start = json.loads(entry.read_text())['visits'][0] if entry.exists() else None
         if loop:
             predecessor = directory / ('STATE-%s.json' % offset_key(at['predecessor'])) \
                 if at.get('predecessor') else None
@@ -513,24 +568,24 @@ def snapshots(run, row):
                 if predecessor is not None and predecessor.exists() else []
             for visit in visits:
                 before = [mark for mark in marks if mark < visit.get('insn', 0)]
-                start = next(other for other in visits if other.get('insn', 0) > before[-1]) if before else visits[0]
-                found.append((data.get('input', directory.name), start['regs'], visit))
+                head = next(other for other in visits if other.get('insn', 0) > before[-1]) if before else visits[0]
+                found.append((data.get('input', directory.name), head['regs'], visit, start))
             continue
-        entry = directory / 'STATE-0000.json'
-        if not entry.exists():
+        if start is None:
             continue
-        entry_regs = json.loads(entry.read_text())['visits'][0]['regs']
         for visit in visits:
-            found.append((data.get('input', directory.name), entry_regs, visit))
+            found.append((data.get('input', directory.name), start['regs'], visit, start))
     return found
 
 
 def test_rows(data, run, row_ids=None, coqc=None):
-    """{'verdict': 'passed' | 'rejected' | 'untested', ...} over the selected rows."""
+    """{'verdict': 'passed' | 'rejected' | 'untested', ...} over the selected rows. `coqc`: a command list."""
     validate(data)
-    coqc = coqc or coqc_command()
+    coqc = coqc or ([coqc_command()] if coqc_command() else None)
     if coqc is None:
         raise SystemExit('annotations test: no coqc (set COQC or ISLARIS_REPO)')
+    setup = data.get('test', {})
+    imports, lets = setup.get('imports', []), setup.get('lets', [])
     rows = [row for row in data['rows'] if row_ids is None or row['id'] in row_ids]
     checked, unchecked, untested = 0, [], []
     with tempfile.TemporaryDirectory() as directory:
@@ -544,20 +599,22 @@ def test_rows(data, run, row_ids=None, coqc=None):
             facts = list(row['facts'])
 
             def terms_of(facts):
-                return [fact_term(row, fact, entry, visit) for _, entry, visit in visits for fact in facts]
-            values = evaluate(terms_of(facts), coqc, directory, split=False)
+                return [fact_term(row, fact, entry, visit, start, lets)
+                        for _, entry, visit, start in visits for fact in facts]
+            values = evaluate(terms_of(facts), coqc, directory, split=False, imports=imports)
             if values is None:
                 # A fact that does not elaborate on the first visit stays unchecked on every visit.
-                _, entry, visit = visits[0]
-                first = evaluate([fact_term(row, fact, entry, visit) for fact in facts], coqc, directory)
+                _, entry, visit, start = visits[0]
+                first = evaluate([fact_term(row, fact, entry, visit, start, lets) for fact in facts], coqc, directory,
+                                 imports=imports)
                 for fact, value in zip(list(facts), first):
                     if not isinstance(value, bool):
                         unchecked.append({'row': row['id'], 'fact': fact['coq'], 'error': value})
                         facts.remove(fact)
-                values = evaluate(terms_of(facts), coqc, directory) if facts else []
+                values = evaluate(terms_of(facts), coqc, directory, imports=imports) if facts else []
             # Visit order, then fact order: the first false fact names the input, its visit and the fact.
             for index, value in enumerate(values):
-                (input_id, _, visit), fact = visits[index // len(facts)], facts[index % len(facts)]
+                (input_id, _, visit, _), fact = visits[index // len(facts)], facts[index % len(facts)]
                 if value is True:
                     checked += 1
                 elif value is False:
@@ -581,13 +638,16 @@ def main():
     test_parser.add_argument('--run', required=True, type=Path)
     test_parser.add_argument('--row', action='append')
     test_parser.add_argument('--annotations', type=Path, help='an annotation file other than the committed one')
+    test_parser.add_argument('--coqc-args', type=Path,
+                             help='JSON list [coqc, flag, ...] (a render coqc-args.json) for the file\'s test imports')
     options = parser.parse_args()
     if options.command == 'compile':
         return cmd_compile(options.function)
     if options.command == 'check':
         return cmd_check(options.function)
     source = options.annotations or annotation_path(options.function)
-    result = test_rows(json.loads(source.read_text()), options.run, options.row)
+    coqc = json.loads(options.coqc_args.read_text()) if options.coqc_args else None
+    result = test_rows(json.loads(source.read_text()), options.run, options.row, coqc)
     print(json.dumps(result, indent=1))
     return 1 if result['verdict'] == 'rejected' else 0
 

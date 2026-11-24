@@ -1,4 +1,4 @@
-"""Run the pinned source engine (FP-20261124) from the entry seed, adding generated seeds.
+"""Run the pinned source engine (FP-20261124b) from the entry seed, adding generated seeds.
 
 A join is seeded only after every join that can reach it has its seed, so its
 incoming edges are complete. A call's return site is seeded from the callee
@@ -303,9 +303,14 @@ def main():
             except ValueError as error:
                 refusals[head] = 'loop head seed refused: ' + str(error)
                 continue
-            roots[head] = root
-            if head_drops:
-                seed_drops[head] = head_drops
+            if design.get('owned'):
+                # A head with owned state is rebuilt on its own tree (loop_design.loop_head_seed): it is the
+                # root of the seeds after it, so a call-return seed in the loop keeps the owned state.
+                roots[head], parents[head] = head, root
+            else:
+                roots[head] = root
+                if head_drops:
+                    seed_drops[head] = head_drops
             refusals.pop(head, None)
             added = head
             break
@@ -395,7 +400,7 @@ def main():
                                                     if roots.get(pc) != pc}}, ensure_ascii=False) + '\n')
     receipt = {'source_pass': bind(output / 'FORWARD.json'), 'level1_K_source': bind(level1),
                'vocabulary': bind(vocabulary_path), 'system_shapes': bind(shapes_path),
-               'engine': bind(ROOT / 'tools/block/FP-20261124.json'), 'joins': bind(output / 'JOINS.json'),
+               'engine': bind(ROOT / 'tools/block/FP-20261124b.json'), 'joins': bind(output / 'JOINS.json'),
                'call_seeds': bind(output / 'CALL-SEEDS.json'), 'join_seeds': bind(output / 'JOIN-SEEDS.json')}
     (output / 'INPUT-RECEIPT.json').write_text(json.dumps(receipt, indent=2) + '\n')
     stops = {}
