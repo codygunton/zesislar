@@ -32,6 +32,11 @@
     "ZesuSsz/Contracts/EntriesToOwnedSliceCall*.v",
     "ZesuSsz/Compliance/EntriesToOwnedSliceCallSpec2.v",
     "ZesuSsz/Compliance/KeysEnsureCapacityCompliance.v",
+    "ZesuSsz/Contracts/AltFlAllocBudgetPremises.v",
+    "ZesuSsz/Contracts/KeysEnsureCapacityBudgetContract.v",
+    "ZesuSsz/Contracts/KeysEnsureCapacityChargedSelected.v",
+    "ZesuSsz/Compliance/KeysEnsureCapacityBudgetCallSpec.v",
+    "ZesuSsz/Compliance/KeysEnsureCapacityBudgetCompositionBoundary.v",
     "ZesuSsz/Residuals/*/*.v"
   ],
   "exclude": [

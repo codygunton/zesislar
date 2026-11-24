@@ -99,6 +99,21 @@ class ProvedFunctionCheckTests(unittest.TestCase):
                 'ZesuSsz/Compliance/OtherComposition.v: requires ZesuSsz.Contracts.CalleeSpec, an internal module '
                 'of the proved function callee; import ZesuSsz.Interfaces.Callee'])
 
+    def test_a_charged_variant_of_the_function_is_no_caller(self):
+        with tempfile.TemporaryDirectory() as root:
+            self.write(root, 'ZesuSsz/Contracts/CalleeSpec.v', '')
+            source = 'Require Import ZesuSsz.Contracts.CalleeSpec.\n'
+            self.write(root, 'ZesuSsz/Generated/CalleeBudget/Entries.v', source)
+            self.write(root, 'ZesuSsz/Generated/Other/Entries.v', source)
+            self.write(root, 'tools/block/functions/calleeBudget.json', json.dumps(
+                {'function': 'calleeBudget', 'symbol': 'lib.callee',
+                 'generated_directory': 'ZesuSsz/Generated/CalleeBudget'}))
+            self.write(root, 'tools/block/functions/other.json', json.dumps(
+                {'function': 'other', 'symbol': 'lib.other', 'generated_directory': 'ZesuSsz/Generated/Other'}))
+            self.assertEqual(C.import_violations(REGISTRY, Path(root)), [
+                'ZesuSsz/Generated/Other/Entries.v: requires ZesuSsz.Contracts.CalleeSpec, an internal module '
+                'of the proved function callee; import ZesuSsz.Interfaces.Callee'])
+
     def test_an_unregistered_compliance_theorem_fails(self):
         with tempfile.TemporaryDirectory() as root:
             self.write(root, 'ZesuSsz/Compliance/Other.v',
@@ -134,6 +149,22 @@ class ProvedFunctionCheckTests(unittest.TestCase):
             self.assertEqual(C.premise_violations(dict(row, premise={'module': 'ZesuSsz.Contracts.AllocPremise'}),
                                                   Path(root)),
                              ['alloc: an assumed row without an interface names premise {module, name, call_spec}'])
+
+    def test_a_charged_row_names_its_declarations(self):
+        names = {'contract': 'CalleeBudgetContractCorrect', 'compliance': 'calleeBudgetCompliance',
+                 'code': 'calleeChargedCode', 'call_spec_correct': 'calleeBudgetCallSpec2_correct'}
+        charged = {key: {'module': 'ZesuSsz.Contracts.CalleeBudget', 'name': name} for key, name in names.items()}
+        row = dict(REGISTRY['functions'][0], budget=7, charged=charged,
+                   compliance_theorems=['calleeCompliance', 'calleeBudgetCompliance'])
+        with tempfile.TemporaryDirectory() as root:
+            self.write(root, 'ZesuSsz/Contracts/CalleeBudget.v',
+                       'Definition CalleeBudgetContractCorrect := True.\nTheorem calleeBudgetCompliance : True.\n'
+                       'Definition calleeChargedCode := True.\n(* Lemma calleeBudgetCallSpec2_correct *)\n')
+            self.assertEqual(C.charged_violations(row, Path(root)), [
+                'callee: ZesuSsz.Contracts.CalleeBudget does not declare calleeBudgetCallSpec2_correct'])
+            self.assertEqual(C.charged_violations(dict(row, budget='7'), Path(root)), [
+                'callee: a charged row has an integer budget and charged '
+                '{call_spec_correct, code, compliance, contract}'])
 
     def test_a_charged_premise_names_its_definition_and_budget(self):
         row = {'function': 'alloc', 'symbol': 'alloc', 'status': 'assumed', 'compliance_theorems': [],

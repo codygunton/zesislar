@@ -475,15 +475,25 @@
       "function": "keysEnsureCapacity",
       "symbol": "array_list.Aligned([32]u8,null).ensureTotalCapacity",
       "status": "proved",
-      "reason": "Plan B4 (issue #347): keysEnsureCapacityCompliance proves KeysEnsureCapacityContractCorrect; every block of the region has a closure certificate (KeysEnsureCapacityBlockObligations has no open block).",
+      "reason": "Plan B4 (issue #347): keysEnsureCapacityCompliance proves KeysEnsureCapacityContractCorrect; every block of the region has a closure certificate (KeysEnsureCapacityBlockObligations has no open block). Plan T6: keysEnsureCapacityBudgetCompliance proves the charged KeysEnsureCapacityBudgetContractCorrect (budget 197, all 25 charged blocks certified).",
       "compliance_theorems": [
-        "keysEnsureCapacityCompliance"
+        "keysEnsureCapacityCompliance",
+        "keysEnsureCapacityBudgetCompliance"
       ],
+      "budget": 197,
+      "charged": {
+        "contract": {"module": "ZesuSsz.Contracts.KeysEnsureCapacityBudgetContract", "name": "KeysEnsureCapacityBudgetContractCorrect"},
+        "compliance": {"module": "ZesuSsz.Compliance.KeysEnsureCapacityBudgetGeneratedComposition", "name": "keysEnsureCapacityBudgetCompliance"},
+        "code": {"module": "ZesuSsz.Contracts.KeysEnsureCapacityChargedSelected", "name": "keysEnsureCapacityChargedCode"},
+        "call_spec_correct": {"module": "ZesuSsz.Compliance.KeysEnsureCapacityBudgetCallSpec", "name": "keysEnsureCapacityBudgetCallSpec2_correct", "statement": "KeysEnsureCapacityBudgetContractCorrect -> keysEnsureCapacityBudgetContractCode -∗ instr_body sym_array_list_Aligned_32_u8_null_ensureTotalCapacity (step_budget keysEnsureCapacityBudget ∗ keysEnsureCapacityCallSpecDefinition)"}
+      },
       "owned_prefixes": [
         "ZesuSsz/Contracts/KeysEnsureCapacity",
         "ZesuSsz/Compliance/KeysEnsureCapacity",
         "ZesuSsz/Generated/KeysEnsureCapacity/",
+        "ZesuSsz/Generated/KeysEnsureCapacityBudget/",
         "ZesuSsz/Proofs/KeysEnsureCapacity/",
+        "ZesuSsz/Proofs/KeysEnsureCapacityBudget/",
         "ZesuSsz/Residuals/keysEnsureCapacity/"
       ],
       "interface": {
