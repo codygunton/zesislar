@@ -33,7 +33,8 @@ from pathlib import Path
 import argparse, hashlib, json, re, sys
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from function_profiles import exit_package, load_profile, return_case, return_sites, tail_callees
+from function_profiles import (budget_import, call_premise, exit_package, load_profile, return_case, return_sites,
+                               tail_callees)
 from render_fp301_statements import (render_block_caller, residual_import, return_precondition, slot_suffix,
                                      successor_precondition)
 
@@ -210,11 +211,12 @@ def main():
             block = block_rows[start]
             for call in profile.get('calls', []) + profile.get('tail_calls', []):
                 if block['start'] <= int(call['call_site_pc'], 16) < block['end']:
-                    imports.append(call['spec_module'])
-                    premise = ('instr_pre ' + call['callee_pc'] + ' ('
-                               + call['spec_module'] + '.' + call['spec'] + ')%I')
+                    premise, modules = call_premise(profile, call)
+                    imports.extend(modules)
                     if premise not in preconditions:
                         preconditions.append(premise)
+        if budget_import(profile) and 'ZesuSsz.Automation2.StepBudget' not in imports:
+            imports.append('ZesuSsz.Automation2.StepBudget')
         source = render_block_caller(profile, suffix, preconditions, imports, slot,
                                      continuation if through else None)
         if row['pc'] in hist_blocks:

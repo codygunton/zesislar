@@ -55,6 +55,19 @@ The compiled profile keys, by `boundary`:
                    the slots, and its seed holds each slot's value as a store at the slot's prologue
                    address (entry_hist.frame_writes), so the paths after it load the value itself; each
                    edge into a site proves the value of the cell it holds
+  potential        (boundary `loop_cut`) a row {`at`, `potential`: Coq Z text over the cut's binders,
+                   `entry_bound`?: Coq Z text over `args`, `returnAddress`} adds `potentials[pc]`
+                   {`potential`, `binders`, `entry_bound`?} (tools/block/budgets.py). The cut must exist
+                   (a loop_cut row or a `loop_heads` entry at `pc`); every binder the text names is a
+                   binder of that cut, and it names at least one. A row with `potential` and binders or
+                   facts is also the cut's loop_cut row.
+The profile key `charged: true` (copied from the profile part) needs `charged_code` {`module`,
+`premise`}: the charged selected code (`instr_lookup_resources_charged ...`) that replaces
+`selected_code` as every block's code premise. A charged function's entries own `step_budget (B)`
+with B from budgets.py. A back edge adds no obligation of its own: the block before the back edge
+enters with its budget over the loop body's binders, and its step into the cut must establish
+`step_budget (<potential at the next iteration>)`, the cut's entry; the inequality between the two
+potentials is left to that block's proof.
 The compiled profile carries `generated_from` {`path`, `sha256`}. The three hand-written profiles have
 no annotation file.
 
@@ -92,7 +105,10 @@ SCHEMA = 'zesu.annotations.v1'
 BOUNDARIES = ('entry', 'loop_cut', 'join', 'call_site', 'call_return', 'function_return', 'access', 'frame')
 GENERATED_KEYS = ('loop_designs', 'join_designs', 'calls', 'function_returns', 'access_placements',
                   'domain_component', 'opaque_predicates', 'unreachable_entries', 'unreachable_reached',
-                  'join_drops', 'generated_from')
+                  'join_drops', 'generated_from', 'potentials')
+POTENTIAL_KEYS = {'id', 'request', 'at', 'potential', 'entry_bound', 'author'}
+REGISTER_BINDER = re.compile(r'(?:machine|call|loop)_x\d+')
+IDENTIFIER = re.compile(r"(?<![\w'.])[A-Za-z_][\w']*(?![\w'.])")
 OPAQUE_USES = ('framed', 'consumed', 'produced')
 PC = re.compile(r'(?:[^+\s]+)?\+0x[0-9a-f]+')
 ABI = ['zero', 'ra', 'sp', 'gp', 'tp', 't0', 't1', 't2', 's0', 's1', 'a0', 'a1', 'a2', 'a3', 'a4', 'a5', 'a6',
@@ -216,6 +232,8 @@ def compile_profile(data, source=None):
                 if set(predicate) != {'name', 'owner'}:
                     raise AnnotationError('%s: a predicate row has exactly `name` and `owner`' % row['id'])
                 profile.setdefault('opaque_predicates', {})[predicate['name']] = dict(predicate)
+        elif boundary == 'loop_cut' and set(row) <= POTENTIAL_KEYS:
+            continue   # a potential row alone: compiled after every cut is known (_potentials)
         elif boundary == 'loop_cut':
             if at['pc'] not in heads:
                 heads.append(at['pc'])
@@ -318,13 +336,68 @@ def compile_profile(data, source=None):
     for key, value in (('loop_designs', loop_designs), ('join_designs', join_designs), ('calls', calls),
                        ('function_returns', returns), ('access_placements', placements),
                        ('unreachable_entries', unreachable), ('unreachable_reached', reached_pcs),
-                       ('join_drops', drops), ('join_frames', join_frames)):
+                       ('join_drops', drops), ('join_frames', join_frames),
+                       ('potentials', _potentials(rows, heads))):
         if value:
             profile[key] = value
+    _check_charged(profile)
     if source is not None:
         profile['generated_from'] = {'path': str(Path(source).resolve().relative_to(ROOT)),
                                      'sha256': hashlib.sha256(Path(source).read_bytes()).hexdigest()}
     return profile
+
+
+def _potentials(rows, heads):
+    """{pc: {potential, binders, entry_bound?}} of the rows with `potential` (see the module text)."""
+    cut_binders = {}
+    for row in rows:
+        if row['at']['boundary'] == 'loop_cut' and not set(row) <= POTENTIAL_KEYS:
+            cut_binders.setdefault(row['at']['pc'], []).extend(
+                binder['name'] for binder in row.get('binders', []) if binder['name'] not in
+                cut_binders.get(row['at']['pc'], []))
+    every = {name for names in cut_binders.values() for name in names}
+    potentials = {}
+    for row in rows:
+        if 'potential' not in row:
+            continue
+        pc, text = row['at']['pc'], row['potential']
+        if row['at']['boundary'] != 'loop_cut':
+            raise AnnotationError('%s: a potential row is at a loop_cut' % row['id'])
+        if pc not in heads:
+            raise AnnotationError('%s: no loop cut exists at %s' % (row['id'], pc))
+        if pc in potentials:
+            raise AnnotationError('%s: a second potential row at %s' % (row['id'], pc))
+        if not isinstance(text, str) or not text.strip() or 'entry_bound' in row and not (
+                isinstance(row['entry_bound'], str) and row['entry_bound'].strip()):
+            raise AnnotationError('%s: potential and entry_bound are Coq Z texts' % row['id'])
+        own = cut_binders.get(pc, [])
+        names = set(IDENTIFIER.findall(text))
+        unknown = sorted(name for name in names if name not in own
+                         and (name in every or REGISTER_BINDER.fullmatch(name)))
+        if unknown:
+            raise AnnotationError('%s: the potential names binders that the cut at %s does not bind: %s'
+                                  % (row['id'], pc, ', '.join(unknown)))
+        if not names & set(own):
+            raise AnnotationError('%s: the potential names none of the binders of the cut at %s'
+                                  % (row['id'], pc))
+        if '{' in text:
+            raise AnnotationError('%s: a potential is over the cut\'s binders, without placeholders' % row['id'])
+        bound = row.get('entry_bound')
+        if bound is not None and set(IDENTIFIER.findall(bound)) & set(own):
+            raise AnnotationError('%s: an entry_bound is over args and returnAddress, not the cut\'s binders'
+                                  % row['id'])
+        potentials[pc] = {'potential': text, 'binders': list(own),
+                          **({'entry_bound': bound} if bound is not None else {})}
+    return potentials
+
+
+def _check_charged(profile):
+    """`charged` is true or absent; a charged profile names its charged selected code."""
+    if 'charged' not in profile:
+        return
+    code = profile.get('charged_code')
+    if profile['charged'] is not True or not isinstance(code, dict) or set(code) != {'module', 'premise'}:
+        raise AnnotationError('the profile key charged is true and needs charged_code {module, premise}')
 
 
 def render_profile(profile):
