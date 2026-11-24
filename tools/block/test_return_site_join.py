@@ -202,9 +202,17 @@ class OwnedJoinReplaces(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, 'no unique ancestor span'):
             self.joined([OLD_BUFFER])
 
-    def test_a_replaced_text_no_edge_holds_is_refused(self):
-        with self.assertRaisesRegex(ValueError, 'held by no edge'):
-            self.joined([OLD_BUFFER, NEW_BUFFER, '(sp - 256) ↦ₘ∗ other'])
+    def test_an_id_item_names_that_component_in_every_seed(self):
+        # Both seeds call their buffer `buffer`: one {id} item replaces the old one on the root and the new
+        # one on the call path.
+        seed, _, plan = self.joined([{'id': 'buffer'}])
+        self.assertEqual(plan['owned']['replaced'], [OLD_BUFFER, NEW_BUFFER])
+        self.assertNotIn('buffer', [row['id'] for row in seed.ownership['components']])
+
+    def test_a_replaced_item_no_edge_holds_is_refused(self):
+        for item in ('(sp - 256) ↦ₘ∗ other', {'id': 'other'}):
+            with self.assertRaisesRegex(ValueError, 'held by no edge'):
+                self.joined([OLD_BUFFER, NEW_BUFFER, item])
 
 
 if __name__ == '__main__':

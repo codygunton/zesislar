@@ -22,6 +22,7 @@ HIST_VISIBLE = ()
 STORE_SPLICE = 'linear'
 JOIN_GUARD_FORM = 'factored'
 ARRAY_SPELLING = 'definition'
+HELD_BINDERS = frozenset()
 # `value` of a join's edge-guard disjunction under `join_guard_form: prop` or `factored`; `entry_formatter` renders
 # such a condition as its normal-form proposition only. Kept through substitution, so successors inherit the form.
 PROP_ONLY_GUARD = 'join_guard_prop'
@@ -36,8 +37,10 @@ def configure(profile):
     with shared guard prefixes stated once, proposition only (linear in a chain of tests); `both`, the flat
     disjunction as boolean fact and normal-form proposition; `prop`, the flat proposition only; `none`, no fact),
     `array_spelling` (how an owned stored array `a ↦ₘ{DfracOwn 1}∗ l` of the forward state is written:
-    `definition`, default, through `isla.ghost_state.mem_mapsto_array_def`; `sealed`, isla's `a ↦ₘ∗ l`)."""
-    global FRAME_SLOTS, HIST_VISIBLE, STORE_SPLICE, JOIN_GUARD_FORM, ARRAY_SPELLING
+    `definition`, default, through `isla.ghost_state.mem_mapsto_array_def`; `sealed`, isla's `a ↦ₘ∗ l`),
+    `held_binders` (names of seed binders that a join or loop head keeps as owned ghosts, like a loop's
+    owned binder, so the stored bytes that name them stay exact; join_generalize.drop_unheld_binders)."""
+    global FRAME_SLOTS, HIST_VISIBLE, STORE_SPLICE, JOIN_GUARD_FORM, ARRAY_SPELLING, HELD_BINDERS
     mode = profile.get('entry_hist')
     if mode is None:
         raise ValueError('entry_hist: the function profile lacks the required key (only "wrap" exists)')
@@ -60,6 +63,11 @@ def configure(profile):
     if spelling not in ('definition', 'sealed'):
         raise ValueError('array_spelling: unknown value ' + str(spelling))
     ARRAY_SPELLING = spelling
+    held = profile.get('held_binders', [])
+    if not isinstance(held, list) or not all(isinstance(name, str) and re.fullmatch(r"[A-Za-z_][\w']*", name)
+                                             for name in held):
+        raise ValueError('held_binders: a list of binder names is required')
+    HELD_BINDERS = frozenset(held)
 
 
 def mentions(name, text):
