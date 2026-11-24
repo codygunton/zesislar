@@ -157,6 +157,32 @@ class SeedTest(unittest.TestCase):
         self.assertIn('loop_owned_20_fact_0', ids)
         self.assertEqual([resource.id for resource in nested.resources], ['loop_owned_0', 'loop_owned_20_0'])
 
+    def test_an_owned_resource_minimum_is_an_entry_fact_and_a_bounds_fact(self):
+        # txAccessList +0x448: the spare capacity (cap - len) * 40 holds at least one entry for the +0x460 stores.
+        public = {'schema': 'h1-public-entry-seed.v1', 'entry_pc': '0x10', 'source_bindings': [],
+                  'assertion_tree': {'kind': 'exists', 'binders': [], 'components': [
+                      {'kind': 'opaque', 'id': 'true', 'coq': 'True'}]}}
+        public['_input_sha256'] = '0' * 64
+        seed = seed_owned_resources(public, entry_pc=0x10, vocabulary={'rows': []})
+        owned = {'binders': [{'name': 's', 'type': 'ArrayListState'}], 'replaces': [],
+                 'resources': [{'coq': '(arrayListPointer s) ↦ₘ? ((arrayListCapacity s - arrayListLength s) * 40)',
+                                'minimum': 40}]}
+        rebuilt = owned_seed(seed, design(owned=owned, facts=[]), 0x10, {'rows': []})
+        texts = [str(c['seed_component'].get('original_component', c['seed_component'].get('coq')))
+                 for c in rebuilt.ownership['components']]
+        self.assertIn('⌜(40 <= (arrayListCapacity s - arrayListLength s) * 40)%Z⌝', texts)
+        bounds, = [fact for fact in rebuilt.facts if fact['fact_id'] == 'loop_owned_0:minimum']
+        self.assertEqual((bounds['kind'], bounds['terms']['resource_id'], bounds['terms']['count']),
+                         ('bounds', 'loop_owned_0', 40))
+        with self.assertRaises(ValueError):
+            owned_seed(seed, design(owned={**owned, 'resources': [{'coq': 'arrayListBuffer 40 3 s', 'minimum': 40}]},
+                                    facts=[]), 0x10, {'rows': []})
+        row = {'id': 'j', 'request': None, 'at': {'pc': '+0x20', 'boundary': 'join', 'predecessors': ['+0x8', '+0xc']},
+               'binders': [{'name': 's', 'type': 'ArrayListState'}], 'facts': [],
+               'resources': [{'coq': 'p ↦ₘ? 8', 'minimum': 0}]}
+        with self.assertRaisesRegex(annotations.AnnotationError, 'minimum a positive integer'):
+            annotations._join_owned(row)
+
     def test_a_pure_fact_keeps_the_text_the_join_gave_it(self):
         # The join before the head dropped the binder `kept` and moved its fact into its history (here
         # `⌜True⌝`); the owned seed must not restore the root's text, which names an unbound binder.

@@ -221,7 +221,23 @@ def owned_seed(seed, design, head, vocabulary, constants=None):
     carried = [{'kind': 'opaque', 'id': prefix + 'fact_%d' % index, 'coq': '⌜' + row['coq'] + '⌝'}
                for index, row in enumerate(design.get('facts', []))
                if _words(row['coq']) & names and '{x' not in row['coq']]
-    nodes[terminal:terminal] = [owned_node(row, index, prefix) for index, row in enumerate(owned['resources'])] + carried
+    resource_nodes = [owned_node(row, index, prefix) for index, row in enumerate(owned['resources'])]
+    # A resource's `minimum` m (an owned join row): `m <= length` of its memory is an entry fact, proved by
+    # each predecessor block, and a bounds fact the forward pass uses for stores into it.
+    minimums, minimum_facts = [], []
+    for row, node in zip(owned['resources'], resource_nodes):
+        minimum = row.get('minimum') if isinstance(row, dict) else None
+        if minimum is None:
+            continue
+        if 'length_original_coq' not in node:
+            raise ValueError('An owned resource minimum bounds a memory resource: ' + owned_text(row))
+        fact = '(%d <= %s)%%Z' % (minimum, node['length_original_coq'])
+        minimums.append({'kind': 'opaque', 'id': node['id'] + '_minimum', 'coq': '⌜' + fact + '⌝'})
+        minimum_facts.append({'fact_id': node['id'] + ':minimum', 'kind': 'bounds', 'status': 'supplied',
+                              'terms': {'resource_id': node['id'], 'index': 0, 'count': minimum,
+                                        'coq_statement': fact},
+                              'origin': {'owned_resource': node['id'], 'minimum': minimum}})
+    nodes[terminal:terminal] = resource_nodes + minimums + carried
     binders = [{key: value for key, value in binder.items() if key != 'scope'} for binder in seed.ownership['binders']]
     # `owned`: a ghost binder of the loop's owned state; a join or loop head below keeps it (drop_unheld_binders).
     binders += [{'name': row['name'], 'type': row['type'], 'expression': input_expr(row['name'], None).to_dict(),
@@ -241,6 +257,7 @@ def owned_seed(seed, design, head, vocabulary, constants=None):
     facts = [fact for fact in seed.facts
              if fact['kind'] not in ('permission', 'nonwrap') and not fact['fact_id'].endswith(':separation')
              and not {fact.get('terms', {}).get(field) for field in ('left', 'right', 'resource_id')} & removed]
+    facts += minimum_facts
     # `constants` (source constants) give a design resource at a fixed address, e.g. `ziskExtraParamsAddress`, its
     # numeric base, as a call return seed does; without them its base stays symbolic.
     rebuilt = seed_owned_resources(public, entry_pc=head, vocabulary=vocabulary, facts=facts, constants=constants)
