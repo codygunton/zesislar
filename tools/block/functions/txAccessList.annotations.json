@@ -164,6 +164,14 @@
     {
      "name": "altFlBlock",
      "owner": "ZesuSsz.Contracts.AltFlAllocPremises"
+    },
+    {
+     "name": "txAccessListKeysSlices",
+     "owner": "ZesuSsz.Contracts.TxAccessListBlockEntries"
+    },
+    {
+     "name": "arrayListBuffer",
+     "owner": "ZesuSsz.Contracts.ArrayListContract"
     }
    ],
    "author": {
@@ -930,10 +938,17 @@
     }
    ],
    "resources": [
-    "(bv_unsigned (txStackPointer args) - 448) ↦ₘ∗ arrayListHeaderBytes tx_entries",
+    {
+     "coq": "(bv_unsigned (txStackPointer args) - 448) ↦ₘ∗ arrayListHeaderBytes tx_entries",
+     "length": "24"
+    },
+    "(bv_unsigned (txStackPointer args) - 424) ↦ₘ? 320",
     "arrayListBuffer entriesElementBytes entriesLog2Alignment tx_entries",
-    "[∗ list] entry; image ∈ tx_done; tx_images, txOwnedSlice (imageKeysPointer image) txAccessListKeysLog2Align (concat (entryKeys entry))",
-    "ziskExtraParamsAddress ↦ₘ∗ tx_scratch"
+    "txAccessListKeysSlices tx_done tx_images",
+    {
+     "coq": "ziskExtraParamsAddress ↦ₘ∗ tx_scratch",
+     "length": "8"
+    }
    ],
    "facts": [
     {
@@ -953,20 +968,44 @@
      "coq": "(0 < bv_unsigned outer_x21)%Z",
      "role": "bound",
      "need": "while (al.len > 0): the head is entered only with bytes left (+0xa8, +0x488)"
+    },
+    {
+     "coq": "arrayListWellFormed entriesElementBytes tx_entries",
+     "role": "owned"
+    },
+    {
+     "coq": "arrayListLength tx_entries = Z.of_nat (length tx_done)",
+     "role": "owned"
+    },
+    {
+     "coq": "arrayListItems tx_entries = txAccessListEntriesBytes tx_done tx_images",
+     "role": "owned"
+    },
+    {
+     "coq": "Forall (fun image => Z.of_nat (length (imagePadding image)) = txAccessListPaddingSize) tx_images",
+     "role": "owned"
+    },
+    {
+     "coq": "Z.of_nat (length tx_scratch) = txAccessListScratchSize",
+     "role": "owned"
+    },
+    {
+     "coq": "txAccessListOuterWalked (txInputBytes args) (bv_unsigned outer_x20 - bv_unsigned (txInputPointer args)) tx_done",
+     "role": "owned"
     }
-   ],
-   "resource_facts": [
-    "arrayListWellFormed entriesElementBytes tx_entries",
-    "arrayListLength tx_entries = Z.of_nat (length tx_done)",
-    "arrayListItems tx_entries = txAccessListEntriesBytes tx_done tx_images",
-    "Forall (fun image => Z.of_nat (length (imagePadding image)) = txAccessListPaddingSize) tx_images",
-    "Z.of_nat (length tx_scratch) = txAccessListScratchSize",
-    "txAccessListOuterWalked (txInputBytes args) i tx_done"
    ],
    "author": {
     "tier": "opus-medium"
    },
-   "why": "while (al.len > 0) over the access-list payload: cursor s4 (x20) advances and s5 (x21) shrinks by each entry's consumed length; i = payload bytes walked. Owned state (resources, resource_facts: applied once loop-cut resources are consumed by the generator): entries list header at s0-0x1c0 and its buffer, one keys slice per finished entry, the memcpy scratch word; tx_done = the candidate's entries of the walked prefix"
+   "why": "while (al.len > 0) over the access-list payload: cursor s4 (x20) advances and s5 (x21) shrinks by each entry's consumed length; i = payload bytes walked. Owned state: entries list header at s0-0x1c0 and its buffer, one keys slice per finished entry, the memcpy scratch word; tx_done = the candidate's entries of the walked prefix; replaces the loop-entry frame span s0-0x1c0..s0-0x68 (resource_37_call_after: the header {8,0,0} and unwritten bytes) and the scratch word (resource_35)",
+   "replaces": [
+    {
+     "id": "resource_37_call_after"
+    },
+    {
+     "id": "resource_35"
+    }
+   ]
   },
   {
    "id": "loop-18c",
@@ -1002,7 +1041,7 @@
    "resources": [
     "(bv_unsigned (txStackPointer args) - 448) ↦ₘ∗ arrayListHeaderBytes tx_entries",
     "arrayListBuffer entriesElementBytes entriesLog2Alignment tx_entries",
-    "[∗ list] entry; image ∈ tx_done; tx_images, txOwnedSlice (imageKeysPointer image) txAccessListKeysLog2Align (concat (entryKeys entry))",
+    "txAccessListKeysSlices tx_done tx_images",
     "ziskExtraParamsAddress ↦ₘ∗ tx_scratch",
     "(bv_unsigned (txStackPointer args) - 280) ↦ₘ∗ arrayListHeaderBytes tx_keys",
     "arrayListBuffer keysElementBytes keysLog2Alignment tx_keys"
@@ -1046,7 +1085,7 @@
    "author": {
     "tier": "opus-medium"
    },
-   "why": "while (kp.len > 0) over one entry's keys payload: cursor s7 (x23) advances by each key's consumed length (33), s6 (x22) shrinks, s8 (x24) counts the keys and equals the keys list length. Owned state: the outer cut's, plus the keys list header at s0-0x118 and its buffer"
+   "why": "while (kp.len > 0) over one entry's keys payload: cursor s7 (x23) advances by each key's consumed length (33), s6 (x22) shrinks, s8 (x24) counts the keys and equals the keys list length. Owned state: the outer cut's, plus the keys list header at s0-0x118 and its buffer. Its resources still lack `replaces` and lengths: the head is not reached until the +0x130 address loads render (open problem)"
   }
  ]
 }

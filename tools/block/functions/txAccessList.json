@@ -143,6 +143,14 @@
     "altFlBlock": {
       "name": "altFlBlock",
       "owner": "ZesuSsz.Contracts.AltFlAllocPremises"
+    },
+    "txAccessListKeysSlices": {
+      "name": "txAccessListKeysSlices",
+      "owner": "ZesuSsz.Contracts.TxAccessListBlockEntries"
+    },
+    "arrayListBuffer": {
+      "name": "arrayListBuffer",
+      "owner": "ZesuSsz.Contracts.ArrayListContract"
     }
   },
   "loop_heads": [
@@ -176,8 +184,73 @@
           "kind": "bound",
           "need": "while (al.len > 0): the head is entered only with bytes left (+0xa8, +0x488)",
           "coq": "(0 < bv_unsigned outer_x21)%Z"
+        },
+        {
+          "kind": "owned",
+          "coq": "arrayListWellFormed entriesElementBytes tx_entries"
+        },
+        {
+          "kind": "owned",
+          "coq": "arrayListLength tx_entries = Z.of_nat (length tx_done)"
+        },
+        {
+          "kind": "owned",
+          "coq": "arrayListItems tx_entries = txAccessListEntriesBytes tx_done tx_images"
+        },
+        {
+          "kind": "owned",
+          "coq": "Forall (fun image => Z.of_nat (length (imagePadding image)) = txAccessListPaddingSize) tx_images"
+        },
+        {
+          "kind": "owned",
+          "coq": "Z.of_nat (length tx_scratch) = txAccessListScratchSize"
+        },
+        {
+          "kind": "owned",
+          "coq": "txAccessListOuterWalked (txInputBytes args) (bv_unsigned outer_x20 - bv_unsigned (txInputPointer args)) tx_done"
         }
-      ]
+      ],
+      "owned": {
+        "binders": [
+          {
+            "name": "tx_entries",
+            "type": "ArrayListState"
+          },
+          {
+            "name": "tx_done",
+            "type": "list AccessListEntryValue"
+          },
+          {
+            "name": "tx_images",
+            "type": "list TxAccessListEntryImage"
+          },
+          {
+            "name": "tx_scratch",
+            "type": "list byte"
+          }
+        ],
+        "resources": [
+          {
+            "coq": "(bv_unsigned (txStackPointer args) - 448) \u21a6\u2098\u2217 arrayListHeaderBytes tx_entries",
+            "length": "24"
+          },
+          "(bv_unsigned (txStackPointer args) - 424) \u21a6\u2098? 320",
+          "arrayListBuffer entriesElementBytes entriesLog2Alignment tx_entries",
+          "txAccessListKeysSlices tx_done tx_images",
+          {
+            "coq": "ziskExtraParamsAddress \u21a6\u2098\u2217 tx_scratch",
+            "length": "8"
+          }
+        ],
+        "replaces": [
+          {
+            "id": "resource_37_call_after"
+          },
+          {
+            "id": "resource_35"
+          }
+        ]
+      }
     },
     {
       "head": "+0x18c",
@@ -212,7 +285,24 @@
           "need": "s8 is the keys count; every accepted key is a 32-byte string with a one-byte header (0xa0)",
           "coq": "(33 * bv_unsigned inner_x24 = i)%Z"
         }
-      ]
+      ],
+      "owned": {
+        "binders": [
+          {
+            "name": "tx_keys",
+            "type": "ArrayListState"
+          }
+        ],
+        "resources": [
+          "(bv_unsigned (txStackPointer args) - 448) \u21a6\u2098\u2217 arrayListHeaderBytes tx_entries",
+          "arrayListBuffer entriesElementBytes entriesLog2Alignment tx_entries",
+          "txAccessListKeysSlices tx_done tx_images",
+          "ziskExtraParamsAddress \u21a6\u2098\u2217 tx_scratch",
+          "(bv_unsigned (txStackPointer args) - 280) \u21a6\u2098\u2217 arrayListHeaderBytes tx_keys",
+          "arrayListBuffer keysElementBytes keysLog2Alignment tx_keys"
+        ],
+        "replaces": []
+      }
     }
   ],
   "calls": [
@@ -753,6 +843,6 @@
   },
   "generated_from": {
     "path": "tools/block/functions/txAccessList.annotations.json",
-    "sha256": "7e0c74226d624569f27d1abd6718bca2b9560a3ff6251552555ff4e9fd81b238"
+    "sha256": "1ba4960b1b2936228210d56d0e9610291f3f4338cff66384c658ee44536f59c5"
   }
 }

@@ -9,6 +9,7 @@ Require Import ZesuSsz.Contracts.ZiskRuntime.
 Require Import ZesuSsz.Contracts.AltFlAllocPremises.
 Require Import ZesuSsz.Contracts.RlpDecodeItem.
 Require Import ZesuSsz.Contracts.TxAccessListMeaning.
+Require Import ZesuSsz.Contracts.Candidates.AccessListCandidate.
 Require Import ZesuSsz.Contracts.TxAccessListContract.
 Open Scope Z_scope.
 
@@ -144,3 +145,12 @@ Definition txAccessListBlockEntryResources `{!islaG Sigma} `{!threadG}
 
 Global Typeclasses Opaque txAccessListBlockEntryResources.
 Global Instance : LithiumUnfold (@txAccessListBlockEntryResources) := I.
+
+(* The keys slices of the entries finished so far (the outer loop cut owns
+   them): the shape txAccessListReturnedHeap gives them on success. A name
+   for the big separating conjunction, which the generator's expression
+   check does not accept as text. *)
+Definition txAccessListKeysSlices `{!islaG Sigma} `{!threadG}
+    (done : list AccessListEntryValue) (images : list TxAccessListEntryImage) : iProp Sigma :=
+  ([∗ list] entry; image ∈ done; images,
+     txOwnedSlice (imageKeysPointer image) txAccessListKeysLog2Align (concat (entryKeys entry)))%I.
