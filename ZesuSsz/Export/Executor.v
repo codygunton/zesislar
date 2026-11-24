@@ -924,7 +924,7 @@ Proof.
       simpl. rewrite Hnext. repeat split; reflexivity.
   - eapply SeqStep with (κ := Some (LDone tnil))
       (κ' := Some (SInstrTrap (Z_to_bv 64 (bvn_unsigned bv5))
-        (seq_state_snapshot (instruction_boundary tnil regs) sigma))).
+        (seq_state_snapshot (instruction_boundary tnil regs) sigma'))).
     + reflexivity.
     + constructor.
     + exists (Z_to_bv 64 (bvn_unsigned bv5)).

@@ -1799,7 +1799,7 @@ Proof.
   destruct (seq_instrs sigma !! x) as [next|] eqn:Hnext;
     repeat match goal with H : _ /\ _ |- _ => destruct H as [? ?] end; subst.
   all: unfold exec_finish;
-    match goal with H : regs !! "PC" = Some (RVal_Bits x) |- _ => rewrite H end;
+    match goal with H : _ !! "PC" = Some (RVal_Bits _) |- _ => rewrite H end;
     rewrite Z_to_bv_bv_unsigned; rewrite Hnext; simpl.
   all: eexists; split; [reflexivity|]; split; [constructor; [reflexivity|constructor]|]; reflexivity.
 Qed.
