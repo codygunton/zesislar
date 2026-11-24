@@ -875,7 +875,11 @@ def call_return_seed(edges, *, call, function_root, root_seed, shapes, vocabular
         for placeholder, name in returned_names.items():
             text = re.sub(r'(?<![\w\'])' + placeholder + r'(?![\w\'])', name, text)
         return text
-    existential = [(name, kind) for name, kind in spec['pre_binders'] if instantiation.get(name, '') is None]
+    # A pre binder that nothing instantiates (an existential of the spec such as an allocator's `context`
+    # behind a framed resource) and that the carried facts name is bound with them, as a replaced array's is.
+    named_in_facts = set(_atoms(' '.join(spec['pre']['facts'] + spec['post']['facts'])))
+    existential = [(name, kind) for name, kind in spec['pre_binders']
+                   if instantiation.get(name, '') is None or name not in instantiation and name in named_in_facts]
     # A definition of a spec file is unfolded: the entry cannot import an internal spec module.
     # A black box's interface is imported, and its sealed names are never unfolded.
     raw = spec['pre']['facts'] + spec['post']['facts']
