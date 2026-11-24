@@ -17,6 +17,7 @@
    }
   ],
   "array_spelling": "sealed",
+  "held_binders": ["call3_payload_offset"],
   "hist_visible": [
    "^\\(?frame_old_m\\d+'* = ",
    "^\\W*bv_unsigned call_x10 = 0\\W*$",
@@ -69,7 +70,9 @@
   "caller_contract_requires": [
    "Require Import ZesuSsz.Contracts.TxAccessListContract.",
    "Require Import ZesuSsz.Contracts.TxAccessListBlockEntries.",
-   "Require Import ZesuSsz.Contracts.TxAccessListLoopFacts."
+   "Require Import ZesuSsz.Contracts.TxAccessListLoopFacts.",
+   "Require Import ZesuSsz.Compliance.TxAccessListCallSlice.",
+   "Require Import ZesuSsz.Compliance.TxAccessListLoopIntro."
   ],
   "selected_code": {
    "module": "ZesuSsz.Contracts.TxAccessListSelected",
@@ -540,7 +543,15 @@
         "coq": "arrayListPointer (ensureListAfter outcome) ↦ₘ∗ arrayListItems (ensureListAfter outcome)",
         "length": "arrayListLength (ensureListAfter outcome) * keysElementBytes"
        },
-       "(arrayListPointer (ensureListAfter outcome) + arrayListLength (ensureListAfter outcome) * keysElementBytes) ↦ₘ? ((arrayListCapacity (ensureListAfter outcome) - arrayListLength (ensureListAfter outcome)) * keysElementBytes)",
+       {
+        "coq": "(arrayListPointer (ensureListAfter outcome) + arrayListLength (ensureListAfter outcome) * keysElementBytes) ↦ₘ? ((arrayListCapacity (ensureListAfter outcome) - arrayListLength (ensureListAfter outcome)) * keysElementBytes)",
+        "minimum": 32,
+        "when": {
+         "register": "x10",
+         "value": 0,
+         "low_bits": 16
+        }
+       },
        "altFlBlock (arrayListPointer (ensureListAfter outcome)) (arrayListCapacity (ensureListAfter outcome) * keysElementBytes) keysLog2Alignment"
       ]
      },
@@ -597,7 +608,7 @@
      {
       "binder": "state",
       "argument": 1,
-      "caller_value": "tx_keys"
+      "caller_value": "tx_keys_done"
      },
      {
       "binder": "resultBefore",
@@ -608,7 +619,7 @@
      {
       "binder": "scratchBefore",
       "constant": "ziskExtraParamsAddress",
-      "caller_value": "tx_scratch",
+      "caller_value": "tx_scratch_keys",
       "length": 8,
       "length_source": "txAccessListArgsWellFormed: length (txScratchBefore args) = 8; loop cuts carry it as tx_scratch with Z.of_nat (length tx_scratch) = 8"
      }
@@ -907,6 +918,46 @@
    "why": "entries.append growth: memcpy(new (s8), old items (s6), len * 40); the destination is the block alloc returned, of new capacity * 40 bytes (the length spelling is re-read from the first render)"
   },
   {
+   "id": "join-248",
+   "request": null,
+   "at": {
+    "pc": "+0x248",
+    "boundary": "join",
+    "predecessors": ["+0x15c", "+0x204"]
+   },
+   "binders": [
+    {"name": "tx_keys_done", "type": "ArrayListState"},
+    {"name": "tx_keys_list", "type": "list (list byte)"},
+    {"name": "tx_scratch_keys", "type": "list byte"}
+   ],
+   "resources": [
+    {"coq": "(bv_unsigned (txStackPointer args) - 280) ↦ₘ∗ arrayListHeaderBytes tx_keys_done", "length": "24"},
+    "(bv_unsigned (txStackPointer args) - 256) ↦ₘ? 152",
+    "arrayListBuffer keysElementBytes keysLog2Alignment tx_keys_done",
+    {"coq": "ziskExtraParamsAddress ↦ₘ∗ tx_scratch_keys", "length": "8"}
+   ],
+   "replaces": [
+    {"id": "loop_owned_1_call_after_call_after_call_after"},
+    {"id": "loop_owned_8000018c_0"},
+    {"id": "loop_owned_8000018c_1_call_output"},
+    {"id": "loop_owned_8000018c_1_call_after"},
+    {"id": "loop_owned_8000018c_1_call_after_span_32"},
+    {"id": "call6_produced_0"},
+    {"id": "call6_produced_1"},
+    {"id": "call6_produced_2"},
+    {"id": "loop_owned_4"}
+   ],
+   "facts": [
+    {"coq": "arrayListWellFormed keysElementBytes tx_keys_done", "role": "owned"},
+    {"coq": "arrayListItems tx_keys_done = concat tx_keys_list", "role": "owned"},
+    {"coq": "arrayListLength tx_keys_done = Z.of_nat (length tx_keys_list)", "role": "owned"},
+    {"coq": "∃ keys_pointer keys_length, firstn 16 call4_after = word64Bytes keys_pointer ++ word64Bytes keys_length /\\ txAccessListKeysWalked (take (Z.to_nat keys_length) (drop (Z.to_nat (keys_pointer - bv_unsigned (txInputPointer args))) (txInputBytes args))) keys_length tx_keys_list", "role": "owned"},
+    {"coq": "Z.of_nat (length tx_scratch_keys) = txAccessListScratchSize", "role": "owned"}
+   ],
+   "author": {"tier": "opus-medium"},
+   "why": "end of one entry's keys: the empty keys payload (+0x184, keys list {s9, 0, 0} stored at +0x178..+0x180) and the inner loop exit (+0x244, the list grown by keysEnsureCapacity) join before keysToOwnedSlice(&keys s0-0x118). The edges disagree on the keys list's resources (no buffer vs the produced pieces and the +0x18c owned frame pieces); each proves the owned keys list: header at s0-0x118, the 152 frame bytes after it, its buffer; tx_keys_list = the keys of the whole keys payload (call4_after words 0 and 1: pointer and length, +0x170/+0x174)."
+  },
+  {
    "id": "dead-344",
    "request": null,
    "at": {
@@ -1027,6 +1078,16 @@
      "need": "while (al.len > 0): the head is entered only with bytes left (+0xa8, +0x488)"
     },
     {
+     "coq": "(bv_unsigned (txInputPointer args) <= bv_unsigned outer_x20)%Z",
+     "role": "bound",
+     "need": "decodeItem call window (+0xd4, B5Bridges CallSlice): the cursor lies in the input; 00ac by txAccessListOuterWindow"
+    },
+    {
+     "coq": "(bv_unsigned outer_x20 + bv_unsigned outer_x21 <= bv_unsigned (txInputPointer args) + Z.of_nat (length (txInputBytes args)))%Z",
+     "role": "bound",
+     "need": "decodeItem call window (+0xd4): the remaining payload ends inside the input"
+    },
+    {
      "coq": "arrayListWellFormed entriesElementBytes tx_entries",
      "role": "owned"
     },
@@ -1127,6 +1188,16 @@
      "coq": "(0 < bv_unsigned inner_x22)%Z",
      "role": "bound",
      "need": "while (kp.len > 0): entered only with bytes left (+0x184, +0x244)"
+    },
+    {
+     "coq": "(bv_unsigned (txInputPointer args) <= bv_unsigned inner_x23)%Z",
+     "role": "bound",
+     "need": "decodeItem call window (+0x19c, B5Bridges CallSlice): the keys cursor lies in the input"
+    },
+    {
+     "coq": "(bv_unsigned inner_x23 + bv_unsigned inner_x22 <= bv_unsigned (txInputPointer args) + Z.of_nat (length (txInputBytes args)))%Z",
+     "role": "bound",
+     "need": "decodeItem call window (+0x19c): the remaining keys payload ends inside the input"
     },
     {
      "coq": "(33 * bv_unsigned inner_x24 = i)%Z",
