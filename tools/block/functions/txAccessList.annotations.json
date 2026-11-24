@@ -25,7 +25,8 @@
   "hist_visible": [
    "^\\(?frame_old_m\\d+'* = ",
    "^\\W*bv_unsigned call_x10 = 0\\W*$",
-   "^\\W*negb \\(bool_decide \\(call_x10 = \\(BV 64%N 0%Z\\)\\)\\)\\W*= true\\W*(/\\\\\\W*bv_unsigned call_x10\\W*<>\\W*0%Z\\W*%Z\\W*)?$"
+   "^\\W*negb \\(bool_decide \\(call_x10 = \\(BV 64%N 0%Z\\)\\)\\)\\W*= true\\W*(/\\\\\\W*bv_unsigned call_x10\\W*<>\\W*0%Z\\W*%Z\\W*)?$",
+   "^\\W*arrayListWellFormed \\w+ \\w+\\W*$"
   ],
   "args_type": "TxAccessListArgs",
   "symbol": "rlp_decode.txAccessList",
@@ -99,6 +100,7 @@
   },
   "trace_namespace": "ZesuSsz.Stock.Closure",
   "cfg_function": "rlp_decode.txAccessList",
+  "duplicated_joins": ["+0x4b8"],
   "compliance": {
    "boundary": "ZesuSsz.Compliance.TxAccessListCompositionBoundary",
    "continuation": "txAccessListContinuation",
@@ -715,6 +717,7 @@
      {
       "binder": "scratchBefore",
       "constant": "ziskExtraParamsAddress",
+      "caller_value": "tx_final_scratch",
       "length": 8,
       "length_source": "txAccessListArgsWellFormed: length (txScratchBefore args) = 8; loop cuts carry it as tx_scratch with Z.of_nat (length tx_scratch) = 8"
      }
@@ -811,6 +814,7 @@
     "spec": "altFlAllocCallSpec",
     "spec_module": "ZesuSsz.Contracts.AltFlAllocPremises",
     "spec_source": "ZesuSsz/Contracts/AltFlAllocPremises.v",
+    "folded_definitions": ["altFlAllocDomain"],
     "stack_bytes": 16,
     "arrays": [],
     "output_length_source": "altFlAllocCallSpec (AltFlAllocPremises.v): the returned block owns altFlAllocatedBytes x10 (argument 1) bytes, uninitialized",
@@ -858,6 +862,7 @@
     "spec": "altFlFreeCallSpec",
     "spec_module": "ZesuSsz.Contracts.AltFlAllocPremises",
     "spec_source": "ZesuSsz/Contracts/AltFlAllocPremises.v",
+    "folded_definitions": ["altFlFreeDomain"],
     "stack_bytes": 16,
     "arrays": [],
     "output_length_source": "altFlFreeCallSpec (AltFlAllocPremises.v): returns altFlHeap only; no array",
@@ -988,7 +993,7 @@
     {"coq": "bv_unsigned {x25} = arrayListCapacity tx_grown", "role": "owned"},
     {"coq": "arrayListLength tx_grown = arrayListLength tx_entries", "role": "owned"},
     {"coq": "arrayListItems tx_grown = arrayListItems tx_entries", "role": "owned"},
-    {"coq": "arrayListLength tx_grown < arrayListCapacity tx_grown", "role": "owned"},
+    {"coq": "(arrayListLength tx_grown < arrayListCapacity tx_grown)%Z", "role": "owned"},
     {"coq": "arrayListWellFormed entriesElementBytes tx_grown", "role": "owned"}
    ],
    "author": {"tier": "opus-medium"},
@@ -1013,10 +1018,10 @@
     {"coq": "bv_unsigned {x11} = arrayListPointer tx_appendable", "role": "owned"},
     {"coq": "arrayListLength tx_appendable = arrayListLength tx_entries", "role": "owned"},
     {"coq": "arrayListItems tx_appendable = arrayListItems tx_entries", "role": "owned"},
-    {"coq": "arrayListLength tx_appendable < arrayListCapacity tx_appendable", "role": "owned"},
+    {"coq": "(arrayListLength tx_appendable < arrayListCapacity tx_appendable)%Z", "role": "owned"},
     {"coq": "arrayListWellFormed entriesElementBytes tx_appendable", "role": "owned"},
-    {"coq": "bv_unsigned {x12} = 8 * arrayListLength tx_appendable", "role": "owned"},
-    {"coq": "bv_unsigned {x16} = 32 * arrayListLength tx_appendable", "role": "owned"},
+    {"coq": "(bv_unsigned {x12} = 8 * arrayListLength tx_appendable)%Z", "role": "owned"},
+    {"coq": "(bv_unsigned {x16} = 32 * arrayListLength tx_appendable)%Z", "role": "owned"},
     {"coq": "Z.of_nat (List.length tx_scratch_append) = txAccessListScratchSize", "role": "owned"}
    ],
    "author": {"tier": "opus-medium"},

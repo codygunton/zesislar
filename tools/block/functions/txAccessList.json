@@ -30,7 +30,8 @@
   "hist_visible": [
     "^\\(?frame_old_m\\d+'* = ",
     "^\\W*bv_unsigned call_x10 = 0\\W*$",
-    "^\\W*negb \\(bool_decide \\(call_x10 = \\(BV 64%N 0%Z\\)\\)\\)\\W*= true\\W*(/\\\\\\W*bv_unsigned call_x10\\W*<>\\W*0%Z\\W*%Z\\W*)?$"
+    "^\\W*negb \\(bool_decide \\(call_x10 = \\(BV 64%N 0%Z\\)\\)\\)\\W*= true\\W*(/\\\\\\W*bv_unsigned call_x10\\W*<>\\W*0%Z\\W*%Z\\W*)?$",
+    "^\\W*arrayListWellFormed \\w+ \\w+\\W*$"
   ],
   "args_type": "TxAccessListArgs",
   "symbol": "rlp_decode.txAccessList",
@@ -104,6 +105,9 @@
   },
   "trace_namespace": "ZesuSsz.Stock.Closure",
   "cfg_function": "rlp_decode.txAccessList",
+  "duplicated_joins": [
+    "+0x4b8"
+  ],
   "compliance": {
     "boundary": "ZesuSsz.Compliance.TxAccessListCompositionBoundary",
     "continuation": "txAccessListContinuation",
@@ -707,6 +711,7 @@
         {
           "binder": "scratchBefore",
           "constant": "ziskExtraParamsAddress",
+          "caller_value": "tx_final_scratch",
           "length": 8,
           "length_source": "txAccessListArgsWellFormed: length (txScratchBefore args) = 8; loop cuts carry it as tx_scratch with Z.of_nat (length tx_scratch) = 8"
         }
@@ -774,6 +779,9 @@
       "spec": "altFlAllocCallSpec",
       "spec_module": "ZesuSsz.Contracts.AltFlAllocPremises",
       "spec_source": "ZesuSsz/Contracts/AltFlAllocPremises.v",
+      "folded_definitions": [
+        "altFlAllocDomain"
+      ],
       "stack_bytes": 16,
       "arrays": [],
       "output_length_source": "altFlAllocCallSpec (AltFlAllocPremises.v): the returned block owns altFlAllocatedBytes x10 (argument 1) bytes, uninitialized",
@@ -806,6 +814,9 @@
       "spec": "altFlFreeCallSpec",
       "spec_module": "ZesuSsz.Contracts.AltFlAllocPremises",
       "spec_source": "ZesuSsz/Contracts/AltFlAllocPremises.v",
+      "folded_definitions": [
+        "altFlFreeDomain"
+      ],
       "stack_bytes": 16,
       "arrays": [],
       "output_length_source": "altFlFreeCallSpec (AltFlAllocPremises.v): returns altFlHeap only; no array",
@@ -1209,7 +1220,7 @@
           "coq": "arrayListItems tx_grown = arrayListItems tx_entries"
         },
         {
-          "coq": "arrayListLength tx_grown < arrayListCapacity tx_grown"
+          "coq": "(arrayListLength tx_grown < arrayListCapacity tx_grown)%Z"
         },
         {
           "coq": "arrayListWellFormed entriesElementBytes tx_grown"
@@ -1287,16 +1298,16 @@
           "coq": "arrayListItems tx_appendable = arrayListItems tx_entries"
         },
         {
-          "coq": "arrayListLength tx_appendable < arrayListCapacity tx_appendable"
+          "coq": "(arrayListLength tx_appendable < arrayListCapacity tx_appendable)%Z"
         },
         {
           "coq": "arrayListWellFormed entriesElementBytes tx_appendable"
         },
         {
-          "coq": "bv_unsigned {x12} = 8 * arrayListLength tx_appendable"
+          "coq": "(bv_unsigned {x12} = 8 * arrayListLength tx_appendable)%Z"
         },
         {
-          "coq": "bv_unsigned {x16} = 32 * arrayListLength tx_appendable"
+          "coq": "(bv_unsigned {x16} = 32 * arrayListLength tx_appendable)%Z"
         },
         {
           "coq": "Z.of_nat (List.length tx_scratch_append) = txAccessListScratchSize"
@@ -1418,6 +1429,6 @@
   },
   "generated_from": {
     "path": "tools/block/functions/txAccessList.annotations.json",
-    "sha256": "ff8a1e76b0e96f642c8872d47a96a9fbf9e0658b66fa89b279d064dab1715328"
+    "sha256": "9e46d7dc58fc9c4a11d2003f241131640450b039400f72b7b1b94a87b6395cd4"
   }
 }
