@@ -28,6 +28,7 @@
     "Require Import ZesuSsz.Contracts.Candidates.AccessListCandidate.",
     "Require Import ZesuSsz.Contracts.TxAccessListContract.",
     "Require Import ZesuSsz.Contracts.TxAccessListBlockEntries.",
+    "Require Import ZesuSsz.Contracts.TxAccessListLoopFacts.",
     "Require Export ZesuSsz.Compliance.TxAccessListHints."
   ],
   "loop_contract_requires": [
@@ -46,11 +47,13 @@
     "Require Import ZesuSsz.Contracts.Candidates.AccessListCandidate.",
     "Require Import ZesuSsz.Contracts.TxAccessListContract.",
     "Require Import ZesuSsz.Contracts.TxAccessListBlockEntries.",
+    "Require Import ZesuSsz.Contracts.TxAccessListLoopFacts.",
     "Require Export ZesuSsz.Compliance.TxAccessListHints."
   ],
   "caller_contract_requires": [
     "Require Import ZesuSsz.Contracts.TxAccessListContract.",
-    "Require Import ZesuSsz.Contracts.TxAccessListBlockEntries."
+    "Require Import ZesuSsz.Contracts.TxAccessListBlockEntries.",
+    "Require Import ZesuSsz.Contracts.TxAccessListLoopFacts."
   ],
   "selected_code": {
     "module": "ZesuSsz.Contracts.TxAccessListSelected",
@@ -378,6 +381,9 @@
         }
       ],
       "output_length_source": "C1BResult (RlpDecodeItem.v): candidateResult40 is errorResult40 or successResult40, each of 40 bytes",
+      "result_words": {
+        "0": "bv_unsigned (txInputPointer args) + (bv_unsigned {word:after:0} - bv_unsigned (txInputPointer args))"
+      },
       "call_site_pc": "+0x108"
     },
     {
@@ -428,6 +434,9 @@
         }
       ],
       "output_length_source": "C1BResult (RlpDecodeItem.v): candidateResult40 is errorResult40 or successResult40, each of 40 bytes",
+      "result_words": {
+        "0": "bv_unsigned (txInputPointer args) + (bv_unsigned {word:after:0} - bv_unsigned (txInputPointer args))"
+      },
       "call_site_pc": "+0x19c"
     },
     {
@@ -724,6 +733,29 @@
       "return_fact": true
     }
   ],
+  "access_placements": [
+    {
+      "pc": "+0x130",
+      "array": "txInputBytes args",
+      "index": "(txBlockWord call3_after 0 - bv_unsigned (txInputPointer args) + 0)%Z",
+      "scale": 1,
+      "offset": 0
+    },
+    {
+      "pc": "+0x134",
+      "array": "txInputBytes args",
+      "index": "(txBlockWord call3_after 0 - bv_unsigned (txInputPointer args) + 8)%Z",
+      "scale": 1,
+      "offset": 8
+    },
+    {
+      "pc": "+0x138",
+      "array": "txInputBytes args",
+      "index": "(txBlockWord call3_after 0 - bv_unsigned (txInputPointer args) + 16)%Z",
+      "scale": 1,
+      "offset": 16
+    }
+  ],
   "unreachable_entries": [
     "+0x344",
     "+0x2ec"
@@ -843,6 +875,6 @@
   },
   "generated_from": {
     "path": "tools/block/functions/txAccessList.annotations.json",
-    "sha256": "1ba4960b1b2936228210d56d0e9610291f3f4338cff66384c658ee44536f59c5"
+    "sha256": "0f9cd2433bfe849a1469fc4c1be6493533982bcff310fd59c6c86b956402b452"
   }
 }

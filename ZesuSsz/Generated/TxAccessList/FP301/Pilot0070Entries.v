@@ -18,6 +18,7 @@ Require Import ZesuSsz.Contracts.ArrayListContract.
 Require Import ZesuSsz.Contracts.Candidates.AccessListCandidate.
 Require Import ZesuSsz.Contracts.TxAccessListContract.
 Require Import ZesuSsz.Contracts.TxAccessListBlockEntries.
+Require Import ZesuSsz.Contracts.TxAccessListLoopFacts.
 Require Export ZesuSsz.Compliance.TxAccessListHints.
 Require Import ZesuSsz.Contracts.Level1.
 Local Open Scope Z_scope.

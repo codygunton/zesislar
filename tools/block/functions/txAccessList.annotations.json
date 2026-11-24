@@ -32,6 +32,7 @@
    "Require Import ZesuSsz.Contracts.Candidates.AccessListCandidate.",
    "Require Import ZesuSsz.Contracts.TxAccessListContract.",
    "Require Import ZesuSsz.Contracts.TxAccessListBlockEntries.",
+   "Require Import ZesuSsz.Contracts.TxAccessListLoopFacts.",
    "Require Export ZesuSsz.Compliance.TxAccessListHints."
   ],
   "loop_contract_requires": [
@@ -50,11 +51,13 @@
    "Require Import ZesuSsz.Contracts.Candidates.AccessListCandidate.",
    "Require Import ZesuSsz.Contracts.TxAccessListContract.",
    "Require Import ZesuSsz.Contracts.TxAccessListBlockEntries.",
+   "Require Import ZesuSsz.Contracts.TxAccessListLoopFacts.",
    "Require Export ZesuSsz.Compliance.TxAccessListHints."
   ],
   "caller_contract_requires": [
    "Require Import ZesuSsz.Contracts.TxAccessListContract.",
-   "Require Import ZesuSsz.Contracts.TxAccessListBlockEntries."
+   "Require Import ZesuSsz.Contracts.TxAccessListBlockEntries.",
+   "Require Import ZesuSsz.Contracts.TxAccessListLoopFacts."
   ],
   "selected_code": {
    "module": "ZesuSsz.Contracts.TxAccessListSelected",
@@ -376,7 +379,10 @@
       "length_source": "decodeItemArgsWellFormed (RlpDecodeItemContract.v): (List.length (decodeItemBeforeStorage args) = 40)%nat"
      }
     ],
-    "output_length_source": "C1BResult (RlpDecodeItem.v): candidateResult40 is errorResult40 or successResult40, each of 40 bytes"
+    "output_length_source": "C1BResult (RlpDecodeItem.v): candidateResult40 is errorResult40 or successResult40, each of 40 bytes",
+    "result_words": {
+     "0": "bv_unsigned (txInputPointer args) + (bv_unsigned {word:after:0} - bv_unsigned (txInputPointer args))"
+    }
    },
    "author": {
     "tier": "opus-medium",
@@ -456,7 +462,10 @@
       "length_source": "decodeItemArgsWellFormed (RlpDecodeItemContract.v): (List.length (decodeItemBeforeStorage args) = 40)%nat"
      }
     ],
-    "output_length_source": "C1BResult (RlpDecodeItem.v): candidateResult40 is errorResult40 or successResult40, each of 40 bytes"
+    "output_length_source": "C1BResult (RlpDecodeItem.v): candidateResult40 is errorResult40 or successResult40, each of 40 bytes",
+    "result_words": {
+     "0": "bv_unsigned (txInputPointer args) + (bv_unsigned {word:after:0} - bv_unsigned (txInputPointer args))"
+    }
    },
    "author": {
     "tier": "opus-medium",
@@ -1086,6 +1095,69 @@
     "tier": "opus-medium"
    },
    "why": "while (kp.len > 0) over one entry's keys payload: cursor s7 (x23) advances by each key's consumed length (33), s6 (x22) shrinks, s8 (x24) counts the keys and equals the keys list length. Owned state: the outer cut's, plus the keys list header at s0-0x118 and its buffer. Its resources still lack `replaces` and lengths: the head is not reached until the +0x130 address loads render (open problem)"
+  },
+  {
+   "id": "access-130",
+   "request": "txAccessList/decision/access_placement-0130",
+   "at": {
+    "pc": "+0x130",
+    "boundary": "access"
+   },
+   "binders": [],
+   "resources": [],
+   "facts": [],
+   "placement": {
+    "array": "txInputBytes args",
+    "index": "(txBlockWord call3_after 0 - bv_unsigned (txInputPointer args) + 0)%Z",
+    "scale": 1,
+    "offset": 0
+   },
+   "author": {
+    "tier": "opus-medium"
+   },
+   "why": "ld at +0x130 reads the entry's 20-byte address payload at offset 0: a0 is the payload pointer of the +0x108 decodeItem result (word 0 of the record at s0-0x180, result_words of call-108), which points into the input"
+  },
+  {
+   "id": "access-134",
+   "request": "txAccessList/decision/access_placement-0134",
+   "at": {
+    "pc": "+0x134",
+    "boundary": "access"
+   },
+   "binders": [],
+   "resources": [],
+   "facts": [],
+   "placement": {
+    "array": "txInputBytes args",
+    "index": "(txBlockWord call3_after 0 - bv_unsigned (txInputPointer args) + 8)%Z",
+    "scale": 1,
+    "offset": 8
+   },
+   "author": {
+    "tier": "opus-medium"
+   },
+   "why": "ld at +0x134 reads the entry's 20-byte address payload at offset 8: a0 is the payload pointer of the +0x108 decodeItem result (word 0 of the record at s0-0x180, result_words of call-108), which points into the input"
+  },
+  {
+   "id": "access-138",
+   "request": "txAccessList/decision/access_placement-0138",
+   "at": {
+    "pc": "+0x138",
+    "boundary": "access"
+   },
+   "binders": [],
+   "resources": [],
+   "facts": [],
+   "placement": {
+    "array": "txInputBytes args",
+    "index": "(txBlockWord call3_after 0 - bv_unsigned (txInputPointer args) + 16)%Z",
+    "scale": 1,
+    "offset": 16
+   },
+   "author": {
+    "tier": "opus-medium"
+   },
+   "why": "lw at +0x138 reads the entry's 20-byte address payload at offset 16: a0 is the payload pointer of the +0x108 decodeItem result (word 0 of the record at s0-0x180, result_words of call-108), which points into the input"
   }
  ]
 }
