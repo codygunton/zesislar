@@ -262,6 +262,8 @@ class JoinOwnedTest(unittest.TestCase):
         self.assertIn('arrayListBuffer 40 3 list_state', texts)
         self.assertIn('⌜arrayListLength list_state = n⌝', texts)
         self.assertIn('⌜r = 1⌝', texts)
+        # under an id of this seed, so a join below adds its own join_relation_0
+        self.assertIn('join_42c_join_relation_0', [c['id'] for c in rebuilt.ownership['components']])
         self.assertEqual((rebuilt.join_kind, rebuilt.join_edges, rebuilt.join_witness_plan),
                          ('call_return', [{'predecessor_pc': '0x400'}], {'x': 1}))
         binder, = [binder for binder in rebuilt.ownership['binders'] if binder['name'] == 'list_state']

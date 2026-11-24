@@ -191,7 +191,8 @@ def owned_seed(seed, design, head, vocabulary, constants=None):
     from symbolic_state import input_expr
     owned = design['owned']
     # A pure component a join added (a relation, a design fact, its edge-guard fact) has no root seed node: its
-    # node is its text.
+    # node is its text, under an id of this seed (a later join adds its own `join_relation_N`).
+    added = {component['id'] for component in seed.ownership['components'] if not component.get('seed_component')}
     seeded = {component['id']: component.get('seed_component') or {'kind': 'opaque', 'coq': component['source']}
               for component in seed.ownership['components']}
     sources = {key: str(node.get('original_component', node.get('coq', ''))) for key, node in seeded.items()}
@@ -214,6 +215,9 @@ def owned_seed(seed, design, head, vocabulary, constants=None):
     # A loop nested in a loop-owned one keeps the outer loop's ids: its own carry the head.
     prefix = ('loop_owned_%x_' % head if any(str(node['id']).startswith('loop_owned_') for node in nodes)
               else 'loop_owned_')
+    for node in nodes:
+        if node['id'] in added:
+            node['id'] = 'join_%x_%s' % (head, node['id'])
     carried = [{'kind': 'opaque', 'id': prefix + 'fact_%d' % index, 'coq': '⌜' + row['coq'] + '⌝'}
                for index, row in enumerate(design.get('facts', []))
                if _words(row['coq']) & names and '{x' not in row['coq']]
