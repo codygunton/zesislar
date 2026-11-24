@@ -1,0 +1,276 @@
+{
+  "function": "decodeItemBudget",
+  "merge_condition_alternatives": false,
+  "args_type": "DecodeItemArgs",
+  "symbol": "rlp.decodeItem",
+  "generated_directory": "ZesuSsz/Generated/DecodeItemBudget/FP301",
+  "callers_directory": "tools/block/generated/decodeitembudget_fp301_callers",
+  "contract_requires": [
+    "Require Import ZesuSsz.Contracts.RlpDecodeItemContract.",
+    "Require Export ZesuSsz.Contracts.DecodeItemDomainRanges.",
+    "Require Import ZesuSsz.Contracts.RlpDecodeItem."
+  ],
+  "loop_contract_requires": [
+    "Require Import ZesuSsz.Contracts.RlpDecodeItemContract.",
+    "Require Import ZesuSsz.Contracts.RlpDecodeItem."
+  ],
+  "caller_contract_requires": [
+    "Require Import ZesuSsz.Contracts.RlpDecodeItemContract."
+  ],
+  "selected_code": {
+    "module": "ZesuSsz.Contracts.DecodeItemSelected",
+    "premise": "decodeItemSelectedCode"
+  },
+  "charged": true,
+  "charged_code": {
+    "module": "ZesuSsz.Contracts.DecodeItemChargedSelected",
+    "premise": "decodeItemChargedCode"
+  },
+  "return_address": {
+    "register": "x1",
+    "value": "(Z_to_bv 64 (decodeItemReturnAddress args))",
+    "alignment": 4,
+    "source": "Each caller reaches the entry by jal or jalr from a 4-aligned pc (the proved code has no compressed instructions), so ra = pc + 4 is 4-aligned. The Level-1 domain states it: decodeItemEntryLayout (RlpDecodeItem.v) has returnAddress mod 4 = 0, and fp301_start_bridge (DecodeItemComplianceGenerated.v) proves this conjunct from it."
+  },
+  "entry_facts": {
+    "fp_machineAt002c_ForwardA0N0": {
+      "facts": [
+        "decodeItemAcceptedFacts args false (bv_unsigned machine_x11 - decodeItemInputPointer args) (bv_unsigned machine_x12 - (bv_unsigned machine_x11 - decodeItemInputPointer args))",
+        "bv_unsigned (List.nth 0%nat (decodeItemInputBytes args) (BV 8%N 0%Z)) <> 128"
+      ],
+      "requires": [
+        "Require Import ZesuSsz.Contracts.DecodeItemReturnFacts."
+      ]
+    },
+    "fp_machineAt0180_ForwardA0N0": {
+      "facts": [
+        "decodeItemRejectedFacts args"
+      ],
+      "requires": [
+        "Require Import ZesuSsz.Contracts.DecodeItemReturnFacts."
+      ]
+    }
+  },
+  "return_facts": [
+    "DecodeMeaningModuloKnownBugs args currentStorage"
+  ],
+  "return_requires": [
+    "Require Import ZesuSsz.Compliance.DecodeItemMeaningPorted."
+  ],
+  "domain_component": "⌜decodeItemDomainAt returnAddress decodeItemC1BDomain args⌝",
+  "blocks": [
+    "+0x0",
+    "+0x14",
+    "+0x1c",
+    "+0x44",
+    "+0x50",
+    "+0x78",
+    "+0x80",
+    "+0x88",
+    "+0xa0",
+    "+0xa8",
+    "+0xb4",
+    "+0x104",
+    "+0x10c",
+    "+0x118",
+    "+0x148",
+    "+0x154",
+    "+0x2c",
+    "+0xc4",
+    "+0x164",
+    "+0x180"
+  ],
+  "loop_heads": [
+    "+0xc4",
+    "+0x164"
+  ],
+  "entry_hist": "wrap",
+  "join_guard_form": "both",
+  "frame_slots": false,
+  "hist_pinned": [
+    ".*"
+  ],
+  "store_splice": "per_store",
+  "keep_source_implied_ram_guards": true,
+  "caller_residual_imports": true,
+  "return_package": {
+    "source": "The function-return state every return block exits to: the Level-1 exit resources (caller registers restored, x10 the output pointer, the output array, the saved frame record) with the clobbered registers existential. One package serves all six return instructions; the composition's end bridge (DecodeItemGeneratedComposition.v, fp301_end_bridge) opens it. return_facts are added after its facts.",
+    "binders": [
+      [
+        "a3",
+        "bv 64%N"
+      ],
+      [
+        "a4",
+        "bv 64%N"
+      ],
+      [
+        "a5",
+        "bv 64%N"
+      ],
+      [
+        "a6",
+        "bv 64%N"
+      ],
+      [
+        "machine_x12",
+        "bv 64%N"
+      ],
+      [
+        "machine_x2",
+        "bv 64%N"
+      ],
+      [
+        "machine_x8",
+        "bv 64%N"
+      ],
+      [
+        "machine_x11",
+        "bv 64%N"
+      ],
+      [
+        "currentStorage",
+        "list (bv 8%N)"
+      ]
+    ],
+    "resources": [
+      "reg_col ((decodeItemSysRegs args))",
+      "\"x10\" ↦ᵣ (RVal_Bits (((Z_to_bv 64%N (decodeItemOutputPointer args))) : bv 64%N))",
+      "\"x11\" ↦ᵣ RVal_Bits machine_x11",
+      "\"x12\" ↦ᵣ (RVal_Bits (machine_x12 : bv 64))",
+      "\"x13\" ↦ᵣ (RVal_Bits (a3 : bv 64%N))",
+      "\"x14\" ↦ᵣ (RVal_Bits (a4 : bv 64%N))",
+      "\"x15\" ↦ᵣ (RVal_Bits (a5 : bv 64%N))",
+      "\"x16\" ↦ᵣ (RVal_Bits (a6 : bv 64%N))",
+      "\"x2\" ↦ᵣ (RVal_Bits (machine_x2 : bv 64))",
+      "\"x1\" ↦ᵣ (RVal_Bits (((Z_to_bv 64%N (decodeItemReturnAddress args))) : bv 64%N))",
+      "\"x8\" ↦ᵣ (RVal_Bits (machine_x8 : bv 64))",
+      "(decodeItemInputPointer args) ↦ₘ{DfracOwn 1}∗ (decodeItemInputBytes args)",
+      "(decodeItemOutputPointer args) ↦ₘ{DfracOwn 1}∗ (currentStorage)",
+      "(decodeItemStackPointer args - ( 16 )) ↦ₘ{DfracOwn 1}∗ (((Coq.Init.Datatypes.cons ((bv_extract 0%N 8%N (decodeItemSavedFramePointer args)) : bv 8%N) (Coq.Init.Datatypes.cons ((bv_extract 8%N 8%N (decodeItemSavedFramePointer args)) : bv 8%N) (Coq.Init.Datatypes.cons ((bv_extract 16%N 8%N (decodeItemSavedFramePointer args)) : bv 8%N) (Coq.Init.Datatypes.cons ((bv_extract 24%N 8%N (decodeItemSavedFramePointer args)) : bv 8%N) (Coq.Init.Datatypes.cons ((bv_extract 32%N 8%N (decodeItemSavedFramePointer args)) : bv 8%N) (Coq.Init.Datatypes.cons ((bv_extract 40%N 8%N (decodeItemSavedFramePointer args)) : bv 8%N) (Coq.Init.Datatypes.cons ((bv_extract 48%N 8%N (decodeItemSavedFramePointer args)) : bv 8%N) (Coq.Init.Datatypes.cons ((bv_extract 56%N 8%N (decodeItemSavedFramePointer args)) : bv 8%N) (Coq.Init.Datatypes.cons ((bv_extract 0%N 8%N ((Z_to_bv 64%N (decodeItemReturnAddress args)))) : bv 8%N) (Coq.Init.Datatypes.cons ((bv_extract 8%N 8%N ((Z_to_bv 64%N (decodeItemReturnAddress args)))) : bv 8%N) (Coq.Init.Datatypes.cons ((bv_extract 16%N 8%N ((Z_to_bv 64%N (decodeItemReturnAddress args)))) : bv 8%N) (Coq.Init.Datatypes.cons ((bv_extract 24%N 8%N ((Z_to_bv 64%N (decodeItemReturnAddress args)))) : bv 8%N) (Coq.Init.Datatypes.cons ((bv_extract 32%N 8%N ((Z_to_bv 64%N (decodeItemReturnAddress args)))) : bv 8%N) (Coq.Init.Datatypes.cons ((bv_extract 40%N 8%N ((Z_to_bv 64%N (decodeItemReturnAddress args)))) : bv 8%N) (Coq.Init.Datatypes.cons ((bv_extract 48%N 8%N ((Z_to_bv 64%N (decodeItemReturnAddress args)))) : bv 8%N) (Coq.Init.Datatypes.cons ((bv_extract 56%N 8%N ((Z_to_bv 64%N (decodeItemReturnAddress args)))) : bv 8%N) (@Coq.Init.Datatypes.nil (bv 8%N))))))))))))))))))))"
+    ],
+    "facts": [
+      "(bv_unsigned machine_x2 = (decodeItemStackPointer args))%Z",
+      "machine_x8 = decodeItemSavedFramePointer args",
+      "(List.length currentStorage = 40)%nat"
+    ]
+  },
+  "loop_head_fixture": "tools/block/fixtures/fp301-loop-heads.json",
+  "loop_designs": [
+    {
+      "head": "+0xc4",
+      "entry_predecessor": "+0xb4",
+      "registers": {
+        "x13": "loop_seed_x13",
+        "x15": "loop_seed_x15",
+        "x16": "loop_seed_x16"
+      },
+      "index": "i",
+      "array_cursor": {
+        "register": "x15",
+        "array": "decodeItemInputBytes args",
+        "extent_reason": "1 <= length (decodeItemInputBytes args): the length-of-length window starts at input byte 1 (loop class: bv_unsigned machine_x15 = decodeItemInputPointer args + 1 + i)"
+      }
+    },
+    {
+      "head": "+0x164",
+      "entry_predecessor": "+0x154",
+      "registers": {
+        "x13": "loop_seed_x13",
+        "x15": "loop_seed_x15",
+        "x16": "loop_seed_x16"
+      },
+      "index": "i",
+      "array_cursor": {
+        "register": "x15",
+        "array": "decodeItemInputBytes args",
+        "extent_reason": "1 <= length (decodeItemInputBytes args): the length-of-length window starts at input byte 1 (loop class: bv_unsigned machine_x15 = decodeItemInputPointer args + 1 + i)"
+      }
+    }
+  ],
+  "loop_first_pass": {
+    "count_guard_marker": "decodeItemInputLength args",
+    "cursor_base": "(decodeItemInputPointer args)",
+    "start_lemma": "loop_fold_start_from_complete_source_domain"
+  },
+  "closed_cases_count": 10,
+  "loop_exits": {
+    "fixture": "tools/block/fixtures/fp301-loop-successors.json",
+    "head_bound": "(bv_unsigned machine_x15 < bv_unsigned machine_x11)",
+    "exit_link": "(bv_unsigned machine_x15 = bv_unsigned machine_x11)",
+    "forward_fixture": "tools/block/fixtures/decodeitem-loop-exit-forward.json",
+    "witness_exclusion": "machine_x\\d+|decodeItem|\\bi\\b",
+    "contradiction_directory": "_build/agents/loop-exit-contradiction-checks",
+    "design": [
+      {
+        "pc": "+0xd8",
+        "head": "+0xc4"
+      },
+      {
+        "pc": "+0xe0",
+        "head": "+0xc4",
+        "block": "+0xd8",
+        "update": [
+          "x14",
+          "x13"
+        ],
+        "branch": [
+          "ltu",
+          "x12",
+          "x14",
+          false
+        ]
+      },
+      {
+        "pc": "+0x178",
+        "head": "+0x164"
+      },
+      {
+        "pc": "+0x1a8",
+        "head": "+0x164",
+        "block": "+0x178",
+        "update": [
+          "x14",
+          "x13"
+        ],
+        "branch": [
+          "ltu",
+          "x12",
+          "x14",
+          true
+        ]
+      }
+    ]
+  },
+  "design_callers": {
+    "fixture": "tools/block/fixtures/fp301-design-callers.json",
+    "design": "ZesuSsz/Evidence/decode_item_block_design.json",
+    "blocks": [
+      "+0x2c",
+      "+0xd8",
+      "+0xe0",
+      "+0x178",
+      "+0x180",
+      "+0x1a8"
+    ]
+  },
+  "potentials": {
+    "+0xc4": {
+      "potential": "5 * (bv_unsigned machine_x11 - bv_unsigned machine_x15) + 12",
+      "binders": [
+        "machine_x11",
+        "machine_x15"
+      ],
+      "entry_bound": "52"
+    },
+    "+0x164": {
+      "potential": "5 * (bv_unsigned machine_x11 - bv_unsigned machine_x15) + 12",
+      "binders": [
+        "machine_x11",
+        "machine_x15"
+      ],
+      "entry_bound": "52"
+    }
+  },
+  "potentials_source": "Both loops read the length-of-length bytes, one per iteration of 5 instructions (+0xc4..+0xd4, +0x164..+0x174); after the loop the longest path to a return is 12 instructions (+0xd8, +0x180; +0x178, +0x1a8 or +0x180). machine_x11 is the end of the length bytes and machine_x15 the cursor (loop class: bv_unsigned machine_x15 < bv_unsigned machine_x11). The entering block (+0xb4, +0x154) runs only after the branches at +0xa4/+0xb0 (+0x108/+0x150) fix the length-of-length to [1, 8], so the potential at loop entry is at most 5 * 8 + 12 = 52. Checked on machine runs: annotations.py test, inputs tools/oblig/exec/inputs/decodeItem.json."
+}

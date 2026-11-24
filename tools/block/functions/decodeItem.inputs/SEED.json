@@ -1,0 +1,271 @@
+{
+  "schema": "h1-public-entry-seed.v1",
+  "function": "rlp.decodeItem",
+  "entry_pc": "0x800d6960",
+  "source_bindings": [
+    {
+      "path": "/home/cody/zesislar/_build/agents/orch/entrylinks/seed-src/ZesuSsz/Contracts/RlpDecodeItemContract.v",
+      "sha256": "595fab72b6fcaa0603a8bd35f5e3b4433a380493a076f2bf8d05116738355d9a"
+    },
+    {
+      "path": "/home/cody/zesislar/_build/agents/orch/entrylinks/seed-src/ZesuSsz/Contracts/DecodeItemCompositional.v",
+      "sha256": "50d8c05339ffe8a09838bc03d61bf9edb424494b75451d249a531e79da93a426"
+    },
+    {
+      "path": "/home/cody/zesislar/_build/agents/orch/entrylinks/seed-src/ZesuSsz/Contracts/Level1.v",
+      "sha256": "45e31b086c53807d6887a91578033c2c9ffdd1d55000631f063018a6f61e9d4f"
+    },
+    {
+      "path": "/home/cody/zesislar/_build/agents/orch/entrylinks/seed-src/ZesuSsz/Contracts/RlpDecodeItem.v",
+      "sha256": "00fb772278173d367df71d67413b17e2631a863c1f384d763412000ac2b4b76e"
+    },
+    {
+      "path": "/home/cody/zesislar/_build/agents/orch/entrylinks/seed-src/ZesuSsz/Contracts/RlpDecodeItemSchema.v",
+      "sha256": "305dd9cea633dad7bc4a68e67c6911779841c65d016660a5899fdd074db14246"
+    },
+    {
+      "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-matrix005v3-v1/input-bank/prepared/default/InstrSpecs/Machine.v",
+      "sha256": "7a4049801e7db2750a69c48294bcd5769ec1511c48f20a6f303ea873c52df81e",
+      "declaration": "machine_static_sys_regs"
+    },
+    {
+      "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-matrix005v3-v1/input-bank/prepared/default/MachineMap/Machine.v",
+      "sha256": "72acac8f753d964bfa0365771d49d59b32add8a3f7e8da37b98989411274d9a4",
+      "declaration": "defaultMap"
+    },
+    {
+      "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-matrix005v3-v1/input-bank/prepared/default/ZesuSsz/Contracts/RlpDecodeItemContract.v",
+      "sha256": "595fab72b6fcaa0603a8bd35f5e3b4433a380493a076f2bf8d05116738355d9a",
+      "declaration": "decodeItemSysRegs"
+    }
+  ],
+  "parameters": [
+    {
+      "name": "args",
+      "type": "DecodeItemArgs"
+    },
+    {
+      "name": "returnAddress",
+      "type": "Z"
+    },
+    {
+      "name": "domain",
+      "type": "DecodeItemArgs -> Prop"
+    }
+  ],
+  "domain_binding": {
+    "source": "DecodeItemCompositional.v",
+    "model": "decodeItemSelectedModelRegisters",
+    "actual_domain": "decodeItemDomainAt returnAddress decodeItemC1BDomain",
+    "handling": "The assertion preserves the domain parameter. This binding fixes its source-defined application. No pure expansion is inferred."
+  },
+  "assertion_tree": {
+    "kind": "exists",
+    "binders": [
+      {
+        "name": "a3",
+        "type": "bv 64",
+        "expression": {
+          "op": "input",
+          "width": 64,
+          "value": "a3"
+        }
+      },
+      {
+        "name": "a4",
+        "type": "bv 64",
+        "expression": {
+          "op": "input",
+          "width": 64,
+          "value": "a4"
+        }
+      },
+      {
+        "name": "a5",
+        "type": "bv 64",
+        "expression": {
+          "op": "input",
+          "width": 64,
+          "value": "a5"
+        }
+      },
+      {
+        "name": "a6",
+        "type": "bv 64",
+        "expression": {
+          "op": "input",
+          "width": 64,
+          "value": "a6"
+        }
+      }
+    ],
+    "components": [
+      {
+        "kind": "opaque",
+        "id": "resource_0",
+        "original_component": "reg_col (decodeItemSysRegs args)",
+        "coq": "reg_col (decodeItemSysRegs args)"
+      },
+      {
+        "kind": "register",
+        "id": "resource_1",
+        "original_component": "\"x10\" \u21a6\u1d63 RVal_Bits (Z_to_bv 64 (decodeItemOutputPointer args))",
+        "register": "x10",
+        "width": 64,
+        "value_coq": "(Z_to_bv 64 (decodeItemOutputPointer args))"
+      },
+      {
+        "kind": "register",
+        "id": "resource_2",
+        "original_component": "\"x11\" \u21a6\u1d63 RVal_Bits (Z_to_bv 64 (decodeItemInputPointer args))",
+        "register": "x11",
+        "width": 64,
+        "value_coq": "(Z_to_bv 64 (decodeItemInputPointer args))"
+      },
+      {
+        "kind": "register",
+        "id": "resource_3",
+        "original_component": "\"x12\" \u21a6\u1d63 RVal_Bits (Z_to_bv 64 (decodeItemInputLength args))",
+        "register": "x12",
+        "width": 64,
+        "value_coq": "(Z_to_bv 64 (decodeItemInputLength args))"
+      },
+      {
+        "kind": "register",
+        "id": "resource_4",
+        "original_component": "\"x13\" \u21a6\u1d63 RVal_Bits a3",
+        "register": "x13",
+        "width": 64,
+        "value_coq": "a3",
+        "symbolic_witness": "a3"
+      },
+      {
+        "kind": "register",
+        "id": "resource_5",
+        "original_component": "\"x14\" \u21a6\u1d63 RVal_Bits a4",
+        "register": "x14",
+        "width": 64,
+        "value_coq": "a4",
+        "symbolic_witness": "a4"
+      },
+      {
+        "kind": "register",
+        "id": "resource_6",
+        "original_component": "\"x15\" \u21a6\u1d63 RVal_Bits a5",
+        "register": "x15",
+        "width": 64,
+        "value_coq": "a5",
+        "symbolic_witness": "a5"
+      },
+      {
+        "kind": "register",
+        "id": "resource_7",
+        "original_component": "\"x16\" \u21a6\u1d63 RVal_Bits a6",
+        "register": "x16",
+        "width": 64,
+        "value_coq": "a6",
+        "symbolic_witness": "a6"
+      },
+      {
+        "kind": "register",
+        "id": "resource_8",
+        "original_component": "\"x2\" \u21a6\u1d63 RVal_Bits (Z_to_bv 64 (decodeItemStackPointer args))",
+        "register": "x2",
+        "width": 64,
+        "value_coq": "(Z_to_bv 64 (decodeItemStackPointer args))"
+      },
+      {
+        "kind": "register",
+        "id": "resource_9",
+        "original_component": "\"x1\" \u21a6\u1d63 RVal_Bits (Z_to_bv 64 (decodeItemReturnAddress args))",
+        "register": "x1",
+        "width": 64,
+        "value_coq": "(Z_to_bv 64 (decodeItemReturnAddress args))"
+      },
+      {
+        "kind": "register",
+        "id": "resource_10",
+        "original_component": "\"x8\" \u21a6\u1d63 RVal_Bits (decodeItemSavedFramePointer args)",
+        "register": "x8",
+        "width": 64,
+        "value_coq": "(decodeItemSavedFramePointer args)"
+      },
+      {
+        "kind": "byte_array",
+        "id": "resource_11",
+        "original_component": "decodeItemInputPointer args \u21a6\u2098\u2217 decodeItemInputBytes args",
+        "address_z": "decodeItemInputPointer args",
+        "byte_array_expr": {
+          "op": "input",
+          "value": "decodeItemInputBytes args"
+        },
+        "element_bits": 8,
+        "length_original_coq": "List.length (decodeItemInputBytes args)"
+      },
+      {
+        "kind": "byte_array",
+        "id": "resource_12",
+        "original_component": "decodeItemOutputPointer args \u21a6\u2098\u2217 decodeItemBeforeStorage args",
+        "address_z": "decodeItemOutputPointer args",
+        "byte_array_expr": {
+          "op": "input",
+          "value": "decodeItemBeforeStorage args"
+        },
+        "element_bits": 8,
+        "length_original_coq": "List.length (decodeItemBeforeStorage args)"
+      },
+      {
+        "kind": "uninitialized_memory",
+        "id": "resource_13",
+        "original_component": "(decodeItemStackPointer args - decodeItemStackBytes) \u21a6\u2098? decodeItemStackBytes",
+        "address_z": "(decodeItemStackPointer args - decodeItemStackBytes)",
+        "length_original_coq": "decodeItemStackBytes"
+      },
+      {
+        "kind": "opaque",
+        "id": "resource_14",
+        "original_component": "\u231cdomain args\u231d",
+        "coq": "\u231cdomain args\u231d",
+        "well_formed_facts": [
+          "(List.length (decodeItemBeforeStorage args) = 40)%nat"
+        ]
+      },
+      {
+        "kind": "opaque",
+        "id": "resource_15",
+        "original_component": "True",
+        "coq": "True"
+      }
+    ]
+  },
+  "BODY": "(\u2203 (a3 a4 a5 a6 : bv 64),\n   reg_col (decodeItemSysRegs args) \u2217\n   \"x10\" \u21a6\u1d63 RVal_Bits (Z_to_bv 64 (decodeItemOutputPointer args)) \u2217\n   \"x11\" \u21a6\u1d63 RVal_Bits (Z_to_bv 64 (decodeItemInputPointer args)) \u2217\n   \"x12\" \u21a6\u1d63 RVal_Bits (Z_to_bv 64 (decodeItemInputLength args)) \u2217\n   \"x13\" \u21a6\u1d63 RVal_Bits a3 \u2217\n   \"x14\" \u21a6\u1d63 RVal_Bits a4 \u2217\n   \"x15\" \u21a6\u1d63 RVal_Bits a5 \u2217\n   \"x16\" \u21a6\u1d63 RVal_Bits a6 \u2217\n   \"x2\" \u21a6\u1d63 RVal_Bits (Z_to_bv 64 (decodeItemStackPointer args)) \u2217\n   \"x1\" \u21a6\u1d63 RVal_Bits (Z_to_bv 64 (decodeItemReturnAddress args)) \u2217\n   \"x8\" \u21a6\u1d63 RVal_Bits (decodeItemSavedFramePointer args) \u2217\n   decodeItemInputPointer args \u21a6\u2098\u2217 decodeItemInputBytes args \u2217\n   decodeItemOutputPointer args \u21a6\u2098\u2217 decodeItemBeforeStorage args \u2217\n   (decodeItemStackPointer args - decodeItemStackBytes) \u21a6\u2098? decodeItemStackBytes \u2217\n   \u231cdomain args\u231d \u2217 True)%I",
+  "original_components": [
+    "reg_col (decodeItemSysRegs args)",
+    "\"x10\" \u21a6\u1d63 RVal_Bits (Z_to_bv 64 (decodeItemOutputPointer args))",
+    "\"x11\" \u21a6\u1d63 RVal_Bits (Z_to_bv 64 (decodeItemInputPointer args))",
+    "\"x12\" \u21a6\u1d63 RVal_Bits (Z_to_bv 64 (decodeItemInputLength args))",
+    "\"x13\" \u21a6\u1d63 RVal_Bits a3",
+    "\"x14\" \u21a6\u1d63 RVal_Bits a4",
+    "\"x15\" \u21a6\u1d63 RVal_Bits a5",
+    "\"x16\" \u21a6\u1d63 RVal_Bits a6",
+    "\"x2\" \u21a6\u1d63 RVal_Bits (Z_to_bv 64 (decodeItemStackPointer args))",
+    "\"x1\" \u21a6\u1d63 RVal_Bits (Z_to_bv 64 (decodeItemReturnAddress args))",
+    "\"x8\" \u21a6\u1d63 RVal_Bits (decodeItemSavedFramePointer args)",
+    "decodeItemInputPointer args \u21a6\u2098\u2217 decodeItemInputBytes args",
+    "decodeItemOutputPointer args \u21a6\u2098\u2217 decodeItemBeforeStorage args",
+    "(decodeItemStackPointer args - decodeItemStackBytes) \u21a6\u2098? decodeItemStackBytes",
+    "\u231cdomain args\u231d",
+    "True"
+  ],
+  "component_count": 16,
+  "source_facts_added": 0,
+  "source_preservation_verified": true,
+  "new_pilot_input": true,
+  "native_calls": 0,
+  "heldout_states_read": 0,
+  "version": "FP-Level1-domain-20261102",
+  "source_domain_binding": {
+    "path": "/home/cody/zesislar/_build/agents/worker-build-1/forward-domain300/inputs001/DOMAIN.json",
+    "sha256": "1e08908c77334cede02b117ca91220d429074f3ea42f2164ee4118f9a5a9147d"
+  }
+}

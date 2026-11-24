@@ -1,0 +1,532 @@
+{
+  "rows": [
+    {
+      "key": "rv_enable_pmp",
+      "collection_ownership_id": "resource_0",
+      "source_bindings": [
+        {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-matrix005v3-v1/input-bank/prepared/default/InstrSpecs/Machine.v",
+          "sha256": "7a4049801e7db2750a69c48294bcd5769ec1511c48f20a6f303ea873c52df81e",
+          "declaration": "machine_static_sys_regs"
+        },
+        {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-matrix005v3-v1/input-bank/prepared/default/MachineMap/Machine.v",
+          "sha256": "72acac8f753d964bfa0365771d49d59b32add8a3f7e8da37b98989411274d9a4",
+          "declaration": "defaultMap"
+        },
+        {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-matrix005v3-v1/input-bank/prepared/default/ZesuSsz/Contracts/RlpDecodeItemContract.v",
+          "sha256": "595fab72b6fcaa0603a8bd35f5e3b4433a380493a076f2bf8d05116738355d9a",
+          "declaration": "decodeItemSysRegs"
+        }
+      ],
+      "original_shape": "ExactShape (RVal_Bool (mapEnablePmp machine))",
+      "shape": "exact",
+      "sort": "bool",
+      "width": null,
+      "value": {
+        "op": "bool",
+        "value": false
+      }
+    },
+    {
+      "key": "rv_enable_misaligned_access",
+      "collection_ownership_id": "resource_0",
+      "source_bindings": [
+        {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-matrix005v3-v1/input-bank/prepared/default/InstrSpecs/Machine.v",
+          "sha256": "7a4049801e7db2750a69c48294bcd5769ec1511c48f20a6f303ea873c52df81e",
+          "declaration": "machine_static_sys_regs"
+        },
+        {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-matrix005v3-v1/input-bank/prepared/default/MachineMap/Machine.v",
+          "sha256": "72acac8f753d964bfa0365771d49d59b32add8a3f7e8da37b98989411274d9a4",
+          "declaration": "defaultMap"
+        },
+        {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-matrix005v3-v1/input-bank/prepared/default/ZesuSsz/Contracts/RlpDecodeItemContract.v",
+          "sha256": "595fab72b6fcaa0603a8bd35f5e3b4433a380493a076f2bf8d05116738355d9a",
+          "declaration": "decodeItemSysRegs"
+        }
+      ],
+      "original_shape": "ExactShape (RVal_Bool (mapEnableMisalignedAccess machine))",
+      "shape": "exact",
+      "sort": "bool",
+      "width": null,
+      "value": {
+        "op": "bool",
+        "value": true
+      }
+    },
+    {
+      "key": "rv_ram_base",
+      "collection_ownership_id": "resource_0",
+      "source_bindings": [
+        {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-matrix005v3-v1/input-bank/prepared/default/InstrSpecs/Machine.v",
+          "sha256": "7a4049801e7db2750a69c48294bcd5769ec1511c48f20a6f303ea873c52df81e",
+          "declaration": "machine_static_sys_regs"
+        },
+        {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-matrix005v3-v1/input-bank/prepared/default/MachineMap/Machine.v",
+          "sha256": "72acac8f753d964bfa0365771d49d59b32add8a3f7e8da37b98989411274d9a4",
+          "declaration": "defaultMap"
+        },
+        {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-matrix005v3-v1/input-bank/prepared/default/ZesuSsz/Contracts/RlpDecodeItemContract.v",
+          "sha256": "595fab72b6fcaa0603a8bd35f5e3b4433a380493a076f2bf8d05116738355d9a",
+          "declaration": "decodeItemSysRegs"
+        }
+      ],
+      "original_shape": "ExactShape (RVal_Bits (Z_to_bv 64 (mapRamBase machine)))",
+      "shape": "exact",
+      "sort": "bits",
+      "width": 64,
+      "value": {
+        "op": "bits",
+        "width": 64,
+        "value": 2684354560
+      }
+    },
+    {
+      "key": "rv_ram_size",
+      "collection_ownership_id": "resource_0",
+      "source_bindings": [
+        {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-matrix005v3-v1/input-bank/prepared/default/InstrSpecs/Machine.v",
+          "sha256": "7a4049801e7db2750a69c48294bcd5769ec1511c48f20a6f303ea873c52df81e",
+          "declaration": "machine_static_sys_regs"
+        },
+        {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-matrix005v3-v1/input-bank/prepared/default/MachineMap/Machine.v",
+          "sha256": "72acac8f753d964bfa0365771d49d59b32add8a3f7e8da37b98989411274d9a4",
+          "declaration": "defaultMap"
+        },
+        {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-matrix005v3-v1/input-bank/prepared/default/ZesuSsz/Contracts/RlpDecodeItemContract.v",
+          "sha256": "595fab72b6fcaa0603a8bd35f5e3b4433a380493a076f2bf8d05116738355d9a",
+          "declaration": "decodeItemSysRegs"
+        }
+      ],
+      "original_shape": "ExactShape (RVal_Bits (Z_to_bv 64 (mapRamSize machine)))",
+      "shape": "exact",
+      "sort": "bits",
+      "width": 64,
+      "value": {
+        "op": "bits",
+        "width": 64,
+        "value": 536870912
+      }
+    },
+    {
+      "key": "rv_rom_base",
+      "collection_ownership_id": "resource_0",
+      "source_bindings": [
+        {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-matrix005v3-v1/input-bank/prepared/default/InstrSpecs/Machine.v",
+          "sha256": "7a4049801e7db2750a69c48294bcd5769ec1511c48f20a6f303ea873c52df81e",
+          "declaration": "machine_static_sys_regs"
+        },
+        {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-matrix005v3-v1/input-bank/prepared/default/MachineMap/Machine.v",
+          "sha256": "72acac8f753d964bfa0365771d49d59b32add8a3f7e8da37b98989411274d9a4",
+          "declaration": "defaultMap"
+        },
+        {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-matrix005v3-v1/input-bank/prepared/default/ZesuSsz/Contracts/RlpDecodeItemContract.v",
+          "sha256": "595fab72b6fcaa0603a8bd35f5e3b4433a380493a076f2bf8d05116738355d9a",
+          "declaration": "decodeItemSysRegs"
+        }
+      ],
+      "original_shape": "ExactShape (RVal_Bits (Z_to_bv 64 (mapRomBase machine)))",
+      "shape": "exact",
+      "sort": "bits",
+      "width": 64,
+      "value": {
+        "op": "bits",
+        "width": 64,
+        "value": 0
+      }
+    },
+    {
+      "key": "rv_rom_size",
+      "collection_ownership_id": "resource_0",
+      "source_bindings": [
+        {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-matrix005v3-v1/input-bank/prepared/default/InstrSpecs/Machine.v",
+          "sha256": "7a4049801e7db2750a69c48294bcd5769ec1511c48f20a6f303ea873c52df81e",
+          "declaration": "machine_static_sys_regs"
+        },
+        {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-matrix005v3-v1/input-bank/prepared/default/MachineMap/Machine.v",
+          "sha256": "72acac8f753d964bfa0365771d49d59b32add8a3f7e8da37b98989411274d9a4",
+          "declaration": "defaultMap"
+        },
+        {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-matrix005v3-v1/input-bank/prepared/default/ZesuSsz/Contracts/RlpDecodeItemContract.v",
+          "sha256": "595fab72b6fcaa0603a8bd35f5e3b4433a380493a076f2bf8d05116738355d9a",
+          "declaration": "decodeItemSysRegs"
+        }
+      ],
+      "original_shape": "ExactShape (RVal_Bits (Z_to_bv 64 (mapRomSize machine)))",
+      "shape": "exact",
+      "sort": "bits",
+      "width": 64,
+      "value": {
+        "op": "bits",
+        "width": 64,
+        "value": 0
+      }
+    },
+    {
+      "key": "rv_clint_base",
+      "collection_ownership_id": "resource_0",
+      "source_bindings": [
+        {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-matrix005v3-v1/input-bank/prepared/default/InstrSpecs/Machine.v",
+          "sha256": "7a4049801e7db2750a69c48294bcd5769ec1511c48f20a6f303ea873c52df81e",
+          "declaration": "machine_static_sys_regs"
+        },
+        {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-matrix005v3-v1/input-bank/prepared/default/MachineMap/Machine.v",
+          "sha256": "72acac8f753d964bfa0365771d49d59b32add8a3f7e8da37b98989411274d9a4",
+          "declaration": "defaultMap"
+        },
+        {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-matrix005v3-v1/input-bank/prepared/default/ZesuSsz/Contracts/RlpDecodeItemContract.v",
+          "sha256": "595fab72b6fcaa0603a8bd35f5e3b4433a380493a076f2bf8d05116738355d9a",
+          "declaration": "decodeItemSysRegs"
+        }
+      ],
+      "original_shape": "ExactShape (RVal_Bits (Z_to_bv 64 (mapClintBase machine)))",
+      "shape": "exact",
+      "sort": "bits",
+      "width": 64,
+      "value": {
+        "op": "bits",
+        "width": 64,
+        "value": 0
+      }
+    },
+    {
+      "key": "rv_clint_size",
+      "collection_ownership_id": "resource_0",
+      "source_bindings": [
+        {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-matrix005v3-v1/input-bank/prepared/default/InstrSpecs/Machine.v",
+          "sha256": "7a4049801e7db2750a69c48294bcd5769ec1511c48f20a6f303ea873c52df81e",
+          "declaration": "machine_static_sys_regs"
+        },
+        {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-matrix005v3-v1/input-bank/prepared/default/MachineMap/Machine.v",
+          "sha256": "72acac8f753d964bfa0365771d49d59b32add8a3f7e8da37b98989411274d9a4",
+          "declaration": "defaultMap"
+        },
+        {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-matrix005v3-v1/input-bank/prepared/default/ZesuSsz/Contracts/RlpDecodeItemContract.v",
+          "sha256": "595fab72b6fcaa0603a8bd35f5e3b4433a380493a076f2bf8d05116738355d9a",
+          "declaration": "decodeItemSysRegs"
+        }
+      ],
+      "original_shape": "ExactShape (RVal_Bits (Z_to_bv 64 (mapClintSize machine)))",
+      "shape": "exact",
+      "sort": "bits",
+      "width": 64,
+      "value": {
+        "op": "bits",
+        "width": 64,
+        "value": 0
+      }
+    },
+    {
+      "key": "rv_htif_tohost",
+      "collection_ownership_id": "resource_0",
+      "source_bindings": [
+        {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-matrix005v3-v1/input-bank/prepared/default/InstrSpecs/Machine.v",
+          "sha256": "7a4049801e7db2750a69c48294bcd5769ec1511c48f20a6f303ea873c52df81e",
+          "declaration": "machine_static_sys_regs"
+        },
+        {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-matrix005v3-v1/input-bank/prepared/default/MachineMap/Machine.v",
+          "sha256": "72acac8f753d964bfa0365771d49d59b32add8a3f7e8da37b98989411274d9a4",
+          "declaration": "defaultMap"
+        },
+        {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-matrix005v3-v1/input-bank/prepared/default/ZesuSsz/Contracts/RlpDecodeItemContract.v",
+          "sha256": "595fab72b6fcaa0603a8bd35f5e3b4433a380493a076f2bf8d05116738355d9a",
+          "declaration": "decodeItemSysRegs"
+        }
+      ],
+      "original_shape": "ExactShape (RVal_Bits (Z_to_bv 64 (mapHtifTohost machine)))",
+      "shape": "exact",
+      "sort": "bits",
+      "width": 64,
+      "value": {
+        "op": "bits",
+        "width": 64,
+        "value": 0
+      }
+    },
+    {
+      "key": "cur_privilege",
+      "collection_ownership_id": "resource_0",
+      "source_bindings": [
+        {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-matrix005v3-v1/input-bank/prepared/default/InstrSpecs/Machine.v",
+          "sha256": "7a4049801e7db2750a69c48294bcd5769ec1511c48f20a6f303ea873c52df81e",
+          "declaration": "machine_static_sys_regs"
+        },
+        {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-matrix005v3-v1/input-bank/prepared/default/MachineMap/Machine.v",
+          "sha256": "72acac8f753d964bfa0365771d49d59b32add8a3f7e8da37b98989411274d9a4",
+          "declaration": "defaultMap"
+        },
+        {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-matrix005v3-v1/input-bank/prepared/default/ZesuSsz/Contracts/RlpDecodeItemContract.v",
+          "sha256": "595fab72b6fcaa0603a8bd35f5e3b4433a380493a076f2bf8d05116738355d9a",
+          "declaration": "decodeItemSysRegs"
+        }
+      ],
+      "original_shape": "ExactShape (RVal_Enum (mapPrivilege machine))",
+      "shape": "exact",
+      "sort": "enum",
+      "width": null,
+      "value": {
+        "op": "enum",
+        "value": "Machine"
+      }
+    },
+    {
+      "key": "misa.bits",
+      "collection_ownership_id": "resource_0",
+      "source_bindings": [
+        {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-matrix005v3-v1/input-bank/prepared/default/InstrSpecs/Machine.v",
+          "sha256": "7a4049801e7db2750a69c48294bcd5769ec1511c48f20a6f303ea873c52df81e",
+          "declaration": "machine_static_sys_regs"
+        },
+        {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-matrix005v3-v1/input-bank/prepared/default/MachineMap/Machine.v",
+          "sha256": "72acac8f753d964bfa0365771d49d59b32add8a3f7e8da37b98989411274d9a4",
+          "declaration": "defaultMap"
+        },
+        {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-matrix005v3-v1/input-bank/prepared/default/ZesuSsz/Contracts/RlpDecodeItemContract.v",
+          "sha256": "595fab72b6fcaa0603a8bd35f5e3b4433a380493a076f2bf8d05116738355d9a",
+          "declaration": "decodeItemSysRegs"
+        }
+      ],
+      "original_shape": "ExactShape (RegVal_Struct [\n    (\"bits\", RVal_Bits (Z_to_bv 64 (mapMisa machine)))])",
+      "shape": "exact",
+      "sort": "bits",
+      "width": 64,
+      "value": {
+        "op": "bits",
+        "width": 64,
+        "value": 9223372036854780160
+      }
+    },
+    {
+      "key": "mtvec.bits",
+      "collection_ownership_id": "resource_0",
+      "source_bindings": [
+        {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-matrix005v3-v1/input-bank/prepared/default/InstrSpecs/Machine.v",
+          "sha256": "7a4049801e7db2750a69c48294bcd5769ec1511c48f20a6f303ea873c52df81e",
+          "declaration": "machine_static_sys_regs"
+        },
+        {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-matrix005v3-v1/input-bank/prepared/default/MachineMap/Machine.v",
+          "sha256": "72acac8f753d964bfa0365771d49d59b32add8a3f7e8da37b98989411274d9a4",
+          "declaration": "defaultMap"
+        },
+        {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-matrix005v3-v1/input-bank/prepared/default/ZesuSsz/Contracts/RlpDecodeItemContract.v",
+          "sha256": "595fab72b6fcaa0603a8bd35f5e3b4433a380493a076f2bf8d05116738355d9a",
+          "declaration": "decodeItemSysRegs"
+        }
+      ],
+      "original_shape": "ExactShape (RegVal_Struct [\n    (\"bits\", RVal_Bits (Z_to_bv 64 (mapMtvec machine)))])",
+      "shape": "exact",
+      "sort": "bits",
+      "width": 64,
+      "value": {
+        "op": "bits",
+        "width": 64,
+        "value": 0
+      }
+    },
+    {
+      "key": "medeleg.bits",
+      "collection_ownership_id": "resource_0",
+      "source_bindings": [
+        {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-matrix005v3-v1/input-bank/prepared/default/InstrSpecs/Machine.v",
+          "sha256": "7a4049801e7db2750a69c48294bcd5769ec1511c48f20a6f303ea873c52df81e",
+          "declaration": "machine_static_sys_regs"
+        },
+        {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-matrix005v3-v1/input-bank/prepared/default/MachineMap/Machine.v",
+          "sha256": "72acac8f753d964bfa0365771d49d59b32add8a3f7e8da37b98989411274d9a4",
+          "declaration": "defaultMap"
+        },
+        {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-matrix005v3-v1/input-bank/prepared/default/ZesuSsz/Contracts/RlpDecodeItemContract.v",
+          "sha256": "595fab72b6fcaa0603a8bd35f5e3b4433a380493a076f2bf8d05116738355d9a",
+          "declaration": "decodeItemSysRegs"
+        }
+      ],
+      "original_shape": "ExactShape (RegVal_Struct [\n    (\"bits\", RVal_Bits (Z_to_bv 64 0))])",
+      "shape": "exact",
+      "sort": "bits",
+      "width": 64,
+      "value": {
+        "op": "bits",
+        "width": 64,
+        "value": 0
+      }
+    },
+    {
+      "key": "mideleg.bits",
+      "collection_ownership_id": "resource_0",
+      "source_bindings": [
+        {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-matrix005v3-v1/input-bank/prepared/default/InstrSpecs/Machine.v",
+          "sha256": "7a4049801e7db2750a69c48294bcd5769ec1511c48f20a6f303ea873c52df81e",
+          "declaration": "machine_static_sys_regs"
+        },
+        {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-matrix005v3-v1/input-bank/prepared/default/MachineMap/Machine.v",
+          "sha256": "72acac8f753d964bfa0365771d49d59b32add8a3f7e8da37b98989411274d9a4",
+          "declaration": "defaultMap"
+        },
+        {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-matrix005v3-v1/input-bank/prepared/default/ZesuSsz/Contracts/RlpDecodeItemContract.v",
+          "sha256": "595fab72b6fcaa0603a8bd35f5e3b4433a380493a076f2bf8d05116738355d9a",
+          "declaration": "decodeItemSysRegs"
+        }
+      ],
+      "original_shape": "ExactShape (RegVal_Struct [\n    (\"bits\", RVal_Bits (Z_to_bv 64 0))])",
+      "shape": "exact",
+      "sort": "bits",
+      "width": 64,
+      "value": {
+        "op": "bits",
+        "width": 64,
+        "value": 0
+      }
+    },
+    {
+      "key": "mstatus.bits",
+      "collection_ownership_id": "resource_0",
+      "source_bindings": [
+        {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-matrix005v3-v1/input-bank/prepared/default/InstrSpecs/Machine.v",
+          "sha256": "7a4049801e7db2750a69c48294bcd5769ec1511c48f20a6f303ea873c52df81e",
+          "declaration": "machine_static_sys_regs"
+        },
+        {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-matrix005v3-v1/input-bank/prepared/default/MachineMap/Machine.v",
+          "sha256": "72acac8f753d964bfa0365771d49d59b32add8a3f7e8da37b98989411274d9a4",
+          "declaration": "defaultMap"
+        },
+        {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-matrix005v3-v1/input-bank/prepared/default/ZesuSsz/Contracts/RlpDecodeItemContract.v",
+          "sha256": "595fab72b6fcaa0603a8bd35f5e3b4433a380493a076f2bf8d05116738355d9a",
+          "declaration": "decodeItemSysRegs"
+        }
+      ],
+      "original_shape": "StructShape [(\"bits\", MaskShape 64 (mapMstatusMask machine) (mapMstatusValue machine))]",
+      "shape": "mask",
+      "sort": "bits",
+      "width": 64,
+      "symbol": {
+        "op": "input",
+        "width": 64,
+        "value": "fp_seed_mstatus_bits"
+      },
+      "mask": {
+        "op": "bits",
+        "width": 64,
+        "value": 131072
+      },
+      "expected": {
+        "op": "bits",
+        "width": 64,
+        "value": 0
+      }
+    },
+    {
+      "key": "satp",
+      "collection_ownership_id": "resource_0",
+      "source_bindings": [
+        {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-matrix005v3-v1/input-bank/prepared/default/InstrSpecs/Machine.v",
+          "sha256": "7a4049801e7db2750a69c48294bcd5769ec1511c48f20a6f303ea873c52df81e",
+          "declaration": "machine_static_sys_regs"
+        },
+        {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-matrix005v3-v1/input-bank/prepared/default/MachineMap/Machine.v",
+          "sha256": "72acac8f753d964bfa0365771d49d59b32add8a3f7e8da37b98989411274d9a4",
+          "declaration": "defaultMap"
+        },
+        {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-matrix005v3-v1/input-bank/prepared/default/ZesuSsz/Contracts/RlpDecodeItemContract.v",
+          "sha256": "595fab72b6fcaa0603a8bd35f5e3b4433a380493a076f2bf8d05116738355d9a",
+          "declaration": "decodeItemSysRegs"
+        }
+      ],
+      "original_shape": "BitsShape 64",
+      "shape": "bits",
+      "sort": "bits",
+      "width": 64,
+      "symbol": {
+        "op": "input",
+        "width": 64,
+        "value": "fp_seed_satp"
+      }
+    },
+    {
+      "key": "zisk_input_end",
+      "shape": "exact",
+      "sort": "bits",
+      "width": 64,
+      "value": {
+        "op": "input",
+        "width": 64,
+        "value": "(Z_to_bv 64%N (decodeItemInputEnd args))"
+      },
+      "collection_ownership_id": "resource_0",
+      "source_bindings": [
+        {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-matrix005v3-v1/input-bank/prepared/default/ZesuSsz/Contracts/RlpDecodeItemContract.v",
+          "sha256": "595fab72b6fcaa0603a8bd35f5e3b4433a380493a076f2bf8d05116738355d9a",
+          "declaration": "decodeItemSysRegs_exact"
+        }
+      ]
+    },
+    {
+      "key": "zisk_free_input",
+      "shape": "bits",
+      "sort": "bits",
+      "width": 64,
+      "symbol": {
+        "op": "input",
+        "width": 64,
+        "value": "fp_seed_zisk_free_input"
+      },
+      "collection_ownership_id": "resource_0",
+      "source_bindings": [
+        {
+          "path": "/home/cody/zesislar/_build/agents/worker-build-2/PORT-matrix005v3-v1/input-bank/prepared/default/ZesuSsz/Contracts/RlpDecodeItemContract.v",
+          "sha256": "595fab72b6fcaa0603a8bd35f5e3b4433a380493a076f2bf8d05116738355d9a",
+          "declaration": "decodeItemSysRegs_exact"
+        }
+      ]
+    }
+  ],
+  "collection_ownership_id": "resource_0",
+  "created_ownership": [],
+  "source_only": true
+}

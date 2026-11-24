@@ -1506,3 +1506,39 @@ Check (eq_refl : @keysEnsureCapacityContractCode = @ReviewedKeysEnsureCapacityCo
 Check (eq_refl : @keysEnsureCapacityResources = @ReviewedKeysEnsureCapacityResources).
 Check (eq_refl : @keysEnsureCapacityContractModel = @ReviewedKeysEnsureCapacityContractModel).
 Check (eq_refl : @KeysEnsureCapacityContractCorrect = @ReviewedKeysEnsureCapacityContractCorrect).
+
+(* rlp.decodeItem with a step bound (plan Stage T, T7; statement reviewed
+   2026-11-24): decodeItemSelectedModel with the code charged and the entry
+   owning step_budget 75. *)
+Require Import InstrSpecs.LookupCharged.
+Require Import ZesuSsz.Automation2.StepBudget.
+Require Import ZesuSsz.Contracts.DecodeItemChargedSelected.
+Require Import ZesuSsz.Contracts.DecodeItemBudgetContract.
+Definition ReviewedDecodeItemChargedCode `{!islaG Sigma} `{!threadG} : iProp Sigma :=
+  instr_lookup_resources_charged
+    (selectedCodeLookup ZesuSsz.Stock.Closure.index_decodeItem.instr_map).
+Definition ReviewedDecodeItemBudgetResources `{!islaG Sigma} `{!threadG}
+    (domain : DecodeItemArgs -> Prop) :
+    IslarisContractResources DecodeItemArgs DecodeItemOutcome :=
+  {| islarisCode := decodeItemChargedCode;
+     islarisEntry := fun args =>
+       (decodeItemEntryResources domain args ∗ step_budget 75)%I;
+     islarisExit := decodeItemExitResources |}.
+Definition ReviewedDecodeItemBudgetModel (returnAddress : Z) :
+    IslarisContractModel DecodeItemArgs DecodeItemOutcome :=
+  {| islarisContractAllows := fun args after =>
+       decodeItemDomainAt returnAddress decodeItemC1BDomain args /\
+       DecodeMeaningModuloKnownBugs args after;
+     islarisContractStep :=
+       ZesuSsz.Stock.Closure.index_decodeItem.decodeItem_cfg_step;
+     islarisContractResources := fun Sigma HG HT =>
+       @decodeItemBudgetResources Sigma HG HT
+         (decodeItemDomainAt returnAddress decodeItemC1BDomain) |}.
+Definition ReviewedDecodeItemBudgetContractCorrect : Prop :=
+  forall returnAddress,
+    IslarisContractCorrect 0x800d6960 returnAddress
+      (decodeItemBudgetModel returnAddress).
+Check (eq_refl : @decodeItemChargedCode = @ReviewedDecodeItemChargedCode).
+Check (eq_refl : @decodeItemBudgetResources = @ReviewedDecodeItemBudgetResources).
+Check (eq_refl : @decodeItemBudgetModel = @ReviewedDecodeItemBudgetModel).
+Check (eq_refl : @DecodeItemBudgetContractCorrect = @ReviewedDecodeItemBudgetContractCorrect).
