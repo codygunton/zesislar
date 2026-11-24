@@ -626,6 +626,27 @@ class ProducedUnfold(OpaqueAndReturnedCall):
         self.assertNotIn('call_produced_1_minimum', {node['id'] for node in public['assertion_tree']['components']})
         self.assertFalse([fact for fact in seed.facts if fact['fact_id'].endswith(':minimum')])
 
+    def test_a_minimum_when_a_returned_register_has_a_value_holds_on_that_outcome_only(self):
+        from forward_resources import _Facts
+        pieces = [self.PIECES[0], {'coq': self.PIECES[1], 'minimum': 32, 'when': {'register': 'x10', 'value': 0}},
+                  self.PIECES[2]]
+        seed, public, _ = self.run_grow(**{'as': pieces})
+        nodes = {node['id']: node for node in public['assertion_tree']['components']}
+        after = '(listAfter (call_outcome))'
+        self.assertEqual(nodes['call_produced_1_minimum']['coq'],
+                         '⌜(bv_unsigned call_x10 = 0 -> 32 <= (arrayListCapacity %s - arrayListLength %s) * 32)%%Z⌝'
+                         % (after, after))
+        bound, = [fact for fact in seed.facts if fact['fact_id'] == 'call_produced_1:minimum']
+        resource, = [resource for resource in seed.resources if resource.id == 'call_produced_1']
+        # The bound counts on a path where x10 = 0, not on another.
+        zero = operation('=', input_expr('call_x10', 64), bits(0, 64))
+        self.assertEqual(_Facts([zero], [bound]).lower_bound(resource)[0], 32)
+        self.assertEqual(_Facts([], [bound]).lower_bound(resource)[0], 0)
+        from call_boundary import CallRefused
+        with self.assertRaisesRegex(CallRefused, 'returned register has a value: x11'):
+            self.run_grow(**{'as': [self.PIECES[0], dict(pieces[1], when={'register': 'x11', 'value': 0}),
+                                    self.PIECES[2]]})
+
     def test_a_minimum_on_an_opaque_piece_is_refused(self):
         from call_boundary import CallRefused
         pieces = self.PIECES[:2] + [{'coq': self.PIECES[2], 'minimum': 1}]

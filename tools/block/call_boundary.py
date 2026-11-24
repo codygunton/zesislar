@@ -1171,13 +1171,26 @@ def call_return_seed(edges, *, call, function_root, root_seed, shapes, vocabular
             except ValueError as error:
                 raise CallRefused(str(error))
             produced_nodes.append(node)
-            # A piece's `minimum` is a fact of the return entry (`m <= length`), proved by the call block.
-            minimum = text['piece'].get('minimum') if isinstance(text['piece'], dict) else None
+            # A piece's `minimum` is a fact of the return entry (`m <= length`), proved by the call block;
+            # with `when` {register, value} (a returned register) it holds on that outcome only:
+            # `bv_unsigned R = value -> m <= length`, and the forward pass uses it where R = value.
+            piece = text['piece'] if isinstance(text['piece'], dict) else {}
+            minimum, when = piece.get('minimum'), piece.get('when')
             if minimum is not None:
                 if 'length_original_coq' not in node:
                     raise CallRefused('A piece minimum bounds a memory piece: ' + node['coq'])
-                fact = '(%d <= %s)%%Z' % (minimum, node['length_original_coq'])
-                piece_minimums.append({'resource_id': node['id'], 'minimum': minimum, 'fact': fact})
+                fact = '%d <= %s' % (minimum, node['length_original_coq'])
+                guard = None
+                if when is not None:
+                    if when.get('register') not in returns.values():
+                        raise CallRefused('A piece minimum holds when a returned register has a value: '
+                                          + str(when.get('register')))
+                    name = prefix + when['register']
+                    fact = 'bv_unsigned %s = %d -> %s' % (name, when['value'], fact)
+                    guard = operation('=', input_expr(name, 64), bits(when['value'], 64)).to_dict()
+                fact = '(' + fact + ')%Z'
+                piece_minimums.append({'resource_id': node['id'], 'minimum': minimum, 'fact': fact,
+                                       **({'guard': guard} if guard else {})})
                 produced_nodes.append({'kind': 'opaque', 'id': node['id'] + '_minimum', 'coq': '⌜' + fact + '⌝'})
             continue
         points = re.fullmatch(r'(.+?)\s+(↦ₘ∗|↦ₘ\?|↦ₘ)\s+(.+)', text)
@@ -1281,7 +1294,7 @@ def call_return_seed(edges, *, call, function_root, root_seed, shapes, vocabular
     for row in piece_minimums:
         copied.append({'fact_id': row['resource_id'] + ':minimum', 'kind': 'bounds', 'status': 'supplied',
                        'terms': {'resource_id': row['resource_id'], 'index': 0, 'count': row['minimum'],
-                                 'coq_statement': row['fact']},
+                                 'coq_statement': row['fact'], **({'guard': row['guard']} if 'guard' in row else {})},
                        'origin': {'call_design': call['call_site_pc'], 'piece_minimum': row['resource_id']}})
     try:
         seed = seed_owned_resources(public, entry_pc=return_pc, vocabulary=vocabulary, constants=constants or {},

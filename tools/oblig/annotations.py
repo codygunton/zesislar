@@ -44,9 +44,10 @@ The compiled profile keys, by `boundary`:
   call_site        a `calls` row: the row's `call` object with `call_site_pc`. Its `opaque` rows
                    [{`spec`, `use`: framed | consumed | produced, `caller`: [...]}] name spec resources in
                    the spec's text and, for a consumed one, the caller components it takes (a framed one
-                   may name them too); a produced row's `as` [text | {coq, length?, minimum?}] states the spec
-                   resource by the pieces of its LithiumUnfold, which the call block proves (a piece's integer
-                   `minimum` m adds `m <= length` of the piece to the return entry, proved there too); its `returns`
+                   may name them too); a produced row's `as` [text | {coq, length?, minimum?, when?}] states the
+                   spec resource by the pieces of its LithiumUnfold, which the call block proves (a piece's integer
+                   `minimum` m adds `m <= length` of the piece to the return entry, proved there too; with `when`
+                   {register, value} of a `returns` register, `bv_unsigned R = value -> m <= length`); its `returns`
                    rows [{`index`, `register`}] name the returned registers the continuation reads; its
                    `result_words` {byte offset: Z value} name words of the returned array the return entry
                    states and the seed reads as the value (`{argv:N}`, `{fresh:NAME:TYPE}` in the value);
@@ -209,11 +210,16 @@ def _check_call(row):
         pieces = item.get('as')
         if pieces is not None and (item['use'] != 'produced' or not isinstance(pieces, list) or not pieces
                                    or not all(isinstance(piece, str) or isinstance(piece, dict)
-                                              and 'coq' in piece and set(piece) <= {'coq', 'length', 'minimum'}
+                                              and 'coq' in piece and set(piece) <= {'coq', 'length', 'minimum', 'when'}
                                               and type(piece.get('minimum', 1)) is int and piece.get('minimum', 1) > 0
+                                              and ('when' not in piece or 'minimum' in piece
+                                                   and isinstance(piece['when'], dict)
+                                                   and set(piece['when']) == {'register', 'value'}
+                                                   and type(piece['when']['value']) is int)
                                               for piece in pieces)):
             raise AnnotationError('%s: `as` belongs to a produced opaque row: its pieces are texts or '
-                                  '{coq, length?, minimum?} (minimum a positive integer)' % row['id'])
+                                  '{coq, length?, minimum?, when?} (minimum a positive integer, when '
+                                  '{register, value} with a minimum)' % row['id'])
     for item in row['call'].get('returns', []):
         if not isinstance(item.get('index'), int) or not re.fullmatch(r'x(1[0-7])', str(item.get('register'))):
             raise AnnotationError('%s: a returns row has an integer `index` and an argument register' % row['id'])
