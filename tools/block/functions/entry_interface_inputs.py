@@ -449,7 +449,13 @@ def domain(profile, contract, text, seed, constants, ram, notes=None):
                                      'derivation': 'the quantity lies in [0, 2^64), so its register value is it'}})
             used.add(index)
     # End bounds `bv_unsigned P + L <= bv_unsigned E` with P an owned initialized array's address and L
-    # one of its length spellings: the array ends at or below E (symbolic_state._placed_end_refutation).
+    # one of its length spellings, or the right side of a conjunct `Z.of_nat (length V) = L` on its value:
+    # the array ends at or below E (symbolic_state._placed_end_refutation).
+    length_equations = {}
+    for index, item in enumerate(clauses):
+        match = re.fullmatch(r'Z\.of_nat \((?:List\.)?length \((.+)\)\) = (.+)', normal(item))
+        if match:
+            length_equations[(normal(match[1]), normal(match[2]))] = index
     for index, item in enumerate(clauses):
         pairs = comparisons(item) or []
         if len(pairs) != 1 or pairs[0][1] != '<=':
@@ -460,17 +466,20 @@ def domain(profile, contract, text, seed, constants, ram, notes=None):
         if len(plus) != 1 or bound is None:
             continue
         address, length = normal(left[:plus[0]]), normal(left[plus[0] + 1:])
-        owners = [node for node in components if node['kind'] == 'byte_array'
-                  and ranges[node['id']][0] == address and length in ranges[node['id']][1]]
+        owners = [node for node in components if node['kind'] == 'byte_array' and ranges[node['id']][0] == address
+                  and (length in ranges[node['id']][1]
+                       or (normal(Expr_value(node)), length) in length_equations)]
         base = re.fullmatch(r'bv_unsigned (.+)', address)
         if len(owners) != 1 or base is None:
             continue
+        equation = length_equations.get((normal(Expr_value(owners[0])), length))
         facts.append({'fact_id': 'wellformed:end-bound-%d' % index, 'kind': 'bounds', 'status': 'supplied',
                       'terms': {'resource_id': owners[0]['id'], 'coq_statement': item, 'end_bound': {
                           'base': input_expr(normal(base[1]), 64).to_dict(),
                           'bound': input_expr(normal(bound[1]), 64).to_dict()}},
-                      'origin': {**clause(index), 'derivation': 'the owned array at the address with that length '
-                                                                'ends at or below the bound'}})
+                      'origin': {**clause(index), **({'length': clause(equation)} if equation is not None else {}),
+                                 'derivation': 'the owned array at the address with that length ends at or '
+                                               'below the bound'}})
         used.add(index)
     # Alignments and intervals of fixed register quantities (and, below, of word-link quantities).
     for index, item in enumerate(clauses):
