@@ -839,7 +839,8 @@ def carry_common_word_links(incoming, seed):
     return seed
 
 
-def lift_call_return_edges(alternatives, *, seeds, roots, ancestor, vocabulary, drops=(), replaced=()):
+def lift_call_return_edges(alternatives, *, seeds, roots, ancestor, vocabulary, drops=(), replaced=(),
+                           forget_unplaced=False):
     """Express join edges that start at seeds below `ancestor` on its tree.
 
     A call-return seed refines its parent's tree: it splits frame spans around the call
@@ -857,6 +858,10 @@ def lift_call_return_edges(alternatives, *, seeds, roots, ancestor, vocabulary, 
     replaced are the resource texts an owned join row `replaces` (profile `join_owned`): an edge
     whose seed holds one forgets it, as for a drop row; an edge that does not hold it is unchanged
     (the edges of an owned join may disagree on the resources it replaces).
+
+    forget_unplaced (an owned join row's `forget_unplaced`): an edge resource that has no place on the
+    ancestor's tree (no unique containing span, a changed span of symbolic length, a store at a symbolic
+    offset) is forgotten instead of refused, a weakening (an error exit leaks what it held).
     """
     try:
         from .forward_resource_design import _state_from_result
@@ -872,6 +877,7 @@ def lift_call_return_edges(alternatives, *, seeds, roots, ancestor, vocabulary, 
                                                     if region.ownership_id == resource.id), None))
            for resource in base.resources if isinstance(resource.length, int)}
     lifted, binders = [], []
+    base_texts = {component['id']: _component_text(component) for component in base.ownership['components']}
     for alternative in alternatives:
         seed_pc = alternative['seed_pc']
         if roots.get(seed_pc) == ancestor:
@@ -906,11 +912,13 @@ def lift_call_return_edges(alternatives, *, seeds, roots, ancestor, vocabulary, 
                 continue
             updates = image.updates[resource.id]
             if any(isinstance(offset, str) for offset in updates):
+                if forget_unplaced:
+                    continue
                 raise ValueError('A lifted join edge stores at a symbolic offset: ' + resource.id)
             if not isinstance(resource.length, int):
                 same = [owner for owner in base.resources if owner.base == resource.base
                         and owner.length == resource.length and owner.byte_array == resource.byte_array]
-                if len(same) != 1 or updates:
+                if (len(same) != 1 or updates) and not forget_unplaced:
                     raise ValueError('A lifted join edge changes a span of symbolic length: ' + resource.id)
                 continue
             containing = [(owner, _offset(resource.base, owner.base)) for owner in base.resources
@@ -918,8 +926,13 @@ def lift_call_return_edges(alternatives, *, seeds, roots, ancestor, vocabulary, 
             containing = [(owner, offset) for owner, offset in containing
                           if offset is not None and offset + resource.length <= owner.length]
             if len(containing) != 1:
+                if forget_unplaced:
+                    continue
                 raise ValueError('A lifted span has no unique ancestor span: ' + resource.id)
             owner, offset = containing[0]
+            if replaced and base_texts.get(owner.id) in forgotten:
+                # It lies in an ancestor span an owned join row replaces: the join owns none of those bytes.
+                continue
             current = _span_bytes(resource, regions.get(resource.id))
             for index in range(resource.length):
                 byte = _byte(Expr.from_dict(updates[index]['value'])) if index in updates else current[index]
@@ -1786,15 +1799,26 @@ def generalize_owned_join(alternatives, *, original_seed, entry_pc, vocabulary,
                  for edge in plan['edges']]
     # A frame annotation's slot values (`frame_writes`) land in the uninitialized span that holds
     # each slot; the join seed carries them as stores of that span (mapped, owned by it, so a read
-    # of another owned region passes them), which each edge proves of the bytes it holds.
+    # of another owned region passes them), which each edge proves of the bytes it holds. A slot
+    # inside an owned byte array whose known bytes are already that value (a root after the prologue,
+    # whose frame resource lists the saved registers) needs no store: the root states it.
     frame_spans = {}
+    known_bytes = {region.ownership_id: region.bytes for region in original_seed.state.memory}
     for write in frame_writes:
         landed = apply_owned_writes(original_seed.resources, [write], conditions=first.conditions,
                                     facts=original_seed.facts, endianness=first.endianness)
         owners = {step['resource_id'] for step in landed.transitions}
-        if landed.status != 'complete' or len(owners) != 1 or memory_by_id[next(iter(owners))].byte_array is not None:
+        if landed.status != 'complete' or len(owners) != 1:
             raise ValueError('A frame slot value lands in no single uninitialized span of the join seed')
-        owner = owners.pop()
+        owner = next(iter(owners))
+        if memory_by_id[owner].byte_array is not None:
+            offset = landed.transitions[0].get('offset')
+            held = known_bytes.get(owner, ())
+            stated = [normalize(operation('extract', write.value, width=8, value=8 * index)) for index in range(8)]
+            if not (isinstance(offset, int) and offset + 8 <= len(held)
+                    and [normalize(byte) for byte in held[offset:offset + 8]] == stated):
+                raise ValueError('A frame slot value lands in no single uninitialized span of the join seed')
+            continue
         frame_spans.setdefault(owner, []).append(replace(write, mapped=True, ownership_id=owner))
     for component in ownership['components']:
         key = component['id']

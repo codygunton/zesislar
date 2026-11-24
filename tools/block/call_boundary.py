@@ -151,6 +151,7 @@ def parse_machine_call_spec(source, name, listed=None, returns=()):
     holds the indices N of the returned registers the row names: the continuation may then be
     `fun rets => ...`, and `rets !!! N%nat` is read as the placeholder RETURNED % N."""
     listed = {side: {_normal_text(text) for text in (listed or {}).get(side, ())} for side in ('pre', 'post')}
+    z_scope = re.search(r'^\s*(?:Local\s+|Global\s+)?Open\s+Scope\s+Z_scope\s*\.', source, re.M) is not None
     body = _strip_enclosure(re.sub(r'%I\s*$', '', definition_body(source, name).strip()))
     body = _strip_enclosure(re.sub(r'%I\s*$', '', body))
     match = re.match(r'machine_call\s+(\S+)\s+(\S+)\s+', body)
@@ -220,12 +221,16 @@ def parse_machine_call_spec(source, name, listed=None, returns=()):
             if _normal_text(original) in listed[side]:
                 rows['listed'].append((_normal_text(original), part))
                 continue
-            points = re.fullmatch(r'(.+?)\s+(↦ₘ∗|↦ₘ\?|↦ₘ)\s+(.+)', part)
+            # A value may span lines (a callee's `if … then … else match … end` value).
+            points = re.fullmatch(r'(.+?)\s+(↦ₘ∗|↦ₘ\?|↦ₘ)\s+(.+)', part, re.S)
             register = re.fullmatch(r'"(\w+)"\s+↦ᵣ\s+RVal_Bits\s+(\w+)', part)
             address = place(points[1]) if points else None
             if address is not None and points[2] == '↦ₘ∗':
-                # A binder, or (after the call) an expression over the post binders.
+                # A binder, or (after the call) an expression over the post binders. A post value with an
+                # operator, from a spec module that opens Z_scope, keeps that reading where the caller states it.
                 value = _strip_enclosure(points[3])
+                if side == 'post' and z_scope and re.search(r'[=<>+*/-]|\bmod\b', value):
+                    value = '(' + value + ')%Z'
                 rows['arrays'].append({**address, ('binder' if re.fullmatch(r'\w+', value) else 'value'): value})
             elif address is not None and points[2] == '↦ₘ' and 'argument' in address:
                 rows['words'].append({'offset': 0, **address, 'value': _strip_enclosure(points[3])})
@@ -768,15 +773,19 @@ def call_return_seed(edges, *, call, function_root, root_seed, shapes, vocabular
         returned_length = (call.get('returned_lengths') or {}).get(str(row.get('argument')))
         if returned is not None and not isinstance(length, int) and returned_length is not None:
             # The call design names the length of the caller's unwritten region at the argument
-            # (annotations.py `call_row`). The callee fills the spec's own length `row['length']` of it;
-            # when that differs from the region's, the rest stays the caller's (`remainder` below).
+            # (annotations.py `call_row`), or `*`: the region's own length, whatever its spelling. The
+            # callee fills the spec's own length `row['length']` of it; when that differs from the
+            # region's, the rest stays the caller's (`remainder` below).
             address = operation('bvadd', state.registers[ARGUMENTS[row['argument']]], bits(row.get('offset', 0), 64))
             owner = [resource for resource in resources.values() if resource.byte_array is None
                      and _offset(address, resource.base) == 0 and isinstance(resource.length, Expr)
-                     and ' '.join(str(resource.length.value).split()) == ' '.join(returned_length.split())]
+                     and (returned_length == '*'
+                          or ' '.join(str(resource.length.value).split()) == ' '.join(returned_length.split()))]
             if len(owner) != 1 or image.updates[owner[0].id]:
                 raise CallRefused('The returned array of length %s has no unwritten caller region at argument %s'
                                   % (returned_length, row['argument']))
+            if returned_length == '*':
+                returned_length = str(owner[0].length.value)
             post, post_value = returned_value(returned)
             # A spec length over its own pre binders takes the whole region (the call step picks it);
             # one fixed by the arguments (memcpy's `bv_unsigned (argv !!! 2%nat)`) may take a prefix.
@@ -986,7 +995,7 @@ def call_return_seed(edges, *, call, function_root, root_seed, shapes, vocabular
                 if (image.updates.get(ids[0]) or ids[0] in splits or ids[0] in kept or ids[0] == callee_frame):
                     raise CallRefused('The consumed caller resource is written or passed elsewhere: ' + caller)
                 consumed.add(ids[0])
-    nodes, regions, extra_facts = [], {}, []
+    nodes, regions, extra_facts, restated = [], {}, [], {}
     piece_name = PieceNames(ownership['components'])
     for component in ownership['components']:
         key, kind = component['id'], component['kind']
@@ -1139,14 +1148,28 @@ def call_return_seed(edges, *, call, function_root, root_seed, shapes, vocabular
                                   '%s ↦ₘ? %d' % (address, end - start), 'address_z': address,
                                   'length_original_coq': str(end - start)})
             continue
+        elif kind in ('byte_array', 'unknown_byte_array') and node.get('byte_array_expr') is not None:
+            # An origin seed (a loop head or join) may hold the array at a new value, the stores before it
+            # folded in (its memory region; the component keeps the root's value, as in loop_design.owned_seed):
+            # the call-site paths hold that value and the callee leaves the array alone, so the return seed's
+            # region keeps it and its known bytes.
+            region = next((region for region in state.memory if region.ownership_id == key), None)
+            if region is not None and region.byte_array is not None \
+                    and region.byte_array.to_dict() != node['byte_array_expr']:
+                restated[key] = _lower_owned(region.byte_array)
+                regions[key] = tuple(_lower_owned(byte) for byte in region.bytes)
         nodes.append(node)
     result_links, result_binders, result_minimums = _result_words(call, outputs, splits, fresh, values['argv'],
                                                                   prefix)
     # Before the closing component: `True`, or the continuation `K` of a root that carries it (a loop
     # head with owned state, loop_design.owned_seed).
     terminal = next(index for index, node in enumerate(nodes) if node.get('coq') in ('True', 'K'))
+    # An array an earlier call replaced as a whole already has its `_length` fact: this call's fact on the
+    # array's new value carries the call prefix.
+    taken = {node['id'] for node in nodes}
     nodes[terminal:terminal] = [
-        {'kind': 'opaque', 'id': row['resource_id'] + '_length', 'coq': '⌜' + row['coq'] + '⌝'}
+        {'kind': 'opaque', 'id': (row['resource_id'] + '_length' if row['resource_id'] + '_length' not in taken
+                                  else prefix + row['resource_id'] + '_length'), 'coq': '⌜' + row['coq'] + '⌝'}
         for row in extra_facts] + [
         {'kind': 'opaque', 'id': name.value + '_value', 'coq': '⌜(zesu_named_eq %s %s)⌝' % (name.value, _coq(value))}
         for value, name in named.items()] + [
@@ -1322,7 +1345,8 @@ def call_return_seed(edges, *, call, function_root, root_seed, shapes, vocabular
         seed.state.registers['nextPC'] = seed.state.registers['PC']
     seed.state.retained_registers = dict(seed.state.registers)
     seed.state.conditions = list(state.conditions) + system_conditions
-    seed.state.memory = [replace(region, bytes=regions.get(region.ownership_id, region.bytes))
+    seed.state.memory = [replace(region, bytes=regions.get(region.ownership_id, region.bytes),
+                                 byte_array=restated.get(region.ownership_id, region.byte_array))
                          for region in seed.state.memory]
     result_ids = {link['resource_id'] for link in result_links}
     links = [link for link in seed.state.word_links if link['resource_id'] in result_ids]

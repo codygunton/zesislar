@@ -70,6 +70,29 @@ class CheckRelocatableTests(unittest.TestCase):
         # Outside the image: RAM, an address one hex digit longer.
         self.assertEqual(hits('0x' + 'a000' + '0000' + ' 0x' + '8010' + 'fd780'), [])
 
+    def test_a_profile_non_address_constant_passes_in_its_residual_modules_only(self):
+        bound = '0x' + '8000' + '0000'
+        tmp = self.fixture(['*.v', 'ZesuSsz/Residuals/*/*.v'],
+                           'Notation inputHigh := ((2 ^ 31) : Z) (only parsing).\n'
+                           f'Definition other := ({bound})%Z.\n')
+        (tmp / 'ZesuSsz/Residuals/fn').mkdir(parents=True)
+        (tmp / 'ZesuSsz/Residuals/fn/Block.v').write_text(f'Lemma r : p <= ({bound})%Z -> pc = {ADDRESS}.\n')
+        profiles = tmp / 'tools/block/functions'
+        profiles.mkdir(parents=True)
+        row = {'name': 'inputHigh', 'source': 'Contract.v'}
+        (profiles / 'fn.json').write_text(json.dumps({'non_address_constants': [row]}))
+        code, text = run(['--root', str(tmp), '--list', str(tmp / 'list.json')])
+        self.assertEqual(code, 1)
+        # The residual module keeps its code address; the bound passes there, not in Contract.v.
+        self.assertIn(f'Block.v:1: absolute address {ADDRESS}', text)
+        self.assertNotIn(f'Block.v:1: absolute address {bound}', text)
+        self.assertIn(f'Contract.v:2: absolute address {bound}', text)
+        # A row whose source does not declare the constant as an integer expression is refused.
+        (profiles / 'fn.json').write_text(json.dumps({'non_address_constants': [{**row, 'name': 'other'}]}))
+        code, text = run(['--root', str(tmp), '--list', str(tmp / 'list.json')])
+        self.assertEqual(code, 2)
+        self.assertIn('does not declare other', text)
+
 
 if __name__ == '__main__':
     unittest.main()

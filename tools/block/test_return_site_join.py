@@ -179,9 +179,9 @@ class OwnedJoinReplaces(unittest.TestCase):
         self.site = boundary(evaluate_owned_function(FUNCTION, TRACES, {16: self.root, 24: self.call_seed},
                                                      vocabulary=VOCABULARY), 24)
 
-    def joined(self, replaces):
+    def joined(self, replaces, **extra):
         owned = {'binders': [{'name': 'e', 'type': 'list byte'}], 'resources': ['ownedBuffer e'],
-                 'replaces': replaces, 'facts': [], 'predecessors': ['+0x10', '+0x14']}
+                 'replaces': replaces, 'facts': [], 'predecessors': ['+0x10', '+0x14'], **extra}
         return return_site_seed(self.site, self.call_seed, seeds={'0x10': self.root}, roots={'0x10': '0x10'},
                                 parents={'0x18': '0x10'}, profile=Profile(join_owned={'+0x18': owned}),
                                 vocabulary=VOCABULARY, continuation=CONTINUATION, live_registers=None,
@@ -202,6 +202,14 @@ class OwnedJoinReplaces(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, 'no unique ancestor span'):
             self.joined([OLD_BUFFER])
 
+    def test_forget_unplaced_drops_what_has_no_ancestor_span(self):
+        # An error exit: the call path's new buffer has no place on the root; the row forgets it (a leak).
+        seed, _, plan = self.joined([OLD_BUFFER], forget_unplaced=True)
+        texts = [str(row['seed_component'].get('original_component', row['seed_component'].get('coq')))
+                 for row in seed.ownership['components']]
+        self.assertEqual(plan['edges'], 2)
+        self.assertNotIn(NEW_BUFFER, texts)
+
     def test_an_id_item_names_that_component_in_every_seed(self):
         # Both seeds call their buffer `buffer`: one {id} item replaces the old one on the root and the new
         # one on the call path.
@@ -213,6 +221,30 @@ class OwnedJoinReplaces(unittest.TestCase):
         for item in ('(sp - 256) ↦ₘ∗ other', {'id': 'other'}):
             with self.assertRaisesRegex(ValueError, 'held by no edge'):
                 self.joined([OLD_BUFFER, NEW_BUFFER, item])
+
+    def test_a_span_inside_a_replaced_ancestor_span_is_forgotten(self):
+        # The call path holds the old buffer's bytes as unknown (`↦ₘ?`): lifted onto the root, whose span
+        # states them, it is refused unless the row replaces the root's span, which then owns none of them.
+        public = {'schema': 'h1-public-entry-seed.v1', 'entry_pc': hex(24), 'source_bindings': [],
+                  '_input_sha256': '0' * 64,
+                  'assertion_tree': {'kind': 'exists', 'binders': [{'name': 'old', 'type': 'bv 64',
+                                                                    'expression': input_expr('old').to_dict()}],
+                                     'components': [{'kind': 'register', 'id': 'r', 'register': 'x13',
+                                                     'value_coq': 'old', 'width': 64},
+                                                    {'kind': 'uninitialized_memory', 'id': 'buffer',
+                                                     'original_component': '(sp - 64) ↦ₘ? 8', 'address_z': 'sp - 64',
+                                                     'length_original_coq': '8'},
+                                                    {'kind': 'opaque', 'id': 'terminal', 'coq': 'True'}]}}
+        seed = seed_owned_resources(public, entry_pc=24, vocabulary={'rows': []})
+        seed.state.registers['x13'] = input_expr('old')
+        self.call_seed = replace(seed, join_kind='call_return')
+        self.call_seed.state.conditions = [CALL_GUARD]
+        self.site = boundary(evaluate_owned_function(FUNCTION, TRACES, {16: self.root, 24: self.call_seed},
+                                                     vocabulary=VOCABULARY), 24)
+        with self.assertRaisesRegex(ValueError, 'does not know a byte its ancestor states'):
+            self.joined([])
+        seed, _, plan = self.joined([OLD_BUFFER])
+        self.assertEqual((plan['edges'], plan['owned']['replaced']), (2, [OLD_BUFFER]))
 
 
 if __name__ == '__main__':

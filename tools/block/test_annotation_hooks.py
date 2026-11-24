@@ -1,5 +1,6 @@
 """Annotation consumption in the generator (plan A6 items 5 and 6): access placements, a call row's
 returned length, and the reach of a stop inside a seeded join."""
+from dataclasses import replace
 from pathlib import Path
 import sys
 import tempfile
@@ -230,7 +231,7 @@ class ReturnedLength(unittest.TestCase):
         True)))%I.
 '''
 
-    def fixture(self, directory, length='want'):
+    def fixture(self, directory, length='want', extra=()):
         from resource_seed import seed_owned_resources
         origin = {'path': 'fixture.v', 'sha256': 'fixture'}
         constants = {'dst': {'value': 0x200, 'origin': origin}}
@@ -241,7 +242,7 @@ class ReturnedLength(unittest.TestCase):
             'kind': 'exists', 'binders': [], 'components': [
                 {'id': 'collection', 'kind': 'opaque', 'coq': 'reg_col (exact_regs args)'}, *registers,
                 {'id': 'dest', 'kind': 'uninitialized_memory', 'original_component': 'dst ↦ₘ? ' + length,
-                 'original_address_z': 'dst', 'length_original_coq': length},
+                 'original_address_z': 'dst', 'length_original_coq': length}, *extra,
                 {'id': 'terminal', 'kind': 'opaque', 'coq': 'True'}]}}
         vocabulary = {'rows': [{'kind': kind, 'source_bindings': []} for kind in
                                ('owned_byte_array', 'uninitialized_stack_span', 'permission_fraction')],
@@ -295,6 +296,29 @@ class ReturnedLength(unittest.TestCase):
         self.assertEqual(nodes['dest_call_after']['original_component'],
                          '(dst + (bv_unsigned (count))) ↦ₘ? (want - (bv_unsigned (count)))')
         self.assertEqual(sorted(region.ownership_id for region in seed.state.memory), ['dest', 'dest_call_after'])
+        # `*` names the region at the argument by its own length, whatever its spelling: the same seed.
+        with tempfile.TemporaryDirectory() as directory:
+            fixture, state, call = self.fixture(directory)
+            Path(directory, 'Spec.v').write_text(self.PREFIX_SPEC)
+            call['returned_lengths'] = {'0': '*'}
+            state.registers['x12'] = input_expr('count', 64)
+            _, star_after, _ = call_return_seed([{'seed_pc': '0x10', 'state': state.to_dict()}], call=call,
+                                                function_root=directory, **fixture)
+        self.assertEqual(star_after['assertion_tree']['components'], public_after['assertion_tree']['components'])
+
+    def test_a_second_whole_replacement_names_its_length_fact_by_the_call(self):
+        # An earlier call replaced `dest` as a whole and left `dest_length`; this call's fact gets its prefix.
+        from call_boundary import call_return_seed
+        with tempfile.TemporaryDirectory() as directory:
+            fixture, state, call = self.fixture(directory, extra=[{'id': 'dest_length', 'kind': 'opaque',
+                                                                   'coq': '⌜earlier⌝'}])
+            call['returned_lengths'] = {'0': 'want'}
+            _, public_after, _ = call_return_seed([{'seed_pc': '0x10', 'state': state.to_dict()}], call=call,
+                                                  function_root=directory, **fixture)
+        ids = [node['id'] for node in public_after['assertion_tree']['components']]
+        self.assertEqual(len(ids), len(set(ids)))
+        self.assertIn('dest_length', ids)
+        self.assertTrue(any(key.endswith('dest_length') and key != 'dest_length' for key in ids))
 
     def test_a_fill_of_the_whole_region_leaves_no_rest(self):
         # The region's length is verbatim the length the arguments fix: one array, as before.
@@ -689,7 +713,7 @@ class WordLinkAcrossCall(unittest.TestCase):
         True)))%I.
 '''
 
-    def run_call(self, spec, arrays, next_pc=None):
+    def run_call(self, spec, arrays, next_pc=None, restated=None):
         from call_boundary import call_return_seed
         from resource_seed import seed_owned_resources
         origin = {'path': 'fixture.v', 'sha256': 'fixture'}
@@ -719,6 +743,11 @@ class WordLinkAcrossCall(unittest.TestCase):
         state.registers.update({'PC': bits(64, 64), **{'x%d' % number: bits(0, 64) for number in range(11, 18)}})
         if next_pc is not None:
             state.registers['nextPC'] = bits(next_pc, 64)
+        if restated is not None:
+            # An origin seed (a loop head) states the array at a new value with its bytes known.
+            known = tuple(operation('extract', input_expr('w', 64), width=8, value=8 * index) for index in range(8))
+            state.memory = [replace(region, byte_array=input_expr(restated, None), bytes=known)
+                            if region.ownership_id == 'hdr' else region for region in state.memory]
         name = spec.split()[1]
         call = {'call_site_pc': '0x14', 'return_site_pc': '0x18', 'spec': name, 'spec_module': 'Spec',
                 'spec_source': 'Spec.v', 'arrays': arrays, 'stack_bytes': 0, 'output_length_source': 'fixture'}
@@ -738,6 +767,17 @@ class WordLinkAcrossCall(unittest.TestCase):
         seed = self.run_call(self.WRITE, [{'binder': 'old', 'constant': 'hdr', 'caller_value': 'bytes',
                                            'length': 8, 'length_source': 'fixture'}])
         self.assertEqual(seed.state.word_links, [])
+
+    def test_a_restated_array_the_call_leaves_alone_keeps_its_new_value(self):
+        # txAccessList +0xd8: the loop head states the rest slice as stored; the return seed kept the root's.
+        seed = self.run_call(self.KEEP, [], restated='stored')
+        region, = [region for region in seed.state.memory if region.ownership_id == 'hdr']
+        self.assertEqual(region.byte_array, input_expr('stored', None))
+        self.assertEqual(len(region.bytes), 8)
+        self.assertEqual(region.bytes[0], operation('extract', input_expr('w', 64), width=8, value=0))
+        unchanged = self.run_call(self.KEEP, [])
+        region, = [region for region in unchanged.state.memory if region.ownership_id == 'hdr']
+        self.assertEqual(region.byte_array, input_expr('bytes', None))
 
     def test_the_next_pc_of_a_return_seed_is_the_return_site(self):
         seed = self.run_call(self.KEEP, [], next_pc=0x1000)
