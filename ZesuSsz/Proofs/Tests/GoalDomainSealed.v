@@ -32,7 +32,7 @@ Proof.
         parentHeaderInputLength args; x13; x14; x15; x16; x17]
        (parentHeaderStackPointer args + 18446744073709551216)
        (bv_unsigned (parentHeaderInputEnd args))
-       (parentHeaderInputBytes args) values).
+       (parentHeaderInputBytes args) values)).
   { ZesuSsz.Automation2.GoalDomain.zesu_goal_domain_sealed. exact H. }
   exact I.
 Qed.

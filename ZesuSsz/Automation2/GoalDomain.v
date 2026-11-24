@@ -4,6 +4,7 @@ Require Import ZesuSsz.Automation2.Rewrites.
 From Coq Require Import ZArith Lia.
 Require Import ZesuSsz.Automation2.LiaHook.
 Require ZesuSsz.Automation2.ContextCollection.
+From Coq Require Import Strings.String.
 
 (* A pure goal whose head a contract registers in `zesu_goal_domain`: a
    callee's call-site domain that is a conjunction of address arithmetic
