@@ -1186,8 +1186,16 @@ def call_return_seed(edges, *, call, function_root, root_seed, shapes, vocabular
                         raise CallRefused('A piece minimum holds when a returned register has a value: '
                                           + str(when.get('register')))
                     name = prefix + when['register']
-                    fact = 'bv_unsigned %s = %d -> %s' % (name, when['value'], fact)
-                    guard = operation('=', input_expr(name, 64), bits(when['value'], 64)).to_dict()
+                    register = input_expr(name, 64)
+                    low = when.get('low_bits')
+                    if low is not None:
+                        # The caller tests the low `low` bits (a zero-extended narrow return value: slli/srli).
+                        shift = bits(64 - low, 64)
+                        register = operation('bvlshr', operation('bvshl', register, shift), shift)
+                        fact = '(bv_unsigned %s mod 2 ^ %d = %d -> %s)' % (name, low, when['value'], fact)
+                    else:
+                        fact = 'bv_unsigned %s = %d -> %s' % (name, when['value'], fact)
+                    guard = operation('=', register, bits(when['value'], 64)).to_dict()
                 fact = '(' + fact + ')%Z'
                 piece_minimums.append({'resource_id': node['id'], 'minimum': minimum, 'fact': fact,
                                        **({'guard': guard} if guard else {})})

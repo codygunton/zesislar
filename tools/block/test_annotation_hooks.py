@@ -642,6 +642,16 @@ class ProducedUnfold(OpaqueAndReturnedCall):
         zero = operation('=', input_expr('call_x10', 64), bits(0, 64))
         self.assertEqual(_Facts([zero], [bound]).lower_bound(resource)[0], 32)
         self.assertEqual(_Facts([], [bound]).lower_bound(resource)[0], 0)
+        # A caller that tests the low 16 bits (slli/srli 48): the guard is that masked equation.
+        seed, public, _ = self.run_grow(**{'as': [self.PIECES[0], dict(pieces[1], when={'register': 'x10', 'value': 0,
+                                                                                      'low_bits': 16}), self.PIECES[2]]})
+        nodes = {node['id']: node for node in public['assertion_tree']['components']}
+        self.assertTrue(nodes['call_produced_1_minimum']['coq'].startswith('⌜((bv_unsigned call_x10 mod 2 ^ 16 = 0 -> 32 <='))
+        bound, = [fact for fact in seed.facts if fact['fact_id'] == 'call_produced_1:minimum']
+        shift = bits(48, 64)
+        masked = operation('=', operation('bvlshr', operation('bvshl', input_expr('call_x10', 64), shift), shift), bits(0, 64))
+        self.assertEqual(_Facts([masked], [bound]).lower_bound(resource)[0], 32)
+        self.assertEqual(_Facts([], [bound]).lower_bound(resource)[0], 0)
         from call_boundary import CallRefused
         with self.assertRaisesRegex(CallRefused, 'returned register has a value: x11'):
             self.run_grow(**{'as': [self.PIECES[0], dict(pieces[1], when={'register': 'x11', 'value': 0}),

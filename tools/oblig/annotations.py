@@ -214,12 +214,14 @@ def _check_call(row):
                                               and type(piece.get('minimum', 1)) is int and piece.get('minimum', 1) > 0
                                               and ('when' not in piece or 'minimum' in piece
                                                    and isinstance(piece['when'], dict)
-                                                   and set(piece['when']) == {'register', 'value'}
-                                                   and type(piece['when']['value']) is int)
+                                                   and {'register', 'value'} <= set(piece['when'])
+                                                   <= {'register', 'value', 'low_bits'}
+                                                   and type(piece['when']['value']) is int
+                                                   and piece['when'].get('low_bits', 1) in range(1, 64))
                                               for piece in pieces)):
             raise AnnotationError('%s: `as` belongs to a produced opaque row: its pieces are texts or '
                                   '{coq, length?, minimum?, when?} (minimum a positive integer, when '
-                                  '{register, value} with a minimum)' % row['id'])
+                                  '{register, value, low_bits?} with a minimum)' % row['id'])
     for item in row['call'].get('returns', []):
         if not isinstance(item.get('index'), int) or not re.fullmatch(r'x(1[0-7])', str(item.get('register'))):
             raise AnnotationError('%s: a returns row has an integer `index` and an argument register' % row['id'])
