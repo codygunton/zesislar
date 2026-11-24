@@ -1347,10 +1347,16 @@
           "id": "resource_35"
         },
         {
+          "id": "loop_owned_80000448_0"
+        },
+        {
           "id": "loop_owned_80000448_1"
         },
         {
           "id": "loop_owned_80000448_2"
+        },
+        {
+          "id": "loop_owned_80000448_4"
         }
       ],
       "facts": [
@@ -1412,6 +1418,6 @@
   },
   "generated_from": {
     "path": "tools/block/functions/txAccessList.annotations.json",
-    "sha256": "061bcda0141b7d0df7e2403434a11fa6f1759775332ea61fd43776950b72fc7e"
+    "sha256": "ff8a1e76b0e96f642c8872d47a96a9fbf9e0658b66fa89b279d064dab1715328"
   }
 }
