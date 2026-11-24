@@ -209,3 +209,7 @@ Proof.
   iFrame "Hcontinuation".
   by iApply (entriesToOwnedSliceBudget_start_bridge with "Hentry").
 Qed.
+
+(* Every block of the region is closed (EntriesToOwnedSliceBudgetOpenBlocks has no field). *)
+Theorem entriesToOwnedSliceBudgetCompliance : EntriesToOwnedSliceBudgetContractCorrect.
+Proof. exact (entriesToOwnedSliceBudgetComplianceFrom entriesToOwnedSliceBudgetOpenBlocks). Qed.
