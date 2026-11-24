@@ -1301,6 +1301,8 @@ def drop_unheld_binders(state, components, carried, binders, plan, live_register
     """
     held = {value.value for value in state.registers.values() if value.op == 'input'}
     held |= {component.get('value') for component in components if component['kind'] == 'byte_array'}
+    # A loop's owned ghost binder (loop_design.owned_seed) is the same value on every edge below its head.
+    held |= {binder['name'] for binder in binders if binder.get('owned')}
     taken = ({binder['name'] for binder in binders} | {binder['name'] for binder in plan['binders']}
              | _fact_names(component.get('source', '') for component in components))
     # Facts that would be dropped wait here and are bound under one existential at the end.

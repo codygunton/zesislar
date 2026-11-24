@@ -91,6 +91,16 @@ class UnheldBinders(unittest.TestCase):
         self.assertEqual(state.registers['x13'], operation('bvadd', self.b, bits(1, 64)))
         self.assertNotIn('dropped_binders', plan)
 
+    def test_a_loop_owned_ghost_binder_stays(self):
+        components = [{'id': 'header', 'kind': 'opaque', 'source': 'h ↦ₘ∗ arrayListHeaderBytes tx_entries'}]
+        plan = {'binders': []}
+        drop_unheld_binders(state_with({}, []), components, {}, [{'name': 'tx_entries', 'type': 'ArrayListState',
+                                                                 'owned': True}], plan, ['x1'], lambda key, writes: '')
+        self.assertNotIn('dropped_binders', plan)
+        with self.assertRaisesRegex(ValueError, 'stays in an owned resource'):
+            drop_unheld_binders(state_with({}, []), components, {}, [{'name': 'tx_entries', 'type': 'ArrayListState'}],
+                                {'binders': []}, ['x1'], lambda key, writes: '')
+
 
 class RegisterDefinition(unittest.TestCase):
     b = input_expr('machine_x15', 64)
