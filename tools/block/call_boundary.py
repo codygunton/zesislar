@@ -1154,8 +1154,12 @@ def call_return_seed(edges, *, call, function_root, root_seed, shapes, vocabular
     # Before the closing component: `True`, or the continuation `K` of a root that carries it (a loop
     # head with owned state, loop_design.owned_seed).
     terminal = next(index for index, node in enumerate(nodes) if node.get('coq') in ('True', 'K'))
+    # An array an earlier call replaced as a whole already has its `_length` fact: this call's fact on the
+    # array's new value carries the call prefix.
+    taken = {node['id'] for node in nodes}
     nodes[terminal:terminal] = [
-        {'kind': 'opaque', 'id': row['resource_id'] + '_length', 'coq': '⌜' + row['coq'] + '⌝'}
+        {'kind': 'opaque', 'id': (row['resource_id'] + '_length' if row['resource_id'] + '_length' not in taken
+                                  else prefix + row['resource_id'] + '_length'), 'coq': '⌜' + row['coq'] + '⌝'}
         for row in extra_facts] + [
         {'kind': 'opaque', 'id': name.value + '_value', 'coq': '⌜(zesu_named_eq %s %s)⌝' % (name.value, _coq(value))}
         for value, name in named.items()] + [
