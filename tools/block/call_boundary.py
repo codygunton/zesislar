@@ -1148,6 +1148,16 @@ def call_return_seed(edges, *, call, function_root, root_seed, shapes, vocabular
                                   '%s ↦ₘ? %d' % (address, end - start), 'address_z': address,
                                   'length_original_coq': str(end - start)})
             continue
+        elif kind in ('byte_array', 'unknown_byte_array') and node.get('byte_array_expr') is not None:
+            # An origin seed (a loop head or join) may state the array at a new value, the stores before it
+            # folded in, while the root component still names the value the root owned: the call-site paths
+            # hold the origin's value and the callee leaves the array alone, so the return seed keeps it.
+            region = next((region for region in state.memory if region.ownership_id == key), None)
+            if region is not None and region.byte_array is not None \
+                    and region.byte_array.to_dict() != node['byte_array_expr']:
+                node.update(original_component='%s ↦ₘ∗ %s' % (node['address_z'], _coq(region.byte_array)),
+                            byte_array_expr=_lower_owned(region.byte_array).to_dict())
+                regions[key] = tuple(_lower_owned(byte) for byte in region.bytes)
         nodes.append(node)
     result_links, result_binders, result_minimums = _result_words(call, outputs, splits, fresh, values['argv'],
                                                                   prefix)
