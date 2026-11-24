@@ -84,6 +84,27 @@ class ClassTest(unittest.TestCase):
         self.assertIn('⌜arrayListLength list_state = i⌝', source)
         self.assertEqual(record['owned'], OWNED)
 
+    def test_a_replaced_component_may_be_named_by_its_id(self):
+        self.assertEqual(replaced_components({'replaces': [{'id': 'a'}]}, {'a': 'p ↦ₘ? 8'}), ['a'])
+        with self.assertRaises(ValueError):
+            replaced_components({'replaces': [{'id': 'b'}]}, {'a': 'p ↦ₘ? 8'})
+
+    def test_a_hand_design_whose_head_is_not_reached_is_a_refused_cut(self):
+        from loop_design import loop_head_rows
+        unreached = {'boundaries': [{'pc': Profile.pc(HEAD), 'alternatives': []}]}
+        profile = type('P', (Profile,), {'path': __file__, 'domain_component': '⌜domain args⌝',
+                                         'get': staticmethod(lambda key, default=None: [design()]
+                                                             if key == 'loop_designs' else default)})
+        rows = loop_head_rows(unreached, Path(__file__), profile)
+        self.assertEqual(rows['rows'], [])
+        self.assertIn(HEAD, rows['inferred_refusals'])
+        with self.assertRaises(ValueError):
+            loop_head_rows(report(), Path(__file__), type('Q', (profile,), {
+                'get': staticmethod(lambda key, default=None: [design(entry_predecessor='+0x8', index='i',
+                                                                       owned={'replaces': ['nothing'],
+                                                                              'resources': [], 'binders': []})]
+                                    if key == 'loop_designs' else default)}))
+
     def test_without_owned_state_the_class_is_unchanged(self):
         source, record = loop_class(report(), design(), Profile)
         self.assertIn('(sp - 448) ↦ₘ? 24', source)

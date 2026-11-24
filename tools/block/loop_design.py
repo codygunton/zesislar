@@ -137,19 +137,29 @@ def owned_text(row):
 
 
 def replaced_components(owned, sources):
-    """The component ids of the loop-entry state that the design's `owned.replaces` texts name; each
-    text names exactly one component (its exact text), else the design is refused."""
+    """The component ids of the loop-entry state that the design's `owned.replaces` rows name: an exact
+    component text, or {"id": component id}; each names exactly one component, else the design is
+    refused."""
     by_text = {}
     for key, text in sources.items():
         by_text.setdefault(_normal(text), []).append(key)
     ids = []
-    for text in owned.get('replaces', []):
-        keys = by_text.get(_normal(text), [])
+    for item in owned.get('replaces', []):
+        keys = ([item['id']] if item['id'] in sources else []) if isinstance(item, dict) \
+            else by_text.get(_normal(item), [])
         if len(keys) != 1:
             raise ValueError('The loop design replaces a resource that is not one component of the '
-                             'loop-entry state: ' + text)
+                             'loop-entry state: ' + str(item))
         ids.append(keys[0])
     return ids
+
+
+def _entry_edges(report, design, profile):
+    """The loop-entry edges of a design's head in the forward report (none when it is not reached)."""
+    head = profile.pc(design['head'])
+    boundary = next((row for row in report['boundaries'] if row['pc'] == head), None)
+    return [row for row in (boundary or {}).get('alternatives', [])
+            if row['predecessor_pc'] == profile.pc(design['entry_predecessor'])]
 
 
 def owned_node(row, index):
@@ -407,10 +417,10 @@ def loop_head_rows(report, report_path, profile):
         try:
             source, record = loop_class(report, design, profile)
         except (ValueError, StopIteration) as error:
-            if not design.get('inferred'):
+            if not design.get('inferred') and _entry_edges(report, design, profile):
                 raise
-            # An inferred design whose head the pass did not seed has no class; its head stays a
-            # refused cut (the forward pass's reaching stops say why).
+            # A design whose head the pass did not seed (no entry edge reaches it: an earlier stop) has
+            # no class; its head stays a refused cut (the forward pass's reaching stops say why).
             refusals[design['head']] = str(error) or 'the loop head has no boundary'
             continue
         rows.append({'block': design['head'], 'source': _bind(profile.path), 'verification': _bind(report_path),
