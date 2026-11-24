@@ -204,6 +204,14 @@ def owned_seed(seed, design, head, vocabulary):
     binders = [{key: value for key, value in binder.items() if key != 'scope'} for binder in seed.ownership['binders']]
     binders += [{'name': row['name'], 'type': row['type'], 'expression': input_expr(row['name'], None).to_dict()}
                 for row in owned.get('binders', [])]
+    # A register's witness that no binder row expresses (a binder of an earlier seed the join kept by name)
+    # gets one; the registers themselves are the loop-head state's (below).
+    named = {binder['name'] for binder in binders if 'expression' in binder}
+    for node in nodes:
+        witness = node.get('symbolic_witness')
+        if node.get('kind') == 'register' and witness and witness not in named:
+            binders.append({'name': witness, 'type': 'bv 64', 'expression': input_expr(witness, 64).to_dict()})
+            named.add(witness)
     public = {'schema': 'h1-public-entry-seed.v1', 'function': design.get('function'), 'entry_pc': hex(head),
               'assertion_tree': {'kind': 'exists', 'binders': binders, 'components': nodes},
               'source_bindings': list(seed.ownership.get('provenance', {}).get('source_bindings', []))}
