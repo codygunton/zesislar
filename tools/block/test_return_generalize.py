@@ -24,14 +24,14 @@ class ReturnGeneralization(unittest.TestCase):
     def setUp(self):
         entry_hist.configure({'entry_hist': 'wrap'})
 
-    def fixture(self, exits, pc='function_return'):
-        """exits: (x10 value, x5 value, guards, return address) per exit."""
+    def fixture(self, exits, pc='function_return', closing='True'):
+        """exits: (x10 value, x5 value, guards, return address) per exit. closing: the seed's closing leaf."""
         binders = [{'name': name, 'type': 'bv 64', 'expression': input_expr(name).to_dict()}
                    for name in ('old10', 'old5')]
         tree = {'kind': 'exists', 'binders': binders,
                 'components': [{'kind': 'register', 'id': 'a0', 'register': 'x10', 'value_coq': 'old10'},
                                {'kind': 'register', 'id': 't0', 'register': 'x5', 'value_coq': 'old5'},
-                               {'kind': 'opaque', 'id': 'terminal', 'coq': 'True'}]}
+                               {'kind': 'opaque', 'id': 'terminal', 'coq': closing}]}
         ownership = ownership_from_assertion_tree(tree, provenance={'source': 'fixture'})
         seed = OwnedSeed(SymbolicState(registers={'PC': bits(0x800f0000, 64), 'x10': input_expr('old10'),
                                                   'x5': input_expr('old5')}), ownership, [], [], [])
@@ -68,6 +68,23 @@ class ReturnGeneralization(unittest.TestCase):
         _, at_block, _ = self.fixture([(bits(1, 64), bits(7, 64), GUARDS[:1], RETURN)], pc='0x800f0238')
         body = self.render(seed, at_block, vocabulary).response['body']
         self.assertEqual(result.response['body'], {**body, 'at': 'function_return'})
+
+    def test_a_seed_closed_by_the_continuation_frames_it_once(self):
+        # A seed below a loop-owned root (loop_design.owned_seed) ends in its root's closing `K`.
+        exits = [(bits(1, 64), bits(7, 64), GUARDS[:1], RETURN)]
+        seed, boundary, vocabulary = self.fixture(exits, pc='0x800f0238', closing='K')
+        result = self.render(seed, boundary, vocabulary)
+        self.assertEqual(result.status, 'complete', result.reports)
+        body = result.response['body']
+        self.assertEqual([row['kind'] for row in body['components']], ['application', 'continuation'])
+        kinds = [row['kind'] for row in body['additional_definitions'][0]['body']['components']]
+        self.assertNotIn('continuation', kinds)
+        self.assertNotIn('application', kinds)
+        # The same seed closed by `True` keeps that leaf in its witness scope; nothing else differs.
+        plain_seed, plain, _ = self.fixture(exits, pc='0x800f0238')
+        plain_kinds = [row['kind'] for row in self.render(plain_seed, plain, vocabulary)
+                       .response['body']['additional_definitions'][0]['body']['components']]
+        self.assertEqual(plain_kinds, [*kinds[:2], 'true', *kinds[2:]])
 
     def test_three_exits_differing_in_a_dead_register(self):
         seed, boundary, vocabulary = self.fixture([(bits(1, 64), bits(n, 64), [guard], RETURN)
