@@ -3,6 +3,7 @@ Require Import ZesuSsz.Automation2.PureFacts.
 Require Import ZesuSsz.Automation2.Rewrites.
 From Coq Require Import ZArith Lia.
 Require Import ZesuSsz.Automation2.LiaHook.
+Require ZesuSsz.Automation2.Hooks.
 
 (* A pure goal whose head a contract registers in `zesu_goal_domain`: a
    callee's call-site domain that is a conjunction of address arithmetic
@@ -93,6 +94,11 @@ Ltac zesu_finish_goal_domain :=
     zesu_goal_domain_open; cbn;
     zesu_witness_facts;
     autounfold with zesu_contract_constants zesu_goal_domain in *;
+    (* one normal form of the machine map in the goal and the hypotheses:
+       `cbn` above reduced the goal's `mapRamBase defaultMap` to its value,
+       a hypothesis that states the same bound keeps the projection, and
+       lia would see two atoms *)
+    ZesuSsz.Automation2.Hooks.zesu_normalize_machine_map;
     rewrite ?bv_add_unsigned;
     unfold bv_wrap, bv_modulus in *; cbn [Z.of_N] in *;
     repeat split; zesu_goal_domain_part].
