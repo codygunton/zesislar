@@ -70,14 +70,13 @@ Ltac2 zesu_residual_occurs (index : int) (term : constr) : bool :=
   let probe := Constr.Unsafe.occur_between 1 1 (Constr.Unsafe.make (Constr.Unsafe.Rel 1)) in
   if probe then reported else Bool.neg reported.
 
-(* The products of TERM, outermost first, each with whether the rest of the
-   term mentions it, and the conclusion under them. `not` is not unfolded:
-   a lemma that concludes `~ P` concludes `~ P`, never `False`. *)
-Ltac2 rec zesu_residual_split (term : constr) (binders : (binder * bool) list)
-  : (binder * bool) list * constr :=
+(* The products of TERM, outermost first, each with the term under it, and
+   the conclusion under them all. `not` is not unfolded: a lemma that
+   concludes `~ P` concludes `~ P`, never `False`. *)
+Ltac2 rec zesu_residual_split (term : constr) (binders : (binder * constr) list)
+  : (binder * constr) list * constr :=
   match Constr.Unsafe.kind term with
-  | Constr.Unsafe.Prod binder body =>
-      zesu_residual_split body ((binder, zesu_residual_occurs 1 body) :: binders)
+  | Constr.Unsafe.Prod binder body => zesu_residual_split body ((binder, body) :: binders)
   | _ => (List.rev binders, term)
   end.
 
@@ -148,16 +147,17 @@ Ltac2 zesu_residual_premise () : unit :=
    binder that a premise mentions is the context variable of the same name
    (the export keeps the names of the context it was taken from); each
    premise closes by a hypothesis. A missing variable or premise fails the
-   lemma; nothing else is tried. *)
+   lemma; nothing else is tried. Which binders the rest of the statement
+   mentions is computed only once the conclusion matched. *)
 Ltac2 zesu_residual_exact_apply (lemma : constr) : unit :=
   let (binders, conclusion) := zesu_residual_split (Constr.type lemma) [] in
   if zesu_residual_matches 0 conclusion (Control.goal ()) then
     let names := List.map (fun declaration => let (name, _, _) := declaration in name) (Control.hyps ()) in
     let (bindings, _) := List.fold_left (fun state entry =>
       let (bindings, index) := state in
-      let (binder, dependent) := entry in
+      let (binder, body) := entry in
       let next := Int.sub index 1 in
-      if Bool.and dependent (Bool.neg (zesu_residual_occurs index conclusion)) then
+      if (if zesu_residual_occurs index conclusion then false else zesu_residual_occurs 1 body) then
         match Constr.Binder.name binder with
         | Some name =>
             if List.mem Ident.equal name names
@@ -182,12 +182,13 @@ Ltac zesu_residual_exact lemma :=
 (* `Hint Resolve` lemmas: depth 2, one residual lemma, then each premise by
    assumption. `Hint Extern` lemmas: depth 1, one call of
    `zesu_residual_exact`. A goal whose conclusion mentions a local definition
-   gets a second try with the definitions unfolded. Telemetry names each
-   tier: kind=alt|altfail site=residual_hint|residual_exact. *)
+   gets one more try of both with the definitions unfolded (unfolded once).
+   Telemetry names each try: kind=alt|altfail
+   site=residual_hint|residual_exact|residual_unfolded. *)
 Ltac zesu_residual_lemma :=
-  first [zesu_talt residual_hint (idtac;
-           first [solve [eauto 2 with nocore zesu_residual]
-                 | solve [zesu_residual_unfold_goal; eauto 2 with nocore zesu_residual]])
-        | zesu_talt residual_exact (idtac;
-           first [solve [eauto 1 with nocore zesu_residual_exact]
-                 | solve [zesu_residual_unfold_goal; eauto 1 with nocore zesu_residual_exact]])].
+  first [zesu_talt residual_hint (idtac; solve [eauto 2 with nocore zesu_residual])
+        | zesu_talt residual_exact (idtac; solve [eauto 1 with nocore zesu_residual_exact])
+        | zesu_talt residual_unfolded (idtac;
+            solve [zesu_residual_unfold_goal;
+                   first [solve [eauto 2 with nocore zesu_residual]
+                         | solve [eauto 1 with nocore zesu_residual_exact]]])].
