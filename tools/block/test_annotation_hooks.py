@@ -610,6 +610,28 @@ class ProducedUnfold(OpaqueAndReturnedCall):
         self.assertEqual(nodes['call_produced_0']['coq'], 'arrayListBuffer 32 3 (listAfter (call_outcome))')
         self.assertNotIn('unfolded_produced', report)
 
+    def test_a_piece_minimum_is_an_entry_fact_and_a_length_bound(self):
+        pieces = [self.PIECES[0], {'coq': self.PIECES[1], 'minimum': 32}, self.PIECES[2]]
+        seed, public, _ = self.run_grow(**{'as': pieces})
+        nodes = {node['id']: node for node in public['assertion_tree']['components']}
+        after = '(listAfter (call_outcome))'
+        self.assertEqual(nodes['call_produced_0']['length_original_coq'], 'arrayListLength %s * 32' % after)
+        self.assertEqual(nodes['call_produced_1_minimum']['coq'],
+                         '⌜(32 <= (arrayListCapacity %s - arrayListLength %s) * 32)%%Z⌝' % (after, after))
+        bound, = [fact for fact in seed.facts if fact['fact_id'] == 'call_produced_1:minimum']
+        self.assertEqual((bound['kind'], bound['terms']['resource_id'], bound['terms']['index'], bound['terms']['count']),
+                         ('bounds', 'call_produced_1', 0, 32))
+        # Without the minimum neither the fact nor the bound exists.
+        seed, public, _ = self.run_grow(**{'as': self.PIECES})
+        self.assertNotIn('call_produced_1_minimum', {node['id'] for node in public['assertion_tree']['components']})
+        self.assertFalse([fact for fact in seed.facts if fact['fact_id'].endswith(':minimum')])
+
+    def test_a_minimum_on_an_opaque_piece_is_refused(self):
+        from call_boundary import CallRefused
+        pieces = self.PIECES[:2] + [{'coq': self.PIECES[2], 'minimum': 1}]
+        with self.assertRaisesRegex(CallRefused, 'A piece minimum bounds a memory piece'):
+            self.run_grow(**{'as': pieces})
+
     def test_an_unregistered_unfold_is_refused(self):
         from call_boundary import CallRefused
         self.SPEC = self.SPEC.replace('arrayListBuffer', 'someBuffer')
