@@ -1973,7 +1973,6 @@ Ltac2 zesu_region_clear_unused_definitions () :=
 
 Ltac zesu_region_fault_arithmetic_selected :=
   zesu_region_unfold_bound_definitions;
-  zesu_split_folded_all;
   ZesuSsz.Automation2.ContextCollection.zesu_select_goal_facts;
   ltac2:(zesu_region_clear_unused_definitions ());
   zesu_region_fault_arithmetic_full.
