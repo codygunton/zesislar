@@ -197,14 +197,19 @@ RESIDUAL_PREFIX = "ZesuSsz.Residuals."
 RESIDUAL_CALLERS = "tools/block/generated"
 RESIDUAL_SHARED = {"DecodeItemBridges"}
 RESIDUAL_HINT = re.compile(r"\s*#\[export\]\s*Hint\s+Resolve\s+(residual_\w+)\s*:\s*zesu_residual\s*")
+RESIDUAL_EXACT_HINT = re.compile(
+    r"\s*#\[export\]\s*Hint\s+Extern\s+0\s*=>\s*ZesuSsz\.Automation2\.ResidualLemmas\.zesu_residual_exact"
+    r"\s+constr:\((residual_\w+)\)\s*:\s*zesu_residual_exact\s*")
 
 
 def residual_errors(root: Path) -> list[str]:
     """Residual modules are scoped hints of one block.
 
-    A module ZesuSsz/Residuals/Block<addr>.v, or ZesuSsz/Residuals/<function>/Block<offset>.v
-    in the relocatable form, registers only exported
-    `Hint Resolve residual_* : zesu_residual` hints. Only the block's own
+    A module ZesuSsz/Residuals/Block<addr>.v registers only exported
+    `Hint Resolve residual_* : zesu_residual` hints; a module
+    ZesuSsz/Residuals/<function>/Block<offset>.v in the relocatable form only
+    exported `Hint Extern 0 => ...zesu_residual_exact constr:(residual_*) :
+    zesu_residual_exact` hints. Only the block's own
     generated caller imports it; no ZesuSsz source imports it. The shared
     bridge module registers no hint, and only block residual modules import it.
     """
@@ -225,9 +230,11 @@ def residual_errors(root: Path) -> list[str]:
             continue
         if path.parent == directory and match:
             modules[name] = match[1]
+            allowed = RESIDUAL_HINT
         elif (path.parent.parent == directory and relocatable
               and re.fullmatch(r"[A-Za-z][A-Za-z0-9]*", path.parent.name)):
             modules[name] = "%s+%s" % (path.parent.name, relocatable[1])
+            allowed = RESIDUAL_EXACT_HINT
         else:
             errors.append(f"Residual module name is not Block<address> or <function>/Block<offset>: {name}.")
             continue
@@ -235,7 +242,7 @@ def residual_errors(root: Path) -> list[str]:
             head = re.sub(r"^\s*(?:#\[[^]]*\]\s*)*", "", command)
             if not re.match(r"(?:Global\s+|Local\s+)?(?:Hint\b|(?:(?:Program|Existing|Declare)\s+)?Instances?\b)", head):
                 continue
-            if not RESIDUAL_HINT.fullmatch(command):
+            if not allowed.fullmatch(command):
                 errors.append(f"{name} registers a hint other than an exported residual lemma.")
     for path in sorted((root / "ZesuSsz").rglob("*.v")):
         importer = ".".join(path.relative_to(root).with_suffix("").parts)
