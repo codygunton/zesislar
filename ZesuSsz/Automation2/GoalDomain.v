@@ -4,6 +4,7 @@ Require Import ZesuSsz.Automation2.Rewrites.
 From Coq Require Import ZArith Lia.
 Require Import ZesuSsz.Automation2.LiaHook.
 Require ZesuSsz.Automation2.Hooks.
+Require ZesuSsz.Automation2.VmClosed.
 
 (* A pure goal whose head a contract registers in `zesu_goal_domain`: a
    callee's call-site domain that is a conjunction of address arithmetic
@@ -74,8 +75,19 @@ Ltac zesu_final_solver_goal :=
 
 (* bv_solve only on a conjunct that reads a bit-vector: on one without (a
    list length) it can only refute the whole context. *)
+(* The closed words of a conjunct as their values (`bv_unsigned` of a
+   literal is an atom to lia; a frame-slot address reads two of them). *)
+Ltac zesu_goal_domain_closed_words :=
+  repeat match goal with
+  | |- context [bv_unsigned ?c] =>
+      ZesuSsz.Automation2.VmClosed.zesu_closed_term c;
+      let v := eval vm_compute in (bv_unsigned c) in
+      change (bv_unsigned c) with v
+  end.
+
 Ltac zesu_goal_domain_part :=
   zesu_final_solver_goal;
+  zesu_goal_domain_closed_words;
   first
     [zesu_lia
     |lazymatch goal with |- context [bv_unsigned _] => bv_solve end
