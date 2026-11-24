@@ -16,8 +16,8 @@ residual_loop.py stays the engine that exports, checks, minimises and registers.
 
 goals packages each open goal (reparse exact, not PASS, not normalised into parts by
 tools/oblig/normalise.py: those parts are open goals of their own) into RUN/package/<id>/:
-- the address check: the patterns of tools/oblig/check_relocatable.py (`0x800[0-9a-f]{5}`,
-  `2148[0-9]{6}`, `21474[0-9]{5}`) over the text of goal.v and over the decimal value of
+- the address check: the patterns of tools/oblig/check_relocatable.py (an address of the linked
+  image as a whole-token hex or decimal literal) over the text of goal.v and over the decimal value of
   each integer literal of its statement. Before it, each `(N)%Z` or `Zpos` literal that is the
   address of a symbol of tools/oblig/symbols.json (or at most 4 KiB above one), and both bounds of
   a code-disjointness disjunction `x + n <= A \\/ B <= x` that are ELF section bounds, are written
@@ -64,13 +64,14 @@ ROOT = HERE.parents[1]
 sys.path.insert(0, str(HERE))
 sys.path.insert(0, str(ROOT / "tools/block"))
 sys.path.insert(0, str(ROOT / "tools/bench"))
+import check_relocatable  # noqa: E402
 import residual_loop as rl  # noqa: E402
 import similar  # noqa: E402
 import symbolize  # noqa: E402
 import bench_report  # noqa: E402
 
 MAX_PROMPT_BYTES = 12000
-ADDRESS_PATTERNS = (re.compile(r"0x800[0-9a-f]{5}"), re.compile(r"2148[0-9]{6}"), re.compile(r"21474[0-9]{5}"))
+ADDRESS_PATTERNS = check_relocatable.PATTERNS
 VERDICTS = ("proved", "false", "need_context", "give_up")
 DIAGNOSIS_KINDS = ("annotation", "pure_goal", "false", "rule_gap")
 HINTS = HERE / "hints.py"

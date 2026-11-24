@@ -26,7 +26,8 @@ same term (print, reparse, print again: the two texts must be equal), and writes
 RUN/tasks/<id>.md for the standing agent of the block.
 
 collect checks each new answer RUN/answers/<id>.v (the proof script only, ending
-with one `Qed.`): it fills the slot, runs check.sh, and writes the compiler errors
+with one `Qed.`, naming no absolute address: tools/oblig/check_relocatable.py): it
+fills the slot, runs check.sh, and writes the compiler errors
 of a FAIL to RUN/feedback/<id>.txt. After a PASS it minimizes the premises: the
 facts whose binders the proof term does not use are dropped, and the smaller
 statement is checked again with the same script; it replaces the first one only
@@ -62,8 +63,11 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / "tools/residuals"))
 sys.path.insert(0, str(ROOT / "tools/block"))
+sys.path.insert(0, str(ROOT / "tools/oblig"))
+import check_relocatable  # noqa: E402
 import render_residual_module as rrm  # noqa: E402
 import residual_package as pkg  # noqa: E402
+import symbolize  # noqa: E402
 
 SWITCH = "Require Import ZesuSsz.Automation2.ResidualExportOn."
 EXPORT_MODULE = "Require Import ZesuSsz.Automation2.ResidualExport."
@@ -257,6 +261,10 @@ def answer_problems(answer):
         return "the answer must end with exactly one Qed."
     if re.search(r"^\s*(Lemma|Theorem|Proof)\b", answer, re.M):
         return "the answer must hold only the proof script"
+    hits = check_relocatable.address_hits(answer)
+    if hits:
+        return ("the answer names the absolute address %s; write it as its notation of "
+                "ZesuSsz.Generated.Stock.Symbols (sym_*, sec_*) as the goal does" % hits[0][1])
     return None
 
 
@@ -653,7 +661,10 @@ def cmd_collect(a):
 
 
 def minimize(run, d, goal, answer, header, args, ocamlpath, function=None):
-    """Drop the premises that the proof term does not use, and check again."""
+    """Drop the premises that the proof term does not use, and check again. A goal.v that imports the
+    symbol notations (package.py or normalise.py compose added them) lends its import to every compile,
+    since the answer may name them too."""
+    header = symbols_header(d, header)
     m = d / ("min-" + sha(answer)[:12])
     m.mkdir(exist_ok=True)
     (m / "minimize.v").write_text(minimize_text(header, goal["name"], goal["statement"], answer))
@@ -684,14 +695,20 @@ def minimize(run, d, goal, answer, header, args, ocamlpath, function=None):
     return state
 
 
+def symbols_header(d, header):
+    """HEADER with the Symbols import when the goal's own goal.v has it, else HEADER."""
+    if symbolize.REQUIRE not in (d / "goal.v").read_text().split("\n"):
+        return header
+    return symbolize.with_require(header)
+
+
 def symbolized_goal_text(d, header, name, statement):
     """goal_text, with the symbol notations of tools/oblig/symbolize.py when the goal's own goal.v
     uses them (package.py rewrote its address literals), so the minimized lemma stays relocatable."""
-    if "Require Import ZesuSsz.Generated.Stock.Symbols." not in (d / "goal.v").read_text():
+    if symbolize.REQUIRE not in (d / "goal.v").read_text().split("\n"):
         return goal_text(header, name, statement)
-    sys.path.insert(0, str(ROOT / "tools/oblig"))
-    import symbolize
-    return goal_text(symbolize.with_require(header), name, symbolize.statement(statement, symbolize.table())[0])
+    rewritten = symbolize.statement(statement, symbolize.table(), symbolize.sections())[0]
+    return goal_text(symbolize.with_require(header), name, rewritten)
 
 
 def module_path(residuals, module):
