@@ -214,6 +214,30 @@ class OwnedJoinReplaces(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, 'held by no edge'):
                 self.joined([OLD_BUFFER, NEW_BUFFER, item])
 
+    def test_a_span_inside_a_replaced_ancestor_span_is_forgotten(self):
+        # The call path holds the old buffer's bytes as unknown (`↦ₘ?`): lifted onto the root, whose span
+        # states them, it is refused unless the row replaces the root's span, which then owns none of them.
+        public = {'schema': 'h1-public-entry-seed.v1', 'entry_pc': hex(24), 'source_bindings': [],
+                  '_input_sha256': '0' * 64,
+                  'assertion_tree': {'kind': 'exists', 'binders': [{'name': 'old', 'type': 'bv 64',
+                                                                    'expression': input_expr('old').to_dict()}],
+                                     'components': [{'kind': 'register', 'id': 'r', 'register': 'x13',
+                                                     'value_coq': 'old', 'width': 64},
+                                                    {'kind': 'uninitialized_memory', 'id': 'buffer',
+                                                     'original_component': '(sp - 64) ↦ₘ? 8', 'address_z': 'sp - 64',
+                                                     'length_original_coq': '8'},
+                                                    {'kind': 'opaque', 'id': 'terminal', 'coq': 'True'}]}}
+        seed = seed_owned_resources(public, entry_pc=24, vocabulary={'rows': []})
+        seed.state.registers['x13'] = input_expr('old')
+        self.call_seed = replace(seed, join_kind='call_return')
+        self.call_seed.state.conditions = [CALL_GUARD]
+        self.site = boundary(evaluate_owned_function(FUNCTION, TRACES, {16: self.root, 24: self.call_seed},
+                                                     vocabulary=VOCABULARY), 24)
+        with self.assertRaisesRegex(ValueError, 'does not know a byte its ancestor states'):
+            self.joined([])
+        seed, _, plan = self.joined([OLD_BUFFER])
+        self.assertEqual((plan['edges'], plan['owned']['replaced']), (2, [OLD_BUFFER]))
+
 
 if __name__ == '__main__':
     unittest.main()
