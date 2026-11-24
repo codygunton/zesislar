@@ -29,4 +29,4 @@ assert (Hs : forall x : Z, Z.shiftl x 5 = x * 32).
 rewrite Hs in H10.
 lia.
 Qed.
-#[export] Hint Resolve residual_keysToOwnedSlice_0148_c154e97b5b34722e : zesu_residual.
+#[export] Hint Extern 0 => ZesuSsz.Automation2.ResidualLemmas.zesu_residual_exact constr:(residual_keysToOwnedSlice_0148_c154e97b5b34722e) : zesu_residual_exact.

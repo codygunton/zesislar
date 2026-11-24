@@ -29,4 +29,4 @@ assert (Hz : bv_unsigned (0%bv : bv 64) = 0) by reflexivity.
 rewrite Hz in Hx.
 lia.
 Qed.
-#[export] Hint Resolve residual_keysToOwnedSlice_0058_9f7bbd29a44de9d3 : zesu_residual.
+#[export] Hint Extern 0 => ZesuSsz.Automation2.ResidualLemmas.zesu_residual_exact constr:(residual_keysToOwnedSlice_0058_9f7bbd29a44de9d3) : zesu_residual_exact.

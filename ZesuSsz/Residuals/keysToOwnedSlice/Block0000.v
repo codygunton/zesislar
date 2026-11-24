@@ -33,7 +33,7 @@ rewrite Hz in Hm.
 assert (Hl : arrayListLength (keysBlockList args) mod 2 ^ 64 = arrayListLength (keysBlockList args)) by (apply Z.mod_small; lia).
 lia.
 Qed.
-#[export] Hint Resolve residual_keysToOwnedSlice_0000_74a9565b37124255 : zesu_residual.
+#[export] Hint Extern 0 => ZesuSsz.Automation2.ResidualLemmas.zesu_residual_exact constr:(residual_keysToOwnedSlice_0000_74a9565b37124255) : zesu_residual_exact.
 
 (* goal 0000-2: goal.v sha256 6efe0f5ee22a3f3369571817f261a1c1d92a13370faf2bf36769fcc5e90db9c8, proof.v sha256 ac98c2acf82d076630ee8a67779e7f0fc5b3ac566c836ea61f2a0e831931fea0 *)
 Lemma residual_keysToOwnedSlice_0000_10c4c32695c0e438 :
@@ -48,4 +48,4 @@ first [ apply bv_unsigned_Z_to_bv | apply Z_to_bv_unsigned | apply bv_unsigned_o
 all: vm_compute.
 all: try reflexivity.
 Qed.
-#[export] Hint Resolve residual_keysToOwnedSlice_0000_10c4c32695c0e438 : zesu_residual.
+#[export] Hint Extern 0 => ZesuSsz.Automation2.ResidualLemmas.zesu_residual_exact constr:(residual_keysToOwnedSlice_0000_10c4c32695c0e438) : zesu_residual_exact.

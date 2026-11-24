@@ -28,4 +28,4 @@ destruct (Z.eqb _ _).
       pose proof (bv_unsigned_in_range _ x) as Hr; clear - Hr; lia
   end.
 Qed.
-#[export] Hint Resolve residual_keysToOwnedSlice_0150_a1590cfa062bfafd : zesu_residual.
+#[export] Hint Extern 0 => ZesuSsz.Automation2.ResidualLemmas.zesu_residual_exact constr:(residual_keysToOwnedSlice_0150_a1590cfa062bfafd) : zesu_residual_exact.

@@ -31,4 +31,4 @@ assert (Hs : arrayListPointer (keysBlockList args) mod 2 ^ 64 = arrayListPointer
 { apply Z.mod_small. lia. }
 lia.
 Qed.
-#[export] Hint Resolve residual_keysToOwnedSlice_0098_8d31101de9e17270 : zesu_residual.
+#[export] Hint Extern 0 => ZesuSsz.Automation2.ResidualLemmas.zesu_residual_exact constr:(residual_keysToOwnedSlice_0098_8d31101de9e17270) : zesu_residual_exact.

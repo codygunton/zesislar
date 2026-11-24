@@ -26,4 +26,4 @@ apply H7.
 rewrite Hc.
 first [ reflexivity | apply bv_eq; reflexivity | cbv [Z_to_bv bv_wrap bv_unsigned]; reflexivity | vm_compute; reflexivity | unfold Z_to_bv; apply bv_eq; cbn; reflexivity ].
 Qed.
-#[export] Hint Resolve residual_keysToOwnedSlice_0078_22a9449e5f829f9d : zesu_residual.
+#[export] Hint Extern 0 => ZesuSsz.Automation2.ResidualLemmas.zesu_residual_exact constr:(residual_keysToOwnedSlice_0078_22a9449e5f829f9d) : zesu_residual_exact.
