@@ -22,7 +22,11 @@ The compiled profile keys, by `boundary`:
                    entry renderer writes as `owner.name args` (render_fp301_entries.py)
   loop_cut         `loop_heads` and a `loop_designs` row: `registers` (binders with a register), `index`
                    (the binder of role `index`), `facts` (role -> `kind`), `array_cursor` from
-                   `placement` {`array`, `register`, `extent_reason`}, `visible`
+                   `placement` {`array`, `register`, `extent_reason`}, `visible`; with `resources`,
+                   `replaces` or typed binders without a register, `owned` {`binders` [{name, type}],
+                   `resources` [text | {coq, length}], `replaces` [text]}: the cut's owned state is the
+                   loop-entry state without the components `replaces` names (exact texts), plus
+                   `resources` over those binders (loop_design.py); facts may name them
   join             `join_designs[pc]`: a fact of role `fact` with no other key is its text, else its object.
                    A row whose single effective fact is `False` (role `unreachable`) lists `pc` in
                    `unreachable_entries` (entry ⌜False⌝; refused where the forward pass reaches it); with
@@ -34,7 +38,9 @@ The compiled profile keys, by `boundary`:
   call_site        a `calls` row: the row's `call` object with `call_site_pc`. Its `opaque` rows
                    [{`spec`, `use`: framed | consumed | produced, `caller`: [...]}] name spec resources in
                    the spec's text and, for a consumed one, the caller components it takes; its `returns`
-                   rows [{`index`, `register`}] name the returned registers the continuation reads
+                   rows [{`index`, `register`}] name the returned registers the continuation reads; its
+                   `result_words` {byte offset: Z value} name words of the returned array the return entry
+                   states and the seed reads as the value (`{argv:N}`, `{fresh:NAME:TYPE}` in the value)
                    (call_boundary.call_return_seed)
   call_return      the `return_facts` of the call whose `return_site_pc` is `pc` (role -> `kind`)
   function_return  a `function_returns` row: `return_instruction_pc` and `return_fact` (True without facts)
@@ -141,7 +147,7 @@ def _join_fact(fact):
 
 
 def _check_call(row):
-    """The shape of a call row's `opaque` and `returns` rows (call_boundary consumes them)."""
+    """The shape of a call row's `opaque`, `returns` and `result_words` rows (call_boundary consumes them)."""
     for item in row['call'].get('opaque', []):
         if not isinstance(item.get('spec'), str) or item.get('use') not in OPAQUE_USES:
             raise AnnotationError('%s: an opaque row has `spec` and a `use` among %s'
@@ -154,6 +160,10 @@ def _check_call(row):
     for item in row['call'].get('returns', []):
         if not isinstance(item.get('index'), int) or not re.fullmatch(r'x(1[0-7])', str(item.get('register'))):
             raise AnnotationError('%s: a returns row has an integer `index` and an argument register' % row['id'])
+    words = row['call'].get('result_words', {})
+    if not isinstance(words, dict) or not all(re.fullmatch(r'[0-9]+', str(key)) and isinstance(value, str)
+                                              for key, value in words.items()):
+        raise AnnotationError('%s: result_words maps byte offsets to value texts' % row['id'])
 
 
 def compile_profile(data, source=None):
@@ -194,6 +204,20 @@ def compile_profile(data, source=None):
                                           'extent_reason': placement['extent_reason']}
             if 'visible' in row:
                 design['visible'] = list(row['visible'])
+            loose = [binder for binder in row.get('binders', [])
+                     if not binder.get('register') and binder.get('role') != 'index']
+            if any(not isinstance(binder.get('type'), str) or not binder['type'] for binder in loose):
+                raise AnnotationError('%s: a loop-cut binder without a register has a `type`' % row['id'])
+            if row.get('resources') or row.get('replaces') or loose:
+                for item in row.get('resources', []):
+                    if not (isinstance(item, str) or isinstance(item, dict) and set(item) == {'coq', 'length'}):
+                        raise AnnotationError('%s: a loop-cut resource is a text or {coq, length}' % row['id'])
+                for item in row.get('replaces', []):
+                    if not (isinstance(item, str) or isinstance(item, dict) and set(item) == {'id'}):
+                        raise AnnotationError('%s: a replaced loop-entry component is a text or {id}' % row['id'])
+                design['owned'] = {'binders': [{'name': binder['name'], 'type': binder['type']} for binder in loose],
+                                   'resources': list(row.get('resources', [])),
+                                   'replaces': list(row.get('replaces', []))}
             loop_designs.append(design)
         elif boundary == 'join':
             roles = {fact['role'] for fact in facts}

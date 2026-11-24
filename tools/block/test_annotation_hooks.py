@@ -55,6 +55,56 @@ class AccessPlacement(unittest.TestCase):
         self.assertEqual(self.read()[1].op, 'unknown_read')
 
 
+class PlacedLoadPastEnd(unittest.TestCase):
+    """A trace case that puts a placed load past its array's end bound E stops only with both rows: the
+    access row placing the load in the array and the supplied domain relation `base + length <= E`."""
+
+    def setUp(self):
+        self.addCleanup(setattr, symbolic_state, 'ACCESS_PLACEMENTS', symbolic_state.ACCESS_PLACEMENTS)
+        base = input_expr('base', 64)
+        self.state = SymbolicState(registers={'PC': bits(PC, 64)}, memory=[
+            MemoryRegion(base, byte_array=input_expr('arr', None), length=input_expr('length arr', None),
+                         ownership_id='arr_resource')])
+        address = operation('bvadd', operation('bvadd', base, input_expr('k', 64)), bits(16, 64))
+        # The trace's case of a 4-byte load ending past the end E.
+        self.guard = operation('not', operation('bvsle', operation('bvadd', operation('zero_extend', address,
+                                                width=128), bits(4, 128)),
+                                                operation('zero_extend', input_expr('end', 64), width=128)))
+        self.placement = {'pc': '0050', 'array': 'arr', 'index': 'k', 'scale': 1, 'offset': 16}
+
+    def relation(self, bound):
+        self.state.source_intervals.append({'end_bound': {'base': input_expr('base', 64).to_dict(),
+                                                          'bound': input_expr(bound, 64).to_dict()},
+                                            'origin': {'fixture': True}, 'fact_id': 'wellformed:end-bound-0'})
+
+    def run_case(self):
+        evaluator = _Evaluator(self.state.copy(), instruction_index=PC)
+        evaluator.state.conditions.append(self.guard)
+        symbolic_state._refute_placed_past_end(self.state, evaluator)
+        return evaluator
+
+    def test_without_an_access_row_the_case_stays(self):
+        self.relation('end')
+        symbolic_state.ACCESS_PLACEMENTS = {}
+        self.assertEqual(self.run_case().status, 'complete')
+        symbolic_state.ACCESS_PLACEMENTS = {PC: [dict(self.placement, array='other')]}
+        self.assertEqual(self.run_case().status, 'complete')
+
+    def test_a_relation_with_another_bound_refutes_nothing(self):
+        self.relation('other_end')
+        symbolic_state.ACCESS_PLACEMENTS = {PC: [self.placement]}
+        self.assertEqual(self.run_case().status, 'complete')
+
+    def test_both_rows_refute_the_case_as_an_open_obligation(self):
+        self.relation('end')
+        symbolic_state.ACCESS_PLACEMENTS = {PC: [self.placement]}
+        evaluator = self.run_case()
+        self.assertEqual(evaluator.status, 'infeasible')
+        report, = [row for row in evaluator.state.reports if row['kind'] == 'placed_end_refutation']
+        self.assertEqual((report['proof_status'], report['owner']), ('open', 'arr_resource'))
+        self.assertTrue(report['required_rocq_guard_projection'])
+
+
 class SeededJoinStops(unittest.TestCase):
     def test_a_stop_inside_a_seeded_join_reaches_the_join_and_what_follows(self):
         # 16 branches to 20 and 24; 24 is a join with a seed; 24 falls into 28.
@@ -171,6 +221,55 @@ class ReturnedLength(unittest.TestCase):
         self.assertNotIn('dest_call_after', nodes)
         self.assertEqual(nodes['dest_length']['coq'],
                          '⌜(Z.of_nat (List.length call_out) = bv_unsigned (count))%Z⌝')
+
+
+class ResultWords(unittest.TestCase):
+    """A call row's `result_words`: a word of the returned array read as the row's value."""
+    SPEC = ReturnedLength.SPEC.replace('∃ (n : Z),\n      bv_unsigned (argv !!! 0%nat) ↦ₘ? n',
+                                       'bv_unsigned (argv !!! 0%nat) ↦ₘ? 16')
+
+    def run_call(self, words, length='16'):
+        from call_boundary import call_return_seed
+        with tempfile.TemporaryDirectory() as directory:
+            fixture, state, call = ReturnedLength().fixture(directory, length=length)
+            Path(directory, 'Spec.v').write_text(self.SPEC)
+            call['result_words'] = words
+            state.registers['x11'] = input_expr('base', 64)
+            return call_return_seed([{'seed_pc': '0x10', 'state': state.to_dict()}], call=call,
+                                    function_root=directory, **fixture)
+
+    def test_the_word_is_its_value_and_the_entry_states_the_equation(self):
+        self.assertNotEqual(self.SPEC, ReturnedLength.SPEC)
+        seed, public_after, _ = self.run_call({'8': 'bv_unsigned {argv:1} + {fresh:off:Z}'})
+        tree = public_after['assertion_tree']
+        nodes = {node['id']: node for node in tree['components']}
+        fact = nodes['call_result_word_8']['coq']
+        self.assertTrue(fact.startswith('⌜(bv_unsigned (bv_concat 64%N ')
+                        and fact.endswith(' (List.nth 8%nat call_out (BV 8%N 0%Z))) = bv_unsigned (base) + call_off)%Z⌝'),
+                        fact)
+        self.assertIn('call_out', fact)
+        self.assertIn({'name': 'call_off', 'type': 'Z', 'expression': input_expr('call_off', None).to_dict()},
+                      tree['binders'])
+        link, = seed.state.word_links
+        self.assertEqual((link['resource_id'], link['offset']), ('dest_call_output', 8))
+        value = operation('bvadd', input_expr('base', 64), input_expr('(Z_to_bv 64%N (call_off))', 64))
+        self.assertEqual(link['value'], value)
+        evaluator = _Evaluator(seed.state.copy(), instruction_index=PC)
+        self.assertEqual(evaluator.memory_read(bits(0x208, 64), 8), value)
+        # The other word of the array stays its bytes.
+        self.assertNotEqual(evaluator.memory_read(bits(0x200, 64), 8), value)
+
+    def test_a_word_outside_the_returned_array_is_refused(self):
+        from call_boundary import CallRefused
+        with self.assertRaisesRegex(CallRefused, 'not a word of the returned array'):
+            self.run_call({'16': 'bv_unsigned {argv:1}'})
+        with self.assertRaisesRegex(CallRefused, 'unknown template'):
+            self.run_call({'0': 'bv_unsigned {argv:1} + {other}'})
+
+    def test_without_the_key_the_seed_is_unchanged(self):
+        seed, public_after, _ = self.run_call({})
+        self.assertEqual(seed.state.word_links, [])
+        self.assertFalse(any('result_word' in node['id'] for node in public_after['assertion_tree']['components']))
 
 
 class OpaqueAndReturnedCall(unittest.TestCase):
