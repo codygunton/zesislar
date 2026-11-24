@@ -1153,6 +1153,74 @@ def _source_comparison_refutation(condition, rows):
             'source_intervals': [rows[index] for index in sorted(indices)]}
 
 
+def _placed_ram_rows(initial, instruction_index, conditions):
+    """Interval rows for the load addresses of this instruction that an access row (profile
+    `access_placements`) places in an owned initialized array whose base the source intervals hold in
+    RAM: such an address is a byte of that array, so it lies in [ram_base, ram_end). Each row names its
+    placement; the pruning it allows stays an open obligation of the block proof (`placed_ram_refutation`)."""
+    regions = [region for region in initial.memory if region.byte_array is not None
+               and region.ownership_id is not None and not region.uninitialized]
+    placements = ACCESS_PLACEMENTS.get(instruction_index, ())
+    if not placements:
+        return []
+    found, rows = [], []
+    def walk(expression):
+        if not isinstance(expression, Expr):
+            return
+        if expression.op == 'bvadd' and expression.width == 64 and expression not in found:
+            found.append(expression)
+        for argument in expression.args:
+            walk(argument)
+    for condition in conditions:
+        walk(condition)
+    for address in found:
+        terms, _ = _addends(address)
+        for region in regions:
+            rest = list(terms)
+            if any(term not in rest or rest.remove(term) for term in _addends(region.base)[0]) or not rest:
+                continue
+            array = _array_text(region.byte_array.value if region.byte_array.op == 'input' else region.byte_array.coq())
+            placement = next((row for row in placements if _array_text(row['array']) == array), None)
+            if placement is None:
+                continue
+            base = _source_interval(region.base, initial.source_intervals)
+            if base is None or not base[2]:
+                continue
+            used = [initial.source_intervals[index] for index in sorted(base[2])]
+            ram = {(row.get('ram_base'), row.get('ram_end')) for row in used}
+            if len(ram) != 1 or not all(type(value) is int for value in next(iter(ram))):
+                continue
+            ram_base, ram_end = ram.pop()
+            rows.append({'expression': address.to_dict(), 'minimum': ram_base, 'maximum': ram_end - 1,
+                         'ram_base': ram_base, 'ram_end': ram_end,
+                         'origin': {'placed_load': hex(instruction_index), 'owner': region.ownership_id,
+                                    'placement': dict(placement),
+                                    'base_intervals': used}})
+            break
+    return rows
+
+
+def _refute_placed_non_ram(initial, evaluator):
+    """Stop a path whose guards put a placed load's address outside RAM (`_placed_ram_rows`). A rendering
+    choice only: the report keeps the guard as an open obligation, so the block proof discharges the
+    trace's non-RAM case from the array's RAM bounds, and a wrong placement row is an open goal."""
+    if evaluator.status != 'complete':
+        return
+    new = [condition for condition in evaluator.state.conditions if condition not in initial.conditions]
+    placed = _placed_ram_rows(initial, evaluator.instruction_index, new)
+    if not placed:
+        return
+    rows = list(initial.source_intervals) + placed
+    for condition in new:
+        result = _source_comparison_refutation(condition, rows)
+        if result is None or not any(row in placed for row in result['source_intervals']):
+            continue
+        evaluator.status = 'infeasible'
+        evaluator.report('placed_ram_refutation', **result, proof_status='open',
+                         required_rocq_guard_projection=True, proof_premises_added=[])
+        return
+
+
 def _apply_source_guard_facts(initial, evaluator):
     """Keep every new source pruning/rewrite obligation explicit for Rocq."""
     if evaluator.status != 'complete':
@@ -1191,6 +1259,7 @@ def evaluate_trace(source, state, *, live_registers=None, instruction_index=0, m
     results = []
     for evaluator in evaluators:
         _refute_ram_fault(source, state, evaluator)
+        _refute_placed_non_ram(state, evaluator)
         _apply_source_guard_facts(state, evaluator)
         _drop_source_implied_ram_guards(state, evaluator)
         if live_registers is not None:
