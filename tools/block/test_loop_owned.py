@@ -252,6 +252,8 @@ class JoinOwnedTest(unittest.TestCase):
         public['_input_sha256'] = '0' * 64
         seed = seed_owned_resources(public, entry_pc=0x42c, vocabulary={'rows': []})
         seed.join_kind, seed.join_edges, seed.join_witness_plan = 'call_return', [{'predecessor_pc': '0x400'}], {'x': 1}
+        # A relation the join added has no root seed node; it stays as its text.
+        seed.ownership['components'].insert(-1, {'id': 'join_relation_0', 'kind': 'opaque', 'source': '⌜r = 1⌝'})
         owned = {**OWNED, 'facts': [{'coq': 'arrayListLength list_state = n'}], 'predecessors': ['0400', '0428']}
         rebuilt = owned_join_seed(seed, owned, 0x42c, {'rows': []})
         texts = [str(c['seed_component'].get('original_component', c['seed_component'].get('coq')))
@@ -259,6 +261,7 @@ class JoinOwnedTest(unittest.TestCase):
         self.assertNotIn('(sp - 448) ↦ₘ? 24', texts)
         self.assertIn('arrayListBuffer 40 3 list_state', texts)
         self.assertIn('⌜arrayListLength list_state = n⌝', texts)
+        self.assertIn('⌜r = 1⌝', texts)
         self.assertEqual((rebuilt.join_kind, rebuilt.join_edges, rebuilt.join_witness_plan),
                          ('call_return', [{'predecessor_pc': '0x400'}], {'x': 1}))
         binder, = [binder for binder in rebuilt.ownership['binders'] if binder['name'] == 'list_state']

@@ -190,10 +190,13 @@ def owned_seed(seed, design, head, vocabulary):
     from resource_seed import seed_owned_resources
     from symbolic_state import input_expr
     owned = design['owned']
-    sources = {component['id']: str(component['seed_component'].get(
-        'original_component', component['seed_component'].get('coq', ''))) for component in seed.ownership['components']}
+    # A pure component a join added (a relation, a design fact, its edge-guard fact) has no root seed node: its
+    # node is its text.
+    seeded = {component['id']: component.get('seed_component') or {'kind': 'opaque', 'coq': component['source']}
+              for component in seed.ownership['components']}
+    sources = {key: str(node.get('original_component', node.get('coq', ''))) for key, node in seeded.items()}
     removed = set(replaced_components(owned, sources))
-    nodes = [{**component['seed_component'], 'id': component['id']} for component in seed.ownership['components']
+    nodes = [{**seeded[component['id']], 'id': component['id']} for component in seed.ownership['components']
              if component['id'] not in removed]
     # A pure fact keeps the text the join gave it (a fact of a binder the join dropped is in its hidden
     # history group or `⌜True⌝`), not its text in the root seed.
