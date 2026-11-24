@@ -773,15 +773,19 @@ def call_return_seed(edges, *, call, function_root, root_seed, shapes, vocabular
         returned_length = (call.get('returned_lengths') or {}).get(str(row.get('argument')))
         if returned is not None and not isinstance(length, int) and returned_length is not None:
             # The call design names the length of the caller's unwritten region at the argument
-            # (annotations.py `call_row`). The callee fills the spec's own length `row['length']` of it;
-            # when that differs from the region's, the rest stays the caller's (`remainder` below).
+            # (annotations.py `call_row`), or `*`: the region's own length, whatever its spelling. The
+            # callee fills the spec's own length `row['length']` of it; when that differs from the
+            # region's, the rest stays the caller's (`remainder` below).
             address = operation('bvadd', state.registers[ARGUMENTS[row['argument']]], bits(row.get('offset', 0), 64))
             owner = [resource for resource in resources.values() if resource.byte_array is None
                      and _offset(address, resource.base) == 0 and isinstance(resource.length, Expr)
-                     and ' '.join(str(resource.length.value).split()) == ' '.join(returned_length.split())]
+                     and (returned_length == '*'
+                          or ' '.join(str(resource.length.value).split()) == ' '.join(returned_length.split()))]
             if len(owner) != 1 or image.updates[owner[0].id]:
                 raise CallRefused('The returned array of length %s has no unwritten caller region at argument %s'
                                   % (returned_length, row['argument']))
+            if returned_length == '*':
+                returned_length = str(owner[0].length.value)
             post, post_value = returned_value(returned)
             # A spec length over its own pre binders takes the whole region (the call step picks it);
             # one fixed by the arguments (memcpy's `bv_unsigned (argv !!! 2%nat)`) may take a prefix.
