@@ -12,6 +12,7 @@ Require Import ZesuSsz.Contracts.EntriesToOwnedSliceBlockEntries.
 Require Import ZesuSsz.Contracts.EntriesToOwnedSliceSelected.
 Require Import ZesuSsz.Generated.EntriesToOwnedSlice.FP301.Edges00a4.
 Require Import ZesuSsz.Automation2.All.
+Require Import ZesuSsz.Residuals.entriesToOwnedSlice.Block00a4.
 Local Open Scope Z_scope.
 #[local] Typeclasses Transparent entriesToOwnedSliceSelectedCode.
 
