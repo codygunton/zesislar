@@ -1571,3 +1571,74 @@ Check (eq_refl : @keysEnsureCapacityBudgetContractCode = @ReviewedKeysEnsureCapa
 Check (eq_refl : @keysEnsureCapacityBudgetResources = @ReviewedKeysEnsureCapacityBudgetResources).
 Check (eq_refl : @keysEnsureCapacityBudgetContractModel = @ReviewedKeysEnsureCapacityBudgetContractModel).
 Check (eq_refl : @KeysEnsureCapacityBudgetContractCorrect = @ReviewedKeysEnsureCapacityBudgetContractCorrect).
+
+(* Step budgets, plan T8 (statements reviewed 2026-11-24): the charged
+   toOwnedSlice model and the charged keysToOwnedSlice and
+   entriesToOwnedSlice contracts. *)
+Require Import ZesuSsz.Contracts.ArrayListBudgetContract.
+Require Import ZesuSsz.Contracts.KeysToOwnedSliceChargedSelected.
+Require Import ZesuSsz.Contracts.EntriesToOwnedSliceChargedSelected.
+Require Import ZesuSsz.Contracts.KeysToOwnedSliceBudgetContract.
+Require Import ZesuSsz.Contracts.EntriesToOwnedSliceBudgetContract.
+Definition ReviewedToOwnedSliceBudgetResources `{!islaG Sigma} `{!threadG}
+    (code : iProp Sigma) (elementBytes log2Align budget returnAddress : Z) :
+    IslarisContractResources ToOwnedSliceArgs ToOwnedSliceOutcome :=
+  {| islarisCode := code;
+     islarisEntry := fun args =>
+       (⌜bv_unsigned (toOwnedReturnAddress args) = returnAddress⌝ ∗
+        toOwnedSliceEntry elementBytes log2Align args ∗
+        step_budget budget)%I;
+     islarisExit := toOwnedSliceExit elementBytes log2Align |}.
+Definition ReviewedToOwnedSliceBudgetModel
+    (code : forall (Sigma : gFunctors), islaG Sigma -> threadG -> iProp Sigma)
+    (step : Z -> Z -> Prop)
+    (elementBytes log2Align emptyPointer budget returnAddress : Z) :
+    IslarisContractModel ToOwnedSliceArgs ToOwnedSliceOutcome :=
+  {| islarisContractAllows := fun args outcome =>
+       bv_unsigned (toOwnedReturnAddress args) = returnAddress /\
+       toOwnedSliceDomain elementBytes args /\
+       toOwnedSliceAllows elementBytes emptyPointer args outcome;
+     islarisContractStep := step;
+     islarisContractResources := fun Sigma HG HT =>
+       @toOwnedSliceBudgetResources Sigma HG HT (code Sigma HG HT)
+         elementBytes log2Align budget returnAddress |}.
+Definition ReviewedKeysToOwnedSliceChargedCode `{!islaG Sigma} `{!threadG} : iProp Sigma :=
+  instr_lookup_resources_charged
+    (selectedCodeLookup ZesuSsz.Stock.Closure.index_sliceBytes32.instr_map).
+Definition ReviewedEntriesToOwnedSliceChargedCode `{!islaG Sigma} `{!threadG} : iProp Sigma :=
+  instr_lookup_resources_charged
+    (selectedCodeLookup ZesuSsz.Stock.Closure.index_sliceAccessList.instr_map).
+Definition ReviewedKeysToOwnedSliceBudgetContractCode `{!islaG Sigma} `{!threadG} : iProp Sigma :=
+  (keysToOwnedSliceChargedCode ∗ altFlAllocatorBudgetPremises ∗
+   ziskMemcpyBudgetCallPremise)%I.
+Definition ReviewedEntriesToOwnedSliceBudgetContractCode `{!islaG Sigma} `{!threadG} : iProp Sigma :=
+  (entriesToOwnedSliceChargedCode ∗ altFlAllocatorBudgetPremises ∗
+   ziskMemcpyBudgetCallPremise)%I.
+Definition ReviewedKeysToOwnedSliceBudgetContractModel (returnAddress : Z) :
+    IslarisContractModel ToOwnedSliceArgs ToOwnedSliceOutcome :=
+  toOwnedSliceBudgetModel (fun Sigma HG HT => @keysToOwnedSliceBudgetContractCode Sigma HG HT)
+    ZesuSsz.Stock.Closure.index_sliceBytes32.sliceBytes32_cfg_step
+    keysElementBytes keysLog2Alignment keysEmptyPointer 175 returnAddress.
+Definition ReviewedEntriesToOwnedSliceBudgetContractModel (returnAddress : Z) :
+    IslarisContractModel ToOwnedSliceArgs ToOwnedSliceOutcome :=
+  toOwnedSliceBudgetModel (fun Sigma HG HT => @entriesToOwnedSliceBudgetContractCode Sigma HG HT)
+    ZesuSsz.Stock.Closure.index_sliceAccessList.sliceAccessList_cfg_step
+    entriesElementBytes entriesLog2Alignment entriesEmptyPointer 185 returnAddress.
+Definition ReviewedKeysToOwnedSliceBudgetContractCorrect : Prop :=
+  forall returnAddress,
+    IslarisContractCorrect sym_array_list_Aligned_32_u8_null_toOwnedSlice returnAddress
+      (keysToOwnedSliceBudgetContractModel returnAddress).
+Definition ReviewedEntriesToOwnedSliceBudgetContractCorrect : Prop :=
+  forall returnAddress,
+    IslarisContractCorrect sym_array_list_Aligned_input_AccessListEntry_null_toOwnedSlice
+      returnAddress (entriesToOwnedSliceBudgetContractModel returnAddress).
+Check (eq_refl : @toOwnedSliceBudgetResources = @ReviewedToOwnedSliceBudgetResources).
+Check (eq_refl : @toOwnedSliceBudgetModel = @ReviewedToOwnedSliceBudgetModel).
+Check (eq_refl : @keysToOwnedSliceChargedCode = @ReviewedKeysToOwnedSliceChargedCode).
+Check (eq_refl : @entriesToOwnedSliceChargedCode = @ReviewedEntriesToOwnedSliceChargedCode).
+Check (eq_refl : @keysToOwnedSliceBudgetContractCode = @ReviewedKeysToOwnedSliceBudgetContractCode).
+Check (eq_refl : @entriesToOwnedSliceBudgetContractCode = @ReviewedEntriesToOwnedSliceBudgetContractCode).
+Check (eq_refl : @keysToOwnedSliceBudgetContractModel = @ReviewedKeysToOwnedSliceBudgetContractModel).
+Check (eq_refl : @entriesToOwnedSliceBudgetContractModel = @ReviewedEntriesToOwnedSliceBudgetContractModel).
+Check (eq_refl : @KeysToOwnedSliceBudgetContractCorrect = @ReviewedKeysToOwnedSliceBudgetContractCorrect).
+Check (eq_refl : @EntriesToOwnedSliceBudgetContractCorrect = @ReviewedEntriesToOwnedSliceBudgetContractCorrect).
