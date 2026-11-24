@@ -295,6 +295,15 @@ class ReturnedLength(unittest.TestCase):
         self.assertEqual(nodes['dest_call_after']['original_component'],
                          '(dst + (bv_unsigned (count))) ↦ₘ? (want - (bv_unsigned (count)))')
         self.assertEqual(sorted(region.ownership_id for region in seed.state.memory), ['dest', 'dest_call_after'])
+        # `*` names the region at the argument by its own length, whatever its spelling: the same seed.
+        with tempfile.TemporaryDirectory() as directory:
+            fixture, state, call = self.fixture(directory)
+            Path(directory, 'Spec.v').write_text(self.PREFIX_SPEC)
+            call['returned_lengths'] = {'0': '*'}
+            state.registers['x12'] = input_expr('count', 64)
+            _, star_after, _ = call_return_seed([{'seed_pc': '0x10', 'state': state.to_dict()}], call=call,
+                                                function_root=directory, **fixture)
+        self.assertEqual(star_after['assertion_tree']['components'], public_after['assertion_tree']['components'])
 
     def test_a_fill_of_the_whole_region_leaves_no_rest(self):
         # The region's length is verbatim the length the arguments fix: one array, as before.

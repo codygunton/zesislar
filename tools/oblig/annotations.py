@@ -42,7 +42,9 @@ The compiled profile keys, by `boundary`:
                    item (a text, or {id}: that component's text in each seed that has it) is dropped from
                    each edge that holds it (lifted or on the join's root) and from the root before the
                    edges are generalized, so the edges may disagree on it; an item no edge and no root
-                   holds is refused. A fact's `{xN}` is register xN's join binder. Its binders
+                   holds is refused. A fact's `{xN}` is register xN's join binder. With `forget_unplaced:
+                   true` (alone it makes the row owned) an edge resource that has no place on the join's
+                   root is forgotten, a leak (an error exit), instead of refusing the join. Its binders
                    are existentials (typed, no register or role, no Boolean selector, never `= literal`);
                    each predecessor block proves the entry, and `test` reports the visits per predecessor.
   call_site        a `calls` row: the row's `call` object with `call_site_pc`. Its `opaque` rows
@@ -282,9 +284,12 @@ def _join_owned(row):
     if not isinstance(predecessors, list) or len(predecessors) < 2 \
             or not all(isinstance(pc, str) and PC.fullmatch(pc) for pc in predecessors):
         raise AnnotationError('%s: an owned join row lists its predecessor blocks (`at.predecessors`)' % row['id'])
+    if 'forget_unplaced' in row and row['forget_unplaced'] is not True:
+        raise AnnotationError('%s: `forget_unplaced` is true or absent' % row['id'])
     return {'binders': [{'name': binder['name'], 'type': binder['type']} for binder in binders],
             'resources': list(row.get('resources', [])), 'replaces': list(row.get('replaces', [])),
-            'facts': [{'coq': fact['coq']} for fact in facts], 'predecessors': list(predecessors)}
+            'facts': [{'coq': fact['coq']} for fact in facts], 'predecessors': list(predecessors),
+            **({'forget_unplaced': True} if row.get('forget_unplaced') else {})}
 
 
 def compile_profile(data, source=None):
@@ -363,7 +368,7 @@ def compile_profile(data, source=None):
                         or not all(isinstance(text, str) for text in item['resources']):
                     raise AnnotationError('%s: a drop row has `root` and its resource texts' % row['id'])
                 drops.setdefault(at['pc'], []).append(dict(item))
-            if row.get('resources') or row.get('replaces'):
+            if row.get('resources') or row.get('replaces') or row.get('forget_unplaced'):
                 owned, facts = _join_owned(row), [fact for fact in facts if not _owned_names(row) & _words(fact['coq'])]
                 join_owned[at['pc']] = owned
             join_designs.setdefault(at['pc'], []).extend(_join_fact(fact) for fact in facts)
