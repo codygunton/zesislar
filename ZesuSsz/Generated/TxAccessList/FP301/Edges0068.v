@@ -9,6 +9,7 @@ Require Import ZesuSsz.Generated.Stock.Symbols.
 Require Export ZesuSsz.Interfaces.DecodeItem.
 Require Export ZesuSsz.Interfaces.KeysToOwnedSlice.
 Require Export ZesuSsz.Interfaces.EntriesToOwnedSlice.
+Require Export ZesuSsz.Interfaces.KeysEnsureCapacity.
 Require Import ZesuSsz.Contracts.AltFlAllocPremises.
 Require Import ZesuSsz.Contracts.ZiskMemcpyPremise.
 Require Import ZesuSsz.Contracts.AbiBytes.

@@ -19,6 +19,7 @@
     "Require Export ZesuSsz.Interfaces.DecodeItem.",
     "Require Export ZesuSsz.Interfaces.KeysToOwnedSlice.",
     "Require Export ZesuSsz.Interfaces.EntriesToOwnedSlice.",
+    "Require Export ZesuSsz.Interfaces.KeysEnsureCapacity.",
     "Require Import ZesuSsz.Contracts.AltFlAllocPremises.",
     "Require Import ZesuSsz.Contracts.ZiskMemcpyPremise.",
     "Require Import ZesuSsz.Contracts.AbiBytes.",
@@ -38,6 +39,7 @@
     "Require Export ZesuSsz.Interfaces.DecodeItem.",
     "Require Export ZesuSsz.Interfaces.KeysToOwnedSlice.",
     "Require Export ZesuSsz.Interfaces.EntriesToOwnedSlice.",
+    "Require Export ZesuSsz.Interfaces.KeysEnsureCapacity.",
     "Require Import ZesuSsz.Contracts.AltFlAllocPremises.",
     "Require Import ZesuSsz.Contracts.ZiskMemcpyPremise.",
     "Require Import ZesuSsz.Contracts.AbiBytes.",
@@ -951,6 +953,6 @@
   },
   "generated_from": {
     "path": "tools/block/functions/txAccessList.annotations.json",
-    "sha256": "5802e0b8fa2b16df1001f25f0235ac8e5d3c0791c71e85cd341172470913fa46"
+    "sha256": "2fb769531b6817e72361c0d2c41de8671cfaede0e8abc3d42300481a5dd0394b"
   }
 }

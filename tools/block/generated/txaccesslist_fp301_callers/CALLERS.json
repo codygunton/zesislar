@@ -2,11 +2,11 @@
   "status": "SOURCE_DECLARATIONS_ONLY",
   "function": "txAccessList",
   "entries": {
-    "path": "/home/cody/zesislar/_build/agents/aa/txAccessList/round-10/render/render/RESULT.json",
-    "sha256": "79839146f243dc0df24080be07530ba3325372b7017e0cad6bcba748eaa944d8"
+    "path": "/home/cody/zesislar/_build/agents/aa/txAccessList/round-28/render/render/RESULT.json",
+    "sha256": "430b9137eaf5fa03a5105e4126e6d77b0e21f49e71373c1a0148aca140a3acc6"
   },
   "cfg": {
-    "path": "/home/cody/zesislar/_build/agents/aa/txAccessList/inputs-r8/FUNCTION.json",
+    "path": "/home/cody/zesislar/_build/agents/aa/txAccessList/inputs-r28/FUNCTION.json",
     "sha256": "a20524c12269475ee1ba985db07f37b806443ebbb5e304076c4b0a0b0598e317"
   },
   "rows": [
@@ -18,7 +18,7 @@
       ],
       "status": "rendered",
       "caller": {
-        "path": "/home/cody/zesislar/_build/agents/aa/txAccessList/round-10/render/callers/Caller0000.v",
+        "path": "/home/cody/zesislar/_build/agents/aa/txAccessList/round-28/render/callers/Caller0000.v",
         "sha256": "b5758d96933cf7c9e0764c56a0711058c5d6154e8b4b35591af30d7efa731d87"
       },
       "lemma": "DesignedBoundary_80000000",
@@ -65,7 +65,7 @@
       ],
       "status": "rendered",
       "caller": {
-        "path": "/home/cody/zesislar/_build/agents/aa/txAccessList/round-10/render/callers/Caller00ac.v",
+        "path": "/home/cody/zesislar/_build/agents/aa/txAccessList/round-28/render/callers/Caller00ac.v",
         "sha256": "c0d968817d850bd19d9331fbb43f8794642d6c34bca5b63fff09ce0b3334cf4a"
       },
       "lemma": "DesignedBoundary_800000ac",
@@ -81,7 +81,7 @@
       ],
       "status": "rendered",
       "caller": {
-        "path": "/home/cody/zesislar/_build/agents/aa/txAccessList/round-10/render/callers/Caller00c4.v",
+        "path": "/home/cody/zesislar/_build/agents/aa/txAccessList/round-28/render/callers/Caller00c4.v",
         "sha256": "5bfbfef5b5402c8c7c95b11c404f73c75f8e25467b824e15a145de49a7e6c78b"
       },
       "lemma": "DesignedBoundary_800000c4",
@@ -118,7 +118,7 @@
       ],
       "status": "rendered",
       "caller": {
-        "path": "/home/cody/zesislar/_build/agents/aa/txAccessList/round-10/render/callers/Caller00ec.v",
+        "path": "/home/cody/zesislar/_build/agents/aa/txAccessList/round-28/render/callers/Caller00ec.v",
         "sha256": "69fdfc1cd2f42e1c294af3ff3a837783f412a2bab1d5d1a0d664e76e173a29d4"
       },
       "lemma": "DesignedBoundary_800000ec",
@@ -163,8 +163,16 @@
       "successors": [
         "015c"
       ],
-      "status": "refused",
-      "reason": "successor entry not rendered: 015c"
+      "status": "rendered",
+      "caller": {
+        "path": "/home/cody/zesislar/_build/agents/aa/txAccessList/round-28/render/callers/Caller0128.v",
+        "sha256": "9c4102593e16a38c308249466d7b8e610fb87f56913a8642efac17c4ce536ef1"
+      },
+      "lemma": "DesignedBoundary_80000128",
+      "preconditions": [
+        "instr_pre 0x8000015c (ZesuSsz.Generated.TxAccessList.FP301.Pilot015cEntries.fp_machineAt015c (args) (returnAddress) (K))%I",
+        "instr_pre 0x800d6960 (ZesuSsz.Interfaces.DecodeItem.decodeItemCallSpec2)%I"
+      ]
     },
     {
       "case": "015c",
@@ -174,7 +182,7 @@
         "04a8"
       ],
       "status": "refused",
-      "reason": "own entry not rendered"
+      "reason": "successor entry not rendered: 04a8"
     },
     {
       "case": "0164",
@@ -184,7 +192,7 @@
         "04a8"
       ],
       "status": "refused",
-      "reason": "own entry not rendered"
+      "reason": "successor entry not rendered: 04a8"
     },
     {
       "case": "0170",
@@ -194,7 +202,7 @@
         "0248"
       ],
       "status": "refused",
-      "reason": "own entry not rendered"
+      "reason": "successor entry not rendered: 0248"
     },
     {
       "case": "0188",
@@ -202,8 +210,15 @@
       "successors": [
         "018c"
       ],
-      "status": "refused",
-      "reason": "own entry not rendered"
+      "status": "rendered",
+      "caller": {
+        "path": "/home/cody/zesislar/_build/agents/aa/txAccessList/round-28/render/callers/Caller0188.v",
+        "sha256": "f68b93c899b5f3dae4a4ad5ee8c05a9bfc1d9759f014f4c1d8065da73a720807"
+      },
+      "lemma": "DesignedBoundary_80000188",
+      "preconditions": [
+        "instr_pre 0x8000018c (ZesuSsz.Generated.TxAccessList.FP301.Pilot018cEntries.fp_machineAt018c (args) (returnAddress) (K))%I"
+      ]
     },
     {
       "case": "018c",
@@ -211,8 +226,16 @@
       "successors": [
         "01a0"
       ],
-      "status": "refused",
-      "reason": "own entry not rendered"
+      "status": "rendered",
+      "caller": {
+        "path": "/home/cody/zesislar/_build/agents/aa/txAccessList/round-28/render/callers/Caller018c.v",
+        "sha256": "a17bc938f50a681187cff97fd3ad5a55b98fe2e61cb120060437e18a0b88cec5"
+      },
+      "lemma": "DesignedBoundary_8000018c",
+      "preconditions": [
+        "instr_pre 0x800001a0 (ZesuSsz.Generated.TxAccessList.FP301.Pilot01a0Entries.fp_machineAt01a0 (args) (returnAddress) (K))%I",
+        "instr_pre 0x800d6960 (ZesuSsz.Interfaces.DecodeItem.decodeItemCallSpec2)%I"
+      ]
     },
     {
       "case": "01a0",
@@ -222,7 +245,7 @@
         "04a8"
       ],
       "status": "refused",
-      "reason": "own entry not rendered"
+      "reason": "successor entry not rendered: 04a8"
     },
     {
       "case": "01a8",
@@ -232,7 +255,7 @@
         "04a8"
       ],
       "status": "refused",
-      "reason": "own entry not rendered"
+      "reason": "successor entry not rendered: 04a8"
     },
     {
       "case": "01b4",
@@ -242,7 +265,7 @@
         "04a8"
       ],
       "status": "refused",
-      "reason": "own entry not rendered"
+      "reason": "successor entry not rendered: 04a8"
     },
     {
       "case": "01bc",
@@ -250,8 +273,16 @@
       "successors": [
         "01f8"
       ],
-      "status": "refused",
-      "reason": "own entry not rendered"
+      "status": "rendered",
+      "caller": {
+        "path": "/home/cody/zesislar/_build/agents/aa/txAccessList/round-28/render/callers/Caller01bc.v",
+        "sha256": "6caa5c875b4bd700d89fa5ac7cdd7216ac5a226b2ebe66c7e3b1f581a2d3bfa4"
+      },
+      "lemma": "DesignedBoundary_800001bc",
+      "preconditions": [
+        "instr_pre 0x800001f8 (ZesuSsz.Generated.TxAccessList.FP301.Pilot01f8Entries.fp_machineAt01f8 (args) (returnAddress) (K))%I",
+        "instr_pre 0x800cb40c (ZesuSsz.Interfaces.KeysEnsureCapacity.keysEnsureCapacityCallSpec2)%I"
+      ]
     },
     {
       "case": "01f8",
@@ -261,7 +292,7 @@
         "04a8"
       ],
       "status": "refused",
-      "reason": "own entry not rendered"
+      "reason": "successor entry not rendered: 0204, 04a8"
     },
     {
       "case": "0204",
@@ -545,8 +576,8 @@
       "reason": "own entry not rendered"
     }
   ],
-  "rendered": 4,
+  "rendered": 8,
   "inlined": 0,
-  "refused": 49,
+  "refused": 45,
   "proof_ran": false
 }
