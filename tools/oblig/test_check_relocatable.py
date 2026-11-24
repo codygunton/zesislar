@@ -59,6 +59,17 @@ class CheckRelocatableTests(unittest.TestCase):
         # Not whole tokens: a longer number, a hash fragment, an offset.
         self.assertEqual(hits(f'1{decimal} {decimal}7 ab{low} +0x6960 {ADDRESS}0'), [])
 
+    def test_whole_image_range(self):
+        hits = check_relocatable.address_hits
+        text_end = '0x' + '8010' + 'fd78'
+        high = '0x' + '80ff' + 'ffff'
+        self.assertEqual(hits(f'({text_end})%Z <= x'), [(1, text_end)])
+        self.assertEqual(hits(high), [(1, high)])
+        for decimal in (str((1 << 31) + 0x10fd78), str((1 << 31) + 0xffffff)):
+            self.assertEqual(hits(f'({decimal})%Z'), [(1, decimal)])
+        # Outside the image: RAM, an address one hex digit longer.
+        self.assertEqual(hits('0x' + 'a000' + '0000' + ' 0x' + '8010' + 'fd780'), [])
+
 
 if __name__ == '__main__':
     unittest.main()
