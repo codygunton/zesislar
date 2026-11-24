@@ -784,6 +784,34 @@
       "index": "(txBlockWord call3_after 0 - bv_unsigned (txInputPointer args) + 16)%Z",
       "scale": 1,
       "offset": 16
+    },
+    {
+      "pc": "+0x1c4",
+      "array": "txInputBytes args",
+      "index": "(call5_payload_offset + 0)%Z",
+      "scale": 1,
+      "offset": 0
+    },
+    {
+      "pc": "+0x1c8",
+      "array": "txInputBytes args",
+      "index": "(call5_payload_offset + 8)%Z",
+      "scale": 1,
+      "offset": 8
+    },
+    {
+      "pc": "+0x1cc",
+      "array": "txInputBytes args",
+      "index": "(call5_payload_offset + 16)%Z",
+      "scale": 1,
+      "offset": 16
+    },
+    {
+      "pc": "+0x1d0",
+      "array": "txInputBytes args",
+      "index": "(call5_payload_offset + 24)%Z",
+      "scale": 1,
+      "offset": 24
     }
   ],
   "unreachable_entries": [
@@ -905,6 +933,6 @@
   },
   "generated_from": {
     "path": "tools/block/functions/txAccessList.annotations.json",
-    "sha256": "669fca14e92be0f2017f976ae59e8e963e441687d0d75cc75e13fb972d230f59"
+    "sha256": "2fdcad4609d2ba8839279261a13d4896ee0a3e323d9ff9b2d59a02f1fd7446f8"
   }
 }

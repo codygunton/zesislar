@@ -937,19 +937,23 @@
     },
     {
      "name": "tx_entries",
-     "type": "ArrayListState"
+     "type": "ArrayListState",
+     "exec": "{| arrayListPointer := snapshotWord {memory} (bv_unsigned (txStackPointer args) - 448); arrayListLength := snapshotWord {memory} ((bv_unsigned (txStackPointer args) - 448) + 8); arrayListCapacity := snapshotWord {memory} ((bv_unsigned (txStackPointer args) - 448) + 16); arrayListItems := snapshotRead {memory} (snapshotWord {memory} (bv_unsigned (txStackPointer args) - 448)) (40 * snapshotWord {memory} ((bv_unsigned (txStackPointer args) - 448) + 8)) |}"
     },
     {
      "name": "tx_done",
-     "type": "list AccessListEntryValue"
+     "type": "list AccessListEntryValue",
+     "exec": "match candidateDecodeItem (txInputBytes args) with candidateSuccess _ hl pl => let walked := firstn (Z.to_nat (bv_unsigned outer_x20 - bv_unsigned (txInputPointer args) - hl)) (itemPayload (txInputBytes args) hl pl) in match snd (accessListEntriesWalk (length walked) walked) with Some d => d | None => [] end | _ => [] end"
     },
     {
      "name": "tx_images",
-     "type": "list TxAccessListEntryImage"
+     "type": "list TxAccessListEntryImage",
+     "exec": "map (fun k => {| imageKeysPointer := snapshotLe (firstn 8 (skipn (40 * k) (arrayListItems tx_entries))); imagePadding := firstn 4 (skipn (40 * k + 36) (arrayListItems tx_entries)) |}) (seq 0 (Z.to_nat (arrayListLength tx_entries)))"
     },
     {
      "name": "tx_scratch",
-     "type": "list byte"
+     "type": "list byte",
+     "exec": "{bytes:zisk-scratch}"
     }
    ],
    "resources": [
@@ -1050,11 +1054,13 @@
     },
     {
      "name": "tx_keys",
-     "type": "ArrayListState"
+     "type": "ArrayListState",
+     "exec": "{| arrayListPointer := snapshotWord {memory} (bv_unsigned (txStackPointer args) - 280); arrayListLength := snapshotWord {memory} ((bv_unsigned (txStackPointer args) - 280) + 8); arrayListCapacity := snapshotWord {memory} ((bv_unsigned (txStackPointer args) - 280) + 16); arrayListItems := snapshotRead {memory} (snapshotWord {memory} (bv_unsigned (txStackPointer args) - 280)) (32 * snapshotWord {memory} ((bv_unsigned (txStackPointer args) - 280) + 8)) |}"
     },
     {
      "name": "tx_done_keys",
-     "type": "list (list byte)"
+     "type": "list (list byte)",
+     "exec": "let walked := firstn (Z.to_nat i) (take (Z.to_nat (bv_unsigned {x22})) (drop (Z.to_nat (bv_unsigned {x23} - bv_unsigned (txInputPointer args))) (txInputBytes args))) in match snd (accessListKeysWalk (length walked) walked) with Some d => d | None => [] end"
     }
    ],
    "resources": [
@@ -1178,6 +1184,111 @@
     "tier": "opus-medium"
    },
    "why": "lw at +0x138 reads the entry's 20-byte address payload at offset 16: a0 is the payload pointer of the +0x108 decodeItem result (word 0 of the record at s0-0x180, result_words of call-108), which points into the input"
+  },
+  {
+   "id": "access-1c4",
+   "request": "txAccessList/decision/access_placement-01c4",
+   "at": {
+    "pc": "+0x1c4",
+    "boundary": "access"
+   },
+   "binders": [],
+   "resources": [],
+   "facts": [],
+   "placement": {
+    "array": "txInputBytes args",
+    "index": "(call5_payload_offset + 0)%Z",
+    "scale": 1,
+    "offset": 0
+   },
+   "author": {
+    "tier": "opus-medium"
+   },
+   "why": "ld at +0x1c4 reads word 0 of the 32-byte storage key payload: a0 (+0x1bc) is word 0 of the +0x19c decodeItem result at s0-0x100, input pointer + call5_payload_offset (result_words of call-19c), which points into the input; the key is appended to the keys list"
+  },
+  {
+   "id": "access-1c8",
+   "request": "txAccessList/decision/access_placement-01c8",
+   "at": {
+    "pc": "+0x1c8",
+    "boundary": "access"
+   },
+   "binders": [],
+   "resources": [],
+   "facts": [],
+   "placement": {
+    "array": "txInputBytes args",
+    "index": "(call5_payload_offset + 8)%Z",
+    "scale": 1,
+    "offset": 8
+   },
+   "author": {
+    "tier": "opus-medium"
+   },
+   "why": "ld at +0x1c8 reads word 1 of the 32-byte storage key payload (see access-1c4)"
+  },
+  {
+   "id": "access-1cc",
+   "request": "txAccessList/decision/access_placement-01cc",
+   "at": {
+    "pc": "+0x1cc",
+    "boundary": "access"
+   },
+   "binders": [],
+   "resources": [],
+   "facts": [],
+   "placement": {
+    "array": "txInputBytes args",
+    "index": "(call5_payload_offset + 16)%Z",
+    "scale": 1,
+    "offset": 16
+   },
+   "author": {
+    "tier": "opus-medium"
+   },
+   "why": "ld at +0x1cc reads word 2 of the 32-byte storage key payload (see access-1c4)"
+  },
+  {
+   "id": "access-1d0",
+   "request": "txAccessList/decision/access_placement-01d0",
+   "at": {
+    "pc": "+0x1d0",
+    "boundary": "access"
+   },
+   "binders": [],
+   "resources": [],
+   "facts": [],
+   "placement": {
+    "array": "txInputBytes args",
+    "index": "(call5_payload_offset + 24)%Z",
+    "scale": 1,
+    "offset": 24
+   },
+   "author": {
+    "tier": "opus-medium"
+   },
+   "why": "ld at +0x1d0 reads word 3 of the 32-byte storage key payload (see access-1c4)"
   }
- ]
+ ],
+ "test": {
+  "imports": [
+   "stdpp.list",
+   "ZesuSsz.Contracts.TxAccessListContract",
+   "ZesuSsz.Contracts.TxAccessListLoopFacts",
+   "ZesuSsz.Contracts.ArrayListContract",
+   "ZesuSsz.Contracts.Candidates.AccessListCandidate",
+   "ZesuSsz.Contracts.RlpDecodeItem",
+   "ZesuSsz.Contracts.TxAccessListBlockEntries"
+  ],
+  "lets": [
+   {
+    "name": "args",
+    "exec": "{| txResultPointer := {entry:x10}; txAllocatorPointer := {entry:x11}; txRestPointer := {entry:x12}; txAllocatorContext := (Z_to_bv 64 (snapshotLe (firstn 8 {entry:bytes:allocator}))); txInputPointer := (Z_to_bv 64 (snapshotLe (firstn 8 {entry:bytes:rest}))); txInputLength := (Z_to_bv 64 (snapshotLe (skipn 8 {entry:bytes:rest}))); txInputBytes := {entry:bytes:input}; txInputEnd := (Z_to_bv 64 (snapshotLe (firstn 8 {entry:bytes:rest}) + snapshotLe (skipn 8 {entry:bytes:rest}))); txStackPointer := {entry:x2}; txReturnAddress := {entry:x1}; txSavedX8 := {entry:x8}; txSavedX9 := {entry:x9}; txSavedX18 := {entry:x18}; txSavedX19 := {entry:x19}; txSavedX20 := {entry:x20}; txSavedX21 := {entry:x21}; txSavedX22 := {entry:x22}; txSavedX23 := {entry:x23}; txSavedX24 := {entry:x24}; txSavedX25 := {entry:x25}; txSavedX26 := {entry:x26}; txSavedX27 := {entry:x27}; txScratchBefore := {entry:bytes:zisk-scratch} |}"
+   },
+   {
+    "name": "returnAddress",
+    "exec": "bv_unsigned {entry:x1}"
+   }
+  ]
+ }
 }
