@@ -44,11 +44,13 @@ Require ZesuSsz.Proofs.KeysEnsureCapacity.FP301.Caller008c_slot0.
 Require ZesuSsz.Proofs.KeysEnsureCapacity.FP301.Caller008c_slot1.
 Require ZesuSsz.Proofs.KeysEnsureCapacity.FP301.Caller008c_slot2.
 Require ZesuSsz.Proofs.KeysEnsureCapacity.FP301.Caller00c0.
+Require ZesuSsz.Proofs.KeysEnsureCapacity.FP301.Caller00ec.
 Require ZesuSsz.Proofs.KeysEnsureCapacity.FP301.Caller00f0.
 Require ZesuSsz.Proofs.KeysEnsureCapacity.FP301.Caller0104.
 Require ZesuSsz.Proofs.KeysEnsureCapacity.FP301.Caller0108.
 Require ZesuSsz.Proofs.KeysEnsureCapacity.FP301.Caller0118.
 Require ZesuSsz.Proofs.KeysEnsureCapacity.FP301.Caller0124.
+Require ZesuSsz.Proofs.KeysEnsureCapacity.FP301.Caller012c.
 Require ZesuSsz.Proofs.KeysEnsureCapacity.FP301.Caller0150.
 Require ZesuSsz.Proofs.KeysEnsureCapacity.FP301.Caller0158.
 Require ZesuSsz.Proofs.KeysEnsureCapacity.FP301.Caller015c.
@@ -57,22 +59,8 @@ Require ZesuSsz.Proofs.KeysEnsureCapacity.FP301.Caller019c.
 Import ListNotations.
 Local Open Scope Z_scope.
 
-(* The 5 open blocks: each field is the statement its block proof must close. *)
+(* The 3 open blocks: each field is the statement its block proof must close. *)
 Record KeysEnsureCapacityOpenBlocks : Prop := {
-  keysEnsureCapacityOpen_800cb4f8 :
-    forall (Sigma : gFunctors) `{!islaG Sigma} `{!threadG},
-    keysEnsureCapacityBlockAt 0x800cb4f8 (@ZesuSsz.Generated.KeysEnsureCapacity.FP301.Pilot00ecEntries.fp_machineAt00ec Sigma _ _) (forall (args : KeysEnsureCapacityBlockArgs) (returnAddress : Z) (K : iProp Sigma),
-    ⊢ instr_pre 0x800cb4fc (ZesuSsz.Generated.KeysEnsureCapacity.FP301.Pilot00f0Entries.fp_machineAt00f0 (args) (returnAddress) (K))%I -∗
-      instr_pre 0x800cb514 (ZesuSsz.Generated.KeysEnsureCapacity.FP301.Pilot0108Entries.fp_machineAt0108 (args) (returnAddress) (K))%I -∗
-      keysEnsureCapacitySelectedCode -∗
-      instr_body 0x800cb4f8 ((ZesuSsz.Generated.KeysEnsureCapacity.FP301.Pilot00ecEntries.fp_machineAt00ec (args) (returnAddress) K) ∗ True));
-  keysEnsureCapacityOpen_800cb538 :
-    forall (Sigma : gFunctors) `{!islaG Sigma} `{!threadG},
-    keysEnsureCapacityBlockAt 0x800cb538 (@ZesuSsz.Generated.KeysEnsureCapacity.FP301.Pilot012cEntries.fp_machineAt012c Sigma _ _) (forall (args : KeysEnsureCapacityBlockArgs) (returnAddress : Z) (K : iProp Sigma),
-    ⊢ instr_pre 0x800cb544 (ZesuSsz.Generated.KeysEnsureCapacity.FP301.Pilot0138Entries.fp_machineAt0138 (args) (returnAddress) (K))%I -∗
-      instr_pre 0x800cb568 (ZesuSsz.Generated.KeysEnsureCapacity.FP301.Pilot015cEntries.fp_machineAt015c (args) (returnAddress) (K))%I -∗
-      keysEnsureCapacitySelectedCode -∗
-      instr_body 0x800cb538 ((ZesuSsz.Generated.KeysEnsureCapacity.FP301.Pilot012cEntries.fp_machineAt012c (args) (returnAddress) K) ∗ True));
   keysEnsureCapacityOpen_800cb544 :
     forall (Sigma : gFunctors) `{!islaG Sigma} `{!threadG},
     keysEnsureCapacityBlockAt 0x800cb544 (@ZesuSsz.Generated.KeysEnsureCapacity.FP301.Pilot0138Entries.fp_machineAt0138 Sigma _ _) (forall (args : KeysEnsureCapacityBlockArgs) (returnAddress : Z) (K : iProp Sigma),
@@ -96,7 +84,7 @@ Record KeysEnsureCapacityOpenBlocks : Prop := {
       instr_body 0x800cb588 ((ZesuSsz.Generated.KeysEnsureCapacity.FP301.Pilot017cEntries.fp_machineAt017c (args) (returnAddress) K) ∗ True))
 }.
 
-(* The 20 closed blocks, from their compiled callers. *)
+(* The 22 closed blocks, from their compiled callers. *)
 Record KeysEnsureCapacityClosedBlocks : Prop := {
   keysEnsureCapacityClosed_800cb40c :
     forall (Sigma : gFunctors) `{!islaG Sigma} `{!threadG},
@@ -162,6 +150,13 @@ Record KeysEnsureCapacityClosedBlocks : Prop := {
       instr_pre 0x8004218c (ZesuSsz.Contracts.AltFlAllocPremises.altFlRemapCallSpec)%I -∗
       keysEnsureCapacitySelectedCode -∗
       instr_body 0x800cb4cc ((ZesuSsz.Generated.KeysEnsureCapacity.FP301.Pilot00c0Entries.fp_machineAt00c0 (args) (returnAddress) K) ∗ True));
+  keysEnsureCapacityClosed_800cb4f8 :
+    forall (Sigma : gFunctors) `{!islaG Sigma} `{!threadG},
+    keysEnsureCapacityBlockAt 0x800cb4f8 (@ZesuSsz.Generated.KeysEnsureCapacity.FP301.Pilot00ecEntries.fp_machineAt00ec Sigma _ _) (forall (args : KeysEnsureCapacityBlockArgs) (returnAddress : Z) (K : iProp Sigma),
+    ⊢ instr_pre 0x800cb4fc (ZesuSsz.Generated.KeysEnsureCapacity.FP301.Pilot00f0Entries.fp_machineAt00f0 (args) (returnAddress) (K))%I -∗
+      instr_pre 0x800cb514 (ZesuSsz.Generated.KeysEnsureCapacity.FP301.Pilot0108Entries.fp_machineAt0108 (args) (returnAddress) (K))%I -∗
+      keysEnsureCapacitySelectedCode -∗
+      instr_body 0x800cb4f8 ((ZesuSsz.Generated.KeysEnsureCapacity.FP301.Pilot00ecEntries.fp_machineAt00ec (args) (returnAddress) K) ∗ True));
   keysEnsureCapacityClosed_800cb4fc :
     forall (Sigma : gFunctors) `{!islaG Sigma} `{!threadG},
     keysEnsureCapacityBlockAt 0x800cb4fc (@ZesuSsz.Generated.KeysEnsureCapacity.FP301.Pilot00f0Entries.fp_machineAt00f0 Sigma _ _) (forall (args : KeysEnsureCapacityBlockArgs) (returnAddress : Z) (K : iProp Sigma),
@@ -194,6 +189,13 @@ Record KeysEnsureCapacityClosedBlocks : Prop := {
     ⊢ instr_pre 0x800cb498 (ZesuSsz.Generated.KeysEnsureCapacity.FP301.Pilot008cEntries.fp_machineAt008c_slot1 (args) (returnAddress) (K))%I -∗
       keysEnsureCapacitySelectedCode -∗
       instr_body 0x800cb530 ((ZesuSsz.Generated.KeysEnsureCapacity.FP301.Pilot0124Entries.fp_machineAt0124 (args) (returnAddress) K) ∗ True));
+  keysEnsureCapacityClosed_800cb538 :
+    forall (Sigma : gFunctors) `{!islaG Sigma} `{!threadG},
+    keysEnsureCapacityBlockAt 0x800cb538 (@ZesuSsz.Generated.KeysEnsureCapacity.FP301.Pilot012cEntries.fp_machineAt012c Sigma _ _) (forall (args : KeysEnsureCapacityBlockArgs) (returnAddress : Z) (K : iProp Sigma),
+    ⊢ instr_pre 0x800cb544 (ZesuSsz.Generated.KeysEnsureCapacity.FP301.Pilot0138Entries.fp_machineAt0138 (args) (returnAddress) (K))%I -∗
+      instr_pre 0x800cb568 (ZesuSsz.Generated.KeysEnsureCapacity.FP301.Pilot015cEntries.fp_machineAt015c (args) (returnAddress) (K))%I -∗
+      keysEnsureCapacitySelectedCode -∗
+      instr_body 0x800cb538 ((ZesuSsz.Generated.KeysEnsureCapacity.FP301.Pilot012cEntries.fp_machineAt012c (args) (returnAddress) K) ∗ True));
   keysEnsureCapacityClosed_800cb55c :
     forall (Sigma : gFunctors) `{!islaG Sigma} `{!threadG},
     keysEnsureCapacityBlockAt 0x800cb55c (@ZesuSsz.Generated.KeysEnsureCapacity.FP301.Pilot0150Entries.fp_machineAt0150 Sigma _ _) (forall (args : KeysEnsureCapacityBlockArgs) (returnAddress : Z) (K : iProp Sigma),
@@ -239,11 +241,13 @@ Definition keysEnsureCapacityClosedBlocks : KeysEnsureCapacityClosedBlocks := {|
   keysEnsureCapacityClosed_800cb498_slot1 := @ZesuSsz.Proofs.KeysEnsureCapacity.FP301.Caller008c_slot1.DesignedBoundary_800cb498_slot1;
   keysEnsureCapacityClosed_800cb498_slot2 := @ZesuSsz.Proofs.KeysEnsureCapacity.FP301.Caller008c_slot2.DesignedBoundary_800cb498_slot2;
   keysEnsureCapacityClosed_800cb4cc := @ZesuSsz.Proofs.KeysEnsureCapacity.FP301.Caller00c0.DesignedBoundary_800cb4cc;
+  keysEnsureCapacityClosed_800cb4f8 := @ZesuSsz.Proofs.KeysEnsureCapacity.FP301.Caller00ec.DesignedBoundary_800cb4f8;
   keysEnsureCapacityClosed_800cb4fc := @ZesuSsz.Proofs.KeysEnsureCapacity.FP301.Caller00f0.DesignedBoundary_800cb4fc;
   keysEnsureCapacityClosed_800cb510 := @ZesuSsz.Proofs.KeysEnsureCapacity.FP301.Caller0104.DesignedBoundary_800cb510;
   keysEnsureCapacityClosed_800cb514 := @ZesuSsz.Proofs.KeysEnsureCapacity.FP301.Caller0108.DesignedBoundary_800cb514;
   keysEnsureCapacityClosed_800cb524 := @ZesuSsz.Proofs.KeysEnsureCapacity.FP301.Caller0118.DesignedBoundary_800cb524;
   keysEnsureCapacityClosed_800cb530 := @ZesuSsz.Proofs.KeysEnsureCapacity.FP301.Caller0124.DesignedBoundary_800cb530;
+  keysEnsureCapacityClosed_800cb538 := @ZesuSsz.Proofs.KeysEnsureCapacity.FP301.Caller012c.DesignedBoundary_800cb538;
   keysEnsureCapacityClosed_800cb55c := @ZesuSsz.Proofs.KeysEnsureCapacity.FP301.Caller0150.DesignedBoundary_800cb55c;
   keysEnsureCapacityClosed_800cb564 := @ZesuSsz.Proofs.KeysEnsureCapacity.FP301.Caller0158.DesignedBoundary_800cb564;
   keysEnsureCapacityClosed_800cb568 := @ZesuSsz.Proofs.KeysEnsureCapacity.FP301.Caller015c.DesignedBoundary_800cb568;
