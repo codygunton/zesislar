@@ -47,6 +47,8 @@ The compiled profile keys, by `boundary`:
                    root is forgotten, a leak (an error exit), instead of refusing the join. Its binders
                    are existentials (typed, no register or role, no Boolean selector, never `= literal`);
                    each predecessor block proves the entry, and `test` reports the visits per predecessor.
+                   A resource {coq, length?, minimum} of a memory text adds the entry fact `m <= length`
+                   (proved by each predecessor) and a bounds fact for stores into it.
   call_site        a `calls` row: the row's `call` object with `call_site_pc`. Its `opaque` rows
                    [{`spec`, `use`: framed | consumed | produced, `caller`: [...]}] name spec resources in
                    the spec's text and, for a consumed one, the caller components it takes (a framed one
@@ -279,8 +281,11 @@ def _join_owned(row):
                 raise AnnotationError('%s: an owned join binder is never fixed to a branch literal: %s'
                                       % (row['id'], fact['coq']))
     for item in row.get('resources', []):
-        if not (isinstance(item, str) or isinstance(item, dict) and set(item) == {'coq', 'length'}):
-            raise AnnotationError('%s: an owned join resource is a text or {coq, length}' % row['id'])
+        if not (isinstance(item, str) or isinstance(item, dict) and 'coq' in item
+                and set(item) <= {'coq', 'length', 'minimum'}
+                and (type(item.get('minimum', 1)) is int and item.get('minimum', 1) > 0)):
+            raise AnnotationError('%s: an owned join resource is a text or {coq, length?, minimum?} (minimum a '
+                                  'positive integer)' % row['id'])
     for item in row.get('replaces', []):
         if not (isinstance(item, str) or isinstance(item, dict) and set(item) == {'id'}):
             raise AnnotationError('%s: a replaced join component is a text or {id}' % row['id'])

@@ -995,7 +995,7 @@ def call_return_seed(edges, *, call, function_root, root_seed, shapes, vocabular
                 if (image.updates.get(ids[0]) or ids[0] in splits or ids[0] in kept or ids[0] == callee_frame):
                     raise CallRefused('The consumed caller resource is written or passed elsewhere: ' + caller)
                 consumed.add(ids[0])
-    nodes, regions, extra_facts = [], {}, []
+    nodes, regions, extra_facts, restated = [], {}, [], {}
     piece_name = PieceNames(ownership['components'])
     for component in ownership['components']:
         key, kind = component['id'], component['kind']
@@ -1149,14 +1149,14 @@ def call_return_seed(edges, *, call, function_root, root_seed, shapes, vocabular
                                   'length_original_coq': str(end - start)})
             continue
         elif kind in ('byte_array', 'unknown_byte_array') and node.get('byte_array_expr') is not None:
-            # An origin seed (a loop head or join) may state the array at a new value, the stores before it
-            # folded in, while the root component still names the value the root owned: the call-site paths
-            # hold the origin's value and the callee leaves the array alone, so the return seed keeps it.
+            # An origin seed (a loop head or join) may hold the array at a new value, the stores before it
+            # folded in (its memory region; the component keeps the root's value, as in loop_design.owned_seed):
+            # the call-site paths hold that value and the callee leaves the array alone, so the return seed's
+            # region keeps it and its known bytes.
             region = next((region for region in state.memory if region.ownership_id == key), None)
             if region is not None and region.byte_array is not None \
                     and region.byte_array.to_dict() != node['byte_array_expr']:
-                node.update(original_component='%s ↦ₘ∗ %s' % (node['address_z'], _coq(region.byte_array)),
-                            byte_array_expr=_lower_owned(region.byte_array).to_dict())
+                restated[key] = _lower_owned(region.byte_array)
                 regions[key] = tuple(_lower_owned(byte) for byte in region.bytes)
         nodes.append(node)
     result_links, result_binders, result_minimums = _result_words(call, outputs, splits, fresh, values['argv'],
@@ -1345,7 +1345,8 @@ def call_return_seed(edges, *, call, function_root, root_seed, shapes, vocabular
         seed.state.registers['nextPC'] = seed.state.registers['PC']
     seed.state.retained_registers = dict(seed.state.registers)
     seed.state.conditions = list(state.conditions) + system_conditions
-    seed.state.memory = [replace(region, bytes=regions.get(region.ownership_id, region.bytes))
+    seed.state.memory = [replace(region, bytes=regions.get(region.ownership_id, region.bytes),
+                                 byte_array=restated.get(region.ownership_id, region.byte_array))
                          for region in seed.state.memory]
     result_ids = {link['resource_id'] for link in result_links}
     links = [link for link in seed.state.word_links if link['resource_id'] in result_ids]
