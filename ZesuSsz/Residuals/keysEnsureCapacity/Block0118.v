@@ -28,4 +28,4 @@ apply bv_eq.
 rewrite Hz.
 reflexivity.
 Qed.
-#[export] Hint Resolve residual_keysEnsureCapacity_0118_0d6f030f926e9c51 : zesu_residual.
+#[export] Hint Extern 0 => ZesuSsz.Automation2.ResidualLemmas.zesu_residual_exact constr:(residual_keysEnsureCapacity_0118_0d6f030f926e9c51) : zesu_residual_exact.

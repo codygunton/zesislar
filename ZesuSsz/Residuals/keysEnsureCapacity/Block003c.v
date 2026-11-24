@@ -32,7 +32,7 @@ assert (Hsm : arrayListCapacity (ensureBlockList args) mod 2 ^ 64 = arrayListCap
 rewrite Hsm in Hm.
 first [ exact (eq_sym Hm) | lia ].
 Qed.
-#[export] Hint Resolve residual_keysEnsureCapacity_003c_38f6997bccbd8639 : zesu_residual.
+#[export] Hint Extern 0 => ZesuSsz.Automation2.ResidualLemmas.zesu_residual_exact constr:(residual_keysEnsureCapacity_003c_38f6997bccbd8639) : zesu_residual_exact.
 
 (* goal 003c-2: goal.v sha256 c5ed0d2c04a3c0d492a6024bf4816c4f9daf45b121b32db5a857d9f54d58e143, proof.v sha256 afef3febffca9b821b8472a5c7f720185d2a6792ebd714b56fdebff962c5ad5b *)
 Lemma residual_keysEnsureCapacity_003c_0f4cb295515deea4 :
@@ -44,4 +44,4 @@ apply H25.
 rewrite Hc.
 first [ reflexivity | (apply bv_eq; vm_compute; reflexivity) | (vm_compute; reflexivity) | (unfold Z_to_bv; apply bv_eq; cbn; reflexivity) ].
 Qed.
-#[export] Hint Resolve residual_keysEnsureCapacity_003c_0f4cb295515deea4 : zesu_residual.
+#[export] Hint Extern 0 => ZesuSsz.Automation2.ResidualLemmas.zesu_residual_exact constr:(residual_keysEnsureCapacity_003c_0f4cb295515deea4) : zesu_residual_exact.
