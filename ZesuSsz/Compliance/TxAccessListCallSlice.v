@@ -8,6 +8,7 @@ Require Import ZesuSsz.Contracts.RlpDecodeItem.
 Require Import ZesuSsz.Contracts.RlpDecodeItemContract.
 Require Import ZesuSsz.Contracts.DecodeItemCallData.
 Require Import ZesuSsz.Contracts.DecodeItemPayloadBounds.
+Require Import ZesuSsz.Contracts.DecodeItemCallFacts.
 Require Import ZesuSsz.Contracts.Candidates.AccessListCandidate.
 Require Import ZesuSsz.Contracts.TxAccessListMeaning.
 Require Import ZesuSsz.Contracts.TxAccessListContract.
@@ -164,4 +165,81 @@ Proof.
   intros H. unfold txAccessListArgsRanges in H.
   change (2 ^ 30) with 1073741824 in H. change (2 ^ 31) with 2147483648 in H.
   lia.
+Qed.
+
+(* The payload of a call that returned a list lies inside that call's input,
+   even when it is empty: a list result is a success (an error clears byte
+   16), its prefix is at least 0xc0, so the payload starts after the header,
+   and the header fits, so header and payload do not wrap 2^64. The entry
+   loop calls decodeItem on the entry's payload with no length test
+   (+0xec..+0x108), so an empty entry (0xc0) reaches that call. *)
+Lemma txAccessListListPayloadWindow (argv0 q : bv 64) (rest : list (bv 64)) (sp : bv 64)
+    (inputEnd : Z) (input before after : list byte) :
+  decodeItemCallMeaning (decodeItemCallDataArgs (argv0 :: q :: rest) sp inputEnd input before) after ->
+  bv_unsigned (bv_and (bv_zero_extend 64 (List.nth 16 after (BV 8 0))) (BV 64 1)) <> 0 ->
+  headerFits input ->
+  bv_unsigned q <= bv_unsigned (leWord64 after 0) /\
+  bv_unsigned (leWord64 after 0) + bv_unsigned (leWord64 after 8) <=
+    bv_unsigned q + Z.of_nat (length input).
+Proof.
+  intros Hm Hlist Hfits.
+  pose proof (decodeItemMeaningC1B _ _ (decodeItemCallMeaningLink _ _ Hm)) as Hc1b.
+  cbn [decodeItemCallDataArgs decodeItemInputPointer decodeItemInputBytes
+       decodeItemBeforeStorage] in Hc1b.
+  change ((argv0 :: q :: rest) !!! 1%nat) with q in Hc1b.
+  unfold C1BResult, candidateResult40 in Hc1b. destruct Hc1b as (_ & Hres & _).
+  assert (Hbit : forall b : byte, bv_unsigned b = 0 ->
+            bv_unsigned (bv_and (bv_zero_extend 64 b) (BV 64 1)) = 0).
+  { intros b Hb. rewrite bv_and_unsigned, bv_zero_extend_unsigned. { rewrite Hb. reflexivity. } done. }
+  destruct (candidateDecodeItem input) as [|isList h p] eqn:Hc.
+  - exfalso. apply Hlist, Hbit. destruct Hres as [_ Hb].
+    exact (byteAtNth _ _ _ (Hb 16%nat ltac:(lia))).
+  - destruct Hres as (_ & _ & H0 & H8 & H16 & _).
+    pose proof (candidateDecodeItemFitsNoWrap _ _ _ _ Hfits Hc) as Hnw.
+    destruct (candidateDecodeItemSuccessBounds _ _ _ _ Hc) as (Hh & Hin & _).
+    rewrite (leWord64Value _ _ _ H8).
+    destruct input as [|prefix tail]; [discriminate|].
+    destruct isList; cycle 1.
+    { exfalso. apply Hlist, Hbit. exact (byteAtNth _ _ _ H16). }
+    assert (Hpre : bv_unsigned prefix <> 128).
+    { intros E. unfold candidateDecodeItem in Hc. rewrite E in Hc. discriminate. }
+    rewrite (proj2 (Z.eqb_neq _ _) Hpre) in H0.
+    rewrite (leWord64Value _ _ _ H0).
+    assert (Hp : 0 <= p) by (destruct H8 as [_ <-]; apply littleEndianRange).
+    unfold word64Modulus in *. change (2 ^ 64) with 18446744073709551616 in *.
+    rewrite Z.mod_small in Hin by lia.
+    pose proof (bv_unsigned_in_range _ q). lia.
+Qed.
+
+(* A load the block computes reads the outcome at the element type `bv 8`
+   (`take`/`drop` at `bv 8`), not at `byte`: the call step matches the window
+   facts syntactically, so they are stated in that spelling. *)
+Local Notation leWord64Bits bytes offset :=
+  (Z_to_bv 64 (little_endian_to_bv 8 (@take (bv 8) (N.to_nat 8) (@drop (bv 8) offset bytes))))
+  (only parsing).
+
+(* The same window over the caller's whole input, for a call on the window
+   [p, p + l) of it (the entry call at +0xc4 on the cursor window). *)
+Lemma txAccessListListPayloadInInput (args : TxAccessListArgs) (argv0 p l : bv 64)
+    (rest : list (bv 64)) (sp : bv 64) (inputEnd : Z) (before after : list byte) :
+  let window := take (Z.to_nat (bv_unsigned l))
+    (drop (Z.to_nat (bv_unsigned p - bv_unsigned (txInputPointer args))) (txInputBytes args)) in
+  decodeItemCallMeaning (decodeItemCallDataArgs (argv0 :: p :: l :: rest) sp inputEnd window before) after ->
+  bv_unsigned (bv_and (bv_zero_extend 64 (List.nth 16 after (BV 8 0))) (BV 64 1)) <> 0 ->
+  headerFits window ->
+  bv_unsigned (txInputPointer args) <= bv_unsigned p ->
+  bv_unsigned p + bv_unsigned l <=
+    bv_unsigned (txInputPointer args) + Z.of_nat (length (txInputBytes args)) ->
+  bv_unsigned (txInputPointer args) <= bv_unsigned (leWord64Bits after 0) /\
+  bv_unsigned (leWord64Bits after 0) + bv_unsigned (leWord64Bits after 8) <=
+    bv_unsigned (txInputPointer args) + Z.of_nat (length (txInputBytes args)).
+Proof.
+  intros window Hm Hlist Hfits Hlo Hhi.
+  destruct (txAccessListListPayloadWindow _ _ _ _ _ _ _ _ Hm Hlist Hfits) as [H1 H2].
+  change (leWord64Bits after 0) with (leWord64 after 0).
+  change (leWord64Bits after 8) with (leWord64 after 8).
+  subst window. rewrite length_take, length_drop in H2.
+  set (w0 := bv_unsigned (leWord64 after 0)) in *.
+  set (w8 := bv_unsigned (leWord64 after 8)) in *.
+  pose proof (bv_unsigned_in_range _ l). lia.
 Qed.

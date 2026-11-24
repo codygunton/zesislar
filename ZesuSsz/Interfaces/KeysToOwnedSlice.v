@@ -62,6 +62,7 @@ Module Type KeysToOwnedSliceSealedSignature.
       (⊢ code -∗ instr_body entry keysToOwnedSliceCallSpecDefinition) ->
       ⊢ code -∗ instr_body entry keysToOwnedSliceCallSpec2Sealed.
   Axiom keysToOwnedSliceCallDomainIntro : forall argv context state resultBefore scratchBefore, keysToOwnedSliceBoundaryDomain argv context state resultBefore scratchBefore -> keysToOwnedSliceCallDomain argv context state resultBefore scratchBefore.
+  Axiom keysToOwnedSliceCallDomainResultLength : forall argv context state resultBefore scratchBefore, keysToOwnedSliceCallDomain argv context state resultBefore scratchBefore -> length resultBefore = 24%nat.
   Axiom keysToOwnedSliceCallAllowsWellFormed : forall state resultBefore outcome, keysToOwnedSliceCallAllows state resultBefore outcome -> arrayListWellFormed keysElementBytes (toOwnedListAfter outcome) /\ arrayListWellFormed keysElementBytes (toOwnedSlice outcome) /\ arrayListCapacity (toOwnedSlice outcome) = arrayListLength (toOwnedSlice outcome).
   Axiom keysToOwnedSliceCallAllowsEmpty : forall state resultBefore outcome, keysToOwnedSliceCallAllows state resultBefore outcome -> arrayListLength state = 0 -> toOwnedKind outcome = arrayListSuccess /\ toOwnedListAfter outcome = arrayListEmpty keysEmptyPointer /\ toOwnedSlice outcome = arrayListEmpty (arrayListPointer state) /\ toOwnedResultAfter outcome = arrayListResultImage resultBefore (arrayListPointer state) 0.
   Axiom keysToOwnedSliceCallAllowsSuccess : forall state resultBefore outcome, keysToOwnedSliceCallAllows state resultBefore outcome -> arrayListLength state <> 0 -> toOwnedKind outcome = arrayListSuccess -> toOwnedListAfter outcome = arrayListEmpty (arrayListPointer state) /\ arrayListLength (toOwnedSlice outcome) = arrayListLength state /\ arrayListItems (toOwnedSlice outcome) = arrayListItems state /\ toOwnedResultAfter outcome = arrayListResultImage resultBefore (arrayListPointer (toOwnedSlice outcome)) (arrayListLength state).
@@ -109,6 +110,7 @@ Module KeysToOwnedSliceSealed : KeysToOwnedSliceSealedSignature.
         True)))%I.
   Definition keysToOwnedSliceCallSpec2CorrectFrom := @keysToOwnedSliceCallSpecCorrectFrom.
   Definition keysToOwnedSliceCallDomainIntro := keysToOwnedSliceDomainIntro.
+  Definition keysToOwnedSliceCallDomainResultLength := keysToOwnedSliceDomainResultLength.
   Definition keysToOwnedSliceCallAllowsWellFormed := keysToOwnedSliceAllowsWellFormed.
   Definition keysToOwnedSliceCallAllowsEmpty := keysToOwnedSliceAllowsEmpty.
   Definition keysToOwnedSliceCallAllowsSuccess := keysToOwnedSliceAllowsSuccess.
@@ -156,6 +158,10 @@ Global Instance : LithiumUnfold (@keysToOwnedSliceCallSpec2) := I.
 Global Typeclasses Opaque keysToOwnedSliceCallSpec2.
 
 (* Facts a caller derives from a forwarded call fact. *)
+#[export] Instance keysToOwnedSliceCallDomainResultLengthDerivedFacts argv context state resultBefore scratchBefore :
+  ZesuDerivedFacts (keysToOwnedSliceCallDomain argv context state resultBefore scratchBefore)
+    (length resultBefore = 24%nat) :=
+  keysToOwnedSliceCallDomainResultLength argv context state resultBefore scratchBefore.
 #[export] Instance keysToOwnedSliceCallAllowsWellFormedDerivedFacts state resultBefore outcome :
   ZesuDerivedFacts (keysToOwnedSliceCallAllows state resultBefore outcome)
     (arrayListWellFormed keysElementBytes (toOwnedListAfter outcome) /\ arrayListWellFormed keysElementBytes (toOwnedSlice outcome) /\ arrayListCapacity (toOwnedSlice outcome) = arrayListLength (toOwnedSlice outcome)) :=
