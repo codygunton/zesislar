@@ -183,10 +183,12 @@ def hull(values, conditions, *, name, scalar_ranges=None):
 
 
 def witness_plan(binders, *, register_bindings, source_bindings=None, source_context=None,
-                 array_bindings=None):
+                 array_bindings=None, ghost_binders=()):
     """Use only the selector's existing register/pair input constructors.
 
-    array_bindings maps a binder to the owned byte array whose value it is.
+    array_bindings maps a binder to the owned byte array whose value it is. ghost_binders names
+    a loop's owned ghost binders (loop_design.owned_seed): no register or array holds one, and
+    every edge passes the binder of its own entry, the same value on every edge.
     """
     inputs, witnesses = [], []
     array_bindings = array_bindings or {}
@@ -208,6 +210,10 @@ def witness_plan(binders, *, register_bindings, source_bindings=None, source_con
         if name in array_bindings and name not in register_bindings:
             inputs.append({'kind': 'owned_array', 'resource_id': array_bindings[name]})
             witnesses.append({'binder': name, 'resource_id': array_bindings[name], 'type': binder['type']})
+            continue
+        if name in ghost_binders and name not in register_bindings:
+            inputs.append({'kind': 'owned_ghost', 'binder': name})
+            witnesses.append({'binder': name, 'owned_ghost': True, 'type': binder['type']})
             continue
         if name not in register_bindings:
             raise ValueError('A join witness needs array packaging or an approved input interface: ' + name)
@@ -2036,11 +2042,12 @@ def generalize_owned_join(alternatives, *, original_seed, entry_pc, vocabulary,
                       if component['kind'] == 'byte_array' and component.get('value') in
                       {binder['name'] for binder in ordered}}
     full_witness_plan = witness_plan(ordered, register_bindings=register_bindings,
-                                     array_bindings=array_bindings)
+                                     array_bindings=array_bindings,
+                                     ghost_binders={binder['name'] for binder in ordered if binder.get('owned')})
     owned_edges = []
     for edge in plan['edges']:
         record = deepcopy(edge)
-        # An array witness is the inherited array value, the same on every edge.
+        # An array or owned ghost witness is the inherited value, the same on every edge.
         record['ordered_witnesses'] = [{'binder': binder['name'],
             'expression': deepcopy(edge['original_values'][register_bindings[binder['name']][0]])
             if binder['name'] in register_bindings else input_expr(binder['name'], None).to_dict()}

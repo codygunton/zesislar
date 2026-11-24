@@ -5,7 +5,8 @@ import unittest
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from join_generalize import (_list_items, _mentions_free, _register_definition, _span_bytes, align_history_groups,
-                             check_fact_accounting, common_root_ancestor, drop_unheld_binders, history_members)
+                             check_fact_accounting, common_root_ancestor, drop_unheld_binders, history_members,
+                             witness_plan)
 from forward_resources import OwnedBytes
 from symbolic_state import Expr, MemoryRegion, SymbolicState, bits, input_expr, operation
 from function_profiles import return_site
@@ -100,6 +101,16 @@ class UnheldBinders(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, 'stays in an owned resource'):
             drop_unheld_binders(state_with({}, []), components, {}, [{'name': 'tx_entries', 'type': 'ArrayListState'}],
                                 {'binders': []}, ['x1'], lambda key, writes: '')
+
+    def test_a_loop_owned_ghost_binder_is_its_own_witness(self):
+        binders = [{'name': 'machine_x10', 'type': 'bv 64'}, {'name': 'tx_entries', 'type': 'ArrayListState'}]
+        plan = witness_plan(binders, register_bindings={'machine_x10': ('x10', 64)}, ghost_binders={'tx_entries'})
+        self.assertEqual(plan['ordered_binders'], ['machine_x10', 'tx_entries'])
+        self.assertEqual(plan['input']['right']['left'], {'kind': 'owned_ghost', 'binder': 'tx_entries'})
+        self.assertEqual(plan['ordered_witnesses'][1],
+                         {'binder': 'tx_entries', 'owned_ghost': True, 'type': 'ArrayListState'})
+        with self.assertRaisesRegex(ValueError, 'needs array packaging or an approved input interface: tx_entries'):
+            witness_plan(binders, register_bindings={'machine_x10': ('x10', 64)})
 
 
 class RegisterDefinition(unittest.TestCase):
