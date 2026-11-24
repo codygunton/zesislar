@@ -3,6 +3,7 @@ Require Import ZesuSsz.Automation2.PureFacts.
 Require Import ZesuSsz.Automation2.Rewrites.
 From Coq Require Import ZArith Lia.
 Require Import ZesuSsz.Automation2.LiaHook.
+Require ZesuSsz.Automation2.ContextCollection.
 
 (* A pure goal whose head a contract registers in `zesu_goal_domain`: a
    callee's call-site domain that is a conjunction of address arithmetic
@@ -71,11 +72,19 @@ Ltac zesu_final_solver_goal :=
   | |- ?target => lazymatch type of target with Prop => idtac end
   end.
 
+(* bv_solve only on a conjunct that reads a bit-vector, over the facts that
+   share its atoms: on a conjunct without one (a list length) it can only
+   refute the whole context, which on a block's context does not end
+   (txAccessList block 0x0248, a keysToOwnedSlice call domain). *)
 Ltac zesu_goal_domain_part :=
   zesu_final_solver_goal;
   first
     [zesu_lia
-    |bv_solve
+    |lazymatch goal with
+     | |- context [bv_unsigned _] =>
+         ZesuSsz.Automation2.ContextCollection.zesu_solve_goal_selected
+           ("goal_domain.part"%string) ltac:(bv_solve)
+     end
     |match goal with
      | |- context [bv_unsigned ?word] =>
          pose proof (bv_unsigned_in_range _ word);
