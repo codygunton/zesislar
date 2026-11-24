@@ -472,12 +472,128 @@
       ]
     },
     {
+      "function": "keysEnsureCapacity",
+      "symbol": "array_list.Aligned([32]u8,null).ensureTotalCapacity",
+      "status": "proved",
+      "reason": "Plan B4 (issue #347): keysEnsureCapacityCompliance proves KeysEnsureCapacityContractCorrect; every block of the region has a closure certificate (KeysEnsureCapacityBlockObligations has no open block). Plan T6: keysEnsureCapacityBudgetCompliance proves the charged KeysEnsureCapacityBudgetContractCorrect (budget 197, all 25 charged blocks certified).",
+      "compliance_theorems": [
+        "keysEnsureCapacityCompliance",
+        "keysEnsureCapacityBudgetCompliance"
+      ],
+      "budget": 197,
+      "charged": {
+        "contract": {"module": "ZesuSsz.Contracts.KeysEnsureCapacityBudgetContract", "name": "KeysEnsureCapacityBudgetContractCorrect"},
+        "compliance": {"module": "ZesuSsz.Compliance.KeysEnsureCapacityBudgetGeneratedComposition", "name": "keysEnsureCapacityBudgetCompliance"},
+        "code": {"module": "ZesuSsz.Contracts.KeysEnsureCapacityChargedSelected", "name": "keysEnsureCapacityChargedCode"},
+        "call_spec_correct": {"module": "ZesuSsz.Compliance.KeysEnsureCapacityBudgetCallSpec", "name": "keysEnsureCapacityBudgetCallSpec2_correct", "statement": "KeysEnsureCapacityBudgetContractCorrect -> keysEnsureCapacityBudgetContractCode -∗ instr_body sym_array_list_Aligned_32_u8_null_ensureTotalCapacity (step_budget keysEnsureCapacityBudget ∗ keysEnsureCapacityCallSpecDefinition)"}
+      },
+      "owned_prefixes": [
+        "ZesuSsz/Contracts/KeysEnsureCapacity",
+        "ZesuSsz/Compliance/KeysEnsureCapacity",
+        "ZesuSsz/Generated/KeysEnsureCapacity/",
+        "ZesuSsz/Generated/KeysEnsureCapacityBudget/",
+        "ZesuSsz/Proofs/KeysEnsureCapacity/",
+        "ZesuSsz/Proofs/KeysEnsureCapacityBudget/",
+        "ZesuSsz/Residuals/keysEnsureCapacity/"
+      ],
+      "interface": {
+        "module": "ZesuSsz.Interfaces.KeysEnsureCapacity",
+        "sealed_module": "KeysEnsureCapacitySealed",
+        "requires": [
+          "From Coq Require Import List ZArith.",
+          "From stdpp Require Import base list bitvector.definitions.",
+          "Require Import isla.riscv64.riscv64.",
+          "Require Import EvmSailRlp.evm_rlp_types.",
+          "Require Import ZesuSsz.Automation.PureFacts.",
+          "Require Import ZesuSsz.Automation2.Calls.",
+          "Require Import ZesuSsz.Automation2.GoalDomain.",
+          "Require Import ZesuSsz.Contracts.AbiBytes.",
+          "Require Import ZesuSsz.Contracts.ZiskRuntime.",
+          "Require Import ZesuSsz.Contracts.AltFlAllocPremises."
+        ],
+        "exports": [
+          "ZesuSsz.Contracts.DecodeItemCallData",
+          "ZesuSsz.Contracts.ArrayListContract",
+          "ZesuSsz.Contracts.KeysEnsureCapacityContract",
+          "ZesuSsz.Contracts.KeysEnsureCapacityCallSpec2"
+        ],
+        "correct": {
+          "module": "ZesuSsz.Interfaces.KeysEnsureCapacityCorrect",
+          "requires": [
+            "Require Import ZesuSsz.Generated.Stock.Symbols.",
+            "Require ZesuSsz.Compliance.KeysEnsureCapacityCallSpec2.",
+            "Require ZesuSsz.Compliance.KeysEnsureCapacityGeneratedComposition."
+          ],
+          "exports": [
+            "ZesuSsz.Contracts.KeysEnsureCapacitySelected"
+          ],
+          "premises": [],
+          "code": "keysEnsureCapacityContractCode",
+          "entry": "sym_array_list_Aligned_32_u8_null_ensureTotalCapacity",
+          "template_correct": "ZesuSsz.Compliance.KeysEnsureCapacityCallSpec2.keysEnsureCapacityCallSpecDefinition_correct ZesuSsz.Compliance.KeysEnsureCapacityGeneratedComposition.keysEnsureCapacityCompliance"
+        },
+        "goal_domain_unfold": [
+          "keysEnsureCapacityBoundaryDomain",
+          "arrayListWellFormed",
+          "arrayListRamRange"
+        ]
+      },
+      "call_spec": {
+        "name": "keysEnsureCapacityCallSpec2",
+        "template": "keysEnsureCapacityCallSpecDefinition",
+        "template_source": "ZesuSsz/Contracts/KeysEnsureCapacityCallSpec2.v",
+        "correct_from": "keysEnsureCapacityCallSpecCorrectFrom"
+      },
+      "sealed": [
+        {
+          "name": "keysEnsureCapacityCallDomain",
+          "type": "list (bv 64) -> Z -> ArrayListState -> list byte -> Prop",
+          "definition": "keysEnsureCapacityBoundaryDomain"
+        },
+        {
+          "name": "keysEnsureCapacityCallAllows",
+          "type": "bv 64 -> ArrayListState -> EnsureCapacityOutcome -> Prop",
+          "definition": "keysEnsureCapacityBoundaryAllows"
+        }
+      ],
+      "interface_lemmas": [
+        {
+          "name": "keysEnsureCapacityCallDomainIntro",
+          "binders": "argv context state scratchBefore",
+          "premise": "keysEnsureCapacityBoundaryDomain argv context state scratchBefore",
+          "conclusion": "keysEnsureCapacityCallDomain argv context state scratchBefore",
+          "proof": "keysEnsureCapacityDomainIntro",
+          "derived_facts": false,
+          "goal_domain_intro": true
+        },
+        {
+          "name": "keysEnsureCapacityCallAllowsFacts",
+          "binders": "requested state outcome",
+          "premise": "keysEnsureCapacityCallAllows requested state outcome",
+          "conclusion": "arrayListWellFormed keysElementBytes (ensureListAfter outcome) /\\ arrayListLength (ensureListAfter outcome) = arrayListLength state /\\ arrayListItems (ensureListAfter outcome) = arrayListItems state /\\ (ensureKind outcome = arrayListSuccess -> bv_unsigned requested <= arrayListCapacity (ensureListAfter outcome)) /\\ (ensureKind outcome = arrayListOutOfMemory -> ensureListAfter outcome = state)",
+          "proof": "keysEnsureCapacityAllowsFacts",
+          "derived_facts": true
+        },
+        {
+          "name": "keysEnsureCapacityCallAllowsLink",
+          "binders": "requested state outcome",
+          "premise": "keysEnsureCapacityCallAllows requested state outcome",
+          "conclusion": "keysEnsureCapacityBoundaryAllows requested state outcome",
+          "proof": "keysEnsureCapacityAllowsLink",
+          "derived_facts": false,
+          "exit_composition_only": true
+        }
+      ]
+    },
+    {
       "function": "altFlAlloc",
       "symbol": "alt_fl_alloc.alloc",
       "status": "assumed",
       "compliance_theorems": [],
       "owned_prefixes": [],
       "premise": {"module": "ZesuSsz.Contracts.AltFlAllocPremises", "name": "altFlAllocCallPremise", "call_spec": "altFlAllocCallSpec"},
+      "budget": 53,
+      "charged_premise": {"module": "ZesuSsz.Contracts.AltFlAllocBudgetPremises", "name": "altFlAllocBudgetCallPremise"},
       "reason": "Trusted runtime premise (plan B1, issue #347), reached by jalr through alt_fl_alloc.vtable slot 0; statement under user review."
     },
     {
@@ -487,6 +603,8 @@
       "compliance_theorems": [],
       "owned_prefixes": [],
       "premise": {"module": "ZesuSsz.Contracts.AltFlAllocPremises", "name": "altFlRemapCallPremise", "call_spec": "altFlRemapCallSpec"},
+      "budget": 9,
+      "charged_premise": {"module": "ZesuSsz.Contracts.AltFlAllocBudgetPremises", "name": "altFlRemapBudgetCallPremise"},
       "reason": "Trusted runtime premise (plan B1, issue #347), reached by jalr through alt_fl_alloc.vtable slot 16; statement under user review."
     },
     {
@@ -496,6 +614,8 @@
       "compliance_theorems": [],
       "owned_prefixes": [],
       "premise": {"module": "ZesuSsz.Contracts.AltFlAllocPremises", "name": "altFlFreeCallPremise", "call_spec": "altFlFreeCallSpec"},
+      "budget": 42,
+      "charged_premise": {"module": "ZesuSsz.Contracts.AltFlAllocBudgetPremises", "name": "altFlFreeBudgetCallPremise"},
       "reason": "Trusted runtime premise (plan B1, issue #347), reached by jalr through alt_fl_alloc.vtable slot 24; statement under user review."
     },
     {
@@ -505,6 +625,8 @@
       "compliance_theorems": [],
       "owned_prefixes": [],
       "premise": {"module": "ZesuSsz.Contracts.ZiskMemcpyPremise", "name": "ziskMemcpyCallPremise", "call_spec": "ziskMemcpyCallSpec"},
+      "budget": 3,
+      "charged_premise": {"module": "ZesuSsz.Contracts.AltFlAllocBudgetPremises", "name": "ziskMemcpyBudgetCallPremise"},
       "reason": "Trusted runtime premise (plan B1, issue #347), reached by direct call; any source, destination and length; statement under user review."
     }
   ]

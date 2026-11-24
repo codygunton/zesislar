@@ -1,0 +1,68 @@
+{
+  "version": "FP-20261124b",
+  "kind": "source engine pin",
+  "supersedes": "FP-20261124",
+  "provenance": "Agent-assisted proofs, plan B5 (issue #347), branch aa/gen-lowbound: FP-20261124 plus one annotation hook. At an instruction with an access row, a path guard `address = c` with the placed load's address base + off + k and c < L + m + k stops as infeasible (rule placed_load_above_low_bound, report placed_low_refutation, proof_status open: the block proof discharges that trace case), consuming the access row, a supplied low_bound fact `L <= base` (entry_interface_inputs.py, the least bound over a disjunction's alternatives) and a supplied offset_minimum fact `m <= off` (a call row's `result_minimums`, a return-entry fact the call block proves; call_boundary is not pinned). Without such rows the engine behaves as FP-20261124: the golden profiles nextUint64, decodeParentHeader, keysToOwnedSlice and entriesToOwnedSlice render byte-identically.",
+  "files": [
+    {
+      "path": "tools/block/entry_helper_resources.py",
+      "sha256": "56ae1ee71de43b0141712e7635264bccdfeb90943724ea50a91ec1b7c7ee09c4"
+    },
+    {
+      "path": "tools/block/entry_seed.py",
+      "sha256": "746bc86c4c47ebd22a94a88704caa971fe70a47c5b5406355312485da77e4b02"
+    },
+    {
+      "path": "tools/block/forward_design.py",
+      "sha256": "4a48e1b3edca831755ea18a8b7f8256a16700a9030c6e47adc62c404931a487c"
+    },
+    {
+      "path": "tools/block/forward_resource_design.py",
+      "sha256": "989ec1a47689af036543f323ddf6ae22b79037d04976a3efba5c4ef9c35b5843"
+    },
+    {
+      "path": "tools/block/forward_resources.py",
+      "sha256": "a5e0903fb5bad564f98b0712462214ec4ef93576ba3005c9509398e228da4770"
+    },
+    {
+      "path": "tools/block/resource_seed.py",
+      "sha256": "7c2edc2f65edc90408e6a154f06feb577afd908a5415302975ad01388053a2ca"
+    },
+    {
+      "path": "tools/block/symbolic_state.py",
+      "sha256": "5d40cb893d675f40f346dec394fccaedbc1da304d7b5cb0d1afdb4bd6624aac5"
+    },
+    {
+      "path": "tools/block/system_shape_seed.py",
+      "sha256": "99e0c444987ce264a676479c4986772ec355ae8a1546daf81ad83838f784e73b"
+    },
+    {
+      "path": "tools/test_forward_resource_design.py",
+      "sha256": "f55c12db1333426ead2dbf5662bc9f7b717817f476cce56008dcc41628297344"
+    },
+    {
+      "path": "tools/test_forward_resources.py",
+      "sha256": "27e5fe56c08e0e22f2319839d91af38354a98db6b24493ee1beffe552d3b2d71"
+    },
+    {
+      "path": "tools/test_resource_seed.py",
+      "sha256": "9fd099b5d09b568370a0881e09cc8aac418d13b092c10b5d04887108130a510b"
+    },
+    {
+      "path": "tools/test_system_shape_seed.py",
+      "sha256": "c3b68a03eb9f444c25b1f0b2e12b19097cc42ff6392ceb6ea5cd77a5e7d3745a"
+    }
+  ],
+  "entrypoint": "forward_resource_design.evaluate_owned_function",
+  "statement": "Source evaluation does not establish any generated contract or predecessor entailment.",
+  "limitations": [
+    "A load inside an owned uninitialized span (`↦ₘ?`, Islaris' per-byte ∃ v : bv 8) reads fresh existential bytes with no facts; an unowned or out-of-extent uninitialized byte stays unknown.",
+    "Unknown ownership stops propagation.",
+    "Unsupported source expressions remain explicit.",
+    "A jump at a CFG return site leaves the function as a function_return exit; a jump from a CFG tail-call instruction to its callee leaves it as a tail_call exit; any other unknown target stops the path.",
+    "An address that carries an owned array base and a symbolic addend reads that array as a list lookup; its index range (below the actual array length) is a path condition and an open read obligation; an array without a length term stops the read. A store at a symbolic index has an owner only when one initialized owned array base is its addend and every other memory resource is disjoint from that array; its index range is an open obligation.",
+    "A call ends its block; its return site is a cut that continues only from a call-return seed (call_boundary.call_return_seed). Loop cuts require source-bound inputs.",
+    "A profile `access_placements` row is untrusted: it only selects the owned array of a read; the index range stays an open read obligation of the block proof. Stores are not placed.",
+    "A profile `unreachable_reached` row is untrusted: it only stops paths into its block; each predecessor block's step into that block's entry (⌜False⌝, or a call return site's own seed) is proved in the kernel."
+  ]
+}

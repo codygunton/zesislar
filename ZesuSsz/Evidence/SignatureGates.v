@@ -1506,3 +1506,68 @@ Check (eq_refl : @keysEnsureCapacityContractCode = @ReviewedKeysEnsureCapacityCo
 Check (eq_refl : @keysEnsureCapacityResources = @ReviewedKeysEnsureCapacityResources).
 Check (eq_refl : @keysEnsureCapacityContractModel = @ReviewedKeysEnsureCapacityContractModel).
 Check (eq_refl : @KeysEnsureCapacityContractCorrect = @ReviewedKeysEnsureCapacityContractCorrect).
+
+(* Step budgets (plan Stage T, T6; statements reviewed 2026-11-24). The
+   allocator and general memcpy premises with their budgets, and the charged
+   keysEnsureCapacity contract. *)
+Require Import InstrSpecs.LookupCharged.
+Require Import ZesuSsz.Automation2.StepBudget.
+Require Import ZesuSsz.Contracts.AltFlAllocBudgetPremises.
+Require Import ZesuSsz.Contracts.KeysEnsureCapacityChargedSelected.
+Require Import ZesuSsz.Contracts.KeysEnsureCapacityBudgetContract.
+Definition ReviewedStepBudget `{!islaG Sigma} (z : Z) : iProp Sigma :=
+  (⌜0 <= z⌝ ∗ step_credits (Z.to_nat z))%I.
+Lemma step_budget_reviewed `{!islaG Sigma} :
+  @step_budget Sigma _ = @ReviewedStepBudget Sigma _.
+Proof. exact step_budget_unseal. Qed.
+Definition ReviewedAltFlAllocBudgetCallPremise `{!islaG Sigma} `{!threadG} : iProp Sigma :=
+  (□ instr_pre sym_alt_fl_alloc_alloc (step_budget 53 ∗ altFlAllocCallSpec))%I.
+Definition ReviewedAltFlRemapBudgetCallPremise `{!islaG Sigma} `{!threadG} : iProp Sigma :=
+  (□ instr_pre sym_alt_fl_alloc_remap (step_budget 9 ∗ altFlRemapCallSpec))%I.
+Definition ReviewedAltFlFreeBudgetCallPremise `{!islaG Sigma} `{!threadG} : iProp Sigma :=
+  (□ instr_pre sym_alt_fl_alloc_free (step_budget 42 ∗ altFlFreeCallSpec))%I.
+Definition ReviewedAltFlAllocatorBudgetPremises `{!islaG Sigma} `{!threadG} : iProp Sigma :=
+  (altFlAllocBudgetCallPremise ∗ altFlRemapBudgetCallPremise ∗
+   altFlFreeBudgetCallPremise)%I.
+Definition ReviewedZiskMemcpyBudgetCallPremise `{!islaG Sigma} `{!threadG} : iProp Sigma :=
+  (□ instr_pre sym_memcpy (step_budget 3 ∗ ziskMemcpyCallSpec))%I.
+Definition ReviewedKeysEnsureCapacityChargedCode `{!islaG Sigma} `{!threadG} : iProp Sigma :=
+  instr_lookup_resources_charged
+    (selectedCodeLookup ZesuSsz.Stock.Closure.index_ensureTotalCapacity.instr_map).
+Definition ReviewedKeysEnsureCapacityBudgetContractCode `{!islaG Sigma} `{!threadG} :
+    iProp Sigma :=
+  (keysEnsureCapacityChargedCode ∗ altFlAllocatorBudgetPremises ∗
+   ziskMemcpyBudgetCallPremise)%I.
+Definition ReviewedKeysEnsureCapacityBudgetResources `{!islaG Sigma} `{!threadG}
+    (returnAddress : Z) :
+    IslarisContractResources EnsureCapacityArgs EnsureCapacityOutcome :=
+  {| islarisCode := keysEnsureCapacityBudgetContractCode;
+     islarisEntry := fun args =>
+       (⌜bv_unsigned (ensureReturnAddress args) = returnAddress⌝ ∗
+        keysEnsureCapacityEntry args ∗
+        step_budget 197)%I;
+     islarisExit := keysEnsureCapacityExit |}.
+Definition ReviewedKeysEnsureCapacityBudgetContractModel (returnAddress : Z) :
+    IslarisContractModel EnsureCapacityArgs EnsureCapacityOutcome :=
+  {| islarisContractAllows := fun args outcome =>
+       bv_unsigned (ensureReturnAddress args) = returnAddress /\
+       keysEnsureCapacityDomain args /\
+       keysEnsureCapacityAllows args outcome;
+     islarisContractStep :=
+       ZesuSsz.Stock.Closure.index_ensureTotalCapacity.ensureTotalCapacity_cfg_step;
+     islarisContractResources := fun Sigma HG HT =>
+       @keysEnsureCapacityBudgetResources Sigma HG HT returnAddress |}.
+Definition ReviewedKeysEnsureCapacityBudgetContractCorrect : Prop :=
+  forall returnAddress,
+    IslarisContractCorrect sym_array_list_Aligned_32_u8_null_ensureTotalCapacity
+      returnAddress (keysEnsureCapacityBudgetContractModel returnAddress).
+Check (eq_refl : @altFlAllocBudgetCallPremise = @ReviewedAltFlAllocBudgetCallPremise).
+Check (eq_refl : @altFlRemapBudgetCallPremise = @ReviewedAltFlRemapBudgetCallPremise).
+Check (eq_refl : @altFlFreeBudgetCallPremise = @ReviewedAltFlFreeBudgetCallPremise).
+Check (eq_refl : @altFlAllocatorBudgetPremises = @ReviewedAltFlAllocatorBudgetPremises).
+Check (eq_refl : @ziskMemcpyBudgetCallPremise = @ReviewedZiskMemcpyBudgetCallPremise).
+Check (eq_refl : @keysEnsureCapacityChargedCode = @ReviewedKeysEnsureCapacityChargedCode).
+Check (eq_refl : @keysEnsureCapacityBudgetContractCode = @ReviewedKeysEnsureCapacityBudgetContractCode).
+Check (eq_refl : @keysEnsureCapacityBudgetResources = @ReviewedKeysEnsureCapacityBudgetResources).
+Check (eq_refl : @keysEnsureCapacityBudgetContractModel = @ReviewedKeysEnsureCapacityBudgetContractModel).
+Check (eq_refl : @KeysEnsureCapacityBudgetContractCorrect = @ReviewedKeysEnsureCapacityBudgetContractCorrect).

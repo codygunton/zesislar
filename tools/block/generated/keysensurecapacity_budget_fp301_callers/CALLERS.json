@@ -1,0 +1,440 @@
+{
+  "status": "SOURCE_DECLARATIONS_ONLY",
+  "function": "keysEnsureCapacityBudget",
+  "entries": {
+    "path": "/home/cody/zesislar/_build/agents/aa/keysEnsureCapacityBudget/round-3/render/render/RESULT.json",
+    "sha256": "7b53c027804c3699efd8f436e918a379d51dd983b688b6b568188e5dea4729f2"
+  },
+  "cfg": {
+    "path": "/home/cody/zesislar/_build/agents/aa/keysEnsureCapacityBudget/inputs-r1/FUNCTION.json",
+    "sha256": "6069e23b93a95be0b3eea77a94de1beb62535a9ca0026f9e51419391f5fb5736"
+  },
+  "rows": [
+    {
+      "case": "0000",
+      "pc": "0x800cb40c",
+      "successors": [
+        "003c",
+        "0088"
+      ],
+      "status": "rendered",
+      "caller": {
+        "path": "/home/cody/zesislar/_build/agents/aa/keysEnsureCapacityBudget/round-3/render/callers/Caller0000.v",
+        "sha256": "7aba4f70749647f222d4c8eb6659462bf3d735b6f521f34775cf38c45ba86121"
+      },
+      "lemma": "DesignedBoundary_800cb40c",
+      "preconditions": [
+        "instr_pre 0x800cb448 (ZesuSsz.Generated.KeysEnsureCapacityBudget.FP301.Pilot003cEntries.fp_machineAt003c (args) (returnAddress) (K))%I",
+        "instr_pre 0x800cb494 (ZesuSsz.Generated.KeysEnsureCapacityBudget.FP301.Pilot0088Entries.fp_machineAt0088 (args) (returnAddress) (K))%I"
+      ]
+    },
+    {
+      "case": "003c",
+      "pc": "0x800cb448",
+      "successors": [
+        "0068",
+        "0074"
+      ],
+      "status": "rendered",
+      "caller": {
+        "path": "/home/cody/zesislar/_build/agents/aa/keysEnsureCapacityBudget/round-3/render/callers/Caller003c.v",
+        "sha256": "f1a08b768a015be31ccd04a2560bfeb03cc8d25139d4100a16aa7def1e512eda"
+      },
+      "lemma": "DesignedBoundary_800cb448",
+      "preconditions": [
+        "instr_pre 0x800cb474 (ZesuSsz.Generated.KeysEnsureCapacityBudget.FP301.Pilot0068Entries.fp_machineAt0068 (args) (returnAddress) (K))%I",
+        "instr_pre 0x800cb480 (ZesuSsz.Generated.KeysEnsureCapacityBudget.FP301.Pilot0074Entries.fp_machineAt0074 (args) (returnAddress) (K))%I"
+      ]
+    },
+    {
+      "case": "0068",
+      "pc": "0x800cb474",
+      "successors": [
+        "0074",
+        "00c0"
+      ],
+      "status": "rendered",
+      "caller": {
+        "path": "/home/cody/zesislar/_build/agents/aa/keysEnsureCapacityBudget/round-3/render/callers/Caller0068.v",
+        "sha256": "bf676d4affc625c55b4d158f94ae0a306f64868e63cb0dd4d1ec3bccb0b41a6c"
+      },
+      "lemma": "DesignedBoundary_800cb474",
+      "preconditions": [
+        "instr_pre 0x800cb480 (ZesuSsz.Generated.KeysEnsureCapacityBudget.FP301.Pilot0074Entries.fp_machineAt0074 (args) (returnAddress) (K))%I",
+        "instr_pre 0x800cb4cc (ZesuSsz.Generated.KeysEnsureCapacityBudget.FP301.Pilot00c0Entries.fp_machineAt00c0 (args) (returnAddress) (K))%I"
+      ]
+    },
+    {
+      "case": "0074",
+      "pc": "0x800cb480",
+      "successors": [
+        "0118"
+      ],
+      "status": "rendered",
+      "caller": {
+        "path": "/home/cody/zesislar/_build/agents/aa/keysEnsureCapacityBudget/round-3/render/callers/Caller0074.v",
+        "sha256": "3b66bd65995d0202b5ee43305f9f294ae26d0af2b4a9d7fed2c3f73d0240e5d9"
+      },
+      "lemma": "DesignedBoundary_800cb480",
+      "preconditions": [
+        "instr_pre 0x800cb524 (ZesuSsz.Generated.KeysEnsureCapacityBudget.FP301.Pilot0118Entries.fp_machineAt0118 (args) (returnAddress) (K))%I"
+      ]
+    },
+    {
+      "case": "0080",
+      "pc": "0x800cb48c",
+      "successors": [
+        "0088"
+      ],
+      "status": "rendered",
+      "caller": {
+        "path": "/home/cody/zesislar/_build/agents/aa/keysEnsureCapacityBudget/round-3/render/callers/Caller0080.v",
+        "sha256": "56c4a809847c93e8c6fd79444166b70c7e5e15b8241883209b8d983fd10fea55"
+      },
+      "lemma": "DesignedBoundary_800cb48c",
+      "preconditions": [
+        "instr_pre 0x800cb494 (ZesuSsz.Generated.KeysEnsureCapacityBudget.FP301.Pilot0088Entries.fp_machineAt0088 (args) (returnAddress) (K))%I"
+      ]
+    },
+    {
+      "case": "0088",
+      "pc": "0x800cb494",
+      "successors": [
+        "008c_slot0"
+      ],
+      "status": "rendered",
+      "caller": {
+        "path": "/home/cody/zesislar/_build/agents/aa/keysEnsureCapacityBudget/round-3/render/callers/Caller0088.v",
+        "sha256": "2f1f110ae99cf2902cc8ccbf2ddce056f2de5ae1c91132e9720175c8557e4cb9"
+      },
+      "lemma": "DesignedBoundary_800cb494",
+      "preconditions": [
+        "instr_pre 0x800cb498 (ZesuSsz.Generated.KeysEnsureCapacityBudget.FP301.Pilot008cEntries.fp_machineAt008c_slot0 (args) (returnAddress) (K))%I"
+      ]
+    },
+    {
+      "case": "008c_slot0",
+      "pc": "0x800cb498",
+      "successors": [],
+      "block": "008c",
+      "slot": 0,
+      "status": "rendered",
+      "caller": {
+        "path": "/home/cody/zesislar/_build/agents/aa/keysEnsureCapacityBudget/round-3/render/callers/Caller008c_slot0.v",
+        "sha256": "33127d7a53021fbc4bfb7aaa263f946daa87a84010cfa4c2e3880fb80914c410"
+      },
+      "lemma": "DesignedBoundary_800cb498_slot0",
+      "preconditions": [
+        "instr_pre returnAddress (ZesuSsz.Generated.KeysEnsureCapacityBudget.FP301.FunctionReturnEntries.fp_machineReturn_slot0 args returnAddress K)"
+      ]
+    },
+    {
+      "case": "008c_slot1",
+      "pc": "0x800cb498",
+      "successors": [],
+      "block": "008c",
+      "slot": 1,
+      "status": "rendered",
+      "caller": {
+        "path": "/home/cody/zesislar/_build/agents/aa/keysEnsureCapacityBudget/round-3/render/callers/Caller008c_slot1.v",
+        "sha256": "00709cba116928442bc9ac84119629526eac9e04009e2b38dac07c355a92d4c0"
+      },
+      "lemma": "DesignedBoundary_800cb498_slot1",
+      "preconditions": [
+        "instr_pre returnAddress (ZesuSsz.Generated.KeysEnsureCapacityBudget.FP301.FunctionReturnEntries.fp_machineReturn_slot1 args returnAddress K)"
+      ]
+    },
+    {
+      "case": "008c_slot2",
+      "pc": "0x800cb498",
+      "successors": [],
+      "block": "008c",
+      "slot": 2,
+      "status": "rendered",
+      "caller": {
+        "path": "/home/cody/zesislar/_build/agents/aa/keysEnsureCapacityBudget/round-3/render/callers/Caller008c_slot2.v",
+        "sha256": "a714868fa0b1588d195ba0613de5a70f2cbe8cd2a7a203d6ea045da3d59dd4a4"
+      },
+      "lemma": "DesignedBoundary_800cb498_slot2",
+      "preconditions": [
+        "instr_pre returnAddress (ZesuSsz.Generated.KeysEnsureCapacityBudget.FP301.FunctionReturnEntries.fp_machineReturn_slot2 args returnAddress K)"
+      ]
+    },
+    {
+      "case": "00c0",
+      "pc": "0x800cb4cc",
+      "successors": [
+        "00ec"
+      ],
+      "status": "rendered",
+      "caller": {
+        "path": "/home/cody/zesislar/_build/agents/aa/keysEnsureCapacityBudget/round-3/render/callers/Caller00c0.v",
+        "sha256": "7b3fa85133994fb58eb3e4231683ebf06827f93ddab1bccf3775c984c7bf3df6"
+      },
+      "lemma": "DesignedBoundary_800cb4cc",
+      "preconditions": [
+        "instr_pre 0x800cb4f8 (ZesuSsz.Generated.KeysEnsureCapacityBudget.FP301.Pilot00ecEntries.fp_machineAt00ec (args) (returnAddress) (K))%I",
+        "instr_pre 0x8004218c (step_budget (9) \u2217 ZesuSsz.Contracts.AltFlAllocPremises.altFlRemapCallSpec)%I"
+      ]
+    },
+    {
+      "case": "00ec",
+      "pc": "0x800cb4f8",
+      "successors": [
+        "00f0",
+        "0108"
+      ],
+      "status": "rendered",
+      "caller": {
+        "path": "/home/cody/zesislar/_build/agents/aa/keysEnsureCapacityBudget/round-3/render/callers/Caller00ec.v",
+        "sha256": "b1dd4f762ab4e76cdaa5c7b1800cff15146dd2fb2962d92385b9ec32c395ec3d"
+      },
+      "lemma": "DesignedBoundary_800cb4f8",
+      "preconditions": [
+        "instr_pre 0x800cb4fc (ZesuSsz.Generated.KeysEnsureCapacityBudget.FP301.Pilot00f0Entries.fp_machineAt00f0 (args) (returnAddress) (K))%I",
+        "instr_pre 0x800cb514 (ZesuSsz.Generated.KeysEnsureCapacityBudget.FP301.Pilot0108Entries.fp_machineAt0108 (args) (returnAddress) (K))%I"
+      ]
+    },
+    {
+      "case": "00f0",
+      "pc": "0x800cb4fc",
+      "successors": [
+        "0080",
+        "0104"
+      ],
+      "status": "rendered",
+      "caller": {
+        "path": "/home/cody/zesislar/_build/agents/aa/keysEnsureCapacityBudget/round-3/render/callers/Caller00f0.v",
+        "sha256": "a809feac1c200dc1ecf8a830f1bb63779cf710ca2161faa50756446c367774a9"
+      },
+      "lemma": "DesignedBoundary_800cb4fc",
+      "preconditions": [
+        "instr_pre 0x800cb48c (ZesuSsz.Generated.KeysEnsureCapacityBudget.FP301.Pilot0080Entries.fp_machineAt0080 (args) (returnAddress) (K))%I",
+        "instr_pre 0x800cb510 (ZesuSsz.Generated.KeysEnsureCapacityBudget.FP301.Pilot0104Entries.fp_machineAt0104 (args) (returnAddress) (K))%I"
+      ]
+    },
+    {
+      "case": "0104",
+      "pc": "0x800cb510",
+      "successors": [
+        "0118"
+      ],
+      "status": "rendered",
+      "caller": {
+        "path": "/home/cody/zesislar/_build/agents/aa/keysEnsureCapacityBudget/round-3/render/callers/Caller0104.v",
+        "sha256": "6e7a4966f42ee97505a4f401d704ca18497768cf18779751ab66f754daf0dbf4"
+      },
+      "lemma": "DesignedBoundary_800cb510",
+      "preconditions": [
+        "instr_pre 0x800cb524 (ZesuSsz.Generated.KeysEnsureCapacityBudget.FP301.Pilot0118Entries.fp_machineAt0118 (args) (returnAddress) (K))%I"
+      ]
+    },
+    {
+      "case": "0108",
+      "pc": "0x800cb514",
+      "successors": [
+        "0118"
+      ],
+      "status": "rendered",
+      "caller": {
+        "path": "/home/cody/zesislar/_build/agents/aa/keysEnsureCapacityBudget/round-3/render/callers/Caller0108.v",
+        "sha256": "f0abecf8383eb9007f31bfb30a7dda38c858b70b0cb3d18e2f240c57cc8872ee"
+      },
+      "lemma": "DesignedBoundary_800cb514",
+      "preconditions": [
+        "instr_pre 0x800cb524 (ZesuSsz.Generated.KeysEnsureCapacityBudget.FP301.Pilot0118Entries.fp_machineAt0118 (args) (returnAddress) (K))%I"
+      ]
+    },
+    {
+      "case": "0118",
+      "pc": "0x800cb524",
+      "successors": [
+        "0124",
+        "012c"
+      ],
+      "status": "rendered",
+      "caller": {
+        "path": "/home/cody/zesislar/_build/agents/aa/keysEnsureCapacityBudget/round-3/render/callers/Caller0118.v",
+        "sha256": "e419a1a808f002f3d07e26093c2782e3742f1390b09c86ecc548365e3054e04d"
+      },
+      "lemma": "DesignedBoundary_800cb524",
+      "preconditions": [
+        "instr_pre 0x800cb530 (ZesuSsz.Generated.KeysEnsureCapacityBudget.FP301.Pilot0124Entries.fp_machineAt0124 (args) (returnAddress) (K))%I",
+        "instr_pre 0x800cb538 (ZesuSsz.Generated.KeysEnsureCapacityBudget.FP301.Pilot012cEntries.fp_machineAt012c (args) (returnAddress) (K))%I"
+      ]
+    },
+    {
+      "case": "0124",
+      "pc": "0x800cb530",
+      "successors": [
+        "008c_slot1"
+      ],
+      "status": "rendered",
+      "caller": {
+        "path": "/home/cody/zesislar/_build/agents/aa/keysEnsureCapacityBudget/round-3/render/callers/Caller0124.v",
+        "sha256": "f412f11728867d7cf5d28b546631f7961fef2800ad7d1882359ffc22373ef50e"
+      },
+      "lemma": "DesignedBoundary_800cb530",
+      "preconditions": [
+        "instr_pre 0x800cb498 (ZesuSsz.Generated.KeysEnsureCapacityBudget.FP301.Pilot008cEntries.fp_machineAt008c_slot1 (args) (returnAddress) (K))%I"
+      ]
+    },
+    {
+      "case": "012c",
+      "pc": "0x800cb538",
+      "successors": [
+        "0138",
+        "015c"
+      ],
+      "status": "rendered",
+      "caller": {
+        "path": "/home/cody/zesislar/_build/agents/aa/keysEnsureCapacityBudget/round-3/render/callers/Caller012c.v",
+        "sha256": "7ca3c6b40156141d631027151bff63323deca4849fbc4b6495504cb927448115"
+      },
+      "lemma": "DesignedBoundary_800cb538",
+      "preconditions": [
+        "instr_pre 0x800cb544 (ZesuSsz.Generated.KeysEnsureCapacityBudget.FP301.Pilot0138Entries.fp_machineAt0138 (args) (returnAddress) (K))%I",
+        "instr_pre 0x800cb568 (ZesuSsz.Generated.KeysEnsureCapacityBudget.FP301.Pilot015cEntries.fp_machineAt015c (args) (returnAddress) (K))%I"
+      ]
+    },
+    {
+      "case": "0138",
+      "pc": "0x800cb544",
+      "successors": [
+        "0150"
+      ],
+      "status": "rendered",
+      "caller": {
+        "path": "/home/cody/zesislar/_build/agents/aa/keysEnsureCapacityBudget/round-3/render/callers/Caller0138.v",
+        "sha256": "c58c7220d5245964ee0859fd5ca14b80bf45c88f54a3b1283a4ef33f5f9344b0"
+      },
+      "lemma": "DesignedBoundary_800cb544",
+      "preconditions": [
+        "instr_pre 0x800cb55c (ZesuSsz.Generated.KeysEnsureCapacityBudget.FP301.Pilot0150Entries.fp_machineAt0150 (args) (returnAddress) (K))%I",
+        "instr_pre 0x80042494 (step_budget (53) \u2217 ZesuSsz.Contracts.AltFlAllocPremises.altFlAllocCallSpec)%I"
+      ]
+    },
+    {
+      "case": "0150",
+      "pc": "0x800cb55c",
+      "successors": [
+        "0158",
+        "0164"
+      ],
+      "status": "rendered",
+      "caller": {
+        "path": "/home/cody/zesislar/_build/agents/aa/keysEnsureCapacityBudget/round-3/render/callers/Caller0150.v",
+        "sha256": "f6706157f1fad9c4ed019555ff509965c58266c1854e8c2f4192e55b4db05219"
+      },
+      "lemma": "DesignedBoundary_800cb55c",
+      "preconditions": [
+        "instr_pre 0x800cb564 (ZesuSsz.Generated.KeysEnsureCapacityBudget.FP301.Pilot0158Entries.fp_machineAt0158 (args) (returnAddress) (K))%I",
+        "instr_pre 0x800cb570 (ZesuSsz.Generated.KeysEnsureCapacityBudget.FP301.Pilot0164Entries.fp_machineAt0164 (args) (returnAddress) (K))%I"
+      ]
+    },
+    {
+      "case": "0158",
+      "pc": "0x800cb564",
+      "successors": [
+        "0124"
+      ],
+      "status": "rendered",
+      "caller": {
+        "path": "/home/cody/zesislar/_build/agents/aa/keysEnsureCapacityBudget/round-3/render/callers/Caller0158.v",
+        "sha256": "6b4774503448366c244d9bd66401b69b3205412219cc663a7a27eb2d5bf12e3d"
+      },
+      "lemma": "DesignedBoundary_800cb564",
+      "preconditions": [
+        "instr_pre 0x800cb530 (ZesuSsz.Generated.KeysEnsureCapacityBudget.FP301.Pilot0124Entries.fp_machineAt0124 (args) (returnAddress) (K))%I"
+      ]
+    },
+    {
+      "case": "015c",
+      "pc": "0x800cb568",
+      "successors": [
+        "0164"
+      ],
+      "status": "rendered",
+      "caller": {
+        "path": "/home/cody/zesislar/_build/agents/aa/keysEnsureCapacityBudget/round-3/render/callers/Caller015c.v",
+        "sha256": "c58fdd339792281f81eebd1ea638557ca3e99b90aa985ca86fb9b2f989720f49"
+      },
+      "lemma": "DesignedBoundary_800cb568",
+      "preconditions": [
+        "instr_pre 0x800cb570 (ZesuSsz.Generated.KeysEnsureCapacityBudget.FP301.Pilot0164Entries.fp_machineAt0164 (args) (returnAddress) (K))%I"
+      ]
+    },
+    {
+      "case": "0164",
+      "pc": "0x800cb570",
+      "successors": [
+        "017c"
+      ],
+      "status": "rendered",
+      "caller": {
+        "path": "/home/cody/zesislar/_build/agents/aa/keysEnsureCapacityBudget/round-3/render/callers/Caller0164.v",
+        "sha256": "2eb10c97747c5a174d11cba470897e80f31062d029bab947c7cfa73fdca96407"
+      },
+      "lemma": "DesignedBoundary_800cb570",
+      "preconditions": [
+        "instr_pre 0x800cb588 (ZesuSsz.Generated.KeysEnsureCapacityBudget.FP301.Pilot017cEntries.fp_machineAt017c (args) (returnAddress) (K))%I",
+        "instr_pre 0x800e06c0 (step_budget (3) \u2217 ZesuSsz.Contracts.ZiskMemcpyPremise.ziskMemcpyCallSpec)%I"
+      ]
+    },
+    {
+      "case": "017c",
+      "pc": "0x800cb588",
+      "successors": [
+        "0180",
+        "019c"
+      ],
+      "status": "rendered",
+      "caller": {
+        "path": "/home/cody/zesislar/_build/agents/aa/keysEnsureCapacityBudget/round-3/render/callers/Caller017c.v",
+        "sha256": "a3dc8466484366566027ec4a4eb0c3e52992876e6d4c42719a10d5b9f59b2588"
+      },
+      "lemma": "DesignedBoundary_800cb588",
+      "preconditions": [
+        "instr_pre 0x800cb58c (ZesuSsz.Generated.KeysEnsureCapacityBudget.FP301.Pilot0180Entries.fp_machineAt0180 (args) (returnAddress) (K))%I",
+        "instr_pre 0x800cb5a8 (ZesuSsz.Generated.KeysEnsureCapacityBudget.FP301.Pilot019cEntries.fp_machineAt019c (args) (returnAddress) (K))%I"
+      ]
+    },
+    {
+      "case": "0180",
+      "pc": "0x800cb58c",
+      "successors": [
+        "019c"
+      ],
+      "status": "rendered",
+      "caller": {
+        "path": "/home/cody/zesislar/_build/agents/aa/keysEnsureCapacityBudget/round-3/render/callers/Caller0180.v",
+        "sha256": "852fc446cbc6aca1c928f312342d7c3431cce93c6898814ff4cd76fb0808b039"
+      },
+      "lemma": "DesignedBoundary_800cb58c",
+      "preconditions": [
+        "instr_pre 0x800cb5a8 (ZesuSsz.Generated.KeysEnsureCapacityBudget.FP301.Pilot019cEntries.fp_machineAt019c (args) (returnAddress) (K))%I",
+        "instr_pre 0x80041f38 (step_budget (42) \u2217 ZesuSsz.Contracts.AltFlAllocPremises.altFlFreeCallSpec)%I"
+      ]
+    },
+    {
+      "case": "019c",
+      "pc": "0x800cb5a8",
+      "successors": [
+        "008c_slot2"
+      ],
+      "status": "rendered",
+      "caller": {
+        "path": "/home/cody/zesislar/_build/agents/aa/keysEnsureCapacityBudget/round-3/render/callers/Caller019c.v",
+        "sha256": "2ae72658e457ebdd41292ab6a3716380060607e233687953b2cde9c7019688b8"
+      },
+      "lemma": "DesignedBoundary_800cb5a8",
+      "preconditions": [
+        "instr_pre 0x800cb498 (ZesuSsz.Generated.KeysEnsureCapacityBudget.FP301.Pilot008cEntries.fp_machineAt008c_slot2 (args) (returnAddress) (K))%I"
+      ]
+    }
+  ],
+  "rendered": 25,
+  "inlined": 0,
+  "refused": 0,
+  "proof_ran": false
+}

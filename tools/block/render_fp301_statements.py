@@ -23,11 +23,13 @@ def qualified_fold(text):
     return SHORT_FOLD.sub('ZesuSsz.Automation2.ByteWindowFold.zesu_byte_window_fold', text)
 
 
-def render_loop_head(block, header, structural=False, profile=None, loop_heads=None):
+def render_loop_head(block, header, structural=False, profile=None, loop_heads=None, budget=None):
     """Keep the source classes and frame the existing caller continuation.
 
     `loop_heads` is the loop-head file to read (default: the profile's committed fixture); a
-    scratch render passes its own so the committed fixture is never rewritten."""
+    scratch render passes its own so the committed fixture is never rewritten. `budget` (a charged
+    profile): the cut's potential, owned by every class as `step_budget (<potential>)` over the
+    class binders."""
     profile = profile or load_profile()
     entry_hist.configure(profile)
     domain_binder = ' (domain : ' + profile.args_type + ' -> Prop)'
@@ -55,6 +57,8 @@ def render_loop_head(block, header, structural=False, profile=None, loop_heads=N
         source = qualified_fold(source.replace(original, name).replace(
             domain_binder, '').replace(
             '⌜domain args⌝', domain))
+        if budget is not None:
+            source = class_with_budget(source, budget)
         authenticated_classes[name] = source
         # Hidden history and per-slot frame cells for the loop class (profile keys).
         design = next((item for item in profile.get('loop_designs', [])
@@ -122,6 +126,15 @@ def class_parts(source):
     if not all(term.startswith('⌜') and term.endswith('⌝') for term in pure):
         raise ValueError('An owned resource follows a pure class fact.')
     return binders, resources, [term[1:-1] for term in pure]
+
+
+def class_with_budget(source, budget):
+    """An authenticated class owning `step_budget (<budget>)` after its owned resources."""
+    from budgets import budget_conjunct
+    binders, resources, facts = class_parts(source)
+    prefix = source[:source.index(':=')]
+    terms = resources + [budget_conjunct(budget)] + ['⌜' + fact + '⌝' for fact in facts]
+    return prefix + ':= ((∃ ' + binders + ', (' + ' ∗ '.join(terms) + ')))%I.'
 
 
 def conjunction(terms):
@@ -370,25 +383,49 @@ def residual_module(source, residuals=RESIDUALS, profile=None, legacy=True):
     return None
 
 
+def shared_residual_modules(source, residuals=RESIDUALS, profile=None):
+    """The relocatable residual modules of the same block registered for the functions the profile
+    lists under `residual_functions` (a charged variant reuses its uncharged function's lemmas:
+    ZesuSsz/Residuals/<other>/Block<offset>.v), those that exist."""
+    if profile is None or not profile.get("residual_functions"):
+        return []
+    match = re.search(r"^Lemma DesignedBoundary_([0-9a-f]+)(?:_slot\d+)?\b", source, re.M)
+    if not match:
+        return []
+    offset = profile.key('0x' + match[1])
+    return [function + ".Block" + offset for function in profile.get("residual_functions")
+            if (Path(residuals) / function / ("Block" + offset + ".v")).is_file()]
+
+
 def residual_import(source, residuals=RESIDUALS, profile=None, legacy=True):
-    """Import the block's residual lemmas (residual_module) after the core import, when they exist.
+    """Import the block's residual lemmas (residual_module, then shared_residual_modules) after the
+    core import, when they exist.
 
     Import is not transitive, so the caller keeps its solver bindings; the
     residual module only adds its exact lemmas to the residual hints
     (`zesu_residual`, or `zesu_residual_exact` for the relocatable form).
     """
     module = residual_module(source, residuals, profile, legacy)
-    if module is None:
-        return source
-    line = "Require Import ZesuSsz.Residuals." + module + "."
     lines = source.split("\n")
+    imports = [line for line in ["Require Import ZesuSsz.Residuals." + name + "."
+                                 for name in ([module] if module else [])
+                                 + shared_residual_modules(source, residuals, profile)]
+               if line not in lines]
+    if not imports:
+        return source
     last = max(index for index, text in enumerate(lines) if text.startswith(("Require ", "From ")))
-    if lines[last] != CORE_IMPORT:
+    # Residual imports already present (and the return requires before them) follow the core import.
+    core = last
+    while core > 0 and lines[core] != CORE_IMPORT and (
+            lines[core].startswith("Require Import ZesuSsz.Residuals.")
+            or lines[core] in (profile or {}).get("return_requires", [])):
+        core -= 1
+    if lines[core] != CORE_IMPORT:
         raise ValueError("A caller must end its imports with the core import.")
     # A return block's residual lemmas may use the pure lemmas behind its exit facts.
     if "FunctionReturnEntries.fp_machineReturn" in source:
-        requires = (profile or load_profile()).get("return_requires", [])
+        requires = [line for line in (profile or load_profile()).get("return_requires", []) if line not in lines]
         lines[last + 1:last + 1] = requires
         last += len(requires)
-    lines.insert(last + 1, line)
+    lines[last + 1:last + 1] = imports
     return "\n".join(lines)

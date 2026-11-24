@@ -232,6 +232,34 @@ class MachineRuns(unittest.TestCase):
         self.assertEqual(result['checked'], 3 * (2 + 5))
         self.assertIn('nextInputPointer', result['unchecked'][0]['error'])
 
+    def test_a_ghost_binder_takes_its_value_from_the_snapshot_memory(self):
+        # The loop's buffer at 4096 holds the bytes walked so far: entry a2 .. visit a2 (excluded).
+        def memory(walked):
+            return [{'name': 'buffer', 'base': 4096, 'size': 8, 'hex': bytes(range(1, 1 + walked)).ljust(8, b'\0').hex()}]
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            run = root / 'exec' / 'one'
+            run.mkdir(parents=True)
+            snapshot(run, '0000', [{'visit': 0, 'insn': 0, 'regs': regs(a2=100, a3=103), 'memory': memory(0)}], 'one')
+            snapshot(run, '009c', [{'visit': 0, 'insn': 10, 'regs': regs(a2=100, a3=103)}], 'one')
+            snapshot(run, '00a4', [{'visit': n, 'insn': 12 + 5 * n, 'regs': regs(a2=100 + n, a3=103),
+                                    'memory': memory(n)} for n in range(3)], 'one')
+            row = json.loads(json.dumps(self.ROW))
+            row['binders'].append({'name': 'walked', 'type': 'list (bv 8)',
+                                   'exec': 'snapshotRead {memory} base (Z.of_nat (length start) + i)'})
+            row['facts'] = [{'coq': 'walked = map (fun k => BV 8 (Z.of_nat k)) (seq 1 (Z.to_nat i))', 'role': 'owned'},
+                            {'coq': 'snapshotWord {memory} base = snapshotLe walked', 'role': 'owned'}]
+            data = self.data(row)
+            data['test'] = {'lets': [{'name': 'start', 'exec': 'firstn 0 {entry:bytes:buffer}'},
+                                     {'name': 'base', 'exec': '4096%Z'}]}
+            result = annotations.test_rows(data, root)
+            self.assertEqual((result['verdict'], result['checked'], result['unchecked']), ('passed', 6, []))
+            row['facts'][0]['coq'] = 'walked = map (fun k => BV 8 (Z.of_nat k)) (seq 0 (Z.to_nat i))'
+            result = annotations.test_rows(data, root)
+            self.assertEqual((result['verdict'], result['visit']), ('rejected', 1))
+        with self.assertRaises(annotations.AnnotationError):
+            annotations.validate({**data, 'test': {'lets': [{'name': 'x y', 'exec': '0'}]}})
+
 
 if __name__ == '__main__':
     unittest.main()
