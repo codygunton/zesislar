@@ -1787,8 +1787,8 @@ Qed.
 Lemma exec_finish_complete regs sigma labels theta' sigma' :
   seq_step (instruction_boundary tnil regs) sigma labels theta' sigma' [] ->
   exists conditions,
-    exec_finish regs sigma = Some (theta', labels, conditions) /\
-    ExecutorConditions conditions /\ seq_regs theta' = regs /\ sigma' = sigma.
+    exec_finish regs sigma = Some (theta', sigma', labels, conditions) /\
+    ExecutorConditions conditions /\ seq_regs theta' = regs.
 Proof.
   intros Hstep. inversion Hstep; subst.
   match goal with H : trace_step _ _ _ _ |- _ => simpl in H; inversion H; subst end.
@@ -1798,8 +1798,10 @@ Proof.
   repeat match goal with H : _ /\ _ |- _ => destruct H as [? ?] end.
   destruct (seq_instrs sigma !! x) as [next|] eqn:Hnext;
     repeat match goal with H : _ /\ _ |- _ => destruct H as [? ?] end; subst.
-  all: unfold exec_finish; rewrite H2; rewrite Z_to_bv_bv_unsigned; rewrite Hnext; simpl.
-  all: eexists; split; [reflexivity|]; split; [constructor; [reflexivity|constructor]|]; split; reflexivity.
+  all: unfold exec_finish;
+    match goal with H : regs !! "PC" = Some (RVal_Bits x) |- _ => rewrite H end;
+    rewrite Z_to_bv_bv_unsigned; rewrite Hnext; simpl.
+  all: eexists; split; [reflexivity|]; split; [constructor; [reflexivity|constructor]|]; reflexivity.
 Qed.
 Print Assumptions completed_nil_step.
 Print Assumptions exec_finish_complete.
@@ -1865,15 +1867,15 @@ Lemma exec_trace_completed fuel trace regs sigma labels theta' sigma' :
   CompletedInstructionSegment (instruction_boundary trace regs) sigma labels theta' sigma' ->
   exists finalRegs finalSigma body bodyConditions last finishConditions,
     exec_trace fuel trace regs sigma = Some (finalRegs, finalSigma, body, bodyConditions) /\
-    exec_finish finalRegs finalSigma = Some (theta', last, finishConditions) /\
+    exec_finish finalRegs finalSigma = Some (theta', sigma', last, finishConditions) /\
     ExecutorConditions bodyConditions /\ ExecutorConditions finishConditions /\
-    seq_regs theta' = finalRegs /\ sigma' = finalSigma /\ labels = body ++ last.
+    seq_regs theta' = finalRegs /\ labels = body ++ last.
 Proof.
   revert trace regs sigma labels theta' sigma'. induction fuel as [|fuel IH];
     intros trace regs sigma labels theta' sigma' Hpath Hrun; [contradiction|].
   destruct trace as [|event rest|branches].
   - apply completed_nil_step in Hrun.
-    destruct (exec_finish_complete _ _ _ _ _ Hrun) as (conditions & Hfinish & Hconditions & Hregs & Hsigma).
+    destruct (exec_finish_complete _ _ _ _ _ Hrun) as (conditions & Hfinish & Hconditions & Hregs).
     exists regs, sigma, [], [], labels, conditions. simpl. repeat split; try assumption. constructor.
   - cbn [ExecutorPath] in Hpath.
     destruct (dead_assertionb event) eqn:Hdead.
@@ -1888,7 +1890,7 @@ Proof.
           Hpin Hexec Hrun) as (tail & Htail & Hlabels).
       destruct (IH _ _ _ _ _ _ Hpath Htail)
         as (finalRegs & finalSigma & body & bodyConditions & last & finishConditions &
-            Htrace & Hfinish & Hbody & HfinishConditions & Hregs & Hsigma & HtailLabels).
+            Htrace & Hfinish & Hbody & HfinishConditions & Hregs & HtailLabels).
       exists finalRegs, finalSigma, (first ++ body), (conditions ++ bodyConditions), last, finishConditions.
       split.
       * cbn [exec_trace]. rewrite Hexec. simpl. rewrite Htrace. reflexivity.
@@ -1900,7 +1902,7 @@ Proof.
     rewrite Forall_forall in Hbranches.
     destruct (IH _ _ _ _ _ _ (Hbranches branch Hmember) Hbranch)
       as (finalRegs & finalSigma & body & bodyConditions & last & finishConditions &
-          Htrace & Hfinish & Hbody & HfinishConditions & Hregs & Hsigma & Hlabels).
+          Htrace & Hfinish & Hbody & HfinishConditions & Hregs & Hlabels).
     exists finalRegs, finalSigma, body, bodyConditions, last, finishConditions.
     split; [|repeat split; assumption]. cbn [exec_trace].
     eapply first_result_complete_unique; [exact Hmember|exact Htrace|].
@@ -1922,10 +1924,10 @@ Proof.
   intros Hdet Hrun. apply executor_deterministic_reflect in Hdet. destruct Hdet as [_ Hpath].
   destruct (exec_trace_completed _ _ _ _ _ _ _ Hpath Hrun)
     as (finalRegs & finalSigma & body & bodyConditions & last & finishConditions &
-        Htrace & Hfinish & Hbody & HfinishConditions & Hregs & Hsigma & Hlabels).
+        Htrace & Hfinish & Hbody & HfinishConditions & Hregs & Hlabels).
   exists (bodyConditions ++ finishConditions). split.
   - unfold exec_instr. rewrite Htrace. simpl. rewrite Hfinish. simpl.
-    rewrite Hregs Hsigma Hlabels. reflexivity.
+    rewrite Hregs Hlabels. reflexivity.
   - unfold ExecutorConditions in *. apply Forall_app. auto.
 Qed.
 Print Assumptions exec_instr_deterministic.
