@@ -176,6 +176,26 @@ class Sync(unittest.TestCase):
             state = store.fold(store.read_events(run))
             self.assertEqual((state['fn/block/0000']['state'], state['fn/block/0000']['resets']), ('derived', 1))
 
+    def test_a_meaning_run_gives_meaning_ids_beside_the_blocks(self):
+        # A meaning run's MANIFEST has block `meaning` (drive.locate): its goals are meaning obligations,
+        # never goal ids of a block `meaning` (a malformed id that rejected the whole sync).
+        with tempfile.TemporaryDirectory() as tmp:
+            run = Path(tmp)
+            write(run / 'callers' / 'CALLERS.json', {'function': F, 'rows': [
+                {'case': '0000', 'status': 'rendered', 'caller': {'path': 'x', 'sha256': 'a' * 64}}]})
+            res = run / 'meaning' / 'lemA'
+            write(res / 'MANIFEST.json', {'block': 'meaning', 'function': F, 'goals': [
+                {'id': 'lemA', 'name': 'lemA', 'statement': 'P'}, {'id': 'lemB', 'name': 'lemB', 'statement': 'Q'}]})
+            write(res / 'goals' / 'lemA' / 'STATUS.json', {'result': 'PASS', 'attempts': [{}]})
+            write(res / 'goals' / 'lemA' / 'proof.v', 'Lemma lemA : True.\nProof. exact I. Qed.\n')
+            self.assertEqual(store.sync(F, run), 3)
+            state = store.fold(store.read_events(run))
+            self.assertEqual({k: (v['kind'], v['state'], v['parent']) for k, v in state.items()},
+                             {'fn/block/0000': ('block', 'derived', None),
+                              store.meaning_id(F, 'lemA'): ('meaning', 'closed', None),
+                              store.meaning_id(F, 'lemB'): ('meaning', 'derived', None)})
+            self.assertEqual(store.sync(F, run), 0)
+
     def test_sync_supersedes_gone_goals_and_requests_no_longer_issued(self):
         with tempfile.TemporaryDirectory() as tmp:
             run = Path(tmp)
