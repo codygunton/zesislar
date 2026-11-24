@@ -2,6 +2,7 @@
 from contextlib import redirect_stdout
 from pathlib import Path
 import io
+import os
 import sys
 import tempfile
 import time
@@ -158,6 +159,25 @@ class BankArgsTests(unittest.TestCase):
             args = scale.bank_args(Path(root) / "build")
         self.assertEqual(args.count("ZesuSsz.Stock.Free"), 1)
         self.assertIn("ZesuSsz.Stock.BerlinGasCalc", args)
+
+    def test_bank_args_take_the_coqc_of_the_bank_switch(self):
+        with tempfile.TemporaryDirectory() as root:
+            build = Path(root) / "build"
+            (build / "default" / "ZesuSsz").mkdir(parents=True)
+            scale.write_json(build / "coqc_recipe.json", {
+                "command": [".bin/coqc", "-q", "-boot", "-I", "/sw/budget/_opam/lib/coq-core/boot",
+                            "ZesuSsz/A.v"], "working_dir": "_dune-cache/default"})
+            self.assertEqual(scale.bank_args(build)[0], "/sw/budget/_opam/bin/coqc")
+            (build / "coqc_recipe.json").unlink()
+            saved = {k: os.environ.pop(k, None) for k in ("OPAM_SWITCH", "ISLARIS_REPO")}
+            try:
+                os.environ["ISLARIS_REPO"] = "/sw/other"
+                self.assertEqual(scale.bank_args(build)[0], "/sw/other/_opam/bin/coqc")
+            finally:
+                for key, value in saved.items():
+                    os.environ.pop(key, None)
+                    if value is not None:
+                        os.environ[key] = value
 
 
 class StateTests(unittest.TestCase):
