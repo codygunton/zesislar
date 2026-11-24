@@ -40,8 +40,9 @@ The compiled profile keys, by `boundary`:
                    the spec's text and, for a consumed one, the caller components it takes; its `returns`
                    rows [{`index`, `register`}] name the returned registers the continuation reads; its
                    `result_words` {byte offset: Z value} name words of the returned array the return entry
-                   states and the seed reads as the value (`{argv:N}`, `{fresh:NAME:TYPE}` in the value)
-                   (call_boundary.call_return_seed)
+                   states and the seed reads as the value (`{argv:N}`, `{fresh:NAME:TYPE}` in the value);
+                   its `result_minimums` {NAME: integer m} state `m <= NAME` of a fresh Z binder of those
+                   values in the return entry, which the call block proves (call_boundary.call_return_seed)
   call_return      the `return_facts` of the call whose `return_site_pc` is `pc` (role -> `kind`)
   function_return  a `function_returns` row: `return_instruction_pc` and `return_fact` (True without facts)
   access           an `access_placements` row: `pc` and `placement` {`array`, `index`, `scale`, `offset`},
@@ -164,6 +165,12 @@ def _check_call(row):
     if not isinstance(words, dict) or not all(re.fullmatch(r'[0-9]+', str(key)) and isinstance(value, str)
                                               for key, value in words.items()):
         raise AnnotationError('%s: result_words maps byte offsets to value texts' % row['id'])
+    minimums = row['call'].get('result_minimums', {})
+    fresh = {name for value in words.values() for name, kind in re.findall(r'\{fresh:(\w+):([^{}]+)\}', value)
+             if ' '.join(kind.split()) == 'Z'}
+    if not isinstance(minimums, dict) or not all(name in fresh and type(value) is int
+                                                 for name, value in minimums.items()):
+        raise AnnotationError('%s: result_minimums maps fresh Z binders of result_words to integers' % row['id'])
 
 
 def compile_profile(data, source=None):

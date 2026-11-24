@@ -36,6 +36,8 @@ applies the callee summary to make the seed of the return site:
   return entry states `bv_unsigned <word> = value`, which the call block proves
   from the callee's meaning, and the seed reads the word as that value (a word
   link of the returned array), so a load through it finds the array it points into.
+  The row's `result_minimums` {NAME: m} add `m <= NAME` of a fresh Z binder, also
+  proved by the call block; the seed keeps it as an `offset_minimum` source row.
 
 The callee summary comes from the spec's source text. The call design row
 names the spec, binds each spec array to its argument and the caller value
@@ -349,13 +351,17 @@ RESULT_FRESH = re.compile(r'\{fresh:([A-Za-z_][A-Za-z0-9_]*):([^{}]+)\}')
 
 
 def _result_words(call, outputs, splits, fresh, arguments, prefix):
-    """(links, binders) of a design row's `result_words` {byte offset: value}: each link names the
-    piece of the call's one returned post array, the word's offset in it, the value as a Z text
+    """(links, binders, minimums) of a design row's `result_words` {byte offset: value}: each link names
+    the piece of the call's one returned post array, the word's offset in it, the value as a Z text
     (`quantity`) and the return entry's fact `bv_unsigned <word> = value`; `{argv:N}` in a value is
-    call argument N, `{fresh:NAME:TYPE}` the fresh existential `<prefix>NAME : TYPE` of the entry."""
+    call argument N, `{fresh:NAME:TYPE}` the fresh existential `<prefix>NAME : TYPE` of the entry.
+    The row's `result_minimums` {NAME: m} give each named fresh Z binder the return entry's fact
+    `m <= <prefix>NAME` (a minimum: its binder, the bound, the fact text)."""
     rows = call.get('result_words') or {}
     if not rows:
-        return [], []
+        if call.get('result_minimums'):
+            raise CallRefused('result_minimums needs result_words with fresh binders')
+        return [], [], []
     returned = [(key, piece) for key, piece in outputs.items()]
     if len(returned) != 1:
         raise CallRefused('result_words needs exactly one returned post array; the call returns %d'
@@ -380,7 +386,14 @@ def _result_words(call, outputs, splits, fresh, arguments, prefix):
             raise CallRefused('The result word at %s has an unknown template: %s' % (offset_text, value))
         fact = _return_fact('(bv_unsigned {word:%s:%d} = %s)%%Z' % (post, offset, value), fresh)
         links.append({'resource_id': piece, 'offset': offset, 'quantity': value, 'fact': fact})
-    return links, sorted(binders.items())
+    minimums = []
+    for name, minimum in sorted((call.get('result_minimums') or {}).items()):
+        if binders.get(prefix + name) != 'Z' or type(minimum) is not int:
+            raise CallRefused('result_minimums: %s is no fresh Z binder of result_words with an integer '
+                              'minimum' % name)
+        minimums.append({'name': prefix + name, 'minimum': minimum,
+                         'fact': '(%d <= %s)%%Z' % (minimum, prefix + name)})
+    return links, sorted(binders.items()), minimums
 
 
 def _merge_call_sites(edges, prefix=PREFIX):
@@ -1061,7 +1074,8 @@ def call_return_seed(edges, *, call, function_root, root_seed, shapes, vocabular
                                   'length_original_coq': str(end - start)})
             continue
         nodes.append(node)
-    result_links, result_binders = _result_words(call, outputs, splits, fresh, values['argv'], prefix)
+    result_links, result_binders, result_minimums = _result_words(call, outputs, splits, fresh, values['argv'],
+                                                                  prefix)
     terminal = next(index for index, node in enumerate(nodes) if node.get('coq') == 'True')
     nodes[terminal:terminal] = [
         {'kind': 'opaque', 'id': row['resource_id'] + '_length', 'coq': '⌜' + row['coq'] + '⌝'}
@@ -1076,7 +1090,9 @@ def call_return_seed(edges, *, call, function_root, root_seed, shapes, vocabular
          'coq': '⌜' + _return_fact(entry_hist.design_fact_text(row), fresh) + '⌝'}
         for index, row in enumerate(call.get('return_facts', []))] + [
         {'kind': 'opaque', 'id': prefix + 'result_word_%d' % link['offset'], 'coq': '⌜' + link['fact'] + '⌝'}
-        for link in result_links]
+        for link in result_links] + [
+        {'kind': 'opaque', 'id': prefix + 'result_minimum_' + row['name'][len(prefix):], 'coq': '⌜' + row['fact'] + '⌝'}
+        for row in result_minimums]
     produced_nodes = []
     for index, text in enumerate(produced):
         points = re.fullmatch(r'(.+?)\s+(↦ₘ∗|↦ₘ\?|↦ₘ)\s+(.+)', text)
@@ -1168,6 +1184,14 @@ def call_return_seed(edges, *, call, function_root, root_seed, shapes, vocabular
                        'terms': {'resource_id': link['resource_id'], 'offset': link['offset'], 'size': 8,
                                  'quantity': link['quantity'], 'coq_statement': link['fact']},
                        'origin': {'call_design': call['call_site_pc'], 'result_words': str(link['offset'])}})
+    # A result minimum bounds its fresh offset, the term the word links add (source_z_expression).
+    for row in result_minimums:
+        copied.append({'fact_id': prefix + 'result-minimum-' + row['name'][len(prefix):], 'kind': 'bounds',
+                       'status': 'supplied',
+                       'terms': {'offset_minimum': {'expression': source_z_expression(row['name'], {}).to_dict(),
+                                                    'minimum': row['minimum']},
+                                 'coq_statement': row['fact']},
+                       'origin': {'call_design': call['call_site_pc'], 'result_minimums': row['name']}})
     try:
         seed = seed_owned_resources(public, entry_pc=return_pc, vocabulary=vocabulary, constants=constants or {},
                                     facts=copied)

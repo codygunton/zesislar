@@ -1230,6 +1230,66 @@ def _refute_placed_past_end(initial, evaluator):
             return
 
 
+def _placed_low_refutation(initial, instruction_index, condition):
+    """The evidence that a path guard `address = c` is false, or None.
+
+    Three rows only: an access row (profile `access_placements`) at this instruction places the load in
+    an owned initialized array whose address is `base + rest + k` (rest one symbolic term, k a constant);
+    a supplied domain relation `L <= base` (a source row `low_bound`, from entry_interface_inputs.py);
+    and a supplied minimum `m <= rest` (a source row `offset_minimum`, a call row's `result_minimums`).
+    The address is at least L + m + k, so it differs from every constant c below that."""
+    placements = ACCESS_PLACEMENTS.get(instruction_index, ())
+    lows = [row for row in initial.source_intervals if 'low_bound' in row]
+    minimums = [row for row in initial.source_intervals if 'offset_minimum' in row]
+    if not placements or not lows or not minimums or condition.op != '=' or len(condition.args) != 2:
+        return None
+    left, right = condition.args
+    if left.op == 'bits':
+        left, right = right, left
+    if right.op != 'bits':
+        return None
+    address, offset = _peel(left)
+    terms, _ = _addends(address)
+    for low in lows:
+        base = Expr.from_dict(low['low_bound']['base'])
+        for region in initial.memory:
+            if region.byte_array is None or region.ownership_id is None or region.uninitialized \
+                    or region.base != base:
+                continue
+            array = _array_text(region.byte_array.value if region.byte_array.op == 'input' else region.byte_array.coq())
+            placement = next((item for item in placements if _array_text(item['array']) == array), None)
+            rest = list(terms)
+            if placement is None or any(term not in rest or rest.remove(term) for term in _addends(base)[0]) \
+                    or len(rest) != 1:
+                continue
+            for minimum in minimums:
+                if Expr.from_dict(minimum['offset_minimum']['expression']) != rest[0]:
+                    continue
+                least = low['low_bound']['minimum'] + minimum['offset_minimum']['minimum'] + offset
+                if right.value < least:
+                    return {'rule': 'placed_load_above_low_bound', 'condition': condition.to_dict(),
+                            'owner': region.ownership_id, 'placement': dict(placement), 'low_bound': low,
+                            'offset_minimum': minimum, 'least_address': least}
+    return None
+
+
+def _refute_placed_below_low(initial, evaluator):
+    """Stop a path whose guard equates a placed load's address with a constant below its least value
+    (`_placed_low_refutation`). A rendering choice only, like `_refute_placed_past_end`: the report keeps
+    the guard as an open obligation of the block proof."""
+    if evaluator.status != 'complete':
+        return
+    for condition in evaluator.state.conditions:
+        if condition in initial.conditions:
+            continue
+        result = _placed_low_refutation(initial, evaluator.instruction_index, condition)
+        if result is not None:
+            evaluator.status = 'infeasible'
+            evaluator.report('placed_low_refutation', **result, proof_status='open',
+                             required_rocq_guard_projection=True, proof_premises_added=[])
+            return
+
+
 def _apply_source_guard_facts(initial, evaluator):
     """Keep every new source pruning/rewrite obligation explicit for Rocq."""
     if evaluator.status != 'complete':
@@ -1269,6 +1329,7 @@ def evaluate_trace(source, state, *, live_registers=None, instruction_index=0, m
     for evaluator in evaluators:
         _refute_ram_fault(source, state, evaluator)
         _refute_placed_past_end(state, evaluator)
+        _refute_placed_below_low(state, evaluator)
         _apply_source_guard_facts(state, evaluator)
         _drop_source_implied_ram_guards(state, evaluator)
         if live_registers is not None:
