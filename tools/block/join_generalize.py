@@ -839,7 +839,8 @@ def carry_common_word_links(incoming, seed):
     return seed
 
 
-def lift_call_return_edges(alternatives, *, seeds, roots, ancestor, vocabulary, drops=(), replaced=()):
+def lift_call_return_edges(alternatives, *, seeds, roots, ancestor, vocabulary, drops=(), replaced=(),
+                           forget_unplaced=False):
     """Express join edges that start at seeds below `ancestor` on its tree.
 
     A call-return seed refines its parent's tree: it splits frame spans around the call
@@ -857,6 +858,10 @@ def lift_call_return_edges(alternatives, *, seeds, roots, ancestor, vocabulary, 
     replaced are the resource texts an owned join row `replaces` (profile `join_owned`): an edge
     whose seed holds one forgets it, as for a drop row; an edge that does not hold it is unchanged
     (the edges of an owned join may disagree on the resources it replaces).
+
+    forget_unplaced (an owned join row's `forget_unplaced`): an edge resource that has no place on the
+    ancestor's tree (no unique containing span, a changed span of symbolic length, a store at a symbolic
+    offset) is forgotten instead of refused, a weakening (an error exit leaks what it held).
     """
     try:
         from .forward_resource_design import _state_from_result
@@ -907,11 +912,13 @@ def lift_call_return_edges(alternatives, *, seeds, roots, ancestor, vocabulary, 
                 continue
             updates = image.updates[resource.id]
             if any(isinstance(offset, str) for offset in updates):
+                if forget_unplaced:
+                    continue
                 raise ValueError('A lifted join edge stores at a symbolic offset: ' + resource.id)
             if not isinstance(resource.length, int):
                 same = [owner for owner in base.resources if owner.base == resource.base
                         and owner.length == resource.length and owner.byte_array == resource.byte_array]
-                if len(same) != 1 or updates:
+                if (len(same) != 1 or updates) and not forget_unplaced:
                     raise ValueError('A lifted join edge changes a span of symbolic length: ' + resource.id)
                 continue
             containing = [(owner, _offset(resource.base, owner.base)) for owner in base.resources
@@ -919,6 +926,8 @@ def lift_call_return_edges(alternatives, *, seeds, roots, ancestor, vocabulary, 
             containing = [(owner, offset) for owner, offset in containing
                           if offset is not None and offset + resource.length <= owner.length]
             if len(containing) != 1:
+                if forget_unplaced:
+                    continue
                 raise ValueError('A lifted span has no unique ancestor span: ' + resource.id)
             owner, offset = containing[0]
             if replaced and base_texts.get(owner.id) in forgotten:

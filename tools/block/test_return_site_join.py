@@ -179,9 +179,9 @@ class OwnedJoinReplaces(unittest.TestCase):
         self.site = boundary(evaluate_owned_function(FUNCTION, TRACES, {16: self.root, 24: self.call_seed},
                                                      vocabulary=VOCABULARY), 24)
 
-    def joined(self, replaces):
+    def joined(self, replaces, **extra):
         owned = {'binders': [{'name': 'e', 'type': 'list byte'}], 'resources': ['ownedBuffer e'],
-                 'replaces': replaces, 'facts': [], 'predecessors': ['+0x10', '+0x14']}
+                 'replaces': replaces, 'facts': [], 'predecessors': ['+0x10', '+0x14'], **extra}
         return return_site_seed(self.site, self.call_seed, seeds={'0x10': self.root}, roots={'0x10': '0x10'},
                                 parents={'0x18': '0x10'}, profile=Profile(join_owned={'+0x18': owned}),
                                 vocabulary=VOCABULARY, continuation=CONTINUATION, live_registers=None,
@@ -201,6 +201,14 @@ class OwnedJoinReplaces(unittest.TestCase):
         # The call path's new buffer lies in no span of the root: without the row it cannot be lifted.
         with self.assertRaisesRegex(ValueError, 'no unique ancestor span'):
             self.joined([OLD_BUFFER])
+
+    def test_forget_unplaced_drops_what_has_no_ancestor_span(self):
+        # An error exit: the call path's new buffer has no place on the root; the row forgets it (a leak).
+        seed, _, plan = self.joined([OLD_BUFFER], forget_unplaced=True)
+        texts = [str(row['seed_component'].get('original_component', row['seed_component'].get('coq')))
+                 for row in seed.ownership['components']]
+        self.assertEqual(plan['edges'], 2)
+        self.assertNotIn(NEW_BUFFER, texts)
 
     def test_an_id_item_names_that_component_in_every_seed(self):
         # Both seeds call their buffer `buffer`: one {id} item replaces the old one on the root and the new
