@@ -68,7 +68,9 @@ export the goal as a standalone lemma (`tools/residuals/`); a model writes its p
 `tools/residuals/render_residual_module.py` writes `ZesuSsz/Residuals/Block<address>.v`: rendered declarations
 around proofs copied verbatim. Never edit or hand-write those proofs; send a failing one back as FAIL.
 The block's caller imports its residual module, and `zesu_block2. Qed.` applies the lemmas through the
-`zesu_residual` hints (`Automation2/ResidualLemmas.v`), tried after the solver fails.
+residual tier (`Automation2/ResidualLemmas.v`), tried after the solver fails: `zesu_residual` hints for
+the original `Block800d<block>.v` modules; for `<function>/Block<offset>.v`, an exact lookup that applies a
+lemma only to a goal that is its conclusion up to its binders and closes its premises by hypotheses only.
 
 Termination is proved separately in Phase 5 of the active plan with the
 verified executor in `Export/Executor.v`. Never prove termination by hand

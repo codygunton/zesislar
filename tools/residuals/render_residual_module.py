@@ -13,6 +13,11 @@ decodeItem address. The relocatable form, for every new function,
 ZesuSsz/Residuals/<function>/Block<offset>.v, holds lemmas named
 residual_<function>_<offset>_<16 hex>; <offset> is the block's 4-hex offset from
 the function's symbol and <function> is an identifier without underscores.
+The original form registers each lemma with `Hint Resolve` in `zesu_residual`
+(searched by `eauto 2`; its rendered text stays as it was). The relocatable form
+registers each lemma with a `Hint Extern` in `zesu_residual_exact` that runs
+`zesu_residual_exact`: the lemma applies only to a goal that is its conclusion up
+to its binders, and its premises close by hypotheses only, with no search.
 
 Each goal dir <blk>-<n>/ holds goal.v (the statement with a PROOF-SLOT) and
 proof.v (goal.v with the slot filled and one Qed.). The module text of each
@@ -49,11 +54,26 @@ OLD_CORE = re.compile(r"\bZesuSsz\.Automation\.")
 FUNCTION = r"[A-Za-z][A-Za-z0-9]*"
 NAME = (r"residual_(?:(?P<function>" + FUNCTION + r")_(?P<offset>[0-9a-f]{4})_[0-9a-f]{16}"
         r"|(?P<block>[0-9a-f]{4})_[0-9a-f]+)")
+# The hint after each lemma: the original form adds it to the `zesu_residual`
+# `Hint Resolve` database; the relocatable form adds one `Hint Extern` that runs
+# `zesu_residual_exact` (ZesuSsz/Automation2/ResidualLemmas.v): the lemma is tried
+# only on a goal that is its conclusion up to its binders, and its premises close
+# by hypotheses only.
+RESOLVE_HINT = "#[export] Hint Resolve %s : zesu_residual.\n"
+EXACT_HINT = ("#[export] Hint Extern 0 => ZesuSsz.Automation2.ResidualLemmas.zesu_residual_exact "
+              "constr:(%s) : zesu_residual_exact.\n")
 LEMMA = re.compile(
     r"\(\* goal (?P<goal>[0-9a-f]{4}-\d+): goal\.v sha256 (?P<goal_sha>[0-9a-f]{64}), "
     r"proof\.v sha256 (?P<proof_sha>[0-9a-f]{64}) \*\)\n"
     r"(?P<body>Lemma (?P<name>" + NAME + r") :\n.*?\nProof\.\n.*?Qed\.)\n"
-    r"#\[export\] Hint Resolve (?P<hint>\w+) : zesu_residual\.\n", re.S)
+    r"(?:#\[export\] Hint Resolve (?P<hint>\w+) : zesu_residual\.\n"
+    r"|#\[export\] Hint Extern 0 => ZesuSsz\.Automation2\.ResidualLemmas\.zesu_residual_exact "
+    r"constr:\((?P<exact>\w+)\) : zesu_residual_exact\.\n)", re.S)
+
+
+def hint_line(name):
+    """The registration of lemma NAME: exact for the relocatable form, `Hint Resolve` for the original."""
+    return (EXACT_HINT if re.fullmatch(NAME, name)["function"] else RESOLVE_HINT) % name
 
 
 class RenderError(ValueError):
@@ -138,9 +158,8 @@ def render_module(block, header, lemmas):
     """header: import lines; lemmas: list of dicts with goal, goal_sha, proof_sha, name, body."""
     out = [GENERATED, "\n".join(header), "\n"]
     for row in lemmas:
-        out.append("\n(* goal %s: goal.v sha256 %s, proof.v sha256 %s *)\n%s\n"
-                   "#[export] Hint Resolve %s : zesu_residual.\n"
-                   % (row["goal"], row["goal_sha"], row["proof_sha"], row["body"], row["name"]))
+        out.append("\n(* goal %s: goal.v sha256 %s, proof.v sha256 %s *)\n%s\n%s"
+                   % (row["goal"], row["goal_sha"], row["proof_sha"], row["body"], hint_line(row["name"])))
     return "".join(out)
 
 
@@ -161,7 +180,7 @@ def parse_module(text):
         match = LEMMA.match(body, position)
         if not match:
             raise RenderError("Invalid lemma block at offset %d." % position)
-        if match["hint"] != match["name"]:
+        if (match["hint"] or match["exact"]) != match["name"]:
             raise RenderError("The hint does not name its lemma: %s." % match["name"])
         proof = match["body"].split("\nProof.\n", 1)[1]
         if FORBIDDEN.search(proof) or proof.count("Qed.") != 1:
