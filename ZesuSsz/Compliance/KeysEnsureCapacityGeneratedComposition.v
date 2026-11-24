@@ -600,3 +600,7 @@ Proof.
   iSplitL "Hentry"; [by iApply keysEnsureCapacity_start_bridge|].
   iExact "Hexit".
 Qed.
+
+(* Every block of the region is closed (KeysEnsureCapacityOpenBlocks has no field). *)
+Theorem keysEnsureCapacityCompliance : KeysEnsureCapacityContractCorrect.
+Proof. exact (keysEnsureCapacityComplianceFrom keysEnsureCapacityOpenBlocks). Qed.
