@@ -34,7 +34,7 @@ from forward_resource_design import _state_from_result, evaluate_owned_function
 from forward_resources import apply_owned_writes, load_resource_vocabulary, render_resource_boundary
 from join_generalize import (common_root_ancestor, drop_root_resources, generalize_owned_join, inherited_drops,
                              lift_call_return_edges, normalize, seed_record)
-from resource_seed import load_public_seed, seed_owned_resources
+from resource_seed import configure_array_words, load_public_seed, seed_owned_resources
 import symbolic_state
 from system_shape_seed import seed_system_shapes
 
@@ -168,6 +168,8 @@ def main():
     for row in (profile.get('access_placements', []) if profile else []):
         placements.setdefault(int(profile.pc(row['pc']), 0), []).append(row)
     symbolic_state.ACCESS_PLACEMENTS = placements
+    # Profile `array_words`: the words of owned arrays of a listed value form (resource_seed).
+    configure_array_words(profile)
     # Profile key `merge_condition_alternatives` (default true): alternatives that reach a block over
     # one edge with the same state up to their path conditions continue as one (forward_design).
     merge = profile.get('merge_condition_alternatives', True) if profile else True
