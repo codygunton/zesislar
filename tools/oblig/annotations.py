@@ -37,7 +37,9 @@ The compiled profile keys, by `boundary`:
                    record the guards it relies on, as documentation only (never emitted).
   call_site        a `calls` row: the row's `call` object with `call_site_pc`. Its `opaque` rows
                    [{`spec`, `use`: framed | consumed | produced, `caller`: [...]}] name spec resources in
-                   the spec's text and, for a consumed one, the caller components it takes; its `returns`
+                   the spec's text and, for a consumed one, the caller components it takes (a framed one
+                   may name them too); a produced row's `as` [text | {coq, length}] states the spec resource
+                   by the pieces of its LithiumUnfold, which the call block proves; its `returns`
                    rows [{`index`, `register`}] name the returned registers the continuation reads; its
                    `result_words` {byte offset: Z value} name words of the returned array the return entry
                    states and the seed reads as the value (`{argv:N}`, `{fresh:NAME:TYPE}` in the value);
@@ -197,6 +199,12 @@ def _check_call(row):
                 or not all(isinstance(text, str) for text in callers):
             raise AnnotationError('%s: a consumed opaque row names its caller resources, a produced one none'
                                   % row['id'])
+        pieces = item.get('as')
+        if pieces is not None and (item['use'] != 'produced' or not isinstance(pieces, list) or not pieces
+                                   or not all(isinstance(piece, str) or isinstance(piece, dict)
+                                              and set(piece) == {'coq', 'length'} for piece in pieces)):
+            raise AnnotationError('%s: `as` belongs to a produced opaque row: its pieces are texts or {coq, length}'
+                                  % row['id'])
     for item in row['call'].get('returns', []):
         if not isinstance(item.get('index'), int) or not re.fullmatch(r'x(1[0-7])', str(item.get('register'))):
             raise AnnotationError('%s: a returns row has an integer `index` and an argument register' % row['id'])
@@ -299,10 +307,17 @@ def compile_profile(data, source=None):
                             'return_fact': ' /\\ '.join(fact['coq'] for fact in facts) if facts else True})
         elif boundary == 'access':
             placement = row.get('placement') or {}
-            missing = {'array', 'index', 'scale', 'offset'} - set(placement)
-            if missing:
-                raise AnnotationError('%s: placement lacks %s' % (row['id'], ', '.join(sorted(missing))))
-            placements.append({'pc': at['pc'], **{key: placement[key] for key in ('array', 'index', 'scale', 'offset')}})
+            if 'region' in placement:
+                # A store into an owned uninitialized region named by its address text, at a constant offset.
+                if set(placement) != {'region', 'offset'} or not isinstance(placement['offset'], int) \
+                        or not isinstance(placement['region'], str):
+                    raise AnnotationError('%s: a store placement is {region: address text, offset: integer}' % row['id'])
+                placements.append({'pc': at['pc'], 'region': placement['region'], 'offset': placement['offset']})
+            else:
+                missing = {'array', 'index', 'scale', 'offset'} - set(placement)
+                if missing:
+                    raise AnnotationError('%s: placement lacks %s' % (row['id'], ', '.join(sorted(missing))))
+                placements.append({'pc': at['pc'], **{key: placement[key] for key in ('array', 'index', 'scale', 'offset')}})
         elif boundary == 'frame':
             slots, sites = row.get('slots') or [], row.get('sites') or []
             if not slots or not sites or row.get('facts') \

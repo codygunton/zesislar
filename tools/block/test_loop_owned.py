@@ -7,7 +7,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1] / 'oblig'))
 
 import annotations  # noqa: E402
 from loop_design import loop_class, owned_node, owned_seed, replaced_components  # noqa: E402
-from resource_seed import seed_owned_resources  # noqa: E402
+from resource_seed import configure_array_words, seed_owned_resources  # noqa: E402
 from symbolic_state import SymbolicState, input_expr  # noqa: E402
 
 HEAD, PRED = '+0x10', '+0x8'
@@ -176,6 +176,35 @@ class SeedTest(unittest.TestCase):
         rebuilt = owned_seed(seed, design(owned=OWNED), 0x10, {'rows': []})
         texts = {c['id']: c['seed_component'].get('coq') for c in rebuilt.ownership['components']}
         self.assertEqual(texts['kept_value'], '⌜True⌝')
+
+
+class ArrayWordsTest(unittest.TestCase):
+    """Profile `array_words`: an owned array `F ARG` holds the word `G ARG` at each listed offset."""
+
+    def seed(self, value):
+        public = {'schema': 'h1-public-entry-seed.v1', 'entry_pc': '0x10', 'source_bindings': [],
+                  'assertion_tree': {'kind': 'exists', 'binders': [], 'components': [
+                      owned_node({'coq': '(sp - 280) ↦ₘ∗ ' + value, 'length': '24'}, 0),
+                      {'kind': 'opaque', 'id': 'true', 'coq': 'True'}]}}
+        public['_input_sha256'] = '0' * 64
+        return seed_owned_resources(public, entry_pc=0x10, vocabulary={'rows': []})
+
+    def tearDown(self):
+        configure_array_words({})
+
+    def test_the_rule_links_each_word(self):
+        configure_array_words({'array_words': [{'array': 'arrayListHeaderBytes',
+                                                'words': {'0': 'arrayListPointer', '8': 'arrayListLength'}}]})
+        links = self.seed('arrayListHeaderBytes (listAfter out)').state.word_links
+        self.assertEqual([(link['offset'], link['value'].value) for link in links],
+                         [(0, '(Z_to_bv 64%N (arrayListPointer (listAfter out)))'),
+                          (8, '(Z_to_bv 64%N (arrayListLength (listAfter out)))')])
+        self.assertEqual(self.seed('otherBytes s').state.word_links, [])
+
+    def test_without_the_key_no_word_is_linked(self):
+        self.assertEqual(self.seed('arrayListHeaderBytes s').state.word_links, [])
+        with self.assertRaisesRegex(ValueError, 'array_words'):
+            configure_array_words({'array_words': [{'array': 'arrayListHeaderBytes', 'words': {'x': 'p'}}]})
 
 
 if __name__ == '__main__':

@@ -55,6 +55,38 @@ class AccessPlacement(unittest.TestCase):
         self.assertEqual(self.read()[1].op, 'unknown_read')
 
 
+class StorePlacement(unittest.TestCase):
+    """A store row ({region, offset}) puts a store at the named uninitialized region's base plus offset."""
+
+    def setUp(self):
+        self.addCleanup(setattr, symbolic_state, 'ACCESS_PLACEMENTS', symbolic_state.ACCESS_PLACEMENTS)
+        from resource_seed import source_z_expression
+        self.base = source_z_expression('arrayListPointer s + arrayListLength s * 32', {}, 64)
+        self.state = SymbolicState(registers={'PC': bits(PC, 64)}, memory=[
+            MemoryRegion(self.base, length=input_expr('(cap - len) * 32', None), uninitialized=True,
+                         ownership_id='spare')])
+        self.address = operation('bvadd', input_expr('word_ptr', 64), operation('bvshl', input_expr('word_len', 64),
+                                                                                 bits(5, 64)))
+
+    def store(self):
+        evaluator = _Evaluator(self.state.copy(), instruction_index=PC)
+        return evaluator, evaluator.placed_store(self.address)
+
+    def test_the_row_places_the_store_and_reports_the_address_claim(self):
+        symbolic_state.ACCESS_PLACEMENTS = {PC: [{'pc': '0050', 'region': 'arrayListPointer s + arrayListLength s * 32',
+                                                  'offset': 8}]}
+        evaluator, placed = self.store()
+        self.assertEqual(placed, operation('bvadd', self.base, bits(8, 64)))
+        obligation, = evaluator.state.read_obligations
+        self.assertEqual((obligation['kind'], obligation['status'], obligation['owner']),
+                         ('placed_store_address', 'OPEN', 'spare'))
+
+    def test_without_the_row_or_with_another_region_nothing_is_placed(self):
+        symbolic_state.ACCESS_PLACEMENTS = {}
+        self.assertIsNone(self.store()[1])
+        symbolic_state.ACCESS_PLACEMENTS = {PC: [{'pc': '0050', 'region': 'other', 'offset': 0}]}
+        self.assertIsNone(self.store()[1])
+
 class PlacedLoadPastEnd(unittest.TestCase):
     """A trace case that puts a placed load past its array's end bound E stops only with both rows: the
     access row placing the load in the array and the supplied domain relation `base + length <= E`."""
@@ -512,6 +544,62 @@ class ListHeaderCall(OpaqueAndReturnedCall):
         from call_boundary import CallRefused
         with self.assertRaisesRegex(CallRefused, 'no unchanged caller array listHeader other'):
             self.run_call(arrays=[{'binder': 'state', 'argument': 0, 'caller_value': 'other'}])
+
+class ProducedUnfold(OpaqueAndReturnedCall):
+    """A produced row's `as`: the spec resource (an array list buffer) enters the seed as the pieces of
+    its registered LithiumUnfold, which the call block proves."""
+    SPEC = '''Definition allocSpec `{!islaG Sigma} `{!threadG} : iProp Sigma :=
+  (machine_call someMap 0
+    (fun argv sp RET =>
+      RET (fun rets =>
+        ∃ outcome : Outcome,
+        arrayListBuffer 32 3 (listAfter outcome) ∗
+        ⌜bv_unsigned (rets !!! 0%nat) = 0⌝ ∗
+        True)))%I.
+'''
+    PIECES = [{'coq': 'arrayListPointer (listAfter outcome) ↦ₘ∗ arrayListItems (listAfter outcome)',
+               'length': 'arrayListLength (listAfter outcome) * 32'},
+              '(arrayListPointer (listAfter outcome) + arrayListLength (listAfter outcome) * 32) ↦ₘ? '
+              '((arrayListCapacity (listAfter outcome) - arrayListLength (listAfter outcome)) * 32)',
+              'altFlBlock (arrayListPointer (listAfter outcome)) (arrayListCapacity (listAfter outcome) * 32) 3']
+
+    def test_without_rows_the_old_refusals_stay(self):
+        pass
+
+    def test_rows_frame_consume_and_produce_and_name_the_returned_register(self):
+        pass
+
+    def test_a_wrong_row_is_refused(self):
+        pass
+
+    def run_grow(self, **row):
+        return self.run_call(returns=[{'index': 0, 'register': 'x10'}],
+                             opaque=[{'spec': 'arrayListBuffer 32 3 (listAfter outcome)', 'use': 'produced', **row}])
+
+    def test_the_pieces_replace_the_opaque_resource(self):
+        _, public, report = self.run_grow(**{'as': self.PIECES})
+        nodes = {node['id']: node for node in public['assertion_tree']['components']}
+        after = '(listAfter (call_outcome))'
+        self.assertEqual((nodes['call_produced_0']['kind'], nodes['call_produced_0']['address_z']),
+                         ('byte_array', 'arrayListPointer ' + after))
+        self.assertEqual(nodes['call_produced_1']['kind'], 'uninitialized_memory')
+        self.assertEqual(nodes['call_produced_2']['coq'], 'altFlBlock (arrayListPointer %s) (arrayListCapacity %s * 32) 3'
+                         % (after, after))
+        self.assertNotIn('arrayListBuffer', repr(public['assertion_tree']['components']))
+        self.assertEqual(report['unfolded_produced'][0]['spec'], 'arrayListBuffer 32 3 ' + after)
+
+    def test_without_as_the_resource_stays_opaque(self):
+        _, public, report = self.run_grow()
+        nodes = {node['id']: node for node in public['assertion_tree']['components']}
+        self.assertEqual(nodes['call_produced_0']['coq'], 'arrayListBuffer 32 3 (listAfter (call_outcome))')
+        self.assertNotIn('unfolded_produced', report)
+
+    def test_an_unregistered_unfold_is_refused(self):
+        from call_boundary import CallRefused
+        self.SPEC = self.SPEC.replace('arrayListBuffer', 'someBuffer')
+        with self.assertRaisesRegex(CallRefused, 'someBuffer, which has no LithiumUnfold instance'):
+            self.run_call(returns=[{'index': 0, 'register': 'x10'}],
+                          opaque=[{'spec': 'someBuffer 32 3 (listAfter outcome)', 'use': 'produced', 'as': self.PIECES}])
 
 class WordLinkAcrossCall(unittest.TestCase):
     """A root word link survives a call that leaves its array alone and is dropped when the spec

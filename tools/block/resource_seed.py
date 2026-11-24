@@ -9,6 +9,21 @@ from forward_resources import (OwnedBytes, _strip_enclosure, _top_positions,
                                ownership_from_assertion_tree)
 from symbolic_state import Expr, MemoryRegion, SymbolicState, bits, input_expr, operation
 
+# Profile `array_words` [{"array": F, "words": {"OFFSET": G}}]: the word an owned array of value `F ARG` holds
+# at OFFSET is `G ARG` (seed_owned_resources). Set by configure_array_words; empty without the key.
+ARRAY_WORDS = []
+
+
+def configure_array_words(profile):
+    """Read the profile's `array_words` rows (refused unless each names an array head and integer offsets)."""
+    rows = (profile or {}).get('array_words', [])
+    for row in rows:
+        if (set(row) != {'array', 'words'} or not re.fullmatch(r"[A-Za-z_][\w'.]*", str(row['array']))
+                or not row['words'] or not all(re.fullmatch(r'\d+', str(offset)) and re.fullmatch(r"[A-Za-z_][\w'.]*", str(reader))
+                                               for offset, reader in row['words'].items())):
+            raise ValueError('array_words: a row is {array: F, words: {OFFSET: G}} with names F, G')
+    ARRAY_WORDS[:] = [dict(row) for row in rows]
+
 
 def load_public_seed(path, expected_sha256):
     data = Path(path).read_bytes()
@@ -293,6 +308,28 @@ def seed_owned_resources(seed, *, entry_pc, vocabulary, constants=None, facts=()
         state.word_links.append({'array': arrays[terms['resource_id']], 'offset': terms['offset'], 'size': 8,
                                  'value': source_z_expression(terms['quantity'], constants, address_width),
                                  'fact_id': fact['fact_id'], 'resource_id': terms['resource_id']})
+    # Profile `array_words` (configure_array_words): an owned array whose value is `F ARG` has the word
+    # `G ARG` at each listed offset. The forward pass reads it as that quantity; every block that loads
+    # it proves the bytes are that word (an open obligation of the block, never assumed).
+    for resource in resources:
+        array = resource.byte_array
+        if array is None or array.op != 'input':
+            continue
+        text = ' '.join(str(array.value).split())
+        for rule in ARRAY_WORDS:
+            match = re.fullmatch(re.escape(rule['array']) + r'\s+(.+)', _strip_enclosure(text), re.S)
+            if match is None:
+                continue
+            argument = match[1] if re.fullmatch(r"[\w'.]+", match[1]) else '(' + _strip_enclosure(match[1]) + ')'
+            for offset, reader in sorted(rule['words'].items(), key=lambda item: int(item[0])):
+                if any(link['resource_id'] == resource.id and link['offset'] == int(offset)
+                       for link in state.word_links):
+                    continue
+                state.word_links.append({'array': array, 'offset': int(offset), 'size': 8,
+                                         'value': source_z_expression('%s %s' % (reader, argument), constants,
+                                                                      address_width),
+                                         'fact_id': '%s:array-words-%s' % (resource.id, offset),
+                                         'resource_id': resource.id})
     # Two separately owned resources with full permission own disjoint bytes:
     # an address inside one cannot be a byte of the other. Explicit range
     # facts keep precedence; this adds only the pairs that they omit.
