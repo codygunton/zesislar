@@ -138,6 +138,19 @@ def exit_body(row):
     return body[:-len('⌝)%I')] + ' /\\ (' + fact + ')⌝)%I'
 
 
+def exit_budget(row, body):
+    """A charged profile: the exit entry owns its own budget (budgets.py) instead of the head's potential."""
+    if not PROFILE.charged:
+        return body
+    import budgets
+    record = budgets.entry_budgets(PROFILE)
+    potential = budgets.budget_conjunct(budgets.budget_text(record, row['head']))
+    if body.count(potential) != 1:
+        raise ValueError('The loop-head class does not own its potential once: ' + row['head'])
+    own = budgets.resolve_registers(budgets.budget_text(record, row['pc']), [body])
+    return body.replace(potential, budgets.budget_conjunct(own))
+
+
 def entries_source(row, body):
     pc = row['pc']
     return (HEADER + '\n'
@@ -217,7 +230,7 @@ def main():
     rows = {row['output']: row for row in fixture['declarations']}
     outputs, checks = {}, []
     for row in DESIGN:
-        body = exit_body(row)
+        body = exit_budget(row, exit_body(row))
         name, binders, facts, check_sha256 = check_record(row, body)
         checks.append({'definition': name, 'binders': binders, 'facts': facts,
                        'check_sha256': check_sha256, 'contradictory': None})
