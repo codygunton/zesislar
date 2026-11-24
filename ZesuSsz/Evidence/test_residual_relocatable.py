@@ -45,7 +45,9 @@ class RelocatableRenderTests(unittest.TestCase):
         block, _, rows = parse_module(text)
         self.assertEqual((block, len(rows)), ("00c4", 2))
         self.assertEqual(module_of_rows(rows), ("00c4", "txAccessList"))
-        self.assertEqual(text.count("#[export] Hint Resolve residual_txAccessList_00c4_"), 2)
+        self.assertEqual(text.count("#[export] Hint Extern 0 => ZesuSsz.Automation2.ResidualLemmas."
+                                    "zesu_residual_exact constr:(residual_txAccessList_00c4_"), 2)
+        self.assertNotIn("Hint Resolve", text)
         self.assertEqual(residual_module_failures("ZesuSsz/Residuals/txAccessList/Block00c4.v", text), [])
         for wrong in ("ZesuSsz/Residuals/Block800d00c4.v", "ZesuSsz/Residuals/txAccessList/Block00c8.v",
                       "ZesuSsz/Residuals/keysToOwnedSlice/Block00c4.v"):
@@ -92,7 +94,8 @@ class RelocatableRenderTests(unittest.TestCase):
 
 class RelocatablePolicyTests(unittest.TestCase):
     MODULE = ("Require Import ZesuSsz.Automation2.All.\n"
-              "#[export] Hint Resolve residual_txAccessList_00c4_0123456789abcdef : zesu_residual.\n")
+              "#[export] Hint Extern 0 => ZesuSsz.Automation2.ResidualLemmas.zesu_residual_exact "
+              "constr:(residual_txAccessList_00c4_0123456789abcdef) : zesu_residual_exact.\n")
 
     def tree(self, files):
         root = Path(tempfile.mkdtemp())
@@ -104,6 +107,13 @@ class RelocatablePolicyTests(unittest.TestCase):
     def test_new_form_module_is_a_residual_module(self):
         root = self.tree({"ZesuSsz/Residuals/txAccessList/Block00c4.v": self.MODULE})
         self.assertEqual(residual_errors(root), [])
+
+    def test_new_form_module_with_a_resolve_hint_is_refused(self):
+        resolve = ("Require Import ZesuSsz.Automation2.All.\n"
+                   "#[export] Hint Resolve residual_txAccessList_00c4_0123456789abcdef : zesu_residual.\n")
+        root = self.tree({"ZesuSsz/Residuals/txAccessList/Block00c4.v": resolve})
+        self.assertEqual(residual_errors(root), [
+            "ZesuSsz.Residuals.txAccessList.Block00c4 registers a hint other than an exported residual lemma."])
 
     def test_other_layouts_and_importers_are_refused(self):
         root = self.tree({
