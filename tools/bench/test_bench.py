@@ -214,5 +214,18 @@ class MemberCpuCap(unittest.TestCase):
         self.assertEqual(self.compile_cap(member), (24, 3600))
 
 
+class FreshDirectory(unittest.TestCase):
+    """Members that share a case and start at once each get their own run directory."""
+
+    def test_concurrent_members_of_one_case_get_distinct_directories(self):
+        from concurrent.futures import ThreadPoolExecutor
+        with tempfile.TemporaryDirectory(prefix='bench-fresh-') as root:
+            with ThreadPoolExecutor(8) as pool:
+                made = list(pool.map(lambda _: bench.fresh_directory(Path(root), '0000'), range(16)))
+            self.assertEqual(len(set(made)), 16)
+            self.assertIn(Path(root) / 'runs' / '0000', made)
+            self.assertTrue(all(d.is_dir() for d in made))
+
+
 if __name__ == '__main__':
     unittest.main()

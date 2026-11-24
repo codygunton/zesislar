@@ -213,16 +213,26 @@
       "function": "keysToOwnedSlice",
       "symbol": "array_list.Aligned([32]u8,null).toOwnedSlice",
       "status": "proved",
-      "reason": "Plan B2 (issue #347): keysToOwnedSliceCompliance proves KeysToOwnedSliceContractCorrect; every block of the region has a closure certificate (KeysToOwnedSliceBlockObligations.v has no open block).",
+      "reason": "Plan B2 (issue #347): keysToOwnedSliceCompliance proves KeysToOwnedSliceContractCorrect; every block of the region has a closure certificate (KeysToOwnedSliceBlockObligations.v has no open block). Plan T8: keysToOwnedSliceBudgetCompliance proves the charged KeysToOwnedSliceBudgetContractCorrect (budget 175, all 30 charged blocks certified).",
       "compliance_theorems": [
         "keysToOwnedSliceGeneratedCompliance",
-        "keysToOwnedSliceCompliance"
+        "keysToOwnedSliceCompliance",
+        "keysToOwnedSliceBudgetCompliance"
       ],
+      "budget": 175,
+      "charged": {
+        "contract": {"module": "ZesuSsz.Contracts.KeysToOwnedSliceBudgetContract", "name": "KeysToOwnedSliceBudgetContractCorrect"},
+        "compliance": {"module": "ZesuSsz.Compliance.KeysToOwnedSliceBudgetGeneratedComposition", "name": "keysToOwnedSliceBudgetCompliance"},
+        "code": {"module": "ZesuSsz.Contracts.KeysToOwnedSliceChargedSelected", "name": "keysToOwnedSliceChargedCode"},
+        "call_spec_correct": {"module": "ZesuSsz.Compliance.KeysToOwnedSliceBudgetCallSpec", "name": "keysToOwnedSliceBudgetCallSpec2_correct", "statement": "KeysToOwnedSliceBudgetContractCorrect -> keysToOwnedSliceBudgetContractCode -∗ instr_body sym_array_list_Aligned_32_u8_null_toOwnedSlice (step_budget keysToOwnedSliceBudget ∗ keysToOwnedSliceCallSpecDefinition)"}
+      },
       "owned_prefixes": [
         "ZesuSsz/Contracts/KeysToOwnedSlice",
         "ZesuSsz/Compliance/KeysToOwnedSlice",
         "ZesuSsz/Generated/KeysToOwnedSlice/",
+        "ZesuSsz/Generated/KeysToOwnedSliceBudget/",
         "ZesuSsz/Proofs/KeysToOwnedSlice/",
+        "ZesuSsz/Proofs/KeysToOwnedSliceBudget/",
         "ZesuSsz/Residuals/keysToOwnedSlice/"
       ],
       "interface": {
@@ -344,16 +354,26 @@
       "function": "entriesToOwnedSlice",
       "symbol": "array_list.Aligned(input.AccessListEntry,null).toOwnedSlice",
       "status": "proved",
-      "reason": "Plan B3 (issue #347): entriesToOwnedSliceCompliance proves EntriesToOwnedSliceContractCorrect; every block of the region has a closure certificate (EntriesToOwnedSliceBlockObligations.v has no open block).",
+      "reason": "Plan B3 (issue #347): entriesToOwnedSliceCompliance proves EntriesToOwnedSliceContractCorrect; every block of the region has a closure certificate (EntriesToOwnedSliceBlockObligations.v has no open block). Plan T8: entriesToOwnedSliceBudgetCompliance proves the charged EntriesToOwnedSliceBudgetContractCorrect (budget 185, all 30 charged blocks certified).",
       "compliance_theorems": [
         "entriesToOwnedSliceGeneratedCompliance",
-        "entriesToOwnedSliceCompliance"
+        "entriesToOwnedSliceCompliance",
+        "entriesToOwnedSliceBudgetCompliance"
       ],
+      "budget": 185,
+      "charged": {
+        "contract": {"module": "ZesuSsz.Contracts.EntriesToOwnedSliceBudgetContract", "name": "EntriesToOwnedSliceBudgetContractCorrect"},
+        "compliance": {"module": "ZesuSsz.Compliance.EntriesToOwnedSliceBudgetGeneratedComposition", "name": "entriesToOwnedSliceBudgetCompliance"},
+        "code": {"module": "ZesuSsz.Contracts.EntriesToOwnedSliceChargedSelected", "name": "entriesToOwnedSliceChargedCode"},
+        "call_spec_correct": {"module": "ZesuSsz.Compliance.EntriesToOwnedSliceBudgetCallSpec", "name": "entriesToOwnedSliceBudgetCallSpec2_correct", "statement": "EntriesToOwnedSliceBudgetContractCorrect -> entriesToOwnedSliceBudgetContractCode -∗ instr_body sym_array_list_Aligned_input_AccessListEntry_null_toOwnedSlice (step_budget entriesToOwnedSliceBudget ∗ entriesToOwnedSliceCallSpecDefinition)"}
+      },
       "owned_prefixes": [
         "ZesuSsz/Contracts/EntriesToOwnedSlice",
         "ZesuSsz/Compliance/EntriesToOwnedSlice",
         "ZesuSsz/Generated/EntriesToOwnedSlice/",
+        "ZesuSsz/Generated/EntriesToOwnedSliceBudget/",
         "ZesuSsz/Proofs/EntriesToOwnedSlice/",
+        "ZesuSsz/Proofs/EntriesToOwnedSliceBudget/",
         "ZesuSsz/Residuals/entriesToOwnedSlice/"
       ],
       "interface": {
