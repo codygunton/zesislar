@@ -678,6 +678,24 @@ def held_texts(seed, texts):
     return [text for text in texts if ' '.join(text.split()) in held]
 
 
+def owned_replaced_texts(owned, seeds):
+    """The component texts an owned join row `replaces` (profile `join_owned`) in `seeds` (the join's
+    root and its edges' seeds): a text item as written, an {"id"} item as the text of that component
+    in each seed that has it. An item that names a component of no seed is refused."""
+    texts = []
+    for item in (owned or {}).get('replaces', []):
+        if isinstance(item, dict):
+            found = [_component_text(component) for seed in seeds for component in seed.ownership['components']
+                     if component['id'] == item['id']]
+        else:
+            found = [' '.join(item.split())] if any(held_texts(seed, [item]) for seed in seeds) else []
+        if not found:
+            raise ValueError('owned join refused: a replaced resource is held by no edge and not by the join '
+                             'root: ' + str(item.get('id') if isinstance(item, dict) else item))
+        texts.extend(found)
+    return list(dict.fromkeys(texts))
+
+
 def inherited_drops(root_seed, origins, seed_drops):
     """The resource texts of root_seed that a seed in `origins` no longer owns.
 
@@ -821,7 +839,7 @@ def carry_common_word_links(incoming, seed):
     return seed
 
 
-def lift_call_return_edges(alternatives, *, seeds, roots, ancestor, vocabulary, drops=()):
+def lift_call_return_edges(alternatives, *, seeds, roots, ancestor, vocabulary, drops=(), replaced=()):
     """Express join edges that start at seeds below `ancestor` on its tree.
 
     A call-return seed refines its parent's tree: it splits frame spans around the call
@@ -835,6 +853,10 @@ def lift_call_return_edges(alternatives, *, seeds, roots, ancestor, vocabulary, 
     components are dropped (a weakening, as for a join seed's relations); their binders
     are returned as existential binders for the join. Edges from the ancestor's own
     tree are unchanged. Return (alternatives, binders).
+
+    replaced are the resource texts an owned join row `replaces` (profile `join_owned`): an edge
+    whose seed holds one forgets it, as for a drop row; an edge that does not hold it is unchanged
+    (the edges of an owned join may disagree on the resources it replaces).
     """
     try:
         from .forward_resource_design import _state_from_result
@@ -870,7 +892,7 @@ def lift_call_return_edges(alternatives, *, seeds, roots, ancestor, vocabulary, 
         listed = {' '.join(text.split()) for item in drops if item['root'] == roots.get(seed_pc)
                   for text in item['resources']}
         texts = {}
-        if listed:
+        if listed or replaced:
             for component in seed.ownership['components']:
                 source = component.get('seed_component') or {}
                 texts[component['id']] = ' '.join(str(source.get('original_component', source.get('coq', ''))).split())
@@ -878,8 +900,9 @@ def lift_call_return_edges(alternatives, *, seeds, roots, ancestor, vocabulary, 
             if unmatched:
                 raise ValueError('A join drop row names no resource of the edge from %s: %s'
                                  % (roots.get(seed_pc), sorted(unmatched)[0]))
+        forgotten = listed | {' '.join(text.split()) for text in replaced}
         for resource in seed.resources:
-            if texts.get(resource.id) in listed:
+            if texts.get(resource.id) in forgotten:
                 continue
             updates = image.updates[resource.id]
             if any(isinstance(offset, str) for offset in updates):
@@ -1282,6 +1305,11 @@ def forget_array_bytes(state, component):
                     for row in state.memory]
 
 
+def _ghost(binder):
+    """A binder the join keeps as its own witness: a loop's owned binder or a profile `held_binders` name."""
+    return bool(binder.get('owned')) or binder['name'] in entry_hist.HELD_BINDERS
+
+
 def drop_unheld_binders(state, components, carried, binders, plan, live_registers, render_span):
     """Remove inherited binders that no register or whole array holds.
 
@@ -1307,8 +1335,9 @@ def drop_unheld_binders(state, components, carried, binders, plan, live_register
     """
     held = {value.value for value in state.registers.values() if value.op == 'input'}
     held |= {component.get('value') for component in components if component['kind'] == 'byte_array'}
-    # A loop's owned ghost binder (loop_design.owned_seed) is the same value on every edge below its head.
-    held |= {binder['name'] for binder in binders if binder.get('owned')}
+    # A loop's owned ghost binder (loop_design.owned_seed) is the same value on every edge below its head;
+    # so is a binder the profile's `held_binders` names (entry_hist.configure).
+    held |= {binder['name'] for binder in binders if _ghost(binder)}
     taken = ({binder['name'] for binder in binders} | {binder['name'] for binder in plan['binders']}
              | _fact_names(component.get('source', '') for component in components))
     # Facts that would be dropped wait here and are bound under one existential at the end.
@@ -2043,7 +2072,7 @@ def generalize_owned_join(alternatives, *, original_seed, entry_pc, vocabulary,
                       {binder['name'] for binder in ordered}}
     full_witness_plan = witness_plan(ordered, register_bindings=register_bindings,
                                      array_bindings=array_bindings,
-                                     ghost_binders={binder['name'] for binder in ordered if binder.get('owned')})
+                                     ghost_binders={binder['name'] for binder in ordered if _ghost(binder)})
     owned_edges = []
     for edge in plan['edges']:
         record = deepcopy(edge)
