@@ -374,7 +374,8 @@ def residual_import(source, residuals=RESIDUALS, profile=None, legacy=True):
     """Import the block's residual lemmas (residual_module) after the core import, when they exist.
 
     Import is not transitive, so the caller keeps its solver bindings; the
-    residual module only adds its exact lemmas to the `zesu_residual` hints.
+    residual module only adds its exact lemmas to the residual hints
+    (`zesu_residual`, or `zesu_residual_exact` for the relocatable form).
     """
     module = residual_module(source, residuals, profile, legacy)
     if module is None:
