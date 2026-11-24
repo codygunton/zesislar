@@ -55,6 +55,49 @@ class AccessPlacement(unittest.TestCase):
         self.assertEqual(self.read()[1].op, 'unknown_read')
 
 
+class PlacedLoadOutsideRam(unittest.TestCase):
+    """A trace case that puts a placed load's address outside RAM stops when an access row places the
+    load in an owned array whose base lies in RAM; without the row the paths stay split."""
+    RAM = (0xa0000000, 0xc0000000)
+
+    def setUp(self):
+        self.addCleanup(setattr, symbolic_state, 'ACCESS_PLACEMENTS', symbolic_state.ACCESS_PLACEMENTS)
+        base = input_expr('base', 64)
+        self.state = SymbolicState(registers={'PC': bits(PC, 64)}, memory=[
+            MemoryRegion(base, byte_array=input_expr('arr', None), length=input_expr('length arr', None),
+                         ownership_id='arr_resource')])
+        self.state.source_intervals.append({'expression': base.to_dict(), 'minimum': self.RAM[0],
+                                            'maximum': self.RAM[1] - 64, 'ram_base': self.RAM[0],
+                                            'ram_end': self.RAM[1], 'origin': {'fixture': True}})
+        address = operation('bvadd', operation('bvadd', base, input_expr('k', 64)), bits(16, 64))
+        # The trace's input-region case: the address lies below the RAM base.
+        self.guard = operation('not', operation('bvsge', operation('zero_extend', address, width=128),
+                                                bits(self.RAM[0], 128)))
+
+    def run_case(self):
+        evaluator = _Evaluator(self.state.copy(), instruction_index=PC)
+        evaluator.state.conditions.append(self.guard)
+        symbolic_state._refute_placed_non_ram(self.state, evaluator)
+        return evaluator
+
+    def test_without_an_access_row_the_case_stays(self):
+        symbolic_state.ACCESS_PLACEMENTS = {}
+        self.assertEqual(self.run_case().status, 'complete')
+        symbolic_state.ACCESS_PLACEMENTS = {PC: [{'pc': '0050', 'array': 'other', 'index': 'k', 'scale': 1,
+                                                  'offset': 0}]}
+        self.assertEqual(self.run_case().status, 'complete')
+
+    def test_a_placed_load_outside_ram_is_refuted_as_an_open_obligation(self):
+        symbolic_state.ACCESS_PLACEMENTS = {PC: [{'pc': '0050', 'array': 'arr', 'index': 'k', 'scale': 1,
+                                                  'offset': 16}]}
+        evaluator = self.run_case()
+        self.assertEqual(evaluator.status, 'infeasible')
+        report, = [row for row in evaluator.state.reports if row['kind'] == 'placed_ram_refutation']
+        self.assertEqual(report['proof_status'], 'open')
+        self.assertTrue(report['required_rocq_guard_projection'])
+        self.assertEqual(report['source_intervals'][-1]['origin']['owner'], 'arr_resource')
+
+
 class SeededJoinStops(unittest.TestCase):
     def test_a_stop_inside_a_seeded_join_reaches_the_join_and_what_follows(self):
         # 16 branches to 20 and 24; 24 is a join with a seed; 24 falls into 28.
