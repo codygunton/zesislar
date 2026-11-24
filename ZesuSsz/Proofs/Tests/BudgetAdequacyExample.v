@@ -25,6 +25,10 @@ Definition budget_example_spec : spec :=
 
 Definition budget_example_code `{!islaG Sigma} `{!threadG} : iProp Sigma :=
   instr_lookup_resources_charged (budget_table_lookup budget_example_instrs).
+Global Instance : LithiumUnfold (@budget_example_code) := I.
+Global Typeclasses Opaque budget_example_code.
+(* The proofs read the table through the wrapper, as generated callers do. *)
+#[local] Typeclasses Transparent budget_example_code.
 
 Section block.
   Context `{!islaG Sigma} `{!threadG}.

@@ -21,12 +21,13 @@ Definition step_budget_test_map : list (Z * isla_trace) :=
 
 Definition step_budget_test_code `{!islaG Sigma} `{!threadG} : iProp Sigma :=
   instr_lookup_resources_charged (selectedCodeLookup step_budget_test_map).
+Global Instance : LithiumUnfold (@step_budget_test_code) := I.
+Global Typeclasses Opaque step_budget_test_code.
+(* The proofs read the table through the wrapper, as generated callers do. *)
+#[local] Typeclasses Transparent step_budget_test_code.
 
 Section tests.
   Context `{!islaG Sigma} `{!threadG}.
-
-  Definition step_budget_test_exit (address : Z) : iProp Sigma :=
-    instr_pre address (reg_col zesu_sys_regs ∗ "x2" ↦ᵣ: (fun _ => True) ∗ True).
 
   (* Three charged instructions with three credits. *)
   Lemma step_budget_three_closes (sp : bv 64) :
@@ -88,6 +89,13 @@ Section tests.
 
   Definition step_budget_test_return_entry : iProp Sigma :=
     reg_col zesu_sys_regs ∗ "x2" ↦ᵣ: (fun _ => True) ∗ step_budget 2 ∗ True.
+End tests.
+Global Instance : LithiumUnfold (@step_budget_test_callee) := I.
+Global Instance : LithiumUnfold (@step_budget_test_return_entry) := I.
+Global Typeclasses Opaque step_budget_test_callee step_budget_test_return_entry.
+
+Section call_tests.
+  Context `{!islaG Sigma} `{!threadG}.
 
   Lemma step_budget_call_site (sp : bv 64) :
     step_budget_test_callee
@@ -120,7 +128,7 @@ Section tests.
           solve [zesu_block2]).
     exact I.
   Qed.
-End tests.
+End call_tests.
 
 Print Assumptions step_budget_three_closes.
 Print Assumptions step_budget_block_a.
