@@ -4,6 +4,7 @@ From Coq Require Import List ZArith Lia.
 From stdpp Require Import bitvector.definitions.
 Require Import EvmSailRlp.evm_rlp_types.
 Require Import ZesuSsz.Contracts.AbiBytes.
+Require Import ZesuSsz.Contracts.IslarisMemory.
 Require Import ZesuSsz.Contracts.ArrayListContract.
 Require Import ZesuSsz.Contracts.AltFlAllocPremises.
 Require Import ZesuSsz.Contracts.Candidates.AccessListCandidate.
@@ -82,6 +83,19 @@ Global Hint Extern 0 (TxClosedWordBytes ?w ?bytes) =>
    ZesuSsz.Automation2.VmClosed.zesu_closed_term bytes;
    apply tx_closed_word_bytes_intro; vm_compute; reflexivity) : typeclass_instances.
 
+(* An empty header the block stored as three words (pointer p, length 0,
+   capacity 0; the +0x170 exit to the +0x248 join): the pointer word's value. *)
+Class TxEmptyListWord (w : bv 64) (p : Z) : Prop :=
+  tx_empty_list_word : bv_unsigned w = p.
+
+Global Hint Extern 0 (TxEmptyListWord ?w ?p) =>
+  (is_evar p; ZesuSsz.Automation2.VmClosed.zesu_closed_term w;
+   let v := eval vm_compute in (bv_unsigned w) in
+   unify p v; vm_compute; reflexivity) : typeclass_instances.
+
+Lemma tx_header_word_bytes (v : Z) : word64Bytes v = bv_to_little_endian 8 8 v.
+Proof. rewrite zesu_word64_bytes_encoding. unfold word64Bytes. reflexivity. Qed.
+
 Section tx_loop_intro.
   Context `{!islaG Sigma} `{!threadG}.
 
@@ -110,6 +124,40 @@ Section tx_loop_intro.
   Qed.
   Definition subsume_tx_empty_list_header_inst := [instance subsume_tx_empty_list_header].
   Global Existing Instance subsume_tx_empty_list_header_inst | 0.
+
+  Lemma tx_header_words_array (a : Z) (w0 w1 w2 : bv 64) :
+    a ↦ₘ w0 -∗ (a + 8) ↦ₘ w1 -∗ (a + 16) ↦ₘ w2 -∗
+    a ↦ₘ∗ (word64Bytes (bv_unsigned w0) ++ word64Bytes (bv_unsigned w1) ++
+           word64Bytes (bv_unsigned w2)).
+  Proof.
+    iIntros "H0 H1 H2". rewrite !tx_header_word_bytes app_assoc.
+    iDestruct (mem_mapsto_u64_pair_to_byte_array with "H0 H1") as "H01".
+    iDestruct (mem_mapsto_mapsto_to_byte_array with "H2") as "H2".
+    iApply (mem_mapsto_array_app_combine_at 8%N a (DfracOwn 1) _ _ 16 with "H01").
+    { rewrite length_app !length_bv_to_little_endian; lia. }
+    rewrite /= Z.mul_1_l. iExact "H2".
+  Qed.
+
+  (* The same header stored as three words: the length and capacity words
+     are taken from the context next to the pointer word. *)
+  Lemma subsume_tx_empty_list_header_words A (a1 a2 : Z) (w : bv 64) (p eb la : Z)
+      `{!TxEmptyListWord w p} `{!TxEmptyList p eb la}
+      (state : A -> ArrayListState) G :
+    (⌜a1 = a2⌝ ∗ (a1 + 8) ↦ₘ (BV 64 0) ∗ (a1 + 16) ↦ₘ (BV 64 0) ∗ ⌜0 <= p <= 2 ^ 64⌝ ∗
+      (arrayListBuffer eb la (arrayListEmpty p) -∗
+        ∃ x, ⌜state x = arrayListEmpty p⌝ ∗ G x))%I ⊢
+    subsume (a1 ↦ₘ w) (fun x => a2 ↦ₘ∗ arrayListHeaderBytes (state x)) G.
+  Proof.
+    iIntros "(-> & H1 & H2 & %Hp & HG) H0".
+    iDestruct ("HG" with "[]") as (x Hstate) "HG"; [by iApply tx_empty_buffer|].
+    iExists x. iFrame "HG". rewrite Hstate /arrayListHeaderBytes /arrayListEmpty.
+    cbn [arrayListPointer arrayListLength arrayListCapacity].
+    rewrite -(tx_empty_list_word (w:=w) (p:=p)).
+    iApply (tx_header_words_array with "H0 H1 H2").
+  Qed.
+  Definition subsume_tx_empty_list_header_words_inst :=
+    [instance subsume_tx_empty_list_header_words].
+  Global Existing Instance subsume_tx_empty_list_header_words_inst | 0.
 
   (* The keys slices of the finished entries: the held ones. *)
   Global Instance txAccessListKeysSlices_related A

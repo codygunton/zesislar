@@ -298,6 +298,14 @@
           "goal_domain_intro": true
         },
         {
+          "name": "keysToOwnedSliceCallDomainResultLength",
+          "binders": "argv context state resultBefore scratchBefore",
+          "premise": "keysToOwnedSliceCallDomain argv context state resultBefore scratchBefore",
+          "conclusion": "length resultBefore = 24%nat",
+          "proof": "keysToOwnedSliceDomainResultLength",
+          "derived_facts": true
+        },
+        {
           "name": "keysToOwnedSliceCallAllowsWellFormed",
           "binders": "state resultBefore outcome",
           "premise": "keysToOwnedSliceCallAllows state resultBefore outcome",
@@ -427,6 +435,14 @@
           "proof": "entriesToOwnedSliceDomainIntro",
           "derived_facts": false,
           "goal_domain_intro": true
+        },
+        {
+          "name": "entriesToOwnedSliceCallDomainResultLength",
+          "binders": "argv context state resultBefore scratchBefore",
+          "premise": "entriesToOwnedSliceCallDomain argv context state resultBefore scratchBefore",
+          "conclusion": "length resultBefore = 24%nat",
+          "proof": "entriesToOwnedSliceDomainResultLength",
+          "derived_facts": true
         },
         {
           "name": "entriesToOwnedSliceCallAllowsWellFormed",
